@@ -35,19 +35,17 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { getDatabaseSystem, } from '@claude-zen/infrastructure';
+import { DatabaseProvider } from '@claude-zen/database';
 import { getBrainSystem } from '@claude-zen/intelligence';
 import { TaskApprovalSystem } from '../agui/task-approval-system.js';
 import type { ApprovalGateManager } from '../core/approval-gate-manager.js';
 import type { SafeFrameworkIntegration } from '../integrations/safe-framework-integration.js';
-
 import type {
   ApprovalGateId,
   ApprovalGateRequirement,
   TaskId,
 } from '../types/index.js';
-
-const _logger = getLogger('ARTSyncCoordination');'
+const _logger = getLogger('ARTSyncCoordination'');
 
 // ============================================================================
 // ART SYNC TYPES AND INTERFACES
@@ -116,7 +114,7 @@ export interface ARTTeam {
   capacity: number;
 
   // Status indicators
-  healthStatus: 'green' | 'yellow' | 'red';
+  healthStatus:'green'|'yellow'|'red';
   blockers: string[];
   dependencies: string[]; // Dependent on other teams
   providesTo: string[]; // Provides dependencies to other teams
@@ -167,9 +165,9 @@ export interface TeamProgressReport {
     qualityMetrics: {
       defectRate: number;
       testCoverage: number;
-      technicalDebt: 'low' | 'medium' | 'high';
+      technicalDebt:'low'|'medium'|'high';
     };
-    deploymentStatus: 'ready' | 'blocked' | 'in_progress';
+    deploymentStatus:'ready'|'blocked'|'in_progress';
   };
 }
 
@@ -184,18 +182,16 @@ export interface CrossTeamDependency {
   // Dependency relationship
   providerTeam: string;
   consumerTeam: string;
-  dependencyType: 'feature|api|data|infrastructure|knowledge;
-
+  dependencyType:'feature| api| data| infrastructure'|'knowledge';
   // Timeline and commitment
   requiredBy: Date;
   committedBy: Date;
   actualDelivery?: Date;
 
   // Status and health
-  status:|'planned|in_progress|at_risk|blocked|delivered|cancelled;
-  healthStatus: 'green' | 'yellow' | 'red';
-  riskLevel: 'low|medium|high|critical;
-
+  status:|'planned| in_progress| at_risk| blocked| delivered'|'cancelled';
+  healthStatus:'green'|'yellow'|'red';
+  riskLevel:'low| medium| high'|'critical';
   // Resolution tracking
   mitigationPlan?: string;
   contingencyPlan?: string;
@@ -204,7 +200,7 @@ export interface CrossTeamDependency {
   // Approval workflow integration
   requiresApproval: boolean;
   approvalGateId?: ApprovalGateId;
-  approvalStatus?: 'pending' | 'approved' | 'rejected';
+  approvalStatus?:'pending'|'approved'|'rejected';
 }
 
 /**
@@ -216,10 +212,9 @@ export interface Impediment {
   description: string;
 
   // Categorization
-  type: 'technical|resource|process|external|organizational;
-  severity: 'low|medium|high|critical;
-  scope: 'team|art|portfolio|enterprise;
-
+  type:'technical| resource| process| external'|'organizational';
+  severity: low| medium| high'|'critical';
+  scope:'team| art| portfolio'|'enterprise';
   // Impact assessment
   impact: {
     affectedTeams: string[];
@@ -236,7 +231,7 @@ export interface Impediment {
   actualResolution?: Date;
 
   // Escalation workflow
-  escalationLevel: 'team' | 'art' | 'portfolio';
+  escalationLevel:'team'|'art'|'portfolio';
   requiresApproval: boolean;
   approvalGateId?: ApprovalGateId;
   resolutionPlan?: string;
@@ -251,12 +246,12 @@ export interface ARTRiskItem {
   description: string;
 
   // Risk assessment
-  probability: 'low' | 'medium' | 'high';
-  impact: 'low|medium|high|critical;
+  probability:'low'|'medium'|'high';
+  impact:'low| medium| high'|'critical';
   riskScore: number; // calculated from probability x impact
 
   // Context
-  category:|'technical|schedule|resource|dependency|external|quality;
+  category:|'technical| schedule| resource| dependency| external'|'quality';
   affectedAreas: string[];
   triggers: string[];
 
@@ -280,7 +275,7 @@ export interface ScopeChangeRequest {
   description: string;
 
   // Change details
-  changeType: 'addition|removal|modification|deferral;
+  changeType:'addition| removal| modification'|'deferral';
   affectedObjectives: string[];
   businessJustification: string;
 
@@ -301,7 +296,7 @@ export interface ScopeChangeRequest {
   approvalGateId?: ApprovalGateId;
 
   // Decision tracking
-  decision?: 'approved' | 'rejected' | 'deferred';
+  decision?:'approved'|'rejected'|'deferred';
   decisionRationale?: string;
   decisionDate?: Date;
 }
@@ -351,7 +346,7 @@ export interface ARTSyncOutcomes {
     description: string;
     assignedTo: string;
     dueDate: Date;
-    priority: 'low|medium|high|critical;
+    priority: low| medium| high'|'critical';
     requiresApproval: boolean;
     approvalGateId?: ApprovalGateId;
   }>;
@@ -369,10 +364,10 @@ export interface ARTSyncOutcomes {
 
   // Health assessment
   artHealth: {
-    overallStatus: 'green' | 'yellow' | 'red';
+    overallStatus:'green'|'yellow'|'red';
     piObjectiveHealth: number; // percentage on track
     dependencyHealth: number; // percentage resolved/on track
-    riskLevel: 'low' | 'medium' | 'high';
+    riskLevel:'low'|'medium'|'high';
     recommendedActions: string[];
   };
 }
@@ -388,7 +383,7 @@ export interface ARTSyncOutcomes {
  * with integrated approval workflows for cross-team coordination.
  */
 export class ARTSyncCoordination {
-  private readonly logger = getLogger('ARTSyncCoordination');'
+  private readonly logger = getLogger('ARTSyncCoordination'');
   private taskApprovalSystem: TaskApprovalSystem;
 
   constructor(
@@ -404,11 +399,11 @@ export class ARTSyncCoordination {
    */
   async initialize(): Promise<void> {
     try {
-      this.logger.info('Initializing ART Sync Coordination...');'
+      this.logger.info('Initializing ART Sync Coordination...'');
 
       // Initialize infrastructure
-      const dbSystem = await getDatabaseSystem();
-      this.database = dbSystem.createProvider('sql');'
+      const dbSystem = await DatabaseProvider.create();
+      this.database = dbSystem.createProvider('sql'');
 
       this.eventSystem = await getEventSystem();
       this.brainSystem = await getBrainSystem();
@@ -427,9 +422,9 @@ export class ARTSyncCoordination {
       // Register event handlers
       this.registerEventHandlers();
 
-      this.logger.info('ART Sync Coordination initialized successfully');'
+      this.logger.info('ART Sync Coordination initialized successfully'');
     } catch (error) {
-      this.logger.error('Failed to initialize ART Sync Coordination', error);'
+      this.logger.error('Failed to initialize ART Sync Coordination,error');
       throw error;
     }
   }
@@ -449,7 +444,7 @@ export class ARTSyncCoordination {
     const sessionId = config.id;
     const _coordinationTraceabilityId = `art-sync-${sessionId}-${Date.now()}`;`
 
-    this.logger.info('Starting ART Sync Session', {'
+    this.logger.info('Starting ART Sync Session,{
       sessionId,
       artName: config.artName,
       piNumber: config.piNumber,
@@ -499,7 +494,7 @@ export class ARTSyncCoordination {
       throw new Error(`ART Sync session $sessionIdnot found`);`
     }
 
-    this.logger.info('Executing Dependency Resolution', {'
+    this.logger.info('Executing Dependency Resolution,{
       sessionId,
       dependenciesCount: dependencies.length,
     });
@@ -580,7 +575,7 @@ export class ARTSyncCoordination {
       throw new Error(`ART Sync session ${sessionId} not found`);`
     }
 
-    this.logger.info('Executing Impediment Escalation', {'
+    this.logger.info('Executing Impediment Escalation,{
       sessionId,
       impedimentsCount: impediments.length,
     });
@@ -647,7 +642,7 @@ export class ARTSyncCoordination {
     progressReports: TeamProgressReport[]
   ): Promise<{
     artHealthAssessment: {
-      overallHealth: 'green' | 'yellow' | 'red';
+      overallHealth:'green'|'yellow'|'red';
       piObjectiveStatus: number; // percentage on track
       teamHealthSummary: Array<{
         teamId: string;
@@ -656,7 +651,7 @@ export class ARTSyncCoordination {
       }>;
     };
     recommendedAdjustments: Array<{
-      type: 'scope' | 'resource' | 'timeline';
+      type:'scope'|'resource'|'timeline';
       description: string;
       affectedTeams: string[];
       requiresApproval: boolean;
@@ -674,7 +669,7 @@ export class ARTSyncCoordination {
       throw new Error(`ART Sync session $sessionIdnot found`);`
     }
 
-    this.logger.info('Executing Progress Review', {'
+    this.logger.info('Executing Progress Review,{
       sessionId,
       teamsReported: progressReports.length,
     });
@@ -724,7 +719,7 @@ export class ARTSyncCoordination {
       throw new Error(`ART Sync session ${sessionId} not found`);`
     }
 
-    this.logger.info('Completing ART Sync Session', { sessionId });'
+    this.logger.info('Completing ART Sync Session,{ sessionId }');
 
     // Gather all decisions and outcomes from the session
     const outcomes = await this.gatherSessionOutcomes(sessionId, config);
@@ -755,16 +750,16 @@ export class ARTSyncCoordination {
       name: string;
       piNumber: number;
       currentIteration: number;
-      overallHealth: 'green' | 'yellow' | 'red';
+      overallHealth:'green'|'yellow'|'red';
       piObjectiveProgress: number;
     };
     teamStatus: Array<{
       teamId: string;
       teamName: string;
-      health: 'green' | 'yellow' | 'red';
+      health:'green'|'yellow'|'red';
       currentBlockers: number;
       dependenciesStatus: string;
-      progressTrend: 'up|'improving' | 'stable' | 'declining'|down;
+      progressTrend:'up|'improving'|'stable'|'declining''|'down';
     }>;
     dependencyHealth: {
       totalDependencies: number;
@@ -807,100 +802,100 @@ export class ARTSyncCoordination {
   private async createARTSyncTables(): Promise<void> {
     // Create tables for ART Sync coordination
     await this.database.schema.createTableIfNotExists(
-      'art_sync_sessions',
+     'art_sync_sessions,
       (table: any) => {
-        table.uuid('id').primary();'
-        table.string('session_id').notNullable().unique();'
-        table.string('art_name').notNullable();'
-        table.integer('pi_number').notNullable();'
-        table.integer('session_number').notNullable();'
-        table.json('config').notNullable();'
-        table.json('outcomes').nullable();'
-        table.timestamp('session_date').notNullable();'
-        table.timestamp('completed_at').nullable();'
-        table.index(['art_name', 'pi_number', 'session_number']);'
+        table.uuid('id').primary(');
+        table.string('session_id').notNullable().unique(');
+        table.string('art_name').notNullable(');
+        table.integer('pi_number').notNullable(');
+        table.integer('session_number').notNullable(');
+        table.json('config').notNullable(');
+        table.json('outcomes').nullable(');
+        table.timestamp('session_date').notNullable(');
+        table.timestamp('completed_at').nullable(');
+        table.index(['art_name,'pi_number,'session_number]);
       }
     );
 
     await this.database.schema.createTableIfNotExists(
-      'cross_team_dependencies',
+     'cross_team_dependencies,
       (table: any) => {
-        table.uuid('id').primary();'
-        table.string('dependency_id').notNullable().unique();'
-        table.string('art_name').notNullable();'
-        table.integer('pi_number').notNullable();'
-        table.string('provider_team').notNullable();'
-        table.string('consumer_team').notNullable();'
-        table.string('dependency_type').notNullable();'
-        table.string('status').notNullable();'
-        table.string('health_status').notNullable();'
-        table.date('required_by').notNullable();'
-        table.date('committed_by').notNullable();'
-        table.date('actual_delivery').nullable();'
-        table.json('dependency_data').notNullable();'
-        table.string('approval_gate_id').nullable();'
-        table.timestamp('created_at').notNullable();'
-        table.timestamp('updated_at').notNullable();'
-        table.index(['art_name', 'pi_number', 'status']);'
+        table.uuid('id').primary(');
+        table.string('dependency_id').notNullable().unique(');
+        table.string('art_name').notNullable(');
+        table.integer('pi_number').notNullable(');
+        table.string('provider_team').notNullable(');
+        table.string('consumer_team').notNullable(');
+        table.string('dependency_type').notNullable(');
+        table.string('status').notNullable(');
+        table.string('health_status').notNullable(');
+        table.date('required_by').notNullable(');
+        table.date('committed_by').notNullable(');
+        table.date('actual_delivery').nullable(');
+        table.json('dependency_data').notNullable(');
+        table.string('approval_gate_id').nullable(');
+        table.timestamp('created_at').notNullable(');
+        table.timestamp('updated_at').notNullable(');
+        table.index(['art_name,'pi_number,'status]);
       }
     );
 
     await this.database.schema.createTableIfNotExists(
-      'art_impediments',
+     'art_impediments,
       (table: any) => {
-        table.uuid('id').primary();'
-        table.string('impediment_id').notNullable().unique();'
-        table.string('art_name').notNullable();'
-        table.integer('pi_number').notNullable();'
-        table.string('type').notNullable();'
-        table.string('severity').notNullable();'
-        table.string('scope').notNullable();'
-        table.string('escalation_level').notNullable();'
-        table.json('impact').notNullable();'
-        table.string('reported_by').notNullable();'
-        table.date('reported_date').notNullable();'
-        table.string('assigned_to').nullable();'
-        table.date('target_resolution').notNullable();'
-        table.date('actual_resolution').nullable();'
-        table.json('impediment_data').notNullable();'
-        table.string('approval_gate_id').nullable();'
-        table.timestamp('created_at').notNullable();'
-        table.timestamp('updated_at').notNullable();'
-        table.index(['art_name', 'pi_number', 'severity', 'escalation_level']);'
+        table.uuid('id').primary(');
+        table.string('impediment_id').notNullable().unique(');
+        table.string('art_name').notNullable(');
+        table.integer('pi_number').notNullable(');
+        table.string('type').notNullable(');
+        table.string('severity').notNullable(');
+        table.string('scope').notNullable(');
+        table.string('escalation_level').notNullable(');
+        table.json('impact').notNullable(');
+        table.string('reported_by').notNullable(');
+        table.date('reported_date').notNullable(');
+        table.string('assigned_to').nullable(');
+        table.date('target_resolution').notNullable(');
+        table.date('actual_resolution').nullable(');
+        table.json('impediment_data').notNullable(');
+        table.string('approval_gate_id').nullable(');
+        table.timestamp('created_at').notNullable(');
+        table.timestamp('updated_at').notNullable(');
+        table.index(['art_name,'pi_number,'severity,'escalation_level]);
       }
     );
 
     await this.database.schema.createTableIfNotExists(
-      'art_sync_traceability',
+     'art_sync_traceability,
       (table: any) => {
-        table.uuid('id').primary();'
-        table.string('session_id').notNullable();'
-        table.string('coordination_type').notNullable(); // dependency, impediment, progress, etc.'
-        table.json('coordination_data').notNullable();'
-        table.json('decisions_made').notNullable();'
-        table.json('approvals_created').notNullable();'
-        table.json('learning_data').notNullable();'
-        table.timestamp('created_at').notNullable();'
-        table.index(['session_id', 'coordination_type']);'
+        table.uuid('id').primary(');
+        table.string('session_id').notNullable(');
+        table.string('coordination_type').notNullable('); // dependency, impediment, progress, etc.
+        table.json('coordination_data').notNullable(');
+        table.json('decisions_made').notNullable(');
+        table.json('approvals_created').notNullable(');
+        table.json('learning_data').notNullable(');
+        table.timestamp('created_at').notNullable(');
+        table.index(['session_id,'coordination_type]);
       }
     );
   }
 
   private registerEventHandlers(): void {
     this.eventSystem.on(
-      'art_sync:dependency_resolved',
+     'art_sync:dependency_resolved,
       this.handleDependencyResolved.bind(this)
     );
     this.eventSystem.on(
-      'art_sync:impediment_escalated',
+     'art_sync:impediment_escalated,
       this.handleImpedimentEscalated.bind(this)
     );
     this.eventSystem.on(
-      'art_sync:progress_reviewed',
+     'art_sync:progress_reviewed,
       this.handleProgressReviewed.bind(this)
     );
     this.eventSystem.on(
-      'art_sync:session_completed',
+     'art_sync:session_completed,
       this.handleSessionCompleted.bind(this)
     );
   }
@@ -919,7 +914,7 @@ export class ARTSyncCoordination {
 
     // Create gates for high-priority dependencies
     const criticalDependencies = config.inputs.identifiedDependencies.filter(
-      (d) => d.riskLevel === 'critical'||d.riskLevel ==='high''
+      (d) => d.riskLevel ==='critical'|| d.riskLevel ===high'
     );
 
     for (const dependency of criticalDependencies) {
@@ -931,15 +926,15 @@ export class ARTSyncCoordination {
             canResolveDirectly: false,
             requiresApproval: true,
             requiresEscalation: false,
-            resolutionPlan: 'Requires cross-team coordination approval',
+            resolutionPlan:'Requires cross-team coordination approval,
             mitigationPlan:
-              dependency.mitigationPlan||'No mitigation plan provided',
-            escalationLevel: 'art',
+              dependency.mitigationPlan||'No mitigation plan provided,
+            escalationLevel:'art,
           }
         );
 
         gates.push({
-          type: 'dependency_resolution',
+          type:'dependency_resolution,
           gateId,
           priority: dependency.riskLevel,
         });
@@ -948,19 +943,19 @@ export class ARTSyncCoordination {
 
     // Create gates for critical impediments
     const criticalImpediments = config.inputs.escalatedImpediments.filter(
-      (i) => i.severity === 'critical'||i.severity ==='high');'
+      (i) => i.severity ==='critical'|| i.severity ===high'');
 
     for (const impediment of criticalImpediments) {
       if (impediment.requiresApproval) {
         const gateId = await this.createImpedimentEscalationGate(impediment, {
           canResolveAtARTLevel: false,
           targetLevel: impediment.escalationLevel,
-          resolutionPlan: impediment.resolutionPlan||'Escalation required',
+          resolutionPlan: impediment.resolutionPlan||'Escalation required,
           resourcesNeeded: [],
         });
 
         gates.push({
-          type: 'impediment_escalation',
+          type:'impediment_escalation,
           gateId,
           priority: impediment.severity,
         });
@@ -976,7 +971,7 @@ export class ARTSyncCoordination {
         );
 
         gates.push({
-          type: 'scope_change',
+          type:'scope_change,
           gateId,
           priority: this.calculateScopeChangePriority(scopeChange),
         });
@@ -1011,7 +1006,7 @@ export class ARTSyncCoordination {
       ].filter(Boolean),
       minimumApprovals: 3, // Both teams + RTE
       isRequired: true,
-      timeoutHours: dependency.riskLevel === 'critical' ? 24 : 48,
+      timeoutHours: dependency.riskLevel ==='critical '? 24 : 48,
       metadata: {
         dependencyId: dependency.id,
         dependencyType: dependency.dependencyType,
@@ -1038,7 +1033,6 @@ export class ARTSyncCoordination {
     // Update dependency with approval gate reference
     dependency.approvalGateId = gateId;
     dependency.approvalStatus = 'pending';
-
     return gateId;
   }
 
@@ -1050,16 +1044,16 @@ export class ARTSyncCoordination {
 
     // Determine approvers based on escalation level
     let approvers: string[] = [];
-    if (analysis.targetLevel === 'portfolio') {'
+    if (analysis.targetLevel ==='portfolio){
       approvers = [
-        'portfolio-manager',
-        'business-owner',
-        'enterprise-architect',
+       'portfolio-manager,
+       'business-owner,
+       'enterprise-architect,
       ];
-    } else if (analysis.targetLevel === 'art') {'
-      approvers = ['rte', 'system-architect', 'business-owner'];'
+    } else if (analysis.targetLevel ==='art){
+      approvers = ['rte,'system-architect,'business-owner];
     } else {
-      approvers = ['scrum-master', 'product-owner'];'
+      approvers = ['scrum-master,'product-owner];
     }
 
     const requirement: ApprovalGateRequirement = {
@@ -1069,7 +1063,7 @@ export class ARTSyncCoordination {
       requiredApprovers: approvers,
       minimumApprovals: Math.ceil(approvers.length * 0.6), // 60% approval
       isRequired: true,
-      timeoutHours: impediment.severity === 'critical' ? 12 : 24,
+      timeoutHours: impediment.severity ==='critical '? 12 : 24,
       metadata: {
         impedimentId: impediment.id,
         impedimentType: impediment.type,
@@ -1152,21 +1146,20 @@ export class ARTSyncCoordination {
   }> {
     // Simple resolution criteria - would be more sophisticated in practice
     const canResolveDirectly =
-      dependency.riskLevel === 'low' && dependency.status !== 'blocked';
+      dependency.riskLevel ==='low '&& dependency.status !== 'blocked';
     const requiresApproval =
-      dependency.riskLevel === 'high'||dependency.riskLevel ==='critical';
+      dependency.riskLevel ==='high'|| dependency.riskLevel ===critical';
     const requiresEscalation =
-      dependency.status === 'blocked' && dependency.riskLevel === 'critical';
-
+      dependency.status ==='blocked '&& dependency.riskLevel === 'critical';
     return {
       canResolveDirectly,
       requiresApproval,
       requiresEscalation,
       resolutionPlan:
-        dependency.mitigationPlan||`Direct coordination between ${dependency.providerTeam} and ${dependency.consumerTeam}`,`
+        dependency.mitigationPlan|| `Direct coordination between ${dependency.providerTeam} and ${dependency.consumerTeam}`,`
       mitigationPlan:
-        dependency.contingencyPlan||'Alternative solution if dependency cannot be delivered on time',
-      escalationLevel: requiresEscalation ? 'portfolio' : 'art',
+        dependency.contingencyPlan||'Alternative solution if dependency cannot be delivered on time,
+      escalationLevel: requiresEscalation ?'portfolio:'art,
     };
   }
 
@@ -1180,14 +1173,14 @@ export class ARTSyncCoordination {
     resourcesNeeded: string[];
   }> {
     const canResolveAtARTLevel =
-      impediment.scope === 'team'||impediment.scope ==='art';
+      impediment.scope ==='team'|| impediment.scope ===art';
     const targetLevel = impediment.escalationLevel;
 
     return {
       canResolveAtARTLevel,
       targetLevel,
       resolutionPlan:
-        impediment.resolutionPlan||`Escalate ${impediment.type} impediment to ${targetLevel} level`,`
+        impediment.resolutionPlan|| `Escalate ${impediment.type} impediment to ${targetLevel} level`,`
       resourcesNeeded: [], // Would analyze resource requirements
     };
   }
@@ -1196,9 +1189,9 @@ export class ARTSyncCoordination {
   private calculateScopeChangePriority(
     scopeChange: ScopeChangeRequest
   ): string {
-    if (scopeChange.impact.scheduleImpact > 5) return'high;
-    if (scopeChange.impact.effortImpact > 20) return 'high;
-    return 'medium;
+    if (scopeChange.impact.scheduleImpact > 5) return'high';
+    if (scopeChange.impact.effortImpact > 20) return'high';
+    return'medium';
   }
 
   private async initializeSessionMonitoring(
@@ -1211,10 +1204,10 @@ export class ARTSyncCoordination {
     config: ARTSyncSessionConfig,
     traceabilityId: string
   ): Promise<void> {
-    await this.database('art_sync_traceability').insert({'
+    await this.database('art_sync_traceability').insert({
       id: traceabilityId,
       session_id: config.id,
-      coordination_type: 'session_initialization',
+      coordination_type:'session_initialization,
       coordination_data: JSON.stringify(config),
       decisions_made: JSON.stringify([]),
       approvals_created: JSON.stringify([]),
@@ -1228,7 +1221,7 @@ export class ARTSyncCoordination {
     dependencyId: string,
     resolution: any
   ): Promise<void> {
-    this.logger.info('Dependency resolved', {'
+    this.logger.info('Dependency resolved,{
       dependencyId,
       resolution: resolution.summary,
     });
@@ -1238,7 +1231,7 @@ export class ARTSyncCoordination {
     impedimentId: string,
     escalation: any
   ): Promise<void> {
-    this.logger.info('Impediment escalated', {'
+    this.logger.info('Impediment escalated,{
       impedimentId,
       level: escalation.level,
     });
@@ -1248,7 +1241,7 @@ export class ARTSyncCoordination {
     sessionId: string,
     healthAssessment: any
   ): Promise<void> {
-    this.logger.info('Progress reviewed', {'
+    this.logger.info('Progress reviewed,{
       sessionId,
       overallHealth: healthAssessment.overallHealth,
     });
@@ -1258,7 +1251,7 @@ export class ARTSyncCoordination {
     sessionId: string,
     outcomes: ARTSyncOutcomes
   ): Promise<void> {
-    this.logger.info('ART Sync session completed', {'
+    this.logger.info('ART Sync session completed,{
       sessionId,
       decisionsCount: Object.keys(outcomes.decisions).length,
       actionItemsCount: outcomes.actionItems.length,
@@ -1284,7 +1277,7 @@ export class ARTSyncCoordination {
     impediment: Impediment,
     analysis: any
   ): Promise<{ assignedTo?: string; plan: string }> {
-    return { assignedTo: 'rte', plan: 'ART-level resolution plan' };'
+    return { assignedTo:'rte,plan: 'ART-level resolution plan '};
   }
 
   private async createAdjustmentApprovalGate(
@@ -1299,11 +1292,11 @@ export class ARTSyncCoordination {
     config: ARTSyncSessionConfig
   ): Promise<any> {
     return {
-      overallHealth: 'green' as const,
+      overallHealth:'green 'as const,
       piObjectiveStatus: 75,
       teamHealthSummary: reports.map((r) => ({
         teamId: r.teamId,
-        status: 'green',
+        status:'green,
         concerns: [],
       })),
     };
@@ -1343,10 +1336,10 @@ export class ARTSyncCoordination {
         escalationsRequired: [],
       },
       artHealth: {
-        overallStatus: 'green',
+        overallStatus:'green,
         piObjectiveHealth: 80,
         dependencyHealth: 85,
-        riskLevel: 'low',
+        riskLevel:'low,
         recommendedActions: [],
       },
     };
@@ -1370,10 +1363,10 @@ export class ARTSyncCoordination {
     sessionId: string,
     outcomes: ARTSyncOutcomes
   ): Promise<void> {
-    await this.database('art_sync_traceability').insert({'
+    await this.database('art_sync_traceability').insert({
       id: `summary-$sessionId-$Date.now()`,`
       session_id: sessionId,
-      coordination_type: 'session_completion',
+      coordination_type:'session_completion,
       coordination_data: JSON.stringify(outcomes),
       decisions_made: JSON.stringify(outcomes.decisions),
       approvals_created: JSON.stringify([]),
@@ -1391,7 +1384,7 @@ export class ARTSyncCoordination {
         name: artName,
         piNumber,
         currentIteration: 3,
-        overallHealth: 'green' as const,
+        overallHealth:'green 'as const,
         piObjectiveProgress: 75,
       },
       teams: [],

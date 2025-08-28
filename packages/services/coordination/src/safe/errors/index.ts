@@ -16,11 +16,8 @@ export { AIDeceptionDetector } from '@claude-zen/ai-safety';
 export * from '@claude-zen/foundation';
 // Re-export infrastructure monitoring from @claude-zen/foundation (basic telemetry/performance)
 export { PerformanceTracker, TelemetryManager } from '@claude-zen/foundation';
-
-
 // Define error types locally since not exported from foundation
-type ErrorSeverity = 'low|medium|high|critical';
-
+type ErrorSeverity ='low'|'medium'|'high'|'critical';
 /**
  * Epic lifecycle error (using foundation error patterns)
  */

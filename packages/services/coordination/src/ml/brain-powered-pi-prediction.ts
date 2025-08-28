@@ -16,22 +16,21 @@
  * - Automatic fallback to rule-based logic
  *
  * ⚡ **PERFORMANCE OPTIMIZED:**
- * - Uses brain's hardware optimization (GPU/CPU)'
+ * - Uses brain's hardware optimization (GPU/CPU)
  * - Leverages existing memory and caching
- * - Integrates with brain's learning systems'
+ * - Integrates with brain's learning systems
  * - Minimal overhead on top of proven infrastructure
  *
  * 🔄 **SEAMLESS INTEGRATION:**
  * - Works with existing brain agents and coordinators
- * - Uses brain's event system for real-time updates'
- * - Leverages brain's monitoring and health systems'
+ * - Uses brain's event system for real-time updates
+ * - Leverages brain's monitoring and health systems
  * - Integrates with swarm coordination patterns
  */
 
 import { getLogger } from '@claude-zen/foundation';
 import { getBrainSystem } from '@claude-zen/intelligence';
-
-const logger = getLogger('BrainPoweredPISuccessPrediction');'
+const logger = getLogger('BrainPoweredPISuccessPrediction'');
 
 // ============================================================================
 // BRAIN-INTEGRATED PREDICTION TYPES
@@ -40,7 +39,7 @@ const logger = getLogger('BrainPoweredPISuccessPrediction');'
 export interface BrainPIPredictionRequest {
   piId: string;
   artId: string;
-  analysisType: 'comprehensive' | 'quick' | 'focused';
+  analysisType:'comprehensive'|'quick'|'focused';
   piData: {
     objectives: any[];
     teams: any[];
@@ -50,7 +49,7 @@ export interface BrainPIPredictionRequest {
   };
   brainConfig?: {
     useNeuralML: boolean;
-    complexity: 'simple' | 'moderate' | 'complex';
+    complexity:'simple'|'moderate'|'complex';
     timeoutMs: number;
     confidenceThreshold: number;
   };
@@ -106,25 +105,25 @@ export class BrainPoweredPIPredictionService {
 
       // Create specialized coordinator for PI analysis
       this.brainCoordinator = await this.brainSystem.createCoordinator({
-        type: 'pi_analysis_coordinator',
+        type:'pi_analysis_coordinator,
         capabilities: [
-          'pattern_recognition',
-          'risk_analysis',
-          'predictive_modeling',
+         'pattern_recognition,
+         'risk_analysis,
+         'predictive_modeling,
         ],
         optimization: {
-          hardware: 'auto', // Let brain choose best hardware'
-          precision: 'high',
-          fallback: 'rule_based',
+          hardware:'auto,// Let brain choose best hardware
+          precision:'high,
+          fallback:'rule_based,
         },
       });
 
       // Register SAFe-specific analysis patterns
       await this.registerSAFeAnalysisPatterns();
 
-      logger.info('Brain-powered PI prediction service initialized');'
+      logger.info('Brain-powered PI prediction service initialized'');
     } catch (error) {
-      logger.error('Failed to initialize brain-powered PI prediction', error);'
+      logger.error('Failed to initialize brain-powered PI prediction,error');
       throw error;
     }
   }
@@ -202,7 +201,7 @@ export class BrainPoweredPIPredictionService {
    * Real-time PI monitoring using brain intelligence
    */
   async monitorPIWithBrain(piId: string): Promise<{
-    riskLevel: 'low|medium|high|critical;
+    riskLevel:'low| medium| high'|'critical';
     brainInsights: any;
     suggestedInterventions: any[];
     confidenceScore: number;
@@ -215,7 +214,7 @@ export class BrainPoweredPIPredictionService {
       // Use brain for real-time risk assessment
       const riskAssessment = await this.brainCoordinator.assessRisk({
         piId,
-        type: 'pi_monitoring',
+        type:'pi_monitoring,
         realTime: true,
         includeInsights: true,
       });
@@ -224,7 +223,7 @@ export class BrainPoweredPIPredictionService {
       const interventions = await this.brainCoordinator.suggestInterventions({
         piId,
         riskLevel: riskAssessment.level,
-        context: 'pi_execution',
+        context:'pi_execution,
       });
 
       return {
@@ -258,7 +257,7 @@ export class BrainPoweredPIPredictionService {
         predictionId,
         predicted: prediction.brainAnalysis,
         actual: actualOutcomes,
-        context: 'pi_success_prediction',
+        context:'pi_success_prediction,
       });
 
       // Update analysis patterns based on accuracy
@@ -285,17 +284,17 @@ export class BrainPoweredPIPredictionService {
     // Create specialized brain session for PI analysis
     const session = await this.brainCoordinator.createSession({
       sessionId: `pi-analysis-${request.piId}`,`
-      type: 'predictive_analysis',
+      type:'predictive_analysis,
       config: {
-        complexity: request.brainConfig?.complexity||'moderate',
-        timeout: request.brainConfig?.timeoutMs||30000,
+        complexity: request.brainConfig?.complexity||'moderate,
+        timeout: request.brainConfig?.timeoutMs|| 30000,
         useCache: true,
         learningEnabled: true,,
     });
 
     // Configure session with SAFe-specific context
     await session.setContext({
-      domain:'safe_framework',
+      domain:'safe_framework,
       analysisType: request.analysisType,
       piData: request.piData,
       historicalPatterns: this.analysisPatterns,
@@ -310,13 +309,13 @@ export class BrainPoweredPIPredictionService {
   ): Promise<any> {
     // Delegate to brain for sophisticated analysis
     const analysisRequest = {
-      type: 'pi_success_prediction',
+      type:'pi_success_prediction,
       data: request.piData,
       objectives: [
-        'predict_success_probability',
-        'identify_risk_factors',
-        'generate_recommendations',
-        'assess_confidence',
+       'predict_success_probability,
+       'identify_risk_factors,
+       'generate_recommendations,
+       'assess_confidence,
       ],
     };
 
@@ -356,9 +355,9 @@ export class BrainPoweredPIPredictionService {
     }
 
     try {
-      // Use brain's neural capabilities for deep pattern analysis'
+      // Use brain's neural capabilities for deep pattern analysis
       const neuralAnalysis = await session.performNeuralAnalysis({
-        type: 'pattern_recognition',
+        type:'pattern_recognition,
         data: request.piData,
         includeFactorAnalysis: true,
         generateLearningInsights: true,
@@ -382,11 +381,11 @@ export class BrainPoweredPIPredictionService {
         },
       };
     } catch (error) {
-      logger.warn('Neural analysis failed, using simplified insights', error);'
+      logger.warn('Neural analysis failed, using simplified insights,error');
       return {
-        patternRecognition: { error: 'neural_analysis_failed' },
-        predictiveFactors: { error: 'neural_analysis_failed' },
-        learningRecommendations: { error: 'neural_analysis_failed' },
+        patternRecognition: { error: 'neural_analysis_failed '},
+        predictiveFactors: { error: 'neural_analysis_failed '},
+        learningRecommendations: { error: 'neural_analysis_failed '},
       };
     }
   }
@@ -436,35 +435,35 @@ export class BrainPoweredPIPredictionService {
     // Register SAFe-specific patterns with brain
     const patterns = [
       {
-        name: 'high_dependency_risk',
+        name:'high_dependency_risk,
         description:
-          'Pattern indicating high risk from cross-team dependencies',
+         'Pattern indicating high risk from cross-team dependencies,
         indicators: [
-          'dependency_count > 5',
-          'critical_dependencies > 2',
-          'low_team_collaboration',
+         'dependency_count > 5,
+         'critical_dependencies > 2,
+         'low_team_collaboration,
         ],
-        outcome: 'increased_failure_probability',
+        outcome:'increased_failure_probability,
       },
       {
-        name: 'team_overcommitment',
-        description: 'Pattern indicating team capacity overcommitment',
+        name:'team_overcommitment,
+        description:'Pattern indicating team capacity overcommitment,
         indicators: [
-          'capacity_utilization > 120%',
-          'low_morale',
-          'declining_velocity',
+         'capacity_utilization > 120%,
+         'low_morale,
+         'declining_velocity,
         ],
-        outcome: 'scope_reduction_needed',
+        outcome:'scope_reduction_needed,
       },
       {
-        name: 'successful_pi_pattern',
-        description: 'Pattern associated with successful PI execution',
+        name:'successful_pi_pattern,
+        description:'Pattern associated with successful PI execution,
         indicators: [
-          'stable'_teams',
-          'clear_objectives',
-          'manageable_dependencies',
+         'stable'_teams,
+         'clear_objectives,
+         'manageable_dependencies,
         ],
-        outcome: 'high_success_probability',
+        outcome:'high_success_probability,
       },
     ];
 
@@ -482,7 +481,7 @@ export class BrainPoweredPIPredictionService {
     try {
       return await this.brainCoordinator.getUtilizationStats();
     } catch (error) {
-      return { error: 'utilization_stats_unavailable'};'
+      return { error:'utilization_stats_unavailable};
     }
   }
 
@@ -490,10 +489,10 @@ export class BrainPoweredPIPredictionService {
     // Simple data quality assessment
     let qualityScore = 1.0;
 
-    if (!piData.objectives||piData.objectives.length === 0)
+    if (!piData.objectives|| piData.objectives.length === 0)
       qualityScore -= 0.3;
-    if (!piData.teams||piData.teams.length === 0) qualityScore -= 0.3;
-    if (!piData.historicalData||piData.historicalData.length < 3)
+    if (!piData.teams|| piData.teams.length === 0) qualityScore -= 0.3;
+    if (!piData.historicalData|| piData.historicalData.length < 3)
       qualityScore -= 0.2;
     if (!piData.dependencies) qualityScore -= 0.2;
 
@@ -506,13 +505,13 @@ export class BrainPoweredPIPredictionService {
     try {
       await this.brainCoordinator.storeLearning({
         predictionId: result.predictionId,
-        analysisType:'pi_success_prediction',
+        analysisType:'pi_success_prediction,
         insights: result.brainAnalysis,
         patterns: result.neuralInsights,
         performance: result.metadata,
       });
     } catch (error) {
-      logger.warn('Failed to store learning in brain', error);'
+      logger.warn('Failed to store learning in brain,error');
     }
   }
 
@@ -520,7 +519,7 @@ export class BrainPoweredPIPredictionService {
     request: BrainPIPredictionRequest,
     startTime: number
   ): Promise<BrainPIPredictionResult> {
-    logger.info('Using fallback analysis for PI prediction');'
+    logger.info('Using fallback analysis for PI prediction'');
 
     // Simple rule-based fallback
     const simpleAnalysis = {
@@ -542,11 +541,11 @@ export class BrainPoweredPIPredictionService {
         recommendations: { immediate: [], strategic: [], monitoring: [] },
         confidence: simpleAnalysis.confidence,
       },
-      neuralInsights: {enabled: false, reason: 'brain_unavailable' ,
-        predictiveFactors: enabled: false, reason: 'brain_unavailable' ,
+      neuralInsights: {enabled: false, reason:'brain_unavailable ,
+        predictiveFactors: enabled: false, reason:'brain_unavailable ,
         learningRecommendations: 
           enabled: false,
-          reason: 'brain_unavailable',,
+          reason:'brain_unavailable,,
       },
       coordinationPlan: {
         suggestedActions: [],
@@ -555,8 +554,8 @@ export class BrainPoweredPIPredictionService {
       },
       metadata: {
         processingTime: Date.now() - startTime,
-        brainUtilization: status: 'unavailable' ,
-        analysisDepth: 'fallback',
+        brainUtilization: status:'unavailable ,
+        analysisDepth:'fallback,
         dataQuality: this.assessDataQuality(request.piData),
       },
     };
@@ -576,18 +575,18 @@ export class BrainPoweredPIPredictionService {
       // If accuracy is low, adjust patterns
       if (accuracy < 0.7) {
         logger.info(
-          'Low prediction accuracy detected, updating analysis patterns''
+         'Low prediction accuracy detected, updating analysis patterns'
         );
 
         // Update pattern weights in brain
         await this.brainCoordinator.updatePatternWeights({
           predictionId: prediction.predictionId,
           accuracy,
-          adjustmentType: 'accuracy_based',
+          adjustmentType:'accuracy_based,
         });
       }
     } catch (error) {
-      logger.warn('Failed to update analysis patterns', error);'
+      logger.warn('Failed to update analysis patterns,error');
     }
   }
 
@@ -605,7 +604,7 @@ export class BrainPoweredPIPredictionService {
 
   private async initializeBrainIntegration(): Promise<void> {
     // Initialize brain integration patterns
-    logger.info('Initializing brain integration for PI prediction');'
+    logger.info('Initializing brain integration for PI prediction'');
   }
 }
 

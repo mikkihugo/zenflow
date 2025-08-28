@@ -9,26 +9,25 @@
  */
 
 import { z } from '@claude-zen/foundation';
-
 /**
  * Workflow step validation schema
  */
 export const WorkflowStepSchema = z.object({
-  type: z.string().min(1, 'Step type is required'),
+  type: z.string().min(1,'Step type is required'),
   name: z.string().optional(),
   params: z.record(z.unknown()).optional(),
   retries: z.number().int().min(0).max(10).default(0),
   timeout: z.number().int().min(100).max(300000).optional(),
   output: z.string().optional(),
-  onError: z.enum(['stop', 'continue', 'skip']).default('stop'),
+  onError: z.enum(['stop,'continue,'skip']).default('stop'),
 });
 
 /**
  * Workflow definition validation schema
  */
 export const WorkflowDefinitionSchema = z.object({
-  name: z.string().min(1, 'Workflow name is required'),
-  steps: z.array(WorkflowStepSchema).min(1, 'At least one step is required'),
+  name: z.string().min(1,'Workflow name is required'),
+  steps: z.array(WorkflowStepSchema).min(1,'At least one step is required'),
   description: z.string().optional(),
   version: z.string().optional(),
   tags: z.array(z.string()).optional(),

@@ -10,12 +10,11 @@
  */
 
 // Core types
-export type Logger = import('@claude-zen/foundation').Logger;
-export type Result<T, E = Error> = import('@claude-zen/foundation').Result<T, E>;
-export type UUID = import('@claude-zen/foundation').UUID;
-
+export type Logger = import('@claude-zen/foundation').Logger';
+export type Result<T, E = Error> = import('@claude-zen/foundation').Result<T, E>';
+export type UUID = import('@claude-zen/foundation').UUID';
 // Event system types from foundation
-export type TypedEventBase = import('@claude-zen/foundation').TypedEventBase;
+export type EventEmitter = import('@claude-zen/foundation').EventEmitter';
 export type TypeSafeEventBus = any; // Placeholder - will use foundation event bus
 
 // Memory system integration
@@ -53,7 +52,7 @@ export interface PortfolioEpic {
   readonly description: string;
   readonly businessValue: number;
   readonly priority: number;
-  readonly status: 'analyzing|implementing|done|backlog;
+  readonly status:'analyzing| implementing| done'|'backlog';
 }
 
 // Value Stream type
@@ -68,7 +67,7 @@ export interface ValueStreamStep {
   readonly id: string;
   readonly name: string;
   readonly duration: number;
-  readonly type: 'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin;
+  readonly type:'javascript'|'typescript'|'python'|'java'|'csharp'|'cpp'|'go'|'ruby'|'swift'|'kotlin';
 }
 
 // Multi-level orchestration manager placeholder
@@ -96,7 +95,7 @@ export interface ComplianceRequirement {
   readonly name: string;
   readonly description: string;
   readonly category: string;
-  readonly priority: 'low|medium|high|critical;
+  readonly priority: low| medium| high'|'critical';
   readonly assessmentFrequency?: number; // days
   readonly validationRules: ValidationRule[];
   readonly evidenceRequirements: EvidenceRequirement[];
@@ -106,8 +105,8 @@ export interface ValidationRule {
   readonly id: string;
   readonly name: string;
   readonly description: string;
-  readonly ruleType: 'automated' | 'manual' | 'hybrid';
-  readonly severity: 'low|medium|high|critical;
+  readonly ruleType:'automated'|'manual'|'hybrid';
+  readonly severity: low| medium| high'|'critical';
   readonly category: string;
 }
 
@@ -115,7 +114,7 @@ export interface EvidenceRequirement {
   readonly id: string;
   readonly name: string;
   readonly description: string;
-  readonly type: 'document|artifact|screenshot|log|report;
+  readonly type:'document| artifact| screenshot| log'|'report';
   readonly required: boolean;
 }
 
@@ -125,18 +124,17 @@ export interface SecurityAssessment {
   readonly description: string;
   readonly assessmentType: SecurityAssessmentType;
   readonly findings: SecurityFinding[];
-  readonly overallRisk: 'low|medium|high|critical;
+  readonly overallRisk:'low| medium| high'|'critical';
 }
 
-export type SecurityAssessmentType =|'vulnerability_scan|penetration_test|code_review|compliance_audit|risk_assessment;
-
+export type SecurityAssessmentType =|'vulnerability_scan| penetration_test| code_review| compliance_audit'|'risk_assessment';
 export interface SecurityFinding {
   readonly id: string;
   readonly title: string;
   readonly description: string;
   readonly severity: SecuritySeverity;
   readonly category: string;
-  readonly status: 'open|in_progress|resolved|false_positive;
+  readonly status:'open| in_progress| resolved'|'false_positive';
   readonly cwe?: string;
   readonly cvssScore?: CVSSScore;
   readonly location?: {
@@ -162,7 +160,7 @@ export interface SecurityFinding {
 export interface SecurityTool {
   readonly id: string;
   readonly name: string;
-  readonly type: 'static|dynamic|interactive|manual;
+  readonly type:'static| dynamic| interactive'|'manual';
   readonly capabilities: string[];
 }
 
@@ -173,10 +171,9 @@ export interface SecurityStandard {
   readonly requirements: string[];
 }
 
-export type SecuritySeverity = 'low|medium|high|critical';
-
+export type SecuritySeverity ='low'|'medium'|'high'|'critical';
 export interface CVSSScore {
-  readonly version: 'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin;
+  readonly version:'javascript'|'typescript'|'python'|'java'|'csharp'|'cpp'|'go'|'ruby'|'swift'|'kotlin';
   readonly baseScore: number;
   readonly temporalScore?: number;
   readonly environmentalScore?: number;

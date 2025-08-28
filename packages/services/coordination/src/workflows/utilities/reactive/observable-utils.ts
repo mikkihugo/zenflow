@@ -21,7 +21,6 @@ import {
   distinctUntilChanged,
   throttleTime,
 } from 'rxjs/operators';
-
 /**
  * Professional Observable utilities
  */
@@ -54,7 +53,7 @@ export class ObservableUtils {
     source: Observable<T>,
     milliseconds: number
   ): Observable<T> {
-    return source.pipe(throttleTime(milliseconds));
+    return source.pipe(throttleTime(milliseconds);
   }
 
   /**
@@ -64,7 +63,7 @@ export class ObservableUtils {
     source: Observable<T>,
     milliseconds: number
   ): Observable<T> {
-    return source.pipe(debounceTime(milliseconds));
+    return source.pipe(debounceTime(milliseconds);
   }
 
   /**

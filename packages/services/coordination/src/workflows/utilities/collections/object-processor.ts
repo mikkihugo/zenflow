@@ -19,7 +19,6 @@ import {
   omit,
   pick,
 } from 'lodash-es';
-
 /**
  * Professional object processing utilities
  */

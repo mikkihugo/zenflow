@@ -22,7 +22,6 @@ import {
   isBefore,
   startOfWeek,
 } from 'date-fns';
-
 /**
  * SAFe date formatting utilities
  */
@@ -31,21 +30,21 @@ export class SafeDateUtils {
    * Format date for SAFe reporting (ISO string)
    */
   static formatISOString(date: Date = new Date()): string {
-    return format(date, "yyyy-MM-dd'T'HH:mm:ss'Z'");'
+    return format(date, "yyyy-MM-dd'T'HH:mm:ss'Z'"');
   }
 
   /**
    * Format date for SAFe milestone display
    */
   static formatMilestone(date: Date): string {
-    return format(date, 'MMM dd, yyyy');'
+    return format(date,'MMM dd, yyyy'');
   }
 
   /**
    * Format PI planning date range
    */
   static formatPIDateRange(startDate: Date, endDate: Date): string {
-    return `${format(startDate, 'MMM dd')} - ${format(endDate, 'MMM dd, yyyy')}`;`
+    return `${{format(startDate,'MMM dd')} - ${format(endDate,'MMM dd, yyyy')}}`';`
   }
 
   /**
@@ -122,10 +121,10 @@ export class SafeDateUtils {
     }>;
   } {
     const phases = [
-      { name: 'Epic Hypothesis', percentage: 0.1 },
-      { name: 'MVP Definition', percentage: 0.15 },
-      { name: 'Development', percentage: 0.6 },
-      { name: 'Validation', percentage: 0.15 },
+      { name:'Epic Hypothesis,percentage: 0.1 },
+      { name:'MVP Definition,percentage: 0.15 },
+      { name:'Development,percentage: 0.6 },
+      { name:'Validation,percentage: 0.15 },
     ];
 
     let currentStart = epicStart;
@@ -196,6 +195,6 @@ export class SafeCalendarUtils {
         { length: 5 },
         (_, sprintIndex) => addWeeks(piStart, (sprintIndex + 1) * 2) // Every 2 weeks
       ),
-    }));
+    });
   }
 }

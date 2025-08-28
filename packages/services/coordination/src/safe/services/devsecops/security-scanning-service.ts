@@ -13,33 +13,30 @@
  */
 
 import { dateFns, generateNanoId, } from '@claude-zen/foundation';
-
 const { format, addDays, subDays } = dateFns;
 
 import {
   countBy,
 } from 'lodash-es';
 import type { Logger } from '../../types';
-
-// Define security types locally as they're not being resolved from types module'
+// Define security types locally as they're not being resolved from types module
 export interface SecurityAssessment {
   readonly id: string;
   readonly name: string;
   readonly description: string;
   readonly assessmentType: SecurityAssessmentType;
   readonly findings: SecurityFinding[];
-  readonly overallRisk: 'low|medium|high|critical;
+  readonly overallRisk:'low| medium| high'|'critical';
 }
 
-export type SecurityAssessmentType =|vulnerability_scan|penetration_test|code_review|compliance_audit|'risk_assessment;
-
+export type SecurityAssessmentType =| vulnerability_scan| penetration_test| code_review| compliance_audit|'risk_assessment';
 export interface SecurityFinding {
   readonly id: string;
   readonly title: string;
   readonly description: string;
   readonly severity: SecuritySeverity;
   readonly category: string;
-  readonly status: 'open|in_progress|resolved|false_positive;
+  readonly status:'open| in_progress| resolved'|'false_positive';
   readonly cwe?: string;
   readonly cvssScore?: CVSSScore;
   readonly location?: {
@@ -65,7 +62,7 @@ export interface SecurityFinding {
 export interface SecurityTool {
   readonly id: string;
   readonly name: string;
-  readonly type: 'static|dynamic|interactive|manual;
+  readonly type:'static| dynamic| interactive'|'manual';
   readonly capabilities: string[];
 }
 
@@ -76,10 +73,9 @@ export interface SecurityStandard {
   readonly requirements: string[];
 }
 
-export type SecuritySeverity =|low|medium|high|critical|'informational;
-
+export type SecuritySeverity =| low| medium| high| critical|'informational';
 export interface CVSSScore {
-  readonly version: '2.0|3.0|3.1;
+  readonly version:'2.0| 3.0'|'3.1';
   readonly baseScore: number;
   readonly temporalScore?: number;
   readonly environmentalScore?: number;
@@ -91,7 +87,7 @@ export interface CVSSScore {
  */
 export interface SecurityScanConfig {
   readonly scanId: string;
-  readonly scanType:|static|dynamic|dependency|container|'infrastructure;
+  readonly scanType:| static| dynamic| dependency| container|'infrastructure';
   readonly tools: SecurityTool[];
   readonly targets: ScanTarget[];
   readonly standards: SecurityStandard[];
@@ -103,18 +99,18 @@ export interface SecurityScanConfig {
  * Scan target configuration
  */
 export interface ScanTarget {
-  readonly type: 'code|container|infrastructure|api;
+  readonly type:'code| container| infrastructure'|'api';
   readonly path: string;
   readonly inclusions: string[];
   readonly exclusions: string[];
-  readonly priority: 'critical|high|medium|low;
+  readonly priority: critical| high| medium'|'low';
 }
 
 /**
  * Scan scheduling configuration
  */
 export interface ScanSchedule {
-  readonly frequency: 'every-commit|daily|weekly|monthly;
+  readonly frequency:'every-commit| daily| weekly'|'monthly';
   readonly timeWindow: string; // cron expression
   readonly maxDuration: number; // minutes
   readonly parallelScans: number;
@@ -124,7 +120,7 @@ export interface ScanSchedule {
  * Scan reporting configuration
  */
 export interface ScanReporting {
-  readonly format: 'json|xml|sarif|html;
+  readonly format:'json| xml| sarif'|'html';
   readonly destinations: string[];
   readonly includeRawResults: boolean;
   readonly aggregateResults: boolean;
@@ -137,7 +133,7 @@ export interface SecurityScanResult {
   readonly scanId: string;
   readonly timestamp: Date;
   readonly duration: number; // milliseconds
-  readonly status: 'completed|failed|cancelled|timeout;
+  readonly status:'completed| failed| cancelled'|'timeout';
   readonly findings: SecurityFinding[];
   readonly metrics: ScanMetrics;
   readonly toolResults: ToolScanResult[];
@@ -150,7 +146,7 @@ export interface SecurityScanResult {
 export interface ToolScanResult {
   readonly toolId: string;
   readonly toolName: string;
-  readonly status: 'success|failure|timeout|error;
+  readonly status:'success| failure| timeout'|'error';
   readonly duration: number;
   readonly findings: SecurityFinding[];
   readonly rawOutput: string;
@@ -200,7 +196,7 @@ export class SecurityScanningService {
    * Configure security scanning for a target
    */
   configureScan(config: SecurityScanConfig): void {
-    this.logger.info('Configuring security scan', {'
+    this.logger.info('Configuring security scan,{
       scanId: config.scanId,
       scanType: config.scanType,
     });
@@ -212,11 +208,11 @@ export class SecurityScanningService {
     this.scanConfigurations.set(config.scanId, config);
 
     // Schedule recurring scans if needed
-    if (config.schedule.frequency !== 'every-commit') {'
+    if (config.schedule.frequency !=='every-commit){
       this.scheduleScan(config);
     }
 
-    this.logger.info('Security scan configured successfully', {'
+    this.logger.info('Security scan configured successfully,{
       scanId: config.scanId,
     });
   }
@@ -230,7 +226,7 @@ export class SecurityScanningService {
       throw new Error(`Scan configuration not found: ${scanId}`);`
     }
 
-    this.logger.info('Executing security scan', {'
+    this.logger.info('Executing security scan,{
       scanId,
       scanType: config.scanType,
     });
@@ -257,7 +253,7 @@ export class SecurityScanningService {
         scanId: resultId,
         timestamp: new Date(),
         duration: Date.now() - startTime,
-        status: 'completed',
+        status:'completed,
         findings: allFindings,
         metrics,
         toolResults,
@@ -266,7 +262,7 @@ export class SecurityScanningService {
 
       this.scanResults.set(resultId, result);
 
-      this.logger.info('Security scan completed', {'
+      this.logger.info('Security scan completed,{
         scanId,
         resultId,
         duration: result.duration,
@@ -276,13 +272,13 @@ export class SecurityScanningService {
 
       return result;
     } catch (error) {
-      this.logger.error('Security scan failed', { scanId, error });'
+      this.logger.error('Security scan failed,{ scanId, error }');
 
       const failedResult: SecurityScanResult = {
         scanId: resultId,
         timestamp: new Date(),
         duration: Date.now() - startTime,
-        status: 'failed',
+        status:'failed,
         findings: [],
         metrics: this.getEmptyMetrics(),
         toolResults: [],
@@ -303,7 +299,7 @@ export class SecurityScanningService {
   ): Promise<ToolScanResult> {
     const startTime = Date.now();
 
-    this.logger.info('Executing security tool', {'
+    this.logger.info('Executing security tool,{
       toolId: tool.id,
       toolName: tool.name,
     });
@@ -315,13 +311,13 @@ export class SecurityScanningService {
       const result: ToolScanResult = {
         toolId: tool.id,
         toolName: tool.name,
-        status: 'success',
+        status:'success,
         duration: Date.now() - startTime,
         findings,
         rawOutput: `Tool ${tool.name} completed successfully`,`
       };
 
-      this.logger.info('Security tool completed', {'
+      this.logger.info('Security tool completed,{
         toolId: tool.id,
         findings: findings.length,
         duration: result.duration,
@@ -329,7 +325,7 @@ export class SecurityScanningService {
 
       return result;
     } catch (error) {
-      this.logger.error('Security tool execution failed', {'
+      this.logger.error('Security tool execution failed,{
         toolId: tool.id,
         error,
       });
@@ -337,11 +333,11 @@ export class SecurityScanningService {
       return {
         toolId: tool.id,
         toolName: tool.name,
-        status: 'error',
+        status:'error,
         duration: Date.now() - startTime,
         findings: [],
-        rawOutput: '',
-        errorMessage: error instanceof Error ? error.message : 'Unknown error',
+        rawOutput:',
+        errorMessage: error instanceof Error ? error.message :'Unknown error,
       };
     }
   }
@@ -364,12 +360,11 @@ export class SecurityScanningService {
     for (const target of targets) {
       // Simulate finding generation based on target priority
       const findingCount =
-        target.priority === 'critical' ? 3 : target.priority === 'high' ? 2 : 1;'
-
+        target.priority ==='critical '? 3 : target.priority ==='high '? 2 : 1';
       for (let i = 0; i < findingCount; i++) {
         findings.push({
           id: `finding-${generateNanoId(8)}`,`
-          title: `${tool.name} finding in ${target.path}`,`
+          title: `${{tool.name} finding in ${target.path}}`,`
           description: `Security issue detected by ${tool.name}`,`
           severity: this.getRandomSeverity(),
           category: this.getCategoryForTool(tool),
@@ -379,22 +374,22 @@ export class SecurityScanningService {
             filePath: target.path,
             lineNumber: Math.floor(Math.random() * 100) + 1,
             columnNumber: Math.floor(Math.random() * 50) + 1,
-            snippet: 'sample code snippet',
+            snippet:'sample code snippet,
           },
           impact: {
-            confidentiality: 'medium',
-            integrity: 'low',
-            availability: 'low',
-            businessImpact: 'Potential security vulnerability',
+            confidentiality:'medium,
+            integrity:'low,
+            availability:'low,
+            businessImpact:'Potential security vulnerability,
           },
-          remediation: 'Apply security patch or update configuration',
+          remediation:'Apply security patch or update configuration,
           references: [
             `https://cwe.mitre.org/data/definitions/${Math.floor(Math.random() * 1000) + 1}.html`,`
           ],
           toolId: tool.id,
           discoveredDate: new Date(),
           lastSeenDate: new Date(),
-          status: 'open',
+          status:'open,
           falsePositive: false,
         });
       }
@@ -425,7 +420,7 @@ export class SecurityScanningService {
     const uniqueFindings: SecurityFinding[] = [];
 
     for (const finding of findings) {
-      const fingerprint = `${finding.title}-${finding.location?.filePath || 'unknown'}-${finding.location?.lineNumber || 0}`;`
+      const fingerprint = `${{finding.title}-${finding.location?.filePath||'unknown}-${finding.location?.lineNumber|| '0}}`'';`
 
       if (!seen.has(fingerprint)) {
         seen.add(fingerprint);
@@ -443,11 +438,11 @@ export class SecurityScanningService {
     findings: SecurityFinding[],
     targets: ScanTarget[]
   ): ScanMetrics {
-    const findingsBySeverity = countBy(findings,'severity') as Record<'
+    const findingsBySeverity = countBy(findings,severity)as Record<
       SecuritySeverity,
       number
     >;
-    const findingsByCategory = countBy(findings, 'category');'
+    const findingsByCategory = countBy(findings,'category'');
 
     return {
       totalFindings: findings.length,
@@ -466,15 +461,15 @@ export class SecurityScanningService {
    * Generate scan summary
    */
   private generateScanSummary(findings: SecurityFinding[]): ScanSummary {
-    const severityCounts = countBy(findings, 'severity');'
+    const severityCounts = countBy(findings,'severity'');
     const riskScore = this.calculateRiskScore(findings);
 
     return {
-      criticalIssues: severityCounts.critical || 0,
-      highIssues: severityCounts.high || 0,
-      mediumIssues: severityCounts.medium || 0,
-      lowIssues: severityCounts.low || 0,
-      informationalIssues: severityCounts.informational || 0,
+      criticalIssues: severityCounts.critical|| 0,
+      highIssues: severityCounts.high|| 0,
+      mediumIssues: severityCounts.medium|| 0,
+      lowIssues: severityCounts.low|| 0,
+      informationalIssues: severityCounts.informational|| 0,
       newFindings: findings.length, // Simplified - would compare with previous scans
       resolvedFindings: 0, // Simplified
       riskScore,
@@ -495,7 +490,7 @@ export class SecurityScanningService {
     };
 
     const totalScore = findings.reduce((score, finding) => {
-      return score + (weights[finding.severity] || 0);
+      return score + (weights[finding.severity]|| 0);
     }, 0);
 
     return Math.min(100, totalScore);
@@ -506,26 +501,26 @@ export class SecurityScanningService {
    */
   private generateRecommendations(findings: SecurityFinding[]): string[] {
     const recommendations: string[] = [];
-    const severityCounts = countBy(findings,'severity');'
+    const severityCounts = countBy(findings,severity'');
 
     if (severityCounts.critical > 0) {
       recommendations.push(
-        'Address critical security vulnerabilities immediately''
+       'Address critical security vulnerabilities immediately'
       );
     }
 
     if (severityCounts.high > 5) {
-      recommendations.push('Implement security training for development team');'
+      recommendations.push('Implement security training for development team'');
     }
 
     if (findings.length > 20) {
       recommendations.push(
-        'Consider implementing automated security testing in CI/CD pipeline''
+       'Consider implementing automated security testing in CI/CD pipeline'
       );
     }
 
-    recommendations.push('Regularly update security tools and signatures');'
-    recommendations.push('Establish security review process for code changes');'
+    recommendations.push('Regularly update security tools and signatures'');
+    recommendations.push('Establish security review process for code changes'');
 
     return recommendations;
   }
@@ -534,16 +529,16 @@ export class SecurityScanningService {
    * Validate scan configuration
    */
   private validateScanConfiguration(config: SecurityScanConfig): void 
-    if (!config.scanId || config.scanId.trim() ==='') {'
-      throw new Error('Scan ID is required');'
+    if (!config.scanId|| config.scanId.trim() ===){
+      throw new Error('Scan ID is required'');
     }
 
     if (config.tools.length === 0) {
-      throw new Error('At least one security tool must be configured');'
+      throw new Error('At least one security tool must be configured'');
     }
 
     if (config.targets.length === 0) {
-      throw new Error('At least one scan target must be specified');'
+      throw new Error('At least one scan target must be specified'');
     }
 
   /**
@@ -551,7 +546,7 @@ export class SecurityScanningService {
    */
   private scheduleScan(config: SecurityScanConfig): void 
     // Implementation would integrate with job scheduler
-    this.logger.info('Scheduling recurring scan', {'
+    this.logger.info('Scheduling recurring scan,{
       scanId: config.scanId,
       frequency: config.schedule.frequency,
     });
@@ -561,33 +556,33 @@ export class SecurityScanningService {
    */
   private getRandomSeverity(): SecuritySeverity {
     const severities: SecuritySeverity[] = [
-      'critical',
-      'high',
-      'medium',
-      'low',
-      'informational',
+     'critical,
+     'high,
+     'medium,
+     'low,
+     'informational,
     ];
     return severities[Math.floor(Math.random() * severities.length)];
   }
 
   private getCategoryForTool(tool: SecurityTool): string {
     const categories = [
-      'injection',
-      'authentication',
-      'authorization',
-      'crypto',
-      'configuration',
+     'injection,
+     'authentication,
+     'authorization,
+     'crypto,
+     'configuration,
     ];
     return categories[Math.floor(Math.random() * categories.length)];
   }
 
   private generateCVSSScore(): CVSSScore 
     return {
-      version: '3.1',
+      version:'3.1,
       baseScore: Math.random() * 10,
       temporalScore: Math.random() * 10,
       environmentalScore: Math.random() * 10,
-      vector: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H',
+      vector:'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H,
     };
 
   private getEmptyMetrics(): ScanMetrics 
@@ -616,13 +611,13 @@ export class SecurityScanningService {
   /**
    * Get scan result
    */
-  getScanResult(resultId: string): SecurityScanResult | undefined 
+  getScanResult(resultId: string): SecurityScanResult| undefined 
     return this.scanResults.get(resultId);
 
   /**
    * Get scan configuration
    */
-  getScanConfiguration(scanId: string): SecurityScanConfig | undefined 
+  getScanConfiguration(scanId: string): SecurityScanConfig| undefined 
     return this.scanConfigurations.get(scanId);
 
   /**

@@ -16,7 +16,6 @@
  */
 
 import type { Logger } from '../../types';
-
 // ============================================================================
 // SPARC-CD MAPPING INTERFACES
 // ============================================================================
@@ -25,74 +24,74 @@ import type { Logger } from '../../types';
  * SPARC phase enumeration
  */
 export enum SPARCPhase {
-  SPECIFICATION = 'specification',
-  PSEUDOCODE = 'pseudocode',
-  ARCHITECTURE = 'architecture',
-  REFINEMENT = 'refinement',
-  COMPLETION = 'completion',
+  SPECIFICATION ='specification,
+  PSEUDOCODE ='pseudocode,
+  ARCHITECTURE ='architecture,
+  REFINEMENT ='refinement,
+  COMPLETION ='completion,
 }
 
 /**
  * CD Pipeline stage types
  */
 export enum StageType {
-  BUILD = 'build',
-  TEST = 'test',
-  SECURITY = 'security',
-  QUALITY = 'quality',
-  DEPLOY = 'deploy',
-  MONITOR = 'monitor',
-  APPROVAL = 'approval',
+  BUILD ='build,
+  TEST ='test,
+  SECURITY ='security,
+  QUALITY ='quality,
+  DEPLOY ='deploy,
+  MONITOR ='monitor,
+  APPROVAL ='approval,
 }
 
 /**
  * Quality gate types
  */
 export enum QualityGateType {
-  CODE_QUALITY = 'code_quality',
-  TEST_COVERAGE = 'test_coverage',
-  SECURITY_SCAN = 'security_scan',
-  PERFORMANCE = 'performance',
-  COMPLIANCE = 'compliance',
-  ARCHITECTURE = 'architecture',
-  BUSINESS_VALIDATION = 'business_validation',
+  CODE_QUALITY ='code_quality,
+  TEST_COVERAGE ='test_coverage,
+  SECURITY_SCAN ='security_scan,
+  PERFORMANCE ='performance,
+  COMPLIANCE ='compliance,
+  ARCHITECTURE ='architecture,
+  BUSINESS_VALIDATION ='business_validation,
 }
 
 /**
  * Automation types
  */
 export enum AutomationType {
-  BUILD = 'build',
-  TEST = 'test',
-  DEPLOY = 'deploy',
-  NOTIFICATION = 'notification',
-  APPROVAL = 'approval',
-  ROLLBACK = 'rollback',
-  MONITORING = 'monitoring',
+  BUILD ='build,
+  TEST ='test,
+  DEPLOY ='deploy,
+  NOTIFICATION ='notification,
+  APPROVAL ='approval,
+  ROLLBACK ='rollback,
+  MONITORING ='monitoring,
 }
 
 /**
  * Pipeline status
  */
 export enum PipelineStatus {
-  PENDING = 'pending',
-  RUNNING = 'running',
-  SUCCESS = 'success',
-  FAILED = 'failed',
-  CANCELLED = 'cancelled',
-  TIMEOUT = 'timeout',
+  PENDING ='pending,
+  RUNNING ='running,
+  SUCCESS ='success,
+  FAILED ='failed,
+  CANCELLED ='cancelled,
+  TIMEOUT ='timeout,
 }
 
 /**
  * Stage status
  */
 export enum StageStatus {
-  PENDING = 'pending',
-  RUNNING = 'running',
-  SUCCESS = 'success',
-  FAILED = 'failed',
-  SKIPPED = 'skipped',
-  CANCELLED = 'cancelled',
+  PENDING ='pending,
+  RUNNING ='running,
+  SUCCESS ='success,
+  FAILED ='failed,
+  SKIPPED ='skipped,
+  CANCELLED ='cancelled,
 }
 
 /**
@@ -133,7 +132,7 @@ export interface QualityGate {
  */
 export interface QualityGateCriterion {
   readonly metric: string;
-  readonly operator: 'gt|gte|lt|lte|eq|neq;
+  readonly operator:'gt| gte| lt| lte| eq'|'neq';
   readonly threshold: number;
   readonly weight: number;
   readonly critical: boolean;
@@ -158,7 +157,7 @@ export interface StageAutomation {
  * Automation trigger
  */
 export interface AutomationTrigger {
-  readonly event:|stage_start|stage_complete|gate_pass|gate_fail|'manual;
+  readonly event:| stage_start| stage_complete| gate_pass| gate_fail|'manual';
   readonly conditions: string[];
   readonly delay: number;
 }
@@ -167,7 +166,7 @@ export interface AutomationTrigger {
  * Automation action
  */
 export interface AutomationAction {
-  readonly type:|command|api_call|notification|gate_check|'deployment;
+  readonly type:| command| api_call| notification| gate_check|'deployment';
   readonly configuration: unknown;
   readonly timeout: number;
   readonly retryOnFailure: boolean;
@@ -183,8 +182,8 @@ export interface PipelineExecutionContext {
   readonly valueStreamId: string;
   readonly sparcProjectId: string;
   readonly initiator: string;
-  readonly priority: 'low|medium|high|critical;
-  readonly environment: 'development' | 'staging' | 'production';
+  readonly priority: low| medium| high'|'critical';
+  readonly environment:'development'|'staging'|'production';
   readonly metadata: Record<string, unknown>;
   readonly startTime: Date;
   readonly timeoutAt: Date;
@@ -228,7 +227,7 @@ export interface StageExecution {
 export interface RetryPolicy {
   readonly enabled: boolean;
   readonly maxAttempts: number;
-  readonly backoffStrategy: 'linear' | 'exponential' | 'fixed';
+  readonly backoffStrategy:'linear'|'exponential'|'fixed';
   readonly baseDelay: number;
   readonly maxDelay: number;
 }
@@ -262,7 +261,7 @@ export interface AutomationCondition {
 
 export interface AutomationResult {
   readonly automationId: string;
-  readonly status: 'success' | 'failure' | 'skipped';
+  readonly status:'success'|'failure'|'skipped';
   readonly startTime: Date;
   readonly endTime: Date;
   readonly output: string;
@@ -271,7 +270,7 @@ export interface AutomationResult {
 
 export interface QualityGateResult {
   readonly gateId: string;
-  readonly status: 'pass|fail|warning|pending;
+  readonly status:'pass| fail| warning'|'pending';
   readonly score: number;
   readonly criterionResults: CriterionResult[];
   readonly executionTime: number;
@@ -292,7 +291,7 @@ export interface CriterionResult {
 export interface PipelineArtifact {
   readonly id: string;
   readonly name: string;
-  readonly type:|binary|report|log|configuration|'documentation;
+  readonly type:| binary| report| log| configuration|'documentation';
   readonly location: string;
   readonly size: number;
   readonly checksum: string;
@@ -324,15 +323,15 @@ export interface PipelineBottleneck {
 
 export interface MetricTrend {
   readonly metric: string;
-  readonly direction: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|degrading;
+  readonly direction:'improving'|'stable'|'declining'|'improving'|'stable'|'declining''|'degrading';
   readonly change: number;
   readonly period: string;
-  readonly significance: 'low' | 'medium' | 'high';
+  readonly significance:'low'|'medium'|'high';
 }
 
 export interface PipelineError {
   readonly stage: string;
-  readonly type: 'validation|execution|timeout|system;
+  readonly type:'validation| execution| timeout'|'system';
   readonly message: string;
   readonly details: unknown;
   readonly timestamp: Date;
@@ -368,7 +367,7 @@ export class SPARCCDMappingService {
 
     try {
       // Lazy load @claude-zen/workflows for pipeline orchestration
-      const { WorkflowEngine } = await import('@claude-zen/workflows');'
+      const { WorkflowEngine } = await import('@claude-zen/workflows'');
       this.workflowEngine = new WorkflowEngine(
         maxConcurrentWorkflows: 50,
         stepTimeout: 7200000, // 2 hours
@@ -376,7 +375,7 @@ export class SPARCCDMappingService {
       await this.workflowEngine.initialize();
 
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent mapping
-      const { BrainCoordinator } = await import('@claude-zen/brain');'
+      const { BrainCoordinator } = await import('@claude-zen/brain'');
       this.brainCoordinator = new BrainCoordinator(
           enabled: true,
           learningRate: 0.1,
@@ -384,14 +383,14 @@ export class SPARCCDMappingService {
       await this.brainCoordinator.initialize();
 
       // Lazy load @claude-zen/foundation for performance tracking
-      const { PerformanceTracker } = await import('@claude-zen/foundation');'
+      const { PerformanceTracker } = await import('@claude-zen/foundation'');
       this.performanceTracker = new PerformanceTracker();
 
       this.initialized = true;
-      this.logger.info('SPARC-CD Mapping Service initialized successfully');'
+      this.logger.info('SPARC-CD Mapping Service initialized successfully'');
     } catch (error) {
       this.logger.error(
-        'Failed to initialize SPARC-CD Mapping Service:',
+       'Failed to initialize SPARC-CD Mapping Service:,
         error
       );
       throw error;
@@ -404,18 +403,18 @@ export class SPARCCDMappingService {
   async mapSPARCToPipelineStages(): Promise<Map<string, CDPipelineStage[]>> {
     if (!this.initialized) await this.initialize();
 
-    const _timer = this.performanceTracker.startTimer('sparc_cd_mapping');'
+    const _timer = this.performanceTracker.startTimer('sparc_cd_mapping'');
 
     try {
       this.logger.info(
-        'Mapping SPARC phases to CD pipeline stages with intelligent optimization''
+       'Mapping SPARC phases to CD pipeline stages with intelligent optimization'
       );
 
       const pipelineTemplates = new Map<string, CDPipelineStage[]>();
 
       // Use brain coordinator for intelligent template generation
       const mappingStrategy = await this.brainCoordinator.optimizeMapping({
-        mappingType: 'sparc_to_cd_pipeline',
+        mappingType:'sparc_to_cd_pipeline,
         context: {
           targetStages: Object.values(StageType),
           sparcPhases: Object.values(SPARCPhase),
@@ -427,36 +426,36 @@ export class SPARCCDMappingService {
       // Create standard pipeline template with intelligent mapping
       const standardPipeline =
         await this.createStandardPipelineFromSPARC(mappingStrategy);
-      pipelineTemplates.set('standard', standardPipeline);'
+      pipelineTemplates.set('standard,standardPipeline');
 
       // Create microservice pipeline template
       const microservicePipeline =
         await this.createMicroservicePipelineFromSPARC(mappingStrategy);
-      pipelineTemplates.set('microservice', microservicePipeline);'
+      pipelineTemplates.set('microservice,microservicePipeline');
 
       // Create library pipeline template
       const libraryPipeline =
         await this.createLibraryPipelineFromSPARC(mappingStrategy);
-      pipelineTemplates.set('library', libraryPipeline);'
+      pipelineTemplates.set('library,libraryPipeline');
 
       // Create enterprise pipeline template for complex systems
       const enterprisePipeline =
         await this.createEnterprisePipelineFromSPARC(mappingStrategy);
-      pipelineTemplates.set('enterprise', enterprisePipeline);'
+      pipelineTemplates.set('enterprise,enterprisePipeline');
 
-      this.performanceTracker.endTimer('sparc_cd_mapping');'
+      this.performanceTracker.endTimer('sparc_cd_mapping'');
 
       this.logger.info(
-        'SPARC to CD pipeline mapping completed with intelligent optimization',
+       'SPARC to CD pipeline mapping completed with intelligent optimization,
           templateCount: pipelineTemplates.size,
-          mappingStrategy: mappingStrategy.strategy || 'standard',
-          optimizationScore: mappingStrategy.confidence || 0.8,
+          mappingStrategy: mappingStrategy.strategy||'standard,
+          optimizationScore: mappingStrategy.confidence|| 0.8,
       );
 
       return pipelineTemplates;
     } catch (error) {
-      this.performanceTracker.endTimer('sparc_cd_mapping');'
-      this.logger.error('SPARC to CD mapping failed:', error);'
+      this.performanceTracker.endTimer('sparc_cd_mapping'');
+      this.logger.error('SPARC to CD mapping failed:,error');
       throw error;
     }
   }
@@ -468,17 +467,17 @@ export class SPARCCDMappingService {
     sparcProjectId: string,
     featureId: string,
     valueStreamId: string,
-    pipelineType: string = 'standard''
+    pipelineType: string ='standard'
   ): Promise<string> {
     if (!this.initialized) await this.initialize();
 
     const _timer = this.performanceTracker.startTimer(
-      'sparc_pipeline_execution''
+     'sparc_pipeline_execution'
     );
 
     try {
       this.logger.info(
-        'Starting CD pipeline for SPARC project with workflow orchestration',
+       'Starting CD pipeline for SPARC project with workflow orchestration,
         {
           sparcProjectId,
           featureId,
@@ -492,13 +491,13 @@ export class SPARCCDMappingService {
         featureId,
         valueStreamId,
         sparcProjectId,
-        initiator: 'sparc-completion',
-        priority: 'medium',
-        environment: 'development',
+        initiator:'sparc-completion,
+        priority: medium,
+        environment:'development,
         metadata: {
           pipelineType,
-          startedBy: 'sparc-mapping-service',
-          mappingVersion: '1.0.0',
+          startedBy:'sparc-mapping-service,
+          mappingVersion:'1.0.0,
         },
         startTime: new Date(),
         timeoutAt: new Date(Date.now() + 7200000), // 2 hours
@@ -506,7 +505,7 @@ export class SPARCCDMappingService {
 
       // Start workflow orchestration for pipeline execution
       const workflowId = await this.workflowEngine.startWorkflow({
-        workflowType: 'sparc_cd_pipeline_execution',
+        workflowType:'sparc_cd_pipeline_execution,
         entityId: context.pipelineId,
         participants: [context.initiator],
         data: { context, pipelineType },
@@ -519,17 +518,17 @@ export class SPARCCDMappingService {
         workflowId
       );
 
-      this.performanceTracker.endTimer('sparc_pipeline_execution');'
+      this.performanceTracker.endTimer('sparc_pipeline_execution'');
 
-      this.logger.info('CD pipeline started with workflow orchestration', '
+      this.logger.info('CD pipeline started with workflow orchestration,
         pipelineId: context.pipelineId,
         workflowId,
         stageCount: execution.stages.length,);
 
       return context.pipelineId;
     } catch (error) {
-      this.performanceTracker.endTimer('sparc_pipeline_execution');'
-      this.logger.error('SPARC pipeline execution failed:', error);'
+      this.performanceTracker.endTimer('sparc_pipeline_execution'');
+      this.logger.error('SPARC pipeline execution failed:,error');
       throw error;
     }
   }
@@ -544,11 +543,11 @@ export class SPARCCDMappingService {
     const templateRecommendation =
       await this.brainCoordinator.recommendTemplate({
         pipelineType,
-        context: { usage: 'cd_pipeline_template' },
+        context: { usage: 'cd_pipeline_template '},
       });
 
     if (templateRecommendation.template) {
-      this.logger.info('Using brain-recommended pipeline template', {'
+      this.logger.info('Using brain-recommended pipeline template,{
         pipelineType,
         recommendedTemplate: templateRecommendation.template,
         confidence: templateRecommendation.confidence,
@@ -557,7 +556,7 @@ export class SPARCCDMappingService {
     }
 
     // Fallback to standard template generation
-    const mappingStrategy = { strategy: 'standard', confidence: 0.5 };'
+    const mappingStrategy = { strategy:'standard,confidence: 0.5 };
     return await this.createStandardPipelineFromSPARC(mappingStrategy);
   }
 
@@ -570,7 +569,7 @@ export class SPARCCDMappingService {
   ): Promise<CDPipelineStage[]> {
     if (!this.initialized) await this.initialize();
 
-    const _timer = this.performanceTracker.startTimer('pipeline_optimization');'
+    const _timer = this.performanceTracker.startTimer('pipeline_optimization'');
 
     try {
       // Use brain coordinator for intelligent optimization
@@ -578,26 +577,26 @@ export class SPARCCDMappingService {
         pipelineType,
         executionHistory,
         optimizationGoals: [
-          'reduce_duration',
-          'improve_quality',
-          'increase_reliability',
+         'reduce_duration,
+         'improve_quality,
+         'increase_reliability,
         ],
       });
 
-      this.performanceTracker.endTimer('pipeline_optimization');'
+      this.performanceTracker.endTimer('pipeline_optimization'');
 
-      this.logger.info('Pipeline stages optimized with brain coordination', '
+      this.logger.info('Pipeline stages optimized with brain coordination,
         pipelineType,
         executionHistoryCount: executionHistory.length,
         optimizationScore: optimizationResult.score,
         improvementAreas: optimizationResult.improvements,);
 
       return (
-        optimizationResult.optimizedStages || (await this.getPipelineTemplate(pipelineType))
+        optimizationResult.optimizedStages|| (await this.getPipelineTemplate(pipelineType))
       );
     } catch (error) {
-      this.performanceTracker.endTimer('pipeline_optimization');'
-      this.logger.error('Pipeline optimization failed:', error);'
+      this.performanceTracker.endTimer('pipeline_optimization'');
+      this.logger.error('Pipeline optimization failed:,error');
       throw error;
     }
   }
@@ -613,7 +612,7 @@ export class SPARCCDMappingService {
       await this.brainCoordinator.shutdown();
     }
     this.initialized = false;
-    this.logger.info('SPARC-CD Mapping Service shutdown complete');'
+    this.logger.info('SPARC-CD Mapping Service shutdown complete'');
   }
 
   // ============================================================================
@@ -627,8 +626,8 @@ export class SPARCCDMappingService {
 
     // SPARC Specification → Build Stage
     stages.push({
-      id: 'build-from-specification',
-      name: 'Build from Specification',
+      id:'build-from-specification,
+      name:'Build from Specification,
       sparcPhase: SPARCPhase.SPECIFICATION,
       type: StageType.BUILD,
       order: 1,
@@ -640,7 +639,7 @@ export class SPARCCDMappingService {
       retryPolicy: {
         enabled: true,
         maxAttempts: 3,
-        backoffStrategy: 'exponential',
+        backoffStrategy:'exponential,
         baseDelay: 30000,
         maxDelay: 300000,
       },
@@ -654,8 +653,8 @@ export class SPARCCDMappingService {
 
     // SPARC Pseudocode → Test Stage
     stages.push({
-      id: 'test-from-pseudocode',
-      name: 'Test from Pseudocode',
+      id:'test-from-pseudocode,
+      name:'Test from Pseudocode,
       sparcPhase: SPARCPhase.PSEUDOCODE,
       type: StageType.TEST,
       order: 2,
@@ -667,7 +666,7 @@ export class SPARCCDMappingService {
       retryPolicy: {
         enabled: true,
         maxAttempts: 2,
-        backoffStrategy: 'linear',
+        backoffStrategy:'linear,
         baseDelay: 60000,
         maxDelay: 180000,
       },
@@ -681,8 +680,8 @@ export class SPARCCDMappingService {
 
     // SPARC Architecture → Security & Quality Stage
     stages.push({
-      id: 'security-quality-from-architecture',
-      name: 'Security & Quality from Architecture',
+      id:'security-quality-from-architecture,
+      name:'Security & Quality from Architecture,
       sparcPhase: SPARCPhase.ARCHITECTURE,
       type: StageType.SECURITY,
       order: 3,
@@ -697,7 +696,7 @@ export class SPARCCDMappingService {
       retryPolicy: {
         enabled: true,
         maxAttempts: 3,
-        backoffStrategy: 'exponential',
+        backoffStrategy:'exponential,
         baseDelay: 30000,
         maxDelay: 240000,
       },
@@ -711,8 +710,8 @@ export class SPARCCDMappingService {
 
     // SPARC Refinement → Deploy Stage
     stages.push({
-      id: 'deploy-from-refinement',
-      name: 'Deploy from Refinement',
+      id:'deploy-from-refinement,
+      name:'Deploy from Refinement,
       sparcPhase: SPARCPhase.REFINEMENT,
       type: StageType.DEPLOY,
       order: 4,
@@ -724,7 +723,7 @@ export class SPARCCDMappingService {
       retryPolicy: {
         enabled: true,
         maxAttempts: 2,
-        backoffStrategy: 'fixed',
+        backoffStrategy:'fixed,
         baseDelay: 120000,
         maxDelay: 300000,
       },
@@ -738,8 +737,8 @@ export class SPARCCDMappingService {
 
     // SPARC Completion → Monitor Stage
     stages.push({
-      id: 'monitor-from-completion',
-      name: 'Monitor from Completion',
+      id:'monitor-from-completion,
+      name:'Monitor from Completion,
       sparcPhase: SPARCPhase.COMPLETION,
       type: StageType.MONITOR,
       order: 5,
@@ -751,7 +750,7 @@ export class SPARCCDMappingService {
       retryPolicy: {
         enabled: true,
         maxAttempts: 5,
-        backoffStrategy: 'exponential',
+        backoffStrategy:'exponential,
         baseDelay: 15000,
         maxDelay: 120000,
       },
@@ -776,8 +775,8 @@ export class SPARCCDMappingService {
     const microserviceStages: CDPipelineStage[] = [
       ...baseStages,
       {
-        id: 'service-mesh-integration',
-        name: 'Service Mesh Integration',
+        id:'service-mesh-integration,
+        name:'Service Mesh Integration,
         sparcPhase: SPARCPhase.ARCHITECTURE,
         type: StageType.DEPLOY,
         order: 3.5,
@@ -789,7 +788,7 @@ export class SPARCCDMappingService {
         retryPolicy: {
           enabled: true,
           maxAttempts: 3,
-          backoffStrategy: 'exponential',
+          backoffStrategy:'exponential,
           baseDelay: 30000,
           maxDelay: 180000,
         },
@@ -820,12 +819,12 @@ export class SPARCCDMappingService {
           ? [
               ...stage.qualityGates,
               {
-                id: 'api-compatibility',
-                name: 'API Compatibility Check',
+                id:'api-compatibility,
+                name:'API Compatibility Check,
               } as QualityGate,
             ]
           : stage.qualityGates,
-    }));
+    });
   }
 
   private async createEnterprisePipelineFromSPARC(
@@ -838,8 +837,8 @@ export class SPARCCDMappingService {
     const enterpriseStages: CDPipelineStage[] = [
       ...standardStages,
       {
-        id: 'compliance-validation',
-        name: 'Enterprise Compliance Validation',
+        id:'compliance-validation,
+        name:'Enterprise Compliance Validation,
         sparcPhase: SPARCPhase.REFINEMENT,
         type: StageType.APPROVAL,
         order: 3.8,
@@ -851,7 +850,7 @@ export class SPARCCDMappingService {
         retryPolicy: {
           enabled: true,
           maxAttempts: 2,
-          backoffStrategy: 'linear',
+          backoffStrategy:'linear,
           baseDelay: 300000,
           maxDelay: 600000,
         },
@@ -907,25 +906,25 @@ export class SPARCCDMappingService {
   // Quality gate creation methods
   private createCodeQualityGate(): QualityGate {
     return {
-      id: 'code-quality-gate',
-      name: 'Code Quality Gate',
+      id:'code-quality-gate,
+      name:'Code Quality Gate,
       type: QualityGateType.CODE_QUALITY,
       criteria: [
         {
-          metric: 'code_coverage',
-          operator: 'gte',
+          metric:'code_coverage,
+          operator:'gte,
           threshold: 80,
           weight: 0.3,
           critical: true,
-          description: 'Code coverage must be at least 80%',
+          description:'Code coverage must be at least 80%,
         },
         {
-          metric: 'complexity_score',
-          operator: 'lte',
+          metric:'complexity_score,
+          operator:'lte,
           threshold: 7.0,
           weight: 0.3,
           critical: false,
-          description: 'Cyclomatic complexity should be under 7',
+          description:'Cyclomatic complexity should be under 7,
         },
       ],
       automated: true,
@@ -938,17 +937,17 @@ export class SPARCCDMappingService {
 
   private createTestCoverageGate(): QualityGate {
     return {
-      id: 'test-coverage-gate',
-      name: 'Test Coverage Gate',
+      id:'test-coverage-gate,
+      name:'Test Coverage Gate,
       type: QualityGateType.TEST_COVERAGE,
       criteria: [
         {
-          metric: 'branch_coverage',
-          operator: 'gte',
+          metric:'branch_coverage,
+          operator:'gte,
           threshold: 85,
           weight: 0.5,
           critical: true,
-          description: 'Branch coverage must be at least 85%',
+          description:'Branch coverage must be at least 85%,
         },
       ],
       automated: true,
@@ -961,17 +960,17 @@ export class SPARCCDMappingService {
 
   private createSecurityGate(): QualityGate {
     return {
-      id: 'security-gate',
-      name: 'Security Gate',
+      id:'security-gate,
+      name:'Security Gate,
       type: QualityGateType.SECURITY_SCAN,
       criteria: [
         {
-          metric: 'critical_vulnerabilities',
-          operator: 'eq',
+          metric:'critical_vulnerabilities,
+          operator:'eq,
           threshold: 0,
           weight: 1.0,
           critical: true,
-          description: 'No critical security vulnerabilities allowed',
+          description:'No critical security vulnerabilities allowed,
         },
       ],
       automated: true,
@@ -984,17 +983,17 @@ export class SPARCCDMappingService {
 
   private createArchitectureGate(): QualityGate {
     return {
-      id: 'architecture-gate',
-      name: 'Architecture Compliance Gate',
+      id:'architecture-gate,
+      name:'Architecture Compliance Gate,
       type: QualityGateType.ARCHITECTURE,
       criteria: [
         {
-          metric: 'architecture_compliance',
-          operator: 'gte',
+          metric:'architecture_compliance,
+          operator:'gte,
           threshold: 90,
           weight: 1.0,
           critical: false,
-          description: 'Architecture compliance score must be at least 90%',
+          description:'Architecture compliance score must be at least 90%,
         },
       ],
       automated: true,
@@ -1007,17 +1006,17 @@ export class SPARCCDMappingService {
 
   private createDeploymentGate(): QualityGate {
     return {
-      id: 'deployment-gate',
-      name: 'Deployment Readiness Gate',
+      id:'deployment-gate,
+      name:'Deployment Readiness Gate,
       type: QualityGateType.COMPLIANCE,
       criteria: [
         {
-          metric: 'deployment_readiness',
-          operator: 'gte',
+          metric:'deployment_readiness,
+          operator:'gte,
           threshold: 95,
           weight: 1.0,
           critical: true,
-          description: 'Deployment readiness score must be at least 95%',
+          description:'Deployment readiness score must be at least 95%,
         },
       ],
       automated: true,
@@ -1030,17 +1029,17 @@ export class SPARCCDMappingService {
 
   private createMonitoringGate(): QualityGate {
     return {
-      id: 'monitoring-gate',
-      name: 'Monitoring Setup Gate',
+      id:'monitoring-gate,
+      name:'Monitoring Setup Gate,
       type: QualityGateType.PERFORMANCE,
       criteria: [
         {
-          metric: 'monitoring_coverage',
-          operator: 'gte',
+          metric:'monitoring_coverage,
+          operator:'gte,
           threshold: 90,
           weight: 1.0,
           critical: false,
-          description: 'Monitoring coverage must be at least 90%',
+          description:'Monitoring coverage must be at least 90%,
         },
       ],
       automated: true,
@@ -1053,8 +1052,8 @@ export class SPARCCDMappingService {
 
   private createServiceMeshGate(): QualityGate {
     return {
-      id: 'service-mesh-gate',
-      name: 'Service Mesh Integration Gate',
+      id:'service-mesh-gate,
+      name:'Service Mesh Integration Gate,
       type: QualityGateType.ARCHITECTURE,
       criteria: [],
       automated: true,
@@ -1067,8 +1066,8 @@ export class SPARCCDMappingService {
 
   private createComplianceGate(): QualityGate {
     return {
-      id: 'compliance-gate',
-      name: 'Enterprise Compliance Gate',
+      id:'compliance-gate,
+      name:'Enterprise Compliance Gate,
       type: QualityGateType.COMPLIANCE,
       criteria: [],
       automated: true,
@@ -1082,10 +1081,10 @@ export class SPARCCDMappingService {
   // Automation creation methods (simplified implementations)
   private createBuildAutomation(): StageAutomation {
     return {
-      id: 'build-automation',
-      name: 'Build Automation',
+      id:'build-automation,
+      name:'Build Automation,
       type: AutomationType.BUILD,
-      trigger: { event: 'stage_start', conditions: [], delay: 0 },
+      trigger: { event:'stage_start,conditions: [], delay: 0 },
       actions: [],
       conditions: [],
       timeout: 1800000,
@@ -1095,10 +1094,10 @@ export class SPARCCDMappingService {
 
   private createTestAutomation(): StageAutomation {
     return {
-      id: 'test-automation',
-      name: 'Test Automation',
+      id:'test-automation,
+      name:'Test Automation,
       type: AutomationType.TEST,
-      trigger: { event: 'stage_start', conditions: [], delay: 0 },
+      trigger: { event:'stage_start,conditions: [], delay: 0 },
       actions: [],
       conditions: [],
       timeout: 2400000,
@@ -1108,10 +1107,10 @@ export class SPARCCDMappingService {
 
   private createSecurityAutomation(): StageAutomation {
     return {
-      id: 'security-automation',
-      name: 'Security Automation',
+      id:'security-automation,
+      name:'Security Automation,
       type: AutomationType.TEST,
-      trigger: { event: 'stage_start', conditions: [], delay: 0 },
+      trigger: { event:'stage_start,conditions: [], delay: 0 },
       actions: [],
       conditions: [],
       timeout: 1800000,
@@ -1121,10 +1120,10 @@ export class SPARCCDMappingService {
 
   private createDeploymentAutomation(): StageAutomation {
     return {
-      id: 'deployment-automation',
-      name: 'Deployment Automation',
+      id:'deployment-automation,
+      name:'Deployment Automation,
       type: AutomationType.DEPLOY,
-      trigger: { event: 'stage_start', conditions: [], delay: 0 },
+      trigger: { event:'stage_start,conditions: [], delay: 0 },
       actions: [],
       conditions: [],
       timeout: 1200000,
@@ -1134,10 +1133,10 @@ export class SPARCCDMappingService {
 
   private createMonitoringAutomation(): StageAutomation {
     return {
-      id: 'monitoring-automation',
-      name: 'Monitoring Automation',
+      id:'monitoring-automation,
+      name:'Monitoring Automation,
       type: AutomationType.MONITORING,
-      trigger: { event: 'stage_start', conditions: [], delay: 0 },
+      trigger: { event:'stage_start,conditions: [], delay: 0 },
       actions: [],
       conditions: [],
       timeout: 600000,
@@ -1147,10 +1146,10 @@ export class SPARCCDMappingService {
 
   private createServiceMeshAutomation(): StageAutomation {
     return {
-      id: 'service-mesh-automation',
-      name: 'Service Mesh Automation',
+      id:'service-mesh-automation,
+      name:'Service Mesh Automation,
       type: AutomationType.DEPLOY,
-      trigger: { event: 'stage_start', conditions: [], delay: 0 },
+      trigger: { event:'stage_start,conditions: [], delay: 0 },
       actions: [],
       conditions: [],
       timeout: 900000,
@@ -1160,10 +1159,10 @@ export class SPARCCDMappingService {
 
   private createComplianceAutomation(): StageAutomation {
     return {
-      id: 'compliance-automation',
-      name: 'Compliance Automation',
+      id:'compliance-automation,
+      name:'Compliance Automation,
       type: AutomationType.APPROVAL,
-      trigger: { event: 'stage_start', conditions: [], delay: 0 },
+      trigger: { event:'stage_start,conditions: [], delay: 0 },
       actions: [],
       conditions: [],
       timeout: 2400000,
@@ -1183,7 +1182,7 @@ export interface CDPipelineConfig {
   readonly pipelineId: string;
   readonly name: string;
   readonly description: string;
-  readonly type: 'standard|microservice|library|enterprise;
+  readonly type:'standard| microservice| library'|'enterprise';
   readonly stages: CDPipelineStage[];
   readonly triggers: PipelineTrigger[];
   readonly variables: Record<string, string>;
@@ -1201,7 +1200,7 @@ export interface CDPipelineConfig {
  */
 export interface PipelineTrigger {
   readonly id: string;
-  readonly type: 'webhook|schedule|manual|dependency;
+  readonly type:'webhook| schedule| manual'|'dependency';
   readonly enabled: boolean;
   readonly configuration: Record<string, unknown>;
   readonly conditions: TriggerCondition[];
@@ -1212,7 +1211,7 @@ export interface PipelineTrigger {
  */
 export interface TriggerCondition {
   readonly field: string;
-  readonly operator:|equals|contains|matches|greater_than|'less_than;
+  readonly operator:| equals| contains| matches| greater_than|'less_than';
   readonly value: string;
   readonly caseSensitive: boolean;
 }
@@ -1222,7 +1221,7 @@ export interface TriggerCondition {
  */
 export interface NotificationConfig {
   readonly id: string;
-  readonly channel: 'email|slack|teams|webhook;
+  readonly channel:'email| slack| teams'|'webhook';
   readonly recipients: string[];
   readonly events: NotificationEvent[];
   readonly template: string;
@@ -1232,15 +1231,14 @@ export interface NotificationConfig {
 /**
  * Notification event
  */
-export type NotificationEvent =|pipeline_started|pipeline_completed|pipeline_failed|stage_completed|stage_failed|quality_gate_failed|'security_check_failed;
-
+export type NotificationEvent =| pipeline_started| pipeline_completed| pipeline_failed| stage_completed| stage_failed| quality_gate_failed|'security_check_failed';
 /**
  * Security check configuration
  */
 export interface SecurityCheck {
   readonly id: string;
   readonly name: string;
-  readonly type:|vulnerability_scan|dependency_check|secrets_scan|'compliance_check;
+  readonly type:| vulnerability_scan| dependency_check| secrets_scan|'compliance_check';
   readonly tool: string;
   readonly configuration: Record<string, unknown>;
   readonly enabled: boolean;
@@ -1283,7 +1281,7 @@ export interface CDPipelineState {
   readonly status: PipelineStatus;
   readonly progress: number;
   readonly estimatedCompletion?: Date;
-  readonly health: 'healthy' | 'degraded' | 'unhealthy';
+  readonly health:'healthy'|'degraded'|'unhealthy';
 }
 
 /**
@@ -1293,7 +1291,7 @@ export interface SwarmExecutionOrchestrator {
   readonly id: string;
   readonly name: string;
   readonly pipelines: string[];
-  readonly coordination: 'sequential' | 'parallel' | 'adaptive';
+  readonly coordination:'sequential'|'parallel'|'adaptive';
   readonly loadBalancing: boolean;
   readonly monitoring: boolean;
 }

@@ -11,14 +11,13 @@
  */
 
 import {
-  type DIContainer,
-  createContainer,
-  getLogger,
+  type DIContainer,getLogger, 
 } from '@claude-zen/foundation';
 import type {
   AIEnhancementConfig,
 } from '../interfaces/ai-enhancements';
 import { AI_ENHANCEMENT_TOKENS, INTERFACE_TOKENS, } from './tokens';
+
 const logger = getLogger('SAFeContainer');
 
 /**
@@ -28,7 +27,7 @@ export class SafeContainer {
   private container: DIContainer;
   private initialized = false;
 
-  constructor(name: string ='safe-framework') {
+  constructor(name: string = 'safe-framework') {
     this.container = createContainer(name);
   }
 
@@ -56,53 +55,9 @@ export class SafeContainer {
       this.initialized = true;
       logger.info('SAFe framework DI container configured successfully');
     } catch (error) {
-      logger.error('Failed to configure SAFe container:, error);
+      logger.error('Failed to configure SAFe container:', error');
       throw error;
     }
-  }
-
-  /**
-   * Register core SAFe services (required)
-   */
-  private registerCoreSAFeServices(config: SafeContainerConfig): void {
-    const { coreServices } = config;
-    
-    // Register required core services
-    this.container.registerInstance('Logger, coreServices.logger);
-    this.container.registerInstance('MemorySystem, coreServices.memorySystem);
-    this.container.registerInstance('EventBus, coreServices.eventBus);
-    this.container.registerInstance('Config, coreServices.config);
-
-    // Register optional services if provided
-    if (coreServices.epicLifecycleService) {
-      this.container.registerInstance('EpicLifecycleService, coreServices.epicLifecycleService);
-    }
-    if (coreServices.businessCaseService) {
-      this.container.registerInstance('BusinessCaseService, coreServices.businessCaseService);
-    }
-    if (coreServices.runwayItemService) {
-      this.container.registerInstance('RunwayItemService, coreServices.runwayItemService);
-    }
-    if (coreServices.technicalDebtService) {
-      this.container.registerInstance('TechnicalDebtService, coreServices.technicalDebtService);
-    }
-    if (coreServices.architectureDecisionService) {
-      this.container.registerInstance('ArchitectureDecisionService, coreServices.architectureDecisionService);
-    }
-    if (coreServices.capabilityService) {
-      this.container.registerInstance('CapabilityService, coreServices.capabilityService);
-    }
-    if (coreServices.securityScanningService) {
-      this.container.registerInstance('SecurityScanningService, coreServices.securityScanningService);
-    }
-    if (coreServices.complianceMonitoringService) {
-      this.container.registerInstance('ComplianceMonitoringService, coreServices.complianceMonitoringService);
-    }
-    if (coreServices.incidentResponseService) {
-      this.container.registerInstance('IncidentResponseService, coreServices.incidentResponseService);
-    }
-
-    logger.debug('Core SAFe services registered');
   }
 
   /**
@@ -122,10 +77,10 @@ export class SafeContainer {
         try {
           const { BrainCoordinator } = await import('@claude-zen/brain');
           const defaultConfig = {
-            sessionId:'safe-framework,
+            sessionId: 'safe-framework',
             enableLearning: true,
             cacheOptimizations: true,
-            logLevel:'info 'as const,
+            logLevel: 'info' as const,
             autonomous: {
               enabled: true,
               learningRate: 0.1,
@@ -145,34 +100,34 @@ export class SafeContainer {
             AI_ENHANCEMENT_TOKENS.BrainCoordinator,
             brainInstance
           );
-          logger.info('Brain Coordinator registered');
+          logger.info(${BASH_REMATCH[0]%''});
         } catch (error) {
-          logger.warn('Brain Coordinator not available:, error);
+          logger.warn('Brain Coordinator not available:', error');
         }
       }
 
       // Optional Performance Tracker (from @claude-zen/foundation)
       if (aiConfig.enablePerformanceTracking) {
         try {
-          const { PerformanceTracker } = await import('@claude-zen/foundation');
+          const { PerformanceTracker } = await import('@claude-zen/foundation'');
           const tracker = new PerformanceTracker();
           this.container.registerInstance(
             AI_ENHANCEMENT_TOKENS.PerformanceTracker,
             tracker
           );
-          logger.info('Performance Tracker registered');
+          logger.info(${BASH_REMATCH[0]%''});
         } catch (error) {
-          logger.warn('Performance Tracker not available:, error);
+          logger.warn('Performance Tracker not available:', error');
         }
       }
 
       // Optional Telemetry Manager (from @claude-zen/foundation)
       if (aiConfig.enableTelemetry) {
         try {
-          const { TelemetryManager } = await import('@claude-zen/foundation');
+          const { TelemetryManager } = await import('@claude-zen/foundation'');
           const telemetry = new TelemetryManager(
-            aiConfig.telemetryConfig|| {
-              serviceName:'safe-framework,
+            aiConfig.telemetryConfig| | {
+              serviceName:'safe-framework',
               enableTracing: true,
               enableMetrics: true,
             }
@@ -182,24 +137,24 @@ export class SafeContainer {
             AI_ENHANCEMENT_TOKENS.TelemetryManager,
             telemetry
           );
-          logger.info('Telemetry Manager registered');
+          logger.info(${BASH_REMATCH[0]%''});
         } catch (error) {
-          logger.warn('Telemetry Manager not available:, error);
+          logger.warn('Telemetry Manager not available:', error');
         }
       }
 
       // Optional Workflow Engine (from @claude-zen/workflows)
       if (aiConfig.enableWorkflowAutomation) {
         try {
-          const { WorkflowEngine } = await import('@claude-zen/workflows');
+          const { WorkflowEngine } = await import('@claude-zen/workflows'');
           const workflowEngine = new WorkflowEngine();
           this.container.registerInstance(
             AI_ENHANCEMENT_TOKENS.WorkflowEngine,
             workflowEngine
           );
-          logger.info('Workflow Engine registered');
+          logger.info(${BASH_REMATCH[0]%''});
         } catch (error) {
-          logger.warn('Workflow Engine not available:, error);
+          logger.warn('Workflow Engine not available:', error');
         }
       }
 
@@ -212,9 +167,9 @@ export class SafeContainer {
             AI_ENHANCEMENT_TOKENS.LoadBalancer,
             loadBalancer
           );
-          logger.info('Load Balancer registered');
+          logger.info(${BASH_REMATCH[0]%''});
         } catch (error) {
-          logger.warn('Load Balancer not available:, error);
+          logger.warn('Load Balancer not available:', error');
         }
       }
 
@@ -225,23 +180,23 @@ export class SafeContainer {
       if (aiConfig.enableConversationOrchestration) {
         try {
           const { ConversationOrchestrator } = await import(
-           '../../teamwork'
+            '../../teamwork'
           );
           const conversationOrchestrator = new ConversationOrchestrator();
           this.container.registerInstance(
             AI_ENHANCEMENT_TOKENS.ConversationOrchestrator,
             conversationOrchestrator
           );
-          logger.info('Conversation Orchestrator registered');
+          logger.info(${BASH_REMATCH[0]%''});
         } catch (error) {
-          logger.warn('Conversation Orchestrator not available:, error);
+          logger.warn('Conversation Orchestrator not available:', error');
         }
       }
 
-      logger.info('AI enhancements registration completed');
+      logger.info(${BASH_REMATCH[0]%''});
     } catch (error) {
       logger.warn(
-       'Error registering AI enhancements (continuing without them):,
+        'Error registering AI enhancements (continuing without them):',
         error
       );
     }
@@ -252,7 +207,7 @@ export class SafeContainer {
    */
   private registerInterfaces(interfaces?: InterfaceConfig): void {
     if (!interfaces) {
-      logger.debug('No interfaces configured');
+      logger.debug('No interfaces configured'');
       return;
     }
 
@@ -286,7 +241,7 @@ export class SafeContainer {
       );
     }
 
-    logger.debug('Interface implementations registered');
+    logger.debug('Interface implementations registered'');
   }
 
   /**
@@ -295,7 +250,7 @@ export class SafeContainer {
   resolve<T>(token: any): T {
     if (!this.initialized) {
       throw new Error(
-       'SAFe container not initialized. Call configure() first.');
+        'SAFe container not initialized. Call configure() first.'');
     }
     return this.container.resolve<T>(token);
   }
@@ -315,8 +270,8 @@ export class SafeContainer {
       return undefined;
     } catch (_error) {
       logger.debug(
-        `Optional dependency ${String(token)} not available:`,
-        _error
+        `Optional dependency ${String(token)} not available:`,`
+        error
       );
       return undefined;
     }
@@ -352,7 +307,7 @@ export class SafeContainer {
   clear(): void {
     this.container.clear();
     this.initialized = false;
-    logger.debug('SAFe container cleared');
+    logger.debug('SAFe container cleared'');
   }
 }
 
@@ -423,7 +378,7 @@ let globalSAFeContainer: SafeContainer| null = null;
  */
 export function getGlobalSAFeContainer(): SafeContainer {
   if (!globalSAFeContainer) {
-    globalSAFeContainer = new SafeContainer('global-safe');
+    globalSAFeContainer = new SafeContainer('global-safe'');
   }
   return globalSAFeContainer;
 }

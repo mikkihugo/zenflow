@@ -26,14 +26,13 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { getDatabaseSystem } from '@claude-zen/infrastructure';
+import { DatabaseProvider } from '@claude-zen/database';
 import type { TaskApprovalSystem } from '../agui/task-approval-system.js';
 import type {
   CompleteSafeFlowIntegration,
 } from '../integrations/complete-safe-flow-integration.js';
 import type { ApprovalGateId, UserId } from '../types/index.js';
-
-const _logger = getLogger('PIPlanningCoordination');'
+const _logger = getLogger('PIPlanningCoordination'');
 
 // ============================================================================
 // PI PLANNING TYPES
@@ -43,12 +42,12 @@ const _logger = getLogger('PIPlanningCoordination');'
  * PI Planning event phases
  */
 export enum PIPlanningPhase {
-  PREPARATION = 'preparation',
-  DAY_ONE_MORNING = 'day_one_morning', // Business context'
-  DAY_ONE_AFTERNOON = 'day_one_afternoon', // Team planning'
-  DAY_TWO_MORNING = 'day_two_morning', // Management review'
-  DAY_TWO_AFTERNOON = 'day_two_afternoon', // Final commitment'
-  COMPLETION = 'completion',
+  PREPARATION ='preparation,
+  DAY_ONE_MORNING ='day_one_morning,// Business context
+  DAY_ONE_AFTERNOON ='day_one_afternoon,// Team planning
+  DAY_TWO_MORNING ='day_two_morning,// Management review
+  DAY_TWO_AFTERNOON ='day_two_afternoon,// Final commitment
+  COMPLETION ='completion,
 }
 
 /**
@@ -105,7 +104,7 @@ export interface PIPlanningEvent {
       toTeam: string;
       description: string;
       resolvedBy: Date;
-      status: 'identified' | 'resolved' | 'accepted_risk';
+      status:'identified'|'resolved'|'accepted_risk';
     }>;
 
     milestones: Array<{
@@ -149,7 +148,7 @@ export interface PIPlanningEvent {
   // Metadata
   createdAt: Date;
   completedAt?: Date;
-  status: 'planning|in_progress|completed|cancelled;
+  status:'planning| in_progress| completed'|'cancelled';
 }
 
 /**
@@ -184,8 +183,8 @@ export interface TeamBreakoutSession {
 
   riskAssessment: Array<{
     risk: string;
-    probability: 'low' | 'medium' | 'high';
-    impact: 'low' | 'medium' | 'high';
+    probability:'low'|'medium'|'high';
+    impact:'low'|'medium'|'high';
     mitigation: string;
     owner: UserId;
   }>;
@@ -200,7 +199,7 @@ export interface TeamBreakoutSession {
  * Orchestrates the complete PI Planning event with approval gate integration
  */
 export class PIPlanningCoordinationService {
-  private readonly logger = getLogger('PIPlanningCoordinationService');'
+  private readonly logger = getLogger('PIPlanningCoordinationService'');
 
   constructor(
     taskApprovalSystem: TaskApprovalSystem,
@@ -215,20 +214,20 @@ export class PIPlanningCoordinationService {
    */
   async initialize(): Promise<void> {
     try {
-      this.logger.info('Initializing PI Planning Coordination Service...');'
+      this.logger.info('Initializing PI Planning Coordination Service...'');
 
-      const dbSystem = await getDatabaseSystem();
-      this.database = dbSystem.createProvider('sql');'
+      const dbSystem = await DatabaseProvider.create();
+      this.database = dbSystem.createProvider('sql'');
 
       await this.createPIPlanningTables();
       await this.loadActivePlanningEvents();
 
       this.logger.info(
-        'PI Planning Coordination Service initialized successfully''
+       'PI Planning Coordination Service initialized successfully'
       );
     } catch (error) {
       this.logger.error(
-        'Failed to initialize PI Planning Coordination Service',
+       'Failed to initialize PI Planning Coordination Service,
         error
       );
       throw error;
@@ -261,7 +260,7 @@ export class PIPlanningCoordinationService {
   }> {
     const _planningEventId = `pi-planning-${planningData.artId}-${planningData.planningIntervalNumber}`;`
 
-    this.logger.info('Starting PI Planning event', {'
+    this.logger.info('Starting PI Planning event,{
       planningEventId,
       piNumber: planningData.planningIntervalNumber,
       artId: planningData.artId,
@@ -291,14 +290,14 @@ export class PIPlanningCoordinationService {
         adjustmentsNeeded: false,
       },
       approvalGates: {
-        businessContextApproval: ' as ApprovalGateId,
-        teamPlanningApproval: ' as ApprovalGateId,
-        dependencyResolutionApproval: ' as ApprovalGateId,
-        finalCommitmentApproval: ' as ApprovalGateId,
+        businessContextApproval: 'as ApprovalGateId,
+        teamPlanningApproval: 'as ApprovalGateId,
+        dependencyResolutionApproval: 'as ApprovalGateId,
+        finalCommitmentApproval: 'as ApprovalGateId,
       },
       commitments: [],
       createdAt: new Date(),
-      status: 'planning',
+      status:'planning,
     };
 
     // Create approval workflows for each phase
@@ -349,7 +348,7 @@ export class PIPlanningCoordinationService {
       throw new Error(`PI Planning event not found: $_planningEventId`);`
     }
 
-    this.logger.info('Executing Day 1 Morning - Business Context', {'
+    this.logger.info('Executing Day 1 Morning - Business Context,{
       planningEventId,
       facilitator: facilitatorContext.facilitatorId,
       attendees: facilitatorContext.attendeeCount,
@@ -409,7 +408,7 @@ export class PIPlanningCoordinationService {
       throw new Error(`PI Planning event not found: ${planningEventId}`);`
     }
 
-    this.logger.info('Executing Day 1 Afternoon - Team Breakouts', {'
+    this.logger.info('Executing Day 1 Afternoon - Team Breakouts,{
       planningEventId,
       teamsPlanning: teamBreakoutData.length,
     });
@@ -461,7 +460,7 @@ export class PIPlanningCoordinationService {
       }>;
       dependencyResolution: Array<{
         dependencyId: string;
-        resolution: 'resolved' | 'accepted_risk' | 'needs_escalation';
+        resolution:'resolved'|'accepted_risk'|'needs_escalation';
         resolutionPlan: string;
         owner: UserId;
       }>;
@@ -477,7 +476,7 @@ export class PIPlanningCoordinationService {
       throw new Error(`PI Planning event not found: $planningEventId`);`
     }
 
-    this.logger.info('Executing Day 2 Morning - Management Review', {'
+    this.logger.info('Executing Day 2 Morning - Management Review,{
       planningEventId,
       businessOwnersCount: managementReview.businessOwnerFeedback.length,
       dependenciesToResolve: managementReview.dependencyResolution.length,
@@ -550,7 +549,7 @@ export class PIPlanningCoordinationService {
       throw new Error(`PI Planning event not found: ${planningEventId}`);`
     }
 
-    this.logger.info('Executing Day 2 Afternoon - Final Commitment', {'
+    this.logger.info('Executing Day 2 Afternoon - Final Commitment,{
       planningEventId,
       teamsVoting: finalCommitment.teamConfidenceVotes.length,
     });
@@ -595,28 +594,28 @@ export class PIPlanningCoordinationService {
 
   private async createPIPlanningTables(): Promise<void> {
     await this.database.schema.createTableIfNotExists(
-      'pi_planning_events',
+     'pi_planning_events,
       (table: any) => {
-        table.string('id').primary();'
-        table.integer('planning_interval_number').notNullable();'
-        table.string('art_id').notNullable();'
-        table.timestamp('start_date').notNullable();'
-        table.timestamp('end_date').notNullable();'
-        table.string('current_phase').notNullable();'
-        table.string('facilitator').notNullable();'
-        table.json('business_owners');'
-        table.json('teams');'
-        table.json('business_context');'
-        table.json('team_pi_objectives');'
-        table.json('art_planning_board');'
-        table.json('confidence_vote');'
-        table.json('approval_gates');'
-        table.json('commitments');'
-        table.timestamp('created_at').notNullable();'
-        table.timestamp('completed_at').nullable();'
-        table.string('status').notNullable();'
-        table.index(['art_id', 'planning_interval_number']);'
-        table.index(['status', 'start_date']);'
+        table.string('id').primary(');
+        table.integer('planning_interval_number').notNullable(');
+        table.string('art_id').notNullable(');
+        table.timestamp('start_date').notNullable(');
+        table.timestamp('end_date').notNullable(');
+        table.string('current_phase').notNullable(');
+        table.string('facilitator').notNullable(');
+        table.json('business_owners'');
+        table.json('teams'');
+        table.json('business_context'');
+        table.json('team_pi_objectives'');
+        table.json('art_planning_board'');
+        table.json('confidence_vote'');
+        table.json('approval_gates'');
+        table.json('commitments'');
+        table.timestamp('created_at').notNullable(');
+        table.timestamp('completed_at').nullable(');
+        table.string('status').notNullable(');
+        table.index(['art_id,'planning_interval_number]);
+        table.index(['status,'start_date]);
       }
     );
   }
@@ -628,12 +627,12 @@ export class PIPlanningCoordinationService {
     const businessContextApproval =
       await this.taskApprovalSystem.createApprovalTask({
         id: `pi-business-context-$planningEvent.id`,`
-        taskType: 'pi_business_context_approval',
+        taskType:'pi_business_context_approval,
         title: `PI Planning Business Context - PI $planningEvent.planningIntervalNumber`,`
-        description: 'Review and approve business context for PI Planning',
+        description:'Review and approve business context for PI Planning,
         context: 
           planningEvent: planningEvent.id,
-          phase: 'business_context',,
+          phase:'business_context,,
         approvers: planningEvent.businessOwners,
         metadata: 
           piNumber: planningEvent.planningIntervalNumber,
@@ -660,7 +659,7 @@ export class PIPlanningCoordinationService {
   private async startPreparationPhase(
     planningEvent: PIPlanningEvent
   ): Promise<void> {
-    this.logger.info('Starting PI Planning preparation phase', {'
+    this.logger.info('Starting PI Planning preparation phase,{
       planningEventId: planningEvent.id,
     });
   }
@@ -670,9 +669,9 @@ export class PIPlanningCoordinationService {
     businessContext: any
   ): Promise<string[]> {
     return [
-      'How does this roadmap change affect our current sprint plans?',
-      'What new dependencies do we need to consider?',
-      'Are there capacity constraints for the proposed milestones?',
+     'How does this roadmap change affect our current sprint plans?,
+     'What new dependencies do we need to consider?,
+     'Are there capacity constraints for the proposed milestones?,
     ];
   }
 
@@ -680,10 +679,10 @@ export class PIPlanningCoordinationService {
     planningEvent: PIPlanningEvent
   ): Promise<string[]> {
     return [
-      'Teams break into planning sessions',
-      'Draft team PI objectives',
-      'Identify dependencies with other teams',
-      'Complete capacity planning',
+     'Teams break into planning sessions,
+     'Draft team PI objectives,
+     'Identify dependencies with other teams,
+     'Complete capacity planning,
     ];
   }
 
@@ -691,7 +690,7 @@ export class PIPlanningCoordinationService {
     return teamBreakoutData.map((team) => ({
       teamId: team.teamId,
       objectives: team.initialObjectives,
-    }));
+    });
   }
 
   private async processDependencies(teamBreakoutData: any[]): Promise<any[]> {
@@ -704,8 +703,8 @@ export class PIPlanningCoordinationService {
       toTeam: dep.toTeam,
       description: dep.description,
       resolvedBy: dep.resolvedBy,
-      status: 'identified',
-    }));
+      status:'identified,
+    });
   }
 
   private async assessDayTwoReadiness(
@@ -729,7 +728,7 @@ export class PIPlanningCoordinationService {
     planningEvent: PIPlanningEvent,
     resolutions: any[]
   ): Promise<any[]> {
-    return resolutions.filter((r) => r.resolution === 'resolved');'
+    return resolutions.filter((r) => r.resolution === 'resolved');
   }
 
   private async processConfidenceVotes(votes: any[]): Promise<any> {
@@ -751,7 +750,7 @@ export class PIPlanningCoordinationService {
         (c: any) => c.conditions.length > 0
       ),
       risks: [],
-    }));
+    });
   }
 
   private async completePlanningEvent(
@@ -766,7 +765,7 @@ export class PIPlanningCoordinationService {
   private async persistPlanningEvent(
     planningEvent: PIPlanningEvent
   ): Promise<void> {
-    await this.database('pi_planning_events')'
+    await this.database('pi_planning_events')
       .insert(
         id: planningEvent.id,
         planning_interval_number: planningEvent.planningIntervalNumber,
@@ -786,12 +785,12 @@ export class PIPlanningCoordinationService {
         created_at: planningEvent.createdAt,
         completed_at: planningEvent.completedAt,
         status: planningEvent.status,)
-      .onConflict('id')'
+      .onConflict('id')
       .merge();
   }
 
   private async loadActivePlanningEvents(): Promise<void> {
-    this.logger.info('Loading active PI Planning events...');'
+    this.logger.info('Loading active PI Planning events...'');
   }
 
   // Additional approval creation methods (simplified)

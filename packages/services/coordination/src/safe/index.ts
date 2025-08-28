@@ -52,7 +52,6 @@ export type {
   QualityGate as EpicQualityGate,
   WSJFScore,
 } from './types/epic-management';
-
 // SAFe-SPARC Integration Bridge types (only export types that actually exist)
 export type {
   QualityGate as IntegrationQualityGate,
@@ -60,14 +59,25 @@ export type {
 } from './types/integration-bridge';
 // Product management types
 export type * from './types/product-management';
-
 // ============================================================================
-// MANAGERS - SAFe framework managers and coordinators
+// COORDINATORS - SAFe 6.0 Essential Event-Driven Coordinators
+// ============================================================================
+
+// Strategic Solution Management - The Main SAFe Brain
+export { default as SolutionManager } from './coordinators/solution-manager';
+export { DocumentTaskVisionCoordinator } from './coordinators/solution-manager'; // Legacy compatibility
+
+// Portfolio Level Coordinators
+export { default as EpicOwnerCoordinator } from './coordinators/portfolio/epic-owner-coordinator';
+// Program Level Coordinators  
+export { default as ReleaseTrainEngineerCoordinator } from './coordinators/program/release-train-engineer-coordinator';
+export { default as ProductManagerCoordinator } from './coordinators/program/product-manager-coordinator';
+// ============================================================================
+// MANAGERS - SAFe framework managers and coordinators (Legacy)
 // ============================================================================
 
 // Core Portfolio Management (placeholder - needs implementation)
 // export { default as SafePortfolioManager } from './managers/safe-portfolio-manager';
-
 // Architecture Management
 export { default as ArchitectureRunwayManager } from './managers/architecture-runway-manager';
 // Continuous Delivery Pipeline
@@ -82,14 +92,12 @@ export { default as EpicOwnerManager } from './managers/epic-owner-manager';
 export { default as ProductManagementManager } from './managers/product-management-manager';
 // Program Increment Management
 export { default as ProgramIncrementManager } from './managers/program-increment-manager';
-
 // Release Train Engineer Management
 export { default as ReleaseTrainEngineerManager } from './managers/release-train-engineer-manager';
 // Events Management
 export { default as SAFeEventsManager } from './managers/safe-events-manager';
 // Solution Train Engineer Management
 export { default as SolutionTrainEngineerManager } from './managers/solution-train-engineer-manager';
-
 // System Solution Architecture Management
 export { default as SystemSolutionArchitectureManager } from './managers/system-solution-architecture-manager';
 // Value Stream Management
@@ -100,7 +108,6 @@ export { PipelinePerformanceService } from './services/continuous-delivery/pipel
 export { QualityGateService } from './services/continuous-delivery/quality-gate-service';
 // Continuous Delivery services
 export { SPARCCDMappingService } from './services/continuous-delivery/sparc-cd-mapping-service';
-
 // ============================================================================
 // SERVICES - Specialized SAFe services
 // ============================================================================
@@ -134,7 +141,6 @@ export { BottleneckAnalysisService } from './services/value-stream/bottleneck-an
 export { ContinuousImprovementService } from './services/value-stream/continuous-improvement-service';
 export { FlowOptimizationService } from './services/value-stream/flow-optimization-service';
 export { PredictiveAnalyticsService } from './services/value-stream/predictive-analytics-service';
-
 // ============================================================================
 // INTEGRATIONS - SAFe framework integrations
 // ============================================================================
@@ -155,7 +161,6 @@ export {
   portfolioEpicToKanbanTask,
   storyToKanbanTask,
 } from './integrations/kanban-integration';
-
 // ============================================================================
 // UTILITIES - SAFe framework utilities
 // ============================================================================
@@ -163,7 +168,6 @@ export {
 export { SafeCollectionUtils } from './utilities/collections/safe-collections';
 export { SafeDateUtils } from './utilities/date/safe-date-utils';
 export { SafeValidationUtils } from './utilities/validation/safe-validation';
-
 // ============================================================================
 // FACTORY FUNCTIONS
 // ============================================================================
@@ -184,7 +188,6 @@ export { piPlanningMachine } from './state-machines/pi-planning-machine';
 // export { default as valueStreamMachine } from './state-machines/value-stream-machine';
 // export { default as portfolioKanbanMachine } from './state-machines/portfolio-kanban-machine';
 // export { default as continuousDeliveryMachine } from './state-machines/continuous-delivery-machine';
-
 // ============================================================================
 // EVENTS - SAFe framework events (placeholder - needs implementation)
 // ============================================================================

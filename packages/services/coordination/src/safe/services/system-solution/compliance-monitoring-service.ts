@@ -17,19 +17,16 @@
  */
 
 import type { Logger } from '@claude-zen/foundation';
-
 // Re-export types for convenience
 export type {
   ComplianceRequirement,
   ControlRequirement,
   SystemDesign,
 } from '../../managers/system-solution-architecture-manager';
-
 import type {
   ComplianceRequirement,
   SystemDesign,
 } from '../../managers/system-solution-architecture-manager';
-
 /**
  * Compliance monitoring configuration
  */
@@ -64,13 +61,13 @@ export interface ComplianceViolation {
   readonly violationId: string;
   readonly framework: string;
   readonly requirement: string;
-  readonly severity: 'critical|high|medium|low;
+  readonly severity: critical| high| medium'|'low';
   readonly description: string;
   readonly evidenceGaps: string[];
   readonly impactAssessment: string;
   readonly remediationSteps: string[];
   readonly estimatedEffort: number; // hours
-  readonly businessRisk: 'critical|high|medium|low;
+  readonly businessRisk:'critical| high| medium'|'low';
 }
 
 /**
@@ -78,12 +75,12 @@ export interface ComplianceViolation {
  */
 export interface ComplianceRecommendation {
   readonly recommendationId: string;
-  readonly type:|process_improvement|control_enhancement|technology_update|'training;
+  readonly type:| process_improvement| control_enhancement| technology_update|'training';
   readonly title: string;
   readonly description: string;
   readonly expectedImpact: string;
   readonly implementationPlan: ImplementationStep[];
-  readonly priority: 'critical|high|medium|low;
+  readonly priority: critical| high| medium'|'low';
   readonly estimatedCost: number;
   readonly timeline: string;
 }
@@ -122,7 +119,7 @@ export interface ComplianceTrendData {
   readonly complianceRate: number;
   readonly violationCount: number;
   readonly criticalViolations: number;
-  readonly trend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|declining;
+  readonly trend:'improving'|'stable'|'declining'|'improving'|'stable'|'declining''|'declining';
 }
 
 /**
@@ -133,8 +130,8 @@ export interface ValidationSchedule {
   readonly systemDesignName: string;
   readonly framework: string;
   readonly scheduledDate: Date;
-  readonly validationType: 'scheduled' | 'triggered' | 'ad_hoc';
-  readonly priority: 'critical|high|medium|low;
+  readonly validationType:'scheduled'|'triggered'|'ad_hoc';
+  readonly priority: critical| high| medium'|'low';
 }
 
 /**
@@ -148,7 +145,7 @@ export interface RemediationProgress {
   readonly progressPercentage: number;
   readonly estimatedCompletion: Date;
   readonly responsible: string;
-  readonly status: 'not_started|in_progress|completed|blocked;
+  readonly status:'not_started| in_progress| completed'|'blocked';
 }
 
 /**
@@ -187,13 +184,13 @@ export class ComplianceMonitoringService {
       complianceThreshold: 90.0, // 90%
       criticalViolationThreshold: 5,
       supportedFrameworks: [
-        'SOX',
-        'HIPAA',
-        'GDPR',
-        'SOC2',
-        'PCI-DSS',
-        'NIST',
-        'ISO27001',
+       'SOX,
+       'HIPAA,
+       'GDPR,
+       'SOC2,
+       'PCI-DSS,
+       'NIST,
+       'ISO27001,
       ],
       ...config,
     };
@@ -207,8 +204,8 @@ export class ComplianceMonitoringService {
 
     try {
       // Lazy load @claude-zen/fact-system for compliance rule validation
-      const { FactSystem } = await import('@claude-zen/fact-system');'
-      const { getDatabaseAccess } = await import('@claude-zen/foundation');'
+      const { FactSystem } = await import('@claude-zen/fact-system'');
+      const { getDatabaseAccess } = await import('@claude-zen/foundation'');
 
       // Get database access for fact system
       const database = getDatabaseAccess();
@@ -221,7 +218,7 @@ export class ComplianceMonitoringService {
       await this.factSystem.initialize();
 
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent compliance analysis
-      const { BrainCoordinator } = await import('@claude-zen/brain');'
+      const { BrainCoordinator } = await import('@claude-zen/brain'');
       this.brainCoordinator = new BrainCoordinator(
           enabled: true,
           learningRate: 0.1,
@@ -230,11 +227,11 @@ export class ComplianceMonitoringService {
 
       // Lazy load @claude-zen/foundation for performance tracking
       const { PerformanceTracker, TelemetryManager } = await import(
-        '@claude-zen/foundation''
+       '@claude-zen/foundation'
       );
       this.performanceTracker = new PerformanceTracker();
       this.telemetryManager = new TelemetryManager({
-        serviceName: 'compliance-monitoring',
+        serviceName:'compliance-monitoring,
         enableTracing: true,
         enableMetrics: true,
       });
@@ -250,12 +247,12 @@ export class ComplianceMonitoringService {
           /* monitoring shutdown */
         },
         trackCompliance: (metric: any) => {
-          this.logger.debug('Compliance metric tracked', metric);'
+          this.logger.debug('Compliance metric tracked,metric');
         },
       };
 
       // Lazy load @claude-zen/workflows for compliance workflow orchestration
-      const { WorkflowEngine } = await import('@claude-zen/workflows');'
+      const { WorkflowEngine } = await import('@claude-zen/workflows'');
       this.workflowEngine = new WorkflowEngine(
         maxConcurrentWorkflows: 8,
         enableVisualization: true,);
@@ -268,11 +265,11 @@ export class ComplianceMonitoringService {
 
       this.initialized = true;
       this.logger.info(
-        'Compliance Monitoring Service initialized successfully''
+       'Compliance Monitoring Service initialized successfully'
       );
     } catch (error) {
       this.logger.error(
-        'Failed to initialize Compliance Monitoring Service:',
+       'Failed to initialize Compliance Monitoring Service:,
         error
       );
       throw error;
@@ -288,12 +285,12 @@ export class ComplianceMonitoringService {
   ): Promise<ComplianceValidationResult> {
     if (!this.initialized) await this.initialize();
 
-    const _timer = this.performanceTracker.startTimer('validate_compliance');'
+    const _timer = this.performanceTracker.startTimer('validate_compliance'');
 
     try {
-      this.logger.info('Validating compliance with fact-based reasoning', {'
+      this.logger.info('Validating compliance with fact-based reasoning,{
         systemDesignId: systemDesign.id,
-        frameworks: frameworks || 'all',
+        frameworks: frameworks||'all,
       });
 
       // Filter compliance requirements by specified frameworks
@@ -306,7 +303,7 @@ export class ComplianceMonitoringService {
       // Use fact system for compliance validation
       const factValidation = await this.factSystem.validateFacts([
         {
-          type: 'system_design_compliance',
+          type:'system_design_compliance,
           data: systemDesign,
           rules: relevantRequirements.map((req) => ({
             framework: req.framework,
@@ -323,13 +320,13 @@ export class ComplianceMonitoringService {
         requirements: relevantRequirements,
         factValidation,
         context: {
-          frameworks: frameworks || this.config.supportedFrameworks,
+          frameworks: frameworks|| this.config.supportedFrameworks,
         },
       });
 
       // Generate violations from fact validation results
       const violations = this.generateViolations(
-        factValidation.violations || [],
+        factValidation.violations|| [],
         complianceAnalysis
       );
 
@@ -367,12 +364,12 @@ export class ComplianceMonitoringService {
         this.activeViolations.set(violation.violationId, violation);
       });
 
-      this.performanceTracker.endTimer('validate_compliance');'
-      this.telemetryManager.recordCounter('compliance_validations', 1);'
-      this.telemetryManager.recordGauge('compliance_score', overallCompliance, '
+      this.performanceTracker.endTimer('validate_compliance'');
+      this.telemetryManager.recordCounter('compliance_validations,1');
+      this.telemetryManager.recordGauge('compliance_score,overallCompliance, 
         systemDesignId: systemDesign.id,);
 
-      this.logger.info('Compliance validation completed', {'
+      this.logger.info('Compliance validation completed,{
         systemDesignId: systemDesign.id,
         overallCompliance,
         violationCount: violations.length,
@@ -381,8 +378,8 @@ export class ComplianceMonitoringService {
 
       return validationResult;
     } catch (error) {
-      this.performanceTracker.endTimer('validate_compliance');'
-      this.logger.error('Failed to validate compliance:', error);'
+      this.performanceTracker.endTimer('validate_compliance'');
+      this.logger.error('Failed to validate compliance:,error');
       throw error;
     }
   }
@@ -394,7 +391,7 @@ export class ComplianceMonitoringService {
     if (!this.initialized) await this.initialize();
 
     const _timer = this.performanceTracker.startTimer(
-      'generate_compliance_dashboard');'
+     'generate_compliance_dashboard'');
 
     try {
       const allValidations = Array.from(this.validationResults.values())();
@@ -416,24 +413,24 @@ export class ComplianceMonitoringService {
         complianceByFramework: this.groupComplianceByFramework(allValidations),
         violationsByFramework: this.groupViolationsByFramework(allViolations),
         violationsBySeverity: this.groupViolationsBySeverity(allViolations),
-        complianceTrend: dashboardInsights.complianceTrend || [],
+        complianceTrend: dashboardInsights.complianceTrend|| [],
         criticalViolations: allViolations.filter(
-          (v) => v.severity ==='critical''
+          (v) => v.severity ===critical'
         ),
         upcomingValidations: this.generateUpcomingValidations(allValidations),
         remediationProgress: allRemediation,
       };
 
-      this.performanceTracker.endTimer('generate_compliance_dashboard');'
+      this.performanceTracker.endTimer('generate_compliance_dashboard'');
 
-      this.logger.info('Compliance dashboard generated', '
+      this.logger.info('Compliance dashboard generated,
         overallCompliance: dashboard.overallComplianceRate,
         criticalViolations: dashboard.criticalViolations.length,);
 
       return dashboard;
     } catch (error) {
-      this.performanceTracker.endTimer('generate_compliance_dashboard');'
-      this.logger.error('Failed to generate compliance dashboard:', error);'
+      this.performanceTracker.endTimer('generate_compliance_dashboard'');
+      this.logger.error('Failed to generate compliance dashboard:,error');
       throw error;
     }
   }
@@ -443,7 +440,7 @@ export class ComplianceMonitoringService {
    */
   getValidationResult(
     systemDesignId: string
-  ): ComplianceValidationResult | undefined {
+  ): ComplianceValidationResult| undefined {
     return this.validationResults.get(systemDesignId);
   }
 
@@ -477,7 +474,7 @@ export class ComplianceMonitoringService {
       await this.telemetryManager.shutdown();
     }
     this.initialized = false;
-    this.logger.info('Compliance Monitoring Service shutdown complete');'
+    this.logger.info('Compliance Monitoring Service shutdown complete'');
   }
 
   // ============================================================================
@@ -489,7 +486,7 @@ export class ComplianceMonitoringService {
       await this.performContinuousMonitoring();
     }, this.config.monitoringInterval);
 
-    this.logger.info('Continuous compliance monitoring started', {'
+    this.logger.info('Continuous compliance monitoring started,{
       interval: this.config.monitoringInterval,
     });
   }
@@ -501,7 +498,7 @@ export class ComplianceMonitoringService {
 
       for (const validation of validations) {
         if (new Date() >= validation.nextValidationDue) {
-          this.logger.info('Scheduled compliance re-validation triggered', {'
+          this.logger.info('Scheduled compliance re-validation triggered,{
             systemDesignId: validation.systemDesignId,
           });
           // Note: In a real implementation, this would trigger re-validation
@@ -509,9 +506,9 @@ export class ComplianceMonitoringService {
         }
       }
 
-      this.logger.debug('Continuous compliance monitoring check completed');'
+      this.logger.debug('Continuous compliance monitoring check completed'');
     } catch (error) {
-      this.logger.error('Continuous compliance monitoring failed:', error);'
+      this.logger.error('Continuous compliance monitoring failed:,error');
     }
   }
 
@@ -521,19 +518,19 @@ export class ComplianceMonitoringService {
   ): ComplianceViolation[] {
     return factViolations.map((violation, index) => ({
       violationId: `violation-${Date.now()}-${index}`,`
-      framework: violation.framework || 'unknown',
-      requirement: violation.requirement || 'unknown',
+      framework: violation.framework||'unknown,
+      requirement: violation.requirement||'unknown,
       severity: this.assessViolationSeverity(violation, analysis),
-      description: violation.description || 'Compliance requirement not met',
-      evidenceGaps: violation.evidenceGaps || [],
+      description: violation.description||'Compliance requirement not met,
+      evidenceGaps: violation.evidenceGaps|| [],
       impactAssessment:
-        analysis.impactAssessment || 'Impact assessment pending',
-      remediationSteps: violation.remediationSteps || ['Review compliance requirement',
-        'Implement controls',
+        analysis.impactAssessment||'Impact assessment pending,
+      remediationSteps: violation.remediationSteps|| ['Review compliance requirement,
+       'Implement controls,
       ],
-      estimatedEffort: violation.estimatedEffort || 16, // 2 days default
+      estimatedEffort: violation.estimatedEffort|| 16, // 2 days default
       businessRisk: this.assessBusinessRisk(violation, analysis),
-    }));
+    });
   }
 
   private async generateComplianceRecommendations(
@@ -548,9 +545,9 @@ export class ComplianceMonitoringService {
           frameworks: this.config.supportedFrameworks,
         });
 
-      return recommendations.recommendations || [];
+      return recommendations.recommendations|| [];
     } catch (error) {
-      this.logger.warn('Failed to generate compliance recommendations:', error);'
+      this.logger.warn('Failed to generate compliance recommendations:,error');
       return [];
     }
   }
@@ -561,7 +558,7 @@ export class ComplianceMonitoringService {
   ): number {
     if (requirements.length === 0) return 100.0;
 
-    const violatedRequirements = new Set(violations.map((v) => v.requirement));
+    const violatedRequirements = new Set(violations.map((v) => v.requirement);
     const compliantCount = requirements.length - violatedRequirements.size;
 
     return (compliantCount / requirements.length) * 100;
@@ -570,43 +567,43 @@ export class ComplianceMonitoringService {
   private assessViolationSeverity(
     violation: any,
     analysis: any
-  ): 'critical|high|medium|low' {'
+  ):'critical| high| medium| low '{
     // AI-enhanced severity assessment
     if (analysis.severityScores?.[violation.id]) {
       const score = analysis.severityScores[violation.id];
-      if (score >= 9) return 'critical;
-      if (score >= 7) return 'high;
-      if (score >= 5) return 'medium;
-      return 'low;
+      if (score >= 9) return'critical';
+      if (score >= 7) return'high';
+      if (score >= 5) return'medium';
+      return'low';
     }
 
     // Fallback heuristic-based assessment
-    if (violation.mandatory && violation.businessImpact === 'high')'
-      return 'critical;
-    if (violation.mandatory) return 'high;
-    if (violation.businessImpact === 'high') return 'medium';
-    return 'low;
+    if (violation.mandatory && violation.businessImpact ==='high')
+      return'critical';
+    if (violation.mandatory) return'high';
+    if (violation.businessImpact ==='high)return'medium';
+    return'low';
   }
 
   private assessBusinessRisk(
     violation: any,
     analysis: any
-  ): 'critical|high|medium|low' {'
+  ):'critical| high| medium| low '{
     // AI-enhanced business risk assessment
     if (
       analysis.businessRiskScores?.[violation.id]
     ) {
       const score = analysis.businessRiskScores[violation.id];
-      if (score >= 9) return 'critical;
-      if (score >= 7) return 'high;
-      if (score >= 5) return 'medium;
-      return 'low;
+      if (score >= 9) return'critical';
+      if (score >= 7) return'high';
+      if (score >= 5) return'medium';
+      return'low';
     }
 
     // Fallback assessment based on framework
-    const criticalFrameworks = ['SOX', 'HIPAA', 'PCI-DSS'];'
-    if (criticalFrameworks.includes(violation.framework)) return 'high;
-    return 'medium;
+    const criticalFrameworks = ['SOX,'HIPAA,'PCI-DSS];
+    if (criticalFrameworks.includes(violation.framework)) return'high';
+    return'medium';
   }
 
   private calculateOverallComplianceRate(
@@ -651,7 +648,7 @@ export class ComplianceMonitoringService {
   ): Record<string, number> {
     return violations.reduce(
       (groups, violation) => {
-        groups[violation.framework] = (groups[violation.framework] || 0) + 1;
+        groups[violation.framework] = (groups[violation.framework]|| 0) + 1;
         return groups;
       },
       {} as Record<string, number>
@@ -663,7 +660,7 @@ export class ComplianceMonitoringService {
   ): Record<string, number> {
     return violations.reduce(
       (groups, violation) => {
-        groups[violation.severity] = (groups[violation.severity] || 0) + 1;
+        groups[violation.severity] = (groups[violation.severity]|| 0) + 1;
         return groups;
       },
       {} as Record<string, number>
@@ -685,12 +682,12 @@ export class ComplianceMonitoringService {
         upcoming.push({
           systemDesignId: validation.systemDesignId,
           systemDesignName: `System Design ${validation.systemDesignId}`, // Would get real name in production`
-          framework:'Multiple', // Would determine specific framework in production'
+          framework:'Multiple,// Would determine specific framework in production
           scheduledDate: validation.nextValidationDue,
-          validationType: 'scheduled',
-          priority: validation.violations.some((v) => v.severity === 'critical')'
-            ? 'critical''
-            : 'medium',
+          validationType:'scheduled,
+          priority:  validation.violations.some((v) => v.severity ===critical')
+            ?'critical'
+            :'medium,
         });
       }
     });

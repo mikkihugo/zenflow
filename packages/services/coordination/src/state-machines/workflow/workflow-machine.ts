@@ -14,10 +14,9 @@
 
 import { assign, setup } from 'xstate';
 import type { WorkflowEvent } from '../../types/events';
-import type { WorkflowKanbanConfig } from '../../types/index';
+import type { WorkflowKanbanConfig } from '../../kanban/types/index';
 import type { WorkflowMachineContext } from './workflow-context';
 import { createInitialContext } from './workflow-context';
-
 // =============================================================================
 // SIMPLIFIED WORKFLOW MACHINE FOR XSTATE 5.20.2
 // =============================================================================
@@ -41,7 +40,7 @@ export const createWorkflowMachine = (config: WorkflowKanbanConfig) => {
       // Essential actions using assign from XState 5.20.2
       addTask: assign({
         tasks: ({ context, event }: any) => {
-          if (event.type !== 'TASK_CREATED') return context.tasks;'
+          if (event.type !== 'TASK_CREATED)return context.tasks';
           return {
             ...context.tasks,
             [event.task.id]: event.task,
@@ -51,7 +50,7 @@ export const createWorkflowMachine = (config: WorkflowKanbanConfig) => {
 
       moveTask: assign({
         tasks: ({ context, event }: any) => {
-          if (event.type !== 'TASK_MOVED') return context.tasks;'
+          if (event.type !== 'TASK_MOVED)return context.tasks';
           const task = context.tasks[event.taskId];
           if (!task) return context.tasks;
 
@@ -68,8 +67,7 @@ export const createWorkflowMachine = (config: WorkflowKanbanConfig) => {
 
       recordError: assign({
         errors: ({ context, event }: any) => {
-          if (event.type !== 'ERROR_OCCURRED') return context.errors;'
-
+          if (event.type !== 'ERROR_OCCURRED)return context.errors';
           const errorEntry = {
             timestamp: new Date(),
             error: event.error,
@@ -84,43 +82,43 @@ export const createWorkflowMachine = (config: WorkflowKanbanConfig) => {
     guards: {
       // Essential guards
       canMoveTask: ({ context, event }: any) => {
-        if (event.type !== 'TASK_MOVED') return false;'
+        if (event.type !== 'TASK_MOVED)return false';
         return context.tasks[event.taskId] !== undefined;
       },
 
       isValidTransition: ({ context, event }: any) => {
-        if (event.type !== 'TASK_MOVED') return false;'
+        if (event.type !== 'TASK_MOVED)return false';
         // Simplified validation - allow all moves for now
         return true;
       },
     },
   }).createMachine({
-    id: 'workflowMachine',
+    id:'workflowMachine,
 
-    initial: 'active',
+    initial:'active,
 
     context: createInitialContext(config),
 
     states: {
       active: {
-        initial: 'monitoring',
+        initial:'monitoring,
 
         states: {
           monitoring: {
             on: {
               TASK_CREATED: {
-                actions: 'addTask',
+                actions:'addTask,
               },
 
               TASK_MOVED: [
                 {
-                  guard: 'canMoveTask',
-                  actions: 'moveTask',
+                  guard:'canMoveTask,
+                  actions:'moveTask,
                 },
               ],
 
               ERROR_OCCURRED: {
-                actions: 'recordError',
+                actions:'recordError,
               },
             },
           },
@@ -128,7 +126,7 @@ export const createWorkflowMachine = (config: WorkflowKanbanConfig) => {
           optimizing: {
             on: {
               OPTIMIZATION_COMPLETE: {
-                target: 'monitoring',
+                target:'monitoring,
               },
             },
           },
@@ -136,7 +134,7 @@ export const createWorkflowMachine = (config: WorkflowKanbanConfig) => {
 
         on: {
           PAUSE_OPERATION: {
-            target: 'paused',
+            target:'paused,
           },
         },
       },
@@ -144,7 +142,7 @@ export const createWorkflowMachine = (config: WorkflowKanbanConfig) => {
       paused: {
         on: {
           RESUME_OPERATION: {
-            target: 'active',
+            target:'active,
           },
         },
       },
@@ -152,7 +150,7 @@ export const createWorkflowMachine = (config: WorkflowKanbanConfig) => {
       error: {
         on: {
           RETRY_OPERATION: {
-            target: 'active',
+            target:'active,
           },
         },
       },
@@ -209,35 +207,35 @@ export const createDefaultWorkflowConfig = (): WorkflowKanbanConfig => ({
   // Thresholds
   performanceThresholds: [
     {
-      metric: 'cycleTime',
-      operator: 'gt',
+      metric:'cycleTime,
+      operator:'gt,
       value: 168, // 1 week in hours
-      severity: 'medium',
-      alertMessage: 'Cycle time exceeds 1 week threshold',
+      severity: medium,
+      alertMessage:'Cycle time exceeds 1 week threshold,
       enabled: true,
     },
     {
-      metric: 'cycleTime',
-      operator: 'gt',
+      metric:'cycleTime,
+      operator:'gt,
       value: 336, // 2 weeks in hours
-      severity: 'high',
-      alertMessage: 'Cycle time exceeds 2 week threshold',
+      severity: high,
+      alertMessage:'Cycle time exceeds 2 week threshold,
       enabled: true,
     },
     {
-      metric: 'leadTime',
-      operator: 'gt',
+      metric:'leadTime,
+      operator:'gt,
       value: 240, // 10 days in hours
-      severity: 'medium',
-      alertMessage: 'Lead time exceeds 10 day threshold',
+      severity: medium,
+      alertMessage:'Lead time exceeds 10 day threshold,
       enabled: true,
     },
     {
-      metric: 'throughput',
-      operator: 'lt',
+      metric:'throughput,
+      operator:'lt,
       value: 1, // tasks per day
-      severity: 'low',
-      alertMessage: 'Throughput below minimum threshold',
+      severity: low,
+      alertMessage:'Throughput below minimum threshold,
       enabled: true,
     },
   ],

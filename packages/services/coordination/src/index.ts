@@ -12,47 +12,65 @@
  */
 
 // =============================================================================
-// SPARC METHODOLOGY - Systematic development workflow
+// SPARC METHODOLOGY - Systematic development workflow with event-driven ML
 // =============================================================================
 
 export * from './sparc';
 export * as sparc from './sparc';
+// =============================================================================
+// EVENT-DRIVEN DSPY - Prompt optimization via events
+// =============================================================================
 
+export * from './dspy/event-driven-dspy';
+export * as eventDrivenDSPy from './dspy/event-driven-dspy';
+// =============================================================================
+// EVENT-DRIVEN BRAIN - ML coordination via events
+// =============================================================================
+
+export * from './brain/event-driven-brain';
+export * as eventDrivenBrain from './brain/event-driven-brain';
 // =============================================================================  
 // SAFE FRAMEWORK - Scaled Agile Framework integration
 // =============================================================================
 
 export * from './safe';
 export * as safe from './safe';
-
 // =============================================================================
 // WORKFLOWS - Core workflow engine with multi-level orchestration
 // =============================================================================
 
 export * from './workflows';
 export * as workflows from './workflows';
-
 // =============================================================================
 // ORCHESTRATION - Task flow management and coordination
 // =============================================================================
 
 export * from './orchestration';
 export * as orchestration from './orchestration';
-
 // =============================================================================
 // TEAMWORK - Multi-agent conversation and collaboration
 // =============================================================================
 
 export * from './teamwork';
 export * as teamwork from './teamwork';
-
 // =============================================================================
-// AGUI - Autonomous Graphical User Interface for human-in-the-loop approvals
+// TASKMASTER - SAFe 6.0 Event-Driven Workflow Engine
 // =============================================================================
 
-export * from './agui';
-export * as agui from './agui';
+export * from './taskmaster/index';
+export * as taskmaster from './taskmaster/index';
+// =============================================================================
+// EVENTS - Event coordination and WebSocket hub
+// =============================================================================
 
+export * from './events/websocket-hub';
+export * as events from './events/websocket-hub';
+// =============================================================================
+// INTEGRATIONS - External service integrations and utilities
+// =============================================================================
+
+export * from './integrations';
+export * as integrations from './integrations';
 // =============================================================================
 // UNIFIED COORDINATION API - High-level coordination interface
 // =============================================================================
@@ -63,20 +81,22 @@ export interface CoordinationSystem {
   workflows: typeof import('./workflows');
   orchestration: typeof import('./orchestration');
   teamwork: typeof import('./teamwork');
-  agui: typeof import('./agui');
+  taskmaster: typeof import('./taskmaster');
+  events: typeof import('./events/websocket-hub');
 }
 
 /**
  * Create unified coordination system with all methodologies
  */
 export async function createCoordinationSystem(): Promise<CoordinationSystem> {
-  const [sparc, safe, workflows, orchestration, teamwork, agui] = await Promise.all([
+  const [sparc, safe, workflows, orchestration, teamwork, taskmaster, events] = await Promise.all([
     import('./sparc'),
     import('./safe'),
     import('./workflows'),
     import('./orchestration'),
     import('./teamwork'),
-    import('./agui')
+    import('./taskmaster'),
+    import('./events/websocket-hub')
   ]);
 
   return {
@@ -85,7 +105,8 @@ export async function createCoordinationSystem(): Promise<CoordinationSystem> {
     workflows,
     orchestration,
     teamwork,
-    agui
+    taskmaster,
+    events
   };
 }
 
@@ -94,22 +115,22 @@ export async function createCoordinationSystem(): Promise<CoordinationSystem> {
 // =============================================================================
 
 export const COORDINATION_PACKAGE_INFO = {
-  name: '@claude-zen/coordination',
-  version: '1.0.0',
-  description: 'Unified coordination package consolidating SPARC, SAFe, workflows, orchestration, and teamwork',
+  name:'@claude-zen/coordination,
+  version:'1.0.0,
+  description:'Unified coordination package consolidating SPARC, SAFe, workflows, orchestration, and teamwork,
   domains: [
-    'SPARC methodology - Systematic development workflow',
-    'SAFe framework - Scaled Agile Framework integration', 
-    'Workflows - Core workflow engine with multi-level orchestration',
-    'Orchestration - Task flow management and coordination',
-    'Teamwork - Multi-agent conversation and collaboration',
-    'AGUI - Human-in-the-loop approval gates and task approval workflows'
+   'SPARC methodology - Systematic development workflow,
+   'SAFe framework - Scaled Agile Framework integration,
+   'Workflows - Core workflow engine with multi-level orchestration,
+   'Orchestration - Task flow management and coordination,
+   'Teamwork - Multi-agent conversation and collaboration,
+   'TaskMaster - Enterprise task management with human approval gates and SOC2 compliance'
   ],
   benefits: [
-    'Eliminates coordination overlap between packages',
-    'Clean domain-based organization',
-    'Unified coordination API',
-    'Preserved functionality from all source packages',
-    'Modular imports for specific domains'
+   'Eliminates coordination overlap between packages,
+   'Clean domain-based organization,
+   'Unified coordination API,
+   'Preserved functionality from all source packages,
+   'Modular imports for specific domains'
   ]
 };

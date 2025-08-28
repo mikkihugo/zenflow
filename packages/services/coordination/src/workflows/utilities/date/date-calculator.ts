@@ -15,7 +15,6 @@ import {
   intervalToDuration,
   subMinutes,
 } from 'date-fns';
-
 /**
  * Professional date calculation utilities
  */

@@ -22,7 +22,6 @@ import type {
   UUID,
   ValidationError,
 } from '@claude-zen/foundation/types';
-
 // =============================================================================
 // WORKFLOW CORE TYPES
 // =============================================================================
@@ -31,70 +30,70 @@ import type {
  * Workflow execution states
  */
 export enum WorkflowStatus {
-  DRAFT = 'draft',
-  QUEUED = 'queued',
-  RUNNING = 'running',
-  PAUSED = 'paused',
-  COMPLETED = 'completed',
-  FAILED = 'failed',
-  CANCELLED = 'cancelled',
-  TIMEOUT = 'timeout',
-  RETRYING = 'retrying',
+  DRAFT ='draft,
+  QUEUED ='queued,
+  RUNNING ='running,
+  PAUSED ='paused,
+  COMPLETED ='completed,
+  FAILED ='failed,
+  CANCELLED ='cancelled,
+  TIMEOUT ='timeout,
+  RETRYING ='retrying,
 }
 
 /**
  * Step execution states
  */
 export enum StepStatus {
-  PENDING = 'pending',
-  RUNNING = 'running',
-  COMPLETED = 'completed',
-  FAILED = 'failed',
-  SKIPPED = 'skipped',
-  CANCELLED = 'cancelled',
-  TIMEOUT = 'timeout',
-  RETRYING = 'retrying',
+  PENDING ='pending,
+  RUNNING ='running,
+  COMPLETED ='completed,
+  FAILED ='failed,
+  SKIPPED ='skipped,
+  CANCELLED ='cancelled,
+  TIMEOUT ='timeout,
+  RETRYING ='retrying,
 }
 
 /**
  * Workflow execution strategies
  */
 export enum ExecutionStrategy {
-  SEQUENTIAL = 'sequential',
-  PARALLEL = 'parallel',
-  MIXED = 'mixed',
-  BATCH = 'batch',
-  STREAMING = 'streaming',
+  SEQUENTIAL ='sequential,
+  PARALLEL ='parallel,
+  MIXED ='mixed,
+  BATCH ='batch,
+  STREAMING ='streaming,
 }
 
 /**
  * Workflow trigger types
  */
 export enum TriggerType {
-  MANUAL = 'manual',
-  SCHEDULED = 'scheduled',
-  EVENT_DRIVEN = 'event_driven',
-  WEBHOOK = 'webhook',
-  API = 'api',
-  DEPENDENCY = 'dependency',
-  CONDITIONAL = 'conditional',
+  MANUAL ='manual,
+  SCHEDULED ='scheduled,
+  EVENT_DRIVEN ='event_driven,
+  WEBHOOK ='webhook,
+  API ='api,
+  DEPENDENCY ='dependency,
+  CONDITIONAL ='conditional,
 }
 
 /**
  * Workflow categories for organization
  */
 export enum WorkflowCategory {
-  DATA_PROCESSING = 'data_processing',
-  COORDINATION = 'coordination',
-  NOTIFICATION = 'notification',
-  DEPLOYMENT = 'deployment',
-  TESTING = 'testing',
-  MONITORING = 'monitoring',
-  BACKUP = 'backup',
-  SECURITY = 'security',
-  ANALYTICS = 'analytics',
-  INTEGRATION = 'integration',
-  CUSTOM = 'custom',
+  DATA_PROCESSING ='data_processing,
+  COORDINATION ='coordination,
+  NOTIFICATION ='notification,
+  DEPLOYMENT ='deployment,
+  TESTING ='testing,
+  MONITORING ='monitoring,
+  BACKUP ='backup,
+  SECURITY ='security,
+  ANALYTICS ='analytics,
+  INTEGRATION ='integration,
+  CUSTOM ='custom,
 }
 
 // =============================================================================
@@ -104,7 +103,7 @@ export enum WorkflowCategory {
 /**
  * Core workflow definition
  */
-export interface WorkflowDefinition extends Omit<Entity, 'version'> {'
+export interface WorkflowDefinition extends Omit<Entity,'version'> {
   name: string;
   description: string;
   category: WorkflowCategory;
@@ -140,29 +139,29 @@ export interface WorkflowStep extends Entity {
   action: StepAction;
   conditions: StepCondition[];
   dependencies: UUID[];
-  retry: RetryConfig|undefined;
-  timeout: number|undefined;
-  resources: ResourceRequirement|undefined;
-  validation: StepValidation|undefined;
-  rollback: RollbackConfig|undefined;
+  retry: RetryConfig| undefined;
+  timeout: number| undefined;
+  resources: ResourceRequirement| undefined;
+  validation: StepValidation| undefined;
+  rollback: RollbackConfig| undefined;
 }
 
 /**
  * Step types for categorization
  */
 export enum StepType {
-  ACTION ='action',
-  CONDITION = 'condition',
-  LOOP = 'loop',
-  PARALLEL = 'parallel',
-  WAIT = 'wait',
-  APPROVAL = 'approval',
-  NOTIFICATION = 'notification',
-  SCRIPT = 'script',
-  API_CALL = 'api_call',
-  DATABASE = 'database',
-  FILE_OPERATION = 'file_operation',
-  CUSTOM = 'custom',
+  ACTION =action,
+  CONDITION ='condition,
+  LOOP ='loop,
+  PARALLEL ='parallel,
+  WAIT ='wait,
+  APPROVAL ='approval,
+  NOTIFICATION ='notification,
+  SCRIPT ='script,
+  API_CALL ='api_call,
+  DATABASE ='database,
+  FILE_OPERATION ='file_operation,
+  CUSTOM ='custom,
 }
 
 /**
@@ -181,10 +180,10 @@ export interface StepAction {
  * Step execution condition
  */
 export interface StepCondition {
-  type: 'skip|execute|retry|fail;
+  type:'skip| execute| retry'|'fail';
   expression: string;
   variables: string[];
-  operator: 'and' | 'or' | 'not';
+  operator:'and'|'or'|'not';
 }
 
 // =============================================================================
@@ -257,7 +256,7 @@ export interface StepExecution extends Entity {
 export interface StepError {
   code: string;
   message: string;
-  type: 'validation|execution|timeout|resource|permission;
+  type:'validation| execution| timeout| resource'|'permission';
   stack?: string;
   context?: Record<string, unknown>;
   recoverable: boolean;
@@ -297,11 +296,11 @@ export interface RetryConfig {
  * Backoff strategies for retries
  */
 export enum BackoffStrategy {
-  FIXED = 'fixed',
-  LINEAR = 'linear',
-  EXPONENTIAL = 'exponential',
-  FIBONACCI = 'fibonacci',
-  CUSTOM = 'custom',
+  FIXED ='fixed,
+  LINEAR ='linear,
+  EXPONENTIAL ='exponential,
+  FIBONACCI ='fibonacci,
+  CUSTOM ='custom,
 }
 
 /**
@@ -333,12 +332,12 @@ export interface ErrorHandlingConfig {
  * Error handling strategies
  */
 export enum ErrorStrategy {
-  FAIL_FAST = 'fail_fast',
-  CONTINUE = 'continue',
-  ROLLBACK = 'rollback',
-  RETRY = 'retry',
-  ESCALATE = 'escalate',
-  IGNORE = 'ignore',
+  FAIL_FAST ='fail_fast,
+  CONTINUE ='continue,
+  ROLLBACK ='rollback,
+  RETRY ='retry,
+  ESCALATE ='escalate,
+  IGNORE ='ignore,
 }
 
 /**
@@ -419,13 +418,13 @@ export interface WorkflowDependency {
  * Dependency types
  */
 export enum DependencyType {
-  SUCCESS = 'success',
-  COMPLETION = 'completion',
-  FAILURE = 'failure',
-  DATA = 'data',
-  RESOURCE = 'resource',
-  TIME = 'time',
-  EVENT = 'event',
+  SUCCESS ='success,
+  COMPLETION ='completion,
+  FAILURE ='failure,
+  DATA ='data,
+  RESOURCE ='resource,
+  TIME ='time,
+  EVENT ='event,
 }
 
 /**
@@ -546,18 +545,18 @@ export interface StepLog {
   level: LogLevel;
   message: string;
   data?: Record<string, unknown>;
-  phase: 'start|execute|complete|error|retry;
+  phase:'start| execute| complete| error'|'retry';
 }
 
 /**
  * Log levels
  */
 export enum LogLevel {
-  DEBUG = 'debug',
-  INFO = 'info',
-  WARN = 'warn',
-  ERROR = 'error',
-  FATAL = 'fatal',
+  DEBUG ='debug,
+  INFO ='info,
+  WARN ='warn,
+  ERROR ='error,
+  FATAL ='fatal,
 }
 
 // =============================================================================
@@ -583,21 +582,21 @@ export interface WorkflowArtifact extends Entity {
  */
 export interface StepArtifact extends WorkflowArtifact {
   stepId: UUID;
-  phase: 'input|output|temporary|log;
+  phase:'input| output| temporary'|'log';
 }
 
 /**
  * Artifact types
  */
 export enum ArtifactType {
-  FILE = 'file',
-  DATA = 'data',
-  LOG = 'log',
-  REPORT = 'report',
-  CONFIGURATION = 'configuration',
-  BINARY = 'binary',
-  ARCHIVE = 'archive',
-  DATABASE = 'database',
+  FILE ='file,
+  DATA ='data,
+  LOG ='log,
+  REPORT ='report,
+  CONFIGURATION ='configuration,
+  BINARY ='binary,
+  ARCHIVE ='archive,
+  DATABASE ='database,
 }
 
 /**
@@ -627,7 +626,7 @@ export interface AccessPolicy {
 /**
  * Workflow template for reusable workflows
  */
-export interface WorkflowTemplate extends Omit<Entity, 'version'> {'
+export interface WorkflowTemplate extends Omit<Entity,'version'> {
   name: string;
   description: string;
   category: WorkflowCategory;
@@ -657,13 +656,13 @@ export interface TemplateParameter {
  * Parameter types
  */
 export enum ParameterType {
-  STRING = 'string',
-  NUMBER = 'number',
-  BOOLEAN = 'boolean',
-  ARRAY = 'array',
-  OBJECT = 'object',
-  FILE = 'file',
-  SECRET = 'secret',
+  STRING ='string,
+  NUMBER ='number,
+  BOOLEAN ='boolean,
+  ARRAY ='array,
+  OBJECT ='object,
+  FILE ='file,
+  SECRET ='secret,
 }
 
 /**
@@ -717,7 +716,7 @@ export interface WorkflowPermissions {
  * Permission specification
  */
 export interface Permission {
-  type: 'user|role|group|service;
+  type:'user| role| group'|'service';
   principal: string;
   conditions?: PermissionCondition[];
   expiry?: Timestamp;
@@ -773,10 +772,10 @@ export interface RollbackConfig {
  * Rollback strategies
  */
 export enum RollbackStrategy {
-  COMPENSATE = 'compensate',
-  RESTORE = 'restore',
-  MANUAL = 'manual',
-  IGNORE = 'ignore',
+  COMPENSATE ='compensate,
+  RESTORE ='restore,
+  MANUAL ='manual,
+  IGNORE ='ignore,
 }
 
 /**
@@ -893,9 +892,9 @@ export interface StateLock {
  * Lock types
  */
 export enum LockType {
-  READ = 'read',
-  WRITE = 'write',
-  EXCLUSIVE = 'exclusive',
+  READ ='read,
+  WRITE ='write,
+  EXCLUSIVE ='exclusive,
 }
 
 // =============================================================================
@@ -903,13 +902,11 @@ export enum LockType {
 // =============================================================================
 
 // Additional utility types for workflow operations
-export type WorkflowId = Branded<UUID, 'WorkflowId'>;'
-export type ExecutionId = Branded<UUID, 'ExecutionId'>;'
-export type StepId = Branded<UUID, 'StepId'>;'
-
+export type WorkflowId = Branded<UUID,'WorkflowId'>';
+export type ExecutionId = Branded<UUID,'ExecutionId'>';
+export type StepId = Branded<UUID,'StepId'>';
 // Complex type aliases for easier usage
-export type WorkflowEventType = 'workflow.created' | 'workflow.started' | 'workflow.completed' | 'workflow.failed' | 'workflow.cancelled' | 'step.started' | 'step.completed' | 'step.failed' | 'step.retried';
-
+export type WorkflowEventType ='workflow.created'|'workflow.started'|'workflow.completed'|'workflow.failed'|'workflow.cancelled'|'step.started'|'step.completed'|'step.failed'|'step.retried';
 // Stub definitions for referenced types (to be defined in respective modules)
 export interface WorkflowMetadata {
   tags: string[];
@@ -1097,9 +1094,9 @@ export type StepResult = Result<StepExecution, StepExecutionError>;
 /**
  * Workflow-specific error types
  */
-export interface WorkflowError extends Omit<ValidationError, 'type'> {'
-  type: 'WorkflowError;
-  category:|'definition|execution|validation|permission|resource;
+export interface WorkflowError extends Omit<ValidationError,'type'> {
+  type: 'WorkflowError';
+  category:|'definition| execution| validation| permission'|'resource';
   workflowId?: UUID;
   executionId?: UUID;
 }
@@ -1108,7 +1105,7 @@ export interface WorkflowError extends Omit<ValidationError, 'type'> {'
  * Execution-specific error types
  */
 export interface ExecutionError extends WorkflowError {
-  category: 'execution;
+  category: 'execution';
   stepId?: UUID;
   retryable: boolean;
   failurePoint: string;
@@ -1118,9 +1115,9 @@ export interface ExecutionError extends WorkflowError {
  * Step execution error types
  */
 export interface StepExecutionError extends WorkflowError {
-  category: 'execution;
+  category: 'execution';
   stepId: UUID;
-  phase: 'validation|execution|output|cleanup;
+  phase:'validation| execution| output'|'cleanup';
   recoverable: boolean;
 }
 

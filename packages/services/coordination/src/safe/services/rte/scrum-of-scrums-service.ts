@@ -13,7 +13,6 @@
  */
 
 import { dateFns, generateNanoId, } from '@claude-zen/foundation';
-
 const { format, addDays, startOfWeek, endOfWeek } = dateFns;
 
 import {
@@ -22,14 +21,13 @@ import {
   meanBy,
 } from 'lodash-es';
 import type { ARTTeam, Dependency, Logger, Risk } from '../../types';
-
 /**
  * Scrum of Scrums meeting configuration
  */
 export interface ScrumOfScrumsConfig {
   readonly id: string;
   readonly artId: string;
-  readonly frequency: 'daily|twice-weekly|weekly;
+  readonly frequency:'daily| twice-weekly'|'weekly';
   readonly duration: number; // minutes
   readonly participants: ScrumOfScrumsParticipant[];
   readonly agenda: ScrumOfScrumsAgenda;
@@ -45,7 +43,7 @@ export interface ScrumOfScrumsParticipant {
   readonly teamId: string;
   readonly teamName: string;
   readonly representative: string;
-  readonly role: 'scrum-master|product-owner|team-lead;
+  readonly role:'scrum-master| product-owner'|'team-lead';
   readonly backupRepresentative?: string;
   readonly participationHistory: ParticipationRecord[];
 }
@@ -82,7 +80,7 @@ export interface ScrumOfScrumsQuestion {
   readonly question: string;
   readonly purpose: string;
   readonly timeAllocation: number; // minutes
-  readonly facilitation: 'round-robin|open-discussion|focused;
+  readonly facilitation:'round-robin| open-discussion'|'focused';
 }
 
 /**
@@ -92,7 +90,7 @@ export interface AgendaCustomItem {
   readonly item: string;
   readonly owner: string;
   readonly duration: number;
-  readonly frequency: 'weekly|bi-weekly|monthly;
+  readonly frequency:'weekly| bi-weekly'|'monthly';
 }
 
 /**
@@ -120,43 +118,43 @@ export interface ProgramImpediment {
  * Impediment categories
  */
 export enum ImpedimentCategory {
-  TECHNICAL = 'technical',
-  PROCESS = 'process',
-  RESOURCE = 'resource',
-  DEPENDENCY = 'dependency',
-  EXTERNAL = 'external',
-  ORGANIZATIONAL = 'organizational',
+  TECHNICAL ='technical,
+  PROCESS ='process,
+  RESOURCE ='resource,
+  DEPENDENCY ='dependency,
+  EXTERNAL ='external,
+  ORGANIZATIONAL ='organizational,
 }
 
 /**
  * Impediment severity levels
  */
 export enum ImpedimentSeverity {
-  LOW = 'low',
-  MEDIUM = 'medium',
-  HIGH = 'high',
-  CRITICAL = 'critical',
+  LOW ='low,
+  MEDIUM ='medium,
+  HIGH ='high,
+  CRITICAL ='critical,
 }
 
 /**
  * Impediment status tracking
  */
 export enum ImpedimentStatus {
-  OPEN = 'open',
-  IN_PROGRESS = 'in_progress',
-  ESCALATED = 'escalated',
-  RESOLVED = 'resolved',
-  CLOSED = 'closed',
+  OPEN ='open,
+  IN_PROGRESS ='in_progress,
+  ESCALATED ='escalated,
+  RESOLVED ='resolved,
+  CLOSED ='closed,
 }
 
 /**
  * Impediment escalation levels
  */
 export enum ImpedimentEscalationLevel {
-  TEAM = 'team',
-  ART = 'art',
-  PROGRAM = 'program',
-  PORTFOLIO = 'portfolio',
+  TEAM ='team,
+  ART ='art,
+  PROGRAM ='program,
+  PORTFOLIO ='portfolio,
 }
 
 /**
@@ -194,7 +192,7 @@ export interface AttendanceRecord {
   readonly attended: boolean;
   readonly late: boolean;
   readonly earlyLeave: boolean;
-  readonly contributionLevel: 'high' | 'medium' | 'low';
+  readonly contributionLevel:'high'|'medium'|'low';
 }
 
 /**
@@ -205,8 +203,8 @@ export interface ScrumActionItem {
   readonly description: string;
   readonly owner: string;
   readonly dueDate: Date;
-  readonly priority: 'high' | 'medium' | 'low';
-  readonly status: 'open' | 'in_progress' | 'completed';
+  readonly priority: high'|'medium'|'low';
+  readonly status:'open'|'in_progress'|'completed';
   readonly relatedImpediment?: string;
 }
 
@@ -240,12 +238,12 @@ export class ScrumOfScrumsService {
   async configureScrumsOfScrums(
     artId: string,
     config: {
-      frequency: 'daily|twice-weekly|weekly;
+      frequency:'daily| twice-weekly'|'weekly';
       duration: number;
       teams: ARTTeam[];
     }
   ): Promise<ScrumOfScrumsConfig> {
-    this.logger.info('Configuring Scrum of Scrums', {'
+    this.logger.info('Configuring Scrum of Scrums,{
       artId,
       frequency: config.frequency,
     });
@@ -267,7 +265,7 @@ export class ScrumOfScrumsService {
 
     this.configurations.set(artId, scrumConfig);
 
-    this.logger.info('Scrum of Scrums configured', {'
+    this.logger.info('Scrum of Scrums configured,{
       configId: scrumConfig.id,
       participantCount: participants.length,
     });
@@ -284,7 +282,7 @@ export class ScrumOfScrumsService {
       throw new Error(`Scrum of Scrums not configured for ART: ${artId}`);`
     }
 
-    this.logger.info('Conducting Scrum of Scrums meeting', { artId });'
+    this.logger.info('Conducting Scrum of Scrums meeting,{ artId }');
 
     const meetingId = `sos-meeting-$generateNanoId(12)`;`
     const attendance = this.generateAttendance(config.participants);
@@ -299,15 +297,15 @@ export class ScrumOfScrumsService {
       actionItems: this.generateActionItems(),
       meetingEffectiveness: this.calculateEffectiveness(attendance),
       outcomes: [
-        'Team synchronization achieved',
-        'Impediments identified',
-        'Dependencies coordinated',
+       'Team synchronization achieved,
+       'Impediments identified,
+       'Dependencies coordinated,
       ],
     };
 
     this.meetingResults.set(meetingId, result);
 
-    this.logger.info('Scrum of Scrums meeting completed', {'
+    this.logger.info('Scrum of Scrums meeting completed,{
       meetingId,
       impedimentsDiscussed: result.impedimentsDiscussed.length,
       effectiveness: result.meetingEffectiveness.overallEffectiveness,
@@ -346,7 +344,7 @@ export class ScrumOfScrumsService {
 
     this.impediments.set(impedimentId, programImpediment);
 
-    this.logger.info('Program impediment tracked', {'
+    this.logger.info('Program impediment tracked,{
       impedimentId,
       severity: impediment.severity,
       affectedTeams: impediment.affectedTeams.length,
@@ -375,7 +373,7 @@ export class ScrumOfScrumsService {
 
     this.impediments.set(impedimentId, escalatedImpediment);
 
-    this.logger.info('Impediment escalated', {'
+    this.logger.info('Impediment escalated,{
       impedimentId,
       newLevel: escalationLevel,
       severity: impediment.severity,
@@ -403,7 +401,7 @@ export class ScrumOfScrumsService {
 
     this.impediments.set(impedimentId, resolvedImpediment);
 
-    this.logger.info('Impediment resolved', {'
+    this.logger.info('Impediment resolved,{
       impedimentId,
       resolutionDate: resolution.resolutionDate,
       resolvedBy: resolution.resolvedBy,
@@ -417,10 +415,10 @@ export class ScrumOfScrumsService {
     return map(teams, (team) => ({
       teamId: team.id,
       teamName: team.name,
-      representative: 'Scrum Master', // Simplified'
-      role: 'scrum-master' as const,
+      representative:'Scrum Master,// Simplified
+      role:'scrum-master 'as const,
       participationHistory: [],
-    }));
+    });
   }
 
   /**
@@ -429,28 +427,28 @@ export class ScrumOfScrumsService {
   private generateStandardAgenda(): ScrumOfScrumsAgenda {
     const standardQuestions: ScrumOfScrumsQuestion[] = [
       {
-        question: 'What has your team accomplished since last meeting?',
-        purpose: 'Share progress and achievements',
+        question:'What has your team accomplished since last meeting?,
+        purpose:'Share progress and achievements,
         timeAllocation: 2,
-        facilitation: 'round-robin',
+        facilitation:'round-robin,
       },
       {
-        question: 'What will your team accomplish before next meeting?',
-        purpose: 'Share upcoming work and commitments',
+        question:'What will your team accomplish before next meeting?,
+        purpose:'Share upcoming work and commitments,
         timeAllocation: 2,
-        facilitation: 'round-robin',
+        facilitation:'round-robin,
       },
       {
-        question: 'What impediments or blockers is your team facing?',
-        purpose: 'Identify and address obstacles',
+        question:'What impediments or blockers is your team facing?,
+        purpose:'Identify and address obstacles,
         timeAllocation: 3,
-        facilitation: 'focused',
+        facilitation:'focused,
       },
       {
-        question: 'What work might impact or depend on other teams?',
-        purpose: 'Coordinate dependencies and integration',
+        question:'What work might impact or depend on other teams?,
+        purpose:'Coordinate dependencies and integration,
         timeAllocation: 3,
-        facilitation: 'open-discussion',
+        facilitation:'open-discussion,
       },
     ];
 
@@ -472,7 +470,7 @@ export class ScrumOfScrumsService {
     return filter(
       Array.from(this.impediments.values()),
       (imp) =>
-        imp.status === ImpedimentStatus.OPEN || imp.status === ImpedimentStatus.IN_PROGRESS
+        imp.status === ImpedimentStatus.OPEN|| imp.status === ImpedimentStatus.IN_PROGRESS
     );
   }
 
@@ -483,11 +481,11 @@ export class ScrumOfScrumsService {
     return [
       {
         id: `action-$generateNanoId(8)`,`
-        description:'Follow up on team dependencies',
-        owner: 'RTE',
+        description:'Follow up on team dependencies,
+        owner:'RTE,
         dueDate: addDays(new Date(), 2),
-        priority: 'high',
-        status: 'open',
+        priority: high,
+        status:'open,
       },
     ];
   }
@@ -501,9 +499,9 @@ export class ScrumOfScrumsService {
     const attendanceRate =
       (filter(attendance, (a) => a.attended).length / attendance.length) * 100;
     const participationLevel = meanBy(attendance, (a) =>
-      a.contributionLevel === 'high''
+      a.contributionLevel ==='high'
         ? 100
-        : a.contributionLevel === 'medium''
+        : a.contributionLevel ==='medium'
           ? 60
           : 30
     );
@@ -529,8 +527,8 @@ export class ScrumOfScrumsService {
       attended: true,
       late: false,
       earlyLeave: false,
-      contributionLevel: 'medium' as const,
-    }));
+      contributionLevel:'medium 'as const,
+    });
   }
 
   /**
@@ -552,14 +550,14 @@ export class ScrumOfScrumsService {
   /**
    * Get impediment by ID
    */
-  getImpediment(impedimentId: string): ProgramImpediment | undefined {
+  getImpediment(impedimentId: string): ProgramImpediment| undefined {
     return this.impediments.get(impedimentId);
   }
 
   /**
    * Get meeting results
    */
-  getMeetingResults(meetingId: string): ScrumOfScrumsResult | undefined {
+  getMeetingResults(meetingId: string): ScrumOfScrumsResult| undefined {
     return this.meetingResults.get(meetingId);
   }
 

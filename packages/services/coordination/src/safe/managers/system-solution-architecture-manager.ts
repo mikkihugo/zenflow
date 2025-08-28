@@ -23,7 +23,6 @@ import type {
   TypeSafeEventBus,
 } from '../types';
 import { getLogger, } from '../types';
-
 // ============================================================================
 // SYSTEM AND SOLUTION ARCHITECTURE CONFIGURATION
 // ============================================================================
@@ -46,25 +45,25 @@ export interface SystemSolutionArchConfig {
  * System architecture types for design coordination
  */
 export enum SystemArchitectureType {
-  MONOLITHIC = 'monolithic',
-  MICROSERVICES = 'microservices',
-  SERVICE_ORIENTED = 'service_oriented',
-  EVENT_DRIVEN = 'event_driven',
-  LAYERED = 'layered',
-  HEXAGONAL = 'hexagonal',
-  CLEAN_ARCHITECTURE = 'clean_architecture',
+  MONOLITHIC ='monolithic,
+  MICROSERVICES ='microservices,
+  SERVICE_ORIENTED ='service_oriented,
+  EVENT_DRIVEN ='event_driven,
+  LAYERED ='layered,
+  HEXAGONAL ='hexagonal,
+  CLEAN_ARCHITECTURE ='clean_architecture,
 }
 
 /**
  * Solution architecture patterns
  */
 export enum SolutionArchitecturePattern {
-  TRADITIONAL_3_TIER = 'traditional_3_tier',
-  MICRO_FRONTEND = 'micro_frontend',
-  SERVERLESS = 'serverless',
-  CLOUD_NATIVE = 'cloud_native',
-  HYBRID_CLOUD = 'hybrid_cloud',
-  EDGE_COMPUTING = 'edge_computing',
+  TRADITIONAL_3_TIER ='traditional_3_tier,
+  MICRO_FRONTEND ='micro_frontend,
+  SERVERLESS ='serverless,
+  CLOUD_NATIVE ='cloud_native,
+  HYBRID_CLOUD ='hybrid_cloud,
+  EDGE_COMPUTING ='edge_computing,
 }
 
 /**
@@ -94,12 +93,12 @@ export interface SystemDesign {
  * System design status
  */
 export enum SystemDesignStatus {
-  DRAFT = 'draft',
-  IN_REVIEW = 'in_review',
-  APPROVED = 'approved',
-  REJECTED = 'rejected',
-  DEPRECATED = 'deprecated',
-  IMPLEMENTATION_READY = 'implementation_ready',
+  DRAFT ='draft,
+  IN_REVIEW ='in_review,
+  APPROVED ='approved,
+  REJECTED ='rejected,
+  DEPRECATED ='deprecated,
+  IMPLEMENTATION_READY ='implementation_ready,
 }
 
 /**
@@ -122,8 +121,8 @@ export interface Stakeholder {
   readonly name: string;
   readonly role: string;
   readonly concerns: string[];
-  readonly influence: 'high' | 'medium' | 'low';
-  readonly involvement: 'active' | 'consulted' | 'informed';
+  readonly influence:'high'|'medium'|'low';
+  readonly involvement:'active'|'consulted'|'informed';
 }
 
 /**
@@ -131,10 +130,10 @@ export interface Stakeholder {
  */
 export interface ArchitecturalDriver {
   readonly id: string;
-  readonly type: 'functional' | 'quality' | 'constraint';
+  readonly type:'functional'|'quality'|'constraint';
   readonly description: string;
   readonly rationale: string;
-  readonly priority: 'critical|high|medium|low;
+  readonly priority: critical| high| medium'|'low';
   readonly source: string;
   readonly impactedComponents: string[];
 }
@@ -193,7 +192,7 @@ export interface ArchitecturalTactic {
  */
 export interface ArchitecturalConstraint {
   readonly id: string;
-  readonly type: 'technical|business|regulatory|organizational;
+  readonly type:'technical| business| regulatory'|'organizational';
   readonly description: string;
   readonly rationale: string;
   readonly implications: string[];
@@ -220,13 +219,13 @@ export interface SystemComponent {
  * Component type
  */
 export enum ComponentType {
-  SERVICE = 'service',
-  DATABASE = 'database',
-  GATEWAY = 'gateway',
-  QUEUE = 'queue',
-  CACHE = 'cache',
-  EXTERNAL_SYSTEM = 'external_system',
-  UI_COMPONENT = 'ui_component',
+  SERVICE ='service,
+  DATABASE ='database,
+  GATEWAY ='gateway,
+  QUEUE ='queue,
+  CACHE ='cache,
+  EXTERNAL_SYSTEM ='external_system,
+  UI_COMPONENT ='ui_component,
 }
 
 /**
@@ -235,7 +234,7 @@ export enum ComponentType {
 export interface ComponentInterface {
   readonly id: string;
   readonly name: string;
-  readonly type: 'synchronous' | 'asynchronous' | 'batch';
+  readonly type:'synchronous'|'asynchronous'|'batch';
   readonly protocol: string;
   readonly producer: string;
   readonly consumer: string;
@@ -264,7 +263,7 @@ export interface ComplianceRequirement {
   readonly description: string;
   readonly controls: ControlRequirement[];
   readonly evidence: string[];
-  readonly status: 'compliant|non_compliant|partial|not_assessed;
+  readonly status:'compliant| non_compliant| partial'|'not_assessed';
 }
 
 /**
@@ -286,8 +285,8 @@ export interface ControlRequirement {
 export interface ArchitectureReview {
   readonly id: string;
   readonly reviewerId: string;
-  readonly reviewType: 'peer|formal|compliance|security;
-  readonly status:|'pending|in_progress|approved|rejected|conditionally_approved;
+  readonly reviewType:'peer| formal| compliance'|'security';
+  readonly status:|'pending| in_progress| approved| rejected'|'conditionally_approved';
   readonly findings: ReviewFinding[];
   readonly recommendations: string[];
   readonly decision: string;
@@ -300,8 +299,8 @@ export interface ArchitectureReview {
  */
 export interface ReviewFinding {
   readonly id: string;
-  readonly category: 'compliance|design|quality|risk;
-  readonly severity: 'critical|high|medium|low|info;
+  readonly category:'compliance| design| quality'|'risk';
+  readonly severity: critical| high| medium| low'|'info';
   readonly description: string;
   readonly recommendation: string;
   readonly impactedComponents: string[];
@@ -336,7 +335,7 @@ export class SystemSolutionArchitectureManager extends EventBus {
     eventBus: TypeSafeEventBus
   ) {
     super();
-    this.logger = getLogger('SystemSolutionArchitectureManager');'
+    this.logger = getLogger('SystemSolutionArchitectureManager'');
     this.config = config;
     this.memorySystem = memorySystem;
     this.eventBus = eventBus;
@@ -351,7 +350,7 @@ export class SystemSolutionArchitectureManager extends EventBus {
     try {
       // Delegate to System Design Management Service
       const { SystemDesignManagementService } = await import(
-        '../services/system-solution/system-design-management-service''
+       '../services/system-solution/system-design-management-service'
       );
       this.systemDesignService = new SystemDesignManagementService(
         this.logger,
@@ -366,7 +365,7 @@ export class SystemSolutionArchitectureManager extends EventBus {
 
       // Delegate to Compliance Monitoring Service
       const { ComplianceMonitoringService } = await import(
-        '../services/system-solution/compliance-monitoring-service');'
+       '../services/system-solution/compliance-monitoring-service'');
       this.complianceMonitoringService = new ComplianceMonitoringService(
         this.logger,
           enableContinuousMonitoring:
@@ -374,27 +373,27 @@ export class SystemSolutionArchitectureManager extends EventBus {
           enableAutomatedRemediation: false,
           enableRealTimeAlerts: true,
           monitoringInterval:
-            this.configuration.complianceCheckInterval||3600000,
+            this.configuration.complianceCheckInterval|| 3600000,
       );
       await this.complianceMonitoringService.initialize();
 
       // Delegate to Architecture Review Management Service
-      const { ArchitectureReviewManagementService } = await import('../services/system-solution/architecture-review-management-service');'
+      const { ArchitectureReviewManagementService } = await import('../services/system-solution/architecture-review-management-service'');
       this.architectureReviewService = new ArchitectureReviewManagementService(
         this.logger,
           maxConcurrentReviews: this.configuration.maxConcurrentReviews,
-          defaultReviewTimeout: this.configuration.reviewTimeout||480,
+          defaultReviewTimeout: this.configuration.reviewTimeout|| 480,
           enableAIAnalysis: true,
           enableAutomatedReviews: true,
       );
       await this.architectureReviewService.initialize();
 
       // Lazy load @claude-zen/foundation for performance tracking
-      const { PerformanceTracker, TelemetryManager } = await import('@claude-zen/foundation''
+      const { PerformanceTracker, TelemetryManager } = await import('@claude-zen/foundation'
       );
       this.performanceTracker = new PerformanceTracker();
       this.telemetryManager = new TelemetryManager({
-        serviceName: 'system-solution-architecture',
+        serviceName:'system-solution-architecture,
         enableTracing: true,
         enableMetrics: true,
       });
@@ -405,16 +404,16 @@ export class SystemSolutionArchitectureManager extends EventBus {
 
       this.initialized = true;
       this.logger.info(
-        'System Solution Architecture Manager initialized successfully with service delegation''
+       'System Solution Architecture Manager initialized successfully with service delegation'
       );
 
-      this.emit('initialized', {'
+      this.emit('initialized,{
         timestamp: new Date(),
         enabledFeatures: this.getEnabledFeatures(),
       });
     } catch (error) {
       this.logger.error(
-        'Failed to initialize System Solution Architecture Manager:',
+       'Failed to initialize System Solution Architecture Manager:,
         error
       );
       throw error;
@@ -432,7 +431,7 @@ export class SystemSolutionArchitectureManager extends EventBus {
   ): Promise<SystemDesign> {
     if (!this.initialized) await this.initialize();
 
-    const _timer = this.performanceTracker.startTimer('create_system_design');'
+    const _timer = this.performanceTracker.startTimer('create_system_design'');
 
     try {
       const _systemDesign = await this.systemDesignService.createSystemDesign(
@@ -442,18 +441,18 @@ export class SystemSolutionArchitectureManager extends EventBus {
         businessContext
       );
 
-      this.performanceTracker.endTimer('create_system_design');'
-      this.telemetryManager.recordCounter('system_designs_created', 1, '
+      this.performanceTracker.endTimer('create_system_design'');
+      this.telemetryManager.recordCounter('system_designs_created,1, 
         type,
         pattern,);
 
       this.logger.info(`Created system design: ${name} (${type}/${pattern})`);`
-      this.emit('systemDesignCreated', { systemDesign });'
+      this.emit('systemDesignCreated,{ systemDesign }');
 
       return systemDesign;
     } catch (error) {
-      this.performanceTracker.endTimer('create_system_design');'
-      this.logger.error('Failed to create system design:', error);'
+      this.performanceTracker.endTimer('create_system_design'');
+      this.logger.error('Failed to create system design:,error');
       throw error;
     }
   }
@@ -463,7 +462,7 @@ export class SystemSolutionArchitectureManager extends EventBus {
    */
   async initiateArchitectureReview(
     systemDesignId: string,
-    reviewType: 'peer|formal|compliance|security',
+    reviewType:'peer| formal| compliance| security,
     reviewerId: string
   ): Promise<ArchitectureReview> {
     if (!this.initialized) await this.initialize();
@@ -479,9 +478,9 @@ export class SystemSolutionArchitectureManager extends EventBus {
         systemDesignId,
         reviewType,
         reviewerId,
-        priority: 'medium'as const,
+        priority: medium'as const,
         deadline: new Date(
-          Date.now() + (this.configuration.reviewTimeout||480) * 60000
+          Date.now() + (this.configuration.reviewTimeout|| 480) * 60000
         ),
       };
 
@@ -491,18 +490,18 @@ export class SystemSolutionArchitectureManager extends EventBus {
           systemDesign
         );
 
-      this.telemetryManager.recordCounter('architecture_reviews_initiated', 1, {'
+      this.telemetryManager.recordCounter('architecture_reviews_initiated,1, {
         reviewType,
       });
 
       this.logger.info(
         `Initiated ${reviewType} review for system design: ${systemDesign.name}``
       );
-      this.emit('architectureReviewInitiated', { review, systemDesign });'
+      this.emit('architectureReviewInitiated,{ review, systemDesign }');
 
       return review;
     } catch (error) {
-      this.logger.error('Failed to initiate architecture review:', error);'
+      this.logger.error('Failed to initiate architecture review:,error');
       throw error;
     }
   }
@@ -535,7 +534,7 @@ export class SystemSolutionArchitectureManager extends EventBus {
       );
 
       this.telemetryManager.recordGauge(
-        'compliance_score',
+       'compliance_score,
         validationResult.overallCompliance,
         {
           systemDesignId,
@@ -544,7 +543,7 @@ export class SystemSolutionArchitectureManager extends EventBus {
       );
 
       this.logger.info(
-        `Compliance validation for ${systemDesign.name}: $validationResult.compliant ? 'COMPLIANT' : 'NON-COMPLIANT'``
+        `Compliance validation for ${systemDesign.name}: $validationResult.compliant ?'COMPLIANT:'NON-COMPLIANT'``
       );
 
       return {
@@ -553,7 +552,7 @@ export class SystemSolutionArchitectureManager extends EventBus {
         recommendations,
       };
     } catch (error) {
-      this.logger.error('Failed to validate compliance:', error);'
+      this.logger.error('Failed to validate compliance:,error');
       throw error;
     }
   }
@@ -561,8 +560,8 @@ export class SystemSolutionArchitectureManager extends EventBus {
   /**
    * Get system design by ID - Delegates to System Design Management Service
    */
-  getSystemDesign(id: string): SystemDesign|undefined {
-    if (!this.initialized||!this.systemDesignService) {
+  getSystemDesign(id: string): SystemDesign| undefined {
+    if (!this.initialized|| !this.systemDesignService) {
       return undefined;
     }
     return this.systemDesignService.getSystemDesign(id);
@@ -572,7 +571,7 @@ export class SystemSolutionArchitectureManager extends EventBus {
    * Get all system designs - Delegates to System Design Management Service
    */
   getAllSystemDesigns(): SystemDesign[] {
-    if (!this.initialized||!this.systemDesignService) {
+    if (!this.initialized|| !this.systemDesignService) {
       return [];
     }
     return this.systemDesignService.getAllSystemDesigns();
@@ -581,8 +580,8 @@ export class SystemSolutionArchitectureManager extends EventBus {
   /**
    * Get architecture review by ID - Delegates to Architecture Review Management Service
    */
-  getArchitectureReview(id: string): ArchitectureReview|undefined {
-    if (!this.initialized||!this.architectureReviewService) {
+  getArchitectureReview(id: string): ArchitectureReview| undefined {
+    if (!this.initialized|| !this.architectureReviewService) {
       return undefined;
     }
     return this.architectureReviewService.getArchitectureReview(id);
@@ -598,36 +597,36 @@ export class SystemSolutionArchitectureManager extends EventBus {
       // Get metrics from each service
       const [designDashboard, reviewDashboard, complianceDashboard] =
         await Promise.all([
-          this.systemDesignService?.getSystemDesignDashboard()||Promise.resolve(null),
-          this.architectureReviewService?.getArchitectureReviewDashboard()||Promise.resolve(null),
-          this.complianceMonitoringService?.getComplianceDashboard()||Promise.resolve(null),
+          this.systemDesignService?.getSystemDesignDashboard()|| Promise.resolve(null),
+          this.architectureReviewService?.getArchitectureReviewDashboard()|| Promise.resolve(null),
+          this.complianceMonitoringService?.getComplianceDashboard()|| Promise.resolve(null),
         ]);
 
       return {
         systemDesigns: {
-          total: designDashboard?.totalDesigns||0,
-          byStatus: designDashboard?.designsByStatus||{},
-          byType: designDashboard?.designsByType||{},
-          byPattern: designDashboard?.designsByPattern||{},
-          qualityScore: designDashboard?.designQualityScore||0,
+          total: designDashboard?.totalDesigns|| 0,
+          byStatus: designDashboard?.designsByStatus|| {},
+          byType: designDashboard?.designsByType|| {},
+          byPattern: designDashboard?.designsByPattern|| {},
+          qualityScore: designDashboard?.designQualityScore|| 0,
         },
         reviews: {
-          total: reviewDashboard?.totalReviews||0,
-          active: reviewDashboard?.pendingReviews?.length||0,
-          byType: reviewDashboard?.reviewsByType||{},
-          averageTime: reviewDashboard?.averageReviewTime||0,
+          total: reviewDashboard?.totalReviews|| 0,
+          active: reviewDashboard?.pendingReviews?.length|| 0,
+          byType: reviewDashboard?.reviewsByType|| {},
+          averageTime: reviewDashboard?.averageReviewTime|| 0,
           effectiveness:
-            reviewDashboard?.reviewEffectiveness?.overallEffectiveness||0,
+            reviewDashboard?.reviewEffectiveness?.overallEffectiveness|| 0,
         },
         compliance: {
-          overallRate: complianceDashboard?.overallComplianceRate||0,
-          byFramework: complianceDashboard?.complianceByFramework||{},
-          violations: complianceDashboard?.violationsBySeverity||{},
-          criticalCount: complianceDashboard?.criticalViolations?.length||0,
+          overallRate: complianceDashboard?.overallComplianceRate|| 0,
+          byFramework: complianceDashboard?.complianceByFramework|| {},
+          violations: complianceDashboard?.violationsBySeverity|| {},
+          criticalCount: complianceDashboard?.criticalViolations?.length|| 0,
         },
       };
     } catch (error) {
-      this.logger.error('Failed to get architecture metrics:', error);'
+      this.logger.error('Failed to get architecture metrics:,error');
       return {
         systemDesigns: { total: 0 },
         reviews: { total: 0 },
@@ -657,10 +656,10 @@ export class SystemSolutionArchitectureManager extends EventBus {
 
       this.initialized = false;
       this.logger.info(
-        'System Solution Architecture Manager shutdown completed''
+       'System Solution Architecture Manager shutdown completed'
       );
     } catch (error) {
-      this.logger.error('Error during shutdown:', error);'
+      this.logger.error('Error during shutdown:,error');
       throw error;
     }
   }
@@ -676,10 +675,10 @@ export class SystemSolutionArchitectureManager extends EventBus {
     }
 
     // Handle compliance check events
-    this.eventBus.on('complianceCheckRequired', (event: any) => {'
+    this.eventBus.on('complianceCheckRequired,(event: any) => {
       if (event.data?.systemDesignId) {
         this.validateCompliance(event.data.systemDesignId).catch((error) => {
-          this.logger.error('Compliance check failed:', error);'
+          this.logger.error('Compliance check failed:,error');
         });
       }
     });
@@ -692,15 +691,15 @@ export class SystemSolutionArchitectureManager extends EventBus {
   private getEnabledFeatures(): string[] {
     const features: string[] = [];
     if (this.configuration.enableSystemDesignCoordination)
-      features.push('SystemDesignCoordination');'
+      features.push('SystemDesignCoordination'');
     if (this.configuration.enableSolutionArchitectWorkflow)
-      features.push('SolutionArchitectWorkflow');'
+      features.push('SolutionArchitectWorkflow'');
     if (this.configuration.enableArchitectureReviews)
-      features.push('ArchitectureReviews');'
+      features.push('ArchitectureReviews'');
     if (this.configuration.enableComplianceMonitoring)
-      features.push('ComplianceMonitoring');'
+      features.push('ComplianceMonitoring'');
     if (this.configuration.enablePerformanceTracking)
-      features.push('PerformanceTracking');'
+      features.push('PerformanceTracking'');
     return features;
   }
 }

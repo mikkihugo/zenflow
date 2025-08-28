@@ -30,8 +30,7 @@
 
 import { getLogger } from '@claude-zen/foundation';
 import { getNeuralMLAccess } from '@claude-zen/intelligence';
-
-const logger = getLogger('PIPlanningSuccessPrediction');'
+const logger = getLogger('PIPlanningSuccessPrediction'');
 
 // ============================================================================
 // PREDICTION MODEL TYPES
@@ -65,7 +64,7 @@ export interface TeamCapacityInput {
   plannedCapacity: number; // story points
   availableCapacity: number; // accounting for leave, etc.
   historicalVelocity: number[];
-  velocityTrend: 'increasing|'improving' | 'stable' | 'declining'|decreasing;
+  velocityTrend:'increasing|'improving'|'stable'|'declining''|'decreasing';
   teamStability: number; // 0-1, team member retention
   skillMaturity: number; // 1-10
   domainExperience: number; // 1-10
@@ -78,8 +77,8 @@ export interface DependencyInput {
   id: string;
   providerTeam: string;
   consumerTeam: string;
-  complexity: 'low|medium|high|critical;
-  riskLevel: 'low' | 'medium' | 'high';
+  complexity:'low| medium| high'|'critical';
+  riskLevel:'low'|'medium'|'high';
   historicalResolutionTime: number; // days
   crossTeamExperience: number; // 1-10, how well teams work together
 }
@@ -88,8 +87,8 @@ export interface RiskInput {
   id: string;
   description: string;
   probability: number; // 0-1
-  impact: 'low|medium|high|critical;
-  category: 'technical|resource|external|process;
+  impact:'low| medium| high'|'critical';
+  category:'technical| resource| external'|'process';
   mitigationPlan?: string;
 }
 
@@ -138,12 +137,12 @@ export interface HistoricalPIData {
 export interface EnvironmentalFactors {
   organizationalChange: boolean;
   budgetConstraints: boolean;
-  marketPressure: 'low' | 'medium' | 'high';
-  competitorActivity: 'low' | 'medium' | 'high';
+  marketPressure:'low'|'medium'|'high';
+  competitorActivity:'low'|'medium'|'high';
   regulatoryChanges: boolean;
   technologyChanges: boolean;
-  seasonality: 'favorable' | 'neutral' | 'challenging';
-  economicConditions: 'stable'|volatile|declining;
+  seasonality:'favorable'|'neutral'|'challenging';
+  economicConditions:'stable'| volatile'|'declining';
 }
 
 // ============================================================================
@@ -169,7 +168,7 @@ export interface OverallPrediction {
   expectedBusinessValueRealization: number; // 0-1
   expectedScheduleAdherence: number; // 0-1
   riskScore: number; // 0-100, higher = more risk
-  confidenceLevel: 'low' | 'medium' | 'high';
+  confidenceLevel:'low'|'medium'|'high';
   keySuccessFactors: string[];
   primaryRisks: string[];
 }
@@ -180,7 +179,7 @@ export interface TeamPrediction {
   capacityUtilization: number; // 0-1, predicted actual vs planned
   velocityPrediction: number; // predicted story points delivered
   objectiveCompletionRate: number; // 0-1
-  riskLevel: 'low' | 'medium' | 'high';
+  riskLevel:'low'|'medium'|'high';
   keyRisks: string[];
   recommendations: string[];
 }
@@ -189,7 +188,7 @@ export interface ObjectivePrediction {
   objectiveId: string;
   completionProbability: number; // 0-1
   expectedDeliveryDate: string;
-  riskLevel: 'low' | 'medium' | 'high';
+  riskLevel:'low'|'medium'|'high';
   blockers: string[];
   successFactors: string[];
   alternatives: string[];
@@ -199,19 +198,19 @@ export interface DependencyPrediction {
   dependencyId: string;
   resolutionProbability: number; // 0-1
   expectedResolutionTime: number; // days
-  riskLevel: 'low' | 'medium' | 'high';
-  impactOnPI: 'minimal|moderate|significant|critical;
+  riskLevel:'low'|'medium'|'high';
+  impactOnPI:'minimal| moderate| significant'|'critical';
   mitigationOptions: string[];
 }
 
 export interface PredictionRecommendation {
   id: string;
-  category: 'scope|capacity|timeline|risk|process;
-  priority: 'low|medium|high|critical;
+  category:'scope| capacity| timeline| risk'|'process';
+  priority: low| medium| high'|'critical';
   recommendation: string;
   rationale: string;
   expectedImpact: number; // 0-1, improvement in success probability
-  implementationEffort: 'low' | 'medium' | 'high';
+  implementationEffort:'low'|'medium'|'high';
   stakeholders: string[];
 }
 
@@ -229,8 +228,8 @@ export interface PredictionConfidence {
 export interface RiskFactor {
   id: string;
   description: string;
-  category: 'team|technical|dependency|external|process;
-  severity: 'low|medium|high|critical;
+  category:'team| technical| dependency| external'|'process';
+  severity: low| medium| high'|'critical';
   probability: number; // 0-1
   impact: string;
   indicators: string[];
@@ -243,7 +242,7 @@ export interface MitigationStrategy {
   strategy: string;
   description: string;
   effectiveness: number; // 0-1
-  cost: 'low' | 'medium' | 'high';
+  cost:'low'|'medium'|'high';
   timeToImplement: number; // days
   requiredResources: string[];
   successCriteria: string[];
@@ -269,10 +268,10 @@ export class PIPlanningSuccessPredictionService {
       await this.validateModelAccuracy();
 
       logger.info(
-        'PI Planning Success Prediction service initialized with neural ML''
+       'PI Planning Success Prediction service initialized with neural ML'
       );
     } catch (error) {
-      logger.error('Failed to initialize PI prediction service', error);'
+      logger.error('Failed to initialize PI prediction service,error');
       throw error;
     }
   }
@@ -390,7 +389,7 @@ export class PIPlanningSuccessPredictionService {
    * Get real-time risk monitoring for ongoing PI
    */
   async monitorPIRisks(piId: string): Promise<{
-    currentRiskLevel: 'low|medium|high|critical;
+    currentRiskLevel:'low| medium| high'|'critical';
     emergingRisks: RiskFactor[];
     recommendedActions: string[];
     predictionAccuracy: number;
@@ -404,7 +403,7 @@ export class PIPlanningSuccessPredictionService {
         currentRiskLevel: riskLevel,
         emergingRisks,
         recommendedActions: await this.generateRiskActions(emergingRisks),
-        predictionAccuracy: this.modelAccuracy.get(piId)||0.8,
+        predictionAccuracy: this.modelAccuracy.get(piId)|| 0.8,
       };
     } catch (error) {
       logger.error(`Failed to monitor PI risks for ${piId}`, error);`
@@ -455,7 +454,7 @@ export class PIPlanningSuccessPredictionService {
         // Dependency features
         dependencyCount: input.dependencies.length,
         criticalDependencies: input.dependencies.filter(
-          (d) => d.complexity ==='critical''
+          (d) => d.complexity ===critical'
         ).length,
         avgDependencyRisk:
           input.dependencies.reduce((sum, d) => {
@@ -494,9 +493,9 @@ export class PIPlanningSuccessPredictionService {
     try {
       // Use neural ML for sophisticated pattern recognition
       const predictions = await this.neuralML.predict({
-        model: 'pi_success_predictor',
+        model:'pi_success_predictor,
         features: analysisData.features,
-        outputFormat: 'detailed',
+        outputFormat:'detailed,
       });
 
       return {
@@ -504,11 +503,11 @@ export class PIPlanningSuccessPredictionService {
         businessValueRealization: predictions.business_value_realization,
         scheduleAdherence: predictions.schedule_adherence,
         riskScore: predictions.risk_score,
-        successFactors: predictions.success_factors||[],
+        successFactors: predictions.success_factors|| [],
         confidenceScore: predictions.confidence,
       };
     } catch (error) {
-      logger.warn('Neural ML prediction failed, falling back to rule-based',
+      logger.warn('Neural ML prediction failed, falling back to rule-based,
         error
       );
       return this.ruleBasedPrediction(analysisData);
@@ -542,7 +541,7 @@ export class PIPlanningSuccessPredictionService {
     successProbability -= features.environmentalRiskScore * 0.1;
 
     // Clamp between 0 and 1
-    successProbability = Math.max(0.1, Math.min(0.95, successProbability));
+    successProbability = Math.max(0.1, Math.min(0.95, successProbability);
 
     return {
       overallSuccess: successProbability,
@@ -573,15 +572,15 @@ export class PIPlanningSuccessPredictionService {
       const completionRate = Math.min(1, velocityPrediction / totalEffort);
 
       // Assess risk level
-      let riskLevel: 'low|medium|high' = 'low';
+      let riskLevel:'low| medium| high = 'low';
       if (
-        capacityUtilization > 1.2||team.morale < 6||team.teamStability < 0.7
+        capacityUtilization > 1.2|| team.morale < 6|| team.teamStability < 0.7
       ) {
-        riskLevel ='high;
+        riskLevel =high';
       } else if (
-        capacityUtilization > 1.0||team.morale < 7||team.teamStability < 0.8
+        capacityUtilization > 1.0|| team.morale < 7|| team.teamStability < 0.8
       ) {
-        riskLevel ='medium;
+        riskLevel =medium';
       }
 
       return {
@@ -609,8 +608,8 @@ export class PIPlanningSuccessPredictionService {
         return {
           objectiveId: objective.id,
           completionProbability: 0.5,
-          expectedDeliveryDate: 'unknown',
-          riskLevel: 'high',
+          expectedDeliveryDate:'unknown,
+          riskLevel:'high,
           blockers: ['Team not found'],
           successFactors: [],
           alternatives: [],
@@ -661,10 +660,10 @@ export class PIPlanningSuccessPredictionService {
         expectedDeliveryDate,
         riskLevel:
           completionProbability < 0.6
-            ? 'high''
+            ?'high'
             : completionProbability < 0.8
-              ? 'medium''
-              : 'low',
+              ?'medium'
+              :'low,
         blockers: this.identifyObjectiveBlockers(objective, assignedTeam),
         successFactors: this.identifyObjectiveSuccessFactors(
           objective,
@@ -702,7 +701,7 @@ export class PIPlanningSuccessPredictionService {
       );
 
       // Estimate resolution time
-      const baseTime = dependency.historicalResolutionTime||5; // days
+      const baseTime = dependency.historicalResolutionTime|| 5; // days
       const complexityMultiplier = {
         low: 1,
         medium: 1.5,
@@ -713,15 +712,15 @@ export class PIPlanningSuccessPredictionService {
         baseTime * complexityMultiplier[dependency.complexity];
 
       // Determine impact on PI
-      let impactOnPI:'minimal|moderate|significant|critical' ='
-        'minimal;
+      let impactOnPI:'minimal| moderate| significant| critical =
+       'minimal';
       if (
-        dependency.complexity === 'critical'||dependency.riskLevel ==='high''
+        dependency.complexity ==='critical'|| dependency.riskLevel ===high'
       ) 
         impactOnPI = 'critical';else if (
-        dependency.complexity === 'high'||dependency.riskLevel ==='medium''
+        dependency.complexity ==='high'|| dependency.riskLevel ===medium'
       ) 
-        impactOnPI = 'significant';else if (dependency.complexity === 'medium') {'
+        impactOnPI = 'significant';else if (dependency.complexity ==='medium){
         impactOnPI = 'moderate';
       }
 
@@ -750,7 +749,7 @@ export class PIPlanningSuccessPredictionService {
     adjustedVelocity *= team.morale / 8; // Normalize morale impact
     adjustedVelocity *= team.teamStability + 0.5; // Stability impact
 
-    return Math.max(avgVelocity * 0.5, adjustedVelocity); // Don't predict below 50% of historical'
+    return Math.max(avgVelocity * 0.5, adjustedVelocity); // Don't predict below 50% of historical
   }
 
   private identifyTeamRisks(
@@ -759,12 +758,12 @@ export class PIPlanningSuccessPredictionService {
   ): string[] {
     const risks: string[] = [];
 
-    if (capacityUtilization > 1.2) risks.push('Severe overcommitment');'
-    if (team.morale < 6) risks.push('Low team morale');'
-    if (team.teamStability < 0.7) risks.push('Team instability');'
-    if (team.technicalDebt > 7) risks.push('High technical debt');'
-    if (team.velocityTrend === 'decreasing')'
-      risks.push('Declining velocity trend');'
+    if (capacityUtilization > 1.2) risks.push('Severe overcommitment'');
+    if (team.morale < 6) risks.push('Low team morale'');
+    if (team.teamStability < 0.7) risks.push('Team instability'');
+    if (team.technicalDebt > 7) risks.push('High technical debt'');
+    if (team.velocityTrend ==='decreasing')
+      risks.push('Declining velocity trend'');
 
     return risks;
   }
@@ -775,11 +774,11 @@ export class PIPlanningSuccessPredictionService {
   ): string[] {
     const recommendations: string[] = [];
 
-    if (riskLevel === 'high') {'
-      recommendations.push('Consider reducing scope or adding capacity');'
-      if (team.morale < 6) recommendations.push('Address team morale issues');'
+    if (riskLevel ==='high){
+      recommendations.push('Consider reducing scope or adding capacity'');
+      if (team.morale < 6) recommendations.push('Address team morale issues'');
       if (team.technicalDebt > 7)
-        recommendations.push('Allocate time for technical debt reduction');'
+        recommendations.push('Allocate time for technical debt reduction'');
     }
 
     return recommendations;
@@ -788,10 +787,10 @@ export class PIPlanningSuccessPredictionService {
   // Placeholder implementations for remaining methods
   private identifySuccessFactors(features: any): string[] {
     const factors: string[] = [];
-    if (features.teamStability > 0.8) factors.push('High team stability');'
-    if (features.avgMorale > 8) factors.push('Excellent team morale');'
+    if (features.teamStability > 0.8) factors.push('High team stability'');
+    if (features.avgMorale > 8) factors.push('Excellent team morale'');
     if (features.historicalSuccessRate > 0.8)
-      factors.push('Strong historical performance');'
+      factors.push('Strong historical performance'');
     return factors;
   }
 
@@ -801,7 +800,7 @@ export class PIPlanningSuccessPredictionService {
     let score = 0;
     if (factors.organizationalChange) score += 0.2;
     if (factors.budgetConstraints) score += 0.15;
-    if (factors.marketPressure === 'high') score += 0.15;'
+    if (factors.marketPressure === 'high)score += 0.15';
     if (factors.regulatoryChanges) score += 0.1;
     return Math.min(1, score);
   }
@@ -829,24 +828,24 @@ export class PIPlanningSuccessPredictionService {
 
   private initializeModels(): void {
     // Initialize prediction models
-    logger.info('Initializing PI prediction models');'
+    logger.info('Initializing PI prediction models'');
   }
 
   private async loadPredictionModels(): Promise<void> {
     // Load pre-trained models or initialize new ones
-    logger.info('Loading PI prediction models');'
+    logger.info('Loading PI prediction models'');
   }
 
   private async validateModelAccuracy(): Promise<void> {
     // Validate model accuracy with historical data
-    this.modelAccuracy.set('default', 0.85);'
-    logger.info('PI prediction model accuracy validated');'
+    this.modelAccuracy.set('default,0.85');
+    logger.info('PI prediction model accuracy validated'');
   }
 
-  private mapConfidenceToLevel(confidence: number): 'low|medium|high' {'
-    if (confidence < 0.6) return 'low;
-    if (confidence < 0.8) return 'medium;
-    return 'high;
+  private mapConfidenceToLevel(confidence: number):'low| medium| high '{
+    if (confidence < 0.6) return'low';
+    if (confidence < 0.8) return'medium';
+    return'high';
   }
 
   private async storePredictionForLearning(
@@ -866,7 +865,7 @@ export class PIPlanningSuccessPredictionService {
 
   private async recalibrateModels(): Promise<void> {
     // Recalibrate models based on new data
-    logger.info('Recalibrated PI prediction models');'
+    logger.info('Recalibrated PI prediction models'');
   }
 
   private async getCurrentPIMetrics(piId: string): Promise<any> {
@@ -881,11 +880,11 @@ export class PIPlanningSuccessPredictionService {
 
   private calculateCurrentRiskLevel(
     risks: RiskFactor[]
-  ): 'low|medium|high|critical' {'
-    if (risks.some((r) => r.severity === 'critical')) return 'critical';
-    if (risks.some((r) => r.severity === 'high')) return 'high';
-    if (risks.some((r) => r.severity === 'medium')) return 'medium';
-    return 'low;
+  ):'low'|'medium'|'high'|'critical '{
+    if (risks.some((r) => r.severity ==='critical')) return'critical';
+    if (risks.some((r) => r.severity ==='high')) return'high';
+    if (risks.some((r) => r.severity ==='medium')) return'medium';
+    return'low';
   }
 
   private async generateRiskActions(risks: RiskFactor[]): Promise<string[]> {
@@ -915,7 +914,7 @@ export class PIPlanningSuccessPredictionService {
     return {
       overall: 0.8,
       dataQuality: 0.85,
-      modelAccuracy: this.modelAccuracy.get('default')||0.8,
+      modelAccuracy: this.modelAccuracy.get('default')|| 0.8,
       uncertaintyFactors: ['Limited historical data'],
       confidenceInterval: {
         lower: predictions.overallSuccess - 0.1,
@@ -937,8 +936,8 @@ export class PIPlanningSuccessPredictionService {
   ): string[] {
     const blockers: string[] = [];
     if (objective.dependencies.length > 3)
-      blockers.push('High dependency count');'
-    if (team.technicalDebt > 7) blockers.push('Technical debt burden');'
+      blockers.push('High dependency count'');
+    if (team.technicalDebt > 7) blockers.push('Technical debt burden'');
     return blockers;
   }
 
@@ -947,16 +946,16 @@ export class PIPlanningSuccessPredictionService {
     team: TeamCapacityInput
   ): string[] {
     const factors: string[] = [];
-    if (team.domainExperience > 8) factors.push('High domain expertise');'
-    if (objective.complexity < 6) factors.push('Manageable complexity');'
+    if (team.domainExperience > 8) factors.push('High domain expertise'');
+    if (objective.complexity < 6) factors.push('Manageable complexity'');
     return factors;
   }
 
   private generateObjectiveAlternatives(objective: PIObjectiveInput): string[] {
     return [
-      'Reduce scope',
-      'Split into smaller objectives',
-      'Defer non-critical features',
+     'Reduce scope,
+     'Split into smaller objectives,
+     'Defer non-critical features,
     ];
   }
 
@@ -964,9 +963,9 @@ export class PIPlanningSuccessPredictionService {
     dependency: DependencyInput
   ): string[] {
     return [
-      'Create alternative solution',
-      'Increase communication frequency',
-      'Add buffer time',
+     'Create alternative solution,
+     'Increase communication frequency,
+     'Add buffer time,
     ];
   }
 }

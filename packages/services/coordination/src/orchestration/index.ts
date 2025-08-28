@@ -6,18 +6,16 @@
 
 // Task flow management types
 export type TaskState = 
-  | 'backlog'
-  | 'analysis' 
-  | 'development'
-  | 'testing'
-  | 'review'
-  | 'deployment'
-  | 'done'
-  | 'blocked'
-  | 'expedite';
-
-export type TaskPriority = 'critical' | 'high' | 'medium' | 'low';
-
+|'backlog
+|'analysis '
+|'development
+|'testing
+|'review
+|'deployment
+|'done
+|'blocked
+|'expedite';
+export type TaskPriority ='critical'|'high'|'medium'|'low';
 export interface WorkflowTask {
   id: string;
   title: string;
@@ -58,7 +56,7 @@ export class TaskOrchestrator {
     this.wipLimits = wipLimits;
   }
 
-  async createTask(task: Omit<WorkflowTask, 'id' | 'createdAt' | 'updatedAt'>): Promise<WorkflowTask> {
+  async createTask(task: Omit<WorkflowTask,'id'|'createdAt'|'updatedAt'>): Promise<WorkflowTask> {
     const newTask: WorkflowTask = {
       id: Math.random().toString(36),
       ...task,
@@ -103,7 +101,7 @@ export interface EpicManagement {
   id: string;
   title: string;
   description: string;
-  status: 'funnel' | 'analyzing' | 'backlog' | 'implementing' | 'done';
+  status:'funnel'|'analyzing'|'backlog'|'implementing'|'done';
   features: FeatureManagement[];
 }
 
@@ -112,7 +110,7 @@ export interface FeatureManagement {
   title: string;
   description: string;
   epicId: string;
-  status: 'backlog' | 'implementing' | 'validating' | 'deployed' | 'released';
+  status:'backlog'|'implementing'|'validating'|'deployed'|'released';
   stories: StoryManagement[];
 }
 
@@ -122,7 +120,7 @@ export interface StoryManagement {
   description: string;
   featureId: string;
   points: number;
-  status: 'backlog' | 'defined' | 'in_progress' | 'completed' | 'accepted';
+  status:'backlog'|'defined'|'in_progress'|'completed'|'accepted';
 }
 
 // Enterprise coordinator
@@ -131,7 +129,7 @@ export class EnterpriseCoordinator {
   private features: Map<string, FeatureManagement> = new Map();
   private stories: Map<string, StoryManagement> = new Map();
 
-  async createEpic(epic: Omit<EpicManagement, 'id' | 'features'>): Promise<EpicManagement> {
+  async createEpic(epic: Omit<EpicManagement,'id'|'features'>): Promise<EpicManagement> {
     const newEpic: EpicManagement = {
       id: Math.random().toString(36),
       ...epic,
@@ -142,7 +140,7 @@ export class EnterpriseCoordinator {
     return newEpic;
   }
 
-  async createFeature(feature: Omit<FeatureManagement, 'id' | 'stories'>): Promise<FeatureManagement> {
+  async createFeature(feature: Omit<FeatureManagement,'id'|'stories'>): Promise<FeatureManagement> {
     const newFeature: FeatureManagement = {
       id: Math.random().toString(36),
       ...feature,
@@ -160,7 +158,7 @@ export class EnterpriseCoordinator {
     return newFeature;
   }
 
-  async createStory(story: Omit<StoryManagement, 'id'>): Promise<StoryManagement> {
+  async createStory(story: Omit<StoryManagement,'id'>): Promise<StoryManagement> {
     const newStory: StoryManagement = {
       id: Math.random().toString(36),
       ...story

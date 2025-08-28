@@ -9,7 +9,6 @@
  */
 
 import { generateNanoId } from '@claude-zen/foundation';
-
 /**
  * Professional secure ID generation utilities
  */
@@ -47,7 +46,7 @@ export class SecureIdGenerator {
    */
   static generateUrlSafe(size: number = 21): string {
     const urlSafeAlphabet =
-      '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_;
+     '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_';
     return customAlphabet(urlSafeAlphabet, size)();
   }
 
@@ -55,6 +54,6 @@ export class SecureIdGenerator {
    * Generate numeric-only ID
    */
   static generateNumeric(size: number = 12): string {
-    return customAlphabet('0123456789', size)();'
+    return customAlphabet('0123456789,size)(');
   }
 }

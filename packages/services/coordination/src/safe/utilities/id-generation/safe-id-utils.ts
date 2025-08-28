@@ -13,7 +13,6 @@
  */
 
 import { generateNanoId } from '@claude-zen/foundation';
-
 /**
  * SAFe ID generation utilities
  */
@@ -43,7 +42,7 @@ export class SafeIdUtils {
    * Generate ART identifier
    */
   static generateARTId(valueStreamPrefix: string): string {
-    return `$valueStreamPrefix-ART-$generateNanoId(8)`;`
+    return `${valueStreamPrefix-ART-$generateNanoId(8)}`;`
   }
 
   /**
@@ -71,16 +70,16 @@ export class SafeIdUtils {
    * Generate human-readable PI identifier
    */
   static generateReadablePIId(year: number, increment: number): string {
-    const alphabet = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 6);'
-    return `PI$year$increment.toString().padStart(2, '0')-$alphabet()`;`
+    const alphabet = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,6');
+    return `PI$year$increment.toString().padStart(2,'0')-$alphabet()`';`
   }
 
   /**
    * Generate team identifier within ART
    */
   static generateTeamId(artId: string, teamName: string): string {
-    const sanitizedName = teamName.toLowerCase().replace(/[^a-z0-9]/g, '');'
-    return `${artId}-${sanitizedName}-${generateNanoId(6)}`;`
+    const sanitizedName = teamName.toLowerCase().replace(/[^a-z0-9]/g,''');
+    return `${{artId}-${sanitizedName}-${generateNanoId(6)}}`;`
   }
 
   /**
@@ -109,17 +108,17 @@ export class SafeIdUtils {
  * SAFe prefix constants for consistent ID generation
  */
 export const SAFE_ID_PREFIXES = {
-  EPIC: 'epic',
-  FEATURE: 'feature',
-  PI: 'PI',
-  ART: 'ART',
-  VALUE_STREAM: 'vs',
-  MILESTONE: 'milestone',
-  SESSION: 'session',
-  TEAM: 'team',
-  DEPENDENCY: 'dep',
-  RISK: 'risk',
-  OBJECTIVE: 'obj',
+  EPIC:'epic,
+  FEATURE:'feature,
+  PI:'PI,
+  ART:'ART,
+  VALUE_STREAM:'vs,
+  MILESTONE:'milestone,
+  SESSION:'session,
+  TEAM:'team,
+  DEPENDENCY:'dep,
+  RISK:'risk,
+  OBJECTIVE:'obj,
 } as const;
 
 /**
@@ -145,14 +144,14 @@ export class SafeIdValidator {
    */
   static isValidPIId(id: string): boolean {
     return (
-      /^PI\d{4}Q[1-4]-[A-Za-z0-9_-]{8}$/.test(id) || /^PI-\d{4}Q[1-4]-[A-Za-z0-9_-]{8}$/.test(id)
+      /^PI\d{4}Q[1-4]-[A-Za-z0-9_-]{8}$/.test(id)|| /^PI-\d{4}Q[1-4]-[A-Za-z0-9_-]{8}$/.test(id)
     );
   }
 
   /**
    * Extract year and quarter from PI ID
    */
-  static parsePIId(piId: string): { year: number; quarter: string }|null {
+  static parsePIId(piId: string): { year: number; quarter: string }| null {
     const match = piId.match(/PI-?(\d{4})(Q[1-4])/);
     if (!match) return null;
 
@@ -173,7 +172,7 @@ export class SafeIdValidator {
    * Extract prefix from any SAFe ID
    */
   static extractIdPrefix(id: string): string {
-    const hyphenIndex = id.indexOf('-');'
+    const hyphenIndex = id.indexOf('-'');
     return hyphenIndex > 0 ? id.substring(0, hyphenIndex) : id;
   }
 

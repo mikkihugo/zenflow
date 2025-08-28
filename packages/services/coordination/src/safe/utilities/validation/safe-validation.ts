@@ -13,7 +13,6 @@
  */
 
 import { z } from '@claude-zen/foundation';
-
 // =============================================================================
 // CORE SAFE DOMAIN SCHEMAS
 // =============================================================================
@@ -21,30 +20,30 @@ import { z } from '@claude-zen/foundation';
 /**
  * SAFe priority levels schema
  */
-export const SafePrioritySchema = z.enum(['critical', 'high', 'medium', 'low']);'
+export const SafePrioritySchema = z.enum(['critical,'high,'medium,'low]);
 
 /**
  * SAFe epic status schema
  */
 export const EpicStatusSchema = z.enum([
-  'draft',
-  'analysis',
-  'portfolio-backlog',
-  'implementing',
-  'done',
-  'cancelled',
+ 'draft,
+ 'analysis,
+ 'portfolio-backlog,
+ 'implementing,
+ 'done,
+ 'cancelled,
 ]);
 
 /**
  * SAFe feature status schema
  */
 export const FeatureStatusSchema = z.enum([
-  'backlog',
-  'analysis',
-  'development',
-  'testing',
-  'deployment',
-  'done',
+ 'backlog,
+ 'analysis,
+ 'development,
+ 'testing,
+ 'deployment,
+ 'done,
 ]);
 
 /**
@@ -142,16 +141,16 @@ export const ProgramIncrementSchema = z
     risks: z.array(
       z.object({
         description: z.string(),
-        impact: z.enum(['high', 'medium', 'low']),
+        impact: z.enum(['high,'medium,'low']),
         mitigation: z.string(),
       })
     ),
-    status: z.enum(['planning', 'execution', 'innovation', 'completed']),
+    status: z.enum(['planning,'execution,'innovation,'completed']),
     createdAt: z.date(),
     updatedAt: z.date(),
   })
   .refine((data) => data.endDate > data.startDate, {
-    message: 'End date must be after start date',
+    message:'End date must be after start date,
   });
 
 /**
@@ -252,7 +251,7 @@ export class SafeValidationUtils {
 
     // Create adjacency list
     const _graph = new Map<string, string[]>();
-    const epicIds = new Set(epics.map((e) => e.id));
+    const epicIds = new Set(epics.map((e) => e.id);
 
     epics.forEach((epic) => {
       // Check if dependencies exist
@@ -282,7 +281,7 @@ export class SafeValidationUtils {
       visited.add(epicId);
       recursionStack.add(epicId);
 
-      const dependencies = graph.get(epicId) || [];
+      const dependencies = graph.get(epicId)|| [];
       for (const depId of dependencies) {
         if (hasCycle(depId)) {
           return true;

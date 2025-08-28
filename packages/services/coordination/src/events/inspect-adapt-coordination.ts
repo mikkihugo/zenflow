@@ -49,19 +49,17 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { getDatabaseSystem, } from '@claude-zen/infrastructure';
+import { DatabaseProvider } from '@claude-zen/database';
 import { getBrainSystem } from '@claude-zen/intelligence';
 import { TaskApprovalSystem } from '../agui/task-approval-system.js';
 import type { ApprovalGateManager } from '../core/approval-gate-manager.js';
 import type { SafeFrameworkIntegration } from '../integrations/safe-framework-integration.js';
-
 import type {
   ApprovalGateId,
   ApprovalGateRequirement,
   TaskId,
 } from '../types/index.js';
-
-const _logger = getLogger('InspectAdaptCoordination');'
+const _logger = getLogger('InspectAdaptCoordination');
 
 // ============================================================================
 // INSPECT & ADAPT TYPES AND INTERFACES
@@ -121,7 +119,7 @@ export interface InspectAdaptConfig {
       enabled: boolean;
       duration: number; // hours
       maxProblemsToAddress: number;
-      techniques: (|'fishbone|5_whys|root_cause_analysis|solution_brainstorming''
+      techniques: (|'fishbone| 5_whys| root_cause_analysis| solution_brainstorming'
       )[];
     };
   };
@@ -205,7 +203,7 @@ export interface PIMetrics {
   quality: {
     defectRate: number;
     escapedDefects: number;
-    technicalDebtTrend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|degrading;
+    technicalDebtTrend:'improving'|'stable'|'declining'|'improving'|'stable'|'declining'|'degrading';
     testCoverage: number;
     automationCoverage: number;
   };
@@ -262,17 +260,16 @@ export interface IASystemProblem {
   description: string;
 
   // Problem categorization
-  category:|'process|technical|organizational|tooling|communication|quality;
-  scope: 'team|cross_team|art|portfolio|enterprise;
-  severity: 'low|medium|high|critical;
-
+  category:|'process| technical| organizational| tooling| communication'|'quality';
+  scope:'team| cross_team| art| portfolio'|'enterprise';
+  severity: low| medium| high'|'critical';
   // Impact assessment
   impact: {
     affectedTeams: string[];
     affectedObjectives: string[];
     businessImpact: string;
     estimatedCost: string; // opportunity cost
-    frequencyOfOccurrence: 'rare|occasional|frequent|constant;
+    frequencyOfOccurrence:'rare| occasional| frequent'|'constant';
   };
 
   // Problem context
@@ -304,8 +301,7 @@ export interface IASystemProblem {
  */
 export interface RootCauseAnalysis {
   problemId: string;
-  technique: 'fishbone|5_whys|root_cause_analysis;
-
+  technique:'fishbone| 5_whys'|'root_cause_analysis';
   // Analysis process
   process: {
     facilitator: string;
@@ -377,10 +373,10 @@ export interface ProposedSolution {
 
   // Feasibility
   feasibility: {
-    technicalFeasibility: 'low' | 'medium' | 'high';
-    organizationalFeasibility: 'low' | 'medium' | 'high';
-    costFeasibility: 'low' | 'medium' | 'high';
-    timelineFeasibility: 'low' | 'medium' | 'high';
+    technicalFeasibility:'low'|'medium'|'high';
+    organizationalFeasibility:'low'|'medium'|'high';
+    costFeasibility:'low'|'medium'|'high';
+    timelineFeasibility:'low'|'medium'|'high';
   };
 
   // Workshop evaluation
@@ -423,7 +419,7 @@ export interface ImprovementBacklogItem {
     acceptanceCriteria: string[];
     businessValue: number; // 1-10
     effortEstimate: number; // story points or days
-    priority: 'low|medium|high|critical;
+    priority: low| medium| high'|'critical';
   };
 
   // Implementation planning
@@ -447,7 +443,7 @@ export interface ImprovementBacklogItem {
 
   // Tracking
   tracking: {
-    status:|'backlog|planned|in_progress|completed|deferred|cancelled;
+    status:|'backlog| planned| in_progress| completed| deferred'|'cancelled';
     progressUpdates: Array<{
       date: Date;
       update: string;
@@ -469,7 +465,7 @@ export interface InspectAdaptOutcomes {
     completed: boolean;
     actualDuration: number; // hours
     participantCount: number;
-    partsCompleted: ('pi_demo|measurement_review|problem_solving')[];'
+    partsCompleted: ('pi_demo| measurement_review| problem_solving')[]';
   };
 
   // Problems addressed
@@ -535,7 +531,7 @@ export interface QualityMetrics {
 
   technicalDebt: {
     technicalDebtItems: number;
-    technicalDebtTrend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|degrading;
+    technicalDebtTrend:'improving'|'stable'|'declining'|'improving'|'stable'|'declining'|'degrading';
     refactoringEffort: number; // story points
   };
 }
@@ -574,7 +570,7 @@ export interface TeamQualityMetrics {
  * improvement backlog management, and integration with TaskMaster approval workflows.
  */
 export class InspectAdaptCoordination {
-  private readonly logger = getLogger('InspectAdaptCoordination');'
+  private readonly logger = getLogger('InspectAdaptCoordination');
   private taskApprovalSystem: TaskApprovalSystem;
 
   constructor(
@@ -590,11 +586,11 @@ export class InspectAdaptCoordination {
    */
   async initialize(): Promise<void> {
     try {
-      this.logger.info('Initializing Inspect & Adapt Coordination...');'
+      this.logger.info('Initializing Inspect & Adapt Coordination...');
 
       // Initialize infrastructure
-      const dbSystem = await getDatabaseSystem();
-      this.database = dbSystem.createProvider('sql');'
+      const dbSystem = await DatabaseProvider.create();
+      this.database = dbSystem.createProvider('sql');
 
       this.eventSystem = await getEventSystem();
       this.brainSystem = await getBrainSystem();
@@ -613,10 +609,10 @@ export class InspectAdaptCoordination {
       // Register event handlers
       this.registerEventHandlers();
 
-      this.logger.info('Inspect & Adapt Coordination initialized successfully');'
+      this.logger.info('Inspect & Adapt Coordination initialized successfully');
     } catch (error) {
       this.logger.error(
-        'Failed to initialize Inspect & Adapt Coordination',
+       'Failed to initialize Inspect & Adapt Coordination,
         error
       );
       throw error;
@@ -638,7 +634,7 @@ export class InspectAdaptCoordination {
     const workshopId = config.id;
     const _coordinationTraceabilityId = `inspect-adapt-${workshopId}-${Date.now()}`;`
 
-    this.logger.info('Scheduling Inspect & Adapt Workshop', {'
+    this.logger.info('Scheduling Inspect & Adapt Workshop,{
       workshopId,
       artName: config.artName,
       piNumber: config.piNumber,
@@ -698,7 +694,7 @@ export class InspectAdaptCoordination {
       throw new Error(`I&A Workshop $workshopIdnot found`);`
     }
 
-    this.logger.info('Executing PI System Demo Review', {'
+    this.logger.info('Executing PI System Demo Review,{
       workshopId,
       piNumber: config.piNumber,
       demoCompleted: demoResults.completed,
@@ -751,7 +747,7 @@ export class InspectAdaptCoordination {
       throw new Error(`I&A Workshop ${workshopId} not found`);`
     }
 
-    this.logger.info('Executing Measurement Review', {'
+    this.logger.info('Executing Measurement Review,{
       workshopId,
       piNumber: config.piNumber,
     });
@@ -823,7 +819,7 @@ export class InspectAdaptCoordination {
       throw new Error(`I&A Workshop $workshopIdnot found`);`
     }
 
-    this.logger.info('Executing Problem-Solving Workshop', {'
+    this.logger.info('Executing Problem-Solving Workshop,{
       workshopId,
       maxProblems: config.structure.problemSolvingWorkshop.maxProblemsToAddress,
       additionalProblems: additionalProblems.length,
@@ -912,7 +908,7 @@ export class InspectAdaptCoordination {
       throw new Error(`I&A Workshop ${workshopId} not found`);`
     }
 
-    this.logger.info('Completing Inspect & Adapt Workshop', {'
+    this.logger.info('Completing Inspect & Adapt Workshop,{
       workshopId,
       actualDuration: executionSummary.actualDuration,
       overallSatisfaction: executionSummary.overallSatisfaction,
@@ -962,7 +958,7 @@ export class InspectAdaptCoordination {
    */
   async getInspectAdaptStatus(workshopId: string): Promise<{
     workshopStatus: {
-      phase:|'preparation|pi_demo|measurement_review|problem_solving|completed;
+      phase:|'preparation| pi_demo| measurement_review| problem_solving'|'completed';
       progress: number; // percentage
       currentActivity: string;
       nextSteps: string[];
@@ -995,9 +991,9 @@ export class InspectAdaptCoordination {
     const statusData = await this.loadWorkshopStatus(workshopId);
 
     // Analyze problem-solving progress
-    const problemAnalyses = this.problemAnalysis.get(workshopId)||[];
-    const solutions = this.solutionBrainstorming.get(workshopId)||[];
-    const improvementItems = this.improvementBacklog.get(workshopId)||[];
+    const problemAnalyses = this.problemAnalysis.get(workshopId)|| [];
+    const solutions = this.solutionBrainstorming.get(workshopId)|| [];
+    const improvementItems = this.improvementBacklog.get(workshopId)|| [];
 
     // Assess participant engagement
     const participantEngagement = await this.assessParticipantEngagement(
@@ -1028,108 +1024,108 @@ export class InspectAdaptCoordination {
 
   private async createInspectAdaptTables(): Promise<void> {
     // Create tables for I&A coordination
-    await this.database.schema.createTableIfNotExists('ia_workshops',
+    await this.database.schema.createTableIfNotExists('ia_workshops,
       (table: any) => {
-        table.uuid('id').primary();'
-        table.string('workshop_id').notNullable().unique();'
-        table.string('art_name').notNullable();'
-        table.integer('pi_number').notNullable();'
-        table.timestamp('workshop_date').notNullable();'
-        table.json('config').notNullable();'
-        table.json('outcomes').nullable();'
-        table.string('status').notNullable();'
-        table.timestamp('created_at').notNullable();'
-        table.timestamp('completed_at').nullable();'
-        table.index(['art_name', 'pi_number']);'
+        table.uuid('id').primary(');
+        table.string('workshop_id').notNullable().unique(');
+        table.string('art_name').notNullable(');
+        table.integer('pi_number').notNullable(');
+        table.timestamp('workshop_date').notNullable(');
+        table.json('config').notNullable(');
+        table.json('outcomes').nullable(');
+        table.string('status').notNullable(');
+        table.timestamp('created_at').notNullable(');
+        table.timestamp('completed_at').nullable(');
+        table.index(['art_name,'pi_number]);
       }
     );
 
     await this.database.schema.createTableIfNotExists(
-      'ia_system_problems',
+     'ia_system_problems,
       (table: any) => {
-        table.uuid('id').primary();'
-        table.string('problem_id').notNullable().unique();'
-        table.string('workshop_id').notNullable();'
-        table.string('category').notNullable();'
-        table.string('scope').notNullable();'
-        table.string('severity').notNullable();'
-        table.json('impact').notNullable();'
-        table.json('context').notNullable();'
-        table.json('workshop_processing').notNullable();'
-        table.boolean('requires_approval').notNullable();'
-        table.string('approval_gate_id').nullable();'
-        table.timestamp('created_at').notNullable();'
-        table.index(['workshop_id', 'severity', 'scope']);'
+        table.uuid('id').primary(');
+        table.string('problem_id').notNullable().unique(');
+        table.string('workshop_id').notNullable(');
+        table.string('category').notNullable(');
+        table.string('scope').notNullable(');
+        table.string('severity').notNullable(');
+        table.json('impact').notNullable(');
+        table.json('context').notNullable(');
+        table.json('workshop_processing').notNullable(');
+        table.boolean('requires_approval').notNullable(');
+        table.string('approval_gate_id').nullable(');
+        table.timestamp('created_at').notNullable(');
+        table.index(['workshop_id,'severity,'scope]);
       }
     );
 
     await this.database.schema.createTableIfNotExists(
-      'ia_root_cause_analyses',
+     'ia_root_cause_analyses,
       (table: any) => {
-        table.uuid('id').primary();'
-        table.string('problem_id').notNullable();'
-        table.string('workshop_id').notNullable();'
-        table.string('technique').notNullable();'
-        table.json('process_data').notNullable();'
-        table.json('analysis_results').notNullable();'
-        table.json('root_causes').notNullable();'
-        table.json('validation').notNullable();'
-        table.timestamp('created_at').notNullable();'
-        table.index(['workshop_id', 'problem_id']);'
+        table.uuid('id').primary(');
+        table.string('problem_id').notNullable(');
+        table.string('workshop_id').notNullable(');
+        table.string('technique').notNullable(');
+        table.json('process_data').notNullable(');
+        table.json('analysis_results').notNullable(');
+        table.json('root_causes').notNullable(');
+        table.json('validation').notNullable(');
+        table.timestamp('created_at').notNullable(');
+        table.index(['workshop_id,'problem_id]);
       }
     );
 
     await this.database.schema.createTableIfNotExists(
-      'ia_improvement_backlog',
+     'ia_improvement_backlog,
       (table: any) => {
-        table.uuid('id').primary();'
-        table.string('item_id').notNullable().unique();'
-        table.string('workshop_id').notNullable();'
-        table.string('problem_id').notNullable();'
-        table.string('solution_id').notNullable();'
-        table.json('source_info').notNullable();'
-        table.json('details').notNullable();'
-        table.json('planning').notNullable();'
-        table.json('approval').notNullable();'
-        table.json('tracking').notNullable();'
-        table.string('status').notNullable();'
-        table.timestamp('created_at').notNullable();'
-        table.timestamp('completed_at').nullable();'
-        table.index(['workshop_id', 'status', 'planning']);'
+        table.uuid('id').primary(');
+        table.string('item_id').notNullable().unique(');
+        table.string('workshop_id').notNullable(');
+        table.string('problem_id').notNullable(');
+        table.string('solution_id').notNullable(');
+        table.json('source_info').notNullable(');
+        table.json('details').notNullable(');
+        table.json('planning').notNullable(');
+        table.json('approval').notNullable(');
+        table.json('tracking').notNullable(');
+        table.string('status').notNullable(');
+        table.timestamp('created_at').notNullable(');
+        table.timestamp('completed_at').nullable(');
+        table.index(['workshop_id,'status,'planning]);
       }
     );
 
     await this.database.schema.createTableIfNotExists(
-      'ia_traceability',
+     'ia_traceability,
       (table: any) => {
-        table.uuid('id').primary();'
-        table.string('workshop_id').notNullable();'
-        table.string('activity_type').notNullable();'
-        table.json('activity_data').notNullable();'
-        table.json('participant_engagement').notNullable();'
-        table.json('outcomes').notNullable();'
-        table.json('learning_data').notNullable();'
-        table.timestamp('created_at').notNullable();'
-        table.index(['workshop_id', 'activity_type']);'
+        table.uuid('id').primary(');
+        table.string('workshop_id').notNullable(');
+        table.string('activity_type').notNullable(');
+        table.json('activity_data').notNullable(');
+        table.json('participant_engagement').notNullable(');
+        table.json('outcomes').notNullable(');
+        table.json('learning_data').notNullable(');
+        table.timestamp('created_at').notNullable(');
+        table.index(['workshop_id,'activity_type]);
       }
     );
   }
 
   private registerEventHandlers(): void {
     this.eventSystem.on(
-      'ia:problem_identified',
+     'ia:problem_identified,
       this.handleProblemIdentified.bind(this)
     );
     this.eventSystem.on(
-      'ia:root_cause_found',
+     'ia:root_cause_found,
       this.handleRootCauseFound.bind(this)
     );
     this.eventSystem.on(
-      'ia:solution_selected',
+     'ia:solution_selected,
       this.handleSolutionSelected.bind(this)
     );
     this.eventSystem.on(
-      'ia:improvement_created',
+     'ia:improvement_created,
       this.handleImprovementCreated.bind(this)
     );
   }
@@ -1165,9 +1161,9 @@ export class InspectAdaptCoordination {
       traceabilityId
     );
     gates.push({
-      type: 'workshop_readiness',
+      type:'workshop_readiness,
       gateId: readinessGate,
-      priority: 'high',
+      priority: high,
     });
 
     // Data preparation gate
@@ -1176,9 +1172,9 @@ export class InspectAdaptCoordination {
       traceabilityId
     );
     gates.push({
-      type: 'data_preparation',
+      type:'data_preparation,
       gateId: dataGate,
-      priority: 'high',
+      priority: high,
     });
 
     // Facilitation readiness gate
@@ -1187,9 +1183,9 @@ export class InspectAdaptCoordination {
       traceabilityId
     );
     gates.push({
-      type: 'facilitation_readiness',
+      type:'facilitation_readiness,
       gateId: facilitationGate,
-      priority: 'medium',
+      priority: medium,
     });
 
     return gates;
@@ -1221,12 +1217,12 @@ export class InspectAdaptCoordination {
         duration: config.duration,
         participantCount: this.countTotalParticipants(config),
         readinessChecklist: [
-          'PI System Demo completed and reviewed',
-          'PI metrics collected and validated',
-          'Team retrospectives completed',
-          'Problems identified and prioritized',
-          'Facilitation materials prepared',
-          'Participants notified and confirmed',
+         'PI System Demo completed and reviewed,
+         'PI metrics collected and validated,
+         'Team retrospectives completed,
+         'Problems identified and prioritized,
+         'Facilitation materials prepared,
+         'Participants notified and confirmed,
         ],
         traceabilityId,
       },
@@ -1258,8 +1254,8 @@ export class InspectAdaptCoordination {
       description: `Approve data preparation and metrics collection for I&A workshop`,`
       requiredApprovers: [
         config.facilitators.rte,
-        'metrics-lead', // Would be resolved from ART structure'
-        'data-analyst', // Would be resolved from ART structure'
+       'metrics-lead,// Would be resolved from ART structure
+       'data-analyst,// Would be resolved from ART structure
       ],
       minimumApprovals: 2,
       isRequired: true,
@@ -1267,11 +1263,11 @@ export class InspectAdaptCoordination {
       metadata: {
         workshopId: config.id,
         dataRequirements: [
-          'PI metrics collected and validated',
-          'Team retrospective data gathered',
-          'Quality metrics compiled',
-          'Stakeholder feedback consolidated',
-          'Problem reports categorized',
+         'PI metrics collected and validated,
+         'Team retrospective data gathered,
+         'Quality metrics compiled,
+         'Stakeholder feedback consolidated,
+         'Problem reports categorized,
         ],
         piContext: config.piContext,
         traceabilityId,
@@ -1315,12 +1311,12 @@ export class InspectAdaptCoordination {
       metadata: {
         workshopId: config.id,
         facilitationChecklist: [
-          'Workshop agenda finalized',
-          'Problem-solving techniques selected',
-          'Facilitation materials prepared',
-          'Room setup and tools configured',
-          'Backup facilitators identified',
-          'Workshop techniques validated',
+         'Workshop agenda finalized,
+         'Problem-solving techniques selected,
+         'Facilitation materials prepared,
+         'Room setup and tools configured,
+         'Backup facilitators identified,
+         'Workshop techniques validated,
         ],
         workshopStructure: config.structure,
         techniques: config.structure.problemSolvingWorkshop.techniques,
@@ -1352,7 +1348,7 @@ export class InspectAdaptCoordination {
     const scoredProblems = problems.map((problem) => ({
       ...problem,
       score: this.calculateProblemScore(problem),
-    }));
+    });
 
     // Sort by score and take top problems
     return scoredProblems
@@ -1364,7 +1360,7 @@ export class InspectAdaptCoordination {
           ...problem.workshop,
           selectedForAnalysis: true,
         },
-      }));
+      });
   }
 
   private calculateProblemScore(problem: IASystemProblem): number {
@@ -1398,7 +1394,7 @@ export class InspectAdaptCoordination {
     score += frequencyWeights[problem.impact.frequencyOfOccurrence] * 2;
 
     // Voting weight
-    score += (problem.workshop.priorityVotes||0) * 5;
+    score += (problem.workshop.priorityVotes|| 0) * 5;
 
     return score;
   }
@@ -1431,24 +1427,24 @@ export class InspectAdaptCoordination {
   private selectRootCauseTechnique(
     problem: IASystemProblem,
     config: InspectAdaptConfig
-  ):'fishbone|5_whys|root_cause_analysis' {'
+  ):'fishbone| 5_whys| root_cause_analysis '{
     // Choose technique based on problem characteristics
     if (
-      problem.category === 'process'||problem.category ==='organizational''
+      problem.category ==='process'|| problem.category ===organizational'
     ) {
-      return 'fishbone'; // Good for complex multi-factor problems'
+      return'fishbone'; // Good for complex multi-factor problems
     } else if (
-      problem.severity === 'critical'||problem.scope ==='enterprise''
+      problem.severity ==='critical'|| problem.scope ===enterprise'
     ) {
-      return 'root_cause_analysis'; // Comprehensive for critical issues'
+      return'root_cause_analysis'; // Comprehensive for critical issues
     } else {
-      return '5_whys'; // Simple and effective for most issues'
+      return'5_whys'; // Simple and effective for most issues
     }
   }
 
   private async executeRootCauseAnalysis(
     problem: IASystemProblem,
-    technique: 'fishbone|5_whys|root_cause_analysis',
+    technique:'fishbone| 5_whys| root_cause_analysis,
     config: InspectAdaptConfig
   ): Promise<RootCauseAnalysis> {
     const analysis: RootCauseAnalysis = {
@@ -1461,25 +1457,25 @@ export class InspectAdaptCoordination {
         analysisDate: new Date(),
       },
       rootCauses: {
-        primary: 'Analysis pending',
+        primary:'Analysis pending,
         secondary: [],
         contributing: [],
       },
       validation: {
         rootCausesValidated: false,
-        validationMethod: 'group_consensus',
+        validationMethod:'group_consensus,
         validatedBy: [],
         confidenceLevel: 7,
       },
     };
 
     // Execute specific technique
-    if (technique === 'fishbone') {'
+    if (technique ==='fishbone){
       analysis.fishboneCategories = await this.executeFishboneAnalysis(problem);
       analysis.rootCauses = this.extractRootCausesFromFishbone(
         analysis.fishboneCategories
       );
-    } else if (technique === '5_whys') {'
+    } else if (technique ==='5_whys){
       analysis.fiveWhysChain = await this.executeFiveWhysAnalysis(problem);
       analysis.rootCauses = this.extractRootCausesFromFiveWhys(
         analysis.fiveWhysChain
@@ -1509,9 +1505,9 @@ export class InspectAdaptCoordination {
     });
 
     // Add domain experts based on problem category
-    if (problem.category === 'technical') {'
+    if (problem.category ==='technical){
       participants.push(...config.participants.systemArchitects);
-    } else if (problem.category === 'process') {'
+    } else if (problem.category ==='process){
       participants.push(...config.facilitators.coaches);
     }
 
@@ -1522,7 +1518,7 @@ export class InspectAdaptCoordination {
   private async handleProblemIdentified(
     problem: IASystemProblem
   ): Promise<void> {
-    this.logger.info('Problem identified for I&A', {'
+    this.logger.info('Problem identified for I&A,{
       problemId: problem.id,
       severity: problem.severity,
       scope: problem.scope,
@@ -1532,7 +1528,7 @@ export class InspectAdaptCoordination {
   private async handleRootCauseFound(
     analysis: RootCauseAnalysis
   ): Promise<void> {
-    this.logger.info('Root cause analysis completed', {'
+    this.logger.info('Root cause analysis completed,{
       problemId: analysis.problemId,
       technique: analysis.technique,
       confidenceLevel: analysis.validation.confidenceLevel,
@@ -1542,7 +1538,7 @@ export class InspectAdaptCoordination {
   private async handleSolutionSelected(
     solution: ProposedSolution
   ): Promise<void> {
-    this.logger.info('Solution selected for implementation', {'
+    this.logger.info('Solution selected for implementation,{
       solutionId: solution.id,
       problemId: solution.problemId,
       votes: solution.evaluation.votes,
@@ -1552,7 +1548,7 @@ export class InspectAdaptCoordination {
   private async handleImprovementCreated(
     item: ImprovementBacklogItem
   ): Promise<void> {
-    this.logger.info('Improvement backlog item created', {'
+    this.logger.info('Improvement backlog item created,{
       itemId: item.id,
       priority: item.details.priority,
       targetPI: item.planning.targetPI,
@@ -1571,10 +1567,10 @@ export class InspectAdaptCoordination {
     config: InspectAdaptConfig,
     traceabilityId: string
   ): Promise<void> {
-    await this.database('ia_traceability').insert({'
+    await this.database('ia_traceability').insert({
       id: traceabilityId,
       workshop_id: config.id,
-      activity_type: 'workshop_preparation',
+      activity_type:'workshop_preparation,
       activity_data: JSON.stringify(config),
       participant_engagement: JSON.stringify({}),
       outcomes: JSON.stringify({}),
@@ -1615,17 +1611,17 @@ export class InspectAdaptCoordination {
     };
   }
 
-  private async analyzeFlowMetrics(flow: PIMetrics['flow']): Promise<any> {'
+  private async analyzeFlowMetrics(flow: PIMetrics['flow']): Promise<any> {
     return {
       efficiency: 75, // percentage
     };
   }
 
   private async analyzeQualityTrends(
-    quality: PIMetrics['quality']'
+    quality: PIMetrics['quality']
   ): Promise<any> {
     return {
-      trend: 'improving' | 'stable' | 'declining'',
+      trend:'improving'|'stable'|'declining,
     };
   }
 
@@ -1692,7 +1688,7 @@ export class InspectAdaptCoordination {
         completed: true,
         actualDuration: execution.actualDuration,
         participantCount: this.countTotalParticipants(config),
-        partsCompleted: ['pi_demo', 'measurement_review', 'problem_solving'],
+        partsCompleted: ['pi_demo,'measurement_review,'problem_solving'],
       },
       problemsAddressed: {
         totalProblemsIdentified: config.inputs.identifiedProblems.length,
@@ -1769,9 +1765,9 @@ export class InspectAdaptCoordination {
 
   private async loadWorkshopStatus(workshopId: string): Promise<any> {
     return {
-      phase: 'preparation' as const,
+      phase:'preparation 'as const,
       progress: 25,
-      currentActivity: 'Data preparation',
+      currentActivity:'Data preparation,
       nextSteps: [],
     };
   }
@@ -1794,16 +1790,16 @@ export class InspectAdaptCoordination {
     return {
       itemsCreated: items.length,
       itemsAwaitingApproval: items.filter(
-        (i) => i.approval.requiresApproval && i.tracking.status === 'backlog''
+        (i) => i.approval.requiresApproval && i.tracking.status ==='backlog'
       ).length,
       itemsReadyForNextPI: items.filter(
         (i) => i.planning.targetPI === i.source.piNumber + 1
       ).length,
       priorityDistribution: {
-        low: items.filter((i) => i.details.priority === 'low').length,
-        medium: items.filter((i) => i.details.priority === 'medium').length,
-        high: items.filter((i) => i.details.priority === 'high').length,
-        critical: items.filter((i) => i.details.priority === 'critical').length,
+        low: items.filter((i) => i.details.priority ==='low').length,
+        medium: items.filter((i) => i.details.priority ==='medium').length,
+        high: items.filter((i) => i.details.priority ==='high').length,
+        critical: items.filter((i) => i.details.priority ==='critical').length,
       },
     };
   }
@@ -1812,72 +1808,72 @@ export class InspectAdaptCoordination {
 
   private async executeFishboneAnalysis(
     problem: IASystemProblem
-  ): Promise<RootCauseAnalysis['fishboneCategories']> {'
+  ): Promise<RootCauseAnalysis['fishboneCategories']> {
     return {
-      people: ['Team coordination issues', 'Skill gaps'],
-      process: ['Workflow bottlenecks', 'Communication gaps'],
-      environment: ['Tool limitations', 'Infrastructure constraints'],
-      materials: ['Incomplete requirements', 'Data quality issues'],
-      methods: ['Inconsistent practices', 'Outdated procedures'],
-      machines: ['System limitations', 'Technology constraints'],
+      people: ['Team coordination issues,'Skill gaps'],
+      process: ['Workflow bottlenecks,'Communication gaps'],
+      environment: ['Tool limitations,'Infrastructure constraints'],
+      materials: ['Incomplete requirements,'Data quality issues'],
+      methods: ['Inconsistent practices,'Outdated procedures'],
+      machines: ['System limitations,'Technology constraints'],
     };
   }
 
   private extractRootCausesFromFishbone(
-    categories: NonNullable<RootCauseAnalysis['fishboneCategories']>'
-  ): RootCauseAnalysis['rootCauses'] {'
+    categories: NonNullable<RootCauseAnalysis['fishboneCategories']>
+  ): RootCauseAnalysis['rootCauses'] {
     return {
-      primary: 'Process workflow bottlenecks',
-      secondary: ['Team coordination issues', 'Tool limitations'],
-      contributing: ['Skill gaps', 'Communication gaps'],
+      primary:'Process workflow bottlenecks,
+      secondary: ['Team coordination issues,'Tool limitations'],
+      contributing: ['Skill gaps,'Communication gaps'],
     };
   }
 
   private async executeFiveWhysAnalysis(
     problem: IASystemProblem
-  ): Promise<RootCauseAnalysis['fiveWhysChain']> {'
+  ): Promise<RootCauseAnalysis['fiveWhysChain']> {
     return {
       why1: {
-        question: 'Why did this problem occur?',
-        answer: 'Process breakdown in team coordination',
+        question:'Why did this problem occur?,
+        answer:'Process breakdown in team coordination,
       },
       why2: {
-        question: 'Why did the process break down?',
-        answer: 'Lack of clear communication channels',
+        question:'Why did the process break down?,
+        answer:'Lack of clear communication channels,
       },
       why3: {
-        question: 'Why are communication channels unclear?',
-        answer: 'No standardized communication process',
+        question:'Why are communication channels unclear?,
+        answer:'No standardized communication process,
       },
       why4: {
-        question: 'Why is there no standardized process?',
-        answer: 'Process improvement was not prioritized',
+        question:'Why is there no standardized process?,
+        answer:'Process improvement was not prioritized,
       },
       why5: {
-        question: 'Why was process improvement not prioritized?',
-        answer: 'Focus was on feature delivery over process',
+        question:'Why was process improvement not prioritized?,
+        answer:'Focus was on feature delivery over process,
       },
     };
   }
 
   private extractRootCausesFromFiveWhys(
-    chain: NonNullable<RootCauseAnalysis['fiveWhysChain']>'
-  ): RootCauseAnalysis['rootCauses'] {'
+    chain: NonNullable<RootCauseAnalysis['fiveWhysChain']>
+  ): RootCauseAnalysis['rootCauses'] {
     return {
-      primary: 'Focus on feature delivery over process improvement',
+      primary:'Focus on feature delivery over process improvement,
       secondary: ['Lack of process improvement prioritization'],
       contributing: [
-        'No standardized communication process',
-        'Unclear communication channels',
+       'No standardized communication process,
+       'Unclear communication channels,
       ],
     };
   }
 
   private async executeComprehensiveRootCauseAnalysis(
     problem: IASystemProblem
-  ): Promise<RootCauseAnalysis['rootCauses']> {'
+  ): Promise<RootCauseAnalysis['rootCauses']> {
     return {
-      primary: 'Comprehensive analysis pending',
+      primary:'Comprehensive analysis pending,
       secondary: [],
       contributing: [],
     };

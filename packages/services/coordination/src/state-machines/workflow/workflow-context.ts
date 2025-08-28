@@ -20,8 +20,7 @@ import type {
   WorkflowBottleneck,
   WorkflowKanbanConfig,
   WorkflowTask,
-} from '../../types/index';
-
+} from '../../kanban/types/index';
 // =============================================================================
 // XSTATE MACHINE CONTEXT DEFINITION
 // =============================================================================
@@ -56,13 +55,13 @@ export interface WorkflowMachineContext {
   bottleneckHistory: WorkflowBottleneck[];
 
   // Flow metrics
-  currentMetrics: FlowMetrics | null;
+  currentMetrics: FlowMetrics| null;
   metricsHistory: Array<{ timestamp: Date; metrics: FlowMetrics }>;
 
   // System status
   systemHealth: number; // 0-1 range
-  lastOptimization: Date | null;
-  optimizationStrategy: OptimizationStrategy | null;
+  lastOptimization: Date| null;
+  optimizationStrategy: OptimizationStrategy| null;
 
   // Configuration
   config: WorkflowKanbanConfig;
@@ -138,7 +137,7 @@ export class WorkflowContextUtils {
     context: WorkflowMachineContext,
     state: TaskState
   ): number {
-    return context.tasksByState[state]?.length || 0;
+    return context.tasksByState[state]?.length|| 0;
   }
 
   /**
@@ -177,11 +176,11 @@ export class WorkflowContextUtils {
    */
   static getSystemHealthCategory(
     health: number
-  ):'excellent|good|warning|critical' {'
-    if (health >= 0.9) return 'excellent;
-    if (health >= 0.7) return 'good;
-    if (health >= 0.3) return 'warning;
-    return 'critical;
+  ):'excellent| good| warning| critical '{
+    if (health >= 0.9) return'excellent';
+    if (health >= 0.7) return'good';
+    if (health >= 0.3) return'warning';
+    return'critical';
   }
 
   /**
@@ -199,11 +198,11 @@ export class WorkflowContextUtils {
    */
   static calculateSystemUtilization(context: WorkflowMachineContext): number {
     const workStates: TaskState[] = [
-      'analysis',
-      'development',
-      'testing',
-      'review',
-      'deployment',
+     'analysis,
+     'development,
+     'testing,
+     'review,
+     'deployment,
     ];
 
     let totalUtilization = 0;

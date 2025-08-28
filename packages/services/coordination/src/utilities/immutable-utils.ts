@@ -13,7 +13,6 @@
  */
 
 import { type Draft, enableMapSet, produce } from 'immer';
-
 // Enable Immer support for Map and Set
 enableMapSet();
 
@@ -97,7 +96,7 @@ export class ImmutableWIPUtils {
           if (utilizationRatio > 0.9) {
             draftLimits[state] = Math.ceil(currentLimit * 1.2);
           } else if (utilizationRatio < 0.5) {
-            draftLimits[state] = Math.max(1, Math.floor(currentLimit * 0.8));
+            draftLimits[state] = Math.max(1, Math.floor(currentLimit * 0.8);
           }
         }
       });
@@ -153,7 +152,7 @@ export class ImmutableMetricsUtils {
       .filter((t) => t.startedAt && t.completedAt)
       .map(
         (t) =>
-          ((t.completedAt?.getTime() || 0) - (t.startedAt?.getTime() || 0)) /
+          ((t.completedAt?.getTime()|| 0) - (t.startedAt?.getTime()|| 0)) /
           (1000 * 60 * 60)
       ); // hours
 
@@ -167,7 +166,7 @@ export class ImmutableMetricsUtils {
       .filter((t) => t.completedAt)
       .map(
         (t) =>
-          ((t.completedAt?.getTime() || 0) - t.createdAt.getTime()) /
+          ((t.completedAt?.getTime()|| 0) - t.createdAt.getTime()) /
           (1000 * 60 * 60)
       ); // hours
 

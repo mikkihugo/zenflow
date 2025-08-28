@@ -24,8 +24,6 @@ import type {
   TypeSafeEventBus,
 } from '../types';
 import { getLogger } from '../types';
-
-
 export type {
   DeploymentAction,
   DeploymentArtifact,
@@ -107,10 +105,8 @@ export type {
   StageType,
   SwarmExecutionOrchestrator,
 } from '../services/continuous-delivery/sparc-cd-mapping-service';
-
 // Import service types
 import type { ValueStreamMapper } from './value-stream-mapper';
-
 // ============================================================================
 // CD PIPELINE MANAGER FACADE IMPLEMENTATION
 // ============================================================================
@@ -157,7 +153,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
   ) {
     super();
 
-    this.logger = getLogger('cd-pipeline-manager');'
+    this.logger = getLogger('cd-pipeline-manager'');
     this.eventBus = eventBus;
     this.memory = memory;
     this.swarmOrchestrator = swarmOrchestrator;
@@ -192,7 +188,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
 
     try {
       this.logger.info(
-        'Initializing Continuous Delivery Pipeline Manager with service delegation''
+       'Initializing Continuous Delivery Pipeline Manager with service delegation'
       );
 
       // Lazy load specialized services
@@ -247,11 +243,11 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
 
       this.initialized = true;
       this.logger.info(
-        'CD Pipeline Manager initialized successfully with service delegation''
+       'CD Pipeline Manager initialized successfully with service delegation'
       );
-      this.emit('initialized', {});'
+      this.emit('initialized,{}');
     } catch (error) {
-      this.logger.error('Failed to initialize CD Pipeline Manager:', error);'
+      this.logger.error('Failed to initialize CD Pipeline Manager:,error');
       throw error;
     }
   }
@@ -260,7 +256,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
    * Shutdown with graceful service cleanup
    */
   async shutdown(): Promise<void> {
-    this.logger.info('Shutting down CD Pipeline Manager');'
+    this.logger.info('Shutting down CD Pipeline Manager'');
 
     // Stop timers
     if (this.monitoringTimer) clearInterval(this.monitoringTimer);
@@ -287,7 +283,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
     this.removeAllListeners();
 
     this.initialized = false;
-    this.logger.info('CD Pipeline Manager shutdown complete');'
+    this.logger.info('CD Pipeline Manager shutdown complete'');
   }
 
   // ============================================================================
@@ -301,7 +297,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
     if (!this.initialized) await this.initialize();
 
     this.logger.info(
-      'Delegating SPARC to CD pipeline mapping to specialized service''
+     'Delegating SPARC to CD pipeline mapping to specialized service'
     );
     const result = await this.sparcCDMappingService.mapSPARCToPipelineStages();
 
@@ -318,12 +314,12 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
     sparcProjectId: string,
     featureId: string,
     valueStreamId: string,
-    pipelineType: string = 'standard''
+    pipelineType: string ='standard'
   ): Promise<string> {
     if (!this.initialized) await this.initialize();
 
     this.logger.info(
-      'Delegating SPARC project pipeline execution to specialized service',
+     'Delegating SPARC project pipeline execution to specialized service,
       {
         sparcProjectId,
         featureId,
@@ -340,7 +336,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
       );
 
     // Emit compatibility event
-    this.emit('pipeline-started', { pipelineId, sparcProjectId, featureId });'
+    this.emit('pipeline-started,{ pipelineId, sparcProjectId, featureId }');
 
     return pipelineId;
   }
@@ -355,7 +351,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
   async createAutomatedQualityGates(): Promise<Map<string, any>> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Delegating quality gate creation to specialized service');'
+    this.logger.info('Delegating quality gate creation to specialized service'');
     const result = await this.qualityGateService.createAutomatedQualityGates();
 
     // Update local state for compatibility
@@ -375,7 +371,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
     if (!this.initialized) await this.initialize();
 
     this.logger.info(
-      'Delegating quality gate execution to specialized service',
+     'Delegating quality gate execution to specialized service,
       {
         gateId,
         pipelineId,
@@ -389,7 +385,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
       stageId,
       context: {
         projectId: pipelineId,
-        environment: 'development' as const,
+        environment:'development 'as const,
         artifacts: [],
         metadata: {},
       },
@@ -397,10 +393,10 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
       retryPolicy: {
         enabled: true,
         maxAttempts: this.config.retryAttempts,
-        backoffStrategy: 'exponential' as const,
+        backoffStrategy:'exponential 'as const,
         baseDelay: 30000,
         maxDelay: 300000,
-        retryableFailures: ['timeout', 'network_error'],
+        retryableFailures: ['timeout,'network_error'],
       },
       escalationEnabled: true,
       notificationEnabled: true,
@@ -409,7 +405,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
     const result = await this.qualityGateService.executeQualityGate(config);
 
     // Emit compatibility event
-    this.emit('quality-gate-executed', { pipelineId, stageId, result });'
+    this.emit('quality-gate-executed,{ pipelineId, stageId, result }');
 
     return result;
   }
@@ -429,7 +425,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
     if (!this.initialized) await this.initialize();
 
     this.logger.info(
-      'Delegating deployment automation to specialized service',
+     'Delegating deployment automation to specialized service,
       {
         pipelineId,
         environment,
@@ -444,7 +440,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
     );
 
     // Emit compatibility event
-    this.emit('deployment-completed', { pipelineId, environment });'
+    this.emit('deployment-completed,{ pipelineId, environment }');
   }
 
   // ============================================================================
@@ -459,7 +455,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
     if (!this.initialized) await this.initialize();
 
     this.logger.debug(
-      'Delegating pipeline performance monitoring to specialized service''
+     'Delegating pipeline performance monitoring to specialized service'
     );
 
     await this.pipelinePerformanceService.monitorPipelinePerformance();
@@ -477,25 +473,25 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
   private async loadPersistedState(): Promise<void> {
     try {
       const persistedState = (await this.memory.retrieve(
-        'cd-pipeline:state')) as any;'
+       'cd-pipeline:state')) as any';
       if (persistedState) {
         this.state = {
           ...this.state,
           ...persistedState,
-          pipelineTemplates: new Map(persistedState.pipelineTemplates||[]),
-          activePipelines: new Map(persistedState.activePipelines||[]),
+          pipelineTemplates: new Map(persistedState.pipelineTemplates|| []),
+          activePipelines: new Map(persistedState.activePipelines|| []),
           qualityGateTemplates: new Map(
-            persistedState.qualityGateTemplates||[]
+            persistedState.qualityGateTemplates|| []
           ),
           automationTemplates: new Map(
-            persistedState.automationTemplates||[]
+            persistedState.automationTemplates|| []
           ),
-          performanceMetrics: new Map(persistedState.performanceMetrics||[]),
+          performanceMetrics: new Map(persistedState.performanceMetrics|| []),
         };
-        this.logger.info('CD Pipeline Manager state loaded');'
+        this.logger.info('CD Pipeline Manager state loaded'');
       }
     } catch (error) {
-      this.logger.warn('Failed to load persisted state', { error });'
+      this.logger.warn('Failed to load persisted state,{ error }');
     }
   }
 
@@ -514,9 +510,9 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
         performanceMetrics: Array.from(this.state.performanceMetrics.entries()),
       };
 
-      await this.memory.store('cd-pipeline:state', stateToSerialize);'
+      await this.memory.store('cd-pipeline:state,stateToSerialize');
     } catch (error) {
-      this.logger.error('Failed to persist state', { error });'
+      this.logger.error('Failed to persist state,{ error }');
     }
   }
 
@@ -533,7 +529,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
       try {
         await this.monitorPipelinePerformance();
       } catch (error) {
-        this.logger.error('Pipeline performance monitoring failed', { error });'
+        this.logger.error('Pipeline performance monitoring failed,{ error }');
       }
     }, this.config.monitoringInterval);
   }
@@ -543,18 +539,18 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
       try {
         await this.cleanupCompletedPipelines();
       } catch (error) {
-        this.logger.error('Pipeline cleanup failed', { error });'
+        this.logger.error('Pipeline cleanup failed,{ error }');
       }
     }, 3600000); // 1 hour
   }
 
   private registerEventHandlers(): void {
-    this.eventBus.registerHandler('sparc-project-completed', async (_event) => {'
+    this.eventBus.registerHandler('sparc-project-completed,async (_event) => {
       await this.handleSPARCProjectCompletion(event.payload);
     });
 
     this.eventBus.registerHandler(
-      'feature-ready-for-deployment',
+     'feature-ready-for-deployment,
       async (event) => {
         await this.handleFeatureDeploymentRequest(event.payload);
       }
@@ -563,7 +559,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
 
   private async cancelActivePipelines(): Promise<void> {
     // Implementation would cancel active pipelines
-    this.logger.info('Cancelling active pipelines');'
+    this.logger.info('Cancelling active pipelines'');
 
     // In production: await pipeline cancellation
     await Promise.resolve(); // Placeholder for actual pipeline cancellation
@@ -571,7 +567,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
 
   private async cleanupCompletedPipelines(): Promise<void> {
     // Implementation would cleanup completed pipelines
-    this.logger.debug('Cleaning up completed pipelines');'
+    this.logger.debug('Cleaning up completed pipelines'');
 
     // In production: await cleanup operations
     await Promise.resolve(); // Placeholder for actual cleanup
@@ -579,7 +575,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
 
   private handleFeatureDeploymentRequest(_payload: unknown): void {
     // Implementation would handle feature deployment request
-    this.logger.info('Handling feature deployment request');'
+    this.logger.info('Handling feature deployment request'');
   }
 }
 

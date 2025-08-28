@@ -46,7 +46,7 @@
  * const engine = new WorkflowEngine();
  *
  * // Schedule workflow with cron
- * const scheduleId = engine.scheduleWorkflow('0 9 * * *', 'daily-report');'
+ * const scheduleId = engine.scheduleWorkflow('0 9 * * *,'daily-report'');
  *
  * // Generate Mermaid visualization
  * const diagram = engine.generateWorkflowVisualization(workflow);
@@ -58,7 +58,6 @@
 // =============================================================================
 
 export { WorkflowEngine as default, WorkflowEngine } from './main';
-
 // =============================================================================
 // PROFESSIONAL UTILITIES - Library Integrations
 // =============================================================================
@@ -89,7 +88,18 @@ export {
   type WorkflowStep as ValidatedWorkflowStep,
   WorkflowStepSchema,
 } from './utilities/index';
+// =============================================================================
+// KANBAN INTEGRATION - Workflow-Kanban coordination
+// =============================================================================
 
+export {
+  createHighThroughputWorkflowKanbanIntegration,
+  createWorkflowKanbanIntegration,
+  type KanbanWorkflowDefinition,
+  type KanbanWorkflowStep,
+  WorkflowKanbanIntegration,
+  type WorkflowKanbanIntegrationConfig,
+} from './integrations/kanban-integration';
 // =============================================================================
 // WORKFLOW DOMAIN TYPES - Comprehensive workflow domain types
 // =============================================================================
@@ -186,7 +196,6 @@ export type {
   // Validation and permissions
   WorkflowValidation,
 } from './types/index';
-
 // =============================================================================
 // LEGACY TYPE COMPATIBILITY - Re-exports from old types.ts
 // =============================================================================
@@ -206,42 +215,41 @@ export type {
   WorkflowStep as WorkflowStepLegacy,
   WorkflowTemplate as WorkflowTemplateLegacy,
 } from './types';
-
 // =============================================================================
 // METADATA - Package information with battle-tested features
 // =============================================================================
 
 export const WORKFLOWS_INFO = {
-  version: '1.0.0',
-  name: '@claude-zen/workflows',
+  version:'1.0.0,
+  name:'@claude-zen/workflows,
   description:
-    'Production-ready workflow engine with battle-tested npm dependencies',
+   'Production-ready workflow engine with battle-tested npm dependencies,
   battleTestedDependencies: [
-    'expr-eval: Safe expression evaluation',
-    'async: Professional async utilities',
-    'p-limit: Controlled concurrency',
-    'eventemitter3: High-performance events',
-    'xstate: Robust state management',
-    'mermaid: Professional visualization',
-    'node-cron: Production scheduling',
-    'foundation: Battle-tested storage',
+   'expr-eval: Safe expression evaluation,
+   'async: Professional async utilities,
+   'p-limit: Controlled concurrency,
+   'eventemitter3: High-performance events,
+   'xstate: Robust state management,
+   'mermaid: Professional visualization,
+   'node-cron: Production scheduling,
+   'foundation: Battle-tested storage,
   ],
   capabilities: [
-    'Secure workflow orchestration (no arbitrary code execution)',
-    'Foundation storage integration',
-    'XState-powered state management',
-    'Professional async utilities',
-    'Controlled concurrency with p-limit',
-    'High-performance eventemitter3 events',
-    'Mermaid workflow visualization',
-    'Production cron scheduling',
-    'Battle-tested persistence layer',
-    'Professional data manipulation (lodash-es)',
-    'Secure ID generation (nanoid)',
-    'Advanced date/time handling (date-fns)',
-    'Runtime validation (zod)',
-    'Reactive programming (rxjs)',
-    'Immutable state management (immer)',
+   'Secure workflow orchestration (no arbitrary code execution),
+   'Foundation storage integration,
+   'XState-powered state management,
+   'Professional async utilities,
+   'Controlled concurrency with p-limit,
+   'High-performance eventemitter3 events,
+   'Mermaid workflow visualization,
+   'Production cron scheduling,
+   'Battle-tested persistence layer,
+   'Professional data manipulation (lodash-es),
+   'Secure ID generation (nanoid),
+   'Advanced date/time handling (date-fns),
+   'Runtime validation (zod),
+   'Reactive programming (rxjs),
+   'Immutable state management (immer),
   ],
   security: {
     safeExpressionEvaluation: true,

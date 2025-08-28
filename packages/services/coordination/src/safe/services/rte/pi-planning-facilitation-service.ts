@@ -13,7 +13,6 @@
  */
 
 import { dateFns, generateNanoId, } from '@claude-zen/foundation';
-
 const { format, addDays, addHours } = dateFns;
 
 import {
@@ -29,7 +28,6 @@ import type {
   PIObjective,
   Risk,
 } from '../../types';
-
 /**
  * PI Planning event configuration
  */
@@ -54,10 +52,10 @@ export interface PIPlanningEventConfig {
 export interface PlanningParticipant {
   readonly id: string;
   readonly name: string;
-  readonly role:|product-manager|system-architect|team-member|'stakeholder;
+  readonly role:| product-manager| system-architect| team-member|'stakeholder';
   readonly team?: string;
   readonly responsibilities: string[];
-  readonly attendance: 'required|optional;
+  readonly attendance:'required'|'optional';
   readonly remote: boolean;
 }
 
@@ -151,8 +149,8 @@ export interface ActionItem {
   readonly description: string;
   readonly owner: string;
   readonly dueDate: Date;
-  readonly priority: 'high' | 'medium' | 'low';
-  readonly status: 'open' | 'in_progress' | 'completed';
+  readonly priority: high'|'medium'|'low';
+  readonly status:'open'|'in_progress'|'completed';
 }
 
 /**
@@ -177,7 +175,7 @@ export class PIPlanningFacilitationService {
     objectives: PIObjective[];
     features: Feature[];
   }): Promise<PIPlanningEventConfig> {
-    this.logger.info('Creating PI planning event', {'
+    this.logger.info('Creating PI planning event,{
       piId: input.piId,
       artId: input.artId,
     });
@@ -204,7 +202,7 @@ export class PIPlanningFacilitationService {
 
     this.planningEvents.set(eventId, planningEvent);
 
-    this.logger.info('PI planning event created', {'
+    this.logger.info('PI planning event created,{
       eventId,
       participantCount: participants.length,
       objectiveCount: input.objectives.length,
@@ -224,7 +222,7 @@ export class PIPlanningFacilitationService {
       throw new Error(`Planning event not found: $_eventId`);`
     }
 
-    this.logger.info('Starting PI planning facilitation', { eventId });'
+    this.logger.info('Starting PI planning facilitation,{ eventId }');
 
     // Simulate facilitation process
     const result: PlanningFacilitationResult = {
@@ -236,17 +234,17 @@ export class PIPlanningFacilitationService {
       teamCommitments: this.generateTeamCommitments(event.participants),
       facilitation: this.calculateFacilitationMetrics(event),
       outcomes: [
-        'Program objectives committed',
-        'Team capacity aligned',
-        'Dependencies identified',
-        'Risks assessed',
+       'Program objectives committed,
+       'Team capacity aligned,
+       'Dependencies identified,
+       'Risks assessed,
       ],
       actionItems: this.generateActionItems(event),
     };
 
     this.facilitationResults.set(eventId, result);
 
-    this.logger.info('PI planning facilitation completed', {'
+    this.logger.info('PI planning facilitation completed,{
       eventId,
       objectivesCommitted: result.objectivesCommitted.length,
       success: result.success,
@@ -263,18 +261,18 @@ export class PIPlanningFacilitationService {
     return [
       {
         id: `pm-${generateNanoId(8)}`,`
-        name: 'Product Manager',
-        role: 'product-manager',
-        responsibilities: ['Product vision', 'Feature prioritization'],
-        attendance: 'required',
+        name:'Product Manager,
+        role:'product-manager,
+        responsibilities: ['Product vision,'Feature prioritization'],
+        attendance:'required,
         remote: false,
       },
       {
         id: `sa-${generateNanoId(8)}`,`
-        name: 'System Architect',
-        role: 'system-architect',
-        responsibilities: ['Architecture guidance', 'Technical decisions'],
-        attendance: 'required',
+        name:'System Architect,
+        role:'system-architect,
+        responsibilities: ['Architecture guidance,'Technical decisions'],
+        attendance:'required,
         remote: false,
       },
     ];
@@ -287,18 +285,18 @@ export class PIPlanningFacilitationService {
     const day1Items: AgendaItem[] = [
       {
         id: `agenda-${generateNanoId(8)}`,`
-        title: 'Business Context & Vision',
+        title:'Business Context & Vision,
         duration: 60,
-        facilitator: 'Product Manager',
+        facilitator:'Product Manager,
         participants: ['all'],
         objectives: ['Understand business context'],
         deliverables: ['Shared understanding'],
       },
       {
         id: `agenda-${generateNanoId(8)}`,`
-        title: 'Team Breakouts & Planning',
+        title:'Team Breakouts & Planning,
         duration: 240,
-        facilitator: 'Team Leads',
+        facilitator:'Team Leads,
         participants: ['teams'],
         objectives: ['Plan team objectives'],
         deliverables: ['Team plans'],
@@ -308,18 +306,18 @@ export class PIPlanningFacilitationService {
     const day2Items: AgendaItem[] = [
       {
         id: `agenda-${generateNanoId(8)}`,`
-        title: 'Draft Plan Review',
+        title:'Draft Plan Review,
         duration: 120,
-        facilitator: 'RTE',
+        facilitator:'RTE,
         participants: ['all'],
         objectives: ['Review draft plans'],
         deliverables: ['Plan adjustments'],
       },
       {
         id: `agenda-${generateNanoId(8)}`,`
-        title: 'Final Plan & Commitment',
+        title:'Final Plan & Commitment,
         duration: 90,
-        facilitator: 'RTE',
+        facilitator:'RTE,
         participants: ['all'],
         objectives: ['Finalize commitments'],
         deliverables: ['Committed objectives'],
@@ -337,7 +335,7 @@ export class PIPlanningFacilitationService {
       },
       timeboxes: [
         {
-          activity: 'Business Context',
+          activity:'Business Context,
           duration: 60,
           enforced: true,
           warningTime: 10,
@@ -357,7 +355,7 @@ export class PIPlanningFacilitationService {
    * Process features for planning
    */
   private processFeatures(features: Feature[]): Feature[] {
-    return orderBy(features, ['businessValue'], ['desc']);'
+    return orderBy(features, ['businessValue'], ['desc]);
   }
 
   /**
@@ -384,7 +382,7 @@ export class PIPlanningFacilitationService {
   ): TeamCommitment[] {
     const teams = groupBy(
       filter(participants, (p) => p.team),
-      'team''
+     'team'
     );
 
     return map(teams, (_members, teamId) => ({
@@ -395,7 +393,7 @@ export class PIPlanningFacilitationService {
       confidence: 4,
       risks: [],
       dependencies: [],
-    }));
+    });
   }
 
   /**
@@ -420,11 +418,11 @@ export class PIPlanningFacilitationService {
     return [
       {
         id: `action-${generateNanoId(8)}`,`
-        description: 'Finalize dependency agreements',
-        owner: 'RTE',
+        description:'Finalize dependency agreements,
+        owner:'RTE,
         dueDate: addDays(new Date(), 7),
-        priority: 'high',
-        status: 'open',
+        priority: high,
+        status:'open,
       },
     ];
   }
@@ -432,7 +430,7 @@ export class PIPlanningFacilitationService {
   /**
    * Get planning event by ID
    */
-  getPlanningEvent(eventId: string): PIPlanningEventConfig | undefined {
+  getPlanningEvent(eventId: string): PIPlanningEventConfig| undefined {
     return this.planningEvents.get(eventId);
   }
 
@@ -441,7 +439,7 @@ export class PIPlanningFacilitationService {
    */
   getFacilitationResults(
     eventId: string
-  ): PlanningFacilitationResult | undefined {
+  ): PlanningFacilitationResult| undefined {
     return this.facilitationResults.get(eventId);
   }
 }

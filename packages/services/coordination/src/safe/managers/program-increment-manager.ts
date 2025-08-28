@@ -34,8 +34,6 @@ import type {
   TypeSafeEventBus,
 } from '../types';
 import { PIStatus } from '../types';
-
-
 export type {
   CapacityPlanningResult,
   CapacityRisk,
@@ -65,7 +63,6 @@ export type {
   PlanningAgendaItem,
   PlanningParticipant,
 } from '../services/program-increment/pi-planning-service';
-
 // ============================================================================
 // PROGRAM INCREMENT MANAGER CONFIGURATION
 // ============================================================================
@@ -160,7 +157,7 @@ export class ProgramIncrementManager extends EventBus {
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
-    this.logger.info('Initializing Program Increment Manager', {'
+    this.logger.info('Initializing Program Increment Manager,{
       config: this.config,
     });
 
@@ -180,10 +177,10 @@ export class ProgramIncrementManager extends EventBus {
       this.registerEventHandlers();
 
       this.initialized = true;
-      this.logger.info('Program Increment Manager initialized successfully');'
-      this.emit('initialized', );'
+      this.logger.info('Program Increment Manager initialized successfully'');
+      this.emit('initialized,');
     } catch (error) {
-      this.logger.error('Failed to initialize PI Manager', { error });'
+      this.logger.error('Failed to initialize PI Manager,{ error }');
       throw error;
     }
   }
@@ -192,7 +189,7 @@ export class ProgramIncrementManager extends EventBus {
    * Shutdown the PI Manager and all services
    */
   async shutdown(): Promise<void> {
-    this.logger.info('Shutting down Program Increment Manager');'
+    this.logger.info('Shutting down Program Increment Manager'');
 
     if (this.trackingTimer) {
       clearInterval(this.trackingTimer);
@@ -210,7 +207,7 @@ export class ProgramIncrementManager extends EventBus {
     this.removeAllListeners();
     this.initialized = false;
 
-    this.logger.info('Program Increment Manager shutdown complete');'
+    this.logger.info('Program Increment Manager shutdown complete'');
   }
 
   // ============================================================================
@@ -228,9 +225,9 @@ export class ProgramIncrementManager extends EventBus {
   ): Promise<ProgramIncrement> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Starting comprehensive PI Planning', { artId });'
+    this.logger.info('Starting comprehensive PI Planning,{ artId }');
 
-    const _timer = this.startTimer('pi_planning');'
+    const _timer = this.startTimer('pi_planning'');
 
     try {
       // Delegate to PI Planning Service for event orchestration
@@ -242,7 +239,7 @@ export class ProgramIncrementManager extends EventBus {
           teamCapacities.map((tc) => ({
             userId: tc.teamId,
             name: tc.teamId,
-            role: 'team-lead' as const,
+            role:'team-lead 'as const,
             required: true,
           }))
         );
@@ -306,20 +303,20 @@ export class ProgramIncrementManager extends EventBus {
       // Store in state
       this.state.activePIs.set(completePIPlan.id, completePIPlan);
 
-      this.endTimer('pi_planning');'
+      this.endTimer('pi_planning'');
 
-      this.logger.info('PI Planning completed successfully', '
+      this.logger.info('PI Planning completed successfully,
         piId: completePIPlan.id,
         objectiveCount: piObjectives.length,
         featureCount: features.length,
         capacityUtilization:
           capacityResult.allocatedCapacity / capacityResult.totalCapacity,);
 
-      this.emit('pi-planned', completePIPlan);'
+      this.emit('pi-planned,completePIPlan');
       return completePIPlan;
     } catch (error) {
-      this.endTimer('pi_planning');'
-      this.logger.error('PI Planning failed:', error);'
+      this.endTimer('pi_planning'');
+      this.logger.error('PI Planning failed:,error');
       throw error;
     }
   }
@@ -351,13 +348,13 @@ export class ProgramIncrementManager extends EventBus {
       featureName: feature.name,
       description: feature.description,
       businessValue: feature.businessValue,
-      complexity: feature.stories?.length||5, // Use story count as complexity
+      complexity: feature.stories?.length|| 5, // Use story count as complexity
       requiredSkills: ['general'],
-      priority: 'medium' as const,
+      priority: medium 'as const,
       dependencies: [],
       acceptanceCriteria: feature.acceptanceCriteria,
       estimatedDuration: 1,
-    }));
+    });
 
     return await this.getCapacityPlanningService().implementCapacityPlanning(
       teamCapacities,
@@ -380,21 +377,21 @@ export class ProgramIncrementManager extends EventBus {
       throw new Error(`PI not found: ${piId}`);`
     }
 
-    this.logger.info('Starting PI execution', { piId });'
+    this.logger.info('Starting PI execution,{ piId }');
 
     // Update PI status
     (pi as any).status = PIStatus.ACTIVE;
 
     // Initialize PI execution tracking
-    this.logger.info('PI execution initialized', { piId, status: pi.status });'
+    this.logger.info('PI execution initialized,{ piId, status: pi.status }');
 
     // Initialize metrics tracking
     const initialMetrics =
       await this.getPIExecutionService().trackPIProgress(piId);
     this.state.piMetrics.set(piId, initialMetrics);
 
-    this.logger.info('PI execution started successfully', { piId });'
-    this.emit('pi-execution-started', pi);'
+    this.logger.info('PI execution started successfully,{ piId }');
+    this.emit('pi-execution-started,pi');
   }
 
   /**
@@ -415,14 +412,14 @@ export class ProgramIncrementManager extends EventBus {
     // Store updated metrics
     this.state.piMetrics.set(piId, currentMetrics);
 
-    this.logger.debug('PI progress updated', {'
+    this.logger.debug('PI progress updated,{
       piId,
       progress: currentMetrics.progressPercentage,
       predictability:
-        currentMetrics.predictabilityMetrics?.overallPredictability||0,
+        currentMetrics.predictabilityMetrics?.overallPredictability|| 0,
     });
 
-    this.emit('pi-progress-updated', { piId, metrics: currentMetrics });'
+    this.emit('pi-progress-updated,{ piId, metrics: currentMetrics }');
     return currentMetrics;
   }
 
@@ -441,7 +438,7 @@ export class ProgramIncrementManager extends EventBus {
       throw new Error(`PI not found: ${piId}`);`
     }
 
-    this.logger.info('Completing Program Increment', { piId });'
+    this.logger.info('Completing Program Increment,{ piId }');
 
     // Get final metrics
     const finalMetrics = await this.trackPIProgress(piId);
@@ -449,17 +446,17 @@ export class ProgramIncrementManager extends EventBus {
     // Create stakeholders list
     const stakeholders = [
       {
-        userId: 'rte-1',
-        name: 'Release Train Engineer',
-        role: 'rte' as const,
-        responsibilities: ['PI coordination', 'Process facilitation'],
+        userId:'rte-1,
+        name:'Release Train Engineer,
+        role:'rte 'as const,
+        responsibilities: ['PI coordination,'Process facilitation'],
         signOffRequired: true,
       },
       {
-        userId: 'po-1',
-        name: 'Product Owner',
-        role: 'product-owner' as const,
-        responsibilities: ['Product delivery', 'Stakeholder communication'],
+        userId:'po-1,
+        name:'Product Owner,
+        role:'product-owner 'as const,
+        responsibilities: ['Product delivery,'Stakeholder communication'],
         signOffRequired: true,
       },
     ];
@@ -475,13 +472,13 @@ export class ProgramIncrementManager extends EventBus {
     // Update PI status
     (pi as any).status = PIStatus.COMPLETED;
 
-    this.logger.info('Program Increment completed successfully', {'
+    this.logger.info('Program Increment completed successfully,{
       piId,
       objectivesAchieved: completionReport.objectivesAchieved,
       overallSuccess: completionReport.overallSuccessRate,
     });
 
-    this.emit('pi-completed', { pi, completionReport });'
+    this.emit('pi-completed,{ pi, completionReport }');
     return completionReport;
   }
 
@@ -547,28 +544,28 @@ export class ProgramIncrementManager extends EventBus {
 
   private initializeServices(): void {
     // Services are initialized lazily when first accessed
-    this.logger.debug('PI Manager services configured for lazy loading');'
+    this.logger.debug('PI Manager services configured for lazy loading'');
   }
 
   private async loadPersistedState(): Promise<void> {
     try {
-      const persistedState = await this.memory.retrieve('pi-manager:state');'
+      const persistedState = await this.memory.retrieve('pi-manager:state'');
       if (persistedState) {
         const state = persistedState as any;
         this.state = {
           ...this.state,
           ...state,
-          activeARTs: new Map(state.activeARTs||[]),
-          activePIs: new Map(state.activePIs||[]),
-          piMetrics: new Map(state.piMetrics||[]),
-          teamCapacities: new Map(state.teamCapacities||[]),
-          dependencyMatrix: new Map(state.dependencyMatrix||[]),
-          riskRegister: new Map(state.riskRegister||[]),
+          activeARTs: new Map(state.activeARTs|| []),
+          activePIs: new Map(state.activePIs|| []),
+          piMetrics: new Map(state.piMetrics|| []),
+          teamCapacities: new Map(state.teamCapacities|| []),
+          dependencyMatrix: new Map(state.dependencyMatrix|| []),
+          riskRegister: new Map(state.riskRegister|| []),
         };
-        this.logger.info('PI Manager state loaded');'
+        this.logger.info('PI Manager state loaded'');
       }
     } catch (error) {
-      this.logger.warn('Failed to load persisted state', { error });'
+      this.logger.warn('Failed to load persisted state,{ error }');
     }
   }
 
@@ -584,9 +581,9 @@ export class ProgramIncrementManager extends EventBus {
         riskRegister: Array.from(this.state.riskRegister.entries()),
       };
 
-      await this.memory.store('pi-manager:state', stateToSerialize);'
+      await this.memory.store('pi-manager:state,stateToSerialize');
     } catch (error) {
-      this.logger.error('Failed to persist state', { error });'
+      this.logger.error('Failed to persist state,{ error }');
     }
   }
 
@@ -595,17 +592,17 @@ export class ProgramIncrementManager extends EventBus {
       try {
         await this.updateAllPIMetrics();
       } catch (error) {
-        this.logger.error('PI tracking update failed', { error });'
+        this.logger.error('PI tracking update failed,{ error }');
       }
     }, this.configuration.trackingUpdateInterval);
   }
 
   private registerEventHandlers(): void {
-    this.eventBus.registerHandler('feature-completed', async (event) => {'
+    this.eventBus.registerHandler('feature-completed,async (event) => {
       await this.handleFeatureCompletion(event.payload.featureId);
     });
 
-    this.eventBus.registerHandler('risk-identified', async (event) => {'
+    this.eventBus.registerHandler('risk-identified,async (event) => {
       await this.handleRiskIdentification(event.payload.risk);
     });
   }
@@ -651,7 +648,7 @@ export class ProgramIncrementManager extends EventBus {
     return [
       {
         id: `obj-${piId}-1`,`
-        description: 'Main objective for this PI',
+        description:'Main objective for this PI,
         businessValue: 20,
         confidence: 8,
       },
@@ -667,19 +664,19 @@ export class ProgramIncrementManager extends EventBus {
     return [
       {
         id: `feature-${piId}-1`,`
-        name: 'Core Feature',
-        description: 'Main feature for this PI',
+        name:'Core Feature,
+        description:'Main feature for this PI,
         piId,
         businessValue: 10,
         acceptanceCriteria: [
-          'Feature must be testable',
-          'Feature must add business value',
+         'Feature must be testable,
+         'Feature must add business value,
         ],
         stories: [],
         enablers: [],
-        status: 'planned' as any,
-        owner: 'product-owner',
-        team: teamCapacities[0]?.teamId||'team-1',
+        status:'planned 'as any,
+        owner:'product-owner,
+        team: teamCapacities[0]?.teamId||'team-1,
       },
     ];
 
@@ -708,11 +705,11 @@ export class ProgramIncrementManager extends EventBus {
   }
 
   private handleFeatureCompletion(featureId: string): void {
-    this.logger.info('Feature completed', { featureId });'
+    this.logger.info('Feature completed,{ featureId }');
   }
 
   private handleRiskIdentification(risk: Risk): void {
-    this.logger.info('Risk identified', { riskId: risk.id });'
+    this.logger.info('Risk identified,{ riskId: risk.id }');
   }
 }
 

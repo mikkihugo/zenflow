@@ -40,14 +40,14 @@ export interface ProductManagerConfig {
  * Product lifecycle stages
  */
 export enum ProductLifecycleStage {
-  IDEATION = 'ideation',
-  VALIDATION = 'validation',
-  DEVELOPMENT = 'development',
-  LAUNCH = 'launch',
-  GROWTH = 'growth',
-  MATURITY = 'maturity',
-  DECLINE = 'decline',
-  SUNSET = 'sunset',
+  IDEATION ='ideation,
+  VALIDATION ='validation,
+  DEVELOPMENT ='development,
+  LAUNCH ='launch,
+  GROWTH ='growth,
+  MATURITY ='maturity,
+  DECLINE ='decline,
+  SUNSET ='sunset,
 }
 
 // =============================================================================
@@ -123,11 +123,11 @@ export interface CustomerNeed {
  * Customer need priority levels
  */
 export enum CustomerNeedPriority {
-  CRITICAL = 'critical',
-  HIGH = 'high',
-  MEDIUM = 'medium',
-  LOW = 'low',
-  NICE_TO_HAVE = 'nice_to_have',
+  CRITICAL ='critical,
+  HIGH ='high,
+  MEDIUM ='medium,
+  LOW ='low,
+  NICE_TO_HAVE ='nice_to_have,
 }
 
 /**
@@ -145,25 +145,25 @@ export interface CompetitorSatisfaction {
  * Urgency level for customer needs
  */
 export enum UrgencyLevel {
-  IMMEDIATE = 'immediate',
-  SHORT_TERM = 'short_term',
-  MEDIUM_TERM = 'medium_term',
-  LONG_TERM = 'long_term',
-  FUTURE = 'future',
+  IMMEDIATE ='immediate,
+  SHORT_TERM ='short_term,
+  MEDIUM_TERM ='medium_term,
+  LONG_TERM ='long_term,
+  FUTURE ='future,
 }
 
 /**
  * Frequency pattern for customer behavior
  */
 export enum FrequencyPattern {
-  CONTINUOUS = 'continuous',
-  DAILY = 'daily',
-  WEEKLY = 'weekly',
-  MONTHLY = 'monthly',
-  QUARTERLY = 'quarterly',
-  ANNUALLY = 'annually',
-  SPORADIC = 'sporadic',
-  ONE_TIME = 'one_time',
+  CONTINUOUS ='continuous,
+  DAILY ='daily,
+  WEEKLY ='weekly,
+  MONTHLY ='monthly,
+  QUARTERLY ='quarterly,
+  ANNUALLY ='annually,
+  SPORADIC ='sporadic,
+  ONE_TIME ='one_time,
 }
 
 /**
@@ -198,7 +198,7 @@ export interface Influencer {
   readonly role: string;
   readonly department: string;
   readonly influenceLevel: InfluenceLevel;
-  readonly influenceType: 'technical|business|financial|strategic;
+  readonly influenceType:'technical| business| financial'|'strategic';
   readonly relationshipToDecisionMaker: string;
   readonly keyMessages: string[];
 }
@@ -207,10 +207,10 @@ export interface Influencer {
  * Influence level enumeration
  */
 export enum InfluenceLevel {
-  PRIMARY = 'primary',
-  SECONDARY = 'secondary',
-  TERTIARY = 'tertiary',
-  MINIMAL = 'minimal',
+  PRIMARY ='primary,
+  SECONDARY ='secondary,
+  TERTIARY ='tertiary,
+  MINIMAL ='minimal,
 }
 
 /**
@@ -228,11 +228,11 @@ export interface CommonObjection {
  * Objection severity levels
  */
 export enum ObjectionSeverity {
-  DEAL_BREAKER = 'deal_breaker',
-  MAJOR = 'major',
-  MODERATE = 'moderate',
-  MINOR = 'minor',
-  EASILY_ADDRESSED = 'easily_addressed',
+  DEAL_BREAKER ='deal_breaker,
+  MAJOR ='major,
+  MODERATE ='moderate,
+  MINOR ='minor,
+  EASILY_ADDRESSED ='easily_addressed,
 }
 
 /**
@@ -264,7 +264,7 @@ export interface CompetitorPerformance {
   readonly competitor: string;
   readonly marketPosition: number; // 1-10
   readonly customerSatisfaction: number; // 0-100%
-  readonly pricing: 'premium' | 'competitive' | 'budget';
+  readonly pricing:'premium'|'competitive'|'budget';
   readonly strengths: string[];
   readonly weaknesses: string[];
   readonly marketShare: number; // 0-100%
@@ -274,7 +274,7 @@ export interface CompetitorPerformance {
  * Budget cycle information
  */
 export interface BudgetCycle {
-  readonly cycleType: 'annual|quarterly|project_based|continuous;
+  readonly cycleType:'annual| quarterly| project_based'|'continuous';
   readonly startMonth: number; // 1-12
   readonly planningHorizon: number; // months
   readonly approvalProcess: string[];
@@ -317,7 +317,7 @@ export interface CompetitorAnalysis {
  */
 export interface MarketTrend {
   readonly trend: string;
-  readonly impact: 'positive' | 'negative' | 'neutral';
+  readonly impact:'positive'|'negative'|'neutral';
   readonly timeframe: string;
   readonly confidence: number; // 0-100%
 }
@@ -327,7 +327,7 @@ export interface MarketTrend {
  */
 export interface MarketBarrier {
   readonly barrier: string;
-  readonly severity: 'high' | 'medium' | 'low';
+  readonly severity: high'|'medium'|'low';
   readonly mitigation: string[];
 }
 
@@ -344,7 +344,7 @@ export interface MarketDriver {
  * Pricing strategy definition
  */
 export interface PricingStrategy {
-  readonly model: 'premium|competitive|penetration|skimming;
+  readonly model:'premium| competitive| penetration'|'skimming';
   readonly basePrice: number;
   readonly discount: number;
   readonly bundling: boolean;
@@ -366,7 +366,7 @@ export interface SuccessCriterion {
 export interface StrategyAlignment {
   readonly strategicTheme: string;
   readonly alignmentScore: number; // 0-100%
-  readonly contributionLevel: 'direct' | 'indirect' | 'supporting';
+  readonly contributionLevel:'direct'|'indirect'|'supporting';
   readonly strategicImportance: number; // 1-10
 }
 
@@ -378,5 +378,5 @@ export interface StakeholderAlignment {
   readonly alignmentLevel: number; // 0-100%
   readonly lastReviewed: Date;
   readonly concerns: string[];
-  readonly supportLevel:|'champion|supporter|neutral|skeptic|blocker;
+  readonly supportLevel:|'champion| supporter| neutral| skeptic'|'blocker';
 }

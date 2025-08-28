@@ -13,14 +13,12 @@
  */
 
 import { dateFns, generateNanoId, } from '@claude-zen/foundation';
-
 const { format, addDays, addWeeks, startOfWeek } = dateFns;
 
 import {
   filter,
 } from 'lodash-es';
 import type { Logger } from '../../types';
-
 /**
  * Multi-ART coordination configuration
  */
@@ -91,34 +89,34 @@ export interface ARTDependency {
  * Dependency types
  */
 export enum DependencyType {
-  TECHNICAL = 'technical',
-  DATA = 'data',
-  INTEGRATION = 'integration',
-  SHARED_SERVICE = 'shared_service',
-  INFRASTRUCTURE = 'infrastructure',
-  KNOWLEDGE = 'knowledge',
+  TECHNICAL ='technical,
+  DATA ='data,
+  INTEGRATION ='integration,
+  SHARED_SERVICE ='shared_service,
+  INFRASTRUCTURE ='infrastructure,
+  KNOWLEDGE ='knowledge,
 }
 
 /**
  * Dependency criticality levels
  */
 export enum DependencyCriticality {
-  LOW = 'low',
-  MEDIUM = 'medium',
-  HIGH = 'high',
-  CRITICAL = 'critical',
+  LOW ='low,
+  MEDIUM ='medium,
+  HIGH ='high,
+  CRITICAL ='critical,
 }
 
 /**
  * Dependency status tracking
  */
 export enum DependencyStatus {
-  PLANNED = 'planned',
-  IN_PROGRESS = 'in_progress',
-  DELIVERED = 'delivered',
-  BLOCKED = 'blocked',
-  AT_RISK = 'at_risk',
-  CANCELLED = 'cancelled',
+  PLANNED ='planned,
+  IN_PROGRESS ='in_progress,
+  DELIVERED ='delivered,
+  BLOCKED ='blocked,
+  AT_RISK ='at_risk,
+  CANCELLED ='cancelled,
 }
 
 /**
@@ -139,33 +137,33 @@ export interface IntegrationPoint {
  * Integration types
  */
 export enum IntegrationType {
-  API = 'api',
-  DATABASE = 'database',
-  MESSAGE_QUEUE = 'message_queue',
-  BATCH_PROCESS = 'batch_process',
-  USER_INTERFACE = 'user_interface',
-  SHARED_COMPONENT = 'shared_component',
+  API ='api,
+  DATABASE ='database,
+  MESSAGE_QUEUE ='message_queue,
+  BATCH_PROCESS ='batch_process,
+  USER_INTERFACE ='user_interface,
+  SHARED_COMPONENT ='shared_component,
 }
 
 /**
  * Integration frequency
  */
 export enum IntegrationFrequency {
-  CONTINUOUS = 'continuous',
-  DAILY = 'daily',
-  WEEKLY = 'weekly',
-  PI_BOUNDARY = 'pi_boundary',
-  ON_DEMAND = 'on_demand',
+  CONTINUOUS ='continuous,
+  DAILY ='daily,
+  WEEKLY ='weekly,
+  PI_BOUNDARY ='pi_boundary,
+  ON_DEMAND ='on_demand,
 }
 
 /**
  * Integration complexity levels
  */
 export enum IntegrationComplexity {
-  SIMPLE = 'simple',
-  MODERATE = 'moderate',
-  COMPLEX = 'complex',
-  VERY_COMPLEX = 'very_complex',
+  SIMPLE ='simple,
+  MODERATE ='moderate,
+  COMPLEX ='complex,
+  VERY_COMPLEX ='very_complex,
 }
 
 /**
@@ -185,23 +183,23 @@ export interface SynchronizationRequirement {
  * Synchronization types
  */
 export enum SynchronizationType {
-  PLANNING = 'planning',
-  INTEGRATION = 'integration',
-  DELIVERY = 'delivery',
-  MILESTONE = 'milestone',
-  GOVERNANCE = 'governance',
-  LEARNING = 'learning',
+  PLANNING ='planning,
+  INTEGRATION ='integration,
+  DELIVERY ='delivery,
+  MILESTONE ='milestone,
+  GOVERNANCE ='governance,
+  LEARNING ='learning,
 }
 
 /**
  * Synchronization frequency
  */
 export enum SynchronizationFrequency {
-  REAL_TIME = 'real_time',
-  DAILY = 'daily',
-  WEEKLY = 'weekly',
-  SPRINT_BOUNDARY = 'sprint_boundary',
-  PI_BOUNDARY = 'pi_boundary',
+  REAL_TIME ='real_time,
+  DAILY ='daily,
+  WEEKLY ='weekly,
+  SPRINT_BOUNDARY ='sprint_boundary,
+  PI_BOUNDARY ='pi_boundary,
 }
 
 /**
@@ -209,7 +207,7 @@ export enum SynchronizationFrequency {
  */
 export interface SynchronizationStrategy {
   readonly strategyName: string;
-  readonly approach: 'centralized' | 'federated' | 'hybrid';
+  readonly approach:'centralized'|'federated'|'hybrid';
   readonly coordinationMechanisms: CoordinationMechanism[];
   readonly synchronizationPoints: SynchronizationPoint[];
   readonly escalationPaths: EscalationPath[];
@@ -221,7 +219,7 @@ export interface SynchronizationStrategy {
 export interface CoordinationMechanism {
   readonly mechanismId: string;
   readonly name: string;
-  readonly type: 'meeting|tool|process|artifact;
+  readonly type:'meeting| tool| process'|'artifact';
   readonly frequency: string;
   readonly participants: string[];
   readonly purpose: string;
@@ -264,10 +262,10 @@ export interface EscalationLevel {
  * Dependency management configuration
  */
 export interface DependencyManagementConfig {
-  readonly trackingStrategy: 'manual' | 'automated' | 'hybrid';
+  readonly trackingStrategy:'manual'|'automated'|'hybrid';
   readonly identificationMethods: string[];
   readonly managementTools: string[];
-  readonly reportingCadence: 'daily|weekly|bi-weekly;
+  readonly reportingCadence:'daily| weekly'|'bi-weekly';
   readonly escalationCriteria: EscalationCriteria;
 }
 
@@ -277,7 +275,7 @@ export interface DependencyManagementConfig {
 export interface EscalationCriteria {
   readonly daysOverdue: number;
   readonly criticalityThreshold: DependencyCriticality;
-  readonly impactThreshold: 'low' | 'medium' | 'high';
+  readonly impactThreshold:'low'|'medium'|'high';
   readonly automaticEscalation: boolean;
 }
 
@@ -290,7 +288,7 @@ export interface CommunicationProtocol {
   readonly purpose: string;
   readonly participants: string[];
   readonly frequency: string;
-  readonly format: 'synchronous|asynchronous;
+  readonly format:'synchronous'|'asynchronous';
   readonly channels: string[];
   readonly agenda: string[];
 }
@@ -336,7 +334,7 @@ export interface ARTCoordinationResult {
  */
 export interface CoordinationActivity {
   readonly activityId: string;
-  readonly activityType:|planning|synchronization|integration|'review;
+  readonly activityType:| planning| synchronization| integration|'review';
   readonly duration: number; // minutes
   readonly participants: string[];
   readonly outcomes: string[];
@@ -361,7 +359,7 @@ export interface SynchronizationOutcome {
  */
 export interface CoordinationIssue {
   readonly issueId: string;
-  readonly severity: 'low|medium|high|critical;
+  readonly severity: low| medium| high'|'critical';
   readonly description: string;
   readonly impactedARTs: string[];
   readonly rootCause: string;
@@ -378,9 +376,9 @@ export interface ActionItem {
   readonly description: string;
   readonly owner: string;
   readonly assignedART: string;
-  readonly priority: 'high' | 'medium' | 'low';
+  readonly priority: high'|'medium'|'low';
   readonly dueDate: Date;
-  readonly status: 'open|in_progress|completed|cancelled;
+  readonly status:'open| in_progress| completed'|'cancelled';
   readonly dependencies: string[];
 }
 
@@ -415,7 +413,7 @@ export class MultiARTCoordinationService {
    * Configure multi-ART coordination
    */
   configureCoordination(config: MultiARTCoordinationConfig): void {
-    this.logger.info('Configuring multi-ART coordination', {'
+    this.logger.info('Configuring multi-ART coordination,{
       coordinationId: config.coordinationId,
       solutionId: config.solutionId,
       artCount: config.coordinatedARTs.length,
@@ -436,7 +434,7 @@ export class MultiARTCoordinationService {
     // Configure synchronization mechanisms
     this.configureSynchronizationMechanisms(config.synchronizationStrategy);
 
-    this.logger.info('Multi-ART coordination configured successfully', {'
+    this.logger.info('Multi-ART coordination configured successfully,{
       coordinationId: config.coordinationId,
     });
   }
@@ -452,7 +450,7 @@ export class MultiARTCoordinationService {
       );
     }
 
-    this.logger.info('Coordinating solution train ARTs', {'
+    this.logger.info('Coordinating solution train ARTs,{
       coordinationId,
       artCount: config.coordinatedARTs.length,
     });
@@ -501,7 +499,7 @@ export class MultiARTCoordinationService {
 
       this.coordinationResults.set(resultId, result);
 
-      this.logger.info('ART coordination completed', {'
+      this.logger.info('ART coordination completed,{
         coordinationId,
         resultId,
         duration: Date.now() - startTime,
@@ -511,7 +509,7 @@ export class MultiARTCoordinationService {
 
       return result;
     } catch (error) {
-      this.logger.error('ART coordination failed', {'
+      this.logger.error('ART coordination failed,{
         coordinationId,
         error,
       });
@@ -523,7 +521,7 @@ export class MultiARTCoordinationService {
    * Track cross-ART dependency
    */
   trackDependency(
-    dependency: Omit<ARTDependency, 'dependencyId'>'
+    dependency: Omit<ARTDependency,'dependencyId'>
   ): ARTDependency {
     const _dependencyId = `dep-${generateNanoId(12)}`;`
 
@@ -534,7 +532,7 @@ export class MultiARTCoordinationService {
 
     this.dependencies.set(dependencyId, trackedDependency);
 
-    this.logger.info('Cross-ART dependency tracked', {'
+    this.logger.info('Cross-ART dependency tracked,{
       dependencyId,
       fromART: dependency.fromART,
       toART: dependency.toART,
@@ -566,7 +564,7 @@ export class MultiARTCoordinationService {
 
     this.dependencies.set(dependencyId, updatedDependency);
 
-    this.logger.info('Dependency status updated', {'
+    this.logger.info('Dependency status updated,{
       dependencyId,
       oldStatus: dependency.status,
       newStatus: status,
@@ -575,7 +573,7 @@ export class MultiARTCoordinationService {
 
     // Check for escalation needs
     if (
-      status === DependencyStatus.BLOCKED || status === DependencyStatus.AT_RISK
+      status === DependencyStatus.BLOCKED|| status === DependencyStatus.AT_RISK
     ) {
       this.escalateDependency(dependencyId);
     }
@@ -589,7 +587,7 @@ export class MultiARTCoordinationService {
   getDependenciesForART(artId: string): ARTDependency[] {
     return filter(
       Array.from(this.dependencies.values()),
-      (dep) => dep.fromART === artId || dep.toART === artId
+      (dep) => dep.fromART === artId|| dep.toART === artId
     );
   }
 
@@ -610,7 +608,7 @@ export class MultiARTCoordinationService {
     return filter(
       Array.from(this.dependencies.values()),
       (dep) =>
-        dep.status === DependencyStatus.BLOCKED || dep.status === DependencyStatus.AT_RISK
+        dep.status === DependencyStatus.BLOCKED|| dep.status === DependencyStatus.AT_RISK
     );
   }
 
@@ -618,12 +616,12 @@ export class MultiARTCoordinationService {
    * Private helper methods
    */
   private validateCoordinationConfig(config: MultiARTCoordinationConfig): void {
-    if (!config.coordinationId || config.coordinationId.trim() ==='') {'
-      throw new Error('Coordination ID is required');'
+    if (!config.coordinationId|| config.coordinationId.trim() ===){
+      throw new Error('Coordination ID is required'');
     }
 
     if (config.coordinatedARTs.length < 2) {
-      throw new Error('At least two ARTs must be configured for coordination');'
+      throw new Error('At least two ARTs must be configured for coordination'');
     }
   }
 
@@ -634,7 +632,7 @@ export class MultiARTCoordinationService {
       }
     }
 
-    this.logger.info('Dependency tracking initialized', {'
+    this.logger.info('Dependency tracking initialized,{
       totalDependencies: this.dependencies.size,
     });
   }
@@ -649,7 +647,7 @@ export class MultiARTCoordinationService {
       }
     }
 
-    this.logger.info('Integration points initialized', {'
+    this.logger.info('Integration points initialized,{
       totalIntegrationPoints: this.integrationPoints.size,
     });
   }
@@ -657,7 +655,7 @@ export class MultiARTCoordinationService {
   private configureSynchronizationMechanisms(
     strategy: SynchronizationStrategy
   ): void {
-    this.logger.info('Configuring synchronization mechanisms', {'
+    this.logger.info('Configuring synchronization mechanisms,{
       strategyName: strategy.strategyName,
       approach: strategy.approach,
       mechanismCount: strategy.coordinationMechanisms.length,
@@ -674,20 +672,20 @@ export class MultiARTCoordinationService {
     // Execute planning activities
     activities.push({
       activityId: `activity-${generateNanoId(8)}`,`
-      activityType: 'planning',
+      activityType:'planning,
       duration: 60,
       participants: config.coordinatedARTs.map((art) => art.rteContact),
-      outcomes: ['Planning alignment achieved', 'Dependencies identified'],
+      outcomes: ['Planning alignment achieved,'Dependencies identified'],
       followupRequired: true,
     });
 
     // Execute synchronization activities
     activities.push({
       activityId: `activity-${generateNanoId(8)}`,`
-      activityType: 'synchronization',
+      activityType:'synchronization,
       duration: 45,
       participants: config.coordinatedARTs.map((art) => art.rteContact),
-      outcomes: ['Status synchronized', 'Issues escalated'],
+      outcomes: ['Status synchronized,'Issues escalated'],
       followupRequired: false,
     });
 
@@ -747,11 +745,11 @@ export class MultiARTCoordinationService {
       if (art.capacity.utilization > 90) {
         issues.push({
           issueId: `issue-${generateNanoId(8)}`,`
-          severity: 'high',
-          description: `${art.artName} capacity utilization at ${art.capacity.utilization}%`,`
+          severity: high,
+          description: `${{art.artName} capacity utilization at ${art.capacity.utilization}%}`,`
           impactedARTs: [art.artId],
-          rootCause: 'Over-commitment',
-          proposedResolution: 'Rebalance capacity or reduce scope',
+          rootCause:'Over-commitment,
+          proposedResolution:'Rebalance capacity or reduce scope,
           owner: art.rteContact,
           dueDate: addDays(new Date(), 3),
         });
@@ -765,12 +763,12 @@ export class MultiARTCoordinationService {
         issueId: `issue-${generateNanoId(8)}`,`
         severity:
           dep.criticality === DependencyCriticality.CRITICAL
-            ? 'critical''
-            : 'high',
+            ?'critical'
+            :'high,
         description: `Dependency blocked: ${dep.description}`,`
         impactedARTs: [dep.fromART, dep.toART],
-        rootCause: 'Dependency blocking',
-        proposedResolution: dep.mitigationPlan || 'Resolve dependency blocker',
+        rootCause:'Dependency blocking,
+        proposedResolution: dep.mitigationPlan||'Resolve dependency blocker,
         owner: dep.toART,
         dueDate: addDays(new Date(), 1),
       });
@@ -786,13 +784,13 @@ export class MultiARTCoordinationService {
       owner: issue.owner,
       assignedART: issue.impactedARTs[0],
       priority:
-        issue.severity === 'critical' || issue.severity ==='high''
-          ? 'high''
-          : 'medium',
+        issue.severity ==='critical '|| issue.severity ===high'
+          ?'high'
+          :'medium,
       dueDate: issue.dueDate,
-      status: 'open' as const,
+      status:'open 'as const,
       _dependencies: [],
-    }));
+    });
   }
 
   private calculateCoordinationEffectiveness(
@@ -805,7 +803,7 @@ export class MultiARTCoordinationService {
       (successfulOutcomes.length / outcomes.length) * 100;
     const criticalIssues = filter(
       issues,
-      (i) => i.severity === 'critical''
+      (i) => i.severity ==='critical'
     ).length;
 
     return {
@@ -832,34 +830,34 @@ export class MultiARTCoordinationService {
     const recommendations: string[] = [];
 
     if (successRate < 80) {
-      recommendations.push('Improve synchronization mechanisms');'
-      recommendations.push('Increase coordination frequency');'
+      recommendations.push('Improve synchronization mechanisms'');
+      recommendations.push('Increase coordination frequency'');
     }
 
-    const criticalIssues = filter(issues, (i) => i.severity === 'critical');'
+    const criticalIssues = filter(issues, (i) => i.severity === 'critical');
     if (criticalIssues.length > 0) {
-      recommendations.push('Address critical coordination issues immediately');'
+      recommendations.push('Address critical coordination issues immediately'');
     }
 
     if (issues.length > 5) {
-      recommendations.push('Review coordination processes for efficiency');'
+      recommendations.push('Review coordination processes for efficiency'');
     }
 
-    recommendations.push('Regular ART health checks');'
-    recommendations.push('Enhance dependency management tools');'
+    recommendations.push('Regular ART health checks'');
+    recommendations.push('Enhance dependency management tools'');
 
     return recommendations;
   }
 
   private escalateDependency(dependencyId: string): void {
-    this.logger.warn('Escalating dependency', { dependencyId });'
+    this.logger.warn('Escalating dependency,{ dependencyId }');
     // Implementation would trigger escalation workflow
   }
 
   /**
    * Get coordination result
    */
-  getCoordinationResult(resultId: string): ARTCoordinationResult | undefined {
+  getCoordinationResult(resultId: string): ARTCoordinationResult| undefined {
     return this.coordinationResults.get(resultId);
   }
 

@@ -26,7 +26,6 @@
 // SPARCPhase and SPARCProject are now event payload types, not direct dependencies
 
 import type { Feature } from '../types';
-
 // ============================================================================
 // EVENT PAYLOAD TYPES (Previously imported from SPARC)
 // ============================================================================
@@ -35,11 +34,11 @@ import type { Feature } from '../types';
  * SPARC phase enumeration - defined locally for event payloads
  */
 export enum SPARCPhase {
-  SPECIFICATION = 'specification',
-  PSEUDOCODE = 'pseudocode', 
-  ARCHITECTURE = 'architecture',
-  REFINEMENT = 'refinement',
-  COMPLETION = 'completion'
+  SPECIFICATION ='specification,
+  PSEUDOCODE ='pseudocode,
+  ARCHITECTURE ='architecture,
+  REFINEMENT ='refinement,
+  COMPLETION ='completion
 }
 
 /**
@@ -54,8 +53,7 @@ export interface SPARCProject {
   metadata: Record<string, unknown>;
 }
 // Define AgentType locally as it's not exported from teamwork package
-export type AgentType = 'researcher' | 'coder' | 'analyst' | 'coordinator' | 'specialist';
-
+export type AgentType ='researcher'|'coder'|'analyst'|'coordinator'|'specialist';
 // ============================================================================
 // INTEGRATION BRIDGE TYPES
 // ============================================================================
@@ -76,8 +74,8 @@ export interface FeatureToSPARCMapping {
  */
 export interface BusinessToTechnicalContext {
   readonly businessValue: number;
-  readonly technicalComplexity: 'simple' | 'moderate' | 'complex' | 'enterprise';
-  readonly stakeholderPriority: 'low' | 'medium' | 'high' | 'critical';
+  readonly technicalComplexity:'simple'|'moderate'|'complex'|'enterprise';
+  readonly stakeholderPriority:'low'|'medium'|'high'|'critical';
   readonly architecturalImpact: ArchitecturalImpact;
   readonly complianceRequirements: string[];
 }
@@ -86,17 +84,17 @@ export interface BusinessToTechnicalContext {
  * Architectural impact assessment
  */
 export interface ArchitecturalImpact {
-  readonly level: 'component' | 'service' | 'system' | 'enterprise';
+  readonly level:'component'|'service'|'system'|'enterprise';
   readonly affectedSystems: string[];
   readonly integrationComplexity: number; // 1-10 scale
-  readonly riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  readonly riskLevel:'low'|'medium'|'high'|'critical';
 }
 
 /**
  * Correlates SAFe progress with SPARC execution
  */
 export interface ProgressCorrelation {
-  readonly safeStatus: Feature['status'];
+  readonly safeStatus: Feature['status];
   readonly sparcPhases: SPARCPhaseMapping[];
   readonly overallProgress: number; // 0-1
   readonly blockers: IntegrationBlocker[];
@@ -130,7 +128,7 @@ export interface QualityGate {
  */
 export interface SPARCValidation {
   readonly phase: SPARCPhase;
-  readonly validationType: 'specification' | 'architecture' | 'implementation' | 'testing';
+  readonly validationType:'specification'|'architecture'|'implementation'|'testing';
   readonly criteria: ValidationCriteria[];
   readonly tooling: string[];
 }
@@ -150,9 +148,9 @@ export interface ValidationCriteria {
  */
 export interface IntegrationBlocker {
   readonly id: string;
-  readonly type: 'dependency' | 'resource' | 'technical' | 'business';
+  readonly type:'dependency'|'resource'|'technical'|'business';
   readonly description: string;
-  readonly impact: 'low' | 'medium' | 'high' | 'critical';
+  readonly impact:'low'|'medium'|'high'|'critical';
   readonly affectedFeatures: string[];
   readonly affectedSPARCProjects: string[];
   readonly resolutionStrategy: string;
@@ -179,19 +177,17 @@ export interface IntegratedAgentProfile {
 /**
  * SAFe-specific agent roles
  */
-export type SAFeAgentRole = 'product-owner' | 'scrum-master' | 'system-architect' | 'business-analyst' | 'compliance-officer';
-
+export type SAFeAgentRole ='product-owner'|'scrum-master'|'system-architect'|'business-analyst'|'compliance-officer';
 /**
  * SPARC-specific agent roles
  */
-export type SPARCAgentRole = 'specification-writer' | 'architect' | 'implementer' | 'quality-validator' | 'technical-writer';
-
+export type SPARCAgentRole ='specification-writer'|'architect'|'implementer'|'quality-validator'|'technical-writer';
 /**
  * Agent capabilities that span both frameworks
  */
 export interface AgentCapability {
   readonly capability: string;
-  readonly framework: 'safe' | 'sparc' | 'integration';
+  readonly framework:'safe'|'sparc'|'integration';
   readonly proficiencyLevel: number; // 1-10
   readonly lastUsed: Date;
   readonly successRate: number; // 0-1
@@ -201,7 +197,7 @@ export interface AgentCapability {
  * Framework certifications and knowledge
  */
 export interface FrameworkCertification {
-  readonly framework: 'safe' | 'sparc' | 'integration';
+  readonly framework:'safe'|'sparc'|'integration';
   readonly certificationLevel: string;
   readonly validUntil: Date;
   readonly competencies: string[];
@@ -211,11 +207,11 @@ export interface FrameworkCertification {
  * Experience levels for framework integration
  */
 export type ExperienceLevel = 
-  | 'novice'    // Basic understanding of both frameworks
-  | 'competent' // Can work independently in either framework
-  | 'proficient'// Can coordinate between frameworks
-  | 'expert'    // Can optimize integration patterns
-  | 'master';   // Can design new integration approaches
+|'novice '   // Basic understanding of both frameworks
+|'competent '// Can work independently in either framework
+|'proficient'// Can coordinate between frameworks
+|'expert '   // Can optimize integration patterns
+|'master'';   // Can design new integration approaches
 
 // ============================================================================
 // WORKFLOW COORDINATION TYPES
@@ -237,7 +233,7 @@ export interface IntegratedWorkflow {
  * SAFe workflow phases
  */
 export interface SAFeWorkflowPhase {
-  readonly phase: 'portfolio-kanban' | 'program-backlog' | 'pi-planning' | 'development' | 'system-demo';
+  readonly phase:'portfolio-kanban'|'program-backlog'|'pi-planning'|'development'|'system-demo';
   readonly duration: number; // milliseconds
   readonly participants: SAFeAgentRole[];
   readonly deliverables: string[];
@@ -264,7 +260,7 @@ export interface SynchronizationPoint {
   readonly name: string;
   readonly safeContext: string;
   readonly sparcContext: string;
-  readonly syncType: 'milestone' | 'review' | 'approval' | 'handoff';
+  readonly syncType:'milestone'|'review'|'approval'|'handoff';
   readonly requiredArtifacts: string[];
   readonly successCriteria: string[];
   readonly timeout: number; // milliseconds
@@ -276,7 +272,7 @@ export interface SynchronizationPoint {
 export interface EscalationPath {
   readonly trigger: EscalationTrigger;
   readonly escalationLevel: number;
-  readonly responsible: SAFeAgentRole | SPARCAgentRole;
+  readonly responsible: SAFeAgentRole| SPARCAgentRole;
   readonly timeoutMinutes: number;
   readonly resolution: ResolutionStrategy;
 }
@@ -285,7 +281,7 @@ export interface EscalationPath {
  * Triggers for escalation
  */
 export interface EscalationTrigger {
-  readonly type: 'delay' | 'quality' | 'dependency' | 'resource' | 'compliance';
+  readonly type:'delay'|'quality'|'dependency'|'resource'|'compliance';
   readonly threshold: unknown;
   readonly description: string;
 }
@@ -294,7 +290,7 @@ export interface EscalationTrigger {
  * Resolution strategies for escalated issues
  */
 export interface ResolutionStrategy {
-  readonly strategy: 'escalate' | 'fallback' | 'retry' | 'skip' | 'manual-intervention';
+  readonly strategy:'escalate'|'fallback'|'retry'|'skip'|'manual-intervention';
   readonly description: string;
   readonly impact: string;
   readonly alternatives: string[];
@@ -377,14 +373,13 @@ export interface IntegrationConfiguration {
 /**
  * Available integration features
  */
-export type IntegrationFeature = 'auto-sync' | 'bi-directional-mapping' | 'cross-framework-reporting' | 'intelligent-escalation';
-
+export type IntegrationFeature ='auto-sync'|'bi-directional-mapping'|'cross-framework-reporting'|'intelligent-escalation';
 /**
  * Synchronization settings
  */
 export interface SynchronizationSettings {
   readonly syncInterval: number; // milliseconds
-  readonly conflictResolution: 'safe-wins' | 'sparc-wins' | 'manual' | 'merge';
+  readonly conflictResolution:'safe-wins'|'sparc-wins'|'manual'|'merge';
   readonly timeoutTolerance: number; // milliseconds
   readonly retryPolicy: RetryPolicy;
 }
@@ -394,7 +389,7 @@ export interface SynchronizationSettings {
  */
 export interface RetryPolicy {
   readonly maxRetries: number;
-  readonly backoffStrategy: 'linear' | 'exponential';
+  readonly backoffStrategy:'linear'|'exponential';
   readonly baseDelay: number; // milliseconds
 }
 
@@ -415,7 +410,7 @@ export interface EscalationThreshold {
   readonly metric: string;
   readonly threshold: number;
   readonly timeWindow: number; // milliseconds
-  readonly severity: 'low' | 'medium' | 'high' | 'critical';
+  readonly severity: low'|'medium'|'high'|'critical';
 }
 
 /**
@@ -437,5 +432,5 @@ export interface QualityGateSettings {
   readonly requireManualApproval: boolean;
   readonly parallelValidation: boolean;
   readonly validationTimeout: number; // milliseconds
-  readonly failureHandling: 'block' | 'warn' | 'log';
+  readonly failureHandling:'block'|'warn'|'log';
 }

@@ -17,7 +17,6 @@
  */
 
 import type { Logger } from '@claude-zen/foundation';
-
 // ============================================================================
 // ARCHITECTURE DECISION MANAGEMENT INTERFACES
 // ============================================================================
@@ -52,20 +51,18 @@ export interface ArchitectureDecisionRecord {
 /**
  * ADR status enumeration
  */
-export type ADRStatus =|draft|proposed|under_review|accepted|rejected|deprecated|superseded|'amended;
-
+export type ADRStatus =| draft| proposed| under_review| accepted| rejected| deprecated| superseded|'amended';
 /**
  * Decision categories for organization
  */
-export type DecisionCategory =|architecture_pattern|technology_selection|integration_approach|security_policy|performance_standard|data_management|deployment_strategy|quality_standard|governance_policy|'infrastructure_decision;
-
+export type DecisionCategory =| architecture_pattern| technology_selection| integration_approach| security_policy| performance_standard| data_management| deployment_strategy| quality_standard| governance_policy|'infrastructure_decision';
 /**
  * Decision impact assessment
  */
 export interface DecisionImpact {
-  readonly scope: 'local|system|enterprise|ecosystem;
-  readonly timeHorizon:|short_term|medium_term|long_term|'strategic;
-  readonly riskLevel: 'low|medium|high|critical;
+  readonly scope:'local| system| enterprise'|'ecosystem';
+  readonly timeHorizon:| short_term| medium_term| long_term|'strategic';
+  readonly riskLevel:'low| medium| high'|'critical';
   readonly businessImpact: number; // 0-10 scale
   readonly technicalComplexity: number; // 0-10 scale
   readonly implementationEffort: number; // story points or hours
@@ -95,7 +92,7 @@ export interface CostAnalysis {
   readonly maintenanceCost: number;
   readonly opportunityCost: number;
   readonly currency: string;
-  readonly timeframe: 'annual' | 'project' | 'lifetime';
+  readonly timeframe:'annual'|'project'|'lifetime';
   readonly confidence: number; // 0-100 scale
 }
 
@@ -138,7 +135,7 @@ export interface Risk {
  * Review cycle for decision governance
  */
 export interface ReviewCycle {
-  readonly frequency: 'one_time|quarterly|annually|on_change;
+  readonly frequency:'one_time| quarterly| annually'|'on_change';
   readonly nextReviewDate?: Date;
   readonly reviewCriteria: string[];
   readonly reviewers: string[];
@@ -151,7 +148,7 @@ export interface ReviewCycle {
 export interface Attachment {
   readonly attachmentId: string;
   readonly name: string;
-  readonly type: 'document|diagram|code|link|image;
+  readonly type:'document| diagram| code| link'|'image';
   readonly url: string;
   readonly description: string;
   readonly uploadedBy: string;
@@ -168,7 +165,7 @@ export interface DecisionMetric {
   readonly targetValue: number;
   readonly currentValue: number;
   readonly unit: string;
-  readonly trend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|declining;
+  readonly trend:'improving'|'stable'|'declining'|'improving'|'stable'|'declining''|'declining';
   readonly lastMeasured: Date;
 }
 
@@ -183,7 +180,7 @@ export interface DecisionRequest {
   readonly requester: string;
   readonly stakeholders: string[];
   readonly deadline?: Date;
-  readonly priority: 'low|medium|high|critical;
+  readonly priority: low| medium| high'|'critical';
   readonly businessJustification: string;
 }
 
@@ -197,7 +194,7 @@ export interface DecisionOption {
   readonly cons: string[];
   readonly estimatedCost: number;
   readonly estimatedEffort: number;
-  readonly riskLevel: 'low' | 'medium' | 'high';
+  readonly riskLevel:'low'|'medium'|'high';
 }
 
 /**
@@ -208,7 +205,7 @@ export interface ADRConfig {
   readonly enableAutomatedReviews: boolean;
   readonly enableStakeholderNotifications: boolean;
   readonly enableMetricsTracking: boolean;
-  readonly defaultReviewCycle: ReviewCycle['frequency'];'
+  readonly defaultReviewCycle: ReviewCycle['frequency];
   readonly maxAlternatives: number;
   readonly minStakeholders: number;
   readonly criticalDecisionThreshold: number;
@@ -262,7 +259,7 @@ export interface DecisionTrend {
   readonly decisionsAccepted: number;
   readonly decisionsRejected: number;
   readonly avgTimeToDecision: number; // days
-  readonly qualityTrend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|declining;
+  readonly qualityTrend:'improving'|'stable'|'declining'|'improving'|'stable'|'declining''|'declining';
 }
 
 // ============================================================================
@@ -296,7 +293,7 @@ export class ArchitectureDecisionManagementService {
       enableAutomatedReviews: true,
       enableStakeholderNotifications: true,
       enableMetricsTracking: true,
-      defaultReviewCycle: 'annually',
+      defaultReviewCycle:'annually,
       maxAlternatives: 10,
       minStakeholders: 2,
       criticalDecisionThreshold: 1000, // effort threshold
@@ -313,7 +310,7 @@ export class ArchitectureDecisionManagementService {
 
     try {
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent decision analysis
-      const { BrainCoordinator } = await import('@claude-zen/brain');'
+      const { BrainCoordinator } = await import('@claude-zen/brain'');
       this.brainCoordinator = new BrainCoordinator(
           enabled: true,
           learningRate: 0.1,
@@ -322,27 +319,27 @@ export class ArchitectureDecisionManagementService {
 
       // Lazy load @claude-zen/foundation for performance tracking
       const { PerformanceTracker, TelemetryManager } = await import(
-        '@claude-zen/foundation''
+       '@claude-zen/foundation'
       );
       this.performanceTracker = new PerformanceTracker();
       this.telemetryManager = new TelemetryManager({
-        serviceName: 'architecture-decision-management',
+        serviceName:'architecture-decision-management,
         enableTracing: true,
         enableMetrics: true,
       });
       await this.telemetryManager.initialize();
 
       // Lazy load @claude-zen/workflows for decision approval workflows
-      const { WorkflowEngine } = await import('@claude-zen/workflows');'
+      const { WorkflowEngine } = await import('@claude-zen/workflows'');
       this.workflowEngine = new WorkflowEngine(
         maxConcurrentWorkflows: 10,
         enableVisualization: true,);
       await this.workflowEngine.initialize();
 
       // Lazy load @claude-zen/agui for approval workflows
-      const { AGUISystem } = await import('@claude-zen/agui');'
+      const { AGUISystem } = await import('@claude-zen/agui'');
       const aguiSystemResult = await AGUISystem({
-        aguiType: 'terminal',
+        aguiType:'terminal,
         taskApprovalConfig: {
           enableRichDisplay: true,
           enableBatchMode: false,
@@ -352,17 +349,17 @@ export class ArchitectureDecisionManagementService {
       this.aguiService = aguiSystemResult.agui;
 
       // Lazy load ../../teamwork for stakeholder collaboration
-      const { ConversationOrchestrator } = await import('../../teamwork');'
+      const { ConversationOrchestrator } = await import('../../teamwork'');
       this.conversationOrchestrator = new ConversationOrchestrator();
       await this.conversationOrchestrator.initialize();
 
       this.initialized = true;
       this.logger.info(
-        'Architecture Decision Management Service initialized successfully''
+       'Architecture Decision Management Service initialized successfully'
       );
     } catch (error) {
       this.logger.error(
-        'Failed to initialize Architecture Decision Management Service:',
+       'Failed to initialize Architecture Decision Management Service:,
         error
       );
       throw error;
@@ -374,18 +371,18 @@ export class ArchitectureDecisionManagementService {
    */
   async createArchitectureDecisionRecord(
     decision: Omit<
-      ArchitectureDecisionRecord,|id|createdAt|updatedAt|status|confidenceLevel|'alternatives''
+      ArchitectureDecisionRecord,| id| createdAt| updatedAt| status| confidenceLevel|'alternatives'
     >
   ): Promise<ArchitectureDecisionRecord> {
     if (!this.initialized) await this.initialize();
 
     const _timer = this.performanceTracker.startTimer(
-      'create_architecture_decision''
+     'create_architecture_decision'
     );
 
     try {
       this.logger.info(
-        'Creating architecture decision record with AI analysis',
+       'Creating architecture decision record with AI analysis,
         { title: decision.title }
       );
 
@@ -417,7 +414,7 @@ export class ArchitectureDecisionManagementService {
       const adr: ArchitectureDecisionRecord = {
         ...decision,
         id: `adr-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,`
-        status: 'draft',
+        status:'draft,
         confidenceLevel,
         alternatives,
         reviewCycle: {
@@ -426,8 +423,8 @@ export class ArchitectureDecisionManagementService {
           reviewers: decision.stakeholders,
           escalationPath: [],
         },
-        dependencies: decisionAnalysis.dependencies || [],
-        tags: decisionAnalysis.recommendedTags || [],
+        dependencies: decisionAnalysis.dependencies|| [],
+        tags: decisionAnalysis.recommendedTags|| [],
         attachments: [],
         metrics: this.generateDecisionMetrics(decision),
         createdAt: new Date(),
@@ -439,17 +436,17 @@ export class ArchitectureDecisionManagementService {
         decision.impact.implementationEffort >
         this.config.criticalDecisionThreshold
       ) {
-        adr.status ='proposed;
+        adr.status =proposed';
         await this.initiateStakeholderReview(adr);
       }
 
       // Store decision record
       this.decisionRecords.set(adr.id, adr);
 
-      this.performanceTracker.endTimer('create_architecture_decision');'
-      this.telemetryManager.recordCounter('architecture_decisions_created', 1);'
+      this.performanceTracker.endTimer('create_architecture_decision'');
+      this.telemetryManager.recordCounter('architecture_decisions_created,1');
 
-      this.logger.info('Architecture decision record created successfully', '
+      this.logger.info('Architecture decision record created successfully,
         adrId: adr.id,
         title: adr.title,
         category: adr.category,
@@ -457,9 +454,9 @@ export class ArchitectureDecisionManagementService {
 
       return adr;
     } catch (error) {
-      this.performanceTracker.endTimer('create_architecture_decision');'
+      this.performanceTracker.endTimer('create_architecture_decision'');
       this.logger.error(
-        'Failed to create architecture decision record:',
+       'Failed to create architecture decision record:,
         error
       );
       throw error;
@@ -480,11 +477,11 @@ export class ArchitectureDecisionManagementService {
     if (!this.initialized) await this.initialize();
 
     const _timer = this.performanceTracker.startTimer(
-      'request_architecture_decision''
+     'request_architecture_decision'
     );
 
     try {
-      this.logger.info('Processing architecture decision request', {'
+      this.logger.info('Processing architecture decision request,{
         title: request.title,
       });
 
@@ -508,7 +505,7 @@ export class ArchitectureDecisionManagementService {
       if (requiresApproval) {
         // Create approval task with stakeholder collaboration
         const approval = await this.aguiService.createApprovalTask({
-          taskType: 'architecture_decision_request',
+          taskType:'architecture_decision_request,
           description: `Architecture decision requires approval: ${request.title}`,`
           context: { request, optionAnalysis },
           approvers: request.stakeholders,
@@ -524,7 +521,7 @@ export class ArchitectureDecisionManagementService {
             optionAnalysis
           );
 
-          this.performanceTracker.endTimer('request_architecture_decision');'
+          this.performanceTracker.endTimer('request_architecture_decision'');
 
           return {
             approved: true,
@@ -534,35 +531,35 @@ export class ArchitectureDecisionManagementService {
           };
         }
 
-        this.performanceTracker.endTimer('request_architecture_decision');'
+        this.performanceTracker.endTimer('request_architecture_decision'');
 
         return {
           approved: false,
           comments:
-            approval.comments || 'Decision not approved by stakeholders',
+            approval.comments||'Decision not approved by stakeholders,
         };
       } else {
         // Auto-approve based on AI recommendation
-        const recommendedOption = optionAnalysis.recommendedOptionIndex || 0;
+        const recommendedOption = optionAnalysis.recommendedOptionIndex|| 0;
         const adr = await this.createADRFromRequest(
           request,
           recommendedOption,
           optionAnalysis
         );
 
-        this.performanceTracker.endTimer('request_architecture_decision');'
+        this.performanceTracker.endTimer('request_architecture_decision'');
 
         return {
           approved: true,
           selectedOption: recommendedOption,
           adrId: adr.id,
-          comments: 'Auto-approved based on AI analysis',
+          comments:'Auto-approved based on AI analysis,
         };
       }
     } catch (error) {
-      this.performanceTracker.endTimer('request_architecture_decision');'
+      this.performanceTracker.endTimer('request_architecture_decision'');
       this.logger.error(
-        'Failed to process architecture decision request:',
+       'Failed to process architecture decision request:,
         error
       );
       throw error;
@@ -579,7 +576,7 @@ export class ArchitectureDecisionManagementService {
   ): Promise<ArchitectureDecisionRecord> {
     if (!this.initialized) await this.initialize();
 
-    const _timer = this.performanceTracker.startTimer('update_adr_status');'
+    const _timer = this.performanceTracker.startTimer('update_adr_status'');
 
     try {
       const adr = this.decisionRecords.get(adrId);
@@ -610,10 +607,10 @@ export class ArchitectureDecisionManagementService {
 
       this.decisionRecords.set(adrId, updatedADR);
 
-      this.performanceTracker.endTimer('update_adr_status');'
-      this.telemetryManager.recordCounter('adr_status_updates', 1);'
+      this.performanceTracker.endTimer('update_adr_status'');
+      this.telemetryManager.recordCounter('adr_status_updates,1');
 
-      this.logger.info('ADR status updated', '
+      this.logger.info('ADR status updated,
         adrId,
         oldStatus: adr.status,
         newStatus,
@@ -621,8 +618,8 @@ export class ArchitectureDecisionManagementService {
 
       return updatedADR;
     } catch (error) {
-      this.performanceTracker.endTimer('update_adr_status');'
-      this.logger.error('Failed to update ADR status:', error);'
+      this.performanceTracker.endTimer('update_adr_status'');
+      this.logger.error('Failed to update ADR status:,error');
       throw error;
     }
   }
@@ -633,7 +630,7 @@ export class ArchitectureDecisionManagementService {
   async getADRDashboard(): Promise<ADRDashboard> {
     if (!this.initialized) await this.initialize();
 
-    const _timer = this.performanceTracker.startTimer('generate_adr_dashboard');'
+    const _timer = this.performanceTracker.startTimer('generate_adr_dashboard'');
 
     try {
       const allDecisions = Array.from(this.decisionRecords.values())();
@@ -650,22 +647,22 @@ export class ArchitectureDecisionManagementService {
         decisionsByStatus: this.groupDecisionsByStatus(allDecisions),
         decisionsByCategory: this.groupDecisionsByCategory(allDecisions),
         averageDecisionTime: this.calculateAverageDecisionTime(allDecisions),
-        stakeholderEngagement: dashboardInsights.stakeholderEngagement || [],
-        decisionEffectiveness: dashboardInsights.decisionEffectiveness || [],
+        stakeholderEngagement: dashboardInsights.stakeholderEngagement|| [],
+        decisionEffectiveness: dashboardInsights.decisionEffectiveness|| [],
         upcomingReviews: this.getUpcomingReviews(allDecisions),
-        trendAnalysis: dashboardInsights.trendAnalysis || [],
+        trendAnalysis: dashboardInsights.trendAnalysis|| [],
       };
 
-      this.performanceTracker.endTimer('generate_adr_dashboard');'
+      this.performanceTracker.endTimer('generate_adr_dashboard'');
 
-      this.logger.info('ADR dashboard generated', '
+      this.logger.info('ADR dashboard generated,
         totalDecisions: dashboard.totalDecisions,
         pendingReviews: dashboard.upcomingReviews.length,);
 
       return dashboard;
     } catch (error) {
-      this.performanceTracker.endTimer('generate_adr_dashboard');'
-      this.logger.error('Failed to generate ADR dashboard:', error);'
+      this.performanceTracker.endTimer('generate_adr_dashboard'');
+      this.logger.error('Failed to generate ADR dashboard:,error');
       throw error;
     }
   }
@@ -680,7 +677,7 @@ export class ArchitectureDecisionManagementService {
   /**
    * Get ADR by ID
    */
-  getDecisionRecord(adrId: string): ArchitectureDecisionRecord | undefined {
+  getDecisionRecord(adrId: string): ArchitectureDecisionRecord| undefined {
     return this.decisionRecords.get(adrId);
   }
 
@@ -704,7 +701,7 @@ export class ArchitectureDecisionManagementService {
       await this.telemetryManager.shutdown();
     }
     this.initialized = false;
-    this.logger.info('Architecture Decision Management Service shutdown complete');'
+    this.logger.info('Architecture Decision Management Service shutdown complete'');
   }
 
   // ============================================================================
@@ -713,20 +710,20 @@ export class ArchitectureDecisionManagementService {
 
   private generateAlternatives(_decision: any, analysis: any): Alternative[] {
     // AI-powered alternative generation
-    const alternatives = analysis.alternatives || [];
+    const alternatives = analysis.alternatives|| [];
 
     return alternatives.map((alt: any, index: number) => ({
       alternativeId: `alt-${index}`,`
-      name: alt.name || `Alternative ${index + 1}`,`
-      description: alt.description || '',
-      pros: alt.pros || [],
-      cons: alt.cons || [],
-      cost: alt.cost || this.generateDefaultCostAnalysis(),
-      feasibility: alt.feasibility || this.generateDefaultFeasibility(),
+      name: alt.name|| `Alternative ${index + 1}`,`
+      description: alt.description||',
+      pros: alt.pros|| [],
+      cons: alt.cons|| [],
+      cost: alt.cost|| this.generateDefaultCostAnalysis(),
+      feasibility: alt.feasibility|| this.generateDefaultFeasibility(),
       riskAssessment:
-        alt.riskAssessment || this.generateDefaultRiskAssessment(),
-      recommendationScore: alt.score || 5.0,
-    }));
+        alt.riskAssessment|| this.generateDefaultRiskAssessment(),
+      recommendationScore: alt.score|| 5.0,
+    });
   }
 
   private calculateConfidenceLevel(
@@ -749,25 +746,24 @@ export class ArchitectureDecisionManagementService {
       confidence += 10;
 
     // Adjust based on impact level
-    if (decision.impact.riskLevel ==='low') confidence += 10;'
-    if (decision.impact.riskLevel === 'high') confidence -= 10;'
-
-    return Math.min(95, Math.max(30, confidence));
+    if (decision.impact.riskLevel ===low)confidence += 10';
+    if (decision.impact.riskLevel === 'high)confidence -= 10';
+    return Math.min(95, Math.max(30, confidence);
   }
 
   private generateReviewCriteria(decision: any): string[] {
     const criteria = [
-      'Decision outcomes align with expected results',
-      'Implementation proceeded as planned',
-      'Stakeholder satisfaction remains high',
+     'Decision outcomes align with expected results,
+     'Implementation proceeded as planned,
+     'Stakeholder satisfaction remains high,
     ];
 
     // Add category-specific criteria
-    if (decision.category === 'technology_selection') {'
-      criteria.push('Technology performance meets expectations');'
+    if (decision.category ==='technology_selection){
+      criteria.push('Technology performance meets expectations'');
     }
-    if (decision.category === 'security_policy') {'
-      criteria.push('Security requirements are being met');'
+    if (decision.category ==='security_policy){
+      criteria.push('Security requirements are being met'');
     }
 
     return criteria;
@@ -776,37 +772,37 @@ export class ArchitectureDecisionManagementService {
   private generateDecisionMetrics(decision: any): DecisionMetric[] {
     const baseMetrics: DecisionMetric[] = [
       {
-        metricId: 'implementation-success',
-        name: 'Implementation Success',
-        description: 'Success rate of decision implementation',
+        metricId:'implementation-success,
+        name:'Implementation Success,
+        description:'Success rate of decision implementation,
         targetValue: 90,
         currentValue: 0,
-        unit: 'percentage',
-        trend: 'stable',
+        unit:'percentage,
+        trend:'stable,
         lastMeasured: new Date(),
       },
       {
-        metricId: 'stakeholder-satisfaction',
-        name: 'Stakeholder Satisfaction',
-        description: 'Satisfaction level of decision stakeholders',
+        metricId:'stakeholder-satisfaction,
+        name:'Stakeholder Satisfaction,
+        description:'Satisfaction level of decision stakeholders,
         targetValue: 85,
         currentValue: 0,
-        unit: 'percentage',
-        trend: 'stable',
+        unit:'percentage,
+        trend:'stable,
         lastMeasured: new Date(),
       },
     ];
 
     // Add category-specific metrics
-    if (decision.category === 'performance_standard') {'
+    if (decision.category ==='performance_standard){
       baseMetrics.push(
-        metricId: 'performance-improvement',
-        name: 'Performance Improvement',
-        description: 'Performance improvement achieved',
+        metricId:'performance-improvement,
+        name:'Performance Improvement,
+        description:'Performance improvement achieved,
         targetValue: 20,
         currentValue: 0,
-        unit: 'percentage',
-        trend: 'stable',
+        unit:'percentage,
+        trend:'stable,
         lastMeasured: new Date(),);
     }
 
@@ -825,7 +821,7 @@ export class ArchitectureDecisionManagementService {
         timeout: 86400000, // 24 hours
       });
     } catch (error) {
-      this.logger.error('Failed to initiate stakeholder review:', error);'
+      this.logger.error('Failed to initiate stakeholder review:,error');
     }
   }
 
@@ -834,9 +830,8 @@ export class ArchitectureDecisionManagementService {
     analysis: any
   ): boolean {
     // High-priority or high-impact decisions require approval
-    if (request.priority === 'critical') return true;'
-    if (request.priority === 'high') return true;'
-
+    if (request.priority === 'critical)return true';
+    if (request.priority === 'high)return true';
     // Large effort decisions require approval
     const totalEffort = request.options.reduce(
       (sum, opt) => sum + opt.estimatedEffort,
@@ -870,15 +865,15 @@ export class ArchitectureDecisionManagementService {
       supersedes: [],
       tags: [],
       reviewCycle: {
-        frequency: 'annually',
+        frequency:'annually,
         nextReviewDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
         reviewCriteria: [
-          'business_value',
-          'technical_feasibility',
-          'compliance',
+         'business_value,
+         'technical_feasibility,
+         'compliance,
         ],
         reviewers: request.stakeholders,
-        escalationPath: ['team_lead', 'architecture_board', 'cto'],
+        escalationPath: ['team_lead,'architecture_board,'cto'],
       },
       attachments: [],
       metrics: [],
@@ -894,14 +889,13 @@ export class ArchitectureDecisionManagementService {
 
     // Simple keyword-based inference
     const title = request.title.toLowerCase();
-    if (title.includes('technology') || title.includes('tech'))'
-      return 'technology_selection;
-    if (title.includes('security')) return 'security_policy;
-    if (title.includes('performance')) return 'performance_standard;
-    if (title.includes('architecture') || title.includes('pattern'))'
-      return 'architecture_pattern;
-
-    return 'architecture_pattern'; // Default'
+    if (title.includes('technology)|| title.includes('tech'))
+      return'technology_selection';
+    if (title.includes('security')) return'security_policy';
+    if (title.includes('performance')) return'performance_standard';
+    if (title.includes('architecture)|| title.includes('pattern'))
+      return'architecture_pattern';
+    return'architecture_pattern''; // Default
   }
 
   private calculateImpact(
@@ -912,25 +906,25 @@ export class ArchitectureDecisionManagementService {
       scope: this.inferScope(option.estimatedCost),
       timeHorizon: this.inferTimeHorizon(option.estimatedEffort),
       riskLevel: option.riskLevel,
-      businessImpact: analysis.businessImpact || 5,
-      technicalComplexity: analysis.technicalComplexity || 5,
+      businessImpact: analysis.businessImpact|| 5,
+      technicalComplexity: analysis.technicalComplexity|| 5,
       implementationEffort: option.estimatedEffort,
-      maintenanceOverhead: analysis.maintenanceOverhead || 3,
+      maintenanceOverhead: analysis.maintenanceOverhead|| 3,
     };
   }
 
-  private inferScope(cost: number): DecisionImpact['scope'] {'
-    if (cost > 100000) return 'enterprise;
-    if (cost > 50000) return 'system;
-    if (cost > 10000) return 'system;
-    return 'local;
+  private inferScope(cost: number): DecisionImpact['scope'] {
+    if (cost > 100000) return'enterprise';
+    if (cost > 50000) return'system';
+    if (cost > 10000) return'system';
+    return'local';
   }
 
-  private inferTimeHorizon(effort: number): DecisionImpact['timeHorizon'] {'
-    if (effort > 2000) return 'strategic;
-    if (effort > 500) return 'long_term;
-    if (effort > 100) return 'medium_term;
-    return 'short_term;
+  private inferTimeHorizon(effort: number): DecisionImpact['timeHorizon'] {
+    if (effort > 2000) return'strategic';
+    if (effort > 500) return'long_term';
+    if (effort > 100) return'medium_term';
+    return'short_term';
   }
 
   private generateDefaultCostAnalysis(): CostAnalysis {
@@ -938,8 +932,8 @@ export class ArchitectureDecisionManagementService {
       implementationCost: 0,
       maintenanceCost: 0,
       opportunityCost: 0,
-      currency: 'USD',
-      timeframe: 'project',
+      currency:'USD,
+      timeframe:'project,
       confidence: 50,
     };
   }
@@ -960,8 +954,8 @@ export class ArchitectureDecisionManagementService {
       risks: [],
       overallRiskScore: 3,
       riskMitigationPlan:
-        'Standard risk mitigation procedures will be followed',
-      contingencyPlan: 'Fallback to previous approach if issues arise',
+       'Standard risk mitigation procedures will be followed,
+      contingencyPlan: 'Fallback to previous approach if issues arise,
     };
   }
 
@@ -970,7 +964,7 @@ export class ArchitectureDecisionManagementService {
   ): Record<ADRStatus, number> {
     return decisions.reduce(
       (groups, decision) => {
-        groups[decision.status] = (groups[decision.status] || 0) + 1;
+        groups[decision.status] = (groups[decision.status]|| 0) + 1;
         return groups;
       },
       {} as Record<ADRStatus, number>
@@ -982,7 +976,7 @@ export class ArchitectureDecisionManagementService {
   ): Record<DecisionCategory, number> {
     return decisions.reduce(
       (groups, decision) => {
-        groups[decision.category] = (groups[decision.category] || 0) + 1;
+        groups[decision.category] = (groups[decision.category]|| 0) + 1;
         return groups;
       },
       {} as Record<DecisionCategory, number>
@@ -994,7 +988,7 @@ export class ArchitectureDecisionManagementService {
   ): number {
     if (decisions.length === 0) return 0;
 
-    const acceptedDecisions = decisions.filter((d) => d.status ==='accepted');'
+    const acceptedDecisions = decisions.filter((d) => d.status ===accepted');
     if (acceptedDecisions.length === 0) return 0;
 
     const totalTime = acceptedDecisions.reduce((sum, decision) => {

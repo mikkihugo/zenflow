@@ -10,7 +10,6 @@
  */
 
 import { TokenFactory } from '@claude-zen/foundation';
-
 /**
  * Core SAFe service tokens
  */
@@ -25,26 +24,26 @@ export const SAFE_TOKENS = {
   EpicLifecycleService: TokenFactory.create<any>('SAFe.EpicLifecycleService'),
   BusinessCaseService: TokenFactory.create<any>('SAFe.BusinessCaseService'),
   PortfolioKanbanService: TokenFactory.create<any>(
-    'SAFe.PortfolioKanbanService''
+   'SAFe.PortfolioKanbanService'
   ),
 
   // Program level services
   ProgramIncrementService: TokenFactory.create<any>(
-    'SAFe.ProgramIncrementService''
+   'SAFe.ProgramIncrementService'
   ),
   FeatureManagementService: TokenFactory.create<any>(
-    'SAFe.FeatureManagementService''
+   'SAFe.FeatureManagementService'
   ),
   ARTCoordinationService: TokenFactory.create<any>(
-    'SAFe.ARTCoordinationService''
+   'SAFe.ARTCoordinationService'
   ),
 
   // Team level services
   IterationPlanningService: TokenFactory.create<any>(
-    'SAFe.IterationPlanningService''
+   'SAFe.IterationPlanningService'
   ),
   StoryManagementService: TokenFactory.create<any>(
-    'SAFe.StoryManagementService''
+   'SAFe.StoryManagementService'
   ),
   TeamKanbanService: TokenFactory.create<any>('SAFe.TeamKanbanService'),
 
@@ -52,48 +51,48 @@ export const SAFE_TOKENS = {
   RunwayItemService: TokenFactory.create<any>('SAFe.RunwayItemService'),
   TechnicalDebtService: TokenFactory.create<any>('SAFe.TechnicalDebtService'),
   ArchitectureDecisionService: TokenFactory.create<any>(
-    'SAFe.ArchitectureDecisionService''
+   'SAFe.ArchitectureDecisionService'
   ),
   CapabilityService: TokenFactory.create<any>('SAFe.CapabilityService'),
 
   // DevSecOps services
   SecurityScanningService: TokenFactory.create<any>(
-    'SAFe.SecurityScanningService''
+   'SAFe.SecurityScanningService'
   ),
   ComplianceMonitoringService: TokenFactory.create<any>(
-    'SAFe.ComplianceMonitoringService''
+   'SAFe.ComplianceMonitoringService'
   ),
   IncidentResponseService: TokenFactory.create<any>(
-    'SAFe.IncidentResponseService''
+   'SAFe.IncidentResponseService'
   ),
 
   // Value Stream services
   ValueStreamMappingService: TokenFactory.create<any>(
-    'SAFe.ValueStreamMappingService''
+   'SAFe.ValueStreamMappingService'
   ),
   FlowAnalyticsService: TokenFactory.create<any>('SAFe.FlowAnalyticsService'),
   ValueDeliveryService: TokenFactory.create<any>('SAFe.ValueDeliveryService'),
 
   // Solution Train services
   MultiARTCoordinationService: TokenFactory.create<any>(
-    'SAFe.MultiARTCoordinationService''
+   'SAFe.MultiARTCoordinationService'
   ),
   SolutionPlanningService: TokenFactory.create<any>(
-    'SAFe.SolutionPlanningService''
+   'SAFe.SolutionPlanningService'
   ),
   CapabilityRoadmapService: TokenFactory.create<any>(
-    'SAFe.CapabilityRoadmapService''
+   'SAFe.CapabilityRoadmapService'
   ),
 
   // Continuous Delivery services
   DeploymentPipelineService: TokenFactory.create<any>(
-    'SAFe.DeploymentPipelineService''
+   'SAFe.DeploymentPipelineService'
   ),
   ReleaseManagementService: TokenFactory.create<any>(
-    'SAFe.ReleaseManagementService''
+   'SAFe.ReleaseManagementService'
   ),
   QualityAssuranceService: TokenFactory.create<any>(
-    'SAFe.QualityAssuranceService''
+   'SAFe.QualityAssuranceService'
   ),
 } as const;
 
@@ -124,7 +123,7 @@ export const AI_ENHANCEMENT_TOKENS = {
 
   // Optional collaboration services (from ../../teamwork)
   ConversationOrchestrator: TokenFactory.create<any>(
-    'AI.ConversationOrchestrator''
+   'AI.ConversationOrchestrator'
   ),
   CollaborationEngine: TokenFactory.create<any>('AI.CollaborationEngine'),
   StakeholderCoordinator: TokenFactory.create<any>('AI.StakeholderCoordinator'),
@@ -145,7 +144,7 @@ export const INTERFACE_TOKENS = {
   // External integrations
   JiraIntegration: TokenFactory.create<any>('Interface.JiraIntegration'),
   AzureDevOpsIntegration: TokenFactory.create<any>(
-    'Interface.AzureDevOpsIntegration''
+   'Interface.AzureDevOpsIntegration'
   ),
   GitHubIntegration: TokenFactory.create<any>('Interface.GitHubIntegration'),
 

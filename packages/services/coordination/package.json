@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "@claude-zen/foundation": "workspace:*",
+    "@claude-zen/database": "workspace:*",
     "@claude-zen/brain": "workspace:*",
     "@claude-zen/knowledge": "workspace:*",
     "@claude-zen/ai-safety": "workspace:*",

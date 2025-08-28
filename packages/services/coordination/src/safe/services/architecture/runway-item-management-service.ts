@@ -16,7 +16,6 @@
  */
 
 import type { Logger } from '@claude-zen/foundation';
-
 // ============================================================================
 // RUNWAY ITEM MANAGEMENT INTERFACES
 // ============================================================================
@@ -28,11 +27,11 @@ export interface ArchitectureRunwayItem {
   id: string;
   title: string;
   description: string;
-  type: 'infrastructure|platform|enabler|technical-debt;
-  priority: 'critical|high|medium|low;
+  type:'infrastructure| platform| enabler'|'technical-debt';
+  priority: critical| high| medium'|'low';
   effort: number; // story points or hours
   dependencies: string[];
-  status: 'backlog|planned|in-progress|completed|blocked;
+  status:'backlog| planned| in-progress| completed'|'blocked';
   assignedTo?: string;
   targetPI?: string;
   createdAt: Date;
@@ -46,7 +45,7 @@ export interface RunwayPlanningConfig {
   readonly maxRunwayItems: number;
   readonly runwayPlanningHorizon: number; // in days
   readonly governanceApprovalThreshold: number;
-  readonly prioritizationStrategy:|value-based|effort-based|risk-based|'ai-optimized;
+  readonly prioritizationStrategy:| value-based| effort-based| risk-based|'ai-optimized';
 }
 
 /**
@@ -110,7 +109,7 @@ export class RunwayItemManagementService {
       maxRunwayItems: 100,
       runwayPlanningHorizon: 180, // 6 months
       governanceApprovalThreshold: 1000, // effort threshold
-      prioritizationStrategy: 'ai-optimized',
+      prioritizationStrategy:'ai-optimized,
       ...config,
     };
   }
@@ -123,7 +122,7 @@ export class RunwayItemManagementService {
 
     try {
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent prioritization
-      const { BrainCoordinator } = await import('@claude-zen/brain');'
+      const { BrainCoordinator } = await import('@claude-zen/brain'');
       this.brainCoordinator = new BrainCoordinator(
           enabled: true,
           learningRate: 0.1,
@@ -131,20 +130,20 @@ export class RunwayItemManagementService {
       await this.brainCoordinator.initialize();
 
       // Lazy load @claude-zen/foundation for performance tracking
-      const { PerformanceTracker } = await import('@claude-zen/foundation');'
+      const { PerformanceTracker } = await import('@claude-zen/foundation'');
       this.performanceTracker = new PerformanceTracker();
 
       // Lazy load @claude-zen/workflows for approval workflows
-      const { WorkflowEngine } = await import('@claude-zen/workflows');'
+      const { WorkflowEngine } = await import('@claude-zen/workflows'');
       this.workflowEngine = new WorkflowEngine(
         maxConcurrentWorkflows: 5,
         enableVisualization: true,);
       await this.workflowEngine.initialize();
 
       // Lazy load @claude-zen/agui for approval workflows
-      const { AGUISystem } = await import('@claude-zen/agui');'
+      const { AGUISystem } = await import('@claude-zen/agui'');
       const aguiResult = await AGUISystem({
-        aguiType: 'terminal',
+        aguiType:'terminal,
         taskApprovalConfig: {
           enableRichDisplay: true,
           enableBatchMode: false,
@@ -155,11 +154,11 @@ export class RunwayItemManagementService {
 
       this.initialized = true;
       this.logger.info(
-        'Runway Item Management Service initialized successfully''
+       'Runway Item Management Service initialized successfully'
       );
     } catch (error) {
       this.logger.error(
-        'Failed to initialize Runway Item Management Service:',
+       'Failed to initialize Runway Item Management Service:,
         error
       );
       throw error;
@@ -172,15 +171,15 @@ export class RunwayItemManagementService {
   async addRunwayItem(
     item: Omit<
       ArchitectureRunwayItem,
-      'id|createdAt|updatedAt|status''
+     'id| createdAt| updatedAt| status'
     >
   ): Promise<ArchitectureRunwayItem> {
     if (!this.initialized) await this.initialize();
 
-    const _timer = this.performanceTracker.startTimer('add_runway_item');'
+    const _timer = this.performanceTracker.startTimer('add_runway_item'');
 
     try {
-      this.logger.info('Adding runway item with AI optimization', {'
+      this.logger.info('Adding runway item with AI optimization,{
         title: item.title,
       });
 
@@ -197,8 +196,8 @@ export class RunwayItemManagementService {
       const runwayItem: ArchitectureRunwayItem = {
         ...item,
         id: `runway-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,`
-        status: 'backlog',
-        priority: priorityOptimization.recommendedPriority || item.priority,
+        status:'backlog,
+        priority: priorityOptimization.recommendedPriority|| item.priority,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -216,9 +215,9 @@ export class RunwayItemManagementService {
       // Store runway item
       this.runwayItems.set(runwayItem.id, runwayItem);
 
-      this.performanceTracker.endTimer('add_runway_item');'
+      this.performanceTracker.endTimer('add_runway_item'');
 
-      this.logger.info('Runway item added successfully', {'
+      this.logger.info('Runway item added successfully,{
         itemId: runwayItem.id,
         priority: runwayItem.priority,
         effort: runwayItem.effort,
@@ -226,8 +225,8 @@ export class RunwayItemManagementService {
 
       return runwayItem;
     } catch (error) {
-      this.performanceTracker.endTimer('add_runway_item');'
-      this.logger.error('Failed to add runway item:', error);'
+      this.performanceTracker.endTimer('add_runway_item'');
+      this.logger.error('Failed to add runway item:,error');
       throw error;
     }
   }
@@ -243,7 +242,7 @@ export class RunwayItemManagementService {
     if (!this.initialized) await this.initialize();
 
     const timer = this.performanceTracker.startTimer(
-      'update_runway_item_status''
+     'update_runway_item_status'
     );
 
     try {
@@ -275,9 +274,9 @@ export class RunwayItemManagementService {
 
       this.runwayItems.set(itemId, updatedItem);
 
-      this.performanceTracker.endTimer('update_runway_item_status');'
+      this.performanceTracker.endTimer('update_runway_item_status'');
 
-      this.logger.info('Runway item status updated', '
+      this.logger.info('Runway item status updated,
         itemId,
         oldStatus: item.status,
         newStatus,
@@ -285,8 +284,8 @@ export class RunwayItemManagementService {
 
       return updatedItem;
     } catch (error) 
-      this.performanceTracker.endTimer('update_runway_item_status');'
-      this.logger.error('Failed to update runway item status:', error);'
+      this.performanceTracker.endTimer('update_runway_item_status'');
+      this.logger.error('Failed to update runway item status:,error');
       throw error;
   }
 
@@ -297,7 +296,7 @@ export class RunwayItemManagementService {
     if (!this.initialized) await this.initialize();
 
     const _timer = this.performanceTracker.startTimer(
-      'generate_runway_dashboard');'
+     'generate_runway_dashboard'');
 
     try {
       const allItems = Array.from(this.runwayItems.values())();
@@ -313,22 +312,22 @@ export class RunwayItemManagementService {
         totalItems: allItems.length,
         itemsByStatus: this.groupItemsByStatus(allItems),
         itemsByPriority: this.groupItemsByPriority(allItems),
-        upcomingDeadlines: dashboardInsights.upcomingDeadlines || [],
-        blockedItems: allItems.filter((item) => item.status ==='blocked'),
-        resourceAllocation: dashboardInsights.resourceAllocation || [],
-        completionTrends: dashboardInsights.completionTrends || [],
+        upcomingDeadlines: dashboardInsights.upcomingDeadlines|| [],
+        blockedItems: allItems.filter((item) => item.status ===blocked'),
+        resourceAllocation: dashboardInsights.resourceAllocation|| [],
+        completionTrends: dashboardInsights.completionTrends|| [],
       };
 
-      this.performanceTracker.endTimer('generate_runway_dashboard');'
+      this.performanceTracker.endTimer('generate_runway_dashboard'');
 
-      this.logger.info('Runway planning dashboard generated', '
+      this.logger.info('Runway planning dashboard generated,
         totalItems: dashboard.totalItems,
         blockedItems: dashboard.blockedItems.length,);
 
       return dashboard;
     } catch (error) {
-      this.performanceTracker.endTimer('generate_runway_dashboard');'
-      this.logger.error('Failed to generate runway dashboard:', error);'
+      this.performanceTracker.endTimer('generate_runway_dashboard'');
+      this.logger.error('Failed to generate runway dashboard:,error');
       throw error;
     }
   }
@@ -342,7 +341,7 @@ export class RunwayItemManagementService {
   /**
    * Get runway item by ID
    */
-  getRunwayItem(itemId: string): ArchitectureRunwayItem | undefined 
+  getRunwayItem(itemId: string): ArchitectureRunwayItem| undefined 
     return this.runwayItems.get(itemId);
 
   /**
@@ -359,7 +358,7 @@ export class RunwayItemManagementService {
       await this.aguiService.shutdown();
     }
     this.initialized = false;
-    this.logger.info('Runway Item Management Service shutdown complete');'
+    this.logger.info('Runway Item Management Service shutdown complete'');
 
   // ============================================================================
   // PRIVATE IMPLEMENTATION METHODS
@@ -370,17 +369,17 @@ export class RunwayItemManagementService {
   ): Promise<any> 
     try {
       const approval = await this.aguiService.createApprovalTask({
-        taskType: 'runway_item_governance',
+        taskType:'runway_item_governance,
         description: `High-effort runway item requires governance approval: ${item.title}`,`
         context: { item },
-        approvers: ['enterprise-architect', 'solution-architect'],
+        approvers: ['enterprise-architect,'solution-architect'],
         timeout: 1800000,
       });
 
       return approval;
     } catch (error) {
-      this.logger.error('Governance approval request failed:', error);'
-      return { approved: false, reason: 'approval_system_error' };'
+      this.logger.error('Governance approval request failed:,error');
+      return { approved: false, reason: 'approval_system_error '};
     }
 
   private groupItemsByStatus(
@@ -388,7 +387,7 @@ export class RunwayItemManagementService {
   ): Record<string, number> 
     return items.reduce(
       (groups, item) => {
-        groups[item.status] = (groups[item.status] || 0) + 1;
+        groups[item.status] = (groups[item.status]|| 0) + 1;
         return groups;
       },
       {} as Record<string, number>
@@ -399,7 +398,7 @@ export class RunwayItemManagementService {
   ): Record<string, number> 
     return items.reduce(
       (groups, item) => {
-        groups[item.priority] = (groups[item.priority] || 0) + 1;
+        groups[item.priority] = (groups[item.priority]|| 0) + 1;
         return groups;
       },
       {} as Record<string, number>

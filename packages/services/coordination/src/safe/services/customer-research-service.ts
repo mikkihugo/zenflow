@@ -13,7 +13,6 @@
  */
 
 import { _, dateFns, generateNanoId } from '@claude-zen/foundation';
-
 const { addDays, differenceInDays, format } = dateFns;
 const { groupBy, map, filter, orderBy, sumBy, meanBy, maxBy, countBy } = _;
 
@@ -24,7 +23,6 @@ import type {
   CustomerSegment,
 } from '../types/product-management';
 import { CustomerNeedPriority } from '../types/product-management';
-
 /**
  * Customer research service configuration
  */
@@ -33,7 +31,7 @@ export interface CustomerResearchConfig {
   readonly feedbackRetentionDays: number;
   readonly competitorAnalysisFrequency: number; // days
   readonly customerInterviewQuota: number; // per month
-  readonly marketResearchDepth: 'basic' | 'comprehensive' | 'advanced';
+  readonly marketResearchDepth:'basic'|'comprehensive'|'advanced';
 }
 
 /**
@@ -44,8 +42,8 @@ export interface CustomerFeedback {
   readonly customerId: string;
   readonly segmentId: string;
   readonly feedback: string;
-  readonly sentiment: 'positive' | 'negative' | 'neutral';
-  readonly category:|'feature|usability|performance|support|pricing;
+  readonly sentiment:'positive'|'negative'|'neutral';
+  readonly category:|'feature| usability| performance| support'|'pricing';
   readonly priority: CustomerNeedPriority;
   readonly source: string;
   readonly collectedAt: Date;
@@ -58,8 +56,8 @@ export interface CustomerFeedback {
 export interface MarketInsight {
   readonly id: string;
   readonly insight: string;
-  readonly category: 'trend|opportunity|threat|competitive;
-  readonly impact: 'high' | 'medium' | 'low';
+  readonly category:'trend| opportunity| threat'|'competitive';
+  readonly impact:'high'|'medium'|'low';
   readonly confidence: number; // 0-100%
   readonly sources: string[];
   readonly discoveredAt: Date;
@@ -100,7 +98,7 @@ export interface CompetitivePositioning {
   readonly strengthsVsCompetitors: string[];
   readonly weaknessesVsCompetitors: string[];
   readonly differentiationOpportunities: string[];
-  readonly competitiveThreat: 'low' | 'medium' | 'high';
+  readonly competitiveThreat:'low'|'medium'|'high';
 }
 
 /**
@@ -119,7 +117,7 @@ export class CustomerResearchService {
    * Create detailed customer segment
    */
   createCustomerSegment(
-    _segmentData: Omit<CustomerSegment, 'id'>'
+    _segmentData: Omit<CustomerSegment,'id'>
   ): CustomerSegment {
     if (this.segments.size >= this.config.maxSegments) {
       throw new Error(`Maximum segments reached: ${this.config.maxSegments}`);`
@@ -131,7 +129,7 @@ export class CustomerResearchService {
     };
 
     this.segments.set(segment.id, segment);
-    this.logger.info('Customer segment created', {'
+    this.logger.info('Customer segment created,{
       segmentId: segment.id,
       name: segment.name,
       size: segment.size,
@@ -150,7 +148,7 @@ export class CustomerResearchService {
         )
       : Array.from(this.segments.values())();
 
-    this.logger.info('Analyzing customer needs', {'
+    this.logger.info('Analyzing customer needs,{
       segmentCount: targetSegments.length,
     });
 
@@ -161,15 +159,14 @@ export class CustomerResearchService {
     });
 
     // Group by description and calculate aggregate priority
-    const needsGrouped = groupBy(allNeeds, 'description');'
+    const needsGrouped = groupBy(allNeeds,'description'');
     const prioritizedNeeds = map(needsGrouped, (needs, description) => {
       const avgFrequency = meanBy(needs, (n) =>
         this.getFrequencyScore(n.frequency)
       );
-      const avgSatisfaction = meanBy(needs, 'satisfactionLevel');'
+      const avgSatisfaction = meanBy(needs,'satisfactionLevel'');
       const maxWillingness =
-        maxBy(needs, 'willingnessToPay')?.willingnessToPay||0;'
-
+        maxBy(needs,'willingnessToPay')?.willingnessToPay||'0';
       // Calculate composite priority score
       const priorityScore =
         avgFrequency * 0.3 +
@@ -189,15 +186,15 @@ export class CustomerResearchService {
     // Sort by priority and satisfaction gap
     return orderBy(
       _prioritizedNeeds,
-      ['priority', (n) => 100 - n.satisfactionLevel],
-      ['asc', 'desc']'
+      ['priority,(n) => 100 - n.satisfactionLevel],
+      ['asc,'desc']
     );
   }
 
   /**
    * Collect and categorize customer feedback
    */
-  collectFeedback(feedbackData: Omit<CustomerFeedback, 'id'>): string {'
+  collectFeedback(feedbackData: Omit<CustomerFeedback,'id'>): string {
     const feedback: CustomerFeedback = {
       id: `feedback-${nanoid(12)}`,`
       ...feedbackData,
@@ -208,7 +205,7 @@ export class CustomerResearchService {
     // Auto-cleanup old feedback
     this.cleanupOldFeedback();
 
-    this.logger.info('Customer feedback collected', {'
+    this.logger.info('Customer feedback collected,{
       feedbackId: feedback.id,
       sentiment: feedback.sentiment,
       category: feedback.category,
@@ -223,7 +220,7 @@ export class CustomerResearchService {
   analyzeCompetitivePosition(
     competitors: CompetitorAnalysis[]
   ): CompetitivePositioning {
-    this.logger.info('Analyzing competitive position', {'
+    this.logger.info('Analyzing competitive position,{
       competitorCount: competitors.length,
     });
 
@@ -259,15 +256,15 @@ export class CustomerResearchService {
       insights.push({
         id: `insight-${nanoid(8)}`,`
         insight:
-          'High-growth market opportunity with significant expansion potential',
-        category: 'opportunity',
-        impact: 'high',
+         'High-growth market opportunity with significant expansion potential,
+        category:'opportunity,
+        impact:'high,
         confidence: 85,
         sources: ['market-analysis'],
         discoveredAt: new Date(),
         actionItems: [
-          'Accelerate product development',
-          'Increase market investment',
+         'Accelerate product development,
+         'Increase market investment,
         ],
       });
     }
@@ -277,15 +274,15 @@ export class CustomerResearchService {
       insights.push({
         id: `insight-${nanoid(8)}`,`
         insight:
-          'Highly competitive market requires strong differentiation strategy',
-        category: 'threat',
-        impact: 'high',
+         'Highly competitive market requires strong differentiation strategy,
+        category:'threat,
+        impact:'high,
         confidence: 90,
         sources: ['competitive-analysis'],
         discoveredAt: new Date(),
         actionItems: [
-          'Strengthen unique value proposition',
-          'Focus on niche segments',
+         'Strengthen unique value proposition,
+         'Focus on niche segments,
         ],
       });
     }
@@ -293,20 +290,20 @@ export class CustomerResearchService {
     // Analyze market trends
     const positiveImpactTrends = filter(
       marketData.marketTrends,
-      (t) => t.impact === 'positive''
+      (t) => t.impact ==='positive'
     );
     if (positiveImpactTrends.length >= 3) {
       insights.push({
         id: `insight-${nanoid(8)}`,`
-        insight: 'Multiple positive market trends support product opportunity',
-        category: 'trend',
-        impact: 'medium',
+        insight:'Multiple positive market trends support product opportunity,
+        category:'trend,
+        impact:'medium,
         confidence: 75,
         sources: ['trend-analysis'],
         discoveredAt: new Date(),
         actionItems: [
-          'Align product roadmap with trends',
-          'Accelerate go-to-market timing',
+         'Align product roadmap with trends,
+         'Accelerate go-to-market timing,
         ],
       });
     }
@@ -316,7 +313,7 @@ export class CustomerResearchService {
       this.insights.set(insight.id, insight);
     });
 
-    this.logger.info('Market insights generated', {'
+    this.logger.info('Market insights generated,{
       insightCount: insights.length,
     });
     return insights;
@@ -326,7 +323,7 @@ export class CustomerResearchService {
    * Perform comprehensive research analysis
    */
   performResearchAnalysis(): ResearchAnalysis {
-    this.logger.info('Performing comprehensive research analysis');'
+    this.logger.info('Performing comprehensive research analysis'');
 
     const segmentInsights = this.analyzeSegmentInsights();
     const needsPrioritization = this.analyzeCustomerNeeds();
@@ -366,7 +363,7 @@ export class CustomerResearchService {
       one_time: 10,
     };
 
-    return frequencyScores[frequency]||25;
+    return frequencyScores[frequency]|| 25;
   }
 
   /**
@@ -385,7 +382,7 @@ export class CustomerResearchService {
    */
   private calculateOurPosition(competitors: CompetitorAnalysis[]): number {
     // Simplified calculation - in reality this would use more sophisticated metrics
-    const _avgCompetitorPosition = meanBy(competitors,'marketShare');'
+    const _avgCompetitorPosition = meanBy(competitors,marketShare'');
     return Math.max(1, Math.min(10, 5 + Math.random() * 3)); // Mock calculation
   }
 
@@ -396,21 +393,21 @@ export class CustomerResearchService {
     strengths: string[];
     weaknesses: string[];
     opportunities: string[];
-    threatLevel: 'low' | 'medium' | 'high';
+    threatLevel:'low'|'medium'|'high';
   } {
-    const topCompetitors = orderBy(competitors, 'marketShare', 'desc').slice('
+    const topCompetitors = orderBy(competitors,'marketShare,'desc').slice(
       0,
       3
     );
 
     return {
-      strengths: ['Innovative product features', 'Strong customer service'],
-      weaknesses: ['Limited market presence', 'Higher pricing'],
+      strengths: ['Innovative product features,'Strong customer service'],
+      weaknesses: ['Limited market presence,'Higher pricing'],
       opportunities: [
-        'Underserved customer segments',
-        'Emerging market trends',
+       'Underserved customer segments,
+       'Emerging market trends,
       ],
-      threatLevel: topCompetitors.length > 2 ? 'high' : 'medium',
+      threatLevel: topCompetitors.length > 2 ?'high:'medium,
     };
   }
 
@@ -422,13 +419,13 @@ export class CustomerResearchService {
       segment,
       size: segment.size,
       growth: Math.random() * 20, // Mock growth calculation
-      satisfaction: meanBy(segment.needs, 'satisfactionLevel'),
+      satisfaction: meanBy(segment.needs,'satisfactionLevel'),
       churnRisk: Math.random() * 30, // Mock churn risk
       valueScore: segment.size * 0.1 + Math.random() * 40,
       keyInsights: [
-        `Primary need: ${segment.needs[0]?.description||'Unknown'}`,`
+        `Primary need: ${segment.needs[0]?.description||'Unknown}`,`
       ],
-    }));
+    });
   }
 
   /**
@@ -443,12 +440,12 @@ export class CustomerResearchService {
     // High-value segment focus
     const highValueSegments = filter(segmentInsights, (s) => s.valueScore > 70);
     if (highValueSegments.length > 0) {
-      actions.push('Focus on high-value customer segments for maximum ROI');'
+      actions.push('Focus on high-value customer segments for maximum ROI'');
     }
 
     // Competitive response
-    if (competitivePosition.competitiveThreat === 'high') {'
-      actions.push('Develop competitive differentiation strategy');'
+    if (competitivePosition.competitiveThreat ==='high){
+      actions.push('Develop competitive differentiation strategy'');
     }
 
     // Customer satisfaction improvements
@@ -457,7 +454,7 @@ export class CustomerResearchService {
       (s) => s.satisfaction < 60
     );
     if (lowSatisfactionSegments.length > 0) {
-      actions.push('Address customer satisfaction gaps in key segments');'
+      actions.push('Address customer satisfaction gaps in key segments'');
     }
 
     return actions;

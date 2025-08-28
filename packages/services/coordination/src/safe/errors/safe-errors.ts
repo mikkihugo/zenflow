@@ -14,22 +14,18 @@
  */
 
 import type { BaseError, Timestamp, UUID } from '@claude-zen/foundation';
-
 // Define error types locally since not exported from foundation
 enum ErrorCategory {
-  BUSINESS = 'business',
-  SYSTEM = 'system',
-  VALIDATION = 'validation',
-  INTEGRATION = 'integration',
-  PERFORMANCE = 'performance',
-  SECURITY = 'security',
+  BUSINESS ='business,
+  SYSTEM ='system,
+  VALIDATION ='validation,
+  INTEGRATION ='integration,
+  PERFORMANCE ='performance,
+  SECURITY ='security,
 }
 
-type ErrorSeverity = 'low|medium|high|critical';
-
-
+type ErrorSeverity ='low'|'medium'|'high'|'critical';
 import type { LogLevel } from '@claude-zen/foundation';
-
 /**
  * SAFe error categories mapped to claude-zen error categories
  */
@@ -86,18 +82,17 @@ export abstract class SAFeError extends Error implements BaseError {
     this.context = params.context;
     this.cause = params.cause;
     this.retryable = params.recoverable ?? true;
-    this.logLevel = 'error'as LogLevel;'
-
+    this.logLevel ='error'as LogLevel';
     this.severity = params.severity;
     this.category = SAFE_ERROR_CATEGORIES[params.safeCategory];
     this.recoverable = params.recoverable ?? true;
     this.safeCategory = params.safeCategory;
-    this.suggestedActions = params.suggestedActions||[];
+    this.suggestedActions = params.suggestedActions|| [];
   }
 
   // Helper methods for BaseError compatibility
   getContext(): Record<string, unknown> {
-    return this.context||{};
+    return this.context|| {};
   }
 }
 
@@ -116,7 +111,7 @@ export class PortfolioError extends SAFeError {
     }
   ) {
     super(message, {
-      safeCategory:'PORTFOLIO',
+      safeCategory:'PORTFOLIO,
       ...params,
     });
   }
@@ -134,7 +129,7 @@ export class EpicLifecycleError extends PortfolioError {
     params: {
       epicId?: string;
       currentState?: string;
-      severity: SAFeError['severity'];'
+      severity:  SAFeError[severity];
       context?: Record<string, any>;
       recoverable?: boolean;
       suggestedActions?: string[];
@@ -159,7 +154,7 @@ export class BusinessCaseError extends PortfolioError {
     params: {
       businessCaseId?: string;
       validationFailures?: string[];
-      severity: SAFeError['severity'];'
+      severity:  SAFeError[severity];
       context?: Record<string, any>;
       recoverable?: boolean;
       suggestedActions?: string[];
@@ -168,7 +163,7 @@ export class BusinessCaseError extends PortfolioError {
   ) {
     super(message, params);
     this.businessCaseId = params.businessCaseId;
-    this.validationFailures = params.validationFailures||[];
+    this.validationFailures = params.validationFailures|| [];
   }
 }
 
@@ -179,7 +174,7 @@ export class ProgramError extends SAFeError {
   constructor(
     message: string,
     params: {
-      severity: SAFeError['severity'];'
+      severity:  SAFeError[severity];
       context?: Record<string, any>;
       recoverable?: boolean;
       suggestedActions?: string[];
@@ -187,7 +182,7 @@ export class ProgramError extends SAFeError {
     }
   ) {
     super(message, {
-      safeCategory: 'PROGRAM',
+      safeCategory:'PROGRAM,
       ...params,
     });
   }
@@ -205,7 +200,7 @@ export class ProgramIncrementError extends ProgramError {
     params: {
       piId?: string;
       artId?: string;
-      severity: SAFeError['severity'];'
+      severity:  SAFeError[severity];
       context?: Record<string, any>;
       recoverable?: boolean;
       suggestedActions?: string[];
@@ -223,14 +218,13 @@ export class ProgramIncrementError extends ProgramError {
  */
 export class ArchitectureError extends SAFeError {
   public readonly componentId?: string;
-  public readonly architectureType: 'runway|enabler|decision|debt;
-
+  public readonly architectureType:'runway'|'enabler'|'decision'|'debt';
   constructor(
     message: string,
     params: {
       componentId?: string;
-      architectureType: ArchitectureError['architectureType'];'
-      severity: SAFeError['severity'];'
+      architectureType: ArchitectureError['architectureType];
+      severity:  SAFeError[severity];
       context?: Record<string, any>;
       recoverable?: boolean;
       suggestedActions?: string[];
@@ -238,7 +232,7 @@ export class ArchitectureError extends SAFeError {
     }
   ) {
     super(message, {
-      safeCategory: 'ARCHITECTURE',
+      safeCategory:'ARCHITECTURE,
       ...params,
     });
     this.componentId = params.componentId;
@@ -251,14 +245,13 @@ export class ArchitectureError extends SAFeError {
  */
 export class DevSecOpsError extends SAFeError {
   public readonly pipelineId?: string;
-  public readonly securityLevel:|'scan|compliance|incident|vulnerability;
-
+  public readonly securityLevel:'scan'|'compliance'|'incident'|'vulnerability';
   constructor(
     message: string,
     params: {
       pipelineId?: string;
-      securityLevel: DevSecOpsError['securityLevel'];'
-      severity: SAFeError['severity'];'
+      securityLevel: DevSecOpsError['securityLevel];
+      severity:  SAFeError[severity];
       context?: Record<string, any>;
       recoverable?: boolean;
       suggestedActions?: string[];
@@ -266,7 +259,7 @@ export class DevSecOpsError extends SAFeError {
     }
   ) {
     super(message, {
-      safeCategory: 'DEVSECOPS',
+      safeCategory:'DEVSECOPS,
       ...params,
     });
     this.pipelineId = params.pipelineId;
@@ -286,7 +279,7 @@ export class SolutionTrainError extends SAFeError {
     params: {
       solutionId?: string;
       affectedARTs?: string[];
-      severity: SAFeError['severity'];'
+      severity:  SAFeError[severity];
       context?: Record<string, any>;
       recoverable?: boolean;
       suggestedActions?: string[];
@@ -294,11 +287,11 @@ export class SolutionTrainError extends SAFeError {
     }
   ) {
     super(message, {
-      safeCategory: 'SYSTEM',
+      safeCategory:'SYSTEM,
       ...params,
     });
     this.solutionId = params.solutionId;
-    this.affectedARTs = params.affectedARTs||[];
+    this.affectedARTs = params.affectedARTs|| [];
   }
 }
 
@@ -306,7 +299,7 @@ export class SolutionTrainError extends SAFeError {
  * Validation errors with detailed feedback
  */
 export class ValidationError extends SAFeError {
-  public readonly validationType:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin;
+  public readonly validationType:'javascript'|'typescript'|'python'|'java'|'csharp'|'cpp'|'go'|'ruby'|'swift'|'kotlin';
   public readonly validationErrors: Array<{
     field: string;
     message: string;
@@ -316,20 +309,20 @@ export class ValidationError extends SAFeError {
   constructor(
     message: string,
     params: {
-      validationType: ValidationError['validationType'];'
-      validationErrors: ValidationError['validationErrors'];'
+      validationType: ValidationError['validationType];
+      validationErrors: ValidationError['validationErrors];
       context?: Record<string, any>;
       cause?: Error;
     }
   ) {
     super(message, {
-      safeCategory: 'SYSTEM',
-      severity: 'medium',
+      safeCategory:'SYSTEM,
+      severity: medium,
       recoverable: true,
       suggestedActions: [
-        'Review validation errors and correct input data',
-        'Ensure all required fields are provided',
-        'Verify data types and constraints',
+       'Review validation errors and correct input data,
+       'Ensure all required fields are provided,
+       'Verify data types and constraints,
       ],
       ...params,
     });
@@ -348,19 +341,19 @@ export class ConfigurationError extends SAFeError {
     message: string,
     params: {
       configurationKey?: string;
-      severity?: SAFeError['severity'];'
+      severity?: SAFeError['severity];
       context?: Record<string, any>;
       cause?: Error;
     }
   ) {
     super(message, {
-      safeCategory: 'SYSTEM',
-      severity: params.severity||'high',
+      safeCategory:'SYSTEM,
+      severity:  params.severity||high,
       recoverable: true,
       suggestedActions: [
-        'Review configuration settings',
-        'Check environment variables and config files',
-        'Validate dependency injection setup',
+       'Review configuration settings,
+       'Check environment variables and config files,
+       'Validate dependency injection setup,
       ],
       ...params,
     });
@@ -396,16 +389,16 @@ export class SAFeErrorHandler implements ErrorHandler {
 
     // Log based on severity
     switch (error.severity) {
-      case 'critical':'
+      case'critical:
         this.logger.error(`[CRITICAL] $error.message`, context);`
         break;
-      case 'high':'
+      case'high:
         this.logger.error(`[HIGH] $error.message`, context);`
         break;
-      case 'medium':'
+      case'medium:
         this.logger.warn(`[MEDIUM] $error.message`, context);`
         break;
-      case 'low':'
+      case'low:
         this.logger.info(`[LOW] $error.message`, context);`
         break;
     }
@@ -414,7 +407,7 @@ export class SAFeErrorHandler implements ErrorHandler {
     if (this._telemetryManager) {
       try {
         // Record error counter
-        this.telemetryManager.recordCounter('safe_errors_total', 1, {'
+        this.telemetryManager.recordCounter('safe_errors_total,1, {
           category: error.category,
           severity: error.severity,
           error_type: error.constructor.name,
@@ -422,13 +415,13 @@ export class SAFeErrorHandler implements ErrorHandler {
         });
 
         // Create error span for tracing
-        const _span = this.telemetryManager.createSpan('safe_error_handled');'
+        const _span = this.telemetryManager.createSpan('safe_error_handled'');
         this.telemetryManager.finishSpan(span, 
           error_id: error.errorId,
           error_category: error.category,
           error_severity: error.severity,);
       } catch (telemetryError) {
-        this.logger.warn('Failed to send error telemetry:', telemetryError);'
+        this.logger.warn('Failed to send error telemetry:,telemetryError');
       }
     }
 
@@ -536,7 +529,7 @@ export const createSAFeErrors = {
     cause?: Error
   ) =>
     new ValidationError(`Epic validation failed for ${epicId}`, {`
-      validationType: 'epic',
+      validationType:'epic,
       validationErrors,
       context: { epicId },
       cause,
@@ -549,12 +542,12 @@ export const createSAFeErrors = {
     new BusinessCaseError(`Business case validation failed`, {`
       businessCaseId,
       validationFailures: failures,
-      severity: 'high',
+      severity: high,
       recoverable: true,
       suggestedActions: [
-        'Review financial projections and assumptions',
-        'Validate market analysis data',
-        'Ensure ROI calculations are correct',
+       'Review financial projections and assumptions,
+       'Validate market analysis data,
+       'Ensure ROI calculations are correct,
       ],
       cause,
     }),
@@ -571,12 +564,12 @@ export const createSAFeErrors = {
     new EpicLifecycleError(`Epic lifecycle operation failed: ${operation}`, {`
       epicId,
       currentState,
-      severity: 'high',
+      severity: high,
       recoverable: true,
       suggestedActions: [
-        'Check epic state transition rules',
-        'Verify required evidence is provided',
-        'Ensure portfolio kanban gates are satisfied',
+       'Check epic state transition rules,
+       'Verify required evidence is provided,
+       'Ensure portfolio kanban gates are satisfied,
       ],
       context: { operation },
       cause,
@@ -588,7 +581,7 @@ export const createSAFeErrors = {
   configuration: (key: string, message: string, cause?: Error) =>
     new ConfigurationError(`Configuration error for ${key}: ${message}`, {`
       configurationKey: key,
-      severity: 'high',
+      severity: high,
       cause,
     }),
 };

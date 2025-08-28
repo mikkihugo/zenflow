@@ -19,7 +19,6 @@
 
 import type { Logger } from '@claude-zen/foundation';
 import { getLogger } from '../config/logging-config';
-
 // ============================================================================
 // CORE CONFIGURATION INTERFACES
 // ============================================================================
@@ -179,9 +178,9 @@ export class EnterpriseArchitectureManager extends EventBus {
 
   constructor(_config: Partial<EnterpriseArchConfig> = {}) {
     super();
-    this.logger = getLogger('EnterpriseArchitectureManager');'
+    this.logger = getLogger('EnterpriseArchitectureManager');
 
-    this.config = 
+    this.config = {
       enablePrincipleValidation: true,
       enableTechnologyStandardCompliance: true,
       enableArchitectureGovernance: true,
@@ -206,7 +205,7 @@ export class EnterpriseArchitectureManager extends EventBus {
     try {
       // Delegate to Architecture Principle Service for principle management
       const { ArchitecturePrincipleService } = await import(
-        '../services/enterprise-architecture/architecture-principle-service''
+       '../services/enterprise-architecture/architecture-principle-service'
       );
       this.architecturePrincipleService = new ArchitecturePrincipleService(
         this.logger
@@ -215,7 +214,7 @@ export class EnterpriseArchitectureManager extends EventBus {
 
       // Delegate to Technology Standards Service for standard management
       const { TechnologyStandardsService } = await import(
-        '../services/enterprise-architecture/technology-standards-service''
+       '../services/enterprise-architecture/technology-standards-service'
       );
       this.technologyStandardsService = new TechnologyStandardsService(
         this.logger
@@ -224,7 +223,7 @@ export class EnterpriseArchitectureManager extends EventBus {
 
       // Delegate to Governance Decision Service for decision workflows
       const { GovernanceDecisionService } = await import(
-        '../services/enterprise-architecture/governance-decision-service''
+       '../services/enterprise-architecture/governance-decision-service'
       );
       this.governanceDecisionService = new GovernanceDecisionService(
         this.logger
@@ -233,7 +232,7 @@ export class EnterpriseArchitectureManager extends EventBus {
 
       // Delegate to Architecture Health Service for health monitoring
       const { ArchitectureHealthService } = await import(
-        '../services/enterprise-architecture/architecture-health-service''
+       '../services/enterprise-architecture/architecture-health-service'
       );
       this.architectureHealthService = new ArchitectureHealthService(
         this.logger,
@@ -252,12 +251,12 @@ export class EnterpriseArchitectureManager extends EventBus {
 
       this.initialized = true;
       this.logger.info(
-        'Enterprise Architecture Manager initialized successfully with service delegation''
+       'Enterprise Architecture Manager initialized successfully with service delegation'
       );
-      this.emit('initialized', {});'
+      this.emit('initialized,{}');
     } catch (error) {
       this.logger.error(
-        'Failed to initialize Enterprise Architecture Manager:',
+       'Failed to initialize Enterprise Architecture Manager:,
         error
       );
       throw error;
@@ -272,12 +271,12 @@ export class EnterpriseArchitectureManager extends EventBus {
     statement: string,
     rationale: string,
     category: string,
-    priority: string = 'medium',
+    priority:  string =medium,
     implications: string[] = []
   ): Promise<ArchitecturePrinciple> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Creating architecture principle', {'
+    this.logger.info('Creating architecture principle,{
       name,
       category,
       priority,
@@ -289,10 +288,10 @@ export class EnterpriseArchitectureManager extends EventBus {
         statement,
         rationale,
         category,
-        priority: priority as 'critical|high|medium|low',
+        priority:  priority ascritical| high| medium| low,
         implications,
-        owner: 'chief-architect',
-        stakeholders: ['architecture-board', 'technical-leads'],
+        owner:'chief-architect,
+        stakeholders: ['architecture-board,'technical-leads'],
         reviewIntervalDays: 365,
       };
 
@@ -301,13 +300,13 @@ export class EnterpriseArchitectureManager extends EventBus {
           request
         );
 
-      this.emit('architecture-principle-created', {'
+      this.emit('architecture-principle-created,{
         principleId: principle.id,
         name: principle.name,
         category: principle.category,
       });
 
-      this.logger.info('Architecture principle created successfully', {'
+      this.logger.info('Architecture principle created successfully,{
         principleId: principle.id,
         name: principle.name,
       });
@@ -317,10 +316,10 @@ export class EnterpriseArchitectureManager extends EventBus {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
       this.logger.error(
-        'Failed to create architecture principle:',
+       'Failed to create architecture principle:,
         errorMessage
       );
-      this.emit('architecture-principle-failed', { name, error: errorMessage });'
+      this.emit('architecture-principle-failed,{ name, error: errorMessage }');
       throw error;
     }
   }
@@ -335,7 +334,7 @@ export class EnterpriseArchitectureManager extends EventBus {
   ): Promise<any> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Validating principle compliance', {'
+    this.logger.info('Validating principle compliance,{
       principleId,
       rulesCount: complianceRules.length,
     });
@@ -344,11 +343,11 @@ export class EnterpriseArchitectureManager extends EventBus {
       const config = {
         principleId,
         validationScope: {
-          includeProjects: validationScope.includeProjects||[],
-          excludeProjects: validationScope.excludeProjects||[],
-          includeTeams: validationScope.includeTeams||[],
-          excludeTeams: validationScope.excludeTeams||[],
-          includeArtifacts: validationScope.includeArtifacts||[],
+          includeProjects: validationScope.includeProjects|| [],
+          excludeProjects: validationScope.excludeProjects|| [],
+          includeTeams: validationScope.includeTeams|| [],
+          excludeTeams: validationScope.excludeTeams|| [],
+          includeArtifacts: validationScope.includeArtifacts|| [],
           timeWindow: {
             startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
             endDate: new Date(),
@@ -359,14 +358,14 @@ export class EnterpriseArchitectureManager extends EventBus {
             ? complianceRules
             : [
                 {
-                  ruleId:'default-compliance-rule',
-                  name: 'Default Compliance Rule',
-                  description: 'Basic compliance validation',
-                  condition: 'principle_adherence > 80%',
-                  severity: 'medium' as const,
+                  ruleId:'default-compliance-rule,
+                  name:'Default Compliance Rule,
+                  description:'Basic compliance validation,
+                  condition:'principle_adherence > 80%,
+                  severity: medium 'as const,
                   automated: true,
-                  remediation: 'Review principle implementation',
-                  category: 'compliance',
+                  remediation:'Review principle implementation,
+                  category:'compliance,
                 },
               ],
         thresholds: {
@@ -379,9 +378,9 @@ export class EnterpriseArchitectureManager extends EventBus {
           },
         },
         reportingConfig: {
-          frequency: 'weekly' as const,
+          frequency:'weekly 'as const,
           recipients: ['architecture-lead@company.com'],
-          format: 'dashboard' as const,
+          format:'dashboard 'as const,
           includeRecommendations: true,
           includeTrends: true,
         },
@@ -392,14 +391,14 @@ export class EnterpriseArchitectureManager extends EventBus {
           config
         );
 
-      this.emit('principle-compliance-validated', {'
+      this.emit('principle-compliance-validated,{
         principleId,
         validationId: result.validationId,
         complianceRate: result.overallCompliance,
         violationCount: result.violations.length,
       });
 
-      this.logger.info('Principle compliance validation completed', {'
+      this.logger.info('Principle compliance validation completed,{
         principleId,
         complianceRate: result.overallCompliance,
       });
@@ -409,10 +408,10 @@ export class EnterpriseArchitectureManager extends EventBus {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
       this.logger.error(
-        'Principle compliance validation failed:',
+       'Principle compliance validation failed:,
         errorMessage
       );
-      this.emit('principle-validation-failed', {'
+      this.emit('principle-validation-failed,{
         principleId,
         error: errorMessage,
       });
@@ -427,16 +426,16 @@ export class EnterpriseArchitectureManager extends EventBus {
     name: string,
     description: string,
     category: string,
-    type: string = 'recommended',
+    type: string ='recommended,
     mandatory: boolean = false,
     applicability: string[] = [],
-    implementation: string = ',
-    verification: string = ',
-    owner: string = 'technology-board''
+    implementation: string =,
+    verification: string =,
+    owner: string ='technology-board'
   ): Promise<TechnologyStandard> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Creating technology standard', {'
+    this.logger.info('Creating technology standard,{
       name,
       category,
       type,
@@ -453,8 +452,8 @@ export class EnterpriseArchitectureManager extends EventBus {
         applicability: {
           domains: applicability,
           projectTypes: ['all'],
-          teamTypes: ['development', 'architecture'],
-          environments: ['production', 'staging'],
+          teamTypes: ['development,'architecture'],
+          environments: ['production,'staging'],
           exclusions: [],
           conditions: [],
         },
@@ -462,10 +461,10 @@ export class EnterpriseArchitectureManager extends EventBus {
           overview: implementation,
           requirements: [
             {
-              id: 'req-1',
-              description: 'Standard implementation required',
-              priority: 'mandatory'as const,
-              verification: verification||'Manual review',
+              id:'req-1,
+              description:'Standard implementation required,
+              priority: mandatory'as const,
+              verification: verification||'Manual review,
               examples: [],
               dependencies: [],
             },
@@ -475,8 +474,8 @@ export class EnterpriseArchitectureManager extends EventBus {
           migration: {
             fromStandards: [],
             migrationPath: [],
-            timeline: '30 days',
-            effort: 'medium' as const,
+            timeline:'30 days,
+            effort:'medium 'as const,
             risks: [],
             checkpoints: [],
           },
@@ -486,16 +485,16 @@ export class EnterpriseArchitectureManager extends EventBus {
           automated: [],
           manual: [
             {
-              checklistId: 'manual-1',
-              name: 'Manual Verification',
-              description: verification||'Manual standard verification',
-              frequency: 'per_project' as const,
+              checklistId:'manual-1,
+              name:'Manual Verification,
+              description: verification||'Manual standard verification,
+              frequency:'per_project 'as const,
               owner,
               checklist: [
                 {
-                  id: 'check-1',
-                  description: 'Verify standard implementation',
-                  evidence: 'Implementation artifacts',
+                  id:'check-1,
+                  description:'Verify standard implementation,
+                  evidence:'Implementation artifacts,
                   mandatory: true,
                   weight: 1,
                 },
@@ -503,15 +502,15 @@ export class EnterpriseArchitectureManager extends EventBus {
             },
           ],
           reporting: {
-            frequency: 'monthly' as const,
+            frequency:'monthly 'as const,
             recipients: [owner],
-            format: 'dashboard' as const,
+            format:'dashboard 'as const,
             includeRecommendations: true,
             escalationRules: [],
           },
         },
         owner,
-        approvers: ['architecture-board', 'technology-committee'],
+        approvers: ['architecture-board,'technology-committee'],
         effectiveDate: new Date(),
         reviewIntervalMonths: 12,
       };
@@ -519,24 +518,24 @@ export class EnterpriseArchitectureManager extends EventBus {
       const standard =
         await this.technologyStandardsService.createTechnologyStandard(request);
 
-      this.emit('technology-standard-created', {'
+      this.emit('technology-standard-created,{
         standardId: standard.id,
         name: standard.name,
         category: standard.category,
         mandatory: standard.mandatory,
       });
 
-      this.logger.info('Technology standard created successfully', {'
+      this.logger.info('Technology standard created successfully,{
         standardId: standard.id,
         name: standard.name,
       });
 
       return standard;
     } catch (error) {
-      this.logger.error('Failed to create technology standard:', error);'
+      this.logger.error('Failed to create technology standard:,error');
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      this.emit('technology-standard-failed', { name, error: errorMessage });'
+      this.emit('technology-standard-failed,{ name, error: errorMessage }');
       throw error;
     }
   }
@@ -550,7 +549,7 @@ export class EnterpriseArchitectureManager extends EventBus {
     description: string,
     requesterId: string,
     decisionMakers: string[],
-    priority: string = 'medium',
+    priority:  string =medium,
     requestedDecisionDate: Date = new Date(
       Date.now() + 7 * 24 * 60 * 60 * 1000
     ),
@@ -560,7 +559,7 @@ export class EnterpriseArchitectureManager extends EventBus {
   ): Promise<GovernanceDecision> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Initiating governance decision', {'
+    this.logger.info('Initiating governance decision,{
       type,
       title,
       priority,
@@ -574,8 +573,8 @@ export class EnterpriseArchitectureManager extends EventBus {
         title,
         description,
         requesterId,
-        requesterRole: 'architect',
-        priority: priority as 'critical|high|medium|low',
+        requesterRole:'architect,
+        priority:  priority ascritical| high| medium| low,
         requestedDecisionDate,
         decisionMakers,
         criteria:
@@ -583,42 +582,42 @@ export class EnterpriseArchitectureManager extends EventBus {
             ? criteria
             : [
                 {
-                  name: 'Technical Feasibility',
-                  description: 'Assess technical feasibility',
-                  category: 'technical' as const,
+                  name:'Technical Feasibility,
+                  description:'Assess technical feasibility,
+                  category:'technical 'as const,
                   weight: 0.3,
                   mandatory: true,
                   measurable: true,
                   threshold: {
-                    operator: 'gte' as const,
+                    operator:'gte 'as const,
                     value: 7,
-                    action: 'accept' as const,
+                    action:'accept 'as const,
                   },
                 },
                 {
-                  name: 'Business Value',
-                  description: 'Assess business value',
-                  category: 'business' as const,
+                  name:'Business Value,
+                  description:'Assess business value,
+                  category:'business 'as const,
                   weight: 0.4,
                   mandatory: true,
                   measurable: true,
                   threshold: {
-                    operator: 'gte' as const,
+                    operator:'gte 'as const,
                     value: 7,
-                    action: 'accept' as const,
+                    action:'accept 'as const,
                   },
                 },
                 {
-                  name: 'Risk Assessment',
-                  description: 'Assess associated risks',
-                  category: 'compliance' as const,
+                  name:'Risk Assessment,
+                  description:'Assess associated risks,
+                  category:'compliance 'as const,
                   weight: 0.3,
                   mandatory: true,
                   measurable: true,
                   threshold: {
-                    operator: 'lte' as const,
+                    operator:'lte 'as const,
                     value: 3,
-                    action: 'accept' as const,
+                    action:'accept 'as const,
                   },
                 },
               ],
@@ -627,19 +626,19 @@ export class EnterpriseArchitectureManager extends EventBus {
             ? risks
             : [
                 {
-                  name: 'Implementation Risk',
-                  description: 'Risk of implementation failure',
-                  category: 'technical' as const,
+                  name:'Implementation Risk,
+                  description:'Risk of implementation failure,
+                  category:'technical 'as const,
                   probability: 0.2,
-                  impact: 'medium' as const,
-                  timeframe: '6 months',
+                  impact:'medium 'as const,
+                  timeframe:'6 months,
                   owner: requesterId,
                   mitigation: {
-                    strategy: 'mitigate' as const,
-                    description: 'Implement phased rollout',
+                    strategy:'mitigate 'as const,
+                    description:'Implement phased rollout,
                     actions: [],
-                    cost: 'medium' as const,
-                    timeline: '2 months',
+                    cost:'medium 'as const,
+                    timeline:'2 months,
                     effectiveness: 0.8,
                     owner: requesterId,
                     dependencies: [],
@@ -651,14 +650,14 @@ export class EnterpriseArchitectureManager extends EventBus {
             ? implications
             : [
                 {
-                  type: 'short_term' as const,
-                  category: 'technical' as const,
-                  description: 'Short-term technical implications',
-                  impact: 'neutral' as const,
-                  magnitude: 'medium' as const,
+                  type:'short_term 'as const,
+                  category:'technical 'as const,
+                  description:'Short-term technical implications,
+                  impact:'neutral 'as const,
+                  magnitude:'medium 'as const,
                   stakeholders: decisionMakers,
-                  timeframe: '3 months',
-                  reversibility: 'reversible' as const,
+                  timeframe:'3 months,
+                  reversibility:'reversible 'as const,
                   dependencies: [],
                 },
               ],
@@ -683,7 +682,7 @@ export class EnterpriseArchitectureManager extends EventBus {
             stakeholders: [],
             teams: [],
             capabilities: [],
-            changeCapacity: 'medium',
+            changeCapacity:'medium,
             culturalFactors: [],
             governancePolicies: [],
           },
@@ -703,24 +702,24 @@ export class EnterpriseArchitectureManager extends EventBus {
           request
         );
 
-      this.emit('governance-decision-initiated', {'
+      this.emit('governance-decision-initiated,{
         decisionId: decision.id,
         type: decision.type,
         priority: decision.priority,
         workflowId: decision.workflow.workflowId,
       });
 
-      this.logger.info('Governance decision initiated successfully', {'
+      this.logger.info('Governance decision initiated successfully,{
         decisionId: decision.id,
         type: decision.type,
       });
 
       return decision;
     } catch (error) {
-      this.logger.error('Failed to initiate governance decision:', error);'
+      this.logger.error('Failed to initiate governance decision:,error');
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      this.emit('governance-decision-failed', {'
+      this.emit('governance-decision-failed,{
         type,
         title,
         error: errorMessage,
@@ -735,20 +734,20 @@ export class EnterpriseArchitectureManager extends EventBus {
   async calculateArchitectureHealthMetrics(): Promise<ArchitectureHealthMetrics> {
     if (!this.initialized) await this.initialize();
 
-    this.logger.info('Calculating architecture health metrics');'
+    this.logger.info('Calculating architecture health metrics'');
 
     try {
       const metrics =
         await this.architectureHealthService.calculateArchitectureHealthMetrics();
 
-      this.emit('architecture-health-calculated', {'
+      this.emit('architecture-health-calculated,{
         overallHealth: metrics.overallHealth,
         healthGrade: metrics.healthGrade,
         alertCount: metrics.alerts.length,
         recommendationCount: metrics.recommendations.length,
       });
 
-      this.logger.info('Architecture health metrics calculated successfully', {'
+      this.logger.info('Architecture health metrics calculated successfully,{
         overallHealth: metrics.overallHealth,
         healthGrade: metrics.healthGrade,
       });
@@ -756,12 +755,12 @@ export class EnterpriseArchitectureManager extends EventBus {
       return metrics;
     } catch (error) {
       this.logger.error(
-        'Failed to calculate architecture health metrics:',
+       'Failed to calculate architecture health metrics:,
         error
       );
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      this.emit('architecture-health-failed', { error: errorMessage });'
+      this.emit('architecture-health-failed,{ error: errorMessage }');
       throw error;
     }
   }
@@ -770,30 +769,30 @@ export class EnterpriseArchitectureManager extends EventBus {
    * Get architecture principles
    */
   getArchitecturePrinciples(): ArchitecturePrinciple[] {
-    if (!this.initialized||!this.architecturePrincipleService) {
+    if (!this.initialized|| !this.architecturePrincipleService) {
       return [];
     }
-    return this.architecturePrincipleService.getAllPrinciples()||[];
+    return this.architecturePrincipleService.getAllPrinciples()|| [];
   }
 
   /**
    * Get technology standards
    */
   getTechnologyStandards(): TechnologyStandard[] {
-    if (!this.initialized||!this.technologyStandardsService) {
+    if (!this.initialized|| !this.technologyStandardsService) {
       return [];
     }
-    return this.technologyStandardsService.getAllStandards()||[];
+    return this.technologyStandardsService.getAllStandards()|| [];
   }
 
   /**
    * Get governance decisions
    */
   getGovernanceDecisions(): GovernanceDecision[] {
-    if (!this.initialized||!this.governanceDecisionService) {
+    if (!this.initialized|| !this.governanceDecisionService) {
       return [];
     }
-    return this.governanceDecisionService.getAllDecisions()||[];
+    return this.governanceDecisionService.getAllDecisions()|| [];
   }
 
   /**
@@ -827,12 +826,12 @@ export class EnterpriseArchitectureManager extends EventBus {
    * Shutdown enterprise architecture manager
    */
   async shutdown(): Promise<void> {
-    this.logger.info('Shutting down Enterprise Architecture Manager');'
+    this.logger.info('Shutting down Enterprise Architecture Manager'');
 
     // Clear monitoring timers
     for (const [name, timer] of this.monitoringTimers) {
       clearInterval(timer);
-      this.logger.debug('Stopped monitoring timer', { timer: name });'
+      this.logger.debug('Stopped monitoring timer,{ timer: name }');
     }
     this.monitoringTimers.clear();
 
@@ -853,7 +852,7 @@ export class EnterpriseArchitectureManager extends EventBus {
     this.removeAllListeners();
     this.initialized = false;
 
-    this.logger.info('Enterprise Architecture Manager shutdown complete');'
+    this.logger.info('Enterprise Architecture Manager shutdown complete'');
   }
 
   // ============================================================================
@@ -866,26 +865,26 @@ export class EnterpriseArchitectureManager extends EventBus {
   private setupServiceEventForwarding(): void {
     // Forward events from Architecture Principle Service
     if (this.architecturePrincipleService) {
-      this.architecturePrincipleService.on('principle-created', (_data: any) => {'
-        this.emit('architecture-principle-created', data);'
+      this.architecturePrincipleService.on('principle-created,(_data: any) => {
+        this.emit('architecture-principle-created,data');
       });
       this.architecturePrincipleService.on(
-        'principle-validated',
+       'principle-validated,
         (data: any) => {
-          this.emit('principle-compliance-validated', data);'
+          this.emit('principle-compliance-validated,data');
         }
       );
     }
 
     // Forward events from Technology Standards Service
     if (this.technologyStandardsService) {
-      this.technologyStandardsService.on('standard-created', (_data: any) => {'
-        this.emit('technology-standard-created', data);'
+      this.technologyStandardsService.on('standard-created,(_data: any) => {
+        this.emit('technology-standard-created,data');
       });
       this.technologyStandardsService.on(
-        'standard-compliance-monitored',
+       'standard-compliance-monitored,
         (data: any) => {
-          this.emit('technology-compliance-monitored', data);'
+          this.emit('technology-compliance-monitored,data');
         }
       );
     }
@@ -893,15 +892,15 @@ export class EnterpriseArchitectureManager extends EventBus {
     // Forward events from Governance Decision Service
     if (this.governanceDecisionService) {
       this.governanceDecisionService.on(
-        'governance-decision-initiated',
+       'governance-decision-initiated,
         (data: any) => {
-          this.emit('governance-decision-initiated', data);'
+          this.emit('governance-decision-initiated,data');
         }
       );
       this.governanceDecisionService.on(
-        'decision-status-updated',
+       'decision-status-updated,
         (data: any) => {
-          this.emit('governance-decision-updated', data);'
+          this.emit('governance-decision-updated,data');
         }
       );
     }
@@ -909,9 +908,9 @@ export class EnterpriseArchitectureManager extends EventBus {
     // Forward events from Architecture Health Service
     if (this.architectureHealthService) {
       this.architectureHealthService.on(
-        'health-metrics-calculated',
+       'health-metrics-calculated,
         (data: any) => {
-          this.emit('architecture-health-calculated', data);'
+          this.emit('architecture-health-calculated,data');
         }
       );
     }
@@ -925,31 +924,31 @@ export class EnterpriseArchitectureManager extends EventBus {
       const principlesTimer = setInterval(async () => {
         await this.reviewArchitecturePrinciples();
       }, this.configuration.principlesReviewInterval);
-      this.monitoringTimers.set('principles-review', principlesTimer);'
+      this.monitoringTimers.set('principles-review,principlesTimer');
     }
 
     if (this.configuration.enableTechnologyStandardCompliance) {
       const complianceTimer = setInterval(async () => {
         await this.performComplianceChecks();
       }, this.configuration.complianceCheckInterval);
-      this.monitoringTimers.set('compliance-check', complianceTimer);'
+      this.monitoringTimers.set('compliance-check,complianceTimer');
     }
 
     if (this.configuration.enableArchitectureGovernance) {
       const governanceTimer = setInterval(async () => {
         await this.reviewGovernanceDecisions();
       }, this.configuration.governanceReviewInterval);
-      this.monitoringTimers.set('governance-review', governanceTimer);'
+      this.monitoringTimers.set('governance-review,governanceTimer');
     }
 
     if (this.configuration.enableHealthMetrics) {
       const healthTimer = setInterval(async () => {
         await this.calculateArchitectureHealthMetrics();
       }, this.configuration.healthMetricsInterval);
-      this.monitoringTimers.set('health-metrics', healthTimer);'
+      this.monitoringTimers.set('health-metrics,healthTimer');
     }
 
-    this.logger.info('Monitoring intervals started', {'
+    this.logger.info('Monitoring intervals started,{
       principlesReview: this.configuration.enablePrincipleValidation,
       complianceCheck: this.configuration.enableTechnologyStandardCompliance,
       governanceReview: this.configuration.enableArchitectureGovernance,
@@ -967,13 +966,13 @@ export class EnterpriseArchitectureManager extends EventBus {
 
       for (const principle of principles) {
         if (principle.reviewDate <= now) {
-          this.logger.info('Architecture principle due for review', {'
+          this.logger.info('Architecture principle due for review,{
             principleId: principle.id,
             name: principle.name,
             reviewDate: principle.reviewDate,
           });
 
-          this.emit('architecture-principle-review-due', {'
+          this.emit('architecture-principle-review-due,{
             principleId: principle.id,
             name: principle.name,
             reviewDate: principle.reviewDate,
@@ -981,7 +980,7 @@ export class EnterpriseArchitectureManager extends EventBus {
         }
       }
     } catch (error) {
-      this.logger.error('Failed to review architecture principles:', error);'
+      this.logger.error('Failed to review architecture principles:,error');
     }
   }
 
@@ -994,7 +993,7 @@ export class EnterpriseArchitectureManager extends EventBus {
 
       for (const standard of standards) {
         if (standard.mandatory) {
-          this.logger.debug('Checking compliance for mandatory standard', {'
+          this.logger.debug('Checking compliance for mandatory standard,{
             standardId: standard.id,
             name: standard.name,
           });
@@ -1017,7 +1016,7 @@ export class EnterpriseArchitectureManager extends EventBus {
         }
       }
     } catch (error) {
-      this.logger.error('Failed to perform compliance checks:', error);'
+      this.logger.error('Failed to perform compliance checks:,error');
     }
   }
 
@@ -1031,23 +1030,23 @@ export class EnterpriseArchitectureManager extends EventBus {
 
       for (const decision of decisions) {
         if (
-          decision.status === 'pending_approval' &&'
+          decision.status ==='pending_approval '&&
           decision.approvalDeadline <= now
         ) 
-          this.logger.warn('Governance decision approval overdue', {'
+          this.logger.warn('Governance decision approval overdue,{
             decisionId: decision.id,
             title: decision.title,
             approvalDeadline: decision.approvalDeadline,
           });
 
-          this.emit('governance-decision-overdue', {'
+          this.emit('governance-decision-overdue,{
             decisionId: decision.id,
             title: decision.title,
             approvalDeadline: decision.approvalDeadline,
           });
       }
     } catch (error) {
-      this.logger.error('Failed to review governance decisions:', error);'
+      this.logger.error('Failed to review governance decisions:,error');
     }
   }
 }

@@ -13,7 +13,6 @@
  */
 
 import { dateFns, generateNanoId, } from '@claude-zen/foundation';
-
 const {
   format,
   addDays,
@@ -26,7 +25,6 @@ import {
   orderBy,
 } from 'lodash-es';
 import type { Logger } from '../../types';
-
 /**
  * Continuous improvement configuration
  */
@@ -56,32 +54,32 @@ export interface KaizenConfig {
  * Kaizen frequency
  */
 export enum KaizenFrequency {
-  DAILY = 'daily',
-  WEEKLY = 'weekly',
-  BI_WEEKLY = 'bi_weekly',
-  MONTHLY = 'monthly',
-  QUARTERLY = 'quarterly',
+  DAILY ='daily,
+  WEEKLY ='weekly,
+  BI_WEEKLY ='bi_weekly,
+  MONTHLY ='monthly,
+  QUARTERLY ='quarterly,
 }
 
 /**
  * Facilitation mode
  */
 export enum FacilitationMode {
-  FULLY_AUTOMATED = 'fully_automated',
-  HUMAN_GUIDED = 'human_guided',
-  HYBRID = 'hybrid',
+  FULLY_AUTOMATED ='fully_automated,
+  HUMAN_GUIDED ='human_guided,
+  HYBRID ='hybrid,
 }
 
 /**
  * Improvement type
  */
 export enum ImprovementType {
-  PROCESS = 'process',
-  TECHNOLOGY = 'technology',
-  SKILLS = 'skills',
-  ORGANIZATION = 'organization',
-  CULTURE = 'culture',
-  MEASUREMENT = 'measurement',
+  PROCESS ='process,
+  TECHNOLOGY ='technology,
+  SKILLS ='skills,
+  ORGANIZATION ='organization,
+  CULTURE ='culture,
+  MEASUREMENT ='measurement,
 }
 
 /**
@@ -101,9 +99,9 @@ export interface KaizenSuccessCriteria {
  * Automation level
  */
 export enum AutomationLevel {
-  MANUAL = 'manual',
-  SEMI_AUTOMATED = 'semi_automated',
-  FULLY_AUTOMATED = 'fully_automated',
+  MANUAL ='manual,
+  SEMI_AUTOMATED ='semi_automated,
+  FULLY_AUTOMATED ='fully_automated,
 }
 
 /**
@@ -124,22 +122,22 @@ export interface FeedbackLoopConfig {
  * Feedback loop type
  */
 export enum FeedbackLoopType {
-  METRICS_BASED = 'metrics_based',
-  OBSERVATION_BASED = 'observation_based',
-  SURVEY_BASED = 'survey_based',
-  EVENT_DRIVEN = 'event_driven',
-  HYBRID = 'hybrid',
+  METRICS_BASED ='metrics_based,
+  OBSERVATION_BASED ='observation_based,
+  SURVEY_BASED ='survey_based,
+  EVENT_DRIVEN ='event_driven,
+  HYBRID ='hybrid,
 }
 
 /**
  * Loop frequency
  */
 export enum LoopFrequency {
-  REAL_TIME = 'real_time',
-  HOURLY = 'hourly',
-  DAILY = 'daily',
-  WEEKLY = 'weekly',
-  MONTHLY = 'monthly',
+  REAL_TIME ='real_time,
+  HOURLY ='hourly,
+  DAILY ='daily,
+  WEEKLY ='weekly,
+  MONTHLY ='monthly,
 }
 
 /**
@@ -157,21 +155,21 @@ export interface FeedbackParticipant {
  * Participant responsibility
  */
 export enum ParticipantResponsibility {
-  DATA_PROVIDER = 'data_provider',
-  ANALYZER = 'analyzer',
-  DECISION_MAKER = 'decision_maker',
-  IMPLEMENTER = 'implementer',
-  VALIDATOR = 'validator',
+  DATA_PROVIDER ='data_provider,
+  ANALYZER ='analyzer,
+  DECISION_MAKER ='decision_maker,
+  IMPLEMENTER ='implementer,
+  VALIDATOR ='validator,
 }
 
 /**
  * Authority level
  */
 export enum AuthorityLevel {
-  OBSERVER = 'observer',
-  ADVISOR = 'advisor',
-  APPROVER = 'approver',
-  EXECUTOR = 'executor',
+  OBSERVER ='observer,
+  ADVISOR ='advisor,
+  APPROVER ='approver,
+  EXECUTOR ='executor,
 }
 
 /**
@@ -218,12 +216,12 @@ export interface DataSource {
  * Data source type
  */
 export enum DataSourceType {
-  DATABASE = 'database',
-  API = 'api',
-  FILE = 'file',
-  STREAM = 'stream',
-  MANUAL = 'manual',
-  SENSOR = 'sensor',
+  DATABASE ='database,
+  API ='api,
+  FILE ='file,
+  STREAM ='stream,
+  MANUAL ='manual,
+  SENSOR ='sensor,
 }
 
 /**
@@ -240,7 +238,7 @@ export interface DataConnection {
  * Authentication configuration
  */
 export interface AuthenticationConfig {
-  readonly type: 'none|basic|token|oauth|certificate;
+  readonly type:'none| basic| token| oauth'|'certificate';
   readonly credentials: Record<string, any>;
 }
 
@@ -260,13 +258,13 @@ export interface DataMetric {
  * Aggregation type
  */
 export enum AggregationType {
-  SUM = 'sum',
-  AVERAGE = 'average',
-  COUNT = 'count',
-  MAX = 'max',
-  MIN = 'min',
-  MEDIAN = 'median',
-  PERCENTILE = 'percentile',
+  SUM ='sum,
+  AVERAGE ='average,
+  COUNT ='count,
+  MAX ='max,
+  MIN ='min,
+  MEDIAN ='median,
+  PERCENTILE ='percentile,
 }
 
 /**
@@ -313,7 +311,7 @@ export interface ActionTrigger {
  * Trigger condition
  */
 export interface TriggerCondition {
-  readonly type: 'threshold|pattern|anomaly|change|time;
+  readonly type:'threshold| pattern| anomaly| change'|'time';
   readonly parameters: Record<string, any>;
   readonly evaluation: ConditionEvaluation;
 }
@@ -322,7 +320,7 @@ export interface TriggerCondition {
  * Condition evaluation
  */
 export interface ConditionEvaluation {
-  readonly operator: 'gt|lt|eq|ne|between|contains;
+  readonly operator:'gt| lt| eq| ne| between'|'contains';
   readonly value: any;
   readonly duration: number; // minutes
   readonly confidence: number; // 0-100
@@ -342,11 +340,11 @@ export interface TriggerAction {
  * Action type
  */
 export enum ActionType {
-  NOTIFICATION = 'notification',
-  ESCALATION = 'escalation',
-  AUTOMATION = 'automation',
-  INVESTIGATION = 'investigation',
-  IMPROVEMENT = 'improvement',
+  NOTIFICATION ='notification,
+  ESCALATION ='escalation,
+  AUTOMATION ='automation,
+  INVESTIGATION ='investigation,
+  IMPROVEMENT ='improvement,
 }
 
 /**
@@ -355,7 +353,7 @@ export enum ActionType {
 export interface ActionParameters {
   readonly [key: string]: any;
   readonly description?: string;
-  readonly urgency?: 'low|medium|high|critical;
+  readonly urgency?:'low| medium| high'|'critical';
   readonly category?: string;
 }
 
@@ -363,10 +361,10 @@ export interface ActionParameters {
  * Trigger priority
  */
 export enum TriggerPriority {
-  LOW = 'low',
-  MEDIUM = 'medium',
-  HIGH = 'high',
-  CRITICAL = 'critical',
+  LOW ='low,
+  MEDIUM ='medium,
+  HIGH ='high,
+  CRITICAL ='critical,
 }
 
 /**
@@ -384,9 +382,9 @@ export interface ClosureCondition {
  * Closure criteria
  */
 export interface ClosureCriteria {
-  readonly type: 'metric|time|approval|combination;
+  readonly type:'metric| time| approval'|'combination';
   readonly requirements: CriteriaRequirement[];
-  readonly operator: 'and|or;
+  readonly operator:'and'|'or';
 }
 
 /**
@@ -404,7 +402,7 @@ export interface CriteriaRequirement {
  * Validation method
  */
 export interface ValidationMethod {
-  readonly method: 'automated' | 'manual' | 'hybrid';
+  readonly method:'automated'|'manual'|'hybrid';
   readonly validator: string;
   readonly evidence: EvidenceRequirement[];
 }
@@ -413,7 +411,7 @@ export interface ValidationMethod {
  * Evidence requirement
  */
 export interface EvidenceRequirement {
-  readonly evidenceType: 'data|document|observation|test;
+  readonly evidenceType:'data| document| observation'|'test';
   readonly description: string;
   readonly required: boolean;
 }
@@ -424,7 +422,7 @@ export interface EvidenceRequirement {
 export interface ApprovalRequirement {
   readonly required: boolean;
   readonly approvers: string[];
-  readonly threshold: 'any' | 'majority' | 'all';
+  readonly threshold:'any'|'majority'|'all';
   readonly timeout: number; // hours
 }
 
@@ -446,12 +444,12 @@ export interface ImprovementObjective {
  * Objective category
  */
 export enum ObjectiveCategory {
-  EFFICIENCY = 'efficiency',
-  QUALITY = 'quality',
-  SPEED = 'speed',
-  COST = 'cost',
-  SATISFACTION = 'satisfaction',
-  INNOVATION = 'innovation',
+  EFFICIENCY ='efficiency,
+  QUALITY ='quality,
+  SPEED ='speed,
+  COST ='cost,
+  SATISFACTION ='satisfaction,
+  INNOVATION ='innovation,
 }
 
 /**
@@ -511,10 +509,10 @@ export interface Checkpoint {
  * Checkpoint purpose
  */
 export enum CheckpointPurpose {
-  PROGRESS_REVIEW = 'progress_review',
-  COURSE_CORRECTION = 'course_correction',
-  STAKEHOLDER_UPDATE = 'stakeholder_update',
-  RISK_ASSESSMENT = 'risk_assessment',
+  PROGRESS_REVIEW ='progress_review,
+  COURSE_CORRECTION ='course_correction,
+  STAKEHOLDER_UPDATE ='stakeholder_update,
+  RISK_ASSESSMENT ='risk_assessment,
 }
 
 /**
@@ -533,10 +531,10 @@ export interface MeasurementFramework {
  * Measurement approach
  */
 export enum MeasurementApproach {
-  OKR = 'okr',
-  BALANCED_SCORECARD = 'balanced_scorecard',
-  LEAN_METRICS = 'lean_metrics',
-  CUSTOM = 'custom',
+  OKR ='okr,
+  BALANCED_SCORECARD ='balanced_scorecard,
+  LEAN_METRICS ='lean_metrics,
+  CUSTOM ='custom,
 }
 
 /**
@@ -556,12 +554,12 @@ export interface KPI {
  * Measurement frequency
  */
 export enum MeasurementFrequency {
-  REAL_TIME = 'real_time',
-  HOURLY = 'hourly',
-  DAILY = 'daily',
-  WEEKLY = 'weekly',
-  MONTHLY = 'monthly',
-  QUARTERLY = 'quarterly',
+  REAL_TIME ='real_time,
+  HOURLY ='hourly,
+  DAILY ='daily,
+  WEEKLY ='weekly,
+  MONTHLY ='monthly,
+  QUARTERLY ='quarterly,
 }
 
 /**
@@ -589,23 +587,23 @@ export interface ReportingConfig {
  * Reporting frequency
  */
 export enum ReportingFrequency {
-  REAL_TIME = 'real_time',
-  DAILY = 'daily',
-  WEEKLY = 'weekly',
-  MONTHLY = 'monthly',
-  QUARTERLY = 'quarterly',
-  ANNUALLY = 'annually',
+  REAL_TIME ='real_time,
+  DAILY ='daily,
+  WEEKLY ='weekly,
+  MONTHLY ='monthly,
+  QUARTERLY ='quarterly,
+  ANNUALLY ='annually,
 }
 
 /**
  * Report format
  */
 export enum ReportFormat {
-  DASHBOARD = 'dashboard',
-  EMAIL = 'email',
-  PDF = 'pdf',
-  PRESENTATION = 'presentation',
-  API = 'api',
+  DASHBOARD ='dashboard,
+  EMAIL ='email,
+  PDF ='pdf,
+  PRESENTATION ='presentation,
+  API ='api,
 }
 
 /**
@@ -624,9 +622,9 @@ export interface ReportingAudience {
  */
 export interface InformationNeed {
   readonly needId: string;
-  readonly category: 'strategic' | 'tactical' | 'operational';
+  readonly category:'strategic'|'tactical'|'operational';
   readonly description: string;
-  readonly urgency: 'low' | 'medium' | 'high';
+  readonly urgency:'low'|'medium'|'high';
   readonly frequency: string;
 }
 
@@ -636,7 +634,7 @@ export interface InformationNeed {
 export interface AudiencePreferences {
   readonly format: ReportFormat[];
   readonly frequency: ReportingFrequency;
-  readonly detail: 'summary' | 'detailed' | 'comprehensive';
+  readonly detail:'summary'|'detailed'|'comprehensive';
   readonly delivery: DeliveryMethod[];
 }
 
@@ -644,11 +642,11 @@ export interface AudiencePreferences {
  * Delivery method
  */
 export enum DeliveryMethod {
-  EMAIL = 'email',
-  SLACK = 'slack',
-  TEAMS = 'teams',
-  DASHBOARD = 'dashboard',
-  API = 'api',
+  EMAIL ='email,
+  SLACK ='slack,
+  TEAMS ='teams,
+  DASHBOARD ='dashboard,
+  API ='api,
 }
 
 /**
@@ -752,9 +750,9 @@ export interface ChangeControl {
  * Change process
  */
 export enum ChangeProcess {
-  LIGHTWEIGHT = 'lightweight',
-  STANDARD = 'standard',
-  COMPREHENSIVE = 'comprehensive',
+  LIGHTWEIGHT ='lightweight,
+  STANDARD ='standard,
+  COMPREHENSIVE ='comprehensive,
 }
 
 /**
@@ -783,7 +781,7 @@ export interface ValidationRule {
   readonly ruleId: string;
   readonly description: string;
   readonly condition: string;
-  readonly severity: 'warning|error;
+  readonly severity: warning'|'error';
   readonly action: string;
 }
 
@@ -813,7 +811,7 @@ export interface MonitoringRequirement {
 export interface AlertingConfig {
   readonly enabled: boolean;
   readonly channels: string[];
-  readonly severity: 'info|warning|error|critical;
+  readonly severity: info| warning| error'|'critical';
   readonly escalation: EscalationRule[];
 }
 
@@ -853,22 +851,22 @@ export interface ImprovementItem {
  * Improvement category
  */
 export enum ImprovementCategory {
-  WASTE_ELIMINATION = 'waste_elimination',
-  PROCESS_STREAMLINING = 'process_streamlining',
-  AUTOMATION = 'automation',
-  SKILL_DEVELOPMENT = 'skill_development',
-  QUALITY_IMPROVEMENT = 'quality_improvement',
-  COMMUNICATION = 'communication',
+  WASTE_ELIMINATION ='waste_elimination,
+  PROCESS_STREAMLINING ='process_streamlining,
+  AUTOMATION ='automation,
+  SKILL_DEVELOPMENT ='skill_development,
+  QUALITY_IMPROVEMENT ='quality_improvement,
+  COMMUNICATION ='communication,
 }
 
 /**
  * Improvement priority
  */
 export enum ImprovementPriority {
-  CRITICAL = 'critical',
-  HIGH = 'high',
-  MEDIUM = 'medium',
-  LOW = 'low',
+  CRITICAL ='critical,
+  HIGH ='high,
+  MEDIUM ='medium,
+  LOW ='low,
 }
 
 /**
@@ -885,7 +883,7 @@ export interface EstimatedEffort {
  * Resource requirement
  */
 export interface ResourceRequirement {
-  readonly resourceType: 'people|technology|budget|time;
+  readonly resourceType:'people| technology| budget'|'time';
   readonly quantity: number;
   readonly duration: number; // days
   readonly skills: string[];
@@ -895,10 +893,10 @@ export interface ResourceRequirement {
  * Effort complexity
  */
 export enum EffortComplexity {
-  SIMPLE = 'simple',
-  MODERATE = 'moderate',
-  COMPLEX = 'complex',
-  VERY_COMPLEX = 'very_complex',
+  SIMPLE ='simple,
+  MODERATE ='moderate,
+  COMPLEX ='complex,
+  VERY_COMPLEX ='very_complex,
 }
 
 /**
@@ -928,10 +926,10 @@ export interface FeasibilityAssessment {
  * Feasibility level
  */
 export enum FeasibilityLevel {
-  HIGH = 'high',
-  MEDIUM = 'medium',
-  LOW = 'low',
-  BLOCKED = 'blocked',
+  HIGH ='high,
+  MEDIUM ='medium,
+  LOW ='low,
+  BLOCKED ='blocked,
 }
 
 /**
@@ -953,11 +951,11 @@ export interface ImprovementImplementation {
  * Implementation status
  */
 export enum ImplementationStatus {
-  PLANNED = 'planned',
-  IN_PROGRESS = 'in_progress',
-  COMPLETED = 'completed',
-  ON_HOLD = 'on_hold',
-  CANCELLED = 'cancelled',
+  PLANNED ='planned,
+  IN_PROGRESS ='in_progress,
+  COMPLETED ='completed,
+  ON_HOLD ='on_hold,
+  CANCELLED ='cancelled,
 }
 
 /**
@@ -996,21 +994,21 @@ export interface Blocker {
  * Blocker category
  */
 export enum BlockerCategory {
-  TECHNICAL = 'technical',
-  ORGANIZATIONAL = 'organizational',
-  RESOURCE = 'resource',
-  DEPENDENCY = 'dependency',
-  POLICY = 'policy',
+  TECHNICAL ='technical,
+  ORGANIZATIONAL ='organizational,
+  RESOURCE ='resource,
+  DEPENDENCY ='dependency,
+  POLICY ='policy,
 }
 
 /**
  * Blocker severity
  */
 export enum BlockerSeverity {
-  MINOR = 'minor',
-  MODERATE = 'moderate',
-  MAJOR = 'major',
-  CRITICAL = 'critical',
+  MINOR ='minor,
+  MODERATE ='moderate,
+  MAJOR ='major,
+  CRITICAL ='critical,
 }
 
 /**
@@ -1072,11 +1070,11 @@ export interface CycleLearning {
  * Learning category
  */
 export enum LearningCategory {
-  PROCESS = 'process',
-  FACILITATION = 'facilitation',
-  ENGAGEMENT = 'engagement',
-  MEASUREMENT = 'measurement',
-  IMPLEMENTATION = 'implementation',
+  PROCESS ='process,
+  FACILITATION ='facilitation,
+  ENGAGEMENT ='engagement,
+  MEASUREMENT ='measurement,
+  IMPLEMENTATION ='implementation,
 }
 
 /**
@@ -1097,7 +1095,7 @@ export class ContinuousImprovementService {
   ): Promise<AutomatedKaizenCycle> {
     const _cycleId = `kaizen-${generateNanoId(12)}`;`
 
-    this.logger.info('Executing automated kaizen cycle', {'
+    this.logger.info('Executing automated kaizen cycle,{
       cycleId,
       valueStreamId: config.valueStreamId,
       automationLevel: config.automationLevel,
@@ -1154,17 +1152,17 @@ export class ContinuousImprovementService {
 
       this.kaizenCycles.set(cycleId, cycle);
 
-      this.logger.info('Automated kaizen cycle completed', {'
+      this.logger.info('Automated kaizen cycle completed,{
         cycleId,
         improvementsIdentified: improvementsIdentified.length,
         improvementsImplemented: implementedImprovements.length,
         cycleEffectiveness: Math.round(cycleMetrics.improvementRate * 100),
-        nextCycleDate: format(cycle.nextCycleDate, 'yyyy-MM-dd'),
+        nextCycleDate: format(cycle.nextCycleDate,'yyyy-MM-dd'),
       });
 
       return cycle;
     } catch (error) {
-      this.logger.error('Failed to execute automated kaizen cycle', {'
+      this.logger.error('Failed to execute automated kaizen cycle,{
         cycleId,
         error,
       });
@@ -1179,7 +1177,7 @@ export class ContinuousImprovementService {
     valueStreamId: string,
     config: ContinuousImprovementConfig
   ): Promise<void> {
-    this.logger.info('Executing continuous improvement loop', {'
+    this.logger.info('Executing continuous improvement loop,{
       valueStreamId,
     });
 
@@ -1195,7 +1193,7 @@ export class ContinuousImprovementService {
   /**
    * Get kaizen cycle result
    */
-  getKaizenCycle(cycleId: string): AutomatedKaizenCycle | undefined {
+  getKaizenCycle(cycleId: string): AutomatedKaizenCycle| undefined {
     return this.kaizenCycles.get(cycleId);
   }
 
@@ -1224,18 +1222,18 @@ export class ContinuousImprovementService {
     ) {
       opportunities.push({
         itemId: `improvement-$generateNanoId(8)`,`
-        title:'Reduce cycle time variance',
+        title:'Reduce cycle time variance,
         description:
-          'High variance in cycle time indicates process inconsistency',
+         'High variance in cycle time indicates process inconsistency,
         category: ImprovementCategory.PROCESS_STREAMLINING,
         priority: ImprovementPriority.HIGH,
         effort: 
           timeHours: 40,
           resources: [
-              resourceType: 'people',
+              resourceType:'people,
               quantity: 2,
               duration: 5,
-              skills: ['Process Analysis', 'Lean'],,
+              skills: ['Process Analysis,'Lean'],,
           ],
           complexity: EffortComplexity.MODERATE,
           dependencies: [],,
@@ -1252,7 +1250,7 @@ export class ContinuousImprovementService {
           timeline: FeasibilityLevel.HIGH,
           overall: FeasibilityLevel.HIGH,
           constraints: [],,
-        proposedBy: 'AI Analysis',
+        proposedBy:'AI Analysis,
         supportLevel: 85,
       });
     }
@@ -1261,19 +1259,19 @@ export class ContinuousImprovementService {
     if (currentMetrics.queueLength && currentMetrics.queueLength.average > 10) {
       opportunities.push({
         itemId: `improvement-${generateNanoId(8)}`,`
-        title: 'Reduce queue length',
+        title:'Reduce queue length,
         description:
-          'Long queues indicate capacity constraints or inefficient resource allocation',
+         'Long queues indicate capacity constraints or inefficient resource allocation,
         category: ImprovementCategory.WASTE_ELIMINATION,
         priority: ImprovementPriority.HIGH,
         effort: {
           timeHours: 60,
           resources: [
             {
-              resourceType: 'people',
+              resourceType:'people,
               quantity: 3,
               duration: 10,
-              skills: ['Capacity Planning', 'Resource Management'],
+              skills: ['Capacity Planning,'Resource Management'],
             },
           ],
           complexity: EffortComplexity.COMPLEX,
@@ -1294,15 +1292,15 @@ export class ContinuousImprovementService {
           overall: FeasibilityLevel.MEDIUM,
           constraints: ['Budget approval required'],
         },
-        proposedBy: 'AI Analysis',
+        proposedBy:'AI Analysis,
         supportLevel: 78,
       });
     }
 
     return orderBy(
       opportunities,
-      ['priority', 'supportLevel'],
-      ['desc', 'desc']'
+      ['priority,'supportLevel'],
+      ['desc,'desc']
     );
   }
 
@@ -1314,9 +1312,9 @@ export class ContinuousImprovementService {
     const scoredImprovements = improvements.map((improvement) => ({
       ...improvement,
       score: this.scoreImprovement(improvement, objectives),
-    }));
+    });
 
-    return orderBy(scoredImprovements, 'score', 'desc');'
+    return orderBy(scoredImprovements,'score,'desc'');
   }
 
   private scoreImprovement(
@@ -1341,7 +1339,7 @@ export class ContinuousImprovementService {
 
     score += Math.min(alignmentBonus, 20) * 0.2;
 
-    return Math.min(100, Math.max(0, score));
+    return Math.min(100, Math.max(0, score);
   }
 
   private async planImplementations(
@@ -1401,7 +1399,7 @@ export class ContinuousImprovementService {
           actualImpact: {
             measuredImprovements: [
               {
-                metric: 'Cycle Time',
+                metric:'Cycle Time,
                 before: 100,
                 after: 85,
                 improvement: 15,
@@ -1413,7 +1411,7 @@ export class ContinuousImprovementService {
             satisfaction: {
               participants: 5,
               averageScore: 8.2,
-              feedback: ['Great improvement', 'Easy to implement'],
+              feedback: ['Great improvement,'Easy to implement'],
               recommendations: ['Scale to other areas'],
             },
           },
@@ -1451,18 +1449,18 @@ export class ContinuousImprovementService {
       {
         learningId: `learning-${generateNanoId(6)}`,`
         category: LearningCategory.PROCESS,
-        description: 'Automated identification increases opportunity discovery',
-        application: 'Use AI analysis for future cycles',
+        description:'Automated identification increases opportunity discovery,
+        application:'Use AI analysis for future cycles,
         confidence: 85,
-        source: 'Cycle Analysis',
+        source:'Cycle Analysis,
       },
       {
         learningId: `learning-${generateNanoId(6)}`,`
         category: LearningCategory.IMPLEMENTATION,
-        description: 'Quick wins build momentum',
-        application: 'Prioritize quick wins in early cycles',
+        description:'Quick wins build momentum,
+        application:'Prioritize quick wins in early cycles,
         confidence: 90,
-        source: 'Implementation Results',
+        source:'Implementation Results,
       },
     ];
   }
@@ -1471,7 +1469,7 @@ export class ContinuousImprovementService {
     config: FeedbackLoopConfig
   ): Promise<void> {
     this.feedbackLoops.set(config.loopId, config);
-    this.logger.info('Feedback loop initialized', {'
+    this.logger.info('Feedback loop initialized,{
       loopId: config.loopId,
       type: config.type,
       frequency: config.frequency,
@@ -1482,7 +1480,7 @@ export class ContinuousImprovementService {
     config: ContinuousImprovementConfig
   ): Promise<void> {
     // Start monitoring improvement progress and triggering actions
-    this.logger.info('Started improvement monitoring', {'
+    this.logger.info('Started improvement monitoring,{
       valueStreamId: config.valueStreamId,
       feedbackLoops: config.feedbackLoops.length,
     });
@@ -1554,7 +1552,7 @@ export class ContinuousImprovementService {
       ],
     };
 
-    const alignedCategories = categoryAlignment[improvement.category] || [];
+    const alignedCategories = categoryAlignment[improvement.category]|| [];
     return alignedCategories.includes(objective.category);
   }
 }

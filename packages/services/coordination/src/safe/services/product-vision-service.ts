@@ -13,7 +13,6 @@
  */
 
 import { dateFns, generateNanoId, } from '@claude-zen/foundation';
-
 const { format, addMonths } = dateFns;
 
 import { filter, meanBy, } from 'lodash-es';
@@ -25,7 +24,6 @@ import type {
   StakeholderAlignment,
   SuccessCriterion,
 } from '../types/product-management';
-
 /**
  * Product vision service configuration
  */
@@ -89,7 +87,7 @@ export class ProductVisionService {
     marketOpportunity: MarketOpportunity;
     strategicThemes: string[];
   }): Promise<ProductVision> {
-    this.logger.info('Creating product vision', { productId: input.productId });'
+    this.logger.info('Creating product vision,{ productId: input.productId }');
 
     const vision: ProductVision = {
       id: `vision-${generateNanoId(12)}`,`
@@ -106,7 +104,7 @@ export class ProductVisionService {
       marketOpportunity: input.marketOpportunity,
       createdAt: new Date(),
       updatedAt: new Date(),
-      version: '1.0.0',
+      version:'1.0.0,
       stakeholderAlignment: [],
     };
 
@@ -114,12 +112,12 @@ export class ProductVisionService {
     const validation = await this.validateVision(vision);
     if (!validation.isValid) {
       throw new Error(
-        `Vision validation failed: ${validation.weaknesses.join(', ')}``
+        `Vision validation failed: ${validation.weaknesses.join(,')}``
       );
     }
 
     this.visions.set(vision.id, vision);
-    this.logger.info('Product vision created successfully', {'
+    this.logger.info('Product vision created successfully,{
       visionId: vision.id,
       score: validation.score,
     });
@@ -131,13 +129,13 @@ export class ProductVisionService {
    * Validate product vision comprehensiveness
    */
   async validateVision(vision: ProductVision): Promise<VisionValidationResult> {
-    const cacheKey = `${vision.id}-${vision.updatedAt.getTime()}`;`
+    const cacheKey = `${{vision.id}-${vision.updatedAt.getTime()}}`;`
 
     if (this.validationCache.has(cacheKey)) {
       return this.validationCache.get(cacheKey)!;
     }
 
-    this.logger.debug('Validating product vision', { visionId: vision.id });'
+    this.logger.debug('Validating product vision,{ visionId: vision.id }');
 
     const metrics = this.calculateVisionMetrics(vision);
     const strengths: string[] = [];
@@ -146,36 +144,36 @@ export class ProductVisionService {
 
     // Analyze vision clarity
     if (metrics.clarity >= 80) {
-      strengths.push('Clear and compelling vision statement');'
+      strengths.push('Clear and compelling vision statement'');
     } else if (metrics.clarity < 60) {
-      weaknesses.push('Vision statement lacks clarity');'
-      recommendations.push('Refine vision statement for better clarity');'
+      weaknesses.push('Vision statement lacks clarity'');
+      recommendations.push('Refine vision statement for better clarity'');
     }
 
     // Analyze market alignment
     if (metrics.marketAlignment >= 75) {
-      strengths.push('Strong market opportunity alignment');'
+      strengths.push('Strong market opportunity alignment'');
     } else {
-      weaknesses.push('Limited market alignment evidence');'
-      recommendations.push('Strengthen market research and validation');'
+      weaknesses.push('Limited market alignment evidence'');
+      recommendations.push('Strengthen market research and validation'');
     }
 
     // Analyze stakeholder alignment
     if (
       metrics.stakeholderAlignment >= this.config.stakeholderAlignmentTarget
     ) {
-      strengths.push('Excellent stakeholder alignment');'
+      strengths.push('Excellent stakeholder alignment'');
     } else {
-      weaknesses.push('Stakeholder alignment below target');'
-      recommendations.push('Increase stakeholder engagement and communication');'
+      weaknesses.push('Stakeholder alignment below target'');
+      recommendations.push('Increase stakeholder engagement and communication'');
     }
 
     // Analyze strategic coherence
     if (metrics.strategicCoherence >= 70) {
-      strengths.push('Strong strategic alignment');'
+      strengths.push('Strong strategic alignment'');
     } else {
-      weaknesses.push('Strategic alignment needs improvement');'
-      recommendations.push('Clarify connection to organizational strategy');'
+      weaknesses.push('Strategic alignment needs improvement'');
+      recommendations.push('Clarify connection to organizational strategy'');
     }
 
     // Identify alignment gaps
@@ -219,7 +217,7 @@ export class ProductVisionService {
     // Calculate stakeholder alignment (average alignment levels)
     const stakeholderAlignment =
       vision.stakeholderAlignment.length > 0
-        ? meanBy(vision.stakeholderAlignment, 'alignmentLevel')'
+        ? meanBy(vision.stakeholderAlignment,'alignmentLevel')
         : 0;
 
     // Calculate strategic coherence
@@ -258,9 +256,9 @@ export class ProductVisionService {
     }
 
     // Check for key elements
-    const hasWho = /customer|user|client/i.test(visionStatement);
-    const hasWhat = /provide|deliver|enable|create/i.test(visionStatement);
-    const hasWhy = /because|to|for|so that/i.test(visionStatement);
+    const hasWho = /customer| user| client/i.test(visionStatement);
+    const hasWhat = /provide| deliver| enable| create/i.test(visionStatement);
+    const hasWhy = /because| to| for| so that/i.test(visionStatement);
 
     if (hasWho) score += 10;
     if (hasWhat) score += 10;
@@ -337,9 +335,9 @@ export class ProductVisionService {
     strategicThemes: string[]
   ): StrategyAlignment 
     return {
-      strategicTheme: strategicThemes.join(', '),
+      strategicTheme: strategicThemes.join(,'),
       alignmentScore: strategicThemes.length > 0 ? 75 : 25,
-      contributionLevel: strategicThemes.length > 0 ? 'direct' : 'indirect',
+      contributionLevel: strategicThemes.length > 0 ?'direct:'indirect,
       strategicImportance: Math.min(10, strategicThemes.length * 3),
     };
 
@@ -366,7 +364,7 @@ export class ProductVisionService {
     // Clear validation cache
     this.validationCache.clear();
 
-    this.logger.info('Stakeholder alignment updated', {'
+    this.logger.info('Stakeholder alignment updated,{
       visionId,
       alignmentCount: alignments.length,
     });
@@ -375,7 +373,7 @@ export class ProductVisionService {
   /**
    * Get vision by ID
    */
-  getVision(visionId: string): ProductVision | undefined {
+  getVision(visionId: string): ProductVision| undefined {
     return this.visions.get(visionId);
   }
 
@@ -392,7 +390,7 @@ export class ProductVisionService {
   /**
    * Get vision metrics
    */
-  async getVisionMetrics(visionId: string): Promise<VisionMetrics | null> {
+  async getVisionMetrics(visionId: string): Promise<VisionMetrics| null> {
     const vision = this.visions.get(visionId);
     if (!vision) {
       return null;

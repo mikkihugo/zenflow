@@ -40,7 +40,7 @@
  * const engine = new WorkflowEngine();
  *
  * // Schedule workflow with cron
- * const scheduleId = engine.scheduleWorkflow('0 9 * * *', 'daily-report');'
+ * const scheduleId = engine.scheduleWorkflow('0 9 * * *,'daily-report'');
  *
  * // Generate Mermaid visualization
  * const diagram = engine.generateWorkflowVisualization(workflow);
@@ -65,7 +65,6 @@ export type {
 // MAIN WORKFLOW ENGINE - Battle-tested with modern npm packages
 // =============================================================================
 export { WorkflowEngine as default, WorkflowEngine } from './engine';
-
 // =============================================================================
 // PROFESSIONAL SYSTEM ACCESS - Production naming patterns
 // =============================================================================
@@ -152,10 +151,10 @@ export async function getWorkflowVisualization(
       system.generateVisualization(workflow),
     export: (
       workflow: WorkflowDefinition,
-      format: 'mermaid' | 'svg' = 'mermaid''
+      format:'mermaid'|'svg ='mermaid'
     ) => {
       // Enhanced format validation and logging
-      const supportedFormats = ['mermaid', 'svg'] as const;'
+      const supportedFormats = ['mermaid,'svg'] as const';
       if (!supportedFormats.includes(format)) {
         logger.warn(`Unsupported workflow export format: ${format}, defaulting to mermaid`);`
         format = 'mermaid';
@@ -180,30 +179,30 @@ export const workflowSystem = {
 // METADATA - Package information with battle-tested features
 // =============================================================================
 export const WORKFLOWS_INFO = {
-  version: '1.0.0',
-  name: '@claude-zen/workflows',
+  version:'1.0.0,
+  name:'@claude-zen/workflows,
   description:
-    'Production-ready workflow engine with battle-tested npm dependencies',
+   'Production-ready workflow engine with battle-tested npm dependencies,
   battleTestedDependencies: [
-    'expr-eval: Safe expression evaluation',
-    'async: Professional async utilities',
-    'p-limit: Controlled concurrency',
-    'eventemitter3: High-performance events',
-    'xstate: Robust state management',
-    'mermaid: Professional visualization',
-    'node-cron: Production scheduling',
-    'foundation: Battle-tested storage',
+   'expr-eval: Safe expression evaluation,
+   'async: Professional async utilities,
+   'p-limit: Controlled concurrency,
+   'eventemitter3: High-performance events,
+   'xstate: Robust state management,
+   'mermaid: Professional visualization,
+   'node-cron: Production scheduling,
+   'foundation: Battle-tested storage,
   ],
   capabilities: [
-    'Secure workflow orchestration (no arbitrary code execution)',
-    'Foundation storage integration',
-    'XState-powered state management',
-    'Professional async utilities',
-    'Controlled concurrency with p-limit',
-    'High-performance eventemitter3 events',
-    'Mermaid workflow visualization',
-    'Production cron scheduling',
-    'Battle-tested persistence layer',
+   'Secure workflow orchestration (no arbitrary code execution),
+   'Foundation storage integration,
+   'XState-powered state management,
+   'Professional async utilities,
+   'Controlled concurrency with p-limit,
+   'High-performance eventemitter3 events,
+   'Mermaid workflow visualization,
+   'Production cron scheduling,
+   'Battle-tested persistence layer,
   ],
   security: {
     safeExpressionEvaluation: true,

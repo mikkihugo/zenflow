@@ -9,7 +9,6 @@
  */
 
 import { debounce, throttle } from 'lodash-es';
-
 /**
  * Professional async utilities
  */
@@ -44,7 +43,7 @@ export class AsyncUtils {
    * Create promise-based delay
    */
   static createDelay(milliseconds: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, milliseconds));
+    return new Promise((resolve) => setTimeout(resolve, milliseconds);
   }
 
   /**
@@ -57,7 +56,7 @@ export class AsyncUtils {
     return Promise.race([
       promise,
       new Promise<never>((_resolve, reject) =>
-        setTimeout(() => reject(new Error('Operation timed out')), milliseconds)'
+        setTimeout(() => reject(new Error('Operation timed out')), milliseconds)
       ),
     ]);
   }

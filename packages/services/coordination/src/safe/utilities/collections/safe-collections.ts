@@ -29,7 +29,6 @@ import {
   sumBy,
   uniqBy,
 } from 'lodash-es';
-
 /**
  * SAFe feature and epic collection utilities
  */
@@ -41,7 +40,7 @@ export class SafeCollectionUtils {
     items: T[],
     priorities: string[]
   ): T[] {
-    return filter(items, (item) => priorities.includes(item.priority));
+    return filter(items, (item) => priorities.includes(item.priority);
   }
 
   /**
@@ -59,7 +58,7 @@ export class SafeCollectionUtils {
   static groupByART<T extends { artId: string }>(
     features: T[]
   ): Record<string, T[]> {
-    return groupBy(features, 'artId');'
+    return groupBy(features,'artId'');
   }
 
   /**
@@ -68,11 +67,11 @@ export class SafeCollectionUtils {
   static calculatePICapacity<T extends { artId: string; storyPoints: number }>(
     features: T[]
   ): Record<string, number> {
-    const grouped = groupBy(features, 'artId');'
+    const grouped = groupBy(features,'artId'');
     return reduce(
       grouped,
       (result, artFeatures, artId) => {
-        result[artId] = sumBy(artFeatures, 'storyPoints');'
+        result[artId] = sumBy(artFeatures,'storyPoints'');
         return result;
       },
       {} as Record<string, number>
@@ -95,9 +94,9 @@ export class SafeCollectionUtils {
       wsjf:
         (item.businessValue + item.urgency + item.riskReduction) /
         Math.max(item.size, 1),
-    }));
+    });
 
-    return orderBy(itemsWithWSJF, 'wsjf', 'desc');'
+    return orderBy(itemsWithWSJF,'wsjf,'desc'');
   }
 
   /**
@@ -106,14 +105,14 @@ export class SafeCollectionUtils {
   static partitionFeaturesByCommitment<T extends { isCommitted: boolean }>(
     features: T[]
   ): [T[], T[]] {
-    return partition(features, 'isCommitted');'
+    return partition(features,'isCommitted'');
   }
 
   /**
    * Remove duplicate epics by identifier using lodash
    */
   static deduplicateById<T extends { id: string }>(items: T[]): T[] {
-    return uniqBy(items, 'id');'
+    return uniqBy(items,'id'');
   }
 
   /**
@@ -122,7 +121,7 @@ export class SafeCollectionUtils {
   static createEpicLookup<T extends { id: string }>(
     epics: T[]
   ): Record<string, T> {
-    return keyBy(epics, 'id');'
+    return keyBy(epics,'id'');
   }
 
   /**
@@ -130,8 +129,8 @@ export class SafeCollectionUtils {
    */
   static findHighestValueEpic<T extends { businessValue: number }>(
     epics: T[]
-  ): T | undefined {
-    return maxBy(epics,'businessValue');'
+  ): T| undefined {
+    return maxBy(epics,businessValue'');
   }
 
   /**
@@ -139,8 +138,8 @@ export class SafeCollectionUtils {
    */
   static findSmallestEpic<T extends { effort: number }>(
     epics: T[]
-  ): T | undefined {
-    return minBy(epics,'effort');'
+  ): T| undefined {
+    return minBy(epics,effort'');
   }
 
   /**
@@ -149,7 +148,7 @@ export class SafeCollectionUtils {
   static countFeaturesByStatus<T extends { status: string }>(
     features: T[]
   ): Record<string, number> {
-    return countBy(features, 'status');'
+    return countBy(features,'status'');
   }
 
   /**
@@ -182,7 +181,7 @@ export class SafePortfolioUtils {
    */
   static calculatePortfolioMetrics<
     T extends {
-      status: 'green' | 'yellow' | 'red';
+      status:'green'|'yellow'|'red';
       budget: number;
       actualSpent: number;
     },
@@ -195,18 +194,18 @@ export class SafePortfolioUtils {
     totalBudget: number;
     totalSpent: number;
   } {
-    const statusCount = countBy(portfolioItems, 'status');'
+    const statusCount = countBy(portfolioItems,'status'');
     const totalItems = portfolioItems.length;
 
     // Calculate health score (green=3, yellow=2, red=1)
     const healthScore =
-      ((statusCount.green || 0) * 3 +
-        (statusCount.yellow || 0) * 2 +
-        (statusCount.red || 0) * 1) /
+      ((statusCount.green|| 0) * 3 +
+        (statusCount.yellow|| 0) * 2 +
+        (statusCount.red|| 0) * 1) /
       (totalItems * 3);
 
-    const totalBudget = sumBy(portfolioItems,'budget');'
-    const totalSpent = sumBy(portfolioItems, 'actualSpent');'
+    const totalBudget = sumBy(portfolioItems,budget'');
+    const totalSpent = sumBy(portfolioItems,'actualSpent'');
     const budgetUtilization = totalBudget > 0 ? totalSpent / totalBudget : 0;
 
     return {
@@ -233,7 +232,7 @@ export class SafePortfolioUtils {
     return orderBy(
       valueStreams,
       [(vs) => vs.throughput / Math.max(vs.cycleTime, 1)],
-      ['desc']'
+      ['desc']
     );
   }
 
@@ -252,7 +251,7 @@ export class SafePortfolioUtils {
     dependencyCount: Record<string, number>;
     criticalPath: string[];
   } {
-    const epicLookup = keyBy(epics, 'id');'
+    const epicLookup = keyBy(epics,'id'');
     const dependencyCount = reduce(
       epics,
       (counts, epic) => {
@@ -266,7 +265,7 @@ export class SafePortfolioUtils {
     const criticalPath = orderBy(
       epics,
       (epic) => epic.dependencies.length,
-      'desc''
+     'desc'
     )
       .slice(0, 5)
       .map((epic) => epic.id);

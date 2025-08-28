@@ -20,7 +20,6 @@ import { EventBus } from '@claude-zen/foundation';
 import type { 
   Feature,Logger, MemorySystem, TypeSafeEventBus, } from '../types';
 import { createEvent, EventPriority, getLogger } from '../types';
-
 // ============================================================================
 // SAFE EVENTS MANAGER CONFIGURATION
 // ============================================================================
@@ -40,7 +39,7 @@ export interface SAFeEventsManagerConfig {
 
 export interface SAFeEventConfig {
   id: string;
-  type:|'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||pi-planning;
+  type:|'javascript'|'typescript'|'python'|'java'|'csharp'|'cpp'|'go'|'ruby'|'swift'|'kotlin'||'pi-planning';
   title: string;
   description: string;
   duration: number;
@@ -65,14 +64,14 @@ export interface EventAgendaItem {
   id: string;
   title: string;
   duration: number;
-  type: 'presentation|discussion|workshop|demo|retrospective;
+  type:'presentation| discussion| workshop| demo'|'retrospective';
   facilitator?: string;
   materials?: string[];
   objectives: string[];
 }
 
 export interface EventSchedulingPattern {
-  type: 'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin'||per-pi;
+  type:'javascript'|'typescript'|'python'|'java'|'csharp'|'cpp'|'go'|'ruby'|'swift'|'kotlin'||'per-pi';
   dayOfWeek?: number;
   timeOfDay?: string;
   iterationWeek?: number;
@@ -99,7 +98,7 @@ export interface EventExecutionContext {
 
 export interface EventOutcome {
   eventId: string;
-  status: 'completed|cancelled|postponed|partial;
+  status:'completed| cancelled| postponed'|'partial';
   duration: number;
   attendance: {
     expected: number;
@@ -120,7 +119,7 @@ export interface EventDecision {
   decisionMaker: string;
   participants: string[];
   rationale: string;
-  impact: 'low|medium|high|critical;
+  impact:'low| medium| high'|'critical';
   implementationDate?: Date;
   responsible: string[];
 }
@@ -131,8 +130,8 @@ export interface ActionItem {
   description: string;
   assignee: string;
   dueDate: Date;
-  priority: 'low|medium|high|critical;
-  status: 'javascript' | 'typescript' | 'python' | 'java' | 'csharp' | 'cpp' | 'go' | 'ruby' | 'swift' | 'kotlin';
+  priority: low| medium| high'|'critical';
+  status:'javascript'|'typescript'|'python'|'java'|'csharp'|'cpp'|'go'|'ruby'|'swift'|'kotlin';
   dependencies: string[];
 }
 
@@ -186,7 +185,7 @@ export class SAFeEventsManager extends EventBus {
     config: Partial<SAFeEventsManagerConfig> = {}
   ) {
     super();
-    this.logger = getLogger('SAFeEventsManager');'
+    this.logger = getLogger('SAFeEventsManager'');
     this.memory = memory;
     this.eventBus = eventBus;
 
@@ -212,7 +211,7 @@ export class SAFeEventsManager extends EventBus {
     if (this.initialized) return;
 
     try {
-      this.logger.info('Initializing SAFe Events Manager');'
+      this.logger.info('Initializing SAFe Events Manager'');
 
       // Setup templates synchronously
       this.setupEventTemplates();
@@ -222,18 +221,18 @@ export class SAFeEventsManager extends EventBus {
 
       // Emit initialization event
       this.eventBus.emit(
-        'safe-events:initialized',
+       'safe-events:initialized,
         createEvent(
-          'safe-events:initialized',
+         'safe-events:initialized,
           { timestamp: Date.now() },
           EventPriority.NORMAL
         )
       );
 
       this.initialized = true;
-      this.logger.info('SAFe Events Manager initialized successfully');'
+      this.logger.info('SAFe Events Manager initialized successfully'');
     } catch (error) {
-      this.logger.error('Failed to initialize SAFe Events Manager:', error);'
+      this.logger.error('Failed to initialize SAFe Events Manager:,error');
       throw error;
     }
   }
@@ -252,8 +251,8 @@ export class SAFeEventsManager extends EventBus {
       const eventId = `system-demo-${piId}-${Date.now()}`;`
       const eventConfig: SAFeEventConfig = {
         id: eventId,
-        type: 'system-demo',
-        title: `System Demo - PI $piId$iterationId ? ` Iteration ${iterationId}` : ''`,`
+        type: 'system-demo,
+        title: `System Demo - PI $piId$iterationId ? ` Iteration ${iterationId}` :'`,`
         description: `Demonstration of completed features from PI ${piId}`,`
         duration: this.config.defaultEventDuration,
         participants: await this.buildParticipantList(features),
@@ -270,15 +269,15 @@ export class SAFeEventsManager extends EventBus {
         eventConfig
       );
 
-      this.emit('system-demo:scheduled', {'
+      this.emit('system-demo:scheduled,{
         eventId,
         eventConfig,
         piId,
         features,
       });
       this.eventBus.emit(
-        'safe-events:system-demo:scheduled',
-        createEvent('safe-events:system-demo:scheduled', {'
+       'safe-events:system-demo:scheduled,
+        createEvent('safe-events:system-demo:scheduled,{
           eventId,
           piId,
           featuresCount: features.length,
@@ -287,7 +286,7 @@ export class SAFeEventsManager extends EventBus {
 
       return { success: true, eventId };
     } catch (error) {
-      this.logger.error('Failed to schedule system demo:', error);'
+      this.logger.error('Failed to schedule system demo:,error');
       return { success: false, error: (error as Error).message };
     }
   }
@@ -306,13 +305,13 @@ export class SAFeEventsManager extends EventBus {
       const eventId = `inspect-adapt-${piId}-${artId}`;`
       const eventConfig: SAFeEventConfig = {
         id: eventId,
-        type: 'inspect-adapt',
+        type:'inspect-adapt,
         title: `Inspect & Adapt Workshop - PI $piId`,`
         description: `PI retrospective and improvement planning for ART ${artId}`,`
         duration: 240, // 4 hours typical I&A duration
         participants: await this.buildARTParticipantList(artId),
         agenda: await this.buildInspectAdaptAgenda(),
-        facilitator: 'safe-coach',
+        facilitator:'safe-coach,
         required: true,
         recurring: false,
       };
@@ -323,10 +322,10 @@ export class SAFeEventsManager extends EventBus {
         eventConfig
       );
 
-      this.emit('inspect-adapt:scheduled', { eventId, piId, artId });'
+      this.emit('inspect-adapt:scheduled,{ eventId, piId, artId }');
       this.eventBus.emit(
-        'safe-events:inspect-adapt:scheduled',
-        createEvent('safe-events:inspect-adapt:scheduled', '
+       'safe-events:inspect-adapt:scheduled,
+        createEvent('safe-events:inspect-adapt:scheduled,
           eventId,
           piId,
           artId,)
@@ -334,7 +333,7 @@ export class SAFeEventsManager extends EventBus {
 
       return { success: true, eventId };
     } catch (error) {
-      this.logger.error('Failed to schedule Inspect & Adapt workshop:', error);'
+      this.logger.error('Failed to schedule Inspect & Adapt workshop:,error');
       return { success: false, error: (error as Error).message };
     }
   }
@@ -351,12 +350,12 @@ export class SAFeEventsManager extends EventBus {
     try {
       const event = this.scheduledEvents.get(eventId);
       if (!event) {
-        return { success: false, error: 'Event not found' };'
+        return { success: false, error: 'Event not found '};
       }
 
       const outcome: EventOutcome = {
         eventId,
-        status: 'completed',
+        status:'completed,
         duration: event.duration,
         attendance: {
           expected: event.participants.length,
@@ -381,10 +380,10 @@ export class SAFeEventsManager extends EventBus {
       this.eventOutcomes.set(eventId, outcome);
       await this.memory.store(`safe-events:outcome:${eventId}`, outcome);`
 
-      this.emit('event:executed', { eventId, outcome });'
+      this.emit('event:executed,{ eventId, outcome }');
       this.eventBus.emit(
-        'safe-events:event:executed',
-        createEvent('safe-events:event:executed', {'
+       'safe-events:event:executed,
+        createEvent('safe-events:event:executed,{
           eventId,
           status: outcome.status,
         })
@@ -392,7 +391,7 @@ export class SAFeEventsManager extends EventBus {
 
       return { success: true, outcome };
     } catch (error) {
-      this.logger.error('Failed to execute event:', error);'
+      this.logger.error('Failed to execute event:,error');
       return { success: false, error: (error as Error).message };
     }
   }
@@ -407,13 +406,13 @@ export class SAFeEventsManager extends EventBus {
       events: {
         scheduled: this.scheduledEvents.size,
         completed: Array.from(this.eventOutcomes.values()).filter(
-          (o) => o.status === 'completed''
+          (o) => o.status ==='completed'
         ).length,
         systemDemos: Array.from(this.scheduledEvents.values()).filter(
-          (e) => e.type === 'system-demo''
+          (e) => e.type ==='system-demo'
         ).length,
         inspectAdapt: Array.from(this.scheduledEvents.values()).filter(
-          (e) => e.type === 'inspect-adapt').length,
+          (e) => e.type ==='inspect-adapt').length,
       },
       outcomes: Array.from(this.eventOutcomes.values()),
       templates: Array.from(this.eventTemplates.keys()),
@@ -423,14 +422,14 @@ export class SAFeEventsManager extends EventBus {
   /**
    * Get scheduled event by ID
    */
-  getScheduledEvent(eventId: string): SAFeEventConfig|undefined {
+  getScheduledEvent(eventId: string): SAFeEventConfig| undefined {
     return this.scheduledEvents.get(eventId);
   }
 
   /**
    * Get event outcome by ID
    */
-  getEventOutcome(eventId: string): EventOutcome|undefined {
+  getEventOutcome(eventId: string): EventOutcome| undefined {
     return this.eventOutcomes.get(eventId);
   }
 
@@ -447,93 +446,93 @@ export class SAFeEventsManager extends EventBus {
 
   private setupEventTemplates(): void {
     // Initialize standard SAFe event templates
-    this.eventTemplates.set('system-demo', {'
-      id: 'template-system-demo',
-      type: 'system-demo',
-      title: 'System Demo Template',
-      description: 'Standard system demonstration format',
+    this.eventTemplates.set('system-demo,{
+      id:'template-system-demo,
+      type:'system-demo,
+      title:'System Demo Template,
+      description:'Standard system demonstration format,
       duration: 120,
       participants: [],
       agenda: [
         {
-          id: 'demo-intro',
-          title: 'Demo Introduction',
+          id:'demo-intro,
+          title:'Demo Introduction,
           duration: 10,
-          type: 'presentation',
-          objectives: ['Set context', 'Review agenda'],
+          type:'presentation,
+          objectives: ['Set context,'Review agenda'],
         },
         {
-          id: 'feature-demos',
-          title: 'Feature Demonstrations',
+          id:'feature-demos,
+          title:'Feature Demonstrations,
           duration: 90,
-          type: 'demo',
-          objectives: ['Show completed features', 'Gather feedback'],
+          type:'demo,
+          objectives: ['Show completed features,'Gather feedback'],
         },
         {
-          id: 'wrap-up',
-          title: 'Wrap-up & Next Steps',
+          id:'wrap-up,
+          title:'Wrap-up & Next Steps,
           duration: 20,
-          type: 'discussion',
-          objectives: ['Summarize feedback', 'Plan follow-up'],
+          type:'discussion,
+          objectives: ['Summarize feedback,'Plan follow-up'],
         },
       ],
       required: true,
       recurring: true,
       schedulingPattern: {
-        type: 'per-iteration',
+        type:'per-iteration,
         iterationWeek: 2,
       },
     });
 
-    this.eventTemplates.set('inspect-adapt', {'
-      id: 'template-inspect-adapt',
-      type: 'inspect-adapt',
-      title: 'Inspect & Adapt Workshop Template',
-      description: 'Standard I&A workshop format',
+    this.eventTemplates.set('inspect-adapt,{
+      id:'template-inspect-adapt,
+      type:'inspect-adapt,
+      title:'Inspect & Adapt Workshop Template,
+      description:'Standard I&A workshop format,
       duration: 240,
       participants: [],
       agenda: [
         {
-          id: 'retrospective',
-          title: 'PI Retrospective',
+          id:'retrospective,
+          title:'PI Retrospective,
           duration: 90,
-          type: 'retrospective',
-          objectives: ['Review PI performance', 'Identify improvement areas'],
+          type:'retrospective,
+          objectives: ['Review PI performance,'Identify improvement areas'],
         },
         {
-          id: 'problem-solving',
-          title: 'Problem Solving Workshop',
+          id:'problem-solving,
+          title:'Problem Solving Workshop,
           duration: 90,
-          type: 'workshop',
-          objectives: ['Address identified issues', 'Develop solutions'],
+          type:'workshop,
+          objectives: ['Address identified issues,'Develop solutions'],
         },
         {
-          id: 'planning',
-          title: 'Action Planning',
+          id:'planning,
+          title:'Action Planning,
           duration: 60,
-          type: 'workshop',
-          objectives: ['Create improvement backlog', 'Assign ownership'],
+          type:'workshop,
+          objectives: ['Create improvement backlog,'Assign ownership'],
         },
       ],
       required: true,
       recurring: true,
       schedulingPattern: {
-        type: 'per-pi',
+        type:'per-pi,
       },
     });
   }
 
   private buildParticipantList(features: Feature[]): EventParticipant[] {
     // Build participant list from feature teams
-    const uniqueTeams = new Set(features.map((f) => f.team).filter(Boolean));
+    const uniqueTeams = new Set(features.map((f) => f.team).filter(Boolean);
     return Array.from(uniqueTeams).map((team) => ({
       id: `team-$team`,`
-      name: `${team} Team`,`
-      role: 'development-team',
+      name: `${{team} Team}`,`
+      role:'development-team,
       team: team!,
       required: true,
       facilitator: false,
-    }));
+    });
   }
 
   private buildARTParticipantList(artId: string): EventParticipant[] {
@@ -541,15 +540,15 @@ export class SAFeEventsManager extends EventBus {
     return [
       {
         id: `art-$artId-coach`,`
-        name: 'SAFe Coach',
-        role: 'safe-coach',
+        name:'SAFe Coach,
+        role:'safe-coach,
         team: artId,
         required: true,
         facilitator: true,
       },
         id: `art-${artId}-rte`,`
-        name: 'Release Train Engineer',
-        role: 'rte',
+        name:'Release Train Engineer,
+        role:'rte,
         team: artId,
         required: true,
         facilitator: false,
@@ -560,23 +559,23 @@ export class SAFeEventsManager extends EventBus {
   private buildSystemDemoAgenda(features: Feature[]): EventAgendaItem[] {
     return [
       {
-        id: 'intro',
-        title: 'Demo Introduction',
+        id:'intro,
+        title:'Demo Introduction,
         duration: 10,
-        type: 'presentation',
-        objectives: ['Set context', 'Review agenda'],
+        type:'presentation,
+        objectives: ['Set context,'Review agenda'],
       },
       {
-        id: 'demos',
+        id:'demos,
         title: `Feature Demonstrations (${features.length} features)`,`
         duration: Math.max(60, features.length * 10),
-        type: 'demo',
-        objectives: ['Show completed features', 'Gather stakeholder feedback'],,
-        id: 'wrap-up',
-        title: 'Wrap-up & Feedback',
+        type:'demo,
+        objectives: ['Show completed features,'Gather stakeholder feedback'],,
+        id:'wrap-up,
+        title:'Wrap-up & Feedback,
         duration: 20,
-        type: 'discussion',
-        objectives: ['Collect feedback', 'Plan next iteration'],,
+        type:'discussion,
+        objectives: ['Collect feedback,'Plan next iteration'],,
     ];
   }
 
@@ -590,16 +589,16 @@ export class SAFeEventsManager extends EventBus {
     // - Database event listeners
 
     // Mock async operation for now
-    await new Promise((resolve) => setTimeout(resolve, 10));
+    await new Promise((resolve) => setTimeout(resolve, 10);
 
-    this.logger.debug('Event bus connections initialized');'
+    this.logger.debug('Event bus connections initialized'');
   }
 
   /**
    * Cleanup resources
    */
   shutdown(): void {
-    this.logger.info('Shutting down SAFe Events Manager');'
+    this.logger.info('Shutting down SAFe Events Manager'');
 
     this.scheduledEvents.clear();
     this.eventOutcomes.clear();
@@ -607,8 +606,8 @@ export class SAFeEventsManager extends EventBus {
     this.initialized = false;
 
     this.eventBus.emit(
-      'safe-events:shutdown',
-      createEvent('safe-events:shutdown', { timestamp: Date.now() })'
+     'safe-events:shutdown,
+      createEvent('safe-events:shutdown,{ timestamp: Date.now() })
     );
   }
 }

@@ -44,19 +44,17 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { getDatabaseSystem, } from '@claude-zen/infrastructure';
+import { DatabaseProvider } from '@claude-zen/database';
 import { getBrainSystem } from '@claude-zen/intelligence';
 import { TaskApprovalSystem } from '../agui/task-approval-system.js';
 import type { ApprovalGateManager } from '../core/approval-gate-manager.js';
 import type { SafeFrameworkIntegration } from '../integrations/safe-framework-integration.js';
-
 import type {
   ApprovalGateId,
   ApprovalGateRequirement,
   TaskId,
 } from '../types/index.js';
-
-const _logger = getLogger('SystemDemoCoordination');'
+const _logger = getLogger('SystemDemoCoordination');
 
 // ============================================================================
 // SYSTEM DEMO TYPES AND INTERFACES
@@ -75,7 +73,7 @@ export interface SystemDemoConfig {
 
   // Demo environment
   environment: {
-    type: 'production' | 'staging' | 'demo';
+    type:'production'|'staging'|'demo';
     url?: string;
     credentials?: string;
     setupInstructions: string;
@@ -99,7 +97,7 @@ export interface SystemDemoConfig {
     recordDemo: boolean;
     enableLiveFeedback: boolean;
     requireFormalApproval: boolean;
-    feedbackCollectionMethod: 'real_time' | 'post_demo' | 'hybrid';
+    feedbackCollectionMethod:'real_time'|'post_demo'|'hybrid';
     businessValueValidation: boolean;
   };
 
@@ -239,14 +237,14 @@ export interface StakeholderFeedback {
 
   // Feedback source
   providedBy: string;
-  role:|'business_owner|customer|product_manager|stakeholder|team_member;
+  role:|'business_owner| customer| product_manager| stakeholder'|'team_member';
   timestamp: Date;
 
   // Feedback content
   feedback: {
-    type:|'positive|concern|suggestion|question|approval|rejection;
-    category:|'functionality|usability|performance|business_value|technical|process;
-    priority: 'low|medium|high|critical;
+    type:|'positive| concern| suggestion| question| approval'|'rejection';
+    category:|'functionality| usability| performance| business_value| technical'|'process';
+    priority: low| medium| high'|'critical';
     description: string;
     specificDetails: string;
   };
@@ -338,9 +336,8 @@ export interface DemoActionItem {
   // Action details
   title: string;
   description: string;
-  type:|'bug_fix|enhancement|investigation|process_improvement|follow_up;
-  priority: 'low|medium|high|critical;
-
+  type:|'bug_fix| enhancement| investigation| process_improvement'|'follow_up';
+  priority: low| medium| high'|'critical';
   // Assignment
   assignedTo: string;
   assignedTeam: string;
@@ -358,7 +355,7 @@ export interface DemoActionItem {
   approvalGateId?: ApprovalGateId;
 
   // Tracking
-  status: 'open|in_progress|resolved|deferred|cancelled;
+  status:'open| in_progress| resolved| deferred'|'cancelled';
   resolution?: string;
   completionDate?: Date;
 }
@@ -435,7 +432,7 @@ export interface SystemDemoOutcomes {
  * collection and integrated approval workflows.
  */
 export class SystemDemoCoordination {
-  private readonly logger = getLogger('SystemDemoCoordination');'
+  private readonly logger = getLogger('SystemDemoCoordination');
   private taskApprovalSystem: TaskApprovalSystem;
 
   constructor(
@@ -451,11 +448,11 @@ export class SystemDemoCoordination {
    */
   async initialize(): Promise<void> {
     try {
-      this.logger.info('Initializing System Demo Coordination...');'
+      this.logger.info('Initializing System Demo Coordination...');
 
       // Initialize infrastructure
-      const dbSystem = await getDatabaseSystem();
-      this.database = dbSystem.createProvider('sql');'
+      const dbSystem = await DatabaseProvider.create();
+      this.database = dbSystem.createProvider('sql');
 
       this.eventSystem = await getEventSystem();
       this.brainSystem = await getBrainSystem();
@@ -474,9 +471,9 @@ export class SystemDemoCoordination {
       // Register event handlers
       this.registerEventHandlers();
 
-      this.logger.info('System Demo Coordination initialized successfully');'
+      this.logger.info('System Demo Coordination initialized successfully');
     } catch (error) {
-      this.logger.error('Failed to initialize System Demo Coordination', error);'
+      this.logger.error('Failed to initialize System Demo Coordination,error');
       throw error;
     }
   }
@@ -496,7 +493,7 @@ export class SystemDemoCoordination {
     const demoId = config.id;
     const _coordinationTraceabilityId = `system-demo-${demoId}-${Date.now()}`;`
 
-    this.logger.info('Scheduling System Demo', {'
+    this.logger.info('Scheduling System Demo,{
       demoId,
       artName: config.artName,
       piNumber: config.piNumber,
@@ -556,7 +553,7 @@ export class SystemDemoCoordination {
       throw new Error(`System Demo $demoIdnot found`);`
     }
 
-    this.logger.info('Validating Demo Readiness', {'
+    this.logger.info('Validating Demo Readiness,{
       demoId,
       scheduledDate: config.demoDate,
     });
@@ -601,7 +598,7 @@ export class SystemDemoCoordination {
    */
   async executeSystemDemo(
     demoId: string,
-    executionMode: 'live|recorded|hybrid''
+    executionMode:'live| recorded| hybrid'
   ): Promise<{
       started: boolean;
       currentStep: string;
@@ -619,7 +616,7 @@ export class SystemDemoCoordination {
       throw new Error(`System Demo ${demoId} not found`);`
     }
 
-    this.logger.info('Executing System Demo', {'
+    this.logger.info('Executing System Demo,{
       demoId,
       executionMode,
       duration: config.duration,
@@ -638,9 +635,9 @@ export class SystemDemoCoordination {
     return {
       execution: {
         started: true,
-        currentStep: 'demo_introduction',
+        currentStep:'demo_introduction,
         feedbackCapture: feedbackCapture.enabled,
-        technicalStatus: 'operational',
+        technicalStatus:'operational,
       },
       realTimeFeedback: {
         enabled: feedbackCapture.enabled,
@@ -660,7 +657,7 @@ export class SystemDemoCoordination {
    */
   async captureStakeholderFeedback(
     demoId: string,
-    feedback: Omit<StakeholderFeedback, 'id|demoId|timestamp'>'
+    feedback: Omit<StakeholderFeedback,'id| demoId| timestamp'>
   ): Promise<{
     feedbackId: string;
     processed: boolean;
@@ -682,7 +679,7 @@ export class SystemDemoCoordination {
       ...feedback,
     };
 
-    this.logger.info('Capturing Stakeholder Feedback', {'
+    this.logger.info('Capturing Stakeholder Feedback,{
       demoId,
       feedbackId,
       type: feedback.feedback.type,
@@ -691,18 +688,18 @@ export class SystemDemoCoordination {
     });
 
     // Store feedback
-    const existingFeedback = this.feedbackCollectors.get(demoId)||[];
+    const existingFeedback = this.feedbackCollectors.get(demoId)|| [];
     existingFeedback.push(fullFeedback);
     this.feedbackCollectors.set(demoId, existingFeedback);
 
     // Analyze feedback for immediate action needs
     const analysis = await this.analyzeFeedbackForImmediateAction(fullFeedback);
 
-    let approvalGateId: ApprovalGateId|undefined;
+    let approvalGateId: ApprovalGateId| undefined;
     let approvalTriggered = false;
 
     // Create approval workflow if needed
-    if (fullFeedback.triggersApproval||analysis.requiresImmediateResponse) {
+    if (fullFeedback.triggersApproval|| analysis.requiresImmediateResponse) {
       approvalGateId = await this.createFeedbackApprovalGate(
         fullFeedback,
         config
@@ -754,14 +751,14 @@ export class SystemDemoCoordination {
       throw new Error(`System Demo $demoIdnot found`);`
     }
 
-    this.logger.info('Completing Demo and Assessment', {'
+    this.logger.info('Completing Demo and Assessment,{
       demoId,
       actualDuration: executionSummary.actualDuration,
       overallSuccess: executionSummary.overallSuccess,
     });
 
     // Gather all feedback for assessment
-    const allFeedback = this.feedbackCollectors.get(demoId)||[];
+    const allFeedback = this.feedbackCollectors.get(demoId)|| [];
 
     // Generate comprehensive assessment
     const assessment = await this.generateDemoAssessment(
@@ -811,7 +808,7 @@ export class SystemDemoCoordination {
    * Get demo coordination status and progress
    */
   async getDemoCoordinationStatus(demoId: string): Promise<{
-      phase:|'preparation|execution|feedback|assessment|completed;
+      phase:|'preparation| execution| feedback| assessment'|'completed';
       readiness: number; // percentage
       issues: string[];
       nextSteps: string[];;
@@ -839,7 +836,7 @@ export class SystemDemoCoordination {
     const statusData = await this.loadDemoStatus(demoId);
 
     // Analyze feedback summary
-    const allFeedback = this.feedbackCollectors.get(demoId)||[];
+    const allFeedback = this.feedbackCollectors.get(demoId)|| [];
     const feedbackSummary = this.analyzeFeedbackSummary(allFeedback);
 
     // Assess team progress
@@ -875,99 +872,99 @@ export class SystemDemoCoordination {
 
   private async createSystemDemoTables(): Promise<void> {
     // Create tables for System Demo coordination
-    await this.database.schema.createTableIfNotExists('system_demos',
+    await this.database.schema.createTableIfNotExists('system_demos,
       (table: any) => {
-        table.uuid('id').primary();'
-        table.string('demo_id').notNullable().unique();'
-        table.string('art_name').notNullable();'
-        table.integer('pi_number').notNullable();'
-        table.integer('iteration_number').notNullable();'
-        table.timestamp('demo_date').notNullable();'
-        table.json('config').notNullable();'
-        table.json('assessment').nullable();'
-        table.json('outcomes').nullable();'
-        table.string('status').notNullable();'
-        table.timestamp('created_at').notNullable();'
-        table.timestamp('completed_at').nullable();'
-        table.index(['art_name', 'pi_number', 'iteration_number']);'
+        table.uuid('id').primary(');
+        table.string('demo_id').notNullable().unique(');
+        table.string('art_name').notNullable(');
+        table.integer('pi_number').notNullable(');
+        table.integer('iteration_number').notNullable(');
+        table.timestamp('demo_date').notNullable(');
+        table.json('config').notNullable(');
+        table.json('assessment').nullable(');
+        table.json('outcomes').nullable(');
+        table.string('status').notNullable(');
+        table.timestamp('created_at').notNullable(');
+        table.timestamp('completed_at').nullable(');
+        table.index(['art_name,'pi_number,'iteration_number]);
       }
     );
 
     await this.database.schema.createTableIfNotExists(
-      'demo_feedback',
+     'demo_feedback,
       (table: any) => {
-        table.uuid('id').primary();'
-        table.string('feedback_id').notNullable().unique();'
-        table.string('demo_id').notNullable();'
-        table.string('feature_id').nullable();'
-        table.string('team_id').nullable();'
-        table.string('provided_by').notNullable();'
-        table.string('role').notNullable();'
-        table.json('feedback_data').notNullable();'
-        table.json('business_impact').notNullable();'
-        table.json('response_data').notNullable();'
-        table.boolean('triggers_approval').notNullable();'
-        table.string('approval_gate_id').nullable();'
-        table.timestamp('created_at').notNullable();'
-        table.timestamp('responded_at').nullable();'
-        table.index(['demo_id', 'role', 'created_at']);'
+        table.uuid('id').primary(');
+        table.string('feedback_id').notNullable().unique(');
+        table.string('demo_id').notNullable(');
+        table.string('feature_id').nullable(');
+        table.string('team_id').nullable(');
+        table.string('provided_by').notNullable(');
+        table.string('role').notNullable(');
+        table.json('feedback_data').notNullable(');
+        table.json('business_impact').notNullable(');
+        table.json('response_data').notNullable(');
+        table.boolean('triggers_approval').notNullable(');
+        table.string('approval_gate_id').nullable(');
+        table.timestamp('created_at').notNullable(');
+        table.timestamp('responded_at').nullable(');
+        table.index(['demo_id,'role,'created_at]);
       }
     );
 
     await this.database.schema.createTableIfNotExists(
-      'demo_action_items',
+     'demo_action_items,
       (table: any) => {
-        table.uuid('id').primary();'
-        table.string('action_id').notNullable().unique();'
-        table.string('demo_id').notNullable();'
-        table.string('source_feedback').notNullable();'
-        table.string('type').notNullable();'
-        table.string('priority').notNullable();'
-        table.string('assigned_to').notNullable();'
-        table.string('assigned_team').notNullable();'
-        table.date('due_date').notNullable();'
-        table.integer('target_iteration').nullable();'
-        table.json('action_data').notNullable();'
-        table.boolean('requires_approval').notNullable();'
-        table.string('approval_gate_id').nullable();'
-        table.string('status').notNullable();'
-        table.timestamp('created_at').notNullable();'
-        table.timestamp('completed_at').nullable();'
-        table.index(['demo_id', 'priority', 'status']);'
+        table.uuid('id').primary(');
+        table.string('action_id').notNullable().unique(');
+        table.string('demo_id').notNullable(');
+        table.string('source_feedback').notNullable(');
+        table.string('type').notNullable(');
+        table.string('priority').notNullable(');
+        table.string('assigned_to').notNullable(');
+        table.string('assigned_team').notNullable(');
+        table.date('due_date').notNullable(');
+        table.integer('target_iteration').nullable(');
+        table.json('action_data').notNullable(');
+        table.boolean('requires_approval').notNullable(');
+        table.string('approval_gate_id').nullable(');
+        table.string('status').notNullable(');
+        table.timestamp('created_at').notNullable(');
+        table.timestamp('completed_at').nullable(');
+        table.index(['demo_id,'priority,'status]);
       }
     );
 
     await this.database.schema.createTableIfNotExists(
-      'demo_traceability',
+     'demo_traceability,
       (table: any) => {
-        table.uuid('id').primary();'
-        table.string('demo_id').notNullable();'
-        table.string('coordination_type').notNullable();'
-        table.json('coordination_data').notNullable();'
-        table.json('stakeholder_engagement').notNullable();'
-        table.json('business_outcomes').notNullable();'
-        table.json('learning_data').notNullable();'
-        table.timestamp('created_at').notNullable();'
-        table.index(['demo_id', 'coordination_type']);'
+        table.uuid('id').primary(');
+        table.string('demo_id').notNullable(');
+        table.string('coordination_type').notNullable(');
+        table.json('coordination_data').notNullable(');
+        table.json('stakeholder_engagement').notNullable(');
+        table.json('business_outcomes').notNullable(');
+        table.json('learning_data').notNullable(');
+        table.timestamp('created_at').notNullable(');
+        table.index(['demo_id,'coordination_type]);
       }
     );
   }
 
   private registerEventHandlers(): void {
     this.eventSystem.on(
-      'demo:feedback_received',
+     'demo:feedback_received,
       this.handleFeedbackReceived.bind(this)
     );
     this.eventSystem.on(
-      'demo:approval_granted',
+     'demo:approval_granted,
       this.handleDemoApprovalGranted.bind(this)
     );
     this.eventSystem.on(
-      'demo:feature_accepted',
+     'demo:feature_accepted,
       this.handleFeatureAccepted.bind(this)
     );
     this.eventSystem.on(
-      'demo:action_item_created',
+     'demo:action_item_created,
       this.handleActionItemCreated.bind(this)
     );
   }
@@ -991,7 +988,7 @@ export class SystemDemoCoordination {
         traceabilityId
       );
       gates.push({
-        type: 'demo_readiness',
+        type:'demo_readiness,
         gateId: readinessGate,
         teamId: team.teamId,
       });
@@ -999,7 +996,7 @@ export class SystemDemoCoordination {
       // Feature approval gates for high-value features
       for (const feature of team.featuresDemo) {
         if (
-          feature.businessValue >= 7||feature.stakeholderInterests.businessOwners.length > 0
+          feature.businessValue >= 7|| feature.stakeholderInterests.businessOwners.length > 0
         ) {
           const featureGate = await this.createFeatureApprovalGate(
             feature,
@@ -1008,7 +1005,7 @@ export class SystemDemoCoordination {
             traceabilityId
           );
           gates.push({
-            type:'feature_approval',
+            type:'feature_approval,
             gateId: featureGate,
             teamId: team.teamId,
           });
@@ -1021,7 +1018,7 @@ export class SystemDemoCoordination {
       config,
       traceabilityId
     );
-    gates.push({ type: 'demo_coordination', gateId: coordinationGate });'
+    gates.push({ type:'demo_coordination,gateId: coordinationGate }');
 
     return gates;
   }
@@ -1036,7 +1033,7 @@ export class SystemDemoCoordination {
 
     const requirement: ApprovalGateRequirement = {
       id: gateId,
-      name: `${team.teamName} Demo Readiness Approval`,`
+      name: `${{team.teamName} Demo Readiness Approval}`,`
       description: `Approve demo readiness for ${team.teamName} featuring ${team.featuresDemo.length} features`,`
       requiredApprovers: [
         team.presenters.primary,
@@ -1055,11 +1052,11 @@ export class SystemDemoCoordination {
         featuresCount: team.featuresDemo.length,
         demoDate: config.demoDate.toISOString(),
         preparationChecklist: [
-          'Environment setup and validated',
-          'Demo script reviewed and approved',
-          'Backup plans in place',
-          'All features tested in demo environment',
-          'Acceptance criteria validated',
+         'Environment setup and validated,
+         'Demo script reviewed and approved,
+         'Backup plans in place,
+         'All features tested in demo environment,
+         'Acceptance criteria validated,
         ],
         traceabilityId,
       },
@@ -1117,11 +1114,11 @@ export class SystemDemoCoordination {
         teamId: team.teamId,
         demoScenario: feature.demoScenario,
         readinessCriteria: [
-          'Development complete',
-          'Testing complete',
-          'Environment deployed',
-          'Acceptance criteria met',
-          'Business value validated',
+         'Development complete,
+         'Testing complete,
+         'Environment deployed,
+         'Acceptance criteria met,
+         'Business value validated,
         ],
         traceabilityId,
       },
@@ -1179,11 +1176,11 @@ export class SystemDemoCoordination {
         ),
         attendeesExpected: Object.values(config.attendees).flat().length,
         coordinationChecklist: [
-          'All team demos approved and ready',
-          'Environment validated and accessible',
-          'Stakeholders notified and confirmed',
-          'Feedback collection system prepared',
-          'Approval workflows configured',
+         'All team demos approved and ready,
+         'Environment validated and accessible,
+         'Stakeholders notified and confirmed,
+         'Feedback collection system prepared,
+         'Approval workflows configured,
         ],
         traceabilityId,
       },
@@ -1211,15 +1208,15 @@ export class SystemDemoCoordination {
 
     // Determine approvers based on feedback impact and priority
     let approvers: string[] = [];
-    if (feedback.feedback.priority === 'critical') {'
+    if (feedback.feedback.priority ==='critical){
       approvers = [
-        'rte-' + config.artName,
+       'rte- '+ config.artName,
         ...config.attendees.businessOwners.slice(0, 2),
       ];
-    } else if (feedback.feedback.priority === 'high') {'
-      approvers = ['product-manager', 'team-lead'];'
+    } else if (feedback.feedback.priority ==='high){
+      approvers = ['product-manager,'team-lead];
     } else {
-      approvers = feedback.approvalRequired||['product-owner'];'
+      approvers = feedback.approvalRequired|| ['product-owner];
     }
 
     const requirement: ApprovalGateRequirement = {
@@ -1228,14 +1225,14 @@ export class SystemDemoCoordination {
       description: `Respond to ${feedback.feedback.priority} priority ${feedback.feedback.type} feedback from ${feedback.role}`,`
       requiredApprovers: approvers,
       minimumApprovals:
-        feedback.feedback.priority === 'critical''
+        feedback.feedback.priority ==='critical'
           ? approvers.length
           : Math.ceil(approvers.length * 0.6),
       isRequired: true,
       timeoutHours:
-        feedback.feedback.priority === 'critical''
+        feedback.feedback.priority ==='critical'
           ? 2
-          : feedback.feedback.priority === 'high''
+          : feedback.feedback.priority ==='high'
             ? 6
             : 24,
       metadata: {
@@ -1278,28 +1275,28 @@ export class SystemDemoCoordination {
     const blockers: string[] = [];
 
     if (!team.preparation.environmentReady)
-      blockers.push('Demo environment not ready');'
-    if (!team.preparation.dataSetup) blockers.push('Demo data not configured');'
+      blockers.push('Demo environment not ready');
+    if (!team.preparation.dataSetup) blockers.push('Demo data not configured');
     if (!team.preparation.scriptsValidated)
-      blockers.push('Demo scripts not validated');'
+      blockers.push('Demo scripts not validated');
 
     // Check feature readiness
     const unreadyFeatures = team.featuresDemo.filter(
       (f) => !f.readiness.approved
     );
     if (unreadyFeatures.length > 0) {
-      blockers.push(`${unreadyFeatures.length} features not approved for demo`);`
+      blockers.push(`${{unreadyFeatures.length} features not approved for demo}`);`
     }
 
     return {
       ready: blockers.length === 0,
       blockers,
-      approvalStatus: team.preparation.demoApproved ? 'approved' : 'pending',
+      approvalStatus: team.preparation.demoApproved ?'approved:'pending,
     };
   }
 
   private async validateDemoEnvironment(
-    environment: SystemDemoConfig['environment']'
+    environment: SystemDemoConfig['environment']
   ): Promise<{
     ready: boolean;
     issues: string[];
@@ -1336,7 +1333,7 @@ export class SystemDemoCoordination {
   private async handleFeedbackReceived(
     feedback: StakeholderFeedback
   ): Promise<void> {
-    this.logger.info('Stakeholder feedback received', {'
+    this.logger.info('Stakeholder feedback received,{
       feedbackId: feedback.id,
       type: feedback.feedback.type,
       priority: feedback.feedback.priority,
@@ -1347,20 +1344,20 @@ export class SystemDemoCoordination {
     gateId: ApprovalGateId,
     approver: string
   ): Promise<void> {
-    this.logger.info('Demo approval granted', { gateId, approver });'
+    this.logger.info('Demo approval granted,{ gateId, approver }');
   }
 
   private async handleFeatureAccepted(
     featureId: string,
     businessOwner: string
   ): Promise<void> {
-    this.logger.info('Feature accepted', { featureId, businessOwner });'
+    this.logger.info('Feature accepted,{ featureId, businessOwner }');
   }
 
   private async handleActionItemCreated(
     actionItem: DemoActionItem
   ): Promise<void> {
-    this.logger.info('Demo action item created', {'
+    this.logger.info('Demo action item created,{
       actionId: actionItem.id,
       type: actionItem.type,
       priority: actionItem.priority,
@@ -1378,10 +1375,10 @@ export class SystemDemoCoordination {
     config: SystemDemoConfig,
     traceabilityId: string
   ): Promise<void> {
-    await this.database('demo_traceability').insert({'
+    await this.database('demo_traceability').insert({
       id: traceabilityId,
       demo_id: config.id,
-      coordination_type: 'demo_preparation',
+      coordination_type:'demo_preparation,
       coordination_data: JSON.stringify(config),
       stakeholder_engagement: JSON.stringify(config.attendees),
       business_outcomes: JSON.stringify({}),
@@ -1413,16 +1410,16 @@ export class SystemDemoCoordination {
     urgent: boolean;
   }> {
     return {
-      requiresImmediateResponse: feedback.feedback.priority === 'critical',
+      requiresImmediateResponse: feedback.feedback.priority ==='critical,
       urgent:
-        feedback.feedback.priority === 'critical'||feedback.feedback.type ==='rejection',
+        feedback.feedback.priority ==='critical'|| feedback.feedback.type ===rejection,
     };
   }
 
   private async persistStakeholderFeedback(
     feedback: StakeholderFeedback
   ): Promise<void> {
-    await this.database('demo_feedback').insert({'
+    await this.database('demo_feedback').insert({
       id: feedback.id,
       feedback_id: feedback.id,
       demo_id: feedback.demoId,
@@ -1462,15 +1459,15 @@ export class SystemDemoCoordination {
       featureAcceptance: [],
       feedbackSummary: {
         totalFeedbackItems: feedback.length,
-        positiveCount: feedback.filter((f) => f.feedback.type === 'positive')'
+        positiveCount: feedback.filter((f) => f.feedback.type ==='positive')
           .length,
-        concernsCount: feedback.filter((f) => f.feedback.type === 'concern')'
+        concernsCount: feedback.filter((f) => f.feedback.type ==='concern')
           .length,
         suggestionsCount: feedback.filter(
-          (f) => f.feedback.type === 'suggestion''
+          (f) => f.feedback.type ==='suggestion'
         ).length,
         criticalIssuesCount: feedback.filter(
-          (f) => f.feedback.priority === 'critical''
+          (f) => f.feedback.priority ==='critical'
         ).length,
         responsesPending: feedback.filter(
           (f) => f.response.responseRequired && !f.response.actualResponse
@@ -1577,7 +1574,7 @@ export class SystemDemoCoordination {
 
   private async loadDemoStatus(demoId: string): Promise<any> {
     return {
-      phase: 'preparation' as const,
+      phase:'preparation 'as const,
       readiness: 75,
       issues: [],
       nextSteps: [],
@@ -1587,7 +1584,7 @@ export class SystemDemoCoordination {
   private analyzeFeedbackSummary(feedback: StakeholderFeedback[]): any {
     return {
       totalFeedback: feedback.length,
-      criticalIssues: feedback.filter((f) => f.feedback.priority === 'critical')'
+      criticalIssues: feedback.filter((f) => f.feedback.priority ==='critical')
         .length,
       approvalsNeeded: feedback.filter((f) => f.triggersApproval).length,
       responsesPending: feedback.filter(
@@ -1601,7 +1598,7 @@ export class SystemDemoCoordination {
     teamId: string
   ): Promise<any> {
     return {
-      status: 'in_progress',
+      status:'in_progress,
       readyFeatures: 3,
       blockers: [],
     };

@@ -12,7 +12,6 @@
 
 import { getLogger } from '@claude-zen/foundation';
 import type { TaskFlowState, TaskFlowStatus } from '../types/task-flow-types';
-
 // Light Brain integration - only what we need for task flow
 interface BrainPredictor {
   predictBottleneck(flowHistory: FlowMetric[]): Promise<BottleneckPrediction>;
@@ -74,7 +73,7 @@ export class TaskFlowIntelligence {
   private isLearningEnabled: boolean = true;
 
   constructor() {
-    this.logger = getLogger('TaskFlowIntelligence');'
+    this.logger = getLogger('TaskFlowIntelligence'');
     this.initializeBrain();
   }
 
@@ -192,7 +191,7 @@ export class TaskFlowIntelligence {
     // Capacity recommendations
     if (currentStatus.systemCapacity.utilizationPercent > 80) {
       recommendations.push(
-        'System approaching capacity - consider pausing low-priority task intake''
+       'System approaching capacity - consider pausing low-priority task intake'
       );
     }
 
@@ -205,7 +204,7 @@ export class TaskFlowIntelligence {
   async forecastCapacity(hoursAhead: number = 24): Promise<{
     expectedLoad: number;
     requiredCapacity: number;
-    riskLevel: 'low' | 'medium' | 'high';
+    riskLevel:'low'|'medium'|'high';
     recommendations: string[];
   }> {
     const recentMetrics = this.flowHistory.slice(-100); // Last 100 data points
@@ -214,7 +213,7 @@ export class TaskFlowIntelligence {
       return {
         expectedLoad: 0.5,
         requiredCapacity: 1.0,
-        riskLevel: 'low',
+        riskLevel:'low,
         recommendations: ['Insufficient data for accurate forecasting'],
       };
     }
@@ -225,19 +224,18 @@ export class TaskFlowIntelligence {
       recentMetrics.length;
     const expectedLoad = avgThroughput * hoursAhead;
 
-    const maxQueueDepth = Math.max(...recentMetrics.map((m) => m.queueDepth));
+    const maxQueueDepth = Math.max(...recentMetrics.map((m) => m.queueDepth);
     const requiredCapacity = expectedLoad + maxQueueDepth * 0.2; // 20% buffer
 
-    let riskLevel: 'low|medium|high' = 'low';
+    let riskLevel:'low| medium| high = 'low';
     if (requiredCapacity > 0.8) riskLevel = 'high';
     else if (requiredCapacity > 0.6) riskLevel = 'medium';
-
     const recommendations: string[] = [];
-    if (riskLevel === 'high') {'
+    if (riskLevel ==='high){
       recommendations.push(
-        'High capacity risk - consider increasing reviewer availability''
+       'High capacity risk - consider increasing reviewer availability'
       );
-      recommendations.push('Enable emergency auto-approval for low-risk tasks');'
+      recommendations.push('Enable emergency auto-approval for low-risk tasks'');
     }
 
     return { expectedLoad, requiredCapacity, riskLevel, recommendations };
@@ -253,7 +251,7 @@ export class TaskFlowIntelligence {
         timestamp: Date.now(),
         state: state as TaskFlowState,
         wipUsage: usage.utilization,
-        queueDepth: status.approvalQueues[`${state}-gate`]?.pending||0,`
+        queueDepth: status.approvalQueues[`${{state}-gate}`]?.pending|| 0,`
         throughput: this.calculateThroughput(state as TaskFlowState),
       });
     }
@@ -298,7 +296,7 @@ export class TaskFlowIntelligence {
         currentThreshold: 0.8,
         recommendedThreshold: 0.8,
         confidence: 0.1,
-        reasoning:'Insufficient data for optimization',
+        reasoning:'Insufficient data for optimization,
       };
     }
 

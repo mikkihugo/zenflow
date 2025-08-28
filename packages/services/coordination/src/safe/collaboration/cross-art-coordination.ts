@@ -14,7 +14,6 @@ import type {
   ConversationOrchestrator,
   ConversationParticipant,
 } from '../../teamwork';
-
 // ConversationSummary type definition (not exported from teamwork yet)
 interface ConversationSummary {
   id: string;
@@ -36,7 +35,6 @@ import type {
   WorkflowEngine,
   WorkflowStep,
 } from '@claude-zen/workflows';
-
 /**
  * SAFe-specific ART coordination using proven teamwork patterns
  */
@@ -71,7 +69,7 @@ export class CrossARTCoordinator {
     conversationId: string;
     participants: ConversationParticipant[];
   }> {
-    this.logger.info('Starting Solution Train sync coordination', {'
+    this.logger.info('Starting Solution Train sync coordination,{
       solutionId: params.solutionId,
       artCount: params.artIds.length,
     });
@@ -81,9 +79,9 @@ export class CrossARTCoordinator {
       (artId) => ({
         id: `rte-${artId}`,`
         name: `RTE ${artId}`,`
-        role: 'release-train-engineer',
-        status: 'active' as const,
-        capabilities: ['speak', 'share-metrics', 'coordinate-dependencies'],
+        role:'release-train-engineer,
+        status:'active 'as const,
+        capabilities: ['speak,'share-metrics,'coordinate-dependencies'],
       })
     );
 
@@ -91,30 +89,30 @@ export class CrossARTCoordinator {
     participants.push({
       id: params.facilitator,
       name: params.facilitator,
-      role: 'solution-train-engineer',
-      status: 'active' as const,
+      role:'solution-train-engineer,
+      status:'active 'as const,
       capabilities: [
-        'facilitate',
-        'escalate',
-        'make-decisions',
-        'coordinate-arts',
+       'facilitate,
+       'escalate,
+       'make-decisions,
+       'coordinate-arts,
       ],
     });
 
     // Use ../../teamwork conversation orchestrator
     const conversationConfig: ConversationConfig = {
       title: `Solution Train Sync - ${params.solutionId}`,`
-      pattern: 'planning',
+      pattern:'planning,
       initialParticipants: [], // Convert participants to AgentId later
-      timeout: (params.duration||90) * 60 * 1000, // Convert to milliseconds
+      timeout: (params.duration|| 90) * 60 * 1000, // Convert to milliseconds
       context: {
         task: `Solution Train Sync for ${params.solutionId}`,`
-        goal:'Coordinate dependencies and align on solution objectives',
+        goal:'Coordinate dependencies and align on solution objectives,
         constraints: [],
         resources: [],
         deadline: undefined,
-        domain: 'safe-framework',
-        expertise: ['solution-architecture', 'art-coordination'],
+        domain:'safe-framework,
+        expertise: ['solution-architecture,'art-coordination'],
         solutionId: params.solutionId,
       },
     };
@@ -126,7 +124,7 @@ export class CrossARTCoordinator {
     const conversationId = conversation.id;
 
     // Emit coordination started event
-    this.eventBus.emit('cross-art:coordination-started', {'
+    this.eventBus.emit('cross-art:coordination-started,{
       solutionId: params.solutionId,
       conversationId,
       participantCount: participants.length,
@@ -144,7 +142,7 @@ export class CrossARTCoordinator {
     sharedObjectives: string[];
     dependencies: Array<{ from: string; to: string; type: string }>;
   }): Promise<string> {
-    this.logger.info('Coordinating PI Planning sync', {'
+    this.logger.info('Coordinating PI Planning sync,{
       piId: params.piId,
       artCount: params.artIds.length,
       dependencyCount: params.dependencies.length,
@@ -153,40 +151,40 @@ export class CrossARTCoordinator {
     // Create PI Planning coordination workflow using @claude-zen/workflows
     const workflowDefinition: WorkflowDefinition = {
       name: `PI Planning Sync - ${params.piId}`,`
-      description: 'Multi-ART PI Planning coordination workflow',
+      description:'Multi-ART PI Planning coordination workflow,
       steps: [
         {
-          id: 'pre-planning-sync',
-          name: 'Pre-Planning ART Sync',
-          type: 'parallel',
+          id:'pre-planning-sync,
+          name:'Pre-Planning ART Sync,
+          type:'parallel,
           params: {
             artIds: params.artIds,
             objectives: params.sharedObjectives,
           },
         } as WorkflowStep,
         {
-          id: 'dependency-identification',
-          name: 'Cross-ART Dependency Identification',
-          type: 'sequence',
+          id:'dependency-identification,
+          name:'Cross-ART Dependency Identification,
+          type:'sequence,
           params: {
             dependencies: params.dependencies,
           },
         } as WorkflowStep,
         {
-          id: 'capacity-balancing',
-          name: 'Cross-ART Capacity Balancing',
-          type: 'condition',
+          id:'capacity-balancing,
+          name:'Cross-ART Capacity Balancing,
+          type:'condition,
           params: {
             balancingRules: [
-              'no-art-over-120-percent',
-              'critical-dependencies-first',
+             'no-art-over-120-percent,
+             'critical-dependencies-first,
             ],
           },
         } as WorkflowStep,
         {
-          id: 'commitment-finalization',
-          name: 'PI Commitment Finalization',
-          type: 'action',
+          id:'commitment-finalization,
+          name:'PI Commitment Finalization,
+          type:'action,
           params: {
             requiresConsensus: true,
             allARTsMustCommit: true,
@@ -202,7 +200,7 @@ export class CrossARTCoordinator {
       dependencies: params.dependencies,
     });
 
-    if (!result.success||!result.workflowId) {
+    if (!result.success|| !result.workflowId) {
       throw new Error(`Failed to start PI Planning workflow: ${result.error}`);`
     }
 
@@ -216,13 +214,13 @@ export class CrossARTCoordinator {
     impedimentId: string;
     affectedARTs: string[];
     description: string;
-    severity:'low|medium|high|critical;
+    severity: low| medium| high'|'critical';
     owner: string;
   }): Promise<{
     resolutionConversationId: string;
     escalationRequired: boolean;
   }> {
-    this.logger.warn('Cross-ART impediment requires resolution', {'
+    this.logger.warn('Cross-ART impediment requires resolution,{
       impedimentId: params.impedimentId,
       severity: params.severity,
       affectedARTs: params.affectedARTs,
@@ -233,19 +231,19 @@ export class CrossARTCoordinator {
       {
         id: params.owner,
         name: params.owner,
-        role: 'impediment-owner',
-        status: 'active' as const,
-        capabilities: ['facilitate', 'provide-context', 'track-resolution'],
+        role:'impediment-owner,
+        status:'active 'as const,
+        capabilities: ['facilitate,'provide-context,'track-resolution'],
       },
       ...params.affectedARTs.map((artId) => ({
         id: `rte-$artId`,`
         name: `RTE ${artId}`,`
-        role: 'release-train-engineer',
-        status: 'active' as const,
+        role:'release-train-engineer,
+        status:'active 'as const,
         capabilities: [
-          'provide-impact-analysis',
-          'commit-resources',
-          'escalate',
+         'provide-impact-analysis,
+         'commit-resources,
+         'escalate,
         ],
       })),
     ];
@@ -254,31 +252,31 @@ export class CrossARTCoordinator {
     const escalationRequired = params.severity === 'critical';
     if (escalationRequired) {
       participants.push({
-        id: 'ste-escalation',
-        name: 'Solution Train Engineer',
-        role: 'solution-train-engineer',
-        status: 'active' as const,
+        id:'ste-escalation,
+        name:'Solution Train Engineer,
+        role:'solution-train-engineer,
+        status:'active 'as const,
         capabilities: [
-          'make-executive-decisions',
-          'allocate-cross-art-resources',
-          'escalate-to-portfolio',
+         'make-executive-decisions,
+         'allocate-cross-art-resources,
+         'escalate-to-portfolio,
         ],
       });
     }
 
     const conversationConfig: ConversationConfig = {
       title: `Cross-ART Impediment Resolution: $params.impedimentId`,`
-      pattern: 'decision',
+      pattern:'decision,
       initialParticipants: [], // Convert participants to AgentId later
-      timeout: (params.severity === 'critical' ? 120 : 60) * 60 * 1000, // Convert to milliseconds'
+      timeout: (params.severity ==='critical '? 120 : 60) * 60 * 1000, // Convert to milliseconds
       context: 
         task: `Resolve cross-ART impediment ${params.impedimentId}`,`
-        goal: 'Identify resolution path and assign ownership',
+        goal:'Identify resolution path and assign ownership,
         constraints: [],
         resources: [],
         deadline: undefined,
-        domain: 'safe-framework',
-        expertise: ['impediment-resolution', 'cross-art-coordination'],
+        domain:'safe-framework,
+        expertise: ['impediment-resolution,'cross-art-coordination'],
         impedimentId: params.impedimentId,
       },
     };
@@ -290,7 +288,7 @@ export class CrossARTCoordinator {
     const conversationId = conversation.id;
 
     // Emit impediment resolution event
-    this.eventBus.emit('cross-art:impediment-resolution-started', {'
+    this.eventBus.emit('cross-art:impediment-resolution-started,{
       impedimentId: params.impedimentId,
       conversationId,
       severity: params.severity,
@@ -320,9 +318,9 @@ export class CrossARTCoordinator {
       resolvedImpediments: 12,
       averageResolutionTime: 4.2, // days
       artParticipation: {
-        'art-1': 85,
-        'art-2': 92,
-        'art-3': 78,
+       'art-1: 85,
+       'art-2: 92,
+       'art-3: 78,
       },
       coordinationEffectiveness: 87, // percentage
     };
@@ -333,11 +331,11 @@ export class CrossARTCoordinator {
  * Cross-ART event types for solution train coordination
  */
 export const CROSS_ART_EVENTS = {
-  COORDINATION_STARTED: 'cross-art:coordination-started',
-  IMPEDIMENT_RESOLUTION_STARTED: 'cross-art:impediment-resolution-started',
-  DEPENDENCY_IDENTIFIED: 'cross-art:dependency-identified',
-  CAPACITY_REBALANCED: 'cross-art:capacity-rebalanced',
-  PI_COMMITMENT_FINALIZED: 'cross-art:pi-commitment-finalized',
+  COORDINATION_STARTED:'cross-art:coordination-started,
+  IMPEDIMENT_RESOLUTION_STARTED:'cross-art:impediment-resolution-started,
+  DEPENDENCY_IDENTIFIED:'cross-art:dependency-identified,
+  CAPACITY_REBALANCED:'cross-art:capacity-rebalanced,
+  PI_COMMITMENT_FINALIZED:'cross-art:pi-commitment-finalized,
 } as const;
 
 /**

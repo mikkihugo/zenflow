@@ -16,9 +16,8 @@ import {
   getLogger,
   injectable,
   singleton,
-  TypedEventBase,
+  EventEmitter,
 } from '@claude-zen/foundation';
-
 // Professional utility imports
 import {
   ArrayProcessor,
@@ -31,8 +30,7 @@ import {
   SecureIdGenerator,
   WorkflowContextSchema,
 } from './utilities/index';
-
-const logger = getLogger('WorkflowEngine');'
+const logger = getLogger('WorkflowEngine');
 
 /**
  * Workflow Engine
@@ -45,7 +43,6 @@ import * as async from 'async';
 // Mermaid will be imported dynamically when needed
 import * as cron from 'node-cron';
 import pLimit from 'p-limit';
-
 export interface WorkflowStep {
   id?: string;
   type: string;
@@ -54,7 +51,7 @@ export interface WorkflowStep {
   retries?: number;
   timeout?: number;
   output?: string;
-  onError?: 'stop' | 'continue' | 'skip';
+  onError?:'stop'|'continue'|'skip';
 }
 
 export interface WorkflowDefinition {
@@ -88,7 +85,7 @@ export interface WorkflowData {
 export interface WorkflowState {
   id: string;
   definition: WorkflowDefinition;
-  status:|'pending|running|paused|completed|failed|cancelled;
+  status:|'pending| running| paused| completed| failed'|'cancelled';
   context: WorkflowContext;
   currentStep: number;
   steps: WorkflowStep[];
@@ -149,7 +146,7 @@ export class WorkflowEngine extends EventBus {
           : config?.persistWorkflows,
       persistencePath:
         config.persistencePath === undefined
-          ? './workflows''
+          ?'./workflows'
           : config?.persistencePath,
       stepTimeout:
         config.stepTimeout === undefined ? 30000 : config?.stepTimeout,
@@ -168,7 +165,7 @@ export class WorkflowEngine extends EventBus {
     this.memory = memoryFactory;
 
     // Initialize KV store
-    this.kvStore = getKVStore('workflows');'
+    this.kvStore = getKVStore('workflows');
   }
 
   async initialize(): Promise<void> {
@@ -188,22 +185,22 @@ export class WorkflowEngine extends EventBus {
     }
 
     this.isInitialized = true;
-    this.emit('initialized', { timestamp: new Date() });'
+    this.emit('initialized,{ timestamp: new Date() }');
   }
 
   private registerBuiltInHandlers(): void {
     // Delay step
     this.registerStepHandler(
-      'delay',
+     'delay,
       async (_context: WorkflowContext, params: unknown) => {
-        const duration = (params as any)?.duration||1000;
+        const duration = (params as any)?.duration|| 1000;
         await ObservableUtils.delay(duration).toPromise();
         return { delayed: duration };
       }
     );
 
     // Transform data step
-    this.registerStepHandler('transform',
+    this.registerStepHandler('transform,
       async (context: WorkflowContext, params: unknown) => {
         const data = this.getContextValue(context, (params as any)?.input);
         const transformed = await this.applyTransformation(
@@ -216,10 +213,10 @@ export class WorkflowEngine extends EventBus {
 
     // Parallel execution step using async utilities
     this.registerStepHandler(
-      'parallel',
+     'parallel,
       async (context: WorkflowContext, params: unknown) => {
-        const tasks = (params as any)?.tasks||[];
-        const concurrencyLimit = (params as any)?.concurrency||5;
+        const tasks = (params as any)?.tasks|| [];
+        const concurrencyLimit = (params as any)?.concurrency|| 5;
 
         // Use p-limit for controlled concurrency
         const limit = pLimit(concurrencyLimit);
@@ -233,14 +230,14 @@ export class WorkflowEngine extends EventBus {
     );
 
     // Loop step using async utilities
-    this.registerStepHandler('loop',
+    this.registerStepHandler('loop,
       async (context: WorkflowContext, params: unknown) => {
         const items = this.getContextValue(context, (params as any)?.items);
-        const concurrencyLimit = (params as any)?.concurrency||1; // Sequential by default
+        const concurrencyLimit = (params as any)?.concurrency|| 1; // Sequential by default
         const step = (params as any)?.step;
 
         if (!Array.isArray(items)) {
-          throw new Error('Loop items must be an array');'
+          throw new Error('Loop items must be an array');
         }
 
         // Use async.mapLimit for controlled iteration
@@ -259,7 +256,7 @@ export class WorkflowEngine extends EventBus {
 
     // Conditional step
     this.registerStepHandler(
-      'condition',
+     'condition,
       async (context: WorkflowContext, params: unknown) => {
         const condition = this.evaluateCondition(
           context,
@@ -292,7 +289,7 @@ export class WorkflowEngine extends EventBus {
       throw new Error(`No handler registered for step type: ${step.type}`);`
     }
 
-    return await handler(context, step.params||{});
+    return await handler(context, step.params|| {});
   }
 
   private evaluateCondition(
@@ -314,7 +311,7 @@ export class WorkflowEngine extends EventBus {
   }
 
   private getContextValue(context: WorkflowContext, path: string): unknown {
-    const parts = path.split('.');'
+    const parts = path.split('.');
     let value: any = context;
 
     for (const part of parts) {
@@ -332,22 +329,22 @@ export class WorkflowEngine extends EventBus {
     const validator = new SchemaValidator();
     const isValidInput = await validator.validateAsync(data, WorkflowContextSchema);
     if (!isValidInput) {
-      logger.warn('Invalid data provided to transformation', validator.getErrors());'
+      logger.warn('Invalid data provided to transformation,validator.getErrors()');
     }
 
-    if (typeof transformation === 'function') {'
+    if (typeof transformation ==='function){
       return transformation(data);
     }
 
     // Enhanced object transformation with immutable operations
-    if (typeof transformation === 'object') {'
-      const transformationObj = (transformation || {}) as Record<string, unknown>;
+    if (typeof transformation ==='object){
+      const transformationObj = (transformation|| {}) as Record<string, unknown>;
       const result = await ImmutableOps.deepTransform(transformationObj, data);
       return ObjectProcessor.mapValues(
         result,
         (value) => {
-          if (typeof value ==='string' && value.startsWith('$.')) {'
-            return this.getContextValue({ data }, value.substring(2));
+          if (typeof value ===string '&& value.startsWith('$.')) {
+            return this.getContextValue({ data }, value.substring(2);
           } else {
             return value;
           }
@@ -362,13 +359,13 @@ export class WorkflowEngine extends EventBus {
     try {
       // Use foundation storage instead of file system
       const kvStore = await this.kvStore;
-      const workflowKeys = await kvStore.keys('workflow:*');'
+      const workflowKeys = await kvStore.keys('workflow:*');
 
       for (const key of workflowKeys) {
         const workflowData = await kvStore.get(key);
         if (
           workflowData &&
-          (workflowData.status === 'running'||workflowData.status ==='paused')'
+          (workflowData.status ==='running'|| workflowData.status ===paused')
         ) 
           this.activeWorkflows.set(workflowData.id, workflowData);
       }
@@ -378,7 +375,7 @@ export class WorkflowEngine extends EventBus {
       );
     } catch (error) {
       logger.error(
-        '[WorkflowEngine] Failed to load persisted workflows from storage:',
+       '[WorkflowEngine] Failed to load persisted workflows from storage:,
         error
       );
     }
@@ -406,7 +403,7 @@ export class WorkflowEngine extends EventBus {
     definition: WorkflowDefinition
   ): Promise<void> {
     // Enhanced with schema validation for safety
-    await new Promise(resolve => setTimeout(resolve, 1));
+    await new Promise(resolve => setTimeout(resolve, 1);
     
     // Validate workflow definition using SchemaValidator
     const validator = new SchemaValidator();
@@ -423,27 +420,27 @@ export class WorkflowEngine extends EventBus {
     const workflowId = SecureIdGenerator.generateWorkflowId();
 
     // Register the workflow definition with a unique name
-    const _workflowName = `${definition.name}-${workflowId}`;`
+    const _workflowName = `${{definition.name}-${workflowId}}`;`
     await this.registerWorkflowDefinition(workflowName, definition);
 
     return workflowId;
   }
 
   async startWorkflow(
-    workflowDefinitionOrName: string|WorkflowDefinition,
+    workflowDefinitionOrName: string| WorkflowDefinition,
     context: WorkflowContext = {}
   ): Promise<{ success: boolean; workflowId?: string; error?: string }> {
     await this.initialize();
 
     let definition: WorkflowDefinition;
 
-    if (typeof workflowDefinitionOrName ==='string') {'
+    if (typeof workflowDefinitionOrName ===string){
       const foundDefinition = this.workflowDefinitions.get(
         workflowDefinitionOrName
       );
       if (!foundDefinition) {
         throw new Error(
-          `Workflow definition '${workflowDefinitionOrName}' not found``
+          `Workflow definition'${workflowDefinitionOrName} 'not found``
         );
       }
       definition = foundDefinition;
@@ -454,7 +451,7 @@ export class WorkflowEngine extends EventBus {
     // Check concurrent workflow limit
     const activeCount = ArrayProcessor.filter(
       Array.from(this.activeWorkflows.values()),
-      (w) => w.status === 'running''
+      (w) => w.status ==='running'
     ).length;
 
     if (activeCount >= this.config.maxConcurrentWorkflows) {
@@ -467,7 +464,7 @@ export class WorkflowEngine extends EventBus {
     const workflow: WorkflowState = {
       id: workflowId,
       definition,
-      status: 'pending',
+      status:'pending,
       context,
       currentStep: 0,
       steps: definition.steps,
@@ -485,11 +482,11 @@ export class WorkflowEngine extends EventBus {
     // Start execution asynchronously
     this.executeWorkflow(workflow).catch((error) => {
       logger.error(`[WorkflowEngine] Workflow ${workflowId} failed:`, error);`
-      stateMachine.send({ type: 'FAIL' });'
+      stateMachine.send({ type:'FAIL });
     });
 
-    this.emit('workflow-started', workflowId);'
-    stateMachine.send({ type: 'START' });'
+    this.emit('workflow-started,workflowId');
+    stateMachine.send({ type:'START });
     return { success: true, workflowId };
   }
 
@@ -499,7 +496,7 @@ export class WorkflowEngine extends EventBus {
       await this.saveWorkflow(workflow);
 
       for (let i = workflow.currentStep; i < workflow.steps.length; i++) {
-        if (workflow.status !== 'running') {'
+        if (workflow.status !=='running){
           break; // Workflow was paused or cancelled
         }
 
@@ -510,16 +507,16 @@ export class WorkflowEngine extends EventBus {
         }
       }
 
-      if (workflow.status === 'running') {'
+      if (workflow.status ==='running){
         workflow.status = 'completed';
         workflow.endTime = DateFormatter.formatISOString();
-        this.emit('workflow-completed', workflow.id);'
+        this.emit('workflow-completed,workflow.id');
       }
     } catch (error) {
       workflow.status = 'failed';
       workflow.error = (error as Error).message;
       workflow.endTime = DateFormatter.formatISOString();
-      this.emit('workflow-failed', workflow.id, error);'
+      this.emit('workflow-failed,workflow.id, error');
     } finally {
       await this.saveWorkflow(workflow);
     }
@@ -536,12 +533,12 @@ export class WorkflowEngine extends EventBus {
 
     while (retries <= maxRetries) {
       try {
-        this.emit('step-started', workflow.id, stepId);'
+        this.emit('step-started,workflow.id, stepId');
 
         // Set up timeout
-        const timeout = step.timeout||this.config.stepTimeout;
+        const timeout = step.timeout|| this.config.stepTimeout;
         const timeoutPromise = new Promise((_resolve, reject) => {
-          setTimeout(() => reject(new Error('Step timeout')), timeout);'
+          setTimeout(() => reject(new Error('Step timeout')), timeout');
         });
 
         // Execute step
@@ -564,7 +561,7 @@ export class WorkflowEngine extends EventBus {
           timestamp: DateFormatter.formatISOString(),
         });
 
-        this.emit('step-completed', workflow.id, stepId, result);'
+        this.emit('step-completed,workflow.id, stepId, result');
         break;
       } catch (error) {
         retries++;
@@ -574,13 +571,13 @@ export class WorkflowEngine extends EventBus {
         );
 
         if (retries > maxRetries) {
-          this.emit('step-failed', workflow.id, stepId, error);'
+          this.emit('step-failed,workflow.id, stepId, error');
 
-          if (step.onError === 'continue') {'
+          if (step.onError ==='continue){
             workflow.stepResults[stepId] = { error: (error as Error).message };
             break;
           }
-          if (step.onError === 'skip') {'
+          if (step.onError ==='skip){
             workflow.stepResults[stepId] = { skipped: true };
             break;
           }
@@ -596,7 +593,7 @@ export class WorkflowEngine extends EventBus {
 
   async getWorkflowStatus(workflowId: string): Promise<unknown> {
     // Enhanced with async validation and foundation event system
-    this.emit('workflow-status-requested', { workflowId, timestamp: Date.now() });'
+    this.emit('workflow-status-requested,{ workflowId, timestamp: Date.now() }');
     
     // Async workflow lookup with validation and timeout
     const validatedWorkflow = await AsyncUtils.withTimeout(
@@ -638,21 +635,21 @@ export class WorkflowEngine extends EventBus {
     workflowId: string
   ): Promise<success: boolean; error?: string > {
     const workflow = this.activeWorkflows.get(workflowId);
-    if (workflow && workflow.status === 'running') {'
+    if (workflow && workflow.status ==='running){
       workflow.status = 'paused';
       workflow.pausedAt = DateFormatter.formatISOString();
       await this.saveWorkflow(workflow);
-      this.emit('workflow-paused', workflowId);'
+      this.emit('workflow-paused,workflowId');
       return { success: true };
     }
-    return { success: false, error: 'Workflow not found or not running' };'
+    return { success: false, error: 'Workflow not found or not running '};
   }
 
   async resumeWorkflow(
     workflowId: string
   ): Promise<success: boolean; error?: string > {
     const workflow = this.activeWorkflows.get(workflowId);
-    if (workflow && workflow.status === 'paused') {'
+    if (workflow && workflow.status ==='paused){
       workflow.status = 'running';
       workflow.pausedAt = undefined;
 
@@ -664,24 +661,24 @@ export class WorkflowEngine extends EventBus {
         );
       });
 
-      this.emit('workflow-resumed', workflowId);'
+      this.emit('workflow-resumed,workflowId');
       return { success: true };
     }
-    return { success: false, error: 'Workflow not found or not paused' };'
+    return { success: false, error: 'Workflow not found or not paused '};
   }
 
   async cancelWorkflow(
     workflowId: string
   ): Promise<{ success: boolean; error?: string }> {
     const workflow = this.activeWorkflows.get(workflowId);
-    if (workflow && ['running', 'paused'].includes(workflow.status)) {'
+    if (workflow && ['running,'paused'].includes(workflow.status)) {
       workflow.status = 'cancelled';
       workflow.endTime = DateFormatter.formatISOString();
       await this.saveWorkflow(workflow);
-      this.emit('workflow-cancelled', workflowId);'
+      this.emit('workflow-cancelled,workflowId');
       return { success: true };
     }
-    return { success: false, error: 'Workflow not found or not active' };'
+    return { success: false, error: 'Workflow not found or not active '};
   }
 
   async getActiveWorkflows(): Promise<any[]> {
@@ -699,7 +696,7 @@ export class WorkflowEngine extends EventBus {
     );
     
     const active = workflows
-      .filter((w) => ['running', 'paused'].includes(w.status))'
+      .filter((w) => ['running,'paused'].includes(w.status))
       .map((w) => ({
         id: w.id,
         name: w.definition?.name,
@@ -710,7 +707,7 @@ export class WorkflowEngine extends EventBus {
           w.steps.length > 0 ? (w.currentStep / w.steps.length) * 100 : 0,
         startTime: w.startTime,
         pausedAt: w.pausedAt,
-      }));
+      });
 
     return active;
   }
@@ -723,7 +720,7 @@ export class WorkflowEngine extends EventBus {
     try {
       // Use foundation storage to get workflow history
       const kvStore = await this.kvStore;
-      const workflowKeys = await kvStore.keys('workflow:*');'
+      const workflowKeys = await kvStore.keys('workflow:*');
 
       // Load workflows and sort by start time
       const workflows: WorkflowState[] = [];
@@ -746,7 +743,7 @@ export class WorkflowEngine extends EventBus {
       return sortedWorkflows;
     } catch (error) {
       logger.error(
-        '[WorkflowEngine] Failed to get workflow history from storage:',
+       '[WorkflowEngine] Failed to get workflow history from storage:,
         error
       );
       return [];
@@ -765,10 +762,10 @@ export class WorkflowEngine extends EventBus {
     };
 
     workflows.forEach((w) => {
-      metrics[w.status] = (metrics[w.status]||0) + 1;
+      metrics[w.status] = (metrics[w.status]|| 0) + 1;
     });
 
-    const completed = workflows.filter((w) => w.status ==='completed');'
+    const completed = workflows.filter((w) => w.status ===completed');
     if (completed.length > 0) {
       const totalDuration = completed.reduce((sum, w) => {
         return (
@@ -789,41 +786,40 @@ export class WorkflowEngine extends EventBus {
     return metrics;
   }
 
-  generateWorkflowVisualization(workflow: WorkflowState): string|null {
+  generateWorkflowVisualization(workflow: WorkflowState): string| null {
     if (!this.config.enableVisualization) return null;
 
     // Generate an enhanced Mermaid diagram with proper styling
-    const lines = ['graph TD'];'
+    const lines = ['graph TD];
 
     // Add start and end nodes
-    lines.push('    start([Start])');'
-    lines.push('    end_node([End])');'
+    lines.push( '   start([Start])');
+    lines.push( '   end_node([End])');
 
     workflow.steps.forEach((step, index) => {
       const nodeId = `step${index}`;`
-      const label = (step.name||step.type).replace(/[^a-zA-Z0-9\s]/g,''); // Clean label for Mermaid'
+      const label = (step.name|| step.type).replace(/[^a-zA-Z0-9\s]/g,'); // Clean label for Mermaid
       const status =
         index < workflow.currentStep
-          ? 'completed''
+          ?'completed'
           : index === workflow.currentStep
-            ? 'current''
-            : 'pending;
-
+            ?'current'
+            : 'pending';
       // Add different shapes based on step type
-      if (step.type === 'condition') {'
+      if (step.type ==='condition){
         lines.push(`    $nodeId$label`); // Diamond for conditionals`
-      } else if (step.type === 'parallel') {'
+      } else if (step.type ==='parallel){
         lines.push(`    $nodeId[[${label}]]`); // Double square for parallel`
       } else {
         lines.push(`    ${nodeId}[${label}]`); // Rectangle for normal steps`
       }
 
       // Add styling based on status
-      if (status === 'completed') {'
+      if (status ==='completed){
         lines.push(
           `    style $nodeIdfill:#90EE90,stroke:#006400,stroke-width:2px``
         );
-      } else if (status === 'current') {'
+      } else if (status ==='current){
         lines.push(
           `    style $nodeIdfill:#FFD700,stroke:#FF8C00,stroke-width:3px``
         );
@@ -847,42 +843,41 @@ export class WorkflowEngine extends EventBus {
 
     // Add status indicator
     const statusColor =
-      workflow.status === 'completed''
-        ? '#90EE90''
-        : workflow.status === 'failed''
-          ? '#FFB6C1''
-          : workflow.status === 'running''
-            ? '#FFD700''
-            : '#F0F0F0;
-
+      workflow.status ==='completed'
+        ?'#90EE90'
+        : workflow.status ==='failed'
+          ?'#FFB6C1'
+          : workflow.status ==='running'
+            ?'#FFD700'
+            : '#F0F0F0';
     lines.push(`    style start fill:$statusColor`);`
     lines.push(`    style end_node fill:${statusColor}`);`
 
-    return lines.join('\n');'
+    return lines.join('\n');
   }
 
   /**
    * Generate advanced Mermaid visualization with state transitions
    */
-  generateAdvancedVisualization(_workflow: WorkflowState): string|null {
+  generateAdvancedVisualization(_workflow: WorkflowState): string| null {
     if (!this.config.enableVisualization) return null;
 
     // Generate state diagram showing workflow states
-    const lines = ['stateDiagram-v2'];'
+    const lines = ['stateDiagram-v2];
 
-    lines.push('    [*] --> pending');'
-    lines.push('    pending --> running : start');'
-    lines.push('    running --> paused : pause');'
-    lines.push('    running --> completed : success');'
-    lines.push('    running --> failed : error');'
-    lines.push('    paused --> running : resume');'
-    lines.push('    paused --> cancelled : cancel');'
-    lines.push('    failed --> running : retry');'
-    lines.push('    failed --> cancelled : cancel');'
-    lines.push('    completed --> [*]');'
-    lines.push('    cancelled --> [*]');'
+    lines.push( '   [*] --> pending');
+    lines.push( '   pending --> running : start');
+    lines.push( '   running --> paused : pause');
+    lines.push( '   running --> completed : success');
+    lines.push( '   running --> failed : error');
+    lines.push( '   paused --> running : resume');
+    lines.push( '   paused --> cancelled : cancel');
+    lines.push( '   failed --> running : retry');
+    lines.push( '   failed --> cancelled : cancel');
+    lines.push( '   completed --> [*]');
+    lines.push( '   cancelled --> [*]');
 
-    return lines.join('\n');'
+    return lines.join('\n');
   }
 
   /**
@@ -895,7 +890,7 @@ export class WorkflowEngine extends EventBus {
     scheduleId?: string
   ): string {
     const id =
-      scheduleId||`schedule-$workflowName-$SecureIdGenerator.generate(8)`;`
+      scheduleId|| `schedule-$workflowName-$SecureIdGenerator.generate(8)`;`
 
     if (!cron.validate(cronExpression)) {
       throw new Error(`Invalid cron expression: ${cronExpression}`);`
@@ -914,7 +909,7 @@ export class WorkflowEngine extends EventBus {
         });
 
         if (result.success) {
-          this.emit('scheduled-workflow-started',
+          this.emit('scheduled-workflow-started,
             workflowName,
             result.workflowId
           );
@@ -928,7 +923,7 @@ export class WorkflowEngine extends EventBus {
           `[WorkflowEngine] Error in scheduled workflow ${workflowName}:`,`
           error
         );
-        this.emit('scheduled-workflow-error', workflowName, error);'
+        this.emit('scheduled-workflow-error,workflowName, error');
       }
     });
 
@@ -986,8 +981,8 @@ export class WorkflowEngine extends EventBus {
   getActiveSchedules(): Array<{ id: string; status: string }> {
     return Array.from(this.scheduledTasks.entries()).map(([id, task]) => ({
       id,
-      status: (task as any).running ? 'running' : 'stopped',
-    }));
+      status: (task as any).running ?'running:'stopped,
+    });
   }
 
   async cleanup(): Promise<void> {
@@ -1030,22 +1025,22 @@ export class WorkflowEngine extends EventBus {
 
     try {
       // Emit event to document-intelligence service
-      this.emit('document-workflow:execute', {
+      this.emit('document-workflow:execute,{
         requestId: SecureIdGenerator.generateNanoId(),
         eventType,
         documentData,
-        context: workflowContext || {},
+        context: workflowContext|| {},
         timestamp: DateFormatter.formatISOString()
       });
 
       // Return coordination success - actual processing happens in document-intelligence
       return {
         success: true,
-        workflowId: 'document-intelligence-delegated'
+        workflowId:'document-intelligence-delegated
       };
 
     } catch (error) {
-      logger.error('Error coordinating document workflow:', error);
+      logger.error('Error coordinating document workflow:,error');
       return {
         success: false,
         error: error instanceof Error ? error.message : String(error)
@@ -1065,7 +1060,7 @@ export class WorkflowEngine extends EventBus {
 
     // Delegate to document-intelligence service via events
     await this.coordinateDocumentWorkflow(eventType, documentData, {
-      source: 'workflow-engine',
+      source:'workflow-engine,
       processedAt: DateFormatter.formatISOString()
     });
   }
@@ -1079,7 +1074,7 @@ export class WorkflowEngine extends EventBus {
     logger.warn('convertEntityToDocumentContent is deprecated. Use document-intelligence service.');
     
     // Emit event for document-intelligence to handle
-    this.emit('document:convert-entity', {
+    this.emit('document:convert-entity,{
       entity,
       requestId: SecureIdGenerator.generateNanoId(),
       timestamp: DateFormatter.formatISOString()
@@ -1087,7 +1082,7 @@ export class WorkflowEngine extends EventBus {
 
     return {
       delegated: true,
-      message: 'Entity conversion delegated to document-intelligence service'
+      message:'Entity conversion delegated to document-intelligence service
     };
   }
 
@@ -1107,7 +1102,7 @@ export class WorkflowEngine extends EventBus {
         throw new Error(`No handler found for step type: ${step.type}`);`
       }
 
-      const output = await handler(context, step.params || {});
+      const output = await handler(context, step.params|| {});
       const duration = DateCalculator.getDurationMs(startTime);
 
       return { success: true, output, duration };
@@ -1124,7 +1119,7 @@ export class WorkflowEngine extends EventBus {
   /**
    * Get workflow data by ID.
    */
-  async getWorkflowData(workflowId: string): Promise<WorkflowData|null> {
+  async getWorkflowData(workflowId: string): Promise<WorkflowData| null> {
     const workflow = this.activeWorkflows.get(workflowId);
     if (!workflow) {
       return null;
@@ -1155,7 +1150,7 @@ export class WorkflowEngine extends EventBus {
       steps: [],
     };
 
-    const result = await this.startWorkflow(definition, data.data||{});
+    const result = await this.startWorkflow(definition, data.data|| {});
     if (!(result.success && result.workflowId)) {
       throw new Error(`Failed to create workflow: $result.error`);`
     }
@@ -1203,24 +1198,24 @@ export class WorkflowEngine extends EventBus {
     // Gather workflow performance data
     const performanceData = {
       executionHistory: workflow.steps.map((step) => ({
-        name: step.name||step.type,
+        name: step.name|| step.type,
         avgDuration: 0, // Would be calculated from actual metrics
         errorRate: 0,
-        retryCount: step.retries||0,
+        retryCount: step.retries|| 0,
       })),
       totalExecutions: 1, // Would be tracked in real metrics
-      successfulExecutions: workflow.status ==='completed' ? 1 : 0,
+      successfulExecutions: workflow.status ===completed '? 1 : 0,
       currentStatus: workflow.status,
     };
 
     // Use LLM to analyze workflow performance
     const llm = getGlobalLLM();
-    llm.setRole('analyst');'
+    llm.setRole('analyst');
 
     const _analysisPrompt = `Analyze this workflow performance data and provide optimization suggestions:`
 
 Workflow: $workflow.definition.name
-Description: $workflow.definition.description||'No description''
+Description: $workflow.definition.description||'No description'
 Steps: $workflow.definition.steps.length
 Current Status: $workflow.status
 
@@ -1245,22 +1240,22 @@ Format as JSON with keys: performance, suggestions, optimizations`;`
       const parsedAnalysis = JSON.parse(analysis);
 
       logger.info(`Intelligent analysis completed for workflow ${workflowId}`, {`
-        suggestions: parsedAnalysis.suggestions?.length||0,
-        optimizations: parsedAnalysis.optimizations?.length||0,
-        operation:'intelligent_workflow_analysis',
+        suggestions: parsedAnalysis.suggestions?.length|| 0,
+        optimizations: parsedAnalysis.optimizations?.length|| 0,
+        operation:'intelligent_workflow_analysis,
       });
 
       return parsedAnalysis;
     } catch (error) 
-      logger.error('Failed to perform intelligent workflow analysis:', error);'
+      logger.error('Failed to perform intelligent workflow analysis:,error');
 
       if (error instanceof SyntaxError) {
         throw new Error(
-          'LLM response parsing failed - invalid JSON format returned''
+         'LLM response parsing failed - invalid JSON format returned'
         );
       }
 
-      throw new Error('Intelligent workflow analysis failed');'
+      throw new Error('Intelligent workflow analysis failed');
   }
 
   /**
@@ -1276,15 +1271,15 @@ Format as JSON with keys: performance, suggestions, optimizations`;`
     }
 
     const llm = getGlobalLLM();
-    llm.setRole('architect'); // Use architect role for documentation'
+    llm.setRole('architect'); // Use architect role for documentation
 
     const docPrompt = `Generate comprehensive documentation for this workflow:`
 
 Workflow Name: $workflow.definition.name
-Description: $workflow.definition.description||'No description provided''
+Description: $workflow.definition.description||'No description provided'
 
 Steps:
-$workflow.definition.steps.map((step, index) => `${index + 1}. ${step.name||step.type} (${step.type})`).join('\n')'
+$workflow.definition.steps.map((step, index) => `${{index + 1}. ${step.name|| step.type} (${step.type})}`).join('\n')
 
 Please generate:
 1. Overview - high-level explanation of what this workflow does
@@ -1306,15 +1301,15 @@ Format as JSON with keys: overview, stepDescriptions, usageGuide, troubleshootin
       logger.info(`Documentation generated for workflow ${workflowId}`);`
       return parsedDocs;
     } catch (error) 
-      logger.error('Failed to generate workflow documentation:', error);'
+      logger.error('Failed to generate workflow documentation:,error');
 
       if (error instanceof SyntaxError) {
         throw new Error(
-          'LLM response parsing failed - invalid JSON format returned''
+         'LLM response parsing failed - invalid JSON format returned'
         );
       }
 
-      throw new Error('Workflow documentation generation failed');'
+      throw new Error('Workflow documentation generation failed');
   }
 
   /**
@@ -1328,7 +1323,7 @@ Format as JSON with keys: overview, stepDescriptions, usageGuide, troubleshootin
     reliabilitySuggestions: string[];
     maintainabilitySuggestions: string[];> {
     const llm = getGlobalLLM();
-    llm.setRole('architect');'
+    llm.setRole('architect');
 
     const _optimizationPrompt = `Analyze this workflow definition and suggest optimizations:`
 
@@ -1352,7 +1347,7 @@ Format as JSON with keys: structuralSuggestions, performanceSuggestions, reliabi
 
       const parsedSuggestions = JSON.parse(suggestions);
 
-      logger.info('Workflow optimization suggestions generated', {'
+      logger.info('Workflow optimization suggestions generated,{
         workflowName: workflowDefinition.name,
         totalSuggestions: Object.values(parsedSuggestions).flat().length,
       });
@@ -1360,17 +1355,17 @@ Format as JSON with keys: structuralSuggestions, performanceSuggestions, reliabi
       return parsedSuggestions;
     } catch (error) {
       logger.error(
-        'Failed to generate workflow optimization suggestions:',
+       'Failed to generate workflow optimization suggestions:,
         error
       );
 
       if (error instanceof SyntaxError) {
         throw new Error(
-          'LLM response parsing failed - invalid JSON format returned''
+         'LLM response parsing failed - invalid JSON format returned'
         );
       }
 
-      throw new Error('Workflow optimization analysis failed');'
+      throw new Error('Workflow optimization analysis failed');
     }
   }
 
@@ -1378,7 +1373,7 @@ Format as JSON with keys: structuralSuggestions, performanceSuggestions, reliabi
    * Enhanced shutdown with cleanup.
    */
   async shutdown(): Promise<void> {
-    logger.info('Shutting down WorkflowEngine...');'
+    logger.info('Shutting down WorkflowEngine...');
 
     const activeWorkflowIds = Array.from(this.activeWorkflows.keys())();
     for (const workflowId of activeWorkflowIds) {

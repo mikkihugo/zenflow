@@ -16,7 +16,6 @@
  */
 
 import type { Logger } from '../../types';
-
 // Re-export types from SPARC-CD mapping service
 export type {
   CriterionResult,
@@ -27,7 +26,6 @@ export type {
   QualityGateResult,
   QualityGateType,
 } from './sparc-cd-mapping-service';
-
 // ============================================================================
 // QUALITY GATE SERVICE INTERFACES
 // ============================================================================
@@ -51,7 +49,7 @@ export interface QualityGateExecutionConfig {
  */
 export interface QualityGateContext {
   readonly projectId: string;
-  readonly environment: 'development' | 'staging' | 'production';
+  readonly environment:'development'|'staging'|'production';
   readonly artifacts: QualityArtifact[];
   readonly metadata: Record<string, unknown>;
   readonly previousResults?: QualityGateResult[];
@@ -63,7 +61,7 @@ export interface QualityGateContext {
  */
 export interface QualityArtifact {
   readonly id: string;
-  readonly type:|code|binary|test_results|security_scan|'documentation;
+  readonly type:| code| binary| test_results| security_scan|'documentation';
   readonly location: string;
   readonly size: number;
   readonly checksum: string;
@@ -86,7 +84,7 @@ export interface QualityHistoricalData {
  */
 export interface QualityTrend {
   readonly metric: string;
-  readonly direction: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|degrading;
+  readonly direction:'improving'|'stable'|'declining'|'improving'|'stable'|'declining''|'degrading';
   readonly change: number;
   readonly period: string;
   readonly confidence: number;
@@ -109,8 +107,8 @@ export interface QualityBenchmark {
 export interface QualityImprovement {
   readonly area: string;
   readonly suggestion: string;
-  readonly impact: 'low' | 'medium' | 'high';
-  readonly effort: 'low' | 'medium' | 'high';
+  readonly impact:'low'|'medium'|'high';
+  readonly effort:'low'|'medium'|'high';
   readonly priority: number;
 }
 
@@ -120,7 +118,7 @@ export interface QualityImprovement {
 export interface GateRetryPolicy {
   readonly enabled: boolean;
   readonly maxAttempts: number;
-  readonly backoffStrategy: 'linear' | 'exponential' | 'fixed';
+  readonly backoffStrategy:'linear'|'exponential'|'fixed';
   readonly baseDelay: number;
   readonly maxDelay: number;
   readonly retryableFailures: string[];
@@ -136,7 +134,7 @@ export interface QualityGateTemplate {
   readonly applicableStages: string[];
   readonly defaultCriteria: QualityGateCriterion[];
   readonly recommendedTimeout: number;
-  readonly category:|security|performance|quality|compliance|'architecture;
+  readonly category:| security| performance| quality| compliance|'architecture';
 }
 
 /**
@@ -158,7 +156,6 @@ import type {
   QualityGateCriterion,
   QualityGateResult,
 } from './sparc-cd-mapping-service';
-
 // ============================================================================
 // QUALITY GATE SERVICE IMPLEMENTATION
 // ============================================================================
@@ -192,12 +189,12 @@ export class QualityGateService {
 
     try {
       // Lazy load @claude-zen/ai-safety for safety protocols
-      const { AISafetyOrchestrator } = await import('@claude-zen/ai-safety');'
+      const { AISafetyOrchestrator } = await import('@claude-zen/ai-safety'');
       this.aiSafetyManager = new AISafetyOrchestrator();
       await this.aiSafetyManager.initialize();
 
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent optimization
-      const { BrainCoordinator } = await import('@claude-zen/brain');'
+      const { BrainCoordinator } = await import('@claude-zen/brain'');
       this.brainCoordinator = new BrainCoordinator(
           enabled: true,
           learningRate: 0.1,
@@ -205,13 +202,13 @@ export class QualityGateService {
       await this.brainCoordinator.initialize();
 
       // Lazy load @claude-zen/foundation for performance tracking
-      const { PerformanceTracker } = await import('@claude-zen/foundation');'
+      const { PerformanceTracker } = await import('@claude-zen/foundation'');
       this.performanceTracker = new PerformanceTracker();
 
       // Lazy load @claude-zen/agui for human approvals
-      const { AGUISystem } = await import('@claude-zen/agui');'
+      const { AGUISystem } = await import('@claude-zen/agui'');
       const aguiResult = await AGUISystem({
-        aguiType: 'terminal',
+        aguiType:'terminal,
         taskApprovalConfig: {
           enableRichDisplay: true,
           enableBatchMode: false,
@@ -224,9 +221,9 @@ export class QualityGateService {
       await this.initializeQualityGateTemplates();
 
       this.initialized = true;
-      this.logger.info('Quality Gate Service initialized successfully');'
+      this.logger.info('Quality Gate Service initialized successfully'');
     } catch (error) {
-      this.logger.error('Failed to initialize Quality Gate Service:', error);'
+      this.logger.error('Failed to initialize Quality Gate Service:,error');
       throw error;
     }
   }
@@ -237,22 +234,22 @@ export class QualityGateService {
   async createAutomatedQualityGates(): Promise<Map<string, QualityGate>> {
     if (!this.initialized) await this.initialize();
 
-    const _timer = this.performanceTracker.startTimer('create_quality_gates');'
+    const _timer = this.performanceTracker.startTimer('create_quality_gates'');
 
     try {
-      this.logger.info('Creating automated quality gates with AI optimization');'
+      this.logger.info('Creating automated quality gates with AI optimization'');
 
       const qualityGates = new Map<string, QualityGate>();
 
       // Use brain coordinator for intelligent gate configuration
       const gateOptimization = await this.brainCoordinator.optimizeQualityGates(
         {
-          context: 'automated_cd_pipeline',
+          context:'automated_cd_pipeline,
           requirements: [
-            'security',
-            'performance',
-            'reliability',
-            'maintainability',
+           'security,
+           'performance,
+           'reliability,
+           'maintainability,
           ],
           historicalData: Array.from(this.executionHistory.values()).flat(),
         }
@@ -285,17 +282,17 @@ export class QualityGateService {
       // Store in templates for reuse
       this.qualityGateTemplates = qualityGates;
 
-      this.performanceTracker.endTimer('create_quality_gates');'
+      this.performanceTracker.endTimer('create_quality_gates'');
 
-      this.logger.info('Automated quality gates created with AI optimization', '
+      this.logger.info('Automated quality gates created with AI optimization,
         gateCount: qualityGates.size,
-        optimizationScore: gateOptimization.overallScore || 0.8,
+        optimizationScore: gateOptimization.overallScore|| 0.8,
         aiSafetyEnabled: !!this.aiSafetyManager,);
 
       return qualityGates;
     } catch (error) {
-      this.performanceTracker.endTimer('create_quality_gates');'
-      this.logger.error('Failed to create automated quality gates:', error);'
+      this.performanceTracker.endTimer('create_quality_gates'');
+      this.logger.error('Failed to create automated quality gates:,error');
       throw error;
     }
   }
@@ -308,7 +305,7 @@ export class QualityGateService {
   ): Promise<QualityGateResult> {
     if (!this.initialized) await this.initialize();
 
-    const _timer = this.performanceTracker.startTimer('execute_quality_gate');'
+    const _timer = this.performanceTracker.startTimer('execute_quality_gate'');
 
     try {
       const gate = this.qualityGateTemplates.get(config.gateId);
@@ -316,7 +313,7 @@ export class QualityGateService {
         throw new Error(`Quality gate not found: ${config.gateId}`);`
       }
 
-      this.logger.info('Executing quality gate with AI evaluation', {'
+      this.logger.info('Executing quality gate with AI evaluation,{
         gateId: config.gateId,
         pipelineId: config.pipelineId,
         stageId: config.stageId,
@@ -332,16 +329,16 @@ export class QualityGateService {
         });
 
       if (!safetyValidation.safe) {
-        this.logger.warn('Quality gate execution blocked by AI safety:', {'
+        this.logger.warn('Quality gate execution blocked by AI safety:,{
           gateId: config.gateId,
           safetyReasons: safetyValidation.reasons,
         });
 
         // Create AGUI gate for manual review
         const manualReview = await this.aguiService.createApprovalTask({
-          taskType: 'quality_gate_safety_review',
+          taskType:'quality_gate_safety_review,
           description: `Quality gate $gate.namerequires manual safety review`,`config, safetyReasons: safetyValidation.reasons ,
-          approvers: ['security-team', 'quality-lead'],
+          approvers: ['security-team,'quality-lead'],
           timeout: 1800000, // 30 minutes
         });
 
@@ -377,11 +374,11 @@ export class QualityGateService {
       const scoreAdjustment = await this.brainCoordinator.adjustQualityScore({
         originalScore: finalScore,
         criterionResults,
-        historicalData: this.executionHistory.get(config.gateId) || [],
+        historicalData: this.executionHistory.get(config.gateId)|| [],
         context: config.context,
       });
 
-      finalScore = scoreAdjustment.adjustedScore || finalScore;
+      finalScore = scoreAdjustment.adjustedScore|| finalScore;
 
       // Determine status with AI-powered decision making
       const status = this.determineGateStatus(
@@ -414,12 +411,12 @@ export class QualityGateService {
       };
 
       // Store execution history for learning
-      const history = this.executionHistory.get(config.gateId) || [];
+      const history = this.executionHistory.get(config.gateId)|| [];
       history.push(result);
       this.executionHistory.set(config.gateId, history.slice(-50)); // Keep last 50 results
 
       // Handle escalation if needed
-      if (status ==='fail' && gate.escalation.length > 0) {'
+      if (status ===fail '&& gate.escalation.length > 0) {
         this.handleGateEscalation(gate, result, config);
       }
 
@@ -428,20 +425,20 @@ export class QualityGateService {
         this.sendGateNotifications(gate, result, config);
       }
 
-      this.performanceTracker.endTimer('execute_quality_gate');'
+      this.performanceTracker.endTimer('execute_quality_gate'');
 
-      this.logger.info('Quality gate executed with AI enhancement', {'
+      this.logger.info('Quality gate executed with AI enhancement,{
         gateId: config.gateId,
         status,
         score: finalScore,
         executionTime: result.executionTime,
-        aiAdjustment: scoreAdjustment.adjustment || 0,
+        aiAdjustment: scoreAdjustment.adjustment|| 0,
       });
 
       return result;
     } catch (error) {
-      this.performanceTracker.endTimer('execute_quality_gate');'
-      this.logger.error('Quality gate execution failed:', error);'
+      this.performanceTracker.endTimer('execute_quality_gate'');
+      this.logger.error('Quality gate execution failed:,error');
       throw error;
     }
   }
@@ -457,7 +454,7 @@ export class QualityGateService {
       return this.optimizationCache.get(gateId)!;
     }
 
-    const timer = this.performanceTracker.startTimer('optimize_quality_gate');'
+    const timer = this.performanceTracker.startTimer('optimize_quality_gate'');
 
     try {
       const gate = this.qualityGateTemplates.get(gateId);
@@ -465,9 +462,9 @@ export class QualityGateService {
         throw new Error(`Quality gate not found: ${gateId}`);`
       }
 
-      const history = this.executionHistory.get(gateId) || [];
+      const history = this.executionHistory.get(gateId)|| [];
 
-      this.logger.info('Optimizing quality gate with AI analysis', {'
+      this.logger.info('Optimizing quality gate with AI analysis,{
         gateId,
         historyCount: history.length,
       });
@@ -477,28 +474,28 @@ export class QualityGateService {
         gate,
         executionHistory: history,
         optimizationGoals: [
-          'improve_accuracy',
-          'reduce_false_positives',
-          'enhance_reliability',
+         'improve_accuracy,
+         'reduce_false_positives,
+         'enhance_reliability,
         ],
       });
 
       const result: QualityGateOptimization = {
         gateId,
         originalScore: this.calculateAverageScore(history),
-        optimizedScore: optimization.expectedScore || 0,
-        improvements: optimization.improvements || [],
-        adjustedCriteria: optimization.optimizedCriteria || gate.criteria,
-        recommendedActions: optimization.actions || [],
-        confidence: optimization.confidence || 0.8,
+        optimizedScore: optimization.expectedScore|| 0,
+        improvements: optimization.improvements|| [],
+        adjustedCriteria: optimization.optimizedCriteria|| gate.criteria,
+        recommendedActions: optimization.actions|| [],
+        confidence: optimization.confidence|| 0.8,
       };
 
       // Cache the optimization result
       this.optimizationCache.set(gateId, result);
 
-      this.performanceTracker.endTimer('optimize_quality_gate');'
+      this.performanceTracker.endTimer('optimize_quality_gate'');
 
-      this.logger.info('Quality gate optimization completed', {'
+      this.logger.info('Quality gate optimization completed,{
         gateId,
         improvementScore: result.optimizedScore - result.originalScore,
         confidence: result.confidence,
@@ -506,8 +503,8 @@ export class QualityGateService {
 
       return result;
     } catch (error) {
-      this.performanceTracker.endTimer('optimize_quality_gate');'
-      this.logger.error('Quality gate optimization failed:', error);'
+      this.performanceTracker.endTimer('optimize_quality_gate'');
+      this.logger.error('Quality gate optimization failed:,error');
       throw error;
     }
   }
@@ -517,7 +514,7 @@ export class QualityGateService {
    */
   async getQualityGateTemplate(
     gateType: QualityGateType
-  ): Promise<QualityGate | null> {
+  ): Promise<QualityGate| null> {
     if (!this.initialized) await this.initialize();
 
     // Find matching template
@@ -535,14 +532,14 @@ export class QualityGateService {
       }
     }
 
-    this.logger.warn('Quality gate template not found', { gateType });'
+    this.logger.warn('Quality gate template not found,{ gateType }');
     return null;
   }
 
   /**
    * Get quality insights and analytics
    */
-  async getQualityInsights(timeframe: string = '30d'): Promise<{'
+  async getQualityInsights(timeframe: string ='30d'): Promise<{
     overallQuality: number;
     trendAnalysis: QualityTrend[];
     topIssues: string[];
@@ -551,7 +548,7 @@ export class QualityGateService {
   }> {
     if (!this.initialized) await this.initialize();
 
-    const timer = this.performanceTracker.startTimer('quality_insights');'
+    const timer = this.performanceTracker.startTimer('quality_insights'');
 
     try {
       // Aggregate execution history
@@ -561,22 +558,22 @@ export class QualityGateService {
       const insights = await this.brainCoordinator.analyzeQualityInsights({
         executionHistory: allResults,
         timeframe,
-        analysisDepth: 'comprehensive',
+        analysisDepth:'comprehensive,
       });
 
       const result = {
         overallQuality:
-          insights.overallQuality || this.calculateOverallQuality(allResults),
-        trendAnalysis: insights.trends || [],
-        topIssues: insights.issues || [],
-        recommendations: insights.recommendations || [],
+          insights.overallQuality|| this.calculateOverallQuality(allResults),
+        trendAnalysis: insights.trends|| [],
+        topIssues: insights.issues|| [],
+        recommendations: insights.recommendations|| [],
         gatePerformance:
-          insights.gatePerformance || this.calculateGatePerformance(),
+          insights.gatePerformance|| this.calculateGatePerformance(),
       };
 
-      this.performanceTracker.endTimer('quality_insights');'
+      this.performanceTracker.endTimer('quality_insights'');
 
-      this.logger.info('Quality insights generated', {'
+      this.logger.info('Quality insights generated,{
         overallQuality: result.overallQuality,
         trendCount: result.trendAnalysis.length,
         recommendationCount: result.recommendations.length,
@@ -584,8 +581,8 @@ export class QualityGateService {
 
       return result;
     } catch (error) {
-      this.performanceTracker.endTimer('quality_insights');'
-      this.logger.error('Failed to generate quality insights:', error);'
+      this.performanceTracker.endTimer('quality_insights'');
+      this.logger.error('Failed to generate quality insights:,error');
       throw error;
     }
   }
@@ -604,7 +601,7 @@ export class QualityGateService {
       await this.aguiService.shutdown();
     }
     this.initialized = false;
-    this.logger.info('Quality Gate Service shutdown complete');'
+    this.logger.info('Quality Gate Service shutdown complete'');
   }
 
   // ============================================================================
@@ -619,53 +616,53 @@ export class QualityGateService {
   private createCodeQualityGate(optimization: any): QualityGate {
     const baseCriteria = [
       {
-        metric: 'code_coverage',
-        operator: 'gte'as const,
-        threshold: optimization.codeQualityThresholds?.coverage || 80,
+        metric:'code_coverage,
+        operator:'gte'as const,
+        threshold: optimization.codeQualityThresholds?.coverage|| 80,
         weight: 0.3,
         critical: true,
-        description:'Code coverage must meet minimum threshold',
+        description:'Code coverage must meet minimum threshold,
       },
       {
-        metric: 'complexity_score',
-        operator: 'lte'as const,
-        threshold: optimization.codeQualityThresholds?.complexity || 7.0,
+        metric:'complexity_score,
+        operator:'lte'as const,
+        threshold: optimization.codeQualityThresholds?.complexity|| 7.0,
         weight: 0.3,
         critical: false,
-        description:'Cyclomatic complexity should be manageable',
+        description:'Cyclomatic complexity should be manageable,
       },
       {
-        metric: 'maintainability_index',
-        operator: 'gte'as const,
-        threshold: optimization.codeQualityThresholds?.maintainability || 60,
+        metric:'maintainability_index,
+        operator:'gte'as const,
+        threshold: optimization.codeQualityThresholds?.maintainability|| 60,
         weight: 0.4,
         critical: false,
-        description:'Code maintainability should be acceptable',
+        description:'Code maintainability should be acceptable,
       },
     ];
 
     return {
-      id: 'code-quality-gate',
-      name: 'Code Quality Gate',
-      type: 'code_quality' as QualityGateType,
+      id:'code-quality-gate,
+      name:'Code Quality Gate,
+      type:'code_quality 'as QualityGateType,
       criteria: baseCriteria,
       automated: true,
       blocking: true,
       timeout: 600000, // 10 minutes
       escalation: [
         {
-          condition: 'critical_failure',
-          escalateTo: ['tech-lead', 'quality-engineer'],
+          condition:'critical_failure,
+          escalateTo: ['tech-lead,'quality-engineer'],
           delay: 300000, // 5 minutes
           maxEscalations: 3,
         },
       ],
       notifications: [
         {
-          trigger: 'gate_fail',
-          channels: ['slack', 'email'],
+          trigger:'gate_fail,
+          channels: ['slack,'email'],
           recipients: ['development-team'],
-          template: 'code_quality_failure',
+          template:'code_quality_failure,
         },
       ],
     };
@@ -673,33 +670,33 @@ export class QualityGateService {
 
   private createTestCoverageGate(optimization: any): QualityGate {
     return {
-      id: 'test-coverage-gate',
-      name: 'Test Coverage Gate',
-      type: 'test_coverage' as QualityGateType,
+      id:'test-coverage-gate,
+      name:'Test Coverage Gate,
+      type:'test_coverage 'as QualityGateType,
       criteria: [
         {
-          metric: 'line_coverage',
-          operator: 'gte'as const,
-          threshold: optimization.testThresholds?.lineCoverage || 85,
+          metric:'line_coverage,
+          operator:'gte'as const,
+          threshold: optimization.testThresholds?.lineCoverage|| 85,
           weight: 0.4,
           critical: true,
-          description:'Line coverage must meet minimum threshold',
+          description:'Line coverage must meet minimum threshold,
         },
         {
-          metric: 'branch_coverage',
-          operator: 'gte'as const,
-          threshold: optimization.testThresholds?.branchCoverage || 80,
+          metric:'branch_coverage,
+          operator:'gte'as const,
+          threshold: optimization.testThresholds?.branchCoverage|| 80,
           weight: 0.4,
           critical: true,
-          description:'Branch coverage must be comprehensive',
+          description:'Branch coverage must be comprehensive,
         },
         {
-          metric: 'mutation_coverage',
-          operator: 'gte'as const,
-          threshold: optimization.testThresholds?.mutationCoverage || 70,
+          metric:'mutation_coverage,
+          operator:'gte'as const,
+          threshold: optimization.testThresholds?.mutationCoverage|| 70,
           weight: 0.2,
           critical: false,
-          description:'Mutation testing should validate test quality',
+          description:'Mutation testing should validate test quality,
         },
       ],
       automated: true,
@@ -712,25 +709,25 @@ export class QualityGateService {
 
   private createSecurityGate(optimization: any): QualityGate {
     return {
-      id: 'security-gate',
-      name: 'Security Gate',
-      type: 'security_scan' as QualityGateType,
+      id:'security-gate,
+      name:'Security Gate,
+      type:'security_scan 'as QualityGateType,
       criteria: [
         {
-          metric: 'critical_vulnerabilities',
-          operator: 'eq' as const,
+          metric:'critical_vulnerabilities,
+          operator:'eq 'as const,
           threshold: 0,
           weight: 1.0,
           critical: true,
-          description: 'No critical security vulnerabilities allowed',
+          description:'No critical security vulnerabilities allowed,
         },
         {
-          metric: 'high_vulnerabilities',
-          operator: 'lte'as const,
-          threshold: optimization.securityThresholds?.highVulns || 2,
+          metric:'high_vulnerabilities,
+          operator:'lte'as const,
+          threshold: optimization.securityThresholds?.highVulns|| 2,
           weight: 0.8,
           critical: true,
-          description:'Limited high-severity vulnerabilities allowed',
+          description:'Limited high-severity vulnerabilities allowed,
         },
       ],
       automated: true,
@@ -738,18 +735,18 @@ export class QualityGateService {
       timeout: 1200000, // 20 minutes
       escalation: [
         {
-          condition: 'security_critical',
-          escalateTo: ['security-team', 'tech-lead'],
+          condition:'security_critical,
+          escalateTo: ['security-team,'tech-lead'],
           delay: 0, // Immediate escalation
           maxEscalations: 1,
         },
       ],
       notifications: [
         {
-          trigger: 'gate_fail',
-          channels: ['slack', 'pagerduty'],
-          recipients: ['security-team', 'development-team'],
-          template: 'security_failure_alert',
+          trigger:'gate_fail,
+          channels: ['slack,'pagerduty'],
+          recipients: ['security-team,'development-team'],
+          template:'security_failure_alert,
         },
       ],
     };
@@ -757,33 +754,33 @@ export class QualityGateService {
 
   private createPerformanceGate(optimization: any): QualityGate {
     return {
-      id: 'performance-gate',
-      name: 'Performance Gate',
-      type: 'performance' as QualityGateType,
+      id:'performance-gate,
+      name:'Performance Gate,
+      type:'performance 'as QualityGateType,
       criteria: [
         {
-          metric: 'response_time_p95',
-          operator: 'lte'as const,
-          threshold: optimization.performanceThresholds?.responseTime || 500,
+          metric:'response_time_p95,
+          operator:'lte'as const,
+          threshold: optimization.performanceThresholds?.responseTime|| 500,
           weight: 0.4,
           critical: false,
-          description:'95th percentile response time should be under threshold',
+          description:'95th percentile response time should be under threshold,
         },
         {
-          metric: 'throughput',
-          operator: 'gte'as const,
-          threshold: optimization.performanceThresholds?.throughput || 1000,
+          metric:'throughput,
+          operator:'gte'as const,
+          threshold: optimization.performanceThresholds?.throughput|| 1000,
           weight: 0.3,
           critical: false,
-          description:'System throughput should meet requirements',
+          description:'System throughput should meet requirements,
         },
         {
-          metric: 'error_rate',
-          operator: 'lte'as const,
-          threshold: optimization.performanceThresholds?.errorRate || 1.0,
+          metric:'error_rate,
+          operator:'lte'as const,
+          threshold: optimization.performanceThresholds?.errorRate|| 1.0,
           weight: 0.3,
           critical: true,
-          description:'Error rate should be within acceptable limits',
+          description:'Error rate should be within acceptable limits,
         },
       ],
       automated: true,
@@ -796,17 +793,17 @@ export class QualityGateService {
 
   private createArchitectureComplianceGate(optimization: any): QualityGate {
     return {
-      id: 'architecture-compliance-gate',
-      name: 'Architecture Compliance Gate',
-      type: 'architecture' as QualityGateType,
+      id:'architecture-compliance-gate,
+      name:'Architecture Compliance Gate,
+      type:'architecture 'as QualityGateType,
       criteria: [
         {
-          metric: 'architecture_compliance_score',
-          operator: 'gte'as const,
-          threshold: optimization.architectureThresholds?.compliance || 90,
+          metric:'architecture_compliance_score,
+          operator:'gte'as const,
+          threshold: optimization.architectureThresholds?.compliance|| 90,
           weight: 1.0,
           critical: false,
-          description:'Architecture must comply with established patterns',
+          description:'Architecture must comply with established patterns,
         },
       ],
       automated: true,
@@ -819,25 +816,25 @@ export class QualityGateService {
 
   private createBusinessValidationGate(optimization: any): QualityGate {
     return {
-      id: 'business-validation-gate',
-      name: 'Business Validation Gate',
-      type: 'business_validation' as QualityGateType,
+      id:'business-validation-gate,
+      name:'Business Validation Gate,
+      type:'business_validation 'as QualityGateType,
       criteria: [
         {
-          metric: 'acceptance_criteria_coverage',
-          operator: 'gte' as const,
+          metric:'acceptance_criteria_coverage,
+          operator:'gte 'as const,
           threshold: 100,
           weight: 0.6,
           critical: true,
-          description: 'All acceptance criteria must be covered',
+          description:'All acceptance criteria must be covered,
         },
         {
-          metric: 'stakeholder_approval',
-          operator: 'eq' as const,
+          metric:'stakeholder_approval,
+          operator:'eq 'as const,
           threshold: 1,
           weight: 0.4,
           critical: true,
-          description: 'Stakeholder approval required',
+          description:'Stakeholder approval required,
         },
       ],
       automated: false,
@@ -845,18 +842,18 @@ export class QualityGateService {
       timeout: 3600000, // 1 hour
       escalation: [
         {
-          condition: 'approval_timeout',
-          escalateTo: ['product-owner', 'business-stakeholder'],
+          condition:'approval_timeout,
+          escalateTo: ['product-owner,'business-stakeholder'],
           delay: 1800000, // 30 minutes
           maxEscalations: 2,
         },
       ],
       notifications: [
         {
-          trigger: 'approval_required',
-          channels: ['email', 'slack'],
-          recipients: ['product-owner', 'business-stakeholder'],
-          template: 'business_validation_request',
+          trigger:'approval_required,
+          channels: ['email,'slack'],
+          recipients: ['product-owner,'business-stakeholder'],
+          template:'business_validation_request,
         },
       ],
     };
@@ -902,7 +899,7 @@ export class QualityGateService {
       artifacts: context.artifacts,
     });
 
-    return measurement.value || Math.random() * 100;
+    return measurement.value|| Math.random() * 100;
   }
 
   private evaluateCriterion(
@@ -910,17 +907,17 @@ export class QualityGateService {
     actualValue: number
   ): boolean {
     switch (criterion.operator) {
-      case'gt':'
+      case'gt:
         return actualValue > criterion.threshold;
-      case 'gte':'
+      case'gte:
         return actualValue >= criterion.threshold;
-      case 'lt':'
+      case'lt:
         return actualValue < criterion.threshold;
-      case 'lte':'
+      case'lte:
         return actualValue <= criterion.threshold;
-      case 'eq':'
+      case'eq:
         return actualValue === criterion.threshold;
-      case 'neq':'
+      case'neq:
         return actualValue !== criterion.threshold;
       default:
         return false;
@@ -932,21 +929,21 @@ export class QualityGateService {
     criterionResults: CriterionResult[],
     gate: QualityGate,
     scoreAdjustment: any
-  ): 'pass|fail|warning' {'
+  ):'pass| fail| warning '{
     const criticalFailures = criterionResults.filter(
       (r) =>
         !r.passed && gate.criteria.find((c) => c.metric === r.metric)?.critical
     );
 
     if (criticalFailures.length > 0) {
-      return 'fail;
+      return'fail';
     }
 
     if (finalScore < 70) {
-      return 'warning;
+      return'warning';
     }
 
-    return 'pass;
+    return'pass';
   }
 
   private generateGateResultMessage(
@@ -972,9 +969,9 @@ export class QualityGateService {
       });
 
     return (
-      recommendations.recommendations || ['Review failed criteria and implement improvements',
-        'Consider updating thresholds based on project context',
-        'Analyze trends to identify systematic issues',
+      recommendations.recommendations|| ['Review failed criteria and implement improvements,
+       'Consider updating thresholds based on project context,
+       'Analyze trends to identify systematic issues,
       ]
     );
   }
@@ -985,7 +982,7 @@ export class QualityGateService {
     config: QualityGateExecutionConfig
   ): void {
     // Handle escalation logic - could integrate with AGUI for approvals
-    this.logger.info('Handling quality gate escalation', {'
+    this.logger.info('Handling quality gate escalation,{
       gateId: gate.id,
       escalationCount: gate.escalation.length,
     });
@@ -997,7 +994,7 @@ export class QualityGateService {
     config: QualityGateExecutionConfig
   ): void {
     // Handle notification logic
-    this.logger.info('Sending quality gate notifications', {'
+    this.logger.info('Sending quality gate notifications,{
       gateId: gate.id,
       notificationCount: gate.notifications.length,
     });

@@ -10,7 +10,6 @@
  */
 
 import type { Logger } from '@claude-zen/foundation';
-
 /**
  * Logger interface for SAFe Framework components
  */
@@ -58,9 +57,9 @@ export function getLogger(componentName: string): SafeLogger {
  * Default logger configuration for SAFe Framework
  */
 export const defaultLoggerConfig = {
-  level: 'info' as const,
-  format: 'json' as const,
+  level:'info 'as const,
+  format:'json 'as const,
   timestamp: true,
   colorize: false,
-  component: 'safe-framework',
+  component:'safe-framework,
 };

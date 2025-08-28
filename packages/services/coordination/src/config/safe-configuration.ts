@@ -27,8 +27,7 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-
-const logger = getLogger('SafeConfiguration');'
+const logger = getLogger('SafeConfiguration'');
 
 // ============================================================================
 // SAFe CONFIGURATION TYPES
@@ -38,10 +37,10 @@ const logger = getLogger('SafeConfiguration');'
  * SAFe 6.0 configuration levels with feature toggles
  */
 export enum SafeConfigurationLevel {
-  ESSENTIAL = 'essential', // Step 1: ART-focused, minimal viable SAFe'
-  LARGE_SOLUTION = 'large_solution', // Step 2: Adds solution coordination'
-  PORTFOLIO = 'portfolio', // Step 3: Adds portfolio management'
-  FULL = 'full', // Step 4: Complete enterprise transformation'
+  ESSENTIAL ='essential,// Step 1: ART-focused, minimal viable SAFe
+  LARGE_SOLUTION ='large_solution,// Step 2: Adds solution coordination
+  PORTFOLIO ='portfolio,// Step 3: Adds portfolio management
+  FULL ='full,// Step 4: Complete enterprise transformation
 }
 
 /**
@@ -98,10 +97,10 @@ export interface SafeConfiguration {
   level: SafeConfigurationLevel;
   features: SafeFeatureToggles;
   customizations: {
-    organizationSize: 'small|medium|large|enterprise;
+    organizationSize:'small| medium| large'|'enterprise';
     industry: string;
     complianceRequirements: string[];
-    aiIntegrationLevel: 'basic' | 'advanced' | 'full';
+    aiIntegrationLevel:'basic'|'advanced'|'full';
   };
   metadata: {
     version: string;
@@ -166,16 +165,16 @@ export const ESSENTIAL_SAFE_6_0_CONFIG: SafeConfiguration = {
   },
 
   customizations: {
-    organizationSize: 'medium', // Typical Essential SAFe target'
-    industry: 'software',
+    organizationSize:'medium,// Typical Essential SAFe target
+    industry:'software,
     complianceRequirements: ['basic'],
-    aiIntegrationLevel: 'advanced', // Our AI strength'
+    aiIntegrationLevel:'advanced,// Our AI strength
   },
 
   metadata: {
-    version: '6.0',
+    version:'6.0,
     lastUpdated: new Date(),
-    configuredBy: 'TaskMaster',
+    configuredBy:'TaskMaster,
     targetGoDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000), // 90 days
   },
 };
@@ -193,7 +192,7 @@ export class SafeConfigurationManager {
 
   constructor(config: SafeConfiguration = ESSENTIAL_SAFE_6_0_CONFIG) {
     this.currentConfig = config;
-    logger.info('SafeConfigurationManager initialized', {'
+    logger.info('SafeConfigurationManager initialized,{
       level: config.level,
       enabledFeatures: this.getEnabledFeatureCount(),
     });
@@ -356,7 +355,7 @@ export class SafeConfigurationManager {
       ([categoryName, category]) => {
         Object.entries(category).forEach(([featureName, enabled]) => {
           if (!enabled) {
-            missing.push(`$categoryName.$featureName`);`
+            missing.push(`${categoryName.$featureName}`);`
           }
         });
       }
@@ -370,29 +369,29 @@ export class SafeConfigurationManager {
     switch (level) {
       case SafeConfigurationLevel.ESSENTIAL:
         return [
-          'Complete ART coordination implementation',
-          'Implement core SAFe events (ART Sync, PI Planning)',
-          'Build core artifact management (Features, ART Backlog)',
-          'Establish core roles and responsibilities',
-          'Enable Team and Technical Agility competency',
+         'Complete ART coordination implementation,
+         'Implement core SAFe events (ART Sync, PI Planning),
+         'Build core artifact management (Features, ART Backlog),
+         'Establish core roles and responsibilities,
+         'Enable Team and Technical Agility competency,
         ];
       case SafeConfigurationLevel.LARGE_SOLUTION:
         return [
-          'Add Solution Train coordination',
-          'Implement solution-level events and artifacts',
-          'Enable supplier management capabilities',
+         'Add Solution Train coordination,
+         'Implement solution-level events and artifacts,
+         'Enable supplier management capabilities,
         ];
       case SafeConfigurationLevel.PORTFOLIO:
         return [
-          'Implement portfolio-level governance',
-          'Add epic management and strategic themes',
-          'Enable lean portfolio management practices',
+         'Implement portfolio-level governance,
+         'Add epic management and strategic themes,
+         'Enable lean portfolio management practices,
         ];
       case SafeConfigurationLevel.FULL:
         return [
-          'Complete organizational agility implementation',
-          'Enable all spanning palette elements',
-          'Implement cultural transformation support',
+         'Complete organizational agility implementation,
+         'Enable all spanning palette elements,
+         'Implement cultural transformation support,
         ];
       default:
         return [];
@@ -402,33 +401,33 @@ export class SafeConfigurationManager {
   private generateEssentialImplementationPlan(): any[] {
     return [
       {
-        phase: 'Phase 1: ART Foundation',
-        description: 'Establish basic ART coordination and core roles',
-        features: ['artCoordination', 'coreRoles'],
-        estimatedEffort: '4-6 weeks',
-        dependencies: ['Approval gate system', 'Event coordination'],
+        phase:'Phase 1: ART Foundation,
+        description:'Establish basic ART coordination and core roles,
+        features: ['artCoordination,'coreRoles'],
+        estimatedEffort:'4-6 weeks,
+        dependencies: ['Approval gate system,'Event coordination'],
       },
       {
-        phase: 'Phase 2: Core Events',
-        description: 'Implement ART Sync, PI Planning, and iteration events',
+        phase:'Phase 2: Core Events,
+        description:'Implement ART Sync, PI Planning, and iteration events,
         features: ['coreEvents'],
-        estimatedEffort: '6-8 weeks',
-        dependencies: ['Phase 1', 'Event scheduling system'],
+        estimatedEffort:'6-8 weeks,
+        dependencies: ['Phase 1,'Event scheduling system'],
       },
       {
-        phase: 'Phase 3: Artifacts & Workflows',
-        description: 'Build feature management and ART backlog workflows',
+        phase:'Phase 3: Artifacts & Workflows,
+        description:'Build feature management and ART backlog workflows,
         features: ['coreArtifacts'],
-        estimatedEffort: '4-6 weeks',
-        dependencies: ['Phase 2', 'Artifact lifecycle management'],
+        estimatedEffort:'4-6 weeks,
+        dependencies: ['Phase 2,'Artifact lifecycle management'],
       },
       {
-        phase: 'Phase 4: Core Competencies',
+        phase:'Phase 4: Core Competencies,
         description:
-          'Enable Team and Technical Agility and Agile Product Delivery',
-        features: ['teamTechnicalAgility', 'agileProductDelivery'],
-        estimatedEffort: '6-8 weeks',
-        dependencies: ['Phase 3', 'Learning and measurement systems'],
+         'Enable Team and Technical Agility and Agile Product Delivery,
+        features: ['teamTechnicalAgility,'agileProductDelivery'],
+        estimatedEffort:'6-8 weeks,
+        dependencies: ['Phase 3,'Learning and measurement systems'],
       },
     ];
   }
@@ -436,10 +435,10 @@ export class SafeConfigurationManager {
   private generateLargeSolutionImplementationPlan(): any[] {
     return [
       {
-        phase: 'Phase 5: Solution Train',
-        description: 'Add solution-level coordination and management',
-        features: ['solutionTrain', 'solutionManagement'],
-        estimatedEffort: '8-10 weeks',
+        phase:'Phase 5: Solution Train,
+        description:'Add solution-level coordination and management,
+        features: ['solutionTrain,'solutionManagement'],
+        estimatedEffort:'8-10 weeks,
         dependencies: ['Essential SAFe complete'],
       },
     ];
@@ -448,10 +447,10 @@ export class SafeConfigurationManager {
   private generatePortfolioImplementationPlan(): any[] {
     return [
       {
-        phase: 'Phase 6: Portfolio Management',
-        description: 'Add portfolio-level governance and epic management',
-        features: ['portfolioManagement', 'epicManagement'],
-        estimatedEffort: '10-12 weeks',
+        phase:'Phase 6: Portfolio Management,
+        description:'Add portfolio-level governance and epic management,
+        features: ['portfolioManagement,'epicManagement'],
+        estimatedEffort:'10-12 weeks,
         dependencies: ['Large Solution SAFe complete'],
       },
     ];
@@ -460,11 +459,11 @@ export class SafeConfigurationManager {
   private generateFullImplementationPlan(): any[] {
     return [
       {
-        phase: 'Phase 7: Full Transformation',
+        phase:'Phase 7: Full Transformation,
         description:
-          'Complete organizational agility and cultural transformation',
-        features: ['organizationalAgility', 'culturalTransformation'],
-        estimatedEffort: '16-20 weeks',
+         'Complete organizational agility and cultural transformation,
+        features: ['organizationalAgility,'culturalTransformation'],
+        estimatedEffort:'16-20 weeks,
         dependencies: ['Portfolio SAFe complete'],
       },
     ];

@@ -13,7 +13,6 @@
  */
 
 import { dateFns, generateNanoId, } from '@claude-zen/foundation';
-
 const { format, addMonths, addWeeks, addDays } = dateFns;
 
 import {
@@ -21,7 +20,6 @@ import {
   orderBy,
 } from 'lodash-es';
 import type { Logger } from '../../types';
-
 /**
  * Solution architecture configuration
  */
@@ -64,12 +62,12 @@ export interface ArchitecturalPrinciple {
  * Principle categories
  */
 export enum PrincipleCategory {
-  BUSINESS = 'business',
-  DATA = 'data',
-  APPLICATION = 'application',
-  TECHNOLOGY = 'technology',
-  SECURITY = 'security',
-  INTEGRATION = 'integration',
+  BUSINESS ='business,
+  DATA ='data,
+  APPLICATION ='application,
+  TECHNOLOGY ='technology,
+  SECURITY ='security,
+  INTEGRATION ='integration,
 }
 
 /**
@@ -119,10 +117,10 @@ export interface QualityTradeoff {
  * Attribute priority
  */
 export enum AttributePriority {
-  CRITICAL = 'critical',
-  HIGH = 'high',
-  MEDIUM = 'medium',
-  LOW = 'low',
+  CRITICAL ='critical,
+  HIGH ='high,
+  MEDIUM ='medium,
+  LOW ='low,
 }
 
 /**
@@ -141,21 +139,21 @@ export interface ArchitecturalConstraint {
  * Constraint types
  */
 export enum ConstraintType {
-  TECHNICAL = 'technical',
-  REGULATORY = 'regulatory',
-  ORGANIZATIONAL = 'organizational',
-  BUDGET = 'budget',
-  TIME = 'time',
-  LEGACY = 'legacy',
+  TECHNICAL ='technical,
+  REGULATORY ='regulatory,
+  ORGANIZATIONAL ='organizational,
+  BUDGET ='budget,
+  TIME ='time,
+  LEGACY ='legacy,
 }
 
 /**
  * Constraint impact
  */
 export enum ConstraintImpact {
-  HIGH = 'high',
-  MEDIUM = 'medium',
-  LOW = 'low',
+  HIGH ='high,
+  MEDIUM ='medium,
+  LOW ='low,
 }
 
 /**
@@ -207,10 +205,10 @@ export interface TransitionStep {
  * Transition approaches
  */
 export enum TransitionApproach {
-  BIG_BANG = 'big_bang',
-  PHASED = 'phased',
-  PARALLEL = 'parallel',
-  PILOT = 'pilot',
+  BIG_BANG ='big_bang,
+  PHASED ='phased,
+  PARALLEL ='parallel,
+  PILOT ='pilot,
 }
 
 /**
@@ -233,34 +231,34 @@ export interface TechnologyStandard {
  * Standard categories
  */
 export enum StandardCategory {
-  PROGRAMMING_LANGUAGE = 'programming_language',
-  FRAMEWORK = 'framework',
-  DATABASE = 'database',
-  MESSAGING = 'messaging',
-  SECURITY = 'security',
-  MONITORING = 'monitoring',
-  DEPLOYMENT = 'deployment',
-  INTEGRATION = 'integration',
+  PROGRAMMING_LANGUAGE ='programming_language,
+  FRAMEWORK ='framework,
+  DATABASE ='database,
+  MESSAGING ='messaging,
+  SECURITY ='security,
+  MONITORING ='monitoring,
+  DEPLOYMENT ='deployment,
+  INTEGRATION ='integration,
 }
 
 /**
  * Standard scope
  */
 export enum StandardScope {
-  MANDATORY = 'mandatory',
-  RECOMMENDED = 'recommended',
-  APPROVED = 'approved',
-  RESTRICTED = 'restricted',
-  DEPRECATED = 'deprecated',
+  MANDATORY ='mandatory,
+  RECOMMENDED ='recommended,
+  APPROVED ='approved,
+  RESTRICTED ='restricted,
+  DEPRECATED ='deprecated,
 }
 
 /**
  * Compliance levels
  */
 export enum ComplianceLevel {
-  STRICT = 'strict',
-  FLEXIBLE = 'flexible',
-  ADVISORY = 'advisory',
+  STRICT ='strict,
+  FLEXIBLE ='flexible,
+  ADVISORY ='advisory,
 }
 
 /**
@@ -279,11 +277,11 @@ export interface StandardLifecycle {
  * Lifecycle status
  */
 export enum LifecycleStatus {
-  EMERGING = 'emerging',
-  TRIAL = 'trial',
-  ADOPT = 'adopt',
-  HOLD = 'hold',
-  DEPRECATED = 'deprecated',
+  EMERGING ='emerging,
+  TRIAL ='trial,
+  ADOPT ='adopt,
+  HOLD ='hold,
+  DEPRECATED ='deprecated,
 }
 
 /**
@@ -313,10 +311,10 @@ export interface GovernanceModel {
  * Governance framework
  */
 export enum GovernanceFramework {
-  CENTRALIZED = 'centralized',
-  FEDERATED = 'federated',
-  DECENTRALIZED = 'decentralized',
-  HYBRID = 'hybrid',
+  CENTRALIZED ='centralized,
+  FEDERATED ='federated,
+  DECENTRALIZED ='decentralized,
+  HYBRID ='hybrid,
 }
 
 /**
@@ -334,18 +332,18 @@ export interface DecisionRight {
  * Decision types
  */
 export enum DecisionType {
-  TECHNOLOGY_ADOPTION = 'technology_adoption',
-  ARCHITECTURAL_CHANGE = 'architectural_change',
-  STANDARD_EXCEPTION = 'standard_exception',
-  PATTERN_APPROVAL = 'pattern_approval',
-  DESIGN_REVIEW = 'design_review',
+  TECHNOLOGY_ADOPTION ='technology_adoption,
+  ARCHITECTURAL_CHANGE ='architectural_change,
+  STANDARD_EXCEPTION ='standard_exception,
+  PATTERN_APPROVAL ='pattern_approval,
+  DESIGN_REVIEW ='design_review,
 }
 
 /**
  * Approval threshold
  */
 export interface ApprovalThreshold {
-  readonly type: 'unanimous' | 'majority' | 'single';
+  readonly type:'unanimous'|'majority'|'single';
   readonly percentage?: number;
   readonly minimumCount?: number;
 }
@@ -366,10 +364,10 @@ export interface ReviewProcess {
  * Review triggers
  */
 export enum ReviewTrigger {
-  MILESTONE = 'milestone',
-  TIME_BASED = 'time_based',
-  CHANGE_DRIVEN = 'change_driven',
-  EXCEPTION_REQUEST = 'exception_request',
+  MILESTONE ='milestone,
+  TIME_BASED ='time_based,
+  CHANGE_DRIVEN ='change_driven,
+  EXCEPTION_REQUEST ='exception_request,
 }
 
 /**
@@ -409,12 +407,12 @@ export interface ReviewCriteria {
  * Criteria categories
  */
 export enum CriteriaCategory {
-  ALIGNMENT = 'alignment',
-  COMPLIANCE = 'compliance',
-  QUALITY = 'quality',
-  FEASIBILITY = 'feasibility',
-  RISK = 'risk',
-  PERFORMANCE = 'performance',
+  ALIGNMENT ='alignment,
+  COMPLIANCE ='compliance,
+  QUALITY ='quality,
+  FEASIBILITY ='feasibility,
+  RISK ='risk,
+  PERFORMANCE ='performance,
 }
 
 /**
@@ -452,11 +450,11 @@ export interface GovernanceMetric {
  * Measurement frequency
  */
 export enum MeasurementFrequency {
-  CONTINUOUS = 'continuous',
-  DAILY = 'daily',
-  WEEKLY = 'weekly',
-  MONTHLY = 'monthly',
-  QUARTERLY = 'quarterly',
+  CONTINUOUS ='continuous,
+  DAILY ='daily,
+  WEEKLY ='weekly,
+  MONTHLY ='monthly,
+  QUARTERLY ='quarterly,
 }
 
 /**
@@ -484,9 +482,9 @@ export interface RunwayStrategy {
  * Runway approaches
  */
 export enum RunwayApproach {
-  CONTINUOUS = 'continuous',
-  BATCH = 'batch',
-  HYBRID = 'hybrid',
+  CONTINUOUS ='continuous,
+  BATCH ='batch,
+  HYBRID ='hybrid,
 }
 
 /**
@@ -503,12 +501,12 @@ export interface RunwayPriority {
  * Runway categories
  */
 export enum RunwayCategory {
-  INFRASTRUCTURE = 'infrastructure',
-  PLATFORM = 'platform',
-  INTEGRATION = 'integration',
-  SECURITY = 'security',
-  COMPLIANCE = 'compliance',
-  PERFORMANCE = 'performance',
+  INFRASTRUCTURE ='infrastructure,
+  PLATFORM ='platform,
+  INTEGRATION ='integration,
+  SECURITY ='security,
+  COMPLIANCE ='compliance,
+  PERFORMANCE ='performance,
 }
 
 /**
@@ -530,23 +528,23 @@ export interface RunwayComponent {
  * Component types
  */
 export enum ComponentType {
-  PLATFORM = 'platform',
-  LIBRARY = 'library',
-  SERVICE = 'service',
-  TOOL = 'tool',
-  PATTERN = 'pattern',
-  STANDARD = 'standard',
+  PLATFORM ='platform,
+  LIBRARY ='library,
+  SERVICE ='service,
+  TOOL ='tool,
+  PATTERN ='pattern,
+  STANDARD ='standard,
 }
 
 /**
  * Component status
  */
 export enum ComponentStatus {
-  PLANNED = 'planned',
-  IN_DEVELOPMENT = 'in_development',
-  AVAILABLE = 'available',
-  DEPRECATED = 'deprecated',
-  RETIRED = 'retired',
+  PLANNED ='planned,
+  IN_DEVELOPMENT ='in_development,
+  AVAILABLE ='available,
+  DEPRECATED ='deprecated,
+  RETIRED ='retired,
 }
 
 /**
@@ -578,7 +576,7 @@ export class SolutionArchitectureManagementService {
   async configureArchitecture(
     config: SolutionArchitectureConfig
   ): Promise<void> {
-    this.logger.info('Configuring solution architecture management', {'
+    this.logger.info('Configuring solution architecture management,{
       configId: config.configId,
       solutionId: config.solutionId,
       standardsCount: config.technologyStandards.length,
@@ -595,7 +593,7 @@ export class SolutionArchitectureManagementService {
       this.runwayComponents.set(component.componentId, component);
     }
 
-    this.logger.info('Solution architecture management configured', {'
+    this.logger.info('Solution architecture management configured,{
       configId: config.configId,
     });
   }
@@ -613,7 +611,7 @@ export class SolutionArchitectureManagementService {
   }): Promise<ArchitecturalDecision> {
     const _decisionId = `decision-${generateNanoId(12)}`;`
 
-    this.logger.info('Making architectural decision', {'
+    this.logger.info('Making architectural decision,{
       decisionId,
       title: decision.title,
       alternativeCount: decision.alternatives.length,
@@ -646,7 +644,7 @@ export class SolutionArchitectureManagementService {
 
     this.architecturalDecisions.set(decisionId, architecturalDecision);
 
-    this.logger.info('Architectural decision made', {'
+    this.logger.info('Architectural decision made,{
       decisionId,
       selectedAlternative.name,
       status: architecturalDecision.status,
@@ -666,7 +664,7 @@ export class SolutionArchitectureManagementService {
       throw new Error(`Configuration not found: ${configId}`);`
     }
 
-    this.logger.info('Assessing architectural compliance', { configId });'
+    this.logger.info('Assessing architectural compliance,{ configId }');
 
     const reportId = `compliance-$generateNanoId(12)`;`
 
@@ -711,7 +709,7 @@ export class SolutionArchitectureManagementService {
 
     this.complianceReports.set(reportId, report);
 
-    this.logger.info('Compliance assessment completed', {'
+    this.logger.info('Compliance assessment completed,{
       reportId,
       overallCompliance: Math.round(overallCompliance),
       violationCount: report.violations.length,
@@ -733,7 +731,7 @@ export class SolutionArchitectureManagementService {
       throw new Error(`Runway component not found: ${componentId}`);`
     }
 
-    this.logger.info('Managing runway component', {'
+    this.logger.info('Managing runway component,{
       componentId,
       operation,
       currentStatus: component.status,
@@ -784,7 +782,7 @@ export class SolutionArchitectureManagementService {
 
     this.runwayComponents.set(componentId, updatedComponent);
 
-    this.logger.info('Runway component updated', {'
+    this.logger.info('Runway component updated,{
       componentId,
       newStatus: updatedComponent.status,
     });
@@ -796,12 +794,12 @@ export class SolutionArchitectureManagementService {
    * Private helper methods
    */
   private validateArchitectureConfig(config: SolutionArchitectureConfig): void 
-    if (!config.configId || config.configId.trim() ==='') {'
-      throw new Error('Configuration ID is required');'
+    if (!config.configId|| config.configId.trim() ===){
+      throw new Error('Configuration ID is required'');
     }
 
-    if (!config.solutionId || config.solutionId.trim() ==='') {'
-      throw new Error('Solution ID is required');'
+    if (!config.solutionId|| config.solutionId.trim() ===){
+      throw new Error('Solution ID is required'');
     }
 
   private async evaluateAlternatives(
@@ -816,7 +814,7 @@ export class SolutionArchitectureManagementService {
         weight: criterion.weight,
       })),
       totalScore: this.calculateTotalScore(alternative, criteria),
-    }));
+    });
 
   private scoreAlternative(
     alternative: Alternative,
@@ -837,8 +835,7 @@ export class SolutionArchitectureManagementService {
   private selectBestAlternative(
     evaluations: AlternativeEvaluation[]
   ): Alternative 
-    return orderBy(evaluations, 'totalScore', 'desc')[0].alternative;'
-
+    return orderBy(evaluations,'totalScore,'desc')[0].alternative';
   private async assessStandardsCompliance(
     standards: TechnologyStandard[]
   ): Promise<number> 
@@ -874,20 +871,20 @@ export class SolutionArchitectureManagementService {
     if (standards < 80) {
       violations.push({
         violationId: `violation-${generateNanoId(8)}`,`
-        type: 'standards',
-        severity: 'medium',
-        description: 'Technology standards compliance below threshold',
-        recommendation: 'Review and align with approved technology standards',
+        type:'standards,
+        severity: medium,
+        description:'Technology standards compliance below threshold,
+        recommendation:'Review and align with approved technology standards,
       });
     }
 
     if (principles < 75) {
       violations.push({
         violationId: `violation-${generateNanoId(8)}`,`
-        type: 'principles',
-        severity: 'high',
-        description: 'Architectural principles adherence below threshold',
-        recommendation: 'Align implementation with architectural principles',
+        type:'principles,
+        severity: high,
+        description:'Architectural principles adherence below threshold,
+        recommendation:'Align implementation with architectural principles,
       });
     }
 
@@ -898,12 +895,12 @@ export class SolutionArchitectureManagementService {
     const recommendations: string[] = [];
 
     if (compliance < 80) {
-      recommendations.push('Implement architectural governance processes');'
-      recommendations.push('Increase compliance monitoring frequency');'
+      recommendations.push('Implement architectural governance processes'');
+      recommendations.push('Increase compliance monitoring frequency'');
     }
 
-    recommendations.push('Regular architecture review sessions');'
-    recommendations.push('Automated compliance checking in CI/CD');'
+    recommendations.push('Regular architecture review sessions'');
+    recommendations.push('Automated compliance checking in CI/CD'');
 
     return recommendations;
   }
@@ -923,15 +920,15 @@ export class SolutionArchitectureManagementService {
    */
   getArchitecturalDecision(
     decisionId: string
-  ): ArchitecturalDecision | undefined 
+  ): ArchitecturalDecision| undefined 
     return this.architecturalDecisions.get(decisionId);
 
-  getRunwayComponent(componentId: string): RunwayComponent | undefined 
+  getRunwayComponent(componentId: string): RunwayComponent| undefined 
     return this.runwayComponents.get(componentId);
 
   getComplianceReport(
     reportId: string
-  ): ArchitecturalComplianceReport | undefined 
+  ): ArchitecturalComplianceReport| undefined 
     return this.complianceReports.get(reportId);
 
   getAllArchitecturalDecisions(): ArchitecturalDecision[] 
@@ -968,10 +965,10 @@ interface DecisionCriteria {
 }
 
 enum DecisionUrgency {
-  LOW ='low',
-  MEDIUM = 'medium',
-  HIGH = 'high',
-  CRITICAL = 'critical',
+  LOW =low,
+  MEDIUM ='medium,
+  HIGH ='high,
+  CRITICAL ='critical,
 }
 
 interface ArchitecturalDecision {
@@ -991,11 +988,11 @@ interface ArchitecturalDecision {
 }
 
 enum DecisionStatus {
-  PROPOSED = 'proposed',
-  UNDER_REVIEW = 'under_review',
-  APPROVED = 'approved',
-  REJECTED = 'rejected',
-  SUPERSEDED = 'superseded',
+  PROPOSED ='proposed,
+  UNDER_REVIEW ='under_review,
+  APPROVED ='approved,
+  REJECTED ='rejected,
+  SUPERSEDED ='superseded,
 }
 
 interface AlternativeEvaluation {
@@ -1025,16 +1022,16 @@ interface ArchitecturalComplianceReport {
 interface ComplianceViolation {
   readonly violationId: string;
   readonly type: string;
-  readonly severity: 'low|medium|high|critical;
+  readonly severity: low| medium| high'|'critical';
   readonly description: string;
   readonly recommendation: string;
 }
 
 enum ComponentOperation {
-  PROMOTE = 'promote',
-  DEPRECATE = 'deprecate',
-  RETIRE = 'retire',
-  UPDATE = 'update',
+  PROMOTE ='promote,
+  DEPRECATE ='deprecate,
+  RETIRE ='retire,
+  UPDATE ='update,
 }
 
 interface InvestmentPlan {
@@ -1073,8 +1070,8 @@ interface RunwayTimebox {
 interface RunwayRisk {
   readonly riskId: string;
   readonly description: string;
-  readonly probability: 'low' | 'medium' | 'high';
-  readonly impact: 'low' | 'medium' | 'high';
+  readonly probability:'low'|'medium'|'high';
+  readonly impact:'low'|'medium'|'high';
   readonly mitigation: string;
 }
 

@@ -24,7 +24,6 @@
 import { type ActorRefFrom, assign, createMachine, fromPromise } from 'xstate';
 import type { PortfolioEpic } from '../types';
 import { getLogger } from '../types';
-
 // Define missing interfaces locally
 interface BusinessCase {
   businessValue: {
@@ -49,7 +48,7 @@ interface EpicOwnerManagerConfig {
   epicTimeboxWeeks: number;
 }
 
-const logger = getLogger('EpicKanbanMachine');'
+const logger = getLogger('EpicKanbanMachine'');
 
 // ============================================================================
 // STATE MACHINE CONTEXT
@@ -75,7 +74,7 @@ export interface EpicKanbanContext {
 /**
  * Epic Kanban state machine events
  */
-export type EpicKanbanEvent =|{ type:'SUBMIT_FOR_ANALYSIS'; businessCase: BusinessCase }|{ type:'ANALYSIS_COMPLETE'; wsjfPriority: WSJFPriority }|{ type:'ANALYSIS_REJECTED'; reason: string }|{ type:'APPROVE_FOR_IMPLEMENTATION'}|{ type:'CAPACITY_AVAILABLE'}|{ type:'CAPACITY_FULL'}|{ type:'IMPLEMENTATION_STARTED'; startTime: Date }|{ type:'IMPLEMENTATION_BLOCKED'; blockers: string[] }|{ type:'UNBLOCK_IMPLEMENTATION'}|{ type:'IMPLEMENTATION_COMPLETE'}|{ type:'SPLIT_EPIC'; splitEpics: PortfolioEpic[] }|{ type:'CANCEL_EPIC'; reason: string }|{ type:'RETRY' };'
+export type EpicKanbanEvent =| { type: 'SUBMIT_FOR_ANALYSIS'; businessCase: BusinessCase }| { type: 'ANALYSIS_COMPLETE'; wsjfPriority: WSJFPriority }| { type: 'ANALYSIS_REJECTED'; reason: string }| { type:'APPROVE_FOR_IMPLEMENTATION}| { type:'CAPACITY_AVAILABLE}| { type:'CAPACITY_FULL}| { type: 'IMPLEMENTATION_STARTED'; startTime: Date }| { type: 'IMPLEMENTATION_BLOCKED'; blockers: string[] }| { type:'UNBLOCK_IMPLEMENTATION}| { type:'IMPLEMENTATION_COMPLETE}| { type: 'SPLIT_EPIC'; splitEpics: PortfolioEpic[] }| { type: 'CANCEL_EPIC'; reason: string }| { type: 'RETRY '};
 
 // ============================================================================
 // GUARDS (BUSINESS RULES)
@@ -154,7 +153,7 @@ const epicKanbanActions = {
     businessCase: ({
       event,
     }: {
-      event: Extract<EpicKanbanEvent, { type: 'SUBMIT_FOR_ANALYSIS' }>;'
+      event: Extract<EpicKanbanEvent, { type: 'SUBMIT_FOR_ANALYSIS '}>';
     }) => event.businessCase,
     analysisStartTime: () => new Date(),
     errorMessage: () => undefined,
@@ -167,7 +166,7 @@ const epicKanbanActions = {
     wsjfPriority: ({
       event,
     }: 
-      event: Extract<EpicKanbanEvent, { type: 'ANALYSIS_COMPLETE' }>;') => event.wsjfPriority,
+      event: Extract<EpicKanbanEvent, { type: 'ANALYSIS_COMPLETE '}>';) => event.wsjfPriority,
   }),
 
   /**
@@ -177,7 +176,7 @@ const epicKanbanActions = {
     errorMessage: ({
       event,
     }: 
-      event: Extract<EpicKanbanEvent, { type: 'ANALYSIS_REJECTED' }>;') => event.reason,
+      event: Extract<EpicKanbanEvent, { type: 'ANALYSIS_REJECTED '}>';) => event.reason,
   }),
 
   /**
@@ -187,7 +186,7 @@ const epicKanbanActions = {
     implementationStartTime: ({
       event,
     }: 
-      event: Extract<EpicKanbanEvent, { type: 'IMPLEMENTATION_STARTED' }>;') => event.startTime,
+      event: Extract<EpicKanbanEvent, { type: 'IMPLEMENTATION_STARTED '}>';) => event.startTime,
     currentCapacityUsage: (context ) => context.currentCapacityUsage + 1,
   }),
 
@@ -198,7 +197,7 @@ const epicKanbanActions = {
     blockers: ({
       event,
     }: 
-      event: Extract<EpicKanbanEvent, { type: 'IMPLEMENTATION_BLOCKED' }>;') => event.blockers,
+      event: Extract<EpicKanbanEvent, { type: 'IMPLEMENTATION_BLOCKED '}>';) => event.blockers,
   }),
 
   /**
@@ -251,8 +250,8 @@ const epicKanbanActions = {
  */
 export const epicKanbanMachine = createMachine(
   {
-    id: 'epicKanban',
-    initial: 'funnel',
+    id:'epicKanban,
+    initial:'funnel,
     context: {} as EpicKanbanContext,
 
     states: {
@@ -260,12 +259,12 @@ export const epicKanbanMachine = createMachine(
        * FUNNEL STATE - Ideas and opportunities
        */
       funnel: {
-        entry: 'logTransition',
+        entry:'logTransition,
         on: {
           SUBMIT_FOR_ANALYSIS: {
-            target: 'analyzing',
-            guard: 'businessCaseValid',
-            actions: 'startAnalysis',
+            target:'analyzing,
+            guard:'businessCaseValid,
+            actions:'startAnalysis,
           },
         },
       },
@@ -274,28 +273,28 @@ export const epicKanbanMachine = createMachine(
        * ANALYZING STATE - Business case analysis and WSJF calculation
        */
       analyzing: {
-        entry: 'logTransition',
+        entry:'logTransition,
         invoke: {
-          id: 'businessCaseAnalysis',
-          src: 'analyzeBusinessCase',
+          id:'businessCaseAnalysis,
+          src:'analyzeBusinessCase,
           onDone: {
-            target: 'portfolio_backlog',
-            actions: 'storeWSJFPriority',
+            target:'portfolio_backlog,
+            actions:'storeWSJFPriority,
           },
           onError: {
-            target: 'funnel',
-            actions: 'handleAnalysisRejection',
+            target:'funnel,
+            actions:'handleAnalysisRejection,
           },
         },
         on: {
           ANALYSIS_COMPLETE: {
-            target: 'portfolio_backlog',
-            guard: 'wsjfScoreAcceptable',
-            actions: 'storeWSJFPriority',
+            target:'portfolio_backlog,
+            guard:'wsjfScoreAcceptable,
+            actions:'storeWSJFPriority,
           },
           ANALYSIS_REJECTED: {
-            target: 'funnel',
-            actions: 'handleAnalysisRejection',
+            target:'funnel,
+            actions:'handleAnalysisRejection,
           },
         },
       },
@@ -304,15 +303,15 @@ export const epicKanbanMachine = createMachine(
        * PORTFOLIO BACKLOG STATE - Prioritized and ready for implementation
        */
       portfolio_backlog: {
-        entry: 'logTransition',
+        entry:'logTransition,
         on: {
           APPROVE_FOR_IMPLEMENTATION: {
-            target: 'implementing',
-            guard: 'capacityAvailable',
-            actions: 'startImplementation',
+            target:'implementing,
+            guard:'capacityAvailable,
+            actions:'startImplementation,
           },
-          CAPACITY_FULL: 'portfolio_backlog', // Stay in backlog'
-          SPLIT_EPIC: 'funnel', // Return to funnel for re-evaluation'
+          CAPACITY_FULL:'portfolio_backlog,// Stay in backlog
+          SPLIT_EPIC:'funnel,// Return to funnel for re-evaluation
         },
       },
 
@@ -320,20 +319,20 @@ export const epicKanbanMachine = createMachine(
        * IMPLEMENTING STATE - Active development
        */
       implementing: {
-        entry: 'logTransition',
-        initial: 'active',
+        entry:'logTransition,
+        initial:'active,
 
         states: {
           active: {
             on: {
               IMPLEMENTATION_BLOCKED: {
-                target: 'blocked',
-                actions: 'addBlockers',
+                target:'blocked,
+                actions:'addBlockers,
               },
               IMPLEMENTATION_COMPLETE: {
-                target: '#epicKanban.done',
-                guard: 'withinTimebox',
-                actions: 'completeEpic',
+                target:'#epicKanban.done,
+                guard:'withinTimebox,
+                actions:'completeEpic,
               },
             },
           },
@@ -341,17 +340,17 @@ export const epicKanbanMachine = createMachine(
           blocked: {
             on: {
               UNBLOCK_IMPLEMENTATION: {
-                target: 'active',
-                guard: 'noBlockers',
-                actions: 'clearBlockers',
+                target:'active,
+                guard:'noBlockers,
+                actions:'clearBlockers,
               },
             },
           },
         },
 
         on: {
-          CANCEL_EPIC: 'funnel',
-          SPLIT_EPIC: 'funnel',
+          CANCEL_EPIC:'funnel,
+          SPLIT_EPIC:'funnel,
         },
       },
 
@@ -359,15 +358,15 @@ export const epicKanbanMachine = createMachine(
        * DONE STATE - Epic completed and value delivered
        */
       done: {
-        entry: ['logTransition', 'completeEpic'],
-        type: 'final',
+        entry: ['logTransition,'completeEpic'],
+        type:'final,
       },
     },
 
     // Global transitions available from any state
     on: {
-      CANCEL_EPIC: 'funnel',
-      RETRY: 'funnel',
+      CANCEL_EPIC:'funnel,
+      RETRY:'funnel,
     },
   },
   {
@@ -379,7 +378,7 @@ export const epicKanbanMachine = createMachine(
       analyzeBusinessCase: fromPromise(
         async ({ input }: { input: EpicKanbanContext }) => {
           // Mock business case analysis - replace with actual implementation
-          await new Promise((resolve) => setTimeout(resolve, 2000));
+          await new Promise((resolve) => setTimeout(resolve, 2000);
 
           const wsjfPriority: WSJFPriority = {
             epicId: input.epic.id,
@@ -433,7 +432,7 @@ export function createEpicKanbanMachine(
         analyzeBusinessCase: fromPromise(
           async ({ input }: { input: EpicKanbanContext }) => {
             // Mock business case analysis - replace with actual implementation
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            await new Promise((resolve) => setTimeout(resolve, 2000);
 
             const wsjfPriority: WSJFPriority = {
               epicId: input.epic.id,

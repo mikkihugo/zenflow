@@ -13,7 +13,6 @@
  */
 
 import { assign } from 'xstate';
-
 // =============================================================================
 // TASK MANAGEMENT ACTIONS
 // =============================================================================
@@ -23,8 +22,7 @@ import { assign } from 'xstate';
  */
 export const addTask = assign({
   tasks: ({ context, event }) => {
-    if (event.type !== 'TASK_CREATED') return context.tasks;'
-
+    if (event.type !== 'TASK_CREATED)return context.tasks';
     return {
       ...context.tasks,
       [event.task.id]: event.task,
@@ -32,8 +30,7 @@ export const addTask = assign({
   },
 
   tasksByState: ({ context, event }) => {
-    if (event.type !== 'TASK_CREATED') return context.tasksByState;'
-
+    if (event.type !== 'TASK_CREATED)return context.tasksByState';
     const state = event.task.state;
     return {
       ...context.tasksByState,
@@ -47,8 +44,7 @@ export const addTask = assign({
  */
 export const moveTask = assign({
   tasks: ({ context, event }) => {
-    if (event.type !== 'TASK_MOVED') return context.tasks;'
-
+    if (event.type !== 'TASK_MOVED)return context.tasks';
     const task = context.tasks[event.taskId];
     if (!task) return context.tasks;
 
@@ -63,8 +59,7 @@ export const moveTask = assign({
   },
 
   tasksByState: ({ context, event }) => {
-    if (event.type !== 'TASK_MOVED') return context.tasksByState;'
-
+    if (event.type !== 'TASK_MOVED)return context.tasksByState';
     return {
       ...context.tasksByState,
       [event.fromState]: context.tasksByState[event.fromState].filter(
@@ -80,8 +75,7 @@ export const moveTask = assign({
  */
 export const updateTask = assign({
   tasks: ({ context, event }) => {
-    if (event.type !== 'TASK_UPDATED') return context.tasks;'
-
+    if (event.type !== 'TASK_UPDATED)return context.tasks';
     const task = context.tasks[event.taskId];
     if (!task) return context.tasks;
 
@@ -105,8 +99,7 @@ export const updateTask = assign({
  */
 export const recordWIPViolation = assign({
   wipViolations: ({ context, event }) => {
-    if (event.type !== 'WIP_LIMIT_EXCEEDED') return context.wipViolations;'
-
+    if (event.type !== 'WIP_LIMIT_EXCEEDED)return context.wipViolations';
     const violation = {
       state: event.state,
       count: event.count,
@@ -119,8 +112,7 @@ export const recordWIPViolation = assign({
   },
 
   systemHealth: ({ context, event }) => {
-    if (event.type !== 'WIP_LIMIT_EXCEEDED') return context.systemHealth;'
-
+    if (event.type !== 'WIP_LIMIT_EXCEEDED)return context.systemHealth';
     // Reduce system health on WIP violations
     return Math.max(0, context.systemHealth - 0.1);
   },
@@ -131,8 +123,7 @@ export const recordWIPViolation = assign({
  */
 export const updateWIPLimits = assign({
   wipLimits: ({ context, event }) => {
-    if (event.type !== 'WIP_LIMITS_UPDATED') return context.wipLimits;'
-
+    if (event.type !== 'WIP_LIMITS_UPDATED)return context.wipLimits';
     return {
       ...context.wipLimits,
       ...event.wipLimits,
@@ -149,8 +140,7 @@ export const updateWIPLimits = assign({
  */
 export const addBottleneck = assign({
   activeBottlenecks: ({ context, event }) => {
-    if (event.type !== 'BOTTLENECK_DETECTED') return context.activeBottlenecks;'
-
+    if (event.type !== 'BOTTLENECK_DETECTED)return context.activeBottlenecks';
     // Check if bottleneck already exists
     const existingIndex = context.activeBottlenecks.findIndex(
       (b: any) => b.id === event.bottleneck.id
@@ -168,13 +158,11 @@ export const addBottleneck = assign({
   },
 
   systemHealth: ({ context, event }) => {
-    if (event.type !== 'BOTTLENECK_DETECTED') return context.systemHealth;'
-
+    if (event.type !== 'BOTTLENECK_DETECTED)return context.systemHealth';
     // Reduce system health based on bottleneck severity
     const severity = event.bottleneck.severity;
     const healthImpact =
-      severity === 'critical' ? 0.3 : severity === 'high' ? 0.2 : 0.1;'
-
+      severity ==='critical '? 0.3 : severity ==='high '? 0.2 : 0.1';
     return Math.max(0, context.systemHealth - healthImpact);
   },
 });
@@ -184,16 +172,14 @@ export const addBottleneck = assign({
  */
 export const resolveBottleneck = assign({
   activeBottlenecks: ({ context, event }) => {
-    if (event.type !== 'BOTTLENECK_RESOLVED') return context.activeBottlenecks;'
-
+    if (event.type !== 'BOTTLENECK_RESOLVED)return context.activeBottlenecks';
     return context.activeBottlenecks.filter(
       (b: any) => b.id !== event.bottleneckId
     );
   },
 
   bottleneckHistory: ({ context, event }) => {
-    if (event.type !== 'BOTTLENECK_RESOLVED') return context.bottleneckHistory;'
-
+    if (event.type !== 'BOTTLENECK_RESOLVED)return context.bottleneckHistory';
     const resolvedBottleneck = context.activeBottlenecks.find(
       (b: any) => b.id === event.bottleneckId
     );
@@ -227,14 +213,12 @@ export const resolveBottleneck = assign({
  */
 export const updateFlowMetrics = assign({
   currentMetrics: ({ context, event }) => {
-    if (event.type !== 'FLOW_ANALYSIS_COMPLETE') return context.currentMetrics;'
-
+    if (event.type !== 'FLOW_ANALYSIS_COMPLETE)return context.currentMetrics';
     return event.metrics;
   },
 
   metricsHistory: ({ context, event }) => {
-    if (event.type !== 'FLOW_ANALYSIS_COMPLETE') return context.metricsHistory;'
-
+    if (event.type !== 'FLOW_ANALYSIS_COMPLETE)return context.metricsHistory';
     const historyEntry = {
       timestamp: new Date(),
       metrics: event.metrics,
@@ -254,14 +238,12 @@ export const updateFlowMetrics = assign({
  */
 export const recordOptimization = assign({
   lastOptimization: ({ event }) => {
-    if (event.type !== 'OPTIMIZATION_TRIGGERED') return null;'
-
+    if (event.type !== 'OPTIMIZATION_TRIGGERED)return null';
     return new Date();
   },
 
   optimizationStrategy: ({ event }) => {
-    if (event.type !== 'OPTIMIZATION_TRIGGERED') return null;'
-
+    if (event.type !== 'OPTIMIZATION_TRIGGERED)return null';
     return event.strategy;
   },
 
@@ -280,9 +262,8 @@ export const recordOptimization = assign({
  */
 export const updateSystemHealth = assign({
   systemHealth: ({ context, event }) => {
-    if (event.type !== 'SYSTEM_HEALTH_UPDATED') return context.systemHealth;'
-
-    return Math.max(0, Math.min(1.0, event.health));
+    if (event.type !== 'SYSTEM_HEALTH_UPDATED)return context.systemHealth';
+    return Math.max(0, Math.min(1.0, event.health);
   },
 });
 
@@ -295,8 +276,7 @@ export const updateSystemHealth = assign({
  */
 export const recordError = assign({
   errors: ({ context, event }) => {
-    if (event.type !== 'ERROR_OCCURRED') return context.errors;'
-
+    if (event.type !== 'ERROR_OCCURRED)return context.errors';
     const errorEntry = {
       timestamp: new Date(),
       error: event.error,
@@ -322,8 +302,7 @@ export const recordError = assign({
  */
 export const updateConfiguration = assign({
   config: ({ context, event }) => {
-    if (event.type !== 'CONFIGURATION_UPDATED') return context.config;'
-
+    if (event.type !== 'CONFIGURATION_UPDATED)return context.config';
     return {
       ...context.config,
       ...event.config,

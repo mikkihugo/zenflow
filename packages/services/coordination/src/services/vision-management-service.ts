@@ -12,7 +12,7 @@
  * 🔗 **VISION HIERARCHY:**
  * - Solution Vision: High-level solution description
  * - ART Vision: How the ART contributes to solution
- * - Team Vision: Team's role within ART vision'
+ * - Team Vision: Team's role within ART vision
  *
  * 🔄 **VISION LIFECYCLE:**
  * - Creation → Review → Approval → Evolution → Alignment Check
@@ -26,14 +26,13 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { getDatabaseSystem } from '@claude-zen/infrastructure';
+import { DatabaseProvider } from '@claude-zen/database';
 import type { TaskApprovalSystem } from '../agui/task-approval-system.js';
 import type {
   CompleteSafeFlowIntegration,
 } from '../integrations/complete-safe-flow-integration.js';
 import type { ApprovalGateId, UserId } from '../types/index.js';
-
-const _logger = getLogger('VisionManagementService');'
+const _logger = getLogger('VisionManagementService'');
 
 // ============================================================================
 // VISION MANAGEMENT TYPES
@@ -43,21 +42,21 @@ const _logger = getLogger('VisionManagementService');'
  * Vision hierarchy levels in SAFe
  */
 export enum VisionLevel {
-  SOLUTION = 'solution', // Highest level - complete solution'
-  ART = 'art', // ART level - how ART contributes'
-  TEAM = 'team', // Team level - team's specific role'
+  SOLUTION ='solution,// Highest level - complete solution
+  ART ='art,// ART level - how ART contributes
+  TEAM ='team,// Team level - team's specific role
 }
 
 /**
  * Vision lifecycle states
  */
 export enum VisionState {
-  DRAFT = 'draft', // Being created'
-  REVIEW = 'review', // Under stakeholder review'
-  APPROVED = 'approved', // Approved for use'
-  ACTIVE = 'active', // Currently guiding work'
-  EVOLVING = 'evolving', // Being updated/refined'
-  ARCHIVED = 'archived', // No longer active'
+  DRAFT ='draft,// Being created
+  REVIEW ='review,// Under stakeholder review
+  APPROVED ='approved,// Approved for use
+  ACTIVE ='active,// Currently guiding work
+  EVOLVING ='evolving,// Being updated/refined
+  ARCHIVED ='archived,// No longer active
 }
 
 /**
@@ -93,8 +92,8 @@ export interface VisionArtifact {
   stakeholders: Array<{
     role: string;
     name: string;
-    influence: 'high' | 'medium' | 'low';
-    commitment: 'champion|supporter|neutral|skeptic;
+    influence:'high'|'medium'|'low';
+    commitment:'champion| supporter| neutral'|'skeptic';
   }>;
 
   // Governance
@@ -112,7 +111,7 @@ export interface VisionArtifact {
   // Metadata
   tags: string[];
   attachments: Array<{
-    type: 'document|image|video|link;
+    type:'document| image| video'|'link';
     url: string;
     description: string;
   }>;
@@ -177,7 +176,7 @@ export interface VisionAlignment {
   alignmentGaps: Array<{
     area: string;
     gap: string;
-    impact: 'high' | 'medium' | 'low';
+    impact:'high'|'medium'|'low';
     recommendation: string;
   }>;
 
@@ -186,7 +185,7 @@ export interface VisionAlignment {
     action: string;
     owner: UserId;
     dueDate: Date;
-    priority: 'high' | 'medium' | 'low';
+    priority: high'|'medium'|'low';
   }>;
 
   overallScore: number;
@@ -202,7 +201,7 @@ export interface VisionAlignment {
  * Manages vision artifacts, approval workflows, and alignment tracking
  */
 export class VisionManagementService {
-  private readonly logger = getLogger('VisionManagementService');'
+  private readonly logger = getLogger('VisionManagementService'');
 
   // State management
   private visions = new Map<string, VisionArtifact>();
@@ -221,11 +220,11 @@ export class VisionManagementService {
    */
   async initialize(): Promise<void> {
     try {
-      this.logger.info('Initializing Vision Management Service...');'
+      this.logger.info('Initializing Vision Management Service...'');
 
       // Initialize database
-      const dbSystem = await getDatabaseSystem();
-      this.database = dbSystem.createProvider('sql');'
+      const dbSystem = await DatabaseProvider.create();
+      this.database = dbSystem.createProvider('sql'');
 
       // Create vision management tables
       await this.createVisionTables();
@@ -233,13 +232,13 @@ export class VisionManagementService {
       // Load existing visions
       await this.loadExistingVisions();
 
-      this.logger.info('Vision Management Service initialized successfully', {'
+      this.logger.info('Vision Management Service initialized successfully,{
         visionsLoaded: this.visions.size,
         visionBoardsLoaded: this.visionBoards.size,
       });
     } catch (error) {
       this.logger.error(
-        'Failed to initialize Vision Management Service',
+       'Failed to initialize Vision Management Service,
         error
       );
       throw error;
@@ -274,7 +273,7 @@ export class VisionManagementService {
   }> {
     const _visionId = `vision-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;`
 
-    this.logger.info('Creating new vision artifact', {'
+    this.logger.info('Creating new vision artifact,{
       visionId,
       level: visionData.level,
       title: visionData.title,
@@ -342,7 +341,7 @@ export class VisionManagementService {
     requestContext: {
       userId: UserId;
       reason: string;
-      changeImpact: 'minor' | 'major' | 'breaking';
+      changeImpact:'minor'|'major'|'breaking';
     }
   ): Promise<{
     success: boolean;
@@ -354,7 +353,7 @@ export class VisionManagementService {
       throw new Error(`Vision not found: $_visionId`);`
     }
 
-    this.logger.info('Updating vision artifact', {'
+    this.logger.info('Updating vision artifact,{
       visionId,
       changeImpact: requestContext.changeImpact,
       updatedBy: requestContext.userId,
@@ -414,8 +413,8 @@ export class VisionManagementService {
       id: visionBoardId,
       visionId,
       visionCanvas: visionCanvasData.visionCanvas,
-      personas: visionCanvasData.personas||[],
-      customerJourney: visionCanvasData.customerJourney||[],
+      personas: visionCanvasData.personas|| [],
+      customerJourney: visionCanvasData.customerJourney|| [],
       createdAt: new Date(),
       lastUpdatedAt: new Date(),
     };
@@ -423,7 +422,7 @@ export class VisionManagementService {
     this.visionBoards.set(visionBoardId, visionBoard);
     await this.persistVisionBoard(visionBoard);
 
-    this.logger.info('Vision board created', {'
+    this.logger.info('Vision board created,{
       visionBoardId,
       visionId,
       createdBy: requestContext.userId,
@@ -462,7 +461,7 @@ export class VisionManagementService {
       throw new Error(`Vision not found: ${visionId}`);`
     }
 
-    this.logger.info('Assessing vision alignment', {'
+    this.logger.info('Assessing vision alignment,{
       visionId,
       stakeholderCount: assessmentContext.stakeholderFeedback.length,
       teamCount: assessmentContext.teamFeedback.length,
@@ -496,7 +495,7 @@ export class VisionManagementService {
     );
 
     const criticalIssues = alignmentGaps
-      .filter((gap) => gap.impact === 'high')'
+      .filter((gap) => gap.impact ==='high')
       .map((gap) => gap.gap);
 
     // Create alignment assessment
@@ -518,7 +517,7 @@ export class VisionManagementService {
 
     // Store alignment assessment
     const alignmentId = `alignment-$visionId-$Date.now()`;`
-    const existingAssessments = this.alignmentAssessments.get(visionId)||[];
+    const existingAssessments = this.alignmentAssessments.get(visionId)|| [];
     existingAssessments.push(alignment);
     this.alignmentAssessments.set(visionId, existingAssessments);
 
@@ -566,70 +565,70 @@ export class VisionManagementService {
 
   private async createVisionTables(): Promise<void> 
     // Create vision artifacts table
-    await this.database.schema.createTableIfNotExists('vision_artifacts',
+    await this.database.schema.createTableIfNotExists('vision_artifacts,
       (table: any) => {
-        table.string('id').primary();'
-        table.string('level').notNullable();'
-        table.string('state').notNullable();'
-        table.string('title').notNullable();'
-        table.text('description');'
-        table.text('vision_statement').notNullable();'
-        table.text('problem_statement');'
-        table.json('target_customers');'
-        table.text('value_proposition');'
-        table.json('success_metrics');'
-        table.string('parent_vision_id').nullable();'
-        table.json('child_vision_ids');'
-        table.json('strategic_theme_alignment');'
-        table.json('architectural_requirements');'
-        table.json('stakeholders');'
-        table.string('approval_gate_id').nullable();'
-        table.string('owner').notNullable();'
-        table.json('contributors');'
-        table.json('reviewers');'
-        table.timestamp('created_at').notNullable();'
-        table.timestamp('last_updated_at').notNullable();'
-        table.timestamp('approved_at').nullable();'
-        table.timestamp('next_review_date').notNullable();'
-        table.json('tags');'
-        table.json('attachments');'
-        table.index(['level', 'state']);'
-        table.index(['owner']);'
-        table.index(['parent_vision_id']);'
+        table.string('id').primary(');
+        table.string('level').notNullable(');
+        table.string('state').notNullable(');
+        table.string('title').notNullable(');
+        table.text('description'');
+        table.text('vision_statement').notNullable(');
+        table.text('problem_statement'');
+        table.json('target_customers'');
+        table.text('value_proposition'');
+        table.json('success_metrics'');
+        table.string('parent_vision_id').nullable(');
+        table.json('child_vision_ids'');
+        table.json('strategic_theme_alignment'');
+        table.json('architectural_requirements'');
+        table.json('stakeholders'');
+        table.string('approval_gate_id').nullable(');
+        table.string('owner').notNullable(');
+        table.json('contributors'');
+        table.json('reviewers'');
+        table.timestamp('created_at').notNullable(');
+        table.timestamp('last_updated_at').notNullable(');
+        table.timestamp('approved_at').nullable(');
+        table.timestamp('next_review_date').notNullable(');
+        table.json('tags'');
+        table.json('attachments'');
+        table.index(['level,'state]);
+        table.index(['owner]);
+        table.index(['parent_vision_id]);
       }
     );
 
     // Create vision boards table
     await this.database.schema.createTableIfNotExists(
-      'vision_boards',
+     'vision_boards,
       (table: any) => {
-        table.string('id').primary();'
-        table.string('vision_id').notNullable();'
-        table.json('vision_canvas').notNullable();'
-        table.json('personas');'
-        table.json('customer_journey');'
-        table.timestamp('created_at').notNullable();'
-        table.timestamp('last_updated_at').notNullable();'
-        table.index(['vision_id']);'
+        table.string('id').primary(');
+        table.string('vision_id').notNullable(');
+        table.json('vision_canvas').notNullable(');
+        table.json('personas'');
+        table.json('customer_journey'');
+        table.timestamp('created_at').notNullable(');
+        table.timestamp('last_updated_at').notNullable(');
+        table.index(['vision_id]);
       }
     );
 
     // Create vision alignment assessments table
     await this.database.schema.createTableIfNotExists(
-      'vision_alignments',
+     'vision_alignments,
       (table: any) => {
-        table.string('id').primary();'
-        table.string('vision_id').notNullable();'
-        table.timestamp('assessment_date').notNullable();'
-        table.integer('strategic_alignment').notNullable();'
-        table.integer('stakeholder_alignment').notNullable();'
-        table.integer('team_alignment').notNullable();'
-        table.integer('architectural_alignment').notNullable();'
-        table.json('alignment_gaps');'
-        table.json('alignment_actions');'
-        table.integer('overall_score').notNullable();'
-        table.json('recommendations');'
-        table.index(['vision_id', 'assessment_date']);'
+        table.string('id').primary(');
+        table.string('vision_id').notNullable(');
+        table.timestamp('assessment_date').notNullable(');
+        table.integer('strategic_alignment').notNullable(');
+        table.integer('stakeholder_alignment').notNullable(');
+        table.integer('team_alignment').notNullable(');
+        table.integer('architectural_alignment').notNullable(');
+        table.json('alignment_gaps'');
+        table.json('alignment_actions'');
+        table.integer('overall_score').notNullable(');
+        table.json('recommendations'');
+        table.index(['vision_id,'assessment_date]);
       }
     );
 
@@ -639,12 +638,12 @@ export class VisionManagementService {
   ): Promise<ApprovalGateId> 
     return await this.taskApprovalSystem.createApprovalTask({
       id: `vision-approval-${vision.id}`,`
-      taskType: 'vision_approval',
+      taskType:'vision_approval,
       title: `Vision Approval: ${vision.title}`,`
       description: `Review and approve vision for ${vision.level} level`,`
       context: {
         vision,
-        approvalType: 'new_vision',
+        approvalType:'new_vision,
         requestReason: requestContext.reason,
       },
       approvers: vision.reviewers,
@@ -659,11 +658,11 @@ export class VisionManagementService {
   private determineReviewers(level: VisionLevel): UserId[] 
     switch (level) {
       case VisionLevel.SOLUTION:
-        return ['business-owner-1', 'solution-architect-1', 'rte-1'];'
+        return ['business-owner-1,'solution-architect-1,'rte-1];
       case VisionLevel.ART:
-        return ['rte-1', 'product-manager-1', 'system-architect-1'];'
+        return ['rte-1,'product-manager-1,'system-architect-1];
       case VisionLevel.TEAM:
-        return ['product-owner-1', 'scrum-master-1', 'tech-lead-1'];'
+        return ['product-owner-1,'scrum-master-1,'tech-lead-1];
       default:
         return [];
     }
@@ -687,16 +686,16 @@ export class VisionManagementService {
     changeImpact: string
   ): boolean {
     // Major or breaking changes require new approval
-    if (changeImpact === 'major'||changeImpact ==='breaking') {'
+    if (changeImpact ==='major'|| changeImpact ===breaking){
       return true;
     }
 
     // Changes to core vision elements require approval
     const coreFields = [
-      'visionStatement',
-      'valueProposition',
-      'targetCustomers',
-      'successMetrics',
+     'visionStatement,
+     'valueProposition,
+     'targetCustomers,
+     'successMetrics,
     ];
     return coreFields.some((field) => updates[field] !== undefined);
   }
@@ -748,18 +747,18 @@ export class VisionManagementService {
 
     if (stakeholder < 70)
       gaps.push({
-        area: 'Stakeholder Alignment',
-        gap: 'Low stakeholder buy-in',
-        impact: 'high',
-        recommendation: 'Conduct stakeholder alignment sessions',
+        area:'Stakeholder Alignment,
+        gap:'Low stakeholder buy-in,
+        impact:'high,
+        recommendation:'Conduct stakeholder alignment sessions,
       });
 
     if (team < 70)
       gaps.push({
-        area: 'Team Alignment',
-        gap: 'Teams unclear on vision',
-        impact: 'high',
-        recommendation: 'Run team vision workshops',
+        area:'Team Alignment,
+        gap:'Teams unclear on vision,
+        impact:'high,
+        recommendation:'Run team vision workshops,
       });
 
     return gaps;
@@ -768,10 +767,10 @@ export class VisionManagementService {
   private generateAlignmentActions(gaps: any[]): any[] 
     return gaps.map((gap) => ({
       action: gap.recommendation,
-      owner: 'product-owner-1',
+      owner:'product-owner-1,
       dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
       priority: gap.impact,
-    }));
+    });
 
   private generateAlignmentRecommendations(
     score: number,
@@ -781,15 +780,15 @@ export class VisionManagementService {
 
     if (score < 70) {
       recommendations.push(
-        'Critical alignment issues need immediate attention''
+       'Critical alignment issues need immediate attention'
       );
-      recommendations.push('Consider vision refinement workshop');'
+      recommendations.push('Consider vision refinement workshop'');
     } else if (score < 85) {
-      recommendations.push('Good alignment with room for improvement');'
-      recommendations.push('Address specific gaps identified');'
+      recommendations.push('Good alignment with room for improvement'');
+      recommendations.push('Address specific gaps identified'');
     } else {
-      recommendations.push('Strong alignment across all areas');'
-      recommendations.push('Continue regular alignment checks');'
+      recommendations.push('Strong alignment across all areas'');
+      recommendations.push('Continue regular alignment checks'');
     }
 
     return recommendations;
@@ -797,7 +796,7 @@ export class VisionManagementService {
 
   // Persistence and loading methods (simplified)
   private async persistVision(vision: VisionArtifact): Promise<void> 
-    await this.database('vision_artifacts')'
+    await this.database('vision_artifacts')
       .insert(
         id: vision.id,
         level: vision.level,
@@ -828,15 +827,15 @@ export class VisionManagementService {
         next_review_date: vision.nextReviewDate,
         tags: JSON.stringify(vision.tags),
         attachments: JSON.stringify(vision.attachments),)
-      .onConflict('id')'
+      .onConflict('id')
       .merge();
 
   private async loadExistingVisions(): Promise<void> 
     // Load from database
-    this.logger.info('Loading existing visions from database...');'
+    this.logger.info('Loading existing visions from database...'');
 
   private async persistVisionBoard(visionBoard: VisionBoard): Promise<void> 
-    await this.database('vision_boards')'
+    await this.database('vision_boards')
       .insert(
         id: visionBoard.id,
         vision_id: visionBoard.visionId,
@@ -845,14 +844,14 @@ export class VisionManagementService {
         customer_journey: JSON.stringify(visionBoard.customerJourney),
         created_at: visionBoard.createdAt,
         last_updated_at: visionBoard.lastUpdatedAt,)
-      .onConflict('id')'
+      .onConflict('id')
       .merge();
 
   private async persistVisionAlignment(
     alignmentId: string,
     alignment: VisionAlignment
   ): Promise<void> 
-    await this.database('vision_alignments').insert({'
+    await this.database('vision_alignments').insert({
       id: alignmentId,
       vision_id: alignment.visionId,
       assessment_date: alignment.assessmentDate,

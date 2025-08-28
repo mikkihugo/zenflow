@@ -24,7 +24,6 @@
  */
 
 import type { Logger } from '@claude-zen/foundation';
-
 // ============================================================================
 // CAPACITY PLANNING INTERFACES
 // ============================================================================
@@ -46,17 +45,17 @@ export interface TeamCapacity {
 export interface TeamMember {
   readonly memberId: string;
   readonly name: string;
-  readonly role:|developer|tester|architect|analyst|designer|'devops;
+  readonly role:| developer| tester| architect| analyst| designer|'devops';
   readonly capacity: number; // individual capacity
   readonly skills: string[];
-  readonly experience: 'junior|mid|senior|expert;
+  readonly experience:'junior| mid| senior'|'expert';
   readonly availability: number; // 0-1, percentage availability for PI
   readonly crossTrainingAreas: string[];
 }
 
 export interface TeamSkill {
   readonly skillName: string;
-  readonly proficiency: 'basic|intermediate|advanced|expert;
+  readonly proficiency:'basic| intermediate| advanced'|'expert';
   readonly memberCount: number; // number of team members with this skill
   readonly capacity: number; // capacity available for this skill
   readonly critical: boolean; // is this a critical bottleneck skill
@@ -69,7 +68,7 @@ export interface FeatureAllocationRequest {
   readonly businessValue: number; // 1-100 scale
   readonly complexity: number; // story points or similar
   readonly requiredSkills: string[];
-  readonly priority: 'critical|high|medium|low;
+  readonly priority: critical| high| medium'|'low';
   readonly dependencies: string[];
   readonly acceptanceCriteria: string[];
   readonly estimatedDuration: number; // in iterations
@@ -92,17 +91,17 @@ export interface TeamAllocation {
 export interface SkillMatch {
   readonly skill: string;
   readonly required: boolean;
-  readonly proficiencyRequired:|basic|intermediate|advanced|'expert;
-  readonly proficiencyAvailable:|basic|intermediate|advanced|'expert;
+  readonly proficiencyRequired:| basic| intermediate| advanced|'expert';
+  readonly proficiencyAvailable:| basic| intermediate| advanced|'expert';
   readonly memberCount: number;
-  readonly matchQuality: 'perfect|good|adequate|poor;
+  readonly matchQuality:'perfect| good| adequate'|'poor';
 }
 
 export interface AllocationRisk {
-  readonly riskType:|capacity|skill|dependency|timeline|'quality;
+  readonly riskType:| capacity| skill| dependency| timeline|'quality';
   readonly description: string;
   readonly probability: number; // 0-1
-  readonly impact: 'low|medium|high|critical;
+  readonly impact:'low| medium| high'|'critical';
   readonly mitigation: string;
   readonly owner: string;
 }
@@ -122,11 +121,11 @@ export interface CapacityPlanningResult {
 
 export interface CapacityRisk {
   readonly riskId: string;
-  readonly type:|overallocation|underutilization|skill_gap|dependency|'timeline;
+  readonly type:| overallocation| underutilization| skill_gap| dependency|'timeline';
   readonly description: string;
   readonly impact: string;
   readonly mitigation: string;
-  readonly severity: 'low|medium|high|critical;
+  readonly severity: low| medium| high'|'critical';
   readonly affectedTeams: string[];
   readonly affectedFeatures: string[];
   readonly dueDate: Date;
@@ -134,13 +133,13 @@ export interface CapacityRisk {
 
 export interface CapacityRecommendation {
   readonly recommendationId: string;
-  readonly type:|rebalancing|skill_development|scope_adjustment|'timeline_adjustment;
+  readonly type:| rebalancing| skill_development| scope_adjustment|'timeline_adjustment';
   readonly title: string;
   readonly description: string;
   readonly benefits: string[];
-  readonly effort: 'low' | 'medium' | 'high';
+  readonly effort:'low'|'medium'|'high';
   readonly timeline: string;
-  readonly priority: 'critical|high|medium|low;
+  readonly priority: critical| high| medium'|'low';
   readonly implementation: RecommendationImplementation;
 }
 
@@ -255,10 +254,10 @@ export class CapacityPlanningService extends EventBus {
       this.factSystem = this.createFactSystemFallback();
 
       this.initialized = true;
-      this.logger.info('Capacity Planning Service initialized successfully');'
+      this.logger.info('Capacity Planning Service initialized successfully'');
     } catch (error) {
       this.logger.error(
-        'Failed to initialize Capacity Planning Service:',
+       'Failed to initialize Capacity Planning Service:,
         error
       );
       throw error;
@@ -271,11 +270,11 @@ export class CapacityPlanningService extends EventBus {
   async calculateTeamCapacities(teams: any[]): Promise<TeamCapacity[]> {
     if (!this.initialized) this.initialize();
 
-    this.logger.info('Calculating team capacities', {'
+    this.logger.info('Calculating team capacities,{
       teamCount: teams.length,
     });
 
-    const _timer = this.performanceTracker.startTimer('capacity_calculation');'
+    const _timer = this.performanceTracker.startTimer('capacity_calculation'');
 
     try {
       const capacities: TeamCapacity[] = [];
@@ -297,18 +296,18 @@ export class CapacityPlanningService extends EventBus {
             capacityAnalysis
           ),
           velocity:
-            capacityAnalysis.historicalVelocity || this.estimateVelocity(team),
+            capacityAnalysis.historicalVelocity|| this.estimateVelocity(team),
           members: this.processTeamMembers(team.members),
           skills: this.analyzeTeamSkills(team.members),
-          commitmentReliability: capacityAnalysis.commitmentReliability || 0.85,
-          focusFactor: capacityAnalysis.focusFactor || 0.7,
+          commitmentReliability: capacityAnalysis.commitmentReliability|| 0.85,
+          focusFactor: capacityAnalysis.focusFactor|| 0.7,
           innovationCapacity: this.calculateInnovationCapacity(team),
           bufferCapacity: this.calculateBufferCapacity(team),
         };
 
         // Store capacity facts for future analysis
         await this.factSystem.storeFact({
-          type:'team_capacity',
+          type:'team_capacity,
           entity: team.id,
           properties: {
             totalCapacity: teamCapacity.totalCapacity,
@@ -317,32 +316,32 @@ export class CapacityPlanningService extends EventBus {
             memberCount: teamCapacity.members.length,
             skillCount: teamCapacity.skills.length,
           },
-          confidence: capacityAnalysis.confidence || 0.8,
-          source:'capacity-planning-service',
+          confidence: capacityAnalysis.confidence|| 0.8,
+          source:'capacity-planning-service,
         });
 
         capacities.push(teamCapacity);
         this.teamCapacities.set(team.id, teamCapacity);
       }
 
-      this.performanceTracker.endTimer('capacity_calculation');'
+      this.performanceTracker.endTimer('capacity_calculation'');
 
-      this.emit('team-capacities-calculated', '
+      this.emit('team-capacities-calculated,
         teamCount: capacities.length,
         totalCapacity: capacities.reduce((sum, c) => sum + c.totalCapacity, 0),
         averageVelocity:
           capacities.reduce((sum, c) => sum + c.velocity, 0) /
           capacities.length,);
 
-      this.logger.info('Team capacities calculated successfully', {'
+      this.logger.info('Team capacities calculated successfully,{
         teamCount: capacities.length,
         totalCapacity: capacities.reduce((sum, c) => sum + c.totalCapacity, 0),
       });
 
       return capacities;
     } catch (error) {
-      this.performanceTracker.endTimer('capacity_calculation');'
-      this.logger.error('Team capacity calculation failed:', error);'
+      this.performanceTracker.endTimer('capacity_calculation'');
+      this.logger.error('Team capacity calculation failed:,error');
       throw error;
     }
   }
@@ -356,12 +355,12 @@ export class CapacityPlanningService extends EventBus {
   ): Promise<CapacityPlanningResult> {
     if (!this.initialized) this.initialize();
 
-    this.logger.info('Implementing capacity planning', {'
+    this.logger.info('Implementing capacity planning,{
       teamCount: teamCapacities.length,
       featureCount: features.length,
     });
 
-    const _timer = this.performanceTracker.startTimer('capacity_planning');'
+    const _timer = this.performanceTracker.startTimer('capacity_planning'');
 
     try {
       // Initialize planning result
@@ -428,7 +427,7 @@ export class CapacityPlanningService extends EventBus {
 
           // Store allocation facts
           await this.factSystem.storeFact({
-            type: 'feature_allocation',
+            type:'feature_allocation,
             entity: feature.featureId,
             properties: {
               teamId: allocation.teamId,
@@ -438,11 +437,11 @@ export class CapacityPlanningService extends EventBus {
               riskCount: allocation.risks.length,
             },
             confidence: allocation.confidence,
-            source: 'capacity-planning-service',
+            source:'capacity-planning-service,
           });
         } else {
           planningResult.unallocatedFeatures.push(feature);
-          this.logger.warn('Feature allocation failed', {'
+          this.logger.warn('Feature allocation failed,{
             featureId: feature.featureId,
             featureName: feature.featureName,
             complexity: feature.complexity,
@@ -480,24 +479,24 @@ export class CapacityPlanningService extends EventBus {
         planningResult
       );
 
-      this.performanceTracker.endTimer('capacity_planning');'
+      this.performanceTracker.endTimer('capacity_planning'');
 
-      this.emit('capacity-planning-completed', '
+      this.emit('capacity-planning-completed,
         allocatedFeatures: planningResult.teamAllocations.length,
         unallocatedFeatures: planningResult.unallocatedFeatures.length,
         utilizationRate: planningResult.utilizationRate,
         riskCount: planningResult.capacityRisks.length,
         recommendationCount: planningResult.recommendations.length,);
 
-      this.logger.info('Capacity planning completed successfully', {'
+      this.logger.info('Capacity planning completed successfully,{
         allocatedFeatures: planningResult.teamAllocations.length,
         utilizationRate: Math.round(planningResult.utilizationRate * 100),
       });
 
       return planningResult;
     } catch (error) {
-      this.performanceTracker.endTimer('capacity_planning');'
-      this.logger.error('Capacity planning implementation failed:', error);'
+      this.performanceTracker.endTimer('capacity_planning'');
+      this.logger.error('Capacity planning implementation failed:,error');
       throw error;
     }
   }
@@ -505,7 +504,7 @@ export class CapacityPlanningService extends EventBus {
   /**
    * Get team capacity by ID
    */
-  getTeamCapacity(teamId: string): TeamCapacity | undefined {
+  getTeamCapacity(teamId: string): TeamCapacity| undefined {
     return this.teamCapacities.get(teamId);
   }
 
@@ -519,7 +518,7 @@ export class CapacityPlanningService extends EventBus {
   /**
    * Get allocation by ID
    */
-  getAllocation(allocationId: string): TeamAllocation | undefined {
+  getAllocation(allocationId: string): TeamAllocation| undefined {
     return this.allocations.get(allocationId);
   }
 
@@ -543,7 +542,7 @@ export class CapacityPlanningService extends EventBus {
    * Shutdown the service
    */
   shutdown(): void {
-    this.logger.info('Shutting down Capacity Planning Service');'
+    this.logger.info('Shutting down Capacity Planning Service'');
     this.removeAllListeners();
     this.teamCapacities.clear();
     this.allocations.clear();
@@ -559,8 +558,8 @@ export class CapacityPlanningService extends EventBus {
    */
   private calculateTotalCapacity(members: any[]): number {
     return members.reduce((total, member) => {
-      const baseCapacity = member.hoursPerWeek || 40;
-      const availability = member.availability || 1.0;
+      const baseCapacity = member.hoursPerWeek|| 40;
+      const availability = member.availability|| 1.0;
       return total + baseCapacity * availability;
     }, 0);
   }
@@ -570,7 +569,7 @@ export class CapacityPlanningService extends EventBus {
    */
   private calculateAvailableCapacity(members: any[], analysis: any): number {
     const totalCapacity = this.calculateTotalCapacity(members);
-    const focusFactor = analysis.focusFactor || 0.7;
+    const focusFactor = analysis.focusFactor|| 0.7;
     return totalCapacity * focusFactor;
   }
 
@@ -603,7 +602,7 @@ export class CapacityPlanningService extends EventBus {
           sum +
           (experienceWeights[
             member.experience as keyof typeof experienceWeights
-          ] || 1.0)
+          ]|| 1.0)
         );
       }, 0) / members.length;
 
@@ -617,13 +616,13 @@ export class CapacityPlanningService extends EventBus {
     return members.map((member) => ({
       memberId: member.id,
       name: member.name,
-      role: member.role || 'developer',
-      capacity: member.hoursPerWeek || 40,
-      skills: member.skills || [],
-      experience: member.experience || 'mid',
-      availability: member.availability || 1.0,
-      crossTrainingAreas: member.crossTrainingAreas || [],
-    }));
+      role: member.role||'developer,
+      capacity: member.hoursPerWeek|| 40,
+      skills: member.skills|| [],
+      experience: member.experience||'mid,
+      availability: member.availability|| 1.0,
+      crossTrainingAreas: member.crossTrainingAreas|| [],
+    });
   }
 
   /**
@@ -637,7 +636,7 @@ export class CapacityPlanningService extends EventBus {
 
     // Aggregate skills across team members
     for (const member of members) {
-      for (const skill of member.skills || []) {
+      for (const skill of member.skills|| []) {
         if (!skillMap.has(skill.name)) {
           skillMap.set(skill.name, {
             count: 0,
@@ -648,8 +647,8 @@ export class CapacityPlanningService extends EventBus {
 
         const skillInfo = skillMap.get(skill.name)!;
         skillInfo.count++;
-        skillInfo.capacity += member.hoursPerWeek * member.availability || 40;
-        skillInfo.proficiencies.push(skill.proficiency || 'intermediate');'
+        skillInfo.capacity += member.hoursPerWeek * member.availability|| 40;
+        skillInfo.proficiencies.push(skill.proficiency||'intermediate'');
       }
     }
 
@@ -677,7 +676,7 @@ export class CapacityPlanningService extends EventBus {
    */
   private calculateAverageProficiency(
     proficiencies: string[]
-  ): 'basic|intermediate|advanced|expert'{'
+  ):'basic| intermediate| advanced| expert'{
     const proficiencyValues = {
       basic: 1,
       intermediate: 2,
@@ -688,14 +687,14 @@ export class CapacityPlanningService extends EventBus {
     const avgValue =
       proficiencies.reduce((sum, prof) => {
         return (
-          sum + (proficiencyValues[prof as keyof typeof proficiencyValues] || 2)
+          sum + (proficiencyValues[prof as keyof typeof proficiencyValues]|| 2)
         );
       }, 0) / proficiencies.length;
 
-    if (avgValue >= 3.5) return'expert;
-    if (avgValue >= 2.5) return 'advanced;
-    if (avgValue >= 1.5) return 'intermediate;
-    return 'basic;
+    if (avgValue >= 3.5) return'expert';
+    if (avgValue >= 2.5) return'advanced';
+    if (avgValue >= 1.5) return'intermediate';
+    return'basic';
   }
 
   /**
@@ -761,8 +760,8 @@ export class CapacityPlanningService extends EventBus {
     teamCapacities: TeamCapacity[],
     allocationStrategy: any,
     existingAllocations: TeamAllocation[]
-  ): Promise<TeamAllocation | null> {
-    this.logger.debug('Allocating feature to team', {'
+  ): Promise<TeamAllocation| null> {
+    this.logger.debug('Allocating feature to team,{
       featureId: feature.featureId,
       complexity: feature.complexity,
       requiredSkills: feature.requiredSkills,
@@ -783,7 +782,7 @@ export class CapacityPlanningService extends EventBus {
       },
     });
 
-    if (!teamMatch || teamMatch.confidence < 0.5) {
+    if (!teamMatch|| teamMatch.confidence < 0.5) {
       return null;
     }
 
@@ -809,13 +808,13 @@ export class CapacityPlanningService extends EventBus {
       skills: skillMatches,
       confidence: teamMatch.confidence,
       risks,
-      startIteration: teamMatch.startIteration || 1,
+      startIteration: teamMatch.startIteration|| 1,
       endIteration:
-        teamMatch.endIteration || 1 + Math.ceil(feature.complexity / team.velocity),
+        teamMatch.endIteration|| 1 + Math.ceil(feature.complexity / team.velocity),
       dependencies: feature.dependencies,
     };
 
-    this.logger.debug('Feature allocated successfully', {'
+    this.logger.debug('Feature allocated successfully,{
       featureId: feature.featureId,
       teamId: team.teamId,
       confidence: allocation.confidence,
@@ -843,11 +842,11 @@ export class CapacityPlanningService extends EventBus {
         const match: SkillMatch = {
           skill: requiredSkill,
           required: true,
-          proficiencyRequired: 'intermediate', // Default requirement'
+          proficiencyRequired:'intermediate,// Default requirement
           proficiencyAvailable: teamSkill.proficiency,
           memberCount: teamSkill.memberCount,
           matchQuality: this.evaluateSkillMatchQuality(
-            'intermediate',
+           'intermediate,
             teamSkill.proficiency,
             teamSkill.memberCount
           ),
@@ -858,10 +857,10 @@ export class CapacityPlanningService extends EventBus {
         const match: SkillMatch = {
           skill: requiredSkill,
           required: true,
-          proficiencyRequired: 'intermediate',
-          proficiencyAvailable: 'basic', // Assume basic if not present'
+          proficiencyRequired:'intermediate,
+          proficiencyAvailable:'basic,// Assume basic if not present
           memberCount: 0,
-          matchQuality: 'poor',
+          matchQuality:'poor,
         };
         skillMatches.push(match);
       }
@@ -877,7 +876,7 @@ export class CapacityPlanningService extends EventBus {
     required: string,
     available: string,
     memberCount: number
-  ): 'perfect|good|adequate|poor'{'
+  ):'perfect| good| adequate| poor'{
     const proficiencyLevels = {
       basic: 1,
       intermediate: 2,
@@ -885,16 +884,16 @@ export class CapacityPlanningService extends EventBus {
       expert: 4,
     };
     const requiredLevel =
-      proficiencyLevels[required as keyof typeof proficiencyLevels] || 2;
+      proficiencyLevels[required as keyof typeof proficiencyLevels]|| 2;
     const availableLevel =
-      proficiencyLevels[available as keyof typeof proficiencyLevels] || 1;
+      proficiencyLevels[available as keyof typeof proficiencyLevels]|| 1;
 
-    if (memberCount === 0) return'poor;
-    if (availableLevel >= requiredLevel + 1) return 'perfect;
+    if (memberCount === 0) return'poor';
+    if (availableLevel >= requiredLevel + 1) return'perfect';
     if (availableLevel >= requiredLevel)
-      return memberCount >= 2 ? 'good' : 'adequate;
-    if (availableLevel >= requiredLevel - 1) return 'adequate;
-    return 'poor;
+      return memberCount >= 2 ?'good: 'adequate';
+    if (availableLevel >= requiredLevel - 1) return'adequate';
+    return'poor';
   }
 
   /**
@@ -909,15 +908,15 @@ export class CapacityPlanningService extends EventBus {
 
     // Skill gap risks
     const poorSkillMatches = skillMatches.filter(
-      (sm) => sm.matchQuality === 'poor''
+      (sm) => sm.matchQuality ==='poor'
     );
     if (poorSkillMatches.length > 0) {
       risks.push({
-        riskType: 'skill',
-        description: `Skill gaps identified: $poorSkillMatches.map((sm) => sm.skill).join(', ')`,`
+        riskType:'skill,
+        description: `Skill gaps identified: $poorSkillMatches.map((sm) => sm.skill).join(,')`,`
         probability: 0.8,
-        impact: 'high',
-        mitigation: 'Cross-training or external expertise required',
+        impact:'high,
+        mitigation:'Cross-training or external expertise required,
         owner: `team-lead-$team.teamId`,`
       });
     }
@@ -925,11 +924,11 @@ export class CapacityPlanningService extends EventBus {
     // Capacity risk
     if (feature.complexity > team.availableCapacity * 0.8) {
       risks.push({
-        riskType: 'capacity',
-        description: 'Feature complexity exceeds comfortable team capacity',
+        riskType:'capacity,
+        description:'Feature complexity exceeds comfortable team capacity,
         probability: 0.7,
-        impact: 'medium',
-        mitigation: 'Consider feature decomposition or timeline extension',
+        impact:'medium,
+        mitigation:'Consider feature decomposition or timeline extension,
         owner: `team-lead-${team.teamId}`,`
       });
     }
@@ -937,11 +936,11 @@ export class CapacityPlanningService extends EventBus {
     // Dependency risk
     if (feature.dependencies.length > 0) {
       risks.push({
-        riskType: 'dependency',
+        riskType:'dependency,
         description: `Feature has ${feature.dependencies.length} dependencies`,`
         probability: 0.6,
-        impact: feature.dependencies.length > 2 ? 'high' : 'medium',
-        mitigation: 'Coordinate dependency resolution early in the PI',
+        impact: feature.dependencies.length > 2 ?'high:'medium,
+        mitigation:'Coordinate dependency resolution early in the PI,
         owner: `dependency-manager`,`
       });
     }
@@ -974,11 +973,11 @@ export class CapacityPlanningService extends EventBus {
     if (overallocatedTeams.length > 0) {
       risks.push({
         riskId: `overallocation-${Date.now()}`,`
-        type: 'overallocation',
-        description: `${overallocatedTeams.length} teams are overallocated`,`
-        impact: 'High risk of delayed delivery and team burnout',
-        mitigation: 'Rebalance workload or adjust scope',
-        severity: 'high',
+        type:'overallocation,
+        description: `${{overallocatedTeams.length} teams are overallocated}`,`
+        impact:'High risk of delayed delivery and team burnout,
+        mitigation:'Rebalance workload or adjust scope,
+        severity: high,
         affectedTeams: overallocatedTeams.map((t) => t.teamId),
         affectedFeatures: [],
         dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1 week
@@ -1000,12 +999,12 @@ export class CapacityPlanningService extends EventBus {
     if (underutilizedTeams.length > 0) {
       risks.push({
         riskId: `underutilization-${Date.now()}`,`
-        type: 'underutilization',
-        description: `${underutilizedTeams.length} teams are underutilized`,`
+        type:'underutilization,
+        description: `${{underutilizedTeams.length} teams are underutilized}`,`
         impact:
-          'Inefficient resource utilization and reduced delivery capacity',
-        mitigation: 'Assign additional features or cross-train for other teams',
-        severity: 'medium',
+         'Inefficient resource utilization and reduced delivery capacity,
+        mitigation:'Assign additional features or cross-train for other teams,
+        severity: medium,
         affectedTeams: underutilizedTeams.map((t) => t.teamId),
         affectedFeatures: [],
         dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 2 weeks
@@ -1015,18 +1014,18 @@ export class CapacityPlanningService extends EventBus {
     // Unallocated features risk
     if (unallocatedFeatures.length > 0) {
       const criticalUnallocated = unallocatedFeatures.filter(
-        (f) => f.priority === 'critical' || f.priority ==='high''
+        (f) => f.priority ==='critical '|| f.priority ===high'
       );
 
       if (criticalUnallocated.length > 0) {
         risks.push({
           riskId: `unallocated-critical-${Date.now()}`,`
-          type: 'timeline',
-          description: `${criticalUnallocated.length} critical/high priority features unallocated`,`
-          impact: 'Business objectives may not be met',
+          type:'timeline,
+          description: `${{criticalUnallocated.length} critical/high priority features unallocated}`,`
+          impact:'Business objectives may not be met,
           mitigation:
-            'Increase capacity, reduce scope, or defer lower priority work',
-          severity: 'critical',
+           'Increase capacity, reduce scope, or defer lower priority work,
+          severity: critical,
           affectedTeams: [],
           affectedFeatures: criticalUnallocated.map((f) => f.featureId),
           dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days
@@ -1055,16 +1054,16 @@ export class CapacityPlanningService extends EventBus {
         allocationStrategy,
         context: {
           utilizationTarget: this.configuration.utilizationTarget,
-          riskTolerance: 'medium',
+          riskTolerance:'medium,
           optimizationGoals: [
-            'maximize_value',
-            'balance_load',
-            'minimize_risks',
+           'maximize_value,
+           'balance_load,
+           'minimize_risks,
           ],
         },
       });
 
-    return intelligentRecommendations.recommendations || [];
+    return intelligentRecommendations.recommendations|| [];
   }
 
   /**
@@ -1118,7 +1117,7 @@ export class CapacityPlanningService extends EventBus {
         allSkills.add(skill.skillName);
         skillTeamCount.set(
           skill.skillName,
-          (skillTeamCount.get(skill.skillName) || 0) + 1
+          (skillTeamCount.get(skill.skillName)|| 0) + 1
         );
       }
     }
@@ -1129,7 +1128,7 @@ export class CapacityPlanningService extends EventBus {
     );
 
     const overloadedSkills = Array.from(allSkills).filter((skill) => {
-      const teamCount = skillTeamCount.get(skill) || 0;
+      const teamCount = skillTeamCount.get(skill)|| 0;
       const demandsForSkill = allocations.filter((a) =>
         a.skills.some((s) => s.skill === skill)
       ).length;
@@ -1173,7 +1172,7 @@ export class CapacityPlanningService extends EventBus {
         (sum, t) => sum + (t.utilization - averageUtilization) ** 2,
         0
       ) / teamWorkloads.length;
-    const evenness = Math.max(0, 1 - Math.sqrt(utilizationVariance));
+    const evenness = Math.max(0, 1 - Math.sqrt(utilizationVariance);
 
     const outliers = teamWorkloads
       .filter((t) => Math.abs(t.utilization - averageUtilization) > 0.2)
@@ -1199,7 +1198,7 @@ export class CapacityPlanningService extends EventBus {
   ): RiskDistributionAnalysis {
     const risksByType = risks.reduce(
       (acc, risk) => {
-        acc[risk.type] = (acc[risk.type] || 0) + 1;
+        acc[risk.type] = (acc[risk.type]|| 0) + 1;
         return acc;
       },
       {} as Record<string, number>
@@ -1207,7 +1206,7 @@ export class CapacityPlanningService extends EventBus {
 
     const risksBySeverity = risks.reduce(
       (acc, risk) => {
-        acc[risk.severity] = (acc[risk.severity] || 0) + 1;
+        acc[risk.severity] = (acc[risk.severity]|| 0) + 1;
         return acc;
       },
       {} as Record<string, number>
@@ -1218,8 +1217,8 @@ export class CapacityPlanningService extends EventBus {
       risksBySeverity,
       riskTrends: ['Capacity-related risks are primary concern'],
       mitigation: [
-        'Implement proactive capacity monitoring',
-        'Establish cross-training programs',
+       'Implement proactive capacity monitoring,
+       'Establish cross-training programs,
       ],
     };
   }
@@ -1239,16 +1238,16 @@ export class CapacityPlanningService extends EventBus {
       historicalAccuracy: avgCommitmentReliability,
       confidenceLevel: avgCommitmentReliability * 0.9, // Slightly conservative
       uncertaintyFactors: [
-        'New team members',
-        'Changing requirements',
-        'External dependencies',
-        'Technical complexity',
+       'New team members,
+       'Changing requirements,
+       'External dependencies,
+       'Technical complexity,
       ],
       improvementAreas: [
-        'Historical data collection',
-        'Estimation training',
-        'Velocity tracking',
-        'Risk assessment',
+       'Historical data collection,
+       'Estimation training,
+       'Velocity tracking,
+       'Risk assessment,
       ],
     };
   }
@@ -1295,11 +1294,11 @@ export class CapacityPlanningService extends EventBus {
   private createLoadBalancerFallback() {
     return {
       createAllocationStrategy: (config: any) => {
-        this.logger.debug('Allocation strategy created (fallback)');'
-        return { strategy: 'simple_priority' };'
+        this.logger.debug('Allocation strategy created (fallback)'');
+        return { strategy: 'simple_priority '};
       },
       findBestMatch: (config: any) => {
-        this.logger.debug('Best match found (fallback)', {'
+        this.logger.debug('Best match found (fallback),{
           workloadId: config.workload.featureId,
         });
         return {
@@ -1316,7 +1315,7 @@ export class CapacityPlanningService extends EventBus {
   private createBrainCoordinatorFallback() {
     return {
       analyzeCapacity: (config: any) => {
-        this.logger.debug('Capacity analyzed (fallback)', {'
+        this.logger.debug('Capacity analyzed (fallback),{
           teamId: config.team.id,
         });
         return {
@@ -1327,13 +1326,13 @@ export class CapacityPlanningService extends EventBus {
         };
       },
       prioritizeFeatures: (config: any) => {
-        this.logger.debug('Features prioritized (fallback)', {'
+        this.logger.debug('Features prioritized (fallback),{
           featureCount: config.features.length,
         });
         return { orderedFeatures: config.features };
       },
       generateRecommendations: (config: any) => {
-        this.logger.debug('Recommendations generated (fallback)');'
+        this.logger.debug('Recommendations generated (fallback)'');
         return { recommendations: [] };
       },
     };
@@ -1345,7 +1344,7 @@ export class CapacityPlanningService extends EventBus {
         return { name, startTime: Date.now() };
       },
       endTimer: (name: string) => {
-        this.logger.debug('Timer ended (fallback)', { name });'
+        this.logger.debug('Timer ended (fallback),{ name }');
       },
     };
   }
@@ -1353,10 +1352,10 @@ export class CapacityPlanningService extends EventBus {
   private createFactSystemFallback() {
     return {
       storeFact: (fact: any) => {
-        this.logger.debug('Fact stored (fallback)', { type: fact.type });'
+        this.logger.debug('Fact stored (fallback),{ type: fact.type }');
       },
       getTeamHistory: (teamId: string) => {
-        this.logger.debug('Team history retrieved (fallback)', { teamId });'
+        this.logger.debug('Team history retrieved (fallback),{ teamId }');
         return { velocity: [], capacity: [], reliability: [] };
       },
     };

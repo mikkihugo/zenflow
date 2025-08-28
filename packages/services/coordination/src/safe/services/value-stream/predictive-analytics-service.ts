@@ -13,7 +13,6 @@
  */
 
 import { dateFns, generateNanoId, } from '@claude-zen/foundation';
-
 const {
   format,
   addDays,
@@ -28,7 +27,6 @@ import {
   meanBy,
 } from 'lodash-es';
 import type { Logger } from '../../types';
-
 /**
  * Predictive analytics configuration
  */
@@ -57,24 +55,24 @@ export interface PredictiveModelConfig {
  * Model type
  */
 export enum ModelType {
-  TIME_SERIES = 'time_series',
-  REGRESSION = 'regression',
-  NEURAL_NETWORK = 'neural_network',
-  ENSEMBLE = 'ensemble',
-  HYBRID = 'hybrid',
+  TIME_SERIES ='time_series,
+  REGRESSION ='regression,
+  NEURAL_NETWORK ='neural_network,
+  ENSEMBLE ='ensemble,
+  HYBRID ='hybrid,
 }
 
 /**
  * Prediction algorithm
  */
 export enum PredictionAlgorithm {
-  ARIMA = 'arima',
-  LINEAR_REGRESSION = 'linear_regression',
-  POLYNOMIAL_REGRESSION = 'polynomial_regression',
-  LSTM = 'lstm',
-  RANDOM_FOREST = 'random_forest',
-  GRADIENT_BOOSTING = 'gradient_boosting',
-  EXPONENTIAL_SMOOTHING = 'exponential_smoothing',
+  ARIMA ='arima,
+  LINEAR_REGRESSION ='linear_regression,
+  POLYNOMIAL_REGRESSION ='polynomial_regression,
+  LSTM ='lstm,
+  RANDOM_FOREST ='random_forest,
+  GRADIENT_BOOSTING ='gradient_boosting,
+  EXPONENTIAL_SMOOTHING ='exponential_smoothing,
 }
 
 /**
@@ -106,7 +104,7 @@ export interface SeasonalityPeriod {
   readonly name: string;
   readonly length: number; // days
   readonly strength: number; // 0-1
-  readonly pattern: 'additive|multiplicative;
+  readonly pattern:'additive'|'multiplicative';
 }
 
 /**
@@ -114,7 +112,7 @@ export interface SeasonalityPeriod {
  */
 export interface TrendConfig {
   readonly enabled: boolean;
-  readonly method: 'linear|exponential|logarithmic|polynomial;
+  readonly method:'linear| exponential| logarithmic'|'polynomial';
   readonly strength: number; // 0-1
   readonly changepoints: ChangepointConfig;
 }
@@ -144,22 +142,22 @@ export interface ValidationConfig {
  * Validation method
  */
 export enum ValidationMethod {
-  TRAIN_TEST_SPLIT = 'train_test_split',
-  CROSS_VALIDATION = 'cross_validation',
-  TIME_SERIES_SPLIT = 'time_series_split',
-  ROLLING_WINDOW = 'rolling_window',
+  TRAIN_TEST_SPLIT ='train_test_split,
+  CROSS_VALIDATION ='cross_validation,
+  TIME_SERIES_SPLIT ='time_series_split,
+  ROLLING_WINDOW ='rolling_window,
 }
 
 /**
  * Validation metric
  */
 export enum ValidationMetric {
-  MAE = 'mae', // Mean Absolute Error'
-  MAPE = 'mape', // Mean Absolute Percentage Error'
-  RMSE = 'rmse', // Root Mean Squared Error'
-  R_SQUARED = 'r_squared',
-  AIC = 'aic', // Akaike Information Criterion'
-  BIC = 'bic', // Bayesian Information Criterion'
+  MAE ='mae,// Mean Absolute Error
+  MAPE ='mape,// Mean Absolute Percentage Error
+  RMSE ='rmse,// Root Mean Squared Error
+  R_SQUARED ='r_squared,
+  AIC ='aic,// Akaike Information Criterion
+  BIC ='bic,// Bayesian Information Criterion
 }
 
 /**
@@ -204,10 +202,10 @@ export interface EnsembleWeight {
  * Combination strategy
  */
 export enum CombinationStrategy {
-  WEIGHTED_AVERAGE = 'weighted_average',
-  VOTING = 'voting',
-  STACKING = 'stacking',
-  DYNAMIC = 'dynamic',
+  WEIGHTED_AVERAGE ='weighted_average,
+  VOTING ='voting,
+  STACKING ='stacking,
+  DYNAMIC ='dynamic,
 }
 
 /**
@@ -236,11 +234,11 @@ export interface FeatureConfig {
  * Feature type
  */
 export enum FeatureType {
-  NUMERIC = 'numeric',
-  CATEGORICAL = 'categorical',
-  TEMPORAL = 'temporal',
-  TEXT = 'text',
-  DERIVED = 'derived',
+  NUMERIC ='numeric,
+  CATEGORICAL ='categorical,
+  TEMPORAL ='temporal,
+  TEXT ='text,
+  DERIVED ='derived,
 }
 
 /**
@@ -249,7 +247,7 @@ export enum FeatureType {
 export interface DataSource {
   readonly sourceId: string;
   readonly name: string;
-  readonly type: 'database|api|file|stream;
+  readonly type:'database| api| file'|'stream';
   readonly connection: ConnectionConfig;
   readonly refresh: RefreshConfig;
 }
@@ -268,7 +266,7 @@ export interface ConnectionConfig {
  * Authentication configuration
  */
 export interface AuthConfig {
-  readonly type: 'none|basic|token|oauth;
+  readonly type:'none| basic| token'|'oauth';
   readonly credentials: Record<string, string>;
 }
 
@@ -285,10 +283,10 @@ export interface RefreshConfig {
  * Failure handling
  */
 export enum FailureHandling {
-  SKIP = 'skip',
-  RETRY = 'retry',
-  FALLBACK = 'fallback',
-  ERROR = 'error',
+  SKIP ='skip,
+  RETRY ='retry,
+  FALLBACK ='fallback,
+  ERROR ='error,
 }
 
 /**
@@ -305,14 +303,14 @@ export interface FeatureTransformation {
  * Transformation type
  */
 export enum TransformationType {
-  NORMALIZATION = 'normalization',
-  STANDARDIZATION = 'standardization',
-  LOG = 'log',
-  SQUARE_ROOT = 'square_root',
-  POLYNOMIAL = 'polynomial',
-  BINNING = 'binning',
-  ONE_HOT_ENCODING = 'one_hot_encoding',
-  SMOOTHING = 'smoothing',
+  NORMALIZATION ='normalization,
+  STANDARDIZATION ='standardization,
+  LOG ='log,
+  SQUARE_ROOT ='square_root,
+  POLYNOMIAL ='polynomial,
+  BINNING ='binning,
+  ONE_HOT_ENCODING ='one_hot_encoding,
+  SMOOTHING ='smoothing,
 }
 
 /**
@@ -329,11 +327,11 @@ export interface FeatureImportance {
  * Importance method
  */
 export enum ImportanceMethod {
-  CORRELATION = 'correlation',
-  MUTUAL_INFORMATION = 'mutual_information',
-  FEATURE_SELECTION = 'feature_selection',
-  PERMUTATION = 'permutation',
-  SHAP = 'shap',
+  CORRELATION ='correlation,
+  MUTUAL_INFORMATION ='mutual_information,
+  FEATURE_SELECTION ='feature_selection,
+  PERMUTATION ='permutation,
+  SHAP ='shap,
 }
 
 /**
@@ -350,8 +348,8 @@ export interface PreprocessingConfig {
  * Missing value handling
  */
 export interface MissingValueHandling {
-  readonly strategy: 'remove' | 'impute' | 'interpolate';
-  readonly method?:|mean|median|mode|forward_fill|'backward_fill;
+  readonly strategy:'remove'|'impute'|'interpolate';
+  readonly method?:| mean| median| mode| forward_fill|'backward_fill';
   readonly threshold: number; // percentage
 }
 
@@ -368,20 +366,20 @@ export interface OutlierHandling {
  * Outlier detection
  */
 export enum OutlierDetection {
-  Z_SCORE = 'z_score',
-  IQR = 'iqr',
-  ISOLATION_FOREST = 'isolation_forest',
-  LOCAL_OUTLIER_FACTOR = 'local_outlier_factor',
+  Z_SCORE ='z_score,
+  IQR ='iqr,
+  ISOLATION_FOREST ='isolation_forest,
+  LOCAL_OUTLIER_FACTOR ='local_outlier_factor,
 }
 
 /**
  * Outlier treatment
  */
 export enum OutlierTreatment {
-  REMOVE = 'remove',
-  CAP = 'cap',
-  TRANSFORM = 'transform',
-  IGNORE = 'ignore',
+  REMOVE ='remove,
+  CAP ='cap,
+  TRANSFORM ='transform,
+  IGNORE ='ignore,
 }
 
 /**
@@ -397,11 +395,11 @@ export interface OutlierThreshold {
  * Scaling method
  */
 export enum ScalingMethod {
-  NONE = 'none',
-  MIN_MAX = 'min_max',
-  Z_SCORE = 'z_score',
-  ROBUST = 'robust',
-  QUANTILE = 'quantile',
+  NONE ='none,
+  MIN_MAX ='min_max,
+  Z_SCORE ='z_score,
+  ROBUST ='robust,
+  QUANTILE ='quantile,
 }
 
 /**
@@ -409,7 +407,7 @@ export enum ScalingMethod {
  */
 export interface EncodingMethod {
   readonly feature: string;
-  readonly type: 'one_hot|label|target|binary;
+  readonly type:'one_hot| label| target'|'binary';
   readonly parameters: Record<string, any>;
 }
 
@@ -457,10 +455,10 @@ export interface DataRelevance {
  * Integration method
  */
 export enum IntegrationMethod {
-  JOIN = 'join',
-  APPEND = 'append',
-  FEATURE_ENGINEERING = 'feature_engineering',
-  EXTERNAL_MODEL = 'external_model',
+  JOIN ='join,
+  APPEND ='append,
+  FEATURE_ENGINEERING ='feature_engineering,
+  EXTERNAL_MODEL ='external_model,
 }
 
 /**
@@ -486,11 +484,11 @@ export interface ToleranceConfig {
  * Update frequency
  */
 export enum UpdateFrequency {
-  REAL_TIME = 'real_time',
-  HOURLY = 'hourly',
-  DAILY = 'daily',
-  WEEKLY = 'weekly',
-  MONTHLY = 'monthly',
+  REAL_TIME ='real_time,
+  HOURLY ='hourly,
+  DAILY ='daily,
+  WEEKLY ='weekly,
+  MONTHLY ='monthly,
 }
 
 /**
@@ -568,7 +566,7 @@ export interface PredictionFactor {
  * Factor impact
  */
 export interface FactorImpact {
-  readonly direction: 'positive' | 'negative' | 'neutral';
+  readonly direction:'positive'|'negative'|'neutral';
   readonly magnitude: number; // 0-100
   readonly unit: string;
 }
@@ -577,7 +575,7 @@ export interface FactorImpact {
  * Factor trend
  */
 export interface FactorTrend {
-  readonly direction: 'increasing' | 'decreasing' | 'stable';
+  readonly direction:'increasing'|'decreasing'|'stable';
   readonly rate: number; // percentage per day
   readonly stability: number; // 0-100
 }
@@ -607,11 +605,11 @@ export interface UncertaintyFactor {
  * Uncertainty category
  */
 export enum UncertaintyCategory {
-  DATA_QUALITY = 'data_quality',
-  MODEL_LIMITATION = 'model_limitation',
-  EXTERNAL_FACTOR = 'external_factor',
-  SEASONAL_VARIATION = 'seasonal_variation',
-  TREND_CHANGE = 'trend_change',
+  DATA_QUALITY ='data_quality,
+  MODEL_LIMITATION ='model_limitation,
+  EXTERNAL_FACTOR ='external_factor,
+  SEASONAL_VARIATION ='seasonal_variation,
+  TREND_CHANGE ='trend_change,
 }
 
 /**
@@ -651,7 +649,7 @@ export interface ValidationResult {
  */
 export interface AccuracyTracking {
   readonly currentAccuracy: number; // 0-100
-  readonly trend: 'improving' | 'stable' | 'declining'|'improving' | 'stable' | 'declining'|declining;
+  readonly trend:'improving'|'stable'|'declining'|'improving'|'stable'|'declining''|'declining';
   readonly recentPredictions: RecentPrediction[];
   readonly alertThreshold: number; // 0-100
 }
@@ -684,11 +682,11 @@ export interface TrendAnalysis {
  * Trend direction
  */
 export enum TrendDirection {
-  INCREASING = 'increasing',
-  DECREASING = 'decreasing',
-  STABLE = 'stable',
-  CYCLICAL = 'cyclical',
-  VOLATILE = 'volatile',
+  INCREASING ='increasing,
+  DECREASING ='decreasing,
+  STABLE ='stable,
+  CYCLICAL ='cyclical,
+  VOLATILE ='volatile,
 }
 
 /**
@@ -732,7 +730,7 @@ export interface ScenarioAssumption {
 export interface ScenarioImpact {
   readonly deliveryTimeChange: number; // percentage
   readonly confidenceChange: number; // percentage
-  readonly riskLevel: 'low|medium|high|critical;
+  readonly riskLevel:'low| medium| high'|'critical';
   readonly mitigationStrategies: string[];
 }
 
@@ -757,7 +755,7 @@ export class PredictiveAnalyticsService {
     historicalData: any[],
     currentContext: any
   ): Promise<ValueDeliveryPrediction> {
-    this.logger.info('Predicting value delivery times', {'
+    this.logger.info('Predicting value delivery times,{
       analyticsId: config.analyticsId,
       valueStreamId: config.valueStreamId,
       horizon: config.predictionHorizon,
@@ -815,7 +813,7 @@ export class PredictiveAnalyticsService {
         modelInfo: {
           modelId: `model-${generateNanoId(8)}`,`
           algorithm: config.modelConfig.algorithm,
-          version: '1.0.0',
+          version:'1.0.0,
           trainedOn: new Date(),
           features: config.dataConfig.features.map((f) => f.featureName),
           performance: {
@@ -837,7 +835,7 @@ export class PredictiveAnalyticsService {
       this.predictions.set(config.analyticsId, result);
       this.historicalData.set(config.valueStreamId, processedData);
 
-      this.logger.info('Value delivery prediction completed', {'
+      this.logger.info('Value delivery prediction completed,{
         predictionId: config.analyticsId,
         predictionsGenerated: predictions.length,
         overallConfidence: Math.round(confidence.overall),
@@ -847,7 +845,7 @@ export class PredictiveAnalyticsService {
 
       return result;
     } catch (error) {
-      this.logger.error('Failed to predict value delivery times', {'
+      this.logger.error('Failed to predict value delivery times,{
         analyticsId: config.analyticsId,
         error,
       });
@@ -858,7 +856,7 @@ export class PredictiveAnalyticsService {
   /**
    * Get prediction result
    */
-  getPrediction(predictionId: string): ValueDeliveryPrediction | undefined {
+  getPrediction(predictionId: string): ValueDeliveryPrediction| undefined {
     return this.predictions.get(predictionId);
   }
 
@@ -877,7 +875,7 @@ export class PredictiveAnalyticsService {
 
     // Update historical data
     const existingData =
-      this.historicalData.get(prediction.valueStreamId) || [];
+      this.historicalData.get(prediction.valueStreamId)|| [];
     const updatedData = [...existingData, ...newData];
     this.historicalData.set(prediction.valueStreamId, updatedData);
 
@@ -886,10 +884,10 @@ export class PredictiveAnalyticsService {
       await this.retrainModel(predictionId, updatedData, actualResults);
     }
 
-    this.logger.info('Model updated with new data', {'
+    this.logger.info('Model updated with new data,{
       predictionId,
       newDataPoints: newData.length,
-      actualResults: actualResults?.length || 0,
+      actualResults: actualResults?.length|| 0,
     });
   }
 
@@ -898,25 +896,25 @@ export class PredictiveAnalyticsService {
    */
   private initializePredictiveModels(): void {
     // Initialize different predictive models
-    this.models.set('arima', {'
+    this.models.set('arima,{
       type: PredictionAlgorithm.ARIMA,
       accuracy: 0.78,
       trainingTime: 180,
-      suitable: ['time_series', 'seasonal'],
+      suitable: ['time_series,'seasonal'],
     });
 
-    this.models.set('lstm', {'
+    this.models.set('lstm,{
       type: PredictionAlgorithm.LSTM,
       accuracy: 0.85,
       trainingTime: 600,
-      suitable: ['complex_patterns', 'non_linear'],
+      suitable: ['complex_patterns,'non_linear'],
     });
 
-    this.models.set('random_forest', {'
+    this.models.set('random_forest,{
       type: PredictionAlgorithm.RANDOM_FOREST,
       accuracy: 0.82,
       trainingTime: 120,
-      suitable: ['feature_rich', 'ensemble'],
+      suitable: ['feature_rich,'ensemble'],
     });
   }
 
@@ -927,7 +925,7 @@ export class PredictiveAnalyticsService {
     let processedData = [...rawData];
 
     // Handle missing values
-    if (config.preprocessing.missingValues.strategy === 'impute') {'
+    if (config.preprocessing.missingValues.strategy ==='impute){
       processedData = this.imputeMissingValues(
         processedData,
         config.preprocessing.missingValues
@@ -996,9 +994,9 @@ export class PredictiveAnalyticsService {
         },
         factors: this.identifyPredictionFactors(model, context),
         assumptions: [
-          'Historical patterns continue',
-          'No major disruptions',
-          'Current team capacity maintained',
+         'Historical patterns continue,
+         'No major disruptions,
+         'Current team capacity maintained,
         ],
       });
     }
@@ -1020,7 +1018,7 @@ export class PredictiveAnalyticsService {
       const trend = this.calculateTrend(deliveryTimes);
       trends.push({
         trendId: `trend-${generateNanoId(6)}`,`
-        metric: 'Delivery Time',
+        metric:'Delivery Time,
         direction: trend.direction,
         strength: trend.strength,
         duration: trend.duration,
@@ -1039,7 +1037,7 @@ export class PredictiveAnalyticsService {
       const throughputTrend = this.calculateTrend(throughputData);
       trends.push({
         trendId: `trend-${generateNanoId(6)}`,`
-        metric: 'Throughput',
+        metric:'Throughput,
         direction: throughputTrend.direction,
         strength: throughputTrend.strength,
         duration: throughputTrend.duration,
@@ -1063,14 +1061,14 @@ export class PredictiveAnalyticsService {
     return [
       {
         scenarioId: `scenario-${generateNanoId(8)}`,`
-        name: 'Optimistic Scenario',
-        description: 'Best case with all factors favorable',
+        name:'Optimistic Scenario,
+        description:'Best case with all factors favorable,
         probability: 0.2,
         assumptions: [
           {
             assumptionId: `assumption-${generateNanoId(6)}`,`
-            description: 'Team capacity increases by 20%',
-            parameter: 'team_capacity',
+            description:'Team capacity increases by 20%,
+            parameter:'team_capacity,
             value: 1.2,
             confidence: 80,
           },
@@ -1083,23 +1081,23 @@ export class PredictiveAnalyticsService {
         impact: {
           deliveryTimeChange: -20,
           confidenceChange: 10,
-          riskLevel: 'low',
+          riskLevel:'low,
           mitigationStrategies: [
-            'Maintain high performance',
-            'Monitor for sustainability',
+           'Maintain high performance,
+           'Monitor for sustainability,
           ],
         },
       },
       {
         scenarioId: `scenario-${generateNanoId(8)}`,`
-        name: 'Pessimistic Scenario',
-        description: 'Worst case with challenges and delays',
+        name:'Pessimistic Scenario,
+        description:'Worst case with challenges and delays,
         probability: 0.15,
         assumptions: [
           {
             assumptionId: `assumption-${generateNanoId(6)}`,`
-            description: 'Major technical issues arise',
-            parameter: 'technical_issues',
+            description:'Major technical issues arise,
+            parameter:'technical_issues,
             value: true,
             confidence: 60,
           },
@@ -1112,11 +1110,11 @@ export class PredictiveAnalyticsService {
         impact: {
           deliveryTimeChange: 40,
           confidenceChange: -20,
-          riskLevel: 'high',
+          riskLevel:'high,
           mitigationStrategies: [
-            'Risk mitigation planning',
-            'Contingency resources',
-            'Process improvements',
+           'Risk mitigation planning,
+           'Contingency resources,
+           'Process improvements,
           ],
         },
       },
@@ -1134,16 +1132,16 @@ export class PredictiveAnalyticsService {
       historicalAccuracy: 82,
       uncertaintyFactors: [
         {
-          factorName: 'Data Quality',
+          factorName:'Data Quality,
           impact: 15,
           category: UncertaintyCategory.DATA_QUALITY,
-          mitigation: ['Improve data collection', 'Validate data sources'],
+          mitigation: ['Improve data collection,'Validate data sources'],
         },
         {
-          factorName: 'External Dependencies',
+          factorName:'External Dependencies,
           impact: 20,
           category: UncertaintyCategory.EXTERNAL_FACTOR,
-          mitigation: ['Monitor dependencies', 'Build buffers'],
+          mitigation: ['Monitor dependencies,'Build buffers'],
         },
       ],
     };
@@ -1156,14 +1154,14 @@ export class PredictiveAnalyticsService {
     return {
       historical: [
         {
-          period: 'Last 30 days',
+          period:'Last 30 days,
           accuracy: 85,
           mae: 2.3,
           predictions: 30,
           correctPredictions: 26,
         },
         {
-          period: 'Last 7 days',
+          period:'Last 7 days,
           accuracy: 88,
           mae: 1.8,
           predictions: 7,
@@ -1182,7 +1180,7 @@ export class PredictiveAnalyticsService {
       ],
       realTimeTracking: {
         currentAccuracy: 87,
-        trend: 'stable',
+        trend:'stable,
         recentPredictions: [],
         alertThreshold: 70,
       },
@@ -1240,29 +1238,29 @@ export class PredictiveAnalyticsService {
   ): PredictionFactor[] {
     return [
       {
-        factorName: 'Team Velocity',
+        factorName:'Team Velocity,
         impact: {
-          direction: 'positive',
+          direction:'positive,
           magnitude: 75,
-          unit: 'story points per sprint',
+          unit:'story points per sprint,
         },
         confidence: 85,
         trend: {
-          direction: 'stable',
+          direction:'stable,
           rate: 0.5,
           stability: 80,
         },
       },
       {
-        factorName: 'Queue Length',
+        factorName:'Queue Length,
         impact: {
-          direction: 'negative',
+          direction:'negative,
           magnitude: 60,
-          unit: 'items in queue',
+          unit:'items in queue,
         },
         confidence: 78,
         trend: {
-          direction: 'decreasing',
+          direction: 'decreasing,
           rate: -1.2,
           stability: 70,
         },
@@ -1286,11 +1284,11 @@ export class PredictiveAnalyticsService {
     }
 
     // Simple trend calculation
-    const firstHalf = values.slice(0, Math.floor(values.length / 2));
-    const secondHalf = values.slice(Math.floor(values.length / 2));
+    const firstHalf = values.slice(0, Math.floor(values.length / 2);
+    const secondHalf = values.slice(Math.floor(values.length / 2);
 
-    const firstMean = meanBy(firstHalf, Number) || 0;
-    const secondMean = meanBy(secondHalf, Number) || 0;
+    const firstMean = meanBy(firstHalf, Number)|| 0;
+    const secondMean = meanBy(secondHalf, Number)|| 0;
 
     const change = (secondMean - firstMean) / firstMean;
 
@@ -1314,9 +1312,9 @@ export class PredictiveAnalyticsService {
   private calculateThroughput(data: any[]): number[] {
     // Group by week and calculate throughput
     const weeklyData = groupBy(data, (item) => {
-      const date = new Date(item.timestamp || Date.now())();
-      const weekStart = new Date(date.setDate(date.getDate() - date.getDay()));
-      return format(weekStart,'yyyy-MM-dd');'
+      const date = new Date(item.timestamp|| Date.now())();
+      const weekStart = new Date(date.setDate(date.getDate() - date.getDay());
+      return format(weekStart,yyyy-MM-dd');
     });
 
     return Object.values(weeklyData).map((weekData) =>
@@ -1327,7 +1325,7 @@ export class PredictiveAnalyticsService {
   private calculateDataQuality(data: any[]): number {
     if (data.length === 0) return 0;
 
-    const fields = ['deliveryTime', 'timestamp', 'stage', 'type'];'
+    const fields = ['deliveryTime,'timestamp,'stage,'type];
     let totalScore = 0;
 
     for (const field of fields) {
