@@ -670,7 +670,7 @@ export class PIExecutionService extends EventBus {
     executionData: any,
     intelligentMetrics: any
   ):ExecutionForecast {
-    const _currentProgress =;
+    const __currentProgress =;
       executionData.scope.completedScope / executionData.scope.currentScope;
     const remainingWork =;
       executionData.scope.currentScope - executionData.scope.completedScope;

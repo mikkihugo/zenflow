@@ -522,11 +522,11 @@ export class AutomatedDeadCodeManager {
    * Merge results from multiple tools
    */
   private mergeResults(resultArrays:DeadCodeItem[][]): DeadCodeItem[] {
-    const _merged = new Map<string, DeadCodeItem>();
+    const __merged = new Map<string, DeadCodeItem>();
 
     for (const results of resultArrays) {
       for (const item of results) {
-        const _key = `${item.type}:${item.location}:${item.name}`;`
+        const __key = `${item.type}:${item.location}:${item.name}`;`
         const existing = merged.get(key);
 
         if (existing) {

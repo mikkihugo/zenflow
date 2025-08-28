@@ -288,7 +288,7 @@ describe('MemoryManager', () => {
       const result = await manager.getStats();
       expect(result.isOk()).toBe(true);
 
-      const _stats = result._unsafeUnwrap();
+      const __stats = result._unsafeUnwrap();
       expect(stats.totalBackends).toBeGreaterThan(0);
       expect(stats.totalEntries).toBeGreaterThanOrEqual(0);
       expect(stats.memoryUsage).toBeDefined();

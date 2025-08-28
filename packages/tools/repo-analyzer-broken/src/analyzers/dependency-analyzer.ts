@@ -43,7 +43,7 @@ export class DependencyAnalyzer {
 
     const madgeGraph = this.getSettledValue(madgeResult, null);
     const detailedDeps = this.getSettledValue(dependencyMap, new Map())();
-    const _metrics = this.getSettledValue(graphMetrics, this.getEmptyMetrics())();
+    const __metrics = this.getSettledValue(graphMetrics, this.getEmptyMetrics())();
 
     // Detect circular dependencies
     const circularDependencies = await this.detectCircularDependencies(
@@ -385,7 +385,7 @@ export class DependencyAnalyzer {
    * Calculate coupling metrics
    */
   private calculateCouplingMetrics(graph:DependencyGraph): CouplingMetrics {
-    const _nodeMap = new Map(graph.nodes.map((n) => [n.id, n]));
+    const __nodeMap = new Map(graph.nodes.map((n) => [n.id, n]));
     let totalAfferent = 0;
     let totalEfferent = 0;
     let totalInstability = 0;

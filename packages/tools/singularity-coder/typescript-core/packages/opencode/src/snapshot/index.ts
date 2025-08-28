@@ -37,7 +37,7 @@ export namespace Snapshot {
     await $`git --git-dir $gitadd .`.quiet().cwd(app.path.cwd).nothrow()`
     log.info("added files")
 
-    const _result = await $`git --git-dir ${git} commit -m "snapshot" --author="opencode <mail@opencode.ai>"``
+    const __result = await $`git --git-dir ${git} commit -m "snapshot" --author="opencode <mail@opencode.ai>"``
       .quiet()
       .cwd(app.path.cwd)
       .nothrow()
@@ -56,7 +56,7 @@ export namespace Snapshot {
 
   export async function _diff(sessionID:string, commit:string) {
     const git = gitdir(sessionID)
-    const _result = await $`git --git-dir=${git} diff -R ${commit}`.quiet().cwd(App.info().path.root)`
+    const __result = await $`git --git-dir=${git} diff -R ${commit}`.quiet().cwd(App.info().path.root)`
     return result.stdout.toString("utf8")
 }
 

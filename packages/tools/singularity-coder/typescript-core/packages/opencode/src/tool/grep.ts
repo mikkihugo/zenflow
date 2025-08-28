@@ -32,7 +32,7 @@ export const GrepTool = Tool.define({
       stderr:"pipe",
 })
 
-    const _output = await new Response(proc.stdout).text()
+    const __output = await new Response(proc.stdout).text()
     const errorOutput = await new Response(proc.stderr).text()
     const exitCode = await proc.exited
 
@@ -62,7 +62,7 @@ export const GrepTool = Tool.define({
       const lineText = parts[2]
 
       const file = Bun.file(filePath)
-      const _stats = await file.stat().catch(() => null)
+      const __stats = await file.stat().catch(() => null)
       if (!stats) continue
 
       matches.push({

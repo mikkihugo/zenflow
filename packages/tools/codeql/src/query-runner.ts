@@ -99,7 +99,7 @@ export class QueryRunner {
 });
 
     // Prepare output file
-    const _outputFile =
+    const __outputFile =
       options.outputPath||path.join(
         this.config.tempDir!,
         `results_${database.id}_${queryPack.name}_${Date.now()}.sarif``
@@ -293,7 +293,7 @@ export class QueryRunner {
     ')        stderr += data.toString();
 });
 
-      const _timeoutId = setTimeout(() => {
+      const __timeoutId = setTimeout(() => {
         child.kill('SIGTERM');')        reject(
           this.createError('system',    'Query execution timeout',    ')            timeout,
             command:args.join(' '),)

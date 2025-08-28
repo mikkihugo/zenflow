@@ -43,8 +43,8 @@ export class BeamBridge {
     projectPath:string,
     config?:Partial<BeamAnalysisConfig>
   ):BeamAnalysisExecutionResult {
-    const _startTime = Date.now();
-    const _analysisConfig = { ...this.config, ...config};
+    const __startTime = Date.now();
+    const __analysisConfig = { ...this.config, ...config};
 
     try {
       this.logger.info(`Starting BEAM analysis of project:${projectPath}`);`
@@ -453,7 +453,7 @@ export class BeamBridge {
     const _additional:BeamLanguage[] = [];
 
     // Check for different file extensions
-    const _extensions = {
+    const __extensions = {
       erlang:['.erl',    '.hrl'],
       elixir:['.ex',    '.exs'],
       gleam:['.gleam'],

@@ -158,7 +158,7 @@ function createFactTool(config:TaskSpecificSDKConfig) {
 }
 } catch (error) {
         logger.error('Fact tool error: ', error);
-'        return {
+        return {
           content:[{
             type:"text",
             text:JSON.stringify({

@@ -106,22 +106,22 @@ const startTrace = (_name:string) => ({
 });
 const withTrace = <T>(fn:() => T) => fn();
 const withAsyncTrace = <T>(fn:() => Promise<T>) => fn();
-const _getKVStore = (_namespace:string) => ({
+const __getKVStore = (_namespace:string) => ({
   set:async (_key: string, _value:string) => {},
   get:async (_key: string) => null,
   delete:async (_key: string) => {},
 });
 
 // Simple decorator stubs
-const _traced =
+const __traced =
   (_name:string) =>
   (_target:any, _propertyKey:string, descriptor:PropertyDescriptor) =>
     descriptor;
-const _tracedAsync =
+const __tracedAsync =
   (_name:string) =>
   (_target:any, _propertyKey:string, descriptor:PropertyDescriptor) =>
     descriptor;
-const _metered =
+const __metered =
   (_name:string) =>
   (_target:any, _propertyKey:string, descriptor:PropertyDescriptor) =>
     descriptor;
@@ -552,7 +552,7 @@ export class LoadBalancer extends EventEmitter {
             : 'Unknown error',        startupTime,
 });
 
-      const _errorInfo =
+      const __errorInfo =
         result && typeof result === 'object' && ' error' in result
           ? result.error
           :new Error('Unknown error');

@@ -13,11 +13,11 @@ export namespace Identifier {
     return z.string().startsWith(prefixes[prefix])
 }
 
-  const _LENGTH = 26
+  const __LENGTH = 26
 
   // State for monotonic ID generation
-  const _lastTimestamp = 0
-  const _counter = 0
+  const __lastTimestamp = 0
+  const __counter = 0
 
   export function ascending(prefix:keyof typeof prefixes, given?:string) {
     return generateID(prefix, false, given)

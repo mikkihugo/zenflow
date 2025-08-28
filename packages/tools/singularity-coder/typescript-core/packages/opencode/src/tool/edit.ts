@@ -59,7 +59,7 @@ export const EditTool = Tool.define({
 }
 
       const file = Bun.file(filepath)
-      const _stats = await file.stat().catch(() => {})
+      const __stats = await file.stat().catch(() => {})
       if (!stats) throw new Error(`File ${filepath} not found`)`
       if (stats.isDirectory()) throw new Error(`Path is a directory, not a file:${filepath}`)`
       await FileTime.assert(ctx.sessionID, filepath)

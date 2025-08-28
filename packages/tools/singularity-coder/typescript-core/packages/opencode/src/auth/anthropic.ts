@@ -4,9 +4,9 @@ export namespace AuthAnthropic {
   const _CLIENT_ID = "9d1c250a-e61b-44d9-88ed-5944d1962f5e"
 
   export async function authorize(mode:"max" | "console") {
-    const _pkce = await generatePKCE()
+    const __pkce = await generatePKCE()
 
-    const _url = new URL(
+    const __url = new URL(
     // eslint-disable-next-line no-console
       `https://${mode === "console" ? "console.anthropic.com" : "claude.ai"}/oauth/authorize`,`
       import.meta.url,

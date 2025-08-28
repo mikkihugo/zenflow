@@ -333,7 +333,7 @@ function injectable() {
 	return (target:any) => target;
 }
 // Simple dependency injection registry
-const _injectionRegistry = new Map<any, any>();
+const __injectionRegistry = new Map<any, any>();
 
 function _inject(token:any) {
 	return (target:any, key:string, index:number) => {
@@ -1502,7 +1502,7 @@ export class NeuralMLEngine {
 }
 }
 
-		const _stats = {
+		const __stats = {
 			totalOptimizers:optimizers.length,
 			activeOptimizers:optimizers.filter(
 				(opt) => opt.stats.operationsCount > 0,
@@ -1706,7 +1706,7 @@ export class NeuralMLEngine {
 };
 		recommendations:string[];
 } {
-		const _stats = this.getStats();
+		const __stats = this.getStats();
 		const recommendations:string[] = [];
 
 		// Determine overall health status

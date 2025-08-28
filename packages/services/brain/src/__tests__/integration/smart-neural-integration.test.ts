@@ -111,7 +111,7 @@ describe('Smart Neural Integration Tests', () => {
 });
 
     it('should have correct configuration propagated', () => {
-    ')      const _stats = smartNeuralCoordinator.getCoordinatorStats();
+    ')      const __stats = smartNeuralCoordinator.getCoordinatorStats();
       expect(stats.configuration.primaryModel).toBe('all-mpnet-base-v2');')      expect(stats.configuration.enableFallbacks).toBe(true);
       expect(stats.configuration.enableCaching).toBe(true);
 });
@@ -211,12 +211,12 @@ describe('Smart Neural Integration Tests', () => {
   describe('Error Handling Integration', () => {
     ')    it('should handle embedding generation errors gracefully', async () => {
     ')      // Mock a failure in the transformers pipeline
-      const _mockPipeline = vi
+      const __mockPipeline = vi
         .fn()
         .mockRejectedValue(new Error('Model loading failed'));')      vi.doMock('@xenova/transformers', () => (')        pipeline:mockPipeline,));
 
       try {
-        const _result = await brainCoordinator.generateEmbedding('test text');')
+        const __result = await brainCoordinator.generateEmbedding('test text');')
         // Should still return a result with fallback
         expect(result).toBeDefined();
         // In a real scenario, this might fall back to brain.js or basic features
@@ -229,7 +229,7 @@ describe('Smart Neural Integration Tests', () => {
     it('should handle invalid input gracefully', async () => {
     ')      try {
         // Test with empty string
-        const _result1 = await brainCoordinator.generateEmbedding(');')        expect(result1.success).toBe(false);
+        const __result1 = await brainCoordinator.generateEmbedding(');')        expect(result1.success).toBe(false);
 
         // Test with very long string
         const longText = 'a'.repeat(10000);')        const result2 = await brainCoordinator.generateEmbedding(longText);
@@ -249,7 +249,7 @@ describe('Smart Neural Integration Tests', () => {
       expect(result.metadata.processingTime).toBeGreaterThan(0);
       expect(result.metadata.processingTime).toBeLessThan(10000); // Should be under 10s
 
-      const _stats = brainCoordinator.getSmartNeuralStats();
+      const __stats = brainCoordinator.getSmartNeuralStats();
       expect(stats.stats.performance).toBeDefined();
       expect(stats.stats.performance.totalRequests).toBeGreaterThan(0);
       expect(stats.stats.performance.averageLatency).toBeGreaterThan(0);
@@ -275,7 +275,7 @@ describe('Smart Neural Integration Tests', () => {
       // Concurrent processing should be faster than sequential
       expect(totalTime).toBeLessThan(15000); // Should complete in under 15s
 
-      const _stats = brainCoordinator.getSmartNeuralStats();
+      const __stats = brainCoordinator.getSmartNeuralStats();
       expect(stats.stats.performance.totalRequests).toBeGreaterThanOrEqual(5);
 });
 });
@@ -284,7 +284,7 @@ describe('Smart Neural Integration Tests', () => {
     ')    it('should use fallback systems when primary model fails', async () => {
     ')      // This test would require more complex mocking to simulate model failures
       // For now, we verify the fallback configuration is in place
-      const _stats = smartNeuralCoordinator.getCoordinatorStats();
+      const __stats = smartNeuralCoordinator.getCoordinatorStats();
       expect(stats.configuration.enableFallbacks).toBe(true);
       expect(stats.fallbackChain).toBeDefined();
       expect(stats.fallbackChain.length).toBeGreaterThan(0);

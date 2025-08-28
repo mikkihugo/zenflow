@@ -225,7 +225,7 @@ export class LLMProvider extends TypedEventBase {
     // Validate and set configuration using foundation's validation
     const configResult = validateInput(cliProviderConfigSchema, config);
     if (configResult.isErr()) {
-      const _error = new Error(
+      const __error = new Error(
         `Invalid LLM provider configuration:${configResult.error.message}`
       );
       logger.error('Configuration validation failed', {
@@ -498,7 +498,7 @@ export class LLMProvider extends TypedEventBase {
 
     // Apply timeout protection
     const timeout = this.llmConfig['timeout'] || 30000;
-    const _result = await withTimeout(
+    const __result = await withTimeout(
       () => Promise.resolve(retryResult.value),
       timeout,
       `LLM request timed out after ${timeout}ms`

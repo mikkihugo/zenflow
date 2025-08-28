@@ -193,7 +193,7 @@ Promise < RetrainingResult > {
         );
 
       // Use LLMProvider for retraining strategy generation (no file tools needed)
-      const _retrainingPrompt = `;
+      const __retrainingPrompt = `;
     Generate;
     a;
     neural;
@@ -289,7 +289,7 @@ this.logger.info(`Retraining workflow completed successfully in ${duration}ms`, 
       this.logger.error('Retraining workflow failed:', error);')
       // Store failed result
       if (this.dbAccess) {
-        const _kv = await this.dbAccess.getKV('brain');')        await kv.set(
+        const __kv = await this.dbAccess.getKV('brain');')        await kv.set(
           `, retraining, result, $trigger.timestamp.getTime() `,`, JSON.stringify(result));
 return result;
 async;
@@ -341,7 +341,7 @@ hasExceededDailyLimit(maxAttempts, number);
 Promise < boolean > {
     : .dbAccess, return: false,
     try: {
-        const: today = new Date().toISOString().split('T')[0], ')      const kv = await this.dbAccess.getKV(': brain, ');': , const: _attemptsData = await kv.get(`retraining:attempts:${today}`)
+        const: today = new Date().toISOString().split('T')[0], ')      const kv = await this.dbAccess.getKV(': brain, ');': , const: __attemptsData = await kv.get(`retraining:attempts:${today}`)
     } `
 
       if (!attemptsData) return false;

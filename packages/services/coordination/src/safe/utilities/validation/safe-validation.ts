@@ -104,7 +104,7 @@ export class SafeValidationUtils {
       businessValue: [];
     const _circularDependencies: [];
     // Create adjacency list
-    const _graph = new Map<string, string[]>();
+    const __graph = new Map<string, string[]>();
     const epicIds = new Set(epics.map((e) => e.id);
     epics.forEach((epic) => {
       // Check if dependencies exist

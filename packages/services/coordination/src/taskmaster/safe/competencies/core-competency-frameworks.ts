@@ -681,7 +681,7 @@ export class CoreCompetencyFrameworks {
       // Initialize task approval system
       this.taskApprovalSystem = new TaskApprovalSystem({
         enableRichDisplay: config.id;
-    const _coordinationTraceabilityId = `competency-assessment-`${assessmentId}-${Date.now()})    this.logger.info(``Executing Competency Assessment,{';
+    const __coordinationTraceabilityId = `competency-assessment-`${assessmentId}-${Date.now()})    this.logger.info(``Executing Competency Assessment,{';
       assessmentId,
       competencyType: config.competencyType,
       artName: config.artName,

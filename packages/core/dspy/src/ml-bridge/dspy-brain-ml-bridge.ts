@@ -225,7 +225,7 @@ export class DSPyBrainMLBridge extends EventEmitter {
 					"Brain package not available, using fallback implementation",
 				);
 				// Create a simple fallback BrainCoordinator that matches the expected interface
-				_BrainCoordinator = class implements BrainCoordinator {
+				__BrainCoordinator = class implements BrainCoordinator {
 					async initialize() {}
 					async destroy() {}
 					async optimizePrompt(request:any) {
@@ -362,7 +362,7 @@ export class DSPyBrainMLBridge extends EventEmitter {
 
 		try {
 			// Use Brain's pattern recognition for intelligent selection (fallback if MLEngine not available)
-			const _mlEngine = this.brainCoordinator.getMLEngine?.() || null;
+			const __mlEngine = this.brainCoordinator.getMLEngine?.() || null;
 
 			// Analyze task characteristics
 			const taskAnalysis =

@@ -40,7 +40,7 @@ export class GitAnalyzer {
 ]);
 
     const commits = this.getSettledValue(logResult, []);
-    const _status = this.getSettledValue(statusResult, null);
+    const __status = this.getSettledValue(statusResult, null);
     const branches = this.getSettledValue(
       branchResult,
       this.getEmptyBranchMetrics()
@@ -135,7 +135,7 @@ export class GitAnalyzer {
 
       for (const commit of commits) {
         const author = commit.author_name;
-        const _email = commit.author_email;
+        const __email = commit.author_email;
         const date = new Date(commit.date);
 
         if (!contributorMap.has(author)) {
@@ -150,7 +150,7 @@ export class GitAnalyzer {
 });
 }
 
-        const _stats = contributorMap.get(author)!;
+        const __stats = contributorMap.get(author)!;
         stats.commits++;
 
         if (date < stats.firstCommit) stats.firstCommit = date;
@@ -206,7 +206,7 @@ export class GitAnalyzer {
 });
 }
 
-            const _stats = fileChangeMap.get(file)!;
+            const __stats = fileChangeMap.get(file)!;
             stats.count++;
             stats.contributors.add(author);
 
@@ -418,7 +418,7 @@ export class GitAnalyzer {
       const churnTrend:Array<{ date: string; churn: number}> = [];
 
       for (const commit of commits) {
-        const _stats = await this.getCommitStats(commit.hash);
+        const __stats = await this.getCommitStats(commit.hash);
         const churn = stats.linesAdded + stats.linesDeleted;
 
         totalChurn += churn;

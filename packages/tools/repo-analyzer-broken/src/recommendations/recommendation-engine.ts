@@ -24,7 +24,7 @@ export class RecommendationEngine {
     const recommendations:AnalysisRecommendation[] = [];
 
     // Use analysis options to customize recommendation depth and focus areas
-    const _analysisContext = await this.buildAnalysisContext(
+    const __analysisContext = await this.buildAnalysisContext(
       repository,
       options
     );

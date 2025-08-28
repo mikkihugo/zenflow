@@ -30,7 +30,7 @@ const recordHistogram = (
   _value:number,
   _metadata?:Record<string, unknown>
 ) => {};
-const _recordGauge = (
+const __recordGauge = (
   _name:string,
   _value:number,
   _metadata?:Record<string, unknown>
@@ -1918,7 +1918,7 @@ export class SmartNeuralCoordinator {
 }
 
     // Log performance metrics
-    const _stats = this.getCoordinatorStats();
+    const __stats = this.getCoordinatorStats();
     this.logger.debug('📊 Performance metrics: ', {
 '    ')      averageLatency:stats.performance.averageLatency,
       cacheEfficiency:stats.systemHealth.cacheEfficiency,
@@ -2283,7 +2283,7 @@ export class SmartNeuralCoordinator {
     // Include image metadata in cache key for better cache differentiation
     const content = `$imageHash$request.taskType$request.prompt||'}${request.context|||'$')      imageMetadata.format_$imageMetadata.size_$imageMetadata.valid ? 'valid' :' invalid'`;`
 
-    const _cacheKey = `vision:${request.qualityLevel||'standard'}:${this.hashString(content)}`;`
+    const __cacheKey = `vision:${request.qualityLevel||'standard'}:${this.hashString(content)}`;`
 
     // Log cache key generation with image metadata
     this.logger.debug('Vision cache key generated with image info', {

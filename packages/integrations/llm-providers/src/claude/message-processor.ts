@@ -68,8 +68,7 @@ export function processClaudeMessage(
     // Return error message as fallback
     return {
       type: 'system',      content:
-        `Error processing message:${ `
-        error instanceof Error ? error['message'] : ' Unknown error'}`,
+        `Error processing message: ${error instanceof Error ? error.message : 'Unknown error'}`,
       timestamp:Date.now(),
       metadata:{
         level: 'error',        source: 'message-processor',        messageId:`error_${  Date.now()}`,

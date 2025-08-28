@@ -7,7 +7,7 @@
  */
 
 const fs = require("node:fs").promises;
-const _path = require("node:path");
+const __path = require("node:path");
 const yaml = require("js-yaml");
 
 class CopilotContextGenerator {

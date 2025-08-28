@@ -215,7 +215,7 @@ declare module '$env/static/public' {
  * 
  * ```ts
  * import { env } from '$env/dynamic/private';
- * logger.info(env.DEPLOYMENT_SPECIFIC_VARIABLE);
+ * console.log(env.DEPLOYMENT_SPECIFIC_VARIABLE);
  * ```
  * 
  * > [!NOTE] In `dev`, `$env/dynamic` always includes environment variables from `.env`. In `prod`, this behavior will depend on your adapter.
@@ -401,7 +401,7 @@ declare module '$env/dynamic/private' {
  * 
  * ```ts
  * import { env } from '$env/dynamic/public';
- * logger.info(env.PUBLIC_DEPLOYMENT_SPECIFIC_VARIABLE);
+ * console.log(env.PUBLIC_DEPLOYMENT_SPECIFIC_VARIABLE);
  * ```
  */
 declare module '$env/dynamic/public' {

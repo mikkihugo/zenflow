@@ -135,7 +135,7 @@ export class SystemMonitor {
     return await withAsyncTrace('system.get_process_metrics', async () => {
     ')      try {
         const processId = pid||process.pid;
-        const _stats = await pidusage(processId);
+        const __stats = await pidusage(processId);
 
         const processMetrics = {
           pid:processId,
@@ -180,7 +180,7 @@ export class SystemMonitor {
         const processMetrics = await Promise.allSettled(
           topProcesses.map(async (proc) => {
             try {
-              const _stats = await pidusage(proc.pid);
+              const __stats = await pidusage(proc.pid);
               return {
                 pid:proc.pid,
                 name:proc.name,
@@ -354,7 +354,7 @@ export class PerformanceTracker {
   async timeAsync<T>(name:string, operation:() => Promise<T>): Promise<T> {
     const timer = this.startTimer(name);
     try {
-      const _result = await operation();
+      const __result = await operation();
       timer();
       recordMetric(`operation.${name}.success`, 1);`
       return result;

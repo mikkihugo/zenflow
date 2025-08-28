@@ -415,7 +415,7 @@ export class SmartPromptOptimizer {
     originalPrompt:string,
     patterns:OptimizationPattern[]
   ):string {
-    const _optimizedPrompt = originalPrompt;
+    const __optimizedPrompt = originalPrompt;
 
     for (const pattern of patterns) {
       switch (pattern.patternType) {

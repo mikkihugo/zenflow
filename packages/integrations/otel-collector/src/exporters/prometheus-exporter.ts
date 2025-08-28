@@ -234,7 +234,7 @@ export class PrometheusExporter implements BaseExporter {
     metricData:any,
     telemetryData:TelemetryData
   ):Promise<void> {
-    const name = this.sanitizeMetricName(metricData.name  |  |  'unnamed_metric');')    const _help =
+    const name = this.sanitizeMetricName(metricData.name  |  |  'unnamed_metric');')    const __help =
       metricData.description  |  |  `Metric ${name} from ${telemetryData.service.name}`;`
     const value = metricData.value  |  |  metricData.count  |  |  metricData.sum  |  |  0;
     const labels = {

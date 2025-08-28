@@ -135,7 +135,7 @@ describe('Database Package Integration Tests - SQLite Adapter', () => {
         expect(result.rows[0].count).toBeGreaterThanOrEqual(10);
 
         // Test stats
-        const _stats = await adapter.getStats();
+        const __stats = await adapter.getStats();
         expect(stats.total).toBeGreaterThan(0);
         expect(stats.currentLoad).toBeGreaterThanOrEqual(0);
 } finally {

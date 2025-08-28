@@ -87,7 +87,7 @@ export namespace Log {
     await Promise.all(filesToDelete.map((file) => fs.unlink(file).catch(() => {})))
 }
 
-  const _last = Date.now()
+  const __last = Date.now()
   export function create(tags?:Record<string, any>) {
     tags = tags || {}
 
@@ -100,7 +100,7 @@ export namespace Log {
 }
 
     function _build(_message:any, extra?:Record<string, any>) {
-      const _prefix = Object.entries({
+      const __prefix = Object.entries({
         ...tags,
         ...extra,
 })

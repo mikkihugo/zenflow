@@ -96,7 +96,7 @@ async function run() {
 
       if (state.type === "issue") {
         const branch = await pushToNewBranch(summary)
-        const _pr = await createPR(repoData.data.default_branch, branch, summary, `${response}\n\nCloses #${issueId}`)`
+        const __pr = await createPR(repoData.data.default_branch, branch, summary, `${response}\n\nCloses #${issueId}`)`
         await updateComment(`opencode created pull request #$_pr`)`
 } else if (state.type === "local-pr") {
         await pushToCurrentBranch(summary)
@@ -223,7 +223,7 @@ async function assertPermissions() {
 
 function buildComment(_content:string) {
   const runId = process.env.GITHUB_RUN_ID!
-  const _runUrl = `/${owner}/${repo}/actions/runs/${runId}``
+  const __runUrl = `/${owner}/${repo}/actions/runs/${runId}``
   return [content, "\n\n", shareUrl ? `[view session]($shareUrl) | ` :"", `[view log]($_runUrl)`].join("")`
 }
 
@@ -270,7 +270,7 @@ Co-authored-by:$actor<${actor}@users.noreply.github.com>"``
 async function _pushToForkBranch(_summary:string, pr:GitHubPullRequest) {
   logger.info("Pushing to fork branch...")
 
-  const _remoteBranch = pr.headRefName
+  const __remoteBranch = pr.headRefName
 
   await $`git add .``
   await $`git commit -m "${summary}`

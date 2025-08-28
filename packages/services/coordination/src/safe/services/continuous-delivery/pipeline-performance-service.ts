@@ -273,7 +273,7 @@ export class PipelinePerformanceService {
    */
   async monitorPipelinePerformance():Promise<void> {
     if (!this.initialized) await this.initialize();
-    const _timer = this.performanceTracker.startTimer(
+    const __timer = this.performanceTracker.startTimer(
      'pipeline_performance_monitoring'));
     try {
       this.logger.info(';')';

@@ -277,7 +277,7 @@ export class IntelligentPromptGenerator {
       { performanceRecommendations, securityRecommendations, testingRecommendations}
     );
 
-    let _standards = ``
+    let __standards = ``
 ## 🎯 Coding Standards & Best Practices ($language.toUpperCase())
 $enhancedStandards.contextualIntro
 
@@ -520,7 +520,7 @@ Remember:Write code that tells a story - it should be self-documenting and easy 
       await dspyBridge.initialize();
 
       // Create coordination task with DSPy examples for prompt generation
-      const _promptTask = {
+      const __promptTask = {
         id:`prompt-gen-${phase}-${Date.now()}`,`
         type:'generation' as const,
         input:`Generate a high-quality development prompt for ${phase} phase.`

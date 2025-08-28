@@ -519,7 +519,7 @@ Promise < { agentId: string, confidence: number, reasoning: string } > {
                 const labels = agentIds.map((id) => this.getAgentTypeLabel(this.classifyAgentType(id)));
                 // Async data preprocessing and enhancement
                 const enhancedFeatures = await this.preprocessTrainingFeatures(features, modelStrategy);
-                const _optimizedLabels = await this.optimizeTrainingLabels(labels, trainingConfiguration);
+                const __optimizedLabels = await this.optimizeTrainingLabels(labels, trainingConfiguration);
                 if (enhancedFeatures.length >= 5 && // Perform DBSCAN clustering for behavioral groups
                     this.behaviorClusterer &&
                     enhancedFeatures.length > 0) {
@@ -1019,7 +1019,7 @@ Promise < { agentId: string, confidence: number, reasoning: string } > {
   ):string {
     const [duration, success, _efficiency] = output;
 
-    let _reasoning = `, Agent, $, { agentId });
+    let __reasoning = `, Agent, $, { agentId });
                 for ($; { taskType }; )
                     : `;`;
                 // Analyze efficiency prediction

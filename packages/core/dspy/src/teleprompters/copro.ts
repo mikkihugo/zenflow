@@ -128,7 +128,7 @@ export interface CoproStats {
  *});
  *
  * // Access optimization statistics
- * const _stats = advancedCopro.getStats();
+ * const __stats = advancedCopro.getStats();
  * logger.info(`Total LM calls:${stats.total_calls}`);
  * ```
  */

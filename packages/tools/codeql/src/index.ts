@@ -109,7 +109,7 @@ export async function analyzeFile(
   options:{
     queryPacks?:import('./types/codeql-types').QueryPack[];')    config?:Partial<import('./types/codeql-types').CodeQLConfig>;')} = {}
 ):Promise<import('./types/codeql-types').QueryExecutionResult> {
-    ')  const _bridge = createCodeQLBridge(options.config);
+    ')  const __bridge = createCodeQLBridge(options.config);
 
   // Detect language from file extension
   const language = detectLanguageFromPath(filePath);

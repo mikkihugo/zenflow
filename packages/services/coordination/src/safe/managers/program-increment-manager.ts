@@ -167,7 +167,7 @@ export class ProgramIncrementManager extends EventBus {
         teamCapacities;
       );
       // Delegate to Capacity Planning Service for feature allocation
-      const _capacityResult =
+      const __capacityResult =
         await this.getCapacityPlanningService().implementCapacityPlanning(
           teamCapacities,
           [] // Features will be generated from objectives;

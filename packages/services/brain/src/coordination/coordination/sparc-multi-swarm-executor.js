@@ -83,7 +83,7 @@ export class SPARCMultiSwarmExecutor {
             const recommendations = this.generateSPARCRecommendations(results, comparison);
             const endTime = new Date();
             const totalWorktreesCreated = results.filter((r) => r.gitTreeInfo.worktreePath).length;
-            const _multiSwarmResult = {
+            const __multiSwarmResult = {
                 testId,
                 taskDescription,
                 strategies: sparcStrategies,
@@ -360,7 +360,7 @@ Promise < SPARCExecutionResult > {
 
     try {
       // Simulate SPARC Commander execution with git tree isolation
-      const _sparcResult = await this.simulateSPARCExecution(
+      const __sparcResult = await this.simulateSPARCExecution(
         taskDescription,
         strategy,
         gitConfig
@@ -459,7 +459,7 @@ catch (error) {
 
     // Generate git tree info
     const worktreePath = `.claude - zen / tmp / sparc - worktrees / sparc - $strategy.id - $generateNanoId(6) `;`;
-    const _branchName = `sparc-${strategy.id}-${Date.now()}`;
+    const __branchName = `sparc-${strategy.id}-${Date.now()}`;
     `
     const commitsCreated =
       strategy.sparcConfig.methodology === 'full-sparc' ? 5 : 3;'
@@ -769,4 +769,4 @@ export async function _quickSPARCTest(taskDescription, scenario = 'comprehensive
 /**
  * Export default instance for immediate use
  */
-export const _sparcMultiSwarmExecutor = new SPARCMultiSwarmExecutor();
+export const __sparcMultiSwarmExecutor = new SPARCMultiSwarmExecutor();

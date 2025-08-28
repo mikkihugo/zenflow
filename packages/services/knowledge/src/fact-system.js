@@ -341,7 +341,7 @@ catch (error) {
 
     try {
       // First try Rust fact bridge for maximum performance
-      const _npmResult = await this.factBridge.getNPMFacts(packageName, version);
+      const __npmResult = await this.factBridge.getNPMFacts(packageName, version);
       logger.info(
         `, NPM, package, info, retrieved, via, Rust, bridge, $, { packageName } ``);
             return npmResult;

@@ -603,7 +603,7 @@ export class MemorySystemManager extends EventEmitter {
       try {
         // Perform health check if component has one
         if (typeof component.instance.getStats === 'function') {
-          const _stats = component.instance.getStats();
+          const __stats = component.instance.getStats();
           component.healthy = true;
           component.lastHealthCheck = Date.now();
 }

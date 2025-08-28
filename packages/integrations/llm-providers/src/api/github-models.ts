@@ -280,8 +280,8 @@ export class GitHubModelsAPI implements APIProvider {
             .filter(Boolean);
 
           logger.info(`📋 GitHub Models from catalog API:${modelIds.length} models`);
-          logger.info(`🎯 First few models:${modelIds.slice(0, 5).join(',    ')}${modelIds.length > 5 ? '...' : ''}`);
-'          
+          logger.info(`🎯 First few models:${modelIds.slice(0, 5).join(', ')}${modelIds.length > 5 ? '...' : ''}`);
+          
           return modelIds;
 }
 } else {
@@ -334,7 +334,7 @@ export class GitHubModelsAPI implements APIProvider {
 }
 } catch (error) {
       logger.error('Failed to list GitHub Models from all sources: ', error);
-'}
+}
 
     // Known working models from successful API tests (final fallback)
     const workingModels = [

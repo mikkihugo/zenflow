@@ -393,8 +393,8 @@ var WorkflowFactory = /** @class */ (function () {
      * Clear all cached instances.
      */
     WorkflowFactory.clearInstances = function () {
-        for (var _i = 0, _a = WorkflowFactory.instances; _i < _a.length; _i++) {
-            var _b = _a[_i], engine = _b[1];
+        for (var __i = 0, __a = WorkflowFactory.instances; _i < _a.length; _i++) {
+            var __b = _a[_i], engine = _b[1];
             engine.cleanup();
         }
         WorkflowFactory.instances.clear();

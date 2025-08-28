@@ -333,7 +333,7 @@ export class SafeMemoryStore extends EventEmitter {
 }
 }
 
-      const _stats = {
+      const __stats = {
         entries,
         totalSize,
         averageSize:entries > 0 ? totalSize / entries : 0,

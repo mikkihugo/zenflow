@@ -217,7 +217,7 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
   async initialize():Promise<Result<void, KnowledgeError>> {
     if (this.initialized) return ok();
 
-    const _timer = this.performanceTracker.startTimer('knowledge_store_initialize');
+    const __timer = this.performanceTracker.startTimer('knowledge_store_initialize');
 
     try {
       // Initialize knowledge-specific dedicated databases
@@ -288,7 +288,7 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
 }
 
     return withTrace('knowledge_store_add', async () => {
-      const _timer = this.performanceTracker.startTimer('knowledge_store_add');
+      const __timer = this.performanceTracker.startTimer('knowledge_store_add');
 
       try {
         // Validate input
@@ -388,7 +388,7 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
 }
 
     return withTrace('knowledge_store_get', async () => {
-      const _timer = this.performanceTracker.startTimer('knowledge_store_get');
+      const __timer = this.performanceTracker.startTimer('knowledge_store_get');
 
       try {
         if (!isUUID(id)) {

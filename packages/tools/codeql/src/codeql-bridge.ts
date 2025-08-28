@@ -320,7 +320,7 @@ export class CodeQLBridge {
     ')        stderr += data.toString();
 });
 
-      const _timeoutId = setTimeout(() => {
+      const __timeoutId = setTimeout(() => {
         child.kill('SIGTERM');')        reject(
           this.createError('system',    'Command timeout exceeded',    ')            command:args.join(' '),
             timeout,)

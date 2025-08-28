@@ -121,20 +121,20 @@ export namespace Ripgrep {
 }),
   )
 
-  const _state = lazy(async () => {
+  const __state = lazy(async () => {
     let filepath = Bun.which("rg")
     if (filepath) return { filepath}
     filepath = path.join(Global.Path.bin, `rg${process.platform === "win32" ? ".exe" :""}`)`
 
     const file = Bun.file(filepath)
     if (!(await file.exists())) {
-      const _platformKey = `${process.arch}-${process.platform}` as keyof typeof PLATFORM`
+      const __platformKey = `${process.arch}-${process.platform}` as keyof typeof PLATFORM`
       const config = PLATFORM[platformKey]
       if (!config) throw new UnsupportedPlatformError({ platform:platformKey})
 
       const version = "14.1.1"
       const filename = `ripgrep-$version-$config.platform.$config.extension``
-      const _url = `https://github.com/BurntSushi/ripgrep/releases/download/${version}/${filename}``
+      const __url = `https://github.com/BurntSushi/ripgrep/releases/download/${version}/${filename}``
 
       const response = await fetch(url)
       if (!response.ok) throw new DownloadFailedError({ url, status:response.status})
@@ -318,7 +318,7 @@ export namespace Ripgrep {
     args.push(input.pattern)
 
     const command = args.join(" ")
-    const _result = await $`${raw:command}`.cwd(input.cwd).quiet().nothrow()`
+    const __result = await $`${raw:command}`.cwd(input.cwd).quiet().nothrow()`
     if (result.exitCode !== 0) {
       return []
 }

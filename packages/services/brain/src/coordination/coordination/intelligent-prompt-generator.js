@@ -143,7 +143,7 @@ export class IntelligentPromptGenerator {
             await this.generateTestingRecommendations(language, featureAnalysis) : [];
         // Merge recommendations into enhanced standards
         const enhancedStandards = await this.mergeFeatureRecommendations({ includePerformance, includeSecurity, includeTesting }, { performanceRecommendations, securityRecommendations, testingRecommendations });
-        let _standards = ``;
+        let __standards = ``;
         #;
         #;
         Coding;
@@ -795,7 +795,7 @@ Remember: Write code that tells a story - it should be self-documenting and easy
       await dspyBridge.initialize();
 
       // Create coordination task with DSPy examples for prompt generation
-      const _promptTask = {
+      const __promptTask = {
         id: `;
         prompt - gen - $;
         {

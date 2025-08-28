@@ -291,7 +291,7 @@ export class MemoryHealthMonitor extends EventEmitter {
 }
 
   private updateNodeStatus(node:MemoryNode, result:HealthCheckResult): void {
-    const _previouslyHealthy = node.status.healthy;
+    const __previouslyHealthy = node.status.healthy;
 
     // Update node status
     node.status = {

@@ -101,7 +101,7 @@ export class RepositoryAnalyzer {
       );
 
       // Generate summary
-      const _summary = this.generateSummary(repositoryMetrics, recommendations);
+      const __summary = this.generateSummary(repositoryMetrics, recommendations);
 
       const analysisTime = Date.now() - startTime;
       this.logger.info(`Repository analysis completed in ${analysisTime}ms`);`
@@ -265,7 +265,7 @@ export class RepositoryAnalyzer {
 
       for (const file of files) {
         try {
-          const _stats = await fs.stat(file);
+          const __stats = await fs.stat(file);
           if (stats.size <= options.maxFileSize) {
             filteredFiles.push(file);
 }

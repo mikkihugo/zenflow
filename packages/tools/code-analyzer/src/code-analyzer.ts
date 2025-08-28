@@ -334,7 +334,7 @@ export class CodeAnalyzer {
     filePath:string,
     _options:Partial<EnhancedAnalysisOptions> = {},
   ):Promise<Result<CodeAnalysisResult, Error>> {
-    const _startTime = Date.now();
+    const __startTime = Date.now();
 
     return await safeAsync(async ():Promise<CodeAnalysisResult> => {
       // Get metrics service from DI container
@@ -1202,7 +1202,7 @@ export class DependencyRelationshipMapper {
       this.logger.debug(`Discovered $files.lengthfiles for analysis`);`
 
       // Phase 2:Node Extraction - Extract all dependency nodes
-      const _nodes = await this.extractNodes(files);
+      const __nodes = await this.extractNodes(files);
       this.logger.debug(`Extracted ${nodes.length} dependency nodes`);`
 
       // Phase 3:Edge Analysis - Analyze relationships between nodes
@@ -1330,7 +1330,7 @@ export class DependencyRelationshipMapper {
   private async discoverFiles(options:any): Promise<string[]> {
     const files:string[] = [];
     const extensions = ['.ts',    '.tsx',    '.js',    '.jsx'];')    
-    const _walkDir = async (dir:string): Promise<void> => {
+    const __walkDir = async (dir:string): Promise<void> => {
       try {
         const entries = await fs.readdir(dir, { withFileTypes:true});
         
@@ -1391,8 +1391,8 @@ export class DependencyRelationshipMapper {
       while ((match = pattern.exec(content)) !== null) {
         const name = match[1] || match[2];
         if (name) {
-          const lineIndex = content.substring(0, match.index).split('\n').length - 1;')          const _line = lines[lineIndex];
-          const _column = match.index - content.lastIndexOf('\n', match.index) - 1;')          
+          const lineIndex = content.substring(0, match.index).split('\n').length - 1;')          const __line = lines[lineIndex];
+          const __column = match.index - content.lastIndexOf('\n', match.index) - 1;')          
           nodes.push(
             id:this.generateNodeId(),
             name,

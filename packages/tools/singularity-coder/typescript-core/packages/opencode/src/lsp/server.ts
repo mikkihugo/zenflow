@@ -241,11 +241,11 @@ export namespace LSPServer {
           return
 }
 
-        const _release = await releaseResponse.json()
+        const __release = await releaseResponse.json()
 
         const platform = process.platform
         const arch = process.arch
-        let _assetName = ""
+        let __assetName = ""
 
         let zlsArch:string = arch
         if (arch === "arm64") zlsArch = "aarch64"
@@ -258,7 +258,7 @@ export namespace LSPServer {
 
         const ext = platform === "win32" ? "zip" :"tar.xz"
 
-        _assetName = `zls-${zlsArch}-${zlsPlatform}.${ext}``
+        __assetName = `zls-${zlsArch}-${zlsPlatform}.${ext}``
 
         const supportedCombos = [
           "zls-x86_64-linux.tar.xz",

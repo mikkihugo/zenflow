@@ -315,7 +315,7 @@ describe('GitHub Models Real API Integration', () => {
         return;
 }
 
-      const _stats = modelsAPI.getUsageStats();
+      const __stats = modelsAPI.getUsageStats();
       expect(stats).toBeDefined();
       expect(typeof stats.requestCount).toBe('number');
       expect(typeof stats.lastRequestTime).toBe('number');

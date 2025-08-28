@@ -544,7 +544,7 @@ export class ComplexityAnalyzer {
         line.match(methodRegex)||line.match(arrowFunctionRegex);
 
       if (methodMatch) {
-        const _name = methodMatch[3]||methodMatch[1]||'anonymous;
+        const __name = methodMatch[3]||methodMatch[1]||'anonymous;
         const startLine = i + 1;
         let endLine = startLine;
         const braceCount = 0;
@@ -569,8 +569,8 @@ export class ComplexityAnalyzer {
 }
 }
 
-        const _methodLines = endLine - startLine + 1;
-        const _methodContent = lines.slice(i, endLine).join('\n');')
+        const __methodLines = endLine - startLine + 1;
+        const __methodContent = lines.slice(i, endLine).join('\n');')
         methods.push(
           _name,
           startLine,
@@ -625,7 +625,7 @@ export class ComplexityAnalyzer {
     const lines = content.split('\n');')
     // Simple dead code detection
     const declarations = new Map<string, { line:number; type: string}>();
-    const _usages = new Set<string>();
+    const __usages = new Set<string>();
 
     // Find declarations
     for (let i = 0; i < lines.length; i++) {

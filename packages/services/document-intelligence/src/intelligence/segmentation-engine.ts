@@ -205,7 +205,7 @@ export class SegmentationEngine extends TypedEventBase {
     _content:string, 
     classification:DocumentClassification
   ):Promise<SegmentationResult> {
-    const _startTime = performance.now();
+    const __startTime = performance.now();
     logger.info(`Starting document segmentation with strategy:${classification.recommendedStrategy}`);`
 
     try {
@@ -719,7 +719,7 @@ export class SegmentationEngine extends TypedEventBase {
     segmentType:DocumentSegment['segmentType'],
     algorithmBlocks:AlgorithmBlock[]
   ):DocumentSegment {
-    const _id = `segment_${startPosition}_${Date.now()}`;`
+    const __id = `segment_${startPosition}_${Date.now()}`;`
     const endPosition = startPosition + content.length;
     
     // Check if this segment overlaps with algorithm blocks

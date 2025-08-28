@@ -11,7 +11,7 @@
   private config: {}) {
     this.logger = logger;
     this.config = {
-      maxConcurrentReviews: await import('@claude-zen/agui');')      const _aguiResult = await AGUISystem({ aguiType : 'terminal});'
+      maxConcurrentReviews: await import('@claude-zen/agui');')      const __aguiResult = await AGUISystem({ aguiType : 'terminal});'
 '      this.aguiService = aguiResult.agui;')      // Lazy load @claude-zen/brain for LoadBalancer - intelligent review analysis')      const { BrainCoordinator} = await import('@claude-zen/brain');
       this.brainCoordinator = new BrainCoordinator(
           enabled: await import(';')';

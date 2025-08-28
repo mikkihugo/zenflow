@@ -94,7 +94,7 @@ export interface BusinessCaseConfig {
       approvalStatus: businessCaseIds.map((id) => this.analyzeBusinessCase(id);
     const comparison = analyses.map((analysis, index) => ({
       businessCaseId: orderBy(comparison,'overallScore,' desc);
-    const topChoice = sortedComparison[0];`)    const _recommendation = `Recommend ${topChoice.businessCaseId} based on overall score``)    const reasoning = [`;
+    const topChoice = sortedComparison[0];`)    const __recommendation = `Recommend ${topChoice.businessCaseId} based on overall score``)    const reasoning = [`;
       `Highest ROI: ${t}opChoice.roi%```;
       `Best payback period: ${t}opChoice.paybackPeriodmonths```;
       ``Risk level: `${analyses.find((a) => a.businessCase.id === topChoice.businessCaseId)?.riskProfile.overallRiskLevel},    ``)];;

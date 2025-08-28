@@ -338,7 +338,7 @@ export class SystemDemoCoordination {
       // Initialize task approval system
       this.taskApprovalSystem = new TaskApprovalSystem({
         enableRichDisplay: config.id;
-    const _coordinationTraceabilityId = `system-demo-`${demoId}-${Date.now()})    this.logger.info(``Scheduling System Demo,{`
+    const __coordinationTraceabilityId = `system-demo-`${demoId}-${Date.now()})    this.logger.info(``Scheduling System Demo,{`
       demoId,
       artName: await this.createDemoPreparationGates(
       config,
@@ -407,7 +407,7 @@ export class SystemDemoCoordination {
       execution: this.activeDemos.get(demoId);
     if (!config) {
     `)      throw new Error(`System Demo ${d}emoIdnot found``);`)};;
-    const _feedbackId = `feedback-${demoId}-${Date.now()})    const fullFeedback: {``;
+    const __feedbackId = `feedback-${demoId}-${Date.now()})    const fullFeedback: {``;
       id: this.feedbackCollectors.get(demoId)|| [];
     existingFeedback.push(fullFeedback);
     this.feedbackCollectors.set(demoId, existingFeedback);

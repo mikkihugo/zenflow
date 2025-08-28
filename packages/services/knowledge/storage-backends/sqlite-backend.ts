@@ -143,7 +143,7 @@ export class SQLiteBackend implements FACTStorageBackend {
       throw new Error('SQLite backend not initialized');')}
 
     try {
-      const _result = await this.dalAdapter.query(
+      const __result = await this.dalAdapter.query(
         `SELECT * FROM ${this.config.tableName} WHERE id = ?`,`
         [id]
       );
@@ -311,7 +311,7 @@ export class SQLiteBackend implements FACTStorageBackend {
          MAX(timestamp) as newest_timestamp
          FROM ${this.config.tableName}``
       );
-      const _stats = result?.rows?.[0];
+      const __stats = result?.rows?.[0];
 
       return {
         persistentEntries:stats.total_count,
@@ -380,8 +380,8 @@ export class SQLiteBackend implements FACTStorageBackend {
       throw new Error('SQLite backend not initialized');')}
 
     try {
-      const _cutoffTime = Date.now() - maxAgeMs;
-      const _result = await this.dalAdapter.execute(
+      const __cutoffTime = Date.now() - maxAgeMs;
+      const __result = await this.dalAdapter.execute(
         `DELETE FROM ${this.config.tableName} WHERE timestamp < ?`,`
         [cutoffTime]
       );
@@ -472,10 +472,10 @@ export class SQLiteBackend implements FACTStorageBackend {
          AVG(access_count) as avg_access_count
          FROM ${this.config.tableName}``
       );
-      const _basicStats = basicStatsResult?.rows?.[0];
+      const __basicStats = basicStatsResult?.rows?.[0];
 
       // Get top domains
-      const _domainsResult = await this.dalAdapter.query(
+      const __domainsResult = await this.dalAdapter.query(
         `SELECT JSON_EXTRACT(metadata, '$.domains') as domains, COUNT(*) as count')         FROM ${this.config.tableName}`
          GROUP BY JSON_EXTRACT(metadata, '$.domains')')         ORDER BY count DESC
          LIMIT 10``

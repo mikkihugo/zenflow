@@ -24,16 +24,16 @@ let _DeceptionAlert:any;
 try {
   const aiSafety = require('@claude-zen/ai-safety');')  NeuralDeceptionDetector = aiSafety.NeuralDeceptionDetector;
   AIDeceptionDetector = aiSafety.AIDeceptionDetector;
-  _AIInteractionData = aiSafety.AIInteractionData;
-  _DeceptionAlert = aiSafety.DeceptionAlert;
+  __AIInteractionData = aiSafety.AIInteractionData;
+  __DeceptionAlert = aiSafety.DeceptionAlert;
 } catch (error) {
   // Fallback implementations when ai-safety package is not available
   logger.debug('AI safety package not available, using fallbacks:', error);')  NeuralDeceptionDetector = class {
 };
   AIDeceptionDetector = class {
 };
-  _AIInteractionData = {};
-  _DeceptionAlert = {};
+  __AIInteractionData = {};
+  __DeceptionAlert = {};
 }
 
 export interface NeuralSafetyConfig {
@@ -416,8 +416,8 @@ export class NeuralSafetyBridge extends TypedEventBase {
     reasoning:string[];
 } {
     const reasoning:string[] = [];
-    let _combinedConfidence = 0;
-    let _deceptionIndicators = 0;
+    let __combinedConfidence = 0;
+    let __deceptionIndicators = 0;
 
     // Standard detection weight:40%
     if (standardDetection.length > 0) {

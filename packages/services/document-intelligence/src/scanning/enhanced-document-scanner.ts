@@ -165,7 +165,7 @@ export class EnhancedDocumentScanner extends TypedEventBase {
       throw new Error('Scanner is already running');')}
 
     this.isScanning = true;
-    const _startTime = Date.now();
+    const __startTime = Date.now();
 
     try {
       logger.info(
@@ -216,14 +216,14 @@ export class EnhancedDocumentScanner extends TypedEventBase {
       return 0;
 }
 
-    let _scannedFiles = 0;
+    let __scannedFiles = 0;
 
     try {
       const entries = await readdir(dirPath);
 
       for (const entry of entries) {
         const fullPath = join(dirPath, entry);
-        const _stats = await stat(fullPath);
+        const __stats = await stat(fullPath);
 
         if (stats.isDirectory()) {
           // Check if directory should be excluded
@@ -433,12 +433,12 @@ export class EnhancedDocumentScanner extends TypedEventBase {
   private groupAnalysisResults(
     results:CodeAnalysisResult[]
   ):Map<string, CodeAnalysisResult[]> {
-    const _groups = new Map<string, CodeAnalysisResult[]>();
+    const __groups = new Map<string, CodeAnalysisResult[]>();
 
     for (const result of results) {
       // Group by pattern type and directory
       const dirPath = relative(this.config.rootPath, result.filePath).split(
-        '/')[0];')      const _groupKey = `${result.type}-${dirPath}`;`
+        '/')[0];')      const __groupKey = `${result.type}-${dirPath}`;`
 
       if (!groups.has(groupKey)) {
         groups.set(groupKey, []);
@@ -525,7 +525,7 @@ export class EnhancedDocumentScanner extends TypedEventBase {
     const fileCount = new Set(results.map((r) => r.filePath)).size;
     const issueCount = results.length;
 
-    const _description = `Address ${issueCount} ${pattern} issue${issueCount > 1 ? 's' :'} across ${fileCount} file${fileCount > 1 ? ' s' :'}.\n\n`;`
+    const __description = `Address ${issueCount} ${pattern} issue${issueCount > 1 ? 's' :'} across ${fileCount} file${fileCount > 1 ? ' s' :'}.\n\n`;`
 
     description += '**Issues to address:**\n';
     for (const result of results.slice(0, 5)) {

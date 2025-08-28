@@ -10,7 +10,7 @@ declare global {
 }
 
 export namespace Installation {
-  const _log = Log.create({ service:"installation"})
+  const __log = Log.create({ service:"installation"})
 
   export type Method = Awaited<ReturnType<typeof method>>
 
@@ -101,7 +101,7 @@ export namespace Installation {
   )
 
   export async function upgrade(method:Method, target:string) {
-    const _cmd = (() => {
+    const __cmd = (() => {
       switch (method) {
         case "curl":
           return $`curl -fsSL https://opencode.ai/install | bash`.env({`

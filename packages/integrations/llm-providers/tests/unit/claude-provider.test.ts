@@ -41,7 +41,7 @@ describe('Claude Provider', () => {
 
   describe('executeClaudeTask', () => {
     ')    it('should execute simple tasks successfully', async () => {
-    ')      const _mockMessages = [
+    ')      const __mockMessages = [
         { role: 'user', content: ' Hello'},
         { role: 'assistant', content: ' Hello! How can I help you today?'},
 ];
@@ -93,7 +93,7 @@ describe('Claude Provider', () => {
         allowed:false,
         reason: 'Tool not permitted',);
 
-      const _result = await executeClaudeTask('task requiring permissions', {
+      const __result = await executeClaudeTask('task requiring permissions', {
     ')        allowedTools:['bash'],
 });
 
@@ -165,7 +165,7 @@ describe('Claude Provider', () => {
     it('should manage completed tasks', () => {
     ')      const initialCount = taskManager.getCompletedTaskCount();
       taskManager.clearCompletedTasks();
-      const _afterClearCount = taskManager.getCompletedTaskCount();
+      const __afterClearCount = taskManager.getCompletedTaskCount();
 
       expect(typeof initialCount).toBe('number');')      expect(afterClearCount).toBe(0);
 });
@@ -390,7 +390,7 @@ describe('Claude Provider', () => {
     it('should handle malformed responses', async () => {
     ')      mockClaudeSDK.sendMessage.mockResolvedValue(null);
 
-      const _result = await executeClaudeTask('test');')      expect(result).toBeNull();
+      const __result = await executeClaudeTask('test');')      expect(result).toBeNull();
 });
 });
 
@@ -406,7 +406,7 @@ describe('Claude Provider', () => {
 });
 
     it('should reuse connections efficiently', async () => {
-    ')      const _tasks = Array.from({ length:5}, (_, i) => `Task ${i + 1}`);`
+    ')      const __tasks = Array.from({ length:5}, (_, i) => `Task ${i + 1}`);`
 
       for (const task of tasks) {
         await executeClaudeTask(task);

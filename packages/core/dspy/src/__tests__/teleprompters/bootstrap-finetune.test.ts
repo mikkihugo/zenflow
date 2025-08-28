@@ -617,7 +617,7 @@ describe("BootstrapFinetune Teleprompter", () => {
 
 		it("should handle custom adapter per LM", async () => {
 			const adapter1 = new ChatAdapter();
-			const _adapter2 = new ChatAdapter();
+			const __adapter2 = new ChatAdapter();
 
 			const adapterMap = new Map([[mockLM, adapter1]]);
 

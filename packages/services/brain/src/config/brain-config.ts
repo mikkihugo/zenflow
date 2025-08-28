@@ -68,7 +68,7 @@ export const DEFAULT_BRAIN_CONFIG:BrainSpecificConfig = {
 export function getBrainConfig():BrainSpecificConfig & Partial<Config> {
   try {
     // Get shared configuration (handles environment, validation, etc.)
-    const _sharedConfig = getConfig();
+    const __sharedConfig = getConfig();
 
     // Get neural-specific config from shared system
     const neuralConfig = getNeuralConfig ? getNeuralConfig()||{} :{};
@@ -83,7 +83,7 @@ export function getBrainConfig():BrainSpecificConfig & Partial<Config> {
     // Get environment-specific settings
     const debugMode = isDebugMode();
     // Use NODE_ENV or fallback to debug mode inference
-    const _environment =
+    const __environment =
       process.env.NODE_ENV||(debugMode ?'development' :' production');')
     logger.info(`Loading brain config for _environment:$_environment`, {`
       debugMode,

@@ -302,7 +302,7 @@ export class SPARCCDMappingService {
    */
   async mapSPARCToPipelineStages():Promise<Map<string, CDPipelineStage[]>> {
     if (!this.initialized) await this.initialize();
-    const _timer = this.performanceTracker.startTimer('sparc_cd_mapping');
+    const __timer = this.performanceTracker.startTimer('sparc_cd_mapping');
     try {
       this.logger.info(';')';
        'Mapping SPARC phases to CD pipeline stages with intelligent optimization'));
@@ -347,7 +347,7 @@ export class SPARCCDMappingService {
     featureId: string,
     valueStreamId: string,')    pipelineType: string ='standard')  ):Promise<string> {';
     if (!this.initialized) await this.initialize();
-    const _timer = this.performanceTracker.startTimer(
+    const __timer = this.performanceTracker.startTimer(
      'sparc_pipeline_execution'));
     try {
       this.logger.info(';')';

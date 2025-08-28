@@ -151,7 +151,7 @@ export class SystemSolutionArchitectureManager extends EventBus {
        'System Solution Architecture Manager initialized successfully with service delegation')      );')      this.emit('initialized,{';
         timestamp: this.performanceTracker.startTimer('create_system_design');
     try {
-      const _systemDesign = await this.systemDesignService.createSystemDesign(
+      const __systemDesign = await this.systemDesignService.createSystemDesign(
         name,
         type,
         pattern,
@@ -169,7 +169,7 @@ export class SystemSolutionArchitectureManager extends EventBus {
           Date.now() + (this.configuration.reviewTimeout|| 480) * 60000
         ),
 };
-      const _review =
+      const __review =
         await this.architectureReviewService.initiateArchitectureReview(
           reviewRequest,
           systemDesign;

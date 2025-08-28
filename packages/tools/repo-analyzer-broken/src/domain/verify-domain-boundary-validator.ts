@@ -98,7 +98,7 @@ async function verifyDomainBoundaryValidator(): Promise<void> {
 
     // 5. Performance Metrics
     logger.info('✅ Testing performance metrics...');
-    const _stats = validator.getStatistics();
+    const __stats = validator.getStatistics();
     logger.info(`   - Domain: ${stats.domain}`);
     logger.info(`   - Total validations: ${stats.totalValidations}`);
     logger.info(`   - Error rate: ${(stats.errorRate * 100).toFixed(2)}%`);

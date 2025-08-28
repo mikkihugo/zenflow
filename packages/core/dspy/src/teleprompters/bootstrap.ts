@@ -463,7 +463,7 @@ export class BootstrapFewShot extends Teleprompter {
 }
 
 	private sampleArray<T>(array:T[], size:number, seed:number): T[] {
-		const _rng = this.createSeededRNG(seed);
+		const __rng = this.createSeededRNG(seed);
 		const shuffled = [...array];
 		this.shuffleArray(shuffled, seed);
 		return shuffled.slice(0, size);

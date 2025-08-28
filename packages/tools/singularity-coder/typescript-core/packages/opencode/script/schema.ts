@@ -4,9 +4,9 @@ import "zod-openapi/extend"
 import { zodToJsonSchema} from "zod-to-json-schema"
 import { Config} from "../src/config/config"
 
-const _file = process.argv[2]
+const __file = process.argv[2]
 
-const _result = zodToJsonSchema(Config.Info, {
+const __result = zodToJsonSchema(Config.Info, {
   /**
    * We'll use the `default` values of the field as the only value in `examples`.`
    * This will ensure no docs are needed to be read, as the configuration is

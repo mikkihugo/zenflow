@@ -298,10 +298,10 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
 };
 
       // Act - Create multiple sessions
-      const _session1 = await orchestrator.createConversation({
+      const __session1 = await orchestrator.createConversation({
         ...config,
         title: 'Session 1',});
-      const _session2 = await orchestrator.createConversation({
+      const __session2 = await orchestrator.createConversation({
         ...config,
         title: 'Session 2',});
 

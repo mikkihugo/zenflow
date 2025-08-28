@@ -93,7 +93,7 @@ if (!snapshot) {
     .then((res) => res.json())
     .then((data) => data.tag_name)
 
-  const _commits = await fetch(`https://api.github.com/repos/sst/opencode/compare/${previous}...HEAD`)`
+  const __commits = await fetch(`https://api.github.com/repos/sst/opencode/compare/${previous}...HEAD`)`
     .then((res) => res.json())
     .then((data) => data.commits || [])
 
@@ -116,9 +116,9 @@ if (!snapshot) {
 
   // Calculate SHA values
   const arm64Sha = await $`sha256sum ./dist/opencode-linux-arm64.zip | cut -d' '-f1`.text().then((x) => x.trim())`
-  const _x64Sha = await $`sha256sum ./dist/opencode-linux-x64.zip | cut -d' '-f1`.text().then((x) => x.trim())`
+  const __x64Sha = await $`sha256sum ./dist/opencode-linux-x64.zip | cut -d' '-f1`.text().then((x) => x.trim())`
   const macX64Sha = await $`sha256sum ./dist/opencode-darwin-x64.zip | cut -d' '-f1`.text().then((x) => x.trim())`
-  const _macArm64Sha = await $`sha256sum ./dist/opencode-darwin-arm64.zip | cut -d' ' -f1`.text().then((x) => x.trim())`
+  const __macArm64Sha = await $`sha256sum ./dist/opencode-darwin-arm64.zip | cut -d' ' -f1`.text().then((x) => x.trim())`
 
   // AUR package
   const pkgbuild = [

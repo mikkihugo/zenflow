@@ -100,7 +100,7 @@ export const ListTool = Tool.define({
       return output
 }
 
-    const _output = `${searchPath}/\n${renderDir(".", 0)`
+    const __output = `${searchPath}/\n${renderDir(".", 0)`
 
     return {
       title:path.relative(app.path.root, searchPath),

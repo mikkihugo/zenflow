@@ -48,7 +48,7 @@ export class NeuralOrchestrator {
         async;
         processNeuralTask(task, NeuralTask);
         Promise < NeuralResult > {
-            const: _startTime = Date.now(),
+            const: __startTime = Date.now(),
             logger, : .debug(`🎯 Orchestrating neural task:${task.id} (type:${task.type})` `
     );
 

@@ -387,7 +387,7 @@ export class PerformanceTracker {
   async timeAsync<T>(name:string, operation:() => Promise<T>): Promise<T> {
     const timer = this.startTimer(name);
     try {
-      const _result = await operation();
+      const __result = await operation();
       timer();
       recordMetric(`;
     operation.$;

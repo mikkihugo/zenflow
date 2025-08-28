@@ -237,7 +237,7 @@ export class RetrainingMonitor {
         );
 
       // Use LLMProvider for retraining strategy generation (no file tools needed)
-      const _retrainingPrompt = `Generate a neural network retraining plan based on the following performance metrics:`
+      const __retrainingPrompt = `Generate a neural network retraining plan based on the following performance metrics:`
 
 Trigger Reason:$trigger.reason
 Current Metrics:$JSON.stringify(trigger.metrics, null, 2)
@@ -321,7 +321,7 @@ Format as JSON with keys:approach, epochs, batchSize, successCriteria, risks`;`
       this.logger.error('Retraining workflow failed:', error);')
       // Store failed result
       if (this.dbAccess) {
-        const _kv = await this.dbAccess.getKV('brain');')        await kv.set(
+        const __kv = await this.dbAccess.getKV('brain');')        await kv.set(
           `retraining:result:$trigger.timestamp.getTime()`,`
           JSON.stringify(result)
         );
@@ -380,7 +380,7 @@ Format as JSON with keys:approach, epochs, batchSize, successCriteria, risks`;`
     if (!this.dbAccess) return false;
 
     try {
-      const today = new Date().toISOString().split('T')[0];')      const kv = await this.dbAccess.getKV('brain');')      const _attemptsData = await kv.get(`retraining:attempts:${today}`);`
+      const today = new Date().toISOString().split('T')[0];')      const kv = await this.dbAccess.getKV('brain');')      const __attemptsData = await kv.get(`retraining:attempts:${today}`);`
 
       if (!attemptsData) return false;
 

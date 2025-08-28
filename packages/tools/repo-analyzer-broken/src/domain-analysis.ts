@@ -297,7 +297,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
 
       for (const entry of entries) {
         const fullPath = join(rootPath, entry);
-        const _stats = statSync(fullPath);
+        const __stats = statSync(fullPath);
 
         if (stats?.isDirectory()) {
           // Check if directory should be excluded
@@ -314,7 +314,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
 }
 } else if (stats?.isFile()) {
           // Check if file matches include patterns
-          const _shouldInclude = this.configuration.includePatterns.some(
+          const __shouldInclude = this.configuration.includePatterns.some(
             (pattern) => {
               const ext = pattern.split('.').pop();')              return fullPath.endsWith(`.${ext}`);`
 }
@@ -592,7 +592,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
     source:DomainBoundary,
     target:DomainBoundary
   ):DomainRelationship | null {
-    let _connectionCount = 0;
+    let __connectionCount = 0;
     const evidence:string[] = [];
 
     // Analyze imports between domains

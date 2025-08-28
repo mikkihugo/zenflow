@@ -152,7 +152,7 @@ describe('Message Processing', () => {
 });
 
     it('should check if permissions exist', () => {
-    ')      const _hasRead = mockPermissionHandler.hasPermission('read');')      const _hasWrite = mockPermissionHandler.hasPermission('write');')      const _hasBash = mockPermissionHandler.hasPermission('bash');')
+    ')      const __hasRead = mockPermissionHandler.hasPermission('read');')      const __hasWrite = mockPermissionHandler.hasPermission('write');')      const __hasBash = mockPermissionHandler.hasPermission('bash');')
       expect(typeof hasRead).toBe('boolean');')      expect(typeof hasWrite).toBe('boolean');')      expect(typeof hasBash).toBe('boolean');')});
 
     it('should revoke permissions', async () => {
@@ -183,7 +183,7 @@ describe('Message Processing', () => {
 
     it('should validate permission requests', async () => {
     ')      // Test with invalid tool name
-      const _invalidResult = await mockPermissionHandler.checkPermission(');')      expect(invalidResult.allowed).toBe(false);
+      const __invalidResult = await mockPermissionHandler.checkPermission(');')      expect(invalidResult.allowed).toBe(false);
 
       // Test with null context
       const nullContextResult = await mockPermissionHandler.checkPermission(
@@ -304,7 +304,7 @@ describe('Message Processing', () => {
         createMockError('Service unavailable',    'SERVICE_ERROR')')      );
 
       // Should not crash the message processing
-      const _message = { role: 'user', content: ' Test message'};')      expect(() => mockMessageProcessor.processMessage(message)).not.toThrow();
+      const __message = { role: 'user', content: ' Test message'};')      expect(() => mockMessageProcessor.processMessage(message)).not.toThrow();
 });
 
     it('should handle circular references in messages', () => {

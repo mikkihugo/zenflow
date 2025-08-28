@@ -327,7 +327,7 @@ export class SmartPromptOptimizer {
         return patterns;
     }
     applyOptimizations(originalPrompt, patterns) {
-        const _optimizedPrompt = originalPrompt;
+        const __optimizedPrompt = originalPrompt;
         for (const pattern of patterns) {
             switch (pattern.patternType) {
                 case 'clarity_improvement':

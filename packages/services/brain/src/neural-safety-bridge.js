@@ -19,8 +19,8 @@ try {
     ';
     NeuralDeceptionDetector = aiSafety.NeuralDeceptionDetector;
     AIDeceptionDetector = aiSafety.AIDeceptionDetector;
-    _AIInteractionData = aiSafety.AIInteractionData;
-    _DeceptionAlert = aiSafety.DeceptionAlert;
+    __AIInteractionData = aiSafety.AIInteractionData;
+    __DeceptionAlert = aiSafety.DeceptionAlert;
 }
 catch (error) {
     // Fallback implementations when ai-safety package is not available
@@ -30,8 +30,8 @@ catch (error) {
     };
     AIDeceptionDetector = class {
     };
-    _AIInteractionData = {};
-    _DeceptionAlert = {};
+    __AIInteractionData = {};
+    __DeceptionAlert = {};
 }
 /**
  * Neural Safety Bridge - Enhanced AI safety with brain package integration.
@@ -324,8 +324,8 @@ export class NeuralSafetyBridge extends TypedEventBase {
      */
     computeCombinedVerdict(standardDetection, neuralResult, behavioralAnalysis, _neuralPatterns) {
         const reasoning = [];
-        let _combinedConfidence = 0;
-        let _deceptionIndicators = 0;
+        let __combinedConfidence = 0;
+        let __deceptionIndicators = 0;
         // Standard detection weight: 40%
         if (standardDetection.length > 0) {
             _deceptionIndicators += standardDetection.length;

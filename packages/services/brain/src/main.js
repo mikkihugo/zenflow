@@ -27,9 +27,9 @@ import { ContextError, getLogger, ok, safeAsync, EventBus } from '@claude-zen/fo
 import { getPerformanceTracker } from '@claude-zen/operations';
 import { NeuralOrchestrator, StorageStrategy, TaskComplexity, } from './neural-orchestrator';
 // Utility functions - strategic facades would provide these eventually
-const _generateUUID = () => crypto.randomUUID();
-const _createTimestamp = () => Date.now();
-const _validateObject = (obj) => !!obj && typeof obj === 'object';
+const __generateUUID = () => crypto.randomUUID();
+const __createTimestamp = () => Date.now();
+const __validateObject = (obj) => !!obj && typeof obj === 'object';
 const createErrorAggregator = () => ({
     addError: (_error) => {
         // Stub implementation - would store errors in strategic facade
@@ -600,7 +600,7 @@ Promise < {
     flowMetrics: any,
     nextActions: string[]
 } > {
-    const: _startTime = Date.now(),
+    const: __startTime = Date.now(),
     : .initialized
 };
 {
@@ -1214,7 +1214,7 @@ Promise < {
                 const module = dspySystem.createEngine().create();
                 // Create examples for few-shot optimization (simplified)
                 const examples = [{ inputs: { prompt }, outputs: { optimized: prompt } }];
-                // Use DSPy's few-shot optimization')      const _optimized = await dspyOptimization.fewShot(module, examples, 3);
+                // Use DSPy's few-shot optimization')      const __optimized = await dspyOptimization.fewShot(module, examples, 3);
                 // Return optimized prompt with DSPy enhancement
                 return `[DSPy Optimized] ${prompt}\n\nContext:${JSON.stringify(context || {})}`;
                 `
@@ -1255,7 +1255,7 @@ Promise < {
             // Use bootstrap optimization with fewer rounds for efficiency
             const module = dspySystem.createEngine().create();
             const examples = [{ inputs: { prompt }, outputs: { optimized: prompt } }];
-            const _optimized = await dspyOptimization.bootstrap(module, examples, 2); // Fewer rounds
+            const __optimized = await dspyOptimization.bootstrap(module, examples, 2); // Fewer rounds
             // Return constrained optimization
             return `[DSPy Constrained] ${prompt}\n\nEfficient Context:${JSON.stringify(context || {})}`;
             `

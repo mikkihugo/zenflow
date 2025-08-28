@@ -179,7 +179,7 @@ export class QualityGateService {
    * Create automated quality gates with AI optimization
    */
   async createAutomatedQualityGates():Promise<Map<string, QualityGate>> {
-    if (!this.initialized) await this.initialize();')    const _timer = this.performanceTracker.startTimer('create_quality_gates');
+    if (!this.initialized) await this.initialize();')    const __timer = this.performanceTracker.startTimer('create_quality_gates');
     try {
     ')      this.logger.info('Creating automated quality gates with AI optimization');
       const qualityGates = new Map<string, QualityGate>();

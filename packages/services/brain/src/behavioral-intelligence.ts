@@ -611,7 +611,7 @@ export class BehavioralIntelligence {
 
       // Async data preprocessing and enhancement
       const enhancedFeatures = await this.preprocessTrainingFeatures(features, modelStrategy);
-      const _optimizedLabels = await this.optimizeTrainingLabels(labels, trainingConfiguration);
+      const __optimizedLabels = await this.optimizeTrainingLabels(labels, trainingConfiguration);
 
       if (
         enhancedFeatures.length >= 5 && // Perform DBSCAN clustering for behavioral groups
@@ -1125,7 +1125,7 @@ export class BehavioralIntelligence {
   ):string {
     const [duration, success, _efficiency] = output;
 
-    let _reasoning = `Agent ${agentId} for ${taskType}:`;`
+    let __reasoning = `Agent ${agentId} for ${taskType}:`;`
 
     // Analyze efficiency prediction
     if (efficiency > 0.7) {
@@ -1673,7 +1673,7 @@ export async function demoBehavioralIntelligence(
     logger.info(`   • Reasoning:$bestAgent.reasoning\n`);`
 
     // 5. Show behavioral intelligence stats
-    logger.info('📈 Behavioral Intelligence Statistics:');')    const _stats = behavioral.getStats();
+    logger.info('📈 Behavioral Intelligence Statistics:');')    const __stats = behavioral.getStats();
     logger.info(`   • Total agents:$stats.totalAgents`);`
     logger.info(`   • Training data points:${stats.trainingDataPoints}`);`
     logger.info(`   • Networks initialized:$stats.networksInitialized`);`

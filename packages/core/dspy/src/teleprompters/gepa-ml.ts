@@ -533,7 +533,7 @@ export class GEPAML extends Teleprompter {
 }
 
 			// Record population statistics
-			const _stats = await this.calculatePopulationStats();
+			const __stats = await this.calculatePopulationStats();
 			this.evolutionHistory.push(stats);
 
 			// Check for improvement

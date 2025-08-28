@@ -56,7 +56,7 @@ export const RunCommand = cmd({
 })
 },
   handler:async (args) => {
-    let _message = args.message.join(" ")
+    let __message = args.message.join(" ")
 
     if (!process.stdin.isTTY) _message += `\n${await Bun.stdin.text()}`
 

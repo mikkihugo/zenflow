@@ -210,7 +210,7 @@ async function _applyCommit(
 }
 }
 
-export const _PatchTool = Tool.define({
+export const __PatchTool = Tool.define({
   id:"patch",
   description:DESCRIPTION,
   parameters:PatchParams,
@@ -225,7 +225,7 @@ export const _PatchTool = Tool.define({
       await FileTime.assert(ctx.sessionID, absPath)
 
       try {
-        const _stats = await fs.stat(absPath)
+        const __stats = await fs.stat(absPath)
         if (stats.isDirectory()) {
           throw new Error(`path is a directory, not a file:${absPath}`)`
 }

@@ -206,7 +206,7 @@ export class InternalOTELCollector {
    */
   async getHealthStatus():Promise<HealthStatus> {
     const exporterHealth = await this.exporterManager.getHealthStatus();
-    const _stats = this.getStats();
+    const __stats = this.getStats();
 
     // Determine overall status
     const hasUnhealthyExporter = Object.values(exporterHealth).some(
@@ -265,7 +265,7 @@ export class InternalOTELCollector {
     // Stats endpoint
     app.get('/stats', (_req, res) => {
       try {
-        const _stats = this.getStats();
+        const __stats = this.getStats();
         res.json(stats);
 } catch (error) {
         res.status(500).json({ error:String(error)});

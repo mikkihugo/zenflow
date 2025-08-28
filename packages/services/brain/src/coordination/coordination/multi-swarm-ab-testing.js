@@ -434,7 +434,7 @@ logger.info(`📊 Sequential options: delay=${delayBetweenStrategies}ms, continu
     } else {
       logger.info(
         `, Executing, $, { strategies, : .length }, strategies, sequentially, ...``);
-const _results = [];
+const __results = [];
 for (let i = 0; i < strategies.length; i++) {
     const strategy = strategies[i];
     try {

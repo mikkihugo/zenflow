@@ -379,7 +379,7 @@ export class SobelowIntegration {
 });
 
       const stdout = ';
-      const _stderr = ';
+      const __stderr = ';
 
       child.stdout.on('data', (_data) => {
     ')        stdout += data.toString();

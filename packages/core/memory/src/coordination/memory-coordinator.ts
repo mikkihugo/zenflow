@@ -495,7 +495,7 @@ export class MemoryCoordinator extends EventEmitter {
    * Health check for coordinator.
    */
   async healthCheck():Promise<{ status: string; details: unknown}> {
-    const _stats = this.getStats();
+    const __stats = this.getStats();
     const unhealthyNodes = Array.from(this.nodes.values()).filter(
       (n) => n.status !== 'active'
     );

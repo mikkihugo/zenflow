@@ -20,14 +20,14 @@ import { getLogger } from '@claude-zen/foundation';
 // Telemetry helpers - will be replaced by operations facade calls
 const recordMetric = (_name, _value, _metadata) => { };
 const recordHistogram = (_name, _value, _metadata) => { };
-const _recordGauge = (_name, _value, _metadata) => { };
+const __recordGauge = (_name, _value, _metadata) => { };
 const withTrace = (_name, fn) => fn({});
 const withAsyncTrace = (_name, fn) => fn({});
 const recordEvent = (_name, _data) => { };
 // Neural backend imports with smart loading
-const _transformersModule = null;
+const __transformersModule = null;
 let brainJsModule = null;
-const _onnxModule = null;
+const __onnxModule = null;
 let openaiModule = null;
 /**
  * Smart Neural Coordinator - Intelligent neural backend system
@@ -1827,7 +1827,7 @@ string;
     const content = `$imageHash$request.taskType$request.prompt||'}${request.context ||  | '$', imageMetadata, format_$imageMetadata, size_$imageMetadata, valid;
     'valid';
     ' invalid' `;`;
-    const _cacheKey = `vision:${request.qualityLevel || 'standard'}:${this.hashString(content)}`;
+    const __cacheKey = `vision:${request.qualityLevel || 'standard'}:${this.hashString(content)}`;
     `
 
     // Log cache key generation with image metadata

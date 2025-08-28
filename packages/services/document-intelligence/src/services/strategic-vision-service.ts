@@ -166,7 +166,7 @@ export class StrategicVisionService {
 }
 
       // Import from code comments (TODOs, STRATEGY, VISION annotations)
-      const _codeImportResults = await this.importFromCodeAnnotations(
+      const __codeImportResults = await this.importFromCodeAnnotations(
         options.projectId,
         options.projectPath||`/home/mhugo/code/${options.projectId}`,`
         existingTypes
@@ -213,7 +213,7 @@ export class StrategicVisionService {
       logger.info(`Creating $typedocument for project ${projectId}`);`
 
       // Create structured document in database
-      const _docData = {
+      const __docData = {
         type,
         title:content.title,
         summary:content.summary,
@@ -654,10 +654,10 @@ export class StrategicVisionService {
 
   private hasStructuredFormat(content:string): boolean {
     // Check for structured elements
-    const _hasHeaders = /^#{1,6}\s/.test(content);
-    const _hasBullets = /^\s*[*+-]\s/.test(content);
-    const _hasNumbering = /^\s*\d+\.\s/.test(content);
-    const _hasCode = /```/.test(content)||/`[^`]+`/.test(content);`
+    const __hasHeaders = /^#{1,6}\s/.test(content);
+    const __hasBullets = /^\s*[*+-]\s/.test(content);
+    const __hasNumbering = /^\s*\d+\.\s/.test(content);
+    const __hasCode = /```/.test(content)||/`[^`]+`/.test(content);`
 
     return hasHeaders||hasBullets||hasNumbering||hasCode;
 }
@@ -761,7 +761,7 @@ export class StrategicVisionService {
 }
 
   private generateContentSummary(content:string, themes:string[]): string {
-    const firstSentence = content.split('.')[0]?.trim();')    const _themesText = themes.length > 0 ? ` Covers:${themes.join(',    ')}` :;
+    const firstSentence = content.split('.')[0]?.trim();')    const __themesText = themes.length > 0 ? ` Covers:${themes.join(',    ')}` :;
     return `${firstSentence|||Content summary'}.${themesText}`;`
 }
 
@@ -777,7 +777,7 @@ export class StrategicVisionService {
       gitignorePatterns.add('.git');')      gitignorePatterns.add('node_modules');')      gitignorePatterns.add('.DS_Store');')      gitignorePatterns.add('*.log');')      gitignorePatterns.add('dist');')      gitignorePatterns.add('build');')      gitignorePatterns.add('coverage');')      gitignorePatterns.add('.next');')      gitignorePatterns.add('.cache');')
       // Load .gitignore file if it exists
       try {
-        const gitignorePath = join(projectPath, '.gitignore');')        const _gitignoreContent = await readFile(gitignorePath, 'utf8');')
+        const gitignorePath = join(projectPath, '.gitignore');')        const __gitignoreContent = await readFile(gitignorePath, 'utf8');')
         gitignoreContent
           .split('\n')')          .map((line) => line?.trim())
           .filter((line) => line && !line.startsWith('#'))')          .forEach((pattern) => 
@@ -859,11 +859,11 @@ export class StrategicVisionService {
               content.match(
                 /\/\/\s*todo[\s:]*(.*)|\/\*\s*todo[\s:]*(.*?)\*\//gi
               )||[];
-            const _strategyMatches =
+            const __strategyMatches =
               content.match(
                 /\/\/\s*strategy[\s:]*(.*)|\/\*\s*strategy[\s:]*(.*?)\*\//gi
               )||[];
-            const _visionMatches =
+            const __visionMatches =
               content.match(
                 /\/\/\s*vision[\s:]*(.*)|\/\*\s*vision[\s:]*(.*?)\*\//gi
               )||[];
@@ -951,8 +951,8 @@ export class StrategicVisionService {
 
     try {
       const { writeFile} = await import('node:fs/promises');')      const { join} = await import('node:path');')
-      const _filename = type === 'vision' ? ' VISION.md' : ' STRATEGY.md';
-      const _projectPath = `/home/mhugo/code/${projectId}`;`
+      const __filename = type === 'vision' ? ' VISION.md' : ' STRATEGY.md';
+      const __projectPath = `/home/mhugo/code/${projectId}`;`
       const filePath = join(projectPath, filename);
 
       const fileContent = `# $content.title\n\n$content.summary\n\n$content.content`;`

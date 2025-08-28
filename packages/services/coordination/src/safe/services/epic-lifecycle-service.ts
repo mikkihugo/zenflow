@@ -169,7 +169,7 @@ export interface EpicLifecycleConfig {
         passedCriteria.push({
           ...criterion,
           status : 'completed,'
-          completionDate: unmetCriteria.length === 0;)    const recommendations = canProgress`)      ? [`Epic meets all criteria for ${targetState}];)      :[``${unmetCriteria.lengthcriteria still need to be met}];``)    const _nextActions = unmetCriteria.map((c) => `Complete: {`
+          completionDate: unmetCriteria.length === 0;)    const recommendations = canProgress`)      ? [`Epic meets all criteria for ${targetState}];)      :[``${unmetCriteria.lengthcriteria still need to be met}];``)    const __nextActions = unmetCriteria.map((c) => `Complete: {`
       [PortfolioKanbanState.FUNNEL]:[],
       [PortfolioKanbanState.ANALYZING]:[
         {

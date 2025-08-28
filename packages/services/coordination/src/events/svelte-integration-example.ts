@@ -191,7 +191,7 @@ export class SvelteWebSocketManager {
   <div class="stats-panel">";
     <h2>Connection Status</h2>
     <div class="connection-stats">";
-      {@const _stats = wsManager.getStats()}
+      {@const __stats = wsManager.getStats()}
       <div class="stat">";
         <span class="label">Connected: </span>')        <span class="value {stats.connected ?'connected : ' disconnected};>')          {stats.connected ?'Yes : ' No};;
 '</span>';

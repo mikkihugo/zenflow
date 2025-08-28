@@ -136,7 +136,7 @@ writeFileSync(mainEntry, entryCode);
 
 logger.info("📦 Step 3: Bundling WASM modules...");
 // Copy WASM files if they exist
-const _wasmDirs = ["dist/wasm", "packages/private-core/*/wasm"];
+const __wasmDirs = ["dist/wasm", "packages/private-core/*/wasm"];
 mkdirSync(`${bundleDir}/wasm`, { recursive: true });
 
 // Build WASM if build script exists

@@ -60,7 +60,7 @@ export class MeetingIntelligence {
       if (data.sentiment) {
         const sentimentScore =
           typeof data.sentiment ==='number'? data.sentiment')            :data.sentiment.overall||data.sentiment.average||0.5;
-        const _sentimentLabel =
+        const __sentimentLabel =
           sentimentScore > 0.6
             ?'positive')            :sentimentScore < 0.4
               ? 'negative')              : 'neutral;

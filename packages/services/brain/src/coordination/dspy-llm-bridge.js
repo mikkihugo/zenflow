@@ -7,7 +7,7 @@
 import { getLogger } from '@claude-zen/foundation';
 // Database access via infrastructure facade
 // Simple fallback implementations
-const _logger = getLogger('dspy-llm-bridge-fallback');
+const __logger = getLogger('dspy-llm-bridge-fallback');
 // Use logger for initialization tracking
 _logger.info('DSPy LLM Bridge fallback implementation loaded', {
     mode: 'fallback', timestamp: new Date().toISOString(),

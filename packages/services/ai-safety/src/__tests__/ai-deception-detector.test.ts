@@ -261,7 +261,7 @@ describe('AIDeceptionDetector - 25-Pattern System', () => {
 
   describe('System Statistics', () => {
     ')    it('should provide comprehensive statistics', () => {
-    ')      const _stats = detector.getStatistics();
+    ')      const __stats = detector.getStatistics();
 
       expect(stats.totalPatterns).toBe(25);
       expect(stats.categories).toEqual([
@@ -295,7 +295,7 @@ describe('AIDeceptionDetector - 25-Pattern System', () => {
       expect(alerts.length).toBeGreaterThan(0);
 
       // Verify telemetry is recorded (integration test)
-      const _stats = detector.getStatistics();
+      const __stats = detector.getStatistics();
       expect(stats.totalInteractions).toBeGreaterThan(0);
 });
 });

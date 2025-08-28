@@ -432,7 +432,7 @@ export class BeamLanguageParser {
     const typeRegex = /@type\s+([_a-z]\w*(?:\([^)]*\))?)\s*::\s*([^\n]+)/g;
     let match;
     while ((match = typeRegex.exec(content)) !== null) {
-      const _lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
+      const __lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
         name:match[1],
         definition:match[2].trim(),
         lineNumber:lineNumber,
@@ -443,7 +443,7 @@ export class BeamLanguageParser {
     const privateTypeRegex =
       /@typep\s+([_a-z]\w*(?:\([^)]*\))?)\s*::\s*([^\n]+)/g;
     while ((match = privateTypeRegex.exec(content)) !== null) {
-      const _lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
+      const __lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
         name:match[1],
         definition:match[2].trim(),
         lineNumber:lineNumber,
@@ -453,7 +453,7 @@ export class BeamLanguageParser {
     // @spec definitions
     const specRegex = /@spec\s+([_a-z]\w*(?:\([^)]*\))?)\s*::\s*([^\n]+)/g;
     while ((match = specRegex.exec(content)) !== null) {
-      const _lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
+      const __lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
         name:match[1],
         definition:match[2].trim(),
         lineNumber:lineNumber,
@@ -566,7 +566,7 @@ export class BeamLanguageParser {
     const typeRegex = /-type\s+([_a-z]\w*(?:\([^)]*\))?)\s*::\s*([^.]+)\./g;
     let match;
     while ((match = typeRegex.exec(content)) !== null) {
-      const _lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
+      const __lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
         name:match[1],
         definition:match[2].trim(),
         lineNumber:lineNumber,
@@ -577,7 +577,7 @@ export class BeamLanguageParser {
     const opaqueRegex =
       /-opaque\s+([_a-z]\w*(?:\([^)]{0,100}\))?)\s*::\s*([^.]{1,200})\./g;
     while ((match = opaqueRegex.exec(content)) !== null) {
-      const _lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
+      const __lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
         name:match[1],
         definition:match[2].trim(),
         lineNumber:lineNumber,
@@ -587,7 +587,7 @@ export class BeamLanguageParser {
     // -spec definitions
     const specRegex = /-spec\s+([_a-z]\w*(?:\([^)]*\))?)\s*->\s*([^.]+)\./g;
     while ((match = specRegex.exec(content)) !== null) {
-      const _lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
+      const __lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
         name:match[1],
         definition:match[2].trim(),
         lineNumber:lineNumber,
@@ -641,7 +641,7 @@ export class BeamLanguageParser {
 
     let match;
     while ((match = exportRegex.exec(content)) !== null) {
-      const _funcs = match[1].split(',    ').map((f) => f.trim())();')      exports.push(...funcs);
+      const __funcs = match[1].split(',    ').map((f) => f.trim())();')      exports.push(...funcs);
 }
 
     return exports;
@@ -725,7 +725,7 @@ export class BeamLanguageParser {
       /(?:pub\s+)?type\s+([A-Z]\w*)\s*(?:\([^)]*\))?\s*=\s*([^\n]+)/g;
     let match;
     while ((match = typeRegex.exec(content)) !== null) {
-      const _lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
+      const __lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
         name:match[1],
         definition:match[2].trim(),
         lineNumber:lineNumber,
@@ -735,7 +735,7 @@ export class BeamLanguageParser {
     // Type aliases
     const aliasRegex = /(?:pub\s+)?type\s+([A-Z]\w*)\s*=\s*([A-Z]\w*)/g;
     while ((match = aliasRegex.exec(content)) !== null) {
-      const _lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
+      const __lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
         name:match[1],
         definition:match[2].trim(),
         lineNumber:lineNumber,

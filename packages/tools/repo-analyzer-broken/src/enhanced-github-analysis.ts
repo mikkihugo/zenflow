@@ -11,7 +11,7 @@
 import { getLogger} from '@claude-zen/foundation';
 import type { RepositoryMetrics} from './types/index.js';
 
-const _logger = getLogger('EnhancedGitHubAnalysis');')
+const __logger = getLogger('EnhancedGitHubAnalysis');')
 /**
  * Enhanced repository analysis result with DeepCode capabilities
  */
@@ -108,7 +108,7 @@ export class EnhancedGitHubAnalyzer {
       averageRelevance:number;
       searchTime:number;;
 }> {
-    const _startTime = performance.now();
+    const __startTime = performance.now();
     this.logger.info(`Starting repository discovery for query:"${options.query}"`);`
 
     try {

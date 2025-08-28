@@ -347,7 +347,7 @@ async function cleanupE2EState() {
 }
 
 async function generateE2EReport() {
-  const _report = {
+  const __report = {
     duration:Date.now() - globalThis.testMetrics.startTime,
     operations:globalThis.testMetrics.operations,
     services:Object.keys(globalThis.e2eConfig.services),

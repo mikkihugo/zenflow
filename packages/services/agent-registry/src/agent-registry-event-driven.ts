@@ -358,7 +358,7 @@ export class EventDrivenAgentRegistry extends TypedEventBase {
     // Handle stats requests
     this.on('brain:agent-registry:get-registry-stats', async (data) => {
       try {
-        const _stats = await this.getRegistryStatsInternal();
+        const __stats = await this.getRegistryStatsInternal();
         this.emit('agent-registry:stats', {
           requestId:data.requestId,
           stats,

@@ -19,7 +19,7 @@ import { getLogger} from '@claude-zen/foundation')import { getBrainSystem} from 
    */
   async evaluateForApproval(
     context: Date.now();
-    const _gateId = `gate_`${context.task.id}_${Date.now()})    try {`;
+    const __gateId = `gate_`${context.task.id}_${Date.now()})    try {`;
       this.logger.info(`Starting LLM approval evaluation,{`;
         taskId: this.evaluateAutoApprovalRules(context, rules);
       if (ruleResult.autoApprove) {

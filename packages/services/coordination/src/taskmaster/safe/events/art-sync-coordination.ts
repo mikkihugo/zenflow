@@ -291,7 +291,7 @@ export class ARTSyncCoordination {
       // Initialize task approval system
       this.taskApprovalSystem = new TaskApprovalSystem({
         enableRichDisplay: config.id;
-    const _coordinationTraceabilityId = `art-sync-`${sessionId}-${Date.now()})    this.logger.info(``Starting ART Sync Session,{`
+    const __coordinationTraceabilityId = `art-sync-`${sessionId}-${Date.now()})    this.logger.info(``Starting ART Sync Session,{`
       sessionId,
       artName: await this.createARTSyncApprovalGates(
       config,

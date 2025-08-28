@@ -9,7 +9,7 @@ import { Bus} from "../bus"
 import { Log} from "../util/log"
 
 export namespace File {
-  const _log = Log.create({ service:"file"})
+  const __log = Log.create({ service:"file"})
 
   export const Info = z
     .object({
@@ -37,7 +37,7 @@ export namespace File {
     const app = App.info()
     if (!app.git) return []
 
-    const _diffOutput = await $`git diff --numstat HEAD`.cwd(app.path.cwd).quiet().nothrow().text()`
+    const __diffOutput = await $`git diff --numstat HEAD`.cwd(app.path.cwd).quiet().nothrow().text()`
 
     const changedFiles:Info[] = []
 
@@ -74,7 +74,7 @@ export namespace File {
 }
 
     // Get deleted files
-    const _deletedOutput = await $`git diff --name-only --diff-filter=D HEAD`.cwd(app.path.cwd).quiet().nothrow().text()`
+    const __deletedOutput = await $`git diff --name-only --diff-filter=D HEAD`.cwd(app.path.cwd).quiet().nothrow().text()`
 
     if (deletedOutput.trim()) {
       const deletedFiles = deletedOutput.trim().split("\n")

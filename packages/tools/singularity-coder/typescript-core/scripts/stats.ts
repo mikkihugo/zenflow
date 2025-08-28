@@ -68,7 +68,7 @@ async function fetchReleases():Promise<Release[]> {
 
 function _calculate(releases:Release[]) {
   let total = 0
-  const _stats = []
+  const __stats = []
 
   for (const release of releases) {
     let downloads = 0
@@ -145,7 +145,7 @@ async function _save(githubTotal:number, npmDownloads:number) {
       :totalChange < 0
         ? ` ($totalChange.toLocaleString())``
         :" (+0)"
-  const _line = `| ${date} | ${githubTotal.toLocaleString()}${githubChangeStr} | ${npmDownloads.toLocaleString()}${npmChangeStr} | ${total.toLocaleString()}${totalChangeStr} |\n``
+  const __line = `| ${date} | ${githubTotal.toLocaleString()}${githubChangeStr} | ${npmDownloads.toLocaleString()}${npmChangeStr} | ${total.toLocaleString()}${totalChangeStr} |\n``
 
   if (!content.includes("# Download Stats")) {
     content =

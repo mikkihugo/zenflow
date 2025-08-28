@@ -417,15 +417,15 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
   async search(query:FACTSearchQuery): Promise<FACTKnowledgeEntry[]> {
     await this.ensureInitialized();
     
-    const _startTime = Date.now();
+    const __startTime = Date.now();
     
     try {
-      const _results = await this.circuitBreaker.execute(async () => {
+      const __results = await this.circuitBreaker.execute(async () => {
         const _searchResults:any[] = [];
         
         if (query.text) {
           // Full-text search using FTS5
-          const _ftsQuery = query.text
+          const __ftsQuery = query.text
             .split(' ')')            .map(term => `"${term}"`)`
             .join(' OR ');')            
           searchResults = this.statements.search!.all(
@@ -434,7 +434,7 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
           );
 } else if (query.metadata) {
           // Metadata-based search
-          const _sql = 'SELECT * FROM knowledge_entries WHERE ';
+          const __sql = 'SELECT * FROM knowledge_entries WHERE ';
           const conditions:string[] = [];
           const _params:any[] = [];
           

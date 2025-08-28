@@ -534,7 +534,7 @@ export namespace Provider {
 }),
   )
 
-  export const _InitError = NamedError.create(
+  export const __InitError = NamedError.create(
     "ProviderInitError",
     z.object({
       providerID:z.string(),

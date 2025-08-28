@@ -59,9 +59,9 @@ import {
 } from './neural-orchestrator';
 
 // Utility functions - strategic facades would provide these eventually
-const _generateUUID = () => crypto.randomUUID();
-const _createTimestamp = () => Date.now();
-const _validateObject = (obj:any) => !!obj && typeof obj === 'object';
+const __generateUUID = () => crypto.randomUUID();
+const __createTimestamp = () => Date.now();
+const __validateObject = (obj:any) => !!obj && typeof obj === 'object';
 const createErrorAggregator = () => ({
   addError:(_error: Error) => {
     // Stub implementation - would store errors in strategic facade
@@ -640,7 +640,7 @@ export class FoundationBrainCoordinator {
     flowMetrics?:any;
     nextActions:string[];
 }> {
-    const _startTime = Date.now(); // Track processing time
+    const __startTime = Date.now(); // Track processing time
 
     if (!this.initialized) {
       throw new Error('Brain coordinator not initialized');')}
@@ -1164,7 +1164,7 @@ export class FoundationBrainCoordinator {
       // Create examples for few-shot optimization (simplified)
       const examples = [{ inputs:{ prompt}, outputs:{ optimized: prompt}}];
 
-      // Use DSPy's few-shot optimization')      const _optimized = await dspyOptimization.fewShot(module, examples, 3);
+      // Use DSPy's few-shot optimization')      const __optimized = await dspyOptimization.fewShot(module, examples, 3);
 
       // Return optimized prompt with DSPy enhancement
       return `[DSPy Optimized] ${prompt}\n\nContext:${JSON.stringify(context||{})}`;`
@@ -1206,7 +1206,7 @@ export class FoundationBrainCoordinator {
       const module = dspySystem.createEngine().create();
       const examples = [{ inputs:{ prompt}, outputs:{ optimized: prompt}}];
 
-      const _optimized = await dspyOptimization.bootstrap(module, examples, 2); // Fewer rounds
+      const __optimized = await dspyOptimization.bootstrap(module, examples, 2); // Fewer rounds
 
       // Return constrained optimization
       return `[DSPy Constrained] ${prompt}\n\nEfficient Context:${JSON.stringify(context||{})}`;`

@@ -617,11 +617,11 @@ export class GRPOML extends Teleprompter {
 				if (this.config.useMultiArmedBandit && step % 10 === 0) {
 					const banditAction = await this.banditOptimizer?.selectAction(state);
 					action = banditAction.action;
-					_actionProbability = banditAction.confidence;
+					__actionProbability = banditAction.confidence;
 } else {
 					const policyAction = await this.currentPolicy?.selectAction(state);
 					action = policyAction.action;
-					_actionProbability = policyAction.probability;
+					__actionProbability = policyAction.probability;
 }
 
 				// Execute action and observe reward

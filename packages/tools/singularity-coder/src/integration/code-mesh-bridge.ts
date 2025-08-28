@@ -5,12 +5,12 @@
 
 // LLM routing integration - fallback if not available
 const _getOptimalProvider:any = null;
-let _llmRoutingAvailable = false;
+let __llmRoutingAvailable = false;
 
 try {
-  const _llmRouting = require('@claude-zen/llm-routing');')  getOptimalProvider = llmRouting.getOptimalProvider;
+  const __llmRouting = require('@claude-zen/llm-routing');')  getOptimalProvider = llmRouting.getOptimalProvider;
   // Note:LLM_PROVIDER_CONFIG available if needed
-  _llmRoutingAvailable = true;
+  __llmRoutingAvailable = true;
 } catch (_error) {
   logger.warn('LLM routing not available, using fallback');')  llmRoutingAvailable = false;
 }
@@ -60,7 +60,7 @@ export class CodeMeshBridge {
       await codeMesh.init();
 
       // Create tool registry
-      const _toolRegistry = new wasmModule.ToolRegistry();
+      const __toolRegistry = new wasmModule.ToolRegistry();
 
       // Create mock provider and session interfaces
       this.provider = {
@@ -266,7 +266,7 @@ export class CodeMeshBridge {
    */
   private extractSymbolsFromContent(content:string, filePath:string): any[] {
     const symbols:any[] = [];
-    const _lines = content.split('\n');')
+    const __lines = content.split('\n');')
     lines.forEach((line, lineIndex) => {
       // Extract function declarations
       const functionMatch = line.match(
@@ -303,7 +303,7 @@ export class CodeMeshBridge {
     request:FileAwareRequest,
     context:any
   ):string {
-    const _prompt = `# Task\n${request.task}\n\n`;`
+    const __prompt = `# Task\n${request.task}\n\n`;`
 
     prompt += `# Context\n$context.summary\n\n`;`
 

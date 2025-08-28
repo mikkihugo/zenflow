@@ -277,7 +277,7 @@ export class SamplerProcessor implements BaseProcessor {
     data:TelemetryData,
     rule:SamplingRule
   ):boolean | null {
-    const _priority = this.inferPriority(data);
+    const __priority = this.inferPriority(data);
 
     if (!rule.priority) return null;
 
@@ -359,8 +359,8 @@ export class SamplerProcessor implements BaseProcessor {
    * Adjust adaptive sampling rate based on recent activity
    */
   private adjustAdaptiveSampling():void {
-    const _now = Date.now();
-    const _windowDuration = 60000; // 1 minute window
+    const __now = Date.now();
+    const __windowDuration = 60000; // 1 minute window
 
     // Add current sample to history
     this.recentSamples.push(this.processedCount);
@@ -373,7 +373,7 @@ export class SamplerProcessor implements BaseProcessor {
       const recentTotal =
         this.recentSamples[this.recentSamples.length - 1] -
         this.recentSamples[0];
-      const _timeSpan = this.recentSamples.length * 30; // 30 second intervals
+      const __timeSpan = this.recentSamples.length * 30; // 30 second intervals
 
       // Adjust rate based on volume
       if (recentTotal > 1000) {

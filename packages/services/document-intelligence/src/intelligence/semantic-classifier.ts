@@ -134,7 +134,7 @@ export class SemanticClassifier extends TypedEventBase {
       const patterns = this.detectPatterns(content);
       
       // Calculate overall confidence
-      const _confidence = this.calculateOverallConfidence(categoryScores, patterns);
+      const __confidence = this.calculateOverallConfidence(categoryScores, patterns);
       
       // Recommend segmentation strategy
       const recommendedStrategy = this.recommendSegmentationStrategy(

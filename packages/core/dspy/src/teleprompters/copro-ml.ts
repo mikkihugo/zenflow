@@ -351,7 +351,7 @@ export class COPROML extends Teleprompter {
 			const patterns = await this.analyzeFeedbackPatterns();
 
 			// Step 4:Statistical validation of learning effectiveness
-			const _statisticalTests = await this.validateLearningEffectiveness();
+			const __statisticalTests = await this.validateLearningEffectiveness();
 
 			// Step 5:Generate final optimized module
 			const optimizedModule = await this.createOptimizedModule(student);
@@ -446,7 +446,7 @@ export class COPROML extends Teleprompter {
 };
 
 		// Run initial Bayesian optimization
-		const _initialPoints = this.generateInitialPoints(bounds);
+		const __initialPoints = this.generateInitialPoints(bounds);
 		await this.bayesianOptimizer?.optimize(objectiveFunction);
 
 		this.explorationBudget -= this.config.initialExplorationBudget;

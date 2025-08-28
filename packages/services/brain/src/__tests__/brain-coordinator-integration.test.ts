@@ -547,7 +547,7 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
       const results = await Promise.allSettled(predictionPromises);
 
       // All predictions should succeed
-      const _successfulResults = results.filter((r) => r.status === 'fulfilled');')      expect(successfulResults.length).toBe(20);
+      const __successfulResults = results.filter((r) => r.status === 'fulfilled');')      expect(successfulResults.length).toBe(20);
 
       // System should still be responsive after load
       const postLoadResult = await brainCoordinator.predict([1, 2, 3]);
@@ -651,7 +651,7 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
       await brainCoordinator.initialize(););
 
     it('should integrate all available subsystems', async () => {
-    ')      const _sessionId = 'comprehensive-integration-test';
+    ')      const __sessionId = 'comprehensive-integration-test';
 
       // 1. Neural processing
       const predictionResult = await brainCoordinator.predict([1, 2, 3, 4]);

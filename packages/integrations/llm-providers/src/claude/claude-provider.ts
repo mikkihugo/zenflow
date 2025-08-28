@@ -291,14 +291,8 @@ export class ClaudeProvider implements CLIProvider {
 }
 
     const prompt = requirements
-      ? `Feature to test:${ `
-        feature 
-}\nRequirements:${ 
-        requirements 
-}\n\nPlease provide test plan and cases:`
-      :`Feature to test: ${
-        feature 
-}\n\nPlease provide test plan and cases:`;
+      ? `Feature to test: ${feature}\nRequirements: ${requirements}\n\nPlease provide test plan and cases:`
+      : `Feature to test: ${feature}\n\nPlease provide test plan and cases:`;
     return this.complete(prompt, options);
 }
 
@@ -313,14 +307,8 @@ export class ClaudeProvider implements CLIProvider {
 }
 
     const prompt = requirements
-      ? `System to architect:${ `
-        system 
-}\nRequirements:${ 
-        requirements 
-}\n\nPlease provide architectural design:`
-      :`System to architect: ${ `
-        system 
-}\n\nPlease provide architectural design:`;
+      ? `System to architect: ${system}\nRequirements: ${requirements}\n\nPlease provide architectural design:`
+      : `System to architect: ${system}\n\nPlease provide architectural design:`;
     return this.complete(prompt, options);
 }
 
@@ -456,9 +444,9 @@ export class ClaudeProvider implements CLIProvider {
 
       return response;
 } catch (error) {
-      // const _logger = getLogger('ClaudeProvider')
+      // const __logger = getLogger('ClaudeProvider')
       logger.error('Claude Code SDK call failed: ', error);
-'      throw new Error(`Claude Code SDK request failed:${error}`);
+      throw new Error(`Claude Code SDK request failed:${error}`);
 }
 }
 }

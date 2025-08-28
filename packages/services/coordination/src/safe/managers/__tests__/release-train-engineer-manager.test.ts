@@ -19,7 +19,7 @@ import { beforeEach, describe, expect, it, vi} from 'vitest')import type {
       error:vi.fn(),
       debug:vi.fn(),
 };
-    _mockMemory = {
+    __mockMemory = {
       store:vi.fn().mockResolvedValue(undefined),
       retrieve:vi.fn().mockResolvedValue(null),
 };
@@ -133,13 +133,13 @@ import { beforeEach, describe, expect, it, vi} from 'vitest')import type {
 });
     expect(disabledManager).toBeDefined();
 });')  it('should throw error when trying disabled features, async () => {
-    const _disabledConfig = { enablePIPlanningFacilitation:false};
+    const __disabledConfig = { enablePIPlanningFacilitation:false};
     const disabledManager = new ReleaseTrainEngineerManager({
       ...config,
       enablePIPlanningFacilitation:false,
 });
     await disabledManager.initialize();
-    const _planningConfig = {
+    const __planningConfig = {
       participants:[],
       durationHours:16,
       objectives:[],')      businessContext: ','      constraints:[],

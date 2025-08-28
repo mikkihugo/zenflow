@@ -219,7 +219,7 @@ export class CodebaseAnalyzer {
     filePath:string
   ):SymbolReference[] {
     const symbols:SymbolReference[] = [];
-    const _lines = content.split('\n');')
+    const __lines = content.split('\n');')
     lines.forEach((line, lineIndex) => {
       // Extract function declarations
       const functionMatch = line.match(

@@ -304,7 +304,7 @@ describe("Enhanced DI Container Features", () => {
 			container.registerInstance("service1", {});
 			container.registerInstance("service2", {});
 
-			const _stats = container.getStats();
+			const __stats = container.getStats();
 
 			expect(stats.totalServices).toBe(2);
 			expect(stats.healthyServices).toBe(2);

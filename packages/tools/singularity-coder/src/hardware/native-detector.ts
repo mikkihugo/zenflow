@@ -8,7 +8,7 @@ try {
   logger.info('os-utils not available, using fallback detection');')}
 
 try {
-  _si = require('systeminformation');')} catch (_e) {
+  __si = require('systeminformation');')} catch (_e) {
   logger.info('systeminformation not available, using fallback detection');')}
 
 export interface HardwareInfo {

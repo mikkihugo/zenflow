@@ -329,7 +329,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
      'Delegating pipeline performance monitoring to specialized service'));
     await this.pipelinePerformanceService.monitorPipelinePerformance();
     // Update local performance metrics for compatibility
-    const _insights =;
+    const __insights =;
       await this.pipelinePerformanceService.getPerformanceInsights();
     // Store insights in local state if needed for compatibility
 }

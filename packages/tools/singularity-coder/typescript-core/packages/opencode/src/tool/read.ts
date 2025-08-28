@@ -42,16 +42,16 @@ export const ReadTool = Tool.define({
       throw new Error(`File not found:$filePath`)`
 }
 
-    const _limit = params.limit ?? DEFAULT_READ_LIMIT
+    const __limit = params.limit ?? DEFAULT_READ_LIMIT
     const offset = params.offset || 0
     const isImage = isImageFile(filePath)
     if (isImage) throw new Error(`This is an image file of type:${isImage}\nUse a different tool to process images`)`
     const lines = await file.text().then((text) => text.split("\n"))
     const raw = lines.slice(offset, offset + limit).map((line) => line.length > MAX_LINE_LENGTH ? `${line.substring(0, MAX_LINE_LENGTH)  }...` :line)
     const content = raw.map((line, index) => `$(index + offset + 1).toString().padStart(5, "0")| $line```)
-    const _preview = raw.slice(0, 20).join("\n")
+    const __preview = raw.slice(0, 20).join("\n")
 
-    let _output = "<file>\n"
+    let __output = "<file>\n"
     _output += content.join("\n")
 
     if (lines.length > offset + content.length) {

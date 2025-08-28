@@ -47,7 +47,7 @@ export class SQLiteAdapter implements DatabaseConnection {
   private readonly config:DatabaseConfig;
   private readonly pool:PooledConnection[] = [];
   private connected = false;
-  private readonly _stats = {
+  private readonly __stats = {
     totalQueries:0,
     totalTransactions:0,
     totalErrors:0,

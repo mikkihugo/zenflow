@@ -686,7 +686,7 @@ window.translations = {
 								});
 						}
 						if (s.editsRemaining !== 0) {
-							if ("*" in s.node.edges) var _c = s.node.edges["*"];
+							if ("*" in s.node.edges) var __c = s.node.edges["*"];
 							else {
 								var c = new t.TokenSet();
 								s.node.edges["*"] = c;
@@ -707,7 +707,7 @@ window.translations = {
 								s.str.length === 1 && (s.node.final = !0),
 								s.str.length >= 1)
 							) {
-								if ("*" in s.node.edges) var _l = s.node.edges["*"];
+								if ("*" in s.node.edges) var __l = s.node.edges["*"];
 								else {
 									var l = new t.TokenSet();
 									s.node.edges["*"] = l;
@@ -964,7 +964,7 @@ window.translations = {
 						u = Object.keys(this.fieldVectors);
 						for (var c = 0; c < u.length; c++) {
 							var _ = u[c],
-								_k = t.FieldRef.fromString(_);
+								__k = t.FieldRef.fromString(_);
 							r[_] = new t.MatchData();
 						}
 					}
@@ -2154,7 +2154,7 @@ window.translations = {
 		ne = { x: 0, y: 0 },
 		Qe = !1,
 		ce = !1,
-		_dt = !1,
+		__dt = !1,
 		F = !1,
 		Oe = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
 			navigator.userAgent,

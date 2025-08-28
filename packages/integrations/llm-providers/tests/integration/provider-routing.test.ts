@@ -30,7 +30,7 @@ describe('Provider Routing Integration', () => {
     it('should categorize providers correctly', () => {
     ')      const providers = listLLMProviders();
 
-      const cliProviders = providers.filter((p) => p.type === 'cli');')      const _apiProviders = providers.filter((p) => p.type === 'api');')
+      const cliProviders = providers.filter((p) => p.type === 'cli');')      const __apiProviders = providers.filter((p) => p.type === 'api');')
       expect(cliProviders.length).toBeGreaterThan(0);
 
       // CLI providers should support file operations
@@ -45,7 +45,7 @@ describe('Provider Routing Integration', () => {
         expect(typeof provider.available).toBe('boolean');')});
 
       // Claude Code should always be available
-      const _claudeProvider = providers.find((p) => p.id === 'claude-code');')      expect(claudeProvider?.available).toBe(true);
+      const __claudeProvider = providers.find((p) => p.id === 'claude-code');')      expect(claudeProvider?.available).toBe(true);
 });
 });
 
@@ -77,9 +77,9 @@ describe('Provider Routing Integration', () => {
 
     it('should respect provider preferences for capabilities', () => {
     ')      // Test that file operations always go to Claude Code
-      const _fileOpsProvider = getLLMProviderByCapability('file-operations');')      expect(fileOpsProvider.getProviderId()).toBe('claude-code');')
+      const __fileOpsProvider = getLLMProviderByCapability('file-operations');')      expect(fileOpsProvider.getProviderId()).toBe('claude-code');')
       // Test that inference can go to multiple providers
-      const _inferenceProvider = getLLMProviderByCapability('inference');')      expect(inferenceProvider).toBeInstanceOf(LLMProvider);
+      const __inferenceProvider = getLLMProviderByCapability('inference');')      expect(inferenceProvider).toBeInstanceOf(LLMProvider);
 });
 });
 
@@ -189,7 +189,7 @@ describe('Provider Routing Integration', () => {
         );
 });
 
-      const _tasks = Array.from({ length:10}, (_, i) => `Task ${i + 1}`);`
+      const __tasks = Array.from({ length:10}, (_, i) => `Task ${i + 1}`);`
 
       // Simple round-robin load balancing
       const results = await Promise.all(
@@ -242,7 +242,7 @@ describe('Provider Routing Integration', () => {
 });
 });
 
-      const _stats = await Promise.all(
+      const __stats = await Promise.all(
         providers.map((provider) => provider.getStats())
       );
 

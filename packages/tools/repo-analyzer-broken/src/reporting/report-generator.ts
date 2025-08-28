@@ -82,7 +82,7 @@ export class ReportGenerator {
 ].join(',    ');')      csvRows.push(row);
 }
 
-    const _csvContent = csvRows.join('\n');')    await fs.writeFile(outputPath, csvContent, 'utf-8');')    return outputPath;
+    const __csvContent = csvRows.join('\n');')    await fs.writeFile(outputPath, csvContent, 'utf-8');')    return outputPath;
 }
 
   /**

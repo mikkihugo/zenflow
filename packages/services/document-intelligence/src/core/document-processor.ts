@@ -368,8 +368,8 @@ export class DocumentProcessor extends TypedEventBase {
       throw new Error(`Workspace not found:$workspaceId`);`
 
     // Generate file path
-    const _dirPath = this.getDocumentDirectory(context.workspace, type);
-    const _fileName = `${title.toLowerCase().replace(/\s+/g, '-')}.md`;`
+    const __dirPath = this.getDocumentDirectory(context.workspace, type);
+    const __fileName = `${title.toLowerCase().replace(/\s+/g, '-')}.md`;`
     const filePath = join(dirPath, fileName);
 
     // Create document content with metadata
@@ -454,7 +454,7 @@ export class DocumentProcessor extends TypedEventBase {
     workspaceId:string,
     document:Document
   ):Promise<void> {
-    const _context = this.workspaces.get(workspaceId)!;
+    const __context = this.workspaces.get(workspaceId)!;
 
     switch (document.type) {
       case 'vision': ')'        context.phase = 'requirements';

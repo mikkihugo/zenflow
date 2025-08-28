@@ -757,7 +757,7 @@ export class FactBridge {
 		try {
 			logger.info(`Attempting web search to find OpenAPI docs for ${apiName}`);
 			// Search for OpenAPI/Swagger documentation
-			const _searchQuery = `${apiName} openapi swagger documentation api docs site:docs.${apiNameLower}.com OR site:api.${apiNameLower}.com OR site:${apiNameLower}.com`;
+			const __searchQuery = `${apiName} openapi swagger documentation api docs site:docs.${apiNameLower}.com OR site:api.${apiNameLower}.com OR site:${apiNameLower}.com`;
 			// Use foundation LLM provider for API docs discovery
 			const { getGlobalLLM } = await import("@claude-zen/foundation");
 			const llm = getGlobalLLM();

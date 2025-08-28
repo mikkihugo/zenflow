@@ -557,7 +557,7 @@ export class GEPA extends Teleprompter {
 
 		// Create feedback function for each predictor
 		const feedback_map:Record<string, any> = {};
-		const _predictors = student.predictors();
+		const __predictors = student.predictors();
 
 		for (const [pred_name, predictor] of Object.entries(
 			student.named_predictors(),

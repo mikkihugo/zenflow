@@ -120,7 +120,7 @@ export class AutonomousOptimizationEngine {
     if (!this.initialized) {
       throw new Error('Autonomous Optimization Engine not initialized');')}
 
-    const _startTime = Date.now();
+    const __startTime = Date.now();
 
     try {
       logger.info(`🤖 Autonomous optimization for:"${context.task}"`);`
@@ -729,7 +729,7 @@ export class AutonomousOptimizationEngine {
 
   private async adaptSelectionStrategy():Promise<void> {
     // Async strategy adaptation with ML-enhanced analysis
-    const _strategyAnalysis = await this.analyzeCurrentStrategy();
+    const __strategyAnalysis = await this.analyzeCurrentStrategy();
     const adaptationRecommendations = await this.generateAdaptationRecommendations();
 
     // Analyze if our method selection is working well

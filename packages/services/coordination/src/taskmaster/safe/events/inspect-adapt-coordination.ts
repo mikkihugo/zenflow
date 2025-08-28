@@ -453,7 +453,7 @@ export class InspectAdaptCoordination {
       // Initialize task approval system
       this.taskApprovalSystem = new TaskApprovalSystem({
         enableRichDisplay: config.id;
-    const _coordinationTraceabilityId = `inspect-adapt-`${workshopId}-${Date.now()})    this.logger.info(``Scheduling Inspect & Adapt Workshop,{`
+    const __coordinationTraceabilityId = `inspect-adapt-`${workshopId}-${Date.now()})    this.logger.info(``Scheduling Inspect & Adapt Workshop,{`
       workshopId,
       artName: await this.createIAPreparationGates(
       config,

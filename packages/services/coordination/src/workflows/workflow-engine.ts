@@ -110,7 +110,7 @@ export type {
   @tracedAsync('workflow-engine-shutdown')')  @metered('workflow_engine_shutdown')';
   async shutdown():Promise<void> {
     ')    return withAsyncTrace('workflow-engine-shutdown, async (_span) => {';
-      const _shutdownStartTime = Date.now();')';
+      const __shutdownStartTime = Date.now();')';
       logger.info(';')';
        'Shutting down WorkflowEngine with comprehensive Foundation cleanup'));
       try {

@@ -148,7 +148,7 @@ export class ValueStreamMapper extends EventBus {
    */
   async mapWorkflowsToValueStreams():Promise<Map<string, ValueStream>> {
     if (!this.initialized) await this.initialize();
-    const _timer = this.performanceTracker.startTimer(';')';
+    const __timer = this.performanceTracker.startTimer(';')';
      'map_workflows_to_value_streams'));
     try {
       this.logger.info(

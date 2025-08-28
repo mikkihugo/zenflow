@@ -409,7 +409,7 @@ export class EventDrivenKnowledgeService {
     // Handle stats requests
     this.addEventListener('brain:knowledge:get-stats', async (data) => {
       try {
-        const _stats = await this.getStatsInternal();
+        const __stats = await this.getStatsInternal();
         this.emitEvent('knowledge:stats', {
           requestId:data.requestId,
           stats,

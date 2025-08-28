@@ -33,7 +33,7 @@ export function displayStats(_stats:SessionStats) {
   function _renderRow(label:string, value:string): string {
     const availableWidth = width - 1
     const paddingNeeded = availableWidth - label.length - value.length
-    const _padding = Math.max(0, paddingNeeded)
+    const __padding = Math.max(0, paddingNeeded)
     return `│${label}${" ".repeat(padding)}${value} │``
 }
 

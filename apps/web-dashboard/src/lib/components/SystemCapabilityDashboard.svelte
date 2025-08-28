@@ -211,7 +211,7 @@ onDestroy(() => {
     <div class="flex items-center space-x-4">
       <!-- Auto-refresh toggle -->
       <button
-        on:click={toggleAutoRefresh}
+        on:click={_toggleAutoRefresh}
         class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       >
         <div class="w-2 h-2 mr-2 rounded-full {autoRefresh ? 'bg-green-400' : 'bg-gray-400'}"></div>
@@ -220,11 +220,11 @@ onDestroy(() => {
       
       <!-- Manual refresh -->
       <button
-        on:click={fetchCapabilityData}
-        disabled={loading}
+        on:click={_fetchCapabilityData}
+        disabled={_loading}
         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
       >
-        {#if loading}
+        {#if _loading}
           <svg class="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -238,7 +238,7 @@ onDestroy(() => {
   </div>
   
   <!-- Error State -->
-  {#if error}
+  {#if _error}
     <div class="rounded-md bg-red-50 p-4">
       <div class="flex">
         <div class="flex-shrink-0">
@@ -248,14 +248,14 @@ onDestroy(() => {
         </div>
         <div class="ml-3">
           <h3 class="text-sm font-medium text-red-800">Error Loading Dashboard</h3>
-          <p class="mt-1 text-sm text-red-700">{error}</p>
+          <p class="mt-1 text-sm text-red-700">{_error}</p>
         </div>
       </div>
     </div>
   {/if}
   
   <!-- Loading State -->
-  {#if loading && !capabilityData}
+  {#if _loading && !_capabilityData}
     <div class="flex justify-center items-center py-12">
       <div class="text-center">
         <svg class="animate-spin h-8 w-8 text-indigo-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -268,22 +268,22 @@ onDestroy(() => {
   {/if}
   
   <!-- Dashboard Content -->
-  {#if capabilityData}
+  {#if _capabilityData}
     <!-- Overall Status Card -->
     <div class="bg-white overflow-hidden shadow rounded-lg">
       <div class="p-5">
         <div class="flex items-center">
           <div class="flex-shrink-0">
-            <span class="text-2xl">{getOverallStatusIcon(capabilityData.overall)}</span>
+            <span class="text-2xl">{_getOverallStatusIcon(_capabilityData.overall)}</span>
           </div>
           <div class="ml-5 w-0 flex-1">
             <dl>
               <dt class="text-sm font-medium text-gray-500 truncate">Overall System Status</dt>
               <dd class="flex items-baseline">
-                <div class="text-2xl font-semibold text-gray-900 capitalize">{capabilityData.overall}</div>
+                <div class="text-2xl font-semibold text-gray-900 capitalize">{_capabilityData.overall}</div>
                 <div class="ml-2 flex items-baseline text-sm">
-                  <span class="{getHealthScoreColor(capabilityData.systemHealthScore)} font-medium">
-                    {capabilityData.systemHealthScore}% Health
+                  <span class="{_getHealthScoreColor(_capabilityData.systemHealthScore)} font-medium">
+                    {_capabilityData.systemHealthScore}% Health
                   </span>
                 </div>
               </dd>
@@ -296,15 +296,15 @@ onDestroy(() => {
           <div class="grid grid-cols-3 gap-4">
             <div>
               <span class="font-medium text-gray-900">📦 Packages:</span>
-              <span class="ml-1">{capabilityData.availablePackages}/{capabilityData.totalPackages}</span>
+              <span class="ml-1">{_capabilityData.availablePackages}/{_capabilityData.totalPackages}</span>
             </div>
             <div>
               <span class="font-medium text-gray-900">🔧 Services:</span>
-              <span class="ml-1">{capabilityData.registeredServices}</span>
+              <span class="ml-1">{_capabilityData.registeredServices}</span>
             </div>
             <div>
               <span class="font-medium text-gray-900">📅 Updated:</span>
-              <span class="ml-1">{new Date(capabilityData.timestamp).toLocaleTimeString()}</span>
+              <span class="ml-1">{new Date(_capabilityData.timestamp).toLocaleTimeString()}</span>
             </div>
           </div>
         </div>
@@ -313,12 +313,12 @@ onDestroy(() => {
     
     <!-- Facades Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-      {#each capabilityData.facades as facade}
+      {#each _capabilityData.facades as facade}
         <div class="bg-white overflow-hidden shadow rounded-lg">
           <div class="p-5">
             <div class="flex items-center justify-between">
               <h3 class="text-lg font-medium text-gray-900 capitalize">{facade.name}</h3>
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {getCapabilityBadgeColor(facade.capability)}">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {_getCapabilityBadgeColor(facade.capability)}">
                 {facade.capability}
               </span>
             </div>
@@ -326,7 +326,7 @@ onDestroy(() => {
             <div class="mt-4">
               <div class="flex items-center justify-between">
                 <span class="text-sm text-gray-500">Health Score</span>
-                <span class="text-sm font-medium {getHealthScoreColor(facade.healthScore)}">{facade.healthScore}%</span>
+                <span class="text-sm font-medium {_getHealthScoreColor(facade.healthScore)}">{facade.healthScore}%</span>
               </div>
               <div class="mt-2 w-full bg-gray-200 rounded-full h-2">
                 <div class="h-2 rounded-full {facade.healthScore >= 80 ? 'bg-green-500' : facade.healthScore >= 60 ? 'bg-yellow-500' : 'bg-red-500'}" style="width: {facade.healthScore}%"></div>

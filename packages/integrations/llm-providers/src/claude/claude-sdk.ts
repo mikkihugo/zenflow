@@ -71,7 +71,7 @@ export async function executeClaudeTask(
 
   // Setup cancellation
   const controller = new AbortController();
-  const _timeoutId = setTimeout(() => {
+  const __timeoutId = setTimeout(() => {
     controller.abort();
 }, config.timeout);
 

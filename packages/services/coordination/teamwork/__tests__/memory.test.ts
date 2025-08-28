@@ -107,7 +107,7 @@ describe('TeamworkStorage - Classical TDD', () => {
 
     it('should return null for non-existent conversation', async () => {
     ')      // Act
-      const _result = await storage.getSession('non-existent');')
+      const __result = await storage.getSession('non-existent');')
       // Assert
       expect(result).toBeNull();
 });
@@ -192,7 +192,7 @@ describe('TeamworkStorage - Classical TDD', () => {
       const foundIds = agent1Conversations.map((c) => c.id).sort();
       expect(foundIds).toEqual(['conv-1',    'conv-2']);')
       // Verify the conversations are correctly retrieved
-      const _conv1 = agent1Conversations.find((c) => c.id === 'conv-1');')      const _conv2 = agent1Conversations.find((c) => c.id === 'conv-2');')
+      const __conv1 = agent1Conversations.find((c) => c.id === 'conv-1');')      const __conv2 = agent1Conversations.find((c) => c.id === 'conv-2');')
       expect(conv1?.title).toBe('Agent 1 Conversation');')      expect(conv2?.title).toBe('Both Agents Conversation');')});
 
     it('should handle pagination in agent conversation search', async () => {
@@ -426,12 +426,12 @@ describe('TeamworkStorage - Classical TDD', () => {
       await storage.storeSession(conversation);
 
       // Verify it exists
-      const _beforeDelete = await storage.getSession('conv-delete-test');')      expect(beforeDelete).not.toBeNull();
+      const __beforeDelete = await storage.getSession('conv-delete-test');')      expect(beforeDelete).not.toBeNull();
 
       // Act
       await storage.deleteSession('conv-delete-test');')
       // Assert
-      const _afterDelete = await storage.getSession('conv-delete-test');')      expect(afterDelete).toBeNull();
+      const __afterDelete = await storage.getSession('conv-delete-test');')      expect(afterDelete).toBeNull();
 
       // Verify it's removed from agent indexes')      const agent1Conversations = await storage.searchConversations({
         agentId: 'agent-1',});

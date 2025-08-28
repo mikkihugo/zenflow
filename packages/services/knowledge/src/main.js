@@ -62,17 +62,17 @@ export class KnowledgeError extends ContextError {
 // FOUNDATION KNOWLEDGE STORE - Enterprise Implementation
 // =============================================================================
 let FoundationKnowledgeStore = (() => {
-    let _classDecorators = [injectable()];
+    let __classDecorators = [injectable()];
     let _classDescriptor;
-    let _classExtraInitializers = [];
+    let __classExtraInitializers = [];
     let _classThis;
-    let _classSuper = TypedEventBase;
+    let __classSuper = TypedEventBase;
     var FoundationKnowledgeStore = class extends _classSuper {
-        static { _classThis = this; }
+        static { __classThis = this; }
         static {
-            const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
-            __esDecorate(null, _classDescriptor = { value: _classThis }, _classDecorators, { kind: "class", name: _classThis.name, metadata: _metadata }, null, _classExtraInitializers);
-            FoundationKnowledgeStore = _classThis = _classDescriptor.value;
+            const __metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
+            __esDecorate(null, __classDescriptor = { value: _classThis }, _classDecorators, { kind: "class", name: _classThis.name, metadata: _metadata }, null, _classExtraInitializers);
+            FoundationKnowledgeStore = __classThis = _classDescriptor.value;
             if (_metadata) Object.defineProperty(_classThis, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
             __runInitializers(_classThis, _classExtraInitializers);
         }
@@ -100,7 +100,7 @@ let FoundationKnowledgeStore = (() => {
         async initialize() {
             if (this.initialized)
                 return ok(undefined);
-            const _timer = this.performanceTracker.startTimer('knowledge_store_initialize', ');
+            const __timer = this.performanceTracker.startTimer('knowledge_store_initialize', ');
             try {
                 // Initialize telemetry
                 await this.initializeTelemetry();
@@ -153,7 +153,7 @@ let FoundationKnowledgeStore = (() => {
             }
             return withTrace('knowledge_store_add', async () => {
                 ';
-                const _timer = this.performanceTracker.startTimer('knowledge_store_add');
+                const __timer = this.performanceTracker.startTimer('knowledge_store_add');
                 ';
                 try {
                     // Validate input
@@ -194,7 +194,7 @@ let FoundationKnowledgeStore = (() => {
                     };
                     this.items.set(id, knowledgeItem);
                     // Persist to storage via circuit breaker
-                    const _storageResult = await withRetry(() => this.circuitBreaker.execute('set', `knowledge:${id}`, `
+                    const __storageResult = await withRetry(() => this.circuitBreaker.execute('set', `knowledge:${id}`, `
               JSON.stringify(knowledgeItem)
             ),
           { maxAttempts: 3, baseDelay: 100 }

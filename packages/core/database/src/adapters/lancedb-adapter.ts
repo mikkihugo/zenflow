@@ -147,7 +147,7 @@ export class LanceDBAdapter implements DatabaseConnection {
   private lancedbModule:LanceDBModule | null = null;
   private database:LanceDBConnection | null = null;
   private isConnectedState = false;
-  private readonly _stats = {
+  private readonly __stats = {
     totalQueries:0,
     totalTransactions:0,
     totalErrors:0,

@@ -37,7 +37,7 @@ export class DatabaseManager {
   ):Promise<CodeQLDatabase> {
     const absolutePath = path.resolve(repositoryPath);
     const databaseId = this.generateDatabaseId(absolutePath, options.languages);
-    const _databasePath = path.join(this.config.tempDir!, `${databaseId}.db`);`
+    const __databasePath = path.join(this.config.tempDir!, `${databaseId}.db`);`
 
     this.logger.info('Creating CodeQL database', {
     ')      databaseId,
@@ -315,7 +315,7 @@ export class DatabaseManager {
     ')        stderr += data.toString();
 });
 
-      const _timeoutId = setTimeout(() => {
+      const __timeoutId = setTimeout(() => {
         child.kill('SIGTERM');')        reject(
           this.createError('system',    'Database creation timeout',    ')            timeout:this.config.timeout,)
         );

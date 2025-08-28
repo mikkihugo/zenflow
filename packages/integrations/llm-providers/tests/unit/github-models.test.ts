@@ -150,7 +150,7 @@ describe('GitHub Models API', () => {
 
       mockGitHubModels.sendRequest.mockResolvedValue(mockResponse);
 
-      const _response = await api.sendRequest('Hello');')
+      const __response = await api.sendRequest('Hello');')
       expect(response).toEqual(mockResponse);
       expect(mockGitHubModels.sendRequest).toHaveBeenCalledWith('Hello');')});
 
@@ -310,7 +310,7 @@ describe('executeGitHubModelsTask', () => {
       timeout:30000
 };
 
-    const _result = await executeGitHubModelsTask('Complex task', options);')
+    const __result = await executeGitHubModelsTask('Complex task', options);')
     expect(result).toBeDefined();
     expect(mockGitHubModels.sendRequest).toHaveBeenCalled();
 });
@@ -328,7 +328,7 @@ describe('executeGitHubModelsTask', () => {
 
     for (const response of responses) {
       mockGitHubModels.sendRequest.mockResolvedValueOnce(response);
-      const _result = await executeGitHubModelsTask('test');')      expect(result).toBeDefined();
+      const __result = await executeGitHubModelsTask('test');')      expect(result).toBeDefined();
 }
 });
 });
@@ -340,7 +340,7 @@ describe('Model-Specific Features', () => {
         choices:[{ message: { content: 'GPT-4o response', role: ' assistant'}}],
         model: 'gpt-4o',        usage:prompt_tokens: 10, completion_tokens:20, total_tokens:30 );
 
-      const _response = await gptApi.sendRequest('Test GPT-4o');')
+      const __response = await gptApi.sendRequest('Test GPT-4o');')
       expect(response.model).toBe('gpt-4o');')      expect(response.choices[0].message.content).toBe('GPT-4o response');')}););
 
   describe('Claude Models', () => {
@@ -350,7 +350,7 @@ describe('Model-Specific Features', () => {
         choices:[{ message: { content: 'Claude response', role: ' assistant'}}],
         model: 'claude-3-sonnet',        usage:input_tokens: 15, output_tokens:25, total_tokens:40 );
 
-      const _response = await claudeApi.sendRequest('Test Claude');')
+      const __response = await claudeApi.sendRequest('Test Claude');')
       expect(response.model).toBe('claude-3-sonnet');')      expect(response.choices[0].message.content).toBe('Claude response');')});
 });
 
@@ -361,14 +361,14 @@ describe('Model-Specific Features', () => {
         choices:[{ message: { content: 'Llama response', role: ' assistant'}}],
         model: 'llama-3-70b',        usage:prompt_tokens: 12, completion_tokens:18, total_tokens:30 );
 
-      const _response = await llamaApi.sendRequest('Test Llama');')
+      const __response = await llamaApi.sendRequest('Test Llama');')
       expect(response.model).toBe('llama-3-70b');')      expect(response.choices[0].message.content).toBe('Llama response');')});
 });
 });
 
 describe('Performance and Optimization', () => {
     ')  it('should handle concurrent requests efficiently', async () => {
-    ')    const _requests = Array.from({ length:10}, (_, i) => `Request ${i + 1}`);`
+    ')    const __requests = Array.from({ length:10}, (_, i) => `Request ${i + 1}`);`
     
     mockGitHubModels.sendRequest.mockImplementation(async (request) => ({
       choices:[{ message: { content: `Response to ${request}`, role: 'assistant'}}],

@@ -198,7 +198,7 @@ export class RustNeuralML {
 
 	private detectRustBinary():string {
 		// Try to find the compiled Rust binary
-		const _possiblePaths = [
+		const __possiblePaths = [
 			"./neural-core/target/release/neural-ml",
 			"./neural-core/target/debug/neural-ml",
 			"cargo",

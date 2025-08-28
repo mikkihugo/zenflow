@@ -244,7 +244,7 @@ export class DomainAnalyzer {
 
     for (const file of files) {
       try {
-        const content = await fs.readFile(file, 'utf-8');')        const _lines = content.split('\n').length;')        totalLines += lines;
+        const content = await fs.readFile(file, 'utf-8');')        const __lines = content.split('\n').length;')        totalLines += lines;
 
         // Simple pattern matching
         functions += (

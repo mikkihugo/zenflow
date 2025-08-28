@@ -25,7 +25,7 @@ import {
 // Note:Missing GRPO-specific exports from bootstrap-finetune
 // These would need to be implemented for full GRPO functionality
 type GRPOGroup = any;
-const _GRPOGroupInstance = {} as any;
+const __GRPOGroupInstance = {} as any;
 const Evaluate = {} as any;
 const bootstrap_trace_data = {} as any;
 const all_predictors_have_lms = {} as any;

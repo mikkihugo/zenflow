@@ -209,7 +209,7 @@ describe('Neural Backend E2E Tests', () => {
       // Average processing time should be reasonable
       expect(averageTime).toBeLessThan(1000); // Under 1 second per embedding on average
 
-      const _stats = brainCoordinator.getSmartNeuralStats();
+      const __stats = brainCoordinator.getSmartNeuralStats();
       expect(stats.stats.performance.totalRequests).toBeGreaterThanOrEqual(
         batchSize
       );
@@ -302,7 +302,7 @@ describe('Neural Backend E2E Tests', () => {
       expect(results.every((r) => r.success)).toBe(true);
 
       // Cache should have implemented eviction policy
-      const _stats = brainCoordinator.getSmartNeuralStats();
+      const __stats = brainCoordinator.getSmartNeuralStats();
       expect(stats.stats.cache.size).toBeLessThanOrEqual(maxCacheSize);
       expect(stats.stats.cache.evictions).toBeGreaterThan(0);
 });
@@ -310,7 +310,7 @@ describe('Neural Backend E2E Tests', () => {
 
   describe('Quality Assurance Scenarios', () => {
     ')    it('should maintain embedding quality across different text types', async () => {
-    ')      const _testCases = [
+    ')      const __testCases = [
         { text: 'Short text', type: ' short'},
         {
           text: 'This is a medium-length text that contains several words and should generate a meaningful embedding vector for semantic analysis purposes.',          type: 'medium',},
@@ -366,7 +366,7 @@ describe('Neural Backend E2E Tests', () => {
 
   describe('Integration Health Checks', () => {
     ')    it('should report healthy system status', async () => {
-    ')      const _stats = brainCoordinator.getSmartNeuralStats();
+    ')      const __stats = brainCoordinator.getSmartNeuralStats();
 
       expect(stats.available).toBe(true);
       expect(stats.stats).toBeDefined();
@@ -375,7 +375,7 @@ describe('Neural Backend E2E Tests', () => {
 });
 
     it('should validate configuration integrity', () => {
-    ')      const _stats = brainCoordinator.getSmartNeuralStats();
+    ')      const __stats = brainCoordinator.getSmartNeuralStats();
       const config = stats.stats.configuration;
 
       expect(config.primaryModel).toBe('all-mpnet-base-v2');')      expect(config.enableFallbacks).toBe(true);

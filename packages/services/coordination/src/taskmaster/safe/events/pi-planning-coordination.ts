@@ -234,7 +234,7 @@ export class PIPlanningCoordinationService {
       managementReview.dependencyResolution;
     );
     // Create dependency resolution approval
-    const _dependencyApproval = await this.createDependencyResolutionApproval(
+    const __dependencyApproval = await this.createDependencyResolutionApproval(
       planningEvent,
       managementReview;
     );
@@ -291,8 +291,8 @@ export class PIPlanningCoordinationService {
         metadata: piNumber: planningEvent.planningIntervalNumber,
           artId: planningEvent.artId,,,});
     // Create other approval workflows...
-    const _teamPlanningApproval =`)      `team-planning-approval-${planningEvent.id} as ApprovalGateId;``)    const dependencyResolutionApproval =`;
-      `dependency-resolution-${p}lanningEvent.id`` as ApprovalGateId;)    const _finalCommitmentApproval =`;
+    const __teamPlanningApproval =`)      `team-planning-approval-${planningEvent.id} as ApprovalGateId;``)    const dependencyResolutionApproval =`;
+      `dependency-resolution-${p}lanningEvent.id`` as ApprovalGateId;)    const __finalCommitmentApproval =`;
       `final-commitment-${planningEvent.id} as ApprovalGateId;``)    return {';
       businessContextApproval,
       teamPlanningApproval,

@@ -53,7 +53,7 @@ describe("Process Lifecycle Management - Simplified", () => {
 				"../../src/core/lifecycle"
 			);
 
-			const _manager = new ProcessLifecycleManager({
+			const __manager = new ProcessLifecycleManager({
 				onShutdown:async () => {},
 });
 
