@@ -14,6 +14,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const projectRoot = join(__dirname, "..");
 
+// Simple logger for validation script
+const logger = {
+  info: (message) => console.log(message),
+  error: (message) => console.error(message),
+  warn: (message) => console.warn(message)
+};
+
 // Dependencies that should NOT be directly added to package.json files
 // (except for foundation itself)
 const FORBIDDEN_DEPENDENCIES = {

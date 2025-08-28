@@ -217,9 +217,9 @@ export class EventRegistryInitializer {
     if (Math.random() > 0.6) {
       const newFlow:EventFlow = {
         id:`flow-${Date.now()}`,
-        eventName:eventNames[Math.floor(Math.random() * eventNames.length)],
-        source:sources[Math.floor(Math.random() * sources.length)],
-        target:targets[Math.floor(Math.random() * targets.length)],
+        eventName:eventNames[Math.floor(Math.random() * eventNames.length)]!,
+        source:sources[Math.floor(Math.random() * sources.length)]!,
+        target:targets[Math.floor(Math.random() * targets.length)]!,
         timestamp:new Date(),
         latency:Math.random() * 1000 + 50,
         success:Math.random() > 0.1
@@ -245,11 +245,14 @@ export class EventRegistryInitializer {
 }
 
     // Occasionally change module status
-    if (Math.random() > 0.9) {
+    if (Math.random() > 0.9 && this.activeModules.length > 0) {
       const randomIndex = Math.floor(Math.random() * this.activeModules.length);
       const statuses:ActiveModule['status'][] = ['active',    'idle'];
-      this.activeModules[randomIndex].status = statuses[Math.floor(Math.random() * statuses.length)];
-}
+      const activeModule = this.activeModules[randomIndex];
+      if (activeModule) {
+        activeModule.status = statuses[Math.floor(Math.random() * statuses.length)]!;
+      }
+    }
 }
 
   /**

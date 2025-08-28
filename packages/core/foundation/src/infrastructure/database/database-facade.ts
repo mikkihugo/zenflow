@@ -57,12 +57,22 @@ export interface GraphStore {
   queryPaths(from:string, to:string, maxDepth?:number): Promise<unknown[]>;
 }
 
+// Type definitions for the optional database package
+interface DatabasePackage {
+  DatabaseFactory?: {
+    createAdapter(type: DatabaseConfig['type']): Promise<DatabaseAdapter>;
+  };
+  createKeyValueStore?(): Promise<KeyValueStore>;
+  createVectorStore?(): Promise<VectorStore>;
+  createGraphStore?(): Promise<GraphStore>;
+}
+
 /**
  * Database Facade providing unified access to database functionality
  */
 export class DatabaseFacade {
   private static instance:DatabaseFacade | null = null;
-  private databasePackage:unknown = null;
+  private databasePackage: DatabasePackage | null = null;
   private capability:CapabilityLevel = CapabilityLevel.FALLBACK;
 
   private constructor() {
@@ -96,13 +106,26 @@ export class DatabaseFacade {
       const packageInfo = await facadeStatusManager.checkAndRegisterPackage('@claude-zen/database',    'databaseService');
       
       if (packageInfo.status === 'available' || packageInfo.status === 'registered') {
-        this.databasePackage = await import('@claude-zen/database');
-        this.capability = CapabilityLevel.FULL;
-        logger.info('Database package loaded successfully');
-} else {
-        logger.warn('Database package unavailable, using fallback');
+        try {
+          // Dynamic import with error handling for optional dependency
+          const moduleName = '@claude-zen/database';
+          const databaseModule = await import(moduleName).catch(() => null);
+          if (databaseModule) {
+            this.databasePackage = databaseModule as DatabasePackage;
+            this.capability = CapabilityLevel.FULL;
+            console.info('Database package loaded successfully');
+          } else {
+            console.warn('Database package not found, using fallback');
+            this.capability = CapabilityLevel.FALLBACK;
+          }
+        } catch (importError) {
+          console.warn('Database package import failed, using fallback', { importError });
+          this.capability = CapabilityLevel.FALLBACK;
+        }
+      } else {
+        console.warn('Database package unavailable, using fallback');
         this.capability = CapabilityLevel.FALLBACK;
-}
+      }
 } catch (error) {
       logger.warn('Failed to load database package', { error});
       this.capability = CapabilityLevel.FALLBACK;
@@ -160,7 +183,7 @@ export class DatabaseFacade {
           }
 };
         
-        return ok(fallbackConnection);
+        return Promise.resolve(ok(fallbackConnection));
 },
       
       getHealth():Promise<{ healthy: boolean; message?: string}> {
@@ -265,6 +288,7 @@ export class DatabaseFacade {
    */
   private createFallbackVectorStore():Result<VectorStore, Error> {
     const vectors = new Map<string, { vector:number[]; metadata?: Record<string, unknown>}>();
+    const cosineSimilarity = this.cosineSimilarity.bind(this);
     
     const store:VectorStore = {
       insert(id:string, vector:number[], metadata?:Record<string, unknown>):Promise<void> {
@@ -278,7 +302,7 @@ export class DatabaseFacade {
         const results:Array<{ id: string; score: number; metadata?: Record<string, unknown>}> = [];
         
         for (const [id, { vector, metadata}] of vectors.entries()) {
-          const score = this.cosineSimilarity(query, vector);
+          const score = cosineSimilarity(query, vector);
           results.push({ id, score, metadata});
 }
         
@@ -312,13 +336,16 @@ export class DatabaseFacade {
     let normB = 0;
     
     for (const [i, element] of a.entries()) {
-      dotProduct += element * b[i];
-      normA += element * element;
-      normB += b[i] * b[i];
-}
+      const bElement = b[i];
+      if (bElement !== undefined) {
+        dotProduct += element * bElement;
+        normA += element * element;
+        normB += bElement * bElement;
+      }
+    }
     
     return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
-}
+  }
 
   /**
    * Create graph store
@@ -409,5 +436,4 @@ export function getDatabaseCapability():CapabilityLevel {
   return databaseFacade.getCapability();
 }
 
-// Export types for external use
-export type { DatabaseConfig, DatabaseConnection, DatabaseAdapter};
+// Export types for external use - already exported above as interfaces
