@@ -265,7 +265,8 @@ export class MemoryCoordinationSystem extends EventEmitter {
 
   async search(
     pattern:string,
-    namespace = 'default')  ):Promise<MemoryOperationResult<Record<string, JSONValue>>> {
+    namespace = 'default'
+  ):Promise<MemoryOperationResult<Record<string, JSONValue>>> {
     this.ensureInitialized();
 
     const request:MemoryOperationRequest = {
@@ -294,7 +295,9 @@ export class MemoryCoordinationSystem extends EventEmitter {
     return withTrace('memory-coordination-operation', async (span) => {
       span?.setAttributes({
         'memory.operation':request.operation,
-        'memory.key':request.key || ',        'memory.namespace':request.namespace || ' default',        'memory.strategy':this.config.strategy,
+        'memory.key':request.key || '',
+        'memory.namespace':request.namespace || 'default',
+        'memory.strategy':this.config.strategy,
 });
 
       const startTime = Date.now();
@@ -516,7 +519,8 @@ export class MemoryCoordinationSystem extends EventEmitter {
     if (
       request.operation === 'retrieve' ||
       request.operation === 'list' ||
-      request.operation === 'search')    ) {
+      request.operation === 'search'
+    ) {
       const primaryNode =
         nodes.find((n) => n.id === this.primaryNode) || nodes[0];
       return this.executeSingleNode<T>(request, primaryNode);
@@ -528,7 +532,8 @@ export class MemoryCoordinationSystem extends EventEmitter {
     );
 
     const successfulResults = results.filter(
-      (r) => r.status === 'fulfilled')    ) as PromiseFulfilledResult<MemoryOperationResult<T>>[];
+      (r) => r.status === 'fulfilled'
+    ) as PromiseFulfilledResult<MemoryOperationResult<T>>[];
 
     if (successfulResults.length === 0) {
       throw new Error('All replica operations failed');
@@ -645,7 +650,8 @@ export class MemoryCoordinationSystem extends EventEmitter {
   private ensureInitialized():void {
     if (!this.initialized) {
       throw new Error(
-        'Memory coordination system not initialized. Call initialize() first.')      );
+        'Memory coordination system not initialized. Call initialize() first.'
+      );
 }
 }
 
@@ -685,7 +691,7 @@ export class MemoryCoordinationSystem extends EventEmitter {
       this.logger.info('Memory coordination system shut down');
 } catch (error) {
       this.logger.error('Error during coordination system shutdown: ', error);
-'      throw error;
+      throw error;
 }
 }
 }

@@ -381,12 +381,12 @@ export class MemoryBackendFactory {
     // LanceDB backend using Foundation's database access (closest to JSONB)
     const { FoundationMemoryBackend} = await import('./foundation-adapter');
 
-    return class extends FoundationMemoryBackend {
+    return class JSONBBackend extends FoundationMemoryBackend {
       public constructor(config:MemoryConfig) {
         super({
           ...config,
           storageType: 'database',
-          databaseType: 'lancedb',
+          databaseType: 'lancedb', // JSONB-like functionality via LanceDB
         } as MemoryConfig);
 }
 };
@@ -403,7 +403,8 @@ export class MemoryBackendFactory {
         super({
           ...config,
           storageType: 'database',
-          databaseType: 'lancedb',
+          databaseType: 'lancedb', // Native vector storage backend
+          vectorCapabilities: true,
         } as MemoryConfig);
 }
 };

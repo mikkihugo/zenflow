@@ -387,7 +387,9 @@ export class MemoryMonitor extends EventEmitter {
       this.createAlert({
         type: 'capacity',        severity:
           metrics.totalMemoryUsage > thresholds.memoryUsage * 1.5
-            ? 'critical')            : 'warning',        message:`Memory usage (${metrics.totalMemoryUsage.toFixed(2)}MB) exceeds threshold (${thresholds.memoryUsage}MB)`,
+            ? 'critical'
+            : 'warning',
+        message:`Memory usage (${metrics.totalMemoryUsage.toFixed(2)}MB) exceeds threshold (${thresholds.memoryUsage}MB)`,
         source: 'memory_monitor',        metadata:{
           currentUsage:metrics.totalMemoryUsage,
           threshold:thresholds.memoryUsage,
@@ -401,7 +403,8 @@ export class MemoryMonitor extends EventEmitter {
       this.createAlert({
         type: 'performance',        severity:
           metrics.cacheHitRate < thresholds.cacheHitRate * 0.5
-            ? 'critical')            : 'warning',        message:`Cache hit rate (${(metrics.cacheHitRate * 100).toFixed(2)}%) below threshold (${(thresholds.cacheHitRate * 100).toFixed(2)}%)`,
+            ? 'critical'
+            : 'warning',        message:`Cache hit rate (${(metrics.cacheHitRate * 100).toFixed(2)}%) below threshold (${(thresholds.cacheHitRate * 100).toFixed(2)}%)`,
         source: 'cache_monitor',        metadata:{
           currentHitRate:metrics.cacheHitRate,
           threshold:thresholds.cacheHitRate,
@@ -413,10 +416,14 @@ export class MemoryMonitor extends EventEmitter {
     // Node health alert
     if (metrics.healthyNodes < metrics.activeNodes) {
       this.createAlert({
-        type: 'coordination',        severity:
+        type: 'coordination',
+        severity:
           metrics.healthyNodes < metrics.activeNodes * 0.5
-            ? 'critical')            : 'warning',        message:`${metrics.activeNodes - metrics.healthyNodes} nodes are unhealthy (${metrics.healthyNodes}/${metrics.activeNodes} healthy)`,
-        source: 'node_monitor',        metadata:{
+            ? 'critical'
+            : 'warning',
+        message: `${metrics.activeNodes - metrics.healthyNodes} nodes are unhealthy (${metrics.healthyNodes}/${metrics.activeNodes} healthy)`,
+        source: 'node_monitor',
+        metadata: {
           activeNodes:metrics.activeNodes,
           healthyNodes:metrics.healthyNodes,
           unhealthyNodes:metrics.activeNodes - metrics.healthyNodes,

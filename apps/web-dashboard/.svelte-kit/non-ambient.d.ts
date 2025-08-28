@@ -27,12 +27,13 @@ export {};
 
 declare module "$app/types" {
 	export interface AppTypes {
-		RouteId(): "/" | "/agui" | "/database" | "/events" | "/facades" | "/memory" | "/safe-production" | "/safe" | "/stories" | "/swarm" | "/system";
+		RouteId(): "/" | "/agents" | "/agui" | "/database" | "/events" | "/facades" | "/memory" | "/safe-production" | "/safe" | "/stories" | "/swarm" | "/system";
 		RouteParams(): {
 			
 		};
 		LayoutParams(): {
 			"/": Record<string, never>;
+			"/agents": Record<string, never>;
 			"/agui": Record<string, never>;
 			"/database": Record<string, never>;
 			"/events": Record<string, never>;
@@ -44,7 +45,7 @@ declare module "$app/types" {
 			"/swarm": Record<string, never>;
 			"/system": Record<string, never>
 		};
-		Pathname(): "/" | "/agui" | "/agui/" | "/database" | "/database/" | "/events" | "/events/" | "/facades" | "/facades/" | "/memory" | "/memory/" | "/safe-production" | "/safe-production/" | "/safe" | "/safe/" | "/stories" | "/stories/" | "/swarm" | "/swarm/" | "/system" | "/system/";
+		Pathname(): "/" | "/agents" | "/agents/" | "/agui" | "/agui/" | "/database" | "/database/" | "/events" | "/events/" | "/facades" | "/facades/" | "/memory" | "/memory/" | "/safe-production" | "/safe-production/" | "/safe" | "/safe/" | "/stories" | "/stories/" | "/swarm" | "/swarm/" | "/system" | "/system/";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
 		Asset(): "/favicon.png" | "/fonts/Quicksand.ttf" | string & {};
 	}

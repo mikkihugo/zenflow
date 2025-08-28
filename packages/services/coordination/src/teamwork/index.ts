@@ -85,11 +85,9 @@ export class ConversationManager extends EventBus {
       
       // Add initial context message
       await this.addMessage(conversation.id, {
-        id: this.generateMessageId(),
         fromAgent: 'system',
         content: `SPARC ${request.phase} phase review requested. Context: ${JSON.stringify(request.context, null, 2)}`,
-        type: 'notification',
-        timestamp: new Date()
+        type: 'notification'
       });
       
       // Simulate review process (in real implementation, this would be actual agent conversations)

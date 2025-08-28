@@ -195,7 +195,6 @@ declare module '$env/static/private' {
 	export const GITHUB_MODELS_TOKEN: string;
 	export const npm_node_execpath: string;
 	export const npm_config_engine_strict: string;
-	export const OLDPWD: string;
 	export const MODULES_CMD: string;
 	export const TERM_PROGRAM: string;
 	export const CF_API_TOKEN: string;
@@ -398,7 +397,6 @@ declare module '$env/dynamic/private' {
 		GITHUB_MODELS_TOKEN: string;
 		npm_node_execpath: string;
 		npm_config_engine_strict: string;
-		OLDPWD: string;
 		MODULES_CMD: string;
 		TERM_PROGRAM: string;
 		CF_API_TOKEN: string;

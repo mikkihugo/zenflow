@@ -210,19 +210,32 @@
    * Business logic for auto-approval determination
    */
   private shouldAutoApproveEpic(
-    _epicId: string,
+    epicId: string,
     context: {
       businessCase: EpicBusinessCase;
       wsjfScore: number;
       stakeholders: string[];
-}
-  ):boolean {
+    }
+  ): boolean {
     // SAFe business rules for auto-approval
-    return (
+    const autoApproved = (
       context.wsjfScore >= this.config.autoApprovalWSJFThreshold &&
       context.businessCase.financialViability.roi >= 15 &&
       context.businessCase.financialViability.paybackPeriod <= 24
     );
+    
+    // Log auto-approval decision for audit trail
+    this.logger.info('Epic auto-approval evaluation', {
+      epicId,
+      autoApproved,
+      wsjfScore: context.wsjfScore,
+      roi: context.businessCase.financialViability.roi,
+      paybackPeriod: context.businessCase.financialViability.paybackPeriod,
+      stakeholderCount: context.stakeholders.length
+    });
+    
+    return autoApproved;
+  }
 }
   /**
    * Get manager status and metrics

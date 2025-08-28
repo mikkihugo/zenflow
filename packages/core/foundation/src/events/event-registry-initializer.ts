@@ -64,7 +64,7 @@ export class EventRegistryInitializer {
   /**
    * Set broadcast callback for external systems (like WebSocket)
    */
-  setBroadcastCallback(callback:(type: string, data:any) => void): void {
+  setBroadcastCallback(callback:(type: string, data:unknown) => void): void {
     this.broadcastCallback = callback;
 }
 

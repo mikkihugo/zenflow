@@ -184,7 +184,9 @@ export class SafeMemoryStore extends EventEmitter {
       if (!metadata) {
         return this.createMemoryError(
           key,
-          'METADATA_MISSING',          'Metadata not found for key')        );
+          'METADATA_MISSING',
+          'Metadata not found for key'
+        );
 }
 
       // Update access information
@@ -471,25 +473,30 @@ export async function safeMemoryUsageExample():Promise<void> {
 
   // Safe property access using type guards
   if (isMemorySuccess(storeResult)) {
+    logger.info('✅ Data stored successfully');
 } else if (isMemoryError(storeResult)) {
     logger.error('❌ Storage failed: ', storeResult?.error?.message);
-'}
+}
 
   // Retrieve data with safe access
   const retrieveResult = await store.retrieve<{ name:string; age: number}>(
-    'user:123')  );
+    'user:123');
 
   if (isMemorySuccess(retrieveResult)) {
+    logger.info('✅ User retrieved:', retrieveResult?.data);
 } else if (isMemoryNotFound(retrieveResult)) {
+    logger.warn('User not found');
 } else if (isMemoryError(retrieveResult)) {
     logger.error('Error retrieving user: ', retrieveResult?.error?.message);
-'}
+}
 
   // Check existence safely
   const existsResult = await store.exists('user:456');
 
   if (isMemorySuccess(existsResult)) {
+    logger.info('User exists');
 } else if (isMemoryNotFound(existsResult)) {
+    logger.info('User does not exist');
 }
 
   await store.shutdown();

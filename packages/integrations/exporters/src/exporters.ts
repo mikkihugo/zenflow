@@ -192,7 +192,8 @@ export class ExportSystem {
 }
 
       if (
-        typeof obj === 'string' || typeof obj === ' number' || typeof obj === ' boolean')      ) {
+        typeof obj === 'string' || typeof obj === 'number' || typeof obj === 'boolean'
+      ) {
         return `<${name}>${obj}</${name}>`;
 }
 

@@ -253,7 +253,7 @@ export class ExportSystem extends TypedEventBase {
       return entries
         .map(
           ([key, value]) =>
-            `${spaces}${key}:${this.convertToYAML(value, indent + 1)}`
+            `${spaces}${key}: ${this.convertToYAML(value, indent + 1)}`
         )
         .join('\n');
 }

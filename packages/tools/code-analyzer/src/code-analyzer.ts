@@ -174,6 +174,9 @@ export class CodeAnalyzer {
   private performanceTracker?:any;
   private databaseSystem?:any;
   private eventSystem?:any;
+  
+  // Repository analysis integration
+  private repoAnalyzer?:any;
 
   constructor(repositoryPath:string) {
     this.repositoryPath = path.resolve(repositoryPath);
@@ -185,13 +188,22 @@ export class CodeAnalyzer {
       useInMemoryFileSystem:false,
 });
 
+    // Initialize repository analyzer
+    try {
+      const { RepoAnalyzer } = require('./repo-analyzer');
+      this.repoAnalyzer = new RepoAnalyzer({ rootPath: this.repositoryPath });
+    } catch (error) {
+      logger.warn('Failed to initialize repository analyzer', { error });
+    }
+
     logger.info('CodeAnalyzer initialized', {
-    ')      repositoryPath:this.repositoryPath,
-      hasProject:!!this._project,
-});
+      repositoryPath: this.repositoryPath,
+      hasProject: !!this._project,
+      hasRepoAnalyzer: !!this.repoAnalyzer
+    });
 
     // Code analyzer initialized successfully
-    logger.debug('Code analyzer registered successfully');')}
+    logger.debug('Code analyzer registered successfully');}
 
   /**
    * Initialize all strategic facade systems
@@ -1681,6 +1693,60 @@ export class DependencyRelationshipMapper {
       weaknesses:metrics.circularDependencies > 0 ? ['Circular dependencies detected'] : [],
 };
 }
+
+  /**
+   * Analyze repository structure and domain boundaries
+   */
+  async analyzeRepository(): Promise<Result<any, Error>> {
+    if (!this.repoAnalyzer) {
+      return err(new Error('Repository analyzer not available'));
+    }
+
+    return await this.repoAnalyzer.analyzeDomainBoundaries();
+  }
+
+  /**
+   * Get workspace information using foundation's detector
+   */
+  async getWorkspaceInfo(): Promise<Result<any, Error>> {
+    return await safeAsync(async () => {
+      const { getWorkspaceDetector } = require('@claude-zen/foundation');
+      const detector = getWorkspaceDetector();
+      const workspace = await detector.detectWorkspaceRoot(this.repositoryPath);
+      return workspace;
+    });
+  }
+
+  /**
+   * Build comprehensive dependency relationship map
+   */
+  async buildDependencyMap(): Promise<Result<any, Error>> {
+    const mapper = new DependencyRelationshipMapper(this.repositoryPath);
+    return await mapper.buildDependencyMap();
+  }
+
+  /**
+   * Unified analysis combining code analysis and repository analysis
+   */
+  async analyzeAll(): Promise<Result<{
+    repository?: any;
+    dependencies?: any;
+    workspace?: any;
+  }, Error>> {
+    return await safeAsync(async () => {
+      const [repoResult, dependencyResult, workspaceResult] = await Promise.allSettled([
+        this.analyzeRepository(),
+        this.buildDependencyMap(),
+        this.getWorkspaceInfo()
+      ]);
+
+      return {
+        repository: repoResult.status === 'fulfilled' && repoResult.value.isOk() ? repoResult.value.value : undefined,
+        dependencies: dependencyResult.status === 'fulfilled' && dependencyResult.value.isOk() ? dependencyResult.value.value : undefined,
+        workspace: workspaceResult.status === 'fulfilled' && workspaceResult.value.isOk() ? workspaceResult.value.value : undefined
+      };
+    });
+  }
 }
 
 /**

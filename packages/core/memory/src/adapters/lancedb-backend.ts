@@ -237,7 +237,6 @@ export class VectorStore extends EventEmitter {
           vectorDimensions:data.vector?.length || 0,
           hasMetadata:Object.keys(data.metadata || {}).length > 0,
 });
-        return Promise.resolve();
 
         // Validate vector dimensions
         if (data.vector.length !== this.config.vectorDimension) {
@@ -407,7 +406,7 @@ export class VectorStore extends EventEmitter {
   /**
    * Range-based search within a distance radius
    */
-  async rangeSearch(options:{
+  rangeSearch(options:{
     vector:number[];
     radius:number;
     maxResults:number;
@@ -430,22 +429,22 @@ export class VectorStore extends EventEmitter {
   /**
    * Get vector by ID
    */
-  async getById(id:string): Promise<VectorSearchResult | null> {
+  getById(id:string): Promise<VectorSearchResult | null> {
     if (!this.isInitialized) {
-      return null;
+      return Promise.resolve(null);
 }
 
     this.logger.debug('Getting vector by ID', { id});
 
     // In real implementation, query LanceDB by ID
     // For now, return null (not found)
-    return null;
+    return Promise.resolve(null);
 }
 
   /**
    * Update existing vector
    */
-  async update(
+  update(
     id:string,
     data:VectorInsertData
   ):Promise<VectorInsertResult> {
@@ -487,7 +486,7 @@ export class VectorStore extends EventEmitter {
   /**
    * Analyze data distribution for optimization
    */
-  async analyzeDataDistribution():Promise<{
+  analyzeDataDistribution():Promise<{
     clusters:number;
     averageIntraClusterDistance:number;
     averageInterClusterDistance:number;
@@ -509,13 +508,13 @@ export class VectorStore extends EventEmitter {
       timestamp:Date.now(),
 });
 
-    return analysis;
+    return Promise.resolve(analysis);
 }
 
   /**
    * Optimize indexes based on usage patterns
    */
-  async optimizeIndex(config?:{
+  optimizeIndex(config?:{
     dataDistribution?:{ clusters: number};
     performanceTarget?:'speed' | ' memory' | ' balanced';
 }):Promise<{
@@ -546,13 +545,13 @@ export class VectorStore extends EventEmitter {
       timestamp:Date.now(),
 });
 
-    return optimization;
+    return Promise.resolve(optimization);
 }
 
   /**
    * Get storage information and statistics
    */
-  async getStorageInfo():Promise<{
+  getStorageInfo():Promise<{
     size:number;
     indexSize:number;
     vectorCount:number;
@@ -568,13 +567,13 @@ export class VectorStore extends EventEmitter {
 };
 
     this.logger.debug('Storage info retrieved', info);
-    return info;
+    return Promise.resolve(info);
 }
 
   /**
    * Compress vectors to reduce storage
    */
-  async compressVectors(config?:{
+  compressVectors(config?:{
     compressionType?:'pq' | ' sq' | ' none';
     qualityTarget?:number;
 }):Promise<{
@@ -601,15 +600,15 @@ export class VectorStore extends EventEmitter {
       timestamp:Date.now(),
 });
 
-    return result;
+    return Promise.resolve(result);
 }
 
   /**
    * Close the vector store and clean up resources
    */
-  async close():Promise<void> {
+  close():Promise<void> {
     if (!this.isInitialized) {
-      return;
+      return Promise.resolve();
 }
 
     this.logger.info('Closing LanceDB vector store');
@@ -631,6 +630,7 @@ export class VectorStore extends EventEmitter {
       this.removeAllListeners();
 
       this.logger.info('LanceDB vector store closed successfully');
+      return Promise.resolve();
 } catch (error) {
       this.logger.error('Error closing vector store', error);
       throw new EnhancedError('Failed to close VectorStore', {
@@ -642,11 +642,11 @@ export class VectorStore extends EventEmitter {
   /**
    * Health check for monitoring
    */
-  async healthCheck():Promise<{
+  healthCheck():Promise<{
     status:'healthy' | ' degraded' | ' unhealthy';
     details:Record<string, unknown>;
 }> {
-    return {
+    return Promise.resolve({
       status:this.isInitialized ? 'healthy' : (' unhealthy' as const),
       details:{
         initialized:this.isInitialized,
@@ -654,7 +654,7 @@ export class VectorStore extends EventEmitter {
         indexes:this.indexCache.size,
         uptime:Date.now(),
 },
-};
+});
 }
 }
 

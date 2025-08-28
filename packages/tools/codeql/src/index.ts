@@ -36,7 +36,7 @@ export type {
  * Default CodeQL configuration for Claude Zen projects
  */
 export const DEFAULT_CODEQL_CONFIG:Partial<
-  import('./types/codeql-types').CodeQLConfig')> = {
+  import('./types/codeql-types').CodeQLConfig> = {
   maxMemory:4096,
   threads:Math.max(1, Math.floor(require('node:os').cpus().length / 2)),
   verbose:false,

@@ -348,7 +348,8 @@ export class MemoryError extends ContextError {
   constructor(
     message:string,
     context:Record<string, unknown> = {},
-    code:string = 'MEMORY_ERROR')  ) {
+    code:string = 'MEMORY_ERROR'
+  ) {
     super(message, context, code);
     this.name = 'MemoryError';
 }
@@ -382,7 +383,8 @@ export class MemoryCapacityError extends MemoryError {
     super(
       message,
       { ...context, currentSize, maxSize},
-      'MEMORY_CAPACITY_ERROR')    );
+      'MEMORY_CAPACITY_ERROR'
+    );
     this.name = 'MemoryCapacityError';
 }
 }

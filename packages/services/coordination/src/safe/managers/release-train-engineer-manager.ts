@@ -228,15 +228,23 @@
   async facilitateInspectAndAdapt(
     piId: string,
     artId: string,
-    _config: any
+    config: any
   ):Promise<any> {
+    this.logger.info('Facilitating Inspect & Adapt session', {
+      piId,
+      artId,
+      configType: typeof config,
+      duration: config?.duration || 'default'
+    });
+    
     return {
       piId,
       artId,
       systemDemoCompleted: true,
-      improvementActions: [],
-      retrospectiveInsights: [],
-};
+      improvementActions: config?.improvementActions || [],
+      retrospectiveInsights: config?.retrospectiveInsights || [],
+      configurationUsed: config
+    };
 }
   async manageSystemDemo(config: any): Promise<any> {
     return {

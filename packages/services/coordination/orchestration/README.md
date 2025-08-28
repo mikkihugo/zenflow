@@ -106,7 +106,7 @@ await kanban.initialize();
 
 ```typescript
 import { WorkflowKanban } from '@claude-zen/taskmaster';
-import type { TypeSafeEventBus } from '@claude-zen/event-system';
+import type { EventBus } from '@claude-zen/foundation';
 
 const kanban = new WorkflowKanban(config, eventBus);
 

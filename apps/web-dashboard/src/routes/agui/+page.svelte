@@ -1,6 +1,6 @@
 <script lang="ts">
 import { onMount } from "svelte";
-import type AGUIIntegration from "../../lib/components/AGUIIntegration.svelte";
+import AGUIIntegration from "../../lib/components/AGUIIntegration.svelte";
 
 interface AGUIInterface {
 	askQuestion(question: string, options?: any): Promise<any>;
@@ -8,7 +8,7 @@ interface AGUIInterface {
 }
 
 let aguiComponent: AGUIIntegration;
-let _aguiInstance: AGUIInterface | null = null;
+let aguiInstance: AGUIInterface | null = null;
 let log: string[] = [];
 let testResults: {
 	test: string;
@@ -33,8 +33,8 @@ onMount(() => {
 });
 
 // Handle AGUI ready event
-function _handleAGUIReady(event: CustomEvent<{ agui: AGUIInterface }>) {
-	_aguiInstance = event.detail.agui;
+function handleAGUIReady(event: CustomEvent<{ agui: AGUIInterface }>) {
+	aguiInstance = event.detail.agui;
 	addLog("✅ AGUI system initialized and ready");
 
 	// Mark initialization test as success
@@ -53,7 +53,7 @@ function _handleAGUIReady(event: CustomEvent<{ agui: AGUIInterface }>) {
 }
 
 // Handle task approval events
-function _handleTaskApproval(
+function handleTaskApproval(
 	event: CustomEvent<{ task: string; approved: boolean }>,
 ) {
 	const { task, approved } = event.detail;
@@ -61,7 +61,7 @@ function _handleTaskApproval(
 }
 
 // Handle user responses
-function _handleUserResponse(event: CustomEvent<{ response: any }>) {
+function handleUserResponse(event: CustomEvent<{ response: any }>) {
 	const { response } = event.detail;
 	addLog(`💬 User responded: ${JSON.stringify(response)}`);
 }
@@ -193,7 +193,7 @@ async function runBasicTests() {
 }
 
 // Manual test trigger
-function _triggerManualTest() {
+function triggerManualTest() {
 	if (aguiComponent) {
 		aguiComponent.requestApproval(
 			`manual-test-${Date.now()}`,
@@ -204,7 +204,7 @@ function _triggerManualTest() {
 }
 
 // Clear log
-function _clearLog() {
+function clearLog() {
 	log = [];
 }
 </script>

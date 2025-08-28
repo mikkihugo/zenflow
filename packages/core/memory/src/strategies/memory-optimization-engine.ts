@@ -86,7 +86,8 @@ export class MemoryOptimizationEngine extends EventEmitter {
 });
 } catch (error) {
       this.logger.error(
-        'Failed to initialize memory optimization engine: ','        error
+        'Failed to initialize memory optimization engine: ',
+        error
       );
       throw error;
 }
@@ -144,7 +145,7 @@ export class MemoryOptimizationEngine extends EventEmitter {
         return this.metrics;
 } catch (error) {
         this.logger.error('Memory optimization cycle failed: ', error);
-'        recordMetric('memory_optimization_cycle_failed', 1);
+        recordMetric('memory_optimization_cycle_failed', 1);
         throw error;
 }
 });
@@ -587,7 +588,7 @@ export class MemoryOptimizationEngine extends EventEmitter {
         await this.optimize();
 } catch (error) {
         this.logger.error('Optimization monitoring cycle failed: ', error);
-'}
+}
 }, this.config.monitoring.interval);
 }
 

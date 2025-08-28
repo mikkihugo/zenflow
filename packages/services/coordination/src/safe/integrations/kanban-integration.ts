@@ -255,8 +255,8 @@ export async function createSafePortfolioKanban(
  */
 function configureSafePortfolioEvents(
   kanban: KanbanEngine,
-  _logger: Logger
-):void {
+  logger: Logger
+): void {
   // Epic business case validation events
   kanban.on('task: created,(_task) => {';
     ')    logger.info('Portfolio Epic created,';
@@ -289,8 +289,8 @@ function configureSafePortfolioEvents(
  */
 function configureSafeProgramEvents(
   kanban: KanbanEngine,
-  _logger: Logger
-):void {
+  logger: Logger
+): void {
   kanban.on('task: created,(_task) => {';
     ')    logger.info('Program Feature created,';
       featureId: task.id,
@@ -306,7 +306,7 @@ function configureSafeProgramEvents(
 /**
  * Configure Team Kanban events for Story/Task flow
  */
-function configureSafeTeamEvents(kanban: KanbanEngine, _logger: Logger): void {
+function configureSafeTeamEvents(kanban: KanbanEngine, logger: Logger): void {
   kanban.on('task: created,(_task) => {';
     ')    logger.info('Team Story created,';
       storyId: task.id,

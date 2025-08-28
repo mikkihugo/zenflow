@@ -20,7 +20,7 @@ import { EventBus} from '@claude-zen/foundation')import type {';
   Logger,
   MemorySystem,
   MultiLevelOrchestrationManager,
-  TypeSafeEventBus,
+  EventBus,
   ValueStream,
   ValueStreamMetrics,
 } from '../types')import { getLogger} from '../types')// Note: Types are defined within this file';

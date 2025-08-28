@@ -67,23 +67,23 @@ $: bannerVisible = $_connectionStatus?.connected === false;
 </script>
 
 <!-- Clean Dashboard Layout -->
-<div class="min-h-screen" style="background-color: #f9fafb;">
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
 	<!-- Top Navigation Bar -->
-	<nav class="bg-white shadow-sm border-b border-gray-200 fixed w-full z-30 top-0">
+	<nav class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 fixed w-full z-50 top-0">
 		<div class="px-3 py-3 lg:px-5 lg:pl-3">
 			<div class="flex items-center justify-between">
 				<div class="flex items-center justify-start">
-					<span class="text-xl font-semibold text-blue-600">🧠 Claude Code Zen</span>
-					<span class="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Admin Portal</span>
+					<span class="text-xl font-semibold text-blue-600 dark:text-blue-400">🧠 Claude Code Zen</span>
+					<span class="ml-2 px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs rounded">Admin Portal</span>
 				</div>
 				<div class="flex items-center gap-4">
 					<!-- Status Indicator -->
-					<div class="flex items-center gap-2 px-3 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+					<div class="flex items-center gap-2 px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-xs rounded-full">
 						<div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
 						Online
 					</div>
 					<!-- User Menu -->
-					<div class="flex items-center gap-2 px-3 py-1 text-gray-700 hover:bg-gray-100 rounded cursor-pointer">
+					<div class="flex items-center gap-2 px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
 						<span>👤</span>
 						<span class="hidden md:inline text-sm">Admin</span>
 					</div>
@@ -96,7 +96,7 @@ $: bannerVisible = $_connectionStatus?.connected === false;
 	<ConnectionBanner connectionStatus={$_connectionStatus} />
 
 	<!-- Sidebar -->
-	<aside class="fixed left-0 z-40 w-64 h-screen transition-transform bg-white border-r border-gray-200" 
+	<aside class="fixed left-0 z-40 w-64 h-screen transition-transform bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700" 
 	       class:with-banner={bannerVisible}
 	       style="top: {bannerVisible ? '7rem' : '4rem'};">
 		<div class="h-full px-3 py-4 overflow-y-auto">
@@ -105,7 +105,7 @@ $: bannerVisible = $_connectionStatus?.connected === false;
 					<li>
 						<a 
 							href={item.href} 
-							class="flex items-center p-2 rounded-lg transition-colors {activeUrl === item.href ? 'text-blue-700 bg-blue-100' : 'text-gray-900 hover:bg-gray-100'}" 
+							class="flex items-center p-2 rounded-lg transition-colors {activeUrl === item.href ? 'text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900' : 'text-gray-900 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}" 
 							title={item.title}
 						>
 							<span class="text-lg mr-3">{item.icon}</span>
@@ -116,17 +116,17 @@ $: bannerVisible = $_connectionStatus?.connected === false;
 			</ul>
 			
 			<!-- Footer in sidebar -->
-			<div class="absolute bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200">
-				<div class="text-xs text-gray-500 text-center">
+			<div class="absolute bottom-0 left-0 right-0 p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+				<div class="text-xs text-gray-500 dark:text-gray-400 text-center">
 					<div>v2.0.0 Alpha</div>
-					<div class="text-gray-400">Admin Portal</div>
+					<div class="text-gray-400 dark:text-gray-500">Admin Portal</div>
 				</div>
 			</div>
 		</div>
 	</aside>
 
 	<!-- Main Content -->
-	<div class="p-4 ml-64 transition-all duration-300"
+	<div class="p-4 ml-64 transition-all duration-300 relative z-10"
 	     class:content-with-banner={bannerVisible}
 	     style="padding-top: {bannerVisible ? '7.5rem' : '4.5rem'};">
 		<slot />

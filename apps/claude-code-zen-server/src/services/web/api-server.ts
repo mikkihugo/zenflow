@@ -1019,8 +1019,12 @@ export class ApiServer {
       if (allowedOrigins) {
         return allowedOrigins.split(',    ').map((origin) => origin.trim());
 }
-      // Default production - only same origin
-      return false;
+      // Default production - include the external domain
+      return [
+        'https://fra-d1.in.centralcloud.net',
+        'http://localhost:3000',
+        'http://localhost:3002'
+      ];
 }
 
     // Test environment - allow all for flexibility

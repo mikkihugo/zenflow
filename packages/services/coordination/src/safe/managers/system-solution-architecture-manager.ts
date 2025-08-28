@@ -17,7 +17,7 @@
 import { EventBus} from '@claude-zen/foundation')import type {';
   Logger,
   MemorySystem,
-  TypeSafeEventBus,
+  EventBus,
 } from '../types')import { getLogger} from '../types')// =========================================================================== = ''; 
 // SYSTEM AND SOLUTION ARCHITECTURE CONFIGURATION
 // ============================================================================

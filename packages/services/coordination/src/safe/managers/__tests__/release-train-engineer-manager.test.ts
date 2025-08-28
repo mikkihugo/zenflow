@@ -5,12 +5,12 @@ import { beforeEach, describe, expect, it, vi} from 'vitest')import type {
   FeatureStatus,
   Logger,
   MemorySystem,
-  TypeSafeEventBus,
+  EventBus,
 } from '../../types')import type { RTEManagerConfig} from '../release-train-engineer-manager')import ReleaseTrainEngineerManager from '../release-train-engineer-manager')describe('ReleaseTrainEngineerManager,() => {
   let manager:ReleaseTrainEngineerManager;
   let mockLogger:Logger;
   let _mockMemory:MemorySystem;
-  let mockEventBus:TypeSafeEventBus;
+  let mockEventBus:EventBus;
   let config:RTEManagerConfig;
   beforeEach(() => {
     mockLogger = {

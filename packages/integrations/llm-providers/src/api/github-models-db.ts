@@ -566,7 +566,7 @@ class GitHubModelsDatabase {
       () => {
         this.updateModels().catch((error) => {
           logger.error('❌ Failed to update models: ', error);
-'});
+        });
 },
       60 * 60 * 1000
     ); // 1 hour
@@ -624,7 +624,7 @@ class GitHubModelsDatabase {
       return ok(void 0);
 } catch (error) {
       logger.error('❌ Failed to update GitHub Models: ', error);
-'      return err(
+      return err(
         error instanceof Error ? error:new Error('Failed to update models')
       );
 }

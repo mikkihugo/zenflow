@@ -23,7 +23,7 @@ interface FoundationMemoryConfig extends MemoryConfig {
 
 export class FoundationMemoryBackend extends BaseMemoryBackend {
   private logger:Logger;
-  private databaseSystem?:any; // Will be resolved through infrastructure facade
+  private databaseSystem?:unknown; // Will be resolved through infrastructure facade
   private memoryStore = new Map<string, string>(); // Temporary in-memory fallback
   private initialized = false;
   protected override memoryConfig:FoundationMemoryConfig;
@@ -171,7 +171,8 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
 
   override async list(
     pattern?:string,
-    namespace = 'default')  ):Promise<string[]> {
+    namespace = 'default'
+  ):Promise<string[]> {
     await this.ensureInitialized();
 
     let keys:string[] = [];
@@ -206,12 +207,13 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
     // TODO:recordMetric('memory_operations_total', 1, { operation: ' clear', namespace:namespace || ' all'});
 }
 
-  override async close():Promise<void> {
-    if (!this.initialized) return;
+  override close():Promise<void> {
+    if (!this.initialized) return Promise.resolve();
 
     this.initialized = false;
     // TODO:recordMetric('memory_backend_closed', 1);
     this.logger.info('Foundation backend closed');
+    return Promise.resolve();
 }
 
   override getCapabilities():BackendCapabilities {
@@ -235,8 +237,8 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
     const namespaces = new Set<string>();
 
     for (const key of allKeys) {
-      const colonIndex = key.indexOf(': ');
-'      if (colonIndex > 0) {
+      const colonIndex = key.indexOf(':');
+      if (colonIndex > 0) {
         namespaces.add(key.substring(0, colonIndex));
 }
 }

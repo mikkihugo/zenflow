@@ -31,7 +31,13 @@ export interface CacheEntry {
 }
 
 export type EvictionReason =
-  | 'size_limit')  | 'memory_limit')  | 'ttl_expired')  | 'lru_eviction')  | 'lfu_eviction')  | 'manual_eviction')  | 'priority_eviction';
+  | 'size_limit'
+  | 'memory_limit'
+  | 'ttl_expired'
+  | 'lru_eviction'
+  | 'lfu_eviction'
+  | 'manual_eviction'
+  | 'priority_eviction';
 
 export interface OptimizationConfig {
   enabled:boolean;
@@ -179,7 +185,16 @@ export interface PerformanceConfig {
 }
 
 export type TuningAction =
-  | 'increase_cache_size')  | 'decrease_cache_size')  | 'change_eviction_policy')  | 'enable_compression')  | 'disable_compression')  | 'adjust_prefetching')  | 'rebalance_load')  | 'optimize_ttl')  | 'increase_cleanup_frequency')  | 'decrease_cleanup_frequency';
+  | 'increase_cache_size'
+  | 'decrease_cache_size'
+  | 'change_eviction_policy'
+  | 'enable_compression'
+  | 'disable_compression'
+  | 'adjust_prefetching'
+  | 'rebalance_load'
+  | 'optimize_ttl'
+  | 'increase_cleanup_frequency'
+  | 'decrease_cleanup_frequency';
 
 export interface TuningRecommendation {
   action:TuningAction;

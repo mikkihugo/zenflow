@@ -211,14 +211,14 @@ export function _sanitizeString(str:string): string {
 }
 });
   // Remove control chars but keep newlines and tabs
-  sanitized = sanitized.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, ');
+  sanitized = sanitized.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
 
   // Additional security patterns
   sanitized = sanitized
-    .replace(/javascript:/gi, ')
-    .replace(/vbscript:/gi, ')
-    .replace(/data:/gi, ')
-    .replace(/[$&;`|]/g, '); // Command injection chars`
+    .replace(/javascript:/gi, '')
+    .replace(/vbscript:/gi, '')
+    .replace(/data:/gi, '')
+    .replace(/[$&;`|]/g, ''); // Command injection chars
 
   return sanitized;
 }

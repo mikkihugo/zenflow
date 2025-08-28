@@ -432,14 +432,16 @@ export class MemoryCoordinator extends EventEmitter {
 
     // Get all active nodes
     const activeNodes = Array.from(this.nodes.values()).filter(
-      (n) => n.status === 'active')    );
+      (n) => n.status === 'active'
+    );
 
     for (const node of activeNodes) {
       try {
         // Assuming backend implements a keys() method
         if (
           'keys' in node?.backend &&
-          typeof node?.backend?.keys === 'function')        ) {
+          typeof node?.backend?.keys === 'function'
+        ) {
           const keys = await node?.backend?.keys();
           const matchingKeys = keys.filter((key) =>
             this.matchesPattern(key, pattern)
@@ -491,7 +493,8 @@ export class MemoryCoordinator extends EventEmitter {
   async healthCheck():Promise<{ status: string; details: unknown}> {
     const stats = this.getStats();
     const unhealthyNodes = Array.from(this.nodes.values()).filter(
-      (n) => n.status !== 'active')    );
+      (n) => n.status !== 'active'
+    );
 
     return {
       status:unhealthyNodes.length === 0 ? 'healthy' : ' degraded',      details:{

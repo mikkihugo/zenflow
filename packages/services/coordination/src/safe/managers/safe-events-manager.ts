@@ -15,7 +15,7 @@
  * Scaled Agile Framework (SAFe) integration capabilities.
  */
 import { EventBus} from '@claude-zen/foundation')import type { ';
-  Feature, Logger, MemorySystem, TypeSafeEventBus} from '../types')import { createEvent, EventPriority, getLogger} from '../types')// =========================================================================== = ';
+  Feature, Logger, MemorySystem, EventBus} from '../types')import { createEvent, EventPriority, getLogger} from '../types')// =========================================================================== = ';
 // SAFE EVENTS MANAGER CONFIGURATION
 // ============================================================================
 export interface SAFeEventsManagerConfig {
@@ -29,7 +29,9 @@ export class SAFeEventsManager extends EventBus {
   private eventTemplates = new Map<string, SAFeEventConfig>();
   private initialized = false;
   constructor(
-    _memory: {}
+    memory: {},
+    eventBus: EventBus,
+    config: SAFeEventsManagerConfig = {}
   ) {
     super();
     this.logger = getLogger('SAFeEventsManager');

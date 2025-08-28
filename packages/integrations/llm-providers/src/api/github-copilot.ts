@@ -162,7 +162,9 @@ function loadCopilotToken():string {
   try {
     const configPath = path.join(
       os.homedir(),
-      '.claude-zen',      'copilot-token.json')    );
+      '.claude-zen',
+      'copilot-token.json'
+    );
     if (fs.existsSync(configPath)) {
       const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
       logger.info(

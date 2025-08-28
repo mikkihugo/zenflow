@@ -370,7 +370,8 @@ export class RecoveryStrategyManager extends EventEmitter {
 
           const repairResults = await Promise.all(repairPromises);
           const successfulRepairs = repairResults?.filter(
-            (r) => r.status === 'repaired')          ).length;
+            (r) => r.status === 'repaired'
+          ).length;
 
           return {
             success:successfulRepairs > 0,
@@ -464,11 +465,13 @@ export class RecoveryStrategyManager extends EventEmitter {
                     data = await backend.get(context.key);
 } else if (
                     'retrieve' in backend &&
-                    typeof backend.retrieve === 'function')                  ) {
+                    typeof backend.retrieve === 'function'
+                  ) {
                     data = await backend.retrieve(context.key);
 } else {
                     throw new Error(
-                      'Backend lacks required get/retrieve method')                    );
+                      'Backend lacks required get/retrieve method'
+                    );
 }
                   return {
                     success:true,
@@ -479,11 +482,12 @@ export class RecoveryStrategyManager extends EventEmitter {
 }
 
                 case 'write':
-                  if ('set' in backend && typeof backend.set === ' function') {
+                  if ('set' in backend && typeof backend.set === 'function') {
                     await backend.set(context.key, context.originalValue);
 } else if (
                     'store' in backend &&
-                    typeof backend.store === 'function')                  ) {
+                    typeof backend.store === 'function'
+                  ) {
                     await backend.store(context.key, context.originalValue);
 } else {
                     throw new Error('Backend lacks required set/store method');

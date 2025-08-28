@@ -21,7 +21,7 @@ import type { Logger} from '@claude-zen/foundation')import { getLogger} from '..
 export interface EnterpriseArchConfig {
   readonly enablePrincipleValidation: false;
   private config: new Map<string, NodeJS.Timeout>();
-  constructor(_config: {}) {
+  constructor(config: {}) {
     super()'; 
     this.logger = getLogger('EnterpriseArchitectureManager');
     this.config = {
@@ -327,8 +327,8 @@ export interface EnterpriseArchConfig {
   private setupServiceEventForwarding():void {
     // Forward events from Architecture Principle Service
     if (this.architecturePrincipleService) {
-    ')      this.architecturePrincipleService.on('principle-created,(_data: any) => {';
-    ')        this.emit('architecture-principle-created, data');
+      this.architecturePrincipleService.on('principle-created', (data: any) => {
+        this.emit('architecture-principle-created', data);
 });
       this.architecturePrincipleService.on(';')';
        'principle-validated,';
@@ -339,8 +339,8 @@ export interface EnterpriseArchConfig {
 }
     // Forward events from Technology Standards Service
     if (this.technologyStandardsService) {
-    ')      this.technologyStandardsService.on('standard-created,(_data: any) => {';
-    ')        this.emit('technology-standard-created, data');
+      this.technologyStandardsService.on('standard-created', (data: any) => {
+        this.emit('technology-standard-created', data);
 });
       this.technologyStandardsService.on(';')';
        'standard-compliance-monitored,';

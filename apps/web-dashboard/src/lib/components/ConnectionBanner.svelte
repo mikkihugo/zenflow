@@ -78,7 +78,7 @@ $: status = $connectionStatus;
 </script>
 
 {#if !status.connected}
-  <div class="bg-orange-500 text-white px-4 py-3 shadow-sm border-b border-orange-600 fixed w-full z-20" 
+  <div class="bg-orange-500 text-white px-4 py-3 shadow-sm border-b border-orange-600 fixed w-full z-50" 
        style="top: 4rem;">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <div class="flex items-center space-x-3">
@@ -99,7 +99,7 @@ $: status = $connectionStatus;
       </div>
       
       <button
-        on:click={retryConnection}
+        on:click={_retryConnection}
         disabled={status.retrying}
         class="bg-orange-600 hover:bg-orange-700 disabled:bg-orange-700 disabled:opacity-50 
                text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200

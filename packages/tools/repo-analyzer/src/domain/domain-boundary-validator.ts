@@ -52,7 +52,7 @@ const logger = {
 
 export interface TypeSchema<T = unknown> {
   type:
-    | 'string')    | 'number')    | 'boolean')    | 'object')    | 'array')    | 'null')    | 'undefined')    | 'function';
+    | 'string' | 'number' | 'boolean' | 'object' | 'array' | 'null' | 'undefined' | 'function';
   required?:boolean;
   properties?:{ [K in keyof T]?: TypeSchema<T[K]>};
   items?:TypeSchema;

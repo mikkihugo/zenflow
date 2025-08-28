@@ -6,13 +6,13 @@
 // Basic implementations for now (will use foundation when it's fixed)
 const getLogger = (name:string) => ({
   info:(msg: string, data?:any) =>
-    console.log(`[${name}] INFO:`, msg, data || '),
+    console.log(`[${name}] INFO:`, msg, data || ''),
   error:(msg: string, data?:any) =>
-    console.error(`[${name}] ERROR:`, msg, data || '),
+    console.error(`[${name}] ERROR:`, msg, data || ''),
   debug:(msg: string, data?:any) =>
-    console.debug(`[${name}] DEBUG:`, msg, data || '),
+    console.debug(`[${name}] DEBUG:`, msg, data || ''),
   warn:(msg: string, data?:any) =>
-    console.warn(`[${name}] WARN:`, msg, data || '),
+    console.warn(`[${name}] WARN:`, msg, data || ''),
 });
 
 export type Result<T, E> =

@@ -512,6 +512,7 @@ export default [
 			// Configuration and cache files
 			"*.config.*",
 			"test-results.json",
+			"test-agui-page.js",
 			".eslintcache",
 			"gts.json",
 			"jest.config.js",
@@ -524,6 +525,11 @@ export default [
 			"**/*.d.ts",
 			"**/*.d.ts.map",
 			"**/*.js.map",
+			
+			// All dist and build output directories
+			"**/dist/**/*",
+			"**/build/**/*",
+			"**/output/**/*",
 			
 			// All compiled JavaScript files in source directories
 			"packages/**/src/**/*.js",    // Compiled JS files in package src directories
@@ -613,9 +619,14 @@ export default [
 			"**/*.spec.*", 
 			"**/tests/**/*",
 			"**/test/**/*",
+			"**/*test*.ts",
+			"**/*spec*.ts",
 			
 			// Third-party packages that shouldn't be linted
 			"packages/tools/singularity-coder/**/*",
+			
+			// Intentionally broken test packages
+			"packages/tools/repo-analyzer-broken/**/*",
 			
 			// Generated Svelte files (comprehensive exclusion)
 			"**/.svelte-kit/**/*",

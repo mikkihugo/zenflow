@@ -43,13 +43,14 @@ export type {
 export const DEFAULT_BEAM_CONFIG:Partial<
   import('./types/beam-types').BeamAnalysisConfig
 > = {
-  languages:['erlang',    'elixir'],
+  languages:['erlang', 'elixir'],
   useDialyzer:true,
   useSobelow:true,
   useElvis:false,
   timeout:300000, // 5 minutes
   includeDeps:true,
-  otpVersion: 'latest',  customRules:[],
+  otpVersion: 'latest',
+  customRules:[],
 };
 
 /**

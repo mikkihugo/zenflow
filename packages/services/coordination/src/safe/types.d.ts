@@ -88,7 +88,7 @@ export interface MemorySystem {
 /**
  * Type-safe event bus interface
  */
-export interface TypeSafeEventBus {
+export interface EventBus {
     emit(event: string, data: unknown): void;
     on(event: string, handler: (data: unknown) => void): void;
     off(event: string, handler: (data: unknown) => void): void;

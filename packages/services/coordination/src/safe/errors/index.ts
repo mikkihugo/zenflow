@@ -43,30 +43,34 @@ export class KanbanTransitionError extends Error {
  */
 export const createSAFeError = {
   epicLifecycle: (
-    _epicId: string,
-    _currentState: string,
+    epicId: string,
+    currentState: string,
     operation: string,
-    cause?:Error
-  ) =>;
+    cause?: Error
+  ) =>
     new EpicLifecycleError(
-      `Epic `${operation} failed``,    ')      epicId,
+      `Epic ${epicId} ${operation} failed from state ${currentState}`,
+      epicId,
       currentState,
       cause
     ),
-  businessCase: (businessCaseId: string, reason: string, cause?:Error) =>`)    new BusinessCaseError(``)`;
-      `Business case validation failed: `${reason},    ``)      businessCaseId,`;
+  businessCase: (businessCaseId: string, reason: string, cause?: Error) =>
+    new BusinessCaseError(
+      `Business case validation failed: ${reason}`,
+      businessCaseId,
       cause
     ),
   kanbanTransition: (
     epicId: string,
-    _fromState: string,
-    _toState: string,
+    fromState: string,
+    toState: string,
     reason: string,
-    _cause?:Error
+    cause?: Error
   ) =>
-    new KanbanTransitionError(``)`;
-      `Invalid transition for epic `${epicId}:${reason},    ``)      fromState,';
+    new KanbanTransitionError(
+      `Invalid transition for epic ${epicId} from ${fromState} to ${toState}: ${reason}`,
+      fromState,
       toState,
       cause
-    ),
-'};)')`;
+    )
+};

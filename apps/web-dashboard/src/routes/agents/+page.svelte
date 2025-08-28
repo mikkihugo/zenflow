@@ -6,27 +6,16 @@
   let error = '';
 
   onMount(async () => {
-    try {
-      // Fetch agents data from API
-      const response = await fetch('/api/v1/agents/status');
-      if (response.ok) {
-        const data = await response.json();
-        agents = Array.isArray(data) ? data : [data];
-      } else if (response.status === 404) {
-        // API endpoint not implemented yet - show empty state gracefully
-        agents = [];
-        error = '';
-      } else {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-    } catch (err) {
-      // Handle network errors or endpoint not found gracefully
-      console.warn('Agents API not available:', err);
-      agents = [];
-      error = '';
-    } finally {
+    // Use mock data while API is being developed
+    setTimeout(() => {
+      agents = [
+        { id: 1, status: 'Active', type: 'Coordination Agent', lastActivity: 'Just now' },
+        { id: 2, status: 'Active', type: 'Analysis Agent', lastActivity: '2 minutes ago' },
+        { id: 3, status: 'Idle', type: 'Processing Agent', lastActivity: '5 minutes ago' }
+      ];
       loading = false;
-    }
+      error = '';
+    }, 500);
   });
 </script>
 

@@ -13,23 +13,25 @@ export const nodes = [
 	() => import('./nodes/9'),
 	() => import('./nodes/10'),
 	() => import('./nodes/11'),
-	() => import('./nodes/12')
+	() => import('./nodes/12'),
+	() => import('./nodes/13')
 ];
 
 export const server_loads = [];
 
 export const dictionary = {
 		"/": [2],
-		"/agui": [3],
-		"/database": [4],
-		"/events": [5],
-		"/facades": [6],
-		"/memory": [7],
-		"/safe-production": [9],
-		"/safe": [8],
-		"/stories": [10],
-		"/swarm": [11],
-		"/system": [12]
+		"/agents": [3],
+		"/agui": [4],
+		"/database": [5],
+		"/events": [6],
+		"/facades": [7],
+		"/memory": [8],
+		"/safe-production": [10],
+		"/safe": [9],
+		"/stories": [11],
+		"/swarm": [12],
+		"/system": [13]
 	};
 
 export const hooks = {

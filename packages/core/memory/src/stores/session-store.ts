@@ -91,8 +91,9 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
         timeout:5000,
         errorThresholdPercentage:50,
         resetTimeout:30000,
-},
-      'memory-storage-circuit-breaker')    );
+      },
+      'memory-storage-circuit-breaker'
+    );
 
     // Record construction metrics
     recordMetric('memory_store_instances_created', 1);
@@ -132,7 +133,8 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
                 logger.debug('Telemetry initialized successfully');
 } else {
                 logger.warn(
-                  'Failed to initialize telemetry: ','                  telemetryResult.error
+                  'Failed to initialize telemetry: ',
+                  telemetryResult.error
                 );
 }
 }
@@ -608,8 +610,8 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
     // Clear storage data if needed
     if (this.storage) {
       const allKeys = await this.storage.keys();
-      const sessionKeys = allKeys.filter((key) => key.startsWith('session: '));
-'
+      const sessionKeys = allKeys.filter((key) => key.startsWith('session:'));
+      
       for (const key of sessionKeys) {
         await this.storage.delete(key);
 }
@@ -643,14 +645,14 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
 
     try {
       const allKeys = await this.storage.keys();
-      const sessionKeys = allKeys.filter((key) => key.startsWith('session: '));
-'
+      const sessionKeys = allKeys.filter((key) => key.startsWith('session:'));
+      
       for (const key of sessionKeys) {
         const sessionDataStr = await this.storage.get(key);
         if (sessionDataStr) {
           try {
             const session = JSON.parse(sessionDataStr) as SessionState;
-            const sessionId = key.replace('session: ','    ');
+            const sessionId = key.replace('session:', '');
             this.sessions.set(sessionId, session);
 } catch (parseError) {
             logger.error(
@@ -664,7 +666,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
       logger.debug(`Loaded ${this.sessions.size} sessions from storage`);
 } catch (error) {
       logger.error('Failed to load sessions from storage: ', error);
-'      throw new MemoryStorageError('Failed to load sessions from storage', {
+      throw new MemoryStorageError('Failed to load sessions from storage', {
         originalError:error,
 });
 }
@@ -681,7 +683,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
       logger.debug(`Saved ${this.sessions.size} sessions to storage`);
 } catch (error) {
       logger.error('Failed to save sessions to storage: ', error);
-'      throw new MemoryStorageError('Failed to save sessions to storage', {
+      throw new MemoryStorageError('Failed to save sessions to storage', {
         originalError:error,
 });
 }
@@ -735,7 +737,8 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
     return safeAsync(async () => {
       if (!this.storage) {
         throw new MemoryError(
-          'Storage not available for circuit breaker operation')        );
+          'Storage not available for circuit breaker operation'
+        );
 }
 
       const { operation, sessionId, key, data} = params;

@@ -84,7 +84,7 @@ export class DataLifecycleManager extends EventEmitter {
 });
 } catch (error) {
       this.logger.error('Failed to initialize data lifecycle manager: ', error);
-'      throw error;
+      throw error;
 }
 }
 
@@ -322,7 +322,7 @@ export class DataLifecycleManager extends EventEmitter {
 });
 } catch (error) {
       this.logger.error('Periodic migration failed: ', error);
-'}
+}
 }
 
   private assessMigrationNeed(entry:LifecycleEntry, now:number): boolean {
@@ -397,7 +397,8 @@ export class DataLifecycleManager extends EventEmitter {
       const coldDuration = this.configuration.stages.cold.duration;
       if (timeSinceAccess > coldDuration || age > coldDuration * 2) {
         return this.configuration.stages.archive.enabled
-          ? 'archive')          : 'expired';
+          ? 'archive'
+          : 'expired';
 }
 }
 
@@ -572,7 +573,7 @@ export class DataLifecycleManager extends EventEmitter {
 });
 } catch (error) {
       this.logger.error('Periodic cleanup failed: ', error);
-'}
+}
 }
 
   // Public methods
@@ -634,13 +635,14 @@ export class DataLifecycleManager extends EventEmitter {
         .filter((entry) => entry.stage === stage)
         .map((entry) => entry.key);
 }
-    return Array.from(this.entries.keys())();
+    return Array.from(this.entries.keys());
 }
 
   forceMigration(
     key:string,
     targetStage:LifecycleStage,
-    reason = 'Manual migration')  ):boolean {
+    reason = 'Manual migration'
+  ):boolean {
     return this.migrate(key, targetStage, reason);
 }
 

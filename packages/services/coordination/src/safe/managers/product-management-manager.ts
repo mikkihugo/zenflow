@@ -11,7 +11,7 @@ import { EventBus} from '@claude-zen/foundation')import { CustomerResearchServic
   Feature,
   Logger,
   MemorySystem,
-  TypeSafeEventBus,
+  EventBus,
 } from '../types')import type {';
   CustomerSegment,
   MarketOpportunity,

@@ -14,7 +14,7 @@
  * Part of the @claude-zen/safe-framework package providing comprehensive
  * Scaled Agile Framework (SAFe) integration capabilities.
  */
-import { EventBus} from '@claude-zen/foundation')import type { Logger, MemorySystem, TypeSafeEventBus} from '../types')import { createEvent, EventPriority, getLogger} from '../types')// =========================================================================== = ''; 
+import { EventBus} from '@claude-zen/foundation')import type { Logger, MemorySystem, EventBus} from '../types')import { createEvent, EventPriority, getLogger} from '../types')// =========================================================================== = ''; 
 // ARCHITECTURE RUNWAY CONFIGURATION
 // ============================================================================
 /**
@@ -28,7 +28,9 @@ export interface ArchitectureRunwayConfig {
  *   title, *   type : 'infrastructure,'
  *   priority: false;
   constructor(
-    _memory: {}
+    memory: {},
+    eventBus: EventBus,
+    config: ArchitectureRunwayConfig = {}
   ) {
     ')    super();')    this.logger = getLogger('ArchitectureRunwayManager');
     this.memory = memory;

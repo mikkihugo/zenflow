@@ -21,7 +21,11 @@ interface SwarmSession {
   sessionId:string;
   swarmId:string;
   type:
-    | 'dev-swarm')    | 'ops-swarm')    | 'coordination-swarm')    | 'hybrid-swarm')    | 'sparc-swarm';
+    | 'dev-swarm'
+    | 'ops-swarm'
+    | 'coordination-swarm'
+    | 'hybrid-swarm'
+    | 'sparc-swarm';
   startTime:number;
   endTime:number;
   participants:Array<{
@@ -188,7 +192,8 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
 });
 } catch (error) {
       this.logger.error(
-        'Failed to initialize swarm knowledge extractor: ','        error
+        'Failed to initialize swarm knowledge extractor: ',
+        error
       );
       throw error;
 }
@@ -355,7 +360,8 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
       await this.patternRecognizer.initialize();
 } catch (error) {
       this.logger.warn(
-        'Failed to initialize ML tools, continuing without ML: ','        error
+        'Failed to initialize ML tools, continuing without ML: ',
+        error
       );
       this.configuration.mlEnabled = false;
 }
@@ -380,7 +386,8 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
       await this.brainCoordinator.initialize();
 } catch (error) {
       this.logger.warn(
-        'Failed to initialize Brain tools, continuing without Brain: ','        error
+        'Failed to initialize Brain tools, continuing without Brain: ',
+        error
       );
       this.configuration.brainEnabled = false;
 }
@@ -400,7 +407,8 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
       await this.sparcEngine.initialize();
 } catch (error) {
       this.logger.warn(
-        'Failed to initialize SPARC tools, continuing without SPARC: ','        error
+        'Failed to initialize SPARC tools, continuing without SPARC: ',
+        error
       );
       this.configuration.sparcEnabled = false;
 }

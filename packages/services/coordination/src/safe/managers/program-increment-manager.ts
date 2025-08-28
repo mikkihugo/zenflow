@@ -24,7 +24,7 @@ import { EventBus} from '@claude-zen/foundation')import type { CapacityPlanningS
   PIObjective,
   ProgramIncrement,
   Risk,
-  TypeSafeEventBus,
+  EventBus,
 } from '../types')import { PIStatus} from '../types')export type {';
   CapacityPlanningResult,
   CapacityRisk,

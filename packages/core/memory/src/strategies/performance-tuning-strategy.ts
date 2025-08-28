@@ -99,7 +99,8 @@ export class PerformanceTuningStrategy extends EventEmitter {
 });
 } catch (error) {
       this.logger.error(
-        'Failed to initialize performance tuning strategy: ','        error
+        'Failed to initialize performance tuning strategy: ',
+        error
       );
       throw error;
 }
@@ -149,7 +150,7 @@ export class PerformanceTuningStrategy extends EventEmitter {
         return recommendations;
 } catch (error) {
         this.logger.error('Performance tuning cycle failed: ', error);
-'        recordMetric('performance_tuning_cycle_failed', 1);
+        recordMetric('performance_tuning_cycle_failed', 1);
         throw error;
 }
 });
@@ -735,7 +736,7 @@ export class PerformanceTuningStrategy extends EventEmitter {
         await this.tune();
 } catch (error) {
         this.logger.error('Performance tuning monitoring cycle failed: ', error);
-'}
+}
 }, this.config.tuning.interval);
 }
 

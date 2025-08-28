@@ -18,7 +18,7 @@
 import { EventBus} from '@claude-zen/foundation')import type {';
   Logger,
   MemorySystem,
-  TypeSafeEventBus,
+  EventBus,
 } from '../types')import { getLogger} from '../types')export type {';
   DeploymentAction,
   DeploymentArtifact,
@@ -383,9 +383,13 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
     // In production: await cleanup operations
     await Promise.resolve(); // Placeholder for actual cleanup
 }
-  private handleFeatureDeploymentRequest(_payload: unknown): void {
-    // Implementation would handle feature deployment request')    this.logger.info('Handling feature deployment request');
-};)};;
+  private handleFeatureDeploymentRequest(payload: unknown): void {
+    // Implementation would handle feature deployment request
+    this.logger.info('Handling feature deployment request', {
+      payloadType: typeof payload,
+      timestamp: new Date().toISOString()
+    });
+  })};;
 // ============================================================================
 // EXPORTS
 // ============================================================================

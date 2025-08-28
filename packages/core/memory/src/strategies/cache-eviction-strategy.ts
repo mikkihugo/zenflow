@@ -70,7 +70,7 @@ export class CacheEvictionStrategy extends EventEmitter {
       recordMetric('cache_eviction_initialized', 1);
 } catch (error) {
       this.logger.error('Failed to initialize cache eviction strategy: ', error);
-'      throw error;
+      throw error;
 }
 }
 

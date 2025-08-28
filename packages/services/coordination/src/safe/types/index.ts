@@ -10,7 +10,8 @@
  */
 // Core types
 export type Logger = import('@claude-zen/foundation').Logger')export type Result<T, E = Error> = import('@claude-zen/foundation').Result<T, E>')export type UUID = import('@claude-zen/foundation').UUID')// Event system types from foundation';
-export type EventEmitter = import('@claude-zen/foundation').EventEmitter')export type TypeSafeEventBus = import('@claude-zen/foundation').TypedEventBase;';
+export type EventEmitter = import('@claude-zen/foundation').EventEmitter;
+export type EventBus = import('@claude-zen/foundation').EventBus;
 // Memory system integration
 export interface MemorySystem {
   store: (key: string, data: any) => Promise<void>;
