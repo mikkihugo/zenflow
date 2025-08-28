@@ -10,11 +10,16 @@
  * Portfolio epic representing strategic initiatives
  */
 export interface PortfolioEpic {
-  readonly id: 'near| mid| long')/**';
+  readonly id: string;
+  readonly name?: string;
+  readonly horizon?: 'near' | 'mid' | 'long';
+}
  * Value stream in the SAFe framework
  */
 export interface ValueStream {
-  readonly id: 'internal| external',)  readonly needs: string[];;
+  readonly id: string;
+  readonly type?: 'internal' | 'external';
+  readonly needs: string[];
   readonly satisfaction: number; // 0-10
 }
 /**
@@ -121,7 +126,8 @@ export function createEvent(
  * Re-export Logger interface and getLogger function from foundation
  * This provides structured logging via LogTape with proper production configuration
  */
-export type { Logger} from '@claude-zen/foundation')export { getLogger} from '@claude-zen/foundation')/**';
+export type { Logger } from '@claude-zen/foundation';
+export { getLogger } from '@claude-zen/foundation';
  * Multi-level orchestration manager interface (stub)
  */
 export interface MultiLevelOrchestrationManager {
@@ -161,32 +167,53 @@ export interface PIConfiguration {
  * PI Status enumeration
  */
 export enum PIStatus {
-  PLANNING = 'planning')  ACTIVE = 'active')  COMPLETED = 'completed')  RETROSPECTIVE = 'retrospective')};;
+  PLANNING = 'planning',
+  ACTIVE = 'active',
+  COMPLETED = 'completed',
+  RETROSPECTIVE = 'retrospective',
+}
 /**
  * Feature Status enumeration
  */
 export enum FeatureStatus {
-    ')  BACKLOG = 'backlog')  ANALYSIS = 'analysis')  DEVELOPMENT = 'development')  TESTING = 'testing')  DONE = 'done')};;
+  BACKLOG = 'backlog',
+  ANALYSIS = 'analysis',
+  DEVELOPMENT = 'development',
+  TESTING = 'testing',
+  DONE = 'done',
+}
 /**
  * Objective Status enumeration
  */
 export enum ObjectiveStatus {
-    ')  COMMITTED = 'committed')  UNCOMMITTED = 'uncommitted')  IN_PROGRESS = 'in_progress')  COMPLETED = 'completed')  MISSED = 'missed')};;
+  COMMITTED = 'committed',
+  UNCOMMITTED = 'uncommitted',
+  IN_PROGRESS = 'in_progress',
+  COMPLETED = 'completed',
+  MISSED = 'missed',
+}
 /**
  * Agile Release Train
  */
 export interface AgileReleaseTrain {
-  readonly id: 'backlog')  IN_PROGRESS = 'in_progress')  REVIEW = 'review')  DONE = 'done')};;
+  readonly id: string;
+  readonly name?: string;
+}
 /**
  * Task
  */
 export interface Task {
-  readonly id: 'backlog')  IN_PROGRESS = 'in_progress')  DONE = 'done')};;
+  readonly id: string;
+  readonly title: string;
+  readonly status?: 'backlog' | 'in_progress' | 'done';
+}
 /**
  * Risk
  */
 export interface Risk {
-  readonly id: 'open| resolved',)  readonly description: string;;
+  readonly id: string;
+  readonly description: string;
+  readonly status?: 'open' | 'resolved';
 }
 /**
  * System Demo
