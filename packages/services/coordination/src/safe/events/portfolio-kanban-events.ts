@@ -19,16 +19,15 @@
 
 import { createEvent, type EventBus, EventPriority } from '../types';
 import { generateNanoId } from '@claude-zen/foundation';
-
 /**
  * SAFe Portfolio Kanban states
  */
 export enum PortfolioKanbanState {
-  FUNNEL = 'funnel',
-  ANALYZING = 'analyzing',
-  PORTFOLIO_BACKLOG = 'portfolio-backlog',
-  IMPLEMENTING = 'implementing',
-  DONE = 'done',
+  FUNNEL ='funnel,
+  ANALYZING ='analyzing,
+  PORTFOLIO_BACKLOG ='portfolio-backlog,
+  IMPLEMENTING ='implementing,
+  DONE ='done,
 }
 
 /**
@@ -52,8 +51,8 @@ export interface EpicBlockedEvent {
   readonly epicId: string;
   readonly currentState: PortfolioKanbanState;
   readonly blockerId: string;
-  readonly blockerType: 'technical' | 'business' | 'resource' | 'external' | 'regulatory';
-  readonly severity: 'low' | 'medium' | 'high' | 'critical';
+  readonly blockerType:'technical'|'business'|'resource'|'external'|'regulatory';
+  readonly severity: low'|'medium'|'high'|'critical';
   readonly description: string;
   readonly owner: string;
   readonly timestamp: Date;
@@ -87,11 +86,11 @@ export interface WSJFScoreUpdatedEvent {
  * Portfolio Kanban event types
  */
 export const PORTFOLIO_KANBAN_EVENTS = {
-  EPIC_STATE_TRANSITION: 'portfolio-kanban:epic-transition',
-  EPIC_BLOCKED: 'portfolio-kanban:epic-blocked',
-  EPIC_UNBLOCKED: 'portfolio-kanban:epic-unblocked',
-  WSJF_SCORE_UPDATED: 'portfolio-kanban:wsjf-updated',
-  PORTFOLIO_REBALANCED: 'portfolio-kanban:rebalanced',
+  EPIC_STATE_TRANSITION:'portfolio-kanban:epic-transition,
+  EPIC_BLOCKED:'portfolio-kanban:epic-blocked,
+  EPIC_UNBLOCKED:'portfolio-kanban:epic-unblocked,
+  WSJF_SCORE_UPDATED:'portfolio-kanban:wsjf-updated,
+  PORTFOLIO_REBALANCED:'portfolio-kanban:rebalanced,
 } as const;
 
 /**
@@ -123,8 +122,8 @@ export function createEpicStateTransition(params: {
 export function createEpicBlocked(params: {
   epicId: string;
   currentState: PortfolioKanbanState;
-  blockerType: EpicBlockedEvent['blockerType'];'
-  severity: EpicBlockedEvent['severity'];'
+  blockerType: EpicBlockedEvent['blockerType];
+  severity:  EpicBlockedEvent[severity];
   description: string;
   owner: string;
 }): EpicBlockedEvent {
@@ -217,7 +216,7 @@ export class PortfolioKanbanStateMachine {
   getAllowedTransitions(
     currentState: PortfolioKanbanState
   ): PortfolioKanbanState[] {
-    return this.allowedTransitions.get(currentState)||[];
+    return this.allowedTransitions.get(currentState)|| [];
   }
 
   /**
@@ -231,24 +230,24 @@ export class PortfolioKanbanStateMachine {
     switch (state) {
       case PortfolioKanbanState.FUNNEL:
         return {
-          required: ['epic-hypothesis', 'problem-statement'],
-          optional: ['market-research', 'customer-feedback'],
+          required: ['epic-hypothesis,'problem-statement'],
+          optional: ['market-research,'customer-feedback'],
           gates: [],
         };
 
       case PortfolioKanbanState.ANALYZING:
         return {
-          required: ['business-case', 'wsjf-score', 'lean-business-case'],
-          optional: ['market-analysis', 'competitive-analysis'],
+          required: ['business-case,'wsjf-score,'lean-business-case'],
+          optional: ['market-analysis,'competitive-analysis'],
           gates: ['epic-review-board'],
         };
 
       case PortfolioKanbanState.PORTFOLIO_BACKLOG:
         return {
           required: [
-            'approved-business-case',
-            'prioritized-wsjf',
-            'capacity-allocation',
+           'approved-business-case,
+           'prioritized-wsjf,
+           'capacity-allocation,
           ],
           optional: ['roadmap-alignment'],
           gates: ['portfolio-sync'],
@@ -256,16 +255,16 @@ export class PortfolioKanbanStateMachine {
 
       case PortfolioKanbanState.IMPLEMENTING:
         return {
-          required: ['art-assignment', 'pi-planning', 'mvp-definition'],
-          optional: ['architecture-runway', 'enablers'],
-          gates: ['system-demo', 'inspect-adapt'],
+          required: ['art-assignment,'pi-planning,'mvp-definition'],
+          optional: ['architecture-runway,'enablers'],
+          gates: ['system-demo,'inspect-adapt'],
         };
 
       case PortfolioKanbanState.DONE:
         return {
-          required: ['hypothesis-validation', 'business-outcome-measurement'],
-          optional: ['lessons-learned', 'retrospective'],
-          gates: ['final-demo', 'value-realization'],
+          required: ['hypothesis-validation,'business-outcome-measurement'],
+          optional: ['lessons-learned,'retrospective'],
+          gates: ['final-demo,'value-realization'],
         };
 
       default:
@@ -319,7 +318,7 @@ export class PortfolioKanbanWorkflow {
     message: string;
   } {
     const currentState =
-      this.epicStates.get(params.epicId)||PortfolioKanbanState.FUNNEL;
+      this.epicStates.get(params.epicId)|| PortfolioKanbanState.FUNNEL;
 
     // Validate transition according to SAFe rules
     if (
@@ -346,7 +345,7 @@ export class PortfolioKanbanWorkflow {
       return {
         success: false,
         newState: currentState,
-        message: `Requirements not met: ${validationResult.missingRequirements.join(', ')}`,`
+        message: `Requirements not met: ${validationResult.missingRequirements.join(,')}`,`
       };
     }
 
@@ -383,13 +382,13 @@ export class PortfolioKanbanWorkflow {
    */
   blockEpic(params: {
     epicId: string;
-    blockerType: EpicBlockedEvent['blockerType'];'
-    severity: EpicBlockedEvent['severity'];'
+    blockerType: EpicBlockedEvent['blockerType];
+    severity:  EpicBlockedEvent[severity];
     description: string;
     owner: string;
   }): string {
     const currentState =
-      this.epicStates.get(params.epicId)||PortfolioKanbanState.FUNNEL;
+      this.epicStates.get(params.epicId)|| PortfolioKanbanState.FUNNEL;
 
     const blockedEvent = createEpicBlocked({
       epicId: params.epicId,
@@ -401,7 +400,7 @@ export class PortfolioKanbanWorkflow {
     });
 
     // Track blocker
-    const existingBlockers = this.blockedEpics.get(params.epicId)||[];
+    const existingBlockers = this.blockedEpics.get(params.epicId)|| [];
     existingBlockers.push(blockedEvent);
     this.blockedEpics.set(params.epicId, existingBlockers);
 
@@ -411,7 +410,7 @@ export class PortfolioKanbanWorkflow {
         type: PORTFOLIO_KANBAN_EVENTS.EPIC_BLOCKED,
         data: blockedEvent,
         priority:
-          blockedEvent.severity ==='critical''
+          blockedEvent.severity ===critical'
             ? EventPriority.CRITICAL
             : EventPriority.HIGH,
       })
@@ -438,8 +437,8 @@ export class PortfolioKanbanWorkflow {
     // Check required evidence
     for (const requirement of requirements.required) {
       if (
-        !evidence ||
-        !evidence[requirement] ||
+        !evidence|| 
+        !evidence[requirement]|| 
         evidence[requirement].length === 0
       ) {
         missingRequirements.push(requirement);
@@ -449,7 +448,7 @@ export class PortfolioKanbanWorkflow {
     // Check gates (would integrate with external gate validation)
     for (const gate of requirements.gates) {
       // Simplified gate validation - in real implementation would check external systems
-      if (!evidence || !evidence[`gate-${gate}`]) {`
+      if (!evidence|| !evidence[`gate-${gate}`]) {`
         pendingGates.push(gate);
       }
     }

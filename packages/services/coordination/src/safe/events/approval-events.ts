@@ -12,16 +12,15 @@
  */
 
 import { generateNanoId } from '@claude-zen/foundation';
-
 /**
  * Approval request event data
  */
 export interface ApprovalRequestEvent {
   readonly requestId: string;
-  readonly type: 'epic|feature|architecture|business-case||resource|process';
+  readonly type: 'epic| feature| architecture| business-case|| resource| process';
   readonly title: string;
   readonly description: string;
-  readonly priority: 'low|medium|high|critical;
+  readonly priority: low| medium| high'|'critical';
   readonly requestedBy: string;
   readonly approvers: string[];
   readonly deadline?: Date;
@@ -55,20 +54,20 @@ export interface ApprovalTimeoutEvent {
  * Approval system event types
  */
 export const APPROVAL_EVENTS = {
-  REQUEST_APPROVAL: 'approval:request',
-  APPROVAL_RECEIVED: 'approval:response',
-  APPROVAL_TIMEOUT: 'approval:timeout',
-  APPROVAL_CANCELLED: 'approval:cancelled',
+  REQUEST_APPROVAL:'approval:request,
+  APPROVAL_RECEIVED:'approval:response,
+  APPROVAL_TIMEOUT:'approval:timeout,
+  APPROVAL_CANCELLED:'approval:cancelled,
 } as const;
 
 /**
  * Create an approval request event
  */
 export function createApprovalRequest(params: {
-  type: ApprovalRequestEvent['type'];'
+  type: ApprovalRequestEvent['type];
   title: string;
   description: string;
-  priority?: ApprovalRequestEvent['priority'];'
+  priority?: ApprovalRequestEvent['priority];
   requestedBy: string;
   approvers: string[];
   deadline?: Date;
@@ -79,11 +78,11 @@ export function createApprovalRequest(params: {
     type: params.type,
     title: params.title,
     description: params.description,
-    priority: params.priority||'medium',
+    priority:  params.priority||medium,
     requestedBy: params.requestedBy,
     approvers: params.approvers,
     deadline: params.deadline,
-    context: params.context || {},
+    context: params.context|| {},
     timestamp: new Date(),
   };
 }
@@ -152,7 +151,7 @@ export class ApprovalWorkflowManager {
    */
   processApprovalResponse(
     response: ApprovalResponseEvent
-  ): ApprovalRequestEvent | null {
+  ): ApprovalRequestEvent| null {
     const request = this.pendingApprovals.get(response.requestId);
     if (!request) {
       return null;
