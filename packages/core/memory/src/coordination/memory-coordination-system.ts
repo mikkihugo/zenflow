@@ -477,7 +477,9 @@ export class MemoryCoordinationSystem extends EventEmitter {
           break;
 
         case 'search':
-          data = (await (node.backend as any).search(
+          data = (await (node.backend as unknown as {
+            search: (pattern: string, namespace?: string) => Promise<Record<string, JSONValue>>;
+          }).search(
             request.key!,
             request.namespace
           )) as T;

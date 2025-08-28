@@ -238,7 +238,7 @@ export class SvelteWebSocketManager {
           {dashboardData.systemHealth.status.toUpperCase()}
         </div>
         <div class="health-details">;
-          Score: \')// stores/websocket.js')import { writable} from 'svelte/store')import { SvelteWebSocketManager} from './websocket-manager')const wsManager = new SvelteWebSocketManager();
+          Score: ')// stores/websocket.js')import { writable} from 'svelte/store')import { SvelteWebSocketManager} from './websocket-manager')const wsManager = new SvelteWebSocketManager();
 // Reactive stores for different data types
 export const tasks = writable([]);
 export const approvalGates = writable([]);
@@ -262,4 +262,4 @@ export async function initWebSocket() {
     connectionStatus.set(false);
 };)};;
 // Component usage: // import { tasks, approvalGates, connectionStatus, initWebSocket} from `${s}tores/websocket``)// onMount(() => initWebSocket();
-\')`;
+')`;

@@ -52,7 +52,7 @@ export interface SemanticAnalysisOptions {
   content:string;
   enablePatternRecognition?:boolean;
   enableDensityAnalysis?:boolean;
-  customPatterns?:Record<string, RegExp | string>;
+  customPatterns?:any;
 }
 
 /**
@@ -159,53 +159,6 @@ export interface ContentAnalysisResult {
 }
 
 /**
- * Document classification result
- */
-export interface DocumentClassificationResult {
-  category: string;
-  confidence: number;
-  subcategories: string[];
-  metadata: Record<string, unknown>;
-}
-
-/**
- * Document segmentation result
- */
-export interface DocumentSegmentationResult {
-  segments: Array<{
-    id: string;
-    type: string;
-    content: string;
-    position: { start: number; end: number };
-  }>;
-  strategy: string;
-  confidence: number;
-}
-
-/**
- * Document scanning result
- */
-export interface DocumentScanningResult {
-  scannedElements: Array<{
-    type: string;
-    content: string;
-    metadata: Record<string, unknown>;
-  }>;
-  totalElements: number;
-  scanDuration: number;
-}
-
-/**
- * Document processing result
- */
-export interface DocumentProcessingResult {
-  status: 'success' | 'error' | 'partial';
-  processedContent: string;
-  metadata: Record<string, unknown>;
-  processingTime: number;
-}
-
-/**
  * Document intelligence event types
  */
 export type DocumentIntelligenceEvent =
@@ -225,11 +178,11 @@ export type DocumentIntelligenceEvent =
 export interface EventPayloads {
   initialized:{ config: DocumentIntelligenceConfig};
   analysis_started:{ options: DocumentAnalysisOptions};
-  analysis_complete:{ result: ContentAnalysisResult};
-  classification_complete:{ classification: DocumentClassificationResult};
-  segmentation_complete:{ segmentation: DocumentSegmentationResult};
-  scanning_complete:{ scanResults: DocumentScanningResult};
-  processing_complete:{ processingResult: DocumentProcessingResult};
+  analysis_complete:{ result: any};
+  classification_complete:{ classification: any};
+  segmentation_complete:{ segmentation: any};
+  scanning_complete:{ scanResults: any};
+  processing_complete:{ processingResult: any};
   error:{ error: Error; context?: string};
   shutdown:{};
 }

@@ -226,7 +226,7 @@ class ComprehensiveRepairValidator {
 
 		// Test better-sqlite3 specifically (the problematic one)
 		try {
-			execSync("node -e \"require('better-sqlite3')\"", {
+			execSync("node -e "require('better-sqlite3')"", {
 				cwd: TEST_PROJECT_PATH,
 				stdio: "pipe",
 			});
@@ -427,7 +427,7 @@ class ComprehensiveRepairValidator {
 
 		// Test if blessed is available for the performance monitor
 		try {
-			execSync("node -e \"require('blessed')\"", {
+			execSync("node -e "require('blessed')"", {
 				cwd: TEST_PROJECT_PATH,
 				stdio: "pipe",
 			});
@@ -474,7 +474,7 @@ class ComprehensiveRepairValidator {
 		// Check if LanceDB is accessible
 		try {
 			execSync(
-				'node -e "import(\\"@lancedb/lancedb\\").then(() => logger.info(\\"OK\\"))"',
+				'node -e "import(\"@lancedb/lancedb\").then(() => logger.info(\"OK\"))"',
 				{
 					cwd: TEST_PROJECT_PATH,
 					stdio: "pipe",

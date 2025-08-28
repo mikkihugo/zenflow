@@ -112,7 +112,7 @@ describe('GitHub Models Real API Integration', () => {
         // GitHub Models requires special access - skip if unauthorized
         if (result.error.message?.includes('unauthorized') || result.error.message?.includes(' Invalid Github auth token')) {
           logger.info('⚠️  GitHub Models API requires special access or beta approval');
-          logger.info('💡 This is expected if you don\' t have GitHub Models beta access');
+          logger.info('💡 This is expected if you don' t have GitHub Models beta access');
           return; // Skip this test
 }
 }

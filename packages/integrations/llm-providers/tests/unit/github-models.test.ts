@@ -158,7 +158,7 @@ describe('GitHub Models API', () => {
     ')      const complexRequest = {
         messages:[
           { role: 'user', content: ' Analyze this code snippet'},
-          { role: 'assistant', content:' I\'ll analyze the code for you.'}')],
+          { role: 'assistant', content:' I'll analyze the code for you.'}')],
         model: 'gpt-4o',        temperature:0.3,
         max_tokens:2000
 };

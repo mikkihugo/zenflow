@@ -76,7 +76,19 @@ function createFactTool(config:TaskSpecificSDKConfig) {
     {
       query:z.string().describe("What facts you need to retrieve"),
       factType:z.enum([
-        'npm-package',    'github-repo',    'security-advisory',    'hex-package',        'api-docs',    'rust-crate',    'go-module',    'perl-package',        'java-package',    'gitlab-repo',    'bitbucket-repo',    'sdk-docs')]).describe("Type of facts to retrieve"),
+        'npm-package',
+        'github-repo',
+        'security-advisory',
+        'hex-package',
+        'api-docs',
+        'rust-crate',
+        'go-module',
+        'perl-package',
+        'java-package',
+        'gitlab-repo',
+        'bitbucket-repo',
+        'sdk-docs'
+      ]).describe("Type of facts to retrieve"),
       context:z.string().describe("Current task context"),
       category:z.string().optional().describe("Category filter for facts"),
       version:z.string().optional().describe("Version filter (for packages/docs)")

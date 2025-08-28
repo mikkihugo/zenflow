@@ -53,7 +53,7 @@
  *   description: 'Classify customer feedback sentiment', *   basePrompt: 'Analyze the sentiment of this customer feedback: {feedback}', *   examples:[
  *     { feedback: 'Great product, love it!', sentiment: ' positive'},
  *     { feedback: 'Terrible experience, disappointed', sentiment: ' negative'},
- *     { feedback:'It\' s okay, could be better', sentiment: ' neutral'}
+ *     { feedback:'It' s okay, could be better', sentiment: ' neutral'}
  *],
  *   metric:'accuracy') *};
  *

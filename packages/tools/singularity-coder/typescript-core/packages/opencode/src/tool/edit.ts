@@ -272,8 +272,8 @@ export const EscapeNormalizedReplacer:Replacer = function* (content, find) {
           return "\r"
         case "'": ')'          return "'"')        case '"': ')'          return '"')        case "`":`
           return "`"`
-        case "\\":
-          return "\\"
+        case "\":
+          return "\"
         case "\n":
           return "\n"
         case "$":

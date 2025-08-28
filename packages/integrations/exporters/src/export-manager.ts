@@ -237,7 +237,7 @@ export class ExportSystem extends TypedEventBase {
     if (obj === null) return 'null';
     if (typeof obj === 'boolean') return obj.toString();
     if (typeof obj === 'number') return obj.toString();
-    if (typeof obj === 'string') return `"${obj.replace(/"/g, '\\"')}"`;
+    if (typeof obj === 'string') return `"${obj.replace(/"/g, '\"')}"`;
 
     if (Array.isArray(obj)) {
       if (obj.length === 0) return '[]';

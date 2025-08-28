@@ -136,7 +136,7 @@ const testCases:TestCase[] = [
     content: 'logger.info("Hello\nWorld");',    find: 'logger.info("Hello\nWorld");',    replace: 'logger.info("Hello\nUniverse");',},
   {
     content:"const str = 'It' s working';",
-    find:"const str = 'It\\' s working';",
+    find:"const str = 'It\' s working';",
     replace:"const str = 'It' s fixed';",
 },
   {

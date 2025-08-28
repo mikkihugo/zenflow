@@ -262,7 +262,7 @@ export async function executeParallelClaudeTasks(
         {
           type:'system' as const,
           content:
-            `Task failed:${ `
+            `Task failed:${
             error instanceof Error ? error['message'] : ' Unknown error'}`,
           timestamp:Date.now(),
           metadata:{

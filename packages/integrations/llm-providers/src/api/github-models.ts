@@ -218,7 +218,7 @@ export class GitHubModelsAPI implements APIProvider {
 }
 } catch (error) {
       logger.error('Failed to get capabilities from catalog: ', error);
-'}
+}
 
     // Fallback to basic capabilities
     const models = githubModelsDB.getAllModels();
