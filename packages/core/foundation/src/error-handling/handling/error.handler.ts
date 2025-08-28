@@ -818,6 +818,8 @@ export const aggregate = createErrorAggregator;
 export const chain = createErrorChain;
 export const context = withContext;
 
+     
+     
 // FORCING PATTERN - Replace console.error, process.exit patterns
 export const exit = (error:Error, code = 1):never => {
 	logger.error("Process exiting due to error:", error);

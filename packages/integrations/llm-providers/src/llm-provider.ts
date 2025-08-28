@@ -42,9 +42,9 @@
  *   'Create a React component for user authentication', *   'TypeScript with hooks and error handling') * );
  *
  * if (result.isOk()) {
- *   console.log('Code generated: ', result.value);
+ *   logger.info('Code generated: ', result.value);
 ' *} else {
- *   console.error('Error: ', result.error.message);
+ *   logger.error('Error: ', result.error.message);
 ' *}
  * ```
  *
@@ -62,9 +62,9 @@
  *   coordination:'sequential') *});
  *
  * // Each agent contributes specialized expertise
- * console.log('Architecture: ', result[0].output);
-' * console.log('Implementation: ', result[1].output);  
-' * console.log('Test Suite: ', result[2].output);
+ * logger.info('Architecture: ', result[0].output);
+' * logger.info('Implementation: ', result[1].output);  
+' * logger.info('Test Suite: ', result[2].output);
 ' * ```
  *
  * @example Advanced Configuration
@@ -208,11 +208,11 @@ export class LLMProvider extends TypedEventBase {
    * const provider = new LLMProvider();
    * 
    * provider.on('provider:ready', () => {
-   *   console.log('Provider is ready for requests');
+   *   logger.info('Provider is ready for requests');
    *});
    * 
    * provider.on('provider:error', (error) => {
-   *   console.error('Provider error: ', error.error);
+   *   logger.error('Provider error: ', error.error);
 '   *});
    * ```
    */
@@ -622,7 +622,7 @@ export class LLMProvider extends TypedEventBase {
    * );
    * 
    * if (result.isOk()) {
-   *   console.log('Explanation: ', result.value);
+   *   logger.info('Explanation: ', result.value);
 '   *}
    * ```
    */
@@ -661,7 +661,7 @@ export class LLMProvider extends TypedEventBase {
    * );
    * 
    * if (result.isOk()) {
-   *   console.log('Generated code: ', result.value);
+   *   logger.info('Generated code: ', result.value);
 '   *}
    * ```
    *
@@ -949,9 +949,9 @@ export interface SwarmTaskResult {
  *   coordination:'sequential'  // Each builds on the previous
  *});
  * 
- * console.log('Architecture: ', results[0].output);
-' * console.log('Implementation Plan: ', results[1].output);
-' * console.log('Testing Strategy: ', results[2].output);
+ * logger.info('Architecture: ', results[0].output);
+' * logger.info('Implementation Plan: ', results[1].output);
+' * logger.info('Testing Strategy: ', results[2].output);
 ' * ```
  *
  * @example Research and Analysis  

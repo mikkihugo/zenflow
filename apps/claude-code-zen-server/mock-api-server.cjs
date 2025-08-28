@@ -219,19 +219,19 @@ app.get("/api/v1/database/status", (_req, res) => {
 
 // Start server
 app.listen(port, () => {
-	console.log("🚀 Claude Code Zen Mock API Server");
-	console.log(`📡 Server running at: http://localhost:${port}`);
-	console.log("🧪 Mock endpoints available:");
-	console.log("   GET  /api/v1/coordination/health");
-	console.log("   GET  /api/v1/coordination/projects");
-	console.log("   GET  /api/v1/coordination/agents");
-	console.log("   POST /api/v1/coordination/agents");
-	console.log("   GET  /api/v1/coordination/tasks");
-	console.log("   POST /api/v1/coordination/tasks");
-	console.log("   GET  /api/v1/analytics/performance");
-	console.log("   GET  /api/v1/memory/status");
-	console.log("   GET  /api/v1/database/status");
-	console.log("");
-	console.log("🎯 Dashboard URL: http://localhost:3002");
-	console.log("✅ Ready for API integration testing!");
+	logger.info("🚀 Claude Code Zen Mock API Server");
+	logger.info(`📡 Server running at: http://localhost:${port}`);
+	logger.info("🧪 Mock endpoints available:");
+	logger.info("   GET  /api/v1/coordination/health");
+	logger.info("   GET  /api/v1/coordination/projects");
+	logger.info("   GET  /api/v1/coordination/agents");
+	logger.info("   POST /api/v1/coordination/agents");
+	logger.info("   GET  /api/v1/coordination/tasks");
+	logger.info("   POST /api/v1/coordination/tasks");
+	logger.info("   GET  /api/v1/analytics/performance");
+	logger.info("   GET  /api/v1/memory/status");
+	logger.info("   GET  /api/v1/database/status");
+	logger.info("");
+	logger.info("🎯 Dashboard URL: http://localhost:3002");
+	logger.info("✅ Ready for API integration testing!");
 });

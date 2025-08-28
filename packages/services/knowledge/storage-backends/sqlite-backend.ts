@@ -311,7 +311,7 @@ export class SQLiteBackend implements FACTStorageBackend {
          MAX(timestamp) as newest_timestamp
          FROM ${this.config.tableName}``
       );
-      const stats = result?.rows?.[0];
+      const _stats = result?.rows?.[0];
 
       return {
         persistentEntries:stats.total_count,

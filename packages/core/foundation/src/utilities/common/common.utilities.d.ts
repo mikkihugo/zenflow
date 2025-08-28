@@ -16,7 +16,7 @@
  *
  * const result = validateInput(UserSchema, { name:'John', email:' john@example.com', age:25 });
  * if (result.isOk()) {
- *   console.log('Valid user: ', result.value);
+ *   logger.info('Valid user: ', result.value);
 ' * }
  * ```
  *
@@ -31,7 +31,7 @@
  *   DATABASE_URL:str()
  * });
  *
- * console.log(`Server starting on port ${config.PORT} in ${config.NODE_ENV} mode`);
+ * logger.info(`Server starting on port ${config.PORT} in ${config.NODE_ENV} mode`);
  * ```
  *
  * @example Process Lifecycle Management
@@ -40,7 +40,7 @@
  *
  * // Cleanup on process exit
  * onExit(async () => {
- *   console.log('Cleaning up resources...');
+ *   logger.info('Cleaning up resources...');
  *   await database.close();
  *   await cache.disconnect();
  * });
@@ -93,9 +93,9 @@ export { z } from "zod";
  *
  * const result = validateInput(UserSchema, userData);
  * if (result.isOk()) {
- *   console.log('Valid user: ', result.value);
+ *   logger.info('Valid user: ', result.value);
 ' * } else {
- *   console.error('Validation error:', result.error.message);
+ *   logger.error('Validation error:', result.error.message);
  * }
  * ```
  */
@@ -140,7 +140,7 @@ export declare function createValidator<T>(schema: z.ZodSchema<T>): (input: unkn
  * });
  *
  * // Type-safe access with intellisense
- * console.log(`Server running on port ${env.PORT} in ${env.NODE_ENV} mode`);
+ * logger.info(`Server running on port ${env.PORT} in ${env.NODE_ENV} mode`);
  * ```
  */
 export declare function createEnvValidator<T extends Record<string, Spec<unknown>>>(specs: T): CleanedEnv<T>;
@@ -162,9 +162,9 @@ export declare function createEnvValidator<T extends Record<string, Spec<unknown
  *   'Data fetch timed out after 5 seconds') * );
  *
  * if (result.isOk()) {
- *   console.log('Data: ', result.value);
+ *   logger.info('Data: ', result.value);
 ' * } else {
- *   console.error('Error or timeout:', result.error.message);
+ *   logger.error('Error or timeout:', result.error.message);
  * }
  * ```
  *
@@ -178,18 +178,14 @@ export declare function createEnvValidator<T extends Record<string, Spec<unknown
  */
 export declare function withTimeout<T>(promise: Promise<T>, timeoutMs: number, timeoutMessage?: string): Promise<Result<T, Error>>;
 export declare const commonEnvSchema: {
-    readonly NODE_ENV: import("envalid").RequiredValidatorSpec<"development" | "production" | "test">;
-    readonly LOG_LEVEL: import("envalid").RequiredValidatorSpec<"error" | "info" | "debug" | "warn">;
-    readonly DEBUG: import("envalid").RequiredValidatorSpec<boolean>;
+    readonly NODE_ENV: any;
+    readonly LOG_LEVEL: any;
+    readonly DEBUG: any;
 };
 /**
  * Get common environment configuration
  */
-export declare function getCommonEnv(): Readonly<{
-    readonly NODE_ENV: "development" | "production" | "test";
-    readonly LOG_LEVEL: "error" | "info" | "debug" | "warn";
-    readonly DEBUG: boolean;
-} & import("envalid").CleanedEnvAccessors>;
+export declare function getCommonEnv(): CleanedEnv<T>;
 /**
  * Utility to check if we're in development mode
  */

@@ -12,7 +12,7 @@ try {
   // Note:LLM_PROVIDER_CONFIG available if needed
   _llmRoutingAvailable = true;
 } catch (_error) {
-  console.warn('LLM routing not available, using fallback');')  llmRoutingAvailable = false;
+  logger.warn('LLM routing not available, using fallback');')  llmRoutingAvailable = false;
 }
 
 import type {
@@ -75,12 +75,12 @@ export class CodeMeshBridge {
 
       this.session = {
         addMessage:(role: string, content:string) => {
-          console.log(`Session:${role}:${content.substring(0, 100)}...`);`
+          logger.info(`Session:${role}:${content.substring(0, 100)}...`);`
 },
         getMessages:() => [],
         save:async () => `session_$Date.now()`,`
         load:async (sessionId: string) => {
-          console.log(`Loading session:${sessionId}`);`
+          logger.info(`Loading session:${sessionId}`);`
 },
 };
 
@@ -97,10 +97,10 @@ export class CodeMeshBridge {
 },
 };
 
-      console.log(
+      logger.info(
         'CodeMesh WASM bridge initialized successfully with real tools!')      );
 } catch (error) {
-      console.warn(
+      logger.warn(
         'CodeMesh WASM not available, using fallback implementation: ','        error instanceof Error ? error.message:String(error)
       );
       await this.initializeFallback();
@@ -112,7 +112,7 @@ export class CodeMeshBridge {
    */
   private async initializeFallback():Promise<void> {
     // Use existing LLM routing as fallback
-    console.log('Using claude-code-zen LLM routing as fallback');')}
+    logger.info('Using claude-code-zen LLM routing as fallback');')}
 
   /**
    * Process a file-aware AI request using CodeMesh or fallback
@@ -246,7 +246,7 @@ export class CodeMeshBridge {
 
         dependencies.push(...deps);
 } catch (error) {
-        console.warn(`Failed to analyze file $file:`, error);`
+        logger.warn(`Failed to analyze file $file:`, error);`
 }
 }
 
@@ -325,7 +325,7 @@ export class CodeMeshBridge {
   private async parseFileChanges(aiResponse:any): Promise<FileChange[]> {
     // This would parse the AI response and extract file changes
     // For now, return a mock response
-    console.log('Parsing AI response:', aiResponse); // Use the aiResponse parameter')    return [
+    logger.info('Parsing AI response:', aiResponse); // Use the aiResponse parameter')    return [
       {
         path: 'example.ts',        type: 'modify',        content: '// updated content based on CodeMesh analysis',        reasoning: 'Updated based on CodeMesh file-aware analysis',},
 ];
@@ -365,7 +365,7 @@ export class CodeMeshBridge {
           appliedChanges.push(change);
 }
 } catch (error) {
-        console.error(`Failed to apply change to ${change.path}:`, error);`
+        logger.error(`Failed to apply change to ${change.path}:`, error);`
 }
 }
 

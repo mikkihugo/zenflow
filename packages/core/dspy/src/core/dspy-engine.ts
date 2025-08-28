@@ -41,12 +41,12 @@ import { getDSPyService} from "./service";
 
 // Simple logging for standalone mode
 const logger = {
-	info:(msg: string, ...args:any[]) => console.log(`[INFO] ${msg}`, ...args),
+	info:(msg: string, ...args:any[]) => logger.info(`[INFO] ${msg}`, ...args),
 	debug:(msg: string, ...args:any[]) =>
-		console.log(`[DEBUG] ${msg}`, ...args),
-	warn:(msg: string, ...args:any[]) => console.warn(`[WARN] ${msg}`, ...args),
+		logger.info(`[DEBUG] ${msg}`, ...args),
+	warn:(msg: string, ...args:any[]) => logger.warn(`[WARN] ${msg}`, ...args),
 	error:(msg: string, ...args:any[]) =>
-		console.error(`[ERROR] ${msg}`, ...args),
+		logger.error(`[ERROR] ${msg}`, ...args),
 };
 
 /**

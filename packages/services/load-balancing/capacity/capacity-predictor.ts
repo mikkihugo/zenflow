@@ -16,13 +16,13 @@ interface AgentCapacityProfile {
 export class CapacityPredictor {
   private logger = {
     debug:(message: string, meta?:unknown) =>
-      console.log(`[DEBUG] ${message}`, meta || '),
+  logger.info(`[DEBUG] ${message}`, meta || ''),
     info:(message: string, meta?:unknown) =>
-      console.log(`[INFO] ${message}`, meta || '),
+  logger.info(`[INFO] ${message}`, meta || ''),
     warn:(message: string, meta?:unknown) =>
-      console.warn(`[WARN] ${message}`, meta || '),
+  logger.warn(`[WARN] ${message}`, meta || ''),
     error:(message: string, meta?:unknown) =>
-      console.error(`[ERROR] ${message}`, meta || '),
+  logger.error(`[ERROR] ${message}`, meta || ''),
 };
 
   public async predict(

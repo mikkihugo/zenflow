@@ -5,17 +5,17 @@
  * Falls back to console logging with structured format.
  */
 interface LogContext {
-    [key:string]: unknown;
+    [key: string]: unknown;
 }
 interface Logger {
-    debug(message:string, context?:LogContext): void;
-    info(message:string, context?:LogContext): void;
-    warn(message:string, context?:LogContext): void;
-    error(message:string, context?:LogContext): void;
+    debug(message: string, context?: LogContext): void;
+    info(message: string, context?: LogContext): void;
+    warn(message: string, context?: LogContext): void;
+    error(message: string, context?: LogContext): void;
 }
 /**
  * Get a logger instance for the specified component
  */
-export declare function getLogger(component:string): Logger;
+export declare function getLogger(component: string): Logger;
 export {};
 //# sourceMappingURL=logger.d.ts.map

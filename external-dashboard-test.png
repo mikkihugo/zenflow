@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="/favicon.png" />
+		<meta name="viewport" content="width=device-width" />
+		
+		<link rel="modulepreload" href="/_app/immutable/entry/start.BEaYsz9b.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/DMLkHGb6.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/C74YsRlC.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/CYsF0Xkq.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/NtCrwu4g.js">
+		<link rel="modulepreload" href="/_app/immutable/entry/app.BN1HhAzf.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/DsnmJJEf.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/Ql4JIPox.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/Dbj_tgVo.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/COFeNJPO.js">
+	</head>
+	<body data-sveltekit-preload-data="hover" data-theme="modern">
+		<div style="display: contents" class="h-full overflow-hidden">
+			<script>
+				{
+					__sveltekit_ogayce = {
+						base: ""
+					};
+
+					const element = document.currentScript.parentElement;
+
+					Promise.all([
+						import("/_app/immutable/entry/start.BEaYsz9b.js"),
+						import("/_app/immutable/entry/app.BN1HhAzf.js")
+					]).then(([kit, app]) => {
+						kit.start(app, element);
+					});
+				}
+			</script>
+		</div>
+	</body>
+</html>

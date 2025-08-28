@@ -312,7 +312,8 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     try {
       if (!brain) {
         logger.warn(
-          'brain.js not available, skipping neural network initialization')        );
+          'brain.js not available, skipping neural network initialization'
+        );
         return;
 }
 
@@ -330,9 +331,9 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
       this.brainJsConfig.initialized = true;
       logger.info('Brain.js neural networks initialized successfully');
-} catch (error) {
+    } catch (error) {
       logger.error('Error initializing brain.js models: ', error);
-'}
+    }
 }
 
   /**
@@ -528,9 +529,9 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
           confidence,
           source: 'brainjs',};
 }
-} catch (error) {
+    } catch (error) {
       logger.warn('Brain.js prediction failed: ', error);
-'}
+    }
 
     return null;
 }
@@ -636,9 +637,9 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
         successStats,
         dataSize:this.historicalData.length,
 });
-} catch (error) {
+    } catch (error) {
       logger.error('Error retraining brain.js models: ', error);
-'}
+    }
 }
 
   /**

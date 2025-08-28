@@ -1,3 +1,4 @@
+/* eslint-env browser */
 /**
  * API client for claude-code-zen backend
  * Connects to real API endpoints instead of using mock data
@@ -92,7 +93,7 @@ class ApiClient {
 
 	private async request<T>(
 		endpoint:string,
-		options:RequestInit = {},
+		options: Record<string, unknown> = {},
 	):Promise<T> {
 		// Add project context as query parameter if available
 		let url = `${this.baseUrl}${endpoint}`;
@@ -101,7 +102,7 @@ class ApiClient {
 			url += `${separator}projectId=${encodeURIComponent(this.currentProjectId)}`;
 }
 
-		const defaultOptions:RequestInit = {
+		const defaultOptions: Record<string, unknown> = {
 			headers:{
 				"Content-Type":"application/json",
 				// Also add project context as header for server preference

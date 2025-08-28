@@ -49,7 +49,7 @@
  *   semanticSearch:true
  *});
  *
- * console.log('Found Facts: ', {
+ * logger.info('Found Facts: ', {
 ' *   total:facts.length,
  *   sources:facts.map(f => f.source).filter((s, i, arr) => arr.indexOf(s) === i),
  *   relevanceScores:facts.map(f => f.relevanceScore)
@@ -119,7 +119,7 @@
  *}
  *});
  *
- * console.log('Comprehensive Analysis: ', {
+ * logger.info('Comprehensive Analysis: ', {
 ' *   totalFacts:comprehensiveFacts.length,
  *   qualityScore:comprehensiveFacts.averageQuality,
  *   sourceDistribution:comprehensiveFacts.sourceBreakdown,
@@ -165,13 +165,13 @@
  *]);
  *
  * for (const answer of answers) {
- *   console.log('Question: ', answer.question);
-' *   console.log('Intent: ', answer.detectedIntent);
-' *   console.log('Sources: ', answer.sources.length);
-' *   console.log('Confidence: ', answer.confidence);
-' *   console.log('Key Points: ', answer.keyPoints);
-' *   console.log('Code Examples: ', answer.codeExamples.length);
-' *   console.log('---');
+ *   logger.info('Question: ', answer.question);
+' *   logger.info('Intent: ', answer.detectedIntent);
+' *   logger.info('Sources: ', answer.sources.length);
+' *   logger.info('Confidence: ', answer.confidence);
+' *   logger.info('Key Points: ', answer.keyPoints);
+' *   logger.info('Code Examples: ', answer.codeExamples.length);
+' *   logger.info('---');
  *}
  * ```
  *
@@ -202,7 +202,7 @@
  *
  * // Monitor for documentation changes
  * docProcessor.on('documentationChanged', async (change) => {
- *   console.log('Documentation Update Detected: ', {
+ *   logger.info('Documentation Update Detected: ', {
 ' *     source:change.source,
  *     changedSections:change.sections,
  *     changeType:change.type, // 'addition',    'modification',    'removal') *     importance:change.importance,
@@ -230,7 +230,7 @@
  * // Stream live updates
  * for await (const update of liveConnector.streamUpdates()) {
  *   await factSystem.ingestLiveUpdate(update);
- *   console.log('Live update processed: ', update.source);
+ *   logger.info('Live update processed: ', update.source);
 ' *}
  * ```
  *
@@ -265,7 +265,7 @@
  *},
  *   depth:'comprehensive') *});
  *
- * console.log('Security Analysis: ', {
+ * logger.info('Security Analysis: ', {
 ' *   riskLevel:securityReport.overallRisk,
  *   vulnerabilities:securityReport.vulnerabilities.length,
  *   highSeverity:securityReport.vulnerabilities.filter(v => v.severity === 'high').length,

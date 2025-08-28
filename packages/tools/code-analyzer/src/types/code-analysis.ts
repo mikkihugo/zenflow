@@ -189,7 +189,7 @@ export interface AnalysisQueueItem {
   queuedAt:Date;
   startedAt?:Date;
   completedAt?:Date;
-  status:'queued' | ' processing' | ' completed' | ' failed;
+  status:'queued' | 'processing' | 'completed' | 'failed';
   error?:Error;
   result?:CodeAnalysisResult;
 }
@@ -214,26 +214,26 @@ export interface DetectedPattern {
 export interface ImportSpecifier {
   name:string;
   alias?:string;
-  kind:'named' | ' default' | ' namespace;
+  kind:'named' | 'default' | 'namespace';
 }
 
 export interface ImportDeclaration {
   source:string;
   specifiers:ImportSpecifier[];
-  kind:'import' | ' require' | ' dynamic-import;
+  kind:'import' | 'require' | 'dynamic-import';
   location:SourceRange;
 }
 
 export interface ExportDeclaration {
   name:string;
-  kind:'named' | ' default' | ' namespace;
+  kind:'named' | 'default' | 'namespace';
   source?:string;
   location:SourceRange;
 }
 
 export interface Declaration {
   name:string;
-  kind:'variable' | ' function' | ' class' | ' interface' | ' type' | ' enum;
+  kind:'variable' | 'function' | 'class' | 'interface' | 'type' | 'enum';
   scope:string;
   location:SourceRange;
   typeAnnotation?:TypeInfo;
@@ -241,14 +241,14 @@ export interface Declaration {
 
 export interface Reference {
   name:string;
-  kind:'read' | ' write' | ' call;
+  kind:'read' | 'write' | 'call';
   declaration?:Declaration;
   location:SourceRange;
 }
 
 export interface Scope {
   id:string;
-  kind:'global' | ' module' | ' function' | ' block' | ' class;
+  kind:'global' | 'module' | 'function' | 'block' | 'class';
   parent?:string;
   bindings:string[];
   references:string[];
@@ -257,7 +257,7 @@ export interface Scope {
 
 export interface Binding {
   name:string;
-  kind:'var' | ' let' | ' const' | ' function' | ' class' | ' parameter;
+  kind:'var' | 'let' | 'const' | 'function' | 'class' | 'parameter';
   scope:string;
   references:Reference[];
   typeInfo?:TypeInfo;
@@ -285,12 +285,12 @@ export interface TypeMethod {
   name:string;
   parameters:TypeProperty[];
   returnType:string;
-  accessibility:'public' | ' private' | ' protected;
+  accessibility:'public' | 'private' | 'protected';
 }
 
 export interface ControlFlowNode {
   id:string;
-  type:'entry' | ' exit' | ' statement' | ' condition' | ' loop;
+  type:'entry' | 'exit' | 'statement' | 'condition' | 'loop';
   statement?:string;
   location:SourceRange;
 }
@@ -312,7 +312,7 @@ export interface ControlFlowGraph {
 export interface DataFlowNode {
   id:string;
   variable:string;
-  type:'definition' | ' use' | ' kill;
+  type:'definition' | 'use' | 'kill';
   location:SourceRange;
 }
 
@@ -320,7 +320,7 @@ export interface DataFlowEdge {
   from:string;
   to:string;
   variable:string;
-  flowType:'def-use' | ' use-def' | ' def-def;
+  flowType:'def-use' | 'use-def' | 'def-def';
 }
 
 export interface Definition {
@@ -346,7 +346,7 @@ export interface DataFlowGraph {
 export interface CallGraphNode {
   id:string;
   name:string;
-  type:'function' | ' method' | ' constructor' | ' external;
+  type:'function' | 'method' | 'constructor' | 'external';
   location?:SourceRange;
   signature?:string;
 }
@@ -354,7 +354,7 @@ export interface CallGraphNode {
 export interface CallGraphEdge {
   from:string;
   to:string;
-  callType:'direct' | ' indirect' | ' virtual' | ' dynamic;
+  callType:'direct' | 'indirect' | 'virtual' | 'dynamic';
   location:SourceRange;
 }
 

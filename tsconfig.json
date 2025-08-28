@@ -1,15 +1,13 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "node",
+    // Root-level overrides/additions only; inherit module/moduleResolution/etc from base
     "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+  // Allow both source and tests as roots for type-checking
+  "rootDirs": ["./src", "./tests"],
+  // Ensure TS doesn't complain about tests being outside of rootDir
+  "rootDir": "."
   },
   "include": [
     "src/**/*",

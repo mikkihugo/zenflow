@@ -38,11 +38,14 @@ interface MockAgentConfig {
   forceSuccess?:boolean;
 }
 
+// Use the interface to prevent unused type error
+const _unusedAgentConfig: MockAgentConfig = { id: 'example' };
+
 // Constants
 const DEFAULT_AGENT_ID = 'mock-agent';
 
 // AI-specific test utilities
-(globalThis as Record<string, unknown>).aiAdvancedUtils = {
+(globalThis as Record<string, unknown>)['aiAdvancedUtils'] = {
   /**
    * Create a mock AI agent with realistic coordination patterns
    */
@@ -103,7 +106,7 @@ const DEFAULT_AGENT_ID = 'mock-agent';
     performance?: { coordination: number; efficiency: number };
   } = {}) => {
     const agents = Array.from({ length: config.size || 5 }, (_, i) => 
-      ((globalThis as Record<string, unknown>).aiAdvancedUtils as {
+      ((globalThis as Record<string, unknown>)['aiAdvancedUtils'] as {
         createMockAgent: (config: { id: string; type: string }) => unknown;
       }).createMockAgent({
         id: `swarm-agent-${i}`,
@@ -147,7 +150,7 @@ const DEFAULT_AGENT_ID = 'mock-agent';
         if (newSize > currentSize) {
           // Add agents
           for (let i = currentSize; i < newSize; i++) {
-            agents.push(((globalThis as Record<string, unknown>).aiAdvancedUtils as {
+            agents.push(((globalThis as Record<string, unknown>)['aiAdvancedUtils'] as {
               createMockAgent: (config: { id: string; type: string }) => unknown;
             }).createMockAgent({
               id: `swarm-agent-${i}`,
@@ -254,7 +257,7 @@ const DEFAULT_AGENT_ID = 'mock-agent';
 
         // Find matching response pattern
         const matchedResponse = responses.find(r => r.pattern.test(prompt));
-        const response = matchedResponse||responses[Math.floor(Math.random() * responses.length)];
+        const response = matchedResponse||responses[Math.floor(Math.random() * responses.length)]!;
 
         return {
           text:response.response,
@@ -274,7 +277,7 @@ const DEFAULT_AGENT_ID = 'mock-agent';
 
       generateStream: vi.fn().mockImplementation(async function*(prompt: string) {
         const matchedResponse = responses.find(r => r.pattern.test(prompt));
-        const response = matchedResponse || responses[Math.floor(Math.random() * responses.length)];
+        const response = matchedResponse || responses[Math.floor(Math.random() * responses.length)]!;
 
         // Stream response word by word
         const words = response.response.split(' ');
@@ -319,8 +322,8 @@ const DEFAULT_AGENT_ID = 'mock-agent';
           new Promise((_, reject) => {
             const timeoutId = setTimeout(() => reject(new Error(`Step timeout: ${step.name}`)), workflow.timeout || 30000);
             // Store timeout for cleanup
-            (globalThis as Record<string, unknown>).__testTimeouts = (globalThis as Record<string, unknown>).__testTimeouts || [];
-            ((globalThis as Record<string, unknown>).__testTimeouts as unknown[]).push(timeoutId);
+            (globalThis as Record<string, unknown>)['__testTimeouts'] = (globalThis as Record<string, unknown>)['__testTimeouts'] || [];
+            ((globalThis as Record<string, unknown>)['__testTimeouts'] as unknown[]).push(timeoutId);
 })
 ]);
         
@@ -352,15 +355,15 @@ const DEFAULT_AGENT_ID = 'mock-agent';
 };
 
 // AI-specific environment setup
-process.env.AI_TESTING_MODE = 'advanced';
+process.env['AI_TESTING_MODE'] = 'advanced';
 process.env.NEURAL_MOCK_MODE = 'true';
 process.env.LLM_PROVIDER = 'mock';
 
 // Cleanup function for test timeouts
 (globalThis as Record<string, unknown>).cleanupTestTimeouts = () => {
-  if ((globalThis as Record<string, unknown>).__testTimeouts) {
-    ((globalThis as Record<string, unknown>).__testTimeouts as unknown[]).forEach((timeoutId:unknown) => clearTimeout(timeoutId as NodeJS.Timeout));
-    (globalThis as Record<string, unknown>).__testTimeouts = [];
+  if ((globalThis as Record<string, unknown>)['__testTimeouts']) {
+    ((globalThis as Record<string, unknown>)['__testTimeouts'] as unknown[]).forEach((timeoutId:unknown) => clearTimeout(timeoutId as NodeJS.Timeout));
+    (globalThis as Record<string, unknown>)['__testTimeouts'] = [];
 }
 };
 

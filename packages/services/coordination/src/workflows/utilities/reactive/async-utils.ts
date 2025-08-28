@@ -7,7 +7,8 @@
  * @author Claude Code Zen Team
  * @since 1.0.0
  */
-import { debounce, throttle} from 'lodash-es')/**';
+import { debounce, throttle } from 'lodash-es';
+/**
  * Professional async utilities
  */
 export class AsyncUtils {

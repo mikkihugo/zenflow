@@ -83,8 +83,8 @@ export class EventLogger {
     logger.info(`🕒 Time:${ctx.timestamp.toISOString()}`);
     
     if (payload) {
-      // eslint-disable-next-line no-console
-      console.log(`📦 Payload:`, payload);
+       
+      logger.info(`📦 Payload:`, payload);
 }
 }
 
@@ -101,14 +101,14 @@ export class EventLogger {
     const errorMessage = error instanceof Error ? error.message : error;
     const errorStack = error instanceof Error ? error.stack : undefined;
 
-    // eslint-disable-next-line no-console
-    console.error(`🚨 Error Event: ${eventName} [${ctx.component || 'unknown'}${ctx.phase ? `:${ctx.phase}` : ''}]`);
-    // eslint-disable-next-line no-console
-    console.error(`💥 Error: ${errorMessage}`);
+     
+    logger.error(`🚨 Error Event: ${eventName} [${ctx.component || 'unknown'}${ctx.phase ? `:${ctx.phase}` : ''}]`);
+     
+    logger.error(`💥 Error: ${errorMessage}`);
     
     if (errorStack) {
-      // eslint-disable-next-line no-console
-      console.error(`📍 Stack:`, errorStack);
+       
+      logger.error(`📍 Stack:`, errorStack);
 }
 }
 }

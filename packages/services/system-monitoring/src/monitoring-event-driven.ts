@@ -11,18 +11,22 @@
 
 const createLogger = (name:string) => ({
   info:(message: string, meta?:unknown) => {
+    // eslint-disable-next-line no-console
     // Internal logging - replaced console.log
     void message; void meta; void name;
 },
   debug:(message: string, meta?:unknown) => {
+    // eslint-disable-next-line no-console
     // Internal logging - replaced console.log
     void message; void meta; void name;
 },
   warn:(message: string, meta?:unknown) => {
+    // eslint-disable-next-line no-console
     // Internal logging - replaced console.warn
     void message; void meta; void name;
 },
   error:(message: string, meta?:unknown) => {
+    // eslint-disable-next-line no-console
     // Internal logging - replaced console.error
     void message; void meta; void name;
 },

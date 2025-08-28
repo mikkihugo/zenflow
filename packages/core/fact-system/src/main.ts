@@ -24,12 +24,12 @@ export class FactClient {
 }
 
 	async search(query:any): Promise<any> {
-		console.log("Searching facts with query:", query);
+		logger.info("Searching facts with query:", query);
 		return [];
 }
 
 	async gatherFromSources(sources:any[], options?:any): Promise<any> {
-		console.log(
+		logger.info(
 			"Gathering facts from sources:",
 			sources,
 			"with options:",
@@ -48,7 +48,7 @@ export class FactClient {
 }
 
 	shutdown?():void {
-		console.log("Shutting down fact client");
+		logger.info("Shutting down fact client");
 }
 }
 
@@ -58,7 +58,7 @@ export function createFactClient(
 	return Promise.resolve(new FactClient(config));
 }
 export function createSQLiteFactClient(path?:string): Promise<FactClient> {
-	console.log("Creating SQLite fact client at path:", path || "default");
+	logger.info("Creating SQLite fact client at path:", path || "default");
 	return Promise.resolve(
 		new FactClient({
 			database:{
@@ -71,7 +71,7 @@ export function createSQLiteFactClient(path?:string): Promise<FactClient> {
 }
 
 export function createLanceDBFactClient(path?:string): Promise<FactClient> {
-	console.log("Creating LanceDB fact client at path:", path || "default");
+	logger.info("Creating LanceDB fact client at path:", path || "default");
 	return Promise.resolve(
 		new FactClient({
 			database:{
@@ -84,7 +84,7 @@ export function createLanceDBFactClient(path?:string): Promise<FactClient> {
 }
 
 export function createKuzuFactClient(path?:string): Promise<FactClient> {
-	console.log("Creating Kuzu fact client at path:", path || "default");
+	logger.info("Creating Kuzu fact client at path:", path || "default");
 	return Promise.resolve(
 		new FactClient({
 			database:{
@@ -104,17 +104,17 @@ export class IntelligentCache {
 	private cache = new Map<string, any>();
 
 	constructor() {
-		console.log("Initializing intelligent cache system");
+		logger.info("Initializing intelligent cache system");
 }
 
 	clear():void {
 		this.cache.clear();
-		console.log("Cache cleared");
+		logger.info("Cache cleared");
 }
 
 	set(key:string, value:any): void {
 		this.cache.set(key, value);
-		console.log("Cached fact:", key);
+		logger.info("Cached fact:", key);
 }
 
 	get(key:string): any {
@@ -124,11 +124,11 @@ export class IntelligentCache {
 
 export class NaturalLanguageQuery {
 	constructor() {
-		console.log("Initializing natural language query processor");
+		logger.info("Initializing natural language query processor");
 }
 
 	async processQuery(query:string): Promise<any> {
-		console.log("Processing natural language query:", query);
+		logger.info("Processing natural language query:", query);
 		return [];
 }
 }
@@ -138,11 +138,11 @@ export class NaturalLanguageQuery {
 // =============================================================================
 export class LiveAPIConnector {
 	constructor() {
-		console.log("Initializing live API connector");
+		logger.info("Initializing live API connector");
 }
 
 	fetchData(source:string): Promise<any> {
-		console.log("Fetching data from source:", source);
+		logger.info("Fetching data from source:", source);
 		return Promise.resolve({});
 }
 }
@@ -152,11 +152,11 @@ export class LiveAPIConnector {
 // =============================================================================
 export class DocumentationProcessor {
 	constructor() {
-		console.log("Initializing documentation processor");
+		logger.info("Initializing documentation processor");
 }
 
 	process(content:string): any {
-		console.log("Processing documentation content, length:", content.length);
+		logger.info("Processing documentation content, length:", content.length);
 		return {};
 }
 }

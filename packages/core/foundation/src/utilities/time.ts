@@ -86,7 +86,7 @@ export {
  * @example
  * ```typescript`
  * const timestamp = now(); // 1640995200000
- * console.log(typeof timestamp); // number (but branded as Timestamp)
+ * logger.info(typeof timestamp); // number (but branded as Timestamp)
  * ```
  */
 export function now():Timestamp {
@@ -191,7 +191,7 @@ export function formatTimestamp(
  * @example
  * ```typescript`
  * await sleep(1000); // Wait 1 second
- * console.log('1 second later');
+ * logger.info('1 second later');
  * ```
  */
 export function sleep(ms:number): Promise<void> {
@@ -207,7 +207,7 @@ export function sleep(ms:number): Promise<void> {
  * @example
  * ```typescript`
  * await delay(5000); // Wait 5 seconds
- * console.log('5 seconds later');
+ * logger.info('5 seconds later');
  * ```
  */
 export function delay(ms:number): Promise<void> {
@@ -295,7 +295,7 @@ export function highResTime():bigint {
  * const { result, durationMs} = await measureTime(async () => {
  *   return await expensiveOperation();
  *});
- * console.log(`Operation took ${durationMs}ms`);
+ * logger.info(`Operation took ${durationMs}ms`);
  * ```
  */
 export async function measureTime<T>(

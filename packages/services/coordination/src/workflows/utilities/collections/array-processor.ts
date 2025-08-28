@@ -7,7 +7,8 @@
  * @author Claude Code Zen Team
  * @since 1.0.0
  */
-import { chunk, filter, flatten, map, sortBy, uniq} from 'lodash-es')/**';
+import { chunk, filter, flatten, map, sortBy, uniq } from 'lodash-es';
+/**
  * Professional array processing utilities
  */
 export class ArrayProcessor {

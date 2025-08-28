@@ -13,11 +13,11 @@ const version = snapshot
       .text()
       .then((x) => x.substring(1).trim())
       .catch(() => {
-        console.error("tag not found")
+        logger.error("tag not found")
         process.exit(1)
 })
 
-console.log(`publishing ${version}`)`
+logger.info(`publishing ${version}`)`
 
 const GOARCH:Record<string, string> = {
   arm64:"arm64",
@@ -37,7 +37,7 @@ await $`rm -rf dist``
 const _optionalDependencies:Record<string, string> = {}
 const npmTag = snapshot ? "snapshot" :"latest"
 for (const [os, arch] of targets) {
-  console.log(`building ${os}-${arch}`)`
+  logger.info(`building ${os}-${arch}`)`
   const name = `$pkg.name-$os-$arch``
   await $`mkdir -p dist/${name}/bin``
   await $`CGO_ENABLED=0 GOOS=$osGOARCH=$GOARCH[arch]go build -ldflags="-s -w -X main.Version=${version}" -o ../opencode/dist/$name/bin/tui ../tui/cmd/opencode/main.go`.cwd(`

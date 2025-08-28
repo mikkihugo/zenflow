@@ -66,11 +66,11 @@ export class ImmutableWIPUtils {
     updates: Partial<T>
   ): T {
     return produce(limits, (draft) => {
-      Object.entries(updates).forEach(([key, value]) => {
+      for (const [key, value] of Object.entries(updates)) {
         if (value !== undefined && value >= 0 && key in draft) {
           (draft as Record<string, number>)[key] = value;
         }
-      });
+      }
     });
 }
   /**
@@ -82,7 +82,7 @@ export class ImmutableWIPUtils {
   ): T {
     return produce(currentLimits, (draft) => {
       const draftLimits = draft as Record<string, number>;
-      Object.entries(utilizationData).forEach(([state, data]) => {
+      for (const [state, data] of Object.entries(utilizationData)) {
         if (state in draft) {
           const currentLimit = draftLimits[state];
           const utilizationRatio = data.current / currentLimit;
@@ -93,7 +93,7 @@ export class ImmutableWIPUtils {
             draftLimits[state] = Math.max(1, Math.floor(currentLimit * 0.8));
           }
         }
-      });
+      }
     });
 }
 }
@@ -144,7 +144,7 @@ export class ImmutableMetricsUtils {
       .map(
         (t) =>
           ((t.completedAt?.getTime()|| 0) - (t.startedAt?.getTime()|| 0)) /
-          (1000 * 60 * 60);
+          (1000 * 60 * 60)
       ); // hours
     const averageCycleTime =
       cycleTimes.length > 0
@@ -190,11 +190,11 @@ export class ImmutableMetricsUtils {
     newMetrics: Partial<T>
   ): T {
     return produce(currentMetrics, (draft) => {
-      Object.entries(newMetrics).forEach(([key, value]) => {
+      for (const [key, value] of Object.entries(newMetrics)) {
         if (value !== undefined) {
           (draft as any)[key] = value;
         }
-      });
+      }
     });
 }
 }

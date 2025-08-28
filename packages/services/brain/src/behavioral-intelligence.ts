@@ -1673,7 +1673,7 @@ export async function demoBehavioralIntelligence(
     logger.info(`   • Reasoning:$bestAgent.reasoning\n`);`
 
     // 5. Show behavioral intelligence stats
-    logger.info('📈 Behavioral Intelligence Statistics:');')    const stats = behavioral.getStats();
+    logger.info('📈 Behavioral Intelligence Statistics:');')    const _stats = behavioral.getStats();
     logger.info(`   • Total agents:$stats.totalAgents`);`
     logger.info(`   • Training data points:${stats.trainingDataPoints}`);`
     logger.info(`   • Networks initialized:$stats.networksInitialized`);`

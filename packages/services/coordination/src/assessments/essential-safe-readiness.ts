@@ -8,6 +8,28 @@ import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('EssentialSafeReadiness');
 
+// Constants for SAFe categories
+const CORE_ROLES = 'Core Roles';
+const CORE_ARTIFACTS = 'Core Artifacts';
+const CORE_EVENTS = 'Core Events';
+const CORE_COMPETENCIES = 'Core Competencies';
+const KEY_PRACTICES = 'Key Practices';
+
+// Configuration manager interface
+interface ConfigManager {
+  get(key: string): unknown;
+  set(key: string, value: unknown): void;
+}
+
+// Implementation plan item interface
+interface ImplementationPlanItem {
+  component: string;
+  priority: 'high' | 'medium' | 'low';
+  estimatedEffort: string;
+  dependencies: string[];
+  description: string;
+}
+
 // ============================================================================
 // ESSENTIAL SAFe 6.0 COMPONENTS ASSESSMENT
 // ============================================================================
@@ -34,7 +56,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
   // ============================================================================
   {
     name: 'Release Train Engineer',
-    category: 'Core Roles',
+    category: CORE_ROLES,
     description: 'Facilitates PI planning and execution',
     required: true,
     taskMasterSupport: 'complete', // ✅ Role-based approval routing
@@ -43,7 +65,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
   },
   {
     name: 'Product Owner',
-    category: 'Core Roles',
+    category: CORE_ROLES,
     description: 'Defines and prioritizes features',
     required: true,
     taskMasterSupport: 'complete', // ✅ Stakeholder approval workflows
@@ -52,7 +74,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
   },
   {
     name: 'Scrum Master',
-    category: 'Core Roles',
+    category: CORE_ROLES,
     description: 'Facilitates team processes',
     required: true,
     taskMasterSupport: 'complete', // ✅ Product Owner approval workflows
@@ -61,7 +83,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
   },
   {
     name: 'Development Team',
-    category: 'Core Roles',
+    category: CORE_ROLES,
     description: 'Delivers working software',
     required: true,
     taskMasterSupport: 'complete', // ✅ Team lead approval workflows
@@ -70,7 +92,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
   },
   {
     name: 'Business Owner',
-    category: 'Core Roles',
+    category: CORE_ROLES,
     description: 'Provides business context',
     required: true,
     taskMasterSupport: 'complete', // ✅ Team-based approval routing
@@ -83,7 +105,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
   // ============================================================================
   {
     name: 'Program Backlog',
-    category: 'Core Artifacts',
+    category: CORE_ARTIFACTS,
     description: 'Prioritized list of features',
     required: true,
     taskMasterSupport: 'complete', // ✅ Via approval gate kanban flow
@@ -92,7 +114,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
   },
   {
     name: 'Features',
-    category: 'Core Artifacts',
+    category: CORE_ARTIFACTS,
     description: 'Services requirements for PI planning',
     required: true,
     taskMasterSupport: 'complete', // ✅ Feature approval gates with state flow
@@ -101,7 +123,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
   },
   {
     name: 'PI Objectives',
-    category: 'Core Artifacts',
+    category: CORE_ARTIFACTS,
     description: 'Business and team objectives for PI',
     required: true,
     taskMasterSupport: 'partial', // ⚠️ Could be represented as approval gate outcomes
@@ -110,7 +132,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
   },
   {
     name: 'Team PI Objectives',
-    category: 'Core Artifacts',
+    category: CORE_ARTIFACTS,
     description: 'Team-level objectives and commitments',
     required: true,
     taskMasterSupport: 'partial', // ⚠️ Team-level approval gate outcomes
@@ -119,7 +141,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
   },
   {
     name: 'Vision',
-    category: 'Core Artifacts',
+    category: CORE_ARTIFACTS,
     description: 'Future state description',
     required: true,
     taskMasterSupport: 'missing', // ❌ No vision management
@@ -132,7 +154,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
   // ============================================================================
   {
     name: 'PI Planning',
-    category: 'Core Events',
+    category: CORE_EVENTS,
     description: 'Quarterly planning event',
     required: true,
     taskMasterSupport: 'partial', // ⚠️ Could use approval gates for PI planning workflow
@@ -141,7 +163,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
   },
   {
     name: 'Scrum of Scrums',
-    category: 'Core Events',
+    category: CORE_EVENTS,
     description: 'ART sync coordination',
     required: true,
     taskMasterSupport: 'partial', // ⚠️ Cross-team approval coordination
@@ -150,7 +172,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
   },
   {
     name: 'System Demo',
-    category: 'Core Events',
+    category: CORE_EVENTS,
     description: 'End-of-iteration demo',
     required: true,
     taskMasterSupport: 'partial', // ⚠️ Demo approval gates
@@ -159,7 +181,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
   },
   {
     name: 'Inspect and Adapt',
-    category: 'Core Events',
+    category: CORE_EVENTS,
     description: 'PI retrospective and improvement',
     required: true,
     taskMasterSupport: 'partial', // ⚠️ Learning system integration
@@ -168,7 +190,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
   },
   {
     name: 'Iteration Planning',
-    category: 'Core Events',
+    category: CORE_EVENTS,
     description: 'Sprint planning within PI',
     required: true,
     taskMasterSupport: 'complete', // ✅ Via team approval workflows
@@ -177,7 +199,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
   },
   {
     name: 'Iteration Review',
-    category: 'Core Events',
+    category: CORE_EVENTS,
     description: 'Sprint review and demo',
     required: true,
     taskMasterSupport: 'complete', // ✅ Via completed approval gate review
@@ -190,7 +212,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
   // ============================================================================
   {
     name: 'Team and Technical Agility',
-    category: 'Core Competencies',
+    category: CORE_COMPETENCIES,
     description: 'High-performing agile teams',
     required: true,
     taskMasterSupport: 'partial', // ⚠️ Technical approval gates exist
@@ -199,7 +221,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
   },
   {
     name: 'Agile Product Delivery',
-    category: 'Core Competencies',
+    category: CORE_COMPETENCIES,
     description: 'Customer-centric product development',
     required: true,
     taskMasterSupport: 'partial', // ⚠️ Product approval workflows exist
@@ -208,7 +230,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
   },
   {
     name: 'Lean-Agile Leadership',
-    category: 'Core Competencies',
+    category: CORE_COMPETENCIES,
     description: 'Leadership mindset and approach',
     required: true,
     taskMasterSupport: 'complete', // ✅ Learning system implemented
@@ -221,7 +243,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
   // ============================================================================
   {
     name: 'Program Kanban',
-    category: 'Key Practices',
+    category: KEY_PRACTICES,
     description: 'Visual workflow management',
     required: true,
     taskMasterSupport: 'complete', // ✅ Approval gate state visualization
@@ -230,7 +252,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
   },
   {
     name: 'WSJF Prioritization',
-    category: 'Key Practices',
+    category: KEY_PRACTICES,
     description: 'Weighted Shortest Job First',
     required: true,
     taskMasterSupport: 'partial', // ⚠️ Could implement via approval thresholds
@@ -239,7 +261,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
   },
   {
     name: 'Definition of Done',
-    category: 'Key Practices',
+    category: KEY_PRACTICES,
     description: 'Quality standards and acceptance criteria',
     required: true,
     taskMasterSupport: 'complete', // ✅ DoD approval gates
@@ -256,9 +278,9 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
  * Essential SAFe readiness assessment
  */
 export class EssentialSafeReadinessAssessment {
-  private configManager: any;
+  private configManager: ConfigManager;
 
-  constructor(configManager: any) {
+  constructor(configManager: ConfigManager) {
     this.configManager = configManager;
     logger.info('EssentialSafeReadinessAssessment initialized');
   }
@@ -273,7 +295,7 @@ export class EssentialSafeReadinessAssessment {
       partial: EssentialSafeComponent[];
       missing: EssentialSafeComponent[];
     };
-    implementationPlan: any[];
+    implementationPlan: ImplementationPlanItem[];
     taskMasterStrengths: string[];
     criticalGaps: string[];
     timeToEssentialSafe: string;

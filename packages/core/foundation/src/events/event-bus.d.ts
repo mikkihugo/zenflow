@@ -61,7 +61,7 @@ export interface Event<T = unknown> {
  * // Fully typed listeners
  * eventBus.on('userAction', (payload) => {
  *   // payload is typed as { action:string; target: string}
- *   console.log(payload.action, payload.target);
+ *   logger.info(payload.action, payload.target);
  *});
  *
  * // Fully typed emission

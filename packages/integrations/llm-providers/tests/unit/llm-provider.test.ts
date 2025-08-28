@@ -206,7 +206,7 @@ describe('LLMProvider', () => {
 };
 
       vi.spyOn(provider as any, 'getStats').mockResolvedValue(mockStats);')
-      const stats = await provider.getStats();
+      const _stats = await provider.getStats();
       expect(stats).toEqual(mockStats);
       expect(stats.totalRequests).toBe(100);
       expect(stats.successfulRequests).toBe(95);

@@ -51,7 +51,8 @@ export const SUPPORTED_EXTENSIONS = {
  * Language detection utility
  */
 export function detectLanguageFamily(filePath:string): string|null {
-  const ext = filePath.toLowerCase().substring(filePath.lastIndexOf('.'));')  return SUPPORTED_EXTENSIONS[ext as keyof typeof SUPPORTED_EXTENSIONS]||null;
+  const ext = filePath.toLowerCase().substring(filePath.lastIndexOf('.'));
+  return SUPPORTED_EXTENSIONS[ext as keyof typeof SUPPORTED_EXTENSIONS] || null;
 }
 
 /**
@@ -73,15 +74,19 @@ export function isSupported(filePath:string): boolean {
  */
 export interface ParserFactory {
   createBeamParser(
-    options?:import('./beam-parser').BeamParserOptions')  ):import('./beam-parser').BeamLanguageParser;')}
+    options?: import('./beam-parser').BeamParserOptions
+  ): import('./beam-parser').BeamLanguageParser;
+}
 
 /**
  * Default parser factory implementation
  */
 export class DefaultParserFactory implements ParserFactory {
   createBeamParser(
-    options?:import('./beam-parser').BeamParserOptions')  ):import('./beam-parser').BeamLanguageParser {
-    ')    const { BeamLanguageParser} = require('./beam-parser');')    return new BeamLanguageParser(options);
+    options?: import('./beam-parser').BeamParserOptions
+  ): import('./beam-parser').BeamLanguageParser {
+    const { BeamLanguageParser } = require('./beam-parser');
+    return new BeamLanguageParser(options);
 }
 }
 
@@ -97,7 +102,7 @@ export function createParserFactory():ParserFactory {
  */
 export async function parseFile(
   filePath:string,
-  _options?:{
+  options?:{
     includeMetrics?:boolean;
     analyzeFunctionComplexity?:boolean;
     extractDocumentation?:boolean;
@@ -106,28 +111,28 @@ export async function parseFile(
   const family = detectLanguageFamily(filePath);
 
   if (!family) {
-    throw new Error(`Unsupported file type:${filePath}`);`
+    throw new Error(`Unsupported file type: ${filePath}`);
 }
 
   const factory = createParserFactory();
 
   switch (family) {
-    case 'beam':{
-    ')      const parser = factory.createBeamParser(options);
+    case 'beam': {
+      const parser = factory.createBeamParser(options);
       return await parser.parseFile(filePath);
 }
-    case 'functional':{
-    ')      // Future:Add functional language parser support
+    case 'functional': {
+      // Future:Add functional language parser support
       const parser = factory.createBeamParser(options); // Fallback to beam for now
       return await parser.parseFile(filePath);
 }
-    case 'concurrent':{
-    ')      // Future:Add concurrent language parser support
+    case 'concurrent': {
+      // Future:Add concurrent language parser support
       const parser = factory.createBeamParser(options); // Fallback to beam for now
       return await parser.parseFile(filePath);
 }
     default:
-      throw new Error(`Parser not implemented for language family:$family`);`
+      throw new Error(`Parser not implemented for language family: ${family}`);
 }
 }
 
@@ -156,25 +161,25 @@ export async function parseFiles(
 }
 
   const factory = createParserFactory();
-  const allResults:any[] = [];
+  const allResults: unknown[] = [];
 
   // Parse each family in parallel
   const familyPromises = Array.from(filesByFamily.entries()).map(
     async ([family, paths]) => {
       switch (family) {
-        case 'beam':{
-    ')          const parser = factory.createBeamParser(options);
+        case 'beam': {
+          const parser = factory.createBeamParser(options);
           const result = await parser.parseFiles(paths);
           return result.isOk() ? result._unsafeUnwrap() :[];
 }
-        case 'functional':{
-    ')          // Future:Add functional language parser support
+        case 'functional': {
+          // Future:Add functional language parser support
           const parser = factory.createBeamParser(options); // Fallback to beam for now
           const result = await parser.parseFiles(paths);
           return result.isOk() ? result._unsafeUnwrap() :[];
 }
-        case 'concurrent':{
-    ')          // Future:Add concurrent language parser support
+        case 'concurrent': {
+          // Future:Add concurrent language parser support
           const parser = factory.createBeamParser(options); // Fallback to beam for now
           const result = await parser.parseFiles(paths);
           return result.isOk() ? result._unsafeUnwrap() :[];

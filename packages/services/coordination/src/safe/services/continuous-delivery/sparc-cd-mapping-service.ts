@@ -13,14 +13,21 @@
  * @since 1.0.0
  * @version 1.0.0
  */
-import type { Logger} from '../../types')// =========================================================================== = ''; 
+import type { Logger} from '../../types';
+
+// =========================================================================== 
 // SPARC-CD MAPPING INTERFACES
 // ============================================================================
 /**
  * SPARC phase enumeration
  */
 export enum SPARCPhase {
-  SPECIFICATION = 'specification')  PSEUDOCODE = 'pseudocode')  ARCHITECTURE = 'architecture')  REFINEMENT = 'refinement')  COMPLETION = 'completion')};;
+  SPECIFICATION = 'specification',
+  PSEUDOCODE = 'pseudocode',
+  ARCHITECTURE = 'architecture',
+  REFINEMENT = 'refinement',
+  COMPLETION = 'completion'
+}
 /**
  * CD Pipeline stage types
  */

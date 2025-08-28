@@ -297,7 +297,7 @@ export class DomainAnalysisEngine extends TypedEventBase {
 
       for (const entry of entries) {
         const fullPath = join(rootPath, entry);
-        const stats = statSync(fullPath);
+        const _stats = statSync(fullPath);
 
         if (stats?.isDirectory()) {
           // Check if directory should be excluded

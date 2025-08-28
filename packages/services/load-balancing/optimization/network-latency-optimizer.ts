@@ -38,7 +38,9 @@ export class NetworkLatencyOptimizer implements NetworkOptimizer {
     // Mock path selection - in practice this would use network topology
     const possiblePaths = [
       [source, destination], // Direct path
-      [source, 'gateway-1', destination], // Via gateway 1')      [source, 'gateway-2', destination], // Via gateway 2')];
+      [source, 'gateway-1', destination], // Via gateway 1
+      [source, 'gateway-2', destination], // Via gateway 2
+    ];
 
     let bestPath = possiblePaths[0];
     let bestLatency = Number.POSITIVE_INFINITY;
@@ -59,7 +61,7 @@ export class NetworkLatencyOptimizer implements NetworkOptimizer {
     const bandwidthMap = new Map<string, number>();
 
     // Simulate bandwidth measurements for different connections
-    const connections = ['agent-1',    'agent-2',    'gateway-1',    'gateway-2'];
+  const connections = ['agent-1', 'agent-2', 'gateway-1', 'gateway-2'];
 
     for (const connection of connections) {
       const bandwidth = 1000 + Math.random() * 4000; // 1-5 Mbps
@@ -101,7 +103,7 @@ export class NetworkLatencyOptimizer implements NetworkOptimizer {
 }
 
     let latency:number;
-    if (from.includes('gateway') || to.includes(' gateway')) {
+  if (from.includes('gateway') || to.includes('gateway')) {
       latency = 20 + Math.random() * 30; // Gateway connections
 } else {
       latency = 10 + Math.random() * 20; // Direct connections

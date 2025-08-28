@@ -150,7 +150,7 @@ export class GitAnalyzer {
 });
 }
 
-        const stats = contributorMap.get(author)!;
+        const _stats = contributorMap.get(author)!;
         stats.commits++;
 
         if (date < stats.firstCommit) stats.firstCommit = date;
@@ -206,7 +206,7 @@ export class GitAnalyzer {
 });
 }
 
-            const stats = fileChangeMap.get(file)!;
+            const _stats = fileChangeMap.get(file)!;
             stats.count++;
             stats.contributors.add(author);
 
@@ -418,7 +418,7 @@ export class GitAnalyzer {
       const churnTrend:Array<{ date: string; churn: number}> = [];
 
       for (const commit of commits) {
-        const stats = await this.getCommitStats(commit.hash);
+        const _stats = await this.getCommitStats(commit.hash);
         const churn = stats.linesAdded + stats.linesDeleted;
 
         totalChurn += churn;

@@ -38,9 +38,10 @@ export function createAICodeAnalyzer(repositoryPath:string, aiConfig?:any) {
   // Configure AI features when available
   if (aiConfig) {
     // Future AI configuration implementation
-    console.debug('AI configuration provided for code analyzer', {
-      config:aiConfig,
-    });
+    // TODO: Implement AI configuration
+    // logger.debug('AI configuration provided for code analyzer', {
+    //   config: aiConfig,
+    // });
   }
   return analyzer;
 }

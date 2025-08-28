@@ -202,13 +202,13 @@ export interface BootstrapFinetuneConfig {
  *     valset:productionValidation
  *});
  *
- *   console.log('Fine-tuning completed successfully');
+ *   logger.info('Fine-tuning completed successfully');
  *
  *   // Evaluate fine-tuned model
  *   const testResults = await evaluate(productionProgram, testSet);
- *   console.log('Test performance: ', testResults);
+ *   logger.info('Test performance: ', testResults);
 ' *} catch (error) {
- *   console.error('Fine-tuning failed: ', error.message);
+ *   logger.error('Fine-tuning failed: ', error.message);
 ' *}
  *
  * // Domain-specific fine-tuning
@@ -309,10 +309,10 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 },
 	):Promise<DSPyModule> {
 		const { trainset, teacher} = config;
-		console.log("Preparing the student and teacher programs...");
+		logger.info("Preparing the student and teacher programs...");
 		this.allPredictorsHaveLMs(student);
 
-		console.log("Bootstrapping data...");
+		logger.info("Bootstrapping data...");
 		let traceData:TraceData[] = [];
 
 		const teachers = Array.isArray(teacher) ? teacher:[teacher];
@@ -333,7 +333,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 }
 }
 
-		console.log("Preparing the train data...");
+		logger.info("Preparing the train data...");
 		const keyToData = new Map<string, any>();
 
 		for (let predInd = 0; predInd < student.predictors().length; predInd++) {
@@ -356,7 +356,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 					pred.lm,
 					dataPredInd,
 				);
-				console.log(
+				logger.info(
 					`Using ${trainData.length} data points for fine-tuning the model:${pred.lm.model || "unknown"}`,
 				);
 
@@ -370,7 +370,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 }
 }
 
-		console.log("Starting LM fine-tuning...");
+		logger.info("Starting LM fine-tuning...");
 		if (keyToData.size > numThreads) {
 			throw new Error(
 				`BootstrapFinetune requires \`num_threads\` to be bigger than or equal to the number of fine-tuning ` +`
@@ -379,10 +379,10 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 			);
 }
 
-		console.log(`${keyToData.size} fine-tuning job(s) to start`);
+		logger.info(`${keyToData.size} fine-tuning job(s) to start`);
 		const keyToLM = await this.finetuneLMs(keyToData);
 
-		console.log("Updating the student program with the fine-tuned LMs...");
+		logger.info("Updating the student program with the fine-tuned LMs...");
 		for (let predInd = 0; predInd < student.predictors().length; predInd++) {
 			const pred = student.predictors()[predInd];
 			const dataPredInd = this.config.multitask ? null:predInd;
@@ -401,7 +401,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 			pred.demos = this.config.exclude_demos ? [] :pred.demos;
 }
 
-		console.log("BootstrapFinetune has finished compiling the student program");
+		logger.info("BootstrapFinetune has finished compiling the student program");
 		(student as any)._compiled = true;
 		return student;
 }
@@ -414,7 +414,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 		finetuneDict:Map<string, any>,
 	):Promise<Map<string, LMInterface | Error>> {
 		const numJobs = finetuneDict.size;
-		console.log(`Starting ${numJobs} fine-tuning job(s)...`);
+		logger.info(`Starting ${numJobs} fine-tuning job(s)...`);
 
 		const keyToJob = new Map<string, FinetuneJob>();
 
@@ -422,7 +422,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 		for (const [key, finetuneKwargs] of finetuneDict) {
 			const {lm} = finetuneKwargs;
 
-			console.log(
+			logger.info(
 				"Calling lm.kill() on the LM to be fine-tuned to free up resources.",
 			);
 
@@ -434,7 +434,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 			const job:FinetuneJob = {
 				async result():Promise<LMInterface | Error> {
 					try {
-						console.log(`Fine-tuning job for ${key} completed`);
+						logger.info(`Fine-tuning job for ${key} completed`);
 						return lm; // Return the fine-tuned LM
 } catch (error) {
 						return error instanceof Error ? error:new Error(String(error));
@@ -457,7 +457,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 }
 			keyToLM.set(key, result);
 			job.thread.join();
-			console.log(`Job ${++jobIndex}/${numJobs} is done`);
+			logger.info(`Job ${++jobIndex}/${numJobs} is done`);
 }
 
 		return keyToLM;
@@ -472,9 +472,9 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 		predInd:number | null = null,
 	):Promise<{ trainData: any[]; dataFormat: DataFormat}> {
 		if (this.config.metric) {
-			console.log(`Collected data for ${traceData.length} examples`);
+			logger.info(`Collected data for ${traceData.length} examples`);
 			traceData = traceData.filter((d) => d.score);
-			console.log(
+			logger.info(
 				`After filtering with the metric, ${traceData.length} examples remain`,
 			);
 }
@@ -556,7 +556,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 
 				data.push(dataDict);
 } catch (_error) {
-				console.warn("Failed to process example during bootstrapping");
+				logger.warn("Failed to process example during bootstrapping");
 }
 }
 

@@ -14,49 +14,49 @@ export declare class EventLogger {
     /**
      * Force enable event logging regardless of NODE_ENV
      */
-    static enable():void;
+    static enable(): void;
     /**
      * Disable forced event logging (revert to NODE_ENV check)
      */
-    static disable():void;
+    static disable(): void;
     /**
      * Check if logging is currently enabled
      */
-    static isEnabled():boolean;
+    static isEnabled(): boolean;
     /**
      * Log event with optional payload
      */
-    static log(eventName:string, payload?:unknown): void;
+    static log(eventName: string, payload?: unknown): void;
     /**
      * Log event flow between components
      */
-    static logFlow(from:string, to:string, eventName:string): void;
+    static logFlow(from: string, to: string, eventName: string): void;
     /**
      * Log event with context information
      */
-    static logWithContext(eventName:string, payload:unknown, context:{
-        component?:string;
-        phase?:string;
-        timestamp?:Date;
-}):void;
+    static logWithContext(eventName: string, payload: unknown, context: {
+        component?: string;
+        phase?: string;
+        timestamp?: Date;
+    }): void;
     /**
      * Log error events with enhanced formatting
      */
-    static logError(eventName:string, error:Error | string, context?:{
-        component?:string;
-        phase?:string;
-}):void;
+    static logError(eventName: string, error: Error | string, context?: {
+        component?: string;
+        phase?: string;
+    }): void;
 }
 /**
  * Quick event logging without needing to reference EventLogger class
  */
-export declare function logEvent(eventName:string, payload?:unknown): void;
+export declare function logEvent(eventName: string, payload?: unknown): void;
 /**
  * Quick flow logging
  */
-export declare function logFlow(from:string, to:string, eventName:string): void;
+export declare function logFlow(from: string, to: string, eventName: string): void;
 /**
  * Quick error logging
  */
-export declare function logError(eventName:string, error:Error | string, component?:string): void;
+export declare function logError(eventName: string, error: Error | string, component?: string): void;
 //# sourceMappingURL=event-logger.d.ts.map

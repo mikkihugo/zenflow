@@ -215,7 +215,7 @@ export function createLLMProvider(
  *   p => p.category === 'file-operations' && p.available
  * );
  * 
- * console.log('Available coding providers: ', codingProviders);
+ * logger.info('Available coding providers: ', codingProviders);
 ' * // Output:[{ id: 'claude-code', name: ' Claude Code CLI', ...}]
  * ```
  *

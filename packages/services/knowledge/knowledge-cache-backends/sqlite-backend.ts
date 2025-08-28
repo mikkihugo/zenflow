@@ -101,7 +101,7 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
     
     this.logger = getLogger('sqlite-backend');
     
-    this.stats = 
+    this._stats = 
       totalEntries:0,
       totalSize:0,
       cacheHits:0,

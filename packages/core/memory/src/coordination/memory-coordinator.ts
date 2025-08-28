@@ -9,7 +9,7 @@ import { EventEmitter} from '@claude-zen/foundation';
 export interface BackendInterface {
   initialize():Promise<void>;
   store(key:string, value:unknown, namespace?:string): Promise<unknown>;
-  retrieve(key:string, namespace?:string): Promise<any | null>;
+  retrieve(key:string, namespace?:string): Promise<unknown | null>;
   search(pattern:string, namespace?:string): Promise<Record<string, unknown>>;
   delete(key:string, namespace?:string): Promise<boolean>;
   listNamespaces():Promise<string[]>;
@@ -451,10 +451,14 @@ export class MemoryCoordinator extends EventEmitter {
             try {
               const value = await node?.backend?.retrieve(key);
               results?.push({ key, value});
-} catch (_error) {}
+            } catch (error) {
+              this.logger.warn(`Failed to retrieve key ${key} from node`, { error });
+            }
 }
 }
-} catch (_error) {}
+        } catch (error) {
+          this.logger.warn('Failed to query node during search', { error });
+        }
 }
 
     // Remove duplicates (in case of replication)
@@ -491,7 +495,7 @@ export class MemoryCoordinator extends EventEmitter {
    * Health check for coordinator.
    */
   async healthCheck():Promise<{ status: string; details: unknown}> {
-    const stats = this.getStats();
+    const _stats = this.getStats();
     const unhealthyNodes = Array.from(this.nodes.values()).filter(
       (n) => n.status !== 'active'
     );

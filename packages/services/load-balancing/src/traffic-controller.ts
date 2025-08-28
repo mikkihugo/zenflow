@@ -366,8 +366,8 @@ export class TrafficController extends EventBus<TrafficEvents> {
         timestamp:Date.now(),
 });
       
-      this.logger.error('❌ Traffic control failed: ', error);
-'      return [];
+  this.logger.error('❌ Traffic control failed: ', error);
+  return [];
 }
 }
 
@@ -455,7 +455,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
         type: 'emergency',        action: 'emergency_protocol_activated',        reasoning:[
           `Critical system conditions detected`,
           `CPU:${(metrics.cpuUsage * 100).toFixed(1)}%`,
-          `Memory:${(metrics.memoryUsage * 100).toFixed(1)}%`, `
+          `Memory:${(metrics.memoryUsage * 100).toFixed(1)}%`,
           `Response time:${metrics.averageResponseTime}ms`,
           `Error rate:${(metrics.errorRate * 100).toFixed(2)}%`,
           'Activating emergency load redistribution',],

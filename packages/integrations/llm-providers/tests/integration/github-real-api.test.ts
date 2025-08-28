@@ -16,7 +16,7 @@ function loadCopilotToken():string | null {
       return config.access_token;
 }
 } catch (error) {
-    console.warn('Could not load Copilot token: ', error);
+    logger.warn('Could not load Copilot token: ', error);
 '}
   
   // Fallback to environment variable
@@ -49,7 +49,7 @@ describe('GitHub Copilot Real API Integration', () => {
         expect(config).toHaveProperty('created_at');
         expect(config).toHaveProperty('source',    'github-copilot-oauth');
 } else {
-        console.log('ℹ️ No .claude-zen/copilot-token.json found - skipping token config test');
+        logger.info('ℹ️ No .claude-zen/copilot-token.json found - skipping token config test');
 }
 });
 
@@ -57,9 +57,9 @@ describe('GitHub Copilot Real API Integration', () => {
       if (copilotToken) {
         expect(copilotToken).toMatch(/^gho_/);
         expect(copilotToken.length).toBeGreaterThan(20);
-        console.log('✅ Valid GitHub Copilot OAuth token format detected');
+        logger.info('✅ Valid GitHub Copilot OAuth token format detected');
 } else {
-        console.log('⚠️ No Copilot token available - skipping format validation');
+        logger.info('⚠️ No Copilot token available - skipping format validation');
 }
 });
 });
@@ -67,18 +67,18 @@ describe('GitHub Copilot Real API Integration', () => {
   describe('Real API Health Check', () => {
     it('should connect to GitHub Copilot API', async () => {
       if (!copilotToken) {
-        console.log('⚠️ No Copilot token available - skipping health check');
+        logger.info('⚠️ No Copilot token available - skipping health check');
         return;
 }
 
       const isHealthy = await copilotAPI.healthCheck();
       expect(typeof isHealthy).toBe('boolean');
-      console.log(`🏥 GitHub Copilot API Health:${isHealthy ? '✅ Healthy' : '❌ Unhealthy'}`);
+      logger.info(`🏥 GitHub Copilot API Health:${isHealthy ? '✅ Healthy' : '❌ Unhealthy'}`);
 }, 15000);
 
     it('should list real models from GitHub Copilot API', async () => {
       if (!copilotToken) {
-        console.log('⚠️ No Copilot token available - skipping models list');
+        logger.info('⚠️ No Copilot token available - skipping models list');
         return;
 }
 
@@ -86,20 +86,20 @@ describe('GitHub Copilot Real API Integration', () => {
       expect(Array.isArray(models)).toBe(true);
       expect(models.length).toBeGreaterThan(0);
       
-      console.log(`📋 GitHub Copilot Models:${models.length} available`);
-      console.log(`🎯 Available models:${models.slice(0, 5).join(',    ')}${models.length > 5 ? '...' : ''}`);
+      logger.info(`📋 GitHub Copilot Models:${models.length} available`);
+      logger.info(`🎯 Available models:${models.slice(0, 5).join(',    ')}${models.length > 5 ? '...' : ''}`);
 '      
       // Check for expected high-quality models
       const expectedModels = ['gpt-4',    'gpt-4-turbo',    'o3-mini',    'claude-sonnet-4'];
       const foundModels = expectedModels.filter(model => models.includes(model));
-      console.log(`🔥 High-quality models found:${foundModels.join(',    ')}`);
+      logger.info(`🔥 High-quality models found:${foundModels.join(',    ')}`);
 }, 15000);
 });
 
   describe('Real API Execution', () => {
     it('should execute real chat completion', async () => {
       if (!copilotToken) {
-        console.log('⚠️ No Copilot token available - skipping real API execution');
+        logger.info('⚠️ No Copilot token available - skipping real API execution');
         return;
 }
 
@@ -118,15 +118,15 @@ describe('GitHub Copilot Real API Integration', () => {
         expect(response.metadata?.provider).toBe('github-copilot-api');
         expect(response.metadata?.model).toBeTruthy();
         
-        console.log(`🤖 GitHub Copilot Response (${response.content.length} chars):`);
-        console.log(`📊 Metadata:Model=${response.metadata?.model}, Tokens=${response.metadata?.tokens}`);
-        console.log(`✂️ Content Preview:${response.content.substring(0, 150)}...`);
+        logger.info(`🤖 GitHub Copilot Response (${response.content.length} chars):`);
+        logger.info(`📊 Metadata:Model=${response.metadata?.model}, Tokens=${response.metadata?.tokens}`);
+        logger.info(`✂️ Content Preview:${response.content.substring(0, 150)}...`);
 }
 }, 30000);
 
     it('should handle different models', async () => {
       if (!copilotToken) {
-        console.log('⚠️ No Copilot token available - skipping model testing');
+        logger.info('⚠️ No Copilot token available - skipping model testing');
         return;
 }
 
@@ -137,7 +137,7 @@ describe('GitHub Copilot Real API Integration', () => {
       ).slice(0, 2);
 
       if (testModels.length === 0) {
-        console.log('⚠️ No suitable test models available');
+        logger.info('⚠️ No suitable test models available');
         return;
 }
 
@@ -155,7 +155,7 @@ describe('GitHub Copilot Real API Integration', () => {
         expect(result.isOk()).toBe(true);
         
         if (result.isOk()) {
-          console.log(`✅ Model ${model}:Response received (${result.value.content.length} chars)`);
+          logger.info(`✅ Model ${model}:Response received (${result.value.content.length} chars)`);
           expect(result.value.metadata?.model).toBe(model);
 }
 }
@@ -176,13 +176,13 @@ describe('GitHub Copilot Real API Integration', () => {
       if (result.isErr()) {
         expect(result.error.code).toBeTruthy();
         expect(result.error.message).toContain('GitHub Copilot API error');
-        console.log(`🚫 Expected error with invalid token:${result.error.message}`);
+        logger.info(`🚫 Expected error with invalid token:${result.error.message}`);
 }
 }, 15000);
 
     it('should handle network errors', async () => {
       if (!copilotToken) {
-        console.log('⚠️ No Copilot token available - skipping network error test');
+        logger.info('⚠️ No Copilot token available - skipping network error test');
         return;
 }
 
@@ -198,7 +198,7 @@ describe('GitHub Copilot Real API Integration', () => {
       
       if (result.isErr()) {
         expect(result.error.code).toBeTruthy();
-        console.log(`🌐 Expected network error:${result.error.message}`);
+        logger.info(`🌐 Expected network error:${result.error.message}`);
 }
 }, 15000);
 });
@@ -206,7 +206,7 @@ describe('GitHub Copilot Real API Integration', () => {
   describe('Provider Factory Integration', () => {
     it('should create provider via factory with real token', async () => {
       if (!copilotToken) {
-        console.log('⚠️ No Copilot token available - skipping factory test');
+        logger.info('⚠️ No Copilot token available - skipping factory test');
         return;
 }
 
@@ -226,7 +226,7 @@ describe('GitHub Copilot Real API Integration', () => {
       expect(result.isOk()).toBe(true);
       
       if (result.isOk()) {
-        console.log(`🏭 Factory test successful:${result.value.content.substring(0, 100)}...`);
+        logger.info(`🏭 Factory test successful:${result.value.content.substring(0, 100)}...`);
 }
 }, 20000);
 });

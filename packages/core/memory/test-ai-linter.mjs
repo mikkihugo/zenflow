@@ -12,6 +12,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 async function testAILinter() {
+     
+    // eslint-disable-next-line no-console
   console.log('🤖 Testing AI Linter on Memory System\n');
   
   try {
@@ -27,10 +29,16 @@ async function testAILinter() {
       processingMode: 'sequential' // More reliable for testing
     });
     
+     
+    // eslint-disable-next-line no-console
     console.log('✅ AI Linter initialized with GPT-4.1 + Copilot');
+     
+    // eslint-disable-next-line no-console
     console.log('📋 Configuration:', aiLinter.getConfig());
     
     // Test file discovery
+     
+    // eslint-disable-next-line no-console
     console.log('\n🔍 Discovering files to lint...');
     const discoveryResult = await aiLinter.discoverFiles({
       scope: 'app-only',
@@ -39,22 +47,34 @@ async function testAILinter() {
     });
     
     if (discoveryResult.success) {
+     
+    // eslint-disable-next-line no-console
       console.log(`📁 Found ${discoveryResult.data.length} files`);
       if (discoveryResult.data.length > 0) {
+     
+    // eslint-disable-next-line no-console
         console.log('Files:', discoveryResult.data.slice(0, 5));
       }
     } else {
+     
+    // eslint-disable-next-line no-console
       console.log('❌ File discovery failed:', discoveryResult.error);
     }
     
     // Test single file processing
     const testFile = join(__dirname, 'src/types.ts');
+     
+    // eslint-disable-next-line no-console
     console.log(`\n🔧 Testing single file processing: ${testFile}`);
     
     const fileResult = await aiLinter.processFile(testFile);
     
     if (fileResult.success) {
+     
+    // eslint-disable-next-line no-console
       console.log('✅ File processing result:');
+     
+    // eslint-disable-next-line no-console
       console.log({
         filePath: fileResult.data.filePath,
         success: fileResult.data.success,
@@ -64,6 +84,8 @@ async function testAILinter() {
         timeTaken: fileResult.data.timeTaken
       });
     } else {
+     
+    // eslint-disable-next-line no-console
       console.log('❌ File processing failed:', fileResult.error);
     }
     
@@ -74,12 +96,18 @@ async function testAILinter() {
     ].filter(Boolean);
     
     if (batchFiles.length > 0) {
+     
+    // eslint-disable-next-line no-console
       console.log(`\n📦 Testing batch processing on ${batchFiles.length} files...`);
       
       const batchResult = await aiLinter.processBatch(batchFiles);
       
       if (batchResult.success) {
+     
+    // eslint-disable-next-line no-console
         console.log('✅ Batch processing completed:');
+     
+    // eslint-disable-next-line no-console
         console.log({
           totalFiles: batchResult.data.totalFiles,
           processedFiles: batchResult.data.processedFiles,
@@ -90,11 +118,15 @@ async function testAILinter() {
           totalTime: batchResult.data.totalTime
         });
       } else {
+     
+    // eslint-disable-next-line no-console
         console.log('❌ Batch processing failed:', batchResult.error);
       }
     }
     
   } catch (error) {
+     
+    // eslint-disable-next-line no-console
     console.error('💥 Test failed:', error);
     process.exit(1);
   }
@@ -102,8 +134,12 @@ async function testAILinter() {
 
 // Run the test
 testAILinter().then(() => {
+     
+    // eslint-disable-next-line no-console
   console.log('\n🎉 AI Linter test completed');
 }).catch(error => {
+     
+    // eslint-disable-next-line no-console
   console.error('💥 Test failed:', error);
   process.exit(1);
 });

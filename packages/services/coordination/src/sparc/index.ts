@@ -111,13 +111,14 @@ export interface TeamworkResponse {
  * Event-driven SPARC Manager that works independently or with Teamwork
  */
 export class SPARCManager extends EventBus {
-  private config: new Map();
-  private collaborationTimeouts: new Map();
-  private pendingReviews: Map<string, {
+  private config = new Map();
+  private collaborationTimeouts = new Map();
+  private pendingReviews = new Map<string, {
     resolve: (result: SparcResult| null) => void;
-    acknowledged: new Map();
-  private neuralOptimizer: sparcNeuralOptimizer;
-  private phaseStartTimes: new Map();
+    acknowledged: Map<string, boolean>;
+  }>();
+  private neuralOptimizer: any; // sparcNeuralOptimizer
+  private phaseStartTimes = new Map();
   constructor(config?:Partial<SparcConfig>) {
     super();
     this.config = {

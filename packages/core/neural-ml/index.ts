@@ -61,13 +61,13 @@
  * const matrixB = new Float32Array([5, 6, 7, 8]); // 2x2 matrix
  * const result = await engine.matrixMultiply(optimizerId, matrixA, matrixB, 2, 2, 2);
  *
- * console.log('Matrix Result: ', result.data);
-' * console.log('Execution Backend: ', result.backend);
-' * console.log('Execution Time: ', result.executionTime);
+ * logger.info('Matrix Result: ', result.data);
+' * logger.info('Execution Backend: ', result.backend);
+' * logger.info('Execution Time: ', result.executionTime);
 ' *
  * // Get comprehensive performance statistics and optimization insights
- * const stats = await engine.getStats();
- * console.log('Performance Statistics: ', {
+ * const _stats = await engine.getStats();
+ * logger.info('Performance Statistics: ', {
 ' *   totalOperations:stats.totalOperations,
  *   averageLatency:stats.averageLatency,
  *   throughput:stats.throughput,
@@ -78,8 +78,8 @@
  * // Get AI-powered optimization recommendations
  * const recommendations = await engine.getOptimizationRecommendations();
  * recommendations.forEach(rec => {
- *   console.log(`💡 ${rec.category}:${rec.suggestion}`);
- *   console.log(`   Expected improvement:${rec.expectedImprovement}`);
+ *   logger.info(`💡 ${rec.category}:${rec.suggestion}`);
+ *   logger.info(`   Expected improvement:${rec.expectedImprovement}`);
  *});
  * ```
  *
@@ -136,7 +136,7 @@
  *
  * // The engine automatically selects optimal backend based on data size and system load
  * const vectorSum = await engine.vectorAdd(gpuOptimizer, vectorA, vectorB);
- * console.log('Vector Addition: ', {
+ * logger.info('Vector Addition: ', {
 ' *   backend:vectorSum.backend,
  *   executionTime:vectorSum.executionTime,
  *   throughput:`${(vectorA.length / (vectorSum.executionTime / 1000)).toFixed(0)} ops/sec`
@@ -154,7 +154,7 @@
  *}
  * );
  *
- * console.log('Neural Activation: ', {
+ * logger.info('Neural Activation: ', {
 ' *   activationType:activationResult.activationType,
  *   processedElements:activationResult.processedElements,
  *   memoryEfficiency:activationResult.memoryEfficiency,
@@ -163,7 +163,7 @@
  *
  * // Comprehensive system health monitoring and diagnostics
  * const health = await engine.getSystemHealth();
- * console.log('System Health Report: ', {
+ * logger.info('System Health Report: ', {
 ' *   overallScore:health.overallScore,
  *   cpuUtilization:health.cpuUtilization,
  *   gpuUtilization:health.gpuUtilization,
@@ -174,7 +174,7 @@
  *
  * // Real-time performance monitoring and alerting
  * engine.on('performanceAlert', (alert) => {
- *   console.warn(`Performance Alert:${alert.type} - ${alert.message}`);
+ *   logger.warn(`Performance Alert:${alert.type} - ${alert.message}`);
  *   if (alert.severity === 'critical') {
  *     // Implement automatic scaling or optimization
  *     engine.enablePerformanceBoost();
@@ -277,7 +277,7 @@
  *   trainingConfig
  * );
  *
- * console.log('Distributed Training Results: ', {
+ * logger.info('Distributed Training Results: ', {
 ' *   finalAccuracy:trainingResult.metrics.accuracy,
  *   finalLoss:trainingResult.metrics.loss,
  *   trainingTime:trainingResult.totalTrainingTime,
@@ -299,7 +299,7 @@
  *}
  *});
  *
- * console.log('Model Export: ', {
+ * logger.info('Model Export: ', {
 ' *   modelSize:exportedModel.sizeBytes,
  *   optimizationRatio:exportedModel.compressionRatio,
  *   expectedLatency:exportedModel.benchmarks.latency,
@@ -348,10 +348,10 @@
  *   { rows:5000, cols:5000, name: 'xxl'}
  *];
  *
- * console.log('Running Matrix Operation Benchmarks...\n');
+ * logger.info('Running Matrix Operation Benchmarks...\n');
  *
  * for (const size of benchmarkSizes) {
- *   console.log(`🔍 Benchmarking ${size.name} matrices (${size.rows}x${size.cols})...`);
+ *   logger.info(`🔍 Benchmarking ${size.name} matrices (${size.rows}x${size.cols})...`);
  *
  *   // Generate random matrices
  *   const matrixA = new Float32Array(size.rows * size.cols)
@@ -387,11 +387,11 @@
  *         memoryUsage:result.memoryUsage
  *};
  *
- *       console.log(`  ${backend.padEnd(8)}:${(endTime - startTime).toFixed(2)}ms ` +`
+ *       logger.info(`  ${backend.padEnd(8)}:${(endTime - startTime).toFixed(2)}ms ` +`
  *                  `(${result.backend}, ${(results[backend].throughput / 1e6).toFixed(1)}M ops/sec)`);
  *
  *} catch (error) {
- *       console.log(`  ${backend.padEnd(8)}:Failed (${error.message})`);
+ *       logger.info(`  ${backend.padEnd(8)}:Failed (${error.message})`);
  *}
  *}
  *
@@ -400,7 +400,7 @@
  *     .sort(([,a], [,b]) => a.executionTime - b.executionTime)[0];
  *
  *   if (optimal) {
- *     console.log(`  🏆 Optimal:${optimal[0]} (${optimal[1].executionTime.toFixed(2)}ms)\n`);
+ *     logger.info(`  🏆 Optimal:${optimal[0]} (${optimal[1].executionTime.toFixed(2)}ms)\n`);
  *}
  *}
  *
@@ -413,13 +413,13 @@
  *   thermalAnalysis:true
  *});
  *
- * console.log('🎯 Optimization Recommendations: ');
+ * logger.info('🎯 Optimization Recommendations: ');
 ' * recommendations.forEach((rec, index) => {
- *   console.log(`  ${index + 1}. ${rec.title}`);
- *   console.log(`     ${rec.description}`);
- *   console.log(`     Expected improvement:${rec.expectedImprovement}`);
- *   console.log(`     Implementation effort:${rec.implementationEffort}`);
- *   console.log(`     Priority:${rec.priority}\n`);
+ *   logger.info(`  ${index + 1}. ${rec.title}`);
+ *   logger.info(`     ${rec.description}`);
+ *   logger.info(`     Expected improvement:${rec.expectedImprovement}`);
+ *   logger.info(`     Implementation effort:${rec.implementationEffort}`);
+ *   logger.info(`     Priority:${rec.priority}\n`);
  *});
  *
  * // Real-time performance monitoring dashboard
@@ -438,7 +438,7 @@
  *});
  *
  * performanceMonitor.on('metrics', (metrics) => {
- *   console.log(`📊 Live Metrics:Latency: ${metrics.latency}ms, ` +`
+ *   logger.info(`📊 Live Metrics:Latency: ${metrics.latency}ms, ` +`
  *              `Throughput:${(metrics.throughput / 1e6).toFixed(1)}M ops/sec, ` +`
  *              `Memory:${(metrics.memoryUsage * 100).toFixed(1)}%`);
  *});

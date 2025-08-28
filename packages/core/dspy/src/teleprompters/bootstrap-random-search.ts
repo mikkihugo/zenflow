@@ -169,10 +169,10 @@ export interface CandidateResult {
  *     valset:productionValidation
  *});
  *
- *   console.log('Random search completed successfully');
- *   console.log('Best program performance: ', await evaluate(bestProgram, testSet));
+ *   logger.info('Random search completed successfully');
+ *   logger.info('Best program performance: ', await evaluate(bestProgram, testSet));
 ' *} catch (error) {
- *   console.error('Random search failed: ', error.message);
+ *   logger.error('Random search failed: ', error.message);
 ' *}
  *
  * // Custom search with specific strategies
@@ -246,10 +246,10 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
 		this.num_candidate_sets = config.num_candidate_programs ?? 16;
 		this.max_labeled_demos = config.max_labeled_demos ?? 16;
 
-		console.log(
+		logger.info(
 			`Going to sample between ${this.min_num_samples} and ${this.max_num_samples} traces per predictor.`,
 		);
-		console.log(
+		logger.info(
 			`Will attempt to bootstrap ${this.num_candidate_sets} candidate sets.`,
 		);
 }
@@ -362,13 +362,13 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
 			all_subscores.push(subscores);
 
 			if (scores.length === 0 || score > Math.max(...scores)) {
-				console.log("New best score:", score, "for seed", seed);
+				logger.info("New best score:", score, "for seed", seed);
 				best_program = program;
 }
 
 			scores.push(score);
-			console.log(`Scores so far:${scores}`);
-			console.log(`Best score so far:${Math.max(...scores)}`);
+			logger.info(`Scores so far:${scores}`);
+			logger.info(`Best score so far:${Math.max(...scores)}`);
 
 			score_data.push({
 				score,
@@ -382,7 +382,7 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
 				this.stop_at_score !== undefined &&
 				score >= this.stop_at_score
 			) {
-				console.log(
+				logger.info(
 					`Stopping early because score ${score} is >= stop_at_score ${this.stop_at_score}`,
 				);
 				break;
@@ -399,7 +399,7 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
 			(a, b) => b.score - a.score,
 		);
 
-		console.log(`${score_data.length} candidate programs found.`);
+		logger.info(`${score_data.length} candidate programs found.`);
 
 		(best_program as any)._compiled = true;
 		return best_program;

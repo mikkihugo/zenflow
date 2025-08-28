@@ -50,7 +50,7 @@ class LoggingConfigurationManager {
                 .initializeLogTape()
                 .catch((error) => {
                 // Enhanced error handling for logging initialization
-                console.error("LogTape initialization failed:", {
+                logger.error("LogTape initialization failed:", {
                     error: error['message'],
                     timestamp: new Date().toISOString(),
                     fallback: "Console logging will be used",
@@ -105,7 +105,7 @@ class LoggingConfigurationManager {
         }
     }
     logFallbackWarning(error) {
-        console.warn("[LoggingConfig] Configuration fallback activated:", {
+        logger.warn("[LoggingConfig] Configuration fallback activated:", {
             reason: "Central config failed",
             error: error instanceof Error ? error['message'] : String(error),
             fallback: "Environment variables",
@@ -149,7 +149,7 @@ class LoggingConfigurationManager {
             }
         }
         catch {
-            console.log("📝 Foundation LogTape using console-only (OTEL unavailable)");
+            logger.info("📝 Foundation LogTape using console-only (OTEL unavailable)");
         }
         return config;
     }
@@ -185,24 +185,24 @@ class LoggingConfigurationManager {
      * Handle collector fallback scenarios
      */
     handleCollectorFallback(otelConfig) {
-        console.log("⚠️  Internal OTEL collector unavailable, trying external OTEL...");
+        logger.info("⚠️  Internal OTEL collector unavailable, trying external OTEL...");
         if (otelConfig.otelLogsExporter === "otlp" || otelConfig.zenOtelEnabled) {
-            console.log("⚠️  OTEL integration has been moved to @claude-zen/infrastructure package. Use getTelemetryManager() instead.");
-            console.log("   Foundation logging will use console-only mode.");
+            logger.info("⚠️  OTEL integration has been moved to @claude-zen/infrastructure package. Use getTelemetryManager() instead.");
+            logger.info("   Foundation logging will use console-only mode.");
         }
     }
     /**
      * Log successful collector initialization
      */
     logCollectorSuccess(endpoint) {
-        console.log("[LogTape] System initialized successfully:", {
+        logger.info("[LogTape] System initialized successfully:", {
             collector: "Internal OTEL collector",
             endpoint,
             status: "active",
             timestamp: new Date().toISOString(),
         });
-        console.log(`   Internal Collector: ${endpoint}/ingest`);
-        console.log("   Service: claude-zen-foundation");
+        logger.info(`   Internal Collector: ${endpoint}/ingest`);
+        logger.info("   Service: claude-zen-foundation");
     }
     /**
      * Create sink configuration
@@ -239,7 +239,7 @@ class LoggingConfigurationManager {
             const props = Object.keys(properties).length > 0
                 ? ` ${JSON.stringify(properties)}`
                 : "";
-            console.log(`${timestamp}${level} [${category}] ${message}${props}`);
+            logger.info(`${timestamp}${level} [${category}] ${message}${props}`);
         };
     }
     /**
@@ -330,11 +330,13 @@ class LoggingConfigurationManager {
                 })
                     .catch((fetchError) => {
                     // Silently ignore fetch errors to avoid logging loops
+    // eslint-disable-next-line no-console
                     console.debug("Failed to send log to internal collector:", fetchError['message']);
                 });
             }
             catch (error) {
                 // Silently ignore errors to avoid logging loops
+    // eslint-disable-next-line no-console
                 console.debug("Internal collector sink error:", error);
             }
         };
@@ -441,6 +443,7 @@ class LoggingConfigurationManager {
         this.config = { ...this.config, ...newConfig };
         // Reinitialize LogTape with new config
         this.initialized = false;
+    // eslint-disable-next-line no-console
         this.initializeLogTape().catch(console.error);
         // Clear cached loggers to pick up new config
         this.loggers.clear();
@@ -545,6 +548,7 @@ export function setLogBroadcaster(broadcaster) {
 export function clearLogBroadcaster() {
     logBroadcaster = null;
 }
+    // eslint-disable-next-line no-console
 // LOGGING FORCING STRATEGY - No console.log or winston allowed!
 // =============================================================================
 /**

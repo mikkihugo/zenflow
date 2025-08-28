@@ -42,7 +42,7 @@ export class MemoryLoadBalancer extends EventEmitter {
     super();
     this.config = config;
     this.logger = getLogger('MemoryLoadBalancer');
-    this.stats = {
+    this._stats = {
       totalRequests:0,
       nodeDistribution:{},
       averageLatency:0,
@@ -324,7 +324,7 @@ export class MemoryLoadBalancer extends EventEmitter {
 }
 
   reset():void {
-    this.stats = {
+    this._stats = {
       totalRequests:0,
       nodeDistribution:{},
       averageLatency:0,

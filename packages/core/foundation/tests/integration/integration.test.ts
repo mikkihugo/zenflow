@@ -392,7 +392,7 @@ describe("Foundation Integration Tests", () => {
 				await llm.complete("Test 1", { maxTokens:30});
 				await llm.complete("Test 2", { maxTokens:30});
 
-				const stats = llm.getUsageStats();
+				const _stats = llm.getUsageStats();
 				expect(stats.requestCount).toBeGreaterThan(0);
 
 				logger.info("System metrics tracked", stats);

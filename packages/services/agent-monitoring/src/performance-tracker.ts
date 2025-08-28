@@ -8,13 +8,13 @@
 // Simple logger placeholder
 const getLogger = (name:string) => ({
   info:(msg: string, meta?:unknown) =>
-    console.log(`[INFO:${name}] ${msg}`, meta || '),
+    logger.info(`[INFO:${name}] ${msg}`, meta || '),
   debug:(msg: string, meta?:unknown) =>
-    console.log(`[DEBUG:${name}] ${msg}`, meta || '),
+    logger.info(`[DEBUG:${name}] ${msg}`, meta || '),
   warn:(msg: string, meta?:unknown) =>
-    console.warn(`[WARN:${name}] ${msg}`, meta || '),
+    logger.warn(`[WARN:${name}] ${msg}`, meta || '),
   error:(msg: string, meta?:unknown) =>
-    console.error(`[ERROR:${name}] ${msg}`, meta || '),
+    logger.error(`[ERROR:${name}] ${msg}`, meta || '),
 });
 
 // Simple metric recording placeholder

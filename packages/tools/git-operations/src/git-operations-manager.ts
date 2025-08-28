@@ -1670,8 +1670,10 @@ Respond in JSON format:
 
     const systemHealth =
       maintenanceRequired > 10
-        ? 'critical')        :maintenanceRequired > 5
-          ? 'warning')          : 'healthy';
+        ? 'critical'
+        : maintenanceRequired > 5
+          ? 'warning'
+          : 'healthy';
 
     return {
       activeOperations:this.activeOperations.size,

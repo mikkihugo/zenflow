@@ -9,7 +9,7 @@
  * import { generateUUID, isUUID} from '@claude-zen/foundation/utilities/ids';
  *
  * const id = generateUUID();
- * console.log(isUUID(id)); // true
+ * logger.info(isUUID(id)); // true
  * ```
  *
  * @example Short ID Generation
@@ -51,8 +51,8 @@ export function generateUUID():UUID {
  * @returns True if valid UUID format
  * @example
  * ```typescript`
- * console.log(isUUID("f47ac10b-58cc-4372-a567-0e02b2c3d479")); // true
- * console.log(isUUID("not-a-uuid")); // false
+ * logger.info(isUUID("f47ac10b-58cc-4372-a567-0e02b2c3d479")); // true
+ * logger.info(isUUID("not-a-uuid")); // false
  * ```
  */
 export function isUUID(value:unknown): value is UUID {

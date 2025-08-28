@@ -21,7 +21,7 @@ class CopilotContextGenerator {
 			const configContent = await fs.readFile(this.configPath, "utf8");
 			this.config = yaml.load(configContent);
 		} catch (error) {
-			console.error("Failed to load configuration:", error.message);
+			logger.error("Failed to load configuration:", error.message);
 			process.exit(1);
 		}
 	}
@@ -238,7 +238,7 @@ class ArchitectureValidator {
   }
 
   validateDomainBoundaries() {
-    console.log('Validating domain boundaries...');
+    logger.info('Validating domain boundaries...');
 
     // Check for cross-domain imports that violate boundaries
     this.domains.forEach(domain => {
@@ -270,7 +270,7 @@ class ArchitectureValidator {
   }
 
   validateAgentTypeUsage() {
-    console.log('Validating agent type usage...');
+    logger.info('Validating agent type usage...');
 
     const files = this.getTypeScriptFiles('src');
     files.forEach(file => {
@@ -288,7 +288,7 @@ class ArchitectureValidator {
   }
 
   validateWASMUsage() {
-    console.log('Validating WASM usage in neural domain...');
+    logger.info('Validating WASM usage in neural domain...');
 
     const neuralFiles = this.getTypeScriptFiles('src/neural');
     neuralFiles.forEach(file => {
@@ -379,15 +379,15 @@ class ArchitectureValidator {
 
   report() {
     if (this.violations.length === 0) {
-      console.log('✅ All architecture validations passed');
+      logger.info('✅ All architecture validations passed');
       return 0;
     }
 
-    console.log(\`❌ Found \${this.violations.length} architecture violations:\`);
+    logger.info(\`❌ Found \${this.violations.length} architecture violations:\`);
     this.violations.forEach((violation, index) => {
-      console.log(\`\\n\${index + 1}. \${violation.rule}:\`);
-      console.log(\`   File: \${violation.file}\`);
-      console.log(\`   Issue: \${violation.violation}\`);
+      logger.info(\`\\n\${index + 1}. \${violation.rule}:\`);
+      logger.info(\`   File: \${violation.file}\`);
+      logger.info(\`   Issue: \${violation.violation}\`);
     });
 
     return 1;

@@ -13,7 +13,8 @@ import {
   formatDuration,
   intervalToDuration,
   subMinutes,
-} from 'date-fns')/**';
+} from 'date-fns';
+/**
  * Professional date calculation utilities
  */
 export class DateCalculator {

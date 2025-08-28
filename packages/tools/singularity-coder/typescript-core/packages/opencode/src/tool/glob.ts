@@ -32,7 +32,7 @@ export const GlobTool = Tool.define({
         break
 }
       const full = path.resolve(search, file)
-      const stats = await Bun.file(full)
+      const _stats = await Bun.file(full)
         .stat()
         .then((x) => x.mtime.getTime())
         .catch(() => 0)

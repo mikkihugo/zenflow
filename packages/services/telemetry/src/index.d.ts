@@ -33,7 +33,7 @@
  *
  * // Telemetry responds to brain with aggregated metrics
  * eventSystem.on('telemetry:metrics', (data) => {
- *   console.log('Telemetry data: ', data.metrics);
+ *   logger.info('Telemetry data: ', data.metrics);
 ' *});
  * ````
  *

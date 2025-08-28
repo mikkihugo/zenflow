@@ -285,13 +285,13 @@ export class DspyGEPAResult {
  *});
  *
  * // Access detailed optimization results
- * console.log(`Best score:${customResult.val_aggregate_scores[customResult.best_idx]}`);
- * console.log(`Total evaluations:${customResult.total_metric_calls}`);
- * console.log(`Discovery budget:${customResult.discovery_eval_counts}`);
+ * logger.info(`Best score:${customResult.val_aggregate_scores[customResult.best_idx]}`);
+ * logger.info(`Total evaluations:${customResult.total_metric_calls}`);
+ * logger.info(`Discovery budget:${customResult.discovery_eval_counts}`);
  *
  * // Get per-instance best candidates
  * const perInstanceBest = customResult.per_val_instance_best_candidates;
- * console.log(`Best candidates per validation instance:`, perInstanceBest);
+ * logger.info(`Best candidates per validation instance:`, perInstanceBest);
  * ```
  */
 export class GEPA extends Teleprompter {
@@ -422,7 +422,7 @@ export class GEPA extends Teleprompter {
 
 		// Logging configuration
 		this.log_dir = config.log_dir;
-		this.track_stats = config.track_stats ?? false;
+		this._track_stats = config.track_stats ?? false;
 		this.use_wandb = config.use_wandb ?? false;
 		this.wandb_api_key = config.wandb_api_key;
 		this.wandb_init_kwargs = config.wandb_init_kwargs;
@@ -533,7 +533,7 @@ export class GEPA extends Teleprompter {
 			);
 }
 
-		console.log(
+		logger.info(
 			`Running GEPA for approx ${this.max_metric_calls} metric calls of the program. ` +`
 				`This amounts to ${(`
 					this.max_metric_calls /
@@ -546,7 +546,7 @@ export class GEPA extends Teleprompter {
 		);
 
 		const actualValset = valset || trainset;
-		console.log(
+		logger.info(
 			`Using ${actualValset.length} examples for tracking Pareto scores. ` +`
 				`You can consider using a smaller sample of the valset to allow GEPA to explore ` +`
 				`more diverse solutions within the same budget.`,
@@ -737,7 +737,7 @@ export class GEPA extends Teleprompter {
 		track_best_outputs:boolean;
 		seed?:number | null;
 }):Promise<any> {
-		console.log("🧬 Starting GEPA optimization...");
+		logger.info("🧬 Starting GEPA optimization...");
 
 		// Initialize candidates with seed candidate
 		const candidates = [config.seed_candidate];
@@ -771,7 +771,7 @@ export class GEPA extends Teleprompter {
 			config.max_metric_calls / config.valset.length,
 		);
 
-		console.log(`📊 Running for up to ${max_generations} generations`);
+		logger.info(`📊 Running for up to ${max_generations} generations`);
 
 		// Evolution loop
 		while (
@@ -779,7 +779,7 @@ export class GEPA extends Teleprompter {
 			generation < max_generations
 		) {
 			generation++;
-			console.log(`\n🔄 Generation ${generation}`);
+			logger.info(`\n🔄 Generation ${generation}`);
 
 			// Generate new candidates through reflection
 			const new_candidates = await this.generateCandidates(
@@ -826,18 +826,18 @@ export class GEPA extends Teleprompter {
 
 				metric_calls += config.valset.length;
 
-				console.log(
+				logger.info(
 					`   Candidate ${candidates.length - 1}:${score.toFixed(3)}`,
 				);
 }
 
 			// Report best score
 			const best_score = Math.max(...val_aggregate_scores);
-			console.log(`✨ Best score so far:${best_score.toFixed(3)}`);
+			logger.info(`✨ Best score so far:${best_score.toFixed(3)}`);
 
 			// Early stopping if perfect score achieved
 			if (best_score >= config.perfect_score && config.skip_perfect_score) {
-				console.log("🎯 Perfect score achieved, stopping early");
+				logger.info("🎯 Perfect score achieved, stopping early");
 				break;
 }
 }
@@ -849,7 +849,7 @@ export class GEPA extends Teleprompter {
 			0,
 		);
 
-		console.log(
+		logger.info(
 			`🏆 Optimization complete! Best candidate:${best_idx} (score:${val_aggregate_scores[best_idx].toFixed(3)})`,
 		);
 

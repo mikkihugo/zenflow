@@ -49,15 +49,21 @@ export enum LogLevel {
 
 // Simple browser logger implementation
 export const getLogger = (name:string): Logger => ({
-	// eslint-disable-next-line no-console
+	 
+    // eslint-disable-next-line no-console
 	debug:(message: string, ...args:unknown[]) => console.debug(`[${name}] ${message}`, ...args),
-	// eslint-disable-next-line no-console
+	 
+    // eslint-disable-next-line no-console
 	info:(message: string, ...args:unknown[]) => console.info(`[${name}] ${message}`, ...args),
-	// eslint-disable-next-line no-console
+	 
+	 
+    // eslint-disable-next-line no-console
 	warn:(message: string, ...args:unknown[]) => console.warn(`[${name}] ${message}`, ...args),
-	// eslint-disable-next-line no-console
+	 
+    // eslint-disable-next-line no-console
 	error:(message: string, ...args:unknown[]) => console.error(`[${name}] ${message}`, ...args),
-	// eslint-disable-next-line no-console
+	 
+    // eslint-disable-next-line no-console
 	fatal:(message: string, ...args:unknown[]) => console.error(`[${name}] FATAL:${message}`, ...args),
 });
 

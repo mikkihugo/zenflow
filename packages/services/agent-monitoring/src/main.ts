@@ -28,7 +28,7 @@
  *
  * // Agent monitoring responds with health data
  * eventSystem.on('agent-monitoring:agent-health', (data) => {
- *   console.log('Agent health: ', data.health);
+ *   logger.info('Agent health: ', data.health);
 ' *});
  * ````
  *

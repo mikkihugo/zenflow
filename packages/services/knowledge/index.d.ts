@@ -93,8 +93,8 @@
  *}
  *});
  *
- * console.log(`Transfer efficiency:${transferResult.efficiency}%`);`
- * console.log(`Applicable patterns:${transferResult.applicablePatterns.length}`);`
+ * logger.info(`Transfer efficiency:${transferResult.efficiency}%`);`
+ * logger.info(`Applicable patterns:${transferResult.applicablePatterns.length}`);`
  * ````
  *
  * @example Distributed Learning Network
@@ -117,8 +117,8 @@
  *
  * // Execute federated learning
  * const result = await session.execute();
- * console.log(`Final accuracy:${result.accuracy}`);`
- * console.log(`Convergence iterations:${result.iterations}`);`
+ * logger.info(`Final accuracy:${result.accuracy}`);`
+ * logger.info(`Convergence iterations:${result.iterations}`);`
  * ````
  *
  * @example Knowledge Quality Management
@@ -279,7 +279,7 @@
  *   earlyStoppingEnabled:true
  *});
  *
- * console.log('Continuous Learning Results: ', {
+ * logger.info('Continuous Learning Results: ', {
 '    ') *   finalAccuracy:result.accuracy,
  *   convergenceTime:result.convergenceTime,
  *   knowledgeTransferred:result.transferredBytes,
@@ -372,7 +372,7 @@
  *}
  *});
  *
- * console.log('Knowledge System Insights: ', {
+ * logger.info('Knowledge System Insights: ', {
 '    ') *   overallQualityScore:insights.quality.overall,
  *   knowledgeGaps:insights.gaps.length,
  *   expertiseDistribution:insights.expertise.distribution,
@@ -466,7 +466,7 @@
  *}
  *});
  *
- * console.log('Knowledge Graph Reasoning Results: ', {
+ * logger.info('Knowledge Graph Reasoning Results: ', {
 '    ') *   graphStatistics:{
  *     nodes:knowledgeGraph.nodeCount,
  *     edges:knowledgeGraph.edgeCount,

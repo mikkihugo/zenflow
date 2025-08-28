@@ -6,13 +6,14 @@
 // Basic implementations for now (will use foundation when it's fixed)
 const getLogger = (name:string) => ({
   info:(msg: string, data?:any) =>
-    console.log(`[${name}] INFO:`, msg, data || ''),
+    logger.info(`[${name}] INFO:`, msg, data || ''),
   error:(msg: string, data?:any) =>
-    console.error(`[${name}] ERROR:`, msg, data || ''),
+    logger.error(`[${name}] ERROR:`, msg, data || ''),
   debug:(msg: string, data?:any) =>
+    // eslint-disable-next-line no-console
     console.debug(`[${name}] DEBUG:`, msg, data || ''),
   warn:(msg: string, data?:any) =>
-    console.warn(`[${name}] WARN:`, msg, data || ''),
+    logger.warn(`[${name}] WARN:`, msg, data || ''),
 });
 
 export type Result<T, E> =

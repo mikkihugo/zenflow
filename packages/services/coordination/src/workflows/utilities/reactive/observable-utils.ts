@@ -14,11 +14,13 @@ import {
   type Observable,
   Subject,
   timer,
-} from 'rxjs')import {';
+} from 'rxjs';
+import {
   debounceTime,
   distinctUntilChanged,
   throttleTime,
-} from 'rxjs/operators')/**';
+} from 'rxjs/operators';
+/**
  * Professional Observable utilities
  */
 export class ObservableUtils {

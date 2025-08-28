@@ -9,7 +9,7 @@ import { execSync } from "node:child_process";
 import { existsSync, mkdirSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-console.log("🚀 Building Claude Code Zen with SEA (Single Executable Applications)...\n");
+logger.info("🚀 Building Claude Code Zen with SEA (Single Executable Applications)...\n");
 
 // Clean and create output directory
 const distDir = "dist";
@@ -19,20 +19,20 @@ if (existsSync(distDir)) {
 }
 mkdirSync(bundleDir, { recursive: true });
 
-console.log("📦 Step 1: Building foundation package...");
+logger.info("📦 Step 1: Building foundation package...");
 try {
-	console.log("   🔧 Building foundation...");
+	logger.info("   🔧 Building foundation...");
 	execSync(
 		"cd packages/public-api/core/foundation && pnpm build",
 		{ stdio: "inherit" },
 	);
-	console.log("   ✅ Foundation built successfully");
+	logger.info("   ✅ Foundation built successfully");
 } catch (error) {
-	console.log("   ⚠️ Foundation build failed:", error.message);
-	console.log("   🔄 Continuing with basic entry point...");
+	logger.info("   ⚠️ Foundation build failed:", error.message);
+	logger.info("   🔄 Continuing with basic entry point...");
 }
 
-console.log("📦 Step 2: Creating main entry point...");
+logger.info("📦 Step 2: Creating main entry point...");
 // Create main entry point that includes server + auth
 const mainEntry = `${bundleDir}/claude-zen.js`;
 const entryCode = `#!/usr/bin/env node
@@ -50,12 +50,12 @@ const args = process.argv.slice(2);
 
 // Handle auth command
 if (args[0] === 'auth') {
-  console.log('🔐 Claude Code Zen Authentication');
-  console.log('Auth functionality bundled in SEA executable');
+  logger.info('🔐 Claude Code Zen Authentication');
+  logger.info('Auth functionality bundled in SEA executable');
   
   const provider = args[1];
   if (!provider || provider === '--help' || provider === '-h') {
-    console.log(\`
+    logger.info(\`
 Usage: claude-zen auth <command>
 
 Commands:
@@ -66,41 +66,41 @@ Commands:
   }
   
   if (provider === 'copilot') {
-    console.log('🔐 GitHub Copilot authentication - Functionality ready');
+    logger.info('🔐 GitHub Copilot authentication - Functionality ready');
   } else if (provider === 'status') {
-    console.log('🔐 Authentication status - Ready for implementation');
+    logger.info('🔐 Authentication status - Ready for implementation');
   }
   return;
 }
 
 // Handle main server
-console.log('🚀 Claude Code Zen Server (SEA Distribution)');
-console.log('📦 Platform:', process.platform);
-console.log('🔧 Node version:', process.version);
-console.log('⚡ Running from Single Executable Application');
+logger.info('🚀 Claude Code Zen Server (SEA Distribution)');
+logger.info('📦 Platform:', process.platform);
+logger.info('🔧 Node version:', process.version);
+logger.info('⚡ Running from Single Executable Application');
 
 // Basic server simulation
 const port = args.find(arg => arg.startsWith('--port='))?.split('=')[1] || 
             (args.includes('--port') ? args[args.indexOf('--port') + 1] : '3000');
 
-console.log(\`🌐 Server would start on port: \${port}\`);
-console.log('✅ SEA executable working correctly');
-console.log('📋 Args received:', args);
+logger.info(\`🌐 Server would start on port: \${port}\`);
+logger.info('✅ SEA executable working correctly');
+logger.info('📋 Args received:', args);
 `;
 
 writeFileSync(mainEntry, entryCode);
 
-console.log("📦 Step 3: Creating final bundle...");
+logger.info("📦 Step 3: Creating final bundle...");
 // Copy main entry as final bundle
 try {
 	mkdirSync(join(bundleDir, 'final'), { recursive: true });
 	execSync(`cp ${mainEntry} ${join(bundleDir, 'final', 'index.js')}`);
-	console.log("   ✅ Final bundle created");
+	logger.info("   ✅ Final bundle created");
 } catch (error) {
-	console.log("   ❌ Bundle copy failed:", error.message);
+	logger.info("   ❌ Bundle copy failed:", error.message);
 }
 
-console.log("📦 Step 4: Creating SEA (Single Executable Applications)...");
+logger.info("📦 Step 4: Creating SEA (Single Executable Applications)...");
 // Create SEA config and binaries
 const bundledEntry = `${bundleDir}/final/index.js`;
 if (existsSync(bundledEntry)) {
@@ -112,13 +112,13 @@ if (existsSync(bundledEntry)) {
 			"disableExperimentalSEAWarning": true
 		};
 		writeFileSync(`${bundleDir}/sea-config.json`, JSON.stringify(seaConfig, null, 2));
-		console.log("   ✅ SEA config created");
+		logger.info("   ✅ SEA config created");
 
 		// Generate the blob
 		execSync(`node --experimental-sea-config ${bundleDir}/sea-config.json`, {
 			stdio: "inherit",
 		});
-		console.log("   ✅ SEA blob generated");
+		logger.info("   ✅ SEA blob generated");
 
 		// Create platform-specific executables
 		const platforms = [
@@ -141,9 +141,9 @@ if (existsSync(bundledEntry)) {
 					stdio: ["inherit", "inherit", "pipe"],
 				});
 				
-				console.log(`   ✅ SEA binary created: claude-zen-${platform.name}${platform.ext}`);
+				logger.info(`   ✅ SEA binary created: claude-zen-${platform.name}${platform.ext}`);
 			} catch (error) {
-				console.log(`   ⚠️ SEA ${platform.name} binary failed:`, error.message);
+				logger.info(`   ⚠️ SEA ${platform.name} binary failed:`, error.message);
 				
 				// For Windows, try a different approach
 				if (platform.name === 'win') {
@@ -151,22 +151,22 @@ if (existsSync(bundledEntry)) {
 						execSync(`cp ${bundleDir}/claude-zen-linux ${bundleDir}/claude-zen-${platform.name}${platform.ext}`, {
 							stdio: "inherit",
 						});
-						console.log(`   ✅ SEA binary (Linux copy): claude-zen-${platform.name}${platform.ext}`);
+						logger.info(`   ✅ SEA binary (Linux copy): claude-zen-${platform.name}${platform.ext}`);
 					} catch (copyError) {
-						console.log(`   ❌ SEA ${platform.name} fallback failed:`, copyError.message);
+						logger.info(`   ❌ SEA ${platform.name} fallback failed:`, copyError.message);
 					}
 				}
 			}
 		});
 
-		console.log("   ✅ All SEA binaries processed");
+		logger.info("   ✅ All SEA binaries processed");
 
 	} catch (error) {
-		console.log("   ❌ SEA build failed:", error.message);
+		logger.info("   ❌ SEA build failed:", error.message);
 	}
 }
 
-console.log("📦 Step 5: Creating final distribution...");
+logger.info("📦 Step 5: Creating final distribution...");
 // Create launchers and documentation
 const unixLauncher = `#!/bin/bash
 # Claude Code Zen SEA Launcher
@@ -252,14 +252,14 @@ claude-zen.cmd                   # Default server
 
 writeFileSync(`${bundleDir}/README.md`, readme);
 
-console.log("\n🎉 Claude Code Zen SEA build complete!");
-console.log(`📁 Distribution ready in: ${bundleDir}/`);
-console.log("\n📊 What you get:");
-console.log("   ✅ Self-contained SEA binaries (claude-zen-linux, claude-zen-macos, claude-zen-win.exe)");
-console.log("   ✅ Node.js fallback bundle (final/index.js)");
-console.log("   ✅ Smart launchers (claude-zen, claude-zen.cmd)");
-console.log("   ✅ Single Executable Applications with embedded V8 runtime");
-console.log("   ✅ No external dependencies required");
+logger.info("\n🎉 Claude Code Zen SEA build complete!");
+logger.info(`📁 Distribution ready in: ${bundleDir}/`);
+logger.info("\n📊 What you get:");
+logger.info("   ✅ Self-contained SEA binaries (claude-zen-linux, claude-zen-macos, claude-zen-win.exe)");
+logger.info("   ✅ Node.js fallback bundle (final/index.js)");
+logger.info("   ✅ Smart launchers (claude-zen, claude-zen.cmd)");
+logger.info("   ✅ Single Executable Applications with embedded V8 runtime");
+logger.info("   ✅ No external dependencies required");
 
 // Show file sizes
 try {
@@ -269,18 +269,18 @@ try {
 		"claude-zen-win.exe",
 		"final/index.js",
 	];
-	console.log("\n📏 File sizes:");
+	logger.info("\n📏 File sizes:");
 	files.forEach((file) => {
 		const fullPath = `${bundleDir}/${file}`;
 		if (existsSync(fullPath)) {
 			const stats = statSync(fullPath);
 			const sizeMB = (stats.size / (1024 * 1024)).toFixed(1);
-			console.log(`   📄 ${file}: ${sizeMB} MB`);
+			logger.info(`   📄 ${file}: ${sizeMB} MB`);
 		}
 	});
 } catch (error) {
-	console.log("   ⚠️ Size check failed:", error.message);
+	logger.info("   ⚠️ Size check failed:", error.message);
 }
 
-console.log("\n🚀 SEA Distribution ready! Everything is in dist/bundle/");
-console.log("🎯 Test with: ./dist/bundle/claude-zen auth status");
+logger.info("\n🚀 SEA Distribution ready! Everything is in dist/bundle/");
+logger.info("🎯 Test with: ./dist/bundle/claude-zen auth status");

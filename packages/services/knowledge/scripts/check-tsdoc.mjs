@@ -194,6 +194,7 @@ function analyzeFile(filePath) {
 	const analysis = new FileAnalysis(filePath);
 
 	if (!fs.existsSync(filePath)) {
+    // eslint-disable-next-line no-console
 		console.warn(colorize(`⚠️  File not found: ${filePath}`, "yellow"));
 		return analysis;
 	}
@@ -256,23 +257,31 @@ function generateFileReport(analysis) {
 	const coverage = analysis.coverage;
 	const quality = analysis.quality;
 
+    // eslint-disable-next-line no-console
 	console.log(`\n📄 ${colorize(fileName, "cyan")}`);
+    // eslint-disable-next-line no-console
 	console.log("─".repeat(50));
+    // eslint-disable-next-line no-console
 	console.log(`Total exports: ${analysis.exports.length}`);
+    // eslint-disable-next-line no-console
 	console.log(`Documented: ${colorize(analysis.documented.length, "green")}`);
+    // eslint-disable-next-line no-console
 	console.log(
 		`Coverage: ${colorize(`${coverage}%`, coverage >= CONFIG.COVERAGE_THRESHOLD ? "green" : "red")}`,
 	);
+    // eslint-disable-next-line no-console
 	console.log(
 		`Quality: ${colorize(quality, quality === "excellent" ? "green" : quality === "good" ? "blue" : "yellow")}`,
 	);
 
 	// Show undocumented exports
 	if (CONFIG.OUTPUT.showUndocumented && analysis.undocumented.length > 0) {
+    // eslint-disable-next-line no-console
 		console.log(
 			`\n${colorize(`❌ Missing TSDoc (${analysis.undocumented.length}):`, "red")}`,
 		);
 		analysis.undocumented.forEach((exp) => {
+    // eslint-disable-next-line no-console
 			console.log(
 				`   • ${colorize(exp.name, "yellow")} (${exp.type}, line ${exp.line})`,
 			);
@@ -281,6 +290,7 @@ function generateFileReport(analysis) {
 
 	// Show documented exports if requested
 	if (CONFIG.OUTPUT.showDocumented && analysis.documented.length > 0) {
+    // eslint-disable-next-line no-console
 		console.log(
 			`\n${colorize(`✅ Documented exports (${analysis.documented.length}):`, "green")}`,
 		);
@@ -291,6 +301,7 @@ function generateFileReport(analysis) {
 					: exp.jsdocQuality === "detailed"
 						? "blue"
 						: "yellow";
+    // eslint-disable-next-line no-console
 			console.log(
 				`   • ${exp.name} (${colorize(exp.jsdocQuality, qualityColor)})`,
 			);
@@ -313,12 +324,19 @@ function generateSummaryReport(analyses) {
 	const overallCoverage =
 		totalExports > 0 ? Math.round((totalDocumented / totalExports) * 100) : 100;
 
+    // eslint-disable-next-line no-console
 	console.log(`\n${"═".repeat(60)}`);
+    // eslint-disable-next-line no-console
 	console.log(colorize("📊 TSDOC COVERAGE SUMMARY", "bright"));
+    // eslint-disable-next-line no-console
 	console.log("═".repeat(60));
+    // eslint-disable-next-line no-console
 	console.log(`Files analyzed: ${totalFiles}`);
+    // eslint-disable-next-line no-console
 	console.log(`Total exports: ${totalExports}`);
+    // eslint-disable-next-line no-console
 	console.log(`Total documented: ${colorize(totalDocumented, "green")}`);
+    // eslint-disable-next-line no-console
 	console.log(
 		`Overall coverage: ${colorize(`${overallCoverage}%`, overallCoverage >= CONFIG.COVERAGE_THRESHOLD ? "green" : "red")}`,
 	);
@@ -346,6 +364,7 @@ function generateSummaryReport(analyses) {
 		emoji = "🚨";
 	}
 
+    // eslint-disable-next-line no-console
 	console.log(
 		`\n${emoji} ${colorize(qualityRating, "bright")} DOCUMENTATION COVERAGE! ${emoji}`,
 	);
@@ -358,6 +377,7 @@ function generateSummaryReport(analyses) {
 	});
 
 	if (Object.keys(qualityBreakdown).length > 1) {
+    // eslint-disable-next-line no-console
 		console.log(`\n📈 File Quality Breakdown:`);
 		Object.entries(qualityBreakdown).forEach(([quality, count]) => {
 			const color =
@@ -368,6 +388,7 @@ function generateSummaryReport(analyses) {
 						: quality === "fair"
 							? "yellow"
 							: "red";
+    // eslint-disable-next-line no-console
 			console.log(`   ${colorize(quality, color)}: ${count} files`);
 		});
 	}
@@ -432,6 +453,7 @@ function main() {
 
 	// Parse command line arguments
 	if (args.includes("--help") || args.includes("-h")) {
+    // eslint-disable-next-line no-console
 		console.log(`
 ${colorize("TSDoc Coverage Checker", "bright")}
 ${colorize("Usage:", "blue")} node check-tsdoc.mjs [options] [files...]
@@ -483,11 +505,14 @@ ${colorize("Examples:", "blue")}
 			: getFilesToAnalyze(CONFIG.DEFAULT_SCAN_DIRS, excludeDtsFiles);
 
 	if (filesToAnalyze.length === 0) {
+    // eslint-disable-next-line no-console
 		console.warn(colorize("⚠️  No TypeScript files found to analyze", "yellow"));
 		process.exit(1);
 	}
 
+    // eslint-disable-next-line no-console
 	console.log(colorize("🔍 TSDoc Coverage Analysis", "bright"));
+    // eslint-disable-next-line no-console
 	console.log(colorize(`Analyzing ${filesToAnalyze.length} files...`, "blue"));
 
 	// Analyze all files
@@ -503,21 +528,27 @@ ${colorize("Examples:", "blue")}
 
 	// Add helpful message for basic check
 	if (isBasicCheck && summary.overallCoverage < 100) {
+    // eslint-disable-next-line no-console
 		console.log(`\n${"─".repeat(60)}`);
+    // eslint-disable-next-line no-console
 		console.log(
 			colorize("💡 TIP: For stricter documentation requirements", "cyan"),
 		);
+    // eslint-disable-next-line no-console
 		console.log(
 			colorize("Run: pnpm docs:check-strict", "bright") +
 				colorize(" (requires 100% coverage)", "cyan"),
 		);
+    // eslint-disable-next-line no-console
 		console.log(colorize("Or:  pnpm docs:check --threshold 100", "bright"));
 
 		if (summary.overallCoverage >= 90) {
+    // eslint-disable-next-line no-console
 			console.log(
 				`\n${colorize("🎯 Current coverage is good!", "green")} Consider aiming for 100% with strict mode.`,
 			);
 		} else {
+    // eslint-disable-next-line no-console
 			console.log(
 				`\n${colorize("📈 Improve coverage first", "yellow")}, then try strict mode for perfection.`,
 			);

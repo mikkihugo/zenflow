@@ -64,8 +64,9 @@ export class CodeQLBridge {
    */
   async checkAvailability():Promise<Result<string, CodeQLError>> {
     return await safeAsync(async () => {
-      const result = await this.executeCommand(['version',    '--format=json']);')      const versionData = JSON.parse(result.stdout);
-      return versionData.productVersion||versionData.version||'unknown;
+      const result = await this.executeCommand(['version', '--format=json']);
+      const versionData = JSON.parse(result.stdout);
+      return versionData.productVersion || versionData.version || 'unknown';
 });
 }
 
@@ -79,7 +80,7 @@ export class CodeQLBridge {
     return await withRetry(
       async () => {
         this.logger.info('Creating CodeQL database', {
-    ')          repositoryPath,
+          repositoryPath,
           languages:options.languages,
 });
 
@@ -271,10 +272,10 @@ export class CodeQLBridge {
 
         if (stats.isDirectory()) {
           queryPacks.push({
-            name:`claude-zen-${languageDir}`,`
-            path:languagePath,
-            metadata:{
-              description:`Claude Zen custom queries for ${languageDir}`,`
+            name: `claude-zen-${languageDir}`,
+            path: languagePath,
+            metadata: {
+              description: `Claude Zen custom queries for ${languageDir}`,
               category: 'custom',              source: 'claude-zen',},
 });
 }

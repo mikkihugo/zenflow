@@ -171,8 +171,8 @@ export interface ProjectRegistry {
  *
  * // Add project with workspace analysis
  * const project = await manager.addProject('/path/to/monorepo');
- * console.log('Workspace type: ', project.workspace?.type);
-' * console.log('Build system: ', project.workspace?.buildSystem);
+ * logger.info('Workspace type: ', project.workspace?.type);
+' * logger.info('Build system: ', project.workspace?.buildSystem);
 ' * ```
  */
 export class ProjectManager {

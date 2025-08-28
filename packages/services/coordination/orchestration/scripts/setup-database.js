@@ -156,4 +156,5 @@ async function setupKVSchema(kvProvider) {
 }
 
 // Run the setup
+    // eslint-disable-next-line no-console
 setupTaskMasterDatabases().catch(console.error);

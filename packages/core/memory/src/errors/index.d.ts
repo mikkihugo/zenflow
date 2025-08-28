@@ -64,7 +64,7 @@ export declare class MemoryError extends Error {
         code: MemoryErrorCode;
         context: MemoryErrorContext;
         recoverable: boolean;
-        severity: "critical" | "low" | "medium" | "high";
+        severity: "low" | "medium" | "high" | "critical";
         stack: string;
     };
     /**

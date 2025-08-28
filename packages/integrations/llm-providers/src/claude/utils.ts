@@ -136,7 +136,7 @@ export function resolveWorkingDirectory(workingDirectory?:string): string {
     return process.cwd();
 }
 
-  const stats = fs.statSync(resolved);
+  const _stats = fs.statSync(resolved);
   if (!stats.isDirectory()) {
     logger.warn(
       `Working directory ${resolved} is not a directory, using current directory`

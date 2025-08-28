@@ -15,7 +15,7 @@
  *
  * const result = validateInput(UserSchema, userData);
  * if (result.isOk()) {
- *   console.log('Valid: ', result.value);
+ *   logger.info('Valid: ', result.value);
 ' *}
  * ```
  *
@@ -46,9 +46,9 @@ export type { ZodSchema, ZodType };
  * const result = validateInput(UserSchema, { name:"John", age:30});
  *
  * if (result.isOk()) {
- *   console.log(result.value.name); // Type-safe access
+ *   logger.info(result.value.name); // Type-safe access
  *} else {
- *   console.error(result.error.issues); // ZodError details
+ *   logger.error(result.error.issues); // ZodError details
  *}
  * ```
  */
@@ -206,7 +206,7 @@ export declare const positiveNumberSchema: zodInstance.ZodNumber;
  * ```typescript`
  * const result = validateInput(schema, data);
  * if (hasValidationError(result, 'too_small')) {
- *   console.log('Value too small');
+ *   logger.info('Value too small');
  *}
  * ```
  */
@@ -221,7 +221,7 @@ export declare function hasValidationError(result: Result<unknown, ZodError>, co
  * ```typescript`
  * const result = validateInput(schema, data);
  * const errors = getValidationErrors(result);
- * errors.forEach(error => console.log(error));
+ * errors.forEach(error => logger.info(error));
  * ```
  */
 export declare function getValidationErrors(result: Result<unknown, ZodError>): string[];

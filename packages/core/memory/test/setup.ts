@@ -32,5 +32,5 @@ process.env.LOG_LEVEL = 'silent';
 
 // Global error handler for unhandled promise rejections
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, ' reason:', reason);
+  logger.error('Unhandled Rejection at:', promise, ' reason:', reason);
 });

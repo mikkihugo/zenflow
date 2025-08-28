@@ -20,7 +20,7 @@ import type { JsonObject } from "../../types/primitives";
  * @example
  * ```typescript`
  * const config:Config = getConfig();
- * console.log(config.env); // 'development' | ' production' | ' test') * console.log(config.logging.level); // 'error' | ' warn' | ' info' | ' debug') * ```
+ * logger.info(config.env); // 'development' | ' production' | ' test') * logger.info(config.logging.level); // 'error' | ' warn' | ' info' | ' debug') * ```
  */
 export interface Config {
     env: string;
@@ -114,7 +114,7 @@ declare const globalConfig: FoundationConfig;
  * @example
  * ```typescript`
  * const config = getConfig();
- * console.log(config.logging.level);
+ * logger.info(config.logging.level);
  * ```
  */
 export declare function getConfig(): Config;

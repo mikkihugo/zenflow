@@ -53,7 +53,7 @@
  *});
  * 
  * if (response.isOk()) {
- *   console.log('Response: ', response.value.content);
+ *   logger.info('Response: ', response.value.content);
 ' *}
  * ```
  *
@@ -169,18 +169,20 @@ function loadCopilotToken():string {
     if (fs.existsSync(configPath)) {
       const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
       logger.info(
-        ' Loaded GitHub Copilot OAuth token from ~/.claude-zen/copilot-token.json')      );
+        'Loaded GitHub Copilot OAuth token from ~/.claude-zen/copilot-token.json'
+      );
       return config.access_token;
 }
 } catch (error) {
     logger.warn('Failed to load Copilot OAuth token from config: ', error);
-'}
+}
 
   // Fallback to environment variables (should be OAuth token, not PAT)
-  const token = process.env['GITHUB_COPILOT_TOKEN'] || ';
+  const token = process.env['GITHUB_COPILOT_TOKEN'] || '';
   if (token && !token.startsWith('gho_')) {
     logger.warn(
-      '⚠️ Token may not be a valid GitHub Copilot OAuth token. Expected format:gho_xxx')    );
+      '⚠️ Token may not be a valid GitHub Copilot OAuth token. Expected format: gho_xxx'
+    );
 }
   return token;
 }
@@ -208,13 +210,14 @@ export class GitHubCopilotAPI implements APIProvider {
   private options:Required<GitHubCopilotOptions>;
 
   constructor(options:GitHubCopilotOptions) {
-    this['options'] = {
+    this.options = {
       model: 'gpt-4.1', // Updated default to gpt-4.1 (primary model)
-      baseURL: 'https://api.githubcopilot.com',      maxTokens:16384, // Updated to realistic Copilot limits
+      baseURL: 'https://api.githubcopilot.com',
+      maxTokens:16384, // Updated to realistic Copilot limits
       temperature:0.7,
       stream:false,
       ...options,
-};
+    } as Required<GitHubCopilotOptions>;
 
     // Initialize database on first use
     this.initializeDatabase();
@@ -225,7 +228,7 @@ export class GitHubCopilotAPI implements APIProvider {
       await initializeGitHubCopilotDB();
 } catch (error) {
       logger.warn('Failed to initialize GitHub Copilot database: ', error);
-'}
+}
 }
 
   /**
@@ -238,11 +241,13 @@ export class GitHubCopilotAPI implements APIProvider {
       );
 
       const response = await fetch(`${this.options.baseURL}/chat/completions`, {
-        method: 'POST',        headers:{
+  method: 'POST',
+  headers:{
           // eslint-disable-next-line @typescript-eslint/naming-convention
           'Authorization':`Bearer ${this.options.token}`,
            
-          'Content-Type': ' application/json',          // eslint-disable-next-line @typescript-eslint/naming-convention
+          'Content-Type': 'application/json',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'Copilot-Integration-Id':COPILOT_INTEGRATION_ID,
 },
         body:JSON.stringify({
@@ -292,7 +297,6 @@ export class GitHubCopilotAPI implements APIProvider {
 });
 } catch (error) {
       logger.error('GitHub Copilot API execution failed: ', error);
-'
       return err({
         code:API_ERROR_CODES.NETWORK_ERROR,
         message:`GitHub Copilot API network error: ${error}`,
@@ -308,7 +312,7 @@ export class GitHubCopilotAPI implements APIProvider {
    */
   getCapabilities():APIProviderCapabilities {
     const models = githubCopilotDB.getAllModels();
-    const chatModels = models.filter((m) => m['type'] === ' chat');
+  const chatModels = models.filter((m) => m['type'] === 'chat');
     const hasVision = models.some((m) => m.supportsVision);
     const maxContext = Math.max(
       ...chatModels.map((m) => m.contextWindow),
@@ -375,8 +379,8 @@ export class GitHubCopilotAPI implements APIProvider {
             .filter(Boolean);
 
           logger.info(`📋 GitHub Copilot models from real API:${modelIds.length} chat models`);
-          logger.info(`🎯 First few models:${modelIds.slice(0, 5).join(',    ')}${modelIds.length > 5 ? '...' : ''}`);
-'          
+          logger.info(`🎯 First few models:${modelIds.slice(0, 5).join(', ')}${modelIds.length > 5 ? '...' : ''}`);
+          
           return modelIds;
 }
 } else {
@@ -400,7 +404,6 @@ export class GitHubCopilotAPI implements APIProvider {
       
 } catch (error) {
       logger.error('Failed to list GitHub Copilot models from API: ', error);
-'
       // Final emergency fallback with real context sizes
       const emergencyModels = [
         'gpt-4.1', // 128k context, 16k output, vision
@@ -477,7 +480,7 @@ export async function executeGitHubCopilotTask(
     token:string;
     model?:'gpt-4' | ' gpt-4-turbo' | ' gpt-3.5-turbo' | ' claude-3-sonnet';
 } = { token: ''}
-'):Promise<string> {
+):Promise<string> {
   const provider = createGitHubCopilotProvider(options);
 
   const result = await provider.execute({

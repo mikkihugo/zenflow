@@ -12,8 +12,8 @@ interface TestCase {
 const testCases:TestCase[] = [
   // SimpleReplacer cases
   {
-    content:["function hello() {", '  console.log("world");', "}"].join("\n"),
-    find: 'console.log("world");',    replace: 'console.log("universe");',},
+    content:["function hello() {", '  logger.info("world");', "}"].join("\n"),
+    find: 'logger.info("world");',    replace: 'logger.info("universe");',},
   {
     content:["if (condition) {", "  doSomething();", "  doSomethingElse();", "}"].join("\n"),
     find:["  doSomething();", "  doSomethingElse();"].join("\n"),
@@ -22,8 +22,8 @@ const testCases:TestCase[] = [
 
   // LineTrimmedReplacer cases
   {
-    content:["function test() {", '    console.log("hello");', "}"].join("\n"),
-    find: 'console.log("hello");',    replace: 'console.log("goodbye");',},
+    content:["function test() {", '    logger.info("hello");', "}"].join("\n"),
+    find: 'logger.info("hello");',    replace: 'logger.info("goodbye");',},
   {
     content:["const x = 5;   ", "const y = 10;"].join("\n"),
     find:"const x = 5;",
@@ -65,8 +65,8 @@ const testCases:TestCase[] = [
 
   // WhitespaceNormalizedReplacer cases
   {
-    content:["function test() {", '\tconsole.log("hello");', "}"].join("\n"),
-    find: '  console.log("hello");',    replace: '  console.log("world");',},
+    content:["function test() {", '\tlogger.info("hello");', "}"].join("\n"),
+    find: '  logger.info("hello");',    replace: '  logger.info("world");',},
   {
     content:"const   x    =     5;",
     find:"const x = 5;",
@@ -80,30 +80,30 @@ const testCases:TestCase[] = [
 
   // IndentationFlexibleReplacer cases
   {
-    content:["    function nested() {", '      console.log("deeply nested");', "      return true;", "}"].join(')      "\n",
+    content:["    function nested() {", '      logger.info("deeply nested");', "      return true;", "}"].join(')      "\n",
     ),
-    find:["function nested() {", '  console.log("deeply nested");', "  return true;", "}"].join("\n"),
-    replace:["function nested() {", '  console.log("updated");', "  return false;", "}"].join("\n"),
+    find:["function nested() {", '  logger.info("deeply nested");', "  return true;", "}"].join("\n"),
+    replace:["function nested() {", '  logger.info("updated");', "  return false;", "}"].join("\n"),
 },
   {
-    content:["  if (true) {", '    console.log("level 1");',    '      console.log("level 2");', "}"].join("\n"),
-    find:["if (true) {", 'console.log("level 1");',    '  console.log("level 2");', "}"].join("\n"),
-    replace:["if (true) {", 'console.log("updated");', "}"].join("\n"),
+    content:["  if (true) {", '    logger.info("level 1");',    '      logger.info("level 2");', "}"].join("\n"),
+    find:["if (true) {", 'logger.info("level 1");',    '  logger.info("level 2");', "}"].join("\n"),
+    replace:["if (true) {", 'logger.info("updated");', "}"].join("\n"),
 },
 
   // replaceAll option cases
   {
-    content:['console.log("test");',    'console.log("test");',    'console.log("test");'].join("\n"),
-    find: 'console.log("test");',    replace: 'console.log("updated");',    all:true,
+    content:['logger.info("test");',    'logger.info("test");',    'logger.info("test");'].join("\n"),
+    find: 'logger.info("test");',    replace: 'logger.info("updated");',    all:true,
 },
   {
-    content:['console.log("test");',    'console.log("test");'].join("\n"),
-    find: 'console.log("test");',    replace: 'console.log("updated");',    all:false,
+    content:['logger.info("test");',    'logger.info("test");'].join("\n"),
+    find: 'logger.info("test");',    replace: 'logger.info("updated");',    all:false,
 },
 
   // Error cases
   {
-    content: 'console.log("hello");',    find:"nonexistent string",
+    content: 'logger.info("hello");',    find:"nonexistent string",
     replace:"updated",
     fail:true,
 },
@@ -133,7 +133,7 @@ const testCases:TestCase[] = [
 
   // EscapeNormalizedReplacer cases
   {
-    content: 'console.log("Hello\nWorld");',    find: 'console.log("Hello\nWorld");',    replace: 'console.log("Hello\nUniverse");',},
+    content: 'logger.info("Hello\nWorld");',    find: 'logger.info("Hello\nWorld");',    replace: 'logger.info("Hello\nUniverse");',},
   {
     content:"const str = 'It' s working';",
     find:"const str = 'It\\' s working';",
@@ -217,7 +217,7 @@ const testCases:TestCase[] = [
 
   // Combined edge cases for new replacers
   {
-    content: '\tconsole.log("test");\t',    find: 'console.log("test");',    replace: 'console.log("updated");',},
+    content: '\tlogger.info("test");\t',    find: 'logger.info("test");',    replace: 'logger.info("updated");',},
   {
     content:["  ", "function test() {", "  return 'value';", "}", "  "].join("\n"),
     find:["function test() {", "return 'value';", "}"].join("\n"),
@@ -226,7 +226,7 @@ const testCases:TestCase[] = [
 
   // Test for same oldString and newString (should fail)
   {
-    content: 'console.log("test");',    find: 'console.log("test");',    replace: 'console.log("test");',    fail:true,
+    content: 'logger.info("test");',    find: 'logger.info("test");',    replace: 'logger.info("test");',    fail:true,
 },
 
   // Additional tests for fixes made
@@ -245,7 +245,7 @@ const testCases:TestCase[] = [
   {
     content: 'const path = "C:\\Users";',    find: 'const path = "C:\\Users";',    replace: 'const path = "D:\\Users";',},
   {
-    content: 'console.log("Line1\nLine2");',    find: 'console.log("Line1\nLine2");',    replace: 'console.log("First\nSecond");',},
+    content: 'logger.info("Line1\nLine2");',    find: 'logger.info("Line1\nLine2");',    replace: 'logger.info("First\nSecond");',},
 
   // BlockAnchorReplacer - test edge case with exact newline boundaries
   {

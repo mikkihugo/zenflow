@@ -59,7 +59,7 @@ export class SecurityMonitor {
         body: JSON.stringify(alert),
       });
     } catch (error) {
-      console.error('Failed to send security alert:', error);
+      logger.error('Failed to send security alert:', error);
     }
   }
 

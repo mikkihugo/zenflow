@@ -239,8 +239,9 @@ export class DatabaseManager {
     languages:CodeQLLanguage[]
   ):string {
     const repoName = path.basename(repositoryPath);
-    const langString = languages.sort().join('-');')    const timestamp = Date.now();
-    return `$repoName_$langString_$timestamp`;`
+    const langString = languages.sort().join('-');
+    const timestamp = Date.now();
+    return `${repoName}_${langString}_${timestamp}`;
 }
 
   private async databaseExists(databasePath:string): Promise<boolean> 

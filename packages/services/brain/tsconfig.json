@@ -21,5 +21,12 @@
     "src/__tests__/**/*",
     "test-*.ts",
     "vitest.config.ts"
+  ],
+  "references": [
+    { "path": "../../core/foundation" },
+    { "path": "../../core/database" },
+    { "path": "../../core/memory" },
+    { "path": "../../core/neural-ml" },
+    { "path": "../../core/dspy" }
   ]
 }

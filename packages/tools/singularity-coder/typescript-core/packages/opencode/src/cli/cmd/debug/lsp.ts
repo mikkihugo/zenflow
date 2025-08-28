@@ -16,7 +16,7 @@ const DiagnosticsCommand = cmd({
   async handler(args) {
     await bootstrap({ cwd:process.cwd()}, async () => {
       await LSP.touchFile(args.file, true)
-      console.log(await LSP.diagnostics())
+      logger.info(await LSP.diagnostics())
 })
 },
 })
@@ -28,7 +28,7 @@ export const SymbolsCommand = cmd({
     await bootstrap({ cwd:process.cwd()}, async () => {
       using _ = Log.Default.time("symbols")
       const results = await LSP.workspaceSymbol(args.query)
-      console.log(JSON.stringify(results, null, 2))
+      logger.info(JSON.stringify(results, null, 2))
 })
 },
 })
@@ -40,7 +40,7 @@ export const DocumentSymbolsCommand = cmd({
     await bootstrap({ cwd:process.cwd()}, async () => {
       using _ = Log.Default.time("document-symbols")
       const results = await LSP.documentSymbol(args.uri)
-      console.log(JSON.stringify(results, null, 2))
+      logger.info(JSON.stringify(results, null, 2))
 })
 },
 })

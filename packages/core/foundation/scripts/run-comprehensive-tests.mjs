@@ -39,6 +39,8 @@ function colorize(text, color) {
 }
 
 function log(message, color = "reset") {
+    // eslint-disable-next-line no-console
+    // eslint-disable-next-line no-console
 	console.log(colorize(message, color));
 }
 
@@ -184,6 +186,8 @@ function runVitest(testFiles, description, additionalOptions = []) {
 				log(`❌ ${description} failed with exit code ${code}`, "red");
 				if (!flags.verbose && stderr) {
 					log("Error output:", "red");
+    // eslint-disable-next-line no-console
+    // eslint-disable-next-line no-console
 					console.error(stderr);
 				}
 				resolve({ success: false, stdout, stderr, exitCode: code });

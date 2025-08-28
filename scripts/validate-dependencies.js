@@ -130,10 +130,10 @@ function checkPackageJson(packagePath) {
 
 			for (const [depName, version] of Object.entries(deps)) {
 				if (FORBIDDEN_DEPENDENCIES[depName]) {
-					console.error(`❌ ${relativePath}`);
-					console.error(`   Forbidden ${depType}: ${depName}@${version}`);
-					console.error(`   ${FORBIDDEN_DEPENDENCIES[depName]}`);
-					console.error("");
+					logger.error(`❌ ${relativePath}`);
+					logger.error(`   Forbidden ${depType}: ${depName}@${version}`);
+					logger.error(`   ${FORBIDDEN_DEPENDENCIES[depName]}`);
+					logger.error("");
 					violations++;
 				}
 			}
@@ -154,12 +154,12 @@ function checkPackageJson(packagePath) {
 		});
 
 		if (hasForbiddenDeps && !hasFoundation) {
-			console.warn(`⚠️  ${relativePath}`);
-			console.warn(`   Consider adding @claude-zen/foundation as a dependency`);
-			console.warn("");
+			logger.warn(`⚠️  ${relativePath}`);
+			logger.warn(`   Consider adding @claude-zen/foundation as a dependency`);
+			logger.warn("");
 		}
 	} catch (error) {
-		console.warn(
+		logger.warn(
 			`⚠️ Could not read package.json: ${packagePath} - ${error.message}`,
 		);
 	}
@@ -169,29 +169,29 @@ function checkPackageJson(packagePath) {
  * Main validation function
  */
 function validateDependencies() {
-	console.log(
+	logger.info(
 		"🔍 Validating package.json dependencies for foundation compliance...\n",
 	);
 
 	const packageFiles = findPackageJsonFiles(projectRoot);
 
-	console.log(`Found ${packageFiles.length} package.json files to check\n`);
+	logger.info(`Found ${packageFiles.length} package.json files to check\n`);
 
 	for (const file of packageFiles) {
 		checkPackageJson(file);
 	}
 
 	if (violations === 0) {
-		console.log(
+		logger.info(
 			"✅ All package.json files are compliant with foundation requirements!",
 		);
 		return true;
 	} else {
-		console.error(`❌ Found ${violations} forbidden dependency/dependencies`);
-		console.error(
+		logger.error(`❌ Found ${violations} forbidden dependency/dependencies`);
+		logger.error(
 			"\n💡 Add @claude-zen/foundation instead of direct utility dependencies",
 		);
-		console.error(
+		logger.error(
 			"💡 Remove forbidden dependencies and use foundation equivalents",
 		);
 		return false;

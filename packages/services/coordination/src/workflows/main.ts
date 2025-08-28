@@ -14,7 +14,9 @@
  * const scheduleId = engine.scheduleWorkflow('0 9 * * *,' daily-report');
  *
  * // Generate Mermaid visualization
- * const diagram = engine.generateWorkflowVisualization(workflow);') * ') */';
+ * const diagram = engine.generateWorkflowVisualization(workflow);
+ */
+
 // =============================================================================
 // TYPE EXPORTS - Comprehensive type definitions
 // =============================================================================
@@ -25,10 +27,12 @@ export type {
   WorkflowData,
   WorkflowDefinition,
   WorkflowEngineConfig,
-  WorkflowState,')  WorkflowStep,')} from './engine')// ============================================================================ = ''; 
+  WorkflowState,
+  WorkflowStep,
+} from './engine'; // ============================================================================ 
 // MAIN WORKFLOW ENGINE - Battle-tested with modern npm packages
 // =============================================================================
-export { WorkflowEngine as default, WorkflowEngine} from './engine')// ============================================================================ = ';
+export { WorkflowEngine as default, WorkflowEngine } from './engine'; // ============================================================================
 // PROFESSIONAL SYSTEM ACCESS - Production naming patterns
 // =============================================================================
 export async function getWorkflowSystemAccess(
@@ -101,7 +105,7 @@ export async function getWorkflowManagement(
 export async function getWorkflowVisualization(
   config?:WorkflowEngineConfig
 ):Promise<any> {
-  const system = await getWorkflowSystemAccess(config)'; 
+  const system = await getWorkflowSystemAccess(config); 
   return {
     generate: (workflow: WorkflowDefinition) =>
       system.generateVisualization(workflow),
@@ -109,11 +113,16 @@ export async function getWorkflowVisualization(
       system.generateVisualization(workflow),
     export: (
       workflow: WorkflowDefinition,
-      format : 'mermaid' | ' svg ='mermaid')    ) => {';
-      // Enhanced format validation and logging')      const supportedFormats = ['mermaid,' svg'] as const')      if (!supportedFormats.includes(format)) {`;
-        logger.warn(``Unsupported workflow export format: ``mermaid`)};;
-      logger.debug(``Exporting workflow ${w}orkflow.idin ${f}ormatformat`)      return system.generateVisualization(workflow);``;
-},
+      format: 'mermaid' | 'svg' = 'mermaid'
+    ) => {
+      // Enhanced format validation and logging
+      const supportedFormats = ['mermaid', 'svg'] as const;
+      if (!supportedFormats.includes(format)) {
+        logger.warn(`Unsupported workflow export format: ${format}`);
+      }
+      logger.debug(`Exporting workflow ${workflow.id} in ${format} format`);
+      return system.generateVisualization(workflow);
+    },
 };
 }
 // Professional workflow system object with proper naming (matches brainSystem pattern)

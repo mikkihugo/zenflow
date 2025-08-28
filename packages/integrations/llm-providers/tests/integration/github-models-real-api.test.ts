@@ -37,10 +37,10 @@ describe('GitHub Models Real API Integration', () => {
         const isValidToken = modelsToken.startsWith('ghp_') || modelsToken.startsWith(' gho_');
         expect(isValidToken).toBe(true);
         expect(modelsToken.length).toBeGreaterThan(20);
-        console.log(`✅ Valid GitHub token format detected:${modelsToken.startsWith('ghp_') ? ' PAT' : ' OAuth'}`);
+        logger.info(`✅ Valid GitHub token format detected:${modelsToken.startsWith('ghp_') ? ' PAT' : ' OAuth'}`);
 } else {
-        console.log('⚠️ No GitHub token available - skipping token validation');
-        console.log('💡 Set GITHUB_TOKEN environment variable');
+        logger.info('⚠️ No GitHub token available - skipping token validation');
+        logger.info('💡 Set GITHUB_TOKEN environment variable');
 }
 });
 
@@ -49,13 +49,13 @@ describe('GitHub Models Real API Integration', () => {
         const isPAT = modelsToken.startsWith('ghp_');
         const isOAuth = modelsToken.startsWith('gho_');
         expect(isPAT || isOAuth).toBe(true);
-        console.log(`🔑 GitHub Models API token format:${isPAT ? 'PAT (ghp_)' : ' OAuth (gho_)'}`);
+        logger.info(`🔑 GitHub Models API token format:${isPAT ? 'PAT (ghp_)' : ' OAuth (gho_)'}`);
         
         if (!isPAT) {
-          console.log('⚠️  GitHub Models may prefer PAT tokens over OAuth tokens');
+          logger.info('⚠️  GitHub Models may prefer PAT tokens over OAuth tokens');
 }
 } else {
-        console.log('⚠️ No Models token available - skipping format validation');
+        logger.info('⚠️ No Models token available - skipping format validation');
 }
 });
 });
@@ -63,18 +63,18 @@ describe('GitHub Models Real API Integration', () => {
   describe('Real API Health Check', () => {
     it('should connect to GitHub Models API', async () => {
       if (!modelsToken) {
-        console.log('⚠️ No Models token available - skipping health check');
+        logger.info('⚠️ No Models token available - skipping health check');
         return;
 }
 
       const isHealthy = await modelsAPI.healthCheck();
       expect(typeof isHealthy).toBe('boolean');
-      console.log(`🏥 GitHub Models API Health:${isHealthy ? '✅ Healthy' : '❌ Unhealthy'}`);
+      logger.info(`🏥 GitHub Models API Health:${isHealthy ? '✅ Healthy' : '❌ Unhealthy'}`);
 }, 15000);
 
     it('should list real models from GitHub Models API', async () => {
       if (!modelsToken) {
-        console.log('⚠️ No Models token available - skipping models list');
+        logger.info('⚠️ No Models token available - skipping models list');
         return;
 }
 
@@ -82,20 +82,20 @@ describe('GitHub Models Real API Integration', () => {
       expect(Array.isArray(models)).toBe(true);
       expect(models.length).toBeGreaterThan(0);
       
-      console.log(`📋 GitHub Models:${models.length} available`);
-      console.log(`🎯 Available models:${models.slice(0, 5).join(',    ')}${models.length > 5 ? '...' : ''}`);
+      logger.info(`📋 GitHub Models:${models.length} available`);
+      logger.info(`🎯 Available models:${models.slice(0, 5).join(',    ')}${models.length > 5 ? '...' : ''}`);
 '      
       // Check for expected models
       const expectedModels = ['openai/gpt-4o',    'openai/gpt-4.1',    'meta/llama-3.3-70b-instruct',    'mistral-ai/mistral-large-2411'];
       const foundModels = expectedModels.filter(model => models.includes(model));
-      console.log(`🔥 Expected models found:${foundModels.join(',    ')}`);
+      logger.info(`🔥 Expected models found:${foundModels.join(',    ')}`);
 }, 15000);
 });
 
   describe('Real API Execution', () => {
     it('should execute real chat completion with GPT-4o', async () => {
       if (!modelsToken) {
-        console.log('⚠️ No Models token available - skipping real API execution');
+        logger.info('⚠️ No Models token available - skipping real API execution');
         return;
 }
 
@@ -105,14 +105,14 @@ describe('GitHub Models Real API Integration', () => {
 });
 
       if (result.isErr()) {
-        console.log(`❌ GitHub Models API Error:${result.error.message}`);
-        console.log(`   Code:${result.error.code}`);
-        console.log(`   Details:`, result.error.details);
+        logger.info(`❌ GitHub Models API Error:${result.error.message}`);
+        logger.info(`   Code:${result.error.code}`);
+        logger.info(`   Details:`, result.error.details);
         
         // GitHub Models requires special access - skip if unauthorized
         if (result.error.message?.includes('unauthorized') || result.error.message?.includes(' Invalid Github auth token')) {
-          console.log('⚠️  GitHub Models API requires special access or beta approval');
-          console.log('💡 This is expected if you don\' t have GitHub Models beta access');
+          logger.info('⚠️  GitHub Models API requires special access or beta approval');
+          logger.info('💡 This is expected if you don\' t have GitHub Models beta access');
           return; // Skip this test
 }
 }
@@ -126,15 +126,15 @@ describe('GitHub Models Real API Integration', () => {
         expect(response.metadata?.provider).toBe('github-models');
         expect(response.metadata?.model).toBe('openai/gpt-4o');
         
-        console.log(`🤖 GitHub Models Response (${response.content.length} chars):`);
-        console.log(`📊 Metadata:Model=${response.metadata?.model}, Tokens=${response.metadata?.tokens}`);
-        console.log(`✂️ Content Preview:${response.content.substring(0, 150)}...`);
+        logger.info(`🤖 GitHub Models Response (${response.content.length} chars):`);
+        logger.info(`📊 Metadata:Model=${response.metadata?.model}, Tokens=${response.metadata?.tokens}`);
+        logger.info(`✂️ Content Preview:${response.content.substring(0, 150)}...`);
 }
 }, 30000);
 
     it('should handle different models from GitHub marketplace', async () => {
       if (!modelsToken) {
-        console.log('⚠️ No Models token available - skipping model testing');
+        logger.info('⚠️ No Models token available - skipping model testing');
         return;
 }
 
@@ -145,7 +145,7 @@ describe('GitHub Models Real API Integration', () => {
       ).slice(0, 2);
 
       if (testModels.length === 0) {
-        console.log('⚠️ No suitable test models available');
+        logger.info('⚠️ No suitable test models available');
         return;
 }
 
@@ -163,7 +163,7 @@ describe('GitHub Models Real API Integration', () => {
         expect(result.isOk()).toBe(true);
         
         if (result.isOk()) {
-          console.log(`✅ Model ${model}:Response received (${result.value.content.length} chars)`);
+          logger.info(`✅ Model ${model}:Response received (${result.value.content.length} chars)`);
           expect(result.value.metadata?.model).toBe(model);
 }
 }
@@ -171,7 +171,7 @@ describe('GitHub Models Real API Integration', () => {
 
     it('should handle multimodal capabilities', async () => {
       if (!modelsToken) {
-        console.log('⚠️ No Models token available - skipping multimodal test');
+        logger.info('⚠️ No Models token available - skipping multimodal test');
         return;
 }
 
@@ -184,10 +184,10 @@ describe('GitHub Models Real API Integration', () => {
       expect(capabilities.features).toBeDefined();
       expect(capabilities.features.multimodal).toBeDefined();
       
-      console.log(`🖼️ Multimodal support:${capabilities.features.multimodal}`);
-      console.log(`🧠 Reasoning support:${capabilities.features.reasoning}`);
-      console.log(`💻 Coding support:${capabilities.features.coding}`);
-      console.log(`📋 Planning support:${capabilities.features.planning}`);
+      logger.info(`🖼️ Multimodal support:${capabilities.features.multimodal}`);
+      logger.info(`🧠 Reasoning support:${capabilities.features.reasoning}`);
+      logger.info(`💻 Coding support:${capabilities.features.coding}`);
+      logger.info(`📋 Planning support:${capabilities.features.planning}`);
 });
 });
 
@@ -205,13 +205,13 @@ describe('GitHub Models Real API Integration', () => {
       if (result.isErr()) {
         expect(result.error.code).toBeTruthy();
         expect(result.error.message).toBeTruthy();
-        console.log(`🚫 Expected error with invalid PAT token:${result.error.message}`);
+        logger.info(`🚫 Expected error with invalid PAT token:${result.error.message}`);
 }
 }, 15000);
 
     it('should handle network errors', async () => {
       if (!modelsToken) {
-        console.log('⚠️ No Models token available - skipping network error test');
+        logger.info('⚠️ No Models token available - skipping network error test');
         return;
 }
 
@@ -227,13 +227,13 @@ describe('GitHub Models Real API Integration', () => {
       
       if (result.isErr()) {
         expect(result.error.code).toBeTruthy();
-        console.log(`🌐 Expected network error:${result.error.message}`);
+        logger.info(`🌐 Expected network error:${result.error.message}`);
 }
 }, 15000);
 
     it('should handle invalid model selection', async () => {
       if (!modelsToken) {
-        console.log('⚠️ No Models token available - skipping invalid model test');
+        logger.info('⚠️ No Models token available - skipping invalid model test');
         return;
 }
 
@@ -249,7 +249,7 @@ describe('GitHub Models Real API Integration', () => {
       expect(result.isErr()).toBe(true);
       
       if (result.isErr()) {
-        console.log(`🚫 Expected error with invalid model:${result.error.message}`);
+        logger.info(`🚫 Expected error with invalid model:${result.error.message}`);
 }
 }, 15000);
 });
@@ -257,7 +257,7 @@ describe('GitHub Models Real API Integration', () => {
   describe('Provider Factory Integration', () => {
     it('should create provider via factory with real PAT token', async () => {
       if (!modelsToken) {
-        console.log('⚠️ No Models token available - skipping factory test');
+        logger.info('⚠️ No Models token available - skipping factory test');
         return;
 }
 
@@ -277,7 +277,7 @@ describe('GitHub Models Real API Integration', () => {
       expect(result.isOk()).toBe(true);
       
       if (result.isOk()) {
-        console.log(`🏭 Models Factory test successful:${result.value.content.substring(0, 100)}...`);
+        logger.info(`🏭 Models Factory test successful:${result.value.content.substring(0, 100)}...`);
 }
 }, 20000);
 });
@@ -285,7 +285,7 @@ describe('GitHub Models Real API Integration', () => {
   describe('API Capabilities Comparison', () => {
     it('should show different capabilities than Copilot API', async () => {
       if (!modelsToken) {
-        console.log('⚠️ No Models token available - skipping capabilities comparison');
+        logger.info('⚠️ No Models token available - skipping capabilities comparison');
         return;
 }
 
@@ -297,30 +297,30 @@ describe('GitHub Models Real API Integration', () => {
       expect(capabilities.maxTokens).toBe(4000); // GitHub Models limit
       expect(capabilities.contextWindow).toBe(8000); // GitHub Models input limit
       
-      console.log('🔍 GitHub Models API Capabilities: ');
-'      console.log(`   Max Tokens:${capabilities.maxTokens}`);
-      console.log(`   Context Window:${capabilities.contextWindow}`);
-      console.log(`   Available Models:${capabilities.models?.length}`);
-      console.log(`   Streaming:${capabilities.features.streaming}`);
-      console.log(`   Multimodal:${capabilities.features.multimodal}`);
-      console.log(`   Custom Tools:${capabilities.features.customTools}`);
-      console.log(`   Pricing:$${capabilities.pricing?.inputTokens}/1K input, $${capabilities.pricing?.outputTokens}/1K output`);
+      logger.info('🔍 GitHub Models API Capabilities: ');
+'      logger.info(`   Max Tokens:${capabilities.maxTokens}`);
+      logger.info(`   Context Window:${capabilities.contextWindow}`);
+      logger.info(`   Available Models:${capabilities.models?.length}`);
+      logger.info(`   Streaming:${capabilities.features.streaming}`);
+      logger.info(`   Multimodal:${capabilities.features.multimodal}`);
+      logger.info(`   Custom Tools:${capabilities.features.customTools}`);
+      logger.info(`   Pricing:$${capabilities.pricing?.inputTokens}/1K input, $${capabilities.pricing?.outputTokens}/1K output`);
 });
 });
 
   describe('Usage Statistics', () => {
     it('should track usage statistics', () => {
       if (!modelsToken) {
-        console.log('⚠️ No Models token available - skipping usage stats');
+        logger.info('⚠️ No Models token available - skipping usage stats');
         return;
 }
 
-      const stats = modelsAPI.getUsageStats();
+      const _stats = modelsAPI.getUsageStats();
       expect(stats).toBeDefined();
       expect(typeof stats.requestCount).toBe('number');
       expect(typeof stats.lastRequestTime).toBe('number');
       
-      console.log(`📊 Usage Stats:${stats.requestCount} requests, last:${new Date(stats.lastRequestTime).toISOString()}`);
+      logger.info(`📊 Usage Stats:${stats.requestCount} requests, last:${new Date(stats.lastRequestTime).toISOString()}`);
 });
 });
 });

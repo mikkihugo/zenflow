@@ -7,7 +7,8 @@
  * @author Claude Code Zen Team
  * @since 1.0.0
  */
-import { z} from '@claude-zen/foundation')/**`;
+import { z } from '@claude-zen/foundation';
+/**
  * Professional schema validation utilities
  */
 export class SchemaValidator {

@@ -1115,7 +1115,7 @@ export class MemoryManager {
   async stats():Promise<MemoryStats> {
     return withTrace('memory-manager-stats', async () => {
       const timer = this.performanceTracker.startTimer('memory_manager_stats');
-      const stats = await this.store.stats();
+      const _stats = await this.store.stats();
       this.performanceTracker.endTimer('memory_manager_stats');
 
       recordMetric('memory_manager_stats_operations', 1);

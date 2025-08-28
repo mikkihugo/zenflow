@@ -11,12 +11,12 @@ import * as path from 'node:path';
 // Fallback glob function for compilation
 async function glob(pattern:string, options:any): Promise<string[]> {
   // Simple fallback - in production this would use fast-glob
-  console.log('Using fallback glob for pattern:', pattern); // Use pattern parameter')  try {
+  logger.info('Using fallback glob for pattern:', pattern); // Use pattern parameter')  try {
     const fs = require('node:fs');')    const path = require('node:path');')
     function walkDir(dir:string, fileList:string[] = []): string[] {
       // Validate that dir is actually a string
       if (typeof dir !== 'string') {
-    ')        console.warn('Invalid directory path type:', typeof dir, dir);')        return fileList;
+    ')        logger.warn('Invalid directory path type:', typeof dir, dir);')        return fileList;
 }
 
       try {
@@ -38,14 +38,14 @@ async function glob(pattern:string, options:any): Promise<string[]> {
               fileList.push(relativePath);
 }
 } catch (statError) {
-            // Skip files that can't be stat' d (e.g., broken symlinks)')            console.warn(
+            // Skip files that can't be stat' d (e.g., broken symlinks)')            logger.warn(
               'Cannot stat file: ','              fullPath,
               statError instanceof Error ? statError.message:String(statError)
             );
 }
 }
 } catch (readDirError) {
-        console.warn(
+        logger.warn(
           'Cannot read directory: ','          dir,
           readDirError instanceof Error
             ? readDirError.message
@@ -60,12 +60,12 @@ async function glob(pattern:string, options:any): Promise<string[]> {
 
     // Validate baseDir is a string
     if (typeof baseDir !=='string') {
-    ')      console.warn('Invalid baseDir type:', typeof baseDir, baseDir);')      return [];
+    ')      logger.warn('Invalid baseDir type:', typeof baseDir, baseDir);')      return [];
 }
 
     return walkDir(baseDir).slice(0, 100); // Limit for safety
 } catch (error) {
-    console.warn('Fallback glob failed:', error);')    return [];
+    logger.warn('Fallback glob failed:', error);')    return [];
 }
 }
 
@@ -323,7 +323,7 @@ export class CodebaseAnalyzer {
       );
       return filteredFiles.slice(0, limit);
 } catch (error) {
-      console.warn(`Error scanning directory ${dir}:`, error);`
+      logger.warn(`Error scanning directory ${dir}:`, error);`
       return [];
 }
 }
@@ -349,7 +349,7 @@ export class CodebaseAnalyzer {
 
       return prioritized.slice(0, limit);
 } catch (error) {
-      console.warn('Error scanning project:', error);')      return [];
+      logger.warn('Error scanning project:', error);')      return [];
 }
 }
 
@@ -390,7 +390,7 @@ export class CodebaseAnalyzer {
     try {
       // Validate that filePath is actually a string
       if (typeof filePath !=='string') {
-    ')        console.warn(`Invalid filePath type:$typeof filePath`, filePath);`
+    ')        logger.warn(`Invalid filePath type:$typeof filePath`, filePath);`
         return null;
 }
 
@@ -399,7 +399,7 @@ export class CodebaseAnalyzer {
         :path.join(this.rootPath, filePath);
       const content = await fs.promises.readFile(fullPath, 'utf-8');')      return content;
 } catch (error) {
-      console.warn(`Error reading file ${filePath}:`, error);`
+      logger.warn(`Error reading file ${filePath}:`, error);`
       return null;
 }
 }

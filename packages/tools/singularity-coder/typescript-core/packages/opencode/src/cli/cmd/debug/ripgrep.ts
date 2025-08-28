@@ -18,7 +18,7 @@ const TreeCommand = cmd({
   async handler(args) {
     await bootstrap({ cwd:process.cwd()}, async () => {
       const app = App.info()
-      console.log(await Ripgrep.tree({ cwd:app.path.cwd, limit:args.limit}))
+      logger.info(await Ripgrep.tree({ cwd:app.path.cwd, limit:args.limit}))
 })
 },
 })
@@ -48,7 +48,7 @@ const FilesCommand = cmd({
         glob:args.glob ? [args.glob] : undefined,
         limit:args.limit,
 })
-      console.log(files.join("\n"))
+      logger.info(files.join("\n"))
 })
 },
 })
@@ -77,6 +77,6 @@ const SearchCommand = cmd({
       glob:args.glob as string[] | undefined,
       limit:args.limit,
 })
-    console.log(JSON.stringify(results, null, 2))
+    logger.info(JSON.stringify(results, null, 2))
 },
 })

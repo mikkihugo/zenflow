@@ -13,7 +13,7 @@ const FileReadCommand = cmd({
   async handler(args) {
     await bootstrap({ cwd:process.cwd()}, async () => {
       const content = await File.read(args.path)
-      console.log(content)
+      logger.info(content)
 })
 },
 })
@@ -24,7 +24,7 @@ const FileStatusCommand = cmd({
   async handler() {
     await bootstrap({ cwd:process.cwd()}, async () => {
       const status = await File.status()
-      console.log(JSON.stringify(status, null, 2))
+      logger.info(JSON.stringify(status, null, 2))
 })
 },
 })

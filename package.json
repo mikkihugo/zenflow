@@ -11,10 +11,10 @@
 	"workspaces": [
 		"apps/claude-code-zen-server",
 		"apps/web-dashboard",
-		"packages/public-api/core/*",
-		"packages/implementation/*",
-		"packages/enterprise/*",
-		"packages/private-core/*"
+		"packages/core/*",
+		"packages/services/*",
+		"packages/integrations/*",
+		"packages/tools/*"
 	],
 	"scripts": {
 		"start": "pnpm --filter @claude-zen/server start",

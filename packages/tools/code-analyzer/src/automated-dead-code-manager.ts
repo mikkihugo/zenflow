@@ -32,11 +32,11 @@
  *
  * // Perform comprehensive scan
  * const scanResult = await manager.scanForDeadCode();
- * console.log(`Found ${scanResult.totalItems} potential dead code items`);`
+ * logger.info(`Found ${scanResult.totalItems} potential dead code items`);`
  *
  * // Process with human oversight
  * const removedItems = await manager.processDeadCodeInteractively();
- * console.log(`Safely removed ${removedItems.length} items`);`
+ * logger.info(`Safely removed ${removedItems.length} items`);`
  * ````
  *
  * @example Batch Processing
@@ -295,8 +295,9 @@ export class AutomatedDeadCodeManager {
 }
 
     const question:ValidationQuestion = {
-      id:`batch-dead-code-${Date.now()}`,`
-      type: 'batch-operation',      question:`🧹 Found ${items.length} medium-confidence dead code items. What should we do?`,`
+      id: `batch-dead-code-${Date.now()}`,
+      type: 'batch-operation',
+      question: `🧹 Found ${items.length} medium-confidence dead code items. What should we do?`,
       context:{
         itemCount:items.length,
         types:Array.from(new Set(items.map((i) => i.type))),

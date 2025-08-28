@@ -8,6 +8,8 @@
 const express = require('express');
 const cors = require('cors');
 const { createServer } = require('http');
+
+const logger = console;
 const { Server: SocketIOServer } = require('socket.io');
 const path = require('path');
 
@@ -19,6 +21,11 @@ const host = process.env.HOST || '0.0.0.0';
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+// Serve static dashboard files
+const dashboardPath = path.resolve(__dirname, '../web-dashboard/build');
+logger.info(`📂 Serving static files from: ${dashboardPath}`);
+app.use(express.static(dashboardPath));
 
 // Health check endpoints
 app.get('/api/health', (req, res) => {
@@ -51,8 +58,8 @@ app.get('/api/v1/system/status', (req, res) => {
   });
 });
 
-// Root route for basic info
-app.get('/', (req, res) => {
+// API info route (moved from root)
+app.get('/api/info', (req, res) => {
   res.json({
     message: 'Claude Code Zen Server',
     status: 'running',
@@ -64,6 +71,11 @@ app.get('/', (req, res) => {
       websocket: '/socket.io/'
     }
   });
+});
+
+// Catch-all handler for SPA routing (non-API routes)
+app.get(/^(?!\/api).*$/, (req, res) => {
+  res.sendFile(path.join(dashboardPath, 'index.html'));
 });
 
 // Create HTTP server
@@ -81,7 +93,7 @@ const io = new SocketIOServer(server, {
 
 // Socket.IO event handlers
 io.on('connection', (socket) => {
-  console.log(`🔌 Dashboard client connected: ${socket.id}`);
+  logger.info(`🔌 Dashboard client connected: ${socket.id}`);
 
   // Send initial connection data
   socket.emit('connected', {
@@ -93,7 +105,7 @@ io.on('connection', (socket) => {
   // Handle client subscription events
   socket.on('subscribe', (channel) => {
     socket.join(channel);
-    console.log(`📡 Client ${socket.id} subscribed to ${channel}`);
+    logger.info(`📡 Client ${socket.id} subscribed to ${channel}`);
 
     // Send initial data based on channel
     switch(channel) {
@@ -120,7 +132,7 @@ io.on('connection', (socket) => {
 
   socket.on('unsubscribe', (channel) => {
     socket.leave(channel);
-    console.log(`📡 Client ${socket.id} unsubscribed from ${channel}`);
+    logger.info(`📡 Client ${socket.id} unsubscribed from ${channel}`);
   });
 
   // Handle ping for connection keep-alive
@@ -129,13 +141,13 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', (reason) => {
-    console.log(`🔌 Dashboard client disconnected: ${socket.id}, reason: ${reason}`);
+    logger.info(`🔌 Dashboard client disconnected: ${socket.id}, reason: ${reason}`);
   });
 });
 
 // Start the server
 server.listen(port, host, () => {
-  console.log(`✅ Claude Code Zen Server running on http://${host}:${port}`);
-  console.log(`📊 Dashboard available at http://${host}:${port}`);
-  console.log(`🔌 Socket.IO server initialized for dashboard real-time updates`);
+  logger.info(`✅ Claude Code Zen Server running on http://${host}:${port}`);
+  logger.info(`📊 Dashboard available at http://${host}:${port}`);
+  logger.info(`🔌 Socket.IO server initialized for dashboard real-time updates`);
 });

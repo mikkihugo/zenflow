@@ -44,9 +44,9 @@ export { AISafetyOrchestrator as SafetyGuard, AISafetyOrchestrator, AutomatedDet
  * const result = await initializeAISafety();
  * if (result.success) {
  *   const safetySystem = result.value;
- *   console.log('Enterprise AI Safety initialized successfully');
+ *   logger.info('Enterprise AI Safety initialized successfully');
  *} else {
- *   console.error('Failed to initialize AI Safety: ', result.error);
+ *   logger.error('Failed to initialize AI Safety: ', result.error);
 ' *}
  * ```
  */
@@ -63,9 +63,9 @@ export declare function initializeAISafety(): Promise<{
  * ```typescript`
  * const result = await emergencySafetyShutdown();
  * if (result.success) {
- *   console.log('Emergency shutdown completed successfully');
+ *   logger.info('Emergency shutdown completed successfully');
  *} else {
- *   console.error('Emergency shutdown failed: ', result.error);
+ *   logger.error('Emergency shutdown failed: ', result.error);
 ' *}
  * ```
  */

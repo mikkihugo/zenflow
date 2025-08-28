@@ -201,7 +201,8 @@ export class AgentCapacityManager implements CapacityManager {
     // Check resource constraints
     const constraints = this.evaluateResourceConstraints(profile);
     const criticalConstraints = constraints.filter(
-      (c) => c.severity === 'critical')    );
+      (c) => c.severity === 'critical'
+    );
 
     if (criticalConstraints.length > 0) {
       return false; // Critical constraints prevent new tasks
@@ -246,7 +247,8 @@ export class AgentCapacityManager implements CapacityManager {
           errorRateThreshold:0.05,
 },
         lastUpdate:new Date(),
-        capacityTrend: 'stable',});
+        capacityTrend: 'stable',
+      });
 }
     return this.capacityProfiles.get(agentId)!;
 }

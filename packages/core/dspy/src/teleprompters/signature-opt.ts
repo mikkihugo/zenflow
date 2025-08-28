@@ -64,7 +64,7 @@ export class SignatureOptimizer extends COPRO {
 } = {},
 	) {
 		// Show deprecation warning exactly matching Stanford implementation
-		console.warn(
+		logger.warn(
 			"\u001b[31m[WARNING] SignatureOptimizer has been deprecated and replaced with COPRO. " +
 				"SignatureOptimizer will be removed in a future release. \u001b[31m",
 		);

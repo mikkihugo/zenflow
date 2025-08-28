@@ -265,7 +265,7 @@ export class RepositoryAnalyzer {
 
       for (const file of files) {
         try {
-          const stats = await fs.stat(file);
+          const _stats = await fs.stat(file);
           if (stats.size <= options.maxFileSize) {
             filteredFiles.push(file);
 }

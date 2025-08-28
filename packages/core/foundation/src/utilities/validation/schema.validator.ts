@@ -114,7 +114,7 @@ export class SchemaValidationError extends Error {
  * // Get detailed validation errors
  * const result = manager.validateWithErrors('user-schema', userData);
  * if (!result.valid) {
- *   console.log('Errors: ', result.errors);
+ *   logger.info('Errors: ', result.errors);
 ' *}
  * ```
  */

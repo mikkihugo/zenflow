@@ -36,7 +36,7 @@ export interface TaskSpecificSDKConfig {
   allowedFactTypes?:Array<
     'npm-package' | ' github-repo' | ' security-advisory' | ' hex-package' | 
     'api-docs' | ' rust-crate' | ' go-module' | ' perl-package' | 
-    'java-package' | ' gitlab-repo' | ' bitbucket-repo' | ' sdk-docs')  >;
+    'java-package' | ' gitlab-repo' | ' bitbucket-repo' | ' sdk-docs'>;
   
   /** Custom tools specific to this task */
   customTools?:Array<ReturnType<typeof tool>>;

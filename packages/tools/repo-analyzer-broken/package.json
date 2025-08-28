@@ -1,5 +1,5 @@
 {
-  "name": "@claude-zen/repo-analyzer",
+  "name": "@claude-zen/repo-analyzer-broken",
   "version": "1.0.0",
   "description": "Battle-hardened repository analysis and domain splitting toolkit",
   "type": "module",

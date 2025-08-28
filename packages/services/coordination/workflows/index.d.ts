@@ -111,14 +111,14 @@
  *
  * // Monitor execution in real-time
  * analytics.onStepCompleted(workflowId, (stepResult) => {
- *   console.log(`Step ${stepResult.stepId} completed in ${stepResult.duration}ms`);`
+ *   logger.info(`Step ${stepResult.stepId} completed in ${stepResult.duration}ms`);`
  *});
  *
  * // Get workflow performance insights
  * const insights = await analytics.getWorkflowInsights(workflowId);
- * console.log(`Total execution time:${insights.totalDuration}ms`);`
- * console.log(`Bottleneck step:${insights.bottleneckStep}`);`
- * console.log(`Success rate:${insights.successRate}%`);`
+ * logger.info(`Total execution time:${insights.totalDuration}ms`);`
+ * logger.info(`Bottleneck step:${insights.bottleneckStep}`);`
+ * logger.info(`Success rate:${insights.successRate}%`);`
  * ````
  *
  * @author Claude Code Zen Team

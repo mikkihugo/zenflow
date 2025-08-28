@@ -67,7 +67,7 @@ export abstract class BaseMemoryBackend extends EventEmitter {
   constructor(config:MemoryConfig) {
     super();
     this.memoryConfig = config;
-    this.stats = {
+    this._stats = {
       totalEntries:0,
       totalSize:0,
       cacheHits:0,
@@ -113,7 +113,7 @@ export abstract class BaseMemoryBackend extends EventEmitter {
       uptime:currentTime - (this.stats.lastAccessed || currentTime),
 };
 
-    this.stats = updatedStats;
+    this._stats = updatedStats;
     return updatedStats;
 }
 

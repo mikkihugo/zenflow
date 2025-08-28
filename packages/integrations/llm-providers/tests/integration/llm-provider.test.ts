@@ -161,7 +161,7 @@ describe('LLM Provider - Integration Tests (Real API)', () => {
           expect(githubResponse.success).toBe(true);
 } catch (error) {
           // GitHub Models might not be configured
-          console.log('GitHub Models not available:', error);')}
+          logger.info('GitHub Models not available:', error);')}
 },
       120000
     );

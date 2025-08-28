@@ -80,8 +80,10 @@ function main() {
 
 		// Create symlink to the actual binary
 		fs.symlinkSync(binaryPath, binScript);
+    // eslint-disable-next-line no-console
 		console.log(`opencode binary symlinked: ${binScript} -> ${binaryPath}`);
 	} catch (error) {
+    // eslint-disable-next-line no-console
 		console.error("Failed to create opencode binary symlink:", error.message);
 		process.exit(1);
 	}

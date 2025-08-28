@@ -83,9 +83,9 @@ export class BrainService {
 			// Ensure DSPy service is ready
 			await getDSPyService();
 			this.initialized = true;
-			console.log("[Brain] Service initialized with DSPy optimization engine");
+			logger.info("[Brain] Service initialized with DSPy optimization engine");
 } catch (error) {
-			console.error("[Brain] Failed to initialize:", error);
+			logger.error("[Brain] Failed to initialize:", error);
 			throw error;
 }
 }
@@ -132,7 +132,7 @@ export class BrainService {
 },
 };
 } catch (error) {
-			console.error("[Brain] Analysis failed:", error);
+			logger.error("[Brain] Analysis failed:", error);
 			throw new Error(`Brain analysis failed:${error}`);
 }
 }
@@ -177,7 +177,7 @@ export class BrainService {
 			// Cache the result
 			this.optimizationCache.set(cacheKey, optimization);
 
-			console.log(
+			logger.info(
 				`[Brain] Optimized prompt with ${optimization.improvement.toFixed(3)} improvement`,
 			);
 
@@ -188,7 +188,7 @@ export class BrainService {
 				examples,
 };
 } catch (error) {
-			console.error("[Brain] Prompt optimization failed:", error);
+			logger.error("[Brain] Prompt optimization failed:", error);
 			throw new Error(`Brain prompt optimization failed:${error}`);
 }
 }
@@ -217,7 +217,7 @@ export class BrainService {
 		this.conversationContext = [];
 		this.optimizationCache.clear();
 		await this.dspyEngine.clear();
-		console.log("[Brain] Memory and cache cleared");
+		logger.info("[Brain] Memory and cache cleared");
 }
 
 	/**
@@ -261,7 +261,7 @@ export class BrainService {
 },
 		);
 
-		console.log(
+		logger.info(
 			`[Brain] Used DSPy optimization (${optimization.improvement.toFixed(3)} improvement)`,
 		);
 		return result;

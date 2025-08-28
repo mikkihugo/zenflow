@@ -7,7 +7,8 @@
  * @author Claude Code Zen Team
  * @since 1.0.0
  */
-import { dateFns} from '@claude-zen/foundation')const { format, parseISO, isValid} = dateFns;';
+import { dateFns } from '@claude-zen/foundation';
+const { format, parseISO, isValid } = dateFns;
 /**
  * Professional date formatting utilities
  */

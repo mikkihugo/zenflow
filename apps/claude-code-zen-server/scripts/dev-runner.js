@@ -11,9 +11,9 @@ try {
 	// Try to import syslog bridge if available
 	const syslogModule = await import("../src/utils/logtape-syslog-bridge");
 	syslogBridge = syslogModule.syslogBridge;
-	console.log("✅ LogTape syslog bridge loaded successfully");
+	logger.info("✅ LogTape syslog bridge loaded successfully");
 } catch (_error) {
-	console.log("ℹ️ LogTape syslog bridge not available (optional feature)");
+	logger.info("ℹ️ LogTape syslog bridge not available (optional feature)");
 	// Provide a simple null implementation
 	syslogBridge = {
 		info: () => {},
@@ -177,10 +177,10 @@ function startErrorServer() {
 	});
 
 	errorServer.listen(PORT, () => {
-		console.log(
+		logger.info(
 			`${colors.yellow}🚨 Error server running at http://localhost:${PORT}${colors.reset}`,
 		);
-		console.log(
+		logger.info(
 			`${colors.cyan}   Fix the TypeScript errors and the main server will restart${colors.reset}`,
 		);
 	});
@@ -195,7 +195,7 @@ function stopErrorServer() {
 
 function runTypeCheck() {
 	return new Promise((resolve, reject) => {
-		console.log(
+		logger.info(
 			`${colors.blue}🔍 Running TypeScript type check...${colors.reset}`,
 		);
 
@@ -234,7 +234,7 @@ function runTypeCheck() {
 
 		tsc.on("close", (code) => {
 			if (code === 0) {
-				console.log(`${colors.green}✅ TypeScript check passed${colors.reset}`);
+				logger.info(`${colors.green}✅ TypeScript check passed${colors.reset}`);
 				if (syslogBridge) {
 					syslogBridge.info("typescript", "TypeScript compilation successful", {
 						exitCode: code,
@@ -244,8 +244,8 @@ function runTypeCheck() {
 				resolve();
 			} else {
 				const error = stderr || stdout || "Unknown TypeScript error";
-				console.log(`${colors.red}❌ TypeScript check failed:${colors.reset}`);
-				console.log(error);
+				logger.info(`${colors.red}❌ TypeScript check failed:${colors.reset}`);
+				logger.info(error);
 				if (syslogBridge) {
 					syslogBridge.error("typescript", "TypeScript compilation failed", {
 						exitCode: code,
@@ -261,7 +261,7 @@ function runTypeCheck() {
 
 function startMainServer() {
 	return new Promise((resolve, reject) => {
-		console.log(`${colors.green}🚀 Starting main server...${colors.reset}`);
+		logger.info(`${colors.green}🚀 Starting main server...${colors.reset}`);
 
 		try {
 			const npxPath = execSync("which npx", { encoding: "utf8" }).trim();
@@ -283,13 +283,13 @@ function startMainServer() {
 
 		mainServer.stderr.on("data", (data) => {
 			const errorText = data.toString();
-			console.error(errorText);
+			logger.error(errorText);
 			startupError += errorText;
 		});
 
 		mainServer.on("close", (code) => {
 			if (code !== 0 && code !== null) {
-				console.log(
+				logger.info(
 					`${colors.red}💥 Main server exited with code ${code}${colors.reset}`,
 				);
 				lastError = startupError || `Server exited with code ${code}`;
@@ -300,7 +300,7 @@ function startMainServer() {
 		// Give the server a moment to start
 		setTimeout(() => {
 			if (mainServer && !mainServer.killed) {
-				console.log(
+				logger.info(
 					`${colors.green}✅ Main server started successfully${colors.reset}`,
 				);
 				if (syslogBridge) {
@@ -350,7 +350,7 @@ function broadcastMessage(message) {
 function startFileWatcher() {
 	if (fileWatcher) return;
 
-	console.log(
+	logger.info(
 		`${colors.blue}👁️ Watching for TypeScript file changes...${colors.reset}`,
 	);
 
@@ -360,7 +360,7 @@ function startFileWatcher() {
 
 	fileWatcher = watch(srcDir, { recursive: true }, (_eventType, filename) => {
 		if (filename?.endsWith(".ts") && !isCheckingTypes) {
-			console.log(`${colors.cyan}📁 File changed: ${filename}${colors.reset}`);
+			logger.info(`${colors.cyan}📁 File changed: ${filename}${colors.reset}`);
 
 			// Clear existing timer
 			if (debounceTimer) {
@@ -371,7 +371,7 @@ function startFileWatcher() {
 			debounceTimer = setTimeout(async () => {
 				if (isCheckingTypes) return; // Double-check
 
-				console.log(
+				logger.info(
 					`${colors.blue}🔍 Debounce complete, checking TypeScript after file changes...${colors.reset}`,
 				);
 				broadcastMessage(
@@ -383,7 +383,7 @@ function startFileWatcher() {
 					await runTypeCheck();
 
 					// TypeScript passed! Switch to main server
-					console.log(
+					logger.info(
 						`${colors.green}✅ TypeScript errors fixed! Starting main server...${colors.reset}`,
 					);
 					broadcastMessage(
@@ -400,7 +400,7 @@ function startFileWatcher() {
 				} catch (error) {
 					// Still has errors, update error server
 					lastError = error.toString();
-					console.log(
+					logger.info(
 						`${colors.yellow}⚠️ TypeScript errors still present, updating error page...${colors.reset}`,
 					);
 					broadcastMessage(
@@ -411,7 +411,7 @@ function startFileWatcher() {
 				debounceTimer = null;
 			}, 30000); // 30 second debounce for batch file operations
 
-			console.log(
+			logger.info(
 				`${colors.magenta}⏱️ TypeScript check scheduled in 30 seconds... (batching file changes)${colors.reset}`,
 			);
 		}
@@ -430,13 +430,13 @@ function stopFileWatcher() {
 }
 
 async function start() {
-	console.log(
+	logger.info(
 		`${colors.bold}${colors.cyan}🔥 Claude Code Zen Development Runner${colors.reset}`,
 	);
-	console.log(
+	logger.info(
 		`${colors.cyan}   TypeScript checking + Error visualization${colors.reset}`,
 	);
-	console.log(
+	logger.info(
 		`${colors.green}📖 Reload Instructions: See SYSTEMD_INSTRUCTIONS.md & CLAUDE.md${colors.reset}\n`,
 	);
 
@@ -466,7 +466,7 @@ async function start() {
 		// TypeScript failed or server crashed
 		lastError = error.toString();
 
-		console.log(
+		logger.info(
 			`${colors.red}🚨 Error detected - starting error server${colors.reset}`,
 		);
 
@@ -481,7 +481,7 @@ async function start() {
 		// Start file watcher to automatically detect fixes
 		startFileWatcher();
 
-		console.log(
+		logger.info(
 			`${colors.yellow}🔄 Error server running. File watcher active - will auto-restart when TypeScript errors are fixed.${colors.reset}`,
 		);
 	}
@@ -489,7 +489,7 @@ async function start() {
 
 // Handle shutdown gracefully
 process.on("SIGTERM", () => {
-	console.log(
+	logger.info(
 		`${colors.yellow}🔄 Received SIGTERM, shutting down gracefully...${colors.reset}`,
 	);
 	stopFileWatcher();
@@ -499,7 +499,7 @@ process.on("SIGTERM", () => {
 });
 
 process.on("SIGINT", () => {
-	console.log(
+	logger.info(
 		`${colors.yellow}🔄 Received SIGINT, shutting down gracefully...${colors.reset}`,
 	);
 	stopFileWatcher();

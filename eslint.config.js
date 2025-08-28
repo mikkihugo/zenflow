@@ -308,6 +308,29 @@ export default [
 	// Web Dashboard Browser Environment Override - MUST come after general TypeScript rules
 	{
 		files: ["apps/web-dashboard/**/*.{ts,tsx,js,jsx}"],
+		languageOptions: {
+			globals: {
+				// Browser globals for web dashboard
+				window: "readonly",
+				document: "readonly",
+				HTMLElement: "readonly",
+				Element: "readonly",
+				Node: "readonly",
+				DragEvent: "readonly",
+				MouseEvent: "readonly",
+				Event: "readonly",
+				EventTarget: "readonly",
+				MessageEvent: "readonly",
+				WebSocket: "readonly",
+				CloseEvent: "readonly",
+				console: "readonly",
+				fetch: "readonly",
+				localStorage: "readonly",
+				sessionStorage: "readonly",
+				location: "readonly",
+				navigator: "readonly",
+			},
+		},
 		rules: {
 			// Browser console logging is appropriate for web dashboard
 			"no-console": "warn",

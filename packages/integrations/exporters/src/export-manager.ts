@@ -225,7 +225,7 @@ export class ExportSystem extends TypedEventBase {
 }
         return value;
 });
-      csvRows.push(values.join(',    '));
+  csvRows.push(values.join(', '));
 }
 
     return csvRows.join('\n');
@@ -242,7 +242,7 @@ export class ExportSystem extends TypedEventBase {
     if (Array.isArray(obj)) {
       if (obj.length === 0) return '[]';
       return obj
-        .map((item) => `${spaces}- ${this.convertToYAML(item, 0)}`)`
+        .map((item) => `${spaces}- ${this.convertToYAML(item, 0)}`)
         .join('\n');
 }
 
@@ -317,12 +317,12 @@ export class ExportSystem extends TypedEventBase {
   private convertToHTML(data:unknown): string {
     const title = (data as Record<string, unknown>)?.title || 'Claude Code Zen Export';
 
-    let html = `<!DOCTYPE html>`
+  let html = `<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${this.escapeHTML(String(title))}</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${this.escapeHTML(String(title))}</title>
 </head>
 <body>`;
 

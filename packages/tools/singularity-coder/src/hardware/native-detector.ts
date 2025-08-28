@@ -5,11 +5,11 @@ import '../types/hardware-types;
 let osUtils:typeof import('os-utils')|null = null;')let _si:typeof import('systeminformation')|null = null;')
 try {
   osUtils = require('os-utils');')} catch (_e) {
-  console.log('os-utils not available, using fallback detection');')}
+  logger.info('os-utils not available, using fallback detection');')}
 
 try {
   _si = require('systeminformation');')} catch (_e) {
-  console.log('systeminformation not available, using fallback detection');')}
+  logger.info('systeminformation not available, using fallback detection');')}
 
 export interface HardwareInfo {
   cpu_cores:number;
@@ -50,7 +50,7 @@ export class NativeHardwareDetector {
       return this.cachedInfo;
 }
 
-    console.log('Native hardware detection starting...');')
+    logger.info('Native hardware detection starting...');')
     // Basic Node.js detection
     const cpus = os.cpus();
     const totalMemory = os.totalmem();
@@ -71,14 +71,14 @@ export class NativeHardwareDetector {
       load_average:loadAvg,
 };
 
-    console.log(
+    logger.info(
       `Basic detection:${cpus.length} cores, ${Math.round(totalMemory / (1024 * 1024))}MB RAM``
     );
 
     // Enhanced detection with systeminformation
     if (si) {
       try {
-        console.log('Using systeminformation for enhanced detection...');')
+        logger.info('Using systeminformation for enhanced detection...');')
         // Get detailed CPU info
         const cpuInfo = await si.cpu();
         if (cpuInfo) {
@@ -112,13 +112,13 @@ export class NativeHardwareDetector {
               hardwareInfo.gpu_memory_mb = gpu.vram;
 }
             hardwareInfo.gpu_vendor = gpu.vendor||'Unknown;
-            console.log(
+            logger.info(
               `GPU detected:${gpu.vendor||'Unknown'} with ${gpu.vram||0}MB VRAM``
             );
 }
 }
 } catch (error) {
-        console.log('systeminformation detection failed, using fallback: ','          error instanceof Error ? error.message:String(error)
+        logger.info('systeminformation detection failed, using fallback: ','          error instanceof Error ? error.message:String(error)
         );
 }
 }
@@ -126,13 +126,13 @@ export class NativeHardwareDetector {
     // Enhanced detection with os-utils
     if (osUtils) {
       try {
-        console.log('Using os-utils for CPU utilization...');')        // Get current CPU usage (this is async in os-utils)
+        logger.info('Using os-utils for CPU utilization...');')        // Get current CPU usage (this is async in os-utils)
         const cpuUsage = await new Promise<number>((resolve) => {
           osUtils.cpuUsage((v:number) => resolve(v));
 });
-        console.log(`CPU usage:${(cpuUsage * 100).toFixed(1)}%`);`
+        logger.info(`CPU usage:${(cpuUsage * 100).toFixed(1)}%`);`
 } catch (error) {
-        console.log(
+        logger.info(
           'os-utils detection failed: ','          error instanceof Error ? error.message:String(error)
         );
 }
@@ -142,7 +142,7 @@ export class NativeHardwareDetector {
     hardwareInfo.optimization_level =
       this.determineOptimizationLevel(hardwareInfo);
 
-    console.log(
+    logger.info(
       `Final detection:$hardwareInfo.cpu_corescores, $hardwareInfo.memory_total_mbMB RAM, GPU:$hardwareInfo.has_gpu, Level:$hardwareInfo.optimization_level``
     );
 
@@ -236,7 +236,7 @@ export class NativeHardwareDetector {
       128 * 1024 * 1024
     ); // Max 128MB
 
-    console.log(
+    logger.info(
       `Generated optimization strategy for ${level} level:${strategy.parallel_tasks} tasks, ${strategy.cache_size_mb}MB cache``
     );
 

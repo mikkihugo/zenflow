@@ -14,9 +14,14 @@
  * const scheduleId = engine.scheduleWorkflow('0 9 * * *,' daily-report');
  *
  * // Generate Mermaid visualization
- * const diagram = engine.generateWorkflowVisualization(workflow);') * ') */';
+ * const diagram = engine.generateWorkflowVisualization(workflow);
+ */
+
 // =============================================================================
-// MAIN WORKFLOW ENGINE - Battle-tested with modern npm packages')// =============================================================================')export { WorkflowEngine as default, WorkflowEngine} from './main')// ============================================================================ = ''; 
+// MAIN WORKFLOW ENGINE - Battle-tested with modern npm packages
+// =============================================================================
+
+export { WorkflowEngine as default, WorkflowEngine} from './main'; 
 // PROFESSIONAL UTILITIES - Library Integrations
 // =============================================================================
 export {
@@ -44,7 +49,8 @@ export {
   // Professional types
   type WorkflowStep as ValidatedWorkflowStep,
   WorkflowStepSchema,
-} from './utilities/index')// ============================================================================ = ''; 
+} from './utilities/index';
+// ============================================================================= 
 // KANBAN INTEGRATION - Workflow-Kanban coordination
 // =============================================================================
 export {
@@ -54,7 +60,7 @@ export {
   type KanbanWorkflowStep,
   WorkflowKanbanIntegration,
   type WorkflowKanbanIntegrationConfig,
-} from './integrations/kanban-integration')// ============================================================================ = ''; 
+} from './integrations/kanban-integration'; // ============================================================================ 
 // WORKFLOW DOMAIN TYPES - Comprehensive workflow domain types
 // =============================================================================
 // Export comprehensive workflow domain types from types/index.ts
@@ -148,7 +154,7 @@ export type {
   WorkflowTemplate,
   // Validation and permissions
   WorkflowValidation,
-} from './types/index')// ============================================================================ = ''; 
+} from './types/index'; // ============================================================================ 
 // LEGACY TYPE COMPATIBILITY - Re-exports from old types.ts
 // =============================================================================
 // Re-export legacy workflow types for backward compatibility
@@ -165,7 +171,9 @@ export type {
   WorkflowState as WorkflowStateLegacy,
   WorkflowStep as WorkflowStepLegacy,
   WorkflowTemplate as WorkflowTemplateLegacy,
-} from './types')// ============================================================================ = ''; 
+} from './types';
+
+// ============================================================================
 // METADATA - Package information with battle-tested features
 // =============================================================================
 export const WORKFLOWS_INFO = {

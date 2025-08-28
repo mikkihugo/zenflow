@@ -161,15 +161,16 @@ export {
 // FORCE:Better console patterns (use getLogger instead)
 export const console = {
 	error:() => {
-		throw new Error("Use getLogger().error() instead of console.error()");
+		throw new Error("Use getLogger().error() instead of logger.error()");
 },
 	log:() => {
-		throw new Error("Use getLogger().info() instead of console.log()");
+		throw new Error("Use getLogger().info() instead of logger.info()");
 },
 	warn:() => {
-		throw new Error("Use getLogger().warn() instead of console.warn()");
+		throw new Error("Use getLogger().warn() instead of logger.warn()");
 },
 	debug:() => {
+     
 		throw new Error("Use getLogger().debug() instead of console.debug()");
 },
 };

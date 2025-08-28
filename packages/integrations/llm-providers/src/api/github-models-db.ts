@@ -682,7 +682,7 @@ class GitHubModelsDatabase {
       stats.set(model.provider, (stats.get(model.provider) || 0) + 1);
 }
     return Array.from(stats.entries())
-      .map(([provider, count]) => `${provider}:${count}`)`
+      .map(([provider, count]) => `${provider}:${count}`)
       .join(',    ');
 }
 

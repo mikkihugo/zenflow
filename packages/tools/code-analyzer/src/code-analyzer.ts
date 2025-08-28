@@ -303,7 +303,7 @@ export class CodeAnalyzer {
             await this.brainSystem.storeEmbedding(
               'session_analysis',              sessionId,
               {
-                content:`Repository: ${this.repositoryPath}`,`
+                content: `Repository: ${this.repositoryPath}`,
                 metadata:{
                   options:session.options,
                   timestamp:startTime.toISOString(),

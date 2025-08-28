@@ -60,7 +60,7 @@
  *   learningEnabled:true
  *});
  *
- * console.log('AI Decision: ', {
+ * logger.info('AI Decision: ', {
 '    ') *   strategy:decision.selectedStrategy,
  *   confidence:decision.confidence,
  *   reasoning:decision.reasoning,
@@ -111,7 +111,7 @@
  *   priority: 'high', *   enableLearning:true
  *});
  *
- * console.log('Autonomous Optimization Result: ', {
+ * logger.info('Autonomous Optimization Result: ', {
 '    ') *   selectedStrategy:result.strategy,
  *   optimizedPrompt:result.prompt,
  *   confidence:result.confidence,
@@ -200,7 +200,7 @@
  *}
  *});
  *
- * console.log('Training Results: ', {
+ * logger.info('Training Results: ', {
 '    ') *   finalLoss:trainingResult.finalLoss,
  *   bestValidationAccuracy:trainingResult.bestValidationAccuracy,
  *   trainingTime:trainingResult.totalTrainingTime,
@@ -247,7 +247,7 @@
  *},
  *   expertise:'senior-architect') *});
  *
- * console.log('Complexity Analysis: ', {
+ * logger.info('Complexity Analysis: ', {
 '    ') *   overallComplexity:complexityAnalysis.score, // 0-1 scale
  *   dimensions:{
  *     technical:complexityAnalysis.technical,
@@ -291,7 +291,7 @@
  *     resourceBudget:'high') *}
  *});
  *
- * console.log('Autonomous Strategy Selection: ', {
+ * logger.info('Autonomous Strategy Selection: ', {
 '    ') *   selectedStrategy:optimizationDecision.strategy,
  *   confidence:optimizationDecision.confidence,
  *   reasoning:optimizationDecision.reasoning,
@@ -364,7 +364,7 @@
  *     urgency:'high') *},
  *   horizons:['1h',    '4h',    '1d']') *});
  *
- * console.log('Performance Prediction: ', {
+ * logger.info('Performance Prediction: ', {
 '    ') *   shortTerm:{
  *     expectedQuality:performancePrediction.oneHour.quality,
  *     confidence:performancePrediction.oneHour.confidence,
@@ -390,7 +390,7 @@
  *   simulationDuration: '30d', *   learningEnabled:true
  *});
  *
- * console.log('Behavioral Intelligence Demo: ', {
+ * logger.info('Behavioral Intelligence Demo: ', {
 '    ') *   totalAgents:demoResults.agents.length,
  *   averageAccuracy:demoResults.predictionAccuracy,
  *   improvementRate:demoResults.learningRate,
@@ -409,7 +409,7 @@
  *
  * // Detect and initialize GPU capabilities
  * const gpuCapabilities = await detectGPUCapabilities();
- * console.log('GPU Capabilities: ', {
+ * logger.info('GPU Capabilities: ', {
 '    ') *   available:gpuCapabilities.available,
  *   type:gpuCapabilities.type, // 'cuda',    'opencl',    'metal',    'webgl') *   memory:gpuCapabilities.memory,
  *   computeCapability:gpuCapabilities.computeCapability,
@@ -452,7 +452,7 @@
  *}
  *});
  *
- *   console.log('GPU Optimization Results: ', {
+ *   logger.info('GPU Optimization Results: ', {
 '    ') *     originalSize:optimizedNetwork.originalSize,
  *     optimizedSize:optimizedNetwork.optimizedSize,
  *     speedupFactor:optimizedNetwork.speedupFactor,
@@ -539,7 +539,7 @@
  *     tenantSLAs:'must-meet') *}
  *});
  *
- * console.log('System Optimization Results: ', {
+ * logger.info('System Optimization Results: ', {
 '    ') *   decisions:systemOptimization.decisions,
  *   expectedImpact:systemOptimization.impact,
  *   confidence:systemOptimization.confidence,

@@ -240,9 +240,9 @@ export async function withRetry<T>(
  * );
  *
  * if (result.isOk()) {
- *   console.log('Success: ', result.value);
+ *   logger.info('Success: ', result.value);
 ' *} else {
- *   console.log('Error: ', result.error);
+ *   logger.info('Error: ', result.error);
 ' *}
  * ```
  */
@@ -326,7 +326,7 @@ export async function safeAsync<T>(
  * try {
  *   const data = await apiCall.execute('/api/data');
  *} catch (error) {
- *   console.log('Circuit breaker prevented call or API failed');
+ *   logger.info('Circuit breaker prevented call or API failed');
  *}
  * ```
  */
@@ -416,9 +416,9 @@ export async function concurrent<T>(
  *
  * results.forEach((result, index) => {
  *   if (result.isOk()) {
- *     console.log(`Request ${index} succeeded:`, result.value);
+ *     logger.info(`Request ${index} succeeded:`, result.value);
  *} else {
- *     console.log(`Request ${index} failed:`, result.error);
+ *     logger.info(`Request ${index} failed:`, result.error);
  *}
  *});
  * ```

@@ -12,8 +12,8 @@ export type {
   WorkflowEngineConfig,
   WorkflowState,
   WorkflowStep,
-} from './workflow-base-types')// Import WorkflowDefinition for proper typing';
-import type { WorkflowDefinition} from './workflow-base-types')// Additional workflow types for advanced functionality';
+} from './workflow-base-types'; // Import WorkflowDefinition for proper typing
+// Additional workflow types for advanced functionality
 export interface WorkflowTemplate {
   id: string;
   name: string;
@@ -24,12 +24,13 @@ export interface WorkflowTemplate {
     version: string;
     author?:string;
     tags?:string[];
-    complexity?:'simple' | ' medium'|' complex')};;
+    complexity?: 'simple' | 'medium' | 'complex';
 }
 export interface WorkflowExecution {
   id: string;
   workflowId: string;
-  status: |'queued| running| paused| completed| failed' | ' cancelled')  startTime: string;;
+  status: 'queued' | 'running' | 'paused' | 'completed' | 'failed' | 'cancelled';
+  startTime: string;
   endTime?:string;
   currentStep: number;
   totalSteps: number;

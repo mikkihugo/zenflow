@@ -156,7 +156,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
     ')      const defaultCoordinator = new SmartNeuralCoordinator();
       await defaultCoordinator.initialize();
 
-      const stats = defaultCoordinator.getCoordinatorStats();
+      const _stats = defaultCoordinator.getCoordinatorStats();
       expect(stats.configuration.primaryModel).toBe('all-mpnet-base-v2');')      expect(stats.configuration.enableFallbacks).toBe(true);
       expect(stats.configuration.enableCaching).toBe(true);
 
@@ -173,7 +173,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
       const customCoordinator = new SmartNeuralCoordinator(customConfig);
       await customCoordinator.initialize();
 
-      const stats = customCoordinator.getCoordinatorStats();
+      const _stats = customCoordinator.getCoordinatorStats();
       expect(stats.configuration.primaryModel).toBe('custom-model');')      expect(stats.configuration.enableFallbacks).toBe(false);
       expect(stats.configuration.enableCaching).toBe(false);
       expect(stats.configuration.maxCacheSize).toBe(50);
@@ -188,7 +188,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
       await coordinator.initialize();
 
       // Should still initialize but with fallback status
-      const stats = coordinator.getCoordinatorStats();
+      const _stats = coordinator.getCoordinatorStats();
       expect(stats.models.primary.status).toBe('error');')});
 });
 
@@ -285,7 +285,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
       expect(result2.metadata.fromCache).toBe(true);
       expect(result2.embedding).toEqual(result1.embedding);
 
-      const stats = coordinator.getCoordinatorStats();
+      const _stats = coordinator.getCoordinatorStats();
       expect(stats.cache.size).toBe(1);
       expect(stats.cache.hits).toBe(1);
 });
@@ -309,7 +309,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
           priority: 'medium',});
 }
 
-      const stats = smallCacheCoordinator.getCoordinatorStats();
+      const _stats = smallCacheCoordinator.getCoordinatorStats();
       expect(stats.cache.size).toBeLessThanOrEqual(3);
       expect(stats.cache.evictions).toBeGreaterThan(0);
 
@@ -323,13 +323,13 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
       await coordinator.generateEmbedding({
         text: 'cache item 2',        priority: 'medium',});
 
-      let stats = coordinator.getCoordinatorStats();
+      let _stats = coordinator.getCoordinatorStats();
       expect(stats.cache.size).toBe(2);
 
       // Clear cache
       await coordinator.clearCache();
 
-      stats = coordinator.getCoordinatorStats();
+      _stats = coordinator.getCoordinatorStats();
       expect(stats.cache.size).toBe(0);
 });
 
@@ -352,7 +352,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
       expect(result1.metadata.fromCache).toBe(false);
       expect(result2.metadata.fromCache).toBe(false);
 
-      const stats = noCacheCoordinator.getCoordinatorStats();
+      const _stats = noCacheCoordinator.getCoordinatorStats();
       expect(stats.cache.size).toBe(0);
 
       await noCacheCoordinator.shutdown();
@@ -373,7 +373,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
         requests.map((request) => coordinator.generateEmbedding(request))
       );
 
-      const stats = coordinator.getCoordinatorStats();
+      const _stats = coordinator.getCoordinatorStats();
       expect(stats.performance.totalRequests).toBe(5);
       expect(stats.performance.successfulRequests).toBe(5);
       expect(stats.performance.failedRequests).toBe(0);
@@ -393,7 +393,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
       const result = await coordinator.generateEmbedding(request);
       expect(result.success).toBe(false);
 
-      const stats = coordinator.getCoordinatorStats();
+      const _stats = coordinator.getCoordinatorStats();
       expect(stats.performance.failedRequests).toBeGreaterThan(0);
 });
 });
@@ -403,7 +403,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
       await coordinator.initialize(););
 
     it('should have fallback chain configured', () => {
-    ')      const stats = coordinator.getCoordinatorStats();
+    ')      const _stats = coordinator.getCoordinatorStats();
       expect(stats.fallbackChain).toBeDefined();
       expect(Array.isArray(stats.fallbackChain)).toBe(true);
       expect(stats.fallbackChain.length).toBeGreaterThan(0);
@@ -441,7 +441,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
       await coordinator.initialize(););
 
     it('should provide comprehensive statistics', () => {
-    ')      const stats = coordinator.getCoordinatorStats();
+    ')      const _stats = coordinator.getCoordinatorStats();
 
       // Configuration
       expect(stats.configuration).toBeDefined();
@@ -823,7 +823,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
       expect(generationResult.success).toBe(true);
 
       // Check performance tracking across phases
-      const stats = coordinator.getCoordinatorStats();
+      const _stats = coordinator.getCoordinatorStats();
       expect(stats.performance.totalRequests).toBeGreaterThanOrEqual(3);
 });
 
@@ -853,7 +853,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
       expect(embeddingResult2.success).toBe(true);
       expect(classificationResult2.success).toBe(true);
 
-      const stats = coordinator.getCoordinatorStats();
+      const _stats = coordinator.getCoordinatorStats();
       expect(stats.cache.hits).toBeGreaterThan(0);
 });
 
@@ -891,7 +891,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
     ')      const newCoordinator = new SmartNeuralCoordinator(mockConfig);
       await newCoordinator.initialize();
 
-      const stats = newCoordinator.getCoordinatorStats();
+      const _stats = newCoordinator.getCoordinatorStats();
       expect(stats.models.primary.status).toBe('ready');')
       await newCoordinator.shutdown();
 });
@@ -922,7 +922,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
     ')      await coordinator.initialize();
       await coordinator.initialize(); // Second call should be safe
 
-      const stats = coordinator.getCoordinatorStats();
+      const _stats = coordinator.getCoordinatorStats();
       expect(stats.models.primary.status).toBe('ready');')});
 
     it('should handle multiple shutdown calls', async () => {

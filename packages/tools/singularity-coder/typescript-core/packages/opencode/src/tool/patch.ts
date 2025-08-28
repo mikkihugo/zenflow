@@ -225,7 +225,7 @@ export const _PatchTool = Tool.define({
       await FileTime.assert(ctx.sessionID, absPath)
 
       try {
-        const stats = await fs.stat(absPath)
+        const _stats = await fs.stat(absPath)
         if (stats.isDirectory()) {
           throw new Error(`path is a directory, not a file:${absPath}`)`
 }

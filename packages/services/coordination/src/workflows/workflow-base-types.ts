@@ -51,9 +51,12 @@ export interface WorkflowStep {
   readonly params?:Record<string, unknown>;
   readonly timeout?:number;
   readonly retries?:number;
-  readonly onError?:'stop' | ' continue'|' skip')  readonly gateConfig?:{';
+  readonly onError?: 'stop' | 'continue' | 'skip';
+  readonly gateConfig?: {
     readonly enabled: boolean;
-    readonly gateType?:'approval| checkpoint| review' | ' decision')    readonly businessImpact?:'low| medium| high' | ' critical')    readonly stakeholders?:string[];;
+    readonly gateType?: 'approval' | 'checkpoint' | 'review' | 'decision';
+    readonly businessImpact?: 'low' | 'medium' | 'high' | 'critical';
+    readonly stakeholders?: string[];
     readonly autoApproval?:boolean;
 };
 }

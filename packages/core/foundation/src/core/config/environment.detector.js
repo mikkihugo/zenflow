@@ -11,9 +11,9 @@
  * const detector = new EnvironmentDetector();
  * const env = await detector.detect('/path/to/project');
  *
- * console.log('Node version: ', env.runtime.node);
-' * console.log('Package manager: ', env.packageManager.type);
-' * console.log('Available tools: ', env.tools);
+ * logger.info('Node version: ', env.runtime.node);
+' * logger.info('Package manager: ', env.packageManager.type);
+' * logger.info('Available tools: ', env.tools);
 ' * ```
  *
  * @example Advanced Usage with Caching
@@ -75,14 +75,14 @@ export class EnvironmentDetectionError extends Error {
  * ```typescript`
  * const detector = new EnvironmentDetector();
  * const env = await detector.detectEnvironment();
- * console.log('Available tools: ', env.tools.filter(t => t.available));
+ * logger.info('Available tools: ', env.tools.filter(t => t.available));
 ' * ```
  *
  * @example With Caching and Auto-refresh
  * ```typescript`
  * const detector = new EnvironmentDetector('/project/path', true, 30000);
  * detector.on('service-started', (event) => {
- *   console.log('Detection completed: ', event.serviceName);
+ *   logger.info('Detection completed: ', event.serviceName);
 ' *});
  * ```
  */
@@ -784,7 +784,7 @@ export class EnvironmentDetector extends EventEmitter {
  * const nix = new NixIntegration('/project/path');
  * const result = await nix.autoSetup();
  * if (result.success) {
- *   console.log('Nix setup completed: ', result.steps);
+ *   logger.info('Nix setup completed: ', result.steps);
 ' *}
  * ```
  */

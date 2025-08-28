@@ -30,20 +30,20 @@ interface TestTask {
 }
 
 async function verifyDomainBoundaryValidator(): Promise<void> {
-  console.log('🧪 Verifying Domain Boundary Validator Implementation');
-  console.log('='.repeat(60));
+  logger.info('🧪 Verifying Domain Boundary Validator Implementation');
+  logger.info('='.repeat(60));
 
   try {
     // 1. Basic Validation Test
-    console.log('✅ Testing basic validation...');
+    logger.info('✅ Testing basic validation...');
     const validator = new DomainBoundaryValidator(Domain.CORE);
 
     const stringSchema: TypeSchema<string> = { type: 'string', required: true};
     const result = validator.validateInput('test-string', stringSchema);
-    console.log(`   - String validation: ${result}`);
+    logger.info(`   - String validation: ${result}`);
 
     // 2. Complex Object Validation
-    console.log('✅ Testing complex object validation...');
+    logger.info('✅ Testing complex object validation...');
     const agentSchema: TypeSchema<TestAgent> = {
       type: 'object',      required: true,
       properties: {
@@ -64,56 +64,56 @@ async function verifyDomainBoundaryValidator(): Promise<void> {
       status: 'idle',};
 
     const validatedAgent = validator.validateInput(agentData, agentSchema);
-    console.log(
+    logger.info(
       `   - Agent validation: ${validatedAgent.id} - ${validatedAgent.status}`
     );
 
     // 3. Registry Test
-    console.log('✅ Testing validator registry...');
+    logger.info('✅ Testing validator registry...');
     const coordValidator = getDomainValidator(Domain.COORDINATION);
     const workflowValidator = getDomainValidator(Domain.WORKFLOWS);
 
-    console.log(
+    logger.info(
       `   - Coordination validator created: ${coordValidator !== undefined}`
     );
-    console.log(
+    logger.info(
       `   - Workflows validator created: ${workflowValidator !== undefined}`
     );
-    console.log(
+    logger.info(
       `   - Different validators: ${coordValidator !== workflowValidator}`
     );
 
     // 4. Domain Crossing Tracking
-    console.log('✅ Testing domain crossing tracking...');
+    logger.info('✅ Testing domain crossing tracking...');
     coordValidator.trackCrossings(
       Domain.COORDINATION,
       Domain.WORKFLOWS,
       'test-operation')    );
 
     const crossings = coordValidator.getDomainCrossings();
-    console.log(`   - Domain crossings tracked: ${crossings.length}`);
-    console.log(
+    logger.info(`   - Domain crossings tracked: ${crossings.length}`);
+    logger.info(
       `   - First crossing: ${crossings[0]?.fromDomain} -> ${crossings[0]?.toDomain}`
     );
 
     // 5. Performance Metrics
-    console.log('✅ Testing performance metrics...');
-    const stats = validator.getStatistics();
-    console.log(`   - Domain: ${stats.domain}`);
-    console.log(`   - Total validations: ${stats.totalValidations}`);
-    console.log(`   - Error rate: ${(stats.errorRate * 100).toFixed(2)}%`);
+    logger.info('✅ Testing performance metrics...');
+    const _stats = validator.getStatistics();
+    logger.info(`   - Domain: ${stats.domain}`);
+    logger.info(`   - Total validations: ${stats.totalValidations}`);
+    logger.info(`   - Error rate: ${(stats.errorRate * 100).toFixed(2)}%`);
 
     // 6. Error Handling
-    console.log('✅ Testing error handling...');
+    logger.info('✅ Testing error handling...');
     try {
       validator.validateInput(42, stringSchema); // Should fail
-      console.log('   - ❌ Error handling test failed - no error thrown');
+      logger.info('   - ❌ Error handling test failed - no error thrown');
 } catch (error) {
-      console.log(`   - Error correctly caught: ${error.constructor.name}`);
+      logger.info(`   - Error correctly caught: ${error.constructor.name}`);
 }
 
     // 7. Cache Behavior
-    console.log('✅ Testing cache behavior...');
+    logger.info('✅ Testing cache behavior...');
     const cacheTestSchema: TypeSchema<string> = {
       type: 'string',      required: true,
       description: 'cache-test',};
@@ -128,21 +128,21 @@ async function verifyDomainBoundaryValidator(): Promise<void> {
     validator.validateInput('cache-test-data', cacheTestSchema);
     const time2 = Date.now() - start2;
 
-    console.log(`   - First validation: ${time1}ms`);
-    console.log(`   - Second validation (cached): ${time2}ms`);
+    logger.info(`   - First validation: ${time1}ms`);
+    logger.info(`   - Second validation (cached): ${time2}ms`);
 
-    console.log('='.repeat(60));
-    console.log('🎉 All Domain Boundary Validator tests passed!');
-    console.log('🏗️  Phase 0, Task 0.2 implementation is complete and working');
+    logger.info('='.repeat(60));
+    logger.info('🎉 All Domain Boundary Validator tests passed!');
+    logger.info('🏗️  Phase 0, Task 0.2 implementation is complete and working');
 } catch (error) {
-    console.error('❌ Verification failed: ', error);
+    logger.error('❌ Verification failed: ', error);
 '    throw error;
 }
 }
 
 // Run verification if this file is executed directly
 verifyDomainBoundaryValidator().catch((error) => {
-  console.error('Verification failed: ', error);
+  logger.error('Verification failed: ', error);
 '  process.exit(1);
 });
 

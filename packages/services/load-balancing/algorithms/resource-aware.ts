@@ -180,13 +180,16 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
     const avgCpuUtilization = this.calculateAverageUtilization(profiles, 'cpu');
     const avgMemoryUtilization = this.calculateAverageUtilization(
       profiles,
-      'memory')    );
+      'memory'
+    );
     const avgDiskUtilization = this.calculateAverageUtilization(
       profiles,
-      'disk')    );
+      'disk'
+    );
     const avgNetworkUtilization = this.calculateAverageUtilization(
       profiles,
-      'network')    );
+      'network'
+    );
 
     const resourceEfficiency = this.calculateResourceEfficiency(profiles);
     const constraintViolations = this.countConstraintViolations(profiles);
@@ -568,18 +571,25 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
     // Check for active constraints
     if (
       profile.cpu.constraint &&
-      profile.cpu.constraint.severity === 'critical')    )
+      profile.cpu.constraint.severity === 'critical'
+    ) {
       penalty *= 0.1;
+    }
     if (
       profile.memory.constraint &&
-      profile.memory.constraint.severity === 'critical')    )
+      profile.memory.constraint.severity === 'critical'
+    ) {
       penalty *= 0.1;
-    if (profile.disk.constraint && profile.disk.constraint.severity === 'high')
+    }
+    if (profile.disk.constraint && profile.disk.constraint.severity === 'high') {
       penalty *= 0.5;
+    }
     if (
       profile.network.constraint &&
-      profile.network.constraint.severity === 'high')    )
+      profile.network.constraint.severity === 'high'
+    ) {
       penalty *= 0.5;
+    }
 
     return score * penalty;
 }
@@ -803,14 +813,18 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
         violations++;
       if (
         profile.memory.constraint &&
-        profile.memory.constraint.severity !== 'low')      )
+        profile.memory.constraint.severity !== 'low'
+      ) {
         violations++;
+      }
       if (profile.disk.constraint && profile.disk.constraint.severity !== 'low')
         violations++;
       if (
         profile.network.constraint &&
-        profile.network.constraint.severity !== 'low')      )
+        profile.network.constraint.severity !== 'low'
+      ) {
         violations++;
+      }
 }
 
     return violations;

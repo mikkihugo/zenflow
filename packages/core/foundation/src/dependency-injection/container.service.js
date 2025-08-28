@@ -37,7 +37,7 @@
  *
  * // Listen to events
  * container.on('serviceRegistered', (event) => {
- *   console.log(`Service ${event.name} registered`);
+ *   logger.info(`Service ${event.name} registered`);
  *});
  * ```
  */

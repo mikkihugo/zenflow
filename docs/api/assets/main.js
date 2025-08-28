@@ -78,7 +78,7 @@ window.translations = {
 			t.version = "2.3.9";
 			(t.utils = {}),
 				(t.utils.warn = ((e) => (n) => {
-					e.console && console.warn && console.warn(n);
+					e.console && console.warn && logger.warn(n);
 				})(this)),
 				(t.utils.asString = (e) => (e == null ? "" : e.toString())),
 				(t.utils.clone = (e) => {
@@ -2081,7 +2081,7 @@ window.translations = {
 			i !== n)
 		) {
 			if (!i || i.role !== "option") {
-				console.error("Option missing");
+				logger.error("Option missing");
 				return;
 			}
 			(i.ariaSelected = "true"),

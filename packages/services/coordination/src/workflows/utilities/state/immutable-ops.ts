@@ -7,7 +7,8 @@
  * @author Claude Code Zen Team
  * @since 1.0.0
  */
-import { type Draft, enableMapSet, produce} from 'immer')// Enable Immer support for Map and Set';
+import { type Draft, enableMapSet, produce } from 'immer';
+// Enable Immer support for Map and Set
 enableMapSet();
 /**
  * Professional immutable state utilities

@@ -169,9 +169,9 @@ export interface TrialLog {
  *     requires_permission_to_run:false,  // Skip permission prompts
  *     provide_traceback:true              // Debug information
  *});
- *   console.log('Optimization successful!');
+ *   logger.info('Optimization successful!');
  *} catch (error) {
- *   console.error('Optimization failed: ', error.message);
+ *   logger.error('Optimization failed: ', error.message);
 ' *}
  * ```
  */
@@ -322,7 +322,7 @@ export class MIPROv2 extends Teleprompter {
 } else {
 				adjustedMinibatchSize = Math.max(1, finalValset.length);
 				if (this.config.verbose) {
-					console.log(
+					logger.info(
 						`Adjusting minibatch_size from ${minibatch_size} to ${adjustedMinibatchSize} to fit validation set size of ${finalValset.length}`,
 					);
 }
@@ -330,8 +330,8 @@ export class MIPROv2 extends Teleprompter {
 }
 
 		// For now, return the optimized program (implementation would continue with full Stanford DSPy logic)
-		console.log("\n==> MIPROv2 OPTIMIZATION COMPLETE <==");
-		console.log(
+		logger.info("\n==> MIPROv2 OPTIMIZATION COMPLETE <==");
+		logger.info(
 			`Optimized program with ${finalTrainset.length} training examples and ${finalValset.length} validation examples`,
 		);
 

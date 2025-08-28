@@ -13,7 +13,7 @@ const CreateCommand = cmd({
   async handler() {
     await bootstrap({ cwd:process.cwd()}, async () => {
       const result = await Snapshot.create("test")
-      console.log(result)
+      logger.info(result)
 })
 },
 })
@@ -29,7 +29,7 @@ const RestoreCommand = cmd({
   async handler(args) {
     await bootstrap({ cwd:process.cwd()}, async () => {
       await Snapshot.restore("test", args.commit)
-      console.log("restored")
+      logger.info("restored")
 })
 },
 })
@@ -46,7 +46,7 @@ export const DiffCommand = cmd({
   async handler(args) {
     await bootstrap({ cwd:process.cwd()}, async () => {
       const diff = await Snapshot.diff("test", args.commit)
-      console.log(diff)
+      logger.info(diff)
 })
 },
 })

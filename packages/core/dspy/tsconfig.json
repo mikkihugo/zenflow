@@ -17,5 +17,8 @@
 		"**/*.test.ts",
 		"**/*.spec.ts",
 		"src/__tests__/**/*"
+	],
+	"references": [
+		{ "path": "../foundation" }
 	]
 }

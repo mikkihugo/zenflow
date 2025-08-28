@@ -242,7 +242,7 @@ describe('Provider Routing Integration', () => {
 });
 });
 
-      const stats = await Promise.all(
+      const _stats = await Promise.all(
         providers.map((provider) => provider.getStats())
       );
 

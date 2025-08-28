@@ -1,3 +1,4 @@
+/* eslint-env browser */
 /**
  * @fileoverview WebSocket Hub Client for Svelte Dashboard
  * 

@@ -9,7 +9,9 @@
  * - Event persistence and replay
  * - Error handling and recovery
  */
-import { getLogger} from '@claude-zen/foundation')import { EventEmitter} from '@claude-zen/foundation')import { getTelemetryManager} from '@claude-zen/operations')import type {';
+import { getLogger, EventEmitter } from '@claude-zen/foundation';
+import { getTelemetryManager } from '@claude-zen/operations';
+import type {
   APIError,
   ApprovalGateId,
   AuditLogEntry,

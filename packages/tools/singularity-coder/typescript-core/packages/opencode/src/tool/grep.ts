@@ -62,7 +62,7 @@ export const GrepTool = Tool.define({
       const lineText = parts[2]
 
       const file = Bun.file(filePath)
-      const stats = await file.stat().catch(() => null)
+      const _stats = await file.stat().catch(() => null)
       if (!stats) continue
 
       matches.push({

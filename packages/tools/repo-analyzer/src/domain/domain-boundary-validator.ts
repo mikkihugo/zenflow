@@ -37,16 +37,18 @@ class EventEmitter {
 // Simple logger fallback
 const logger = {
   debug:(msg: string, ...args:unknown[]) => {
+     
     // eslint-disable-next-line no-console
     console.debug(`[DEBUG] ${msg}`, ...args);
 },
   info:(msg: string, ...args:unknown[]) => {
+     
     // eslint-disable-next-line no-console
     console.info(`[INFO] ${msg}`, ...args);
 },
   error:(msg: string, ...args:unknown[]) => {
-    // eslint-disable-next-line no-console
-    console.error(`[ERROR] ${msg}`, ...args);
+     
+    logger.error(`[ERROR] ${msg}`, ...args);
 },
 };
 

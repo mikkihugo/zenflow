@@ -474,7 +474,7 @@ class ComprehensiveRepairValidator {
 		// Check if LanceDB is accessible
 		try {
 			execSync(
-				'node -e "import(\\"@lancedb/lancedb\\").then(() => console.log(\\"OK\\"))"',
+				'node -e "import(\\"@lancedb/lancedb\\").then(() => logger.info(\\"OK\\"))"',
 				{
 					cwd: TEST_PROJECT_PATH,
 					stdio: "pipe",

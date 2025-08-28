@@ -94,7 +94,7 @@ export interface CircuitBreaker {
   recordSuccess(agentId:string): void;
   recordFailure(agentId:string, error:Error): void;
   reset(agentId:string): void;
-  getState(agentId:string): 'closed' | ' open' | ' half-open';
+  getState(agentId:string): 'closed' | 'open' | 'half-open';
 }
 
 export interface ConnectionPool {
@@ -144,7 +144,8 @@ export interface AutoScaler extends EventEmitter {
 export interface EmergencyHandler extends EventEmitter {
   handleEmergency(
     type:string,
-    severity:'low' | ' medium' | ' high' | ' critical')  ):Promise<void>;
+    severity: 'low' | 'medium' | 'high' | 'critical'
+  ): Promise<void>;
   shedLoad(percentage:number): Promise<void>;
   activateFailover():Promise<void>;
   throttleRequests(rate:number): Promise<void>;

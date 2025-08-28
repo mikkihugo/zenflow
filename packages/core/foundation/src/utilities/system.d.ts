@@ -63,7 +63,7 @@ export type EnvironmentType = "development" | "production" | "test" | "staging" 
  * @example
  * ```typescript`
  * const platform = getPlatform();
- * console.log(platform); // 'darwin',    'linux',    'win32', etc.
+ * logger.info(platform); // 'darwin',    'linux',    'win32', etc.
  * ```
  */
 export declare function getPlatform(): Platform;
@@ -75,7 +75,7 @@ export declare function getPlatform(): Platform;
  * @example
  * ```typescript`
  * const arch = getArchitecture();
- * console.log(arch); // 'x64',    'arm64', etc.
+ * logger.info(arch); // 'x64',    'arm64', etc.
  * ```
  */
 export declare function getArchitecture(): Architecture;
@@ -126,7 +126,7 @@ export declare function isLinux(): boolean;
  * @example
  * ```typescript`
  * if (isCI()) {
- *   console.log('Running in CI environment');
+ *   logger.info('Running in CI environment');
  *}
  * ```
  */
@@ -139,7 +139,7 @@ export declare function isCI(): boolean;
  * @example
  * ```typescript`
  * if (isDocker()) {
- *   console.log('Running in Docker container');
+ *   logger.info('Running in Docker container');
  *}
  * ```
  */
@@ -152,7 +152,7 @@ export declare function isDocker(): boolean;
  * @example
  * ```typescript`
  * if (isWSL()) {
- *   console.log('Running in WSL');
+ *   logger.info('Running in WSL');
  *}
  * ```
  */
@@ -218,7 +218,7 @@ export declare function isTest(): boolean;
  * @example
  * ```typescript`
  * const sysInfo = getSystemInfo();
- * console.log(`Running on ${sysInfo.platform} ${sysInfo.arch} with ${sysInfo.cpuCount} CPUs`);
+ * logger.info(`Running on ${sysInfo.platform} ${sysInfo.arch} with ${sysInfo.cpuCount} CPUs`);
  * ```
  */
 export declare function getSystemInfo(): SystemInfo;
@@ -230,7 +230,7 @@ export declare function getSystemInfo(): SystemInfo;
  * @example
  * ```typescript`
  * const procInfo = getProcessInfo();
- * console.log(`Process ${procInfo.pid} running for ${procInfo.uptime}s`);
+ * logger.info(`Process ${procInfo.pid} running for ${procInfo.uptime}s`);
  * ```
  */
 export declare function getProcessInfo(): ProcessInfo;
@@ -244,7 +244,7 @@ export declare function getProcessInfo(): ProcessInfo;
  * const detector = getWorkspaceDetector();
  * const workspace = await detector.detectWorkspaceRoot();
  * if (workspace) {
- *   console.log(`Found ${workspace.tool} workspace with ${workspace.totalProjects} projects`);
+ *   logger.info(`Found ${workspace.tool} workspace with ${workspace.totalProjects} projects`);
  *}
  * ```
  */
@@ -259,9 +259,9 @@ export declare function getWorkspaceDetector(): WorkspaceDetector;
  * ```typescript`
  * const workspace = await detectWorkspace();
  * if (workspace) {
- *   console.log(`Detected ${workspace.tool} monorepo with ${workspace.totalProjects} projects`);
+ *   logger.info(`Detected ${workspace.tool} monorepo with ${workspace.totalProjects} projects`);
  *} else {
- *   console.log('No monorepo detected');
+ *   logger.info('No monorepo detected');
  *}
  * ```
  */
@@ -274,8 +274,8 @@ export declare function detectWorkspace(startPath?: string): Promise<DetectedWor
  * @example
  * ```typescript`
  * const capabilities = await getSystemCapabilities();
- * console.log(`System health:${capabilities.systemHealthScore}%`);
- * console.log(`Available packages:${capabilities.availablePackages}/${capabilities.totalPackages}`);
+ * logger.info(`System health:${capabilities.systemHealthScore}%`);
+ * logger.info(`Available packages:${capabilities.availablePackages}/${capabilities.totalPackages}`);
  * ```
  */
 export declare function getSystemCapabilities(): Promise<SystemCapabilityData>;
@@ -307,8 +307,8 @@ export declare function startMonitoring(): void;
  * @example
  * ```typescript`
  * const scores = await getCapabilityScoreMap();
- * console.log('Intelligence capability: ', scores.intelligence);
-' * console.log('Infrastructure capability: ', scores.infrastructure);
+ * logger.info('Intelligence capability: ', scores.intelligence);
+' * logger.info('Infrastructure capability: ', scores.infrastructure);
 ' * ```
  */
 export declare function getCapabilityScoreMap(): Promise<Record<string, number>>;
@@ -320,7 +320,7 @@ export declare function getCapabilityScoreMap(): Promise<Record<string, number>>
  * @example
  * ```typescript`
  * const summary = createSystemSummary();
- * console.log(summary);
+ * logger.info(summary);
  * // Outputs:"Linux x64 (Node.js v18.17.0) - 8 CPUs, 16.0GB RAM - Development"
  * ```
  */
@@ -339,7 +339,7 @@ export declare function createSystemSummary(): string;
  *});
  *
  * if (!meetsRequirements) {
- *   console.warn('System does not meet minimum requirements');
+ *   logger.warn('System does not meet minimum requirements');
  *}
  * ```
  */

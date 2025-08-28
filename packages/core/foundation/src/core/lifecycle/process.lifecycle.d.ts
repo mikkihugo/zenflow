@@ -11,7 +11,7 @@
  *
  * // Simple setup
  * const lifecycle = setupProcessLifecycle(async () => {
- *   console.log('Graceful shutdown initiated');
+ *   logger.info('Graceful shutdown initiated');
  *   await cleanup();
  *});
  *
@@ -141,7 +141,7 @@ export declare class ProcessLifecycleManager {
  * ```typescript`
  * const lifecycle = setupProcessLifecycle(async () => {
  *   await cleanup();
- *   console.log('Shutdown complete');
+ *   logger.info('Shutdown complete');
  *});
  * ```
  */

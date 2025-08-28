@@ -230,7 +230,7 @@ export class ClaudeProvider implements CLIProvider {
 }
 
     const prompt =
-      `Analysis type:${ `
+      `Analysis type:${
       analysisType 
 }\n\nData to analyze:\n${ 
       data 
@@ -249,12 +249,12 @@ export class ClaudeProvider implements CLIProvider {
 }
 
     const prompt = scope
-      ? `Research topic:${ `
+      ? `Research topic:${
         topic 
 }\nScope:${ 
         scope 
 }\n\nPlease provide comprehensive research:`
-      :`Research topic: ${ `
+      :`Research topic: ${
         topic 
 }\n\nPlease provide comprehensive research:`;
     return this.complete(prompt, options);
@@ -271,12 +271,12 @@ export class ClaudeProvider implements CLIProvider {
 }
 
     const prompt = teamContext
-      ? `Coordination task:${ `
+      ? `Coordination task:${
         task 
 }\nTeam context:${ 
         teamContext 
 }\n\nPlease provide coordination plan:`
-      :`Coordination task: ${  task}\n\nPlease provide coordination plan:`;
+      :`Coordination task: ${task}\n\nPlease provide coordination plan:`;
     return this.complete(prompt, options);
 }
 
@@ -296,7 +296,7 @@ export class ClaudeProvider implements CLIProvider {
 }\nRequirements:${ 
         requirements 
 }\n\nPlease provide test plan and cases:`
-      :`Feature to test: ${ `
+      :`Feature to test: ${
         feature 
 }\n\nPlease provide test plan and cases:`;
     return this.complete(prompt, options);

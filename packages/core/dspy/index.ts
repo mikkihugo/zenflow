@@ -60,7 +60,7 @@
  * // Optimize the prompt automatically
  * const optimizationResult = await dspy.optimize(task);
  *
- * console.log('Optimization Results: ', {
+ * logger.info('Optimization Results: ', {
 ' *   originalAccuracy:optimizationResult.baseline.accuracy,
  *   optimizedAccuracy:optimizationResult.optimized.accuracy,
  *   improvement:optimizationResult.improvement,
@@ -69,7 +69,7 @@
  *
  * // Use the optimized prompt for predictions
  * const prediction = await dspy.predict('The service was amazing!');
- * console.log('Prediction: ', prediction.sentiment);
+ * logger.info('Prediction: ', prediction.sentiment);
 ' * ```
  *
  * @example Advanced Teleprompter Usage
@@ -124,7 +124,7 @@
  *
  * // Evaluate performance
  * const evaluation = await trainedEnsemble.evaluate(testSet);
- * console.log('Ensemble Performance: ', {
+ * logger.info('Ensemble Performance: ', {
 ' *   accuracy:evaluation.accuracy,
  *   precision:evaluation.precision,
  *   recall:evaluation.recall,
@@ -155,7 +155,7 @@
  *});
  *
  * // Brain automatically selected DSPy and optimized
- * console.log('Autonomous Result: ', {
+ * logger.info('Autonomous Result: ', {
 ' *   strategyUsed:result.strategy, // 'dspy-bootstrap') *   accuracy:result.metrics.accuracy,
  *   optimizationTime:result.duration,
  *   confidence:result.confidence
@@ -256,7 +256,7 @@
  *
  * // Monitor optimization performance over time
  * dspyService.on('optimizationComplete', (event) => {
- *   console.log('Optimization completed: ', {
+ *   logger.info('Optimization completed: ', {
 ' *     taskId:event.taskId,
  *     improvement:event.improvement,
  *     duration:event.duration,
@@ -265,7 +265,7 @@
  *
  *   // Alert if performance degrades
  *   if (event.finalAccuracy < 0.85) {
- *     console.warn('Performance below threshold, investigating...');
+ *     logger.warn('Performance below threshold, investigating...');
  *     // Trigger investigation or re-optimization
  *}
  *});
@@ -276,7 +276,7 @@
  *     timeRange: '24h', *     includeBreakdown:true
  *});
  *
- *   console.log('DSPy Performance: ', {
+ *   logger.info('DSPy Performance: ', {
 ' *     totalOptimizations:metrics.totalOptimizations,
  *     averageImprovement:metrics.averageImprovement,
  *     successRate:metrics.successRate,

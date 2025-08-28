@@ -36,7 +36,14 @@ const logger = getLogger('GitHubModelsAPI');
 export interface GitHubModelsOptions {
   token:string;
   model?:
-    | 'openai/gpt-4.1')    | 'openai/gpt-4o')    | 'openai/gpt-5')    | 'openai/o1')    | 'meta/llama-3.3-70b-instruct')    | 'mistral-ai/mistral-large-2411')    | 'deepseek/deepseek-r1')    | 'xai/grok-3';
+    | 'openai/gpt-4.1'
+    | 'openai/gpt-4o'
+    | 'openai/gpt-5'
+    | 'openai/o1'
+    | 'meta/llama-3.3-70b-instruct'
+    | 'mistral-ai/mistral-large-2411'
+    | 'deepseek/deepseek-r1'
+    | 'xai/grok-3';
   baseURL?:string;
   maxTokens?:number;
   temperature?:number;
@@ -71,7 +78,7 @@ export class GitHubModelsAPI implements APIProvider {
       await initializeGitHubModelsDB();
 } catch (error) {
       logger.warn('Failed to initialize GitHub Models database: ', error);
-'}
+}
 }
 
   /**
@@ -105,7 +112,7 @@ export class GitHubModelsAPI implements APIProvider {
 }
 
       const data = await response.json();
-      const content = data.choices?.[0]?.message?.content || ';
+      const content = data.choices?.[0]?.message?.content || '';
 
       return ok({
         content,
@@ -117,10 +124,12 @@ export class GitHubModelsAPI implements APIProvider {
 });
 } catch (error) {
       logger.error('GitHub Models API execution failed: ', error);
-'      return err({
+      return err({
         code:API_ERROR_CODES.NETWORK_ERROR,
-        message:error instanceof Error ? error['message'] : ' Unknown error',        details:{
-          provider: 'github-models',          executionTime:Date.now(),
+        message: error instanceof Error ? error.message : 'Unknown error',
+        details: {
+          provider: 'github-models',
+          executionTime: Date.now(),
 },
         ...(error instanceof Error && { cause:error}),
 });
@@ -167,7 +176,7 @@ export class GitHubModelsAPI implements APIProvider {
 }
 } catch (error) {
       logger.error('Failed to get model details from catalog: ', error);
-'}
+}
     return null;
 }
 

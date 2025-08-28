@@ -17,7 +17,8 @@ import {
   merge,
   omit,
   pick,
-} from 'lodash-es')/**';
+} from 'lodash-es';
+/**
  * Professional object processing utilities
  */
 export class ObjectProcessor {

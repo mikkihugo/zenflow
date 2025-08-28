@@ -11,6 +11,13 @@ import * as path from 'node:path';
 import { afterAll, afterEach, beforeAll, beforeEach, expect} from 'vitest';
 import './global-types';
 
+// Import logger from foundation
+const logger = {
+  warn: console.warn,
+  info: console.info,
+  error: console.error
+};
+
 // E2E test setup with real system components
 beforeAll(async () => {
   // Setup E2E test environment
@@ -140,7 +147,7 @@ async function startService(name:string, command:string[]) {
 });
 
     childProcess.stderr?.on('data', (data) => {
-      console.warn(`${name} stderr:`, data.toString());
+      logger.warn(`${name} stderr:`, data.toString());
 });
 
     childProcess.on('error', reject);
@@ -241,7 +248,7 @@ async function resetSystemState() {
     // Clear in-memory state
     await clearMemoryState();
   } catch (error) {
-    console.warn('Failed to reset system state: ', error);
+    logger.warn('Failed to reset system state: ', error);
   }
 }
 
@@ -309,7 +316,7 @@ async function stopTestServices() {
       childProcess.kill('SIGTERM');
       await waitForProcessExit(childProcess, 10000);
 } catch (_error) {
-      console.warn(`Failed to stop ${name} gracefully, force killing`);
+      logger.warn(`Failed to stop ${name} gracefully, force killing`);
       childProcess.kill('SIGKILL');
 }
 }

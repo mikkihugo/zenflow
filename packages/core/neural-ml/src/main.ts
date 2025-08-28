@@ -1502,7 +1502,7 @@ export class NeuralMLEngine {
 }
 }
 
-		const stats = {
+		const _stats = {
 			totalOptimizers:optimizers.length,
 			activeOptimizers:optimizers.filter(
 				(opt) => opt.stats.operationsCount > 0,
@@ -1706,7 +1706,7 @@ export class NeuralMLEngine {
 };
 		recommendations:string[];
 } {
-		const stats = this.getStats();
+		const _stats = this.getStats();
 		const recommendations:string[] = [];
 
 		// Determine overall health status

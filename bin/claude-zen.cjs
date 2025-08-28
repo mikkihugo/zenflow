@@ -21,7 +21,7 @@ if (args[0] === 'auth') {
   const provider = args[1];
   
   if (!provider || provider === '--help' || provider === '-h') {
-    console.log(`
+    logger.info(`
 Claude Code Zen Authentication
 
 Usage: claude-zen auth <command>
@@ -71,8 +71,8 @@ Examples:
   
   async function authCopilot() {
     try {
-      console.log('\n🔐 GitHub Copilot Authentication');
-      console.log('═'.repeat(50));
+      logger.info('\n🔐 GitHub Copilot Authentication');
+      logger.info('═'.repeat(50));
       
       // Get device code
       const deviceRes = await httpRequest('https://github.com/login/device/code', {
@@ -84,9 +84,9 @@ Examples:
       
       const { device_code, user_code, verification_uri, interval } = deviceRes.data;
       
-      console.log(`\n📋 Your verification code: ${user_code}`);
-      console.log(`🌐 Visit: ${verification_uri}`);
-      console.log(`⏰ Code expires in 15 minutes\n`);
+      logger.info(`\n📋 Your verification code: ${user_code}`);
+      logger.info(`🌐 Visit: ${verification_uri}`);
+      logger.info(`⏰ Code expires in 15 minutes\n`);
       
       const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
       await new Promise(resolve => rl.question('Press Enter after authorizing...', resolve));
@@ -125,10 +125,10 @@ Examples:
       };
       fs.writeFileSync(tokenPath, JSON.stringify(tokenData, null, 2));
       
-      console.log('\n✅ Authentication successful!');
-      console.log(`Token saved to: ${tokenPath}`);
+      logger.info('\n✅ Authentication successful!');
+      logger.info(`Token saved to: ${tokenPath}`);
     } catch (error) {
-      console.error('\n❌ Authentication failed:', error.message);
+      logger.error('\n❌ Authentication failed:', error.message);
       process.exit(1);
     }
   }
@@ -140,19 +140,19 @@ Examples:
       
       if (fs.existsSync(tokenPath)) {
         const tokenData = JSON.parse(fs.readFileSync(tokenPath, 'utf8'));
-        console.log('\n🔐 Authentication Status');
-        console.log('═'.repeat(30));
-        console.log('✅ Authenticated: Yes');
-        console.log(`📅 Token created: ${tokenData.created_at}`);
-        console.log(`📍 Token location: ${tokenPath}`);
+        logger.info('\n🔐 Authentication Status');
+        logger.info('═'.repeat(30));
+        logger.info('✅ Authenticated: Yes');
+        logger.info(`📅 Token created: ${tokenData.created_at}`);
+        logger.info(`📍 Token location: ${tokenPath}`);
       } else {
-        console.log('\n🔐 Authentication Status');
-        console.log('═'.repeat(30));
-        console.log('❌ Authenticated: No');
-        console.log('💡 Run `claude-zen auth copilot` to authenticate');
+        logger.info('\n🔐 Authentication Status');
+        logger.info('═'.repeat(30));
+        logger.info('❌ Authenticated: No');
+        logger.info('💡 Run `claude-zen auth copilot` to authenticate');
       }
     } catch (error) {
-      console.error('❌ Failed to check status:', error.message);
+      logger.error('❌ Failed to check status:', error.message);
       process.exit(1);
     }
   }
@@ -162,8 +162,8 @@ Examples:
   } else if (provider === 'status') {
     authStatus();
   } else {
-    console.log('Usage: claude-zen auth <command>');
-    console.log('Available commands: copilot, status');
+    logger.info('Usage: claude-zen auth <command>');
+    logger.info('Available commands: copilot, status');
     process.exit(1);
   }
   
@@ -172,7 +172,7 @@ Examples:
 
 // Ensure bundle directory exists
 if (!existsSync(bundleDir)) {
-  console.error('❌ Bundle directory not found. Please run: npm run binary:build');
+  logger.error('❌ Bundle directory not found. Please run: npm run binary:build');
   process.exit(1);
 }
 
@@ -202,6 +202,6 @@ child.on('exit', (code) => {
 child.on('error', (error) => {
   // Restore package.json on error
   fs.writeFileSync(pkgPath, originalPkg);
-  console.error('❌ Failed to start Claude Code Zen:', error.message);
+  logger.error('❌ Failed to start Claude Code Zen:', error.message);
   process.exit(1);
 });

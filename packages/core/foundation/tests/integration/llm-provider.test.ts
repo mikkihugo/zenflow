@@ -134,7 +134,7 @@ describe("LLM Provider - Unit Tests (Vitest)", () => {
 
 		it("should update stats on role change", () => {
 			llmProvider.setRole("analyst");
-			const stats = llmProvider.getUsageStats();
+			const _stats = llmProvider.getUsageStats();
 			expect(stats.currentRole).toBe("analyst");
 			expect(stats.lastRoleChange).toBeInstanceOf(Date);
 });
@@ -263,7 +263,7 @@ describe("LLM Provider - Unit Tests (Vitest)", () => {
 			expect(typeof response).toBe("string");
 			expect(mockClaudeAPI).toHaveBeenCalled();
 
-			const stats = llmProvider.getUsageStats();
+			const _stats = llmProvider.getUsageStats();
 			expect(stats.requestCount).toBeGreaterThan(0);
 });
 
@@ -411,7 +411,7 @@ describe("LLM Provider - Integration Tests (Real API)", () => {
 					expect(opusResponse).toBeTruthy();
 } catch (error) {
 					// Opus might not be available in all environments
-					console.log("Opus model not available:", error);
+					logger.info("Opus model not available:", error);
 }
 },
 			120000,
@@ -625,7 +625,7 @@ describe("LLM Provider - Edge Cases", () => {
 			expect(llmProvider.getRole()?.role).toBe(role);
 }
 
-		const stats = llmProvider.getUsageStats();
+		const _stats = llmProvider.getUsageStats();
 		expect(stats.roleChanges).toBe(100);
 });
 });

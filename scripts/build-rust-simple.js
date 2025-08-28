@@ -8,7 +8,7 @@
 import { execSync } from "node:child_process";
 import path from "node:path";
 
-console.log("🦀 Building Rust Projects (Smart Mode)...\n");
+logger.info("🦀 Building Rust Projects (Smart Mode)...\n");
 
 // Known problematic packages to skip or build differently
 const HEAVY_PACKAGES = [
@@ -33,12 +33,12 @@ try {
 	);
 	cargoProjects.push(...result.trim().split("\n").filter(Boolean));
 } catch (_error) {
-	console.log("⚠️ No Rust projects found");
+	logger.info("⚠️ No Rust projects found");
 	process.exit(0);
 }
 
-console.log(`📦 Found ${cargoProjects.length} Rust projects`);
-console.log("");
+logger.info(`📦 Found ${cargoProjects.length} Rust projects`);
+logger.info("");
 
 let successCount = 0;
 let skippedCount = 0;
@@ -51,17 +51,17 @@ for (const cargoPath of cargoProjects) {
 
 	// Check if should skip
 	if (SKIP_PACKAGES.includes(projectName)) {
-		console.log(`⏭️ Skipping ${projectName} (known issues)`);
+		logger.info(`⏭️ Skipping ${projectName} (known issues)`);
 		skippedCount++;
 		continue;
 	}
 
-	console.log(`🔧 Building ${projectName}...`);
+	logger.info(`🔧 Building ${projectName}...`);
 
 	try {
 		// Heavy packages: build with minimal features
 		if (HEAVY_PACKAGES.includes(projectName)) {
-			console.log(`   📦 Heavy package detected, using minimal build...`);
+			logger.info(`   📦 Heavy package detected, using minimal build...`);
 			execSync("cargo build --release --no-default-features --features std", {
 				cwd: projectDir,
 				stdio: "inherit",
@@ -70,7 +70,7 @@ for (const cargoPath of cargoProjects) {
 		}
 		// WASM packages: try wasm-pack first
 		else if (cargoPath.includes("wasm") || projectName.includes("wasm")) {
-			console.log(`   🌐 WASM package, trying wasm-pack...`);
+			logger.info(`   🌐 WASM package, trying wasm-pack...`);
 			try {
 				execSync(
 					"wasm-pack build --target web --out-dir ./pkg --scope claude-zen --dev",
@@ -81,7 +81,7 @@ for (const cargoPath of cargoProjects) {
 					},
 				);
 			} catch (_wasmError) {
-				console.log(`   ⚠️ wasm-pack failed, trying cargo build...`);
+				logger.info(`   ⚠️ wasm-pack failed, trying cargo build...`);
 				execSync("cargo build --release", {
 					cwd: projectDir,
 					stdio: "inherit",
@@ -98,10 +98,10 @@ for (const cargoPath of cargoProjects) {
 			});
 		}
 
-		console.log(`   ✅ ${projectName} built successfully\n`);
+		logger.info(`   ✅ ${projectName} built successfully\n`);
 		successCount++;
 	} catch (error) {
-		console.log(
+		logger.info(
 			`   ❌ ${projectName} failed: ${error.message.split("\n")[0]}\n`,
 		);
 		failureCount++;
@@ -109,17 +109,17 @@ for (const cargoPath of cargoProjects) {
 }
 
 // Summary
-console.log("🦀 Rust Build Summary");
-console.log("═".repeat(40));
-console.log(`✅ Successful: ${successCount}`);
-console.log(`❌ Failed: ${failureCount}`);
-console.log(`⏭️ Skipped: ${skippedCount}`);
-console.log(`📊 Total: ${cargoProjects.length}`);
+logger.info("🦀 Rust Build Summary");
+logger.info("═".repeat(40));
+logger.info(`✅ Successful: ${successCount}`);
+logger.info(`❌ Failed: ${failureCount}`);
+logger.info(`⏭️ Skipped: ${skippedCount}`);
+logger.info(`📊 Total: ${cargoProjects.length}`);
 
 if (successCount > 0) {
-	console.log("\n🎉 Some Rust builds completed successfully!");
+	logger.info("\n🎉 Some Rust builds completed successfully!");
 } else if (failureCount === cargoProjects.length) {
-	console.log("\n💔 All builds failed");
+	logger.info("\n💔 All builds failed");
 	process.exit(1);
 }
 

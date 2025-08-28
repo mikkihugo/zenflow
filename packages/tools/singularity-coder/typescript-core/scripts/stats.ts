@@ -28,13 +28,13 @@ async function _fetchNpmDownloads(packageName:string): Promise<number> {
     const endYear = currentYear + 5
     const response = await fetch(`https://api.npmjs.org/downloads/range/2020-01-01:${endYear}-12-31/${packageName}`)
     if (!response.ok) {
-      console.warn(`Failed to fetch npm downloads for ${packageName}: ${response.status}`);
+      logger.warn(`Failed to fetch npm downloads for ${packageName}: ${response.status}`);
       return 0
 }
     const data:NpmDownloadsRange = await response.json()
     return data.downloads.reduce((total, day) => total + day.downloads, 0)
 } catch (error) {
-    console.warn(`Error fetching npm downloads for ${packageName}:`, error)`
+    logger.warn(`Error fetching npm downloads for ${packageName}:`, error)`
     return 0
 }
 }
@@ -56,7 +56,7 @@ async function fetchReleases():Promise<Release[]> {
     if (batch.length === 0) break
 
     releases.push(...batch)
-    console.log(`Fetched page $pagewith ${batch.length} releases`)`
+    logger.info(`Fetched page $pagewith ${batch.length} releases`)`
 
     if (batch.length < per) break
     page++
@@ -68,7 +68,7 @@ async function fetchReleases():Promise<Release[]> {
 
 function _calculate(releases:Release[]) {
   let total = 0
-  const stats = []
+  const _stats = []
 
   for (const release of releases) {
     let downloads = 0
@@ -155,48 +155,48 @@ async function _save(githubTotal:number, npmDownloads:number) {
   await Bun.write(file, content + line)
   await Bun.spawn(["bunx", "prettier", "--write", file]).exited
 
-  console.log(
+  logger.info(
     `\nAppended stats to $file:GitHub $githubTotal.toLocaleString()$githubChangeStr, npm $npmDownloads.toLocaleString()$npmChangeStr, Total $total.toLocaleString()$totalChangeStr`,`
   )
 }
 
-console.log("Fetching GitHub releases for sst/opencode...\n")
+logger.info("Fetching GitHub releases for sst/opencode...\n")
 
 const releases = await fetchReleases()
-console.log(`\nFetched ${releases.length} releases total\n`)`
+logger.info(`\nFetched ${releases.length} releases total\n`)`
 
 const { total:githubTotal, stats} = calculate(releases)
 
-console.log("Fetching npm all-time downloads for opencode-ai...\n")
+logger.info("Fetching npm all-time downloads for opencode-ai...\n")
 const npmDownloads = await fetchNpmDownloads("opencode-ai")
-console.log(`Fetched npm all-time downloads:${npmDownloads.toLocaleString()}\n`)`
+logger.info(`Fetched npm all-time downloads:${npmDownloads.toLocaleString()}\n`)`
 
 await save(githubTotal, npmDownloads)
 
 const totalDownloads = githubTotal + npmDownloads
 
-console.log("=".repeat(60))
-console.log(`TOTAL DOWNLOADS:${totalDownloads.toLocaleString()}`)`
-console.log(`  GitHub:${githubTotal.toLocaleString()}`)`
-console.log(`  npm:${npmDownloads.toLocaleString()}`)`
-console.log("=".repeat(60))
+logger.info("=".repeat(60))
+logger.info(`TOTAL DOWNLOADS:${totalDownloads.toLocaleString()}`)`
+logger.info(`  GitHub:${githubTotal.toLocaleString()}`)`
+logger.info(`  npm:${npmDownloads.toLocaleString()}`)`
+logger.info("=".repeat(60))
 
-console.log("\nDownloads by release:")
-console.log("-".repeat(60))
+logger.info("\nDownloads by release:")
+logger.info("-".repeat(60))
 
 for (const release of stats
   .sort((a, b) => b.downloads - a.downloads)) {
-    console.log(`${release.tag.padEnd(15)} ${release.downloads.toLocaleString().padStart(10)} downloads`)`
+    logger.info(`${release.tag.padEnd(15)} ${release.downloads.toLocaleString().padStart(10)} downloads`)`
 
     if (release.assets.length > 1) {
       for (const asset of release.assets
         .sort((a, b) => b.downloads - a.downloads)) {
-          console.log(`  └─ ${asset.name.padEnd(25)} ${asset.downloads.toLocaleString().padStart(8)}`)`
+          logger.info(`  └─ ${asset.name.padEnd(25)} ${asset.downloads.toLocaleString().padStart(8)}`)`
 }
 }
 }
 
-console.log("-".repeat(60))
-console.log(`GitHub Total:$githubTotal.toLocaleString()downloads across $releases.lengthreleases`)`
-console.log(`npm Total:${npmDownloads.toLocaleString()} downloads`)`
-console.log(`Combined Total:$totalDownloads.toLocaleString()downloads`)`
+logger.info("-".repeat(60))
+logger.info(`GitHub Total:$githubTotal.toLocaleString()downloads across $releases.lengthreleases`)`
+logger.info(`npm Total:${npmDownloads.toLocaleString()} downloads`)`
+logger.info(`Combined Total:$totalDownloads.toLocaleString()downloads`)`

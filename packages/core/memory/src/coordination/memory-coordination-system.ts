@@ -5,15 +5,13 @@
  * load balancing, health monitoring, and automatic failover.
  */
 
-import { EventEmitter} from '@claude-zen/foundation';
 import {
+  EventEmitter,
   getLogger,
   recordMetric,
   withTrace,
   TelemetryManager,
-} from '@claude-zen/foundation';
-import type {
-  Logger,
+  type Logger,
 } from '@claude-zen/foundation';
 import { MemoryLoadBalancer} from './memory-load-balancer';
 import { MemoryHealthMonitor} from './memory-health-monitor';
@@ -661,7 +659,7 @@ export class MemoryCoordinationSystem extends EventEmitter {
     return new Map(this.nodes);
 }
 
-  getHealthStatus():Record<string, any> {
+  getHealthStatus():Record<string, unknown> {
     return {
       totalNodes:this.nodes.size,
       healthyNodes:Array.from(this.nodes.values()).filter(

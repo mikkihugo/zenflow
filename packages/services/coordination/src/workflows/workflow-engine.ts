@@ -424,28 +424,50 @@ export type {
    * Execute gate for workflow step
    */
   private async executeGateForStep(
-    step: `workflow-${workflow.id}-step-${workflow.currentStep})      // Create gate request from step configuration`;
-      const gateRequest: {
-        // ValidationQuestion base properties
-        id: ';
-          workflowId: workflow.id,
-          stepName: step.name|| step.type,
-          stepType: step.type,
-          stepParams: step.params||,,
-        confidence: 0.8,
-        priority: ',)'          step.gateConfig.businessImpact ===critical '? critical:`medium``;
-        validationReason,    ')        expectedImpact: step.gateConfig.businessImpact ===high'? 0.7: 'task',)          stakeholders: new Map();
-}
-      workflow.pendingGates.set(gateId, gateRequest);
-      // For auto-approval steps, return immediately approved
-      if (step.gateConfig.autoApproval) {
-        return {
-          success: 'auto-approval,',
-'          correlationId: await this.simulateGateDecision(step, workflow);
+    step: WorkflowStep,
+    workflow: WorkflowState
+  ): Promise<{ success: boolean; message?: string }> {
+    // Create gate request from step configuration
+    const gateId = `workflow-${workflow.id}-step-${workflow.currentStep}`;
+    const gateRequest = {
+      // ValidationQuestion base properties
+      id: gateId,
+      workflowId: workflow.id,
+      stepName: step.name || step.type,
+      stepType: step.type,
+      stepParams: step.params || {},
+      confidence: 0.8,
+      priority: step.gateConfig?.businessImpact === 'critical' ? 'critical' : 'medium',
+      validationReason: 'Workflow step requires validation',
+      expectedImpact: step.gateConfig?.businessImpact === 'high' ? 0.7 : 0.5,
+      stakeholders: step.gateConfig?.stakeholders || []
+    };
+    
+    workflow.pendingGates.set(gateId, gateRequest);
+    
+    // For auto-approval steps, return immediately approved
+    if (step.gateConfig?.autoApproval) {
       return {
-        success: ' rejected,',
-        correlationId: step.gateConfig?.businessImpact||| medium;
-    const stakeholders = step.gateConfig?.stakeholders|| [];
+        success: true,
+        message: 'auto-approval'
+      };
+    }
+    
+    // Otherwise, simulate gate decision based on step configuration
+    const shouldApprove = await this.simulateGateDecision(step, workflow);
+    return {
+      success: shouldApprove,
+      message: shouldApprove ? 'approved' : 'rejected'
+    };
+  }
+  
+  /**
+   * Simulate gate decision based on step configuration
+   */
+  private async simulateGateDecision(
+    step: WorkflowStep,
+    workflow: WorkflowState
+  ): Promise<boolean> {
     // Auto-approve if configured
     if (step.gateConfig?.autoApproval) {
       return true;

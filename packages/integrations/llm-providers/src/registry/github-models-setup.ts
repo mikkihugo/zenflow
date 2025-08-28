@@ -110,7 +110,7 @@ export class GitHubModelsContainer {
       return provider;
 } catch (error) {
       logger.error('❌ Failed to setup GitHub Copilot API: ', error);
-'      return null;
+      return null;
 }
 }
 

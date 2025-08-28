@@ -343,7 +343,7 @@ export interface ModelStatus {
  *   text:"Machine learning is transforming software development",
  *   qualityLevel: 'standard', *   priority:'high') *});
  *
- * console.log(`Embedding:${result.embedding.length}D, Quality:${result.qualityScore}`);`
+ * logger.info(`Embedding:${result.embedding.length}D, Quality:${result.qualityScore}`);`
  * ````
  */
 export declare class SmartNeuralCoordinator {

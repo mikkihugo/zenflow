@@ -9,7 +9,7 @@
  * import { getSystemStatus, getHealthSummary} from '@claude-zen/foundation/status-manager';
  *
  * const systemStatus = getSystemStatus();
- * console.log(`Overall:${systemStatus.overall}, Health:${systemStatus.healthScore}%`);
+ * logger.info(`Overall:${systemStatus.overall}, Health:${systemStatus.healthScore}%`);
  *
  * const health = getHealthSummary();
  * // Returns:{ status: 'healthy|degraded|unhealthy', details:{...}}
@@ -319,7 +319,7 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
 	 * ```typescript`
 	 * const packageInfo = await statusManager.checkAndRegisterPackage('@claude-zen/brain',    'brainService');
 	 * if (packageInfo.status === PackageStatus.REGISTERED) {
-	 *   console.log('Brain package available and registered in Awilix');
+	 *   logger.info('Brain package available and registered in Awilix');
 	 *}
 	 * ```
 	 */
@@ -594,7 +594,7 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
 	 * // Try to get real monitoring service, fall back to stub
 	 * const monitoring = await statusManager.getService('systemmonitoring', () => ({
 	 *   PerformanceTracker:class FallbackTracker {
-	 *     startTimer() { return () => console.log('Fallback timer');}
+	 *     startTimer() { return () => logger.info('Fallback timer');}
 	 *}
 	 *}));
 	 * ```

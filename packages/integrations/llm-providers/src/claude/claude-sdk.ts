@@ -168,15 +168,15 @@ export async function executeClaudeTask(
 }
 
     logger.info(
-      `Task completed successfully, returned ${ `
+      `Task completed successfully, returned ${
         validMessages['length'] 
 } messages`
     );
     return validMessages;
 } catch (error) {
     logger.error('Claude task execution failed: ', error);
-'    throw new Error(
-      `Claude task failed:${ `
+    throw new Error(
+      `Claude task failed:${
         error instanceof Error ? error['message'] : ' Unknown error'}`
     );
 } finally {
@@ -197,7 +197,7 @@ export function executeSwarmCoordinationTask(
   const swarmOptions = {
     ...options,
     systemPrompt:(
-      `${options['systemPrompt'] || ')}\n\nYou are coordinating with a swarm system. Focus on clear, actionable responses.`
+      `${options.systemPrompt || ''}\n\nYou are coordinating with a swarm system. Focus on clear, actionable responses.`
     ).trim(),
 };
 

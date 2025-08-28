@@ -12,18 +12,22 @@
 // Simple logger implementation without console statements
 const createLogger = (name:string) => ({
   info:(message: string, meta?:unknown) => {
+    // eslint-disable-next-line no-console
     // Log to internal system - replaced console.log
     void message; void meta; void name;
 },
   debug:(message: string, meta?:unknown) => {
+    // eslint-disable-next-line no-console
     // Log to internal system - replaced console.log  
     void message; void meta; void name;
 },
   warn:(message: string, meta?:unknown) => {
+    // eslint-disable-next-line no-console
     // Log to internal system - replaced console.warn
     void message; void meta; void name;
 },
   error:(message: string, meta?:unknown) => {
+    // eslint-disable-next-line no-console
     // Log to internal system - replaced console.error
     void message; void meta; void name;
 },

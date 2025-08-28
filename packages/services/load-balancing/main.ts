@@ -26,7 +26,7 @@
  *   estimatedDuration:300000
  *});
  *
- * console.log(`Task assigned to agent:${assignment.agent.id}`);`
+ * logger.info(`Task assigned to agent:${assignment.agent.id}`);`
  * ````
  * @features
  * - **ML-Predictive Routing**:Uses machine learning to predict optimal agent assignments
@@ -92,7 +92,7 @@ try {
   tf = require('@tensorflow/tfjs-node');
 } catch {
   // TensorFlow not available - will use fallback implementations
-  console.warn('@tensorflow/tfjs-node not available, ML predictions disabled');
+  logger.warn('@tensorflow/tfjs-node not available, ML predictions disabled');
 }
 
 // Simple stub functions for telemetry (to be replaced with proper imports later)
@@ -237,7 +237,8 @@ export class LoadBalancer extends EventEmitter {
 
   private async initializeComponents():Promise<void> {
     this.logger.info(
-      'Initializing load balancing components with battle-tested dependencies and comprehensive monitoring')    );
+      'Initializing load balancing components with battle-tested dependencies and comprehensive monitoring'
+    );
 
     // 🔬 Start comprehensive monitoring systems
     await this.systemMonitor.start();
@@ -319,7 +320,8 @@ export class LoadBalancer extends EventEmitter {
   private async initializeML():Promise<void> {
     try {
       this.logger.info(
-        'Initializing TensorFlow.js model for ML-predictive routing')      );
+        'Initializing TensorFlow.js model for ML-predictive routing'
+      );
 
       // Create a simple neural network for load prediction
       const model = tf.sequential({
@@ -331,8 +333,10 @@ export class LoadBalancer extends EventEmitter {
 });
 
       model.compile({
-        optimizer: 'adam',        loss: 'binaryCrossentropy',        metrics:['accuracy'],
-});
+        optimizer: 'adam',
+        loss: 'binaryCrossentropy',
+        metrics:['accuracy'],
+      });
 
       this.mlModel = model;
       this.logger.info('TensorFlow.js model initialized successfully');
@@ -468,7 +472,8 @@ export class LoadBalancer extends EventEmitter {
 
     const result = await withAsyncTrace(async () => await safeAsync(async () => {
         this.logger.info(
-          'Starting load balancing system with comprehensive monitoring')        );
+          'Starting load balancing system with comprehensive monitoring'
+        );
 
         // Initialize KV storage
         // this.kvStore = await getKVStore('load-balancing');
@@ -829,7 +834,8 @@ export class LoadBalancer extends EventEmitter {
         if (task.type === 'stateful' || task.sessionId) {
           // Use consistent hashing for stateful tasks
           const hashedAgent = this.consistentHashing.get(
-            task.sessionId || task.id || 'default')          );
+            task.sessionId || task.id || 'default'
+          );
           const agent = hashedAgent ? this.agents.get(hashedAgent) :undefined;
 
           if (agent && agent.status === AgentStatus.HEALTHY) {
@@ -1371,9 +1377,14 @@ export class LoadBalancer extends EventEmitter {
 
     if (healthyPercentage < 0.3) {
       await this.emergencyHandler.handleEmergency(
-        'low_availability',        'critical')      );
+        'low_availability',
+        'critical'
+      );
 } else if (healthyPercentage < 0.5) {
-      await this.emergencyHandler.handleEmergency('low_availability',    'high');
+      await this.emergencyHandler.handleEmergency(
+        'low_availability',
+        'high'
+      );
 }
 }
 

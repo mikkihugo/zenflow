@@ -91,9 +91,9 @@ export interface RecursiveCall {
 
 // AI Analysis types
 export interface ComplexityFactor {
-  type:'cyclomatic' | ' cognitive' | ' nesting' | ' coupling' | ' cohesion;
+  type:'cyclomatic' | 'cognitive' | 'nesting' | 'coupling' | 'cohesion';
   value:number;
-  impact:'low' | ' medium' | ' high' | ' critical;
+  impact:'low' | 'medium' | 'high' | 'critical';
   description:string;
 }
 
@@ -272,7 +272,7 @@ export interface EvolutionaryHotspot {
 export interface PerformanceBottleneck {
   type:'cpu' | ' memory' | ' io' | ' network' | ' algorithm;
   location:CodeLocation;
-  impact:'low' | ' medium' | ' high' | ' critical;
+  impact:'low' | 'medium' | 'high' | 'critical';
   description:string;
   suggestions:string[];
 }

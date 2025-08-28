@@ -108,7 +108,7 @@ export async function getNPMPackageInfo(packageName, version) {
   try {
     return await knowledgeFactSystem.getNPMPackageInfo(packageName, version);
   } catch (error) {
-    console.error(`Failed to get NPM package info for ${packageName}:`, error);
+    logger.error(`Failed to get NPM package info for ${packageName}:`, error);
     return null;
   }
 }
@@ -119,7 +119,7 @@ export async function getGitHubRepoInfo(owner, repo) {
   try {
     return await knowledgeFactSystem.getGitHubRepoInfo(owner, repo);
   } catch (error) {
-    console.error(
+    logger.error(
       `Failed to get GitHub repo info for ${owner}/${repo}:`,
       error
     );

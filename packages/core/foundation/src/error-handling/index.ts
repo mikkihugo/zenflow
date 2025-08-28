@@ -13,9 +13,9 @@
  *});
  *
  * if (result.isOk()) {
- *   console.log('Success: ', result.value);
+ *   logger.info('Success: ', result.value);
 ' *} else {
- *   console.error('Error: ', result.error);
+ *   logger.error('Error: ', result.error);
 ' *}
  * ```
  *

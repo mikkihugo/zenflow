@@ -75,8 +75,9 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     strategyUpdateInterval:1000,
     contextSimilarityThreshold:0.8,
     reinforcementDiscountFactor:0.9,
-    strategySelectionMethod:'epsilon_greedy' as
-      | 'epsilon_greedy')      | 'ucb')      | 'thompson_sampling',};
+    strategySelectionMethod:
+      'epsilon_greedy' as 'epsilon_greedy' | 'ucb' | 'thompson_sampling',
+  };
 
   constructor() {
     this.initializeStrategies();
@@ -365,7 +366,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       return strategies[Math.floor(Math.random() * strategies.length)];
 }
     // Exploit:select best strategy
-    let bestStrategy = ';
+  let bestStrategy = '';
     let bestScore = Number.NEGATIVE_INFINITY;
 
     for (const [name, strategy] of this.strategies) {
@@ -388,7 +389,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       0
     );
 
-    let bestStrategy = ';
+  let bestStrategy = '';
     let bestUCB = Number.NEGATIVE_INFINITY;
 
     for (const [name, strategy] of this.strategies) {
@@ -416,7 +417,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
    * Thompson sampling strategy selection.
    */
   private thompsonSamplingSelection():string {
-    let bestStrategy = ';
+  let bestStrategy = '';
     let bestSample = Number.NEGATIVE_INFINITY;
 
     for (const [name, strategy] of this.strategies) {
@@ -796,7 +797,8 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
 
   private sampleBeta(_alpha:number, _beta:number): number {
     // Simplified beta distribution sampling
-    // In practice, you'd use a proper statistical library')    return Math.random(); // Placeholder
+  // In practice, you'd use a proper statistical library
+  return Math.random(); // Placeholder
 }
 
   private generatePatternKey(context:PatternContext): string {
@@ -883,7 +885,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   private encodeState(features:Record<string, number>):string {
     // Encode state features into a string for Q-learning
     return Object.entries(features)
-      .map(([key, value]) => `${key}:${Math.floor(value * 10)}`)`
+  .map(([key, value]) => `${key}:${Math.floor(value * 10)}`)
       .join('|');
 }
 
@@ -896,7 +898,8 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       timeOfDay:decision.features.timeOfDay,
       dayOfWeek:new Date(decision.timestamp).getDay(),
       systemLoad:decision.features.systemLoad,
-      taskType:decision.taskId.split('_')[0], // Extract task type from ID')      agentCount:decision.features.agentCount,
+      taskType:decision.taskId.split('_')[0], // Extract task type from ID
+      agentCount:decision.features.agentCount,
 } as PatternContext;
 
     const patternKey = this.generatePatternKey(context);

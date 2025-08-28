@@ -10,5 +10,8 @@
 		"**/*.test.ts",
 		"**/*.spec.ts",
 		"rust/**/*"
+	],
+	"references": [
+		{ "path": "../foundation" }
 	]
 }

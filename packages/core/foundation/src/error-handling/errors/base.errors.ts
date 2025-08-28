@@ -157,7 +157,7 @@ export interface ErrorMetrics {
  *}
  *
  * const error = new CustomError('Something went wrong');
- * console.log(error.severity); // 'medium') * console.log(error.recoverable); // true
+ * logger.info(error.severity); // 'medium') * logger.info(error.recoverable); // true
  * ```
  */
 export abstract class BaseClaudeZenError extends Error {
@@ -225,7 +225,7 @@ export abstract class BaseClaudeZenError extends Error {
 	 * ```typescript`
 	 * const error = new CustomError('Test error');
 	 * const json = error.toJSON();
-	 * console.log(JSON.stringify(json, null, 2));
+	 * logger.info(JSON.stringify(json, null, 2));
 	 * ```
 	 */
 	public toJSON():object {
@@ -442,10 +442,10 @@ export class NotFoundError extends BaseClaudeZenError {
  *} catch (error) {
  *   if (isRecoverableError(error)) {
  *     // Attempt recovery or retry
- *     console.log('Error is recoverable, retrying...');
+ *     logger.info('Error is recoverable, retrying...');
  *} else {
  *     // Log and fail fast
- *     console.error('Fatal error, cannot recover: ', error);
+ *     logger.error('Fatal error, cannot recover: ', error);
 ' *}
  *}
  * ```

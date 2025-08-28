@@ -9,7 +9,7 @@ class FactEngineImpl {
     wasmInstance;
     constructor(wasmInstance) {
         this.wasmInstance = wasmInstance;
-        console.log("WASM fact engine initialized");
+        logger.info("WASM fact engine initialized");
     }
     verify_fact(fact) {
         // Stub implementation - would call WASM function
@@ -20,16 +20,16 @@ class FactEngineImpl {
     }
     store_fact(fact, metadata) {
         // Stub implementation - would call WASM function
-        console.log("Storing fact:", fact, metadata);
+        logger.info("Storing fact:", fact, metadata);
     }
     query_facts(query) {
         // Stub implementation - would call WASM function
-        console.log("Querying facts with:", query);
+        logger.info("Querying facts with:", query);
         return [];
     }
     analyze_patterns(data) {
         // Stub implementation - would call WASM function
-        console.log("Analyzing patterns in data:", data.length, "items");
+        logger.info("Analyzing patterns in data:", data.length, "items");
         return { patterns: [], confidence: 0.5 };
     }
     process_bulk_facts(facts) {

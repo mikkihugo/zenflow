@@ -128,8 +128,8 @@ export interface CoproStats {
  *});
  *
  * // Access optimization statistics
- * const stats = advancedCopro.getStats();
- * console.log(`Total LM calls:${stats.total_calls}`);
+ * const _stats = advancedCopro.getStats();
+ * logger.info(`Total LM calls:${stats.total_calls}`);
  * ```
  */
 export class COPRO extends Teleprompter {
@@ -184,7 +184,7 @@ export class COPRO extends Teleprompter {
 		this.depth = config.depth ?? 3;
 		this.init_temperature = config.init_temperature ?? 1.4;
 		this.prompt_model = config.prompt_model;
-		this.track_stats = config.track_stats ?? false;
+		this._track_stats = config.track_stats ?? false;
 }
 
 	/**
@@ -243,7 +243,7 @@ export class COPRO extends Teleprompter {
 
 		// For each iteration in depth...
 		for (let d = 0; d < this.depth; d++) {
-			console.log(`Iteration Depth:${d + 1}/${this.depth}.`);
+			logger.info(`Iteration Depth:${d + 1}/${this.depth}.`);
 
 			const latest_scores:number[] = [];
 
@@ -278,7 +278,7 @@ export class COPRO extends Teleprompter {
 					// Set this new module with our instruction / prefix
 					this._updateSignature(p_new, instruction, prefix);
 
-					console.log(
+					logger.info(
 						`At Depth ${d + 1}/${this.depth}, Evaluating Prompt Candidate #${c_i + 1}/${candidates_.proposed_instruction.length} for ` +`
 							`Predictor ${p_i + 1} of ${modulePredictors.length}.`,
 					);

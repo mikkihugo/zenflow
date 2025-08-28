@@ -1208,7 +1208,8 @@ export class MLNeuralCoordinator extends TypedEventBase {
 			operation,
 			metadata,
 			timestamp:Date.now(),
-			requester:'MLNeuralCoordinator')};
+			requester:'MLNeuralCoordinator'
+		};
 		
 		// Emit approval request
 		this.emit("taskmaster_approval_requested", approvalRequest);
@@ -1426,6 +1427,10 @@ export function createDSPyMLConfig(
 				gradient_steps:100,
 				...overrides,
 };
+}
+
+	// Fallback (should be unreachable due to union type)
+	return baseConfig;
 }
 
 // Export all types and classes

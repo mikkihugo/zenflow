@@ -32,15 +32,15 @@ import {
  */
 export interface SPARCStrategy extends ABTestStrategy {
   sparcConfig:{
-    methodology:'full-sparc' | ' rapid-sparc' | ' quality-sparc' | ' performance-sparc;
+    methodology:'full-sparc' | 'rapid-sparc' | 'quality-sparc' | 'performance-sparc';
     phaseOptimization:{
-      specification: 'detailed|concise|user-driven;
-'      pseudocode: 'algorithmic|high-level|step-by-step;
-'      architecture: 'microservices|monolithic|layered|event-driven;
-'      refinement:'performance' | ' quality' | ' maintainability';
-      completion: 'mvp|production-ready|enterprise-grade;
-'};
-    gitTreeStrategy:'isolated' | ' shared' | ' hybrid';
+      specification: 'detailed' | 'concise' | 'user-driven';
+      pseudocode: 'algorithmic' | 'high-level' | 'step-by-step';
+      architecture: 'microservices' | 'monolithic' | 'layered' | 'event-driven';
+      refinement:'performance' | 'quality' | 'maintainability';
+      completion: 'mvp' | 'production-ready' | 'enterprise-grade';
+    };
+    gitTreeStrategy:'isolated' | 'shared' | 'hybrid';
     intelligentSystems:{
       usePromptGeneration:boolean;
       useBehavioralIntelligence:boolean;
@@ -98,8 +98,8 @@ export interface SPARCMultiSwarmResult {
   comparison:{
     winner:SPARCStrategy;
     confidence:number;
-    significance: 'high|medium|low|none;
-'    sparcPerformanceDelta:Record<string, number>;
+    significance: 'high' | 'medium' | 'low' | 'none';
+    sparcPerformanceDelta:Record<string, number>;
     qualityDelta:Record<string, number>;
 };
   recommendations:{
@@ -162,9 +162,9 @@ export class SPARCMultiSwarmExecutor {
     const testId = `sparc-multiswarm-${generateNanoId()}`;`
     const startTime = new Date();
 
-    console.log(`🧪 Starting SPARC Multi-Swarm A/B test:$testId`);`
-    console.log(`📋 Task:${taskDescription}`);`
-    console.log(
+    logger.info(`🧪 Starting SPARC Multi-Swarm A/B test:$testId`);`
+    logger.info(`📋 Task:${taskDescription}`);`
+    logger.info(
       `🔬 Testing $sparcStrategies.lengthSPARC strategies with git tree isolation``
     );
 
@@ -223,15 +223,15 @@ export class SPARCMultiSwarmExecutor {
 },
 };
 
-      console.log(`✅ SPARC Multi-Swarm test completed:${testId}`);`
-      console.log(
+      logger.info(`✅ SPARC Multi-Swarm test completed:${testId}`);`
+      logger.info(
         `🏆 Winner:$comparison.winner.name($comparison.confidence.toFixed(2)confidence)``
       );
-      console.log(`🌳 Git trees created:${totalWorktreesCreated}`);`
+      logger.info(`🌳 Git trees created:${totalWorktreesCreated}`);`
 
       return multiSwarmResult;
 } catch (error) {
-      console.error(`❌ SPARC Multi-Swarm test failed:$testId`, error);`
+      logger.error(`❌ SPARC Multi-Swarm test failed:$testId`, error);`
       throw error;
 }
 }
@@ -356,7 +356,7 @@ export class SPARCMultiSwarmExecutor {
     gitConfig:GitTreeConfig,
     options:any
   ):Promise<SPARCExecutionResult[]> {
-    console.log(
+    logger.info(
       `⚡ Executing $strategies.lengthSPARC strategies in parallel with git trees...``
     );
 
@@ -382,7 +382,7 @@ export class SPARCMultiSwarmExecutor {
     gitConfig:GitTreeConfig,
     options:any
   ):Promise<SPARCExecutionResult[]> 
-    console.log(
+    logger.info(
       `⏭️ Executing ${strategies.length} SPARC strategies sequentially with git trees...``
     );
 
@@ -412,7 +412,7 @@ export class SPARCMultiSwarmExecutor {
   ):Promise<SPARCExecutionResult> {
     const startTime = Date.now();
 
-    console.log(
+    logger.info(
       `🚀 Executing SPARC strategy:${strategy.name} (${strategy.modelBackend})``
     );
 
@@ -426,7 +426,7 @@ export class SPARCMultiSwarmExecutor {
 
       const duration = Date.now() - startTime;
 
-      console.log(
+      logger.info(
         `✅ SPARC strategy completed:${strategy.name} (${duration}ms)``
       );
 
@@ -442,7 +442,7 @@ export class SPARCMultiSwarmExecutor {
 };
 } catch (error) {
       const duration = Date.now() - startTime;
-      console.error(`❌ SPARC strategy failed:${strategy.name}`, error);`
+      logger.error(`❌ SPARC strategy failed:${strategy.name}`, error);`
 
       return {
         strategy,

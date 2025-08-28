@@ -20,14 +20,23 @@ import type {
   Timestamp,
   UUID,
   ValidationError,
-} from '@claude-zen/foundation/types')// ============================================================================ = ''; 
+} from '@claude-zen/foundation/types'; // ============================================================================ 
 // WORKFLOW CORE TYPES
 // =============================================================================
 /**
  * Workflow execution states
  */
 export enum WorkflowStatus {
-  DRAFT = 'draft')  QUEUED = 'queued')  RUNNING = 'running')  PAUSED = 'paused')  COMPLETED = 'completed')  FAILED = 'failed')  CANCELLED = 'cancelled')  TIMEOUT = 'timeout')  RETRYING = 'retrying')};;
+  DRAFT = 'draft',
+  QUEUED = 'queued',
+  RUNNING = 'running',
+  PAUSED = 'paused',
+  COMPLETED = 'completed',
+  FAILED = 'failed',
+  CANCELLED = 'cancelled',
+  TIMEOUT = 'timeout',
+  RETRYING = 'retrying'
+};
 /**
  * Step execution states
  */

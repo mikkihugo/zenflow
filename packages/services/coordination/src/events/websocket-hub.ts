@@ -4,15 +4,20 @@
  * Single WebSocket endpoint that integrates with the existing event system,
  * providing auto-discovery and unified real-time updates for Svelte dashboard.
  */
-import { EventEmitter} from 'events')import type { WebSocket, RawData} from 'ws`)// Temporary logger and recordEvent implementations until foundation is available`;
+import { EventEmitter } from 'events';
+import type { WebSocket, RawData } from 'ws';
+
+// Temporary logger and recordEvent implementations until foundation is available
 const getLogger = (name: string) => ({
-  info:(msg: string, data?:any) => console.log(`[${name}] ${msg}, data||`)``;
-  debug: (msg: string, data?:any) => console.log(`[${name}] ${msg}, data||`)``;
-  error: (msg: string, data?:any) => console.error(`[${name}] ${msg}, data||`)``;
-  warn: (msg: string, data?:any) => console.warn(`[`${name}] ${msg}, data||``)';
+  info: (msg: string, data?: any) => logger.info(`[${name}] ${msg}`, data || ''),
+  debug: (msg: string, data?: any) => logger.info(`[${name}] ${msg}`, data || ''),
+  error: (msg: string, data?: any) => logger.error(`[${name}] ${msg}`, data || ''),
+  warn: (msg: string, data?: any) => logger.warn(`[${name}] ${msg}`, data || '')
 });
-const recordEvent = (eventName: string, data?:any) => {
-    `)  console.log(`[EVENT] ${eventName}, data||``);')'};;
+
+const recordEvent = (eventName: string, data?: any) => {
+  logger.info(`[EVENT] ${eventName}`, data || '');
+};
 /**
  * Registered service information
  */

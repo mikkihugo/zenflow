@@ -42,13 +42,23 @@
  *
  * **COMPLETE TRACEABILITY:** Every decision, every gate, every flow tracked with AGUI visibility
  */
-import { getSafeFramework, getWorkflowEngine} from '@claude-zen/enterprise')import { getLogger} from '@claude-zen/foundation')import { DatabaseProvider} from '@claude-zen/database')import { getBrainSystem} from '@claude-zen/intelligence')// SAFE Framework comprehensive types';
+import { getLogger } from '@claude-zen/foundation';
+
+// SAFE Framework comprehensive types - commented out invalid import
+// import type {
+//   InvestmentHorizon,
+//   PIObjective,
+// } from '@claude-zen/safe-framework';
+import { TaskApprovalSystem } from '../agui/task-approval-system.js';
+import type { ApprovalGateManager } from '../core/approval-gate-manager.js';
+import { LLMApprovalService } from '../services/llm-approval-service.js';
+import { PromptManagementService } from '../services/prompt-management-service.js';
 import type {
-  InvestmentHorizon,
-  PIObjective,
-} from '@claude-zen/safe-framework')import { TaskApprovalSystem} from '../agui/task-approval-system.js')import type { ApprovalGateManager} from '../core/approval-gate-manager.js')import { LLMApprovalService} from '../services/llm-approval-service.js')import { PromptManagementService} from '../services/prompt-management-service.js')import type {';
   ApprovalGateId,
-} from '../types/index.js')import { SafeFrameworkIntegration} from './safe-framework-integration.js')// =========================================================================== = ''; 
+} from '../types/index.js';
+import { SafeFrameworkIntegration } from './safe-framework-integration.js';
+
+// =========================================================================== 
 // COMPLETE SAFe 6.0 FLOW GATE TYPES
 // ============================================================================
 /**

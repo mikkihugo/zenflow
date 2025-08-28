@@ -7,12 +7,14 @@ export namespace AuthAnthropic {
     const _pkce = await generatePKCE()
 
     const _url = new URL(
+    // eslint-disable-next-line no-console
       `https://${mode === "console" ? "console.anthropic.com" : "claude.ai"}/oauth/authorize`,`
       import.meta.url,
     )
     url.searchParams.set("code", "true")
     url.searchParams.set("client_id", CLIENT_ID)
     url.searchParams.set("response_type", "code")
+    // eslint-disable-next-line no-console
     url.searchParams.set("redirect_uri", "https://console.anthropic.com/oauth/code/callback")
     url.searchParams.set("scope", "org:create_api_key user:profile user:inference")
     url.searchParams.set("code_challenge", pkce.challenge)
@@ -26,6 +28,7 @@ export namespace AuthAnthropic {
 
   export async function exchange(code:string, verifier:string) {
     const splits = code.split("#")
+    // eslint-disable-next-line no-console
     const result = await fetch("https://console.anthropic.com/v1/oauth/token", {
       method:"POST",
       headers:{
@@ -36,6 +39,7 @@ export namespace AuthAnthropic {
         state:splits[1],
         grant_type:"authorization_code",
         client_id:CLIENT_ID,
+    // eslint-disable-next-line no-console
         redirect_uri:"https://console.anthropic.com/oauth/code/callback",
         code_verifier:verifier,
 }),
@@ -53,6 +57,7 @@ export namespace AuthAnthropic {
     const info = await Auth.get("anthropic")
     if (!info || info.type !== "oauth") return
     if (info.access && info.expires > Date.now()) return info.access
+    // eslint-disable-next-line no-console
     const response = await fetch("https://console.anthropic.com/v1/oauth/token", {
       method:"POST",
       headers:{

@@ -38,7 +38,7 @@ export const ServeCommand = cmd({
         hostname,
 })
 
-      console.log(`opencode server listening on http://${server.hostname}:${server.port}`)`
+      logger.info(`opencode server listening on http://${server.hostname}:${server.port}`)`
 
       await new Promise(() => {})
 

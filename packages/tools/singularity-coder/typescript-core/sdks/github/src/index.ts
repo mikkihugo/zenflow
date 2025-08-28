@@ -113,7 +113,7 @@ async function run() {
 } catch (e:any) {
     await restoreGitConfig()
     await revokeAppToken()
-    console.error(e)
+    logger.error(e)
     let msg = e
     if (e instanceof $.ShellError) {
       msg = e.stderr.toString()
@@ -136,7 +136,7 @@ async function generateGitHubToken() {
   try {
     return await core.getIDToken("opencode-github-action")
 } catch (error) {
-    console.error("Failed to get OIDC token:", error)
+    logger.error("Failed to get OIDC token:", error)
     throw new Error("Could not fetch an OIDC token. Make sure to add `id-token:write` to your workflow permissions.")`
 }
 }
@@ -159,7 +159,7 @@ async function exchangeForAppToken(oidcToken:string) {
 }
 
 async function configureGit(appToken:string) {
-  console.log("Configuring git...")
+  logger.info("Configuring git...")
   const config = "http.https://github.com/.extraheader"
   const ret = await $`git config --local --get $config``
   gitCredentials = ret.stdout.toString().trim()
@@ -173,7 +173,7 @@ async function configureGit(appToken:string) {
 }
 
 async function checkoutLocalBranch(pr:GitHubPullRequest) {
-  console.log("Checking out local branch...")
+  logger.info("Checking out local branch...")
 
   const branch = pr.headRefName
   const depth = Math.max(pr.commits.totalCount, 20)
@@ -183,7 +183,7 @@ async function checkoutLocalBranch(pr:GitHubPullRequest) {
 }
 
 async function checkoutForkBranch(pr:GitHubPullRequest) {
-  console.log("Checking out fork branch...")
+  logger.info("Checking out fork branch...")
 
   const remoteBranch = pr.headRefName
   const localBranch = generateBranchName()
@@ -201,7 +201,7 @@ async function _restoreGitConfig() {
 }
 
 async function assertPermissions() {
-  console.log(`Asserting permissions for user ${actor}...`)`
+  logger.info(`Asserting permissions for user ${actor}...`)`
 
   let permission
   try {
@@ -212,9 +212,9 @@ async function assertPermissions() {
 })
 
     permission = response.data.permission
-    console.log(`  permission:${permission}`)`
+    logger.info(`  permission:${permission}`)`
 } catch (error) {
-    console.error(`Failed to check permissions:$error`)`
+    logger.error(`Failed to check permissions:$error`)`
     throw new Error(`Failed to check permissions for user ${actor}:${error}`)`
 }
 
@@ -228,7 +228,7 @@ function buildComment(_content:string) {
 }
 
 async function _createComment(body:string) {
-  console.log("Creating comment...")
+  logger.info("Creating comment...")
   return await octoRest.rest.issues.createComment({
     owner,
     repo,
@@ -238,7 +238,7 @@ async function _createComment(body:string) {
 }
 
 async function _updateComment(body:string) {
-  console.log("Updating comment...")
+  logger.info("Updating comment...")
   return await octoRest.rest.issues.updateComment({
     owner,
     repo,
@@ -259,7 +259,7 @@ function generateBranchName() {
 }
 
 async function pushToCurrentBranch(summary:string) {
-  console.log("Pushing to current branch...")
+  logger.info("Pushing to current branch...")
   await $`git add .``
   await $`git commit -m "${summary}`
   
@@ -268,7 +268,7 @@ Co-authored-by:$actor<${actor}@users.noreply.github.com>"``
 }
 
 async function _pushToForkBranch(_summary:string, pr:GitHubPullRequest) {
-  console.log("Pushing to fork branch...")
+  logger.info("Pushing to fork branch...")
 
   const _remoteBranch = pr.headRefName
 
@@ -280,7 +280,7 @@ Co-authored-by:$actor<${actor}@users.noreply.github.com>"``
 }
 
 async function _pushToNewBranch(summary:string) {
-  console.log("Pushing to new branch...")
+  logger.info("Pushing to new branch...")
   const branch = generateBranchName()
   await $`git checkout -b ${branch}``
   await $`git add .``
@@ -292,7 +292,7 @@ Co-authored-by:$actor<${actor}@users.noreply.github.com>"``
 }
 
 async function _createPR(base:string, branch:string, title:string, body:string) {
-  console.log("Creating pull request...")
+  logger.info("Creating pull request...")
   const pr = await octoRest.rest.pulls.create({
     owner,
     repo,
@@ -310,7 +310,7 @@ async function _runOpencode(
     share?:boolean
 },
 ) {
-  console.log("Running opencode...")
+  logger.info("Running opencode...")
 
   const promptPath = path.join(os.tmpdir(), "PROMPT")
   await Bun.write(promptPath, prompt)
@@ -322,7 +322,7 @@ async function _runOpencode(
 }
 
 async function branchIsDirty() {
-  console.log("Checking if branch is dirty...")
+  logger.info("Checking if branch is dirty...")
   const ret = await $`git status --porcelain``
   return ret.stdout.toString().trim().length > 0
 }
@@ -332,7 +332,7 @@ async function _fetchRepo() {
 }
 
 async function _fetchIssue() {
-  console.log("Fetching prompt data for issue...")
+  logger.info("Fetching prompt data for issue...")
   const issueResult = await octoGraph<IssueQueryResponse>(
     ``
 query($owner:String!, $repo:String!, $number:Int!) {
@@ -387,7 +387,7 @@ function buildPromptDataForIssue(issue:GitHubIssue) {
 }
 
 async function _fetchPR() {
-  console.log("Fetching prompt data for PR...")
+  logger.info("Fetching prompt data for PR...")
   const prResult = await octoGraph<PullRequestQueryResponse>(
     ``
 query($owner:String!, $repo:String!, $number:Int!) {

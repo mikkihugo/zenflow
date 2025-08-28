@@ -57,7 +57,7 @@ export class InternalOTELCollector {
     this.processorManager = new ProcessorManager(this.config.processors || []);
 
     // Initialize stats
-    this.stats = {
+    this._stats = {
       received:{ traces: 0, metrics:0, logs:0},
       exported:{ traces: 0, metrics:0, logs:0},
       errors:{},
@@ -206,7 +206,7 @@ export class InternalOTELCollector {
    */
   async getHealthStatus():Promise<HealthStatus> {
     const exporterHealth = await this.exporterManager.getHealthStatus();
-    const stats = this.getStats();
+    const _stats = this.getStats();
 
     // Determine overall status
     const hasUnhealthyExporter = Object.values(exporterHealth).some(
@@ -265,7 +265,7 @@ export class InternalOTELCollector {
     // Stats endpoint
     app.get('/stats', (_req, res) => {
       try {
-        const stats = this.getStats();
+        const _stats = this.getStats();
         res.json(stats);
 } catch (error) {
         res.status(500).json({ error:String(error)});

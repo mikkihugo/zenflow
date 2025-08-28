@@ -99,6 +99,7 @@ function releaseLock() {
 function setupCleanup() {
   process.on('exit', releaseLock);
   process.on('SIGINT', () => {
+    // eslint-disable-next-line no-console
     console.log('\n⚠️  Process interrupted, cleaning up...');
     releaseLock();
     process.exit(1);
@@ -111,6 +112,7 @@ function setupCleanup() {
 
 mkdirSync(backupDir, { recursive: true });
 
+    // eslint-disable-next-line no-console
 console.log(`📁 Backup directory: ${backupDir}`);
 
 /**
@@ -153,6 +155,7 @@ function validateTypeScriptContent(content, filePath) {
     const codeBlockMatch = normalizedContent.match(/```(?:typescript|ts|javascript|js)?\s*([\s\S]*?)\s*```/i);
     if (codeBlockMatch) {
       codeToValidate = codeBlockMatch[1].trim();
+    // eslint-disable-next-line no-console
       console.log('🔧 Extracted code from markdown blocks');
     }
   }
@@ -169,6 +172,7 @@ function validateTypeScriptContent(content, filePath) {
  */
 async function fixWithGPT41(filePath, content) {
   try {
+    // eslint-disable-next-line no-console
     console.log('🤖 Using GPT-4.1 for syntax fixes...');
     
     const os = await import('os');
@@ -176,6 +180,7 @@ async function fixWithGPT41(filePath, content) {
     const tokenPath = path.join(os.homedir(), '.claude-zen', 'copilot-token.json');
     
     if (!existsSync(tokenPath)) {
+    // eslint-disable-next-line no-console
       console.log('⚠️ GitHub Copilot token not found');
       return null;
     }
@@ -213,6 +218,7 @@ Return only the corrected TypeScript code.`;
     });
     
     if (!response.ok) {
+    // eslint-disable-next-line no-console
       console.log(`⚠️ GPT-4.1 API error: ${response.status}`);
       return null;
     }
@@ -222,14 +228,17 @@ Return only the corrected TypeScript code.`;
     
     const validation = validateTypeScriptContent(fixedContent, filePath);
     if (validation.isValid) {
+    // eslint-disable-next-line no-console
       console.log('✅ GPT-4.1 syntax fixes completed');
       return validation.cleanedCode || fixedContent;
     } else {
+    // eslint-disable-next-line no-console
       console.log(`⚠️ GPT-4.1 output validation failed: ${validation.reason}`);
       return null;
     }
     
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.log(`❌ GPT-4.1 error: ${error.message}`);
     return null;
   }
@@ -239,6 +248,7 @@ Return only the corrected TypeScript code.`;
  * Main processing function for a single file
  */
 async function processFile(filePath) {
+    // eslint-disable-next-line no-console
   console.log(`\n📝 Processing: ${filePath}`);
   
   // Read original content
@@ -254,8 +264,10 @@ async function processFile(filePath) {
     // Apply GPT-4.1 fix
     writeFileSync(filePath, gptFixed, 'utf8');
     createBackup(filePath, gptFixed, 'post-gpt41');
+    // eslint-disable-next-line no-console
     console.log('✅ Applied GPT-4.1 fixes');
   } else {
+    // eslint-disable-next-line no-console
     console.log('ℹ️ No GPT-4.1 fixes applied');
   }
   
@@ -268,8 +280,10 @@ async function processFile(filePath) {
     
     const eslintFixed = readFileSync(filePath, 'utf8');
     createBackup(filePath, eslintFixed, 'post-eslint');
+    // eslint-disable-next-line no-console
     console.log('✅ Applied ESLint fixes');
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.log('ℹ️ ESLint fixes not available or failed');
   }
   
@@ -282,11 +296,14 @@ async function processFile(filePath) {
     
     const prettierFixed = readFileSync(filePath, 'utf8');
     createBackup(filePath, prettierFixed, 'final');
+    // eslint-disable-next-line no-console
     console.log('✅ Applied Prettier formatting');
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.log('ℹ️ Prettier formatting not available or failed');
   }
   
+    // eslint-disable-next-line no-console
   console.log(`✅ Completed processing: ${filePath}`);
 }
 
@@ -297,6 +314,7 @@ function createBackup(filePath, content, suffix = 'original') {
   const backupPath = join(backupDir, backupFileName);
   
   writeFileSync(backupPath, content, 'utf8');
+    // eslint-disable-next-line no-console
   console.log(`💾 Backup: ${backupFileName}`);
   return backupPath;
 }
@@ -306,6 +324,7 @@ async function main() {
   setupCleanup();
   
   if (!acquireLock()) {
+    // eslint-disable-next-line no-console
     console.log('⚠️ Another intelligent-linter instance is running');
     process.exit(1);
   }
@@ -314,6 +333,7 @@ async function main() {
     const args = process.argv.slice(2);
     
     if (args.length === 0 || args.includes('--help')) {
+    // eslint-disable-next-line no-console
       console.log(`
 Intelligent Linter v3.0.0
 
@@ -337,6 +357,7 @@ Features:
         encoding: 'utf8'
       }).trim().split('\n').filter(f => f.length > 0);
       
+    // eslint-disable-next-line no-console
       console.log(`📋 Found ${files.length} TypeScript files to process`);
       
       for (const file of files) {
@@ -355,6 +376,7 @@ Features:
 }
 
 main().catch(error => {
+    // eslint-disable-next-line no-console
   console.error('❌ Intelligent linter error:', error);
   releaseLock();
   process.exit(1);

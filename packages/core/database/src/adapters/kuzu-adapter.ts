@@ -78,7 +78,7 @@ export class KuzuAdapter implements DatabaseConnection {
   private database:KuzuDatabase | null = null;
   private connection:KuzuConnection | null = null;
   private isConnectedState = false;
-  private readonly stats = {
+  private readonly _stats = {
     totalQueries:0,
     totalTransactions:0,
     totalErrors:0,

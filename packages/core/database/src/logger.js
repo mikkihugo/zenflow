@@ -33,24 +33,26 @@ class SimpleLogger {
         // Use appropriate console method based on level
         switch (level) {
             case 'DEBUG':
-                // eslint-disable-next-line no-console
+    // eslint-disable-next-line no-console
+    // eslint-disable-next-line no-console
                 console.debug(JSON.stringify(logEntry));
                 break;
             case 'INFO':
-                // eslint-disable-next-line no-console
+    // eslint-disable-next-line no-console
+    // eslint-disable-next-line no-console
                 console.info(JSON.stringify(logEntry));
                 break;
             case 'WARN':
                 // eslint-disable-next-line no-console
-                console.warn(JSON.stringify(logEntry));
+                logger.warn(JSON.stringify(logEntry));
                 break;
             case 'ERROR':
                 // eslint-disable-next-line no-console
-                console.error(JSON.stringify(logEntry));
+                logger.error(JSON.stringify(logEntry));
                 break;
             default:
                 // eslint-disable-next-line no-console
-                console.log(JSON.stringify(logEntry));
+                logger.info(JSON.stringify(logEntry));
         }
     }
 }

@@ -35,7 +35,7 @@ export const dictionary = {
 	};
 
 export const hooks = {
-	handleError: (({ error }) => { logger.error(error) }),
+	handleError: (({ error }) => { console.error(error) }),
 	
 	reroute: (() => {}),
 	transport: {}

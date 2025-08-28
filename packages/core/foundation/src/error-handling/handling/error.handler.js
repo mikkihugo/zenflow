@@ -563,6 +563,7 @@ export const recover = createErrorRecovery;
 export const aggregate = createErrorAggregator;
 export const chain = createErrorChain;
 export const context = withContext;
+    // eslint-disable-next-line no-console
 // FORCING PATTERN - Replace console.error, process.exit patterns
 export const exit = (error, code = 1) => {
     logger.error("Process exiting due to error:", error);

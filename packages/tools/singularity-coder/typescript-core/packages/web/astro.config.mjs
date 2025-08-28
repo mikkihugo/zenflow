@@ -100,6 +100,7 @@ function configSchema() {
 		name: "configSchema",
 		hooks: {
 			"astro:build:done": async () => {
+    // eslint-disable-next-line no-console
 				console.log("generating config schema");
 				spawnSync("../opencode/script/schema.ts", ["./dist/config.json"]);
 			},

@@ -111,17 +111,17 @@ export class BetterTogether extends Teleprompter {
 	):Promise<DSPyModule> {
 		const { trainset, strategy = "p -> w -> p", valset_ratio = 0.1} = config;
 
-		console.log("Validating the strategy");
+		logger.info("Validating the strategy");
 		const parsed_strategy = this._parse_strategy(strategy);
 
-		console.log("Preparing the student program...");
+		logger.info("Preparing the student program...");
 		let prepared_student = this._prepare_student(student);
 		this._all_predictors_have_lms(prepared_student);
 
 		// Make shallow copy of trainset to preserve original order
 		const working_trainset = [...trainset];
 
-		console.log("Compiling the student program...");
+		logger.info("Compiling the student program...");
 		prepared_student = await this._run_strategies(
 			parsed_strategy,
 			prepared_student,
@@ -129,7 +129,7 @@ export class BetterTogether extends Teleprompter {
 			valset_ratio,
 		);
 
-		console.log("BetterTogether has finished compiling the student program");
+		logger.info("BetterTogether has finished compiling the student program");
 		return prepared_student;
 }
 
@@ -189,11 +189,11 @@ export class BetterTogether extends Teleprompter {
 				.slice(0, ind + 1)
 				.join(STRAT_SEP);
 
-			console.log(
+			logger.info(
 				`\n########## Step ${ind + 1} of ${parsed_strategy.length} - Strategy '${current_strategy}' ##########`,
 			);
 
-			console.log("Shuffling the trainset...");
+			logger.info("Shuffling the trainset...");
 			this.rng.shuffle(trainset);
 
 			if (!launched_flag) {
@@ -236,7 +236,7 @@ export class BetterTogether extends Teleprompter {
 		trainset:Example[],
 		valset_ratio:number,
 	):Promise<DSPyModule> {
-		console.log("Preparing for prompt optimization...");
+		logger.info("Preparing for prompt optimization...");
 
 		// Sample validation set and drop hints exactly matching Stanford implementation
 		const processed_trainset = trainset.map((x) => {
@@ -255,7 +255,7 @@ export class BetterTogether extends Teleprompter {
 		const prompt_valset = processed_trainset.slice(0, num_val);
 		const prompt_trainset = processed_trainset.slice(num_val);
 
-		console.log("Compiling the prompt optimizer...");
+		logger.info("Compiling the prompt optimizer...");
 
 		// Save predictor LMs before optimization exactly matching Stanford implementation
 		const pred_lms = this._get_predictors(student).map((pred) => pred.lm);
@@ -283,12 +283,12 @@ export class BetterTogether extends Teleprompter {
 		student:DSPyModule,
 		trainset:Example[],
 	):Promise<DSPyModule> {
-		console.log("Preparing for weight optimization...");
+		logger.info("Preparing for weight optimization...");
 
 		// Save original LMs exactly matching Stanford implementation
 		const original_lms = this._get_predictors(student).map((pred) => pred.lm);
 
-		console.log("Compiling the weight optimizer...");
+		logger.info("Compiling the weight optimizer...");
 		student = await this.weight_optimizer.compile(student, { trainset});
 
 		// Update train kwargs for new LMs exactly matching Stanford implementation

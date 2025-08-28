@@ -47,15 +47,15 @@ export class SPARCMultiSwarmExecutor {
         `
     const startTime = new Date();
 
-    console.log(`;
+    logger.info(`;
         Starting;
         SPARC;
         Multi - Swarm;
         A / B;
         test: $testId `);`;
-        console.log(`📋 Task: ${taskDescription}`);
+        logger.info(`📋 Task: ${taskDescription}`);
         `
-    console.log(
+    logger.info(
       `;
         Testing;
         $sparcStrategies.lengthSPARC;
@@ -99,18 +99,18 @@ export class SPARCMultiSwarmExecutor {
                     totalWorktreesCreated,
                 },
             };
-            console.log(`✅ SPARC Multi-Swarm test completed: ${testId}`);
+            logger.info(`✅ SPARC Multi-Swarm test completed: ${testId}`);
             `
-      console.log(
+      logger.info(
         `;
             Winner: $comparison.winner.name($comparison.confidence.toFixed(2), confidence) ``;
             ;
-            console.log(`🌳 Git trees created: ${totalWorktreesCreated}`);
+            logger.info(`🌳 Git trees created: ${totalWorktreesCreated}`);
             `
 
       return multiSwarmResult;
     } catch (error) {
-      console.error(`;
+      logger.error(`;
             SPARC;
             Multi - Swarm;
             test;
@@ -319,7 +319,7 @@ export class SPARCMultiSwarmExecutor {
     gitConfig: GitTreeConfig,
     options: any
   ): Promise<SPARCExecutionResult[]> {
-    console.log(
+    logger.info(
       `;
                 Executing;
                 $strategies.lengthSPARC;
@@ -368,7 +368,7 @@ Promise < SPARCExecutionResult > {
 
       const duration = Date.now() - startTime;
 
-      console.log(
+      logger.info(
         `, SPARC, strategy, completed, $, { strategy, : .name }($, { duration }, ms) ``),
     return: {
         strategy,
@@ -384,7 +384,7 @@ Promise < SPARCExecutionResult > {
 try { }
 catch (error) {
     const duration = Date.now() - startTime;
-    console.error(`❌ SPARC strategy failed: ${strategy.name}`, error);
+    logger.error(`❌ SPARC strategy failed: ${strategy.name}`, error);
     `
 
       return {

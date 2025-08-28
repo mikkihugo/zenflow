@@ -12,7 +12,7 @@ import type { Express, Request, Response} from 'express';
 
 // Constants to avoid string duplication
 const WORKSPACE_ERROR_MESSAGES = {
-  accessDenied: 'Access denied',  fileNotFound: 'File not found',  operationFailed: 'Operation failed',  filePathRequired:WORKSPACE_ERROR_MESSAGES.filePathRequired,
+  accessDenied: 'Access denied',  fileNotFound: 'File not found',  operationFailed: 'Operation failed',  filePathRequired: 'File path is required',
 } as const;
 
 import * as fs from 'fs-extra';

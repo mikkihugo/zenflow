@@ -11,10 +11,16 @@
  * Uses SAFe 6.0 terminology: ART instead of Program, streamlined naming conventions.
  * Provides complete traceability, AGUI integration, SOC2 compliance, and learning.
  */
-import { getLogger} from '@claude-zen/foundation')import { DatabaseProvider} from '@claude-zen/database')import { getBrainSystem} from '@claude-zen/intelligence')import { getSafeFramework, getWorkflowEngine} from '@claude-zen/enterprise')import {';
-  getSafe6DevelopmentManager,
-  createSafe6SolutionTrainManager,
-} from '@claude-zen/development')import { ApprovalGateManager} from '../core/approval-gate-manager.js')import { LLMApprovalService} from '../services/llm-approval-service.js')import { PromptManagementService} from '../services/prompt-management-service.js')import { TaskApprovalSystem} from '../agui/task-approval-system.js')import type {';
+import { getLogger } from '@claude-zen/foundation';
+// Removed invalid imports - packages don't exist
+// import {
+//  getSafe6DevelopmentManager,
+//  createSafe6SolutionTrainManager,
+// } from '@claude-zen/development';
+
+// Core coordination components
+import type { ApprovalGateManager } from '../core/approval-gate-manager.js';
+import type {
   ApprovalGateId,
   TaskId,
   UserId,

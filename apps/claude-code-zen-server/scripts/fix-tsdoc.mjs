@@ -318,6 +318,7 @@ async function fixFileWithClaude(
 			analysisReport,
 		);
 
+    // eslint-disable-next-line no-console
 		console.log(
 			colorize(
 				`🔧 Fixing documentation in ${path.basename(filePath)}...`,
@@ -326,12 +327,17 @@ async function fixFileWithClaude(
 		);
 
 		if (CONFIG.OUTPUT.verbose) {
-			console.log(colorize("📝 Enhanced Prompt Preview:", "cyan"));
-			console.log(`${prompt.substring(0, 300)}...\n`);
+    // eslint-disable-next-line no-console
+		console.log(colorize("📝 Enhanced Prompt Preview:", "cyan"));
+    // eslint-disable-next-line no-console
+		console.log(`${prompt.substring(0, 300)}...\n`);
 			if (analysisReport) {
-				console.log(colorize("📊 Analysis Report:", "magenta"));
-				console.log(analysisReport);
-				console.log("");
+    // eslint-disable-next-line no-console
+		console.log(colorize("📊 Analysis Report:", "magenta"));
+    // eslint-disable-next-line no-console
+		console.log(analysisReport);
+    // eslint-disable-next-line no-console
+		console.log("");
 			}
 		}
 
@@ -362,7 +368,8 @@ async function fixFileWithClaude(
 
 		child.on("close", (code) => {
 			if (code === 0) {
-				console.log(
+    // eslint-disable-next-line no-console
+		console.log(
 					colorize(
 						`✅ Claude completed documentation improvements for ${path.basename(filePath)}`,
 						"green",
@@ -370,15 +377,18 @@ async function fixFileWithClaude(
 				);
 				resolve({ success: true, output: stdout });
 			} else {
-				console.error(
+    // eslint-disable-next-line no-console
+		console.error(
 					colorize(
 						`❌ Claude failed to process ${path.basename(filePath)}`,
 						"red",
 					),
 				);
 				if (stderr) {
-					console.error(colorize("Error details:", "red"));
-					console.error(stderr);
+    // eslint-disable-next-line no-console
+		console.error(colorize("Error details:", "red"));
+    // eslint-disable-next-line no-console
+		console.error(stderr);
 				}
 				resolve({ success: false, error: stderr });
 			}
@@ -419,7 +429,8 @@ async function validateFixes(filePath) {
  * Processes a batch of files for documentation improvements
  */
 async function processBatch(files) {
-	console.log(
+    // eslint-disable-next-line no-console
+		console.log(
 		colorize(
 			`\n🚀 Processing ${files.length} files for documentation improvements...`,
 			"bright",
@@ -430,10 +441,14 @@ async function processBatch(files) {
 
 	for (const file of files) {
 		try {
-			console.log(`\n${"─".repeat(50)}`);
-			console.log(colorize(`📁 Processing: ${file.path}`, "cyan"));
-			console.log(colorize(`📊 Current coverage: ${file.coverage}%`, "yellow"));
-			console.log(
+    // eslint-disable-next-line no-console
+		console.log(`\n${"─".repeat(50)}`);
+    // eslint-disable-next-line no-console
+		console.log(colorize(`📁 Processing: ${file.path}`, "cyan"));
+    // eslint-disable-next-line no-console
+		console.log(colorize(`📊 Current coverage: ${file.coverage}%`, "yellow"));
+    // eslint-disable-next-line no-console
+		console.log(
 				colorize(
 					`📝 Undocumented exports: ${file.undocumented.length}`,
 					"yellow",
@@ -449,11 +464,13 @@ async function processBatch(files) {
 
 			if (claudeResult.success) {
 				// Validate improvements
-				console.log(colorize("🔍 Validating improvements...", "blue"));
+    // eslint-disable-next-line no-console
+		console.log(colorize("🔍 Validating improvements...", "blue"));
 				const validation = await validateFixes(file.path);
 
 				if (validation.success) {
-					console.log(
+    // eslint-disable-next-line no-console
+		console.log(
 						colorize(
 							`🎉 SUCCESS: ${file.path} now has 100% coverage!`,
 							"green",
@@ -461,7 +478,8 @@ async function processBatch(files) {
 					);
 					results.push({ file: file.path, success: true, finalCoverage: 100 });
 				} else {
-					console.log(
+    // eslint-disable-next-line no-console
+		console.log(
 						colorize(
 							`⚠️  PARTIAL: ${file.path} improved to ${validation.coverage}% (${validation.remaining} exports remaining)`,
 							"yellow",
@@ -475,7 +493,8 @@ async function processBatch(files) {
 					});
 				}
 			} else {
-				console.log(
+    // eslint-disable-next-line no-console
+		console.log(
 					colorize(`❌ FAILED: Could not improve ${file.path}`, "red"),
 				);
 				results.push({
@@ -485,7 +504,8 @@ async function processBatch(files) {
 				});
 			}
 		} catch (error) {
-			console.error(
+    // eslint-disable-next-line no-console
+		console.error(
 				colorize(`💥 ERROR processing ${file.path}: ${error.message}`, "red"),
 			);
 			results.push({ file: file.path, success: false, error: error.message });
@@ -622,6 +642,7 @@ ${partial.length > 0 ? "1. **Review Partially Improved Files**: Re-run the fix s
 		await fs.promises.writeFile(reportPath, reportContent, "utf8");
 		return reportPath;
 	} catch (error) {
+    // eslint-disable-next-line no-console
 		console.warn(
 			colorize(
 				`⚠️  Could not generate detailed report: ${error.message}`,
@@ -636,40 +657,54 @@ ${partial.length > 0 ? "1. **Review Partially Improved Files**: Re-run the fix s
  * Generates a summary report of the fix operations
  */
 function generateSummaryReport(results) {
-	console.log(`\n${"═".repeat(60)}`);
-	console.log(colorize("📊 TSDOC FIX SUMMARY", "bright"));
-	console.log("═".repeat(60));
+    // eslint-disable-next-line no-console
+		console.log(`\n${"═".repeat(60)}`);
+    // eslint-disable-next-line no-console
+		console.log(colorize("📊 TSDOC FIX SUMMARY", "bright"));
+    // eslint-disable-next-line no-console
+		console.log("═".repeat(60));
 
 	const successful = results.filter((r) => r.success);
 	const failed = results.filter((r) => !r.success);
 	const partial = results.filter((r) => !r.success && r.finalCoverage);
 
-	console.log(`Total files processed: ${results.length}`);
-	console.log(colorize(`✅ Successfully fixed: ${successful.length}`, "green"));
-	console.log(colorize(`⚠️  Partially improved: ${partial.length}`, "yellow"));
-	console.log(colorize(`❌ Failed: ${failed.length}`, "red"));
+    // eslint-disable-next-line no-console
+		console.log(`Total files processed: ${results.length}`);
+    // eslint-disable-next-line no-console
+		console.log(colorize(`✅ Successfully fixed: ${successful.length}`, "green"));
+    // eslint-disable-next-line no-console
+		console.log(colorize(`⚠️  Partially improved: ${partial.length}`, "yellow"));
+    // eslint-disable-next-line no-console
+		console.log(colorize(`❌ Failed: ${failed.length}`, "red"));
 
 	if (successful.length > 0) {
+    // eslint-disable-next-line no-console
 		console.log(colorize("\n🎉 Successfully fixed files:", "green"));
-		successful.forEach((r) => console.log(`   • ${r.file}`));
+    // eslint-disable-next-line no-console
+		console.log(`   • ${r.file}`));
 	}
 
 	if (partial.length > 0) {
+    // eslint-disable-next-line no-console
 		console.log(colorize("\n⚠️  Partially improved files:", "yellow"));
 		partial.forEach((r) =>
-			console.log(
+    // eslint-disable-next-line no-console
+		console.log(
 				`   • ${r.file} (${r.finalCoverage}%, ${r.remaining} exports remaining)`,
 			),
 		);
 	}
 
 	if (failed.length > 0) {
+    // eslint-disable-next-line no-console
 		console.log(colorize("\n❌ Failed files:", "red"));
-		failed.forEach((r) => console.log(`   • ${r.file}`));
+    // eslint-disable-next-line no-console
+		console.log(`   • ${r.file}`));
 	}
 
 	const overallSuccess = (successful.length / results.length) * 100;
-	console.log(
+    // eslint-disable-next-line no-console
+		console.log(
 		`\n${colorize("Overall success rate:", "bright")} ${overallSuccess.toFixed(1)}%`,
 	);
 
@@ -690,6 +725,7 @@ async function main() {
 
 	// Parse command line arguments
 	if (args.includes("--help") || args.includes("-h")) {
+    // eslint-disable-next-line no-console
 		console.log(`
 ${colorize("TSDoc Auto-Fix with Claude CLI", "bright")}
 ${colorize("Enhanced prompts with system instructions and analysis reports", "cyan")}
@@ -753,8 +789,10 @@ ${colorize("Examples:", "blue")}
 		CONFIG.MAX_BATCH_SIZE = parseInt(args[batchIndex + 1], 10);
 	}
 
-	console.log(colorize("🔍 TSDoc Auto-Fix with Claude CLI", "bright"));
-	console.log(colorize(`Using model: ${CONFIG.CLAUDE_MODEL}`, "blue"));
+    // eslint-disable-next-line no-console
+		console.log(colorize("🔍 TSDoc Auto-Fix with Claude CLI", "bright"));
+    // eslint-disable-next-line no-console
+		console.log(colorize(`Using model: ${CONFIG.CLAUDE_MODEL}`, "blue"));
 
 	try {
 		// Get files to analyze
@@ -766,11 +804,13 @@ ${colorize("Examples:", "blue")}
 		);
 		const targetPath = fileArgs.length > 0 ? fileArgs[0] : ".";
 
+    // eslint-disable-next-line no-console
 		console.log(colorize("🔍 Analyzing TSDoc coverage...", "blue"));
 		const checkResult = await runTSDocCheck(targetPath);
 
 		if (checkResult.files.length === 0) {
-			console.log(
+    // eslint-disable-next-line no-console
+		console.log(
 				colorize(
 					"🎉 No files need documentation improvements! All files have 100% coverage.",
 					"green",
@@ -779,6 +819,7 @@ ${colorize("Examples:", "blue")}
 			process.exit(0);
 		}
 
+    // eslint-disable-next-line no-console
 		console.log(
 			colorize(
 				`📋 Found ${checkResult.files.length} files needing documentation improvements`,
@@ -795,7 +836,8 @@ ${colorize("Examples:", "blue")}
 		const allResults = [];
 
 		for (let i = 0; i < batches.length; i++) {
-			console.log(
+    // eslint-disable-next-line no-console
+		console.log(
 				colorize(
 					`\n📦 Processing batch ${i + 1}/${batches.length}...`,
 					"magenta",
@@ -811,10 +853,12 @@ ${colorize("Examples:", "blue")}
 		// Generate detailed markdown report
 		const reportPath = await generateDetailedReport(allResults, checkResult);
 		if (reportPath) {
-			console.log(
+    // eslint-disable-next-line no-console
+		console.log(
 				colorize(`\n📄 Detailed report generated: ${reportPath}`, "blue"),
 			);
-			console.log(
+    // eslint-disable-next-line no-console
+		console.log(
 				colorize(
 					"   Use this report for documentation reviews and project tracking",
 					"cyan",
@@ -825,6 +869,7 @@ ${colorize("Examples:", "blue")}
 		// Exit with appropriate code
 		process.exit(summary.successful === summary.total ? 0 : 1);
 	} catch (error) {
+    // eslint-disable-next-line no-console
 		console.error(colorize(`💥 Fatal error: ${error.message}`, "red"));
 		process.exit(1);
 	}
@@ -833,6 +878,7 @@ ${colorize("Examples:", "blue")}
 // Run the script
 if (import.meta.url === `file://${process.argv[1]}`) {
 	main().catch((error) => {
+    // eslint-disable-next-line no-console
 		console.error(colorize(`💥 Unhandled error: ${error.message}`, "red"));
 		process.exit(1);
 	});

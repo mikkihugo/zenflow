@@ -32,7 +32,7 @@ describe('AIDeceptionDetector - 25-Pattern System', () => {
       const alerts = await detector.detectDeception(mockInteraction);
 
       // Debug:Log what alerts were actually generated
-      console.log(
+      logger.info(
         'Generated alerts: ','        alerts.map((a) => ({ type:a.type, severity:a.severity}))
       );
 
@@ -261,7 +261,7 @@ describe('AIDeceptionDetector - 25-Pattern System', () => {
 
   describe('System Statistics', () => {
     ')    it('should provide comprehensive statistics', () => {
-    ')      const stats = detector.getStatistics();
+    ')      const _stats = detector.getStatistics();
 
       expect(stats.totalPatterns).toBe(25);
       expect(stats.categories).toEqual([
@@ -295,7 +295,7 @@ describe('AIDeceptionDetector - 25-Pattern System', () => {
       expect(alerts.length).toBeGreaterThan(0);
 
       // Verify telemetry is recorded (integration test)
-      const stats = detector.getStatistics();
+      const _stats = detector.getStatistics();
       expect(stats.totalInteractions).toBeGreaterThan(0);
 });
 });

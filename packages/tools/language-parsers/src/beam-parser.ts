@@ -98,8 +98,8 @@ export interface BeamType {
   lineNumber:number;
 
   /** Type category */
-  category?: 'custom|alias|opaque|spec;
-'}
+  category?: 'custom' | 'alias' | 'opaque' | 'spec';
+}
 
 /**
  * Module complexity metrics
@@ -152,16 +152,18 @@ export class BeamLanguageParser {
   private readonly options:BeamParserOptions;
 
   constructor(_options:BeamParserOptions = {}) {
-    this.logger = getLogger('BeamLanguageParser');')    this.options = 
-      includeMetrics:true,
+    this.logger = getLogger('BeamLanguageParser');
+    this.options = {
+      includeMetrics: true,
       analyzeFunctionComplexity:true,
       extractDocumentation:true,
       maxFileSize:10 * 1024 * 1024, // 10MB default
-      ...options,;
+      ..._options,
+    };
 
     this.logger.debug('BeamLanguageParser initialized', {
-    ')      options:this.options,
-});
+      options: this.options,
+    });
 }
 
   /**
@@ -169,32 +171,35 @@ export class BeamLanguageParser {
    */
   async parseFile(filePath:string): Promise<Result<BeamModule, Error>> {
     try {
-      this.logger.info(`Parsing BEAM file:${filePath}`);`
+      this.logger.info(`Parsing BEAM file: ${filePath}`);
 
-      const content = await readFile(filePath, 'utf8');')
+      const content = await readFile(filePath, 'utf8');
       // Check file size limit
       if (content.length > (this.options.maxFileSize||10485760)) {
-        return err(new Error(`File too large:$content.lengthbytes`));`
-}
+        return err(new Error(`File too large: ${content.length} bytes`));
+      }
 
       const ext = extname(filePath);
       const language = this.detectLanguage(ext);
 
       if (!language) {
-        return err(new Error(`Unsupported file extension:${ext}`));`
+        return err(new Error(`Unsupported file extension: ${ext}`));
 }
 
       let module:BeamModule;
 
       switch (language) {
-        case'elixir': ')'          module = await this.parseElixirFile(filePath, content);
+        case 'elixir':
+          module = await this.parseElixirFile(filePath, content);
           break;
-        case 'erlang': ')'          module = await this.parseErlangFile(filePath, content);
+        case 'erlang':
+          module = await this.parseErlangFile(filePath, content);
           break;
-        case 'gleam': ')'          module = await this.parseGleamFile(filePath, content);
+        case 'gleam':
+          module = await this.parseGleamFile(filePath, content);
           break;
         default:
-          return err(new Error(`Unsupported language:$language`));`
+          return err(new Error(`Unsupported language: ${language}`));
 }
 
       // Calculate metrics if enabled
@@ -213,9 +218,9 @@ export class BeamLanguageParser {
 
       return ok(module);
 } catch (error) {
-      const err_msg = `Failed to parse ${filePath}:${error instanceof Error ? error.message: String(error)}`;`
-      this.logger.error(err_msg, { error});
-      return err(new Error(err_msg));
+      const errorMsg = 'Failed to parse ' + filePath + ': ' + (error instanceof Error ? error.message : String(error));
+      this.logger.error(errorMsg, { error });
+      return err(new Error(errorMsg));
 }
 }
 
@@ -224,7 +229,7 @@ export class BeamLanguageParser {
    */
   async parseFiles(filePaths:string[]): Promise<Result<BeamModule[], Error>> {
     try {
-      this.logger.info(`Parsing $filePaths.lengthBEAM files in parallel`);`
+      this.logger.info(`Parsing ${filePaths.length} BEAM files in parallel`);
 
       const results = await Promise.allSettled(
         filePaths.map((path) => this.parseFile(path))
@@ -236,17 +241,17 @@ export class BeamLanguageParser {
       for (let i = 0; i < results.length; i++) {
         const result = results[i];
         if (result.status === 'fulfilled' && result.value.isOk()) {
-    ')          modules.push(result.value._unsafeUnwrap())();
+          modules.push(result.value._unsafeUnwrap());
 } else {
           const error =
-            result.status === 'rejected')              ? result.reason
-              :result.value._unsafeUnwrapErr();
-          errors.push(`${filePaths[i]}:${error.message}`);`
+            result.status === 'rejected' ? result.reason
+              : result.value._unsafeUnwrapErr();
+          errors.push(`${filePaths[i]}: ${error.message}`);
 }
 }
 
       if (errors.length > 0) {
-        this.logger.warn(`Some files failed to parse`, {`
+        this.logger.warn('Some files failed to parse', {
           errorCount:errors.length,
           successCount:modules.length,
           errors:errors.slice(0, 5), // Log first 5 errors

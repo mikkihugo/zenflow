@@ -75,9 +75,9 @@ declare module '$env/static/private' {
 	export const VOYAGE_API_KEY: string;
 	export const PNPM_HOME: string;
 	export const ARCHITECT_URL: string;
-	export const VIPSHOME: string;
 	export const ERL_FLAGS: string;
 	export const HEX_CACHE_CLEANUP: string;
+	export const npm_config_recursive: string;
 	export const npm_config_global_dir: string;
 	export const CLAUDECODE: string;
 	export const MOTD_SHOWN: string;
@@ -196,7 +196,6 @@ declare module '$env/static/private' {
 	export const GITHUB_MODELS_TOKEN: string;
 	export const npm_node_execpath: string;
 	export const npm_config_engine_strict: string;
-	export const OLDPWD: string;
 	export const MODULES_CMD: string;
 	export const TERM_PROGRAM: string;
 	export const CF_API_TOKEN: string;
@@ -223,7 +222,7 @@ declare module '$env/static/public' {
  * 
  * ```ts
  * import { env } from '$env/dynamic/private';
- * logger.info(env.DEPLOYMENT_SPECIFIC_VARIABLE);
+ * console.log(env.DEPLOYMENT_SPECIFIC_VARIABLE);
  * ```
  * 
  * > [!NOTE] In `dev`, `$env/dynamic` always includes environment variables from `.env`. In `prod`, this behavior will depend on your adapter.
@@ -279,9 +278,9 @@ declare module '$env/dynamic/private' {
 		VOYAGE_API_KEY: string;
 		PNPM_HOME: string;
 		ARCHITECT_URL: string;
-		VIPSHOME: string;
 		ERL_FLAGS: string;
 		HEX_CACHE_CLEANUP: string;
+		npm_config_recursive: string;
 		npm_config_global_dir: string;
 		CLAUDECODE: string;
 		MOTD_SHOWN: string;
@@ -400,7 +399,6 @@ declare module '$env/dynamic/private' {
 		GITHUB_MODELS_TOKEN: string;
 		npm_node_execpath: string;
 		npm_config_engine_strict: string;
-		OLDPWD: string;
 		MODULES_CMD: string;
 		TERM_PROGRAM: string;
 		CF_API_TOKEN: string;
@@ -417,7 +415,7 @@ declare module '$env/dynamic/private' {
  * 
  * ```ts
  * import { env } from '$env/dynamic/public';
- * logger.info(env.PUBLIC_DEPLOYMENT_SPECIFIC_VARIABLE);
+ * console.log(env.PUBLIC_DEPLOYMENT_SPECIFIC_VARIABLE);
  * ```
  */
 declare module '$env/dynamic/public' {

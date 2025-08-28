@@ -157,17 +157,17 @@ export class AvatarOptimizer extends Teleprompter {
 		let best_score = this.optimize_for === "max" ? -999:999;
 
 		for (let i = 0; i < this.max_iters; i++) {
-			console.log("=".repeat(20));
-			console.log(`Iteration ${i + 1}/${this.max_iters}`);
+			logger.info("=".repeat(20));
+			logger.info(`Iteration ${i + 1}/${this.max_iters}`);
 
 			const { score, pos_inputs, neg_inputs} = await this._get_pos_neg_results(
 				best_actor,
 				trainset,
 			);
 
-			console.log(`Positive examples:${pos_inputs.length}`);
-			console.log(`Negative examples:${neg_inputs.length}`);
-			console.log(
+			logger.info(`Positive examples:${pos_inputs.length}`);
+			logger.info(`Negative examples:${neg_inputs.length}`);
+			logger.info(
 				`Sampling ${this.max_positive_inputs} positive examples and ${this.max_negative_inputs} negative examples`,
 			);
 
@@ -206,7 +206,7 @@ export class AvatarOptimizer extends Teleprompter {
 
 			const {new_instruction} = new_instruction_result;
 
-			console.log(`Generated new instruction:${new_instruction}`);
+			logger.info(`Generated new instruction:${new_instruction}`);
 
 			// Update best actor exactly matching Stanford logic
 			const should_update =
@@ -221,7 +221,7 @@ export class AvatarOptimizer extends Teleprompter {
 }
 }
 
-		console.log(`Best Actor:${best_actor}`);
+		logger.info(`Best Actor:${best_actor}`);
 
 		(best_actor as any)._compiled = true;
 		return best_actor;
@@ -243,7 +243,7 @@ export class AvatarOptimizer extends Teleprompter {
 
 			return return_outputs ? { example, prediction, score} :score;
 } catch (error) {
-			console.error(error);
+			logger.error(error);
 
 			return return_outputs ? { example, prediction:null, score:0} :0;
 }
@@ -301,7 +301,7 @@ export class AvatarOptimizer extends Teleprompter {
 		const avg_score = evaluation_result.score;
 		const {results} = evaluation_result;
 
-		console.log(`Average Score:${avg_score}`);
+		logger.info(`Average Score:${avg_score}`);
 
 		for (const { example, prediction, score} of results) {
 			if (score >= this.upper_bound) {

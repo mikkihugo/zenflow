@@ -240,8 +240,8 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
           this.extractLearningOutcomes(sessionData),
           this.extractFailurePatterns(sessionData),
           this.configuration.sparcEnabled
-            ? this.extractSPARCInsights(sessionData)
-            :Promise.resolve(),
+            ? Promise.resolve(this.extractSPARCInsights(sessionData))
+            : Promise.resolve(),
 ]);
 
         // Calculate importance and confidence using ML if available
@@ -396,9 +396,9 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
   private async initializeSPARCTools():Promise<void> {
     try {
       // @ts-ignore - Package may not exist yet, graceful degradation
-      const { SPARCManager} = await import('@claude-zen/coordination');
+      const { SPARCManager: SparcManagerClass} = await import('@claude-zen/coordination');
 
-      this.sparcEngine = new SPARCManager({
+      this.sparcEngine = new SparcManagerClass({
         enabled:true,
         analysisMode: 'pattern-extraction',        phases:[
           'specification',          'pseudocode',          'architecture',          'refinement',          'completion',],
@@ -524,7 +524,8 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
         adaptabilityScore = prediction.output.adaptability || 0.5;
 } catch (error) {
         this.logger.debug(
-          'Brain adaptability prediction failed, using default')        );
+          'Brain adaptability prediction failed, using default'
+        );
 }
 }
 
@@ -571,7 +572,8 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
     const patterns:ExtractedKnowledge['failurePatterns'] = [];
 
     const failures = sessionData.decisions.filter(
-      (d) => d.outcome === 'failure')    );
+      (d) => d.outcome === 'failure'
+    );
     if (failures.length > 0) {
       // Group failures by context
       const failureGroups = new Map<string, typeof failures>();
@@ -596,9 +598,9 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
     return patterns;
 }
 
-  private async extractSPARCInsights(
+  private extractSPARCInsights(
     sessionData:SwarmSession
-  ):Promise<ExtractedKnowledge['sparcInsights'] | undefined> {
+  ):ExtractedKnowledge['sparcInsights'] | undefined {
     if (!sessionData.sparcPhases || !this.sparcEngine) {
       return undefined;
 }
@@ -633,7 +635,7 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
 };
 } catch (error) {
       this.logger.error('Failed to extract SPARC insights: ', error);
-'      return undefined;
+      return undefined;
 }
 }
 
@@ -679,7 +681,8 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
         importance = (importance + mlImportance) / 2; // Blend manual and ML scores
 } catch (error) {
         this.logger.debug(
-          'Brain importance prediction failed, using manual calculation')        );
+          'Brain importance prediction failed, using manual calculation'
+        );
 }
 }
 
@@ -700,7 +703,8 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
 
     // Higher confidence with consistent patterns
     const consistentDecisions = sessionData.decisions.filter(
-      (d) => d.outcome === 'success')    ).length;
+      (d) => d.outcome === 'success'
+    ).length;
     if (sessionData.decisions.length > 0) {
       const consistency = consistentDecisions / sessionData.decisions.length;
       confidence += consistency * 0.1;

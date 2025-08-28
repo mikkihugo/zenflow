@@ -127,7 +127,7 @@ export abstract class BaseRegistryAdapter extends TypedEventBase {
    * Get migration statistics
    */
   getMigrationStats():MigrationStats {
-    const stats = this.container.getStats();
+    const _stats = this.container.getStats();
     const migrationDuration = this.migrationStartTime
       ? Date.now() - this.migrationStartTime
       :0;

@@ -14,24 +14,24 @@ import type { EmergencyHandler} from '../interfaces';
 
 const logger = {
   debug:(message: string, meta?:unknown) =>
-    console.log(`[DEBUG] ${message}`, meta || '),
+  logger.info(`[DEBUG] ${message}`, meta || ''),
   info:(message: string, meta?:unknown) =>
-    console.log(`[INFO] ${message}`, meta || '),
+  logger.info(`[INFO] ${message}`, meta || ''),
   warn:(message: string, meta?:unknown) =>
-    console.warn(`[WARN] ${message}`, meta || '),
+  logger.warn(`[WARN] ${message}`, meta || ''),
   error:(message: string, meta?:unknown) =>
-    console.error(`[ERROR] ${message}`, meta || '),
+  logger.error(`[ERROR] ${message}`, meta || ''),
 };
 
 interface EmergencyProtocol {
   name:string;
-  severity:'low' | ' medium' | ' high' | ' critical';
+  severity:'low' | 'medium' | 'high' | 'critical';
   actions:EmergencyAction[];
   triggers:string[];
 }
 
 interface EmergencyAction {
-  type:'load_shed' | ' scale_up' | ' failover' | ' throttle' | ' alert';
+  type:'load_shed' | 'scale_up' | 'failover' | 'throttle' | 'alert';
   parameters:Record<string, unknown>;
   timeout:number;
 }
@@ -55,7 +55,8 @@ export class EmergencyProtocolHandler
 
   public async handleEmergency(
     type:string,
-    severity:'low' | ' medium' | ' high' | ' critical')  ):Promise<void> {
+    severity:'low' | 'medium' | 'high' | 'critical'
+  ):Promise<void> {
     const protocol = this.activeProtocols.get(type);
     await (protocol
       ? this.executeProtocol(protocol)
@@ -71,7 +72,7 @@ export class EmergencyProtocolHandler
     // 2. Reject or queue them
     // 3. Reduce processing capacity temporarily
 
-    this.recordEmergency('load_shed',    'high', `shed_${percentage}%`);
+  this.recordEmergency('load_shed', 'high', `shed_${percentage}%`);
 }
 
   public async activateFailover():Promise<void> {
@@ -206,13 +207,16 @@ export class EmergencyProtocolHandler
 
   private async executeDefaultEmergencyResponse(
     type:string,
-    severity:'low' | ' medium' | ' high' | ' critical')  ):Promise<void> {
+    severity: 'low' | 'medium' | 'high' | 'critical'
+  ): Promise<void> {
     switch (severity) {
       case 'critical':
         await this.shedLoad(30);
         await this.activateFailover();
-        await this.sendAlert(`Critical emergency:${type}`, [`
-          'ops-team',          'on-call',]);
+        await this.sendAlert(`Critical emergency:${type}`, [
+          'ops-team',
+          'on-call',
+        ]);
         break;
       case 'high':
         await this.throttleRequests(50);

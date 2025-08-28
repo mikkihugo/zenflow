@@ -9,7 +9,6 @@
 		"declarationMap": true,
 
 		/* Output Configuration */
-		"rootDir": "./src",
 		"outDir": "./dist",
 
 		/* Strict Type Checking - Best Practices */
@@ -36,27 +35,6 @@
 	"references": [
 		{ "path": "packages/core/foundation" },
 		{ "path": "packages/core/database" },
-		{ "path": "packages/core/memory" },
-		{ "path": "packages/core/fact-system" },
-		{ "path": "packages/core/neural-ml" },
-		{ "path": "packages/core/dspy" },
-		{ "path": "packages/services/brain" },
-		{ "path": "packages/services/ai-safety" },
-		{ "path": "packages/services/knowledge" },
-		{ "path": "packages/services/coordination/orchestration" },
-		{ "path": "packages/services/coordination/safe" },
-		{ "path": "packages/services/coordination/sparc" },
-		{ "path": "packages/services/coordination/teamwork" },
-		{ "path": "packages/services/coordination/workflows" },
-		{ "path": "packages/services/system-monitoring" },
-		{ "path": "packages/services/telemetry" },
-		{ "path": "packages/services/load-balancing" },
-		{ "path": "packages/integrations/llm-providers" },
-		{ "path": "packages/integrations/exporters" },
-		{ "path": "packages/integrations/otel-collector" },
-		{ "path": "packages/tools/code-analyzer" },
-		{ "path": "packages/tools/repo-analyzer" },
-		{ "path": "packages/tools/git-operations" },
 		{ "path": "apps/claude-code-zen-server" },
 		{ "path": "apps/web-dashboard" }
 	]

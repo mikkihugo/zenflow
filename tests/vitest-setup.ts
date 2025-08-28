@@ -152,10 +152,15 @@ globalThis.restoreConsole = () => {
 };
 
 // Suppress console output during tests (can be restored per test)
+    // eslint-disable-next-line no-console
 console.log = vi.fn();
+    // eslint-disable-next-line no-console
 console.warn = vi.fn();
+    // eslint-disable-next-line no-console
 console.error = vi.fn();
+    // eslint-disable-next-line no-console
 console.info = vi.fn();
+    // eslint-disable-next-line no-console
 console.debug = vi.fn();
 
 // Environment variables for tests

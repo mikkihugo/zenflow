@@ -231,11 +231,11 @@ export class GRPO extends FinetuneTeleprompter {
 
 		// Trace validation with warnings exactly like Stanford
 		if (trace_data[0][0].length === 0) {
-			console.warn(
+			logger.warn(
 				`Trace data for example 0 and teacher 0 is empty. This is likely due to all examples in the training set input, resulting in the model generating output not following the dspy response format.`,
 			);
 } else if (trace_data[0][0].length !== num_samples_per_input) {
-			console.warn(
+			logger.warn(
 				`Trace data length ${trace_data[0][0].length} does not match the expected number of samples per input ${num_samples_per_input}`,
 			);
 
@@ -532,7 +532,7 @@ export class GRPO extends FinetuneTeleprompter {
 				:Math.floor(base_idx / this.shuffled_trainset_ids.length);
 
 		if (curr_epoch > this.epoch) {
-			console.log(`Updating shuffled trainset for epoch ${curr_epoch}...`);
+			logger.info(`Updating shuffled trainset for epoch ${curr_epoch}...`);
 			this.epoch = curr_epoch;
 			this.update_shuffled_trainset(original_trainset);
 }
@@ -583,6 +583,7 @@ export class GRPO extends FinetuneTeleprompter {
 },
 	):Promise<DSPyModule> {
 		let { trainset, teacher = null, valset = null} = config;
+    // eslint-disable-next-line no-console
 		const logger = { info:console.log, warning:console.warn};
 
 		logger.info(

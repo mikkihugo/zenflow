@@ -72,9 +72,11 @@ export async function analyzeRepository(
 export async function performSecurityScan(
   repositoryPath:string,
   options:{
-    languages?:import('./types/codeql-types').CodeQLLanguage[];')    config?:Partial<import('./types/codeql-types').CodeQLConfig>;')} = {}
+    languages?: import('./types/codeql-types').CodeQLLanguage[];
+    config?: Partial<import('./types/codeql-types').CodeQLConfig>;
+  } = {}
 ):Promise<import('./types/codeql-types').QueryExecutionResult> {
-    ')  const bridge = createCodeQLBridge(options.config);
+  const bridge = createCodeQLBridge(options.config);
 
   // Get security-focused query packs
   const languages = options.languages||['typescript',    'javascript'];')  const securityQueryPacks:import('./types/codeql-types').QueryPack[] = [];')

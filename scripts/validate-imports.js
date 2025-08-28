@@ -103,10 +103,10 @@ function checkFile(filePath) {
 
 				// Check if this is a forbidden import
 				if (FORBIDDEN_IMPORTS[importedModule]) {
-					console.error(`❌ ${relativePath}:${i + 1}`);
-					console.error(`   Direct import: ${importedModule}`);
-					console.error(`   ${FORBIDDEN_IMPORTS[importedModule]}`);
-					console.error("");
+					logger.error(`❌ ${relativePath}:${i + 1}`);
+					logger.error(`   Direct import: ${importedModule}`);
+					logger.error(`   ${FORBIDDEN_IMPORTS[importedModule]}`);
+					logger.error("");
 					violations++;
 				}
 			}
@@ -117,16 +117,16 @@ function checkFile(filePath) {
 				const requiredModule = requireMatch[1];
 
 				if (FORBIDDEN_IMPORTS[requiredModule]) {
-					console.error(`❌ ${relativePath}:${i + 1}`);
-					console.error(`   Direct require: ${requiredModule}`);
-					console.error(`   ${FORBIDDEN_IMPORTS[requiredModule]}`);
-					console.error("");
+					logger.error(`❌ ${relativePath}:${i + 1}`);
+					logger.error(`   Direct require: ${requiredModule}`);
+					logger.error(`   ${FORBIDDEN_IMPORTS[requiredModule]}`);
+					logger.error("");
 					violations++;
 				}
 			}
 		}
 	} catch (_error) {
-		console.warn(`⚠️ Could not read file: ${filePath}`);
+		logger.warn(`⚠️ Could not read file: ${filePath}`);
 	}
 }
 
@@ -134,22 +134,22 @@ function checkFile(filePath) {
  * Main validation function
  */
 function validateImports() {
-	console.log("🔍 Validating imports for foundation compliance...\n");
+	logger.info("🔍 Validating imports for foundation compliance...\n");
 
 	const sourceFiles = findSourceFiles(projectRoot);
 
-	console.log(`Found ${sourceFiles.length} source files to check\n`);
+	logger.info(`Found ${sourceFiles.length} source files to check\n`);
 
 	for (const file of sourceFiles) {
 		checkFile(file);
 	}
 
 	if (violations === 0) {
-		console.log("✅ All imports are compliant with foundation requirements!");
+		logger.info("✅ All imports are compliant with foundation requirements!");
 		return true;
 	} else {
-		console.error(`❌ Found ${violations} forbidden import(s)`);
-		console.error(
+		logger.error(`❌ Found ${violations} forbidden import(s)`);
+		logger.error(
 			"\n💡 Use @claude-zen/foundation for centralized utilities instead of direct imports",
 		);
 		return false;

@@ -223,7 +223,7 @@ export class EnhancedDocumentScanner extends TypedEventBase {
 
       for (const entry of entries) {
         const fullPath = join(dirPath, entry);
-        const stats = await stat(fullPath);
+        const _stats = await stat(fullPath);
 
         if (stats.isDirectory()) {
           // Check if directory should be excluded

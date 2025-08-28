@@ -14,6 +14,9 @@ import {
   eventRegistryInitializer,
 } from '@claude-zen/foundation';
 import { eventRegistryWebSocketService} from './services/websocket/event-registry-websocket.js';
+import type { Express, Request, Response } from 'express';
+import type { Server as HTTPServer } from 'http';
+import type { Server as SocketIOServer, Socket } from 'socket.io';
 
 const logger = getLogger('claude-zen-server');
 
@@ -52,7 +55,7 @@ class ClaudeZenServer {
   /**
    * Setup Express middleware
    */
-  private async setupMiddleware(app: any): Promise<void> {
+  private async setupMiddleware(app: Express): Promise<void> {
     logger.debug('Setting up middleware...');
     
     // Import middleware dynamically
@@ -87,11 +90,11 @@ class ClaudeZenServer {
   /**
    * Setup Express routes
    */
-  private setupRoutes(app: any): void {
+  private setupRoutes(app: Express): void {
     logger.debug('Setting up routes...');
     
     // Health check endpoint
-    app.get('/health', (req: any, res: any) => {
+    app.get('/health', (req: Request, res: Response) => {
       res.json({ 
         status: 'ok', 
         timestamp: new Date().toISOString(),
@@ -101,7 +104,7 @@ class ClaudeZenServer {
     });
     
     // API routes
-    app.get('/api/v1/health', (req: any, res: any) => {
+    app.get('/api/v1/health', (req: Request, res: Response) => {
       res.json({ 
         status: 'healthy', 
         service: 'claude-code-zen-server',
@@ -111,7 +114,7 @@ class ClaudeZenServer {
     });
     
     // Basic dashboard route (if no static serving is set up)
-    app.get('/', (req: any, res: any) => {
+    app.get('/', (req: Request, res: Response) => {
       res.json({
         message: 'Claude Code Zen Server',
         status: 'running',
@@ -125,7 +128,7 @@ class ClaudeZenServer {
     });
     
     // Catch all for API routes
-    app.use('/api', (req: any, res: any) => {
+    app.use('/api', (req: Request, res: Response) => {
       res.status(404).json({
         error: 'API endpoint not found',
         path: req.path,
@@ -146,7 +149,7 @@ class ClaudeZenServer {
   /**
    * Initialize WebSocket services
    */
-  private async initializeWebSockets(server: any): Promise<void> {
+  private async initializeWebSockets(server: HTTPServer): Promise<void> {
     // Initialize WebSocket service for event registry
     eventRegistryWebSocketService.initialize(server);
     
@@ -161,7 +164,7 @@ class ClaudeZenServer {
   /**
    * Initialize Socket.IO for dashboard real-time updates
    */
-  private async initializeSocketIO(server: any): Promise<void> {
+  private async initializeSocketIO(server: HTTPServer): Promise<void> {
     try {
       const { Server: socketIOServer } = await import('socket.io');
       const io = new socketIOServer(server, {
@@ -183,8 +186,8 @@ class ClaudeZenServer {
   /**
    * Setup Socket.IO event handlers
    */
-  private setupSocketHandlers(io: any): void {
-    io.on('connection', (socket: any) => {
+  private setupSocketHandlers(io: SocketIOServer): void {
+    io.on('connection', (socket: Socket) => {
       logger.debug(`Dashboard client connected: ${socket.id}`);
 
       // Send initial connection data
@@ -202,7 +205,7 @@ class ClaudeZenServer {
   /**
    * Setup socket subscription handlers
    */
-  private setupSocketSubscriptions(socket: any): void {
+  private setupSocketSubscriptions(socket: Socket): void {
     socket.on('subscribe', (channel: string) => {
       socket.join(channel);
       logger.debug(`Client ${socket.id} subscribed to ${channel}`);
@@ -239,7 +242,7 @@ class ClaudeZenServer {
   /**
    * Setup socket utility handlers
    */
-  private setupSocketUtilities(socket: any): void {
+  private setupSocketUtilities(socket: Socket): void {
     // Handle ping for connection keep-alive
     socket.on('ping', () => {
       socket.emit('pong', { timestamp: new Date().toISOString() });

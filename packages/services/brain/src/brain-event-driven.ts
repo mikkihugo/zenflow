@@ -34,7 +34,7 @@
  *
  * // Listen for optimization results
  * brainService.eventBus.on('brain-service:prompt-optimized', (result) => {
- *   console.log('Optimization completed: ', {
+ *   logger.info('Optimization completed: ', {
 ' *     strategy:result.strategy,
  *     confidence:result.confidence,
  *     optimizedPrompt:result.optimizedPrompt

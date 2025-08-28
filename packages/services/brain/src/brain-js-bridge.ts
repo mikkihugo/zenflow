@@ -462,7 +462,7 @@ export class BrainJsBridge {
 };
 
       // Train the network
-      const stats = networkInstance.network.train(
+      const _stats = networkInstance.network.train(
         trainingData as any[],
         trainingOptions
       );

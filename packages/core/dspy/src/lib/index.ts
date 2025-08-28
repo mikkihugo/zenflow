@@ -131,7 +131,7 @@
  *
  * // Use the optimized program
  * const result = await optimized_qa.forward("What is the largest planet?");
- * console.log(result.answer); // Automatically optimized response
+ * logger.info(result.answer); // Automatically optimized response
  * ```
  *
  * @example Advanced Multi-Step Reasoning with Chain-of-Thought
@@ -205,8 +205,8 @@
  *});
  *
  * // Brain tracks performance and improves over time
- * console.log(`Optimized program achieved ${result.performance.f1_score} F1 score`);
- * console.log(`Brain recommendation:${result.brainInsights.recommendedStrategy}`);
+ * logger.info(`Optimized program achieved ${result.performance.f1_score} F1 score`);
+ * logger.info(`Brain recommendation:${result.brainInsights.recommendedStrategy}`);
  * ```
  *
  * @example Production Ensemble with Multiple Optimizers
@@ -248,7 +248,7 @@
  *
  * // Production-ready classifier with ensemble power
  * const production_result = await ensemble.forward("This product is amazing!");
- * console.log(`Category:${production_result.category}, Confidence:${production_result.confidence}`);
+ * logger.info(`Category:${production_result.category}, Confidence:${production_result.confidence}`);
  * ```
  *
  * @example Real-World Foundation LLM Integration
@@ -279,7 +279,7 @@
  *});
  *
  * const evaluation_results = await evaluator.evaluate(optimized_program, test_set);
- * console.log(`Program performance:${evaluation_results.score}`);
+ * logger.info(`Program performance:${evaluation_results.score}`);
  * ```
  *
  * **OPTIMIZATION STRATEGIES:**
@@ -514,7 +514,7 @@ Respond with just the numeric score (e.g., 0.85):`;
 			return { score:finalScore};
 } catch (error) {
 			// Fallback to simple heuristic evaluation if foundation fails
-			console.warn("Foundation evaluation failed, using fallback:", error);
+			logger.warn("Foundation evaluation failed, using fallback:", error);
 
 			let totalScore = 0;
 			for (const item of dataset) {

@@ -600,7 +600,7 @@ export async function getKnowledgeSystemAccess(
     factSystem = await fs.getAccess();
   } catch (error) {
     // Fact system optional - knowledge can work standalone
-    console.warn(
+    logger.warn(
       'Fact system not available, knowledge will work in standalone mode''
     );
   }

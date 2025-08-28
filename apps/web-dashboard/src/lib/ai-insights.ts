@@ -193,7 +193,7 @@ export class AIInsightsEngine {
 	):AIInsight[] {
 		const insights:AIInsight[] = [];
 		const activeAgents = agents.filter((a) => a.status === "active");
-		// const idleAgents = agents.filter((a) => a.status === 'idle'); // Currently unused
+		const idleAgents = agents.filter((a) => a.status === 'idle');
 		const errorAgents = agents.filter((a) => a.status === "error");
 
 		// Agent Distribution Analysis
@@ -214,6 +214,7 @@ export class AIInsightsEngine {
 					utilization:utilizationRate,
 					total:agents.length,
 					active:activeAgents.length,
+					idle:idleAgents.length,
 },
 				actionable:true,
 				tags:["optimization", "agents", "efficiency"],
@@ -271,7 +272,7 @@ export class AIInsightsEngine {
 		const insights:AIInsight[] = [];
 		const completedTasks = tasks.filter((t) => t.status === "completed");
 		const pendingTasks = tasks.filter((t) => t.status === "pending");
-		// const inProgressTasks = tasks.filter((t) => t.status === 'in-progress'); // Currently unused
+		const inProgressTasks = tasks.filter((t) => t.status === 'in-progress');
 
 		// Task Backlog Analysis
 		const backlogRatio = pendingTasks.length / tasks.length;
@@ -290,12 +291,37 @@ export class AIInsightsEngine {
 				data:{
 					backlogRatio,
 					pending:pendingTasks.length,
+					inProgress:inProgressTasks.length,
 					total:tasks.length,
 },
 				actionable:true,
 				tags:["performance", "tasks", "backlog"],
 });
 }
+
+		// Task Progress Monitoring
+		const progressRatio = inProgressTasks.length / tasks.length;
+		if (progressRatio > 0.4 && backlogRatio > 0.3) {
+			insights.push({
+				id:`tasks-bottleneck-${Date.now()}`,
+				type:"performance",
+				severity:"medium",
+				title:"Task Processing Bottleneck",
+				description:`${(progressRatio * 100).toFixed(1)}% of tasks are in progress with significant backlog, indicating processing bottleneck.`,
+				recommendation:"Review task complexity, consider parallel processing, or increase worker capacity.",
+				confidence:85,
+				timestamp,
+				data:{
+					progressRatio,
+					backlogRatio,
+					inProgress:inProgressTasks.length,
+					pending:pendingTasks.length,
+					total:tasks.length,
+				},
+				actionable:true,
+				tags:["performance", "tasks", "bottleneck"],
+			});
+		}
 
 		// Task Completion Rate Analysis
 		const completionRate = completedTasks.length / tasks.length;

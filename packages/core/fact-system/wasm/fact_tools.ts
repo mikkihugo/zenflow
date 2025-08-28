@@ -27,7 +27,7 @@ class FactEngineImpl implements RustFactEngine {
 
 	constructor(wasmInstance:any) {
 		this.wasmInstance = wasmInstance;
-		console.log("WASM fact engine initialized");
+		logger.info("WASM fact engine initialized");
 }
 
 	verify_fact(fact:string): boolean {
@@ -40,18 +40,18 @@ class FactEngineImpl implements RustFactEngine {
 
 	store_fact(fact:string, metadata?:any): void {
 		// Stub implementation - would call WASM function
-		console.log("Storing fact:", fact, metadata);
+		logger.info("Storing fact:", fact, metadata);
 }
 
 	query_facts(query:string): string[] {
 		// Stub implementation - would call WASM function
-		console.log("Querying facts with:", query);
+		logger.info("Querying facts with:", query);
 		return [];
 }
 
 	analyze_patterns(data:string[]): any {
 		// Stub implementation - would call WASM function
-		console.log("Analyzing patterns in data:", data.length, "items");
+		logger.info("Analyzing patterns in data:", data.length, "items");
 		return { patterns:[], confidence:0.5};
 }
 

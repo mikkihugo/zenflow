@@ -83,7 +83,7 @@ class GitHubCopilotDatabase {
 
     if (!this.token) {
       logger.warn(
-        '⚠️ No GitHub Copilot token available, skipping model updates')      );
+        '⚠️ No GitHub Copilot token available, skipping model updates');
       return;
 }
 
@@ -95,7 +95,7 @@ class GitHubCopilotDatabase {
       () => {
         this.updateModels().catch((error) => {
           logger.error('❌ Failed to update Copilot models: ', error);
-'});
+        });
 },
       60 * 60 * 1000
     ); // 1 hour
@@ -179,7 +179,7 @@ class GitHubCopilotDatabase {
       logger.info(` Updated ${this.models.size} GitHub Copilot Models`);
       logger.info(` Models by vendor:${this.getVendorStats()}`);
       logger.info(
-        `🎯 Primary models:${this.getPrimaryModels()`
+        `🎯 Primary models:${this.getPrimaryModels()
           .map((m) => m.id)
           .join(',    ')}`
       );
@@ -187,7 +187,7 @@ class GitHubCopilotDatabase {
       return ok(void 0);
 } catch (error) {
       logger.error('❌ Failed to update GitHub Copilot Models: ', error);
-'      return err(
+      return err(
         error instanceof Error ? error:new Error('Failed to update models')
       );
 }
@@ -220,7 +220,8 @@ class GitHubCopilotDatabase {
    * Get models by category
    */
   getModelsByCategory(
-    category:'versatile' | ' lightweight' | ' powerful')  ):GitHubCopilotModelMetadata[] {
+    category:'versatile' | ' lightweight' | ' powerful'
+  ):GitHubCopilotModelMetadata[] {
     return Array.from(this.models.values()).filter(
       (model) => model['category'] === category
     );
@@ -249,7 +250,8 @@ class GitHubCopilotDatabase {
    */
   getChatModels():GitHubCopilotModelMetadata[] {
     return Array.from(this.models.values()).filter(
-      (model) => model['type'] === ' chat')    );
+      (model) => model['type'] === ' chat'
+    );
 }
 
   /**
@@ -270,7 +272,7 @@ class GitHubCopilotDatabase {
       stats.set(model.vendor, (stats.get(model.vendor) || 0) + 1);
 }
     return Array.from(stats.entries())
-      .map(([vendor, count]) => `${vendor}:${count}`)`
+      .map(([vendor, count]) => `${vendor}:${count}`)
       .join(',    ');
 }
 

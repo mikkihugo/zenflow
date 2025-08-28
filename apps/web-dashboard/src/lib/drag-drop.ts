@@ -1,7 +1,10 @@
+/* eslint-env browser */
 /**
  * Drag and drop utilities for dashboard customization
  * Provides widget reordering and layout management
  */
+
+/// <reference lib="dom" />
 
 import { getLogger} from "@claude-zen/foundation";
 import { writable} from "svelte/store";

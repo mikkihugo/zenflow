@@ -76,9 +76,9 @@ export { AISafetyOrchestrator as SafetyGuard,
  * const result = await initializeAISafety();
  * if (result.success) {
  *   const safetySystem = result.value;
- *   console.log('Enterprise AI Safety initialized successfully');
+ *   logger.info('Enterprise AI Safety initialized successfully');
  *} else {
- *   console.error('Failed to initialize AI Safety: ', result.error);
+ *   logger.error('Failed to initialize AI Safety: ', result.error);
 ' *}
  * ```
  */
@@ -110,30 +110,30 @@ export async function initializeAISafety() {
  * ```typescript`
  * const result = await emergencySafetyShutdown();
  * if (result.success) {
- *   console.log('Emergency shutdown completed successfully');
+ *   logger.info('Emergency shutdown completed successfully');
  *} else {
- *   console.error('Emergency shutdown failed: ', result.error);
+ *   logger.error('Emergency shutdown failed: ', result.error);
 ' *}
  * ```
  */
 export async function emergencySafetyShutdown() {
   try {
-    console.log('🛑 ENTERPRISE EMERGENCY SAFETY SHUTDOWN INITIATED');
+    logger.info('🛑 ENTERPRISE EMERGENCY SAFETY SHUTDOWN INITIATED');
 
     // Enhanced safety logging with error handling capabilities
     const safetyResult = { success: true, message: 'Safety shutdown initiated'};
-    console.log('Safety result: ', safetyResult);
+    logger.info('Safety result: ', safetyResult);
 '    
     // Error scenario demonstration (expanded functionality)
     if (process.env.NODE_ENV === 'test') {
       const testError = new Error('Test safety error for validation');
-      console.log('Test error created: ', testError.message);
+      logger.info('Test error created: ', testError.message);
 '}
 
     // This would coordinate with all safety systems
     // For now, return success - full implementation would coordinate shutdown
 
-    console.log('🚨 Emergency safety protocols activated');
+    logger.info('🚨 Emergency safety protocols activated');
     return { success: true};
 } catch (error) {
     return {
@@ -223,7 +223,7 @@ export async function getAISafetySystemAccess(
       safetySystem.evaluateAgentSafety?.(agentId, data),
     emergencyShutdown: () => emergencySafetyShutdown(),
     getStatus: () => safetySystem.getSafetyStatus?.(),
-    escalate: (alert: any) => console.log('Escalating:', alert),
+    escalate: (alert: any) => logger.info('Escalating:', alert),
 };
 }
 
@@ -271,7 +271,7 @@ export async function getSafetyIntervention(
   return {
     intervene: (action: InterventionAction) => {
       // Implementation would handle different intervention types
-      console.log(`Intervention requested: ${action.type} on ${action.target}`);
+      logger.info(`Intervention requested: ${action.type} on ${action.target}`);
       return Promise.resolve({ success: true, action});
 },
     escalate: (alert: any) => system.escalate(alert),

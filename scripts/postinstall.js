@@ -13,7 +13,7 @@ import { dirname } from 'path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-console.log('\n🎉 Claude Code Zen installed successfully!');
+logger.info('\n🎉 Claude Code Zen installed successfully!');
 
 // Check what's available
 const binaryMap = {
@@ -35,22 +35,22 @@ if (existsSync(binaryPath)) {
   installType = '⚠️ Installation incomplete';
 }
 
-console.log(`📦 Installation type: ${installType}`);
-console.log(`🖥️  Platform: ${platform()}`);
-console.log(`🔧 Node.js: ${process.version}`);
+logger.info(`📦 Installation type: ${installType}`);
+logger.info(`🖥️  Platform: ${platform()}`);
+logger.info(`🔧 Node.js: ${process.version}`);
 
-console.log('\n🚀 Quick Start:');
-console.log('   claude-zen auth copilot     # Authenticate with GitHub Copilot');
-console.log('   claude-zen --port 3001      # Start server on custom port');
-console.log('   claude-zen                  # Start with default settings');
+logger.info('\n🚀 Quick Start:');
+logger.info('   claude-zen auth copilot     # Authenticate with GitHub Copilot');
+logger.info('   claude-zen --port 3001      # Start server on custom port');
+logger.info('   claude-zen                  # Start with default settings');
 
-console.log('\n📚 Documentation: https://github.com/zen-neural/claude-code-zen');
-console.log('🐛 Issues: https://github.com/zen-neural/claude-code-zen/issues');
+logger.info('\n📚 Documentation: https://github.com/zen-neural/claude-code-zen');
+logger.info('🐛 Issues: https://github.com/zen-neural/claude-code-zen/issues');
 
 if (!existsSync(binaryPath) && !existsSync(nodejsPath)) {
-  console.log('\n⚠️  Installation seems incomplete. Try reinstalling:');
-  console.log('   npm uninstall -g @zen-ai/claude-code-zen');
-  console.log('   npm install -g @zen-ai/claude-code-zen');
+  logger.info('\n⚠️  Installation seems incomplete. Try reinstalling:');
+  logger.info('   npm uninstall -g @zen-ai/claude-code-zen');
+  logger.info('   npm install -g @zen-ai/claude-code-zen');
 }
 
-console.log('\n✅ Ready to use! Run "claude-zen" to get started.\n');
+logger.info('\n✅ Ready to use! Run "claude-zen" to get started.\n');

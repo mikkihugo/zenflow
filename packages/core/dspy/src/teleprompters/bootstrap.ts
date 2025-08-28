@@ -296,7 +296,7 @@ export class BootstrapFewShot extends Teleprompter {
 }
 }
 
-		console.log(
+		logger.info(
 			`Bootstrapped ${Object.keys(bootstrapped).length} full traces after ${this.trainset.length} examples ` +`
 				`for up to ${this.max_rounds} rounds, amounting to ${bootstrap_attempts} attempts.`,
 		);
@@ -409,7 +409,7 @@ export class BootstrapFewShot extends Teleprompter {
 				throw error;
 }
 
-			console.error(
+			logger.error(
 				`Failed to run or to evaluate example ${JSON.stringify(example)} with ${this.metric} due to ${error}.`,
 			);
 			return false;

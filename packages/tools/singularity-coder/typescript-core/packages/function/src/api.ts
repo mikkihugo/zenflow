@@ -8,7 +8,7 @@ type Env = {
 
 export class SyncServer extends DurableObject<Env> {
   async fetch() {
-    console.log("SyncServer subscribe")
+    logger.info("SyncServer subscribe")
 
     const webSocketPair = new WebSocketPair()
     const [client, server] = Object.values(webSocketPair)
@@ -49,7 +49,7 @@ export class SyncServer extends DurableObject<Env> {
 })
     await this.ctx.storage.put(key, content)
     const clients = this.ctx.getWebSockets()
-    console.log("SyncServer publish", key, "to", clients.length, "subscribers")
+    logger.info("SyncServer publish", key, "to", clients.length, "subscribers")
     for (const client of clients) {
       client.send(JSON.stringify({ key, content}))
 }
@@ -179,7 +179,7 @@ export default {
 })
 }
       const id = url.searchParams.get("id")
-      console.log("share_poll", id)
+      logger.info("share_poll", id)
       if (!id) return new Response("Error:Share ID is required", { status:400})
       const stub = env.SYNC_SERVER.get(env.SYNC_SERVER.idFromName(id))
       return stub.fetch(request)
@@ -187,7 +187,7 @@ export default {
 
     if (request.method === "GET" && method === "share_data") {
       const id = url.searchParams.get("id")
-      console.log("share_data", id)
+      logger.info("share_data", id)
       if (!id) return new Response("Error:Share ID is required", { status:400})
       const stub = env.SYNC_SERVER.get(env.SYNC_SERVER.idFromName(id))
       const data = await stub.getData()
@@ -252,7 +252,7 @@ export default {
         owner = parts[0]
         repo = parts[1]
 } catch (err) {
-        console.error("Token verification failed:", err)
+        logger.error("Token verification failed:", err)
         return new Response(JSON.stringify({ error:"Invalid or expired token"}), {
           status:403,
           headers:{ "Content-Type": "application/json"},

@@ -124,9 +124,9 @@ const configSchema = zodInstance.object({
          *
          * const config = await getConfig();
          * if (config.project.storeInUserHome) {
-         *   console.log('Using user-global storage:~/.claude-zen/');
+         *   logger.info('Using user-global storage:~/.claude-zen/');
          *} else {
-         *   console.log('Using project-local storage:./.claude-zen/');
+         *   logger.info('Using project-local storage:./.claude-zen/');
          *}
          * ```
          *
@@ -394,7 +394,7 @@ globalConfig.initialize();
  * @example
  * ```typescript`
  * const config = getConfig();
- * console.log(config.logging.level);
+ * logger.info(config.logging.level);
  * ```
  */
 export function getConfig() {
@@ -442,6 +442,7 @@ export const requireEnv = (key) => {
     }
     return value;
 };
+    // eslint-disable-next-line no-console
 // FORCING PATTERN - Replace console.log with configured logging
 export const shouldLog = (level) => {
     const configLevel = getConfig().logging.level;

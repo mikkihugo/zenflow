@@ -24,7 +24,7 @@ export default defineConfig({
       const destPath = resolve(distDir, file);
       if (existsSync(srcPath)) {
         copyFileSync(srcPath, destPath);
-        console.log(`Copied ${file} to dist/`);`
+        logger.info(`Copied ${file} to dist/`);`
 }
 }
 

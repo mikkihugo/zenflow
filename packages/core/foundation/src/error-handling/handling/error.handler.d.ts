@@ -199,7 +199,7 @@ export declare class CircuitBreakerWithMonitoring<T extends unknown[], R> {
      */
     getStats(): {
         name: string;
-        state: string;
+        state: any;
         isOpen: boolean;
         isHalfOpen: boolean;
         isClosed: boolean;
@@ -211,7 +211,7 @@ export declare class CircuitBreakerWithMonitoring<T extends unknown[], R> {
         isOpen: boolean;
         isHalfOpen: boolean;
         isClosed: boolean;
-        state: string;
+        state: any;
     };
     /**
      * Clear metrics (cockatiel doesn't support reset/shutdown)

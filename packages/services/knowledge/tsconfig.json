@@ -17,5 +17,10 @@
     "**/*.test.ts",
     "**/*.spec.ts",
     "di/examples/**/*.ts"
+  ],
+  "references": [
+    { "path": "../../core/foundation" },
+    { "path": "../../core/database" },
+    { "path": "../../core/fact-system" }
   ]
 }

@@ -38,29 +38,29 @@ export function displayStats(_stats:SessionStats) {
 }
 
   // Overview section
-  console.log("┌────────────────────────────────────────────────────────┐")
-  console.log("│                       OVERVIEW                         │")
-  console.log("├────────────────────────────────────────────────────────┤")
-  console.log(renderRow("Sessions", stats.totalSessions.toLocaleString()))
-  console.log(renderRow("Messages", stats.totalMessages.toLocaleString()))
-  console.log(renderRow("Days", stats.days.toString()))
-  console.log("└────────────────────────────────────────────────────────┘")
-  console.log()
+  logger.info("┌────────────────────────────────────────────────────────┐")
+  logger.info("│                       OVERVIEW                         │")
+  logger.info("├────────────────────────────────────────────────────────┤")
+  logger.info(renderRow("Sessions", stats.totalSessions.toLocaleString()))
+  logger.info(renderRow("Messages", stats.totalMessages.toLocaleString()))
+  logger.info(renderRow("Days", stats.days.toString()))
+  logger.info("└────────────────────────────────────────────────────────┘")
+  logger.info()
 
   // Cost & Tokens section
-  console.log("┌────────────────────────────────────────────────────────┐")
-  console.log("│                    COST & TOKENS                       │")
-  console.log("├────────────────────────────────────────────────────────┤")
+  logger.info("┌────────────────────────────────────────────────────────┐")
+  logger.info("│                    COST & TOKENS                       │")
+  logger.info("├────────────────────────────────────────────────────────┤")
   const cost = isNaN(stats.totalCost) ? 0:stats.totalCost
   const costPerDay = isNaN(stats.costPerDay) ? 0:stats.costPerDay
-  console.log(renderRow("Total Cost", `$$cost.toFixed(2)`))`
-  console.log(_renderRow("Cost/Day", `$${costPerDay.toFixed(2)}`))`
-  console.log(renderRow("Input", formatNumber(stats.totalTokens.input)))
-  console.log(renderRow("Output", formatNumber(stats.totalTokens.output)))
-  console.log(renderRow("Cache Read", formatNumber(stats.totalTokens.cache.read)))
-  console.log(renderRow("Cache Write", formatNumber(stats.totalTokens.cache.write)))
-  console.log("└────────────────────────────────────────────────────────┘")
-  console.log()
+  logger.info(renderRow("Total Cost", `$$cost.toFixed(2)`))`
+  logger.info(_renderRow("Cost/Day", `$${costPerDay.toFixed(2)}`))`
+  logger.info(renderRow("Input", formatNumber(stats.totalTokens.input)))
+  logger.info(renderRow("Output", formatNumber(stats.totalTokens.output)))
+  logger.info(renderRow("Cache Read", formatNumber(stats.totalTokens.cache.read)))
+  logger.info(renderRow("Cache Write", formatNumber(stats.totalTokens.cache.write)))
+  logger.info("└────────────────────────────────────────────────────────┘")
+  logger.info()
 
   // Tool Usage section
   if (Object.keys(stats.toolUsage).length > 0) {
@@ -68,9 +68,9 @@ export function displayStats(_stats:SessionStats) {
       .sort(([, a], [, b]) => b - a)
       .slice(0, 10)
 
-    console.log("┌────────────────────────────────────────────────────────┐")
-    console.log("│                      TOOL USAGE                        │")
-    console.log("├────────────────────────────────────────────────────────┤")
+    logger.info("┌────────────────────────────────────────────────────────┐")
+    logger.info("│                      TOOL USAGE                        │")
+    logger.info("├────────────────────────────────────────────────────────┤")
 
     const maxCount = Math.max(...sortedTools.map(([, count]) => count))
     const totalToolUsage = Object.values(stats.toolUsage).reduce((a, b) => a + b, 0)
@@ -82,11 +82,11 @@ export function displayStats(_stats:SessionStats) {
 
       const content = ` $tool.padEnd(10)$bar.padEnd(20)$count.toString().padStart(3)($percentage.padStart(4)%)``
       const padding = Math.max(0, width - content.length)
-      console.log(`│${content}${" ".repeat(padding)} │`)`
+      logger.info(`│${content}${" ".repeat(padding)} │`)`
 }
-    console.log("└────────────────────────────────────────────────────────┘")
+    logger.info("└────────────────────────────────────────────────────────┘")
 }
-  console.log()
+  logger.info()
 }
 function formatNumber(num:number): string {
   if (num >= 1000000) {

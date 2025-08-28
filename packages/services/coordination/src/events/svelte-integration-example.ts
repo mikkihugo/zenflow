@@ -14,7 +14,7 @@ export class SvelteWebSocketManager {
   private subscribers = new Map<string, Function[]>();
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
-  constructor(private hubEndpoint: string  = 'ws://localhost: `svelte_`${Date.now()}_${Math.random().toString(36).substr(2, 9)})};;
+  constructor(private hubEndpoint: string = 'ws://localhost:3000') {}
   /**
    * Connect to the Central WebSocket Hub
    */
@@ -23,7 +23,7 @@ export class SvelteWebSocketManager {
       try {
         this.ws = new WebSocket(this.hubEndpoint)'; 
         this.ws.onopen = () => {
-    ``)          console.log('🔌 Connected to Central WebSocket Hub');
+    ``)          logger.info('🔌 Connected to Central WebSocket Hub');
           this.reconnectAttempts = 0;
           resolve();
 };
@@ -31,11 +31,11 @@ export class SvelteWebSocketManager {
           this.handleMessage(JSON.parse(event.data);
 };
         this.ws.onclose = () => {
-    ')          console.log('❌ Disconnected from Central WebSocket Hub');
+    ')          logger.info('❌ Disconnected from Central WebSocket Hub');
           this.handleReconnect();
 };
         this.ws.onerror = (error) => {
-    ')          console.error('🚨 WebSocket error:, error');
+    ')          logger.error('🚨 WebSocket error:, error');
           reject(error);
 };
 } catch (error) {
@@ -61,7 +61,7 @@ export class SvelteWebSocketManager {
         this.emit('system_health_update, message.data');
         break;
       default: discoveryData.services.map((s: any) => s.name);
-    ')    console.log('🔍 Discovered services:, this.availableServices');')    console.log('📡 Available message types:, discoveryData.totalMessageTypes');
+    ')    logger.info('🔍 Discovered services:, this.availableServices');')    logger.info('📡 Available message types:, discoveryData.totalMessageTypes');
     // Auto-subscribe to common dashboard events
     this.subscribe([')     'taskmaster,   // TaskMaster events';
      'coordination '  // System coordination events';
@@ -75,7 +75,7 @@ export class SvelteWebSocketManager {
    */
   subscribe(services: string[], messageTypes: string[]): void {
     if (!this.ws|| this.ws.readyState !== WebSocket.OPEN) {
-      console.warn('⚠️ WebSocket not connected, subscription queued');
+      logger.warn('⚠️ WebSocket not connected, subscription queued');
       return;
 }
     this.ws.send(JSON.stringify({
@@ -97,21 +97,21 @@ export class SvelteWebSocketManager {
         try {
           callback(data);
 } catch (error) {
-    `)          console.error(`Error in event callback for ${eventType}:`, error);``,';
+    `)          logger.error(`Error in event callback for ${eventType}:`, error);``,';
 }
 });
 };)    // Also emit to wildcard listeners'')    const wildcardCallbacks = this.subscribers.get('*);`;
     if (wildcardCallbacks) {
       wildcardCallbacks.forEach(callback => {
         try {
-          callback({ type: Math.pow(2, this.reconnectAttempts) * 1000; // Exponential backoff')      `)      console.log(`🔄 Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})``);
+          callback({ type: Math.pow(2, this.reconnectAttempts) * 1000; // Exponential backoff')      `)      logger.info(`🔄 Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})``);
       
       setTimeout(() => {
         this.connect().catch(error => {
-    ')          console.error('Reconnection failed:, error');
+    ')          logger.error('Reconnection failed:, error');
 });
 }, delay);')} else {';
-    ')      console.error('🚫 Max reconnection attempts reached');
+    ')      logger.error('🚫 Max reconnection attempts reached');
 }
 }
   /**
@@ -136,7 +136,7 @@ export class SvelteWebSocketManager {
       availableServices: null;
 }
     this.subscribers.clear();
-    console.log('🔌 Disconnected from Central WebSocket Hub');
+    logger.info('🔌 Disconnected from Central WebSocket Hub');
 };)};;
 /**
  * Example Svelte usage in a component
@@ -155,31 +155,31 @@ export class SvelteWebSocketManager {
       await wsManager.connect();
       // Set up event listeners for different data types
       wsManager.on('task_updated,(data) => {';
-    ')        console.log('📋 Task updated:, data');
+    ')        logger.info('📋 Task updated:, data');
         dashboardData.tasks = data.tasks|| [];
         dashboardData = dashboardData; // Trigger reactivity
 });')      wsManager.on('approval_gate_changed,(data) => {';
-    ')        console.log('🚪 Approval gate changed:, data');
+    ')        logger.info('🚪 Approval gate changed:, data');
         dashboardData.approvalGates = data.gates|| [];
         dashboardData = dashboardData;
 });')      wsManager.on('pi_planning_progress,(data) => {';
-    ')        console.log('📈 PI Planning progress:, data');
+    ')        logger.info('📈 PI Planning progress:, data');
         dashboardData.piProgress = data;
         dashboardData = dashboardData;
 });')      wsManager.on('flow_metrics_updated,(data) => {';
-    ')        console.log('📊 Flow metrics updated:, data');
+    ')        logger.info('📊 Flow metrics updated:, data');
         dashboardData.flowMetrics = data;
         dashboardData = dashboardData;
 });')      wsManager.on('system_health_update,(data) => {';
-    ')        console.log('💚 System health update:, data');
+    ')        logger.info('💚 System health update:, data');
         dashboardData.systemHealth = data;
         dashboardData = dashboardData;
 });
       // Wildcard listener for debugging')      wsManager.on('*,(event) => {';
-    ')        console.log('🌐 WebSocket event:, event.type, event.data');
+    ')        logger.info('🌐 WebSocket event:, event.type, event.data');
 });
 } catch (error) {
-    ')      console.error('Failed to connect to WebSocket hub:, error');
+    ')      logger.error('Failed to connect to WebSocket hub:, error');
 }
 });
   onDestroy(() => {
@@ -191,7 +191,7 @@ export class SvelteWebSocketManager {
   <div class="stats-panel">";
     <h2>Connection Status</h2>
     <div class="connection-stats">";
-      {@const stats = wsManager.getStats()}
+      {@const _stats = wsManager.getStats()}
       <div class="stat">";
         <span class="label">Connected: </span>')        <span class="value {stats.connected ?'connected : ' disconnected};>')          {stats.connected ?'Yes : ' No};;
 '</span>';
@@ -258,7 +258,7 @@ export async function initWebSocket() {
     wsManager.on('flow_metrics_updated,(data) => flowMetrics.set(data)');
     wsManager.on('system_health_update,(data) => systemHealth.set(data)');
 } catch (error) {
-    console.error('WebSocket connection failed:, error);`;
+    logger.error('WebSocket connection failed:, error);`;
     connectionStatus.set(false);
 };)};;
 // Component usage: // import { tasks, approvalGates, connectionStatus, initWebSocket} from `${s}tores/websocket``)// onMount(() => initWebSocket();

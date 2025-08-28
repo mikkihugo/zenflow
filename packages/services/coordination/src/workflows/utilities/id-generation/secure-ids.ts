@@ -7,7 +7,8 @@
  * @author Claude Code Zen Team
  * @since 1.0.0
  */
-import { generateNanoId} from '@claude-zen/foundation')/**`;
+import { generateNanoId } from '@claude-zen/foundation';
+/**
  * Professional secure ID generation utilities
  */
 export class SecureIdGenerator {

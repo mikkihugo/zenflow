@@ -78,22 +78,22 @@ class SEAUpgrader {
 
   async upgrade(force = false) {
     try {
-      console.log('🔍 Checking for SEA binary updates...');
+      logger.info('🔍 Checking for SEA binary updates...');
       
       const currentBinaryPath = join(this.binDir, this.platformBinary);
       const latest = await this.getLatestVersion();
       
       if (!latest.downloadUrl) {
-        console.log('⚠️ No binary available for platform:', platform());
+        logger.info('⚠️ No binary available for platform:', platform());
         return false;
       }
 
       if (!force && existsSync(currentBinaryPath)) {
-        console.log('✅ Binary already exists. Use --force to update.');
+        logger.info('✅ Binary already exists. Use --force to update.');
         return false;
       }
 
-      console.log(`📥 Downloading ${latest.version} binary...`);
+      logger.info(`📥 Downloading ${latest.version} binary...`);
       const tempPath = `${currentBinaryPath}.tmp`;
       
       await this.downloadBinary(latest.downloadUrl, tempPath);
@@ -104,11 +104,11 @@ class SEAUpgrader {
       }
       renameSync(tempPath, currentBinaryPath);
       
-      console.log(`✅ Updated to ${latest.version}`);
+      logger.info(`✅ Updated to ${latest.version}`);
       return true;
       
     } catch (error) {
-      console.error('❌ Update failed:', error.message);
+      logger.error('❌ Update failed:', error.message);
       return false;
     }
   }
@@ -117,7 +117,7 @@ class SEAUpgrader {
     const currentBinaryPath = join(this.binDir, this.platformBinary);
     
     if (!existsSync(currentBinaryPath)) {
-      console.log('⚡ No SEA binary found, downloading latest...');
+      logger.info('⚡ No SEA binary found, downloading latest...');
       return await this.upgrade(true);
     }
     
@@ -127,7 +127,7 @@ class SEAUpgrader {
     const oneDayMs = 24 * 60 * 60 * 1000;
     
     if (now - lastCheck > oneDayMs) {
-      console.log('🔄 Checking for updates (daily check)...');
+      logger.info('🔄 Checking for updates (daily check)...');
       this.setLastCheckTime(now);
       return await this.upgrade();
     }

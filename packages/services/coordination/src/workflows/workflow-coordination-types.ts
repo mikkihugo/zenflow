@@ -21,7 +21,7 @@ export interface WorkflowGateRequest {
   workflowId: string;
   stepId: string;
   context: Record<string, unknown>;
-  priority : 'low' | 'medium' | 'high' | 'urgent'';
+  priority: 'low' | 'medium' | 'high' | 'urgent';
   timestamp: number;
   metadata?:Record<string, unknown>;
 }

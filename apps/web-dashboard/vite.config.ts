@@ -4,13 +4,13 @@ import { defineConfig} from "vite";
 export default defineConfig({
 	plugins:[sveltekit()],
 	server:{
-		port:3002,
+		port:3000,
 		host:"0.0.0.0",
 		allowedHosts:["fra-d1.in.centralcloud.net", "localhost", "127.0.0.1"],
 		proxy:{
 			// Proxy API calls to backend server
 			"/api":{
-				target:"http://localhost:3000",
+				target:"http://localhost:3001",
 				changeOrigin:true,
 				secure:false,
 				// Handle backend server being down gracefully
@@ -34,7 +34,7 @@ export default defineConfig({
 						if (process.env.NODE_ENV === 'development') {
 							// eslint-disable-next-line no-console
 							logger.info(
-								`Proxying API request:${req.method} ${req.url} -> http://localhost:3000${req.url}`,
+								`Proxying API request:${req.method} ${req.url} -> http://localhost:3001${req.url}`,
 							);
 }
 						// Use proxyReq for logging proxy request details
@@ -44,7 +44,7 @@ export default defineConfig({
 },
 			// Proxy WebSocket connections
 			"/socket.io":{
-				target:"http://localhost:3000",
+				target:"http://localhost:3001",
 				ws:true,
 				changeOrigin:true,
 },

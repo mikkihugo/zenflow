@@ -250,11 +250,11 @@ class EnsembledProgram extends DSPyModule {
  * // Run ensemble prediction
  * const input = new Example({ question:"What is 2+2?", context:"math"});
  * const result = await ensembledProgram.forward(input);
- * console.log('Ensemble result: ', result);
+ * logger.info('Ensemble result: ', result);
 ' *
  * // Access ensemble configuration
  * const config = ensemble.getConfig();
- * console.log('Ensemble settings: ', config);
+ * logger.info('Ensemble settings: ', config);
 ' * ```
  */
 export class Ensemble {

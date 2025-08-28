@@ -111,7 +111,7 @@ describe('Smart Neural Integration Tests', () => {
 });
 
     it('should have correct configuration propagated', () => {
-    ')      const stats = smartNeuralCoordinator.getCoordinatorStats();
+    ')      const _stats = smartNeuralCoordinator.getCoordinatorStats();
       expect(stats.configuration.primaryModel).toBe('all-mpnet-base-v2');')      expect(stats.configuration.enableFallbacks).toBe(true);
       expect(stats.configuration.enableCaching).toBe(true);
 });
@@ -249,7 +249,7 @@ describe('Smart Neural Integration Tests', () => {
       expect(result.metadata.processingTime).toBeGreaterThan(0);
       expect(result.metadata.processingTime).toBeLessThan(10000); // Should be under 10s
 
-      const stats = brainCoordinator.getSmartNeuralStats();
+      const _stats = brainCoordinator.getSmartNeuralStats();
       expect(stats.stats.performance).toBeDefined();
       expect(stats.stats.performance.totalRequests).toBeGreaterThan(0);
       expect(stats.stats.performance.averageLatency).toBeGreaterThan(0);
@@ -275,7 +275,7 @@ describe('Smart Neural Integration Tests', () => {
       // Concurrent processing should be faster than sequential
       expect(totalTime).toBeLessThan(15000); // Should complete in under 15s
 
-      const stats = brainCoordinator.getSmartNeuralStats();
+      const _stats = brainCoordinator.getSmartNeuralStats();
       expect(stats.stats.performance.totalRequests).toBeGreaterThanOrEqual(5);
 });
 });
@@ -284,7 +284,7 @@ describe('Smart Neural Integration Tests', () => {
     ')    it('should use fallback systems when primary model fails', async () => {
     ')      // This test would require more complex mocking to simulate model failures
       // For now, we verify the fallback configuration is in place
-      const stats = smartNeuralCoordinator.getCoordinatorStats();
+      const _stats = smartNeuralCoordinator.getCoordinatorStats();
       expect(stats.configuration.enableFallbacks).toBe(true);
       expect(stats.fallbackChain).toBeDefined();
       expect(stats.fallbackChain.length).toBeGreaterThan(0);
