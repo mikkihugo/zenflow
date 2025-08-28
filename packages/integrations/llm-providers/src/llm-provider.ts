@@ -280,7 +280,8 @@ export class LLMProvider extends TypedEventBase {
         default:{
           // Fallback to Claude Code
           const { ClaudeProvider:DefaultProvider} = await import(
-            './claude/claude-provider')          );
+            './claude/claude-provider'
+          );
           this['cliProvider'] = new DefaultProvider();
           break;
 }

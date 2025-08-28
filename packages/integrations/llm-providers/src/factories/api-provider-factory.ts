@@ -15,7 +15,10 @@ const logger = getLogger('APIProviderFactory');
  */
 export async function createAPIProvider(
   providerId:
-    | 'github-models-api')    | 'github-copilot-api')    | 'anthropic-api')    | 'openai-api',  options:Record<string, unknown> = {}
+    | 'github-models-api'
+    | 'github-copilot-api'
+    | 'anthropic-api'
+    | 'openai-api',  options:Record<string, unknown> = {}
 ):Promise<APIProvider> {
   logger.info(`Creating API provider:${providerId}`);
 

@@ -186,7 +186,8 @@ export {
  * @since 1.0.0
  */
 export function createLLMProvider(
-  providerId:'claude-code' | ' cursor-cli' | ' gemini-cli' = ' claude-code')):LLMProvider {
+  providerId:'claude-code' | 'cursor-cli' | 'gemini-cli' = 'claude-code'
+):LLMProvider {
   return new LLMProvider(providerId);
 }
 

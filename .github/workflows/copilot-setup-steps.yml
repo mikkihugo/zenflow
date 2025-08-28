@@ -34,24 +34,34 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # Step 2: Setup Node.js v22 Environment
+    # Step 2: Setup Node.js v22 Environment
       # Configures the Node.js environment using the official GitHub Action.
-      - name: Setup Node.js v22
+    - name: Setup Node.js v22
         uses: actions/setup-node@v4
         with:
-          # Specify '22.x' to automatically use the latest available patch release for Node.js v22.
-          # This ensures access to the latest security fixes and improvements without manual updates. [8, 9]
-          node-version: '22.x'
+      # Specify '22.x' to automatically use the latest available patch release for Node.js v22.
+      # This ensures access to the latest security fixes and improvements without manual updates. [8, 9]
+      node-version: '22.x'
           # Enable built-in caching for pnpm. This significantly speeds up subsequent runs by caching dependencies.
           # The cache key is generated from the hash of the 'pnpm-lock.yaml' file. [6, 10]
           cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
 
       # Step 3: Setup PNPM
       # This step installs pnpm itself, which is required before we can install the project dependencies.
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 10
+          run_install: false
+
+      # Step 3.1: Verify pnpm version
+      - name: Verify pnpm version
+        run: pnpm -v
+      
+      # Optional: show pnpm store path (helpful when checking cache hits in logs)
+      - name: Show pnpm store path
+        run: pnpm store path
           
       # Step 4: Install Node.js Dependencies
       # Use 'pnpm install' instead of 'npm ci'. 'pnpm install' provides faster, more reliable, and deterministic builds
