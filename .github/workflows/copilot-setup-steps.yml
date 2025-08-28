@@ -73,6 +73,9 @@ jobs:
           toolchain: stable
           components: rustfmt, clippy
           cache: true
+
+      # Step 6: Install Node.js Dependencies again (after Rust setup, if needed)
+      - name: Install Node.js Dependencies (post Rust setup)
         run: pnpm install
 
 
