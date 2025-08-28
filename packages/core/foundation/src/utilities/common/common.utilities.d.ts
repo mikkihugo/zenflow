@@ -178,14 +178,18 @@ export declare function createEnvValidator<T extends Record<string, Spec<unknown
  */
 export declare function withTimeout<T>(promise: Promise<T>, timeoutMs: number, timeoutMessage?: string): Promise<Result<T, Error>>;
 export declare const commonEnvSchema: {
-    readonly NODE_ENV: any;
-    readonly LOG_LEVEL: any;
-    readonly DEBUG: any;
+    readonly NODE_ENV: import("envalid").RequiredValidatorSpec<"development" | "production" | "test">;
+    readonly LOG_LEVEL: import("envalid").RequiredValidatorSpec<"error" | "warn" | "info" | "debug">;
+    readonly DEBUG: import("envalid").RequiredValidatorSpec<boolean>;
 };
 /**
  * Get common environment configuration
  */
-export declare function getCommonEnv(): CleanedEnv<T>;
+export declare function getCommonEnv(): Readonly<{
+    readonly NODE_ENV: "development" | "production" | "test";
+    readonly LOG_LEVEL: "error" | "warn" | "info" | "debug";
+    readonly DEBUG: boolean;
+} & import("envalid").CleanedEnvAccessors>;
 /**
  * Utility to check if we're in development mode
  */

@@ -10,18 +10,21 @@ import { EventBus } from '@claude-zen/foundation';
 export interface DspyOptimizationRequest {
     requestId: string;
     prompt: string;
-    context?: any;
+    context?: Record<string, unknown>;
     priority?: number;
 }
 export interface DspyLlmRequest {
     requestId: string;
-    messages: any[];
+    messages: {
+        role: string;
+        content: string;
+    }[];
     model: string;
 }
 export interface DspyLlmResponse {
     requestId: string;
     content: string;
-    metadata?: any;
+    metadata?: Record<string, unknown>;
 }
 export interface DspyOptimizationResult {
     requestId: string;

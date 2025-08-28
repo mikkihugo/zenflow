@@ -14,7 +14,7 @@ export class SQLiteAdapter {
     config;
     pool = [];
     connected = false;
-    stats = {
+    __stats = {
         totalQueries: 0,
         totalTransactions: 0,
         totalErrors: 0,

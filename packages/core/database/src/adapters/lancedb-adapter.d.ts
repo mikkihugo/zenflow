@@ -10,7 +10,7 @@ export declare class LanceDBAdapter implements DatabaseConnection {
     private lancedbModule;
     private database;
     private isConnectedState;
-    private readonly stats;
+    private readonly __stats;
     constructor(config: DatabaseConfig);
     connect(): Promise<void>;
     disconnect(): Promise<void>;

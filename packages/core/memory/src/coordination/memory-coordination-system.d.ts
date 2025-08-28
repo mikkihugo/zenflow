@@ -60,7 +60,7 @@ export declare class MemoryCoordinationSystem extends EventEmitter {
     private hashKey;
     private ensureInitialized;
     getNodes(): Map<string, MemoryNode>;
-    getHealthStatus(): Record<string, any>;
+    getHealthStatus(): Record<string, unknown>;
     shutdown(): Promise<void>;
 }
 //# sourceMappingURL=memory-coordination-system.d.ts.map

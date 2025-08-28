@@ -121,7 +121,7 @@ export class SystemMonitor {
         return await withAsyncTrace('system.get_process_metrics', async () => {
             ')      try {;
             const processId = pid || process.pid;
-            const stats = await pidusage(processId);
+            const __stats = await pidusage(processId);
             const processMetrics = {
                 pid: processId,
                 cpu: Math.round(stats.cpu * 100) / 100, // CPU usage percentage
@@ -179,7 +179,7 @@ Promise < any[] > {
             .slice(0, 10); // Top 10 processes
         const processMetrics = await Promise.allSettled(topProcesses.map(async (proc) => {
             try {
-                const stats = await pidusage(proc.pid);
+                const __stats = await pidusage(proc.pid);
                 return {
                     pid: proc.pid,
                     name: proc.name,

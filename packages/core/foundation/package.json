@@ -49,6 +49,7 @@
 	"license": "MIT",
 	"dependencies": {
 		"@logtape/logtape": "^1.0.4",
+		"ajv": "^8.17.1",
 		"awilix": "^12.0.5",
 		"cockatiel": "^3.2.1",
 		"commander": "^12.1.0",

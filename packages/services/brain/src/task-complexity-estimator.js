@@ -103,7 +103,7 @@ export class TaskComplexityEstimator {
             if (this.complexityHistory.length >= 10) {
                 confidenceScore = Math.min(0.95, confidenceScore + 0.2);
             }
-            const __estimate = {
+            const _estimate = {
                 estimatedComplexity: finalComplexity,
                 confidence: confidenceScore,
                 reasoning,

@@ -277,7 +277,7 @@ export class DynamicEventRegistry extends EventBus {
       eventTypes,
       avgProcessingTime: this.calculateAverageLatency(lastMinuteFlows),
       errorCount: lastMinuteFlows.filter(f => !f.success).length,
-      listenerCount: this.listenerCount
+      listenerCount: this.eventNames().reduce((sum, name) => sum + this.listenerCount(name), 0)
 };
 
     // Store metrics history (keep last 100 entries)

@@ -6,7 +6,7 @@ import { EventEmitter } from '@claude-zen/foundation';
 export interface BackendInterface {
     initialize(): Promise<void>;
     store(key: string, value: unknown, namespace?: string): Promise<unknown>;
-    retrieve(key: string, namespace?: string): Promise<any | null>;
+    retrieve(key: string, namespace?: string): Promise<unknown | null>;
     search(pattern: string, namespace?: string): Promise<Record<string, unknown>>;
     delete(key: string, namespace?: string): Promise<boolean>;
     listNamespaces(): Promise<string[]>;

@@ -25,9 +25,9 @@ const withTrace = (_name, fn) => fn({});
 const withAsyncTrace = (_name, fn) => fn({});
 const recordEvent = (_name, _data) => { };
 // Neural backend imports with smart loading
-const __transformersModule = null;
+const _transformersModule = null;
 let brainJsModule = null;
-const __onnxModule = null;
+const _onnxModule = null;
 let openaiModule = null;
 /**
  * Smart Neural Coordinator - Intelligent neural backend system
@@ -1423,7 +1423,7 @@ void {
     }
 }
 // Log performance metrics
-const stats = this.getCoordinatorStats();
+const __stats = this.getCoordinatorStats();
 this.logger.debug('📊 Performance metrics: ', {
     '    ': 
 });

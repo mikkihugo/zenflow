@@ -13,6 +13,11 @@ import { dirname } from 'path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+// Simple logger for postinstall script
+const logger = {
+  info: (message) => console.log(message)
+};
+
 logger.info('\n🎉 Claude Code Zen installed successfully!');
 
 // Check what's available

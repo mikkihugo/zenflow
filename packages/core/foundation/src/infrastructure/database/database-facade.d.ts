@@ -114,5 +114,4 @@ export declare function createKeyValueStore(): Promise<Result<KeyValueStore, Err
 export declare function createVectorStore(): Promise<Result<VectorStore, Error>>;
 export declare function createGraphStore(): Promise<Result<GraphStore, Error>>;
 export declare function getDatabaseCapability(): CapabilityLevel;
-export type { DatabaseConfig, DatabaseConnection, DatabaseAdapter };
 //# sourceMappingURL=database-facade.d.ts.map

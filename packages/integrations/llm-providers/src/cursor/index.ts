@@ -5,7 +5,7 @@
  * Will include SDK wrapper and provider implementation.
  */
 
-import { err, type Result} from '@claude-zen/foundation';
+import { err, type Result } from '@claude-zen/foundation';
 
 import type {
   CLIError,
@@ -23,58 +23,66 @@ export class CursorCLI implements CLIProvider {
   readonly id = 'cursor-cli';
   readonly name = 'Cursor CLI';
 
-  getCapabilities():CLIProviderCapabilities {
+  getCapabilities(): CLIProviderCapabilities {
     return {
-      models:['cursor-model'],
-      maxTokens:4096,
-      contextWindow:8192,
-      features:{
-        fileOperations:true,
-        webAccess:false,
-        codeExecution:true,
-        imageGeneration:false,
-        multimodal:false,
-        streaming:false,
-        customTools:true,
-        contextWindow:true,
-        reasoning:true,
-        coding:true,
-        planning:true,
-},
-};
-}
+      models: ['cursor-model'],
+      maxTokens: 4096,
+      contextWindow: 8192,
+      features: {
+        fileOperations: true,
+        webAccess: false,
+        codeExecution: true,
+        imageGeneration: false,
+        multimodal: false,
+        streaming: false,
+        customTools: true,
+        contextWindow: true,
+        reasoning: true,
+        coding: true,
+        planning: true,
+      },
+    };
+  }
 
-  async execute():Promise<CLIResult> {
-    const error:CLIError = {
-      code: 'NOT_IMPLEMENTED',      message: 'Cursor CLI provider not yet implemented.',};
+  async execute(): Promise<CLIResult> {
+    const error: CLIError = {
+      code: 'NOT_IMPLEMENTED',
+      message: 'Cursor CLI provider not yet implemented.',
+    };
     return err(error);
-}
+  }
 
-  setRole():Result<void, CLIError> {
-    const error:CLIError = {
-      code: 'NOT_IMPLEMENTED',      message: 'Cursor CLI provider not yet implemented.',};
+  setRole(): Result<void, CLIError> {
+    const error: CLIError = {
+      code: 'NOT_IMPLEMENTED',
+      message: 'Cursor CLI provider not yet implemented.',
+    };
     return err(error);
-}
+  }
 
-  getRole():SwarmAgentRole | undefined {
+  getRole(): SwarmAgentRole | undefined {
     return undefined;
-}
+  }
 
-  async complete():Promise<Result<string, CLIError>> {
-    const error:CLIError = {
-      code: 'NOT_IMPLEMENTED',      message: 'Cursor CLI provider not yet implemented.',};
+  async complete(): Promise<Result<string, CLIError>> {
+    const error: CLIError = {
+      code: 'NOT_IMPLEMENTED',
+      message: 'Cursor CLI provider not yet implemented.',
+    };
     return err(error);
-}
+  }
 
-  async executeTask():Promise<Result<unknown, CLIError>> {
-    const error:CLIError = {
-      code: 'NOT_IMPLEMENTED',      message: 'Cursor CLI provider not yet implemented.',};
+  async executeTask(): Promise<Result<unknown, CLIError>> {
+    const error: CLIError = {
+      code: 'NOT_IMPLEMENTED',
+      message: 'Cursor CLI provider not yet implemented.',
+    };
     return err(error);
-}
+  }
 
   getUsageStats() {
-    return { requestCount:0, lastRequestTime:0};
-}
+    return { requestCount: 0, lastRequestTime: 0 };
+  }
 }
 
 // Placeholder exports

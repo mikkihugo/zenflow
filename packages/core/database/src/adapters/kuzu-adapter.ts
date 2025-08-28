@@ -546,7 +546,8 @@ export class KuzuAdapter implements DatabaseConnection {
   async getCurrentMigrationVersion():Promise<string | null> {
     try {
       const result = await this.query<{ version:string}>(
-        'MATCH (m:_Migration) RETURN m.version as version ORDER BY m.version DESC LIMIT 1')      );
+        'MATCH (m:_Migration) RETURN m.version as version ORDER BY m.version DESC LIMIT 1'
+      );
       return result.rows[0]?.version || null;
 } catch {
       // Migrations node doesn't exist yet
@@ -593,13 +594,12 @@ export class KuzuAdapter implements DatabaseConnection {
     try {
       // Build property definitions
       const propertyDefs = Object.entries(properties)
-        .map(([name, type]) => `${name} ${type.toUpperCase()}`)`
+        .map(([name, type]) => `${name} ${type.toUpperCase()}`)
         .join(',    ');
 
       const primaryKeyClause = primaryKey
         ? `, PRIMARY KEY (${primaryKey})`
-        : ';
-'
+        : '';
       const cypher = `CREATE NODE TABLE IF NOT EXISTS ${tableName} (${propertyDefs}${primaryKeyClause})`;
 
       await this.query(cypher, undefined, { correlationId});

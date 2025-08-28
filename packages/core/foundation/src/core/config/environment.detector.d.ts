@@ -138,8 +138,8 @@ export interface EnvironmentSnapshot {
  * @extends Error
  */
 export declare class EnvironmentDetectionError extends Error {
-    readonly tool?: string;
-    constructor(message: string, tool?: string);
+    readonly tool?: string | undefined;
+    constructor(message: string, tool?: string | undefined);
 }
 /**
  * Comprehensive environment detection system for universal development environment discovery.
@@ -314,7 +314,7 @@ export declare class NixIntegration {
     private logger;
     private cachePath;
     private cacheExpiry;
-    constructor(projectRoot?: string, environmentDetector?: EnvironmentDetector, logger?: Logger);
+    constructor(projectRoot?: string, environmentDetector?: EnvironmentDetector | undefined, logger?: Logger);
     /**
      * Detects and returns the complete Nix environment with caching.
      *
