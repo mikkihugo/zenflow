@@ -12,21 +12,21 @@
 
 // Fallback types for missing foundation exports
 export interface ExporterDefinition {
-  id: string;
-  name: string;
+  id:string;
+  name:string;
 }
 export interface ExportOptions {
-  format: string;
+  format:string;
 }
 export interface ExportResult {
-  success: boolean;
+  success:boolean;
 }
 export interface InterfaceManagerConfig {
-  mode: string;
+  mode:string;
 }
-export type InterfaceMode = 'auto' | 'cli' | 'web';
+export type InterfaceMode = 'auto' | ' cli' | ' web';
 export interface InterfaceStats {
-  connections: number;
+  connections:number;
 }
 // Document types not available in intelligence facade
 // getDocumentProcessor not available in enterprise facade
@@ -35,17 +35,17 @@ export interface InterfaceStats {
 export class DocumentationManager {
   static create() {
     return new DocumentationManager();
-  }
+}
 }
 export class ExportManager {
   static create() {
     return new ExportManager();
-  }
+}
 }
 export class InterfaceManager {
   static create() {
     return new InterfaceManager();
-  }
+}
 }
 // WorkflowDefinition, WorkflowEngineConfig, WorkflowState not available in intelligence facade
 export type {
@@ -53,7 +53,7 @@ export type {
   SystemStatus,
 } from './core-system';
 // Main system coordinator
-export { System as CoreSystem } from './core-system';
+export { System as CoreSystem} from './core-system';
 // Memory types now available via @claude-zen/foundation package
 // Memory functionality now available via @claude-zen/foundation Storage and getDatabaseAccess
 // Core processing engines
@@ -61,11 +61,11 @@ export { System as CoreSystem } from './core-system';
 
 // ==================== LEGACY COMPATIBILITY ====================
 
-export { ApplicationCoordinator } from './application-coordinator'; // Legacy - use CoreSystem
+export { ApplicationCoordinator} from './application-coordinator'; // Legacy - use CoreSystem
 
 // Keep these for backward compatibility during transition
 // DocumentDrivenSystem package not available // Moved to package - legacy compatibility
-// export { MemoryCoordinator } from './memory-coordinator'; // Module not found - use BrainCoordinator
+// export { MemoryCoordinator} from './memory-coordinator'; // Module not found - use BrainCoordinator
 
 // ==================== SHARED UTILITIES ====================
 
@@ -74,38 +74,38 @@ export { ApplicationCoordinator } from './application-coordinator'; // Legacy - 
 class SafeArtifactIntelligence {
   static create() {
     return new SafeArtifactIntelligence();
-  }
 }
-export { SafeArtifactIntelligence };
+}
+export { SafeArtifactIntelligence};
 // ExportManager already exported above as UnifiedExportSystem
 // Export utilities (legacy) - fallbacks
 export interface ExportConfig {
-  format: string;
+  format:string;
 }
 export interface LegacyExportResult {
-  success: boolean;
+  success:boolean;
 }
 export interface LogMeta {
-  timestamp: string;
+  timestamp:string;
 }
 class ExportSystem {
   static create() {
     return new ExportSystem();
-  }
+}
 }
 class ExportUtils {
-  static format(data: unknown) {
+  static format(data:unknown) {
     return JSON.stringify(data);
-  }
 }
-export { ExportSystem, ExportUtils };
+}
+export { ExportSystem, ExportUtils};
 // Types (re-export for convenience) - removed wildcard export to avoid conflicts
 // Documentation utilities (legacy)
 // CrossReference, DocumentationIndex not available in intelligence facade
 // Legacy unified systems (still exported but deprecated)
 // DocumentationIndex not available in intelligence facade
 // Foundation exports (centralized imports)
-export type { Logger } from '@claude-zen/foundation';
+export type { Logger} from '@claude-zen/foundation';
 // Error handling - only export what exists in foundation
 export {
   ConfigurationError,
@@ -116,22 +116,22 @@ export {
 } from '@claude-zen/foundation';
 // Core utilities
 // EventBus is available through facade pattern - use getEventSystem
-// export { EventBus } from "@claude-zen/intelligence";
+// export { EventBus} from "@claude-zen/intelligence";
 // InterfaceModeDetector not available - using facade pattern
-// export { InterfaceModeDetector } from "@claude-zen/interfaces";
-export { Orchestrator } from './orchestrator';
+// export { InterfaceModeDetector} from "@claude-zen/interfaces";
+export { Orchestrator} from './orchestrator';
 
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger} from '@claude-zen/foundation';
 
 const logger = getLogger('core-index');
 
 // Project coordination functions for project switcher
-export const initializeClaudeZen = (): Promise<void> => {
+export const initializeClaudeZen = ():Promise<void> => {
   logger.info('Initializing Claude Zen core systems');
   return Promise.resolve();
 };
 
-export const shutdownClaudeZen = (): Promise<void> => {
+export const shutdownClaudeZen = ():Promise<void> => {
   logger.info('Shutting down Claude Zen core systems');
   return Promise.resolve();
 };

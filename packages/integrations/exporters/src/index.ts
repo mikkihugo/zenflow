@@ -7,5 +7,5 @@
  */
 
 export type * from './export-manager';
-export { ExportSystem } from './export-manager';
+export { ExportSystem} from './export-manager';
 export * from './exporters';

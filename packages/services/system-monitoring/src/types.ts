@@ -7,36 +7,36 @@
  */
 export interface SystemMetrics {
   /** CPU usage percentage */
-  cpu: {
-    usage: number;
-    load: number[];
-    cores: number;
-  };
+  cpu:{
+    usage:number;
+    load:number[];
+    cores:number;
+};
   /** Memory usage */
-  memory: {
-    total: number;
-    used: number;
-    free: number;
-    usage: number;
-  };
+  memory:{
+    total:number;
+    used:number;
+    free:number;
+    usage:number;
+};
   /** Disk usage */
-  disk: {
-    total: number;
-    used: number;
-    free: number;
-    usage: number;
-  };
+  disk:{
+    total:number;
+    used:number;
+    free:number;
+    usage:number;
+};
   /** Network statistics */
-  network: {
-    bytesIn: number;
-    bytesOut: number;
-    packetsIn: number;
-    packetsOut: number;
-  };
+  network:{
+    bytesIn:number;
+    bytesOut:number;
+    packetsIn:number;
+    packetsOut:number;
+};
   /** System uptime */
-  uptime: number;
+  uptime:number;
   /** Timestamp */
-  timestamp: number;
+  timestamp:number;
 }
 
 /**
@@ -44,31 +44,31 @@ export interface SystemMetrics {
  */
 export interface PerformanceMetrics {
   /** Operation timings */
-  operations: Record<
+  operations:Record<
     string,
     {
-      count: number;
-      totalTime: number;
-      avgTime: number;
-      minTime: number;
-      maxTime: number;
-      p50?: number;
-      p90?: number;
-      p95?: number;
-      p99?: number;
-      stdDev?: number;
-      throughput?: number;
-      trend?: 'improving' | 'stable' | 'declining' | stable|degrading;
-    }
+      count:number;
+      totalTime:number;
+      avgTime:number;
+      minTime:number;
+      maxTime:number;
+      p50?:number;
+      p90?:number;
+      p95?:number;
+      p99?:number;
+      stdDev?:number;
+      throughput?:number;
+      trend?:'improving' | ' stable' | ' declining' | stable|degrading;
+}
   >;
   /** System performance */
-  system: {
-    responseTime: number;
-    throughput: number;
-    errorRate: number;
-  };
+  system:{
+    responseTime:number;
+    throughput:number;
+    errorRate:number;
+};
   /** Timestamp */
-  timestamp: number;
+  timestamp:number;
 }
 
 /**
@@ -77,29 +77,29 @@ export interface PerformanceMetrics {
 export interface HealthStatus {
   /** Overall health status */
   status: 'healthy | degraded|unhealthy;
-  /** Individual check results */
-  checks: Record<
+'  /** Individual check results */
+  checks:Record<
     string,
     {
       status: 'ok | warning|error;
-      message?: string;
-      value?: number;
-      threshold?: number;
-    }
+'      message?:string;
+      value?:number;
+      threshold?:number;
+}
   >;
   /** Additional health details */
-  details?: {
-    systemLoad?: number[];
-    processCount?: number;
-    memoryDetails?: {
-      total: string;
-      used: string;
-      free: string;
-    };
-    [key: string]: any;
-  };
+  details?:{
+    systemLoad?:number[];
+    processCount?:number;
+    memoryDetails?:{
+      total:string;
+      used:string;
+      free:string;
+};
+    [key:string]: any;
+};
   /** Timestamp */
-  timestamp: number;
+  timestamp:number;
 }
 
 /**
@@ -107,27 +107,27 @@ export interface HealthStatus {
  */
 export interface InfrastructureConfig {
   /** Enable system metrics collection */
-  enableSystemMetrics?: boolean;
+  enableSystemMetrics?:boolean;
   /** System metrics collection interval (ms) */
-  systemMetricsInterval?: number;
+  systemMetricsInterval?:number;
   /** Enable performance tracking */
-  enablePerformanceTracking?: boolean;
+  enablePerformanceTracking?:boolean;
   /** Enable health checks */
-  enableHealthChecks?: boolean;
+  enableHealthChecks?:boolean;
   /** Health check interval (ms) */
-  healthCheckInterval?: number;
+  healthCheckInterval?:number;
   /** CPU usage warning threshold */
-  cpuWarningThreshold?: number;
+  cpuWarningThreshold?:number;
   /** CPU usage error threshold */
-  cpuErrorThreshold?: number;
+  cpuErrorThreshold?:number;
   /** Memory usage warning threshold */
-  memoryWarningThreshold?: number;
+  memoryWarningThreshold?:number;
   /** Memory usage error threshold */
-  memoryErrorThreshold?: number;
+  memoryErrorThreshold?:number;
   /** Disk usage warning threshold */
-  diskWarningThreshold?: number;
+  diskWarningThreshold?:number;
   /** Disk usage error threshold */
-  diskErrorThreshold?: number;
+  diskErrorThreshold?:number;
 }
 
 /**
@@ -135,7 +135,7 @@ export interface InfrastructureConfig {
  */
 export interface SystemMonitoringConfig extends InfrastructureConfig {
   /** Service name for telemetry */
-  serviceName?: string;
+  serviceName?:string;
   /** Additional labels for metrics */
-  labels?: Record<string, string>;
+  labels?:Record<string, string>;
 }

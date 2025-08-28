@@ -278,7 +278,7 @@ impl<T: Float> FeatureMatrix<T> {
 
 /// Main feature engineering engine
 #[derive(Debug, Clone)]
-pub struct FeatureEngine<T: Float> {
+pub struct FeatureEngine<T: Float + Send + Sync> {
   config: FeatureConfig<T>,
   fitted: bool,
   feature_stats: HashMap<String, FeatureStats<T>>,
@@ -321,7 +321,7 @@ impl<T: Float> FeatureStats<T> {
   }
 }
 
-impl<T: Float> FeatureEngine<T> {
+impl<T: Float + Send + Sync> FeatureEngine<T> {
   /// Create a new feature engine with default configuration
   pub fn new() -> Self {
     Self {
@@ -580,22 +580,46 @@ impl<T: Float> FeatureEngine<T> {
           Self::stat_name(stat),
           window
         ));
-        let mut stat_values = Vec::with_capacity(valid_samples);
 
-        for i in max_window..n_samples {
-          let start_idx = if i >= window { i - window + 1 } else { 0 };
-          let window_data = &values[start_idx..=i];
+        #[cfg(feature = "parallel")]
+        {
+          // Use parallel processing for rolling statistics calculation
+          let indices: Vec<usize> = (max_window..n_samples).collect();
+          let stat_values: std::result::Result<Vec<T>, DataPipelineError> = indices
+            .par_iter()
+            .map(|&i| {
+              let start_idx = if i >= window { i - window + 1 } else { 0 };
+              let window_data = &values[start_idx..=i];
 
-          let min_periods = config.min_periods.unwrap_or(1);
-          if window_data.len() >= min_periods {
-            let stat_value =
-              self.compute_rolling_statistic(window_data, stat)?;
-            stat_values.push(stat_value);
-          } else {
-            stat_values.push(T::nan()); // Not enough data
-          }
+              let min_periods = config.min_periods.unwrap_or(1);
+              if window_data.len() >= min_periods {
+                self.compute_rolling_statistic(window_data, stat)
+              } else {
+                Ok(T::nan()) // Not enough data
+              }
+            })
+            .collect();
+          features.push(stat_values?);
         }
-        features.push(stat_values);
+        
+        #[cfg(not(feature = "parallel"))]
+        {
+          let mut stat_values = Vec::with_capacity(valid_samples);
+          for i in max_window..n_samples {
+            let start_idx = if i >= window { i - window + 1 } else { 0 };
+            let window_data = &values[start_idx..=i];
+
+            let min_periods = config.min_periods.unwrap_or(1);
+            if window_data.len() >= min_periods {
+              let stat_value =
+                self.compute_rolling_statistic(window_data, stat)?;
+              stat_values.push(stat_value);
+            } else {
+              stat_values.push(T::nan()); // Not enough data
+            }
+          }
+          features.push(stat_values);
+        }
       }
     }
 
@@ -1053,7 +1077,7 @@ impl<T: Float> FeatureEngine<T> {
   }
 }
 
-impl<T: Float> Default for FeatureEngine<T> {
+impl<T: Float + Send + Sync> Default for FeatureEngine<T> {
   fn default() -> Self {
     Self::new()
   }
@@ -1062,7 +1086,7 @@ impl<T: Float> Default for FeatureEngine<T> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use crate::{DataPoint, TimeSeriesDatasetBuilder};
+  use crate::TimeSeriesDatasetBuilder;
   use approx::assert_relative_eq;
   use chrono::TimeZone;
 

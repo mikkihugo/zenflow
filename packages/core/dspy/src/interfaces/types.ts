@@ -8,17 +8,17 @@
  * @author Claude Code Zen Team
  */
 
-import type { Example } from "../primitives/example";
-import type { DSPyModule } from "../primitives/module";
-import type { Prediction } from "../primitives/prediction";
+import type { Example} from "../primitives/example";
+import type { DSPyModule} from "../primitives/module";
+import type { Prediction} from "../primitives/prediction";
 
 /**
  * Metric function type for evaluating predictions
  */
 export type MetricFunction = (
-	example: Example,
-	prediction: Prediction,
-	trace?: any[],
+	example:Example,
+	prediction:Prediction,
+	trace?:any[],
 ) => number | boolean;
 
 /**
@@ -26,19 +26,19 @@ export type MetricFunction = (
  */
 export interface CompileOptions {
 	/** Training examples */
-	trainset?: Example[];
+	trainset?:Example[];
 	/** Validation examples */
-	valset?: Example[];
+	valset?:Example[];
 	/** Teacher module(s) */
-	teacher?: DSPyModule | DSPyModule[] | null;
+	teacher?:DSPyModule | DSPyModule[] | null;
 	/** Number of trials/iterations */
-	num_trials?: number;
+	num_trials?:number;
 	/** Maximum number of examples to use */
-	max_examples?: number;
+	max_examples?:number;
 	/** Random seed */
-	seed?: number;
+	seed?:number;
 	/** Additional options */
-	[key: string]: any;
+	[key:string]: any;
 }
 
 /**
@@ -46,13 +46,13 @@ export interface CompileOptions {
  */
 export interface PredictorSignature {
 	/** Instructions for the predictor */
-	instructions?: string;
+	instructions?:string;
 	/** Input field specifications */
-	inputs?: Record<string, FieldSpec>;
+	inputs?:Record<string, FieldSpec>;
 	/** Output field specifications */
-	outputs?: Record<string, FieldSpec>;
+	outputs?:Record<string, FieldSpec>;
 	/** Additional signature metadata */
-	metadata?: Record<string, any>;
+	metadata?:Record<string, any>;
 }
 
 /**
@@ -60,20 +60,20 @@ export interface PredictorSignature {
  */
 export interface FieldSpec {
 	/** Field description */
-	description?: string;
+	description?:string;
 	/** Field type */
-	type?: string;
+	type?:string;
 	/** Whether field is required */
-	required?: boolean;
+	required?:boolean;
 	/** Default value */
-	default?: any;
+	default?:any;
 	/** Validation rules */
-	validation?: {
-		min_length?: number;
-		max_length?: number;
-		pattern?: string;
-		enum?: any[];
-	};
+	validation?:{
+		min_length?:number;
+		max_length?:number;
+		pattern?:string;
+		enum?:any[];
+};
 }
 
 /**
@@ -81,21 +81,21 @@ export interface FieldSpec {
  */
 export interface Predictor {
 	/** Predictor name/identifier */
-	name?: string;
+	name?:string;
 	/** Predictor signature */
-	signature: PredictorSignature;
+	signature:PredictorSignature;
 	/** Language model instance */
-	lm?: any;
+	lm?:any;
 	/** Demonstration examples */
-	demos?: Example[];
+	demos?:Example[];
 	/** Predictor metadata */
-	metadata?: Record<string, any>;
+	metadata?:Record<string, any>;
 	/** Forward function */
-	forward?(example: Example): Promise<Prediction>;
+	forward?(example:Example): Promise<Prediction>;
 	/** Reset function */
-	reset?(): void;
+	reset?():void;
 	/** Deep copy function */
-	deepcopy?(): Predictor;
+	deepcopy?():Predictor;
 }
 
 /**
@@ -103,11 +103,11 @@ export interface Predictor {
  */
 export interface TrainingData {
 	/** Training examples */
-	examples: Example[];
+	examples:Example[];
 	/** Data format (chat, completion, etc.) */
-	format?: string;
+	format?:string;
 	/** Additional metadata */
-	metadata?: Record<string, any>;
+	metadata?:Record<string, any>;
 }
 
 /**
@@ -115,16 +115,16 @@ export interface TrainingData {
  */
 export interface EvaluationResult {
 	/** Metric score */
-	score: number;
+	score:number;
 	/** Individual example results */
-	examples?: Array<{
-		example: Example;
-		prediction: Prediction;
-		score: number;
-		metadata?: Record<string, any>;
-	}>;
+	examples?:Array<{
+		example:Example;
+		prediction:Prediction;
+		score:number;
+		metadata?:Record<string, any>;
+}>;
 	/** Evaluation metadata */
-	metadata?: Record<string, any>;
+	metadata?:Record<string, any>;
 }
 
 /**
@@ -132,15 +132,15 @@ export interface EvaluationResult {
  */
 export interface OptimizationCandidate {
 	/** Candidate identifier */
-	id: string;
+	id:string;
 	/** Program/module instance */
-	program: DSPyModule;
+	program:DSPyModule;
 	/** Candidate score */
-	score?: number;
+	score?:number;
 	/** Additional metrics */
-	metrics?: Record<string, number>;
+	metrics?:Record<string, number>;
 	/** Candidate metadata */
-	metadata?: Record<string, any>;
+	metadata?:Record<string, any>;
 }
 
 /**
@@ -148,18 +148,18 @@ export interface OptimizationCandidate {
  */
 export interface Hyperparameter {
 	/** Parameter name */
-	name: string;
+	name:string;
 	/** Parameter value */
-	value: any;
+	value:any;
 	/** Parameter type */
-	type: "number|string|boolean|array|object";
+	type:"number|string|boolean|array|object";
 	/** Valid range/options */
-	range?: {
-		min?: number;
-		max?: number;
-		step?: number;
-		options?: any[];
-	};
+	range?:{
+		min?:number;
+		max?:number;
+		step?:number;
+		options?:any[];
+};
 }
 
 /**
@@ -167,18 +167,18 @@ export interface Hyperparameter {
  */
 export interface OptimizationConfig {
 	/** Maximum number of trials */
-	max_trials?: number;
+	max_trials?:number;
 	/** Optimization timeout (ms) */
-	timeout?: number;
+	timeout?:number;
 	/** Early stopping criteria */
-	early_stopping?: {
-		patience?: number;
-		min_improvement?: number;
-	};
+	early_stopping?:{
+		patience?:number;
+		min_improvement?:number;
+};
 	/** Hyperparameter search space */
-	search_space?: Hyperparameter[];
+	search_space?:Hyperparameter[];
 	/** Optimization strategy */
-	strategy?: "random|grid|bayesian|genetic";
+	strategy?:"random|grid|bayesian|genetic";
 }
 
 /**
@@ -186,20 +186,20 @@ export interface OptimizationConfig {
  */
 export interface ModelConfig {
 	/** Model name/identifier */
-	model: string;
+	model:string;
 	/** Model parameters */
-	parameters?: Record<string, any>;
+	parameters?:Record<string, any>;
 	/** API configuration */
-	api?: {
-		endpoint?: string;
-		headers?: Record<string, string>;
-		timeout?: number;
-	};
+	api?:{
+		endpoint?:string;
+		headers?:Record<string, string>;
+		timeout?:number;
+};
 	/** Rate limiting */
-	rate_limit?: {
-		requests_per_minute?: number;
-		requests_per_hour?: number;
-	};
+	rate_limit?:{
+		requests_per_minute?:number;
+		requests_per_hour?:number;
+};
 }
 
 /**
@@ -207,76 +207,76 @@ export interface ModelConfig {
  */
 export interface CacheEntry {
 	/** Cache key */
-	key: string;
+	key:string;
 	/** Cached value */
-	value: any;
+	value:any;
 	/** Creation timestamp */
-	created_at: number;
+	created_at:number;
 	/** Expiration timestamp */
-	expires_at?: number;
+	expires_at?:number;
 	/** Cache metadata */
-	metadata?: Record<string, any>;
+	metadata?:Record<string, any>;
 }
 
 /**
  * Progress callback type for long-running operations
  */
-export type ProgressCallback = (progress: {
-	current: number;
-	total: number;
-	percentage: number;
-	message?: string;
-	metadata?: Record<string, any>;
+export type ProgressCallback = (progress:{
+	current:number;
+	total:number;
+	percentage:number;
+	message?:string;
+	metadata?:Record<string, any>;
 }) => void;
 
 /**
  * Logger interface
  */
 export interface Logger {
-	debug(message: string, ...args: any[]): void;
-	info(message: string, ...args: any[]): void;
-	warn(message: string, ...args: any[]): void;
-	error(message: string, ...args: any[]): void;
+	debug(message:string, ...args:any[]): void;
+	info(message:string, ...args:any[]): void;
+	warn(message:string, ...args:any[]): void;
+	error(message:string, ...args:any[]): void;
 }
 
 /**
  * Error types for DSPy operations
  */
 export class DSPyError extends Error {
-	public readonly code: string;
-	public readonly metadata?: Record<string, any>;
+	public readonly code:string;
+	public readonly metadata?:Record<string, any>;
 
 	constructor(
-		message: string,
-		code: string = "DSPY_ERROR",
-		metadata?: Record<string, any>,
+		message:string,
+		code:string = "DSPY_ERROR",
+		metadata?:Record<string, any>,
 	) {
 		super(message);
 		this.name = "DSPyError";
 		this.code = code;
 		this.metadata = metadata ?? {};
-	}
+}
 }
 
 export class ValidationError extends DSPyError {
-	constructor(message: string, metadata?: Record<string, any>) {
+	constructor(message:string, metadata?:Record<string, any>) {
 		super(message, "VALIDATION_ERROR", metadata);
 		this.name = "ValidationError";
-	}
+}
 }
 
 export class OptimizationError extends DSPyError {
-	constructor(message: string, metadata?: Record<string, any>) {
+	constructor(message:string, metadata?:Record<string, any>) {
 		super(message, "OPTIMIZATION_ERROR", metadata);
 		this.name = "OptimizationError";
-	}
+}
 }
 
 export class ModelError extends DSPyError {
-	constructor(message: string, metadata?: Record<string, any>) {
+	constructor(message:string, metadata?:Record<string, any>) {
 		super(message, "MODEL_ERROR", metadata);
 		this.name = "ModelError";
-	}
+}
 }
 
 /**
@@ -287,13 +287,13 @@ export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 /**
  * Utility type for making properties required
  */
-export type Required<T, K extends keyof T> = T & { [P in K]-?: T[P] };
+export type Required<T, K extends keyof T> = T & { [P in K]-?:T[P]};
 
 /**
  * Deep partial utility type
  */
 export type DeepPartial<T> = {
-	[P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+	[P in keyof T]?:T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
 
 // Default export object

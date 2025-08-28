@@ -59,8 +59,8 @@
   "license": "MIT",
   "dependencies": {
     "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/infrastructure": "workspace:*",
-    "@anthropic-ai/claude-code": "^1.0.88",
+    "@claude-zen/database": "workspace:*",
+    "@anthropic-ai/claude-code": "^1.0.94",
     "validator": "^13.12.0"
   },
   "devDependencies": {

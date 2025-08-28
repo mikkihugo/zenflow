@@ -14,17 +14,17 @@
  */
 export interface DSPyConfig {
 	/** Maximum optimization iterations */
-	maxIterations: number;
+	maxIterations:number;
 	/** Number of few-shot examples to use */
-	fewShotExamples: number;
+	fewShotExamples:number;
 	/** LLM temperature for optimization */
-	temperature: number;
+	temperature:number;
 	/** LLM model to use */
-	model: string;
+	model:string;
 	/** Metrics to track during optimization */
-	metrics: string[];
+	metrics:string[];
 	/** Enable swarm coordination (future enhancement) */
-	swarmCoordination: boolean;
+	swarmCoordination:boolean;
 }
 
 /**
@@ -32,18 +32,18 @@ export interface DSPyConfig {
  */
 export interface DSPyExample {
 	/** Unique example identifier */
-	id: string;
+	id:string;
 	/** Input text or data */
-	input: string;
+	input:string;
 	/** Expected output */
-	output: string;
+	output:string;
 	/** Optional metadata */
-	metadata?: {
-		createdAt: Date;
-		source?: string;
-		difficulty?: "easy|medium|hard";
-		tags?: string[];
-	};
+	metadata?:{
+		createdAt:Date;
+		source?:string;
+		difficulty?:"easy|medium|hard";
+		tags?:string[];
+};
 }
 
 /**
@@ -51,17 +51,17 @@ export interface DSPyExample {
  */
 export interface DSPyProgram {
 	/** Unique program identifier */
-	id: string;
+	id:string;
 	/** Human-readable name */
-	name: string;
+	name:string;
 	/** Input/output signature */
-	signature: string;
+	signature:string;
 	/** Current prompt */
-	prompt: string;
+	prompt:string;
 	/** Training examples */
-	examples: DSPyExample[];
+	examples:DSPyExample[];
 	/** Performance metrics */
-	metrics: DSPyMetrics;
+	metrics:DSPyMetrics;
 }
 
 /**
@@ -69,17 +69,17 @@ export interface DSPyProgram {
  */
 export interface DSPyMetrics {
 	/** Accuracy score (0-1) */
-	accuracy: number;
+	accuracy:number;
 	/** Response latency in ms */
-	latency: number;
+	latency:number;
 	/** Token usage estimate */
-	tokenUsage: number;
+	tokenUsage:number;
 	/** Cost estimate in USD */
-	cost: number;
+	cost:number;
 	/** Iterations completed */
-	iterationsCompleted: number;
+	iterationsCompleted:number;
 	/** Best score achieved */
-	bestScore: number;
+	bestScore:number;
 }
 
 /**
@@ -87,13 +87,13 @@ export interface DSPyMetrics {
  */
 export interface DSPyPromptVariation {
 	/** The prompt text */
-	prompt: string;
+	prompt:string;
 	/** Optimization strategy used */
-	strategy: "few-shot-optimization" | "fallback" | "manual";
+	strategy:"few-shot-optimization" | "fallback" | "manual";
 	/** Iteration number */
-	iteration: number;
+	iteration:number;
 	/** Evaluation score */
-	score: number;
+	score:number;
 }
 
 /**
@@ -101,53 +101,53 @@ export interface DSPyPromptVariation {
  */
 export interface DSPyOptimizationResult {
 	/** Program ID that was optimized */
-	programId: string;
+	programId:string;
 	/** Original prompt */
-	originalPrompt: string;
+	originalPrompt:string;
 	/** Optimized prompt */
-	optimizedPrompt: string;
+	optimizedPrompt:string;
 	/** Improvement score */
-	improvement: number;
+	improvement:number;
 	/** Number of iterations performed */
-	iterations: number;
+	iterations:number;
 	/** All prompt variations tried */
-	variations: DSPyPromptVariation[];
+	variations:DSPyPromptVariation[];
 	/** Final metrics */
-	metrics: {
-		accuracy: number;
-		latency: number;
-		tokenUsage: number;
-		cost: number;
-	};
+	metrics:{
+		accuracy:number;
+		latency:number;
+		tokenUsage:number;
+		cost:number;
+};
 	/** Optimization timestamp */
-	timestamp: Date;
+	timestamp:Date;
 	/** Configuration used */
-	config: DSPyConfig;
+	config:DSPyConfig;
 }
 
 /**
  * DSPy Optimization Strategy
  */
-export type DSPyOptimizationStrategy = "few-shot-optimization"; // Use few-shot examples for improvement|'iterative-refinement'// Iterative prompt refinement|'pattern-matching'// Match successful patterns|'fallback'; // Simple fallback strategy
+export type DSPyOptimizationStrategy = "few-shot-optimization"; // Use few-shot examples for improvement|'iterative-refinement'// Iterative prompt refinement|' pattern-matching'// Match successful patterns|' fallback'; // Simple fallback strategy
 
 /**
  * DSPy Pattern for Learning
  */
 export interface DSPyPattern {
 	/** Pattern identifier */
-	id: string;
+	id:string;
 	/** Pattern type */
-	type: "prompt-template" | "example-structure" | "optimization-strategy";
+	type:"prompt-template" | "example-structure" | "optimization-strategy";
 	/** Pattern content */
-	pattern: string;
+	pattern:string;
 	/** Effectiveness score */
-	effectiveness: number;
+	effectiveness:number;
 	/** Usage count */
-	usageCount: number;
+	usageCount:number;
 	/** Last used timestamp */
-	lastUsed: Date;
+	lastUsed:Date;
 	/** Context where pattern works well */
-	contexts: string[];
+	contexts:string[];
 }
 
 /**
@@ -155,22 +155,22 @@ export interface DSPyPattern {
  */
 export interface DSPyTaskConfig {
 	/** Task identifier */
-	taskId: string;
+	taskId:string;
 	/** Task description */
-	description: string;
+	description:string;
 	/** Training dataset */
-	dataset: DSPyExample[];
+	dataset:DSPyExample[];
 	/** Optimization settings */
-	optimization: {
-		maxIterations: number;
-		strategy: DSPyOptimizationStrategy;
-		parallelization: boolean;
-	};
+	optimization:{
+		maxIterations:number;
+		strategy:DSPyOptimizationStrategy;
+		parallelization:boolean;
+};
 	/** Persistence settings */
-	persistence: {
-		saveResults: boolean;
-		learnFromResults: boolean;
-	};
+	persistence:{
+		saveResults:boolean;
+		learnFromResults:boolean;
+};
 }
 
 /**
@@ -178,13 +178,13 @@ export interface DSPyTaskConfig {
  */
 export interface DSPyEngineStats {
 	/** Total optimizations performed */
-	totalOptimizations: number;
+	totalOptimizations:number;
 	/** Average improvement achieved */
-	averageImprovement: number;
+	averageImprovement:number;
 	/** Best improvement achieved */
-	bestImprovement: number;
+	bestImprovement:number;
 	/** Total tasks optimized */
-	totalTasks: number;
+	totalTasks:number;
 }
 
 /**
@@ -192,32 +192,32 @@ export interface DSPyEngineStats {
  */
 export interface DSPyStorage {
 	/** Store optimization result */
-	storeResult(taskId: string, result: DSPyOptimizationResult): Promise<void>;
+	storeResult(taskId:string, result:DSPyOptimizationResult): Promise<void>;
 	/** Get optimization history */
-	getHistory(taskId: string): Promise<DSPyOptimizationResult[]>;
+	getHistory(taskId:string): Promise<DSPyOptimizationResult[]>;
 	/** Store learned pattern */
-	storePattern(pattern: DSPyPattern): Promise<void>;
+	storePattern(pattern:DSPyPattern): Promise<void>;
 	/** Get effective patterns */
-	getPatterns(context: string): Promise<DSPyPattern[]>;
+	getPatterns(context:string): Promise<DSPyPattern[]>;
 	/** Clear all data */
-	clear(): Promise<void>;
+	clear():Promise<void>;
 }
 
 /**
  * DSPy Example Generator Function
  */
 export type DSPyExampleGenerator = (
-	task: string,
-	count: number,
-	context?: any,
+	task:string,
+	count:number,
+	context?:any,
 ) => Promise<DSPyExample[]>;
 
 /**
  * DSPy Prompt Evaluator Function
  */
 export type DSPyPromptEvaluator = (
-	prompt: string,
-	examples: DSPyExample[],
+	prompt:string,
+	examples:DSPyExample[],
 ) => Promise<number>;
 
 /**
@@ -225,7 +225,7 @@ export type DSPyPromptEvaluator = (
  */
 export interface DSPyConfigValidator {
 	/** Validate configuration */
-	validate(config: any): { valid: boolean; errors: string[] };
+	validate(config:any): { valid: boolean; errors: string[]};
 }
 
 /**
@@ -234,17 +234,17 @@ export interface DSPyConfigValidator {
 export namespace DSPyUtils {
 	/** Create examples from raw data */
 	export type CreateExamples = (
-		data: Array<{ input: string; output: string }>,
+		data:Array<{ input: string; output: string}>,
 	) => DSPyExample[];
 
 	/** Validate configuration */
-	export type ValidateConfig = (config: any) => {
-		valid: boolean;
-		errors: string[];
-	};
+	export type ValidateConfig = (config:any) => {
+		valid:boolean;
+		errors:string[];
+};
 
 	/** Extract patterns from results */
 	export type ExtractPatterns = (
-		results: DSPyOptimizationResult[],
+		results:DSPyOptimizationResult[],
 	) => DSPyPattern[];
 }

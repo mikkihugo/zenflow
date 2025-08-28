@@ -8,7 +8,7 @@
  * @since 1.0.0
  * @version 1.0.0
  */
-import { DatabaseAccess } from "@claude-zen/foundation";
+import { DatabaseAccess} from "@claude-zen/foundation";
 import type {
 	FactSearchQuery,
 	FactSearchResult,
@@ -34,90 +34,90 @@ export declare class FactBridge {
 	private database;
 	private useRustEngine;
 	private initialized;
-	constructor(config: { useRustEngine: boolean; database: DatabaseAccess });
+	constructor(config:{ useRustEngine: boolean; database: DatabaseAccess});
 	/**
 	 * Initialize the bridge and load Rust engine if enabled
 	 */
-	initialize(): Promise<void>;
+	initialize():Promise<void>;
 	/**
 	 * SQL search against facts database (points to valid resources)
 	 */
-	searchFacts(query: FactSearchQuery): Promise<FactSearchResult[]>;
+	searchFacts(query:FactSearchQuery): Promise<FactSearchResult[]>;
 	/**
 	 * Get a specific fact using deterministic lookup
 	 */
-	getFact(query: FactQuery): Promise<FactResult>;
+	getFact(query:FactQuery): Promise<FactResult>;
 	/**
 	 * Get NPM package facts
 	 */
-	getNPMFacts(packageName: string, version?: string): Promise<NPMFactResult>;
+	getNPMFacts(packageName:string, version?:string): Promise<NPMFactResult>;
 	/**
 	 * Get GitHub repository facts using GraphQL
 	 */
-	getGitHubFacts(owner: string, repo: string): Promise<GitHubFactResult>;
+	getGitHubFacts(owner:string, repo:string): Promise<GitHubFactResult>;
 	/**
 	 * Get security advisory facts
 	 */
-	getSecurityFacts(cveId: string): Promise<SecurityFactResult>;
+	getSecurityFacts(cveId:string): Promise<SecurityFactResult>;
 	/**
 	 * Get Hex (Elixir package manager) facts
 	 */
-	getHexFacts(packageName: string, version?: string): Promise<HexFactResult>;
+	getHexFacts(packageName:string, version?:string): Promise<HexFactResult>;
 	/**
 	 * Get API documentation facts (TypeScript only for now)
 	 */
 	getAPIDocsFacts(
-		apiName: string,
-		endpoint?: string,
-	): Promise<APIDocumentationFactResult>;
+		apiName:string,
+		endpoint?:string,
+	):Promise<APIDocumentationFactResult>;
 	/**
 	 * Get Rust crate facts
 	 */
 	getRustCrateFacts(
-		crateName: string,
-		version?: string,
-	): Promise<RustCrateFactResult>;
+		crateName:string,
+		version?:string,
+	):Promise<RustCrateFactResult>;
 	/**
 	 * Get Go module facts
 	 */
 	getGoModuleFacts(
-		modulePath: string,
-		version?: string,
-	): Promise<GoModuleFactResult>;
+		modulePath:string,
+		version?:string,
+	):Promise<GoModuleFactResult>;
 	/**
 	 * Get Perl package facts
 	 */
 	getPerlPackageFacts(
-		packageName: string,
-		version?: string,
-	): Promise<PerlPackageFactResult>;
+		packageName:string,
+		version?:string,
+	):Promise<PerlPackageFactResult>;
 	/**
 	 * Get Java package facts
 	 */
 	getJavaPackageFacts(
-		groupId: string,
-		artifactId: string,
-		version?: string,
-	): Promise<JavaPackageFactResult>;
+		groupId:string,
+		artifactId:string,
+		version?:string,
+	):Promise<JavaPackageFactResult>;
 	/**
 	 * Get GitLab repository facts
 	 */
-	getGitLabRepoFacts(projectPath: string): Promise<GitLabRepoFactResult>;
+	getGitLabRepoFacts(projectPath:string): Promise<GitLabRepoFactResult>;
 	/**
 	 * Get Bitbucket repository facts
 	 */
 	getBitbucketRepoFacts(
-		workspace: string,
-		repoSlug: string,
-	): Promise<BitbucketRepoFactResult>;
+		workspace:string,
+		repoSlug:string,
+	):Promise<BitbucketRepoFactResult>;
 	/**
 	 * Get system statistics
 	 */
-	getStats(): Promise<{
-		cacheSize: number;
-		totalQueries: number;
-		cacheHitRate: number;
-	}>;
+	getStats():Promise<{
+		cacheSize:number;
+		totalQueries:number;
+		cacheHitRate:number;
+}>;
 	/**
 	 * Load Rust engine via WASM or N-API
 	 */
@@ -194,6 +194,6 @@ export declare class FactBridge {
 	/**
 	 * Shutdown the bridge
 	 */
-	shutdown(): Promise<void>;
+	shutdown():Promise<void>;
 }
 //# sourceMappingURL=fact-bridge.d.ts.map

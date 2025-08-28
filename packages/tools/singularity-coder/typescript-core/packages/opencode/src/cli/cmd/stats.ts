@@ -1,41 +1,41 @@
-import { cmd } from "./cmd"
+import { cmd} from "./cmd"
 
 interface SessionStats {
-  totalSessions: number
-  totalMessages: number
-  totalCost: number
-  totalTokens: {
-    input: number
-    output: number
-    reasoning: number
-    cache: {
-      read: number
-      write: number
-    }
-  }
-  toolUsage: Record<string, number>
-  dateRange: {
-    earliest: number
-    latest: number
-  }
-  days: number
-  costPerDay: number
+  totalSessions:number
+  totalMessages:number
+  totalCost:number
+  totalTokens:{
+    input:number
+    output:number
+    reasoning:number
+    cache:{
+      read:number
+      write:number
+}
+}
+  toolUsage:Record<string, number>
+  dateRange:{
+    earliest:number
+    latest:number
+}
+  days:number
+  costPerDay:number
 }
 
 export const StatsCommand = cmd({
-  command: "stats",
-  handler: async () => {},
+  command:"stats",
+  handler:async () => {},
 })
 
-export function displayStats(_stats: SessionStats) {
+export function displayStats(_stats:SessionStats) {
   const width = 56
 
-  function _renderRow(label: string, value: string): string {
+  function _renderRow(label:string, value:string): string {
     const availableWidth = width - 1
     const paddingNeeded = availableWidth - label.length - value.length
     const _padding = Math.max(0, paddingNeeded)
     return `│${label}${" ".repeat(padding)}${value} │``
-  }
+}
 
   // Overview section
   console.log("┌────────────────────────────────────────────────────────┐")
@@ -51,8 +51,8 @@ export function displayStats(_stats: SessionStats) {
   console.log("┌────────────────────────────────────────────────────────┐")
   console.log("│                    COST & TOKENS                       │")
   console.log("├────────────────────────────────────────────────────────┤")
-  const cost = isNaN(stats.totalCost) ? 0 : stats.totalCost
-  const costPerDay = isNaN(stats.costPerDay) ? 0 : stats.costPerDay
+  const cost = isNaN(stats.totalCost) ? 0:stats.totalCost
+  const costPerDay = isNaN(stats.costPerDay) ? 0:stats.costPerDay
   console.log(renderRow("Total Cost", `$$cost.toFixed(2)`))`
   console.log(_renderRow("Cost/Day", `$${costPerDay.toFixed(2)}`))`
   console.log(renderRow("Input", formatNumber(stats.totalTokens.input)))
@@ -83,16 +83,16 @@ export function displayStats(_stats: SessionStats) {
       const content = ` $tool.padEnd(10)$bar.padEnd(20)$count.toString().padStart(3)($percentage.padStart(4)%)``
       const padding = Math.max(0, width - content.length)
       console.log(`│${content}${" ".repeat(padding)} │`)`
-    }
+}
     console.log("└────────────────────────────────────────────────────────┘")
-  }
+}
   console.log()
 }
-function formatNumber(num: number): string {
+function formatNumber(num:number): string {
   if (num >= 1000000) {
-    return (num / 1000000).toFixed(1) + "M"
-  } else if (num >= 1000) {
-    return (num / 1000).toFixed(1) + "K"
-  }
+    return `${(num / 1000000).toFixed(1)  }M`
+} else if (num >= 1000) {
+    return `${(num / 1000).toFixed(1)  }K`
+}
   return num.toString()
 }

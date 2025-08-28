@@ -1155,7 +1155,7 @@ mod tests {
     let unscaled = scaler.inverse_transform(&scaled).unwrap();
 
     // Median should be 0
-    let median = 3.0; // Original median
+    let _median = 3.0; // Original median
     let scaled_median_idx = 2; // Index of median in scaled data
     assert_relative_eq!(scaled[scaled_median_idx], 0.0, epsilon = 1e-10);
 

@@ -8,32 +8,32 @@
  * @version 1.0.0
  */
 interface DatabaseAccess {
-    query(sql: string, params?: any[]): Promise<any[]>;
-    execute(sql: string, params?: any[]): Promise<number>;
-    close(): Promise<void>;
+    query(sql:string, params?:any[]): Promise<any[]>;
+    execute(sql:string, params?:any[]): Promise<number>;
+    close():Promise<void>;
 }
 /**
  * Configuration for the FACT system
  */
 export interface FactSystemConfig {
     /** Database access via foundation package */
-    database: DatabaseAccess;
+    database:DatabaseAccess;
     /** Whether to use the Rust engine for high-performance processing */
-    useRustEngine?: boolean;
+    useRustEngine?:boolean;
     /** Cache size for fact storage */
-    cacheSize?: number;
+    cacheSize?:number;
     /** Cache TTL in milliseconds */
-    cacheTTL?: number;
+    cacheTTL?:number;
     /** Enable GitHub GraphQL API integration */
-    enableGitHubGraphQL?: boolean;
+    enableGitHubGraphQL?:boolean;
     /** Enable real-time API calls (vs cache-only mode) */
-    enableRealTimeAPIs?: boolean;
+    enableRealTimeAPIs?:boolean;
     /** Enable Hex.pm (Elixir package manager) integration */
-    enableHexPM?: boolean;
+    enableHexPM?:boolean;
     /** Enable rule validation and automated compliance checking */
-    enableRuleValidation?: boolean;
+    enableRuleValidation?:boolean;
     /** Enable AI-powered inference and reasoning capabilities */
-    enableInference?: boolean;
+    enableInference?:boolean;
 }
 /**
  * SQL-based fact search query (like ruvnet/FACT)
@@ -41,32 +41,32 @@ export interface FactSystemConfig {
  */
 export interface FactSearchQuery {
     /** SQL-like query against facts database */
-    query: string;
+    query:string;
     /** Fact types to search within */
-    factTypes?: ("npm-package" | "github-repo" | "security-advisory" | "hex-package" | "api-docs" | "rust-crate" | "go-module" | "perl-package" | "java-package" | "gitlab-repo" | "bitbucket-repo")[];
+    factTypes?:("npm-package" | "github-repo" | "security-advisory" | "hex-package" | "api-docs" | "rust-crate" | "go-module" | "perl-package" | "java-package" | "gitlab-repo" | "bitbucket-repo")[];
     /** Data sources to search within */
-    sources?: string[];
+    sources?:string[];
     /** Maximum results to return */
-    limit?: number;
+    limit?:number;
     /** Include cached results */
-    includeCached?: boolean;
+    includeCached?:boolean;
 }
 /**
  * Direct fact query for retrieving specific structured data
  */
 export interface FactQuery {
     /** Fact type to query (npm-package, github-repo, security-advisory, hex-package, rust-crate, go-module, perl-package, java-package, gitlab-repo, bitbucket-repo) */
-    factType: "npm-package" | "github-repo" | "security-advisory" | "hex-package" | "api-docs" | "rust-crate" | "go-module" | "perl-package" | "java-package" | "gitlab-repo" | "bitbucket-repo";
+    factType:"npm-package" | "github-repo" | "security-advisory" | "hex-package" | "api-docs" | "rust-crate" | "go-module" | "perl-package" | "java-package" | "gitlab-repo" | "bitbucket-repo";
     /** Specific identifier (package name, repo name, CVE ID, etc.) */
-    identifier: string;
+    identifier:string;
     /** Optional version for packages */
-    version?: string;
+    version?:string;
     /** Additional parameters for specific fact types */
-    parameters?: Record<string, any>;
+    parameters?:Record<string, any>;
     /** Include cached results */
-    includeCached?: boolean;
+    includeCached?:boolean;
     /** Cache TTL override in milliseconds */
-    cacheTTL?: number;
+    cacheTTL?:number;
 }
 /**
  * SQL search result pointing to valid resources (like ruvnet/FACT)
@@ -74,23 +74,23 @@ export interface FactQuery {
  */
 export interface FactSearchResult {
     /** Type of resource this points to */
-    factType: "npm-package" | "github-repo" | "security-advisory" | "hex-package" | "api-docs" | "rust-crate" | "go-module" | "perl-package" | "java-package" | "gitlab-repo" | "bitbucket-repo";
+    factType:"npm-package" | "github-repo" | "security-advisory" | "hex-package" | "api-docs" | "rust-crate" | "go-module" | "perl-package" | "java-package" | "gitlab-repo" | "bitbucket-repo";
     /** Resource identifier (package name, repo owner/name, CVE ID) */
-    identifier: string;
+    identifier:string;
     /** Optional version for packages */
-    version?: string;
+    version?:string;
     /** Direct link to resource */
-    resourceUrl: string;
+    resourceUrl:string;
     /** Match score from SQL query */
-    score: number;
+    score:number;
     /** When this resource was indexed */
-    indexedAt: number;
+    indexedAt:number;
     /** Quick metadata for display */
-    metadata: {
-        title: string;
-        description?: string;
-        [key: string]: any;
-    };
+    metadata:{
+        title:string;
+        description?:string;
+        [key:string]: any;
+};
 }
 /**
  * Base fact result from deterministic data sources
@@ -98,594 +98,594 @@ export interface FactSearchResult {
  */
 export interface FactResult {
     /** Source of the fact (npm-api, github-api, nvd-api, hex-api) */
-    source: string;
+    source:string;
     /** Type of fact (matches identifier type) */
-    factType: string;
+    factType:string;
     /** Unique identifier for this fact */
-    identifier: string;
+    identifier:string;
     /** Structured fact data */
-    data: NPMFactResult | GitHubFactResult | SecurityFactResult | HexFactResult | APIDocumentationFactResult | RustCrateFactResult | GoModuleFactResult | PerlPackageFactResult | JavaPackageFactResult | GitLabRepoFactResult | BitbucketRepoFactResult;
+    data:NPMFactResult | GitHubFactResult | SecurityFactResult | HexFactResult | APIDocumentationFactResult | RustCrateFactResult | GoModuleFactResult | PerlPackageFactResult | JavaPackageFactResult | GitLabRepoFactResult | BitbucketRepoFactResult;
     /** Data freshness indicator */
-    isCached: boolean;
+    isCached:boolean;
     /** Cache timestamp */
-    cacheTimestamp?: number;
+    cacheTimestamp?:number;
     /** Time-to-live for this fact */
-    ttl: number;
+    ttl:number;
     /** Processing timestamp */
-    timestamp: number;
+    timestamp:number;
 }
 /**
  * NPM package fact result
  */
 export interface NPMFactResult {
     /** Package name */
-    name: string;
+    name:string;
     /** Package version */
-    version: string;
+    version:string;
     /** Package description */
-    description: string;
+    description:string;
     /** Dependencies list */
-    dependencies: string[];
+    dependencies:string[];
     /** Dev dependencies list */
-    devDependencies: string[];
+    devDependencies:string[];
     /** Repository URL */
-    repository?: string;
+    repository?:string;
     /** Homepage URL */
-    homepage?: string;
+    homepage?:string;
     /** License */
-    license?: string;
+    license?:string;
     /** Download statistics */
-    downloads?: {
-        weekly: number;
-        monthly: number;
-        yearly: number;
-    };
+    downloads?:{
+        weekly:number;
+        monthly:number;
+        yearly:number;
+};
     /** Package maintainers */
-    maintainers: string[];
+    maintainers:string[];
     /** Package keywords */
-    keywords: string[];
+    keywords:string[];
     /** Published date */
-    publishedAt: string;
+    publishedAt:string;
     /** Result confidence */
-    confidence: number;
+    confidence:number;
     /** Source of data */
-    source: string;
+    source:string;
     /** Timestamp */
-    timestamp: number;
+    timestamp:number;
 }
 /**
  * GitHub repository fact result
  */
 export interface GitHubFactResult {
     /** Repository owner */
-    owner: string;
+    owner:string;
     /** Repository name */
-    repo: string;
+    repo:string;
     /** Full repository name (owner/repo) */
-    fullName: string;
+    fullName:string;
     /** Repository description */
-    description: string;
+    description:string;
     /** Repository URL */
-    url: string;
+    url:string;
     /** Primary language */
-    language: string;
+    language:string;
     /** Language breakdown */
-    languages: Record<string, number>;
+    languages:Record<string, number>;
     /** Star count */
-    stars: number;
+    stars:number;
     /** Fork count */
-    forks: number;
+    forks:number;
     /** Open issues count */
-    openIssues: number;
+    openIssues:number;
     /** License */
-    license?: string;
+    license?:string;
     /** Repository topics */
-    topics: string[];
+    topics:string[];
     /** Created date */
-    createdAt: string;
+    createdAt:string;
     /** Last updated date */
-    updatedAt: string;
+    updatedAt:string;
     /** Last pushed date */
-    pushedAt: string;
+    pushedAt:string;
     /** Whether repository is archived */
-    archived: boolean;
+    archived:boolean;
     /** Whether repository is private */
-    private: boolean;
+    private:boolean;
     /** Default branch */
-    defaultBranch: string;
+    defaultBranch:string;
     /** Recent releases */
-    releases: Array<{
-        name: string;
-        tagName: string;
-        publishedAt: string;
-        prerelease: boolean;
-    }>;
+    releases:Array<{
+        name:string;
+        tagName:string;
+        publishedAt:string;
+        prerelease:boolean;
+}>;
     /** Result confidence */
-    confidence: number;
+    confidence:number;
     /** Source of data */
-    source: string;
+    source:string;
     /** Timestamp */
-    timestamp: number;
+    timestamp:number;
 }
 /**
  * Security advisory fact result
  */
 export interface SecurityFactResult {
     /** CVE ID */
-    id: string;
+    id:string;
     /** Vulnerability description */
-    description: string;
+    description:string;
     /** Severity level */
-    severity: "low" | "medium" | "high" | "critical";
+    severity:"low" | "medium" | "high" | "critical";
     /** CVSS score */
-    score: number;
+    score:number;
     /** CVSS vector string */
-    vector: string;
+    vector:string;
     /** Published date */
-    published: string;
+    published:string;
     /** Last modified date */
-    lastModified: string;
+    lastModified:string;
     /** Reference URLs */
-    references: string[];
+    references:string[];
     /** Affected products */
-    affectedProducts: string[];
+    affectedProducts:string[];
     /** Mitigation advice */
-    mitigation?: string;
+    mitigation?:string;
     /** Result confidence */
-    confidence: number;
+    confidence:number;
     /** Source of data */
-    source: string;
+    source:string;
     /** Timestamp */
-    timestamp: number;
+    timestamp:number;
 }
 /**
  * Hex (Elixir) package fact result
  */
 export interface HexFactResult {
     /** Package name */
-    name: string;
+    name:string;
     /** Package version */
-    version: string;
+    version:string;
     /** Package description */
-    description: string;
+    description:string;
     /** Package owner/organization */
-    owner: string;
+    owner:string;
     /** Repository URL */
-    repository?: string;
+    repository?:string;
     /** Homepage URL */
-    homepage?: string;
+    homepage?:string;
     /** License */
-    license?: string;
+    license?:string;
     /** Download statistics */
-    downloads?: {
-        total: number;
-        recent: number;
-        day: number;
-        week: number;
-    };
+    downloads?:{
+        total:number;
+        recent:number;
+        day:number;
+        week:number;
+};
     /** Package maintainers */
-    maintainers: string[];
+    maintainers:string[];
     /** Elixir version requirement */
-    elixirVersion?: string;
+    elixirVersion?:string;
     /** OTP version requirement */
-    otpVersion?: string;
+    otpVersion?:string;
     /** Dependencies list */
-    dependencies: Array<{
-        name: string;
-        requirement: string;
-        optional: boolean;
-    }>;
+    dependencies:Array<{
+        name:string;
+        requirement:string;
+        optional:boolean;
+}>;
     /** Package documentation URL */
-    documentation?: string;
+    documentation?:string;
     /** Published date */
-    publishedAt: string;
+    publishedAt:string;
     /** Last updated date */
-    updatedAt: string;
+    updatedAt:string;
     /** Package configuration */
-    config?: {
-        consolidateProtocols?: boolean;
-        buildEmbedded?: boolean;
-        startPermanent?: boolean;
-    };
+    config?:{
+        consolidateProtocols?:boolean;
+        buildEmbedded?:boolean;
+        startPermanent?:boolean;
+};
     /** Result confidence */
-    confidence: number;
+    confidence:number;
     /** Source of data */
-    source: string;
+    source:string;
     /** Timestamp */
-    timestamp: number;
+    timestamp:number;
 }
 /**
  * API documentation fact result
  */
 export interface APIDocumentationFactResult {
     /** API name */
-    name: string;
+    name:string;
     /** Base URL */
-    baseUrl: string;
+    baseUrl:string;
     /** Authentication method */
-    authentication: string;
+    authentication:string;
     /** API endpoints */
-    endpoints: Array<{
-        path: string;
-        method: string;
-        description: string;
-        parameters?: Record<string, any>;
-    }>;
+    endpoints:Array<{
+        path:string;
+        method:string;
+        description:string;
+        parameters?:Record<string, any>;
+}>;
     /** Specific endpoint (if requested) */
-    endpoint?: string;
+    endpoint?:string;
     /** Rate limiting info */
-    rateLimit?: string;
+    rateLimit?:string;
     /** API documentation URL */
-    documentation?: string;
+    documentation?:string;
     /** Available SDKs */
-    sdks?: string[];
+    sdks?:string[];
     /** Result confidence */
-    confidence: number;
+    confidence:number;
     /** Source of data */
-    source: string;
+    source:string;
     /** Timestamp */
-    timestamp: number;
+    timestamp:number;
 }
 /**
  * FACT system statistics
  */
 export interface FactSystemStats {
     /** Cache size */
-    cacheSize: number;
+    cacheSize:number;
     /** Total queries processed */
-    totalQueries: number;
+    totalQueries:number;
     /** Cache hit rate (0-1) */
-    cacheHitRate: number;
+    cacheHitRate:number;
     /** Whether Rust engine is active */
-    rustEngineActive: boolean;
+    rustEngineActive:boolean;
     /** Performance metrics */
-    performance?: {
-        averageQueryTime: number;
-        rustQueryTime?: number;
-        typescriptQueryTime?: number;
-    };
+    performance?:{
+        averageQueryTime:number;
+        rustQueryTime?:number;
+        typescriptQueryTime?:number;
+};
 }
 /**
  * Fact cache entry
  */
 export interface FactCacheEntry {
     /** Cache key */
-    key: string;
+    key:string;
     /** Cached data */
-    data: any;
+    data:any;
     /** Cache timestamp */
-    timestamp: number;
+    timestamp:number;
     /** Time to live */
-    ttl: number;
+    ttl:number;
     /** Access count */
-    accessCount: number;
+    accessCount:number;
 }
 /**
  * Rust crate fact result (from crates.io)
  */
 export interface RustCrateFactResult {
     /** Crate name */
-    name: string;
+    name:string;
     /** Crate version */
-    version: string;
+    version:string;
     /** Crate description */
-    description: string;
+    description:string;
     /** Authors */
-    authors: string[];
+    authors:string[];
     /** Repository URL */
-    repository?: string;
+    repository?:string;
     /** Homepage URL */
-    homepage?: string;
+    homepage?:string;
     /** License */
-    license?: string;
+    license?:string;
     /** Keywords */
-    keywords: string[];
+    keywords:string[];
     /** Categories */
-    categories: string[];
+    categories:string[];
     /** Download statistics */
-    downloads?: {
-        total: number;
-        recent: number;
-    };
+    downloads?:{
+        total:number;
+        recent:number;
+};
     /** Dependencies */
-    dependencies: Array<{
-        name: string;
-        version: string;
-        kind: "normal" | "dev" | "build";
-        optional: boolean;
-    }>;
+    dependencies:Array<{
+        name:string;
+        version:string;
+        kind:"normal" | "dev" | "build";
+        optional:boolean;
+}>;
     /** Features */
-    features: Record<string, string[]>;
+    features:Record<string, string[]>;
     /** Minimum Rust version */
-    rustVersion?: string;
+    rustVersion?:string;
     /** Documentation URL */
-    documentation?: string;
+    documentation?:string;
     /** Additional documentation sites */
-    docsSites?: {
+    docsSites?:{
         /** docs.rs URL for Rust crates */
-        docsRs?: string;
+        docsRs?:string;
         /** Repository docs */
-        repository?: string;
+        repository?:string;
         /** Homepage docs */
-        homepage?: string;
-    };
+        homepage?:string;
+};
     /** Published date */
-    publishedAt: string;
+    publishedAt:string;
     /** Last updated */
-    updatedAt: string;
+    updatedAt:string;
     /** Result confidence */
-    confidence: number;
+    confidence:number;
     /** Source of data */
-    source: string;
+    source:string;
     /** Timestamp */
-    timestamp: number;
+    timestamp:number;
 }
 /**
  * Go module fact result (from pkg.go.dev)
  */
 export interface GoModuleFactResult {
     /** Module path */
-    path: string;
+    path:string;
     /** Module version */
-    version: string;
+    version:string;
     /** Module description */
-    description: string;
+    description:string;
     /** License */
-    license?: string;
+    license?:string;
     /** Repository URL */
-    repository?: string;
+    repository?:string;
     /** Homepage URL */
-    homepage?: string;
+    homepage?:string;
     /** Go version requirement */
-    goVersion?: string;
+    goVersion?:string;
     /** Module imports */
-    imports: string[];
+    imports:string[];
     /** Packages in module */
-    packages: Array<{
-        path: string;
-        name: string;
-        synopsis: string;
-    }>;
+    packages:Array<{
+        path:string;
+        name:string;
+        synopsis:string;
+}>;
     /** Additional documentation sites */
-    docsSites?: {
+    docsSites?:{
         /** pkg.go.dev URL for Go modules */
-        pkgGoDev?: string;
+        pkgGoDev?:string;
         /** Repository docs */
-        repository?: string;
+        repository?:string;
         /** Homepage docs */
-        homepage?: string;
-    };
+        homepage?:string;
+};
     /** Published date */
-    publishedAt: string;
+    publishedAt:string;
     /** Result confidence */
-    confidence: number;
+    confidence:number;
     /** Source of data */
-    source: string;
+    source:string;
     /** Timestamp */
-    timestamp: number;
+    timestamp:number;
 }
 /**
  * Perl package fact result (from CPAN)
  */
 export interface PerlPackageFactResult {
     /** Package name */
-    name: string;
+    name:string;
     /** Package version */
-    version: string;
+    version:string;
     /** Package description */
-    description: string;
+    description:string;
     /** Author */
-    author: string;
+    author:string;
     /** Author email */
-    authorEmail?: string;
+    authorEmail?:string;
     /** License */
-    license?: string;
+    license?:string;
     /** Repository URL */
-    repository?: string;
+    repository?:string;
     /** Homepage URL */
-    homepage?: string;
+    homepage?:string;
     /** Dependencies */
-    dependencies: Array<{
-        module: string;
-        version?: string;
-        phase: "configure" | "build" | "test" | "runtime";
-        relationship: "requires" | "recommends" | "suggests";
-    }>;
+    dependencies:Array<{
+        module:string;
+        version?:string;
+        phase:"configure" | "build" | "test" | "runtime";
+        relationship:"requires" | "recommends" | "suggests";
+}>;
     /** Keywords */
-    keywords: string[];
+    keywords:string[];
     /** Abstract */
-    abstract?: string;
+    abstract?:string;
     /** Published date */
-    publishedAt: string;
+    publishedAt:string;
     /** Result confidence */
-    confidence: number;
+    confidence:number;
     /** Source of data */
-    source: string;
+    source:string;
     /** Timestamp */
-    timestamp: number;
+    timestamp:number;
 }
 /**
  * Java package fact result (from Maven Central)
  */
 export interface JavaPackageFactResult {
     /** Group ID */
-    groupId: string;
+    groupId:string;
     /** Artifact ID */
-    artifactId: string;
+    artifactId:string;
     /** Version */
-    version: string;
+    version:string;
     /** Package name (groupId:artifactId) */
-    name: string;
+    name:string;
     /** Description */
-    description: string;
+    description:string;
     /** License */
-    license?: string;
+    license?:string;
     /** Repository URL */
-    repository?: string;
+    repository?:string;
     /** Homepage URL */
-    homepage?: string;
+    homepage?:string;
     /** Packaging type */
-    packaging: string;
+    packaging:string;
     /** Dependencies */
-    dependencies: Array<{
-        groupId: string;
-        artifactId: string;
-        version: string;
-        scope: "compile" | "provided" | "runtime" | "test" | "system";
-        optional: boolean;
-    }>;
+    dependencies:Array<{
+        groupId:string;
+        artifactId:string;
+        version:string;
+        scope:"compile" | "provided" | "runtime" | "test" | "system";
+        optional:boolean;
+}>;
     /** Java version requirement */
-    javaVersion?: string;
+    javaVersion?:string;
     /** Additional documentation sites */
-    docsSites?: {
+    docsSites?:{
         /** Javadoc.io URL for Java packages */
-        javadocIo?: string;
+        javadocIo?:string;
         /** Repository docs */
-        repository?: string;
+        repository?:string;
         /** Homepage docs */
-        homepage?: string;
-    };
+        homepage?:string;
+};
     /** Published date */
-    publishedAt: string;
+    publishedAt:string;
     /** Last updated */
-    updatedAt: string;
+    updatedAt:string;
     /** Result confidence */
-    confidence: number;
+    confidence:number;
     /** Source of data */
-    source: string;
+    source:string;
     /** Timestamp */
-    timestamp: number;
+    timestamp:number;
 }
 /**
  * GitLab repository fact result
  */
 export interface GitLabRepoFactResult {
     /** Repository ID */
-    id: number;
+    id:number;
     /** Repository name */
-    name: string;
+    name:string;
     /** Repository path */
-    path: string;
+    path:string;
     /** Full path with namespace */
-    pathWithNamespace: string;
+    pathWithNamespace:string;
     /** Repository description */
-    description: string;
+    description:string;
     /** Repository URL */
-    url: string;
+    url:string;
     /** SSH URL */
-    sshUrl: string;
+    sshUrl:string;
     /** HTTP URL */
-    httpUrl: string;
+    httpUrl:string;
     /** Primary language */
-    language?: string;
+    language?:string;
     /** Star count */
-    stars: number;
+    stars:number;
     /** Fork count */
-    forks: number;
+    forks:number;
     /** Open issues count */
-    openIssues: number;
+    openIssues:number;
     /** Visibility level */
-    visibility: "private" | "internal" | "public";
+    visibility:"private" | "internal" | "public";
     /** Repository topics */
-    topics: string[];
+    topics:string[];
     /** Default branch */
-    defaultBranch: string;
+    defaultBranch:string;
     /** Created date */
-    createdAt: string;
+    createdAt:string;
     /** Last updated date */
-    updatedAt: string;
+    updatedAt:string;
     /** Last activity date */
-    lastActivityAt: string;
+    lastActivityAt:string;
     /** Archived status */
-    archived: boolean;
+    archived:boolean;
     /** Avatar URL */
-    avatarUrl?: string;
+    avatarUrl?:string;
     /** Namespace */
-    namespace: {
-        id: number;
-        name: string;
-        path: string;
-        kind: string;
-        fullPath: string;
-    };
+    namespace:{
+        id:number;
+        name:string;
+        path:string;
+        kind:string;
+        fullPath:string;
+};
     /** Result confidence */
-    confidence: number;
+    confidence:number;
     /** Source of data */
-    source: string;
+    source:string;
     /** Timestamp */
-    timestamp: number;
+    timestamp:number;
 }
 /**
  * Bitbucket repository fact result
  */
 export interface BitbucketRepoFactResult {
     /** Repository UUID */
-    uuid: string;
+    uuid:string;
     /** Repository name */
-    name: string;
+    name:string;
     /** Full repository name (workspace/name) */
-    fullName: string;
+    fullName:string;
     /** Repository description */
-    description: string;
+    description:string;
     /** Repository URL */
-    url: string;
+    url:string;
     /** Clone URLs */
-    cloneUrls: {
-        https: string;
-        ssh: string;
-    };
+    cloneUrls:{
+        https:string;
+        ssh:string;
+};
     /** Primary language */
-    language?: string;
+    language?:string;
     /** Repository size in bytes */
-    size: number;
+    size:number;
     /** Whether repository is private */
-    private: boolean;
+    private:boolean;
     /** Fork policy */
-    forkPolicy: "allow_forks" | "no_public_forks" | "no_forks";
+    forkPolicy:"allow_forks" | "no_public_forks" | "no_forks";
     /** Has issues enabled */
-    hasIssues: boolean;
+    hasIssues:boolean;
     /** Has wiki enabled */
-    hasWiki: boolean;
+    hasWiki:boolean;
     /** Project information */
-    project?: {
-        key: string;
-        name: string;
-        uuid: string;
-    };
+    project?:{
+        key:string;
+        name:string;
+        uuid:string;
+};
     /** Workspace information */
-    workspace: {
-        uuid: string;
-        name: string;
-        slug: string;
-    };
+    workspace:{
+        uuid:string;
+        name:string;
+        slug:string;
+};
     /** Main branch */
-    mainBranch: {
-        name: string;
-        type: string;
-    };
+    mainBranch:{
+        name:string;
+        type:string;
+};
     /** Created date */
-    createdAt: string;
+    createdAt:string;
     /** Last updated date */
-    updatedAt: string;
+    updatedAt:string;
     /** Result confidence */
-    confidence: number;
+    confidence:number;
     /** Source of data */
-    source: string;
+    source:string;
     /** Timestamp */
-    timestamp: number;
+    timestamp:number;
 }
 export type FactSourceType = "npm" | "github" | "rust" | "go" | "api" | "security";
 export interface FactProcessingOptions {
-    parallel?: boolean;
-    timeout?: number;
-    retries?: number;
-    cacheResults?: boolean;
+    parallel?:boolean;
+    timeout?:number;
+    retries?:number;
+    cacheResults?:boolean;
 }
 export interface RustEngineConfig {
-    enabled: boolean;
-    maxWorkers?: number;
-    memoryLimit?: number;
-    wasmPath?: string;
+    enabled:boolean;
+    maxWorkers?:number;
+    memoryLimit?:number;
+    wasmPath?:string;
 }
 export {};
 //# sourceMappingURL=types.d.ts.map

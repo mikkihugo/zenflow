@@ -4,14 +4,14 @@
  * @file Implements the 70% London TDD / 30% Classical TDD hybrid approach
  *
  * Domain Distribution:
- * - Coordination: London TDD (mockist) - 70%
- * - Interfaces: London TDD (mockist) - 70%
- * - Neural: Classical TDD (Detroit) - 30%
- * - Memory: Hybrid approach based on operation type
+ * - Coordination:London TDD (mockist) - 70%
+ * - Interfaces:London TDD (mockist) - 70%
+ * - Neural:Classical TDD (Detroit) - 30%
+ * - Memory:Hybrid approach based on operation type
  */
 
 // Import Vitest globals and utilities
-import { afterEach, beforeEach, expect, vi } from 'vitest';
+import { afterEach, beforeEach, expect, vi, type Mock } from 'vitest';
 import './global-types';
 
 /**
@@ -20,9 +20,9 @@ import './global-types';
  * @example
  */
 interface HybridTDDConfig {
-  domain: 'coordination|interfaces|neural|memory|hybrid';
-  testStyle: 'london|classical|hybrid';
-  mockingStrategy: 'aggressive|minimal|selective';
+  domain: 'coordination' | 'interfaces' | 'neural' | 'memory' | 'hybrid';
+  testStyle: 'london' | 'classical' | 'hybrid';
+  mockingStrategy: 'aggressive' | 'minimal' | 'selective';
   performanceThresholds: {
     coordinationLatency: number;
     neuralComputation: number;
@@ -47,7 +47,7 @@ beforeEach(() => {
   vi.clearAllMocks();
 
   // Setup based on test file path
-  const testPath = expect.getState().testPath||'';
+  const testPath = expect.getState().testPath || '';
 
   if (testPath.includes('/coordination/')) {
     setupLondonTDD();
@@ -64,7 +64,7 @@ beforeEach(() => {
 
 afterEach(() => {
   // Cleanup based on test type
-  const testPath = expect.getState().testPath||'';
+  const testPath = expect.getState().testPath || '';
 
   if (testPath.includes('/neural/')) {
     cleanupClassicalResources();
@@ -75,7 +75,7 @@ afterEach(() => {
 
 /**
  * London TDD Setup (Coordination & Interfaces domains)
- * Focus: Interactions, protocols, communication patterns
+ * Focus:Interactions, protocols, communication patterns
  */
 function setupLondonTDD() {
   // Mock timers for deterministic coordination testing
@@ -98,7 +98,7 @@ function setupLondonTDD() {
 
 /**
  * Classical TDD Setup (Neural domain)
- * Focus: Algorithms, computations, mathematical operations
+ * Focus:Algorithms, computations, mathematical operations
  */
 function setupClassicalTDD() {
   // Performance monitoring for neural computations
@@ -130,9 +130,9 @@ function setupClassicalTDD() {
           { input: [1, 1], output: [0] },
         ];
       case 'linear':
-        return Array.from({ length: config.samples||100 }, (_, _i) => {
+        return Array.from({ length: config.samples || 100 }, (_, _i) => {
           const x = Math.random() * 10;
-          const y = 2 * x + 3 + (Math.random() - 0.5) * (config.noise||0.1);
+          const y = 2 * x + 3 + (Math.random() - 0.5) * (config.noise || 0.1);
           return { input: [x], output: [y] };
         });
       default:
@@ -146,7 +146,7 @@ function setupClassicalTDD() {
    *
    * @param actual - Actual value
    * @param expected - Expected value
-   * @param tolerance - Allowed difference (default: 1e-10)
+   * @param tolerance - Allowed difference (default:1e-10)
    */
   globalThis.expectNearlyEqual = (
     actual: number,
@@ -168,19 +168,21 @@ function setupHybridTDD() {
 
   // Hybrid-specific utilities
   globalThis.testWithApproach = (
-    approach:'london|classical',
-    testFn: () => undefined|'Promise<void>
-  ) => {
-    if (approach ==='london') {
+    approach: 'london' | 'classical',
+    testFn: () => void | Promise<void>
+  ): undefined | Promise<void> => {
+    if (approach === 'london') {
       // Use mocks for external dependencies
-      return testFn();
+      const result = testFn();
+      return result instanceof Promise ? result : undefined;
     }
     // Use real implementations
-    return testFn();
+    const result = testFn();
+    return result instanceof Promise ? result : undefined;
   };
 
   // Memory-specific test utilities
-  globalThis.createMemoryTestScenario = (type: 'sqlite|lancedb|json') => {
+  globalThis.createMemoryTestScenario = (type: 'sqlite' | 'lancedb' | 'json') => {
     switch (type) {
       case 'sqlite':
         return {
@@ -198,7 +200,7 @@ function setupHybridTDD() {
         return {
           backend: 'json',
           file: '/tmp/test.json',
-          testData: { key: 'value'},
+          testData: { key: 'value' },
         };
       default:
         return {};
@@ -211,8 +213,8 @@ function setupHybridTDD() {
  */
 function cleanupClassicalResources() {
   const g = (globalThis as any).gc;
-  const startMem = (globalThis as any).testStartMemory as|NodeJS.MemoryUsage|undefined;
-  if (typeof g ==='function' && startMem) {
+  const startMem = (globalThis as any).testStartMemory as NodeJS.MemoryUsage | undefined;
+  if (typeof g === 'function' && startMem) {
     try {
       g();
     } catch {
@@ -233,7 +235,7 @@ function cleanupClassicalResources() {
  * @param actualTime
  */
 (globalThis as any).expectPerformanceWithinThreshold = (
-  operation: 'coordination|neural|memory',
+  operation: 'coordination' | 'neural' | 'memory',
   actualTime: number
 ) => {
   const threshold =
@@ -242,7 +244,8 @@ function cleanupClassicalResources() {
         ? 'coordinationLatency'
         : operation === 'neural'
           ? 'neuralComputation'
-          : 'memoryAccess'];
+          : 'memoryAccess'
+    ];
 
   expect(actualTime).toBeLessThanOrEqual(threshold);
 };
@@ -265,7 +268,7 @@ function cleanupClassicalResources() {
  * @param phase
  */
 (globalThis as any).createSPARCTestScenario = (
-  phase:|'specification|pseudocode|architecture|refinement|completion'
+  phase: 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion'
 ) => {
   return {
     phase,
@@ -282,11 +285,11 @@ function cleanupClassicalResources() {
  */
 interface MemoryTestScenario {
   /** Memory backend type */
-  type: 'sqlite|lancedb|json';
+  type: 'sqlite' | 'lancedb' | 'json';
   /** Test configuration */
   config: unknown;
   /** Mock methods */
-  mocks: Record<string, vi.Mock>;
+  mocks: Record<string, Mock>;
 }
 
 /**
@@ -310,7 +313,7 @@ interface TestContainer {
  */
 interface SPARCTestScenario {
   /** SPARC phase */
-  phase:|'specification|pseudocode|architecture|refinement|completion';
+  phase: 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion';
   /** Test input */
   input: string;
   /** Expected output */

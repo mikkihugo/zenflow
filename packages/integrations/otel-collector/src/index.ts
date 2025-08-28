@@ -6,7 +6,7 @@
  * and telemetry signals (traces, metrics, logs).
  */
 
-export { InternalOTELCollector } from './collector.js';
+export { InternalOTELCollector} from './collector.js';
 export {
   ConfigManager,
   configManager,
@@ -15,18 +15,18 @@ export {
   loadDefaultConfig,
 } from './config/index.js';
 // Re-export specific exporters
-export { ConsoleExporter } from './exporters/console-exporter.js';
-export { FileExporter } from './exporters/file-exporter.js';
-export { ExporterManager } from './exporters/index.js';
-export { JaegerExporter } from './exporters/jaeger-exporter.js';
-export { OTLPExporter } from './exporters/otlp-exporter.js';
-export { PrometheusExporter } from './exporters/prometheus-exporter.js';
+export { ConsoleExporter} from './exporters/console-exporter.js';
+export { FileExporter} from './exporters/file-exporter.js';
+export { ExporterManager} from './exporters/index.js';
+export { JaegerExporter} from './exporters/jaeger-exporter.js';
+export { OTLPExporter} from './exporters/otlp-exporter.js';
+export { PrometheusExporter} from './exporters/prometheus-exporter.js';
 // Re-export specific processors
-export { BatchProcessor } from './processors/batch-processor.js';
-export { FilterProcessor } from './processors/filter-processor.js';
-export { ProcessorManager } from './processors/index.js';
-export { SamplerProcessor } from './processors/sampler-processor.js';
-export { TransformProcessor } from './processors/transform-processor.js';
+export { BatchProcessor} from './processors/batch-processor.js';
+export { FilterProcessor} from './processors/filter-processor.js';
+export { ProcessorManager} from './processors/index.js';
+export { SamplerProcessor} from './processors/sampler-processor.js';
+export { TransformProcessor} from './processors/transform-processor.js';
 // Re-export types
 export type {
   // Core types
@@ -46,16 +46,16 @@ export type {
  * Create and start an OTEL collector with default configuration
  */
 export async function createCollector(
-  configPath?: string
-): Promise<InternalOTELCollector> {
+  configPath?:string
+):Promise<InternalOTELCollector> {
   const collector = new InternalOTELCollector();
 
   if (configPath) {
     await collector.initialize(configPath);
-  } else {
+} else {
     const config = await loadDefaultConfig();
     await collector.initialize(config);
-  }
+}
 
   return collector;
 }
@@ -63,7 +63,7 @@ export async function createCollector(
 /**
  * Create and start a development OTEL collector
  */
-export async function createDevelopmentCollector(): Promise<InternalOTELCollector> {
+export async function createDevelopmentCollector():Promise<InternalOTELCollector> {
   const collector = new InternalOTELCollector();
   const config = createDevelopmentConfig();
   await collector.initialize(config);
@@ -73,7 +73,7 @@ export async function createDevelopmentCollector(): Promise<InternalOTELCollecto
 /**
  * Create and start a production OTEL collector
  */
-export async function createProductionCollector(): Promise<InternalOTELCollector> {
+export async function createProductionCollector():Promise<InternalOTELCollector> {
   const collector = new InternalOTELCollector();
   const config = createProductionConfig();
   await collector.initialize(config);
@@ -83,10 +83,10 @@ export async function createProductionCollector(): Promise<InternalOTELCollector
 /**
  * Quick start function - creates and starts collector based on environment
  */
-export async function quickStart(): Promise<InternalOTELCollector> {
+export async function quickStart():Promise<InternalOTELCollector> {
   const isDevelopment = process.env.NODE_ENV === 'development';
 
-  return isDevelopment ? createDevelopmentCollector() : createProductionCollector();
+  return isDevelopment ? createDevelopmentCollector() :createProductionCollector();
 }
 
 // Default export for convenience

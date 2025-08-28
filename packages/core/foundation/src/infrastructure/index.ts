@@ -4,4 +4,5 @@
  * Infrastructure services and facades for external system integration.
  */
 
-export * from "./facades";
+export * from "./facades/index.js";
+export * from "./database/index.js";

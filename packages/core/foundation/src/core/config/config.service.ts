@@ -11,9 +11,9 @@
  * their respective implementation packages.
  */
 
-import { z as zodInstance } from "../../utilities/validation.js";
-import type { JsonObject } from "../../types/primitives";
-import { getLogger } from "../logging/index.js";
+import { z as zodInstance} from "../../utilities/validation.js";
+import type { JsonObject} from "../../types/primitives";
+import { getLogger} from "../logging/index.js";
 
 const logger = getLogger("foundation-config");
 
@@ -36,32 +36,32 @@ const logger = getLogger("foundation-config");
  */
 const configSchema = zodInstance.object({
 	// Environment Configuration
-	env: zodInstance.enum(["production", "development", "test"]).default("development"),
+	env:zodInstance.enum(["production", "development", "test"]).default("development"),
 
 	// Logging Configuration (Foundation Core System)
-	logging: zodInstance.object({
-		level: zodInstance.enum(["error", "warn", "info", "debug"]).default("info"),
-		format: zodInstance.enum(["json", "text"]).default("text"),
-		console: zodInstance.boolean().default(true),
-		file: zodInstance.string().default(""),
-		timestamp: zodInstance.boolean().default(true),
-	}),
+	logging:zodInstance.object({
+		level:zodInstance.enum(["error", "warn", "info", "debug"]).default("info"),
+		format:zodInstance.enum(["json", "text"]).default("text"),
+		console:zodInstance.boolean().default(true),
+		file:zodInstance.string().default(""),
+		timestamp:zodInstance.boolean().default(true),
+}),
 
 	// System Configuration
-	system: zodInstance.object({
-		hostname: zodInstance.string().default("localhost"),
-		instanceId: zodInstance.string().default("foundation-default"),
-	}),
+	system:zodInstance.object({
+		hostname:zodInstance.string().default("localhost"),
+		instanceId:zodInstance.string().default("foundation-default"),
+}),
 
 	// Development Environment Detection
-	development: zodInstance.object({
-		debug: zodInstance.boolean().default(false),
-		inNixShell: zodInstance.boolean().default(false),
-		flakeDevShell: zodInstance.boolean().default(false),
-	}),
+	development:zodInstance.object({
+		debug:zodInstance.boolean().default(false),
+		inNixShell:zodInstance.boolean().default(false),
+		flakeDevShell:zodInstance.boolean().default(false),
+}),
 
 	// Basic Project Configuration (for foundation config storage only)
-	project: zodInstance.object({
+	project:zodInstance.object({
 		/**
 		 * Configuration directory name following Claude Zen storage architecture.
 		 *
@@ -70,7 +70,7 @@ const configSchema = zodInstance.object({
 		 * persistent application state. This creates a consistent storage pattern across
 		 * all components and packages.
 		 *
-		 * **Default Value**: `.claude-zen`
+		 * **Default Value**:`.claude-zen`
 		 *
 		 * **Directory Structure Created**:
 		 * ```
@@ -90,22 +90,22 @@ const configSchema = zodInstance.object({
 		 * ```
 		 *
 		 * **Usage Locations**:
-		 * - Project root: `./claude-zen/` (when `storeInUserHome: false`)
-		 * - User home: `~/.claude-zen/` (when `storeInUserHome: true`)
+		 * - Project root:`./claude-zen/` (when `storeInUserHome: false`)`
+		 * - User home:`~/.claude-zen/` (when `storeInUserHome: true`)`
 		 *
 		 * @example
-		 * ```typescript
+		 * ```typescript`
 		 * const config = await getConfig();
 		 * const configPath = config.project.storeInUserHome
 		 *   ? path.join(os.homedir(), config.project.configDir)
-		 *   : path.join(process.cwd(), config.project.configDir);
-		 * // Results in: "/home/user/.claude-zen" or "/project/.claude-zen"
+		 *   :path.join(process.cwd(), config.project.configDir);
+		 * // Results in:"/home/user/.claude-zen" or "/project/.claude-zen"
 		 * ```
 		 *
 		 * @see {@link storeInUserHome} for location selection logic
 		 * @since 1.0.0
 		 */
-		configDir: zodInstance.string().default(".claude-zen"),
+		configDir:zodInstance.string().default(".claude-zen"),
 
 		/**
 		 * Controls whether configuration and data are stored in user home or project directory.
@@ -115,43 +115,43 @@ const configSchema = zodInstance.object({
 		 * all storage operations including databases, memory, authentication tokens, and
 		 * configuration files.
 		 *
-		 * **Default Value**: `true` (user home storage)
+		 * **Default Value**:`true` (user home storage)`
 		 *
 		 * **Storage Patterns**:
-		 * - **`true` (User Home)**: `~/.claude-zen/` - Personal settings across projects
-		 * - **`false` (Project Local)**: `./.claude-zen/` - Project-specific settings
+		 * - **`true` (User Home)**:`~/.claude-zen/` - Personal settings across projects`
+		 * - **`false` (Project Local)**:`./.claude-zen/` - Project-specific settings`
 		 *
 		 * **Use Cases**:
-		 * - **User Home** (`true`): Personal development, cross-project authentication,
+		 * - **User Home** (`true`):Personal development, cross-project authentication,
 		 *   shared settings, single-user environments
-		 * - **Project Local** (`false`): Team projects, CI/CD environments,
+		 * - **Project Local** (`false`):Team projects, CI/CD environments,
 		 *   project-specific configurations, containerized deployments
 		 *
 		 * @example
-		 * ```typescript
+		 * ```typescript`
 		 * // Environment variable override:
 		 * // ZEN_STORE_CONFIG_IN_USER_HOME=false
 		 *
 		 * const config = await getConfig();
 		 * if (config.project.storeInUserHome) {
-		 *   console.log('Using user-global storage: ~/.claude-zen/');
-		 * } else {
-		 *   console.log('Using project-local storage: ./.claude-zen/');
-		 * }
+		 *   console.log('Using user-global storage:~/.claude-zen/');
+		 *} else {
+		 *   console.log('Using project-local storage:./.claude-zen/');
+		 *}
 		 * ```
 		 *
 		 * @see {@link configDir} for directory structure details
 		 * @since 1.0.0
 		 */
-		storeInUserHome: zodInstance.boolean().default(true),
-	}),
+		storeInUserHome:zodInstance.boolean().default(true),
+}),
 
 	// OpenTelemetry Configuration (foundation-only, basic settings)
-	otel: zodInstance.object({
-		enabled: zodInstance.boolean().default(false),
-		useInternalCollector: zodInstance.boolean().default(true),
-		internalCollectorEndpoint: zodInstance.string().default("http://localhost:4318"),
-	}),
+	otel:zodInstance.object({
+		enabled:zodInstance.boolean().default(false),
+		useInternalCollector:zodInstance.boolean().default(true),
+		internalCollectorEndpoint:zodInstance.string().default("http://localhost:4318"),
+}),
 });
 
 /**
@@ -162,30 +162,29 @@ const configSchema = zodInstance.object({
  * @returns The parsed value as boolean, number, or string
  *
  * @example
- * ```typescript
+ * ```typescript`
  * parseEnvValue('true')  // returns boolean true
  * parseEnvValue('42')    // returns number 42
- * parseEnvValue('hello') // returns string 'hello'
- * ```
+ * parseEnvValue('hello') // returns string ' hello') * ```
  */
-function parseEnvValue(value: string | undefined): unknown {
+function parseEnvValue(value:string | undefined): unknown {
 	if (!value) {
 		return undefined;
-	}
+}
 
 	// Boolean parsing
 	if (value.toLowerCase() === "true") {
 		return true;
-	}
+}
 	if (value.toLowerCase() === "false") {
 		return false;
-	}
+}
 
 	// Number parsing
 	const num = Number(value);
 	if (!Number.isNaN(num)) {
 		return num;
-	}
+}
 
 	// String value
 	return value;
@@ -199,92 +198,92 @@ function parseEnvValue(value: string | undefined): unknown {
  *
  * @remarks
  * Supported environment variables:
- * - NODE_ENV: Application environment (development/production/test)
- * - ZEN_LOG_LEVEL: Logging level (error/warn/info/debug)
- * - ZEN_LOG_FORMAT: Log format (json/text)
- * - HOSTNAME: System hostname
- * - IN_NIX_SHELL: Nix development shell detection
- * - ZEN_DEBUG_MODE: Debug mode flag
+ * - NODE_ENV:Application environment (development/production/test)
+ * - ZEN_LOG_LEVEL:Logging level (error/warn/info/debug)
+ * - ZEN_LOG_FORMAT:Log format (json/text)
+ * - HOSTNAME:System hostname
+ * - IN_NIX_SHELL:Nix development shell detection
+ * - ZEN_DEBUG_MODE:Debug mode flag
  *
  * **Claude Zen Storage Architecture Variables**:
- * - ZEN_PROJECT_CONFIG_DIR: Override default `.claude-zen` directory name
- * - ZEN_STORE_CONFIG_IN_USER_HOME: Control user vs project storage location
+ * - ZEN_PROJECT_CONFIG_DIR:Override default `.claude-zen` directory name`
+ * - ZEN_STORE_CONFIG_IN_USER_HOME:Control user vs project storage location
  */
-function buildConfigFromEnv(): unknown {
+function buildConfigFromEnv():unknown {
 	return {
-		env: parseEnvValue(process.env['NODE_ENV']),
-		logging: {
-			level: parseEnvValue(process.env['ZEN_LOG_LEVEL']),
-			format: parseEnvValue(process.env['ZEN_LOG_FORMAT']),
-			console: parseEnvValue(process.env['ZEN_LOG_CONSOLE']),
-			file: parseEnvValue(process.env['ZEN_LOG_FILE']),
-			timestamp: parseEnvValue(process.env['ZEN_LOG_TIMESTAMP']),
-		},
-		system: {
-			hostname: parseEnvValue(process.env['HOSTNAME']),
-			instanceId: parseEnvValue(process.env['ZEN_INSTANCE_ID']),
-		},
-		development: {
-			debug: parseEnvValue(process.env['ZEN_DEBUG_MODE']),
-			inNixShell: parseEnvValue(process.env['IN_NIX_SHELL']),
-			flakeDevShell: parseEnvValue(process.env['FLAKE_DEVSHELL']),
-		},
-		project: {
+		env:parseEnvValue(process.env['NODE_ENV']),
+		logging:{
+			level:parseEnvValue(process.env['ZEN_LOG_LEVEL']),
+			format:parseEnvValue(process.env['ZEN_LOG_FORMAT']),
+			console:parseEnvValue(process.env['ZEN_LOG_CONSOLE']),
+			file:parseEnvValue(process.env['ZEN_LOG_FILE']),
+			timestamp:parseEnvValue(process.env['ZEN_LOG_TIMESTAMP']),
+},
+		system:{
+			hostname:parseEnvValue(process.env['HOSTNAME']),
+			instanceId:parseEnvValue(process.env['ZEN_INSTANCE_ID']),
+},
+		development:{
+			debug:parseEnvValue(process.env['ZEN_DEBUG_MODE']),
+			inNixShell:parseEnvValue(process.env['IN_NIX_SHELL']),
+			flakeDevShell:parseEnvValue(process.env['FLAKE_DEVSHELL']),
+},
+		project:{
 			/**
 			 * Environment override for Claude Zen configuration directory name.
 			 *
-			 * **Environment Variable**: `ZEN_PROJECT_CONFIG_DIR`
-			 * **Default**: `.claude-zen`
+			 * **Environment Variable**:`ZEN_PROJECT_CONFIG_DIR`
+			 * **Default**:`.claude-zen`
 			 *
 			 * Allows customization of the standard directory name used throughout
 			 * the Claude Zen storage architecture. When set, this overrides the
-			 * default `.claude-zen` directory name across all storage operations.
+			 * default `.claude-zen` directory name across all storage operations.`
 			 *
 			 * @example
-			 * ```bash
+			 * ```bash`
 			 * # Use custom directory name
 			 * export ZEN_PROJECT_CONFIG_DIR=".my-claude-zen"
 			 *
-			 * # Results in: ./.my-claude-zen/ or ~/.my-claude-zen/
+			 * # Results in:./.my-claude-zen/ or ~/.my-claude-zen/
 			 * ```
 			 */
-			configDir: parseEnvValue(process.env['ZEN_PROJECT_CONFIG_DIR']),
+			configDir:parseEnvValue(process.env['ZEN_PROJECT_CONFIG_DIR']),
 
 			/**
 			 * Environment override for Claude Zen storage location selection.
 			 *
-			 * **Environment Variable**: `ZEN_STORE_CONFIG_IN_USER_HOME`
-			 * **Default**: `true` (user home storage)
+			 * **Environment Variable**:`ZEN_STORE_CONFIG_IN_USER_HOME`
+			 * **Default**:`true` (user home storage)`
 			 *
 			 * Controls whether the Claude Zen directory is created in the user's
 			 * home directory or in the current project directory. This affects
 			 * all storage operations throughout the system.
 			 *
 			 * @example
-			 * ```bash
+			 * ```bash`
 			 * # Force project-local storage
 			 * export ZEN_STORE_CONFIG_IN_USER_HOME=false
 			 *
-			 * # Results in: ./.claude-zen/ (project-local)
+			 * # Results in:./.claude-zen/ (project-local)
 			 *
 			 * # Force user-global storage (default)
 			 * export ZEN_STORE_CONFIG_IN_USER_HOME=true
 			 *
-			 * # Results in: ~/.claude-zen/ (user-global)
+			 * # Results in:~/.claude-zen/ (user-global)
 			 * ```
 			 */
-			storeInUserHome: parseEnvValue(process.env['ZEN_STORE_CONFIG_IN_USER_HOME']),
-		},
-		otel: {
-			enabled: parseEnvValue(process.env['ZEN_OTEL_ENABLED']),
-			useInternalCollector: parseEnvValue(
+			storeInUserHome:parseEnvValue(process.env['ZEN_STORE_CONFIG_IN_USER_HOME']),
+},
+		otel:{
+			enabled:parseEnvValue(process.env['ZEN_OTEL_ENABLED']),
+			useInternalCollector:parseEnvValue(
 				process.env['ZEN_USE_INTERNAL_OTEL_COLLECTOR'],
 			),
-			internalCollectorEndpoint: parseEnvValue(
+			internalCollectorEndpoint:parseEnvValue(
 				process.env['ZEN_INTERNAL_COLLECTOR_ENDPOINT'],
 			),
-		},
-	};
+},
+};
 }
 
 // =============================================================================
@@ -298,39 +297,37 @@ function buildConfigFromEnv(): unknown {
  * @interface Config
  *
  * @example
- * ```typescript
- * const config: Config = getConfig();
- * console.log(config.env); // 'development' | 'production' | 'test'
- * console.log(config.logging.level); // 'error' | 'warn' | 'info' | 'debug'
- * ```
+ * ```typescript`
+ * const config:Config = getConfig();
+ * console.log(config.env); // 'development' | ' production' | ' test') * console.log(config.logging.level); // 'error' | ' warn' | ' info' | ' debug') * ```
  */
 export interface Config {
-	env: string;
-	logging: {
-		level: string;
-		format: string;
-		console: boolean;
-		file: string;
-		timestamp: boolean;
-	};
-	system: {
-		hostname: string;
-		instanceId: string;
-	};
-	development: {
-		debug: boolean;
-		inNixShell: boolean;
-		flakeDevShell: boolean;
-	};
-	project: {
-		configDir: string;
-		storeInUserHome: boolean;
-	};
-	otel: {
-		enabled: boolean;
-		useInternalCollector: boolean;
-		internalCollectorEndpoint: string;
-	};
+	env:string;
+	logging:{
+		level:string;
+		format:string;
+		console:boolean;
+		file:string;
+		timestamp:boolean;
+};
+	system:{
+		hostname:string;
+		instanceId:string;
+};
+	development:{
+		debug:boolean;
+		inNixShell:boolean;
+		flakeDevShell:boolean;
+};
+	project:{
+		configDir:string;
+		storeInUserHome:boolean;
+};
+	otel:{
+		enabled:boolean;
+		useInternalCollector:boolean;
+		internalCollectorEndpoint:string;
+};
 }
 
 // =============================================================================
@@ -344,20 +341,20 @@ export interface Config {
  * @class FoundationConfig
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const config = new FoundationConfig();
  * config.initialize();
  * const logLevel = config.get('logging.level');
  * ```
  */
 export class FoundationConfig {
-	private config: Config;
+	private config:Config;
 	private isInitialized = false;
 
 	constructor() {
 		// Initialize config with defaults, then apply environment overrides
 		this.config = {} as Config; // Will be properly initialized in initialize()
-	}
+}
 
 	/**
 	 * Initializes the configuration by parsing and validating environment variables.
@@ -365,20 +362,20 @@ export class FoundationConfig {
 	 *
 	 * @throws {Error} When configuration validation fails
 	 */
-	initialize(): void {
+	initialize():void {
 		try {
 			// Parse and validate configuration from environment
 			const envConfig = buildConfigFromEnv();
 			this.config = configSchema.parse(envConfig);
 			this.isInitialized = true;
 			logger.info("Foundation configuration initialized successfully");
-		} catch (error) {
+} catch (error) {
 			logger.error("Foundation configuration initialization failed:", error);
 			throw new Error(
-				`Configuration error: ${error instanceof Error ? error['message'] : "Unknown error"}`,
+				`Configuration error:${error instanceof Error ? error['message'] : "Unknown error"}`,
 			);
-		}
-	}
+}
+}
 
 	/**
 	 * Gets a configuration value by key path.
@@ -389,17 +386,17 @@ export class FoundationConfig {
 	 * @throws {Error} When the key is not found or configuration is not initialized
 	 *
 	 * @example
-	 * ```typescript
+	 * ```typescript`
 	 * const level = config.get('logging.level'); // Gets nested value
 	 * const env = config.get('env'); // Gets top-level value
 	 * ```
 	 */
-	get(key: string): unknown {
+	get(key:string): unknown {
 		this.ensureInitialized();
 		try {
 			// Handle nested key access (e.g., 'logging.level')
 			const keys = key.split(".");
-			let value: Record<string, unknown> | unknown = this.config;
+			let value:Record<string, unknown> | unknown = this.config;
 
 			for (const k of keys) {
 				if (
@@ -409,17 +406,17 @@ export class FoundationConfig {
 					k in value
 				) {
 					value = (value as Record<string, unknown>)[k];
-				} else {
+} else {
 					throw new Error(`Key '${key}' not found`);
-				}
-			}
+}
+}
 
 			return value;
-		} catch (error) {
+} catch (error) {
 			logger.error(`Failed to get config key '${key}':`, error);
 			throw new Error(`Configuration key '${key}' not found or invalid`);
-		}
-	}
+}
+}
 
 	/**
 	 * Gets the complete configuration object.
@@ -427,34 +424,34 @@ export class FoundationConfig {
 	 * @returns The complete validated configuration
 	 * @throws {Error} When configuration is not initialized
 	 */
-	getAll(): JsonObject {
+	getAll():JsonObject {
 		this.ensureInitialized();
 		return this.config as unknown as JsonObject;
-	}
+}
 
 	/**
 	 * Validates the current environment variables against the schema.
 	 *
 	 * @returns True if validation passes, false otherwise
 	 */
-	validate(): boolean {
+	validate():boolean {
 		try {
 			const envConfig = buildConfigFromEnv();
 			configSchema.parse(envConfig);
 			return true;
-		} catch (error) {
+} catch (error) {
 			logger.error("Configuration validation failed:", error);
 			return false;
-		}
-	}
+}
+}
 
-	private ensureInitialized(): void {
+	private ensureInitialized():void {
 		if (!this.isInitialized) {
 			throw new Error(
 				"Configuration not initialized. Call initialize() first.",
 			);
-		}
-	}
+}
+}
 }
 
 // =============================================================================
@@ -477,12 +474,12 @@ globalConfig.initialize();
  * @returns The validated foundation configuration
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const config = getConfig();
  * console.log(config.logging.level);
  * ```
  */
-export function getConfig(): Config {
+export function getConfig():Config {
 	return globalConfig.getAll() as unknown as Config;
 }
 
@@ -491,7 +488,7 @@ export function getConfig(): Config {
  *
  * @returns True if configuration is valid, false otherwise
  */
-export function validateConfig(): boolean {
+export function validateConfig():boolean {
 	return globalConfig.validate();
 }
 
@@ -499,7 +496,7 @@ export function validateConfig(): boolean {
  * Reloads configuration from environment variables.
  * Useful when environment changes during runtime.
  */
-export function reloadConfig(): void {
+export function reloadConfig():void {
 	globalConfig.initialize();
 }
 
@@ -508,7 +505,7 @@ export function reloadConfig(): void {
  *
  * @returns True if debug mode is active
  */
-export function isDebugMode(): boolean {
+export function isDebugMode():boolean {
 	return globalConfig.get("development.debug") as boolean;
 }
 
@@ -524,32 +521,32 @@ export const isProduction = () => getConfig().env === "production";
 export const isTest = () => getConfig().env === "test";
 
 // FORCING PATTERN - Replace direct process.env access
-export const getEnv = (key: string, defaultValue?: string): string =>
+export const getEnv = (key:string, defaultValue?:string): string =>
 	process.env[key] || defaultValue || "";
 
-export const requireEnv = (key: string): string => {
+export const requireEnv = (key:string): string => {
 	const value = process.env[key];
 	if (!value) {
 		throw new Error(`Required environment variable ${key} is not set`);
-	}
+}
 	return value;
 };
 
 // FORCING PATTERN - Replace console.log with configured logging
 export const shouldLog = (
-	level: "error" | "warn" | "info" | "debug",
-): boolean => {
+	level:"error" | "warn" | "info" | "debug",
+):boolean => {
 	const configLevel = getConfig().logging.level;
-	const levels = { error: 0, warn: 1, info: 2, debug: 3 };
+	const levels = { error:0, warn:1, info:2, debug:3};
 	return levels[level] <= levels[configLevel as keyof typeof levels];
 };
 
 export const configHelpers = {
-	get: (key: string) => globalConfig.get(key),
-	getAll: () => globalConfig.getAll(),
-	validate: validateConfig,
-	reload: reloadConfig,
-	isDebug: isDebugMode,
+	get:(key: string) => globalConfig.get(key),
+	getAll:() => globalConfig.getAll(),
+	validate:validateConfig,
+	reload:reloadConfig,
+	isDebug:isDebugMode,
 	// Forcing patterns
 	config,
 	env,
@@ -565,20 +562,20 @@ export const configHelpers = {
 /**
  * Placeholder for neural config - should be implemented in neural packages
  */
-export function getNeuralConfig(): Record<string, unknown> {
+export function getNeuralConfig():Record<string, unknown> {
 	// Neural configuration is handled by the intelligence package
 	// This function provides basic defaults for neural system integration
 	return {
-		enabled: false,
-		fallbackMode: true,
-		timeout: 30000,
-		retries: 3,
-		models: {
-			default: "claude-3",
-			reasoning: "o3-mini",
-			fast: "gpt-4",
-		},
-	};
+		enabled:false,
+		fallbackMode:true,
+		timeout:30000,
+		retries:3,
+		models:{
+			default:"claude-3",
+			reasoning:"o3-mini",
+			fast:"gpt-4",
+},
+};
 }
 
 export default globalConfig;

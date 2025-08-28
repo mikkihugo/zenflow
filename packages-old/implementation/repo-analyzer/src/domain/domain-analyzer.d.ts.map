@@ -1,1 +1,0 @@
-{"version":3,"file":"domain-analyzer.d.ts","sourceRoot":"","sources":["domain-analyzer.ts"],"names":[],"mappings":"AAAA;;;GAGG;AAGH,OAAO,KAAK,EACV,eAAe,EACf,MAAM,EAEP,MAAM,mBAAmB,CAAC;AAE3B,qBAAa,cAAc;IACzB,OAAO,CAAC,MAAM,CAA+B;IAAA,CAAC,MAAA;IAE9C;;OAEG;IACG,iBAAiB,CACrB,QAAQ,EAAE,MAAM,EAChB,KAAK,EAAE,MAAM,EAAE,EACf,OAAO,CAAC,EAAE,eAAe,GACxB,OAAO,CAAC,MAAM,EAAE,CAAC;CAuBf"}

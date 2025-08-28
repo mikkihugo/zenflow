@@ -5,42 +5,42 @@
  * Supports multiple backends, data processing, and centralized configuration.
  */
 
-import type { Attributes } from '@opentelemetry/api';
+import type { Attributes} from '@opentelemetry/api';
 
 /**
  * Collector configuration interface
  */
 export interface CollectorConfig {
   /** Service name for the collector */
-  serviceName?: string;
+  serviceName?:string;
 
   /** HTTP port for OTEL data ingestion */
-  httpPort?: number;
+  httpPort?:number;
 
   /** gRPC port for OTEL data ingestion */
-  grpcPort?: number;
+  grpcPort?:number;
 
   /** Enable/disable specific signal types */
-  signals?: {
-    traces?: boolean;
-    metrics?: boolean;
-    logs?: boolean;
-  };
+  signals?:{
+    traces?:boolean;
+    metrics?:boolean;
+    logs?:boolean;
+};
 
   /** Backend exporters configuration */
-  exporters?: ExporterConfig[];
+  exporters?:ExporterConfig[];
 
   /** Data processors configuration */
-  processors?: ProcessorConfig[];
+  processors?:ProcessorConfig[];
 
   /** Global attributes to add to all telemetry */
-  globalAttributes?: Attributes;
+  globalAttributes?:Attributes;
 
   /** Batching configuration */
-  batching?: BatchingConfig;
+  batching?:BatchingConfig;
 
   /** Buffer and queue settings */
-  buffering?: BufferingConfig;
+  buffering?:BufferingConfig;
 }
 
 /**
@@ -49,33 +49,28 @@ export interface CollectorConfig {
 export interface ExporterConfig {
   /** Exporter type */
   type:
-    | 'jaeger'
-    | 'otlp-http'
-    | 'otlp-grpc'
-    | 'prometheus'
-    | 'console'
-    | 'file';
+    | 'jaeger')    | 'otlp-http')    | 'otlp-grpc')    | 'prometheus')    | 'console')    | 'file';
 
   /** Exporter name/identifier */
-  name: string;
+  name:string;
 
   /** Whether this exporter is enabled */
-  enabled?: boolean;
+  enabled?:boolean;
 
   /** Backend endpoint URL */
-  endpoint?: string;
+  endpoint?:string;
 
   /** Authentication headers */
-  headers?: Record<string, string>;
+  headers?:Record<string, string>;
 
   /** Timeout in milliseconds */
-  timeout?: number;
+  timeout?:number;
 
   /** Which signals to export */
-  signals?: ('traces' | 'metrics' | 'logs')[];
+  signals?:('traces' | ' metrics' | ' logs')[];
 
   /** Exporter-specific configuration */
-  config?: Record<string, any>;
+  config?:Record<string, any>;
 }
 
 /**
@@ -84,22 +79,16 @@ export interface ExporterConfig {
 export interface ProcessorConfig {
   /** Processor type */
   type:
-    | 'batch'
-    | 'filter'
-    | 'transform'
-    | 'sampler'
-    | 'memory_limiter'
-    | 'resource'
-    | 'attribute';
+    | 'batch')    | 'filter')    | 'transform')    | 'sampler')    | 'memory_limiter')    | 'resource')    | 'attribute';
 
   /** Processor name */
-  name: string;
+  name:string;
 
   /** Whether processor is enabled */
-  enabled?: boolean;
+  enabled?:boolean;
 
   /** Processor-specific configuration */
-  config?: Record<string, any>;
+  config?:Record<string, any>;
 }
 
 /**
@@ -107,13 +96,13 @@ export interface ProcessorConfig {
  */
 export interface BatchingConfig {
   /** Maximum batch size */
-  maxBatchSize?: number;
+  maxBatchSize?:number;
 
   /** Batch timeout in milliseconds */
-  batchTimeout?: number;
+  batchTimeout?:number;
 
   /** Maximum queue size */
-  maxQueueSize?: number;
+  maxQueueSize?:number;
 }
 
 /**
@@ -121,16 +110,16 @@ export interface BatchingConfig {
  */
 export interface BufferingConfig {
   /** Maximum memory usage in bytes */
-  maxMemoryMiB?: number;
+  maxMemoryMiB?:number;
 
   /** Maximum disk usage in bytes */
-  maxDiskMiB?: number;
+  maxDiskMiB?:number;
 
   /** Buffer flush interval in milliseconds */
-  flushInterval?: number;
+  flushInterval?:number;
 
   /** Enable disk spooling */
-  enableDiskSpool?: boolean;
+  enableDiskSpool?:boolean;
 }
 
 /**
@@ -138,34 +127,34 @@ export interface BufferingConfig {
  */
 export interface CollectorStats {
   /** Total signals received */
-  received: {
-    traces: number;
-    metrics: number;
-    logs: number;
-  };
+  received:{
+    traces:number;
+    metrics:number;
+    logs:number;
+};
 
   /** Total signals exported */
-  exported: {
-    traces: number;
-    metrics: number;
-    logs: number;
-  };
+  exported:{
+    traces:number;
+    metrics:number;
+    logs:number;
+};
 
   /** Export errors by backend */
-  errors: Record<string, number>;
+  errors:Record<string, number>;
 
   /** Current queue sizes */
-  queueSizes: Record<string, number>;
+  queueSizes:Record<string, number>;
 
   /** Memory usage */
-  memoryUsage: {
-    heapUsed: number;
-    heapTotal: number;
-    external: number;
-  };
+  memoryUsage:{
+    heapUsed:number;
+    heapTotal:number;
+    external:number;
+};
 
   /** Uptime in milliseconds */
-  uptime: number;
+  uptime:number;
 }
 
 /**
@@ -173,79 +162,68 @@ export interface CollectorStats {
  */
 export interface HealthStatus {
   /** Overall health status */
-  status: 'healthy' | 'degraded' | 'unhealthy';
+  status:'healthy' | ' degraded' | ' unhealthy';
 
   /** Individual exporter health */
-  exporters: Record<
+  exporters:Record<
     string,
     {
-      status: 'healthy' | 'degraded' | 'unhealthy';
-      lastSuccess?: number;
-      lastError?: string;
-    }
+      status:'healthy' | ' degraded' | ' unhealthy';
+      lastSuccess?:number;
+      lastError?:string;
+}
   >;
 
   /** System resource status */
-  resources: {
-    memory: 'ok' | 'warning' | 'critical';
-    disk: 'ok' | 'warning' | 'critical';
-    cpu: 'ok' | 'warning' | 'critical';
-  };
+  resources:{
+    memory:'ok' | ' warning' | ' critical';
+    disk:'ok' | ' warning' | ' critical';
+    cpu:'ok' | ' warning' | ' critical';
+};
 
   /** Timestamp of health check */
-  timestamp: number;
+  timestamp:number;
 }
 
 /**
  * Signal types supported by collector
  */
-export type SignalType = 'traces' | 'metrics' | 'logs';
+export type SignalType = 'traces' | ' metrics' | ' logs';
 
 /**
  * Backend types supported
  */
 export type BackendType =
-  | 'jaeger'
-  | 'otlp-http'
-  | 'otlp-grpc'
-  | 'prometheus'
-  | 'console'
-  | 'file';
+  | 'jaeger')  | 'otlp-http')  | 'otlp-grpc')  | 'prometheus')  | 'console')  | 'file';
 
 /**
  * Processor types available
  */
 export type ProcessorType =
-  | 'batch'
-  | 'filter'
-  | 'transform'
-  | 'sampler'
-  | 'memory_limiter'
-  | 'resource'
-  | 'attribute';
+  | 'batch')  | 'filter')  | 'transform')  | 'sampler')  | 'memory_limiter')  | 'resource')  | 'attribute';
 
 /**
  * Internal telemetry data structure
  */
 export interface TelemetryData {
   /** Signal type */
-  type: SignalType;
+  type:SignalType;
 
   /** Timestamp */
-  timestamp: number;
+  timestamp:number;
 
   /** Service information */
-  service: {
-    name: string;
-    version?: string;
-    instance?: string;
-  };
+  service:{
+    name:string;
+    version?:string;
+    instance?:string;
+};
 
   /** Data payload */
-  data: any;
+  data:any;
 
   /** Additional attributes */
-  attributes?: Attributes;
+  attributes?:Attributes;
 }
 
 /**
@@ -253,17 +231,17 @@ export interface TelemetryData {
  */
 export interface ExportResult {
   /** Whether export was successful */
-  success: boolean;
+  success:boolean;
 
   /** Number of items exported */
-  exported: number;
+  exported:number;
 
   /** Error message if failed */
-  error?: string;
+  error?:string;
 
   /** Backend name */
-  backend: string;
+  backend:string;
 
   /** Export duration in milliseconds */
-  duration: number;
+  duration:number;
 }

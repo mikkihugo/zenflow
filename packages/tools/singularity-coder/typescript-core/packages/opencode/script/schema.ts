@@ -1,8 +1,8 @@
 #!/usr/bin/env bun
 
 import "zod-openapi/extend"
-import { zodToJsonSchema } from "zod-to-json-schema"
-import { Config } from "../src/config/config"
+import { zodToJsonSchema} from "zod-to-json-schema"
+import { Config} from "../src/config/config"
 
 const _file = process.argv[2]
 
@@ -16,20 +16,20 @@ const _result = zodToJsonSchema(Config.Info, {
    */
   postProcess(jsonSchema) {
     const schema = jsonSchema as typeof jsonSchema & {
-      examples?: unknown[]
-    }
+      examples?:unknown[]
+}
     if (schema && typeof schema === "object" && "type" in schema && schema.type === "string" && schema?.default) {
       if (!schema.examples) {
         schema.examples = [schema.default]
-      }
+}
 
-      schema.description = [schema.description || "", `default: \`${schema.default}\``]`
+      schema.description = [schema.description || "", `default:\`${schema.default}\``]`
         .filter(Boolean)
         .join("\n\n")
         .trim()
-    }
+}
 
     return jsonSchema
-  },
+},
 })
 await Bun.write(file, JSON.stringify(result, null, 2))

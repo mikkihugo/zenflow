@@ -1,17 +1,17 @@
 import path from "node:path"
-import { z } from "@claude-zen/foundation"
-import { createMessageConnection, StreamMessageReader, StreamMessageWriter } from "vscode-jsonrpc/node"
-import type { Diagnostic as VSCodeDiagnostic } from "vscode-languageserver-types"
-import { App } from "../app/app"
-import { Bus } from "../bus"
-import { NamedError } from "../util/error"
-import { Log } from "../util/log"
-import { withTimeout } from "../util/timeout"
-import { LANGUAGE_EXTENSIONS } from "./language"
-import type { LSPServer } from "./server"
+import { z} from "@claude-zen/foundation"
+import { createMessageConnection, StreamMessageReader, StreamMessageWriter} from "vscode-jsonrpc/node"
+import type { Diagnostic as VSCodeDiagnostic} from "vscode-languageserver-types"
+import { App} from "../app/app"
+import { Bus} from "../bus"
+import { NamedError} from "../util/error"
+import { Log} from "../util/log"
+import { withTimeout} from "../util/timeout"
+import { LANGUAGE_EXTENSIONS} from "./language"
+import type { LSPServer} from "./server"
 
 export namespace LSPClient {
-  const log = Log.create({ service: "lsp.client" })
+  const log = Log.create({ service:"lsp.client"})
 
   export type Info = NonNullable<Awaited<ReturnType<typeof create>>>
 
@@ -20,21 +20,21 @@ export namespace LSPClient {
   export const InitializeError = NamedError.create(
     "LSPInitializeError",
     z.object({
-      serverID: z.string(),
-    }),
+      serverID:z.string(),
+}),
   )
 
   export const Event = {
-    Diagnostics: Bus.event(
+    Diagnostics:Bus.event(
       "lsp.client.diagnostics",
       z.object({
-        serverID: z.string(),
-        path: z.string(),
-      }),
+        serverID:z.string(),
+        path:z.string(),
+}),
     ),
-  }
+}
 
-  export async function create(input: { serverID: string; server: LSPServer.Handle; root: string }) {
+  export async function create(input:{ serverID: string; server: LSPServer.Handle; root: string}) {
     const app = App.info()
     const l = log.clone().tag("serverID", input.serverID)
     l.info("starting client")
@@ -49,115 +49,115 @@ export namespace LSPClient {
       const path = new URL(params.uri).pathname
       l.info("textDocument/publishDiagnostics", {
         path,
-      })
+})
       const exists = diagnostics.has(path)
       diagnostics.set(path, params.diagnostics)
       if (!exists && input.serverID === "typescript") return
-      Bus.publish(Event.Diagnostics, { path, serverID: input.serverID })
-    })
+      Bus.publish(Event.Diagnostics, { path, serverID:input.serverID})
+})
     connection.onRequest("window/workDoneProgress/create", (params) => {
       l.info("window/workDoneProgress/create", params)
       return null
-    })
+})
     connection.onRequest("workspace/configuration", async () => {
       return [{}]
-    })
+})
     connection.listen()
 
     l.info("sending initialize")
     await withTimeout(
       connection.sendRequest("initialize", {
-        rootUri: `file://${input.root}`,
-        processId: input.server.process.pid,
-        workspaceFolders: [
+        rootUri:`file://${input.root}`,
+        processId:input.server.process.pid,
+        workspaceFolders:[
           {
-            name: "workspace",
-            uri: `file://${input.root}`,
-          },
-        ],
-        initializationOptions: {
+            name:"workspace",
+            uri:`file://${input.root}`,
+},
+],
+        initializationOptions:{
           ...input.server.initialization,
-        },
-        capabilities: {
-          window: {
-            workDoneProgress: true,
-          },
-          workspace: {
-            configuration: true,
-          },
-          textDocument: {
-            synchronization: {
-              didOpen: true,
-              didChange: true,
-            },
-            publishDiagnostics: {
-              versionSupport: true,
-            },
-          },
-        },
-      }),
+},
+        capabilities:{
+          window:{
+            workDoneProgress:true,
+},
+          workspace:{
+            configuration:true,
+},
+          textDocument:{
+            synchronization:{
+              didOpen:true,
+              didChange:true,
+},
+            publishDiagnostics:{
+              versionSupport:true,
+},
+},
+},
+}),
       5_000,
     ).catch((err) => {
-      l.error("initialize error", { error: err })
+      l.error("initialize error", { error:err})
       throw new InitializeError(
-        { serverID: input.serverID },
+        { serverID:input.serverID},
         {
-          cause: err,
-        },
+          cause:err,
+},
       )
-    })
+})
 
     await connection.sendNotification("initialized", {})
 
-    const files: {
-      [path: string]: number
-    } = {}
+    const files:{
+      [path:string]: number
+} = {}
 
     const result = {
-      root: input.root,
+      root:input.root,
       get serverID() {
         return input.serverID
-      },
+},
       get connection() {
         return connection
-      },
-      notify: {
-        async open(input: { path: string }) {
-          input.path = path.isAbsolute(input.path) ? input.path : path.resolve(app.path.cwd, input.path)
+},
+      notify:{
+        async open(input:{ path: string}) {
+          input.path = path.isAbsolute(input.path) ? input.path:path.resolve(app.path.cwd, input.path)
           const file = Bun.file(input.path)
           const text = await file.text()
           const version = files[input.path]
           if (version !== undefined) {
             diagnostics.delete(input.path)
             await connection.sendNotification("textDocument/didClose", {
-              textDocument: {
-                uri: `file://${input.path}`,`
-              },
-            })
-          }
+              textDocument:{
+                uri:`file://${input.path}`,`
+},
+})
+}
           log.info("textDocument/didOpen", input)
           diagnostics.delete(input.path)
           const extension = path.extname(input.path)
           const languageId = LANGUAGE_EXTENSIONS[extension] ?? "plaintext"
           await connection.sendNotification("textDocument/didOpen", {
-            textDocument: {
-              uri: `file://${input.path}`,`
+            textDocument:{
+              uri:`file://${input.path}`,`
               languageId,
-              version: 0,
+              version:0,
               text,
-            },
-          })
+},
+})
           files[input.path] = 0
           return
-        },
-      },
+},
+},
       get diagnostics() {
         return diagnostics
-      },
-      async waitForDiagnostics(input: { path: string }) {
-        input.path = path.isAbsolute(input.path) ? input.path : path.resolve(app.path.cwd, input.path)
+},
+      async waitForDiagnostics(input:{ path: string}) {
+        input.path = path.isAbsolute(input.path) ? input.path:path.resolve(app.path.cwd, input.path)
         log.info("waiting for diagnostics", input)
-        let unsub: () => void
+        let unsub:() => void
         return await withTimeout(
           new Promise<void>((resolve) => {
             unsub = Bus.subscribe(Event.Diagnostics, (event) => {
@@ -165,27 +165,27 @@ export namespace LSPClient {
                 log.info("got diagnostics", input)
                 unsub?.()
                 resolve()
-              }
-            })
-          }),
+}
+})
+}),
           3000,
         )
           .catch(() => {})
           .finally(() => {
             unsub?.()
-          })
-      },
+})
+},
       async shutdown() {
         l.info("shutting down")
         connection.end()
         connection.dispose()
         input.server.process.kill()
         l.info("shutdown")
-      },
-    }
+},
+}
 
     l.info("initialized")
 
     return result
-  }
+}
 }

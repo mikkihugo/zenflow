@@ -1031,8 +1031,15 @@ export { CompleteIntelligenceSystem, createBasicIntelligenceSystem, createIntell
 //   SystemHealth
 // } from './monitoring/types';
 // =============================================================================
-// LOAD BALANCING SYSTEM - Internal load balancing (formerly @claude-zen/load-balancing)
+// LOAD BALANCING SYSTEM - ⚠️ DEPRECATED (formerly @claude-zen/load-balancing)
 // =============================================================================
+// 
+// 🚫 DEPRECATED - DO NOT USE
+// Load balancing is unnecessary for 1-2 user systems.
+// Use brain event coordination instead for intelligent task distribution.
+//
+// Replaced by: Brain event-driven coordination with modal behavior
+//
 // export {
 //   LoadBalancer,
 //   createLoadBalancer,

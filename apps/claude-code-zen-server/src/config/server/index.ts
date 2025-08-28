@@ -6,5 +6,5 @@
  */
 
 // Configuration types and functions
-export type { WebConfig, WebSession } from './server.config';
-export { createWebConfig, DEFAULT_WEB_CONFIG } from './server.config';
+export type { WebConfig, WebSession} from './server.config';
+export { createWebConfig, DEFAULT_WEB_CONFIG} from './server.config';

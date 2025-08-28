@@ -6,7 +6,7 @@ echo "=================================================="
 echo ""
 
 # Run the specific test file
-npx jest tests/integration/hive-mind-schema.test.js --verbose
+npx vitest tests/integration/hive-mind-schema.test.js --verbose
 
 # Check exit code
 if [ $? -eq 0 ]; then

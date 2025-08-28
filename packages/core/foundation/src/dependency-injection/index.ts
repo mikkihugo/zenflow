@@ -5,4 +5,4 @@
  */
 
 export * from "./container.service.js";
-export type { Container, ContainerStats, ServiceInfo } from "./container.service.js";
+export type { Container, ContainerStats, ServiceInfo} from "./container.service.js";

@@ -1,6 +1,6 @@
 import path from "node:path"
-import { Global } from "../global"
-import { lazy } from "../util/lazy"
+import { Global} from "../global"
+import { lazy} from "../util/lazy"
 
 export const AuthCopilot = lazy(async () => {
   const file = Bun.file(path.join(Global.Path.state, "plugin", "copilot.ts"))
@@ -11,7 +11,7 @@ export const AuthCopilot = lazy(async () => {
   if (!file.exists()) {
     const worked = await response
     if (!worked) return
-  }
+}
   const result = await import(file.name!).catch(() => {})
   if (!result) return
   return result.AuthCopilot

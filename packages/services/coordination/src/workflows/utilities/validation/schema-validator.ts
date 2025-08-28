@@ -7,9 +7,7 @@
  * @author Claude Code Zen Team
  * @since 1.0.0
  */
-
-import { z } from '@claude-zen/foundation';
-/**
+import { z} from '@claude-zen/foundation')/**`;
  * Professional schema validation utilities
  */
 export class SchemaValidator {
@@ -18,41 +16,23 @@ export class SchemaValidator {
    */
   static createSafeParser<T>(schema: z.ZodSchema<T>) {
     return (
-      data: unknown
-    ): { success: boolean; data?: T; errors?: string[] } => {
+      data: unknown;
+    ):{ success: boolean; data?: T; errors?: string[]} => {
       try {
         const result = schema.parse(data);
-        return { success: true, data: result };
-      } catch (error) {
+        return { success: true, data: result};
+} catch (error) {
         if (error instanceof z.ZodError) {
           return {
             success: false,
             errors: error.errors.map(
-              (e) => `${{e.path.join('.')}: ${e.message}}``
-            ),
-          };
-        }
-        return { success: false, errors: ['Unknown validation error'] };
-      }
-    };
-  }
-
-  /**
-   * Validate data against schema
-   */
-  static validate<T>(
-    schema: z.ZodSchema<T>,
-    data: unknown
-  ): { success: boolean; data?: T; errors?: string[] } {
-    const parser = this.createSafeParser(schema);
+              (e) => ``${{e.path.join('.)}:${e.message}};)            ),``;
+};)};)        return { success: this.createSafeParser(schema);
     return parser(data);
-  }
-
+}
   /**
    * Check if data matches schema
    */
-  static isValid<T>(schema: z.ZodSchema<T>, data: unknown): boolean {
-    const result = this.validate(schema, data);
+  static isValid<T>(schema: this.validate(schema, data);
     return result.success;
-  }
-}
+};)};;

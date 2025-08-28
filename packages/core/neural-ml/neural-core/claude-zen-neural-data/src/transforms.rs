@@ -53,9 +53,9 @@ impl LogTransform {
                   }
                 })
               })
-              .with_name(col_name.clone());
+              .with_name(col_name);
 
-            let column = transformed.into_column();
+            let column = transformed.into_series();
             result = result.hstack(&[column])?;
           }
           _ => {
@@ -91,9 +91,9 @@ impl LogTransform {
                   }
                 })
               })
-              .with_name(col_name.clone());
+              .with_name(col_name);
 
-            let column = transformed.into_column();
+            let column = transformed.into_series();
             result = result.hstack(&[column])?;
           }
           _ => {
@@ -141,8 +141,8 @@ impl DifferenceTransform {
             if len <= self.periods {
               // Not enough data for differencing, return NaN values
               let nan_values: Vec<Option<f64>> = vec![None; len];
-              let transformed = Series::new(col_name.clone(), nan_values);
-              let column = transformed.into_column();
+              let transformed = Series::new(col_name, nan_values);
+              let column = transformed.into_series();
               result = result.hstack(&[column])?;
               continue;
             }
@@ -166,8 +166,8 @@ impl DifferenceTransform {
               }
             }
 
-            let transformed = Series::new(col_name.clone(), diff_values);
-            let column = transformed.into_column();
+            let transformed = Series::new(col_name, diff_values);
+            let column = transformed.into_series();
             result = result.hstack(&[column])?;
           }
           _ => {
@@ -222,8 +222,8 @@ impl DifferenceTransform {
               }
             }
 
-            let transformed = Series::new(col_name.clone(), original_values);
-            let column = transformed.into_column();
+            let transformed = Series::new(col_name, original_values);
+            let column = transformed.into_series();
             result = result.hstack(&[column])?;
           }
           _ => {

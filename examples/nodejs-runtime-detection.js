@@ -8,8 +8,8 @@
  */
 
 const { spawn } = require("node:child_process");
-const _fs = require("node:fs");
-const _path = require("node:path");
+const fs = require("node:fs");
+const path = require("node:path");
 
 // Detect hardware in pure JavaScript (before loading WASM)
 function detectNodeJSHardware() {
@@ -20,6 +20,11 @@ function detectNodeJSHardware() {
 	console.log(
 		`   Total Memory: ${Math.round(require("node:os").totalmem() / 1024 / 1024 / 1024)}GB`,
 	);
+	
+	// Check if neural-ml directory exists for WASM binaries
+	const wasmPath = path.join(__dirname, '..', 'packages', 'core', 'neural-ml');
+	const wasmExists = fs.existsSync(wasmPath);
+	console.log(`   WASM Directory: ${wasmExists ? '✅ Found' : '❌ Missing'} at ${wasmPath}`);
 	console.log(`   Node.js Version: ${process.version}`);
 
 	// Detect Apple Silicon
@@ -81,9 +86,13 @@ async function loadNeuralMLWithDetection() {
 		},
 	);
 
-	let _buildOutput = "";
+	let buildOutput = "";
 	buildProcess.stdout.on("data", (data) => {
-		_buildOutput += data.toString();
+		buildOutput += data.toString();
+		// Log build progress for debugging
+		if (buildOutput.includes("Compiling")) {
+			console.log(`   Build: ${data.toString().trim()}`);
+		}
 	});
 
 	buildProcess.stderr.on("data", (data) => {
@@ -184,8 +193,9 @@ async function main() {
 	// Step 2: Build WASM with detection
 	try {
 		await loadNeuralMLWithDetection();
-	} catch (_error) {
+	} catch (error) {
 		console.log("   ⚠️  WASM build skipped (continuing with simulation)");
+		console.log(`   Error: ${error.message}`);
 	}
 
 	// Step 3: Simulate runtime detection

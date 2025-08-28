@@ -16,8 +16,8 @@
  * @version 1.0.0
  * @since 2024-01-01
  */
-import type { BehavioralIntelligence } from '../../behavioral-intelligence';
-import type { CodingPrinciplesResearcher } from './coding-principles-researcher';
+import type { BehavioralIntelligence} from '../../behavioral-intelligence';
+import type { CodingPrinciplesResearcher} from './coding-principles-researcher';
 /**
  * Development phase types for prompt generation
  */
@@ -26,61 +26,61 @@ export type DevelopmentPhase = specification | pseudocode | architecture | refin
  * Coding standards configuration
  */
 export interface CodingStandardsConfig {
-    /** Target language (default: typescript) */
+    /** Target language (default:typescript) */
     language?: 'typescript|javascript|rust|python;;
-    /** Maximum function complexity (default: 10) */
-    maxComplexity?: number;
-    /** Maximum lines per function (default: 30) */
-    maxLinesPerFunction?: number;
-    /** Maximum parameters per function (default: 5) */
-    maxParameters?: number;
-    /** File naming convention (default: kebab-case) */
+'    /** Maximum function complexity (default:10) */
+    maxComplexity?:number;
+    /** Maximum lines per function (default:30) */
+    maxLinesPerFunction?:number;
+    /** Maximum parameters per function (default:5) */
+    maxParameters?:number;
+    /** File naming convention (default:kebab-case) */
     fileNaming?: 'kebab-case|camelCase|PascalCase|snake_case;;
-    /** Include performance guidelines */
-    includePerformance?: boolean;
+'    /** Include performance guidelines */
+    includePerformance?:boolean;
     /** Include security guidelines */
-    includeSecurity?: boolean;
+    includeSecurity?:boolean;
 }
 /**
  * Project context for prompt generation
  */
 export interface ProjectContext {
     /** Project name */
-    name: string;
+    name:string;
     /** Project domain/type */
-    domain: string;
+    domain:string;
     /** Current phase of the project */
-    currentPhase?: string;
+    currentPhase?:string;
     /** Domain-specific context */
-    domainSpecific?: Record<string, unknown>;
+    domainSpecific?:Record<string, unknown>;
     /** Current requirements */
-    requirements?: string[];
+    requirements?:string[];
     /** Existing architecture patterns */
-    architecturePatterns?: string[];
+    architecturePatterns?:string[];
     /** Technology stack */
-    techStack?: string[];
+    techStack?:string[];
 }
 /**
  * Generated prompt result
  */
 export interface IntelligentPrompt {
     /** Main prompt content */
-    content: string;
+    content:string;
     /** Coding standards section */
-    codingStandards: string;
+    codingStandards:string;
     /** Phase-specific guidelines */
-    phaseGuidelines: string;
+    phaseGuidelines:string;
     /** Quality metrics */
-    qualityMetrics: string[];
+    qualityMetrics:string[];
     /** Estimated complexity score */
-    complexityScore: number;
+    complexityScore:number;
     /** Meta-learning metadata */
-    metadata?: {
-        principlesId?: string;
-        researchConfidence?: number;
-        usesPrinciplesResearch?: boolean;
-        researchedAt?: Date;
-    };
+    metadata?:{
+        principlesId?:string;
+        researchConfidence?:number;
+        usesPrinciplesResearch?:boolean;
+        researchedAt?:Date;
+};
 }
 /**
  * Intelligent Prompt Generator
@@ -89,12 +89,12 @@ export interface IntelligentPrompt {
  * integrated coding standards and best practices.
  */
 export declare class IntelligentPromptGenerator {
-    ': any;
-    constructor(behavioralIntelligence?: BehavioralIntelligence, codingPrinciplesResearcher?: CodingPrinciplesResearcher);
+    ':any;
+    constructor(behavioralIntelligence?:BehavioralIntelligence, codingPrinciplesResearcher?:CodingPrinciplesResearcher);
     /**
      * Generate intelligent prompt for development phase using meta-learning with confidence tracking
      */
-    generatePrompt(phase: DevelopmentPhase, context: ProjectContext, config?: Partial<CodingStandardsConfig>): Promise<IntelligentPrompt>;
+    generatePrompt(phase:DevelopmentPhase, context:ProjectContext, config?:Partial<CodingStandardsConfig>): Promise<IntelligentPrompt>;
     /**
      * Generate comprehensive coding standards
      */
@@ -107,15 +107,15 @@ export declare class IntelligentPromptGenerator {
      * Generate quality metrics for the phase
      */
     private generateQualityMetrics;
-    const result: any;
-    if(result: any, success: any): any;
+    const result:any;
+    if(result:any, success:any): any;
 }
 /**
  * Export convenient factory function
  */
-export declare function createIntelligentPromptGenerator(behavioralIntelligence?: BehavioralIntelligence): IntelligentPromptGenerator;
+export declare function createIntelligentPromptGenerator(behavioralIntelligence?:BehavioralIntelligence): IntelligentPromptGenerator;
 /**
  * Export default configuration
  */
-export declare const DEFAULT_CODING_STANDARDS: Required<CodingStandardsConfig>;
+export declare const DEFAULT_CODING_STANDARDS:Required<CodingStandardsConfig>;
 //# sourceMappingURL=intelligent-prompt-generator.d.ts.map

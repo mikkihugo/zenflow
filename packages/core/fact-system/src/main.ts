@@ -17,18 +17,18 @@ import type {
 } from "./typescript/types";
 
 export class FactClient {
-	private config: FactSystemConfig | undefined;
+	private config:FactSystemConfig | undefined;
 
-	constructor(config?: FactSystemConfig) {
+	constructor(config?:FactSystemConfig) {
 		this.config = config;
-	}
+}
 
-	async search(query: any): Promise<any> {
+	async search(query:any): Promise<any> {
 		console.log("Searching facts with query:", query);
 		return [];
-	}
+}
 
-	async gatherFromSources(sources: any[], options?: any): Promise<any> {
+	async gatherFromSources(sources:any[], options?:any): Promise<any> {
 		console.log(
 			"Gathering facts from sources:",
 			sources,
@@ -36,63 +36,63 @@ export class FactClient {
 			options,
 		);
 		return [];
-	}
+}
 
-	getStats(): any {
+	getStats():any {
 		return {
-			cacheSize: 0,
-			totalQueries: 0,
-			cacheHitRate: 0,
-			rustEngineActive: this.config?.useRustEngine || false,
-		};
-	}
+			cacheSize:0,
+			totalQueries:0,
+			cacheHitRate:0,
+			rustEngineActive:this.config?.useRustEngine || false,
+};
+}
 
-	shutdown?(): void {
+	shutdown?():void {
 		console.log("Shutting down fact client");
-	}
+}
 }
 
 export function createFactClient(
-	config?: FactSystemConfig,
-): Promise<FactClient> {
+	config?:FactSystemConfig,
+):Promise<FactClient> {
 	return Promise.resolve(new FactClient(config));
 }
-export function createSQLiteFactClient(path?: string): Promise<FactClient> {
+export function createSQLiteFactClient(path?:string): Promise<FactClient> {
 	console.log("Creating SQLite fact client at path:", path || "default");
 	return Promise.resolve(
 		new FactClient({
-			database: {
-				query: async () => [],
-				execute: async () => 0,
-				close: async () => {},
-			},
-		}),
+			database:{
+				query:async () => [],
+				execute:async () => 0,
+				close:async () => {},
+},
+}),
 	);
 }
 
-export function createLanceDBFactClient(path?: string): Promise<FactClient> {
+export function createLanceDBFactClient(path?:string): Promise<FactClient> {
 	console.log("Creating LanceDB fact client at path:", path || "default");
 	return Promise.resolve(
 		new FactClient({
-			database: {
-				query: async () => [],
-				execute: async () => 0,
-				close: async () => {},
-			},
-		}),
+			database:{
+				query:async () => [],
+				execute:async () => 0,
+				close:async () => {},
+},
+}),
 	);
 }
 
-export function createKuzuFactClient(path?: string): Promise<FactClient> {
+export function createKuzuFactClient(path?:string): Promise<FactClient> {
 	console.log("Creating Kuzu fact client at path:", path || "default");
 	return Promise.resolve(
 		new FactClient({
-			database: {
-				query: async () => [],
-				execute: async () => 0,
-				close: async () => {},
-			},
-		}),
+			database:{
+				query:async () => [],
+				execute:async () => 0,
+				close:async () => {},
+},
+}),
 	);
 }
 
@@ -105,32 +105,32 @@ export class IntelligentCache {
 
 	constructor() {
 		console.log("Initializing intelligent cache system");
-	}
+}
 
-	clear(): void {
+	clear():void {
 		this.cache.clear();
 		console.log("Cache cleared");
-	}
+}
 
-	set(key: string, value: any): void {
+	set(key:string, value:any): void {
 		this.cache.set(key, value);
 		console.log("Cached fact:", key);
-	}
+}
 
-	get(key: string): any {
+	get(key:string): any {
 		return this.cache.get(key) || null;
-	}
+}
 }
 
 export class NaturalLanguageQuery {
 	constructor() {
 		console.log("Initializing natural language query processor");
-	}
+}
 
-	async processQuery(query: string): Promise<any> {
+	async processQuery(query:string): Promise<any> {
 		console.log("Processing natural language query:", query);
 		return [];
-	}
+}
 }
 
 // =============================================================================
@@ -139,12 +139,12 @@ export class NaturalLanguageQuery {
 export class LiveAPIConnector {
 	constructor() {
 		console.log("Initializing live API connector");
-	}
+}
 
-	fetchData(source: string): Promise<any> {
+	fetchData(source:string): Promise<any> {
 		console.log("Fetching data from source:", source);
 		return Promise.resolve({});
-	}
+}
 }
 
 // =============================================================================
@@ -153,12 +153,12 @@ export class LiveAPIConnector {
 export class DocumentationProcessor {
 	constructor() {
 		console.log("Initializing documentation processor");
-	}
+}
 
-	process(content: string): any {
+	process(content:string): any {
 		console.log("Processing documentation content, length:", content.length);
 		return {};
-	}
+}
 }
 
 // =============================================================================
@@ -193,83 +193,83 @@ export type {
 // =============================================================================
 
 export async function getFactSystemAccess(
-	config?: FactSystemConfig,
-): Promise<any> {
+	config?:FactSystemConfig,
+):Promise<any> {
 	const factClient = await createFactClient(config);
 	const cache = new IntelligentCache();
 	const nlQuery = new NaturalLanguageQuery();
 
 	return {
-		createClient: (clientConfig?: FactSystemConfig) =>
+		createClient:(clientConfig?: FactSystemConfig) =>
 			createFactClient(clientConfig),
-		createSQLiteClient: (path?: string) => createSQLiteFactClient(path),
-		createLanceDBClient: (path?: string) => createLanceDBFactClient(path),
-		createKuzuClient: (path?: string) => createKuzuFactClient(path),
-		createBridge: () => new FactBridge(),
-		createCache: () => new IntelligentCache(),
-		search: (query: any) => factClient.search(query),
-		searchNaturalLanguage: (query: string) => nlQuery.processQuery(query),
-		gatherFacts: (sources: any[], options?: any) =>
+		createSQLiteClient:(path?: string) => createSQLiteFactClient(path),
+		createLanceDBClient:(path?: string) => createLanceDBFactClient(path),
+		createKuzuClient:(path?: string) => createKuzuFactClient(path),
+		createBridge:() => new FactBridge(),
+		createCache:() => new IntelligentCache(),
+		search:(query: any) => factClient.search(query),
+		searchNaturalLanguage:(query: string) => nlQuery.processQuery(query),
+		gatherFacts:(sources: any[], options?:any) =>
 			factClient.gatherFromSources(sources, options),
-		processDocumentation: (content: string) => {
+		processDocumentation:(content: string) => {
 			const processor = new DocumentationProcessor();
 			return processor.process(content);
-		},
-		getStats: () => factClient.getStats(),
-		clearCache: () => cache.clear(),
-		shutdown: () => factClient.shutdown?.(),
-	};
+},
+		getStats:() => factClient.getStats(),
+		clearCache:() => cache.clear(),
+		shutdown:() => factClient.shutdown?.(),
+};
 }
 
 export async function getFactClient(
-	config?: FactSystemConfig,
-): Promise<FactClient> {
+	config?:FactSystemConfig,
+):Promise<FactClient> {
 	return await createFactClient(config);
 }
 
 export async function getFactGathering(
-	config?: FactSystemConfig,
-): Promise<any> {
+	config?:FactSystemConfig,
+):Promise<any> {
 	const system = await getFactSystemAccess(config);
 	return {
-		gather: (sources: FactSourceType[], options?: FactProcessingOptions) =>
+		gather:(sources: FactSourceType[], options?:FactProcessingOptions) =>
 			system.gatherFacts(sources, options),
-		search: (query: FactSearchQuery) => system.search(query),
-		query: (naturalLanguageQuery: string) =>
+		search:(query: FactSearchQuery) => system.search(query),
+		query:(naturalLanguageQuery: string) =>
 			system.searchNaturalLanguage(naturalLanguageQuery),
-		fromNPM: (packageName: string) =>
-			system.search({ source: "npm", query: packageName }),
-		fromGitHub: (repository: string) =>
-			system.search({ source: "github", query: repository }),
-		fromDocs: (apiName: string) =>
-			system.search({ source: "api_docs", query: apiName }),
-	};
+		fromNPM:(packageName: string) =>
+			system.search({ source:"npm", query:packageName}),
+		fromGitHub:(repository: string) =>
+			system.search({ source:"github", query:repository}),
+		fromDocs:(apiName: string) =>
+			system.search({ source:"api_docs", query:apiName}),
+};
 }
 
 export async function getFactProcessing(
-	config?: FactSystemConfig,
-): Promise<any> {
+	config?:FactSystemConfig,
+):Promise<any> {
 	const system = await getFactSystemAccess(config);
 	return {
-		process: (content: string) => system.processDocumentation(content),
-		cache: (key: string, data: any) => {
+		process:(content: string) => system.processDocumentation(content),
+		cache:(key: string, data:any) => {
 			const cache = new IntelligentCache();
 			return cache.set(key, data);
-		},
-		retrieve: (key: string) => {
+},
+		retrieve:(key: string) => {
 			const cache = new IntelligentCache();
 			return cache.get(key);
-		},
-		analyze: (facts: FactSearchResult[]) => 
+},
+		analyze:(facts: FactSearchResult[]) => 
 			// Analysis implementation
 			 ({
-				totalFacts: facts.length,
-				sourceBreakdown: facts.reduce(
+				totalFacts:facts.length,
+				sourceBreakdown:facts.reduce(
 					(acc, fact) => {
 						const source = (fact as any).source || "unknown";
 						acc[source] = (acc[source] || 0) + 1;
 						return acc;
-					},
+},
 					{} as Record<string, number>,
 				),
 				confidence:
@@ -277,51 +277,51 @@ export async function getFactProcessing(
 						(sum, fact) => sum + ((fact as any).confidence || 0),
 						0,
 					) / (facts.length || 1),
-			})
-		,
-	};
+})
+,
+};
 }
 
-export async function getFactSources(config?: FactSystemConfig): Promise<any> {
+export async function getFactSources(config?:FactSystemConfig): Promise<any> {
 	const system = await getFactSystemAccess(config);
 	return {
-		npm: (packageName: string) =>
-			system.search({ source: "npm", query: packageName }),
-		github: (repository: string) =>
-			system.search({ source: "github", query: repository }),
-		apiDocs: (apiName: string) =>
-			system.search({ source: "api_docs", query: apiName }),
-		security: (cveId: string) =>
-			system.search({ source: "security", query: cveId }),
-		live: async (endpoint: string) => {
+		npm:(packageName: string) =>
+			system.search({ source:"npm", query:packageName}),
+		github:(repository: string) =>
+			system.search({ source:"github", query:repository}),
+		apiDocs:(apiName: string) =>
+			system.search({ source:"api_docs", query:apiName}),
+		security:(cveId: string) =>
+			system.search({ source:"security", query:cveId}),
+		live:async (endpoint: string) => {
 			const connector = new LiveAPIConnector();
 			return connector.fetchData(endpoint);
-		},
-		documentation: (content: string) => system.processDocumentation(content),
-	};
+},
+		documentation:(content: string) => system.processDocumentation(content),
+};
 }
 
 export async function getFactIntelligence(
-	config?: FactSystemConfig,
-): Promise<any> {
+	config?:FactSystemConfig,
+):Promise<any> {
 	const system = await getFactSystemAccess(config);
 	const nlQuery = new NaturalLanguageQuery();
 
 	return {
-		understand: (query: string) => nlQuery.processQuery(query),
-		search: (query: any) => system.search(query),
-		reason: (facts: FactSearchResult[]) => 
+		understand:(query: string) => nlQuery.processQuery(query),
+		search:(query: any) => system.search(query),
+		reason:(facts: FactSearchResult[]) => 
 			// Reasoning implementation
 			 ({
-				insights: facts.map(
+				insights:facts.map(
 					(fact) =>
-						`${(fact as any).source || "unknown"}: ${(fact as any).summary || (fact as any).content || "no content"}`,
+						`${(fact as any).source || "unknown"}:${(fact as any).summary || (fact as any).content || "no content"}`,
 				),
-				patterns: [], // Pattern detection would be implemented here
-				recommendations: [], // Recommendations based on facts
-			})
-		,
-		correlate: (facts: FactSearchResult[]) => {
+				patterns:[], // Pattern detection would be implemented here
+				recommendations:[], // Recommendations based on facts
+})
+,
+		correlate:(facts: FactSearchResult[]) => {
 			// Correlation analysis
 			const correlations = [];
 			for (let i = 0; i < facts.length; i++) {
@@ -333,49 +333,49 @@ export async function getFactIntelligence(
 					const fact2Terms = ((facts[j] as any).content || "")
 						.toLowerCase()
 						.split(" ");
-					const commonTerms = fact1Terms.filter((term: any) =>
+					const commonTerms = fact1Terms.filter((term:any) =>
 						fact2Terms.includes(term),
 					);
 					if (commonTerms.length > 3) {
 						correlations.push({
-							fact1: facts[i],
-							fact2: facts[j],
+							fact1:facts[i],
+							fact2:facts[j],
 							commonTerms,
 							strength:
 								commonTerms.length /
 								Math.max(fact1Terms.length, fact2Terms.length),
-						});
-					}
-				}
-			}
+});
+}
+}
+}
 			return correlations;
-		},
-	};
+},
+};
 }
 
 // Professional fact system object with proper naming (matches brainSystem pattern)
 export const factSystem = {
-	getAccess: getFactSystemAccess,
-	getClient: getFactClient,
-	getGathering: getFactGathering,
-	getProcessing: getFactProcessing,
-	getSources: getFactSources,
-	getIntelligence: getFactIntelligence,
-	createClient: createFactClient,
-	createBridge: () => new FactBridge(),
+	getAccess:getFactSystemAccess,
+	getClient:getFactClient,
+	getGathering:getFactGathering,
+	getProcessing:getFactProcessing,
+	getSources:getFactSources,
+	getIntelligence:getFactIntelligence,
+	createClient:createFactClient,
+	createBridge:() => new FactBridge(),
 };
 
 // =============================================================================
 // METADATA
 // =============================================================================
 export const FACT_MAIN_INFO = {
-	version: "1.0.0",
-	description: "FACT system main implementation entry point",
-	components: [
+	version:"1.0.0",
+	description:"FACT system main implementation entry point",
+	components:[
 		"FactClient - Core fact gathering system",
 		"FactBridge - Rust/TypeScript integration",
 		"IntelligentCache - Smart caching layer",
 		"LiveAPIConnector - External data sources",
 		"DocumentationProcessor - Content processing",
-	],
+],
 } as const;

@@ -9,8 +9,10 @@
 export * from './core';
 
 // Direct package imports
-export { DatabaseProvider } from '@claude-zen/database';
-export { EventManager } from '@claude-zen/event-system';
+import { DatabaseProvider} from '@claude-zen/database';
+import { EventBus} from '@claude-zen/foundation';
+
+export { DatabaseProvider, EventBus};
 
 // Create database access utility function
 export function getDatabaseAccess() {
@@ -19,9 +21,9 @@ export function getDatabaseAccess() {
 
 // Create infrastructure system utility
 export const infrastructureSystem = {
-  database: new DatabaseProvider(),
-  events: new EventManager()
+  database:new DatabaseProvider(),
+  events:new EventBus()
 };
 
-// TODO: Add configuration module when needed
+// TODO:Add configuration module when needed
 // export * from './configuration';

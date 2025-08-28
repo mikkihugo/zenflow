@@ -13,26 +13,26 @@
  */
 
 // Export main CodeAnalyzer class and utilities
-export { analyzeFile, CodeAnalyzer, createCodeAnalyzer } from './code-analyzer';
+export { analyzeFile, CodeAnalyzer, createCodeAnalyzer} from './code-analyzer';
 
-import { CodeAnalyzer } from './code-analyzer';
+import { CodeAnalyzer} from './code-analyzer';
 
 // Export all types
 export type * from './types/code-analysis';
 
 // Export factory functions for common use cases
-export function createLiveCodeAnalyzer(repositoryPath: string) {
+export function createLiveCodeAnalyzer(repositoryPath:string) {
   return new CodeAnalyzer(repositoryPath);
 }
 
-export function createAICodeAnalyzer(repositoryPath: string, aiConfig?: any) {
+export function createAICodeAnalyzer(repositoryPath:string, aiConfig?:any) {
   const analyzer = new CodeAnalyzer(repositoryPath);
   // Configure AI features when available
   if (aiConfig) {
     // Future AI configuration implementation
-    console.debug('AI configuration provided for code analyzer', {'
-      config: aiConfig,
-    });
-  }
+    console.debug('AI configuration provided for code analyzer', {
+    ')      config:aiConfig,
+});
+}
   return analyzer;
 }

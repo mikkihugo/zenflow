@@ -24,9 +24,7 @@
 				"../../packages/services/*/src",
 				"../../packages/services/*/dist",
 				"../../packages/core/*/src", 
-				"../../packages/core/*/dist",
-				"../../packages-old/implementation/*/src",
-				"../../packages-old/implementation/*/dist"
+				"../../packages/core/*/dist"
 			],
 			"$lib/*": ["./src/lib/*"],
 			"$components/*": ["./src/components/*"],
@@ -41,6 +39,7 @@
 		"node_modules",
 		"**/*.test.ts",
 		"**/*.spec.ts",
-		"src/__tests__/**/*"
+		"src/__tests__/**/*",
+		"../../packages-old/**/*"
 	]
 }

@@ -5,24 +5,24 @@
  * These represent standard ways of organizing data and behavior that are
  * domain-agnostic and universally applicable.
  *
- * SCOPE: Structural patterns that are NOT domain-specific
+ * SCOPE:Structural patterns that are NOT domain-specific
  *
  * @package @claude-zen/foundation
  * @since 2.1.0
  * @example
- * ```typescript
- * import type { Timestamped, Versioned, Paginated } from '@claude-zen/foundation/types';
+ * ```typescript`
+ * import type { Timestamped, Versioned, Paginated} from '@claude-zen/foundation/types';
  *
  * interface User extends Timestamped, Versioned {
- *   id: string;
- *   email: string;
- * }
+ *   id:string;
+ *   email:string;
+ *}
  *
  * type UserList = Paginated<User>;
  * ```
  */
 
-import type { ID, ISODateString, Timestamp, UUID } from "./primitives";
+import type { ID, ISODateString, Timestamp, UUID} from "./primitives";
 
 // =============================================================================
 // TEMPORAL PATTERNS - Time-related data structures
@@ -34,25 +34,23 @@ import type { ID, ISODateString, Timestamp, UUID } from "./primitives";
  *
  * @interface Timestamped
  * @example
- * ```typescript
+ * ```typescript`
  * interface User extends Timestamped {
- *   id: string;
- *   email: string;
- * }
+ *   id:string;
+ *   email:string;
+ *}
  *
- * const user: User = {
- *   id: '123',
- *   email: 'user@example.com',
- *   createdAt: Date.now(),
- *   updatedAt: Date.now()
- * };
+ * const user:User = {
+ *   id: '123', *   email: 'user@example.com', *   createdAt:Date.now(),
+ *   updatedAt:Date.now()
+ *};
  * ```
  */
 export interface Timestamped {
 	/** When this entity was created */
-	readonly createdAt: Timestamp;
+	readonly createdAt:Timestamp;
 	/** When this entity was last updated */
-	updatedAt: Timestamp;
+	updatedAt:Timestamp;
 }
 
 /**
@@ -62,31 +60,29 @@ export interface Timestamped {
  * @interface TimestampedWithDeletion
  * @extends Timestamped
  * @example
- * ```typescript
+ * ```typescript`
  * interface SoftDeletableUser extends TimestampedWithDeletion {
- *   id: string;
- *   email: string;
- * }
+ *   id:string;
+ *   email:string;
+ *}
  *
  * // Active user
- * const activeUser: SoftDeletableUser = {
- *   id: '123',
- *   email: 'user@example.com',
- *   createdAt: Date.now(),
- *   updatedAt: Date.now(),
- *   deletedAt: null
- * };
+ * const activeUser:SoftDeletableUser = {
+ *   id: '123', *   email: 'user@example.com', *   createdAt:Date.now(),
+ *   updatedAt:Date.now(),
+ *   deletedAt:null
+ *};
  *
  * // Soft-deleted user
- * const deletedUser: SoftDeletableUser = {
+ * const deletedUser:SoftDeletableUser = {
  *   ...activeUser,
- *   deletedAt: Date.now()
- * };
+ *   deletedAt:Date.now()
+ *};
  * ```
  */
 export interface TimestampedWithDeletion extends Timestamped {
 	/** When this entity was soft-deleted (null if not deleted) */
-	deletedAt: Timestamp | null;
+	deletedAt:Timestamp | null;
 }
 
 /**
@@ -95,23 +91,21 @@ export interface TimestampedWithDeletion extends Timestamped {
  *
  * @interface ISOTimestamped
  * @example
- * ```typescript
+ * ```typescript`
  * interface APIResponse extends ISOTimestamped {
- *   data: unknown;
- * }
+ *   data:unknown;
+ *}
  *
- * const response: APIResponse = {
- *   data: { message: 'Hello' },
- *   createdAt: '2025-01-15T12:00:00.000Z',
- *   updatedAt: '2025-01-15T12:30:00.000Z'
- * };
+ * const response:APIResponse = {
+ *   data:{ message: 'Hello'},
+ *   createdAt: '2025-01-15T12:00:00.000Z', *   updatedAt:'2025-01-15T12:30:00.000Z') *};
  * ```
  */
 export interface ISOTimestamped {
 	/** When this entity was created (ISO format) */
-	readonly createdAt: ISODateString;
+	readonly createdAt:ISODateString;
 	/** When this entity was last updated (ISO format) */
-	updatedAt: ISODateString;
+	updatedAt:ISODateString;
 }
 
 /**
@@ -120,18 +114,17 @@ export interface ISOTimestamped {
  *
  * @interface DateTimestamped
  * @example
- * ```typescript
+ * ```typescript`
  * interface EventLog extends DateTimestamped {
- *   event: string;
- *   data: unknown;
- * }
+ *   event:string;
+ *   data:unknown;
+ *}
  *
- * const log: EventLog = {
- *   event: 'user.login',
- *   data: { userId: '123' },
- *   createdAt: new Date(),
- *   updatedAt: new Date()
- * };
+ * const log:EventLog = {
+ *   event: 'user.login', *   data:{ userId: '123'},
+ *   createdAt:new Date(),
+ *   updatedAt:new Date()
+ *};
  *
  * // Easy date calculations
  * const ageInMs = Date.now() - log.createdAt.getTime();
@@ -139,9 +132,9 @@ export interface ISOTimestamped {
  */
 export interface DateTimestamped {
 	/** When this entity was created */
-	readonly createdAt: Date;
+	readonly createdAt:Date;
 	/** When this entity was last updated */
-	updatedAt: Date;
+	updatedAt:Date;
 }
 
 // =============================================================================
@@ -154,25 +147,25 @@ export interface DateTimestamped {
  *
  * @interface Versioned
  * @example
- * ```typescript
+ * ```typescript`
  * interface Document extends Versioned {
- *   id: string;
- *   content: string;
- * }
+ *   id:string;
+ *   content:string;
+ *}
  *
  * // Update with version check
- * const updateDocument = (doc: Document, newContent: string): Document => {
+ * const updateDocument = (doc:Document, newContent:string): Document => {
  *   return {
  *     ...doc,
- *     content: newContent,
- *     version: doc.version + 1
- *   };
- * };
+ *     content:newContent,
+ *     version:doc.version + 1
+ *};
+ *};
  * ```
  */
 export interface Versioned {
 	/** Current version number (increments on each update) */
-	readonly version: number;
+	readonly version:number;
 }
 
 /**
@@ -182,28 +175,25 @@ export interface Versioned {
  * @interface VersionedWithRevision
  * @extends Versioned
  * @example
- * ```typescript
+ * ```typescript`
  * interface AuditableDocument extends VersionedWithRevision {
- *   id: string;
- *   content: string;
- *   author: string;
- * }
+ *   id:string;
+ *   content:string;
+ *   author:string;
+ *}
  *
- * const doc: AuditableDocument = {
- *   id: 'doc-123',
- *   content: 'Hello World',
- *   author: 'user-456',
- *   version: 5,
- *   revisionId: 'rev-789' as UUID,
- *   previousVersion: 4
- * };
+ * const doc:AuditableDocument = {
+ *   id: 'doc-123', *   content: 'Hello World', *   author: 'user-456', *   version:5,
+ *   revisionId:'rev-789' as UUID,
+ *   previousVersion:4
+ *};
  * ```
  */
 export interface VersionedWithRevision extends Versioned {
 	/** Unique revision identifier */
-	readonly revisionId: UUID;
+	readonly revisionId:UUID;
 	/** Previous version number (null for initial version) */
-	readonly previousVersion: number | null;
+	readonly previousVersion:number | null;
 }
 
 /**
@@ -212,36 +202,32 @@ export interface VersionedWithRevision extends Versioned {
  *
  * @interface SemanticVersioned
  * @example
- * ```typescript
+ * ```typescript`
  * interface Package extends SemanticVersioned {
- *   name: string;
- *   description: string;
- * }
+ *   name:string;
+ *   description:string;
+ *}
  *
- * const pkg: Package = {
- *   name: '@claude-zen/foundation',
- *   description: 'Core foundation package',
- *   version: {
- *     major: 1,
- *     minor: 2,
- *     patch: 3,
- *     prerelease: 'beta.1',
- *     build: 'build.123'
- *   }
- * };
+ * const pkg:Package = {
+ *   name: '@claude-zen/foundation', *   description: 'Core foundation package', *   version:{
+ *     major:1,
+ *     minor:2,
+ *     patch:3,
+ *     prerelease: 'beta.1', *     build:'build.123') *}
+ *};
  *
  * const versionString = `${pkg.version.major}.${pkg.version.minor}.${pkg.version.patch}`;
  * ```
  */
 export interface SemanticVersioned {
 	/** Semantic version string (e.g., "1.2.3") */
-	readonly semanticVersion: string;
+	readonly semanticVersion:string;
 	/** Major version number */
-	readonly majorVersion: number;
+	readonly majorVersion:number;
 	/** Minor version number */
-	readonly minorVersion: number;
+	readonly minorVersion:number;
 	/** Patch version number */
-	readonly patchVersion: number;
+	readonly patchVersion:number;
 }
 
 // =============================================================================
@@ -254,7 +240,7 @@ export interface SemanticVersioned {
  */
 export interface Identifiable<TID = ID> {
 	/** Unique identifier for this entity */
-	readonly id: TID;
+	readonly id:TID;
 }
 
 /**
@@ -262,7 +248,7 @@ export interface Identifiable<TID = ID> {
  * When you specifically need UUID identifiers
  */
 export interface UUIDIdentifiable extends Identifiable<UUID> {
-	readonly id: UUID;
+	readonly id:UUID;
 }
 
 /**
@@ -271,9 +257,9 @@ export interface UUIDIdentifiable extends Identifiable<UUID> {
  */
 export interface Named {
 	/** Human-readable name */
-	name: string;
+	name:string;
 	/** Optional display name (defaults to name if not provided) */
-	displayName?: string;
+	displayName?:string;
 }
 
 /**
@@ -282,9 +268,9 @@ export interface Named {
  */
 export interface Described {
 	/** Brief description */
-	description?: string;
+	description?:string;
 	/** Detailed description or documentation */
-	longDescription?: string;
+	longDescription?:string;
 }
 
 /**
@@ -297,7 +283,7 @@ export interface Entity
 		Timestamped,
 		Versioned {
 	/** Whether this entity is currently active/enabled */
-	isActive: boolean;
+	isActive:boolean;
 }
 
 // =============================================================================
@@ -310,9 +296,9 @@ export interface Entity
  */
 export interface Paginated<T> {
 	/** Array of items for current page */
-	items: T[];
+	items:T[];
 	/** Pagination metadata */
-	pagination: PaginationMetadata;
+	pagination:PaginationMetadata;
 }
 
 /**
@@ -321,17 +307,17 @@ export interface Paginated<T> {
  */
 export interface PaginationMetadata {
 	/** Current page number (1-based) */
-	currentPage: number;
+	currentPage:number;
 	/** Number of items per page */
-	pageSize: number;
+	pageSize:number;
 	/** Total number of pages */
-	totalPages: number;
+	totalPages:number;
 	/** Total number of items across all pages */
-	totalItems: number;
+	totalItems:number;
 	/** Whether there is a next page */
-	hasNextPage: boolean;
+	hasNextPage:boolean;
 	/** Whether there is a previous page */
-	hasPreviousPage: boolean;
+	hasPreviousPage:boolean;
 }
 
 /**
@@ -340,9 +326,9 @@ export interface PaginationMetadata {
  */
 export interface CursorPaginated<T> {
 	/** Array of items for current page */
-	items: T[];
+	items:T[];
 	/** Pagination metadata */
-	pagination: CursorPaginationMetadata;
+	pagination:CursorPaginationMetadata;
 }
 
 /**
@@ -350,15 +336,15 @@ export interface CursorPaginated<T> {
  */
 export interface CursorPaginationMetadata {
 	/** Cursor for next page (null if no next page) */
-	nextCursor: string | null;
+	nextCursor:string | null;
 	/** Cursor for previous page (null if no previous page) */
-	previousCursor: string | null;
+	previousCursor:string | null;
 	/** Whether there are more items after this page */
-	hasNextPage: boolean;
+	hasNextPage:boolean;
 	/** Whether there are more items before this page */
-	hasPreviousPage: boolean;
+	hasPreviousPage:boolean;
 	/** Approximate total count (may not be exact for performance) */
-	estimatedTotal?: number;
+	estimatedTotal?:number;
 }
 
 // =============================================================================
@@ -371,13 +357,13 @@ export interface CursorPaginationMetadata {
  */
 export interface OperationResult<T = void, E = Error> {
 	/** Whether the operation succeeded */
-	success: boolean;
+	success:boolean;
 	/** Result data (only present if success is true) */
-	data?: T;
+	data?:T;
 	/** Error information (only present if success is false) */
-	error?: E;
+	error?:E;
 	/** Optional metadata about the operation */
-	metadata?: Record<string, unknown>;
+	metadata?:Record<string, unknown>;
 }
 
 /**
@@ -386,11 +372,11 @@ export interface OperationResult<T = void, E = Error> {
 export interface AsyncOperationResult<T = void, E = Error>
 	extends OperationResult<T, E> {
 	/** When the operation started */
-	startTime: Timestamp;
+	startTime:Timestamp;
 	/** When the operation completed */
-	endTime: Timestamp;
+	endTime:Timestamp;
 	/** Duration in milliseconds */
-	duration: number;
+	duration:number;
 }
 
 /**
@@ -399,13 +385,13 @@ export interface AsyncOperationResult<T = void, E = Error>
  */
 export interface ValidationResult {
 	/** Whether validation passed */
-	isValid: boolean;
+	isValid:boolean;
 	/** Validation error messages (empty if valid) */
-	errors: string[];
+	errors:string[];
 	/** Validation warnings (non-blocking issues) */
-	warnings: string[];
+	warnings:string[];
 	/** Field-specific validation errors */
-	fieldErrors?: Record<string, string[]>;
+	fieldErrors?:Record<string, string[]>;
 }
 
 // =============================================================================
@@ -418,11 +404,11 @@ export interface ValidationResult {
  */
 export interface FilterCriteria {
 	/** Fields to include in results (if not specified, include all) */
-	include?: string[];
+	include?:string[];
 	/** Fields to exclude from results */
-	exclude?: string[];
+	exclude?:string[];
 	/** Additional filter parameters */
-	filters?: Record<string, unknown>;
+	filters?:Record<string, unknown>;
 }
 
 /**
@@ -430,13 +416,13 @@ export interface FilterCriteria {
  */
 export interface SearchCriteria extends FilterCriteria {
 	/** Search query string */
-	query?: string;
+	query?:string;
 	/** Fields to search in (if not specified, search all text fields) */
-	searchFields?: string[];
+	searchFields?:string[];
 	/** Whether search should be case-sensitive */
-	caseSensitive?: boolean;
+	caseSensitive?:boolean;
 	/** Whether to use exact match or fuzzy search */
-	exactMatch?: boolean;
+	exactMatch?:boolean;
 }
 
 /**
@@ -444,9 +430,9 @@ export interface SearchCriteria extends FilterCriteria {
  */
 export interface SortCriteria {
 	/** Field to sort by */
-	field: string;
+	field:string;
 	/** Sort direction */
-	direction: "asc|desc";
+	direction:"asc|desc";
 }
 
 /**
@@ -454,12 +440,12 @@ export interface SortCriteria {
  */
 export interface QueryCriteria extends SearchCriteria {
 	/** Sort criteria */
-	sort?: SortCriteria[];
+	sort?:SortCriteria[];
 	/** Pagination settings */
-	pagination?: {
-		page: number;
-		pageSize: number;
-	};
+	pagination?:{
+		page:number;
+		pageSize:number;
+};
 }
 
 // =============================================================================
@@ -471,9 +457,9 @@ export interface QueryCriteria extends SearchCriteria {
  */
 export interface EnvironmentConfig<T> {
 	/** Default configuration values */
-	default: T;
+	default:T;
 	/** Environment-specific overrides */
-	overrides?: Partial<Record<string, Partial<T>>>;
+	overrides?:Partial<Record<string, Partial<T>>>;
 }
 
 /**
@@ -481,13 +467,13 @@ export interface EnvironmentConfig<T> {
  */
 export interface FeatureFlag {
 	/** Feature flag key */
-	key: string;
+	key:string;
 	/** Whether the feature is enabled */
-	enabled: boolean;
+	enabled:boolean;
 	/** Optional description of what this flag controls */
-	description?: string;
+	description?:string;
 	/** When this flag was last modified */
-	lastModified?: Timestamp;
+	lastModified?:Timestamp;
 }
 
 /**
@@ -495,13 +481,13 @@ export interface FeatureFlag {
  */
 export interface ConfigSection<T> {
 	/** Configuration values */
-	values: T;
+	values:T;
 	/** Schema for validation (JSON Schema or similar) */
-	schema?: Record<string, unknown>;
+	schema?:Record<string, unknown>;
 	/** Whether this configuration has been validated */
-	validated: boolean;
+	validated:boolean;
 	/** Validation errors (empty if validated successfully) */
-	validationErrors: string[];
+	validationErrors:string[];
 }
 
 // =============================================================================
@@ -514,21 +500,21 @@ export interface ConfigSection<T> {
  */
 export interface AuditEntry {
 	/** Unique identifier for this audit entry */
-	id: UUID;
+	id:UUID;
 	/** ID of the entity that was changed */
-	entityId: ID;
+	entityId:ID;
 	/** Type of entity that was changed */
-	entityType: string;
+	entityType:string;
 	/** Type of operation performed */
-	operation: "create|update|delete|read";
+	operation:"create|update|delete|read";
 	/** Who performed the operation */
-	performedBy: UUID | "system";
+	performedBy:UUID | "system";
 	/** When the operation was performed */
-	performedAt: Timestamp;
+	performedAt:Timestamp;
 	/** What changed (field-level changes) */
-	changes?: Record<string, { from: unknown; to: unknown }>;
+	changes?:Record<string, { from:unknown; to: unknown}>;
 	/** Additional context about the operation */
-	context?: Record<string, unknown>;
+	context?:Record<string, unknown>;
 }
 
 /**
@@ -536,7 +522,7 @@ export interface AuditEntry {
  */
 export interface Auditable {
 	/** Audit trail entries for this entity */
-	auditTrail: AuditEntry[];
+	auditTrail:AuditEntry[];
 }
 
 // =============================================================================
@@ -548,19 +534,19 @@ export interface Auditable {
  */
 export interface CoordinationRequest {
 	/** Unique identifier for this request */
-	id: UUID;
+	id:UUID;
 	/** Type of coordination operation */
-	operation: string;
+	operation:string;
 	/** Request parameters */
-	params?: Record<string, unknown>;
+	params?:Record<string, unknown>;
 	/** Request priority */
-	priority?: "low|normal|high|critical";
+	priority?:"low|normal|high|critical";
 	/** Request timeout in milliseconds */
-	timeout?: number;
+	timeout?:number;
 	/** Request metadata */
-	metadata?: Record<string, unknown>;
+	metadata?:Record<string, unknown>;
 	/** When the request was created */
-	createdAt: Timestamp;
+	createdAt:Timestamp;
 }
 
 /**
@@ -568,23 +554,23 @@ export interface CoordinationRequest {
  */
 export interface CoordinationResponse<T = unknown> {
 	/** ID of the original request */
-	requestId: UUID;
+	requestId:UUID;
 	/** Whether the operation succeeded */
-	success: boolean;
+	success:boolean;
 	/** Response data (present if success is true) */
-	data?: T;
+	data?:T;
 	/** Error information (present if success is false) */
-	error?: {
-		code: string;
-		message: string;
-		details?: Record<string, unknown>;
-	};
+	error?:{
+		code:string;
+		message:string;
+		details?:Record<string, unknown>;
+};
 	/** Response metadata */
-	metadata?: Record<string, unknown>;
+	metadata?:Record<string, unknown>;
 	/** When the response was created */
-	completedAt: Timestamp;
+	completedAt:Timestamp;
 	/** How long the operation took */
-	duration: number;
+	duration:number;
 }
 
 /**
@@ -592,13 +578,13 @@ export interface CoordinationResponse<T = unknown> {
  */
 export interface Lifecycle {
 	/** Initialize the component */
-	initialize(): Promise<void>;
+	initialize():Promise<void>;
 	/** Start the component */
-	start(): Promise<void>;
+	start():Promise<void>;
 	/** Stop the component */
-	stop(): Promise<void>;
+	stop():Promise<void>;
 	/** Check if the component is running */
-	isRunning(): boolean;
+	isRunning():boolean;
 }
 
 /**
@@ -606,33 +592,33 @@ export interface Lifecycle {
  */
 export interface SystemHealth {
 	/** Overall system status */
-	status: "healthy|degraded|unhealthy|unknown";
+	status:"healthy|degraded|unhealthy|unknown";
 	/** Overall health score (0-100) */
-	score: number;
+	score:number;
 	/** Individual component health checks */
-	components: Record<string, ComponentHealth>;
+	components:Record<string, ComponentHealth>;
 	/** System-wide metrics */
-	metrics: {
-		uptime: number;
-		memory: {
-			used: number;
-			total: number;
-			percentage: number;
-		};
-		cpu: {
-			percentage: number;
-			loadAverage: number[];
-		};
-		disk: {
-			used: number;
-			total: number;
-			percentage: number;
-		};
-	};
+	metrics:{
+		uptime:number;
+		memory:{
+			used:number;
+			total:number;
+			percentage:number;
+};
+		cpu:{
+			percentage:number;
+			loadAverage:number[];
+};
+		disk:{
+			used:number;
+			total:number;
+			percentage:number;
+};
+};
 	/** When health check was performed */
-	timestamp: Timestamp;
+	timestamp:Timestamp;
 	/** Health check duration */
-	checkDuration: number;
+	checkDuration:number;
 }
 
 /**
@@ -640,23 +626,23 @@ export interface SystemHealth {
  */
 export interface ComponentHealth {
 	/** Component status */
-	status: "healthy|degraded|unhealthy|unknown";
+	status:"healthy|degraded|unhealthy|unknown";
 	/** Component health score (0-100) */
-	score: number;
+	score:number;
 	/** Component-specific metrics */
-	metrics?: Record<string, unknown>;
+	metrics?:Record<string, unknown>;
 	/** Last successful check */
-	lastSuccess?: Timestamp;
+	lastSuccess?:Timestamp;
 	/** Last failure */
-	lastFailure?: Timestamp;
+	lastFailure?:Timestamp;
 	/** Error details if unhealthy */
-	error?: {
-		message: string;
-		code?: string;
-		details?: Record<string, unknown>;
-	};
+	error?:{
+		message:string;
+		code?:string;
+		details?:Record<string, unknown>;
+};
 	/** Response time in milliseconds */
-	responseTime?: number;
+	responseTime?:number;
 }
 
 // =============================================================================
@@ -667,70 +653,70 @@ export interface ComponentHealth {
  * Create pagination metadata from raw pagination info
  */
 export function createPaginationMetadata(
-	currentPage: number,
-	pageSize: number,
-	totalItems: number,
-): PaginationMetadata {
+	currentPage:number,
+	pageSize:number,
+	totalItems:number,
+):PaginationMetadata {
 	const totalPages = Math.ceil(totalItems / pageSize);
 	return {
 		currentPage,
 		pageSize,
 		totalPages,
 		totalItems,
-		hasNextPage: currentPage < totalPages,
-		hasPreviousPage: currentPage > 1,
-	};
+		hasNextPage:currentPage < totalPages,
+		hasPreviousPage:currentPage > 1,
+};
 }
 
 /**
  * Create a paginated result
  */
 export function createPaginated<T>(
-	items: T[],
-	currentPage: number,
-	pageSize: number,
-	totalItems: number,
-): Paginated<T> {
+	items:T[],
+	currentPage:number,
+	pageSize:number,
+	totalItems:number,
+):Paginated<T> {
 	return {
 		items,
-		pagination: createPaginationMetadata(currentPage, pageSize, totalItems),
-	};
+		pagination:createPaginationMetadata(currentPage, pageSize, totalItems),
+};
 }
 
 /**
  * Create a successful operation result
  */
 export function createSuccessResult<T>(
-	data: T,
-	metadata?: Record<string, unknown>,
-): OperationResult<T> {
+	data:T,
+	metadata?:Record<string, unknown>,
+):OperationResult<T> {
 	return {
-		success: true,
+		success:true,
 		data,
 		metadata,
-	};
+};
 }
 
 /**
  * Create a failed operation result
  */
 export function createErrorResult<E = Error>(
-	error: E,
-	metadata?: Record<string, unknown>,
-): OperationResult<never, E> {
+	error:E,
+	metadata?:Record<string, unknown>,
+):OperationResult<never, E> {
 	return {
-		success: false,
+		success:false,
 		error,
 		metadata,
-	};
+};
 }
 
 /**
  * Check if operation result is successful (type guard)
  */
 export function isSuccessResult<T, E>(
-	result: OperationResult<T, E>,
-): result is OperationResult<T, E> & { success: true; data: T } {
+	result:OperationResult<T, E>,
+):result is OperationResult<T, E> & { success:true; data: T} {
 	return result.success === true;
 }
 
@@ -738,7 +724,7 @@ export function isSuccessResult<T, E>(
  * Check if operation result is an error (type guard)
  */
 export function isErrorResult<T, E>(
-	result: OperationResult<T, E>,
-): result is OperationResult<T, E> & { success: false; error: E } {
+	result:OperationResult<T, E>,
+):result is OperationResult<T, E> & { success:false; error: E} {
 	return result.success === false;
 }

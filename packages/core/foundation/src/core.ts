@@ -1,11 +1,11 @@
 /**
  * @fileoverview Core Foundation Systems Entry Point
  *
- * Essential core utilities: logging, configuration, lifecycle management.
+ * Essential core utilities:logging, configuration, lifecycle management.
  * Import this for basic foundation functionality without heavy dependencies.
  */
 
-export type { Config } from "./core/config/index.js";
+export type { Config} from "./core/config/index.js";
 // =============================================================================
 // CORE CONFIGURATION SYSTEM
 // =============================================================================
@@ -22,7 +22,7 @@ export {
 	shouldLog,
 	validateConfig,
 } from "./core/config";
-export type { Logger, LoggingConfig } from "./core/logging/index.js";
+export type { Logger, LoggingConfig} from "./core/logging/index.js";
 // =============================================================================
 // CORE LOGGING SYSTEM
 // =============================================================================

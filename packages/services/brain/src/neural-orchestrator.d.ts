@@ -11,84 +11,77 @@
  * Neural task complexity levels
  */
 export declare enum TaskComplexity {
-    SIMPLE = "simple",// brain.js internal processing'
-    MODERATE = "moderate",// Enhanced brain.js with some ML'
-    COMPLEX = "complex",// Requires neural-ml lightweight models'
-    HEAVY = "heavy"
+    SIMPLE = "simple",// brain.js internal processing')    MODERATE = "moderate",// Enhanced brain.js with some ML')    COMPLEX = "complex",// Requires neural-ml lightweight models')    HEAVY = "heavy"
 }
 /**
  * Storage strategy types
  */
 export declare enum StorageStrategy {
-    MEMORY = "memory",// Fast access in brain package memory'
-    DATABASE = "database",// Persistent via foundation SQLite'
-    VECTOR = "vector",// High-dimensional via foundation LanceDB'
-    GRAPH = "graph",// Relationship via foundation Kuzu'
-    HYBRID = "hybrid"
+    MEMORY = "memory",// Fast access in brain package memory')    DATABASE = "database",// Persistent via foundation SQLite')    VECTOR = "vector",// High-dimensional via foundation LanceDB')    GRAPH = "graph",// Relationship via foundation Kuzu')    HYBRID = "hybrid"
 }
 /**
  * Neural task definition
  */
 export interface NeuralTask {
-    id: string;
-    type: 'prediction|classification|clustering|forecasting|optimization|pattern_recognition;;
-    data: {
-        input: number[] | number[][];
-        context?: Record<string, unknown>;
-        metadata?: {
-            dimensions?: number;
-            timeSeriesLength?: number;
-            featureCount?: number;
-            expectedOutputSize?: number;
-        };
-    };
-    requirements?: {
-        accuracy?: number;
-        latency?: number;
-        memory?: number;
-        gpu?: boolean;
-    };
+    id:string;
+    type: '...[proper format needed]
+'    data:{
+        input:number[] | number[][];
+        context?:Record<string, unknown>;
+        metadata?:{
+            dimensions?:number;
+            timeSeriesLength?:number;
+            featureCount?:number;
+            expectedOutputSize?:number;
+};
+};
+    requirements?:{
+        accuracy?:number;
+        latency?:number;
+        memory?:number;
+        gpu?:boolean;
+};
 }
 /**
  * Neural result with orchestration metadata
  */
 export interface NeuralResult {
-    taskId: string;
-    result: number[] | number[][] | Record<string, unknown>;
-    metadata: {
-        complexity: TaskComplexity;
-        processor: 'brain-js' | 'neural-ml-light' | 'neural-ml-heavy;;
-        duration: number;
-        confidence?: number;
-        storageStrategy: StorageStrategy;
-        memoryUsed?: number;
-    };
+    taskId:string;
+    result:number[] | number[][] | Record<string, unknown>;
+    metadata:{
+        complexity:TaskComplexity;
+        processor:'brain-js' | ' neural-ml-light' | ' neural-ml-heavy;;
+        duration:number;
+        confidence?:number;
+        storageStrategy:StorageStrategy;
+        memoryUsed?:number;
+};
 }
 /**
  * Neural data with storage characteristics
  */
 export interface NeuralData {
-    id: string;
-    type: 'weights|training|patterns|predictions|models;;
-    data: unknown;
-    characteristics: {
-        size: number;
-        dimensions?: number;
+    id:string;
+    type: '...[proper format needed]
+'    data:unknown;
+    characteristics:{
+        size:number;
+        dimensions?:number;
         accessFrequency: 'rare|occasional|frequent|realtime;;
-        persistenceLevel: 'temporary' | 'session' | 'permanent';
-        relationships?: string[];
-    };
+'        persistenceLevel:'temporary' | ' session' | ' permanent';
+        relationships?:string[];
+};
 }
 /**
  * Neural orchestration metrics
  */
 export interface OrchestrationMetrics {
-    tasksProcessed: number;
-    complexityDistribution: Record<TaskComplexity, number>;
-    averageLatency: Record<TaskComplexity, number>;
-    cacheHitRate: number;
-    neuralMlLoadCount: number;
-    storageDistribution: Record<StorageStrategy, number>;
+    tasksProcessed:number;
+    complexityDistribution:Record<TaskComplexity, number>;
+    averageLatency:Record<TaskComplexity, number>;
+    cacheHitRate:number;
+    neuralMlLoadCount:number;
+    storageDistribution:Record<StorageStrategy, number>;
 }
 /**
  * Neural Orchestrator - Brain as intelligent coordinator
@@ -98,7 +91,7 @@ export declare class NeuralOrchestrator {
     /**
      * Main orchestration method - analyzes and routes neural tasks
      */
-    processNeuralTask(task: NeuralTask): Promise<NeuralResult>;
+    processNeuralTask(task:NeuralTask): Promise<NeuralResult>;
     /**
      * Process simple tasks with internal brain.js
      */

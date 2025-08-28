@@ -8,74 +8,74 @@
  * Uses foundation error patterns for consistency with the rest of the system.
  */
 
-import { EnhancedError, getLogger } from '@claude-zen/foundation';
+import { getLogger} from '@claude-zen/foundation';
 
-const _logger = getLogger('KnowledgeErrors');'
+const logger = getLogger('KnowledgeErrors');
 
 /**
  * Base error context interface for knowledge operations
  */
 export interface KnowledgeErrorContext {
-  timestamp: number;
-  operation?: string;
-  correlationId?: string;
-  metadata?: Record<string, unknown>;
+  timestamp:number;
+  operation?:string;
+  correlationId?:string;
+  metadata?:Record<string, unknown>;
 }
 
 /**
  * Base error class for knowledge domain operations
  */
-export abstract class BaseKnowledgeError extends EnhancedError {
-  public readonly severity: 'low|medium|high|critical;
-  public readonly category: string;
-  public readonly recoverable: boolean;
+export interface BaseKnowledgeErrorOptions {
+  category:string;
+  severity?:'low' | ' medium' | ' high' | ' critical';
+  context?:Partial<KnowledgeErrorContext>;
+  recoverable?:boolean;
+}
+
+export abstract class BaseKnowledgeError extends Error {
+  public readonly severity:'low' | ' medium' | ' high' | ' critical';
+  public readonly category:string;
+  public readonly recoverable:boolean;
+  public readonly context:Partial<KnowledgeErrorContext>;
 
   constructor(
-    message: string,
-    category: string,
-    severity: 'low|medium|high|critical' = 'medium',
-    context: Partial<KnowledgeErrorContext> = {},
-    recoverable: boolean = true
+    message:string,
+    options:BaseKnowledgeErrorOptions
   ) {
-    // EnhancedError expects context as Record<string, any> and handles timestamp internally
-    super(message, {
-      category,
-      severity,
-      recoverable,
-      ...context,
-    });
+    super(message);
+    this.name = this.constructor.name;
 
-    this.category = category;
-    this.severity = severity;
-    this.recoverable = recoverable;
+    this.category = options.category;
+    this.severity = options.severity || 'medium';
+    this.recoverable = options.recoverable ?? true;
+    this.context = { timestamp:Date.now(), ...options.context};
 
     // Log error immediately using foundation logging
     this.logError();
-  }
+}
 
-  private logError(): void {
-    const _logLevel =
-      this.severity === 'critical''
-        ? 'error''
-        : this.severity === 'high''
-          ? 'warn''
-          : 'info;
+  private logError():void {
+    const logLevel =
+      this.severity === 'critical')        ? 'error')        :this.severity === 'high')          ? 'warn')          : 'info';
 
-    logger[logLevel](`[$this.category] $this.message`, {`
-      severity: this.severity,
-      context: this.context,
-      recoverable: this.recoverable,
-    });
-  }
+    logger[logLevel](`[${this.category}] ${this.message}`, {
+      severity:this.severity,
+      context:this.context,
+      recoverable:this.recoverable,
+});
+}
 
-  public override toObject(): Record<string, any> {
+  public toObject():Record<string, any> {
     return {
-      ...super.toObject(),
-      category: this.category,
-      severity: this.severity,
-      recoverable: this.recoverable,
-    };
-  }
+      name:this.name,
+      message:this.message,
+      stack:this.stack,
+      category:this.category,
+      severity:this.severity,
+      recoverable:this.recoverable,
+      context:this.context,
+};
+}
 }
 
 // ===============================
@@ -88,21 +88,16 @@ export abstract class BaseKnowledgeError extends EnhancedError {
  * @example
  * ```typescript`
  * throw new FACTError(
- *   'Failed to process FACT data',
- *   'high',
- *   { operation: 'dataProcessing', metadata: { factId: 'fact-123' } }'
- * );
+ *   'Failed to process FACT data', *   'high', *   { operation: 'dataProcessing', metadata:{ factId: ' fact-123'}}') * );
  * ````
  */
 export class FACTError extends BaseKnowledgeError {
   constructor(
-    message: string,
-    severity: 'low|medium|high|critical' = 'medium',
-    context: Partial<KnowledgeErrorContext> = {}
+    message:string,
+    severity:'low' | ' medium' | ' high' | ' critical' = ' medium',    context:Partial<KnowledgeErrorContext> = {}
   ) {
-    super(message, 'FACT', severity, context);'
-    this.name = 'FACTError';
-  }
+    super(message, { category: 'FACT', severity, context});
+}
 }
 
 /**
@@ -110,14 +105,12 @@ export class FACTError extends BaseKnowledgeError {
  */
 export class FACTStorageError extends FACTError {
   constructor(
-    message: string,
-    public readonly backend: string,
-    public readonly operation: string,
-    severity: 'low|medium|high|critical' = 'high''
-  ) {
-    super(message, severity, { operation, metadata: { backend } });
-    this.name = 'FACTStorageError';
-  }
+    message:string,
+    public readonly backend:string,
+    public readonly operation:string,
+    severity:'low' | ' medium' | ' high' | ' critical' = ' high',  ) {
+    super(message, severity, { operation, metadata:{ backend}});
+}
 }
 
 /**
@@ -125,14 +118,12 @@ export class FACTStorageError extends FACTError {
  */
 export class FACTGatheringError extends FACTError {
   constructor(
-    message: string,
-    public readonly query: string,
-    public readonly sources: string[],
-    severity: 'low|medium|high|critical' = 'medium''
-  ) {
-    super(message, severity, { metadata: { query, sources } });
-    this.name = 'FACTGatheringError';
-  }
+    message:string,
+    public readonly query:string,
+    public readonly sources:string[],
+    severity:'low' | ' medium' | ' high' | ' critical' = ' medium',  ) {
+    super(message, severity, { metadata:{ query, sources}});
+}
 }
 
 /**
@@ -140,14 +131,12 @@ export class FACTGatheringError extends FACTError {
  */
 export class FACTProcessingError extends FACTError {
   constructor(
-    message: string,
-    public readonly processType: string,
-    public readonly dataId?: string,
-    severity: 'low|medium|high|critical' = 'medium''
-  ) {
-    super(message, severity, { metadata: { processType, dataId } });
-    this.name = 'FACTProcessingError';
-  }
+    message:string,
+    public readonly processType:string,
+    public readonly dataId?:string,
+    severity:'low' | ' medium' | ' high' | ' critical' = ' medium',  ) {
+    super(message, severity, { metadata:{ processType, dataId}});
+}
 }
 
 // ===============================
@@ -160,21 +149,16 @@ export class FACTProcessingError extends FACTError {
  * @example
  * ```typescript`
  * throw new RAGError(
- *   'RAG processing failed',
- *   'high',
- *   { operation: 'retrieval', metadata: { queryId: 'query-456' } }'
- * );
+ *   'RAG processing failed', *   'high', *   { operation: 'retrieval', metadata:{ queryId: ' query-456'}}') * );
  * ````
  */
 export class RAGError extends BaseKnowledgeError {
   constructor(
-    message: string,
-    severity: 'low|medium|high|critical' = 'medium',
-    context: Partial<KnowledgeErrorContext> = {}
+    message:string,
+    severity:'low' | ' medium' | ' high' | ' critical' = ' medium',    context:Partial<KnowledgeErrorContext> = {}
   ) {
-    super(message, 'RAG', severity, context);'
-    this.name = 'RAGError';
-  }
+    super(message, { category: 'RAG', severity, context});
+}
 }
 
 /**
@@ -182,14 +166,11 @@ export class RAGError extends BaseKnowledgeError {
  */
 export class RAGVectorError extends RAGError {
   constructor(
-    message: string,
-    public readonly operation: 'embed|search|index|delete',
-    public readonly vectorDimension?: number,
-    severity: 'low|medium|high|critical' = 'high''
-  ) {
-    super(message, severity, { operation, metadata: { vectorDimension } });
-    this.name = 'RAGVectorError';
-  }
+    message:string,
+    public readonly operation: 'embed|search|index|delete',    public readonly vectorDimension?:number,
+    severity:'low' | ' medium' | ' high' | ' critical' = ' high',  ) {
+    super(message, severity, { operation, metadata:{ vectorDimension}});
+}
 }
 
 /**
@@ -197,14 +178,12 @@ export class RAGVectorError extends RAGError {
  */
 export class RAGEmbeddingError extends RAGError {
   constructor(
-    message: string,
-    public readonly modelName: string,
-    public readonly textLength?: number,
-    severity: 'low|medium|high|critical' = 'high''
-  ) {
-    super(message, severity, { metadata: { modelName, textLength } });
-    this.name = 'RAGEmbeddingError';
-  }
+    message:string,
+    public readonly modelName:string,
+    public readonly textLength?:number,
+    severity:'low' | ' medium' | ' high' | ' critical' = ' high',  ) {
+    super(message, severity, { metadata:{ modelName, textLength}});
+}
 }
 
 /**
@@ -212,14 +191,12 @@ export class RAGEmbeddingError extends RAGError {
  */
 export class RAGRetrievalError extends RAGError {
   constructor(
-    message: string,
-    public readonly query: string,
-    public readonly similarityThreshold?: number,
-    severity: 'low|medium|high|critical' = 'medium''
-  ) {
-    super(message, severity, { metadata: { query, similarityThreshold } });
-    this.name = 'RAGRetrievalError';
-  }
+    message:string,
+    public readonly query:string,
+    public readonly similarityThreshold?:number,
+    severity:'low' | ' medium' | ' high' | ' critical' = ' medium',  ) {
+    super(message, severity, { metadata:{ query, similarityThreshold}});
+}
 }
 
 // ===============================
@@ -229,10 +206,10 @@ export class RAGRetrievalError extends RAGError {
 /**
  * Determines if a knowledge error is recoverable.
  */
-export function isRecoverableKnowledgeError(error: Error): boolean {
+export function isRecoverableKnowledgeError(error:Error): boolean {
   if (error instanceof BaseKnowledgeError) {
     return error.recoverable;
-  }
+}
   return true; // Default to recoverable for non-knowledge errors
 }
 
@@ -240,29 +217,26 @@ export function isRecoverableKnowledgeError(error: Error): boolean {
  * Gets the severity level of a knowledge error.
  */
 export function getKnowledgeErrorSeverity(
-  error: Error
-): 'low|medium|high|critical' {'
+  error:Error
+):'low' | ' medium' | ' high' | ' critical' {
   if (error instanceof BaseKnowledgeError) {
     return error.severity;
-  }
-  return 'medium'; // Default severity'
 }
+  return 'medium'; // Default severity')}
 
 /**
  * Creates a knowledge error with proper context wrapping.
  */
 export function createKnowledgeError(
-  message: string,
-  category: 'FACT|RAG'',
-  context: Partial<KnowledgeErrorContext> = {},
-  severity: 'low|medium|high|critical' = 'medium''
-): BaseKnowledgeError {
+  message:string,
+  category:'FACT' | ' RAG',  context:Partial<KnowledgeErrorContext> = {},
+  severity:'low' | ' medium' | ' high' | ' critical' = ' medium',):BaseKnowledgeError {
   switch (category) {
-    case 'FACT':'
+    case 'FACT':
       return new FACTError(message, severity, context);
-    case 'RAG':'
+    case 'RAG':
       return new RAGError(message, severity, context);
     default:
-      throw new Error(`Unknown knowledge error category: ${category}`);`
-  }
+      throw new Error(`Unknown knowledge error category:${category}`);
+}
 }

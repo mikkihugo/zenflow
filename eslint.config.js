@@ -56,6 +56,8 @@ export default [
 				MouseEvent: "readonly",
 				KeyboardEvent: "readonly",
 				CustomEvent: "readonly",
+				MessageEvent: "readonly",
+				RequestInit: "readonly",
 			},
 		},
 		plugins: {
@@ -697,6 +699,9 @@ export default [
 			"gts.json",
 			"jest.config.js",
 			"**/*.tsbuildinfo",
+			"**/tailwind.config.*",
+			"**/vite.config.*",
+			"config/default.*",
 
 			// Generated files - TypeScript compilation output
 			"**/*.d.ts",
@@ -768,6 +773,29 @@ export default [
 
 			// Playwright artifacts
 			".playwright-mcp/**/*",
+			
+			// Generated documentation
+			"docs/**/*",
+			
+			// Binary and executable files
+			"bin/**/*",
+			"*.cjs",
+			
+			// Example files (demo code with intentional console usage)
+			"examples/**/*",
+			
+			// Deep Core Tier 5 packages (ultra-restricted, emergency only)
+			"packages/core/dspy/**/*",
+			"packages/core/fact-system/**/*",
+			
+			// Database adapters (third-party naming conventions)
+			"packages/core/database/src/adapters/**/*",
+			
+			// Test files (exclude all test patterns)
+			"**/*.test.*",
+			"**/*.spec.*", 
+			"**/tests/**/*",
+			"**/test/**/*",
 		],
 	},
 ];

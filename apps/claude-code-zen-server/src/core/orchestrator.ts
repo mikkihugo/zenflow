@@ -1,72 +1,72 @@
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger} from '@claude-zen/foundation';
 
 // Use facade patterns instead of direct coordination imports
-// import type { CoordinationManager } from "../coordination/coordination-manager";
-// import type { EventBus } from "../coordination/event-system";
-// import type { MemoryManager } from "../coordination/memory-manager";
-// import type { TerminalManager } from "../coordination/terminal-manager";
+// import type { CoordinationManager} from "../coordination/coordination-manager";
+// import type { EventBus} from "../coordination/event-system";
+// import type { MemoryManager} from "../coordination/memory-manager";
+// import type { TerminalManager} from "../coordination/terminal-manager";
 
 // Placeholder interfaces for coordination components
 interface CoordinationManager {
-  coordinate?: () => Promise<void>;
-  initialize?: () => Promise<void>;
-  stop?: () => Promise<void>;
-  coordinateTask?: (task: Task) => Promise<void>;
-  isHealthy?: () => Promise<boolean>;
+  coordinate?:() => Promise<void>;
+  initialize?:() => Promise<void>;
+  stop?:() => Promise<void>;
+  coordinateTask?:(task: Task) => Promise<void>;
+  isHealthy?:() => Promise<boolean>;
 }
 
 interface EventBus {
-  emit?: (event: string, data?: unknown) => void;
+  emit?:(event: string, data?:unknown) => void;
 }
 
 interface MemoryManager {
-  store?: (key: string, value: unknown) => Promise<void>;
-  initialize?: () => Promise<void>;
-  stop?: () => Promise<void>;
-  storeTask?: (task: Task) => Promise<void>;
-  isHealthy?: () => Promise<boolean>;
+  store?:(key: string, value:unknown) => Promise<void>;
+  initialize?:() => Promise<void>;
+  stop?:() => Promise<void>;
+  storeTask?:(task: Task) => Promise<void>;
+  isHealthy?:() => Promise<boolean>;
 }
 
 interface TerminalManager {
-  execute?: (command: string) => Promise<void>;
-  initialize?: () => Promise<void>;
-  stop?: () => Promise<void>;
-  isHealthy?: () => Promise<boolean>;
+  execute?:(command: string) => Promise<void>;
+  initialize?:() => Promise<void>;
+  stop?:() => Promise<void>;
+  isHealthy?:() => Promise<boolean>;
 }
 
 interface OrchestratorConfig {
-  name: string;
-  timeout: number;
-  maxConcurrentTasks: number;
-  enableHealthCheck: boolean;
-  healthCheckInterval: number;
+  name:string;
+  timeout:number;
+  maxConcurrentTasks:number;
+  enableHealthCheck:boolean;
+  healthCheckInterval:number;
 }
 
 interface Task {
-  id: string;
-  type: string;
-  description: string;
-  priority: number;
-  input: unknown;
-  metadata: {
-    userId: string;
-    sessionId: string;
-  };
+  id:string;
+  type:string;
+  description:string;
+  priority:number;
+  input:unknown;
+  metadata:{
+    userId:string;
+    sessionId:string;
+};
 }
 
 interface TaskResult {
-  id: string;
-  status: 'success' | 'failure' | 'timeout';
-  result?: unknown;
-  error?: string;
-  duration: number;
+  id:string;
+  status:'success' | ' failure' | ' timeout';
+  result?:unknown;
+  error?:string;
+  duration:number;
 }
 
 interface OrchestratorDependencies {
-  terminalManager: TerminalManager;
-  memoryManager: MemoryManager;
-  coordinationManager: CoordinationManager;
-  eventBus: EventBus;
+  terminalManager:TerminalManager;
+  memoryManager:MemoryManager;
+  coordinationManager:CoordinationManager;
+  eventBus:EventBus;
 }
 
 export class Orchestrator {
@@ -74,14 +74,14 @@ export class Orchestrator {
   private isStarted = false;
   private activeTasks = new Map<string, Promise<TaskResult>>();
 
-  private terminalManager: TerminalManager;
-  private memoryManager: MemoryManager;
-  private coordinationManager: CoordinationManager;
-  private eventBus: EventBus;
+  private terminalManager:TerminalManager;
+  private memoryManager:MemoryManager;
+  private coordinationManager:CoordinationManager;
+  private eventBus:EventBus;
 
   constructor(
-    private config: OrchestratorConfig,
-    dependencies: OrchestratorDependencies,
+    private config:OrchestratorConfig,
+    dependencies:OrchestratorDependencies,
     customLogger = getLogger('Orchestrator')
   ) {
     this.terminalManager = dependencies.terminalManager;
@@ -89,15 +89,15 @@ export class Orchestrator {
     this.coordinationManager = dependencies.coordinationManager;
     this.eventBus = dependencies.eventBus;
     this.logger = customLogger;
-  }
+}
 
-  async start(): Promise<void> {
+  async start():Promise<void> {
     if (this.isStarted) {
       this.logger.warn('Orchestrator already started');
       return;
-    }
+}
 
-    this.logger.info('Starting orchestrator', { config: this.config });
+    this.logger.info('Starting orchestrator', { config:this.config});
 
     // Initialize all managers
     await this.terminalManager.initialize?.();
@@ -107,17 +107,17 @@ export class Orchestrator {
     // Set up health check if enabled
     if (this.config.enableHealthCheck) {
       this.startHealthCheck();
-    }
+}
 
     this.isStarted = true;
-    this.eventBus.emit?.('orchestrator:started', { config: this.config });
+    this.eventBus.emit?.('orchestrator:started', { config:this.config});
     this.logger.info('Orchestrator started successfully');
-  }
+}
 
-  async stop(): Promise<void> {
+  async stop():Promise<void> {
     if (!this.isStarted) {
       return;
-    }
+}
 
     this.logger.info('Stopping orchestrator');
 
@@ -132,72 +132,68 @@ export class Orchestrator {
     this.isStarted = false;
     this.eventBus.emit?.('orchestrator:stopped');
     this.logger.info('Orchestrator stopped successfully');
-  }
+}
 
-  async executeTask(task: Task): Promise<TaskResult> {
+  async executeTask(task:Task): Promise<TaskResult> {
     if (!this.isStarted) {
       throw new Error('Orchestrator not started');
-    }
+}
 
     if (this.activeTasks.size >= this.config.maxConcurrentTasks) {
       throw new Error('Maximum concurrent tasks reached');
-    }
+}
 
     const startTime = Date.now();
-    this.logger.info('Executing task', { task });
+    this.logger.info('Executing task', { task});
 
     const taskPromise = this.processTask(task, startTime);
     this.activeTasks.set(task.id, taskPromise);
 
     try {
       const result = await taskPromise;
-      this.eventBus.emit?.('task:completed', { task, result });
+      this.eventBus.emit?.('task:completed', { task, result});
       return result;
-    } catch (error) {
-      const errorResult: TaskResult = {
-        id: task.id,
-        status: 'failure',
-        error: error instanceof Error ? error.message : 'Unknown error',
-        duration: Date.now() - startTime,
-      };
-      this.eventBus.emit?.('task:failed', { task, error: errorResult });
+} catch (error) {
+      const errorResult:TaskResult = {
+        id:task.id,
+        status: 'failure',        error:error instanceof Error ? error.message : 'Unknown error',        duration:Date.now() - startTime,
+};
+      this.eventBus.emit?.('task:failed', { task, error:errorResult});
       return errorResult;
-    } finally {
+} finally {
       this.activeTasks.delete(task.id);
-    }
-  }
+}
+}
 
   private async processTask(
-    task: Task,
-    startTime: number
-  ): Promise<TaskResult> {
+    task:Task,
+    startTime:number
+  ):Promise<TaskResult> {
     const timeoutPromise = new Promise<TaskResult>((resolve, reject) => {
       setTimeout(() => {
         reject(new Error('Task timeout'));
-      }, this.config.timeout);
-    });
+}, this.config.timeout);
+});
 
     const taskPromise = this.executeTaskLogic(task, startTime);
 
     try {
       return await Promise.race([taskPromise, timeoutPromise]);
-    } catch (error) {
+} catch (error) {
       if (error instanceof Error && error.message === 'Task timeout') {
         return {
-          id: task.id,
-          status: 'timeout',
-          error: 'Task execution timed out',
-          duration: Date.now() - startTime,
-        };
-      }
+          id:task.id,
+          status: 'timeout',          error: 'Task execution timed out',          duration:Date.now() - startTime,
+};
+}
       throw error;
-    }
-  }
+}
+}
 
   private async executeTaskLogic(
-    task: Task,
-    startTime: number
-  ): Promise<TaskResult> {
+    task:Task,
+    startTime:number
+  ):Promise<TaskResult> {
     // Store task in memory for tracking
     await this.memoryManager.storeTask?.(task);
 
@@ -205,7 +201,7 @@ export class Orchestrator {
     await this.coordinationManager.coordinateTask?.(task);
 
     // Execute based on task type
-    let result: unknown;
+    let result:unknown;
     switch (task.type) {
       case 'neural_training':
         result = await this.executeNeuralTraining(task);
@@ -217,70 +213,69 @@ export class Orchestrator {
         result = await this.executeSystemCoordination(task);
         break;
       default:
-        throw new Error(`Unknown task type: ${task.type}`);
-    }
+        throw new Error(`Unknown task type:${task.type}`);
+}
 
     return {
-      id: task.id,
-      status: 'success',
-      result,
-      duration: Date.now() - startTime,
-    };
-  }
+      id:task.id,
+      status: 'success',      result,
+      duration:Date.now() - startTime,
+};
+}
 
-  private executeNeuralTraining(task: Task): Promise<unknown> {
-    this.logger.info('Executing neural training', { task });
+  private executeNeuralTraining(task:Task): Promise<unknown> {
+    this.logger.info('Executing neural training', { task});
     // Neural training implementation would go here
     return Promise.resolve({
-      trained: true,
-      model: (task.input as Record<string, unknown>)?.dataset,
-    });
-  }
+      trained:true,
+      model:(task.input as Record<string, unknown>)?.dataset,
+});
+}
 
-  private executeDataProcessing(task: Task): Promise<unknown> {
-    this.logger.info('Executing data processing', { task });
+  private executeDataProcessing(task:Task): Promise<unknown> {
+    this.logger.info('Executing data processing', { task});
     // Data processing implementation would go here
     return Promise.resolve({
-      processed: true,
-      records: (task.input as Record<string, unknown>)?.recordCount || 0,
-    });
-  }
+      processed:true,
+      records:(task.input as Record<string, unknown>)?.recordCount || 0,
+});
+}
 
-  private executeSystemCoordination(task: Task): Promise<unknown> {
-    this.logger.info('Executing system coordination', { task });
+  private executeSystemCoordination(task:Task): Promise<unknown> {
+    this.logger.info('Executing system coordination', { task});
     // System coordination implementation would go here
     return Promise.resolve({
-      coordinated: true,
-      systems: (task.input as Record<string, unknown>)?.systems || [],
-    });
-  }
+      coordinated:true,
+      systems:(task.input as Record<string, unknown>)?.systems || [],
+});
+}
 
-  private startHealthCheck(): void {
+  private startHealthCheck():void {
     setInterval(async () => {
       try {
         const health = await this.getHealthStatus();
         this.eventBus.emit?.('health:check', health);
 
         if (!health.healthy) {
-          this.logger.warn('Health check failed', { health });
-        }
-      } catch (error) {
-        this.logger.error('Health check error', { error });
-      }
-    }, this.config.healthCheckInterval);
-  }
+          this.logger.warn('Health check failed', { health});
+}
+} catch (error) {
+        this.logger.error('Health check error', { error});
+}
+}, this.config.healthCheckInterval);
+}
 
-  async getHealthStatus(): Promise<{ healthy: boolean; details: unknown }> {
+  async getHealthStatus():Promise<{ healthy: boolean; details: unknown}> {
     const details = {
-      started: this.isStarted,
-      activeTasks: this.activeTasks.size,
-      maxTasks: this.config.maxConcurrentTasks,
-      managers: {
-        terminal: await this.terminalManager.isHealthy?.() || false,
-        memory: await this.memoryManager.isHealthy?.() || false,
-        coordination: await this.coordinationManager.isHealthy?.() || false,
-      },
-    };
+      started:this.isStarted,
+      activeTasks:this.activeTasks.size,
+      maxTasks:this.config.maxConcurrentTasks,
+      managers:{
+        terminal:await this.terminalManager.isHealthy?.() || false,
+        memory:await this.memoryManager.isHealthy?.() || false,
+        coordination:await this.coordinationManager.isHealthy?.() || false,
+},
+};
 
     const healthy =
       this.isStarted &&
@@ -288,24 +283,23 @@ export class Orchestrator {
       details.managers.memory &&
       details.managers.coordination;
 
-    return { healthy, details };
-  }
+    return { healthy, details};
+}
 
-  getActiveTasks(): string[] {
+  getActiveTasks():string[] {
     return Array.from(this.activeTasks.keys());
-  }
+}
 }
 
 // Example usage:
 // Initialize orchestrator with full dependency injection
 // const orchestrator = new Orchestrator(
 //   {
-//     name: 'claude-zen-main',
-//     timeout: 60000,
-//     maxConcurrentTasks: 20,
-//     enableHealthCheck: true,
-//     healthCheckInterval: 30000
-//   },
+//     name: 'claude-zen-main',//     timeout:60000,
+//     maxConcurrentTasks:20,
+//     enableHealthCheck:true,
+//     healthCheckInterval:30000
+//},
 //   terminalManager, memoryManager, coordinationManager, eventBus, logger
 // );
 //
@@ -314,16 +308,11 @@ export class Orchestrator {
 //
 // Execute tasks with priority handling
 // const result = await orchestrator.executeTask({
-//   id: 'neural-training-001',
-//   type: 'neural_training',
-//   description: 'Train CNN model with latest dataset',
-//   priority: 1,
-//   input: {
-//     dataset: 'cnn_v2',
-//     epochs: 100
-//   },
-//   metadata: {
-//     userId: '123',
-//     sessionId: 'abc'
+//   id: 'neural-training-001',//   type: 'neural_training',//   description: 'Train CNN model with latest dataset',//   priority:1,
+//   input:{
+//     dataset: 'cnn_v2',//     epochs:100
+//},
+//   metadata:{
+//     userId: '123',//     sessionId: 'abc'
 //   }
-// });
+//});

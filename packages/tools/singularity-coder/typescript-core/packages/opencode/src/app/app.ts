@@ -1,144 +1,144 @@
 import "zod-openapi/extend"
 import os from "node:os"
 import path from "node:path"
-import { z } from "@claude-zen/foundation"
-import { Global } from "../global"
-import { Context } from "../util/context"
-import { Filesystem } from "../util/filesystem"
-import { Log } from "../util/log"
+import { z} from "@claude-zen/foundation"
+import { Global} from "../global"
+import { Context} from "../util/context"
+import { Filesystem} from "../util/filesystem"
+import { Log} from "../util/log"
 
 export namespace App {
-  const log = Log.create({ service: "app" })
+  const log = Log.create({ service:"app"})
 
   export const Info = z
     .object({
-      hostname: z.string(),
-      git: z.boolean(),
-      path: z.object({
-        config: z.string(),
-        data: z.string(),
-        root: z.string(),
-        cwd: z.string(),
-        state: z.string(),
-      }),
-      time: z.object({
-        initialized: z.number().optional(),
-      }),
-    })
+      hostname:z.string(),
+      git:z.boolean(),
+      path:z.object({
+        config:z.string(),
+        data:z.string(),
+        root:z.string(),
+        cwd:z.string(),
+        state:z.string(),
+}),
+      time:z.object({
+        initialized:z.number().optional(),
+}),
+})
     .openapi({
-      ref: "App",
-    })
+      ref:"App",
+})
   export type Info = z.infer<typeof Info>
 
   const ctx = Context.create<{
-    info: Info
-    services: Map<any, { state: any; shutdown?: (input: any) => Promise<void> }>
-  }>("app")
+    info:Info
+    services:Map<any, { state:any; shutdown?: (input: any) => Promise<void>}>
+}>("app")
 
   export const {use} = ctx
 
   const APP_JSON = "app.json"
 
   export type Input = {
-    cwd: string
-  }
+    cwd:string
+}
 
   export const provideExisting = ctx.provide
-  export async function provide<T>(input: Input, cb: (app: App.Info) => Promise<T>) {
+  export async function provide<T>(input:Input, cb:(app: App.Info) => Promise<T>) {
     log.info("creating", {
-      cwd: input.cwd,
-    })
-    const git = await Filesystem.findUp(".git", input.cwd).then(([x]) => (x ? path.dirname(x) : undefined))
-    log.info("git", { git })
+      cwd:input.cwd,
+})
+    const git = await Filesystem.findUp(".git", input.cwd).then(([x]) => (x ? path.dirname(x) :undefined))
+    log.info("git", { git})
 
-    const data = path.join(Global.Path.data, "project", git ? directory(git) : "global")
+    const data = path.join(Global.Path.data, "project", git ? directory(git) :"global")
     const stateFile = Bun.file(path.join(data, APP_JSON))
     const state = (await stateFile.json().catch(() => ({}))) as {
-      initialized: number
-    }
+      initialized:number
+}
     await stateFile.write(JSON.stringify(state))
 
     const services = new Map<
       any,
       {
-        state: any
-        shutdown?: (input: any) => Promise<void>
-      }
+        state:any
+        shutdown?:(input: any) => Promise<void>
+}
     >()
 
     const root = git ?? input.cwd
 
-    const info: Info = {
-      hostname: os.hostname(),
-      time: {
-        initialized: state.initialized,
-      },
-      git: git !== undefined,
-      path: {
-        config: Global.Path.config,
-        state: Global.Path.state,
+    const info:Info = {
+      hostname:os.hostname(),
+      time:{
+        initialized:state.initialized,
+},
+      git:git !== undefined,
+      path:{
+        config:Global.Path.config,
+        state:Global.Path.state,
         data,
         root,
-        cwd: input.cwd,
-      },
-    }
+        cwd:input.cwd,
+},
+}
     const app = {
       services,
       info,
-    }
+}
 
     return ctx.provide(app, async () => {
       try {
         return await cb(app.info)
-      } finally {
+} finally {
         for (const [key, entry] of app.services.entries()) {
           if (!entry.shutdown) continue
-          log.info("shutdown", { name: key })
+          log.info("shutdown", { name:key})
           await entry.shutdown?.(await entry.state)
-        }
-      }
-    })
-  }
+}
+}
+})
+}
 
   export function state<State>(
-    key: any,
-    init: (app: Info) => State,
-    shutdown?: (state: Awaited<State>) => Promise<void>,
+    key:any,
+    init:(app: Info) => State,
+    shutdown?:(state: Awaited<State>) => Promise<void>,
   ) {
     return () => {
       const app = ctx.use()
       const {services} = app
       if (!services.has(key)) {
-        log.info("registering service", { name: key })
+        log.info("registering service", { name:key})
         services.set(key, {
-          state: init(app.info),
+          state:init(app.info),
           shutdown,
-        })
-      }
+})
+}
       return services.get(key)?.state as State
-    }
-  }
+}
+}
 
   export function info() {
     return ctx.use().info
-  }
+}
 
   export async function initialize() {
-    const { info } = ctx.use()
+    const { info} = ctx.use()
     info.time.initialized = Date.now()
     await Bun.write(
       path.join(info.path.data, APP_JSON),
       JSON.stringify({
-        initialized: Date.now(),
-      }),
+        initialized:Date.now(),
+}),
     )
-  }
+}
 
-  function directory(input: string): string {
+  function directory(input:string): string {
     return input
       .split(path.sep)
       .filter(Boolean)
       .join("-")
       .replace(/\W/g, "-")
-  }
+}
 }

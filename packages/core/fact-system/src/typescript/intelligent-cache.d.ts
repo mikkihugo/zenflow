@@ -29,7 +29,7 @@ export declare class IntelligentCache {
 	private cacheConfigs;
 	private hitCount;
 	private missCount;
-	constructor(namespace?: string);
+	constructor(namespace?:string);
 	/**
 	 * Initialize database connection using foundation
 	 */
@@ -41,11 +41,11 @@ export declare class IntelligentCache {
 	/**
 	 * Get cached data with intelligent cache logic
 	 */
-	get(type: string, key: string): Promise<any | null>;
+	get(type:string, key:string): Promise<any | null>;
 	/**
 	 * Store data in cache with intelligent expiration
 	 */
-	set(type: string, key: string, data: any): Promise<void>;
+	set(type:string, key:string, data:any): Promise<void>;
 	/**
 	 * Check if cache entry is still valid
 	 */
@@ -73,19 +73,19 @@ export declare class IntelligentCache {
 	/**
 	 * Get cache statistics
 	 */
-	getCacheStats(): {
-		hitRate: number;
-		hitCount: number;
-		missCount: number;
-		totalRequests: number;
-	};
+	getCacheStats():{
+		hitRate:number;
+		hitCount:number;
+		missCount:number;
+		totalRequests:number;
+};
 	/**
 	 * Clear cache for specific type or all cache
 	 */
-	clearCache(type?: string): Promise<void>;
+	clearCache(type?:string): Promise<void>;
 	/**
 	 * Warm cache with frequently accessed data
 	 */
-	warmCache(): Promise<void>;
+	warmCache():Promise<void>;
 }
 //# sourceMappingURL=intelligent-cache.d.ts.map

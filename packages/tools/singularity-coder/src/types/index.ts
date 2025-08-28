@@ -5,75 +5,75 @@
  */
 
 export interface FileAwareRequest {
-  task: string;
-  files?: string[];
-  context?: {
-    maxFiles?: number;
-    includeTests?: boolean;
-    includeDocs?: boolean;
-  };
-  options?: {
-    dryRun?: boolean;
-    model?: string;
-    maxTokens?: number;
-  };
+  task:string;
+  files?:string[];
+  context?:{
+    maxFiles?:number;
+    includeTests?:boolean;
+    includeDocs?:boolean;
+};
+  options?:{
+    dryRun?:boolean;
+    model?:string;
+    maxTokens?:number;
+};
 }
 
 export interface FileAwareResponse {
-  success: boolean;
-  changes: FileChange[];
-  context: AnalyzedContext;
-  metadata: {
-    filesAnalyzed: number;
-    provider: string;
-    model: string;
-    executionTime: number;
-  };
+  success:boolean;
+  changes:FileChange[];
+  context:AnalyzedContext;
+  metadata:{
+    filesAnalyzed:number;
+    provider:string;
+    model:string;
+    executionTime:number;
+};
 }
 
 export interface FileChange {
   type: 'create|modify|delete|rename;
-  path: string;
-  content?: string;
-  reasoning: string;
+'  path:string;
+  content?:string;
+  reasoning:string;
 }
 
 export interface FileInfo {
-  path: string;
-  content: string;
-  size: number;
-  lastModified: Date;
-  language?: string;
+  path:string;
+  content:string;
+  size:number;
+  lastModified:Date;
+  language?:string;
 }
 
 export interface SymbolReference {
-  name: string;
+  name:string;
   type: 'function|class|interface|variable|type;
-  file: string;
-  line: number;
-  column: number;
+'  file:string;
+  line:number;
+  column:number;
 }
 
 export interface FileDependency {
-  from: string;
-  to: string;
-  type: 'import' | 'reference' | 'inheritance';
+  from:string;
+  to:string;
+  type:'import' | ' reference' | ' inheritance';
 }
 
 export interface AnalyzedContext {
-  relevantFiles: string[];
-  dependencies: FileDependency[];
-  symbols: SymbolReference[];
-  summary: string;
-  complexity: 'low' | 'medium' | 'high';
+  relevantFiles:string[];
+  dependencies:FileDependency[];
+  symbols:SymbolReference[];
+  summary:string;
+  complexity:'low' | ' medium' | ' high';
 }
 
 export interface FileAwareConfig {
   provider: 'codeMesh|codeMeshCopilot|opencode|fallback;
-  model?: string;
-  rootPath: string;
-  excludePatterns?: string[];
-  maxFiles?: number;
-  enableRustCore?: boolean;
-  enableWasm?: boolean;
+'  model?:string;
+  rootPath:string;
+  excludePatterns?:string[];
+  maxFiles?:number;
+  enableRustCore?:boolean;
+  enableWasm?:boolean;
 }

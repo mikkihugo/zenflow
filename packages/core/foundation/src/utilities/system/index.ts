@@ -25,7 +25,7 @@ export {
 	isWSL,
 	startMonitoring,
 } from "./environment";
-export type { DetectedProject, DetectedWorkspace } from "./monorepo.detector.js";
+export type { DetectedProject, DetectedWorkspace} from "./monorepo.detector.js";
 // Specific exports to avoid conflicts
 export {
 	getWorkspaceDetector as getWorkspaceDetectorFromMonorepo,

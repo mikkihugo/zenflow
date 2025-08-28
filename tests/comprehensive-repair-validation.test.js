@@ -7,7 +7,10 @@ import { execSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import path from "node:path";
 
-const _colors = {
+// Constants
+const TEST_PROJECT_PATH = TEST_PROJECT_PATH;
+
+const colors = {
 	green: "\x1b[32m",
 	red: "\x1b[31m",
 	yellow: "\x1b[33m",
@@ -16,7 +19,11 @@ const _colors = {
 	reset: "\x1b[0m",
 };
 
-function log(_message, _color = "reset") {}
+function log(message, color = "reset") {
+	if (message && colors[color]) {
+		// No-op logging function for tests
+	}
+}
 
 class ComprehensiveRepairValidator {
 	constructor() {
@@ -73,7 +80,7 @@ class ComprehensiveRepairValidator {
 		for (const script of repairedScripts) {
 			try {
 				execSync(`node -c ${script}`, {
-					cwd: "/home/mhugo/code/claude-zen-flow",
+					cwd: TEST_PROJECT_PATH,
 					stdio: "pipe",
 				});
 				this.recordResult(
@@ -104,7 +111,7 @@ class ComprehensiveRepairValidator {
 		for (const { script, timeout } of executableScripts) {
 			try {
 				execSync(`timeout ${timeout / 1000}s node ${script} || true`, {
-					cwd: "/home/mhugo/code/claude-zen-flow",
+					cwd: TEST_PROJECT_PATH,
 					stdio: "pipe",
 				});
 				this.recordResult(
@@ -144,7 +151,7 @@ class ComprehensiveRepairValidator {
 		for (const tsFile of tsFiles) {
 			try {
 				// Check if file exists
-				const fullPath = path.join("/home/mhugo/code/claude-zen-flow", tsFile);
+				const fullPath = path.join(TEST_PROJECT_PATH, tsFile);
 				if (!existsSync(fullPath)) {
 					this.recordResult(
 						`TS Check: ${tsFile}`,
@@ -157,7 +164,7 @@ class ComprehensiveRepairValidator {
 				// Try TypeScript compilation check (if tsc is available)
 				try {
 					execSync(`npx tsc --noEmit --skipLibCheck ${tsFile}`, {
-						cwd: "/home/mhugo/code/claude-zen-flow",
+						cwd: TEST_PROJECT_PATH,
 						stdio: "pipe",
 					});
 					this.recordResult(
@@ -165,10 +172,10 @@ class ComprehensiveRepairValidator {
 						true,
 						"TypeScript compiles without errors",
 					);
-				} catch (_tscError) {
+				} catch {
 					// If tsc fails, at least check if it's valid JavaScript
 					execSync(`node -c ${tsFile}`, {
-						cwd: "/home/mhugo/code/claude-zen-flow",
+						cwd: TEST_PROJECT_PATH,
 						stdio: "pipe",
 					});
 					this.recordResult(
@@ -196,7 +203,7 @@ class ComprehensiveRepairValidator {
 		for (const dep of criticalDeps) {
 			try {
 				execSync(`npm list ${dep}`, {
-					cwd: "/home/mhugo/code/claude-zen-flow",
+					cwd: TEST_PROJECT_PATH,
 					stdio: "pipe",
 				});
 				this.recordResult(`Dependency: ${dep}`, true, "Package is installed");
@@ -220,7 +227,7 @@ class ComprehensiveRepairValidator {
 		// Test better-sqlite3 specifically (the problematic one)
 		try {
 			execSync("node -e \"require('better-sqlite3')\"", {
-				cwd: "/home/mhugo/code/claude-zen-flow",
+				cwd: TEST_PROJECT_PATH,
 				stdio: "pipe",
 			});
 			this.recordResult(
@@ -275,7 +282,7 @@ class ComprehensiveRepairValidator {
 		for (const impl of implementations) {
 			try {
 				if (
-					!existsSync(path.join("/home/mhugo/code/claude-zen-flow", impl.file))
+					!existsSync(path.join(TEST_PROJECT_PATH, impl.file))
 				) {
 					this.recordResult(impl.name, false, "Implementation file missing");
 					continue;
@@ -402,7 +409,7 @@ class ComprehensiveRepairValidator {
 		try {
 			// Test performance monitor
 			execSync("node -c scripts/performance-monitor.js", {
-				cwd: "/home/mhugo/code/claude-zen-flow",
+				cwd: TEST_PROJECT_PATH,
 				stdio: "pipe",
 			});
 			this.recordResult(
@@ -421,7 +428,7 @@ class ComprehensiveRepairValidator {
 		// Test if blessed is available for the performance monitor
 		try {
 			execSync("node -e \"require('blessed')\"", {
-				cwd: "/home/mhugo/code/claude-zen-flow",
+				cwd: TEST_PROJECT_PATH,
 				stdio: "pipe",
 			});
 			this.recordResult(
@@ -429,7 +436,7 @@ class ComprehensiveRepairValidator {
 				true,
 				"Available for interactive dashboard",
 			);
-		} catch (_error) {
+		} catch {
 			this.recordResult(
 				"Blessed UI Library",
 				false,
@@ -447,7 +454,7 @@ class ComprehensiveRepairValidator {
 			execSync(
 				"timeout 5s node scripts/validate-sqlite-optimizations.js || true",
 				{
-					cwd: "/home/mhugo/code/claude-zen-flow",
+					cwd: TEST_PROJECT_PATH,
 					stdio: "pipe",
 				},
 			);
@@ -469,12 +476,12 @@ class ComprehensiveRepairValidator {
 			execSync(
 				'node -e "import(\\"@lancedb/lancedb\\").then(() => console.log(\\"OK\\"))"',
 				{
-					cwd: "/home/mhugo/code/claude-zen-flow",
+					cwd: TEST_PROJECT_PATH,
 					stdio: "pipe",
 				},
 			);
 			this.recordResult("LanceDB Library", true, "Import successful");
-		} catch (_error) {
+		} catch {
 			this.recordResult(
 				"LanceDB Library",
 				false,
@@ -650,7 +657,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 			process.exit(success ? 0 : 1);
 		})
 		.catch((error) => {
-			console.error("❌ Validation failed:", error);
+			// Validation failed - using process.stderr instead of console
+			process.stderr.write(`❌ Validation failed: ${error}\\n`);
 			process.exit(1);
 		});
 }

@@ -86,6 +86,17 @@ node_modules/.cache/
 # TypeScript build artifacts
 .tsbuildinfo
 *.tsbuildinfo
+*.d.ts
+*.d.ts.map
+*.js
+*.js.map
+
+# Exclude TypeScript source files from the build artifact ignore
+!src/**/*.ts
+!*.ts
+!**/*.config.js
+!**/*.config.ts
+!**/eslint.config.js
 
 # IDE and editor files
 *.swp
@@ -101,6 +112,10 @@ polyglot-benchmarks/
 
 # Scripts and temporary files
 merge_script.sh
+fix-strings.cjs
+fix_strings.js
+*fix*.cjs
+*fix*.js
 
 # Root-level temporary test and demo files
 /test-*.js

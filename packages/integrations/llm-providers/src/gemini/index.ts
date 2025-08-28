@@ -5,7 +5,7 @@
  * Will include SDK wrapper and provider implementation.
  */
 
-import { err, type Result } from '@claude-zen/foundation';
+import { err, type Result} from '@claude-zen/foundation';
 
 import type {
   CLIError,
@@ -15,77 +15,69 @@ import type {
   SwarmAgentRole,
 } from '../types/cli-providers';
 
-// TODO: Implement GeminiProvider class
-// TODO: Implement Gemini CLI SDK wrapper
-// TODO: Add Gemini-specific role configurations
+// TODO:Implement GeminiProvider class
+// TODO:Implement Gemini CLI SDK wrapper
+// TODO:Add Gemini-specific role configurations
 
 export class GeminiCLI implements CLIProvider {
   readonly id = 'gemini-cli';
   readonly name = 'Gemini CLI';
 
-  getCapabilities(): CLIProviderCapabilities {
+  getCapabilities():CLIProviderCapabilities {
     return {
-      models: ['gemini-pro', 'gemini-pro-vision'],
-      maxTokens: 8192,
-      contextWindow: 32768,
-      features: {
-        fileOperations: false,
-        webAccess: true,
-        codeExecution: false,
-        imageGeneration: true,
-        multimodal: true,
-        streaming: true,
-        customTools: false,
-        contextWindow: true,
-        reasoning: true,
-        coding: true,
-        planning: true,
-      },
-    };
-  }
+      models:['gemini-pro',    'gemini-pro-vision'],
+      maxTokens:8192,
+      contextWindow:32768,
+      features:{
+        fileOperations:false,
+        webAccess:true,
+        codeExecution:false,
+        imageGeneration:true,
+        multimodal:true,
+        streaming:true,
+        customTools:false,
+        contextWindow:true,
+        reasoning:true,
+        coding:true,
+        planning:true,
+},
+};
+}
 
-  async execute(): Promise<CLIResult> {
-    const error: CLIError = {
-      code: 'NOT_IMPLEMENTED',
-      message: 'Gemini CLI provider not yet implemented.',
-    };
+  async execute():Promise<CLIResult> {
+    const error:CLIError = {
+      code: 'NOT_IMPLEMENTED',      message: 'Gemini CLI provider not yet implemented.',};
     return err(error);
-  }
+}
 
-  setRole(): Result<void, CLIError> {
-    const error: CLIError = {
-      code: 'NOT_IMPLEMENTED',
-      message: 'Gemini CLI provider not yet implemented.',
-    };
+  setRole():Result<void, CLIError> {
+    const error:CLIError = {
+      code: 'NOT_IMPLEMENTED',      message: 'Gemini CLI provider not yet implemented.',};
     return err(error);
-  }
+}
 
-  getRole(): SwarmAgentRole | undefined {
+  getRole():SwarmAgentRole | undefined {
     return undefined;
-  }
+}
 
-  async complete(): Promise<Result<string, CLIError>> {
-    const error: CLIError = {
-      code: 'NOT_IMPLEMENTED',
-      message: 'Gemini CLI provider not yet implemented.',
-    };
+  async complete():Promise<Result<string, CLIError>> {
+    const error:CLIError = {
+      code: 'NOT_IMPLEMENTED',      message: 'Gemini CLI provider not yet implemented.',};
     return err(error);
-  }
+}
 
-  async executeTask(): Promise<Result<unknown, CLIError>> {
-    const error: CLIError = {
-      code: 'NOT_IMPLEMENTED',
-      message: 'Gemini CLI provider not yet implemented.',
-    };
+  async executeTask():Promise<Result<unknown, CLIError>> {
+    const error:CLIError = {
+      code: 'NOT_IMPLEMENTED',      message: 'Gemini CLI provider not yet implemented.',};
     return err(error);
-  }
+}
 
   getUsageStats() {
-    return { requestCount: 0, lastRequestTime: 0 };
-  }
+    return { requestCount:0, lastRequestTime:0};
+}
 }
 
 // Placeholder exports
 export const GEMINI_SWARM_AGENT_ROLES = {
-  // TODO: Define Gemini-specific agent roles
+  // TODO:Define Gemini-specific agent roles
 };

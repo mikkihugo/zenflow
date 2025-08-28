@@ -49,23 +49,23 @@ export {
  *
  * @template T - The type of service this token represents
  * @example
- * ```typescript
- * const USER_SERVICE: InjectionToken<UserService> = Symbol('UserService');
- * const API_URL: InjectionToken<string> = 'apiUrl';
+ * ```typescript`
+ * const USER_SERVICE:InjectionToken<UserService> = Symbol('UserService');
+ * const API_URL:InjectionToken<string> = 'apiUrl';
  * ```
  */
 export type InjectionToken<T = unknown> =
 	| string
 	| symbol
 	| (new (
-			...args: unknown[]
+			...args:unknown[]
 	  ) => T);
 
 /**
  * Service lifecycle options compatible with Awilix.
- * - `singleton`: One instance shared across the application
- * - `transient`: New instance created for each resolution
- * - `scoped`: One instance per scope/request
+ * - `singleton`:One instance shared across the application`
+ * - `transient`:New instance created for each resolution`
+ * - `scoped`:One instance per scope/request`
  */
 export type LifecycleCompat = "singleton" | "transient" | "scoped";
 
@@ -73,31 +73,30 @@ export type LifecycleCompat = "singleton" | "transient" | "scoped";
  * Options for service registration in the DI container.
  *
  * @example
- * ```typescript
- * const options: ServiceRegistrationOptions = {
- *   lifetime: 'singleton',
- *   capabilities: ['database', 'auth'],
- *   tags: ['critical', 'external'],
- *   healthCheck: () => database.isConnected()
- * };
+ * ```typescript`
+ * const options:ServiceRegistrationOptions = {
+ *   lifetime: 'singleton', *   capabilities:['database',    'auth'],
+ *   tags:['critical',    'external'],
+ *   healthCheck:() => database.isConnected()
+ *};
  * ```
  */
 export interface ServiceRegistrationOptions {
 	/** Service lifecycle - how instances are managed */
-	lifetime?: LifecycleCompat;
+	lifetime?:LifecycleCompat;
 	/** Service capabilities for discovery and filtering */
-	capabilities?: string[];
+	capabilities?:string[];
 	/** Tags for categorization and querying */
-	tags?: string[];
+	tags?:string[];
 	/** Optional health check function */
-	healthCheck?: () => boolean;
+	healthCheck?:() => boolean;
 }
 
 /**
  * Service lifetime enumeration for type-safe lifecycle management.
  *
  * @example
- * ```typescript
+ * ```typescript`
  * container.register('service', asClass(MyService).scoped());
  * // Equivalent to:
  * container.register('service', asClass(MyService).lifetime(Lifetime.Scoped));

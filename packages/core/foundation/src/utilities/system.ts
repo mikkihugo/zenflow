@@ -29,9 +29,9 @@ export {
 	getSystemCapabilityData,
 	startSystemMonitoring,
 } from "./system/capability.provider.js";
-export type { DetectedWorkspace } from "./system/monorepo.detector.js";
+export type { DetectedWorkspace} from "./system/monorepo.detector.js";
 // Re-export system modules for convenience
-export { WorkspaceDetector } from "./system/monorepo.detector.js";
+export { WorkspaceDetector} from "./system/monorepo.detector.js";
 
 /**
  * Platform types
@@ -64,35 +64,35 @@ export type Architecture =
  * System information interface
  */
 export interface SystemInfo {
-	platform: Platform;
-	arch: Architecture;
-	nodeVersion: string;
-	osVersion: string;
-	cpuCount: number;
-	totalMemoryGB: number;
-	availableMemoryGB: number;
-	hostname: string;
-	username: string;
-	homeDir: string;
-	tempDir: string;
-	isCI: boolean;
-	isDocker: boolean;
-	isWSL: boolean;
+	platform:Platform;
+	arch:Architecture;
+	nodeVersion:string;
+	osVersion:string;
+	cpuCount:number;
+	totalMemoryGB:number;
+	availableMemoryGB:number;
+	hostname:string;
+	username:string;
+	homeDir:string;
+	tempDir:string;
+	isCI:boolean;
+	isDocker:boolean;
+	isWSL:boolean;
 }
 
 /**
  * Process information interface
  */
 export interface ProcessInfo {
-	pid: number;
-	ppid: number;
-	title: string;
-	argv: string[];
-	execPath: string;
-	cwd: string;
-	env: Record<string, string | undefined>;
-	uptime: number;
-	memoryUsage: NodeJS.MemoryUsage;
+	pid:number;
+	ppid:number;
+	title:string;
+	argv:string[];
+	execPath:string;
+	cwd:string;
+	env:Record<string, string | undefined>;
+	uptime:number;
+	memoryUsage:NodeJS.MemoryUsage;
 }
 
 /**
@@ -112,13 +112,13 @@ export type EnvironmentType =
  * @returns Normalized platform name
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const platform = getPlatform();
- * console.log(platform); // 'darwin', 'linux', 'win32', etc.
+ * console.log(platform); // 'darwin',    'linux',    'win32', etc.
  * ```
  */
-export function getPlatform(): Platform {
-	const { platform } = process;
+export function getPlatform():Platform {
+	const { platform} = process;
 
 	// Handle known platforms
 	if (
@@ -127,13 +127,13 @@ export function getPlatform(): Platform {
 		)
 	) {
 		return platform as Platform;
-	}
+}
 
 	// Check for Android (common in Node.js environments)
-	const { env } = process;
+	const { env} = process;
 	if (platform === "linux" && env['ANDROID_ROOT']) {
 		return "android";
-	}
+}
 
 	return "unknown";
 }
@@ -144,20 +144,20 @@ export function getPlatform(): Platform {
  * @returns Normalized architecture name
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const arch = getArchitecture();
- * console.log(arch); // 'x64', 'arm64', etc.
+ * console.log(arch); // 'x64',    'arm64', etc.
  * ```
  */
-export function getArchitecture(): Architecture {
-	const { arch } = process;
+export function getArchitecture():Architecture {
+	const { arch} = process;
 
 	// Handle known architectures
 	if (
 		["x64", "arm64", "ia32", "arm", "ppc64", "s390x", "mips"].includes(arch)
 	) {
 		return arch as Architecture;
-	}
+}
 
 	return "unknown";
 }
@@ -168,13 +168,13 @@ export function getArchitecture(): Architecture {
  * @returns True if running on Windows
  *
  * @example
- * ```typescript
+ * ```typescript`
  * if (isWindows()) {
  *   // Windows-specific logic
- * }
+ *}
  * ```
  */
-export function isWindows(): boolean {
+export function isWindows():boolean {
 	return getPlatform() === "win32";
 }
 
@@ -184,13 +184,13 @@ export function isWindows(): boolean {
  * @returns True if running on macOS
  *
  * @example
- * ```typescript
+ * ```typescript`
  * if (isMacOS()) {
  *   // macOS-specific logic
- * }
+ *}
  * ```
  */
-export function isMacOS(): boolean {
+export function isMacOS():boolean {
 	return getPlatform() === "darwin";
 }
 
@@ -200,13 +200,13 @@ export function isMacOS(): boolean {
  * @returns True if running on Linux
  *
  * @example
- * ```typescript
+ * ```typescript`
  * if (isLinux()) {
  *   // Linux-specific logic
- * }
+ *}
  * ```
  */
-export function isLinux(): boolean {
+export function isLinux():boolean {
 	return getPlatform() === "linux";
 }
 
@@ -216,13 +216,13 @@ export function isLinux(): boolean {
  * @returns True if running in CI
  *
  * @example
- * ```typescript
+ * ```typescript`
  * if (isCI()) {
  *   console.log('Running in CI environment');
- * }
+ *}
  * ```
  */
-export function isCI(): boolean {
+export function isCI():boolean {
 	return !!(
 		process.env['CI'] ||
 		process.env['CONTINUOUS_INTEGRATION'] ||
@@ -243,30 +243,30 @@ export function isCI(): boolean {
  * @returns True if running in Docker
  *
  * @example
- * ```typescript
+ * ```typescript`
  * if (isDocker()) {
  *   console.log('Running in Docker container');
- * }
+ *}
  * ```
  */
-export function isDocker(): boolean {
+export function isDocker():boolean {
 	try {
 		// Check for .dockerenv file
 		const fs = require("node:fs");
 		if (fs.existsSync("/.dockerenv")) {
 			return true;
-		}
+}
 
 		// Check for Docker-specific cgroup entries
 		if (fs.existsSync("/proc/1/cgroup")) {
 			const cgroup = fs.readFileSync("/proc/1/cgroup", "utf8");
 			return cgroup.includes("docker") || cgroup.includes("containerd");
-		}
+}
 
 		return false;
-	} catch {
+} catch {
 		return false;
-	}
+}
 }
 
 /**
@@ -275,16 +275,16 @@ export function isDocker(): boolean {
  * @returns True if running in WSL
  *
  * @example
- * ```typescript
+ * ```typescript`
  * if (isWSL()) {
  *   console.log('Running in WSL');
- * }
+ *}
  * ```
  */
-export function isWSL(): boolean {
+export function isWSL():boolean {
 	if (!isLinux()) {
 		return false;
-	}
+}
 
 	try {
 		const fs = require("node:fs");
@@ -293,12 +293,12 @@ export function isWSL(): boolean {
 		if (fs.existsSync("/proc/version")) {
 			const version = fs.readFileSync("/proc/version", "utf8").toLowerCase();
 			return version.includes("microsoft") || version.includes("wsl");
-		}
+}
 
 		return false;
-	} catch {
+} catch {
 		return false;
-	}
+}
 }
 
 /**
@@ -307,14 +307,14 @@ export function isWSL(): boolean {
  * @returns Environment type
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const env = getEnvironment();
  * if (env === 'production') {
  *   // Production-specific configuration
- * }
+ *}
  * ```
  */
-export function getEnvironment(): EnvironmentType {
+export function getEnvironment():EnvironmentType {
 	const nodeEnv = process.env['NODE_ENV']?.toLowerCase();
 
 	// Direct NODE_ENV mapping
@@ -327,32 +327,32 @@ export function getEnvironment(): EnvironmentType {
 	// Infer from other environment variables
 	if (
 		process.env['VERCEL_ENV'] === "production" ||
-		(process.env['NETLIFY'] && process.env['CONTEXT'] === "production")
+		(process.env['NETLIFY'] && process.env[' CONTEXT'] === "production")
 	) {
 		return "production";
-	}
+}
 
 	if (
 		process.env['VERCEL_ENV'] === "preview" ||
-		(process.env['NETLIFY'] && process.env['CONTEXT'] === "deploy-preview")
+		(process.env['NETLIFY'] && process.env[' CONTEXT'] === "deploy-preview")
 	) {
 		return "preview";
-	}
+}
 
 	if (
 		process.env['VERCEL_ENV'] === "development" ||
-		(process.env['NETLIFY'] && process.env['CONTEXT'] === "dev")
+		(process.env['NETLIFY'] && process.env[' CONTEXT'] === "dev")
 	) {
 		return "development";
-	}
+}
 
 	// CI environments usually indicate production-like environments
 	if (isCI()) {
 		return "production";
-	}
+}
 
 	// Default to development if no clear indicators
-	return nodeEnv ? "unknown" : "development";
+	return nodeEnv ? "unknown" :"development";
 }
 
 /**
@@ -361,13 +361,13 @@ export function getEnvironment(): EnvironmentType {
  * @returns True if in development mode
  *
  * @example
- * ```typescript
+ * ```typescript`
  * if (isDevelopment()) {
  *   // Development-only features
- * }
+ *}
  * ```
  */
-export function isDevelopment(): boolean {
+export function isDevelopment():boolean {
 	return getEnvironment() === "development";
 }
 
@@ -377,13 +377,13 @@ export function isDevelopment(): boolean {
  * @returns True if in production mode
  *
  * @example
- * ```typescript
+ * ```typescript`
  * if (isProduction()) {
  *   // Production optimizations
- * }
+ *}
  * ```
  */
-export function isProduction(): boolean {
+export function isProduction():boolean {
 	return getEnvironment() === "production";
 }
 
@@ -393,13 +393,13 @@ export function isProduction(): boolean {
  * @returns True if in test mode
  *
  * @example
- * ```typescript
+ * ```typescript`
  * if (isTest()) {
  *   // Test-specific setup
- * }
+ *}
  * ```
  */
-export function isTest(): boolean {
+export function isTest():boolean {
 	return getEnvironment() === "test";
 }
 
@@ -409,12 +409,12 @@ export function isTest(): boolean {
  * @returns System information object
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const sysInfo = getSystemInfo();
  * console.log(`Running on ${sysInfo.platform} ${sysInfo.arch} with ${sysInfo.cpuCount} CPUs`);
  * ```
  */
-export function getSystemInfo(): SystemInfo {
+export function getSystemInfo():SystemInfo {
 	const platform = getPlatform();
 	const arch = getArchitecture();
 
@@ -427,19 +427,19 @@ export function getSystemInfo(): SystemInfo {
 	return {
 		platform,
 		arch,
-		nodeVersion: process.version,
-		osVersion: os.release(),
-		cpuCount: os.cpus().length,
+		nodeVersion:process.version,
+		osVersion:os.release(),
+		cpuCount:os.cpus().length,
 		totalMemoryGB,
 		availableMemoryGB,
-		hostname: os.hostname(),
-		username: os.userInfo().username,
-		homeDir: os.homedir(),
-		tempDir: os.tmpdir(),
-		isCI: isCI(),
-		isDocker: isDocker(),
-		isWSL: isWSL(),
-	};
+		hostname:os.hostname(),
+		username:os.userInfo().username,
+		homeDir:os.homedir(),
+		tempDir:os.tmpdir(),
+		isCI:isCI(),
+		isDocker:isDocker(),
+		isWSL:isWSL(),
+};
 }
 
 /**
@@ -448,23 +448,23 @@ export function getSystemInfo(): SystemInfo {
  * @returns Process information object
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const procInfo = getProcessInfo();
  * console.log(`Process ${procInfo.pid} running for ${procInfo.uptime}s`);
  * ```
  */
-export function getProcessInfo(): ProcessInfo {
+export function getProcessInfo():ProcessInfo {
 	return {
-		pid: process.pid,
-		ppid: process.ppid || 0,
-		title: process.title,
-		argv: process.argv,
-		execPath: process.execPath,
-		cwd: process.cwd(),
-		env: process.env,
-		uptime: process.uptime(),
-		memoryUsage: process.memoryUsage(),
-	};
+		pid:process.pid,
+		ppid:process.ppid || 0,
+		title:process.title,
+		argv:process.argv,
+		execPath:process.execPath,
+		cwd:process.cwd(),
+		env:process.env,
+		uptime:process.uptime(),
+		memoryUsage:process.memoryUsage(),
+};
 }
 
 /**
@@ -473,15 +473,15 @@ export function getProcessInfo(): ProcessInfo {
  * @returns WorkspaceDetector instance
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const detector = getWorkspaceDetector();
  * const workspace = await detector.detectWorkspaceRoot();
  * if (workspace) {
  *   console.log(`Found ${workspace.tool} workspace with ${workspace.totalProjects} projects`);
- * }
+ *}
  * ```
  */
-export function getWorkspaceDetector(): WorkspaceDetector {
+export function getWorkspaceDetector():WorkspaceDetector {
 	return new WorkspaceDetector();
 }
 
@@ -492,18 +492,18 @@ export function getWorkspaceDetector(): WorkspaceDetector {
  * @returns Detected workspace information or null
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const workspace = await detectWorkspace();
  * if (workspace) {
  *   console.log(`Detected ${workspace.tool} monorepo with ${workspace.totalProjects} projects`);
- * } else {
+ *} else {
  *   console.log('No monorepo detected');
- * }
+ *}
  * ```
  */
 export function detectWorkspace(
-	startPath?: string,
-): Promise<DetectedWorkspace | null> {
+	startPath?:string,
+):Promise<DetectedWorkspace | null> {
 	const detector = getWorkspaceDetector();
 	return detector.detectWorkspaceRoot(startPath);
 }
@@ -514,13 +514,13 @@ export function detectWorkspace(
  * @returns System capability data
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const capabilities = await getSystemCapabilities();
- * console.log(`System health: ${capabilities.systemHealthScore}%`);
- * console.log(`Available packages: ${capabilities.availablePackages}/${capabilities.totalPackages}`);
+ * console.log(`System health:${capabilities.systemHealthScore}%`);
+ * console.log(`Available packages:${capabilities.availablePackages}/${capabilities.totalPackages}`);
  * ```
  */
-export function getSystemCapabilities(): Promise<SystemCapabilityData> {
+export function getSystemCapabilities():Promise<SystemCapabilityData> {
 	return Promise.resolve(getSystemCapabilityData());
 }
 
@@ -528,12 +528,12 @@ export function getSystemCapabilities(): Promise<SystemCapabilityData> {
  * Display system status information to console
  *
  * @example
- * ```typescript
+ * ```typescript`
  * await showSystemStatus();
  * // Outputs detailed system status with colors and emojis
  * ```
  */
-export function showSystemStatus(): Promise<void> {
+export function showSystemStatus():Promise<void> {
 	return displaySystemStatus();
 }
 
@@ -541,12 +541,12 @@ export function showSystemStatus(): Promise<void> {
  * Start system monitoring for status changes
  *
  * @example
- * ```typescript
+ * ```typescript`
  * startMonitoring();
  * // Begins logging system events and status changes
  * ```
  */
-export function startMonitoring(): void {
+export function startMonitoring():void {
 	startSystemMonitoring();
 }
 
@@ -556,13 +556,13 @@ export function startMonitoring(): void {
  * @returns Record of capability area names to scores
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const scores = await getCapabilityScoreMap();
- * console.log('Intelligence capability:', scores.intelligence);
- * console.log('Infrastructure capability:', scores.infrastructure);
- * ```
+ * console.log('Intelligence capability: ', scores.intelligence);
+' * console.log('Infrastructure capability: ', scores.infrastructure);
+' * ```
  */
-export function getCapabilityScoreMap(): Promise<Record<string, number>> {
+export function getCapabilityScoreMap():Promise<Record<string, number>> {
 	return getCapabilityScores();
 }
 
@@ -572,26 +572,26 @@ export function getCapabilityScoreMap(): Promise<Record<string, number>> {
  * @returns Formatted system summary string
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const summary = createSystemSummary();
  * console.log(summary);
- * // Outputs: "Linux x64 (Node.js v18.17.0) - 8 CPUs, 16.0GB RAM - Development"
+ * // Outputs:"Linux x64 (Node.js v18.17.0) - 8 CPUs, 16.0GB RAM - Development"
  * ```
  */
-export function createSystemSummary(): string {
+export function createSystemSummary():string {
 	const info = getSystemInfo();
 	const env = getEnvironment();
 
 	let summary = `${info.platform} ${info.arch} (Node.js ${info.nodeVersion}) - ${info.cpuCount} CPUs, ${info.totalMemoryGB}GB RAM - ${env}`;
 
-	const indicators: string[] = [];
+	const indicators:string[] = [];
 	if (info.isCI) indicators.push("CI");
 	if (info.isDocker) indicators.push("Docker");
 	if (info.isWSL) indicators.push("WSL");
 
 	if (indicators.length > 0) {
 		summary += ` (${indicators.join(", ")})`;
-	}
+}
 
 	return summary;
 }
@@ -603,24 +603,23 @@ export function createSystemSummary(): string {
  * @returns True if requirements are met
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const meetsRequirements = checkSystemRequirements({
- *   nodeVersion: '18.0.0',
- *   totalMemoryGB: 8,
- *   cpuCount: 4
- * });
+ *   nodeVersion: '18.0.0', *   totalMemoryGB:8,
+ *   cpuCount:4
+ *});
  *
  * if (!meetsRequirements) {
  *   console.warn('System does not meet minimum requirements');
- * }
+ *}
  * ```
  */
-export function checkSystemRequirements(requirements: {
-	nodeVersion?: string;
-	totalMemoryGB?: number;
-	cpuCount?: number;
-	supportedPlatforms?: Platform[];
-}): boolean {
+export function checkSystemRequirements(requirements:{
+	nodeVersion?:string;
+	totalMemoryGB?:number;
+	cpuCount?:number;
+	supportedPlatforms?:Platform[];
+}):boolean {
 	const info = getSystemInfo();
 
 	// Check Node.js version
@@ -641,8 +640,8 @@ export function checkSystemRequirements(requirements: {
 			(currentMajor === requiredMajor && currentMinor < requiredMinor)
 		) {
 			return false;
-		}
-	}
+}
+}
 
 	// Check memory
 	if (
@@ -650,12 +649,12 @@ export function checkSystemRequirements(requirements: {
 		info.totalMemoryGB < requirements.totalMemoryGB
 	) {
 		return false;
-	}
+}
 
 	// Check CPU count
 	if (requirements.cpuCount && info.cpuCount < requirements.cpuCount) {
 		return false;
-	}
+}
 
 	// Check platform support
 	if (
@@ -663,7 +662,7 @@ export function checkSystemRequirements(requirements: {
 		!requirements.supportedPlatforms.includes(info.platform)
 	) {
 		return false;
-	}
+}
 
 	return true;
 }

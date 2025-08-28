@@ -2,8 +2,8 @@
 import { onMount } from "svelte";
 
 // Simple dashboard data
-const _systemStatus = { status: "healthy", uptime: "2h 34m", services: 12 };
-const _metrics = {
+const systemStatus = { status: "healthy", uptime: "2h 34m", services: 12 };
+const metrics = {
 	cpu: 45,
 	memory: 62,
 	disk: 78,
@@ -158,13 +158,16 @@ onMount(() => {
 			<button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
 				🚀 Start SAFe Planning
 			</button>
+			<a href="/events" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors inline-block">
+				📡 Event System Dashboard
+			</a>
 			<button class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
 				📊 Generate Report
 			</button>
-			<button class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors">
+			<button class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors">
 				🔧 System Settings
 			</button>
-			<button class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors">
+			<button class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-colors">
 				📖 View Documentation
 			</button>
 		</div>

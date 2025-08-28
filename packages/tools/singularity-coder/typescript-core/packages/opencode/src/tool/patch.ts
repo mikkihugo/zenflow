@@ -1,67 +1,67 @@
 import * as fs from "node:fs/promises"
 import * as path from "node:path"
-import { z } from "@claude-zen/foundation"
-import { FileTime } from "../file/time"
+import { z} from "@claude-zen/foundation"
+import { FileTime} from "../file/time"
 import DESCRIPTION from "./patch.txt"
-import { Tool } from "./tool"
+import { Tool} from "./tool"
 
 const PatchParams = z.object({
-  patchText: z.string().describe("The full patch text that describes all changes to be made"),
+  patchText:z.string().describe("The full patch text that describes all changes to be made"),
 })
 
 interface Change {
-  type: "add" | "update" | "delete"
-  old_content?: string
-  new_content?: string
+  type:"add" | "update" | "delete"
+  old_content?:string
+  new_content?:string
 }
 
 interface Commit {
-  changes: Record<string, Change>
+  changes:Record<string, Change>
 }
 
 interface PatchOperation {
-  type: "update" | "add" | "delete"
-  filePath: string
-  hunks?: PatchHunk[]
-  content?: string
+  type:"update" | "add" | "delete"
+  filePath:string
+  hunks?:PatchHunk[]
+  content?:string
 }
 
 interface PatchHunk {
-  contextLine: string
-  changes: PatchChange[]
+  contextLine:string
+  changes:PatchChange[]
 }
 
 interface PatchChange {
-  type: "keep" | "remove" | "add"
-  content: string
+  type:"keep" | "remove" | "add"
+  content:string
 }
 
-function identifyFilesNeeded(patchText: string): string[] {
-  const files: string[] = []
+function identifyFilesNeeded(patchText:string): string[] {
+  const files:string[] = []
   const lines = patchText.split("\n")
   for (const line of lines) {
     if (line.startsWith("*** Update File:") || line.startsWith("*** Delete File:")) {
       const filePath = line.split(":", 2)[1]?.trim()
       if (filePath) files.push(filePath)
-    }
-  }
+}
+}
   return files
 }
 
-function _identifyFilesAdded(patchText: string): string[] {
-  const files: string[] = []
+function _identifyFilesAdded(patchText:string): string[] {
+  const files:string[] = []
   const lines = patchText.split("\n")
   for (const line of lines) {
     if (line.startsWith("*** Add File:")) {
       const filePath = line.split(":", 2)[1]?.trim()
       if (filePath) files.push(filePath)
-    }
-  }
+}
+}
   return files
 }
 
-function textToPatch(patchText: string, _currentFiles: Record<string, string>): [PatchOperation[], number] {
-  const operations: PatchOperation[] = []
+function textToPatch(patchText:string, _currentFiles:Record<string, string>):[PatchOperation[], number] {
+  const operations:PatchOperation[] = []
   const lines = patchText.split("\n")
   let i = 0
   const fuzz = 0
@@ -74,45 +74,45 @@ function textToPatch(patchText: string, _currentFiles: Record<string, string>): 
       if (!filePath) {
         i++
         continue
-      }
+}
 
-      const hunks: PatchHunk[] = []
+      const hunks:PatchHunk[] = []
       i++
 
       while (i < lines.length && !lines[i].startsWith("***")) {
         if (lines[i].startsWith("@@")) {
           const contextLine = lines[i].substring(2).trim()
-          const changes: PatchChange[] = []
+          const changes:PatchChange[] = []
           i++
 
           while (i < lines.length && !lines[i].startsWith("@@") && !lines[i].startsWith("***")) {
             const changeLine = lines[i]
             if (changeLine.startsWith(" ")) {
-              changes.push({ type: "keep", content: changeLine.substring(1) })
-            } else if (changeLine.startsWith("-")) {
+              changes.push({ type:"keep", content:changeLine.substring(1)})
+} else if (changeLine.startsWith("-")) {
               changes.push({
-                type: "remove",
-                content: changeLine.substring(1),
-              })
-            } else if (changeLine.startsWith("+")) {
-              changes.push({ type: "add", content: changeLine.substring(1) })
-            }
+                type:"remove",
+                content:changeLine.substring(1),
+})
+} else if (changeLine.startsWith("+")) {
+              changes.push({ type:"add", content:changeLine.substring(1)})
+}
             i++
-          }
+}
 
-          hunks.push({ contextLine, changes })
-        } else {
+          hunks.push({ contextLine, changes})
+} else {
           i++
-        }
-      }
+}
+}
 
-      operations.push({ type: "update", filePath, hunks })
-    } else if (line.startsWith("*** Add File:")) {
+      operations.push({ type:"update", filePath, hunks})
+} else if (line.startsWith("*** Add File:")) {
       const filePath = line.split(":", 2)[1]?.trim()
       if (!filePath) {
         i++
         continue
-      }
+}
 
       let content = ""
       i++
@@ -120,74 +120,74 @@ function textToPatch(patchText: string, _currentFiles: Record<string, string>): 
       while (i < lines.length && !lines[i].startsWith("***")) {
         if (lines[i].startsWith("+")) {
           content += `${lines[i].substring(1)}\n`
-        }
+}
         i++
-      }
+}
 
-      operations.push({ type: "add", filePath, content: content.slice(0, -1) })
-    } else if (line.startsWith("*** Delete File:")) {
+      operations.push({ type:"add", filePath, content:content.slice(0, -1)})
+} else if (line.startsWith("*** Delete File:")) {
       const filePath = line.split(":", 2)[1]?.trim()
       if (filePath) {
-        operations.push({ type: "delete", filePath })
-      }
+        operations.push({ type:"delete", filePath})
+}
       i++
-    } else {
+} else {
       i++
-    }
-  }
+}
+}
 
   return [operations, fuzz]
 }
 
-function _patchToCommit(operations: PatchOperation[], currentFiles: Record<string, string>): Commit {
-  const changes: Record<string, Change> = {}
+function _patchToCommit(operations:PatchOperation[], currentFiles:Record<string, string>):Commit {
+  const changes:Record<string, Change> = {}
 
   for (const op of operations) {
     if (op.type === "delete") {
       changes[op.filePath] = {
-        type: "delete",
-        old_content: currentFiles[op.filePath] || "",
-      }
-    } else if (op.type === "add") {
+        type:"delete",
+        old_content:currentFiles[op.filePath] || "",
+}
+} else if (op.type === "add") {
       changes[op.filePath] = {
-        type: "add",
-        new_content: op.content || "",
-      }
-    } else if (op.type === "update" && op.hunks) {
+        type:"add",
+        new_content:op.content || "",
+}
+} else if (op.type === "update" && op.hunks) {
       const originalContent = currentFiles[op.filePath] || ""
       const lines = originalContent.split("\n")
 
       for (const hunk of op.hunks) {
         const contextIndex = lines.findIndex((line) => line.includes(hunk.contextLine))
         if (contextIndex === -1) {
-          throw new Error(`Context line not found: ${hunk.contextLine}`)`
-        }
+          throw new Error(`Context line not found:${hunk.contextLine}`)`
+}
 
         let currentIndex = contextIndex
         for (const change of hunk.changes) {
           if (change.type === "keep") {
             currentIndex++
-          } else if (change.type === "remove") {
+} else if (change.type === "remove") {
             lines.splice(currentIndex, 1)
-          } else if (change.type === "add") {
+} else if (change.type === "add") {
             lines.splice(currentIndex, 0, change.content)
             currentIndex++
-          }
-        }
-      }
-
-      changes[op.filePath] = {
-        type: "update",
-        old_content: originalContent,
-        new_content: lines.join("\n"),
-      }
-    }
-  }
-
-  return { changes }
+}
+}
 }
 
-function generateDiff(oldContent: string, newContent: string, filePath: string): [string, number, number] {
+      changes[op.filePath] = {
+        type:"update",
+        old_content:originalContent,
+        new_content:lines.join("\n"),
+}
+}
+}
+
+  return { changes}
+}
+
+function generateDiff(oldContent:string, newContent:string, filePath:string): [string, number, number] {
   // Mock implementation - would need actual diff generation
   const lines1 = oldContent.split("\n")
   const lines2 = newContent.split("\n")
@@ -197,86 +197,84 @@ function generateDiff(oldContent: string, newContent: string, filePath: string):
 }
 
 async function _applyCommit(
-  commit: Commit,
-  writeFile: (path: string, content: string) => Promise<void>,
-  deleteFile: (path: string) => Promise<void>,
-): Promise<void> {
+  commit:Commit,
+  writeFile:(path: string, content:string) => Promise<void>,
+  deleteFile:(path: string) => Promise<void>,
+):Promise<void> {
   for (const [filePath, change] of Object.entries(commit.changes)) {
     if (change.type === "delete") {
       await deleteFile(filePath)
-    } else if (change.new_content !== undefined) {
+} else if (change.new_content !== undefined) {
       await writeFile(filePath, change.new_content)
-    }
-  }
+}
+}
 }
 
 export const _PatchTool = Tool.define({
-  id: "patch",
-  description: DESCRIPTION,
-  parameters: PatchParams,
-  execute: async (params, ctx) => {
-    // Identify all files needed for the patch and verify they've been read'
-    const filesToRead = identifyFilesNeeded(params.patchText)
+  id:"patch",
+  description:DESCRIPTION,
+  parameters:PatchParams,
+  execute:async (params, ctx) => {
+    // Identify all files needed for the patch and verify they've been read')    const filesToRead = identifyFilesNeeded(params.patchText)
     for (const filePath of filesToRead) {
       let absPath = filePath
       if (!path.isAbsolute(absPath)) {
         absPath = path.resolve(process.cwd(), absPath)
-      }
+}
 
       await FileTime.assert(ctx.sessionID, absPath)
 
       try {
         const stats = await fs.stat(absPath)
         if (stats.isDirectory()) {
-          throw new Error(`path is a directory, not a file: ${absPath}`)`
-        }
-      } catch (error: any) {
+          throw new Error(`path is a directory, not a file:${absPath}`)`
+}
+} catch (error:any) {
         if (error.code === "ENOENT") {
-          throw new Error(`file not found: $absPath`)`
-        }
-        throw new Error(`failed to access file: ${error.message}`)`
-      }
-    }
+          throw new Error(`file not found:$absPath`)`
+}
+        throw new Error(`failed to access file:${error.message}`)`
+}
+}
 
-    // Check for new files to ensure they don't already exist'
-    const filesToAdd = identifyFilesAdded(params.patchText)
+    // Check for new files to ensure they don't already exist')    const filesToAdd = identifyFilesAdded(params.patchText)
     for (const filePath of filesToAdd) {
       let absPath = filePath
       if (!path.isAbsolute(absPath)) {
         absPath = path.resolve(process.cwd(), absPath)
-      }
+}
 
       try {
         await fs.stat(absPath)
-        throw new Error(`file already exists and cannot be added: $absPath`)`
-      } catch (error: any) {
+        throw new Error(`file already exists and cannot be added:$absPath`)`
+} catch (error:any) {
         if (error.code !== "ENOENT") {
-          throw new Error(`failed to check file: ${error.message}`)`
-        }
-      }
-    }
+          throw new Error(`failed to check file:${error.message}`)`
+}
+}
+}
 
     // Load all required files
-    const currentFiles: Record<string, string> = {}
+    const currentFiles:Record<string, string> = {}
     for (const filePath of filesToRead) {
       let absPath = filePath
       if (!path.isAbsolute(absPath)) {
         absPath = path.resolve(process.cwd(), absPath)
-      }
+}
 
       try {
         const content = await fs.readFile(absPath, "utf-8")
         currentFiles[filePath] = content
-      } catch (error: any) {
-        throw new Error(`failed to read file $absPath: $error.message`)`
-      }
-    }
+} catch (error:any) {
+        throw new Error(`failed to read file $absPath:$error.message`)`
+}
+}
 
     // Process the patch
     const [_patch, fuzz] = textToPatch(params.patchText, currentFiles)
     if (fuzz > 3) {
-      throw new Error(`patch contains fuzzy matches (fuzz level: ${fuzz}). Please make your context lines more precise`)`
-    }
+      throw new Error(`patch contains fuzzy matches (fuzz level:${fuzz}). Please make your context lines more precise`)`
+}
 
     // Convert patch to commit
     const commit = patchToCommit(patch, currentFiles)
@@ -284,28 +282,28 @@ export const _PatchTool = Tool.define({
     // Apply the changes to the filesystem
     await applyCommit(
       commit,
-      async (filePath: string, content: string) => {
+      async (filePath:string, content:string) => {
         let absPath = filePath
         if (!path.isAbsolute(absPath)) {
           absPath = path.resolve(process.cwd(), absPath)
-        }
+}
 
         // Create parent directories if needed
         const dir = path.dirname(absPath)
-        await fs.mkdir(dir, { recursive: true })
+        await fs.mkdir(dir, { recursive:true})
         await fs.writeFile(absPath, content, "utf-8")
-      },
-      async (filePath: string) => {
+},
+      async (filePath:string) => {
         let absPath = filePath
         if (!path.isAbsolute(absPath)) {
           absPath = path.resolve(process.cwd(), absPath)
-        }
+}
         await fs.unlink(absPath)
-      },
+},
     )
 
     // Calculate statistics
-    const changedFiles: string[] = []
+    const changedFiles:string[] = []
     let totalAdditions = 0
     let totalRemovals = 0
 
@@ -313,7 +311,7 @@ export const _PatchTool = Tool.define({
       let absPath = filePath
       if (!path.isAbsolute(absPath)) {
         absPath = path.resolve(process.cwd(), absPath)
-      }
+}
       changedFiles.push(absPath)
 
       const oldContent = change.old_content || ""
@@ -325,19 +323,19 @@ export const _PatchTool = Tool.define({
       totalRemovals += removals
 
       FileTime.read(ctx.sessionID, absPath)
-    }
+}
 
     const result = `Patch applied successfully. $changedFiles.lengthfiles changed, $totalAdditionsadditions, $totalRemovalsremovals``
     const output = result
 
     return {
-      title: `${filesToRead.length} files`,`
-      metadata: {
-        changed: changedFiles,
-        additions: totalAdditions,
-        removals: totalRemovals,
-      },
+      title:`${filesToRead.length} files`,`
+      metadata:{
+        changed:changedFiles,
+        additions:totalAdditions,
+        removals:totalRemovals,
+},
       output,
-    }
-  },
+}
+},
 })

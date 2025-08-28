@@ -2,7 +2,7 @@
  * @fileoverview Main Exports Tests
  */
 
-import { describe, expect, it } from "vitest";
+import { describe, expect, it} from "vitest";
 
 describe("Foundation Main Exports", () => {
 	describe("Tree-shakable Entry Point", () => {
@@ -23,7 +23,7 @@ describe("Foundation Main Exports", () => {
 			expect(typeof main.ok).toBe("function");
 			expect(typeof main.err).toBe("function");
 			expect(typeof main.safeAsync).toBe("function");
-		});
+});
 
 		it("should maintain tree-shaking structure", async () => {
 			const main = await import("../../src/index");
@@ -33,12 +33,12 @@ describe("Foundation Main Exports", () => {
 			expect(exportKeys.length).toBeLessThan(15);
 
 			// Should NOT include heavy utilities (they should be in specific modules)
-			expect(exportKeys.includes("TypedEventBase")).toBe(false);
+			// TypedEventBase has been removed from foundation
 			expect(exportKeys.includes("createServiceContainer")).toBe(false);
-		});
+});
 
 		it("should work with logger creation", async () => {
-			const { getLogger } = await import("../../src/index");
+			const { getLogger} = await import("../../src/index");
 
 			const logger = getLogger("main-test");
 			expect(logger).toBeDefined();
@@ -46,10 +46,10 @@ describe("Foundation Main Exports", () => {
 			expect(typeof logger.error).toBe("function");
 			expect(typeof logger.warn).toBe("function");
 			expect(typeof logger.debug).toBe("function");
-		});
+});
 
 		it("should work with configuration", async () => {
-			const { getConfig, isDevelopment, isProduction, isTest } = await import(
+			const { getConfig, isDevelopment, isProduction, isTest} = await import(
 				"../../src/index"
 			);
 
@@ -59,10 +59,10 @@ describe("Foundation Main Exports", () => {
 			const envStates = [isDevelopment(), isProduction(), isTest()];
 			const activeEnvs = envStates.filter(Boolean);
 			expect(activeEnvs).toHaveLength(1);
-		});
+});
 
 		it("should work with Result pattern", async () => {
-			const { Result, ok, err, safeAsync } = await import("../../src/index");
+			const { Result, ok, err, safeAsync} = await import("../../src/index");
 
 			expect(Result).toBeDefined();
 
@@ -74,11 +74,11 @@ describe("Foundation Main Exports", () => {
 
 			if (successResult.isOk()) {
 				expect(successResult.value).toBe("test-success");
-			}
+}
 
 			if (errorResult.isErr()) {
 				expect(errorResult.error).toBe("test-error");
-			}
+}
 
 			// Test safeAsync
 			const asyncResult = await safeAsync(async () => "async-test");
@@ -86,9 +86,9 @@ describe("Foundation Main Exports", () => {
 
 			if (asyncResult.isOk()) {
 				expect(asyncResult.value).toBe("async-test");
-			}
-		});
-	});
+}
+});
+});
 
 	describe("Module Exports", () => {
 		it("should provide specific module exports", async () => {
@@ -107,7 +107,7 @@ describe("Foundation Main Exports", () => {
 			// Resilience module
 			const resilience = await import("../../src/resilience");
 			expect(resilience).toBeDefined();
-		});
+});
 
 		it("should maintain module separation", async () => {
 			// Each module should have its own exports
@@ -122,6 +122,6 @@ describe("Foundation Main Exports", () => {
 			// Modules should be separate
 			expect(events).not.toBe(errorHandling);
 			expect(errorHandling).not.toBe(utilities);
-		});
-	});
+});
+});
 });

@@ -2,11 +2,11 @@
  * Integration Test Setup
  *
  * @file Setup configuration for integration testing
- * Focus: Component boundaries, system integration, protocol compliance
+ * Focus:Component boundaries, system integration, protocol compliance
  */
 
 // Import Vitest globals and utilities
-import { afterEach, beforeEach, expect, vi } from "vitest";
+import { afterEach, beforeEach, expect, vi} from "vitest";
 import "./global-types";
 
 // Integration test setup with hybrid approach
@@ -53,7 +53,7 @@ async function setupIntegrationEnvironment() {
 			web: 30002,
 			api: 30003,
 		},
-	};
+};
 }
 
 async function initializeTestStorage() {
@@ -90,10 +90,10 @@ function setupNetworkMocking() {
 function resetNetworkMocks() {
 	if (globalThis.originalFetch) {
 		globalThis.fetch = globalThis.originalFetch;
-	}
+}
 	if (globalThis.originalWebSocket) {
 		globalThis.WebSocket = globalThis.originalWebSocket;
-	}
+}
 	vi.clearAllMocks();
 }
 
@@ -104,8 +104,8 @@ async function cleanupIntegrationState() {
 			if (db && typeof (db as any).close === "function") {
 				await (db as any).close();
 			}
-		}
-	}
+			}
+}
 
 	// Clear test fixtures
 	globalThis.testFixtures = {};
@@ -125,11 +125,11 @@ async function cleanupIntegrationState() {
  */
 interface TestRoute {
 	/** HTTP method (get, post, put, delete) */
-	method: "get|post|put|delete";
+	method:"get|post|put|delete";
 	/** Route path */
-	path: string;
+	path:string;
 	/** Route handler function */
-	handler: (req: unknown, res: unknown) => void;
+	handler:(req: unknown, res:unknown) => void;
 }
 
 /**
@@ -139,13 +139,13 @@ interface TestRoute {
  */
 interface TestClient {
 	/** Perform GET request */
-	get: (path: string) => Promise<Response>;
+	get:(path: string) => Promise<Response>;
 	/** Perform POST request */
-	post: (path: string, data: unknown) => Promise<Response>;
+	post:(path: string, data:unknown) => Promise<Response>;
 	/** Perform PUT request */
-	put: (path: string, data: unknown) => Promise<Response>;
+	put:(path: string, data:unknown) => Promise<Response>;
 	/** Perform DELETE request */
-	delete: (path: string) => Promise<Response>;
+	delete:(path: string) => Promise<Response>;
 }
 
 // Integration test helpers
@@ -157,24 +157,24 @@ interface TestClient {
  * @returns Promise resolving to server instance
  */
 globalThis.createTestServer = async (
-	port: number,
-	routes: TestRoute[] = [],
+	port:number,
+	routes:TestRoute[] = [],
 ) => {
 	const express = await import("express");
 	const app = (express as any).default
 		? (express as any).default()
-		: (express as any)();
+		:(express as any)();
 
 	routes.forEach((route) => {
 		app[route.method](route.path, route.handler);
-	});
+});
 
 	return new Promise((resolve, reject) => {
-		const server = app.listen(port, (err?: Error) => {
+		const server = app.listen(port, (err?:Error) => {
 			if (err) reject(err);
 			else resolve(server);
-		});
-	});
+});
+});
 };
 
 /**
@@ -183,7 +183,7 @@ globalThis.createTestServer = async (
  * @param baseURL - Base URL for all requests
  * @returns Test client interface
  */
-globalThis.createTestClient = (baseURL: string): TestClient => {
+globalThis.createTestClient = (baseURL:string): TestClient => {
 	return {
 		get: (path: string) => fetch(`${baseURL}${path}`),
 		post: (path: string, data: unknown) =>
@@ -199,10 +199,10 @@ globalThis.createTestClient = (baseURL: string): TestClient => {
 				body: JSON.stringify(data),
 			}),
 		delete: (path: string) => fetch(`${baseURL}${path}`, { method: "DELETE" }),
-	};
+};
 };
 
-globalThis.waitForPort = async (port: number, timeout: number = 5000) => {
+globalThis.waitForPort = async (port:number, timeout:number = 5000) => {
 	const net = await import("node:net");
 	const start = Date.now();
 
@@ -216,12 +216,12 @@ globalThis.waitForPort = async (port: number, timeout: number = 5000) => {
 				});
 				socket.on("error", reject);
 				setTimeout(() => reject(new Error("Timeout")), 1000);
-			});
+});
 			return true;
 		} catch {
 			await new Promise((resolve) => setTimeout(resolve, 100));
-		}
-	}
+			}
+}
 	throw new Error(`Port ${port} not available within ${timeout}ms`);
 };
 
@@ -231,7 +231,7 @@ globalThis.waitForPort = async (port: number, timeout: number = 5000) => {
  * @example
  */
 interface DatabaseFixtures {
-	[table: string]: unknown;
+	[table:string]: unknown;
 }
 
 /**
@@ -241,13 +241,13 @@ interface DatabaseFixtures {
  */
 interface MockAgent {
 	/** Agent ID */
-	id: string;
+	id:string;
 	/** Agent type */
-	type: string;
+	type:string;
 	/** Current status */
-	status: "idle|working|offline";
+	status:"idle" | "working" | "offline";
 	/** Assigned tasks */
-	tasks: unknown[];
+	tasks:unknown[];
 }
 
 /**
@@ -257,13 +257,13 @@ interface MockAgent {
  */
 interface MockSwarm {
 	/** Swarm ID */
-	id: string;
+	id:string;
 	/** Swarm agents */
-	agents: MockAgent[];
+	agents:MockAgent[];
 	/** Swarm coordinator */
-	coordinator: unknown | null;
+	coordinator:unknown | null;
 	/** Swarm status */
-	status: string;
+	status:string;
 }
 
 /**
@@ -271,7 +271,7 @@ interface MockSwarm {
  *
  * @param fixtures - Database fixtures to load
  */
-globalThis.setupDatabaseFixtures = async (fixtures: DatabaseFixtures) => {
+globalThis.setupDatabaseFixtures = async (fixtures:DatabaseFixtures) => {
 	// Load test data into databases
 	for (const [table, data] of Object.entries(fixtures)) {
 		globalThis.testFixtures[table] = data;
@@ -284,7 +284,7 @@ globalThis.setupDatabaseFixtures = async (fixtures: DatabaseFixtures) => {
  * @param agentCount - Number of agents to create
  * @returns Mock swarm instance
  */
-globalThis.createMockSwarm = (agentCount: number = 3): MockSwarm => {
+globalThis.createMockSwarm = (agentCount:number = 3): MockSwarm => {
 	const swarm: MockSwarm = {
 		id: `test-swarm-${Date.now()}`,
 		agents: [],
@@ -299,7 +299,7 @@ globalThis.createMockSwarm = (agentCount: number = 3): MockSwarm => {
 			status: "idle",
 			tasks: [],
 		});
-	}
+}
 
 	return swarm;
 };
@@ -312,15 +312,15 @@ globalThis.createMockSwarm = (agentCount: number = 3): MockSwarm => {
  * @returns Promise resolving to workflow results
  */
 globalThis.simulateSwarmWorkflow = async (
-	swarm: MockSwarm,
-	tasks: unknown[],
+	swarm:MockSwarm,
+	tasks:unknown[],
 ) => {
-	const results: Array<{
-		taskId: string;
-		agentId: string;
-		result: string;
-		timestamp: number;
-	}> = [];
+	const results:Array<{
+		taskId:string;
+		agentId:string;
+		result:string;
+		timestamp:number;
+}> = [];
 	for (const task of tasks) {
 		const agent = swarm.agents.find((a) => a.status === "idle");
 		if (agent) {
@@ -341,8 +341,8 @@ globalThis.simulateSwarmWorkflow = async (
 			agent.tasks = agent.tasks.filter(
 				(t) => (t as { id: string }).id !== (task as { id: string }).id,
 			);
-		}
-	}
+			}
+}
 	return results;
 };
 
@@ -353,15 +353,15 @@ globalThis.simulateSwarmWorkflow = async (
  */
 interface MockMCPClient {
 	/** Send message to MCP server */
-	send: any;
+	send:any;
 	/** Connect to MCP server */
-	connect: any;
+	connect:any;
 	/** Disconnect from MCP server */
-	disconnect: any;
+	disconnect:any;
 	/** List available tools */
-	listTools: any;
+	listTools:any;
 	/** Call a specific tool */
-	callTool: any;
+	callTool:any;
 }
 
 /**
@@ -371,13 +371,13 @@ interface MockMCPClient {
  */
 interface MCPMessage {
 	/** JSON-RPC version */
-	jsonrpc: string;
+	jsonrpc:string;
 	/** Message ID */
-	id: string | number;
+	id:string | number;
 	/** Method name */
-	method: string;
+	method:string;
 	/** Method parameters */
-	params?: unknown;
+	params?:unknown;
 }
 
 // Protocol testing helpers
@@ -386,14 +386,14 @@ interface MCPMessage {
  *
  * @returns Mock MCP client instance
  */
-globalThis.createMockMCPClient = (): MockMCPClient => {
+globalThis.createMockMCPClient = ():MockMCPClient => {
 	return {
 		send: vi.fn().mockResolvedValue({ success: true }),
-		connect: vi.fn().mockResolvedValue(true),
-		disconnect: vi.fn().mockResolvedValue(true),
-		listTools: vi.fn().mockResolvedValue([]),
-		callTool: vi.fn().mockResolvedValue({ result: "mock" }),
-	};
+		connect:vi.fn().mockResolvedValue(true),
+		disconnect:vi.fn().mockResolvedValue(true),
+		listTools:vi.fn().mockResolvedValue([]),
+		callTool:vi.fn().mockResolvedValue({ result: "mock"}),
+};
 };
 
 /**
@@ -401,7 +401,7 @@ globalThis.createMockMCPClient = (): MockMCPClient => {
  *
  * @param message - Message to validate
  */
-globalThis.validateMCPProtocol = (message: MCPMessage) => {
+globalThis.validateMCPProtocol = (message:MCPMessage) => {
 	expect(message).toHaveProperty("jsonrpc", "2.0");
 	expect(message).toHaveProperty("id");
 	expect(message).toHaveProperty("method");
@@ -420,11 +420,11 @@ globalThis.validateMCPProtocol = (message: MCPMessage) => {
  */
 interface DatabaseConfig {
 	/** SQLite configuration */
-	sqlite?: unknown;
+	sqlite?:unknown;
 	/** PostgreSQL configuration */
-	postgres?: unknown;
+	postgres?:unknown;
 	/** LanceDB configuration */
-	lancedb?: unknown;
+	lancedb?:unknown;
 }
 
 /**
@@ -434,11 +434,11 @@ interface DatabaseConfig {
  */
 interface RedisConfig {
 	/** Redis host */
-	host?: string;
+	host?:string;
 	/** Redis port */
-	port?: number;
+	port?:number;
 	/** Redis password */
-	password?: string;
+	password?:string;
 }
 
 /**
@@ -448,11 +448,11 @@ interface RedisConfig {
  */
 interface PortConfig {
 	/** HTTP API port */
-	api?: number;
+	api?:number;
 	/** WebSocket port */
-	websocket?: number;
+	websocket?:number;
 	/** MCP server port */
-	mcp?: number;
+	mcp?:number;
 }
 
 // Types are now declared in global-types.ts

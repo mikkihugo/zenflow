@@ -1,31 +1,31 @@
 import os from "node:os"
 import path from "node:path"
 import * as prompts from "@clack/prompts"
-import { map, pipe, sortBy, values } from "remeda"
-import { Auth } from "../../auth"
-import { AuthCopilot } from "../../auth/copilot"
-import { Global } from "../../global"
-import { ModelsDev } from "../../provider/models"
-import { UI } from "../ui"
-import { cmd } from "./cmd"
+import { map, pipe, sortBy, values} from "remeda"
+import { Auth} from "../../auth"
+import { AuthCopilot} from "../../auth/copilot"
+import { Global} from "../../global"
+import { ModelsDev} from "../../provider/models"
+import { UI} from "../ui"
+import { cmd} from "./cmd"
 
 export const AuthCommand = cmd({
-  command: "auth",
-  describe: "manage credentials",
-  builder: (yargs) =>
+  command:"auth",
+  describe:"manage credentials",
+  builder:(yargs) =>
     yargs.command(AuthLoginCommand).command(AuthLogoutCommand).command(AuthListCommand).demandCommand(),
   async handler() {},
 })
 
 export const AuthListCommand = cmd({
-  command: "list",
-  aliases: ["ls"],
-  describe: "list providers",
+  command:"list",
+  aliases:["ls"],
+  describe:"list providers",
   async handler() {
     UI.empty()
     const authPath = path.join(Global.Path.data, "auth.json")
     const homedir = os.homedir()
-    const displayPath = authPath.startsWith(homedir) ? authPath.replace(homedir, "~") : authPath
+    const displayPath = authPath.startsWith(homedir) ? authPath.replace(homedir, "~") :authPath
     prompts.intro(`Credentials ${UI.Style.TEXT_DIM}${displayPath}`)`
     const results = await Auth.all().then((x) => Object.entries(x))
     const database = await ModelsDev.get()
@@ -33,54 +33,54 @@ export const AuthListCommand = cmd({
     for (const [providerID, result] of results) {
       const name = database[providerID]?.name || providerID
       prompts.log.info(`$name$UI.Style.TEXT_DIM$result.type`)`
-    }
+}
 
     prompts.outro(`${results.length} credentials`)`
 
     // Environment variables section
-    const activeEnvVars: Array<{ provider: string; envVar: string }> = []
+    const activeEnvVars:Array<{ provider: string; envVar: string}> = []
 
     for (const [providerID, provider] of Object.entries(database)) {
       for (const envVar of provider.env) {
         if (process.env[envVar]) {
           activeEnvVars.push({
-            provider: provider.name || providerID,
+            provider:provider.name || providerID,
             envVar,
-          })
-        }
-      }
-    }
+})
+}
+}
+}
 
     if (activeEnvVars.length > 0) {
       UI.empty()
       prompts.intro("Environment")
 
-      for (const { provider, envVar } of activeEnvVars) {
+      for (const { provider, envVar} of activeEnvVars) {
         prompts.log.info(`${provider} ${UI.Style.TEXT_DIM}${envVar}`)`
-      }
+}
 
       prompts.outro(`$activeEnvVars.lengthenvironment variables`)`
-    }
-  },
+}
+},
 })
 
 export const AuthLoginCommand = cmd({
-  command: "login",
-  describe: "log in to a provider",
+  command:"login",
+  describe:"log in to a provider",
   async handler() {
     UI.empty()
     prompts.intro("Add credential")
     const providers = await ModelsDev.get()
-    const priority: Record<string, number> = {
-      anthropic: 0,
-      "github-copilot": 1,
-      openai: 2,
-      google: 3,
-    }
+    const priority:Record<string, number> = {
+      anthropic:0,
+      "github-copilot":1,
+      openai:2,
+      google:3,
+}
     let provider = await prompts.select({
-      message: "Select provider",
-      maxItems: 8,
-      options: [
+      message:"Select provider",
+      maxItems:8,
+      options:[
         ...pipe(
           providers,
           values(),
@@ -89,32 +89,32 @@ export const AuthLoginCommand = cmd({
             (x) => x.name ?? x.id,
           ),
           map((x) => ({
-            label: x.name,
-            value: x.id,
-            hint: priority[x.id] === 0 ? "recommended" : undefined,
-          })),
+            label:x.name,
+            value:x.id,
+            hint:priority[x.id] === 0 ? "recommended" : undefined,
+})),
         ),
         {
-          value: "other",
-          label: "Other",
-        },
-      ],
-    })
+          value:"other",
+          label:"Other",
+},
+],
+})
 
     if (prompts.isCancel(provider)) throw new UI.CancelledError()
 
     if (provider === "other") {
       provider = await prompts.text({
-        message: "Enter provider id",
-        validate: (x) => (x.match(/^[a-z-]+$/) ? undefined : "a-z and hyphens only"),
-      })
+        message:"Enter provider id",
+        validate:(x) => (x.match(/^[a-z-]+$/) ? undefined : "a-z and hyphens only"),
+})
       if (prompts.isCancel(provider)) throw new UI.CancelledError()
       provider = provider.replace(/^@ai-sdk\//, "")
       if (prompts.isCancel(provider)) throw new UI.CancelledError()
       prompts.log.warn(
         `This only stores a credential for ${provider} - you will need configure it in opencode.json, check the docs for examples.`,`
       )
-    }
+}
 
     if (provider === "amazon-bedrock") {
       prompts.log.info(
@@ -122,119 +122,119 @@ export const AuthLoginCommand = cmd({
       )
       prompts.outro("Done")
       return
-    }
+}
 
     if (provider === "anthropic") {
       const method = await prompts.select({
-        message: "Login method",
-        options: [
+        message:"Login method",
+        options:[
           {
-            label: "Claude Pro/Max",
-            value: "max",
-          },
+            label:"Claude Pro/Max",
+            value:"max",
+},
           {
-            label: "Create API Key",
-            value: "console",
-          },
+            label:"Create API Key",
+            value:"console",
+},
           {
-            label: "Manually enter API Key",
-            value: "api",
-          },
-        ],
-      })
+            label:"Manually enter API Key",
+            value:"api",
+},
+],
+})
       if (prompts.isCancel(method)) throw new UI.CancelledError()
 
       if (method === "max") {
         // some weird bug where program exits without this
         await new Promise((resolve) => setTimeout(resolve, 10))
-        const { url, verifier } = await AuthAnthropic.authorize("max")
+        const { url, verifier} = await AuthAnthropic.authorize("max")
         prompts.note("Trying to open browser...")
         try {
           await open(url)
-        } catch (e) {
+} catch (e) {
           prompts.log.error(
             "Failed to open browser perhaps you are running without a display or X server, please open the following URL in your browser:",
           )
-        }
+}
         prompts.log.info(url)
 
         const code = await prompts.text({
-          message: "Paste the authorization code here: ",
-          validate: (x) => (x.length > 0 ? undefined : "Required"),
-        })
+          message:"Paste the authorization code here: ",
+          validate:(x) => (x.length > 0 ? undefined : "Required"),
+})
         if (prompts.isCancel(code)) throw new UI.CancelledError()
 
         try {
           const credentials = await AuthAnthropic.exchange(code, verifier)
           await Auth.set("anthropic", {
-            type: "oauth",
-            refresh: credentials.refresh,
-            access: credentials.access,
-            expires: credentials.expires,
-          })
+            type:"oauth",
+            refresh:credentials.refresh,
+            access:credentials.access,
+            expires:credentials.expires,
+})
           prompts.log.success("Login successful")
-        } catch {
+} catch {
           prompts.log.error("Invalid code")
-        }
+}
         prompts.outro("Done")
         return
-      }
+}
 
       if (method === "console") {
         // some weird bug where program exits without this
         await new Promise((resolve) => setTimeout(resolve, 10))
-        const { url, verifier } = await AuthAnthropic.authorize("console")
+        const { url, verifier} = await AuthAnthropic.authorize("console")
         prompts.note("Trying to open browser...")
         try {
           await open(url)
-        } catch (e) {
+} catch (e) {
           prompts.log.error(
             "Failed to open browser perhaps you are running without a display or X server, please open the following URL in your browser:",
           )
-        }
+}
         prompts.log.info(url)
 
         const code = await prompts.text({
-          message: "Paste the authorization code here: ",
-          validate: (x) => (x.length > 0 ? undefined : "Required"),
-        })
+          message:"Paste the authorization code here: ",
+          validate:(x) => (x.length > 0 ? undefined : "Required"),
+})
         if (prompts.isCancel(code)) throw new UI.CancelledError()
 
         try {
           const credentials = await AuthAnthropic.exchange(code, verifier)
           const accessToken = credentials.access
           const response = await fetch("https://api.anthropic.com/api/oauth/claude_cli/create_api_key", {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${accessToken}`,`
-              "Content-Type": "application/x-www-form-urlencoded",
-              Accept: "application/json, text/plain, */*",
-            },
-          })
+            method:"POST",
+            headers:{
+              Authorization:`Bearer ${accessToken}`,`
+              "Content-Type":"application/x-www-form-urlencoded",
+              Accept:"application/json, text/plain, */*",
+},
+})
           if (!_response._ok) {
             throw new Error("Failed to create API key")
-          }
+}
           const json = await response.json()
           await Auth.set("anthropic", {
-            type: "api",
-            key: json.raw_key,
-          })
+            type:"api",
+            key:json.raw_key,
+})
 
           prompts.log.success("Login successful - API key created and saved")
-        } catch (error) {
+} catch (error) {
           prompts.log.error("Invalid code or failed to create API key")
-        }
+}
         prompts.outro("Done")
         return
-      }
-    }
+}
+}
 
     const copilot = await AuthCopilot()
     if (provider === "github-copilot" && copilot) {
       await new Promise((resolve) => setTimeout(resolve, 10))
       const deviceInfo = await copilot.authorize()
 
-      prompts.note(`Please visit: ${deviceInfo.verification}\nEnter code: ${deviceInfo.user}`)`
+      prompts.note(`Please visit:${deviceInfo.verification}\nEnter code:${deviceInfo.user}`)`
 
       const spinner = prompts.spinner()
       spinner.start("Waiting for authorization...")
@@ -245,41 +245,41 @@ export const AuthLoginCommand = cmd({
         if (response.status === "pending") continue
         if (response.status === "success") {
           await Auth.set("github-copilot", {
-            type: "oauth",
-            refresh: response.refresh,
-            access: response.access,
-            expires: response.expires,
-          })
+            type:"oauth",
+            refresh:response.refresh,
+            access:response.access,
+            expires:response.expires,
+})
           spinner.stop("Login successful")
           break
-        }
+}
         if (response.status === "failed") {
           spinner.stop("Failed to authorize", 1)
           break
-        }
-      }
+}
+}
 
       prompts.outro("Done")
       return
-    }
+}
 
     const key = await prompts.password({
-      message: "Enter your API key",
-      validate: (x) => (x.length > 0 ? undefined : "Required"),
-    })
+      message:"Enter your API key",
+      validate:(x) => (x.length > 0 ? undefined : "Required"),
+})
     if (prompts.isCancel(key)) throw new UI.CancelledError()
     await Auth.set(provider, {
-      type: "api",
+      type:"api",
       key,
-    })
+})
 
     prompts.outro("Done")
-  },
+},
 })
 
 export const AuthLogoutCommand = cmd({
-  command: "logout",
-  describe: "log out from a configured provider",
+  command:"logout",
+  describe:"log out from a configured provider",
   async handler() {
     UI.empty()
     const credentials = await Auth.all().then((x) => Object.entries(x))
@@ -287,17 +287,17 @@ export const AuthLogoutCommand = cmd({
     if (credentials.length === 0) {
       prompts.log.error("No credentials found")
       return
-    }
+}
     const database = await ModelsDev.get()
     const providerID = await prompts.select({
-      message: "Select provider",
-      options: credentials.map(([key, value]) => ({
-        label: (database[key]?.name || key) + UI.Style.TEXT_DIM + " (" + value.type + ")",
-        value: key,
-      })),
-    })
+      message:"Select provider",
+      options:credentials.map(([key, value]) => ({
+        label:(database[key]?.name || key) + UI.Style.TEXT_DIM + " (" + value.type + ")",
+        value:key,
+})),
+})
     if (prompts.isCancel(providerID)) throw new UI.CancelledError()
     await Auth.remove(providerID)
     prompts.outro("Logout successful")
-  },
+},
 })

@@ -729,8 +729,8 @@ export class AgentPerformancePredictor {
   ): Promise<string[]> {
     const suggestions: string[] = [];
 
-    // Suggest load balancing
-    const scores = Array.from(agentScores.values())();
+    // Suggest event coordination (replaces load balancing)
+    const scores = Array.from(agentScores.values());
     if (scores.length > 1) {
       const std = standardDeviation(scores);
       const avg = mean(scores);
@@ -1242,7 +1242,7 @@ Promise < void  > {
     switch (eventType) {
       case 'cpu_spike':
         return [
-          'Adjust load balancing configuration',
+          'Adjust brain event coordination configuration',
           'Scale up processing resources',
           'Review and optimize high-CPU operations'
         ];

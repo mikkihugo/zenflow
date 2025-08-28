@@ -6,23 +6,23 @@
  * Designed for enterprise-grade applications requiring reliable process management.
  *
  * @example Basic Usage
- * ```typescript
- * import { ProcessLifecycleManager, setupProcessLifecycle } from '@claude-zen/foundation';
+ * ```typescript`
+ * import { ProcessLifecycleManager, setupProcessLifecycle} from '@claude-zen/foundation';
  *
  * // Simple setup
  * const lifecycle = setupProcessLifecycle(async () => {
  *   console.log('Graceful shutdown initiated');
  *   await cleanup();
- * });
+ *});
  *
  * // Advanced setup
  * const manager = new ProcessLifecycleManager({
- *   onShutdown: async () => await gracefulShutdown(),
- *   onError: async (error) => await handleError(error),
- * }, {
- *   gracefulShutdownTimeout: 30000,
- *   exitOnUncaughtException: true
- * });
+ *   onShutdown:async () => await gracefulShutdown(),
+ *   onError:async (error) => await handleError(error),
+ *}, {
+ *   gracefulShutdownTimeout:30000,
+ *   exitOnUncaughtException:true
+ *});
  * ```
  *
  * @package @claude-zen/foundation
@@ -30,7 +30,7 @@
  * @version 1.0.0
  */
 
-import { getLogger } from "../logging/index.js";
+import { getLogger} from "../logging/index.js";
 
 const logger = getLogger("ProcessLifecycle");
 
@@ -42,13 +42,13 @@ const logger = getLogger("ProcessLifecycle");
  */
 export interface LifecycleHandlers {
 	/** Handler for graceful shutdown operations */
-	onShutdown?: () => Promise<void>;
+	onShutdown?:() => Promise<void>;
 	/** Handler for errors during shutdown */
-	onError?: (error: Error) => Promise<void>;
+	onError?:(error: Error) => Promise<void>;
 	/** Handler for uncaught exceptions */
-	onUncaughtException?: (error: Error) => void;
+	onUncaughtException?:(error: Error) => void;
 	/** Handler for unhandled promise rejections */
-	onUnhandledRejection?: (reason: unknown) => void;
+	onUnhandledRejection?:(reason: unknown) => void;
 }
 
 /**
@@ -58,12 +58,12 @@ export interface LifecycleHandlers {
  * timeout durations and exit strategies for different error conditions.
  */
 export interface ProcessOptions {
-	/** Timeout in milliseconds for graceful shutdown (default: 30000) */
-	gracefulShutdownTimeout?: number;
-	/** Whether to exit process on uncaught exceptions (default: true) */
-	exitOnUncaughtException?: boolean;
-	/** Whether to exit process on unhandled rejections (default: true) */
-	exitOnUnhandledRejection?: boolean;
+	/** Timeout in milliseconds for graceful shutdown (default:30000) */
+	gracefulShutdownTimeout?:number;
+	/** Whether to exit process on uncaught exceptions (default:true) */
+	exitOnUncaughtException?:boolean;
+	/** Whether to exit process on unhandled rejections (default:true) */
+	exitOnUnhandledRejection?:boolean;
 }
 
 /**
@@ -74,34 +74,34 @@ export interface ProcessOptions {
  * Designed for production environments requiring reliable process control.
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const manager = new ProcessLifecycleManager({
- *   onShutdown: async () => {
+ *   onShutdown:async () => {
  *     await database.close();
  *     await server.close();
- *   },
- *   onError: async (error) => {
- *     await logger.error('Process error:', error);
- *   }
- * });
+ *},
+ *   onError:async (error) => {
+ *     await logger.error('Process error: ', error);
+' *}
+ *});
  * ```
  */
 export class ProcessLifecycleManager {
-	private handlers: LifecycleHandlers;
-	private options: Required<ProcessOptions>;
+	private handlers:LifecycleHandlers;
+	private options:Required<ProcessOptions>;
 	private isShuttingDown = false;
-	private shutdownTimeout?: NodeJS.Timeout;
+	private shutdownTimeout?:NodeJS.Timeout;
 
-	constructor(handlers: LifecycleHandlers = {}, options: ProcessOptions = {}) {
+	constructor(handlers:LifecycleHandlers = {}, options:ProcessOptions = {}) {
 		this.handlers = handlers;
 		this.options = {
-			gracefulShutdownTimeout: options.gracefulShutdownTimeout ?? 30000, // 30 seconds
-			exitOnUncaughtException: options.exitOnUncaughtException ?? true,
-			exitOnUnhandledRejection: options.exitOnUnhandledRejection ?? true,
-		};
+			gracefulShutdownTimeout:options.gracefulShutdownTimeout ?? 30000, // 30 seconds
+			exitOnUncaughtException:options.exitOnUncaughtException ?? true,
+			exitOnUnhandledRejection:options.exitOnUnhandledRejection ?? true,
+};
 
 		this.setupProcessHandlers();
-	}
+}
 
 	/**
 	 * Setup comprehensive process signal and error handlers.
@@ -109,7 +109,7 @@ export class ProcessLifecycleManager {
 	 * Registers listeners for SIGINT, SIGTERM, SIGHUP signals and
 	 * uncaught exceptions/rejections with the Node.js process.
 	 */
-	private setupProcessHandlers(): void {
+	private setupProcessHandlers():void {
 		// Register graceful shutdown signal handlers
 		process.on("SIGINT", this.handleShutdownSignal.bind(this, "SIGINT"));
 		process.on("SIGTERM", this.handleShutdownSignal.bind(this, "SIGTERM"));
@@ -120,7 +120,7 @@ export class ProcessLifecycleManager {
 		process.on("unhandledRejection", this.handleUnhandledRejection.bind(this));
 
 		logger.info("✅ Process lifecycle handlers registered");
-	}
+}
 
 	/**
 	 * Handle shutdown signals with graceful shutdown logic.
@@ -130,11 +130,11 @@ export class ProcessLifecycleManager {
 	 *
 	 * @param signal - The signal name that triggered shutdown
 	 */
-	private async handleShutdownSignal(signal: string): Promise<void> {
+	private async handleShutdownSignal(signal:string): Promise<void> {
 		if (this.isShuttingDown) {
 			logger.warn(`Received ${signal} during shutdown, forcing exit...`);
 			process.exit(1);
-		}
+}
 
 		logger.info(`📡 Received ${signal}, initiating graceful shutdown...`);
 		this.isShuttingDown = true;
@@ -143,82 +143,82 @@ export class ProcessLifecycleManager {
 		this.shutdownTimeout = setTimeout(() => {
 			logger.error("⏰ Graceful shutdown timeout exceeded, forcing exit");
 			process.exit(1);
-		}, this.options.gracefulShutdownTimeout);
+}, this.options.gracefulShutdownTimeout);
 
 		try {
 			// Execute shutdown handler
 			if (this.handlers.onShutdown) {
 				await this.handlers.onShutdown();
-			}
+}
 
 			logger.info("✅ Graceful shutdown completed");
 
 			// Clear timeout and exit cleanly
 			if (this.shutdownTimeout) {
 				clearTimeout(this.shutdownTimeout);
-			}
+}
 
 			process.exit(0);
-		} catch (error) {
+} catch (error) {
 			logger.error("❌ Error during graceful shutdown:", error);
 
 			if (this.handlers.onError) {
 				try {
 					await this.handlers.onError(
-						error instanceof Error ? error : new Error(String(error)),
+						error instanceof Error ? error:new Error(String(error)),
 					);
-				} catch (handlerError) {
+} catch (handlerError) {
 					logger.error("❌ Error in shutdown error handler:", handlerError);
-				}
-			}
+}
+}
 
 			process.exit(1);
-		}
-	}
+}
+}
 
 	/**
 	 * Handle uncaught exceptions with optional custom handler.
 	 *
 	 * @param error - The uncaught exception error
 	 */
-	private handleUncaughtException(error: Error): void {
+	private handleUncaughtException(error:Error): void {
 		logger.error("💥 Uncaught exception:", error);
 
 		if (this.handlers.onUncaughtException) {
 			try {
 				this.handlers.onUncaughtException(error);
-			} catch (handlerError) {
+} catch (handlerError) {
 				logger.error("❌ Error in uncaught exception handler:", handlerError);
-			}
-		}
+}
+}
 
 		if (this.options.exitOnUncaughtException) {
 			logger.error("🚨 Exiting due to uncaught exception");
 			process.exit(1);
-		}
-	}
+}
+}
 
 	/**
 	 * Handle unhandled promise rejections with optional custom handler.
 	 *
 	 * @param reason - The rejection reason
 	 */
-	private handleUnhandledRejection(reason: unknown): void {
+	private handleUnhandledRejection(reason:unknown): void {
 		logger.error("🚫 Unhandled promise rejection:", reason);
 
 		if (this.handlers.onUnhandledRejection) {
 			try {
 				this.handlers.onUnhandledRejection(reason);
-			} catch (handlerError) {
+} catch (handlerError) {
 				logger.error("❌ Error in unhandled rejection handler:", handlerError);
-			}
-		}
+}
+}
 
 		if (this.options.exitOnUnhandledRejection) {
 			logger.error("🚨 Exiting due to unhandled promise rejection");
 			process.exit(1);
-		}
-	}
+}
+}
 
 	/**
 	 * Manually trigger graceful shutdown.
@@ -226,9 +226,9 @@ export class ProcessLifecycleManager {
 	 * Programmatically initiates the same shutdown sequence
 	 * as receiving a termination signal.
 	 */
-	async shutdown(): Promise<void> {
+	async shutdown():Promise<void> {
 		await this.handleShutdownSignal("MANUAL");
-	}
+}
 
 	/**
 	 * Remove all registered process handlers and cleanup resources.
@@ -236,7 +236,7 @@ export class ProcessLifecycleManager {
 	 * Call this method when the lifecycle manager is no longer needed
 	 * to prevent memory leaks and clean up event listeners.
 	 */
-	dispose(): void {
+	dispose():void {
 		process.removeAllListeners("SIGINT");
 		process.removeAllListeners("SIGTERM");
 		process.removeAllListeners("SIGHUP");
@@ -245,10 +245,10 @@ export class ProcessLifecycleManager {
 
 		if (this.shutdownTimeout) {
 			clearTimeout(this.shutdownTimeout);
-		}
+}
 
 		logger.info("✅ Process lifecycle handlers removed");
-	}
+}
 }
 
 /**
@@ -261,22 +261,22 @@ export class ProcessLifecycleManager {
  * @returns Configured ProcessLifecycleManager instance
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const lifecycle = setupProcessLifecycle(async () => {
  *   await cleanup();
  *   console.log('Shutdown complete');
- * });
+ *});
  * ```
  */
 export function setupProcessLifecycle(
-	shutdownHandler: () => Promise<void>,
-): ProcessLifecycleManager {
+	shutdownHandler:() => Promise<void>,
+):ProcessLifecycleManager {
 	return new ProcessLifecycleManager({
-		onShutdown: shutdownHandler,
-		onError: async (error: Error) => {
+		onShutdown:shutdownHandler,
+		onError:async (error: Error) => {
 			logger.error("🔥 Application error during shutdown:", error);
 			// Add minimal async operation to satisfy linter
 			await new Promise(resolve => setTimeout(resolve, 0));
-		},
-	});
+},
+});
 }

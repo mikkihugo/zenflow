@@ -7,18 +7,18 @@
  * For better tree-shaking and smaller bundles, import from specific entry points:
  *
  * @example Tree-Shakable Imports (Recommended)
- * ```typescript
+ * ```typescript`
  * // Import only what you need for optimal bundle size:
- * import { getLogger } from '@claude-zen/foundation/core';
- * import { Result, ok, err } from '@claude-zen/foundation/resilience';
- * import { createContainer } from '@claude-zen/foundation/di';
- * import { _, nanoid } from '@claude-zen/foundation/utils';
+ * import { getLogger} from '@claude-zen/foundation/core';
+ * import { Result, ok, err} from '@claude-zen/foundation/resilience';
+ * import { createContainer} from '@claude-zen/foundation/di';
+ * import { _, nanoid} from '@claude-zen/foundation/utils';
  * ```
  *
  * @example Full Import (Not Recommended for Production)
- * ```typescript
+ * ```typescript`
  * // This imports everything (larger bundle):
- * import { getLogger, Result, createContainer } from '@claude-zen/foundation';
+ * import { getLogger, Result, createContainer} from '@claude-zen/foundation';
  * ```
  */
 
@@ -29,7 +29,7 @@
 // CORE MODULES - Essential system functionality
 // =============================================================================
 
-export type { Config } from "./core/config/index.js";
+export type { Config} from "./core/config/index.js";
 // Core configuration and environment
 export { 
 	EnvironmentDetector, 
@@ -55,7 +55,7 @@ export {
 	ProcessLifecycleManager,
 	setupProcessLifecycle,
 } from "./core/lifecycle/index.js";
-export type { Logger } from "./core/logging/index.js";
+export type { Logger} from "./core/logging/index.js";
 // Core logging system
 export { 
 	getLogger, 
@@ -67,8 +67,8 @@ export {
 
 // DEPENDENCY INJECTION - Service container and patterns
 // =============================================================================
-export { createContainer, inject, TOKENS } from "./dependency-injection/index.js";
-export type { Container, ContainerStats, ServiceInfo } from "./dependency-injection/index.js";
+export { createContainer, inject, TOKENS} from "./dependency-injection/index.js";
+export type { Container, ContainerStats, ServiceInfo} from "./dependency-injection/index.js";
 // ERROR HANDLING AND RESILIENCE - Comprehensive error management
 // =============================================================================
 export {
@@ -88,13 +88,63 @@ export {
 } from "./error-handling/index.js";
 // EVENT SYSTEM - Complete event system with EventEmitter and EventBus
 // =============================================================================
-export { EventEmitter } from "./events/event-emitter.js";
-export type { EventMap, EventArgs } from "./events/event-emitter.js";
+export { EventEmitter} from "./events/event-emitter.js";
+export type { EventMap, EventArgs} from "./events/event-emitter.js";
 
 // Modern event bus with full TypeScript generics  
-export { EventBus } from "./events/event-bus.js";
-export type { EventBusConfig, EventListener, EventMetrics, EventContext, EventMiddleware } from "./events/event-bus.js";
-export type { Event as EventBusEvent } from "./events/event-bus.js";
+export { EventBus} from "./events/event-bus.js";
+export type { EventBusConfig, EventListener, EventMetrics, EventContext, EventMiddleware} from "./events/event-bus.js";
+export type { Event as EventBusEvent} from "./events/event-bus.js";
+
+// Development event logger
+export { EventLogger, logEvent, logFlow, logError} from "./events/event-logger.js";
+
+// Event catalog and validation
+export { 
+  EVENT_CATALOG,
+  isValidEventName,
+  getEventType, 
+  getAllEventNames,
+  getEventsByCategory,
+  CatalogEventLogger
+} from "./events/event-catalog.js";
+
+// Event registry initializer
+export { eventRegistryInitializer} from "./events/event-registry-initializer.js";
+export type { 
+  BaseEvent,
+  EventPayload,
+  EventName,
+  // SPARC Events
+  SPARCPhaseReviewEvent,
+  SPARCProjectCompleteEvent, 
+  SPARCPhaseCompleteEvent,
+  // LLM Events
+  LLMInferenceRequestEvent,
+  LLMInferenceCompleteEvent,
+  LLMInferenceFailedEvent,
+  // Claude Code Events
+  ClaudeCodeExecuteTaskEvent,
+  ClaudeCodeTaskCompleteEvent,
+  ClaudeCodeTaskFailedEvent,
+  // Teamwork Events
+  TeamworkReviewAcknowledgedEvent,
+  TeamworkReviewCompleteEvent,
+  TeamworkCollaborationFailedEvent,
+  // SAFe Events
+  SafePIPlanningEvent,
+  SafeEpicEvent,
+  // Git Operations Events
+  GitOperationStartedEvent,
+  GitOperationCompletedEvent,
+  GitOperationFailedEvent,
+  GitConflictResolvedEvent,
+  GitWorktreeEvent,
+  GitMaintenanceEvent,
+  // System Events
+  SystemStartEvent,
+  SystemErrorEvent
+} from "./events/event-catalog.js";
 // TYPE SYSTEM - All types and type utilities
 // =============================================================================
 // Type utilities and advanced types
@@ -145,8 +195,27 @@ export {
 	hasService,
 	registerFacade,
 } from "./infrastructure/facades/index.js";
+
+// DATABASE FACADE - Foundation-based database access
+// =============================================================================
+export {
+	databaseFacade,
+	createDatabaseAdapter,
+	createKeyValueStore,
+	createVectorStore,
+	createGraphStore,
+	getDatabaseCapability,
+} from "./infrastructure/database/index.js";
+export type {
+	DatabaseConfig,
+	DatabaseConnection,
+	DatabaseAdapter,
+	KeyValueStore,
+	VectorStore,
+	GraphStore,
+} from "./infrastructure/database/index.js";
 // Export resilience types
-export type { CircuitBreakerOptions, RetryOptions } from "./resilience.js";
+export type { CircuitBreakerOptions, RetryOptions} from "./resilience.js";
 // RESILIENCE PATTERNS - Advanced resilience utilities (using cockatiel)
 // =============================================================================
 export {
@@ -267,21 +336,21 @@ export {
 For smaller bundles, import from specific entry points:
 
 CORE UTILITIES (essential, lightweight):
-  import { getLogger, getConfig } from '@claude-zen/foundation/core';
+  import { getLogger, getConfig} from '@claude-zen/foundation/core';
 
 DEPENDENCY INJECTION (when you need DI):
-  import { createContainer } from '@claude-zen/foundation/di';
+  import { createContainer} from '@claude-zen/foundation/di';
 
 RESILIENCE PATTERNS (error handling, circuit breakers):
-  import { Result, ok, err, withRetry } from '@claude-zen/foundation/resilience';
+  import { Result, ok, err, withRetry} from '@claude-zen/foundation/resilience';
 
 UTILITIES (validation, dates, file ops):
-  import { z, validateInput, _ } from '@claude-zen/foundation/utils';
+  import { z, validateInput, _} from '@claude-zen/foundation/utils';
 
 TYPES ONLY (zero runtime cost):
-  import type { UUID, Logger, Config } from '@claude-zen/foundation/types';
+  import type { UUID, Logger, Config} from '@claude-zen/foundation/types';
 
 For complete functionality, use specific entry points:
-  import { createContainer } from '@claude-zen/foundation/di';
-  import { withRetry, createCircuitBreaker } from '@claude-zen/foundation/resilience';
+  import { createContainer} from '@claude-zen/foundation/di';
+  import { withRetry, createCircuitBreaker} from '@claude-zen/foundation/resilience';
 */

@@ -1168,7 +1168,7 @@ mod tests {
 
   #[test]
   fn test_empty_series_validation() {
-    let data = TimeSeriesData::new("empty".to_string(), "D".to_string());
+    let data: TimeSeriesData<f64> = TimeSeriesData::new("empty".to_string(), "D".to_string());
     let validator = DataValidator::new();
     let report = validator.validate_series(&data);
 
@@ -1373,7 +1373,7 @@ mod tests {
     assert!(quick_data_quality_check(&data).is_ok());
 
     // Test with invalid data
-    let invalid_data =
+    let invalid_data: TimeSeriesData<f64> =
       TimeSeriesData::new("empty".to_string(), "D".to_string());
     assert!(quick_data_quality_check(&invalid_data).is_err());
   }

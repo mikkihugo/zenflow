@@ -4,8 +4,8 @@
  * 100% coverage tests for the logging system.
  */
 
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { Logger } from "../../src/core/logging";
+import { afterEach, beforeEach, describe, expect, it, vi} from "vitest";
+import type { Logger} from "../../src/core/logging";
 import {
 	getLogger,
 	getLoggingConfig,
@@ -15,16 +15,16 @@ import {
 } from "../../src/core/logging";
 
 describe("Logging System - 100% Coverage", () => {
-	let originalEnv: NodeJS.ProcessEnv;
+	let originalEnv:NodeJS.ProcessEnv;
 
 	beforeEach(() => {
-		originalEnv = { ...process.env };
+		originalEnv = { ...process.env};
 		vi.clearAllMocks();
-	});
+});
 
 	afterEach(() => {
 		process.env = originalEnv;
-	});
+});
 
 	describe("getLogger", () => {
 		it("should create logger with default config", () => {
@@ -35,7 +35,7 @@ describe("Logging System - 100% Coverage", () => {
 			expect(typeof logger.info).toBe("function");
 			expect(typeof logger.warn).toBe("function");
 			expect(typeof logger.error).toBe("function");
-		});
+});
 
 		it("should create different loggers for different names", () => {
 			const logger1 = getLogger("logger1");
@@ -46,42 +46,42 @@ describe("Logging System - 100% Coverage", () => {
 			// They should be different instances but same interface
 			expect(typeof logger1.info).toBe("function");
 			expect(typeof logger2.info).toBe("function");
-		});
+});
 
 		it("should handle empty logger name", () => {
 			const logger = getLogger("");
 			expect(logger).toBeDefined();
 			expect(typeof logger.info).toBe("function");
-		});
-	});
+});
+});
 
 	describe("updateLoggingConfig", () => {
 		it("should update logging configuration", () => {
 			const newConfig = {
-				level: LoggingLevel.DEBUG,
-				enableConsole: true,
-				enableFile: false,
-				enableSyslog: false,
-			};
+				level:LoggingLevel.DEBUG,
+				enableConsole:true,
+				enableFile:false,
+				enableSyslog:false,
+};
 
 			expect(() => updateLoggingConfig(newConfig)).not.toThrow();
-		});
+});
 
 		it("should handle partial config updates", () => {
 			const partialConfig = {
-				level: LoggingLevel.WARN,
-			};
+				level:LoggingLevel.WARN,
+};
 
 			expect(() => updateLoggingConfig(partialConfig)).not.toThrow();
-		});
+});
 
 		it("should handle invalid config gracefully", () => {
 			const invalidConfig = null as any;
 
 			// Should either handle gracefully or throw predictably
 			expect(() => updateLoggingConfig(invalidConfig)).not.toThrow();
-		});
-	});
+});
+});
 
 	describe("getLoggingConfig", () => {
 		it("should return current logging configuration", () => {
@@ -89,19 +89,19 @@ describe("Logging System - 100% Coverage", () => {
 
 			expect(config).toBeDefined();
 			expect(config).toHaveProperty("level");
-		});
+});
 
 		it("should return consistent config", () => {
 			const config1 = getLoggingConfig();
 			const config2 = getLoggingConfig();
 
 			expect(config1).toEqual(config2);
-		});
-	});
+});
+});
 
 	describe("validateLoggingEnvironment", () => {
 		it("should validate clean environment", () => {
-			process.env = { ...originalEnv };
+			process.env = { ...originalEnv};
 			delete process.env['LOG_LEVEL'];
 
 			const result = validateLoggingEnvironment();
@@ -109,7 +109,7 @@ describe("Logging System - 100% Coverage", () => {
 			expect(result).toHaveProperty("issues");
 			expect(result).toHaveProperty("config");
 			expect(typeof result.isValid).toBe("boolean");
-		});
+});
 
 		it("should validate with LOG_LEVEL set", () => {
 			process.env['LOG_LEVEL'] = "debug";
@@ -119,7 +119,7 @@ describe("Logging System - 100% Coverage", () => {
 			expect(result).toHaveProperty("issues");
 			expect(result).toHaveProperty("config");
 			expect(typeof result.isValid).toBe("boolean");
-		});
+});
 
 		it("should handle invalid LOG_LEVEL", () => {
 			process.env['LOG_LEVEL'] = "invalid";
@@ -129,7 +129,7 @@ describe("Logging System - 100% Coverage", () => {
 			expect(result).toHaveProperty("issues");
 			expect(result).toHaveProperty("config");
 			expect(typeof result.isValid).toBe("boolean");
-		});
+});
 
 		it("should validate with multiple env vars", () => {
 			process.env['LOG_LEVEL'] = "info";
@@ -141,8 +141,8 @@ describe("Logging System - 100% Coverage", () => {
 			expect(result).toHaveProperty("issues");
 			expect(result).toHaveProperty("config");
 			expect(typeof result.isValid).toBe("boolean");
-		});
-	});
+});
+});
 
 	describe("LoggingLevel enum", () => {
 		it("should have all required levels", () => {
@@ -150,61 +150,61 @@ describe("Logging System - 100% Coverage", () => {
 			expect(LoggingLevel.INFO).toBeDefined();
 			expect(LoggingLevel.WARN).toBeDefined();
 			expect(LoggingLevel.ERROR).toBeDefined();
-		});
+});
 
 		it("should have string values", () => {
 			expect(typeof LoggingLevel.DEBUG).toBe("string");
 			expect(typeof LoggingLevel.INFO).toBe("string");
 			expect(typeof LoggingLevel.WARN).toBe("string");
 			expect(typeof LoggingLevel.ERROR).toBe("string");
-		});
-	});
+});
+});
 
 	describe("Logger interface implementation", () => {
-		let logger: Logger;
+		let logger:Logger;
 
 		beforeEach(() => {
 			logger = getLogger("interface-test");
-		});
+});
 
 		it("should implement debug method", () => {
 			expect(() => logger.debug("test message")).not.toThrow();
 			expect(() =>
-				logger.debug("test with data", { key: "value" }),
+				logger.debug("test with data", { key:"value"}),
 			).not.toThrow();
-		});
+});
 
 		it("should implement info method", () => {
 			expect(() => logger.info("test message")).not.toThrow();
 			expect(() =>
-				logger.info("test with data", { key: "value" }),
+				logger.info("test with data", { key:"value"}),
 			).not.toThrow();
-		});
+});
 
 		it("should implement warn method", () => {
 			expect(() => logger.warn("test message")).not.toThrow();
 			expect(() =>
-				logger.warn("test with data", { key: "value" }),
+				logger.warn("test with data", { key:"value"}),
 			).not.toThrow();
-		});
+});
 
 		it("should implement error method", () => {
 			expect(() => logger.error("test message")).not.toThrow();
 			expect(() =>
-				logger.error("test with data", { key: "value" }),
+				logger.error("test with data", { key:"value"}),
 			).not.toThrow();
 			expect(() => logger.error(new Error("test error"))).not.toThrow();
-		});
+});
 
 		it("should handle various data types", () => {
 			expect(() => logger.info("string")).not.toThrow();
 			expect(() => logger.info(123)).not.toThrow();
-			expect(() => logger.info({ object: "data" })).not.toThrow();
+			expect(() => logger.info({ object:"data"})).not.toThrow();
 			expect(() => logger.info(["array", "data"])).not.toThrow();
 			expect(() => logger.info(null)).not.toThrow();
 			expect(() => logger.info()).not.toThrow();
-		});
-	});
+});
+});
 
 	describe("Edge cases and error handling", () => {
 		it("should handle logger creation with special characters", () => {
@@ -214,26 +214,26 @@ describe("Logging System - 100% Coverage", () => {
 				"test_logger",
 				"test.logger",
 				"test/logger",
-			];
+];
 
 			for (const name of specialNames) {
 				expect(() => getLogger(name)).not.toThrow();
-			}
-		});
+}
+});
 
 		it("should handle very long logger names", () => {
 			const longName = "a".repeat(1000);
 			expect(() => getLogger(longName)).not.toThrow();
-		});
+});
 
 		it("should handle concurrent logger creation", () => {
-			const promises = Array.from({ length: 10 }, (_, i) =>
+			const promises = Array.from({ length:10}, (_, i) =>
 				Promise.resolve(getLogger(`concurrent-${i}`)),
 			);
 
 			expect(() => Promise.all(promises)).not.toThrow();
-		});
-	});
+});
+});
 
 	describe("Performance characteristics", () => {
 		it("should create loggers efficiently", () => {
@@ -241,11 +241,11 @@ describe("Logging System - 100% Coverage", () => {
 
 			for (let i = 0; i < 100; i++) {
 				getLogger(`perf-test-${i}`);
-			}
+}
 
 			const duration = performance.now() - start;
 			expect(duration).toBeLessThan(1000); // Should complete in under 1 second
-		});
+});
 
 		it("should log messages efficiently", () => {
 			const logger = getLogger("perf-logger");
@@ -253,10 +253,10 @@ describe("Logging System - 100% Coverage", () => {
 
 			for (let i = 0; i < 1000; i++) {
 				logger.info(`Performance test message ${i}`);
-			}
+}
 
 			const duration = performance.now() - start;
 			expect(duration).toBeLessThan(5000); // Should complete in under 5 seconds
-		});
-	});
+});
+});
 });

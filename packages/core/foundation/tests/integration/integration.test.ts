@@ -9,7 +9,7 @@
  * @since 2.0.0
  */
 
-import { afterAll, describe, expect, it } from "vitest";
+import { afterAll, describe, expect, it} from "vitest";
 import {
 	// Dependency injection
 	DIContainer,
@@ -28,20 +28,20 @@ import {
 	safeAsync,
 	withRetry,
 } from "../../src/index";
-import { cleanupGlobalInstances } from "../claude-sdk";
+import { cleanupGlobalInstances} from "../claude-sdk";
 
-import { createToken } from "../di/tokens/token-factory";
+import { createToken} from "../di/tokens/token-factory";
 
 describe("Foundation Integration Tests", () => {
 	const runIntegration = process.env['RUN_INTEGRATION'] === "true";
-	const itIntegration = runIntegration ? it : it.skip;
+	const itIntegration = runIntegration ? it:it.skip;
 
 	afterAll(() => {
 		const taskManager = getGlobalClaudeTaskManager();
 		taskManager.clearCompletedTasks();
 		taskManager.clearPermissionDenials();
 		cleanupGlobalInstances();
-	});
+});
 
 	describe("System Initialization", () => {
 		it("should initialize all core systems", () => {
@@ -66,7 +66,7 @@ describe("Foundation Integration Tests", () => {
 			// DI system
 			const container = new DIContainer();
 			expect(container).toBeTruthy();
-		});
+});
 
 		it("should have consistent logging across systems", () => {
 			const logger1 = getLogger("test-1");
@@ -76,8 +76,8 @@ describe("Foundation Integration Tests", () => {
 			expect(logger1).toBeTruthy();
 			expect(logger2).toBeTruthy();
 			expect(logger3).toBe(logger1); // Should be same instance
-		});
-	});
+});
+});
 
 	describe("Cross-System Coordination", () => {
 		itIntegration(
@@ -90,13 +90,13 @@ describe("Foundation Integration Tests", () => {
 				llm.setRole("analyst");
 				const analysisResult = await llm.complete(
 					"Provide a brief analysis of the number 42",
-					{ maxTokens: 100 },
+					{ maxTokens:100},
 				);
 
 				expect(analysisResult).toBeTruthy();
 				logger.info("LLM analysis completed", {
-					length: analysisResult.length,
-				});
+					length:analysisResult.length,
+});
 
 				// Store result (if storage is available)
 				try {
@@ -106,10 +106,10 @@ describe("Foundation Integration Tests", () => {
 					expect(retrieved).toBe(analysisResult);
 
 					logger.info("Storage integration successful");
-				} catch (error) {
-					logger.warn("Storage not available for testing", { error });
-				}
-			},
+} catch (error) {
+					logger.warn("Storage not available for testing", { error});
+}
+},
 			120000,
 		);
 
@@ -120,22 +120,22 @@ describe("Foundation Integration Tests", () => {
 
 				// Test error handling with LLM system
 				const result = await safeAsync(async () => executeClaudeTask("This is a test", {
-						maxTurns: 1,
-						timeoutMs: 5000, // Short timeout to potentially trigger error
-						allowedTools: [],
-					}));
+						maxTurns:1,
+						timeoutMs:5000, // Short timeout to potentially trigger error
+						allowedTools:[],
+}));
 
 				if (result.success) {
 					logger.info("Claude task succeeded", {
-						messageCount: result.data.length,
-					});
-				} else {
+						messageCount:result.data.length,
+});
+} else {
 					logger.info("Claude task failed as expected", {
-						error: result.error.message,
-					});
+						error:result.error.message,
+});
 					expect(result.error).toBeInstanceOf(Error);
-				}
-			},
+}
+},
 			120000,
 		);
 
@@ -148,23 +148,23 @@ describe("Foundation Integration Tests", () => {
 					attempts++;
 					if (attempts < 2) {
 						throw new Error("Simulated failure");
-					}
+}
 					return `Success on attempt ${attempts}`;
-				},
+},
 				{
-					maxRetries: 3,
-					baseDelay: 100,
-					maxDelay: 1000,
-				},
+					maxRetries:3,
+					baseDelay:100,
+					maxDelay:1000,
+},
 			);
 
 			expect(result.success).toBe(true);
 			expect(result.data).toBe("Success on attempt 2");
 			expect(attempts).toBe(2);
 
-			logger.info("Retry mechanism validated", { attempts });
-		});
-	});
+			logger.info("Retry mechanism validated", { attempts});
+});
+});
 
 	describe("Dependency Injection Integration", () => {
 		it("should support service registration and injection", () => {
@@ -175,13 +175,13 @@ describe("Foundation Integration Tests", () => {
 			const configToken = createToken<any>("config");
 
 			container.register(loggerToken, {
-				type: "transient",
-				create: () => getLogger("di-test"),
-			});
+				type:"transient",
+				create:() => getLogger("di-test"),
+});
 			container.register(configToken, {
-				type: "transient",
-				create: () => getConfig(),
-			});
+				type:"transient",
+				create:() => getConfig(),
+});
 
 			// Resolve services
 			const logger = container.resolve(loggerToken);
@@ -189,7 +189,7 @@ describe("Foundation Integration Tests", () => {
 
 			expect(logger).toBeTruthy();
 			expect(config).toBeTruthy();
-		});
+});
 
 		it("should support function-based service creation", () => {
 			const container = new DIContainer();
@@ -198,30 +198,30 @@ describe("Foundation Integration Tests", () => {
 
 			// Register logger
 			container.register(loggerToken, {
-				type: "transient",
-				create: () => getLogger("service-test"),
-			});
+				type:"transient",
+				create:() => getLogger("service-test"),
+});
 
 			// Register service that depends on logger
 			container.register(serviceToken, {
-				type: "transient",
-				create: (container) => {
+				type:"transient",
+				create:(container) => {
 					const logger = container.resolve(loggerToken);
 					return {
 						test() {
 							logger.info("Test service method called");
 							return "test-result";
-						},
-					};
-				},
-			});
+},
+};
+},
+});
 
 			const service = container.resolve(serviceToken);
 			const result = service.test();
 
 			expect(result).toBe("test-result");
-		});
-	});
+});
+});
 
 	describe("Real World Scenarios", () => {
 		itIntegration(
@@ -233,14 +233,14 @@ describe("Foundation Integration Tests", () => {
 				const task = "Analyze the pros and cons of microservices architecture";
 				const agents = ["architect", "analyst", "researcher"];
 
-				logger.info("Starting swarm coordination", { task, agents });
+				logger.info("Starting swarm coordination", { task, agents});
 
 				const messages = await executeSwarmCoordinationTask(task, agents, {
-					maxTurns: 3,
-					timeoutMs: 60000,
-					allowedTools: ["TodoWrite"], // Safe tools only
-					model: "sonnet",
-				});
+					maxTurns:3,
+					timeoutMs:60000,
+					allowedTools:["TodoWrite"], // Safe tools only
+					model:"sonnet",
+});
 
 				expect(messages).toBeTruthy();
 				expect(messages.length).toBeGreaterThan(0);
@@ -250,10 +250,10 @@ describe("Foundation Integration Tests", () => {
 				expect(resultMessage).toBeTruthy();
 
 				logger.info("Swarm coordination completed", {
-					messageCount: messages.length,
-					success: !(resultMessage as any)?.is_error,
-				});
-			},
+					messageCount:messages.length,
+					success:!(resultMessage as any)?.is_error,
+});
+},
 			120000,
 		);
 
@@ -263,7 +263,7 @@ describe("Foundation Integration Tests", () => {
 				const logger = getLogger("multi-role-workflow");
 				const llm = getGlobalLLM();
 
-				// Step 1: Research phase
+				// Step 1:Research phase
 				llm.setRole("researcher");
 				const research = await llm.executeAsResearcher(
 					"Benefits of TypeScript",
@@ -272,7 +272,7 @@ describe("Foundation Integration Tests", () => {
 				expect(research).toBeTruthy();
 				logger.info("Research phase completed");
 
-				// Step 2: Analysis phase
+				// Step 2:Analysis phase
 				llm.setRole("analyst");
 				const analysis = await llm.executeAsAnalyst(
 					research.substring(0, 500), // Limit input size
@@ -281,7 +281,7 @@ describe("Foundation Integration Tests", () => {
 				expect(analysis).toBeTruthy();
 				logger.info("Analysis phase completed");
 
-				// Step 3: Implementation guidance
+				// Step 3:Implementation guidance
 				llm.setRole("coder");
 				const implementation = await llm.executeAsCoder(
 					"Provide a simple TypeScript setup guide",
@@ -292,7 +292,7 @@ describe("Foundation Integration Tests", () => {
 
 				// Verify role switching worked
 				expect(llm.getRole()?.role).toBe("coder");
-			},
+},
 			120000,
 		);
 
@@ -303,33 +303,33 @@ describe("Foundation Integration Tests", () => {
 
 				// Test error recovery with multiple systems
 				const operations = [
-					// Operation 1: Should succeed
+					// Operation 1:Should succeed
 					async () => {
 						const llm = getGlobalLLM();
 						llm.setRole("assistant");
-						return llm.complete("Say hello", { maxTokens: 20 });
-					},
+						return llm.complete("Say hello", { maxTokens:20});
+},
 
-					// Operation 2: Might fail
+					// Operation 2:Might fail
 					async () => executeClaudeTask("Test task", {
-							maxTurns: 1,
-							timeoutMs: 10000,
-							allowedTools: [],
-						}),
+							maxTurns:1,
+							timeoutMs:10000,
+							allowedTools:[],
+}),
 
-					// Operation 3: Storage operation (if available)
+					// Operation 3:Storage operation (if available)
 					async () => {
 						try {
 							const kvStore = Storage.getKVStore();
 							await kvStore.set("recovery-test", "test-value");
 							return kvStore.get("recovery-test");
-						} catch (error) {
+} catch (error) {
 							throw new EnhancedError("Storage not available", {
-								originalError: error,
-							});
-						}
-					},
-				];
+								originalError:error,
+});
+}
+},
+];
 
 				const results = await Promise.allSettled(operations);
 
@@ -340,20 +340,20 @@ describe("Foundation Integration Tests", () => {
 				for (const [index, result] of results.entries()) {
 					if (result.status === "fulfilled") {
 						logger.info(`Operation ${index + 1} succeeded`);
-					} else {
+} else {
 						logger.warn(`Operation ${index + 1} failed`, {
-							error: result.reason,
-						});
-					}
-				}
-			},
+							error:result.reason,
+});
+}
+}
+},
 			120000,
 		);
-	});
+});
 
 	describe("Performance and Scalability", () => {
 		const runPerformance = process.env['RUN_PERFORMANCE'] === "true";
-		const itPerformance = runPerformance ? it : it.skip;
+		const itPerformance = runPerformance ? it:it.skip;
 
 		itPerformance(
 			"should handle concurrent operations",
@@ -364,7 +364,7 @@ describe("Foundation Integration Tests", () => {
 				// Create multiple concurrent LLM requests
 				const requests = Array(5)
 					.fill(0)
-					.map((_, i) => llm.complete(`Count to ${i + 1}`, { maxTokens: 50 }));
+					.map((_, i) => llm.complete(`Count to ${i + 1}`, { maxTokens:50}));
 
 				const startTime = Date.now();
 				const results = await Promise.all(requests);
@@ -374,11 +374,11 @@ describe("Foundation Integration Tests", () => {
 				results.forEach((result) => expect(result).toBeTruthy())();
 
 				logger.info("Concurrent operations completed", {
-					requests: 5,
+					requests:5,
 					duration,
-					avgDuration: duration / 5,
-				});
-			},
+					avgDuration:duration / 5,
+});
+},
 			120000,
 		);
 
@@ -389,15 +389,15 @@ describe("Foundation Integration Tests", () => {
 				const llm = getGlobalLLM();
 
 				// Perform operations and track metrics
-				await llm.complete("Test 1", { maxTokens: 30 });
-				await llm.complete("Test 2", { maxTokens: 30 });
+				await llm.complete("Test 1", { maxTokens:30});
+				await llm.complete("Test 2", { maxTokens:30});
 
 				const stats = llm.getUsageStats();
 				expect(stats.requestCount).toBeGreaterThan(0);
 
 				logger.info("System metrics tracked", stats);
-			},
+},
 			120000,
 		);
-	});
+});
 });

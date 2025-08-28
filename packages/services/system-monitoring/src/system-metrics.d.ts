@@ -24,41 +24,41 @@
  * @since 2.1.0 (extracted from main app)
  * @version 1.0.0
  */
-import type { Logger } from '@claude-zen/foundation';
+import type { Logger} from '@claude-zen/foundation';
 export interface CpuMetrics {
-    usage_percent: number;
-    user_time_ms: number;
-    system_time_ms: number;
-    cores: number;
-    load_average: number[];
+    usage_percent:number;
+    user_time_ms:number;
+    system_time_ms:number;
+    cores:number;
+    load_average:number[];
 }
 export interface MemoryMetrics {
-    used_mb: number;
-    total_mb: number;
-    free_mb: number;
-    heap_used_mb: number;
-    heap_total_mb: number;
-    external_mb: number;
-    rss_mb: number;
+    used_mb:number;
+    total_mb:number;
+    free_mb:number;
+    heap_used_mb:number;
+    heap_total_mb:number;
+    external_mb:number;
+    rss_mb:number;
 }
 export interface SystemPerformanceTracker {
-    start_time: number;
-    end_time?: number;
-    duration_ms?: number;
-    memory_start: NodeJS.MemoryUsage;
-    memory_end?: NodeJS.MemoryUsage;
-    memory_delta_mb?: number;
+    start_time:number;
+    end_time?:number;
+    duration_ms?:number;
+    memory_start:NodeJS.MemoryUsage;
+    memory_end?:NodeJS.MemoryUsage;
+    memory_delta_mb?:number;
 }
 export interface SystemHealth {
-    status: 'healthy' | 'warning' | 'critical';
-    cpu_health: 'good' | 'high' | 'critical';
-    memory_health: 'good' | 'high' | 'critical';
-    load_health: 'good' | 'high' | 'critical';
-    recommendations: string[];
+    status:'healthy' | ' warning' | ' critical';
+    cpu_health:'good' | ' high' | ' critical';
+    memory_health:'good' | ' high' | ' critical';
+    load_health:'good' | ' high' | ' critical';
+    recommendations:string[];
 }
 export declare class SystemMetricsError extends Error {
-    readonly metric?: string;
-    constructor(message: string, metric?: string);
+    readonly metric?:string;
+    constructor(message:string, metric?:string);
 }
 export declare class SystemMetricsCollector {
     private static instance;
@@ -70,29 +70,29 @@ export declare class SystemMetricsCollector {
     /**
      * Get singleton instance with optional logger
      */
-    static getInstance(logger?: Logger): SystemMetricsCollector;
+    static getInstance(logger?:Logger): SystemMetricsCollector;
     /**
      * Get CPU metrics
      */
-    getCpuMetrics(): CpuMetrics;
+    getCpuMetrics():CpuMetrics;
     /**
      * Get memory metrics
      */
-    getMemoryMetrics(): MemoryMetrics;
+    getMemoryMetrics():MemoryMetrics;
     /**
      * Start performance tracking for an operation
      */
-    startPerformanceTracking(operationId: string): void;
-    const endTime: number;
-    const endMemory: NodeJS.MemoryUsage;
-    const MB_DIVISOR: number;
-    tracker: any;
-    end_time: any;
-    tracker: any;
-    duration_ms: number;
-    tracker: any;
-    memory_end: any;
-    tracker: any;
-    memory_delta_mb: number;
+    startPerformanceTracking(operationId:string): void;
+    const endTime:number;
+    const endMemory:NodeJS.MemoryUsage;
+    const MB_DIVISOR:number;
+    tracker:any;
+    end_time:any;
+    tracker:any;
+    duration_ms:number;
+    tracker:any;
+    memory_end:any;
+    tracker:any;
+    memory_delta_mb:number;
 }
 //# sourceMappingURL=system-metrics.d.ts.map

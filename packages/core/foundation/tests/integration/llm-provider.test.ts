@@ -8,32 +8,32 @@
  * - Performance and timeout testing
  * - All agent roles and capabilities
  *
- * VITEST FRAMEWORK: Converted from Jest to Vitest testing patterns
+ * VITEST FRAMEWORK:Converted from Jest to Vitest testing patterns
  *
  * @author Claude Code Zen Team
  * @since 2.0.0
  */
 
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi} from "vitest";
 
 // Mock the logging system
 vi.mock("@claude-zen/foundation/logging", () => ({
-	getLogger: () => ({
-		debug: vi.fn(),
-		info: vi.fn(),
-		warn: vi.fn(),
-		error: vi.fn(),
-	}),
+	getLogger:() => ({
+		debug:vi.fn(),
+		info:vi.fn(),
+		warn:vi.fn(),
+		error:vi.fn(),
+}),
 }));
 
 // Mock Claude API for unit tests
 const mockClaudeAPI = vi.fn();
 vi.mock("@anthropic/claude", () => ({
-	default: vi.fn().mockImplementation(() => ({
-		messages: {
-			create: mockClaudeAPI,
-		},
-	})),
+	default:vi.fn().mockImplementation(() => ({
+		messages:{
+			create:mockClaudeAPI,
+},
+})),
 }));
 
 import type {
@@ -49,28 +49,28 @@ import {
 } from "../../src/llm-provider";
 
 describe("LLM Provider - Unit Tests (Vitest)", () => {
-	let llmProvider: LLMProvider;
+	let llmProvider:LLMProvider;
 
 	beforeEach(() => {
 		llmProvider = new LLMProvider();
 		// Reset global LLM to avoid test interference
 		setGlobalLLM(new LLMProvider())();
 		vi.clearAllMocks();
-	});
+});
 
 	describe("Role Management", () => {
 		it("should default to coder role", () => {
 			const role = llmProvider.getRole();
 			expect(role?.role).toBe("coder");
 			expect(role?.capabilities).toContain("code-generation");
-		});
+});
 
 		it("should allow role switching", () => {
 			llmProvider.setRole("researcher");
 			const role = llmProvider.getRole();
 			expect(role?.role).toBe("researcher");
 			expect(role?.capabilities).toContain("information-gathering");
-		});
+});
 
 		it("should have all defined roles available", () => {
 			const roleNames = Object.keys(SWARM_AGENT_ROLES);
@@ -81,7 +81,7 @@ describe("LLM Provider - Unit Tests (Vitest)", () => {
 			expect(roleNames).toContain("coordinator");
 			expect(roleNames).toContain("tester");
 			expect(roleNames).toContain("architect");
-		});
+});
 
 		it("should provide correct capabilities for each role", () => {
 			llmProvider.setRole("coder");
@@ -94,10 +94,10 @@ describe("LLM Provider - Unit Tests (Vitest)", () => {
 			expect(llmProvider.getRole()?.capabilities).toContain(
 				"information-gathering",
 			);
-		});
+});
 
 		it("should validate role names", () => {
-			const validRoles: SwarmAgentRole[] = [
+			const validRoles:SwarmAgentRole[] = [
 				"assistant",
 				"coder",
 				"analyst",
@@ -105,13 +105,13 @@ describe("LLM Provider - Unit Tests (Vitest)", () => {
 				"coordinator",
 				"tester",
 				"architect",
-			];
+];
 
 			for (const role of validRoles) {
 				expect(() => llmProvider.setRole(role)).not.toThrow();
 				expect(llmProvider.getRole()?.role).toBe(role);
-			}
-		});
+}
+});
 
 		it("should provide role descriptions", () => {
 			for (const role of Object.keys(SWARM_AGENT_ROLES)) {
@@ -119,9 +119,9 @@ describe("LLM Provider - Unit Tests (Vitest)", () => {
 				const roleInfo = llmProvider.getRole();
 				expect(roleInfo?.description).toBeDefined();
 				expect(roleInfo?.description).toMatch(/\w+/); // Should have some content
-			}
-		});
-	});
+}
+});
+});
 
 	describe("Usage Statistics", () => {
 		it("should track request count", () => {
@@ -130,14 +130,14 @@ describe("LLM Provider - Unit Tests (Vitest)", () => {
 			const initialStats = llmProvider.getUsageStats();
 			expect(initialStats.requestCount).toBe(0);
 			expect(initialStats.currentRole).toBe("coder");
-		});
+});
 
 		it("should update stats on role change", () => {
 			llmProvider.setRole("analyst");
 			const stats = llmProvider.getUsageStats();
 			expect(stats.currentRole).toBe("analyst");
 			expect(stats.lastRoleChange).toBeInstanceOf(Date);
-		});
+});
 
 		it("should track role change history", () => {
 			const initialStats = llmProvider.getUsageStats();
@@ -148,7 +148,7 @@ describe("LLM Provider - Unit Tests (Vitest)", () => {
 
 			const finalStats = llmProvider.getUsageStats();
 			expect(finalStats.roleChanges).toBeGreaterThan(initialStats.roleChanges);
-		});
+});
 
 		it("should reset statistics when requested", () => {
 			// Simulate some usage
@@ -163,15 +163,15 @@ describe("LLM Provider - Unit Tests (Vitest)", () => {
 			const afterReset = llmProvider.getUsageStats();
 			expect(afterReset.requestCount).toBe(0);
 			expect(afterReset.roleChanges).toBe(0);
-		});
-	});
+});
+});
 
 	describe("Global LLM Instance", () => {
 		it("should provide singleton global instance", () => {
 			const global1 = getGlobalLLM();
 			const global2 = getGlobalLLM();
 			expect(global1).toBe(global2);
-		});
+});
 
 		it("should allow global instance replacement", () => {
 			const customLLM = new LLMProvider();
@@ -180,7 +180,7 @@ describe("LLM Provider - Unit Tests (Vitest)", () => {
 			setGlobalLLM(customLLM);
 			const retrieved = getGlobalLLM();
 			expect(retrieved.getRole()?.role).toBe("researcher");
-		});
+});
 
 		it("should maintain global instance across module reloads", () => {
 			const originalGlobal = getGlobalLLM();
@@ -190,8 +190,8 @@ describe("LLM Provider - Unit Tests (Vitest)", () => {
 			const sameGlobal = getGlobalLLM();
 			expect(sameGlobal.getRole()?.role).toBe("architect");
 			expect(sameGlobal).toBe(originalGlobal);
-		});
-	});
+});
+});
 
 	describe("Configuration Management", () => {
 		it("should use default configuration", () => {
@@ -200,15 +200,15 @@ describe("LLM Provider - Unit Tests (Vitest)", () => {
 			expect(config.temperature).toBeGreaterThanOrEqual(0);
 			expect(config.temperature).toBeLessThanOrEqual(1);
 			expect(config.maxTokens).toBeGreaterThan(0);
-		});
+});
 
 		it("should allow configuration updates", () => {
 			const newConfig = {
-				model: "opus" as const,
-				temperature: 0.8,
-				maxTokens: 2000,
-				timeout: 30000,
-			};
+				model:"opus" as const,
+				temperature:0.8,
+				maxTokens:2000,
+				timeout:30000,
+};
 
 			llmProvider.updateConfig(newConfig);
 			const config = llmProvider.getConfig();
@@ -217,41 +217,41 @@ describe("LLM Provider - Unit Tests (Vitest)", () => {
 			expect(config.temperature).toBe(0.8);
 			expect(config.maxTokens).toBe(2000);
 			expect(config.timeout).toBe(30000);
-		});
+});
 
 		it("should validate configuration parameters", () => {
 			// Test invalid temperature
 			expect(() => {
-				llmProvider.updateConfig({ temperature: 2.0 });
-			}).toThrow(/temperature/i);
+				llmProvider.updateConfig({ temperature:2.0});
+}).toThrow(/temperature/i);
 
 			expect(() => {
-				llmProvider.updateConfig({ temperature: -0.5 });
-			}).toThrow(/temperature/i);
+				llmProvider.updateConfig({ temperature:-0.5});
+}).toThrow(/temperature/i);
 
 			// Test invalid maxTokens
 			expect(() => {
-				llmProvider.updateConfig({ maxTokens: -100 });
-			}).toThrow(/maxtokens/i);
+				llmProvider.updateConfig({ maxTokens:-100});
+}).toThrow(/maxtokens/i);
 
 			expect(() => {
-				llmProvider.updateConfig({ maxTokens: 0 });
-			}).toThrow(/maxtokens/i);
-		});
-	});
+				llmProvider.updateConfig({ maxTokens:0});
+}).toThrow(/maxtokens/i);
+});
+});
 
 	describe("Role-Specific Methods", () => {
 		beforeEach(() => {
 			// Mock the internal API calls for unit tests
 			mockClaudeAPI.mockResolvedValue({
-				content: [{ text: "Mocked response" }],
-				model: "claude-3-sonnet-20240229",
-				usage: {
-					input_tokens: 10,
-					output_tokens: 5,
-				},
-			});
-		});
+				content:[{ text: "Mocked response"}],
+				model:"claude-3-sonnet-20240229",
+				usage:{
+					input_tokens:10,
+					output_tokens:5,
+},
+});
+});
 
 		it("should provide coder-specific functionality", async () => {
 			llmProvider.setRole("coder");
@@ -265,7 +265,7 @@ describe("LLM Provider - Unit Tests (Vitest)", () => {
 
 			const stats = llmProvider.getUsageStats();
 			expect(stats.requestCount).toBeGreaterThan(0);
-		});
+});
 
 		it("should provide analyst-specific functionality", async () => {
 			llmProvider.setRole("analyst");
@@ -277,7 +277,7 @@ describe("LLM Provider - Unit Tests (Vitest)", () => {
 
 			expect(typeof response).toBe("string");
 			expect(mockClaudeAPI).toHaveBeenCalled();
-		});
+});
 
 		it("should provide researcher-specific functionality", async () => {
 			llmProvider.setRole("researcher");
@@ -288,7 +288,7 @@ describe("LLM Provider - Unit Tests (Vitest)", () => {
 
 			expect(typeof response).toBe("string");
 			expect(mockClaudeAPI).toHaveBeenCalled();
-		});
+});
 
 		it("should provide architect-specific functionality", async () => {
 			llmProvider.setRole("architect");
@@ -299,7 +299,7 @@ describe("LLM Provider - Unit Tests (Vitest)", () => {
 
 			expect(typeof response).toBe("string");
 			expect(mockClaudeAPI).toHaveBeenCalled();
-		});
+});
 
 		it("should provide coordinator-specific functionality", async () => {
 			llmProvider.setRole("coordinator");
@@ -311,21 +311,21 @@ describe("LLM Provider - Unit Tests (Vitest)", () => {
 
 			expect(typeof response).toBe("string");
 			expect(mockClaudeAPI).toHaveBeenCalled();
-		});
-	});
+});
+});
 });
 
 describe("LLM Provider - Integration Tests (Real API)", () => {
-	let llmProvider: LLMProvider;
+	let llmProvider:LLMProvider;
 
 	beforeEach(() => {
 		llmProvider = new LLMProvider();
-	});
+});
 
 	// Skip these tests by default to avoid API costs during normal testing
-	// Run with: npm test -- --testNamePattern="Integration" to include these
+	// Run with:npm test -- --testNamePattern="Integration" to include these
 	const runIntegration = process.env['RUN_INTEGRATION'] === "true";
-	const itIntegration = runIntegration ? it : it.skip;
+	const itIntegration = runIntegration ? it:it.skip;
 
 	describe("Real Claude API Calls", () => {
 		itIntegration(
@@ -334,15 +334,15 @@ describe("LLM Provider - Integration Tests (Real API)", () => {
 				llmProvider.setRole("assistant");
 
 				const response = await llmProvider.complete("What is 2 + 2?", {
-					model: "sonnet",
-					temperature: 0,
-					maxTokens: 100,
-				});
+					model:"sonnet",
+					temperature:0,
+					maxTokens:100,
+});
 
 				expect(response).toBeTruthy();
 				expect(typeof response).toBe("string");
 				expect(response.toLowerCase()).toContain("4");
-			},
+},
 			120000,
 		); // 120 second timeout
 
@@ -364,31 +364,31 @@ describe("LLM Provider - Integration Tests (Real API)", () => {
 					"statistical summary",
 				);
 				expect(analysisResponse.toLowerCase()).toMatch(/(mean|average|sum)/);
-			},
+},
 			120000,
 		); // 120 second timeout for complex tasks
 
 		itIntegration(
 			"should handle chat conversations",
 			async () => {
-				const request: LLMRequest = {
-					messages: [
-						{ role: "system", content: "You are a helpful assistant." },
-						{ role: "user", content: "Hello! How are you?" },
-					],
-					model: "sonnet",
-					temperature: 0.5,
-					maxTokens: 150,
-				};
+				const request:LLMRequest = {
+					messages:[
+						{ role:"system", content:"You are a helpful assistant."},
+						{ role:"user", content:"Hello! How are you?"},
+],
+					model:"sonnet",
+					temperature:0.5,
+					maxTokens:150,
+};
 
-				const response: LLMResponse = await llmProvider.chat(request);
+				const response:LLMResponse = await llmProvider.chat(request);
 
 				expect(response.content).toBeTruthy();
 				expect(response.model).toContain("claude");
 				expect(response.usage.totalTokens).toBeGreaterThan(0);
 				expect(response.usage.promptTokens).toBeGreaterThan(0);
 				expect(response.usage.completionTokens).toBeGreaterThan(0);
-			},
+},
 			120000,
 		);
 
@@ -397,23 +397,23 @@ describe("LLM Provider - Integration Tests (Real API)", () => {
 			async () => {
 				// Test Sonnet
 				const sonnetResponse = await llmProvider.complete("Hello", {
-					model: "sonnet",
-					maxTokens: 50,
-				});
+					model:"sonnet",
+					maxTokens:50,
+});
 				expect(sonnetResponse).toBeTruthy();
 
 				// Test Opus (if available)
 				try {
 					const opusResponse = await llmProvider.complete("Hello", {
-						model: "opus",
-						maxTokens: 50,
-					});
+						model:"opus",
+						maxTokens:50,
+});
 					expect(opusResponse).toBeTruthy();
-				} catch (error) {
+} catch (error) {
 					// Opus might not be available in all environments
 					console.log("Opus model not available:", error);
-				}
-			},
+}
+},
 			120000,
 		);
 
@@ -423,14 +423,14 @@ describe("LLM Provider - Integration Tests (Real API)", () => {
 				const shortTimeout = llmProvider.complete(
 					"Write a very long essay about artificial intelligence",
 					{
-						model: "sonnet",
-						maxTokens: 2000,
-					},
+						model:"sonnet",
+						maxTokens:2000,
+},
 				);
 
 				// Should complete within reasonable time
 				await expect(shortTimeout).resolves.toBeTruthy();
-			},
+},
 			120000,
 		);
 
@@ -440,42 +440,42 @@ describe("LLM Provider - Integration Tests (Real API)", () => {
 				// Test with invalid model (should fallback)
 				try {
 					const response = await llmProvider.complete("Hello", {
-						model: "invalid-model" as any,
-						maxTokens: 50,
-					});
+						model:"invalid-model" as any,
+						maxTokens:50,
+});
 					// Should either work with fallback or throw descriptive error
 					expect(response).toBeTruthy();
-				} catch (error) {
+} catch (error) {
 					expect(error).toBeInstanceOf(Error);
 					expect((error as Error).message).toBeTruthy();
-				}
-			},
+}
+},
 			120000,
 		);
-	});
+});
 
 	describe("Error Handling", () => {
 		itIntegration("should handle network errors", async () => {
 			// This would require mocking network layer or testing with invalid endpoints
 			// For now, test that errors are properly wrapped
 			try {
-				await llmProvider.complete("", { maxTokens: -1 as any });
-			} catch (error) {
+				await llmProvider.complete("", { maxTokens:-1 as any});
+} catch (error) {
 				expect(error).toBeInstanceOf(Error);
-			}
-		});
+}
+});
 
 		itIntegration("should handle malformed requests", async () => {
 			try {
 				await llmProvider.chat({
-					messages: [], // Empty messages should be handled
-					model: "sonnet",
-				});
-			} catch (error) {
+					messages:[], // Empty messages should be handled
+					model:"sonnet",
+});
+} catch (error) {
 				expect(error).toBeInstanceOf(Error);
-			}
-		});
-	});
+}
+});
+});
 
 	describe("Performance Tests", () => {
 		itIntegration(
@@ -485,9 +485,9 @@ describe("LLM Provider - Integration Tests (Real API)", () => {
 					.fill(0)
 					.map((_, i) =>
 						llmProvider.complete(`Count to ${i + 1}`, {
-							model: "sonnet",
-							maxTokens: 50,
-						}),
+							model:"sonnet",
+							maxTokens:50,
+}),
 					);
 
 				const results = await Promise.all(promises);
@@ -495,8 +495,8 @@ describe("LLM Provider - Integration Tests (Real API)", () => {
 				for (const result of results) {
 					expect(result).toBeTruthy();
 					expect(typeof result).toBe("string");
-				}
-			},
+}
+},
 			120000,
 		);
 
@@ -505,40 +505,40 @@ describe("LLM Provider - Integration Tests (Real API)", () => {
 			async () => {
 				const initialStats = llmProvider.getUsageStats();
 
-				await llmProvider.complete("Hello", { maxTokens: 20 });
-				await llmProvider.complete("World", { maxTokens: 20 });
+				await llmProvider.complete("Hello", { maxTokens:20});
+				await llmProvider.complete("World", { maxTokens:20});
 
 				const finalStats = llmProvider.getUsageStats();
 				expect(finalStats.requestCount).toBe(initialStats.requestCount + 2);
 				expect(finalStats.lastRequestTime).toBeGreaterThan(
 					initialStats.lastRequestTime,
 				);
-			},
+},
 			120000,
 		);
-	});
+});
 });
 
 describe("LLM Provider - Edge Cases", () => {
-	let llmProvider: LLMProvider;
+	let llmProvider:LLMProvider;
 
 	beforeEach(() => {
 		llmProvider = new LLMProvider();
 		vi.clearAllMocks();
-	});
+});
 
 	it("should handle empty prompts gracefully", async () => {
 		// Mock the internal method to avoid real API calls
 		const mockChat = vi.spyOn(llmProvider, "chat" as any).mockResolvedValue({
-			content: "I need more information.",
-			model: "claude-3-sonnet",
-			usage: { promptTokens: 10, completionTokens: 5, totalTokens: 15 },
-		});
+			content:"I need more information.",
+			model:"claude-3-sonnet",
+			usage:{ promptTokens: 10, completionTokens:5, totalTokens:15},
+});
 
 		const response = await llmProvider.complete("");
 		expect(response).toBeTruthy();
 		expect(mockChat).toHaveBeenCalled();
-	});
+});
 
 	it("should handle role switching during operations", () => {
 		llmProvider.setRole("coder");
@@ -549,7 +549,7 @@ describe("LLM Provider - Edge Cases", () => {
 
 		llmProvider.setRole("analyst");
 		expect(llmProvider.getRole()?.role).toBe("analyst");
-	});
+});
 
 	it("should maintain role consistency across method calls", async () => {
 		llmProvider.setRole("architect");
@@ -563,7 +563,7 @@ describe("LLM Provider - Edge Cases", () => {
 
 		// Role should still be architect after operation
 		expect(llmProvider.getRole()?.role).toBe("architect");
-	});
+});
 
 	it("should handle extremely long prompts", async () => {
 		const mockComplete = vi
@@ -575,7 +575,7 @@ describe("LLM Provider - Edge Cases", () => {
 
 		expect(response).toBeTruthy();
 		expect(mockComplete).toHaveBeenCalled();
-	});
+});
 
 	it("should handle special characters in prompts", async () => {
 		const mockComplete = vi
@@ -583,7 +583,7 @@ describe("LLM Provider - Edge Cases", () => {
 			.mockResolvedValue("Handled special chars");
 
 		const specialPrompt =
-			"Test with émojis 🚀 and unicode: αβγδε and symbols: @#$%^&*()";
+			"Test with émojis 🚀 and unicode:αβγδε and symbols: @#$%^&*()";
 		const response = await llmProvider.complete(specialPrompt);
 
 		expect(response).toBeTruthy();
@@ -591,7 +591,7 @@ describe("LLM Provider - Edge Cases", () => {
 			specialPrompt,
 			expect.any(Object),
 		);
-	});
+});
 
 	it("should handle null and undefined inputs gracefully", async () => {
 		const mockComplete = vi
@@ -607,86 +607,86 @@ describe("LLM Provider - Edge Cases", () => {
 		expect(undefinedResponse).toBeTruthy();
 
 		expect(mockComplete).toHaveBeenCalledTimes(2);
-	});
+});
 
 	it("should handle rapid role switching", () => {
-		const roles: SwarmAgentRole[] = [
+		const roles:SwarmAgentRole[] = [
 			"coder",
 			"analyst",
 			"researcher",
 			"architect",
 			"coordinator",
-		];
+];
 
 		// Switch roles rapidly
 		for (let i = 0; i < 100; i++) {
 			const role = roles[i % roles.length];
 			llmProvider.setRole(role);
 			expect(llmProvider.getRole()?.role).toBe(role);
-		}
+}
 
 		const stats = llmProvider.getUsageStats();
 		expect(stats.roleChanges).toBe(100);
-	});
+});
 });
 
 describe("LLM Provider - Advanced Features", () => {
-	let llmProvider: LLMProvider;
+	let llmProvider:LLMProvider;
 
 	beforeEach(() => {
 		llmProvider = new LLMProvider();
 		vi.clearAllMocks();
-	});
+});
 
 	it("should support streaming responses", async () => {
 		const mockStream = vi.fn().mockImplementation(async function* () {
-			yield { content: "Hello " };
-			yield { content: "world!" };
-		});
+			yield { content:"Hello "};
+			yield { content:"world!"};
+});
 
 		vi.spyOn(llmProvider, "streamComplete" as any).mockImplementation(
 			mockStream,
 		);
 
-		const chunks: string[] = [];
+		const chunks:string[] = [];
 		const stream = llmProvider.streamComplete("Say hello");
 
 		for await (const chunk of stream) {
 			chunks.push(chunk.content);
-		}
+}
 
 		expect(chunks).toEqual(["Hello ", "world!"]);
-	});
+});
 
 	it("should support function calling", async () => {
 		const mockFunctionCall = vi
 			.spyOn(llmProvider, "callFunction" as any)
 			.mockResolvedValue({
-				function: "calculate",
-				arguments: { operation: "add", a: 2, b: 2 },
-				result: 4,
-			});
+				function:"calculate",
+				arguments:{ operation: "add", a:2, b:2},
+				result:4,
+});
 
 		const result = await llmProvider.callFunction("Calculate 2 + 2", {
-			name: "calculate",
-			parameters: {
-				operation: "string",
-				a: "number",
-				b: "number",
-			},
-		});
+			name:"calculate",
+			parameters:{
+				operation:"string",
+				a:"number",
+				b:"number",
+},
+});
 
 		expect(result.function).toBe("calculate");
 		expect(result.result).toBe(4);
 		expect(mockFunctionCall).toHaveBeenCalled();
-	});
+});
 
 	it("should support multi-turn conversations", async () => {
 		const mockChat = vi.spyOn(llmProvider, "chat").mockResolvedValue({
-			content: "Multi-turn response",
-			model: "claude-3-sonnet",
-			usage: { promptTokens: 20, completionTokens: 10, totalTokens: 30 },
-		});
+			content:"Multi-turn response",
+			model:"claude-3-sonnet",
+			usage:{ promptTokens: 20, completionTokens:10, totalTokens:30},
+});
 
 		const conversation = llmProvider.createConversation();
 		conversation.addMessage("user", "Hello");
@@ -696,17 +696,17 @@ describe("LLM Provider - Advanced Features", () => {
 		const response = await conversation.continue();
 		expect(response).toBeTruthy();
 		expect(mockChat).toHaveBeenCalled();
-	});
+});
 
 	it("should support context window management", () => {
 		const conversation = llmProvider.createConversation({
-			maxContextLength: 1000,
-		});
+			maxContextLength:1000,
+});
 
 		// Add messages until context is full
 		for (let i = 0; i < 100; i++) {
 			conversation.addMessage("user", `Message ${i}`.repeat(10));
-		}
+}
 
 		const messages = conversation.getMessages();
 		const totalLength = messages.reduce(
@@ -716,5 +716,5 @@ describe("LLM Provider - Advanced Features", () => {
 
 		expect(totalLength).toBeLessThanOrEqual(1000);
 		expect(messages.length).toBeLessThan(100); // Should have pruned old messages
-	});
+});
 });

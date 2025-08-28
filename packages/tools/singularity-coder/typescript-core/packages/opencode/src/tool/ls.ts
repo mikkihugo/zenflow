@@ -1,8 +1,8 @@
 import * as path from "node:path"
-import { z } from "@claude-zen/foundation"
-import { App } from "../app/app"
+import { z} from "@claude-zen/foundation"
+import { App} from "../app/app"
 import DESCRIPTION from "./ls.txt"
-import { Tool } from "./tool"
+import { Tool} from "./tool"
 
 export const IGNORE_PATTERNS = [
   "node_modules/",
@@ -34,12 +34,12 @@ export const IGNORE_PATTERNS = [
 const LIMIT = 100
 
 export const ListTool = Tool.define({
-  id: "list",
-  description: DESCRIPTION,
-  parameters: z.object({
-    path: z.string().describe("The absolute path to the directory to list (must be absolute, not relative)").optional(),
-    ignore: z.array(z.string()).describe("List of glob patterns to ignore").optional(),
-  }),
+  id:"list",
+  description:DESCRIPTION,
+  parameters:z.object({
+    path:z.string().describe("The absolute path to the directory to list (must be absolute, not relative)").optional(),
+    ignore:z.array(z.string()).describe("List of glob patterns to ignore").optional(),
+}),
   async execute(params) {
     const app = App.info()
     const searchPath = path.resolve(app.path.cwd, params.path || ".")
@@ -47,12 +47,12 @@ export const ListTool = Tool.define({
     const glob = new Bun.Glob("**/*")
     const files = []
 
-    for await (const file of glob.scan({ cwd: searchPath, dot: true })) {
+    for await (const file of glob.scan({ cwd:searchPath, dot:true})) {
       if (IGNORE_PATTERNS.some((p) => file.includes(p))) continue
       if (params.ignore?.some((pattern) => new Bun.Glob(pattern).match(file))) continue
       files.push(file)
       if (files.length >= LIMIT) break
-    }
+}
 
     // Build directory structure
     const dirs = new Set<string>()
@@ -60,26 +60,26 @@ export const ListTool = Tool.define({
 
     for (const file of files) {
       const dir = path.dirname(file)
-      const parts = dir === "." ? [] : dir.split("/")
+      const parts = dir === "." ? [] :dir.split("/")
 
       // Add all parent directories
       for (let i = 0; i <= parts.length; i++) {
-        const dirPath = i === 0 ? "." : parts.slice(0, i).join("/")
+        const dirPath = i === 0 ? "." :parts.slice(0, i).join("/")
         dirs.add(dirPath)
-      }
+}
 
       // Add file to its directory
       if (!filesByDir.has(dir)) filesByDir.set(dir, [])
       filesByDir.get(dir)?.push(path.basename(file))
-    }
+}
 
-    function renderDir(dirPath: string, depth: number): string {
+    function renderDir(dirPath:string, depth:number): string {
       const indent = "  ".repeat(depth)
       let output = ""
 
       if (depth > 0) {
         output += `${indent}${path.basename(dirPath)}/\n``
-      }
+}
 
       const childIndent = "  ".repeat(depth + 1)
       const children = Array.from(dirs)
@@ -89,27 +89,27 @@ export const ListTool = Tool.define({
       // Render subdirectories first
       for (const child of children) {
         output += renderDir(child, depth + 1)
-      }
+}
 
       // Render files
       const files = filesByDir.get(dirPath) || []
       for (const file of files.sort()) {
         output += `$childIndent$file\n``
-      }
+}
 
       return output
-    }
+}
 
     const _output = `${searchPath}/\n${renderDir(".", 0)`
 
     return {
-      title: path.relative(app.path.root, searchPath),
-      metadata: {
-        count: files.length,
-        truncated: files.length >= LIMIT,
-      },
+      title:path.relative(app.path.root, searchPath),
+      metadata:{
+        count:files.length,
+        truncated:files.length >= LIMIT,
+},
       output,
-    }
-  },
+}
+},
 })
 }`

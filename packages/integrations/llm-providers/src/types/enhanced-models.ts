@@ -5,39 +5,39 @@
  * while providing clean, standardized access patterns.
  */
 
-import type { GitHubCopilotModelMetadata } from '../api/github-copilot-db';
-import type { GitHubModelMetadata } from '../api/github-models-db';
+import type { GitHubCopilotModelMetadata} from '../api/github-copilot-db';
+import type { GitHubModelMetadata} from '../api/github-models-db';
 
 /**
  * Base model interface - common fields across all providers
  */
 export interface BaseModelInfo {
   // Identity
-  id: string;
-  name: string;
-  provider: string;
-  family?: string;
-  version?: string;
+  id:string;
+  name:string;
+  provider:string;
+  family?:string;
+  version?:string;
 
   // Core capabilities
-  contextWindow: number;
-  maxTokens: number;
+  contextWindow:number;
+  maxTokens:number;
 
   // Basic features
-  supportsStreaming: boolean;
-  supportsVision: boolean;
-  supportsToolCalls: boolean;
+  supportsStreaming:boolean;
+  supportsVision:boolean;
+  supportsToolCalls:boolean;
 
   // Metadata
-  available: boolean;
-  lastUpdated: Date;
+  available:boolean;
+  lastUpdated:Date;
 
   // Pricing (if available)
-  pricing?: {
-    inputTokens: number;
-    outputTokens: number;
-    currency: string;
-  };
+  pricing?:{
+    inputTokens:number;
+    outputTokens:number;
+    currency:string;
+};
 }
 
 /**
@@ -52,11 +52,7 @@ export interface RichModelInfo extends BaseModelInfo {
 
   // Provider type for type-safe access
   providerType:
-    | 'github-copilot'
-    | 'github-models'
-    | 'anthropic'
-    | 'openai'
-    | string;
+    | 'github-copilot')    | 'github-models')    | 'anthropic')    | 'openai')    | string;
 }
 
 /**
@@ -64,25 +60,25 @@ export interface RichModelInfo extends BaseModelInfo {
  */
 export interface ModelQuery {
   // Basic filters
-  provider?: string;
-  family?: string;
-  minContextWindow?: number;
-  maxCost?: number;
+  provider?:string;
+  family?:string;
+  minContextWindow?:number;
+  maxCost?:number;
 
   // Feature requirements
-  requiresVision?: boolean;
-  requiresToolCalls?: boolean;
-  requiresStreaming?: boolean;
+  requiresVision?:boolean;
+  requiresToolCalls?:boolean;
+  requiresStreaming?:boolean;
 
   // Advanced requirements
-  customFilter?: (model: RichModelInfo) => boolean;
+  customFilter?:(model: RichModelInfo) => boolean;
 
   // Sorting
-  sortBy?: 'contextWindow' | 'cost' | 'performance' | 'updated';
-  sortOrder?: 'asc' | 'desc';
+  sortBy?:'contextWindow' | ' cost' | ' performance' | ' updated';
+  sortOrder?:'asc' | ' desc';
 
   // Limits
-  limit?: number;
+  limit?:number;
 }
 
 /**
@@ -90,64 +86,62 @@ export interface ModelQuery {
  */
 export interface ProviderDatabase<T = unknown> {
   // Basic operations
-  getAllModels(): T[];
-  getModel(id: string): T | undefined;
+  getAllModels():T[];
+  getModel(id:string): T | undefined;
 
   // Provider-specific queries
-  getModelsByCategory?(category: string): T[];
-  getModelsByCapability?(capability: string): T[];
+  getModelsByCategory?(category:string): T[];
+  getModelsByCapability?(capability:string): T[];
 
   // Metadata access
-  getProviderType(): string;
-  getLastUpdated(): Date;
+  getProviderType():string;
+  getLastUpdated():Date;
 
   // Update operations
-  updateModels(): Promise<void>;
+  updateModels():Promise<void>;
 
   // Rich metadata conversion
-  toRichModelInfo(model: T): RichModelInfo;
-  toBaseModelInfo(model: T): BaseModelInfo;
+  toRichModelInfo(model:T): RichModelInfo;
+  toBaseModelInfo(model:T): BaseModelInfo;
 }
 
 /**
  * Type-safe provider metadata access
  */
-export type ProviderMetadata<P extends string> = P extends 'github-copilot'
-  ? GitHubCopilotModelMetadata
-  : P extends 'github-models'
-    ? GitHubModelMetadata
-    : Record<string, unknown>;
+export type ProviderMetadata<P extends string> = P extends 'github-copilot')  ? GitHubCopilotModelMetadata
+  :P extends 'github-models')    ? GitHubModelMetadata
+    :Record<string, unknown>;
 
 /**
  * Advanced model comparison interface
  */
 export interface ModelComparison {
-  models: RichModelInfo[];
+  models:RichModelInfo[];
 
   // Comparison metrics
-  contextWindowComparison: Record<string, number>;
-  costComparison: Record<string, number>;
-  featureMatrix: Record<string, Record<string, boolean>>;
+  contextWindowComparison:Record<string, number>;
+  costComparison:Record<string, number>;
+  featureMatrix:Record<string, Record<string, boolean>>;
 
   // Recommendations
-  bestForTask: {
-    coding: string;
-    vision: string;
-    longContext: string;
-    costEffective: string;
-  };
+  bestForTask:{
+    coding:string;
+    vision:string;
+    longContext:string;
+    costEffective:string;
+};
 }
 
 /**
  * Model selection recommendations
  */
 export interface ModelRecommendation {
-  modelId: string;
-  confidence: number;
-  reasoning: string[];
-  alternatives: Array<{
-    modelId: string;
-    reason: string;
-    tradeoff: string;
-  }>;
+  modelId:string;
+  confidence:number;
+  reasoning:string[];
+  alternatives:Array<{
+    modelId:string;
+    reason:string;
+    tradeoff:string;
+}>;
 }

@@ -53,7 +53,7 @@ export {
 } from "./time";
 // Export specific functions to avoid conflicts
 // Temporary direct export to bypass module resolution issues
-import { z } from "zod";
+import { z} from "zod";
 export const emailSchema = z.string().email();
 
 // Temporarily comment out validation exports to fix circular import issue
@@ -76,27 +76,27 @@ export const emailSchema = z.string().email();
 // 	UUIDSchema,
 // 	validateInput,
 // 	z,
-// } from "./validation";
+//} from "./validation";
 
 // Direct exports to bypass import issues
-export { z } from "zod";
+export { z} from "zod";
 export const nonEmptyStringSchema = z.string().min(1);
 export const positiveNumberSchema = z.number().positive();
 export const urlSchema = z.string().url();
 export const uuidSchema = z.string().uuid();
 
 // Simple validation functions without complex dependencies
-export function isEmail(value: unknown): boolean {
+export function isEmail(value:unknown): boolean {
 	return typeof value === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
-export function isURL(value: unknown): boolean {
+export function isURL(value:unknown): boolean {
 	if (typeof value !== "string") return false;
 	try {
 		// Use global URL constructor
 		new globalThis.URL(value);
 		return true;
-	} catch {
+} catch {
 		return false;
-	}
+}
 }

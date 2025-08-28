@@ -17,129 +17,129 @@
  * @version 1.0.0
  * @since 2024-01-01
  */
-import { CodingPrinciplesResearcher, type PrinciplesResearchConfig } from './coding-principles-researcher';
-import { IntelligentPromptGenerator } from './intelligent-prompt-generator';
+import { CodingPrinciplesResearcher, type PrinciplesResearchConfig} from './coding-principles-researcher';
+import { IntelligentPromptGenerator} from './intelligent-prompt-generator';
 /**
  * Supported AI model backends for swarm A/B testing
  */
-export type AIModelBackend = 'claude-sonnet' | 'claude-opus' | 'claude-haiku' | 'gemini-pro' | 'gemini-flash' | 'gpt-4' | 'gpt-4-turbo' | 'aider' | 'custom';
+export type AIModelBackend = 'claude-sonnet' | ' claude-opus' | ' claude-haiku' | ' gemini-pro' | ' gemini-flash' | ' gpt-4' | ' gpt-4-turbo' | ' aider' | ' custom';
 /**
  * A/B test strategy configuration
  */
 export interface ABTestStrategy {
     /** Strategy identifier */
-    id: string;
+    id:string;
     /** Human-readable name */
-    name: string;
+    name:string;
     /** AI model backend to use */
-    modelBackend: AIModelBackend;
+    modelBackend:AIModelBackend;
     /** Swarm configuration parameters */
-    swarmConfig: {
+    swarmConfig:{
         topology: 'mesh|hierarchical|ring|star;;
-        maxAgents: number;
-        strategy: 'balanced' | 'specialized' | 'adaptive';
-        coordinationApproach: 'conservative' | 'aggressive' | 'exploratory';
-    };
+'        maxAgents:number;
+        strategy:'balanced' | ' specialized' | ' adaptive';
+        coordinationApproach:'conservative' | ' aggressive' | ' exploratory';
+};
     /** Research configuration for this strategy */
-    researchConfig?: Partial<PrinciplesResearchConfig>;
+    researchConfig?:Partial<PrinciplesResearchConfig>;
     /** Custom prompt variations */
-    promptVariations?: {
+    promptVariations?:{
         style: 'concise|detailed|step-by-step|creative;;
-        focus: 'performance|quality|speed|innovation;;
-    };
+'        focus: 'performance|quality|speed|innovation;;
+'};
 }
 /**
  * Git tree configuration for isolated testing
  */
 export interface GitTreeConfig {
     /** Create isolated git worktrees for each test */
-    useGitWorktrees: boolean;
+    useGitWorktrees:boolean;
     /** Base branch to create worktrees from */
-    baseBranch: string;
+    baseBranch:string;
     /** Prefix for worktree branch names */
-    branchPrefix: string;
+    branchPrefix:string;
     /** Clean up worktrees after testing */
-    cleanupAfterTest: boolean;
+    cleanupAfterTest:boolean;
     /** Maximum concurrent worktrees */
-    maxWorktrees: number;
+    maxWorktrees:number;
 }
 /**
  * A/B test execution result for a single strategy
  */
 export interface SwarmTestResult {
     /** Strategy that was tested */
-    strategy: ABTestStrategy;
+    strategy:ABTestStrategy;
     /** Execution success status */
-    success: boolean;
+    success:boolean;
     /** Execution duration in milliseconds */
-    duration: number;
+    duration:number;
     /** Quality metrics */
-    qualityMetrics: {
-        codeQuality: number;
-        requirementsCoverage: number;
-        implementationCorrectness: number;
-        maintainability: number;
-        performance: number;
-        overallScore: number;
-        accuracy?: number;
-        completeness?: number;
-        efficiency?: number;
-    };
+    qualityMetrics:{
+        codeQuality:number;
+        requirementsCoverage:number;
+        implementationCorrectness:number;
+        maintainability:number;
+        performance:number;
+        overallScore:number;
+        accuracy?:number;
+        completeness?:number;
+        efficiency?:number;
+};
     /** Generated artifacts and outputs */
-    artifacts: {
-        filesCreated: string[];
-        linesOfCode: number;
-        functionsCreated: number;
-        testsGenerated: number;
-    };
+    artifacts:{
+        filesCreated:string[];
+        linesOfCode:number;
+        functionsCreated:number;
+        testsGenerated:number;
+};
     /** Error information if failed */
-    error?: string;
+    error?:string;
     /** Git worktree path if used */
-    worktreePath?: string;
+    worktreePath?:string;
     /** Model-specific metadata */
-    modelMetadata: {
-        backend: AIModelBackend;
-        tokenUsage?: number;
-        requestCount: number;
-        avgResponseTime: number;
-        attemptNumber?: number;
-        totalAttempts?: number;
-        timedOut?: boolean;
-    };
+    modelMetadata:{
+        backend:AIModelBackend;
+        tokenUsage?:number;
+        requestCount:number;
+        avgResponseTime:number;
+        attemptNumber?:number;
+        totalAttempts?:number;
+        timedOut?:boolean;
+};
 }
 /**
  * Complete A/B test comparison result
  */
 export interface ABTestResult {
     /** Test execution ID */
-    testId: string;
+    testId:string;
     /** Test description */
-    description: string;
+    description:string;
     /** All strategies tested */
-    strategies: ABTestStrategy[];
+    strategies:ABTestStrategy[];
     /** Results for each strategy */
-    results: SwarmTestResult[];
+    results:SwarmTestResult[];
     /** Statistical comparison */
-    comparison: {
+    comparison:{
         /** Best performing strategy */
-        winner: ABTestStrategy;
+        winner:ABTestStrategy;
         /** Confidence in winner selection (0-1) */
-        confidence: number;
+        confidence:number;
         /** Statistical significance */
         significance: 'high|medium|low|none;;
-        /** Performance differences */
-        performanceDelta: Record<string, number>;
-    };
+'        /** Performance differences */
+        performanceDelta:Record<string, number>;
+};
     /** Execution metadata */
-    metadata: {
-        startTime: Date;
-        endTime: Date;
-        totalDuration: number;
-        parallelExecution: boolean;
-        gitTreesUsed: boolean;
-    };
+    metadata:{
+        startTime:Date;
+        endTime:Date;
+        totalDuration:number;
+        parallelExecution:boolean;
+        gitTreesUsed:boolean;
+};
     /** Learning insights for future tests */
-    insights: string[];
+    insights:string[];
 }
 /**
  * Multi-Swarm A/B Testing System
@@ -148,29 +148,29 @@ export interface ABTestResult {
  * optimal approaches through statistical comparison and analysis.
  */
 export declare class MultiSwarmABTesting {
-    [x: number]: any;
+    [x:number]: any;
     private codingPrinciplesResearcher;
     private testHistory;
-    constructor(codingPrinciplesResearcher?: CodingPrinciplesResearcher, promptGenerator?: IntelligentPromptGenerator);
+    constructor(codingPrinciplesResearcher?:CodingPrinciplesResearcher, promptGenerator?:IntelligentPromptGenerator);
     /**
      * Execute A/B test with multiple swarm strategies
      */
-    executeABTest(taskDescription: string, strategies: ABTestStrategy[], options?: {
-        gitConfig?: GitTreeConfig;
-        parallelExecution?: boolean;
-        timeoutMs?: number;
-        collectDetailedMetrics?: boolean;
-    }): Promise<ABTestResult>;
+    executeABTest(taskDescription:string, strategies:ABTestStrategy[], options?:{
+        gitConfig?:GitTreeConfig;
+        parallelExecution?:boolean;
+        timeoutMs?:number;
+        collectDetailedMetrics?:boolean;
+}):Promise<ABTestResult>;
     /**
      * Get recommendations based on test history
      */
-    getRecommendations(taskType: string): {
-        recommendedStrategy: ABTestStrategy | null;
-        confidence: number;
-        reasoning: string[];
-    };
-    worktreePaths: any;
-    logger: any;
-    info(: any, strategy: any, name: any): any;
+    getRecommendations(taskType:string): {
+        recommendedStrategy:ABTestStrategy | null;
+        confidence:number;
+        reasoning:string[];
+};
+    worktreePaths:any;
+    logger:any;
+    info(:any, strategy:any, name:any): any;
 }
 //# sourceMappingURL=multi-swarm-ab-testing.d.ts.map

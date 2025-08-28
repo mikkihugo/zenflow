@@ -1,4 +1,4 @@
-import { vi } from 'vitest';
+import { vi} from 'vitest';
 
 // Global test setup for LLM providers
 beforeEach(() => {
@@ -12,7 +12,7 @@ beforeEach(() => {
   // Clear any global state
   if (global.gc) {
     global.gc();
-  }
+}
 });
 
 afterEach(() => {
@@ -23,16 +23,16 @@ afterEach(() => {
 // Mock console methods to reduce noise in tests
 global.console = {
   ...console,
-  log: vi.fn(),
-  debug: vi.fn(),
-  info: vi.fn(),
-  warn: vi.fn(),
-  error: vi.fn(),
+  log:vi.fn(),
+  debug:vi.fn(),
+  info:vi.fn(),
+  warn:vi.fn(),
+  error:vi.fn(),
 };
 
 // Global error handler for unhandled promise rejections
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  console.error('Unhandled Rejection at:', promise, ' reason:', reason);
 });
 
 // ✅ NO GLOBAL MOCKS NEEDED!

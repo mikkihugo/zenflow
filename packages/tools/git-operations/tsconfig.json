@@ -11,7 +11,7 @@
   "exclude": ["dist", "node_modules", "**/*.test.ts", "**/*.spec.ts"],
   "references": [
     {
-      "path": "../../foundation"
+      "path": "../../core/foundation"
     }
   ]
 }

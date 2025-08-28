@@ -4,7 +4,7 @@
 //! Replaces Hugging Face Transformers.js with native Rust implementation.
 
 use anyhow::Result;
-use ndarray::ArrayD;
+// use ndarray::ArrayD; // Unused import
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use tokenizers::Tokenizer;
@@ -138,6 +138,7 @@ impl TextGenerationPipeline {
 
 /// Simple ONNX-based transformer model implementation
 pub struct OnnxTransformerModel {
+    #[allow(dead_code)]
     model_path: String,
     config: ModelConfig,
 }
@@ -161,7 +162,7 @@ impl TransformerModel for OnnxTransformerModel {
         // 3. Apply output projection
         
         let vocab_size = self.config.vocab_size;
-        let seq_len = input_ids.len();
+        let _seq_len = input_ids.len();
         
         // Simple placeholder logits (in practice would be computed by model)
         let output_size = vocab_size.min(1000); // Limit output size
@@ -218,21 +219,19 @@ fn create_default_tokenizer() -> Result<Tokenizer> {
     use tokenizers::models::bpe::BpeBuilder;
     use tokenizers::{TokenizerBuilder, normalizers, pre_tokenizers, processors};
     
-    let mut bpe_builder = BpeBuilder::new();
-    bpe_builder.vocab_and_merges(HashMap::new(), Vec::new());
-    let bpe = bpe_builder.build().map_err(|e| anyhow::anyhow!("BPE build failed: {}", e))?;
+    let bpe_builder = BpeBuilder::new();
+    let bpe = bpe_builder.vocab_and_merges(HashMap::new(), Vec::new())
+        .build().map_err(|e| anyhow::anyhow!("BPE build failed: {}", e))?;
     
-    let tokenizer = TokenizerBuilder::new()
+    let tokenizer: tokenizers::TokenizerImpl<_, _, _, _, tokenizers::decoders::byte_level::ByteLevel> = TokenizerBuilder::new()
         .with_model(bpe)
         .with_normalizer(Some(normalizers::unicode::NFC))
         .with_pre_tokenizer(Some(pre_tokenizers::byte_level::ByteLevel::default()))
         .with_post_processor(Some(processors::byte_level::ByteLevel::default()))
+        .with_decoder(Some(tokenizers::decoders::byte_level::ByteLevel::default()))
         .build()
         .map_err(|e| anyhow::anyhow!("Tokenizer build failed: {}", e))?;
-    
-    // Convert to the expected Tokenizer type
-    let tokenizer: Tokenizer = tokenizer.into();
-    Ok(tokenizer)
+    Ok(tokenizer.into())
 }
 
 /// Find the index with maximum value

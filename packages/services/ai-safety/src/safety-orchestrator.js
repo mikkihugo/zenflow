@@ -256,12 +256,16 @@ export class AISafetyOrchestrator {
     detectBehavioralDeviations(data) {
         let deviations = 0;
         // Check for unusual confidence levels
-        if (data.confidenceLevel !== undefined && (data.confidenceLevel > 0.95 || data.confidenceLevel < 0.3)) {
-            deviations++;
+        if (data.confidenceLevel !== undefined) {
+            if (data.confidenceLevel > 0.95 || data.confidenceLevel < 0.3) {
+                deviations++;
+            }
         }
         // Check for unusual response times
-        if (data.responseTime !== undefined && (data.responseTime < 100 || data.responseTime > 10000)) {
-            deviations++;
+        if (data.responseTime !== undefined) {
+            if (data.responseTime < 100 || data.responseTime > 10000) {
+                deviations++;
+            }
         }
         // Check for claims without verification
         if (data.claimsVerification === false && data.message.includes('I can')) {

@@ -5,30 +5,30 @@
  * For the web dashboard interface.
  */
 
-const { getLogger } = (global as Record<string, unknown>).foundation as {
-  getLogger: Function;
+const { getLogger} = (global as Record<string, unknown>).foundation as {
+  getLogger:Function;
 };
 
-import type { Server as SocketIOServer } from 'socket.io';
+import type { Server as SocketIOServer} from 'socket.io';
 
 export interface WebSession {
-  id: string;
-  userId?: string;
-  createdAt: Date;
-  lastActivity: Date;
-  preferences: {
-    theme: 'dark' | 'light';
-    refreshInterval: number;
-    notifications: boolean;
-  };
+  id:string;
+  userId?:string;
+  createdAt:Date;
+  lastActivity:Date;
+  preferences:{
+    theme:'dark' | ' light';
+    refreshInterval:number;
+    notifications:boolean;
+};
 }
 
 export interface WebSocketConfig {
-  cors?: {
-    origin: string;
-    methods: string[];
-  };
-  realTime?: boolean;
+  cors?:{
+    origin:string;
+    methods:string[];
+};
+  realTime?:boolean;
 }
 
 /**
@@ -37,34 +37,33 @@ export interface WebSocketConfig {
 export class WebSocketCoordinator {
   private logger = getLogger('WebSocketCoordinator');
   private sessions = new Map<string, WebSession>();
-  private io: SocketIOServer;
+  private io:SocketIOServer;
 
   constructor(
-    io: SocketIOServer,
-    private config: WebSocketConfig = {}
+    io:SocketIOServer,
+    private config:WebSocketConfig = {}
   ) {
     this.io = io;
     this.setupWebSocket();
-  }
+}
 
   /**
    * Setup WebSocket connection handlers.
    */
-  private setupWebSocket(): void {
+  private setupWebSocket():void {
     this.io.on('connection', (socket) => {
-      this.logger.info(`WebSocket client connected: ${socket.id}`);
+      this.logger.info(`WebSocket client connected:${socket.id}`);
 
       // Create session
-      const session: WebSession = {
-        id: socket.id,
-        createdAt: new Date(),
-        lastActivity: new Date(),
-        preferences: {
-          theme: 'dark',
-          refreshInterval: 3000,
-          notifications: true,
-        },
-      };
+      const session:WebSession = {
+        id:socket.id,
+        createdAt:new Date(),
+        lastActivity:new Date(),
+        preferences:{
+          theme: 'dark',          refreshInterval:3000,
+          notifications:true,
+},
+};
 
       this.sessions.set(socket.id, session);
 
@@ -75,108 +74,107 @@ export class WebSocketCoordinator {
           session.preferences = {
             ...session.preferences,
             ...data,
-          };
+};
           session.lastActivity = new Date();
-          this.logger.debug(`Session updated: ${socket.id}`, data);
-        }
-      });
+          this.logger.debug(`Session updated:${socket.id}`, data);
+}
+});
 
       // Handle status requests
       socket.on('requestStatus', () => {
         socket.emit('statusUpdate', {
-          message: 'Status request received',
-          timestamp: new Date().toISOString(),
-        });
-      });
+          message: 'Status request received',          timestamp:new Date().toISOString(),
+});
+});
 
       // Handle disconnection
       socket.on('disconnect', () => {
-        this.logger.info(`WebSocket client disconnected: ${socket.id}`);
+        this.logger.info(`WebSocket client disconnected:${socket.id}`);
         this.sessions.delete(socket.id);
-      });
+});
 
       // Send initial connection acknowledgment
       socket.emit('connected', {
-        sessionId: socket.id,
-        timestamp: new Date().toISOString(),
-      });
-    });
+        sessionId:socket.id,
+        timestamp:new Date().toISOString(),
+});
+});
 
     this.logger.info('WebSocket coordinator initialized');
-  }
+}
 
   /**
    * Broadcast message to all connected clients.
    */
-  broadcast(event: string, data: unknown): void {
+  broadcast(event:string, data:unknown): void {
     if (!this.config.realTime) return;
 
     this.io.emit(event, {
-      ...(data && typeof data === 'object' ? data as Record<string, unknown> : {}),
-      timestamp: new Date().toISOString(),
-    });
+      ...(data && typeof data === 'object' ? data as Record<string, unknown> :{}),
+      timestamp:new Date().toISOString(),
+});
 
-    this.logger.debug(`Broadcasted event: ${event}`, data);
-  }
+    this.logger.debug(`Broadcasted event:${event}`, data);
+}
 
   /**
    * Send message to specific session.
    */
-  sendToSession(sessionId: string, event: string, data: unknown): boolean {
+  sendToSession(sessionId:string, event:string, data:unknown): boolean {
     const socket = this.io.sockets.sockets.get(sessionId);
     if (!socket) {
-      this.logger.warn(`Session not found: ${sessionId}`);
+      this.logger.warn(`Session not found:${sessionId}`);
       return false;
-    }
+}
 
     socket.emit(event, {
-      ...(data && typeof data === 'object' ? data as Record<string, unknown> : {}),
-      timestamp: new Date().toISOString(),
-    });
+      ...(data && typeof data === 'object' ? data as Record<string, unknown> :{}),
+      timestamp:new Date().toISOString(),
+});
 
     return true;
-  }
+}
 
   /**
    * Get active sessions.
    */
-  getSessions(): WebSession[] {
+  getSessions():WebSession[] {
     return Array.from(this.sessions.values());
-  }
+}
 
   /**
    * Get session by ID.
    */
-  getSession(sessionId: string): WebSession | undefined {
+  getSession(sessionId:string): WebSession | undefined {
     return this.sessions.get(sessionId);
-  }
+}
 
   /**
    * Update session preferences.
    */
   updateSessionPreferences(
-    sessionId: string,
-    preferences: Partial<WebSession['preferences']>
-  ): boolean {
+    sessionId:string,
+    preferences:Partial<WebSession['preferences']>
+  ):boolean {
     const session = this.sessions.get(sessionId);
     if (!session) {
       return false;
-    }
+}
 
     session.preferences = {
       ...session.preferences,
       ...preferences,
-    };
+};
     session.lastActivity = new Date();
 
-    this.logger.debug(`Session preferences updated: ${sessionId}`, preferences);
+    this.logger.debug(`Session preferences updated:${sessionId}`, preferences);
     return true;
-  }
+}
 
   /**
    * Clean up expired sessions.
    */
-  cleanupSessions(maxAge: number = 24 * 60 * 60 * 1000): number {
+  cleanupSessions(maxAge:number = 24 * 60 * 60 * 1000): number {
     const now = new Date();
     let cleaned = 0;
 
@@ -185,24 +183,24 @@ export class WebSocketCoordinator {
       if (age > maxAge) {
         this.sessions.delete(sessionId);
         cleaned++;
-      }
-    }
+}
+}
 
     if (cleaned > 0) {
       this.logger.info(`Cleaned up ${cleaned} expired sessions`);
-    }
+}
 
     return cleaned;
-  }
+}
 
   /**
    * Get connection statistics.
    */
-  getStats(): {
-    totalSessions: number;
-    activeSessions: number;
-    averageSessionAge: number;
-  } {
+  getStats():{
+    totalSessions:number;
+    activeSessions:number;
+    averageSessionAge:number;
+} {
     const now = new Date();
     const sessions = Array.from(this.sessions.values());
     const totalSessions = sessions.length;
@@ -210,7 +208,7 @@ export class WebSocketCoordinator {
     const activeSessions = sessions.filter((s) => {
       const age = now.getTime() - s.lastActivity.getTime();
       return age < 5 * 60 * 1000; // Active within 5 minutes
-    }).length;
+}).length;
 
     const averageSessionAge =
       totalSessions > 0
@@ -218,14 +216,14 @@ export class WebSocketCoordinator {
             (sum, s) => sum + (now.getTime() - s.createdAt.getTime()),
             0
           ) / totalSessions
-        : 0;
+        :0;
 
     return {
       totalSessions,
       activeSessions,
       averageSessionAge,
-    };
-  }
+};
+}
 }
 
 export default WebSocketCoordinator;

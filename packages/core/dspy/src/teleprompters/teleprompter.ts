@@ -8,20 +8,20 @@
  * @author Claude Code Zen Team
  */
 
-import type { DSPyModule, Example } from "../lib/index.js";
+import type { DSPyModule, Example} from "../lib/index.js";
 
 /**
  * Compilation options for teleprompters
  */
 export interface CompileOptions {
 	/** Training dataset */
-	trainset: Example[];
+	trainset:Example[];
 	/** Validation dataset (optional) */
-	valset?: Example[];
+	valset?:Example[];
 	/** Teacher program (optional) */
-	teacher?: DSPyModule | DSPyModule[];
+	teacher?:DSPyModule | DSPyModule[];
 	/** Additional compilation parameters */
-	[key: string]: any;
+	[key:string]: any;
 }
 
 /**
@@ -29,13 +29,13 @@ export interface CompileOptions {
  */
 export interface TeleprompterMetrics {
 	/** Final score achieved */
-	score: number;
+	score:number;
 	/** Number of optimization steps */
-	steps: number;
+	steps:number;
 	/** Training time in milliseconds */
-	training_time: number;
+	training_time:number;
 	/** Additional metrics */
-	[key: string]: any;
+	[key:string]: any;
 }
 
 /**
@@ -43,11 +43,11 @@ export interface TeleprompterMetrics {
  */
 export interface OptimizationResult {
 	/** Optimized program */
-	program: DSPyModule;
+	program:DSPyModule;
 	/** Optimization metrics */
-	metrics: TeleprompterMetrics;
+	metrics:TeleprompterMetrics;
 	/** Whether optimization was successful */
-	success: boolean;
+	success:boolean;
 }
 
 /**
@@ -57,7 +57,7 @@ export interface OptimizationResult {
  * It follows the exact API design of Stanford DSPy's Teleprompter class.
  *
  * EXACT Stanford DSPy API:
- * def compile(self, student: Module, *, trainset: list[Example], teacher: Module|None = None, valset: list[Example]|None = None, **kwargs) -> Module:
+ * def compile(self, student:Module, *, trainset:list[Example], teacher:Module|None = None, valset:list[Example]|None = None, **kwargs) -> Module:
  *
  * @abstract
  */
@@ -79,41 +79,41 @@ export abstract class Teleprompter {
 	 * @returns Promise resolving to the optimized program
 	 */
 	abstract compile(
-		student: DSPyModule,
-		config: {
-			trainset: Example[];
-			teacher?: DSPyModule | null;
-			valset?: Example[] | null;
-			[key: string]: any;
-		},
-	): Promise<DSPyModule>;
+		student:DSPyModule,
+		config:{
+			trainset:Example[];
+			teacher?:DSPyModule | null;
+			valset?:Example[] | null;
+			[key:string]: any;
+},
+	):Promise<DSPyModule>;
 
 	/**
 	 * Get teleprompter parameters (matches Stanford get_params())
 	 * Returns all instance attributes as a dictionary
 	 */
-	getParams(): Record<string, any> {
+	getParams():Record<string, any> {
 		// Return all enumerable properties (matches Python __dict__)
-		const params: Record<string, any> = {};
+		const params:Record<string, any> = {};
 		for (const key in this) {
 			if (Object.hasOwn(this, key) && typeof this[key] !== "function") {
 				params[key] = this[key];
-			}
-		}
+}
+}
 		return params;
-	}
+}
 
 	/**
 	 * Get teleprompter configuration (alias for getParams for backwards compatibility)
 	 * Optional method for teleprompters to expose their configuration
 	 */
-	getConfig?(): Record<string, any>;
+	getConfig?():Record<string, any>;
 
 	/**
 	 * Reset teleprompter state
 	 * Optional method for stateful teleprompters
 	 */
-	reset?(): void;
+	reset?():void;
 }
 
 /**

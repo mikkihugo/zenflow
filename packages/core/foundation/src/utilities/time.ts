@@ -5,8 +5,8 @@
  * Combines custom timestamp functions with date-fns re-exports.
  *
  * @example Timestamp Operations
- * ```typescript
- * import { now, timestampFromDate, formatTimestamp } from '@claude-zen/foundation/utilities/time';
+ * ```typescript`
+ * import { now, timestampFromDate, formatTimestamp} from '@claude-zen/foundation/utilities/time';
  *
  * const timestamp = now();
  * const date = new Date('2024-01-01');
@@ -15,27 +15,27 @@
  * ```
  *
  * @example Date Operations
- * ```typescript
- * import { addDays, format, differenceInHours } from '@claude-zen/foundation/utilities/time';
+ * ```typescript`
+ * import { addDays, format, differenceInHours} from '@claude-zen/foundation/utilities/time';
  *
  * const tomorrow = addDays(new Date(), 1);
  * const formatted = format(tomorrow, 'yyyy-MM-dd');
  * ```
  *
  * @example Async Delays
- * ```typescript
- * import { sleep, delay } from '@claude-zen/foundation/utilities/time';
+ * ```typescript`
+ * import { sleep, delay} from '@claude-zen/foundation/utilities/time';
  *
  * await sleep(1000); // Wait 1 second
  * await delay(5000); // Wait 5 seconds
  * ```
  */
 
-import { setTimeout as nodeSetTimeout } from "node:timers/promises";
+import { setTimeout as nodeSetTimeout} from "node:timers/promises";
 // Foundation re-exports date-fns internally to avoid circular dependency
-import { format } from "date-fns";
+import { format} from "date-fns";
 import * as dateFnsLib from "date-fns";
-import type { ISODateString, Timestamp } from "../types/primitives";
+import type { ISODateString, Timestamp} from "../types/primitives";
 
 // Re-export date-fns for comprehensive date operations
 export const dateFns = dateFnsLib;
@@ -84,12 +84,12 @@ export {
  *
  * @returns Current timestamp in milliseconds
  * @example
- * ```typescript
+ * ```typescript`
  * const timestamp = now(); // 1640995200000
  * console.log(typeof timestamp); // number (but branded as Timestamp)
  * ```
  */
-export function now(): Timestamp {
+export function now():Timestamp {
 	return Date.now() as Timestamp;
 }
 
@@ -100,12 +100,12 @@ export function now(): Timestamp {
  * @param date - Date to convert
  * @returns Timestamp in milliseconds
  * @example
- * ```typescript
+ * ```typescript`
  * const date = new Date('2024-01-01');
  * const timestamp = timestampFromDate(date);
  * ```
  */
-export function timestampFromDate(date: Date): Timestamp {
+export function timestampFromDate(date:Date): Timestamp {
 	return date.getTime() as Timestamp;
 }
 
@@ -116,12 +116,12 @@ export function timestampFromDate(date: Date): Timestamp {
  * @param timestamp - Timestamp to convert
  * @returns Date object
  * @example
- * ```typescript
+ * ```typescript`
  * const timestamp = now();
  * const date = dateFromTimestamp(timestamp);
  * ```
  */
-export function dateFromTimestamp(timestamp: Timestamp): Date {
+export function dateFromTimestamp(timestamp:Timestamp): Date {
 	return new Date(timestamp);
 }
 
@@ -132,13 +132,13 @@ export function dateFromTimestamp(timestamp: Timestamp): Date {
  * @param timestamp - Timestamp to convert
  * @returns ISO date string
  * @example
- * ```typescript
+ * ```typescript`
  * const timestamp = now();
  * const isoString = isoStringFromTimestamp(timestamp);
  * // "2024-01-01T12:00:00.000Z"
  * ```
  */
-export function isoStringFromTimestamp(timestamp: Timestamp): ISODateString {
+export function isoStringFromTimestamp(timestamp:Timestamp): ISODateString {
 	return new Date(timestamp).toISOString() as ISODateString;
 }
 
@@ -149,11 +149,11 @@ export function isoStringFromTimestamp(timestamp: Timestamp): ISODateString {
  * @param isoString - ISO date string to parse
  * @returns Timestamp in milliseconds
  * @example
- * ```typescript
+ * ```typescript`
  * const timestamp = timestampFromISOString("2024-01-01T12:00:00.000Z");
  * ```
  */
-export function timestampFromISOString(isoString: string): Timestamp {
+export function timestampFromISOString(isoString:string): Timestamp {
 	return Date.parse(isoString) as Timestamp;
 }
 
@@ -165,16 +165,16 @@ export function timestampFromISOString(isoString: string): Timestamp {
  * @param formatStr - date-fns format string
  * @returns Formatted date string
  * @example
- * ```typescript
+ * ```typescript`
  * const timestamp = now();
  * const formatted = formatTimestamp(timestamp, 'yyyy-MM-dd HH:mm:ss');
  * // "2024-01-01 12:00:00"
  * ```
  */
 export function formatTimestamp(
-	timestamp: Timestamp,
-	formatStr: string = "yyyy-MM-dd HH:mm:ss",
-): string {
+	timestamp:Timestamp,
+	formatStr:string = "yyyy-MM-dd HH:mm:ss",
+):string {
 	return format(new Date(timestamp), formatStr);
 }
 
@@ -189,12 +189,12 @@ export function formatTimestamp(
  * @param ms - Milliseconds to sleep
  * @returns Promise that resolves after delay
  * @example
- * ```typescript
+ * ```typescript`
  * await sleep(1000); // Wait 1 second
  * console.log('1 second later');
  * ```
  */
-export function sleep(ms: number): Promise<void> {
+export function sleep(ms:number): Promise<void> {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
@@ -205,12 +205,12 @@ export function sleep(ms: number): Promise<void> {
  * @param ms - Milliseconds to delay
  * @returns Promise that resolves after delay
  * @example
- * ```typescript
+ * ```typescript`
  * await delay(5000); // Wait 5 seconds
  * console.log('5 seconds later');
  * ```
  */
-export function delay(ms: number): Promise<void> {
+export function delay(ms:number): Promise<void> {
 	return nodeSetTimeout(ms);
 }
 
@@ -222,20 +222,20 @@ export function delay(ms: number): Promise<void> {
  * @param message - Optional timeout error message
  * @returns Promise that rejects after timeout
  * @example
- * ```typescript
+ * ```typescript`
  * const result = await Promise.race([
  *   fetchData(),
  *   timeout(5000, 'Data fetch timeout')
- * ]);
+ *]);
  * ```
  */
 export function timeout(
-	ms: number,
-	message: string = "Operation timed out",
-): Promise<never> {
+	ms:number,
+	message:string = "Operation timed out",
+):Promise<never> {
 	return new Promise((_, reject) => {
 		setTimeout(() => reject(new Error(message)), ms);
-	});
+});
 }
 
 /**
@@ -247,19 +247,18 @@ export function timeout(
  * @param timeoutMessage - Optional timeout error message
  * @returns Promise that resolves/rejects based on race result
  * @example
- * ```typescript
+ * ```typescript`
  * const result = await withTimeout(
  *   fetchUserData(userId),
  *   10000,
- *   'User data fetch timeout'
- * );
+ *   'User data fetch timeout') * );
  * ```
  */
 export function withTimeout<T>(
-	operation: Promise<T>,
-	timeoutMs: number,
-	timeoutMessage?: string,
-): Promise<T> {
+	operation:Promise<T>,
+	timeoutMs:number,
+	timeoutMessage?:string,
+):Promise<T> {
 	return Promise.race([operation, timeout(timeoutMs, timeoutMessage)]);
 }
 
@@ -273,7 +272,7 @@ export function withTimeout<T>(
  *
  * @returns High-resolution timestamp in nanoseconds
  * @example
- * ```typescript
+ * ```typescript`
  * const start = highResTime();
  * await someOperation();
  * const end = highResTime();
@@ -281,7 +280,7 @@ export function withTimeout<T>(
  * const durationMs = Number(durationNs) / 1_000_000;
  * ```
  */
-export function highResTime(): bigint {
+export function highResTime():bigint {
 	return process.hrtime.bigint();
 }
 
@@ -292,22 +291,22 @@ export function highResTime(): bigint {
  * @param operation - Async operation to measure
  * @returns Object with result and duration in milliseconds
  * @example
- * ```typescript
- * const { result, durationMs } = await measureTime(async () => {
+ * ```typescript`
+ * const { result, durationMs} = await measureTime(async () => {
  *   return await expensiveOperation();
- * });
+ *});
  * console.log(`Operation took ${durationMs}ms`);
  * ```
  */
 export async function measureTime<T>(
-	operation: () => Promise<T>,
-): Promise<{ result: T; durationMs: number }> {
+	operation:() => Promise<T>,
+):Promise<{ result: T; durationMs: number}> {
 	const start = highResTime();
 	const result = await operation();
 	const end = highResTime();
 	const durationMs = Number(end - start) / 1_000_000;
 
-	return { result, durationMs };
+	return { result, durationMs};
 }
 
 /**
@@ -316,7 +315,7 @@ export async function measureTime<T>(
  *
  * @returns Timer object with control functions
  * @example
- * ```typescript
+ * ```typescript`
  * const timer = createTimer();
  * timer.start();
  * // ... some operations
@@ -327,36 +326,36 @@ export async function measureTime<T>(
  * ```
  */
 export function createTimer() {
-	let startTime: bigint | null = null;
-	let endTime: bigint | null = null;
+	let startTime:bigint | null = null;
+	let endTime:bigint | null = null;
 
 	return {
 		start() {
 			startTime = highResTime();
 			endTime = null;
-		},
+},
 
-		stop(): number {
+		stop():number {
 			if (startTime === null) {
 				throw new Error("Timer not started");
-			}
+}
 			endTime = highResTime();
 			return Number(endTime - startTime) / 1_000_000;
-		},
+},
 
-		elapsed(): number {
+		elapsed():number {
 			if (startTime === null) {
 				throw new Error("Timer not started");
-			}
+}
 			const currentTime = endTime || highResTime();
 			return Number(currentTime - startTime) / 1_000_000;
-		},
+},
 
 		reset() {
 			startTime = null;
 			endTime = null;
-		},
-	};
+},
+};
 }
 
 // =============================================================================
@@ -370,17 +369,17 @@ export function createTimer() {
  * @param timestamp - Timestamp to validate
  * @returns True if valid timestamp
  * @example
- * ```typescript
+ * ```typescript`
  * const timestamp = now();
  * if (isValidTimestamp(timestamp)) {
  *   processTimestamp(timestamp);
- * }
+ *}
  * ```
  */
-export function isValidTimestamp(timestamp: unknown): timestamp is Timestamp {
+export function isValidTimestamp(timestamp:unknown): timestamp is Timestamp {
 	if (typeof timestamp !== "number" || !Number.isInteger(timestamp)) {
 		return false;
-	}
+}
 
 	// Must be positive and reasonable (after 1970, before year 3000)
 	const minTimestamp = 0;
@@ -396,15 +395,15 @@ export function isValidTimestamp(timestamp: unknown): timestamp is Timestamp {
  * @param dateString - String to validate
  * @returns True if valid ISO date string
  * @example
- * ```typescript
+ * ```typescript`
  * if (isValidISOString("2024-01-01T12:00:00.000Z")) {
  *   const date = new Date(dateString);
- * }
+ *}
  * ```
  */
 export function isValidISOString(
-	dateString: unknown,
-): dateString is ISODateString {
+	dateString:unknown,
+):dateString is ISODateString {
 	if (typeof dateString !== "string") return false;
 
 	// Check ISO 8601 format pattern

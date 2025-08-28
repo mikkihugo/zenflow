@@ -1,0 +1,446 @@
+<script lang="ts">
+  import { onMount, onDestroy } from 'svelte';
+  import { Chart, registerables } from 'chart.js';
+  import { toast } from '@zerodevx/svelte-toast';
+  
+  // Register Chart.js components
+  Chart.register(...registerables);
+  
+  interface EventFlow {
+    id: string;
+    eventName: string;
+    source: string;
+    target: string;
+    timestamp: Date;
+    latency: number;
+    success: boolean;
+  }
+  
+  interface EventMetrics {
+    totalEvents: number;
+    eventsPerSecond: number;
+    averageLatency: number;
+    errorRate: number;
+    activeModules: number;
+    systemHealth: 'healthy' | 'degraded' | 'critical';
+  }
+  
+  // Component state
+  let eventFlows: EventFlow[] = [];
+  let eventMetrics: EventMetrics = {
+    totalEvents: 0,
+    eventsPerSecond: 0,
+    averageLatency: 0,
+    errorRate: 0,
+    activeModules: 0,
+    systemHealth: 'healthy'
+  };
+  
+  let flowChart: Chart | null = null;
+  let metricsChart: Chart | null = null;
+  let flowChartCanvas: HTMLCanvasElement;
+  let metricsChartCanvas: HTMLCanvasElement;
+  let updateInterval: NodeJS.Timer;
+  let isConnected = false;
+  let websocket: WebSocket | null = null;
+  
+  // Chart data
+  let flowChartData = {
+    labels: [] as string[],
+    datasets: [{
+      label: 'Events per Second',
+      data: [] as number[],
+      borderColor: 'rgb(59, 130, 246)',
+      backgroundColor: 'rgba(59, 130, 246, 0.1)',
+      tension: 0.4
+    }]
+  };
+  
+  let metricsChartData = {
+    labels: ['Success', 'Errors'],
+    datasets: [{
+      data: [0, 0],
+      backgroundColor: ['rgb(34, 197, 94)', 'rgb(239, 68, 68)']
+    }]
+  };
+  
+  onMount(async () => {
+    try {
+      await initializeCharts();
+      await connectToEventSystem();
+      startDataUpdates();
+      isConnected = true;
+      toast.push('Connected to event system', { theme: { '--toastColor': 'mintcream', '--toastBackground': 'rgba(34, 197, 94, 0.9)' } });
+    } catch (error) {
+      console.error('Failed to initialize event visualization:', error);
+      toast.push('Failed to connect to event system', { theme: { '--toastColor': 'white', '--toastBackground': 'rgba(239, 68, 68, 0.9)' } });
+    }
+  });
+  
+  onDestroy(() => {
+    if (updateInterval) {
+      clearInterval(updateInterval);
+    }
+    if (websocket) {
+      websocket.close();
+    }
+    if (flowChart) {
+      flowChart.destroy();
+    }
+    if (metricsChart) {
+      metricsChart.destroy();
+    }
+  });
+  
+  async function initializeCharts() {
+    // Flow chart (line chart for events over time)
+    const flowCtx = flowChartCanvas.getContext('2d');
+    if (flowCtx) {
+      flowChart = new Chart(flowCtx, {
+        type: 'line',
+        data: flowChartData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Event Flow Rate'
+            },
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'Time'
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Events/sec'
+              },
+              beginAtZero: true
+            }
+          },
+          interaction: {
+            intersect: false,
+            mode: 'index'
+          }
+        }
+      });
+    }
+    
+    // Metrics chart (doughnut chart for success/error ratio)
+    const metricsCtx = metricsChartCanvas.getContext('2d');
+    if (metricsCtx) {
+      metricsChart = new Chart(metricsCtx, {
+        type: 'doughnut',
+        data: metricsChartData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Event Success Rate'
+            },
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
+    }
+  }
+  
+  async function connectToEventSystem() {
+    console.log('Connecting to event system via WebSocket...');
+    
+    try {
+      // Determine WebSocket URL based on current location
+      const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${protocol}//${location.host}/api/events/ws`;
+      
+      websocket = new WebSocket(wsUrl);
+      
+      websocket.onopen = () => {
+        console.log('WebSocket connected successfully');
+        isConnected = true;
+        
+        // Subscribe to all event types
+        websocket?.send(JSON.stringify({
+          type: 'subscribe',
+          eventTypes: ['event-flows', 'event-metrics', 'module-status']
+        }));
+        
+        toast.push('Connected to event system', { 
+          theme: { '--toastColor': 'mintcream', '--toastBackground': 'rgba(34, 197, 94, 0.9)' } 
+        });
+      };
+      
+      websocket.onmessage = (event) => {
+        try {
+          const message = JSON.parse(event.data);
+          handleWebSocketMessage(message);
+        } catch (error) {
+          console.error('Failed to parse WebSocket message:', error);
+        }
+      };
+      
+      websocket.onclose = () => {
+        console.log('WebSocket connection closed');
+        isConnected = false;
+        toast.push('Disconnected from event system', { 
+          theme: { '--toastColor': 'white', '--toastBackground': 'rgba(239, 68, 68, 0.9)' } 
+        });
+        
+        // Attempt to reconnect after 5 seconds
+        setTimeout(() => {
+          if (!isConnected) {
+            connectToEventSystem();
+          }
+        }, 5000);
+      };
+      
+      websocket.onerror = (error) => {
+        console.error('WebSocket error:', error);
+        isConnected = false;
+      };
+      
+    } catch (error) {
+      console.error('Failed to establish WebSocket connection:', error);
+      toast.push('Failed to connect to event system', { 
+        theme: { '--toastColor': 'white', '--toastBackground': 'rgba(239, 68, 68, 0.9)' } 
+      });
+    }
+  }
+  
+  function handleWebSocketMessage(message: any) {
+    switch (message.type) {
+      case 'event-flows':
+        if (Array.isArray(message.data)) {
+          eventFlows = message.data.map((flow: any) => ({
+            ...flow,
+            timestamp: new Date(flow.timestamp)
+          }));
+        }
+        break;
+        
+      case 'event-metrics':
+        if (message.data) {
+          eventMetrics = { ...eventMetrics, ...message.data };
+          updateChartData();
+        }
+        break;
+        
+      case 'module-status':
+        if (message.data?.activeModules) {
+          eventMetrics.activeModules = message.data.activeModules;
+        }
+        break;
+        
+      case 'event-flow':
+        // Single new event flow
+        if (message.data) {
+          const newFlow = {
+            ...message.data,
+            timestamp: new Date(message.data.timestamp)
+          };
+          eventFlows = [newFlow, ...eventFlows.slice(0, 49)];
+        }
+        break;
+        
+      default:
+        console.log('Unknown message type:', message.type);
+    }
+  }
+  
+  function startDataUpdates() {
+    updateInterval = setInterval(() => {
+      updateChartData();
+    }, 2000);
+  }
+  
+  function updateChartData() {
+    const now = new Date();
+    const timeLabel = now.toLocaleTimeString();
+    
+    // Update flow chart
+    if (flowChart) {
+      flowChartData.labels.push(timeLabel);
+      flowChartData.datasets[0].data.push(eventMetrics.eventsPerSecond + (Math.random() - 0.5) * 2);
+      
+      // Keep only last 20 data points
+      if (flowChartData.labels.length > 20) {
+        flowChartData.labels.shift();
+        flowChartData.datasets[0].data.shift();
+      }
+      
+      flowChart.update('none');
+    }
+    
+    // Update metrics chart
+    if (metricsChart) {
+      const successRate = 100 - eventMetrics.errorRate;
+      metricsChartData.datasets[0].data = [successRate, eventMetrics.errorRate];
+      metricsChart.update();
+    }
+  }
+  
+  
+  function getHealthColor(health: string): string {
+    switch (health) {
+      case 'healthy': return 'text-green-600';
+      case 'degraded': return 'text-yellow-600';
+      case 'critical': return 'text-red-600';
+      default: return 'text-gray-600';
+    }
+  }
+  
+  function getHealthIcon(health: string): string {
+    switch (health) {
+      case 'healthy': return '✅';
+      case 'degraded': return '⚠️';
+      case 'critical': return '❌';
+      default: return '❓';
+    }
+  }
+  
+  function formatLatency(latency: number): string {
+    return `${Math.round(latency)}ms`;
+  }
+  
+  function formatTimestamp(timestamp: Date): string {
+    return timestamp.toLocaleTimeString();
+  }
+</script>
+
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h2 class="text-2xl font-bold text-gray-900">Event Flow Visualization</h2>
+      <p class="text-gray-600">Real-time monitoring of event-driven architecture</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <div class="w-3 h-3 rounded-full {isConnected ? 'bg-green-500 animate-pulse' : 'bg-red-500'}"></div>
+      <span class="text-sm {isConnected ? 'text-green-600' : 'text-red-600'}">
+        {isConnected ? 'Connected' : 'Disconnected'}
+      </span>
+    </div>
+  </div>
+
+  <!-- System Health Overview -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="bg-white p-4 rounded-lg shadow border">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600">System Health</p>
+          <div class="flex items-center gap-2">
+            <span class="text-lg">{getHealthIcon(eventMetrics.systemHealth)}</span>
+            <span class="text-xl font-bold {getHealthColor(eventMetrics.systemHealth)}">
+              {eventMetrics.systemHealth.toUpperCase()}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="bg-white p-4 rounded-lg shadow border">
+      <div>
+        <p class="text-sm text-gray-600">Active Modules</p>
+        <p class="text-2xl font-bold text-blue-600">{eventMetrics.activeModules}</p>
+      </div>
+    </div>
+    
+    <div class="bg-white p-4 rounded-lg shadow border">
+      <div>
+        <p class="text-sm text-gray-600">Events/sec</p>
+        <p class="text-2xl font-bold text-green-600">{eventMetrics.eventsPerSecond.toFixed(1)}</p>
+      </div>
+    </div>
+    
+    <div class="bg-white p-4 rounded-lg shadow border">
+      <div>
+        <p class="text-sm text-gray-600">Avg Latency</p>
+        <p class="text-2xl font-bold text-purple-600">{formatLatency(eventMetrics.averageLatency)}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Event Flow Chart -->
+    <div class="bg-white p-6 rounded-lg shadow border">
+      <div class="h-64">
+        <canvas bind:this={flowChartCanvas}></canvas>
+      </div>
+    </div>
+    
+    <!-- Success Rate Chart -->
+    <div class="bg-white p-6 rounded-lg shadow border">
+      <div class="h-64">
+        <canvas bind:this={metricsChartCanvas}></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Event Flows -->
+  <div class="bg-white rounded-lg shadow border">
+    <div class="p-6 border-b">
+      <h3 class="text-lg font-semibold text-gray-900">Recent Event Flows</h3>
+      <p class="text-sm text-gray-600">Latest event activities across the system</p>
+    </div>
+    
+    <div class="p-6">
+      <div class="space-y-3 max-h-64 overflow-y-auto">
+        {#each eventFlows.slice(0, 10) as flow (flow.id)}
+          <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+            <div class="w-2 h-2 rounded-full {flow.success ? 'bg-green-500' : 'bg-red-500'}"></div>
+            
+            <div class="flex-1 grid grid-cols-1 md:grid-cols-4 gap-2">
+              <div>
+                <div class="font-mono text-sm text-blue-600">{flow.eventName}</div>
+                <div class="text-xs text-gray-500">{formatTimestamp(flow.timestamp)}</div>
+              </div>
+              
+              <div>
+                <div class="text-sm font-medium text-gray-900">{flow.source}</div>
+                <div class="text-xs text-gray-500">Source</div>
+              </div>
+              
+              <div>
+                <div class="text-sm font-medium text-gray-900">{flow.target}</div>
+                <div class="text-xs text-gray-500">Target</div>
+              </div>
+              
+              <div class="text-right">
+                <div class="text-sm font-medium {flow.success ? 'text-green-600' : 'text-red-600'}">
+                  {flow.success ? 'Success' : 'Failed'}
+                </div>
+                <div class="text-xs text-gray-500">{formatLatency(flow.latency)}</div>
+              </div>
+            </div>
+          </div>
+        {/each}
+        
+        {#if eventFlows.length === 0}
+          <div class="text-center py-8">
+            <p class="text-gray-500">No recent event flows</p>
+          </div>
+        {/if}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  :global(.chart-container) {
+    position: relative;
+    height: 300px;
+  }
+</style>

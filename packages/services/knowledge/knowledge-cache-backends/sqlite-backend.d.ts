@@ -26,61 +26,61 @@ export declare class SQLiteBackend implements FACTStorageBackend {
 	private stats;
 	private isInitialized;
 	private config;
-	constructor(config: FACTStorageConfig);
+	constructor(config:FACTStorageConfig);
 	/**
 	 * Initialize SQLite database and create required tables.
 	 */
-	initialize(): Promise<void>;
+	initialize():Promise<void>;
 	/**
 	 * Store a knowledge entry in SQLite database.
 	 *
 	 * @param entry
 	 */
-	store(entry: FACTKnowledgeEntry): Promise<void>;
+	store(entry:FACTKnowledgeEntry): Promise<void>;
 	/**
 	 * Retrieve a knowledge entry by ID.
 	 *
 	 * @param id
 	 */
-	get(id: string): Promise<FACTKnowledgeEntry | null>;
+	get(id:string): Promise<FACTKnowledgeEntry | null>;
 	/**
 	 * Search knowledge entries with various criteria.
 	 *
 	 * @param _query
 	 */
-	search(_query: FACTSearchQuery): Promise<FACTKnowledgeEntry[]>;
+	search(_query:FACTSearchQuery): Promise<FACTKnowledgeEntry[]>;
 	/**
 	 * Delete a knowledge entry by ID.
 	 *
 	 * @param id
 	 */
-	delete(id: string): Promise<boolean>;
+	delete(id:string): Promise<boolean>;
 	/**
 	 * Get storage statistics.
 	 */
-	getStats(): Promise<Partial<FACTStorageStats>>;
+	getStats():Promise<Partial<FACTStorageStats>>;
 	/**
 	 * Clean up old entries beyond maxAge.
 	 */
-	cleanup(maxAge: number): Promise<number>;
+	cleanup(maxAge:number): Promise<number>;
 	/**
 	 * Clear all knowledge entries.
 	 */
-	clear(): Promise<void>;
+	clear():Promise<void>;
 	/**
 	 * Close database connection.
 	 */
-	shutdown(): Promise<void>;
+	shutdown():Promise<void>;
 	/**
 	 * Get backend capabilities.
 	 */
-	getCapabilities(): {
-		supportsFullTextSearch: boolean;
-		supportsVectorSearch: boolean;
-		supportsMetadataSearch: boolean;
-		maxEntrySize: number;
-		concurrent: boolean;
-	};
+	getCapabilities():{
+		supportsFullTextSearch:boolean;
+		supportsVectorSearch:boolean;
+		supportsMetadataSearch:boolean;
+		maxEntrySize:number;
+		concurrent:boolean;
+};
 	private ensureInitialized;
 	private updateStats;
 	private calculateHitRate;

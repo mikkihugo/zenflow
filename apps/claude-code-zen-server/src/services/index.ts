@@ -5,7 +5,7 @@
  * Services delegate to strategic facades when needed.
  */
 
-import { createContainer, getLogger } from '@claude-zen/foundation';
+import { createContainer, getLogger} from '@claude-zen/foundation';
 
 const logger = getLogger('services');
 

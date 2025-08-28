@@ -48,7 +48,6 @@
   "author": "Claude-Zen Team",
   "license": "MIT",
   "dependencies": {
-    "@claude-zen/event-system": "workspace:*",
     "@claude-zen/fact-system": "workspace:*",
     "@claude-zen/foundation": "workspace:*"
   },

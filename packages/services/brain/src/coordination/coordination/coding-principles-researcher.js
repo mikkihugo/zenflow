@@ -495,7 +495,7 @@ string[];
         microservices: [
             'Service decomposition and bounded context design',
             'Inter-service communication patterns (sync/async)',
-            'Service discovery and load balancing',
+            'Service discovery and event coordination',
             'Distributed transaction management',
             'Monitoring and observability across services',
             'Container orchestration and deployment strategies',

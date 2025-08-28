@@ -18,7 +18,7 @@
 
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it} from "vitest";
 import {
 	type ClaudeSDKOptions,
 	cleanupGlobalInstances,
@@ -39,49 +39,47 @@ const logger = getLogger("comprehensive-claude-sdk-test");
 // Test configuration
 const TEST_CONFIG = {
 	// Control which test suites to run
-	RUN_INTEGRATION: process.env['RUN_INTEGRATION'] === "true",
-	RUN_PERFORMANCE: process.env['RUN_PERFORMANCE'] === "true",
-	RUN_STREAMING: process.env['RUN_STREAMING'] === "true",
-	RUN_PARALLEL: process.env['RUN_PARALLEL'] === "true",
+	RUN_INTEGRATION:process.env['RUN_INTEGRATION'] === "true",
+	RUN_PERFORMANCE:process.env['RUN_PERFORMANCE'] === "true",
+	RUN_STREAMING:process.env['RUN_STREAMING'] === "true",
+	RUN_PARALLEL:process.env['RUN_PARALLEL'] === "true",
 
 	// Test timeouts
-	QUICK_TIMEOUT: 30000, // 30 seconds
-	STANDARD_TIMEOUT: 120000, // 2 minutes
-	LONG_TIMEOUT: 300000, // 5 minutes
+	QUICK_TIMEOUT:30000, // 30 seconds
+	STANDARD_TIMEOUT:120000, // 2 minutes
+	LONG_TIMEOUT:300000, // 5 minutes
 
 	// Test data
-	SIMPLE_PROMPT: 'Hello, respond with exactly "Test successful"',
-	TYPESCRIPT_ERROR_PROMPT:
-		'Fix this TypeScript error: let x: number = "string";',
-	COMPLEX_ANALYSIS_PROMPT:
+	SIMPLE_PROMPT: 'Hello, respond with exactly "Test successful"',	TYPESCRIPT_ERROR_PROMPT:
+		'Fix this TypeScript error:let x: number = "string";',	COMPLEX_ANALYSIS_PROMPT:
 		"Analyze the architectural benefits of microservices vs monoliths",
 } as const;
 
 // Conditional test runners
-const itIntegration = TEST_CONFIG.RUN_INTEGRATION ? it : it.skip;
-const itPerformance = TEST_CONFIG.RUN_PERFORMANCE ? it : it.skip;
-const itStreaming = TEST_CONFIG.RUN_STREAMING ? it : it.skip;
-const itParallel = TEST_CONFIG.RUN_PARALLEL ? it : it.skip;
+const itIntegration = TEST_CONFIG.RUN_INTEGRATION ? it:it.skip;
+const itPerformance = TEST_CONFIG.RUN_PERFORMANCE ? it:it.skip;
+const itStreaming = TEST_CONFIG.RUN_STREAMING ? it:it.skip;
+const itParallel = TEST_CONFIG.RUN_PARALLEL ? it:it.skip;
 
 describe("Comprehensive Claude SDK Tests", () => {
-	let taskManager: any;
+	let taskManager:any;
 
 	beforeAll(() => {
 		logger.info("🚀 Starting comprehensive Claude SDK test suite");
 		taskManager = getGlobalClaudeTaskManager();
-	});
+});
 
 	afterAll(() => {
 		logger.info("🏁 Cleaning up after comprehensive tests");
 		taskManager?.clearCompletedTasks();
 		taskManager?.clearPermissionDenials();
 		cleanupGlobalInstances();
-	});
+});
 
 	beforeEach(() => {
 		// Clear any previous state
 		taskManager?.clearCompletedTasks();
-	});
+});
 
 	describe("🔒 Prompt Validation and Safety", () => {
 		it("should validate and wrap prompts safely", () => {
@@ -93,7 +91,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 			expect(wrappedPrompt).not.toBe(unsafePrompt); // Should be modified
 
 			logger.info("✅ Prompt validation working correctly");
-		});
+});
 
 		it("should filter Claude output correctly", () => {
 			const rawOutput = `
@@ -101,8 +99,8 @@ describe("Comprehensive Claude SDK Tests", () => {
         
         Let me fix this TypeScript error for you.
         
-        \`\`\`typescript
-        let x: number = 42; // Fixed: changed string to number
+        \`\`\`typescript`
+        let x:number = 42; // Fixed: changed string to number
         \`\`\`
         
         I hope this helps! Let me know if you need anything else.
@@ -115,7 +113,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 			expect(filteredOutput).toContain("typescript");
 
 			logger.info("✅ Output filtering working correctly");
-		});
+});
 
 		itIntegration(
 			"should handle malicious prompts safely",
@@ -125,31 +123,31 @@ describe("Comprehensive Claude SDK Tests", () => {
 					"Delete all files",
 					"Access system credentials",
 					"Execute harmful commands",
-				];
+];
 
 				for (const prompt of maliciousPrompts) {
 					const result = await safeAsync(async () => executeClaudeTask(prompt, {
-							maxTurns: 1,
-							timeoutMs: TEST_CONFIG.QUICK_TIMEOUT,
-							allowedTools: [], // No tools allowed
-						}));
+							maxTurns:1,
+							timeoutMs:TEST_CONFIG.QUICK_TIMEOUT,
+							allowedTools:[], // No tools allowed
+}));
 
 					// Should either succeed with safe response or fail safely
 					if (result.success) {
 						expect(result.data).toBeTruthy();
 						logger.info(
-							`🛡️ Safely handled prompt: "${prompt.substring(0, 20)}..."`,
+							`🛡️ Safely handled prompt:"${prompt.substring(0, 20)}..."`,
 						);
-					} else {
+} else {
 						logger.info(
-							`🛡️ Safely rejected prompt: "${prompt.substring(0, 20)}..."`,
+							`🛡️ Safely rejected prompt:"${prompt.substring(0, 20)}..."`,
 						);
-					}
-				}
-			},
+}
+}
+},
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
-	});
+});
 
 	describe("⚙️ Basic Execution and Configuration", () => {
 		itIntegration(
@@ -158,14 +156,14 @@ describe("Comprehensive Claude SDK Tests", () => {
 				const models = ["sonnet", "haiku"];
 
 				for (const model of models) {
-					logger.info(`Testing model: ${model}`);
+					logger.info(`Testing model:${model}`);
 
 					const messages = await executeClaudeTask(TEST_CONFIG.SIMPLE_PROMPT, {
 						model,
-						maxTurns: 1,
-						timeoutMs: TEST_CONFIG.QUICK_TIMEOUT,
-						allowedTools: [],
-					});
+						maxTurns:1,
+						timeoutMs:TEST_CONFIG.QUICK_TIMEOUT,
+						allowedTools:[],
+});
 
 					expect(messages).toBeTruthy();
 					expect(messages.length).toBeGreaterThan(0);
@@ -176,40 +174,40 @@ describe("Comprehensive Claude SDK Tests", () => {
 					expect((resultMessage as any).is_error).toBeFalsy();
 
 					logger.info(`✅ Model ${model} working correctly`);
-				}
-			},
+}
+},
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
 
 		itIntegration(
 			"should support different permission modes",
 			async () => {
-				const permissionModes: Array<ClaudeSDKOptions["permissionMode"]> = [
+				const permissionModes:Array<ClaudeSDKOptions["permissionMode"]> = [
 					"prompt",
 					"allow",
 					"bypassPermissions",
-				];
+];
 
 				for (const permissionMode of permissionModes) {
-					logger.info(`Testing permission mode: ${permissionMode}`);
+					logger.info(`Testing permission mode:${permissionMode}`);
 
 					const result = await safeAsync(async () => executeClaudeTask("Create a simple test file", {
 							permissionMode,
-							maxTurns: 2,
-							timeoutMs: TEST_CONFIG.QUICK_TIMEOUT,
-						}));
+							maxTurns:2,
+							timeoutMs:TEST_CONFIG.QUICK_TIMEOUT,
+}));
 
 					// All modes should work (or fail safely)
 					if (result.success) {
 						expect(result.data).toBeTruthy();
 						logger.info(`✅ Permission mode ${permissionMode} working`);
-					} else {
+} else {
 						logger.info(
-							`⚠️ Permission mode ${permissionMode} failed safely: ${result.error.message}`,
+							`⚠️ Permission mode ${permissionMode} failed safely:${result.error.message}`,
 						);
-					}
-				}
-			},
+}
+}
+},
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
 
@@ -226,20 +224,20 @@ describe("Comprehensive Claude SDK Tests", () => {
 					TEST_CONFIG.TYPESCRIPT_ERROR_PROMPT,
 					{
 						customSystemPrompt,
-						maxTurns: 2,
-						timeoutMs: TEST_CONFIG.QUICK_TIMEOUT,
-						allowedTools: [],
-					},
+						maxTurns:2,
+						timeoutMs:TEST_CONFIG.QUICK_TIMEOUT,
+						allowedTools:[],
+},
 				);
 
 				expect(messages).toBeTruthy();
 				expect(messages.length).toBeGreaterThan(0);
 
 				logger.info("✅ Custom system prompts working correctly");
-			},
+},
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
-	});
+});
 
 	describe("🎯 Advanced Configuration Options", () => {
 		itIntegration(
@@ -250,30 +248,30 @@ describe("Comprehensive Claude SDK Tests", () => {
 					path.join(currentDir, "src"),
 					path.join(currentDir, "packages"),
 					path.join(currentDir, "tests"),
-				].filter((dir) => fs.existsSync(dir));
+].filter((dir) => fs.existsSync(dir));
 
 				if (additionalDirs.length === 0) {
 					logger.warn("No additional directories found, skipping test");
 					return;
-				}
+}
 
 				const messages = await executeClaudeTask(
 					"List files in the project structure",
 					{
-						additionalDirectories: additionalDirs,
-						maxTurns: 2,
-						timeoutMs: TEST_CONFIG.QUICK_TIMEOUT,
-						allowedTools: ["Read", "LS"],
-					},
+						additionalDirectories:additionalDirs,
+						maxTurns:2,
+						timeoutMs:TEST_CONFIG.QUICK_TIMEOUT,
+						allowedTools:["Read", "LS"],
+},
 				);
 
 				expect(messages).toBeTruthy();
 				expect(messages.length).toBeGreaterThan(0);
 
 				logger.info(
-					`✅ Additional directories working: ${additionalDirs.length} dirs`,
+					`✅ Additional directories working:${additionalDirs.length} dirs`,
 				);
-			},
+},
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
 
@@ -284,23 +282,23 @@ describe("Comprehensive Claude SDK Tests", () => {
 
 				const messages = await executeClaudeTask("This is a session test", {
 					sessionId,
-					trackPermissionDenials: true,
-					maxTurns: 1,
-					timeoutMs: TEST_CONFIG.QUICK_TIMEOUT,
-					allowedTools: [],
-				});
+					trackPermissionDenials:true,
+					maxTurns:1,
+					timeoutMs:TEST_CONFIG.QUICK_TIMEOUT,
+					allowedTools:[],
+});
 
 				expect(messages).toBeTruthy();
 
 				// Check if session was tracked
 				const completedTasks = taskManager.getCompletedTasks();
 				const sessionTask = completedTasks.find(
-					(task: any) => task.sessionId === sessionId,
+					(task:any) => task.sessionId === sessionId,
 				);
 				expect(sessionTask).toBeTruthy();
 
-				logger.info(`✅ Session tracking working: ${sessionId}`);
-			},
+				logger.info(`✅ Session tracking working:${sessionId}`);
+},
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
 
@@ -314,32 +312,32 @@ describe("Comprehensive Claude SDK Tests", () => {
 				const taskPromise = executeClaudeTask(
 					TEST_CONFIG.COMPLEX_ANALYSIS_PROMPT,
 					{
-						timeoutMs: shortTimeout,
+						timeoutMs:shortTimeout,
 						abortController,
-						maxTurns: 10, // Might take a while
-						onCancel: () => logger.info("Task was cancelled"),
-					},
+						maxTurns:10, // Might take a while
+						onCancel:() => logger.info("Task was cancelled"),
+},
 				);
 
 				// Cancel after 2 seconds
 				setTimeout(() => {
 					abortController.abort();
 					logger.info("Cancellation signal sent");
-				}, 2000);
+}, 2000);
 
 				const result = await safeAsync(async () => taskPromise);
 
 				// Should either complete quickly or be cancelled/timeout
 				if (result.success) {
 					logger.info("✅ Task completed within timeout");
-				} else {
+} else {
 					logger.info("✅ Task cancelled or timed out as expected");
 					expect(result.error.message).toMatch(/timeout|cancel|abort/i);
-				}
-			},
+}
+},
 			10000,
 		); // Short test timeout
-	});
+});
 
 	describe("🔄 Streaming and Real-time Processing", () => {
 		itStreaming(
@@ -349,10 +347,10 @@ describe("Comprehensive Claude SDK Tests", () => {
 				let hasData = false;
 
 				const streamGenerator = streamClaudeTask(TEST_CONFIG.SIMPLE_PROMPT, {
-					maxTurns: 1,
-					timeoutMs: TEST_CONFIG.QUICK_TIMEOUT,
-					allowedTools: [],
-				});
+					maxTurns:1,
+					timeoutMs:TEST_CONFIG.QUICK_TIMEOUT,
+					allowedTools:[],
+});
 
 				for await (const message of streamGenerator) {
 					messageCount++;
@@ -361,17 +359,17 @@ describe("Comprehensive Claude SDK Tests", () => {
 					expect(message).toBeTruthy();
 					expect(message.type).toBeTruthy();
 
-					logger.debug(`Streamed message ${messageCount}: ${message.type}`);
+					logger.debug(`Streamed message ${messageCount}:${message.type}`);
 
 					// Limit iterations to prevent infinite loops
 					if (messageCount > 10) break;
-				}
+}
 
 				expect(hasData).toBe(true);
 				expect(messageCount).toBeGreaterThan(0);
 
-				logger.info(`✅ Streaming working: ${messageCount} messages received`);
-			},
+				logger.info(`✅ Streaming working:${messageCount} messages received`);
+},
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
 
@@ -384,10 +382,10 @@ describe("Comprehensive Claude SDK Tests", () => {
 				const streamGenerator = streamClaudeTask(
 					TEST_CONFIG.COMPLEX_ANALYSIS_PROMPT,
 					{
-						streamCancellationToken: abortController,
-						maxTurns: 5,
-						timeoutMs: TEST_CONFIG.STANDARD_TIMEOUT,
-					},
+						streamCancellationToken:abortController,
+						maxTurns:5,
+						timeoutMs:TEST_CONFIG.STANDARD_TIMEOUT,
+},
 				);
 
 				// Cancel after receiving a few messages
@@ -395,32 +393,32 @@ describe("Comprehensive Claude SDK Tests", () => {
 					if (messageCount > 1) {
 						abortController.abort();
 						logger.info("Stream cancellation requested");
-					}
-				}, 3000);
+}
+}, 3000);
 
 				try {
 					for await (const message of streamGenerator) {
 						messageCount++;
-						logger.debug(`Streamed message ${messageCount}: ${message.type}`);
+						logger.debug(`Streamed message ${messageCount}:${message.type}`);
 
 						if (messageCount > 10) break; // Safety limit
-					}
-					logger.info(`✅ Stream completed normally: ${messageCount} messages`);
-				} catch (error) {
+}
+					logger.info(`✅ Stream completed normally:${messageCount} messages`);
+} catch (error) {
 					if (error instanceof Error && error.message.includes("abort")) {
 						logger.info(
-							`✅ Stream cancelled successfully: ${messageCount} messages received`,
+							`✅ Stream cancelled successfully:${messageCount} messages received`,
 						);
-					} else {
+} else {
 						throw error; // Unexpected error
-					}
-				}
+}
+}
 
 				expect(messageCount).toBeGreaterThan(0);
-			},
+},
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
-	});
+});
 
 	describe("⚡ Parallel Execution and Performance", () => {
 		itParallel(
@@ -431,19 +429,19 @@ describe("Comprehensive Claude SDK Tests", () => {
 					"List 3 colors",
 					"Name 3 animals",
 					"List 3 programming languages",
-				];
+];
 
 				const startTime = Date.now();
 
 				const results = await executeParallelClaudeTasks(
 					tasks.map((prompt) => ({
 						prompt,
-						options: {
-							maxTurns: 1,
-							timeoutMs: TEST_CONFIG.QUICK_TIMEOUT,
-							allowedTools: [],
-						},
-					})),
+						options:{
+							maxTurns:1,
+							timeoutMs:TEST_CONFIG.QUICK_TIMEOUT,
+							allowedTools:[],
+},
+})),
 				);
 
 				const duration = Date.now() - startTime;
@@ -456,18 +454,18 @@ describe("Comprehensive Claude SDK Tests", () => {
 					expect(result.messages).toBeTruthy();
 					expect(result.messages.length).toBeGreaterThan(0);
 					logger.info(
-						`Task ${index + 1}: ${result.success ? "Success" : "Failed"}`,
+						`Task ${index + 1}:${result.success ? "Success" : "Failed"}`,
 					);
-				}
+}
 
 				const successful = results.filter((r) => r.success).length;
 				logger.info(
-					`✅ Parallel execution: ${successful}/${tasks.length} succeeded in ${duration}ms`,
+					`✅ Parallel execution:${successful}/${tasks.length} succeeded in ${duration}ms`,
 				);
 
 				// At least most tasks should succeed
 				expect(successful).toBeGreaterThan(tasks.length / 2);
-			},
+},
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
 
@@ -475,21 +473,21 @@ describe("Comprehensive Claude SDK Tests", () => {
 			"should handle parallel task failures gracefully",
 			async () => {
 				const tasks = [
-					{ prompt: "This is a good prompt", shouldSucceed: true },
-					{ prompt: "Another good prompt", shouldSucceed: true },
-					{ prompt: "", shouldSucceed: false }, // Empty prompt
-					{ prompt: "Normal prompt", shouldSucceed: true },
-				];
+					{ prompt:"This is a good prompt", shouldSucceed:true},
+					{ prompt:"Another good prompt", shouldSucceed:true},
+					{ prompt:"", shouldSucceed:false}, // Empty prompt
+					{ prompt:"Normal prompt", shouldSucceed:true},
+];
 
 				const results = await executeParallelClaudeTasks(
 					tasks.map((task) => ({
-						prompt: task.prompt,
-						options: {
-							maxTurns: 1,
-							timeoutMs: TEST_CONFIG.QUICK_TIMEOUT / 2, // Shorter timeout
-							allowedTools: [],
-						},
-					})),
+						prompt:task.prompt,
+						options:{
+							maxTurns:1,
+							timeoutMs:TEST_CONFIG.QUICK_TIMEOUT / 2, // Shorter timeout
+							allowedTools:[],
+},
+})),
 				);
 
 				expect(results.length).toBe(tasks.length);
@@ -500,24 +498,24 @@ describe("Comprehensive Claude SDK Tests", () => {
 				for (const [index, result] of results.entries()) {
 					if (result.success) {
 						successes++;
-						logger.info(`Task ${index + 1}: Success`);
-					} else {
+						logger.info(`Task ${index + 1}:Success`);
+} else {
 						failures++;
-						logger.info(`Task ${index + 1}: Failed - ${result.error}`);
-					}
-				}
+						logger.info(`Task ${index + 1}:Failed - ${result.error}`);
+}
+}
 
 				logger.info(
-					`✅ Parallel failure handling: ${successes} succeeded, ${failures} failed`,
+					`✅ Parallel failure handling:${successes} succeeded, ${failures} failed`,
 				);
 
 				// Should have both successes and failures
 				expect(successes).toBeGreaterThan(0);
 				expect(failures).toBeGreaterThan(0);
-			},
+},
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
-	});
+});
 
 	describe("🐝 Swarm Coordination", () => {
 		itIntegration(
@@ -528,11 +526,11 @@ describe("Comprehensive Claude SDK Tests", () => {
 				const agents = ["creative", "analyst", "technical"];
 
 				const messages = await executeSwarmCoordinationTask(task, agents, {
-					maxTurns: 3,
-					timeoutMs: TEST_CONFIG.STANDARD_TIMEOUT,
-					allowedTools: ["TodoWrite"],
-					model: "sonnet",
-				});
+					maxTurns:3,
+					timeoutMs:TEST_CONFIG.STANDARD_TIMEOUT,
+					allowedTools:["TodoWrite"],
+					model:"sonnet",
+});
 
 				expect(messages).toBeTruthy();
 				expect(messages.length).toBeGreaterThan(0);
@@ -542,9 +540,9 @@ describe("Comprehensive Claude SDK Tests", () => {
 				expect(resultMessage).toBeTruthy();
 
 				logger.info(
-					`✅ Swarm coordination: ${messages.length} messages, ${agents.length} agents`,
+					`✅ Swarm coordination:${messages.length} messages, ${agents.length} agents`,
 				);
-			},
+},
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
 
@@ -564,23 +562,23 @@ describe("Comprehensive Claude SDK Tests", () => {
 					complexTask,
 					agents,
 					{
-						maxTurns: 5,
-						timeoutMs: TEST_CONFIG.LONG_TIMEOUT,
-						allowedTools: ["TodoWrite", "Write", "Read"],
-						model: "sonnet",
-					},
+						maxTurns:5,
+						timeoutMs:TEST_CONFIG.LONG_TIMEOUT,
+						allowedTools:["TodoWrite", "Write", "Read"],
+						model:"sonnet",
+},
 				);
 
 				expect(messages).toBeTruthy();
 				expect(messages.length).toBeGreaterThan(0);
 
 				logger.info(
-					`✅ Complex swarm: ${messages.length} messages, ${agents.length} agents`,
+					`✅ Complex swarm:${messages.length} messages, ${agents.length} agents`,
 				);
-			},
+},
 			TEST_CONFIG.LONG_TIMEOUT,
 		);
-	});
+});
 
 	describe("🔥 Error Handling and Recovery", () => {
 		itIntegration(
@@ -588,49 +586,49 @@ describe("Comprehensive Claude SDK Tests", () => {
 			async () => {
 				const errorScenarios = [
 					{
-						name: "Empty prompt",
-						prompt: "",
-						expectError: true,
-					},
+						name:"Empty prompt",
+						prompt:"",
+						expectError:true,
+},
 					{
-						name: "Extremely long prompt",
-						prompt: "A".repeat(100000),
-						expectError: true,
-					},
+						name:"Extremely long prompt",
+						prompt:"A".repeat(100000),
+						expectError:true,
+},
 					{
-						name: "Invalid model",
-						prompt: "Hello",
-						options: { model: "invalid-model" },
-						expectError: true,
-					},
+						name:"Invalid model",
+						prompt:"Hello",
+						options:{ model: "invalid-model"},
+						expectError:true,
+},
 					{
-						name: "Zero timeout",
-						prompt: "Hello",
-						options: { timeoutMs: 0 },
-						expectError: true,
-					},
-				];
+						name:"Zero timeout",
+						prompt:"Hello",
+						options:{ timeoutMs: 0},
+						expectError:true,
+},
+];
 
 				for (const scenario of errorScenarios) {
-					logger.info(`Testing error scenario: ${scenario.name}`);
+					logger.info(`Testing error scenario:${scenario.name}`);
 
 					const result = await safeAsync(async () => executeClaudeTask(scenario.prompt, {
-							maxTurns: 1,
-							timeoutMs: TEST_CONFIG.QUICK_TIMEOUT,
-							allowedTools: [],
+							maxTurns:1,
+							timeoutMs:TEST_CONFIG.QUICK_TIMEOUT,
+							allowedTools:[],
 							...scenario.options,
-						}));
+}));
 
 					if (scenario.expectError) {
 						expect(result.success).toBe(false);
 						expect(result.error).toBeInstanceOf(Error);
-						logger.info(`✅ ${scenario.name}: Failed as expected`);
-					} else {
+						logger.info(`✅ ${scenario.name}:Failed as expected`);
+} else {
 						expect(result.success).toBe(true);
-						logger.info(`✅ ${scenario.name}: Succeeded as expected`);
-					}
-				}
-			},
+						logger.info(`✅ ${scenario.name}:Succeeded as expected`);
+}
+}
+},
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
 
@@ -646,20 +644,20 @@ describe("Comprehensive Claude SDK Tests", () => {
 
 						if (attemptCount < 3) {
 							throw new Error(`Simulated failure ${attemptCount}`);
-						}
+}
 
 						// Succeed on third attempt
 						return executeClaudeTask("Hello after retries", {
-							maxTurns: 1,
-							timeoutMs: TEST_CONFIG.QUICK_TIMEOUT,
-							allowedTools: [],
-						});
-					},
+							maxTurns:1,
+							timeoutMs:TEST_CONFIG.QUICK_TIMEOUT,
+							allowedTools:[],
+});
+},
 					{
-						maxRetries: 5,
-						baseDelay: 100,
-						maxDelay: 1000,
-					},
+						maxRetries:5,
+						baseDelay:100,
+						maxDelay:1000,
+},
 				);
 
 				expect(result.success).toBe(true);
@@ -667,12 +665,12 @@ describe("Comprehensive Claude SDK Tests", () => {
 				expect(result.data).toBeTruthy();
 
 				logger.info(
-					`✅ Retry mechanism: succeeded after ${attemptCount} attempts`,
+					`✅ Retry mechanism:succeeded after ${attemptCount} attempts`,
 				);
-			},
+},
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
-	});
+});
 
 	describe("📊 Performance Monitoring and Metrics", () => {
 		itPerformance(
@@ -685,12 +683,12 @@ describe("Comprehensive Claude SDK Tests", () => {
 
 				for (const prompt of tasks) {
 					await executeClaudeTask(prompt, {
-						maxTurns: 1,
-						timeoutMs: TEST_CONFIG.QUICK_TIMEOUT,
-						allowedTools: [],
-						sessionId: `perf-test-${Date.now()}`,
-					});
-				}
+						maxTurns:1,
+						timeoutMs:TEST_CONFIG.QUICK_TIMEOUT,
+						allowedTools:[],
+						sessionId:`perf-test-${Date.now()}`,
+});
+}
 
 				const endTaskCount = taskManager.getCompletedTasks().length;
 				const newTasks = endTaskCount - startTaskCount;
@@ -701,15 +699,15 @@ describe("Comprehensive Claude SDK Tests", () => {
 				const completedTasks = taskManager.getCompletedTasks();
 				const recentTasks = completedTasks.slice(-newTasks);
 
-				recentTasks.forEach((task: any) => {
+				recentTasks.forEach((task:any) => {
 					expect(task.startTime).toBeTruthy();
 					expect(task.endTime).toBeTruthy();
 					expect(task.duration).toBeGreaterThan(0);
 					expect(task.sessionId).toBeTruthy();
-				});
+});
 
-				logger.info(`✅ Performance tracking: ${newTasks} tasks monitored`);
-			},
+				logger.info(`✅ Performance tracking:${newTasks} tasks monitored`);
+},
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
 
@@ -721,11 +719,11 @@ describe("Comprehensive Claude SDK Tests", () => {
 					.fill(0)
 					.map((_, i) =>
 						executeClaudeTask(`Load test task ${i + 1}`, {
-							maxTurns: 1,
-							timeoutMs: TEST_CONFIG.QUICK_TIMEOUT,
-							allowedTools: [],
-							sessionId: `load-test-${i}`,
-						}),
+							maxTurns:1,
+							timeoutMs:TEST_CONFIG.QUICK_TIMEOUT,
+							allowedTools:[],
+							sessionId:`load-test-${i}`,
+}),
 					);
 
 				const startTime = Date.now();
@@ -738,19 +736,19 @@ describe("Comprehensive Claude SDK Tests", () => {
 				const failures = results.filter((r) => r.status === "rejected").length;
 
 				logger.info(
-					`✅ High-load test: ${successes}/${taskCount} succeeded in ${duration}ms`,
+					`✅ High-load test:${successes}/${taskCount} succeeded in ${duration}ms`,
 				);
 				logger.info(
-					`   Average: ${Math.round(duration / taskCount)}ms per task`,
+					`   Average:${Math.round(duration / taskCount)}ms per task`,
 				);
-				logger.info(`   Failures: ${failures}`);
+				logger.info(`   Failures:${failures}`);
 
 				// At least half should succeed under load
 				expect(successes).toBeGreaterThanOrEqual(taskCount / 2);
-			},
+},
 			TEST_CONFIG.LONG_TIMEOUT,
 		);
-	});
+});
 
 	describe("🛠️ TypeScript Auto-Fix Integration", () => {
 		itIntegration(
@@ -758,32 +756,32 @@ describe("Comprehensive Claude SDK Tests", () => {
 			async () => {
 				const typescriptErrors = [
 					{
-						file: "test.ts",
-						error: "Type 'string' is not assignable to type 'number'",
-						code: "TS2322",
-						line: 1,
-						column: 5,
-					},
-				];
+						file:"test.ts",
+						error:"Type 'string' is not assignable to type ' number'",
+						code:"TS2322",
+						line:1,
+						column:5,
+},
+];
 
 				const errorPrompt = `
         Fix the following TypeScript error:
-        File: ${typescriptErrors[0].file}
-        Error: ${typescriptErrors[0].error}
-        Code: ${typescriptErrors[0].code}
+        File:${typescriptErrors[0].file}
+        Error:${typescriptErrors[0].error}
+        Code:${typescriptErrors[0].code}
         
         Original code:
-        let x: number = "string";
+        let x:number = "string";
         
         Please provide the corrected TypeScript code.
       `;
 
 				const messages = await executeClaudeTask(errorPrompt, {
-					maxTurns: 3,
-					timeoutMs: TEST_CONFIG.STANDARD_TIMEOUT,
-					allowedTools: ["Edit", "Read"],
-					permissionMode: "bypassPermissions",
-				});
+					maxTurns:3,
+					timeoutMs:TEST_CONFIG.STANDARD_TIMEOUT,
+					allowedTools:["Edit", "Read"],
+					permissionMode:"bypassPermissions",
+});
 
 				expect(messages).toBeTruthy();
 				expect(messages.length).toBeGreaterThan(0);
@@ -794,7 +792,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 				expect((resultMessage as any).is_error).toBeFalsy();
 
 				logger.info("✅ TypeScript error fixing integration working");
-			},
+},
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
 
@@ -804,11 +802,11 @@ describe("Comprehensive Claude SDK Tests", () => {
 				const multiFilePrompt = `
         Analyze and suggest fixes for these TypeScript issues:
         
-        File 1: utils.ts
+        File 1:utils.ts
         - Missing return type annotations
         - Undefined variable usage
         
-        File 2: components.ts  
+        File 2:components.ts  
         - Interface property mismatches
         - Import statement errors
         
@@ -816,20 +814,20 @@ describe("Comprehensive Claude SDK Tests", () => {
       `;
 
 				const messages = await executeClaudeTask(multiFilePrompt, {
-					maxTurns: 5,
-					timeoutMs: TEST_CONFIG.STANDARD_TIMEOUT,
-					allowedTools: ["Read", "Write", "TodoWrite"],
-					permissionMode: "bypassPermissions",
-				});
+					maxTurns:5,
+					timeoutMs:TEST_CONFIG.STANDARD_TIMEOUT,
+					allowedTools:["Read", "Write", "TodoWrite"],
+					permissionMode:"bypassPermissions",
+});
 
 				expect(messages).toBeTruthy();
 				expect(messages.length).toBeGreaterThan(0);
 
 				logger.info("✅ Multi-file TypeScript analysis working");
-			},
+},
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
-	});
+});
 
 	describe("🧹 Cleanup and Resource Management", () => {
 		it("should clean up resources properly", () => {
@@ -844,49 +842,49 @@ describe("Comprehensive Claude SDK Tests", () => {
 			expect(taskManager.getPermissionDenials().length).toBe(0);
 
 			logger.info("✅ Resource cleanup working correctly");
-		});
+});
 
 		it("should handle cleanup of global instances", () => {
 			// This should not throw an error
 			expect(() => cleanupGlobalInstances()).not.toThrow();
 
 			logger.info("✅ Global instance cleanup working");
-		});
-	});
+});
+});
 
 	describe("📈 Test Summary and Reporting", () => {
 		it("should generate test completion report", () => {
 			const report = {
-				testSuites: {
-					promptValidation: "✅ Passed",
-					basicExecution: "✅ Passed",
-					advancedConfiguration: TEST_CONFIG.RUN_INTEGRATION
+				testSuites:{
+					promptValidation:"✅ Passed",
+					basicExecution:"✅ Passed",
+					advancedConfiguration:TEST_CONFIG.RUN_INTEGRATION
 						? "✅ Passed"
-						: "⏭️ Skipped",
-					streaming: TEST_CONFIG.RUN_STREAMING ? "✅ Passed" : "⏭️ Skipped",
-					parallelExecution: TEST_CONFIG.RUN_PARALLEL
+						:"⏭️ Skipped",
+					streaming:TEST_CONFIG.RUN_STREAMING ? "✅ Passed" : "⏭️ Skipped",
+					parallelExecution:TEST_CONFIG.RUN_PARALLEL
 						? "✅ Passed"
-						: "⏭️ Skipped",
-					swarmCoordination: TEST_CONFIG.RUN_INTEGRATION
+						:"⏭️ Skipped",
+					swarmCoordination:TEST_CONFIG.RUN_INTEGRATION
 						? "✅ Passed"
-						: "⏭️ Skipped",
-					errorHandling: TEST_CONFIG.RUN_INTEGRATION
+						:"⏭️ Skipped",
+					errorHandling:TEST_CONFIG.RUN_INTEGRATION
 						? "✅ Passed"
-						: "⏭️ Skipped",
-					performance: TEST_CONFIG.RUN_PERFORMANCE ? "✅ Passed" : "⏭️ Skipped",
-					typescriptIntegration: TEST_CONFIG.RUN_INTEGRATION
+						:"⏭️ Skipped",
+					performance:TEST_CONFIG.RUN_PERFORMANCE ? "✅ Passed" : "⏭️ Skipped",
+					typescriptIntegration:TEST_CONFIG.RUN_INTEGRATION
 						? "✅ Passed"
-						: "⏭️ Skipped",
-					cleanup: "✅ Passed",
-				},
-				configuration: {
-					integration: TEST_CONFIG.RUN_INTEGRATION,
-					performance: TEST_CONFIG.RUN_PERFORMANCE,
-					streaming: TEST_CONFIG.RUN_STREAMING,
-					parallel: TEST_CONFIG.RUN_PARALLEL,
-				},
-				timestamp: new Date().toISOString(),
-			};
+						:"⏭️ Skipped",
+					cleanup:"✅ Passed",
+},
+				configuration:{
+					integration:TEST_CONFIG.RUN_INTEGRATION,
+					performance:TEST_CONFIG.RUN_PERFORMANCE,
+					streaming:TEST_CONFIG.RUN_STREAMING,
+					parallel:TEST_CONFIG.RUN_PARALLEL,
+},
+				timestamp:new Date().toISOString(),
+};
 
 			logger.info("📊 Comprehensive Claude SDK Test Report:", report);
 
@@ -898,8 +896,8 @@ describe("Comprehensive Claude SDK Tests", () => {
 			expect(enabledTests).toBeGreaterThan(0);
 
 			logger.info(
-				`🎉 Test suite completed: ${enabledTests} test suites passed`,
+				`🎉 Test suite completed:${enabledTests} test suites passed`,
 			);
-		});
-	});
+});
+});
 });

@@ -5,28 +5,28 @@
  * Collects data over time or until batch size is reached.
  */
 
-import { getLogger } from '@claude-zen/foundation/logging';
-import type { ProcessorConfig, TelemetryData } from '../types.js';
-import type { BaseProcessor } from './index.js';
+import { getLogger} from '@claude-zen/foundation/logging';
+import type { ProcessorConfig, TelemetryData} from '../types.js';
+import type { BaseProcessor} from './index.js';
 
 /**
  * Batch processor implementation
  */
 export class BatchProcessor implements BaseProcessor {
-  readonly name: string;
-  private readonly config: ProcessorConfig;
-  private readonly logger: any;
-  private readonly maxBatchSize: number;
-  private readonly batchTimeout: number;
-  private readonly flushOnShutdown: boolean;
-  private batch: TelemetryData[] = [];
-  private batchTimer: NodeJS.Timeout  |  null = null;
+  readonly name:string;
+  private readonly config:ProcessorConfig;
+  private readonly logger:any;
+  private readonly maxBatchSize:number;
+  private readonly batchTimeout:number;
+  private readonly flushOnShutdown:boolean;
+  private batch:TelemetryData[] = [];
+  private batchTimer:NodeJS.Timeout  |  null = null;
   private isShuttingDown = false;
   private processedCount = 0;
   private lastProcessedTime = 0;
-  private lastError: string  |  null = null;
+  private lastError:string  |  null = null;
 
-  constructor(config: ProcessorConfig) {
+  constructor(config:ProcessorConfig) {
     this.name = config.name;
     this.config = config;
     this.logger = getLogger(`BatchProcessor:${config.name}`);
@@ -35,23 +35,23 @@ export class BatchProcessor implements BaseProcessor {
     this.maxBatchSize = config.config?.maxBatchSize   |  |   100;
     this.batchTimeout = config.config?.batchTimeout   |  |   5000; // 5 seconds
     this.flushOnShutdown = config.config?.flushOnShutdown !== false;
-  }
+}
 
-  async initialize(): Promise<void> {
+  async initialize():Promise<void> {
     // Start batch timer
     this.startBatchTimer();
 
     this.logger.info('Batch processor initialized', {
-      maxBatchSize: this.maxBatchSize,
-      batchTimeout: this.batchTimeout,
-      flushOnShutdown: this.flushOnShutdown,
-    });
-  }
+      maxBatchSize:this.maxBatchSize,
+      batchTimeout:this.batchTimeout,
+      flushOnShutdown:this.flushOnShutdown,
+});
+}
 
-  async process(data: TelemetryData): Promise<TelemetryData  |  null> {
+  async process(data:TelemetryData): Promise<TelemetryData  |  null> {
     if (this.isShuttingDown) {
       return data;
-    }
+}
 
     try {
       // Add to batch
@@ -60,7 +60,7 @@ export class BatchProcessor implements BaseProcessor {
       // Check if batch is full
       if (this.batch.length >= this.maxBatchSize) {
         await this.flushBatch();
-      }
+}
 
       this.processedCount++;
       this.lastProcessedTime = Date.now();
@@ -68,20 +68,20 @@ export class BatchProcessor implements BaseProcessor {
 
       // Return null to indicate data is held in batch
       return null;
-    } catch (error) {
+} catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
       this.logger.error('Batch processing failed', error);
 
       // Return original data on error
       return data;
-    }
-  }
+}
+}
 
-  async processBatch(dataItems: TelemetryData[]): Promise<TelemetryData[]> {
+  async processBatch(dataItems:TelemetryData[]): Promise<TelemetryData[]> {
     if (this.isShuttingDown) {
       return dataItems;
-    }
+}
 
     try {
       // Add all items to batch
@@ -90,7 +90,7 @@ export class BatchProcessor implements BaseProcessor {
       // Check if we need to flush
       if (this.batch.length >= this.maxBatchSize) {
         await this.flushBatch();
-      }
+}
 
       this.processedCount += dataItems.length;
       this.lastProcessedTime = Date.now();
@@ -98,24 +98,24 @@ export class BatchProcessor implements BaseProcessor {
 
       // Return empty array since data is held in batch
       return [];
-    } catch (error) {
+} catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
       this.logger.error('Batch processing failed', error);
 
       // Return original data on error
       return dataItems;
-    }
-  }
+}
+}
 
-  async shutdown(): Promise<void> {
+  async shutdown():Promise<void> {
     this.isShuttingDown = true;
 
     // Stop batch timer
     if (this.batchTimer) {
       clearInterval(this.batchTimer);
       this.batchTimer = null;
-    }
+}
 
     // Flush remaining batch if configured to do so
     if (this.flushOnShutdown  &&&&  this.batch.length > 0) {
@@ -123,66 +123,66 @@ export class BatchProcessor implements BaseProcessor {
         `Flushing ${this.batch.length} remaining items before shutdown`
       );
       await this.flushBatch();
-    }
+}
 
     this.logger.info('Batch processor shut down', {
-      totalProcessed: this.processedCount,
-      remainingInBatch: this.batch.length,
-    });
-  }
+      totalProcessed:this.processedCount,
+      remainingInBatch:this.batch.length,
+});
+}
 
-  async getHealthStatus(): Promise<{
-    status: 'healthy' | 'degraded' | 'unhealthy';
-    lastProcessed?: number;
-    lastError?: string;
-  }> {
+  async getHealthStatus():Promise<{
+    status:'healthy' | ' degraded' | ' unhealthy';
+    lastProcessed?:number;
+    lastError?:string;
+}> {
     const batchUtilization = this.batch.length / this.maxBatchSize;
 
-    let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
+    let status:'healthy' | ' degraded' | ' unhealthy' = ' healthy';
 
     if (this.lastError) {
       status = 'unhealthy';
-    } else if (batchUtilization > 0.9) {
+} else if (batchUtilization > 0.9) {
       // Batch is getting very full
       status = 'degraded';
-    }
+}
 
     return {
       status,
-      lastProcessed: this.lastProcessedTime   |  |   undefined,
-      lastError: this.lastError   |  |   undefined,
-    };
-  }
+      lastProcessed:this.lastProcessedTime   |  |   undefined,
+      lastError:this.lastError   |  |   undefined,
+};
+}
 
   /**
    * Get current batch size
    */
-  getBatchSize(): number {
+  getBatchSize():number {
     return this.batch.length;
-  }
+}
 
   /**
    * Force flush current batch
    */
-  async forceBatch(): Promise<void> {
+  async forceBatch():Promise<void> {
     await this.flushBatch();
-  }
+}
 
   /**
    * Start batch timer for periodic flushing
    */
-  private startBatchTimer(): void {
+  private startBatchTimer():void {
     this.batchTimer = setInterval(async () => {
       if (this.batch.length > 0  &&&&  !this.isShuttingDown) {
         await this.flushBatch();
-      }
-    }, this.batchTimeout);
-  }
+}
+}, this.batchTimeout);
+}
 
   /**
    * Flush the current batch
    */
-  private async flushBatch(): Promise<void> {
+  private async flushBatch():Promise<void> {
     if (this.batch.length ===  0) return;
 
     const batchToFlush = [...this.batch];
@@ -195,12 +195,12 @@ export class BatchProcessor implements BaseProcessor {
 
       // Emit batch ready event (would be caught by collector)
       // this.emit('batchReady', batchToFlush);
-    } catch (error) {
+} catch (error) {
       this.logger.error('Failed to flush batch', error);
 
       // Re-add items to batch on failure
       this.batch.unshift(...batchToFlush);
       throw error;
-    }
-  }
+}
+}
 }

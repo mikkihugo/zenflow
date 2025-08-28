@@ -7,7 +7,3 @@ packages:
   - 'packages/services/*'
   - 'packages/tools/*'
   - 'packages/integrations/*'
-  
-  # Old packages (during migration)
-  - 'packages-old/implementation/*'
-  - 'packages-old/enterprise/*'

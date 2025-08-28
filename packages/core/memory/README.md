@@ -66,7 +66,7 @@ The memory package integrates with the strategic facade architecture through:
 
 - **@claude-zen/foundation** DI system with `@injectable` decorators
 - **Result pattern** for type-safe error handling
-- **Event-driven coordination** with TypedEventBase
+- **Event-driven coordination** with EventEmitter
 - **Professional logging** with performance tracking
 - **Circuit breaker patterns** for resilience
 

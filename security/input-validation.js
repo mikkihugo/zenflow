@@ -61,7 +61,7 @@ export class InputValidator {
     const xssPatterns = [
       /<script[^>]*>.*?</script>/gi,
       /javascript:/gi,
-      /onw+s*=/gi,
+      /on\\w+\\s*=/gi,
       /<iframe[^>]*>.*?</iframe>/gi,
       /data:text/html/gi
     ];

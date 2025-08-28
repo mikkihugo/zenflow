@@ -3,553 +3,555 @@
  * Connects to real API endpoints instead of using mock data
  */
 
-import { getLogger } from "@claude-zen/foundation";
+import { getLogger} from "@claude-zen/foundation";
+
+// Uses global RequestInit type from eslint globals
 
 const logger = getLogger("api-client");
 const API_BASE_URL = "http://localhost:3000/api";
 
 interface ApiResponse<T> {
-	data: T;
-	success: boolean;
-	error?: string;
+	data:T;
+	success:boolean;
+	error?:string;
 }
 
 interface Agent {
-	id: string;
-	type: string;
-	status: string;
-	capabilities: string[];
-	created: string;
-	lastActivity: string;
+	id:string;
+	type:string;
+	status:string;
+	capabilities:string[];
+	created:string;
+	lastActivity:string;
 }
 
 interface Task {
-	id: string;
-	title: string;
-	type: string;
-	status: string;
-	progress: number;
-	priority: string;
-	created: string;
-	assignedTo?: string;
+	id:string;
+	title:string;
+	type:string;
+	status:string;
+	progress:number;
+	priority:string;
+	created:string;
+	assignedTo?:string;
 }
 
 interface SwarmConfig {
-	topology: string;
-	maxAgents: number;
-	strategy: string;
-	created: string;
+	topology:string;
+	maxAgents:number;
+	strategy:string;
+	created:string;
 }
 
 interface HealthStatus {
-	status: string;
-	uptime: number;
-	version: string;
-	timestamp: string;
-	services: Record<string, string>;
-	metrics: {
-		totalMemoryUsage: number;
-		availableMemory: number;
-		utilizationRate: number;
-	};
+	status:string;
+	uptime:number;
+	version:string;
+	timestamp:string;
+	services:Record<string, string>;
+	metrics:{
+		totalMemoryUsage:number;
+		availableMemory:number;
+		utilizationRate:number;
+};
 }
 
 interface PerformanceMetrics {
-	cpu: number;
-	memory: number;
-	requestsPerMin: number;
-	avgResponse: number;
-	timestamp: string;
+	cpu:number;
+	memory:number;
+	requestsPerMin:number;
+	avgResponse:number;
+	timestamp:string;
 }
 
 interface Project {
-	id: number;
-	name: string;
-	status: string;
-	progress: number;
-	currentPhase: string;
-	description: string;
-	created?: string;
-	lastActivity?: string;
+	id:number;
+	name:string;
+	status:string;
+	progress:number;
+	currentPhase:string;
+	description:string;
+	created?:string;
+	lastActivity?:string;
 }
 
 class ApiClient {
-	private baseUrl: string;
-	public currentProjectId: string | null = null;
+	private baseUrl:string;
+	public currentProjectId:string | null = null;
 
-	constructor(baseUrl: string = API_BASE_URL) {
+	constructor(baseUrl:string = API_BASE_URL) {
 		this.baseUrl = baseUrl;
-	}
+}
 
 	// Set current project context for all API calls
-	setProjectContext(projectId: string | null) {
+	setProjectContext(projectId:string | null) {
 		this.currentProjectId = projectId;
-		logger.info("API client project context updated", { projectId });
-	}
+		logger.info("API client project context updated", { projectId});
+}
 
 	private async request<T>(
-		endpoint: string,
-		options: RequestInit = {},
-	): Promise<T> {
+		endpoint:string,
+		options:RequestInit = {},
+	):Promise<T> {
 		// Add project context as query parameter if available
 		let url = `${this.baseUrl}${endpoint}`;
 		if (this.currentProjectId) {
-			const separator = endpoint.includes("?") ? "&" : "?";
+			const separator = endpoint.includes("?") ? "&" :"?";
 			url += `${separator}projectId=${encodeURIComponent(this.currentProjectId)}`;
-		}
+}
 
-		const defaultOptions: RequestInit = {
-			headers: {
-				"Content-Type": "application/json",
+		const defaultOptions:RequestInit = {
+			headers:{
+				"Content-Type":"application/json",
 				// Also add project context as header for server preference
 				...(this.currentProjectId && {
-					"X-Project-Context": this.currentProjectId,
-				}),
-			},
-		};
+					"X-Project-Context":this.currentProjectId,
+}),
+},
+};
 
 		try {
-			const response = await fetch(url, { ...defaultOptions, ...options });
+			const response = await fetch(url, { ...defaultOptions, ...options});
 
 			if (!response.ok) {
-				throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-			}
+				throw new Error(`HTTP ${response.status}:${response.statusText}`);
+}
 
 			return await response.json();
-		} catch (error) {
-			logger.error("API request failed", { endpoint, error });
+} catch (error) {
+			logger.error("API request failed", { endpoint, error});
 			throw error;
-		}
-	}
+}
+}
 
 	// ===== COORDINATION API =====
 
-	async getAgents(): Promise<Agent[]> {
-		const response = await this.request<{ agents: Agent[]; total: number }>(
+	async getAgents():Promise<Agent[]> {
+		const response = await this.request<{ agents:Agent[]; total: number}>(
 			"/v1/coordination/agents",
 		);
 		return response.agents || [];
-	}
+}
 
-	async createAgent(agentData: Partial<Agent>): Promise<Agent> {
+	async createAgent(agentData:Partial<Agent>): Promise<Agent> {
 		return await this.request<Agent>("/v1/coordination/agents", {
-			method: "POST",
-			body: JSON.stringify(agentData),
-		});
-	}
+			method:"POST",
+			body:JSON.stringify(agentData),
+});
+}
 
-	async getAgent(agentId: string): Promise<Agent> {
+	async getAgent(agentId:string): Promise<Agent> {
 		return await this.request<Agent>(`/v1/coordination/agents/${agentId}`);
-	}
+}
 
-	async removeAgent(agentId: string): Promise<void> {
+	async removeAgent(agentId:string): Promise<void> {
 		await this.request<void>(`/v1/coordination/agents/${agentId}`, {
 			method: "DELETE",
 		});
-	}
+}
 
-	getTasks(): Promise<Task[]> {
-		// Note: Based on the API, we need to get tasks through other endpoints or implement a tasks list endpoint
+	getTasks():Promise<Task[]> {
+		// Note:Based on the API, we need to get tasks through other endpoints or implement a tasks list endpoint
 		// For now, return empty array and implement when backend supports it
 		return Promise.resolve([]);
-	}
+}
 
-	async createTask(taskData: Partial<Task>): Promise<Task> {
+	async createTask(taskData:Partial<Task>): Promise<Task> {
 		return await this.request<Task>("/v1/coordination/tasks", {
-			method: "POST",
-			body: JSON.stringify(taskData),
-		});
-	}
+			method:"POST",
+			body:JSON.stringify(taskData),
+});
+}
 
-	async getTask(taskId: string): Promise<Task> {
+	async getTask(taskId:string): Promise<Task> {
 		return await this.request<Task>(`/v1/coordination/tasks/${taskId}`);
-	}
+}
 
-	async getSwarmConfig(): Promise<SwarmConfig> {
+	async getSwarmConfig():Promise<SwarmConfig> {
 		return await this.request<SwarmConfig>("/v1/coordination/swarm/config");
-	}
+}
 
-	async updateSwarmConfig(config: Partial<SwarmConfig>): Promise<SwarmConfig> {
+	async updateSwarmConfig(config:Partial<SwarmConfig>): Promise<SwarmConfig> {
 		return await this.request<SwarmConfig>("/v1/coordination/swarm/config", {
-			method: "PUT",
-			body: JSON.stringify(config),
-		});
-	}
+			method:"PUT",
+			body:JSON.stringify(config),
+});
+}
 
-	async initializeSwarm(config: {
-		topology: string;
-		maxAgents: number;
-		strategy?: string;
-	}): Promise<Record<string, unknown>> {
+	async initializeSwarm(config:{
+		topology:string;
+		maxAgents:number;
+		strategy?:string;
+}):Promise<Record<string, unknown>> {
 		return await this.request("/v1/coordination/swarm/initialize", {
-			method: "POST",
-			body: JSON.stringify(config),
-		});
-	}
+			method:"POST",
+			body:JSON.stringify(config),
+});
+}
 
-	async getHealth(): Promise<HealthStatus> {
+	async getHealth():Promise<HealthStatus> {
 		return await this.request<HealthStatus>("/v1/coordination/health");
-	}
+}
 
-	async getMetrics(timeRange?: string): Promise<PerformanceMetrics> {
-		const params = timeRange ? `?timeRange=${timeRange}` : "";
+	async getMetrics(timeRange?:string): Promise<PerformanceMetrics> {
+		const params = timeRange ? `?timeRange=${timeRange}` :"";
 		return await this.request<PerformanceMetrics>(
 			`/v1/coordination/metrics${params}`,
 		);
-	}
+}
 
 	// ===== MEMORY API =====
 
-	async getMemoryHealth(): Promise<Record<string, unknown>> {
+	async getMemoryHealth():Promise<Record<string, unknown>> {
 		return await this.request("/v1/memory/health");
-	}
+}
 
-	async getMemoryStores(): Promise<Array<Record<string, unknown>>> {
+	async getMemoryStores():Promise<Array<Record<string, unknown>>> {
 		const response = await this.request<{
-			stores: Record<string, unknown>[];
-			total: number;
-		}>("/v1/memory/stores");
+			stores:Record<string, unknown>[];
+			total:number;
+}>("/v1/memory/stores");
 		return response.stores || [];
-	}
+}
 
-	async getMemoryStats(storeId: string): Promise<Record<string, unknown>> {
+	async getMemoryStats(storeId:string): Promise<Record<string, unknown>> {
 		return await this.request(`/v1/memory/stores/${storeId}/stats`);
-	}
+}
 
 	// ===== DATABASE API =====
 
-	async getDatabaseHealth(): Promise<Record<string, unknown>> {
+	async getDatabaseHealth():Promise<Record<string, unknown>> {
 		return await this.request("/v1/database/health");
-	}
+}
 
-	async getDatabaseStatus(): Promise<Record<string, unknown>> {
+	async getDatabaseStatus():Promise<Record<string, unknown>> {
 		return await this.request("/v1/database/status");
-	}
+}
 
-	async getDatabaseAnalytics(): Promise<Record<string, unknown>> {
+	async getDatabaseAnalytics():Promise<Record<string, unknown>> {
 		return await this.request("/v1/database/analytics");
-	}
+}
 
-	async getDatabaseSchema(): Promise<Record<string, unknown>> {
+	async getDatabaseSchema():Promise<Record<string, unknown>> {
 		return await this.request("/v1/database/schema");
-	}
+}
 
-	async executeQuery(queryData: {
-		sql: string;
-		params?: Record<string, unknown>[];
-	}): Promise<Record<string, unknown>> {
+	async executeQuery(queryData:{
+		sql:string;
+		params?:Record<string, unknown>[];
+}):Promise<Record<string, unknown>> {
 		return await this.request("/v1/database/query", {
-			method: "POST",
-			body: JSON.stringify(queryData),
-		});
-	}
+			method:"POST",
+			body:JSON.stringify(queryData),
+});
+}
 
-	async executeCommand(commandData: {
-		sql: string;
-		params?: Record<string, unknown>[];
-	}): Promise<Record<string, unknown>> {
+	async executeCommand(commandData:{
+		sql:string;
+		params?:Record<string, unknown>[];
+}):Promise<Record<string, unknown>> {
 		return await this.request("/v1/database/execute", {
-			method: "POST",
-			body: JSON.stringify(commandData),
-		});
-	}
+			method:"POST",
+			body:JSON.stringify(commandData),
+});
+}
 
-	async executeTransaction(transactionData: {
-		operations: Array<{
-			type: "query|execute";
-			sql: string;
-			params?: Record<string, unknown>[];
-		}>;
-		useTransaction?: boolean;
-	}): Promise<Record<string, unknown>> {
+	async executeTransaction(transactionData:{
+		operations:Array<{
+			type:"query|execute";
+			sql:string;
+			params?:Record<string, unknown>[];
+}>;
+		useTransaction?:boolean;
+}):Promise<Record<string, unknown>> {
 		return await this.request("/v1/database/transaction", {
-			method: "POST",
-			body: JSON.stringify(transactionData),
-		});
-	}
+			method:"POST",
+			body:JSON.stringify(transactionData),
+});
+}
 
-	async executeMigration(migrationData: {
-		statements: string[];
-		version: string;
-		description?: string;
-		dryRun?: boolean;
-	}): Promise<Record<string, unknown>> {
+	async executeMigration(migrationData:{
+		statements:string[];
+		version:string;
+		description?:string;
+		dryRun?:boolean;
+}):Promise<Record<string, unknown>> {
 		return await this.request("/v1/database/migrate", {
-			method: "POST",
-			body: JSON.stringify(migrationData),
-		});
-	}
+			method:"POST",
+			body:JSON.stringify(migrationData),
+});
+}
 
 	// ===== ADVANCED MEMORY API =====
 
 	async getMemoryKeys(
-		storeId: string,
-		pattern?: string,
+		storeId:string,
+		pattern?:string,
 		limit = 100,
-	): Promise<Record<string, unknown>> {
-		const params = new URLSearchParams({ limit: limit.toString() });
+	):Promise<Record<string, unknown>> {
+		const params = new URLSearchParams({ limit:limit.toString()});
 		if (pattern) params.append("pattern", pattern);
 		return await this.request(`/v1/memory/stores/${storeId}/keys?${params}`);
-	}
+}
 
 	async getMemoryValue(
-		storeId: string,
-		key: string,
-	): Promise<Record<string, unknown>> {
+		storeId:string,
+		key:string,
+	):Promise<Record<string, unknown>> {
 		return await this.request(
 			`/v1/memory/stores/${storeId}/keys/${encodeURIComponent(key)}`,
 		);
-	}
+}
 
 	async setMemoryValue(
-		storeId: string,
-		key: string,
-		value: Record<string, unknown>,
-		ttl?: number,
-	): Promise<Record<string, unknown>> {
+		storeId:string,
+		key:string,
+		value:Record<string, unknown>,
+		ttl?:number,
+	):Promise<Record<string, unknown>> {
 		return await this.request(
 			`/v1/memory/stores/${storeId}/keys/${encodeURIComponent(key)}`,
 			{
-				method: "PUT",
-				body: JSON.stringify({ value, ttl }),
-			},
+				method:"PUT",
+				body:JSON.stringify({ value, ttl}),
+},
 		);
-	}
+}
 
-	async deleteMemoryKey(storeId: string, key: string): Promise<void> {
+	async deleteMemoryKey(storeId:string, key:string): Promise<void> {
 		await this.request(
 			`/v1/memory/stores/${storeId}/keys/${encodeURIComponent(key)}`,
 			{
-				method: "DELETE",
-			},
+				method:"DELETE",
+},
 		);
-	}
+}
 
 	async batchGetMemoryValues(
-		storeId: string,
-		keys: string[],
-	): Promise<Record<string, unknown>> {
+		storeId:string,
+		keys:string[],
+	):Promise<Record<string, unknown>> {
 		return await this.request(`/v1/memory/stores/${storeId}/batch/get`, {
-			method: "POST",
-			body: JSON.stringify({ keys }),
-		});
-	}
+			method:"POST",
+			body:JSON.stringify({ keys}),
+});
+}
 
 	async batchSetMemoryValues(
-		storeId: string,
-		items: Array<{ key: string; value: Record<string, unknown>; ttl?: number }>,
-	): Promise<Record<string, unknown>> {
+		storeId:string,
+		items:Array<{ key: string; value: Record<string, unknown>; ttl?:number}>,
+	):Promise<Record<string, unknown>> {
 		return await this.request(`/v1/memory/stores/${storeId}/batch/set`, {
-			method: "POST",
-			body: JSON.stringify({ items }),
-		});
-	}
+			method:"POST",
+			body:JSON.stringify({ items}),
+});
+}
 
 	async syncMemoryStore(
-		storeId: string,
+		storeId:string,
 		type = "full",
-	): Promise<Record<string, unknown>> {
+	):Promise<Record<string, unknown>> {
 		return await this.request(`/v1/memory/stores/${storeId}/sync`, {
-			method: "POST",
-			body: JSON.stringify({ type }),
-		});
-	}
+			method:"POST",
+			body:JSON.stringify({ type}),
+});
+}
 
-	async createMemoryStore(storeData: {
-		type: string;
-		config?: Record<string, unknown>;
-	}): Promise<Record<string, unknown>> {
+	async createMemoryStore(storeData:{
+		type:string;
+		config?:Record<string, unknown>;
+}):Promise<Record<string, unknown>> {
 		return await this.request("/v1/memory/stores", {
-			method: "POST",
-			body: JSON.stringify(storeData),
-		});
-	}
+			method:"POST",
+			body:JSON.stringify(storeData),
+});
+}
 
 	// ===== ADVANCED COORDINATION API =====
 
 	async getAgentTasks(
-		agentId: string,
-		status?: string,
-	): Promise<Record<string, unknown>> {
-		const params = status ? `?status=${encodeURIComponent(status)}` : "";
+		agentId:string,
+		status?:string,
+	):Promise<Record<string, unknown>> {
+		const params = status ? `?status=${encodeURIComponent(status)}` :"";
 		return await this.request(
 			`/v1/coordination/agents/${agentId}/tasks${params}`,
 		);
-	}
+}
 
 	async assignTask(
-		taskId: string,
-		agentId: string,
-	): Promise<Record<string, unknown>> {
+		taskId:string,
+		agentId:string,
+	):Promise<Record<string, unknown>> {
 		return await this.request(`/v1/coordination/tasks/${taskId}/assign`, {
-			method: "POST",
-			body: JSON.stringify({ agentId }),
-		});
-	}
+			method:"POST",
+			body:JSON.stringify({ agentId}),
+});
+}
 
 	async updateAgentHeartbeat(
-		agentId: string,
-		heartbeatData: { workload?: Record<string, unknown>; status?: string },
-	): Promise<Record<string, unknown>> {
+		agentId:string,
+		heartbeatData:{ workload?: Record<string, unknown>; status?:string},
+	):Promise<Record<string, unknown>> {
 		return await this.request(`/v1/coordination/agents/${agentId}/heartbeat`, {
-			method: "POST",
-			body: JSON.stringify(heartbeatData),
-		});
-	}
+			method:"POST",
+			body:JSON.stringify(heartbeatData),
+});
+}
 
 	// ===== SWARM API (Enhanced) =====
 
-	async initializeAdvancedSwarm(config: {
-		topology: string;
-		maxAgents: number;
-		strategy?: string;
-	}): Promise<Record<string, unknown>> {
+	async initializeAdvancedSwarm(config:{
+		topology:string;
+		maxAgents:number;
+		strategy?:string;
+}):Promise<Record<string, unknown>> {
 		return await this.request("/v1/swarm/init", {
-			method: "POST",
-			body: JSON.stringify(config),
-		});
-	}
+			method:"POST",
+			body:JSON.stringify(config),
+});
+}
 
 	async spawnSwarmAgent(
-		swarmId: string,
-		config: {
-			type: string;
-			name: string;
-			capabilities?: string[];
-		},
-	): Promise<Record<string, unknown>> {
+		swarmId:string,
+		config:{
+			type:string;
+			name:string;
+			capabilities?:string[];
+},
+	):Promise<Record<string, unknown>> {
 		return await this.request(`/v1/swarm/${swarmId}/agents`, {
-			method: "POST",
-			body: JSON.stringify(config),
-		});
-	}
+			method:"POST",
+			body:JSON.stringify(config),
+});
+}
 
-	async orchestrateSwarmTask(taskConfig: {
-		task: string;
-		strategy?: string;
-		priority?: string;
-		maxAgents?: number;
-	}): Promise<Record<string, unknown>> {
+	async orchestrateSwarmTask(taskConfig:{
+		task:string;
+		strategy?:string;
+		priority?:string;
+		maxAgents?:number;
+}):Promise<Record<string, unknown>> {
 		return await this.request("/v1/swarm/tasks", {
-			method: "POST",
-			body: JSON.stringify(taskConfig),
-		});
-	}
+			method:"POST",
+			body:JSON.stringify(taskConfig),
+});
+}
 
-	async getSwarmStatus(swarmId?: string): Promise<Record<string, unknown>> {
+	async getSwarmStatus(swarmId?:string): Promise<Record<string, unknown>> {
 		const endpoint = swarmId
 			? `/v1/swarm/${swarmId}/status`
-			: "/v1/swarm/status";
+			:"/v1/swarm/status";
 		return await this.request(endpoint);
-	}
+}
 
-	async getSwarmTasks(taskId?: string): Promise<Record<string, unknown>> {
-		const endpoint = taskId ? `/v1/swarm/tasks/${taskId}` : "/v1/swarm/tasks";
+	async getSwarmTasks(taskId?:string): Promise<Record<string, unknown>> {
+		const endpoint = taskId ? `/v1/swarm/tasks/${taskId}` :"/v1/swarm/tasks";
 		return await this.request(endpoint);
-	}
+}
 
-	async getSwarmStats(): Promise<Record<string, unknown>> {
+	async getSwarmStats():Promise<Record<string, unknown>> {
 		return await this.request("/v1/swarm/stats");
-	}
+}
 
-	async shutdownSwarm(): Promise<Record<string, unknown>> {
+	async shutdownSwarm():Promise<Record<string, unknown>> {
 		return await this.request("/v1/swarm/shutdown", {
-			method: "POST",
-		});
-	}
+			method:"POST",
+});
+}
 
 	// ===== PROJECT MANAGEMENT (Enhanced) =====
 
-	async getProjects(): Promise<Project[]> {
-		const response = await this.request<{ projects: Project[]; total: number }>(
+	async getProjects():Promise<Project[]> {
+		const response = await this.request<{ projects:Project[]; total: number}>(
 			"/v1/projects",
 		);
 		return response.projects || [];
-	}
+}
 
-	async getCurrentProject(): Promise<Project> {
+	async getCurrentProject():Promise<Project> {
 		return await this.request<Project>("/v1/projects/current");
-	}
+}
 
-	async getProject(projectId: string): Promise<Project> {
+	async getProject(projectId:string): Promise<Project> {
 		return await this.request<Project>(`/v1/projects/${projectId}`);
-	}
+}
 
 	async switchProject(
-		projectId: string,
-		projectPath?: string,
-	): Promise<Record<string, unknown>> {
+		projectId:string,
+		projectPath?:string,
+	):Promise<Record<string, unknown>> {
 		return await this.request("/v1/projects/switch", {
-			method: "POST",
-			body: JSON.stringify({ projectId, projectPath }),
-		});
-	}
+			method:"POST",
+			body:JSON.stringify({ projectId, projectPath}),
+});
+}
 
-	async switchToProject(projectId: string): Promise<Record<string, unknown>> {
+	async switchToProject(projectId:string): Promise<Record<string, unknown>> {
 		return await this.request(`/v1/projects/${projectId}/switch`, {
-			method: "POST",
-		});
-	}
+			method:"POST",
+});
+}
 
-	async getProjectStatus(): Promise<Record<string, unknown>> {
+	async getProjectStatus():Promise<Record<string, unknown>> {
 		return await this.request("/v1/projects/status");
-	}
+}
 
-	async cleanupProjectRegistry(): Promise<Record<string, unknown>> {
+	async cleanupProjectRegistry():Promise<Record<string, unknown>> {
 		return await this.request("/v1/projects/cleanup", {
-			method: "POST",
-		});
-	}
+			method:"POST",
+});
+}
 
-	async createProject(projectData: Partial<Project>): Promise<Project> {
+	async createProject(projectData:Partial<Project>): Promise<Project> {
 		return await this.request<Project>("/v1/projects", {
-			method: "POST",
-			body: JSON.stringify(projectData),
-		});
-	}
+			method:"POST",
+			body:JSON.stringify(projectData),
+});
+}
 
 	// ===== PROJECT MODE MANAGEMENT API =====
 
-	async getProjectModes(projectId: string): Promise<Record<string, unknown>> {
+	async getProjectModes(projectId:string): Promise<Record<string, unknown>> {
 		return await this.request(`/v1/projects/${projectId}/modes`);
-	}
+}
 
-	async getModeCapabilities(mode: string): Promise<Record<string, unknown>> {
+	async getModeCapabilities(mode:string): Promise<Record<string, unknown>> {
 		return await this.request(`/v1/projects/modes/${mode}/capabilities`);
-	}
+}
 
 	async upgradeProjectMode(
-		projectId: string,
-		upgradeData: {
-			toMode: string;
-			preserveData?: boolean;
-			backupBeforeMigration?: boolean;
-			validateAfterMigration?: boolean;
-		},
-	): Promise<Record<string, unknown>> {
+		projectId:string,
+		upgradeData:{
+			toMode:string;
+			preserveData?:boolean;
+			backupBeforeMigration?:boolean;
+			validateAfterMigration?:boolean;
+},
+	):Promise<Record<string, unknown>> {
 		return await this.request(`/v1/projects/${projectId}/modes/upgrade`, {
-			method: "POST",
-			body: JSON.stringify(upgradeData),
-		});
-	}
+			method:"POST",
+			body:JSON.stringify(upgradeData),
+});
+}
 
 	async getProjectUpgradePaths(
-		projectId: string,
-	): Promise<Record<string, unknown>> {
+		projectId:string,
+	):Promise<Record<string, unknown>> {
 		return await this.request(`/v1/projects/${projectId}/modes/upgrade-paths`);
-	}
+}
 
 	async getSchemaMigrationPath(
-		fromVersion: string,
-		toVersion: string,
-	): Promise<Record<string, unknown>> {
-		const params = new URLSearchParams({ fromVersion, toVersion });
+		fromVersion:string,
+		toVersion:string,
+	):Promise<Record<string, unknown>> {
+		const params = new URLSearchParams({ fromVersion, toVersion});
 		return await this.request(`/v1/projects/schema/migration-path?${params}`);
-	}
+}
 
-	async getAllProjectModes(): Promise<Record<string, unknown>> {
+	async getAllProjectModes():Promise<Record<string, unknown>> {
 		return await this.request("/v1/projects/modes");
-	}
+}
 
 	// ========================================
 	// SAFe 6.0 ESSENTIAL API (REPLACES LEGACY ROADMAP/MILESTONE METHODS)
@@ -557,173 +559,173 @@ class ApiClient {
 
 	// ===== SYSTEM CAPABILITY API =====
 
-	async getSystemCapabilityStatus(): Promise<Record<string, unknown>> {
+	async getSystemCapabilityStatus():Promise<Record<string, unknown>> {
 		return await this.request("/v1/system/capability/status");
-	}
+}
 
-	async getSystemCapabilityFacades(): Promise<Record<string, unknown>> {
+	async getSystemCapabilityFacades():Promise<Record<string, unknown>> {
 		return await this.request("/v1/system/capability/facades");
-	}
+}
 
-	async getSystemCapabilitySuggestions(): Promise<Record<string, unknown>> {
+	async getSystemCapabilitySuggestions():Promise<Record<string, unknown>> {
 		return await this.request("/v1/system/capability/suggestions");
-	}
+}
 
-	async getSystemCapabilityDetailed(): Promise<Record<string, unknown>> {
+	async getSystemCapabilityDetailed():Promise<Record<string, unknown>> {
 		return await this.request("/v1/system/capability/detailed");
-	}
+}
 
-	async getSystemCapabilityHealth(): Promise<Record<string, unknown>> {
+	async getSystemCapabilityHealth():Promise<Record<string, unknown>> {
 		return await this.request("/v1/system/capability/health");
-	}
+}
 
-	async getSystemCapabilityScores(): Promise<Record<string, unknown>> {
+	async getSystemCapabilityScores():Promise<Record<string, unknown>> {
 		return await this.request("/v1/system/capability/scores");
-	}
+}
 
 	// ===== FACADE MONITORING API =====
 
-	async getFacadeStatus(): Promise<Record<string, unknown>> {
+	async getFacadeStatus():Promise<Record<string, unknown>> {
 		return await this.request("/v1/facades/status");
-	}
+}
 
-	async getFacadeHealth(facadeName?: string): Promise<Record<string, unknown>> {
+	async getFacadeHealth(facadeName?:string): Promise<Record<string, unknown>> {
 		const endpoint = facadeName
 			? `/v1/facades/${facadeName}/health`
-			: "/v1/facades/health";
+			:"/v1/facades/health";
 		return await this.request(endpoint);
-	}
+}
 
 	async getFacadePackages(
-		facadeName: string,
-	): Promise<Record<string, unknown>> {
+		facadeName:string,
+	):Promise<Record<string, unknown>> {
 		return await this.request(`/v1/facades/${facadeName}/packages`);
-	}
+}
 
 	async getFacadeServices(
-		facadeName: string,
-	): Promise<Record<string, unknown>> {
+		facadeName:string,
+	):Promise<Record<string, unknown>> {
 		return await this.request(`/v1/facades/${facadeName}/services`);
-	}
+}
 
 	async refreshFacadeStatus(
-		facadeName?: string,
-	): Promise<Record<string, unknown>> {
+		facadeName?:string,
+	):Promise<Record<string, unknown>> {
 		const endpoint = facadeName
 			? `/v1/facades/${facadeName}/refresh`
-			: "/v1/facades/refresh";
-		return await this.request(endpoint, { method: "POST" });
-	}
+			:"/v1/facades/refresh";
+		return await this.request(endpoint, { method:"POST"});
+}
 
 	async getPackageStatus(
-		packageName: string,
-	): Promise<Record<string, unknown>> {
+		packageName:string,
+	):Promise<Record<string, unknown>> {
 		return await this.request(
 			`/v1/facades/packages/${encodeURIComponent(packageName)}/status`,
 		);
-	}
+}
 
 	async getServiceStatus(
-		serviceName: string,
-	): Promise<Record<string, unknown>> {
+		serviceName:string,
+	):Promise<Record<string, unknown>> {
 		return await this.request(
 			`/v1/facades/services/${encodeURIComponent(serviceName)}/status`,
 		);
-	}
+}
 
-	async getFacadeMetrics(): Promise<Record<string, unknown>> {
+	async getFacadeMetrics():Promise<Record<string, unknown>> {
 		return await this.request("/v1/facades/metrics");
-	}
+}
 
 	async getFacadeHistory(
-		facadeName: string,
-		timeRange?: string,
-	): Promise<Record<string, unknown>> {
-		const params = timeRange ? `?timeRange=${timeRange}` : "";
+		facadeName:string,
+		timeRange?:string,
+	):Promise<Record<string, unknown>> {
+		const params = timeRange ? `?timeRange=${timeRange}` :"";
 		return await this.request(`/v1/facades/${facadeName}/history${params}`);
-	}
+}
 
-	async getSystemDependencies(): Promise<Record<string, unknown>> {
+	async getSystemDependencies():Promise<Record<string, unknown>> {
 		return await this.request("/v1/facades/dependencies");
-	}
+}
 
 	// ===== TASKMASTER SAFE WORKFLOW API =====
 
-	async getTaskMasterMetrics(): Promise<Record<string, unknown>> {
+	async getTaskMasterMetrics():Promise<Record<string, unknown>> {
 		return await this.request("/v1/taskmaster/metrics");
-	}
+}
 
-	async getTaskMasterHealth(): Promise<Record<string, unknown>> {
+	async getTaskMasterHealth():Promise<Record<string, unknown>> {
 		return await this.request("/v1/taskmaster/health");
-	}
+}
 
-	async getTaskMasterDashboard(): Promise<Record<string, unknown>> {
+	async getTaskMasterDashboard():Promise<Record<string, unknown>> {
 		return await this.request("/v1/taskmaster/dashboard");
-	}
+}
 
-	async createSAFeTask(taskData: {
-		title: string;
-		description?: string;
-		priority: "critical" | "high" | "medium" | "low";
-		estimatedEffort: number;
-		assignedAgent?: string;
-	}): Promise<Record<string, unknown>> {
+	async createSAFeTask(taskData:{
+		title:string;
+		description?:string;
+		priority:"critical" | "high" | "medium" | "low";
+		estimatedEffort:number;
+		assignedAgent?:string;
+}):Promise<Record<string, unknown>> {
 		return await this.request("/v1/taskmaster/tasks", {
-			method: "POST",
-			body: JSON.stringify(taskData),
-		});
-	}
+			method:"POST",
+			body:JSON.stringify(taskData),
+});
+}
 
-	async getTaskMasterTask(taskId: string): Promise<Record<string, unknown>> {
+	async getTaskMasterTask(taskId:string): Promise<Record<string, unknown>> {
 		return await this.request(`/v1/taskmaster/tasks/${taskId}`);
-	}
+}
 
 	async moveSAFeTask(
-		taskId: string,
-		toState: string,
-	): Promise<Record<string, unknown>> {
+		taskId:string,
+		toState:string,
+	):Promise<Record<string, unknown>> {
 		return await this.request(`/v1/taskmaster/tasks/${taskId}/move`, {
-			method: "PUT",
-			body: JSON.stringify({ toState }),
-		});
-	}
+			method:"PUT",
+			body:JSON.stringify({ toState}),
+});
+}
 
-	async getTasksByState(state: string): Promise<Record<string, unknown>> {
+	async getTasksByState(state:string): Promise<Record<string, unknown>> {
 		return await this.request(`/v1/taskmaster/tasks/state/${state}`);
-	}
+}
 
-	async createPIPlanningEvent(eventData: {
-		planningIntervalNumber: number;
-		artId: string;
-		startDate: string;
-		endDate: string;
-		facilitator: string;
-	}): Promise<Record<string, unknown>> {
+	async createPIPlanningEvent(eventData:{
+		planningIntervalNumber:number;
+		artId:string;
+		startDate:string;
+		endDate:string;
+		facilitator:string;
+}):Promise<Record<string, unknown>> {
 		return await this.request("/v1/taskmaster/pi-planning", {
-			method: "POST",
-			body: JSON.stringify(eventData),
-		});
-	}
+			method:"POST",
+			body:JSON.stringify(eventData),
+});
+}
 
 	// Convenience methods for SAFe workflow states
-	async getAllSAFeTasks(): Promise<{
-		backlog: Record<string, unknown>[];
-		analysis: Record<string, unknown>[];
-		development: Record<string, unknown>[];
-		testing: Record<string, unknown>[];
-		review: Record<string, unknown>[];
-		deployment: Record<string, unknown>[];
-		done: Record<string, unknown>[];
-		blocked: Record<string, unknown>[];
-	}> {
+	async getAllSAFeTasks():Promise<{
+		backlog:Record<string, unknown>[];
+		analysis:Record<string, unknown>[];
+		development:Record<string, unknown>[];
+		testing:Record<string, unknown>[];
+		review:Record<string, unknown>[];
+		deployment:Record<string, unknown>[];
+		done:Record<string, unknown>[];
+		blocked:Record<string, unknown>[];
+}> {
 		const dashboard = await this.getTaskMasterDashboard();
 		return dashboard.data.tasksByState;
-	}
+}
 
-	async getSAFeFlowMetrics(): Promise<Record<string, unknown>> {
+	async getSAFeFlowMetrics():Promise<Record<string, unknown>> {
 		const metrics = await this.getTaskMasterMetrics();
 		return metrics.data;
-	}
+}
 }
 
 // Export singleton instance

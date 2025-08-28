@@ -11,44 +11,44 @@ export * from "./primitives";
 
 // Additional basic entity patterns
 export interface Timestamped {
-	createdAt: number;
-	updatedAt: number;
+	createdAt:number;
+	updatedAt:number;
 }
 
 export interface Identifiable<T = string> {
-	id: T;
+	id:T;
 }
 
 export interface Entity extends Timestamped, Identifiable<string> {
-	name: string;
-	version: number;
-	isActive: boolean;
+	name:string;
+	version:number;
+	isActive:boolean;
 }
 
 // Generic utility patterns
 export interface Paginated<T> {
-	items: T[];
-	totalItems: number;
-	totalPages: number;
-	currentPage: number;
-	pageSize: number;
+	items:T[];
+	totalItems:number;
+	totalPages:number;
+	currentPage:number;
+	pageSize:number;
 }
 
 export interface PaginationOptions {
-	page?: number;
-	limit?: number;
-	offset?: number;
+	page?:number;
+	limit?:number;
+	offset?:number;
 }
 
 // Result pattern for error handling
 export interface SuccessResult<T> {
-	success: true;
-	data: T;
+	success:true;
+	data:T;
 }
 
 export interface ErrorResult<E> {
-	success: false;
-	error: E;
+	success:false;
+	error:E;
 }
 
 export type Result<T, E = Error> = SuccessResult<T> | ErrorResult<E>;
@@ -58,20 +58,20 @@ export type AsyncOperationResult<T, E = Error> = Promise<Result<T, E>>;
 
 // Query patterns
 export interface QueryCriteria {
-	filters?: Record<string, unknown>;
-	sort?: { field: string; direction: "asc|desc" }[];
-	pagination?: PaginationOptions;
+	filters?:Record<string, unknown>;
+	sort?:{ field: string; direction: "asc|desc"}[];
+	pagination?:PaginationOptions;
 }
 
 // Audit and versioning
 export interface AuditEntry extends Timestamped {
-	id: string;
-	entityId: string;
-	entityType: string;
-	action: string;
-	changes: Record<string, unknown>;
-	userId?: string;
-	metadata?: Record<string, unknown>;
+	id:string;
+	entityId:string;
+	entityType:string;
+	action:string;
+	changes:Record<string, unknown>;
+	userId?:string;
+	metadata?:Record<string, unknown>;
 }
 
 // Additional utility types needed by brain package
@@ -89,54 +89,50 @@ export type LogLevel = "debug|info|warn|error|fatal";
  * that enhance the foundation type system for complex transformations.
  *
  * @example String Manipulation
- * ```typescript
+ * ```typescript`
  * // Create union types with autocomplete support
  * type ModelName = LiteralUnion<'claude-3|gpt-4', string>;
- * const model: ModelName = 'claude-3'; // ✅ Autocomplete
- * const customModel: ModelName = 'custom-model'; // ✅ Also valid
+ * const model:ModelName = 'claude-3'; // ✅ Autocomplete
+ * const customModel:ModelName = 'custom-model'; // ✅ Also valid
  *
  * // Case conversions
- * type ApiKey = CamelCase<'api_key'>; // 'apiKey'
- * type UrlPath = KebabCase<'getUserProfile'>; // 'get-user-profile'
- * ```
+ * type ApiKey = CamelCase<'api_key'>; // ' apiKey') * type UrlPath = KebabCase<'getUserProfile'>; // ' get-user-profile') * ```
  *
  * @example Object Manipulation
- * ```typescript
+ * ```typescript`
  * interface User {
- *   id: string;
- *   name: string;
- *   email: string;
- *   metadata?: Record<string, unknown>;
- * }
+ *   id:string;
+ *   name:string;
+ *   email:string;
+ *   metadata?:Record<string, unknown>;
+ *}
  *
  * // Make specific properties optional
  * type UserInput = SetOptional<User, 'id|metadata'>;
  *
  * // Merge interfaces intelligently
- * type ExtendedUser = Merge<User, { lastLogin: Date; permissions: string[] }>;
+ * type ExtendedUser = Merge<User, { lastLogin:Date; permissions: string[]}>;
  *
  * // Deep partial for nested objects
  * type UserUpdate = PartialDeep<User>;
  * ```
  *
  * @example Configuration Types
- * ```typescript
+ * ```typescript`
  * // Type-safe package.json handling
- * import type { PackageJson } from '@claude-zen/foundation';
+ * import type { PackageJson} from '@claude-zen/foundation';
  *
- * function validatePackage(pkg: PackageJson): boolean {
- *   return typeof pkg.name === 'string' && typeof pkg.version === 'string';
- * }
+ * function validatePackage(pkg:PackageJson): boolean {
+ *   return typeof pkg.name === 'string' && typeof pkg.version === ' string';
+ *}
  *
  * // Type-safe tsconfig.json
- * import type { TsConfigJson } from '@claude-zen/foundation';
+ * import type { TsConfigJson} from '@claude-zen/foundation';
  *
- * const config: TsConfigJson = {
- *   compilerOptions: {
- *     target: 'ES2022',
- *     module: 'ESNext'
- *   }
- * };
+ * const config:TsConfigJson = {
+ *   compilerOptions:{
+ *     target: 'ES2022', *     module:'ESNext') *}
+ *};
  * ```
  */
 export type {
@@ -224,11 +220,11 @@ export type {
  * All utilities now sourced from type-fest for consistency.
  *
  * @example Deep Type Operations (type-fest equivalents)
- * ```typescript
+ * ```typescript`
  * interface Config {
- *   database: { host: string; port: number; };
- *   api: { baseUrl: string; timeout: number; };
- * }
+ *   database:{ host: string; port: number;};
+ *   api:{ baseUrl: string; timeout: number;};
+ *}
  *
  * // type-fest provides these
  * type ConfigUpdate = PartialDeep<Config>; // Instead of DeepPartial
@@ -258,12 +254,12 @@ export type MarkReadonly<
 
 // Additional utility types
 export type StrictOmit<T, K extends keyof T> = import("type-fest").Except<T, K>;
-export type NonNever<T> = T extends never ? never : T;
+export type NonNever<T> = T extends never ? never:T;
 
 // Type checking utilities
 export type Primitive = string | number | boolean | symbol | null | undefined;
 export type AsyncOrSync<T> = T | Promise<T>;
-export type AsyncOrSyncType<T> = T extends Promise<infer U> ? U : T;
+export type AsyncOrSyncType<T> = T extends Promise<infer U> ? U:T;
 
 // Object utilities
 export type ValueOf<T> = T[keyof T];
@@ -276,28 +272,28 @@ export type Head<T extends readonly unknown[]> = T extends readonly [
 	...unknown[],
 ]
 	? H
-	: never;
+	:never;
 export type Tail<T extends readonly unknown[]> = T extends readonly [
 	unknown,
 	...infer Rest,
 ]
 	? Rest
-	: [];
+	:[];
 export type ReadonlyKeys<T> = {
-	[K in keyof T]: T[K] extends Readonly<T[K]> ? K : never;
+	[K in keyof T]:T[K] extends Readonly<T[K]> ? K: never;
 }[keyof T];
 export type WritableKeys<T> = {
-	[K in keyof T]: T[K] extends Readonly<T[K]> ? never : K;
+	[K in keyof T]:T[K] extends Readonly<T[K]> ? never: K;
 }[keyof T];
 export type RequiredKeys<T> = {
-	[K in keyof T]: T extends Record<K, T[K]> ? K : never;
+	[K in keyof T]:T extends Record<K, T[K]> ? K:never;
 }[keyof T];
 export type OptionalKeys<T> = {
-	[K in keyof T]: T extends Record<K, T[K]> ? never : K;
+	[K in keyof T]:T extends Record<K, T[K]> ? never:K;
 }[keyof T];
 
 // Function utilities
-export type AnyFunction = (...args: unknown[]) => unknown;
+export type AnyFunction = (...args:unknown[]) => unknown;
 
 // =============================================================================
 // TYPE GUARDS AND UTILITIES - Runtime type checking and validation
@@ -368,4 +364,4 @@ export {
 // =============================================================================
 
 // Agent types moved to @claude-zen/intelligence
-// Use: import { AgentInstance, AgentRegistrationConfig } from '@claude-zen/intelligence';
+// Use:import { AgentInstance, AgentRegistrationConfig} from '@claude-zen/intelligence';

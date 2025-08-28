@@ -1,4 +1,4 @@
-import { vi } from 'vitest';
+import { vi} from 'vitest';
 
 // Global test setup
 beforeEach(() => {
@@ -8,7 +8,7 @@ beforeEach(() => {
   // Reset any global state
   if (global.gc) {
     global.gc();
-  }
+}
 });
 
 afterEach(() => {
@@ -19,11 +19,11 @@ afterEach(() => {
 // Mock console methods to reduce noise in tests
 global.console = {
   ...console,
-  log: vi.fn(),
-  debug: vi.fn(),
-  info: vi.fn(),
-  warn: vi.fn(),
-  error: vi.fn(),
+  log:vi.fn(),
+  debug:vi.fn(),
+  info:vi.fn(),
+  warn:vi.fn(),
+  error:vi.fn(),
 };
 
 // Setup test environment variables
@@ -32,5 +32,5 @@ process.env.LOG_LEVEL = 'silent';
 
 // Global error handler for unhandled promise rejections
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  console.error('Unhandled Rejection at:', promise, ' reason:', reason);
 });

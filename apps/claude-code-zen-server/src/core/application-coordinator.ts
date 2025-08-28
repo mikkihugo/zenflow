@@ -6,7 +6,7 @@
  * preserving the expected interface.
  */
 
-import { EventEmitter, getLogger } from '@claude-zen/foundation';
+import { EventEmitter, getLogger} from '@claude-zen/foundation';
 
 const logger = getLogger('application-coordinator');
 
@@ -14,87 +14,87 @@ const logger = getLogger('application-coordinator');
 const STATUS_CHANGED_EVENT = 'status-changed';
 
 export interface ApplicationCoordinatorConfig {
-  memory?: {
-    directory?: string;
-    enableCache?: boolean;
-    enableVectorStorage?: boolean;
-  };
-  workflow?: {
-    maxConcurrentWorkflows?: number;
-  };
-  documentation?: {
-    documentationPaths?: string[];
-    codePaths?: string[];
-    enableAutoLinking?: boolean;
-  };
-  export?: {
-    defaultFormat?: string;
-    outputPath?: string;
-  };
-  workspace?: {
-    root?: string;
-    autoDetect?: boolean;
-  };
-  interface?: {
-    defaultMode?: 'auto' | 'cli' | 'web';
-    webPort?: number;
-    theme?: string;
-    enableRealTime?: boolean;
-  };
+  memory?:{
+    directory?:string;
+    enableCache?:boolean;
+    enableVectorStorage?:boolean;
+};
+  workflow?:{
+    maxConcurrentWorkflows?:number;
+};
+  documentation?:{
+    documentationPaths?:string[];
+    codePaths?:string[];
+    enableAutoLinking?:boolean;
+};
+  export?:{
+    defaultFormat?:string;
+    outputPath?:string;
+};
+  workspace?:{
+    root?:string;
+    autoDetect?:boolean;
+};
+  interface?:{
+    defaultMode?:'auto' | ' cli' | ' web';
+    webPort?:number;
+    theme?:string;
+    enableRealTime?:boolean;
+};
 }
 
 export interface SystemStatus {
-  status: 'initializing' | 'ready' | 'error' | 'shutdown';
-  version: string;
-  components: {
-    interface: {
-      status: string;
-      mode?: string;
-    };
-    memory: { status: string; sessions: number; size?: number };
-    workflow: { status: string; activeWorkflows: number };
-    export: { status: string; availableFormats?: number };
-    documentation: { status: string; documentsIndexed: number };
-    workspace: {
-      status: string;
-      workspaceId?: string;
-      documentsLoaded: number;
-    };
-  };
-  uptime: number;
-  lastUpdate: string;
+  status:'initializing' | ' ready' | ' error' | ' shutdown';
+  version:string;
+  components:{
+    interface:{
+      status:string;
+      mode?:string;
+};
+    memory:{ status: string; sessions: number; size?: number};
+    workflow:{ status: string; activeWorkflows: number};
+    export:{ status: string; availableFormats?: number};
+    documentation:{ status: string; documentsIndexed: number};
+    workspace:{
+      status:string;
+      workspaceId?:string;
+      documentsLoaded:number;
+};
+};
+  uptime:number;
+  lastUpdate:string;
 }
 
 /**
  * Simplified Application Coordinator stub to fix compilation.
- * TODO: Restore full functionality from corrupted original.
+ * TODO:Restore full functionality from corrupted original.
  */
 export class ApplicationCoordinator extends EventEmitter {
-  private status: SystemStatus['status'] = 'initializing';
-  private startTime: number;
+  private status:SystemStatus['status'] = ' initializing';
+  private startTime:number;
   private initialized = false;
-  private activeWorkspaceId?: string;
-  private configuration: ApplicationCoordinatorConfig;
+  private activeWorkspaceId?:string;
+  private configuration:ApplicationCoordinatorConfig;
 
-  constructor(config: ApplicationCoordinatorConfig = {}) {
+  constructor(config:ApplicationCoordinatorConfig = {}) {
     super();
     this.configuration = config;
     this.startTime = Date.now();
     this.initializeComponents();
     this.setupEventHandlers();
-  }
+}
 
-  private initializeComponents(): void {
+  private initializeComponents():void {
     // Minimal component initialization
     logger.info('Components initialized (stub mode)');
-  }
+}
 
-  private setupEventHandlers(): void {
+  private setupEventHandlers():void {
     // Basic event handler setup
     logger.info('Event handlers configured (stub mode)');
-  }
+}
 
-  async initialize(): Promise<void> {
+  async initialize():Promise<void> {
     if (this.initialized) return;
 
     logger.info('🚀 Initializing Application Coordinator (stub mode)');
@@ -111,75 +111,68 @@ export class ApplicationCoordinator extends EventEmitter {
       this.emit('initialized', {});
 
       logger.info('✅ Application Coordinator ready (stub mode)');
-    } catch (error) {
+} catch (error) {
       this.status = 'error';
       this.emit(STATUS_CHANGED_EVENT, this.status);
-      logger.error('❌ Failed to initialize Application Coordinator:', error);
+      logger.error('❌ Failed to initialize Application Coordinator: ', error);
       throw error;
-    }
-  }
+}
+}
 
-  async launch(): Promise<void> {
+  async launch():Promise<void> {
     await this.ensureInitialized();
     logger.info('Interface launched (stub mode)');
-  }
+}
 
-  getSystemStatus(): SystemStatus {
+  getSystemStatus():SystemStatus {
     return {
-      status: this.status,
-      version: '2.0.0-stub',
-      components: {
-        interface: {
-          status: 'ready',
-          mode: 'auto',
-        },
-        memory: {
-          status: 'ready',
-          sessions: 0,
-        },
-        workflow: {
-          status: 'ready',
-          activeWorkflows: 0,
-        },
-        export: { status: 'ready' },
-        documentation: {
-          status: 'ready',
-          documentsIndexed: 0,
-        },
-        workspace: {
-          status: this.activeWorkspaceId ? 'ready' : 'none',
-          documentsLoaded: 0,
-        },
-      },
-      uptime: Date.now() - this.startTime,
-      lastUpdate: new Date().toISOString(),
-    };
-  }
+      status:this.status,
+      version: '2.0.0-stub',      components:{
+        interface:{
+          status: 'ready',          mode: 'auto',},
+        memory:{
+          status: 'ready',          sessions:0,
+},
+        workflow:{
+          status: 'ready',          activeWorkflows:0,
+},
+        export:{ status: 'ready'},
+        documentation:{
+          status: 'ready',          documentsIndexed:0,
+},
+        workspace:{
+          status:this.activeWorkspaceId ? 'ready' : ' none',          documentsLoaded:0,
+},
+},
+      uptime:Date.now() - this.startTime,
+      lastUpdate:new Date().toISOString(),
+};
+}
 
-  async processDocument(documentPath: string): Promise<{
-    success: boolean;
-    workflowIds: string[];
-    error?: string;
-  }> {
+  async processDocument(documentPath:string): Promise<{
+    success:boolean;
+    workflowIds:string[];
+    error?:string;
+}> {
     await this.ensureInitialized();
-    logger.info(`Processing document: ${documentPath} (stub mode)`);
+    logger.info(`Processing document:${documentPath} (stub mode)`);
     return {
-      success: true,
-      workflowIds: [],
-    };
-  }
+      success:true,
+      workflowIds:[],
+};
+}
 
-  async exportSystemData(format: string): Promise<{
-    success: boolean;
-    filename?: string;
-    error?: string;
-  }> {
+  async exportSystemData(format:string): Promise<{
+    success:boolean;
+    filename?:string;
+    error?:string;
+}> {
     await this.ensureInitialized();
     logger.info(`Exporting system data to ${format} (stub mode)`);
     return { success: true, filename: `export.${format}` };
-  }
+}
 
-  async generateSystemReport(): Promise<string> {
+  async generateSystemReport():Promise<string> {
     await this.ensureInitialized();
     const status = await this.getSystemStatus();
 
@@ -197,7 +190,7 @@ ${Object.entries(status.components)
 Note: This is a stub implementation. Full functionality needs restoration.`;
   }
 
-  async shutdown(): Promise<void> {
+  async shutdown():Promise<void> {
     logger.info('Shutting down Application Coordinator (stub mode)');
     this.status = 'shutdown';
     this.emit(STATUS_CHANGED_EVENT, this.status);
@@ -205,33 +198,33 @@ Note: This is a stub implementation. Full functionality needs restoration.`;
     this.emit('shutdown', {});
     await Promise.resolve(); // Add await expression for require-await rule
     logger.info('Application Coordinator shutdown complete');
-  }
+}
 
   getComponents() {
     return {
       // Stub components
-    };
-  }
+};
+}
 
-  private async ensureInitialized(): Promise<void> {
+  private async ensureInitialized():Promise<void> {
     if (!this.initialized) {
       await this.initialize();
-    }
-  }
+}
+}
 
   static async create(
-    config?: ApplicationCoordinatorConfig
-  ): Promise<ApplicationCoordinator> {
+    config?:ApplicationCoordinatorConfig
+  ):Promise<ApplicationCoordinator> {
     const coordinator = new ApplicationCoordinator(config);
     await coordinator.initialize();
     return coordinator;
-  }
+}
 
   static async quickStart(
-    config?: ApplicationCoordinatorConfig
-  ): Promise<ApplicationCoordinator> {
+    config?:ApplicationCoordinatorConfig
+  ):Promise<ApplicationCoordinator> {
     const coordinator = await ApplicationCoordinator.create(config);
     await coordinator.launch();
     return coordinator;
-  }
+}
 }

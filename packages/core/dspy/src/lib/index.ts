@@ -12,12 +12,12 @@
  * to automatically improve program behavior based on metrics and examples.
  *
  * **CORE DSPY CONCEPTS:**
- * - 🎯 **Signatures**: Declare what your function should do (input/output spec)
- * - 🔧 **Modules**: Composable building blocks that use signatures
- * - 📊 **Teleprompters**: Optimization algorithms that improve programs
- * - 📈 **Metrics**: Functions that measure program quality
- * - 📚 **Examples**: Training data for optimization
- * - 🔄 **Compilation**: Automatic program improvement process
+ * - 🎯 **Signatures**:Declare what your function should do (input/output spec)
+ * - 🔧 **Modules**:Composable building blocks that use signatures
+ * - 📊 **Teleprompters**:Optimization algorithms that improve programs
+ * - 📈 **Metrics**:Functions that measure program quality
+ * - 📚 **Examples**:Training data for optimization
+ * - 🔄 **Compilation**:Automatic program improvement process
  *
  * **ARCHITECTURE FLOW:**
  * ```
@@ -27,107 +27,107 @@
  * ```
  *
  * **SUPPORTED OPTIMIZATION ALGORITHMS:**
- * - 🚀 **BootstrapFewShot**: Learn from examples automatically
- * - 🎯 **MIPROv2**: Multi-prompt instruction optimization
- * - 🔄 **COPRO**: Collaborative prompt optimization
- * - 📊 **GEPA**: Generalized error-based prompt adaptation
- * - 🧠 **Ensemble**: Combine multiple optimized programs
- * - ⚡ **Random Search**: Bootstrap with random sampling
- * - 🎨 **Avatar Optimizer**: Action-based program optimization
- * - 🤝 **Better Together**: Collaborative multi-model optimization
+ * - 🚀 **BootstrapFewShot**:Learn from examples automatically
+ * - 🎯 **MIPROv2**:Multi-prompt instruction optimization
+ * - 🔄 **COPRO**:Collaborative prompt optimization
+ * - 📊 **GEPA**:Generalized error-based prompt adaptation
+ * - 🧠 **Ensemble**:Combine multiple optimized programs
+ * - ⚡ **Random Search**:Bootstrap with random sampling
+ * - 🎨 **Avatar Optimizer**:Action-based program optimization
+ * - 🤝 **Better Together**:Collaborative multi-model optimization
  *
  * **KEY CAPABILITIES:**
- * 1. **Automatic Prompt Optimization**: No more manual prompt engineering
- * 2. **Program Synthesis**: Generate programs from examples and metrics
- * 3. **Self-Improvement**: Programs get better through use and feedback
- * 4. **Composable Architecture**: Build complex programs from simple modules
- * 5. **Multi-Model Support**: Works with any LLM via Foundation integration
- * 6. **Metric-Driven**: Optimize for any measurable outcome
- * 7. **Production Ready**: Battle-tested optimization algorithms
- * 8. **Brain Integration**: Seamless integration with @claude-zen/brain
+ * 1. **Automatic Prompt Optimization**:No more manual prompt engineering
+ * 2. **Program Synthesis**:Generate programs from examples and metrics
+ * 3. **Self-Improvement**:Programs get better through use and feedback
+ * 4. **Composable Architecture**:Build complex programs from simple modules
+ * 5. **Multi-Model Support**:Works with any LLM via Foundation integration
+ * 6. **Metric-Driven**:Optimize for any measurable outcome
+ * 7. **Production Ready**:Battle-tested optimization algorithms
+ * 8. **Brain Integration**:Seamless integration with @claude-zen/brain
  *
  * **PERFORMANCE CHARACTERISTICS:**
- * - **Optimization Speed**: 10-100x faster than manual prompt engineering
- * - **Quality Improvement**: 20-50% better performance on benchmarks
- * - **Adaptability**: Continuous improvement through usage feedback
- * - **Scalability**: Handles complex multi-step reasoning chains
- * - **Robustness**: Resistant to prompt injection and edge cases
+ * - **Optimization Speed**:10-100x faster than manual prompt engineering
+ * - **Quality Improvement**:20-50% better performance on benchmarks
+ * - **Adaptability**:Continuous improvement through usage feedback
+ * - **Scalability**:Handles complex multi-step reasoning chains
+ * - **Robustness**:Resistant to prompt injection and edge cases
  *
  * **WHEN TO USE EACH OPTIMIZER:**
  *
  * 🚀 **BootstrapFewShot** - Quick optimization with examples
- * ```typescript
- * import { BootstrapFewShot } from '@claude-zen/dspy';
- * // USE FOR: Fast optimization, limited examples, simple tasks
- * // PERFORMANCE: Quick convergence, good baseline performance
- * // FEATURES: Few-shot learning, example-based optimization
+ * ```typescript`
+ * import { BootstrapFewShot} from '@claude-zen/dspy';
+ * // USE FOR:Fast optimization, limited examples, simple tasks
+ * // PERFORMANCE:Quick convergence, good baseline performance
+ * // FEATURES:Few-shot learning, example-based optimization
  * ```
  *
  * 🎯 **MIPROv2** - Advanced multi-prompt optimization
- * ```typescript
- * import { MIPROv2 } from '@claude-zen/dspy';
- * // USE FOR: Complex tasks, multiple instruction candidates
- * // PERFORMANCE: Best quality results, slower optimization
- * // FEATURES: Multi-prompt search, instruction optimization
+ * ```typescript`
+ * import { MIPROv2} from '@claude-zen/dspy';
+ * // USE FOR:Complex tasks, multiple instruction candidates
+ * // PERFORMANCE:Best quality results, slower optimization
+ * // FEATURES:Multi-prompt search, instruction optimization
  * ```
  *
  * 🔄 **COPRO** - Collaborative prompt optimization
- * ```typescript
- * import { COPRO } from '@claude-zen/dspy';
- * // USE FOR: Iterative improvement, collaborative optimization
- * // PERFORMANCE: Continuous improvement, adaptive learning
- * // FEATURES: Collaborative search, meta-optimization
+ * ```typescript`
+ * import { COPRO} from '@claude-zen/dspy';
+ * // USE FOR:Iterative improvement, collaborative optimization
+ * // PERFORMANCE:Continuous improvement, adaptive learning
+ * // FEATURES:Collaborative search, meta-optimization
  * ```
  *
  * 📊 **GEPA** - Error-based adaptation
- * ```typescript
- * import { GEPA } from '@claude-zen/dspy';
- * // USE FOR: Error-driven optimization, feedback-based improvement
- * // PERFORMANCE: Learns from failures, robust optimization
- * // FEATURES: Error analysis, adaptive feedback loops
+ * ```typescript`
+ * import { GEPA} from '@claude-zen/dspy';
+ * // USE FOR:Error-driven optimization, feedback-based improvement
+ * // PERFORMANCE:Learns from failures, robust optimization
+ * // FEATURES:Error analysis, adaptive feedback loops
  * ```
  *
  * 🧠 **Ensemble** - Combine multiple optimized programs
- * ```typescript
- * import { Ensemble } from '@claude-zen/dspy';
- * // USE FOR: Maximum accuracy, combining different approaches
- * // PERFORMANCE: Best overall quality, higher computational cost
- * // FEATURES: Multi-model ensemble, voting mechanisms
+ * ```typescript`
+ * import { Ensemble} from '@claude-zen/dspy';
+ * // USE FOR:Maximum accuracy, combining different approaches
+ * // PERFORMANCE:Best overall quality, higher computational cost
+ * // FEATURES:Multi-model ensemble, voting mechanisms
  * ```
  *
  * **INTEGRATION EXAMPLES:**
  *
  * @example Basic DSPy Program with Automatic Optimization
- * ```typescript
- * import { DSPyModule, BootstrapFewShot, BrainService } from '@claude-zen/dspy';
+ * ```typescript`
+ * import { DSPyModule, BootstrapFewShot, BrainService} from '@claude-zen/dspy';
  *
  * // Define a signature (what the program should do)
  * class QuestionAnswering extends DSPyModule {
  *   constructor() {
  *     super();
  *     this.generate_answer = this.createPredictor({
- *       signature: "question -> answer",
- *       instructions: "Answer the question accurately and concisely"
- *     });
- *   }
+ *       signature:"question -> answer",
+ *       instructions:"Answer the question accurately and concisely"
+ *});
+ *}
  *
- *   async forward(question: string) {
- *     return await this.generate_answer({ question });
- *   }
- * }
+ *   async forward(question:string) {
+ *     return await this.generate_answer({ question});
+ *}
+ *}
  *
  * // Create training examples
  * const examples = [
- *   { question: "What is the capital of France?", answer: "Paris" },
- *   { question: "Who wrote Romeo and Juliet?", answer: "William Shakespeare" }
- * ];
+ *   { question:"What is the capital of France?", answer:"Paris"},
+ *   { question:"Who wrote Romeo and Juliet?", answer:"William Shakespeare"}
+ *];
  *
  * // Optimize the program automatically
  * const optimizer = new BootstrapFewShot();
  * const optimized_qa = await optimizer.compile(new QuestionAnswering(), {
  *   examples,
- *   metric: (prediction, example) => prediction.answer === example.answer ? 1 : 0
- * });
+ *   metric:(prediction, example) => prediction.answer === example.answer ? 1:0
+ *});
  *
  * // Use the optimized program
  * const result = await optimized_qa.forward("What is the largest planet?");
@@ -135,153 +135,151 @@
  * ```
  *
  * @example Advanced Multi-Step Reasoning with Chain-of-Thought
- * ```typescript
- * import { DSPyModule, MIPROv2, Example } from '@claude-zen/dspy';
+ * ```typescript`
+ * import { DSPyModule, MIPROv2, Example} from '@claude-zen/dspy';
  *
  * class ChainOfThoughtReasoner extends DSPyModule {
  *   constructor() {
  *     super();
  *     this.think = this.createPredictor({
- *       signature: "question -> reasoning",
- *       instructions: "Think step by step about the problem"
- *     });
+ *       signature:"question -> reasoning",
+ *       instructions:"Think step by step about the problem"
+ *});
  *     this.answer = this.createPredictor({
- *       signature: "question, reasoning -> answer",
- *       instructions: "Provide a final answer based on your reasoning"
- *     });
- *   }
+ *       signature:"question, reasoning -> answer",
+ *       instructions:"Provide a final answer based on your reasoning"
+ *});
+ *}
  *
- *   async forward(question: string) {
- *     const reasoning_result = await this.think({ question });
+ *   async forward(question:string) {
+ *     const reasoning_result = await this.think({ question});
  *     const answer_result = await this.answer({
  *       question,
- *       reasoning: reasoning_result.reasoning
- *     });
+ *       reasoning:reasoning_result.reasoning
+ *});
  *     return {
- *       reasoning: reasoning_result.reasoning,
- *       answer: answer_result.answer
- *     };
- *   }
- * }
+ *       reasoning:reasoning_result.reasoning,
+ *       answer:answer_result.answer
+ *};
+ *}
+ *}
  *
  * // Advanced optimization with MIPROv2
  * const optimizer = new MIPROv2({
- *   num_candidates: 10,
- *   init_temperature: 1.0,
- *   verbose: true
- * });
+ *   num_candidates:10,
+ *   init_temperature:1.0,
+ *   verbose:true
+ *});
  *
  * const complex_examples = [
  *   {
- *     question: "If a train leaves NYC at 9am going 60mph to Boston (200 miles), when does it arrive?",
- *     expected_reasoning: "Distance = 200 miles, Speed = 60 mph, Time = Distance/Speed = 200/60 = 3.33 hours",
- *     expected_answer: "12:20 PM"
- *   }
- * ];
+ *     question:"If a train leaves NYC at 9am going 60mph to Boston (200 miles), when does it arrive?",
+ *     expected_reasoning:"Distance = 200 miles, Speed = 60 mph, Time = Distance/Speed = 200/60 = 3.33 hours",
+ *     expected_answer:"12:20 PM"
+ *}
+ *];
  *
  * const optimized_reasoner = await optimizer.compile(new ChainOfThoughtReasoner(), {
- *   examples: complex_examples,
- *   metric: (pred, example) => {
- *     const reasoning_score = pred.reasoning.includes("Distance") ? 0.5 : 0;
+ *   examples:complex_examples,
+ *   metric:(pred, example) => {
+ *     const reasoning_score = pred.reasoning.includes("Distance") ? 0.5:0;
  *     const answer_score = pred.answer.includes("12:20") ? 0.5 : 0;
  *     return reasoning_score + answer_score;
- *   }
- * });
+ *}
+ *});
  * ```
  *
  * @example Brain Integration - Autonomous DSPy Optimization
- * ```typescript
- * import { getBrainService, BrainService } from '@claude-zen/dspy';
+ * ```typescript`
+ * import { getBrainService, BrainService} from '@claude-zen/dspy';
  *
  * // Get brain-integrated DSPy service
  * const brainService = await getBrainService();
  *
  * // Brain automatically chooses best optimization strategy
  * const result = await brainService.optimize({
- *   task: "sentiment_analysis",
- *   examples: sentimentExamples,
- *   targetMetric: "f1_score",
- *   optimizationBudget: "medium" // Brain selects appropriate teleprompter
- * });
+ *   task:"sentiment_analysis",
+ *   examples:sentimentExamples,
+ *   targetMetric:"f1_score",
+ *   optimizationBudget:"medium" // Brain selects appropriate teleprompter
+ *});
  *
  * // Brain tracks performance and improves over time
  * console.log(`Optimized program achieved ${result.performance.f1_score} F1 score`);
- * console.log(`Brain recommendation: ${result.brainInsights.recommendedStrategy}`);
+ * console.log(`Brain recommendation:${result.brainInsights.recommendedStrategy}`);
  * ```
  *
  * @example Production Ensemble with Multiple Optimizers
- * ```typescript
- * import { Ensemble, BootstrapFewShot, MIPROv2, COPRO } from '@claude-zen/dspy';
+ * ```typescript`
+ * import { Ensemble, BootstrapFewShot, MIPROv2, COPRO} from '@claude-zen/dspy';
  *
  * class ProductionClassifier extends DSPyModule {
  *   constructor() {
  *     super();
  *     this.classify = this.createPredictor({
- *       signature: "text -> category, confidence",
- *       instructions: "Classify text into categories with confidence score"
- *     });
- *   }
+ *       signature:"text -> category, confidence",
+ *       instructions:"Classify text into categories with confidence score"
+ *});
+ *}
  *
- *   async forward(text: string) {
- *     return await this.classify({ text });
- *   }
- * }
+ *   async forward(text:string) {
+ *     return await this.classify({ text});
+ *}
+ *}
  *
  * // Create multiple optimized versions
  * const bootstrap_optimized = await new BootstrapFewShot().compile(
- *   new ProductionClassifier(), { examples, metric }
+ *   new ProductionClassifier(), { examples, metric}
  * );
  *
  * const mipro_optimized = await new MIPROv2().compile(
- *   new ProductionClassifier(), { examples, metric }
+ *   new ProductionClassifier(), { examples, metric}
  * );
  *
  * const copro_optimized = await new COPRO().compile(
- *   new ProductionClassifier(), { examples, metric }
+ *   new ProductionClassifier(), { examples, metric}
  * );
  *
  * // Combine into ensemble for best performance
  * const ensemble = new Ensemble({
- *   programs: [bootstrap_optimized, mipro_optimized, copro_optimized],
- *   strategy: 'vote', // or 'average', 'weighted'
- *   weights: [0.3, 0.5, 0.2] // Based on validation performance
- * });
+ *   programs:[bootstrap_optimized, mipro_optimized, copro_optimized],
+ *   strategy: 'vote', // or ' average',    'weighted') *   weights:[0.3, 0.5, 0.2] // Based on validation performance
+ *});
  *
  * // Production-ready classifier with ensemble power
  * const production_result = await ensemble.forward("This product is amazing!");
- * console.log(`Category: ${production_result.category}, Confidence: ${production_result.confidence}`);
+ * console.log(`Category:${production_result.category}, Confidence:${production_result.confidence}`);
  * ```
  *
  * @example Real-World Foundation LLM Integration
- * ```typescript
- * import { DSPyEngine, createDSPyEngine } from '@claude-zen/dspy';
+ * ```typescript`
+ * import { DSPyEngine, createDSPyEngine} from '@claude-zen/dspy';
  *
  * // Create DSPy engine with Foundation LLM integration
  * const dspyEngine = await createDSPyEngine({
- *   llm: {
- *     provider: 'openai', // Uses Foundation's LLM providers
- *     model: 'gpt-4',
- *     temperature: 0.1
- *   },
- *   caching: true, // Enable response caching
- *   telemetry: true, // Foundation telemetry integration
- *   rateLimiting: {
- *     requestsPerMinute: 60,
- *     adaptiveBackoff: true
- *   }
- * });
+ *   llm:{
+ *     provider: 'openai', // Uses Foundation' s LLM providers
+ *     model: 'gpt-4', *     temperature:0.1
+ *},
+ *   caching:true, // Enable response caching
+ *   telemetry:true, // Foundation telemetry integration
+ *   rateLimiting:{
+ *     requestsPerMinute:60,
+ *     adaptiveBackoff:true
+ *}
+ *});
  *
  * // Use real-world evaluation with Foundation's evaluation framework
  * const evaluator = new Evaluate({
- *   metric: async (prediction, example) => {
+ *   metric:async (prediction, example) => {
  *     // Uses Foundation's LLM for evaluation
  *     const score = await dspyEngine.evaluateQuality(prediction, example);
  *     return score;
- *   }
- * });
+ *}
+ *});
  *
  * const evaluation_results = await evaluator.evaluate(optimized_program, test_set);
- * console.log(`Program performance: ${evaluation_results.score}`);
+ * console.log(`Program performance:${evaluation_results.score}`);
  * ```
  *
  * **OPTIMIZATION STRATEGIES:**
@@ -342,8 +340,8 @@ export {
 	initializeBrainService,
 } from "../core/brain-service.js";
 // INTERNAL DSPy ENGINE (use Brain service instead of direct access)
-export { createDSPyEngine, DSPyEngine } from "../core/dspy-engine.js";
-export { getDSPyService, initializeDSPyService } from "../core/service.js";
+export { createDSPyEngine, DSPyEngine} from "../core/dspy-engine.js";
+export { getDSPyService, initializeDSPyService} from "../core/service.js";
 export {
 	type Adapter,
 	BaseAdapter,
@@ -382,11 +380,11 @@ export {
 	type TrainingData,
 	ValidationError,
 } from "../interfaces/types";
-export { Example } from "../primitives/example";
+export { Example} from "../primitives/example";
 // Core primitives
-export { DSPyModule } from "../primitives/module";
-export { type Prediction, PredictionUtils } from "../primitives/prediction";
-export { SeededRNG } from "../primitives/seeded-rng";
+export { DSPyModule} from "../primitives/module";
+export { type Prediction, PredictionUtils} from "../primitives/prediction";
+export { SeededRNG} from "../primitives/seeded-rng";
 export {
 	type ActionOutput,
 	type AvatarModule,
@@ -395,7 +393,7 @@ export {
 	type EvalResult,
 	type FeedbackBasedInstructionSignature,
 } from "../teleprompters/avatar-optimizer";
-export { BetterTogether } from "../teleprompters/better-together";
+export { BetterTogether} from "../teleprompters/better-together";
 export {
 	type BootstrapCompileOptions,
 	type BootstrapConfig,
@@ -424,8 +422,8 @@ export {
 	type GenerateInstructionGivenAttemptsSignature,
 	type InstructionCompletions,
 } from "../teleprompters/copro";
-export type { EnsembleConfig } from "../teleprompters/ensemble";
-export { Ensemble } from "../teleprompters/ensemble";
+export type { EnsembleConfig} from "../teleprompters/ensemble";
+export { Ensemble} from "../teleprompters/ensemble";
 export {
 	AUTO_RUN_SETTINGS,
 	type DSPyTrace,
@@ -440,19 +438,19 @@ export type {
 	MIPROv2Config,
 	TrialLog,
 } from "../teleprompters/miprov2";
-export { MIPROv2 } from "../teleprompters/miprov2";
-export { SignatureOptimizer } from "../teleprompters/signature-opt";
+export { MIPROv2} from "../teleprompters/miprov2";
+export { SignatureOptimizer} from "../teleprompters/signature-opt";
 // Teleprompters
-export { Teleprompter } from "../teleprompters/teleprompter";
+export { Teleprompter} from "../teleprompters/teleprompter";
 
 /**
  * Foundation-based Evaluate class for real evaluation
  */
 export class Evaluate {
-	async evaluate(program: any, dataset: any[]): Promise<{ score: number }> {
+	async evaluate(program:any, dataset:any[]): Promise<{ score: number}> {
 		try {
 			// Use foundation to perform real evaluation
-			const { getDSPyService } = await import("../core/service.js");
+			const { getDSPyService} = await import("../core/service.js");
 			const dspyService = await getDSPyService();
 
 			let totalScore = 0;
@@ -467,9 +465,9 @@ export class Evaluate {
 					const evaluationPrompt = `
 Evaluate this DSPy program output for accuracy and quality:
 
-Input: ${JSON.stringify(item.input || item)}
-Expected: ${JSON.stringify(item.output || item.expected || "No expected output")}
-Actual: ${JSON.stringify(result)}
+Input:${JSON.stringify(item.input || item)}
+Expected:${JSON.stringify(item.output || item.expected || "No expected output")}
+Actual:${JSON.stringify(result)}
 
 Rate the accuracy on a scale of 0.0 to 1.0 where:
 - 1.0 = Perfect match or excellent quality
@@ -483,10 +481,10 @@ Respond with just the numeric score (e.g., 0.85):`;
 					const scoreResponse = await dspyService.executePrompt(
 						evaluationPrompt,
 						{
-							temperature: 0.1,
-							maxTokens: 50,
-							role: "analyst" as "user" | "analyst" | "architect",
-						},
+							temperature:0.1,
+							maxTokens:50,
+							role:"analyst" as "user" | "analyst" | "architect",
+},
 					);
 
 					// Extract numeric score from response
@@ -496,25 +494,25 @@ Respond with just the numeric score (e.g., 0.85):`;
 						if (!Number.isNaN(score) && score >= 0 && score <= 1) {
 							totalScore += score;
 							validEvaluations++;
-						}
-					}
-				} catch (error) {
+}
+}
+} catch (error) {
 					// Log error but continue evaluation
 					dspyService.getLogger().warn("Evaluation failed for item:", error);
-				}
-			}
+}
+}
 
 			const finalScore =
-				validEvaluations > 0 ? totalScore / validEvaluations : 0.5;
+				validEvaluations > 0 ? totalScore / validEvaluations:0.5;
 
 			dspyService.getLogger().info("DSPy evaluation completed", {
-				totalItems: dataset.length,
+				totalItems:dataset.length,
 				validEvaluations,
-				averageScore: finalScore,
-			});
+				averageScore:finalScore,
+});
 
-			return { score: finalScore };
-		} catch (error) {
+			return { score:finalScore};
+} catch (error) {
 			// Fallback to simple heuristic evaluation if foundation fails
 			console.warn("Foundation evaluation failed, using fallback:", error);
 
@@ -530,24 +528,24 @@ Respond with just the numeric score (e.g., 0.85):`;
 						actual,
 					);
 					totalScore += similarity;
-				} catch {
+} catch {
 					totalScore += 0.1; // Small score for failed executions
-				}
-			}
+}
+}
 
-			return { score: dataset.length > 0 ? totalScore / dataset.length : 0.5 };
-		}
-	}
+			return { score:dataset.length > 0 ? totalScore / dataset.length : 0.5};
+}
+}
 
-	private calculateStringSimilarity(str1: string, str2: string): number {
+	private calculateStringSimilarity(str1:string, str2:string): number {
 		// Simple Jaccard similarity for fallback
 		const set1 = new Set(str1.toLowerCase().split(/\s+/));
 		const set2 = new Set(str2.toLowerCase().split(/\s+/));
 		const intersection = new Set([...set1].filter((x) => set2.has(x)));
 		const union = new Set([...set1, ...set2]);
-		return union.size > 0 ? intersection.size / union.size : 0;
-	}
+		return union.size > 0 ? intersection.size / union.size:0;
+}
 }
 
 // Re-export as named exports for better tree-shaking
-// Note: DSPyModule, Example, etc. are already exported above as named exports
+// Note:DSPyModule, Example, etc. are already exported above as named exports

@@ -48,6 +48,12 @@ export { ConfigurationError, createCircuitBreaker, err, isError, NetworkError, o
 export { EventEmitter } from "./events/event-emitter.js";
 // Modern event bus with full TypeScript generics  
 export { EventBus } from "./events/event-bus.js";
+// Development event logger
+export { EventLogger, logEvent, logFlow, logError } from "./events/event-logger.js";
+// Event catalog and validation
+export { EVENT_CATALOG, isValidEventName, getEventType, getAllEventNames, getEventsByCategory, CatalogEventLogger } from "./events/event-catalog.js";
+// Event registry initializer
+export { eventRegistryInitializer } from "./events/event-registry-initializer.js";
 // UTILITIES - Comprehensive utility functions
 // =============================================================================
 // INFRASTRUCTURE - Facade system and infrastructure utilities

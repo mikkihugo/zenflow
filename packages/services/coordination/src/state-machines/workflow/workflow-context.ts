@@ -11,7 +11,6 @@
  * @since 1.0.0
  * @version 1.0.0
  */
-
 import type {
   FlowMetrics,
   OptimizationStrategy,
@@ -20,16 +19,13 @@ import type {
   WorkflowBottleneck,
   WorkflowKanbanConfig,
   WorkflowTask,
-} from '../../kanban/types/index';
-// =============================================================================
+} from '../../kanban/types/index')// ============================================================================ = ';
 // XSTATE MACHINE CONTEXT DEFINITION
 // =============================================================================
-
 /**
  * XState machine context for workflow coordination
  *
- * Complete state structure containing all coordination data:
- * - Task management and indexing
+ * Complete state structure containing all coordination data: * - Task management and indexing
  * - WIP limit tracking and violations
  * - Bottleneck detection and history
  * - Flow metrics and analytics
@@ -37,10 +33,9 @@ import type {
  * - Error tracking and recovery
  */
 export interface WorkflowMachineContext {
-  // Task management
+  // Task management;
   tasks: Record<string, WorkflowTask>;
   tasksByState: Record<TaskState, string[]>;
-
   // WIP management
   wipLimits: WIPLimits;
   wipViolations: Array<{
@@ -48,46 +43,39 @@ export interface WorkflowMachineContext {
     count: number;
     limit: number;
     timestamp: Date;
-  }>;
-
+}>;
   // Bottleneck detection
   activeBottlenecks: WorkflowBottleneck[];
   bottleneckHistory: WorkflowBottleneck[];
-
   // Flow metrics
   currentMetrics: FlowMetrics| null;
-  metricsHistory: Array<{ timestamp: Date; metrics: FlowMetrics }>;
-
+  metricsHistory: Array<{ timestamp: Date; metrics: FlowMetrics}>;
   // System status
   systemHealth: number; // 0-1 range
   lastOptimization: Date| null;
   optimizationStrategy: OptimizationStrategy| null;
-
   // Configuration
   config: WorkflowKanbanConfig;
-
   // Error handling
   errors: Array<{
     timestamp: Date;
     error: string;
     context: string;
-  }>;
+}>'; 
 }
-
 // =============================================================================
 // CONTEXT INITIALIZATION
 // =============================================================================
-
 /**
  * Create initial workflow machine context with safe defaults
  */
 export const createInitialContext = (
   config: WorkflowKanbanConfig
-): WorkflowMachineContext => ({
+):WorkflowMachineContext => ({
   // Initialize task management structures
-  tasks: {},
+  tasks:{},
   tasksByState: {
-    backlog: [],
+    backlog:[],
     analysis: [],
     development: [],
     testing: [],
@@ -96,36 +84,28 @@ export const createInitialContext = (
     done: [],
     blocked: [],
     expedite: [],
-  },
-
+},
   // Initialize WIP management
-  wipLimits: { ...config.defaultWIPLimits },
+  wipLimits: { ...config.defaultWIPLimits},
   wipViolations: [],
-
   // Initialize bottleneck tracking
   activeBottlenecks: [],
   bottleneckHistory: [],
-
   // Initialize flow metrics
   currentMetrics: null,
   metricsHistory: [],
-
   // Initialize system health (start optimistic)
   systemHealth: 1.0,
   lastOptimization: null,
   optimizationStrategy: null,
-
   // Store configuration
-  config: { ...config },
-
+  config: { ...config},
   // Initialize error tracking
   errors: [],
-});
-
+'});
 // =============================================================================
 // CONTEXT UTILITIES
 // =============================================================================
-
 /**
  * Context utility functions for safe state access
  */
@@ -134,89 +114,45 @@ export class WorkflowContextUtils {
    * Get task count for specific state
    */
   static getTaskCountForState(
-    context: WorkflowMachineContext,
-    state: TaskState
-  ): number {
-    return context.tasksByState[state]?.length|| 0;
-  }
-
-  /**
-   * Get WIP utilization for specific state
-   */
-  static getWIPUtilization(
-    context: WorkflowMachineContext,
-    state: TaskState
-  ): number {
-    const currentCount = WorkflowContextUtils.getTaskCountForState(
+    context: WorkflowContextUtils.getTaskCountForState(
       context,
-      state
+      state;
     );
     const limit = context.wipLimits[state];
-    return limit > 0 ? currentCount / limit : 0;
-  }
-
-  /**
-   * Check if WIP limit would be exceeded
-   */
-  static wouldExceedWIPLimit(
-    context: WorkflowMachineContext,
-    state: TaskState,
-    additionalTasks: number = 1
-  ): boolean {
+    return limit > 0 ? currentCount / limit: 1
+  ):boolean {
     const currentCount = WorkflowContextUtils.getTaskCountForState(
       context,
-      state
+      state;
     );
     const limit = context.wipLimits[state];
     return currentCount + additionalTasks > limit;
-  }
-
+}
   /**
    * Get system health category
    */
   static getSystemHealthCategory(
-    health: number
-  ):'excellent| good| warning| critical '{
-    if (health >= 0.9) return'excellent';
-    if (health >= 0.7) return'good';
-    if (health >= 0.3) return'warning';
-    return'critical';
-  }
-
+    health: number')  ):'excellent| good| warning| critical '{';
+    if (health >= 0.9) return'excellent')    if (health >= 0.7) return'good')    if (health >= 0.3) return'warning')    return'critical')};;
   /**
    * Get recent errors (last N errors)
    */
   static getRecentErrors(
-    context: WorkflowMachineContext,
-    count: number = 5
-  ): Array<{ timestamp: Date; error: string; context: string }> {
-    return context.errors.slice(-count);
-  }
-
-  /**
-   * Calculate overall system utilization
-   */
-  static calculateSystemUtilization(context: WorkflowMachineContext): number {
-    const workStates: TaskState[] = [
-     'analysis,
-     'development,
-     'testing,
-     'review,
-     'deployment,
-    ];
-
+    context: 5
+  ):Array<{ timestamp: [
+     'analysis,')     'development,';
+     'testing,')     'review,';
+     'deployment,';
+];
     let totalUtilization = 0;
     let stateCount = 0;
-
     for (const state of workStates) {
       const utilization = WorkflowContextUtils.getWIPUtilization(
         context,
-        state
+        state;
       );
       totalUtilization += Math.min(1, utilization); // Cap at 100%
       stateCount++;
-    }
-
-    return stateCount > 0 ? totalUtilization / stateCount : 0;
-  }
 }
+    return stateCount > 0 ? totalUtilization / stateCount: 0;
+};)};;

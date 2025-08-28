@@ -1,57 +1,57 @@
-import { type ZodSchema, z } from "@claude-zen/foundation"
-// import { Log } from "./log"
+import { type ZodSchema, z} from "@claude-zen/foundation"
+// import { Log} from "./log"
 
 // const log = Log.create()
 
 export abstract class NamedError extends Error {
-  abstract schema(): ZodSchema
-  abstract toObject(): { name: string; data: any }
+  abstract schema():ZodSchema
+  abstract toObject():{ name: string; data: any}
 
-  static create<Name extends string, Data extends ZodSchema>(name: Name, data: Data) {
+  static create<Name extends string, Data extends ZodSchema>(name:Name, data:Data) {
     const schema = z
       .object({
-        name: z.literal(name),
+        name:z.literal(name),
         data,
-      })
+})
       .openapi({
-        ref: name,
-      })
+        ref:name,
+})
     const result = class extends NamedError {
       public static readonly Schema = schema
 
       public readonly name = name as Name
 
       constructor(
-        public readonly data: z.input<Data>,
-        options?: ErrorOptions,
+        public readonly data:z.input<Data>,
+        options?:ErrorOptions,
       ) {
         super(name, options)
         this.name = name
-      }
+}
 
-      static isInstance(input: any): input is InstanceType<typeof result> {
+      static isInstance(input:any): input is InstanceType<typeof result> {
         return "name" in input && input.name === name
-      }
+}
 
       schema() {
         return schema
-      }
+}
 
       toObject() {
         return {
           name,
-          data: this.data,
-        }
-      }
-    }
-    Object.defineProperty(result, "name", { value: name })
+          data:this.data,
+}
+}
+}
+    Object.defineProperty(result, "name", { value:name})
     return result
-  }
+}
 
   public static readonly Unknown = NamedError.create(
     "UnknownError",
     z.object({
-      message: z.string(),
-    }),
+      message:z.string(),
+}),
   )
 }

@@ -11,52 +11,52 @@
  * - Database-backed training history
  */
 export interface RetrainingConfig {
-    checkIntervalMs: number;
-    minCoordinationSuccessRateThreshold: number;
-    cooldownHours: number;
-    enableAutoRetraining: boolean;
-    maxRetrainingAttemptsPerDay: number;
+    checkIntervalMs:number;
+    minCoordinationSuccessRateThreshold:number;
+    cooldownHours:number;
+    enableAutoRetraining:boolean;
+    maxRetrainingAttemptsPerDay:number;
 }
 export interface RetrainingTrigger {
-    timestamp: Date;
-    reason: string;
-    metrics: Record<string, number>;
-    strategy: 'performance' | 'manual' | 'scheduled';
+    timestamp:Date;
+    reason:string;
+    metrics:Record<string, number>;
+    strategy:'performance' | ' manual' | ' scheduled';
 }
 export interface RetrainingResult {
-    success: boolean;
-    strategy: string;
-    duration: number;
-    improvementMetrics?: Record<string, number>;
-    error?: string;
+    success:boolean;
+    strategy:string;
+    duration:number;
+    improvementMetrics?:Record<string, number>;
+    error?:string;
 }
 export interface MonitoringMetrics {
-    totalRetrainingTriggers: number;
-    successfulRetrainings: number;
-    averageRetrainingDuration: number;
-    currentCoordinationSuccessRate: number;
-    lastRetrainingTimestamp?: number;
-    retrainingFrequency: number;
+    totalRetrainingTriggers:number;
+    successfulRetrainings:number;
+    averageRetrainingDuration:number;
+    currentCoordinationSuccessRate:number;
+    lastRetrainingTimestamp?:number;
+    retrainingFrequency:number;
     cooldownStatus: 'active|inactive;;
-    dailyLimitStatus: {
-        used: number;
-        limit: number;
-        remaining: number;
-    };
+'    dailyLimitStatus:{
+        used:number;
+        limit:number;
+        remaining:number;
+};
 }
 /**
  * Automated retraining monitor using foundation metrics and LLM coordination.
  *
- * Implements Option 4: Build coordination feedback loops (coordinationSuccessRate → retraining)
+ * Implements Option 4:Build coordination feedback loops (coordinationSuccessRate → retraining)
  */
 export declare class RetrainingMonitor {
     private isMonitoring;
     private logger;
-    constructor(_config: RetrainingConfig);
+    constructor(_config:RetrainingConfig);
     /**
      * Start monitoring coordination success rates and trigger retraining when needed.
      */
-    startMonitoring(): Promise<void>;
+    startMonitoring():Promise<void>;
     /**
      * Get current retraining configuration from foundation config system.
      */
@@ -65,7 +65,7 @@ export declare class RetrainingMonitor {
      * Check metrics and trigger retraining if thresholds are breached.
      */
     private checkAndTriggerRetraining;
-    catch(error: any): void;
+    catch(error:any): void;
 }
 export default RetrainingMonitor;
 //# sourceMappingURL=retraining-monitor.d.ts.map

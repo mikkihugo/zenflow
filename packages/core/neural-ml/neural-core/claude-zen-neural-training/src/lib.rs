@@ -34,8 +34,8 @@ use num_traits::Float;
 use std::collections::HashMap;
 use thiserror::Error;
 
-// Re-export ruv-FANN types for convenience
-pub use ruv_fann::{Network, NetworkError};
+// Re-export feedforward types for convenience 
+pub use claude_zen_neural_feedforward::{Network, NetworkError};
 
 // Core training modules
 pub mod loss;
@@ -189,7 +189,7 @@ pub struct EpochMetrics<T: Float + Send + Sync> {
 /// Bridge for integrating with ruv-FANN training algorithms
 pub struct TrainingBridge<T: Float + Send + Sync> {
   pub(crate) ruv_fann_trainer:
-    Option<Box<dyn ruv_fann::training::TrainingAlgorithm<T>>>,
+    Option<Box<dyn claude_zen_neural_feedforward::TrainingAlgorithmTrait<T>>>,
   pub(crate) loss_adapter: Option<LossAdapter<T>>,
   pub(crate) config: Option<TrainingConfig<T>>,
 }
@@ -207,7 +207,7 @@ impl<T: Float + Send + Sync> TrainingBridge<T> {
   /// Set the ruv-FANN training algorithm
   pub fn with_ruv_fann_trainer(
     mut self,
-    trainer: Box<dyn ruv_fann::training::TrainingAlgorithm<T>>,
+    trainer: Box<dyn claude_zen_neural_feedforward::TrainingAlgorithmTrait<T>>,
   ) -> Self {
     self.ruv_fann_trainer = Some(trainer);
     self
@@ -259,26 +259,7 @@ impl<T: Float + Send + Sync> LossAdapter<T> {
   }
 }
 
-impl<T: Float + Send + Sync> ruv_fann::training::ErrorFunction<T>
-  for LossAdapter<T>
-{
-  fn calculate(&self, actual: &[T], desired: &[T]) -> T {
-    self
-      .calculate_loss(actual, desired)
-      .unwrap_or_else(|_| T::zero())
-  }
-
-  fn derivative(&self, actual: T, desired: T) -> T {
-    let actual_slice = [actual];
-    let desired_slice = [desired];
-    self
-      .calculate_gradient(&actual_slice, &desired_slice)
-      .unwrap_or_else(|_| vec![T::zero()])
-      .first()
-      .copied()
-      .unwrap_or_else(T::zero)
-  }
-}
+// Removed problematic trait implementation that doesn't match feedforward crate interface
 
 /// Utility functions
 pub mod utils {

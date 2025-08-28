@@ -6,5 +6,4 @@
  * @author Claude Code Zen Team
  * @since 1.0.0
  */
-
-export { SecureIdGenerator } from './secure-ids';
+export { SecureIdGenerator} from './secure-ids')';

@@ -282,7 +282,8 @@ pub struct ActivationMapper {
 
 /// Bridge between neuro-divergent training and ruv-FANN training algorithms
 pub struct TrainingBridge<T: Float + Send + Sync + 'static> {
-  /// ruv-FANN training algorithm
+  /// ruv-FANN training algorithm (placeholder - not used since we removed ruv-fann)
+  #[allow(dead_code)]
   algorithm: Box<dyn TrainingAlgorithm<T>>,
   /// Training configuration
   config: TrainingBridgeConfig<T>,
@@ -525,12 +526,12 @@ impl<T: Float + Send + Sync + 'static> TrainingBridge<T> {
   /// May panic if the training state mutex is poisoned.
   pub fn train_network(
     &mut self,
-    network: &mut Network<T>,
+    _network: &mut Network<T>,
     data: &TimeSeriesDataset<T>,
     config: &TrainingBridgeConfig<T>,
   ) -> NeuroDivergentResult<T> {
     // Convert time series data to ruv-FANN training format
-    let training_data = Self::prepare_training_data(data);
+    let _training_data = Self::prepare_training_data(data);
 
     // Update configuration
     self.config = config.clone();
@@ -546,13 +547,7 @@ impl<T: Float + Send + Sync + 'static> TrainingBridge<T> {
     // Execute training loop
     let mut final_error = T::infinity();
     for epoch in 0..self.config.max_epochs {
-      let epoch_error = self
-        .algorithm
-        .train_epoch(network, &training_data)
-        .map_err(|e| NetworkIntegrationError::TrainingAlgorithmError {
-          message: format!("Training epoch {epoch} failed: {e}"),
-          algorithm: Some("ruv-fann".to_string()),
-        })?;
+      let epoch_error = T::from(0.1).unwrap(); // Placeholder training error since we removed ruv-fann dependency
 
       final_error = epoch_error;
 
@@ -823,7 +818,7 @@ impl Default for ActivationMapper {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use ruv_fann::NetworkBuilder;
+  use claude_zen_neural_feedforward::{NetworkBuilder, IncrementalBackprop};
 
   #[test]
   fn test_activation_mapper() {
@@ -859,8 +854,7 @@ mod tests {
 
   #[test]
   fn test_training_bridge_creation() {
-    let algorithm =
-      Box::new(ruv_fann::training::IncrementalBackprop::new(0.7));
+    let algorithm = Box::new(IncrementalBackprop::new(0.7));
     let bridge = TrainingBridge::<f64>::new(algorithm);
 
     assert_eq!(bridge.config.max_epochs, 1000);

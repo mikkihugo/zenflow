@@ -271,7 +271,7 @@ npm test -- --coverage agent-health-monitor.test.ts
 The Health Monitor integrates seamlessly with the existing coordination architecture:
 
 - **Swarm Strategy**: Provides health information for agent selection
-- **Load Balancing**: Influences load distribution based on health
+- **Event Coordination**: Influences task distribution based on health (replaces load balancing)
 - **Task Orchestration**: Considers agent health for task assignment
 - **Performance Optimization**: Feeds data to optimization systems
 - **Learning Systems**: Integrated with adaptive learning algorithms

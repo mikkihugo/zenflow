@@ -10,28 +10,28 @@ import type {
   FileAwareResponse,
   FileChange,
 } from '../types/index';
-import { CodebaseAnalyzer } from './codebase-analyzer';
+import { CodebaseAnalyzer} from './codebase-analyzer';
 
 export class FileAwareAIEngine {
-  private analyzer: CodebaseAnalyzer;
-  private rootPath: string;
+  private analyzer:CodebaseAnalyzer;
+  private rootPath:string;
 
-  constructor(rootPath: string, excludePatterns?: string[]) {
+  constructor(rootPath:string, excludePatterns?:string[]) {
     this.rootPath = rootPath;
     this.analyzer = new CodebaseAnalyzer(rootPath, excludePatterns);
-  }
+}
 
   /**
    * Get the root path for this engine
    */
-  getRootPath(): string {
+  getRootPath():string {
     return this.rootPath;
-  }
+}
 
   /**
    * Process a file-aware AI request
    */
-  async processRequest(request: FileAwareRequest): Promise<FileAwareResponse> {
+  async processRequest(request:FileAwareRequest): Promise<FileAwareResponse> {
     const startTime = Date.now();
 
     try {
@@ -47,47 +47,42 @@ export class FileAwareAIEngine {
       const executionTime = Date.now() - startTime;
 
       return {
-        success: true,
+        success:true,
         changes,
         context,
-        metadata: {
-          filesAnalyzed: context.relevantFiles.length,
-          provider:'fallback',
-          model: request.options?.model||'default',
-          executionTime,
-        },
-      };
-    } catch (error) {
+        metadata:{
+          filesAnalyzed:context.relevantFiles.length,
+          provider: 'fallback',          model:request.options?.model||'default',          executionTime,
+},
+};
+} catch (error) {
       const executionTime = Date.now() - startTime;
 
       return {
-        success: false,
-        changes: [],
-        context: {
-          relevantFiles: [],
-          dependencies: [],
-          symbols: [],
-          summary: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,`
-          complexity: 'low',
-        },
-        metadata: {
-          filesAnalyzed: 0,
-          provider: 'fallback',
-          model: request.options?.model||'default',
-          executionTime,
-        },
-      };
-    }
-  }
+        success:false,
+        changes:[],
+        context:{
+          relevantFiles:[],
+          dependencies:[],
+          symbols:[],
+          summary:`Error: ${error instanceof Error ? error.message : 'Unknown error'}`,`
+          complexity: 'low',},
+        metadata:{
+          filesAnalyzed:0,
+          provider: 'fallback',          model:request.options?.model||'default',          executionTime,
+},
+};
+}
+}
 
   /**
    * Generate file changes based on request and context
    */
   private async generateChanges(
-    request: FileAwareRequest,
-    context: AnalyzedContext
-  ): Promise<FileChange[]> {
-    const changes: FileChange[] = [];
+    request:FileAwareRequest,
+    context:AnalyzedContext
+  ):Promise<FileChange[]> {
+    const changes:FileChange[] = [];
 
     // This is a fallback implementation - in production, this would use
     // CodeMesh or another AI system to generate actual changes
@@ -96,39 +91,35 @@ export class FileAwareAIEngine {
     if (context.relevantFiles.length > 0) {
       const targetFile = context.relevantFiles[0];
       if (targetFile) {
-        changes.push(`${{
-          type: 'modify',
-          path: targetFile,
+        changes.push(`${{`
+          type: 'modify',          path:targetFile,
           reasoning:
-            `Suggested modification for file ${targetFile} based on task: ${request.task}. 
+            `Suggested modification for file ${targetFile} based on task:${request.task}. `
             `This is a fallback response - actual AI processing would analyze the code structure ` +`
-            `and generate specific improvements based on the ${context.complexity} complexity context `}
+            `and generate specific improvements based on the ${context.complexity} complexity context `}`
             `with ${context.dependencies.length} dependencies and ${context.symbols.length} symbols.`,`
-        });
-      }
-    } else {
+});
+}
+} else {
       changes.push({
-        type: 'create',
-        path: 'ANALYSIS.md',
-        content:
+        type: 'create',        path: 'ANALYSIS.md',        content:
           `Codebase Analysis Results\n\n${context.summary}\n\n## Task\n${request.task}\n\n` +`
           `## Files Analyzed\n${context.relevantFiles.length} files\n\n` +`
           `## Dependencies\n${context.dependencies.length} dependencies found\n\n` +`
           `## Symbols\n${context.symbols.length} symbols identified\n\n` +`
-          `## Complexity\nAssessed as: ${context.complexity}`,`
+          `## Complexity\nAssessed as:${context.complexity}`,`
         reasoning:
-          'Created analysis file since no existing files were found to modify',
-      });
-    }
+          'Created analysis file since no existing files were found to modify',});
+}
 
     return changes;
-  }
+}
 
   /**
    * Get current session information
    */
-  async getSession(): Promise<string | null> {
+  async getSession():Promise<string | null> {
     // Fallback implementation - would integrate with actual session management
     return `fallback-session-${Date.now()}`;`
-  }
+}
 }

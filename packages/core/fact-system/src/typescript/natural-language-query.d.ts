@@ -8,7 +8,7 @@
  * @since 1.0.0
  * @version 1.0.0
  */
-import type { FactSearchQuery } from "./types";
+import type { FactSearchQuery} from "./types";
 /**
  * Query intent classification
  */
@@ -26,23 +26,23 @@ export declare enum QueryIntent {
  * Extracted query parameters from natural language
  */
 interface ParsedQuery {
-	intent: QueryIntent;
-	entities: {
-		packageNames?: string[];
-		repoOwners?: string[];
-		repoNames?: string[];
-		technologies?: string[];
-		keywords?: string[];
-		cveIds?: string[];
-	};
-	modifiers: {
-		timeRange?: string;
-		sortBy?: string;
-		includeMetrics?: boolean;
-		securityFocus?: boolean;
-		performanceFocus?: boolean;
-	};
-	confidence: number;
+	intent:QueryIntent;
+	entities:{
+		packageNames?:string[];
+		repoOwners?:string[];
+		repoNames?:string[];
+		technologies?:string[];
+		keywords?:string[];
+		cveIds?:string[];
+};
+	modifiers:{
+		timeRange?:string;
+		sortBy?:string;
+		includeMetrics?:boolean;
+		securityFocus?:boolean;
+		performanceFocus?:boolean;
+};
+	confidence:number;
 }
 /**
  * Natural Language Query processor for FACT system
@@ -53,11 +53,11 @@ export declare class NaturalLanguageQuery {
 	/**
 	 * Process natural language query and convert to structured FACT operations
 	 */
-	processQuery(query: string): Promise<{
-		structuredQueries: FactSearchQuery[];
-		parsedQuery: ParsedQuery;
-		explanation: string;
-	}>;
+	processQuery(query:string): Promise<{
+		structuredQueries:FactSearchQuery[];
+		parsedQuery:ParsedQuery;
+		explanation:string;
+}>;
 	/**
 	 * Parse natural language query into structured components
 	 */

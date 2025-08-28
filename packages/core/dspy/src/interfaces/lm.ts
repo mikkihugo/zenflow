@@ -14,34 +14,34 @@
  */
 export interface LMInterface {
 	/** Model identifier/name */
-	model?: string;
+	model?:string;
 
 	/** Generate text from prompt */
-	generate(prompt: string, options?: GenerationOptions): Promise<string>;
+	generate(prompt:string, options?:GenerationOptions): Promise<string>;
 
-	/** Optional: Generate multiple completions */
+	/** Optional:Generate multiple completions */
 	generateMultiple?(
-		prompts: string[],
-		options?: GenerationOptions,
-	): Promise<string[]>;
+		prompts:string[],
+		options?:GenerationOptions,
+	):Promise<string[]>;
 
-	/** Optional: Kill/cleanup LM resources */
-	kill?(): void;
+	/** Optional:Kill/cleanup LM resources */
+	kill?():void;
 
-	/** Optional: Launch/initialize LM */
-	launch?(): void;
+	/** Optional:Launch/initialize LM */
+	launch?():void;
 
-	/** Optional: Check if LM is ready */
-	isReady?(): boolean;
+	/** Optional:Check if LM is ready */
+	isReady?():boolean;
 
-	/** Optional: Get model info */
-	getInfo?(): ModelInfo;
+	/** Optional:Get model info */
+	getInfo?():ModelInfo;
 
-	/** Optional: Get usage statistics */
-	getUsage?(): ModelUsage;
+	/** Optional:Get usage statistics */
+	getUsage?():ModelUsage;
 
-	/** Optional: Reset usage statistics */
-	resetUsage?(): void;
+	/** Optional:Reset usage statistics */
+	resetUsage?():void;
 }
 
 /**
@@ -49,31 +49,31 @@ export interface LMInterface {
  */
 export interface GenerationOptions {
 	/** Maximum tokens to generate */
-	max_tokens?: number;
+	max_tokens?:number;
 
 	/** Temperature for sampling (0-1) */
-	temperature?: number;
+	temperature?:number;
 
 	/** Top-p sampling threshold */
-	top_p?: number;
+	top_p?:number;
 
 	/** Top-k sampling threshold */
-	top_k?: number;
+	top_k?:number;
 
 	/** Stop sequences */
-	stop?: string[];
+	stop?:string[];
 
 	/** Number of completions to generate */
-	n?: number;
+	n?:number;
 
 	/** Whether to echo the prompt */
-	echo?: boolean;
+	echo?:boolean;
 
 	/** Random seed for reproducibility */
-	seed?: number;
+	seed?:number;
 
 	/** Custom model parameters */
-	[key: string]: any;
+	[key:string]: any;
 }
 
 /**
@@ -81,28 +81,28 @@ export interface GenerationOptions {
  */
 export interface ModelInfo {
 	/** Model name/identifier */
-	name: string;
+	name:string;
 
 	/** Model provider (OpenAI, Anthropic, etc.) */
-	provider?: string;
+	provider?:string;
 
 	/** Model version */
-	version?: string;
+	version?:string;
 
 	/** Context length limit */
-	context_length?: number;
+	context_length?:number;
 
 	/** Maximum output tokens */
-	max_output_tokens?: number;
+	max_output_tokens?:number;
 
 	/** Supported capabilities */
-	capabilities?: string[];
+	capabilities?:string[];
 
 	/** Cost per token (if available) */
-	cost_per_token?: {
-		input?: number;
-		output?: number;
-	};
+	cost_per_token?:{
+		input?:number;
+		output?:number;
+};
 }
 
 /**
@@ -110,29 +110,29 @@ export interface ModelInfo {
  */
 export interface ModelUsage {
 	/** Total input tokens used */
-	input_tokens: number;
+	input_tokens:number;
 
 	/** Total output tokens used */
-	output_tokens: number;
+	output_tokens:number;
 
 	/** Total API calls made */
-	api_calls: number;
+	api_calls:number;
 
 	/** Total cost (if tracking enabled) */
-	total_cost?: number;
+	total_cost?:number;
 
 	/** Last usage timestamp */
-	last_used?: number;
+	last_used?:number;
 
 	/** Usage by date */
-	daily_usage?: Record<
+	daily_usage?:Record<
 		string,
 		{
-			input_tokens: number;
-			output_tokens: number;
-			api_calls: number;
-			cost?: number;
-		}
+			input_tokens:number;
+			output_tokens:number;
+			api_calls:number;
+			cost?:number;
+}
 	>;
 }
 
@@ -140,31 +140,31 @@ export interface ModelUsage {
  * Base Language Model class with common functionality
  */
 export abstract class BaseLM implements LMInterface {
-	public model?: string;
-	protected usage: ModelUsage = {
-		input_tokens: 0,
-		output_tokens: 0,
-		api_calls: 0,
-		last_used: Date.now(),
-	};
+	public model?:string;
+	protected usage:ModelUsage = {
+		input_tokens:0,
+		output_tokens:0,
+		api_calls:0,
+		last_used:Date.now(),
+};
 
-	constructor(model?: string) {
+	constructor(model?:string) {
 		this.model = model ?? "unknown";
-	}
+}
 
 	abstract generate(
-		prompt: string,
-		options?: GenerationOptions,
-	): Promise<string>;
+		prompt:string,
+		options?:GenerationOptions,
+	):Promise<string>;
 
 	/**
 	 * Track usage statistics
 	 */
 	protected trackUsage(
-		inputTokens: number,
-		outputTokens: number,
-		cost?: number,
-	): void {
+		inputTokens:number,
+		outputTokens:number,
+		cost?:number,
+	):void {
 		this.usage.input_tokens += inputTokens;
 		this.usage.output_tokens += outputTokens;
 		this.usage.api_calls += 1;
@@ -172,24 +172,24 @@ export abstract class BaseLM implements LMInterface {
 
 		if (cost !== undefined) {
 			this.usage.total_cost = (this.usage.total_cost || 0) + cost;
-		}
+}
 
 		// Track daily usage
 		const today = new Date().toISOString().split("T")[0];
 		if (!today) {
 			throw new Error("Failed to get today's date");
-		}
+}
 		if (!this.usage.daily_usage) {
 			this.usage.daily_usage = {};
-		}
+}
 		if (!this.usage.daily_usage[today]) {
 			this.usage.daily_usage[today] = {
-				input_tokens: 0,
-				output_tokens: 0,
-				api_calls: 0,
-				cost: 0,
-			};
-		}
+				input_tokens:0,
+				output_tokens:0,
+				api_calls:0,
+				cost:0,
+};
+}
 
 		const dayUsage = this.usage.daily_usage[today];
 		if (dayUsage) {
@@ -198,59 +198,59 @@ export abstract class BaseLM implements LMInterface {
 			dayUsage.api_calls += 1;
 			if (cost !== undefined) {
 				dayUsage.cost = (dayUsage.cost || 0) + cost;
-			}
-		}
-	}
+}
+}
+}
 
 	/**
 	 * Get usage statistics
 	 */
-	getUsage(): ModelUsage {
-		return { ...this.usage };
-	}
+	getUsage():ModelUsage {
+		return { ...this.usage};
+}
 
 	/**
 	 * Reset usage statistics
 	 */
-	resetUsage(): void {
+	resetUsage():void {
 		this.usage = {
-			input_tokens: 0,
-			output_tokens: 0,
-			api_calls: 0,
-			last_used: Date.now(),
-		};
-	}
+			input_tokens:0,
+			output_tokens:0,
+			api_calls:0,
+			last_used:Date.now(),
+};
+}
 
 	/**
 	 * Get model info (override in subclasses)
 	 */
-	getInfo(): ModelInfo {
+	getInfo():ModelInfo {
 		return {
-			name: this.model || "unknown",
-			provider: "unknown",
-		};
-	}
+			name:this.model || "unknown",
+			provider:"unknown",
+};
+}
 
 	/**
 	 * Check if ready (default implementation)
 	 */
-	isReady(): boolean {
+	isReady():boolean {
 		return true;
-	}
+}
 
 	/**
 	 * Kill/cleanup (default implementation)
 	 */
-	kill(): void {
-		// Default: no-op
-	}
+	kill():void {
+		// Default:no-op
+}
 
 	/**
 	 * Launch/initialize (default implementation)
 	 */
-	launch(): void {
-		// Default: no-op
-	}
+	launch():void {
+		// Default:no-op
+}
 }
 
 export default LMInterface;

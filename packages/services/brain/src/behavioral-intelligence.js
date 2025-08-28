@@ -15,7 +15,7 @@
  * - Behavioral anomaly detection
  *
  * Integration with claude-code-zen:
- * - Load balancing: Agent performance predictions
+ * - Event coordination: Agent performance predictions (replaces load balancing)
  * - Task orchestration: Complexity estimation and routing
  * - Agent monitoring: Behavioral health and adaptation
  * - Swarm coordination: Intelligent agent selection

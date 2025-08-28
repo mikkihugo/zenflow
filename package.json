@@ -76,7 +76,7 @@
 		"web-interface"
 	],
 	"dependencies": {
-		"@anthropic-ai/claude-code": "^1.0.90",
+		"@anthropic-ai/claude-code": "^1.0.94",
 		"@anthropic-ai/sdk": "^0.60.0",
 		"@floating-ui/dom": "^1.7.4",
 		"@godaddy/terminus": "^4.12.1",

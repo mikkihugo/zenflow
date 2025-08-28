@@ -6,9 +6,7 @@
  * @author Claude Code Zen Team
  * @since 1.0.0
  */
-
-export { SchemaValidator } from './schema-validator';
-export {
+export { SchemaValidator} from './schema-validator')export {';
   type WorkflowContext,
   WorkflowContextSchema,
   type WorkflowDefinition,
@@ -17,4 +15,4 @@ export {
   WorkflowExecutionResultSchema,
   type WorkflowStep,
   WorkflowStepSchema,
-} from './workflow-schemas';
+} from './workflow-schemas')';

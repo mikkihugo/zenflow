@@ -4,23 +4,23 @@
  */
 
 export interface SafetyInterventionConfig {
-  enabled: boolean;
-  autoEscalationThreshold: number;
-  humanTimeoutMs: number;
-  defaultDecision: string;
-  escalationChannels: string[];
-  criticalPatterns: string[];
+  enabled:boolean;
+  autoEscalationThreshold:number;
+  humanTimeoutMs:number;
+  defaultDecision:string;
+  escalationChannels:string[];
+  criticalPatterns:string[];
 }
 
 export class SafetyInterventionProtocols {
-  private config: SafetyInterventionConfig;
+  private config:SafetyInterventionConfig;
   private initialized = false;
 
-  constructor(config: SafetyInterventionConfig) {
+  constructor(config:SafetyInterventionConfig) {
     this.config = config;
-  }
+}
 
-  async initialize(): Promise<void> {
+  async initialize():Promise<void> {
     if (this.initialized) return;
     
     // Using direct log for initialization message
@@ -34,17 +34,17 @@ export class SafetyInterventionProtocols {
     // Using direct log for completion message
     // eslint-disable-next-line no-console
     console.log('✅ Safety Intervention Protocols initialized');
-  }
+}
 
-  isEnabled(): boolean {
+  isEnabled():boolean {
     return this.config.enabled && this.initialized;
-  }
+}
 
-  getCriticalPatterns(): string[] {
+  getCriticalPatterns():string[] {
     return this.config.criticalPatterns;
-  }
+}
 
-  getEscalationThreshold(): number {
+  getEscalationThreshold():number {
     return this.config.autoEscalationThreshold;
-  }
+}
 }

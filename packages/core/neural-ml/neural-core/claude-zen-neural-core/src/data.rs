@@ -7,7 +7,7 @@
 use std::collections::HashMap;
 use std::marker::PhantomData;
 use std::path::Path;
-use std::sync::Arc;
+// use std::sync::Arc; // Unused import
 
 use chrono::{DateTime, TimeZone, Utc};
 use ndarray::Array2;
@@ -415,7 +415,7 @@ impl TimeSeriesSchema {
     let columns: Vec<String> = df
       .get_column_names()
       .into_iter()
-      .map(|s| s.to_string())
+      .map(std::string::ToString::to_string)
       .collect();
 
     // Check required columns
@@ -690,7 +690,6 @@ impl<T: Float> TimeSeriesDataFrame<T> {
         ))
         .build()
       })?
-      .phys
       .iter()
       .filter_map(|opt| opt.map(|ts| Utc.timestamp_nanos(ts * 1000)))
       .collect();

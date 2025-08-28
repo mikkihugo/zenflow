@@ -3,17 +3,14 @@
  *
  * Types for LLM-powered intelligent auto-approval gates
  */
-
 export interface LLMApprovalConfig {
   enabled: boolean;
-  model:'claude-3-5-sonnet'|'claude-3-haiku'|'claude-3-opus';
-  prompt: string;
+  model : 'claude-3-5-sonnet' | ' claude-3-haiku'|' claude-3-opus')  prompt: string;;
   criteria: string[];
   confidenceThreshold: number; // 0.0 - 1.0
   maxRetries: number;
   timeout: number; // milliseconds
 }
-
 export interface LLMApprovalDecision {
   approved: boolean;
   confidence: number; // 0.0 - 1.0
@@ -25,9 +22,8 @@ export interface LLMApprovalDecision {
     processingTime: number;
     tokenUsage: number;
     version: string;
-  };
+};
 }
-
 export interface AutoApprovalRule {
   id: string;
   name: string;
@@ -37,114 +33,99 @@ export interface AutoApprovalRule {
   enabled: boolean;
   tags: string[];
 }
-
 export interface EnhancedApprovalGate {
   id: string;
   name: string;
-  description?: string;
+  description?:string;
   taskId: string;
-
   // Human approval configuration
   requiredApprovers: string[];
   minimumApprovals: number;
   isRequired: boolean;
-  timeoutHours?: number;
-
+  timeoutHours?:number;
   // LLM auto-approval configuration
-  llmApprover?: LLMApprovalConfig;
+  llmApprover?:LLMApprovalConfig;
   autoApprovalRules: AutoApprovalRule[];
-
   // Fallback and override settings
   humanFallback: boolean;
   allowHumanOverride: boolean;
   escalationConditions: string[];
-
   // State and audit
-  state:'pending'|'llm_analyzing'|'auto_approved'|'human_review'|'approved'|'rejected'|'escalated'|'timed_out'|'cancelled';
-  llmDecisions: LLMApprovalDecision[];
+  state : 'pending' | ' llm_analyzing'|' auto_approved' | ' human_review'|' approved' | ' rejected'|' escalated' | ' timed_out'|' cancelled')  llmDecisions: LLMApprovalDecision[];;
   humanOverrides: HumanOverride[];
-
   // Timestamps
   createdAt: Date;
   updatedAt: Date;
-  timeoutAt?: Date;
-  completedAt?: Date;
-
+  timeoutAt?:Date;
+  completedAt?:Date;
   // Metadata
   metadata: Record<string, unknown>;
-  tenantId?: string;
+  tenantId?:string;
 }
-
 export interface HumanOverride {
   id: string;
   userId: string;
-  action:'approve| reject| escalate'|'override_llm';
-  reason: string;
-  previousLLMDecision?: LLMApprovalDecision;
+  action : 'approve| reject| escalate' | ' override_llm')  reason: string;;
+  previousLLMDecision?:LLMApprovalDecision;
   timestamp: Date;
   confidence: number;
   metadata: Record<string, unknown>;
 }
-
 export interface LLMApprovalContext {
   task: {
     id: string;
     title: string;
-    description?: string;
+    description?:string;
     type: string;
     complexity: string;
     priority: string;
     tags: string[];
-    assignee?: string;
+    assignee?:string;
     dependencies: string[];
     customData: Record<string, unknown>;
-  };
+};
   workflow: {
     id: string;
     name: string;
     currentState: string;
     previousStates: string[];
-  };
+};
   history: {
     similarTasks: Array<{
       taskId: string;
-      decision:'approved'|'rejected';
-      confidence: number;
+      decision : 'approved' | ' rejected')      confidence: number;;
       reasoning: string;
-    }>;
+}>;
     userPatterns: {
       userId: string;
       approvalRate: number;
       commonCriteria: string[];
-    };
-  };
+};
+};
   security: {
     hasSecrets: boolean;
     affectedSystems: string[];
-    riskLevel:'low| medium| high'|'critical';
-    complianceFlags: string[];
-  };
-  codeAnalysis?: {
+    riskLevel : 'low| medium| high' | ' critical')    complianceFlags: string[];;
+};
+  codeAnalysis?:{
     changedFiles: string[];
     linesAdded: number;
     linesDeleted: number;
     testCoverage: number;
     securityScan: any;
     dependencies: any;
-  };
+};
 }
-
 export interface LLMApprovalResult {
   gateId: string;
   taskId: string;
   decision: LLMApprovalDecision;
   autoApproved: boolean;
   escalatedToHuman: boolean;
-  rule?: AutoApprovalRule;
+  rule?:AutoApprovalRule;
   processingTime: number;
   timestamp: Date;
 }
-
 export interface ApprovalLearning {
   taskId: string;
   llmDecision: LLMApprovalDecision;
@@ -152,12 +133,10 @@ export interface ApprovalLearning {
     approved: boolean;
     reasoning: string;
     userId: string;
-  };
-  feedback:'correct'|'incorrect'|'partially_correct';
-  learningWeight: number; // How much this feedback affects future decisions
+};
+  feedback : 'correct' | ' incorrect'|' partially_correct')  learningWeight: number; // How much this feedback affects future decisions';
   patterns: string[]; // Extracted patterns for future learning
 }
-
 export interface LLMApprovalMetrics {
   totalDecisions: number;
   autoApprovals: number;
@@ -169,9 +148,9 @@ export interface LLMApprovalMetrics {
     reason: string;
     count: number;
     successRate: number;
-  }>;
+}>;
   improvementTrends: {
-    accuracyOverTime: Array<{ date: Date; accuracy: number }>;
-    confidenceOverTime: Array<{ date: Date; confidence: number }>;
-  };
-}
+    accuracyOverTime: Array<{ date: Date; accuracy: number}>;
+    confidenceOverTime: Array<{ date: Date; confidence: number}>;
+};
+};

@@ -14,37 +14,37 @@
  * @since 2.1.0
  */
 export interface PromptAnalysisData {
-    readonly originalPrompt: string;
-    readonly optimizedPrompt: string;
-    readonly contextSize: number;
-    readonly taskComplexity: number;
-    readonly agentType: string;
-    readonly successRate: number;
-    readonly responseTime: number;
-    readonly userSatisfaction: number;
-    readonly timestamp: number;
-    readonly metadata?: {
-        domain?: string;
-        complexity?: number;
-        taskType?: string;
-    };
-    readonly context?: string;
-    readonly metrics?: Record<string, number>;
+    readonly originalPrompt:string;
+    readonly optimizedPrompt:string;
+    readonly contextSize:number;
+    readonly taskComplexity:number;
+    readonly agentType:string;
+    readonly successRate:number;
+    readonly responseTime:number;
+    readonly userSatisfaction:number;
+    readonly timestamp:number;
+    readonly metadata?:{
+        domain?:string;
+        complexity?:number;
+        taskType?:string;
+};
+    readonly context?:string;
+    readonly metrics?:Record<string, number>;
 }
 export interface OptimizationPattern {
     readonly patternType: 'length_optimization|structure_enhancement|context_addition|clarity_improvement;;
-    readonly confidence: number;
-    readonly improvement: number;
-    readonly applicableContexts: string[];
-    readonly examples: string[];
+'    readonly confidence:number;
+    readonly improvement:number;
+    readonly applicableContexts:string[];
+    readonly examples:string[];
 }
 export interface SmartOptimizationResult {
-    readonly optimizedPrompt: string;
-    readonly confidence: number;
-    readonly improvementFactor: number;
-    readonly appliedPatterns: OptimizationPattern[];
-    readonly reasoning: string[];
-    readonly statisticalSignificance: number;
+    readonly optimizedPrompt:string;
+    readonly confidence:number;
+    readonly improvementFactor:number;
+    readonly appliedPatterns:OptimizationPattern[];
+    readonly reasoning:string[];
+    readonly statisticalSignificance:number;
 }
 /**
  * Smart Prompt Optimization System
@@ -58,20 +58,20 @@ export declare class SmartPromptOptimizer {
     /**
      * Initialize the optimization system
      */
-    initialize(): Promise<void>;
+    initialize():Promise<void>;
     /**
      * Optimize a prompt using ML-powered analysis
      */
-    optimizePrompt(originalPrompt: string, _context?: {
-        taskComplexity?: number;
-        agentType?: string;
-        expectedResponseTime?: number;
-        domainSpecific?: boolean;
-    }): Promise<SmartOptimizationResult>;
+    optimizePrompt(originalPrompt:string, _context?:{
+        taskComplexity?:number;
+        agentType?:string;
+        expectedResponseTime?:number;
+        domainSpecific?:boolean;
+}):Promise<SmartOptimizationResult>;
     /**
      * Learn from prompt performance feedback
      */
-    learnFromPerformance(analysisData: PromptAnalysisData): Promise<void>;
-    catch(error: any): void;
+    learnFromPerformance(analysisData:PromptAnalysisData): Promise<void>;
+    catch(error:any): void;
 }
 //# sourceMappingURL=smart-prompt-optimizer.d.ts.map

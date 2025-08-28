@@ -1,7 +1,7 @@
-import { Config } from "../config/config"
-import { MCP } from "../mcp"
+import { Config} from "../config/config"
+import { MCP} from "../mcp"
 
-export function FormatError(input: unknown) {
+export function FormatError(input:unknown) {
   if (MCP.Failed.isInstance(input))
     return `MCP server "${input.data.name}" failed. Note, opencode does not support MCP authentication yet.``
   if (Config.JsonError.isInstance(input)) return `Config file at $input.data.pathis not valid JSON``
@@ -9,7 +9,7 @@ export function FormatError(input: unknown) {
     return [
       `Config file at ${input.data.path} is invalid`,`
       ...(input.data.issues?.map((issue) => "↳ " + issue.message + " " + issue.path.join(".")) ?? []),
-    ].join("\n")
+].join("\n")
 
   if (UI.CancelledError.isInstance(input)) return ""
 }

@@ -2,22 +2,24 @@
  * @file Coordination API - Public Interface for Coordination Layer
  *
  * This file provides the public API for coordination layer to interact with
- * the knowledge package's fact system. The actual implementation remains'
- * private within the knowledge package.
+ * the knowledge package's fact system. The actual implementation remains') * private within the knowledge package.
  *
  * This maintains the same interface as the old shared-fact-system to ensure
  * compatibility with existing coordination code.
  */
 
-import type {
-  CoordinationFact,
-  CoordinationFactQuery,
-  FactSearchResult,
+import {
+  knowledgeFactSystem,
+  type CoordinationFact,
+  type CoordinationFactQuery,
+  type FactSearchResult,
 } from './fact-system';
-import { knowledgeFactSystem } from './fact-system';
+import { getLogger} from '@claude-zen/foundation';
+
+const logger = getLogger('coordination-api');
 
 // Re-export types for coordination layer
-export type { CoordinationFact, CoordinationFactQuery, FactSearchResult };
+export type { CoordinationFact, CoordinationFactQuery, FactSearchResult};
 
 // Legacy compatibility types (maintain same interface as old shared-fact-system)
 export type FactEntry = CoordinationFact;
@@ -28,15 +30,15 @@ export type FactQuery = CoordinationFactQuery;
  */
 export function getCoordinationFactSystem() {
   return {
-    isInitialized: () => knowledgeFactSystem.isInitialized(),
-    getStats: () => knowledgeFactSystem.getStats(),
-  };
+    isInitialized:() => knowledgeFactSystem.isInitialized(),
+    getStats:() => knowledgeFactSystem.getStats(),
+};
 }
 
 /**
  * Initialize the coordination fact system
  */
-export async function initializeCoordinationFactSystem(): Promise<void> {
+export async function initializeCoordinationFactSystem():Promise<void> {
   await knowledgeFactSystem.initialize();
 }
 
@@ -44,8 +46,8 @@ export async function initializeCoordinationFactSystem(): Promise<void> {
  * Store a coordination-specific fact
  */
 export async function storeCoordinationFact(
-  fact: Omit<CoordinationFact, 'id|timestamp''>'
-): Promise<string> {
+  fact:Omit<CoordinationFact, 'id' | ' timestamp'>
+):Promise<string> {
   return await knowledgeFactSystem.storeFact(fact);
 }
 
@@ -53,19 +55,19 @@ export async function storeCoordinationFact(
  * Query coordination facts based on criteria
  */
 export async function queryCoordinationFacts(
-  query: CoordinationFactQuery = {}
-): Promise<CoordinationFact[]> {
+  query:CoordinationFactQuery = {}
+):Promise<CoordinationFact[]> {
   return await knowledgeFactSystem.queryFacts(query);
 }
 
 /**
  * Search coordination facts with text-based query
  */
-export async function searchCoordinationFacts(searchParams: {
-  query: string;
-  type?: string;
-  limit?: number;
-}): Promise<CoordinationFact[]> {
+export async function searchCoordinationFacts(searchParams:{
+  query:string;
+  type?:string;
+  limit?:number;
+}):Promise<CoordinationFact[]> {
   return await knowledgeFactSystem.searchFacts(searchParams);
 }
 
@@ -74,67 +76,70 @@ export async function searchCoordinationFacts(searchParams: {
  */
 export async function getCoordinationFacts(
   limit = 50
-): Promise<CoordinationFact[]> {
+):Promise<CoordinationFact[]> {
   return await knowledgeFactSystem.queryFacts({
-    tags: ['coordination'],
+    tags:['coordination'],
     limit,
-  });
+});
 }
 
 /**
  * Store a coordination event as a fact
  */
 export async function storeCoordinationEvent(
-  eventType: string,
-  eventData: unknown,
-  agentId?: string
-): Promise<string> {
+  eventType:string,
+  eventData:unknown,
+  agentId?:string
+):Promise<string> {
   return await knowledgeFactSystem.storeFact({
-    type: 'coordination_event',
-    data: {
+    type: 'coordination_event',    data:{
       eventType,
       eventData,
       agentId,
-    },
-    source: agentId ? `agent:${agentId}` : 'system',
-    confidence: 1.0,
-    tags: ['coordination', 'event', eventType],
-  });
+},
+    source:agentId ? `agent:${agentId}` : 'system',    confidence:1.0,
+    tags:['coordination',    'event', eventType],
+});
 }
 
 /**
  * Convenience functions for agent integration
  */
+export interface AgentFactOptions {
+  agentId:string;
+  type:string;
+  data:unknown;
+  confidence?:number;
+  tags?:string[];
+}
+
 export async function storeAgentFact(
-  agentId: string,
-  type: string,
-  data: unknown,
-  confidence = 1.0,
-  tags: string[] = []
-): Promise<string> {
+  options:AgentFactOptions
+):Promise<string> {
+  const { agentId, type, data, confidence = 1.0, tags = []} = options;
   return await knowledgeFactSystem.storeFact({
     type,
     data,
-    source: `agent:${agentId}`,`
+    source:`agent:${agentId}`,
     confidence,
-    tags: ['agent', ...tags],
-  });
+    tags:['agent', ...tags],
+});
 }
 
 export async function queryAgentFacts(
-  agentId?: string,
-  _type?: string,
+  agentId?:string,
+  type?:string,
   limit = 100
-): Promise<CoordinationFact[]> {
-  const query: CoordinationFactQuery = { limit };
+):Promise<CoordinationFact[]> {
+  const query:CoordinationFactQuery = { limit};
 
   if (agentId) {
-    query.source = `agent:${agentId}`;`
-  }
+    query.source = `agent:${agentId}`;
+}
 
   if (type) {
     query.type = type;
-  }
+}
 
   return await knowledgeFactSystem.queryFacts(query);
 }
@@ -143,8 +148,8 @@ export async function queryAgentFacts(
  * Search external facts (NPM, GitHub, security, etc.) using foundation fact system
  */
 export async function searchExternalFacts(
-  query: string,
-  sources?: string[],
+  query:string,
+  sources?:string[],
   limit = 10
 ) {
   return await knowledgeFactSystem.searchExternalFacts(query, sources, limit);
@@ -153,26 +158,28 @@ export async function searchExternalFacts(
 /**
  * Get NPM package information using high-performance Rust fact bridge
  */
-export async function getNPMPackageInfo(packageName: string, version?: string) {
+export async function getNPMPackageInfo(packageName:string, version?:string) {
   try {
     return await knowledgeFactSystem.getNPMPackageInfo(packageName, version);
-  } catch (error) {
-    console.error(`Failed to get NPM package info for ${packageName}:`, error);`
+} catch (error) {
+    // Use foundation logging instead of console
+    logger.error(`Failed to get NPM package info for ${packageName}:`, error);
     return null;
-  }
+}
 }
 
 /**
  * Get GitHub repository information using high-performance Rust fact bridge
  */
-export async function getGitHubRepoInfo(owner: string, repo: string) {
+export async function getGitHubRepoInfo(owner:string, repo:string) {
   try {
     return await knowledgeFactSystem.getGitHubRepoInfo(owner, repo);
-  } catch (error) {
-    console.error(
-      `Failed to get GitHub repo info for ${owner}/${repo}:`,`
+} catch (error) {
+    // Use foundation logging instead of console
+    logger.error(
+      `Failed to get GitHub repo info for ${owner}/${repo}:`,
       error
     );
     return null;
-  }
+}
 }

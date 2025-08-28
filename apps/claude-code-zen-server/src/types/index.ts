@@ -88,10 +88,7 @@ export type {
 // ============================================================================
 export * from './shared';
 
-// Removed duplicate export - already included in export * from './api'
-// Removed duplicate export - already included in export * from './coordination'
-// Removed duplicate export - already included in export * from './shared'
-
+// Removed duplicate export - already included in export * from './api')// Removed duplicate export - already included in export * from './coordination')// Removed duplicate export - already included in export * from './shared')
 // ============================================================================
 // External Package Types (Strategic Facade Compliance)
 // ============================================================================
@@ -119,15 +116,15 @@ export {
   success,
 } from './shared';
 
-// Note: Only import types that are actually available and needed
+// Note:Only import types that are actually available and needed
 // Removed imports for packages that may not exist or aren't being used
 
 // ============================================================================
 // Legacy Compatibility (Temporary)
 // ============================================================================
 // Import the types we need for aliases
-import type { SwarmAgent, SwarmConfig } from './coordination';
-import type { SystemHealth } from './core';
+import type { SwarmAgent, SwarmConfig} from './coordination';
+import type { SystemHealth} from './core';
 
 // These aliases maintain backward compatibility during migration
 export type Agent = SwarmAgent;
