@@ -272,7 +272,7 @@ function _formatDuration(ms: number): string {
 
 				<!-- Database Type -->
 				<div class="text-center">
-					<div class="text-lg font-bold text-tertiary-500 mb-1">
+					<div class="text-lg font-bold text-green-500 mb-1">
 						{databaseStatus.data?.type || 'Unknown'}
 					</div>
 					<div class="text-sm font-medium">Database Type</div>
@@ -280,7 +280,7 @@ function _formatDuration(ms: number): string {
 
 				<!-- Version -->
 				<div class="text-center">
-					<div class="text-lg font-bold text-warning-500 mb-1">
+					<div class="text-lg font-bold text-yellow-500 mb-1">
 						{databaseStatus.data?.version || 'Unknown'}
 					</div>
 					<div class="text-sm font-medium">Version</div>
@@ -292,12 +292,12 @@ function _formatDuration(ms: number): string {
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 					<div>
 						<h6 class="text-sm font-medium mb-2">Configuration</h6>
-						<CodeBlock language="json" code={JSON.stringify(databaseStatus.data.config, null, 2)} class="max-h-32 overflow-y-auto" />
+						<pre class="bg-gray-100 dark:bg-gray-800 p-3 rounded text-xs overflow-auto max-h-32">{JSON.stringify(databaseStatus.data.config, null, 2)}</pre>
 					</div>
 					{#if databaseStatus.data.metadata}
 						<div>
 							<h6 class="text-sm font-medium mb-2">Metadata</h6>
-							<CodeBlock language="json" code={JSON.stringify(databaseStatus.data.metadata, null, 2)} class="max-h-32 overflow-y-auto" />
+							<pre class="bg-gray-100 dark:bg-gray-800 p-3 rounded text-xs overflow-auto max-h-32">{JSON.stringify(databaseStatus.data.metadata, null, 2)}</pre>
 						</div>
 					{/if}
 				</div>
@@ -308,16 +308,37 @@ function _formatDuration(ms: number): string {
 
 <!-- Database Operations -->
 <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
-	<header class="card-header">
-		<h3 class="h3 text-primary-500">⚡ Database Operations</h3>
+	<header class="p-4 border-b border-gray-200 dark:border-gray-700">
+		<h3 class="text-xl font-bold text-blue-500">⚡ Database Operations</h3>
 	</header>
 	<section class="p-4">
-		<TabGroup bind:active={activeTab}>
-			<Tab value={0}>🔍 Query</Tab>
-			<Tab value={1}>⚡ Commands</Tab>
-			<Tab value={2}>📋 Schema</Tab>
-			<Tab value={3}>📊 Analytics</Tab>
-		</TabGroup>
+		<!-- Tab Navigation -->
+		<div class="flex border-b border-gray-200 dark:border-gray-700 mb-6">
+			<button 
+				class="px-4 py-2 text-sm font-medium border-b-2 {activeTab === 0 ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}"
+				on:click={() => activeTab = 0}
+			>
+				🔍 Query
+			</button>
+			<button 
+				class="px-4 py-2 text-sm font-medium border-b-2 {activeTab === 1 ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}"
+				on:click={() => activeTab = 1}
+			>
+				⚡ Commands
+			</button>
+			<button 
+				class="px-4 py-2 text-sm font-medium border-b-2 {activeTab === 2 ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}"
+				on:click={() => activeTab = 2}
+			>
+				📋 Schema
+			</button>
+			<button 
+				class="px-4 py-2 text-sm font-medium border-b-2 {activeTab === 3 ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}"
+				on:click={() => activeTab = 3}
+			>
+				📊 Analytics
+			</button>
+		</div>
 
 		<div class="mt-6">
 			{#if activeTab === 0}
