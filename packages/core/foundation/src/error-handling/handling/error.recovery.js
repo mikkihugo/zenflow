@@ -16,12 +16,12 @@
  * - Event-driven recovery notifications
  *
  * Recovery Strategies:
- * - Restart: Component/service restart with graceful shutdown
- * - Rollback: Version rollback to last known good state
- * - Failover: Automatic failover to backup systems
- * - Scale: Dynamic scaling based on error patterns
- * - Notify: Alert and notification management
- * - Repair: Self-healing and automatic repair actions
+ * - Restart:Component/service restart with graceful shutdown
+ * - Rollback:Version rollback to last known good state
+ * - Failover:Automatic failover to backup systems
+ * - Scale:Dynamic scaling based on error patterns
+ * - Notify:Alert and notification management
+ * - Repair:Self-healing and automatic repair actions
  *
  * @package @claude-zen/foundation
  * @since 2.1.0
@@ -31,28 +31,19 @@
  * @see {@link https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/} Retry Strategies
  *
  * @example Basic Recovery Strategy
- * ```typescript
- * import { ErrorRecoverySystem } from '@claude-zen/foundation';
+ * ```typescript`
+ * import { ErrorRecoverySystem} from '@claude-zen/foundation';
  *
  * const recovery = new ErrorRecoverySystem({
- *   strategies: [{
- *     id: 'neural-restart',
- *     name: 'Neural Network Restart',
- *     severity: 'high',
- *     timeout: 30000,
- *     maxRetries: 3,
- *     backoffStrategy: 'exponential',
- *     actions: [{ type: 'restart', target: 'neural-engine' }]
- *   }]
- * });
+ *   strategies:[{
+ *     id: 'neural-restart', *     name: 'Neural Network Restart', *     severity: 'high', *     timeout:30000,
+ *     maxRetries:3,
+ *     backoffStrategy: 'exponential', *     actions:[{ type: 'restart', target: ' neural-engine'}]
+ *}]
+ *});
  *
  * const result = await recovery.handleError({
- *   errorId: 'neural-training-failure',
- *   component: 'neural-network',
- *   operation: 'train',
- *   errorType: 'timeout',
- *   severity: 'high'
- * });
+ *   errorId: 'neural-training-failure', *   component: 'neural-network', *   operation: 'train', *   errorType: 'timeout', *   severity:'high') *});
  * ```
  */
 // Foundation re-exports Result types - use internal imports to avoid circular dependency
@@ -312,7 +303,7 @@ export class ErrorRecoverySystem extends EventEmitter {
                 const actionResult = await this.executeRecoveryAction(action, errorInfo, strategy);
                 result.actionsExecuted.push(actionResult);
                 if (!actionResult.success && !action.retryable) {
-                    throw new Error(`Recovery action failed: ${actionResult.error}`);
+                    throw new Error(`Recovery action failed:${actionResult.error}`);
                 }
             }
             result.success = true;
@@ -419,7 +410,7 @@ export class ErrorRecoverySystem extends EventEmitter {
                     parameters: action.parameters,
                 };
             default:
-                throw new Error(`Unknown recovery action type: ${action.type}`);
+                throw new Error(`Unknown recovery action type:${action.type}`);
         }
     }
     delay(ms) {

@@ -46,6 +46,7 @@ const _navItems = [
 		title: "Advanced Swarm Management",
 	},
 	{ href: "/agui", icon: "🎛️", label: "AGUI", title: "Advanced GUI Interface" },
+	{ href: "/agents", icon: "🤖", label: "Agents", title: "AI Agent Coordination" },
 	{ href: "/memory", icon: "💾", label: "Memory", title: "Memory Management" },
 	{
 		href: "/database",

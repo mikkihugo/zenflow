@@ -1,42 +1,42 @@
 /**
- * @fileoverview System Monitoring Package for claude-code-zen
+ * @fileoverview System Monitoring Package for claude-code-zen - 100% EVENT-DRIVEN
  *
- * **INFRASTRUCTURE MONITORING**
+ * **100% EVENT-BASED INFRASTRUCTURE MONITORING**
  *
- * System and infrastructure monitoring using @claude-zen/telemetry for metrics collection.
- * Provides monitoring for CPU, memory, disk, network, and overall system performance.
+ * Pure event-driven system monitoring with ZERO imports.
+ * Listens to brain events and responds with system metrics via events only.
  *
- * **MONITORING CAPABILITIES:**
- * - 🖥️ **System Resources**: CPU, memory, disk, network monitoring
- * - 📊 **Performance Tracking**: System performance metrics and bottlenecks
- * - 🔍 **Health Checks**: System availability and health monitoring
- * - 📈 **Infrastructure Metrics**: Custom infrastructure-specific metrics
- * - ⚡ **Performance Tracker**: Operation timing and performance analysis
+ * **EVENT-DRIVEN CAPABILITIES:**
+ * - 🧠 **Brain Integration**:Responds to brain monitoring requests via events
+ * - 🖥️ **System Resources**:CPU, memory, disk, network monitoring via events
+ * - 📊 **Performance Tracking**:System performance metrics via event emission
+ * - 🔍 **Health Checks**:System availability via event responses
+ * - 📈 **Telemetry Events**:Metrics emission via telemetry events (no imports)
+ * - ⚡ **Zero Dependencies**:No foundation or telemetry imports
  *
- * **INTEGRATION:**
- * Uses @claude-zen/telemetry internally for all metrics collection and tracing.
- * Designed to be used by Infrastructure facade only.
+ * **EVENT ARCHITECTURE:**
+ * Brain emits monitoring request events → System Monitor responds with metric events
+ * Pure event coordination with no direct package dependencies.
  *
- * @example Infrastructure Usage
+ * @example Event-Driven Usage (Brain Integration)
  * ```typescript`
- * import { SystemMonitor, PerformanceTracker, getSystemMonitoring } from '@claude-zen/system-monitoring';
+ * // Brain emits request
+ * eventSystem.emit('brain:system-monitoring:get-metrics', {
+ *   requestId: '123', *   timestamp:Date.now()
+ *});
  *
- * // System monitoring
- * const monitor = new SystemMonitor();
- * await monitor.initialize();
- * const metrics = await monitor.getMetrics();
- *
- * // Performance tracking
- * const tracker = new PerformanceTracker();
- * const timer = tracker.startTimer('database_query');'
- * // ... operation
- * timer();
+ * // System monitor responds with event
+ * eventSystem.on('system-monitoring:metrics', (data) => {
+ *   console.log('System metrics: ', data.metrics);
+' *});
  * ````
  *
  * @author Claude Code Zen Team
- * @version 1.0.0
+ * @version 2.0.0-event-driven
  */
-// Default export for convenience
-export { createHealthChecker, createPerformanceTracker, createSystemMonitor, getSystemMonitoring, HealthChecker, InfrastructureMetrics, PerformanceTracker, SystemMonitor, SystemMonitor as default, } from './monitoring.js';
+// PRIMARY EVENT-DRIVEN EXPORTS (ZERO IMPORTS)
+export { createEventDrivenSystemMonitor, EventDrivenSystemMonitor, EventDrivenSystemMonitor as default, } from './monitoring-event-driven.js';
+// LEGACY EXPORTS (WITH IMPORTS - DEPRECATED)
+export { createHealthChecker, createPerformanceTracker, createSystemMonitor, getSystemMonitoring, HealthChecker, InfrastructureMetrics, PerformanceTracker, SystemMonitor, } from './monitoring.js';
 // System metrics implementation (moved from foundation)
 export { createSystemMetricsCollector, SYSTEM_METRICS_COLLECTOR_TOKEN, SystemMetricsCollector, } from './system-metrics.js';

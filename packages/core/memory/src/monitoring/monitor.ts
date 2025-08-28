@@ -284,7 +284,9 @@ export class MemoryMonitor extends EventEmitter {
         backendMetrics[id] = {
           status:
             errors / Math.max(backendOps.length, 1) > 0.1
-              ? 'degraded')              : 'healthy',          operations:backendOps.length,
+              ? 'degraded'
+              : 'healthy',
+          operations:backendOps.length,
           errors,
           latency:avgLatency,
 };
@@ -355,7 +357,9 @@ export class MemoryMonitor extends EventEmitter {
       this.createAlert({
         type: 'performance',        severity:
           metrics.averageLatency > thresholds.latency * 2
-            ? 'critical')            : 'warning',        message:`Average latency (${metrics.averageLatency.toFixed(2)}ms) exceeds threshold (${thresholds.latency}ms)`,
+            ? 'critical'
+            : 'warning',
+        message:`Average latency (${metrics.averageLatency.toFixed(2)}ms) exceeds threshold (${thresholds.latency}ms)`,
         source: 'latency_monitor',        metadata:{
           currentLatency:metrics.averageLatency,
           threshold:thresholds.latency,

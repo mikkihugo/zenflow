@@ -28,119 +28,119 @@
  * @since 2.1.0
  * @version 1.0.0
  */
-import { type ContextError, type Logger, type Result} from '@claude-zen/foundation';
-import type { ActivationFunction, ModelMetrics} from './types/index';
+import { type ContextError, type Logger, type Result } from '@claude-zen/foundation';
+import type { ActivationFunction, ModelMetrics } from './types/index';
 /**
  * Configuration for brain.js neural networks
  */
 export interface BrainJsConfig {
     /** Default learning rate for training */
-    readonly learningRate?:number;
+    readonly learningRate?: number;
     /** Default number of iterations for training */
-    readonly iterations?:number;
+    readonly iterations?: number;
     /** Error threshold for training completion */
-    readonly errorThreshold?:number;
+    readonly errorThreshold?: number;
     /** Enable GPU acceleration (experimental) */
-    readonly gpu?:boolean;
+    readonly gpu?: boolean;
     /** Enable logging of training progress */
-    readonly logPeriod?:number;
+    readonly logPeriod?: number;
     /** Timeout for training operations (ms) */
-    readonly timeout?:number;
+    readonly timeout?: number;
     /** Enable memory optimization */
-    readonly memoryOptimization?:boolean;
+    readonly memoryOptimization?: boolean;
 }
 /**
  * Network configuration for brain.js networks
  */
 export interface BrainJsNetworkConfig {
     /** Type of neural network */
-    readonly type:'feedforward' | ' rnn' | ' lstm' | ' gru';
+    readonly type: 'feedforward' | ' rnn' | ' lstm' | ' gru';
     /** Hidden layer sizes (for feedforward networks) */
-    readonly hiddenLayers?:readonly number[];
+    readonly hiddenLayers?: readonly number[];
     /** Input size (for RNN/LSTM/GRU networks) */
-    readonly inputSize?:number;
+    readonly inputSize?: number;
     /** Output size (for RNN/LSTM/GRU networks) */
-    readonly outputSize?:number;
+    readonly outputSize?: number;
     /** Activation function */
-    readonly activation?:ActivationFunction;
+    readonly activation?: ActivationFunction;
     /** Learning rate for this specific network */
-    readonly learningRate?:number;
+    readonly learningRate?: number;
     /** Binary threshold (for binary classification) */
-    readonly binaryThresh?:number;
+    readonly binaryThresh?: number;
     /** Enable bias neurons */
-    readonly bias?:boolean;
+    readonly bias?: boolean;
 }
 /**
  * Training data format for brain.js
  */
 export interface BrainJsTrainingData {
     /** Input data */
-    readonly input:number[] | Record<string, number>;
+    readonly input: number[] | Record<string, number>;
     /** Expected output */
-    readonly output:number[] | Record<string, number>;
+    readonly output: number[] | Record<string, number>;
 }
 /**
  * Training options for brain.js networks
  */
 export interface BrainJsTrainingOptions {
     /** Maximum number of training iterations */
-    readonly iterations?:number;
+    readonly iterations?: number;
     /** Target error threshold */
-    readonly errorThreshold?:number;
+    readonly errorThreshold?: number;
     /** Logging period for training progress */
-    readonly logPeriod?:number;
+    readonly logPeriod?: number;
     /** Learning rate */
-    readonly learningRate?:number;
+    readonly learningRate?: number;
     /** Momentum for training */
-    readonly momentum?:number;
+    readonly momentum?: number;
     /** Callback function for training progress */
-    readonly callback?:(stats: any) => void;
+    readonly callback?: (stats: any) => void;
     /** Period for calling the callback */
-    readonly callbackPeriod?:number;
+    readonly callbackPeriod?: number;
     /** Timeout for training */
-    readonly timeout?:number;
+    readonly timeout?: number;
 }
 /**
  * Prediction result from brain.js networks
  */
 export interface BrainJsPredictionResult {
     /** Network output */
-    readonly output:number[] | Record<string, number>;
+    readonly output: number[] | Record<string, number>;
     /** Confidence score (if available) */
-    readonly confidence?:number;
+    readonly confidence?: number;
     /** Processing time in milliseconds */
-    readonly processingTime:number;
+    readonly processingTime: number;
     /** Additional metadata */
-    readonly metadata?:Record<string, unknown>;
+    readonly metadata?: Record<string, unknown>;
 }
 /**
  * Neural network instance for brain.js
  */
 export interface BrainJsNetworkInstance {
     /** Unique network identifier */
-    readonly id:string;
+    readonly id: string;
     /** Network type */
-    readonly type:BrainJsNetworkConfig['type'];
+    readonly type: BrainJsNetworkConfig['type'];
     /** The actual brain.js network instance */
-    readonly network:any;
+    readonly network: any;
     /** Network configuration */
-    readonly config:BrainJsNetworkConfig;
+    readonly config: BrainJsNetworkConfig;
     /** Current training state */
-    readonly trainingState:{
-        readonly isTrained:boolean;
-        readonly isTraining:boolean;
-        readonly iterations:number;
-        readonly error:number;
-        readonly lastTrainingTime?:string;
-};
+    readonly trainingState: {
+        readonly isTrained: boolean;
+        readonly isTraining: boolean;
+        readonly iterations: number;
+        readonly error: number;
+        readonly lastTrainingTime?: string;
+    };
     /** Network metadata */
-    readonly metadata:{
-        readonly created:string;
-        readonly updated:string;
-        readonly inputSize?:number;
-        readonly outputSize?:number;
-        readonly parameterCount?:number;
-};
+    readonly metadata: {
+        readonly created: string;
+        readonly updated: string;
+        readonly inputSize?: number;
+        readonly outputSize?: number;
+        readonly parameterCount?: number;
+    };
 }
 /**
  * Brain.js Neural Network Bridge
@@ -179,101 +179,14 @@ export declare class BrainJsBridge {
     private config;
     private initialized;
     private dbAccess;
-    constructor(foundationLogger:Logger, config?:BrainJsConfig);
+    constructor(foundationLogger: Logger, config?: BrainJsConfig);
     /**
      * Initialize the brain.js bridge
      */
-    initialize():Promise<Result<void, ContextError>>;
-    /**
-     * Create a new brain.js neural network
-     *
-     * @param id - Unique network identifier
-     * @param type - Type of neural network to create
-     * @param config - Network configuration
-     * @returns Result containing the network ID or error
-     */
-    createNeuralNet(id:string, type:BrainJsNetworkConfig['type'], config:Omit<BrainJsNetworkConfig, ' type'>, :any): Promise<Result<string, ContextError>>;
-    /**
-     * Train a brain.js neural network
-     *
-     * @param networkId - ID of the network to train
-     * @param trainingData - Training data for the network
-     * @param options - Training options
-     * @returns Result containing training success status or error
-     */
-    trainNeuralNet(networkId:string, trainingData:readonly BrainJsTrainingData[], options?:BrainJsTrainingOptions): Promise<Result<ModelMetrics, ContextError>>;
-    /**
-     * Make a prediction with a brain.js neural network
-     *
-     * @param networkId - ID of the network to use for prediction
-     * @param input - Input data for prediction
-     * @returns Result containing prediction result or error
-     */
-    predictWithNeuralNet(networkId:string, input:number[] | Record<string, number>):Promise<Result<BrainJsPredictionResult, ContextError>>;
-    /**
-     * Get network information
-     *
-     * @param networkId - ID of the network
-     * @returns Result containing network instance or error
-     */
-    getNetworkInfo(networkId:string): Result<BrainJsNetworkInstance, ContextError>;
-    /**
-     * List all brain.js networks
-     *
-     * @returns Array of network instances
-     */
-    listNetworks():BrainJsNetworkInstance[];
-    /**
-     * Remove a brain.js network
-     *
-     * @param networkId - ID of the network to remove
-     * @returns Success status
-     */
-    removeNetwork(networkId:string): Promise<Result<boolean, ContextError>>;
-    /**
-     * Export a trained network to JSON
-     *
-     * @param networkId - ID of the network to export
-     * @returns Result containing JSON representation or error
-     */
-    exportNetwork(networkId:string): Result<object, ContextError>;
-    /**
-     * Import a network from JSON
-     *
-     * @param networkData - JSON representation of the network
-     * @returns Result containing the network ID or error
-     */
-    importNetwork(networkData:any): Promise<Result<string, ContextError>>;
-    /**
-     * Get brain.js bridge statistics
-     *
-     * @returns Statistics about the bridge and networks
-     */
-    getStats():{
-        totalNetworks:number;
-        trainedNetworks:number;
-        trainingNetworks:number;
-        networkTypes:Record<string, number>;
-        memoryUsage:number;
-};
-    /**
-     * Shutdown the brain.js bridge
-     */
-    shutdown():Promise<Result<void, ContextError>>;
-    /**
-     * Initialize database schema for brain.js networks
-     */
-    private initializeDatabaseSchema;
-    /**
-     * Estimate parameter count for a network
-     */
-    private estimateParameterCount;
-    /**
-     * Estimate memory usage of all networks
-     */
-    private estimateMemoryUsage;
+    initialize(): Promise<Result<void, ContextError>>;
+    then(): any;
 }
-export declare function createBrainJsNetwork(id:string, type:BrainJsNetworkConfig['type'], config:Omit<BrainJsNetworkConfig, ' type'>, bridgeConfig?:BrainJsConfig): Promise<Result<string, ContextError>>;
-export declare function trainBrainJsNetwork(bridge:BrainJsBridge, networkId:string, trainingData:readonly BrainJsTrainingData[], options?:BrainJsTrainingOptions): Promise<Result<ModelMetrics, ContextError>>;
-export declare function predictWithBrainJsNetwork(bridge:BrainJsBridge, networkId:string, input:number[] | Record<string, number>):Promise<Result<BrainJsPredictionResult, ContextError>>;
+export declare function createBrainJsNetwork(id: string, type: BrainJsNetworkConfig['type'], config: Omit<BrainJsNetworkConfig, 'type'>, bridgeConfig?: BrainJsConfig): Promise<Result<string, ContextError>>;
+export declare function trainBrainJsNetwork(bridge: BrainJsBridge, networkId: string, trainingData: readonly BrainJsTrainingData[], options?: BrainJsTrainingOptions): Promise<Result<ModelMetrics, ContextError>>;
+export declare function predictWithBrainJsNetwork(bridge: BrainJsBridge, networkId: string, input: number[] | Record<string, number>): Promise<Result<BrainJsPredictionResult, ContextError>>;
 //# sourceMappingURL=brain-js-bridge.d.ts.map

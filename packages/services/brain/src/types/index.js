@@ -5,8 +5,8 @@
  * learning algorithms, and brain coordination systems. These types define the core
  * domain model for all neural and AI operations within the brain package.
  *
- * Dependencies: Only imports from @claude-zen/foundation for shared primitives.
- * Domain Independence: Self-contained neural/AI domain types.
+ * Dependencies:Only imports from @claude-zen/foundation for shared primitives.
+ * Domain Independence:Self-contained neural/AI domain types.
  *
  * @package @claude-zen/brain
  * @since 2.1.0
@@ -216,6 +216,9 @@ stable;
 declining;
 '|volatile;;
 confidence: number;
+'  aggregation: ';
+mean | median | max | min | sum | count;
+'};
 /**
  * Coordination topologies
  */
@@ -269,6 +272,12 @@ export var AgentStatus;
     AgentStatus["SHUTTING_DOWN"] = "shutting_down";
     AgentStatus["OFFLINE"] = "offline";
 })(AgentStatus || (AgentStatus = {}));
+'  severity: ';
+low | medium | high | critical;
+'  message:string;;
+timestamp: Timestamp;
+resolved: boolean;
+resolvedAt ?  : Timestamp;
 /**
  * Dataset types
  */
@@ -306,39 +315,37 @@ export var DataFormat;
  * Type guard for neural agents
  */
 export function isNeuralAgent(obj) {
-    return (typeof obj === 'object' && ');
-    obj !== null &&
-        'agentType' in obj && ';
-    'cognitiveModel' in obj && ';
+    return (typeof obj === 'object' && ')    obj !== null &&);
+    'agentType' in obj && ')    ';
+    cognitiveModel;
+    ' in obj &&';
     'capabilities' in obj;
-    ';
-    ;
+    ')  );;
 }
 /**
  * Type guard for neural network config
  */
 export function isNeuralNetworkConfig(obj) {
-    return (typeof obj === 'object' && ');
-    obj !== null &&
-        'modelType' in obj && ';
-    'architecture' in obj && ';
+    return (typeof obj === 'object' && ')    obj !== null &&);
+    'modelType' in obj && ')    ';
+    architecture;
+    ' in obj &&';
     'training' in obj;
-    ';
-    ;
+    ')  );;
 }
 /**
  * Type guard for agent messages
  */
 export function isAgentMessage(obj) {
-    return (typeof obj === 'object' && ');
-    obj !== null &&
-        'id' in obj && ';
-    'from' in obj && ';
-    'to' in obj && ';
-    'type' in obj && ';
+    return (typeof obj === 'object' && ')    obj !== null &&);
+    'id' in obj && ')    ';
+    from;
+    ' in obj &&';
+    'to' in obj && ')    ';
+    type;
+    ' in obj &&';
     'payload' in obj;
-    ';
-    ;
+    ')  );;
 }
 // Export all types as the default brain domain types
 export default {

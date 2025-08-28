@@ -137,7 +137,7 @@ function _enterEnhancedDashboard(role: string) {
       <h2 style="font-size: 2rem; font-weight: bold; text-align: center; margin-bottom: 3rem;">Choose Your SAFe Role</h2>
       
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem;">
-        {#each safeRoles as roleData}
+        {#each _safeRoles as roleData}
           <div role="button" tabindex="0" style="background: rgba(51, 65, 85, 0.3); backdrop-filter: blur(8px); border-radius: 1rem; border: 1px solid rgba(51, 65, 85, 0.5); padding: 1.5rem; transition: all 0.3s ease;" 
                on:mouseenter={e => e.target.style.borderColor = 'rgba(96, 165, 250, 0.5)'}
                on:mouseleave={e => e.target.style.borderColor = 'rgba(51, 65, 85, 0.5)'}>
@@ -170,7 +170,7 @@ function _enterEnhancedDashboard(role: string) {
             <div style="display: flex; flex-direction: column; gap: 0.5rem;">
               <button 
                 style="width: 100%; padding: 0.5rem 1rem; background: linear-gradient(to right, #2563eb, #7c3aed); border: none; border-radius: 0.5rem; color: white; font-weight: 500; cursor: pointer; transition: all 0.2s ease;"
-                on:click={() => enterProductionDashboard(roleData.role)}
+                on:click={() => _enterProductionDashboard(roleData.role)}
                 on:mouseenter={e => e.target.style.background = 'linear-gradient(to right, #1d4ed8, #6d28d9)'}
                 on:mouseleave={e => e.target.style.background = 'linear-gradient(to right, #2563eb, #7c3aed)'}
               >
@@ -178,7 +178,7 @@ function _enterEnhancedDashboard(role: string) {
               </button>
               <button 
                 style="width: 100%; padding: 0.5rem 1rem; background: rgba(51, 65, 85, 0.5); border: 1px solid #475569; border-radius: 0.5rem; color: #cbd5e1; font-weight: 500; cursor: pointer; transition: all 0.2s ease;"
-                on:click={() => enterEnhancedDashboard(roleData.role)}
+                on:click={() => _enterEnhancedDashboard(roleData.role)}
                 on:mouseenter={e => e.target.style.background = 'rgba(71, 85, 105, 0.5)'}
                 on:mouseleave={e => e.target.style.background = 'rgba(51, 65, 85, 0.5)'}
               >

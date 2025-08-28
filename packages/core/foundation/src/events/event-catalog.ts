@@ -5,7 +5,7 @@
  * Provides TypeScript definitions and development-time validation.
  */
 
-import { getLogger} from '../logging/index.js';
+import { getLogger} from '../core/logging/logging.service.js';
 
 const logger = getLogger('EventCatalog');
 

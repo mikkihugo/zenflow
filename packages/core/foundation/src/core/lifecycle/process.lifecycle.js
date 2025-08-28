@@ -6,23 +6,23 @@
  * Designed for enterprise-grade applications requiring reliable process management.
  *
  * @example Basic Usage
- * ```typescript
- * import { ProcessLifecycleManager, setupProcessLifecycle } from '@claude-zen/foundation';
+ * ```typescript`
+ * import { ProcessLifecycleManager, setupProcessLifecycle} from '@claude-zen/foundation';
  *
  * // Simple setup
  * const lifecycle = setupProcessLifecycle(async () => {
  *   console.log('Graceful shutdown initiated');
  *   await cleanup();
- * });
+ *});
  *
  * // Advanced setup
  * const manager = new ProcessLifecycleManager({
- *   onShutdown: async () => await gracefulShutdown(),
- *   onError: async (error) => await handleError(error),
- * }, {
- *   gracefulShutdownTimeout: 30000,
- *   exitOnUncaughtException: true
- * });
+ *   onShutdown:async () => await gracefulShutdown(),
+ *   onError:async (error) => await handleError(error),
+ *}, {
+ *   gracefulShutdownTimeout:30000,
+ *   exitOnUncaughtException:true
+ *});
  * ```
  *
  * @package @claude-zen/foundation
@@ -39,16 +39,16 @@ const logger = getLogger("ProcessLifecycle");
  * Designed for production environments requiring reliable process control.
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const manager = new ProcessLifecycleManager({
- *   onShutdown: async () => {
+ *   onShutdown:async () => {
  *     await database.close();
  *     await server.close();
- *   },
- *   onError: async (error) => {
- *     await logger.error('Process error:', error);
- *   }
- * });
+ *},
+ *   onError:async (error) => {
+ *     await logger.error('Process error: ', error);
+' *}
+ *});
  * ```
  */
 export class ProcessLifecycleManager {
@@ -203,11 +203,11 @@ export class ProcessLifecycleManager {
  * @returns Configured ProcessLifecycleManager instance
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const lifecycle = setupProcessLifecycle(async () => {
  *   await cleanup();
  *   console.log('Shutdown complete');
- * });
+ *});
  * ```
  */
 export function setupProcessLifecycle(shutdownHandler) {

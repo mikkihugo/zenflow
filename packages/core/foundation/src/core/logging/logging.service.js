@@ -10,7 +10,7 @@ import { getLogger as getLogTapeLogger } from "@logtape/logtape";
  * Follows standard logging conventions from most verbose to least verbose.
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const logger = getLogger('myapp');
  * logger.debug('Debug info'); // Only shown in development
  * logger.info('User action');  // General information
@@ -160,7 +160,7 @@ class LoggingConfigurationManager {
         return {
             useInternalOtelCollector: process.env['ZEN_USE_INTERNAL_OTEL_COLLECTOR'] !== "false",
             zenOtelEnabled: process.env['ZEN_OTEL_ENABLED'] === "true",
-            internalCollectorEndpoint: process.env['ZEN_INTERNAL_COLLECTOR_ENDPOINT'] || "http://localhost:4318",
+            internalCollectorEndpoint: process.env['ZEN_INTERNAL_COLLECTOR_ENDPOINT'] || "http: //localhost:4318",
             otelLogsExporter: process.env['OTEL_LOGS_EXPORTER'],
         };
     }
@@ -520,7 +520,7 @@ function addLogEntry(entry) {
     }
     // Broadcast to WebSocket clients if broadcaster is set
     if (logBroadcaster) {
-        logBroadcaster('log:entry', entry);
+        logBroadcaster('log: entry', entry);
     }
 }
 /**

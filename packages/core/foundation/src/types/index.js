@@ -35,4 +35,4 @@ Priority as PriorityEnum, Status as StatusEnum, timestampFromDate, } from "./pri
 // AGENT TYPES MOVED TO INTELLIGENCE PACKAGE
 // =============================================================================
 // Agent types moved to @claude-zen/intelligence
-// Use: import { AgentInstance, AgentRegistrationConfig } from '@claude-zen/intelligence';
+// Use:import { AgentInstance, AgentRegistrationConfig} from '@claude-zen/intelligence';

@@ -14,104 +14,77 @@ import {
 /**
  * Calculate realistic SAFe coverage based on actual implementations
  */
-export function calculateActualSafeCoverage():{
-  essentialSafeCoverage: ESSENTIAL_SAFE_COMPONENTS.filter('
-    (c) => c.taskMasterSupport === 'complete'  );
-  const partialComponents = ESSENTIAL_SAFE_COMPONENTS.filter('
-    (c) => c.taskMasterSupport === 'partial'  );
-  const missingComponents = ESSENTIAL_SAFE_COMPONENTS.filter('
-    (c) => c.taskMasterSupport === 'missing'  );
-  // Calculate Essential SAFe coverage (weighted: complete=1.0, partial=0.5, missing=0.0)
-  const essentialSafeCoverage = Math.round();
-    ((completeComponents.length * 1.0 + partialComponents.length * 0.5) /;
-      ESSENTIAL_SAFE_COMPONENTS.length) *;
-      100;
+export function calculateActualSafeCoverage(): {
+  essentialSafeCoverage: number;
+  implementedComponents: number;
+  partialComponents: number;
+  missingComponents: number;
+  recommendations: string[];
+} {
+  const completeComponents = ESSENTIAL_SAFE_COMPONENTS.filter(
+    (c) => c.taskMasterSupport === 'complete'
   );
-  // Essential SAFe is ~25% of Full SAFe, so scale accordingly
-  const overallSafeCoverage = Math.round(essentialSafeCoverage * 0.25);
+  const partialComponents = ESSENTIAL_SAFE_COMPONENTS.filter(
+    (c) => c.taskMasterSupport === 'partial'
+  );
+  const missingComponents = ESSENTIAL_SAFE_COMPONENTS.filter(
+    (c) => c.taskMasterSupport === 'missing'
+  );
+  // Calculate Essential SAFe coverage (weighted: complete=1.0, partial=0.5, missing=0.0)
+  const essentialSafeCoverage = Math.round(
+    ((completeComponents.length * 1.0 + partialComponents.length * 0.5) /
+      ESSENTIAL_SAFE_COMPONENTS.length) *
+      100
+  );
+  
   return {
-    essentialSafeCoverage;
-    overallSafeCoverage;
-    breakdown: {
-      complete: completeComponents.length;
-      partial: partialComponents.length;
-      missing: missingComponents.length;
+    essentialSafeCoverage,
+    implementedComponents: completeComponents.length,
+    partialComponents: partialComponents.length,
+    missingComponents: missingComponents.length,
+    recommendations: [
+      'Focus on completing missing components for full Essential SAFe coverage',
+      'Enhance partial implementations to achieve complete component coverage',
+      'Consider progression to Large Solution SAFe once Essential SAFe is fully implemented'
+    ]
+  };
 }
-    strengths: [;'
-     'Universal approval gate orchestration',     'AI-powered decision making',     'Complete role-based workflows',     'Kanban flow via approval states',     'SOC2-compliant audit trails',     'Learning and improvement systems',],;;
-    gaps: [;'
-     'Event coordination and facilitation',     'Artifact template management',     'Competency practice frameworks',     'PI planning coordination',     'Vision and roadmap management',],;;
-    recommendation: generateRecommendation();
-      essentialSafeCoverage;
-      overallSafeCoverage;
-    );
-  }
-}
+
+/**
+ * Generate recommendations based on coverage analysis
+ */
 function generateRecommendation(
-  essentialCoverage: number;
-  _overallCoverage: number;
-):string {
-  if (essentialCoverage >= 80) {'
+  essentialCoverage: number,
+  _overallCoverage: number
+): string {
+  if (essentialCoverage >= 80) {
     return 'Strong foundation - focus on completing Essential SAFe before expanding';
-  } else if (essentialCoverage >= 60) {'
+  } else if (essentialCoverage >= 60) {
     return 'Good progress - complete remaining Essential SAFe components';
-  } else if (essentialCoverage >= 40) {'
+  } else if (essentialCoverage >= 40) {
     return 'Solid foundation - systematic approach to complete Essential SAFe';
-  } else {'
+  } else {
     return 'Early stage - focus on core Essential SAFe implementation';
   }
 }
 /**
  * Generate honest assessment report
  */
-export function generateHonestAssessmentReport():string {
+export function generateHonestAssessmentReport(): string {
   const coverage = calculateActualSafeCoverage();
-  return ``;
-# TaskMaster SAFe Implementation - Honest Assessment;
-## Executive Summary;
-- **Essential SAFe Coverage**:${coverage.essentialSafeCoverage}%;
-- **Overall SAFe Coverage**:${coverage.overallSafeCoverage}%;
-- **Recommendation**:${coverage.recommendation}
-## Component Status;
-- ✅ **Complete**:${coverage.breakdown.complete}
-- ⚠️ **Partial**:${coverage.breakdown.partial}
-- ❌ **Missing**:${coverage.breakdown.missing}
-## TaskMaster Strengths`;
-${coverage.strengths.map((s) => `- ${s}).join(`\n`)};`;
-## Critical Gaps;  return ``;
-# TaskMaster SAFe Implementation - Honest Assessment;
-## Executive Summary;
-- **Essential SAFe Coverage**:${coverage.essentialSafeCoverage}%;
-- **Overall SAFe Coverage**:${coverage.overallSafeCoverage}%;
-- **Recommendation**:${coverage.recommendation}
-## Component Status;
-- ✅ **Complete**:${coverage.breakdown.complete}
-- ⚠️ **Partial**:${coverage.breakdown.partial}
-- ❌ **Missing**:${coverage.breakdown.missing}
-## TaskMaster Strengths`;
-${coverage.strengths.map((s) => `- ${s}).join(`\n`)};;'`
-## Critical Gaps;.charAt(  return `;
-# TaskMaster SAFe Implementation - Honest Assessment;
-## Executive Summary;
-- **Essential SAFe Coverage**:${coverage.essentialSafeCoverage}%;
-- **Overall SAFe Coverage**:${coverage.overallSafeCoverage}%;
-- **Recommendation**:${coverage.recommendation}
-## Component Status;
-- ✅ **Complete**:${coverage.breakdown.complete}
-- ⚠️ **Partial**:${coverage.breakdown.partial}
-- ❌ **Missing**:${coverage.breakdown.missing}
-## TaskMaster Strengths`;
-${coverage.strengths.map((s) => `- ${s}).join(`\n`)};;'`
-## Critical Gaps;.indexOf("'") > -1 ? "'" : "");
-`${coverage.gaps.map((g) => `- ${g}).join(`'\n)};;
-## Next Steps;
-1. Complete partial implementations (4-6 weeks);
-2. Build missing essential components (6-8 weeks);
-3. Validate end-to-end Essential SAFe workflows (2-3 weeks)`;
-**Total Time to Essential SAFe**: 12-17 weeks
-**Total Time to Meaningful SAFe Coverage**: 6-12 months'
-'`;
-}
-;
-export default calculateActualSafeCoverage;
+  
+  return `# TaskMaster SAFe Implementation - Honest Assessment
+
+## Executive Summary
+- **Essential SAFe Coverage**: ${coverage.essentialSafeCoverage}%
+- **Implemented Components**: ${coverage.implementedComponents}
+- **Partial Components**: ${coverage.partialComponents}  
+- **Missing Components**: ${coverage.missingComponents}
+
+## Recommendations
+${coverage.recommendations.map(r => `- ${r}`).join('\n')}
+
+## Next Steps
+Focus on completing missing components for full Essential SAFe coverage
 `;
+}

@@ -247,7 +247,7 @@ export abstract class BaseMemoryBackend extends EventEmitter {
       const retrieved = await this.retrieve(testKey);
       await this.delete(testKey);
 
-      healthy = retrieved !== null && (retrieved as any)?.test === true;
+      healthy = retrieved !== null && (retrieved as Record<string, unknown>)?.test === true;
 } catch (error) {
       healthy = false;
       this.emitError(error as Error, 'healthCheck');
@@ -355,8 +355,9 @@ export abstract class BaseMemoryBackend extends EventEmitter {
       return healthStatus.healthy;
 } catch (error) {
       this.emitError(
-        error instanceof Error ? error:new Error(String(error)),
-        'health')      );
+        error instanceof Error ? error : new Error(String(error)),
+        'health'
+      );
       return false;
 }
 }

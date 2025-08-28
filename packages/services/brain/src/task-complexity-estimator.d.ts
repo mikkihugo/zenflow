@@ -16,30 +16,30 @@
  * @since 2.1.0
  */
 export interface TaskComplexityData {
-    readonly task:string;
-    readonly prompt:string;
-    readonly context:Record<string, any>;
-    readonly agentRole?:string;
-    readonly actualComplexity?:number;
-    readonly actualDuration?:number;
-    readonly actualSuccess?:boolean;
-    readonly timestamp:number;
+    readonly task: string;
+    readonly prompt: string;
+    readonly context: Record<string, any>;
+    readonly agentRole?: string;
+    readonly actualComplexity?: number;
+    readonly actualDuration?: number;
+    readonly actualSuccess?: boolean;
+    readonly timestamp: number;
 }
 export interface ComplexityEstimate {
-    readonly estimatedComplexity:number;
-    readonly confidence:number;
-    readonly reasoning:string[];
-    readonly suggestedMethod:'dspy' | ' ml' | ' hybrid';
-    readonly estimatedDuration:number;
+    readonly estimatedComplexity: number;
+    readonly confidence: number;
+    readonly reasoning: string[];
+    readonly suggestedMethod: 'dspy' | ' ml' | ' hybrid';
+    readonly estimatedDuration: number;
     readonly difficultyLevel: 'trivial|easy|medium|hard|expert;;
-'    readonly keyFactors:string[];
+    '  readonly keyFactors:string[];: any;
 }
 export interface ComplexityPattern {
-    readonly keywords:string[];
-    readonly contextKeys:string[];
-    readonly complexity:number;
-    readonly weight:number;
-    readonly examples:string[];
+    readonly keywords: string[];
+    readonly contextKeys: string[];
+    readonly complexity: number;
+    readonly weight: number;
+    readonly examples: string[];
 }
 /**
  * Task Complexity Estimation System
@@ -54,28 +54,7 @@ export declare class TaskComplexityEstimator {
     private initialized;
     private keywordWeights;
     constructor();
-    /**
-     * Initialize the complexity estimation system
-     */
-    initialize():Promise<void>;
-    /**
-     * Estimate the complexity of a task
-     */
-    estimateComplexity(task:string, prompt:string, context?:Record<string, any>, agentRole?:string): Promise<ComplexityEstimate>;
-    /**
-     * Get complexity estimation statistics
-     */
-    getComplexityStats():{
-        totalEstimations:number;
-        averageComplexity:number;
-        accuracyRate:number;
-        patternCount:number;
-        topComplexityFactors:string[];
-};
     private analyzePromptComplexity;
-    private analyzeContextComplexity;
-    number:any;
-    reasoning:string;
+    private analyzeRoleComplexity;
 }
-export default TaskComplexityEstimator;
 //# sourceMappingURL=task-complexity-estimator.d.ts.map

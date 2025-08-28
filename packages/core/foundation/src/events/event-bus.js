@@ -10,7 +10,7 @@
  */
 import { EventEmitter } from './event-emitter.js';
 // Simple logger for event-system to avoid circular dependency
-// Production-ready: Use structured logging instead of direct console
+// Production-ready:Use structured logging instead of direct console
 const logger = {
     info: (msg, data) => {
         // Use structured logging in production
@@ -41,11 +41,9 @@ const logger = {
         })}\n`);
     },
     debug: (msg, data) => {
-        if (process.env['NODE_ENV'] === 'development' || process.env['DEBUG'] === 'true') {
+        if (process.env['NODE_ENV'] === ' development' || process.env[' DEBUG'] === ' true') {
             process.stdout.write(`${JSON.stringify({
-                level: 'debug',
-                component: 'EventBus',
-                message: msg,
+                level: 'debug', component: 'EventBus', message: msg,
                 data: data || null,
                 timestamp: new Date().toISOString()
             })}\n`);
@@ -66,24 +64,24 @@ const safeAsync = async (fn) => {
  * Single implementation replacing all previous event system variants.
  *
  * @example
- * ```typescript
+ * ```typescript`
  * // Define your event map
  * interface MyEvents {
- *   userAction: { action: string; target: string };
- *   systemEvent: { type: string; data: unknown };
- * }
+ *   userAction:{ action: string; target: string};
+ *   systemEvent:{ type: string; data: unknown};
+ *}
  *
  * // Create fully typed event bus
  * const eventBus = new EventBus<MyEvents>();
  *
  * // Fully typed listeners
  * eventBus.on('userAction', (payload) => {
- *   // payload is typed as { action: string; target: string }
+ *   // payload is typed as { action:string; target: string}
  *   console.log(payload.action, payload.target);
- * });
+ *});
  *
  * // Fully typed emission
- * eventBus.emit('userAction', { action: 'click', target: 'button' });
+ * eventBus.emit('userAction', { action: ' click', target: ' button'});
  * ```
  */
 export class EventBus extends EventEmitter {
@@ -98,8 +96,7 @@ export class EventBus extends EventEmitter {
             enableMiddleware: true,
             enableMetrics: true,
             enableLogging: false,
-            logLevel: 'info',
-            ...config,
+            logLevel: 'info', ...config,
         };
         this.setMaxListeners(this.busConfig.maxListeners);
         this.busMetrics = {
@@ -122,7 +119,7 @@ export class EventBus extends EventEmitter {
     /**
      * Initialize event bus with proper async operations.
      */
-    async initialize() {
+    initialize() {
         return safeAsync(async () => {
             // Validate configuration
             if (this.busConfig.maxListeners < 1) {
@@ -176,7 +173,7 @@ export class EventBus extends EventEmitter {
             }
             // Log if enabled
             if (this.busConfig.enableLogging) {
-                logger.info(`Emitting event: ${String(event)}`, { payload });
+                logger.info(`Emitting event:${String(event)}`, { payload });
             }
             // Emit event
             const result = super.emit(String(event), payload);
@@ -196,7 +193,7 @@ export class EventBus extends EventEmitter {
             return false;
         }
     }
-    async emitSafe(event, payload) {
+    emitSafe(event, payload) {
         return safeAsync(async () => {
             const startTime = Date.now();
             // Update metrics
@@ -210,7 +207,7 @@ export class EventBus extends EventEmitter {
             }
             // Log if enabled
             if (this.busConfig.enableLogging) {
-                logger.info(`Emitting event: ${event}`, { payload });
+                logger.info(`Emitting event:${event}`, { payload });
             }
             // Emit event
             const result = super.emit(String(event), payload);

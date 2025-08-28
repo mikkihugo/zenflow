@@ -13,25 +13,25 @@ const path = require("node:path");
 
 // Detect hardware in pure JavaScript (before loading WASM)
 function detectNodeJSHardware() {
-	console.log("🔍 Node.js Environment Detection:");
-	console.log(`   Platform: ${process.platform}`);
-	console.log(`   Architecture: ${process.arch}`);
-	console.log(`   CPU Cores: ${require("node:os").cpus().length}`);
-	console.log(
+	logger.info("🔍 Node.js Environment Detection:");
+	logger.info(`   Platform: ${process.platform}`);
+	logger.info(`   Architecture: ${process.arch}`);
+	logger.info(`   CPU Cores: ${require("node:os").cpus().length}`);
+	logger.info(
 		`   Total Memory: ${Math.round(require("node:os").totalmem() / 1024 / 1024 / 1024)}GB`,
 	);
 	
 	// Check if neural-ml directory exists for WASM binaries
 	const wasmPath = path.join(__dirname, '..', 'packages', 'core', 'neural-ml');
 	const wasmExists = fs.existsSync(wasmPath);
-	console.log(`   WASM Directory: ${wasmExists ? '✅ Found' : '❌ Missing'} at ${wasmPath}`);
-	console.log(`   Node.js Version: ${process.version}`);
+	logger.info(`   WASM Directory: ${wasmExists ? '✅ Found' : '❌ Missing'} at ${wasmPath}`);
+	logger.info(`   Node.js Version: ${process.version}`);
 
 	// Detect Apple Silicon
 	const isAppleSilicon =
 		process.platform === "darwin" && process.arch === "arm64";
 	if (isAppleSilicon) {
-		console.log(
+		logger.info(
 			"   🍎 Apple Silicon detected - will enable Metal acceleration",
 		);
 	}
@@ -40,9 +40,9 @@ function detectNodeJSHardware() {
 	try {
 		const { execSync } = require("node:child_process");
 		execSync("nvidia-smi", { stdio: "ignore" });
-		console.log("   🟢 NVIDIA CUDA available");
+		logger.info("   🟢 NVIDIA CUDA available");
 	} catch {
-		console.log("   🔴 NVIDIA CUDA not available");
+		logger.info("   🔴 NVIDIA CUDA not available");
 	}
 
 	// Detect GPU libraries
@@ -56,16 +56,16 @@ function detectNodeJSHardware() {
 	gpuLibraries.forEach((lib) => {
 		try {
 			require.resolve(lib);
-			console.log(`   ✅ ${lib} available`);
+			logger.info(`   ✅ ${lib} available`);
 		} catch {
-			console.log(`   ❌ ${lib} not installed`);
+			logger.info(`   ❌ ${lib} not installed`);
 		}
 	});
 }
 
 // Build and load WASM with runtime detection
 async function loadNeuralMLWithDetection() {
-	console.log("\n🏗️  Building neural-ml with runtime detection...");
+	logger.info("\n🏗️  Building neural-ml with runtime detection...");
 
 	const neuralMLPath = "packages/private-core/neural-ml/neural-core";
 
@@ -91,7 +91,7 @@ async function loadNeuralMLWithDetection() {
 		buildOutput += data.toString();
 		// Log build progress for debugging
 		if (buildOutput.includes("Compiling")) {
-			console.log(`   Build: ${data.toString().trim()}`);
+			logger.info(`   Build: ${data.toString().trim()}`);
 		}
 	});
 
@@ -101,17 +101,17 @@ async function loadNeuralMLWithDetection() {
 			output.includes("AUTO-ENABLED") ||
 			output.includes("FULL AUTO DETECTION")
 		) {
-			console.log(`   ${output.trim()}`);
+			logger.info(`   ${output.trim()}`);
 		}
 	});
 
 	return new Promise((resolve, reject) => {
 		buildProcess.on("close", (code) => {
 			if (code === 0) {
-				console.log("   ✅ WASM build complete with runtime detection");
+				logger.info("   ✅ WASM build complete with runtime detection");
 				resolve();
 			} else {
-				console.log(`   ❌ Build failed with code ${code}`);
+				logger.info(`   ❌ Build failed with code ${code}`);
 				reject(new Error(`Build failed: ${code}`));
 			}
 		});
@@ -120,7 +120,7 @@ async function loadNeuralMLWithDetection() {
 
 // Simulate WASM loading with detected capabilities
 function simulateWASMRuntimeDetection() {
-	console.log("\n🧠 Simulating WASM Runtime Detection:");
+	logger.info("\n🧠 Simulating WASM Runtime Detection:");
 
 	const capabilities = {
 		platform: "NodeJS",
@@ -145,13 +145,13 @@ function simulateWASMRuntimeDetection() {
 		optimizationLevel = "Minimal";
 	}
 
-	console.log("   Detected capabilities:");
+	logger.info("   Detected capabilities:");
 	Object.entries(capabilities).forEach(([key, value]) => {
 		const icon = value === true ? "✅" : value === false ? "❌" : "📊";
-		console.log(`     ${icon} ${key}: ${value}`);
+		logger.info(`     ${icon} ${key}: ${value}`);
 	});
 
-	console.log(`   🎯 Optimization Level: ${optimizationLevel}`);
+	logger.info(`   🎯 Optimization Level: ${optimizationLevel}`);
 
 	// Determine optimal features
 	const features = ["std"];
@@ -178,14 +178,14 @@ function simulateWASMRuntimeDetection() {
 		}
 	}
 
-	console.log(`   🚀 Auto-enabled features: ${features.join(", ")}`);
+	logger.info(`   🚀 Auto-enabled features: ${features.join(", ")}`);
 
 	return { capabilities, optimizationLevel, features };
 }
 
 // Main execution
 async function main() {
-	console.log("🚀 Claude-Zen Neural ML: Node.js Runtime Detection Demo\n");
+	logger.info("🚀 Claude-Zen Neural ML: Node.js Runtime Detection Demo\n");
 
 	// Step 1: Pure Node.js detection
 	detectNodeJSHardware();
@@ -194,32 +194,32 @@ async function main() {
 	try {
 		await loadNeuralMLWithDetection();
 	} catch (error) {
-		console.log("   ⚠️  WASM build skipped (continuing with simulation)");
-		console.log(`   Error: ${error.message}`);
+		logger.info("   ⚠️  WASM build skipped (continuing with simulation)");
+		logger.info(`   Error: ${error.message}`);
 	}
 
 	// Step 3: Simulate runtime detection
 	const detection = simulateWASMRuntimeDetection();
 
 	// Step 4: Show results
-	console.log("\n📊 Summary:");
-	console.log(`   The neural-ml library will automatically:`);
-	console.log(
+	logger.info("\n📊 Summary:");
+	logger.info(`   The neural-ml library will automatically:`);
+	logger.info(
 		`   • Detect this as a ${detection.capabilities.platform} environment`,
 	);
-	console.log(
+	logger.info(
 		`   • Enable ${detection.optimizationLevel.toLowerCase()} optimization level`,
 	);
-	console.log(
+	logger.info(
 		`   • Use ${detection.features.length} optimal features for your hardware`,
 	);
-	console.log(`   • Provide best performance without manual configuration`);
+	logger.info(`   • Provide best performance without manual configuration`);
 
-	console.log(
+	logger.info(
 		"\n✅ Runtime detection ensures optimal performance on ANY hardware!",
 	);
 }
 
 if (require.main === module) {
-	main().catch(console.error);
+	main().catch(logger.error);
 }

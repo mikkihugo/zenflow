@@ -10,8 +10,7 @@ import { getLogger } from '@claude-zen/foundation';
 const _logger = getLogger('dspy-llm-bridge-fallback');
 // Use logger for initialization tracking
 _logger.info('DSPy LLM Bridge fallback implementation loaded', {
-    mode: 'fallback',
-    timestamp: new Date().toISOString(),
+    mode: 'fallback', timestamp: new Date().toISOString(),
 });
 /**
  * Simplified DSPy LLM Bridge with fallback implementations
@@ -64,8 +63,7 @@ export class DSPyLLMBridge {
             }),
             // Fallback implementation
             return: {
-                result: 'fallback_coordination_result',
-                reasoning: ['Fallback coordination executed'],
+                result: 'fallback_coordination_result', reasoning: ['Fallback coordination executed'],
                 confidence: 0.7,
                 success: true, // Add success property
                 metrics: {

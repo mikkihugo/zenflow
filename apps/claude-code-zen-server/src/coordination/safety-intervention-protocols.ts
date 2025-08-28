@@ -3,6 +3,10 @@
  * AI safety monitoring and intervention system
  */
 
+import { getLogger } from '@claude-zen/foundation';
+
+const logger = getLogger('safety-intervention');
+
 export interface SafetyInterventionConfig {
   enabled:boolean;
   autoEscalationThreshold:number;
@@ -24,16 +28,16 @@ export class SafetyInterventionProtocols {
     if (this.initialized) return;
     
     // Using direct log for initialization message
-    // eslint-disable-next-line no-console
-    console.log('🛡️ Initializing Safety Intervention Protocols...');
+     
+    logger.info('🛡️ Initializing Safety Intervention Protocols...');
     
     // Mock initialization - in a real system this would set up monitoring
     await new Promise(resolve => setTimeout(resolve, 100));
     
     this.initialized = true;
     // Using direct log for completion message
-    // eslint-disable-next-line no-console
-    console.log('✅ Safety Intervention Protocols initialized');
+     
+    logger.info('✅ Safety Intervention Protocols initialized');
 }
 
   isEnabled():boolean {

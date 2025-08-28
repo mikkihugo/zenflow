@@ -5,21 +5,21 @@
  * These provide a consistent approach to error management and error propagation
  * throughout all packages.
  *
- * SCOPE: Generic error types that are NOT domain-specific
+ * SCOPE:Generic error types that are NOT domain-specific
  *
  * @package @claude-zen/foundation
  * @since 2.1.0
  * @example
- * ```typescript
- * import type { BaseError, ValidationError, SystemError } from '@claude-zen/foundation/types';
- * import { createValidationError, isValidationError } from '@claude-zen/foundation/types';
+ * ```typescript`
+ * import type { BaseError, ValidationError, SystemError} from '@claude-zen/foundation/types';
+ * import { createValidationError, isValidationError} from '@claude-zen/foundation/types';
  *
- * function validateEmail(email: string): ValidationError|null {
+ * function validateEmail(email:string): ValidationError|null {
  *   if (!email.includes('@')) {
- *     return createValidationError('Invalid email format', { field: 'email' });
- *   }
+ *     return createValidationError('Invalid email format', { field: ' email'});
+ *}
  *   return null;
- * }
+ *}
  * ```
  */
 import { LogLevel } from "./primitives";
@@ -65,7 +65,7 @@ export function createValidationError(message, options) {
         code: "VALIDATION_FAILED",
         message,
         timestamp: Date.now(),
-        errorId: (typeof globalThis.crypto !== 'undefined' ? globalThis.crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        errorId: (typeof globalThis.crypto !== 'undefined' ? globalThis.crypto.randomUUID() : ' xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
             const r = Math.random() * 16 | 0;
             const v = c === 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
@@ -91,7 +91,7 @@ export function createSystemError(message, options) {
         code: "SYSTEM_ERROR",
         message,
         timestamp: Date.now(),
-        errorId: (typeof globalThis.crypto !== 'undefined' ? globalThis.crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        errorId: (typeof globalThis.crypto !== 'undefined' ? globalThis.crypto.randomUUID() : ' xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
             const r = Math.random() * 16 | 0;
             const v = c === 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
@@ -116,7 +116,7 @@ export function createNetworkError(message, options) {
         code: "NETWORK_ERROR",
         message,
         timestamp: Date.now(),
-        errorId: (typeof globalThis.crypto !== 'undefined' ? globalThis.crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        errorId: (typeof globalThis.crypto !== 'undefined' ? globalThis.crypto.randomUUID() : ' xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
             const r = Math.random() * 16 | 0;
             const v = c === 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
@@ -142,7 +142,7 @@ export function createResourceError(message, options) {
         code: "RESOURCE_ERROR",
         message,
         timestamp: Date.now(),
-        errorId: (typeof globalThis.crypto !== 'undefined' ? globalThis.crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        errorId: (typeof globalThis.crypto !== 'undefined' ? globalThis.crypto.randomUUID() : ' xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
             const r = Math.random() * 16 | 0;
             const v = c === 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);

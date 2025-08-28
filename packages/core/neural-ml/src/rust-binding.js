@@ -127,7 +127,7 @@ export class RustNeuralML {
     async hasGpuSupport() {
         try {
             const result = await this.executeRustCommand(["--check-gpu"]);
-            return result.includes("GPU: Available");
+            return result.includes("GPU:Available");
         }
         catch {
             return false;
@@ -235,7 +235,7 @@ export class RustNeuralML {
                     resolve(stdout.trim());
                 }
                 else {
-                    reject(new Error(`Command failed with code ${code}: ${stderr}`));
+                    reject(new Error(`Command failed with code ${code}:${stderr}`));
                 }
             });
             child.on("error", reject);

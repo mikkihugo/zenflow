@@ -77,7 +77,8 @@ export class MemoryCoordinationSystem extends EventEmitter {
 });
 } catch (error) {
       this.logger.error(
-        'Failed to initialize memory coordination system: ','        error
+        'Failed to initialize memory coordination system: ',
+        error
       );
       throw error;
 }
@@ -250,7 +251,8 @@ export class MemoryCoordinationSystem extends EventEmitter {
 
   async list(
     pattern?:string,
-    namespace = 'default')  ):Promise<MemoryOperationResult<string[]>> {
+    namespace = 'default'
+  ):Promise<MemoryOperationResult<string[]>> {
     this.ensureInitialized();
 
     const request:MemoryOperationRequest = {

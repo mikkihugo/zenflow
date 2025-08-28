@@ -6,7 +6,6 @@
  */
 import { getLogger } from '@claude-zen/foundation';
 const logger = getLogger('agent-monitoring-task-predictor');
-';
 /**
  * Default configuration for Task Predictor
  */
@@ -28,31 +27,31 @@ export class SimpleTaskPredictor {
     constructor(config) {
         this.config = { ...DEFAULT_TASK_PREDICTOR_CONFIG, ...config };
         logger.info('SimpleTaskPredictor initialized', { config: this.config });
-        ';
-    }
-    /**
-     * Record a task completion for future predictions
-     */
-    recordTaskCompletion(agentId, taskType, _duration, _success, _metadata) {
-        const key = `${agentId.id}-${taskType}`;
-        `
+        ')};
+        /**
+         * Record a task completion for future predictions
+         */
+        recordTaskCompletion(agentId, AgentId, taskType, string, _duration, number, _success, boolean, _metadata ?  : Record);
+        void {
+            const: key = `${agentId.id}-${taskType}`
+        } `
 
-    const record: TaskCompletionRecord = {
+    const record:TaskCompletionRecord = {
       agentId,
       taskType,
       duration,
       success,
-      timestamp: Date.now(),
-      complexity: metadata?.complexity as number,
-      quality: metadata?.quality as number,
-      resourceUsage: metadata?.resourceUsage as number,
+      timestamp:Date.now(),
+      complexity:metadata?.complexity as number,
+      quality:metadata?.quality as number,
+      resourceUsage:metadata?.resourceUsage as number,
       metadata,
-    };
+};
 
     // Add to history
     if (!this.taskHistory.has(key)) {
       this.taskHistory.set(key, []);
-    }
+}
 
     const history = this.taskHistory.get(key)!;
     history.push(record);
@@ -60,24 +59,24 @@ export class SimpleTaskPredictor {
     // Keep only recent history
     if (history.length > this.config.historyWindowSize) {
       history.shift();
-    }
+}
 
-    logger.debug('Task completion recorded', {'
-      agentId: agentId.id,
+    logger.debug('Task completion recorded', {
+    ')      agentId:agentId.id,
       taskType,
       duration,
       success,
-    });
-  }
+});
+}
 
   /**
    * Predict task duration using simple moving average
    */
   predictTaskDuration(
-    agentId: AgentId,
-    taskType: string,
-    contextFactors?: Record<string, unknown>
-  ): TaskPrediction {
+    agentId:AgentId,
+    taskType:string,
+    contextFactors?:Record<string, unknown>
+  ):TaskPrediction {
     const key = `;
         $agentId.id - $taskType `;`;
         const history = this.taskHistory.get(key) || [];
@@ -95,22 +94,20 @@ export class SimpleTaskPredictor {
             const complexityFactor = contextFactors.complexity;
             adjustedDuration *= complexityFactor;
             contextAdjustmentFactors.push({
-                name: 'Complexity Factor',
-                impact: complexityFactor,
+                name: 'Complexity Factor', impact: complexityFactor,
                 confidence: 0.8,
                 description: `Task complexity adjustment: ${complexityFactor}x`,
             } `
-      });
-    }
+});
+}
 
     if (contextFactors?.urgency) {
       const urgencyFactor = contextFactors.urgency as number;
       adjustedDuration *= 1 / urgencyFactor; // Higher urgency = faster execution
       contextAdjustmentFactors.push({
-        name: 'Urgency Factor',
-        impact: urgencyFactor,
-        confidence: 0.7,
-        description: `, Urgency - based, time, pressure, $, { urgencyFactor }, x `,`);
+        name: 'Urgency Factor',        impact:urgencyFactor,
+        confidence:0.7,
+        description:`, Urgency - based, time, pressure, $, { urgencyFactor }, x `,`);
         }
         ;
     }
@@ -118,13 +115,12 @@ export class SimpleTaskPredictor {
         const resourceFactor = contextFactors.resourceLoad;
         adjustedDuration *= 1 + resourceFactor * 0.5; // Resource contention slows down
         contextAdjustmentFactors.push({
-            name: 'Resource Load Factor',
-            impact: resourceFactor,
+            name: 'Resource Load Factor', impact: resourceFactor,
             confidence: 0.6,
             description: `Resource contention impact: ${resourceFactor}x`,
         } `
-      });
-    }
+});
+}
 
     // Simple confidence based on data consistency
     const variance = this.calculateVariance(durations);
@@ -132,17 +128,16 @@ export class SimpleTaskPredictor {
     const cv = Math.sqrt(variance) / mean; // coefficient of variation
     const confidence = Math.max(0.1, Math.min(0.95, 1 - cv));
 
-    const prediction: TaskPrediction = {
-      agentId: agentId.id,
+    const prediction:TaskPrediction = {
+      agentId:agentId.id,
       taskType,
-      predictedDuration: Math.round(adjustedDuration),
+      predictedDuration:Math.round(adjustedDuration),
       confidence,
-      factors: [
+      factors:[
         {
-          name: 'Historical Average',
-          impact: 1.0,
-          confidence: confidence,
-          description: `, Based, on, $, { recentHistory, : .length }, recent, completions `,`);
+          name: 'Historical Average',          impact:1.0,
+          confidence:confidence,
+          description:`, Based, on, $, { recentHistory, : .length }, recent, completions `,`);
     }
     contextAdjustmentFactors;
     lastUpdated;
@@ -150,14 +145,12 @@ export class SimpleTaskPredictor {
 }
  > 0
     ? 'context_adjusted_average' : ;
-';
-'simple_average',
-    trendDirection;
+'simple_average', trendDirection;
 this.calculateTrendDirection(durations),
 ;
 ;
-logger.debug('Task duration predicted', { ': agentId, agentId, : .id,
-    taskType,
+logger.debug('Task duration predicted', {
+    ')      agentId:agentId.id,: taskType,
     predictedDuration: prediction.predictedDuration,
     confidence: prediction.confidence,
 });
@@ -182,65 +175,76 @@ void {
     }, else: {
         this: .taskHistory.clear()
     },
-    logger, : .info('Prediction cache cleared', { olderThanMs }), ': 
-};
-createFallbackPrediction(agentId, string, taskType, string);
-TaskPrediction;
-{
-    return {
-        agentId,
-        taskType,
-        predictedDuration: this.config.maxPredictionTime / 2, // Conservative estimate
-        confidence: 0.3, // Low confidence
-        factors: [
-            {
-                name: 'Fallback Prediction',
-                impact: 1.0,
-                confidence: 0.3,
-                description: 'Insufficient historical data for reliable prediction',
+    logger, : .info('Prediction cache cleared', { olderThanMs }), ')}: 
+    /**
+     * Create fallback prediction when insufficient data is available
+     */
+    private, createFallbackPrediction(agentId, taskType) {
+        return {
+            agentId,
+            taskType,
+            predictedDuration: this.config.maxPredictionTime / 2, // Conservative estimate
+            confidence: 0.3, // Low confidence
+            factors: [
+                {
+                    name: 'Fallback Prediction', impact: 1.0,
+                    confidence: 0.3,
+                    description: 'Insufficient historical data for reliable prediction',
+                },
+            ],
+            lastUpdated: new Date(),
+            metadata: {
+                sampleSize: 0,
+                algorithm: 'fallback', trendDirection: 'stable',
             },
-        ],
-        lastUpdated: new Date(),
-        metadata: {
-            sampleSize: 0,
-            algorithm: 'fallback',
-            trendDirection: 'stable',
-        },
-    };
-}
-calculateTrendDirection(durations, number[]);
-'improving' | 'stable' | 'declining';
-{
-    ';
-    if (durations.length < 3)
-        return 'stable';
-    const firstHalf = durations.slice(0, Math.floor(durations.length / 2));
-    const secondHalf = durations.slice(Math.floor(durations.length / 2));
-    const firstAvg = this.calculateMean(firstHalf);
-    const secondAvg = this.calculateMean(secondHalf);
-    const improvement = (firstAvg - secondAvg) / firstAvg;
-    if (improvement > 0.1)
-        return 'improving'; // Times getting shorter = improving'
-    if (improvement < -0.1)
-        return 'declining'; // Times getting longer = 'improving' | 'stable' | 'declining'
-    return 'stable';
-}
-calculateVariance(numbers, number[]);
-number;
-{
-    if (numbers.length === 0)
-        return 0;
-    const mean = this.calculateMean(numbers);
-    const squaredDiffs = numbers.map((n) => (n - mean) ** 2);
-    return this.calculateMean(squaredDiffs);
-}
-calculateMean(numbers, number[]);
-number;
-{
-    if (numbers.length === 0)
-        return 0;
-    return numbers.reduce((sum, n) => sum + n, 0) / numbers.length;
-}
+        };
+    }
+    /**
+     * Calculate performance trend direction
+     */
+    ,
+    /**
+     * Calculate performance trend direction
+     */
+    calculateTrendDirection(durations) {
+        ')    if (durations.length < 3) return ';
+        stable;
+        ';;
+        const firstHalf = durations.slice(0, Math.floor(durations.length / 2));
+        const secondHalf = durations.slice(Math.floor(durations.length / 2));
+        const firstAvg = this.calculateMean(firstHalf);
+        const secondAvg = this.calculateMean(secondHalf);
+        const improvement = (firstAvg - secondAvg) / firstAvg;
+        if (improvement > 0.1)
+            return 'improving'; // Times getting shorter = improving')    if (improvement < -0.1) return 'declining'; // Times getting longer = ' improving' | ' stable' | ' declining')    return 'stable';
+    }
+    /**
+     * Calculate variance of an array of numbers
+     */
+    ,
+    /**
+     * Calculate variance of an array of numbers
+     */
+    calculateVariance(numbers) {
+        if (numbers.length === 0)
+            return 0;
+        const mean = this.calculateMean(numbers);
+        const squaredDiffs = numbers.map((n) => (n - mean) ** 2);
+        return this.calculateMean(squaredDiffs);
+    }
+    /**
+     * Calculate mean of an array of numbers
+     */
+    ,
+    /**
+     * Calculate mean of an array of numbers
+     */
+    calculateMean(numbers) {
+        if (numbers.length === 0)
+            return 0;
+        return numbers.reduce((sum, n) => sum + n, 0) / numbers.length;
+    }
+};
 /**
  * Factory function to create Task Predictor with default configuration
  */

@@ -86,7 +86,7 @@ class TransactionSQLStorageImpl {
         };
     }
     async listTables() {
-        const result = await this.query("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'");
+        const result = await this.query("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE ' sqlite_%'");
         return result.rows.map((row) => row.name);
     }
 }
@@ -114,7 +114,7 @@ export class SQLStorageImpl {
                 sql: sql.slice(0, 100),
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new QueryError(`SQL query failed: ${error instanceof Error ? error.message : String(error)}`, { query: sql, params });
+            throw new QueryError(`SQL query failed:${error instanceof Error ? error.message : String(error)}`, { query: sql, params });
         }
     }
     async execute(sql, params, options) {
@@ -142,7 +142,7 @@ export class SQLStorageImpl {
                 sql: sql.slice(0, 100),
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new QueryError(`SQL command failed: ${error instanceof Error ? error.message : String(error)}`, { query: sql, params });
+            throw new QueryError(`SQL command failed:${error instanceof Error ? error.message : String(error)}`, { query: sql, params });
         }
     }
     async transaction(fn, context) {
@@ -160,7 +160,7 @@ export class SQLStorageImpl {
             logger.error("SQL transaction failed", {
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new TransactionError(`Transaction failed: ${error instanceof Error ? error.message : String(error)}`);
+            throw new TransactionError(`Transaction failed:${error instanceof Error ? error.message : String(error)}`);
         }
     }
     async createTable(name, schema) {
@@ -192,7 +192,7 @@ export class SQLStorageImpl {
                 name,
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new QueryError(`Failed to create table: ${error instanceof Error ? error.message : String(error)}`, {
+            throw new QueryError(`Failed to create table:${error instanceof Error ? error.message : String(error)}`, {
                 correlationId: this.generateCorrelationId(),
                 cause: error instanceof Error ? error : undefined,
             });
@@ -211,7 +211,7 @@ export class SQLStorageImpl {
                 name,
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new QueryError(`Failed to drop table: ${error instanceof Error ? error.message : String(error)}`, {
+            throw new QueryError(`Failed to drop table:${error instanceof Error ? error.message : String(error)}`, {
                 correlationId: this.generateCorrelationId(),
                 cause: error instanceof Error ? error : undefined,
             });
@@ -228,7 +228,7 @@ export class SQLStorageImpl {
                 name,
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new QueryError(`Failed to truncate table: ${error instanceof Error ? error.message : String(error)}`, {
+            throw new QueryError(`Failed to truncate table:${error instanceof Error ? error.message : String(error)}`, {
                 correlationId: this.generateCorrelationId(),
                 cause: error instanceof Error ? error : undefined,
             });
@@ -262,7 +262,7 @@ export class SQLStorageImpl {
                 name,
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new QueryError(`Failed to get table schema: ${error instanceof Error ? error.message : String(error)}`, {
+            throw new QueryError(`Failed to get table schema:${error instanceof Error ? error.message : String(error)}`, {
                 correlationId: this.generateCorrelationId(),
                 cause: error instanceof Error ? error : undefined,
             });
@@ -288,13 +288,13 @@ export class SQLStorageImpl {
                 tableName,
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new QueryError(`Failed to get table info: ${error instanceof Error ? error.message : String(error)}`, { correlationId: this.generateCorrelationId() });
+            throw new QueryError(`Failed to get table info:${error instanceof Error ? error.message : String(error)}`, { correlationId: this.generateCorrelationId() });
         }
     }
     async listTables() {
         try {
             logger.debug("Listing tables");
-            const result = await this.query("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'");
+            const result = await this.query("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE ' sqlite_%'");
             const tables = result.rows.map((row) => row.name);
             logger.debug("Tables listed", { tableCount: tables.length });
             return tables;
@@ -303,7 +303,7 @@ export class SQLStorageImpl {
             logger.error("Failed to list tables", {
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new QueryError(`Failed to list tables: ${error instanceof Error ? error.message : String(error)}`);
+            throw new QueryError(`Failed to list tables:${error instanceof Error ? error.message : String(error)}`);
         }
     }
     async createIndex(name, tableName, columns, options) {
@@ -326,7 +326,7 @@ export class SQLStorageImpl {
                 columns,
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new QueryError(`Failed to create index: ${error instanceof Error ? error.message : String(error)}`, { correlationId: this.generateCorrelationId() });
+            throw new QueryError(`Failed to create index:${error instanceof Error ? error.message : String(error)}`, { correlationId: this.generateCorrelationId() });
         }
     }
     async dropIndex(indexName, options) {
@@ -343,7 +343,7 @@ export class SQLStorageImpl {
                 indexName,
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new QueryError(`Failed to drop index: ${error instanceof Error ? error.message : String(error)}`, { correlationId: this.generateCorrelationId() });
+            throw new QueryError(`Failed to drop index:${error instanceof Error ? error.message : String(error)}`, { correlationId: this.generateCorrelationId() });
         }
     }
     // Health and monitoring methods

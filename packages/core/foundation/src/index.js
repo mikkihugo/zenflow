@@ -7,18 +7,18 @@
  * For better tree-shaking and smaller bundles, import from specific entry points:
  *
  * @example Tree-Shakable Imports (Recommended)
- * ```typescript
+ * ```typescript`
  * // Import only what you need for optimal bundle size:
- * import { getLogger } from '@claude-zen/foundation/core';
- * import { Result, ok, err } from '@claude-zen/foundation/resilience';
- * import { createContainer } from '@claude-zen/foundation/di';
- * import { _, nanoid } from '@claude-zen/foundation/utils';
+ * import { getLogger} from '@claude-zen/foundation/core';
+ * import { Result, ok, err} from '@claude-zen/foundation/resilience';
+ * import { createContainer} from '@claude-zen/foundation/di';
+ * import { _, nanoid} from '@claude-zen/foundation/utils';
  * ```
  *
  * @example Full Import (Not Recommended for Production)
- * ```typescript
+ * ```typescript`
  * // This imports everything (larger bundle):
- * import { getLogger, Result, createContainer } from '@claude-zen/foundation';
+ * import { getLogger, Result, createContainer} from '@claude-zen/foundation';
  * ```
  */
 // Core configuration and environment
@@ -59,6 +59,9 @@ export { eventRegistryInitializer } from "./events/event-registry-initializer.js
 // INFRASTRUCTURE - Facade system and infrastructure utilities
 // =============================================================================
 export { facadeStatusManager, getSystemStatus, hasService, registerFacade, } from "./infrastructure/facades/index.js";
+// DATABASE FACADE - Foundation-based database access
+// =============================================================================
+export { databaseFacade, createDatabaseAdapter, createKeyValueStore, createVectorStore, createGraphStore, getDatabaseCapability, } from "./infrastructure/database/index.js";
 // RESILIENCE PATTERNS - Advanced resilience utilities (using cockatiel)
 // =============================================================================
 export { BrokenCircuitError, BulkheadRejectedError, bulkhead, CircuitState, ConsecutiveBreaker, ConstantBackoff, CountBreaker, circuitBreaker, DelegateBackoff, decorrelatedJitterGenerator, Event, ExponentialBackoff, fallback, handleAll, handleResultType, handleType, handleWhen, handleWhenResult, IsolatedCircuitError, IterableBackoff, noJitterGenerator, noop, Policy, 
@@ -85,21 +88,21 @@ export { dateFromTimestamp, formatTimestamp, isoStringFromTimestamp, now, parseI
 For smaller bundles, import from specific entry points:
 
 CORE UTILITIES (essential, lightweight):
-  import { getLogger, getConfig } from '@claude-zen/foundation/core';
+  import { getLogger, getConfig} from '@claude-zen/foundation/core';
 
 DEPENDENCY INJECTION (when you need DI):
-  import { createContainer } from '@claude-zen/foundation/di';
+  import { createContainer} from '@claude-zen/foundation/di';
 
 RESILIENCE PATTERNS (error handling, circuit breakers):
-  import { Result, ok, err, withRetry } from '@claude-zen/foundation/resilience';
+  import { Result, ok, err, withRetry} from '@claude-zen/foundation/resilience';
 
 UTILITIES (validation, dates, file ops):
-  import { z, validateInput, _ } from '@claude-zen/foundation/utils';
+  import { z, validateInput, _} from '@claude-zen/foundation/utils';
 
 TYPES ONLY (zero runtime cost):
-  import type { UUID, Logger, Config } from '@claude-zen/foundation/types';
+  import type { UUID, Logger, Config} from '@claude-zen/foundation/types';
 
 For complete functionality, use specific entry points:
-  import { createContainer } from '@claude-zen/foundation/di';
-  import { withRetry, createCircuitBreaker } from '@claude-zen/foundation/resilience';
+  import { createContainer} from '@claude-zen/foundation/di';
+  import { withRetry, createCircuitBreaker} from '@claude-zen/foundation/resilience';
 */

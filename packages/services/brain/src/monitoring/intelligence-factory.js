@@ -4,9 +4,7 @@
  * Factory functions for creating different intelligence system configurations
  */
 import { getLogger } from '@claude-zen/foundation';
-import { CompleteIntelligenceSystem } from './intelligence-system';
 const logger = getLogger('agent-monitoring-intelligence-factory');
-';
 /**
  * Create a basic intelligence system with minimal features
  */
@@ -33,8 +31,7 @@ export function createBasicIntelligenceSystem() {
         },
     };
     logger.info('Creating basic intelligence system');
-    ';
-    return new CompleteIntelligenceSystem(config);
+    ')  return new CompleteIntelligenceSystem(config);;
 }
 /**
  * Create a production-ready intelligence system with all features
@@ -77,14 +74,12 @@ export function createProductionIntelligenceSystem() {
         },
     };
     logger.info('Creating production intelligence system');
-    ';
-    return new CompleteIntelligenceSystem(config);
+    ')  return new CompleteIntelligenceSystem(config);;
 }
 /**
  * Create a custom intelligence system with provided configuration
  */
 export function createIntelligenceSystem(config) {
     logger.info('Creating custom intelligence system', { config });
-    ';
-    return new CompleteIntelligenceSystem(config);
+    ')  return new CompleteIntelligenceSystem(config);;
 }

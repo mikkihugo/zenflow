@@ -341,20 +341,26 @@ export class MemoryCoordinator extends EventEmitter {
       nodes:{
         total:this.nodes.size,
         active:Array.from(this.nodes.values()).filter(
-          (n) => n.status === 'active')        ).length,
+          (n) => n.status === 'active'
+        ).length,
         degraded:Array.from(this.nodes.values()).filter(
-          (n) => n.status === 'degraded')        ).length,
+          (n) => n.status === 'degraded'
+        ).length,
 },
       decisions:{
         total:this.decisions.size,
         pending:Array.from(this.decisions.values()).filter(
-          (d) => d.status === 'pending')        ).length,
+          (d) => d.status === 'pending'
+        ).length,
         executing:Array.from(this.decisions.values()).filter(
-          (d) => d.status === 'executing')        ).length,
+          (d) => d.status === 'executing'
+        ).length,
         completed:Array.from(this.decisions.values()).filter(
-          (d) => d.status === 'completed')        ).length,
+          (d) => d.status === 'completed'
+        ).length,
         failed:Array.from(this.decisions.values()).filter(
-          (d) => d.status === 'failed')        ).length,
+          (d) => d.status === 'failed'
+        ).length,
 },
       config:this.config,
 };

@@ -5,7 +5,7 @@
  * Provides type-safe event validation and payload inspection.
  */
 
-import { getLogger} from '../logging/index.js';
+import { getLogger} from '../core/logging/logging.service.js';
 
 const logger = getLogger('EventLogger');
 

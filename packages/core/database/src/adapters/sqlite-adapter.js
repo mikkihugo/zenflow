@@ -4,7 +4,7 @@
  * Real implementation with connection pooling, retry logic, health monitoring,
  * and comprehensive error handling for enterprise applications.
  */
-import { existsSync, mkdirSync } from 'node:fs';
+import { mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import Database from 'better-sqlite3';
 import { getLogger } from '../logger.js';
@@ -75,7 +75,7 @@ export class SQLiteAdapter {
                 correlationId,
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new ConnectionError(`Failed to connect to SQLite database: ${error instanceof Error ? error.message : String(error)}`, correlationId, error instanceof Error ? error : undefined);
+            throw new ConnectionError(`Failed to connect to SQLite database:${error instanceof Error ? error.message : String(error)}`, correlationId, error instanceof Error ? error : undefined);
         }
     }
     async disconnect() {
@@ -98,7 +98,7 @@ export class SQLiteAdapter {
                 correlationId,
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new ConnectionError(`Failed to disconnect from SQLite: ${error instanceof Error ? error.message : String(error)}`, correlationId, error instanceof Error ? error : undefined);
+            throw new ConnectionError(`Failed to disconnect from SQLite:${error instanceof Error ? error.message : String(error)}`, correlationId, error instanceof Error ? error : undefined);
         }
     }
     isConnected() {
@@ -132,7 +132,7 @@ export class SQLiteAdapter {
             if (error instanceof DatabaseError) {
                 throw error;
             }
-            throw new QueryError(`Query execution failed: ${error instanceof Error ? error.message : String(error)}`, {
+            throw new QueryError(`Query execution failed:${error instanceof Error ? error.message : String(error)}`, {
                 query: sql,
                 params,
                 correlationId,
@@ -187,7 +187,7 @@ export class SQLiteAdapter {
             if (error instanceof DatabaseError) {
                 throw error;
             }
-            throw new TransactionError(`Transaction failed: ${error instanceof Error ? error.message : String(error)}`, correlationId, error instanceof Error ? error : undefined);
+            throw new TransactionError(`Transaction failed:${error instanceof Error ? error.message : String(error)}`, correlationId, error instanceof Error ? error : undefined);
         }
         finally {
             this.releaseConnection(connection);
@@ -199,8 +199,7 @@ export class SQLiteAdapter {
             if (!this.connected) {
                 return {
                     healthy: false,
-                    status: 'unhealthy',
-                    score: 0,
+                    status: 'unhealthy', score: 0,
                     timestamp: new Date(),
                     details: { connected: false, reason: 'Not connected' },
                 };
@@ -233,8 +232,7 @@ export class SQLiteAdapter {
             score = Math.max(0, score);
             return {
                 healthy: score >= 70,
-                status: score >= 70 ? 'healthy' : score >= 40 ? 'degraded' : 'unhealthy',
-                score,
+                status: score >= 70 ? 'healthy' : score >= 40 ? ' degraded' : ' unhealthy', score,
                 timestamp: new Date(),
                 responseTimeMs: responseTime,
                 connectionPool: poolStats,
@@ -257,8 +255,7 @@ export class SQLiteAdapter {
         catch (error) {
             return {
                 healthy: false,
-                status: 'unhealthy',
-                score: 0,
+                status: 'unhealthy', score: 0,
                 timestamp: new Date(),
                 responseTimeMs: Date.now() - startTime,
                 lastError: error instanceof Error ? error.message : String(error),
@@ -281,7 +278,7 @@ export class SQLiteAdapter {
             created: this.stats.connectionCreated,
             destroyed: this.stats.connectionDestroyed,
             errors: this.stats.totalErrors,
-            averageAcquisitionTimeMs: 0, // TODO: Implement acquisition time tracking
+            averageAcquisitionTimeMs: 0, // TODO:Implement acquisition time tracking
             averageIdleTimeMs: this.calculateAverageIdleTime(),
             currentLoad: poolStats.active / poolStats.total,
         };
@@ -393,314 +390,367 @@ export class SQLiteAdapter {
                         executionTimeMs: Date.now() - startTime,
                         affectedRows: runResult.changes,
                         insertId: typeof runResult.lastInsertRowid === 'bigint'
-                            ? Number(runResult.lastInsertRowid)
-                            : runResult.lastInsertRowid,
-                        fields: [],
-                    });
-                    return;
+                    }) ? Number(runResult.lastInsertRowid)
+                        : runResult.lastInsertRowid,
+                        fields;
+                    [],
+                    ;
                 }
-                resolve({
-                    rows: (rows || []),
-                    rowCount: rows ? rows.length : 0,
-                    executionTimeMs: Date.now() - startTime,
-                    fields: rows.length > 0 ? Object.keys(rows[0] || {}) : [],
-                    affectedRows: undefined,
-                    insertId: undefined,
+            }
+            finally { }
+        });
+        return;
+    }
+    resolve({ rows:  }) { }
+}
+(rows || []),
+    rowCount;
+rows ? rows.length : 0,
+    executionTimeMs;
+Date.now() - startTime,
+    fields;
+rows.length > 0 ? Object.keys(rows[0] || {}) : [],
+    affectedRows;
+undefined,
+    insertId;
+undefined,
+;
+;
+try { }
+catch (error) {
+    reject(error);
+}
+;
+async;
+createConnection();
+Promise < PooledConnection > {
+    // Use setImmediate to make this genuinely asynchronous
+    return: await new Promise((resolve, reject) => {
+        setImmediate(() => {
+            const id = this.generateCorrelationId();
+            try {
+                const db = new Database(this.config.database, {
+                    readonly: false,
+                    fileMustExist: false,
+                    timeout: this.config.pool?.createTimeoutMillis,
+                    verbose: (message) => {
+                        logger.debug('SQLite operation', { message, connectionId: id });
+                    },
                 });
+                // Configure SQLite for better performance
+                db.exec('PRAGMA journal_mode = WAL');
+                db.exec('PRAGMA synchronous = NORMAL');
+                db.exec('PRAGMA cache_size = 1000');
+                db.exec('PRAGMA foreign_keys = ON');
+                db.exec('PRAGMA temp_store = MEMORY');
+                const connection = {
+                    db,
+                    id,
+                    createdAt: new Date(),
+                    lastUsedAt: new Date(),
+                    inUse: false,
+                    queryCount: 0,
+                    transactionCount: 0,
+                };
+                this.pool.push(connection);
+                this.stats.connectionCreated++;
+                logger.debug('Created new SQLite connection', { connectionId: id });
+                resolve(connection);
             }
             catch (error) {
+                logger.error('Failed to create SQLite connection', {
+                    connectionId: id,
+                    error: error instanceof Error ? error.message : String(error),
+                });
                 reject(error);
             }
         });
-    }
-    async createConnection() {
-        // Use setImmediate to make this genuinely asynchronous
-        return await new Promise((resolve, reject) => {
-            setImmediate(() => {
-                const id = this.generateCorrelationId();
-                try {
-                    const db = new Database(this.config.database, {
-                        readonly: false,
-                        fileMustExist: false,
-                        timeout: this.config.pool?.createTimeoutMillis,
-                        verbose: (message) => {
-                            logger.debug('SQLite operation', { message, connectionId: id });
-                        },
-                    });
-                    // Configure SQLite for better performance
-                    db.exec('PRAGMA journal_mode = WAL');
-                    db.exec('PRAGMA synchronous = NORMAL');
-                    db.exec('PRAGMA cache_size = 1000');
-                    db.exec('PRAGMA foreign_keys = ON');
-                    db.exec('PRAGMA temp_store = MEMORY');
-                    const connection = {
-                        db,
-                        id,
-                        createdAt: new Date(),
-                        lastUsedAt: new Date(),
-                        inUse: false,
-                        queryCount: 0,
-                        transactionCount: 0,
-                    };
-                    this.pool.push(connection);
-                    this.stats.connectionCreated++;
-                    logger.debug('Created new SQLite connection', { connectionId: id });
-                    resolve(connection);
-                }
-                catch (error) {
-                    logger.error('Failed to create SQLite connection', {
-                        connectionId: id,
-                        error: error instanceof Error ? error.message : String(error),
-                    });
-                    reject(error);
-                }
-            });
-        });
-    }
-    async destroyConnection(connection) {
-        return await new Promise((resolve) => {
-            setImmediate(() => {
-                try {
-                    connection.db.close();
-                    this.stats.connectionDestroyed++;
-                    logger.debug('Destroyed SQLite connection', {
-                        connectionId: connection.id,
-                    });
-                    resolve();
-                }
-                catch (error) {
-                    logger.error('Error destroying SQLite connection', {
-                        connectionId: connection.id,
-                        error: error instanceof Error ? error.message : String(error),
-                    });
-                    resolve(); // Don't reject on connection destruction errors
-                }
-            });
-        });
-    }
-    async acquireConnection(correlationId) {
-        const timeout = this.config.pool?.acquireTimeoutMillis;
-        const startTime = Date.now();
-        const timeoutMs = timeout || 30000;
-        while (Date.now() - startTime < timeoutMs) {
-            // Find available connection
-            const available = this.pool.find((conn) => !conn.inUse);
-            if (available) {
-                available.inUse = true;
-                available.lastUsedAt = new Date();
-                return available;
-            }
-            // Create new connection if under limit
-            const maxConnections = this.config.pool?.max || 10;
-            if (this.pool.length < maxConnections) {
-                const newConnection = await this.createConnection();
-                newConnection.inUse = true;
-                return newConnection;
-            }
-            // Wait for connection to become available
-            await this.sleep(10);
-        }
-        throw new ConnectionError(`Failed to acquire connection within ${timeout}ms`, correlationId);
-    }
-    releaseConnection(connection) {
-        connection.inUse = false;
-        connection.lastUsedAt = new Date();
-    }
-    async executeWithRetry(operation, correlationId, sql, params) {
-        const retryPolicy = this.config.retryPolicy;
-        let lastError;
-        for (let attempt = 0; attempt <= retryPolicy.maxRetries; attempt++) {
+    })
+};
+async;
+destroyConnection(connection, PooledConnection);
+Promise < void  > {
+    return: await new Promise((resolve) => {
+        setImmediate(() => {
             try {
-                return await operation();
+                connection.db.close();
+                this.stats.connectionDestroyed++;
+                logger.debug('Destroyed SQLite connection', {
+                    connectionId: connection.id,
+                });
+                resolve();
             }
             catch (error) {
-                lastError = error instanceof Error ? error : new Error(String(error));
-                const errorCode = this.extractSQLiteErrorCode(lastError);
-                const isRetryable = retryPolicy.retryableErrors.includes(errorCode);
-                if (attempt === retryPolicy.maxRetries || !isRetryable) {
-                    break;
-                }
-                const delay = Math.min(retryPolicy.initialDelayMs * retryPolicy.backoffFactor ** attempt, retryPolicy.maxDelayMs);
-                logger.warn('Retrying operation after error', {
-                    correlationId,
-                    attempt: attempt + 1,
-                    maxRetries: retryPolicy.maxRetries,
-                    delayMs: delay,
-                    error: lastError.message,
+                logger.error('Error destroying SQLite connection', {
+                    connectionId: connection.id,
+                    error: error instanceof Error ? error.message : String(error),
                 });
-                await this.sleep(delay);
+                resolve(); // Don't reject on connection destruction errors
             }
-        }
-        throw new QueryError(`Operation failed after ${retryPolicy.maxRetries} retries: ${lastError?.message}`, {
-            query: sql,
-            params,
-            correlationId,
-            cause: lastError,
         });
+    })
+};
+async;
+acquireConnection(correlationId, string);
+Promise < PooledConnection > {
+    const: timeout = this.config.pool?.acquireTimeoutMillis,
+    const: startTime = Date.now(),
+    const: timeoutMs = timeout || 30000,
+    while(Date) { }, : .now() - startTime < timeoutMs
+};
+{
+    // Find available connection
+    const available = this.pool.find((conn) => !conn.inUse);
+    if (available) {
+        available.inUse = true;
+        available.lastUsedAt = new Date();
+        return available;
     }
-    extractSQLiteErrorCode(error) {
-        if (error.message.includes('SQLITE_BUSY'))
-            return 'SQLITE_BUSY';
-        if (error.message.includes('SQLITE_LOCKED'))
-            return 'SQLITE_LOCKED';
-        return 'UNKNOWN';
+    // Create new connection if under limit
+    const maxConnections = this.config.pool?.max || 10;
+    if (this.pool.length < maxConnections) {
+        const newConnection = await this.createConnection();
+        newConnection.inUse = true;
+        return newConnection;
     }
-    normalizeParams(params) {
-        if (!params)
-            return [];
-        if (Array.isArray(params))
-            return [...params];
-        if (params instanceof Map)
-            return [...params.values()];
-        return Object.values(params);
+    // Wait for connection to become available
+    await this.sleep(10);
+}
+throw new ConnectionError(`Failed to acquire connection within ${timeout}ms`, correlationId);
+releaseConnection(connection, PooledConnection);
+void {
+    connection, : .inUse = false,
+    connection, : .lastUsedAt = new Date()
+};
+async;
+executeWithRetry(operation, () => Promise, correlationId, string, sql ?  : string, params ?  : QueryParams);
+Promise < T > {
+    const: retryPolicy = this.config.retryPolicy,
+    let, lastError: Error | undefined,
+    for(let, attempt = 0, attempt) { }
+} <= retryPolicy.maxRetries;
+attempt++;
+{
+    try {
+        return await operation();
     }
-    getPoolStats() {
-        const active = this.pool.filter((conn) => conn.inUse).length;
-        const idle = this.pool.filter((conn) => !conn.inUse).length;
-        return {
-            total: this.pool.length,
-            active,
-            idle,
-            waiting: 0, // SQLite doesn't have a waiting queue concept
-        };
-    }
-    calculateAverageIdleTime() {
-        const now = Date.now();
-        const idleConnections = this.pool.filter((conn) => !conn.inUse);
-        if (idleConnections.length === 0)
-            return 0;
-        const totalIdleTime = idleConnections.reduce((sum, conn) => sum + (now - conn.lastUsedAt.getTime()), 0);
-        return totalIdleTime / idleConnections.length;
-    }
-    updateAverageQueryTime(executionTime) {
-        const { totalQueries, averageQueryTimeMs } = this.stats;
-        this.stats.averageQueryTimeMs =
-            (averageQueryTimeMs * (totalQueries - 1) + executionTime) / totalQueries;
-    }
-    async getTableSchema(tableName) {
-        try {
-            const pragmaResult = await this.query(`PRAGMA table_info(${tableName})`);
-            const columns = pragmaResult.rows.map((row) => ({
-                name: row.name,
-                type: row.type,
-                nullable: row.notnull === 0,
-                defaultValue: row.dflt_value,
-            }));
-            const primaryKey = columns
-                .filter((col) => (pragmaResult.rows.find((row) => row.name === col.name)?.pk || 0) >
-                0)
-                .map((col) => col.name);
-            // Get indexes
-            const indexResult = await this.query(`PRAGMA index_list(${tableName})`);
-            const indexes = [];
-            for (const idx of indexResult.rows) {
-                const indexInfo = await this.query(`PRAGMA index_info(${idx.name})`);
-                indexes.push({
-                    name: idx.name,
-                    tableName,
-                    columns: indexInfo.rows.map((col) => col.name),
-                    unique: false, // TODO: Get unique info from sqlite_master
-                    type: 'btree',
-                });
-            }
-            return {
-                name: tableName,
-                columns,
-                primaryKey,
-                foreignKeys: [], // TODO: Implement foreign key detection
-                indexes,
-            };
+    catch (error) {
+        lastError = error instanceof Error ? error : new Error(String(error));
+        const errorCode = this.extractSQLiteErrorCode(lastError);
+        const isRetryable = retryPolicy.retryableErrors.includes(errorCode);
+        if (attempt === retryPolicy.maxRetries || !isRetryable) {
+            break;
         }
-        catch (error) {
-            logger.error('Failed to get table schema', { tableName, error });
-            return null;
-        }
+        const delay = Math.min(retryPolicy.initialDelayMs * retryPolicy.backoffFactor ** attempt, retryPolicy.maxDelayMs);
+        logger.warn('Retrying operation after error', {
+            correlationId,
+            attempt: attempt + 1,
+            maxRetries: retryPolicy.maxRetries,
+            delayMs: delay,
+            error: lastError.message,
+        });
+        await this.sleep(delay);
     }
-    async getDatabaseVersion() {
-        try {
-            const result = await this.query('SELECT sqlite_version() as version');
-            return result.rows[0]?.version || 'unknown';
-        }
-        catch {
-            return 'unknown';
-        }
+}
+throw new QueryError(`Operation failed after ${retryPolicy.maxRetries} retries:${lastError?.message}`, {
+    query: sql,
+    params,
+    correlationId,
+    cause: lastError,
+});
+extractSQLiteErrorCode(error, Error);
+string;
+{
+    if (error.message.includes('SQLITE_BUSY'))
+        return ' SQLITE_BUSY';
+    if (error.message.includes('SQLITE_LOCKED'))
+        return ' SQLITE_LOCKED';
+    return 'UNKNOWN';
+}
+normalizeParams(params ?  : QueryParams);
+unknown[];
+{
+    if (!params)
+        return [];
+    if (Array.isArray(params))
+        return [...params];
+    if (params instanceof Map)
+        return [...params.values()];
+    return Object.values(params);
+}
+getPoolStats();
+{
+    const active = this.pool.filter((conn) => conn.inUse).length;
+    const idle = this.pool.filter((conn) => !conn.inUse).length;
+    return {
+        total: this.pool.length,
+        active,
+        idle,
+        waiting: 0, // SQLite doesn't have a waiting queue concept
+    };
+}
+calculateAverageIdleTime();
+number;
+{
+    const now = Date.now();
+    const idleConnections = this.pool.filter((conn) => !conn.inUse);
+    if (idleConnections.length === 0)
+        return 0;
+    const totalIdleTime = idleConnections.reduce((sum, conn) => sum + (now - conn.lastUsedAt.getTime()), 0);
+    return totalIdleTime / idleConnections.length;
+}
+updateAverageQueryTime(executionTime, number);
+void {
+    const: { totalQueries, averageQueryTimeMs } = this.stats,
+    this: .stats.averageQueryTimeMs =
+        (averageQueryTimeMs * (totalQueries - 1) + executionTime) / totalQueries
+};
+async;
+getTableSchema(tableName, string);
+Promise < TableSchema | null > {
+    try: {
+        const: pragmaResult = await this.query(`PRAGMA table_info(${tableName})`),
+        const: columns, ColumnSchema, []:  = pragmaResult.rows.map((row) => ({
+            name: row.name,
+            type: row.type,
+            nullable: row.notnull === 0,
+            defaultValue: row.dflt_value,
+        })),
+        const: primaryKey = columns
+            .filter((col) => (pragmaResult.rows.find((row) => row.name === col.name)?.pk || 0) >
+            0)
+            .map((col) => col.name),
+        // Get indexes
+        const: indexResult = await this.query(`PRAGMA index_list(${tableName})`),
+        const: indexes, IndexSchema, []:  = [],
+        for(, idx, of, indexResult) { }, : .rows
     }
-    async getLastMigrationVersion() {
-        return (await this.getCurrentMigrationVersion()) || undefined;
+};
+{
+    const indexInfo = await this.query(`PRAGMA index_info(${idx.name})`);
+    indexes.push({
+        name: idx.name,
+        tableName,
+        columns: indexInfo.rows.map((col) => col.name),
+        unique: false, // TODO:Get unique info from sqlite_master
+        type: 'btree',
+    });
+}
+return {
+    name: tableName,
+    columns,
+    primaryKey,
+    foreignKeys: [], // TODO:Implement foreign key detection
+    indexes,
+};
+try { }
+catch (error) {
+    logger.error('Failed to get table schema', { tableName, error });
+    return null;
+}
+async;
+getDatabaseVersion();
+Promise < string > {
+    try: {
+        const: result = await this.query('SELECT sqlite_version() as version'),
+        return: result.rows[0]?.version || 'unknown'
+    }, catch: {
+        return: 'unknown'
     }
-    async createMigrationsTable() {
-        await this.query(`
+};
+async;
+getLastMigrationVersion();
+Promise < string | undefined > {
+    : .getCurrentMigrationVersion()
+} || undefined;
+async;
+createMigrationsTable();
+Promise < void  > {
+    await, this: .query(`
       CREATE TABLE IF NOT EXISTS _migrations (
         version TEXT PRIMARY KEY,
         name TEXT NOT NULL,
         applied_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
-    `);
-    }
-    async recordMigration(version, name) {
-        await this.query('INSERT INTO _migrations (version, name) VALUES (?, ?)', [
-            version,
-            name,
-        ]);
-    }
-    async setIsolationLevel(db, level) {
-        return await new Promise((resolve, reject) => {
-            setImmediate(() => {
-                try {
-                    // SQLite doesn't have traditional isolation levels, but we can simulate some behavior
-                    switch (level) {
-                        case IsolationLevel.ReadUncommitted:
-                            db.exec('PRAGMA read_uncommitted = 1');
-                            break;
-                        case IsolationLevel.Serializable:
-                            db.exec('PRAGMA read_uncommitted = 0');
-                            break;
-                        // ReadCommitted and RepeatableRead are the default in SQLite
-                        default:
-                            break;
-                    }
-                    resolve();
+    `)
+};
+async;
+recordMigration(version, string, name, string);
+Promise < void  > {
+    await, this: .query('INSERT INTO _migrations (version, name) VALUES (?, ?)', [
+        version,
+        name,
+    ])
+};
+async;
+setIsolationLevel(db, Database.Database, level, IsolationLevel);
+Promise < void  > {
+    return: await new Promise((resolve, reject) => {
+        setImmediate(() => {
+            try {
+                // SQLite doesn't have traditional isolation levels, but we can simulate some behavior
+                switch (level) {
+                    case IsolationLevel.ReadUncommitted:
+                        db.exec('PRAGMA read_uncommitted = 1');
+                        break;
+                    case IsolationLevel.Serializable:
+                        db.exec('PRAGMA read_uncommitted = 0');
+                        break;
+                    // ReadCommitted and RepeatableRead are the default in SQLite
+                    default:
+                        break;
                 }
-                catch (error) {
-                    reject(error);
-                }
-            });
-        });
-    }
-    startPoolMaintenance() {
-        setInterval(() => {
-            this.maintainPool();
-        }, this.config.pool?.reapIntervalMillis);
-    }
-    maintainPool() {
-        const now = Date.now();
-        const idleTimeout = this.config.pool?.idleTimeoutMillis;
-        const minConnections = this.config.pool?.min;
-        // Remove idle connections beyond idle timeout, but keep minimum
-        const toRemove = this.pool.filter((conn) => !conn.inUse &&
-            now - conn.lastUsedAt.getTime() > (idleTimeout ?? 300000) &&
-            this.pool.length > (minConnections ?? 1));
-        for (const conn of toRemove) {
-            const index = this.pool.indexOf(conn);
-            if (index > -1) {
-                this.pool.splice(index, 1);
-                this.destroyConnection(conn);
+                resolve();
             }
-        }
-    }
-    ensureDatabaseDirectory() {
-        const dbDir = dirname(this.config.database);
-        if (!existsSync(dbDir)) {
-            mkdirSync(dbDir, { recursive: true });
-        }
-    }
-    generateCorrelationId() {
-        return `sqlite-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    }
-    sleep(ms) {
-        return new Promise((resolve) => setTimeout(resolve, ms));
-    }
+            catch (error) {
+                reject(error);
+            }
+        });
+    })
+};
+startPoolMaintenance();
+void {
+    setInterval() { }
+}();
+{
+    this.maintainPool();
 }
+this.config.pool?.reapIntervalMillis;
+;
+maintainPool();
+void {
+    const: now = Date.now(),
+    const: idleTimeout = this.config.pool?.idleTimeoutMillis,
+    const: minConnections = this.config.pool?.min,
+    // Remove idle connections beyond idle timeout, but keep minimum
+    const: toRemove = this.pool.filter((conn) => !conn.inUse &&
+        now - conn.lastUsedAt.getTime() > (idleTimeout ?? 300000) &&
+        this.pool.length > (minConnections ?? 1)),
+    for(, conn, of, toRemove) {
+        const index = this.pool.indexOf(conn);
+        if (index > -1) {
+            this.pool.splice(index, 1);
+            this.destroyConnection(conn);
+        }
+    }
+};
+ensureDatabaseDirectory();
+void {
+    const: dbDir = dirname(this.config.database),
+    if(, existsSync) { }
+}(dbDir);
+{
+    mkdirSync(dbDir, { recursive: true });
+}
+generateCorrelationId();
+string;
+{
+    return `sqlite-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+}
+sleep(ms, number);
+Promise < void  > {
+    return: new Promise((resolve) => setTimeout(resolve, ms))
+};
 class SQLiteTransactionConnection {
     db;
     correlationId;
@@ -731,104 +781,120 @@ class SQLiteTransactionConnection {
                             executionTimeMs: Date.now() - startTime,
                             affectedRows: runResult.changes,
                             insertId: typeof runResult.lastInsertRowid === 'bigint'
-                                ? Number(runResult.lastInsertRowid)
-                                : runResult.lastInsertRowid,
-                        });
-                        return;
+                        }) ? Number(runResult.lastInsertRowid)
+                            : runResult.lastInsertRowid,
+                        ;
                     }
-                    resolve({
-                        rows: (rows || []),
-                        rowCount: rows ? rows.length : 0,
-                        executionTimeMs: Date.now() - startTime,
-                        fields: rows.length > 0 ? Object.keys(rows[0] || {}) : [],
-                    });
                 }
-                catch (error) {
-                    reject(new QueryError(`Transaction query failed: ${error instanceof Error ? error.message : String(error)}`, {
-                        query: sql,
-                        params,
-                        correlationId: this.correlationId,
-                        cause: error instanceof Error ? error : undefined,
-                    }));
-                }
+                finally { }
             });
+            return;
+        }, resolve({
+            rows: (rows || []),
+            rowCount: rows ? rows.length : 0,
+            executionTimeMs: Date.now() - startTime,
+            fields: rows.length > 0 ? Object.keys(rows[0] || {}) : [],
+        }));
+    }
+    catch(error) {
+        reject(new QueryError(`Transaction query failed:${error instanceof Error ? error.message : String(error)}`, {
+            query: sql,
+            params,
+            correlationId: this.correlationId,
+            cause: error instanceof Error ? error : undefined,
+        }));
+    }
+}
+;
+;
+async;
+execute(sql, string, params ?  : QueryParams);
+Promise < QueryResult > {
+    return: await this.query(sql, params)
+};
+async;
+rollback();
+Promise < void  > {
+    return: await new Promise((resolve, reject) => {
+        setImmediate(() => {
+            try {
+                this.db.exec('ROLLBACK');
+                resolve();
+            }
+            catch (error) {
+                reject(error);
+            }
         });
-    }
-    async execute(sql, params) {
-        return await this.query(sql, params);
-    }
-    async rollback() {
-        return await new Promise((resolve, reject) => {
-            setImmediate(() => {
-                try {
-                    this.db.exec('ROLLBACK');
-                    resolve();
-                }
-                catch (error) {
-                    reject(error);
-                }
-            });
+    })
+};
+async;
+commit();
+Promise < void  > {
+    return: await new Promise((resolve, reject) => {
+        setImmediate(() => {
+            try {
+                this.db.exec('COMMIT');
+                resolve();
+            }
+            catch (error) {
+                reject(error);
+            }
         });
-    }
-    async commit() {
-        return await new Promise((resolve, reject) => {
-            setImmediate(() => {
-                try {
-                    this.db.exec('COMMIT');
-                    resolve();
-                }
-                catch (error) {
-                    reject(error);
-                }
-            });
+    })
+};
+async;
+savepoint(name, string);
+Promise < void  > {
+    return: await new Promise((resolve, reject) => {
+        setImmediate(() => {
+            try {
+                this.db.exec(`SAVEPOINT ${name}`);
+                resolve();
+            }
+            catch (error) {
+                reject(error);
+            }
         });
-    }
-    async savepoint(name) {
-        return await new Promise((resolve, reject) => {
-            setImmediate(() => {
-                try {
-                    this.db.exec(`SAVEPOINT ${name}`);
-                    resolve();
-                }
-                catch (error) {
-                    reject(error);
-                }
-            });
+    })
+};
+async;
+releaseSavepoint(name, string);
+Promise < void  > {
+    return: await new Promise((resolve, reject) => {
+        setImmediate(() => {
+            try {
+                this.db.exec(`RELEASE SAVEPOINT ${name}`);
+                resolve();
+            }
+            catch (error) {
+                reject(error);
+            }
         });
-    }
-    async releaseSavepoint(name) {
-        return await new Promise((resolve, reject) => {
-            setImmediate(() => {
-                try {
-                    this.db.exec(`RELEASE SAVEPOINT ${name}`);
-                    resolve();
-                }
-                catch (error) {
-                    reject(error);
-                }
-            });
+    })
+};
+async;
+rollbackToSavepoint(name, string);
+Promise < void  > {
+    return: await new Promise((resolve, reject) => {
+        setImmediate(() => {
+            try {
+                this.db.exec(`ROLLBACK TO SAVEPOINT ${name}`);
+                resolve();
+            }
+            catch (error) {
+                reject(error);
+            }
         });
-    }
-    async rollbackToSavepoint(name) {
-        return await new Promise((resolve, reject) => {
-            setImmediate(() => {
-                try {
-                    this.db.exec(`ROLLBACK TO SAVEPOINT ${name}`);
-                    resolve();
-                }
-                catch (error) {
-                    reject(error);
-                }
-            });
-        });
-    }
-    normalizeParams(params) {
-        if (!params)
-            return [];
-        if (Array.isArray(params))
-            return [...params];
-        if (params instanceof Map)
-            return [...params.values()];
-        return Object.values(params);
-    }
+    })
+};
+normalizeParams(params ?  : QueryParams);
+unknown[];
+{
+    if (!params)
+        return [];
+    if (Array.isArray(params))
+        return [...params];
+    if (params instanceof Map)
+        return [...params.values()];
+    return Object.values(params);
 }

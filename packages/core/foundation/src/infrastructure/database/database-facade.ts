@@ -62,7 +62,7 @@ export interface GraphStore {
  */
 export class DatabaseFacade {
   private static instance:DatabaseFacade | null = null;
-  private databasePackage:any = null;
+  private databasePackage:unknown = null;
   private capability:CapabilityLevel = CapabilityLevel.FALLBACK;
 
   private constructor() {
@@ -140,38 +140,40 @@ export class DatabaseFacade {
     logger.debug(`Creating fallback database adapter for ${type}`);
     
     const fallbackAdapter:DatabaseAdapter = {
-      async connect(config:DatabaseConfig): Promise<Result<DatabaseConnection, Error>> {
+      connect(config:DatabaseConfig): Promise<Result<DatabaseConnection, Error>> {
         logger.warn(`Fallback database connection for ${config.type}`);
         
         const fallbackConnection:DatabaseConnection = {
-          async query<T = unknown>():Promise<T[]> {
+          query<T = unknown>():Promise<T[]> {
             logger.warn('Fallback database query - returning empty result');
-            return [];
-},
+            return Promise.resolve([]);
+          },
           
-          async execute():Promise<{ affectedRows: number; insertId?: number}> {
+          execute():Promise<{ affectedRows: number; insertId?: number}> {
             logger.warn('Fallback database execute - no operation performed');
-            return { affectedRows:0};
-},
+            return Promise.resolve({ affectedRows:0});
+          },
           
-          async close():Promise<void> {
+          close():Promise<void> {
             logger.debug('Fallback database connection closed');
-}
+            return Promise.resolve();
+          }
 };
         
         return ok(fallbackConnection);
 },
       
-      async getHealth():Promise<{ healthy: boolean; message?: string}> {
-        return { 
+      getHealth():Promise<{ healthy: boolean; message?: string}> {
+        return Promise.resolve({ 
           healthy:false, 
           message:'Using fallback database adapter - @claude-zen/database not available'
-        };
+        });
       },
       
-      async disconnect():Promise<void> {
+      disconnect():Promise<void> {
         logger.debug('Fallback database adapter disconnected');
-}
+        return Promise.resolve();
+      }
 };
 
     return ok(fallbackAdapter);
@@ -201,38 +203,40 @@ export class DatabaseFacade {
     const fallbackStore = new Map<string, { value:unknown; expires?: number}>();
     
     const store:KeyValueStore = {
-      async get<T = unknown>(key:string): Promise<T | null> {
+      get<T = unknown>(key:string): Promise<T | null> {
         const entry = fallbackStore.get(key);
-        if (!entry) return null;
+        if (!entry) return Promise.resolve(null);
         
         if (entry.expires && Date.now() > entry.expires) {
           fallbackStore.delete(key);
-          return null;
-}
+          return Promise.resolve(null);
+        }
         
-        return entry.value as T;
-},
+        return Promise.resolve(entry.value as T);
+      },
       
-      async set<T = unknown>(key:string, value:T, ttl?:number): Promise<void> {
+      set<T = unknown>(key:string, value:T, ttl?:number): Promise<void> {
         const expires = ttl ? Date.now() + ttl * 1000:undefined;
         fallbackStore.set(key, { value, expires});
-},
+        return Promise.resolve();
+      },
       
-      async delete(key:string): Promise<boolean> {
-        return fallbackStore.delete(key);
-},
+      delete(key:string): Promise<boolean> {
+        return Promise.resolve(fallbackStore.delete(key));
+      },
       
-      async clear():Promise<void> {
+      clear():Promise<void> {
         fallbackStore.clear();
-},
+        return Promise.resolve();
+      },
       
-      async keys(pattern?:string): Promise<string[]> {
+      keys(pattern?:string): Promise<string[]> {
         const allKeys = Array.from(fallbackStore.keys());
-        if (!pattern) return allKeys;
+        if (!pattern) return Promise.resolve(allKeys);
         
         const regex = new RegExp(pattern.replace(/\*/g, '.*'));
-        return allKeys.filter(key => regex.test(key));
-}
+        return Promise.resolve(allKeys.filter(key => regex.test(key)));
+      }
 };
 
     logger.debug('Created fallback key-value store');
@@ -263,11 +267,12 @@ export class DatabaseFacade {
     const vectors = new Map<string, { vector:number[]; metadata?: Record<string, unknown>}>();
     
     const store:VectorStore = {
-      async insert(id:string, vector:number[], metadata?:Record<string, unknown>):Promise<void> {
+      insert(id:string, vector:number[], metadata?:Record<string, unknown>):Promise<void> {
         vectors.set(id, { vector, metadata});
-},
+        return Promise.resolve();
+      },
       
-      async search(query:number[], limit = 10):Promise<Array<{ id: string; score: number; metadata?: Record<string, unknown>}>> {
+      search(query:number[], limit = 10):Promise<Array<{ id: string; score: number; metadata?: Record<string, unknown>}>> {
         logger.warn('Fallback vector search - using simple cosine similarity');
         
         const results:Array<{ id: string; score: number; metadata?: Record<string, unknown>}> = [];
@@ -277,17 +282,18 @@ export class DatabaseFacade {
           results.push({ id, score, metadata});
 }
         
-        return results
+        return Promise.resolve(results
           .sort((a, b) => b.score - a.score)
-          .slice(0, limit);
-},
+          .slice(0, limit));
+      },
       
-      async delete(id:string): Promise<boolean> {
-        return vectors.delete(id);
-},
+      delete(id:string): Promise<boolean> {
+        return Promise.resolve(vectors.delete(id));
+      },
       
-      async clear():Promise<void> {
+      clear():Promise<void> {
         vectors.clear();
+        return Promise.resolve();
 }
 };
 
@@ -339,21 +345,23 @@ export class DatabaseFacade {
     const edges = new Map<string, { from:string; to: string; type: string; properties?: Record<string, unknown>}>();
     
     const store:GraphStore = {
-      async addNode(id:string, properties:Record<string, unknown> = {}):Promise<void> {
+      addNode(id:string, properties:Record<string, unknown> = {}):Promise<void> {
         nodes.set(id, properties);
-},
+        return Promise.resolve();
+      },
       
-      async addEdge(from:string, to:string, type:string, properties?:Record<string, unknown>):Promise<void> {
+      addEdge(from:string, to:string, type:string, properties?:Record<string, unknown>):Promise<void> {
         const edgeId = `${from}->${to}:${type}`;
         edges.set(edgeId, { from, to, type, properties});
-},
+        return Promise.resolve();
+      },
       
-      async queryNodes():Promise<unknown[]> {
+      queryNodes():Promise<unknown[]> {
         logger.warn('Fallback graph query - returning all nodes');
-        return Array.from(nodes.entries()).map(([id, properties]) => ({ id, ...properties}));
-},
+        return Promise.resolve(Array.from(nodes.entries()).map(([id, properties]) => ({ id, ...properties})));
+      },
       
-      async queryPaths(from:string, to:string): Promise<unknown[]> {
+      queryPaths(from:string, to:string): Promise<unknown[]> {
         logger.warn('Fallback graph path query - basic implementation');
         const paths:unknown[] = [];
         
@@ -368,8 +376,8 @@ export class DatabaseFacade {
 }
 }
         
-        return paths;
-}
+        return Promise.resolve(paths);
+      }
 };
 
     logger.debug('Created fallback graph store');
@@ -382,19 +390,19 @@ export const databaseFacade = DatabaseFacade.getInstance();
 
 // Convenience functions for easy access from foundation
 export async function createDatabaseAdapter(type:DatabaseConfig['type']): Promise<Result<DatabaseAdapter, Error>> {
-  return databaseFacade.createAdapter(type);
+  return await databaseFacade.createAdapter(type);
 }
 
 export async function createKeyValueStore():Promise<Result<KeyValueStore, Error>> {
-  return databaseFacade.createKeyValueStore();
+  return await databaseFacade.createKeyValueStore();
 }
 
 export async function createVectorStore():Promise<Result<VectorStore, Error>> {
-  return databaseFacade.createVectorStore();
+  return await databaseFacade.createVectorStore();
 }
 
 export async function createGraphStore():Promise<Result<GraphStore, Error>> {
-  return databaseFacade.createGraphStore();
+  return await databaseFacade.createGraphStore();
 }
 
 export function getDatabaseCapability():CapabilityLevel {

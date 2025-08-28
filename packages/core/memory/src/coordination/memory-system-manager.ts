@@ -595,7 +595,7 @@ export class MemorySystemManager extends EventEmitter {
       );
 } catch (error) {
       this.logger.error('Monitoring cycle failed: ', error);
-'}
+}
 }
 
   private async performHealthChecks():Promise<void> {

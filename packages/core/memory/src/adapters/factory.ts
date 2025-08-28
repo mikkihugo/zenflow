@@ -79,8 +79,7 @@ export class MemoryBackendFactory {
     const backendClass = await this.getBackendClass(type);
 
     // Create backend instance
-    const backend = new (backendClass as any)(fullConfig) as BaseMemoryBackend &
-      BackendInterface;
+    const backend = new (backendClass as new (config: MemoryConfig) => BaseMemoryBackend & BackendInterface)(fullConfig);
 
     // Initialize backend
     await backend.initialize();
@@ -191,7 +190,7 @@ export class MemoryBackendFactory {
     type:MemoryBackendType
   ):Promise<BackendCapabilities> {
     const backendClass = await this.getBackendClass(type);
-    const tempBackend = new (backendClass as any)(this.defaultConfig);
+    const tempBackend = new (backendClass as new (config: MemoryConfig) => BackendInterface)(this.defaultConfig);
     return tempBackend.getCapabilities();
 }
 
@@ -332,7 +331,8 @@ export class MemoryBackendFactory {
       config?.type === 'sqlite' || config?.type === ' lancedb';
     if (wantsPersistent) {
       return config?.maxSize && config?.maxSize > 50 * 1024 * 1024
-        ? 'sqlite')        : 'json';
+        ? 'sqlite' 
+        : 'json';
 }
 
     if (config?.maxSize && config?.maxSize > 100 * 1024 * 1024) {
@@ -353,7 +353,8 @@ export class MemoryBackendFactory {
         super({
           ...config,
           storageType: 'kv', // In-memory uses KV with no persistence
-          databaseType: 'sqlite',} as any);
+          databaseType: 'sqlite',
+        } as MemoryConfig);
 }
 };
 }
@@ -367,7 +368,9 @@ export class MemoryBackendFactory {
       public constructor(config:MemoryConfig) {
         super({
           ...config,
-          storageType: 'database',          databaseType: 'sqlite',} as any);
+          storageType: 'database',
+          databaseType: 'sqlite',
+        } as MemoryConfig);
 }
 };
 }
@@ -382,7 +385,9 @@ export class MemoryBackendFactory {
       public constructor(config:MemoryConfig) {
         super({
           ...config,
-          storageType: 'database',          databaseType: 'lancedb',} as any);
+          storageType: 'database',
+          databaseType: 'lancedb',
+        } as MemoryConfig);
 }
 };
 }
@@ -397,7 +402,9 @@ export class MemoryBackendFactory {
       public constructor(config:MemoryConfig) {
         super({
           ...config,
-          storageType: 'database',          databaseType: 'lancedb',} as any);
+          storageType: 'database',
+          databaseType: 'lancedb',
+        } as MemoryConfig);
 }
 };
 }

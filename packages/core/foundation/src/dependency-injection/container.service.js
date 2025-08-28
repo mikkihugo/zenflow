@@ -5,8 +5,8 @@
  * Uses awilix-compatible patterns with comprehensive service lifecycle management.
  *
  * @example Basic Usage
- * ```typescript
- * import { createContainer } from './container.service';
+ * ```typescript`
+ * import { createContainer} from './container.service';
  *
  * const container = createContainer();
  *
@@ -26,11 +26,11 @@
  * @returns A fully configured DI container instance
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const container = createContainer();
  *
  * // Register services
- * container.register('logger', Logger, { capabilities: ['logging'], tags: ['core'] });
+ * container.register('logger', Logger, { capabilities:[' logging'], tags:[' core']});
  *
  * // Start health monitoring
  * container.startHealthMonitoring(5000);
@@ -38,7 +38,7 @@
  * // Listen to events
  * container.on('serviceRegistered', (event) => {
  *   console.log(`Service ${event.name} registered`);
- * });
+ *});
  * ```
  */
 import { ContainerImpl } from "./container-impl.js";

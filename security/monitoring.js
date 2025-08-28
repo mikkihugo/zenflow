@@ -85,7 +85,7 @@ export class SecurityMonitor {
 
   detectSuspiciousActivity(req, res, next) {
     const suspiciousPatterns = [
-      /\.\.|\.\.\\/, // Path traversal
+      /\.\.|\.\.[\\/]/, // Path traversal
       /<script|javascript:|data:text/html/i, // XSS attempts
       /union|select|insert|update|delete|drop/i, // SQL injection
       /cmd|eval|exec|system/i // Command injection

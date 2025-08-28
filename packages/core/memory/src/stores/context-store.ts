@@ -545,7 +545,8 @@ export function getGlobalContextManager(
 
   if (!globalContextManager) {
     throw new Error(
-      'Global context manager not initialized. Provide memorySystem parameter.')    );
+      'Global context manager not initialized. Provide memorySystem parameter.'
+    );
 }
 
   return globalContextManager;

@@ -12,6 +12,7 @@ import { getLogger, Result, ok, err} from '@claude-zen/foundation';
 import { BaseMemoryBackend, type MemoryEntry, type BackendCapabilities} from './base-backend';
 
 const logger = getLogger('DatabaseBackedAdapter');
+const ADAPTER_NOT_INITIALIZED_ERROR = 'Adapter not initialized';
 
 export interface DatabaseMemoryConfig {
   type:'sqlite' | ' memory';
@@ -54,9 +55,9 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
 }
 }
 
-  async store(key:string, value:any): Promise<Result<void, Error>> {
+  async store(key:string, value:unknown): Promise<Result<void, Error>> {
     if (!this.initialized || !this.storage) {
-      return err(new Error('Adapter not initialized'));
+      return err(new Error(ADAPTER_NOT_INITIALIZED_ERROR));
 }
 
     try {
@@ -77,9 +78,9 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
 }
 }
 
-  async retrieve(key:string): Promise<Result<any, Error>> {
+  async retrieve(key:string): Promise<Result<unknown, Error>> {
     if (!this.initialized || !this.storage) {
-      return err(new Error('Adapter not initialized'));
+      return err(new Error(ADAPTER_NOT_INITIALIZED_ERROR));
 }
 
     try {
@@ -105,7 +106,7 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
 
   async delete(key:string): Promise<Result<boolean, Error>> {
     if (!this.initialized || !this.storage) {
-      return err(new Error('Adapter not initialized'));
+      return err(new Error(ADAPTER_NOT_INITIALIZED_ERROR));
 }
 
     try {
@@ -120,7 +121,7 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
 
   async clear():Promise<Result<void, Error>> {
     if (!this.initialized || !this.storage) {
-      return err(new Error('Adapter not initialized'));
+      return err(new Error(ADAPTER_NOT_INITIALIZED_ERROR));
 }
 
     try {
@@ -135,7 +136,7 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
 
   async size():Promise<Result<number, Error>> {
     if (!this.initialized || !this.storage) {
-      return err(new Error('Adapter not initialized'));
+      return err(new Error(ADAPTER_NOT_INITIALIZED_ERROR));
 }
 
     try {

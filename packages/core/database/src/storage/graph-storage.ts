@@ -449,14 +449,8 @@ export class GraphStorageImpl implements GraphStorage {
 				const current = queue.shift()!;
 
 				if (current.nodeId === toId) {
-					// Found path - get node details
-					const pathNodes:GraphNode[] = [];
-					for (const nodeId of current.path) {
-						const node = await this.getNode(nodeId);
-						if (node) pathNodes.push(node);
-}
-					return pathNodes;
-}
+					return await this.buildPathNodes(current.path);
+				}
 
 				if (current.path.length >= maxDepth || visited.has(current.nodeId)) {
 					continue;
@@ -491,8 +485,17 @@ export class GraphStorageImpl implements GraphStorage {
 					cause:error instanceof Error ? error : undefined,
 },
 			);
-}
-}
+		}
+	}
+
+	private async buildPathNodes(path: string[]): Promise<readonly GraphNode[]> {
+		const pathNodes: GraphNode[] = [];
+		for (const nodeId of path) {
+			const node = await this.getNode(nodeId);
+			if (node) pathNodes.push(node);
+		}
+		return pathNodes;
+	}
 
 	async query(
 		cypher:string,

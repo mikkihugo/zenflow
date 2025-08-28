@@ -1,0 +1,25 @@
+/**
+ * Foundation Storage Adapter for Memory Backend - Simplified Implementation
+ */
+import type { JSONValue } from '../core/memory-system';
+import type { MemoryConfig } from '../providers/memory-providers';
+import { BaseMemoryBackend } from './base-backend';
+interface FoundationMemoryConfig extends MemoryConfig {
+    storageType: 'kv' | ' database' | ' hybrid';
+    databaseType?: 'sqlite' | ' lancedb' | ' kuzu';
+}
+export declare class FoundationMemoryBackend extends BaseMemoryBackend {
+    private logger;
+    private databaseSystem?;
+    private memoryStore;
+    private initialized;
+    protected memoryConfig: FoundationMemoryConfig;
+    constructor(config: FoundationMemoryConfig);
+    initialize(): Promise<void>;
+    store(key: string, value: JSONValue, namespace?: string): Promise<void>;
+    set(key: string, value: JSONValue): Promise<void>;
+    retrieve<T = JSONValue>(key: string, namespace?: string): any;
+    Promise<T>(): any;
+}
+export {};
+//# sourceMappingURL=foundation-adapter.d.ts.map

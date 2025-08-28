@@ -12,8 +12,8 @@
  *
  * @example Importing core components
  * ```typescript`
- * import { CompleteIntelligenceSystem, ITaskPredictor } from '@claude-zen/agent-monitoring';
- * import { SimpleTaskPredictor } from '@claude-zen/agent-monitoring';
+ * import { CompleteIntelligenceSystem, ITaskPredictor} from '@claude-zen/agent-monitoring';
+ * import { SimpleTaskPredictor} from '@claude-zen/agent-monitoring';
  * ````
  *
  * @author Claude Code Zen Team - Intelligence Integration
@@ -44,14 +44,7 @@ export { createTaskPredictor, DEFAULT_TASK_PREDICTOR_CONFIG, getPredictionSummar
  * Package metadata and version information
  */
 export const PACKAGE_INFO = {
-    name: '@claude-zen/agent-monitoring',
-    version: '1.0.0',
-    description: 'Core agent monitoring primitives for Claude Code Zen',
-    features: [
-        'Basic task prediction interfaces',
-        'Simple intelligence system implementations',
-        'Core monitoring types and configurations',
-        'Foundation logging and storage integration',
-        'Tree-shakable exports for optimal bundles',
+    name: '@claude-zen/agent-monitoring', version: '1.0.0', description: 'Core agent monitoring primitives for Claude Code Zen', features: [
+        'Basic task prediction interfaces', 'Simple intelligence system implementations', 'Core monitoring types and configurations', 'Foundation logging and storage integration', 'Tree-shakable exports for optimal bundles',
     ],
 };

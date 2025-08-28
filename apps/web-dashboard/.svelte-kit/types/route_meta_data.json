@@ -2,6 +2,7 @@
 	"/": [],
 	"/agui": [],
 	"/database": [],
+	"/events": [],
 	"/facades": [],
 	"/memory": [],
 	"/safe-production": [],

@@ -7,16 +7,16 @@
 /**
  *
  * @example Get System Capability Data
- * ```typescript
- * import { getSystemCapabilityData } from '@claude-zen/foundation/system-capability-data-provider';
+ * ```typescript`
+ * import { getSystemCapabilityData} from '@claude-zen/foundation/system-capability-data-provider';
  *
  * const data = await getSystemCapabilityData();
  * // Use this data in web dashboard, CLI, or API
  * ```
  *
  * @example Get Installation Suggestions
- * ```typescript
- * import { getInstallationSuggestions } from '@claude-zen/foundation/system-capability-data-provider';
+ * ```typescript`
+ * import { getInstallationSuggestions} from '@claude-zen/foundation/system-capability-data-provider';
  *
  * const suggestions = await getInstallationSuggestions();
  * // Pass to web UI or CLI for display
@@ -111,9 +111,9 @@ export async function displaySystemStatus() {
         : dashboard.overall === "partial"
             ? "⚠️"
             : "❌";
-    logger.info(`${statusEmoji} Overall: ${dashboard.overall.toUpperCase()} (${dashboard.systemHealthScore}% health)`);
-    logger.info(`📦 Packages: ${dashboard.availablePackages}/${dashboard.totalPackages} available`);
-    logger.info(`🔧 Services: ${dashboard.registeredServices} registered in Awilix`);
+    logger.info(`${statusEmoji} Overall:${dashboard.overall.toUpperCase()} (${dashboard.systemHealthScore}% health)`);
+    logger.info(`📦 Packages:${dashboard.availablePackages}/${dashboard.totalPackages} available`);
+    logger.info(`🔧 Services:${dashboard.registeredServices} registered in Awilix`);
     // Facade breakdown
     logger.info("\n📊 Facade Status:");
     for (const facade of dashboard.facades) {
@@ -122,12 +122,12 @@ export async function displaySystemStatus() {
             : facade.capability === "partial"
                 ? "⚠️"
                 : "❌";
-        logger.info(`  ${facadeEmoji} ${facade.name}: ${facade.capability} (${facade.healthScore}%)`);
+        logger.info(`  ${facadeEmoji} ${facade.name}:${facade.capability} (${facade.healthScore}%)`);
         if (facade.missingPackages.length > 0) {
-            logger.info(`    Missing: ${facade.missingPackages.join(", ")}`);
+            logger.info(`    Missing:${facade.missingPackages.join(", ")}`);
         }
         if (facade.registeredServices.length > 0) {
-            logger.info(`    Services: ${facade.registeredServices.join(", ")}`);
+            logger.info(`    Services:${facade.registeredServices.join(", ")}`);
         }
     }
     // Installation suggestions
@@ -143,7 +143,7 @@ export async function displaySystemStatus() {
             logger.info(`    └─ ${suggestion.reason}`);
         }
     }
-    logger.info(`\n📅 Last Updated: ${dashboard.timestamp}`);
+    logger.info(`\n📅 Last Updated:${dashboard.timestamp}`);
     logger.info("=".repeat(50));
 }
 /**

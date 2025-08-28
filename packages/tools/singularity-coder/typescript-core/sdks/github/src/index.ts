@@ -10,7 +10,7 @@ import { $} from "bun"
 import type { GitHubPullRequest, IssueQueryResponse, PullRequestQueryResponse} from "./types"
 
 if (github.context.eventName !== "issue_comment") {
-  core.setFailed(`Unsupported event type:${github.context.eventName}`)`
+  core.setFailed(`Unsupported event type: ${github.context.eventName}`);
   process.exit(1)
 }
 

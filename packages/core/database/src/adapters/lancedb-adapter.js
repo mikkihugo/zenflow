@@ -51,7 +51,7 @@ export class LanceDBAdapter {
                         ? importError.message
                         : String(importError),
                 });
-                throw new ConnectionError('LanceDB package not found. Please install with: npm install @lancedb/lancedb', correlationId, importError instanceof Error ? importError : undefined);
+                throw new ConnectionError('LanceDB package not found. Please install with:npm install @lancedb/lancedb', correlationId, importError instanceof Error ? importError : undefined);
             }
             // Create LanceDB database connection
             try {
@@ -73,7 +73,7 @@ export class LanceDBAdapter {
                         ? lancedbError.message
                         : String(lancedbError),
                 });
-                throw new ConnectionError(`Failed to create LanceDB connection: ${lancedbError instanceof Error ? lancedbError.message : String(lancedbError)}`, correlationId, lancedbError instanceof Error ? lancedbError : undefined);
+                throw new ConnectionError(`Failed to create LanceDB connection:${lancedbError instanceof Error ? lancedbError.message : String(lancedbError)}`, correlationId, lancedbError instanceof Error ? lancedbError : undefined);
             }
         }
         catch (error) {
@@ -85,7 +85,7 @@ export class LanceDBAdapter {
                 database: this.config.database,
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new ConnectionError(`Failed to connect to LanceDB: ${error instanceof Error ? error.message : String(error)}`, correlationId, error instanceof Error ? error : undefined);
+            throw new ConnectionError(`Failed to connect to LanceDB:${error instanceof Error ? error.message : String(error)}`, correlationId, error instanceof Error ? error : undefined);
         }
     }
     async disconnect() {
@@ -110,7 +110,7 @@ export class LanceDBAdapter {
                 correlationId,
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new ConnectionError(`Failed to disconnect from LanceDB: ${error instanceof Error ? error.message : String(error)}`, correlationId, error instanceof Error ? error : undefined);
+            throw new ConnectionError(`Failed to disconnect from LanceDB:${error instanceof Error ? error.message : String(error)}`, correlationId, error instanceof Error ? error : undefined);
         }
     }
     isConnected() {
@@ -166,7 +166,7 @@ export class LanceDBAdapter {
             if (error instanceof DatabaseError) {
                 throw error;
             }
-            throw new QueryError(`LanceDB operation execution failed: ${error instanceof Error ? error.message : String(error)}`, {
+            throw new QueryError(`LanceDB operation execution failed:${error instanceof Error ? error.message : String(error)}`, {
                 query: sql,
                 params,
                 correlationId,
@@ -185,7 +185,7 @@ export class LanceDBAdapter {
         }
         try {
             logger.debug('Starting LanceDB transaction', { correlationId });
-            // Note: LanceDB doesn't have traditional transactions like SQL databases
+            // Note:LanceDB doesn't have traditional transactions like SQL databases
             // Instead, we'll implement a transaction-like behavior using batch operations
             const txConnection = new LanceDBTransactionConnection(this, correlationId);
             const result = await fn(txConnection);
@@ -204,7 +204,7 @@ export class LanceDBAdapter {
             if (error instanceof DatabaseError) {
                 throw error;
             }
-            throw new TransactionError(`Transaction failed: ${error instanceof Error ? error.message : String(error)}`, correlationId, error instanceof Error ? error : undefined);
+            throw new TransactionError(`Transaction failed:${error instanceof Error ? error.message : String(error)}`, correlationId, error instanceof Error ? error : undefined);
         }
     }
     async health() {
@@ -213,8 +213,7 @@ export class LanceDBAdapter {
             if (!this.isConnected()) {
                 return {
                     healthy: false,
-                    status: 'unhealthy',
-                    score: 0,
+                    status: 'unhealthy', score: 0,
                     timestamp: new Date(),
                     details: { connected: false, reason: 'Not connected' },
                 };
@@ -240,8 +239,7 @@ export class LanceDBAdapter {
             score = Math.max(0, score);
             return {
                 healthy: score >= 70,
-                status: score >= 70 ? 'healthy' : score >= 40 ? 'degraded' : 'unhealthy',
-                score,
+                status: score >= 70 ? 'healthy' : score >= 40 ? ' degraded' : ' unhealthy', score,
                 timestamp: new Date(),
                 responseTimeMs: responseTime,
                 metrics: {
@@ -262,8 +260,7 @@ export class LanceDBAdapter {
         catch (error) {
             return {
                 healthy: false,
-                status: 'unhealthy',
-                score: 0,
+                status: 'unhealthy', score: 0,
                 timestamp: new Date(),
                 responseTimeMs: Date.now() - startTime,
                 lastError: error instanceof Error ? error.message : String(error),
@@ -302,8 +299,7 @@ export class LanceDBAdapter {
             logger.error('Failed to get LanceDB schema', { error });
             return {
                 tables: [],
-                version: 'unknown',
-                lastMigration: undefined,
+                version: 'unknown', lastMigration: undefined,
             };
         }
     }
@@ -408,10 +404,9 @@ export class LanceDBAdapter {
             // Create initial sample data with the schema
             const sampleData = [
                 {
-                    id: 'sample',
-                    [schema.vectorColumn || 'vector']: new Array(schema.dimensions || 384).fill(0.1),
+                    id: 'sample', [schema.vectorColumn || 'vector']: new Array(schema.dimensions || 384).fill(0.1),
                     ...Object.keys(schema.columns).reduce((acc, col) => {
-                        acc[col] = col === 'text' ? 'sample text' : 'sample value';
+                        acc[col] = col === 'text' ? ' sample text' : ' sample value';
                         return acc;
                     }, {}),
                 },
@@ -423,8 +418,7 @@ export class LanceDBAdapter {
                 correlationId,
                 tableName,
                 schema: schema.columns,
-                vectorColumn: schema.vectorColumn || 'vector',
-                dimensions: schema.dimensions || 384,
+                vectorColumn: schema.vectorColumn || 'vector', dimensions: schema.dimensions || 384,
                 embeddingModel: embeddingFunction?.model || 'default',
             });
         }
@@ -529,8 +523,7 @@ export class LanceDBAdapter {
                     ? Object.keys(filteredResults[0] || {})
                     : [],
                 metadata: {
-                    distanceType: options.distanceType || 'l2',
-                    queryVector: queryVector.slice(0, 10), // First 10 dimensions for logging
+                    distanceType: options.distanceType || 'l2', queryVector: queryVector.slice(0, 10), // First 10 dimensions for logging
                     vectorDimensions: queryVector.length,
                 },
             };
@@ -578,9 +571,7 @@ export class LanceDBAdapter {
             logger.info('Vector index created successfully', {
                 correlationId,
                 tableName,
-                column: options.column || 'vector',
-                indexType: options.indexType || 'default',
-                metric: options.metric || 'L2',
+                column: options.column || 'vector', indexType: options.indexType || 'default', metric: options.metric || 'L2',
             });
         }
         catch (error) {
@@ -808,7 +799,7 @@ export class LanceDBAdapter {
         try {
             const table = await this.database?.openTable(tableName);
             if (!table) {
-                throw new Error(`Failed to open table: ${tableName}`);
+                throw new Error(`Failed to open table:${tableName}`);
             }
             let query = table.vectorSearch([...vector]);
             if (options?.limit) {
@@ -839,7 +830,7 @@ export class LanceDBAdapter {
                 tableName,
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new QueryError(`Vector search failed: ${error instanceof Error ? error.message : String(error)}`, {
+            throw new QueryError(`Vector search failed:${error instanceof Error ? error.message : String(error)}`, {
                 query: `VECTOR_SEARCH ${tableName}`,
                 params: { vector, options },
             });
@@ -854,7 +845,7 @@ export class LanceDBAdapter {
             try {
                 const openedTable = await this.database?.openTable(tableName);
                 if (!openedTable) {
-                    throw new Error(`Failed to open table: ${tableName}`);
+                    throw new Error(`Failed to open table:${tableName}`);
                 }
                 table = openedTable;
             }
@@ -870,7 +861,7 @@ export class LanceDBAdapter {
                     data: sampleData,
                 });
                 if (!createdTable) {
-                    throw new Error(`Failed to create table: ${tableName}`);
+                    throw new Error(`Failed to create table:${tableName}`);
                 }
                 table = createdTable;
             }
@@ -890,7 +881,7 @@ export class LanceDBAdapter {
                 tableName,
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new QueryError(`Vector insertion failed: ${error instanceof Error ? error.message : String(error)}`, {
+            throw new QueryError(`Vector insertion failed:${error instanceof Error ? error.message : String(error)}`, {
                 query: `INSERT_VECTORS ${tableName}`,
                 params: { vectors },
             });
@@ -907,7 +898,7 @@ export class LanceDBAdapter {
                 correlationId,
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new ConnectionError(`Connection test failed: ${error instanceof Error ? error.message : String(error)}`, correlationId, error instanceof Error ? error : undefined);
+            throw new ConnectionError(`Connection test failed:${error instanceof Error ? error.message : String(error)}`, correlationId, error instanceof Error ? error : undefined);
         }
     }
     async parseLanceDBQuery(sql) {
@@ -919,7 +910,7 @@ export class LanceDBAdapter {
                 table_name: name,
             }));
         }
-        if (sqlUpper.startsWith('SELECT') && sqlUpper.includes('FROM')) {
+        if (sqlUpper.startsWith('SELECT') && sqlUpper.includes(' FROM')) {
             // Extract table name from SELECT * FROM tableName
             const tableMatch = sql.match(/from\s+(\w+)/i);
             if (tableMatch) {
@@ -933,7 +924,7 @@ export class LanceDBAdapter {
                 }
             }
         }
-        // Default: return empty result
+        // Default:return empty result
         return [];
     }
     async executeWithRetry(operation, correlationId, sql, params) {
@@ -967,7 +958,7 @@ export class LanceDBAdapter {
                 await this.sleep(delay);
             }
         }
-        throw new QueryError(`Operation failed after ${retryPolicy.maxRetries} retries: ${lastError?.message}`, {
+        throw new QueryError(`Operation failed after ${retryPolicy.maxRetries} retries:${lastError?.message}`, {
             query: sql,
             params,
             correlationId,
@@ -990,12 +981,9 @@ export class LanceDBAdapter {
     async createMigrationsTable() {
         try {
             await this.database?.createTable({
-                name: '_migrations',
-                data: [
+                name: '_migrations', data: [
                     {
-                        version: 'placeholder',
-                        name: 'placeholder',
-                        applied_at: new Date().toISOString(),
+                        version: 'placeholder', name: 'placeholder', applied_at: new Date().toISOString(),
                     },
                 ],
             });

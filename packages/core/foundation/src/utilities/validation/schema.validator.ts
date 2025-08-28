@@ -253,7 +253,7 @@ export class JsonSchemaManager {
 		if (!isValid) {
 			const errors = schemaEntry.validator.errors?.map((err) => {
 				const error = err as unknown as UnknownRecord;
-				return `${error['instancePath'] || error[' schemaPath'] || "root"}:${error[message] || "Unknown error"}`;
+				return `${error['instancePath'] || error['schemaPath'] || "root"}: ${error.message || "Unknown error"}`;
 }) || ["Unknown validation error"];
 
 			return { isValid:false, errors};

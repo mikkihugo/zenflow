@@ -49,6 +49,12 @@ export interface EventMetrics {
   activeModules:number;
   peakEventsPerSecond:number;
   systemHealth:'healthy' | 'degraded' | 'critical';
+  // Base EventBus compatibility
+  eventCount:number;
+  eventTypes:Record<string, number>;
+  avgProcessingTime:number;
+  errorCount:number;
+  listenerCount:number;
 }
 
 export interface ModuleRegistration {
@@ -76,7 +82,13 @@ export class DynamicEventRegistry extends EventBus {
     errorRate:0,
     activeModules:0,
     peakEventsPerSecond:0,
-    systemHealth: 'healthy'
+    systemHealth: 'healthy',
+    // Base EventBus compatibility
+    eventCount: 0,
+    eventTypes: {},
+    avgProcessingTime: 0,
+    errorCount: 0,
+    listenerCount: 0
   };
   private metricsHistory: Array<{ timestamp: Date; metrics: EventMetrics }> = [];
   private eventBuffer:EventFlow[] = [];
@@ -246,6 +258,12 @@ export class DynamicEventRegistry extends EventBus {
       flow => now.getTime() - flow.timestamp.getTime() < 60000
     );
 
+    // Calculate event type distribution
+    const eventTypes: Record<string, number> = {};
+    for (const flow of this.eventBuffer) {
+      eventTypes[flow.eventName] = (eventTypes[flow.eventName] || 0) + 1;
+    }
+    
     this.eventMetrics = {
       totalEvents:this.eventBuffer.length,
       eventsPerSecond:lastMinuteFlows.length / 60,
@@ -253,7 +271,13 @@ export class DynamicEventRegistry extends EventBus {
       errorRate:this.calculateErrorRate(lastMinuteFlows),
       activeModules:this.activeModules.size,
       peakEventsPerSecond:Math.max(this.eventMetrics.peakEventsPerSecond, lastMinuteFlows.length / 60),
-      systemHealth:this.calculateSystemHealth()
+      systemHealth:this.calculateSystemHealth(),
+      // Base EventBus compatibility
+      eventCount: this.eventBuffer.length,
+      eventTypes,
+      avgProcessingTime: this.calculateAverageLatency(lastMinuteFlows),
+      errorCount: lastMinuteFlows.filter(f => !f.success).length,
+      listenerCount: this.listenerCount
 };
 
     // Store metrics history (keep last 100 entries)
@@ -354,7 +378,7 @@ export class DynamicEventRegistry extends EventBus {
       catalog[eventName] = {
         type:EVENT_CATALOG[eventName],
         flows:flows.length,
-        lastSeen:flows.length > 0 ? flows[flows.length - 1].timestamp : undefined,
+        lastSeen:flows.length > 0 ? flows[flows.length - 1]?.timestamp : undefined,
         activeModules:modules.map(m => m.name)
 };
 }

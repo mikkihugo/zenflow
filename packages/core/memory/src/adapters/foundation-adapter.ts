@@ -49,7 +49,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
       // TODO:recordMetric('memory_backend_initialized', 1, { storageType:config.storageType});
 } catch (error) {
       this.logger.error('Failed to initialize Foundation backend: ', error);
-'      // TODO:recordMetric('memory_backend_init_errors', 1);
+      // TODO: recordMetric('memory_backend_init_errors', 1);
       throw error;
 }
 }
@@ -57,7 +57,8 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
   override async store(
     key:string,
     value:JSONValue,
-    namespace = 'default')  ):Promise<void> {
+    namespace = 'default'
+  ):Promise<void> {
     await this.ensureInitialized();
 
     const finalKey = `${namespace}:${key}`;
@@ -90,7 +91,8 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
 
   override async retrieve<T = JSONValue>(
     key:string,
-    namespace = 'default')  ):Promise<T | null> {
+    namespace = 'default'
+  ):Promise<T | null> {
     await this.ensureInitialized();
 
     const finalKey = `${namespace}:${key}`;

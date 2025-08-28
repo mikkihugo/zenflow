@@ -12,8 +12,8 @@ const logger = getLogger('event-registry-initializer');
 export interface ActiveModule {
   id:string;
   name:string;
-  type:'sparc' | ' brain' | ' dspy' | 'teamwork' | 'llm' | 'git' | ' system' | ' safe' | 'claude-code';
-  status:'active' | 'idle' | ' error' | 'disconnected';
+  type:'sparc' | 'brain' | 'dspy' | 'teamwork' | 'llm' | 'git' | 'system' | ' safe' | 'claude-code';
+  status:'active' | 'idle' | 'error' | 'disconnected';
   lastSeen:Date;
   eventCount:number;
   events:string[];

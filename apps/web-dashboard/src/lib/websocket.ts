@@ -3,12 +3,16 @@
  * Connects to claude-code-zen-server Socket.IO for live data streaming
  */
 
-import { getLogger} from "@claude-zen/foundation";
 import { toast} from "@zerodevx/svelte-toast";
 import { io, type Socket} from "socket.io-client";
 import { type Writable, writable} from "svelte/store";
 
-const logger = getLogger("websocket");
+// Simple browser logger
+const logger = {
+  info: (msg: string, ...args: unknown[]) => console.log(`[websocket] ${msg}`, ...args),
+  warn: (msg: string, ...args: unknown[]) => console.warn(`[websocket] ${msg}`, ...args),
+  error: (msg: string, ...args: unknown[]) => console.error(`[websocket] ${msg}`, ...args)
+};
 
 interface WebSocketData {
 	event:string;

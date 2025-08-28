@@ -3,11 +3,12 @@
  * Connects to real API endpoints instead of using mock data
  */
 
-import { getLogger} from "@claude-zen/foundation";
-
-// Uses global RequestInit type from eslint globals
-
-const logger = getLogger("api-client");
+// Simple browser logger for web dashboard
+const logger = {
+  info: (msg: string, ...args: unknown[]) => console.log(`[api-client] ${msg}`, ...args),
+  warn: (msg: string, ...args: unknown[]) => console.warn(`[api-client] ${msg}`, ...args),
+  error: (msg: string, ...args: unknown[]) => console.error(`[api-client] ${msg}`, ...args)
+};
 const API_BASE_URL = "http://localhost:3000/api";
 
 interface ApiResponse<T> {

@@ -5,18 +5,18 @@
  * These represent standard ways of organizing data and behavior that are
  * domain-agnostic and universally applicable.
  *
- * SCOPE: Structural patterns that are NOT domain-specific
+ * SCOPE:Structural patterns that are NOT domain-specific
  *
  * @package @claude-zen/foundation
  * @since 2.1.0
  * @example
- * ```typescript
- * import type { Timestamped, Versioned, Paginated } from '@claude-zen/foundation/types';
+ * ```typescript`
+ * import type { Timestamped, Versioned, Paginated} from '@claude-zen/foundation/types';
  *
  * interface User extends Timestamped, Versioned {
- *   id: string;
- *   email: string;
- * }
+ *   id:string;
+ *   email:string;
+ *}
  *
  * type UserList = Paginated<User>;
  * ```

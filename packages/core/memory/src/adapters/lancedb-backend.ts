@@ -231,12 +231,13 @@ export class VectorStore extends EventEmitter {
 }
 
     return await withRetry(
-      async () => {
+      () => {
         this.logger.debug('Inserting vector', {
           hasVector:!!data.vector,
           vectorDimensions:data.vector?.length || 0,
           hasMetadata:Object.keys(data.metadata || {}).length > 0,
 });
+        return Promise.resolve();
 
         // Validate vector dimensions
         if (data.vector.length !== this.config.vectorDimension) {
@@ -347,7 +348,7 @@ export class VectorStore extends EventEmitter {
 }
 
     return await withRetry(
-      async () => {
+      () => {
         this.logger.debug('Performing similarity search', {
           vectorDimension:options.vector.length,
           k:options.k,

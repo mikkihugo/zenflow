@@ -6,7 +6,7 @@
 -->
 
 <script lang="ts">
-
+  import SystemCapabilityDashboard from '$lib/components/SystemCapabilityDashboard.svelte';
 </script>
 
 <svelte:head>

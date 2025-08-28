@@ -26,9 +26,9 @@ async function _fetchNpmDownloads(packageName:string): Promise<number> {
     // Use a range from 2020 to current year + 5 years to ensure it works forever
     const currentYear = new Date().getFullYear()
     const endYear = currentYear + 5
-    const response = await fetch(`https://api.npmjs.org/downloads/range/2020-01-01:${endYear}-12-31/${packageName}`)`
+    const response = await fetch(`https://api.npmjs.org/downloads/range/2020-01-01:${endYear}-12-31/${packageName}`)
     if (!response.ok) {
-      console.warn(`Failed to fetch npm downloads for ${packageName}:$response.status`)`
+      console.warn(`Failed to fetch npm downloads for ${packageName}: ${response.status}`);
       return 0
 }
     const data:NpmDownloadsRange = await response.json()

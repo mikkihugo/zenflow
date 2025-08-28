@@ -39,20 +39,18 @@ const logger = getLogger("ErrorSystem");
  * @class BaseClaudeZenError
  * @augments Error
  * @example
- * ```typescript
+ * ```typescript`
  * class CustomError extends BaseClaudeZenError {
- *   constructor(message: string) {
- *     super(message, 'Custom', 'medium', {
- *       operation: 'customOperation',
- *       metadata: { customData: 'value' }
- *     });
+ *   constructor(message:string) {
+ *     super(message, 'Custom',    'medium', {
+ *       operation: 'customOperation', *       metadata:{ customData: 'value'}
+ *});
  *     this.name = 'CustomError';
- *   }
- * }
+ *}
+ *}
  *
  * const error = new CustomError('Something went wrong');
- * console.log(error.severity); // 'medium'
- * console.log(error.recoverable); // true
+ * console.log(error.severity); // 'medium') * console.log(error.recoverable); // true
  * ```
  */
 export class BaseClaudeZenError extends Error {
@@ -103,7 +101,7 @@ export class BaseClaudeZenError extends Error {
      *
      * @returns JSON representation of the error.
      * @example
-     * ```typescript
+     * ```typescript`
      * const error = new CustomError('Test error');
      * const json = error.toJSON();
      * console.log(JSON.stringify(json, null, 2));
@@ -126,12 +124,12 @@ export class BaseClaudeZenError extends Error {
 // ===============================
 // FACT errors moved to @claude-zen/intelligence package where FACT integration lives
 // FACT errors moved to @claude-zen/intelligence package
-// export { FACTError, FACTStorageError, FACTGatheringError, FACTProcessingError } from '@claude-zen/intelligence';
+// export { FACTError, FACTStorageError, FACTGatheringError, FACTProcessingError} from '@claude-zen/intelligence';
 // ===============================
 // RAG System Errors - Domain-Specific (Moved to @claude-zen/intelligence)
 // ===============================
 // RAG errors moved to @claude-zen/intelligence package where RAG integration lives
-// export { RAGError, RAGVectorError, RAGEmbeddingError, RAGRetrievalError } from '@claude-zen/intelligence';
+// export { RAGError, RAGVectorError, RAGEmbeddingError, RAGRetrievalError} from '@claude-zen/intelligence';
 // ===============================
 // Swarm Coordination Errors
 // ===============================
@@ -141,12 +139,9 @@ export class BaseClaudeZenError extends Error {
  * @class SwarmError
  * @augments BaseClaudeZenError
  * @example
- * ```typescript
+ * ```typescript`
  * throw new SwarmError(
- *   'Swarm coordination failed',
- *   'swarm-789',
- *   'high',
- *   { operation: 'coordination', metadata: { agentCount: 5 } }
+ *   'Swarm coordination failed', *   'swarm-789', *   'high', *   { operation: 'coordination', metadata:{ agentCount: 5}}
  * );
  * ```
  */
@@ -176,13 +171,9 @@ export class SwarmError extends BaseClaudeZenError {
  * @class AgentError
  * @augments BaseClaudeZenError
  * @example
- * ```typescript
+ * ```typescript`
  * throw new AgentError(
- *   'Agent execution failed',
- *   'agent-123',
- *   'researcher',
- *   'high'
- * );
+ *   'Agent execution failed', *   'agent-123', *   'researcher', *   'high') * );
  * ```
  */
 export class AgentError extends BaseClaudeZenError {
@@ -193,7 +184,7 @@ export class AgentError extends BaseClaudeZenError {
      *
      * @param message - Error message.
      * @param agentId - Unique identifier of the agent (optional).
-     * @param agentType - Type of agent (e.g., 'researcher', 'coder') (optional).
+     * @param agentType - Type of agent (e.g., 'researcher',    'coder') (optional).
      * @param severity - Error severity level (defaults to 'medium').
      */
     constructor(message, agentId, agentType, severity = "medium") {
@@ -281,8 +272,8 @@ export class NotFoundError extends BaseClaudeZenError {
 // Storage and Database Errors - Foundation's Public API Only
 // ===============================
 // Foundation's public storage error API (database package is private/internal)
-// REMOVED: Circular import - these errors should be defined locally
-// export { StorageError, DatabaseConnectionError } from '@claude-zen/foundation';
+// REMOVED:Circular import - these errors should be defined locally
+// export { StorageError, DatabaseConnectionError} from '@claude-zen/foundation';
 // ===============================
 // Error Classification Utilities
 // ===============================
@@ -292,18 +283,18 @@ export class NotFoundError extends BaseClaudeZenError {
  * @param error - Error to check for recoverability.
  * @returns True if the error is recoverable, false otherwise.
  * @example
- * ```typescript
+ * ```typescript`
  * try {
  *   await someOperation();
- * } catch (error) {
+ *} catch (error) {
  *   if (isRecoverableError(error)) {
  *     // Attempt recovery or retry
  *     console.log('Error is recoverable, retrying...');
- *   } else {
+ *} else {
  *     // Log and fail fast
- *     console.error('Fatal error, cannot recover:', error);
- *   }
- * }
+ *     console.error('Fatal error, cannot recover: ', error);
+' *}
+ *}
  * ```
  */
 export function isRecoverableError(error) {
@@ -320,19 +311,19 @@ export function isRecoverableError(error) {
  * Gets the severity level of an error for prioritization and handling.
  *
  * @param error - Error to assess severity for.
- * @returns Severity level ('low', 'medium', 'high', or 'critical').
+ * @returns Severity level ('low',    'medium',    'high', or ' critical').
  * @example
- * ```typescript
+ * ```typescript`
  * try {
  *   await networkOperation();
- * } catch (error) {
+ *} catch (error) {
  *   const severity = getErrorSeverity(error);
  *   if (severity === 'critical') {
  *     await initiateEmergencyShutdown();
- *   } else if (severity === 'high') {
+ *} else if (severity === 'high') {
  *     await escalateAlert(error);
- *   }
- * }
+ *}
+ *}
  * ```
  */
 export function getErrorSeverity(error) {
@@ -356,7 +347,7 @@ export function getErrorSeverity(error) {
  * @param maxRetries - Maximum number of retries allowed (defaults to 3).
  * @returns True if the operation should be retried, false otherwise.
  * @example
- * ```typescript
+ * ```typescript`
  * let attempt = 0;
  * const maxRetries = 3;
  *
@@ -364,14 +355,14 @@ export function getErrorSeverity(error) {
  *   try {
  *     const result = await unreliableOperation();
  *     return result;
- *   } catch (error) {
+ *} catch (error) {
  *     if (!shouldRetry(error, attempt, maxRetries)) {
  *       throw error; // Give up
- *     }
+ *}
  *     attempt++;
  *     await delay(1000 * attempt); // Backoff
- *   }
- * }
+ *}
+ *}
  * ```
  */
 export function shouldRetry(error, attempt, maxRetries = 3) {

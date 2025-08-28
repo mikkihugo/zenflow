@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-/* eslint-disable no-console */
+ 
 /**
  * @fileoverview Claude Code Zen Auth Commands
  *
@@ -99,9 +99,9 @@ const TOKEN_FILENAME = 'copilot-token.json';
  * ```typescript`
  * const authConfig = await getAuthConfig();
  * if (authConfig.useProjectConfig) {
- *   console.log('Using project-local authentication storage');
+ *   logger.info('Using project-local authentication storage');
  *} else {
- *   console.log('Using user-global authentication storage');
+ *   logger.info('Using user-global authentication storage');
  *}
  * ```
  *
@@ -274,7 +274,7 @@ async function saveToken(token:string): Promise<void> {
       'This token does not expire, but can be revoked from GitHub settings',};
 
   await fs.writeFile(tokenPath, JSON.stringify(tokenData, null, 2));
-  console.log(`✅ Token saved to:${tokenPath}`);
+  logger.info(`✅ Token saved to:${tokenPath}`);
   logger.info(`GitHub Copilot token saved successfully to ${tokenPath}`);
 }
 
@@ -339,11 +339,11 @@ export async function authLogin():Promise<void> {
     const deviceFlow = await initiateDeviceFlow();
 
     // Step 2:Display user code and instructions
-    console.log('\n🔐 GitHub Copilot Authentication');
-    console.log('═'.repeat(50));
-    console.log(`\n📋 Your verification code:${deviceFlow.user_code}`);
-    console.log(`🌐 Visit:${deviceFlow.verification_uri}`);
-    console.log(
+    logger.info('\n🔐 GitHub Copilot Authentication');
+    logger.info('═'.repeat(50));
+    logger.info(`\n📋 Your verification code:${deviceFlow.user_code}`);
+    logger.info(`🌐 Visit:${deviceFlow.verification_uri}`);
+    logger.info(
       `⏰ Code expires in ${Math.floor(deviceFlow.expires_in / 60)} minutes\n`
     );
 
@@ -365,8 +365,8 @@ export async function authLogin():Promise<void> {
     // Step 5:Save token
     await saveToken(tokenResponse.access_token);
 
-    console.log('\n✅ Authentication successful!');
-    console.log('You can now use GitHub Copilot with Claude Code Zen.');
+    logger.info('\n✅ Authentication successful!');
+    logger.info('You can now use GitHub Copilot with Claude Code Zen.');
 } catch (error) {
     logger.error('Authentication failed: ', error);
     process.exit(1);
@@ -380,17 +380,17 @@ export async function authStatus():Promise<void> {
 
     try {
       const tokenData = JSON.parse(await fs.readFile(tokenPath, 'utf8'));
-      console.log('\n🔐 Authentication Status');
-      console.log('═'.repeat(30));
-      console.log('✅ Authenticated: Yes');
-      console.log(`📅 Token created: ${tokenData.created_at}`);
-      console.log(`📍 Token location: ${tokenPath}`);
-      console.log(`🔑 Source: ${tokenData.source}`);
+      logger.info('\n🔐 Authentication Status');
+      logger.info('═'.repeat(30));
+      logger.info('✅ Authenticated: Yes');
+      logger.info(`📅 Token created: ${tokenData.created_at}`);
+      logger.info(`📍 Token location: ${tokenPath}`);
+      logger.info(`🔑 Source: ${tokenData.source}`);
 } catch {
-      console.log('\n🔐 Authentication Status');
-      console.log('═'.repeat(30));
-      console.log('❌ Authenticated: No');
-      console.log('💡 Run `claude-zen auth login` to authenticate');
+      logger.info('\n🔐 Authentication Status');
+      logger.info('═'.repeat(30));
+      logger.info('❌ Authenticated: No');
+      logger.info('💡 Run `claude-zen auth login` to authenticate');
 }
 } catch (error) {
     logger.error('Failed to check authentication status: ', error);
@@ -405,11 +405,11 @@ export async function authLogout():Promise<void> {
 
     try {
       await fs.unlink(tokenPath);
-      console.log('\n✅ Successfully logged out');
-      console.log('Token has been removed from local storage.');
+      logger.info('\n✅ Successfully logged out');
+      logger.info('Token has been removed from local storage.');
 } catch {
-      console.log('\n💡 No authentication token found');
-      console.log('You are already logged out.');
+      logger.info('\n💡 No authentication token found');
+      logger.info('You are already logged out.');
 }
 } catch (error) {
     logger.error('Failed to logout: ', error);
@@ -433,7 +433,7 @@ async function main() {
       await authLogout();
       break;
     default:
-      console.log(`
+      logger.info(`
 Claude Code Zen Authentication
 
 Usage:claude-zen auth <command>

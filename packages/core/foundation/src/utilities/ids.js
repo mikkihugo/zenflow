@@ -5,16 +5,16 @@
  * All ID generation functions unified in one location.
  *
  * @example UUID Generation
- * ```typescript
- * import { generateUUID, isUUID } from '@claude-zen/foundation/utilities/ids';
+ * ```typescript`
+ * import { generateUUID, isUUID} from '@claude-zen/foundation/utilities/ids';
  *
  * const id = generateUUID();
  * console.log(isUUID(id)); // true
  * ```
  *
  * @example Short ID Generation
- * ```typescript
- * import { generateShortId, generateCustomId } from '@claude-zen/foundation/utilities/ids';
+ * ```typescript`
+ * import { generateShortId, generateCustomId} from '@claude-zen/foundation/utilities/ids';
  *
  * const shortId = generateShortId(); // nanoid
  * const customId = generateCustomId(16); // hex-based
@@ -31,7 +31,7 @@ import { customAlphabet, nanoid } from "nanoid";
  *
  * @returns UUID v4 string
  * @example
- * ```typescript
+ * ```typescript`
  * const id = generateUUID(); // "f47ac10b-58cc-4372-a567-0e02b2c3d479"
  * ```
  */
@@ -45,7 +45,7 @@ export function generateUUID() {
  * @param value - String to validate
  * @returns True if valid UUID format
  * @example
- * ```typescript
+ * ```typescript`
  * console.log(isUUID("f47ac10b-58cc-4372-a567-0e02b2c3d479")); // true
  * console.log(isUUID("not-a-uuid")); // false
  * ```
@@ -61,10 +61,10 @@ export function isUUID(value) {
  * Generate a URL-safe short ID using nanoid.
  * Default 21 characters, cryptographically secure.
  *
- * @param size - Optional size (default: 21)
+ * @param size - Optional size (default:21)
  * @returns URL-safe short ID
  * @example
- * ```typescript
+ * ```typescript`
  * const id = generateShortId(); // "V1StGXR8_Z5jdHi6B-myT"
  * const shortId = generateShortId(10); // "V1StGXR8_Z"
  * ```
@@ -80,7 +80,7 @@ export function generateShortId(size) {
  * @param size - Default size for generated IDs
  * @returns Custom ID generator function
  * @example
- * ```typescript
+ * ```typescript`
  * const generateNumericId = createCustomGenerator('0123456789', 8);
  * const id = generateNumericId(); // "84751249"
  * ```
@@ -95,10 +95,10 @@ export function createCustomGenerator(alphabet, size = 21) {
  * Generate a custom hex-based ID.
  * Uses crypto.randomBytes for security.
  *
- * @param bytes - Number of random bytes (default: 16)
+ * @param bytes - Number of random bytes (default:16)
  * @returns Hex string ID
  * @example
- * ```typescript
+ * ```typescript`
  * const id = generateCustomId(); // "a1b2c3d4e5f6789012345678"
  * const shortId = generateCustomId(8); // "a1b2c3d4e5f6"
  * ```
@@ -111,10 +111,10 @@ export function generateCustomId(bytes = 16) {
  * Combines timestamp with random bytes for uniqueness.
  *
  * @param prefix - Optional prefix string
- * @param randomBytes - Number of random bytes to append (default: 4)
+ * @param randomBytes - Number of random bytes to append (default:4)
  * @returns Timestamped ID
  * @example
- * ```typescript
+ * ```typescript`
  * const id = generateTimestampId(); // "1640995200000-a1b2c3d4"
  * const prefixedId = generateTimestampId("user"); // "user-1640995200000-a1b2c3d4"
  * ```
@@ -133,7 +133,7 @@ export function generateTimestampId(prefix, randomBytesCount = 4) {
  *
  * @returns Secure session ID
  * @example
- * ```typescript
+ * ```typescript`
  * const sessionId = generateSessionId();
  * // "a1b2c3d4e5f67890123456789abcdef01234567890abcdef1234567890abcdef"
  * ```
@@ -146,10 +146,10 @@ export function generateSessionId() {
  * Combines prefix with secure random data.
  *
  * @param prefix - API key prefix (e.g., "sk", "pk")
- * @param bytes - Random bytes for key data (default: 24)
+ * @param bytes - Random bytes for key data (default:24)
  * @returns Formatted API key
  * @example
- * ```typescript
+ * ```typescript`
  * const apiKey = generateApiKey("sk"); // "sk_1a2b3c4d5e6f..."
  * const publicKey = generateApiKey("pk", 16); // "pk_1a2b3c4d..."
  * ```

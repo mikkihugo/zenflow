@@ -605,9 +605,15 @@
  *
  * @packageDocumentation
  */
-export { BehavioralIntelligence, BrainCoordinator, BrainCoordinator as BrainSystem, BrainCoordinator as default, createNeuralNetwork, detectGPUCapabilities, initializeGPUAcceleration, NeuralBridge, predictWithNetwork, trainNeuralNetwork} from './main';
-export type { CacheEntry, ModelStatus, NeuralBackendConfig, NeuralEmbeddingRequest, NeuralEmbeddingResult} from './smart-neural-coordinator';
-export { SmartNeuralCoordinator} from './smart-neural-coordinator';
+export { createEventDrivenBrain, EventDrivenBrain, EventDrivenBrain as default, } from './brain-event-driven.js';
+export type { EventDrivenBrainConfig, PromptOptimizationRequest, PromptOptimizationResult, ComplexityEstimationRequest, ComplexityAnalysisResult, PerformancePredictionRequest, PerformancePredictionResult, AutonomousCoordinationRequest, AutonomousCoordinationResult, BehavioralAnalysisRequest, BehavioralAnalysisResult, NeuralProcessingRequest, NeuralProcessingResult, BrainServiceEvents } from './brain-event-driven.js';
+/**
+ * @deprecated Use EventDrivenBrain instead for event-based brain coordination
+ */
+export { BrainCoordinator, createBrainCoordinator, type BrainConfig as PureBrainConfig, type IntelligenceEvents, } from './brain-coordinator-pure';
+export { BehavioralIntelligence, BrainCoordinator as BrainSystem, BrainCoordinator as default, createNeuralNetwork, detectGPUCapabilities, initializeGPUAcceleration, NeuralBridge, predictWithNetwork, trainNeuralNetwork } from './main';
+export type { CacheEntry, ModelStatus, NeuralBackendConfig, NeuralEmbeddingRequest, NeuralEmbeddingResult, } from './smart-neural-coordinator';
+export { SmartNeuralCoordinator } from './smart-neural-coordinator';
 /**
  * 📊 AgentPerformancePredictor - Behavioral prediction and optimization
  *
@@ -617,7 +623,7 @@ export { SmartNeuralCoordinator} from './smart-neural-coordinator';
  * - Agent-task matching optimization
  * - Continuous performance monitoring
  */
-export { AgentPerformancePredictor} from './agent-performance-predictor';
+export { AgentPerformancePredictor } from './agent-performance-predictor';
 /**
  * 🏛️ AutonomousCoordinator - Self-governing system management
  *
@@ -629,7 +635,7 @@ export { AgentPerformancePredictor} from './agent-performance-predictor';
  *
  * Note:Advanced system coordination - use with caution in production
  */
-export { AutonomousCoordinator} from './autonomous-coordinator';
+export { AutonomousCoordinator } from './autonomous-coordinator';
 /**
  * 🤖 AutonomousOptimizationEngine - Intelligently chooses optimization methods
  *
@@ -645,16 +651,16 @@ export { AutonomousCoordinator} from './autonomous-coordinator';
  * - Real-time adaptation to changing patterns
  * - Continuous learning from optimization results
  */
-export { AutonomousOptimizationEngine} from './autonomous-optimization-engine';
-export type { AgentBehavioralProfile, AgentExecutionData, BehavioralPrediction, TaskComplexityAnalysis} from './behavioral-intelligence';
-export type { BrainConfig, BrainMetrics, BrainStatus, OptimizationStrategy, PromptOptimizationRequest, PromptOptimizationResult} from './brain-coordinator';
-export type { BrainJsConfig, BrainJsNetworkConfig, BrainJsNetworkInstance, BrainJsPredictionResult, BrainJsTrainingData, BrainJsTrainingOptions} from './brain-js-bridge';
-export { DSPyLLMBridge} from './coordination/dspy-llm-bridge';
-export { RetrainingMonitor} from './coordination/retraining-monitor';
-export { createMeetingIntelligence, MeetingIntelligence, type MeetingLearningOutcome, type MeetingStructureParams, type MeetingStructureRecommendation, type NeuralParticipantProfile, type ParticipantSelectionRecommendation, type ParticipantSelectionRequest} from './meeting-intelligence';
-export { AutoencoderPreset, CNNPreset, GraphNeuralNetwork, LSTMPreset, NeuralModelPresets, TransformerModel, VAEModel} from './models-dir';
-export type { NeuralConfig, NeuralNetwork, PredictionResult, TrainingData} from './neural-bridge';
-export { NeuralBridge as IntelligenceBridge} from './neural-bridge';
+export { AutonomousOptimizationEngine } from './autonomous-optimization-engine';
+export type { AgentBehavioralProfile, AgentExecutionData, BehavioralPrediction, TaskComplexityAnalysis, } from './behavioral-intelligence';
+export type { BrainConfig, BrainMetrics, BrainStatus, OptimizationStrategy, PromptOptimizationRequest, PromptOptimizationResult, } from './brain-coordinator';
+export type { BrainJsConfig, BrainJsNetworkConfig, BrainJsNetworkInstance, BrainJsPredictionResult, BrainJsTrainingData, BrainJsTrainingOptions, } from './brain-js-bridge';
+export { DSPyLLMBridge } from './coordination/dspy-llm-bridge';
+export { RetrainingMonitor } from './coordination/retraining-monitor';
+export { createMeetingIntelligence, MeetingIntelligence, type MeetingLearningOutcome, type MeetingStructureParams, type MeetingStructureRecommendation, type NeuralParticipantProfile, type ParticipantSelectionRecommendation, type ParticipantSelectionRequest, } from './meeting-intelligence';
+export { AutoencoderPreset, CNNPreset, GraphNeuralNetwork, LSTMPreset, NeuralModelPresets, TransformerModel, VAEModel } from './models-dir';
+export type { NeuralConfig, NeuralNetwork, PredictionResult, TrainingData, } from './neural-bridge';
+export { NeuralBridge as IntelligenceBridge } from './neural-bridge';
 /**
  * 🧠 SmartPromptOptimizer - ML-powered prompt enhancement
  *
@@ -664,7 +670,7 @@ export { NeuralBridge as IntelligenceBridge} from './neural-bridge';
  * - Domain-specific optimization strategies
  * - Performance tracking and improvement
  */
-export { SmartPromptOptimizer} from './smart-prompt-optimizer';
+export { SmartPromptOptimizer } from './smart-prompt-optimizer';
 /**
  * 🎯 TaskComplexityEstimator - ML-based automatic task complexity analysis
  *
@@ -680,7 +686,7 @@ export { SmartPromptOptimizer} from './smart-prompt-optimizer';
  * - Duration and difficulty predictions
  * - Continuous learning and model updates
  */
-export { TaskComplexityEstimator} from './task-complexity-estimator';
+export { TaskComplexityEstimator } from './task-complexity-estimator';
 /**
  * The Brain Package implements a comprehensive autonomous decision-making pipeline:
  *
@@ -705,48 +711,48 @@ export { TaskComplexityEstimator} from './task-complexity-estimator';
  * This creates a fully autonomous system that "auto makes the best decisions
  * over time" through continuous learning and intelligent adaptation.
  */
-export type { CoordinationResult, CoordinationTask, DSPyLLMConfig, LLMBridgeOptions} from './coordination/dspy-llm-bridge';
-export type { MonitoringMetrics, RetrainingConfig, RetrainingResult, RetrainingTrigger} from './coordination/retraining-monitor';
-export type { ActivationFunction, AgentCapabilities, AgentMessage, AgentPerformance, AgentState, AgentStatus, AgentType, BrainCoordinationConfig, CognitivePattern, CollaborationStyle, CommunicationProtocol, CoordinationError, CoordinationTopology, DataFormat, DatasetType, HealthStatus, LayerConfig, LearningAbility, LearningConfiguration, LearningStrategy, LossFunction, MessagePayload, MessageType, MetricType, NetworkArchitecture, NeuralAgent, NeuralAgentResult, NeuralError, NeuralModelType, NeuralNetworkConfig, OptimizationConfig, OptimizerType, ReasoningStyle, ResourceUsage, SkillType, TrainingConfiguration, TrainingDataset, TrainingError, TrainingResult} from './types/index';
-export { isAgentMessage, isNeuralAgent, isNeuralNetworkConfig} from './types/index';
+export type { CoordinationResult, CoordinationTask, DSPyLLMConfig, LLMBridgeOptions, } from './coordination/dspy-llm-bridge';
+export type { MonitoringMetrics, RetrainingConfig, RetrainingResult, RetrainingTrigger, } from './coordination/retraining-monitor';
+export type { ActivationFunction, AgentCapabilities, AgentMessage, AgentPerformance, AgentState, AgentStatus, AgentType, BrainCoordinationConfig, CognitivePattern, CollaborationStyle, CommunicationProtocol, CoordinationError, CoordinationTopology, DataFormat, DatasetType, HealthStatus, LayerConfig, LearningAbility, LearningConfiguration, LearningStrategy, LossFunction, MessagePayload, MessageType, MetricType, NetworkArchitecture, NeuralAgent, NeuralAgentResult, NeuralError, NeuralModelType, NeuralNetworkConfig, OptimizationConfig, OptimizerType, ReasoningStyle, ResourceUsage, SkillType, TrainingConfiguration, TrainingDataset, TrainingError, TrainingResult, } from './types/index';
+export { isAgentMessage, isNeuralAgent, isNeuralNetworkConfig, } from './types/index';
 /**
  * Types for AgentPerformancePredictor - Behavioral prediction system
  */
-export type { PerformancePrediction} from './agent-performance-predictor';
+export type { PerformancePrediction } from './agent-performance-predictor';
 /**
  * Types for AutonomousCoordinator - System-wide autonomous management
  */
-export type { AutonomousDecision, SystemMetrics} from './autonomous-coordinator';
+export type { AutonomousDecision, SystemMetrics, } from './autonomous-coordinator';
 /**
  * Types for AutonomousOptimizationEngine - Intelligent optimization system
  */
-export type { OptimizationContext, OptimizationFeedback} from './autonomous-optimization-engine';
+export type { OptimizationContext, OptimizationFeedback, } from './autonomous-optimization-engine';
 /**
  * Types for SmartPromptOptimizer - ML-powered prompt optimization
  */
-export type { OptimizationPattern, SmartOptimizationResult} from './smart-prompt-optimizer';
+export type { OptimizationPattern, SmartOptimizationResult, } from './smart-prompt-optimizer';
 /**
  * Types for TaskComplexityEstimator - ML-based complexity analysis
  */
-export type { ComplexityEstimate, ComplexityPattern, TaskComplexityData} from './task-complexity-estimator';
+export type { ComplexityEstimate, ComplexityPattern, TaskComplexityData, } from './task-complexity-estimator';
 /**
  * Brain Package Information
  *
  * Comprehensive metadata about the brain package including
  * version details, capabilities, and neural features.
  */
-export declare const BRAIN_INFO:{
-    readonly version:"2.0.0";
-    readonly name:"@claude-zen/brain";
-    readonly description:"Autonomous AI decision-making system with neural intelligence and Rust/WASM acceleration";
-    readonly capabilities:readonly ["Autonomous decision-making and strategy selection", "Task complexity estimation with ML models", "Neural network coordination with FANN integration", "GPU acceleration for high-performance computing", "Behavioral intelligence and performance prediction", "Real-time adaptation and continuous learning", "Enterprise-grade security and multi-tenant isolation", "Foundation telemetry integration"];
-    readonly neuralArchitectures:readonly ["Feedforward Neural Networks", "Convolutional Neural Networks (CNN)", "Recurrent Neural Networks (RNN/LSTM)", "Transformer and Attention-based models", "Variational Autoencoders (VAE)", "Generative Adversarial Networks (GAN)", "Reinforcement Learning models", "Custom neural architectures"];
-    readonly acceleration:{
-        readonly rust:"High-performance Rust backend with WASM bindings";
-        readonly gpu:"CUDA, OpenCL, Metal, and WebGL support";
-        readonly cpu:"Multi-threaded processing with SIMD optimization";
-        readonly distributed:"Horizontal scaling across multiple nodes";
-};
+export declare const BRAIN_INFO: {
+    readonly version: "2.0.0";
+    readonly name: "@claude-zen/brain";
+    readonly description: "Autonomous AI decision-making system with neural intelligence and Rust/WASM acceleration";
+    readonly capabilities: readonly ["Autonomous decision-making and strategy selection", "Task complexity estimation with ML models", "Neural network coordination with FANN integration", "GPU acceleration for high-performance computing", "Behavioral intelligence and performance prediction", "Real-time adaptation and continuous learning", "Enterprise-grade security and multi-tenant isolation", "Foundation telemetry integration"];
+    readonly neuralArchitectures: readonly ["Feedforward Neural Networks", "Convolutional Neural Networks (CNN)", "Recurrent Neural Networks (RNN/LSTM)", "Transformer and Attention-based models", "Variational Autoencoders (VAE)", "Generative Adversarial Networks (GAN)", "Reinforcement Learning models", "Custom neural architectures"];
+    readonly acceleration: {
+        readonly rust: "High-performance Rust backend with WASM bindings";
+        readonly gpu: "CUDA, OpenCL, Metal, and WebGL support";
+        readonly cpu: "Multi-threaded processing with SIMD optimization";
+        readonly distributed: "Horizontal scaling across multiple nodes";
+    };
 };
 /**
  * Brain Package Documentation
@@ -863,37 +869,37 @@ export declare const BRAIN_INFO:{
  *
  * See the comprehensive examples above for detailed usage patterns and enterprise features.
  */
-export { NeuralOrchestrator, TaskComplexity, StorageStrategy} from './neural-orchestrator;;
-export type { NeuralData, NeuralResult, NeuralTask} from './neural-orchestrator';
-export declare function getBrainSystemAccess():Promise<any>;
-export declare function getBrainCoordinator(config?:any): Promise<any>;
-export declare function getSmartNeuralCoordinator(config?:any): Promise<any>;
-export declare function getNeuralOrchestrator(_config?:any): Promise<any>;
-export declare function getTaskComplexityEstimator(config?:any): Promise<any>;
-export declare function getAutonomousOptimizer(_config?:any): Promise<any>;
-export declare function getBehavioralIntelligence(_config?:any): Promise<any>;
-export declare function getNeuralBridge(_config?:any): Promise<any>;
-export declare const brainSystem:{
-    getAccess:typeof getBrainSystemAccess;
-    getCoordinator:typeof getBrainCoordinator;
-    getSmartCoordinator:typeof getSmartNeuralCoordinator;
-    getOrchestrator:typeof getNeuralOrchestrator;
-    getComplexityEstimator:typeof getTaskComplexityEstimator;
-    getAutonomousOptimizer:typeof getAutonomousOptimizer;
-    getBehavioralIntelligence:typeof getBehavioralIntelligence;
-    getNeuralBridge:typeof getNeuralBridge;
+export { NeuralOrchestrator, TaskComplexity, StorageStrategy, } from './neural-orchestrator;;
+export type { NeuralData, NeuralResult, NeuralTask, } from './neural-orchestrator';
+export declare function getBrainSystemAccess(): Promise<any>;
+export declare function getBrainCoordinator(config?: any): Promise<any>;
+export declare function getSmartNeuralCoordinator(config?: any): Promise<any>;
+export declare function getNeuralOrchestrator(_config?: any): Promise<any>;
+export declare function getTaskComplexityEstimator(config?: any): Promise<any>;
+export declare function getAutonomousOptimizer(_config?: any): Promise<any>;
+export declare function getBehavioralIntelligence(_config?: any): Promise<any>;
+export declare function getNeuralBridge(_config?: any): Promise<any>;
+export declare const brainSystem: {
+    getAccess: typeof getBrainSystemAccess;
+    getCoordinator: typeof getBrainCoordinator;
+    getSmartCoordinator: typeof getSmartNeuralCoordinator;
+    getOrchestrator: typeof getNeuralOrchestrator;
+    getComplexityEstimator: typeof getTaskComplexityEstimator;
+    getAutonomousOptimizer: typeof getAutonomousOptimizer;
+    getBehavioralIntelligence: typeof getBehavioralIntelligence;
+    getNeuralBridge: typeof getNeuralBridge;
 };
 export interface BrainSystemConfig {
-    autonomous?:{
-        enabled?:boolean;
-        learningRate?:number;
-        adaptationThreshold?:number;
-};
-    neural?:{
-        backend?:string;
-        acceleration?:boolean;
-};
+    autonomous?: {
+        enabled?: boolean;
+        learningRate?: number;
+        adaptationThreshold?: number;
+    };
+    neural?: {
+        backend?: string;
+        acceleration?: boolean;
+    };
 }
-export { CompleteIntelligenceSystem, createBasicIntelligenceSystem, createIntelligenceSystem, createProductionIntelligenceSystem, createTaskPredictor, getPredictionSummary, isHighConfidencePrediction, SimpleTaskPredictor} from './monitoring/main';
-export type { TaskPredictor} from './monitoring/task-predictor';
+export { CompleteIntelligenceSystem, createBasicIntelligenceSystem, createIntelligenceSystem, createProductionIntelligenceSystem, createTaskPredictor, getPredictionSummary, isHighConfidencePrediction, SimpleTaskPredictor, } from './monitoring/main';
+export type { TaskPredictor } from './monitoring/task-predictor';
 //# sourceMappingURL=index.d.ts.map

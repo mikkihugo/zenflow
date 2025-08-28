@@ -108,14 +108,14 @@ export class CircuitBreaker {
  * @returns Promise that resolves with the function result or rejects after max attempts
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const result = await withRetry(
  *   async () => {
  *     const response = await fetch('/api/data');
  *     if (!response.ok) throw new Error('Failed to fetch');
  *     return response.json();
- *   },
- *   { maxAttempts: 5, baseDelay: 1000 }
+ *},
+ *   { maxAttempts:5, baseDelay:1000}
  * );
  * ```
  */
@@ -148,17 +148,17 @@ export async function withRetry(fn, config = {}) {
  * @returns Promise that resolves with Result containing success or timeout error
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const result = await withTimeout(
  *   fetch('/api/slow-endpoint'),
- *   { timeout: 5000, message: 'API request timed out' }
+ *   { timeout:5000, message: 'API request timed out'}
  * );
  *
  * if (result.isOk()) {
- *   console.log('Success:', result.value);
- * } else {
- *   console.log('Error:', result.error);
- * }
+ *   console.log('Success: ', result.value);
+' *} else {
+ *   console.log('Error: ', result.error);
+' *}
  * ```
  */
 export async function withTimeout(promise, config) {
@@ -185,13 +185,13 @@ export async function withTimeout(promise, config) {
  * @returns Promise that resolves with Result containing success or timeout error
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const result = await safeAsync(
  *   async () => {
  *     const response = await fetch('/api/data');
  *     return response.json();
- *   },
- *   { timeout: 5000 }
+ *},
+ *   { timeout:5000}
  * );
  * ```
  */
@@ -216,21 +216,21 @@ export async function safeAsync(fn, config) {
  * @returns Circuit breaker instance
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const apiCall = createCircuitBreaker(
- *   async (url: string) => {
+ *   async (url:string) => {
  *     const response = await fetch(url);
  *     if (!response.ok) throw new Error('API failure');
  *     return response.json();
- *   },
- *   { failureThreshold: 3, resetTimeout: 30000 }
+ *},
+ *   { failureThreshold:3, resetTimeout:30000}
  * );
  *
  * try {
  *   const data = await apiCall.execute('/api/data');
- * } catch (error) {
+ *} catch (error) {
  *   console.log('Circuit breaker prevented call or API failed');
- * }
+ *}
  * ```
  */
 export function createCircuitBreaker(fn, config) {
@@ -243,7 +243,7 @@ export function createCircuitBreaker(fn, config) {
  * @returns Promise that resolves after delay
  *
  * @example
- * ```typescript
+ * ```typescript`
  * await sleep(1000); // Wait 1 second
  * ```
  */
@@ -254,12 +254,12 @@ export function sleep(ms) {
  * Execute multiple promises concurrently with optional concurrency limit
  *
  * @param tasks - Array of functions that return promises
- * @param concurrency - Maximum number of concurrent executions (default: unlimited)
+ * @param concurrency - Maximum number of concurrent executions (default:unlimited)
  * @returns Promise that resolves with array of results
  *
  * @example
- * ```typescript
- * const urls = ['url1', 'url2', 'url3', 'url4', 'url5'];
+ * ```typescript`
+ * const urls = ['url1',    'url2',    'url3',    'url4',    'url5'];
  * const results = await concurrent(
  *   urls.map(url => () => fetch(url)),
  *   3 // Max 3 concurrent requests
@@ -296,20 +296,20 @@ export async function concurrent(tasks, concurrency) {
  * @returns Promise that resolves with array of Results
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const results = await allSettledSafe([
  *   fetch('/api/data1'),
  *   fetch('/api/data2'),
  *   fetch('/api/data3')
- * ]);
+ *]);
  *
  * results.forEach((result, index) => {
  *   if (result.isOk()) {
  *     console.log(`Request ${index} succeeded:`, result.value);
- *   } else {
+ *} else {
  *     console.log(`Request ${index} failed:`, result.error);
- *   }
- * });
+ *}
+ *});
  * ```
  */
 export async function allSettledSafe(promises) {
@@ -328,11 +328,11 @@ export async function allSettledSafe(promises) {
  * @returns Debounced function
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const debouncedSave = debounce(
- *   async (data: any) => {
+ *   async (data:any) => {
  *     await saveToDatabase(data);
- *   },
+ *},
  *   1000
  * );
  *
@@ -383,11 +383,11 @@ export function debounce(fn, delay) {
  * @returns Throttled function
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const throttledAPI = throttle(
- *   async (query: string) => {
+ *   async (query:string) => {
  *     return fetch(`/api/search?q=${query}`);
- *   },
+ *},
  *   1000
  * );
  * ```

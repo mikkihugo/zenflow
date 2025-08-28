@@ -33,7 +33,7 @@ export class VectorStorageImpl {
                 id,
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new QueryError(`Failed to insert vector: ${error instanceof Error ? error.message : String(error)}`, {
+            throw new QueryError(`Failed to insert vector:${error instanceof Error ? error.message : String(error)}`, {
                 correlationId: this.generateCorrelationId(),
                 cause: error instanceof Error ? error : undefined,
             });
@@ -76,7 +76,7 @@ export class VectorStorageImpl {
             logger.error("Failed to search vectors", {
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new QueryError(`Failed to search vectors: ${error instanceof Error ? error.message : String(error)}`, {
+            throw new QueryError(`Failed to search vectors:${error instanceof Error ? error.message : String(error)}`, {
                 correlationId: this.generateCorrelationId(),
                 cause: error instanceof Error ? error : undefined,
             });
@@ -107,7 +107,7 @@ export class VectorStorageImpl {
                 id,
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new QueryError(`Failed to get vector: ${error instanceof Error ? error.message : String(error)}`, {
+            throw new QueryError(`Failed to get vector:${error instanceof Error ? error.message : String(error)}`, {
                 correlationId: this.generateCorrelationId(),
                 cause: error instanceof Error ? error : undefined,
             });
@@ -151,7 +151,7 @@ export class VectorStorageImpl {
                 id,
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new QueryError(`Failed to update vector: ${error instanceof Error ? error.message : String(error)}`, {
+            throw new QueryError(`Failed to update vector:${error instanceof Error ? error.message : String(error)}`, {
                 correlationId: this.generateCorrelationId(),
                 cause: error instanceof Error ? error : undefined,
             });
@@ -171,7 +171,7 @@ export class VectorStorageImpl {
                 id,
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new QueryError(`Failed to delete vector: ${error instanceof Error ? error.message : String(error)}`, {
+            throw new QueryError(`Failed to delete vector:${error instanceof Error ? error.message : String(error)}`, {
                 correlationId: this.generateCorrelationId(),
                 cause: error instanceof Error ? error : undefined,
             });
@@ -192,7 +192,7 @@ export class VectorStorageImpl {
                 name,
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new QueryError(`Failed to create vector index: ${error instanceof Error ? error.message : String(error)}`, {
+            throw new QueryError(`Failed to create vector index:${error instanceof Error ? error.message : String(error)}`, {
                 correlationId: this.generateCorrelationId(),
                 cause: error instanceof Error ? error : undefined,
             });
@@ -211,7 +211,7 @@ export class VectorStorageImpl {
                 name,
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new QueryError(`Failed to drop vector index: ${error instanceof Error ? error.message : String(error)}`, {
+            throw new QueryError(`Failed to drop vector index:${error instanceof Error ? error.message : String(error)}`, {
                 correlationId: this.generateCorrelationId(),
                 cause: error instanceof Error ? error : undefined,
             });
@@ -227,7 +227,7 @@ export class VectorStorageImpl {
             logger.error("Failed to count vectors", {
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new QueryError(`Failed to count vectors: ${error instanceof Error ? error.message : String(error)}`, {
+            throw new QueryError(`Failed to count vectors:${error instanceof Error ? error.message : String(error)}`, {
                 correlationId: this.generateCorrelationId(),
                 cause: error instanceof Error ? error : undefined,
             });
@@ -258,7 +258,7 @@ export class VectorStorageImpl {
             logger.error("Failed to get vector stats", {
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new QueryError(`Failed to get vector stats: ${error instanceof Error ? error.message : String(error)}`, {
+            throw new QueryError(`Failed to get vector stats:${error instanceof Error ? error.message : String(error)}`, {
                 correlationId: this.generateCorrelationId(),
                 cause: error instanceof Error ? error : undefined,
             });
@@ -279,7 +279,7 @@ export class VectorStorageImpl {
             logger.error("Failed to create vectors table", {
                 error: error instanceof Error ? error.message : String(error),
             });
-            throw new QueryError(`Failed to create vectors table: ${error instanceof Error ? error.message : String(error)}`);
+            throw new QueryError(`Failed to create vectors table:${error instanceof Error ? error.message : String(error)}`);
         }
     }
     generateCorrelationId() {

@@ -247,11 +247,12 @@ export class RecoveryStrategyManager extends EventEmitter {
           await backend.initialize?.();
 
           // Test connectivity with method compatibility
-          if ('get' in backend && typeof backend.get === ' function') {
+          if ('get' in backend && typeof backend.get === 'function') {
             await backend.get('__health_check__');
 } else if (
             'retrieve' in backend &&
-            typeof backend.retrieve === 'function')          ) {
+            typeof backend.retrieve === 'function'
+          ) {
             await backend.retrieve('__health_check__');
 } else {
             throw new Error('Backend lacks required methods');
@@ -300,11 +301,12 @@ export class RecoveryStrategyManager extends EventEmitter {
           for (const [id, backend] of Array.from(context.backends.entries())) {
             try {
               let data;
-              if ('get' in backend && typeof backend.get === ' function') {
+              if ('get' in backend && typeof backend.get === 'function') {
                 data = await backend.get(key);
 } else if (
                 'retrieve' in backend &&
-                typeof backend.retrieve === 'function')              ) {
+                typeof backend.retrieve === 'function'
+              ) {
                 data = await backend.retrieve(key);
 } else {
                 continue; // Skip backends without compatible methods
@@ -345,11 +347,12 @@ export class RecoveryStrategyManager extends EventEmitter {
           const repairPromises = Array.from(context.backends.entries()).map(
             async ([id, backend]) => {
               try {
-                if ('set' in backend && typeof backend.set === ' function') {
+                if ('set' in backend && typeof backend.set === 'function') {
                   await backend.set(key, consensusData);
 } else if (
                   'store' in backend &&
-                  typeof backend.store === 'function')                ) {
+                  typeof backend.store === 'function'
+                ) {
                   await backend.store(key, consensusData);
 } else {
                   throw new Error('Backend lacks required set/store method');
@@ -358,7 +361,8 @@ export class RecoveryStrategyManager extends EventEmitter {
 } catch (repairError) {
                 return {
                   id,
-                  status: 'failed',                  error:(repairError as Error).message,
+                  status: 'failed',
+                  error:(repairError as Error).message,
 };
 }
 }

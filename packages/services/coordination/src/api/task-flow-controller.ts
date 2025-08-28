@@ -23,8 +23,7 @@
  */
 
 import type { Logger } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation';
-import { EventEmitter } from 'events';
+import { getLogger, EventEmitter } from '@claude-zen/foundation';
 
 // EventBus for event emissions
 class EventBus extends EventEmitter {
@@ -566,10 +565,24 @@ export class TaskFlowController extends EventBus {
       return false;
     }
   }
-      
+
+  /**
+   * Get average wait time with sampling confidence adjustments
+   */
+  private async getAverageWaitTime(state: string): Promise<number> {
+    if (!this.dbProvider) {
+      return 300000; // Default 5 minutes
+    }
+
+    try {
+      const result = await this.dbProvider.query(
+        'SELECT AVG(wait_time_ms) as avg_wait_time, COUNT(*) as sample_size FROM approval_queue_history WHERE state = ? AND wait_time_ms IS NOT NULL',
+        [state]
+      );
+
       const row = result.rows[0];
-      const avgWaitTime = row?.avg_wait_time||300000; // Default 5 minutes
-      const sampleSize = row?.sample_size||0;
+      const avgWaitTime = row?.avg_wait_time || 300000; // Default 5 minutes
+      const sampleSize = row?.sample_size || 0;
       
       // If we have very few samples, blend with default
       let adjustedWaitTime = avgWaitTime;
@@ -690,33 +703,45 @@ export class TaskFlowController extends EventBus {
   // HELPER METHODS FOR DATABASE INTEGRATION
   // =============================================================================
 
-  private calculateInMemoryQueueDepth(state: this.kanban.getStateTaskCount(state);
+  /**
+   * Calculate in-memory queue depth
+   */
+  private calculateInMemoryQueueDepth(state: string): number {
+    const currentTasks = this.kanban.getStateTaskCount(state);
     const wipLimit = this.config.wipLimits[state];
     return Math.max(0, currentTasks - wipLimit);
   }
-  private async calculateRecentWaitTimeTrend(state: await this.dbProvider.query(';
-        'SELECT AVG(wait_time_ms) as avg_wait FROM approval_queue_history WHERE state = ? AND queued_at > datetime("now", "-1 day")';
+
+  /**
+   * Calculate recent wait time trend
+   */
+  private async calculateRecentWaitTimeTrend(state: string): Promise<number | null> {
+    if (!this.dbProvider) return null;
+    
+    try {
+      const result = await this.dbProvider.query(
+        'SELECT AVG(wait_time_ms) as avg_wait FROM approval_queue_history WHERE state = ? AND queued_at > datetime("now", "-1 day")',
         [state]
       );
-
-      const previousResult = await this.dbProvider.query(';
-        'SELECT AVG(wait_time_ms) as avg_wait FROM approval_queue_history WHERE state = ? AND queued_at BETWEEN datetime("now", "-2 days") AND datetime("now", "-1 day")';
-        [state]
-      );
-
-      const recentAvg = recentResult.rows[0]?.avg_wait;
-      const previousAvg = previousResult.rows[0]?.avg_wait;
-
-      if (recentAvg && previousAvg && previousAvg > 0) {
-        return recentAvg / previousAvg; // Trend multiplier
+      
+      if (result.rows && result.rows.length > 0 && result.rows[0].avg_wait) {
+        const recentAvg = result.rows[0].avg_wait;
+        const overallAvg = await this.getAverageWaitTime(state);
+        return recentAvg / overallAvg; // Trend factor
       }
+      
       return null;
-    } catch (error) {';
-      this.logger.error('Error calculating wait time trend', { state, error });
+    } catch (error) {
+      this.logger.error('Error calculating recent wait time trend', { state, error });
       return null;
     }
   }
-  private async analyzeBottleneckPatterns(bottlenecks: [];
+
+  /**
+   * Analyze bottleneck patterns (overriding the earlier stub)
+   */
+  private async analyzeBottleneckPatterns(bottlenecks: string[]): Promise<any[]> {
+    const enhancedBottlenecks = [];
 
     for (const state of bottlenecks) {
       const utilization = this.kanban.getStateTaskCount(state) / this.config.wipLimits[state];
@@ -724,22 +749,27 @@ export class TaskFlowController extends EventBus {
       // Calculate historical frequency from database
       let historicalFrequency = 0.5; // Default
       if (this.dbProvider) {
-        try {';
-          const result = await this.dbProvider.query('SELECT COUNT(*) as bottleneck_count, (SELECT COUNT(*) FROM task_flow_metrics WHERE state = ?) as total_measurements FROM task_flow_metrics WHERE state = ? AND bottleneck_score > 0.5 AND timestamp > datetime("now", "-30 days")', [state, state]);
+        try {
+          const result = await this.dbProvider.query(
+            'SELECT COUNT(*) as bottleneck_count, (SELECT COUNT(*) FROM task_flow_metrics WHERE state = ?) as total_measurements FROM task_flow_metrics WHERE state = ? AND bottleneck_score > 0.5 AND timestamp > datetime("now", "-30 days")',
+            [state, state]
+          );
           
           const row = result.rows[0];
           if (row && row.total_measurements > 0) {
             historicalFrequency = row.bottleneck_count / row.total_measurements;
           }
-        } catch (error) {';
-          this.logger.error('Error calculating historical bottleneck frequency', error);
+        } catch (error) {
+          this.logger.error('Error calculating historical bottleneck frequency', { error, state });
         }
       }
-      // Determine severity based on utilization and historical frequency';
-      let severity: 'low;';
-      if (utilization > 0.95 || historicalFrequency > 0.8) severity = 'critical;';
-      else if (utilization > 0.9 || historicalFrequency > 0.6) severity = 'high;';
-      else if (utilization > 0.85 || historicalFrequency > 0.4) severity  = 'medium;
+      
+      // Determine severity based on utilization and historical frequency
+      let severity: 'low' | 'medium' | 'high' | 'critical' = 'low';
+      if (utilization > 0.95 || historicalFrequency > 0.8) severity = 'critical';
+      else if (utilization > 0.9 || historicalFrequency > 0.6) severity = 'high';
+      else if (utilization > 0.85 || historicalFrequency > 0.4) severity = 'medium';
+      
       enhancedBottlenecks.push({
         state,
         utilization,
@@ -749,156 +779,9 @@ export class TaskFlowController extends EventBus {
     }
     return enhancedBottlenecks;
   }
-  private async recordBottleneckEvent(bottleneck: [];
-    const currentCount = this.kanban.getStateTaskCount(state);
-    const wipLimit = this.config.wipLimits[state];
-    const utilization = currentCount / wipLimit'; 
 
-    // Analyze historical resolution patterns if database is available
-    if (this.dbProvider) {
-      try {';
-        const statePattern = %"state:`${state}%`;';
-        const historicalResolutions = await this.dbProvider.query(SELECT event_data, COUNT(*) as frequency FROM system_events WHERE event_type = ? AND event_data LIKE ? AND timestamp > datetime("now", "-90 days) GROUP BY event_data ORDER BY frequency DESC LIMIT 3`, [`bottleneck_resolved, statePattern]);
-
-        for (const resolution of historicalResolutions.rows) {
-          try {
-            const data = JSON.parse(resolution.event_data);
-            if (data.resolution_strategy) {
-              recommendations.push(`Historical success: new Date().getHours();
-    if (currentHour >= 9 && currentHour <= 17) {';
-      recommendations.push('Consider escalating during business hours for faster resolution');
-    } else {';
-      recommendations.push('Schedule bottleneck review for next business day');
-    }
-    return recommendations.slice(0, 5); // Return top 5 recommendations
-  }
-  // Additional helper methods for the enhanced handleWIPLimitReached method
-  private async recordWIPLimitViolation(taskId: {
-      spilloverSuccessRate: '%"from_state:`${state}%;
-      const spilloverResult = await this.dbProvider.query(';
-        'SELECT COUNT(*) as total_spillovers, SUM(CASE WHEN event_data LIKE ? THEN 1 ELSE 0 END) as successful_spillovers FROM system_events WHERE event_type = ? AND event_data LIKE ? AND timestamp > datetime("now", "-30 days")',;';
-        ['%"success":true%', 'spillover_executed, fromStatePattern];;
-      );
-
-      const spilloverData = spilloverResult.rows[0];
-      const spilloverSuccessRate = spilloverData?.total_spillovers > 0 ;
-        ? spilloverData.successful_spillovers / spilloverData.total_spillovers: [];
-    const utilization = this.kanban.getStateTaskCount(state) / this.config.wipLimits[state];
-
-    recommendations.push(`Current utilization: json_set(COALESCE(metadata,`{};),`${.}paused_at,datetime(``now'));
-        WHERE current_state IN ('analysis,'development,'testing');
-      ');
-
-      // Record pause event
-      await this.dbProvider.execute(';
-       'INSERT INTO system_events (event_type, event_data, severity) VALUES (?, ?, ?)',;';
-        ['task_processing_halted',JSON.stringify({ timestamp: {
-        config: this.config,
-        taskCounts: Object.fromEntries(
-          Object.keys(this.config.wipLimits).map(state => [
-            state,
-            this.kanban.getStateTaskCount(state as TaskFlowState)
-          ];
-        ),
-        haltTimestamp: '2.0.0';
-      }
-      await this.dbProvider.execute(';
-       'INSERT INTO system_events (event_type, event_data, severity) VALUES (?, ?, ?)',;';
-        ['system_state_persisted',JSON.stringify(systemState),'info'];;
-      );
-';
-      this.logger.info('System state persisted for recovery');
-    } catch (error) {';
-      this.logger.error('Error persisting system state', error);
-      throw error;
-    }
-  }
-  private async notifySystemHaltToServices(reason: 'unknown';
-      });
-
-      // Could also integrate with external notification systems here
-      // e.g., Slack, email, monitoring systems
-      ';
-      this.logger.info('System halt notifications sent to all services');
-    } catch (error) {';
-      this.logger.error('Error notifying services of system halt', error);';
-      // Don't throw - this shouldn't prevent halt;
-    }
-  }
-  private async updateSystemStatusInDatabase(status: string, reason: string): Promise<void>  {
-    if (!this.dbProvider) return;
-
-    try {
-      await this.dbProvider.execute(';
-       'INSERT INTO system_events (event_type, event_data, severity) VALUES (?, ?, ?)';
-        [';
-         'system_status_changed';
-          JSON.stringify({ 
-            new_status: status, 
-            reason, 
-            timestamp: Date.now() 
-          }),';
-          status === 'halted' ? 'warning' : [];
-    let score = 1.0;
-
-    try {
-      // Check database connectivity
-      if (!this.dbProvider) {';
-        issues.push('Database provider not initialized');
-        score -= 0.3;
-      } else {
-        try {';
-          await this.dbProvider.query('SELECT 1 as test');
-        } catch (error) {';
-          issues.push('Database connection failed');
-          score -= 0.4;
-        }
-      }
-      // Check component health
-      if (!this.kanban) {';
-        issues.push('Kanban system not initialized');
-        score -= 0.2;
-      }
-      if (!this.agui) {';
-        issues.push('AGUI system not initialized');
-        score -= 0.1;
-      }
-      return {
-        healthy: issues.length === 0 && score > 0.7,
-        issues,
-        score: await this.dbProvider.query(';
-        'SELECT event_data FROM system_events WHERE event_type = ? ORDER BY timestamp DESC LIMIT 1',;';
-        ['system_state_persisted'];;
-      );
-
-      if (result.rows.length > 0) {
-        const stateData = JSON.parse(result.rows[0].event_data);
-        const totalTasks = Object.values(stateData.taskCounts as Record<string, number>);
-          .reduce((sum, count) => sum + count, 0);
-        ';
-        this.logger.info('System state restored from storage, { ;
-          taskCounts: json_remove(metadata, `${.}paused_at``) WHERE json_extract(metadata, `${.}paused_at``) IS NOT NULL');
-
-      // Clear any stale approval queue entries';
-      await this.dbProvider.execute('UPDATE approval_queue_history SET processed_at = datetime("now"), approval_result = "cancelled_on_resume" WHERE processed_at IS NULL AND queued_at < datetime("now", "-1 hour")');
-';
-      this.logger.info('Task processing queues reinitialized');
-    } catch (error) {';
-      this.logger.error('Error reinitializing task processing queues', error);
-      throw error;
-    }
-  }
-  private async reconnectToExternalServices(): Promise<void> {
-    try {
-      // Reinitialize components that might have been disconnected
-      // This could include database connections, external APIs, etc.';
-      this.logger.info('External services reconnection completed');
-    } catch (error) {';
-      this.logger.error('Error reconnecting to external services', error);
-      throw error;
-    }
-  }
 }
+
 // =============================================================================
 // FACTORY FUNCTION
 // =============================================================================
@@ -911,6 +794,7 @@ export function _createTaskFlowController(
 ): TaskFlowController {
   return new TaskFlowController(config);
 }
+
 // =============================================================================
 // EXPORTS
 // =============================================================================

@@ -158,7 +158,7 @@ export class ContainerImpl {
             }
         }
         catch (error) {
-            const message = `Failed to resolve service '${token}': ${error instanceof Error ? error['message'] : String(error)}`;
+            const message = `Failed to resolve service '${token}': ${error instanceof Error ? error.message : String(error)}`;
             this.emit("serviceResolutionFailed", { token, error: message });
             throw new Error(message);
         }
@@ -293,7 +293,7 @@ export class ContainerImpl {
         for (const [serviceToken, metadata] of this.serviceMetadata.entries()) {
             if (metadata.capabilities?.includes(capability)) {
                 const logger = require("../core/logging").getLogger("foundation:service-discovery");
-                logger.debug(`Service ${serviceToken} provides capability: ${capability}`);
+                logger.debug(`Service ${serviceToken} provides capability:${capability}`);
                 matchingServices.push(metadata);
             }
         }
@@ -304,7 +304,7 @@ export class ContainerImpl {
         for (const [serviceToken, metadata] of this.serviceMetadata.entries()) {
             if (metadata.tags?.includes(tag)) {
                 const logger = require("../core/logging").getLogger("foundation:service-discovery");
-                logger.debug(`Service ${serviceToken} has tag: ${tag}`);
+                logger.debug(`Service ${serviceToken} has tag:${tag}`);
                 matchingServices.push(metadata);
             }
         }

@@ -2,8 +2,8 @@
  * @fileoverview Monorepo Detection using Industry-Standard Tools
  *
  * Uses established npm packages for reliable monorepo and project detection:
- * - find-workspaces: Comprehensive workspace detection
- * - @manypkg/find-root: Multi-tool monorepo root detection
+ * - find-workspaces:Comprehensive workspace detection
+ * - @manypkg/find-root:Multi-tool monorepo root detection
  *
  * Supports all major monorepo tools and build systems.
  */

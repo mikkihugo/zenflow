@@ -5,37 +5,37 @@
  * process lifecycle, and timeouts using proven NPM packages.
  *
  * @example Input Validation with Zod
- * ```typescript
+ * ```typescript`
  * import { z, validateInput, createValidator } from '@claude-zen/foundation/utilities';
  *
  * const UserSchema = z.object({
- *   name: z.string().min(1),
- *   email: z.string().email(),
- *   age: z.number().min(18)
+ *   name:z.string().min(1),
+ *   email:z.string().email(),
+ *   age:z.number().min(18)
  * });
  *
- * const result = validateInput(UserSchema, { name: 'John', email: 'john@example.com', age: 25 });
+ * const result = validateInput(UserSchema, { name:'John', email:' john@example.com', age:25 });
  * if (result.isOk()) {
- *   console.log('Valid user:', result.value);
- * }
+ *   console.log('Valid user: ', result.value);
+' * }
  * ```
  *
  * @example Environment Configuration with Envalid
- * ```typescript
+ * ```typescript`
  * import { env, str, num, bool, createEnvValidator } from '@claude-zen/foundation/utilities';
  *
  * const config = createEnvValidator({
- *   NODE_ENV: str({ choices: ['development', 'production', 'test'], default: 'development' }),
- *   PORT: num({ default: 3000 }),
- *   ENABLE_LOGGING: bool({ default: true }),
- *   DATABASE_URL: str()
+ *   NODE_ENV:str({ choices: ['development',    'production',    'test'], default:' development' }),
+ *   PORT:num({ default: 3000 }),
+ *   ENABLE_LOGGING:bool({ default: true }),
+ *   DATABASE_URL:str()
  * });
  *
  * console.log(`Server starting on port ${config.PORT} in ${config.NODE_ENV} mode`);
  * ```
  *
  * @example Process Lifecycle Management
- * ```typescript
+ * ```typescript`
  * import { onExit, withTimeout } from '@claude-zen/foundation/utilities';
  *
  * // Cleanup on process exit
@@ -49,8 +49,7 @@
  * const result = await withTimeout(
  *   longRunningOperation(),
  *   5000,
- *   'Operation timed out after 5 seconds'
- * );
+ *   'Operation timed out after 5 seconds') * );
  * ```
  *
  * Features:
@@ -64,8 +63,10 @@
 // Foundation integration utilities
 import { bool, cleanEnv, email, host, json, num, port, str, url } from "envalid";
 import { z } from "zod";
-import { getLogger } from "../../core/logging/index.js";
 import { err, ok } from "../../error-handling/index.js";
+import { getLogger } from "../../core/logging/logging.service.js";
+// Logger for utility functions
+const logger = getLogger('CommonUtilities');
 // Constants for duplicate string literals
 const ERROR_MESSAGES = {
     UNKNOWN_ERROR: "Unknown error"
@@ -86,8 +87,7 @@ export { default as _, default as lodash } from "lodash";
 // Re-export nanoid for ID generation
 export { customAlphabet, nanoid } from "nanoid";
 export { z } from "zod";
-// Use cockatiel timeout policies: import { timeout, TimeoutStrategy } from '@claude-zen/foundation'
-const logger = getLogger("foundation-utilities");
+// Use cockatiel timeout policies:import { timeout, TimeoutStrategy } from '@claude-zen/foundation')const logger = getLogger("foundation-utilities");
 /**
  * Validates input data using a Zod schema with type-safe Result pattern.
  * Returns detailed validation errors on failure.
@@ -98,17 +98,17 @@ const logger = getLogger("foundation-utilities");
  * @returns Result containing validated data or validation error
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const UserSchema = z.object({
- *   name: z.string().min(1),
- *   email: z.string().email()
+ *   name:z.string().min(1),
+ *   email:z.string().email()
  * });
  *
  * const result = validateInput(UserSchema, userData);
  * if (result.isOk()) {
- *   console.log('Valid user:', result.value);
- * } else {
- *   console.error('Validation error:', result.error['message']);
+ *   console.log('Valid user: ', result.value);
+' * } else {
+ *   console.error('Validation error:', result.error.message);
  * }
  * ```
  */
@@ -119,7 +119,7 @@ export function validateInput(schema, input) {
     }
     catch (error) {
         if (error instanceof z.ZodError) {
-            const message = `Validation failed: ${error.issues.map((e) => `${e.path.join(".")}: ${e['message']}`).join(", ")}`;
+            const message = `Validation failed: ${error.issues.map((e) => `${e.path.join(".")}: ${e.message}`).join(", ")}`;
             return err(new Error(message));
         }
         return err(error instanceof Error ? error : new Error("Unknown validation error"));
@@ -134,10 +134,10 @@ export function validateInput(schema, input) {
  * @returns Function that validates input using the provided schema
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const validateUser = createValidator(z.object({
- *   name: z.string().min(1),
- *   email: z.string().email()
+ *   name:z.string().min(1),
+ *   email:z.string().email()
  * }));
  *
  * // Reuse validator multiple times
@@ -158,12 +158,12 @@ export function createValidator(schema) {
  * @throws {Error} When environment validation fails
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const env = createEnvValidator({
- *   NODE_ENV: str({ choices: ['development', 'production', 'test'] }),
- *   PORT: num({ default: 3000 }),
- *   DEBUG: bool({ default: false }),
- *   DATABASE_URL: str({ desc: 'Database connection string' })
+ *   NODE_ENV:str({ choices: ['development',    'production',    'test'] }),
+ *   PORT:num({ default: 3000 }),
+ *   DEBUG:bool({ default: false }),
+ *   DATABASE_URL:str({ desc: 'Database connection string' })
  * });
  *
  * // Type-safe access with intellisense
@@ -190,27 +190,25 @@ export function createEnvValidator(specs) {
  * @returns Promise resolving to Result containing success value or timeout/error
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const result = await withTimeout(
  *   fetchData(),
  *   5000,
- *   'Data fetch timed out after 5 seconds'
- * );
+ *   'Data fetch timed out after 5 seconds') * );
  *
  * if (result.isOk()) {
- *   console.log('Data:', result.value);
- * } else {
- *   console.error('Error or timeout:', result.error['message']);
+ *   console.log('Data: ', result.value);
+' * } else {
+ *   console.error('Error or timeout:', result.error.message);
  * }
  * ```
  *
  * @example API Calls with Timeout
- * ```typescript
+ * ```typescript`
  * const apiResult = await withTimeout(
  *   fetch('/api/users').then(r => r.json()),
  *   3000,
- *   'API call timed out'
- * );
+ *   'API call timed out') * );
  * ```
  */
 export async function withTimeout(promise, timeoutMs, timeoutMessage) {
@@ -285,7 +283,7 @@ export function parseJSON(text) {
         return ok(result);
     }
     catch (error) {
-        return err(new Error(`Invalid JSON: ${error instanceof Error ? error['message'] : ERROR_MESSAGES.UNKNOWN_ERROR}`));
+        return err(new Error(`Invalid JSON:${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`));
     }
 }
 /**
@@ -301,7 +299,7 @@ export function stringifyJSON(value, space) {
         return ok(result);
     }
     catch (error) {
-        return err(new Error(`JSON serialization failed: ${error instanceof Error ? error['message'] : ERROR_MESSAGES.UNKNOWN_ERROR}`));
+        return err(new Error(`JSON serialization failed:${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`));
     }
 }
 /**
@@ -368,7 +366,7 @@ export function safeGet(obj, path, schema) {
         return validate(schema, current);
     }
     catch (error) {
-        return err(new Error(`Failed to access property '${path}': ${error instanceof Error ? error['message'] : ERROR_MESSAGES.UNKNOWN_ERROR}`));
+        return err(new Error(`Failed to access property '${path}':${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`));
     }
 }
 // =============================================================================
@@ -386,7 +384,7 @@ export async function readFile(filePath, encoding = "utf8") {
         return ok(content);
     }
     catch (error) {
-        return err(new Error(`Failed to read file '${filePath}': ${error instanceof Error ? error['message'] : ERROR_MESSAGES.UNKNOWN_ERROR}`));
+        return err(new Error(`Failed to read file '${filePath}':${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`));
     }
 }
 /**
@@ -399,7 +397,7 @@ export async function writeFile(filePath, content, encoding = "utf8") {
         return ok();
     }
     catch (error) {
-        return err(new Error(`Failed to write file '${filePath}': ${error instanceof Error ? error['message'] : ERROR_MESSAGES.UNKNOWN_ERROR}`));
+        return err(new Error(`Failed to write file '${filePath}':${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`));
     }
 }
 /**
@@ -415,7 +413,7 @@ export async function directoryExists(dirPath) {
         if (error.code === "ENOENT") {
             return ok(false);
         }
-        return err(new Error(`Failed to check directory '${dirPath}': ${error instanceof Error ? error['message'] : ERROR_MESSAGES.UNKNOWN_ERROR}`));
+        return err(new Error(`Failed to check directory '${dirPath}':${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`));
     }
 }
 /**
@@ -431,7 +429,7 @@ export async function fileExists(filePath) {
         if (error.code === "ENOENT") {
             return ok(false);
         }
-        return err(new Error(`Failed to check file '${filePath}': ${error instanceof Error ? error['message'] : ERROR_MESSAGES.UNKNOWN_ERROR}`));
+        return err(new Error(`Failed to check file '${filePath}':${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`));
     }
 }
 /**
@@ -444,12 +442,12 @@ export function safePath(...segments) {
         const normalized = path.normalize(joined);
         // Prevent directory traversal
         if (normalized.includes("..")) {
-            return err(new Error('Path traversal detected: path contains ".."'));
+            return err(new Error('Path traversal detected:path contains ".."'));
         }
         return ok(normalized);
     }
     catch (error) {
-        return err(new Error(`Invalid path: ${error instanceof Error ? error['message'] : ERROR_MESSAGES.UNKNOWN_ERROR}`));
+        return err(new Error(`Invalid path:${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`));
     }
 }
 /**

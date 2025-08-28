@@ -5,75 +5,67 @@
  * health status, and capability reporting using service management.
  *
  * @example Basic Usage - Check System Status
- * ```typescript
- * import { getSystemStatus, getHealthSummary } from '@claude-zen/foundation/status-manager';
+ * ```typescript`
+ * import { getSystemStatus, getHealthSummary} from '@claude-zen/foundation/status-manager';
  *
  * const systemStatus = getSystemStatus();
- * console.log(`Overall: ${systemStatus.overall}, Health: ${systemStatus.healthScore}%`);
+ * console.log(`Overall:${systemStatus.overall}, Health:${systemStatus.healthScore}%`);
  *
  * const health = getHealthSummary();
- * // Returns: { status: 'healthy|degraded|unhealthy', details: {...} }
+ * // Returns:{ status: 'healthy|degraded|unhealthy', details:{...}}
  * ```
  *
  * @example Service Resolution with Fallbacks
- * ```typescript
- * import { getService, hasService } from '@claude-zen/foundation/status-manager';
+ * ```typescript`
+ * import { getService, hasService} from '@claude-zen/foundation/status-manager';
  *
  * // Check if monitoring service is registered in container
  * if (hasService('systemmonitoring')) {
  *   const monitoring = await getService('systemmonitoring');
  *   const tracker = new monitoring.PerformanceTracker();
- * } else {
+ *} else {
  *   // Use fallback implementation
  *   const monitoring = await getService('systemmonitoring', () => ({
- *     PerformanceTracker: class FallbackTracker { startTimer() { return () => {}; } }
- *   }));
- * }
+ *     PerformanceTracker:class FallbackTracker { startTimer() { return () => {};}}
+ *}));
+ *}
  * ```
  *
  * @example Service Registration
- * ```typescript
- * import { registerService } from '@claude-zen/foundation/status-manager';
+ * ```typescript`
+ * import { registerService} from '@claude-zen/foundation/status-manager';
  *
  * // Register infrastructure service with expected packages
  * await registerService('infrastructure', [
- *   '@claude-zen/event-system',
- *   '@claude-zen/database',
- *   '@claude-zen/system-monitoring'
- * ], [
- *   'Event system management',
- *   'Database access and ORM',
- *   'System monitoring and telemetry'
- * ]);
+ *   '@claude-zen/event-system', *   '@claude-zen/database', *   '@claude-zen/system-monitoring') *], [
+ *   'Event system management', *   'Database access and ORM', *   'System monitoring and telemetry') *]);
  * ```
  *
  * @example Health Check Endpoints
- * ```typescript
- * import { getHealthSummary, getSystemStatus } from '@claude-zen/foundation/status-manager';
+ * ```typescript`
+ * import { getHealthSummary, getSystemStatus} from '@claude-zen/foundation/status-manager';
  *
  * // Basic health endpoint
  * app.get('/health', (req, res) => {
  *   const health = getHealthSummary();
  *   res.json({
- *     status: health.status, // 'healthy|degraded|unhealthy'
- *     timestamp: new Date().toISOString(),
- *     details: health.details
- *   });
- * });
+ *     status:health.status, // 'healthy|degraded|unhealthy') *     timestamp:new Date().toISOString(),
+ *     details:health.details
+ *});
+ *});
  *
  * // Detailed service status
  * app.get('/health/services', (req, res) => {
  *   const systemStatus = getSystemStatus();
  *   res.json({
- *     overall: systemStatus.overall,
- *     services: Object.entries(systemStatus.services).map(([name, status]) => ({
+ *     overall:systemStatus.overall,
+ *     services:Object.entries(systemStatus.services).map(([name, status]) => ({
  *       name,
- *       capability: status.capability, // 'full|partial|fallback'
- *       healthScore: status.healthScore,
- *       missingPackages: status.missingPackages
- *     }))
- *   });
- * });
+ *       capability:status.capability, // 'full|partial|fallback') *       healthScore:status.healthScore,
+ *       missingPackages:status.missingPackages
+ *}))
+ *});
+ *});
  * ```
  *
  * Features:
@@ -88,7 +80,7 @@ import { EventEmitter } from "../../events/event-emitter.js";
 // Fallback container implementation
 const createContainer = () => ({
     register: (nameOrRegistrations, resolver, options) => {
-        // Security audit: tracking service registration attempts for facade status management
+        // Security audit:tracking service registration attempts for facade status management
         logger.debug("Service registration attempt in fallback container", {
             nameOrRegistrations: typeof nameOrRegistrations === "string"
                 ? nameOrRegistrations
@@ -100,7 +92,7 @@ const createContainer = () => ({
     resolve: () => null,
     has: () => false,
     dispose: async () => {
-        // Security audit: tracking container disposal for facade lifecycle management
+        // Security audit:tracking container disposal for facade lifecycle management
         logger.debug("Fallback container disposal initiated");
         // Enhanced async disposal with resource cleanup
         await Promise.resolve(); // Simulated async cleanup
@@ -108,7 +100,7 @@ const createContainer = () => ({
     },
 });
 const asFunction = (fn, options) => {
-    // Security audit: tracking function registration for DI security analysis
+    // Security audit:tracking function registration for DI security analysis
     logger.debug("Function registration in fallback DI", {
         hasOptions: !!options,
     });
@@ -196,11 +188,11 @@ export class SystemStatusManager extends EventEmitter {
      * Check if a package is available and register it with Awilix
      *
      * @example
-     * ```typescript
-     * const packageInfo = await statusManager.checkAndRegisterPackage('@claude-zen/brain', 'brainService');
+     * ```typescript`
+     * const packageInfo = await statusManager.checkAndRegisterPackage('@claude-zen/brain',    'brainService');
      * if (packageInfo.status === PackageStatus.REGISTERED) {
      *   console.log('Brain package available and registered in Awilix');
-     * }
+     *}
      * ```
      */
     async checkAndRegisterPackage(packageName, serviceName) {
@@ -327,17 +319,14 @@ export class SystemStatusManager extends EventEmitter {
      * Register a service with its expected packages
      *
      * @example
-     * ```typescript
+     * ```typescript`
      * await statusManager.registerService('intelligence', [
-     *   '@claude-zen/brain',
-     *   '@claude-zen/ai-safety'
-     * ], [
-     *   'Neural coordination',
-     *   'AI safety protocols'* ]);
+     *   '@claude-zen/brain',	 *   '@claude-zen/ai-safety')	 *], [
+     *   'Neural coordination',	 *   'AI safety protocols'*]);
      * ```
      */
     async registerService(serviceName, expectedPackages, features = []) {
-        logger.info(`Registering service: ${serviceName}`, {
+        logger.info(`Registering service:${serviceName}`, {
             expectedPackages,
             features,
         });
@@ -404,13 +393,13 @@ export class SystemStatusManager extends EventEmitter {
      * Get a service from the Awilix container with fallback
      *
      * @example
-     * ```typescript
+     * ```typescript`
      * // Try to get real monitoring service, fall back to stub
      * const monitoring = await statusManager.getService('systemmonitoring', () => ({
-     *   PerformanceTracker: class FallbackTracker {
-     *     startTimer() { return () => console.log('Fallback timer'); }
-     *   }
-     * }));
+     *   PerformanceTracker:class FallbackTracker {
+     *     startTimer() { return () => console.log('Fallback timer');}
+     *}
+     *}));
      * ```
      */
     getService(serviceName, fallback) {

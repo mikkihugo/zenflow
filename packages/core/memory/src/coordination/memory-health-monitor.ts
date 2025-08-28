@@ -85,7 +85,7 @@ export class MemoryHealthMonitor extends EventEmitter {
       recordMetric('memory_health_monitor_initialized', 1);
 } catch (error) {
       this.logger.error('Failed to initialize health monitor: ', error);
-'      throw error;
+      throw error;
 }
 }
 
@@ -525,7 +525,7 @@ export class MemoryHealthMonitor extends EventEmitter {
       this.logger.info('Memory health monitor shut down');
 } catch (error) {
       this.logger.error('Error during health monitor shutdown: ', error);
-'      throw error;
+      throw error;
 }
 }
 }

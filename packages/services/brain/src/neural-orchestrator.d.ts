@@ -11,94 +11,39 @@
  * Neural task complexity levels
  */
 export declare enum TaskComplexity {
-    SIMPLE = "simple",// brain.js internal processing')    MODERATE = "moderate",// Enhanced brain.js with some ML')    COMPLEX = "complex",// Requires neural-ml lightweight models')    HEAVY = "heavy"
-}
-/**
- * Storage strategy types
- */
-export declare enum StorageStrategy {
-    MEMORY = "memory",// Fast access in brain package memory')    DATABASE = "database",// Persistent via foundation SQLite')    VECTOR = "vector",// High-dimensional via foundation LanceDB')    GRAPH = "graph",// Relationship via foundation Kuzu')    HYBRID = "hybrid"
-}
-/**
- * Neural task definition
- */
-export interface NeuralTask {
-    id:string;
-    type: '...[proper format needed]
-'    data:{
-        input:number[] | number[][];
-        context?:Record<string, unknown>;
-        metadata?:{
-            dimensions?:number;
-            timeSeriesLength?:number;
-            featureCount?:number;
-            expectedOutputSize?:number;
-};
-};
-    requirements?:{
-        accuracy?:number;
-        latency?:number;
-        memory?:number;
-        gpu?:boolean;
-};
-}
-/**
- * Neural result with orchestration metadata
- */
-export interface NeuralResult {
-    taskId:string;
-    result:number[] | number[][] | Record<string, unknown>;
-    metadata:{
-        complexity:TaskComplexity;
-        processor:'brain-js' | ' neural-ml-light' | ' neural-ml-heavy;;
-        duration:number;
-        confidence?:number;
-        storageStrategy:StorageStrategy;
-        memoryUsed?:number;
-};
-}
-/**
- * Neural data with storage characteristics
- */
-export interface NeuralData {
-    id:string;
-    type: '...[proper format needed]
-'    data:unknown;
-    characteristics:{
-        size:number;
-        dimensions?:number;
-        accessFrequency: 'rare|occasional|frequent|realtime;;
-'        persistenceLevel:'temporary' | ' session' | ' permanent';
-        relationships?:string[];
-};
+    SIMPLE = "simple",// brain.js internal processing')  MODERATE = 'moderate', // Enhanced brain.js with some ML')  COMPLEX = 'complex', // Requires neural-ml lightweight models')  HEAVY = 'heavy', // Requires neural-ml heavy models (LSTM, Transformers)')}
+    /**
+     * Storage strategy types
+     */
+    export,
+    enum,
+    StorageStrategy
 }
 /**
  * Neural orchestration metrics
  */
 export interface OrchestrationMetrics {
-    tasksProcessed:number;
-    complexityDistribution:Record<TaskComplexity, number>;
-    averageLatency:Record<TaskComplexity, number>;
-    cacheHitRate:number;
-    neuralMlLoadCount:number;
-    storageDistribution:Record<StorageStrategy, number>;
+    tasksProcessed: number;
+    complexityDistribution: Record<TaskComplexity, number>;
+    averageLatency: Record<TaskComplexity, number>;
+    cacheHitRate: number;
+    neuralMlLoadCount: number;
+    storageDistribution: Record<StorageStrategy, number>;
 }
 /**
  * Neural Orchestrator - Brain as intelligent coordinator
  */
 export declare class NeuralOrchestrator {
     constructor();
-    /**
-     * Main orchestration method - analyzes and routes neural tasks
-     */
-    processNeuralTask(task:NeuralTask): Promise<NeuralResult>;
-    /**
-     * Process simple tasks with internal brain.js
-     */
-    private processSimpleTask;
-    /**
-     * Process complex tasks by lazy-loading neural-ml
-     */
-    private processComplexTask;
+    catch(error: any): void;
+    if(needsLowLatency: any): void;
+    const taskTypeComplexity: {
+        prediction: TaskComplexity;
+        classification: any;
+        clustering: any;
+        forecasting: any;
+        optimization: any;
+        pattern_recognition: any;
+    };
 }
 //# sourceMappingURL=neural-orchestrator.d.ts.map

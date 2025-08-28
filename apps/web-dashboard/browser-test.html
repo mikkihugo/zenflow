@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sub-page Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-result { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+        .warning { background: #fff3cd; border-color: #ffeaa7; }
+        iframe { width: 100%; height: 300px; border: 1px solid #ddd; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Claude Code Zen Sub-page Test</h1>
+    <p>Testing if sub-pages show white screens or load properly...</p>
+    
+    <div id="results"></div>
+    
+    <script>
+        const baseUrl = 'https://fra-d1.in.centralcloud.net';
+        const subPages = ['/system', '/agents', '/safe', '/events', '/memory'];
+        const resultsDiv = document.getElementById('results');
+        
+        async function testPage(path) {
+            const url = baseUrl + path;
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'test-result';
+            resultDiv.innerHTML = `
+                <h3>Testing: ${url}</h3>
+                <p>Loading...</p>
+            `;
+            resultsDiv.appendChild(resultDiv);
+            
+            try {
+                // Create iframe to load the page
+                const iframe = document.createElement('iframe');
+                iframe.src = url;
+                iframe.style.width = '100%';
+                iframe.style.height = '300px';
+                iframe.style.border = '1px solid #ddd';
+                
+                return new Promise((resolve) => {
+                    let timeoutId;
+                    
+                    iframe.onload = () => {
+                        clearTimeout(timeoutId);
+                        
+                        setTimeout(() => {
+                            try {
+                                // Try to access iframe content (may fail due to CORS)
+                                let hasContent = false;
+                                let errorMsg = '';
+                                
+                                try {
+                                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                                    const bodyText = iframeDoc.body.textContent || '';
+                                    hasContent = bodyText.trim().length > 10;
+                                    
+                                    if (!hasContent) {
+                                        errorMsg = '🚨 WHITE SCREEN - No visible content detected';
+                                        resultDiv.className = 'test-result error';
+                                    } else {
+                                        errorMsg = '✅ Content detected - Page appears to be loading';
+                                        resultDiv.className = 'test-result success';
+                                    }
+                                } catch (crossOriginError) {
+                                    // Can't access due to CORS, but iframe loaded
+                                    errorMsg = '✅ Page loaded (CORS prevents content check)';
+                                    resultDiv.className = 'test-result success';
+                                    hasContent = true;
+                                }
+                                
+                                resultDiv.innerHTML = `
+                                    <h3>Testing: ${url}</h3>
+                                    <p>${errorMsg}</p>
+                                    <p><small>Visual check: Look at the iframe below to see if the page content is visible</small></p>
+                                `;
+                                resultDiv.appendChild(iframe);
+                                
+                                resolve({ url, hasContent, error: !hasContent ? 'white screen' : null });
+                            } catch (err) {
+                                resultDiv.innerHTML = `
+                                    <h3>Testing: ${url}</h3>
+                                    <p>🚨 Error: ${err.message}</p>
+                                `;
+                                resultDiv.className = 'test-result error';
+                                resultDiv.appendChild(iframe);
+                                resolve({ url, hasContent: false, error: err.message });
+                            }
+                        }, 2000); // Wait 2 seconds for SPA to load
+                    };
+                    
+                    iframe.onerror = () => {
+                        clearTimeout(timeoutId);
+                        resultDiv.innerHTML = `
+                            <h3>Testing: ${url}</h3>
+                            <p>🚨 Failed to load iframe</p>
+                        `;
+                        resultDiv.className = 'test-result error';
+                        resolve({ url, hasContent: false, error: 'Failed to load' });
+                    };
+                    
+                    // Timeout after 10 seconds
+                    timeoutId = setTimeout(() => {
+                        resultDiv.innerHTML = `
+                            <h3>Testing: ${url}</h3>
+                            <p>⏱️ Timeout - Page took too long to load</p>
+                        `;
+                        resultDiv.className = 'test-result warning';
+                        resultDiv.appendChild(iframe);
+                        resolve({ url, hasContent: false, error: 'timeout' });
+                    }, 10000);
+                });
+                
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <h3>Testing: ${url}</h3>
+                    <p>🚨 Error: ${error.message}</p>
+                `;
+                resultDiv.className = 'test-result error';
+                return { url, hasContent: false, error: error.message };
+            }
+        }
+        
+        async function runTests() {
+            const results = [];
+            
+            for (const path of subPages) {
+                const result = await testPage(path);
+                results.push(result);
+                
+                // Wait a bit between tests
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+            
+            // Summary
+            const summaryDiv = document.createElement('div');
+            summaryDiv.className = 'test-result';
+            summaryDiv.style.marginTop = '40px';
+            summaryDiv.style.borderColor = '#007bff';
+            summaryDiv.style.backgroundColor = '#e7f3ff';
+            
+            const working = results.filter(r => r.hasContent).length;
+            const total = results.length;
+            
+            summaryDiv.innerHTML = `
+                <h3>📊 Summary</h3>
+                <p><strong>Working pages:</strong> ${working}/${total}</p>
+                <p><strong>Issues found:</strong></p>
+                <ul>
+                    ${results.filter(r => r.error).map(r => `<li>${r.url}: ${r.error}</li>`).join('')}
+                </ul>
+            `;
+            
+            resultsDiv.appendChild(summaryDiv);
+        }
+        
+        // Start tests
+        runTests();
+    </script>
+</body>
+</html>

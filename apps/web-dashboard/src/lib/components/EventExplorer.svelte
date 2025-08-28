@@ -380,8 +380,8 @@
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
         >
           <option value="all">All Events</option>
-          <option value="active">Active (< 1min ago)</option>
-          <option value="inactive">Inactive (> 1min ago)</option>
+          <option value="active">Active (&lt; 1min ago)</option>
+          <option value="inactive">Inactive (&gt; 1min ago)</option>
         </select>
       </div>
       

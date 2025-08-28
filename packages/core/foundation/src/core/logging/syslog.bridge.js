@@ -33,7 +33,7 @@ export class LogTapeSyslogBridge {
         }
         catch (error) {
             // Use direct error logging to avoid circular dependency with syslog bridge
-            process.stderr.write(`[SyslogBridge] Failed to initialize syslog bridge: ${error}\n`);
+            process.stderr.write(`[SyslogBridge] Failed to initialize syslog bridge:${error}\n`);
             this.isEnabled = false;
         }
     }
@@ -54,7 +54,7 @@ export class LogTapeSyslogBridge {
         }
         catch (error) {
             // Use direct error logging to avoid circular dependency with syslog bridge
-            process.stderr.write(`[SyslogBridge] Syslog bridge error: ${error}\n`);
+            process.stderr.write(`[SyslogBridge] Syslog bridge error:${error}\n`);
         }
     }
     /**
@@ -92,8 +92,8 @@ export class LogTapeSyslogBridge {
         catch (error) {
             // Fallback to direct stdout if logger command fails (avoid circular logging)
             const errorMsg = error instanceof Error ? error['message'] : String(error);
-            process.stdout.write(`SYSLOG[${level.toUpperCase()}] ${this.componentName}: ${message}\n`);
-            process.stderr.write(`SYSLOG_ERROR: Failed to write to syslog: ${errorMsg}\n`);
+            process.stdout.write(`SYSLOG[${level.toUpperCase()}] ${this.componentName}:${message}\n`);
+            process.stderr.write(`SYSLOG_ERROR:Failed to write to syslog: ${errorMsg}\n`);
         }
     }
     /**

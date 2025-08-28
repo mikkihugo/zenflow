@@ -46,7 +46,6 @@ export class SystemMetricsCollector {
     logger;
     constructor(logger) {
         this.logger = logger || getLogger('SystemMetricsCollector');
-        ';
         this.cpuBaseline = cpuUsage();
         this.lastCpuCheck = Date.now();
     }
@@ -106,16 +105,16 @@ export class SystemMetricsCollector {
             start_time: Date.now(),
             memory_start: memoryUsage(),
         });
-        this.logger.debug(`Started performance tracking for: ${operationId}`);
+        this.logger.debug(`Started performance tracking for:${operationId}`);
         `
-  }
+}
 
   /**
    * End performance tracking and get results
    */
   public endPerformanceTracking(
-    operationId: string
-  ): SystemPerformanceTracker|null {
+    operationId:string
+  ):SystemPerformanceTracker|null {
     const tracker = this.performanceTrackers.get(operationId);
     if (!tracker) {
       this.logger.warn(`;
@@ -142,89 +141,78 @@ export class SystemMetricsCollector {
 }
 // Clean up tracker
 this.performanceTrackers.delete(operationId);
-this.logger.debug(`Completed performance tracking for: ${operationId}`, {} `
-      duration_ms: tracker.duration_ms,
-      memory_delta_mb: tracker.memory_delta_mb,
-    });
+this.logger.debug(`Completed performance tracking for:${operationId}`, {} `
+      duration_ms:tracker.duration_ms,
+      memory_delta_mb:tracker.memory_delta_mb,
+});
 
     return tracker;
-  }
+}
 
   /**
    * Get current system performance snapshot
    */
-  public getPerformanceSnapshot(): {
-    cpu: CpuMetrics;
-    memory: MemoryMetrics;
-    timestamp: string;
-    uptime_seconds: number;
-  } {
+  public getPerformanceSnapshot():{
+    cpu:CpuMetrics;
+    memory:MemoryMetrics;
+    timestamp:string;
+    uptime_seconds:number;
+} {
     return {
-      cpu: this.getCpuMetrics(),
-      memory: this.getMemoryMetrics(),
-      timestamp: new Date().toISOString(),
-      uptime_seconds: Math.floor(process.uptime()),
-    };
-  }
+      cpu:this.getCpuMetrics(),
+      memory:this.getMemoryMetrics(),
+      timestamp:new Date().toISOString(),
+      uptime_seconds:Math.floor(process.uptime()),
+};
+}
 
   /**
    * Get system health status with recommendations
    */
-  public getSystemHealth(): SystemHealth {
+  public getSystemHealth():SystemHealth {
     const cpu = this.getCpuMetrics();
     const memory = this.getMemoryMetrics();
 
     // Health thresholds
     const cpuHealth =
       cpu.usage_percent > 90
-        ?'critical''
-        : cpu.usage_percent > 70
-          ? 'high''
-          : 'good;
-    const memoryPressure = memory.used_mb / memory.total_mb;
+        ?'critical')        :cpu.usage_percent > 70
+          ? 'high')          : 'good;
+'    const memoryPressure = memory.used_mb / memory.total_mb;
     const memoryHealth =
       memoryPressure > 0.95
-        ? 'critical''
-        : memoryPressure > 0.8
-          ? 'high''
-          : 'good;
-
+        ? 'critical')        :memoryPressure > 0.8
+          ? 'high')          : 'good;
+'
     const loadAvg1Min = (cpu.load_average[0] ?? 0) / cpu.cores;
     const loadHealth =
-      loadAvg1Min > 2 ? 'critical' : loadAvg1Min > 1 ? 'high' : 'good;
+      loadAvg1Min > 2 ? 'critical' :loadAvg1Min > 1 ? ' high' : ' good;
 
     // Overall status
     const healths = [cpuHealth, memoryHealth, loadHealth];
-    const status = healths.includes('critical')'
-      ? 'critical''
-      : healths.includes('high')'
-        ? 'warning''
-        : 'healthy;
-
+    const status = healths.includes('critical')')      ? 'critical')      :healths.includes('high')')        ? 'warning')        : 'healthy;
+'
     // Recommendations
-    const recommendations: string[] = [];
-    if (cpuHealth !== 'good') {'
-      recommendations.push(
-        'High CPU usage detected - consider reducing agent count''
-      );
-    }
-    if (memoryHealth !== 'good') {'
-      recommendations.push(
-        'High memory usage detected - implement cleanup policies''
-      );
-    }
-    if (loadHealth !== 'good') {'
-      recommendations.push('High system load - consider distributing work');'
-    }
+    const recommendations:string[] = [];
+    if (cpuHealth !== 'good') {
+    ')      recommendations.push(
+        'High CPU usage detected - consider reducing agent count')      );
+}
+    if (memoryHealth !== 'good') {
+    ')      recommendations.push(
+        'High memory usage detected - implement cleanup policies')      );
+}
+    if (loadHealth !== 'good') {
+    ')      recommendations.push('High system load - consider distributing work');')}
 
     return {
       status,
-      cpu_health: cpuHealth,
-      memory_health: memoryHealth,
-      load_health: loadHealth,
+      cpu_health:cpuHealth,
+      memory_health:memoryHealth,
+      load_health:loadHealth,
       recommendations,
-    };
-  }
+};
+}
 }
 
 // ============================================================================
@@ -234,14 +222,13 @@ this.logger.debug(`Completed performance tracking for: ${operationId}`, {} `
 /**
  * DI token for SystemMetricsCollector
  */
-export const SYSTEM_METRICS_COLLECTOR_TOKEN = Symbol('SystemMetricsCollector');'
-
+export const SYSTEM_METRICS_COLLECTOR_TOKEN = Symbol('SystemMetricsCollector');')
 /**
  * Create SystemMetricsCollector with DI
  */
 export function createSystemMetricsCollector(
-  logger?: Logger
-): SystemMetricsCollector {
+  logger?:Logger
+):SystemMetricsCollector {
   return SystemMetricsCollector.getInstance(logger);
 }
 );

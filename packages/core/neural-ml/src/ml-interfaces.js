@@ -186,9 +186,9 @@ export function createBayesianOptimizer(config) {
             // In a real implementation, this would update the Gaussian process
             // For now, we just validate the inputs
             if (params.length !== Array.from(bounds.lower).length) {
-                throw new Error(`Parameter dimension mismatch: expected ${Array.from(bounds.lower).length}, got ${params.length}`);
+                throw new Error(`Parameter dimension mismatch:expected ${Array.from(bounds.lower).length}, got ${params.length}`);
             }
-            logger?.debug(`Observed: params=${params}, value=${value}`);
+            logger?.debug(`Observed:params=${params}, value=${value}`);
         },
         // Add aliases for different method names used by teleprompters
         async observe(params, value) {
@@ -624,7 +624,7 @@ export function createOnlineLearner(config) {
             if (Array.isArray(data))
                 return data.filter((x) => typeof x === "number");
             if (typeof data === "string") {
-                // Simple text features: length, vowel count, word count
+                // Simple text features:length, vowel count, word count
                 const vowelCount = (data.match(/[aeiou]/gi) || []).length;
                 const wordCount = data.split(/\s+/).length;
                 return [data.length, vowelCount, wordCount];

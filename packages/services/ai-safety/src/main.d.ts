@@ -13,8 +13,8 @@
  * - Dependency injection with TSyringe
  * - Structured validation and type safety
  *
- * ENHANCEMENT:Basic → Comprehensive foundation integration
- * PATTERN:Matches memory, knowledge, event-system, teamwork, brain packages
+ * ENHANCEMENT: Basic → Comprehensive foundation integration
+ * PATTERN: Matches memory, knowledge, event-system, teamwork, brain packages
  *
  * @example Enterprise usage with Result pattern
  * ```typescript`
@@ -33,8 +33,8 @@
  * import { AIDeceptionDetector} from '@claude-zen/ai-safety';
  * ```
  */
-export { AIDeceptionDetector, analyzeAIResponse, createAIDeceptionDetector} from './ai-deception-detector';
-export { AISafetyOrchestrator as SafetyGuard, AISafetyOrchestrator, AutomatedDetectionResult, BehavioralAnalysisResult, createAISafetyOrchestrator as createSafetyGuard, createAISafetyOrchestrator, createInitializedAISafetyOrchestrator, HumanEscalationResult, SafetyError, SafetyOrchestrationResult} from './safety-orchestrator';
+export { AIDeceptionDetector, analyzeAIResponse, createAIDeceptionDetector, } from './ai-deception-detector';
+export { AISafetyOrchestrator as SafetyGuard, AISafetyOrchestrator, AutomatedDetectionResult, BehavioralAnalysisResult, createAISafetyOrchestrator as createSafetyGuard, createAISafetyOrchestrator, createInitializedAISafetyOrchestrator, HumanEscalationResult, SafetyError, SafetyOrchestrationResult } from './safety-orchestrator';
 /**
  * Enterprise setup function for AI safety monitoring with comprehensive foundation integration.
  *
@@ -50,10 +50,10 @@ export { AISafetyOrchestrator as SafetyGuard, AISafetyOrchestrator, AutomatedDet
 ' *}
  * ```
  */
-export declare function initializeAISafety():Promise<{
-    success:boolean;
-    value?:import("./safety-orchestrator").AISafetyOrchestrator;
-    error?:import("./safety-orchestrator").SafetyError;
+export declare function initializeAISafety(): Promise<{
+    success: boolean;
+    value?: import("./safety-orchestrator").AISafetyOrchestrator;
+    error?: import("./safety-orchestrator").SafetyError;
 }>;
 /**
  * Enterprise emergency safety shutdown with comprehensive cleanup.
@@ -69,54 +69,11 @@ export declare function initializeAISafety():Promise<{
 ' *}
  * ```
  */
-export declare function emergencySafetyShutdown():Promise<{
-    success:boolean;
-    error?:undefined;
+export declare function emergencySafetyShutdown(): Promise<{
+    success: boolean;
+    error?: undefined;
 } | {
-    success:boolean;
-    error:Error;
+    success: boolean;
+    error: Error;
 }>;
-export type { AIInteractionData, DeceptionAlert} from './ai-deception-detector';
-export type { SafetyMetrics} from './safety-orchestrator';
-/** Safety configuration interface */
-export interface SafetyConfig {
-    enabled:boolean;
-    strictMode?:boolean;
-    interventionThreshold?:number;
-    escalationTimeout?:number;
-}
-/** Safety event interface */
-export interface SafetyEvent {
-    type:'alert' | ' intervention' | ' escalation' | ' shutdown';
-    timestamp:number;
-    agentId?:string;
-    severity:'low' | ' medium' | ' high' | ' critical';
-    data:Record<string, any>;
-}
-/** Risk level enum */
-export type RiskLevel = 'minimal' | ' low' | ' medium' | ' high' | ' critical' | ' extreme';
-/** Safety status enum */
-export type SafetyStatus = 'safe' | ' monitoring' | ' warning' | ' alert' | ' intervention' | ' emergency';
-/** Intervention action interface */
-export interface InterventionAction {
-    type:'pause' | ' restrict' | ' terminate' | ' escalate';
-    target:string;
-    reason:string;
-    timestamp:number;
-    success:boolean;
-}
-export declare function getAISafetySystemAccess(_config?:SafetyConfig): Promise<any>;
-export declare function getSafetyOrchestrator(config?:SafetyConfig): Promise<any>;
-export declare function getDeceptionDetection(_config?:any): Promise<any>;
-export declare function getSafetyMonitoring(config?:SafetyConfig): Promise<any>;
-export declare function getSafetyIntervention(config?:SafetyConfig): Promise<any>;
-export declare const aiSafetySystem:{
-    getAccess:typeof getAISafetySystemAccess;
-    getOrchestrator:typeof getSafetyOrchestrator;
-    getDetection:typeof getDeceptionDetection;
-    getMonitoring:typeof getSafetyMonitoring;
-    getIntervention:typeof getSafetyIntervention;
-    initialize:typeof initializeAISafety;
-    emergencyShutdown:typeof emergencySafetyShutdown;
-};
 //# sourceMappingURL=main.d.ts.map

@@ -5,28 +5,26 @@
  * environment discovery and project context analysis.
  *
  * @example Basic Environment Detection
- * ```typescript
- * import { EnvironmentDetector } from '@claude-zen/foundation';
+ * ```typescript`
+ * import { EnvironmentDetector} from '@claude-zen/foundation';
  *
  * const detector = new EnvironmentDetector();
  * const env = await detector.detect('/path/to/project');
  *
- * console.log('Node version:', env.runtime.node);
- * console.log('Package manager:', env.packageManager.type);
- * console.log('Available tools:', env.tools);
- * ```
+ * console.log('Node version: ', env.runtime.node);
+' * console.log('Package manager: ', env.packageManager.type);
+' * console.log('Available tools: ', env.tools);
+' * ```
  *
  * @example Advanced Usage with Caching
- * ```typescript
+ * ```typescript`
  * const detector = new EnvironmentDetector({
- *   useCache: true,
- *   cacheTimeout: 300000, // 5 minutes
- * });
+ *   useCache:true,
+ *   cacheTimeout:300000, // 5 minutes
+ *});
  *
  * const environments = await detector.detectMultiple([
- *   '/path/to/project1',
- *   '/path/to/project2'
- * ]);
+ *   '/path/to/project1', *   '/path/to/project2') *]);
  * ```
  *
  * @package @claude-zen/foundation
@@ -71,21 +69,21 @@ export class EnvironmentDetectionError extends Error {
  * Provides auto-detection of tools, project context, system capabilities, and Nix integration.
  *
  * @class EnvironmentDetector
- * @extends TypedEventBase<ServiceEvents>
+ * @extends EventEmitter
  *
  * @example Basic Usage
- * ```typescript
+ * ```typescript`
  * const detector = new EnvironmentDetector();
  * const env = await detector.detectEnvironment();
- * console.log('Available tools:', env.tools.filter(t => t.available));
- * ```
+ * console.log('Available tools: ', env.tools.filter(t => t.available));
+' * ```
  *
  * @example With Caching and Auto-refresh
- * ```typescript
+ * ```typescript`
  * const detector = new EnvironmentDetector('/project/path', true, 30000);
  * detector.on('service-started', (event) => {
- *   console.log('Detection completed:', event.serviceName);
- * });
+ *   console.log('Detection completed: ', event.serviceName);
+' *});
  * ```
  */
 export class EnvironmentDetector extends EventEmitter {
@@ -179,7 +177,7 @@ export class EnvironmentDetector extends EventEmitter {
         }
         catch (error) {
             this.logger.error("Environment detection failed:", error);
-            throw new EnvironmentDetectionError(`Failed to detect environment: ${error instanceof Error ? error['message'] : "Unknown error"}`);
+            throw new EnvironmentDetectionError(`Failed to detect environment:${error instanceof Error ? error['message'] : "Unknown error"}`);
         }
         finally {
             this.isDetecting = false;
@@ -418,7 +416,7 @@ export class EnvironmentDetector extends EventEmitter {
                     currentShell: null,
                     packages: [],
                     suggestedSetup: [
-                        "Install Nix: curl -L https://nixos.org/nix/install|sh",
+                        "Install Nix:curl -L https://nixos.org/nix/install|sh",
                     ],
                 };
             }
@@ -588,12 +586,12 @@ export class EnvironmentDetector extends EventEmitter {
     generateNixSetupSuggestions(flakesEnabled, packages) {
         const suggestions = [];
         if (!flakesEnabled) {
-            suggestions.push('Enable Nix flakes: echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf');
+            suggestions.push('Enable Nix flakes:echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf');
         }
         // Check if flake.nix exists
         const hasFlakeNix = this.hasFlakeNix();
         if (hasFlakeNix) {
-            suggestions.push("Enter development shell: nix develop");
+            suggestions.push("Enter development shell:nix develop");
         }
         else {
             suggestions.push("Create flake.nix for reproducible development environment");
@@ -603,7 +601,7 @@ export class EnvironmentDetector extends EventEmitter {
         const devTools = packages.filter((p) => p.category === "dev-tools");
         const missingDev = devTools.filter((p) => p.available && !p.installed);
         if (missingDev.length > 0) {
-            suggestions.push(`Install dev tools: nix-shell -p ${missingDev.map((p) => p.name).join(" ")}`);
+            suggestions.push(`Install dev tools:nix-shell -p ${missingDev.map((p) => p.name).join(" ")}`);
         }
         return suggestions;
     }
@@ -660,7 +658,7 @@ export class EnvironmentDetector extends EventEmitter {
         }
     }
     detectToolCapabilities(toolName) {
-        // Security audit: tracking tool capability detection for security analysis
+        // Security audit:tracking tool capability detection for security analysis
         this.logger.debug("Detecting tool capabilities for security audit", {
             toolName,
         });
@@ -782,12 +780,12 @@ export class EnvironmentDetector extends EventEmitter {
  * @class NixIntegration
  *
  * @example Basic Usage
- * ```typescript
+ * ```typescript`
  * const nix = new NixIntegration('/project/path');
  * const result = await nix.autoSetup();
  * if (result.success) {
- *   console.log('Nix setup completed:', result.steps);
- * }
+ *   console.log('Nix setup completed: ', result.steps);
+' *}
  * ```
  */
 export class NixIntegration {
@@ -829,7 +827,7 @@ export class NixIntegration {
             currentShell: null,
             packages: [],
             suggestedSetup: [
-                "Install Nix: curl -L https://nixos.org/nix/install | sh",
+                "Install Nix:curl -L https://nixos.org/nix/install | sh",
             ],
         };
         // Cache the results
@@ -871,13 +869,13 @@ export class NixIntegration {
                     steps.push("✓ Enabled Nix flakes");
                 }
                 catch (error) {
-                    errors.push(`Failed to enable flakes: ${error}`);
+                    errors.push(`Failed to enable flakes:${error}`);
                 }
             }
             return { success: errors.length === 0, steps, errors };
         }
         catch (error) {
-            errors.push(`Auto-setup failed: ${error}`);
+            errors.push(`Auto-setup failed:${error}`);
             return { success: false, steps, errors };
         }
     }
@@ -891,7 +889,7 @@ export class NixIntegration {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-  };
+};
 
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
@@ -913,15 +911,15 @@ export class NixIntegration {
             tree
             jq
             curl
-          ];
+];
           
-          shellHook = '
+          shellHook = ''
             echo "🚀 Claude Code Zen Development Environment"
             echo "📦 TypeScript/Node.js development ready"
             echo "🛠️  Ready for development!"
           ';
-        };
-      });
+};
+});
 }`;
         await writeFile(join(this.projectRoot, "flake.nix"), flakeContent);
     }
@@ -947,7 +945,7 @@ export class NixIntegration {
             }
         }
         catch (error) {
-            throw new Error(`Failed to enable flakes: ${error}`);
+            throw new Error(`Failed to enable flakes:${error}`);
         }
     }
     /**
@@ -959,7 +957,7 @@ export class NixIntegration {
             if (!existsSync(flakePath)) {
                 return false;
             }
-            // Enhanced validation: check if the flake.nix file is readable and non-empty
+            // Enhanced validation:check if the flake.nix file is readable and non-empty
             try {
                 const content = readFileSync(flakePath, "utf-8");
                 return content.trim().length > 0 && content.includes("outputs");

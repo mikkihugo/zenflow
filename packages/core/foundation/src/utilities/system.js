@@ -19,9 +19,9 @@ export { WorkspaceDetector } from "./system/monorepo.detector.js";
  * @returns Normalized platform name
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const platform = getPlatform();
- * console.log(platform); // 'darwin', 'linux', 'win32', etc.
+ * console.log(platform); // 'darwin',    'linux',    'win32', etc.
  * ```
  */
 export function getPlatform() {
@@ -43,9 +43,9 @@ export function getPlatform() {
  * @returns Normalized architecture name
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const arch = getArchitecture();
- * console.log(arch); // 'x64', 'arm64', etc.
+ * console.log(arch); // 'x64',    'arm64', etc.
  * ```
  */
 export function getArchitecture() {
@@ -62,10 +62,10 @@ export function getArchitecture() {
  * @returns True if running on Windows
  *
  * @example
- * ```typescript
+ * ```typescript`
  * if (isWindows()) {
  *   // Windows-specific logic
- * }
+ *}
  * ```
  */
 export function isWindows() {
@@ -77,10 +77,10 @@ export function isWindows() {
  * @returns True if running on macOS
  *
  * @example
- * ```typescript
+ * ```typescript`
  * if (isMacOS()) {
  *   // macOS-specific logic
- * }
+ *}
  * ```
  */
 export function isMacOS() {
@@ -92,10 +92,10 @@ export function isMacOS() {
  * @returns True if running on Linux
  *
  * @example
- * ```typescript
+ * ```typescript`
  * if (isLinux()) {
  *   // Linux-specific logic
- * }
+ *}
  * ```
  */
 export function isLinux() {
@@ -107,10 +107,10 @@ export function isLinux() {
  * @returns True if running in CI
  *
  * @example
- * ```typescript
+ * ```typescript`
  * if (isCI()) {
  *   console.log('Running in CI environment');
- * }
+ *}
  * ```
  */
 export function isCI() {
@@ -131,10 +131,10 @@ export function isCI() {
  * @returns True if running in Docker
  *
  * @example
- * ```typescript
+ * ```typescript`
  * if (isDocker()) {
  *   console.log('Running in Docker container');
- * }
+ *}
  * ```
  */
 export function isDocker() {
@@ -161,10 +161,10 @@ export function isDocker() {
  * @returns True if running in WSL
  *
  * @example
- * ```typescript
+ * ```typescript`
  * if (isWSL()) {
  *   console.log('Running in WSL');
- * }
+ *}
  * ```
  */
 export function isWSL() {
@@ -190,11 +190,11 @@ export function isWSL() {
  * @returns Environment type
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const env = getEnvironment();
  * if (env === 'production') {
  *   // Production-specific configuration
- * }
+ *}
  * ```
  */
 export function getEnvironment() {
@@ -212,15 +212,15 @@ export function getEnvironment() {
         return "preview";
     // Infer from other environment variables
     if (process.env['VERCEL_ENV'] === "production" ||
-        (process.env['NETLIFY'] && process.env['CONTEXT'] === "production")) {
+        (process.env['NETLIFY'] && process.env[' CONTEXT'] === "production")) {
         return "production";
     }
     if (process.env['VERCEL_ENV'] === "preview" ||
-        (process.env['NETLIFY'] && process.env['CONTEXT'] === "deploy-preview")) {
+        (process.env['NETLIFY'] && process.env[' CONTEXT'] === "deploy-preview")) {
         return "preview";
     }
     if (process.env['VERCEL_ENV'] === "development" ||
-        (process.env['NETLIFY'] && process.env['CONTEXT'] === "dev")) {
+        (process.env['NETLIFY'] && process.env[' CONTEXT'] === "dev")) {
         return "development";
     }
     // CI environments usually indicate production-like environments
@@ -236,10 +236,10 @@ export function getEnvironment() {
  * @returns True if in development mode
  *
  * @example
- * ```typescript
+ * ```typescript`
  * if (isDevelopment()) {
  *   // Development-only features
- * }
+ *}
  * ```
  */
 export function isDevelopment() {
@@ -251,10 +251,10 @@ export function isDevelopment() {
  * @returns True if in production mode
  *
  * @example
- * ```typescript
+ * ```typescript`
  * if (isProduction()) {
  *   // Production optimizations
- * }
+ *}
  * ```
  */
 export function isProduction() {
@@ -266,10 +266,10 @@ export function isProduction() {
  * @returns True if in test mode
  *
  * @example
- * ```typescript
+ * ```typescript`
  * if (isTest()) {
  *   // Test-specific setup
- * }
+ *}
  * ```
  */
 export function isTest() {
@@ -281,7 +281,7 @@ export function isTest() {
  * @returns System information object
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const sysInfo = getSystemInfo();
  * console.log(`Running on ${sysInfo.platform} ${sysInfo.arch} with ${sysInfo.cpuCount} CPUs`);
  * ```
@@ -317,7 +317,7 @@ export function getSystemInfo() {
  * @returns Process information object
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const procInfo = getProcessInfo();
  * console.log(`Process ${procInfo.pid} running for ${procInfo.uptime}s`);
  * ```
@@ -341,12 +341,12 @@ export function getProcessInfo() {
  * @returns WorkspaceDetector instance
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const detector = getWorkspaceDetector();
  * const workspace = await detector.detectWorkspaceRoot();
  * if (workspace) {
  *   console.log(`Found ${workspace.tool} workspace with ${workspace.totalProjects} projects`);
- * }
+ *}
  * ```
  */
 export function getWorkspaceDetector() {
@@ -359,13 +359,13 @@ export function getWorkspaceDetector() {
  * @returns Detected workspace information or null
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const workspace = await detectWorkspace();
  * if (workspace) {
  *   console.log(`Detected ${workspace.tool} monorepo with ${workspace.totalProjects} projects`);
- * } else {
+ *} else {
  *   console.log('No monorepo detected');
- * }
+ *}
  * ```
  */
 export function detectWorkspace(startPath) {
@@ -378,10 +378,10 @@ export function detectWorkspace(startPath) {
  * @returns System capability data
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const capabilities = await getSystemCapabilities();
- * console.log(`System health: ${capabilities.systemHealthScore}%`);
- * console.log(`Available packages: ${capabilities.availablePackages}/${capabilities.totalPackages}`);
+ * console.log(`System health:${capabilities.systemHealthScore}%`);
+ * console.log(`Available packages:${capabilities.availablePackages}/${capabilities.totalPackages}`);
  * ```
  */
 export function getSystemCapabilities() {
@@ -391,7 +391,7 @@ export function getSystemCapabilities() {
  * Display system status information to console
  *
  * @example
- * ```typescript
+ * ```typescript`
  * await showSystemStatus();
  * // Outputs detailed system status with colors and emojis
  * ```
@@ -403,7 +403,7 @@ export function showSystemStatus() {
  * Start system monitoring for status changes
  *
  * @example
- * ```typescript
+ * ```typescript`
  * startMonitoring();
  * // Begins logging system events and status changes
  * ```
@@ -417,11 +417,11 @@ export function startMonitoring() {
  * @returns Record of capability area names to scores
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const scores = await getCapabilityScoreMap();
- * console.log('Intelligence capability:', scores.intelligence);
- * console.log('Infrastructure capability:', scores.infrastructure);
- * ```
+ * console.log('Intelligence capability: ', scores.intelligence);
+' * console.log('Infrastructure capability: ', scores.infrastructure);
+' * ```
  */
 export function getCapabilityScoreMap() {
     return getCapabilityScores();
@@ -432,10 +432,10 @@ export function getCapabilityScoreMap() {
  * @returns Formatted system summary string
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const summary = createSystemSummary();
  * console.log(summary);
- * // Outputs: "Linux x64 (Node.js v18.17.0) - 8 CPUs, 16.0GB RAM - Development"
+ * // Outputs:"Linux x64 (Node.js v18.17.0) - 8 CPUs, 16.0GB RAM - Development"
  * ```
  */
 export function createSystemSummary() {
@@ -461,16 +461,15 @@ export function createSystemSummary() {
  * @returns True if requirements are met
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const meetsRequirements = checkSystemRequirements({
- *   nodeVersion: '18.0.0',
- *   totalMemoryGB: 8,
- *   cpuCount: 4
- * });
+ *   nodeVersion: '18.0.0', *   totalMemoryGB:8,
+ *   cpuCount:4
+ *});
  *
  * if (!meetsRequirements) {
  *   console.warn('System does not meet minimum requirements');
- * }
+ *}
  * ```
  */
 export function checkSystemRequirements(requirements) {

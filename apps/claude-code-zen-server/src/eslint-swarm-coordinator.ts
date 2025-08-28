@@ -415,8 +415,9 @@ export class ESLintSwarmCoordinator extends EventEmitter {
         this.logger.debug(
           `Remaining: ${violation.filePath}:${msg.line}:${msg.column} - ${msg.ruleId}`
         );
-}
-}
+      }
+    }
+  }
 
   /**
    * Utility function to chunk arrays into smaller batches
@@ -494,11 +495,11 @@ async function main():Promise<void> {
 }
 
 // Run if called directly
-if (import.meta.url === `file://${process.argv[1]}`) {`
+if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch((error) => {
     getLogger('eslint-swarm-main').error(' Fatal error: ', error);
-      process.exit(1);
-});
+    process.exit(1);
+  });
 }
 
 export type {

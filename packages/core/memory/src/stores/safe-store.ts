@@ -98,13 +98,17 @@ export class SafeMemoryStore extends EventEmitter {
       if (!this.initialized) {
         return this.createMemoryError(
           key,
-          'STORE_NOT_INITIALIZED',          'Memory store not initialized')        );
+          'STORE_NOT_INITIALIZED',
+          'Memory store not initialized'
+        );
 }
 
       if (this.store.size >= this.options.maxSize) {
         return this.createMemoryError(
           key,
-          'STORE_FULL',          'Memory store has reached maximum capacity')        );
+          'STORE_FULL',
+          'Memory store has reached maximum capacity'
+        );
 }
 
       const fullKey = this.createKey(key);
@@ -160,7 +164,9 @@ export class SafeMemoryStore extends EventEmitter {
       if (!this.initialized) {
         return this.createMemoryError(
           key,
-          'STORE_NOT_INITIALIZED',          'Memory store not initialized')        );
+          'STORE_NOT_INITIALIZED',
+          'Memory store not initialized'
+        );
 }
 
       const fullKey = this.createKey(key);
@@ -222,7 +228,9 @@ export class SafeMemoryStore extends EventEmitter {
       if (!this.initialized) {
         return this.createMemoryError(
           key,
-          'STORE_NOT_INITIALIZED',          'Memory store not initialized')        );
+          'STORE_NOT_INITIALIZED',
+          'Memory store not initialized'
+        );
 }
 
       const fullKey = this.createKey(key);

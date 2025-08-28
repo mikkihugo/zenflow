@@ -295,5 +295,6 @@ export function isSwarmMessage(obj:unknown): obj is SwarmMessage {
     obj &&
     typeof obj.id === 'string' &&
     typeof obj.from === 'string' &&
-    typeof obj.type === 'string')  );
+    typeof obj.type === 'string'
+  );
 }

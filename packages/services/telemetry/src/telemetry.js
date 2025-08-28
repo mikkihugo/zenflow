@@ -8,13 +8,10 @@ import { getLogger } from '@claude-zen/foundation';
 // =============================================================================
 // SIMPLE TELEMETRY MANAGER
 // =============================================================================
-const _defaultConfig = {
-    serviceName: 'claude-zen-service',
-    serviceVersion: '1.0.0',
-    enableTracing: true,
+const defaultConfig = {
+    serviceName: 'claude-zen-service', serviceVersion: '1.0.0', enableTracing: true,
     enableMetrics: true,
-    jaegerEndpoint: 'http://localhost:14268/api/traces',
-    prometheusPort: 9090,
+    jaegerEndpoint: 'http://localhost:14268/api/traces', prometheusPort: 9090,
     samplingRatio: 1.0,
     globalAttributes: {},
 };
@@ -27,12 +24,13 @@ export class TelemetryManager {
     initialized = false;
     metrics = new Map();
     traces = new Map();
-    constructor(_config = { serviceName: 'claude-zen-service' }) {
-        this.config = { ..._defaultConfig, ..._config };
+    constructor(config = { serviceName: 'claude-zen-service' }) {
+        this.config = { ...defaultConfig, ...config };
     }
     async initialize() {
         if (this.initialized)
             return;
+        await Promise.resolve();
         this.logger.info('Initializing telemetry manager', {
             serviceName: this.config.serviceName,
             enableTracing: this.config.enableTracing,
@@ -111,7 +109,7 @@ export class TelemetryManager {
         };
     }
     withTrace(nameOrFn, fn) {
-        // Handle both signatures: withTrace(fn) and withTrace(name, fn)
+        // Handle both signatures:withTrace(fn) and withTrace(name, fn)
         if (typeof nameOrFn === 'function') {
             const span = this.startTrace('anonymous');
             try {
@@ -140,7 +138,7 @@ export class TelemetryManager {
         }
     }
     async withAsyncTrace(nameOrFn, fn) {
-        // Handle both signatures: withAsyncTrace(fn) and withAsyncTrace(name, fn)
+        // Handle both signatures:withAsyncTrace(fn) and withAsyncTrace(name, fn)
         if (typeof nameOrFn === 'function') {
             const span = this.startTrace('async-anonymous');
             try {
@@ -220,7 +218,10 @@ export function withTrace(nameOrFn, fn) {
     return typeof nameOrFn === 'function' ? getTelemetry().withTrace(nameOrFn) : getTelemetry().withTrace(nameOrFn, fn);
 }
 export async function withAsyncTrace(nameOrFn, fn) {
-    return typeof nameOrFn === 'function' ? getTelemetry().withAsyncTrace(nameOrFn) : getTelemetry().withAsyncTrace(nameOrFn, fn);
+    if (typeof nameOrFn === 'function') {
+        return await getTelemetry().withAsyncTrace(nameOrFn);
+    }
+    return await getTelemetry().withAsyncTrace(nameOrFn, fn);
 }
 // =============================================================================
 // DECORATORS (Simplified)
@@ -229,7 +230,8 @@ export function traced(name) {
     return (target, propertyKey, descriptor) => {
         const originalMethod = descriptor.value;
         descriptor.value = function (...args) {
-            const traceName = name || `${target.constructor.name}.${propertyKey}`;
+            const className = target?.constructor?.name ?? 'UnknownClass';
+            const traceName = name || `${className}.${propertyKey}`;
             return withTrace(traceName, () => originalMethod.apply(this, args));
         };
     };
@@ -238,18 +240,20 @@ export function tracedAsync(name) {
     return function (target, propertyKey, descriptor) {
         const originalMethod = descriptor.value;
         descriptor.value = async function (...args) {
-            const traceName = name || `${target.constructor.name}.${propertyKey}`;
-            return withAsyncTrace(traceName, () => originalMethod.apply(this, args));
+            const className = target?.constructor?.name ?? 'UnknownClass';
+            const traceName = name || `${className}.${propertyKey}`;
+            return await withAsyncTrace(traceName, () => originalMethod.apply(this, args));
         };
     };
 }
 export function metered(name) {
     return (target, propertyKey, descriptor) => {
-        const _originalMethod = descriptor.value;
-        descriptor.value = function (..._args) {
-            const _metricName = name || `${target.constructor.name}.${propertyKey}.calls`;
-            recordMetric(_metricName, 1);
-            return _originalMethod.apply(this, _args);
+        const originalMethod = descriptor.value;
+        descriptor.value = function (...args) {
+            const className = target?.constructor?.name ?? 'UnknownClass';
+            const metricName = name || `${className}.${propertyKey}.calls`;
+            recordMetric(metricName, 1);
+            return originalMethod.apply(this, args);
         };
     };
 }
@@ -258,5 +262,5 @@ export function metered(name) {
 // =============================================================================
 export function setTraceAttributes(attributes) {
     // Simple implementation - log attributes
-    getLogger('TelemetryManager').debug('Trace attributes set', attributes);
+    getLogger('TelemetryManager').debug(' Trace attributes set', attributes);
 }

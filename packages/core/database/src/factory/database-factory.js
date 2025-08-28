@@ -167,11 +167,7 @@ export class DatabaseFactoryImpl {
      */
     getRecommendedBackend(storageType) {
         const recommendedBackends = {
-            keyValue: 'sqlite',
-            sql: 'sqlite',
-            vector: 'lancedb',
-            graph: 'kuzu',
-            hybrid: 'sqlite', // Default fallback
+            keyValue: 'sqlite', sql: 'sqlite', vector: 'lancedb', graph: 'kuzu', hybrid: 'sqlite', // Default fallback
         };
         return recommendedBackends[storageType];
     }
@@ -229,7 +225,7 @@ export class DatabaseFactoryImpl {
                     database: ':memory:',
                 });
             default:
-                throw new Error(`Unsupported database type: ${config.type}`);
+                throw new Error(`Unsupported database type:${config.type}`);
         }
     }
     validateConfig(config) {
@@ -316,8 +312,7 @@ export class DatabaseFactoryImpl {
                     // Settings for key-value workload
                     pragma: {
                         cache_size: 2000,
-                        journal_mode: 'WAL',
-                        synchronous: 'NORMAL',
+                        journal_mode: 'WAL', synchronous: 'NORMAL',
                     },
                 },
             },
@@ -326,17 +321,14 @@ export class DatabaseFactoryImpl {
                     // Settings for OLTP workload
                     pragma: {
                         cache_size: 5000,
-                        journal_mode: 'WAL',
-                        synchronous: 'NORMAL',
-                        foreign_keys: 'ON',
+                        journal_mode: 'WAL', synchronous: 'NORMAL', foreign_keys: 'ON',
                     },
                 },
             },
             vector: {
                 lancedb: {
                     // Settings for vector operations
-                    writeMode: 'append',
-                    readConsistencyInterval: 1000,
+                    writeMode: 'append', readConsistencyInterval: 1000,
                 },
             },
             graph: {
@@ -412,6 +404,6 @@ export function createStorage(type, database, baseConfig) {
         case 'graph':
             return factory.createGraphStorage(config);
         default:
-            throw new Error(`Unsupported storage type: ${type}`);
+            throw new Error(`Unsupported storage type:${type}`);
     }
 }

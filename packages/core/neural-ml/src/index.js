@@ -12,4 +12,3 @@
 export * from "./ml-interfaces";
 // Export simple Rust binding
 export * from "./rust-binding";
-//# sourceMappingURL=index.js.map

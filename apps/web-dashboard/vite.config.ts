@@ -19,7 +19,7 @@ export default defineConfig({
 						// Log backend connection errors in development
 						if (process.env.NODE_ENV === 'development') {
 							// eslint-disable-next-line no-console
-							console.log("Backend API proxy error:", err.message);
+							logger.info("Backend API proxy error:", err.message);
 }
 						res.writeHead(503, { "Content-Type":"application/json"});
 						res.end(
@@ -33,7 +33,7 @@ export default defineConfig({
 					proxy.on("proxyReq", (proxyReq, req) => {
 						if (process.env.NODE_ENV === 'development') {
 							// eslint-disable-next-line no-console
-							console.log(
+							logger.info(
 								`Proxying API request:${req.method} ${req.url} -> http://localhost:3000${req.url}`,
 							);
 }

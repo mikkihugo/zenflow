@@ -119,17 +119,17 @@ export class AISafetyOrchestrator {
         try {
             const startTime = Date.now();
             const orchestrationId = this.generateId();
-            // Phase 1: Automated Detection
+            // Phase 1:Automated Detection
             const phase1Result = await this.performAutomatedDetection(agentId, interactionData, orchestrationId);
             if (!phase1Result.success) {
                 throw phase1Result.error;
             }
-            // Phase 2: Behavioral Analysis
+            // Phase 2:Behavioral Analysis
             const phase2Result = await this.performBehavioralAnalysis(agentId, interactionData, orchestrationId);
             if (!phase2Result.success) {
                 throw phase2Result.error;
             }
-            // Phase 3: Human Escalation (if needed)
+            // Phase 3:Human Escalation (if needed)
             let phase3Result;
             if (this.shouldEscalateToHuman(phase1Result.value, phase2Result.value)) {
                 const escalationResult = await this.escalateToHuman(agentId, phase1Result.value, phase2Result.value, orchestrationId);
@@ -174,13 +174,12 @@ export class AISafetyOrchestrator {
         try {
             const startTime = Date.now();
             const alerts = this.deceptionDetector.analyzeAIResponse(interactionData);
-            const immediateInterventions = alerts.filter(alert => alert.severity === 'CRITICAL' || alert.severity === 'HIGH').length;
+            const immediateInterventions = alerts.filter(alert => alert.severity === 'CRITICAL' || alert.severity === ' HIGH'), length;
             return {
                 success: true,
                 value: {
                     id: this.generateId(),
-                    detectionSpeed: 'REAL_TIME',
-                    alertsGenerated: alerts.length,
+                    detectionSpeed: 'REAL_TIME', alertsGenerated: alerts.length,
                     immediateInterventions,
                     accuracy: alerts.length > 0 ? 0.95 : 1.0,
                     timeMs: Date.now() - startTime,
@@ -256,16 +255,12 @@ export class AISafetyOrchestrator {
     detectBehavioralDeviations(data) {
         let deviations = 0;
         // Check for unusual confidence levels
-        if (data.confidenceLevel !== undefined) {
-            if (data.confidenceLevel > 0.95 || data.confidenceLevel < 0.3) {
-                deviations++;
-            }
+        if (data.confidenceLevel !== undefined && (data.confidenceLevel > 0.95 || data.confidenceLevel < 0.3)) {
+            deviations++;
         }
         // Check for unusual response times
-        if (data.responseTime !== undefined) {
-            if (data.responseTime < 100 || data.responseTime > 10000) {
-                deviations++;
-            }
+        if (data.responseTime !== undefined && (data.responseTime < 100 || data.responseTime > 10000)) {
+            deviations++;
         }
         // Check for claims without verification
         if (data.claimsVerification === false && data.message.includes('I can')) {
@@ -294,8 +289,7 @@ export class AISafetyOrchestrator {
                     id: this.generateId(),
                     escalationLevel,
                     responseTime: 0, // Immediate for now
-                    resolution: 'PENDING',
-                    timestamp: new Date(),
+                    resolution: 'PENDING', timestamp: new Date(),
                     errors: []
                 }
             };

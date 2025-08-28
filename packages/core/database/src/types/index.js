@@ -31,8 +31,7 @@ export class DatabaseError extends Error {
 export class ConnectionError extends DatabaseError {
     constructor(message, correlationId, cause) {
         super(message, {
-            code: 'CONNECTION_ERROR',
-            correlationId,
+            code: 'CONNECTION_ERROR', correlationId,
             cause,
         });
         this.name = 'ConnectionError';
@@ -41,8 +40,7 @@ export class ConnectionError extends DatabaseError {
 export class QueryError extends DatabaseError {
     constructor(message, options = {}) {
         super(message, {
-            code: 'QUERY_ERROR',
-            correlationId: options.correlationId,
+            code: 'QUERY_ERROR', correlationId: options.correlationId,
             query: options.query,
             params: options.params,
             cause: options.cause,
@@ -53,8 +51,7 @@ export class QueryError extends DatabaseError {
 export class TransactionError extends DatabaseError {
     constructor(message, correlationId, cause) {
         super(message, {
-            code: 'TRANSACTION_ERROR',
-            correlationId,
+            code: 'TRANSACTION_ERROR', correlationId,
             cause,
         });
         this.name = 'TransactionError';

@@ -2,9 +2,9 @@
  * @fileoverview Modern Error Handling using Battle-Tested Libraries
  *
  * Professional error handling using established npm packages:
- * - neverthrow: Type-safe Result<T, E> pattern
- * - p-retry: Advanced retry logic with exponential backoff
- * - opossum: Production-ready circuit breaker
+ * - neverthrow:Type-safe Result<T, E> pattern
+ * - p-retry:Advanced retry logic with exponential backoff
+ * - opossum:Production-ready circuit breaker
  *
  * Features:
  * - Type-safe error handling with Result pattern
@@ -30,14 +30,12 @@ const logger = getLogger("error-handling");
  * @extends Error
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const error = new EnhancedError(
- *   'Database connection failed',
- *   { host: 'localhost', port: 5432 },
- *   'DB_CONNECTION_ERROR'
- * );
+ *   'Database connection failed', *   { host: 'localhost', port:5432},
+ *   'DB_CONNECTION_ERROR') * );
  *
- * const enriched = error.withContext({ retryAttempt: 3 });
+ * const enriched = error.withContext({ retryAttempt:3});
  * ```
  */
 export class EnhancedError extends Error {
@@ -88,14 +86,12 @@ export class EnhancedError extends Error {
  * @extends Error
  *
  * @example
- * ```typescript
+ * ```typescript`
  * const contextError = new ContextError(
- *   'Validation failed',
- *   { field: 'email', value: 'invalid-email', rule: 'email-format' },
- *   'VALIDATION_ERROR'
- * );
+ *   'Validation failed', *   { field: 'email', value: ' invalid-email', rule: ' email-format'},
+ *   'VALIDATION_ERROR') * );
  *
- * const enriched = contextError.withContext({ userId: '12345' });
+ * const enriched = contextError.withContext({ userId: '12345'});
  * const serialized = enriched.toObject();
  * ```
  */
@@ -364,7 +360,7 @@ export class CircuitBreakerWithMonitoring {
      * Clear metrics (cockatiel doesn't support reset/shutdown)
      */
     clear() {
-        logger.info(`Circuit breaker ${this.name} metrics cleared (note: cockatiel doesn't support reset)`);
+        logger.info(`Circuit breaker ${this.name} metrics cleared (note:cockatiel doesn't support reset)`);
     }
 }
 /**

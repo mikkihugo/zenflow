@@ -264,14 +264,15 @@ export class WebApiRoutes {
     // Root route
     app.get('/', (req, res) => {
       res.json({
-        message: 'Claude Code Zen API Server',        version:getVersion(),
-        documentation:`${api}/docs`,
-        health:`${api}/health`,
-});
+        message: 'Claude Code Zen API Server',
+        version: getVersion(),
+        documentation: `${api}/docs`,
+        health: `${api}/health`,
+      });
 });
 
     // Health check - delegate to monitoring package
-    app.get(`${api}/health`, async (req:Request, res:Response) => {`
+    app.get(`${api}/health`, async (req: Request, res: Response) => {
       try {
         assertDefined(
           this.healthMonitor,
@@ -279,12 +280,13 @@ export class WebApiRoutes {
         );
         const health = await this.healthMonitor?.getSystemHealth();
         res.json(health);
-} catch (error) {
+      } catch (error) {
         res.status(500).json({
-          error: 'Health check failed',          message:getErrorMessage(error),
-});
-}
-});
+          error: 'Health check failed',
+          message: getErrorMessage(error),
+        });
+      }
+    });
 
     // System status - delegate to monitoring package
     app.get(`${api}/system/status`, async (req: Request, res: Response) => {
@@ -303,6 +305,49 @@ export class WebApiRoutes {
 }
 });
 
+    // Missing endpoints that frontend expects - temporary mock implementations
+    app.get(`${api}/agents/status`, (req: Request, res: Response) => {
+      res.json({
+        success: true,
+        data: []
+      });
+    });
+
+    app.get(`${api}/tasks`, (req: Request, res: Response) => {
+      res.json({
+        success: true,
+        data: []
+      });
+    });
+
+    app.get(`${api}/safe/metrics`, (req: Request, res: Response) => {
+      res.json({
+        success: true,
+        data: {
+          metrics: {},
+          summary: "No active metrics"
+        }
+      });
+    });
+
+    app.get(`${api}/events`, (req: Request, res: Response) => {
+      res.json({
+        success: true,
+        data: []
+      });
+    });
+
+    app.get(`${api}/memory/status`, (req: Request, res: Response) => {
+      res.json({
+        success: true,
+        data: {
+          total: 1024,
+          used: 512,
+          free: 512
+        }
+      });
+    });
+
     this.logger.info('🔧 Core routes configured with delegation');
 }
   /**
@@ -318,19 +363,20 @@ export class WebApiRoutes {
     await this.advancedGUI.setupWebRoutes(app, `${api}/agui`);
 
     // Task approval routes
-    app.get(`${api}/agui/approvals`, async (req:Request, res:Response) => {`
+    app.get(`${api}/agui/approvals`, async (req: Request, res: Response) => {
       try {
         const approvals = await this.advancedGUI?.getPendingApprovals();
         res.json({
-          success:true,
-          data:approvals,
-});
-} catch (error) {
+          success: true,
+          data: approvals,
+        });
+      } catch (error) {
         res.status(500).json({
-          error: 'Failed to get approvals',          message:getErrorMessage(error),
-});
-}
-});
+          error: 'Failed to get approvals',
+          message: getErrorMessage(error),
+        });
+      }
+    });
 
     app.post(
       `${api}/agui/approvals/:id/approve`,
@@ -341,15 +387,16 @@ export class WebApiRoutes {
             req.body
           );
           res.json({
-            success:true,
-            data:result,
-});
-} catch (error) {
+            success: true,
+            data: result,
+          });
+        } catch (error) {
           res.status(500).json({
-            error: 'Failed to approve task',            message:getErrorMessage(error),
-});
-}
-}
+            error: 'Failed to approve task',
+            message: getErrorMessage(error),
+          });
+        }
+      }
     );
 
     this.logger.info(
@@ -367,13 +414,13 @@ export class WebApiRoutes {
     await this.workflowEngine?.setupWebRoutes(app, `${api}/workflows`);
 
     // Task management routes
-    app.get(`${api}/tasks`, async (req:Request, res:Response) => {`
+    app.get(`${api}/tasks`, async (req: Request, res: Response) => {
       try {
         const tasks = await this.workflowEngine?.getTasks(req.query);
         res.json({
-          success:true,
-          data:tasks,
-});
+          success: true,
+          data: tasks,
+        });
 } catch (error) {
         res.status(500).json({
           error: 'Failed to get tasks',          message:getErrorMessage(error),
@@ -381,13 +428,13 @@ export class WebApiRoutes {
 }
 });
 
-    app.post(`${api}/tasks`, async (req:Request, res:Response) => {`
+    app.post(`${api}/tasks`, async (req: Request, res: Response) => {
       try {
         const task = await this.workflowEngine?.createTask(req.body);
         res.status(201).json({
-          success:true,
-          data:task,
-});
+          success: true,
+          data: task,
+        });
 } catch (error) {
         res.status(500).json({
           error: 'Failed to create task',          message:getErrorMessage(error),
@@ -401,9 +448,9 @@ export class WebApiRoutes {
         try {
           const result = await this.workflowEngine?.executeTask(req.params.id);
           res.json({
-            success:true,
-            data:result,
-});
+            success: true,
+            data: result,
+          });
 } catch (error) {
           res.status(500).json({
             error: 'Failed to execute task',            message:getErrorMessage(error),
@@ -430,13 +477,13 @@ export class WebApiRoutes {
     await this.healthMonitor.setupWebRoutes(app, `${api}/monitoring`);
 
     // Metrics endpoints
-    app.get(`${api}/metrics`, async (req:Request, res:Response) => {`
+    app.get(`${api}/metrics`, async (req: Request, res: Response) => {
       try {
         const metrics = await this.healthMonitor?.getMetrics();
         res.json({
-          success:true,
-          data:metrics,
-});
+          success: true,
+          data: metrics,
+        });
 } catch (error) {
         res.status(500).json({
           error: 'Failed to get metrics',          message:getErrorMessage(error),
@@ -444,22 +491,24 @@ export class WebApiRoutes {
 }
 });
 
-    app.get(`${api}/analytics/llm`, async (req:Request, res:Response) => {`
+    app.get(`${api}/analytics/llm`, async (req: Request, res: Response) => {
       try {
         const analytics = await this.healthMonitor.getLLMAnalytics(req.query);
         res.json({
-          success:true,
-          data:analytics,
-});
+          success: true,
+          data: analytics,
+        });
 } catch (error) {
         res.status(500).json({
-          error: 'Failed to get LLM analytics',          message:getErrorMessage(error),
-});
+          error: 'Failed to get LLM analytics',
+          message: getErrorMessage(error),
+        });
 }
 });
 
     this.logger.info(
-      '📊 Monitoring routes configured via @claude-zen/monitoring')    );
+      '📊 Monitoring routes configured via @claude-zen/monitoring'
+    );
 }
   /**
    * Setup collaboration routes with @claude-zen/intelligence delegation
@@ -470,13 +519,14 @@ export class WebApiRoutes {
   ):Promise<void> {
     assertDefined(
       this.collaborationEngine,
-      'Collaboration engine not initialized')    );
+      'Collaboration engine not initialized'
+    );
 
     // Delegate all collaboration routes to teamwork package
     await this.collaborationEngine?.setupWebRoutes(app, `${api}/collaboration`);
 
     // WebSocket setup for real-time collaboration
-    app.get(`${api}/ws`, async (req:Request, res:Response) => {`
+    app.get(`${api}/ws`, async (req: Request, res: Response) => {
       try {
         // Delegate WebSocket upgrade to collaboration engine
         await this.collaborationEngine?.handleWebSocketUpgrade(req, res);
@@ -488,7 +538,8 @@ export class WebApiRoutes {
 });
 
     this.logger.info(
-      '🤝 Collaboration routes configured via @claude-zen/intelligence')    );
+      '🤝 Collaboration routes configured via @claude-zen/intelligence'
+    );
 }
   /**
    * Error handling middleware with foundation delegation

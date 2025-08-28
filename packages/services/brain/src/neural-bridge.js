@@ -19,8 +19,7 @@ export class NeuralBridge {
     constructor(foundationLogger = getLogger('Neural'), config = {}) {
         this.foundationLogger = foundationLogger;
         this.config = {
-            wasmPath: './wasm/claude_zen_neural', // Points to neural/wasm/ directory'
-            gpuAcceleration: false,
+            wasmPath: './wasm/claude_zen_neural', // Points to neural/wasm/ directory')      gpuAcceleration:false,
             enableTraining: true,
             ...config,
         };
@@ -29,7 +28,6 @@ export class NeuralBridge {
         if (!NeuralBridge.instance) {
             // For singleton pattern with DI, we need to provide a logger
             const _defaultLogger = logger || getLogger('Neural');
-            ';
             NeuralBridge.instance = new NeuralBridge(defaultLogger, config);
         }
         return NeuralBridge.instance;
@@ -40,7 +38,8 @@ export class NeuralBridge {
     async initialize() {
         if (this.initialized)
             return;
-        this.foundationLogger.info('Initializing Neural Bridge with Foundation integration...', ');
+        this.foundationLogger.info('Initializing Neural Bridge with Foundation integration...');
+        ;
         try {
             // Initialize database access for model persistence
             const { DatabaseProvider } = await import('@claude-zen/database');
@@ -50,7 +49,8 @@ export class NeuralBridge {
             if (this.config.smartNeuralBackend !== undefined) {
                 this.smartNeuralCoordinator = new SmartNeuralCoordinator(this.config.smartNeuralBackend || {});
                 await this.smartNeuralCoordinator.initialize();
-                this.foundationLogger.info('✅ SmartNeuralCoordinator integrated successfully', ');
+                this.foundationLogger.info('✅ SmartNeuralCoordinator integrated successfully');
+                ;
             }
             // Load WASM module if available
             if (this.config.wasmPath) {
@@ -63,12 +63,12 @@ export class NeuralBridge {
             // Initialize database schema for neural networks
             await this.initializeDatabaseSchema();
             this.initialized = true;
-            this.foundationLogger.info('Neural Bridge initialized successfully with database, metrics, and smart neural backend integration', ');
+            this.foundationLogger.info('Neural Bridge initialized successfully with database, metrics, and smart neural backend integration');
+            ;
         }
         catch (error) {
             this.foundationLogger.error('Failed to initialize Neural Bridge:', error);
-            ';
-            throw error;
+            ')      throw error;;
         }
     }
     /**
@@ -84,289 +84,309 @@ export class NeuralBridge {
         }
         if (!this.wasmModule) {
             throw new Error('WASM module not loaded');
-            ';
-        }
-        try {
-            // Create the actual WASM network using our Rust implementation
-            const layersArray = new Uint32Array(layers);
-            const wasmNetwork = new this.wasmModule.WasmNetwork(layersArray);
-            // Store the WASM network instance
-            this.networks.set(id, wasmNetwork);
-            // Store metadata separately for status tracking
-            const metadata = {
-                id,
-                type,
-                layers,
-                status: 'idle',
-            };
-            this.networkMetadata.set(id, metadata);
-            // Persist network metadata to database
-            if (this.dbAccess) {
-                const kv = await this.dbAccess.getKV('neural');
-                ';
-                await kv.set(`metadata:$id`, JSON.stringify(metadata));
-                `
-        await kv.set(`;
-                layers: $;
-                {
-                    id;
+            ')};
+            try {
+                // Create the actual WASM network using our Rust implementation
+                const layersArray = new Uint32Array(layers);
+                const wasmNetwork = new this.wasmModule.WasmNetwork(layersArray);
+                // Store the WASM network instance
+                this.networks.set(id, wasmNetwork);
+                // Store metadata separately for status tracking
+                const metadata = {
+                    id,
+                    type,
+                    layers,
+                    status: 'idle',
+                };
+                this.networkMetadata.set(id, metadata);
+                // Persist network metadata to database
+                if (this.dbAccess) {
+                    const kv = await this.dbAccess.getKV('neural');
+                    ')        await kv.set(`metadata:$id`, JSON.stringify(metadata));`;
+                    await kv.set(`layers:${id}`, JSON.stringify(layers));
+                    `
+}
+
+      this.foundationLogger.info(
+        `;
+                    Created;
+                    WASM;
+                    neural;
+                    network: $id($type);
+                    with (layers)
+                        : [$layers.join(',    ')] ``;
+                    ;
+                    return id;
                 }
-                `, JSON.stringify(layers));`;
+                try { }
+                catch (error) {
+                    const _errorMessage = error instanceof Error ? error.message : String(error);
+                    this.foundationLogger.error(`Failed to create network ${id}:`, error);
+                    `
+      throw new Error(`;
+                    Network;
+                    creation;
+                    failed: $_errorMessage `);`;
+                }
             }
-            this.foundationLogger.info(`Created WASM neural network: $id($type) with layers: [$layers.join(', ')]` `
+            /**
+             * Train a neural network.
+             *
+             * @param networkId
+             * @param trainingData
+             * @param epochs
+             */
+            finally {
+            }
+            /**
+             * Train a neural network.
+             *
+             * @param networkId
+             * @param trainingData
+             * @param epochs
+             */
+            async;
+            trainNetwork(networkId, string, trainingData, TrainingData, epochs, number = 1000);
+            Promise < boolean > {
+                const: wasmNetwork = this.networks.get(networkId),
+                const: metadata = this.networkMetadata.get(networkId),
+                if(, wasmNetwork) { }
+            } || !metadata;
+            {
+                throw new Error(`Network not found:${networkId}`);
+                `
+}
+
+    if (!this.config.enableTraining) {
+      throw new Error('Training is disabled in configuration');')}
+
+    metadata.status = 'training';
+    this.foundationLogger.info(
+      `;
+                Training;
+                WASM;
+                network;
+                $networkIdfor;
+                $;
+                {
+                    epochs;
+                }
+                epochs ``;
+                ;
+                try {
+                    const startTime = Date.now();
+                    // Flatten the training data into Float32Arrays for WASM
+                    const flatInputs = new Float32Array(trainingData.inputs.flat())();
+                    const flatOutputs = new Float32Array(trainingData.outputs.flat())();
+                    // Call the actual WASM training function
+                    const finalError = wasmNetwork.train(flatInputs, flatOutputs, epochs);
+                    const trainingTime = Date.now() - startTime;
+                    metadata.status = 'idle';
+                    // Store training metrics in database
+                    if (this.dbAccess) {
+                        const _kv = await this.dbAccess.getKV('neural');
+                        ')        await kv.set( `training:$networkId:$Date.now()`, `
+          JSON.stringify({
+            epochs,
+            finalError,
+            trainingTime,
+            timestamp:new Date().toISOString(),
+})
+        );
+}
+
+      this.foundationLogger.info(
+        `;
+                        WASM;
+                        training;
+                        completed;
+                        for ($; { networkId } in $; { trainingTime })
+                            ms;
+                        with (final)
+                            error: $;
+                        {
+                            finalError;
+                        }
+                        ``;
+                        ;
+                        return true;
+                    }
+                    try { }
+                    catch (error) {
+                        metadata.status = 'error';
+                        this.foundationLogger.error(`WASM training failed for ${networkId}:`, `
+        error
       );
-      return id;
-    } catch (error) {
-      const _errorMessage =
-        error instanceof Error ? error.message : String(error);
-      this.foundationLogger.error(`, Failed, to, create, network, $, { id }, `, error);`);
-            throw new Error(`Network creation failed: $_errorMessage`);
-            `
-    }
-  }
+      return false;
+}
+}
 
   /**
-   * Train a neural network.
+   * Make predictions with a neural network.
    *
    * @param networkId
-   * @param trainingData
-   * @param epochs
+   * @param inputs
    */
-  async trainNetwork(
-    networkId: string,
-    trainingData: TrainingData,
-    epochs: number = 1000
-  ): Promise<boolean> {
+  async predict(
+    networkId:string,
+    inputs:number[]
+  ):Promise<PredictionResult> {
     const wasmNetwork = this.networks.get(networkId);
     const metadata = this.networkMetadata.get(networkId);
 
     if (!wasmNetwork||!metadata) {
-      throw new Error(`;
-            Network;
-            not;
-            found: $;
-            {
-                networkId;
-            }
-            `);`;
-        }
-        finally {
-        }
-        if (!this.config.enableTraining) {
-            throw new Error('Training is disabled in configuration');
-            ';
-        }
-        metadata.status = 'training';
-        this.foundationLogger.info(`Training WASM network $networkIdfor ${epochs} epochs` `
-    );
-
-    try {
-      const startTime = Date.now();
-
-      // Flatten the training data into Float32Arrays for WASM
-      const flatInputs = new Float32Array(trainingData.inputs.flat())();
-      const flatOutputs = new Float32Array(trainingData.outputs.flat())();
-
-      // Call the actual WASM training function
-      const finalError = wasmNetwork.train(flatInputs, flatOutputs, epochs);
-
-      const trainingTime = Date.now() - startTime;
-      metadata.status = 'idle';
-
-      // Store training metrics in database
-      if (this.dbAccess) {
-        const _kv = await this.dbAccess.getKV('neural');'
-        await kv.set(
-          `, training, $networkId, $Date.now() `,`, JSON.stringify({
-            epochs,
-            finalError,
-            trainingTime,
-            timestamp: new Date().toISOString(),
-        }));
-    }
-}
-this.foundationLogger.info(`WASM training completed for ${networkId} in ${trainingTime}ms with final error: ${finalError}` `
+      throw new Error(`, Network, not, found, $, { networkId } `);`);
+                    }
+                    metadata.status = 'predicting;;
+                    const startTime = Date.now();
+                    try {
+                        // Convert inputs to Float32Array for WASM
+                        const inputsArray = new Float32Array(inputs);
+                        // Call the actual WASM predict function
+                        const outputsArray = wasmNetwork.predict(inputsArray);
+                        // Convert the result back to a standard number array
+                        const outputs = Array.from(outputsArray);
+                        const processingTime = Date.now() - startTime;
+                        metadata.status = 'idle';
+                        return {
+                            outputs,
+                            confidence: this.calculateConfidence(outputs),
+                            processingTime,
+                        };
+                    }
+                    catch (error) {
+                        metadata.status = 'error';
+                        this.foundationLogger.error(`WASM prediction failed for ${networkId}:`, `
+        error
       );
-      return true;
-    } catch (error) {
-      metadata.status = 'error';
-      this.foundationLogger.error(
-        `, WASM, training, failed);
-for ($; { networkId }; )
-    : `,`;
-error;
-;
-return false;
-/**
- * Make predictions with a neural network.
- *
- * @param networkId
- * @param inputs
- */
-async;
-predict(networkId, string, inputs, number[]);
-Promise < PredictionResult > {
-    const: wasmNetwork = this.networks.get(networkId),
-    const: metadata = this.networkMetadata.get(networkId),
-    if(, wasmNetwork) { }
-} || !metadata;
-{
-    throw new Error(`Network not found: ${networkId}`);
-    `
-    }
-
-    metadata.status ='predicting;
-    const startTime = Date.now();
-
-    try {
-      // Convert inputs to Float32Array for WASM
-      const inputsArray = new Float32Array(inputs);
-
-      // Call the actual WASM predict function
-      const outputsArray = wasmNetwork.predict(inputsArray);
-
-      // Convert the result back to a standard number array
-      const outputs = Array.from(outputsArray as ArrayLike<number>);
-      const processingTime = Date.now() - startTime;
-
-      metadata.status = 'idle';
-
-      return {
-        outputs,
-        confidence: this.calculateConfidence(outputs),
-        processingTime,
-      };
-    } catch (error) {
-      metadata.status = 'error';
-      this.foundationLogger.error(
-        `;
-    WASM;
-    prediction;
-    failed;
-    for ($; { networkId }; )
-        : `,`;
-    error;
-    ;
-    throw error;
+      throw error;
 }
-calculateConfidence(outputs, number[]);
-number;
-{
-    if (outputs.length === 0)
-        return 0;
+}
+
+  /**
+   * Calculate confidence from network outputs.
+   * For softmax outputs, this would be the max probability.
+   * For regression, this could be based on output variance.
+   *
+   * @param outputs
+   */
+  private calculateConfidence(outputs:number[]): number {
+    if (outputs.length === 0) return 0;
+
     // For classification (softmax-like outputs), use max value
     if (outputs.every((x) => x >= 0 && x <= 1)) {
-        return Math.max(...outputs);
-    }
+      return Math.max(...outputs);
+}
+
     // For regression or other outputs, use a different heuristic
     // This is a simple approach - could be more sophisticated
     const mean = outputs.reduce((a, b) => a + b, 0) / outputs.length;
-    const variance = outputs.reduce((a, b) => a + (b - mean) ** 2, 0) / outputs.length;
+    const variance =
+      outputs.reduce((a, b) => a + (b - mean) ** 2, 0) / outputs.length;
     return Math.max(0, Math.min(1, 1 - variance)); // Lower variance = higher confidence
 }
-/**
- * Get network status.
- *
- * @param networkId
- */
-getNetworkStatus(networkId, string);
-NeuralNetwork | undefined;
-return this.networkMetadata.get(networkId);
-/**
- * List all networks.
- */
-listNetworks();
-NeuralNetwork[];
-return Array.from(this.networkMetadata.values())();
-/**
- * Remove a network.
- *
- * @param networkId
- */
-removeNetwork(networkId, string);
-boolean;
-{
+
+  /**
+   * Get network status.
+   *
+   * @param networkId
+   */
+  getNetworkStatus(networkId:string): NeuralNetwork|undefined 
+    return this.networkMetadata.get(networkId);
+
+  /**
+   * List all networks.
+   */
+  listNetworks():NeuralNetwork[] 
+    return Array.from(this.networkMetadata.values())();
+
+  /**
+   * Remove a network.
+   *
+   * @param networkId
+   */
+  removeNetwork(networkId:string): boolean {
     const wasmNetwork = this.networks.get(networkId);
     if (wasmNetwork) {
-        // WASM networks are automatically cleaned up when they go out of scope
-        // due to the Drop implementation in Rust
-        this.networks.delete(networkId);
-    }
+      // WASM networks are automatically cleaned up when they go out of scope
+      // due to the Drop implementation in Rust
+      this.networks.delete(networkId);
+}
     return this.networkMetadata.delete(networkId);
 }
-/**
- * Get neural system stats.
- */
-getStats();
-totalNetworks: number;
-activeNetworks: number;
-trainingNetworks: number;
-gpuEnabled: boolean;
-wasmEnabled: boolean;
-{
+
+  /**
+   * Get neural system stats.
+   */
+  getStats():
+    totalNetworks:number;
+    activeNetworks:number;
+    trainingNetworks:number;
+    gpuEnabled:boolean;
+    wasmEnabled:boolean;{
     const networks = Array.from(this.networkMetadata.values())();
+
     return {
-        totalNetworks: networks.length,
-        activeNetworks: networks.filter((n) => n.status !== 'idle').length,
-        trainingNetworks: networks.filter((n) => n.status === 'training').length,
-        gpuEnabled: !!this.config.gpuAcceleration,
-        wasmEnabled: !!this.wasmModule,
-    };
+      totalNetworks:networks.length,
+      activeNetworks:networks.filter((n) => n.status !=='idle').length,
+      trainingNetworks:networks.filter((n) => n.status === 'training').length,
+      gpuEnabled:!!this.config.gpuAcceleration,
+      wasmEnabled:!!this.wasmModule,
+};
 }
-async;
-loadWasmModule();
-Promise;
-this.foundationLogger.info('Loading WASM module...');
-';
-try {
-    // Dynamically import the WASM module generated by wasm-pack
-    const _wasmModule = await import(
-    /* @vite-ignore */ `${this.config.wasmPath}/claude_zen_neural.js` `
-      );
 
-      // Initialize the WASM module
-      await wasmModule.default();
-
-      // Store the module for later use
-      this.wasmModule = wasmModule;
-
-      this.foundationLogger.info(
-        'WASM module loaded and initialized successfully''
-      );
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
-      this.foundationLogger.error('Failed to load WASM module:', error);'
-      throw new Error(`, WASM, namespace, loading, failed, $errorMessage `);`);
+  private async loadWasmModule():Promise<void> 
+    this.foundationLogger.info('Loading WASM module...');')
+    try {
+      // Dynamically import the WASM module generated by wasm-pack
+      const _wasmModule = await import(
+        /* @vite-ignore */ `, $, { this: .config.wasmPath } / claude_zen_neural.js ``);
+                        // Initialize the WASM module
+                        await wasmModule.default();
+                        // Store the module for later use
+                        this.wasmModule = wasmModule;
+                        this.foundationLogger.info('WASM module loaded and initialized successfully');
+                        ;
+                    }
+                    try { }
+                    catch (error) {
+                        const errorMessage = error instanceof Error ? error.message : String(error);
+                        this.foundationLogger.error('Failed to load WASM module:', error);
+                        ')      throw new Error(`WASM namespace loading failed:$errorMessage`);`;
+                    }
+                }
+                finally {
+                }
+            }
+        }
+    }
 }
-finally {
-}
-async;
-initializeGPU();
-Promise;
 // In a real implementation, this would initialize GPU acceleration
 // using the WebGPU components from the integrated system
 this.foundationLogger.info('Initializing GPU acceleration...');
-';
+');
 // Simulate GPU initialization
 await new Promise((resolve) => setTimeout(resolve, 200));
 this.foundationLogger.info('GPU acceleration initialized');
-';
+');
 async;
 initializeDatabaseSchema();
 Promise;
 if (!this.dbAccess) {
-    this.foundationLogger.warn('Database access not available, skipping schema initialization', ');
+    this.foundationLogger.warn('Database access not available, skipping schema initialization');
+    ;
     return;
 }
 try {
-    this.foundationLogger.info('Initializing neural network database schema...', ');
+    this.foundationLogger.info('Initializing neural network database schema...');
+    ;
     // Initialize any required database tables or collections
     // The foundation database layer handles the actual schema creation
-    this.foundationLogger.info('Neural network database schema initialized successfully', ');
+    this.foundationLogger.info('Neural network database schema initialized successfully');
+    ;
 }
 catch (error) {
-    this.foundationLogger.error('Failed to initialize database schema:', error);
+    this.foundationLogger.error('Failed to initialize database schema: ', '        error);
     throw error;
 }
 /**
@@ -379,23 +399,22 @@ catch (error) {
 async;
 generateEmbedding(text, string, options ?  : {
     context: string,
-    priority: 'low' | 'medium' | 'high',
-    qualityLevel: 'basic' | 'standard' | 'premium'
+    priority: 'low' | ' medium' | ' high',
+    qualityLevel: 'basic' | ' standard' | ' premium'
 });
 Promise < NeuralEmbeddingResult > {
     : .smartNeuralCoordinator
 };
 {
     throw new Error('SmartNeuralCoordinator not initialized. Enable smartNeuralBackend in config.');
-    ';
+    ')};
+    const request = {
+        text,
+        context: options?.context,
+        priority: options?.priority || 'medium', qualityLevel: options?.qualityLevel || 'standard',
+    };
+    return await this.smartNeuralCoordinator.generateEmbedding(request);
 }
-const request = {
-    text,
-    context: options?.context,
-    priority: options?.priority || 'medium',
-    qualityLevel: options?.qualityLevel || 'standard',
-};
-return await this.smartNeuralCoordinator.generateEmbedding(request);
 /**
  * Get SmartNeuralCoordinator statistics
  */
@@ -418,12 +437,13 @@ async;
 clearSmartNeuralCache();
 Promise;
 if (!this.smartNeuralCoordinator) {
-    this.foundationLogger.warn('SmartNeuralCoordinator not available for cache clearing', ');
+    this.foundationLogger.warn('SmartNeuralCoordinator not available for cache clearing');
+    ;
     return;
 }
 await this.smartNeuralCoordinator.clearCache();
 this.foundationLogger.info('SmartNeuralCoordinator cache cleared');
-';
+');
 /**
  * Shutdown neural bridge.
  */
@@ -431,7 +451,7 @@ async;
 shutdown();
 Promise;
 this.foundationLogger.info('Shutting down Neural Bridge...');
-';
+');
 // Shutdown SmartNeuralCoordinator
 if (this.smartNeuralCoordinator) {
     await this.smartNeuralCoordinator.shutdown();
@@ -440,8 +460,9 @@ if (this.smartNeuralCoordinator) {
 // Stop all training processes by updating metadata
 for (const metadata of this.networkMetadata.values()) {
     if (metadata.status === 'training') {
-        ';
-        metadata.status = 'idle';
+        ')        metadata.status = ';
+        idle;
+        ';;
     }
 }
 // Clear WASM networks (will trigger Drop implementation in Rust)
@@ -450,23 +471,20 @@ this.networkMetadata.clear();
 this.wasmModule = null;
 this.initialized = false;
 this.foundationLogger.info('Neural Bridge shutdown complete');
-';
+')};
 // Export convenience functions
 export async function createNeuralNetwork(id, type, layers, config) {
     const logger = getLogger('Neural');
-    ';
     const bridge = NeuralBridge.getInstance(logger, config);
     return await bridge.createNetwork(id, type, layers);
 }
 export async function trainNeuralNetwork(networkId, trainingData, epochs) {
     const logger = getLogger('Neural');
-    ';
     const bridge = NeuralBridge.getInstance(logger);
     return await bridge.trainNetwork(networkId, trainingData, epochs);
 }
 export async function predictWithNetwork(networkId, inputs) {
     const logger = getLogger('Neural');
-    ';
     const bridge = NeuralBridge.getInstance(logger);
     return await bridge.predict(networkId, inputs);
 }

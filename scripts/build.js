@@ -93,17 +93,38 @@ if (args[0] === 'auth') {
 // Handle main server
 console.log('🚀 Starting Claude Code Zen Server...');
 try {
-  // Start the main server from built packages
-  const serverPath = join(__dirname, '../apps/claude-code-zen-server/dist/main.js');
+  // For SEA binary, find the project root relative to binary location
+  // SEA binary is in dist/bundle/, so we need to go up 2 levels to reach project root
+  const binaryDir = join(__dirname, '..', '..');
+  
+  const serverPath = join(binaryDir, 'apps/claude-code-zen-server/dist/apps/claude-code-zen-server/src/main.js');
+  
   if (existsSync(serverPath)) {
+    console.log(\`📍 Using server: \${serverPath}\`);
     const child = spawn('node', [serverPath, ...args], {
       stdio: 'inherit',
-      env: { ...process.env, CLAUDE_ZEN_BUNDLE_MODE: 'true' }
+      env: { ...process.env, CLAUDE_ZEN_BUNDLE_MODE: 'true' },
+      cwd: binaryDir
     });
     child.on('exit', process.exit);
   } else {
-    console.error('❌ Server not found. Please run: pnpm build');
-    process.exit(1);
+    // Fallback to development mode
+    const devRunner = join(binaryDir, 'apps/claude-code-zen-server/scripts/dev-runner.js');
+    if (existsSync(devRunner)) {
+      console.log('⚡ Falling back to development mode...');
+      const child = spawn('node', [devRunner, ...args], {
+        stdio: 'inherit',
+        env: { ...process.env, NODE_ENV: 'development' },
+        cwd: binaryDir
+      });
+      child.on('exit', process.exit);
+    } else {
+      console.error(\`❌ Neither server nor dev-runner found:\`);
+      console.error(\`   Server: \${serverPath}\`);
+      console.error(\`   Dev runner: \${devRunner}\`);
+      console.error(\`   Binary dir: \${binaryDir}\`);
+      process.exit(1);
+    }
   }
 } catch (error) {
   console.error('❌ Failed to start server:', error.message);

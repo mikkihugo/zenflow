@@ -3,41 +3,41 @@
  * Integrates neural network components with Claude-Zen system.
  * Enhanced with SmartNeuralCoordinator for intelligent neural backend system.
  */
-import { type Logger} from '@claude-zen/foundation';
-import { type NeuralBackendConfig} from './smart-neural-coordinator';
+import { type Logger } from '@claude-zen/foundation';
+import { type NeuralBackendConfig } from './smart-neural-coordinator';
 export interface NeuralConfig {
-    wasmPath?:string;
-    gpuAcceleration?:boolean;
-    modelPath?:string;
-    enableTraining?:boolean;
-    smartNeuralBackend?:NeuralBackendConfig;
+    wasmPath?: string;
+    gpuAcceleration?: boolean;
+    modelPath?: string;
+    enableTraining?: boolean;
+    smartNeuralBackend?: NeuralBackendConfig;
 }
 export interface NeuralNetwork {
-    id:string;
-    type: '...[proper format needed]
-'    layers:number[];
-    weights?:Float32Array;
+    id: string;
+    type: '...[proper format needed];
+    '  layers:number[];: any;
+    weights?: Float32Array;
     status: 'idle|training|predicting|error;;
-'    handle?:number;
+    '  handle?:number; // WASM network handle: any;
 }
 export interface TrainingData {
-    inputs:number[][];
-    outputs:number[][];
+    inputs: number[][];
+    outputs: number[][];
 }
 export interface PredictionResult {
-    outputs:number[];
-    confidence:number;
-    processingTime:number;
+    outputs: number[];
+    confidence: number;
+    processingTime: number;
 }
 export interface NetworkArchitecture {
-    type: '...[proper format needed]
-'    layers:number[];
-    activation:ActivationFunction;
-    outputActivation?:ActivationFunction;
-    learningRate:number;
-    batchSize:number;
-    epochs?:number;
-    metadata?:Record<string, unknown>;
+    type: '...[proper format needed];
+    '  layers:number[];: any;
+    activation: ActivationFunction;
+    outputActivation?: ActivationFunction;
+    learningRate: number;
+    batchSize: number;
+    epochs?: number;
+    metadata?: Record<string, unknown>;
 }
 export type ActivationFunction = 'sigmoid|tanh|relu|leaky_relu|softmax|linear|swish|gelu;;
 export declare class NeuralBridge {
@@ -50,12 +50,12 @@ export declare class NeuralBridge {
     private wasmModule;
     private dbAccess;
     private smartNeuralCoordinator;
-    constructor(foundationLogger?:Logger, config?:NeuralConfig);
-    static getInstance(logger?:Logger, _config?:NeuralConfig): NeuralBridge;
+    constructor(foundationLogger?: Logger, config?: NeuralConfig);
+    static getInstance(logger?: Logger, _config?: NeuralConfig): NeuralBridge;
     /**
      * Initialize neural network bridge.
      */
-    initialize():Promise<void>;
+    initialize(): Promise<void>;
     /**
      * Create a new neural network.
      *
@@ -63,9 +63,10 @@ export declare class NeuralBridge {
      * @param type
      * @param layers
      */
-    createNetwork(id:string, type:NeuralNetwork['type'], layers:number[]): Promise<string>;
+    createNetwork(id: string, type: NeuralNetwork['type'], layers: number[]): Promise<string>;
+    private initializeGPU;
 }
-export declare function createNeuralNetwork(id:string, type:NeuralNetwork['type'], layers:number[], config?:NeuralConfig): Promise<string>;
-export declare function trainNeuralNetwork(networkId:string, trainingData:TrainingData, epochs?:number): Promise<boolean>;
-export declare function predictWithNetwork(networkId:string, inputs:number[]): Promise<PredictionResult>;
+export declare function createNeuralNetwork(id: string, type: NeuralNetwork['type'], layers: number[], config?: NeuralConfig): Promise<string>;
+export declare function trainNeuralNetwork(networkId: string, trainingData: TrainingData, epochs?: number): Promise<boolean>;
+export declare function predictWithNetwork(networkId: string, inputs: number[]): Promise<PredictionResult>;
 //# sourceMappingURL=neural-bridge.d.ts.map

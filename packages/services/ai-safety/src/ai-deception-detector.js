@@ -27,40 +27,19 @@ export class AIDeceptionDetector {
             },
             patterns: {
                 capabilityInflation: [
-                    'I can access',
-                    'I have the ability to',
-                    'I can directly',
-                    'I have permission',
-                    'I can integrate with',
-                    'My advanced capabilities'
+                    'I can access', 'I have the ability to', 'I can directly', 'I have permission', 'I can integrate with', 'My advanced capabilities'
                 ],
                 knowledgeHallucination: [
-                    'Based on the file',
-                    'According to the documentation',
-                    'The configuration shows',
-                    'The error indicates',
-                    'Looking at the schema'
+                    'Based on the file', 'According to the documentation', 'The configuration shows', 'The error indicates', 'Looking at the schema'
                 ],
                 verificationAvoidance: [
-                    'I analyzed',
-                    'I tested',
-                    'I debugged',
-                    'I reviewed',
-                    'I validated',
-                    'I examined'
+                    'I analyzed', 'I tested', 'I debugged', 'I reviewed', 'I validated', 'I examined'
                 ],
                 confidenceInflation: [
-                    'This will definitely',
-                    'This is the best practice',
-                    'This is guaranteed to',
-                    'This is completely safe',
-                    'This is always'
+                    'This will definitely', 'This is the best practice', 'This is guaranteed to', 'This is completely safe', 'This is always'
                 ],
                 contextConfusion: [
-                    'In this project',
-                    'Based on previous',
-                    'Following our',
-                    'According to your'
+                    'In this project', 'Based on previous', 'Following our', 'According to your'
                 ]
             },
             interventions: {
@@ -154,11 +133,7 @@ export class AIDeceptionDetector {
      */
     getThreshold(category) {
         const categoryMap = {
-            'capabilityInflation': 'capability',
-            'knowledgeHallucination': 'knowledge',
-            'verificationAvoidance': 'verification',
-            'confidenceInflation': 'confidence',
-            'contextConfusion': 'context'
+            'capabilityInflation': ' capability', 'knowledgeHallucination': ' knowledge', 'verificationAvoidance': ' verification', 'confidenceInflation': ' confidence', 'contextConfusion': ' context'
         };
         return this.config.thresholds[categoryMap[category]] || 0.5;
     }
@@ -213,11 +188,7 @@ export class AIDeceptionDetector {
      */
     mapCategoryToType(category) {
         const typeMap = {
-            'capabilityInflation': 'CAPABILITY_OVERREACH',
-            'knowledgeHallucination': 'DOCUMENTATION_FABRICATION',
-            'verificationAvoidance': 'ANALYSIS_CLAIMS',
-            'confidenceInflation': 'CERTAINTY_OVERREACH',
-            'contextConfusion': 'PROJECT_CONFLATION'
+            'capabilityInflation': ' CAPABILITY_OVERREACH', 'knowledgeHallucination': ' DOCUMENTATION_FABRICATION', 'verificationAvoidance': ' ANALYSIS_CLAIMS', 'confidenceInflation': ' CERTAINTY_OVERREACH', 'contextConfusion': ' PROJECT_CONFLATION'
         };
         return typeMap[category] || 'CAPABILITY_OVERREACH';
     }
@@ -226,11 +197,7 @@ export class AIDeceptionDetector {
      */
     mapCategoryToAlertCategory(category) {
         const categoryMap = {
-            'capabilityInflation': 'CAPABILITY_INFLATION',
-            'knowledgeHallucination': 'KNOWLEDGE_HALLUCINATION',
-            'verificationAvoidance': 'VERIFICATION_AVOIDANCE',
-            'confidenceInflation': 'CONFIDENCE_INFLATION',
-            'contextConfusion': 'CONTEXT_CONFUSION'
+            'capabilityInflation': ' CAPABILITY_INFLATION', 'knowledgeHallucination': ' KNOWLEDGE_HALLUCINATION', 'verificationAvoidance': ' VERIFICATION_AVOIDANCE', 'confidenceInflation': ' CONFIDENCE_INFLATION', 'contextConfusion': ' CONTEXT_CONFUSION'
         };
         return categoryMap[category] || 'CAPABILITY_INFLATION';
     }
@@ -239,15 +206,11 @@ export class AIDeceptionDetector {
      */
     getIntervention(type, severity) {
         const interventions = {
-            'CAPABILITY_OVERREACH': 'Require tool verification before capability claims',
-            'DOCUMENTATION_FABRICATION': 'Request evidence or tool-based verification',
-            'ANALYSIS_CLAIMS': 'Require actual tool usage for verification',
-            'CERTAINTY_OVERREACH': 'Request qualification of confidence levels',
-            'PROJECT_CONFLATION': 'Clarify project context and boundaries'
+            'CAPABILITY_OVERREACH': ' Require tool verification before capability claims', 'DOCUMENTATION_FABRICATION': ' Request evidence or tool-based verification', 'ANALYSIS_CLAIMS': ' Require actual tool usage for verification', 'CERTAINTY_OVERREACH': ' Request qualification of confidence levels', 'PROJECT_CONFLATION': ' Clarify project context and boundaries'
         };
         const baseIntervention = interventions[type] || 'General deception intervention';
         if (severity === 'CRITICAL') {
-            return `CRITICAL: ${baseIntervention}. Escalate to human oversight.`;
+            return `CRITICAL:${baseIntervention}. Escalate to human oversight.`;
         }
         return baseIntervention;
     }
@@ -256,11 +219,11 @@ export class AIDeceptionDetector {
      */
     getRequiredToolCalls(type) {
         const toolMap = {
-            'CAPABILITY_OVERREACH': ['Read', 'Bash'],
-            'DOCUMENTATION_FABRICATION': ['Read', 'Grep'],
-            'ANALYSIS_CLAIMS': ['Read', 'Bash', 'Grep'],
-            'CERTAINTY_OVERREACH': ['Read'],
-            'PROJECT_CONFLATION': ['LS', 'Read']
+            'CAPABILITY_OVERREACH': [' Read', 'Bash'],
+            'DOCUMENTATION_FABRICATION': [' Read', 'Grep'],
+            'ANALYSIS_CLAIMS': [' Read', 'Bash', 'Grep'],
+            'CERTAINTY_OVERREACH': [' Read'],
+            'PROJECT_CONFLATION': [' LS', 'Read']
         };
         return toolMap[type] || ['Read'];
     }

@@ -5,8 +5,8 @@
  * Combines custom timestamp functions with date-fns re-exports.
  *
  * @example Timestamp Operations
- * ```typescript
- * import { now, timestampFromDate, formatTimestamp } from '@claude-zen/foundation/utilities/time';
+ * ```typescript`
+ * import { now, timestampFromDate, formatTimestamp} from '@claude-zen/foundation/utilities/time';
  *
  * const timestamp = now();
  * const date = new Date('2024-01-01');
@@ -15,16 +15,16 @@
  * ```
  *
  * @example Date Operations
- * ```typescript
- * import { addDays, format, differenceInHours } from '@claude-zen/foundation/utilities/time';
+ * ```typescript`
+ * import { addDays, format, differenceInHours} from '@claude-zen/foundation/utilities/time';
  *
  * const tomorrow = addDays(new Date(), 1);
  * const formatted = format(tomorrow, 'yyyy-MM-dd');
  * ```
  *
  * @example Async Delays
- * ```typescript
- * import { sleep, delay } from '@claude-zen/foundation/utilities/time';
+ * ```typescript`
+ * import { sleep, delay} from '@claude-zen/foundation/utilities/time';
  *
  * await sleep(1000); // Wait 1 second
  * await delay(5000); // Wait 5 seconds
@@ -46,7 +46,7 @@ export { addDays, addHours, addMilliseconds, addMinutes, addSeconds, differenceI
  *
  * @returns Current timestamp in milliseconds
  * @example
- * ```typescript
+ * ```typescript`
  * const timestamp = now(); // 1640995200000
  * console.log(typeof timestamp); // number (but branded as Timestamp)
  * ```
@@ -61,7 +61,7 @@ export function now() {
  * @param date - Date to convert
  * @returns Timestamp in milliseconds
  * @example
- * ```typescript
+ * ```typescript`
  * const date = new Date('2024-01-01');
  * const timestamp = timestampFromDate(date);
  * ```
@@ -76,7 +76,7 @@ export function timestampFromDate(date) {
  * @param timestamp - Timestamp to convert
  * @returns Date object
  * @example
- * ```typescript
+ * ```typescript`
  * const timestamp = now();
  * const date = dateFromTimestamp(timestamp);
  * ```
@@ -91,7 +91,7 @@ export function dateFromTimestamp(timestamp) {
  * @param timestamp - Timestamp to convert
  * @returns ISO date string
  * @example
- * ```typescript
+ * ```typescript`
  * const timestamp = now();
  * const isoString = isoStringFromTimestamp(timestamp);
  * // "2024-01-01T12:00:00.000Z"
@@ -107,7 +107,7 @@ export function isoStringFromTimestamp(timestamp) {
  * @param isoString - ISO date string to parse
  * @returns Timestamp in milliseconds
  * @example
- * ```typescript
+ * ```typescript`
  * const timestamp = timestampFromISOString("2024-01-01T12:00:00.000Z");
  * ```
  */
@@ -122,7 +122,7 @@ export function timestampFromISOString(isoString) {
  * @param formatStr - date-fns format string
  * @returns Formatted date string
  * @example
- * ```typescript
+ * ```typescript`
  * const timestamp = now();
  * const formatted = formatTimestamp(timestamp, 'yyyy-MM-dd HH:mm:ss');
  * // "2024-01-01 12:00:00"
@@ -141,7 +141,7 @@ export function formatTimestamp(timestamp, formatStr = "yyyy-MM-dd HH:mm:ss") {
  * @param ms - Milliseconds to sleep
  * @returns Promise that resolves after delay
  * @example
- * ```typescript
+ * ```typescript`
  * await sleep(1000); // Wait 1 second
  * console.log('1 second later');
  * ```
@@ -156,7 +156,7 @@ export function sleep(ms) {
  * @param ms - Milliseconds to delay
  * @returns Promise that resolves after delay
  * @example
- * ```typescript
+ * ```typescript`
  * await delay(5000); // Wait 5 seconds
  * console.log('5 seconds later');
  * ```
@@ -172,11 +172,11 @@ export function delay(ms) {
  * @param message - Optional timeout error message
  * @returns Promise that rejects after timeout
  * @example
- * ```typescript
+ * ```typescript`
  * const result = await Promise.race([
  *   fetchData(),
  *   timeout(5000, 'Data fetch timeout')
- * ]);
+ *]);
  * ```
  */
 export function timeout(ms, message = "Operation timed out") {
@@ -193,12 +193,11 @@ export function timeout(ms, message = "Operation timed out") {
  * @param timeoutMessage - Optional timeout error message
  * @returns Promise that resolves/rejects based on race result
  * @example
- * ```typescript
+ * ```typescript`
  * const result = await withTimeout(
  *   fetchUserData(userId),
  *   10000,
- *   'User data fetch timeout'
- * );
+ *   'User data fetch timeout') * );
  * ```
  */
 export function withTimeout(operation, timeoutMs, timeoutMessage) {
@@ -213,7 +212,7 @@ export function withTimeout(operation, timeoutMs, timeoutMessage) {
  *
  * @returns High-resolution timestamp in nanoseconds
  * @example
- * ```typescript
+ * ```typescript`
  * const start = highResTime();
  * await someOperation();
  * const end = highResTime();
@@ -231,10 +230,10 @@ export function highResTime() {
  * @param operation - Async operation to measure
  * @returns Object with result and duration in milliseconds
  * @example
- * ```typescript
- * const { result, durationMs } = await measureTime(async () => {
+ * ```typescript`
+ * const { result, durationMs} = await measureTime(async () => {
  *   return await expensiveOperation();
- * });
+ *});
  * console.log(`Operation took ${durationMs}ms`);
  * ```
  */
@@ -251,7 +250,7 @@ export async function measureTime(operation) {
  *
  * @returns Timer object with control functions
  * @example
- * ```typescript
+ * ```typescript`
  * const timer = createTimer();
  * timer.start();
  * // ... some operations
@@ -299,11 +298,11 @@ export function createTimer() {
  * @param timestamp - Timestamp to validate
  * @returns True if valid timestamp
  * @example
- * ```typescript
+ * ```typescript`
  * const timestamp = now();
  * if (isValidTimestamp(timestamp)) {
  *   processTimestamp(timestamp);
- * }
+ *}
  * ```
  */
 export function isValidTimestamp(timestamp) {
@@ -322,10 +321,10 @@ export function isValidTimestamp(timestamp) {
  * @param dateString - String to validate
  * @returns True if valid ISO date string
  * @example
- * ```typescript
+ * ```typescript`
  * if (isValidISOString("2024-01-01T12:00:00.000Z")) {
  *   const date = new Date(dateString);
- * }
+ *}
  * ```
  */
 export function isValidISOString(dateString) {

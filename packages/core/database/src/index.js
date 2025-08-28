@@ -1,5 +1,5 @@
 /**
- * Database Package
+ * Database Package - Event-Driven Infrastructure
  *
  * A simplified multi-database abstraction layer with:
  * - Real SQLite adapter with connection pooling
@@ -8,7 +8,10 @@
  * - Health monitoring
  * - Transaction support
  * - Key-value storage abstraction
+ * - Event-driven coordination and monitoring
  */
+// Import event system from foundation
+import { EventEmitter } from '@claude-zen/foundation';
 export { SQLiteAdapter } from './adapters/sqlite-adapter.js';
 import { createDatabaseConnection, createStorageConfig, getDatabaseFactory, createOptimalConfig, createOptimalStorageConfig, } from './factory/database-factory';
 export { createDatabaseConnection, createStorageConfig, getDatabaseFactory, createOptimalConfig, createOptimalStorageConfig, };
@@ -19,7 +22,7 @@ export * from './types/index.js';
 export async function createDatabase(type, database) {
     const { SQLiteAdapter: sqliteAdapter } = await import('./adapters/sqlite-adapter.js');
     return new sqliteAdapter({
-        type: type === 'memory' ? 'sqlite' : type,
+        type: type === 'memory' ? ' sqlite' : type,
         database: type === 'memory' ? ':memory:' : database,
         pool: {
             min: 1,
@@ -63,17 +66,54 @@ export function createDatabaseAccess(config) {
         getConfig: () => configuration,
     };
 }
-// Provider class expected by infrastructure facade
-export class DatabaseProvider {
+// Event-driven database coordinator
+export class DatabaseEventCoordinator extends EventEmitter {
     config;
     constructor(config) {
+        super();
         this.config = config;
     }
+    async connect(type, database) {
+        this.emit('database:connection:initiated', { type, database });
+        try {
+            const connection = await createDatabase(type, database);
+            this.emit('database:connection:established', { type, database, status: ' connected' });
+            return connection;
+        }
+        catch (error) {
+            this.emit('database:connection:failed', { type, database, error: error.message });
+            throw error;
+        }
+    }
+    async createStorage(database) {
+        this.emit('database:storage:creation_started', { database });
+        try {
+            const storage = await createKeyValueStorage(database);
+            this.emit('database:storage:creation_completed', { database, status: ' ready' });
+            return storage;
+        }
+        catch (error) {
+            this.emit('database:storage:creation_failed', { database, error: error.message });
+            throw error;
+        }
+    }
+    emitOperation(operation, details) {
+        this.emit('database:operation', { operation, details, timestamp: Date.now() });
+    }
+    emitHealthStatus(status, details) {
+        this.emit('database:health:status_change', { status, details, timestamp: Date.now() });
+    }
+}
+// Provider class expected by infrastructure facade  
+export class DatabaseProvider extends DatabaseEventCoordinator {
+    constructor(config) {
+        super(config);
+    }
     createConnection(type, database) {
-        return createDatabase(type, database);
+        return this.connect(type, database);
     }
     createKeyValue(database) {
-        return createKeyValueStorage(database);
+        return this.createStorage(database);
     }
 }
 export const version = '1.0.0';
