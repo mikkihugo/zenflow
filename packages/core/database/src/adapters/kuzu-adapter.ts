@@ -639,8 +639,8 @@ export class KuzuAdapter implements DatabaseConnection {
 
       if (properties && Object.keys(properties).length > 0) {
         const propertyDefs = Object.entries(properties)
-          .map(([name, type]) => `${name} ${type.toUpperCase()}`)`
-          .join(',    ');
+          .map(([name, type]) => `${name} ${type.toUpperCase()}`)
+          .join(', ');
         cypher += `, ${propertyDefs}`;
 }
 
@@ -684,13 +684,13 @@ export class KuzuAdapter implements DatabaseConnection {
       for (const node of nodes) {
         const properties = Object.keys(node);
         const values = Object.values(node);
-        const cypher = `CREATE (:${tableName} {${properties.map((prop, i) => `${prop}:$param${i}`).join(',    ')}})`;
-
+        const cypher = `CREATE (:${tableName} {${properties.map((prop, i) => `${prop}:$param${i}`).join(', ')}})`;
+        
         // Convert values array to params object
-        const params:Record<string, unknown> = {};
+        const params: Record<string, unknown> = {};
         for (const [i, value] of values.entries()) {
           params[`param${i}`] = value;
-}
+        }
 
         await this.query(cypher, params, { correlationId});
 }
@@ -732,11 +732,11 @@ export class KuzuAdapter implements DatabaseConnection {
       for (const rel of relationships) {
         // Build match clauses for from and to nodes
         const fromProps = Object.entries(rel.from)
-          .map(([key, value]) => `${key}:"${value}"`)`
-          .join(',    ');
+          .map(([key, value]) => `${key}:"${value}"`)
+          .join(', ');
         const toProps = Object.entries(rel.to)
-          .map(([key, value]) => `${key}:"${value}"`)`
-          .join(',    ');
+          .map(([key, value]) => `${key}:"${value}"`)
+          .join(', ');
 
         let cypher = `MATCH (from), (to) WHERE {${fromProps}} AND {${toProps}}`;
 
@@ -1012,11 +1012,12 @@ export class KuzuAdapter implements DatabaseConnection {
 }
 }
 
-  private async recordMigration(version:string, name:string): Promise<void> {
+  private async recordMigration(version: string, name: string): Promise<void> {
     await this.query(
-      'CREATE (:_Migration {version:$version, name:$name, applied_at:timestamp()})',      { version, name}
+      'CREATE (:_Migration {version:$version, name:$name, applied_at:timestamp()})',
+      { version, name }
     );
-}
+  }
 
   private ensureDatabaseDirectory():void {
     const dbDir = dirname(this.config.database);

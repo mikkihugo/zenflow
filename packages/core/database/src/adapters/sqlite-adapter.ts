@@ -482,16 +482,17 @@ export class SQLiteAdapter implements DatabaseConnection {
     return results;
 }
 
-  async getCurrentMigrationVersion():Promise<string | null> {
+  async getCurrentMigrationVersion(): Promise<string | null> {
     try {
-      const result = await this.query<{ version:string}>(
-        'SELECT version FROM _migrations ORDER BY version DESC LIMIT 1')      );
+      const result = await this.query<{ version: string }>(
+        'SELECT version FROM _migrations ORDER BY version DESC LIMIT 1'
+      );
       return result.rows[0]?.version || null;
-} catch {
+    } catch {
       // Migrations table doesn't exist yet
       return null;
-}
-}
+    }
+  }
 
   async explain(sql:string, params?:QueryParams): Promise<QueryResult> {
     return await this.query(`EXPLAIN QUERY PLAN ${sql}`, params);
@@ -531,22 +532,23 @@ export class SQLiteAdapter implements DatabaseConnection {
           resolve({
             rows:rows as T[],
             rowCount:0,
-            executionTimeMs:Date.now() - startTime,
-            affectedRows:runResult.changes,
+            executionTimeMs: Date.now() - startTime,
+            affectedRows: runResult.changes,
             insertId:
-              typeof runResult.lastInsertRowid === 'bigint')                ? Number(runResult.lastInsertRowid)
-                :(runResult.lastInsertRowid as number | undefined),
-            fields:[],
-});
+              typeof runResult.lastInsertRowid === 'bigint'
+                ? Number(runResult.lastInsertRowid)
+                : (runResult.lastInsertRowid as number | undefined),
+            fields: [],
+          });
           return;
-}
+        }
 
         resolve({
-          rows:(rows || []) as T[],
-          rowCount:rows ? rows.length : 0,
-          executionTimeMs:Date.now() - startTime,
-          fields:rows.length > 0 ? Object.keys(rows[0] || {}) :[],
-          affectedRows:undefined,
+          rows: (rows || []) as T[],
+          rowCount: rows ? rows.length : 0,
+          executionTimeMs: Date.now() - startTime,
+          fields: rows.length > 0 ? Object.keys(rows[0] || {}) : [],
+          affectedRows: undefined,
           insertId:undefined,
 });
 } catch (error) {
@@ -952,17 +954,18 @@ class SQLiteTransactionConnection implements TransactionConnection {
             resolve({
               rows:[] as T[],
               rowCount:0,
-              executionTimeMs:Date.now() - startTime,
-              affectedRows:runResult.changes,
+              executionTimeMs: Date.now() - startTime,
+              affectedRows: runResult.changes,
               insertId:
-                typeof runResult.lastInsertRowid === 'bigint')                  ? Number(runResult.lastInsertRowid)
-                  :(runResult.lastInsertRowid as number | undefined),
-});
+                typeof runResult.lastInsertRowid === 'bigint'
+                  ? Number(runResult.lastInsertRowid)
+                  : (runResult.lastInsertRowid as number | undefined),
+            });
             return;
-}
+          }
 
           resolve({
-            rows:(rows || []) as T[],
+            rows: (rows || []) as T[],
             rowCount:rows ? rows.length : 0,
             executionTimeMs:Date.now() - startTime,
             fields:rows.length > 0 ? Object.keys(rows[0] || {}) :[],
