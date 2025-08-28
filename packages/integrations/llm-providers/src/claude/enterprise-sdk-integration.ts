@@ -241,7 +241,7 @@ function createSDKDocumentationTool(config:TaskSpecificSDKConfig) {
 }
 } catch (error) {
         logger.error('SDK docs tool error: ', error);
-'        return {
+        return {
           content:[{
             type:"text",
             text:JSON.stringify({

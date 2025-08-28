@@ -26,7 +26,15 @@ describe('Memory Backends', () => {
 });
 
   describe('In-Memory Backend', () => {
-    let backend:any;
+    let backend: {
+      store: ReturnType<typeof vi.fn>;
+      retrieve: ReturnType<typeof vi.fn>;
+      delete: ReturnType<typeof vi.fn>;
+      clear: ReturnType<typeof vi.fn>;
+      size: ReturnType<typeof vi.fn>;
+      health: ReturnType<typeof vi.fn>;
+      getStats: ReturnType<typeof vi.fn>;
+    };
 
     beforeEach(async () => {
       // Mock in-memory backend implementation
@@ -108,7 +116,15 @@ describe('Memory Backends', () => {
 });
 
   describe('SQLite Backend', () => {
-    let backend:any;
+    let backend: {
+      store: ReturnType<typeof vi.fn>;
+      retrieve: ReturnType<typeof vi.fn>;
+      delete: ReturnType<typeof vi.fn>;
+      clear: ReturnType<typeof vi.fn>;
+      size: ReturnType<typeof vi.fn>;
+      health: ReturnType<typeof vi.fn>;
+      getStats: ReturnType<typeof vi.fn>;
+    };
 
     beforeEach(() => {
       backend = {
@@ -199,7 +215,15 @@ describe('Memory Backends', () => {
 });
 
   describe('LanceDB Backend', () => {
-    let backend:any;
+    let backend: {
+      store: ReturnType<typeof vi.fn>;
+      retrieve: ReturnType<typeof vi.fn>;
+      delete: ReturnType<typeof vi.fn>;
+      clear: ReturnType<typeof vi.fn>;
+      size: ReturnType<typeof vi.fn>;
+      health: ReturnType<typeof vi.fn>;
+      getStats: ReturnType<typeof vi.fn>;
+    };
 
     beforeEach(() => {
       backend = {
@@ -275,7 +299,15 @@ describe('Memory Backends', () => {
 });
 
   describe('JSON Backend', () => {
-    let backend:any;
+    let backend: {
+      store: ReturnType<typeof vi.fn>;
+      retrieve: ReturnType<typeof vi.fn>;
+      delete: ReturnType<typeof vi.fn>;
+      clear: ReturnType<typeof vi.fn>;
+      size: ReturnType<typeof vi.fn>;
+      health: ReturnType<typeof vi.fn>;
+      getStats: ReturnType<typeof vi.fn>;
+    };
 
     beforeEach(() => {
       backend = {
@@ -349,7 +381,7 @@ describe('Memory Backends', () => {
       const invalidData = { key:undefined, circular:{}};
       invalidData.circular = invalidData; // Create circular reference
 
-      backend.store.mockImplementation((key:string, value:any) => {
+      backend.store.mockImplementation((key:string, value:unknown) => {
         try {
           JSON.stringify(value);
           return Promise.resolve();
@@ -376,7 +408,7 @@ describe('Memory Backends', () => {
 ];
 
       const factory = {
-        createBackend:vi.fn().mockImplementation((config: any) => ({
+        createBackend:vi.fn().mockImplementation((config: unknown) => ({
             type:config.type,
             config,
             store:vi.fn(),
@@ -398,7 +430,7 @@ describe('Memory Backends', () => {
 
     it('should handle unknown backend types', async () => {
       const factory = {
-        createBackend:vi.fn().mockImplementation((config: any) => {
+        createBackend:vi.fn().mockImplementation((config: unknown) => {
           if (!['memory',    'sqlite',    'lancedb',    'json'].includes(config.type)) {
             throw new Error(`Unknown backend type:${config.type}`);
 }

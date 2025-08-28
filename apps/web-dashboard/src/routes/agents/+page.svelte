@@ -1,21 +1,61 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
+  import { webSocketManager } from '$lib/websocket';
   
   let agents: Array<any> = [];
   let loading = true;
   let error = '';
+  let unsubscribeAgents: (() => void) | null = null;
 
   onMount(async () => {
-    // Use mock data while API is being developed
-    setTimeout(() => {
-      agents = [
-        { id: 1, status: 'Active', type: 'Coordination Agent', lastActivity: 'Just now' },
-        { id: 2, status: 'Active', type: 'Analysis Agent', lastActivity: '2 minutes ago' },
-        { id: 3, status: 'Idle', type: 'Processing Agent', lastActivity: '5 minutes ago' }
-      ];
-      loading = false;
-      error = '';
-    }, 500);
+    // Connect to real WebSocket data
+    setupRealTimeUpdates();
+  });
+
+  function setupRealTimeUpdates() {
+    // Subscribe to agent updates from WebSocket
+    unsubscribeAgents = webSocketManager.agents.subscribe((agentData) => {
+      if (agentData && Array.isArray(agentData)) {
+        console.log('🤖 Real-time agent data received:', agentData);
+        agents = agentData;
+        loading = false;
+        error = '';
+      } else if (agentData) {
+        // If single object, wrap in array
+        agents = [agentData];
+        loading = false;
+        error = '';
+      }
+    });
+
+    // Subscribe to agents channel for real-time updates
+    webSocketManager.subscribe('agents');
+
+    // Set initial loading state
+    loading = !webSocketManager.isConnected();
+
+    // Listen for connection changes
+    webSocketManager.connectionState.subscribe((connectionState) => {
+      if (!connectionState.connected) {
+        error = 'WebSocket disconnected - showing cached data';
+        // Show fallback mock data when disconnected
+        if (agents.length === 0) {
+          agents = [
+            { id: 1, name: 'Coordination Agent', status: 'offline', type: 'Coordination', lastActivity: 'Disconnected', capabilities: ['Planning', 'Task Management'] },
+            { id: 2, name: 'Analysis Agent', status: 'offline', type: 'Analysis', lastActivity: 'Disconnected', capabilities: ['Data Processing', 'Insights'] },
+            { id: 3, name: 'Processing Agent', status: 'offline', type: 'Processing', lastActivity: 'Disconnected', capabilities: ['File Processing', 'Automation'] }
+          ];
+        }
+        loading = false;
+      } else {
+        error = '';
+      }
+    });
+  }
+
+  onDestroy(() => {
+    if (unsubscribeAgents) unsubscribeAgents();
+    webSocketManager.unsubscribe('agents');
   });
 </script>
 
@@ -54,11 +94,11 @@
             {#each agents as agent, index}
               <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div class="flex items-center">
-                  <div class="w-3 h-3 bg-green-400 rounded-full mr-3"></div>
-                  <span class="font-medium">Agent {index + 1}</span>
+                  <div class="w-3 h-3 {agent.status === 'active' ? 'bg-green-400' : agent.status === 'busy' ? 'bg-yellow-400' : 'bg-gray-400'} rounded-full mr-3"></div>
+                  <span class="font-medium">{agent.name || `Agent ${index + 1}`}</span>
                 </div>
                 <div class="text-sm text-gray-600">
-                  Status: {agent.status || 'Active'}
+                  Status: {agent.status || 'offline'}
                 </div>
               </div>
             {/each}
@@ -118,20 +158,20 @@
                   <tr>
                     <td class="px-6 py-4 whitespace-nowrap">
                       <div class="flex items-center">
-                        <div class="w-2 h-2 bg-green-400 rounded-full mr-3"></div>
-                        <div class="text-sm font-medium text-gray-900">Agent {index + 1}</div>
+                        <div class="w-2 h-2 {agent.status === 'active' ? 'bg-green-400' : agent.status === 'busy' ? 'bg-yellow-400' : 'bg-gray-400'} rounded-full mr-3"></div>
+                        <div class="text-sm font-medium text-gray-900">{agent.name || `Agent ${index + 1}`}</div>
                       </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                        {agent.status || 'Active'}
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {agent.status === 'active' ? 'bg-green-100 text-green-800' : agent.status === 'busy' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'}">
+                        {agent.status || 'offline'}
                       </span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {agent.type || 'Coordination Agent'}
+                      {agent.type || 'Unknown'}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {agent.lastActivity || 'Just now'}
+                      {agent.lastActivity || 'Never'}
                     </td>
                   </tr>
                 {/each}

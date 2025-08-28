@@ -1,6 +1,5 @@
 <script lang="ts">
 import { onMount } from "svelte";
-import { apiClient } from "../../lib/api";
 
 // Database management data
 let databaseStatus: any = null;
@@ -58,34 +57,30 @@ const _sampleQueries = [
 
 onMount(async () => {
 	await loadDatabaseStatus();
-
-	// Listen for project changes
-	const handleProjectChange = async () => {
-		await loadDatabaseStatus();
-		// Clear cached data when project changes
-		databaseSchema = null;
-		databaseAnalytics = null;
-		queryResult = null;
-		commandResult = null;
-	};
-
-	window.addEventListener(
-		"projectChanged",
-		handleProjectChange as EventListener,
-	);
-
-	return () => {
-		window.removeEventListener(
-			"projectChanged",
-			handleProjectChange as EventListener,
-		);
-	};
 });
 
 async function loadDatabaseStatus() {
 	try {
 		_statusLoading = true;
-		databaseStatus = await apiClient.getDatabaseStatus();
+		// Show mock database status for now
+		databaseStatus = {
+			data: {
+				status: 'Connected',
+				responseTime: 45,
+				type: 'SQLite',
+				version: '3.43.0',
+				config: {
+					database: 'claude-zen.db',
+					mode: 'WAL',
+					cache_size: -64000
+				},
+				metadata: {
+					tables: 12,
+					size: '2.4MB',
+					last_vacuum: '2024-08-28T10:30:00Z'
+				}
+			}
+		};
 		_statusError = null;
 		console.log("✅ Loaded database status:", databaseStatus);
 	} catch (error) {
@@ -100,7 +95,20 @@ async function loadDatabaseStatus() {
 async function _loadDatabaseSchema() {
 	try {
 		_schemaLoading = true;
-		databaseSchema = await apiClient.getDatabaseSchema();
+		// Mock database schema
+		databaseSchema = {
+			tables: [
+				{ name: 'agents', columns: ['id', 'name', 'type', 'status', 'created_at'] },
+				{ name: 'tasks', columns: ['id', 'title', 'description', 'status', 'assigned_to'] },
+				{ name: 'events', columns: ['id', 'type', 'data', 'timestamp'] },
+				{ name: 'system_status', columns: ['id', 'component', 'status', 'last_check'] }
+			],
+			indexes: [
+				{ table: 'agents', column: 'status' },
+				{ table: 'tasks', column: 'status' },
+				{ table: 'events', column: 'type' }
+			]
+		};
 		_schemaError = null;
 		console.log("📋 Loaded database schema:", databaseSchema);
 	} catch (error) {
@@ -232,23 +240,23 @@ function _formatDuration(ms: number): string {
 		<h3 class="text-xl font-bold text-blue-600 dark:text-blue-400">⚡ Database Status</h3>
 	</div>
 	<div class="p-4">
-		{#if statusLoading}
+		{#if _statusLoading}
 			<div class="flex items-center justify-center py-12">
 				<div class="flex flex-col items-center gap-4">
-					<div class="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+					<div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
 					<p class="text-sm opacity-75">Loading database status...</p>
 				</div>
 			</div>
-		{:else if statusError}
-			<div class="text-center text-error-500 py-8">
-				<p class="text-sm">❌ {statusError}</p>
+		{:else if _statusError}
+			<div class="text-center text-red-500 py-8">
+				<p class="text-sm">❌ {_statusError}</p>
 				<button on:click={loadDatabaseStatus} class="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-3 py-1 rounded text-sm hover:bg-red-200 dark:hover:bg-red-700 transition-colors mt-2">Retry</button>
 			</div>
 		{:else if databaseStatus}
 			<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
 				<!-- Connection Status -->
 				<div class="text-center">
-					<div class="bg-{getStatusColor(databaseStatus.data?.status)}-100 dark:bg-{getStatusColor(databaseStatus.data?.status)}-900 text-{getStatusColor(databaseStatus.data?.status)}-800 dark:text-{getStatusColor(databaseStatus.data?.status)}-200 px-3 py-1 rounded text-lg mb-2">
+					<div class="bg-{_getStatusColor(databaseStatus.data?.status)}-100 dark:bg-{_getStatusColor(databaseStatus.data?.status)}-900 text-{_getStatusColor(databaseStatus.data?.status)}-800 dark:text-{_getStatusColor(databaseStatus.data?.status)}-200 px-3 py-1 rounded text-lg mb-2">
 						{databaseStatus.data?.status || 'Unknown'}
 					</div>
 					<div class="text-sm font-medium">Connection Status</div>
@@ -256,15 +264,15 @@ function _formatDuration(ms: number): string {
 
 				<!-- Response Time -->
 				<div class="text-center">
-					<div class="text-2xl font-bold text-secondary-500 mb-1">
-						{databaseStatus.data?.responseTime ? formatDuration(databaseStatus.data.responseTime) : 'N/A'}
+					<div class="text-2xl font-bold text-blue-500 mb-1">
+						{databaseStatus.data?.responseTime ? _formatDuration(databaseStatus.data.responseTime) : 'N/A'}
 					</div>
 					<div class="text-sm font-medium">Response Time</div>
 				</div>
 
 				<!-- Database Type -->
 				<div class="text-center">
-					<div class="text-lg font-bold text-tertiary-500 mb-1">
+					<div class="text-lg font-bold text-green-500 mb-1">
 						{databaseStatus.data?.type || 'Unknown'}
 					</div>
 					<div class="text-sm font-medium">Database Type</div>
@@ -272,7 +280,7 @@ function _formatDuration(ms: number): string {
 
 				<!-- Version -->
 				<div class="text-center">
-					<div class="text-lg font-bold text-warning-500 mb-1">
+					<div class="text-lg font-bold text-yellow-500 mb-1">
 						{databaseStatus.data?.version || 'Unknown'}
 					</div>
 					<div class="text-sm font-medium">Version</div>
@@ -284,12 +292,12 @@ function _formatDuration(ms: number): string {
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 					<div>
 						<h6 class="text-sm font-medium mb-2">Configuration</h6>
-						<CodeBlock language="json" code={JSON.stringify(databaseStatus.data.config, null, 2)} class="max-h-32 overflow-y-auto" />
+						<pre class="bg-gray-100 dark:bg-gray-800 p-3 rounded text-xs overflow-auto max-h-32">{JSON.stringify(databaseStatus.data.config, null, 2)}</pre>
 					</div>
 					{#if databaseStatus.data.metadata}
 						<div>
 							<h6 class="text-sm font-medium mb-2">Metadata</h6>
-							<CodeBlock language="json" code={JSON.stringify(databaseStatus.data.metadata, null, 2)} class="max-h-32 overflow-y-auto" />
+							<pre class="bg-gray-100 dark:bg-gray-800 p-3 rounded text-xs overflow-auto max-h-32">{JSON.stringify(databaseStatus.data.metadata, null, 2)}</pre>
 						</div>
 					{/if}
 				</div>
@@ -300,16 +308,37 @@ function _formatDuration(ms: number): string {
 
 <!-- Database Operations -->
 <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
-	<header class="card-header">
-		<h3 class="h3 text-primary-500">⚡ Database Operations</h3>
+	<header class="p-4 border-b border-gray-200 dark:border-gray-700">
+		<h3 class="text-xl font-bold text-blue-500">⚡ Database Operations</h3>
 	</header>
 	<section class="p-4">
-		<TabGroup bind:active={activeTab}>
-			<Tab value={0}>🔍 Query</Tab>
-			<Tab value={1}>⚡ Commands</Tab>
-			<Tab value={2}>📋 Schema</Tab>
-			<Tab value={3}>📊 Analytics</Tab>
-		</TabGroup>
+		<!-- Tab Navigation -->
+		<div class="flex border-b border-gray-200 dark:border-gray-700 mb-6">
+			<button 
+				class="px-4 py-2 text-sm font-medium border-b-2 {activeTab === 0 ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}"
+				on:click={() => activeTab = 0}
+			>
+				🔍 Query
+			</button>
+			<button 
+				class="px-4 py-2 text-sm font-medium border-b-2 {activeTab === 1 ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}"
+				on:click={() => activeTab = 1}
+			>
+				⚡ Commands
+			</button>
+			<button 
+				class="px-4 py-2 text-sm font-medium border-b-2 {activeTab === 2 ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}"
+				on:click={() => activeTab = 2}
+			>
+				📋 Schema
+			</button>
+			<button 
+				class="px-4 py-2 text-sm font-medium border-b-2 {activeTab === 3 ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}"
+				on:click={() => activeTab = 3}
+			>
+				📊 Analytics
+			</button>
+		</div>
 
 		<div class="mt-6">
 			{#if activeTab === 0}

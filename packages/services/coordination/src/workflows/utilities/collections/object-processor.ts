@@ -73,13 +73,13 @@ export class ObjectProcessor {
   /**
    * Check if object is empty
    */
-  static isEmpty(value: any): boolean {
+  static isEmpty(value: unknown): boolean {
     return isEmpty(value);
 }
   /**
    * Deep equality check
    */
-  static isEqual(a: any, b: any): boolean {
+  static isEqual(a: unknown, b: unknown): boolean {
     return isEqual(a, b);
 }
 };

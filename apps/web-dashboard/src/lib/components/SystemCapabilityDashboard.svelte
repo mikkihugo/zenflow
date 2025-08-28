@@ -372,19 +372,19 @@ onDestroy(() => {
     </div>
     
     <!-- Installation Suggestions -->
-    {#if capabilityData.installationSuggestions.length > 0}
+    {#if _capabilityData.installationSuggestions.length > 0}
       <div class="bg-white shadow rounded-lg">
         <div class="px-4 py-5 sm:p-6">
           <h3 class="text-lg leading-6 font-medium text-gray-900">💡 Installation Suggestions</h3>
           <p class="mt-1 text-sm text-gray-500">Recommended packages to improve system capabilities</p>
           
           <div class="mt-6 space-y-4">
-            {#each capabilityData.installationSuggestions.slice(0, 8) as suggestion}
+            {#each _capabilityData.installationSuggestions.slice(0, 8) as suggestion}
               <div class="flex items-start justify-between p-4 bg-gray-50 rounded-lg">
                 <div class="flex-1">
                   <div class="flex items-center">
-                    <span class="text-lg mr-2">{getPriorityIcon(suggestion.priority)}</span>
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {getPriorityBadgeColor(suggestion.priority)}">
+                    <span class="text-lg mr-2">{_getPriorityIcon(suggestion.priority)}</span>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {_getPriorityBadgeColor(suggestion.priority)}">
                       {suggestion.priority}
                     </span>
                     <span class="ml-2 text-sm font-medium text-gray-900">{suggestion.facade}</span>
@@ -401,10 +401,10 @@ onDestroy(() => {
               </div>
             {/each}
             
-            {#if capabilityData.installationSuggestions.length > 8}
+            {#if _capabilityData.installationSuggestions.length > 8}
               <div class="text-center">
                 <span class="text-sm text-gray-500">
-                  +{capabilityData.installationSuggestions.length - 8} more suggestions available
+                  +{_capabilityData.installationSuggestions.length - 8} more suggestions available
                 </span>
               </div>
             {/if}
