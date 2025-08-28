@@ -52,11 +52,11 @@ export interface EnhancedDeceptionResult {
     patterns:string[];
     behavioralSignals:number[];
 };
-  behavioralAnalysis:{
-    anomalyScore:number;
-    riskLevel: 'LOW|MEDIUM|HIGH|CRITICAL;
-'    recommendation:string;
-};
+  behavioralAnalysis: {
+    anomalyScore: number;
+    riskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+    recommendation: string;
+  };
   combinedVerdict:{
     isDeceptive:boolean;
     confidence:number;
@@ -87,23 +87,25 @@ export class NeuralSafetyBridge extends TypedEventBase {
     this.neuralDeceptionDetector = new NeuralDeceptionDetector();
 
     this.logger.info('🧠🛡️ Neural Safety Bridge initialized', {
-    ')      enhancedDetection:config.enhancedDetection,
-      behavioralLearning:config.behavioralLearning,
-      realTimeMonitoring:config.realTimeMonitoring,
-});
-}
+      enhancedDetection: config.enhancedDetection,
+      behavioralLearning: config.behavioralLearning,
+      realTimeMonitoring: config.realTimeMonitoring,
+    });
+  }
 
   /**
    * Initialize neural safety bridge with brain system integration.
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     if (this.isInitialized) {
-      this.logger.warn('Neural Safety Bridge already initialized');')      return;
-}
+      this.logger.warn('Neural Safety Bridge already initialized');
+      return;
+    }
 
     try {
       this.logger.info(
-        '🔧 Initializing Neural Safety Bridge with brain integration...')      );
+        '🔧 Initializing Neural Safety Bridge with brain integration...'
+      );
       
       // Async initialization of safety monitoring systems
       await this.initializeSafetyProtocols();
@@ -270,11 +272,11 @@ export class NeuralSafetyBridge extends TypedEventBase {
 
   /**
    * Analyze behavioral patterns using brain's behavioral intelligence.')   */
-  private async analyzeBehavioralPatterns(features:number[]): Promise<{
-    anomalyScore:number;
-    riskLevel: 'LOW|MEDIUM|HIGH|CRITICAL;
-'    recommendation:string;
-}> {
+  private async analyzeBehavioralPatterns(features: number[]): Promise<{
+    anomalyScore: number;
+    riskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+    recommendation: string;
+  }> {
     // Async behavioral analysis with ML enhancement
     const patternAnalysis = await this.performPatternAnalysis(features);
     const behavioralMetrics = await this.calculateBehavioralMetrics(features);
@@ -327,30 +329,31 @@ export class NeuralSafetyBridge extends TypedEventBase {
 
     const anomalyScore = 1 - prediction; // Invert performance for anomaly
 
-    let riskLevel: 'LOW|MEDIUM|HIGH|CRITICAL;
-'    let recommendation:string;
+    let riskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+    let recommendation: string;
 
     if (anomalyScore >= 0.8) {
       riskLevel = 'CRITICAL';
       recommendation =
-        'Immediate intervention required - suspicious behavioral patterns detected;
+        'Immediate intervention required - suspicious behavioral patterns detected';
 } else if (anomalyScore >= 0.6) {
       riskLevel = 'HIGH';
       recommendation =
-        'Enhanced monitoring recommended - unusual behavioral patterns;
-} else if (anomalyScore >= 0.4) {
+        'Enhanced monitoring recommended - unusual behavioral patterns';
+    } else if (anomalyScore >= 0.4) {
       riskLevel = 'MEDIUM';
       recommendation = 'Continued observation - minor behavioral deviations';
-} else {
+    } else {
       riskLevel = 'LOW';
       recommendation = 'Normal behavioral patterns - no action required';
-}
+    }
 
-    return { anomalyScore, riskLevel, recommendation};
-}
+    return { anomalyScore, riskLevel, recommendation };
+  }
 
   /**
-   * Process neural patterns using brain's neural network.')   */
+   * Process neural patterns using brain's neural network.
+   */
   private async processNeuralPatterns(data:any): Promise<string[]> {
     // Use neural bridge for advanced pattern recognition
     const neuralAnalysis = await this.performNeuralAnalysis(data);
@@ -408,7 +411,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
     standardDetection:any[],
     neuralResult:any,
     behavioralAnalysis:any,
-    _neuralPatterns:string[]
+    neuralPatterns:string[]
   ):{
     isDeceptive:boolean;
     confidence:number;
@@ -416,55 +419,56 @@ export class NeuralSafetyBridge extends TypedEventBase {
     reasoning:string[];
 } {
     const reasoning:string[] = [];
-    let __combinedConfidence = 0;
-    let __deceptionIndicators = 0;
+    let combinedConfidence = 0;
+    let deceptionIndicators = 0;
 
     // Standard detection weight:40%
     if (standardDetection.length > 0) {
-      _deceptionIndicators += standardDetection.length;
-      _combinedConfidence += 0.4 * Math.min(standardDetection.length / 3, 1);
+      deceptionIndicators += standardDetection.length;
+      combinedConfidence += 0.4 * Math.min(standardDetection.length / 3, 1);
       reasoning.push(
-        `Standard detection:${standardDetection.length} patterns found``
+        `Standard detection:${standardDetection.length} patterns found`
       );
-}
+    }
 
     // Neural ML detection weight:30%
     if (neuralResult.finalVerdict.isDeceptive) {
       deceptionIndicators += 1;
       combinedConfidence += 0.3 * neuralResult.finalVerdict.confidence;
       reasoning.push(
-        `Neural ML:${(neuralResult.neuralPrediction.deceptionProbability * 100).toFixed(1)}% deception probability``
+        `Neural ML:${(neuralResult.neuralPrediction.deceptionProbability * 100).toFixed(1)}% deception probability`
       );
-}
+    }
 
     // Behavioral analysis weight:20%
     if (
-      behavioralAnalysis.riskLevel ==='HIGH'||behavioralAnalysis.riskLevel ===' CRITICAL')    ) 
-      _deceptionIndicators += 1;
-      _combinedConfidence += 0.2 * behavioralAnalysis.anomalyScore;
+      behavioralAnalysis.riskLevel === 'HIGH' || behavioralAnalysis.riskLevel === 'CRITICAL'
+    ) {
+      deceptionIndicators += 1;
+      combinedConfidence += 0.2 * behavioralAnalysis.anomalyScore;
       reasoning.push(
-        `Behavioral analysis:${behavioralAnalysis.riskLevel} risk level``
+        `Behavioral analysis:${behavioralAnalysis.riskLevel} risk level`
       );
-}
+    }
 
     // Neural patterns weight:10%
     if (neuralPatterns.length > 0) {
       deceptionIndicators += 1;
       combinedConfidence += 0.1 * Math.min(neuralPatterns.length / 2, 1);
-      reasoning.push(`Neural patterns:${neuralPatterns.join(',    ')}`);`
-}
+      reasoning.push(`Neural patterns:${neuralPatterns.join(', ')}`);
+    }
 
     const isDeceptive =
-      deceptionIndicators >= 2||combinedConfidence > this.neuralSafetyConfig.interventionThreshold;
+      deceptionIndicators >= 2 || combinedConfidence > this.neuralSafetyConfig.interventionThreshold;
     const interventionRequired =
-      deceptionIndicators >= 3||behavioralAnalysis.riskLevel ==='CRITICAL'||standardDetection.some((a) => a.severity ===' CRITICAL');')
+      deceptionIndicators >= 3 || behavioralAnalysis.riskLevel === 'CRITICAL' || standardDetection.some((a) => a.severity === 'CRITICAL');
     return {
       isDeceptive,
-      confidence:Math.min(combinedConfidence, 1),
+      confidence: Math.min(combinedConfidence, 1),
       interventionRequired,
       reasoning,
-};
-}
+    };
+  }
 
   /**
    * Setup real-time monitoring for continuous safety assessment.
@@ -474,45 +478,48 @@ export class NeuralSafetyBridge extends TypedEventBase {
     // Set up event handlers for immediate response
     this.on('deception:detected', (result:EnhancedDeceptionResult) => {
     ')      this.logger.warn(
-        '🚨 Deception detected by enhanced neural safety system',        {
-          confidence:result.combinedVerdict.confidence,
-          standardAlerts:result.standardDetection.length,
-          behavioralRisk:result.behavioralAnalysis.riskLevel,
-}
+        '🚨 Deception detected by enhanced neural safety system',
+        {
+          confidence: result.combinedVerdict.confidence,
+          standardAlerts: result.standardDetection.length,
+          behavioralRisk: result.behavioralAnalysis.riskLevel,
+        }
       );
 
       this.logger.warn('Neural safety deception detected', {
-    ')        confidence:result.combinedVerdict.confidence.toString(),
-        riskLevel:result.behavioralAnalysis.riskLevel,
-});
-});
+        confidence: result.combinedVerdict.confidence.toString(),
+        riskLevel: result.behavioralAnalysis.riskLevel,
+      });
+    });
 
-    this.on('intervention:required', (result:EnhancedDeceptionResult) => {
-    ')      this.logger.error(
-        '🛑 INTERVENTION REQUIRED - Critical deception detected',        {
-          reasoning:result.combinedVerdict.reasoning,
-          behavioralRisk:result.behavioralAnalysis.riskLevel,
-}
+    this.on('intervention:required', (result: EnhancedDeceptionResult) => {
+      this.logger.error(
+        '🛑 INTERVENTION REQUIRED - Critical deception detected',
+        {
+          reasoning: result.combinedVerdict.reasoning,
+          behavioralRisk: result.behavioralAnalysis.riskLevel,
+        }
       );
 
       this.logger.warn('Neural safety intervention triggered', {
-    ')        riskLevel:result.behavioralAnalysis.riskLevel,
-        standardAlerts:result.standardDetection.length.toString(),
-});
-});
+        riskLevel: result.behavioralAnalysis.riskLevel,
+        standardAlerts: result.standardDetection.length.toString(),
+      });
+    });
 
-    this.logger.info('✅ Real-time safety monitoring active');')}
+    this.logger.info('✅ Real-time safety monitoring active');
+  }}
 
   /**
    * Learn from feedback to improve detection accuracy.
    */
   async learnFromFeedback(
-    interactionData:any,
-    actualDeception:boolean,
-    feedback:string
-  ):Promise<void> {
+    interactionData: any,
+    actualDeception: boolean,
+    feedback: string
+  ): Promise<void> {
     this.logger.info('📚 Learning from safety feedback...', {
-    ')      agentId:interactionData.agentId,
+      agentId: interactionData.agentId,
       actualDeception,
       feedback,
 });
