@@ -228,7 +228,7 @@ export class ContainerImpl implements Container {
 					);
 }
 } catch (error) {
-			const message = `Failed to resolve service '${token}':${error instanceof Error ? error[' message'] : String(error)}`;
+			const message = `Failed to resolve service '${token}': ${error instanceof Error ? error.message : String(error)}`;
 			this.emit("serviceResolutionFailed", { token, error:message});
 			throw new Error(message);
 }

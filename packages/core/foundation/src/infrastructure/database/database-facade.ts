@@ -8,8 +8,7 @@
 
 import { getLogger} from '../../core/logging/index.js';
 import { facadeStatusManager, CapabilityLevel} from '../facades/system.status.manager.js';
-import type { Result} from '../../error-handling/index.js';
-import { ok} from '../../error-handling/index.js';
+import { type Result, ok} from '../../error-handling/index.js';
 
 const logger = getLogger('database-facade');
 
@@ -96,7 +95,7 @@ export class DatabaseFacade {
     try {
       const packageInfo = await facadeStatusManager.checkAndRegisterPackage('@claude-zen/database',    'databaseService');
       
-      if (packageInfo.status === 'available' || packageInfo.status === ' registered') {
+      if (packageInfo.status === 'available' || packageInfo.status === 'registered') {
         this.databasePackage = await import('@claude-zen/database');
         this.capability = CapabilityLevel.FULL;
         logger.info('Database package loaded successfully');

@@ -68,7 +68,8 @@ export interface SafeConfiguration {
   level: SafeConfigurationLevel;
   features: SafeFeatureToggles;
   customizations: {
-    organizationSize : 'small| medium| large' | ' enterprise')    industry: string;;
+    organizationSize: 'small' | 'medium' | 'large' | 'enterprise';
+    industry: string;
     complianceRequirements: string[];
     aiIntegrationLevel: 'basic' | 'advanced' | 'full';
   };

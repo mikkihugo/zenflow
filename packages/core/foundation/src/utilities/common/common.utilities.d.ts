@@ -95,7 +95,7 @@ export { z} from "zod";
  * if (result.isOk()) {
  *   console.log('Valid user: ', result.value);
 ' *} else {
- *   console.error('Validation error:', result.error[' message']);
+ *   console.error('Validation error:', result.error[message]);
  *}
  * ```
  */
@@ -164,7 +164,7 @@ export declare function createEnvValidator<T extends Record<string, Spec<unknown
  * if (result.isOk()) {
  *   console.log('Data: ', result.value);
 ' *} else {
- *   console.error('Error or timeout:', result.error[' message']);
+ *   console.error('Error or timeout:', result.error[message]);
  *}
  * ```
  *

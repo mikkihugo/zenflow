@@ -78,7 +78,7 @@ export interface LoggingConfig {
  * ```typescript`
  * const logger = getLogger('myservice');
  * logger.info('Service started', { port: 3000});
- * logger.error('Database connection failed', { error: err[' message']});
+ * logger.error('Database connection failed', { error: err[message]});
  * logger.success?.('Operation completed successfully');
  * ```
  */

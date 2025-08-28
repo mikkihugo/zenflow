@@ -12,8 +12,8 @@ const logger = getLogger('event-registry-initializer');
 export interface ActiveModule {
   id:string;
   name:string;
-  type:'sparc' | ' brain' | ' dspy' | ' teamwork' | ' llm' | ' git' | ' system' | ' safe' | ' claude-code';
-  status:'active' | ' idle' | ' error' | ' disconnected';
+  type:'sparc' | ' brain' | ' dspy' | 'teamwork' | 'llm' | 'git' | ' system' | ' safe' | 'claude-code';
+  status:'active' | 'idle' | ' error' | 'disconnected';
   lastSeen:Date;
   eventCount:number;
   events:string[];
@@ -41,7 +41,7 @@ export interface EventMetrics {
   averageLatency:number;
   errorRate:number;
   activeModules:number;
-  systemHealth:'healthy' | ' degraded' | ' critical';
+  systemHealth:'healthy' | 'degraded' | 'critical';
 }
 
 export class EventRegistryInitializer {
@@ -247,7 +247,7 @@ export class EventRegistryInitializer {
     // Occasionally change module status
     if (Math.random() > 0.9) {
       const randomIndex = Math.floor(Math.random() * this.activeModules.length);
-      const statuses:ActiveModule['status'][] = [' active',    'idle'];
+      const statuses:ActiveModule['status'][] = ['active',    'idle'];
       this.activeModules[randomIndex].status = statuses[Math.floor(Math.random() * statuses.length)];
 }
 }

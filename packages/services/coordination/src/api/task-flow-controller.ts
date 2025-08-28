@@ -584,26 +584,77 @@ export class TaskFlowController extends EventBus {
       if (recentTrend) {
         adjustedWaitTime *= recentTrend; // Multiply by trend factor (>1 = increasing, <1 = decreasing)
       }
-      ';
+      
       this.logger.debug('Average wait time calculated', {
         state,
-        avgWaitTime: await this.getSystemStatus();
-    
-    // Persist bottleneck analysis to database for historical tracking
+        avgWaitTime,
+        sampleSize,
+        recentTrend
+      });
+      
+      return adjustedWaitTime;
+    } catch (error) {
+      this.logger.error('Error calculating average wait time', { state, error });
+      return 300000; // Default 5 minutes
+    }
+  }
+
+  /**
+   * Get system status with bottleneck analysis
+   */
+  private async getSystemStatus(): Promise<any> {
+    // Implementation for getting system status
+    return {
+      wipUsage: {},
+      bottlenecks: []
+    };
+  }
+
+  /**
+   * Persist bottleneck analysis to database for historical tracking
+   */
+  private async persistBottleneckAnalysis(status: any): Promise<void> {
     if (this.dbProvider) {
       try {
         for (const [state, usage] of Object.entries(status.wipUsage)) {
-          await this.dbProvider.execute(';
-           'INSERT INTO task_flow_metrics (state, task_count, wip_utilization, bottleneck_score) VALUES (?, ?, ?, ?)';
-            [state, usage.current, usage.utilization, usage.utilization > 0.9 ? 1.0: await this.analyzeBottleneckPatterns(status.bottlenecks);
-    
-    for (const bottleneck of enhancedBottlenecks) {
-      // Record bottleneck event in database
-      await this.recordBottleneckEvent(bottleneck);
-      
+          await this.dbProvider.execute(
+            'INSERT INTO task_flow_metrics (state, task_count, wip_utilization, bottleneck_score) VALUES (?, ?, ?, ?)',
+            [state, (usage as any).current, (usage as any).utilization, (usage as any).utilization > 0.9 ? 1.0 : 0.0]
+          );
+        }
+        
+        const enhancedBottlenecks = await this.analyzeBottleneckPatterns(status.bottlenecks);
+        
+        for (const bottleneck of enhancedBottlenecks) {
+          // Record bottleneck event in database
+          await this.recordBottleneckEvent(bottleneck);
+        }
+      } catch (error) {
+        this.logger.error('Error persisting bottleneck analysis', { error });
+      }
+    }
+  }
+
+  /**
+   * Analyze bottleneck patterns
+   */
+  private async analyzeBottleneckPatterns(bottlenecks: any[]): Promise<any[]> {
+    // Implementation for analyzing bottleneck patterns
+    return bottlenecks.map(bottleneck => ({
+      ...bottleneck,
+      severity: 'high',
+      timestamp: new Date()
+    }));
+  }
+
+  /**
+   * Record bottleneck event
+   */
+  private async recordBottleneckEvent(bottleneck: any): Promise<void> {
+    try {
       // Generate intelligent recommendations based on historical data
       const recommendations = await this.generateBottleneckRecommendations(bottleneck.state);
-      ';
+      
       this.emit('bottleneckDetected', {
         state: bottleneck.state,
         utilization: bottleneck.utilization,
@@ -612,14 +663,28 @@ export class TaskFlowController extends EventBus {
         recommendations,
         timestamp: Date.now(),
       });
-      ';
+      
       this.logger.warn('Bottleneck detected with enhanced analysis', {
         state: bottleneck.state,
         utilization: bottleneck.utilization,
         severity: bottleneck.severity,
         recommendations: recommendations.slice(0, 3) // Log top 3 recommendations
       });
+    } catch (error) {
+      this.logger.error('Error recording bottleneck event', { error, bottleneck });
     }
+  }
+
+  /**
+   * Generate bottleneck recommendations
+   */
+  private async generateBottleneckRecommendations(state: string): Promise<string[]> {
+    // Implementation for generating recommendations
+    return [
+      `Consider increasing WIP limit for ${state}`,
+      `Add more resources to ${state} processing`,
+      `Review process efficiency for ${state}`
+    ];
   }
   // =============================================================================
   // HELPER METHODS FOR DATABASE INTEGRATION

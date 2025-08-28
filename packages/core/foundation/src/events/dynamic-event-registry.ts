@@ -16,8 +16,8 @@ import { EVENT_CATALOG, EventName, getAllEventNames} from './event-catalog.js';
 export interface ActiveModule {
   id:string;
   name:string;
-  type:'sparc' | ' brain' | ' dspy' | ' teamwork' | ' llm' | ' git' | ' system' | ' safe' | ' claude-code';
-  status:'active' | ' idle' | ' error' | ' disconnected';
+  type:'sparc' | 'brain' | 'dspy' | 'teamwork' | 'llm' | 'git' | 'system' | 'safe' | 'claude-code';
+  status:'active' | 'idle' | 'error' | 'disconnected';
   lastSeen:Date;
   eventCount:number;
   events:EventName[];
@@ -48,7 +48,7 @@ export interface EventMetrics {
   errorRate:number;
   activeModules:number;
   peakEventsPerSecond:number;
-  systemHealth:'healthy' | ' degraded' | ' critical';
+  systemHealth:'healthy' | 'degraded' | 'critical';
 }
 
 export interface ModuleRegistration {
@@ -80,7 +80,7 @@ export class DynamicEventRegistry extends EventBus {
   };
   private metricsHistory: Array<{ timestamp: Date; metrics: EventMetrics }> = [];
   private eventBuffer:EventFlow[] = [];
-  private metricsInterval?:NodeJS.Timer;
+  private metricsInterval?:NodeJS.Timeout;
 
   constructor() {
     super();
@@ -118,7 +118,8 @@ export class DynamicEventRegistry extends EventBus {
       metadata:{
         ...registration.metadata,
         uptime:0,
-        version:registration.metadata?.version as string || '1.0.0',        description:registration.metadata?.description as string || `${registration.moduleName} module`
+        version:registration.metadata?.['version'] as string || '1.0.0',
+        description:registration.metadata?.['description'] as string || `${registration.moduleName} module`
 }
 };
 
@@ -151,21 +152,24 @@ export class DynamicEventRegistry extends EventBus {
   /**
    * Handle module registration events
    */
-  private handleModuleRegistration(registration:ModuleRegistration): void {
+  private handleModuleRegistration(...args: unknown[]): void {
+    const registration = args[0] as ModuleRegistration;
     this.registerModule(registration);
 }
 
   /**
    * Handle module unregistration events
    */
-  private handleModuleUnregistration(moduleId:string): void {
+  private handleModuleUnregistration(...args: unknown[]): void {
+    const moduleId = args[0] as string;
     this.unregisterModule(moduleId);
 }
 
   /**
    * Handle module heartbeat events
    */
-  private handleModuleHeartbeat(data:{ moduleId: string; metadata?: Record<string, unknown>}):void {
+  private handleModuleHeartbeat(...args: unknown[]): void {
+    const data = args[0] as { moduleId: string; metadata?: Record<string, unknown>};
     const module = this.activeModules.get(data.moduleId);
     if (module) {
       module.lastSeen = new Date();
@@ -181,7 +185,10 @@ export class DynamicEventRegistry extends EventBus {
   /**
    * Handle all event flows for monitoring
    */
-  private handleEventFlow(eventName:string, payload?:unknown): void {
+  private handleEventFlow(...args: unknown[]): void {
+    const eventName = args[0] as string;
+    const payload = args[1];
+    
     if (eventName.startsWith('registry: ')) {
       return; // Don't track registry events to avoid recursion
 }
@@ -313,7 +320,7 @@ export class DynamicEventRegistry extends EventBus {
   /**
    * Get current system metrics
    */
-  getMetrics():EventMetrics {
+  override getMetrics():EventMetrics {
     return { ...this.eventMetrics};
 }
 
@@ -334,6 +341,7 @@ export class DynamicEventRegistry extends EventBus {
     activeModules:string[];
 }> {
     const catalog:Record<string, {
+      type:string;
       flows:number;
       lastSeen?:Date;
       activeModules:string[];
