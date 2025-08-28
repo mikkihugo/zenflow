@@ -56,6 +56,25 @@ const _sampleQueries = [
 	},
 ];
 
+// Alias underscored state/function names to the ones used in the template
+// States
+$: schemaLoading = _schemaLoading;
+$: analyticsLoading = _analyticsLoading;
+$: queryLoading = _queryLoading;
+$: commandLoading = _commandLoading;
+$: schemaError = _schemaError;
+$: analyticsError = _analyticsError;
+$: queryError = _queryError;
+$: commandError = _commandError;
+// Data
+$: sampleQueries = _sampleQueries;
+// Functions
+const loadDatabaseSchema = _loadDatabaseSchema;
+const loadDatabaseAnalytics = _loadDatabaseAnalytics;
+const executeQuery = _executeQuery;
+const executeCommand = _executeCommand;
+const loadSampleQuery = _loadSampleQuery;
+
 onMount(async () => {
 	await loadDatabaseStatus();
 });
@@ -409,7 +428,7 @@ function _formatDuration(ms: number): string {
 										<p class="text-xs">{queryError}</p>
 									</div>
 								{:else if queryResult}
-									<CodeBlock language="json" code={JSON.stringify(queryResult, null, 2)} />
+									<pre class="bg-gray-100 dark:bg-gray-800 p-3 rounded text-xs overflow-auto max-h-80">{JSON.stringify(queryResult, null, 2)}</pre>
 								{:else}
 									<p class="text-sm opacity-75">Execute a query to see results here</p>
 								{/if}
@@ -476,7 +495,7 @@ function _formatDuration(ms: number): string {
 										<p class="text-xs">{commandError}</p>
 									</div>
 								{:else if commandResult}
-									<CodeBlock language="json" code={JSON.stringify(commandResult, null, 2)} />
+									<pre class="bg-gray-100 dark:bg-gray-800 p-3 rounded text-xs overflow-auto max-h-80">{JSON.stringify(commandResult, null, 2)}</pre>
 								{:else}
 									<p class="text-sm opacity-75">Execute a command to see results here</p>
 								{/if}
@@ -516,11 +535,7 @@ function _formatDuration(ms: number): string {
 								<button on:click={loadDatabaseSchema} class="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-3 py-1 rounded text-sm hover:bg-red-200 dark:hover:bg-red-700 transition-colors mt-2">Retry</button>
 							</div>
 						{:else if databaseSchema}
-							<CodeBlock 
-								language="json" 
-								code={JSON.stringify(databaseSchema, null, 2)} 
-								class="max-h-96 overflow-y-auto"
-							/>
+							<pre class="bg-gray-100 dark:bg-gray-800 p-3 rounded text-xs overflow-auto max-h-96">{JSON.stringify(databaseSchema, null, 2)}</pre>
 						{:else}
 							<p class="text-sm opacity-75 text-center py-8">Click "Load Schema" to retrieve database schema information</p>
 						{/if}
@@ -558,11 +573,7 @@ function _formatDuration(ms: number): string {
 								<button on:click={loadDatabaseAnalytics} class="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-3 py-1 rounded text-sm hover:bg-red-200 dark:hover:bg-red-700 transition-colors mt-2">Retry</button>
 							</div>
 						{:else if databaseAnalytics}
-							<CodeBlock 
-								language="json" 
-								code={JSON.stringify(databaseAnalytics, null, 2)} 
-								class="max-h-96 overflow-y-auto"
-							/>
+							<pre class="bg-gray-100 dark:bg-gray-800 p-3 rounded text-xs overflow-auto max-h-96">{JSON.stringify(databaseAnalytics, null, 2)}</pre>
 						{:else}
 							<p class="text-sm opacity-75 text-center py-8">Click "Load Analytics" to retrieve database performance and usage analytics</p>
 						{/if}
