@@ -52,8 +52,15 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10
+          version: 10.15.0
           run_install: false
+
+      # Fallback: ensure pnpm via Corepack in case PATH is reset by subsequent steps
+      - name: Ensure pnpm via Corepack (fallback)
+        run: |
+          node -v
+          corepack enable
+          corepack prepare pnpm@10.15.0 --activate
 
       # Step 3.1: Verify pnpm version
       - name: Verify pnpm version
