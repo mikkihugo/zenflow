@@ -6,6 +6,6 @@
  * functionality and SAFe-specific coordination.
  */
 
-export type * from './export-manager';
-export { ExportSystem} from './export-manager';
-export * from './exporters';
+export type { ExportResult as UnifiedExportResult, ExportOptions, ExporterDefinition } from './export-manager';
+export { ExportSystem } from './export-manager';
+export { EXPORT_UTILS } from './exporters';

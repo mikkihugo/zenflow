@@ -5,7 +5,8 @@
  * Supports JSON, YAML, CSV, XML, and custom formats.
  */
 
-import { getLogger, TypedEventBase} from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
+import { EventEmitter } from 'node:events';
 import { mkdir, writeFile} from 'node:fs/promises';
 import { dirname, join} from 'node:path';
 
@@ -41,7 +42,7 @@ export interface ExporterDefinition {
   supports?:string[];
 }
 
-export class ExportSystem extends TypedEventBase {
+export class ExportSystem extends EventEmitter {
   private exporters = new Map<string, ExporterDefinition>();
   private exportHistory:ExportResult[] = [];
   private initialized = false;
@@ -168,7 +169,7 @@ export class ExportSystem extends TypedEventBase {
         await writeFile(filePath, exportedData, options?.encoding || 'utf8');
 }
 
-      const result:ExportResult = {
+  const result:ExportResult = {
         id:exportId,
         format,
         filename,
@@ -211,15 +212,15 @@ export class ExportSystem extends TypedEventBase {
       return '';
 }
 
-    const headers = Object.keys(data[0] || {});
-    const csvRows = [headers.join(',    ')];
+  const headers = Object.keys(data[0] || {});
+  const csvRows = [headers.join(', ')];
 
     for (const row of data) {
       const values = headers.map((header) => {
         const value = row[header];
         if (
           typeof value === 'string' &&
-          (value.includes(',    ') || value.includes('"'))
+          (value.includes(', ') || value.includes('"'))
         ) {
           return `"${value.replace(/"/g, '""')}"`;
 }
@@ -237,7 +238,7 @@ export class ExportSystem extends TypedEventBase {
     if (obj === null) return 'null';
     if (typeof obj === 'boolean') return obj.toString();
     if (typeof obj === 'number') return obj.toString();
-    if (typeof obj === 'string') return `"${obj.replace(/"/g, '\"')}"`;
+  if (typeof obj === 'string') return `"${obj.replace(/"/g, '"')}"`;
 
     if (Array.isArray(obj)) {
       if (obj.length === 0) return '[]';
@@ -296,16 +297,16 @@ export class ExportSystem extends TypedEventBase {
 
     if (typeof data === 'object' && data !== null) {
       const dataObj = data as Record<string, unknown>;
-      if (dataObj.title) {
-        markdown += `# ${dataObj.title}\n\n`;
+      if (dataObj['title']) {
+        markdown += `# ${String(dataObj['title'])}\n\n`;
 }
 
-      if (dataObj.description) {
-        markdown += `${dataObj.description}\n\n`;
+      if (dataObj['description']) {
+        markdown += `${String(dataObj['description'])}\n\n`;
 }
 
-      if (dataObj.content) {
-        markdown += `## Content\n${dataObj.content}\n`;
+      if (dataObj['content']) {
+        markdown += `## Content\n${String(dataObj['content'])}\n`;
 }
 } else {
       markdown = String(data);
@@ -315,7 +316,7 @@ export class ExportSystem extends TypedEventBase {
 }
 
   private convertToHTML(data:unknown): string {
-    const title = (data as Record<string, unknown>)?.title || 'Claude Code Zen Export';
+  const title = (data as Record<string, unknown>)?.['title'] || 'Claude Code Zen Export';
 
   let html = `<!DOCTYPE html>
 <html lang="en">
@@ -338,7 +339,7 @@ export class ExportSystem extends TypedEventBase {
 
     if (typeof obj === 'object' && obj !== null) {
       for (const [key, value] of Object.entries(obj)) {
-        if (key === 'title') continue;
+  if (key === 'title') continue;
         
         html += `<h2>${this.escapeHTML(key.charAt(0).toUpperCase() + key.slice(1))}</h2>`;
         

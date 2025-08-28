@@ -3,18 +3,16 @@
   "compilerOptions": {
     // Root-level overrides/additions only; inherit module/moduleResolution/etc from base
     "resolveJsonModule": true,
-    "downlevelIteration": true,
-  // Allow both source and tests as roots for type-checking
-  "rootDirs": ["./src", "./tests"],
-  // Ensure TS doesn't complain about tests being outside of rootDir
-  "rootDir": "."
+  "downlevelIteration": true
   },
   "include": [
-    "src/**/*",
-    "tests/**/*"
+  "src/**/*"
   ],
   "exclude": [
     "node_modules",
-    "dist"
+  "dist",
+  "tests",
+  "**/*.test.ts",
+  "**/*.spec.ts"
   ]
 }

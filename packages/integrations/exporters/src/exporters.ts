@@ -23,7 +23,7 @@ export interface ExportResult {
 }
 
 export interface ExportConfig {
-  format:'json' | ' csv' | ' yaml' | ' xml' | ' markdown';
+  format: 'json' | 'csv' | 'yaml' | 'xml' | 'markdown';
   outputPath?:string;
   fileName?:string;
   options?:Record<string, unknown>;
@@ -121,8 +121,8 @@ export class ExportSystem {
       return '';
 }
 
-    const headers = Object.keys(data[0]);
-    const csvRows = [headers.join(',    ')];
+  const headers = Object.keys(data[0] ?? {}) as string[];
+  const csvRows = [headers.join(', ')];
 
     for (const row of data) {
       const values = headers.map((header) => {
@@ -130,13 +130,13 @@ export class ExportSystem {
         // Escape commas and quotes
         if (
           typeof value === 'string' &&
-          (value.includes(',    ') || value.includes('"'))
+          (value.includes(', ') || value.includes('"'))
         ) {
           return `"${value.replace(/"/g, '""')}"`;
 }
         return value?.toString() || '';
 });
-      csvRows.push(values.join(',    '));
+  csvRows.push(values.join(', '));
 }
 
     return csvRows.join('\n');
@@ -157,7 +157,7 @@ export class ExportSystem {
           :obj;
 }
 
-      if (typeof obj === 'number' || typeof obj === ' boolean') {
+  if (typeof obj === 'number' || typeof obj === 'boolean') {
         return obj.toString();
 }
 
@@ -224,7 +224,7 @@ export class ExportSystem {
         return obj;
 }
 
-      if (typeof obj === 'number' || typeof obj === ' boolean') {
+  if (typeof obj === 'number' || typeof obj === 'boolean') {
         return obj.toString();
 }
 
@@ -235,12 +235,15 @@ export class ExportSystem {
           !Array.isArray(obj[0])
         ) {
           // Convert array of objects to table
-          const headers = Object.keys(obj[0]);
+          const headers = Object.keys(obj[0] as Record<string, unknown>);
           const headerRow = `|${headers.join('|')}|`;
           const separatorRow = `|${headers.map(() => '---').join('|')}|`;
           const dataRows = obj.map(
             (item) =>
-              `|${headers.map((header) => item?.[header]?.toString() || '').join('|')}|`
+              `|${headers.map((header) => {
+                const v = (item as Record<string, unknown>)?.[header];
+                return v != null ? String(v) : '';
+              }).join('|')}|`
           );
           return [headerRow, separatorRow, ...dataRows].join('\n');
 }
