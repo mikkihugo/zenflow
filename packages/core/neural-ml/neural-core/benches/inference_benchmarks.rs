@@ -31,11 +31,7 @@ fn generate_inference_data(
   let mut data_frames = Vec::with_capacity(batch_size);
 
   for i in 0..batch_size {
-    let start_time = Utc
-      .ymd_opt(2023, 1, 1)
-      .unwrap()
-      .and_hms_opt(0, 0, 0)
-      .unwrap();
+  let start_time = Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap();
     let mut timestamps = Vec::with_capacity(sequence_length);
     let mut values = Vec::with_capacity(sequence_length);
 

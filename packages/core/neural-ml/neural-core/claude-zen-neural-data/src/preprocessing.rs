@@ -1168,31 +1168,11 @@ mod tests {
   #[test]
   fn test_differencing_transformer() {
     let timestamps = vec![
-      chrono::Utc
-        .ymd_opt(2023, 1, 1)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
-      chrono::Utc
-        .ymd_opt(2023, 1, 2)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
-      chrono::Utc
-        .ymd_opt(2023, 1, 3)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
-      chrono::Utc
-        .ymd_opt(2023, 1, 4)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
-      chrono::Utc
-        .ymd_opt(2023, 1, 5)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
+  chrono::Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap(),
+  chrono::Utc.with_ymd_and_hms(2023, 1, 2, 0, 0, 0).unwrap(),
+  chrono::Utc.with_ymd_and_hms(2023, 1, 3, 0, 0, 0).unwrap(),
+  chrono::Utc.with_ymd_and_hms(2023, 1, 4, 0, 0, 0).unwrap(),
+  chrono::Utc.with_ymd_and_hms(2023, 1, 5, 0, 0, 0).unwrap(),
     ];
     let values = vec![1.0, 3.0, 6.0, 10.0, 15.0]; // Differences: [2, 3, 4, 5]
 
@@ -1206,7 +1186,7 @@ mod tests {
     let mut transformer = DifferencingTransformer::new(1);
     let transformed = transformer.fit_transform(&series).unwrap();
 
-    let expected_diffs = vec![2.0, 3.0, 4.0, 5.0];
+  let expected_diffs = [2.0, 3.0, 4.0, 5.0];
     let actual_diffs = transformed.values();
 
     assert_eq!(actual_diffs.len(), expected_diffs.len());
@@ -1218,21 +1198,9 @@ mod tests {
   #[test]
   fn test_log_transformer() {
     let timestamps = vec![
-      chrono::Utc
-        .ymd_opt(2023, 1, 1)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
-      chrono::Utc
-        .ymd_opt(2023, 1, 2)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
-      chrono::Utc
-        .ymd_opt(2023, 1, 3)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
+      chrono::Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap(),
+      chrono::Utc.with_ymd_and_hms(2023, 1, 2, 0, 0, 0).unwrap(),
+      chrono::Utc.with_ymd_and_hms(2023, 1, 3, 0, 0, 0).unwrap(),
     ];
     let values = vec![
       1.0,

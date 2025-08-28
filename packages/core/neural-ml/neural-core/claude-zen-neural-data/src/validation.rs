@@ -1118,31 +1118,11 @@ mod tests {
 
   fn create_valid_series() -> TimeSeriesData<f64> {
     let timestamps = vec![
-      chrono::Utc
-        .ymd_opt(2023, 1, 1)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
-      chrono::Utc
-        .ymd_opt(2023, 1, 2)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
-      chrono::Utc
-        .ymd_opt(2023, 1, 3)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
-      chrono::Utc
-        .ymd_opt(2023, 1, 4)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
-      chrono::Utc
-        .ymd_opt(2023, 1, 5)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
+      chrono::Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap(),
+      chrono::Utc.with_ymd_and_hms(2023, 1, 2, 0, 0, 0).unwrap(),
+      chrono::Utc.with_ymd_and_hms(2023, 1, 3, 0, 0, 0).unwrap(),
+      chrono::Utc.with_ymd_and_hms(2023, 1, 4, 0, 0, 0).unwrap(),
+      chrono::Utc.with_ymd_and_hms(2023, 1, 5, 0, 0, 0).unwrap(),
     ];
     let values = vec![10.0, 12.0, 11.0, 13.0, 12.5];
 
@@ -1185,21 +1165,9 @@ mod tests {
   #[test]
   fn test_duplicate_timestamps() {
     let timestamps = vec![
-      chrono::Utc
-        .ymd_opt(2023, 1, 1)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
-      chrono::Utc
-        .ymd_opt(2023, 1, 1)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(), // Duplicate
-      chrono::Utc
-        .ymd_opt(2023, 1, 3)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
+      chrono::Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap(),
+      chrono::Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap(), // Duplicate
+      chrono::Utc.with_ymd_and_hms(2023, 1, 3, 0, 0, 0).unwrap(),
     ];
     let values = vec![10.0, 12.0, 11.0];
 
@@ -1224,21 +1192,9 @@ mod tests {
   #[test]
   fn test_out_of_order_timestamps() {
     let timestamps = vec![
-      chrono::Utc
-        .ymd_opt(2023, 1, 1)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
-      chrono::Utc
-        .ymd_opt(2023, 1, 3)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
-      chrono::Utc
-        .ymd_opt(2023, 1, 2)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(), // Out of order
+      chrono::Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap(),
+      chrono::Utc.with_ymd_and_hms(2023, 1, 3, 0, 0, 0).unwrap(),
+      chrono::Utc.with_ymd_and_hms(2023, 1, 2, 0, 0, 0).unwrap(), // Out of order
     ];
     let values = vec![10.0, 12.0, 11.0];
 
@@ -1276,31 +1232,11 @@ mod tests {
   #[test]
   fn test_outlier_detection() {
     let timestamps = vec![
-      chrono::Utc
-        .ymd_opt(2023, 1, 1)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
-      chrono::Utc
-        .ymd_opt(2023, 1, 2)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
-      chrono::Utc
-        .ymd_opt(2023, 1, 3)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
-      chrono::Utc
-        .ymd_opt(2023, 1, 4)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
-      chrono::Utc
-        .ymd_opt(2023, 1, 5)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
+      chrono::Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap(),
+      chrono::Utc.with_ymd_and_hms(2023, 1, 2, 0, 0, 0).unwrap(),
+      chrono::Utc.with_ymd_and_hms(2023, 1, 3, 0, 0, 0).unwrap(),
+      chrono::Utc.with_ymd_and_hms(2023, 1, 4, 0, 0, 0).unwrap(),
+      chrono::Utc.with_ymd_and_hms(2023, 1, 5, 0, 0, 0).unwrap(),
     ];
     let values = vec![10.0, 12.0, 100.0, 13.0, 12.5]; // 100.0 is an outlier
 

@@ -81,10 +81,7 @@ fn generate_comparison_data(
 
   let timestamps: Vec<DateTime<Utc>> = (0..size)
     .map(|i| {
-      Utc
-        .ymd_opt(2023, 1, 1)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
+      Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0)
         .unwrap()
         + chrono::Duration::hours(i as i64)
     })

@@ -1098,9 +1098,7 @@ mod tests {
     for i in 0..30 {
       timestamps.push(
         chrono::Utc
-          .ymd_opt(2023, 1, 1)
-          .unwrap()
-          .and_hms_opt(0, 0, 0)
+          .with_ymd_and_hms(2023, 1, 1, 0, 0, 0)
           .unwrap()
           + chrono::Duration::days(i),
       );
@@ -1262,21 +1260,9 @@ mod tests {
         .unwrap();
     let feature_names = vec!["feature1".to_string(), "feature2".to_string()];
     let timestamps = vec![
-      chrono::Utc
-        .ymd_opt(2023, 1, 1)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
-      chrono::Utc
-        .ymd_opt(2023, 1, 2)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
-      chrono::Utc
-        .ymd_opt(2023, 1, 3)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
+      chrono::Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap(),
+      chrono::Utc.with_ymd_and_hms(2023, 1, 2, 0, 0, 0).unwrap(),
+      chrono::Utc.with_ymd_and_hms(2023, 1, 3, 0, 0, 0).unwrap(),
     ];
 
     let matrix = FeatureMatrix::new(

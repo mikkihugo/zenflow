@@ -351,21 +351,9 @@ impl<T: Float> TimeSeriesDatasetBuilder<T> {
       self
         .timestamps
         .ok_or_else(|| DataPipelineError::MissingData {
-          field: "timestamps".to_string(),
-        })?;
-
-    if values.len() != timestamps.len() {
-      return Err(DataPipelineError::IncompatibleDimensions {
-        expected: format!("values.len()={}", values.len()),
-        actual: format!("timestamps.len()={}", timestamps.len()),
-      });
-    }
-
-    let mut time_series = TimeSeriesData::new(self.series_id, frequency);
-    time_series.static_features = self.static_features;
-    time_series.metadata = self.metadata;
-
-    // Create data points
+  Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap(),
+  Utc.with_ymd_and_hms(2023, 1, 2, 0, 0, 0).unwrap(),
+  Utc.with_ymd_and_hms(2023, 1, 3, 0, 0, 0).unwrap(),
     for (timestamp, value) in timestamps.into_iter().zip(values.into_iter()) {
       let exogenous = if let Some(ref exog) = self.exogenous {
         exog.get(time_series.data_points.len()).cloned()
@@ -556,11 +544,7 @@ mod tests {
 
   #[test]
   fn test_data_point_creation() {
-    let timestamp = Utc
-      .ymd_opt(2023, 1, 1)
-      .unwrap()
-      .and_hms_opt(0, 0, 0)
-      .unwrap();
+  let timestamp = Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap();
     let point = DataPoint::new(timestamp, 42.0f64);
 
     assert_eq!(point.timestamp, timestamp);
@@ -570,11 +554,7 @@ mod tests {
 
   #[test]
   fn test_data_point_with_exogenous() {
-    let timestamp = Utc
-      .ymd_opt(2023, 1, 1)
-      .unwrap()
-      .and_hms_opt(0, 0, 0)
-      .unwrap();
+  let timestamp = Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap();
     let exogenous = vec![1.0, 2.0, 3.0];
     let point =
       DataPoint::with_exogenous(timestamp, 42.0f64, exogenous.clone());
@@ -587,21 +567,9 @@ mod tests {
   #[test]
   fn test_time_series_builder() {
     let timestamps = vec![
-      Utc
-        .ymd_opt(2023, 1, 1)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
-      Utc
-        .ymd_opt(2023, 1, 2)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
-      Utc
-        .ymd_opt(2023, 1, 3)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
+      Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap(),
+      Utc.with_ymd_and_hms(2023, 1, 2, 0, 0, 0).unwrap(),
+      Utc.with_ymd_and_hms(2023, 1, 3, 0, 0, 0).unwrap(),
     ];
     let values = vec![1.0, 2.0, 3.0];
 
@@ -622,21 +590,9 @@ mod tests {
   #[test]
   fn test_time_series_slice() {
     let timestamps = vec![
-      Utc
-        .ymd_opt(2023, 1, 1)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
-      Utc
-        .ymd_opt(2023, 1, 2)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
-      Utc
-        .ymd_opt(2023, 1, 3)
-        .unwrap()
-        .and_hms_opt(0, 0, 0)
-        .unwrap(),
+  Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap(),
+  Utc.with_ymd_and_hms(2023, 1, 2, 0, 0, 0).unwrap(),
+  Utc.with_ymd_and_hms(2023, 1, 3, 0, 0, 0).unwrap(),
     ];
     let values = vec![1.0, 2.0, 3.0];
 
@@ -654,38 +610,22 @@ mod tests {
 
   #[test]
   fn test_dataset_operations() {
-    let series1 = TimeSeriesDatasetBuilder::new("series1".to_string())
+  let series1 = TimeSeriesDatasetBuilder::new("series1".to_string())
       .with_frequency("D".to_string())
       .with_values(vec![1.0, 2.0])
       .with_timestamps(vec![
-        Utc
-          .ymd_opt(2023, 1, 1)
-          .unwrap()
-          .and_hms_opt(0, 0, 0)
-          .unwrap(),
-        Utc
-          .ymd_opt(2023, 1, 2)
-          .unwrap()
-          .and_hms_opt(0, 0, 0)
-          .unwrap(),
+    Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap(),
+    Utc.with_ymd_and_hms(2023, 1, 2, 0, 0, 0).unwrap(),
       ])
       .build()
       .unwrap();
 
-    let series2 = TimeSeriesDatasetBuilder::new("series2".to_string())
+  let series2 = TimeSeriesDatasetBuilder::new("series2".to_string())
       .with_frequency("D".to_string())
       .with_values(vec![3.0, 4.0])
       .with_timestamps(vec![
-        Utc
-          .ymd_opt(2023, 1, 1)
-          .unwrap()
-          .and_hms_opt(0, 0, 0)
-          .unwrap(),
-        Utc
-          .ymd_opt(2023, 1, 2)
-          .unwrap()
-          .and_hms_opt(0, 0, 0)
-          .unwrap(),
+    Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap(),
+    Utc.with_ymd_and_hms(2023, 1, 2, 0, 0, 0).unwrap(),
       ])
       .build()
       .unwrap();

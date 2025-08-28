@@ -36,11 +36,7 @@ fn generate_csv_data(
   csv_data.push_str("target\n");
 
   // Data
-  let start_time = Utc
-    .ymd_opt(2023, 1, 1)
-    .unwrap()
-    .and_hms_opt(0, 0, 0)
-    .unwrap();
+  let start_time = Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap();
 
   for series in 0..num_series {
     for t in 0..length {
@@ -274,10 +270,7 @@ fn bench_feature_engineering(c: &mut Criterion) {
     // Create time series data
     let timestamps: Vec<DateTime<Utc>> = (0..seq_len)
       .map(|i| {
-        Utc
-          .ymd_opt(2023, 1, 1)
-          .unwrap()
-          .and_hms_opt(0, 0, 0)
+        Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0)
           .unwrap()
           + chrono::Duration::hours(i as i64)
       })
@@ -403,11 +396,7 @@ fn bench_data_validation(c: &mut Criterion) {
     for s in 0..num_series {
       let timestamps: Vec<DateTime<Utc>> = (0..length)
         .map(|i| {
-          let base = Utc
-            .ymd_opt(2023, 1, 1)
-            .unwrap()
-            .and_hms_opt(0, 0, 0)
-            .unwrap();
+          let base = Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap();
           // Introduce some gaps
           if i % 50 == 0 && i > 0 {
             base + chrono::Duration::hours((i + 2) as i64)
@@ -526,10 +515,7 @@ fn bench_batch_loading(c: &mut Criterion) {
     for s in 0..num_series {
       let timestamps: Vec<DateTime<Utc>> = (0..1000)
         .map(|i| {
-          Utc
-            .ymd_opt(2023, 1, 1)
-            .unwrap()
-            .and_hms_opt(0, 0, 0)
+          Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0)
             .unwrap()
             + chrono::Duration::hours(i as i64)
         })

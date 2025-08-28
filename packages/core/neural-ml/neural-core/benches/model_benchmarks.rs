@@ -18,11 +18,7 @@ fn generate_time_series_data(
   n_features: usize,
   frequency: &str,
 ) -> TimeSeriesDataFrame {
-  let start_time = Utc
-    .ymd_opt(2023, 1, 1)
-    .unwrap()
-    .and_hms_opt(0, 0, 0)
-    .unwrap();
+  let start_time = Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap();
   let mut timestamps = Vec::with_capacity(length);
   let mut values = Vec::with_capacity(length);
 
