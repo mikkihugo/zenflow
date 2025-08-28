@@ -132,7 +132,7 @@ export interface MemoryEntryWithMetadata<T = JSONValue> {
  *
  * @example
  */
-export interface MemoryOperationResult<T = any> {
+export interface MemoryOperationResult<T = unknown> {
     success: boolean;
     data?: T;
     error?: string;

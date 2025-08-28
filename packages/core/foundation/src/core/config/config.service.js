@@ -442,7 +442,6 @@ export const requireEnv = (key) => {
     }
     return value;
 };
-    // eslint-disable-next-line no-console
 // FORCING PATTERN - Replace console.log with configured logging
 export const shouldLog = (level) => {
     const configLevel = getConfig().logging.level;

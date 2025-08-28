@@ -57,8 +57,8 @@ export interface SystemHealth {
     recommendations: string[];
 }
 export declare class SystemMetricsError extends Error {
-    readonly metric?: string;
-    constructor(message: string, metric?: string);
+    readonly metric?: string | undefined;
+    constructor(message: string, metric?: string | undefined);
 }
 export declare class SystemMetricsCollector {
     private static instance;

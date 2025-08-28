@@ -35,7 +35,7 @@ export declare function createDatabaseAccess(config?: unknown): {
 };
 export declare class DatabaseEventCoordinator extends EventEmitter {
     private config?;
-    constructor(config?: unknown);
+    constructor(config?: unknown | undefined);
     connect(type: 'sqlite' | ' memory', database: string): Promise<import("./index.js").SQLiteAdapter>;
     createStorage(database: string): Promise<import("./index.js").KeyValueStorageImpl>;
     emitOperation(operation: string, details: Record<string, unknown>): void;

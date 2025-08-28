@@ -189,11 +189,12 @@ export class AILinter {
               timeTaken:0,
               aiModel:this.config.aiMode,
               error:
-                result.status === 'rejected')                  ? result.reason
-                  :result.value.success
+                result.status === 'rejected' 
+                  ? result.reason
+                  : result.value.success
                     ? undefined
-                    :result.value.error,
-});
+                    : result.value.error,
+            });
 }
 }
 }

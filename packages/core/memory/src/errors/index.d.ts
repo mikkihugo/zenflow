@@ -65,7 +65,7 @@ export declare class MemoryError extends Error {
         context: MemoryErrorContext;
         recoverable: boolean;
         severity: "low" | "medium" | "high" | "critical";
-        stack: string;
+        stack: string | undefined;
     };
     /**
      * Create a MemoryError from a generic error.

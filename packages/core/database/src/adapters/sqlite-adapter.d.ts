@@ -9,7 +9,7 @@ export declare class SQLiteAdapter implements DatabaseConnection {
     private readonly config;
     private readonly pool;
     private connected;
-    private readonly stats;
+    private readonly __stats;
     constructor(config: DatabaseConfig);
     connect(): Promise<void>;
     disconnect(): Promise<void>;

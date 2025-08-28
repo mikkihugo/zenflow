@@ -172,7 +172,7 @@ export declare class MemoryMonitor extends EventEmitter {
             metricsCollected: number;
             operationsTracked: number;
         };
-        current: MemoryMetrics;
+        current: MemoryMetrics | null;
         alerts: {
             total: number;
             active: number;

@@ -48,7 +48,7 @@ import { TelemetryManager } from './telemetry.js';
 export declare function createTelemetryManager(config?: unknown): TelemetryManager;
 export declare class TelemetryProvider {
     private config?;
-    constructor(config?: unknown);
+    constructor(config?: unknown | undefined);
     createTelemetryManager(config?: unknown): Promise<TelemetryManager>;
     createCollector(config?: unknown): Promise<TelemetryManager>;
 }

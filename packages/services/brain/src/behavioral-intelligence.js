@@ -1595,7 +1595,7 @@ Reasoning: $bestAgent.reasoning;
 n `);`;
 // 5. Show behavioral intelligence stats
 logger.info('📈 Behavioral Intelligence Statistics:');
-')    const stats = behavioral.getStats();;
+')    const __stats = behavioral.getStats();;
 logger.info(`   • Total agents:$stats.totalAgents`);
 `
     logger.info(`;

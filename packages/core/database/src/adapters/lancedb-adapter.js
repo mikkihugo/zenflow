@@ -14,7 +14,7 @@ export class LanceDBAdapter {
     lancedbModule = null;
     database = null;
     isConnectedState = false;
-    stats = {
+    __stats = {
         totalQueries: 0,
         totalTransactions: 0,
         totalErrors: 0,

@@ -40,7 +40,7 @@ export class GraphNeuralNetwork {
         async;
         predict(input, any);
         Promise < any > {
-            console, : .log('Graph Neural Network prediction for input:', input), ')    return { prediction: ': graph_output, '};': 
+            logger, : .info('Graph Neural Network prediction for input:', input), ')    return { prediction: ': graph_output, '};': 
         };
     }
 }
@@ -55,7 +55,7 @@ export class TransformerModel {
         async;
         predict(input, any);
         Promise < any > {
-            console, : .log('Transformer Model prediction for input:', input), ')    return { prediction: ': transformer_output, '};': 
+            logger, : .info('Transformer Model prediction for input:', input), ')    return { prediction: ': transformer_output, '};': 
         };
     }
 }
@@ -70,7 +70,7 @@ export class VAEModel {
         async;
         predict(input, any);
         Promise < any > {
-            console, : .log('VAE Model prediction for input:', input), ')    return { prediction: ': vae_output, '};': 
+            logger, : .info('VAE Model prediction for input:', input), ')    return { prediction: ': vae_output, '};': 
         };
     }
 }

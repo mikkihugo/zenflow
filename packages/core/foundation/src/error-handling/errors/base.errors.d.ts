@@ -8,12 +8,12 @@
  * @file Errors implementation.
  */
 export declare class ValidationError extends Error {
-    readonly field?: string;
-    constructor(message: string, field?: string);
+    readonly field?: string | undefined;
+    constructor(message: string, field?: string | undefined);
 }
 export declare class ConfigurationError extends Error {
-    readonly configKey?: string;
-    constructor(message: string, configKey?: string);
+    readonly configKey?: string | undefined;
+    constructor(message: string, configKey?: string | undefined);
 }
 /**
  * Context information for error tracking and debugging.
@@ -181,7 +181,7 @@ export declare abstract class BaseClaudeZenError extends Error {
  * ```
  */
 export declare class SwarmError extends BaseClaudeZenError {
-    readonly swarmId?: string;
+    readonly swarmId?: string | undefined;
     /**
      * Creates a new SwarmError instance.
      *
@@ -190,7 +190,7 @@ export declare class SwarmError extends BaseClaudeZenError {
      * @param severity - Error severity level (defaults to 'medium').
      * @param context - Additional error context (optional).
      */
-    constructor(message: string, swarmId?: string, severity?: "low" | "medium" | "high" | "critical", context?: Partial<ErrorContext>);
+    constructor(message: string, swarmId?: string | undefined, severity?: "low" | "medium" | "high" | "critical", context?: Partial<ErrorContext>);
 }
 /**
  * Error class for individual agent failures within a swarm.
@@ -204,8 +204,8 @@ export declare class SwarmError extends BaseClaudeZenError {
  * ```
  */
 export declare class AgentError extends BaseClaudeZenError {
-    readonly agentId?: string;
-    readonly agentType?: string;
+    readonly agentId?: string | undefined;
+    readonly agentType?: string | undefined;
     /**
      * Creates a new AgentError instance.
      *
@@ -214,7 +214,7 @@ export declare class AgentError extends BaseClaudeZenError {
      * @param agentType - Type of agent (e.g., 'researcher',    'coder') (optional).
      * @param severity - Error severity level (defaults to 'medium').
      */
-    constructor(message: string, agentId?: string, agentType?: string, severity?: "low" | "medium" | "high" | "critical");
+    constructor(message: string, agentId?: string | undefined, agentType?: string | undefined, severity?: "low" | "medium" | "high" | "critical");
 }
 export declare class SwarmCommunicationError extends SwarmError {
     readonly fromAgent: string;
@@ -229,24 +229,24 @@ export declare class SwarmCommunicationError extends SwarmError {
 }
 export declare class SwarmCoordinationError extends SwarmError {
     readonly coordinationType: string;
-    readonly participantCount?: number;
-    constructor(message: string, coordinationType: string, participantCount?: number, severity?: "low" | "medium" | "high" | "critical");
+    readonly participantCount?: number | undefined;
+    constructor(message: string, coordinationType: string, participantCount?: number | undefined, severity?: "low" | "medium" | "high" | "critical");
 }
 /**
  * Error for task execution failures (domain-specific).
  */
 export declare class TaskError extends BaseClaudeZenError {
-    readonly taskId?: string;
-    readonly taskType?: string;
-    constructor(message: string, taskId?: string, taskType?: string, severity?: "low" | "medium" | "high" | "critical");
+    readonly taskId?: string | undefined;
+    readonly taskType?: string | undefined;
+    constructor(message: string, taskId?: string | undefined, taskType?: string | undefined, severity?: "low" | "medium" | "high" | "critical");
 }
 /**
  * Error for resource not found (domain-specific).
  */
 export declare class NotFoundError extends BaseClaudeZenError {
-    readonly resource?: string;
-    readonly resourceId?: string;
-    constructor(message: string, resource?: string, resourceId?: string);
+    readonly resource?: string | undefined;
+    readonly resourceId?: string | undefined;
+    constructor(message: string, resource?: string | undefined, resourceId?: string | undefined);
 }
 /**
  * Determines if an error is recoverable and can be retried.

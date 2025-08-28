@@ -317,7 +317,6 @@ export interface DatabaseStorageEvent extends BaseEvent {
 export interface DatabaseOperationEvent extends BaseEvent {
     operation: string;
     details: Record<string, unknown>;
-    timestamp: number;
 }
 /**
  * Database health status change event
@@ -327,7 +326,6 @@ export interface DatabaseOperationEvent extends BaseEvent {
 export interface DatabaseHealthEvent extends BaseEvent {
     status: 'healthy' | ' degraded' | ' unhealthy';
     details?: Record<string, unknown>;
-    timestamp: number;
 }
 /**
  * System component starts

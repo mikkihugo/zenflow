@@ -11,7 +11,7 @@ export declare class KuzuAdapter implements DatabaseConnection {
     private database;
     private connection;
     private isConnectedState;
-    private readonly stats;
+    private readonly __stats;
     constructor(config: DatabaseConfig);
     connect(): Promise<void>;
     disconnect(): Promise<void>;
@@ -37,6 +37,16 @@ export declare class KuzuAdapter implements DatabaseConnection {
      * Create a node table in the graph database
      */
     createNodeTable(tableName: string, properties: Record<string, string>, primaryKey?: string): Promise<void>;
-    catch(error: any): void;
+    /**
+     * Create a relationship table in the graph database
+     */
+    createRelationshipTable(tableName: string, fromNodeTable: string, toNodeTable: string, properties?: Record<string, string>): Promise<void>;
+    logger: any;
+    info(: any, { correlationId, tableName, relationshipCount: relationships, length, }: {
+        correlationId: any;
+        tableName: any;
+        relationshipCount: any;
+        length: any;
+    }): any;
 }
 //# sourceMappingURL=kuzu-adapter.d.ts.map

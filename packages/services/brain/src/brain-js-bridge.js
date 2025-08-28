@@ -278,7 +278,7 @@ Promise < Result < ModelMetrics, ContextError >> {
             timeout: options.timeout || this.config.timeout,
         };
         // Train the network
-        const stats = networkInstance.network.train(trainingData, trainingOptions);
+        const __stats = networkInstance.network.train(trainingData, trainingOptions);
         const trainingTime = Date.now() - startTime;
         // Update network instance with training results
         const finalInstance = {

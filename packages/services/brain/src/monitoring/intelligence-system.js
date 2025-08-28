@@ -93,7 +93,7 @@ export class CompleteIntelligenceSystem {
             instance: agentId.instance,
         });
         // Create mock learning state based on agent characteristics
-        const __learningState = {
+        const _learningState = {
             agentId: agentId.id,
             learningRate: agentId.type === 'optimizer' ? 0.15 : 0.1, // Optimizers learn faster')      adaptationStrategy:
             agentId, : .type === 'researcher', 'exploration-focused': , 'exploitation-focused': , performanceHistory: [], // Would be populated from historical data
