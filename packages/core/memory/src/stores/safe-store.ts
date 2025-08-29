@@ -164,34 +164,34 @@ export class SafeMemoryStore extends EventEmitter {
    *
    * @param key
    */
-  async retrieve<T>(key:string): Promise<MemoryResult<T>> {
+  retrieve<T>(key:string): Promise<MemoryResult<T>> {
     try {
       if (!this.initialized) {
-        return this.createMemoryError(
+        return Promise.resolve(this.createMemoryError(
           key,
           'STORE_NOT_INITIALIZED',
           ERROR_MESSAGES.storeNotInitialized
-        );
+        ));
 }
 
       const fullKey = this.createKey(key);
 
       if (!this.store.has(fullKey)) {
-        return {
+        return Promise.resolve({
           found:false,
           key:fullKey,
-          reason: 'not_found',} as MemoryNotFound;
+          reason: 'not_found',} as MemoryNotFound);
 }
 
       const data = this.store.get(fullKey) as T;
       const metadata = this.metadata.get(fullKey);
 
       if (!metadata) {
-        return this.createMemoryError(
+        return Promise.resolve(this.createMemoryError(
           key,
           'METADATA_MISSING',
           'Metadata not found for key'
-        );
+        ));
 }
 
       // Update access information
@@ -205,7 +205,7 @@ export class SafeMemoryStore extends EventEmitter {
         accessCount:metadata?.accessCount,
 });
 
-      return {
+      return Promise.resolve({
         found:true,
         data,
         key:fullKey,
@@ -217,11 +217,11 @@ export class SafeMemoryStore extends EventEmitter {
           accessCount:metadata?.accessCount,
           size:metadata.size,
 },
-} as MemorySuccess<T>;
+} as MemorySuccess<T>);
 } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message: 'Unknown retrieval error';
-      return this.createMemoryError(key, 'RETRIEVE_FAILED', errorMessage);
+      return Promise.resolve(this.createMemoryError(key, 'RETRIEVE_FAILED', errorMessage));
 }
 }
 
@@ -230,23 +230,23 @@ export class SafeMemoryStore extends EventEmitter {
    *
    * @param key
    */
-  async delete(key:string): Promise<MemoryResult<boolean>> {
+  delete(key:string): Promise<MemoryResult<boolean>> {
     try {
       if (!this.initialized) {
-        return this.createMemoryError(
+        return Promise.resolve(this.createMemoryError(
           key,
           'STORE_NOT_INITIALIZED',
           ERROR_MESSAGES.storeNotInitialized
-        );
+        ));
 }
 
       const fullKey = this.createKey(key);
 
       if (!this.store.has(fullKey)) {
-        return {
+        return Promise.resolve({
           found:false,
           key:fullKey,
-          reason: 'not_found',} as MemoryNotFound;
+          reason: 'not_found',} as MemoryNotFound);
 }
 
       // Clear TTL timer if exists
@@ -262,17 +262,17 @@ export class SafeMemoryStore extends EventEmitter {
 
       this.emit('deleted', { key:fullKey});
 
-      return {
+      return Promise.resolve({
         found:true,
         data:deleted,
         key:fullKey,
         timestamp:new Date(),
         metadata:{ operation: 'delete', success:true},
-} as MemorySuccess<boolean>;
+} as MemorySuccess<boolean>);
 } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message: 'Unknown deletion error';
-      return this.createMemoryError(key, 'DELETE_FAILED', errorMessage);
+      return Promise.resolve(this.createMemoryError(key, 'DELETE_FAILED', errorMessage));
 }
 }
 
@@ -281,37 +281,37 @@ export class SafeMemoryStore extends EventEmitter {
    *
    * @param key
    */
-  async exists(key:string): Promise<MemoryResult<boolean>> {
+  exists(key:string): Promise<MemoryResult<boolean>> {
     try {
       const fullKey = this.createKey(key);
       const exists = this.store.has(fullKey);
 
       if (exists) {
-        return {
+        return Promise.resolve({
           found:true,
           data:true,
           key:fullKey,
           timestamp:new Date(),
           metadata:{ operation: 'exists', result:true},
-} as MemorySuccess<boolean>;
+} as MemorySuccess<boolean>);
 }
-      return {
+      return Promise.resolve({
         found:false,
         key:fullKey,
-        reason: 'not_found',} as MemoryNotFound;
+        reason: 'not_found',} as MemoryNotFound);
 } catch (error) {
       const errorMessage =
         error instanceof Error
           ? error.message
           : 'Unknown existence check error';
-      return this.createMemoryError(key, 'EXISTS_CHECK_FAILED', errorMessage);
+      return Promise.resolve(this.createMemoryError(key, 'EXISTS_CHECK_FAILED', errorMessage));
 }
 }
 
   /**
    * Get store statistics.
    */
-  async getStats():Promise<
+  getStats():Promise<
     MemoryResult<{
       entries:number;
       totalSize:number;
@@ -346,23 +346,23 @@ export class SafeMemoryStore extends EventEmitter {
         newestEntry,
 };
 
-      return {
+      return Promise.resolve({
         found:true,
         data:stats,
         key: 'stats',        timestamp:new Date(),
         metadata:{ operation: 'stats'},
-} as MemorySuccess<typeof stats>;
+} as MemorySuccess<typeof stats>);
 } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message: 'Unknown stats error';
-      return this.createMemoryError('stats',    'STATS_FAILED', errorMessage);
+      return Promise.resolve(this.createMemoryError('stats',    'STATS_FAILED', errorMessage));
 }
 }
 
   /**
    * Clear all data.
    */
-  async clear():Promise<void> {
+  clear():Promise<void> {
     // Clear all TTL timers
     for (const timer of this.ttlTimers.values()) {
       clearTimeout(timer);
@@ -373,6 +373,7 @@ export class SafeMemoryStore extends EventEmitter {
     this.ttlTimers.clear();
 
     this.emit('cleared', {});
+    return Promise.resolve();
 }
 
   /**

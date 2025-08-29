@@ -21,17 +21,22 @@
 
 import { getLogger, ok, err } from '@claude-zen/foundation';
 
-import type {
-  APIProvider,
-  APIRequest,
-  APIResult,
-  APIProviderCapabilities,
+import {
+  type APIProvider,
+  type APIRequest,
+  type APIResult,
+  type APIProviderCapabilities,
+  API_ERROR_CODES,
 } from '../types/api-providers';
-import { API_ERROR_CODES } from '../types/api-providers';
 
 import { initializeGitHubModelsDB, githubModelsDB } from './github-models-db';
 
 const logger = getLogger('GitHubModelsAPI');
+
+// Constants for repeated strings
+const CONTENT_TYPE_JSON = 'application/json';
+const ACCEPT_JSON = 'application/vnd.github+json';
+const BEARER_PREFIX = 'Bearer ';
 
 export interface GitHubModelsOptions {
   token: string;
@@ -97,8 +102,8 @@ export class GitHubModelsAPI implements APIProvider {
         {
           method: 'POST',
           headers: {
-            'Content-Type': ' application/json',
-            Authorization: `Bearer ${this.options.token}`,
+            'content-type': CONTENT_TYPE_JSON,
+            authorization: `${BEARER_PREFIX}${this.options.token}`,
           },
           body: JSON.stringify({
             model: this.options.model,
@@ -150,8 +155,8 @@ export class GitHubModelsAPI implements APIProvider {
       const response = await fetch(catalogEndpoint, {
         method: 'GET',
         headers: {
-          Accept: ' application/vnd.github+json',
-          Authorization: `Bearer ${this.options.token}`,
+          accept: ACCEPT_JSON,
+          authorization: `${BEARER_PREFIX}${this.options.token}`,
           'X-GitHub-Api-Version': '2022-11-28',
         },
       });

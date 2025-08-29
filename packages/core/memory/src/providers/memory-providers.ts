@@ -458,16 +458,16 @@ export class JsonMemoryBackend implements MemoryBackend {
 }
 }
 
-  async retrieve<T = unknown>(key:string): Promise<T | null> {
+  retrieve<T = unknown>(key:string): Promise<T | null> {
     this.logger.debug(`Retrieving key:${key} from JSON backend`);
     this.ensureInitialized();
 
     try {
       const value = this.data.get(key);
-      return value !== undefined ? (value as T) :null;
+      return Promise.resolve(value !== undefined ? (value as T) :null);
 } catch (error) {
       this.logger.error(`Failed to retrieve key ${key}:${error}`);
-      throw error;
+      return Promise.reject(error);
 }
 }
 
@@ -505,18 +505,18 @@ export class JsonMemoryBackend implements MemoryBackend {
 }
 }
 
-  async size():Promise<number> {
+  size():Promise<number> {
     this.ensureInitialized();
-    return this.data.size;
+    return Promise.resolve(this.data.size);
 }
 
-  async health():Promise<boolean> {
+  health():Promise<boolean> {
     try {
       this.ensureInitialized();
-      return true;
+      return Promise.resolve(true);
 } catch (error) {
       this.logger.error(`Health check failed:${error}`);
-      return false;
+      return Promise.resolve(false);
 }
 }
 
@@ -539,10 +539,11 @@ export class JsonMemoryBackend implements MemoryBackend {
     this.data = new Map();
   }
 
-  private async persistToFile():Promise<void> {
+  private persistToFile():Promise<void> {
     // File persistence implementation would go here
     // For now, just log
     this.logger.debug('JSON data persisted to file');
+    return Promise.resolve();
 }
 }
 
@@ -566,36 +567,37 @@ export class InMemoryBackend implements MemoryBackend {
     );
 }
 
-  async store(key:string, value:unknown): Promise<void> {
+  store(key:string, value:unknown): Promise<void> {
     this.logger.debug(`Storing key:${key} in memory backend`);
 
     try {
       // Check size limits
       if (this.data.size >= this.maxSize && !this.data.has(key)) {
-        throw new Error(`Memory limit exceeded. Max size:${this.maxSize}`);
+        return Promise.reject(new Error(`Memory limit exceeded. Max size:${this.maxSize}`));
 }
 
       this.data.set(key, value);
       this.logger.debug(`Successfully stored key:${key}`);
+      return Promise.resolve();
 } catch (error) {
       this.logger.error(`Failed to store key ${key}:${error}`);
-      throw error;
+      return Promise.reject(error);
 }
 }
 
-  async retrieve<T = unknown>(key:string): Promise<T | null> {
+  retrieve<T = unknown>(key:string): Promise<T | null> {
     this.logger.debug(`Retrieving key:${key} from memory backend`);
 
     try {
       const value = this.data.get(key);
-      return value !== undefined ? (value as T) :null;
+      return Promise.resolve(value !== undefined ? (value as T) :null);
 } catch (error) {
       this.logger.error(`Failed to retrieve key ${key}:${error}`);
-      throw error;
+      return Promise.reject(error);
 }
 }
 
-  async delete(key:string): Promise<boolean> {
+  delete(key:string): Promise<boolean> {
     this.logger.debug(`Deleting key:${key} from memory backend`);
 
     try {
@@ -605,39 +607,40 @@ export class InMemoryBackend implements MemoryBackend {
 } else {
         this.logger.debug(`Key not found for deletion:${key}`);
 }
-      return deleted;
+      return Promise.resolve(deleted);
 } catch (error) {
       this.logger.error(`Failed to delete key ${key}:${error}`);
-      throw error;
+      return Promise.reject(error);
 }
 }
 
-  async clear():Promise<void> {
+  clear():Promise<void> {
     this.logger.info('Clearing all data from memory backend');
 
     try {
       this.data.clear();
       this.logger.info(LOG_MESSAGES.successfullyCleared);
+      return Promise.resolve();
 } catch (error) {
       this.logger.error(`Failed to clear data:${error}`);
-      throw error;
+      return Promise.reject(error);
 }
 }
 
-  async size():Promise<number> {
-    return this.data.size;
+  size():Promise<number> {
+    return Promise.resolve(this.data.size);
 }
 
-  async health():Promise<boolean> {
+  health():Promise<boolean> {
     try {
       // Check if we can perform basic operations
       const testKey = '__health_check__';
       this.data.set(testKey, 'test');
       this.data.delete(testKey);
-      return true;
+      return Promise.resolve(true);
 } catch (error) {
       this.logger.error(`Health check failed:${error}`);
-      return false;
+      return Promise.resolve(false);
 }
 }
 }

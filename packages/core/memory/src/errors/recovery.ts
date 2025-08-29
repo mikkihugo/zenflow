@@ -295,35 +295,7 @@ export class RecoveryStrategyManager extends EventEmitter {
 
         try {
           // Collect data from all healthy backends
-          const dataVersions = new Map();
-          const healthyBackends = [];
-
-          for (const [id, backend] of Array.from(context.backends.entries())) {
-            try {
-              let data;
-              if ('get' in backend && typeof backend.get === 'function') {
-                data = await backend.get(key);
-} else if (
-                'retrieve' in backend &&
-                typeof backend.retrieve === 'function'
-              ) {
-                data = await backend.retrieve(key);
-} else {
-                continue; // Skip backends without compatible methods
-}
-
-              if (data !== null) {
-                const dataKey = JSON.stringify(data);
-                dataVersions.set(
-                  dataKey,
-                  (dataVersions.get(dataKey) || 0) + 1
-                );
-                healthyBackends.push({ id, backend, data} as never);
-}
-} catch {
-              // Skip unhealthy backends
-}
-}
+          const { dataVersions } = await this.collectDataVersions(key, context.backends);
 
           if (dataVersions.size === 0) {
             return {
@@ -333,42 +305,10 @@ export class RecoveryStrategyManager extends EventEmitter {
 }
 
           // Find the most common version (consensus)
-          let consensusData = null;
-          let maxCount = 0;
-
-          for (const [dataStr, count] of Array.from(dataVersions.entries())) {
-            if (count > maxCount) {
-              maxCount = count;
-              consensusData = JSON.parse(dataStr);
-}
-}
+          const consensusData = this.findConsensusData(dataVersions);
 
           // Repair all backends with consensus data
-          const repairPromises = Array.from(context.backends.entries()).map(
-            async ([id, backend]) => {
-              try {
-                if ('set' in backend && typeof backend.set === 'function') {
-                  await backend.set(key, consensusData);
-} else if (
-                  'store' in backend &&
-                  typeof backend.store === 'function'
-                ) {
-                  await backend.store(key, consensusData);
-} else {
-                  throw new Error('Backend lacks required set/store method');
-}
-                return { id, status: 'repaired'};
-} catch (repairError) {
-                return {
-                  id,
-                  status: 'failed',
-                  error:(repairError as Error).message,
-};
-}
-}
-          );
-
-          const repairResults = await Promise.all(repairPromises);
+          const repairResults = await this.repairBackends(key, consensusData, context.backends);
           const successfulRepairs = repairResults?.filter(
             (r) => r.status === 'repaired'
           ).length;
@@ -458,46 +398,19 @@ export class RecoveryStrategyManager extends EventEmitter {
             if (context.operation && context.key) {
               const backend = Array.from(context.backends.values())[0];
 
-              switch (context.operation) {
-                case 'read':{
-                  let data;
-                  if ('get' in backend && typeof backend.get === 'function') {
-                    data = await backend.get(context.key);
-} else if (
-                    'retrieve' in backend &&
-                    typeof backend.retrieve === 'function'
-                  ) {
-                    data = await backend.retrieve(context.key);
-} else {
-                    throw new Error(
-                      'Backend lacks required get/retrieve method'
-                    );
-}
-                  return {
-                    success:true,
-                    strategy: 'retry_with_backoff',                    action: 'retry_succeeded',                    duration:Date.now() - startTime,
-                    data,
-                    metadata:{ attempt, delay},
-};
-}
+              const result = await this.performBackendOperation(
+                backend, 
+                context.operation, 
+                context.key, 
+                context.originalValue
+              );
 
-                case 'write':
-                  if ('set' in backend && typeof backend.set === 'function') {
-                    await backend.set(context.key, context.originalValue);
-} else if (
-                    'store' in backend &&
-                    typeof backend.store === 'function'
-                  ) {
-                    await backend.store(context.key, context.originalValue);
-} else {
-                    throw new Error('Backend lacks required set/store method');
-}
-                  return {
-                    success:true,
-                    strategy: 'retry_with_backoff',                    action: 'retry_succeeded',                    duration:Date.now() - startTime,
-                    metadata:{ attempt, delay},
+              return {
+                success:true,
+                strategy: 'retry_with_backoff',                action: 'retry_succeeded',                duration:Date.now() - startTime,
+                data: result,
+                metadata:{ attempt, delay},
 };
-}
 }
 
             // If we can't retry the specific operation, just wait and return success
@@ -634,4 +547,118 @@ export class RecoveryStrategyManager extends EventEmitter {
       (a, b) => b.priority - a.priority
     );
 }
+
+  /**
+   * Collect data versions from healthy backends.
+   */
+  private async collectDataVersions(key: string, backends: Map<string, unknown>) {
+    const dataVersions = new Map();
+    const healthyBackends = [];
+
+    for (const [id, backend] of Array.from(backends.entries())) {
+      try {
+        let data;
+        if ('get' in backend && typeof backend.get === 'function') {
+          data = await (backend as { get: (key: string) => Promise<unknown> }).get(key);
+        } else if (
+          'retrieve' in backend &&
+          typeof backend.retrieve === 'function'
+        ) {
+          data = await (backend as { retrieve: (key: string) => Promise<unknown> }).retrieve(key);
+        } else {
+          continue; // Skip backends without compatible methods
+        }
+
+        if (data !== null) {
+          const dataKey = JSON.stringify(data);
+          dataVersions.set(
+            dataKey,
+            (dataVersions.get(dataKey) || 0) + 1
+          );
+          healthyBackends.push({ id, backend, data });
+        }
+      } catch {
+        // Skip unhealthy backends
+      }
+    }
+
+    return { dataVersions, healthyBackends };
+  }
+
+  /**
+   * Find consensus data from collected versions.
+   */
+  private findConsensusData(dataVersions: Map<string, number>) {
+    let consensusData = null;
+    let maxCount = 0;
+
+    for (const [dataStr, count] of Array.from(dataVersions.entries())) {
+      if (count > maxCount) {
+        maxCount = count;
+        consensusData = JSON.parse(dataStr);
+      }
+    }
+
+    return consensusData;
+  }
+
+  /**
+   * Repair all backends with consensus data.
+   */
+  private async repairBackends(key: string, consensusData: unknown, backends: Map<string, unknown>) {
+    const repairPromises = Array.from(backends.entries()).map(
+      async ([id, backend]) => {
+        try {
+          if ('set' in backend && typeof backend.set === 'function') {
+            await (backend as { set: (key: string, data: unknown) => Promise<void> }).set(key, consensusData);
+          } else if (
+            'store' in backend &&
+            typeof backend.store === 'function'
+          ) {
+            await (backend as { store: (key: string, data: unknown) => Promise<void> }).store(key, consensusData);
+          } else {
+            throw new Error('Backend lacks required set/store method');
+          }
+          return { id, status: 'repaired' };
+        } catch (repairError) {
+          return {
+            id,
+            status: 'failed',
+            error: (repairError as Error).message,
+          };
+        }
+      }
+    );
+
+    return await Promise.all(repairPromises);
+  }
+
+  /**
+   * Perform operation on backend with type safety.
+   */
+  private async performBackendOperation(backend: unknown, operation: string, key: string, value?: unknown): Promise<unknown> {
+    switch (operation) {
+      case 'read': {
+        if ('get' in backend && typeof backend.get === 'function') {
+          return await (backend as { get: (key: string) => Promise<unknown> }).get(key);
+        } else if ('retrieve' in backend && typeof backend.retrieve === 'function') {
+          return await (backend as { retrieve: (key: string) => Promise<unknown> }).retrieve(key);
+        } else {
+          throw new Error('Backend lacks required get/retrieve method');
+        }
+      }
+      case 'write': {
+        if ('set' in backend && typeof backend.set === 'function') {
+          await (backend as { set: (key: string, data: unknown) => Promise<void> }).set(key, value);
+        } else if ('store' in backend && typeof backend.store === 'function') {
+          await (backend as { store: (key: string, data: unknown) => Promise<void> }).store(key, value);
+        } else {
+          throw new Error('Backend lacks required set/store method');
+        }
+        return true;
+      }
+      default:
+        throw new Error(`Unsupported operation: ${operation}`);
+    }
+  }
 }
