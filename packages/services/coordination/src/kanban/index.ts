@@ -150,17 +150,13 @@ export const isValidWorkflowState = (state: string): state is TaskState => {
  */
 export const isValidTaskPriority = (
   priority: string
-): priority is TaskPriority => {
-  return TASK_PRIORITIES.includes(priority as TaskPriority);
-};;
+): priority is TaskPriority => TASK_PRIORITIES.includes(priority as TaskPriority);;
 /**
  * Validate if an optimization strategy is valid
  */
 export const isValidOptimizationStrategy = (
   strategy: string
-): strategy is OptimizationStrategy => {
-  return OPTIMIZATION_STRATEGIES.includes(strategy as OptimizationStrategy);
-};;
+): strategy is OptimizationStrategy => OPTIMIZATION_STRATEGIES.includes(strategy as OptimizationStrategy);;
 /**
  * Get next state in workflow (or null if at end)
  */
