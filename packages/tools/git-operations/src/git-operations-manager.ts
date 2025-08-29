@@ -60,7 +60,7 @@ class SimpleGitSandbox {
 } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',};
+        error: this.getErrorMessage(error),};
 }
 }
 
@@ -297,16 +297,16 @@ export interface MaintenanceTask {
 
 // Event types for git operations
 export interface GitOperationStartedEvent {
-  type: 'git: operation: started';
+  type: 'gitOperationStarted';
   operationId: string;
   operationType: GitOperation['type'];
   projectId: string;
   timestamp: string;
-  metadata?:Record<string, any>;
+  metadata?:Record<string, unknown>;
 }
 
 export interface GitOperationCompletedEvent {
-  type: 'git: operation: completed';
+  type: 'gitOperationCompleted';
   operationId: string;
   operationType: GitOperation['type'];
   projectId: string;
@@ -317,7 +317,7 @@ export interface GitOperationCompletedEvent {
 }
 
 export interface GitOperationFailedEvent {
-  type: 'git: operation: failed';
+  type: 'gitOperationFailed';
   operationId: string;
   operationType: GitOperation['type'];
   projectId: string;
@@ -326,7 +326,7 @@ export interface GitOperationFailedEvent {
 }
 
 export interface GitConflictResolvedEvent {
-  type: 'git: conflict: resolved';
+  type: 'gitConflictResolved';
   projectId: string;
   conflictType:'merge' | ' rebase' | ' cherry-pick';
   filesResolved: string[];
@@ -335,7 +335,7 @@ export interface GitConflictResolvedEvent {
 }
 
 export interface GitWorktreeEvent {
-  type:'git: worktree: created' | ' git: worktree: removed';
+  type:'gitWorktreeCreated' | 'gitWorktreeRemoved';
   projectId: string;
   worktreeName: string;
   worktreePath: string;
@@ -344,7 +344,7 @@ export interface GitWorktreeEvent {
 }
 
 export interface GitMaintenanceEvent {
-  type:'git: maintenance: started' | ' git: maintenance: completed';
+  type:'gitMaintenanceStarted' | 'gitMaintenanceCompleted';
   taskType:'cleanup-stale' | ' compress-trees' | ' update-remotes' | ' verify-integrity';
   projectsAffected?:number;
   timestamp: string;
@@ -375,14 +375,14 @@ export interface GitOperationsResult {
 
 // Define event map for GitOperationsManager
 interface GitEventMap extends EventMap {
-  'git: operation: started': [GitOperationStartedEvent];
-  'git: operation: completed': [GitOperationCompletedEvent];
-  'git: operation: failed': [GitOperationFailedEvent];
-  'git: conflict: resolved': [GitConflictResolvedEvent];
-  'git: worktree: created': [GitWorktreeEvent];
-  'git: worktree: removed': [GitWorktreeEvent];
-  'git: maintenance: started': [GitMaintenanceEvent];
-  'git: maintenance: completed': [GitMaintenanceEvent];
+  gitOperationStarted: [GitOperationStartedEvent];
+  gitOperationCompleted: [GitOperationCompletedEvent];
+  gitOperationFailed: [GitOperationFailedEvent];
+  gitConflictResolved: [GitConflictResolvedEvent];
+  gitWorktreeCreated: [GitWorktreeEvent];
+  gitWorktreeRemoved: [GitWorktreeEvent];
+  gitMaintenanceStarted: [GitMaintenanceEvent];
+  gitMaintenanceCompleted: [GitMaintenanceEvent];
 }
 
 /**
@@ -472,6 +472,13 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
 
     // Foundation integration test placeholder
 }
+
+  /**
+   * Helper to get error message from unknown error
+   */
+  private getErrorMessage(error: unknown): string {
+    return error instanceof Error ? error.message : 'Unknown error';
+  }
 
   /**
    * Get manager ID
