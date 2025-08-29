@@ -28,7 +28,9 @@
 export {
   KanbanEngine,
   type WorkflowKanbanEvents,
-} from './api/kanban-engine')// ============================================================================ = ''; 
+} from './api/kanban-engine';
+
+// =============================================================================
 // XSTATE MACHINE EXPORTS - For Advanced Integration
 // =============================================================================
 export {
@@ -37,7 +39,9 @@ export {
   createWorkflowMachine,
   WorkflowContextUtils,
   type WorkflowMachineContext,
-} from './state-machines/index')// ============================================================================ = ''; 
+} from './state-machines/index';
+
+// =============================================================================
 // COMPREHENSIVE TYPE EXPORTS - Full Kanban Domain Type System
 // =============================================================================
 export type {
@@ -67,7 +71,9 @@ export type {
   WorkflowKanbanConfig,
   WorkflowStatistics,
   WorkflowTask,
-} from './types/index')// ============================================================================ = ''; 
+} from './types/index';
+
+// =============================================================================
 // UTILITY EXPORTS - Immutable Operations and Validation
 // =============================================================================
 export {
@@ -82,7 +88,7 @@ export {
   ValidationUtils,
   WIPLimitsSchema,
   WorkflowTaskSchema,
-} from './utilities/index')// ============================================================================ = ''; 
+} from './utilities/index'; 
 // WORKFLOW CONSTANTS - Helper Functions and Validation
 // =============================================================================
 /**
@@ -200,5 +206,16 @@ export const isValidStateTransition = (
  * Shared flow visualization engine metadata and feature information
  */
 export const FLOW_PACKAGE_INFO = {
-  name : '@claude-zen/coordination/flow')  version,  description,   'Shared flow visualization engine with XState-powered state management,';
-  features: 'XState state machines + EventEmitter3 events',)    domain : 'Workflow coordination (shared across coordination systems)')    api : 'Clean interfaces hiding XState complexity')    integration,},')'} as const;';
+  name: '@claude-zen/coordination/flow',
+  version: '1.0.0',
+  description: 'Shared flow visualization engine with XState-powered state management',
+  features: [
+    'XState state machines + EventEmitter3 events',
+    'Real-time workflow coordination',
+    'WIP limits and bottleneck detection',
+    'Flow metrics and performance tracking'
+  ],
+  domain: 'Workflow coordination (shared across coordination systems)',
+  api: 'Clean interfaces hiding XState complexity',
+  integration: 'Used by TaskMaster, SAFe, and Workflows'
+} as const;
