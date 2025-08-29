@@ -6,7 +6,7 @@
 
 Claude Code Zen is an advanced AI development platform with sophisticated agent coordination, neural networks, and MCP integration. This is a complex monorepo with 52+ packages using a 5-tier architecture system.
 
-**Architecture**: Coordination · Neural · Interfaces · Memory · Database domains with specialized agent coordination system.
+**Architecture**: Coordination · Neural · Interfaces · Memory · Database domains with 147+ specialized agent types.
 
 ## Essential Setup Requirements
 
@@ -182,28 +182,19 @@ pnpm lint
 - Use Rust/WASM for performance-critical operations
 
 ### Coordination Domain (src/coordination/*)
-- Use flexible agent type system (NO arbitrary limitations on agent types)
-- Agent types are configurable strings based on capabilities and needs
+- Use existing 147+ agent types (DO NOT create new generic agent types)
 - Respect existing topology strategies (hierarchical/mesh/ring/star)
-- Use established agent selection and coordination patterns
-- Follow SAFe 6.0 and SPARC enterprise methodologies for coordination
+- Use established agent selection and swarm patterns
 
 ### Memory Domain (src/memory/*)
 - Multi-backend abstraction (SQLite/LanceDB/JSON)
 - Use pooling and caching utilities
 - Never couple feature code to concrete backend
 
-### Database Domain (packages/core/database/*)
-- Multi-adapter database system (SQLite/LanceDB/Kuzu)
-- Kuzu graph database for complex relationship modeling
-- Database connection pooling and transaction management
-- Schema migration and database health monitoring
-
 ### Interfaces Domain (src/interfaces/*)
-- Web dashboard as primary interface (comprehensive Svelte-based management)
-- MCP servers for limited tool integration (secondary interface)
-- Basic terminal screens for status display only (minimal implementation)
-- Focus on web-first development and dashboard functionality
+- MCP servers for tool integration
+- Multiple interface types: CLI, API, WebSocket, Terminal UI
+- Focus on user experience and error handling
 
 ## Common Issues and Workarounds
 
@@ -233,7 +224,7 @@ Before completing any work, ALWAYS verify:
 - [ ] Web dashboard starts and loads at `http://localhost:3000`
 - [ ] Dashboard navigation and core functionality works
 - [ ] Any new code follows domain isolation principles
-- [ ] No artificial agent type restrictions (use descriptive agent type strings as needed)
+- [ ] No new generic agent types created (use existing 147+ types)
 - [ ] WASM operations go through proper gateway facade
 
 ## NEVER CANCEL Operations
