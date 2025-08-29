@@ -5,15 +5,15 @@
  */
 
 // Simple logger placeholder
-const getLogger = (name:string) => ({
+const getLogger = (name: string) => ({
   info:(msg: string, meta?:unknown) =>
-    logger.info(`[INFO:${name}] ${msg}`, meta || '),
+    logger.info(`[INFO: ${name}] ${msg}`, meta || '),
   debug:(msg: string, meta?:unknown) =>
-    logger.info(`[DEBUG:${name}] ${msg}`, meta || '),
+    logger.info(`[DEBUG: ${name}] ${msg}`, meta || '),
   warn:(msg: string, meta?:unknown) =>
-    logger.warn(`[WARN:${name}] ${msg}`, meta || '),
+    logger.warn(`[WARN: ${name}] ${msg}`, meta || '),
   error:(msg: string, meta?:unknown) =>
-    logger.error(`[ERROR:${name}] ${msg}`, meta || '),
+    logger.error(`[ERROR: ${name}] ${msg}`, meta || '),
 });
 import type {
   AdaptiveLearningUpdate,
@@ -38,10 +38,10 @@ const logger = getLogger('agent-monitoring-intelligence-system');
  * Complete Intelligence System - Main implementation
  */
 export class CompleteIntelligenceSystem implements IntelligenceSystem {
-  private config:IntelligenceSystemConfig;
+  private config: IntelligenceSystemConfig;
   private initialized = false;
 
-  constructor(config:IntelligenceSystemConfig) {
+  constructor(config: IntelligenceSystemConfig) {
     this.config = config;
     this.initialized = true;
     logger.info('CompleteIntelligenceSystem initialized', { config});
@@ -52,15 +52,15 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     logger.info('CompleteIntelligenceSystem initialized');
 }
 
-  async predict(request:any): Promise<any> {
+  async predict(request: any): Promise<any> {
     return { prediction: 'placeholder', request};
 }
 
-  getAgentHealth(_agentId:AgentId): AgentHealth | null {
+  getAgentHealth(_agentId: AgentId): AgentHealth | null {
     return null;
 }
 
-  async updateAgentHealth(_agentId:AgentId, _health:any): Promise<void> {
+  async updateAgentHealth(_agentId: AgentId, _health: any): Promise<void> {
     // Placeholder
 }
 
@@ -73,54 +73,51 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     logger.info('CompleteIntelligenceSystem shutdown');
 }
 
-  async predictTaskDuration(
-    agentId:AgentId,
-    taskType:string,
+  async predictTaskDuration(agentId: AgentId,
+    taskType: string,
     _context?:Record<string, unknown>
-  ):Promise<TaskPrediction> {
+  ): Promise<TaskPrediction> {
     return {
-      agentId:agentId.id,
+      agentId: agentId.id,
       taskType,
       predictedDuration:1000,
       confidence:0.8,
       factors:[],
-      lastUpdated:new Date(),
+      lastUpdated: new Date(),
 };
 }
 
-  async predictTaskDurationMultiHorizon(
-    agentId:AgentId,
-    taskType:string,
+  async predictTaskDurationMultiHorizon(agentId: AgentId,
+    taskType: string,
     _context?:Record<string, unknown>
-  ):Promise<MultiHorizonTaskPrediction> {
+  ): Promise<MultiHorizonTaskPrediction> {
     return {
-      agentId:agentId.id,
+      agentId: agentId.id,
       taskType,
       predictions:{
         short:{ duration: 1000, confidence:0.9},
         medium:{ duration: 1500, confidence:0.8},
         long:{ duration: 2000, confidence:0.7},
 },
-      timestamp:new Date(),
+      timestamp: new Date(),
 };
 }
 
-  getAgentLearningState(_agentId:AgentId): AgentLearningState | null {
+  getAgentLearningState(_agentId: AgentId): AgentLearningState | null {
     return null;
 }
 
   updateAgentPerformance(
-    agentId:AgentId,
-    success:boolean,
+    agentId: AgentId,
+    success: boolean,
     _metadata?:Record<string, unknown>
   ):void {
-    logger.debug('Agent performance updated', { agentId:agentId.id, success});
+    logger.debug('Agent performance updated', { agentId: agentId.id, success});
 }
 
-  async forecastPerformanceOptimization(
-    swarmId:SwarmId,
+  async forecastPerformanceOptimization(swarmId: SwarmId,
     _horizon?:ForecastHorizon
-  ):Promise<PerformanceOptimizationForecast> {
+  ): Promise<PerformanceOptimizationForecast> {
     return {
       agentId:{ id: 'agent-1', swarmId, type: ' coordinator', instance:1},
       currentPerformance:0.8,
@@ -130,18 +127,17 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
 };
 }
 
-  async predictKnowledgeTransferSuccess(
-    sourceSwarm:SwarmId,
-    targetSwarm:SwarmId,
-    _patterns:unknown[]
-  ):Promise<KnowledgeTransferPrediction> {
+  async predictKnowledgeTransferSuccess(sourceSwarm: SwarmId,
+    targetSwarm: SwarmId,
+    _patterns: unknown[]
+  ): Promise<KnowledgeTransferPrediction> {
     return {
       sourceAgent:{
-        id: 'source-1',        swarmId:sourceSwarm,
+        id: 'source-1',        swarmId: sourceSwarm,
         type: 'researcher',        instance:1,
 },
       targetAgent:{
-        id: 'target-1',        swarmId:targetSwarm,
+        id: 'target-1',        swarmId: targetSwarm,
         type: 'coder',        instance:1,
 },
       knowledge: 'pattern-knowledge',      transferProbability:0.7,
@@ -177,7 +173,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
       warningAgents:1,
       criticalAgents:0,
       offlineAgents:0,
-      lastUpdated:Date.now(),
+      lastUpdated: Date.now(),
 };
 }
 }

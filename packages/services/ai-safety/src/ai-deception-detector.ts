@@ -5,7 +5,7 @@
  * capability hiding, work avoidance, and false claims.
  */
 
-import { getLogger} from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('ai-deception-detector');
 
@@ -31,12 +31,12 @@ export interface DeceptionAlert {
     'PROJECT_CONFLATION' | ' TIMELINE_CONFUSION' | ' ENVIRONMENT_ASSUMPTIONS';
   severity:'LOW' | ' MEDIUM' | ' HIGH' | ' CRITICAL';
   agentId?:string;
-  evidence:string[];
-  confidence:number;
-  intervention:string;
-  timestamp:Date;
+  evidence: string[];
+  confidence: number;
+  intervention: string;
+  timestamp: Date;
   toolCallsRequired?:string[];
-  humanEscalation:boolean;
+  humanEscalation: boolean;
   category:'CAPABILITY_INFLATION' | ' KNOWLEDGE_HALLUCINATION' | ' VERIFICATION_AVOIDANCE' | ' CONFIDENCE_INFLATION' | ' CONTEXT_CONFUSION';
 }
 
@@ -44,19 +44,19 @@ export interface DeceptionAlert {
  * AI interaction data for analysis.
  */
 export interface AIInteractionData {
-  agentId:string;
-  message:string;
+  agentId: string;
+  message: string;
   toolCalls?:string[];
   claimsVerification?:boolean;
   contextAwareness?:string;
   confidenceLevel?:number;
-  timestamp:Date;
+  timestamp: Date;
   responseTime?:number;
   behaviorMetrics?:{
-    hesitation:number;
-    certainty:number;
-    toolUsage:number;
-    verificationAttempts:number;
+    hesitation: number;
+    certainty: number;
+    toolUsage: number;
+    verificationAttempts: number;
 };
 }
 
@@ -64,25 +64,25 @@ export interface AIInteractionData {
  * Detection configuration interface.
  */
 export interface DetectionConfig {
-  enabled:boolean;
+  enabled: boolean;
   thresholds:{
-    capability:number;
-    knowledge:number;
-    verification:number;
-    confidence:number;
-    context:number;
+    capability: number;
+    knowledge: number;
+    verification: number;
+    confidence: number;
+    context: number;
 };
   patterns:{
-    capabilityInflation:string[];
-    knowledgeHallucination:string[];
-    verificationAvoidance:string[];
-    confidenceInflation:string[];
-    contextConfusion:string[];
+    capabilityInflation: string[];
+    knowledgeHallucination: string[];
+    verificationAvoidance: string[];
+    confidenceInflation: string[];
+    contextConfusion: string[];
 };
   interventions:{
-    immediate:boolean;
-    humanEscalation:boolean;
-    toolRequired:boolean;
+    immediate: boolean;
+    humanEscalation: boolean;
+    toolRequired: boolean;
 };
 }
 
@@ -92,13 +92,13 @@ export interface DetectionConfig {
  * Monitors AI agent behavior for deception patterns and triggers appropriate interventions.
  */
 export class AIDeceptionDetector {
-  private config:DetectionConfig;
-  private patternDatabase:Map<string, RegExp[]>;
-  private alertHistory:DeceptionAlert[];
+  private config: DetectionConfig;
+  private patternDatabase: Map<string, RegExp[]>;
+  private alertHistory: DeceptionAlert[];
 
   constructor(config?:Partial<DetectionConfig>) {
     this.config = {
-      enabled:true,
+      enabled: true,
       thresholds:{
         capability:0.7,
         knowledge:0.6,
@@ -119,9 +119,9 @@ export class AIDeceptionDetector {
           'In this project',          'Based on previous',          'Following our',          'According to your')]
 },
       interventions:{
-        immediate:true,
-        humanEscalation:false,
-        toolRequired:true
+        immediate: true,
+        humanEscalation: false,
+        toolRequired: true
 },
       ...config
 };
@@ -131,8 +131,8 @@ export class AIDeceptionDetector {
     this.initializePatternDatabase();
 
     logger.info('AI Deception Detector initialized', {
-      config:this.config,
-      patternsCount:this.calculateTotalPatterns()
+      config: this.config,
+      patternsCount: this.calculateTotalPatterns()
 });
 }
 
@@ -160,12 +160,12 @@ export class AIDeceptionDetector {
   /**
    * Analyze AI response for deception patterns.
    */
-  public analyzeAIResponse(data:AIInteractionData): DeceptionAlert[] {
+  public analyzeAIResponse(data: AIInteractionData): DeceptionAlert[] {
     if (!this.config.enabled) {
       return [];
 }
 
-    const alerts:DeceptionAlert[] = [];
+    const alerts: DeceptionAlert[] = [];
     const { message, agentId, timestamp} = data;
 
     // Analyze each category of deception patterns
@@ -196,8 +196,8 @@ export class AIDeceptionDetector {
   /**
    * Detect patterns in message text.
    */
-  private detectPatterns(message:string, patterns:RegExp[]): Array<{ pattern: RegExp; matches: RegExpMatchArray[]}> {
-    const results:Array<{ pattern: RegExp; matches: RegExpMatchArray[]}> = [];
+  private detectPatterns(message: string, patterns: RegExp[]): Array<{ pattern: RegExp; matches: RegExpMatchArray[]}> {
+    const results: Array<{ pattern: RegExp; matches: RegExpMatchArray[]}> = [];
     
     for (const pattern of patterns) {
       const matches = Array.from(message.matchAll(new RegExp(pattern.source, 'gi')));
@@ -212,7 +212,7 @@ export class AIDeceptionDetector {
   /**
    * Calculate confidence score for detected patterns.
    */
-  private calculateConfidence(matches:Array<{ pattern: RegExp; matches: RegExpMatchArray[]}>, category:string): number {
+  private calculateConfidence(matches: Array<{ pattern: RegExp; matches: RegExpMatchArray[]}>, category: string): number {
     const totalMatches = matches.reduce((sum, match) => sum + match.matches.length, 0);
     const patternDiversity = matches.length;
     const categoryMultiplier = this.getCategoryMultiplier(category);
@@ -226,8 +226,8 @@ export class AIDeceptionDetector {
   /**
    * Get threshold for specific category.
    */
-  private getThreshold(category:string): number {
-    const categoryMap:Record<string, keyof DetectionConfig['thresholds']> = {
+  private getThreshold(category: string): number {
+    const categoryMap: Record<string, keyof DetectionConfig['thresholds']> = {
       'capabilityInflation': ' capability',      'knowledgeHallucination': ' knowledge',      'verificationAvoidance': ' verification',      'confidenceInflation': ' confidence',      'contextConfusion':' context')};
     
     return this.config.thresholds[categoryMap[category]] || 0.5;
@@ -236,8 +236,8 @@ export class AIDeceptionDetector {
   /**
    * Get category-specific multiplier for confidence calculation.
    */
-  private getCategoryMultiplier(category:string): number {
-    const multipliers:Record<string, number> = {
+  private getCategoryMultiplier(category: string): number {
+    const multipliers: Record<string, number> = {
       'capabilityInflation':1.2,
       'knowledgeHallucination':1.1,
       'verificationAvoidance':1.3,
@@ -251,13 +251,12 @@ export class AIDeceptionDetector {
   /**
    * Create deception alert from detected patterns.
    */
-  private createAlert(
-    category:string,
-    matches:Array<{ pattern: RegExp; matches: RegExpMatchArray[]}>,
-    confidence:number,
-    agentId:string,
-    timestamp:Date
-  ):DeceptionAlert {
+  private createAlert(category: string,
+    matches: Array<{ pattern: RegExp; matches: RegExpMatchArray[]}>,
+    confidence: number,
+    agentId: string,
+    timestamp: Date
+  ): DeceptionAlert {
     const evidence = matches.flatMap(match => 
       match.matches.map(m => m[0])
     );
@@ -272,18 +271,18 @@ export class AIDeceptionDetector {
       agentId,
       evidence,
       confidence,
-      intervention:this.getIntervention(type, severity),
+      intervention: this.getIntervention(type, severity),
       timestamp,
-      toolCallsRequired:this.getRequiredToolCalls(type),
-      humanEscalation:this.shouldEscalateToHuman(severity, confidence),
-      category:alertCategory
+      toolCallsRequired: this.getRequiredToolCalls(type),
+      humanEscalation: this.shouldEscalateToHuman(severity, confidence),
+      category: alertCategory
 };
 }
 
   /**
    * Calculate severity based on confidence score.
    */
-  private calculateSeverity(confidence:number): 'LOW' | ' MEDIUM' | ' HIGH' | ' CRITICAL' {
+  private calculateSeverity(confidence: number): 'LOW' | ' MEDIUM' | ' HIGH' | ' CRITICAL' {
     if (confidence >= 0.9) return 'CRITICAL';
     if (confidence >= 0.7) return 'HIGH';
     if (confidence >= 0.5) return 'MEDIUM';
@@ -293,8 +292,8 @@ export class AIDeceptionDetector {
   /**
    * Map category to specific deception type.
    */
-  private mapCategoryToType(category:string): DeceptionAlert['type'] {
-    const typeMap:Record<string, DeceptionAlert['type']> = {
+  private mapCategoryToType(category: string): DeceptionAlert['type'] {
+    const typeMap: Record<string, DeceptionAlert['type']> = {
       'capabilityInflation': ' CAPABILITY_OVERREACH',      'knowledgeHallucination': ' DOCUMENTATION_FABRICATION',      'verificationAvoidance': ' ANALYSIS_CLAIMS',      'confidenceInflation': ' CERTAINTY_OVERREACH',      'contextConfusion':' PROJECT_CONFLATION')};
     
     return typeMap[category] || 'CAPABILITY_OVERREACH';
@@ -303,8 +302,8 @@ export class AIDeceptionDetector {
   /**
    * Map category to alert category.
    */
-  private mapCategoryToAlertCategory(category:string): DeceptionAlert['category'] {
-    const categoryMap:Record<string, DeceptionAlert['category']> = {
+  private mapCategoryToAlertCategory(category: string): DeceptionAlert['category'] {
+    const categoryMap: Record<string, DeceptionAlert['category']> = {
       'capabilityInflation': ' CAPABILITY_INFLATION',      'knowledgeHallucination': ' KNOWLEDGE_HALLUCINATION',      'verificationAvoidance': ' VERIFICATION_AVOIDANCE',      'confidenceInflation': ' CONFIDENCE_INFLATION',      'contextConfusion':' CONTEXT_CONFUSION')};
     
     return categoryMap[category] || 'CAPABILITY_INFLATION';
@@ -313,14 +312,14 @@ export class AIDeceptionDetector {
   /**
    * Get intervention text for deception type and severity.
    */
-  private getIntervention(type:DeceptionAlert['type'], severity:DeceptionAlert[' severity']): string {
-    const interventions:Record<string, string> = {
+  private getIntervention(type: DeceptionAlert['type'], severity: DeceptionAlert[' severity']): string {
+    const interventions: Record<string, string> = {
       'CAPABILITY_OVERREACH': ' Require tool verification before capability claims',      'DOCUMENTATION_FABRICATION': ' Request evidence or tool-based verification',      'ANALYSIS_CLAIMS': ' Require actual tool usage for verification',      'CERTAINTY_OVERREACH': ' Request qualification of confidence levels',      'PROJECT_CONFLATION':' Clarify project context and boundaries')};
     
     const baseIntervention = interventions[type] || 'General deception intervention';
     
     if (severity === 'CRITICAL') {
-      return `CRITICAL:${baseIntervention}. Escalate to human oversight.`;
+      return `CRITICAL: ${baseIntervention}. Escalate to human oversight.`;
 }
     
     return baseIntervention;
@@ -329,8 +328,8 @@ export class AIDeceptionDetector {
   /**
    * Get required tool calls for verification.
    */
-  private getRequiredToolCalls(type:DeceptionAlert['type']): string[] {
-    const toolMap:Record<string, string[]> = {
+  private getRequiredToolCalls(type: DeceptionAlert['type']): string[] {
+    const toolMap: Record<string, string[]> = {
       'CAPABILITY_OVERREACH':[' Read',    'Bash'],
       'DOCUMENTATION_FABRICATION':[' Read',    'Grep'],
       'ANALYSIS_CLAIMS':[' Read',    'Bash',    'Grep'],
@@ -344,7 +343,7 @@ export class AIDeceptionDetector {
   /**
    * Determine if alert should escalate to human.
    */
-  private shouldEscalateToHuman(severity:DeceptionAlert['severity'], confidence:number): boolean {
+  private shouldEscalateToHuman(severity: DeceptionAlert['severity'], confidence: number): boolean {
     return severity === 'CRITICAL' || 
            (severity === 'HIGH' && confidence >= 0.8) ||
            this.config.interventions.humanEscalation;
@@ -353,13 +352,13 @@ export class AIDeceptionDetector {
   /**
    * Trigger intervention for detected deception.
    */
-  private triggerIntervention(alert:DeceptionAlert): void {
+  private triggerIntervention(alert: DeceptionAlert): void {
     logger.warn('Deception intervention triggered', {
-      type:alert.type,
-      severity:alert.severity,
-      agentId:alert.agentId,
-      confidence:alert.confidence,
-      evidence:alert.evidence
+      type: alert.type,
+      severity: alert.severity,
+      agentId: alert.agentId,
+      confidence: alert.confidence,
+      evidence: alert.evidence
 });
 }
 
@@ -382,17 +381,17 @@ export class AIDeceptionDetector {
       totalAlerts,
       severityBreakdown,
       categoryBreakdown,
-      averageConfidence:totalAlerts > 0 ? 
+      averageConfidence: totalAlerts > 0 ? 
         this.alertHistory.reduce((sum, alert) => sum + alert.confidence, 0) / totalAlerts:0,
-      recentAlerts:this.alertHistory.slice(-10),
-      config:this.config
+      recentAlerts: this.alertHistory.slice(-10),
+      config: this.config
 };
 }
 
   /**
    * Update detection configuration.
    */
-  public updateConfig(updates:Partial<DetectionConfig>): void {
+  public updateConfig(updates: Partial<DetectionConfig>): void {
     this.config = { ...this.config, ...updates};
     this.initializePatternDatabase();
     
@@ -418,7 +417,7 @@ export function createAIDeceptionDetector(config?:Partial<DetectionConfig>): AID
 /**
  * Quick analysis function for AI responses.
  */
-export function analyzeAIResponse(data:AIInteractionData, config?:Partial<DetectionConfig>): DeceptionAlert[] {
+export function analyzeAIResponse(data: AIInteractionData, config?:Partial<DetectionConfig>): DeceptionAlert[] {
   const detector = new AIDeceptionDetector(config);
   return detector.analyzeAIResponse(data);
 }

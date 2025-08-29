@@ -39,15 +39,15 @@ import type {
 
 // SQLite Database interface - in a real implementation this would be better-sqlite3
 interface SQLiteDatabase {
-  prepare(sql:string): SQLiteStatement;
-  exec(sql:string): void;
-  transaction<T>(fn:() => T): T;
-  close():void;
-  pragma(pragma:string, value?:any): any;
+  prepare(sql: string): SQLiteStatement;
+  exec(sql: string): void;
+  transaction<T>(fn: () => T): T;
+  close(): void;
+  pragma(pragma: string, value?: any): any;
 }
 
 interface SQLiteStatement {
-  run(...params:any[]): { changes: number; lastInsertRowid: number};
+  run(...params: any[]): { changes: number; lastInsertRowid: number };
   get(...params:any[]): any;
   all(...params:any[]): any[];
   iterate(...params:any[]): IterableIterator<any>;

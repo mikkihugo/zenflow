@@ -9,11 +9,7 @@
 // FOUNDATION IMPORTS - Internal operations 
 // =============================================================================
 
-import {
-  createServiceContainer, getLogger, type Logger,
-  TypedEventBase, generateUUID,
-  recordMetric, recordHistogram, withTrace, withRetry
-} from '@claude-zen/foundation';
+import { createServiceContainer, getLogger, type Logger, TypedEventBase, generateUUID, recordMetric, recordHistogram, withTrace, withRetry } from '@claude-zen/foundation';
 
 // =============================================================================
 // EVENT INTERFACES - Brain coordination
@@ -21,91 +17,91 @@ import {
 
 interface AISafetyEvents {
   // Brain requests
-  'brain:ai-safety:start-monitoring': {
-    requestId:string;
+  'brain: ai-safety: start-monitoring': {
+    requestId: string;
     config?:AISafetyConfig;
-    timestamp:number;
+    timestamp: number;
 };
-  'brain:ai-safety:stop-monitoring': {
-    requestId:string;
-    timestamp:number;
+  'brain: ai-safety: stop-monitoring': {
+    requestId: string;
+    timestamp: number;
 };
-  'brain:ai-safety:analyze-response': {
-    requestId:string;
-    response:any;
+  'brain: ai-safety: analyze-response': {
+    requestId: string;
+    response: any;
     agentId?:string;
-    timestamp:number;
+    timestamp: number;
 };
-  'brain:ai-safety:check-agent': {
-    requestId:string;
-    agentId:string;
-    interactionData:AIInteractionData;
-    timestamp:number;
+  'brain: ai-safety: check-agent': {
+    requestId: string;
+    agentId: string;
+    interactionData: AIInteractionData;
+    timestamp: number;
 };
-  'brain:ai-safety:get-metrics': {
-    requestId:string;
-    timestamp:number;
+  'brain: ai-safety: get-metrics': {
+    requestId: string;
+    timestamp: number;
 };
-  'brain:ai-safety:emergency-shutdown': {
-    requestId:string;
-    reason:string;
-    timestamp:number;
+  'brain: ai-safety: emergency-shutdown': {
+    requestId: string;
+    reason: string;
+    timestamp: number;
 };
 
   // AI Safety responses
-  'ai-safety:monitoring-started': {
-    requestId:string;
-    success:boolean;
-    timestamp:number;
+  'ai-safety: monitoring-started': {
+    requestId: string;
+    success: boolean;
+    timestamp: number;
 };
-  'ai-safety:monitoring-stopped': {
-    requestId:string;
-    success:boolean;
-    timestamp:number;
+  'ai-safety: monitoring-stopped': {
+    requestId: string;
+    success: boolean;
+    timestamp: number;
 };
-  'ai-safety:analysis-complete': {
-    requestId:string;
-    result:DeceptionAnalysisResult;
-    timestamp:number;
+  'ai-safety: analysis-complete': {
+    requestId: string;
+    result: DeceptionAnalysisResult;
+    timestamp: number;
 };
-  'ai-safety:agent-checked': {
-    requestId:string;
-    agentId:string;
-    safetyStatus:SafetyStatus;
-    riskLevel:RiskLevel;
-    timestamp:number;
+  'ai-safety: agent-checked': {
+    requestId: string;
+    agentId: string;
+    safetyStatus: SafetyStatus;
+    riskLevel: RiskLevel;
+    timestamp: number;
 };
-  'ai-safety:metrics': {
-    requestId:string;
-    metrics:SafetyMetrics;
-    timestamp:number;
+  'ai-safety: metrics': {
+    requestId: string;
+    metrics: SafetyMetrics;
+    timestamp: number;
 };
-  'ai-safety:emergency-complete': {
-    requestId:string;
-    success:boolean;
-    timestamp:number;
+  'ai-safety: emergency-complete': {
+    requestId: string;
+    success: boolean;
+    timestamp: number;
 };
-  'ai-safety:error': {
-    requestId:string;
-    error:string;
-    timestamp:number;
+  'ai-safety: error': {
+    requestId: string;
+    error: string;
+    timestamp: number;
 };
 
   // Safety alerts (outbound to other systems)
   'safety-alert':{
-    alertId:string;
-    type:AlertType;
+    alertId: string;
+    type: AlertType;
     severity:'low' | ' medium' | ' high' | ' critical';
     agentId?:string;
-    description:string;
-    timestamp:number;
+    description: string;
+    timestamp: number;
 };
   'safety-intervention':{
-    interventionId:string;
-    type:InterventionType;
-    agentId:string;
-    reason:string;
-    timestamp:number;
+    interventionId: string;
+    type: InterventionType;
+    agentId: string;
+    reason: string;
+    timestamp: number;
 };
 }
 
@@ -124,8 +120,8 @@ interface AISafetyConfig {
 }
 
 interface AIInteractionData {
-  input:string;
-  output:string;
+  input: string;
+  output: string;
   model?:string;
   agentId?:string;
   timestamp?:number;
@@ -133,11 +129,11 @@ interface AIInteractionData {
 }
 
 interface DeceptionAnalysisResult {
-  isDeceptive:boolean;
-  confidence:number;
-  indicators:string[];
-  riskLevel:RiskLevel;
-  recommendation:string;
+  isDeceptive: boolean;
+  confidence: number;
+  indicators: string[];
+  riskLevel: RiskLevel;
+  recommendation: string;
 }
 
 type SafetyStatus = 'safe' | ' monitoring' | ' warning' | ' alert' | ' intervention' | ' emergency';
@@ -146,23 +142,23 @@ type AlertType = 'deception' | ' manipulation' | ' harmful-content' | ' policy-v
 type InterventionType = 'pause' | ' restrict' | ' terminate' | ' escalate' | ' quarantine';
 
 interface SafetyMetrics {
-  totalAnalyses:number;
-  deceptionDetected:number;
-  interventionsTriggered:number;
-  alertsRaised:number;
-  averageRiskLevel:number;
-  systemStatus:SafetyStatus;
-  lastUpdated:number;
+  totalAnalyses: number;
+  deceptionDetected: number;
+  interventionsTriggered: number;
+  alertsRaised: number;
+  averageRiskLevel: number;
+  systemStatus: SafetyStatus;
+  lastUpdated: number;
 }
 
 interface SafetyAlert {
-  id:string;
-  type:AlertType;
+  id: string;
+  type: AlertType;
   severity:'low' | ' medium' | ' high' | ' critical';
   agentId?:string;
-  description:string;
-  timestamp:number;
-  resolved:boolean;
+  description: string;
+  timestamp: number;
+  resolved: boolean;
 }
 
 // =============================================================================
@@ -170,12 +166,12 @@ interface SafetyAlert {
 // =============================================================================
 
 export class EventDrivenAISafety extends TypedEventBase {
-  private logger:Logger;
-  private serviceContainer:any;
-  private config:Required<AISafetyConfig>;
+  private logger: Logger;
+  private serviceContainer: any;
+  private config: Required<AISafetyConfig>;
   private initialized = false;
   private monitoring = false;
-  private monitoringInterval:NodeJS.Timeout | null = null;
+  private monitoringInterval: NodeJS.Timeout | null = null;
 
   // Safety tracking
   private totalAnalyses = 0;
@@ -192,13 +188,13 @@ export class EventDrivenAISafety extends TypedEventBase {
     
     // Default config with foundation-powered features
     this.config = {
-      enabled:true,
-      strictMode:false,
+      enabled: true,
+      strictMode: false,
       interventionThreshold:0.7,
       escalationTimeout:30000,
       monitoringInterval:10000,
-      deceptionDetectionEnabled:true,
-      behavioralAnalysisEnabled:true,
+      deceptionDetectionEnabled: true,
+      behavioralAnalysisEnabled: true,
 };
 
     this.setupBrainEventHandlers();
@@ -209,7 +205,7 @@ export class EventDrivenAISafety extends TypedEventBase {
   // =============================================================================
 
   private setupBrainEventHandlers():void {
-    this.addEventListener('brain:ai-safety:start-monitoring', async (data) => {
+    this.addEventListener('brain: ai-safety: start-monitoring', async (data) => {
       await withTrace('ai-safety-start-monitoring', async () => {
         try {
           if (data.config) {
@@ -220,71 +216,71 @@ export class EventDrivenAISafety extends TypedEventBase {
           await this.startMonitoringInternal();
 
           recordMetric('ai_safety_monitoring_starts', 1);
-          this.emitEvent('ai-safety:monitoring-started', {
-            requestId:data.requestId,
-            success:true,
-            timestamp:Date.now(),
+          this.emitEvent('ai-safety: monitoring-started', {
+            requestId: data.requestId,
+            success: true,
+            timestamp: Date.now(),
 });
 
           this.logger.info('AI safety monitoring started', {
-            requestId:data.requestId,
-            config:this.config,
+            requestId: data.requestId,
+            config: this.config,
 });
 } catch (error) {
-          this.emitEvent('ai-safety:monitoring-started', {
-            requestId:data.requestId,
-            success:false,
-            timestamp:Date.now(),
+          this.emitEvent('ai-safety: monitoring-started', {
+            requestId: data.requestId,
+            success: false,
+            timestamp: Date.now(),
 });
-          this.emitEvent('ai-safety:error', {
-            requestId:data.requestId,
-            error:error instanceof Error ? error.message : String(error),
-            timestamp:Date.now(),
+          this.emitEvent('ai-safety: error', {
+            requestId: data.requestId,
+            error: error instanceof Error ? error.message : String(error),
+            timestamp: Date.now(),
 });
 }
 });
 });
 
-    this.addEventListener('brain:ai-safety:stop-monitoring', async (data) => {
+    this.addEventListener('brain: ai-safety: stop-monitoring', async (data) => {
       await withTrace('ai-safety-stop-monitoring', async () => {
         try {
           await this.stopMonitoringInternal();
 
           recordMetric('ai_safety_monitoring_stops', 1);
-          this.emitEvent('ai-safety:monitoring-stopped', {
-            requestId:data.requestId,
-            success:true,
-            timestamp:Date.now(),
+          this.emitEvent('ai-safety: monitoring-stopped', {
+            requestId: data.requestId,
+            success: true,
+            timestamp: Date.now(),
 });
 
           this.logger.info('AI safety monitoring stopped', {
-            requestId:data.requestId,
+            requestId: data.requestId,
 });
 } catch (error) {
-          this.emitEvent('ai-safety:monitoring-stopped', {
-            requestId:data.requestId,
-            success:false,
-            timestamp:Date.now(),
+          this.emitEvent('ai-safety: monitoring-stopped', {
+            requestId: data.requestId,
+            success: false,
+            timestamp: Date.now(),
 });
-          this.emitEvent('ai-safety:error', {
-            requestId:data.requestId,
-            error:error instanceof Error ? error.message : String(error),
-            timestamp:Date.now(),
+          this.emitEvent('ai-safety: error', {
+            requestId: data.requestId,
+            error: error instanceof Error ? error.message : String(error),
+            timestamp: Date.now(),
 });
 }
 });
 });
 
-    this.addEventListener('brain:ai-safety:analyze-response', async (data) => {
+    this.addEventListener('brain: ai-safety: analyze-response', async (data) => {
       await withTrace('ai-safety-analyze-response', async () => {
         try {
           const analysis = await this.analyzeResponseInternal(data.response, data.agentId);
 
           recordMetric('ai_safety_analyses_performed', 1);
-          this.emitEvent('ai-safety:analysis-complete', {
-            requestId:data.requestId,
-            result:analysis,
-            timestamp:Date.now(),
+          this.emitEvent('ai-safety: analysis-complete', {
+            requestId: data.requestId,
+            result: analysis,
+            timestamp: Date.now(),
 });
 
           // Emit alert if deception detected
@@ -293,99 +289,99 @@ export class EventDrivenAISafety extends TypedEventBase {
 }
 
           this.logger.debug('Response analysis complete', {
-            requestId:data.requestId,
-            deceptive:analysis.isDeceptive,
-            riskLevel:analysis.riskLevel,
+            requestId: data.requestId,
+            deceptive: analysis.isDeceptive,
+            riskLevel: analysis.riskLevel,
 });
 } catch (error) {
-          this.emitEvent('ai-safety:error', {
-            requestId:data.requestId,
-            error:error instanceof Error ? error.message : String(error),
-            timestamp:Date.now(),
+          this.emitEvent('ai-safety: error', {
+            requestId: data.requestId,
+            error: error instanceof Error ? error.message : String(error),
+            timestamp: Date.now(),
 });
 }
 });
 });
 
-    this.addEventListener('brain:ai-safety:check-agent', async (data) => {
+    this.addEventListener('brain: ai-safety: check-agent', async (data) => {
       await withTrace('ai-safety-check-agent', async () => {
         try {
           const safetyStatus = await this.checkAgentSafetyInternal(data.agentId, data.interactionData);
           const riskLevel = this.agentRiskLevels.get(data.agentId) || 'minimal';
 
-          this.emitEvent('ai-safety:agent-checked', {
-            requestId:data.requestId,
-            agentId:data.agentId,
+          this.emitEvent('ai-safety: agent-checked', {
+            requestId: data.requestId,
+            agentId: data.agentId,
             safetyStatus,
             riskLevel,
-            timestamp:Date.now(),
+            timestamp: Date.now(),
 });
 
           this.logger.debug('Agent safety check complete', {
-            requestId:data.requestId,
-            agentId:data.agentId,
+            requestId: data.requestId,
+            agentId: data.agentId,
             safetyStatus,
             riskLevel,
 });
 } catch (error) {
-          this.emitEvent('ai-safety:error', {
-            requestId:data.requestId,
-            error:error instanceof Error ? error.message : String(error),
-            timestamp:Date.now(),
+          this.emitEvent('ai-safety: error', {
+            requestId: data.requestId,
+            error: error instanceof Error ? error.message : String(error),
+            timestamp: Date.now(),
 });
 }
 });
 });
 
-    this.addEventListener('brain:ai-safety:get-metrics', async (data) => {
+    this.addEventListener('brain: ai-safety: get-metrics', async (data) => {
       try {
         const metrics = this.getSafetyMetricsInternal();
 
-        this.emitEvent('ai-safety:metrics', {
-          requestId:data.requestId,
+        this.emitEvent('ai-safety: metrics', {
+          requestId: data.requestId,
           metrics,
-          timestamp:Date.now(),
+          timestamp: Date.now(),
 });
 
         this.logger.debug('Safety metrics retrieved', {
-          requestId:data.requestId,
-          totalAnalyses:metrics.totalAnalyses,
+          requestId: data.requestId,
+          totalAnalyses: metrics.totalAnalyses,
 });
 } catch (error) {
-        this.emitEvent('ai-safety:error', {
-          requestId:data.requestId,
-          error:error instanceof Error ? error.message : String(error),
-          timestamp:Date.now(),
+        this.emitEvent('ai-safety: error', {
+          requestId: data.requestId,
+          error: error instanceof Error ? error.message : String(error),
+          timestamp: Date.now(),
 });
 }
 });
 
-    this.addEventListener('brain:ai-safety:emergency-shutdown', async (data) => {
+    this.addEventListener('brain: ai-safety: emergency-shutdown', async (data) => {
       await withTrace('ai-safety-emergency-shutdown', async () => {
         try {
           await this.emergencyShutdownInternal(data.reason);
 
           recordMetric('ai_safety_emergency_shutdowns', 1);
-          this.emitEvent('ai-safety:emergency-complete', {
-            requestId:data.requestId,
-            success:true,
-            timestamp:Date.now(),
+          this.emitEvent('ai-safety: emergency-complete', {
+            requestId: data.requestId,
+            success: true,
+            timestamp: Date.now(),
 });
 
           this.logger.warn('Emergency safety shutdown completed', {
-            requestId:data.requestId,
-            reason:data.reason,
+            requestId: data.requestId,
+            reason: data.reason,
 });
 } catch (error) {
-          this.emitEvent('ai-safety:emergency-complete', {
-            requestId:data.requestId,
-            success:false,
-            timestamp:Date.now(),
+          this.emitEvent('ai-safety: emergency-complete', {
+            requestId: data.requestId,
+            success: false,
+            timestamp: Date.now(),
 });
-          this.emitEvent('ai-safety:error', {
-            requestId:data.requestId,
-            error:error instanceof Error ? error.message : String(error),
-            timestamp:Date.now(),
+          this.emitEvent('ai-safety: error', {
+            requestId: data.requestId,
+            error: error instanceof Error ? error.message : String(error),
+            timestamp: Date.now(),
 });
 }
 });
@@ -400,13 +396,13 @@ export class EventDrivenAISafety extends TypedEventBase {
     if (this.initialized) return;
 
     this.logger.info('Initializing event-driven AI safety system', {
-      config:this.config,
+      config: this.config,
 });
 
     // Initialize foundation-powered components
     await this.serviceContainer.register('ai-safety-analyzer', {
-      analyzeDeception:this.detectDeceptionInternal.bind(this),
-      analyzeBehavior:this.analyzeBehaviorInternal.bind(this),
+      analyzeDeception: this.detectDeceptionInternal.bind(this),
+      analyzeBehavior: this.analyzeBehaviorInternal.bind(this),
 });
 
     this.initialized = true;
@@ -424,8 +420,8 @@ export class EventDrivenAISafety extends TypedEventBase {
 }, this.config.monitoringInterval);
 
     this.logger.info('AI safety monitoring active', {
-      interval:this.config.monitoringInterval,
-      strictMode:this.config.strictMode,
+      interval: this.config.monitoringInterval,
+      strictMode: this.config.strictMode,
 });
 }
 
@@ -442,10 +438,10 @@ export class EventDrivenAISafety extends TypedEventBase {
     this.logger.info('AI safety monitoring stopped');
 }
 
-  private async analyzeResponseInternal(response:any, agentId?:string): Promise<DeceptionAnalysisResult> {
+  private async analyzeResponseInternal(response: any, agentId?:string): Promise<DeceptionAnalysisResult> {
     this.totalAnalyses++;
 
-    const responseText = typeof response === 'string' ? response:JSON.stringify(response);
+    const responseText = typeof response === 'string' ? response: JSON.stringify(response);
     
     // Foundation-powered deception analysis
     const deceptionResult = await this.detectDeceptionInternal(responseText);
@@ -480,14 +476,13 @@ export class EventDrivenAISafety extends TypedEventBase {
       confidence,
       indicators,
       riskLevel,
-      recommendation:this.generateRecommendation(riskLevel, isDeceptive),
+      recommendation: this.generateRecommendation(riskLevel, isDeceptive),
 };
 }
 
-  private async checkAgentSafetyInternal(
-    agentId:string,
-    interactionData:AIInteractionData
-  ):Promise<SafetyStatus> {
+  private async checkAgentSafetyInternal(agentId: string,
+    interactionData: AIInteractionData
+  ): Promise<SafetyStatus> {
     const analysis = await this.analyzeResponseInternal(interactionData.output, agentId);
     
     // Determine safety status based on analysis
@@ -511,17 +506,17 @@ export class EventDrivenAISafety extends TypedEventBase {
     const systemStatus = this.determineSystemStatus();
 
     return {
-      totalAnalyses:this.totalAnalyses,
-      deceptionDetected:this.deceptionCount,
-      interventionsTriggered:this.interventionCount,
-      alertsRaised:this.alertCount,
+      totalAnalyses: this.totalAnalyses,
+      deceptionDetected: this.deceptionCount,
+      interventionsTriggered: this.interventionCount,
+      alertsRaised: this.alertCount,
       averageRiskLevel,
       systemStatus,
-      lastUpdated:Date.now(),
+      lastUpdated: Date.now(),
 };
 }
 
-  private async emergencyShutdownInternal(reason:string): Promise<void> {
+  private async emergencyShutdownInternal(reason: string): Promise<void> {
     this.logger.warn('🛑 EMERGENCY SAFETY SHUTDOWN', { reason});
 
     // Stop all monitoring
@@ -529,9 +524,9 @@ export class EventDrivenAISafety extends TypedEventBase {
 
     // Emit critical safety intervention
     this.emitEvent('safety-intervention', {
-      interventionId:generateUUID(),
+      interventionId: generateUUID(),
       type: 'terminate',      agentId: 'system',      reason:`Emergency shutdown: ${reason}`,
-      timestamp:Date.now(),
+      timestamp: Date.now(),
 });
 
     this.interventionCount++;
@@ -542,14 +537,14 @@ export class EventDrivenAISafety extends TypedEventBase {
   // AI SAFETY ANALYSIS METHODS - Foundation powered
   // =============================================================================
 
-  private async detectDeceptionInternal(text:string): Promise<{
-    isDeceptive:boolean;
-    confidence:number;
-    indicators:string[];
+  private async detectDeceptionInternal(text: string): Promise<{
+    isDeceptive: boolean;
+    confidence: number;
+    indicators: string[];
 }> {
     // Foundation-powered deception detection with retry logic
     return await withRetry(async () => {
-      const indicators:string[] = [];
+      const indicators: string[] = [];
       let confidence = 0;
 
       // Check for common deception patterns
@@ -587,14 +582,14 @@ export class EventDrivenAISafety extends TypedEventBase {
 });
 }
 
-  private async analyzeBehaviorInternal(text:string, agentId?:string): Promise<{
-    suspicious:boolean;
-    confidence:number;
-    indicators:string[];
+  private async analyzeBehaviorInternal(text: string, agentId?:string): Promise<{
+    suspicious: boolean;
+    confidence: number;
+    indicators: string[];
 } | null> {
     if (!this.config.behavioralAnalysisEnabled) return null;
 
-    const indicators:string[] = [];
+    const indicators: string[] = [];
     let confidence = 0;
 
     // Behavioral pattern analysis
@@ -630,7 +625,7 @@ export class EventDrivenAISafety extends TypedEventBase {
 }
 
     return {
-      suspicious:confidence > 0.3,
+      suspicious: confidence > 0.3,
       confidence,
       indicators,
 };
@@ -640,7 +635,7 @@ export class EventDrivenAISafety extends TypedEventBase {
   // HELPER METHODS - Foundation powered
   // =============================================================================
 
-  private calculateRiskLevel(confidence:number, isDeceptive:boolean): RiskLevel {
+  private calculateRiskLevel(confidence: number, isDeceptive: boolean): RiskLevel {
     if (!isDeceptive) return 'minimal';
     
     if (confidence >= 0.9) return 'extreme';
@@ -650,7 +645,7 @@ export class EventDrivenAISafety extends TypedEventBase {
     return 'low';
 }
 
-  private generateRecommendation(riskLevel:RiskLevel, isDeceptive:boolean): string {
+  private generateRecommendation(riskLevel: RiskLevel, isDeceptive: boolean): string {
     if (!isDeceptive) {
       return 'Response appears safe. Continue normal operation.';
 }
@@ -711,8 +706,8 @@ export class EventDrivenAISafety extends TypedEventBase {
       // Check if intervention threshold exceeded
       if (systemMetrics.averageRiskLevel > this.config.interventionThreshold) {
         this.logger.warn('Safety intervention threshold exceeded', {
-          averageRisk:systemMetrics.averageRiskLevel,
-          threshold:this.config.interventionThreshold,
+          averageRisk: systemMetrics.averageRiskLevel,
+          threshold: this.config.interventionThreshold,
 });
 
         this.emitSystemIntervention('High average risk level detected');
@@ -725,15 +720,15 @@ export class EventDrivenAISafety extends TypedEventBase {
 }
 }
 
-  private emitSafetyAlert(analysis:DeceptionAnalysisResult, agentId?:string): void {
+  private emitSafetyAlert(analysis: DeceptionAnalysisResult, agentId?:string): void {
     const alertId = generateUUID();
-    const alert:SafetyAlert = {
-      id:alertId,
-      type: 'deception',      severity:this.mapRiskToSeverity(analysis.riskLevel),
+    const alert: SafetyAlert = {
+      id: alertId,
+      type: 'deception',      severity: this.mapRiskToSeverity(analysis.riskLevel),
       agentId,
-      description:`Deception detected with ${(analysis.confidence * 100).toFixed(1)}% confidence:${analysis.indicators.join(',    ')}`,
-      timestamp:Date.now(),
-      resolved:false,
+      description:`Deception detected with ${(analysis.confidence * 100).toFixed(1)}% confidence: ${analysis.indicators.join(',    ')}`,
+      timestamp: Date.now(),
+      resolved: false,
 };
 
     this.activeAlerts.set(alertId, alert);
@@ -741,31 +736,31 @@ export class EventDrivenAISafety extends TypedEventBase {
 
     this.emitEvent('safety-alert', {
       alertId,
-      type:alert.type,
-      severity:alert.severity,
+      type: alert.type,
+      severity: alert.severity,
       agentId,
-      description:alert.description,
-      timestamp:alert.timestamp,
+      description: alert.description,
+      timestamp: alert.timestamp,
 });
 
     recordMetric(`ai_safety_alerts_${alert.severity}`, 1);
     this.logger.warn('Safety alert raised', alert);
 }
 
-  private emitSystemIntervention(reason:string): void {
+  private emitSystemIntervention(reason: string): void {
     const interventionId = generateUUID();
     
     this.emitEvent('safety-intervention', {
       interventionId,
       type: 'restrict',      agentId: 'system',      reason,
-      timestamp:Date.now(),
+      timestamp: Date.now(),
 });
 
     this.interventionCount++;
     recordMetric('ai_safety_system_interventions', 1);
 }
 
-  private mapRiskToSeverity(riskLevel:RiskLevel): 'low' | ' medium' | ' high' | ' critical' {
+  private mapRiskToSeverity(riskLevel: RiskLevel): 'low' | ' medium' | ' high' | ' critical' {
     switch (riskLevel) {
       case 'extreme':
       case 'critical':

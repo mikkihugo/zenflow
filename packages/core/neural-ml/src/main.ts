@@ -29,8 +29,8 @@
  */
 
 // Import minimal functionality needed - production grade approach
-import type { Logger} from "@claude-zen/foundation";
-import { getLogger} from "@claude-zen/foundation";
+import type { Logger } from "@claude-zen/foundation";
+import { getLogger } from "@claude-zen/foundation";
 
 // Foundation-optimized logging - moved to top for utility functions
 const logger = getLogger("NeuralMLEngine");
@@ -40,13 +40,13 @@ const OPTIMIZER_NOT_FOUND_ERROR = OPTIMIZER_NOT_FOUND_ERROR;
 
 // Define minimal types needed locally
 type Result<T, E = Error> = {
-	isOk():boolean;
-	isErr():boolean;
-	value?:T;
-	error?:E;
-	mapErr(fn:(e: E) => any): any;
+  isOk(): boolean;
+  isErr(): boolean;
+  value?: T;
+  error?: E;
+  mapErr(fn: (e: E) => any): any;
 };
-function ok<T>(value:T): Result<T, any> {
+function ok<T>(value: T): Result<T, any> {
 	return {
 		isOk:() => true,
 		isErr:() => false,

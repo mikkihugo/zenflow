@@ -40,15 +40,15 @@ export type {
 /**
  * Default BEAM analysis configuration
  */
-export const DEFAULT_BEAM_CONFIG:Partial<
+export const DEFAULT_BEAM_CONFIG: Partial<
   import('./types/beam-types').BeamAnalysisConfig
 > = {
   languages:['erlang', 'elixir'],
-  useDialyzer:true,
-  useSobelow:true,
-  useElvis:false,
+  useDialyzer: true,
+  useSobelow: true,
+  useElvis: false,
   timeout:300000, // 5 minutes
-  includeDeps:true,
+  includeDeps: true,
   otpVersion: 'latest',
   customRules:[],
 };
@@ -57,7 +57,7 @@ export const DEFAULT_BEAM_CONFIG:Partial<
  * Quick analysis function for BEAM projects
  */
 export async function analyzeBeamProject(
-  projectPath:string,
+  projectPath: string,
   options:{
     languages?:import('./types/beam-types').BeamLanguage[];
     config?:Partial<import('./types/beam-types').BeamAnalysisConfig>;
@@ -66,7 +66,7 @@ export async function analyzeBeamProject(
   const bridge = createBeamBridge(options.config);
 
   return await bridge.analyzeProject(projectPath, {
-    languages:options.languages || ['erlang',    'elixir'],
+    languages: options.languages || ['erlang',    'elixir'],
     ...options.config,
 });
 }
@@ -75,7 +75,7 @@ export async function analyzeBeamProject(
  * Security-focused analysis for Elixir/Phoenix projects
  */
 export async function analyzeElixirSecurity(
-  projectPath:string,
+  projectPath: string,
   options:{
     confidence?:'high' | ' medium' | ' low';
     skipFiles?:string[];
@@ -85,17 +85,17 @@ export async function analyzeElixirSecurity(
   const bridge = createBeamBridge({
     ...options.config,
     languages:['elixir'],
-    useSobelow:true,
-    useDialyzer:false,
-    useElvis:false,
+    useSobelow: true,
+    useDialyzer: false,
+    useElvis: false,
 });
 
   return await bridge.analyzeProject(projectPath, {
     languages:['elixir'],
-    useSobelow:true,
+    useSobelow: true,
     sobelowConfig:{
-      confidence:options.confidence,
-      skipFiles:options.skipFiles,
+      confidence: options.confidence,
+      skipFiles: options.skipFiles,
 },
 });
 }
@@ -104,7 +104,7 @@ export async function analyzeElixirSecurity(
  * Type safety analysis using Dialyzer
  */
 export async function analyzeBeamTypes(
-  projectPath:string,
+  projectPath: string,
   options:{
     buildPlt?:boolean;
     languages?:import('./types/beam-types').BeamLanguage[];
@@ -113,15 +113,15 @@ export async function analyzeBeamTypes(
 ):Promise<import('./types/beam-types').BeamAnalysisExecutionResult> {
   const bridge = createBeamBridge({
     ...options.config,
-    languages:options.languages || ['erlang',    'elixir'],
-    useDialyzer:true,
-    useSobelow:false,
-    useElvis:false,
+    languages: options.languages || ['erlang',    'elixir'],
+    useDialyzer: true,
+    useSobelow: false,
+    useElvis: false,
 });
 
   return await bridge.analyzeProject(projectPath, {
-    languages:options.languages,
-    useDialyzer:true,
+    languages: options.languages,
+    useDialyzer: true,
 });
 }
 
@@ -129,7 +129,7 @@ export async function analyzeBeamTypes(
  * Pattern analysis for BEAM best practices
  */
 export async function analyzeBeamPatterns(
-  projectPath:string,
+  projectPath: string,
   options:{
     languages?:import('./types/beam-types').BeamLanguage[];
     customRules?:import('./types/beam-types').BeamAnalysisRule[];
@@ -138,16 +138,16 @@ export async function analyzeBeamPatterns(
 ):Promise<import('./types/beam-types').BeamAnalysisExecutionResult> {
   const bridge = createBeamBridge({
     ...options.config,
-    languages:options.languages || ['erlang',    'elixir'],
-    useDialyzer:false,
-    useSobelow:false,
-    useElvis:false,
-    customRules:options.customRules || [],
+    languages: options.languages || ['erlang',    'elixir'],
+    useDialyzer: false,
+    useSobelow: false,
+    useElvis: false,
+    customRules: options.customRules || [],
 });
 
   return await bridge.analyzeProject(projectPath, {
-    languages:options.languages,
-    customRules:options.customRules,
+    languages: options.languages,
+    customRules: options.customRules,
 });
 }
 
@@ -155,7 +155,7 @@ export async function analyzeBeamPatterns(
  * Comprehensive analysis combining all tools
  */
 export async function analyzeBeamComprehensive(
-  projectPath:string,
+  projectPath: string,
   options:{
     languages?:import('./types/beam-types').BeamLanguage[];
     config?:Partial<import('./types/beam-types').BeamAnalysisConfig>;
@@ -164,7 +164,7 @@ export async function analyzeBeamComprehensive(
   const config = {
     ...DEFAULT_BEAM_CONFIG,
     ...options.config,
-    languages:options.languages || ['erlang',    'elixir'],
+    languages: options.languages || ['erlang',    'elixir'],
 };
 
   const bridge = createBeamBridge(config);
@@ -182,18 +182,18 @@ export function getBeamConfigForProject(
     case 'library':
       return {
         ...baseConfig,
-        useDialyzer:true,
-        useSobelow:false,
-        useElvis:true,
+        useDialyzer: true,
+        useSobelow: false,
+        useElvis: true,
         timeout:180000, // 3 minutes for libraries
 };
 
     case 'application':
       return {
         ...baseConfig,
-        useDialyzer:true,
-        useSobelow:false,
-        useElvis:false,
+        useDialyzer: true,
+        useSobelow: false,
+        useElvis: false,
         timeout:300000, // 5 minutes for applications
 };
 
@@ -201,9 +201,9 @@ export function getBeamConfigForProject(
       return {
         ...baseConfig,
         languages:['elixir'],
-        useDialyzer:true,
-        useSobelow:true,
-        useElvis:false,
+        useDialyzer: true,
+        useSobelow: true,
+        useElvis: false,
         timeout:600000, // 10 minutes for Phoenix apps
 };
 
@@ -211,21 +211,21 @@ export function getBeamConfigForProject(
       return {
         ...baseConfig,
         languages:['elixir'],
-        useDialyzer:true,
-        useSobelow:false,
-        useElvis:false,
+        useDialyzer: true,
+        useSobelow: false,
+        useElvis: false,
         timeout:900000, // 15 minutes for Nerves
-        includeDeps:false, // Skip deps for embedded
+        includeDeps: false, // Skip deps for embedded
 };
 
     case 'umbrella':
       return {
         ...baseConfig,
-        useDialyzer:true,
-        useSobelow:true,
-        useElvis:false,
+        useDialyzer: true,
+        useSobelow: true,
+        useElvis: false,
         timeout:1200000, // 20 minutes for umbrella apps
-        includeDeps:true,
+        includeDeps: true,
 };
 
     default:
@@ -237,11 +237,11 @@ export function getBeamConfigForProject(
  * Language detection utilities
  */
 export function detectBeamLanguage(
-  filePath:string
+  filePath: string
 ):import('./types/beam-types').BeamLanguage | null {
-  const ext = require('node:path').extname(filePath).toLowerCase();
+  const ext = require('node: path').extname(filePath).toLowerCase();
 
-  const languageMap:Record<string, import('./types/beam-types').BeamLanguage> =
+  const languageMap: Record<string, import('./types/beam-types').BeamLanguage> =
     {
       '.erl': ' erlang',      '.hrl': ' erlang',      '.ex': ' elixir',      '.exs': ' elixir',      '.gleam': ' gleam',      '.lfe': ' lfe',};
 
@@ -251,9 +251,9 @@ export function detectBeamLanguage(
 /**
  * Check if project is a BEAM project
  */
-export async function isBeamProject(projectPath:string): Promise<boolean> {
-  const { promises:fs} = require('node:fs');
-  const path = require('node:path');
+export async function isBeamProject(projectPath: string): Promise<boolean> {
+  const { promises: fs} = require('node: fs');
+  const path = require('node: path');
 
   try {
     // Check for common BEAM project files

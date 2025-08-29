@@ -18,7 +18,7 @@
  *
  * @example Enterprise usage with Result pattern
  * ```typescript`
- * import { createInitializedAISafetyOrchestrator} from '@claude-zen/ai-safety';
+ * import { createInitializedAISafetyOrchestrator } from '@claude-zen/ai-safety';
  *
  * const result = await createInitializedAISafetyOrchestrator();
  * if (result.success) {
@@ -29,8 +29,8 @@
  *
  * @example Tree-shakable imports
  * ```typescript`
- * import { AISafetyOrchestrator, SafetyError} from '@claude-zen/ai-safety';
- * import { AIDeceptionDetector} from '@claude-zen/ai-safety';
+ * import { AISafetyOrchestrator, SafetyError } from '@claude-zen/ai-safety';
+ * import { AIDeceptionDetector } from '@claude-zen/ai-safety';
  * ```
  */
 
@@ -45,7 +45,7 @@ export {
 } from './ai-deception-detector';
 
 // Import for internal use
-import { type AIInteractionData} from './ai-deception-detector';
+import { type AIInteractionData } from './ai-deception-detector';
 // =============================================================================
 // PRIMARY ENTRY POINT - Main safety guard
 // =============================================================================
