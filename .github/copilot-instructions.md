@@ -191,6 +191,12 @@ pnpm lint
 - Use pooling and caching utilities
 - Never couple feature code to concrete backend
 
+### Database Domain (packages/core/database/*)
+- Multi-adapter database system (SQLite/LanceDB/Kuzu)
+- Kuzu graph database for complex relationship modeling
+- Database connection pooling and transaction management
+- Schema migration and database health monitoring
+
 ### Interfaces Domain (src/interfaces/*)
 - MCP servers for tool integration
 - Multiple interface types: CLI, API, WebSocket, Terminal UI
