@@ -42,13 +42,24 @@
  *
  * **COMPLETE TRACEABILITY:** Every decision, every gate, every flow tracked with AGUI visibility
  */
-import { getSafeFramework, getWorkflowEngine} from '@claude-zen/enterprise')import { getLogger} from '@claude-zen/foundation')import { DatabaseProvider} from '@claude-zen/database')import { getBrainSystem} from '@claude-zen/intelligence')// SAFE Framework comprehensive types';
+import { getSafeFramework, getWorkflowEngine } from '@claude-zen/enterprise';
+import { getLogger } from '@claude-zen/foundation';
+import { DatabaseProvider } from '@claude-zen/database';
+import { getBrainSystem } from '@claude-zen/intelligence';
+
+// SAFE Framework comprehensive types - using local implementation instead of external package
 import type {
   InvestmentHorizon,
   PIObjective,
-} from '@claude-zen/safe-framework')import { TaskApprovalSystem} from '../agui/task-approval-system.js')import type { ApprovalGateManager} from '../core/approval-gate-manager.js')import { LLMApprovalService} from '../services/llm-approval-service.js')import { PromptManagementService} from '../services/prompt-management-service.js')import type {';
+} from '../../safe/types.js';
+import { TaskApprovalSystem } from '../agui/task-approval-system.js';
+import type { ApprovalGateManager } from '../core/approval-gate-manager.js';
+import { LLMApprovalService } from '../services/llm-approval-service.js';
+import { PromptManagementService } from '../services/prompt-management-service.js';
+import type {
   ApprovalGateId,
-} from '../types/index.js')import { SafeFrameworkIntegration} from './safe-framework-integration.js')// =========================================================================== = ''; 
+} from '../types/index.js';
+import { SafeFrameworkIntegration } from './safe-framework-integration.js';// =========================================================================== = ''; 
 // COMPLETE SAFe 6.0 FLOW GATE TYPES
 // ============================================================================
 /**

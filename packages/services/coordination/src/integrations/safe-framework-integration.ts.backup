@@ -36,13 +36,13 @@ import type {
   QualityGate as SafeQualityGate,
   GateCriterion,
   EpicBusinessCase,
-} from '@claude-zen/safe-framework'; // Import quality gate types from SAFE
+} from '../safe/types/epic-management.js'; // Import quality gate types from local SAFE
 import type {
   QualityGate,
   QualityGateType,
   QualityGateResult,
   QualityGateExecutionConfig,
-} from '@claude-zen/safe-framework/services/continuous-delivery/quality-gate-service';
+} from '../safe/services/continuous-delivery/quality-gate-service.js';
 
 // ============================================================================ 
 // SAFE INTEGRATION TYPES

@@ -11,7 +11,7 @@
  * - Event metrics and retrospective analysis
  * - Human-facilitated ceremony integration
  *
- * Part of the @claude-zen/safe-framework package providing comprehensive
+ * Part of the coordination package providing comprehensive
  * Scaled Agile Framework (SAFe) integration capabilities.
  */
 import { EventBus } from '@claude-zen/foundation';

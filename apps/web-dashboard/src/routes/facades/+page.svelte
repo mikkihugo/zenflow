@@ -78,7 +78,7 @@ const mockFacadeData = {
 			capability: "fallback",
 			healthScore: 40,
 			packages: {
-				"@claude-zen/safe-framework": { status: "fallback", version: null },
+				"@claude-zen/coordination": { status: "active", version: null },
 				"@claude-zen/workflows": { status: "fallback", version: null },
 				"@claude-zen/portfolio": { status: "fallback", version: null },
 			},
@@ -88,7 +88,7 @@ const mockFacadeData = {
 				"Portfolio management",
 			],
 			missingPackages: [
-				"@claude-zen/safe-framework",
+				// SAFe framework now included in coordination package
 				"@claude-zen/workflows",
 				"@claude-zen/portfolio",
 			],

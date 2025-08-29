@@ -33,21 +33,20 @@ import type {
   LLMApprovalContext,
   LLMApprovalResult,
 } from '../types/index.js';
-// Import SAFE framework types
+// Import SAFE framework types from local implementation
 import type {
   PortfolioKanbanState,
   EpicLifecycleStage,
-  QualityGate as SafeQualityGate,
-  GateCriterion,
   EpicBusinessCase,
-} from '@claude-zen/safe-framework';
-// Import quality gate types from SAFE
+  GateCriterion,
+} from '../../safe/types/epic-management.js';
+// Import quality gate types from local SAFE implementation
 import type {
   QualityGate,
   QualityGateType,
   QualityGateResult,
   QualityGateExecutionConfig,
-} from '@claude-zen/safe-framework/services/continuous-delivery/quality-gate-service';
+} from '../../safe/services/continuous-delivery/quality-gate-service.js';
 
 // ============================================================================
 // SAFE INTEGRATION TYPES

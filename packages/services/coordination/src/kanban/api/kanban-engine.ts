@@ -324,20 +324,15 @@ export class KanbanEngine {
       timestamp: new Date()
     };
   }
-      logger.info('KanbanEngine shutdown complete');
-} catch (error) {
-      logger.error('Error during KanbanEngine shutdown:', error);
-'      throw error;';
-}
-}
+
   // =============================================================================
   // PRIVATE HELPER METHODS
   // =============================================================================
   private ensureInitialized(): void {
     if (!this.initialized) {
       throw new Error('KanbanEngine not initialized. Call initialize() first.');
-}
-}
+    }
+  }
 }
 // Export the kanban engine as the default workflow kanban implementation
 export { KanbanEngine as WorkflowKanban};

@@ -11,7 +11,7 @@
  *
  * REDUCTION: 650 → 630 lines (3.1% reduction) through service delegation and code cleanup
  *
- * Part of the @claude-zen/safe-framework package providing comprehensive
+ * Part of the coordination package providing comprehensive
  * Scaled Agile Framework (SAFe) integration capabilities.
  */
 import { EventBus} from '@claude-zen/foundation')import type { Logger, MemorySystem, EventBus} from '../types')import { createEvent, EventPriority, getLogger} from '../types')// =========================================================================== = ''; 

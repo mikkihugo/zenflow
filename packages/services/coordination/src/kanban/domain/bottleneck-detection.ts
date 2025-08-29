@@ -12,18 +12,24 @@ export interface BottleneckDetectionConfig {
   /** Utilization threshold for capacity bottlenecks */
   capacityThreshold:  {
   capacityThreshold: [];
-  constructor(config:  {}) {
-    this.config = { ...DEFAULT_CONFIG, ...config};
-    logger.info('BottleneckDetectionService initialized, this.config');
-}
+  constructor(config: Partial<BottleneckDetectionConfig> = {}) {
+    this.config = { ...DEFAULT_CONFIG, ...config };
+    logger.info('BottleneckDetectionService initialized', this.config);
+  }
+
   /**
    * Detect current bottlenecks in the workflow
    */
   async detectBottlenecks(
-    allTasks: new Date();
-    const bottlenecks: [];
-    logger.debug('Starting bottleneck detection', {';
-      totalTasks: await this.detectCapacityBottlenecks(allTasks, wipLimits);
+    allTasks: any[],
+    wipLimits: Record<string, number>
+  ): Promise<any[]> {
+    const bottlenecks: any[] = [];
+    logger.debug('Starting bottleneck detection', {
+      totalTasks: allTasks.length
+    });
+
+    const capacityBottlenecks = await this.detectCapacityBottlenecks(allTasks, wipLimits);
     const dwellingBottlenecks = await this.detectDwellingBottlenecks(allTasks);
     const flowRateBottlenecks = await this.detectFlowRateBottlenecks(allTasks);
     const dependencyBottlenecks = await this.detectDependencyBottlenecks(allTasks);

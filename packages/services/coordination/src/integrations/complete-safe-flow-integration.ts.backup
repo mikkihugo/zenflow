@@ -48,7 +48,7 @@ import { getLogger } from '@claude-zen/foundation';
 // import type {
 //   InvestmentHorizon,
 //   PIObjective,
-// } from '@claude-zen/safe-framework';
+// } from '../safe/types.js';
 import { TaskApprovalSystem } from '../agui/task-approval-system.js';
 import type { ApprovalGateManager } from '../core/approval-gate-manager.js';
 import { LLMApprovalService } from '../services/llm-approval-service.js';
