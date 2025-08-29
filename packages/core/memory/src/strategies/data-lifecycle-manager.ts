@@ -11,8 +11,8 @@ import {
   recordMetric,
   TelemetryManager,
   withTrace,
+  type Logger,
 } from '@claude-zen/foundation';
-import type { Logger} from '@claude-zen/foundation';
 
 import type {
   LifecycleConfig,
@@ -20,16 +20,6 @@ import type {
   LifecycleStage,
   StrategyMetrics,
 } from './types';
-
-interface LifecycleAction {
-  type: 'promote|demote|migrate|cleanup|archive';
-  key:string;
-  fromStage:LifecycleStage;
-  toStage:LifecycleStage;
-  reason:string;
-  timestamp:number;
-  metadata:Record<string, unknown>;
-}
 
 interface StageStats {
   count:number;
@@ -244,7 +234,6 @@ export class DataLifecycleManager extends EventEmitter {
 
   private updateAccessTracking(entry:LifecycleEntry): void {
     const now = Date.now();
-    const timeSinceLastAccess = now - entry.lastAccessed;
 
     entry.lastAccessed = now;
     entry.accessCount++;
