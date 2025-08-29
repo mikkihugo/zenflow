@@ -24,20 +24,20 @@ Create a GitHub Personal Access Token with `repo` permissions:
 
 ```bash
 # Dry run to see what would be imported
-node scripts/import-github-project.js \
+node scripts/import-github-project.mjs \
   --token YOUR_GITHUB_TOKEN \
   --owner mikkihugo \
   --repo zenflow \
   --dry-run
 
 # Actually create the issues
-node scripts/import-github-project.js \
+node scripts/import-github-project.mjs \
   --token YOUR_GITHUB_TOKEN \
   --owner mikkihugo \
   --repo zenflow
 
 # Add to project board #3
-node scripts/import-github-project.js \
+node scripts/import-github-project.mjs \
   --token YOUR_GITHUB_TOKEN \
   --owner mikkihugo \
   --repo zenflow \
@@ -53,7 +53,7 @@ export GITHUB_OWNER="mikkihugo"
 export GITHUB_REPO="zenflow"
 
 # Now you can run without specifying these each time
-node scripts/import-github-project.js --dry-run
+node scripts/import-github-project.mjs --dry-run
 ```
 
 ## What Gets Imported
@@ -107,14 +107,14 @@ Options:
 
 ```bash
 # 1. First, run a dry run to see what would be imported
-node scripts/import-github-project.js \
+node scripts/import-github-project.mjs \
   --token ghp_xxxxxxxxxxxxxxxxxxxx \
   --owner mikkihugo \
   --repo zenflow \
   --dry-run
 
 # 2. If the results look good, run the actual import
-node scripts/import-github-project.js \
+node scripts/import-github-project.mjs \
   --token ghp_xxxxxxxxxxxxxxxxxxxx \
   --owner mikkihugo \
   --repo zenflow
@@ -124,7 +124,7 @@ node scripts/import-github-project.js \
 
 ```bash
 # Import and add to project board #3
-node scripts/import-github-project.js \
+node scripts/import-github-project.mjs \
   --token ghp_xxxxxxxxxxxxxxxxxxxx \
   --owner mikkihugo \
   --repo zenflow \
@@ -136,7 +136,7 @@ node scripts/import-github-project.js \
 
 ```bash
 # Import only specific files
-node scripts/import-github-project.js \
+node scripts/import-github-project.mjs \
   --token ghp_xxxxxxxxxxxxxxxxxxxx \
   --owner mikkihugo \
   --repo zenflow \
@@ -148,7 +148,7 @@ node scripts/import-github-project.js \
 
 ```bash
 # Import everything, including completed items
-node scripts/import-github-project.js \
+node scripts/import-github-project.mjs \
   --token ghp_xxxxxxxxxxxxxxxxxxxx \
   --owner mikkihugo \
   --repo zenflow \
