@@ -38,16 +38,28 @@ class SimpleGitSandbox {
   
   private activeSandboxes = new Map<string, SandboxEnvironment>();
 
-  constructor(config: unknown) {
+  constructor(config: {
+    sandboxRoot?: string;
+    maxAgeHours?: number;
+    restrictedEnvVars?: string[];
+  } = {}) {
     this.config = {
       sandboxRoot:
-        config.sandboxRoot||path.join(process.cwd(),'.git-sandbox'),
-      maxAgeHours: config.maxAgeHours||24,
-      restrictedEnvVars: config.restrictedEnvVars||[],
-};
-}
+        config.sandboxRoot || path.join(process.cwd(), '.git-sandbox'),
+      maxAgeHours: config.maxAgeHours || 24,
+      restrictedEnvVars: config.restrictedEnvVars || [],
+    };
+  }
 
-  async execute(command: string, options: unknown = {}): Promise<unknown> {
+  async execute(
+    command: string,
+    options: { cwd?: string; timeout?: number } = {}
+  ): Promise<{
+    success: boolean;
+    output?: string;
+    stderr?: string;
+    error?: string;
+  }> {
     // Execute git command safely in sandbox
     const { exec} = await import('node:child_process');
     const { promisify} = await import('node:util');
@@ -55,31 +67,32 @@ class SimpleGitSandbox {
 
     try {
       const result = await execAsync(command, {
-        cwd: options.cwd||this.config.sandboxRoot,
-        timeout: options.timeout||30000,
+        cwd: options.cwd || this.config.sandboxRoot,
+        timeout: options.timeout || 30000,
         env: this.getSafeEnvironment(),
-});
-      return { success: true, output: result.stdout, stderr: result.stderr};
-} catch (error) {
+      });
+      return { success: true, output: result.stdout, stderr: result.stderr };
+    } catch (error) {
       return {
         success: false,
-        error: this.getErrorMessage(error),};
+        error: this.getErrorMessage(error),
+      };
 }
 }
 
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     // Create sandbox root directory
-    await fs.mkdir(this.config.sandboxRoot, { recursive: true});
+    await fs.mkdir(this.config.sandboxRoot, { recursive: true });
     logger.info('Git sandbox initialized', {
       sandboxRoot: this.config.sandboxRoot,
-});
-}
+    });
+  }
 
   async createSandbox(projectId: string): Promise<SandboxEnvironment> {
     const sandboxId = `${projectId}-${Date.now()}`;
     const sandboxPath = path.join(this.config.sandboxRoot, sandboxId);
 
-    await fs.mkdir(sandboxPath, { recursive: true});
+    await fs.mkdir(sandboxPath, { recursive: true });
 
     const sandbox: SandboxEnvironment = {
       id: sandboxId,

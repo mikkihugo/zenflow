@@ -505,49 +505,59 @@ export class RecoveryStrategyManager extends EventEmitter {
 }
 
         return {
-          success:false,
-          strategy: 'retry_with_backoff',          action: 'retry_loop_failed',          duration:Date.now() - startTime,
-          error: 'Unexpected exit from retry loop',};
-},
-});
+          success: false,
+          strategy: 'retry_with_backoff',
+          action: 'retry_loop_failed',
+          duration: Date.now() - startTime,
+          error: 'Unexpected exit from retry loop',
+        };
+      },
+    });
+  }
 
+  /**
+   * Register system reset strategy.
+   */
+  private registerSystemResetStrategy(): void {
     // Graceful Degradation Strategy
     this.registerStrategy({
-      name: 'graceful_degradation',      description:
-        'Degrade functionality gracefully to maintain partial service',      applicableErrors:[
+      name: 'graceful_degradation',
+      description:
+        'Degrade functionality gracefully to maintain partial service',
+      applicableErrors: [
         MemoryErrorCode['RESOURCE_EXHAUSTED'],
         MemoryErrorCode['BACKEND_CAPACITY_EXCEEDED'],
         MemoryErrorCode['QUORUM_NOT_REACHED'],
-],
-      priority:2,
-      timeoutMs:3000,
-      maxRetries:1,
-      execute:(error) => {
+      ],
+      priority: 2,
+      timeoutMs: 3000,
+      maxRetries: 1,
+      execute: (error) => {
         const startTime = Date.now();
 
         try {
-          const degradationActions:string[] = [];
+          const degradationActions: string[] = [];
 
           // Reduce memory usage
           if (error.code === MemoryErrorCode['RESOURCE_EXHAUSTED']) {
             degradationActions.push('reduced_cache_size');
             degradationActions.push('enabled_compression');
-}
+          }
 
           // Use single node instead of quorum
           if (error.code === MemoryErrorCode['QUORUM_NOT_REACHED']) {
             degradationActions.push('fallback_to_single_node');
             degradationActions.push('reduced_consistency_guarantee');
-}
+          }
 
           // Archive old data
           if (error.code === MemoryErrorCode['BACKEND_CAPACITY_EXCEEDED']) {
             degradationActions.push('archived_old_data');
             degradationActions.push('reduced_retention_period');
-}
+          }
 
           return {
-            success:true,
+            success: true,
             strategy: 'graceful_degradation',            action: 'degradation_applied',            duration:Date.now() - startTime,
             metadata:{ degradationActions},
 };
