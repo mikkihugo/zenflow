@@ -67,7 +67,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
   private cacheKeys:string[] = [];
 
   private storage:KeyValueStore | null = null;
-  private circuitBreaker:any;
+  private circuitBreaker:unknown;
   private errorAggregator = createErrorAggregator();
   private telemetryInitialized = false;
 

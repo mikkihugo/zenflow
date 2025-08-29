@@ -4,18 +4,9 @@
  * Event-driven intelligence system for agent monitoring and prediction
  */
 
+import { getLogger } from '@claude-zen/foundation';
 
-// Event-driven logger implementation  
-const getLogger = (name: string) => ({
-  info:(msg: string, meta?:unknown) =>
-    console.info(`[INFO: ${name}] ${msg}`, meta ? JSON.stringify(meta) : ''),
-  debug:(msg: string, meta?:unknown) =>
-    console.debug(`[DEBUG: ${name}] ${msg}`, meta ? JSON.stringify(meta) : ''),
-  warn:(msg: string, meta?:unknown) =>
-    console.warn(`[WARN: ${name}] ${msg}`, meta ? JSON.stringify(meta) : ''),
-  error:(msg: string, meta?:unknown) =>
-    console.error(`[ERROR: ${name}] ${msg}`, meta ? JSON.stringify(meta) : ''),
-});
+const logger = getLogger('agent-monitoring-intelligence-system');
 import type {
   AdaptiveLearningUpdate,
   AgentHealth,

@@ -181,13 +181,13 @@ const getPredictionSummary = predictionSummary;
 // Global performance tracker instance
 let globalPerformanceTracker: PerformanceTracker;
 
-// Type aliases for function signatures - using any for complex config functions
-type ISystemConfig = any;
-type ITaskPredictorConfig = any;
-type IPerformanceTrackerConfig = any;
-type IPredictionRequest = any;
-type IAgentId = any;
-type IAgentHealth = any;
+// Type aliases for function signatures - using unknown for complex config functions
+type ISystemConfig = unknown;
+type ITaskPredictorConfig = unknown;
+type IPerformanceTrackerConfig = unknown;
+type IPredictionRequest = unknown;
+type IAgentId = string;
+type IAgentHealth = unknown;
 type ITaskPrediction = any;
 type ITaskCompletionRecord = any;
 

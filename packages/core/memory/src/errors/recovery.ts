@@ -537,7 +537,7 @@ export class RecoveryStrategyManager extends EventEmitter {
       priority:2,
       timeoutMs:3000,
       maxRetries:1,
-      execute:(error, context) => {
+      execute:(error) => {
         const startTime = Date.now();
 
         try {
