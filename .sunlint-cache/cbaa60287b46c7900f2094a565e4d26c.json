@@ -1,0 +1,22 @@
+{
+  "key": "cbaa60287b46c7900f2094a565e4d26c",
+  "value": [
+    {
+      "rule": "C006",
+      "line": 1,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'createEventDrivenAISafety' may not clearly indicate a verb or verb-noun combination.",
+      "suggestion": "Rename to 'initializeEventDrivenAISafety' or 'buildEventDrivenAISafety' to clarify the action performed.",
+      "codeSnippet": "// PRIMARY EVENT-DRIVEN EXPORTS - Foundation powered with brain coordination",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/ai-safety/src/index.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756490969852,
+  "version": "1.0.0",
+  "fileHash": ""
+}

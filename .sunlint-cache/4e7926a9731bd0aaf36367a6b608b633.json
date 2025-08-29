@@ -1,0 +1,78 @@
+{
+  "key": "4e7926a9731bd0aaf36367a6b608b633",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 56,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'i' is not used as a loop counter and lacks descriptive context.",
+      "suggestion": "Rename 'i' to a more descriptive name indicating its purpose.",
+      "codeSnippet": "};",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/document-intelligence/src/document-intelligence-event-driven.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 382,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'getProcessingStats' does not start with a verb and lacks action context.",
+      "suggestion": "Rename to 'retrieveProcessingStats' or 'fetchProcessingStats' for clarity.",
+      "codeSnippet": "name: 'prd-to-epic',        description: 'Convert Product Requirements Document to Epic definitions',        version: '1.0.0',        steps:[",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/document-intelligence/src/document-intelligence-event-driven.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C019",
+      "line": 259,
+      "column": 0,
+      "severity": "warning",
+      "message": "Logger uses 'error' level for workflow step failures that may not be critical.",
+      "suggestion": "Use 'warn' level for recoverable workflow step failures.",
+      "codeSnippet": "",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/document-intelligence/src/document-intelligence-event-driven.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C029",
+      "line": 259,
+      "column": 0,
+      "severity": "warning",
+      "message": "Catch block logs error but does not include stack trace or context information.",
+      "suggestion": "Log both error message and stack trace, and include relevant context data.",
+      "codeSnippet": "",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/document-intelligence/src/document-intelligence-event-driven.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 180,
+      "column": 0,
+      "severity": "warning",
+      "message": "Access control errors in workflow execution only log a warning and continue, potentially allowing workflows to be triggered even after a failure.",
+      "suggestion": "Modify error handling to ensure that if any workflow fails due to an access control or logic error, access is denied and no workflows are triggered for that request.",
+      "codeSnippet": "private workflows = new Map<string, WorkflowDefinition>();",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/document-intelligence/src/document-intelligence-event-driven.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756492860446,
+  "version": "1.0.0",
+  "fileHash": ""
+}

@@ -1,0 +1,50 @@
+{
+  "key": "f79e7c5d63386d4eb514da65fda847c9",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 108,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable 'g' is an arbitrary abbreviation and not descriptive.",
+      "suggestion": "Rename 'g' to 'globalGc' or 'garbageCollector' for clarity.",
+      "codeSnippet": "globalThis.gc?.();",
+      "filePath": "/home/mhugo/code/zenflow/tests/setup-hybrid.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.9
+    },
+    {
+      "rule": "C003",
+      "line": 109,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable 'startMem' is an uncommon abbreviation and not descriptive.",
+      "suggestion": "Rename 'startMem' to 'startMemoryUsage' for clarity.",
+      "codeSnippet": "} catch {",
+      "filePath": "/home/mhugo/code/zenflow/tests/setup-hybrid.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 108,
+      "column": 0,
+      "severity": "warning",
+      "message": "Test data for memory scenarios uses predictable sequential IDs (e.g., id: 1 for sqlite), which may encourage insecure patterns if reused in production code.",
+      "suggestion": "Use UUIDs or securely generated IDs for test data to reinforce secure patterns and avoid IDOR risks.",
+      "codeSnippet": "globalThis.gc?.();",
+      "filePath": "/home/mhugo/code/zenflow/tests/setup-hybrid.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756490889558,
+  "version": "1.0.0",
+  "fileHash": ""
+}

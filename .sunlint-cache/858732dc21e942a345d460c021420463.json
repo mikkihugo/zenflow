@@ -1,0 +1,78 @@
+{
+  "key": "858732dc21e942a345d460c021420463",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 119,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'avgWordLength' is not descriptive enough for its purpose.",
+      "suggestion": "Rename 'avgWordLength' to 'averageWordLength' for clarity.",
+      "codeSnippet": "}, request.context.timeLimit || 30000);",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/sparc/neural-optimizer.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 136,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'getHistoricalPerformance' does not follow verb or verb-noun convention.",
+      "suggestion": "Rename to 'fetchHistoricalPerformance' or 'retrieveHistoricalPerformance'.",
+      "codeSnippet": "",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/sparc/neural-optimizer.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C019",
+      "line": 169,
+      "column": 0,
+      "severity": "warning",
+      "message": "Logger uses 'warn' for a failed prediction, but also logs performance data with 'debug' for the same error context.",
+      "suggestion": "Use 'error' for critical prediction failures and 'debug' for additional context only.",
+      "codeSnippet": "...config,",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/sparc/neural-optimizer.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C029",
+      "line": 169,
+      "column": 0,
+      "severity": "warning",
+      "message": "Catch block does not log stack trace or enough context for error.",
+      "suggestion": "Log error stack and relevant request context in the catch block.",
+      "codeSnippet": "...config,",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/sparc/neural-optimizer.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 53,
+      "column": 0,
+      "severity": "warning",
+      "message": "Access control error fallback returns default config, which may grant permissions if prediction fails.",
+      "suggestion": "Ensure fallback config denies access or restricts permissions when prediction fails, rather than granting default operational permissions.",
+      "codeSnippet": "return prediction;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/sparc/neural-optimizer.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756491785090,
+  "version": "1.0.0",
+  "fileHash": ""
+}

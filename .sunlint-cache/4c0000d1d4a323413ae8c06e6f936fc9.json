@@ -1,0 +1,64 @@
+{
+  "key": "4c0000d1d4a323413ae8c06e6f936fc9",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 97,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'a' in agents.filter(a => a.status === 'healthy') is a single-character name not used as a counter.",
+      "suggestion": "Rename 'a' to 'agent' for clarity.",
+      "codeSnippet": "error: string;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/agent-monitoring/src/intelligence-system-event-driven.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 98,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'a' in agents.filter(a => a.status === 'degraded') is a single-character name not used as a counter.",
+      "suggestion": "Rename 'a' to 'agent' for clarity.",
+      "codeSnippet": "timestamp: number;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/agent-monitoring/src/intelligence-system-event-driven.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 99,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'a' in agents.filter(a => a.status === 'unhealthy') is a single-character name not used as a counter.",
+      "suggestion": "Rename 'a' to 'agent' for clarity.",
+      "codeSnippet": "};",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/agent-monitoring/src/intelligence-system-event-driven.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 180,
+      "column": 0,
+      "severity": "error",
+      "message": "Access control error: getAgentHealthInternal returns mock health data with 'healthy' status if no real data is available, potentially granting access when permission data is missing.",
+      "suggestion": "Fail securely by returning null or a denied status when agent health data is missing, instead of defaulting to 'healthy'.",
+      "codeSnippet": "listener:(data: AgentMonitoringEvents[K]) => void",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/agent-monitoring/src/intelligence-system-event-driven.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756491587285,
+  "version": "1.0.0",
+  "fileHash": ""
+}

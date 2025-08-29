@@ -1,0 +1,64 @@
+{
+  "key": "42337f0cd656494320b0cf05ec62eceb",
+  "value": [
+    {
+      "rule": "C029",
+      "line": 90,
+      "column": 0,
+      "severity": "warning",
+      "message": "Empty catch block does not log the root cause of the error.",
+      "suggestion": "Log the error message and stack trace inside the catch block for debugging and monitoring.",
+      "codeSnippet": "* ```",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/ai-safety/src/main.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 123,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable '_config' uses an arbitrary abbreviation and is not descriptive.",
+      "suggestion": "Rename '_config' to 'configuration' or 'safetyConfig' for clarity.",
+      "codeSnippet": "// =============================================================================",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/ai-safety/src/main.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 153,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable '_config' uses an arbitrary abbreviation and is not descriptive.",
+      "suggestion": "Rename '_config' to 'detectionConfig' or 'config' for clarity.",
+      "codeSnippet": "}",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/ai-safety/src/main.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 93,
+      "column": 0,
+      "severity": "error",
+      "message": "Access control error handling throws an exception instead of denying access securely. Should fail with a deny-by-default response.",
+      "suggestion": "Return a structured error response indicating access denied, rather than throwing an exception. Ensure no default permissions are granted on error.",
+      "codeSnippet": "try {",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/ai-safety/src/main.js",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756490925550,
+  "version": "1.0.0",
+  "fileHash": ""
+}

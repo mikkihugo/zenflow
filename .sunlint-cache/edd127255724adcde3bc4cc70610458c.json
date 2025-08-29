@@ -1,0 +1,78 @@
+{
+  "key": "edd127255724adcde3bc4cc70610458c",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 96,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'ex' is an uncommon abbreviation; use a more descriptive name.",
+      "suggestion": "Rename 'ex' to 'example' for clarity.",
+      "codeSnippet": "originalPromptLength: request.prompt.length,",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/dspy/event-driven-dspy.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 142,
+      "column": 0,
+      "severity": "info",
+      "message": "Function name 'extractPromptFromResponse' is a verb-noun combination, but could be more specific to context.",
+      "suggestion": "Consider renaming to 'parseOptimizedPromptFromLlmResponse' for clarity.",
+      "codeSnippet": "],",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/dspy/event-driven-dspy.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C019",
+      "line": 53,
+      "column": 0,
+      "severity": "warning",
+      "message": "Using 'error' log level for a recoverable event (optimization request failure).",
+      "suggestion": "Change log level to 'warn' unless the failure is critical.",
+      "codeSnippet": "private setupEventHandlers(): void {",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/dspy/event-driven-dspy.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C029",
+      "line": 53,
+      "column": 0,
+      "severity": "warning",
+      "message": "Error logging does not include stack trace or sufficient context.",
+      "suggestion": "Log error.message and error.stack, and include relevant request data.",
+      "codeSnippet": "private setupEventHandlers(): void {",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/dspy/event-driven-dspy.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 43,
+      "column": 0,
+      "severity": "warning",
+      "message": "Access control error handling does not explicitly deny access on error; emits error event but does not enforce deny-by-default.",
+      "suggestion": "Ensure that access control failures always result in denied access, not just error logging or event emission. Add logic to explicitly deny access when errors occur.",
+      "codeSnippet": "private optimizationHistory = new Map<string, DspyOptimizationResult[]>();",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/dspy/event-driven-dspy.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756492167372,
+  "version": "1.0.0",
+  "fileHash": ""
+}

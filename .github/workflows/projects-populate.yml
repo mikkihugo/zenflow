@@ -1,0 +1,53 @@
+name: Projects Populate
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 2 * * *' # optional nightly run at 02:23 UTC
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+  projects: write
+
+jobs:
+  populate:
+    runs-on: ubuntu-latest
+    env:
+      OWNER: mikkihugo
+      REPO: zenflow
+      GH_RETRY_MAX: '6'
+      GH_RETRY_DELAY: '2'
+      GH_THROTTLE: '0.4'
+      GH_TOKEN: ${{ secrets.GH_PAT_PROJECTS }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify gh CLI
+        run: gh --version
+
+      - name: Ensure projects/fields/labels
+        run: |
+          bash scripts/gh-projects-setup.sh
+
+      - name: Populate from issues/TODOs
+        run: |
+          bash scripts/gh-projects-populate.sh
+
+      - name: Summary counts
+        run: |
+          for T in "🧠 Neural AI Platform (Zen Neural Stack)" \
+                   "🔍 Auto-Discovery & Domain Intelligence" \
+                   "🏢 Enterprise Platform & SAFe Integration" \
+                   "🧪 Testing, Validation & Quality"; do
+            N=$(gh project list --owner "$OWNER" --format json --jq ".projects[]|select(.title==\"$T\")|.number" || true)
+            if [ -n "$N" ]; then
+              C=$(gh project item-list "$N" --owner "$OWNER" --format json --jq '.items|length' || echo 0)
+              echo "$T (#$N): $C items"
+            else
+              echo "$T: not found"
+            fi
+            sleep 0.2
+          done

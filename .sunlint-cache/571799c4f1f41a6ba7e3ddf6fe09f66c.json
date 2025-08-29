@@ -1,0 +1,64 @@
+{
+  "key": "571799c4f1f41a6ba7e3ddf6fe09f66c",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 13,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'aiTeam' is an uncommon abbreviation and does not clearly indicate its purpose.",
+      "suggestion": "Rename 'aiTeam' to a more descriptive name such as 'reviewingTeam' or 'approvalTeam'.",
+      "codeSnippet": "weight: 1.0,",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/core/types/advanced-approval.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 0,
+      "column": 0,
+      "severity": "warning",
+      "message": "No access control logic present; unable to verify secure failure on errors. If access control is added, ensure errors result in deny-by-default.",
+      "suggestion": "Implement access control checks that explicitly deny access on errors or missing data.",
+      "codeSnippet": "/**",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/core/types/advanced-approval.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 0,
+      "column": 0,
+      "severity": "warning",
+      "message": "No resource ownership verification or ID handling logic found. If CRUD operations are added, ensure backend verifies ownership and uses unpredictable IDs.",
+      "suggestion": "Add backend resource ownership checks and use UUIDs or encrypted IDs for resource access.",
+      "codeSnippet": "/**",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/core/types/advanced-approval.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S003",
+      "line": 0,
+      "column": 0,
+      "severity": "warning",
+      "message": "No URL redirect logic found. If dynamic redirects are implemented, validate URLs against an allow list.",
+      "suggestion": "Implement allow list validation for all dynamic redirects.",
+      "codeSnippet": "/**",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/core/types/advanced-approval.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756491370889,
+  "version": "1.0.0",
+  "fileHash": ""
+}

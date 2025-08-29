@@ -1,0 +1,78 @@
+{
+  "key": "3cacd67e772eddeb26627a1169d04bb4",
+  "value": [
+    {
+      "rule": "C029",
+      "line": 119,
+      "column": 0,
+      "severity": "warning",
+      "message": "Catch block does not log root cause or context; only sets error in result.",
+      "suggestion": "Log error message and stack trace with relevant context (workflowName, documentType) using logger before setting result.",
+      "codeSnippet": "",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/document-intelligence/src/services/document-workflow-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C029",
+      "line": 136,
+      "column": 0,
+      "severity": "warning",
+      "message": "Catch block does not log root cause or context; only sets error in result.",
+      "suggestion": "Log error message and stack trace with relevant context (eventType, input parameters) using logger before setting result.",
+      "codeSnippet": "case 'vision':",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/document-intelligence/src/services/document-workflow-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 91,
+      "column": 0,
+      "severity": "warning",
+      "message": "Access control errors (e.g., unknown document type) result in success:true, which may allow unintended workflow execution.",
+      "suggestion": "Return success:false or explicitly deny access when document type is unknown or not authorized.",
+      "codeSnippet": "name: 'vision-to-prds',        description: 'Process vision document and generate product requirements documents',        version: '1.0.0',        steps:[",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/document-intelligence/src/services/document-workflow-service.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 180,
+      "column": 0,
+      "severity": "warning",
+      "message": "DocumentContent id is generated using predictable patterns (e.g., 'prd-' + Date.now()), which may be susceptible to IDOR attacks.",
+      "suggestion": "Use UUIDs or securely generated random IDs for document identifiers instead of predictable values.",
+      "codeSnippet": "results",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/document-intelligence/src/services/document-workflow-service.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 208,
+      "column": 0,
+      "severity": "warning",
+      "message": "Epic document IDs are generated using 'epic-' + epicName + Date.now(), which may be predictable and vulnerable to IDOR.",
+      "suggestion": "Generate epic document IDs using UUIDs or cryptographically secure random values.",
+      "codeSnippet": "for (const step of workflow.steps) {",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/document-intelligence/src/services/document-workflow-service.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756491066253,
+  "version": "1.0.0",
+  "fileHash": ""
+}

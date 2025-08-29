@@ -25,6 +25,8 @@ Advanced AI development platform with sophisticated agent coordination, multi-da
 - **Node.js**: Version 22.18.0+ (required)
 - **pnpm**: Version 10.15.0+ (required - npm will not work properly)
 - **Rust**: Latest stable (for WASM modules)
+  
+Note: mise is not required for this repository. Use your system toolchain or asdf/volta if preferred.
 
 ### Development Setup
 

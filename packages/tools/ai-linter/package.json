@@ -6,6 +6,9 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "ai-lint": "dist/cli.js"
+  },
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
@@ -14,7 +17,8 @@
   },
   "dependencies": {
     "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/llm-providers": "workspace:*"
+  "@claude-zen/llm-providers": "workspace:*",
+  "glob": "^10.3.12"
   },
   "devDependencies": {
     "@types/node": "^20.10.5",

@@ -1,0 +1,92 @@
+{
+  "key": "ceae8a48dc32b3499726753b79f3a250",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 142,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'ttaScore' uses uncommon abbreviation; not immediately clear.",
+      "suggestion": "Rename 'ttaScore' to 'teamTechnicalAgilityScore' for clarity.",
+      "codeSnippet": "CROSS_FUNCTIONAL_TEAMS = 'cross_functional_teams',",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/competencies/core-competency-frameworks.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 143,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'apdScore' uses uncommon abbreviation; not immediately clear.",
+      "suggestion": "Rename 'apdScore' to 'agileProductDeliveryScore' for clarity.",
+      "codeSnippet": "STABLE_TEAM_COMPOSITION = 'stable_team_composition',",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/competencies/core-competency-frameworks.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 144,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'clcScore' uses uncommon abbreviation; not immediately clear.",
+      "suggestion": "Rename 'clcScore' to 'continuousLearningCultureScore' for clarity.",
+      "codeSnippet": "OPTIMAL_TEAM_SIZE = 'optimal_team_size',",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/competencies/core-competency-frameworks.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 108,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'createTTAFramework' uses abbreviation; not a clear verb or verb-noun combination.",
+      "suggestion": "Rename to 'createTeamTechnicalAgilityFramework' for clarity and rule compliance.",
+      "codeSnippet": "title: string;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/competencies/core-competency-frameworks.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 127,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'createAPDFramework' uses abbreviation; not a clear verb or verb-noun combination.",
+      "suggestion": "Rename to 'createAgileProductDeliveryFramework' for clarity and rule compliance.",
+      "codeSnippet": "",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/competencies/core-competency-frameworks.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 146,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'createCLCFramework' uses abbreviation; not a clear verb or verb-noun combination.",
+      "suggestion": "Rename to 'createContinuousLearningCultureFramework' for clarity and rule compliance.",
+      "codeSnippet": "DEFINED_ROLES_RESPONSIBILITIES = 'defined_roles_responsibilities'",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/competencies/core-competency-frameworks.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756492155987,
+  "version": "1.0.0",
+  "fileHash": ""
+}

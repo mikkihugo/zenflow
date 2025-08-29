@@ -1,0 +1,64 @@
+{
+  "key": "ce0e373a22bd68b47a831aff7d3a1869",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 323,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable 'c' used as a filter parameter in listConversations; single-letter variable name is not descriptive.",
+      "suggestion": "Rename 'c' to 'conversation' for clarity.",
+      "codeSnippet": "",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/teamwork/index.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.9
+    },
+    {
+      "rule": "C003",
+      "line": 392,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable 'm' used as a filter parameter in listSAFeMeetings; single-letter variable name is not descriptive.",
+      "suggestion": "Rename 'm' to 'meeting' for clarity.",
+      "codeSnippet": "/**",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/teamwork/index.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.9
+    },
+    {
+      "rule": "S002",
+      "line": 295,
+      "column": 0,
+      "severity": "warning",
+      "message": "Resource access in getConversation(id: string) is controlled solely by the id parameter from the caller, without verifying ownership or authorization.",
+      "suggestion": "Add backend authorization logic to verify that the requesting user/agent is authorized to access the conversation with the given id.",
+      "codeSnippet": "*/",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/teamwork/index.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 302,
+      "column": 0,
+      "severity": "warning",
+      "message": "Resource listing in listConversations(agentId?: string) is filtered only by agentId, without verifying that the requesting user/agent is authorized to view these conversations.",
+      "suggestion": "Implement backend authorization checks to ensure the requesting user/agent is permitted to view conversations for the specified agentId.",
+      "codeSnippet": "}): Promise<ConversationMessage> {",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/teamwork/index.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756492197218,
+  "version": "1.0.0",
+  "fileHash": ""
+}

@@ -1,0 +1,36 @@
+{
+  "key": "06863907fcdd86ea0da2529a59d3ce9f",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 221,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable '__report' uses uncommon abbreviation and does not clearly indicate its purpose.",
+      "suggestion": "Rename '__report' to 'e2eTestReport' or 'testReport' for clarity.",
+      "codeSnippet": "// Initialize test data for E2E scenarios",
+      "filePath": "/home/mhugo/code/zenflow/tests/setup-e2e.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 214,
+      "column": 0,
+      "severity": "warning",
+      "message": "Resource access in createE2EClient uses predictable string IDs (e.g., 'test-user-1'), which may allow IDOR if backend does not verify ownership.",
+      "suggestion": "Ensure backend authorization checks resource ownership and use UUIDs or encrypted IDs for user/task/swarm identifiers.",
+      "codeSnippet": "await new Promise((resolve) => setTimeout(resolve, 500));",
+      "filePath": "/home/mhugo/code/zenflow/tests/setup-e2e.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756490872687,
+  "version": "1.0.0",
+  "fileHash": ""
+}

@@ -1,0 +1,50 @@
+{
+  "key": "14a5668073cec3b5d4daf85fca20098c",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 30,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'id' is not descriptive and may be considered arbitrary abbreviation.",
+      "suggestion": "Rename 'id' to a more descriptive name such as 'analysisId' or 'wipLimitId' to clarify its purpose.",
+      "codeSnippet": "analysis: z.object({",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/kanban/utils/validation.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 32,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'title' is used twice and is not descriptive of its purpose.",
+      "suggestion": "Rename 'title' to a more descriptive name such as 'wipLimitTitle' or 'analysisTitle' to clarify its context.",
+      "codeSnippet": "enableIntelligentWIP: z.object({",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/kanban/utils/validation.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 26,
+      "column": 0,
+      "severity": "warning",
+      "message": "Possible IDOR vulnerability: 'id' field is validated only for type, not for ownership or authorization.",
+      "suggestion": "Add backend authorization logic to verify that the resource 'id' belongs to the current user before allowing access or modification.",
+      "codeSnippet": "/**",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/kanban/utils/validation.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756491821009,
+  "version": "1.0.0",
+  "fileHash": ""
+}

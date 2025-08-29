@@ -1,0 +1,36 @@
+{
+  "key": "9a8736ae71dad49eb6b5e18675dab5af",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 11,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'wsService' uses an abbreviation that may not be clear to all readers.",
+      "suggestion": "Rename 'wsService' to 'webSocketService' for clarity.",
+      "codeSnippet": "* // Create PI Planning event",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/index.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 14,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'broadcast' is vague and does not follow verb-noun convention.",
+      "suggestion": "Rename 'broadcast' to 'sendTaskUpdate' or similar verb-noun combination.",
+      "codeSnippet": "*   startDate: await safeSystem.getFlowMetrics();') * ') *';",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/index.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756491652140,
+  "version": "1.0.0",
+  "fileHash": ""
+}

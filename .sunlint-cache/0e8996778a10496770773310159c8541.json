@@ -1,0 +1,22 @@
+{
+  "key": "0e8996778a10496770773310159c8541",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 97,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'cpu' in 'resources' is an abbreviation; use a more descriptive name.",
+      "suggestion": "Rename 'cpu' to 'cpuUsage' or 'processorUsage' for clarity.",
+      "codeSnippet": "/** Maximum batch size */",
+      "filePath": "/home/mhugo/code/zenflow/packages/integrations/otel-collector/src/types.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756490597386,
+  "version": "1.0.0",
+  "fileHash": ""
+}

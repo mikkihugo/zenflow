@@ -1,0 +1,50 @@
+{
+  "key": "e2d62c197cc50f6693fb9fda24cc8bcd",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 18,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable 'svg' uses an arbitrary abbreviation; not descriptive.",
+      "suggestion": "Rename 'svg' to 'iconSvgElement' or 'iconsContainerSvg' for clarity.",
+      "codeSnippet": "});",
+      "filePath": "/home/mhugo/code/zenflow/docs/api/assets/icons.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 21,
+      "column": 0,
+      "severity": "warning",
+      "message": "Parameter 'el' in forEach callback is an arbitrary abbreviation.",
+      "suggestion": "Rename 'el' to 'useElement' for clarity.",
+      "codeSnippet": "",
+      "filePath": "/home/mhugo/code/zenflow/docs/api/assets/icons.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 21,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'updateUseElements' is a noun phrase; should be verb or verb-noun.",
+      "suggestion": "Rename to 'updateIconUseElements' or 'refreshUseElements'.",
+      "codeSnippet": "",
+      "filePath": "/home/mhugo/code/zenflow/docs/api/assets/icons.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756490853536,
+  "version": "1.0.0",
+  "fileHash": ""
+}

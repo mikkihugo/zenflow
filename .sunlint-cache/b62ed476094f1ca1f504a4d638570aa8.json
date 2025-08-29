@@ -1,0 +1,50 @@
+{
+  "key": "b62ed476094f1ca1f504a4d638570aa8",
+  "value": [
+    {
+      "rule": "C006",
+      "line": 97,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'getEnabledFeatureCount' is a noun phrase; should be a verb or verb-noun combination.",
+      "suggestion": "Rename to 'countEnabledFeatures' or 'calculateEnabledFeatureCount'.",
+      "codeSnippet": "teamTechnicalAgility: true,",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/config/safe-configuration.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 105,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'getTotalFeatureCount' is a noun phrase; should be a verb or verb-noun combination.",
+      "suggestion": "Rename to 'countTotalFeatures' or 'calculateTotalFeatureCount'.",
+      "codeSnippet": "solutionEvents: false,",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/config/safe-configuration.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 111,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'getMissingFeatures' is a noun phrase; should be a verb or verb-noun combination.",
+      "suggestion": "Rename to 'findMissingFeatures' or 'listMissingFeatures'.",
+      "codeSnippet": "epicManagement: false,",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/config/safe-configuration.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756492262714,
+  "version": "1.0.0",
+  "fileHash": ""
+}

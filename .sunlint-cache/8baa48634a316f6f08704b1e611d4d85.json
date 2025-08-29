@@ -1,0 +1,92 @@
+{
+  "key": "8baa48634a316f6f08704b1e611d4d85",
+  "value": [
+    {
+      "rule": "C019",
+      "line": 60,
+      "column": 0,
+      "severity": "warning",
+      "message": "Uses error log level for recoverable filter processing failure.",
+      "suggestion": "Change logger.error to logger.warn for non-critical filter processing failures.",
+      "codeSnippet": "this.lastProcessedTime = Date.now();",
+      "filePath": "/home/mhugo/code/zenflow/packages/integrations/otel-collector/src/processors/filter-processor.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C019",
+      "line": 89,
+      "column": 0,
+      "severity": "warning",
+      "message": "Uses error log level for recoverable batch processing failure.",
+      "suggestion": "Change logger.error to logger.warn for non-critical batch processing failures.",
+      "codeSnippet": "}",
+      "filePath": "/home/mhugo/code/zenflow/packages/integrations/otel-collector/src/processors/filter-processor.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C029",
+      "line": 60,
+      "column": 0,
+      "severity": "warning",
+      "message": "Error log does not include stack trace or context information in catch block.",
+      "suggestion": "Log error.message and error.stack, and include context such as input data or processor name.",
+      "codeSnippet": "this.lastProcessedTime = Date.now();",
+      "filePath": "/home/mhugo/code/zenflow/packages/integrations/otel-collector/src/processors/filter-processor.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C029",
+      "line": 89,
+      "column": 0,
+      "severity": "warning",
+      "message": "Error log does not include stack trace or context information in catch block.",
+      "suggestion": "Log error.message and error.stack, and include context such as batch size or processor name.",
+      "codeSnippet": "}",
+      "filePath": "/home/mhugo/code/zenflow/packages/integrations/otel-collector/src/processors/filter-processor.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 61,
+      "column": 0,
+      "severity": "warning",
+      "message": "Access control errors in process() fall back to returning original data on error, potentially allowing unintended access.",
+      "suggestion": "On error, return null or deny access instead of returning original data.",
+      "codeSnippet": "this.lastError = null;",
+      "filePath": "/home/mhugo/code/zenflow/packages/integrations/otel-collector/src/processors/filter-processor.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 86,
+      "column": 0,
+      "severity": "warning",
+      "message": "Access control errors in processBatch() fall back to returning all original data on error, potentially allowing unintended access.",
+      "suggestion": "On error, return an empty array or deny access instead of returning all data.",
+      "codeSnippet": "const shouldInclude = this.shouldIncludeData(data);",
+      "filePath": "/home/mhugo/code/zenflow/packages/integrations/otel-collector/src/processors/filter-processor.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756490667139,
+  "version": "1.0.0",
+  "fileHash": ""
+}

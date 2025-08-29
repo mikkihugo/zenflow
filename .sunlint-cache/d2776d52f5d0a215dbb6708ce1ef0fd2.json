@@ -1,0 +1,92 @@
+{
+  "key": "d2776d52f5d0a215dbb6708ce1ef0fd2",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 12,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'ART' is an uncommon abbreviation and not descriptive.",
+      "suggestion": "Rename 'ART' to a more descriptive name such as 'AgileReleaseTrain'.",
+      "codeSnippet": "}",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/services/vision-management-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.9
+    },
+    {
+      "rule": "C003",
+      "line": 13,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'TEAM' is an uncommon abbreviation and not descriptive.",
+      "suggestion": "Rename 'TEAM' to a more descriptive name such as 'TeamLevel'.",
+      "codeSnippet": "/**",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/services/vision-management-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.9
+    },
+    {
+      "rule": "C006",
+      "line": 118,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'createVisionTables' is a noun phrase, not a verb or verb-noun combination.",
+      "suggestion": "Rename to 'initializeVisionTables' or 'setupVisionTables'.",
+      "codeSnippet": "}>;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/services/vision-management-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 180,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'combineVisionHierarchies' is a noun phrase, not a verb or verb-noun combination.",
+      "suggestion": "Rename to 'mergeVisionHierarchies'.",
+      "codeSnippet": ");",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/services/vision-management-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 108,
+      "column": 0,
+      "severity": "warning",
+      "message": "CRUD operations use predictable string IDs (e.g., visionId) without explicit backend ownership verification. This may allow IDOR if permissions are not checked.",
+      "suggestion": "Ensure backend checks that the visionId belongs to the current user before allowing access or modification. Use UUIDs and verify resource ownership in all CRUD endpoints.",
+      "codeSnippet": "// Alignment scores (0-100)",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/services/vision-management-service.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 115,
+      "column": 0,
+      "severity": "warning",
+      "message": "Access control errors (e.g., vision not found) throw generic errors without explicit deny-by-default logic. This may inadvertently leak information or fail insecurely.",
+      "suggestion": "On access control errors, always deny access and avoid revealing resource existence. Return a generic 'Access Denied' response instead of detailed error messages.",
+      "codeSnippet": "area: string;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/services/vision-management-service.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756492549832,
+  "version": "1.0.0",
+  "fileHash": ""
+}

@@ -1,0 +1,50 @@
+{
+  "key": "1b44223692ec7ecdb1db8d539504d0e8",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 7,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'workflowActions' is not clearly descriptive; consider a more explicit name indicating its purpose.",
+      "suggestion": "Rename 'workflowActions' to something like 'workflowStateActions' or 'workflowMachineActions' for clarity.",
+      "codeSnippet": "* @since 1.0.0",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/state-machines/index.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 14,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'createConfiguredWorkflowMachine' is a verb-noun combination, but 'createDefaultWorkflowConfig' and 'createWorkflowMachine' could be more specific about their actions.",
+      "suggestion": "Consider renaming 'createDefaultWorkflowConfig' to 'generateDefaultWorkflowConfig' and 'createWorkflowMachine' to 'initializeWorkflowMachine' for clearer intent.",
+      "codeSnippet": "export {",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/state-machines/index.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 0,
+      "column": 0,
+      "severity": "warning",
+      "message": "No access control logic present; unable to verify secure failure on errors.",
+      "suggestion": "Ensure access control checks are implemented and fail securely in all exported modules.",
+      "codeSnippet": "/**",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/state-machines/index.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756491270080,
+  "version": "1.0.0",
+  "fileHash": ""
+}

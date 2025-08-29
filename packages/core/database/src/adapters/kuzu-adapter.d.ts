@@ -11,7 +11,7 @@ export declare class KuzuAdapter implements DatabaseConnection {
     private database;
     private connection;
     private isConnectedState;
-    private readonly __stats;
+    private readonly stats;
     constructor(config: DatabaseConfig);
     connect(): Promise<void>;
     disconnect(): Promise<void>;
@@ -41,12 +41,44 @@ export declare class KuzuAdapter implements DatabaseConnection {
      * Create a relationship table in the graph database
      */
     createRelationshipTable(tableName: string, fromNodeTable: string, toNodeTable: string, properties?: Record<string, string>): Promise<void>;
-    logger: any;
-    info(: any, { correlationId, tableName, relationshipCount: relationships, length, }: {
-        correlationId: any;
-        tableName: any;
-        relationshipCount: any;
-        length: any;
-    }): any;
+    /**
+     * Insert nodes into the graph database
+     */
+    insertNodes(tableName: string, nodes: Array<Record<string, unknown>>): Promise<void>;
+    /**
+     * Insert relationships into the graph database
+     */
+    insertRelationships(tableName: string, relationships: Array<{
+        from: Record<string, unknown>;
+        to: Record<string, unknown>;
+        properties?: Record<string, unknown>;
+    }>): Promise<void>;
+    /**
+     * Execute a graph traversal query
+     */
+    graphTraversal<T = unknown>(startNodeCondition: Record<string, unknown>, relationshipPattern: string, endNodeCondition?: Record<string, unknown>, options?: {
+        maxHops?: number;
+        returnPath?: boolean;
+        correlationId?: string;
+    }): Promise<QueryResult<T>>;
+    /**
+     * Get graph statistics and schema information
+     */
+    getGraphSchema(): Promise<{
+        nodeLabels: string[];
+        relationshipTypes: string[];
+        nodeCount: number;
+        relationshipCount: number;
+    }>;
+    private testConnection;
+    private executeWithRetry;
+    private updateAverageQueryTime;
+    private getDatabaseVersion;
+    private getLastMigrationVersion;
+    private createMigrationsTable;
+    private recordMigration;
+    private ensureDatabaseDirectory;
+    private generateCorrelationId;
+    private sleep;
 }
 //# sourceMappingURL=kuzu-adapter.d.ts.map

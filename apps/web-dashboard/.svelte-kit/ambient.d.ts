@@ -176,7 +176,6 @@ declare module '$env/static/private' {
 	export const GECKOWEBDRIVER: string;
 	export const GHCUP_INSTALL_BASE_PREFIX: string;
 	export const GITHUB_OUTPUT: string;
-	export const npm_config_recursive: string;
 	export const EDGEWEBDRIVER: string;
 	export const npm_config__jsr_registry: string;
 	export const npm_config_save_prefix: string;
@@ -376,7 +375,6 @@ declare module '$env/dynamic/private' {
 		GECKOWEBDRIVER: string;
 		GHCUP_INSTALL_BASE_PREFIX: string;
 		GITHUB_OUTPUT: string;
-		npm_config_recursive: string;
 		EDGEWEBDRIVER: string;
 		npm_config__jsr_registry: string;
 		npm_config_save_prefix: string;

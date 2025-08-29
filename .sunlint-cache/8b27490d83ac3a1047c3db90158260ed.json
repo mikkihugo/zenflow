@@ -1,0 +1,92 @@
+{
+  "key": "8b27490d83ac3a1047c3db90158260ed",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 66,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable 'tempPath' uses an uncommon abbreviation; should be more descriptive.",
+      "suggestion": "Rename 'tempPath' to 'temporaryBinaryPath' for clarity.",
+      "codeSnippet": "}",
+      "filePath": "/home/mhugo/code/zenflow/scripts/auto-upgrade-sea.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 79,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable 'now' is a single-character name not used as a loop counter.",
+      "suggestion": "Rename 'now' to 'currentTimestamp' for clarity.",
+      "codeSnippet": "try {",
+      "filePath": "/home/mhugo/code/zenflow/scripts/auto-upgrade-sea.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 80,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable 'oneDayMs' uses an uncommon abbreviation.",
+      "suggestion": "Rename 'oneDayMs' to 'oneDayMilliseconds' for clarity.",
+      "codeSnippet": "logger.info('🔍 Checking for SEA binary updates...');",
+      "filePath": "/home/mhugo/code/zenflow/scripts/auto-upgrade-sea.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C029",
+      "line": 97,
+      "column": 0,
+      "severity": "warning",
+      "message": "Empty catch block in getLastCheckTime does not log the root cause of the error.",
+      "suggestion": "Log the error message and stack trace inside the catch block for debugging.",
+      "codeSnippet": "",
+      "filePath": "/home/mhugo/code/zenflow/scripts/auto-upgrade-sea.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C029",
+      "line": 105,
+      "column": 0,
+      "severity": "warning",
+      "message": "Empty catch block in setLastCheckTime does not log the root cause of the error.",
+      "suggestion": "Log the error message and stack trace inside the catch block for debugging.",
+      "codeSnippet": "",
+      "filePath": "/home/mhugo/code/zenflow/scripts/auto-upgrade-sea.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S003",
+      "line": 48,
+      "column": 0,
+      "severity": "warning",
+      "message": "URL redirects in downloadBinary use response.headers.location without validation or allow list check.",
+      "suggestion": "Validate response.headers.location against a predefined allow list before following the redirect.",
+      "codeSnippet": "} catch (error) {",
+      "filePath": "/home/mhugo/code/zenflow/scripts/auto-upgrade-sea.js",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756490328599,
+  "version": "1.0.0",
+  "fileHash": ""
+}

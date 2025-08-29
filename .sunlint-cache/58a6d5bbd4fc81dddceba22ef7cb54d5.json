@@ -1,0 +1,78 @@
+{
+  "key": "58a6d5bbd4fc81dddceba22ef7cb54d5",
+  "value": [
+    {
+      "rule": "C006",
+      "line": 12,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'update' is vague and does not clearly describe the specific action performed.",
+      "suggestion": "Rename function to 'updateState' or 'applyUpdateToState' for clarity.",
+      "codeSnippet": "/**",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/utilities/state/immutable-ops.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 18,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'clone' is a noun and does not follow verb or verb-noun convention.",
+      "suggestion": "Rename function to 'cloneState' or 'createClone' for clarity.",
+      "codeSnippet": "*/",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/utilities/state/immutable-ops.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 24,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'merge' is a verb but lacks context about what is being merged.",
+      "suggestion": "Rename function to 'mergeObjects' or 'mergeStateObjects' for clarity.",
+      "codeSnippet": "*/",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/utilities/state/immutable-ops.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 37,
+      "column": 0,
+      "severity": "warning",
+      "message": "updateArrayItem controls array item updates based solely on client-provided 'id', which can lead to IDOR vulnerabilities if used for sensitive resources.",
+      "suggestion": "Always verify resource ownership and authorization on the backend before allowing updates based on 'id'. Use UUIDs or encrypted IDs and ensure the current user owns the resource.",
+      "codeSnippet": "* Update array item by ID immutably",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/utilities/state/immutable-ops.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 53,
+      "column": 0,
+      "severity": "warning",
+      "message": "removeFromArray removes array items based solely on client-provided 'id', which can lead to IDOR vulnerabilities if used for sensitive resources.",
+      "suggestion": "Verify resource ownership and authorization before allowing removal based on 'id'. Use secure identifiers and ensure the current user is authorized to remove the resource.",
+      "codeSnippet": "*/",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/utilities/state/immutable-ops.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756492718560,
+  "version": "1.0.0",
+  "fileHash": ""
+}

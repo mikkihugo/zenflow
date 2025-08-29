@@ -1,0 +1,36 @@
+{
+  "key": "a381e157aac059f24c81c7e5841d4469",
+  "value": [
+    {
+      "rule": "C029",
+      "line": 55,
+      "column": 0,
+      "severity": "warning",
+      "message": "Error caught in catch block is not logged with stack trace or context information.",
+      "suggestion": "Log the error object with its stack trace and relevant context (e.g., projectName) using logger.error or logger.warn.",
+      "codeSnippet": "continue;",
+      "filePath": "/home/mhugo/code/zenflow/scripts/build-rust-simple.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 37,
+      "column": 0,
+      "severity": "warning",
+      "message": "Access control error handling does not fail securely; on error finding Cargo.toml files, the script logs info and exits with code 0, which may not be a secure default deny.",
+      "suggestion": "Change process.exit(0) to process.exit(1) or ensure errors in access control logic result in a deny-by-default behavior.",
+      "codeSnippet": "}",
+      "filePath": "/home/mhugo/code/zenflow/scripts/build-rust-simple.js",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756490376443,
+  "version": "1.0.0",
+  "fileHash": ""
+}

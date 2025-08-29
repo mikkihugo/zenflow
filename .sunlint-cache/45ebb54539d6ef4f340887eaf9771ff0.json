@@ -1,0 +1,36 @@
+{
+  "key": "45ebb54539d6ef4f340887eaf9771ff0",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 10,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'z' is an arbitrary abbreviation and does not clearly indicate its purpose.",
+      "suggestion": "Rename 'z' to a more descriptive name such as 'zodLibrary' or 'zod'.",
+      "codeSnippet": "/**",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/utilities/validation/workflow-schemas.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 17,
+      "column": 0,
+      "severity": "warning",
+      "message": "Possible IDOR vulnerability: workflowId is inferred from WorkflowStepSchema, but there is no backend ownership check or UUID usage.",
+      "suggestion": "Ensure workflowId is validated for ownership on the backend and use UUIDs or encrypted IDs instead of predictable values.",
+      "codeSnippet": "* Workflow execution result schema",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/utilities/validation/workflow-schemas.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756492803623,
+  "version": "1.0.0",
+  "fileHash": ""
+}

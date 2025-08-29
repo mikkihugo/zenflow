@@ -11,17 +11,17 @@ export type Result<T, E> =
 /**
  * AI linter processing modes
  */
-export type AIMode = 'gpt-4.1' | ' gpt-5' | ' claude' | ' aider';
+export type AIMode = 'gpt-4.1' | 'gpt-5' | 'claude' | 'aider';
 
 /**
  * File scope for processing
  */
-export type ScopeMode = 'app-only' | ' full-repo';
+export type ScopeMode = 'app-only' | 'full-repo';
 
 /**
  * Processing modes for batch operations
  */
-export type ProcessingMode = 'sequential' | ' parallel';
+export type ProcessingMode = 'sequential' | 'parallel';
 
 /**
  * File error information
@@ -31,8 +31,8 @@ export interface FileError {
   line:number;
   column:number;
   message:string;
-  severity:'error' | ' warning';
-  source:'typescript' | ' eslint';
+  severity:'error' | 'warning';
+  source:'typescript' | 'eslint';
 }
 
 /**

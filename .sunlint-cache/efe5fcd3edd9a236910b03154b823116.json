@@ -1,0 +1,78 @@
+{
+  "key": "efe5fcd3edd9a236910b03154b823116",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 12,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'WIPLimits' uses an uncommon abbreviation 'WIP'.",
+      "suggestion": "Rename 'WIPLimits' to 'WorkInProgressLimits' for clarity.",
+      "codeSnippet": "*",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/kanban/types/index.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 64,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'WIPViolation' uses an uncommon abbreviation 'WIP'.",
+      "suggestion": "Rename 'WIPViolation' to 'WorkInProgressViolation' for clarity.",
+      "codeSnippet": "// =============================================================================",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/kanban/types/index.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 80,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'WIPLimits' uses an uncommon abbreviation 'WIP'.",
+      "suggestion": "Rename 'WIPLimits' to 'WorkInProgressLimits' for clarity.",
+      "codeSnippet": "readonly [key: string]: number;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/kanban/types/index.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 88,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'IntelligentWIPLimits' uses an uncommon abbreviation 'WIP'.",
+      "suggestion": "Rename 'IntelligentWIPLimits' to 'IntelligentWorkInProgressLimits' for clarity.",
+      "codeSnippet": "readonly historical: WIPLimits[];",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/kanban/types/index.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 262,
+      "column": 0,
+      "severity": "warning",
+      "message": "KanbanOperationResult interface allows returning success: true even if error is present, which may result in insecure error handling for access control logic.",
+      "suggestion": "Ensure that when error is set, success is always false. Deny access by default if any error occurs in access control logic.",
+      "codeSnippet": "readonly toState: TaskState;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/kanban/types/index.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756491396260,
+  "version": "1.0.0",
+  "fileHash": ""
+}

@@ -1,0 +1,50 @@
+{
+  "key": "6bf5b881536bc9dec8a7a3ebda7067f3",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 73,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable 'i' used outside a simple loop context for agent creation; single-letter variable names should be reserved for counters in loops.",
+      "suggestion": "Rename 'i' to 'agentIndex' or similar to clarify its purpose in agent creation.",
+      "codeSnippet": "task,",
+      "filePath": "/home/mhugo/code/zenflow/tests/ai-test-setup.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 221,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'cleanupTestTimeouts' is a noun-verb combination; function names should start with a verb or verb-noun combination.",
+      "suggestion": "Rename to 'clearTestTimeouts' or 'removeTestTimeouts' for clarity and action-oriented naming.",
+      "codeSnippet": "network: 'mock-neural',",
+      "filePath": "/home/mhugo/code/zenflow/tests/ai-test-setup.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 60,
+      "column": 0,
+      "severity": "warning",
+      "message": "Agent creation uses predictable sequential IDs (e.g., 'swarm-agent-0', 'swarm-agent-1'), which may lead to IDOR vulnerabilities if used in API endpoints.",
+      "suggestion": "Use UUIDs or securely generated random IDs for agent identifiers instead of predictable sequences.",
+      "codeSnippet": "capabilities: config.capabilities || ['read', 'write', 'analyze'],",
+      "filePath": "/home/mhugo/code/zenflow/tests/ai-test-setup.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756490677774,
+  "version": "1.0.0",
+  "fileHash": ""
+}

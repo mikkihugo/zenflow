@@ -21,7 +21,7 @@ export interface CoordinationSystem {
  * Create a unified coordination system by loading all domains
  */
 export declare function createCoordinationSystem(): Promise<CoordinationSystem>;
-export declare const COORDINATION_PACKAGE_INFO:  {
+export declare const COORDINATION_PACKAGE_INFO: {
     name: string;
     version: string;
     description: string;

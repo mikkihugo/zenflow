@@ -1,0 +1,64 @@
+{
+  "key": "12c793363a6e65f297d74b2de0198651",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 64,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'ms' is an uncommon abbreviation and not descriptive.",
+      "suggestion": "Rename 'ms' to 'milliseconds' for clarity.",
+      "codeSnippet": "arg !== null &&",
+      "filePath": "/home/mhugo/code/zenflow/tests/vitest-setup.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 80,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'dirPath' could be more descriptive about its purpose.",
+      "suggestion": "Rename 'dirPath' to 'tempDirectoryPath' or similar for clarity.",
+      "codeSnippet": "",
+      "filePath": "/home/mhugo/code/zenflow/tests/vitest-setup.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 93,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'restoreConsole' is a noun-verb combination; should be verb-noun or verb phrase.",
+      "suggestion": "Rename to 'restoreConsoleOutput' or 'resetConsole'.",
+      "codeSnippet": "",
+      "filePath": "/home/mhugo/code/zenflow/tests/vitest-setup.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 73,
+      "column": 0,
+      "severity": "warning",
+      "message": "Access control error during cleanupTempDir is ignored without denying access or reporting failure.",
+      "suggestion": "Handle errors securely by denying access or reporting failure when cleanup fails, rather than silently ignoring errors.",
+      "codeSnippet": "pass",
+      "filePath": "/home/mhugo/code/zenflow/tests/vitest-setup.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756490527362,
+  "version": "1.0.0",
+  "fileHash": ""
+}

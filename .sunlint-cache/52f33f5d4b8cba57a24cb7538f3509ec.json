@@ -1,0 +1,22 @@
+{
+  "key": "52f33f5d4b8cba57a24cb7538f3509ec",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 53,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'rss' is an uncommon abbreviation and does not clearly indicate its purpose.",
+      "suggestion": "Rename 'rss' to a more descriptive name such as 'residentSetSize'.",
+      "codeSnippet": "// Test state and configuration",
+      "filePath": "/home/mhugo/code/zenflow/tests/global-types.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756490719280,
+  "version": "1.0.0",
+  "fileHash": ""
+}

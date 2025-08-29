@@ -1,0 +1,36 @@
+{
+  "key": "a61a03a3a3fb7a61ab2e8e87cd8b0a26",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 37,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'wsjfThreshold' uses an uncommon abbreviation ('wsjf') that may not be clear to all readers.",
+      "suggestion": "Rename 'wsjfThreshold' to a more descriptive name, such as 'weightedShortestJobFirstThreshold'.",
+      "codeSnippet": "",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/safe/domain/safe-portfolio-traceability-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 41,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'aiConfidenceThreshold' uses an abbreviation ('ai') that may not be clear to all readers.",
+      "suggestion": "Rename 'aiConfidenceThreshold' to 'artificialIntelligenceConfidenceThreshold' for clarity.",
+      "codeSnippet": "export class TaskMasterSafeIntegration {",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/safe/domain/safe-portfolio-traceability-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756492033736,
+  "version": "1.0.0",
+  "fileHash": ""
+}

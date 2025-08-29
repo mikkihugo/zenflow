@@ -15,7 +15,7 @@ export interface DspyOptimizationRequest {
 }
 export interface DspyLlmRequest {
     requestId: string;
-    messages:  {
+    messages: {
         role: string;
         content: string;
     }[];

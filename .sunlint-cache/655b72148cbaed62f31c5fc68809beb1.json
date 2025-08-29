@@ -1,0 +1,92 @@
+{
+  "key": "655b72148cbaed62f31c5fc68809beb1",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 152,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'i' used outside of a simple loop context; consider a more descriptive name for clarity.",
+      "suggestion": "Rename 'i' to something more descriptive, such as 'goalIndex' or 'riskIndex', except in simple for-loops.",
+      "codeSnippet": "* Generate strategic tasks from vision analysis and documents",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/document-intelligence/src/services/document-task-coordinator.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 71,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'getDashboard' is a noun; function names should be verbs or verb-noun combinations.",
+      "suggestion": "Rename to 'buildDashboard' or 'generateDashboard'.",
+      "codeSnippet": "}",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/document-intelligence/src/services/document-task-coordinator.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C019",
+      "line": 108,
+      "column": 0,
+      "severity": "warning",
+      "message": "Using 'logger.error' for recoverable issue when generating tasks from vision; should use 'warn' or 'info' for normal errors.",
+      "suggestion": "Change 'logger.error' to 'logger.warn' or 'logger.info' for non-critical errors.",
+      "codeSnippet": "documents",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/document-intelligence/src/services/document-task-coordinator.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C029",
+      "line": 108,
+      "column": 0,
+      "severity": "warning",
+      "message": "Catch block logs error but does not include stack trace or context information.",
+      "suggestion": "Log both error.message and error.stack, and include relevant context such as projectId.",
+      "codeSnippet": "documents",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/document-intelligence/src/services/document-task-coordinator.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 162,
+      "column": 0,
+      "severity": "warning",
+      "message": "Access control errors (e.g., document search failure) return 'Task not found' but do not log or deny access securely. No explicit deny-by-default logic if search fails due to error.",
+      "suggestion": "Ensure that any error or missing data in access control checks results in a secure denial of access, not just a generic error message. Log the denial and avoid exposing resource existence.",
+      "codeSnippet": "try {",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/document-intelligence/src/services/document-task-coordinator.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 161,
+      "column": 0,
+      "severity": "warning",
+      "message": "Task update permissions are controlled only by 'taskId' from client input, without verifying resource ownership or user authorization.",
+      "suggestion": "Add backend authorization logic to verify that the current user owns or is permitted to update the specified task before proceeding.",
+      "codeSnippet": "}> {",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/document-intelligence/src/services/document-task-coordinator.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756491033652,
+  "version": "1.0.0",
+  "fileHash": ""
+}
