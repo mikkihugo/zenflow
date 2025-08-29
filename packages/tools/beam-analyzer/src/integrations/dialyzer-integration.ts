@@ -18,18 +18,18 @@ import type {
 } from '../types/beam-types';
 
 export class DialyzerIntegration {
-  private logger = getLogger('DialyzerIntegration');')
+  private logger = getLogger('DialyzerIntegration');
   /**
    * Run Dialyzer analysis on a BEAM project
    */
   async analyze(project: BeamProject,
     _context: BeamAnalysisContext,
-    _options:{
-      buildPlt?:boolean;
-      apps?:string[];
-      warnings?:DialyzerWarningType[];
-      outputFormat?:'formatted'|' raw;
-} = {}
+    _options: {
+      buildPlt?: boolean;
+      apps?: string[];
+      warnings?: DialyzerWarningType[];
+      outputFormat?: 'formatted' | 'raw';
+    } = {}
   ): Promise<Result<DialyzerResult, BeamAnalysisError>> {
     try {
       this.logger.info(
@@ -69,13 +69,16 @@ export class DialyzerIntegration {
 };
 
       this.logger.info(
-        `Dialyzer analysis completed: ${warnings.length} warnings found``
+        `Dialyzer analysis completed: ${warnings.length} warnings found`
       );
       return ok(result);
-} catch (error) {
-      this.logger.error('Dialyzer analysis failed:', error);')      return err({
-        code: 'ANALYSIS_FAILED',        message:`Dialyzer analysis failed: ${error instanceof Error ? error.message : String(error)}`,`
-        tool: 'dialyzer',        originalError: error instanceof Error ? error : undefined,
+    } catch (error) {
+      this.logger.error('Dialyzer analysis failed:', error);
+      return err({
+        code: 'ANALYSIS_FAILED',
+        message: `Dialyzer analysis failed: ${error instanceof Error ? error.message : String(error)}`,
+        tool: 'dialyzer',
+        originalError: error instanceof Error ? error : undefined,
 });
 }
 }

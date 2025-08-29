@@ -6,8 +6,6 @@
  */
 
 import { EventEmitter } from 'events';
-import { performance } from 'perf_hooks';
-import { cpuUsage } from 'process';
 
 // Real logger implementation using event-driven telemetry
 const getLogger = (name: string) => ({

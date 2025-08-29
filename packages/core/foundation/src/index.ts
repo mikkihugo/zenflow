@@ -196,23 +196,15 @@ export {
 	registerFacade,
 } from "./infrastructure/facades/index.js";
 
-// DATABASE FACADE - Foundation-based database access
+// DATABASE ACCESS - Direct access to @claude-zen/database
 // =============================================================================
 export {
-	databaseFacade,
-	createDatabaseAdapter,
-	createKeyValueStore,
-	createVectorStore,
-	createGraphStore,
-	getDatabaseCapability,
-} from "./infrastructure/database/index.js";
-export type {
-	DatabaseConfig,
-	DatabaseConnection,
-	DatabaseAdapter,
-	KeyValueStore,
-	VectorStore,
-	GraphStore,
+	createDatabase,
+	createKeyValueStorage,
+	createDatabaseAccess,
+	DatabaseProvider,
+	DatabaseEventCoordinator,
+	SQLiteAdapter,
 } from "./infrastructure/database/index.js";
 // Export resilience types
 export type { CircuitBreakerOptions, RetryOptions} from "./resilience.js";

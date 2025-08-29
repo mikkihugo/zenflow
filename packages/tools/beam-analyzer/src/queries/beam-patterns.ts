@@ -14,7 +14,7 @@ import type {
 } from '../types/beam-types';
 
 export class BeamPatternAnalyzer {
-  private logger = getLogger('BeamPatternAnalyzer');')
+  private logger = getLogger('BeamPatternAnalyzer');
   /**
    * Analyze BEAM project for common patterns and anti-patterns
    */
@@ -50,16 +50,18 @@ export class BeamPatternAnalyzer {
 }
 
       this.logger.info(
-        `Pattern analysis completed: ${findings.length} findings``
+        `Pattern analysis completed: ${findings.length} findings`
       );
       return ok(findings);
-} catch (error) {
-      this.logger.error('Pattern analysis failed:', error);')      return err({
-        code: 'ANALYSIS_FAILED',        message:`Pattern analysis failed: ${error instanceof Error ? error.message : String(error)}`,`
+    } catch (error) {
+      this.logger.error('Pattern analysis failed:', error);
+      return err({
+        code: 'ANALYSIS_FAILED',
+        message: `Pattern analysis failed: ${error instanceof Error ? error.message : String(error)}`,
         originalError: error instanceof Error ? error : undefined,
-});
-}
-}
+      });
+    }
+  }
 }
 
     return findings;

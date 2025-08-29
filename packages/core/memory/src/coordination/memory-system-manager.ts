@@ -364,72 +364,98 @@ export class MemorySystemManager extends EventEmitter {
 };
 }
 
-  getSystemMetrics():SystemMetrics {
+  getSystemMetrics(): SystemMetrics {
     const coordinationStatus = this.coordination?.getHealthStatus();
     const optimizationMetrics = this.optimization?.getMetrics();
     const lifecycleMetrics = this.lifecycle?.getMetrics();
     const performanceMetrics = this.performance?.getMetrics();
 
     return {
-      system:{
-        name:this.config.name,
-        uptime:Date.now() - this.startTime,
-        version: '2.1.0',        mode:this.config.mode,
-},
-      coordination:{
-        totalNodes:coordinationStatus?.totalNodes || 0,
-        healthyNodes:coordinationStatus?.healthyNodes || 0,
-        operationsPerSecond:0, // Would come from actual metrics
-        averageLatency:0, // Would come from actual metrics
-        successRate:0.99, // Would come from actual metrics
-},
-      optimization:{
-        optimizationCycles:optimizationMetrics?.operations.compressions || 0,
-        improvementsApplied:optimizationMetrics?.operations.reads || 0,
-        performanceGain:optimizationMetrics?.health.score || 0,
-        memoryEfficiency:optimizationMetrics?.memoryUsage.current || 0,
-},
-      lifecycle:{
-        totalEntries:0, // Would get from lifecycle manager
-        hotEntries:0,
-        warmEntries:0,
-        coldEntries:0,
-        archivedEntries:0,
-        migrationsPerHour:lifecycleMetrics?.migrations || 0,
-},
-      performance:{
-        responseTime:{
-          p50:performanceMetrics?.stabilityScore || 0,
-          p95:performanceMetrics?.stabilityScore || 0,
-          p99:performanceMetrics?.stabilityScore || 0,
-},
-        throughput:0,
-        cacheMetrics:{
-          hitRate:0.85,
-          evictionsPerHour:0,
-          compressionRatio:0.7,
-},
-        errorRate:0.01,
-},
-      resources:{
-        memory:{
-          used:process.memoryUsage().heapUsed,
-          available:process.memoryUsage().heapTotal,
-          peak:process.memoryUsage().heapUsed,
-},
-        storage:{
-          used:0,
-          available:0,
-          iops:0,
-},
-        network:{
-          bytesIn:0,
-          bytesOut:0,
-          connectionsActive:0,
-},
-},
-};
-}
+      system: this.getSystemInfo(),
+      coordination: this.getCoordinationMetrics(coordinationStatus),
+      optimization: this.getOptimizationMetrics(optimizationMetrics),
+      lifecycle: this.getLifecycleMetrics(lifecycleMetrics),
+      performance: this.getPerformanceMetrics(performanceMetrics),
+      resources: this.getResourceMetrics(),
+    };
+  }
+
+  private getSystemInfo() {
+    return {
+      name: this.config.name,
+      uptime: Date.now() - this.startTime,
+      version: '2.1.0',
+      mode: this.config.mode,
+    };
+  }
+
+  private getCoordinationMetrics(coordinationStatus: unknown) {
+    return {
+      totalNodes: coordinationStatus?.totalNodes || 0,
+      healthyNodes: coordinationStatus?.healthyNodes || 0,
+      operationsPerSecond: 0, // Would come from actual metrics
+      averageLatency: 0, // Would come from actual metrics
+      successRate: 0.99, // Would come from actual metrics
+    };
+  }
+
+  private getOptimizationMetrics(optimizationMetrics: unknown) {
+    return {
+      optimizationCycles: optimizationMetrics?.operations.compressions || 0,
+      improvementsApplied: optimizationMetrics?.operations.reads || 0,
+      performanceGain: optimizationMetrics?.health.score || 0,
+      memoryEfficiency: optimizationMetrics?.memoryUsage.current || 0,
+    };
+  }
+
+  private getLifecycleMetrics(lifecycleMetrics: unknown) {
+    return {
+      totalEntries: 0, // Would get from lifecycle manager
+      hotEntries: 0,
+      warmEntries: 0,
+      coldEntries: 0,
+      archivedEntries: 0,
+      migrationsPerHour: lifecycleMetrics?.migrations || 0,
+    };
+  }
+
+  private getPerformanceMetrics(performanceMetrics: unknown) {
+    return {
+      responseTime: {
+        p50: performanceMetrics?.stabilityScore || 0,
+        p95: performanceMetrics?.stabilityScore || 0,
+        p99: performanceMetrics?.stabilityScore || 0,
+      },
+      throughput: 0,
+      cacheMetrics: {
+        hitRate: 0.85,
+        evictionsPerHour: 0,
+        compressionRatio: 0.7,
+      },
+      errorRate: 0.01,
+    };
+  }
+
+  private getResourceMetrics() {
+    const memUsage = process.memoryUsage();
+    return {
+      memory: {
+        used: memUsage.heapUsed,
+        available: memUsage.heapTotal,
+        peak: memUsage.heapUsed,
+      },
+      storage: {
+        used: 0,
+        available: 0,
+        iops: 0,
+      },
+      network: {
+        bytesIn: 0,
+        bytesOut: 0,
+        connectionsActive: 0,
+      },
+    };
+  }
 
   private async initializeCoordination():Promise<void> {
     this.coordination = new MemoryCoordinationSystem(this.config.coordination);

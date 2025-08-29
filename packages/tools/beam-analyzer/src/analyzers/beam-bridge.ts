@@ -22,7 +22,8 @@ import type {
 } from '../types/beam-types';
 
 export class BeamBridge {
-  private logger = getLogger('BeamBridge');')  private config: Required<BeamAnalysisConfig>;
+  private logger = getLogger('BeamBridge');
+  private config: Required<BeamAnalysisConfig>;
 
   constructor(config: BeamAnalysisConfig = {}) {
     this.config = {
@@ -127,19 +128,21 @@ export class BeamBridge {
         findings,
         metrics,
         toolResults,
-};
+      };
 
       this.logger.info(
-        `BEAM analysis completed: $findings.lengthfindings in $metrics.totalTimems``
+        `BEAM analysis completed: ${findings.length} findings in ${metrics.totalTime}ms`
       );
       return ok(result);
-} catch (error) {
-      this.logger.error('BEAM analysis failed:', error);')      return err({
-        code: 'ANALYSIS_FAILED',        message:`Analysis failed: ${error instanceof Error ? error.message : String(error)}`,`
+    } catch (error) {
+      this.logger.error('BEAM analysis failed:', error);
+      return err({
+        code: 'ANALYSIS_FAILED',
+        message: `Analysis failed: ${error instanceof Error ? error.message : String(error)}`,
         originalError: error instanceof Error ? error : undefined,
-} as BeamAnalysisError);
-}
-}
+      } as BeamAnalysisError);
+    }
+  }
 
   /**
    * Detect BEAM project structure and configuration

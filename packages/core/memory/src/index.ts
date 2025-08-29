@@ -68,20 +68,11 @@ export {
 } from './errors';
 
 // ===================================================================
-// EVENT SYSTEM
+// EVENT SYSTEM - Using foundation EventEmitter
 // ===================================================================
 
-export type {
-  MemoryEvent,
-  MemorySystemSyncEvent,
-  CacheCoordinationEvent,
-  MemoryEventType,
-} from './events';
-
-export {
-  isCoordinationEvent,
-  isCacheEvent,
-} from './events';
+// Re-export EventEmitter from foundation instead of local events
+export { EventEmitter } from '@claude-zen/foundation';
 
 // ===================================================================
 // ADAPTERS (Backend Implementations)
@@ -177,8 +168,8 @@ export class MemoryFactory {
     type?:'sqlite' | 'memory';
     database?:string;
 } = {}):Promise<unknown> {
-    const { MemoryBackendFactory} = await import('./adapters');
-    const factory = MemoryBackendFactory.getInstance();
+    const { MemoryBackendFactory: memoryBackendFactory } = await import('./adapters');
+    const factory = memoryBackendFactory.getInstance();
     
     return factory.createDatabaseBackend({
       type:config.type || DEFAULT_DATABASE_TYPE,      database:config.database || DEFAULT_DATABASE_PATH,});
@@ -194,9 +185,9 @@ export class MemoryFactory {
     type?:'sqlite' | 'memory';
     path?:string;
 } = {}):Promise<MemorySystemInterface> {
-    const { MemoryCoordinationSystem} = await import('./coordination');
-    
-    const system = new MemoryCoordinationSystem({
+    const { MemoryCoordinationSystem: memoryCoordinationSystem } = await import('./coordination');
+
+    const system = new memoryCoordinationSystem({
       backendConfig:{
         type:config.type || DEFAULT_DATABASE_TYPE,        path:config.path || DEFAULT_DATABASE_PATH,},
 });
@@ -209,24 +200,24 @@ export class MemoryFactory {
    * Create a session store
    */
   static async createSessionStore(sessionId:string, options?:unknown): Promise<unknown> {
-    const { SessionMemoryStore} = await import('./stores/session-store');
-    return new SessionMemoryStore(sessionId, options);
+    const { SessionMemoryStore: sessionMemoryStore } = await import('./stores/session-store');
+    return new sessionMemoryStore(sessionId, options);
 }
 
   /**
    * Create a safe memory store
    */
   static async createSafeStore(config?:unknown): Promise<unknown> {
-    const { SafeMemoryStore} = await import('./stores/safe-store');
-    return new SafeMemoryStore(config);
+    const { SafeMemoryStore: safeMemoryStore } = await import('./stores/safe-store');
+    return new safeMemoryStore(config);
 }
 
   /**
    * Create a context store
    */
   static async createContextStore(config?:unknown): Promise<unknown> {
-    const { ContextStore} = await import('./stores/context-store');
-    return new ContextStore(config);
+    const { ContextStore: contextStore } = await import('./stores/context-store');
+    return new contextStore(config);
 }
 }
 
@@ -278,8 +269,8 @@ export async function getMemorySystem(config?:unknown): Promise<unknown> {
       MemoryFactory.createContextStore(config),
     getCoordination:() => manager,
     getMonitoring:async () => {
-      const { MemoryMonitor} = await import('./monitoring/monitor');
-      return new MemoryMonitor();
+      const { MemoryMonitor: memoryMonitor } = await import('./monitoring/monitor');
+      return new memoryMonitor();
 },
     getStrategies:async () => await import('./strategies'),
     shutdown:() => manager.shutdown?.(),
@@ -310,8 +301,8 @@ export async function getSessionMemory(
  * Get coordination system access
  */
 export async function getMemoryCoordination(config?:unknown): Promise<unknown> {
-  const { MemoryCoordinationSystem} = await import('./coordination');
-  const coordination = new MemoryCoordinationSystem(config);
+  const { MemoryCoordinationSystem: memoryCoordinationSystem } = await import('./coordination');
+  const coordination = new memoryCoordinationSystem(config);
   
   await coordination.initialize?.();
   

@@ -18,7 +18,7 @@ import type {
 } from '../types/beam-types';
 
 export class SobelowIntegration {
-  private logger = getLogger('SobelowIntegration');')
+  private logger = getLogger('SobelowIntegration');
   /**
    * Run Sobelow security analysis on an Elixir/Phoenix project
    */
@@ -34,11 +34,14 @@ export class SobelowIntegration {
   ): Promise<Result<SobelowResult, BeamAnalysisError>> {
     try {
       if (project.language !== 'elixir') {
-    ')        return err({
-          code: 'CONFIGURATION_ERROR',          message: 'Sobelow can only analyze Elixir projects',          tool: 'sobelow',});
-}
+        return err({
+          code: 'CONFIGURATION_ERROR',
+          message: 'Sobelow can only analyze Elixir projects',
+          tool: 'sobelow',
+        });
+      }
 
-      this.logger.info('Running Sobelow security analysis...');')
+      this.logger.info('Running Sobelow security analysis...');
       // Run Sobelow analysis
       const analysisResult = await this.runSobelowAnalysis(
         project,

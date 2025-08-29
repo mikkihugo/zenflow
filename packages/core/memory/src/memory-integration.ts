@@ -328,29 +328,32 @@ export function createMemoryContainer(
 
   // Register core services (would normally come from main app)
   container.register(CORE_TOKENS.Logger, {
-    type: 'singleton',    create:() => ({
-      debug:(msg: string) => {},
-      info:(msg: string) => {},
-      warn:(msg: string) => logger.warn(`[MEMORY WARN] ${msg}`),
-      error:(msg: string) => logger.error(`[MEMORY ERROR] ${msg}`),
-}),
-});
+    type: 'singleton',
+    create: () => ({
+      debug: (_msg: string) => {},
+      info: (_msg: string) => {},
+      warn: (msg: string) => logger.warn(`[MEMORY WARN] ${msg}`),
+      error: (msg: string) => logger.error(`[MEMORY ERROR] ${msg}`),
+    }),
+  });
 
   container.register(CORE_TOKENS.Config, {
-    type: 'singleton',    create:() => ({
-      get:(key: string, defaultValue?:unknown) => defaultValue,
-      set:(key: string, value:unknown) => {},
-      has:(key: string) => false,
-}),
-});
+    type: 'singleton',
+    create: () => ({
+      get: (_key: string, defaultValue?: unknown) => defaultValue,
+      set: (_key: string, _value: unknown) => {},
+      has: (_key: string) => false,
+    }),
+  });
 
   // Register DAL Factory
   container.register(DATABASE_TOKENS?.DALFactory, {
-    type: 'singleton',    create:(container) => {
-      const { DALFactory} = require('../database/factory');
+    type: 'singleton',
+    create: (container) => {
+      const { DALFactory: dalFactory } = require('../database/factory');
       const {
-        DatabaseProviderFactory,
-} = require('../database/providers/database-providers');
+        DatabaseProviderFactory: databaseProviderFactory,
+      } = require('../database/providers/database-providers');
 
       return new DALFactory(
         container.resolve(CORE_TOKENS.Logger),

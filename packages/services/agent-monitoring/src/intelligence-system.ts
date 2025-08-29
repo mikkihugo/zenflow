@@ -4,7 +4,6 @@
  * Event-driven intelligence system for agent monitoring and prediction
  */
 
-import { EventEmitter } from 'events';
 
 // Event-driven logger implementation  
 const getLogger = (name: string) => ({
