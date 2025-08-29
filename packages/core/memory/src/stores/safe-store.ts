@@ -67,7 +67,7 @@ export class SafeMemoryStore extends EventEmitter {
 };
 }
 
-  async initialize():Promise<void> {
+  initialize():void {
     if (this.initialized) return;
 
     try {
@@ -89,11 +89,11 @@ export class SafeMemoryStore extends EventEmitter {
    * @param data
    * @param ttl
    */
-  async storeData<T>(
+  storeData<T>(
     key:string,
     data:T,
     ttl?:number
-  ):Promise<MemoryResult<void>> {
+  ):MemoryResult<void> {
     try {
       if (!this.initialized) {
         return this.createMemoryError(

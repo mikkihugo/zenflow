@@ -186,12 +186,12 @@ export function registerMemoryProviders(
  * @param container
  * @example
  */
-export async function createMemoryBackends(container:DIContainer): Promise<{
+export function createMemoryBackends(container:DIContainer): {
   cache:unknown;
   session:unknown;
   semantic:unknown;
   debug:unknown;
-}> {
+} {
   const factory = container.resolve(
     MEMORY_TOKENS['ProviderFactory']
   ) as MemoryProviderFactory;
@@ -201,7 +201,7 @@ export async function createMemoryBackends(container:DIContainer): Promise<{
     session:factory.createProvider(defaultMemoryConfigurations?.session),
     semantic:factory.createProvider(defaultMemoryConfigurations?.semantic),
     debug:factory.createProvider(defaultMemoryConfigurations?.debug),
-};
+  };
 }
 
 /**
@@ -330,8 +330,8 @@ export function createMemoryContainer(
   container.register(CORE_TOKENS.Logger, {
     type: 'singleton',
     create: () => ({
-      debug: (_msg: string) => {},
-      info: (_msg: string) => {},
+      debug: () => {},
+      info: () => {},
       warn: (msg: string) => logger.warn(`[MEMORY WARN] ${msg}`),
       error: (msg: string) => logger.error(`[MEMORY ERROR] ${msg}`),
     }),
@@ -340,9 +340,9 @@ export function createMemoryContainer(
   container.register(CORE_TOKENS.Config, {
     type: 'singleton',
     create: () => ({
-      get: (_key: string, defaultValue?: unknown) => defaultValue,
-      set: (_key: string, _value: unknown) => {},
-      has: (_key: string) => false,
+      get: (key: string, defaultValue?: unknown) => defaultValue,
+      set: () => {},
+      has: () => false,
     }),
   });
 
@@ -350,9 +350,9 @@ export function createMemoryContainer(
   container.register(DATABASE_TOKENS?.DALFactory, {
     type: 'singleton',
     create: (container) => {
-      const { DALFactory: dalFactory } = require('../database/factory');
+      const { DALFactory } = require('../database/factory');
       const {
-        DatabaseProviderFactory: databaseProviderFactory,
+        DatabaseProviderFactory,
       } = require('../database/providers/database-providers');
 
       return new DALFactory(

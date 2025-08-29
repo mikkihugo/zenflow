@@ -159,7 +159,7 @@ export class RecoveryStrategyManager extends EventEmitter {
    * @param error
    * @param context
    */
-  private async executeWithTimeout(
+  private executeWithTimeout(
     strategy:RecoveryStrategy,
     error:MemoryError,
     context:RecoveryContext
@@ -179,9 +179,9 @@ export class RecoveryStrategyManager extends EventEmitter {
           clearTimeout(timeout);
           resolve(result);
 })
-        .catch((error) => {
+        .catch((strategyError) => {
           clearTimeout(timeout);
-          reject(error);
+          reject(strategyError);
 });
 });
 }
@@ -576,6 +576,28 @@ export class RecoveryStrategyManager extends EventEmitter {
 },
 });
 }
+
+  /**
+   * Validate data integrity.
+   */
+  private validateData(value: unknown): boolean {
+    if (value === null || value === undefined) {
+      return false;
+    }
+
+    // Basic validation - could be extended with more sophisticated checks
+    try {
+      if (typeof value === 'string') {
+        return value.length > 0;
+      }
+      if (typeof value === 'object') {
+        return Object.keys(value).length > 0;
+      }
+      return true;
+    } catch {
+      return false;
+    }
+  }
 
   /**
    * Get recovery statistics.

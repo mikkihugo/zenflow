@@ -211,7 +211,7 @@ export class MemoryMonitor extends EventEmitter {
   /**
    * Collect current metrics.
    */
-  private async collectMetrics():Promise<void> {
+  private collectMetrics():void {
     try {
       const now = Date.now();
       const windowMs = this.configuration.collectInterval * 5; // 5 collection periods
@@ -270,7 +270,7 @@ export class MemoryMonitor extends EventEmitter {
 
       // Get backend metrics
       const backendMetrics:MemoryMetrics['backends'] = {};
-      for (const [id, _backend] of this.backends) {
+      for (const [id] of this.backends) {
         const backendOps = recentOperations.filter((op) =>
           op.operation.includes(id)
         );
