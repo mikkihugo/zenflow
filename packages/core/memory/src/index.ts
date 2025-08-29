@@ -162,6 +162,9 @@ export {
 // FACTORY AND UTILITIES
 // ===================================================================
 
+const DEFAULT_DATABASE_TYPE = 'sqlite';
+const DEFAULT_DATABASE_PATH = DEFAULT_DATABASE_PATH;
+
 /**
  * Factory for creating memory system components
  */
@@ -171,14 +174,14 @@ export class MemoryFactory {
    * Uses the database package following correct architecture
    */
   static async createDatabaseBackedManager(config:{
-    type?:'sqlite' | ' memory';
+    type?:'sqlite' | 'memory';
     database?:string;
-} = {}):Promise<DatabaseBackedAdapter> {
+} = {}):Promise<unknown> {
     const { MemoryBackendFactory} = await import('./adapters');
     const factory = MemoryBackendFactory.getInstance();
     
     return factory.createDatabaseBackend({
-      type:config.type || 'sqlite',      database:config.database || './memory.db',});
+      type:config.type || DEFAULT_DATABASE_TYPE,      database:config.database || DEFAULT_DATABASE_PATH,});
 }
 
   /**
@@ -188,14 +191,14 @@ export class MemoryFactory {
    * instead of the database package. The correct pattern is memory -> database package.
    */
   static async createManager(config:{
-    type?:'sqlite' | ' memory';
+    type?:'sqlite' | 'memory';
     path?:string;
 } = {}):Promise<MemorySystemInterface> {
     const { MemoryCoordinationSystem} = await import('./coordination');
     
     const system = new MemoryCoordinationSystem({
       backendConfig:{
-        type:config.type || 'sqlite',        path:config.path || './memory.db',},
+        type:config.type || DEFAULT_DATABASE_TYPE,        path:config.path || DEFAULT_DATABASE_PATH,},
 });
 
     await system.initialize();
@@ -205,7 +208,7 @@ export class MemoryFactory {
   /**
    * Create a session store
    */
-  static async createSessionStore(sessionId:string, options?:any): Promise<any> {
+  static async createSessionStore(sessionId:string, options?:unknown): Promise<unknown> {
     const { SessionMemoryStore} = await import('./stores/session-store');
     return new SessionMemoryStore(sessionId, options);
 }
@@ -213,7 +216,7 @@ export class MemoryFactory {
   /**
    * Create a safe memory store
    */
-  static async createSafeStore(config?:any): Promise<any> {
+  static async createSafeStore(config?:unknown): Promise<unknown> {
     const { SafeMemoryStore} = await import('./stores/safe-store');
     return new SafeMemoryStore(config);
 }
@@ -221,7 +224,7 @@ export class MemoryFactory {
   /**
    * Create a context store
    */
-  static async createContextStore(config?:any): Promise<any> {
+  static async createContextStore(config?:unknown): Promise<unknown> {
     const { ContextStore} = await import('./stores/context-store');
     return new ContextStore(config);
 }
@@ -236,14 +239,14 @@ export class MemoryFactory {
  * Uses proper architecture with database package
  */
 export async function getDatabaseBackedMemorySystem(config?:{
-  type?:'sqlite' | ' memory';
+  type?:'sqlite' | 'memory';
   database?:string;
-}):Promise<any> {
+}):Promise<unknown> {
   const adapter = await MemoryFactory.createDatabaseBackedManager({
-    type:config?.type || 'sqlite',    database:config?.database || './memory.db',});
+    type:config?.type || DEFAULT_DATABASE_TYPE,    database:config?.database || DEFAULT_DATABASE_PATH,});
 
   return {
-    store:(key: string, value:any) => adapter.store(key, value),
+    store:(key: string, value:unknown) => adapter.store(key, value),
     retrieve:(key: string) => adapter.retrieve(key),
     delete:(key: string) => adapter.delete(key),
     clear:() => adapter.clear(),
@@ -261,17 +264,17 @@ export async function getDatabaseBackedMemorySystem(config?:{
  * This function violates architecture by using memory's internal implementations
  * instead of the database package. The correct pattern is memory -> database package.
  */
-export async function getMemorySystem(config?:MemoryConfig): Promise<any> {
+export async function getMemorySystem(config?:unknown): Promise<unknown> {
   const manager = await MemoryFactory.createManager({
-    type:config?.backendConfig?.type as 'sqlite' | ' memory',    path:config?.backendConfig?.path,
+    type:config?.backendConfig?.type as 'sqlite' | 'memory',    path:config?.backendConfig?.path,
 });
 
   return {
-    createSessionStore:(sessionId: string, options?:any) =>
+    createSessionStore:(sessionId: string, options?:unknown) =>
       MemoryFactory.createSessionStore(sessionId, options),
-    createSafeStore:(config?: any) =>
+    createSafeStore:(config?: unknown) =>
       MemoryFactory.createSafeStore(config),
-    createContextStore:(config?: any) =>
+    createContextStore:(config?: unknown) =>
       MemoryFactory.createContextStore(config),
     getCoordination:() => manager,
     getMonitoring:async () => {
@@ -289,12 +292,12 @@ export async function getMemorySystem(config?:MemoryConfig): Promise<any> {
  */
 export async function getSessionMemory(
   sessionId:string,
-  config?:MemoryConfig
-):Promise<any> {
+  config?:unknown
+):Promise<unknown> {
   const sessionStore = await MemoryFactory.createSessionStore(sessionId, config);
   
   return {
-    store:(key: string, value:any) => sessionStore.store?.(key, value),
+    store:(key: string, value:unknown) => sessionStore.store?.(key, value),
     retrieve:(key: string) => sessionStore.retrieve?.(key),
     delete:(key: string) => sessionStore.delete?.(key),
     clear:() => sessionStore.clear?.(),
@@ -306,18 +309,18 @@ export async function getSessionMemory(
 /**
  * Get coordination system access
  */
-export async function getMemoryCoordination(config?:MemoryConfig): Promise<any> {
+export async function getMemoryCoordination(config?:unknown): Promise<unknown> {
   const { MemoryCoordinationSystem} = await import('./coordination');
   const coordination = new MemoryCoordinationSystem(config);
   
   await coordination.initialize?.();
   
   return {
-    coordinate:(operation: string, ...args:any[]) => 
+    coordinate:(operation: string, ...args:unknown[]) => 
       coordination.coordinate?.(operation, ...args),
     monitor:() => coordination.getHealth?.(),
     events:() => coordination.getEventSystem?.(),
-    load_balance:() => coordination.getLoadBalancer?.(),
+    loadBalance:() => coordination.getLoadBalancer?.(),
 };
 }
 
@@ -330,7 +333,7 @@ export async function getMemoryCoordination(config?:MemoryConfig): Promise<any> 
  */
 export const memorySystem = {
   // Factory methods
-  Factory:MemoryFactory,
+  factory:MemoryFactory,
   create:MemoryFactory.createManager,
   
   // System access
