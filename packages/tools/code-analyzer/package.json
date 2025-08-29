@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/repo-analyzer": "workspace:*",
     "chokidar": "^3.6.0",
     "fast-glob": "^3.3.2",
     "ts-morph": "^26.0.0",
