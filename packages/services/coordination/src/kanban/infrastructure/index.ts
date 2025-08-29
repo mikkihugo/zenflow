@@ -92,62 +92,7 @@ export class InfrastructureServiceFactory {
 }
 
 // Export default factory instance
-export const infrastructureServiceFactory = new InfrastructureServiceFactory();  {
-    eventCoordinator?:Partial<EventCoordinationConfig>;
-    stateMachine?:Partial<StateMachineConfig>;
-    performance?:Partial<PerformanceTrackerConfig>;
-    persistence?:Partial<PersistenceConfig>;
-}):  {
-    eventCoordinator: this.createEventCoordinator(config?.eventCoordinator);
-    // Create services that depend on event coordinator
-    const stateMachineCoordinator = this.createStateMachineCoordinator(
-      eventCoordinator,
-      config?.stateMachine;
-    );
-    const performanceTracker = this.createPerformanceTracker(
-      eventCoordinator,
-      config?.performance;
-    );
-    const persistenceCoordinator = this.createPersistenceCoordinator(
-      eventCoordinator,
-      config?.persistence;
-    );
-    return {
-      eventCoordinator,
-      stateMachineCoordinator,
-      performanceTracker,
-      persistenceCoordinator,
-};
-}
-  /**
-   * Initialize all infrastructure services
-   */
-  async initializeAllServices(): Promise<void> {
-    if (this.eventCoordinator) {
-      await this.eventCoordinator.initialize();
-}
-    if (this.stateMachineCoordinator) {
-      await this.stateMachineCoordinator.initialize();
-}
-    if (this.performanceTracker) {
-      await this.performanceTracker.initialize();
-}
-    if (this.persistenceCoordinator) {
-      await this.persistenceCoordinator.initialize();
-}
-}
-  /**
-   * Shutdown all infrastructure services
-   */
-  async shutdownAllServices(): Promise<void> {
-    // Shutdown in reverse order of initialization
-    if (this.persistenceCoordinator) {
-      await this.persistenceCoordinator.shutdown();
-}
-    if (this.performanceTracker) {
-      await this.performanceTracker.shutdown();
-}
-    if (this.stateMachineCoordinator) {
+export const infrastructureServiceFactory = new InfrastructureServiceFactory();
       await this.stateMachineCoordinator.shutdown();
 }
     if (this.eventCoordinator) {
