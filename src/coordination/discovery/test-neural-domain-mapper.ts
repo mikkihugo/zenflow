@@ -160,8 +160,11 @@ async function testNeuralDomainMapper() {
     console.log('📊 Coupling Matrix:');
     console.log('  ', domains.map(d => d.name.substr(0, 4).padEnd(4)).join(' '));
     relationshipMap.couplingMatrix.forEach((row, i) => {
-      const domainName = domains[i].name.substr(0, 4).padEnd(4);
-      const rowStr = row.map(val => val.toFixed(1).padStart(4)).join(' ');
+      const domain = domains[i];
+      if (!domain) return;
+      
+      const domainName = domain.name.substr(0, 4).padEnd(4);
+      const rowStr = row.map((val: number) => val.toFixed(1).padStart(4)).join(' ');
       console.log(`  ${domainName} ${rowStr}`);
     });
     console.log();

@@ -7,17 +7,18 @@
 
 // Re-export from neural domain mapper for backward compatibility
 export type {
-  Domain,
   DependencyGraph,
   DomainNode,
   DependencyEdge,
   GraphMetadata,
-  DomainRelationshipMap,
   DomainRelationship,
   TopologyRecommendation,
   GNNModel,
   WasmNeuralAccelerator
-} from './neural-domain-mapper';
+} from './neural-domain-mapper.js';
+
+// Import directly for use in this file
+import type { DomainRelationshipMap } from './neural-domain-mapper.js';
 
 // Additional discovery-specific types
 
@@ -208,17 +209,4 @@ export namespace DiscoveryTypes {
   export type Context = DiscoveryContext;
   export type Result = DiscoveryResult;
   export type Metadata = DiscoveryMetadata;
-  export type ValidationCheckpoint = ValidationCheckpoint;
-  export type HumanValidationResponse = HumanValidationResponse;
-  export type NeuralAnalysisConfig = NeuralAnalysisConfig;
-  export type GraphAnalysisResult = GraphAnalysisResult;
-  export type CommunityCluster = CommunityCluster;
-  export type GraphBottleneck = GraphBottleneck;
-  export type EnhancedDomainBoundary = EnhancedDomainBoundary;
-  export type DomainViolation = DomainViolation;
-  export type AlternativeStructure = AlternativeStructure;
-  export type DiscoveryEvent = DiscoveryEvent;
-  export type AGUIValidationRequest = AGUIValidationRequest;
-  export type AGUIValidationResult = AGUIValidationResult;
-  export type DiscoveryPerformanceMetrics = DiscoveryPerformanceMetrics;
 }
