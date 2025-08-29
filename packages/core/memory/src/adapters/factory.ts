@@ -346,9 +346,9 @@ export class MemoryBackendFactory {
   private async loadMemoryBackend():Promise<
     new (config:MemoryConfig) => BaseMemoryBackend
   > {
-    const { FoundationMemoryBackend} = await import('./foundation-adapter');
+    const { FoundationMemoryBackend: foundationMemoryBackend} = await import('./foundation-adapter');
 
-    return class InMemoryBackend extends FoundationMemoryBackend {
+    return class InMemoryBackend extends foundationMemoryBackend {
       public constructor(config:MemoryConfig) {
         super({
           ...config,
@@ -362,9 +362,9 @@ export class MemoryBackendFactory {
   private async loadSQLiteBackend():Promise<
     new (config:MemoryConfig) => BaseMemoryBackend
   > {
-    const { FoundationMemoryBackend} = await import('./foundation-adapter');
+    const { FoundationMemoryBackend: foundationMemoryBackend} = await import('./foundation-adapter');
 
-    return class extends FoundationMemoryBackend {
+    return class extends foundationMemoryBackend {
       public constructor(config:MemoryConfig) {
         super({
           ...config,
@@ -379,9 +379,9 @@ export class MemoryBackendFactory {
     new (config:MemoryConfig) => BaseMemoryBackend
   > {
     // LanceDB backend using Foundation's database access (closest to JSONB)
-    const { FoundationMemoryBackend} = await import('./foundation-adapter');
+    const { FoundationMemoryBackend: foundationMemoryBackend} = await import('./foundation-adapter');
 
-    return class JSONBBackend extends FoundationMemoryBackend {
+    return class JSONBBackend extends foundationMemoryBackend {
       public constructor(config:MemoryConfig) {
         super({
           ...config,
@@ -396,9 +396,9 @@ export class MemoryBackendFactory {
     new (config:MemoryConfig) => BaseMemoryBackend
   > {
     // LanceDB vector backend
-    const { FoundationMemoryBackend} = await import('./foundation-adapter');
+    const { FoundationMemoryBackend: foundationMemoryBackend} = await import('./foundation-adapter');
 
-    return class LanceDBBackend extends FoundationMemoryBackend {
+    return class LanceDBBackend extends foundationMemoryBackend {
       public constructor(config:MemoryConfig) {
         super({
           ...config,

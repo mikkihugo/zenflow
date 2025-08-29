@@ -148,6 +148,13 @@ export class MemoryController {
 }
 
   /**
+   * Helper to get error message from unknown error
+   */
+  private getErrorMessage(error: unknown): string {
+    return error instanceof Error ? error.message : 'Unknown error';
+  }
+
+  /**
    * GET /api/memory/status.
    * Get memory system status and health information.
    */
@@ -194,7 +201,7 @@ export class MemoryController {
 
       return {
         success:false,
-        error:`Failed to get memory status: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error:`Failed to get memory status: ${this.getErrorMessage(error)}`,
         metadata:{
           size:0,
           timestamp:Date.now(),
@@ -261,7 +268,7 @@ export class MemoryController {
 
       return {
         success:false,
-        error:`Failed to store memory: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error:`Failed to store memory: ${this.getErrorMessage(error)}`,
         metadata:{
           size:0,
           timestamp:Date.now(),
@@ -320,7 +327,7 @@ export class MemoryController {
 
       return {
         success:false,
-        error:`Failed to retrieve memory: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error:`Failed to retrieve memory: ${this.getErrorMessage(error)}`,
         metadata:{
           size:0,
           timestamp:Date.now(),
@@ -375,7 +382,7 @@ export class MemoryController {
 
       return {
         success:false,
-        error:`Failed to delete memory: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error:`Failed to delete memory: ${this.getErrorMessage(error)}`,
         metadata:{
           size:0,
           timestamp:Date.now(),
@@ -423,7 +430,7 @@ export class MemoryController {
 
       return {
         success:false,
-        error:`Failed to clear memory: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error:`Failed to clear memory: ${this.getErrorMessage(error)}`,
         metadata:{
           size:0,
           timestamp:Date.now(),
@@ -493,7 +500,7 @@ export class MemoryController {
             operation:operation.type,
             key:operation.key,
             success:false,
-            error:error instanceof Error ? error.message : 'Unknown error',});
+            error:this.getErrorMessage(error),});
 
           if (!request.continueOnError) {
             break;
@@ -531,7 +538,7 @@ export class MemoryController {
 
       return {
         success:false,
-        error:`Batch operations failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error:`Batch operations failed: ${this.getErrorMessage(error)}`,
         metadata:{
           size:0,
           timestamp:Date.now(),
@@ -614,7 +621,7 @@ export class MemoryController {
 
       return {
         success:false,
-        error:`Failed to get analytics: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error:`Failed to get analytics: ${this.getErrorMessage(error)}`,
         metadata:{
           size:0,
           timestamp:Date.now(),

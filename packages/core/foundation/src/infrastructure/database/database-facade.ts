@@ -12,6 +12,9 @@ import { type Result, ok} from '../../error-handling/index.js';
 
 const logger = getLogger('database-facade');
 
+// Constants
+const DATABASE_PACKAGE_NAME = '@claude-zen/database';
+
 export interface DatabaseConnection {
   query<T = unknown>(sql:string, params?:unknown[]): Promise<T[]>;
   execute(sql:string, params?:unknown[]): Promise<{ affectedRows: number; insertId?: number}>;
@@ -90,7 +93,7 @@ export class DatabaseFacade {
     try {
       // Register database facade with status manager
       await facadeStatusManager.registerFacade('database', [
-        '@claude-zen/database'], [
+        DATABASE_PACKAGE_NAME], [
         'SQL database operations',        'Key-value storage',        'Vector database',        'Graph database']);
 
       // Try to load the database package
@@ -103,27 +106,27 @@ export class DatabaseFacade {
 
   private async loadDatabasePackage():Promise<void> {
     try {
-      const packageInfo = await facadeStatusManager.checkAndRegisterPackage('@claude-zen/database',    'databaseService');
+      const packageInfo = await facadeStatusManager.checkAndRegisterPackage(DATABASE_PACKAGE_NAME,    'databaseService');
       
       if (packageInfo.status === 'available' || packageInfo.status === 'registered') {
         try {
           // Dynamic import with error handling for optional dependency
-          const moduleName = '@claude-zen/database';
+          const moduleName = DATABASE_PACKAGE_NAME;
           const databaseModule = await import(moduleName).catch(() => null);
           if (databaseModule) {
             this.databasePackage = databaseModule as DatabasePackage;
             this.capability = CapabilityLevel.FULL;
-            console.info('Database package loaded successfully');
+            logger.info('Database package loaded successfully');
           } else {
-            console.warn('Database package not found, using fallback');
+            logger.warn('Database package not found, using fallback');
             this.capability = CapabilityLevel.FALLBACK;
           }
         } catch (importError) {
-          console.warn('Database package import failed, using fallback', { importError });
+          logger.warn('Database package import failed, using fallback', { importError });
           this.capability = CapabilityLevel.FALLBACK;
         }
       } else {
-        console.warn('Database package unavailable, using fallback');
+        logger.warn('Database package unavailable, using fallback');
         this.capability = CapabilityLevel.FALLBACK;
       }
 } catch (error) {

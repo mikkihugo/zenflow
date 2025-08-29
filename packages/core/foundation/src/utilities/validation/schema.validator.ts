@@ -36,7 +36,6 @@ import type { Logger} from "../../core/logging/index.js";
 import type {
 	JsonObject,
 	JsonValue,
-	UnknownRecord,
 } from "../../types/primitives";
 
 // Node.js fetch polyfill for older versions
@@ -251,10 +250,9 @@ export class JsonSchemaManager {
 		const isValid = schemaEntry.validator(data);
 
 		if (!isValid) {
-			const errors = schemaEntry.validator.errors?.map((err: any) => {
-				const error = err as unknown as UnknownRecord;
-				return `${error['instancePath'] || error['schemaPath'] || "root"}: ${error['message'] || "Unknown error"}`;
-			}) || ["Unknown validation error"];
+			const errors = schemaEntry.validator.errors?.map((err: import('ajv').ErrorObject) => 
+				`${err.instancePath || err.schemaPath || "root"}: ${err.message || "Unknown error"}`
+			) || ["Unknown validation error"];
 
 			return { isValid:false, errors};
 }
