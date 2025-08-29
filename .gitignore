@@ -48,6 +48,26 @@ node_modules
 *.log
 *.swp
 *.swo
+
+# Screenshots and test artifacts (should be in docs/archive)
+screenshot*.png
+page-test-*.png
+dashboard-*.png
+*screenshot*.png
+*test-report*.json
+*analysis*.json
+dashboard-analysis-*.md
+external-*.json
+external-*.html
+external-*.txt
+
+# Development history files
+.aider.*
+packages-old-backup-*.tgz
+*-corruption.sh
+
+# Test output and temporary server files
+server-with-dashboard.cjs
 *.bak
 *.tmp
 *.pid
