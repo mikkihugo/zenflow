@@ -22,7 +22,32 @@ const recordEvent = (eventName: string, data?: any) => {
  * Registered service information
  */
 export interface RegisteredService {
-  name: 'services_available',)  data: getLogger('WebSocketHub');
+  readonly name: string;
+  readonly version: string;
+  readonly endpoint: string;
+  readonly capabilities: string[];
+  readonly messageTypes: string[];
+  readonly healthEndpoint?: string;
+  readonly registeredAt: Date;
+}
+
+/**
+ * Hub message format
+ */
+export interface HubMessage {
+  readonly type: string;
+  readonly source: string;
+  readonly target?: string;
+  readonly data: any;
+  readonly timestamp: Date;
+  readonly id: string;
+}
+
+/**
+ * Central WebSocket Hub Service
+ */
+export class CentralWebSocketHub {
+  private readonly logger = getLogger('WebSocketHub');
   private services = new Map<string, RegisteredService>();
   private connections = new Map<string, HubConnection>();
   private isInitialized = false;
