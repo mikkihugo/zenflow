@@ -40,7 +40,7 @@ function Part(props) {
             var _a = window.location, origin = _a.origin, pathname = _a.pathname, search = _a.search;
             navigator.clipboard
                 .writeText("".concat(origin).concat(pathname).concat(search).concat(hash))
-                .catch(function (err) { return console.error("Copy failed", err); });
+                .catch(function (error) { return console.error("Copy failed", error); });
             setCopied(true);
             setTimeout(function () { return setCopied(false); }, 3000);
         }}>
@@ -505,11 +505,13 @@ function FallbackTool(props) {
 function flattenToolArgs(obj, prefix) {
     if (prefix === void 0) { prefix = ""; }
     var entries = [];
-    var _loop_1 = function (key, value) {
+    for (var _i = 0, _a = Object.entries(obj); _i < _a.length; _i++) {
+        var _b = _a[_i], key = _b[0], value = _b[1];
         var path = prefix ? "".concat(prefix, ".").concat(key) : key;
         if (value !== null && typeof value === "object") {
             if (Array.isArray(value)) {
-                value.forEach(function (item, index) {
+                for (var _c = 0, _d = value.entries(); _c < _d.length; _c++) {
+                    var _e = _d[_c], index = _e[0], item = _e[1];
                     var arrayPath = "".concat(path, "[").concat(index, "]");
                     if (item !== null && typeof item === "object") {
                         entries.push.apply(entries, flattenToolArgs(item, arrayPath));
@@ -517,7 +519,7 @@ function flattenToolArgs(obj, prefix) {
                     else {
                         entries.push([arrayPath, item]);
                     }
-                });
+                }
             }
             else {
                 entries.push.apply(entries, flattenToolArgs(value, path));
@@ -526,10 +528,6 @@ function flattenToolArgs(obj, prefix) {
         else {
             entries.push([path, value]);
         }
-    };
-    for (var _i = 0, _a = Object.entries(obj); _i < _a.length; _i++) {
-        var _b = _a[_i], key = _b[0], value = _b[1];
-        _loop_1(key, value);
     }
     return entries;
 }

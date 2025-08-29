@@ -64,7 +64,9 @@ jobs:
 
       # Step 7: Install Node.js Dependencies
       - name: Install Node.js Dependencies
-        run: pnpm install
+        run: |
+          # Explicitly disable frozen lockfile to handle any lockfile inconsistencies
+          pnpm install --no-frozen-lockfile
 
       # Step 8: Setup Rust Stable Toolchain
       - name: Setup Rust Stable Toolchain
@@ -76,7 +78,9 @@ jobs:
 
       # Step 9: Install Node.js Dependencies again (after Rust setup, if needed)
       - name: Install Node.js Dependencies (post Rust setup)
-        run: pnpm install
+        run: |
+          # Second install after Rust setup, also with no frozen lockfile
+          pnpm install --no-frozen-lockfile
 
 
 

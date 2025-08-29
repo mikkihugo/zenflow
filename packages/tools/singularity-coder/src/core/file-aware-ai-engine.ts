@@ -65,12 +65,15 @@ export class FileAwareAIEngine {
           relevantFiles:[],
           dependencies:[],
           symbols:[],
-          summary:`Error: ${error instanceof Error ? error.message : 'Unknown error'}`,`
-          complexity: 'low',},
-        metadata:{
-          filesAnalyzed:0,
-          provider: 'fallback',          model:request.options?.model||'default',          executionTime,
-},
+          summary: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+          complexity: 'low',
+        },
+        metadata: {
+          filesAnalyzed: 0,
+          provider: 'fallback',
+          model: request.options?.model || 'default',
+          executionTime,
+        },
 };
 }
 }

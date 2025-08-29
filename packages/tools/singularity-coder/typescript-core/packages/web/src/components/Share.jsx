@@ -255,8 +255,8 @@ function Share(props) {
         };
         result.created = props.info.time.created;
         var msgs = messages();
-        for (var i = 0; i < msgs.length; i++) {
-            var msg = msgs[i];
+        for (var _i = 0, msgs_1 = msgs; _i < msgs_1.length; _i++) {
+            var msg = msgs_1[_i];
             result.messages.push(msg);
             if (msg.role === "assistant") {
                 result.cost += msg.cost;

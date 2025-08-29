@@ -8,7 +8,7 @@ function CopyButton(props) {
     var _a = (0, solid_js_1.createSignal)(false), copied = _a[0], setCopied = _a[1];
     function handleCopyClick() {
         if (props.text) {
-            navigator.clipboard.writeText(props.text).catch(function (err) { return console.error("Copy failed", err); });
+            navigator.clipboard.writeText(props.text).catch(function (error) { return console.error("Copy failed", error); });
             setCopied(true);
             setTimeout(function () { return setCopied(false); }, 2000);
         }
