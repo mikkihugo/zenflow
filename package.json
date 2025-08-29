@@ -42,6 +42,8 @@
 		"validate:imports": "node scripts/validate-imports.js",
 		"validate:dependencies": "node scripts/validate-dependencies.js",
 		"validate:foundation": "pnpm run validate:imports && pnpm run validate:dependencies",
+		"import:github-project": "node scripts/import-github-project.js",
+		"import:github-project:dry-run": "node scripts/import-github-project.js --dry-run",
 		"prepare": "husky install || true",
 		"prepublishOnly": "pnpm run build:npm",
 		"pre-commit": "bash scripts/pre-commit.sh"
