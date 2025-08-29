@@ -9,7 +9,7 @@ export declare class SQLiteAdapter implements DatabaseConnection {
     private readonly config;
     private readonly pool;
     private connected;
-    private readonly __stats;
+    private readonly stats;
     constructor(config: DatabaseConfig);
     connect(): Promise<void>;
     disconnect(): Promise<void>;
@@ -32,8 +32,26 @@ export declare class SQLiteAdapter implements DatabaseConnection {
     vacuum(): Promise<void>;
     analyze(): Promise<void>;
     private executeStatementWithRetry;
-    resolve({ rows:  }: {
-        rows: any;
-    }): any;
+    private createConnection;
+    private destroyConnection;
+    private acquireConnection;
+    private releaseConnection;
+    private executeWithRetry;
+    private extractSQLiteErrorCode;
+    private normalizeParams;
+    private getPoolStats;
+    private calculateAverageIdleTime;
+    private updateAverageQueryTime;
+    private getTableSchema;
+    private getDatabaseVersion;
+    private getLastMigrationVersion;
+    private createMigrationsTable;
+    private recordMigration;
+    private setIsolationLevel;
+    private startPoolMaintenance;
+    private maintainPool;
+    private ensureDatabaseDirectory;
+    private generateCorrelationId;
+    private sleep;
 }
 //# sourceMappingURL=sqlite-adapter.d.ts.map

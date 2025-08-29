@@ -141,7 +141,7 @@ export interface NeuralGenerationResult {
     generated: {
         text: string;
         finishReason: 'completed|length|stop_sequence|error;;
-        '    tokensGenerated:number;: any;
+        '    tokensGenerated: number;: any;
         alternatives?: string[];
     };
     model: 'transformers' | ' brain-js' | ' basic' | ' openai;;
@@ -333,8 +333,8 @@ export interface ModelStatus {
  * @example
  * ```typescript`
  * const coordinator = new SmartNeuralCoordinator({
- *   primaryModel: 'all-mpnet-base-v2', *   enableFallbacks:true,
- *   cache:{ maxSize: 10000, ttlMs:3600000, performanceBasedEviction:true}
+ *   primaryModel: 'all-mpnet-base-v2', *   enableFallbacks: true,
+ *   cache:{ maxSize: 10000, ttlMs:3600000, performanceBasedEviction: true}
  *});
  *
  * await coordinator.initialize();
@@ -343,7 +343,7 @@ export interface ModelStatus {
  *   text:"Machine learning is transforming software development",
  *   qualityLevel: 'standard', *   priority:'high') *});
  *
- * logger.info(`Embedding:${result.embedding.length}D, Quality:${result.qualityScore}`);`
+ * logger.info(`Embedding: ${result.embedding.length}D, Quality: ${result.qualityScore}`);`
  * ````
  */
 export declare class SmartNeuralCoordinator {

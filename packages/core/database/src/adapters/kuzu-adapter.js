@@ -4,7 +4,7 @@
  * Real implementation for Kuzu graph database with proper Cypher query execution,
  * connection management, and comprehensive error handling for enterprise applications.
  */
-import { mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { getLogger } from '../logger.js';
 // Constants to avoid string duplication
@@ -17,7 +17,7 @@ export class KuzuAdapter {
     database = null;
     connection = null;
     isConnectedState = false;
-    __stats = {
+    stats = {
         totalQueries: 0,
         totalTransactions: 0,
         totalErrors: 0,
@@ -425,7 +425,7 @@ export class KuzuAdapter {
             // Build property definitions
             const propertyDefs = Object.entries(properties)
                 .map(([name, type]) => `${name} ${type.toUpperCase()}`)
-                .join(',    ');
+                .join(', ');
             const primaryKeyClause = primaryKey
                 ? `, PRIMARY KEY (${primaryKey})`
                 : '';
@@ -458,411 +458,305 @@ export class KuzuAdapter {
             let cypher = `CREATE REL TABLE IF NOT EXISTS ${tableName} (FROM ${fromNodeTable} TO ${toNodeTable}`;
             if (properties && Object.keys(properties).length > 0) {
                 const propertyDefs = Object.entries(properties)
-                    .map(([name, type]) => `${name} ${type.toUpperCase()}`) `
-          .join(',    ');
-        cypher += `, $, { propertyDefs };
-                `;
-}
-
-      cypher += ')';
-
-      await this.query(cypher, undefined, { correlationId});
-
-      logger.info('Relationship table created successfully', {
-        correlationId,
-        tableName,
-        fromNodeTable,
-        toNodeTable,
-        properties:properties ? Object.keys(properties).length : 0,
-});
-} catch (error) {
-      logger.error('Failed to create relationship table', {
-        correlationId,
-        tableName,
-        fromNodeTable,
-        toNodeTable,
-        error:error instanceof Error ? error.message : String(error),
-});
-      throw error;
-}
-}
-
-  /**
-   * Insert nodes into the graph database
-   */
-  async insertNodes(
-    tableName:string,
-    nodes:Array<Record<string, unknown>>
-  ):Promise<void> {
-    if (!this.isConnected()) {
-      await this.connect();
-}
-
-    const correlationId = this.generateCorrelationId();
-
-    try {
-      for (const node of nodes) {
-        const properties = Object.keys(node);
-        const values = Object.values(node);
-        const cypher = `;
-                CREATE($, { tableName }, { $ }, { properties, : .map((prop, i) => `${prop}:$param${i}`).join(',    ') });
+                    .map(([name, type]) => `${name} ${type.toUpperCase()}`)
+                    .join(', ');
+                cypher += `, ${propertyDefs}`;
             }
-            `;
-
-        // Convert values array to params object
-        const params:Record<string, unknown> = {};
-        for (const [i, value] of values.entries()) {
-          params[`;
-            param$;
-            {
-                i;
-            }
-            `] = value;
-}
-
-        await this.query(cypher, params, { correlationId});
-}
-
-      logger.info('Nodes inserted successfully', {
-        correlationId,
-        tableName,
-        nodeCount:nodes.length,
-});
-} catch (error) {
-      logger.error('Failed to insert nodes', {
-        correlationId,
-        tableName,
-        nodeCount:nodes.length,
-        error:error instanceof Error ? error.message : String(error),
-});
-      throw error;
-}
-}
-
-  /**
-   * Insert relationships into the graph database
-   */
-  async insertRelationships(
-    tableName:string,
-    relationships:Array<{
-      from:Record<string, unknown>;
-      to:Record<string, unknown>;
-      properties?:Record<string, unknown>;
-}>
-  ):Promise<void> {
-    if (!this.isConnected()) {
-      await this.connect();
-}
-
-    const correlationId = this.generateCorrelationId();
-
-    try {
-      for (const rel of relationships) {
-        // Build match clauses for from and to nodes
-        const fromProps = Object.entries(rel.from)
-          .map(([key, value]) => `;
-            $;
-            {
-                key;
-            }
-            "${value}" `)`
-                .join(',    ');
-            const toProps = Object.entries(rel.to)
-                .map(([key, value]) => `${key}:"${value}"`) `
-          .join(',    ');
-
-        let cypher = `, MATCH;
-            (from), (to);
-            WHERE;
-            {
-                $;
-                {
-                    fromProps;
+            cypher += ')';
+            await this.query(cypher, undefined, { correlationId });
+            logger.info('Relationship table created successfully', {
+                correlationId,
+                tableName,
+                fromNodeTable,
+                toNodeTable,
+                properties: properties ? Object.keys(properties).length : 0,
+            });
+        }
+        catch (error) {
+            logger.error('Failed to create relationship table', {
+                correlationId,
+                tableName,
+                fromNodeTable,
+                toNodeTable,
+                error: error instanceof Error ? error.message : String(error),
+            });
+            throw error;
+        }
+    }
+    /**
+     * Insert nodes into the graph database
+     */
+    async insertNodes(tableName, nodes) {
+        if (!this.isConnected()) {
+            await this.connect();
+        }
+        const correlationId = this.generateCorrelationId();
+        try {
+            for (const node of nodes) {
+                const properties = Object.keys(node);
+                const values = Object.values(node);
+                const cypher = `CREATE (:${tableName} {${properties.map((prop, i) => `${prop}:$param${i}`).join(', ')}})`;
+                // Convert values array to params object
+                const params = {};
+                for (const [i, value] of values.entries()) {
+                    params[`param${i}`] = value;
                 }
+                await this.query(cypher, params, { correlationId });
             }
-            AND;
-            {
-                $;
-                {
-                    toProps;
+            logger.info('Nodes inserted successfully', {
+                correlationId,
+                tableName,
+                nodeCount: nodes.length,
+            });
+        }
+        catch (error) {
+            logger.error('Failed to insert nodes', {
+                correlationId,
+                tableName,
+                nodeCount: nodes.length,
+                error: error instanceof Error ? error.message : String(error),
+            });
+            throw error;
+        }
+    }
+    /**
+     * Insert relationships into the graph database
+     */
+    async insertRelationships(tableName, relationships) {
+        if (!this.isConnected()) {
+            await this.connect();
+        }
+        const correlationId = this.generateCorrelationId();
+        try {
+            for (const rel of relationships) {
+                // Build match clauses for from and to nodes
+                const fromProps = Object.entries(rel.from)
+                    .map(([key, value]) => `${key}:"${value}"`)
+                    .join(', ');
+                const toProps = Object.entries(rel.to)
+                    .map(([key, value]) => `${key}:"${value}"`)
+                    .join(', ');
+                let cypher = `MATCH (from), (to) WHERE {${fromProps}} AND {${toProps}}`;
+                if (rel.properties && Object.keys(rel.properties).length > 0) {
+                    const relProps = Object.entries(rel.properties)
+                        .map(([key, value]) => `${key}:"${value}"`)
+                        .join(', ');
+                    cypher += ` CREATE (from)-[:${tableName} {${relProps}}]->(to)`;
                 }
+                else {
+                    cypher += ` CREATE (from)-[:${tableName}]->(to)`;
+                }
+                await this.query(cypher, undefined, { correlationId });
             }
-            `;
-
-        if (rel.properties && Object.keys(rel.properties).length > 0) {
-          const relProps = Object.entries(rel.properties)
-            .map(([key, value]) => `;
-            $;
-            {
-                key;
+            logger.info('Relationships inserted successfully', {
+                correlationId,
+                tableName,
+                relationshipCount: relationships.length,
+            });
+        }
+        catch (error) {
+            logger.error('Failed to insert relationships', {
+                correlationId,
+                tableName,
+                relationshipCount: relationships.length,
+                error: error instanceof Error ? error.message : String(error),
+            });
+            throw error;
+        }
+    }
+    /**
+     * Execute a graph traversal query
+     */
+    async graphTraversal(startNodeCondition, relationshipPattern, endNodeCondition, options) {
+        const correlationId = options?.correlationId || this.generateCorrelationId();
+        try {
+            // Build start node condition
+            const startProps = Object.entries(startNodeCondition)
+                .map(([key, value]) => `${key}:"${value}"`)
+                .join(', ');
+            let cypher = `MATCH path = (start {${startProps}})`;
+            // Add relationship pattern with optional hop limits
+            cypher += options?.maxHops
+                ? `-[r:${relationshipPattern}*1..${options.maxHops}]-`
+                : `-[r:${relationshipPattern}]-`;
+            // Add end node condition if specified
+            if (endNodeCondition) {
+                const endProps = Object.entries(endNodeCondition)
+                    .map(([key, value]) => `${key}:"${value}"`)
+                    .join(', ');
+                cypher += `(end {${endProps}})`;
             }
-            "${value}" `)`
-                .join(',    ');
-            cypher += ` CREATE (from)-[:${tableName} {${relProps}}]->(to)`;
+            else {
+                cypher += '(end)';
+            }
+            // Return clause
+            cypher += options?.returnPath
+                ? ' RETURN path, start, end, r'
+                : ' RETURN start, end, r';
+            const result = await this.query(cypher, undefined, { correlationId });
+            logger.debug('Graph traversal completed', {
+                correlationId,
+                relationshipPattern,
+                resultCount: result.rowCount,
+            });
+            return result;
         }
-        finally { }
-        {
-            cypher += ` CREATE (from)-[:${tableName}]->(to)`;
+        catch (error) {
+            logger.error('Graph traversal failed', {
+                correlationId,
+                relationshipPattern,
+                error: error instanceof Error ? error.message : String(error),
+            });
+            throw error;
         }
-        await this.query(cypher, undefined, { correlationId });
     }
-    logger;
-}
-try { }
-catch (error) {
-    logger.error('Failed to insert relationships', {
-        correlationId,
-        tableName,
-        relationshipCount: relationships.length,
-        error: error instanceof Error ? error.message : String(error),
-    });
-    throw error;
-}
-/**
- * Execute a graph traversal query
- */
-async;
-graphTraversal < T;
-unknown > (startNodeCondition);
-(Record),
-    relationshipPattern;
-string,
-    endNodeCondition ?  : Record,
-    options ?  : {
-        maxHops: number,
-        returnPath: boolean,
-        correlationId: string
-    };
-Promise < QueryResult < T >> {
-    const: correlationId =
-        options?.correlationId || this.generateCorrelationId(),
-    try: {
-        // Build start node condition
-        const: startProps = Object.entries(startNodeCondition)
-            .map(([key, value]) => `${key}:"${value}"`) `
-        .join(',    ');
-
-      let cypher = `, MATCH, path = (start)
+    /**
+     * Get graph statistics and schema information
+     */
+    async getGraphSchema() {
+        if (!this.isConnected()) {
+            await this.connect();
+        }
+        const correlationId = this.generateCorrelationId();
+        try {
+            // Get node table names
+            const nodeTablesResult = await this.query(SHOW_TABLES_QUERY, undefined, { correlationId });
+            const nodeLabels = nodeTablesResult.rows
+                .map((row) => row.name)
+                .filter((name) => !!name);
+            // Get relationship types (simplified - would need more sophisticated query for actual rel types)
+            const relationshipTypes = [];
+            // Get node count (simplified)
+            let nodeCount = 0;
+            let relationshipCount = 0;
+            try {
+                const nodeCountResult = await this.query('MATCH (n) RETURN count(n) as count', undefined, { correlationId });
+                nodeCount = nodeCountResult.rows[0]?.count || 0;
+                const relCountResult = await this.query('MATCH ()-[r]->() RETURN count(r) as count', undefined, { correlationId });
+                relationshipCount =
+                    relCountResult.rows[0]?.count || 0;
+            }
+            catch {
+                // Ignore errors for statistics queries
+            }
+            logger.debug('Retrieved graph schema', {
+                correlationId,
+                nodeLabels: nodeLabels.length,
+                relationshipTypes: relationshipTypes.length,
+                nodeCount,
+                relationshipCount,
+            });
+            return {
+                nodeLabels,
+                relationshipTypes,
+                nodeCount,
+                relationshipCount,
+            };
+        }
+        catch (error) {
+            logger.error('Failed to get graph schema', {
+                correlationId,
+                error: error instanceof Error ? error.message : String(error),
+            });
+            throw error;
+        }
     }
-};
-{
-    $;
-    {
-        startProps;
+    // Private methods
+    async testConnection(correlationId) {
+        try {
+            await this.query('RETURN 1 as test', undefined, { correlationId });
+            logger.debug('Connection test successful', { correlationId });
+        }
+        catch (error) {
+            logger.error('Connection test failed', {
+                correlationId,
+                error: error instanceof Error ? error.message : String(error),
+            });
+            throw new ConnectionError(`Connection test failed:${error instanceof Error ? error.message : String(error)}`, correlationId, error instanceof Error ? error : undefined);
+        }
     }
-}
-`;
-
-      // Add relationship pattern with optional hop limits
-      cypher += options?.maxHops
-        ? ` - [r, $, { relationshipPattern } * 1..$, { options, : .maxHops }] - `
-        :` - [r, $, { relationshipPattern }] - `;
-
-      // Add end node condition if specified
-      if (endNodeCondition) {
-        const endProps = Object.entries(endNodeCondition)
-          .map(([key, value]) => `;
-$;
-{
-    key;
-}
-"${value}" `)`
-    .join(',    ');
-cypher += `(end {${endProps}})`;
-{
-    cypher += '(end)';
-}
-// Return clause
-cypher += options?.returnPath
-    ? ' RETURN path, start, end, r' : ;
-' RETURN start, end, r';
-const result = await this.query(cypher, undefined, { correlationId });
-logger.debug('Graph traversal completed', {
-    correlationId,
-    relationshipPattern,
-    resultCount: result.rowCount,
-});
-return result;
-try { }
-catch (error) {
-    logger.error('Graph traversal failed', {
-        correlationId,
-        relationshipPattern,
-        error: error instanceof Error ? error.message : String(error),
-    });
-    throw error;
-}
-/**
- * Get graph statistics and schema information
- */
-async;
-getGraphSchema();
-Promise < {
-    nodeLabels: string[],
-    relationshipTypes: string[],
-    nodeCount: number,
-    relationshipCount: number
-} > {
-    : .isConnected()
-};
-{
-    await this.connect();
-}
-const correlationId = this.generateCorrelationId();
-try {
-    // Get node table names
-    const nodeTablesResult = await this.query(SHOW_TABLES_QUERY, undefined, { correlationId });
-    const nodeLabels = nodeTablesResult.rows
-        .map((row) => row.name)
-        .filter((name) => !!name);
-    // Get relationship types (simplified - would need more sophisticated query for actual rel types)
-    const relationshipTypes = [];
-    // Get node count (simplified)
-    let nodeCount = 0;
-    let relationshipCount = 0;
-    try {
-        const nodeCountResult = await this.query('MATCH (n) RETURN count(n) as count', undefined, { correlationId });
-        nodeCount = nodeCountResult.rows[0]?.count || 0;
-        const relCountResult = await this.query('MATCH ()-[r]->() RETURN count(r) as count', undefined, { correlationId });
-        relationshipCount =
-            relCountResult.rows[0]?.count || 0;
-    }
-    catch {
-        // Ignore errors for statistics queries
-    }
-    logger.debug('Retrieved graph schema', {
-        correlationId,
-        nodeLabels: nodeLabels.length,
-        relationshipTypes: relationshipTypes.length,
-        nodeCount,
-        relationshipCount,
-    });
-    return {
-        nodeLabels,
-        relationshipTypes,
-        nodeCount,
-        relationshipCount,
-    };
-}
-catch (error) {
-    logger.error('Failed to get graph schema', {
-        correlationId,
-        error: error instanceof Error ? error.message : String(error),
-    });
-    throw error;
-}
-async;
-testConnection(correlationId, string);
-Promise < void  > {
-    try: {
-        await, this: .query('RETURN 1 as test', undefined, { correlationId }),
-        logger, : .debug('Connection test successful', { correlationId })
-    }, catch(error) {
-        logger.error('Connection test failed', {
+    async executeWithRetry(operation, correlationId, sql, params) {
+        const retryPolicy = this.config.retryPolicy || {
+            maxRetries: 3,
+            initialDelayMs: 100,
+            maxDelayMs: 5000,
+            backoffFactor: 2,
+            retryableErrors: ['NETWORK_ERROR', 'TIMEOUT_ERROR'],
+        };
+        let lastError;
+        for (let attempt = 0; attempt <= retryPolicy.maxRetries; attempt++) {
+            try {
+                return await operation();
+            }
+            catch (error) {
+                lastError = error instanceof Error ? error : new Error(String(error));
+                const errorMessage = lastError.message.toUpperCase();
+                const isRetryable = retryPolicy.retryableErrors.some((retryableError) => errorMessage.includes(retryableError));
+                if (attempt === retryPolicy.maxRetries || !isRetryable) {
+                    break;
+                }
+                const delay = Math.min(retryPolicy.initialDelayMs * retryPolicy.backoffFactor ** attempt, retryPolicy.maxDelayMs);
+                logger.warn('Retrying Kuzu operation after error', {
+                    correlationId,
+                    attempt: attempt + 1,
+                    maxRetries: retryPolicy.maxRetries,
+                    delayMs: delay,
+                    error: lastError.message,
+                });
+                await this.sleep(delay);
+            }
+        }
+        throw new QueryError(`Operation failed after ${retryPolicy.maxRetries} retries:${lastError?.message}`, {
+            query: sql,
+            params,
             correlationId,
-            error: error instanceof Error ? error.message : String(error),
+            cause: lastError,
         });
-        throw new ConnectionError(`Connection test failed:${error instanceof Error ? error.message : String(error)}`, correlationId, error instanceof Error ? error : undefined);
     }
-};
-async;
-executeWithRetry(operation, () => Promise, correlationId, string, sql ?  : string, params ?  : QueryParams);
-Promise < T > {
-    const: retryPolicy = this.config.retryPolicy || {
-        maxRetries: 3,
-        initialDelayMs: 100,
-        maxDelayMs: 5000,
-        backoffFactor: 2,
-        retryableErrors: ['NETWORK_ERROR', 'TIMEOUT_ERROR'],
-    },
-    let, lastError: Error | undefined,
-    for(let, attempt = 0, attempt) { }
-} <= retryPolicy.maxRetries;
-attempt++;
-{
-    try {
-        return await operation();
+    updateAverageQueryTime(executionTime) {
+        const { totalQueries, averageQueryTimeMs } = this.stats;
+        this.stats.averageQueryTimeMs =
+            (averageQueryTimeMs * (totalQueries - 1) + executionTime) / totalQueries;
     }
-    catch (error) {
-        lastError = error instanceof Error ? error : new Error(String(error));
-        const errorMessage = lastError.message.toUpperCase();
-        const isRetryable = retryPolicy.retryableErrors.some((retryableError) => errorMessage.includes(retryableError));
-        if (attempt === retryPolicy.maxRetries || !isRetryable) {
-            break;
-        }
-        const delay = Math.min(retryPolicy.initialDelayMs * retryPolicy.backoffFactor ** attempt, retryPolicy.maxDelayMs);
-        logger.warn('Retrying Kuzu operation after error', {
-            correlationId,
-            attempt: attempt + 1,
-            maxRetries: retryPolicy.maxRetries,
-            delayMs: delay,
-            error: lastError.message,
-        });
-        await this.sleep(delay);
+    async getDatabaseVersion() {
+        await Promise.resolve(); // Ensure async compliance
+        // Kuzu doesn't have a version function like SQLite
+        return 'kuzu-embedded';
     }
-}
-throw new QueryError(`Operation failed after ${retryPolicy.maxRetries} retries:${lastError?.message}`, {
-    query: sql,
-    params,
-    correlationId,
-    cause: lastError,
-});
-updateAverageQueryTime(executionTime, number);
-void {
-    const: { totalQueries, averageQueryTimeMs } = this.stats,
-    this: .stats.averageQueryTimeMs =
-        (averageQueryTimeMs * (totalQueries - 1) + executionTime) / totalQueries
-};
-async;
-getDatabaseVersion();
-Promise < string > {
-    await, Promise, : .resolve(), // Ensure async compliance
-    // Kuzu doesn't have a version function like SQLite
-    return: 'kuzu-embedded'
-};
-async;
-getLastMigrationVersion();
-Promise < string | undefined > {
-    : .getCurrentMigrationVersion()
-} || undefined;
-async;
-createMigrationsTable();
-Promise < void  > {
-    try: {
-        await, this: .query(`
+    async getLastMigrationVersion() {
+        return (await this.getCurrentMigrationVersion()) || undefined;
+    }
+    async createMigrationsTable() {
+        try {
+            await this.query(`
         CREATE NODE TABLE IF NOT EXISTS _Migration (
           version STRING, 
           name STRING, 
           applied_at TIMESTAMP,
           PRIMARY KEY (version)
         )
-      `)
-    }, catch(error) {
-        logger.warn('Could not create migrations table', { error });
+      `);
+        }
+        catch (error) {
+            logger.warn('Could not create migrations table', { error });
+        }
     }
-};
-async;
-recordMigration(version, string, name, string);
-Promise < void  > {
-    await, this: .query('CREATE (:_Migration {version:$version, name:$name, applied_at:timestamp()})', { version, name })
-};
-ensureDatabaseDirectory();
-void {
-    const: dbDir = dirname(this.config.database),
-    if(, existsSync) { }
-}(dbDir);
-{
-    mkdirSync(dbDir, { recursive: true });
+    async recordMigration(version, name) {
+        await this.query('CREATE (:_Migration {version:$version, name:$name, applied_at:timestamp()})', { version, name });
+    }
+    ensureDatabaseDirectory() {
+        const dbDir = dirname(this.config.database);
+        if (!existsSync(dbDir)) {
+            mkdirSync(dbDir, { recursive: true });
+        }
+    }
+    generateCorrelationId() {
+        return `kuzu-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    }
+    sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    }
 }
-generateCorrelationId();
-string;
-{
-    return `kuzu-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-}
-sleep(ms, number);
-Promise < void  > {
-    return: new Promise((resolve) => setTimeout(resolve, ms))
-};
 class KuzuTransactionConnection {
     adapter;
     correlationId;

@@ -962,8 +962,9 @@ class SQLiteTransactionConnection implements TransactionConnection {
               executionTimeMs:Date.now() - startTime,
               affectedRows:runResult.changes,
               insertId:
-                typeof runResult.lastInsertRowid === 'bigint')                  ? Number(runResult.lastInsertRowid)
-                  :(runResult.lastInsertRowid as number | undefined),
+                (typeof runResult.lastInsertRowid === 'bigint')
+                  ? Number(runResult.lastInsertRowid)
+                  : (runResult.lastInsertRowid as number | undefined),
           });
             return;
 }
@@ -983,7 +984,7 @@ class SQLiteTransactionConnection implements TransactionConnection {
                 params,
                 correlationId:this.correlationId,
                 cause:error instanceof Error ? error : undefined,
-}
+              }
             )
           );
 }
@@ -1001,10 +1002,10 @@ class SQLiteTransactionConnection implements TransactionConnection {
         try {
           this.db.exec('ROLLBACK');
           resolve();
-} catch (error) {
+        } catch (error) {
           reject(error);
-}
-          });
+        }
+      });
           });
 }
 
@@ -1014,10 +1015,10 @@ class SQLiteTransactionConnection implements TransactionConnection {
         try {
           this.db.exec('COMMIT');
           resolve();
-} catch (error) {
+        } catch (error) {
           reject(error);
-}
-          });
+        }
+      });
           });
 }
 
@@ -1027,10 +1028,10 @@ class SQLiteTransactionConnection implements TransactionConnection {
         try {
           this.db.exec(`SAVEPOINT ${name}`);
           resolve();
-} catch (error) {
+        } catch (error) {
           reject(error);
-}
-          });
+        }
+      });
           });
 }
 
@@ -1040,10 +1041,10 @@ class SQLiteTransactionConnection implements TransactionConnection {
         try {
           this.db.exec(`RELEASE SAVEPOINT ${name}`);
           resolve();
-} catch (error) {
+        } catch (error) {
           reject(error);
-}
-          });
+        }
+      });
           });
 }
 
@@ -1053,10 +1054,10 @@ class SQLiteTransactionConnection implements TransactionConnection {
         try {
           this.db.exec(`ROLLBACK TO SAVEPOINT ${name}`);
           resolve();
-} catch (error) {
+        } catch (error) {
           reject(error);
-}
-          });
+        }
+      });
           });
 }
 
