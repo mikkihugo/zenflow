@@ -274,13 +274,13 @@ async function distributeTasksToAgents(swarm: any, tasks: any[], strategy: strin
   // In production, this would use the actual task distribution engine
   const distribution: Record<string, any[]> = {};
   
-  tasks.forEach((task, index) => {
+  for (const [index, task] of tasks.entries()) {
     const agentId = `agent_${index % swarm.agentCount}`;
     if (!distribution[agentId]) {
       distribution[agentId] = [];
     }
     distribution[agentId].push(task);
-  });
+  }
   
   return distribution;
 }

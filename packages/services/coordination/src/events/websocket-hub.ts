@@ -361,7 +361,7 @@ export class CentralWebSocketHub extends EventEmitter {
     const allTypes = new Set<string>();
     
     for (const service of this.services.values()) {
-      service.messageTypes.forEach(type => allTypes.add(type));
+      for (const type of service.messageTypes) allTypes.add(type);
     }
     
     return Array.from(allTypes).sort();
