@@ -314,9 +314,9 @@ export class RecoveryStrategyManager extends EventEmitter {
 
               if (data !== null) {
                 const dataKey = JSON.stringify(data);
-                dataVersions?.set(
+                dataVersions.set(
                   dataKey,
-                  (dataVersions?.get(dataKey) || 0) + 1
+                  (dataVersions.get(dataKey) || 0) + 1
                 );
                 healthyBackends.push({ id, backend, data} as never);
 }
@@ -403,7 +403,7 @@ export class RecoveryStrategyManager extends EventEmitter {
       priority:5,
       timeoutMs:5000,
       maxRetries:1,
-      execute:async (_error, context) => {
+      execute:(error, context) => {
         const startTime = Date.now();
 
         try {
@@ -461,7 +461,7 @@ export class RecoveryStrategyManager extends EventEmitter {
               switch (context.operation) {
                 case 'read':{
                   let data;
-                  if ('get' in backend && typeof backend.get === ' function') {
+                  if ('get' in backend && typeof backend.get === 'function') {
                     data = await backend.get(context.key);
 } else if (
                     'retrieve' in backend &&
@@ -537,7 +537,7 @@ export class RecoveryStrategyManager extends EventEmitter {
       priority:2,
       timeoutMs:3000,
       maxRetries:1,
-      execute:async (error, _context) => {
+      execute:(error, context) => {
         const startTime = Date.now();
 
         try {

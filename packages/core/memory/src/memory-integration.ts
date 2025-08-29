@@ -350,15 +350,15 @@ export function createMemoryContainer(
   container.register(DATABASE_TOKENS?.DALFactory, {
     type: 'singleton',
     create: (container) => {
-      const { DALFactory } = require('../database/factory');
+      const { DALFactory: dalFactory } = require('../database/factory');
       const {
-        DatabaseProviderFactory,
+        DatabaseProviderFactory: databaseProviderFactory,
       } = require('../database/providers/database-providers');
 
-      return new DALFactory(
+      return new dalFactory(
         container.resolve(CORE_TOKENS.Logger),
         container.resolve(CORE_TOKENS.Config),
-        new DatabaseProviderFactory(
+        new databaseProviderFactory(
           container.resolve(CORE_TOKENS.Logger),
           container.resolve(CORE_TOKENS.Config)
         )

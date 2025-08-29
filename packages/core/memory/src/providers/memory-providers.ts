@@ -19,6 +19,13 @@ import {
   type Logger,
 } from '../../di/tokens/core-tokens';
 
+// Constants for repeated strings
+const LOG_MESSAGES = {
+  SUCCESSFULLY_STORED: 'Successfully stored key',
+  SUCCESSFULLY_DELETED: 'Successfully deleted key', 
+  SUCCESSFULLY_CLEARED: 'Successfully cleared all data',
+} as const;
+
 /**
  * Interface for memory backend implementations.
  * Updated to be compatible with BaseMemoryBackend.
@@ -137,7 +144,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
 
   async store(key:string, value:unknown): Promise<void> {
     this.logger.debug(`Storing key:${key} in SQLite backend`);
-    await this.ensureInitialized();
+    this.ensureInitialized();
 
     try {
       await this.repository.create({
@@ -146,8 +153,8 @@ export class SqliteMemoryBackend implements MemoryBackend {
         createdAt:new Date().toISOString(),
         metadata:{ type: 'memory_entry'},
 });
-      this.logger.debug(`Successfully stored key:${key}`);
-} catch (error) {
+      this.logger.debug(`${LOG_MESSAGES.SUCCESSFULLY_STORED}: ${key}`);
+    } catch (error) {
       this.logger.error(`Failed to store key ${key}:${error}`);
       throw error;
 }
@@ -155,7 +162,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
 
   async retrieve<T = unknown>(key:string): Promise<T | null> {
     this.logger.debug(`Retrieving key:${key} from SQLite backend`);
-    await this.ensureInitialized();
+    this.ensureInitialized();
 
     try {
       const results = await this.repository.findAll({});
@@ -169,7 +176,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
 
   async delete(key:string): Promise<boolean> {
     this.logger.debug(`Deleting key:${key} from SQLite backend`);
-    await this.ensureInitialized();
+    this.ensureInitialized();
 
     try {
       // First check if the key exists
@@ -190,7 +197,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
 
   async clear():Promise<void> {
     this.logger.info('Clearing all data from SQLite backend');
-    await this.ensureInitialized();
+    this.ensureInitialized();
 
     try {
       const allEntries = await this.repository.findAll({});
@@ -205,7 +212,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
 }
 
   async size():Promise<number> {
-    await this.ensureInitialized();
+    this.ensureInitialized();
 
     try {
       const allEntries = await this.repository.findAll({});
@@ -218,7 +225,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
 
   async health():Promise<boolean> {
     try {
-      await this.ensureInitialized();
+      this.ensureInitialized();
       // Test basic operation
       await this.repository.findAll({ limit:1});
       return true;
@@ -273,7 +280,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
 
   async store(key:string, value:unknown): Promise<void> {
     this.logger.debug(`Storing key:${key} in LanceDB backend`);
-    await this.ensureInitialized();
+    this.ensureInitialized();
 
     try {
       // Generate a simple vector representation for the key-value pair
@@ -298,7 +305,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
 
   async retrieve<T = unknown>(key:string): Promise<T | null> {
     this.logger.debug(`Retrieving key:${key} from LanceDB backend`);
-    await this.ensureInitialized();
+    this.ensureInitialized();
 
     try {
       const results = await this.repository.similaritySearch([0], {
@@ -326,7 +333,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
 
   async delete(key:string): Promise<boolean> {
     this.logger.debug(`Deleting key:${key} from LanceDB backend`);
-    await this.ensureInitialized();
+    this.ensureInitialized();
 
     try {
       // First check if the key exists
@@ -347,7 +354,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
 
   async clear():Promise<void> {
     this.logger.info('Clearing all data from LanceDB backend');
-    await this.ensureInitialized();
+    this.ensureInitialized();
 
     try {
       // Get all vectors and delete them
@@ -355,7 +362,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
         limit:10000,
 });
       for (const vector of allVectors) {
-        if (vector && 'id' in vector && typeof vector.id === ' string') {
+        if (vector && 'id' in vector && typeof vector.id === 'string') {
           await this.repository.delete(vector.id);
 }
 }
@@ -367,7 +374,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
 }
 
   async size():Promise<number> {
-    await this.ensureInitialized();
+    this.ensureInitialized();
 
     try {
       const allVectors = await this.repository.similaritySearch([0], {
@@ -382,7 +389,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
 
   async health():Promise<boolean> {
     try {
-      await this.ensureInitialized();
+      this.ensureInitialized();
       // Test basic operation
       await this.repository.similaritySearch([0], { limit:1});
       return true;
@@ -439,7 +446,7 @@ export class JsonMemoryBackend implements MemoryBackend {
 
   async store(key:string, value:unknown): Promise<void> {
     this.logger.debug(`Storing key:${key} in JSON backend`);
-    await this.ensureInitialized();
+    this.ensureInitialized();
 
     try {
       this.data.set(key, value);
@@ -453,7 +460,7 @@ export class JsonMemoryBackend implements MemoryBackend {
 
   async retrieve<T = unknown>(key:string): Promise<T | null> {
     this.logger.debug(`Retrieving key:${key} from JSON backend`);
-    await this.ensureInitialized();
+    this.ensureInitialized();
 
     try {
       const value = this.data.get(key);
@@ -466,7 +473,7 @@ export class JsonMemoryBackend implements MemoryBackend {
 
   async delete(key:string): Promise<boolean> {
     this.logger.debug(`Deleting key:${key} from JSON backend`);
-    await this.ensureInitialized();
+    this.ensureInitialized();
 
     try {
       const existed = this.data.has(key);
@@ -486,7 +493,7 @@ export class JsonMemoryBackend implements MemoryBackend {
 
   async clear():Promise<void> {
     this.logger.info('Clearing all data from JSON backend');
-    await this.ensureInitialized();
+    this.ensureInitialized();
 
     try {
       this.data.clear();
@@ -499,13 +506,13 @@ export class JsonMemoryBackend implements MemoryBackend {
 }
 
   async size():Promise<number> {
-    await this.ensureInitialized();
+    this.ensureInitialized();
     return this.data.size;
 }
 
   async health():Promise<boolean> {
     try {
-      await this.ensureInitialized();
+      this.ensureInitialized();
       return true;
 } catch (error) {
       this.logger.error(`Health check failed:${error}`);
@@ -513,24 +520,24 @@ export class JsonMemoryBackend implements MemoryBackend {
 }
 }
 
-  private async ensureInitialized():Promise<void> {
+  private ensureInitialized():void {
     if (this.initialized) return;
 
     try {
-      await this.loadFromFile();
+      this.loadFromFile();
       this.initialized = true;
       this.logger.info('JSON memory backend initialized');
-} catch (error) {
+    } catch (error) {
       this.logger.error(`Failed to initialize JSON backend:${error}`);
       throw error;
 }
 }
 
-  private async loadFromFile():Promise<void> {
+  private loadFromFile():void {
     // File loading implementation would go here
     // For now, just initialize empty
     this.data = new Map();
-}
+  }
 
   private async persistToFile():Promise<void> {
     // File persistence implementation would go here
