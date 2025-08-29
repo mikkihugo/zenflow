@@ -10,8 +10,8 @@ import {
   getLogger,
   recordMetric,
   TelemetryManager,
+  type Logger,
 } from '@claude-zen/foundation';
-import type { Logger} from '@claude-zen/foundation';
 
 import type {
   CacheEvictionConfig,

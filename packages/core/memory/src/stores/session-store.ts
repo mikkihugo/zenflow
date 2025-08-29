@@ -54,6 +54,9 @@ const telemetryConfig:TelemetryConfig = {
 };
 const telemetry = new BasicTelemetryManager(telemetryConfig);
 
+// Constants for repeated strings
+const SERVICE_NAME = 'memory-manager';
+
 type SessionMemoryStoreOptions = SessionMemoryStoreOptionsType;
 
 @injectable()
@@ -777,7 +780,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
 
         default:
           throw new MemoryError(
-            `Unsupported circuit breaker operation:${operation}`
+            `Unsupported circuit breaker operation:${params.operation}`
           );
 }
 }).then((result) => {
@@ -785,8 +788,8 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
         const error = ensureError(result.error);
         recordMetric('memory_circuit_breaker_errors', 1);
         logger.error('Circuit breaker operation failed', {
-          operation,
-          sessionId,
+          operation: params.operation,
+          sessionId: params.sessionId,
           error:error.message,
 });
         throw error;
@@ -822,7 +825,7 @@ export class MemoryManager {
 
     // Initialize telemetry for manager
     this.telemetryManager = new BasicTelemetryManager({
-      serviceName: 'memory-manager',      enableTracing:true,
+      serviceName: SERVICE_NAME,      enableTracing:true,
       enableMetrics:true,
 });
 
@@ -861,7 +864,7 @@ export class MemoryManager {
             const storeResult = await this.store.initialize();
             if (storeResult.isErr()) {
               throw new MemoryConnectionError(
-                'Failed to initialize memory store in manager',                'memory-manager',                { originalError:storeResult.error}
+                'Failed to initialize memory store in manager',                SERVICE_NAME,                { originalError:storeResult.error}
               );
 }
 
@@ -894,7 +897,7 @@ export class MemoryManager {
       )).then((result) => {
       if (result.isErr()) {
         const error = new MemoryConnectionError(
-          'Failed to initialize memory manager',          'memory-manager',          { originalError:result.error.message}
+          'Failed to initialize memory manager',          SERVICE_NAME,          { originalError:result.error.message}
         );
         this.errorAggregator.add(error);
         recordMetric('memory_manager_initialization_failures', 1);

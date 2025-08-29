@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 
+// Simple logger for test
+const logger = {
+  info: (msg, ...args) => console.log(msg, ...args)
+};
+
 // Test Node.js runtime detection
 logger.info("🧪 Testing Node.js Runtime Detection");
 logger.info("");
