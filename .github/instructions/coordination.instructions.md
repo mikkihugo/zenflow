@@ -25,7 +25,7 @@ src/coordination/
 
 ### Agent Management
 
-- **Use existing AgentType** from `src/types/agent-types.ts` (147+ types available)
+- **Use existing AgentType** from coordination types (5 core types: coordinator, worker, specialist, monitor, proxy)
 - **Follow registry patterns** in `src/coordination/agents/agent-registry.ts`
 - **Respect agent capabilities** and specialization boundaries
 - **Use agent pools** for efficient resource management
@@ -167,7 +167,7 @@ const consensus = await consensusEngine.proposeDecision({
 ## Common Anti-Patterns to Avoid
 
 - **Don't bypass agent registry** - always use established patterns
-- **Don't create new agent types** - use existing 147+ types
+- **Don't create new agent types** - use existing 5 core types (coordinator, worker, specialist, monitor, proxy)
 - **Don't implement synchronous coordination** - use async patterns
 - **Don't ignore load balancing** - always consider resource distribution
 - **Don't skip consensus** - use established protocols for decisions

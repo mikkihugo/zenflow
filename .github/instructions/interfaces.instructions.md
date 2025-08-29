@@ -6,32 +6,28 @@ applies_to: 'src/interfaces/**/*'
 
 ## Domain Focus
 
-The interfaces domain handles all user-facing interactions: CLI, API, MCP servers, terminal interfaces, and web dashboards. This is how users and systems interact with claude-code-zen.
+The interfaces domain handles MCP server integration, API endpoints, and limited user interfaces. The primary focus is on MCP (Model Context Protocol) for AI tool integration with external systems.
 
 ## Key Subdirectories
 
 ```
 src/interfaces/
 ├── api/           # REST API and WebSocket interfaces
-│   ├── http/      # HTTP REST API endpoints
-│   └── websocket/ # Real-time WebSocket connections
-├── cli/           # Command-line interface
-├── mcp/           # MCP (Model Context Protocol) servers
-├── terminal/      # Terminal UI and interactive interfaces
-├── web/           # Web dashboard and browser interfaces
-└── shared/        # Shared interface types and utilities
+│   └── http/      # HTTP REST API endpoints
+├── mcp/           # MCP (Model Context Protocol) servers (primary interface)
+└── terminal/      # Limited terminal UI components
+    └── screens/   # Basic status screens
 ```
 
 ## Architecture Patterns
 
-### Multi-Interface Strategy
+### MCP-Focused Strategy
 
-- **CLI** for command-line automation and scripting
-- **HTTP API** for external integrations and web services
-- **WebSocket** for real-time coordination and monitoring
-- **MCP servers** for AI tool integration (HTTP port 3000 + Stdio)
-- **Terminal UI** for interactive management and debugging
-- **Web dashboard** for visual monitoring and control
+- **MCP servers** for AI tool integration (primary interface approach)
+- **HTTP API** for basic external integrations 
+- **WebSocket** for real-time coordination updates
+- **Limited terminal UI** for basic status display
+- **Web dashboard** handled by separate app (apps/web-dashboard)
 
 ### MCP Integration (Critical)
 

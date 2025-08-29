@@ -6,7 +6,7 @@
 
 Claude Code Zen is an advanced AI development platform with sophisticated agent coordination, neural networks, and MCP integration. This is a complex monorepo with 52+ packages using a 5-tier architecture system.
 
-**Architecture**: Coordination · Neural · Interfaces · Memory · Database domains with 147+ specialized agent types.
+**Architecture**: Coordination · Neural · Interfaces · Memory · Database domains with specialized agent coordination system.
 
 ## Essential Setup Requirements
 
@@ -198,9 +198,10 @@ pnpm lint
 - Schema migration and database health monitoring
 
 ### Interfaces Domain (src/interfaces/*)
-- MCP servers for tool integration
-- Multiple interface types: CLI, API, WebSocket, Terminal UI
-- Focus on user experience and error handling
+- MCP servers for tool integration (primary interface)
+- API and WebSocket interfaces for coordination
+- Basic terminal screens (limited implementation)
+- Focus on MCP protocol compliance and tool integration
 
 ## Common Issues and Workarounds
 
@@ -230,7 +231,7 @@ Before completing any work, ALWAYS verify:
 - [ ] Web dashboard starts and loads at `http://localhost:3000`
 - [ ] Dashboard navigation and core functionality works
 - [ ] Any new code follows domain isolation principles
-- [ ] No new generic agent types created (use existing 147+ types)
+- [ ] No new agent types created (use existing 5 core types: coordinator, worker, specialist, monitor, proxy)
 - [ ] WASM operations go through proper gateway facade
 
 ## NEVER CANCEL Operations
