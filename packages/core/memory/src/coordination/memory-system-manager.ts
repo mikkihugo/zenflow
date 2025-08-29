@@ -5,15 +5,16 @@
  * optimization strategies, lifecycle management, and comprehensive monitoring.
  */
 
-import { EventEmitter} from '@claude-zen/foundation';
-import {
+import { 
+  EventEmitter,
   getLogger,
   recordMetric,
   withTrace,
   TelemetryManager,
   createCircuitBreaker,
+  type Logger, 
+  type CircuitBreakerOptions,
 } from '@claude-zen/foundation';
-import type { Logger, CircuitBreakerOptions} from '@claude-zen/foundation';
 import { MemoryCoordinationSystem} from '../coordinators/memory-coordination-system';
 import { MemoryOptimizationEngine} from '../strategies/memory-optimization-engine';
 import { DataLifecycleManager} from '../strategies/data-lifecycle-manager';
@@ -29,11 +30,13 @@ import type { JSONValue} from '../core/memory-system';
 
 interface ManagedComponent {
   name:string;
-  instance:any;
+  instance:unknown;
   initialized:boolean;
   healthy:boolean;
   lastHealthCheck:number;
 }
+
+const COORDINATION_NOT_INITIALIZED_ERROR = COORDINATION_NOT_INITIALIZED_ERROR;
 
 export class MemorySystemManager extends EventEmitter {
   private logger:Logger;
@@ -49,7 +52,7 @@ export class MemorySystemManager extends EventEmitter {
   private healthCheckTimer?:NodeJS.Timeout;
   private initialized = false;
   private startTime = Date.now();
-  private circuitBreaker:any;
+  private circuitBreaker:unknown;
 
   constructor(config:MemorySystemConfig) {
     super();
@@ -75,8 +78,8 @@ export class MemorySystemManager extends EventEmitter {
     try {
       await withTrace('memory-system-manager-init', async (span) => {
         span?.setAttributes({
-          'system.name':this.config.name,
-          'system.mode':this.config.mode,
+          'system_name':this.config.name,
+          'system_mode':this.config.mode,
 });
 
         await this.telemetry.initialize();
@@ -146,10 +149,10 @@ export class MemorySystemManager extends EventEmitter {
 } = {}
   ):Promise<void> {
     if (!this.coordination) {
-      throw new Error('Coordination system not initialized');
+      throw new Error(COORDINATION_NOT_INITIALIZED_ERROR);
 }
 
-    return this.circuitBreaker.execute(async () => {
+    return await this.circuitBreaker.execute(async () => {
       await this.coordination!.addNode(id, backend, options);
 
       this.emit('nodeAdded', { id, options});
@@ -162,10 +165,10 @@ export class MemorySystemManager extends EventEmitter {
 
   async removeNode(id:string): Promise<void> {
     if (!this.coordination) {
-      throw new Error('Coordination system not initialized');
+      throw new Error(COORDINATION_NOT_INITIALIZED_ERROR);
 }
 
-    return this.circuitBreaker.execute(async () => {
+    return await this.circuitBreaker.execute(async () => {
       await this.coordination!.removeNode(id);
 
       this.emit('nodeRemoved', { id});
@@ -186,16 +189,16 @@ export class MemorySystemManager extends EventEmitter {
       priority?:number;
       tags?:string[];
 }
-  ):Promise<any> {
+  ):Promise<unknown> {
     if (!this.coordination) {
-      throw new Error('Coordination system not initialized');
+      throw new Error(COORDINATION_NOT_INITIALIZED_ERROR);
 }
 
-    return withTrace('memory-system-store', async (span) => {
+    return await withTrace('memory-system-store', async (span) => {
       span?.setAttributes({
-        'memory.key':key,
-        'memory.namespace':namespace,
-        'memory.tier':options?.tier || ' warm',});
+        'memory_key':key,
+        'memory_namespace':namespace,
+        'memory_tier':options?.tier || ' warm',});
 
       // Store via coordination system
       const result = await this.coordination!.store(key, value, namespace, {
@@ -228,13 +231,13 @@ export class MemorySystemManager extends EventEmitter {
 }
   ):Promise<T | null> {
     if (!this.coordination) {
-      throw new Error('Coordination system not initialized');
+      throw new Error(COORDINATION_NOT_INITIALIZED_ERROR);
 }
 
-    return withTrace('memory-system-retrieve', async (span) => {
+    return await withTrace('memory-system-retrieve', async (span) => {
       span?.setAttributes({
-        'memory.key':key,
-        'memory.namespace':namespace,
+        'memory_key':key,
+        'memory_namespace':namespace,
 });
 
       // Try lifecycle manager first if enabled
@@ -267,13 +270,13 @@ export class MemorySystemManager extends EventEmitter {
 
   async delete(key:string, namespace = 'default'):Promise<boolean> {
     if (!this.coordination) {
-      throw new Error('Coordination system not initialized');
+      throw new Error(COORDINATION_NOT_INITIALIZED_ERROR);
 }
 
-    return withTrace('memory-system-delete', async (span) => {
+    return await withTrace('memory-system-delete', async (span) => {
       span?.setAttributes({
-        'memory.key':key,
-        'memory.namespace':namespace,
+        'memory_key':key,
+        'memory_namespace':namespace,
 });
 
       // Delete from lifecycle manager if enabled
@@ -295,12 +298,12 @@ export class MemorySystemManager extends EventEmitter {
 
   async clear(namespace?:string): Promise<void> {
     if (!this.coordination) {
-      throw new Error('Coordination system not initialized');
+      throw new Error(COORDINATION_NOT_INITIALIZED_ERROR);
 }
 
-    return withTrace('memory-system-clear', async (span) => {
+    return await withTrace('memory-system-clear', async (span) => {
       span?.setAttributes({
-        'memory.namespace':namespace || ' all',});
+        'memory_namespace':namespace || ' all',});
 
       // Clear cache eviction if enabled
       if (this.cacheEviction) {
@@ -573,7 +576,7 @@ export class MemorySystemManager extends EventEmitter {
 }
 }
 
-  private async performMonitoringCycle():Promise<void> {
+  private performMonitoringCycle():void {
     try {
       const status = this.getSystemStatus();
       const metrics = this.getSystemMetrics();
@@ -598,22 +601,22 @@ export class MemorySystemManager extends EventEmitter {
 }
 }
 
-  private async performHealthChecks():Promise<void> {
+  private performHealthChecks():void {
     for (const [name, component] of this.components) {
       try {
         // Perform health check if component has one
         if (typeof component.instance.getStats === 'function') {
-          const __stats = component.instance.getStats();
+          component.instance.getStats(); // Call for health check but don't store result
           component.healthy = true;
           component.lastHealthCheck = Date.now();
-}
-} catch (error) {
+        }
+      } catch (error) {
         this.logger.warn(`Health check failed for component ${name}:`, error);
         component.healthy = false;
         component.lastHealthCheck = Date.now();
-}
-}
-}
+      }
+    }
+  }
 
   private getComponentsHealth():Map<string, boolean> {
     const health = new Map<string, boolean>();

@@ -78,7 +78,7 @@ export class MemoryCoordinator extends EventEmitter {
    * @param id
    * @param backend
    */
-  async registerNode(id:string, backend:BackendInterface): Promise<void> {
+  registerNode(id:string, backend:BackendInterface): void {
     const node:MemoryNode = {
       id,
       backend,
@@ -96,7 +96,7 @@ export class MemoryCoordinator extends EventEmitter {
    *
    * @param id
    */
-  async unregisterNode(id:string): Promise<void> {
+  unregisterNode(id:string): void {
     this.nodes.delete(id);
     this.emit('nodeUnregistered', { nodeId:id});
 }
@@ -233,7 +233,7 @@ export class MemoryCoordinator extends EventEmitter {
       );
       await Promise.race([
         Promise.all(writePromises.slice(0, quorum)),
-        new Promise((_, reject) =>
+        new Promise((resolve, reject) =>
           setTimeout(
             () => reject(new Error('Quorum timeout')),
             this.config.consensus.timeout
@@ -428,48 +428,77 @@ export class MemoryCoordinator extends EventEmitter {
    * @param pattern
    */
   async list(pattern:string): Promise<Array<{ key: string; value: unknown}>> {
-    const results:Array<{ key: string; value: unknown}> = [];
+    const activeNodes = this.getActiveNodes();
+    const results = await this.collectKeysFromNodes(activeNodes, pattern);
+    return this.removeDuplicateResults(results);
+  }
 
-    // Get all active nodes
-    const activeNodes = Array.from(this.nodes.values()).filter(
+  private getActiveNodes(): MemoryNode[] {
+    return Array.from(this.nodes.values()).filter(
       (n) => n.status === 'active'
     );
+  }
 
-    for (const node of activeNodes) {
+  private async collectKeysFromNodes(
+    nodes: MemoryNode[], 
+    pattern: string
+  ): Promise<Array<{ key: string; value: unknown}>> {
+    const results:Array<{ key: string; value: unknown}> = [];
+
+    for (const node of nodes) {
       try {
-        // Assuming backend implements a keys() method
-        if (
-          'keys' in node?.backend &&
-          typeof node?.backend?.keys === 'function'
-        ) {
-          const keys = await node?.backend?.keys();
-          const matchingKeys = keys.filter((key) =>
-            this.matchesPattern(key, pattern)
-          );
+        const nodeResults = await this.getMatchingKeysFromNode(node, pattern);
+        results.push(...nodeResults);
+      } catch (error) {
+        this.logger.warn('Failed to query node during search', { error });
+      }
+    }
 
-          for (const key of matchingKeys) {
-            try {
-              const value = await node?.backend?.retrieve(key);
-              results?.push({ key, value});
-            } catch (error) {
-              this.logger.warn(`Failed to retrieve key ${key} from node`, { error });
-            }
-}
-}
-        } catch (error) {
-          this.logger.warn('Failed to query node during search', { error });
-        }
-}
+    return results;
+  }
 
-    // Remove duplicates (in case of replication)
+  private async getMatchingKeysFromNode(
+    node: MemoryNode, 
+    pattern: string
+  ): Promise<Array<{ key: string; value: unknown}>> {
+    const results: Array<{ key: string; value: unknown}> = [];
+
+    if (!this.nodeHasKeysMethod(node)) {
+      return results;
+    }
+
+    const keys = await node.backend.keys();
+    const matchingKeys = keys.filter((key) =>
+      this.matchesPattern(key, pattern)
+    );
+
+    for (const key of matchingKeys) {
+      try {
+        const value = await node.backend.retrieve(key);
+        results.push({ key, value});
+      } catch (error) {
+        this.logger.warn(`Failed to retrieve key ${key} from node`, { error });
+      }
+    }
+
+    return results;
+  }
+
+  private nodeHasKeysMethod(node: MemoryNode): boolean {
+    return 'keys' in node.backend && 
+           typeof (node.backend as { keys?: () => Promise<string[]> }).keys === 'function';
+  }
+
+  private removeDuplicateResults(
+    results: Array<{ key: string; value: unknown}>
+  ): Array<{ key: string; value: unknown}> {
     const uniqueResults = new Map();
     for (const result of results) {
-      if (!uniqueResults?.has(result?.key)) {
-        uniqueResults?.set(result?.key, result);
-}
-}
-
-    return Array.from(uniqueResults?.values())();
+      if (!uniqueResults.has(result.key)) {
+        uniqueResults.set(result.key, result);
+      }
+    }
+    return Array.from(uniqueResults.values());
 }
 
   /**
@@ -494,8 +523,8 @@ export class MemoryCoordinator extends EventEmitter {
   /**
    * Health check for coordinator.
    */
-  async healthCheck():Promise<{ status: string; details: unknown}> {
-    const __stats = this.getStats();
+  healthCheck():{ status: string; details: unknown} {
+    const stats = this.getStats();
     const unhealthyNodes = Array.from(this.nodes.values()).filter(
       (n) => n.status !== 'active'
     );
@@ -503,7 +532,7 @@ export class MemoryCoordinator extends EventEmitter {
     return {
       status:unhealthyNodes.length === 0 ? 'healthy' : ' degraded',      details:{
         ...stats,
-        unhealthyNodes:unhealthyNodes?.map((n) => ({
+        unhealthyNodes:unhealthyNodes.map((n) => ({
           id:n.id,
           status:n.status,
 })),
