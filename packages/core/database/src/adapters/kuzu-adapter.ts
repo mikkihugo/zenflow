@@ -78,7 +78,7 @@ export class KuzuAdapter implements DatabaseConnection {
   private database:KuzuDatabase | null = null;
   private connection:KuzuConnection | null = null;
   private isConnectedState = false;
-  private readonly __stats = {
+  private readonly stats = {
     totalQueries:0,
     totalTransactions:0,
     totalErrors:0,
@@ -595,7 +595,7 @@ export class KuzuAdapter implements DatabaseConnection {
       // Build property definitions
       const propertyDefs = Object.entries(properties)
         .map(([name, type]) => `${name} ${type.toUpperCase()}`)
-        .join(',    ');
+        .join(', ');
 
       const primaryKeyClause = primaryKey
         ? `, PRIMARY KEY (${primaryKey})`
@@ -684,13 +684,13 @@ export class KuzuAdapter implements DatabaseConnection {
       for (const node of nodes) {
         const properties = Object.keys(node);
         const values = Object.values(node);
-        const cypher = `CREATE (:${tableName} {${properties.map((prop, i) => `${prop}:$param${i}`).join(', ')}})`;
-        
+        const cypher = `CREATE (:${tableName} {${properties.map((prop, i) => `${prop}:$param${i}`).join(',    ')}})`;
+
         // Convert values array to params object
-        const params: Record<string, unknown> = {};
+        const params:Record<string, unknown> = {};
         for (const [i, value] of values.entries()) {
           params[`param${i}`] = value;
-        }
+}
 
         await this.query(cypher, params, { correlationId});
 }
@@ -732,18 +732,18 @@ export class KuzuAdapter implements DatabaseConnection {
       for (const rel of relationships) {
         // Build match clauses for from and to nodes
         const fromProps = Object.entries(rel.from)
-          .map(([key, value]) => `${key}:"${value}"`)
-          .join(', ');
+          .map(([key, value]) => `${key}:"${value}"`)`
+          .join(',    ');
         const toProps = Object.entries(rel.to)
-          .map(([key, value]) => `${key}:"${value}"`)
-          .join(', ');
+          .map(([key, value]) => `${key}:"${value}"`)`
+          .join(',    ');
 
         let cypher = `MATCH (from), (to) WHERE {${fromProps}} AND {${toProps}}`;
 
         if (rel.properties && Object.keys(rel.properties).length > 0) {
           const relProps = Object.entries(rel.properties)
-            .map(([key, value]) => `${key}:"${value}"`)`
-            .join(',    ');
+            .map(([key, value]) => `${key}:"${value}"`)
+            .join(', ');
           cypher += ` CREATE (from)-[:${tableName} {${relProps}}]->(to)`;
 } else {
           cypher += ` CREATE (from)-[:${tableName}]->(to)`;
@@ -787,21 +787,21 @@ export class KuzuAdapter implements DatabaseConnection {
     try {
       // Build start node condition
       const startProps = Object.entries(startNodeCondition)
-        .map(([key, value]) => `${key}:"${value}"`)`
-        .join(',    ');
+        .map(([key, value]) => `${key}:"${value}"`)
+        .join(', ');
 
       let cypher = `MATCH path = (start {${startProps}})`;
 
       // Add relationship pattern with optional hop limits
       cypher += options?.maxHops
         ? `-[r:${relationshipPattern}*1..${options.maxHops}]-`
-        :`-[r: ${relationshipPattern}]-`;
+        : `-[r:${relationshipPattern}]-`;
 
       // Add end node condition if specified
       if (endNodeCondition) {
         const endProps = Object.entries(endNodeCondition)
-          .map(([key, value]) => `${key}:"${value}"`)`
-          .join(',    ');
+          .map(([key, value]) => `${key}:"${value}"`)
+          .join(', ');
         cypher += `(end {${endProps}})`;
 } else {
         cypher += '(end)';
@@ -809,7 +809,8 @@ export class KuzuAdapter implements DatabaseConnection {
 
       // Return clause
       cypher += options?.returnPath
-        ? ' RETURN path, start, end, r')        : ' RETURN start, end, r';
+        ? ' RETURN path, start, end, r'
+        : ' RETURN start, end, r';
 
       const result = await this.query<T>(cypher, undefined, { correlationId});
 
@@ -865,13 +866,15 @@ export class KuzuAdapter implements DatabaseConnection {
 
       try {
         const nodeCountResult = await this.query(
-          'MATCH (n) RETURN count(n) as count',          undefined,
+          'MATCH (n) RETURN count(n) as count',
+          undefined,
           { correlationId}
         );
         nodeCount = (nodeCountResult.rows[0] as { count?:number})?.count || 0;
 
         const relCountResult = await this.query(
-          'MATCH ()-[r]->() RETURN count(r) as count',          undefined,
+          'MATCH ()-[r]->() RETURN count(r) as count',
+          undefined,
           { correlationId}
         );
         relationshipCount =
@@ -1012,12 +1015,11 @@ export class KuzuAdapter implements DatabaseConnection {
 }
 }
 
-  private async recordMigration(version: string, name: string): Promise<void> {
+  private async recordMigration(version:string, name:string): Promise<void> {
     await this.query(
-      'CREATE (:_Migration {version:$version, name:$name, applied_at:timestamp()})',
-      { version, name }
+      'CREATE (:_Migration {version:$version, name:$name, applied_at:timestamp()})',      { version, name}
     );
-  }
+}
 
   private ensureDatabaseDirectory():void {
     const dbDir = dirname(this.config.database);

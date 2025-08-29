@@ -47,7 +47,7 @@ export class SQLiteAdapter implements DatabaseConnection {
   private readonly config:DatabaseConfig;
   private readonly pool:PooledConnection[] = [];
   private connected = false;
-  private readonly __stats = {
+  private readonly stats = {
     totalQueries:0,
     totalTransactions:0,
     totalErrors:0,
@@ -76,7 +76,7 @@ export class SQLiteAdapter implements DatabaseConnection {
         initialDelayMs:100,
         maxDelayMs:5000,
         backoffFactor:2,
-        retryableErrors:['SQLITE_BUSY',    'SQLITE_LOCKED'],
+        retryableErrors:['SQLITE_BUSY', 'SQLITE_LOCKED'],
         ...config.retryPolicy,
 },
 };
@@ -338,7 +338,8 @@ export class SQLiteAdapter implements DatabaseConnection {
       return {
         healthy:score >= 70,
         status:
-          score >= 70 ? 'healthy' :score >= 40 ? ' degraded' : ' unhealthy',        score,
+          score >= 70 ? 'healthy' : score >= 40 ? 'degraded' : 'unhealthy',
+        score,
         timestamp:new Date(),
         responseTimeMs:responseTime,
         connectionPool:poolStats,
@@ -361,7 +362,8 @@ export class SQLiteAdapter implements DatabaseConnection {
 } catch (error) {
       return {
         healthy:false,
-        status: 'unhealthy',        score:0,
+        status: 'unhealthy',
+        score:0,
         timestamp:new Date(),
         responseTimeMs:Date.now() - startTime,
         lastError:error instanceof Error ? error.message : String(error),
@@ -399,7 +401,8 @@ export class SQLiteAdapter implements DatabaseConnection {
 
   async getSchema():Promise<SchemaInfo> {
     const tables = await this.query<{ name:string}>(
-      'SELECT name FROM sqlite_master WHERE type = ?',      ['table']
+      'SELECT name FROM sqlite_master WHERE type = ?',
+      ['table']
     );
     const tableSchemas:TableSchema[] = [];
 
@@ -482,17 +485,16 @@ export class SQLiteAdapter implements DatabaseConnection {
     return results;
 }
 
-  async getCurrentMigrationVersion(): Promise<string | null> {
+  async getCurrentMigrationVersion():Promise<string | null> {
     try {
-      const result = await this.query<{ version: string }>(
-        'SELECT version FROM _migrations ORDER BY version DESC LIMIT 1'
-      );
+      const result = await this.query<{ version:string}>(
+        'SELECT version FROM _migrations ORDER BY version DESC LIMIT 1')      );
       return result.rows[0]?.version || null;
-    } catch {
+} catch {
       // Migrations table doesn't exist yet
       return null;
-    }
-  }
+}
+}
 
   async explain(sql:string, params?:QueryParams): Promise<QueryResult> {
     return await this.query(`EXPLAIN QUERY PLAN ${sql}`, params);
@@ -532,23 +534,22 @@ export class SQLiteAdapter implements DatabaseConnection {
           resolve({
             rows:rows as T[],
             rowCount:0,
-            executionTimeMs: Date.now() - startTime,
-            affectedRows: runResult.changes,
+            executionTimeMs:Date.now() - startTime,
+            affectedRows:runResult.changes,
             insertId:
-              typeof runResult.lastInsertRowid === 'bigint'
-                ? Number(runResult.lastInsertRowid)
-                : (runResult.lastInsertRowid as number | undefined),
-            fields: [],
-          });
+              typeof runResult.lastInsertRowid === 'bigint')                ? Number(runResult.lastInsertRowid)
+                :(runResult.lastInsertRowid as number | undefined),
+            fields:[],
+});
           return;
-        }
+}
 
         resolve({
-          rows: (rows || []) as T[],
-          rowCount: rows ? rows.length : 0,
-          executionTimeMs: Date.now() - startTime,
-          fields: rows.length > 0 ? Object.keys(rows[0] || {}) : [],
-          affectedRows: undefined,
+          rows:(rows || []) as T[],
+          rowCount:rows ? rows.length : 0,
+          executionTimeMs:Date.now() - startTime,
+          fields:rows.length > 0 ? Object.keys(rows[0] || {}) :[],
+          affectedRows:undefined,
           insertId:undefined,
 });
 } catch (error) {
@@ -719,8 +720,8 @@ export class SQLiteAdapter implements DatabaseConnection {
 }
 
   private extractSQLiteErrorCode(error:Error): string {
-    if (error.message.includes('SQLITE_BUSY')) return ' SQLITE_BUSY';
-    if (error.message.includes('SQLITE_LOCKED')) return ' SQLITE_LOCKED';
+    if (error.message.includes('SQLITE_BUSY')) return 'SQLITE_BUSY';
+    if (error.message.includes('SQLITE_LOCKED')) return 'SQLITE_LOCKED';
     return 'UNKNOWN';
 }
 
@@ -804,7 +805,8 @@ export class SQLiteAdapter implements DatabaseConnection {
           tableName,
           columns:indexInfo.rows.map((col) => col.name),
           unique:false, // TODO:Get unique info from sqlite_master
-          type: 'btree',});
+          type: 'btree',
+        });
 }
 
       return {
@@ -823,7 +825,8 @@ export class SQLiteAdapter implements DatabaseConnection {
   private async getDatabaseVersion():Promise<string> {
     try {
       const result = await this.query<{ version:string}>(
-        'SELECT sqlite_version() as version')      );
+        'SELECT sqlite_version() as version'
+      );
       return result.rows[0]?.version || 'unknown';
 } catch {
       return 'unknown';
@@ -954,18 +957,17 @@ class SQLiteTransactionConnection implements TransactionConnection {
             resolve({
               rows:[] as T[],
               rowCount:0,
-              executionTimeMs: Date.now() - startTime,
-              affectedRows: runResult.changes,
+              executionTimeMs:Date.now() - startTime,
+              affectedRows:runResult.changes,
               insertId:
-                typeof runResult.lastInsertRowid === 'bigint'
-                  ? Number(runResult.lastInsertRowid)
-                  : (runResult.lastInsertRowid as number | undefined),
-            });
+                typeof runResult.lastInsertRowid === 'bigint')                  ? Number(runResult.lastInsertRowid)
+                  :(runResult.lastInsertRowid as number | undefined),
+});
             return;
-          }
+}
 
           resolve({
-            rows: (rows || []) as T[],
+            rows:(rows || []) as T[],
             rowCount:rows ? rows.length : 0,
             executionTimeMs:Date.now() - startTime,
             fields:rows.length > 0 ? Object.keys(rows[0] || {}) :[],

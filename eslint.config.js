@@ -648,11 +648,6 @@ export default [
 			// Third-party packages that shouldn't be linted
 			"packages/tools/singularity-coder/**/*",
 			
-			// Temporarily ignore files with syntax corruption
-			"packages/tools/language-parsers/src/beam-parser.ts",
-			"packages/core/database/src/adapters/kuzu-adapter.ts",
-			"packages/core/database/src/adapters/sqlite-adapter.ts",
-			
 			// Intentionally broken test packages
 			"packages/tools/repo-analyzer-broken/**/*",
 			

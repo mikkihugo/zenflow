@@ -11,7 +11,7 @@
 		"neural-core/"
 	],
 	"scripts": {
-		"build": "echo 'Neural-ML build temporarily disabled due to TypeScript issues'",
+		"build": "tsc --project tsconfig.json",
 		"build:rust": "cd neural-core && cargo build --release",
 		"test": "vitest run",
 		"test:rust": "cd neural-core && cargo test",
