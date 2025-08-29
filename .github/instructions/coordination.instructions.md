@@ -6,7 +6,7 @@ applies_to: 'src/coordination/**/*'
 
 ## Domain Focus
 
-The coordination domain handles agent management, swarm intelligence, load balancing, distributed protocols, and multi-agent orchestration. This is the core of claude-code-zen's AI coordination capabilities.
+The coordination domain handles agent management, load balancing, distributed protocols, and multi-agent orchestration. This is the core of claude-code-zen's AI coordination capabilities.
 
 ## Key Subdirectories
 
@@ -15,34 +15,25 @@ src/coordination/
 ├── agents/          # Agent management, registry, lifecycle
 ├── load-balancing/  # Load distribution, resource allocation
 ├── maestro/         # High-level orchestration patterns
-├── mcp/            # MCP tool integration for coordination
-├── protocols/      # Communication and consensus protocols
-├── swarm/          # Swarm intelligence and collective behavior
-└── strategies/     # Coordination strategies and algorithms
+├── protocols/       # Communication and consensus protocols
+└── strategies/      # Coordination strategies and algorithms
 ```
 
 ## Architecture Patterns
 
 ### Agent Management
 
-- **Use existing AgentType** from `src/types/agent-types.ts` (147+ types available)
+- **Use existing AgentType** from coordination types (5 core types: coordinator, worker, specialist, monitor, proxy)
 - **Follow registry patterns** in `src/coordination/agents/agent-registry.ts`
 - **Respect agent capabilities** and specialization boundaries
 - **Use agent pools** for efficient resource management
 
-### Swarm Coordination
+### Agent Coordination
 
-- **Implement collective behavior** using established swarm patterns
+- **Implement collective behavior** using established coordination patterns
 - **Use consensus protocols** for distributed decision making
 - **Follow load balancing** algorithms for task distribution
-- **Maintain swarm health** through monitoring and recovery
-
-### MCP Integration
-
-- **Coordinate via MCP tools** in `src/coordination/mcp/tools/`
-- **Use existing tool patterns** rather than creating new protocols
-- **Follow schema validation** for tool parameters
-- **Test both HTTP and Stdio** MCP protocols
+- **Maintain coordination health** through monitoring and recovery
 
 ## Testing Strategy - London TDD (Mockist)
 
@@ -97,17 +88,17 @@ const agents = await agentRegistry.findCapableAgents({
 const selectedAgent = loadBalancer.selectOptimal(agents, task);
 ```
 
-### Swarm Orchestration
+### Agent Orchestration
 
 ```typescript
-// Follow established swarm patterns
-const swarm = await swarmManager.createSwarm({
+// Follow established coordination patterns
+const coordination = await coordinationManager.orchestrate({
   topology: 'hierarchical', // or 'mesh', 'ring', 'star'
   size: optimalSize,
   strategy: 'adaptive',
 });
 
-await swarm.executeCoordinatedTask(complexTask);
+await coordination.executeCoordinatedTask(complexTask);
 ```
 
 ### Protocol Communication
@@ -161,13 +152,13 @@ const consensus = await consensusEngine.proposeDecision({
 
 - **Document coordination algorithms** and decision logic
 - **Maintain API documentation** for coordination interfaces
-- **Update swarm pattern documentation** for new strategies
+- **Update coordination pattern documentation** for new strategies
 - **Provide troubleshooting guides** for coordination issues
 
 ## Common Anti-Patterns to Avoid
 
 - **Don't bypass agent registry** - always use established patterns
-- **Don't create new agent types** - use existing 147+ types
+- **Don't create new agent types** - use existing 5 core types (coordinator, worker, specialist, monitor, proxy)
 - **Don't implement synchronous coordination** - use async patterns
 - **Don't ignore load balancing** - always consider resource distribution
 - **Don't skip consensus** - use established protocols for decisions
@@ -177,6 +168,6 @@ const consensus = await consensusEngine.proposeDecision({
 - **Use coordination metrics** for performance monitoring
 - **Implement health checks** for all coordination components
 - **Log coordination decisions** with appropriate detail level
-- **Provide debugging tools** for swarm state inspection
+- **Provide debugging tools** for coordination state inspection
 
 The coordination domain is critical for system performance and reliability. Maintain high standards and leverage the sophisticated patterns already established.

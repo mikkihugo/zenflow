@@ -1,9 +1,0 @@
-{
-  "timestamp": "2025-08-28T12:22:20.342Z",
-  "url": "https://fra-d1.in.centralcloud.net/",
-  "status": "ERROR",
-  "error": "hasModulePreloads is not defined",
-  "issues": [
-    "Test failed: hasModulePreloads is not defined"
-  ]
-}

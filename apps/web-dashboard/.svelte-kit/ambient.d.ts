@@ -116,8 +116,8 @@ declare module '$env/static/private' {
 	export const RUNNER_TRACKING_ID: string;
 	export const INVOCATION_ID: string;
 	export const RUNNER_TOOL_CACHE: string;
-	export const NODE: string;
 	export const npm_package_name: string;
+	export const NODE: string;
 	export const GITHUB_ACTION: string;
 	export const GITHUB_RUN_NUMBER: string;
 	export const GITHUB_TRIGGERING_ACTOR: string;
@@ -143,8 +143,8 @@ declare module '$env/static/private' {
 	export const GITHUB_ACTIONS: string;
 	export const CPD_SAVE_TRAJECTORY_OUTPUT: string;
 	export const npm_package_version: string;
-	export const npm_config_verify_deps_before_run: string;
 	export const npm_lifecycle_event: string;
+	export const npm_config_verify_deps_before_run: string;
 	export const NODE_PATH: string;
 	export const GITHUB_REF_PROTECTED: string;
 	export const npm_config_update_notifier: string;
@@ -178,10 +178,10 @@ declare module '$env/static/private' {
 	export const GITHUB_OUTPUT: string;
 	export const npm_config_recursive: string;
 	export const EDGEWEBDRIVER: string;
-	export const PNPM_SCRIPT_SRC_DIR: string;
 	export const npm_config__jsr_registry: string;
 	export const npm_config_save_prefix: string;
 	export const npm_command: string;
+	export const PNPM_SCRIPT_SRC_DIR: string;
 	export const ANDROID_NDK: string;
 	export const SGX_AESM_ADDR: string;
 	export const CHROME_BIN: string;
@@ -316,8 +316,8 @@ declare module '$env/dynamic/private' {
 		RUNNER_TRACKING_ID: string;
 		INVOCATION_ID: string;
 		RUNNER_TOOL_CACHE: string;
-		NODE: string;
 		npm_package_name: string;
+		NODE: string;
 		GITHUB_ACTION: string;
 		GITHUB_RUN_NUMBER: string;
 		GITHUB_TRIGGERING_ACTOR: string;
@@ -343,8 +343,8 @@ declare module '$env/dynamic/private' {
 		GITHUB_ACTIONS: string;
 		CPD_SAVE_TRAJECTORY_OUTPUT: string;
 		npm_package_version: string;
-		npm_config_verify_deps_before_run: string;
 		npm_lifecycle_event: string;
+		npm_config_verify_deps_before_run: string;
 		NODE_PATH: string;
 		GITHUB_REF_PROTECTED: string;
 		npm_config_update_notifier: string;
@@ -378,10 +378,10 @@ declare module '$env/dynamic/private' {
 		GITHUB_OUTPUT: string;
 		npm_config_recursive: string;
 		EDGEWEBDRIVER: string;
-		PNPM_SCRIPT_SRC_DIR: string;
 		npm_config__jsr_registry: string;
 		npm_config_save_prefix: string;
 		npm_command: string;
+		PNPM_SCRIPT_SRC_DIR: string;
 		ANDROID_NDK: string;
 		SGX_AESM_ADDR: string;
 		CHROME_BIN: string;
