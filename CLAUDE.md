@@ -639,15 +639,14 @@ claude-code-zen IS the comprehensive enterprise coordination brain:
 ```
 SAFe Planning → SPARC Development → Teamwork Coordination →
 Workflow Orchestration → TaskMaster Management → Tool Selection →
-Claude Code Implementation
+Implementation Tools (including Claude Code when needed)
 ```
 
-**Your role as Claude Code:**
-
-- Get invoked by the enterprise system when code work is needed
-- Use tools naturally (Read to understand, Write/Edit to implement)
-- Focus on quality implementation within the systematic framework
-- Report results back through the event system for further coordination
+**Architecture Note:**
+- **Web Dashboard**: Primary comprehensive interface at `http://localhost:3000`
+- **MCP Integration**: Limited scope for specific tool integrations
+- **Terminal Interface**: Minimal status screens only
+- **Agent System**: Flexible agent types without arbitrary restrictions
 
 ## Support
 

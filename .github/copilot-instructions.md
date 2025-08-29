@@ -182,9 +182,11 @@ pnpm lint
 - Use Rust/WASM for performance-critical operations
 
 ### Coordination Domain (src/coordination/*)
-- Use existing 147+ agent types (DO NOT create new generic agent types)
+- Use flexible agent type system (NO arbitrary limitations on agent types)
+- Agent types are configurable strings based on capabilities and needs
 - Respect existing topology strategies (hierarchical/mesh/ring/star)
 - Use established agent selection and swarm patterns
+- Follow SAFe 6.0 and SPARC enterprise methodologies for coordination
 
 ### Memory Domain (src/memory/*)
 - Multi-backend abstraction (SQLite/LanceDB/JSON)
@@ -198,10 +200,10 @@ pnpm lint
 - Schema migration and database health monitoring
 
 ### Interfaces Domain (src/interfaces/*)
-- MCP servers for tool integration (primary interface)
-- API and WebSocket interfaces for coordination
-- Basic terminal screens (limited implementation)
-- Focus on MCP protocol compliance and tool integration
+- Web dashboard as primary interface (comprehensive Svelte-based management)
+- MCP servers for limited tool integration (secondary interface)
+- Basic terminal screens for status display only (minimal implementation)
+- Focus on web-first development and dashboard functionality
 
 ## Common Issues and Workarounds
 
@@ -231,7 +233,7 @@ Before completing any work, ALWAYS verify:
 - [ ] Web dashboard starts and loads at `http://localhost:3000`
 - [ ] Dashboard navigation and core functionality works
 - [ ] Any new code follows domain isolation principles
-- [ ] No new agent types created (use existing 5 core types: coordinator, worker, specialist, monitor, proxy)
+- [ ] No artificial agent type restrictions (use descriptive agent type strings as needed)
 - [ ] WASM operations go through proper gateway facade
 
 ## NEVER CANCEL Operations
