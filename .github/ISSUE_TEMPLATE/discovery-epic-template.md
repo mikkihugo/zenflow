@@ -16,7 +16,7 @@ projects: ['Auto-Discovery & Domain Intelligence']
 ## Background & Context
 
 **Based on**: TODO.md archived content (978 lines)
-**Strategic Importance**: Zero-manual-initialization swarm creation with 90%+ accuracy
+**Strategic Importance**: Zero-manual-initialization coordination creation with 90%+ accuracy
 
 [Detailed background context from archived TODO content]
 
@@ -26,7 +26,7 @@ projects: ['Auto-Discovery & Domain Intelligence']
 - [ ] Monorepo Detection (95%+ accuracy) - COMPLETED ✅
 - [ ] Document-Domain Bridge Integration - COMPLETED ✅  
 - [ ] Progressive Confidence Builder (6-dimensional tracking) - COMPLETED ✅
-- [ ] Auto-Swarm Factory (731 lines production-ready) - COMPLETED ✅
+- [ ] Auto-Coordination Factory (731 lines production-ready) - COMPLETED ✅
 
 ### **🔄 In Progress Components**
 - [ ] [Component name and status]
@@ -38,7 +38,7 @@ projects: ['Auto-Discovery & Domain Intelligence']
 
 ### **Must Have**
 - [ ] 90%+ correct domain identification accuracy
-- [ ] 80%+ confidence before swarm creation
+- [ ] 80%+ confidence before coordination creation
 - [ ] <5 minutes processing for large monorepos
 - [ ] Zero-manual-initialization capability
 
@@ -66,8 +66,8 @@ projects: ['Auto-Discovery & Domain Intelligence']
 
 ### **Integration Requirements**
 - [ ] AGUI human validation interface
-- [ ] HiveFACT knowledge system integration
-- [ ] MCP memory persistence for learning
+- [ ] Knowledge system integration
+- [ ] Database memory persistence for learning
 - [ ] Progressive Confidence Builder workflows
 
 ## Dependencies
@@ -77,7 +77,7 @@ projects: ['Auto-Discovery & Domain Intelligence']
 - [ ] [External knowledge system or API]
 
 ### **Downstream Impact**
-- [ ] Auto-Swarm Factory utilizes discovery results
+- [ ] Auto-Coordination Factory utilizes discovery results
 - [ ] Enterprise Platform benefits from discovered domains
 - [ ] Neural Platform enhanced by discovery patterns
 
@@ -94,7 +94,7 @@ projects: ['Auto-Discovery & Domain Intelligence']
 - [ ] Confidence-based training data generation
 
 ### **Phase 3: Learning & Memory** (Weeks 5-6)
-- [ ] MCP memory learning loop implementation
+- [ ] Database memory learning loop implementation
 - [ ] Cross-session pattern matching
 - [ ] Export/import learned patterns capability
 
@@ -128,7 +128,7 @@ projects: ['Auto-Discovery & Domain Intelligence']
 ### **Human Validation Touchpoints**
 - [ ] Document relevance validation
 - [ ] Domain boundary approval
-- [ ] Swarm topology confirmation
+- [ ] Coordination topology confirmation
 - [ ] Relationship verification
 
 ## Risks & Mitigation
@@ -157,12 +157,12 @@ projects: ['Auto-Discovery & Domain Intelligence']
 
 ### **Completed Systems (Reference)**
 - **Progressive Confidence Builder**: 6-dimensional confidence tracking
-- **Auto-Swarm Factory**: Intelligent topology selection and agent configuration
+- **Auto-Coordination Factory**: Intelligent topology selection and agent configuration
 - **Domain Discovery Bridge**: Document-to-domain mapping with NLP
 - **AGUI Integration**: Human validation workflows
 
 ### **Integration Points**
-- **HiveFACT**: Universal knowledge system integration
+- **Knowledge System**: Universal knowledge system integration
 - **Neural Platform**: GNN-enhanced relationship detection
 - **Enterprise Platform**: Discovery results for workflow optimization
 

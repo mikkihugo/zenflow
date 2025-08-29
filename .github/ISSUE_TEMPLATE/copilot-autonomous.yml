@@ -14,7 +14,7 @@ body:
         Implement feature X following domain-driven architecture...
         
         Requirements:
-        - Use existing AgentType from src/types/agent-types.ts (147+ available)
+        - Use flexible agent type strings based on capabilities
         - Follow domain structure in src/
         - Add tests using hybrid-tdd approach
         - Maintain performance requirements
@@ -52,11 +52,11 @@ body:
       label: Architecture Requirements
       description: Key constraints for claude-code-zen
       options:
-        - label: "Use existing 147+ agent types (not generic implementations)"
+      options:
+        - label: "Use flexible agent type strings based on capabilities (not generic implementations)"
         - label: "Follow domain-driven with domain boundaries"
         - label: "Use hybrid-tdd (70% London, 30% Classical)"
-        - label: "Integrate with MCP servers (port 3000)"
-
+        - label: "Integrate with web-first architecture (primary interface)"
         - label: "Use WASM for performance-critical neural code"
 
         

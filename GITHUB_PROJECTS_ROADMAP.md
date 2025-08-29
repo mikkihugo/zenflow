@@ -68,9 +68,9 @@ This guide shows how to organize the 2,872+ lines of archived roadmap content in
 
 **Milestone: Learning & Memory (Week 8)**
 - Epic: Memory Integration & Learning
-  - Issue: MCP Memory Learning Loop
+  - Issue: Database Memory Learning Loop
   - Issue: Cross-Session Pattern Matching
-  - Issue: Continuous Learning from Swarm Operations
+  - Issue: Continuous Learning from Coordination Operations
   - Issue: Export/Import Learned Patterns
 
 **Milestone: Production Validation (Week 12)**
@@ -197,7 +197,7 @@ This guide shows how to organize the 2,872+ lines of archived roadmap content in
 
 #### **Sprint 7-10: Discovery System Enhancement**
 - Integrate GNN for enhanced domain relationships
-- Implement learning loop with MCP memory
+- Implement learning loop with database memory
 - Validate 90%+ accuracy and <5 minute performance
 - Complete CLI interface and user experience
 

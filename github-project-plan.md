@@ -9,9 +9,9 @@ Found massive archived TODO/roadmap files (2,872+ lines) containing detailed SAF
 ### 📋 **TODO.md (978 lines)**
 - **Auto-Discovery System**: Complete neural-driven domain discovery with confidence building
 - **Progressive Confidence Builder**: 6-dimensional confidence tracking with human validation
-- **Auto-Swarm Factory**: Intelligent topology selection and agent configuration
+- **Auto-Coordination Factory**: Intelligent topology selection and agent configuration
 - **FACT Integration**: WASM-based knowledge gathering and orchestration
-- **Hive Knowledge System**: Cross-swarm learning and coordination (1,753+ lines)
+- **Knowledge System**: Cross-coordination learning and optimization (1,753+ lines)
 
 ### 🧠 **AI_ROADMAP.md (1,119 lines)**
 - **Zen Neural Stack Strategy**: Complete independence from external neural dependencies
@@ -79,9 +79,9 @@ Found massive archived TODO/roadmap files (2,872+ lines) containing detailed SAF
 - **Issue**: Resource Constraint Validation ✅ COMPLETED
 
 #### **Epic 2.4: Learning & Memory Integration**
-- **Issue**: MCP Memory Learning Loop (Store discovery patterns)
+- **Issue**: Database Memory Learning Loop (Store discovery patterns)
 - **Issue**: Cross-Session Pattern Matching
-- **Issue**: Continuous Learning from Swarm Operations
+- **Issue**: Continuous Learning from Coordination Operations
 - **Issue**: Export/Import Learned Patterns
 
 ### 🏢 **Project 3: Enterprise Platform & SAFe Integration**
@@ -91,7 +91,7 @@ Found massive archived TODO/roadmap files (2,872+ lines) containing detailed SAF
 - **Issue**: WebSocket Hub Real-Time Coordination ✅ COMPLETED
 - **Issue**: LLM Approval Service Intelligence ✅ COMPLETED
 - **Issue**: Workflow Engine Battle-Testing ✅ COMPLETED
-- **Issue**: MCP Integration (Port 3000) Enhancement
+- **Issue**: Web API Integration (Port 3000) Enhancement
 
 #### **Epic 3.2: Enterprise Security & Compliance**
 - **Issue**: SOC2 Compliance Implementation
@@ -157,7 +157,7 @@ Found massive archived TODO/roadmap files (2,872+ lines) containing detailed SAF
 
 ### **Auto-Discovery KPIs**
 - 90%+ domain identification accuracy
-- 80%+ confidence before swarm creation
+- 80%+ confidence before coordination creation
 - <5 minutes processing for large monorepos
 
 ### **Enterprise Platform KPIs**
