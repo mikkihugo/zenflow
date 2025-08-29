@@ -6,7 +6,7 @@ applies_to: 'src/interfaces/**/*'
 
 ## Domain Focus
 
-The interfaces domain handles MCP server integration, API endpoints, and limited user interfaces. The primary focus is on MCP (Model Context Protocol) for AI tool integration with external systems.
+The interfaces domain handles web-based user interfaces and API endpoints. The primary focus is on the comprehensive web dashboard for enterprise AI development management.
 
 ## Key Subdirectories
 
@@ -14,27 +14,25 @@ The interfaces domain handles MCP server integration, API endpoints, and limited
 src/interfaces/
 ├── api/           # REST API and WebSocket interfaces
 │   └── http/      # HTTP REST API endpoints
-├── mcp/           # MCP (Model Context Protocol) servers (primary interface)
 └── terminal/      # Limited terminal UI components
     └── screens/   # Basic status screens
 ```
 
 ## Architecture Patterns
 
-### MCP-Focused Strategy
+### Web-First Strategy
 
-- **MCP servers** for AI tool integration (primary interface approach)
+- **Web dashboard** as primary interface (apps/web-dashboard) 
 - **HTTP API** for basic external integrations 
 - **WebSocket** for real-time coordination updates
 - **Limited terminal UI** for basic status display
-- **Web dashboard** handled by separate app (apps/web-dashboard)
 
-### MCP Integration (Critical)
+### Limited MCP Integration
 
-- **HTTP MCP** (port 3000) for external tool integration with Claude Desktop
-- **Stdio MCP** for internal swarm coordination with Claude Code
-- **Tool schema validation** for all MCP tools
-- **Protocol compliance** with MCP specifications
+- **Standalone agent manager** for specific use cases only
+- **Port and auth configuration** for GitHub integration
+- **Web dashboard handles** primary interface responsibilities
+- **MCP tools** only for specialized external tool needs
 
 ## Testing Strategy - London TDD (Mockist)
 
@@ -43,13 +41,13 @@ Use London TDD for interface code - test interactions and protocols:
 ```typescript
 // Example: Test API endpoint interactions
 describe('CoordinationAPI', () => {
-  it('should handle swarm creation requests', async () => {
-    const mockSwarmManager = { createSwarm: jest.fn() };
-    const api = new CoordinationAPI(mockSwarmManager);
+  it('should handle coordination requests', async () => {
+    const mockCoordinationManager = { createCoordination: jest.fn() };
+    const api = new CoordinationAPI(mockCoordinationManager);
 
-    const response = await api.createSwarm(request);
+    const response = await api.createCoordination(request);
 
-    expect(mockSwarmManager.createSwarm).toHaveBeenCalledWith(request.params);
+    expect(mockCoordinationManager.createCoordination).toHaveBeenCalledWith(request.params);
     expect(response.status).toBe(201);
   });
 });
@@ -77,8 +75,8 @@ export class CLICommand {
 // REST API endpoint patterns
 @Controller('/coordination')
 export class CoordinationController {
-  @Post('/swarms')
-  async createSwarm(@Body() request: SwarmRequest): Promise<SwarmResponse> {
+  @Post('/coordination')
+  async createCoordination(@Body() request: CoordinationRequest): Promise<CoordinationResponse> {
     // Input validation
     // Service coordination
     // Response formatting
@@ -86,13 +84,13 @@ export class CoordinationController {
 }
 ```
 
-### MCP Server Tools
+### Web API Tools
 
 ```typescript
-// MCP tool implementation pattern
-export const mcpSwarmTool: MCPTool = {
-  name: 'swarm_init',
-  description: 'Initialize a new swarm with specified configuration',
+// Web-based tool implementation pattern
+export const coordinationTool = {
+  name: 'coordination_init',
+  description: 'Initialize coordination with specified configuration',
   inputSchema: {
     type: 'object',
     properties: {
@@ -103,7 +101,7 @@ export const mcpSwarmTool: MCPTool = {
   },
   handler: async (params) => {
     // Validate parameters
-    // Execute swarm initialization
+    // Execute coordination initialization
     // Return structured response
   },
 };
@@ -114,10 +112,10 @@ export const mcpSwarmTool: MCPTool = {
 ```typescript
 // WebSocket event patterns
 export class RealtimeCoordination {
-  @WebSocketEvent('swarm.status')
-  async handleSwarmStatus(client: WebSocket, data: SwarmStatusRequest) {
+  @WebSocketEvent('coordination.status')
+  async handleCoordinationStatus(client: WebSocket, data: CoordinationStatusRequest) {
     // Validate client permissions
-    // Get current swarm status
+    // Get current coordination status
     // Emit real-time updates
   }
 }
@@ -132,12 +130,12 @@ export class RealtimeCoordination {
 - **Real-time updates** via WebSocket with <10ms latency
 - **Rate limiting** to prevent abuse and ensure stability
 
-### MCP Performance
+### API Performance
 
 - **<10ms tool execution** for simple coordination tools
-- **<100ms tool execution** for complex swarm operations
-- **Protocol compliance** with MCP specifications
-- **Concurrent tool execution** support
+- **<100ms tool execution** for complex coordination operations
+- **WebSocket responsiveness** for real-time updates
+- **Concurrent request handling** support
 
 ### Interface Responsiveness
 
@@ -151,9 +149,8 @@ export class RealtimeCoordination {
 ### With Coordination Domain
 
 - **Expose coordination APIs** for external access
-- **Provide MCP tools** for swarm management
-- **Real-time coordination updates** via WebSocket
-- **CLI commands** for agent and swarm management
+- **Real-time coordination updates** via WebSocket  
+- **Web dashboard** for coordination management
 
 ### With Neural Domain
 
@@ -176,12 +173,12 @@ export class RealtimeCoordination {
 - **Comprehensive input validation** and sanitization
 - **Rate limiting and security** measures
 
-### MCP Compliance
+### Web Interface Standards
 
-- **Schema validation** for all tool parameters
-- **Protocol specification adherence** for compatibility
-- **Error handling** with proper MCP error codes
-- **Documentation** for all available tools
+- **Schema validation** for all API parameters
+- **Consistent error handling** across all interfaces
+- **Comprehensive input validation** and sanitization
+- **Documentation** for all available endpoints
 
 ### User Experience
 
@@ -235,20 +232,6 @@ export class InterfaceAuth {
 }
 ```
 
-## MCP Server Configuration
-
-### HTTP MCP Server (Port 3000)
-
-- **External tool integration** with Claude Desktop
-- **Project management tools** for human interaction
-- **System status and monitoring** endpoints
-
-### Stdio MCP Server
-
-- **Internal swarm coordination** with Claude Code
-- **Agent management tools** for AI automation
-- **Task orchestration** and execution
-
 ## Common Anti-Patterns to Avoid
 
 - **Don't bypass input validation** - always validate user input
@@ -261,7 +244,7 @@ export class InterfaceAuth {
 
 - **Request/response logging** for all interfaces
 - **Performance metrics** for API endpoints
-- **MCP protocol compliance** monitoring
+- **API response monitoring** for performance tracking
 - **WebSocket connection health** tracking
 - **User interaction analytics** for interface optimization
 

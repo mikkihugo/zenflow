@@ -185,7 +185,7 @@ pnpm lint
 - Use flexible agent type system (NO arbitrary limitations on agent types)
 - Agent types are configurable strings based on capabilities and needs
 - Respect existing topology strategies (hierarchical/mesh/ring/star)
-- Use established agent selection and swarm patterns
+- Use established agent selection and coordination patterns
 - Follow SAFe 6.0 and SPARC enterprise methodologies for coordination
 
 ### Memory Domain (src/memory/*)
