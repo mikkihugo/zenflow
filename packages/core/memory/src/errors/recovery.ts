@@ -372,7 +372,6 @@ export class RecoveryStrategyManager extends EventEmitter {
   /**
    * Register cache optimization strategy.
    */
-  private registerCacheOptimizationStrategy(): void {
   /**
    * Register cache optimization strategy.
    */
@@ -387,7 +386,7 @@ export class RecoveryStrategyManager extends EventEmitter {
       priority: 5,
       timeoutMs: 5000,
       maxRetries: 1,
-      execute: async (error, context) => {
+      execute: (error, context) => {
         const startTime = Date.now();
 
         try {
@@ -433,6 +432,14 @@ export class RecoveryStrategyManager extends EventEmitter {
    * Register system cleanup strategy.
    */
   private registerSystemCleanupStrategy(): void {
+    this.registerRetryWithBackoffStrategy();
+    this.registerSystemResetStrategy();
+  }
+
+  /**
+   * Register retry with backoff strategy.
+   */
+  private registerRetryWithBackoffStrategy(): void {
     // Retry with Backoff Strategy
     this.registerStrategy({
       name: 'retry_with_backoff',
