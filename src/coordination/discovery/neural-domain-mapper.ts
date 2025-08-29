@@ -312,11 +312,11 @@ export class NeuralDomainMapper {
   private calculateCohesionScores(predictions: any, domains: Domain[]): Map<string, number> {
     const cohesionScores = new Map<string, number>();
     
-    domains.forEach((domain, index) => {
+    for (const [index, domain] of domains.entries()) {
       // Extract cohesion score from GNN predictions
       const cohesion = this.extractCohesionFromPredictions(predictions, index);
       cohesionScores.set(domain.id, cohesion);
-    });
+    }
 
     return cohesionScores;
   }
@@ -327,7 +327,7 @@ export class NeuralDomainMapper {
   private generateCouplingMatrix(relationships: DomainRelationship[], domains: Domain[]): number[][] {
     const matrix = Array(domains.length).fill(null).map(() => Array(domains.length).fill(0));
     
-    relationships.forEach(rel => {
+    for (const rel of relationships) {
       const sourceIndex = domains.findIndex(d => d.id === rel.sourceDomain);
       const targetIndex = domains.findIndex(d => d.id === rel.targetDomain);
       
@@ -337,7 +337,7 @@ export class NeuralDomainMapper {
           matrix[targetIndex][sourceIndex] = rel.strength;
         }
       }
-    });
+    }
 
     return matrix;
   }
@@ -445,14 +445,14 @@ export class NeuralDomainMapper {
   private createAdjacencyMatrix(domains: Domain[], dependencies: DependencyGraph): number[][] {
     const matrix = Array(domains.length).fill(null).map(() => Array(domains.length).fill(0));
     
-    dependencies.edges.forEach(edge => {
+    for (const edge of dependencies.edges) {
       const sourceIndex = domains.findIndex(d => d.id === edge.source);
       const targetIndex = domains.findIndex(d => d.id === edge.target);
       
       if (sourceIndex >= 0 && targetIndex >= 0) {
         matrix[sourceIndex][targetIndex] = edge.weight;
       }
-    });
+    }
 
     return matrix;
   }
