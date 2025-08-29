@@ -316,12 +316,13 @@ export class CodeAnalyzer {
         // Emit session started event
         if (this.eventSystem) {
           await this.eventSystem.emit('analysis-session-started', {
-    ')            sessionId,
+            sessionId,
             options,
-});
-}
+          });
+        }
 
-        logger.info('Live analysis session started', { sessionId, options});')        return session;
+        logger.info('Live analysis session started', { sessionId, options});
+        return session;
 },
       { retries:3, minTimeout:1000},
     );

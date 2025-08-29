@@ -4,9 +4,9 @@
  */
 
 
-import { spawn } from 'node: child_process';
-import { promises as fs } from 'node: fs';
-import * as path from 'node: path';
+import { spawn } from 'node:child_process';
+import { promises as fs } from 'node:fs';
+import * as path from 'node:path';
 import { err, getLogger, ok } from '@claude-zen/foundation';
 import which from 'which';
 

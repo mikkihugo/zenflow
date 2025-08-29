@@ -301,50 +301,62 @@ export class AutomatedDeadCodeManager {
       context:{
         itemCount:items.length,
         types:Array.from(new Set(items.map((i) => i.type))),
-        avgConfidence:`${((items.reduce((sum, i) => sum + i.confidence, 0) / items.length) * 100).toFixed(1)}%`,`
+        avgConfidence:`${((items.reduce((sum, i) => sum + i.confidence, 0) / items.length) * 100).toFixed(1)}%`,
         preview:items
           .slice(0, 5)
-          .map((i) => `${i.type}:${i.name} (${i.location})`),`
+          .map((i) => `${i.type}:${i.name} (${i.location})`),
 },
       options:[
         'review-each - Review each item individually',        'auto-remove - Auto-remove high-safety items',        'defer-all - Defer all decisions',        'investigate-all - Mark all for investigation',],
-      priority: 'medium',      validationReason: 'Batch operation for medium-confidence dead code',};
+      priority: 'medium',
+      validationReason: 'Batch operation for medium-confidence dead code',
+    };
 
     const response = await this.aguiInterface.askQuestion(question);
     const decisions:DeadCodeDecision[] = [];
 
     switch (response) {
-      case 'review-each': ')'        // Process individually (up to a limit)
+      case 'review-each':
+        // Process individually (up to a limit)
         for (const item of items.slice(0, 5)) {
           decisions.push(await this.askHumanAboutDeadCode(item));
-}
+        }
         break;
 
-      case 'auto-remove': ')'        // Auto-remove items with high safety scores
+      case 'auto-remove':
+        // Auto-remove items with high safety scores
         items
           .filter((i) => i.safetyScore > 0.8)
           .forEach((item) => {
             decisions.push({
               itemId:item.id,
-              action: 'remove',              timestamp:new Date(),
-              reason: 'Auto-removal based on high safety score',});
-});
+              action: 'remove',
+              timestamp:new Date(),
+              reason: 'Auto-removal based on high safety score',
+            });
+          });
         break;
 
-      case 'defer-all': ')'        items.forEach((item) => {
+      case 'defer-all':
+        items.forEach((item) => {
           decisions.push({
             itemId:item.id,
-            action: 'defer',            timestamp:new Date(),
-            reason: 'Batch deferral',});
-});
+            action: 'defer',
+            timestamp:new Date(),
+            reason: 'Batch deferral',
+          });
+        });
         break;
 
-      case 'investigate-all': ')'        items.forEach((item) => {
+      case 'investigate-all':
+        items.forEach((item) => {
           decisions.push({
             itemId:item.id,
-            action: 'investigate',            timestamp:new Date(),
-            reason: 'Batch investigation request',});
-});
+            action: 'investigate',
+            timestamp:new Date(),
+            reason: 'Batch investigation request',
+          });
+        });
         break;
 }
 
