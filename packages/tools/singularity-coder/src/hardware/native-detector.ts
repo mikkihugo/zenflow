@@ -1,13 +1,15 @@
 import * as os from 'node:os';
-import '../types/hardware-types;
+import '../types/hardware-types';
 
 // Optional native dependencies for enhanced hardware detection
-let osUtils:typeof import('os-utils')|null = null;')let _si:typeof import('systeminformation')|null = null;')
-try {
-  osUtils = require('os-utils');')} catch (_e) {
-  logger.info('os-utils not available, using fallback detection');')}
+let osUtils: typeof import('os-utils') | null = null;
+let _si: typeof import('systeminformation') | null = null;
 
 try {
+  osUtils = require('os-utils');
+} catch (_e) {
+  console.log('os-utils not available, using fallback detection');
+}
   __si = require('systeminformation');')} catch (_e) {
   logger.info('systeminformation not available, using fallback detection');')}
 

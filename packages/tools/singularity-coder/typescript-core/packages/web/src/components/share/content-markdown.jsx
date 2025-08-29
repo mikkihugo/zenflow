@@ -59,11 +59,9 @@ var markedWithShiki = marked_1.marked.use((0, marked_shiki_1.default)({
 }));
 function ContentMarkdown(props) {
     var _this = this;
-    var html = (0, solid_js_1.createResource)(function () { return strip(props.text); }, function (markdown) { return __awaiter(_this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            return [2 /*return*/, markedWithShiki.parse(markdown)];
-        });
-    }); })[0];
+    var html = (0, solid_js_1.createResource)(function () { return strip(props.text); }, function (markdown) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+        return [2 /*return*/, markedWithShiki.parse(markdown)];
+    }); }); })[0];
     var _a = (0, solid_js_1.createSignal)(false), expanded = _a[0], setExpanded = _a[1];
     var overflow = (0, common_1.createOverflow)();
     return (<div class={content_markdown_module_css_1.default.root} data-highlight={props.highlight === true ? true : undefined} data-expanded={expanded() || props.expand === true ? true : undefined}>
@@ -76,7 +74,7 @@ function ContentMarkdown(props) {
     </div>);
 }
 function strip(text) {
-    var wrappedRe = /^\s*<([A-Za-z]\w*)>\s*([\s\S]*?)\s*<\/\1>\s*$/;
+    var wrappedRe = /^\s*<([A-Za-z]\w*)>\s*([\S\s]*?)\s*<\/\1>\s*$/;
     var match = text.match(wrappedRe);
     return match ? match[2] : text;
 }

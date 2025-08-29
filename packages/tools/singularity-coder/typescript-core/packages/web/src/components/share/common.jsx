@@ -16,7 +16,7 @@ function AnchorIcon(props) {
             var _a = window.location, origin = _a.origin, pathname = _a.pathname, search = _a.search;
             navigator.clipboard
                 .writeText("".concat(origin).concat(pathname).concat(search).concat(hash))
-                .catch(function (err) { return console.error("Copy failed", err); });
+                .catch(function (error) { return console.error("Copy failed", error); });
             setCopied(true);
             setTimeout(function () { return setCopied(false); }, 3000);
         }}>

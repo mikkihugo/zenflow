@@ -8,11 +8,13 @@ const _getOptimalProvider:any = null;
 let __llmRoutingAvailable = false;
 
 try {
-  const __llmRouting = require('@claude-zen/llm-routing');')  getOptimalProvider = llmRouting.getOptimalProvider;
-  // Note:LLM_PROVIDER_CONFIG available if needed
+  const __llmRouting = require('@claude-zen/llm-providers');
+  getOptimalProvider = __llmRouting.getOptimalProvider;
+  // Note: LLM_PROVIDER_CONFIG available if needed
   __llmRoutingAvailable = true;
 } catch (_error) {
-  logger.warn('LLM routing not available, using fallback');')  llmRoutingAvailable = false;
+  console.warn('LLM routing not available, using fallback');
+  __llmRoutingAvailable = false;
 }
 
 import type {

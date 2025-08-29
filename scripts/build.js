@@ -28,29 +28,45 @@ try {
 		{ stdio: "inherit" },
 	);
 
-	console.log("   🔧 Building facades...");
-	execSync(
-		"find packages/public-api/facades -name package.json -execdir pnpm build \\;",
-		{ stdio: "inherit" },
-	);
+	console.log("   🔧 Building core packages...");
+	try {
+		execSync(
+			"find packages/core -name package.json -not -path '*/foundation/*' -execdir pnpm build \\;",
+			{ stdio: "inherit" },
+		);
+	} catch (_error) {
+		console.log("     ⚠️ Some core packages failed, continuing...");
+	}
 
-	console.log("   🔧 Building implementation packages...");
-	execSync(
-		"find packages/implementation -name package.json -not -path '*/file-aware-ai/*' -execdir pnpm build \\;",
-		{ stdio: "inherit" },
-	);
+	console.log("   🔧 Building services packages...");
+	try {
+		execSync(
+			"find packages/services -name package.json -execdir pnpm build \\;",
+			{ stdio: "inherit" },
+		);
+	} catch (_error) {
+		console.log("     ⚠️ Some service packages failed, continuing...");
+	}
 
-	console.log("   🔧 Building enterprise packages...");
-	execSync(
-		"find packages/enterprise -name package.json -execdir pnpm build \\;",
-		{ stdio: "inherit" },
-	);
+	console.log("   🔧 Building tools packages (including singularity-coder)...");
+	try {
+		execSync(
+			"find packages/tools -name package.json -execdir pnpm build \\;",
+			{ stdio: "inherit" },
+		);
+	} catch (_error) {
+		console.log("     ⚠️ Some tools packages failed, continuing...");
+	}
 
-	console.log("   🔧 Building private core packages...");
-	execSync(
-		"find packages/private-core -name package.json -execdir pnpm build \\;",
-		{ stdio: "inherit" },
-	);
+	console.log("   🔧 Building integration packages (including llm-providers)...");
+	try {
+		execSync(
+			"find packages/integrations -name package.json -execdir pnpm build \\;",
+			{ stdio: "inherit" },
+		);
+	} catch (_error) {
+		console.log("     ⚠️ Some integration packages failed, continuing...");
+	}
 
 	console.log("   🔧 Building server...");
 	execSync("cd apps/claude-code-zen-server && pnpm build", {
@@ -62,7 +78,7 @@ try {
 		stdio: "inherit",
 	});
 
-	console.log("   ✅ ALL packages built successfully");
+	console.log("   ✅ ALL packages build process completed");
 } catch (_error) {
 	console.log("   ⚠️ Some builds failed, continuing with available code...");
 }

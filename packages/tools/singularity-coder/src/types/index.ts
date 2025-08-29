@@ -32,10 +32,10 @@ export interface FileAwareResponse {
 }
 
 export interface FileChange {
-  type: 'create|modify|delete|rename;
-'  path:string;
-  content?:string;
-  reasoning:string;
+  type: 'create' | 'modify' | 'delete' | 'rename';
+  path: string;
+  content?: string;
+  reasoning: string;
 }
 
 export interface FileInfo {

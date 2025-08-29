@@ -11,13 +11,15 @@ import * as path from 'node:path';
 // Fallback glob function for compilation
 async function glob(pattern:string, options:any): Promise<string[]> {
   // Simple fallback - in production this would use fast-glob
-  logger.info('Using fallback glob for pattern:', pattern); // Use pattern parameter')  try {
-    const fs = require('node:fs');')    const path = require('node:path');')
+  try {
+    const fs = require('node:fs');
+    const path = require('node:path');
     function walkDir(dir:string, fileList:string[] = []): string[] {
       // Validate that dir is actually a string
       if (typeof dir !== 'string') {
-    ')        logger.warn('Invalid directory path type:', typeof dir, dir);')        return fileList;
-}
+        console.warn('Invalid directory path type:', typeof dir, dir);
+        return fileList;
+      }
 
       try {
         const files = fs.readdirSync(dir);

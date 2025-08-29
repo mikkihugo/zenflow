@@ -1,1 +1,1 @@
-{"version":3,"file":"failover-manager.d.ts","sourceRoot":"","sources":["failover-manager.ts"],"names":[],"mappings":"AAAA;;;GAGG;AACH;;GAEG;AAEH,qBAAa,eAAe;IAC1B,OAAO,CAAC,kBAAkB,CAAkC;IAE/C,gBAAgB,CAAC,aAAa,EAAE,MAAM,GAAG,OAAO,CAAC,IAAI,CAAC;YAoBrD,gBAAgB;YAEhB,oBAAoB;YAEpB,mBAAmB;CAClC"}
+{"version":3,"file":"failover-manager.d.ts","sourceRoot":"","sources":["failover-manager.ts"],"names":[],"mappings":"AAAA;;;GAGG;AACH;;GAEG;AAEH,qBAAa,eAAe;IAC1B,OAAO,CAAC,kBAAkB,CAAiC;IAE9C,gBAAgB,CAAC,aAAa,EAAC,MAAM,GAAG,OAAO,CAAC,IAAI,CAAC;YAoBpD,gBAAgB;YAEhB,oBAAoB;YAEpB,mBAAmB;CAClC"}
