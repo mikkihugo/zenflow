@@ -5,6 +5,10 @@
  * unified Central WebSocket Hub for real-time coordination updates.
  */
 
+import { getLogger } from '@claude-zen/foundation';
+
+const logger = getLogger('svelte-websocket-manager');
+
 /**
  * Example Svelte WebSocket Manager
  * This would typically be in the Svelte app as a utility/store
@@ -28,7 +32,7 @@ export class SvelteWebSocketManager {
         this.ws = new WebSocket(this.hubEndpoint);
         
         this.ws.onopen = () => {
-          console.info('🔌 Connected to Central WebSocket Hub');
+          logger.info('🔌 Connected to Central WebSocket Hub');
           this.reconnectAttempts = 0;
           resolve();
         };
@@ -38,12 +42,12 @@ export class SvelteWebSocketManager {
         };
         
         this.ws.onclose = () => {
-          console.info('❌ Disconnected from Central WebSocket Hub');
+          logger.info('❌ Disconnected from Central WebSocket Hub');
           this.handleReconnect();
         };
         
         this.ws.onerror = (error) => {
-          console.error('🚨 WebSocket error:', error);
+          logger.error('🚨 WebSocket error:', error);
           reject(error);
         };
       } catch (error) {
@@ -76,14 +80,14 @@ export class SvelteWebSocketManager {
         this.emit('system_health_update', message.data);
         break;
       default:
-        console.warn('Unknown message type:', message.type);
+        logger.warn('Unknown message type:', message.type);
     }
   }
 
   private handleServiceDiscovery(discoveryData: any): void {
     this.availableServices = discoveryData.services.map((s: any) => s.name);
-    console.info('🔍 Discovered services:', this.availableServices);
-    console.info('📡 Available message types:', discoveryData.totalMessageTypes);
+    logger.info('🔍 Discovered services:', this.availableServices);
+    logger.info('📡 Available message types:', discoveryData.totalMessageTypes);
     
     // Auto-subscribe to common dashboard events
     this.subscribe([
@@ -103,7 +107,7 @@ export class SvelteWebSocketManager {
    */
   subscribe(services: string[], messageTypes: string[]): void {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
-      console.warn('⚠️ WebSocket not connected, subscription queued');
+      logger.warn('⚠️ WebSocket not connected, subscription queued');
       return;
     }
 
@@ -147,7 +151,7 @@ export class SvelteWebSocketManager {
         try {
           callback(data);
         } catch (error) {
-          console.error(`Error in event callback for ${eventType}:`, error);
+          logger.error(`Error in event callback for ${eventType}:`, error);
         }
       });
     }
@@ -159,7 +163,7 @@ export class SvelteWebSocketManager {
         try {
           callback({ type: eventType, data });
         } catch (error) {
-          console.error('Error in wildcard callback:', error);
+          logger.error('Error in wildcard callback:', error);
         }
       });
     }
@@ -172,15 +176,15 @@ export class SvelteWebSocketManager {
     if (this.reconnectAttempts < this.maxReconnectAttempts) {
       this.reconnectAttempts++;
       const delay = Math.pow(2, this.reconnectAttempts) * 1000; // Exponential backoff
-      console.info(`🔄 Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
+      logger.info(`🔄 Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
       
       setTimeout(() => {
         this.connect().catch(error => {
-          console.error('Reconnection failed:', error);
+          logger.error('Reconnection failed:', error);
         });
       }, delay);
     } else {
-      console.error('🚫 Max reconnection attempts reached');
+      logger.error('🚫 Max reconnection attempts reached');
     }
   }
 
@@ -221,7 +225,7 @@ export class SvelteWebSocketManager {
       this.ws = null;
     }
     this.subscribers.clear();
-    console.info('🔌 Disconnected from Central WebSocket Hub');
+    logger.info('🔌 Disconnected from Central WebSocket Hub');
   }
 }
 
@@ -256,7 +260,7 @@ export async function initWebSocket() {
     wsManager.on('flow_metrics_updated', (data) => flowMetrics.set(data));
     wsManager.on('system_health_update', (data) => systemHealth.set(data));
   } catch (error) {
-    console.error('WebSocket connection failed:', error);
+    logger.error('WebSocket connection failed:', error);
     connectionStatus.set(false);
   }
 }

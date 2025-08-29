@@ -4,23 +4,10 @@
  * Single WebSocket endpoint that integrates with the existing event system,
  * providing auto-discovery and unified real-time updates for Svelte dashboard.
  */
-import { EventEmitter } from 'events';
+import { EventEmitter, getLogger } from '@claude-zen/foundation';
 import type { WebSocket, RawData } from 'ws';
 
-// Temporary logger and recordEvent implementations until foundation is available
-const logger = {
-  info: (msg: string, data?: any) => console.log(`[INFO] ${msg}`, data || ''),
-  debug: (msg: string, data?: any) => console.log(`[DEBUG] ${msg}`, data || ''),
-  error: (msg: string, data?: any) => console.error(`[ERROR] ${msg}`, data || ''),
-  warn: (msg: string, data?: any) => console.warn(`[WARN] ${msg}`, data || '')
-};
-
-const getLogger = (name: string) => ({
-  info: (msg: string, data?: any) => logger.info(`[${name}] ${msg}`, data || ''),
-  debug: (msg: string, data?: any) => logger.debug(`[${name}] ${msg}`, data || ''),
-  error: (msg: string, data?: any) => logger.error(`[${name}] ${msg}`, data || ''),
-  warn: (msg: string, data?: any) => logger.warn(`[${name}] ${msg}`, data || '')
-});
+const logger = getLogger('websocket-hub');
 
 const recordEvent = (eventName: string, data?: any) => {
   logger.info(`[EVENT] ${eventName}`, data || '');
