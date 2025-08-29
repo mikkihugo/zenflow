@@ -51,69 +51,16 @@ export {
   shutdownEventDrivenTelemetry,
 } from './telemetry-event-driven.js';
 
-// LEGACY EXPORTS (WITH IMPORTS - DEPRECATED)
-// OpenTelemetry re-exports for convenience
-export { SpanKind, SpanStatusCode} from '@opentelemetry/api';
-export {
-  getTelemetry,
-  initializeTelemetry,
-  metered,
-  recordEvent,
-  recordGauge,
-  recordHistogram,
-  recordMetric,
-  setTraceAttributes,
-  shutdownTelemetry,
-  startTrace,
-  TelemetryManager,
-  TelemetryManager as default,
-  traced,
-  tracedAsync,
-  withAsyncTrace,
-  withTrace,
-} from './telemetry.js';
-// Export types
-export type {
-  Attributes,
-  Meter,
-  MetricDefinition,
-  MetricType,
-  Span,
-  SpanOptions,
-  TelemetryConfig,
-  TelemetryEvent,
-  Tracer,
-} from './types.js';
-
-// Import TelemetryManager class
-import { TelemetryManager} from './telemetry.js';
-
-// Factory function expected by infrastructure facade
+// Direct telemetry creation functions (no facade pattern)
 export function createTelemetryManager(config?:unknown) {
-  return new TelemetryManager(config);
+  return new EventDrivenTelemetryManager(config);
 }
 
-// Provider class expected by infrastructure facade
-export class TelemetryProvider {
-  constructor(private config?:unknown) {}
-
-  async createTelemetryManager(config?:unknown) {
-    return createTelemetryManager({ ...this.config, ...config});
-}
-
-  async createCollector(config?:unknown) {
-    return createTelemetryManager({ ...this.config, ...config});
-}
-}
-
-// Main factory function for infrastructure facade
-export function createTelemetryAccess(_config?:unknown) {
+export function createTelemetryAccess(config?:unknown) {
   return {
-    createTelemetryManager,
-    createCollector:createTelemetryManager,
-    createProvider:(providerConfig?: unknown) =>
-      new TelemetryProvider(providerConfig),
-    TelemetryManager,
-    TelemetryProvider,
-};
+    createTelemetryManager: () => createTelemetryManager(config),
+    getEventDrivenTelemetry,
+    initializeEventDrivenTelemetry,
+    shutdownEventDrivenTelemetry
+  };
 }

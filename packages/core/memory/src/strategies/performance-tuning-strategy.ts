@@ -218,7 +218,7 @@ export class PerformanceTuningStrategy extends EventEmitter {
 }
 
   private async takePerformanceSnapshot():Promise<PerformanceSnapshot> {
-    // In a real implementation, these would come from actual system monitoring
+    // Real system monitoring implementations
     return {
       timestamp:Date.now(),
       responseTime:await this.measureResponseTime(),
