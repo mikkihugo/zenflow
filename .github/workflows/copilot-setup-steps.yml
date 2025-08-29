@@ -32,7 +32,14 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # Step 2: Setup Node.js v22 Environment
+      # Step 2: Setup PNPM (must come before Node.js cache setup)
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.15.0
+          run_install: false
+
+      # Step 3: Setup Node.js v22 Environment (after pnpm is available)
       - name: Setup Node.js v22
         uses: actions/setup-node@v4
         with:
@@ -40,33 +47,26 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: pnpm-lock.yaml
 
-      # Step 3: Setup PNPM
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.15.0
-          run_install: false
-
-      # Fallback: ensure pnpm via Corepack in case PATH is reset by subsequent steps
+      # Step 4: Fallback: ensure pnpm via Corepack in case PATH is reset by subsequent steps
       - name: Ensure pnpm via Corepack (fallback)
         run: |
           node -v
           corepack enable
           corepack prepare pnpm@10.15.0 --activate
 
-      # Step 3.1: Verify pnpm version
+      # Step 5: Verify pnpm version
       - name: Verify pnpm version
         run: pnpm -v
 
-      # Optional: show pnpm store path (helpful when checking cache hits in logs)
+      # Step 6: Show pnpm store path
       - name: Show pnpm store path
         run: pnpm store path
 
-      # Step 4: Install Node.js Dependencies
+      # Step 7: Install Node.js Dependencies
       - name: Install Node.js Dependencies
         run: pnpm install
 
-      # Step 5: Setup Rust Stable Toolchain
+      # Step 8: Setup Rust Stable Toolchain
       - name: Setup Rust Stable Toolchain
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
@@ -74,7 +74,7 @@ jobs:
           components: rustfmt, clippy
           cache: true
 
-      # Step 6: Install Node.js Dependencies again (after Rust setup, if needed)
+      # Step 9: Install Node.js Dependencies again (after Rust setup, if needed)
       - name: Install Node.js Dependencies (post Rust setup)
         run: pnpm install
 
