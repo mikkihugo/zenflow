@@ -5,9 +5,9 @@
  * connection management, and comprehensive error handling for enterprise applications.
  */
 
-import { existsSync, mkdirSync} from 'node:fs';
-import { dirname} from 'node:path';
-import { getLogger} from '../logger.js';
+import { existsSync, mkdirSync } from 'node:fs';
+import { dirname } from 'node:path';
+import { getLogger } from '../logger.js';
 
 // Constants to avoid string duplication
 const SHOW_TABLES_QUERY = 'CALL show_tables()';
@@ -33,36 +33,36 @@ const logger = getLogger('kuzu-adapter');
 
 // Real Kuzu types based on the actual API from Context7 documentation
 interface KuzuModule {
-  Database:new (
-    databasePath?:string,
-    bufferManagerSize?:number,
-    enableCompression?:boolean,
-    readOnly?:boolean,
-    maxDBSize?:number,
-    autoCheckpoint?:boolean,
-    checkpointThreshold?:number
+  Database: new (
+    databasePath?: string,
+    bufferManagerSize?: number,
+    enableCompression?: boolean,
+    readOnly?: boolean,
+    maxDBSize?: number,
+    autoCheckpoint?: boolean,
+    checkpointThreshold?: number
   ) => KuzuDatabase;
-  Connection:new (
-    database:KuzuDatabase,
-    numThreads?:number
+  Connection: new (
+    database: KuzuDatabase,
+    numThreads?: number
   ) => KuzuConnection;
 }
 
 interface KuzuDatabase {
-  init():Promise<void>;
-  initSync():void;
-  close():Promise<void>;
-  closeSync():void;
+  init(): Promise<void>;
+  initSync(): void;
+  close(): Promise<void>;
+  closeSync(): void;
 }
 
 interface KuzuConnection {
-  query(cypher:string): Promise<KuzuQueryResult | KuzuQueryResult[]>;
-  close():Promise<void>;
+  query(cypher: string): Promise<KuzuQueryResult | KuzuQueryResult[]>;
+  close(): Promise<void>;
 }
 
 interface KuzuQueryResult {
-  getAll():Promise<unknown[]>;
-  getAllObjects():Promise<Record<string, unknown>[]>; // Enhanced result format
+  getAll(): Promise<unknown[]>;
+  getAllObjects(): Promise<Record<string, unknown>[]>; // Enhanced result format
   hasNext():boolean;
   getNext():unknown;
   getColumnNames():string[];

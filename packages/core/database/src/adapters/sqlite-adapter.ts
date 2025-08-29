@@ -5,8 +5,8 @@
  * and comprehensive error handling for enterprise applications.
  */
 
-import { existsSync, mkdirSync} from 'node:fs';
-import { dirname} from 'node:path';
+import { existsSync, mkdirSync } from 'node:fs';
+import { dirname } from 'node:path';
 import Database from 'better-sqlite3';
 import { getLogger} from '../logger.js';
 import {
@@ -34,17 +34,17 @@ import {
 const logger = getLogger('sqlite-adapter');
 
 interface PooledConnection {
-  db:Database.Database;
-  id:string;
-  createdAt:Date;
-  lastUsedAt:Date;
-  inUse:boolean;
-  queryCount:number;
-  transactionCount:number;
+  db: Database.Database;
+  id: string;
+  createdAt: Date;
+  lastUsedAt: Date;
+  inUse: boolean;
+  queryCount: number;
+  transactionCount: number;
 }
 
 export class SQLiteAdapter implements DatabaseConnection {
-  private readonly config:DatabaseConfig;
+  private readonly config: DatabaseConfig;
   private readonly pool:PooledConnection[] = [];
   private connected = false;
   private readonly stats = {
@@ -56,7 +56,7 @@ export class SQLiteAdapter implements DatabaseConnection {
     connectionDestroyed:0,
 };
 
-  constructor(config:DatabaseConfig) {
+  constructor(config: DatabaseConfig) {
     this.config = {
       ...config,
       pool:{
@@ -68,7 +68,7 @@ export class SQLiteAdapter implements DatabaseConnection {
         createTimeoutMillis:3000,
         destroyTimeoutMillis:5000,
         createRetryIntervalMillis:200,
-        propagateCreateError:true,
+        propagateCreateError: true,
         ...config.pool,
 },
       retryPolicy:{
@@ -85,14 +85,14 @@ export class SQLiteAdapter implements DatabaseConnection {
     this.startPoolMaintenance();
 }
 
-  async connect():Promise<void> {
+  async connect(): Promise<void> {
     if (this.connected) return;
 
     const correlationId = this.generateCorrelationId();
     logger.info('Connecting to SQLite database', {
       correlationId,
-      database:this.config.database,
-          });
+      database: this.config.database,
+    });
 
     try {
       // Ensure database directory exists
@@ -106,13 +106,13 @@ export class SQLiteAdapter implements DatabaseConnection {
       this.connected = true;
       logger.info('Successfully connected to SQLite database', {
         correlationId,
-        poolSize:this.pool.length,
-          });
+        poolSize: this.pool.length,
+      });
 } catch (error) {
       logger.error('Failed to connect to SQLite database', {
         correlationId,
-        error:error instanceof Error ? error.message : String(error),
-          });
+        error: error instanceof Error ? error.message : String(error),
+      });
       throw new ConnectionError(
         `Failed to connect to SQLite database:${error instanceof Error ? error.message : String(error)}`,
         correlationId,
@@ -121,7 +121,7 @@ export class SQLiteAdapter implements DatabaseConnection {
 }
 }
 
-  async disconnect():Promise<void> {
+  async disconnect(): Promise<void> {
     if (!this.connected) return;
 
     const correlationId = this.generateCorrelationId();
@@ -139,12 +139,12 @@ export class SQLiteAdapter implements DatabaseConnection {
 
       logger.info('Successfully disconnected from SQLite database', {
         correlationId,
-          });
+      });
 } catch (error) {
       logger.error('Error during SQLite disconnect', {
         correlationId,
-        error:error instanceof Error ? error.message : String(error),
-          });
+        error: error instanceof Error ? error.message : String(error),
+      });
       throw new ConnectionError(
         `Failed to disconnect from SQLite:${error instanceof Error ? error.message : String(error)}`,
         correlationId,
@@ -363,15 +363,15 @@ export class SQLiteAdapter implements DatabaseConnection {
       return {
         healthy:false,
         status: 'unhealthy',
-        score:0,
-        timestamp:new Date(),
-        responseTimeMs:Date.now() - startTime,
-        lastError:error instanceof Error ? error.message : String(error),
-        details:{
-          connected:this.connected,
-          error:error instanceof Error ? error.message : String(error),
-},
-};
+        score: 0,
+        timestamp: new Date(),
+        responseTimeMs: Date.now() - startTime,
+        lastError: error instanceof Error ? error.message : String(error),
+        details: {
+          connected: this.connected,
+          error: error instanceof Error ? error.message : String(error),
+        },
+      };
 }
 }
 
@@ -451,10 +451,10 @@ export class SQLiteAdapter implements DatabaseConnection {
           });
 
         results.push({
-          version:migration.version,
-          applied:true,
-          executionTimeMs:Date.now() - startTime,
-          });
+          version: migration.version,
+          applied: true,
+          executionTimeMs: Date.now() - startTime,
+        });
 
         logger.info('Migration applied successfully', {
           version:migration.version,
@@ -465,17 +465,17 @@ export class SQLiteAdapter implements DatabaseConnection {
           error instanceof Error ? error.message:String(error);
 
         results.push({
-          version:migration.version,
-          applied:false,
-          executionTimeMs:Date.now() - startTime,
-          error:errorMessage,
-          });
+          version: migration.version,
+          applied: false,
+          executionTimeMs: Date.now() - startTime,
+          error: errorMessage,
+        });
 
         logger.error('Migration failed', {
-          version:migration.version,
-          name:migration.name,
-          error:errorMessage,
-          });
+          version: migration.version,
+          name: migration.name,
+          error: errorMessage,
+        });
 
         // Stop on first failure
         break;
@@ -583,20 +583,20 @@ export class SQLiteAdapter implements DatabaseConnection {
           db.exec('PRAGMA foreign_keys = ON');
           db.exec('PRAGMA temp_store = MEMORY');
 
-          const connection:PooledConnection = {
+          const connection: PooledConnection = {
             db,
             id,
-            createdAt:new Date(),
-            lastUsedAt:new Date(),
-            inUse:false,
-            queryCount:0,
-            transactionCount:0,
-};
+            createdAt: new Date(),
+            lastUsedAt: new Date(),
+            inUse: false,
+            queryCount: 0,
+            transactionCount: 0,
+          };
 
           this.pool.push(connection);
           this.stats.connectionCreated++;
 
-          logger.debug('Created new SQLite connection', { connectionId:id          });
+          logger.debug('Created new SQLite connection', { connectionId: id });
           resolve(connection);
 } catch (error) {
           logger.error('Failed to create SQLite connection', {

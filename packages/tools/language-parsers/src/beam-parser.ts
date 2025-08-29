@@ -29,10 +29,10 @@ export interface BeamModule {
   name:string;
 
   /** File path */
-  path:string;
+  path: string;
 
   /** Programming language */
-  language:'elixir' | 'erlang' | 'gleam';
+  language: 'elixir' | 'erlang' | 'gleam';
 
   /** Exported functions */
   exports:BeamFunction[];
