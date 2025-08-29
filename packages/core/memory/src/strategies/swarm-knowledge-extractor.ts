@@ -121,9 +121,9 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
   private config:ExtractionConfig;
   private telemetry:TelemetryManager;
   private lifecycleManager?:DataLifecycleManager;
-  private brainCoordinator?:any; // Will be dynamically imported
-  private mlCoordinator?:any; // Will be dynamically imported
-  private patternRecognizer?:any; // Will be dynamically imported
+  private brainCoordinator?:unknown; // Will be dynamically imported
+  private mlCoordinator?:unknown; // Will be dynamically imported
+  private patternRecognizer?:unknown; // Will be dynamically imported
   private sparcEngine?:any; // Will be dynamically imported
   private initialized = false;
 
@@ -520,9 +520,9 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
     if (this.brainCoordinator) {
       try {
         const features = [avgTaskCompletion, avgCollaboration, decisionQuality];
-        const prediction = await this.brainCoordinator.predict(features);
+        const prediction = await (this.brainCoordinator as { predict: (features: number[]) => Promise<{ output: { adaptability?: number } }> }).predict(features);
         adaptabilityScore = prediction.output.adaptability || 0.5;
-} catch (error) {
+} catch {
         this.logger.debug(
           'Brain adaptability prediction failed, using default'
         );
@@ -537,7 +537,7 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
 };
 }
 
-  private async extractLearningOutcomes(
+  private extractLearningOutcomes(
     sessionData:SwarmSession
   ):Promise<ExtractedKnowledge['learningOutcomes']> {
     const outcomes:ExtractedKnowledge['learningOutcomes'] = [];
@@ -563,10 +563,10 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
 });
 }
 
-    return outcomes;
+    return Promise.resolve(outcomes);
 }
 
-  private async extractFailurePatterns(
+  private extractFailurePatterns(
     sessionData:SwarmSession
   ):Promise<ExtractedKnowledge['failurePatterns']> {
     const patterns:ExtractedKnowledge['failurePatterns'] = [];
@@ -595,7 +595,7 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
 }
 }
 
-    return patterns;
+    return Promise.resolve(patterns);
 }
 
   private extractSPARCInsights(
@@ -676,10 +676,10 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
           avgCollaboration,
           sessionData.participants.length,
 ];
-        const prediction = await this.brainCoordinator.predict(features);
+        const prediction = await (this.brainCoordinator as { predict: (features: number[]) => Promise<{ output: { importance?: number } }> }).predict(features);
         const mlImportance = prediction.output.importance || 0.5;
         importance = (importance + mlImportance) / 2; // Blend manual and ML scores
-} catch (error) {
+} catch {
         this.logger.debug(
           'Brain importance prediction failed, using manual calculation'
         );

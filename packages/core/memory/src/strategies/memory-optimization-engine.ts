@@ -100,8 +100,8 @@ export class MemoryOptimizationEngine extends EventEmitter {
 
     return withTrace('memory-optimization-cycle', async (span) => {
       span?.setAttributes({
-        'optimization.mode':this.config.mode,
-        'optimization.samples':this.samples.length,
+        optimizationMode:this.config.mode,
+        optimizationSamples:this.samples.length,
 });
 
       const startTime = Date.now();
