@@ -21,9 +21,9 @@ import {
 
 // Constants for repeated strings
 const LOG_MESSAGES = {
-  SUCCESSFULLY_STORED: 'Successfully stored key',
-  SUCCESSFULLY_DELETED: 'Successfully deleted key', 
-  SUCCESSFULLY_CLEARED: 'Successfully cleared all data',
+  successfullyStored: 'Successfully stored key',
+  successfullyDeleted: 'Successfully deleted key', 
+  successfullyCleared: 'Successfully cleared all data',
 } as const;
 
 /**
@@ -153,7 +153,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
         createdAt:new Date().toISOString(),
         metadata:{ type: 'memory_entry'},
 });
-      this.logger.debug(`${LOG_MESSAGES.SUCCESSFULLY_STORED}: ${key}`);
+      this.logger.debug(`${LOG_MESSAGES.successfullyStored}: ${key}`);
     } catch (error) {
       this.logger.error(`Failed to store key ${key}:${error}`);
       throw error;
@@ -204,7 +204,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
       for (const entry of allEntries) {
         await this.repository.delete(entry.id);
 }
-      this.logger.info('Successfully cleared all data');
+      this.logger.info(LOG_MESSAGES.successfullyCleared);
 } catch (error) {
       this.logger.error(`Failed to clear data:${error}`);
       throw error;
@@ -366,7 +366,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
           await this.repository.delete(vector.id);
 }
 }
-      this.logger.info('Successfully cleared all data');
+      this.logger.info(LOG_MESSAGES.successfullyCleared);
 } catch (error) {
       this.logger.error(`Failed to clear data:${error}`);
       throw error;
@@ -498,7 +498,7 @@ export class JsonMemoryBackend implements MemoryBackend {
     try {
       this.data.clear();
       await this.persistToFile();
-      this.logger.info('Successfully cleared all data');
+      this.logger.info(LOG_MESSAGES.successfullyCleared);
 } catch (error) {
       this.logger.error(`Failed to clear data:${error}`);
       throw error;
@@ -617,7 +617,7 @@ export class InMemoryBackend implements MemoryBackend {
 
     try {
       this.data.clear();
-      this.logger.info('Successfully cleared all data');
+      this.logger.info(LOG_MESSAGES.successfullyCleared);
 } catch (error) {
       this.logger.error(`Failed to clear data:${error}`);
       throw error;

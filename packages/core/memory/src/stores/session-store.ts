@@ -54,7 +54,6 @@ const telemetryConfig:TelemetryConfig = {
 };
 const telemetry = new BasicTelemetryManager(telemetryConfig);
 
-type BackendConfig = SessionMemoryStoreOptionsType['backendConfig'];
 type SessionMemoryStoreOptions = SessionMemoryStoreOptionsType;
 
 @injectable()

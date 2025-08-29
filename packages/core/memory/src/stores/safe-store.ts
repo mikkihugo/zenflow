@@ -25,6 +25,11 @@ import {
 
 const logger = getLogger('src-memory-safe-memory-store');
 
+// Constants for repeated strings
+const ERROR_MESSAGES = {
+  storeNotInitialized: 'Memory store not initialized',
+} as const;
+
 export interface SafeMemoryStoreOptions {
   namespace?:string;
   enableTTL?:boolean;
@@ -99,7 +104,7 @@ export class SafeMemoryStore extends EventEmitter {
         return this.createMemoryError(
           key,
           'STORE_NOT_INITIALIZED',
-          'Memory store not initialized'
+          ERROR_MESSAGES.storeNotInitialized
         );
 }
 
@@ -165,7 +170,7 @@ export class SafeMemoryStore extends EventEmitter {
         return this.createMemoryError(
           key,
           'STORE_NOT_INITIALIZED',
-          'Memory store not initialized'
+          ERROR_MESSAGES.storeNotInitialized
         );
 }
 
@@ -231,7 +236,7 @@ export class SafeMemoryStore extends EventEmitter {
         return this.createMemoryError(
           key,
           'STORE_NOT_INITIALIZED',
-          'Memory store not initialized'
+          ERROR_MESSAGES.storeNotInitialized
         );
 }
 
@@ -333,7 +338,7 @@ export class SafeMemoryStore extends EventEmitter {
 }
 }
 
-      const __stats = {
+      const stats = {
         entries,
         totalSize,
         averageSize:entries > 0 ? totalSize / entries : 0,
