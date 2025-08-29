@@ -32,6 +32,7 @@ declare module '$env/static/private' {
 	export const COPILOT_AGENT_START_TIME_SEC: string;
 	export const DOTNET_NOLOGO: string;
 	export const USER: string;
+	export const RUST_BACKTRACE: string;
 	export const npm_config_user_agent: string;
 	export const CI: string;
 	export const RUNNER_ENVIRONMENT: string;
@@ -57,6 +58,7 @@ declare module '$env/static/private' {
 	export const ANDROID_NDK_LATEST_HOME: string;
 	export const JAVA_HOME_21_X64: string;
 	export const GITHUB_RETENTION_DAYS: string;
+	export const CARGO_INCREMENTAL: string;
 	export const npm_config__claude_zen_registry: string;
 	export const GITHUB_REPOSITORY_OWNER_ID: string;
 	export const POWERSHELL_DISTRIBUTION_CHANNEL: string;
@@ -66,7 +68,6 @@ declare module '$env/static/private' {
 	export const npm_config_engine_strict: string;
 	export const GITHUB_GRAPHQL_URL: string;
 	export const NVM_DIR: string;
-	export const GITHUB_COPILOT_SETUP_ERROR_REPORTED: string;
 	export const DOTNET_SKIP_FIRST_TIME_EXPERIENCE: string;
 	export const JAVA_HOME_17_X64: string;
 	export const ImageVersion: string;
@@ -87,6 +88,7 @@ declare module '$env/static/private' {
 	export const JOURNAL_STREAM: string;
 	export const GITHUB_WORKFLOW: string;
 	export const _: string;
+	export const CACHE_ON_FAILURE: string;
 	export const COPILOT_AGENT_BRANCH_NAME: string;
 	export const MEMORY_PRESSURE_WATCH: string;
 	export const GOROOT_1_24_X64: string;
@@ -103,6 +105,7 @@ declare module '$env/static/private' {
 	export const COPILOT_MCP_ENABLED: string;
 	export const COPILOT_AGENT_CALLBACK_URL: string;
 	export const GITHUB_WORKFLOW_REF: string;
+	export const CARGO_TERM_COLOR: string;
 	export const GITHUB_ACTION_REPOSITORY: string;
 	export const ENABLE_RUNNER_TRACING: string;
 	export const npm_config_node_gyp: string;
@@ -119,9 +122,11 @@ declare module '$env/static/private' {
 	export const GITHUB_RUN_NUMBER: string;
 	export const GITHUB_TRIGGERING_ACTOR: string;
 	export const RUNNER_ARCH: string;
+	export const RUSTFLAGS: string;
 	export const XDG_RUNTIME_DIR: string;
 	export const AGENT_TOOLSDIRECTORY: string;
 	export const npm_config_frozen_lockfile: string;
+	export const CARGO_PROFILE_DEV_DEBUG: string;
 	export const LANG: string;
 	export const VCPKG_INSTALLATION_ROOT: string;
 	export const CONDA: string;
@@ -145,9 +150,11 @@ declare module '$env/static/private' {
 	export const npm_config_update_notifier: string;
 	export const GITHUB_WORKSPACE: string;
 	export const ACCEPT_EULA: string;
+	export const CARGO_UNSTABLE_SPARSE_REGISTRY: string;
 	export const GITHUB_JOB: string;
 	export const GITHUB_SHA: string;
 	export const GITHUB_RUN_ATTEMPT: string;
+	export const CARGO_REGISTRIES_CRATES_IO_PROTOCOL: string;
 	export const COPILOT_AGENT_DEBUG: string;
 	export const GITHUB_REF: string;
 	export const COPILOT_AGENT_ISSUE_NUMBER: string;
@@ -180,6 +187,7 @@ declare module '$env/static/private' {
 	export const CHROME_BIN: string;
 	export const SELENIUM_JAR_PATH: string;
 	export const MEMORY_PRESSURE_WRITE: string;
+	export const PNPM_HOME: string;
 	export const COPILOT_AGENT_COMMIT_EMAIL: string;
 	export const COPILOT_FEATURE_FLAGS: string;
 	export const COPILOT_API_URL: string;
@@ -224,6 +232,7 @@ declare module '$env/dynamic/private' {
 		COPILOT_AGENT_START_TIME_SEC: string;
 		DOTNET_NOLOGO: string;
 		USER: string;
+		RUST_BACKTRACE: string;
 		npm_config_user_agent: string;
 		CI: string;
 		RUNNER_ENVIRONMENT: string;
@@ -249,6 +258,7 @@ declare module '$env/dynamic/private' {
 		ANDROID_NDK_LATEST_HOME: string;
 		JAVA_HOME_21_X64: string;
 		GITHUB_RETENTION_DAYS: string;
+		CARGO_INCREMENTAL: string;
 		npm_config__claude_zen_registry: string;
 		GITHUB_REPOSITORY_OWNER_ID: string;
 		POWERSHELL_DISTRIBUTION_CHANNEL: string;
@@ -258,7 +268,6 @@ declare module '$env/dynamic/private' {
 		npm_config_engine_strict: string;
 		GITHUB_GRAPHQL_URL: string;
 		NVM_DIR: string;
-		GITHUB_COPILOT_SETUP_ERROR_REPORTED: string;
 		DOTNET_SKIP_FIRST_TIME_EXPERIENCE: string;
 		JAVA_HOME_17_X64: string;
 		ImageVersion: string;
@@ -279,6 +288,7 @@ declare module '$env/dynamic/private' {
 		JOURNAL_STREAM: string;
 		GITHUB_WORKFLOW: string;
 		_: string;
+		CACHE_ON_FAILURE: string;
 		COPILOT_AGENT_BRANCH_NAME: string;
 		MEMORY_PRESSURE_WATCH: string;
 		GOROOT_1_24_X64: string;
@@ -295,6 +305,7 @@ declare module '$env/dynamic/private' {
 		COPILOT_MCP_ENABLED: string;
 		COPILOT_AGENT_CALLBACK_URL: string;
 		GITHUB_WORKFLOW_REF: string;
+		CARGO_TERM_COLOR: string;
 		GITHUB_ACTION_REPOSITORY: string;
 		ENABLE_RUNNER_TRACING: string;
 		npm_config_node_gyp: string;
@@ -311,9 +322,11 @@ declare module '$env/dynamic/private' {
 		GITHUB_RUN_NUMBER: string;
 		GITHUB_TRIGGERING_ACTOR: string;
 		RUNNER_ARCH: string;
+		RUSTFLAGS: string;
 		XDG_RUNTIME_DIR: string;
 		AGENT_TOOLSDIRECTORY: string;
 		npm_config_frozen_lockfile: string;
+		CARGO_PROFILE_DEV_DEBUG: string;
 		LANG: string;
 		VCPKG_INSTALLATION_ROOT: string;
 		CONDA: string;
@@ -337,9 +350,11 @@ declare module '$env/dynamic/private' {
 		npm_config_update_notifier: string;
 		GITHUB_WORKSPACE: string;
 		ACCEPT_EULA: string;
+		CARGO_UNSTABLE_SPARSE_REGISTRY: string;
 		GITHUB_JOB: string;
 		GITHUB_SHA: string;
 		GITHUB_RUN_ATTEMPT: string;
+		CARGO_REGISTRIES_CRATES_IO_PROTOCOL: string;
 		COPILOT_AGENT_DEBUG: string;
 		GITHUB_REF: string;
 		COPILOT_AGENT_ISSUE_NUMBER: string;
@@ -372,6 +387,7 @@ declare module '$env/dynamic/private' {
 		CHROME_BIN: string;
 		SELENIUM_JAR_PATH: string;
 		MEMORY_PRESSURE_WRITE: string;
+		PNPM_HOME: string;
 		COPILOT_AGENT_COMMIT_EMAIL: string;
 		COPILOT_FEATURE_FLAGS: string;
 		COPILOT_API_URL: string;

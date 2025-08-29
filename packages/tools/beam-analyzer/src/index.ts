@@ -239,7 +239,7 @@ export function getBeamConfigForProject(
 export function detectBeamLanguage(
   filePath: string
 ):import('./types/beam-types').BeamLanguage | null {
-  const ext = require('node: path').extname(filePath).toLowerCase();
+  const ext = require('node:path').extname(filePath).toLowerCase();
 
   const languageMap: Record<string, import('./types/beam-types').BeamLanguage> =
     {
@@ -252,8 +252,8 @@ export function detectBeamLanguage(
  * Check if project is a BEAM project
  */
 export async function isBeamProject(projectPath: string): Promise<boolean> {
-  const { promises: fs} = require('node: fs');
-  const path = require('node: path');
+  const { promises: fs} = require('node:fs');
+  const path = require('node:path');
 
   try {
     // Check for common BEAM project files

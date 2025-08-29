@@ -9,6 +9,11 @@ import { execSync } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync, copyFileSync } from "node:fs";
 import { join } from "node:path";
 
+// Simple logger for build output
+const logger = {
+	info: (...args) => console.log(...args)
+};
+
 logger.info("📦 Building Claude Code Zen for NPM distribution...\n");
 
 // Clean and create output directory
@@ -21,7 +26,7 @@ mkdirSync(npmDir, { recursive: true });
 
 logger.info("📦 Step 1: Building foundation...");
 try {
-	execSync("cd packages/public-api/core/foundation && pnpm build", {
+	execSync("cd packages/core/foundation && pnpm build", {
 		stdio: "inherit",
 	});
 	logger.info("   ✅ Foundation built");

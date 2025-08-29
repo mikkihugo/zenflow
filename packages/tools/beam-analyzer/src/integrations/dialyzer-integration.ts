@@ -4,8 +4,8 @@
  */
 
 
-import { spawn } from 'node: child_process';
-import { promises as fs } from 'node: fs';
+import { spawn } from 'node:child_process';
+import { promises as fs } from 'node:fs';
 import { err, getLogger, ok, type Result } from '@claude-zen/foundation';
 
 import type {

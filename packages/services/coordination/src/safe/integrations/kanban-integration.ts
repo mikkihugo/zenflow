@@ -29,7 +29,10 @@ import {
   type WorkflowTask,
 } from '../../kanban')// Import workflow constants from shared kanban';
 // Use Node.js EventEmitter until event-system is implemented
-import type { EventEmitter} from 'node: events')import type { Logger} from '@claude-zen/foundation')// Define WSJFPriority type locally since it's not exported yet';
+import type { EventEmitter } from 'node:events';
+import type { Logger } from '@claude-zen/foundation';
+
+// Define WSJFPriority type locally since it's not exported yet
 interface WSJFPriority {
   businessValue: number;
   urgency: number;

@@ -21,10 +21,10 @@
  * └── .gitignore             # Auto-generated gitignore
  */
 
-import * as fs from "node: fs";
-import { promises as fsAsync } from "node: fs";
-import * as os from "node: os";
-import * as path from "node: path";
+import * as fs from "node:fs";
+import { promises as fsAsync } from "node:fs";
+import * as os from "node:os";
+import * as path from "node:path";
 
 import { type Config, getConfig } from "../../core/config/index.js";
 import { getLogger } from "../../core/logging/index.js";
