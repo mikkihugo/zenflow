@@ -8,16 +8,8 @@
 import { getLogger } from '@claude-zen/foundation';
 
 // Core coordination components
-import type { ApprovalGateManager } from '../core/approval-gate-manager.js';
 import type {
   ApprovalGateId,
-  TaskId,
-  UserId,
-  ApprovalGateRequirement,
-  EnhancedApprovalGate,
-  LLMApprovalConfig,
-  LLMApprovalContext,
-  LLMApprovalResult,
 } from '../types/index.js';
 
 // ============================================================================
@@ -350,7 +342,7 @@ export class SafeFrameworkIntegration {
         confidence: 0.8
       },
       auditTrail:  {
-        sessionId: 'session-' + Date.now(),
+        sessionId: `session-${  Date.now()}`,
         ipAddress: '127.0.0.1',
         userAgent: 'TaskMaster-SafeIntegration',
         correlationId: `correlation-${gateId}`,

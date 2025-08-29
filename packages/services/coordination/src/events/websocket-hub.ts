@@ -4,8 +4,9 @@
  * Single WebSocket endpoint that integrates with the existing event system,
  * providing auto-discovery and unified real-time updates for Svelte dashboard.
  */
-import { EventEmitter, getLogger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
 import type { WebSocket, RawData } from 'ws';
+import { EventEmitter } from 'events';
 
 const logger = getLogger('websocket-hub');
 
@@ -44,7 +45,7 @@ export interface HubMessage {
 export interface HubConnection {
   readonly id: string;
   readonly ws: WebSocket;
-  readonly subscriptions:  {
+  readonly subscriptions: {
     services: Set<string>;
     messageTypes: Set<string>;
   };
@@ -66,7 +67,7 @@ export interface HubStatus {
 /**
  * Central WebSocket Hub Service
  */
-export class CentralWebSocketHub {
+export class CentralWebSocketHub extends EventEmitter {
   private readonly logger = getLogger('WebSocketHub');
   private services = new Map<string, RegisteredService>();
   private connections = new Map<string, HubConnection>();
@@ -96,13 +97,13 @@ export class CentralWebSocketHub {
     const connection: HubConnection = {
       id: connectionId,
       ws,
-      subscriptions:  {
+      subscriptions: {
         services: new Set(),
         messageTypes: new Set()
       },
       lastActivity: new Date()
     };
-
+    
     this.connections.set(connectionId, connection);
     
     // Set up connection handlers
@@ -135,24 +136,25 @@ export class CentralWebSocketHub {
   }
 
   /**
-   * Broadcast message to all appropriate connections
+   * Broadcast message to appropriate connections
    */
-  broadcastMessage(message: HubMessage, source: string): number {
-    let sentCount = 0;
-    const fullMessage = {
+  broadcast(source: string, message: Omit<HubMessage, 'source' | 'timestamp' | 'id'>): number {
+    const fullMessage: HubMessage = {
       ...message,
       source,
-      timestamp: new Date()
+      timestamp: new Date(),
+      id: `msg_${this.messageCounter++}`
     };
     
-    for (const [connectionId, connection] of Array.from(this.connections.entries())) {
+    let sentCount = 0;
+    
+    for (const [connectionId, connection] of this.connections.entries()) {
       if (this.shouldReceiveMessage(connection, source, message.type)) {
         try {
           if (connection.ws.readyState === 1) { // WebSocket.OPEN
             connection.ws.send(JSON.stringify(fullMessage));
             connection.lastActivity = new Date();
             sentCount++;
-            this.messageCounter++;
           } else {
             this.unregisterConnection(connectionId);
           }
@@ -165,6 +167,7 @@ export class CentralWebSocketHub {
         }
       }
     }
+    
     return sentCount;
   }
 
@@ -175,70 +178,78 @@ export class CentralWebSocketHub {
     const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
     let activeConnections = 0;
     
-    for (const connection of Array.from(this.connections.values())) {
+    for (const connection of this.connections.values()) {
       if (connection.lastActivity >= fiveMinutesAgo) {
         activeConnections++;
       }
     }
-    
+
+    const serviceBreakdown: Record<string, any> = {};
+    for (const [name, service] of this.services.entries()) {
+      serviceBreakdown[name] = {
+        capabilities: service.capabilities,
+        messageTypes: service.messageTypes,
+        endpoint: service.endpoint,
+        registeredAt: service.registeredAt
+      };
+    }
+
     return {
       isInitialized: this.isInitialized,
       totalConnections: this.connections.size,
       activeConnections,
       registeredServices: this.services.size,
       messagesSent: this.messageCounter,
-      serviceBreakdown: Object.fromEntries(
-        Array.from(this.services.entries()).map(([name, service]) => [
-          name,
-          {
-            version: service.version,
-            capabilities: service.capabilities,
-            messageTypes: service.messageTypes,
-            registeredAt: service.registeredAt
-          }
-        ])
-      )
+      serviceBreakdown
     };
+  }
+
+  /**
+   * Register a service with the hub
+   */
+  registerService(service: RegisteredService): void {
+    this.services.set(service.name, service);
+    this.logger.info('Service registered with hub', { 
+      name: service.name, 
+      capabilities: service.capabilities 
+    });
   }
 
   /**
    * Auto-discover and register available services
    */
   private async discoverAndRegisterServices(): Promise<void> {
-    try {
-      // Register TaskMaster service
-      this.registerService('taskmaster', {
-        name: 'taskmaster',
-        version: '1.0.0',
-        endpoint: '/taskmaster',
-        capabilities: ['task_management', 'safe_coordination'],
-        messageTypes: ['task_update', 'safe_event', 'coordination_update'],
-        healthEndpoint: '/taskmaster/health',
-        registeredAt: new Date()
-      });
+    // Register TaskMaster service
+    this.registerService({
+      name: 'taskmaster',
+      version: '1.0.0',
+      endpoint: '/api/taskmaster',
+      capabilities: ['task_management', 'approval_gates', 'safe_coordination'],
+      messageTypes: ['task_updated', 'approval_gate_changed', 'pi_planning_progress', 'flow_metrics_updated'],
+      healthEndpoint: '/api/taskmaster/health',
+      registeredAt: new Date()
+    });
 
-      this.logger.info('Service discovery completed', {
-        servicesFound: this.services.size
-      });
-    } catch (error) {
-      this.logger.error('Service discovery failed', error);
-    }
+    // Register Coordination service
+    this.registerService({
+      name: 'coordination',
+      version: '1.0.0', 
+      endpoint: '/api/coordination',
+      capabilities: ['agent_coordination', 'swarm_management', 'system_health'],
+      messageTypes: ['system_health_update', 'agent_coordination', 'swarm_status_changed'],
+      healthEndpoint: '/api/coordination/health',
+      registeredAt: new Date()
+    });
+
+    this.logger.info('Service discovery completed', { serviceCount: this.services.size });
   }
 
   /**
-   * Set up event system integration
+   * Setup integration with existing event systems
    */
   private setupEventSystemIntegration(): void {
-    // Set up event forwarding to WebSocket clients
-    this.logger.debug('Event system integration established');
-  }
-
-  /**
-   * Register a service with the hub
-   */
-  private registerService(name: string, service: RegisteredService): void {
-    this.services.set(name, service);
-    this.logger.debug('Service registered', { name, version: service.version });
+    // This would integrate with the actual event system when available
+    this.logger.info('Event system integration setup completed');
   }
 
   /**
@@ -246,7 +257,7 @@ export class CentralWebSocketHub {
    */
   private handleMessage(connectionId: string, data: RawData): void {
     try {
-      const message = JSON.parse(data.toString()) as any;
+      const message = JSON.parse(data.toString());
       const connection = this.connections.get(connectionId);
       
       if (!connection) return;
@@ -267,12 +278,12 @@ export class CentralWebSocketHub {
         messageType: message.type
       });
     } catch (error) {
-      this.logger.error('Failed to handle message', { connectionId, error });
+      this.logger.error('Error handling WebSocket message', { connectionId, error });
     }
   }
 
   /**
-   * Handle subscription update
+   * Handle subscription management
    */
   private handleSubscription(connectionId: string, message: any): void {
     const connection = this.connections.get(connectionId);
@@ -302,7 +313,7 @@ export class CentralWebSocketHub {
   }
 
   /**
-   * Send service discovery information
+   * Send service discovery information to a connection
    */
   private sendServiceDiscovery(connectionId: string): void {
     const connection = this.connections.get(connectionId);
@@ -310,32 +321,50 @@ export class CentralWebSocketHub {
 
     const discoveryMessage = {
       type: 'services_available',
-      data:  {
+      data: {
         services: Array.from(this.services.values()),
-        hubVersion: '1.0.0'
+        totalServices: this.services.size,
+        availableMessageTypes: this.getAllMessageTypes()
       },
-      timestamp: new Date(),
-      id: `discovery_${Date.now()}`
+      timestamp: new Date()
     };
 
     try {
       connection.ws.send(JSON.stringify(discoveryMessage));
+      this.logger.debug('Service discovery sent', { connectionId });
     } catch (error) {
       this.logger.error('Failed to send service discovery', { connectionId, error });
     }
   }
 
   /**
-   * Check if connection should receive a message
+   * Determine if a connection should receive a message
    */
   private shouldReceiveMessage(connection: HubConnection, source: string, messageType: string): boolean {
-    // Don't send back to the source
-    if (source === connection.id) return false;
+    // Check if subscribed to the source service
+    if (connection.subscriptions.services.has(source)) {
+      return true;
+    }
 
-    // Check if subscribed to the service or message type
-    return connection.subscriptions.services.has(source) ||
-           connection.subscriptions.messageTypes.has(messageType) ||
-           connection.subscriptions.messageTypes.has('*');
+    // Check if subscribed to the specific message type
+    if (connection.subscriptions.messageTypes.has(messageType)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Get all available message types from registered services
+   */
+  private getAllMessageTypes(): string[] {
+    const allTypes = new Set<string>();
+    
+    for (const service of this.services.values()) {
+      for (const type of service.messageTypes) allTypes.add(type);
+    }
+    
+    return Array.from(allTypes).sort();
   }
 
   /**
@@ -345,7 +374,7 @@ export class CentralWebSocketHub {
     const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000);
     let cleanedCount = 0;
     
-    for (const [connectionId, connection] of Array.from(this.connections.entries())) {
+    for (const [connectionId, connection] of this.connections.entries()) {
       if (connection.lastActivity < thirtyMinutesAgo) {
         this.unregisterConnection(connectionId);
         cleanedCount++;
@@ -363,7 +392,7 @@ export class CentralWebSocketHub {
    */
   async shutdown(): Promise<void> {
     // Close all connections
-    for (const [connectionId, connection] of Array.from(this.connections.entries())) {
+    for (const [connectionId, connection] of this.connections.entries()) {
       try {
         connection.ws.close();
       } catch (error) {
@@ -398,52 +427,34 @@ export function getWebSocketHub(): CentralWebSocketHub {
  */
 export const hubBroadcast = {
   // TaskMaster events
-  taskUpdated: (taskData: any) => getWebSocketHub().broadcastMessage({
+  taskUpdated: (taskData: any) => getWebSocketHub().broadcast('taskmaster', {
     type: 'task_updated',
-    source: 'taskmaster',
-    data: taskData,
-    timestamp: new Date(),
-    id: `task_update_${Date.now()}`
-  }, 'taskmaster'),
+    data: taskData
+  }),
 
-  approvalGateChanged: (gateData: any) => getWebSocketHub().broadcastMessage({
+  approvalGateChanged: (gateData: any) => getWebSocketHub().broadcast('taskmaster', {
     type: 'approval_gate_changed',
-    source: 'taskmaster',
-    data: gateData,
-    timestamp: new Date(),
-    id: `gate_change_${Date.now()}`
-  }, 'taskmaster'),
+    data: gateData
+  }),
 
-  piPlanningProgress: (progressData: any) => getWebSocketHub().broadcastMessage({
+  piPlanningProgress: (progressData: any) => getWebSocketHub().broadcast('taskmaster', {
     type: 'pi_planning_progress',
-    source: 'taskmaster',
-    data: progressData,
-    timestamp: new Date(),
-    id: `pi_progress_${Date.now()}`
-  }, 'taskmaster'),
+    data: progressData
+  }),
 
-  flowMetricsUpdated: (metricsData: any) => getWebSocketHub().broadcastMessage({
+  flowMetricsUpdated: (metricsData: any) => getWebSocketHub().broadcast('taskmaster', {
     type: 'flow_metrics_updated',
-    source: 'taskmaster',
-    data: metricsData,
-    timestamp: new Date(),
-    id: `metrics_update_${Date.now()}`
-  }, 'taskmaster'),
+    data: metricsData
+  }),
 
   // System coordination events
-  systemHealthUpdate: (healthData: any) => getWebSocketHub().broadcastMessage({
+  systemHealthUpdate: (healthData: any) => getWebSocketHub().broadcast('coordination', {
     type: 'system_health_update',
-    source: 'coordination',
-    data: healthData,
-    timestamp: new Date(),
-    id: `health_update_${Date.now()}`
-  }, 'coordination'),
+    data: healthData
+  }),
 
-  agentCoordination: (coordinationData: any) => getWebSocketHub().broadcastMessage({
+  agentCoordination: (coordinationData: any) => getWebSocketHub().broadcast('coordination', {
     type: 'agent_coordination',
-    source: 'coordination',
-    data: coordinationData,
-    timestamp: new Date(),
-    id: `agent_coord_${Date.now()}`
-  }, 'coordination')
+    data: coordinationData
+  })
 };

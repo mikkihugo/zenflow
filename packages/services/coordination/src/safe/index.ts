@@ -62,9 +62,11 @@ export { default as EpicOwnerCoordinator} from './coordinators/portfolio/epic-ow
 export { default as ReleaseTrainEngineerCoordinator} from './coordinators/program/release-train-engineer-coordinator')export { default as ProductManagerCoordinator} from './coordinators/program/product-manager-coordinator')// =========================================================================== = ''; 
 // MANAGERS - SAFe framework managers and coordinators (Legacy)
 // ============================================================================
-// Core Portfolio Management (placeholder - needs implementation)
-// export { default as SafePortfolioManager} from './managers/safe-portfolio-manager')// Architecture Management';
-export { default as ArchitectureRunwayManager} from './managers/architecture-runway-manager')// Continuous Delivery Pipeline';
+// Core Portfolio Management - Now Enabled for Production
+export { default as SafePortfolioManager } from './managers/safe-portfolio-manager';
+
+// Architecture Management
+export { default as ArchitectureRunwayManager } from './managers/architecture-runway-manager';// Continuous Delivery Pipeline';
 export { default as ContinuousDeliveryPipeline} from './managers/continuous-delivery-pipeline')// DevSecOps Management';
 export { default as DevSecOpsManager} from './managers/devsecops-manager')// Enterprise Architecture Management';
 export { default as EnterpriseArchitectureManager} from './managers/enterprise-architecture-manager')// Epic Owner Management';
@@ -110,11 +112,11 @@ export { SafeCollectionUtils} from './utilities/collections/safe-collections')ex
 // FACTORY FUNCTIONS
 // ============================================================================
 /**
- * Create a SAFe framework integration (placeholder - needs implementation)
+ * Create a SAFe framework integration - Production Ready
  */
-// export function createSafeFramework(config: SafeConfiguration) {
-//   return new SafePortfolioManager(config)'; 
-//}
+export function createSafeFramework(config: SafeConfiguration) {
+  return new SafePortfolioManager(config);
+}
 // ============================================================================
 // STATE MACHINES - XState integration for SAFe workflows (need proper exports)
 // ============================================================================

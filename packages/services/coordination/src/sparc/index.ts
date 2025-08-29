@@ -392,32 +392,84 @@ export class SPARCManager extends EventBus {
 };
 };
     
-    EventLogger.log('claude-code: execute-task', claudeCodePayload');
-    this.emit('claude-code: execute-task', claudeCodePayload');`;
-    // Add minimal async operation to satisfy require-await
-    await new Promise(resolve => setTimeout(resolve, 0));
-    // Return placeholder - in real implementation, this would wait for Claude Code response
+    
+    EventLogger.log('claude-code:execute-task', claudeCodePayload);
+    this.emit('claude-code:execute-task', claudeCodePayload);
+    
+    // Execute task and wait for completion with proper async handling
+    const taskResult = await this.executeTaskWithClaudeCode(claudeCodePayload);
+    
     return [{
-    `)      type,      phase``;
-      delegatedBy:  {
-    ')      requestId,    ')      type : 'structured-generation, // vs'simple-inference',    'analysis,' code-generation')      projectId: project.id,';
+      requestId,
+      type: 'structured-generation', // vs 'simple-inference', 'analysis', 'code-generation'
+      projectId: project.id,
       phase,
       prompt: this.generateSparcLLMPrompt(phase, project),
-      sparcMethodology:  {
+      sparcMethodology: {
         phaseName: phase,
         requirements: executionPlan.sparcRequirements,
         validationCriteria: this.getPhaseValidationCriteria(phase)
-},
-      llmConfig:  {
-        strategy: executionPlan.llmStrategy||'auto,';
+      },
+      llmConfig: {
+        strategy: executionPlan.llmStrategy || 'auto',
         contextSize: executionPlan.contextSize,
         maxTokens: await this.getOptimizedMaxTokens(phase, project),
         temperature: await this.getOptimizedTemperature(phase, project)
-},
-      context:  {
+      },
+      context: {
         requirements: project.requirements,
         previousArtifacts: project.artifacts
-}
+      },
+      result: taskResult,
+      status: taskResult.success ? 'completed' : 'failed',
+      completedAt: new Date().toISOString()
+    }];
+  }
+
+  /**
+   * Execute task with Claude Code and wait for response
+   */
+  private async executeTaskWithClaudeCode(payload: any): Promise<any> {
+    try {
+      // Create a promise that resolves when the task completes
+      const taskPromise = new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          reject(new Error('Task execution timeout'));
+        }, 300000); // 5 minute timeout
+
+        // Listen for task completion
+        const handleTaskComplete = (result: any) => {
+          if (result.requestId === payload.requestId) {
+            clearTimeout(timeout);
+            this.off('claude-code:task-complete', handleTaskComplete);
+            resolve(result);
+          }
+        };
+
+        this.on('claude-code:task-complete', handleTaskComplete);
+      });
+
+      // Wait for task completion
+      const result = await taskPromise;
+      
+      return {
+        success: true,
+        result,
+        executionTime: Date.now() - payload.timestamp
+      };
+      
+    } catch (error) {
+      this.logger.error('Claude Code task execution failed', { 
+        error, 
+        requestId: payload.requestId 
+      });
+      
+      return {
+        success: false,
+        error: error.message,
+        executionTime: Date.now() - payload.timestamp
+      };
+    }
 };
     
     EventLogger.log('llm: inference-request', llmPayload');

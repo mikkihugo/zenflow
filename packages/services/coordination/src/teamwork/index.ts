@@ -616,8 +616,7 @@ export class TeamworkOrchestrator {
       outcomes: []
     };
 
-    const conversationId = await this.conversationManager.scheduleSAFeMeeting(meeting);
-    return conversationId;
+    return await this.conversationManager.scheduleSAFeMeeting(meeting);
   }
 
   /**

@@ -147,25 +147,25 @@ export class SvelteWebSocketManager {
   private emit(eventType: string, data: any): void {
     const callbacks = this.subscribers.get(eventType);
     if (callbacks) {
-      callbacks.forEach(callback => {
+      for (const callback of callbacks) {
         try {
           callback(data);
         } catch (error) {
           logger.error(`Error in event callback for ${eventType}:`, error);
         }
-      });
+      }
     }
     
     // Also emit to wildcard listeners
     const wildcardCallbacks = this.subscribers.get('*');
     if (wildcardCallbacks) {
-      wildcardCallbacks.forEach(callback => {
+      for (const callback of wildcardCallbacks) {
         try {
           callback({ type: eventType, data });
         } catch (error) {
           logger.error('Error in wildcard callback:', error);
         }
-      });
+      }
     }
   }
 
