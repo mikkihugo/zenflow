@@ -586,32 +586,32 @@ export class BeamLanguageParser {
     const typeRegex = /-type\s+([_a-z]\w*(?:\([^)]*\))?)\s*::\s*([^.]+)\./g;
     let match;
     while ((match = typeRegex.exec(content)) !== null) {
-      const __lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
+      const lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
         name:match[1],
         definition:match[2].trim(),
         lineNumber:lineNumber,
-        category: 'custom',);
+        category: 'custom'});
 }
 
     // -opaque definitions - ReDoS-safe regex with atomic groups and limits
     const opaqueRegex =
       /-opaque\s+([_a-z]\w*(?:\([^)]{0,100}\))?)\s*::\s*([^.]{1,200})\./g;
     while ((match = opaqueRegex.exec(content)) !== null) {
-      const __lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
+      const lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
         name:match[1],
         definition:match[2].trim(),
         lineNumber:lineNumber,
-        category: 'opaque',);
+        category: 'opaque'});
 }
 
     // -spec definitions
     const specRegex = /-spec\s+([_a-z]\w*(?:\([^)]*\))?)\s*->\s*([^.]+)\./g;
     while ((match = specRegex.exec(content)) !== null) {
-      const __lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
+      const lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
         name:match[1],
         definition:match[2].trim(),
         lineNumber:lineNumber,
-        category: 'spec',);
+        category: 'spec'});
 }
 
     return types;
@@ -661,7 +661,7 @@ export class BeamLanguageParser {
 
     let match;
     while ((match = exportRegex.exec(content)) !== null) {
-      const __funcs = match[1].split(',    ').map((f) => f.trim())();')      exports.push(...funcs);
+      const funcs = match[1].split(',    ').map((f) => f.trim())();')      exports.push(...funcs);
 }
 
     return exports;
@@ -701,7 +701,7 @@ export class BeamLanguageParser {
     const otpBehaviours = [
       'gen_server',      'gen_statem',      'supervisor',      'application',];
     return otpBehaviours.some((behaviour) =>
-      content.includes(`-behaviour(${behaviour})`)`
+      content.includes(`-behaviour(${behaviour})`
     );
 }
 
@@ -745,21 +745,21 @@ export class BeamLanguageParser {
       /(?:pub\s+)?type\s+([A-Z]\w*)\s*(?:\([^)]*\))?\s*=\s*([^\n]+)/g;
     let match;
     while ((match = typeRegex.exec(content)) !== null) {
-      const __lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
+      const lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
         name:match[1],
         definition:match[2].trim(),
         lineNumber:lineNumber,
-        category: 'custom',);
+        category: 'custom'});
 }
 
     // Type aliases
     const aliasRegex = /(?:pub\s+)?type\s+([A-Z]\w*)\s*=\s*([A-Z]\w*)/g;
     while ((match = aliasRegex.exec(content)) !== null) {
-      const __lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
+      const lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
         name:match[1],
         definition:match[2].trim(),
         lineNumber:lineNumber,
-        category: 'alias',);
+        category: 'alias'});
 }
 
     return types;
@@ -847,7 +847,9 @@ export class BeamLanguageParser {
         !line.trim().startsWith('#') &&')        !line.trim().startsWith('%')')    ).length;
 
     const publicFunctions = module.exports.filter(
-      (f) => f.visibility === 'public');')    const documentsedFunctions = module.exports.filter(
+      (f) => f.visibility === 'public'
+    );
+    const documentedFunctions = module.exports.filter(
       (f) => f.documentation
     ).length;
 
@@ -863,7 +865,7 @@ export class BeamLanguageParser {
 
     const documentationCoverage =
       module.exports.length > 0
-        ? documentsedFunctions / module.exports.length
+        ? documentedFunctions / module.exports.length
         :0;
 
     return {

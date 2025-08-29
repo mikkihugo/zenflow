@@ -684,7 +684,7 @@ export class KuzuAdapter implements DatabaseConnection {
       for (const node of nodes) {
         const properties = Object.keys(node);
         const values = Object.values(node);
-        const cypher = `CREATE (:${tableName} {${properties.map((prop, i) => `${prop}:$param${i}`).join(',    ')}})`;
+        const cypher = `CREATE (:${tableName} {${properties.map((prop, i) => `${prop}:$param${i}`).join(', ')}})`;
 
         // Convert values array to params object
         const params:Record<string, unknown> = {};
@@ -732,11 +732,11 @@ export class KuzuAdapter implements DatabaseConnection {
       for (const rel of relationships) {
         // Build match clauses for from and to nodes
         const fromProps = Object.entries(rel.from)
-          .map(([key, value]) => `${key}:"${value}"`)`
-          .join(',    ');
+          .map(([key, value]) => `${key}:"${value}"`)
+          .join(', ');
         const toProps = Object.entries(rel.to)
-          .map(([key, value]) => `${key}:"${value}"`)`
-          .join(',    ');
+          .map(([key, value]) => `${key}:"${value}"`)
+          .join(', ');
 
         let cypher = `MATCH (from), (to) WHERE {${fromProps}} AND {${toProps}}`;
 

@@ -92,7 +92,7 @@ export class SQLiteAdapter implements DatabaseConnection {
     logger.info('Connecting to SQLite database', {
       correlationId,
       database:this.config.database,
-});
+          });
 
     try {
       // Ensure database directory exists
@@ -107,12 +107,12 @@ export class SQLiteAdapter implements DatabaseConnection {
       logger.info('Successfully connected to SQLite database', {
         correlationId,
         poolSize:this.pool.length,
-});
+          });
 } catch (error) {
       logger.error('Failed to connect to SQLite database', {
         correlationId,
         error:error instanceof Error ? error.message : String(error),
-});
+          });
       throw new ConnectionError(
         `Failed to connect to SQLite database:${error instanceof Error ? error.message : String(error)}`,
         correlationId,
@@ -125,7 +125,7 @@ export class SQLiteAdapter implements DatabaseConnection {
     if (!this.connected) return;
 
     const correlationId = this.generateCorrelationId();
-    logger.info('Disconnecting from SQLite database', { correlationId});
+    logger.info('Disconnecting from SQLite database', { correlationId          });
 
     try {
       // Close all pooled connections
@@ -139,12 +139,12 @@ export class SQLiteAdapter implements DatabaseConnection {
 
       logger.info('Successfully disconnected from SQLite database', {
         correlationId,
-});
+          });
 } catch (error) {
       logger.error('Error during SQLite disconnect', {
         correlationId,
         error:error instanceof Error ? error.message : String(error),
-});
+          });
       throw new ConnectionError(
         `Failed to disconnect from SQLite:${error instanceof Error ? error.message : String(error)}`,
         correlationId,
@@ -193,7 +193,7 @@ export class SQLiteAdapter implements DatabaseConnection {
         correlationId,
         executionTimeMs:result.executionTimeMs,
         rowCount:result.rowCount,
-});
+          });
 
       return result;
 } catch (error) {
@@ -202,7 +202,7 @@ export class SQLiteAdapter implements DatabaseConnection {
         correlationId,
         sql:sql.substring(0, 200),
         error:error instanceof Error ? error.message : String(error),
-});
+          });
 
       if (error instanceof DatabaseError) {
         throw error;
@@ -267,13 +267,13 @@ export class SQLiteAdapter implements DatabaseConnection {
         connection.db.exec('COMMIT');
 
         this.stats.totalTransactions++;
-        logger.debug('Transaction committed successfully', { correlationId});
+        logger.debug('Transaction committed successfully', { correlationId          });
 } catch (error) {
         connection.db.exec('ROLLBACK');
         logger.error('Transaction rolled back', {
           correlationId,
           error:error instanceof Error ? error.message : String(error),
-});
+          });
         throw error;
 }
 
@@ -383,7 +383,7 @@ export class SQLiteAdapter implements DatabaseConnection {
       waiting:number;
 }>((resolve) => {
       resolve(this.getPoolStats());
-});
+          });
 
     return {
       total:poolStats.total,
@@ -441,25 +441,25 @@ export class SQLiteAdapter implements DatabaseConnection {
             version:migration.version,
             applied:false,
             executionTimeMs:0,
-});
+          });
           continue;
 }
 
         await this.transaction(async () => {
           await migration.up(this);
           await this.recordMigration(migration.version, migration.name);
-});
+          });
 
         results.push({
           version:migration.version,
           applied:true,
           executionTimeMs:Date.now() - startTime,
-});
+          });
 
         logger.info('Migration applied successfully', {
           version:migration.version,
           name:migration.name,
-});
+          });
 } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message:String(error);
@@ -469,13 +469,13 @@ export class SQLiteAdapter implements DatabaseConnection {
           applied:false,
           executionTimeMs:Date.now() - startTime,
           error:errorMessage,
-});
+          });
 
         logger.error('Migration failed', {
           version:migration.version,
           name:migration.name,
           error:errorMessage,
-});
+          });
 
         // Stop on first failure
         break;
@@ -488,7 +488,8 @@ export class SQLiteAdapter implements DatabaseConnection {
   async getCurrentMigrationVersion():Promise<string | null> {
     try {
       const result = await this.query<{ version:string}>(
-        'SELECT version FROM _migrations ORDER BY version DESC LIMIT 1')      );
+        'SELECT version FROM _migrations ORDER BY version DESC LIMIT 1'
+      );
       return result.rows[0]?.version || null;
 } catch {
       // Migrations table doesn't exist yet
@@ -537,10 +538,11 @@ export class SQLiteAdapter implements DatabaseConnection {
             executionTimeMs:Date.now() - startTime,
             affectedRows:runResult.changes,
             insertId:
-              typeof runResult.lastInsertRowid === 'bigint')                ? Number(runResult.lastInsertRowid)
-                :(runResult.lastInsertRowid as number | undefined),
+              typeof runResult.lastInsertRowid === 'bigint'
+                ? Number(runResult.lastInsertRowid)
+                : (runResult.lastInsertRowid as number | undefined),
             fields:[],
-});
+                    });
           return;
 }
 
@@ -551,11 +553,11 @@ export class SQLiteAdapter implements DatabaseConnection {
           fields:rows.length > 0 ? Object.keys(rows[0] || {}) :[],
           affectedRows:undefined,
           insertId:undefined,
-});
+          });
 } catch (error) {
         reject(error);
 }
-});
+          });
 }
 
   private async createConnection():Promise<PooledConnection> {
@@ -570,9 +572,9 @@ export class SQLiteAdapter implements DatabaseConnection {
             fileMustExist:false,
             timeout:this.config.pool?.createTimeoutMillis,
             verbose:(message?: unknown) => {
-              logger.debug('SQLite operation', { message, connectionId:id});
+              logger.debug('SQLite operation', { message, connectionId:id          });
 },
-});
+          });
 
           // Configure SQLite for better performance
           db.exec('PRAGMA journal_mode = WAL');
@@ -594,17 +596,17 @@ export class SQLiteAdapter implements DatabaseConnection {
           this.pool.push(connection);
           this.stats.connectionCreated++;
 
-          logger.debug('Created new SQLite connection', { connectionId:id});
+          logger.debug('Created new SQLite connection', { connectionId:id          });
           resolve(connection);
 } catch (error) {
           logger.error('Failed to create SQLite connection', {
             connectionId:id,
             error:error instanceof Error ? error.message : String(error),
-});
+          });
           reject(error);
 }
-});
-});
+          });
+          });
 }
 
   private async destroyConnection(connection:PooledConnection): Promise<void> {
@@ -616,17 +618,17 @@ export class SQLiteAdapter implements DatabaseConnection {
 
           logger.debug('Destroyed SQLite connection', {
             connectionId:connection.id,
-});
+          });
           resolve();
 } catch (error) {
           logger.error('Error destroying SQLite connection', {
             connectionId:connection.id,
             error:error instanceof Error ? error.message : String(error),
-});
+          });
           resolve(); // Don't reject on connection destruction errors
 }
-});
-});
+          });
+          });
 }
 
   private async acquireConnection(
@@ -702,7 +704,7 @@ export class SQLiteAdapter implements DatabaseConnection {
           maxRetries:retryPolicy.maxRetries,
           delayMs:delay,
           error:lastError.message,
-});
+          });
 
         await this.sleep(delay);
 }
@@ -806,7 +808,7 @@ export class SQLiteAdapter implements DatabaseConnection {
           columns:indexInfo.rows.map((col) => col.name),
           unique:false, // TODO:Get unique info from sqlite_master
           type: 'btree',
-        });
+                  });
 }
 
       return {
@@ -817,7 +819,7 @@ export class SQLiteAdapter implements DatabaseConnection {
         indexes,
 };
 } catch (error) {
-      logger.error('Failed to get table schema', { tableName, error});
+      logger.error('Failed to get table schema', { tableName, error          });
       return null;
 }
 }
@@ -877,8 +879,8 @@ export class SQLiteAdapter implements DatabaseConnection {
 } catch (error) {
           reject(error);
 }
-});
-});
+          });
+          });
 }
 
   private startPoolMaintenance():void {
@@ -912,7 +914,7 @@ export class SQLiteAdapter implements DatabaseConnection {
   private ensureDatabaseDirectory():void {
     const dbDir = dirname(this.config.database);
     if (!existsSync(dbDir)) {
-      mkdirSync(dbDir, { recursive:true});
+      mkdirSync(dbDir, { recursive:true          });
 }
 }
 
@@ -944,7 +946,7 @@ class SQLiteTransactionConnection implements TransactionConnection {
           // Use instance method for transaction connections
           const paramArray = Array.isArray(params)
             ? [...params]
-            :Object.values(params || {});
+            :Object.values(params || {          });
 
           let rows:unknown[];
           if (
@@ -962,7 +964,7 @@ class SQLiteTransactionConnection implements TransactionConnection {
               insertId:
                 typeof runResult.lastInsertRowid === 'bigint')                  ? Number(runResult.lastInsertRowid)
                   :(runResult.lastInsertRowid as number | undefined),
-});
+          });
             return;
 }
 
@@ -971,7 +973,7 @@ class SQLiteTransactionConnection implements TransactionConnection {
             rowCount:rows ? rows.length : 0,
             executionTimeMs:Date.now() - startTime,
             fields:rows.length > 0 ? Object.keys(rows[0] || {}) :[],
-});
+          });
 } catch (error) {
           reject(
             new QueryError(
@@ -985,8 +987,8 @@ class SQLiteTransactionConnection implements TransactionConnection {
             )
           );
 }
-});
-});
+          });
+          });
 }
 
   async execute(sql:string, params?:QueryParams): Promise<QueryResult> {
@@ -1002,8 +1004,8 @@ class SQLiteTransactionConnection implements TransactionConnection {
 } catch (error) {
           reject(error);
 }
-});
-});
+          });
+          });
 }
 
   async commit():Promise<void> {
@@ -1015,8 +1017,8 @@ class SQLiteTransactionConnection implements TransactionConnection {
 } catch (error) {
           reject(error);
 }
-});
-});
+          });
+          });
 }
 
   async savepoint(name:string): Promise<void> {
@@ -1028,8 +1030,8 @@ class SQLiteTransactionConnection implements TransactionConnection {
 } catch (error) {
           reject(error);
 }
-});
-});
+          });
+          });
 }
 
   async releaseSavepoint(name:string): Promise<void> {
@@ -1041,8 +1043,8 @@ class SQLiteTransactionConnection implements TransactionConnection {
 } catch (error) {
           reject(error);
 }
-});
-});
+          });
+          });
 }
 
   async rollbackToSavepoint(name:string): Promise<void> {
@@ -1054,8 +1056,8 @@ class SQLiteTransactionConnection implements TransactionConnection {
 } catch (error) {
           reject(error);
 }
-});
-});
+          });
+          });
 }
 
   private normalizeParams(params?:QueryParams): unknown[] {
