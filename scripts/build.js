@@ -190,9 +190,8 @@ if (existsSync(bundledEntry)) {
 		
 		platforms.forEach(platform => {
 			try {
-				// Copy Node.js binary - handle different platforms
-				const nodeCmd = platform.name === 'win' ? 'node.exe' : 'node';
-				execSync(`cp $(which ${nodeCmd}) ${bundleDir}/claude-zen-${platform.name}${platform.ext}`, {
+				// Copy Node.js binary - use current node for all platforms when cross-building
+				execSync(`cp $(which node) ${bundleDir}/claude-zen-${platform.name}${platform.ext}`, {
 					stdio: "inherit",
 				});
 				

@@ -21,13 +21,23 @@
  * @since 1.0.0
  * @version 1.0.0
  */
-import { EventEmitter} from 'node: events')import type { Logger} from '@claude-zen/foundation')// =========================================================================== = ''; 
+import { EventEmitter } from 'node:events';
+import type { Logger } from '@claude-zen/foundation';
+
+// =========================================================================== 
 // ARCHITECTURE HEALTH INTERFACES
 // ============================================================================
 export interface ArchitectureHealthMetrics {
-  readonly timestamp: 'A| B| C| D| F')export interface HealthDimension {';
+  readonly timestamp: Date;
+  readonly overallScore: number; // 0-100
+  readonly grade: 'A' | 'B' | 'C' | 'D' | 'F';
+  readonly dimensions: HealthDimension[];
+}
+
+export interface HealthDimension {
   readonly name: string;
-  readonly category : 'technical| operational| strategic' | ' compliance')  readonly score: number; // 0-100';
+  readonly category: 'technical' | 'operational' | 'strategic' | 'compliance';
+  readonly score: number; // 0-100
   readonly weight: number; // 0-1
   readonly status : 'excellent| good| fair| poor' | ' critical')  readonly trend : 'improving' | ' stable'|' declining' | ' improving'|' stable' | ' declining'|' declining')  readonly metrics: DimensionMetric[];;
   readonly issues: HealthIssue[];

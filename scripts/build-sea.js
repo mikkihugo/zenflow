@@ -9,6 +9,11 @@ import { execSync } from "node:child_process";
 import { existsSync, mkdirSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
+// Simple logger for build output
+const logger = {
+	info: (...args) => console.log(...args)
+};
+
 logger.info("🚀 Building Claude Code Zen with SEA (Single Executable Applications)...\n");
 
 // Clean and create output directory
@@ -23,7 +28,7 @@ logger.info("📦 Step 1: Building foundation package...");
 try {
 	logger.info("   🔧 Building foundation...");
 	execSync(
-		"cd packages/public-api/core/foundation && pnpm build",
+		"cd packages/core/foundation && pnpm build",
 		{ stdio: "inherit" },
 	);
 	logger.info("   ✅ Foundation built successfully");
@@ -45,6 +50,11 @@ const entryCode = `#!/usr/bin/env node
 const { join } = require('path');
 const { spawn } = require('child_process');
 const { existsSync } = require('fs');
+
+// Simple logger for output
+const logger = {
+	info: (...args) => console.log(...args)
+};
 
 const args = process.argv.slice(2);
 
@@ -130,10 +140,17 @@ if (existsSync(bundledEntry)) {
 		platforms.forEach(platform => {
 			try {
 				// Copy Node.js binary
-				const nodeCmd = platform.name === 'win' ? 'where node' : 'which node';
-				execSync(`cp $(${nodeCmd}) ${bundleDir}/claude-zen-${platform.name}${platform.ext}`, {
-					stdio: "inherit",
-				});
+				if (platform.name === 'win') {
+					// For Windows on non-Windows platform, copy the current node binary
+					execSync(`cp $(which node) ${bundleDir}/claude-zen-${platform.name}${platform.ext}`, {
+						stdio: "inherit",
+					});
+				} else {
+					const nodeCmd = 'which node';
+					execSync(`cp $(${nodeCmd}) ${bundleDir}/claude-zen-${platform.name}${platform.ext}`, {
+						stdio: "inherit",
+					});
+				}
 				
 				// Inject the blob with warning suppression
 				const machoSegment = platform.name === 'macos' ? ' --macho-segment-name NODE_SEA' : '';

@@ -19,8 +19,8 @@
  * @since 2024-01-01
  */
 
-import * as fs from 'node: fs/promises';
-import * as path from 'node: path';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 import * as cron from 'node-cron';
 import type { SimpleGit, BranchSummary} from 'simple-git';
 import { getLogger, EventEmitter, type EventMap } from '@claude-zen/foundation';
@@ -46,8 +46,8 @@ class SimpleGitSandbox {
 
   async execute(command: string, options: unknown = {}): Promise<unknown> {
     // Execute git command safely in sandbox
-    const { exec} = await import('node: child_process');
-    const { promisify} = await import('node: util');
+    const { exec} = await import('node:child_process');
+    const { promisify} = await import('node:util');
     const execAsync = promisify(exec);
 
     try {
