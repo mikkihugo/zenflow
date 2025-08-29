@@ -25,6 +25,9 @@ import * as cron from 'node-cron';
 import type { SimpleGit, BranchSummary} from 'simple-git';
 import { getLogger, EventEmitter, type EventMap } from '@claude-zen/foundation';
 
+// Constants for commonly used strings to avoid duplication
+const UNKNOWN_ERROR_MESSAGE = 'Unknown error';
+
 // Real implementation of Git sandbox for secure operations
 class SimpleGitSandbox {
   private config:{
@@ -116,7 +119,7 @@ class SimpleGitSandbox {
 } catch (error) {
       logger.error('Git operation failed in sandbox', {
         sandboxId: sandboxEnv.id,
-        error: error instanceof Error ? error.message : 'Unknown error',});
+        error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
       throw error;
 }
 }
@@ -477,7 +480,7 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
    * Helper to get error message from unknown error
    */
   private getErrorMessage(error: unknown): string {
-    return error instanceof Error ? error.message : 'Unknown error';
+    return error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE;
   }
 
   /**
@@ -507,7 +510,7 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
 } catch (error) {
       logger.error('❌ Failed to initialize GitOperationsManager', {
         managerId: this.managerId,
-        error: error instanceof Error ? error.message : 'Unknown error',});
+        error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
       throw error;
 }
 }
@@ -1029,7 +1032,7 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
       logger.error('❌ AI conflict resolution failed', {
         managerId: this.managerId,
         conflictType,
-        error: error instanceof Error ? error.message : 'Unknown error',});
+        error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
 
       return {
         type: conflictType,
@@ -1115,7 +1118,7 @@ Respond in JSON format:
 } catch (error) {
         logger.warn(`Failed to get AI suggestion for conflict in ${fileName}`, {
           managerId: this.managerId,
-          error: error instanceof Error ? error.message : 'Unknown error',});
+          error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
 
         // Fallback suggestion
         suggestions.push({
@@ -1317,7 +1320,7 @@ Respond in JSON format:
       logger.error(`❌ Maintenance task failed: ${task.type}`, {
         managerId: this.managerId,
         taskId: task.id,
-        error: error instanceof Error ? error.message : 'Unknown error',});
+        error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
 }
 }
 
@@ -1344,7 +1347,7 @@ Respond in JSON format:
 } catch (error) {
           logger.warn(`Failed to cleanup stale tree: ${projectId}`, {
             managerId: this.managerId,
-            error: error instanceof Error ? error.message : 'Unknown error',});
+            error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
 }
 }
 }
@@ -1382,7 +1385,7 @@ Respond in JSON format:
 } catch (error) {
         logger.warn(`Failed to compress git tree: ${projectId}`, {
           managerId: this.managerId,
-          error: error instanceof Error ? error.message : 'Unknown error',});
+          error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
 }
 }
 
@@ -1418,7 +1421,7 @@ Respond in JSON format:
 } catch (error) {
         logger.warn(`Failed to update remote refs: ${projectId}`, {
           managerId: this.managerId,
-          error: error instanceof Error ? error.message : 'Unknown error',});
+          error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
 }
 }
 
@@ -1453,12 +1456,12 @@ Respond in JSON format:
           managerId: this.managerId,
 });
 } catch (error) {
-        const issue = `Repository integrity issue in ${projectId}:${error instanceof Error ? error.message: 'Unknown error'}`;
+        const issue = `Repository integrity issue in ${projectId}:${error instanceof Error ? error.message: UNKNOWN_ERROR_MESSAGE}`;
         issues.push(issue);
 
         logger.warn(`Repository integrity issue: ${projectId}`, {
           managerId: this.managerId,
-          error: error instanceof Error ? error.message : 'Unknown error',});
+          error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
 }
 }
 
@@ -1494,7 +1497,7 @@ Respond in JSON format:
 } catch (error) {
       logger.warn(`Creating new sandbox for project: ${projectId}`, {
         managerId: this.managerId,
-        error: error instanceof Error ? error.message : 'Unknown error',});
+        error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
       const sandbox = await this.sandbox.createSandbox(
         `${projectId}-${Date.now()}`
       );
@@ -1521,7 +1524,7 @@ Respond in JSON format:
   private createOperation(type: GitOperation['type'],
     projectId: string,
     operationId: string,
-    metadata?:Record<string, any>
+    metadata?: Record<string, unknown>
   ): GitOperation {
     const operation: GitOperation = {
       id: operationId,
@@ -1582,7 +1585,7 @@ Respond in JSON format:
     const completedAt = new Date();
     operation.status = 'failed';
     operation.completedAt = completedAt;
-    operation.error = error instanceof Error ? error.message: 'Unknown error';
+    operation.error = error instanceof Error ? error.message: UNKNOWN_ERROR_MESSAGE;
 
     this.activeOperations.delete(operation.id);
     this.operationHistory.push(operation);
@@ -1728,7 +1731,7 @@ Respond in JSON format:
 } catch (error) {
       logger.error('❌ Error during GitOperationsManager shutdown', {
         managerId: this.managerId,
-        error: error instanceof Error ? error.message : 'Unknown error',});
+        error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
       throw error;
 }
 }
@@ -1905,7 +1908,7 @@ Respond in JSON format:
 } catch (error) {
       logger.warn('Failed to list worktrees', {
         projectId,
-        error: error instanceof Error ? error.message : 'Unknown error',});
+        error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
       return [];
 }
 }
