@@ -219,26 +219,40 @@ export class RecoveryStrategyManager extends EventEmitter {
   /**
    * Register default recovery strategies.
    */
-  private registerDefaultStrategies():void {
-    // Node Reconnection Strategy
+  private registerDefaultStrategies(): void {
+    this.registerNodeReconnectionStrategy();
+    this.registerDataRepairStrategy();
+    this.registerCacheOptimizationStrategy();
+    this.registerSystemCleanupStrategy();
+  }
+
+  /**
+   * Register node reconnection strategy.
+   */
+  private registerNodeReconnectionStrategy(): void {
     this.registerStrategy({
-      name: 'node_reconnection',      description: 'Attempt to reconnect to unreachable nodes',      applicableErrors:[
+      name: 'node_reconnection',
+      description: 'Attempt to reconnect to unreachable nodes',
+      applicableErrors: [
         MemoryErrorCode['NODE_UNREACHABLE'],
         MemoryErrorCode['BACKEND_CONNECTION_LOST'],
-],
-      priority:8,
-      timeoutMs:10000,
-      maxRetries:3,
-      execute:async (error, context) => {
+      ],
+      priority: 8,
+      timeoutMs: 10000,
+      maxRetries: 3,
+      execute: async (error, context) => {
         const startTime = Date.now();
         const backendId = error.context.backendId || error.context.nodeId;
 
         if (!(backendId && context.backends.has(backendId))) {
           return {
-            success:false,
-            strategy: 'node_reconnection',            action: 'backend_not_found',            duration:Date.now() - startTime,
-            error: 'Backend not found for reconnection',};
-}
+            success: false,
+            strategy: 'node_reconnection',
+            action: 'backend_not_found',
+            duration: Date.now() - startTime,
+            error: 'Backend not found for reconnection',
+          };
+        }
 
         const backend = context.backends.get(backendId)!;
 
@@ -249,49 +263,62 @@ export class RecoveryStrategyManager extends EventEmitter {
           // Test connectivity with method compatibility
           if ('get' in backend && typeof backend.get === 'function') {
             await backend.get('__health_check__');
-} else if (
+          } else if (
             'retrieve' in backend &&
             typeof backend.retrieve === 'function'
           ) {
             await backend.retrieve('__health_check__');
-} else {
+          } else {
             throw new Error('Backend lacks required methods');
-}
+          }
 
           return {
-            success:true,
-            strategy: 'node_reconnection',            action: 'backend_reconnected',            duration:Date.now() - startTime,
-            metadata:{ backendId},
-};
-} catch (reconnectError) {
+            success: true,
+            strategy: 'node_reconnection',
+            action: 'backend_reconnected',
+            duration: Date.now() - startTime,
+            metadata: { backendId },
+          };
+        } catch (reconnectError) {
           return {
-            success:false,
-            strategy: 'node_reconnection',            action: 'reconnection_failed',            duration:Date.now() - startTime,
-            error:reconnectError.message,
-};
-}
-},
-});
+            success: false,
+            strategy: 'node_reconnection',
+            action: 'reconnection_failed',
+            duration: Date.now() - startTime,
+            error: reconnectError.message,
+          };
+        }
+      },
+    });
+  }
 
-    // Data Repair Strategy
+  /**
+   * Register data repair strategy.
+   */
+  private registerDataRepairStrategy(): void {
     this.registerStrategy({
-      name: 'data_repair',      description: 'Attempt to repair corrupted or inconsistent data',      applicableErrors:[
+      name: 'data_repair',
+      description: 'Attempt to repair corrupted or inconsistent data',
+      applicableErrors: [
         MemoryErrorCode['DATA_CORRUPTION'],
         MemoryErrorCode['DATA_INCONSISTENCY'],
-],
-      priority:9,
-      timeoutMs:15000,
-      maxRetries:2,
-      execute:async (error, context) => {
+      ],
+      priority: 9,
+      timeoutMs: 15000,
+      maxRetries: 2,
+      execute: async (error, context) => {
         const startTime = Date.now();
         const key = error.context.key || context.key;
 
         if (!key) {
           return {
-            success:false,
-            strategy: 'data_repair',            action: 'key_not_specified',            duration:Date.now() - startTime,
-            error: 'Data key not specified for repair',};
-}
+            success: false,
+            strategy: 'data_repair',
+            action: 'key_not_specified',
+            duration: Date.now() - startTime,
+            error: 'Data key not specified for repair',
+          };
+        }
 
         try {
           // Collect data from all healthy backends
@@ -299,10 +326,13 @@ export class RecoveryStrategyManager extends EventEmitter {
 
           if (dataVersions.size === 0) {
             return {
-              success:false,
-              strategy: 'data_repair',              action: 'no_data_found',              duration:Date.now() - startTime,
-              error: 'No valid data found across backends',};
-}
+              success: false,
+              strategy: 'data_repair',
+              action: 'no_data_found',
+              duration: Date.now() - startTime,
+              error: 'No valid data found across backends',
+            };
+          }
 
           // Find the most common version (consensus)
           const consensusData = this.findConsensusData(dataVersions);
@@ -314,36 +344,50 @@ export class RecoveryStrategyManager extends EventEmitter {
           ).length;
 
           return {
-            success:successfulRepairs > 0,
-            strategy: 'data_repair',            action: 'consensus_repair_completed',            duration:Date.now() - startTime,
-            data:consensusData,
-            metadata:{
+            success: successfulRepairs > 0,
+            strategy: 'data_repair',
+            action: 'consensus_repair_completed',
+            duration: Date.now() - startTime,
+            data: consensusData,
+            metadata: {
               key,
               successfulRepairs,
-              totalBackends:context.backends.size,
+              totalBackends: context.backends.size,
               repairResults,
-},
-};
-} catch (repairError) {
+            },
+          };
+        } catch (repairError) {
           return {
-            success:false,
-            strategy: 'data_repair',            action: 'repair_failed',            duration:Date.now() - startTime,
-            error:repairError.message,
-};
-}
-},
-});
+            success: false,
+            strategy: 'data_repair',
+            action: 'repair_failed',
+            duration: Date.now() - startTime,
+            error: repairError.message,
+          };
+        }
+      },
+    });
+  }
 
-    // Cache Optimization Strategy
+  /**
+   * Register cache optimization strategy.
+   */
+  private registerCacheOptimizationStrategy(): void {
+  /**
+   * Register cache optimization strategy.
+   */
+  private registerCacheOptimizationStrategy(): void {
     this.registerStrategy({
-      name: 'cache_optimization',      description: 'Optimize cache settings to improve performance',      applicableErrors:[
+      name: 'cache_optimization',
+      description: 'Optimize cache settings to improve performance',
+      applicableErrors: [
         MemoryErrorCode['CACHE_MISS_RATE_HIGH'],
         MemoryErrorCode['LATENCY_THRESHOLD_EXCEEDED'],
-],
-      priority:5,
-      timeoutMs:5000,
-      maxRetries:1,
-      execute:(error, context) => {
+      ],
+      priority: 5,
+      timeoutMs: 5000,
+      maxRetries: 1,
+      execute: async (error, context) => {
         const startTime = Date.now();
 
         try {
@@ -351,39 +395,56 @@ export class RecoveryStrategyManager extends EventEmitter {
           if (context.optimizer) {
             // Simulate cache optimization
             const optimizationResult = {
-              cacheSize: 'increased',              evictionPolicy: 'adjusted',              prefetchStrategy: 'optimized',};
+              cacheSize: 'increased',
+              evictionPolicy: 'adjusted',
+              prefetchStrategy: 'optimized',
+            };
 
             return {
-              success:true,
-              strategy: 'cache_optimization',              action: 'cache_optimized',              duration:Date.now() - startTime,
-              data:optimizationResult,
-};
-}
+              success: true,
+              strategy: 'cache_optimization',
+              action: 'cache_optimized',
+              duration: Date.now() - startTime,
+              data: optimizationResult,
+            };
+          }
 
           return {
-            success:false,
-            strategy: 'cache_optimization',            action: 'optimizer_not_available',            duration:Date.now() - startTime,
-            error: 'Performance optimizer not available',};
-} catch (optimizationError) {
+            success: false,
+            strategy: 'cache_optimization',
+            action: 'optimizer_not_available',
+            duration: Date.now() - startTime,
+            error: 'Performance optimizer not available',
+          };
+        } catch (optimizationError) {
           return {
-            success:false,
-            strategy: 'cache_optimization',            action: 'optimization_failed',            duration:Date.now() - startTime,
-            error:optimizationError.message,
-};
-}
-},
-});
+            success: false,
+            strategy: 'cache_optimization',
+            action: 'optimization_failed',
+            duration: Date.now() - startTime,
+            error: optimizationError.message,
+          };
+        }
+      },
+    });
+  }
 
+  /**
+   * Register system cleanup strategy.
+   */
+  private registerSystemCleanupStrategy(): void {
     // Retry with Backoff Strategy
     this.registerStrategy({
-      name: 'retry_with_backoff',      description: 'Retry failed operation with exponential backoff',      applicableErrors:[
+      name: 'retry_with_backoff',
+      description: 'Retry failed operation with exponential backoff',
+      applicableErrors: [
         MemoryErrorCode['CONSENSUS_TIMEOUT'],
         MemoryErrorCode['SYSTEM_OVERLOAD'],
-],
-      priority:3,
-      timeoutMs:30000,
-      maxRetries:5,
-      execute:async (error, context) => {
+      ],
+      priority: 3,
+      timeoutMs: 30000,
+      maxRetries: 5,
+      execute: async (error, context) => {
         const startTime = Date.now();
         const maxRetries = 3;
         let lastError = error;
@@ -399,26 +460,30 @@ export class RecoveryStrategyManager extends EventEmitter {
               const backend = Array.from(context.backends.values())[0];
 
               const result = await this.performBackendOperation(
-                backend, 
-                context.operation, 
-                context.key, 
+                backend,
+                context.operation,
+                context.key,
                 context.originalValue
               );
 
               return {
-                success:true,
-                strategy: 'retry_with_backoff',                action: 'retry_succeeded',                duration:Date.now() - startTime,
+                success: true,
+                strategy: 'retry_with_backoff',
+                action: 'retry_succeeded',
+                duration: Date.now() - startTime,
                 data: result,
-                metadata:{ attempt, delay},
-};
-}
+                metadata: { attempt, delay },
+              };
+            }
 
             // If we can't retry the specific operation, just wait and return success
             return {
-              success:true,
-              strategy: 'retry_with_backoff',              action: 'backoff_completed',              duration:Date.now() - startTime,
-              metadata:{ attempt, delay},
-};
+              success: true,
+              strategy: 'retry_with_backoff',
+              action: 'backoff_completed',
+              duration: Date.now() - startTime,
+              metadata: { attempt, delay },
+            };
 } catch (retryError) {
             lastError = retryError;
             if (attempt === maxRetries) {

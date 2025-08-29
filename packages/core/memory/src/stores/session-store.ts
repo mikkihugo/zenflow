@@ -111,12 +111,12 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
     // Storage will be created during initialization using foundation
 }
 
-  async initialize():Promise<Result<void, MemoryConnectionError>> {
+  async initialize(): Promise<Result<void, MemoryConnectionError>> {
     if (this.initialized) return ok();
 
     const timer = performanceTracker.startTimer('memory_initialize');
 
-    return withTrace('memory-store-initialize', () =>
+    return await withTrace('memory-store-initialize', () =>
       withRetry(
         async () => safeAsync(async () => {
             logger.info(

@@ -53,14 +53,14 @@ export interface ValidationCheckpoint {
   confidence: number;
   requiresHumanApproval: boolean;
   question: string;
-  context: any;
+  context: unknown;
   timestamp: Date;
 }
 
 export interface HumanValidationResponse {
   checkpointId: string;
   approved: boolean;
-  modifications?: any;
+  modifications?: unknown;
   feedback?: string;
   timestamp: Date;
 }
@@ -156,7 +156,7 @@ export interface AlternativeStructure {
 export interface DiscoveryEvent {
   type: 'started' | 'progress' | 'neural_analysis' | 'validation_required' | 'completed' | 'error';
   timestamp: Date;
-  data: any;
+  data: unknown;
   source: 'domain_scanner' | 'neural_mapper' | 'validator' | 'human_interface';
 }
 
@@ -167,13 +167,13 @@ export interface AGUIValidationRequest {
   description: string;
   priority: 'low' | 'medium' | 'high' | 'urgent';
   requiredActions: string[];
-  context: any;
+  context: unknown;
   timeoutMs?: number;
 }
 
 export interface AGUIValidationResult {
   requestId: string;
-  response: any;
+  response: unknown;
   confidence: number;
   processingTimeMs: number;
   validatorId?: string;
