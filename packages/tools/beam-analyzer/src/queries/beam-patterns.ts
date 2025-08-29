@@ -45,15 +45,14 @@ export class BeamPatternAnalyzer {
           for (const file of files) {
             const fileFindings = await this.analyzeFile(file, allRules);
             findings.push(...fileFindings);
-}
-}
-}
+          }
+        }
 
-      this.logger.info(
-        `Pattern analysis completed: ${findings.length} findings`
-      );
-      return ok(findings);
-    } catch (error) {
+        this.logger.info(
+          `Pattern analysis completed: ${findings.length} findings`
+        );
+        return ok(findings);
+      } catch (error) {
       this.logger.error('Pattern analysis failed:', error);
       return err({
         code: 'ANALYSIS_FAILED',

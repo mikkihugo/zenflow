@@ -76,13 +76,13 @@ export interface PerformanceMetrics {
  */
 export interface HealthStatus {
   /** Overall health status */
-  status: 'healthy | degraded|unhealthy;
-'  /** Individual check results */
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  /** Individual check results */
   checks:Record<
     string,
     {
-      status: 'ok | warning|error;
-'      message?:string;
+      status: 'ok' | 'warning' | 'error';
+      message?:string;
       value?:number;
       threshold?:number;
 }

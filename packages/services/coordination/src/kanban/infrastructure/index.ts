@@ -93,12 +93,6 @@ export class InfrastructureServiceFactory {
 
 // Export default factory instance
 export const infrastructureServiceFactory = new InfrastructureServiceFactory();
-      await this.stateMachineCoordinator.shutdown();
-}
-    if (this.eventCoordinator) {
-      await this.eventCoordinator.shutdown();
-}
-}
   /**
    * Get health status of all infrastructure services
    */
