@@ -10,7 +10,7 @@
  * Epic state transition event
  */
 export interface EpicStateTransitionEvent {
-  readonly epicId: {
+  readonly epicId:  {
   EPIC_STATE_TRANSITION = 'portfolio-kanban: 'portfolio-kanban: 'portfolio-kanban: 'portfolio-kanban: 'portfolio-kanban: new Map([
       [PortfolioKanbanState.FUNNEL, [PortfolioKanbanState.ANALYZING]],
       [
@@ -56,13 +56,13 @@ export interface EpicStateTransitionEvent {
   /**
    * Transition epic to new Portfolio Kanban state
    */
-  transitionEpic(params: {
+  transitionEpic(params:  {
     epicId: string;
     targetState: PortfolioKanbanState;
     triggeredBy: string;
     reason: string;
     evidence?:Record<string, string[]>;
-}):{
+}):  {
     success: boolean;
     newState: PortfolioKanbanState;
     message: string;
@@ -106,7 +106,7 @@ export interface EpicStateTransitionEvent {
   /**
    * Block epic with specific blocker
    */
-  blockEpic(params: {
+  blockEpic(params:  {
     epicId: string;
     blockerType: EpicBlockedEvent['blockerType];;
     severity: EpicBlockedEvent[severity];
@@ -122,7 +122,7 @@ export interface EpicStateTransitionEvent {
     // Emit blocked event
     this.eventBus.emit(
       createEvent({
-        type: ',',blockedEvent.severity ===critical')            ? EventPriority.CRITICAL';
+        type: ',blockedEvent.severity ===critical')            ? EventPriority.CRITICAL';
             :EventPriority.HIGH,
 };
     );

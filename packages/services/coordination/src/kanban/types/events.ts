@@ -114,62 +114,62 @@ export interface KanbanContext {
  */
 export interface WorkflowKanbanEvents {
   // Kanban system events;
- 'kanban: initialized: {';
+ 'kanban: initialized:  {';
     timestamp: Date;
     config: WorkflowKanbanConfig;
 };
   // Task lifecycle events
- 'task: created: WorkflowTask[];) 'task: updated: {';
+ 'task: created: WorkflowTask[];) 'task: updated:  {';
     taskId: string;
     changes: Partial<WorkflowTask>;
     timestamp: Date;
 };
  'task: moved: [string, TaskState, TaskState];; // taskId, fromState, toState';
- 'task: deleted: {';
+ 'task: deleted:  {';
     taskId: string;
     timestamp: Date;
 };
   // WIP management events
- 'wip: limit_exceeded: {';
+ 'wip: limit_exceeded:  {';
     state: TaskState;
     currentCount: number;
     limit: number;
     timestamp: Date;
 };
- 'wip: limits_updated: {';
+ 'wip: limits_updated:  {';
     oldLimits: WIPLimits;
     newLimits: WIPLimits;
     timestamp: Date;
 };
   // Bottleneck detection events
- 'bottleneck: detected: {';
+ 'bottleneck: detected:  {';
     bottleneck: WorkflowBottleneck;
     timestamp: Date;
 };
- 'bottleneck: resolved: {';
+ 'bottleneck: resolved:  {';
     bottleneckId: string;
     resolution: string;
     timestamp: Date;
 };
   // Flow metrics events
- 'flow: metrics_calculated: {';
+ 'flow: metrics_calculated:  {';
     metrics: FlowMetrics;
     timestamp: Date;
 };
   // Health monitoring events
- 'health: check_completed: {';
+ 'health: check_completed:  {';
     overallHealth: number;
     componentHealth: Record<string, number>;
     timestamp: Date;
 };
   // Workflow state machine events
- 'workflow: machine_created: {';
+ 'workflow: machine_created:  {';
     machineId: string;
     initialState: string;
     context: KanbanContext;
     timestamp: Date;
 };
- 'workflow: state_changed: {';
+ 'workflow: state_changed:  {';
     machineId: string;
     fromState: string;
     toState: string;
@@ -177,23 +177,23 @@ export interface WorkflowKanbanEvents {
     context: KanbanContext;
     timestamp: Date;
 };
- 'workflow: machine_stopped: {';
+ 'workflow: machine_stopped:  {';
     machineId: string;
     finalState: string;
     context: KanbanContext;
     timestamp: Date;
 };
   // Persistence events
- 'persistence: task_saved: {';
+ 'persistence: task_saved:  {';
     taskId: string;
     operation : 'save' | ' update'|' delete'    timestamp: Date;;
 };
- 'persistence: wip_limits_saved: {';
+ 'persistence: wip_limits_saved:  {';
     limits: WIPLimits;
     timestamp: Date;
 };
   // Event bus system events  
- 'eventbus: initialized: {';
+ 'eventbus: initialized:  {';
     timestamp: Date;
 };
 }

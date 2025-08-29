@@ -111,7 +111,7 @@ export interface BudgetCycle {
     readonly startMonth: number;
     readonly planningHorizon: number;
     readonly approvalProcess: string[];
-    readonly budgetSize: {
+    readonly budgetSize:  {
         min: number;
         max: number;
     };

@@ -9,8 +9,8 @@
  * WIP check result interface
  */
 export interface WIPCheckResult {
-  allowed: {} as Record<TaskState, number[]>;
-  constructor(initialLimits: { ...initialLimits};
+  allowed:  {} as Record<TaskState, number[]>;
+  constructor(initialLimits:  { ...initialLimits};
     logger.info('WIPManagementService initialized with limits:, this.wipLimits');`;
 }
   /**
@@ -19,7 +19,7 @@ export interface WIPCheckResult {
   async checkWIPLimits(state: currentTasks.filter(task => task.state === state);
     const currentCount = tasksInState.length;
     const limit = this.wipLimits[state];
-    const utilization = limit > 0 ? currentCount / limit: {
+    const utilization = limit > 0 ? currentCount / limit:  {
       allowed: this.generateWIPRecommendation(state, utilization, currentCount, limit);
 }
     return result;
@@ -27,7 +27,7 @@ export interface WIPCheckResult {
   /**
    * Get current WIP limits
    */
-  async getWIPLimits():Promise<WIPLimits> {
+  async getWIPLimits(): Promise<WIPLimits> {
     return { ...this.wipLimits};
 }
   /**
@@ -84,7 +84,7 @@ export interface WIPCheckResult {
       totalUtilization += Math.min(1, utilization);
       stateCount++;
 }
-    return stateCount > 0 ? totalUtilization / stateCount: {};
+    return stateCount > 0 ? totalUtilization / stateCount:  {};
     for (const state of Object.keys(this.utilizationHistory) as TaskState[]) {
       const history = this.utilizationHistory[state];
       const current = history[history.length - 1]|| 0;

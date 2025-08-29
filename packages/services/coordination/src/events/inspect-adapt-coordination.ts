@@ -19,7 +19,7 @@ export interface IATeam {
   actualDelivery: string[];
   businessValueDelivered: number;
   velocity: number;
-  qualityMetrics: {
+  qualityMetrics:  {
     defects: number;
     testCoverage: number;
     techDebtScore: number;
@@ -53,7 +53,7 @@ export interface PISystemDemo {
   id: string;
   piId: string;
   demoDate: Date;
-  features: {
+  features:  {
     id: string;
     name: string;
     team: string;
@@ -61,7 +61,7 @@ export interface PISystemDemo {
     demoStatus: 'completed' | 'partial' | 'not-ready';
     stakeholderFeedback: string[];
   }[];
-  stakeholderAttendance: {
+  stakeholderAttendance:  {
     businessOwners: string[];
     customers: string[];
     sponsors: string[];
@@ -93,10 +93,10 @@ export interface ProblemSolvingWorkshop {
   participants: string[];
   duration: number; // minutes
   techniques: string[]; // e.g., '5 Whys', 'Fishbone', 'Affinity Mapping'
-  outcomes: {
+  outcomes:  {
     rootCauseIdentified: boolean;
     rootCause: string;
-    actionItems: {
+    actionItems:  {
       id: string;
       description: string;
       owner: string;
@@ -117,19 +117,19 @@ export interface InspectAdaptWorkshop {
   piNumber: number;
   workshopDate: Date;
   duration: number; // hours
-  facilitators: {
+  facilitators:  {
     primary: string;
     coaches: string[];
     external?: string;
   };
   participants: IATeam[];
-  agenda: {
+  agenda:  {
     piSystemDemo: PISystemDemo;
     quantitativeReview: QuantitativeMeasurement[];
     problemIdentification: ProblemItem[];
     problemSolvingWorkshops: ProblemSolvingWorkshop[];
   };
-  outcomes: {
+  outcomes:  {
     actionItems: string[];
     improvements: string[];
     experimentsPlanned: string[];
@@ -167,7 +167,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
   /**
    * Create I&A workshop
    */
-  createWorkshop(config: {
+  createWorkshop(config:  {
     artName: string;
     piNumber: number;
     workshopDate: Date;
@@ -184,13 +184,13 @@ export class InspectAdaptCoordinationManager extends EventBus {
       duration: 8, // Full day workshop
       facilitators: config.facilitators,
       participants: config.teams,
-      agenda: {
+      agenda:  {
         piSystemDemo: this.createDefaultSystemDemo(workshopId, config.teams),
         quantitativeReview: this.createDefaultMetrics(config.teams),
         problemIdentification: [],
         problemSolvingWorkshops: []
       },
-      outcomes: {
+      outcomes:  {
         actionItems: [],
         improvements: [],
         experimentsPlanned: [],
@@ -208,7 +208,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
   /**
    * Handle workshop start
    */
-  private handleWorkshopStart(data: { workshopId: string }): void {
+  private handleWorkshopStart(data:  { workshopId: string }): void {
     const workshop = this.workshops.get(data.workshopId);
     if (!workshop) {
       logger.error(`Workshop not found: ${data.workshopId}`);
@@ -228,7 +228,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
   /**
    * Handle problem identification
    */
-  private handleProblemIdentified(data: {
+  private handleProblemIdentified(data:  {
     workshopId: string;
     problem: Omit<ProblemItem, 'id' | 'votes' | 'priority'>;
   }): void {
@@ -256,7 +256,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
   /**
    * Handle problem voting
    */
-  private handleProblemVoting(data: {
+  private handleProblemVoting(data:  {
     problemId: string;
     votes: number;
   }): void {
@@ -278,7 +278,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
   /**
    * Handle workshop facilitation
    */
-  private handleWorkshopFacilitation(data: {
+  private handleWorkshopFacilitation(data:  {
     problemId: string;
     facilitator: string;
     participants: string[];
@@ -299,7 +299,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
       participants: data.participants,
       duration: 45, // 45 minutes per workshop
       techniques: [data.technique],
-      outcomes: {
+      outcomes:  {
         rootCauseIdentified: false,
         rootCause: '',
         actionItems: [],
@@ -333,7 +333,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
   /**
    * Handle demo feedback
    */
-  private handleDemoFeedback(data: {
+  private handleDemoFeedback(data:  {
     demoId: string;
     featureId: string;
     feedback: string[];
@@ -357,7 +357,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
   /**
    * Handle metrics review
    */
-  private handleMetricsReview(data: {
+  private handleMetricsReview(data:  {
     workshopId: string;
     metrics: QuantitativeMeasurement[];
   }): void {
@@ -394,7 +394,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
           stakeholderFeedback: []
         }))
       ),
-      stakeholderAttendance: {
+      stakeholderAttendance:  {
         businessOwners: [],
         customers: [],
         sponsors: []
@@ -463,7 +463,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
   /**
    * Get workshop status
    */
-  getWorkshopStatus(workshopId: string): {
+  getWorkshopStatus(workshopId: string):  {
     workshop?: InspectAdaptWorkshop;
     problemsSolved: number;
     actionItemsGenerated: number;

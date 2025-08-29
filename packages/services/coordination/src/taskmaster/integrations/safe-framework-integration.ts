@@ -50,10 +50,10 @@ export enum SafeGateCategory {
 export interface SafeIntegrationConfig {
   enabled: boolean;
   // Epic management gates
-  epicGates: {
+  epicGates:  {
     enablePortfolioKanban: boolean;
     enableLifecycleGates: boolean;
-    autoApprovalThresholds: {
+    autoApprovalThresholds:  {
       funnel: number;
       analyzing: number;
       portfolioBacklog: number;
@@ -61,7 +61,7 @@ export interface SafeIntegrationConfig {
 };
 };
   // Continuous delivery gates
-  qualityGates: {
+  qualityGates:  {
     enableCodeQuality: boolean;
     enableSecurity: boolean;
     enablePerformance: boolean;
@@ -70,14 +70,14 @@ export interface SafeIntegrationConfig {
     humanFallbackThreshold: number;
 };
   // Business validation gates
-  businessGates: {
+  businessGates:  {
     enableStakeholderApproval: boolean;
     enableComplianceReview: boolean;
     requireBusinessCase: boolean;
     escalationTimeoutHours: number;
 };
   // Learning and improvement
-  learning: {
+  learning:  {
     enableContinuousLearning: boolean;
     trackDecisionPatterns: boolean;
     adaptPrompts: boolean;)    auditCompliance : 'basic| soc2' | ' comprehensive')};;
@@ -87,21 +87,21 @@ export interface SafeIntegrationConfig {
  */
 export interface SafeGateContext {
   category: SafeGateCategory;
-  safeEntity: {
+  safeEntity:  {
     type : 'epic| feature| story| capability' | ' solution')    id: string;;
     metadata: Record<string, unknown>;
 };
-  workflow: {
+  workflow:  {
     currentState: string;
     targetState: string;
     previousStates: string[];
 };
-  stakeholders: {
+  stakeholders:  {
     owners: string[];
     approvers: string[];
     reviewers: string[];
 };
-  compliance: {
+  compliance:  {
     required: boolean;
     frameworks: string[];
     auditLevel : 'basic' | ' enhanced'|' comprehensive')};;
@@ -115,27 +115,27 @@ export interface SafeGateTraceabilityRecord {
   category: SafeGateCategory;
   context: SafeGateContext;
   // Decision chain
-  aiDecision?:{
+  aiDecision?:  {
     confidence: number;
     reasoning: string;
     model: string;
     promptVersion: string;
     timestamp: Date;
 };
-  humanDecision?:{
+  humanDecision?:  {
     approver: string;
     decision : 'approved' | ' rejected'|' escalated')    reasoning: string;;
     timestamp: Date;
     reviewTime: number;
 };
   // Learning data
-  learningExtracted: {
+  learningExtracted:  {
     patterns: string[];
     improvements: string[];
     confidence: number;
 };
   // SOC2 audit trail
-  auditTrail: {
+  auditTrail:  {
     sessionId: string;
     ipAddress: string;
     userAgent: string;
@@ -143,7 +143,7 @@ export interface SafeGateTraceabilityRecord {
     complianceLevel: string;
 };
   // Performance metrics
-  metrics: {
+  metrics:  {
     totalProcessingTime: number;
     aiProcessingTime: number;
     humanReviewTime: number;
@@ -173,7 +173,7 @@ export class SafeFrameworkIntegration {
   /**
    * Initialize SAFE framework integration
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     try {
     ')      this.logger.info('Initializing SAFE Framework Integration...');
       // Initialize infrastructure
@@ -198,7 +198,7 @@ export class SafeFrameworkIntegration {
       // Register event handlers
       this.registerEventHandlers();')      this.logger.info('SAFE Framework Integration initialized successfully');
 } catch (error) {
-      this.logger.error(';')';
+      this.logger.error(';)';
        'Failed to initialize SAFE Framework Integration,`;
         error
       );
@@ -212,12 +212,12 @@ export class SafeFrameworkIntegration {
     epicId: string,
     fromState: PortfolioKanbanState,
     toState: PortfolioKanbanState,
-    context: {
+    context:  {
       businessCase?:EpicBusinessCase;
       stakeholders: string[];
       complianceRequired: boolean;
 }
-  ):Promise<{ gateId: ApprovalGateId; traceabilityId: string}> {
+  ): Promise<{ gateId: ApprovalGateId, traceabilityId: string}> {
     const gateId =;
       `epic-`${epicId}-${fromState}-to-${toState} as ApprovalGateId;``)    const traceabilityId = `trace-${gateId}-${Date.now()})    this.logger.info(`'Creating Epic Portfolio Gate,{';
       epicId,
@@ -233,23 +233,23 @@ export class SafeFrameworkIntegration {
       context;
     );
     // Create SAFE gate context
-    const safeContext: {
+    const safeContext:  {
       category: 'epic,',
 '        id: epicId,';
-        metadata: {
+        metadata:  {
           fromState,
           toState,
           businessCase: context.businessCase,
           transitionType: this.getTransitionType(fromState, toState),',},';
 },
-      workflow: {
+      workflow:  {
         currentState: fromState,
         targetState: toState,
         previousStates: [], // Would load from epic history
 },
-      stakeholders: {
+      stakeholders:  {
     ')        owners: context.stakeholders.filter((s) => s.includes('owner')),')        approvers: context.stakeholders.filter((s) => s.includes('approver')),';
-        reviewers: {
+        reviewers:  {
       id: 'system',)        userAgent : 'TaskMaster-SafeIntegration,'
         correlationId: await this.processLLMApproval(
         gateId,
@@ -266,13 +266,13 @@ export class SafeFrameworkIntegration {
       throw new Error(
         `Failed to create epic approval gate: qualityGateConfig.gateId as ApprovalGateId;`)    const traceabilityId = `trace-${gateId}-${Date.now()})    this.logger.info(``Creating Quality Gate,{';
       gateId,
-      pipelineId: {
+      pipelineId:  {
       category: 'feature,',
 '        id: 'quality_review',)        targetState : 'quality_approved')        previousStates:['development,' testing'],';
 },
-      stakeholders: {
+      stakeholders:  {
         owners: context.stakeholders.filter((s) => s.includes('owner')),')        approvers: context.stakeholders.filter((s) => s.includes('quality')),';
-        reviewers: {
+        reviewers:  {
       id: 'system,)        userAgent,        correlationId: await this.processLLMQualityApproval(
         qualityGateConfig,
         safeContext,
@@ -320,22 +320,22 @@ export class SafeFrameworkIntegration {
   // ============================================================================
   // PRIVATE IMPLEMENTATION METHODS
   // ============================================================================
-  private async createTables():Promise<void> {
+  private async createTables(): Promise<void> {
     // Create tables for SAFE integration data
-    await this.database.schema.createTableIfNotExists(';')';
+    await this.database.schema.createTableIfNotExists(';)';
      'safe_gate_traceability,';
       (table: any) => {
         table.uuid('id').primary(');)        table.string('gate_id').notNullable(');')        table.string('category').notNullable(');')        table.json('context').notNullable(');')        table.json('ai_decision').nullable(');')        table.json('human_decision').nullable(');')        table.json('learning_extracted').notNullable(');')        table.json('audit_trail').notNullable(');')        table.json('metrics').notNullable(');')        table.timestamp('created_at').notNullable(');')        table.timestamp('completed_at').nullable(');')        table.index(['gate_id,' category,'created_at]);
 }
-    );')    await this.database.schema.createTableIfNotExists(';')';
+    );')    await this.database.schema.createTableIfNotExists(';)';
      'safe_gate_learning,';
       (table: any) => {
         table.uuid('id').primary(');)        table.string('pattern').notNullable(');')        table.integer('frequency').notNullable(');')        table.float('accuracy').notNullable(');')        table.text('improvement').notNullable(');')        table.timestamp('last_updated').notNullable(');')        table.index(['pattern,' accuracy]);
 }
     );
 }
-  private registerEventHandlers():void {
-    // Listen for approval gate events')    this.eventSystem.on(';')';
+  private registerEventHandlers(): void {
+    // Listen for approval gate events')    this.eventSystem.on(';)';
      'approval: this.activeGates.get(gateId);
     if (!context) return;
     this.logger.info('SAFE gate approved,{ gateId, taskId, approverId};);
@@ -382,7 +382,7 @@ export class SafeFrameworkIntegration {
       minimumApprovals,
       isRequired: true,
       timeoutHours,
-      metadata: {
+      metadata:  {
         category: SafeGateCategory.EPIC_PORTFOLIO,')        transition,    )        complianceRequired: context.complianceRequired,`;
 },
 };
@@ -398,8 +398,8 @@ export class SafeFrameworkIntegration {
       ),
       minimumApprovals: Date.now();
     // Build LLM approval context
-    const llmContext: {
-      task:{
+    const llmContext:  {
+      task:  {
         id: 'SAFE Framework Workflow,',
 '        currentState: await this.getLLMConfig(context.category);
     // Evaluate with LLM
@@ -421,10 +421,10 @@ export class SafeFrameworkIntegration {
     const qualityResult =;
       await qualityGateService.executeQualityGate(qualityConfig);
     // Convert to LLM approval result
-    const llmResult: {
+    const llmResult:  {
       gateId: qualityConfig.gateId,
       taskId: context.safeEntity.id,
-      decision: {
+      decision:  {
         approved: qualityResult.status ==='pass,';
         confidence: 'quality-gate-ai,',
 '          processingTime: qualityResult.executionTime,',          tokenUsage: 0,')          version,},';
@@ -434,7 +434,7 @@ export class SafeFrameworkIntegration {
           this.config.qualityGates.humanFallbackThreshold,
       escalatedToHuman: qualityResult.status !=='pass'|| qualityResult.score / 100 <';
           this.config.qualityGates.humanFallbackThreshold,
-      processingTime: {
+      processingTime:  {
       confidence: 'quality-gate-ai',)      promptVersion : 'quality-gate-v1.0.0,'
       timestamp: new Date();
     record.metrics.totalProcessingTime =
@@ -466,12 +466,12 @@ export class SafeFrameworkIntegration {
     ')        patterns.push('ai_human_mismatch');')        improvements.push('Review approval criteria and thresholds');
 }
 }
-    // Pattern: {
+    // Pattern:  {
     ')      id,    ')      userId: await this.database('safe_gate_traceability')')      .where('id, traceabilityId)';
       .first();
     if (!row) return null;
     return {
-      id: {
+      id:  {
     ')      [PortfolioKanbanState.FUNNEL]:'intake')      [PortfolioKanbanState.ANALYZING]:'analysis')      [PortfolioKanbanState.PORTFOLIO_BACKLOG]:'prioritization')      [PortfolioKanbanState.IMPLEMENTING]:'execution')      [PortfolioKanbanState.DONE]: 'completion',};)    return transitions[toState]||'unknown')};;
   private getRequiredApprovalCount(
     fromState: PortfolioKanbanState,
@@ -503,7 +503,7 @@ export class SafeFrameworkIntegration {
     // Assess based on compliance and entity type
     if (context.compliance.auditLevel ==='comprehensive)return' high')    if (context.safeEntity.type ==='epic)return' medium')    return'low')};;
   private async getLLMConfig(
-    category: {
+    category:  {
       enabled: true,)      model: `claude-3-5-sonnet``;
       prompt,    ')      criteria: [';
        'business_value,')       'compliance,';
@@ -518,7 +518,7 @@ export class SafeFrameworkIntegration {
   private async triggerSafeStateTransition(
     context: SafeGateContext,
     decision: string
-  ):Promise<void> {
+  ): Promise<void> {
     // Trigger appropriate SAFE framework state transition
     this.logger.info('Triggering SAFE state transition,{';
       entityType: context.safeEntity.type,
@@ -532,7 +532,7 @@ export class SafeFrameworkIntegration {
   private async triggerSafeEscalation(
     context: SafeGateContext,
     reason: string
-  ):Promise<void> {
+  ): Promise<void> {
     // Trigger SAFE framework escalation procedures')    this.logger.warn('Triggering SAFE escalation,{';
       entityType: context.safeEntity.type,
       entityId: context.safeEntity.id,
@@ -552,7 +552,7 @@ export class SafeFrameworkIntegration {
     // Implementation would analyze patterns in decision records
     return [];
 }
-  private calculateAIPerformance(records: SafeGateTraceabilityRecord[]): {
+  private calculateAIPerformance(records: SafeGateTraceabilityRecord[]):  {
     autoApprovalRate: number;
     humanOverrideRate: number;
     averageConfidence: number;
@@ -566,7 +566,7 @@ export class SafeFrameworkIntegration {
       accuracyTrend: [0.8, 0.82, 0.85, 0.87, 0.89],
 };
 }
-  private analyzeHumanBehavior(records: SafeGateTraceabilityRecord[]): {
+  private analyzeHumanBehavior(records: SafeGateTraceabilityRecord[]):  {
     averageReviewTime: number;
     commonRejectionReasons: string[];
     escalationPatterns: string[];
@@ -579,7 +579,7 @@ export class SafeFrameworkIntegration {
 ],')      escalationPatterns: ['Timeout after 24h,' Complex business cases'],';
 };
 }
-  private calculateComplianceMetrics(records: SafeGateTraceabilityRecord[]): {
+  private calculateComplianceMetrics(records: SafeGateTraceabilityRecord[]):  {
     auditTrailCompleteness: number;
     soc2Compliance: boolean;
     gatesCovered: number;

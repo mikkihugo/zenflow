@@ -15,14 +15,14 @@ export interface InspectAdaptConfig {
   workshopDate: Date;
   duration: number; // hours
   // Workshop facilitators
-  facilitators: {
+  facilitators:  {
     rte: string; // Primary facilitator
     scrumMasters: string[];
     coaches: string[];
     externalFacilitator?:string;
 };
   // Workshop participants
-  participants: {
+  participants:  {
     allTeams: IATeam[];
     businessOwners: string[];
     productManagement: string[];
@@ -30,7 +30,7 @@ export interface InspectAdaptConfig {
     stakeholders: string[];
 };
   // PI context for review
-  piContext: {
+  piContext:  {
     startDate: Date;
     endDate: Date;
     piObjectives: string[];
@@ -40,18 +40,18 @@ export interface InspectAdaptConfig {
     actualBusinessValue: number;
 };
   // Workshop structure
-  structure: {
-    piSystemDemo:{
+  structure:  {
+    piSystemDemo:  {
       enabled: boolean;
       duration: number; // hours
       presenter: string;
 };
-    measurementReview: {
+    measurementReview:  {
       enabled: boolean;
       duration: number; // hours
       metricsToReview: string[];
 };
-    problemSolvingWorkshop: {
+    problemSolvingWorkshop:  {
       enabled: boolean;
       duration: number; // hours
       maxProblemsToAddress: number;)      techniques: (|'fishbone| 5_whys| root_cause_analysis| solution_brainstorming')      )[];;
@@ -73,14 +73,14 @@ export interface IATeam {
   name: string;
   domain: string;
   // Team representatives for I&A
-  representatives: {
+  representatives:  {
     scrumMaster: string;
     productOwner: string;
     teamLead: string;
     teamMembers: string[]; // Additional participants
 };
   // Team PI performance
-  performance: {
+  performance:  {
     piObjectivesPlanned: number;
     piObjectivesDelivered: number;
     businessValuePlanned: number;
@@ -89,7 +89,7 @@ export interface IATeam {
     qualityMetrics: TeamQualityMetrics;
 };
   // Team-identified issues
-  issues: {
+  issues:  {
     teamLevelProblems: IASystemProblem[];
     crossTeamProblems: IASystemProblem[];
     processImprovements: string[];
@@ -102,20 +102,20 @@ export interface IATeam {
 export interface PIMetrics {
   piNumber: number;
   // Planning vs delivery
-  planning: {
+  planning:  {
     piObjectivesCommitted: number;
     businessValueCommitted: number;
     velocityPlanned: number;
     teamCapacityPlanned: number;
 };
-  delivery: {
+  delivery:  {
     piObjectivesDelivered: number;
     businessValueDelivered: number;
     velocityActual: number;
     teamCapacityUtilized: number;
 };
   // Flow metrics
-  flow: {
+  flow:  {
     leadTime: number; // days
     cycleTime: number; // days
     throughput: number; // features per iteration
@@ -123,14 +123,14 @@ export interface PIMetrics {
     blockedTime: number; // percentage
 };
   // Quality metrics
-  quality: {
+  quality:  {
     defectRate: number;
     escapedDefects: number;
     technicalDebtTrend : 'improving' | ' stable'|' declining' | ' improving'|' stable' | ' declining'|' degrading')    testCoverage: number;;
     automationCoverage: number;
 };
   // Stakeholder satisfaction
-  satisfaction: {
+  satisfaction:  {
     businessOwnerSatisfaction: number; // 1-10
     customerSatisfaction: number; // 1-10
     teamSatisfaction: number; // 1-10
@@ -143,21 +143,21 @@ export interface PIMetrics {
 export interface TeamRetrospective {
   teamId: string;
   // Retrospective outcomes
-  outcomes: {
+  outcomes:  {
     whatWorkedWell: string[];
     whatDidntWork: string[];
     improvementActions: string[];
     experimentsToTry: string[];
 };
   // Team-specific metrics
-  metrics: {
+  metrics:  {
     teamVelocityTrend: number[];
     teamSatisfaction: number;
     collaborationEffectiveness: number;
     technicalPracticesMaturity: number;
 };
   // Issues and impediments
-  issues: {
+  issues:  {
     teamInternalIssues: string[];
     crossTeamIssues: string[];
     organizationalImpediments: string[];
@@ -175,14 +175,14 @@ export interface IASystemProblem {
   description: string;
   // Problem categorization
   category: |'process| technical| organizational| tooling| communication' | ' quality')  scope : 'team| cross_team| art| portfolio' | ' enterprise')  severity: low| medium| high'|' critical')  // Impact assessment';
-  impact: {
+  impact:  {
     affectedTeams: string[];
     affectedObjectives: string[];
     businessImpact: string;
     estimatedCost: string; // opportunity cost
     frequencyOfOccurrence : 'rare| occasional| frequent' | ' constant')};;
   // Problem context
-  context: {
+  context:  {
     reportedBy: string[];
     firstObserved: Date;
     lastOccurred: Date;
@@ -190,7 +190,7 @@ export interface IASystemProblem {
     attemptedSolutions: string[];
 };
   // Workshop processing
-  workshop: {
+  workshop:  {
     priorityVotes: number;
     selectedForAnalysis: boolean;
     rootCauseAnalysis?:RootCauseAnalysis;
@@ -208,14 +208,14 @@ export interface IASystemProblem {
 export interface RootCauseAnalysis {
   problemId: string;
   technique : 'fishbone| 5_whys' | ' root_cause_analysis')  // Analysis process';
-  process: {
+  process:  {
     facilitator: string;
     participants: string[];
     duration: number; // minutes
     analysisDate: Date;
 };
   // Fishbone diagram categories (if used)
-  fishboneCategories?:{
+  fishboneCategories?:  {
     people: string[];
     process: string[];
     environment: string[];
@@ -224,21 +224,21 @@ export interface RootCauseAnalysis {
     machines: string[];
 };
   // 5 Whys chain (if used)
-  fiveWhysChain?:{
-    why1: { question: string; answer: string};
-    why2: { question: string; answer: string};
-    why3: { question: string; answer: string};
-    why4: { question: string; answer: string};
-    why5: { question: string; answer: string};
+  fiveWhysChain?:  {
+    why1:  { question: string, answer: string};
+    why2:  { question: string, answer: string};
+    why3:  { question: string, answer: string};
+    why4:  { question: string, answer: string};
+    why5:  { question: string, answer: string};
 };
   // Root causes identified
-  rootCauses: {
+  rootCauses:  {
     primary: string;
     secondary: string[];
     contributing: string[];
 };
   // Validation
-  validation: {
+  validation:  {
     rootCausesValidated: boolean;
     validationMethod: string;
     validatedBy: string[];
@@ -254,7 +254,7 @@ export interface ProposedSolution {
   title: string;
   description: string;
   // Solution details
-  details: {
+  details:  {
     implementationApproach: string;
     resourcesRequired: string[];
     estimatedEffort: string;
@@ -262,24 +262,24 @@ export interface ProposedSolution {
     successMeasures: string[];
 };
   // Impact assessment
-  impact: {
+  impact:  {
     expectedImprovement: string;
     riskMitigation: string;
     preventativeValue: string;
     scalabilityPotential: string;
 };
   // Feasibility
-  feasibility: {
+  feasibility:  {
     technicalFeasibility : 'low' | ' medium'|' high')    organizationalFeasibility : 'low' | ' medium'|' high')    costFeasibility : 'low' | ' medium'|' high')    timelineFeasibility : 'low' | ' medium'|' high')};;
   // Workshop evaluation
-  evaluation: {
+  evaluation:  {
     proposedBy: string;
     votes: number;
     ranking: number; // 1-3 for top solutions
     selectedForImplementation: boolean;
 };
   // Implementation planning
-  implementation?:{
+  implementation?:  {
     owner: string;
     targetIteration: number;
     dependencies: string[];
@@ -295,21 +295,21 @@ export interface ImprovementBacklogItem {
   title: string;
   description: string;
   // Source information
-  source: {
+  source:  {
     iaProblemId: string;
     solutionId: string;
     piNumber: number;
     workshopDate: Date;
 };
   // Backlog item details
-  details: {
+  details:  {
     userStory: string; // Written as improvement user story
     acceptanceCriteria: string[];
     businessValue: number; // 1-10
     effortEstimate: number; // story points or days
     priority: low| medium| high' | ' critical')};;
   // Implementation planning
-  planning: {
+  planning:  {
     targetPI: number;
     targetIteration: number;
     assignedTeam: string;
@@ -318,7 +318,7 @@ export interface ImprovementBacklogItem {
     prerequisites: string[];
 };
   // Approval and prioritization
-  approval: {
+  approval:  {
     requiresApproval: boolean;
     approvers: string[];
     approvalGateId?:ApprovalGateId;
@@ -326,7 +326,7 @@ export interface ImprovementBacklogItem {
     costBenefitAnalysis: string;
 };
   // Tracking
-  tracking: {
+  tracking:  {
     status:|'backlog| planned| in_progress| completed| deferred' | ' cancelled')    progressUpdates: Array<{';
       date: Date;
       update: string;
@@ -342,13 +342,13 @@ export interface ImprovementBacklogItem {
 export interface InspectAdaptOutcomes {
   workshopId: string;
   // Workshop execution
-  execution: {
+  execution:  {
     completed: boolean;
     actualDuration: number; // hours
     participantCount: number;
     partsCompleted: ('pi_demo| measurement_review| problem_solving')[];)};;
   // Problems addressed
-  problemsAddressed: {
+  problemsAddressed:  {
     totalProblemsIdentified: number;
     problemsAnalyzed: number;
     rootCausesIdentified: number;
@@ -356,14 +356,14 @@ export interface InspectAdaptOutcomes {
     solutionsSelected: number;
 };
   // Improvement backlog
-  improvementBacklog: {
+  improvementBacklog:  {
     itemsCreated: number;
     highPriorityItems: number;
     itemsForNextPI: number;
     itemsRequiringApproval: number;
 };
   // Business impact
-  businessImpact: {
+  businessImpact:  {
     processImprovements: number;
     qualityImprovements: number;
     efficiencyGains: string[];
@@ -371,14 +371,14 @@ export interface InspectAdaptOutcomes {
     riskMitigations: string[];
 };
   // Learning and culture
-  learning: {
+  learning:  {
     participantSatisfaction: number; // 1-10
     learningObjectivesAchieved: string[];
     continuousImprovementCulture: number; // 1-10 assessment
     processMaturityImprovements: string[];
 };
   // Follow-up coordination
-  followUp: {
+  followUp:  {
     nextPIPlanningIntegration: string[];
     approvalWorkflowsCreated: number;
     actionItemsAssigned: number;
@@ -389,19 +389,19 @@ export interface InspectAdaptOutcomes {
  * Quality metrics for I&A review
  */
 export interface QualityMetrics {
-  defectMetrics: {
+  defectMetrics:  {
     totalDefects: number;
     defectsByCategory: Record<string, number>;
     defectEscapeRate: number;
     meanTimeToResolution: number;
 };
-  testingMetrics: {
+  testingMetrics:  {
     testCoverage: number;
     automatedTestCoverage: number;
     testExecutionTime: number;
     testPassRate: number;
 };
-  technicalDebt: {
+  technicalDebt:  {
     technicalDebtItems: number;
     technicalDebtTrend : 'improving' | ' stable'|' declining' | ' improving'|' stable' | ' declining'|' degrading')    refactoringEffort: number; // story points';
 };
@@ -410,17 +410,17 @@ export interface QualityMetrics {
  * Team-level quality metrics
  */
 export interface TeamQualityMetrics {
-  codeQuality: {
+  codeQuality:  {
     codeReviewCoverage: number;
     codingStandardsCompliance: number;
     complexityMetrics: any;
 };
-  delivery: {
+  delivery:  {
     deliveryPredictability: number;
     iterationGoalSuccess: number;
     velocityConsistency: number;
 };
-  collaboration: {
+  collaboration:  {
     pairProgrammingFrequency: number;
     knowledgeSharingRating: number;
     crossFunctionalCollaboration: number;
@@ -443,7 +443,7 @@ export class InspectAdaptCoordination {
   /**
    * Initialize Inspect & Adapt coordination
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     try {
     ')      this.logger.info('Initializing Inspect & Adapt Coordination...');
       // Initialize infrastructure
@@ -501,7 +501,7 @@ export class InspectAdaptCoordination {
     `)      throw new Error(`I&A Workshop ${workshopId} not found``);')};;
     this.logger.info('Executing Measurement Review,{
       workshopId,
-      piNumber: { ...config.inputs.piMetrics, ...detailedMetrics};
+      piNumber:  { ...config.inputs.piMetrics, ...detailedMetrics};
     // Analyze performance vs commitments
     const performanceAnalysis =;
       await this.analyzePerformanceVsCommitments(fullMetrics);
@@ -531,7 +531,7 @@ export class InspectAdaptCoordination {
     );
     return {
       reviewCompleted: []
-  ):Promise<{
+  ): Promise<{
     workshopCompleted: this.activeWorkshops.get(workshopId);
     if (!config) {
     `)      throw new Error(`I&A Workshop ${w}orkshopIdnot found``);')};;
@@ -629,7 +629,7 @@ export class InspectAdaptCoordination {
       this.analyzeImprovementBacklogStatus(improvementItems);
     return {
       workshopStatus: statusData,
-      problemSolvingProgress: {
+      problemSolvingProgress:  {
         problemsIdentified: config.inputs.identifiedProblems.length,
         problemsAnalyzed: problemAnalyses.length,
         solutionsGenerated: solutions.length,
@@ -642,43 +642,43 @@ export class InspectAdaptCoordination {
   // ============================================================================
   // PRIVATE IMPLEMENTATION METHODS
   // ============================================================================
-  private async createInspectAdaptTables():Promise<void> {
+  private async createInspectAdaptTables(): Promise<void> {
     // Create tables for I&A coordination
     await this.database.schema.createTableIfNotExists('ia_workshops,')';
       (table: any) => {
     ')        table.uuid('id').primary(');)        table.string('workshop_id').notNullable().unique(');')        table.string('art_name').notNullable(');')        table.integer('pi_number').notNullable(');')        table.timestamp('workshop_date').notNullable(');')        table.json('config').notNullable(');')        table.json('outcomes').nullable(');')        table.string('status').notNullable(');')        table.timestamp('created_at').notNullable(');')        table.timestamp('completed_at').nullable(');')        table.index(['art_name,' pi_number]);
 }
-    );')    await this.database.schema.createTableIfNotExists(';')';
+    );')    await this.database.schema.createTableIfNotExists(';)';
      'ia_system_problems,';
       (table: any) => {
         table.uuid('id').primary(');)        table.string('problem_id').notNullable().unique(');')        table.string('workshop_id').notNullable(');')        table.string('category').notNullable(');')        table.string('scope').notNullable(');')        table.string('severity').notNullable(');')        table.json('impact').notNullable(');')        table.json('context').notNullable(');')        table.json('workshop_processing').notNullable(');')        table.boolean('requires_approval').notNullable(');')        table.string('approval_gate_id').nullable(');')        table.timestamp('created_at').notNullable(');')        table.index(['workshop_id,' severity,'scope]);
 }
-    );')    await this.database.schema.createTableIfNotExists(';')';
+    );')    await this.database.schema.createTableIfNotExists(';)';
      'ia_root_cause_analyses,';
       (table: any) => {
         table.uuid('id').primary(');)        table.string('problem_id').notNullable(');')        table.string('workshop_id').notNullable(');')        table.string('technique').notNullable(');')        table.json('process_data').notNullable(');')        table.json('analysis_results').notNullable(');')        table.json('root_causes').notNullable(');')        table.json('validation').notNullable(');')        table.timestamp('created_at').notNullable(');')        table.index(['workshop_id,' problem_id]);
 }
-    );')    await this.database.schema.createTableIfNotExists(';')';
+    );')    await this.database.schema.createTableIfNotExists(';)';
      'ia_improvement_backlog,';
       (table: any) => {
         table.uuid('id').primary(');)        table.string('item_id').notNullable().unique(');')        table.string('workshop_id').notNullable(');')        table.string('problem_id').notNullable(');')        table.string('solution_id').notNullable(');')        table.json('source_info').notNullable(');')        table.json('details').notNullable(');')        table.json('planning').notNullable(');')        table.json('approval').notNullable(');')        table.json('tracking').notNullable(');')        table.string('status').notNullable(');')        table.timestamp('created_at').notNullable(');')        table.timestamp('completed_at').nullable(');')        table.index(['workshop_id,' status,'planning]);
 }
-    );')    await this.database.schema.createTableIfNotExists(';')';
+    );')    await this.database.schema.createTableIfNotExists(';)';
      'ia_traceability,';
       (table: any) => {
         table.uuid('id').primary(');)        table.string('workshop_id').notNullable(');')        table.string('activity_type').notNullable(');')        table.json('activity_data').notNullable(');')        table.json('participant_engagement').notNullable(');')        table.json('outcomes').notNullable(');')        table.json('learning_data').notNullable(');')        table.timestamp('created_at').notNullable(');')        table.index(['workshop_id,' activity_type]);
 }
     );
 }
-  private registerEventHandlers():void {
-    ')    this.eventSystem.on(';')';
+  private registerEventHandlers(): void {
+    ')    this.eventSystem.on(';)';
      'ia: problem_identified,';
       this.handleProblemIdentified.bind(this));
     this.eventSystem.on(
      'ia: root_cause_found,';
       this.handleRootCauseFound.bind(this)
     );')';
-    this.eventSystem.on(';')';
+    this.eventSystem.on(';)';
      'ia: solution_selected,';
       this.handleSolutionSelected.bind(this));
     this.eventSystem.on(
@@ -719,19 +719,19 @@ export class InspectAdaptCoordination {
     );
     gates.push({
       type  = 'facilitation_readiness,,
-      gateId: `ia-readiness-${config.id} as ApprovalGateId;``)    const requirement: {`'; `
+      gateId: `ia-readiness-${config.id} as ApprovalGateId;``)    const requirement:  {`'; `
       id: await this.approvalGateManager.createApprovalGate(
       requirement,
       `ia-workshop-`${c}onfig.id`` as TaskId')    );
     if (!result.success) {
       throw new Error(')`;
-        `Failed to create workshop readiness gate: `ia-data-prep-${config.id} as ApprovalGateId;`)    const requirement: {`;
+        `Failed to create workshop readiness gate: `ia-data-prep-${config.id} as ApprovalGateId;`)    const requirement:  {`;
       id: await this.approvalGateManager.createApprovalGate(
       requirement,
       `ia-data-`${config.id} as TaskId``)    );
     if (!result.success) {
       throw new Error(')`;
-        `Failed to create data preparation gate: `ia-facilitation-${config.id} as ApprovalGateId;`)    const requirement: {`;
+        `Failed to create data preparation gate: `ia-facilitation-${config.id} as ApprovalGateId;`)    const requirement:  {`;
       id: await this.approvalGateManager.createApprovalGate(
       requirement,
       `ia-facilitation-`${c}onfig.id`` as TaskId')    );
@@ -808,16 +808,16 @@ export class InspectAdaptCoordination {
 }
   private async executeRootCauseAnalysis(
     problem: 'fishbone| 5_whys| root_cause_analysis,',
-'    config: {
+'    config:  {
       problemId: 'Analysis pending,',
 '        secondary: 'group_consensus,',
 '        validatedBy: [],';
         confidenceLevel: 7,',},';
 };
     // Execute specific technique')    if (technique ==='fishbone){';
-    ')      analysis.fishboneCategories = await this.executeFishboneAnalysis(problem);')      analysis.rootCauses = this.extractRootCausesFromFishbone(';')';
+    ')      analysis.fishboneCategories = await this.executeFishboneAnalysis(problem);')      analysis.rootCauses = this.extractRootCausesFromFishbone(';)';
         analysis.fishboneCategories')      );')} else if (technique === '5_whys){';
-      analysis.fiveWhysChain = await this.executeFiveWhysAnalysis(problem)')      analysis.rootCauses = this.extractRootCausesFromFiveWhys(';';; 
+      analysis.fiveWhysChain = await this.executeFiveWhysAnalysis(problem)')      analysis.rootCauses = this.extractRootCausesFromFiveWhys(';;; 
         analysis.fiveWhysChain')      );')} else {';
       analysis.rootCauses =
         await this.executeComprehensiveRootCauseAnalysis(problem);
@@ -836,7 +836,7 @@ export class InspectAdaptCoordination {
     ')      participants.push(...config.facilitators.coaches);')};;
     return participants;
 }
-  // Event handlers')  private async handleProblemIdentified(';')';
+  // Event handlers')  private async handleProblemIdentified(';)';
     problem: 'workshop_preparation,',
 '      activity_data: 'preparation ',as const,';
       progress: 'Data preparation,',
@@ -845,7 +845,7 @@ export class InspectAdaptCoordination {
   private async assessParticipantEngagement(
     workshopId: string,
     config: InspectAdaptConfig
-  ):Promise<any> {
+  ): Promise<any> {
     return {
       participantCount: this.countTotalParticipants(config),
       engagementLevel: 8.5,
@@ -855,7 +855,7 @@ export class InspectAdaptCoordination {
 }
   private analyzeImprovementBacklogStatus(
     items: ImprovementBacklogItem[]
-  ):any {
+  ): any {
     return {
       itemsCreated: items.length,
       itemsAwaitingApproval: items.filter(';)';
@@ -863,7 +863,7 @@ export class InspectAdaptCoordination {
       itemsReadyForNextPI: items.filter(
         (i) => i.planning.targetPI === i.source.piNumber + 1
       ).length,
-      priorityDistribution: {
+      priorityDistribution:  {
         low: items.filter((i) => i.details.priority ==='low').length,';
         medium: items.filter((i) => i.details.priority ==='medium').length,';
         high: items.filter((i) => i.details.priority ==='high').length,';
@@ -881,7 +881,7 @@ export class InspectAdaptCoordination {
       why5: 'Why was process improvement not prioritized?',)        answer,},';
 };
 }
-  private extractRootCausesFromFiveWhys(';')';
+  private extractRootCausesFromFiveWhys(';)';
     chain: 'Focus on feature delivery over process improvement',)      secondary: 'Comprehensive analysis pending,',
       secondary: [],
       contributing: [],',};;

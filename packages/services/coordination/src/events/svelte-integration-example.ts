@@ -198,7 +198,7 @@ export class SvelteWebSocketManager {
   /**
    * Get connection statistics
    */
-  getStats(): {
+  getStats():  {
     connected: boolean;
     availableServices: string[];
     activeSubscriptions: number;

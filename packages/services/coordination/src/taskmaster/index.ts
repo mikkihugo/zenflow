@@ -21,7 +21,7 @@
  * 
  * // Broadcast task updates to Svelte dashboard
  * wsService.broadcast({
- *   type : 'task_updated') *   data:{ taskId : 'task-123, status: 'completed};;
+ *   type : 'task_updated') *   data:  { taskId : 'task-123, status: 'completed};;
  *});') * ') */';
 // =============================================================================
 // MAIN TASKMASTER SYSTEM')// =============================================================================')export { getTaskMaster} from './main')// ============================================================================ = ';

@@ -20,7 +20,7 @@ import type { WorkflowEvent} from '../../types/events')import type { WorkflowMac
 export const wouldExceedWIPLimit = ({
   context,
   event,
-'}:{';
+'}:  {';
   context: WorkflowMachineContext;
   event: WorkflowEvent;)'}):boolean => {';
     ')  if (event.type !== 'TASK_MOVED)return false')  const currentCount = context.tasksByState[event.toState].length;';
@@ -32,7 +32,7 @@ export const wouldExceedWIPLimit = ({
  */
 export const hasWIPViolations = ({
   context,
-'}:{';
+'}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
   return context.wipViolations.length > 0;')'};;
 /**
@@ -40,7 +40,7 @@ export const hasWIPViolations = ({
  */
 export const hasHighWIPUtilization = ({
   context,
-'}:{';
+'}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
   const workStates = [')   'analysis,';
    'development,')   'testing,';
@@ -64,7 +64,7 @@ export const hasHighWIPUtilization = ({
  */
 export const isSystemHealthCritical = ({
   context,
-'}:{';
+'}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
   return context.systemHealth < 0.3;')'};;
 /**
@@ -72,7 +72,7 @@ export const isSystemHealthCritical = ({
  */
 export const isSystemHealthWarning = ({
   context,
-'}:{';
+'}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
   return context.systemHealth >= 0.3 && context.systemHealth < 0.7;')'};;
 /**
@@ -80,7 +80,7 @@ export const isSystemHealthWarning = ({
  */
 export const isSystemHealthImproving = ({
   context,
-'}:{';
+'}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
   if (context.metricsHistory.length < 2) return false;
   const recent = context.metricsHistory.slice(-2);
@@ -100,7 +100,7 @@ export const isSystemHealthImproving = ({
  */
 export const hasActiveBottlenecks = ({
   context,
-'}:{';
+'}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
   return context.activeBottlenecks.length > 0;')'};;
 /**
@@ -108,7 +108,7 @@ export const hasActiveBottlenecks = ({
  */
 export const hasCriticalBottlenecks = ({
   context,
-'}:{';
+'}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
     ')  return context.activeBottlenecks.some((b) => b.severity ===critical');
 '};;
@@ -117,7 +117,7 @@ export const hasCriticalBottlenecks = ({
  */
 export const isBottleneckCountIncreasing = ({
   context,
-'}:{';
+'}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
   // Simple heuristic: if we have more than 3 active bottlenecks
   return context.activeBottlenecks.length > 3;)'};;
@@ -129,7 +129,7 @@ export const isBottleneckCountIncreasing = ({
  */
 export const needsOptimization = ({
   context,
-'}:{';
+'}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
   const hasBottlenecks = context.activeBottlenecks.length > 0;
   const hasWIPIssues = context.wipViolations.length > 0;
@@ -140,7 +140,7 @@ export const needsOptimization = ({
  */
 export const wasRecentlyOptimized = ({
   context,
-'}:{';
+'}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
   if (!context.lastOptimization) return false;
   const hoursSinceOptimization =;
@@ -152,10 +152,10 @@ export const wasRecentlyOptimized = ({
  */
 export const needsEmergencyOptimization = ({
   context,
-'}:{';
+'}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
   const criticalHealth = context.systemHealth < 0.2;
-  const multipleCriticalBottlenecks =';')    context.activeBottlenecks.filter((b) => b.severity ===critical').length >';
+  const multipleCriticalBottlenecks =';)    context.activeBottlenecks.filter((b) => b.severity ===critical').length >';
     1;
   const systemOverloaded =;
     WorkflowContextUtils.calculateSystemUtilization(context) > 0.95;
@@ -169,7 +169,7 @@ export const needsEmergencyOptimization = ({
  */
 export const isRealTimeMonitoringEnabled = ({
   context,
-'}:{';
+'}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
   return context.config.enableRealTimeMonitoring;')'};;
 /**
@@ -177,7 +177,7 @@ export const isRealTimeMonitoringEnabled = ({
  */
 export const isBottleneckDetectionEnabled = ({
   context,
-'}:{';
+'}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
   return context.config.enableBottleneckDetection;')'};;
 /**
@@ -185,7 +185,7 @@ export const isBottleneckDetectionEnabled = ({
  */
 export const isFlowOptimizationEnabled = ({
   context,
-'}:{';
+'}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
   return context.config.enableFlowOptimization;')'};;
 /**
@@ -193,7 +193,7 @@ export const isFlowOptimizationEnabled = ({
  */
 export const isPredictiveAnalyticsEnabled = ({
   context,
-'}:{';
+'}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
   return context.config.enablePredictiveAnalytics|| false;')'};;
 // =============================================================================
@@ -205,7 +205,7 @@ export const isPredictiveAnalyticsEnabled = ({
 export const isValidWorkflowProgression = ({
   context,
   event,
-'}:{';
+'}:  {';
   context: WorkflowMachineContext;
   event: WorkflowEvent;)'}):boolean => {';
     ')  if (event.type !==TASK_MOVED)return false')  // Special states can transition to/from any state';
@@ -234,7 +234,7 @@ export const isValidWorkflowProgression = ({
 export const hasUnresolvedDependencies = ({
   context,
   event,
-'}:{';
+'}:  {';
   context: WorkflowMachineContext;
   event: WorkflowEvent;)'}):boolean => {';
     ')  if (event.type !==TASK_MOVED)return false')  const task = context.tasks[event.taskId];;
@@ -254,7 +254,7 @@ export const hasUnresolvedDependencies = ({
  */
 export const isTimeForPeriodicAnalysis = ({
   context,
-'}:{';
+'}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
   if (!context.currentMetrics) return true; // First analysis
   const lastAnalysis =;

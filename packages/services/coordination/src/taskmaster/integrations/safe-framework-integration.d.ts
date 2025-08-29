@@ -18,17 +18,17 @@ export declare enum SafeGateCategory {
  */
 export interface SafeIntegrationConfig {
     enabled: boolean;
-    epicGates: {
+    epicGates:  {
         enablePortfolioKanban: boolean;
         enableLifecycleGates: boolean;
-        autoApprovalThresholds: {
+        autoApprovalThresholds:  {
             funnel: number;
             analyzing: number;
             portfolioBacklog: number;
             implementing: number;
         };
     };
-    qualityGates: {
+    qualityGates:  {
         enableCodeQuality: boolean;
         enableSecurity: boolean;
         enablePerformance: boolean;
@@ -36,13 +36,13 @@ export interface SafeIntegrationConfig {
         llmAutoApproval: boolean;
         humanFallbackThreshold: number;
     };
-    businessGates: {
+    businessGates:  {
         enableStakeholderApproval: boolean;
         enableComplianceReview: boolean;
         requireBusinessCase: boolean;
         escalationTimeoutHours: number;
     };
-    learning: {
+    learning:  {
         enableContinuousLearning: boolean;
         trackDecisionPatterns: boolean;
         adaptPrompts: boolean;
@@ -54,22 +54,22 @@ export interface SafeIntegrationConfig {
  */
 export interface SafeGateContext {
     category: SafeGateCategory;
-    safeEntity: {
+    safeEntity:  {
         type: 'epic| feature| story| capability' | ' solution';
         id: string;
         metadata: Record<string, unknown>;
     };
-    workflow: {
+    workflow:  {
         currentState: string;
         targetState: string;
         previousStates: string[];
     };
-    stakeholders: {
+    stakeholders:  {
         owners: string[];
         approvers: string[];
         reviewers: string[];
     };
-    compliance: {
+    compliance:  {
         required: boolean;
         frameworks: string[];
         auditLevel: 'basic' | ' enhanced' | ' comprehensive';
@@ -83,33 +83,33 @@ export interface SafeGateTraceabilityRecord {
     gateId: ApprovalGateId;
     category: SafeGateCategory;
     context: SafeGateContext;
-    aiDecision?: {
+    aiDecision?:  {
         confidence: number;
         reasoning: string;
         model: string;
         promptVersion: string;
         timestamp: Date;
     };
-    humanDecision?: {
+    humanDecision?:  {
         approver: string;
         decision: 'approved' | ' rejected' | ' escalated';
         reasoning: string;
         timestamp: Date;
         reviewTime: number;
     };
-    learningExtracted: {
+    learningExtracted:  {
         patterns: string[];
         improvements: string[];
         confidence: number;
     };
-    auditTrail: {
+    auditTrail:  {
         sessionId: string;
         ipAddress: string;
         userAgent: string;
         correlationId: string;
         complianceLevel: string;
     };
-    metrics: {
+    metrics:  {
         totalProcessingTime: number;
         aiProcessingTime: number;
         humanReviewTime: number;

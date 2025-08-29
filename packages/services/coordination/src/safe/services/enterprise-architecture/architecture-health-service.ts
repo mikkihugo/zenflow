@@ -497,7 +497,7 @@ export interface DimensionConfig {
  */
 export class ArchitectureHealthService extends EventBus {
   private readonly logger: false;
-  private config: {}) {
+  private config:  {}) {
     super();
     this.logger = logger;
     this.config = {
@@ -512,7 +512,7 @@ export class ArchitectureHealthService extends EventBus {
       this.initialized = true;
       this.logger.info('Architecture Health Service initialized successfully');
 } catch (error) {
-      this.logger.error(';')';
+      this.logger.error(';)';
        'Failed to initialize Architecture Health Service:,';
         error
       );
@@ -522,7 +522,7 @@ export class ArchitectureHealthService extends EventBus {
   /**
    * Calculate comprehensive architecture health metrics
    */
-  async calculateArchitectureHealthMetrics():Promise<ArchitectureHealthMetrics> {
+  async calculateArchitectureHealthMetrics(): Promise<ArchitectureHealthMetrics> {
     if (!this.initialized) this.initialize();
     this.logger.info('Calculating architecture health metrics');
     try {
@@ -551,7 +551,7 @@ export class ArchitectureHealthService extends EventBus {
       );
       // Get historical data
       const historicalData = this.getHistoricalHealthData();
-      const metrics: {
+      const metrics:  {
         timestamp: new Date(),
         overallHealth,
         healthGrade,
@@ -585,7 +585,7 @@ export class ArchitectureHealthService extends EventBus {
 });
       return metrics;
 } catch (error) {
-      const errorMessage =';')        error instanceof Error ? error.message : 'Unknown error occurred')      this.logger.error(';';; 
+      const errorMessage =';)        error instanceof Error ? error.message : 'Unknown error occurred')      this.logger.error(';;; 
        'Failed to calculate architecture health metrics:,';
         error')';
       );')      this.emit('health-calculation-failed,{';
@@ -602,7 +602,7 @@ export class ArchitectureHealthService extends EventBus {
   /**
    * Shutdown the service
    */
-  shutdown():void {
+  shutdown(): void {
     ')    this.logger.info('Shutting down Architecture Health Service');
     this.stopHealthMonitoring();
     this.removeAllListeners();
@@ -674,7 +674,7 @@ export class ArchitectureHealthService extends EventBus {
           currentValue: dimension.score,
           expectedValue: 80,
           threshold: 70,
-          impact: {
+          impact:  {
             immediate: dimension.status ==='critical '?' high : 'medium')            shortTerm  = 'medium,)            longTerm:`high,`'; `
             affectedSystems: '30 minutes',)            escalateToRoles:[Architecture Lead,` CTO`],`;
             escalationMessage,    )            maxEscalations: [];
@@ -688,7 +688,7 @@ export class ArchitectureHealthService extends EventBus {
 },
           implementation: 'USD',)            paybackPeriod : '6 months,'
 '            roi: 'architecture_health_metrics',)      source : 'architecture-health-service,'
-'      metadata: {';
+'      metadata:  {';
         timestamp: metrics.timestamp.toISOString(),
         overallHealth: metrics.overallHealth,
         healthGrade: metrics.healthGrade,',},';

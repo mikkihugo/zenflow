@@ -57,7 +57,7 @@ export interface HubMessage {
 export interface HubConnection {
   readonly id: string;
   readonly ws: WebSocket;
-  readonly subscriptions: {
+  readonly subscriptions:  {
     services: Set<string>;
     messageTypes: Set<string>;
   };
@@ -109,7 +109,7 @@ export class CentralWebSocketHub {
     const connection: HubConnection = {
       id: connectionId,
       ws,
-      subscriptions: {
+      subscriptions:  {
         services: new Set(),
         messageTypes: new Set()
       },
@@ -323,7 +323,7 @@ export class CentralWebSocketHub {
 
     const discoveryMessage = {
       type: 'services_available',
-      data: {
+      data:  {
         services: Array.from(this.services.values()),
         hubVersion: '1.0.0'
       },

@@ -46,10 +46,10 @@ export interface SafeIntegrationConfig {
   enabled: boolean;
   
   // Epic management gates
-  epicGates: {
+  epicGates:  {
     enablePortfolioKanban: boolean;
     enableLifecycleGates: boolean;
-    autoApprovalThresholds: {
+    autoApprovalThresholds:  {
       funnel: number;
       analyzing: number;
       portfolioBacklog: number;
@@ -58,7 +58,7 @@ export interface SafeIntegrationConfig {
   };
   
   // Continuous delivery gates
-  qualityGates: {
+  qualityGates:  {
     enableCodeQuality: boolean;
     enableSecurity: boolean;
     enablePerformance: boolean;
@@ -68,7 +68,7 @@ export interface SafeIntegrationConfig {
   };
   
   // Business validation gates
-  businessGates: {
+  businessGates:  {
     enableStakeholderApproval: boolean;
     enableComplianceReview: boolean;
     requireBusinessCase: boolean;
@@ -76,7 +76,7 @@ export interface SafeIntegrationConfig {
   };
   
   // Learning and improvement
-  learning: {
+  learning:  {
     enableContinuousLearning: boolean;
     trackDecisionPatterns: boolean;
     adaptPrompts: boolean;
@@ -89,22 +89,22 @@ export interface SafeIntegrationConfig {
  */
 export interface SafeGateContext {
   category: SafeGateCategory;
-  safeEntity: {
+  safeEntity:  {
     type: 'epic' | 'feature' | 'story' | 'capability' | 'solution';
     id: string;
     metadata: Record<string, unknown>;
   };
-  workflow: {
+  workflow:  {
     currentState: string;
     targetState: string;
     previousStates: string[];
   };
-  stakeholders: {
+  stakeholders:  {
     owners: string[];
     approvers: string[];
     reviewers: string[];
   };
-  compliance: {
+  compliance:  {
     required: boolean;
     frameworks: string[];
     auditLevel: 'basic' | 'enhanced' | 'comprehensive';
@@ -121,7 +121,7 @@ export interface SafeGateTraceabilityRecord {
   context: SafeGateContext;
   
   // Decision chain
-  aiDecision?: {
+  aiDecision?:  {
     confidence: number;
     reasoning: string;
     model: string;
@@ -129,7 +129,7 @@ export interface SafeGateTraceabilityRecord {
     timestamp: Date;
   };
   
-  humanDecision?: {
+  humanDecision?:  {
     approver: string;
     decision: 'approved' | 'rejected' | 'escalated';
     reasoning: string;
@@ -138,14 +138,14 @@ export interface SafeGateTraceabilityRecord {
   };
   
   // Learning data
-  learningExtracted: {
+  learningExtracted:  {
     patterns: string[];
     improvements: string[];
     confidence: number;
   };
   
   // SOC2 audit trail
-  auditTrail: {
+  auditTrail:  {
     sessionId: string;
     ipAddress: string;
     userAgent: string;
@@ -154,7 +154,7 @@ export interface SafeGateTraceabilityRecord {
   };
   
   // Performance metrics
-  metrics: {
+  metrics:  {
     totalProcessingTime: number;
     aiProcessingTime: number;
     humanProcessingTime: number;
@@ -214,12 +214,12 @@ export class SafeFrameworkIntegration {
     epicId: string,
     fromState: string,
     toState: string,
-    context: {
+    context:  {
       businessCase?: any;
       stakeholders: string[];
       complianceRequired: boolean;
     }
-  ): Promise<{ gateId: ApprovalGateId; traceabilityId: string }> {
+  ): Promise<{ gateId: ApprovalGateId, traceabilityId: string }> {
     const gateId = `epic-${epicId}-${fromState}-to-${toState}` as ApprovalGateId;
     const traceabilityId = `trace-${gateId}-${Date.now()}`;
     
@@ -232,25 +232,25 @@ export class SafeFrameworkIntegration {
     // Create gate context
     const gateContext: SafeGateContext = {
       category: SafeGateCategory.EPIC_PORTFOLIO,
-      safeEntity: {
+      safeEntity:  {
         type: 'epic',
         id: epicId,
-        metadata: {
+        metadata:  {
           businessCase: context.businessCase,
           compliance: context.complianceRequired
         }
       },
-      workflow: {
+      workflow:  {
         currentState: fromState,
         targetState: toState,
         previousStates: []
       },
-      stakeholders: {
+      stakeholders:  {
         owners: context.stakeholders.filter(s => s.includes('owner')),
         approvers: context.stakeholders.filter(s => s.includes('approver')),
         reviewers: context.stakeholders.filter(s => s.includes('reviewer'))
       },
-      compliance: {
+      compliance:  {
         required: context.complianceRequired,
         frameworks: ['SAFe6.0'],
         auditLevel: 'comprehensive'
@@ -270,7 +270,7 @@ export class SafeFrameworkIntegration {
     componentId: string,
     gateType: string,
     config: any
-  ): Promise<{ gateId: ApprovalGateId; traceabilityId: string }> {
+  ): Promise<{ gateId: ApprovalGateId, traceabilityId: string }> {
     const gateId = `quality-${componentId}-${gateType}` as ApprovalGateId;
     const traceabilityId = `trace-${gateId}-${Date.now()}`;
     
@@ -282,22 +282,22 @@ export class SafeFrameworkIntegration {
     // Create gate context
     const gateContext: SafeGateContext = {
       category: SafeGateCategory.QUALITY_ASSURANCE,
-      safeEntity: {
+      safeEntity:  {
         type: 'story',
         id: componentId,
-        metadata: { gateType, config }
+        metadata:  { gateType, config }
       },
-      workflow: {
+      workflow:  {
         currentState: 'development',
         targetState: 'testing',
         previousStates: []
       },
-      stakeholders: {
+      stakeholders:  {
         owners: ['development-team'],
         approvers: ['qa-team'],
         reviewers: ['tech-lead']
       },
-      compliance: {
+      compliance:  {
         required: true,
         frameworks: ['SAFe6.0', 'DevSecOps'],
         auditLevel: 'enhanced'
@@ -337,26 +337,26 @@ export class SafeFrameworkIntegration {
       gateId,
       category: context.category,
       context,
-      humanDecision: {
+      humanDecision:  {
         approver,
         decision,
         reasoning,
         timestamp: new Date(),
         reviewTime: 0 // Would calculate actual review time
       },
-      learningExtracted: {
+      learningExtracted:  {
         patterns: [],
         improvements: [],
         confidence: 0.8
       },
-      auditTrail: {
+      auditTrail:  {
         sessionId: 'session-' + Date.now(),
         ipAddress: '127.0.0.1',
         userAgent: 'TaskMaster-SafeIntegration',
         correlationId: `correlation-${gateId}`,
         complianceLevel: context.compliance.auditLevel
       },
-      metrics: {
+      metrics:  {
         totalProcessingTime: 0,
         aiProcessingTime: 0,
         humanProcessingTime: 0,

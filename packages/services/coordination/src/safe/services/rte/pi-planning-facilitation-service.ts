@@ -27,11 +27,11 @@ export interface PIPlanningEventConfig {
    */
   async createPlanningEvent(input: `pi-planning-`${generateNanoId(12)})    const participants = this.generateParticipants(input.artId);``;
     const agenda = this.generateAgenda(input.duration);
-    const planningEvent: {
+    const planningEvent:  {
       eventId,
       piId: this.planningEvents.get(eventId);
     if (!event) {
-    `)      throw new Error(`Planning event not found: {`
+    `)      throw new Error(`Planning event not found:  {`
       success: 'Product Manager',)        role : 'product-manager')        responsibilities:['Product vision,' Feature prioritization'],')        attendance : 'required,'
         remote: 'System Architect',)        role : 'system-architect')        responsibilities:['Architecture guidance,' Technical decisions'],')        attendance : 'required,'
         remote: [

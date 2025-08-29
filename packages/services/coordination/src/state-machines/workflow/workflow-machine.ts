@@ -19,11 +19,11 @@ import { assign, setup} from 'xstate')import type { WorkflowEvent} from '../../t
  *
  * Simplified design focused on core workflow functionality: (config: WorkflowKanbanConfig) => {
   return setup({
-    types:{
-      context:{} as WorkflowMachineContext,
-      events: {} as WorkflowEvent,
+    types:  {
+      context:  {} as WorkflowMachineContext,
+      events:  {} as WorkflowEvent,
 },
-    actions: {
+    actions:  {
       // Essential actions using assign from XState 5.20.2
       addTask: assign({
         tasks:({ context, event}:any) => {
@@ -39,7 +39,7 @@ import { assign, setup} from 'xstate')import type { WorkflowEvent} from '../../t
           if (!task) return context.tasks;
           return {
             ...context.tasks,
-            [event.taskId]:{
+            [event.taskId]:  {
               ...task,
               state: event.toState,
               updatedAt: new Date(),
@@ -58,7 +58,7 @@ import { assign, setup} from 'xstate')import type { WorkflowEvent} from '../../t
 },
 }),
 },
-    guards: {
+    guards:  {
       // Essential guards
       canMoveTask:({ context, event}:any) => {
         if (event.type !== 'TASK_MOVED)return false')        return context.tasks[event.taskId] !== undefined;';
@@ -73,31 +73,31 @@ import { assign, setup} from 'xstate')import type { WorkflowEvent} from '../../t
 '    context: 'monitoring,',
 '        states: 'canMoveTask',)                  actions,},';
 ],
-              ERROR_OCCURRED: {
+              ERROR_OCCURRED:  {
     ')                actions,},';
 },
 },
-          optimizing: {
-            on:{
-              OPTIMIZATION_COMPLETE:{
+          optimizing:  {
+            on:  {
+              OPTIMIZATION_COMPLETE:  {
     ')                target,},';
 },
 },
 },
-        on: {
-          PAUSE_OPERATION:{
+        on:  {
+          PAUSE_OPERATION:  {
     ')            target,},';
 },
 },
-      paused: {
-        on:{
-          RESUME_OPERATION:{
+      paused:  {
+        on:  {
+          RESUME_OPERATION:  {
     ')            target,},';
 },
 },
-      error: {
-        on:{
-          RETRY_OPERATION:{
+      error:  {
+        on:  {
+          RETRY_OPERATION:  {
     ')            target,},';
 },
 },

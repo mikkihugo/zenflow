@@ -38,7 +38,7 @@ interface ProductManagerState {
   /**
    * Initialize the Product Management Manager with service delegation
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     if (this.initialized) {
       this.logger.warn('Product Management Manager already initialized');
       return;
@@ -75,7 +75,7 @@ interface ProductManagerState {
       this.marketService.performMarketSizing({
         ...input,
         pricingModel: 'competitive,',
-'          basePrice: {
+'          basePrice:  {
       ...this.state,
       lastMarketAnalysis: features.map((feature) => ({
       ...feature,
@@ -87,10 +87,10 @@ interface ProductManagerState {
     const prioritizedFeatures =;
       SafeCollectionUtils.prioritizeByWSJF(featuresWithWSJF);')    this.logger.info('Feature prioritization completed,{';
       topFeature: 12
-  ):Promise<{
+  ): Promise<{
     roadmapId: SafeDateUtils.calculateRoadmapHorizon(horizonMonths);
     const milestones = roadmapHorizon.quarters.map((quarter) => ({
-      date: {';
+      date:  {';
     ')      roadmapId,    ')      timeline: [];
     const warnings: [];
     // Validate using schema validation
@@ -116,7 +116,7 @@ interface ProductManagerState {
   /**
    * Get manager status and metrics
    */
-  getStatus():{
+  getStatus():  {
     initialized: boolean;
     state: ProductManagerState;
     config: ProductManagerConfig;
@@ -145,7 +145,7 @@ interface ProductManagerState {
   /**
    * Setup event handlers for coordination
    */
-  private setupEventHandlers():void {
+  private setupEventHandlers(): void {
     ')    this.eventBus.on('product-vision-updated,(_data) => {';
     ')      this.logger.info('Product vision updated, data');')      this.emit('vision-updated, data');
 });')    this.eventBus.on('market-data-refreshed,(_data) => {';
@@ -155,9 +155,9 @@ interface ProductManagerState {
   /**
    * Restore state from memory system
    */
-  private async restoreState():Promise<void> {
+  private async restoreState(): Promise<void> {
     try {
-      const savedState = await this.memorySystem.retrieve(';')';
+      const savedState = await this.memorySystem.retrieve(';)';
        'product-manager-state'));
       if (savedState) {
         this.state = { ...this.state, ...savedState};
@@ -170,7 +170,7 @@ interface ProductManagerState {
   /**
    * Persist current state to memory system
    */
-  private async persistState():Promise<void> {
+  private async persistState(): Promise<void> {
     try {
     ')      await this.memorySystem.store('product-manager-state,{';
         visionCount: this.state.visionCount,

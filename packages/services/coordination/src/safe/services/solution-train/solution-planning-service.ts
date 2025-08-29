@@ -125,7 +125,7 @@ export interface NextStep {
         risks,
         dependencies;
       );
-      const result: {
+      const result:  {
         planningId: resultId,
         timestamp: new Date(),
         planningType,
@@ -157,7 +157,7 @@ export interface NextStep {
       onTrack,
       lastUpdate: this.risks.get(riskId);
     if (!risk) {
-      throw new Error(`Risk not found: {`
+      throw new Error(`Risk not found:  {`
       ...risk,
       status,
 };
@@ -177,7 +177,7 @@ export interface NextStep {
     ')      throw new Error('Planning ID is required');
 }
     if (config.participatingARTs.length < 2) {
-    ')      throw new Error(';')';
+    ')      throw new Error(';)';
        'At least two ARTs must participate in solution planning));
 }
   private async initializeStakeholderCommunication(

@@ -42,12 +42,12 @@
   /**
    * Create all domain services
    */
-  createAllServices(config?:{
+  createAllServices(config?:  {
     wipLimits?:any;
     bottleneckDetection?:any;
     healthMonitoring?:any;
     performanceMetrics?:any;
-}):{
+}):  {
     taskManagement: config?.wipLimits|| {
       analysis: undefined;
     this.wipManagement = undefined;

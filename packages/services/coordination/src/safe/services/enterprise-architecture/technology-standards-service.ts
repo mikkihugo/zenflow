@@ -242,7 +242,7 @@ export interface ComplianceScope {
   readonly projects: string[];
   readonly teams: string[];
   readonly environments: string[];
-  readonly timeWindow: {
+  readonly timeWindow:  {
     readonly startDate: Date;
     readonly endDate: Date;
 };
@@ -286,7 +286,7 @@ export class TechnologyStandardsService extends EventBus {
   /**
    * Initialize the service with dependencies
    */
-  initialize():void {
+  initialize(): void {
     if (this.initialized) return;
     try {
       // Initialize with fallback implementations
@@ -297,7 +297,7 @@ export class TechnologyStandardsService extends EventBus {
       this.initialized = true;
       this.logger.info('Technology Standards Service initialized successfully');
 } catch (error) {
-      this.logger.error(';')';
+      this.logger.error(';)';
        'Failed to initialize Technology Standards Service:,';
         error
       );
@@ -315,7 +315,7 @@ export class TechnologyStandardsService extends EventBus {
         throw new Error(
           `Technology standard with name ``${request.name} already exists``)        );
 }
-      const standard: {
+      const standard:  {
     ')        id,    ')        name: 'draft,',
 '        mandatory: '1.0.0,',
 '        dependencies: 'technology_standard,',
@@ -341,7 +341,7 @@ export class TechnologyStandardsService extends EventBus {
       return standard;
 } catch (error) {
     ')      this.logger.error('Failed to create technology standard:, error');
-      const errorMessage =';')        error instanceof Error ? error.message : 'Unknown error occurred')      this.emit('standard-creation-failed,{
+      const errorMessage =';)        error instanceof Error ? error.message : 'Unknown error occurred')      this.emit('standard-creation-failed,{
         name: this.standards.get(standardId);
       if (!standard) {
     `)        throw new Error(`Technology standard ${standardId} not found``);')};;
@@ -375,10 +375,10 @@ export class TechnologyStandardsService extends EventBus {
         standard,
         violations,
         complianceRate;
-      );')      const result: {';
+      );')      const result:  {';
     ')        complianceId,    ')        standardId,';
         timestamp: 'standard_compliance_result',)        source : 'technology-standards-service,'
-'        metadata: {';
+'        metadata:  {';
           standardId,
           complianceId: result.complianceId,
           complianceRate,
@@ -397,7 +397,7 @@ export class TechnologyStandardsService extends EventBus {
       return result;
 } catch (error) {
     ')      this.logger.error('Standard compliance monitoring failed:, error');
-      const errorMessage =';')        error instanceof Error ? error.message : 'Unknown error occurred')      this.emit('standard-compliance-failed,{';
+      const errorMessage =';)        error instanceof Error ? error.message : 'Unknown error occurred')      this.emit('standard-compliance-failed,{';
         standardId,
         error: errorMessage,')';
 });
@@ -419,7 +419,7 @@ export class TechnologyStandardsService extends EventBus {
   /**
    * Get standards by category
    */
-  getStandardsByCategory(';')';
+  getStandardsByCategory(';)';
     category: TechnologyStandard['category'];;
   ):TechnologyStandard[] {
     return Array.from(this.standards.values()).filter(
@@ -528,9 +528,9 @@ export class TechnologyStandardsService extends EventBus {
    * Update standard compliance metrics
    */
   private updateStandardComplianceMetrics(
-    standard: {
+    standard:  {
       ...standard,
-      complianceMetrics: {
+      complianceMetrics:  {
         complianceRate: complianceResult.overallCompliance,
         violationCount: complianceResult.violations.length,
         lastComplianceCheck: complianceResult.timestamp,

@@ -307,7 +307,7 @@ export class WorkflowEngine extends EventEmitter {
       status: 'pending',
       context: initialContext,
       currentStep: 0,
-      stepResults: {},
+      stepResults:  {},
       startTime: DateFormatter.formatISOString()
     };
 

@@ -81,7 +81,7 @@ export interface ValidationScope {
   readonly includeTeams: string[];
   readonly excludeTeams: string[];
   readonly includeArtifacts: string[];
-  readonly timeWindow: {
+  readonly timeWindow:  {
     readonly startDate: Date;
     readonly endDate: Date;
 };
@@ -99,7 +99,7 @@ export interface ValidationThresholds {
   readonly minComplianceRate: number;
   readonly maxViolationsPerProject: number;
   readonly criticalViolationThreshold: number;
-  readonly alertThresholds: {
+  readonly alertThresholds:  {
     readonly warning: number;
     readonly critical: number;
 };
@@ -169,7 +169,7 @@ export class ArchitecturePrincipleService extends EventBus {
   /**
    * Initialize the service with dependencies
    */
-  initialize():void {
+  initialize(): void {
     if (this.initialized) return;
     try {
       // Initialize with fallback implementations
@@ -180,7 +180,7 @@ export class ArchitecturePrincipleService extends EventBus {
       this.logger.info(
        'Architecture Principle Service initialized successfully'));
 } catch (error) {
-      this.logger.error(';')';
+      this.logger.error(';)';
        'Failed to initialize Architecture Principle Service:,';
         error
       );
@@ -198,7 +198,7 @@ export class ArchitecturePrincipleService extends EventBus {
         throw new Error(
           `Architecture principle with name ``${request.name} already exists``)        );
 }
-      const principle: {
+      const principle:  {
     ')        id,    ')        name: 'draft,',
 '        owner: '1.0.0,',
 '        relationships: 'architecture_principle,',
@@ -223,7 +223,7 @@ export class ArchitecturePrincipleService extends EventBus {
       return principle;
 } catch (error) {
     ')      this.logger.error('Failed to create architecture principle:, error');
-      const errorMessage =';')        error instanceof Error ? error.message : 'Unknown error occurred')      this.emit('principle-creation-failed,{';
+      const errorMessage =';)        error instanceof Error ? error.message : 'Unknown error occurred')      this.emit('principle-creation-failed,{';
         name: this.principles.get(config.principleId);
       if (!principle) {
         throw new Error(')`;
@@ -258,9 +258,9 @@ export class ArchitecturePrincipleService extends EventBus {
         principle,
         violations,
         complianceRate;
-      );')      const result: {';
+      );')      const result:  {';
     ')        validationId,    ')        principleId: 'principle_validation_result',)        source : 'architecture-principle-service,'
-'        metadata: {';
+'        metadata:  {';
           principleId: config.principleId,
           validationId: result.validationId,
           complianceRate,
@@ -279,7 +279,7 @@ export class ArchitecturePrincipleService extends EventBus {
       return result;
 } catch (error) {
     ')      this.logger.error('Principle compliance validation failed:, error');
-      const errorMessage =';')        error instanceof Error ? error.message : 'Unknown error occurred')      this.emit('principle-validation-failed,{';
+      const errorMessage =';)        error instanceof Error ? error.message : 'Unknown error occurred')      this.emit('principle-validation-failed,{';
         principleId: config.principleId,
         error: errorMessage,');
 });
@@ -385,9 +385,9 @@ export class ArchitecturePrincipleService extends EventBus {
    * Update principle compliance metrics
    */
   private updatePrincipleComplianceMetrics(
-    principle: {
+    principle:  {
       ...principle,
-      complianceMetrics: {
+      complianceMetrics:  {
         complianceRate: validationResult.overallCompliance,
         violationCount: validationResult.violations.length,
         lastComplianceCheck: validationResult.timestamp,

@@ -43,22 +43,22 @@ export interface ImpedimentResolution {
   async configureScrumsOfScrums(
     artId: this.generateParticipants(config.teams);
     const agenda = this.generateStandardAgenda();
-    const scrumConfig: {
+    const scrumConfig:  {
       id,    ')      artId,';
       frequency: this.configurations.get(artId);
     if (!config) {
     `)      throw new Error(`Scrum of Scrums not configured for ART: `sos-meeting-${g}enerateNanoId(12)``)    const attendance = this.generateAttendance(config.participants);
-    const result: {
+    const result:  {
       meetingId,
-      date: `imp-${generateNanoId(12)})    const programImpediment: {``;
+      date: `imp-${generateNanoId(12)})    const programImpediment:  {``;
       id: this.impediments.get(impedimentId);
     if (!impediment) {
-    `)      throw new Error(`Impediment not found: {`
+    `)      throw new Error(`Impediment not found:  {`
       ...impediment,
       escalationLevel,
       status: this.impediments.get(impedimentId);
     if (!impediment) {
-    `)      throw new Error(`Impediment not found: {`
+    `)      throw new Error(`Impediment not found:  {`
       ...impediment,
       status: ImpedimentStatus.RESOLVED,
       resolution,

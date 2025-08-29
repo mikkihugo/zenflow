@@ -26,7 +26,7 @@ export class KanbanEngine {
   private domainFactory: any;
   private infrastructureFactory: any;
 
-  constructor(config: {}) {
+  constructor(config:  {}) {
     this.config = { ...DEFAULT_CONFIG, ...config};
     this.domainFactory = new DomainServicesFactory();
     this.infrastructureFactory = new InfrastructureServicesFactory();
@@ -287,7 +287,7 @@ export class KanbanEngine {
   /**
    * Start background flow metrics tracking for workflow optimization
    */
-  private startFlowMetricsTracking():void {
+  private startFlowMetricsTracking(): void {
     setInterval(async () => {
       try {
         const allTasks = await this.infrastructureServices.persistenceCoordinator.loadAllTasks();
@@ -319,17 +319,21 @@ export class KanbanEngine {
    * Get system health status
    */
   getSystemHealth(): any {
-    kanban: false;
+    return {
+      kanban: this.initialized,
+      timestamp: new Date()
+    };
+  }
       logger.info('KanbanEngine shutdown complete');
 } catch (error) {
-      logger.error('Error during KanbanEngine shutdown : ', error);'
+      logger.error('Error during KanbanEngine shutdown:', error);
 '      throw error;';
 }
 }
   // =============================================================================
   // PRIVATE HELPER METHODS
   // =============================================================================
-  private ensureInitialized():void {
+  private ensureInitialized(): void {
     if (!this.initialized) {
       throw new Error('KanbanEngine not initialized. Call initialize() first.');
 }

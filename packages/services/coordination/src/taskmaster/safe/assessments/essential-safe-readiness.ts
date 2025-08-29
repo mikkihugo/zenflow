@@ -64,8 +64,8 @@ export class EssentialSafeReadinessAssessment {
   /**
    * Generate comprehensive readiness assessment
    */
-  generateAssessment():{
-    overallReadiness: ESSENTIAL_SAFE_COMPONENTS.filter(';')';
+  generateAssessment():  {
+    overallReadiness: ESSENTIAL_SAFE_COMPONENTS.filter(';)';
       (c) => c.taskMasterSupport ==='complete'));
     const partial = ESSENTIAL_SAFE_COMPONENTS.filter(
       (c) => c.taskMasterSupport ==='partial'));
@@ -78,7 +78,7 @@ export class EssentialSafeReadinessAssessment {
     );
     return {
       overallReadiness,
-      componentBreakdown: { complete, partial, missing},
+      componentBreakdown:  { complete, partial, missing},
       implementationPlan: this.generateImplementationPlan(partial, missing),
       taskMasterStrengths: this.identifyTaskMasterStrengths(complete),
       criticalGaps: this.identifyCriticalGaps(missing, partial),

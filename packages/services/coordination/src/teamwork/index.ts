@@ -44,7 +44,7 @@ export interface SPARCCollaborationRequest {
   phase: string;
   requiresReview: boolean;
   suggestedAgents: string[];
-  context: {
+  context:  {
     artifacts: unknown[];
     requirements: string[];
   };
@@ -145,7 +145,7 @@ export class ConversationManager extends EventBus {
   /**
    * Send message to conversation
    */
-  async sendMessage(params: {
+  async sendMessage(params:  {
     conversationId: string;
     fromAgent: string;
     content: string;
@@ -298,7 +298,7 @@ export class ConversationMemoryManager {
   /**
    * Store memory for conversation
    */
-  async storeMemory(memory: { conversationId: string; key: string; value: any }): Promise<void> {
+  async storeMemory(memory:  { conversationId: string, key: string, value: any }): Promise<void> {
     const existing = this.memories.get(memory.conversationId) || {};
     const updates = { [memory.key]: memory.value };
     

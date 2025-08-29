@@ -16,7 +16,7 @@ export interface PerformanceTrackerConfig {
   private currentAlerts: [];
   private initialized = false;
   constructor(
-    eventCoordinator: {}
+    eventCoordinator:  {}
   ) {
     this.eventCoordinator = eventCoordinator;
     this.config = {
@@ -29,9 +29,9 @@ export interface PerformanceTrackerConfig {
   /**
    * Start timing an operation
    */
-  startOperation(operationId: {
+  startOperation(operationId:  {
       operationType,
-      startTime: true, metadata?:Record<string, any>):void {
+      startTime: true, metadata?:Record<string, any>): void {
     if (!this.initialized) return;
     const timing = this.activeOperations.get(operationId);
     if (!timing) return;
@@ -63,7 +63,7 @@ export interface PerformanceTrackerConfig {
   /**
    * Shutdown performance tracker
    */
-  async shutdown():Promise<void> {
+  async shutdown(): Promise<void> {
     if (!this.initialized) return;
     try {
       // Clear active operations
@@ -78,7 +78,7 @@ export interface PerformanceTrackerConfig {
   // =============================================================================
   // PRIVATE PERFORMANCE ANALYSIS METHODS
   // =============================================================================
-  private setupPerformanceListeners():void {
+  private setupPerformanceListeners(): void {
     // Track task creation performance')    this.eventCoordinator.addListener('task: created, async (tasks) => {
     `)      const operationId = `batch-create-`${Date.now()})      this.startOperation(operationId,``task_creation,{ taskCount: tasks.length};);
       
@@ -108,7 +108,7 @@ export interface PerformanceTrackerConfig {
 }, Math.random() * 25);
 });
 }
-  private startMetricsCollection():void {
+  private startMetricsCollection(): void {
     // Collect metrics every 30 seconds
     setInterval(async () => {
       try {
@@ -120,8 +120,8 @@ export interface PerformanceTrackerConfig {
   private checkPerformanceAlerts(timing: timing.duration|| 0;
     // Check response time threshold
     if (duration > this.config.responseTimeThreshold) {
-      const alert: {
-    ')        id,    ')        type: {
+      const alert:  {
+    ')        id,    ')        type:  {
     ')        id,    )        type,        metric: this.currentAlerts.slice(-25);
 };)    logger.warn(`Performance alert: this.responseTimes.slice(-60); // Last minute worth`
     return recentOperations.length; // Simplified calculation
@@ -129,7 +129,7 @@ export interface PerformanceTrackerConfig {
   private calculateTasksPerMinute():number {
     // Would typically come from domain services
     return Math.floor(Math.random() * 20) + 10; // Simulated
-};)  private async getResourceUtilization():Promise<PerformanceMetrics[``resourceUtilization']> {';
+};)  private async getResourceUtilization(): Promise<PerformanceMetrics[``resourceUtilization']> {';
     // In a real implementation, this would query system resources
     return {
       memoryUsage: this.metricsHistory[this.metricsHistory.length - 1];

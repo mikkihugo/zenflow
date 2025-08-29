@@ -151,7 +151,7 @@ export interface SecurityAssessment {
 export type SecurityAssessmentType = 'vulnerability_scan| penetration_test| code_review' | ' compliance_audit';
 export interface AssessmentScope {
     readonly targets: string[];
-    readonly timeframe: {
+    readonly timeframe:  {
         readonly start: Date;
         readonly end: Date;
     };

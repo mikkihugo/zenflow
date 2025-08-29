@@ -194,7 +194,7 @@ export const WORKFLOWS_INFO = {
    'Runtime validation (zod),')   'Reactive programming (rxjs),';
    'Immutable state management (immer),';
 ],
-  security: {
+  security:  {
     safeExpressionEvaluation: true,
     noArbitraryCodeExecution: true,
     foundationStorageIntegration: true,

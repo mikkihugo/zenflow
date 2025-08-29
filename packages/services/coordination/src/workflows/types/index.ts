@@ -286,22 +286,22 @@ export interface ExecutionMetrics {
  * Resource usage tracking
  */
 export interface ResourceUsage {
-  cpu: {
+  cpu:  {
     peak: number;
     average: number;
     total: number; // CPU-seconds
 };
-  memory: {
+  memory:  {
     peak: number;
     average: number;
     total: number; // MB-seconds
 };
-  disk: {
+  disk:  {
     read: number; // MB
     write: number; // MB
     storage: number; // MB
 };
-  network: {
+  network:  {
     in: number; // MB
     out: number; // MB
     requests: number;

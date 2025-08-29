@@ -23,7 +23,7 @@ export interface EpicKanbanContext {
 /**
  * Epic Kanban state machine events
  */
-export type EpicKanbanEvent =| { type : 'SUBMIT_FOR_ANALYSIS'; businessCase: ' ANALYSIS_COMPLETE', wsjfPriority: ' ANALYSIS_REJECTED', reason: ' APPROVE_FOR_IMPLEMENTATION}| { type: ' CAPACITY_FULL}| { type: ' IMPLEMENTATION_BLOCKED', blockers: ' UNBLOCK_IMPLEMENTATION}| { type: ' SPLIT_EPIC', splitEpics: ' CANCEL_EPIC', reason: string}| { type};;
+export type EpicKanbanEvent =| { type : 'SUBMIT_FOR_ANALYSIS', businessCase: ' ANALYSIS_COMPLETE', wsjfPriority: ' ANALYSIS_REJECTED', reason: ' APPROVE_FOR_IMPLEMENTATION}| { type: ' CAPACITY_FULL}| { type: ' IMPLEMENTATION_BLOCKED', blockers: ' UNBLOCK_IMPLEMENTATION}| { type: ' SPLIT_EPIC', splitEpics: ' CANCEL_EPIC', reason: string}| { type};;
 // ============================================================================
 // GUARDS (BUSINESS RULES)
 // ============================================================================
@@ -34,7 +34,7 @@ const epicKanbanGuards = {
   /**
    * Check if business case meets minimum threshold for analysis
    */
-  businessCaseValid: ({ context}:{ context: EpicKanbanContext}) => {
+  businessCaseValid: ({ context}:  { context: EpicKanbanContext}) => {
     return (
       (context.businessCase?.businessValue?.totalValue ?? 0) >=
       context.config.businessCaseThreshold;
@@ -43,13 +43,13 @@ const epicKanbanGuards = {
   /**
    * Check if WSJF score meets threshold for portfolio backlog
    */
-  wsjfScoreAcceptable: ({ context}:{ context: EpicKanbanContext}) => {
+  wsjfScoreAcceptable: ({ context}:  { context: EpicKanbanContext}) => {
     return (context.wsjfPriority?.wsjfScore ?? 0) >= 5.0; // Configurable threshold
 },
   /**
    * Check if implementation capacity is available
    */
-  capacityAvailable: ({ context}:{ context: EpicKanbanContext}) => {
+  capacityAvailable: ({ context}:  { context: EpicKanbanContext}) => {
     return (
       context.currentCapacityUsage < context.config.maxEpicsInImplementation
     );
@@ -57,7 +57,7 @@ const epicKanbanGuards = {
   /**
    * Check if epic exceeds timebox limit
    */
-  withinTimebox: ({ context}:{ context: EpicKanbanContext}) => {
+  withinTimebox: ({ context}:  { context: EpicKanbanContext}) => {
     if (!context.implementationStartTime) return true;
     const weeksSinceStart = Math.floor(
       (Date.now() - context.implementationStartTime.getTime()) /
@@ -68,13 +68,13 @@ const epicKanbanGuards = {
   /**
    * Check if epic has no blockers
    */
-  noBlockers: ({ context}:{ context: EpicKanbanContext}) => {
+  noBlockers: ({ context}:  { context: EpicKanbanContext}) => {
     return context.blockers.length === 0;
 },
   /**
    * Check if all required stakeholder approvals are obtained
    */
-  stakeholderApproved: ({ context}:{ context: EpicKanbanContext}) => {
+  stakeholderApproved: ({ context}:  { context: EpicKanbanContext}) => {
     return context.stakeholderApprovals.length >= 2; // Minimum required approvals
 },
 '};;
@@ -91,7 +91,7 @@ const epicKanbanActions = {
   startAnalysis: assign({
     businessCase:({
       event,
-}:{
+}:  {
     ')      event: Extract<EpicKanbanEvent, { type}>')}) => event.businessCase,';
     analysisStartTime: () => new Date(),
     errorMessage: () => undefined,
@@ -151,7 +151,7 @@ const epicKanbanActions = {
   logTransition: ({
     context,
     event,
-}:{
+}:  {
     context: EpicKanbanContext;
     event: EpicKanbanEvent;
 }) => {
@@ -213,12 +213,12 @@ const epicKanbanActions = {
     guards: epicKanbanGuards as any,
     actions: epicKanbanActions as any,
     // Services for async operations
-    actors: {
+    actors:  {
       analyzeBusinessCase: fromPromise(
-        async ({ input}:{ input: EpicKanbanContext}) => {
+        async ({ input}:  { input: EpicKanbanContext}) => {
           // Mock business case analysis - replace with actual implementation
           await new Promise((resolve) => setTimeout(resolve, 2000);
-          const wsjfPriority: {
+          const wsjfPriority:  {
             epicId: (Business Value + Time Criticality + RROE) / Job Size
             ranking: 1,
             calculatedAt: new Date(),
@@ -241,7 +241,7 @@ export function createEpicKanbanMachine(
   epic: createMachine(
     {
       ...epicKanbanMachine.config,
-      context: {
+      context:  {
         epic,
         config,
         currentCapacityUsage: 0,
@@ -252,12 +252,12 @@ export function createEpicKanbanMachine(
     {
       guards: epicKanbanGuards as any,
       actions: epicKanbanActions as any,
-      actors: {
+      actors:  {
         analyzeBusinessCase: fromPromise(
-          async ({ input}:{ input: EpicKanbanContext}) => {
+          async ({ input}:  { input: EpicKanbanContext}) => {
             // Mock business case analysis - replace with actual implementation;
             await new Promise((resolve) => setTimeout(resolve, 2000);
-            const wsjfPriority: {
+            const wsjfPriority:  {
               epicId: (Business Value + Time Criticality + RROE) / Job Size
               ranking: 1,
               calculatedAt: new Date(),

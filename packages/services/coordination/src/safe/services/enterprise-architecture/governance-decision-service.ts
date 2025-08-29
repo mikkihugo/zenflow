@@ -420,7 +420,7 @@ export class GovernanceDecisionService extends EventBus {
   /**
    * Initialize the service with dependencies
    */
-  initialize():void {
+  initialize(): void {
     if (this.initialized) return;
     try {
       // Initialize with fallback implementations
@@ -431,7 +431,7 @@ export class GovernanceDecisionService extends EventBus {
       this.initialized = true;
       this.logger.info('Governance Decision Service initialized successfully');
 } catch (error) {
-      this.logger.error(';')';
+      this.logger.error(';)';
        'Failed to initialize Governance Decision Service:,';
         error
       );
@@ -442,7 +442,7 @@ export class GovernanceDecisionService extends EventBus {
    * Initiate new governance decision with comprehensive workflow
    */
   async initiateGovernanceDecision(
-    request: {
+    request:  {
         id,    ')        type: request.type,';
         title: request.title,
         description: request.description,
@@ -457,7 +457,7 @@ export class GovernanceDecisionService extends EventBus {
 })),
         criteria: request.criteria.map((c) => ({
           ...c,')          id,    ')          evaluation: 'qualitative ',as const,';
-            scale: 'categorical ',as const, range: { min: 1, max: 5}},`;
+            scale: 'categorical ',as const, range:  { min: 1, max: 5}},`;
             evidence: [],`)            evaluator: `,`,`;
 },
 })),
@@ -483,9 +483,9 @@ export class GovernanceDecisionService extends EventBus {
     ')        workflowType : 'governance_decision_approval,'
 '        entityId: decision.id,';
         participants: decision.decisionMakers.map((dm) => dm.userId),
-        data: {
+        data:  {
         ...decision,
-        workflow: {
+        workflow:  {
           ...decision.workflow,
           workflowId,
 },
@@ -505,7 +505,7 @@ export class GovernanceDecisionService extends EventBus {
       return updatedDecision;
 } catch (error) {
     ')      this.logger.error('Failed to initiate governance decision:, error');
-      const errorMessage =';')        error instanceof Error ? error.message : 'Unknown error occurred';')      this.emit('governance-decision-failed,{';
+      const errorMessage =';)        error instanceof Error ? error.message : 'Unknown error occurred';)      this.emit('governance-decision-failed,{';
         type: request.type,
         error: errorMessage,');
 });
@@ -572,7 +572,7 @@ export class GovernanceDecisionService extends EventBus {
   /**
    * Get default role for decision type
    */
-  private getDefaultRoleForDecisionType(decisionType: {
+  private getDefaultRoleForDecisionType(decisionType:  {
     ')      architecture_standard : 'Chief Architect')      technology_selection : 'Technology Lead')      design_pattern : 'Senior Architect')      security_policy : 'Security Architect')      integration_approach : 'Integration Architect')      data_governance : 'Data Architect')      performance_requirement : 'Performance Architect')      compliance_exception : 'Compliance Officer')      investment_decision : 'Portfolio Manager')      strategic_direction,};)    return roleMap[decisionType]||'Senior Architect')};;
   /**
    * Create decision workflow based on type and priority
@@ -581,7 +581,7 @@ export class GovernanceDecisionService extends EventBus {
     request: [
       {
         stageId : 'initial-review')        name : 'Initial Review')        type : 'review')        owner,        participants: 'stakeholder-analysis',)        name : 'Stakeholder Analysis')        type : 'analysis,'
-'        owner: '3 days',)        prerequisites: 'decision-approval',)        name : 'Decision Approval')        type : 'approval')        owner,        participants: '5 days',)        prerequisites: ',',stages,')      currentStage : 'initial-review,'
+'        owner: '3 days',)        prerequisites: 'decision-approval',)        name : 'Decision Approval')        type : 'approval')        owner,        participants: '5 days',)        prerequisites: ',stages,')      currentStage : 'initial-review,'
 '      escalationRules: 'timeout',)            threshold : '7 days')            condition,},')          escalateTo: 'notify',)          message : 'Decision workflow has exceeded timeout,'
 '          autoExecute: 'Architecture Review Board,',
 '            approvers: 'cto@company.com',)          abstentionHandling,},';

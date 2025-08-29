@@ -64,7 +64,7 @@ interface ApprovalGateContext {
 /**
  * State machine events
  */
-type ApprovalGateEvent =| { type : 'REQUEST_APPROVAL'; request: ' HUMAN_DECISION', decision: ' AUTO_APPROVE', reason: ' AUTO_REJECT', reason: ' TIMEOUT}| { type: ' RESET}| { type: ',UPDATE_CONFIG'; config: Partial<ApprovalGateConfig>};`;
+type ApprovalGateEvent =| { type : 'REQUEST_APPROVAL', request: ' HUMAN_DECISION', decision: ' AUTO_APPROVE', reason: ' AUTO_REJECT', reason: ' TIMEOUT}| { type: ' RESET}| { type: ',UPDATE_CONFIG', config: Partial<ApprovalGateConfig>};`;
 // =============================================================================
 // APPROVAL GATE STATE MACHINE
 // =============================================================================
@@ -72,14 +72,14 @@ type ApprovalGateEvent =| { type : 'REQUEST_APPROVAL'; request: ' HUMAN_DECISION
  * Create approval gate state machine
  */
 export function createApprovalGateMachine(config: getLogger(`ApprovalGate:`${config.gateId});``)  return setup({';
-    types: {
-      context:{} as ApprovalGateContext,
-      events: {} as ApprovalGateEvent,
+    types:  {
+      context:  {} as ApprovalGateContext,
+      events:  {} as ApprovalGateEvent,
 },
-    actors: {
+    actors:  {
       // Actor for human approval requests
       requestHumanApproval: fromPromise(
-        async ({ input}:{ input: { request: ApprovalRequest}}) => {
+        async ({ input}:  { input:  { request: ApprovalRequest}}) => {
           // This would integrate with terminal UI or web interface
           // For now, simulate human approval with a timeout
           return new Promise<ApprovalDecision>((resolve) => {
@@ -94,8 +94,8 @@ export function createApprovalGateMachine(config: getLogger(`ApprovalGate:`${con
       handleOverflow: fromPromise(
         async ({
           input,
-}:{
-          input: { request: ApprovalRequest; behavior: string};
+}:  {
+          input:  { request: ApprovalRequest, behavior: string};
 }) => {
           const { request, behavior} = input;
           switch (behavior) {
@@ -115,7 +115,7 @@ export function createApprovalGateMachine(config: getLogger(`ApprovalGate:`${con
 }
       ),
 },
-    guards: {
+    guards:  {
       // Check if request can be auto-approved
       canAutoApprove:({ context, event}) => {
         if (event.type ==='REQUEST_APPROVAL){';
@@ -127,13 +127,13 @@ export function createApprovalGateMachine(config: getLogger(`ApprovalGate:`${con
       isQueueFull: ({ context}) => {
         return context.queueDepth >= context.config.maxQueueDepth;')},')      // Check if request is high priority')      isHighPriority: ({ event}) => {';
     ')        if (event.type ==='REQUEST_APPROVAL){';
-    ')          return (';')';
+    ')          return (';)';
             event.request.priority ==='high '|| event.request.priority ===critical'));
 }
         return false;
 },
 },
-    actions: {
+    actions:  {
       // Initialize request processing
       setCurrentRequest: assign({
         currentRequest:({ event}) => {
@@ -188,7 +188,7 @@ export function createApprovalGateMachine(config: getLogger(`ApprovalGate:`${con
 },
 }),
       // Log state transitions
-      logTransition: ({ context}, params: { from: string; to: string}) => {
+      logTransition: ({ context}, params:  { from: string, to: string}) => {
         context.logger.info('Approval gate state transition,{';
           gateId: context.config.gateId,
           from: params.from,
@@ -212,41 +212,41 @@ export function createApprovalGateMachine(config: getLogger(`ApprovalGate:`${con
 }),
       // Set error state
       setError: assign({
-        error:(_, params: { error: string}) => params.error,
+        error:(_, params:  { error: string}) => params.error,
 }),
 },
 }).createMachine({
     ')    id,    ')      config,';
       queueDepth: 'idle,',
-'    states : ','entry: 'logTransition, params: 'isQueueFull',)              target : 'overflow')              actions: 'canAutoApprove',)              target : 'autoApproving')              actions:['setCurrentRequest,' addToQueue'],';
+'    states : 'entry: 'logTransition, params: 'isQueueFull',)              target : 'overflow')              actions: 'canAutoApprove',)              target : 'autoApproving')              actions:['setCurrentRequest,' addToQueue'],';
 },
             {
               target : 'pending')              actions:['setCurrentRequest,' addToQueue'],';
 },
 ],
-          UPDATE_CONFIG: 'logTransition',)            params:{ from : 'idle, to},'
+          UPDATE_CONFIG: 'logTransition',)            params:  { from : 'idle, to},'
 },
           {
             type : 'autoApprove')            params: 'approved,,,',
-'      pending : ','entry: 'logTransition, params: 'requestHumanApproval,',
+'      pending : 'entry: 'logTransition, params: 'requestHumanApproval,',
 '          input: (context ) => (request: 'deciding,',
 '            actions: [';
               assign(',                lastDecision: ({ event}) => event.output,),';
 ],,
           onError,            target,            actions: 'setError',)                params: 'Human approval request failed,,',
 ],,,
-        after : ','[config.humanApprovalTimeout]: 'deciding',)            actions: 'logTransition',)            params:{ from : 'pending, to},'
+        after : '[config.humanApprovalTimeout]: 'deciding',)            actions: 'logTransition',)            params:  { from : 'pending, to},'
 },
 ],
         always: [
             guard:({ context}) => context.lastDecision?.approved === true,
             target : 'approved,')            target : 'rejected,,'
 '],,';
-      approved: 'logTransition',)            params:{ from : 'deciding, to},'
+      approved: 'logTransition',)            params:  { from : 'deciding, to},'
 },
          'removeFromQueue,';
 ],
-        after: 'idle',)            actions: 'logTransition',)            params:{ from : 'deciding, to},'
+        after: 'idle',)            actions: 'logTransition',)            params:  { from : 'deciding, to},'
 },
          'removeFromQueue,';
 ],
@@ -265,8 +265,8 @@ export function createApprovalGateMachine(config: getLogger(`ApprovalGate:`${con
 ],
           onError,            target,            actions: 'setError',)                params: 'Overflow handling failed,,',
 ],,,,
-      timeout : ','entry: 'logTransition, params: 'autoReject, params: 'rejected,,,',
-'      error : ','entry: 'logTransition, params: 'idle,',
+      timeout : 'entry: 'logTransition, params: 'autoReject, params: 'rejected,,,',
+'      error : 'entry: 'logTransition, params: 'idle,',
 '            actions: [';
               assign(
                 error: undefined,

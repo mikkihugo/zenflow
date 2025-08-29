@@ -9,9 +9,9 @@
  * Component health assessment
  */
 export interface ComponentHealthAssessment {
-  component: {
+  component:  {
   warningThreshold: [];
-  private performanceMetrics: {},
+  private performanceMetrics:  {},
     initialPerformanceMetrics?:Partial<PerformanceMetrics>
   ) {
     this.config = { ...DEFAULT_CONFIG, ...config};
@@ -30,7 +30,7 @@ export interface ComponentHealthAssessment {
       flowHealth * componentWeights.flowOptimization +;
       coordinationHealth * componentWeights.taskCoordination;
     // Generate health result
-    const healthResult: {
+    const healthResult:  {
       timestamp,
       overallHealth,
       componentHealth: this.getHealthStatus(overallHealth);
@@ -46,12 +46,12 @@ export interface ComponentHealthAssessment {
 '      health: this.calculateCoordinationHealth();
     assessments.push({
     ')      component : 'Task Coordination,'
-'      health: { ...this.performanceMetrics, ...metrics};
+'      health:  { ...this.performanceMetrics, ...metrics};
     ')    logger.debug('Performance metrics updated,{';
       responseTime: this.healthHistory.slice(-20); // Last 20 measurements
     return {
       overall: recentHistory.map(h => h.overallHealth),
-      components: {
+      components:  {
         wipManagement: recentHistory.map(h => h.componentHealth.wipManagement),
         bottleneckDetection: recentHistory.map(h => h.componentHealth.bottleneckDetection),
         flowOptimization: recentHistory.map(h => h.componentHealth.flowOptimization),
@@ -105,7 +105,7 @@ export interface ComponentHealthAssessment {
     
     return (responseTimeHealth * 0.4 + throughputHealth * 0.3 + errorHealth * 0.3);
 }
-  private getAssumedWIPLimit(state: {
+  private getAssumedWIPLimit(state:  {
       analysis: 5,
       development: 8,
       testing: 6,

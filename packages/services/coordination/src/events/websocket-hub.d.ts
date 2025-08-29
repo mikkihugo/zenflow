@@ -13,7 +13,7 @@ export declare function getWebSocketHub(): WebSocketHub;
 /**
  * Helper functions for broadcasting to the WebSocket hub
  */
-export declare const hubBroadcast: {
+export declare const hubBroadcast:  {
     taskUpdated: (taskData: any) => any;
     ')': any;
     type: string;

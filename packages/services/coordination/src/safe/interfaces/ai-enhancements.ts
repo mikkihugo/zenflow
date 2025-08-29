@@ -14,7 +14,7 @@
  * Implementation provided by @claude-zen/brain package
  */
 export interface IBrainCoordinator {
-  analyzeWSJF(input: {
+  analyzeWSJF(input:  {
   brainCoordinator?:IBrainCoordinator;
   performanceTracker?:IPerformanceTracker;
   telemetryManager?:ITelemetryManager;
@@ -34,19 +34,19 @@ export interface AIEnhancementConfig {
   // enableInteractiveGUI removed - use event-driven architecture for UI
   enableConversationOrchestration?:boolean;
   // AI-specific configuration
-  brainConfig?:{
+  brainConfig?:  {
     learningRate?:number;
     adaptationThreshold?:number;
     confidenceThreshold?:number;
 };
   // Performance tracking configuration
-  performanceConfig?:{
+  performanceConfig?:  {
     enableDetailedMetrics?:boolean;
     retentionDays?:number;
     aggregationInterval?:number;
 };
   // Telemetry configuration
-  telemetryConfig?:{
+  telemetryConfig?:  {
     serviceName?:string;
     enableTracing?:boolean;
     enableMetrics?:boolean;

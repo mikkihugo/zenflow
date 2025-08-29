@@ -75,7 +75,7 @@ export interface TaskFlowConfig {
   gates: Partial<Record<TaskFlowState, TaskFlowGate>>;
 
   /** Global system limits */
-  systemLimits: {
+  systemLimits:  {
     /** Maximum total pending approvals across all gates */
     maxTotalPending: number;
 
@@ -87,7 +87,7 @@ export interface TaskFlowConfig {
   };
 
   /** Flow optimization settings */
-  optimization: {
+  optimization:  {
     /** Enable automatic bottleneck detection */
     enableBottleneckDetection: boolean;
 
@@ -105,14 +105,14 @@ export interface TaskFlowStatus {
   /** Current WIP usage per state */
   wipUsage: Record<
     TaskFlowState,
-    { current: number; limit: number; utilization: number }
+    { current: number, limit: number, utilization: number }
   >;
 
   /** Approval queue status */
-  approvalQueues: Record<string, { pending: number; avgWaitTime: number }>;
+  approvalQueues: Record<string, { pending: number, avgWaitTime: number }>;
 
   /** System capacity status */
-  systemCapacity: {
+  systemCapacity:  {
     totalPending: number;
     maxPending: number;
     utilizationPercent: number;
@@ -147,7 +147,7 @@ export interface BottleneckAnalysis {
  *   wipLimits: 'Is this task ready for testing?';
  *     }
  *   },
- *   systemLimits: await taskFlow.moveTask('TASK-123','testing);
+ *   systemLimits: await taskFlow.moveTask('TASK-123'testing);
  * `;
  */
 export class TaskFlowController extends EventBus {
@@ -276,8 +276,8 @@ export class TaskFlowController extends EventBus {
   }
   
   async getSystemStatus(): Promise<TaskFlowStatus> {
-    const wipUsage: Record<TaskFlowState, { current: number; limit: number; utilization: number }> = {} as Record<TaskFlowState, { current: number; limit: number; utilization: number }>;
-    const approvalQueues: Record<string, { pending: number; avgWaitTime: number }> = {};
+    const wipUsage: Record<TaskFlowState, { current: number, limit: number, utilization: number }> = {} as Record<TaskFlowState, { current: number, limit: number, utilization: number }>;
+    const approvalQueues: Record<string, { pending: number, avgWaitTime: number }> = {};
     // Calculate WIP usage for each state
     for (const [state, limit] of Object.entries(this.config.wipLimits)) {
       const current = this.kanban.getStateTaskCount(state as TaskFlowState);
@@ -329,7 +329,7 @@ export class TaskFlowController extends EventBus {
     return {
       wipUsage,
       approvalQueues,
-      systemCapacity: {
+      systemCapacity:  {
         totalPending,
         maxPending,
         utilizationPercent,
@@ -413,7 +413,7 @@ export class TaskFlowController extends EventBus {
       const response = await this.aguiSystem.askQuestion({
         id: `${taskId}-${toState}`,
         question: gate.approvalQuestion,
-        metadata: { taskId, toState, confidence }
+        metadata:  { taskId, toState, confidence }
       });
       return response.approved === true;
     } catch (error) {

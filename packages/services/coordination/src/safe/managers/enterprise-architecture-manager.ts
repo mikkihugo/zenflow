@@ -21,11 +21,11 @@ import type { Logger} from '@claude-zen/foundation')import { getLogger} from '..
 export interface EnterpriseArchConfig {
   readonly enablePrincipleValidation: false;
   private config: new Map<string, NodeJS.Timeout>();
-  constructor(config: {}) {
+  constructor(config:  {}) {
     super()'; 
     this.logger = getLogger('EnterpriseArchitectureManager');
     this.config = {
-      enablePrincipleValidation: await import(';')';
+      enablePrincipleValidation: await import(';)';
        '../services/enterprise-architecture/architecture-principle-service'));
       this.architecturePrincipleService = new ArchitecturePrincipleService(
         this.logger
@@ -39,7 +39,7 @@ export interface EnterpriseArchConfig {
       );
       await this.technologyStandardsService.initialize();
       // Delegate to Governance Decision Service for decision workflows
-      const { GovernanceDecisionService} = await import(';')';
+      const { GovernanceDecisionService} = await import(';)';
        '../services/enterprise-architecture/governance-decision-service'));
       this.governanceDecisionService = new GovernanceDecisionService(
         this.logger
@@ -52,11 +52,11 @@ export interface EnterpriseArchConfig {
         this.logger,
         {
           enableRealTimeMonitoring: true;
-      this.logger.info(';')';
+      this.logger.info(';)';
        'Enterprise Architecture Manager initialized successfully with service delegation'));
       this.emit('initialized,{};);
 } catch (error) {
-      this.logger.error(';')';
+      this.logger.error(';)';
        'Failed to initialize Enterprise Architecture Manager:,';
         error
       );
@@ -73,7 +73,7 @@ export interface EnterpriseArchConfig {
     category: string,
     priority: string =medium,
     implications: []
-  ):Promise<ArchitecturePrinciple> {
+  ): Promise<ArchitecturePrinciple> {
     if (!this.initialized) await this.initialize();
     this.logger.info('Creating architecture principle,{';
       name,
@@ -104,12 +104,12 @@ export interface EnterpriseArchConfig {
       return principle;
 } catch (error) {
       const errorMessage =;
-        error instanceof Error ? error.message: {},
+        error instanceof Error ? error.message:  {},
     complianceRules: []
-  ):Promise<any> {
+  ): Promise<any> {
     if (!this.initialized) await this.initialize();)    this.logger.info('Validating principle compliance,{';
       principleId,
-      rulesCount: {
+      rulesCount:  {
         principleId,
         validationScope: 'default-compliance-rule',)                  name : 'Default Compliance Rule')                  description : 'Basic compliance validation')                  condition : 'principle_adherence > 80%')                  severity: 'Review principle implementation',)                  category,},';
 ],
@@ -136,7 +136,7 @@ export interface EnterpriseArchConfig {
 } catch (error) {
       const errorMessage =;
         error instanceof Error ? error.message: String(error);
-      this.logger.error(';')';
+      this.logger.error(';)';
        'Principle compliance validation failed:,';
         errorMessage
       );
@@ -157,7 +157,7 @@ export interface EnterpriseArchConfig {
     mandatory: false,
     applicability: [],
     implementation: string =,
-    verification: string =,')    owner: string ='technology-board')  ):Promise<TechnologyStandard> {';
+    verification: string =,')    owner: string ='technology-board')  ): Promise<TechnologyStandard> {';
     if (!this.initialized) await this.initialize();
     this.logger.info('Creating technology standard,{';
       name,
@@ -219,13 +219,13 @@ export interface EnterpriseArchConfig {
     criteria: [],
     risks: [],
     implications: []
-  ):Promise<GovernanceDecision> {
+  ): Promise<GovernanceDecision> {
     if (!this.initialized) await this.initialize();)    this.logger.info('Initiating governance decision,{';
       type,
       title,
       priority,
       requesterId,
-      decisionMakersCount: {
+      decisionMakersCount:  {
         type: 'architect,',
 '        priority: 'Technical Feasibility',)                  description : 'Assess technical feasibility')                  category : 'technical 'as const,';
                   weight: 'gte ',as const,';
@@ -259,7 +259,7 @@ export interface EnterpriseArchConfig {
                   dependencies: 'medium,',
 '            culturalFactors: [],';
             governancePolicies: [],',},';
-          externalContext: {
+          externalContext:  {
             regulatoryRequirements:[],
             industryStandards: [],
             vendorConstraints: [],
@@ -296,7 +296,7 @@ export interface EnterpriseArchConfig {
   /**
    * Calculate architecture health metrics - Delegates to Architecture Health Service
    */
-  async calculateArchitectureHealthMetrics():Promise<ArchitectureHealthMetrics> {
+  async calculateArchitectureHealthMetrics(): Promise<ArchitectureHealthMetrics> {
     if (!this.initialized) await this.initialize();')    this.logger.info('Calculating architecture health metrics');
     try {
       const metrics =;
@@ -311,7 +311,7 @@ export interface EnterpriseArchConfig {
 });
       return metrics;
 } catch (error) {
-      this.logger.error(';')';
+      this.logger.error(';)';
        'Failed to calculate architecture health metrics:,';
         error
       );
@@ -324,13 +324,13 @@ export interface EnterpriseArchConfig {
   /**
    * Setup event forwarding from services
    */
-  private setupServiceEventForwarding():void {
+  private setupServiceEventForwarding(): void {
     // Forward events from Architecture Principle Service
     if (this.architecturePrincipleService) {
       this.architecturePrincipleService.on('principle-created', (data: any) => {
         this.emit('architecture-principle-created', data);
 });
-      this.architecturePrincipleService.on(';')';
+      this.architecturePrincipleService.on(';)';
        'principle-validated,';
         (data: any) => {
           this.emit('principle-compliance-validated, data');
@@ -342,7 +342,7 @@ export interface EnterpriseArchConfig {
       this.technologyStandardsService.on('standard-created', (data: any) => {
         this.emit('technology-standard-created', data);
 });
-      this.technologyStandardsService.on(';')';
+      this.technologyStandardsService.on(';)';
        'standard-compliance-monitored,';
         (data: any) => {
           this.emit('technology-compliance-monitored, data');
@@ -351,13 +351,13 @@ export interface EnterpriseArchConfig {
 }
     // Forward events from Governance Decision Service
     if (this.governanceDecisionService) {
-      this.governanceDecisionService.on(';')';
+      this.governanceDecisionService.on(';)';
        'governance-decision-initiated,';
         (data: any) => {
           this.emit('governance-decision-initiated, data');
 }
       );
-      this.governanceDecisionService.on(';')';
+      this.governanceDecisionService.on(';)';
        'decision-status-updated,';
         (data: any) => {
           this.emit('governance-decision-updated, data');
@@ -366,7 +366,7 @@ export interface EnterpriseArchConfig {
 }
     // Forward events from Architecture Health Service
     if (this.architectureHealthService) {
-      this.architectureHealthService.on(';')';
+      this.architectureHealthService.on(';)';
        'health-metrics-calculated,';
         (data: any) => {
           this.emit('architecture-health-calculated, data');
@@ -377,7 +377,7 @@ export interface EnterpriseArchConfig {
   /**
    * Start monitoring intervals for periodic tasks
    */
-  private startMonitoringIntervals():void {
+  private startMonitoringIntervals(): void {
     if (this.configuration.enablePrincipleValidation) {
       const principlesTimer = setInterval(async () => {
         await this.reviewArchitecturePrinciples();
@@ -407,11 +407,11 @@ export interface EnterpriseArchConfig {
       for (const standard of standards) {
         if (standard.mandatory) {
     ')          this.logger.debug('Checking compliance for mandatory standard,{';
-            standardId: {
+            standardId:  {
     ')            projects: this.getGovernanceDecisions();
       const now = new Date();
       for (const decision of decisions) {
-        if (';')';
+        if (';)';
           decision.status ==='pending_approval '&&';
           decision.approvalDeadline <= now
         ) ')          this.logger.warn('Governance decision approval overdue,{';

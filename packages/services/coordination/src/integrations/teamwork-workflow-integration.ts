@@ -16,12 +16,12 @@ const logger = getLogger('TeamworkWorkflowIntegration');
 export interface ConversationWorkflow {
   id: string;
   name: string;
-  trigger: {
+  trigger:  {
     conditions: any[];
     type: string;
   };
   actions: any[];
-  safeAlignment: {
+  safeAlignment:  {
     level: 'team' | 'art' | 'portfolio';
     processArea: string;
   };
@@ -46,7 +46,7 @@ export class TeamworkWorkflowIntegration {
   /**
    * Initialize workflow integration
    */
-  async initialize(params: {
+  async initialize(params:  {
     workflowEngine: any;
     safeCoordination: any;
   }): Promise<void> {

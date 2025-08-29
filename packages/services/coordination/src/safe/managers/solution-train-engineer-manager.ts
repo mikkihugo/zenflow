@@ -14,7 +14,7 @@
   /**
    * Initialize with service delegation
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     if (this.initialized) return;
     try {
       // Delegate to Multi-ART Coordination Service')      const { MultiARTCoordinationService} = await import('../services/solution-train/multi-art-coordination-service'));
@@ -22,7 +22,7 @@
         this.logger
       );
       // Delegate to Solution Planning Service
-      const { SolutionPlanningService} = await import(';')';
+      const { SolutionPlanningService} = await import(';)';
        '../services/solution-train/solution-planning-service'));
       this.solutionPlanningService = new SolutionPlanningService(this.logger);
       // Delegate to Solution Architecture Management Service
@@ -32,7 +32,7 @@
         new SolutionArchitectureManagementService(this.logger);
       this.initialized = true;')      this.logger.info('SolutionTrainEngineerManager initialized successfully');
 } catch (error) {
-      this.logger.error(';')';
+      this.logger.error(';)';
        'Failed to initialize SolutionTrainEngineerManager:,';
         error
       );
@@ -59,7 +59,7 @@
 };
 } catch (error) {
     ')      this.logger.error('ART coordination failed:, error');
-      const errorMessage =';')        error instanceof Error ? error.message : 'Unknown error occurred')      this.emit('coordination-failed,{ error: await this.solutionPlanningService.executePlanning(
+      const errorMessage =';)        error instanceof Error ? error.message : 'Unknown error occurred')      this.emit('coordination-failed,{ error: await this.solutionPlanningService.executePlanning(
         planningConfig.planningId,')       'PI_PLANNING'));
       this.emit('solution-planning-completed,{';
         success: result.success,
@@ -76,7 +76,7 @@
 };
 } catch (error) {
     ')      this.logger.error('Solution planning failed:, error');
-      const errorMessage =';')        error instanceof Error ? error.message : 'Unknown error occurred')      this.emit('planning-failed,{ error: errorMessage};);
+      const errorMessage =';)        error instanceof Error ? error.message : 'Unknown error occurred')      this.emit('planning-failed,{ error: errorMessage};);
       throw error;
 }
 }
@@ -107,7 +107,7 @@
 };
 } catch (error) {
     ')      this.logger.error('Solution architecture management failed:, error');
-      const errorMessage =';')        error instanceof Error ? error.message : 'Unknown error occurred')      this.emit('architecture-failed,{ error: errorMessage};);
+      const errorMessage =';)        error instanceof Error ? error.message : 'Unknown error occurred')      this.emit('architecture-failed,{ error: errorMessage};);
       throw error;
 }
 }
@@ -139,7 +139,7 @@
     dependencyId: string,
     status: string,
     actualDeliveryDate?:Date
-  ):Promise<any> {
+  ): Promise<any> {
     if (!this.initialized) await this.initialize();
     try {
       const updatedDependency =

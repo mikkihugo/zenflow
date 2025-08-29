@@ -49,7 +49,7 @@ export interface WorkflowMachineContext {
   bottleneckHistory: WorkflowBottleneck[];
   // Flow metrics
   currentMetrics: FlowMetrics| null;
-  metricsHistory: Array<{ timestamp: Date; metrics: FlowMetrics}>;
+  metricsHistory: Array<{ timestamp: Date, metrics: FlowMetrics}>;
   // System status
   systemHealth: number; // 0-1 range
   lastOptimization: Date| null;
@@ -73,8 +73,8 @@ export const createInitialContext = (
   config: WorkflowKanbanConfig
 ):WorkflowMachineContext => ({
   // Initialize task management structures
-  tasks:{},
-  tasksByState: {
+  tasks:  {},
+  tasksByState:  {
     backlog:[],
     analysis: [],
     development: [],
@@ -86,7 +86,7 @@ export const createInitialContext = (
     expedite: [],
 },
   // Initialize WIP management
-  wipLimits: { ...config.defaultWIPLimits},
+  wipLimits:  { ...config.defaultWIPLimits},
   wipViolations: [],
   // Initialize bottleneck tracking
   activeBottlenecks: [],
@@ -99,7 +99,7 @@ export const createInitialContext = (
   lastOptimization: null,
   optimizationStrategy: null,
   // Store configuration
-  config: { ...config},
+  config:  { ...config},
   // Initialize error tracking
   errors: [],
 '});

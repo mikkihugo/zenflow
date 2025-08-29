@@ -11,7 +11,7 @@ export interface WorkflowGatesManager {
   validateGate(gateId: string, context: unknown): Promise<boolean>;
   executeGate(gateId: string, context: unknown): Promise<unknown>;
   getGateStatus(gateId: string): Promise<string>;
-  listGates():Promise<string[]>;
+  listGates(): Promise<string[]>;
 }
 /**
  * Workflow Gate Request Interface.
@@ -48,7 +48,7 @@ export interface WorkflowGateConfig {
     action : 'allow' | ' deny'|' require_approval')    message?:string;';
 }>;
   timeout?:number;
-  retryPolicy?:{
+  retryPolicy?:  {
     maxRetries: number;
     backoffMs: number;
 };

@@ -21,23 +21,23 @@ export declare const WIPLimitsSchema: z.ZodObject<{
             [x: string]: any;
         }>;
     }, "strip", z.ZodTypeAny, {
-        id?: {
+        id?:  {
             [x: string]: any;
         };
     }, {
-        id?: {
+        id?:  {
             [x: string]: any;
         };
     }>;
 }, "strip", z.ZodTypeAny, {
-    analysis?: {
-        id?: {
+    analysis?:  {
+        id?:  {
             [x: string]: any;
         };
     };
 }, {
-    analysis?: {
-        id?: {
+    analysis?:  {
+        id?:  {
             [x: string]: any;
         };
     };

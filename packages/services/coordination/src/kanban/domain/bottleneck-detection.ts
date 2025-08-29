@@ -10,9 +10,9 @@
  */
 export interface BottleneckDetectionConfig {
   /** Utilization threshold for capacity bottlenecks */
-  capacityThreshold: {
+  capacityThreshold:  {
   capacityThreshold: [];
-  constructor(config: {}) {
+  constructor(config:  {}) {
     this.config = { ...DEFAULT_CONFIG, ...config};
     logger.info('BottleneckDetectionService initialized, this.config');
 }
@@ -41,9 +41,9 @@ export interface BottleneckDetectionConfig {
     if (this.detectionHistory.length > 100) {
       this.detectionHistory = this.detectionHistory.slice(-100); // Keep last 100 detections
 }
-    const report: {
+    const report:  {
       reportId,      generatedAt: timestamp,';
-      timeRange: {
+      timeRange:  {
         start: new Date(Date.now() - 24 * 60 * 60 * 1000), // Last 24 hours
         end: timestamp,
 },
@@ -152,7 +152,7 @@ export interface BottleneckDetectionConfig {
         impactScore,
         detectedAt: new Date(),
         affectedTasks: blockedTasks.map(t => t.id),',        estimatedDelay: 'Review and resolve task dependencies,',
-'        metadata: {';
+'        metadata:  {';
           blockedTaskCount: blockedTasks.length,
           totalTasks: allTasks.length,',},';
 });
@@ -192,7 +192,7 @@ export interface BottleneckDetectionConfig {
           prerequisites: [],',};;
 }
 }
-  private async analyzeTrends():Promise<any[]> {
+  private async analyzeTrends(): Promise<any[]> {
     // Placeholder for trend analysis
     // Would typically analyze bottleneck history for patterns
     return [];

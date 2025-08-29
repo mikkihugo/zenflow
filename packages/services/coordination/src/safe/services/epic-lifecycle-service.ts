@@ -38,9 +38,9 @@ export interface EpicLifecycleConfig {
     );
     if (!gateValidation.canProgress) {
       return {
-        success: {
+        success:  {
       ...epic,
-      status: {
+      status:  {
       stage: this.lifecycleStages.get(epicId)|| [];
     stages.push(newStage);
     this.lifecycleStages.set(epicId, stages);
@@ -55,7 +55,7 @@ export interface EpicLifecycleConfig {
       input.opportunityEnablement;
     // Calculate WSJF score (CoD / Size)
     const wsjfScore = costOfDelay / Math.max(input.size, 1);
-    const newScore: {
+    const newScore:  {
       businessValue: Array.from(this.wsjfScores.entries())();
     const sortedByScore = orderBy(
       allScores,
@@ -78,14 +78,14 @@ export interface EpicLifecycleConfig {
       previousScore;
     );
     this.logger.info('WSJF score calculated,{';
-      epicId: {
+      epicId:  {
     ')      id,    ')      identifiedAt: this.blockers.get(epicId)|' | '[];)    existingBlockers.push(blocker)';;
     this.blockers.set(epicId, existingBlockers);')    this.logger.warn('Epic blocker added,{
       epicId,
       blockerId: this.blockers.get(epicId)|| [];
     const blockerIndex = blockers.findIndex((b) => b.id === blockerId);
     if (blockerIndex === -1) {
-    `)      throw new Error(`Blocker not found: {`
+    `)      throw new Error(`Blocker not found:  {`
       ...blockers[blockerIndex],
       resolvedAt: Array.from(this.epics.values())();
     const allStages = Array.from(this.lifecycleStages.values()).flat();
@@ -169,7 +169,7 @@ export interface EpicLifecycleConfig {
         passedCriteria.push({
           ...criterion,
           status : 'completed,'
-          completionDate: unmetCriteria.length === 0;)    const recommendations = canProgress`)      ? [`Epic meets all criteria for ${targetState}];)      :[``${unmetCriteria.lengthcriteria still need to be met}];``)    const __nextActions = unmetCriteria.map((c) => `Complete: {`
+          completionDate: unmetCriteria.length === 0;)    const recommendations = canProgress`)      ? [`Epic meets all criteria for ${targetState}];)      :[``${unmetCriteria.lengthcriteria still need to be met}];``)    const __nextActions = unmetCriteria.map((c) => `Complete:  {`
       [PortfolioKanbanState.FUNNEL]:[],
       [PortfolioKanbanState.ANALYZING]:[
         {
@@ -180,7 +180,7 @@ export interface EpicLifecycleConfig {
 '          dueDate: 'Implementation capacity allocated',)          status : 'pending')          owner : 'RTE,'
 '          dueDate: 'Epic acceptance criteria met',)          status : 'pending')          owner : 'Epic Owner,'
 '          dueDate: 'Business value realized',)          status : 'pending')          owner : 'Portfolio Manager,'
-'          dueDate: {
+'          dueDate:  {
       [PortfolioKanbanState.FUNNEL]:10,
       [PortfolioKanbanState.ANALYZING]:25,
       [PortfolioKanbanState.PORTFOLIO_BACKLOG]:40,
@@ -193,26 +193,26 @@ export interface EpicLifecycleConfig {
   /**
    * Get key activities for lifecycle stage
    */
-  private getStageActivities(state: {
+  private getStageActivities(state:  {
     ')      [PortfolioKanbanState.FUNNEL]:['Capture epic idea,')       'Initial assessment,';
 ],
       [PortfolioKanbanState.ANALYZING]:[
        'Develop business case,')       'Conduct market research,';
        'Define MVP,';
 ],
-      [PortfolioKanbanState.PORTFOLIO_BACKLOG]:[';'];;
+      [PortfolioKanbanState.PORTFOLIO_BACKLOG]:[';];;
        'Prioritize with WSJF,')       'Resource planning,';
        'Dependency analysis,';
 ],
-      [PortfolioKanbanState.IMPLEMENTING]:[';'];;
+      [PortfolioKanbanState.IMPLEMENTING]:[';];;
        'Feature development,')       'Solution implementation,';
        'Value delivery,';
 ],
-      [PortfolioKanbanState.DONE]:[';'];;
+      [PortfolioKanbanState.DONE]:[';];;
        'Value realization,')       'Lessons learned,';
        'Epic closure,';
 ],
-      [PortfolioKanbanState.CANCELLED]:[';'];;
+      [PortfolioKanbanState.CANCELLED]:[';];;
        'Document cancellation,')       'Resource reallocation,';
 ],
 };
@@ -221,21 +221,21 @@ export interface EpicLifecycleConfig {
   /**
    * Get stakeholders involved in lifecycle stage
    */
-  private getStageStakeholders(state: {
+  private getStageStakeholders(state:  {
       [PortfolioKanbanState.FUNNEL]:['Epic Owner,' Portfolio Manager'],';
       [PortfolioKanbanState.ANALYZING]:[
        'Epic Owner,')       'Product Manager,';
        'Solution Architect,';
 ],
-      [PortfolioKanbanState.PORTFOLIO_BACKLOG]:[';'];;
+      [PortfolioKanbanState.PORTFOLIO_BACKLOG]:[';];;
        'Portfolio Manager,')       'Epic Owner,';
        'RTE,';
 ],
-      [PortfolioKanbanState.IMPLEMENTING]:[';'];;
+      [PortfolioKanbanState.IMPLEMENTING]:[';];;
        'Epic Owner,')       'ARTs,';
        'Solution Train,';
 ],
-      [PortfolioKanbanState.DONE]:[';'];;
+      [PortfolioKanbanState.DONE]:[';];;
        'Portfolio Manager,')       'Epic Owner,';
        'Business Stakeholders,';
 ],')      [PortfolioKanbanState.CANCELLED]:['Portfolio Manager,' Epic Owner'],';
@@ -245,7 +245,7 @@ export interface EpicLifecycleConfig {
   /**
    * Get next actions for lifecycle stage
    */
-  private getNextActions(state: {
+  private getNextActions(state:  {
       [PortfolioKanbanState.FUNNEL]:['Develop epic hypothesis,')       'Schedule analysis,';
 ],
       [PortfolioKanbanState.ANALYZING]:[
@@ -284,7 +284,7 @@ export interface EpicLifecycleConfig {
     ')      recommendations.push('WSJF score decreased - review assumptions');
 }
     if (current.size > 15) {
-      recommendations.push(';')';
+      recommendations.push(';)';
        'Large epic size - consider splitting into smaller epics));
 }
     return recommendations;

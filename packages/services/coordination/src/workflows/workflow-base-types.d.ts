@@ -46,7 +46,7 @@ export interface WorkflowStep {
     readonly timeout?: number;
     readonly retries?: number;
     readonly onError?: 'stop' | ' continue' | ' skip';
-    readonly gateConfig?: {
+    readonly gateConfig?:  {
         ';: any;
         readonly enabled: boolean;
         readonly gateType?: 'approval| checkpoint| review' | ' decision';
@@ -76,7 +76,7 @@ export interface WorkflowState {
     error?: string;
     pendingGates?: Map<string, WorkflowGateRequest>;
     gateResults?: Map<string, WorkflowGateResult>;
-    pausedForGate?: {
+    pausedForGate?:  {
         stepIndex: number;
         gateId: string;
         pausedAt: string;

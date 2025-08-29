@@ -18,7 +18,7 @@ export class SchemaValidator {
   static createSafeParser<T>(schema: z.ZodSchema<T>) {
     return (
       data: unknown;
-    ):{ success: boolean; data?: T; errors?: string[]} => {
+    ):  { success: boolean; data?: T; errors?: string[]} => {
       try {
         const result = schema.parse(data);
         return { success: true, data: result};

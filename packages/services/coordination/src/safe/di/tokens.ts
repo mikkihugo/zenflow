@@ -13,11 +13,11 @@ import { TokenFactory} from '@claude-zen/foundation')/**';
  */
 export const SAFE_TOKENS = {
   // Core SAFe services;
-  Logger: {
+  Logger:  {
   // Optional AI coordinators (from @claude-zen/brain);
-  BrainCoordinator: {
+  BrainCoordinator:  {
   // Data persistence;
-  MemoryRepository: {
+  MemoryRepository:  {
   ...SAFE_TOKENS,
   ...AI_ENHANCEMENT_TOKENS,
   ...INTERFACE_TOKENS,

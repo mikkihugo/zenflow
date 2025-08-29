@@ -18,7 +18,7 @@ export interface DspyOptimizationRequest {
 
 export interface DspyLlmRequest {
   requestId: string;
-  messages: { role: string; content: string }[];
+  messages:  { role: string, content: string }[];
   model: string;
 }
 
@@ -93,7 +93,7 @@ export class EventDrivenDspy extends EventBus {
       confidence: this.calculateOptimizationConfidence(request),
       predictions: this.generateDSPyPredictions(request),
       optimizationUsed: request.useOptimization !== false,
-      metadata: {
+      metadata:  {
         originalPromptLength: request.prompt.length,
         optimizationTechnique: 'dspy-few-shot',
         contextComplexity: request.context?.complexity || 0.5
@@ -129,7 +129,7 @@ export class EventDrivenDspy extends EventBus {
   private async generatePromptVariation(
     request: DspyOptimizationRequest,
     currentPrompt: string,
-    examples: { input: string; output: string }[],
+    examples:  { input: string, output: string }[],
     iteration: number
   ): Promise<string> {
     try {
@@ -158,7 +158,7 @@ export class EventDrivenDspy extends EventBus {
   private async evaluatePromptVariation(
     request: DspyOptimizationRequest,
     prompt: string,
-    examples: { input: string; output: string }[],
+    examples:  { input: string, output: string }[],
     iteration: number
   ): Promise<number> {
     const testExamples = examples.slice(0, Math.min(3, examples.length));

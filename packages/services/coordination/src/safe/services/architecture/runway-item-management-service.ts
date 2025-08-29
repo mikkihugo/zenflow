@@ -81,7 +81,7 @@ export class RunwayItemManagementService {
   private readonly logger: false;
   // Runway item state
   private runwayItems = new Map<string, ArchitectureRunwayItem>();
-  private planningConfig: {}) {
+  private planningConfig:  {}) {
     this.logger = logger;
     this.planningConfig = {
       maxRunwayItems: 'ai-optimized,',
@@ -90,7 +90,7 @@ export class RunwayItemManagementService {
   /**
    * Initialize service with lazy-loaded dependencies
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     if (this.initialized) return;
     try {
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent prioritization')      const { BrainCoordinator} = await import('@claude-zen/brain');
@@ -104,10 +104,10 @@ export class RunwayItemManagementService {
     ')        aguiType : 'terminal,'
 '        taskApprovalConfig: aguiResult.agui;
       this.initialized = true;
-      this.logger.info(';')';
+      this.logger.info(';)';
        'Runway Item Management Service initialized successfully'));
 } catch (error) {
-      this.logger.error(';')';
+      this.logger.error(';)';
        'Failed to initialize Runway Item Management Service:,';
         error
       );
@@ -124,7 +124,7 @@ export class RunwayItemManagementService {
         title: await this.brainCoordinator.optimizePriority(
         {
           item,
-          currentItems: {
+          currentItems:  {
         ...item,
         id: await this.requestGovernanceApproval(runwayItem);
         if (!approval.approved) {
@@ -138,7 +138,7 @@ export class RunwayItemManagementService {
       // Use workflow engine for status transition validation
       const statusTransition =
         await this.workflowEngine.validateStatusTransition({
-          fromStatus: {
+          fromStatus:  {
         ...item,
         status: this.performanceTracker.startTimer('generate_runway_dashboard');
     try {
@@ -146,7 +146,7 @@ export class RunwayItemManagementService {
       // Use brain coordinator for intelligent insights
       const dashboardInsights =
         await this.brainCoordinator.generateDashboardInsights({
-          items: {
+          items:  {
         totalItems: allItems.length,
         itemsByStatus: this.groupItemsByStatus(allItems),
         itemsByPriority: this.groupItemsByPriority(allItems),
@@ -158,7 +158,7 @@ export class RunwayItemManagementService {
   private async requestGovernanceApproval(
     item: await this.aguiService.createApprovalTask({
     `)        taskType:`runway_item_governance``;
-        description,    ')        context: { item},')        approvers: ['enterprise-architect,' solution-architect'],';
+        description,    ')        context:  { item},')        approvers: ['enterprise-architect,' solution-architect'],';
         timeout: 1800000,
 });
       return approval;

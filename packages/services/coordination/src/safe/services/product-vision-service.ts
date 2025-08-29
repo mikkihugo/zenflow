@@ -23,7 +23,7 @@ export interface ProductVisionServiceConfig {
   /**
    * Create comprehensive product vision
    */
-  async createProductVision(input: {
+  async createProductVision(input:  {
       id,    ')      productId: '1.0.0,',
       stakeholderAlignment: await this.validateVision(vision);
     if (!validation.isValid) {
@@ -65,7 +65,7 @@ export interface ProductVisionServiceConfig {
       vision.stakeholderAlignment,
       (sa) => sa.alignmentLevel < this.config.stakeholderAlignmentTarget;
     );
-    const result: {
+    const result:  {
       isValid: metrics.overallScore >= this.config.visionValidationThreshold,
       score: this.assessVisionClarity(vision.visionStatement);
     // Calculate feasibility (based on success criteria and market opportunity)
@@ -172,7 +172,7 @@ export interface ProductVisionServiceConfig {
     strategicThemes: 'indirect,,
       strategicImportance: this.visions.get(visionId);
     if (!vision) {
-    `)      throw new Error(`Vision not found: {`
+    `)      throw new Error(`Vision not found:  {`
       ...vision,
       stakeholderAlignment: alignments,
       updatedAt: new Date(),

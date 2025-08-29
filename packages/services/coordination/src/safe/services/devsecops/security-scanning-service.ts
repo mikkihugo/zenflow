@@ -23,13 +23,13 @@ export type SecurityAssessmentType =| vulnerability_scan| penetration_test| code
   readonly category: string;
   readonly status : 'open| in_progress| resolved' | ' false_positive')  readonly cwe?:string;';
   readonly cvssScore?:CVSSScore;
-  readonly location?:{
+  readonly location?:  {
     readonly filePath: string;
     readonly lineNumber: number;
     readonly columnNumber: number;
     readonly snippet: string;
 };
-  readonly impact?:{
+  readonly impact?:  {
     readonly confidentiality: string;
     readonly integrity: string;
     readonly availability: string;
@@ -85,13 +85,13 @@ export type SecuritySeverity =| low| medium| high| critical|'informational')expo
       const metrics = this.calculateScanMetrics(allFindings, config.targets);
       // Generate summary
       const summary = this.generateScanSummary(allFindings);
-      const result: {
+      const result:  {
         scanId: 'completed,',
-'        findings: {
+'        findings:  {
         scanId: 'failed,',
 '        findings: Date.now();)    this.logger.info('Executing security tool,{';
       toolId: await this.simulateToolExecution(tool, targets);
-      const result: {
+      const result:  {
         toolId: 'error,',
 '        duration: '',)        errorMessage: error instanceof Error ? error.message,};;
 }
@@ -102,7 +102,7 @@ export type SecuritySeverity =| low| medium| high| critical|'informational')expo
   private async simulateToolExecution(
     tool: SecurityTool,
     targets: ScanTarget[]
-  ):Promise<SecurityFinding[]> {
+  ): Promise<SecurityFinding[]> {
     // Simulate processing delay
     await new Promise((resolve) =>
       setTimeout(resolve, Math.random() * 2000 + 500));
@@ -145,7 +145,7 @@ export type SecuritySeverity =| low| medium| high| critical|'informational')expo
       totalFindings: countBy(findings, 'severity');
     const riskScore = this.calculateRiskScore(findings);
     return {
-      criticalIssues: {
+      criticalIssues:  {
       critical: findings.reduce((score, finding) => {
       return score + (weights[finding.severity]|| 0);
 }, 0);
@@ -156,14 +156,14 @@ export type SecuritySeverity =| low| medium| high| critical|'informational')expo
    */
   private generateRecommendations(findings: [];)    const severityCounts = countBy(findings, severity');
     if (severityCounts.critical > 0) {
-      recommendations.push(';')';
+      recommendations.push(';)';
        'Address critical security vulnerabilities immediately'));
 }
     if (severityCounts.high > 5) {
       recommendations.push('Implement security training for development team');
 }
     if (findings.length > 20) {
-      recommendations.push(';')';
+      recommendations.push(';)';
        'Consider implementing automated security testing in CI/CD pipeline'));
 }
     recommendations.push('Regularly update security tools and signatures');')    recommendations.push('Establish security review process for code changes');
@@ -205,8 +205,8 @@ export type SecuritySeverity =| low| medium| high| critical|'informational')expo
   private getEmptyMetrics():ScanMetrics 
     return {
       totalFindings: 0,
-      findingsBySeverity: {} as Record<SecuritySeverity, number>,
-      findingsByCategory: {},
+      findingsBySeverity:  {} as Record<SecuritySeverity, number>,
+      findingsByCategory:  {},
       coveragePercentage: 0,
       falsePositiveRate: 0,
       scanEfficiency: 0,

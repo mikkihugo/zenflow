@@ -153,7 +153,7 @@ export interface AuditActionLoggedEvent extends BaseEvent {
   private eventBus: new Map<string, Array<(event: any) => Promise<void>>>();
   private middleware: Array<(event: any) => Promise<any>> = [];
   // Configuration
-  private config: {
+  private config:  {
       enablePersistence: true,
       enableTelemetry: true,
       enableReplay: true,
@@ -168,7 +168,7 @@ export interface AuditActionLoggedEvent extends BaseEvent {
   /**
    * Initialize the event manager
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     try {
       // Initialize event system
       const eventBus = new EventEmitter();
@@ -271,7 +271,7 @@ export interface AuditActionLoggedEvent extends BaseEvent {
    * Replay events from a specific timestamp
    */
   async replayEvents(fromTimestamp: await this.eventStore.getEvents({
-        from: { ...event, isReplay: await this.eventStore.query(filter);
+        from:  { ...event, isReplay: await this.eventStore.query(filter);
       return events;')} catch (error) {';
     ')      this.logger.error('Failed to get event history, error');
       throw error;
@@ -280,7 +280,7 @@ export interface AuditActionLoggedEvent extends BaseEvent {
   // =============================================================================
   // PRIVATE METHODS
   // =============================================================================
-  private enrichEvent(eventType: {
+  private enrichEvent(eventType:  {
       ...eventData,
       id: event;
     for (const middleware of this.middleware) {
@@ -302,14 +302,14 @@ export interface AuditActionLoggedEvent extends BaseEvent {
  */
 export async function createTaskMasterEventManager(
   config?:Partial<TaskMasterEventManager[``config']>';
-):Promise<TaskMasterEventManager> {
+): Promise<TaskMasterEventManager> {
   const manager = new TaskMasterEventManager(config);
   await manager.initialize();
   return manager;')};;
 /**
  * Create event emitter factory for TaskMaster events
  */
-export function createEventEmitter():{
+export function createEventEmitter():  {
   emit: <K extends keyof TaskMasterEventMap>(
     eventType: K,
     eventData: Parameters<TaskMasterEventMap[K]>[0];
@@ -346,7 +346,7 @@ export function validateEvent<K extends keyof TaskMasterEventMap>(
 /**
  * Create event correlation helper
  */
-export function createEventCorrelation(baseEvent: BaseEvent): {
+export function createEventCorrelation(baseEvent: BaseEvent):  {
   correlationId: string;
   getCorrelatedEvent: <T extends BaseEvent>(event: T) => T;
 '} {
@@ -378,7 +378,7 @@ export class EventAggregator {
 }
     return [...this.events];
 }
-  private cleanup():void {
+  private cleanup(): void {
     const cutoff = Date.now() - this.timeWindow;
     this.events = this.events.filter((e) => e.timestamp.getTime() > cutoff);
 }

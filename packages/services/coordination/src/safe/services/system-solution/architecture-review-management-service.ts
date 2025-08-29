@@ -8,13 +8,13 @@
   // Architecture review state
   private activeReviews = new Map<string, ArchitectureReview>();
   private completedReviews = new Map<string, ArchitectureReview>();
-  private config: {}) {
+  private config:  {}) {
     this.logger = logger;
     this.config = {
       maxConcurrentReviews: await import('@claude-zen/agui');')      const __aguiResult = await AGUISystem({ aguiType : 'terminal});'
 '      this.aguiService = aguiResult.agui;')      // Lazy load @claude-zen/brain for LoadBalancer - intelligent review analysis')      const { BrainCoordinator} = await import('@claude-zen/brain');
       this.brainCoordinator = new BrainCoordinator(
-          enabled: await import(';')';
+          enabled: await import(';)';
        '@claude-zen/foundation'));
       this.performanceTracker = new PerformanceTracker();
       this.telemetryManager = new TelemetryManager({
@@ -25,7 +25,7 @@
       this.conversationOrchestrator = new ConversationOrchestrator();
       await this.conversationOrchestrator.initialize();
       this.initialized = true;
-      this.logger.info(';')';
+      this.logger.info(';)';
        'Architecture Review Management Service initialized successfully'));
 } catch (error) {
       this.logger.error(
@@ -39,7 +39,7 @@
    * Initiate architecture review with AI-powered workflow orchestration
    */
   async initiateArchitectureReview(
-    request: this.performanceTracker.startTimer(';')';
+    request: this.performanceTracker.startTimer(';)';
      'initiate_architecture_review'));
     try {
       this.logger.info('Initiating architecture review,{';
@@ -56,9 +56,9 @@
           request,
           systemDesign,
           existingReviews: await this.aguiService.createApprovalTask({';
-    ')        taskType,        description,    ')        context: {
+    ')        taskType,        description,    ')        context:  {
     ')        id = ')`,approvalWorkflow.taskId|| `review-`${Date.now()}-${Math.random().toString(36).substr(2, 9)},    ``)        reviewerId: 'pending,',
-'        findings: ',',createdAt: 'approved| rejected| conditionally_approved,',
+'        findings: ',createdAt: 'approved| rejected| conditionally_approved,',
 '    findings: this.performanceTracker.startTimer(')     'complete_architecture_review);
     try {
       const review = this.activeReviews.get(reviewId);
@@ -73,9 +73,9 @@
           comments,
 });
       // Complete the review
-      const completedReview: {
+      const completedReview:  {
         ...review,
-        status: this.performanceTracker.startTimer(';')';
+        status: this.performanceTracker.startTimer(';)';
      'generate_review_dashboard');
     try {
       const activeReviews = Array.from(this.activeReviews.values())();
@@ -86,7 +86,7 @@
         await this.brainCoordinator.generateReviewDashboardInsights({
           activeReviews,
           completedReviews,
-          config: {
+          config:  {
         totalReviews: allReviews.length,
         reviewsByType: this.groupReviewsByType(allReviews),
         reviewsByStatus: this.groupReviewsByStatus(allReviews),
@@ -116,13 +116,13 @@
   private async initiateStakeholderCollaboration(
     review: ArchitectureReview,
     systemDesign: SystemDesign
-  ):Promise<void> {
+  ): Promise<void> {
     try {
       await this.conversationOrchestrator.startConversation({
     ')        conversationId,    ')        participants: [';
           review.reviewerId,
           ...systemDesign.stakeholders.map((s) => s.id),
-],')        topic,    ')        context: { review, systemDesign},';
+],')        topic,    ')        context:  { review, systemDesign},';
         timeout: this.config.defaultReviewTimeout * 60000, // convert to ms
 });
 } catch (error) {

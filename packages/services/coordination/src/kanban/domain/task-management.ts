@@ -26,7 +26,7 @@ export interface TaskCreationInput {
 }
       const validatedData = validationResult.data;
       // Create task with domain defaults
-      const task: {
+      const task:  {
         id: 'backlog,// Domain rule: 'Unknown error,,
         timestamp: this.taskIndex.get(taskId);
       if (!task) {
@@ -45,7 +45,7 @@ export interface TaskCreationInput {
       )[0];
       // Update domain index
       this.taskIndex.set(taskId, updatedTask);
-      const result: {
+      const result:  {
         success: 'Unknown error,',
         timestamp: [];
     for (const task of this.taskIndex.values()) {
@@ -58,7 +58,7 @@ export interface TaskCreationInput {
   /**
    * Get all tasks
    */
-  async getAllTasks():Promise<WorkflowTask[]> {
+  async getAllTasks(): Promise<WorkflowTask[]> {
     return Array.from(this.taskIndex.values();
 }
   /**
@@ -87,7 +87,7 @@ export interface TaskCreationInput {
   // =============================================================================
   private generateTaskId():string {
     `)    return `task-`${Date.now()}-${Math.random().toString(36).substr(2, 9)})};;
-  private isValidStateTransition(fromState: {
+  private isValidStateTransition(fromState:  {
     ``)      backlog: validTransitions[fromState]|| [];
     return allowedStates.includes(toState);
 };)};;

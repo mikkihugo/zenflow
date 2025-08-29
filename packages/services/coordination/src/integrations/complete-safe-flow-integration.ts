@@ -103,7 +103,7 @@ export interface SafeEntity {
   description?: string;
   
   // Hierarchy context
-  parent?: {
+  parent?:  {
     type: SafeEntity['type'];
     id: string;
   };
@@ -139,18 +139,18 @@ export interface SafeEntity {
 
 export interface CompleteSafeFlowConfig {
   // Portfolio Level Configuration
-  portfolio: {
+  portfolio:  {
     enableEpicGates: boolean;
     enablePortfolioKanban: boolean;
     enableLeanBudgets: boolean;
-    autoApprovalThresholds: {
+    autoApprovalThresholds:  {
       businessValue: number;
       confidence: number;
     };
   };
   
   // ART Level Configuration (SAFe 6.0)
-  art: {
+  art:  {
     enablePlanningIntervalGates: boolean; // SAFe 6.0 terminology
     enableFeatureGates: boolean;
     enableSystemDemo: boolean;
@@ -159,7 +159,7 @@ export interface CompleteSafeFlowConfig {
   };
   
   // Team Level Configuration
-  team: {
+  team:  {
     enableStoryGates: boolean;
     enableCodeReview: boolean;
     enableDefinitionOfDone: boolean;
@@ -168,7 +168,7 @@ export interface CompleteSafeFlowConfig {
   };
   
   // Solution Level Configuration
-  solution: {
+  solution:  {
     enableArchitectureGates: boolean;
     enableSolutionDemo: boolean;
     enableComplianceGates: boolean;
@@ -176,7 +176,7 @@ export interface CompleteSafeFlowConfig {
   };
   
   // Continuous Delivery Configuration
-  continuousDelivery: {
+  continuousDelivery:  {
     enableBuildGates: boolean;
     enableTestGates: boolean;
     enableSecurityGates: boolean;
@@ -185,7 +185,7 @@ export interface CompleteSafeFlowConfig {
   };
   
   // Cross-Cutting Configuration
-  crossCutting: {
+  crossCutting:  {
     enableRiskGates: boolean;
     enableDependencyGates: boolean;
     enableResourceGates: boolean;
@@ -194,7 +194,7 @@ export interface CompleteSafeFlowConfig {
   };
   
   // Traceability and Learning
-  traceability: {
+  traceability:  {
     enableFullTraceability: boolean;
     enableLearning: boolean;
     enablePatternRecognition: boolean;
@@ -282,7 +282,7 @@ export class CompleteSafeFlowIntegration {
       owner: strategicTheme.owner,
       stakeholders: strategicTheme.stakeholders || [],
       approvers: strategicTheme.approvers || [],
-      metadata: {},
+      metadata:  {},
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -425,14 +425,14 @@ export class CompleteSafeFlowIntegration {
     }
 
     return {
-      flowSummary: {
+      flowSummary:  {
         id: flowId,
         startedAt: new Date(),
         currentStage: SafeFlowStage.STRATEGIC_PLANNING,
         entitiesInFlow: flow.length
       },
       traceabilityChain: [],
-      learningInsights: {},
+      learningInsights:  {},
       recommendations: [
         'Consider parallel gate execution for non-dependent items',
         'Implement automated quality gates for faster feedback',

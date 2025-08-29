@@ -15,7 +15,7 @@ export enum SafeConfigurationLevel {
  */
 export interface SafeFeatureToggles {
   // Essential SAFe Features (Always enabled for Step 1+)
-  essential: {
+  essential:  {
     artCoordination: boolean; // ART Sync, PI Planning, team coordination
     coreRoles: boolean; // RTE, Business Owners, Agile Teams
     coreEvents: boolean; // Essential events only
@@ -25,7 +25,7 @@ export interface SafeFeatureToggles {
     continuousLearningCulture: boolean; // NEW in SAFe 6.0 - added to foundation
 };
   // Large Solution Features (Step 2+)
-  largeSolution: {
+  largeSolution:  {
     solutionTrain: boolean; // Solution Train coordination
     solutionManagement: boolean; // Solution Manager, Solution Architect
     supplierManagement: boolean; // External supplier coordination
@@ -34,7 +34,7 @@ export interface SafeFeatureToggles {
     enterpriseSolutionDelivery: boolean; // Large solution competency
 };
   // Portfolio Features (Step 3+)
-  portfolio: {
+  portfolio:  {
     portfolioManagement: boolean; // Portfolio level governance
     epicManagement: boolean; // Epic Owners, epic lifecycle
     strategicThemes: boolean; // Strategic theme management
@@ -44,7 +44,7 @@ export interface SafeFeatureToggles {
     leanPortfolioManagement: boolean; // Portfolio competency
 };
   // Full SAFe Features (Step 4)
-  full: {
+  full:  {
     organizationalAgility: boolean; // Complete org transformation
     leanAgileLeadership: boolean; // Leadership transformation
     spanningPalette: boolean; // All spanning palette elements
@@ -59,11 +59,11 @@ export interface SafeFeatureToggles {
 export interface SafeConfiguration {
   level: SafeConfigurationLevel;
   features: SafeFeatureToggles;
-  customizations: {
+  customizations:  {
     organizationSize : 'small| medium| large' | ' enterprise')    industry: string;;
     complianceRequirements: string[];
     aiIntegrationLevel : 'basic' | ' advanced'|' full')};;
-  metadata: {
+  metadata:  {
     version: string;
     lastUpdated: Date;
     configuredBy: string;
@@ -77,7 +77,7 @@ export interface SafeConfiguration {
  * Essential SAFe 6.0 - Our complete Step 1 implementation target
  * This represents 100% coverage of Essential SAFe configuration
  */
-export const ESSENTIAL_SAFE_6_0_CONFIG: {
+export const ESSENTIAL_SAFE_6_0_CONFIG:  {
   level: 'medium,// Typical Essential SAFe target',)    industry : 'software')    complianceRequirements: 'TaskMaster,',
 '    targetGoDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000), // 90 days',},')'};;
 // ============================================================================
@@ -106,7 +106,7 @@ export class SafeConfigurationManager {
   /**
    * Get configuration readiness assessment
    */
-  getConfigurationReadiness():{
+  getConfigurationReadiness():  {
     level: this.getEnabledFeatureCount();
     const totalFeatures = this.getTotalFeatureCount();
     const missingFeatures = this.getMissingFeatures();
@@ -123,24 +123,24 @@ export class SafeConfigurationManager {
   // ============================================================================
   // PRIVATE IMPLEMENTATION METHODS
   // ============================================================================
-  private enableEssentialSafe():void {
+  private enableEssentialSafe(): void {
     Object.keys(this.currentConfig.features.essential).forEach((feature) => {
       (this.currentConfig.features.essential as any)[feature] = true;
 });
 }
-  private enableLargeSolutionSafe():void {
+  private enableLargeSolutionSafe(): void {
     Object.keys(this.currentConfig.features.largeSolution).forEach(
       (feature) => {
         (this.currentConfig.features.largeSolution as any)[feature] = true;
 }
     );
 }
-  private enablePortfolioSafe():void {
+  private enablePortfolioSafe(): void {
     Object.keys(this.currentConfig.features.portfolio).forEach((feature) => {
       (this.currentConfig.features.portfolio as any)[feature] = true;
 });
 }
-  private enableFullSafe():void {
+  private enableFullSafe(): void {
     this.enableEssentialSafe();
     this.enableLargeSolutionSafe();
     this.enablePortfolioSafe();
@@ -194,7 +194,7 @@ export class SafeConfigurationManager {
 },
 ];
 }
-  private generateLargeSolutionImplementationPlan():any[] {
+  private generateLargeSolutionImplementationPlan(): any[] {
     return [
       {
         phase = 'Phase 5: 'Add solution-level coordination and management',)        features:['solutionTrain,' solutionManagement'],';

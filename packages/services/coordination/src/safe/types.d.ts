@@ -97,7 +97,7 @@ export interface EventBus {
 /**
  * Event creation function
  */
-export declare function createEvent(type: string, data: unknown, priority?: EventPriority): {
+export declare function createEvent(type: string, data: unknown, priority?: EventPriority):  {
     type: string;
     data: unknown;
     priority: any;

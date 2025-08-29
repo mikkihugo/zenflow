@@ -241,7 +241,7 @@ export class PIExecutionService extends EventBus {
   private readonly logger: new Map<string, PIExecutionMetrics>();
   private readonly executionTimers = new Map<string, NodeJS.Timeout>();
   private brainCoordinator: false;
-  constructor(logger: {}) {
+  constructor(logger:  {}) {
     super();
     this.logger = logger;
     this.config = {
@@ -251,7 +251,7 @@ export class PIExecutionService extends EventBus {
   /**
    * Initialize the service with dependencies
    */
-  initialize():void {
+  initialize(): void {
     if (this.initialized) return;
     try {
       // Initialize with fallback implementations
@@ -325,11 +325,11 @@ export class PIExecutionService extends EventBus {
         executionData;
       );
       // Create comprehensive metrics
-      const piExecutionMetrics: {
+      const piExecutionMetrics:  {
         piId,
         timestamp: 'pi_execution_metrics,',
 '        entity: piId,';
-        properties: {
+        properties:  {
           overallHealth,
           progressPercentage,
           velocityTrend: velocityTrend.trend,
@@ -384,8 +384,8 @@ export class PIExecutionService extends EventBus {
       severity: this.piMetrics.get(piId);
     if (!metrics) {
     `)      throw new Error(`PI metrics not found: 'scope_change,',
-      entity: {
-    `)        alertId:`scope-change-`${p}iId-${D}ate.now()``')        severity: 'info',)        category : 'scope')        title = Significant Scope Change Detected`,)        message: `decreased`by ${M}ath.abs(scopeChange)%. Reason: {`
+      entity:  {
+    `)        alertId:`scope-change-`${p}iId-${D}ate.now()``')        severity: 'info',)        category : 'scope')        title = Significant Scope Change Detected`,)        message: `decreased`by ${M}ath.abs(scopeChange)%. Reason:  {`
         ...metrics,
         alerts: false;
 }
@@ -517,7 +517,7 @@ export class PIExecutionService extends EventBus {
     // Determine trend based on historical data
     const predictabilityTrend ='; 
       intelligentMetrics.predictabilityTrend||'stable')    // Benchmark comparison (would be based on actual organizational data)';
-    const benchmarkComparison: {
+    const benchmarkComparison:  {
       industryAverage: executionData.quality;
     // Calculate quality trend
     const recentQuality = executionData.iterations
@@ -536,7 +536,7 @@ export class PIExecutionService extends EventBus {
 '            threshold: 4.0,',            actual: qualityData.codeQuality,')            status: qualityData.codeQuality >= 4.0 ?'passed : ' failed,'
             weight: 0.4,',},';
 ],
-        status: qualityData.testCoverage >= 80 && qualityData.codeQuality >= 4.0')            ? 'passed' : executionData.risks;)    const openRisks = risks.filter((r: any) => r.status ==='open').length')    const mitigatedRisks = risks.filter(';';; 
+        status: qualityData.testCoverage >= 80 && qualityData.codeQuality >= 4.0')            ? 'passed' : executionData.risks;)    const openRisks = risks.filter((r: any) => r.status ==='open').length')    const mitigatedRisks = risks.filter(';;; 
       (r: any) => r.status ==='mitigating')    ).length;;
     const closedRisks = risks.filter((r: any) => r.status ==='closed').length')    // Convert risk data to RiskItem format';
     const highRiskItems: risks)      .filter((r: any) => r.impact ===`high `|| r.impact ===critical`)`;
@@ -682,11 +682,11 @@ export class PIExecutionService extends EventBus {
     const baseCompletion = new Date(
       Date.now() + (remainingWork / averageVelocity) * 14 * 24 * 60 * 60 * 1000;
     );
-    const completionProbability: {
+    const completionProbability:  {
       p10: 'Velocity Stability',)          impact : 'positive,'
 '          magnitude: 'Dependency Risks',)          impact : 'negative,'
-'          magnitude: {
-      originalScope: {
+'          magnitude:  {
+      originalScope:  {
       currentQuality: 'stable,,
       qualityRisk: [
       { iteration: [

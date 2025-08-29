@@ -241,13 +241,13 @@ export class ArchitectureDecisionManagementService {
   private readonly logger: false;
   // ADR state
   private decisionRecords = new Map<string, ArchitectureDecisionRecord>();
-  private config: {}) {
+  private config:  {}) {
     this.logger = logger;
     this.config = {
       enableAIAnalysis: 'annually,',
 '      maxAlternatives: await import('@claude-zen/brain');
       this.brainCoordinator = new BrainCoordinator(
-          enabled: await import(';')';
+          enabled: await import(';)';
        '@claude-zen/foundation'));
       this.performanceTracker = new PerformanceTracker();
       this.telemetryManager = new TelemetryManager({
@@ -262,7 +262,7 @@ export class ArchitectureDecisionManagementService {
       this.conversationOrchestrator = new ConversationOrchestrator();
       await this.conversationOrchestrator.initialize();
       this.initialized = true;
-      this.logger.info(';')';
+      this.logger.info(';)';
        'Architecture Decision Management Service initialized successfully'));
 } catch (error) {
       this.logger.error(
@@ -279,7 +279,7 @@ export class ArchitectureDecisionManagementService {
     decision: this.performanceTracker.startTimer(
      'create_architecture_decision'));
     try {
-      this.logger.info(';')';
+      this.logger.info(';)';
        'Creating architecture decision record with AI analysis,';
         { title: decision.title}
       );
@@ -298,12 +298,12 @@ export class ArchitectureDecisionManagementService {
         alternatives;
       );
       // Create ADR with AI-enhanced data
-      const adr: {
+      const adr:  {
         ...decision,
         id,    ')        status : 'draft,'
 '        confidenceLevel,';
         alternatives,
-        reviewCycle: {
+        reviewCycle:  {
           frequency: this.config.defaultReviewCycle,
           reviewCriteria: this.generateReviewCriteria(decision),
           reviewers: decision.stakeholders,
@@ -340,7 +340,7 @@ export class ArchitectureDecisionManagementService {
         // Create approval task with stakeholder collaboration
         const approval = await this.aguiService.createApprovalTask({
     ')          taskType: `architecture_decision_request``;
-          description,    ')          context: { request, optionAnalysis},';
+          description,    ')          context:  { request, optionAnalysis},';
           approvers: request.stakeholders,
           timeout: 2700000, // 45 minutes
           collaborationMode: true,
@@ -373,7 +373,7 @@ export class ArchitectureDecisionManagementService {
       // Use workflow engine for status transition validation
       const statusTransition =
         await this.workflowEngine.validateStatusTransition({
-          fromStatus: {
+          fromStatus:  {
         ...adr,
         status: this.performanceTracker.startTimer('generate_adr_dashboard');
     try {
@@ -381,7 +381,7 @@ export class ArchitectureDecisionManagementService {
       // Use brain coordinator for intelligent dashboard insights
       const dashboardInsights =
         await this.brainCoordinator.generateADRDashboardInsights({
-          decisions: {
+          decisions:  {
         totalDecisions: false;')    this.logger.info(Architecture Decision Management Service shutdown complete`);`;
 }
   // ============================================================================
@@ -422,7 +422,7 @@ export class ArchitectureDecisionManagementService {
 '        lastMeasured: new Date(),',},';
 ];
     // Add category-specific metrics')    if (decision.category ==='performance_standard){';
-    ')      baseMetrics.push(';')';
+    ')      baseMetrics.push(';)';
         metricId : 'performance-improvement')        name : 'Performance Improvement')        description : 'Performance improvement achieved,'
 '        targetValue: 'percentage',)        trend : 'stable,'
         lastMeasured: new Date(),);',};;
@@ -430,10 +430,10 @@ export class ArchitectureDecisionManagementService {
 }
   private async initiateStakeholderReview(
     adr: ArchitectureDecisionRecord
-  ):Promise<void> {
+  ): Promise<void> {
     try {
     ')      await this.conversationOrchestrator.startConversation({';
-    ')        conversationId,    ')        participants: adr.stakeholders,')        topic,    ')        context: { adr},';
+    ')        conversationId,    ')        participants: adr.stakeholders,')        topic,    ')        context:  { adr},';
         timeout: 86400000, // 24 hours
 });
 } catch (error) {

@@ -186,7 +186,7 @@ export declare class PICompletionService extends EventBus {
     private readonly logger;
     private readonly workshops;
     private brainCoordinator;
-    constructor(logger: {});
+    constructor(logger:  {});
     /**
      * Initialize the service with dependencies
      */

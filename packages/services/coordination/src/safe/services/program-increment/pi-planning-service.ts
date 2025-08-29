@@ -201,23 +201,23 @@ export interface PIPlanningConfiguration {
 export class PIPlanningService extends EventBus {
   private readonly planningEvents = new Map<string, PIPlanningEventConfig>();
   private readonly planningResults = new Map<string, PIPlanningResult>();
-  private workflowEngine: { 
-    startWorkflow: (workflow: { workflowType: string; entityId: string; participants: string[]; data: unknown }) => string 
+  private workflowEngine:  { 
+    startWorkflow: (workflow:  { workflowType: string, entityId: string, participants: string[], data: unknown }) => string 
   } | null = null;
-  private aguiSystem: { 
-    createInterface: (config: { type: string; title?: string; content?: unknown }) => { interfaceId: string } 
+  private aguiSystem:  { 
+    createInterface: (config:  { type: string; title?: string; content?: unknown }) => { interfaceId: string } 
   } | null = null;
-  private teamworkOrchestrator: { 
-    coordinateActivity: (activity: { 
+  private teamworkOrchestrator:  { 
+    coordinateActivity: (activity:  { 
       activityId: string; 
       facilitator: string; 
       participants: string[]; 
       duration: number; 
       deliverables: string[] 
-    }) => { success: boolean; actualParticipants: string[]; actualDuration: number; issues: string[]; nextActions: string[]; notes: string }
+    }) => { success: boolean, actualParticipants: string[], actualDuration: number, issues: string[], nextActions: string[], notes: string }
   } | null = null;
-  private knowledgeManager: { 
-    store: (data: { type: string; content: unknown; eventId?: string }) => void 
+  private knowledgeManager:  { 
+    store: (data:  { type: string, content: unknown; eventId?: string }) => void 
   } | null = null;
   private initialized = false;
 
@@ -269,7 +269,7 @@ export class PIPlanningService extends EventBus {
       startDate: new Date(),
       source: 'pi-planning-service',
       participants: [],
-      metadata: {}
+      metadata:  {}
     };
 
     // Start workflow
@@ -695,7 +695,7 @@ export class PIPlanningService extends EventBus {
    */
   private createWorkflowEngineFallback() {
     return {
-      startWorkflow: (workflow: { workflowType: string; entityId: string; participants: string[]; data: unknown }) => {
+      startWorkflow: (workflow:  { workflowType: string, entityId: string, participants: string[], data: unknown }) => {
         logger.debug('Workflow started (fallback)', {
           type: workflow.workflowType,
           entityId: workflow.entityId
@@ -706,7 +706,7 @@ export class PIPlanningService extends EventBus {
   }
   private createAGUISystemFallback() {
     return {
-      createInterface: (config: { type: string; title?: string; content?: unknown }) => {
+      createInterface: (config:  { type: string; title?: string; content?: unknown }) => {
         logger.debug('AGUI interface created (fallback)', {
           type: config.type
         });
@@ -716,7 +716,7 @@ export class PIPlanningService extends EventBus {
   }
   private createTeamworkOrchestratorFallback() {
     return {
-      coordinateActivity: (activity: { 
+      coordinateActivity: (activity:  { 
         activityId: string; 
         facilitator: string; 
         participants: string[]; 
@@ -740,7 +740,7 @@ export class PIPlanningService extends EventBus {
   }
   private createKnowledgeManagerFallback() {
     return {
-      store: (data: { type: string; content: unknown; eventId?: string }) => {
+      store: (data:  { type: string, content: unknown; eventId?: string }) => {
         logger.debug('Knowledge stored (fallback)', { type: data.type });
       }
     };
@@ -753,7 +753,7 @@ export class PIPlanningService extends EventBus {
   async integrateSPARCMethodology(
     piPlanningConfig: PIPlanningEventConfig,
     objectives: PIObjective[]
-  ): Promise<{ sparcProjects: SparcProject[]; totalComplexity: number }> {
+  ): Promise<{ sparcProjects: SparcProject[], totalComplexity: number }> {
     const sparcProjects: SparcProject[] = [];
     let totalComplexity = 0;
 
@@ -766,7 +766,7 @@ export class PIPlanningService extends EventBus {
           requirements: objective.acceptanceCriteria || [objective.description],
           priority: objective.businessValue > 50 ? 'high' : 'medium',
           completedPhases: [],
-          metadata: {
+          metadata:  {
             piId: piPlanningConfig.piId,
             objectiveId: objective.id,
             businessValue: objective.businessValue,
@@ -803,7 +803,7 @@ export class PIPlanningService extends EventBus {
           requirements: [objective.description || 'PI Objective'],
           priority: 'medium',
           completedPhases: [],
-          metadata: { piId: piPlanningConfig.piId, objectiveId: objective.id }
+          metadata:  { piId: piPlanningConfig.piId, objectiveId: objective.id }
         };
         sparcProjects.push(fallbackProject);
         totalComplexity += 0.6; // Default complexity
@@ -827,7 +827,7 @@ export class PIPlanningService extends EventBus {
   async executeSPARCEnhancedPIPlanning(
     piPlanningConfig: PIPlanningEventConfig,
     objectives: PIObjective[]
-  ): Promise<{ planningResult: PIPlanningResult; sparcProjects: SparcProject[] }> {
+  ): Promise<{ planningResult: PIPlanningResult, sparcProjects: SparcProject[] }> {
     logger.info(`Executing SPARC-enhanced PI Planning for PI ${piPlanningConfig.piId}`);
 
     try {

@@ -55,7 +55,7 @@ export interface ValidationScope {
     readonly includeTeams: string[];
     readonly excludeTeams: string[];
     readonly includeArtifacts: string[];
-    readonly timeWindow: {
+    readonly timeWindow:  {
         readonly startDate: Date;
         readonly endDate: Date;
     };
@@ -71,7 +71,7 @@ export interface ValidationThresholds {
     readonly minComplianceRate: number;
     readonly maxViolationsPerProject: number;
     readonly criticalViolationThreshold: number;
-    readonly alertThresholds: {
+    readonly alertThresholds:  {
         readonly warning: number;
         readonly critical: number;
     };

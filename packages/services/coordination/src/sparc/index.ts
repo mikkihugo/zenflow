@@ -122,23 +122,23 @@ export class SPARCManager extends EventBus {
   constructor(config?:Partial<SparcConfig>) {
     super();
     this.config = {
-      projectName,      domain,      requirements: {
+      projectName,      domain,      requirements:  {
       timestamp: new Date(),
       neuralOptimizationEnabled: true,
       phases: this.config.phases
 };)    EventLogger.log('sparc: initialized', initPayload);
     this.emit('sparc: initialized', initPayload);
 }
-  async initializeProject(params: {
+  async initializeProject(params:  {
     name: string;
     domain: string;
     requirements: string[];
-}):Promise<SparcProject> {
+}): Promise<SparcProject> {
     // Add minimal async operation to satisfy require-await rule
     await new Promise(resolve => setTimeout(resolve, 0));
     
-    const project: {
-      id: {
+    const project:  {
+      id:  {
       project,
       timestamp: new Date(),
       initialPhase: SPARCPhase.SPECIFICATION
@@ -151,11 +151,11 @@ export class SPARCManager extends EventBus {
    * Execute SPARC phase with optional Teamwork collaboration
    * Works independently OR with Teamwork - graceful degradation
    */
-  async executePhase(project: SparcProject, phase: SPARCPhase, options?:{
+  async executePhase(project: SparcProject, phase: SPARCPhase, options?:  {
     requiresCollaboration?:boolean;
     timeout?:number;
     agents?:string[];
-}):Promise<SparcResult> {
+}): Promise<SparcResult> {
     logger.info(``Executing SPARC phase: ${phase} for project ${project.id});`)      logger.info(`Teamwork unavailable, executing ${phase} independently`);``;
 }
     // Independent SPARC execution (always works)
@@ -168,8 +168,8 @@ export class SPARCManager extends EventBus {
   private async requestCollaboration(
     project: SparcProject,
     phase: SPARCPhase,
-    options: { timeout?: number; agents?: string[]}
-  ):Promise<SparcResult| null> {
+    options:  { timeout?: number; agents?: string[]}
+  ): Promise<SparcResult| null> {
     // Add minimal async operation to satisfy require-await rule
     await new Promise(resolve => setTimeout(resolve, 0));
     
@@ -263,8 +263,8 @@ export class SPARCManager extends EventBus {
   private async delegateToLLMSystem(
     phase: SPARCPhase, 
     project: SparcProject, 
-    executionPlan: { system: string; sparcRequirements: string[]; needsFileAccess: boolean; llmStrategy?: string; contextSize: string}
-  ):Promise<unknown[]> {`).length`)    // Previous phases artifacts`;
+    executionPlan:  { system: string, sparcRequirements: string[], needsFileAccess: boolean; llmStrategy?: string, contextSize: string}
+  ): Promise<unknown[]> {`).length`)    // Previous phases artifacts`;
     for (const artifacts of Object.values(project.artifacts)) {
       if (artifacts.length > 0) {
         contextSize += JSON.stringify(artifacts).length;
@@ -287,8 +287,8 @@ export class SPARCManager extends EventBus {
   private async delegateToLLMSystem(
     phase: SPARCPhase, 
     project: SparcProject, 
-    executionPlan: { system: string; sparcRequirements: string[]; needsFileAccess: boolean; llmStrategy?: string; contextSize: string}
-  ):Promise<unknown[]> {; 
+    executionPlan:  { system: string, sparcRequirements: string[], needsFileAccess: boolean; llmStrategy?: string, contextSize: string}
+  ): Promise<unknown[]> {; 
     logger.info(`SPARC delegating `${phase} to ${executionPlan.system} with requirements: ${executionPlan.sparcRequirements.join(,)});``;
     switch (executionPlan.system) {
     )      case`claude-code: `;
@@ -352,7 +352,7 @@ export class SPARCManager extends EventBus {
       return artifactObj.implementation && artifactObj.testing && artifactObj.documentation;
 });
 }
-  private getPhaseMethodologyNotes(phase: {
+  private getPhaseMethodologyNotes(phase:  {
       [SPARCPhase.SPECIFICATION]:[
        'Focus on clear requirements definition,')       'Ensure acceptance criteria are measurable,';
        'Document technical constraints')],';
@@ -376,16 +376,16 @@ export class SPARCManager extends EventBus {
    * SPARC delegates to Claude Code (file access, large context)
    */
   private async delegateToClaudeCode(
-    phase: {
+    phase:  {
       projectId: project.id,
       phase,
-      sparcMethodology: {
+      sparcMethodology:  {
         phaseName: phase,
         requirements: executionPlan.sparcRequirements,
         validationCriteria: this.getPhaseValidationCriteria(phase),
         methodologyNotes: this.getPhaseMethodologyNotes(phase)
 },
-      context: {
+      context:  {
         requirements: project.requirements,
         previousArtifacts: project.artifacts,
         needsFileAccess: executionPlan.needsFileAccess
@@ -399,22 +399,22 @@ export class SPARCManager extends EventBus {
     // Return placeholder - in real implementation, this would wait for Claude Code response
     return [{
     `)      type,      phase``;
-      delegatedBy: {
+      delegatedBy:  {
     ')      requestId,    ')      type : 'structured-generation, // vs'simple-inference',    'analysis,' code-generation')      projectId: project.id,';
       phase,
       prompt: this.generateSparcLLMPrompt(phase, project),
-      sparcMethodology: {
+      sparcMethodology:  {
         phaseName: phase,
         requirements: executionPlan.sparcRequirements,
         validationCriteria: this.getPhaseValidationCriteria(phase)
 },
-      llmConfig: {
+      llmConfig:  {
         strategy: executionPlan.llmStrategy||'auto,';
         contextSize: executionPlan.contextSize,
         maxTokens: await this.getOptimizedMaxTokens(phase, project),
         temperature: await this.getOptimizedTemperature(phase, project)
 },
-      context: {
+      context:  {
         requirements: project.requirements,
         previousArtifacts: project.artifacts
 }
@@ -436,7 +436,7 @@ export class SPARCManager extends EventBus {
   /**
    * Get SPARC methodology validation criteria for phase
    */
-  private getPhaseValidationCriteria(phase: {
+  private getPhaseValidationCriteria(phase:  {
       [SPARCPhase.SPECIFICATION]:[
        'Requirements are clear and testable,')       'Acceptance criteria are defined,';
        'Technical constraints documented,')       'User stories properly formatted')],';
@@ -459,7 +459,7 @@ export class SPARCManager extends EventBus {
   /**
    * Generate SPARC methodology-aware Copilot prompt
    */
-  private generateSparcCopilotPrompt(phase: {
+  private generateSparcCopilotPrompt(phase:  {
       methodology  = 'SPARC,,
       phase,
       requirements: this.getPhaseMethodologyNotes(phase);
@@ -471,7 +471,7 @@ Validation Criteria = `)`${validationCriteria.map(criteria => ,- ${criteria}).jo
   /**
    * Handle LLM inference completion
    */
-  private handleLLMInferenceComplete(data: { requestId: string; projectId: string; success: boolean; artifacts: unknown[]}):void {
+  private handleLLMInferenceComplete(data:  { requestId: string, projectId: string, success: boolean, artifacts: unknown[]}): void {
     ')    EventLogger.log('llm: inference-complete, data`);`;
     logger.info(``LLM inference completed for ${data.projectId}:success=${data.success});`)    EventLogger.log(``llm: inference-failed', data);`;
     logger.error(``LLM inference failed for ${data.projectId}:${data.error});`)    EventLogger.log(``claude-code: task-complete', data);`;
@@ -514,7 +514,7 @@ Validation Criteria = `)`${validationCriteria.map(criteria => ,- ${criteria}).jo
           generatedAt: await this.neuralOptimizer.optimizePhaseConfig(phase, project);
       return config.maxTokens;
 } catch (error) {
-    `)      logger.warn(``Neural optimization failed for maxTokens, using fallback: { projectId: Date.now() - startTime;
+    `)      logger.warn(``Neural optimization failed for maxTokens, using fallback:  { projectId: Date.now() - startTime;
     const qualityScore = this.calculateQualityScore(success, artifacts, executionTimeMs);
     const performanceData = {
       projectId: project.id,
@@ -557,22 +557,22 @@ export default class SPARC extends EventBus {
   /**
    * Setup event coordination for SPARC system
    */
-  private setupEventCoordination():void {
+  private setupEventCoordination(): void {
     // Listen for SPARC coordination requests
-    this.on('sparc: createManager,(data: { config?: Partial<SparcConfig>'; requestId: string}) => {';
+    this.on('sparc: createManager,(data:  { config?: Partial<SparcConfig>', requestId: string}) => {';
       try {
         const manager = new SPARCManager(data.config);
         this.manager = manager;
         
         const managerCreatedPayload = {
-          requestId: {
+          requestId:  {
           requestId: data.requestId,
           error: error instanceof Error ? error.message: String(error),
           timestamp: new Date()
 };)        EventLogger.log('sparc: managerCreationFailed', managerFailedPayload');
         this.emit('sparc: managerCreationFailed', managerFailedPayload');
 }
-});')    this.on('sparc: createProject, async (data: { ';
+});')    this.on('sparc: createProject, async (data:  { ';
       name: string; 
       domain: string; 
       requirements: string[]; 
@@ -584,18 +584,18 @@ export default class SPARC extends EventBus {
 }
         
         const project = await this.manager.initializeProject({
-          name: {
-          requestId: {
+          name:  {
+          requestId:  {
           requestId: data.requestId,
           error: error instanceof Error ? error.message: String(error),
           timestamp: new Date()
 };)        EventLogger.log('sparc: projectCreationFailed', projectFailedPayload');
         this.emit('sparc: projectCreationFailed', projectFailedPayload');
 }
-});')    this.on('sparc: executePhase, async (data: {';
+});')    this.on('sparc: executePhase, async (data:  {';
       projectId: string;
       phase: SPARCPhase;)';
-      options?:{ requiresCollaboration?: boolean; timeout?: number; agents?: string[]};
+      options?:  { requiresCollaboration?: boolean; timeout?: number; agents?: string[]};
       requestId: string;
 }) => {
       try {
@@ -607,7 +607,7 @@ export default class SPARC extends EventBus {
         const result = await this.manager.executePhase(project, data.phase, data.options);
         
         const phaseExecutedPayload = {
-          requestId: {
+          requestId:  {
           requestId: data.requestId,
           error: error instanceof Error ? error.message: String(error),
           timestamp: new Date()
@@ -615,7 +615,7 @@ export default class SPARC extends EventBus {
         this.emit('sparc: phaseExecutionFailed', phaseFailedPayload);)';
 }
 });
-    // Project status monitoring events')    this.on('sparc: requestProjectStatus,(data: { projectId: string; requestId: string}) => {';
+    // Project status monitoring events')    this.on('sparc: requestProjectStatus,(data:  { projectId: string, requestId: string}) => {';
       try {
         if (!this.manager) {
     ')          throw new Error('SPARC manager not initialized);`)};)        const project = this.manager[`projects`].get(data.projectId);`;
@@ -625,25 +625,25 @@ export default class SPARC extends EventBus {
         const projectStatusPayload = {
           requestId: data.requestId,
           project,
-          status: {
+          status:  {
             currentPhase: project.currentPhase,
             completedPhases: Object.keys(project.artifacts).filter(phase => 
               project.artifacts[phase as SPARCPhase].length > 0
             ),
-            totalPhases: {
+            totalPhases:  {
           requestId: data.requestId,
           error: error instanceof Error ? error.message: String(error),
           timestamp: new Date()
 };)        EventLogger.log('sparc: projectStatusFailed', statusFailedPayload);
         this.emit('sparc: projectStatusFailed', statusFailedPayload);)';
 }
-});')    this.on('sparc: requestAllProjects,(data: { requestId: string}) => {';
+});')    this.on('sparc: requestAllProjects,(data:  { requestId: string}) => {';
       try {
         if (!this.manager) {
     ')          throw new Error('SPARC manager not initialized');')};)        const projects = Array.from(this.manager['projects].values());
         
         const allProjectsPayload = {
-          requestId: {
+          requestId:  {
           requestId: new SPARCManager();
 }
     return this.manager;

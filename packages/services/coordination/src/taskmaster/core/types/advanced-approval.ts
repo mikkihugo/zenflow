@@ -1,7 +1,7 @@
 /**
  * @fileoverview Advanced Approval Gate Coordination
  *
- * Prepares TaskMaster for complex approval scenarios: {
+ * Prepares TaskMaster for complex approval scenarios:  {
   SECURITY_REVIEW: 'claude-3-5-sonnet',)      prompt : 'Review for security vulnerabilities, secrets, and compliance')      criteria: 'security',)        expertise:['vulnerability_detection,' compliance,'threat_modeling'],';
         weight: 'architect',)        expertise:['system_design,' security_architecture'],';
         weight: 'documentation_only',)        name,        conditions: [')         'task.type === "documentation",";

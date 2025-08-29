@@ -178,7 +178,7 @@ export class CapacityPlanningService extends EventBus {
   private readonly allocations = new Map<string, TeamAllocation>();
   private readonly config: false;
   constructor(
-    logger: {}
+    logger:  {}
   ) {
     super();
     this.logger = logger;
@@ -190,7 +190,7 @@ export class CapacityPlanningService extends EventBus {
       this.initialized = true;
       this.logger.info('Capacity Planning Service initialized successfully');
 } catch (error) {
-      this.logger.error(';')';
+      this.logger.error(';)';
        'Failed to initialize Capacity Planning Service:,';
         error
       );
@@ -207,10 +207,10 @@ export class CapacityPlanningService extends EventBus {
         // Use brain coordinator for intelligent capacity analysis
         const capacityAnalysis = await this.brainCoordinator.analyzeCapacity({
           team,
-          historicalData: {
+          historicalData:  {
           teamId: 'team_capacity,',
 '          entity: team.id,';
-          properties: {
+          properties:  {
             totalCapacity: teamCapacity.totalCapacity,
             availableCapacity: teamCapacity.availableCapacity,
             velocity: teamCapacity.velocity,
@@ -240,7 +240,7 @@ export class CapacityPlanningService extends EventBus {
     teamCapacities: this.performanceTracker.startTimer('capacity_planning');
     try {
       // Initialize planning result
-      const planningResult: {
+      const planningResult:  {
         totalCapacity: teamCapacities.reduce(
           (sum, t) => sum + t.totalCapacity,
           0
@@ -272,7 +272,7 @@ export class CapacityPlanningService extends EventBus {
           await this.factSystem.storeFact({
     ')            type : 'feature_allocation,'
 '            entity: feature.featureId,';
-            properties: {
+            properties:  {
               teamId: allocation.teamId,
               capacityRequired: allocation.capacityRequired,
               capacityAllocated: allocation.capacityAllocated,
@@ -362,7 +362,7 @@ export class CapacityPlanningService extends EventBus {
   /**
    * Shutdown the service
    */
-  shutdown():void {
+  shutdown(): void {
     ')    this.logger.info('Shutting down Capacity Planning Service');
     this.removeAllListeners();
     this.teamCapacities.clear();
@@ -401,7 +401,7 @@ export class CapacityPlanningService extends EventBus {
   /**
    * Calculate experience multiplier based on team member experience
    */
-  private calculateExperienceMultiplier(members: {
+  private calculateExperienceMultiplier(members:  {
       junior: 0.7,
       mid: 1.0,
       senior: 1.3,
@@ -450,7 +450,7 @@ export class CapacityPlanningService extends EventBus {
    * Calculate average proficiency level
    */
   private calculateAverageProficiency(
-    proficiencies: {
+    proficiencies:  {
       basic: 1,
       intermediate: 2,
       advanced: 3,
@@ -478,7 +478,7 @@ export class CapacityPlanningService extends EventBus {
    * Prioritize features using intelligent algorithms
    */
   private async prioritizeFeatures(
-    features: { critical: 4, high: 3, medium: 2, low: 1};
+    features:  { critical: 4, high: 3, medium: 2, low: 1};
       return [...features].sort((a, b) => {
         const aPriority = priorityOrder[a.priority];
         const bPriority = priorityOrder[b.priority];
@@ -501,7 +501,7 @@ export class CapacityPlanningService extends EventBus {
     // Assess allocation risks
     const risks = this.assessAllocationRisks(feature, team, skillMatches);
     // Create allocation
-    const allocation: {
+    const allocation:  {
       allocationId,
       teamId: [];
     for (const requiredSkill of requiredSkills) {
@@ -509,10 +509,10 @@ export class CapacityPlanningService extends EventBus {
         (s) => s.skillName.toLowerCase() === requiredSkill.toLowerCase();
       );
       if (teamSkill) {
-        const match: {
+        const match:  {
           skill: 'intermediate,// Default requirement',
-'          proficiencyAvailable: {
-          skill: 'intermediate',)          proficiencyAvailable,          memberCount: {
+'          proficiencyAvailable:  {
+          skill: 'intermediate',)          proficiencyAvailable,          memberCount:  {
       basic: 1,
       intermediate: 2,
       advanced: 3,
@@ -598,7 +598,7 @@ export class CapacityPlanningService extends EventBus {
         planningResult,
         teamCapacities,
         allocationStrategy,
-        context: {
+        context:  {
       totalTeams: new Set<string>();
     const skillTeamCount = new Map<string, number>();
     // Collect all skills across teams
@@ -705,25 +705,25 @@ export class CapacityPlanningService extends EventBus {
       totalFeatures: 0,
       allocationSuccess: 0,
       averageUtilization: 0,
-      skillCoverage: {
+      skillCoverage:  {
         totalSkills: 0,
         coveredSkills: 0,
         skillGaps: [],
         overloadedSkills: [],
         crossTrainingOpportunities: [],
 },
-      teamDistribution: {
+      teamDistribution:  {
         evenness: 0,
         outliers: [],
         balanceRecommendations: [],
 },
-      riskDistribution: {
-        risksByType:{},
-        risksBySeverity: {},
+      riskDistribution:  {
+        risksByType:  {},
+        risksBySeverity:  {},
         riskTrends: [],
         mitigation: [],
 },
-      forecastAccuracy: {
+      forecastAccuracy:  {
         historicalAccuracy: 0,
         confidenceLevel: 0,
         uncertaintyFactors: [],

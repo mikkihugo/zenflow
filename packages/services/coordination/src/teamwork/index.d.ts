@@ -35,7 +35,7 @@ export interface SPARCCollaborationRequest {
     phase: string;
     requiresReview: boolean;
     suggestedAgents: string[];
-    context: {
+    context:  {
         artifacts: unknown[];
         requirements: string[];
     };
@@ -68,7 +68,7 @@ export declare class ConversationManager extends EventBus {
     /**
      * Send message to conversation
      */
-    sendMessage(params: {
+    sendMessage(params:  {
         conversationId: string;
         fromAgent: string;
         content: string;
@@ -125,7 +125,7 @@ export declare class ConversationMemoryManager {
     /**
      * Store memory for conversation
      */
-    storeMemory(memory: {
+    storeMemory(memory:  {
         conversationId: string;
         key: string;
         value: any;

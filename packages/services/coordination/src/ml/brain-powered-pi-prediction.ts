@@ -7,14 +7,14 @@
 // ============================================================================
 export interface BrainPIPredictionRequest {
   piId: string;
-  artId: string;)  analysisType : 'comprehensive' | ' quick'|' focused')  piData: {';
+  artId: string;)  analysisType : 'comprehensive' | ' quick'|' focused')  piData:  {';
     objectives: any[];
     teams: any[];
     dependencies: any[];
     historicalData: any[];
     environmentalFactors: any;
 };
-  brainConfig?:{
+  brainConfig?:  {
     useNeuralML: boolean;
     complexity : 'simple' | ' moderate'|' complex')    timeoutMs: number;;
     confidenceThreshold: number;
@@ -22,23 +22,23 @@ export interface BrainPIPredictionRequest {
 }
 export interface BrainPIPredictionResult {
   predictionId: string;
-  brainAnalysis: {
+  brainAnalysis:  {
     overallAssessment: any;
     riskAnalysis: any;
     recommendations: any;
     confidence: number;
 };
-  neuralInsights: {
+  neuralInsights:  {
     patternRecognition: any;
     predictiveFactors: any;
     learningRecommendations: any;
 };
-  coordinationPlan: {
+  coordinationPlan:  {
     suggestedActions: any[];
     monitoringPlan: any;
     escalationTriggers: any[];
 };
-  metadata: {
+  metadata:  {
     processingTime: number;
     brainUtilization: any;
     analysisDepth: string;
@@ -59,7 +59,7 @@ export class BrainPoweredPIPredictionService {
   /**
    * Initialize brain system integration
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     try {
       // Get brain system from intelligence facade
       this.brainSystem = await getBrainSystem();
@@ -92,7 +92,7 @@ export class BrainPoweredPIPredictionService {
         brainAnalysis,
         neuralInsights;
       );
-      // Step 5: {
+      // Step 5:  {
     ')        predictionId,    ')        brainAnalysis,';
         neuralInsights,
         coordinationPlan,
@@ -125,13 +125,13 @@ export class BrainPoweredPIPredictionService {
   private async setupBrainAnalysisSession(
     request: await this.brainCoordinator.createSession({`;
     `)      sessionId: 'safe_framework,',
-'      analysisType: {';
+'      analysisType:  {';
     ')      type : 'pi_success_prediction,'
 '      data: await session.performAnalysis(analysisRequest);
     return {
       overallAssessment: await session.performNeuralAnalysis({
         type : 'pattern_recognition,'
-'        data: {
+'        data:  {
       analysis: brainAnalysis,
       insights: neuralInsights,
       generateActions: true,
@@ -150,7 +150,7 @@ export class BrainPoweredPIPredictionService {
         stakeholders: action.stakeholders,
         successCriteria: action.success_criteria,
 })),
-      monitoringPlan: {
+      monitoringPlan:  {
         keyMetrics: plan.monitoring.key_metrics,
         checkpoints: plan.monitoring.checkpoints,
         alertThresholds: plan.monitoring.alert_thresholds,
@@ -174,16 +174,16 @@ export class BrainPoweredPIPredictionService {
 }
   private async storeLearningInBrain(
     result: 'pi_success_prediction,',
-'        insights: {
+'        insights:  {
       successProbability: 'brain_unavailable ',)        predictiveFactors: 'brain_unavailable,',
-        learningRecommendations : ','enabled: 'unavailable ',)        analysisDepth : 'fallback,'
+        learningRecommendations : 'enabled: 'unavailable ',)        analysisDepth : 'fallback,'
 '        dataQuality: this.calculatePredictionAccuracy(
         prediction,
         actualOutcomes;
       );
       // If accuracy is low, adjust patterns
       if (accuracy < 0.7) {
-        logger.info(';')';
+        logger.info(';)';
          'Low prediction accuracy detected, updating analysis patterns'));
         // Update pattern weights in brain
         await this.brainCoordinator.updatePatternWeights({
@@ -204,7 +204,7 @@ export class BrainPoweredPIPredictionService {
     const actual = actualOutcomes.overallSuccess ? 1: 0;
     return 1 - Math.abs(predicted - actual);
 }
-  private async initializeBrainIntegration():Promise<void> {
+  private async initializeBrainIntegration(): Promise<void> {
     // Initialize brain integration patterns'')    logger.info('Initializing brain integration for PI prediction');
 };)};;
 // ============================================================================
@@ -216,7 +216,7 @@ export const brainPoweredPIPredictionService =;
 // INTEGRATION HOOKS
 // ============================================================================
 export interface BrainPIPredictionIntegration {
-  initialize: {
+  initialize:  {
   initialize: brainPoweredPIPredictionService.initialize.bind(
     brainPoweredPIPredictionService
   ),

@@ -36,12 +36,12 @@
   /**
    * Create all infrastructure services with proper dependencies
    */
-  createAllServices(config?:{
+  createAllServices(config?:  {
     eventCoordinator?:Partial<EventCoordinationConfig>;
     stateMachine?:Partial<StateMachineConfig>;
     performance?:Partial<PerformanceTrackerConfig>;
     persistence?:Partial<PersistenceConfig>;
-}):{
+}):  {
     eventCoordinator: this.createEventCoordinator(config?.eventCoordinator);
     // Create services that depend on event coordinator
     const stateMachineCoordinator = this.createStateMachineCoordinator(
@@ -66,7 +66,7 @@
   /**
    * Initialize all infrastructure services
    */
-  async initializeAllServices():Promise<void> {
+  async initializeAllServices(): Promise<void> {
     if (this.eventCoordinator) {
       await this.eventCoordinator.initialize();
 }
@@ -83,7 +83,7 @@
   /**
    * Shutdown all infrastructure services
    */
-  async shutdownAllServices():Promise<void> {
+  async shutdownAllServices(): Promise<void> {
     // Shutdown in reverse order of initialization
     if (this.persistenceCoordinator) {
       await this.persistenceCoordinator.shutdown();
@@ -101,7 +101,7 @@
   /**
    * Get health status of all infrastructure services
    */
-  getHealthStatus():{
+  getHealthStatus():  {
     eventCoordinator: this.eventCoordinator?.isHealthy() ?? false;
     const stateMachineHealthy = this.stateMachineCoordinator?.isHealthy() ?? false;
     const performanceHealthy = this.performanceTracker?.isHealthy() ?? false;

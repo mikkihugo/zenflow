@@ -224,7 +224,7 @@ export declare class PIExecutionService extends EventBus {
     private readonly logger;
     private readonly executionTimers;
     private brainCoordinator;
-    constructor(logger: {});
+    constructor(logger:  {});
     /**
      * Initialize the service with dependencies
      */

@@ -37,7 +37,7 @@ export interface BusinessCaseConfig {
     // Generate risk mitigations
     const riskMitigations = this.generateRiskMitigations(input.risks);
     // Build complete business hypothesis
-    const businessHypothesis: {
+    const businessHypothesis:  {
       ...input.businessHypothesis,
       assumptionsList: this.createFinancialProjection(
       input.financialInputs;
@@ -50,7 +50,7 @@ export interface BusinessCaseConfig {
     const successMetrics = this.defineSuccessMetrics(financialProjection);
     // Analyze alternative solutions
     const alternativeSolutions = this.analyzeAlternativeSolutions(input.epicId);
-    const businessCase: {
+    const businessCase:  {
       id,    ')      epicId: 'proceed,// Will be determined by analysis',
 '      createdAt: 'draft',)        approver},';
 };
@@ -76,7 +76,7 @@ export interface BusinessCaseConfig {
     const competitivePosition = this.analyzeCompetitivePosition(
       businessCase.marketAnalysis;
     );
-    const analysis: {
+    const analysis:  {
       businessCase,
       financialViability,
       riskProfile,
@@ -89,7 +89,7 @@ export interface BusinessCaseConfig {
       businessCaseId,
       recommendation: this.businessCases.get(businessCaseId);
     if (!businessCase) {
-    `)      throw new Error(`Business case not found: {`
+    `)      throw new Error(`Business case not found:  {`
       ...businessCase,
       approvalStatus: businessCaseIds.map((id) => this.analyzeBusinessCase(id);
     const comparison = analyses.map((analysis, index) => ({
@@ -153,7 +153,7 @@ export interface BusinessCaseConfig {
         supportCost: baseCost * 0.2 * year,
         totalCost: (year === 1 ? financialInputs.developmentCost: sumBy(revenueProjections, revenue');')    const totalCost = sumBy(costProjections,'totalCost');
     const totalInvestment = financialInputs.investmentRequired;
-    const roiCalculation: {
+    const roiCalculation:  {
       totalInvestment,
       totalReturn: '5-year DCF analysis,',
       timeHorizon: this.calculateNPV(

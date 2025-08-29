@@ -45,7 +45,7 @@ export interface FlowTrend {
     const averageCycleTime = cycleTimes.length > 0;
       ? cycleTimes.reduce((a, b) => a + b, 0) / cycleTimes.length: leadTimes.length > 0;
       ? leadTimes.reduce((a, b) => a + b, 0) / leadTimes.length: (range.end.getTime() - range.start.getTime()) / (1000 * 60 * 60);
-    const throughput = rangeHours > 0 ? (completedTasks.length / rangeHours) * 24: {
+    const throughput = rangeHours > 0 ? (completedTasks.length / rangeHours) * 24:  {
       totalTasks: this.metricsHistory[this.metricsHistory.length - 1];
     const previous = this.metricsHistory[this.metricsHistory.length - 2];
     const trends: [')      this.calculateTrend('throughput, current.throughput, previous.throughput,' higher'),')      this.calculateTrend('averageCycleTime, current.averageCycleTime, previous.averageCycleTime,' lower'),')      this.calculateTrend('averageLeadTime, current.averageLeadTime, previous.averageLeadTime,' lower'),')      this.calculateTrend('flowEfficiency, current.flowEfficiency, previous.flowEfficiency,' higher'),';
@@ -68,7 +68,7 @@ export interface FlowTrend {
     const standardDeviation = Math.sqrt(variance);
     const coefficientOfVariation = averageCycleTime > 0 ? standardDeviation / averageCycleTime: higher predictability
     const predictabilityScore = Math.max(0, 1 - Math.min(1, coefficientOfVariation);
-    const analysis: {
+    const analysis:  {
       cycleTimes,
       averageCycleTime,
       standardDeviation,

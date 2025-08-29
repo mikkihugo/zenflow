@@ -219,7 +219,7 @@ export interface ComplianceScope {
     readonly projects: string[];
     readonly teams: string[];
     readonly environments: string[];
-    readonly timeWindow: {
+    readonly timeWindow:  {
         readonly startDate: Date;
         readonly endDate: Date;
     };

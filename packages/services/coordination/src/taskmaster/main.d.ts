@@ -20,17 +20,17 @@ export declare function getTaskMaster(): Promise<TaskMasterSystem>;
 /**
  * Create TaskMaster system with custom configuration
  */
-export declare function createTaskMaster(config?: {
+export declare function createTaskMaster(config?:  {
     enableIntelligentWIP?: boolean;
     enableBottleneckDetection?: boolean;
     enableFlowOptimization?: boolean;
-    '}):Promise<TaskMasterSystem> {': any;
+    '}): Promise<TaskMasterSystem> {': any;
 }): any;
 export { KanbanEngine } from '../kanban/api/kanban-engine';
 export { ApprovalGateManager } from './core/approval-gate-manager';
 export type { TaskMasterSystem };
 export type { ApprovalGateInstance, FlowMetrics, PIPlanningEvent, TaskPriority, TaskState, WorkflowKanbanConfig, WorkflowTask } from './core/types/index';
-declare const _default: {
+declare const _default:  {
     getTaskMaster: typeof getTaskMaster;
     createTaskMaster: typeof createTaskMaster;
     '; ': string;

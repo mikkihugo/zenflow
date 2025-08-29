@@ -52,7 +52,7 @@ export interface WorkflowStep {
   readonly timeout?:number;
   readonly retries?:number;
   readonly onError?: 'stop' | 'continue' | 'skip';
-  readonly gateConfig?: {
+  readonly gateConfig?:  {
     readonly enabled: boolean;
     readonly gateType?: 'approval' | 'checkpoint' | 'review' | 'decision';
     readonly businessImpact?: 'low' | 'medium' | 'high' | 'critical';
@@ -81,7 +81,7 @@ export interface WorkflowState {
   // Gate-aware execution state
   pendingGates?:Map<string, WorkflowGateRequest>;
   gateResults?:Map<string, WorkflowGateResult>;
-  pausedForGate?:{
+  pausedForGate?:  {
     stepIndex: number;
     gateId: string;
     pausedAt: string;

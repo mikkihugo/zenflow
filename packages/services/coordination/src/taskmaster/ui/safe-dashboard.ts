@@ -67,7 +67,7 @@ export interface LiveGateStatus {
   /**
    * Initialize dashboard with real-time monitoring
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     try {
     ')      this.logger.info('Initializing Complete SAFE Dashboard...');
       
@@ -175,7 +175,7 @@ export interface LiveGateStatus {
   
   private initializeAnalytics():DashboardAnalytics {
     return {
-      realTime: {
+      realTime:  {
         activeFlows: 0,
         pendingGates: 0,
         gatesPerHour: 0,
@@ -183,36 +183,36 @@ export interface LiveGateStatus {
         humanOverrideRate: 0,
         averageProcessingTime: 0
 },
-      aiPerformance: {
+      aiPerformance:  {
         accuracy: 0.85,
         confidence: 0.82,
         improvement: 15,
-        modelUsage: {},
+        modelUsage:  {},
         decisionSpeed: 2500
 },
-      humanMetrics: {
+      humanMetrics:  {
         averageReviewTime: 1200000,
         approvalRate: 0.78,
         rejectionReasons: [],
         escalationPatterns: [],
         productivityTrends: []
 },
-      flowHealth: {
+      flowHealth:  {
         bottlenecks:[],
         predictedDelays: [],
         riskIndicators: []
 },
-      learning: {
+      learning:  {
         patternsDiscovered: 45,
         adaptationsApplied: 12,
         accuracyTrend: [0.75, 0.78, 0.82, 0.85],
         recommendationsGenerated: 8
 },
-      compliance: {
+      compliance:  {
         auditTrailCompleteness: 1.0,
         soc2Compliance: true,
         complianceViolations: 0,
-        riskAssessments: {}
+        riskAssessments:  {}
 }
 };
 };)};;

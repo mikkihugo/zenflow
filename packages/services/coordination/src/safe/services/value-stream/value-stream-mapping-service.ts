@@ -157,7 +157,7 @@ export class ValueStreamMappingService {
   /**
    * Initialize service with lazy-loaded dependencies
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     if (this.initialized) return;
     try {
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent mapping optimization
@@ -173,7 +173,7 @@ export class ValueStreamMappingService {
 '        taskApprovalConfig: aguiResult.agui;
       this.initialized = true;')      this.logger.info('Value Stream Mapping Service initialized successfully');
 } catch (error) {
-      this.logger.error(';')';
+      this.logger.error(';)';
        'Failed to initialize Value Stream Mapping Service:,';
         error
       );
@@ -228,18 +228,18 @@ export class ValueStreamMappingService {
         complexity: await this.brainCoordinator.designValueStream({
         workflowId,
         context,
-        designPrinciples: {
+        designPrinciples:  {
         id:`vs-${workflowId}-${Date.now()};``;
         name: this.validateValueStreamDesign(valueStream, context);
       if (!validation.isValid && validation.approvalRequired) {
         // Create AGUI task for manual review
         const approval = await this.aguiService.createApprovalTask({
-    `)          taskType: {`
+    `)          taskType:  {`
         workflowId,')        valueStreamId: this.performanceTracker.startTimer('mapping_insights');
     try {
       let mappings: this.valueStreamMappings.get(workflowId);
         mappings = mapping ? [mapping] :[];
-        const validation = this.validatedMappings.get(';')';
+        const validation = this.validatedMappings.get(';)';
           mapping?.valueStreamId||'));
         validations = validation ? [validation] :[];
 } else {
@@ -265,7 +265,7 @@ export class ValueStreamMappingService {
   // ============================================================================
   private getWorkflowsFromOrchestration(
     orchestrationManager: MultiLevelOrchestrationManager
-  ):any {
+  ): any {
     // Extract workflows from orchestration manager
     return {
       program:[], // Would be populated from orchestrationManager
@@ -297,7 +297,7 @@ export class ValueStreamMappingService {
   private validateMappingsWithAI(
     valueStreams: Map<string, ValueStream>,
     strategy: any
-  ):void {
+  ): void {
     // Validate mappings using AI analysis
     this.logger.debug('Validating value stream mappings with AI,{';
       streamCount: valueStreams.size,')';
@@ -306,14 +306,14 @@ export class ValueStreamMappingService {
   private createOptimizedFlowSteps(
     design: any,
     context: ValueStreamCreationContext
-  ):any[] {
+  ): any[] {
     // Create optimized flow steps based on design and context
     return [];
 }
   private createFlowMetrics(
     design: any,
     context: ValueStreamCreationContext
-  ):any {
+  ): any {
     // Create appropriate flow metrics for the value stream
     return {};
 }

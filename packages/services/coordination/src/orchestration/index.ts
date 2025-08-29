@@ -16,7 +16,7 @@ export type TaskState = ;
   id: new Map();
   private wipLimits: wipLimits;
 }
-  async createTask(task: {
+  async createTask(task:  {
       id: this.tasks.get(taskId);
     if (!task) return false;
     // Check WIP limits
@@ -36,15 +36,15 @@ export type TaskState = ;
       throughput: new Map();
   private features: new Map();
   private stories: new Map();
-  async createEpic(epic: {
-      id: {
+  async createEpic(epic:  {
+      id:  {
       id: this.epics.get(feature.epicId);
     if (epic) {
       epic.features.push(newFeature);
 }
     
     return newFeature;
-};)  async createStory(story: {
+};)  async createStory(story:  {
       id: this.features.get(story.featureId);
     if (feature) {
       feature.stories.push(newStory);

@@ -152,7 +152,7 @@ export class QualityGateService {
   /**
    * Initialize service with lazy-loaded dependencies
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     if (this.initialized) return'; 
     try {
       // Lazy load @claude-zen/ai-safety for safety protocols
@@ -178,7 +178,7 @@ export class QualityGateService {
   /**
    * Create automated quality gates with AI optimization
    */
-  async createAutomatedQualityGates():Promise<Map<string, QualityGate>> {
+  async createAutomatedQualityGates(): Promise<Map<string, QualityGate>> {
     if (!this.initialized) await this.initialize();')    const __timer = this.performanceTracker.startTimer('create_quality_gates');
     try {
     ')      this.logger.info('Creating automated quality gates with AI optimization');
@@ -260,7 +260,7 @@ export class QualityGateService {
         config.context,
         scoreAdjustment;
       );
-      const result: {
+      const result:  {
         gateId: this.executionHistory.get(config.gateId)|| [];
       history.push(result);
       this.executionHistory.set(config.gateId, history.slice(-50)); // Keep last 50 results
@@ -278,7 +278,7 @@ export class QualityGateService {
         gateId,
         historyCount: await this.brainCoordinator.optimizeQualityGate({
         gate,
-        executionHistory: {
+        executionHistory:  {
         gateId,
         originalScore: this.calculateAverageScore(history),
         optimizedScore: optimization.expectedScore|| 0,
@@ -305,7 +305,7 @@ export class QualityGateService {
    */
   async getQualityGateTemplate(
     gateType: QualityGateType
-  ):Promise<QualityGate| null> {
+  ): Promise<QualityGate| null> {
     if (!this.initialized) await this.initialize();
     // Find matching template
     for (const [id, gate] of this.qualityGateTemplates) {
@@ -331,13 +331,13 @@ export class QualityGateService {
       const allResults = Array.from(this.executionHistory.values()).flat();
       // Use brain coordinator for intelligent analysis
       const insights = await this.brainCoordinator.analyzeQualityInsights({
-        executionHistory: {
+        executionHistory:  {
         overallQuality: false;')    this.logger.info('Quality Gate Service shutdown complete');
 }
   // ============================================================================
   // PRIVATE IMPLEMENTATION METHODS
   // ============================================================================
-  private async initializeQualityGateTemplates():Promise<void> {
+  private async initializeQualityGateTemplates(): Promise<void> {
     // Initialize with basic templates - will be optimized by AI
     await this.createAutomatedQualityGates();
 }
@@ -407,7 +407,7 @@ export class QualityGateService {
     criterionResults: CriterionResult[],
     context: QualityGateContext,
     scoreAdjustment: any
-  ):Promise<string[]> {
+  ): Promise<string[]> {
     // Use brain coordinator for intelligent recommendations
     const recommendations =
       await this.brainCoordinator.generateQualityRecommendations({
@@ -425,7 +425,7 @@ export class QualityGateService {
     gate: QualityGate,
     result: QualityGateResult,
     config: QualityGateExecutionConfig
-  ):void {
+  ): void {
     ')    // Handle escalation logic - could integrate with AGUI for approvals')    this.logger.info('Handling quality gate escalation,{';
       gateId: gate.id,
       escalationCount: gate.escalation.length,')';
@@ -435,7 +435,7 @@ export class QualityGateService {
     gate: QualityGate,
     result: QualityGateResult,
     config: QualityGateExecutionConfig
-  ):void {
+  ): void {
     // Handle notification logic
     this.logger.info('Sending quality gate notifications,{';
       gateId: gate.id,
@@ -453,7 +453,7 @@ export class QualityGateService {
     return sum / results.length;
 }
   private calculateGatePerformance():Record<string, number> {
-    const performance: {};
+    const performance:  {};
     for (const [gateId, history] of this.executionHistory) {
       performance[gateId] = this.calculateAverageScore(history);
 }

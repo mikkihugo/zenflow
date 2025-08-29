@@ -9,7 +9,7 @@
   private validationResults = new Map<string, ComplianceValidationResult>();
   private activeViolations = new Map<string, ComplianceViolation>();
   private remediationTracking = new Map<string, RemediationProgress>();
-  private config: {}
+  private config:  {}
   ) {
     this.logger = logger;
     this.config = {
@@ -20,12 +20,12 @@
         database,
         enableInference: await import('@claude-zen/brain');
       this.brainCoordinator = new BrainCoordinator(
-          enabled: await import(';')';
+          enabled: await import(';)';
        '@claude-zen/foundation'));
       this.performanceTracker = new PerformanceTracker();
       this.telemetryManager = new TelemetryManager({
         serviceName : 'compliance-monitoring,'
-'        enableTracing: {
+'        enableTracing:  {
         initialize: async () => {
           /* monitoring initialized */
 },
@@ -38,7 +38,7 @@
       // Lazy load @claude-zen/workflows for compliance workflow orchestration')      const { WorkflowEngine} = await import('@claude-zen/workflows');
       this.workflowEngine = new WorkflowEngine(
         maxConcurrentWorkflows: true;
-      this.logger.info(';')';
+      this.logger.info(';)';
        'Compliance Monitoring Service initialized successfully'));
 } catch (error) {
       this.logger.error(
@@ -82,7 +82,7 @@
         violations;
       );
       // Create validation result
-      const validationResult: {
+      const validationResult:  {
         systemDesignId: systemDesign.id,
         validationId,    ')        overallCompliance,';
         compliant: overallCompliance >= this.config.complianceThreshold,
@@ -107,7 +107,7 @@
       // Use brain coordinator for intelligent dashboard insights
       const dashboardInsights =
         await this.brainCoordinator.generateComplianceDashboardInsights({
-          validations: {
+          validations:  {
         overallComplianceRate: this.calculateOverallComplianceRate(allValidations),
         complianceByFramework: this.groupComplianceByFramework(allValidations),
         violationsByFramework: this.groupViolationsByFramework(allViolations),
@@ -120,7 +120,7 @@
   // ============================================================================
   // PRIVATE IMPLEMENTATION METHODS
   // ============================================================================
-  private startContinuousMonitoring():void {
+  private startContinuousMonitoring(): void {
     this.monitoringTimer = setInterval(async () => {
       await this.performContinuousMonitoring();
 }, this.config.monitoringInterval);')    this.logger.info('Continuous compliance monitoring started,{';
@@ -158,7 +158,7 @@
   private async generateComplianceRecommendations(
     violations: ComplianceViolation[],
     analysis: any
-  ):Promise<ComplianceRecommendation[]> {
+  ): Promise<ComplianceRecommendation[]> {
     try {
       const recommendations =
         await this.brainCoordinator.generateComplianceRecommendations({
@@ -190,7 +190,7 @@
     violation: analysis.businessRiskScores[violation.id];
       if (score >= 9) return'critical')      if (score >= 7) return'high')      if (score >= 5) return'medium')      return'low')};;
     // Fallback assessment based on framework
-    const criticalFrameworks = ['SOX,' HIPAA,'PCI-DSS];)    if (criticalFrameworks.includes(violation.framework)) return'high';')    return'medium')};;
+    const criticalFrameworks = ['SOX,' HIPAA,'PCI-DSS];)    if (criticalFrameworks.includes(violation.framework)) return'high';)    return'medium')};;
   private calculateOverallComplianceRate(
     validations: ComplianceValidationResult[]
   ):number {
@@ -204,7 +204,7 @@
   private groupComplianceByFramework(
     validations: ComplianceValidationResult[]
   ):Record<string, number> {
-    const frameworkScores: Record<string, { total: number; count: number}> =
+    const frameworkScores: Record<string, { total: number, count: number}> =
       {};
     validations.forEach((validation) => {
       validation.violations.forEach((violation) => {
@@ -216,7 +216,7 @@
         frameworkScores[violation.framework].count += 1;
 });
 });
-    const result: {};
+    const result:  {};
     Object.entries(frameworkScores).forEach(([framework, scores]) => {
       result[framework] = scores.count > 0 ? scores.total / scores.count: 100;
 });

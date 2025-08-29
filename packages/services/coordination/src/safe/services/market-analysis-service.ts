@@ -42,7 +42,7 @@ export interface MarketAnalysisConfig {
     const growthProjection = this.projectMarketGrowth(tam, 5);
     // Calculate confidence level
     const confidenceLevel = this.assessConfidence(input.assumptions);
-    const sizing: {
+    const sizing:  {
       totalAddressableMarket: tam,
       serviceableAddressableMarket: sam,
       serviceableObtainableMarket: som,
@@ -63,7 +63,7 @@ export interface MarketAnalysisConfig {
    */
   async analyzeCompetitiveLandscape(
     competitors: CompetitorAnalysis[]
-  ):Promise<CompetitiveLandscape> {
+  ): Promise<CompetitiveLandscape> {
     ')    this.logger.info('Analyzing competitive landscape,{';
       competitorCount: competitors.length,')';
 });
@@ -243,7 +243,7 @@ export interface MarketAnalysisConfig {
    */
   private evaluateBarrierToEntry(
     competitors: meanBy(competitors, 'marketShare');
-    const topCompetitorShare =';')      maxBy(competitors,'marketShare')?.marketShare||'0')    if (topCompetitorShare > 40) return'high')    if (avgMarketShare > 15) return'medium')    return'low')};;
+    const topCompetitorShare =';)      maxBy(competitors,'marketShare')?.marketShare||'0')    if (topCompetitorShare > 40) return'high')    if (avgMarketShare > 15) return'medium')    return'low')};;
   /**
    * Assess trend impact on business
    */
@@ -259,7 +259,7 @@ export interface MarketAnalysisConfig {
 }
     const nearTermTrends = filter(trendImpacts, (t) => t.timeToImpact <= 12);
     if (nearTermTrends.length > 2) {
-      implications.push(';')';
+      implications.push(';)';
        'Multiple near-term trends require immediate attention`)      );`;
 }
     return implications;

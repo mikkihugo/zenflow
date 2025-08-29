@@ -50,7 +50,7 @@ export interface KanbanWorkflowDefinition extends WorkflowDefinition {
 export declare class WorkflowKanbanIntegration {
     private readonly config;
     private initialized;
-    constructor(config: {});
+    constructor(config:  {});
     catch(error: any): void;
 }
 //# sourceMappingURL=kanban-integration.d.ts.map

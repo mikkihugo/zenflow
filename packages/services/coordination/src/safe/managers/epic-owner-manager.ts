@@ -32,7 +32,7 @@
   /**
    * Initialize Epic Owner Manager with service delegation
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     if (this.initialized) {
     ')      this.logger.warn('Epic Owner Manager already initialized');
       return;
@@ -58,7 +58,7 @@
     try {
     ')      this.logger.info('Calculating WSJF score,{ epicId: await this.lifecycleService.calculateWSJFScore({
         ...input,
-        confidence: {
+        confidence:  {
         wsjfScore: result.currentScore.wsjfScore,
         rank: 1, // Would be calculated from all epics
         rankChange: result.rankChange,
@@ -71,7 +71,7 @@
               epicId: [
             ...enhancedResult.recommendations,
             ...aiAnalysis.recommendations,')];)          this.logger.debug('WSJF enhanced with AI analysis,{';
-            epicId: {
+            epicId:  {
         ...this.state,
         lastWSJFUpdate: this.performanceTracker.startTimer('create_business_case');
     try {
@@ -81,7 +81,7 @@
             investmentRequired: input.financialInputs.investmentRequired,',            expectedMarketShare: 5,')            keySuccessFactors: ['Product differentiation'],';
 },
 },
-        financialInputs: {
+        financialInputs:  {
           ...input.financialInputs,
           revenueAssumptions: [
             {
@@ -103,7 +103,7 @@
           await this.aiEnhancements.workflowEngine.executeWorkflow(
            'business-case-approval,';
             {
-              businessCaseId: {
+              businessCaseId:  {
         ...this.state,
         businessCasesCount: await this.lifecycleService.getPrioritizedBacklog();
     // Transform to include stage information
@@ -119,7 +119,7 @@
       estimatedMonths;
     );
     const enhancedPhases = timeline.phases.map((phase) => ({
-      ...phase,`)      milestones: {`
+      ...phase,`)      milestones:  {`
     ')      timelineId,    ')      phases: enhancedPhases,')      criticalPath: ['Epic Hypothesis,' Development,'Validation'],';
 };
     this.emit('timeline-generated,{';
@@ -133,7 +133,7 @@
   /**
    * Get Portfolio Kanban metrics - delegates to EpicLifecycleService
    */
-  async getPortfolioMetrics():Promise<EpicPerformanceMetrics> {
+  async getPortfolioMetrics(): Promise<EpicPerformanceMetrics> {
     if (!this.initialized) await this.initialize();')    this.logger.info('Retrieving portfolio metrics');
     if (!this.lifecycleService) {
     ')      throw new Error('Lifecycle service not initialized');
@@ -190,7 +190,7 @@
     `)        type: 'medium',)        requestedBy : 'epic-owner-manager,'`
 '        approvers: approvalContext.stakeholders,';
         deadline: approvalContext.deadline,
-        context: {
+        context:  {
           epicId,
           businessCaseId: approvalContext.businessCase.id,
           wsjfScore: approvalContext.wsjfScore,',},';
@@ -211,7 +211,7 @@
    */
   private shouldAutoApproveEpic(
     epicId: string,
-    context: {
+    context:  {
       businessCase: EpicBusinessCase;
       wsjfScore: number;
       stakeholders: string[];
@@ -240,7 +240,7 @@
   /**
    * Get manager status and metrics
    */
-  getStatus():{
+  getStatus():  {
     initialized: boolean;
     state: EpicOwnerState;
     config: EpicOwnerManagerConfig;
@@ -271,7 +271,7 @@
   /**
    * Setup event handlers for coordination
    */
-  private setupEventHandlers():void {
+  private setupEventHandlers(): void {
     // Event handlers temporarily disabled due to event system resolution')    // this.eventBus.on('epic-state-changed,(data) => {';
     ')    //   this.logger.info('Epic state changed, data');')    //   this.emit('epic-updated, data');
     //});')    // this.eventBus.on('wsjf-scores-updated,(data) => {';
@@ -283,9 +283,9 @@
   /**
    * Restore state from memory system
    */
-  private async restoreState():Promise<void> {
+  private async restoreState(): Promise<void> {
     try {
-      const savedState = (await this.memorySystem.retrieve(';')';
+      const savedState = (await this.memorySystem.retrieve(';)';
        'epic-owner-state')) as Partial<EpicOwnerState>' | ' null')      if (savedState && typeof savedState ===object){';
         this.state = ...this.state, ...savedState;
         this.logger.info('Epic owner state restored from memory');
@@ -297,7 +297,7 @@
   /**
    * Persist current state to memory system
    */
-  private async persistState():Promise<void> {
+  private async persistState(): Promise<void> {
     try {
     ')      await this.memorySystem.store('epic-owner-state,{';
         activeEpicsCount: this.state.activeEpicsCount,

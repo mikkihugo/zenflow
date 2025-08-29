@@ -12,12 +12,12 @@ export interface EventCoordinationConfig {
   /** Enable event bus monitoring */
   enableMonitoring: false;
   constructor(
-    config: {},
+    config:  {},
     eventBus?:EventBus<WorkflowKanbanEvents>
   ) {
     this.config = {
       enableMonitoring: eventBus|| new EventBus<WorkflowKanbanEvents>({
-      maxListeners: {
+      maxListeners:  {
       eventsEmitted: await this.eventBus.initialize();
       if (result.isErr()) {
         throw result.error;
@@ -65,7 +65,7 @@ export interface EventCoordinationConfig {
   async emitEventSafe<K extends keyof WorkflowKanbanEvents>(
     eventType: K,
     payload: WorkflowKanbanEvents[K]
-  ):Promise<boolean> {
+  ): Promise<boolean> {
     try {
       await this.emitEvent(eventType, payload);
       return true;
@@ -79,7 +79,7 @@ export interface EventCoordinationConfig {
   addListener<K extends keyof WorkflowKanbanEvents>(
     eventType: K,
     listener: (payload: WorkflowKanbanEvents[K]) => void| Promise<void>
-  ):void {
+  ): void {
     this.eventBus.on(eventType as string, listener);
     this.metrics.activeListeners++;
     `)    logger.debug(`Listener added for event: ${String(eventType)});`;
@@ -90,7 +90,7 @@ export interface EventCoordinationConfig {
   removeListener<K extends keyof WorkflowKanbanEvents>(
     eventType: K,
     listener: (payload: WorkflowKanbanEvents[K]) => void| Promise<void>
-  ):void {
+  ): void {
     this.eventBus.off(eventType as string, listener);
     this.metrics.activeListeners = Math.max(0, this.metrics.activeListeners - 1);
     
@@ -103,13 +103,13 @@ export interface EventCoordinationConfig {
   // =============================================================================
   // PRIVATE INFRASTRUCTURE METHODS
   // =============================================================================
-  private setupEventMonitoring():void {
+  private setupEventMonitoring(): void {
     // Monitor event bus for high-level metrics')    this.eventBus.on('eventbus: initialized,() => {';
     ')      logger.info('Event bus monitoring active');
 });
     // Could add more monitoring events as needed')    logger.debug('Event monitoring setup complete);`;
 }
-  private setupEventMiddleware():void {
+  private setupEventMiddleware(): void {
     // Add performance tracking middleware
     this.eventBus.use(async (context, next) => {
       const startTime = Date.now();
@@ -149,7 +149,7 @@ export interface EventCoordinationConfig {
   /**
    * Get health summary
    */
-  getHealthSummary():{
+  getHealthSummary():  {
     healthy: [];
     
     if (!this.initialized) {
