@@ -8,31 +8,62 @@
 /**
  * Event coordination configuration
  */
+/**
+ * Configuration for event coordination
+ */
 export interface EventCoordinationConfig {
   /** Enable event bus monitoring */
-  enableMonitoring: false;
+  enableMonitoring: boolean;
+  /** Enable event middleware */
+  enableMiddleware: boolean;
+  /** Maximum number of listeners per event */
+  maxListeners: number;
+}
+
+/**
+ * Event coordination service for kanban workflows
+ */
+export class EventCoordinatorService {
+  private config: EventCoordinationConfig;
+  private eventBus: EventBus<WorkflowKanbanEvents>;
+  private initialized = false;
+
   constructor(
-    config:  {},
-    eventBus?:EventBus<WorkflowKanbanEvents>
+    config: Partial<EventCoordinationConfig> = {},
+    eventBus?: EventBus<WorkflowKanbanEvents>
   ) {
     this.config = {
-      enableMonitoring: eventBus|| new EventBus<WorkflowKanbanEvents>({
-      maxListeners:  {
-      eventsEmitted: await this.eventBus.initialize();
+      enableMonitoring: false,
+      enableMiddleware: false,
+      maxListeners: 100,
+      ...config
+    };
+    this.eventBus = eventBus || new EventBus<WorkflowKanbanEvents>({
+      maxListeners: this.config.maxListeners
+    });
+  }
+
+  async initialize(): Promise<void> {
+    try {
+      const result = await this.eventBus.initialize();
       if (result.isErr()) {
         throw result.error;
-}
+      }
+      
       // Set up monitoring if enabled
       if (this.config.enableMonitoring) {
         this.setupEventMonitoring();
-}
+      }
+      
       // Set up middleware if enabled
       if (this.config.enableMiddleware) {
         this.setupEventMiddleware();
-}
-      this.initialized = true;')      logger.info('EventCoordinatorService initialized successfully');
-} catch (error) {
-    ')      logger.error('Failed to initialize EventCoordinatorService:, error');
+      }
+      
+      this.initialized = true;
+      logger.info('EventCoordinatorService initialized successfully');
+    } catch (error) {
+      logger.error('Failed to initialize EventCoordinatorService:', error);
       throw error;
 }
 }
@@ -46,19 +77,24 @@ export interface EventCoordinationConfig {
    * Emit event through coordinator
    */
   async emitEvent<K extends keyof WorkflowKanbanEvents>(
-    eventType: Date.now();
+    eventType: K,
+    payload: WorkflowKanbanEvents[K]
+  ): Promise<void> {
+    const startTime = Date.now();
     try {
       this.eventBus.emit(eventType, payload);
       
       // Update metrics
       this.updateMetrics(startTime, false);
       
-      logger.debug(`Event emitted: ${String(eventType)}, { payload});`;
-} catch (error) {
+      logger.debug(`Event emitted: ${String(eventType)}`, { payload });
+    } catch (error) {
       this.updateMetrics(startTime, true);
-      logger.error(`Failed to emit event `${String(eventType)}:``, error);`;
-      throw error;`,};;
-}
+      logger.error(`Failed to emit event ${String(eventType)}:`, error);
+      throw error;
+    }
+  }
+
   /**
    * Emit event safely with error handling
    */
@@ -69,9 +105,11 @@ export interface EventCoordinationConfig {
     try {
       await this.emitEvent(eventType, payload);
       return true;
-} catch (error) {
-    `)      logger.error(`Safe emit failed for `${String(eventType)}:``, error);`;
-      return false;`,};;
+    } catch (error) {
+      logger.error(`Safe emit failed for ${String(eventType)}:`, error);
+      return false;
+    }
+  }
 }
   /**
    * Add event listener
