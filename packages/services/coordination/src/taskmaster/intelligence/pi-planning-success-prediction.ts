@@ -1,12 +1,30 @@
 /**
  * @fileoverview PI Planning Success Prediction - ML-Powered SAFe Intelligence
  *
- * **PREDICTIVE ANALYTICS FOR PI PLANNING SUCCESS: getLogger('PIPlanningSuccessPrediction');
+ * **PREDICTIVE ANALYTICS FOR PI PLANNING SUCCESS**
+ *
+ * Advanced ML models predict the likelihood of successful PI completion
+ * based on team metrics, dependencies, risks, and historical performance.
+ * Integrated with Brain package for neural network-powered predictions.
+ */
+import { getLogger } from '@claude-zen/foundation';
+
+const logger = getLogger('PIPlanningSuccessPrediction');
+
 // ============================================================================
 // PREDICTION MODEL TYPES
 // ============================================================================
 export interface PISuccessPredictionInput {
-  piId: 'increasing|',improving' | ' stable'| ' declining' | ' decreasing')  teamStability: more debt
+  piId: string;
+  artId: string;
+  teamCount: number;
+  objectiveCount: number;
+  dependencyCount: number;
+  riskCount: number;
+  teamMaturity: 'forming' | 'storming' | 'norming' | 'performing';
+  velocityTrend: 'increasing' | 'improving' | 'stable' | 'declining' | 'decreasing';
+  teamStability: number; // 0-1, percentage of team members unchanged
+  technicalDebt: number; // 1-10, perceived technical debt level
   morale: number; // 1-10
   previousPIPerformance: number[]; // % of objectives completed
 }
@@ -14,14 +32,19 @@ export interface DependencyInput {
   id: string;
   providerTeam: string;
   consumerTeam: string;
-  complexity : 'low| medium| high' | ' critical')  riskLevel : 'low' | ' medium'|' high')  historicalResolutionTime: number; // days';
+  complexity: 'low' | 'medium' | 'high' | 'critical';
+  riskLevel: 'low' | 'medium' | 'high';
+  historicalResolutionTime: number; // days
   crossTeamExperience: number; // 1-10, how well teams work together
 }
+
 export interface RiskInput {
   id: string;
   description: string;
   probability: number; // 0-1
-  impact : 'low| medium| high' | ' critical')  category : 'technical| resource| external' | ' process')  mitigationPlan?:string;';
+  impact: 'low' | 'medium' | 'high' | 'critical';
+  category: 'technical' | 'resource' | 'external' | 'process';
+  mitigationPlan?: string;
 }
 export interface HistoricalPIData {
   piId: string;

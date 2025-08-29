@@ -1,7 +1,7 @@
 /**
  * @fileoverview SAFe 6.0 Framework Integration - TaskMaster as Universal Approval Gate Orchestrator
  *
- * Integrates TaskMaster's approval gate system with ALL SAFe 6.0 framework gates : ';
+ * Integrates TaskMaster's approval gate system with ALL SAFe 6.0 framework gates:
  * - Epic Management Gates (Portfolio Kanban states)
  * - Continuous Delivery Gates (Quality, Security, Performance)
  * - ART Gates (Agile Release Train coordination)
@@ -11,10 +11,19 @@
  * Uses SAFe 6.0 terminology: ART instead of Program, streamlined naming conventions.
  * Provides complete traceability, AGUI integration, SOC2 compliance, and learning.
  */
-import { getLogger} from '@claude-zen/foundation')import { DatabaseProvider} from '@claude-zen/database')import { getBrainSystem} from '@claude-zen/intelligence')import { getSafeFramework, getWorkflowEngine} from '@claude-zen/enterprise')import {';
+import { getLogger } from '@claude-zen/foundation';
+import { DatabaseProvider } from '@claude-zen/database';
+import { getBrainSystem } from '@claude-zen/intelligence';
+import { getSafeFramework, getWorkflowEngine } from '@claude-zen/enterprise';
+import {
   getSafe6DevelopmentManager,
   createSafe6SolutionTrainManager,
-} from '@claude-zen/development')import { ApprovalGateManager} from '../core/approval-gate-manager.js')import { LLMApprovalService} from '../services/llm-approval-service.js')import { PromptManagementService} from '../services/prompt-management-service.js')import { TaskApprovalSystem} from '../agui/task-approval-system.js')import type {';
+} from '@claude-zen/development';
+import { ApprovalGateManager } from '../core/approval-gate-manager.js';
+import { LLMApprovalService } from '../services/llm-approval-service.js';
+import { PromptManagementService } from '../services/prompt-management-service.js';
+import { TaskApprovalSystem } from '../agui/task-approval-system.js';
+import type {
   ApprovalGateId,
   TaskId,
   UserId,
@@ -23,20 +32,24 @@ import { getLogger} from '@claude-zen/foundation')import { DatabaseProvider} fro
   LLMApprovalConfig,
   LLMApprovalContext,
   LLMApprovalResult,
-} from '../types/index.js')// Import SAFE framework types';
+} from '../types/index.js';
+// Import SAFE framework types
 import type {
   PortfolioKanbanState,
   EpicLifecycleStage,
   QualityGate as SafeQualityGate,
   GateCriterion,
   EpicBusinessCase,
-} from '@claude-zen/safe-framework')// Import quality gate types from SAFE';
+} from '@claude-zen/safe-framework';
+// Import quality gate types from SAFE
 import type {
   QualityGate,
   QualityGateType,
   QualityGateResult,
   QualityGateExecutionConfig,
-} from '@claude-zen/safe-framework/services/continuous-delivery/quality-gate-service')// =========================================================================== = ''; 
+} from '@claude-zen/safe-framework/services/continuous-delivery/quality-gate-service';
+
+// ============================================================================
 // SAFE INTEGRATION TYPES
 // ============================================================================
 /**
