@@ -29,14 +29,14 @@ import type {
   LLMApprovalConfig,
   LLMApprovalContext,
   LLMApprovalResult,
-} from '../types/index.js')// Import SAFE framework types';
+} from '../types/index.js'; // Import SAFE framework types
 import type {
   PortfolioKanbanState,
   EpicLifecycleStage,
   QualityGate as SafeQualityGate,
   GateCriterion,
   EpicBusinessCase,
-} from '@claude-zen/safe-framework')// Import quality gate types from SAFE';
+} from '@claude-zen/safe-framework'; // Import quality gate types from SAFE
 import type {
   QualityGate,
   QualityGateType,
@@ -49,7 +49,16 @@ import type {
  * SAFe 6.0 gate categories that TaskMaster orchestrates
  */
 export enum SafeGateCategory {
-  EPIC_PORTFOLIO = 'epic_portfolio')  EPIC_LIFECYCLE = 'epic_lifecycle')  ART_COORDINATION = 'art_coordination')  QUALITY_ASSURANCE = 'quality_assurance')  SECURITY_COMPLIANCE = 'security_compliance')  PERFORMANCE_VALIDATION = 'performance_validation')  BUSINESS_VALIDATION = 'business_validation')  ARCHITECTURE_COMPLIANCE = 'architecture_compliance')  CROSS_FRAMEWORK_SYNC = 'cross_framework_sync')};;
+  EPIC_PORTFOLIO = 'epic_portfolio',
+  EPIC_LIFECYCLE = 'epic_lifecycle',
+  ART_COORDINATION = 'art_coordination',
+  QUALITY_ASSURANCE = 'quality_assurance',
+  SECURITY_COMPLIANCE = 'security_compliance',
+  PERFORMANCE_VALIDATION = 'performance_validation',
+  BUSINESS_VALIDATION = 'business_validation',
+  ARCHITECTURE_COMPLIANCE = 'architecture_compliance',
+  CROSS_FRAMEWORK_SYNC = 'cross_framework_sync'
+};
 /**
  * Integration configuration for SAFe 6.0 gates
  */
@@ -86,7 +95,9 @@ export interface SafeIntegrationConfig {
   learning: {
     enableContinuousLearning: boolean;
     trackDecisionPatterns: boolean;
-    adaptPrompts: boolean;)    auditCompliance : 'basic| soc2' | ' comprehensive')};;
+    adaptPrompts: boolean;
+    auditCompliance: 'basic' | 'soc2' | 'comprehensive';
+  };;
 }
 /**
  * SAFE gate execution context
