@@ -69,16 +69,28 @@ export interface MemoryBatchRequest {
   /** Array of operations to perform */
   operations:Array<{
     /** Type of operation */
-    type: 'store|retrieve|delete';
+    type: 'store' | 'retrieve' | 'delete';
     /** Key for the operation */
     key:string;
     /** Value for store operations */
     value?:unknown;
     /** Options for the operation */
     options?:MemoryRequest['options'];
-}>;
+  }>;
   /** Whether to stop on first error or continue */
   continueOnError?:boolean;
+}
+
+/** Single batch operation type */
+type BatchOperation = MemoryBatchRequest['operations'][0];
+
+/** Result of a single batch operation */
+interface BatchOperationResult {
+  operation: string;
+  key: string;
+  success?: boolean;
+  data?: unknown;
+  error?: string;
 }
 
 /**
@@ -442,6 +454,52 @@ export class MemoryController {
 }
 
   /**
+   * Handle batch operation result and determine if processing should continue
+   */
+  private handleBatchResult(result: BatchOperationResult, request: MemoryBatchRequest): boolean {
+    return !result.success && !request.continueOnError;
+  }
+  private handleBatchError(operation: BatchOperation, error: unknown, request: MemoryBatchRequest, results: BatchOperationResult[]): boolean {
+    results.push({
+      operation: operation.type,
+      key: operation.key,
+      success: false,
+      error: this.getErrorMessage(error),
+    });
+
+    return !request.continueOnError;
+  }
+  private async processBatchOperation(operation: BatchOperation): Promise<BatchOperationResult> {
+    let result;
+
+    switch (operation.type) {
+      case 'store':
+        result = await this.storeMemory({
+          key:operation.key,
+          value:operation.value,
+          options:operation.options,
+        });
+        break;
+      case 'retrieve':
+        result = await this.retrieveMemory(operation.key);
+        break;
+      case 'delete':
+        result = await this.deleteMemory(operation.key);
+        break;
+      default:
+        throw new Error(`Unsupported operation type:${operation.type}`);
+    }
+
+    return {
+      operation:operation.type,
+      key:operation.key,
+      success:result?.success,
+      data:result?.data,
+      error:result?.error,
+    };
+  }
+
+  /**
    * POST /api/memory/batch.
    * Perform multiple memory operations in a single request.
    *
@@ -460,53 +518,24 @@ export class MemoryController {
 
       for (const operation of request.operations) {
         try {
-          let result;
+          const result = await this.processBatchOperation(operation);
+          results.push(result);
 
-          switch (operation.type) {
-            case 'store':
-              result = await this.storeMemory({
-                key:operation.key,
-                value:operation.value,
-                options:operation.options,
-});
-              break;
-            case 'retrieve':
-              result = await this.retrieveMemory(operation.key);
-              break;
-            case 'delete':
-              result = await this.deleteMemory(operation.key);
-              break;
-            default:
-              throw new Error(`Unsupported operation type:${operation.type}`);
-}
-
-          results.push({
-            operation:operation.type,
-            key:operation.key,
-            success:result?.success,
-            data:result?.data,
-            error:result?.error,
-});
-
-          if (!result?.success) {
+          if (!result.success) {
             errorCount++;
-            if (!request.continueOnError) {
-              break;
-}
-}
-} catch (error) {
-          errorCount++;
-          results.push({
-            operation:operation.type,
-            key:operation.key,
-            success:false,
-            error:this.getErrorMessage(error),});
-
-          if (!request.continueOnError) {
+          }
+          
+          if (this.handleBatchResult(result, request)) {
             break;
-}
-}
-}
+          }
+        } catch (error) {
+          errorCount++;
+          const shouldStop = this.handleBatchError(operation, error, request, results);
+          if (shouldStop) {
+            break;
+          }
+        }
+      }
 
       const size = await this.backend.size();
       const executionTime = Date.now() - startTime;
