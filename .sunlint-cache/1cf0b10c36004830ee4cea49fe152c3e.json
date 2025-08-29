@@ -1,0 +1,78 @@
+{
+  "key": "1cf0b10c36004830ee4cea49fe152c3e",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 12,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'WIPLimitsSchema' uses abbreviation 'WIP' which may not be clear to all readers.",
+      "suggestion": "Rename to 'WorkInProgressLimitsSchema' for clarity.",
+      "codeSnippet": "// Validation utilities (Zod integration) - RUNTIME SAFETY FOR KANBAN",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/utils/index.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 18,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'ImmutableWIPUtils' uses abbreviation 'WIP' which may not be clear to all readers.",
+      "suggestion": "Rename to 'ImmutableWorkInProgressUtils' for clarity.",
+      "codeSnippet": "WIPLimitsSchema,",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/utils/index.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 0,
+      "column": 0,
+      "severity": "warning",
+      "message": "No access control logic present; unable to verify secure failure on access control errors.",
+      "suggestion": "Ensure access control checks are implemented and fail securely by denying access on errors.",
+      "codeSnippet": "/**",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/utils/index.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 0,
+      "column": 0,
+      "severity": "warning",
+      "message": "No CRUD operations or resource ID handling found; unable to verify protection against IDOR vulnerabilities.",
+      "suggestion": "Implement backend resource ownership checks and avoid relying solely on client-provided IDs.",
+      "codeSnippet": "/**",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/utils/index.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S003",
+      "line": 0,
+      "column": 0,
+      "severity": "warning",
+      "message": "No URL redirect logic found; unable to verify allow list enforcement for redirects.",
+      "suggestion": "Validate all dynamic redirects against an allow list before execution.",
+      "codeSnippet": "/**",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/utils/index.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756492097466,
+  "version": "1.0.0",
+  "fileHash": ""
+}

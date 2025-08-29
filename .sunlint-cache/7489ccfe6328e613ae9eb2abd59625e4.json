@@ -1,0 +1,64 @@
+{
+  "key": "7489ccfe6328e613ae9eb2abd59625e4",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 23,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'ttl' is abbreviated and not immediately clear; should use a more descriptive name.",
+      "suggestion": "Rename 'ttl' to 'timeToLive' for clarity.",
+      "codeSnippet": "timestamp:number;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/knowledge/types/fact-types.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 24,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'id' is a single character and not used as a counter; should be more descriptive.",
+      "suggestion": "Rename 'id' to 'entryId' or 'knowledgeEntryId' for clarity.",
+      "codeSnippet": "ttl:number;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/knowledge/types/fact-types.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 43,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'id' is a single character and not used as a counter; should be more descriptive.",
+      "suggestion": "Rename 'id' to 'entryId' for clarity.",
+      "codeSnippet": "timeout?:number;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/knowledge/types/fact-types.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 46,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'id' is a single character and not used as a counter; should be more descriptive.",
+      "suggestion": "Rename 'id' to 'entryId' for clarity.",
+      "codeSnippet": "end:number;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/knowledge/types/fact-types.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756491075787,
+  "version": "1.0.0",
+  "fileHash": ""
+}

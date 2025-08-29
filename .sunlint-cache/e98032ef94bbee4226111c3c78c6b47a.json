@@ -1,0 +1,50 @@
+{
+  "key": "e98032ef94bbee4226111c3c78c6b47a",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 12,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'js' is an uncommon abbreviation and does not clearly indicate its purpose.",
+      "suggestion": "Rename 'js' to a more descriptive name such as 'eslintJsConfig'.",
+      "codeSnippet": "parserOptions: {",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/orchestration/eslint.config.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 13,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'tsPlugin' is an abbreviation and does not clearly indicate its purpose.",
+      "suggestion": "Rename 'tsPlugin' to 'typescriptEslintPlugin'.",
+      "codeSnippet": "ecmaVersion: 2022,",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/orchestration/eslint.config.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 14,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'tsParser' is an abbreviation and does not clearly indicate its purpose.",
+      "suggestion": "Rename 'tsParser' to 'typescriptEslintParser'.",
+      "codeSnippet": "sourceType: 'module',",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/orchestration/eslint.config.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756492825990,
+  "version": "1.0.0",
+  "fileHash": ""
+}

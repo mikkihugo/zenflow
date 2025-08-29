@@ -1,0 +1,50 @@
+{
+  "key": "c6c23364dcd8b296b6e868dd564c92ff",
+  "value": [
+    {
+      "rule": "C006",
+      "line": 9,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'generate' is vague and does not clearly describe the action or output.",
+      "suggestion": "Rename function to 'generateSecureId' or 'createSecureId' for clarity.",
+      "codeSnippet": "import { generateNanoId } from '@claude-zen/foundation';",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/utilities/id-generation/secure-ids.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 16,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'generateNumeric' could be more descriptive about its action.",
+      "suggestion": "Rename function to 'generateNumericId' or 'createNumericId' for clarity.",
+      "codeSnippet": "*/",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/utilities/id-generation/secure-ids.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 14,
+      "column": 0,
+      "severity": "warning",
+      "message": "ID generation uses predictable numeric-only IDs, which may lead to IDOR vulnerabilities if used for resource access control.",
+      "suggestion": "Use UUIDs or securely generated random IDs for resource identifiers and always verify resource ownership on the backend.",
+      "codeSnippet": "/**",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/utilities/id-generation/secure-ids.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756492662652,
+  "version": "1.0.0",
+  "fileHash": ""
+}

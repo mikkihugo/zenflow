@@ -1,0 +1,50 @@
+{
+  "key": "5a563fb81cbf0f6a7eef67d803b88eff",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 53,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable '_config' uses an arbitrary abbreviation and single character prefix; not descriptive.",
+      "suggestion": "Rename '_config' to 'configuration' or 'telemetryConfig' for clarity.",
+      "codeSnippet": "}",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/telemetry/src/index.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 52,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'createTelemetryAccess' is a noun-verb combination; should be verb-noun or verb only.",
+      "suggestion": "Rename function to 'initializeTelemetryAccess' or 'setupTelemetryAccess'.",
+      "codeSnippet": "return new TelemetryManager(config);",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/telemetry/src/index.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 37,
+      "column": 0,
+      "severity": "warning",
+      "message": "createTelemetryManager and createCollector accept config objects directly from caller without verifying resource ownership or user authorization. This may allow IDOR if config contains sensitive resource IDs controlled by client input.",
+      "suggestion": "Add backend-side authorization checks to ensure the caller is permitted to access or modify resources referenced in the config object. Do not rely solely on IDs provided by the client.",
+      "codeSnippet": "* ````",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/telemetry/src/index.js",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756490536807,
+  "version": "1.0.0",
+  "fileHash": ""
+}

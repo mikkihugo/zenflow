@@ -1,0 +1,92 @@
+{
+  "key": "25c712631263a58b6a0cbf1be063f07e",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 7,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'wsjfScores' is an uncommon abbreviation and not immediately clear.",
+      "suggestion": "Rename 'wsjfScores' to 'weightedShortestJobFirstScores' for clarity.",
+      "codeSnippet": "import {",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/safe/services/epic-lifecycle-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 8,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'blockers' is vague and does not clearly indicate its purpose.",
+      "suggestion": "Rename 'blockers' to 'epicBlockers' to clarify its context.",
+      "codeSnippet": "orderBy,",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/safe/services/epic-lifecycle-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 40,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'progressEpicState' is not a verb or verb-noun combination.",
+      "suggestion": "Rename to 'advanceEpicState' or 'moveEpicToNextState'.",
+      "codeSnippet": "success:  {",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/safe/services/epic-lifecycle-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C019",
+      "line": 48,
+      "column": 0,
+      "severity": "warning",
+      "message": "Throwing an error for a missing epic uses the 'Error' log level for a non-critical issue.",
+      "suggestion": "Use 'warn' or 'info' log level instead of throwing an error for recoverable issues.",
+      "codeSnippet": "newState: this.wsjfScores.get(input.epicId);",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/safe/services/epic-lifecycle-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C029",
+      "line": 48,
+      "column": 0,
+      "severity": "warning",
+      "message": "Error thrown in catch block does not log the root cause or stack trace.",
+      "suggestion": "Log the error message and stack trace before throwing or handling the error.",
+      "codeSnippet": "newState: this.wsjfScores.get(input.epicId);",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/safe/services/epic-lifecycle-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 27,
+      "column": 0,
+      "severity": "warning",
+      "message": "Access control error handling does not explicitly deny access if epic is not found; throws generic error instead of denying.",
+      "suggestion": "Return an explicit access denied response or error code when access control checks fail, rather than a generic error.",
+      "codeSnippet": "async progressEpicState(",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/safe/services/epic-lifecycle-service.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756493424305,
+  "version": "1.0.0",
+  "fileHash": ""
+}

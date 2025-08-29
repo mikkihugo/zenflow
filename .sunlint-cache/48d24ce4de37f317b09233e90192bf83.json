@@ -1,0 +1,92 @@
+{
+  "key": "48d24ce4de37f317b09233e90192bf83",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 14,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'diffMs' uses uncommon abbreviation; not immediately clear.",
+      "suggestion": "Rename 'diffMs' to 'differenceInMilliseconds' for clarity.",
+      "codeSnippet": "export class DateFormatter {",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/utilities/date/date-formatter.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 15,
+      "column": 0,
+      "severity": "info",
+      "message": "Variable name 'minutes' is acceptable as it describes its purpose.",
+      "suggestion": "No change needed.",
+      "codeSnippet": "/**",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/utilities/date/date-formatter.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 17,
+      "column": 0,
+      "severity": "info",
+      "message": "Variable name 'hours' is acceptable as it describes its purpose.",
+      "suggestion": "No change needed.",
+      "codeSnippet": "*/",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/utilities/date/date-formatter.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 19,
+      "column": 0,
+      "severity": "info",
+      "message": "Variable name 'days' is acceptable as it describes its purpose.",
+      "suggestion": "No change needed.",
+      "codeSnippet": "return isValid(parsed) ? parsed: new Date();",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/utilities/date/date-formatter.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 10,
+      "column": 0,
+      "severity": "info",
+      "message": "Function name 'formatISOString' is acceptable as it is a verb-noun combination.",
+      "suggestion": "No change needed.",
+      "codeSnippet": "const { format, parseISO, isValid } = dateFns;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/utilities/date/date-formatter.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 9,
+      "column": 0,
+      "severity": "warning",
+      "message": "Access control error handling is missing; no deny-by-default logic present if date parsing fails.",
+      "suggestion": "Ensure that when parsing fails or errors occur, the function does not return a valid date object that could be misused. Explicitly deny or throw an error on invalid input.",
+      "codeSnippet": "import { dateFns } from '@claude-zen/foundation';",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/utilities/date/date-formatter.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756492704271,
+  "version": "1.0.0",
+  "fileHash": ""
+}

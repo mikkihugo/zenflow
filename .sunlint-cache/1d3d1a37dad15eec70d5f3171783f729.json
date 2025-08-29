@@ -1,0 +1,78 @@
+{
+  "key": "1d3d1a37dad15eec70d5f3171783f729",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 51,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable 'g' in 'resultId = `result-${g}enerateNanoId(12)`' is an unclear abbreviation.",
+      "suggestion": "Rename 'g' to a more descriptive name, such as 'generator' or 'idGenerator'.",
+      "codeSnippet": "readonly name: string;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/safe/services/devsecops/security-scanning-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 108,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'getCategoryForTool' is a noun phrase, not a verb or verb-noun combination.",
+      "suggestion": "Rename function to 'determineCategoryForTool' or 'assignCategoryToTool'.",
+      "codeSnippet": "// Generate sample findings based on tool type",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/safe/services/devsecops/security-scanning-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C029",
+      "line": 52,
+      "column": 0,
+      "severity": "warning",
+      "message": "Catch block does not log the root cause of the error; missing error message and stack trace.",
+      "suggestion": "Add logging inside the catch block to record error.message and error.stack, along with relevant context.",
+      "codeSnippet": "readonly version: string;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/safe/services/devsecops/security-scanning-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 73,
+      "column": 0,
+      "severity": "warning",
+      "message": "Access control error handling is unclear; if config is missing, throws generic error but does not explicitly deny access or ensure 'deny by default'.",
+      "suggestion": "Explicitly deny access and ensure no permissions are granted when access control errors or missing config occur.",
+      "codeSnippet": "')      this.scheduleScan(config);')};)    this.logger.info('Security scan configured successfully,{';",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/safe/services/devsecops/security-scanning-service.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 150,
+      "column": 0,
+      "severity": "warning",
+      "message": "Resource access via scanId and resultId is not validated for ownership or authorization; IDs are used directly from client input.",
+      "suggestion": "Add backend authorization checks to verify resource ownership before returning scan configuration or results.",
+      "codeSnippet": "}, 0);",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/safe/services/devsecops/security-scanning-service.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756493092117,
+  "version": "1.0.0",
+  "fileHash": ""
+}

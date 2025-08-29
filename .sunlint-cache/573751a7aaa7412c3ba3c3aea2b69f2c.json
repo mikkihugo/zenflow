@@ -1,0 +1,64 @@
+{
+  "key": "573751a7aaa7412c3ba3c3aea2b69f2c",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 97,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'o' in `${o}peration` is an arbitrary single-character abbreviation outside of a loop context.",
+      "suggestion": "Rename 'o' to a more descriptive variable name such as 'operationType'.",
+      "codeSnippet": "*/",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/safe/services/solution-train/solution-architecture-management-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 119,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'g' in `${g}enerateNanoId(12)` is an arbitrary single-character abbreviation outside of a loop context.",
+      "suggestion": "Rename 'g' to a more descriptive variable name such as 'generator'.",
+      "codeSnippet": "const selectedAlternative = this.selectBestAlternative(evaluation);",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/safe/services/solution-train/solution-architecture-management-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 76,
+      "column": 0,
+      "severity": "error",
+      "message": "Access control error does not securely fail; missing config falls through to code execution before throwing error.",
+      "suggestion": "Ensure access is denied immediately if config is missing, and avoid executing further logic before throwing error.",
+      "codeSnippet": "* Escalation path",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/safe/services/solution-train/solution-architecture-management-service.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 96,
+      "column": 0,
+      "severity": "error",
+      "message": "Access control error does not securely fail; missing runway component falls through to code execution before throwing error.",
+      "suggestion": "Deny access and halt execution immediately if runway component is missing.",
+      "codeSnippet": "* Component status",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/safe/services/solution-train/solution-architecture-management-service.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756493408797,
+  "version": "1.0.0",
+  "fileHash": ""
+}

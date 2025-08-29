@@ -1,0 +1,50 @@
+{
+  "key": "1284b8cf261086cafe87c8a6df991498",
+  "value": [
+    {
+      "rule": "C019",
+      "line": 48,
+      "column": 0,
+      "severity": "warning",
+      "message": "Uses error log level for recoverable transformation failure; should use warn for non-critical issues.",
+      "suggestion": "Change logger.error to logger.warn for recoverable transformation failures.",
+      "codeSnippet": "async process(data:TelemetryData): Promise<TelemetryData | null> {",
+      "filePath": "/home/mhugo/code/zenflow/packages/integrations/otel-collector/src/processors/transform-processor.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C019",
+      "line": 77,
+      "column": 0,
+      "severity": "warning",
+      "message": "Uses error log level for recoverable batch transformation failure; should use warn for non-critical issues.",
+      "suggestion": "Change logger.error to logger.warn for recoverable batch transformation failures.",
+      "codeSnippet": "",
+      "filePath": "/home/mhugo/code/zenflow/packages/integrations/otel-collector/src/processors/transform-processor.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 175,
+      "column": 0,
+      "severity": "error",
+      "message": "Condition evaluation errors default to allow (returns true), violating 'deny by default' principle for access control logic.",
+      "suggestion": "Change the default return value in evaluateCondition to false on error to ensure secure failure.",
+      "codeSnippet": "// Apply field mappings (rename fields)",
+      "filePath": "/home/mhugo/code/zenflow/packages/integrations/otel-collector/src/processors/transform-processor.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756490631892,
+  "version": "1.0.0",
+  "fileHash": ""
+}

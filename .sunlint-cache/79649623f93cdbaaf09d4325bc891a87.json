@@ -1,0 +1,64 @@
+{
+  "key": "79649623f93cdbaaf09d4325bc891a87",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 119,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'p' in map callback is an arbitrary abbreviation and not descriptive.",
+      "suggestion": "Rename 'p' to 'prediction' for clarity.",
+      "codeSnippet": "IntelligenceSystemConfig as Config,",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/agent-monitoring/src/main.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 84,
+      "column": 0,
+      "severity": "warning",
+      "message": "Type alias 'I' prefixes (e.g., ISystemConfig, ITaskPredictorConfig) are non-standard and unclear.",
+      "suggestion": "Use descriptive type names without arbitrary 'I' prefix, e.g., 'SystemConfig', 'TaskPredictorConfig'.",
+      "codeSnippet": "export {",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/agent-monitoring/src/main.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 97,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'withPerformanceTracking' is not a verb or verb-noun combination.",
+      "suggestion": "Rename to 'trackPerformance' or 'applyPerformanceTracking'.",
+      "codeSnippet": "export type {",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/agent-monitoring/src/main.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 175,
+      "column": 0,
+      "severity": "warning",
+      "message": "Permissions for agent health and metrics are controlled solely by agentId from the client, without explicit backend ownership verification. This may allow users to access or modify resources they do not own.",
+      "suggestion": "Add backend authorization logic to verify that the agentId belongs to the current user before allowing access or updates. Do not rely solely on client-supplied IDs.",
+      "codeSnippet": "",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/agent-monitoring/src/main.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756491691248,
+  "version": "1.0.0",
+  "fileHash": ""
+}

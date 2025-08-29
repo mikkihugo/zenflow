@@ -1,0 +1,92 @@
+{
+  "key": "c6681b5a565b9beb2acfa5f0ba8a498e",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 10,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'dbSystem' is an uncommon abbreviation and does not clearly indicate its purpose.",
+      "suggestion": "Rename 'dbSystem' to 'databaseProvider' or another descriptive name.",
+      "codeSnippet": "* Create a new prompt template with SOC2 audit trail",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/core/services/prompt-management-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 15,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'v' used in filter and reduce is a single character and not a loop counter.",
+      "suggestion": "Rename 'v' to 'variant' for clarity.",
+      "codeSnippet": "// Create initial version",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/core/services/prompt-management-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 69,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'selectVariant' is a noun-verb order; should be verb-noun for clarity.",
+      "suggestion": "Rename to 'chooseVariant' or 'getActiveVariant'.",
+      "codeSnippet": "await this.createAuditEntry(",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/core/services/prompt-management-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C029",
+      "line": 26,
+      "column": 0,
+      "severity": "warning",
+      "message": "Throwing an error in catch blocks without logging the root cause or context.",
+      "suggestion": "Log error message and stack trace with relevant context before throwing.",
+      "codeSnippet": "const nextVersion = this.generateNextVersion(template.versions);",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/core/services/prompt-management-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 245,
+      "column": 0,
+      "severity": "warning",
+      "message": "Access control errors in getPromptTemplate and getPromptTemplateByVersionId return null instead of denying access, which may allow fallback logic to proceed without proper authorization.",
+      "suggestion": "Ensure that when access control or resource lookup fails, access is denied explicitly and no fallback logic grants permissions or access.",
+      "codeSnippet": "// Insert versions",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/core/services/prompt-management-service.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 245,
+      "column": 0,
+      "severity": "warning",
+      "message": "CRUD operations like getPromptTemplate and updatePromptTemplate rely on promptId from client input without explicit ownership verification, risking IDOR vulnerabilities.",
+      "suggestion": "Add backend checks to verify that the resource identified by promptId belongs to the current user before allowing access or modification.",
+      "codeSnippet": "// Insert versions",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/core/services/prompt-management-service.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756491485795,
+  "version": "1.0.0",
+  "fileHash": ""
+}

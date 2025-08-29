@@ -1,0 +1,36 @@
+{
+  "key": "37af0b7b6ad4c387604fdf0971d3fa4f",
+  "value": [
+    {
+      "rule": "C006",
+      "line": 62,
+      "column": 0,
+      "severity": "info",
+      "message": "Function name 'createInitialContext' is a verb-noun combination, but could be more specific about the action, e.g., 'initializeWorkflowContext'.",
+      "suggestion": "Rename function to 'initializeWorkflowContext' for clearer intent.",
+      "codeSnippet": "timestamp: Date;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/state-machines/workflow/workflow-context.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 89,
+      "column": 0,
+      "severity": "warning",
+      "message": "Access control error handling is not implemented; if errors occur in permission logic, there is no explicit deny-by-default fallback.",
+      "suggestion": "Add explicit error handling in access control utility methods to ensure that any error or missing data results in access denial, not permission grant.",
+      "codeSnippet": "// Initialize WIP management",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/state-machines/workflow/workflow-context.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756492414646,
+  "version": "1.0.0",
+  "fileHash": ""
+}

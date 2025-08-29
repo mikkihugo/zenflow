@@ -1,0 +1,78 @@
+{
+  "key": "46fd69609e6ff7aeca6e2703cbc31e5d",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 84,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable 'deps' is a non-standard abbreviation; use a more descriptive name like 'dependencies'.",
+      "suggestion": "Rename 'deps' to 'dependencies' for clarity.",
+      "codeSnippet": "for (const entry of entries) {",
+      "filePath": "/home/mhugo/code/zenflow/scripts/validate-dependencies.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 98,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable 'deps' is a non-standard abbreviation; use a more descriptive name like 'dependencies'.",
+      "suggestion": "Rename 'deps' to 'dependencies' for clarity.",
+      "codeSnippet": "",
+      "filePath": "/home/mhugo/code/zenflow/scripts/validate-dependencies.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 103,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable 'deps' is a non-standard abbreviation; use a more descriptive name like 'dependencies'.",
+      "suggestion": "Rename 'deps' to 'dependencies' for clarity.",
+      "codeSnippet": "}",
+      "filePath": "/home/mhugo/code/zenflow/scripts/validate-dependencies.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 107,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable 'deps' is a non-standard abbreviation; use a more descriptive name like 'dependencies'.",
+      "suggestion": "Rename 'deps' to 'dependencies' for clarity.",
+      "codeSnippet": "}",
+      "filePath": "/home/mhugo/code/zenflow/scripts/validate-dependencies.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 86,
+      "column": 0,
+      "severity": "warning",
+      "message": "Access control error in findPackageJsonFiles: catch block silently ignores all errors, potentially allowing incomplete results and skipping files without denying access.",
+      "suggestion": "Log access errors and ensure skipped files are treated as denied or inaccessible, not silently ignored.",
+      "codeSnippet": "",
+      "filePath": "/home/mhugo/code/zenflow/scripts/validate-dependencies.js",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756490410333,
+  "version": "1.0.0",
+  "fileHash": ""
+}

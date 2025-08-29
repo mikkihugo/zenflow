@@ -1,0 +1,22 @@
+{
+  "key": "af3333133b24c34834dde801389e9ce6",
+  "value": [
+    {
+      "rule": "C006",
+      "line": 60,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'quickStart' is vague and does not clearly describe a specific action. Function names should be verbs or verb-noun combinations.",
+      "suggestion": "Rename the function to a more descriptive verb-noun combination, such as 'initializeCollectorByEnvironment' or 'startCollectorByEnv'.",
+      "codeSnippet": "}",
+      "filePath": "/home/mhugo/code/zenflow/packages/integrations/otel-collector/src/index.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756490444604,
+  "version": "1.0.0",
+  "fileHash": ""
+}

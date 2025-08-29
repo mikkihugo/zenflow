@@ -1,0 +1,36 @@
+{
+  "key": "dafd3ac542dbf94faeb086d393c40a96",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 37,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'id' is not descriptive; should indicate its purpose (e.g., gateId, configId).",
+      "suggestion": "Rename 'id' to a more descriptive name such as 'gateConfigId'.",
+      "codeSnippet": "}",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/workflow-coordination-types.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 12,
+      "column": 0,
+      "severity": "warning",
+      "message": "Resource access is controlled using predictable string IDs (gateId, workflowId, stepId) without explicit ownership verification, which may lead to IDOR vulnerabilities.",
+      "suggestion": "Implement backend authorization logic to verify that the requesting user owns or is permitted to access the resource identified by these IDs. Prefer using UUIDs or encrypted IDs.",
+      "codeSnippet": "getGateStatus(gateId: string): Promise<string>;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/workflow-coordination-types.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756492350609,
+  "version": "1.0.0",
+  "fileHash": ""
+}

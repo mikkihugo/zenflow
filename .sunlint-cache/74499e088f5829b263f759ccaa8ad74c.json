@@ -1,0 +1,92 @@
+{
+  "key": "74499e088f5829b263f759ccaa8ad74c",
+  "value": [
+    {
+      "rule": "C006",
+      "line": 183,
+      "column": 0,
+      "severity": "info",
+      "message": "Function name 'createBaseEvent' is a verb-noun combination, but could be more specific about the action (e.g., 'generateBaseEvent').",
+      "suggestion": "Rename function to 'generateBaseEvent' for clearer action description.",
+      "codeSnippet": "readonly severity: 'warning' | 'critical';",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/events/task-master-events.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 193,
+      "column": 0,
+      "severity": "info",
+      "message": "Function name 'isTaskEvent' is a verb-noun combination, but 'is' prefix is appropriate for boolean return.",
+      "suggestion": "No change needed; name follows rule for boolean functions.",
+      "codeSnippet": "",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/events/task-master-events.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 197,
+      "column": 0,
+      "severity": "info",
+      "message": "Function name 'isWorkflowEvent' is a verb-noun combination and appropriate for boolean return.",
+      "suggestion": "No change needed; name follows rule for boolean functions.",
+      "codeSnippet": "export interface TaskMasterEventMap {",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/events/task-master-events.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 201,
+      "column": 0,
+      "severity": "info",
+      "message": "Function name 'isApprovalEvent' is a verb-noun combination and appropriate for boolean return.",
+      "suggestion": "No change needed; name follows rule for boolean functions.",
+      "codeSnippet": "'task:deleted': (event: TaskDeletedEvent) => void;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/events/task-master-events.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 205,
+      "column": 0,
+      "severity": "info",
+      "message": "Function name 'isPerformanceEvent' is a verb-noun combination and appropriate for boolean return.",
+      "suggestion": "No change needed; name follows rule for boolean functions.",
+      "codeSnippet": "'task:blocked': (event: TaskBlockedEvent) => void;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/events/task-master-events.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 216,
+      "column": 0,
+      "severity": "info",
+      "message": "Function name 'getEventSeverity' is a verb-noun combination and clearly describes its purpose.",
+      "suggestion": "No change needed; name follows rule.",
+      "codeSnippet": "'approval:requested': (event: ApprovalRequestedEvent) => void;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/events/task-master-events.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756491965655,
+  "version": "1.0.0",
+  "fileHash": ""
+}

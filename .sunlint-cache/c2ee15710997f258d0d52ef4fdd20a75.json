@@ -1,0 +1,78 @@
+{
+  "key": "c2ee15710997f258d0d52ef4fdd20a75",
+  "value": [
+    {
+      "rule": "C006",
+      "line": 12,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'groupBy' is a noun; should be a verb or verb-noun combination.",
+      "suggestion": "Rename to 'groupItemsByKey' or 'groupByKey'.",
+      "codeSnippet": "isEmpty,",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/utilities/collections/object-processor.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 18,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'keyBy' is a noun; should be a verb or verb-noun combination.",
+      "suggestion": "Rename to 'mapItemsByKey' or 'createKeyedMap'.",
+      "codeSnippet": "pick,",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/utilities/collections/object-processor.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 23,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'mapValues' is a noun; should be a verb or verb-noun combination.",
+      "suggestion": "Rename to 'transformValues' or 'mapObjectValues'.",
+      "codeSnippet": "export class ObjectProcessor {",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/utilities/collections/object-processor.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 28,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'pick' is a vague verb; lacks context.",
+      "suggestion": "Rename to 'pickProperties' or 'selectProperties'.",
+      "codeSnippet": "items: T[],",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/utilities/collections/object-processor.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 33,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'omit' is a vague verb; lacks context.",
+      "suggestion": "Rename to 'omitProperties' or 'removeProperties'.",
+      "codeSnippet": "/**",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/utilities/collections/object-processor.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756492645932,
+  "version": "1.0.0",
+  "fileHash": ""
+}

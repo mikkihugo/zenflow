@@ -1,0 +1,33 @@
+{
+  "//": "=== Sunlint Configuration (CLI + VSCode Compatible) ===",
+  "//description": "Auto-generated config for sunlint-cli and sunlint-vscode",
+  "//documentation": "See docs/PRACTICAL-CONFIG-DESIGN.md for detailed guide",
+  "extends": "@sun/sunlint/recommended",
+  "exclude": [
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    "coverage/**",
+    "*.min.js",
+    "*.d.ts"
+  ],
+  "vscode-ext": {
+    "mode": "medium",
+    "batchSize": 5,
+    "temperature": 0.1,
+    "cacheEnabled": true,
+    "maxConcurrency": 4,
+    "memoryThreshold": 0.8,
+    "enablePerformanceMonitoring": true,
+    "enableSuggestions": true,
+    "suggestionDetail": "detailed",
+    "showInlineDecorations": true,
+    "debug": false
+  },
+  "ai": {
+    "enabled": true,
+    "provider": "copilot",
+    "model": "gpt-4o",
+    "confidence": 0.8
+  }
+}

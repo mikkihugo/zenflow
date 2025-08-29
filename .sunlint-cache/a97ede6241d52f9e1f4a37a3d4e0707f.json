@@ -1,0 +1,50 @@
+{
+  "key": "a97ede6241d52f9e1f4a37a3d4e0707f",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 60,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'aiTeam' uses abbreviation 'ai' which is not a common exception and may reduce clarity.",
+      "suggestion": "Rename 'aiTeam' to 'artificialIntelligenceTeam' or 'machineLearningReviewers' for clarity.",
+      "codeSnippet": "}",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/types/advanced-approval.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 61,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'aiTeam' uses abbreviation 'ai' which is not a common exception and may reduce clarity.",
+      "suggestion": "Rename 'aiTeam' to 'artificialIntelligenceTeam' or 'machineLearningReviewers' for clarity.",
+      "codeSnippet": "],",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/types/advanced-approval.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 85,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'aiTeam' uses abbreviation 'ai' which is not a common exception and may reduce clarity.",
+      "suggestion": "Rename 'aiTeam' to 'artificialIntelligenceTeam' or 'machineLearningReviewers' for clarity.",
+      "codeSnippet": "model: 'claude-3-5-sonnet',",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/types/advanced-approval.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756492206186,
+  "version": "1.0.0",
+  "fileHash": ""
+}

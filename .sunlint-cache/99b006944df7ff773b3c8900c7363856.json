@@ -1,0 +1,78 @@
+{
+  "key": "99b006944df7ff773b3c8900c7363856",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 93,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'cv' is an uncommon abbreviation and does not clearly indicate its purpose.",
+      "suggestion": "Rename 'cv' to 'coefficientOfVariation' for clarity.",
+      "codeSnippet": "taskType: string,",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/agent-monitoring/src/task-predictor.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 156,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'getPredictionSummary' is a noun phrase and does not start with a verb.",
+      "suggestion": "Rename function to 'generatePredictionSummary' or 'formatPredictionSummary'.",
+      "codeSnippet": "history.shift();",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/agent-monitoring/src/task-predictor.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 108,
+      "column": 0,
+      "severity": "info",
+      "message": "Access control fallback returns a prediction with default values when insufficient data is available, but does not grant access or permissions. No clear violation found.",
+      "suggestion": "No action needed; fallback does not grant access.",
+      "codeSnippet": "* Simple Task Predictor Implementation",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/agent-monitoring/src/task-predictor.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 84,
+      "column": 0,
+      "severity": "info",
+      "message": "Resource access is controlled by agentId and taskType from backend logic, not solely by client-supplied id. No clear IDOR vulnerability detected.",
+      "suggestion": "No action needed; resource ownership is checked via backend logic.",
+      "codeSnippet": "/**",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/agent-monitoring/src/task-predictor.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S003",
+      "line": 0,
+      "column": 0,
+      "severity": "info",
+      "message": "No URL redirect logic present in this code. No violation found.",
+      "suggestion": "No action needed; no redirect logic implemented.",
+      "codeSnippet": "/**",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/agent-monitoring/src/task-predictor.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756491742518,
+  "version": "1.0.0",
+  "fileHash": ""
+}

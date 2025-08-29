@@ -1,0 +1,78 @@
+{
+  "key": "2ed08e1764ce793e8b6b0c51f36de9ec",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 43,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name '_databaseConnections' uses an uncommon abbreviation and leading underscore without clear purpose.",
+      "suggestion": "Rename '_databaseConnections' to 'databaseConnections' for clarity.",
+      "codeSnippet": "databases:{",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/document-intelligence/src/core/document-driven-system.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 45,
+      "column": 0,
+      "severity": "info",
+      "message": "Variable name 'workspaceId' is descriptive, but 'workspaceName' could be improved for clarity.",
+      "suggestion": "Consider renaming 'workspaceName' to 'workspaceTitle' or 'name' for consistency.",
+      "codeSnippet": "relationships:string; // Relationship graph database",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/document-intelligence/src/core/document-driven-system.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 72,
+      "column": 0,
+      "severity": "info",
+      "message": "Function name 'processVisionaryDocument' is acceptable, but sub-functions like 'processVisionDocument', 'processADR', 'processPRD', 'processEpic', 'processFeature', 'processTask' should be checked for verb-noun clarity.",
+      "suggestion": "Ensure all function names use verb-noun combinations, e.g., 'processEpicDocument' instead of 'processEpic'.",
+      "codeSnippet": "/**",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/document-intelligence/src/core/document-driven-system.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C029",
+      "line": 79,
+      "column": 0,
+      "severity": "warning",
+      "message": "Throwing an error in 'if (!context) throw new Error(...)' without logging the root cause.",
+      "suggestion": "Log the error message and stack trace before throwing, using logger.error with context information.",
+      "codeSnippet": "",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/document-intelligence/src/core/document-driven-system.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 62,
+      "column": 0,
+      "severity": "warning",
+      "message": "Access control error does not fail securely: if workspace context is missing, throws an error but does not explicitly deny access or prevent further execution.",
+      "suggestion": "Ensure that when access control errors occur (e.g., missing workspace context), the system denies access and halts further processing. Replace 'throw new Error' with logic that securely denies access and logs the incident.",
+      "codeSnippet": "this.setupDocumentHandlers();",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/document-intelligence/src/core/document-driven-system.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756492815692,
+  "version": "1.0.0",
+  "fileHash": ""
+}

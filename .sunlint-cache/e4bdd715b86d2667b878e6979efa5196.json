@@ -1,0 +1,64 @@
+{
+  "key": "e4bdd715b86d2667b878e6979efa5196",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 51,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'i' used outside of a loop context; single-character variable names should be reserved for counters.",
+      "suggestion": "Rename 'i' to a more descriptive name indicating its purpose.",
+      "codeSnippet": "} from './utilities/index';",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/index.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 52,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'j' used outside of a loop context; single-character variable names should be reserved for counters.",
+      "suggestion": "Rename 'j' to a more descriptive name indicating its purpose.",
+      "codeSnippet": "// =============================================================================",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/index.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 53,
+      "column": 0,
+      "severity": "warning",
+      "message": "No backend resource ownership verification for exported types related to permissions and workflow IDs. Risk of IDOR if APIs use these types without proper checks.",
+      "suggestion": "Ensure all API endpoints using these types verify resource ownership and do not rely solely on client-supplied IDs. Use UUIDs and backend authorization checks.",
+      "codeSnippet": "// KANBAN INTEGRATION - Workflow-Kanban coordination",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/index.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S003",
+      "line": 96,
+      "column": 0,
+      "severity": "warning",
+      "message": "No allow list validation for URLs in metadata or capabilities. If used for redirects, risk of open redirect vulnerability.",
+      "suggestion": "Implement allow list validation for any URLs used in redirects. Reject or warn if URL is not in the allow list.",
+      "codeSnippet": "PerformanceMetrics,",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/workflows/index.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756492762584,
+  "version": "1.0.0",
+  "fileHash": ""
+}

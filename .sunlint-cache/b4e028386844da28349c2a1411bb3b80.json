@@ -1,0 +1,50 @@
+{
+  "key": "b4e028386844da28349c2a1411bb3b80",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 101,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'wipImpact' uses abbreviation 'wip' which is not a common abbreviation outside the domain.",
+      "suggestion": "Rename 'wipImpact' to 'workInProgressImpact' for clarity.",
+      "codeSnippet": "readonly severity: low' | ' medium'|' high' | ' critical')  readonly recommendedAction: string;;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/core/types/index.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 102,
+      "column": 0,
+      "severity": "info",
+      "message": "Variable name 'bottleneckImpact' is descriptive but could be improved for clarity.",
+      "suggestion": "Consider renaming 'bottleneckImpact' to 'workflowBottleneckImpact' for explicit context.",
+      "codeSnippet": "}",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/core/types/index.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 40,
+      "column": 0,
+      "severity": "warning",
+      "message": "TaskAssignment uses agentId and taskId as string types, but there is no indication of backend ownership verification for CRUD operations. This could allow IDOR if used directly for access control.",
+      "suggestion": "Ensure backend logic verifies resource ownership for taskId and agentId before allowing CRUD operations. Do not rely solely on IDs from the client.",
+      "codeSnippet": "/**",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/core/types/index.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756491298965,
+  "version": "1.0.0",
+  "fileHash": ""
+}

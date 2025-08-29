@@ -1,0 +1,78 @@
+{
+  "key": "8a3780eebda6ca7e894dc88e621bd8ab",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 281,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable '__coordinationTraceabilityId' uses uncommon abbreviation and unclear purpose.",
+      "suggestion": "Rename to 'coordinationTraceabilityId' for clarity and remove leading underscores unless needed for convention.",
+      "codeSnippet": "businessOutcomes:  {",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/safe/events/system-demo-coordination.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 330,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable '__feedbackId' uses uncommon abbreviation and unclear purpose.",
+      "suggestion": "Rename to 'feedbackId' for clarity and remove leading underscores unless needed for convention.",
+      "codeSnippet": "async initialize(): Promise<void> {",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/safe/events/system-demo-coordination.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 441,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function 'analyzeFeedbackSummary' does not use a verb or verb-noun combination.",
+      "suggestion": "Rename to 'getFeedbackSummary' or 'summarizeFeedback' to follow verb-noun convention.",
+      "codeSnippet": "allFeedback,",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/safe/events/system-demo-coordination.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 353,
+      "column": 0,
+      "severity": "warning",
+      "message": "Access control error handling may not securely deny access if approval gate creation fails; error thrown but no explicit deny state enforced.",
+      "suggestion": "Ensure that when approval gate creation fails, access is explicitly denied and no fallback to allow state occurs.",
+      "codeSnippet": "demoId,",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/safe/events/system-demo-coordination.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 91,
+      "column": 0,
+      "severity": "warning",
+      "message": "CRUD operations use predictable string IDs (e.g., demoId, featureId, teamId) without verification of resource ownership.",
+      "suggestion": "Verify resource ownership for each CRUD operation and prefer using UUIDs or encrypted IDs for resource access.",
+      "codeSnippet": "featureId: string;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/safe/events/system-demo-coordination.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756491978021,
+  "version": "1.0.0",
+  "fileHash": ""
+}

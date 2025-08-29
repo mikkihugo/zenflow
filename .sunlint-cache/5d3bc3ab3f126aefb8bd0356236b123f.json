@@ -1,0 +1,50 @@
+{
+  "key": "5d3bc3ab3f126aefb8bd0356236b123f",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 108,
+      "column": 0,
+      "severity": "info",
+      "message": "Variable 'port' uses a generic name; consider a more descriptive name like 'serverPort' to clarify its purpose.",
+      "suggestion": "Rename 'port' to 'serverPort' for clarity.",
+      "codeSnippet": "} catch (error) {",
+      "filePath": "/home/mhugo/code/zenflow/scripts/build-sea.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 155,
+      "column": 0,
+      "severity": "info",
+      "message": "Variable 'files' uses a generic name; consider a more descriptive name like 'outputFiles' to clarify its purpose.",
+      "suggestion": "Rename 'files' to 'outputFiles' for clarity.",
+      "codeSnippet": "const machoSegment = platform.name === 'macos' ? ' --macho-segment-name NODE_SEA' : '';",
+      "filePath": "/home/mhugo/code/zenflow/scripts/build-sea.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 26,
+      "column": 0,
+      "severity": "warning",
+      "message": "Access control build failure falls back to continuing with basic entry point, potentially allowing unintended access if foundation build fails.",
+      "suggestion": "Change logic to deny access or abort build if foundation build fails, rather than continuing with a fallback.",
+      "codeSnippet": "logger.info(\"📦 Step 1: Building foundation package...\");",
+      "filePath": "/home/mhugo/code/zenflow/scripts/build-sea.js",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756490363079,
+  "version": "1.0.0",
+  "fileHash": ""
+}

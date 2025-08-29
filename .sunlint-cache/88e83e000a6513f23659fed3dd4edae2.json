@@ -1,0 +1,92 @@
+{
+  "key": "88e83e000a6513f23659fed3dd4edae2",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 12,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'ART' is an uncommon abbreviation and not descriptive.",
+      "suggestion": "Rename 'ART' to a more descriptive name such as 'AgileReleaseTrain'.",
+      "codeSnippet": "}",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/core/services/vision-management-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 13,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'TEAM' is an uncommon abbreviation and not descriptive.",
+      "suggestion": "Rename 'TEAM' to a more descriptive name such as 'TeamLevel'.",
+      "codeSnippet": "/**",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/core/services/vision-management-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 162,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'buildVisionHierarchy' is a noun phrase and does not start with a verb.",
+      "suggestion": "Rename to 'createVisionHierarchy' or 'generateVisionHierarchy'.",
+      "codeSnippet": ");",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/core/services/vision-management-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 166,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'combineVisionHierarchies' is a noun phrase and does not start with a verb.",
+      "suggestion": "Rename to 'mergeVisionHierarchies'.",
+      "codeSnippet": "await this.persistVision(vision);",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/core/services/vision-management-service.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 96,
+      "column": 0,
+      "severity": "error",
+      "message": "Access control error (missing vision) throws generic error, but does not explicitly deny access or ensure secure failure.",
+      "suggestion": "Ensure that when access control errors occur (e.g., missing vision), the system fails securely by denying access and not proceeding with any privileged actions.",
+      "codeSnippet": "opportunities: string[];",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/core/services/vision-management-service.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 96,
+      "column": 0,
+      "severity": "error",
+      "message": "CRUD operation uses visionId from client without verifying resource ownership or authorization.",
+      "suggestion": "Add backend authorization logic to verify that the visionId belongs to the current user before allowing access or modification.",
+      "codeSnippet": "opportunities: string[];",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/core/services/vision-management-service.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756491527990,
+  "version": "1.0.0",
+  "fileHash": ""
+}

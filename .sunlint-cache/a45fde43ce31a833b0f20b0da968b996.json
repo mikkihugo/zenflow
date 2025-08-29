@@ -1,0 +1,64 @@
+{
+  "key": "a45fde43ce31a833b0f20b0da968b996",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 18,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name '_usage' is an uncommon abbreviation and unclear.",
+      "suggestion": "Rename '_usage' to a more descriptive name like 'usageData' or 'usageMetrics'.",
+      "codeSnippet": "this.initializeBrain();",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/intelligence/task-intelligence.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 61,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 'h' used in filter and reduce is unclear outside of loop counters.",
+      "suggestion": "Rename 'h' to 'approvalMetric' or similar for clarity.",
+      "codeSnippet": "if (!this.isLearningEnabled) return;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/intelligence/task-intelligence.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 108,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'createTaskFlowIntelligence' is a noun phrase, not a verb or verb-noun combination.",
+      "suggestion": "Rename to 'initializeTaskFlowIntelligence' or 'buildTaskFlowIntelligence'.",
+      "codeSnippet": "* Forecast capacity needs based on historical trends",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/intelligence/task-intelligence.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 35,
+      "column": 0,
+      "severity": "warning",
+      "message": "Access control fallback does not explicitly deny access on error; missing deny-by-default logic.",
+      "suggestion": "Ensure that any error or missing permission data in access control logic results in access being denied by default.",
+      "codeSnippet": "}",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/taskmaster/intelligence/task-intelligence.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756491175720,
+  "version": "1.0.0",
+  "fileHash": ""
+}

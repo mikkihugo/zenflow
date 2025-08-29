@@ -1,0 +1,78 @@
+{
+  "key": "e82412507c6e91258f07bd71446ed054",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 91,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable name 's' in filter callbacks is an arbitrary abbreviation and not descriptive.",
+      "suggestion": "Rename 's' to 'stakeholder' in filter callbacks for clarity.",
+      "codeSnippet": "previousStates: string[];",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/integrations/safe-framework-integration.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C006",
+      "line": 180,
+      "column": 0,
+      "severity": "warning",
+      "message": "Function name 'registerEventHandlers' is a noun phrase and does not start with a verb.",
+      "suggestion": "Rename to 'registerGateEventHandlers' or 'initializeEventHandlers' to follow verb-noun convention.",
+      "codeSnippet": "this.config = config;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/integrations/safe-framework-integration.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C019",
+      "line": 66,
+      "column": 0,
+      "severity": "warning",
+      "message": "Logger uses 'error' level for initialization failure, which may not be a critical system failure.",
+      "suggestion": "Use 'warn' level for recoverable initialization failures unless it is a critical system error.",
+      "codeSnippet": "escalationTimeoutHours: number;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/integrations/safe-framework-integration.ts",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 86,
+      "column": 0,
+      "severity": "warning",
+      "message": "Epic gate creation uses epicId directly from client input for gateId and safeEntity.id without verifying resource ownership or using a secure identifier.",
+      "suggestion": "Verify that epicId belongs to the current user and consider using a UUID or encrypted ID instead of a predictable string.",
+      "codeSnippet": "metadata: Record<string, unknown>;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/integrations/safe-framework-integration.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 118,
+      "column": 0,
+      "severity": "warning",
+      "message": "Quality gate creation uses componentId directly from client input for gateId and safeEntity.id without verifying resource ownership or using a secure identifier.",
+      "suggestion": "Verify that componentId belongs to the current user and consider using a UUID or encrypted ID instead of a predictable string.",
+      "codeSnippet": "model: string;",
+      "filePath": "/home/mhugo/code/zenflow/packages/services/coordination/src/integrations/safe-framework-integration.ts",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756492025202,
+  "version": "1.0.0",
+  "fileHash": ""
+}

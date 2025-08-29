@@ -1,0 +1,64 @@
+{
+  "key": "12125900660273b97781208ac424fe26",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 2,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable 'js' uses an arbitrary abbreviation; use a more descriptive name.",
+      "suggestion": "Rename 'js' to 'eslintJsConfig' or similar for clarity.",
+      "codeSnippet": "import tsparser from \"@typescript-eslint/parser\";",
+      "filePath": "/home/mhugo/code/zenflow/eslint.config.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 3,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable 'tseslint' uses an arbitrary abbreviation; use a more descriptive name.",
+      "suggestion": "Rename 'tseslint' to 'typescriptEslintPlugin' for clarity.",
+      "codeSnippet": "import importPlugin from \"eslint-plugin-import\";",
+      "filePath": "/home/mhugo/code/zenflow/eslint.config.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 4,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable 'tsparser' uses an arbitrary abbreviation; use a more descriptive name.",
+      "suggestion": "Rename 'tsparser' to 'typescriptParser' for clarity.",
+      "codeSnippet": "import sonarjs from \"eslint-plugin-sonarjs\";",
+      "filePath": "/home/mhugo/code/zenflow/eslint.config.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S002",
+      "line": 180,
+      "column": 0,
+      "severity": "warning",
+      "message": "No backend resource ownership verification for CRUD operations; permissions may be controlled solely by client-supplied IDs.",
+      "suggestion": "Add backend authorization logic to verify resource ownership for all CRUD operations using IDs, and prefer UUIDs or encrypted IDs over sequential IDs.",
+      "codeSnippet": "\"axios\",",
+      "filePath": "/home/mhugo/code/zenflow/eslint.config.js",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756490318232,
+  "version": "1.0.0",
+  "fileHash": ""
+}

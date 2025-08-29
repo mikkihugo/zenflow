@@ -1,11 +1,9 @@
 [tools]
-node = "22.17.1"  # Latest Node.js with ES modules and crypto.randomUUID
-pnpm = "latest"
-rust = "1.89.0"
+node = "22.18.0"   # Required by repo (see .github/copilot-instructions.md)
+pnpm = "10.15.0"   # Required minimum version
+rust = "stable"    # Track latest stable toolchain
 
 [env]
-NODE_OPTIONS = "--experimental-vm-modules --experimental-wasm-modules"
 NPM_CONFIG_ENGINE_STRICT = "true"
 RUST_BACKTRACE = "1"
-RUSTFLAGS = "-C target-cpu=native"  # Optimize for local CPU
 

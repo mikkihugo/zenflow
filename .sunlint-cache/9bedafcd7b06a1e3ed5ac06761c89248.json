@@ -1,0 +1,50 @@
+{
+  "key": "9bedafcd7b06a1e3ed5ac06761c89248",
+  "value": [
+    {
+      "rule": "C003",
+      "line": 12,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable 'cargoProjects' uses an abbreviation; prefer a more descriptive name like 'rustProjectPaths'.",
+      "suggestion": "Rename 'cargoProjects' to 'rustProjectPaths' or similar for clarity.",
+      "codeSnippet": "",
+      "filePath": "/home/mhugo/code/zenflow/scripts/build-rust.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "C003",
+      "line": 53,
+      "column": 0,
+      "severity": "warning",
+      "message": "Variable 'failures' is vague; use a more descriptive name like 'failedBuilds'.",
+      "suggestion": "Rename 'failures' to 'failedBuilds' for better clarity.",
+      "codeSnippet": "",
+      "filePath": "/home/mhugo/code/zenflow/scripts/build-rust.js",
+      "category": "code_quality",
+      "categoryName": "Code Quality",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    },
+    {
+      "rule": "S001",
+      "line": 21,
+      "column": 0,
+      "severity": "warning",
+      "message": "Access control error (find command failure) does not fail securely; script exits with code 0, which may be interpreted as success.",
+      "suggestion": "Exit with a non-zero code (e.g., process.exit(1)) when access control or discovery fails to ensure secure failure.",
+      "codeSnippet": ");",
+      "filePath": "/home/mhugo/code/zenflow/scripts/build-rust.js",
+      "category": "security",
+      "categoryName": "Security",
+      "analysisMode": "medium",
+      "confidence": 0.85
+    }
+  ],
+  "timestamp": 1756490400406,
+  "version": "1.0.0",
+  "fileHash": ""
+}

@@ -3,18 +3,23 @@
  * @module ai-linter
  */
 
-// Basic implementations for now (will use foundation when it's fixed)
-const getLogger = (name:string) => ({
-  info:(msg: string, data?:any) =>
-    logger.info(`[${name}] INFO:`, msg, data || ''),
-  error:(msg: string, data?:any) =>
-    logger.error(`[${name}] ERROR:`, msg, data || ''),
-  debug:(msg: string, data?:any) =>
-    // eslint-disable-next-line no-console
-    console.debug(`[${name}] DEBUG:`, msg, data || ''),
-  warn:(msg: string, data?:any) =>
-    logger.warn(`[${name}] WARN:`, msg, data || ''),
-});
+// Basic console-backed logger (replace with foundation when available)
+function createLogger(name: string) {
+  return {
+    info: (msg: string, data?: unknown) =>
+      // eslint-disable-next-line no-console
+      console.log(`[${name}] INFO:`, msg, data ?? ''),
+    error: (msg: string, data?: unknown) =>
+      // eslint-disable-next-line no-console
+      console.error(`[${name}] ERROR:`, msg, data ?? ''),
+    debug: (msg: string, data?: unknown) =>
+      // eslint-disable-next-line no-console
+      console.debug(`[${name}] DEBUG:`, msg, data ?? ''),
+    warn: (msg: string, data?: unknown) =>
+      // eslint-disable-next-line no-console
+      console.warn(`[${name}] WARN:`, msg, data ?? ''),
+  } as const;
+}
 
 export type Result<T, E> =
   | { success:true; data: T}
@@ -30,11 +35,12 @@ import type {
   ProcessingResult,
 } from './types.js';
 // Direct import from relative path while workspace dependency is resolving
-import { GitHubCopilotAPI} from '../../llm-providers/dist/index.js';
+import { GitHubCopilotAPI } from '@claude-zen/llm-providers';
 import * as fs from 'node:fs';
-import { spawn} from 'node:child_process';
+import { spawn } from 'node:child_process';
+import { glob } from 'glob';
 
-const logger = getLogger('ai-linter');
+const logger = createLogger('ai-linter');
 
 /**
  * AI-powered TypeScript/JavaScript linter
@@ -49,16 +55,20 @@ const logger = getLogger('ai-linter');
 export class AILinter {
   private config:AILinterConfig;
 
-  constructor(config?:Partial<AILinterConfig>) {
+  constructor(config?: Partial<AILinterConfig>) {
     this.config = {
-      aiMode: 'gpt-4.1',      scopeMode: 'app-only',      processingMode: 'sequential',      temperature:0.0,
-      maxRetries:3,
-      backupEnabled:true,
-      eslintConfigPath: 'eslint.config.js',      ...config,
-};
+      aiMode: 'gpt-4.1',
+      scopeMode: 'app-only',
+      processingMode: 'sequential',
+      temperature: 0.0,
+      maxRetries: 3,
+      backupEnabled: true,
+      eslintConfigPath: 'eslint.config.js',
+      ...config,
+    } as AILinterConfig;
 
-    logger.info('AI Linter initialized', { config:this.config});
-}
+    logger.info('AI Linter initialized', { config: this.config });
+  }
 
   /**
    * Process a single file with AI fixing
@@ -229,22 +239,22 @@ export class AILinter {
     try {
       const opts:FileDiscoveryOptions = {
         scope:this.config.scopeMode,
-        extensions:['.ts',    '.tsx',    '.js',    '.jsx'],
-        excludePatterns:['node_modules/**',    'dist/**',    '**/*.d.ts'],
+        extensions:['.ts', '.tsx', '.js', '.jsx'],
+        excludePatterns:['node_modules/**', 'dist/**', '**/*.d.ts'],
         includePatterns:['**/*.{ts,tsx,js,jsx}'],
         ...options,
 };
 
       logger.info('Discovering files', opts);
 
-      // TODO:Implement file discovery logic
-      // This will include:
-      // - Running TypeScript compiler to find files with errors
-      // - Filtering by scope (app-only vs full-repo)
-      // - Applying include/exclude patterns
-
-      const files:string[] = [];
-      return ok(files);
+      const patterns = opts.includePatterns;
+      const ignore = opts.excludePatterns;
+      const matches = new Set<string>();
+      for (const pattern of patterns) {
+        const found = await glob(pattern, { ignore, nodir: true });
+        for (const f of found) matches.add(f);
+      }
+      return ok(Array.from(matches));
 } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message:String(error);
@@ -271,31 +281,32 @@ export class AILinter {
   /**
    * Run ESLint on a file to detect errors
    */
-  private async runESLint(
+  private runESLint(
     filePath:string
   ):Promise<
     Array<{ line:number; column: number; message: string; severity: string}>
   > {
     return new Promise((resolve) => {
-      const eslint = spawn('npx', [' eslint', filePath, '--format=json'], {
+      const eslint = spawn('npx', ['eslint', filePath, '--format', 'json'], {
         cwd:process.cwd(),
-        stdio:['pipe',    'pipe',    'pipe'],
+        stdio:['pipe','pipe','pipe'],
 });
 
-      let stdout = ';
+      let stdout = '';
       eslint.stdout.on('data', (data) => (stdout += data));
 
-      eslint.on('close', (code) => {
+  eslint.on('close', () => {
         try {
           if (stdout.trim()) {
-            const results = JSON.parse(stdout);
-            const errors = results[0]?.messages || [];
+    const results = JSON.parse(stdout) as Array<{ messages: Array<{ line:number; column:number; message:string; severity:number }> }>;
+    const errors = (results[0]?.messages || []) as Array<{ line:number; column:number; message:string; severity:number }>;
             resolve(
-              errors.map((msg:any) => ({
-                line:msg.line,
-                column:msg.column,
-                message:msg.message,
-                severity:msg.severity === 2 ? 'error' : ' warning',}))
+      errors.map((msg) => ({
+                line: msg.line,
+                column: msg.column,
+                message: msg.message,
+                severity: msg.severity === 2 ? 'error' : 'warning',
+              }))
             );
 } else {
             resolve([]);
@@ -327,13 +338,16 @@ export class AILinter {
 });
 
       // Use real GitHub Copilot API with GPT-4.1
+      const token = process.env.GITHUB_COPILOT_TOKEN || '';
       const copilot = new GitHubCopilotAPI({
-        model:this.config.aiMode === 'gpt-4.1' ? ' gpt-4' : ' gpt-3.5-turbo',        temperature:this.config.temperature,
-        token:process.env.GITHUB_COPILOT_TOKEN || ',});
+        model: this.config.aiMode,
+        temperature: this.config.temperature,
+        token,
+      });
 
       const response = await copilot.execute({
-        messages:[{ role: 'user', content:prompt}],
-});
+        messages: [{ role: 'user', content: prompt }],
+      });
 
       if (response.success && response.content) {
         // Extract fixed code from AI response
@@ -348,25 +362,19 @@ export class AILinter {
 }
 }
 
-      logger.warn(
-        'GPT-4.1 did not provide usable fixes, falling back to rule-based fixes')      );
+  logger.warn('GPT-4.1 did not provide usable fixes, falling back to rule-based fixes');
 
       // Fallback to rule-based fixes if GPT fails
       let fixedCode = content;
 
-      // Fix 1:Better regex optimization
-      if (errors.some((e) => e.message.includes('better-regex'))) {
-        fixedCode = fixedCode.replace(
-          /\/\\\[([^\]]*)\\]\/g/g,
-          '/\\[([^\\]]*)]\/g')        );
-        logger.info('Applied fallback regex optimization fix');
-}
+  // Fix 1: Skipped complex regex optimization in fallback to reduce risk
 
       // Fix 2:Replace 'any' with proper types
       if (errors.some((e) => e.message.includes('no-explicit-any')) && content.includes(' updateStats(')) {
           fixedCode = fixedCode.replace(
             /:any/g,
-            ':string | number | boolean | undefined')          );
+            ':string | number | boolean | undefined'
+          );
           logger.info('Applied fallback type inference fix');
 }
 
@@ -380,7 +388,8 @@ export class AILinter {
       if (errors.some((e) => e.message.includes('defined but never used'))) {
         fixedCode = fixedCode.replace(
           /(\w+\s*\([^)]*),\s*_?namespace[^)]*([^)]*\))/g,
-          '$1$2')        );
+          '$1$2'
+        );
         logger.info('Applied fallback unused parameter removal');
 }
 
@@ -413,30 +422,32 @@ export class AILinter {
       )
       .join('\n');
 
-    return `You are an intelligent TypeScript/JavaScript linter with deep understanding of:`
-- Code architecture and design patterns
-- Performance optimization
-- Type safety best practices  
-- Modern JavaScript/TypeScript features
-
-File:${filePath}
-
-Found ${errors.length} linting issues:
-${errorSummary}
-
-Original code:
-\`\`\`typescript`
-${content}
-\`\`\`
-
-Please fix these issues intelligently while:
-1. Maintaining the original functionality and logic
-2. Using proper TypeScript types (avoid 'any')
-3. Following modern best practices
-4. Preserving code readability and maintainability
-5. Adding helpful comments where needed
-
-Return ONLY the fixed code without explanation, wrapped in \`\`\`typescript\`\`\` blocks.`;
+    return [
+      'You are an intelligent TypeScript/JavaScript linter with deep understanding of:',
+      '- Code architecture and design patterns',
+      '- Performance optimization',
+      '- Type safety best practices',
+      '- Modern JavaScript/TypeScript features',
+      '',
+      `File: ${filePath}`,
+      '',
+      `Found ${errors.length} linting issues:`,
+      errorSummary,
+      '',
+      'Original code:',
+      '```typescript',
+      content,
+      '```',
+      '',
+      'Please fix these issues intelligently while:',
+      '1. Maintaining the original functionality and logic',
+      "2. Using proper TypeScript types (avoid 'any')",
+      '3. Following modern best practices',
+      '4. Preserving code readability and maintainability',
+      '5. Adding helpful comments where needed',
+      '',
+      'Return ONLY the fixed code without explanation, wrapped in ```typescript``` blocks.',
+    ].join('\n');
 }
 
   /**
@@ -444,9 +455,7 @@ Return ONLY the fixed code without explanation, wrapped in \`\`\`typescript\`\`\
    */
   private extractCodeFromResponse(response:string): string | null {
     // Look for code blocks
-    const codeBlockMatch = response.match(
-      /```(?:typescript|ts|javascript|js)?\n([\S\s]*?)\n```/`
-    );
+  const codeBlockMatch = response.match(/```(?:typescript|ts|javascript|js)?\n([\S\s]*?)\n```/);
     if (codeBlockMatch && codeBlockMatch[1]) {
       return codeBlockMatch[1].trim();
 }
