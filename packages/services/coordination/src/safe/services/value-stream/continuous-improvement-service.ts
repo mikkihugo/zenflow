@@ -191,7 +191,7 @@ export class ContinuousImprovementService {
         implementedImprovements,
         cycleMetrics;
       );
-      const cycle: {
+      const cycle:  {
         cycleId,
         valueStreamId: config.valueStreamId,
         timestamp: new Date(),
@@ -224,7 +224,7 @@ export class ContinuousImprovementService {
   async executeContinuousImprovementLoop(
     valueStreamId: string,
     config: ContinuousImprovementConfig
-  ):Promise<void> {
+  ): Promise<void> {
     this.logger.info('Executing continuous improvement loop,{
       valueStreamId,`)`;
 });
@@ -286,12 +286,12 @@ export class ContinuousImprovementService {
     improvements: [];
     for (const improvement of improvements.slice(0, 5)) {
       // Top 5 improvements
-      const implementation: {
+      const implementation:  {
     ')        implementationId,    ')        improvementId: [];
     for (const impl of implementations) {
       if (automationLevel === AutomationLevel.FULLY_AUTOMATED) {
         // Simulate quick implementation for demo
-        const executedImpl: {
+        const executedImpl:  {
           ...impl,
           status: 'Cycle Time,',
 '                before: 'Automated identification increases opportunity discovery',)        application,        confidence: 'Quick wins build momentum',)        application,        confidence: Array.from(this.kaizenCycles.values()).filter(
@@ -299,7 +299,7 @@ export class ContinuousImprovementService {
     );
     return cycles.length + 1;
 }
-  private calculateNextCycleDate(config: {
+  private calculateNextCycleDate(config:  {
       [ImprovementCategory.WASTE_ELIMINATION]:[
         ObjectiveCategory.EFFICIENCY,
         ObjectiveCategory.COST,

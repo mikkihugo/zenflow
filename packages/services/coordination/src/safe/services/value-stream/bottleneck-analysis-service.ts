@@ -74,7 +74,7 @@ export interface ImpactAssessment {
       rootCauseAnalysis,
       contributingFactors;
     );
-    const analysis: {
+    const analysis:  {
       analysisId: [];
     // Analyze cycle times by stage')    const stageAnalysis = groupBy(flowData.stages, name');
     for (const [stageName, stageData] of Object.entries(stageAnalysis)) {
@@ -121,7 +121,7 @@ export interface ImpactAssessment {
     bottlenecks: DetectedBottleneck[],
     config: BottleneckAnalysisConfig,
     flowData: any
-  ):Promise<RootCauseAnalysis> {
+  ): Promise<RootCauseAnalysis> {
     if (bottlenecks.length === 0) {
       return this.createEmptyRootCauseAnalysis();
 }
@@ -154,12 +154,12 @@ export interface ImpactAssessment {
     return {
     ')      assessmentId,    ')      financialImpact: 'USD,',
 '        confidence: 75,',},';
-      timeImpact: {
+      timeImpact:  {
         delayHours: totalCycleTime,
         delayDays: totalCycleTime / 24,
         cumulativeDelay: totalCycleTime * 1.5,
 },
-      qualityImpact: {
+      qualityImpact:  {
         defectRate: meanBy(bottlenecks, (b) => b.errorMetrics.errorRate),
         reworkRate: meanBy(bottlenecks, (b) => b.errorMetrics.reworkRate),
         customerSatisfactionImpact: ' medium',)        burnoutRisk: [];
@@ -170,7 +170,7 @@ export interface ImpactAssessment {
     `)          factorId: [];
     for (const bottleneck of bottlenecks) {
       switch (bottleneck.type) {
-        case BottleneckType.CAPACITY: ')','Add additional resources or optimize resource allocation,';
+        case BottleneckType.CAPACITY: ')'Add additional resources or optimize resource allocation,';
             priority: 'medium',)            estimatedImpact,            implementation: 'low',)            estimatedImpact,            implementation: 'high',)            estimatedImpact,            implementation: map(stageData,'cycleTime').filter((ct) => ct != null');
     return {
       average: map(stageData, queueLength').filter(';
@@ -369,5 +369,5 @@ interface BottleneckRecommendation {
   readonly recommendationId: string;
   readonly title: string;
   readonly description: string;
-  readonly priority: low| medium| high' | ' critical')  readonly estimatedEffort : 'low' | ' medium'|' high';')  readonly estimatedImpact : 'low' | ' medium'|' high')  readonly implementation: string[];`;
+  readonly priority: low| medium| high' | ' critical')  readonly estimatedEffort : 'low' | ' medium'|' high';)  readonly estimatedImpact : 'low' | ' medium'|' high')  readonly implementation: string[];`;
 };

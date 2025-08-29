@@ -26,35 +26,35 @@ export declare enum SafeFlowStage {
  * Complete SAFE flow configuration
  */
 export interface CompleteSafeFlowConfig {
-    portfolio: {
+    portfolio:  {
         enableStrategicThemeGates: boolean;
         enableInvestmentGates: boolean;
         enableValueStreamGates: boolean;
         enableEpicGates: boolean;
         autoApprovalThresholds: Record<string, number>;
     };
-    art: {
+    art:  {
         enablePlanningIntervalPlanningGates: boolean;
         enableFeatureGates: boolean;
         enableCapabilityGates: boolean;
         enableSystemDemoGates: boolean;
         autoApprovalThresholds: Record<string, number>;
     };
-    team: {
+    team:  {
         enableStoryGates: boolean;
         enableTaskGates: boolean;
         enableCodeReviewGates: boolean;
         enableSprintGates: boolean;
         autoApprovalThresholds: Record<string, number>;
     };
-    solution: {
+    solution:  {
         enableSolutionIntentGates: boolean;
         enableArchitectureGates: boolean;
         enableComplianceGates: boolean;
         enableIntegrationGates: boolean;
         autoApprovalThresholds: Record<string, number>;
     };
-    continuousDelivery: {
+    continuousDelivery:  {
         enableBuildGates: boolean;
         enableTestGates: boolean;
         enableSecurityGates: boolean;
@@ -62,14 +62,14 @@ export interface CompleteSafeFlowConfig {
         enableReleaseGates: boolean;
         autoApprovalThresholds: Record<string, number>;
     };
-    crossCutting: {
+    crossCutting:  {
         enableRiskGates: boolean;
         enableDependencyGates: boolean;
         enableResourceGates: boolean;
         enableStakeholderGates: boolean;
         globalEscalationRules: any[];
     };
-    traceability: {
+    traceability:  {
         enableFullTraceability: boolean;
         enableLearning: boolean;
         enablePatternRecognition: boolean;

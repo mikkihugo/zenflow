@@ -88,7 +88,7 @@ export interface PIManagerState {
 export class ProgramIncrementManager extends EventBus {
   private readonly logger: false;
   constructor(
-    eventBus: {}
+    eventBus:  {}
   ) {
     super();
     this.logger = logger;
@@ -103,7 +103,7 @@ export class ProgramIncrementManager extends EventBus {
   /**
    * Initialize the PI Manager with service delegation
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     if (this.initialized) return'; 
     this.logger.info('Initializing Program Increment Manager,{';
       config: true;')      this.logger.info('Program Increment Manager initialized successfully');')      this.emit('initialized,');')} catch (error) {';
@@ -114,7 +114,7 @@ export class ProgramIncrementManager extends EventBus {
   /**
    * Shutdown the PI Manager and all services
    */
-  async shutdown():Promise<void> {
+  async shutdown(): Promise<void> {
     ')    this.logger.info('Shutting down Program Increment Manager');
     if (this.trackingTimer) {
       clearInterval(this.trackingTimer);
@@ -322,7 +322,7 @@ export class ProgramIncrementManager extends EventBus {
         this.state = {
           ...this.state,
           ...state,
-          activeARTs: {
+          activeARTs:  {
         ...this.state,
         activeARTs: setInterval(async () => {
       try {
@@ -332,7 +332,7 @@ export class ProgramIncrementManager extends EventBus {
 }
 }, this.configuration.trackingUpdateInterval);
 }
-  private registerEventHandlers():void {
+  private registerEventHandlers(): void {
     ')    this.eventBus.registerHandler('feature-completed, async (event) => {';
       await this.handleFeatureCompletion(event.payload.featureId);')';
 });

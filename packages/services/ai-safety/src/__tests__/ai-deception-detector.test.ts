@@ -1,23 +1,20 @@
 /**
  * @file Tests for comprehensive 25-pattern AI deception detection system (Jest Version).
  *
- * CONVERTED FROM VITEST:Uses Jest testing framework
+ * CONVERTED FROM VITEST: Uses Jest testing framework
  */
 
-import {
-  AIDeceptionDetector,
-  type AIInteractionData,
-} from '../ai-deception-detector';
+import { AIDeceptionDetector, type AIInteractionData,  } from '../ai-deception-detector';
 
 describe('AIDeceptionDetector - 25-Pattern System', () => {
-    ')  let detector:AIDeceptionDetector;
-  let mockInteraction:AIInteractionData;
+    ')  let detector: AIDeceptionDetector;
+  let mockInteraction: AIInteractionData;
 
   beforeEach(() => {
     detector = new AIDeceptionDetector();
     mockInteraction = {
       agentId: 'test-agent',      input: ','      response: ','      toolCalls:[],
-      timestamp:new Date(),
+      timestamp: new Date(),
       claimedCapabilities:[],
       actualWork:[],
 };
@@ -31,9 +28,9 @@ describe('AIDeceptionDetector - 25-Pattern System', () => {
 
       const alerts = await detector.detectDeception(mockInteraction);
 
-      // Debug:Log what alerts were actually generated
+      // Debug: Log what alerts were actually generated
       logger.info(
-        'Generated alerts: ','        alerts.map((a) => ({ type:a.type, severity:a.severity}))
+        'Generated alerts: ','        alerts.map((a) => ({ type: a.type, severity: a.severity}))
       );
 
       const toolOmnipotence = alerts.find((a) => a.type === 'TOOL_OMNIPOTENCE');')      expect(toolOmnipotence).toBeDefined();

@@ -88,7 +88,7 @@ export interface ExecutionTimeMetrics {
   readonly stages: Record<string, number>;
   readonly queueTime: number;
   readonly waitTime: number;
-  readonly percentiles: {
+  readonly percentiles:  {
     readonly p50: number;
     readonly p90: number;
     readonly p95: number;
@@ -248,7 +248,7 @@ export class PipelinePerformanceService {
   /**
    * Initialize service with lazy-loaded dependencies
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     if (this.initialized) return'; 
     try {
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent analysis
@@ -257,11 +257,11 @@ export class PipelinePerformanceService {
           enabled: await import('@claude-zen/foundation');
       this.performanceTracker = new PerformanceTracker();
       // Lazy load @claude-zen/brain for LoadBalancer - optimization')      const { LoadBalancer} = await import('@claude-zen/brain');
-      this.loadBalancer = new LoadBalancer(';')';
+      this.loadBalancer = new LoadBalancer(';)';
         strategy : 'intelligent,'
 '        enableHealthChecks: true;')      this.logger.info('Pipeline Performance Service initialized successfully');
 } catch (error) {
-      this.logger.error(';')';
+      this.logger.error(';)';
        'Failed to initialize Pipeline Performance Service:,';
         error
       );
@@ -271,12 +271,12 @@ export class PipelinePerformanceService {
   /**
    * Monitor pipeline performance with intelligent analysis
    */
-  async monitorPipelinePerformance():Promise<void> {
+  async monitorPipelinePerformance(): Promise<void> {
     if (!this.initialized) await this.initialize();
     const __timer = this.performanceTracker.startTimer(
      'pipeline_performance_monitoring'));
     try {
-      this.logger.info(';')';
+      this.logger.info(';)';
        'Monitoring pipeline performance with intelligent analysis'));
       // Get active pipelines to monitor
       const activePipelines = this.getActivePipelines();
@@ -294,7 +294,7 @@ export class PipelinePerformanceService {
       // Generate optimization recommendations
       await this.generateOptimizationRecommendations();
       this.performanceTracker.endTimer('pipeline_performance_monitoring');')      this.logger.info('Pipeline performance monitoring completed,';
-        pipelineCount: this.performanceTracker.startTimer(';')';
+        pipelineCount: this.performanceTracker.startTimer(';)';
      'pipeline_performance_analysis'));
     try {
       this.logger.info('Analyzing pipeline performance with AI insights,{';
@@ -318,17 +318,17 @@ export class PipelinePerformanceService {
         execution,
         detailedMetrics;
       );
-      const result: {
+      const result:  {
         pipelineId: this.performanceTracker.startTimer('performance_insights');
     try {
       // Use brain coordinator for comprehensive insights
       const insights = await this.brainCoordinator.generatePerformanceInsights({
         pipelineId,
-        performanceData: {
+        performanceData:  {
         overallPerformance: [')     'reduce_duration,';
      'improve_reliability,')     'increase_throughput,';
 ]
-  ):Promise<{
+  ): Promise<{
     optimizedConfiguration: this.performanceTracker.startTimer('pipeline_optimization');`;
     try {
       const analysis = this.performanceMetrics.get(pipelineId);
@@ -336,7 +336,7 @@ export class PipelinePerformanceService {
         throw new Error(
           `Performance analysis not found for pipeline: `${pipelineId})        );``;
 }
-      this.logger.info(';')';
+      this.logger.info(';)';
        'Optimizing pipeline performance with AI recommendations,';
         {
           pipelineId,
@@ -347,7 +347,7 @@ export class PipelinePerformanceService {
       const optimization =
         await this.brainCoordinator.optimizePipelinePerformance({
           pipelineId,
-          currentMetrics: {
+          currentMetrics:  {
         optimizedConfiguration: 60000): setInterval(async () => {
       try {
         await this.monitorPipelinePerformance();
@@ -361,7 +361,7 @@ export class PipelinePerformanceService {
   /**
    * Stop continuous performance monitoring
    */
-  stopContinuousMonitoring():void {
+  stopContinuousMonitoring(): void {
     if (this.monitoringTimer) {
       clearInterval(this.monitoringTimer);
       this.monitoringTimer = undefined;')      this.logger.info('Continuous performance monitoring stopped');
@@ -370,7 +370,7 @@ export class PipelinePerformanceService {
   /**
    * Shutdown service gracefully
    */
-  async shutdown():Promise<void> {
+  async shutdown(): Promise<void> {
     this.stopContinuousMonitoring();
     if (this.brainCoordinator?.shutdown) {
       await this.brainCoordinator.shutdown();
@@ -388,12 +388,12 @@ export class PipelinePerformanceService {
     return [];
 }
   private calculateDetailedMetrics(
-    execution: {
-      total: {
-      pipelinesPerHour: {
-      successRate: {
-      resourceEfficiency: {
-      cpu:{ average: await this.brainCoordinator.analyzePipelineTrends({
+    execution:  {
+      total:  {
+      pipelinesPerHour:  {
+      successRate:  {
+      resourceEfficiency:  {
+      cpu:  { average: await this.brainCoordinator.analyzePipelineTrends({
       execution,
       metrics,
       historicalData: this.historicalData.get(execution.context.pipelineId)|| [],
@@ -404,7 +404,7 @@ export class PipelinePerformanceService {
     execution: PipelineExecution,
     metrics: DetailedPerformanceMetrics,
     bottlenecks: BottleneckAnalysis[]
-  ):Promise<PerformanceRecommendation[]> {
+  ): Promise<PerformanceRecommendation[]> {
     // Use brain coordinator for intelligent recommendations
     const recommendations =
       await this.brainCoordinator.generatePerformanceRecommendations({
@@ -434,10 +434,10 @@ export class PipelinePerformanceService {
 }
     this.historicalData.set(execution.context.pipelineId, history);
 }
-  private analyzeCrossPipelineTrends():void {
+  private analyzeCrossPipelineTrends(): void {
     // Analyze trends across all pipelines for system-wide insights')    this.logger.debug('Analyzing cross-pipeline performance trends');
 }
-  private generateOptimizationRecommendations():void {
+  private generateOptimizationRecommendations(): void {
     // Generate system-wide optimization recommendations')    this.logger.debug('Generating optimization recommendations');
 }
   private calculateOverallPerformanceScore(

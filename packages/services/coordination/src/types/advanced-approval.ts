@@ -18,18 +18,18 @@ export interface ApprovalGateConfig {
   coordinationType: 'parallel' | 'sequential' | 'hybrid';
   requiredGates: string[];
   aiTeam: AIReviewerConfig[];
-  humanReviewers: {
+  humanReviewers:  {
     role: string;
     expertise: string[];
     weight: number;
   }[];
-  autoApprovalConditions?: {
+  autoApprovalConditions?:  {
     name: string;
     conditions: string[];
     priority: number;
   }[];
   requiredDocumentation: string[];
-  escalationRules?: {
+  escalationRules?:  {
     condition: string;
     action: string;
     stakeholders: string[];
@@ -40,7 +40,7 @@ export interface ApprovalGateConfig {
  * Advanced approval gate configurations for complex scenarios
  */
 export const ADVANCED_APPROVAL_GATES: Record<string, ApprovalGateConfig> = {
-  SECURITY_REVIEW: {
+  SECURITY_REVIEW:  {
     name: 'Security Review Gate',
     coordinationType: 'parallel',
     requiredGates: ['security_scan', 'manual_review'],
@@ -77,7 +77,7 @@ export const ADVANCED_APPROVAL_GATES: Record<string, ApprovalGateConfig> = {
     ]
   },
 
-  PRODUCTION_DEPLOYMENT: {
+  PRODUCTION_DEPLOYMENT:  {
     name: 'Production Deployment Gate',
     coordinationType: 'sequential',
     requiredGates: ['security_review', 'technical_review', 'business_approval'],
@@ -117,7 +117,7 @@ export const ADVANCED_APPROVAL_GATES: Record<string, ApprovalGateConfig> = {
     ]
   },
 
-  COMPLIANCE_AUDIT: {
+  COMPLIANCE_AUDIT:  {
     name: 'Compliance Audit Gate',
     coordinationType: 'hybrid',
     requiredGates: ['automated_compliance', 'manual_audit'],
@@ -172,7 +172,7 @@ export interface ApprovalCoordinationResult {
   taskId: string;
   overallDecision: 'approved' | 'rejected' | 'pending' | 'escalated';
   decisions: ApprovalDecision[];
-  coordinationMetrics: {
+  coordinationMetrics:  {
     totalReviewTime: number;
     aiReviewTime: number;
     humanReviewTime: number;

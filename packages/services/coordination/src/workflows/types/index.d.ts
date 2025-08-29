@@ -144,22 +144,22 @@ export interface ExecutionMetrics {
  * Resource usage tracking
  */
 export interface ResourceUsage {
-    cpu: {
+    cpu:  {
         peak: number;
         average: number;
         total: number;
     };
-    memory: {
+    memory:  {
         peak: number;
         average: number;
         total: number;
     };
-    disk: {
+    disk:  {
         read: number;
         write: number;
         storage: number;
     };
-    network: {
+    network:  {
         in: number;
         out: number;
         requests: number;
@@ -576,7 +576,7 @@ export interface WorkflowError extends Omit<ValidationError, 'type'> {
     phase: 'validation| execution| output' | ' cleanup';
     recoverable: boolean;
 }
-declare const _default: {
+declare const _default:  {
     WorkflowStatus: typeof WorkflowStatus;
     StepStatus: typeof StepStatus;
     ExecutionStrategy: any;

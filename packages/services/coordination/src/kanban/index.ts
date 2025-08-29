@@ -28,7 +28,9 @@
 export {
   KanbanEngine,
   type WorkflowKanbanEvents,
-} from './api/kanban-engine')// ============================================================================ = ''; 
+} from './api/kanban-engine';
+
+// =============================================================================
 // XSTATE MACHINE EXPORTS - For Advanced Integration
 // =============================================================================
 export {
@@ -37,7 +39,9 @@ export {
   createWorkflowMachine,
   WorkflowContextUtils,
   type WorkflowMachineContext,
-} from './state-machines/index')// ============================================================================ = ''; 
+} from './state-machines/index';
+
+// =============================================================================
 // COMPREHENSIVE TYPE EXPORTS - Full Kanban Domain Type System
 // =============================================================================
 export type {
@@ -67,7 +71,9 @@ export type {
   WorkflowKanbanConfig,
   WorkflowStatistics,
   WorkflowTask,
-} from './types/index')// ============================================================================ = ''; 
+} from './types/index';
+
+// =============================================================================
 // UTILITY EXPORTS - Immutable Operations and Validation
 // =============================================================================
 export {
@@ -82,21 +88,27 @@ export {
   ValidationUtils,
   WIPLimitsSchema,
   WorkflowTaskSchema,
-} from './utilities/index')// ============================================================================ = ''; 
+} from './utilities/index'; 
 // WORKFLOW CONSTANTS - Helper Functions and Validation
 // =============================================================================
 /**
  * Default task states in workflow order
  */
 export const DEFAULT_WORKFLOW_STATES: [
- 'backlog,') 'analysis,';
- 'development,') 'testing,';
- 'review,') 'deployment,';
- 'done,';
+  'backlog',
+  'analysis', 
+  'development',
+  'testing',
+  'review',
+  'deployment',
+  'done'
 ];
+
 /**
  * Blocked and expedite states (special handling)
- */')export const SPECIAL_WORKFLOW_STATES: ['blocked,' expedite];;
+ */
+export const SPECIAL_WORKFLOW_STATES: ['blocked', 'expedite'];
+
 /**
  * All supported workflow states
  */
@@ -104,20 +116,26 @@ export const ALL_WORKFLOW_STATES: [
   ...DEFAULT_WORKFLOW_STATES,
   ...SPECIAL_WORKFLOW_STATES,
 ];
+
 /**
  * Task priority levels in order (highest to lowest)
  */
-export const TASK_PRIORITIES: [';];;
- 'critical,') 'high,';
- 'medium,') 'low,';
+export const TASK_PRIORITIES: [
+  'critical',
+  'high',
+  'medium', 
+  'low'
 ];
+
 /**
  * Available optimization strategies
  */
 export const OPTIMIZATION_STRATEGIES: [
- 'wip_reduction,') 'bottleneck_removal,';
- 'parallel_processing,') 'batch_optimization,';
- 'cycle_time_reduction,';
+  'wip_reduction',
+  'bottleneck_removal',
+  'parallel_processing',
+  'batch_optimization',
+  'cycle_time_reduction'
 ];
 // =============================================================================
 // VALIDATION UTILITIES - Domain Validation Functions
@@ -132,44 +150,45 @@ export const isValidWorkflowState = (state: string): state is TaskState => {
  */
 export const isValidTaskPriority = (
   priority: string
-):priority is TaskPriority => {
+): priority is TaskPriority => {
   return TASK_PRIORITIES.includes(priority as TaskPriority);
-'};;
+};;
 /**
  * Validate if an optimization strategy is valid
  */
 export const isValidOptimizationStrategy = (
   strategy: string
-):strategy is OptimizationStrategy => {
+): strategy is OptimizationStrategy => {
   return OPTIMIZATION_STRATEGIES.includes(strategy as OptimizationStrategy);
-'};;
+};;
 /**
  * Get next state in workflow (or null if at end)
  */
 export const getNextWorkflowState = (
   currentState: TaskState
-):TaskState| null => {
+): TaskState | null => {
   const currentIndex = DEFAULT_WORKFLOW_STATES.indexOf(currentState);
   if (
-    currentIndex === -1|| 
+    currentIndex === -1 || 
     currentIndex === DEFAULT_WORKFLOW_STATES.length - 1
   ) {
     return null;
-}
+  }
   return DEFAULT_WORKFLOW_STATES[currentIndex + 1];
-'};;
+};
+
 /**
  * Get previous state in workflow (or null if at beginning)
  */
 export const getPreviousWorkflowState = (
   currentState: TaskState
-):TaskState| null => {
+): TaskState | null => {
   const currentIndex = DEFAULT_WORKFLOW_STATES.indexOf(currentState);
   if (currentIndex <= 0) {
     return null;
-}
+  }
   return DEFAULT_WORKFLOW_STATES[currentIndex - 1];
-'};;
+};;
 /**
  * Check if state transition is valid (follows workflow order)
  */
@@ -189,10 +208,10 @@ export const isValidStateTransition = (
   const toIndex = DEFAULT_WORKFLOW_STATES.indexOf(toState);
   if (fromIndex === -1|| toIndex === -1) {
     return false;
-}
+  }
   // Allow forward movement, backward movement (for rework), or staying in same state
-  return Math.abs(toIndex - fromIndex) <= 2|| toIndex >= fromIndex;
-'};;
+  return Math.abs(toIndex - fromIndex) <= 2 || toIndex >= fromIndex;
+};;
 // =============================================================================
 // PACKAGE METADATA - Shared Flow Visualization Information
 // =============================================================================
@@ -200,5 +219,16 @@ export const isValidStateTransition = (
  * Shared flow visualization engine metadata and feature information
  */
 export const FLOW_PACKAGE_INFO = {
-  name : '@claude-zen/coordination/flow')  version,  description,   'Shared flow visualization engine with XState-powered state management,';
-  features: 'XState state machines + EventEmitter3 events',)    domain : 'Workflow coordination (shared across coordination systems)')    api : 'Clean interfaces hiding XState complexity')    integration,},')'} as const;';
+  name: '@claude-zen/coordination/flow',
+  version: '1.0.0',
+  description: 'Shared flow visualization engine with XState-powered state management',
+  features: [
+    'XState state machines + EventEmitter3 events',
+    'Real-time workflow coordination',
+    'WIP limits and bottleneck detection',
+    'Flow metrics and performance tracking'
+  ],
+  domain: 'Workflow coordination (shared across coordination systems)',
+  api: 'Clean interfaces hiding XState complexity',
+  integration: 'Used by TaskMaster, SAFe, and Workflows'
+} as const;

@@ -16,9 +16,9 @@ export type SafeLogger = Logger;
 /**
  * Default logger configuration for SAFe Framework
  */
-export declare const defaultLoggerConfig: {
+export declare const defaultLoggerConfig:  {
     level: "info ";
-    ';': any;
+    ';: any;
     'json ': any;
     const: any;
     true: any;

@@ -18,7 +18,7 @@ import type { SystemEvent} from '@claude-zen/event-system')import type {';
  * Base approval gate event extending the unified event system
  */
 export interface ApprovalGateEvent extends SystemEvent {
-  type: 'approval: 'request',)  status : 'pending')  details: 'approval: 'success',)  details: 'approval: 'human-review',)  status : 'pending')  details: 'approval: 'success',)  details: 'approval: 'overflow-handling',)  status : 'approval: 'configure',)  status : 'success')  details: 'approval: 'bottleneck-detection',)  status : 'warning')  details: 'approval: 'capacity-monitoring',)  status : 'warning' | ' critical')  details: {';
+  type: 'approval: 'request',)  status : 'pending')  details: 'approval: 'success',)  details: 'approval: 'human-review',)  status : 'pending')  details: 'approval: 'success',)  details: 'approval: 'overflow-handling',)  status : 'approval: 'configure',)  status : 'success')  details: 'approval: 'bottleneck-detection',)  status : 'warning')  details: 'approval: 'capacity-monitoring',)  status : 'warning' | ' critical')  details:  {';
     utilizationPercent: number;
     capacityThreshold: number;
     timeToCapacity: number;
@@ -50,7 +50,7 @@ export function createApprovalRequestedEvent(
     timestamp: 'bottleneck-detection',)    status : 'warning,'
 '    timestamp: 'capacity-monitoring',)    status: ' warning,',
     timestamp: Date.now(),
-    details: {
+    details:  {
       utilizationPercent,
       capacityThreshold,
       timeToCapacity,',      recommendedActions: [')       'Pause task intake,';
@@ -66,7 +66,7 @@ export function createApprovalRequestedEvent(
  * Event type constants for type-safe event handling
  */
 export const APPROVAL_EVENTS = {
-  REQUESTED = 'approval: 'approval: 'approval: 'approval: 'approval: 'approval: 'approval: 'approval: {
+  REQUESTED = 'approval: 'approval: 'approval: 'approval: 'approval: 'approval: 'approval: 'approval:  {
   CAPACITY_ALERT : 'critical 'as const,';
   QUEUE_OVERFLOW : 'high 'as const,';
   BOTTLENECK : 'high 'as const,';

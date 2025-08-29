@@ -101,13 +101,13 @@ export type SecurityAssessmentType =|'vulnerability_scan| penetration_test| code
   readonly category: string;
   readonly status : 'open| in_progress| resolved' | ' false_positive')  readonly cwe?:string;';
   readonly cvssScore?:CVSSScore;
-  readonly location?:{
+  readonly location?:  {
     readonly filePath: string;
     readonly lineNumber: number;
     readonly columnNumber: number;
     readonly snippet: string;
 };
-  readonly impact?:{
+  readonly impact?:  {
     readonly confidentiality: string;
     readonly integrity: string;
     readonly availability: string;

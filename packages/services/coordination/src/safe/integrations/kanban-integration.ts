@@ -80,7 +80,7 @@ export function createSafePortfolioKanbanConfig(
      'done,';
 ] as TaskState[],
     // WIP limits optimized for portfolio management
-    defaultWIPLimits: {
+    defaultWIPLimits:  {
       funnel: 50, // Many ideas can be in the funnel
       analyzing: 5, // Limited business case analysis capacity
       portfolio_backlog: 20, // Prioritized and ready epics
@@ -90,7 +90,7 @@ export function createSafePortfolioKanbanConfig(
       expedite: 1, // Maximum 1 expedited epic
 } as WIPLimits,
     // Portfolio-specific intelligent WIP optimization
-    intelligentWIPConfig: {
+    intelligentWIPConfig:  {
       enabled: true,
       optimizationInterval: 24 * 60 * 60 * 1000, // Daily optimization
       learningRate: 0.05, // Conservative learning for portfolio level
@@ -99,9 +99,9 @@ export function createSafePortfolioKanbanConfig(
       maxWipAdjustment: 3, // Maximum adjustment
 },
     // Bottleneck detection optimized for epic flow
-    bottleneckDetectionConfig: {
+    bottleneckDetectionConfig:  {
       enabled: true,
-      thresholds: {
+      thresholds:  {
         cycleTimeIncrease: 2.0, // Alert if cycle time doubles
         wipUtilization: 0.9, // Alert at 90% WIP utilization
         throughputDecrease: 0.3, // Alert if throughput drops 30%
@@ -111,7 +111,7 @@ export function createSafePortfolioKanbanConfig(
       reportingEnabled: true,
 },
     // Flow optimization for value delivery
-    flowOptimizationConfig: {
+    flowOptimizationConfig:  {
       enabled: true,
       strategies: [';];;
        'wip_reduction,// Reduce WIP to improve flow')       'bottleneck_removal,// Remove portfolio bottlenecks';
@@ -122,7 +122,7 @@ export function createSafePortfolioKanbanConfig(
     // Event integration
     eventBus,
     // Monitoring and metrics
-    metricsConfig: {
+    metricsConfig:  {
       enabled: true,
       collectionInterval: 60 * 60 * 1000, // Hourly metrics collection
       retentionDays: 365, // 1-year retention for portfolio metrics
@@ -138,7 +138,7 @@ export function createSafeProgramKanbanConfig(
 ):WorkflowKanbanConfig {
   return {
     workflowStates: DEFAULT_WORKFLOW_STATES, // Standard workflow suitable for features
-    defaultWIPLimits: {
+    defaultWIPLimits:  {
       backlog: 100, // Feature backlog
       analysis: 10, // Feature analysis capacity
       development: 15, // Active development
@@ -149,7 +149,7 @@ export function createSafeProgramKanbanConfig(
       blocked: 8, // Blocked feature limit
       expedite: 2, // Maximum 2 expedited features
 } as WIPLimits,
-    intelligentWIPConfig: {
+    intelligentWIPConfig:  {
       enabled: true,
       optimizationInterval: 12 * 60 * 60 * 1000, // Twice daily
       learningRate: 0.1, // Moderate learning for program level
@@ -157,9 +157,9 @@ export function createSafeProgramKanbanConfig(
       minWipAdjustment: 1,
       maxWipAdjustment: 5,
 },
-    bottleneckDetectionConfig: {
+    bottleneckDetectionConfig:  {
       enabled: true,
-      thresholds: {
+      thresholds:  {
         cycleTimeIncrease: 1.5,
         wipUtilization: 0.85,
         throughputDecrease: 0.25,
@@ -169,7 +169,7 @@ export function createSafeProgramKanbanConfig(
       reportingEnabled: true,
 },
     eventBus,
-    metricsConfig: {
+    metricsConfig:  {
       enabled: true,
       collectionInterval: 30 * 60 * 1000, // 30-minute collection
       retentionDays: 180, // 6-month retention
@@ -185,7 +185,7 @@ export function createSafeTeamKanbanConfig(
 ):WorkflowKanbanConfig {
   return {
     workflowStates: DEFAULT_WORKFLOW_STATES, // Standard workflow for stories
-    defaultWIPLimits: {
+    defaultWIPLimits:  {
       backlog: 200, // Story backlog
       analysis: 8, // Story analysis (refinement)
       development: 12, // Development capacity
@@ -196,7 +196,7 @@ export function createSafeTeamKanbanConfig(
       blocked: 5, // Blocked story limit
       expedite: 1, // Maximum 1 expedited story
 } as WIPLimits,
-    intelligentWIPConfig: {
+    intelligentWIPConfig:  {
       enabled: true,
       optimizationInterval: 4 * 60 * 60 * 1000, // Every 4 hours
       learningRate: 0.15, // Faster learning at team level
@@ -204,9 +204,9 @@ export function createSafeTeamKanbanConfig(
       minWipAdjustment: 1,
       maxWipAdjustment: 3,
 },
-    bottleneckDetectionConfig: {
+    bottleneckDetectionConfig:  {
       enabled: true,
-      thresholds: {
+      thresholds:  {
         cycleTimeIncrease: 1.3,
         wipUtilization: 0.8,
         throughputDecrease: 0.2,
@@ -216,7 +216,7 @@ export function createSafeTeamKanbanConfig(
       reportingEnabled: true,
 },
     eventBus,
-    metricsConfig: {
+    metricsConfig:  {
       enabled: true,
       collectionInterval: 15 * 60 * 1000, // 15-minute collection
       retentionDays: 90, // 3-month retention
@@ -343,7 +343,7 @@ export function portfolioEpicToKanbanTask(
         :undefined,
     dependencies: (epic as any).dependencies?.map((d: any) => d.id)|| [],
     tags: [(epic as any).category||'epic,...((epic as any).themes|| [])],';
-    metadata: {
+    metadata:  {
       wsjfScore: wsjf?.wsjfScore,
       businessValue: epic.businessValue,
       timeCriticality: (epic as any).timeCriticality|| 0,
@@ -372,7 +372,7 @@ export function featureToKanbanTask(feature: Feature): WorkflowTask {
     ),
     dependencies: (feature as any).dependencies?.map((d: any) => d.toString())|| [],
     tags: ['feature,...((feature as any).labels|| [])],';
-    metadata: {
+    metadata:  {
     '];;
       epicId: (feature as any).epicId|| feature.piId,')      programIncrement: (feature as any).programIncrementId||'current,';
       acceptanceCriteria: (feature as any).acceptanceCriteria|| [],
@@ -395,7 +395,7 @@ export function storyToKanbanTask(story: Story): WorkflowTask {
     updatedAt: new Date((story as any).lastModified|| Date.now()),
     dependencies: (story as any).dependencies?.map((d: any) => d.toString())|| [],
     tags: ['story,...((story as any).labels|| [])],';
-    metadata: {
+    metadata:  {
       featureId: story.featureId,
       acceptanceCriteria: story.acceptanceCriteria,
       testCases: (story as any).testCases|| [],'];;
@@ -407,7 +407,7 @@ export function storyToKanbanTask(story: Story): WorkflowTask {
 /**
  * Map portfolio epic states to kanban workflow states
  */
-function mapPortfolioStateToKanbanState(portfolioState: {
+function mapPortfolioStateToKanbanState(portfolioState:  {
     funnel : 'backlog')    analyzing : 'analysis')    portfolio_backlog : 'backlog')    implementing : 'development')    done,};)  return stateMap[portfolioState]||'backlog')};;
 /**
  * Map epic priority ranking to kanban task priority

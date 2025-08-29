@@ -84,7 +84,7 @@ export interface BudgetCycle {
   readonly cycleType : 'annual| quarterly| project_based' | ' continuous')  readonly startMonth: number; // 1-12';
   readonly planningHorizon: number; // months
   readonly approvalProcess: string[];
-  readonly budgetSize: { min: number; max: number};
+  readonly budgetSize:  { min: number, max: number};
 }
 // =============================================================================
 // MARKET OPPORTUNITY AND STRATEGY

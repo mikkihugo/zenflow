@@ -92,7 +92,7 @@ export interface KanbanContext {
  * Event definitions for the kanban system
  */
 export interface WorkflowKanbanEvents {
-    'kanban: initialized: {': any;
+    'kanban: initialized:  {': any;
     timestamp: Date;
     config: WorkflowKanbanConfig;
 }

@@ -14,10 +14,10 @@
     data: generateUUID();
     const versionId = generateUUID();
     // Create initial version
-    const initialVersion: {
+    const initialVersion:  {
       id: 'Initial version,',
 '      createdBy,',      createdAt: 'draft,',
-'      performance: {
+'      performance:  {
       id: await this.getPromptTemplate(promptId);
     if (!template) {
       throw new Error(`Prompt template `${promptId} not found``);')};;
@@ -25,7 +25,7 @@
     await this.checkPermission(template, createdBy,'edit');
     // Generate next version number
     const nextVersion = this.generateNextVersion(template.versions);
-    const newVersion: {
+    const newVersion:  {
       id: 'draft,',
 '      performance: new Date();
     // Start approval workflow if configured
@@ -44,9 +44,9 @@
     if (currentAllocation + data.trafficAllocation > 1.0) {
     ')      throw new Error('Total traffic allocation cannot exceed 100%');
 }
-    const variant: {
+    const variant:  {
       id: new Date();
-    await this.createAuditEntry(';')';
+    await this.createAuditEntry(';)';
       promptId,')     'variant_created,
       createdBy,
       auditContext,
@@ -54,7 +54,7 @@
         variantName: await this.getPromptTemplate(promptId);
     if (!template) {
     `)      throw new Error(`Prompt template ${promptId} not found``);')};)    await this.checkPermission(template, authorId,'edit');
-    const draft: {
+    const draft:  {
       id: 'pending,',
       createdAt: await this.getPromptTemplate(promptId);
     if (!template) {
@@ -127,7 +127,7 @@
 }
   // Private helper methods
   private async checkPermission(
-    template: 'view| edit| approve',)  ):Promise<void> {';
+    template: 'view| edit| approve',)  ): Promise<void> {';
     const { accessControl} = template;
     const hasPermission = false;
     switch (action) {
@@ -168,12 +168,12 @@
     return activeVariants[0]; // Fallback
 }
   private async createAuditEntry(
-    promptId: {}
-  ):Promise<void> {
-    const auditEntry: {
+    promptId:  {}
+  ): Promise<void> {
+    const auditEntry:  {
       id: 'prompt_draft,',
 '      collaborators: draft.collaborators,';
-      permissions: {
+      permissions:  {
         canEdit: true,
         canComment: true,
         canView: true,',},';
@@ -182,12 +182,12 @@
     template: PromptTemplate,
     version: PromptVersion,
     createdBy: string
-  ):Promise<void> 
+  ): Promise<void> 
     if (!template.teamworkConfig?.approvalWorkflowId) return;
     // Start workflow using the workflow engine
     await this.workflowEngine.startWorkflow({
       workflowId: template.teamworkConfig.approvalWorkflowId,
-      context: {
+      context:  {
         promptId: template.id,
         versionId: version.id,
         createdBy,
@@ -195,33 +195,33 @@
 },
 });
   // Database operations
-  private async createTables():Promise<void> 
-    // Create tables for prompt management with SOC2 compliance')    await this.database.schema.createTableIfNotExists(';')';
+  private async createTables(): Promise<void> 
+    // Create tables for prompt management with SOC2 compliance')    await this.database.schema.createTableIfNotExists(';)';
      'prompt_templates,';
       (table: any) => {
         table.uuid('id').primary(');)        table.string('name').notNullable(');')        table.text('description');')        table.string('gate_type').notNullable(');')        table.uuid('active_version_id');')        table.json('access_control').notNullable(');')        table.json('teamwork_config');
         table.timestamps(true, true);')        table.uuid('tenant_id');')        table.index(['gate_type]);')        table.index(['tenant_id]);'];;
 }
-    );')    await this.database.schema.createTableIfNotExists(';')';
+    );')    await this.database.schema.createTableIfNotExists(';)';
      'prompt_versions,';
       (table: any) => {
         table.uuid('id').primary(');)        table.uuid('prompt_id').notNullable(');')        table.string('version').notNullable(');')        table.text('content').notNullable(');')        table.text('description');')        table.uuid('created_by').notNullable(');')        table.timestamp('created_at').notNullable(');')        table.uuid('approved_by');')        table.timestamp('approved_at');')        table.string('status').notNullable(');')        table.json('performance').notNullable(');')        table.json('config').notNullable(');')        table.json('tags');')        table.json('metadata');
         table')          .foreign('prompt_id')')          .references('prompt_templates.id')')          .onDelete('CASCADE');')        table.index(['prompt_id,' version]);')        table.index(['status]);'];;
 }
-    );')    await this.database.schema.createTableIfNotExists(';')';
+    );')    await this.database.schema.createTableIfNotExists(';)';
      'prompt_variants,';
       (table: any) => {
         table.uuid('id').primary(');)        table.string('name').notNullable(');')        table.uuid('version_id').notNullable(');')        table.decimal('traffic_allocation,5, 4).notNullable(');')        table.json('metrics').notNullable(');')        table.boolean('is_active').defaultTo(true');')        table.timestamp('created_at').notNullable(');')';
         table')          .foreign('version_id')')          .references('prompt_versions.id')')          .onDelete('CASCADE');
 }
     );
-    await this.database.schema.createTableIfNotExists(';')';
+    await this.database.schema.createTableIfNotExists(';)';
      'prompt_audit_log,';
       (table: any) => {
         table.uuid('id').primary(');)        table.uuid('prompt_id').notNullable(');')        table.string('action').notNullable(');')        table.uuid('user_id').notNullable(');')        table.timestamp('timestamp').notNullable(');')        table.string('ip_address');')        table.text('user_agent');')        table.string('session_id');')        table.json('changes');')        table.text('reason');')        table.string('approval_reference');')        table.string('risk_assessment');')        table.json('metadata');
         table')          .foreign('prompt_id')')          .references('prompt_templates.id')')          .onDelete('CASCADE');')        table.index(['prompt_id,' timestamp]);')        table.index(['user_id,' timestamp]);')        table.index(['action]);'];;
 }
-    );')    await this.database.schema.createTableIfNotExists(';')';
+    );')    await this.database.schema.createTableIfNotExists(';)';
      'prompt_drafts,';
       (table: any) => {
         table.uuid('id').primary(');)        table.uuid('prompt_id').notNullable(');')        table.uuid('author_id').notNullable(');')        table.string('title').notNullable(');')        table.text('content').notNullable(');')        table.json('config').notNullable(');')        table.json('collaborators');')        table.json('comments');')        table.string('review_status').notNullable(');')        table.uuid('workflow_instance_id');
@@ -271,18 +271,18 @@
 });
   private async getPromptTemplate(
     promptId: string
-  ):Promise<PromptTemplate| null> 
+  ): Promise<PromptTemplate| null> 
     // Implementation would fetch from database and reconstruct object
     // This is a placeholder
     return null;
   private async getPromptTemplatesByGateType(
     gateType: string
-  ):Promise<PromptTemplate[]> 
+  ): Promise<PromptTemplate[]> 
     // Implementation would fetch templates by gate type
     return [];
   private async getPromptTemplateByVersionId(
     versionId: string
-  ):Promise<PromptTemplate| null> 
+  ): Promise<PromptTemplate| null> 
     // Implementation would fetch template by version ID
     return null;
   private async storeAuditEntry(entry: PromptAuditEntry): Promise<void> ')    await this.database('prompt_audit_log').insert( {';

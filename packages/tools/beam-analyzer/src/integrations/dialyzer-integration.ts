@@ -4,9 +4,9 @@
  */
 
 
-import { spawn} from 'node:child_process';
-import { promises as fs} from 'node:fs';
-import { err, getLogger, ok, type Result} from '@claude-zen/foundation';
+import { spawn } from 'node: child_process';
+import { promises as fs } from 'node: fs';
+import { err, getLogger, ok, type Result } from '@claude-zen/foundation';
 
 import type {
   BeamAnalysisContext,
@@ -22,16 +22,15 @@ export class DialyzerIntegration {
   /**
    * Run Dialyzer analysis on a BEAM project
    */
-  async analyze(
-    project:BeamProject,
-    _context:BeamAnalysisContext,
+  async analyze(project: BeamProject,
+    _context: BeamAnalysisContext,
     _options:{
       buildPlt?:boolean;
       apps?:string[];
       warnings?:DialyzerWarningType[];
       outputFormat?:'formatted'|' raw;
 } = {}
-  ):Promise<Result<DialyzerResult, BeamAnalysisError>> {
+  ): Promise<Result<DialyzerResult, BeamAnalysisError>> {
     try {
       this.logger.info(
         `Running Dialyzer analysis for ${project.language} project``
@@ -59,24 +58,24 @@ export class DialyzerIntegration {
       // 3. Parse results
       const warnings = this.parseDialyzerOutput(analysisResult.value);
 
-      const result:DialyzerResult = {
+      const result: DialyzerResult = {
         warnings,
         successTypings:[], // Would be extracted from verbose output
         pltInfo:{
-          file:pltPath,
+          file: pltPath,
           modules:[], // Would be extracted from PLT info
-          lastModified:new Date(),
+          lastModified: new Date(),
 },
 };
 
       this.logger.info(
-        `Dialyzer analysis completed:${warnings.length} warnings found``
+        `Dialyzer analysis completed: ${warnings.length} warnings found``
       );
       return ok(result);
 } catch (error) {
       this.logger.error('Dialyzer analysis failed:', error);')      return err({
         code: 'ANALYSIS_FAILED',        message:`Dialyzer analysis failed: ${error instanceof Error ? error.message : String(error)}`,`
-        tool: 'dialyzer',        originalError:error instanceof Error ? error : undefined,
+        tool: 'dialyzer',        originalError: error instanceof Error ? error : undefined,
 });
 }
 }
@@ -86,7 +85,7 @@ export class DialyzerIntegration {
     ')        resolve(
           err(
             code: 'TOOL_NOT_FOUND',            message:`Failed to spawn dialyzer: $error.message`,`
-            tool: 'dialyzer',            originalError:error,)
+            tool: 'dialyzer',            originalError: error,)
         );
 });
 });
@@ -95,16 +94,15 @@ export class DialyzerIntegration {
   /**
    * Run Dialyzer analysis
    */
-  private async runDialyzerAnalysis(
-    project:BeamProject,
-    context:BeamAnalysisContext,
-    pltPath:string,
+  private async runDialyzerAnalysis(project: BeamProject,
+    context: BeamAnalysisContext,
+    pltPath: string,
     options:{
       apps?:string[];
       warnings?:DialyzerWarningType[];
       outputFormat?:'formatted'|' raw;
 }
-  ):Promise<Result<string, BeamAnalysisError>> {
+  ): Promise<Result<string, BeamAnalysisError>> {
     return new Promise((resolve) => {
       const args = ['--plt', pltPath];')
       // Add warning flags
@@ -130,11 +128,11 @@ export class DialyzerIntegration {
         args.push('ebin',    '*/ebin',    '_build/*/lib/*/ebin');')}
 
       this.logger.debug(
-        `Running Dialyzer with command:dialyzer $args.join(' ')``
+        `Running Dialyzer with command: dialyzer $args.join(' ')``
       );
 
       const child = spawn('dialyzer', args, {
-    ')        cwd:context.workingDirectory,
+    ')        cwd: context.workingDirectory,
         stdio:['ignore',    'pipe',    'pipe'],
 });
 
@@ -168,7 +166,7 @@ export class DialyzerIntegration {
     ')        resolve(
           err(
             code: 'TOOL_NOT_FOUND',            message:`Failed to spawn dialyzer: $error.message`,`
-            tool: 'dialyzer',            originalError:error,)
+            tool: 'dialyzer',            originalError: error,)
         );
 });
 });
@@ -177,8 +175,8 @@ export class DialyzerIntegration {
   /**
    * Parse Dialyzer output into structured warnings
    */
-  private parseDialyzerOutput(output:string): DialyzerWarning[] {
-    const warnings:DialyzerWarning[] = [];
+  private parseDialyzerOutput(output: string): DialyzerWarning[] {
+    const warnings: DialyzerWarning[] = [];
     const lines = output.split('\n');')
     for (const line of lines) {
       if (line.trim() === '||line.startsWith('  ')) {
@@ -197,11 +195,11 @@ export class DialyzerIntegration {
   /**
    * Parse a single Dialyzer warning line
    */
-  private parseDialyzerWarningLine(line:string): DialyzerWarning|null {
+  private parseDialyzerWarningLine(line: string): DialyzerWarning|null {
     // Dialyzer warning format:
-    // filename.erl:line: Warning: warning_type message
+    // filename.erl: line: Warning: warning_type message
     // or
-    // filename.erl:line: function_name/arity: Warning: warning_type message
+    // filename.erl: line: function_name/arity: Warning: warning_type message
 
     const match = line.match(
       /^([^:]+):(\d+):\s*(?:([^:]+):\s*)?Warning:\s*(.+)$/
@@ -216,15 +214,15 @@ export class DialyzerIntegration {
     // Extract warning type from message
     const warningType = this.extractWarningType(message);
 
-    const location:BeamLocation = {
+    const location: BeamLocation = {
       file,
-      line:lineNum,
-      context:functionSig||undefined,
+      line: lineNum,
+      context: functionSig||undefined,
 };
 
     return {
-      type:warningType,
-      function:functionSig||'unknown',      message:message.trim(),
+      type: warningType,
+      function: functionSig||'unknown',      message: message.trim(),
       location,
 };
 }
@@ -232,7 +230,7 @@ export class DialyzerIntegration {
   /**
    * Extract Dialyzer warning type from message
    */
-  private extractWarningType(message:string): DialyzerWarningType {
+  private extractWarningType(message: string): DialyzerWarningType {
     const lowerMessage = message.toLowerCase();
 
     if (
@@ -274,9 +272,8 @@ export class DialyzerIntegration {
   /**
    * Get PLT information
    */
-  async getPltInfo(
-    pltPath:string
-  ):Promise<Result<{ modules: string[]; size: number}, BeamAnalysisError>> {
+  async getPltInfo(pltPath: string
+  ): Promise<Result<{ modules: string[]; size: number}, BeamAnalysisError>> {
     return new Promise((resolve) => {
       const child = spawn('dialyzer', ['--plt_info',    '--plt', pltPath], {
     ')        stdio:['ignore',    'pipe',    'pipe'],
@@ -299,7 +296,7 @@ export class DialyzerIntegration {
           resolve(
             ok({
               modules,
-              size:stdout.length, // Approximation
+              size: stdout.length, // Approximation
 })
           );
 } else {
@@ -315,7 +312,7 @@ export class DialyzerIntegration {
     ')        resolve(
           err(
             code: 'TOOL_NOT_FOUND',            message:`Failed to get PLT info: $error.message`,`
-            tool: 'dialyzer',            originalError:error,)
+            tool: 'dialyzer',            originalError: error,)
         );
 });
 });
@@ -324,8 +321,8 @@ export class DialyzerIntegration {
   /**
    * Extract module list from PLT info output
    */
-  private extractModulesFromPltInfo(output:string): string[] {
-    const modules:string[] = [];
+  private extractModulesFromPltInfo(output: string): string[] {
+    const modules: string[] = [];
     const lines = output.split('\n');')
     for (const line of lines) {
       const match = line.match(/^\s*([_a-z][\d_a-z]*)\s*$/);
@@ -337,7 +334,7 @@ export class DialyzerIntegration {
     return modules;
 }
 
-  private async fileExists(filePath:string): Promise<boolean> {
+  private async fileExists(filePath: string): Promise<boolean> {
     try {
       await fs.access(filePath);
       return true;

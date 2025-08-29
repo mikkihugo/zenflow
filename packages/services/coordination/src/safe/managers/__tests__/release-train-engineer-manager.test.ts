@@ -142,7 +142,7 @@ import { beforeEach, describe, expect, it, vi} from 'vitest')import type {
     const __planningConfig = {
       participants:[],
       durationHours:16,
-      objectives:[],')      businessContext: ','      constraints:[],
+      objectives:[],')      businessContext: '      constraints:[],
 };
     await expect(
       disabledManager.facilitatePIPlanning({

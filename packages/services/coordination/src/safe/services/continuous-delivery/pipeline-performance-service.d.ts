@@ -61,7 +61,7 @@ export interface ExecutionTimeMetrics {
     readonly stages: Record<string, number>;
     readonly queueTime: number;
     readonly waitTime: number;
-    readonly percentiles: {
+    readonly percentiles:  {
         readonly p50: number;
         readonly p90: number;
         readonly p95: number;

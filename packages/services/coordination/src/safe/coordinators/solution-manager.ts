@@ -96,22 +96,22 @@ export interface ValueDeliveryDashboard {
   solutionId: string;
   strategicAlignment: number;
   deliveryVelocity: number;
-  qualityMetrics: {
+  qualityMetrics:  {
     defectDensity: number;
     customerSatisfaction: number;
     technicalDebt: number;
   };
-  flowMetrics: {
+  flowMetrics:  {
     leadTime: number;
     cycleTime: number;
     throughput: number;
   };
-  businessMetrics: {
+  businessMetrics:  {
     revenueImpact: number;
     costReduction: number;
     marketShare: number;
   };
-  technicalMetrics: {
+  technicalMetrics:  {
     codeQuality: number;
     testCoverage: number;
     deploymentFrequency: number;
@@ -122,11 +122,11 @@ export interface ValueDeliveryDashboard {
  * Solution Manager Events
  */
 export interface SolutionManagerEvents {
-  'solution:strategic-theme-analyzed': { themeId: string; decomposition: any };
-  'solution:portfolio-epic-created': { epicId: string; epic: PortfolioEpic };
-  'solution:program-increment-planned': { piId: string; pi: ProgramIncrement };
-  'solution:coordination-established': { solutionId: string; coordination: SolutionCoordination };
-  'solution:value-delivered': { solutionId: string; metrics: ValueDeliveryDashboard };
+  'solution:strategic-theme-analyzed':  { themeId: string, decomposition: any };
+  'solution:portfolio-epic-created':  { epicId: string, epic: PortfolioEpic };
+  'solution:program-increment-planned':  { piId: string, pi: ProgramIncrement };
+  'solution:coordination-established':  { solutionId: string, coordination: SolutionCoordination };
+  'solution:value-delivered':  { solutionId: string, metrics: ValueDeliveryDashboard };
 }
 
 /**
@@ -173,7 +173,7 @@ export class SolutionManager extends EventBus {
     
     this.emit('solution:strategic-theme-analyzed', {
       themeId: theme.id,
-      decomposition: { portfolioEpics, estimatedValue, complexity }
+      decomposition:  { portfolioEpics, estimatedValue, complexity }
     });
 
     return { portfolioEpics, estimatedValue, complexity };
@@ -263,22 +263,22 @@ export class SolutionManager extends EventBus {
       solutionId,
       strategicAlignment: this.calculateStrategicAlignment(solutionId),
       deliveryVelocity: flowMetrics.throughput,
-      qualityMetrics: {
+      qualityMetrics:  {
         defectDensity: technicalMetrics.defectDensity || 2.1,
         customerSatisfaction: businessMetrics.customerSatisfaction || 4.2,
         technicalDebt: technicalMetrics.technicalDebt || 15
       },
-      flowMetrics: {
+      flowMetrics:  {
         leadTime: flowMetrics.leadTime,
         cycleTime: flowMetrics.cycleTime,
         throughput: flowMetrics.throughput
       },
-      businessMetrics: {
+      businessMetrics:  {
         revenueImpact: businessMetrics.revenueImpact,
         costReduction: businessMetrics.costReduction,
         marketShare: businessMetrics.marketShare
       },
-      technicalMetrics: {
+      technicalMetrics:  {
         codeQuality: technicalMetrics.codeQuality,
         testCoverage: technicalMetrics.testCoverage,
         deploymentFrequency: technicalMetrics.deploymentFrequency

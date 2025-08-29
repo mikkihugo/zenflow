@@ -15,39 +15,24 @@
  * @version 1.0.0
  */
 
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from 'vitest';
-import {
-  AgentHealthMonitor,
-  createAgentHealthMonitor,
-  DEFAULT_HEALTH_MONITOR_CONFIG,
-} from '../agent-health-monitor';
-import {
-  type AgentLearningSystem,
-  createAgentLearningSystem,
-} from '../agent-learning-system';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi,  } from 'vitest';
+import { AgentHealthMonitor, createAgentHealthMonitor, DEFAULT_HEALTH_MONITOR_CONFIG,  } from '../agent-health-monitor';
+import { type AgentLearningSystem, createAgentLearningSystem,  } from '../agent-learning-system';
 
 // Mock the logging system
 vi.mock('../../../config/logging-config', () => ({
   getLogger:() => ({
-    info:vi.fn(),
-    debug:vi.fn(),
-    warn:vi.fn(),
-    error:vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
 }),
 }));
 
 describe('AgentHealthMonitor', () => {
-    ')  let healthMonitor:AgentHealthMonitor;
-  let learningSystem:AgentLearningSystem;
-  let mockConfig:any;
+    ')  let healthMonitor: AgentHealthMonitor;
+  let learningSystem: AgentLearningSystem;
+  let mockConfig: any;
 
   beforeAll(() => {
     // Set up test environment
@@ -61,7 +46,7 @@ describe('AgentHealthMonitor', () => {
       healthCheckInterval:1000, // 1 second for testing
       historyRetention:100,
       prediction:{
-        enabled:true,
+        enabled: true,
         horizonMinutes:5,
         updateInterval:5000, // 5 seconds for testing
 },

@@ -288,9 +288,9 @@ export class EssentialSafeReadinessAssessment {
   /**
    * Generate comprehensive readiness assessment
    */
-  generateAssessment(): {
+  generateAssessment():  {
     overallReadiness: number;
-    componentBreakdown: {
+    componentBreakdown:  {
       complete: EssentialSafeComponent[];
       partial: EssentialSafeComponent[];
       missing: EssentialSafeComponent[];
@@ -318,7 +318,7 @@ export class EssentialSafeReadinessAssessment {
 
     return {
       overallReadiness,
-      componentBreakdown: { complete, partial, missing },
+      componentBreakdown:  { complete, partial, missing },
       implementationPlan: this.generateImplementationPlan(partial, missing),
       taskMasterStrengths: this.identifyTaskMasterStrengths(complete),
       criticalGaps: this.identifyCriticalGaps(missing, partial),

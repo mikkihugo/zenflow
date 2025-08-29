@@ -102,15 +102,17 @@ claude-code-zen uses **direct package imports** with **50+ packages** providing 
 
 🔧 Services Packages (packages/services/):
 ├── @claude-zen/brain            ✅ AI coordination and optimization
-├── @claude-zen/teamwork         ✅ Multi-agent coordination
 ├── @claude-zen/knowledge        ✅ Knowledge management
-├── @claude-zen/safe-framework   ✅ SAFe 6.0 enterprise planning
-├── @claude-zen/sparc            ✅ SPARC development methodology  
-├── @claude-zen/workflows        ✅ XState process orchestration
-├── @claude-zen/taskmaster       ✅ SOC2-compliant task management
+├── @claude-zen/coordination     ✅ Unified coordination package includes:
+│   ├── SAFe 6.0 framework       ✅ Enterprise portfolio planning
+│   ├── SPARC methodology        ✅ 5-phase development process
+│   ├── Teamwork orchestration   ✅ Multi-agent coordination
+│   ├── Workflow engines         ✅ XState process orchestration
+│   └── TaskMaster management    ✅ SOC2-compliant task management
 ├── @claude-zen/load-balancing   ✅ Intelligent load distribution
 ├── @claude-zen/system-monitoring ✅ Performance and health tracking
-└── @claude-zen/telemetry        ✅ Metrics collection and analysis
+├── @claude-zen/telemetry        ✅ Metrics collection and analysis
+└── @claude-zen/ai-safety        ✅ AI safety monitoring
 
 🛠️ Tools Packages (packages/tools/):
 ├── @claude-zen/code-analyzer    ✅ Static code analysis
@@ -139,9 +141,13 @@ import { BrainCoordinator } from '@claude-zen/brain';
 import { MemoryManager } from '@claude-zen/memory';
 import { EventManager } from '@claude-zen/event-system';
 import { DatabaseProvider } from '@claude-zen/database';
-import { SafeFramework } from '@claude-zen/safe-framework';
-import { WorkflowEngine } from '@claude-zen/workflows';
-import { TaskMaster } from '@claude-zen/taskmaster';
+
+// ✅ Coordination package exports (unified package)
+import { SafeFramework } from '@claude-zen/coordination/safe';
+import { WorkflowEngine } from '@claude-zen/coordination/workflows';
+import { TaskMaster } from '@claude-zen/coordination'; // Main export includes TaskMaster
+import { SPARCMethodology } from '@claude-zen/coordination/sparc';
+import { TeamworkOrchestrator } from '@claude-zen/coordination/teamwork';
 
 // ✅ Integration packages
 import { LLMProvider } from '@claude-zen/llm-providers';
@@ -215,9 +221,14 @@ import { DatabaseProvider } from '@claude-zen/database';
 import { EventManager } from '@claude-zen/event-system';
 import { BrainCoordinator } from '@claude-zen/brain';
 import { MemoryManager } from '@claude-zen/memory';
-import { SafeFramework } from '@claude-zen/safe-framework';
-import { WorkflowEngine } from '@claude-zen/workflows';
-import { TaskMaster } from '@claude-zen/taskmaster';
+
+// Coordination package unified imports
+import { SafeFramework } from '@claude-zen/coordination/safe';
+import { WorkflowEngine } from '@claude-zen/coordination/workflows';
+import { TaskMaster } from '@claude-zen/coordination';
+import { SPARCMethodology } from '@claude-zen/coordination/sparc';
+import { TeamworkOrchestrator } from '@claude-zen/coordination/teamwork';
+
 import { LLMProvider } from '@claude-zen/llm-providers';
 ```
 
@@ -438,9 +449,10 @@ These packages are `"private": true` and should NEVER be imported directly:
 // import { KnowledgeBase } from '@claude-zen/knowledge';
 
 // Enterprise implementations
-// import { SafeFramework } from '@claude-zen/safe-framework';
-// import { SPARCMethodology } from '@claude-zen/sparc';
-// import { WorkflowEngine } from '@claude-zen/workflows';
+// import { SafeFramework } from '@claude-zen/coordination/safe';
+// import { SPARCMethodology } from '@claude-zen/coordination/sparc';
+// import { WorkflowEngine } from '@claude-zen/coordination/workflows';
+// import { TeamworkOrchestrator } from '@claude-zen/coordination/teamwork';
 ```
 
 #### **🔐 Tier 3: Deep Internal - Ultra Restricted**

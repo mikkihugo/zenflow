@@ -58,7 +58,7 @@ interface BrainPredictor {
     approved: boolean,
     outcomePositive: boolean,
     responseTime: number
-  ):Promise<void> {
+  ): Promise<void> {
     if (!this.isLearningEnabled) return;
     // Record approval metric
     this.approvalHistory.push({
@@ -100,7 +100,7 @@ interface BrainPredictor {
 }
     // Capacity recommendations
     if (currentStatus.systemCapacity.utilizationPercent > 80) {
-      recommendations.push(';')';
+      recommendations.push(';)';
        'System approaching capacity - consider pausing low-priority task intake'));
 }
     return [...new Set(recommendations)]; // Remove duplicates
@@ -123,7 +123,7 @@ interface BrainPredictor {
     const requiredCapacity = expectedLoad + maxQueueDepth * 0.2; // 20% buffer
     let riskLevel : 'low| medium| high = 'low')    if (requiredCapacity > 0.8) riskLevel = 'high')    else if (requiredCapacity > 0.6) riskLevel = 'medium')    const recommendations: [];;
     if (riskLevel ==='high){';
-    ')      recommendations.push(';')';
+    ')      recommendations.push(';)';
        'High capacity risk - consider increasing reviewer availability)      );`;
       recommendations.push(`Enable emergency auto-approval for low-risk tasks`);`;
 }

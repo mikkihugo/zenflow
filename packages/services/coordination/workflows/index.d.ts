@@ -26,7 +26,7 @@
  *
  * @example Basic Workflow Creation and Execution
  * ```typescript`
- * import { WorkflowEngine, WorkflowUtils} from '@claude-zen/workflows';
+ * import { WorkflowEngine, WorkflowUtils} from '@claude-zen/coordination/workflows';
  *
  * const engine = new WorkflowEngine({
  *   enableTelemetry:true,
@@ -61,7 +61,7 @@
  *
  * @example Conditional Workflow with Error Handling
  * ```typescript`
- * import { WorkflowEngine} from '@claude-zen/workflows';
+ * import { WorkflowEngine} from '@claude-zen/coordination/workflows';
  *
  * const conditionalWorkflow = {
  *   name: 'user-onboarding', *   steps:[
@@ -97,7 +97,7 @@
  *
  * @example Workflow Monitoring and Analytics
  * ```typescript`
- * import { WorkflowEngine, WorkflowAnalytics} from '@claude-zen/workflows';
+ * import { WorkflowEngine, WorkflowAnalytics} from '@claude-zen/coordination/workflows';
  *
  * const engine = new WorkflowEngine({
  *   enableAnalytics:true,
@@ -154,7 +154,7 @@ import { WorkflowEngine} from './src/main';
  */
 export declare const WORKFLOWS_INFO:{
   readonly version: '1.0.0;
-'  readonly name: '@claude-zen/workflows;
+'  readonly name: '@claude-zen/coordination/workflows;
 '  readonly description: 'Production-grade workflow orchestration system for complex multi-step processes;
 '  readonly capabilities:readonly [
     'Workflow orchestration and automation',    'Visual workflow design and editing',    'Step-by-step execution control',    'Conditional logic and branching',    'Error handling and retry mechanisms',    'Performance monitoring and analytics',    'State management and persistence',    'Foundation integration',];
@@ -228,7 +228,7 @@ export declare const WORKFLOWS_INFO:{
  * ## Getting Started
  *
  * ```bash`
- * npm install @claude-zen/workflows @claude-zen/foundation
+ * npm install @claude-zen/coordination/workflows @claude-zen/foundation
  * ````
  *
  * See the examples above for usage patterns.

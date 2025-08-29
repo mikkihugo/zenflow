@@ -225,7 +225,7 @@ export function createHighThroughputWorkflowKanbanIntegration():WorkflowKanbanIn
     enableKanbanSteps: true,
     enableKanbanTriggers: true,
     enableBidirectionalEvents: true,
-    kanbanConfig: {
+    kanbanConfig:  {
       enableIntelligentWIP: true,
       enableBottleneckDetection: true,
       enableFlowOptimization: true,

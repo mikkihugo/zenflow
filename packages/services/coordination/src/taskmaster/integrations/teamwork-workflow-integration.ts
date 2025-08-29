@@ -14,7 +14,7 @@ export interface ConversationTriggeredWorkflow {
   approvalGateIntegration: boolean;
   realTimeUpdates: boolean;)};;
 export interface ConversationWorkflowTrigger {
-  triggerType: |'decision_reached| consensus_achieved| escalation_needed' | ' completion')  conditions:{';
+  triggerType: |'decision_reached| consensus_achieved| escalation_needed' | ' completion')  conditions:  {';
     decisionType?:string;
     participantConsensus?:number; // 0-1
     urgencyLevel?:'low| medium| high' | ' critical')    conversationDuration?:number; // minutes';
@@ -63,7 +63,7 @@ export class TeamworkWorkflowIntegration {
     const approvalGates: [];
     for (const workflowDef of applicableWorkflows) {
       try {
-        const workflowContext: {
+        const workflowContext:  {
           conversationId,
           conversationOutcome: 'conversation_triggered,,
             safeEvent: await this.startWorkflow(
@@ -103,7 +103,7 @@ export class TeamworkWorkflowIntegration {
       sender: ``workflow_system,';
       message: message.content,
       messageType: message.type,
-      metadata: {
+      metadata:  {
         workflowId: update.workflowId,
         updateType: update.updateType,
         requiresHumanInput: update.requiresHumanInput,',},';
@@ -120,7 +120,7 @@ export class TeamworkWorkflowIntegration {
   /**
    * Register built-in SAFe workflow patterns
    */
-  private async registerSAFeWorkflowPatterns():Promise<void> {
+  private async registerSAFeWorkflowPatterns(): Promise<void> {
     // ART Sync Dependency Resolution Workflow
     await this.registerConversationWorkflow({
     ')      id : 'art-sync-dependency-resolution')      name : 'Cross-Team Dependency Resolution')      conversationType,      trigger: 'dependency_resolution,',
@@ -175,7 +175,7 @@ export class TeamworkWorkflowIntegration {
       conversationId: 'boolean,',
 '          required: 'pending,',
 '      createdAt: new Date().toISOString(),';
-      metadata: {
+      metadata:  {
         workflowId: workflowDef.id,',        conversationId: context.conversationId,')        triggerType,},';
 };
 }
@@ -210,15 +210,15 @@ export class TeamworkWorkflowIntegration {
 }
     return true;
 }
-  private determineSAFeEventType(conversationType: {';
+  private determineSAFeEventType(conversationType:  {';
     'art-sync-coordination : ' ART_SYNC')     'pi-planning-breakout : ' PI_PLANNING')     'system-demo-feedback : ' SYSTEM_DEMO')     'inspect-adapt-workshop,};)    return typeMap[conversationType]||'UNKNOWN')};;
   private determineWorkflowApprovers(
-    workflowDef: {
-     'art-sync-dependency-resolution: {
+    workflowDef:  {
+     'art-sync-dependency-resolution:  {
       progress: 'Workflow status update received',)        type,};;
     );
 }
-  private setupEventListeners():void {
+  private setupEventListeners(): void {
     // Set up event listeners for workflow and conversation events')    // This would integrate with the event system when available'')    logger.info('Event listeners setup for teamwork-workflow integration');
 };)};;
 // ============================================================================
@@ -229,7 +229,7 @@ export const teamworkWorkflowIntegration = new TeamworkWorkflowIntegration();
 // INTEGRATION HOOKS
 // ============================================================================
 export interface TeamworkWorkflowAPIIntegration {
-  initializeIntegration: {
+  initializeIntegration:  {
   initializeIntegration: teamworkWorkflowIntegration.initialize.bind(
     teamworkWorkflowIntegration
   ),

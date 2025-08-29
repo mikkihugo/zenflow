@@ -125,7 +125,7 @@ export interface SuccessMetric {
         recommendations,
         config;
       );
-      const result: {
+      const result:  {
         recommendationId: 0;
     // Impact scoring (40% weight)
     const impactScore =
@@ -151,14 +151,14 @@ export interface SuccessMetric {
   /**
    * Private helper methods
    */
-  private initializeAIModels():void {
+  private initializeAIModels(): void {
     // Initialize different AI models for optimization')    this.aiModels.set('neural_network,{';
     ')';
       type,      accuracy: 'high,',
-'      adaptive: {
+'      adaptive:  {
       timeWindow: this.aiModels.get(aiConfig.modelType);
     if (!model) {
-      throw new Error(`Unknown AI model type: {`
+      throw new Error(`Unknown AI model type:  {`
       ...model,
       trained: [];
     // Generate process optimization recommendations
@@ -186,7 +186,7 @@ export interface SuccessMetric {
   private async createImplementationRoadmap(
     recommendations: FlowOptimizationRecommendation[],
     config: FlowOptimizationConfig
-  ):Promise<ImplementationRoadmap> 
+  ): Promise<ImplementationRoadmap> 
     return {
     )      roadmapId,    `)      totalDuration: 180,`;
       phases: [
@@ -205,7 +205,7 @@ export interface SuccessMetric {
     `)      assessmentId: `risk-assessment-${generateNanoId(8)};``;
       overallRisk: ``medium,';
       riskScore: 35,
-      topRisks: allRisks.slice(0, 5),,      mitigationPlan: {`;
+      topRisks: allRisks.slice(0, 5),,      mitigationPlan:  {`;
     `)        planId: `mitigation-`${generateNanoId(8)};``)        actions: ['Regular monitoring,' Stakeholder engagement'],';
         timeline: 30,
         owner,},';

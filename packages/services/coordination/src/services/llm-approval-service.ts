@@ -11,7 +11,7 @@ import { getLogger} from '@claude-zen/foundation')import { getBrainSystem} from 
   type LLMApprovalResult,
 } from '../types/llm-approval.js')export class LLMApprovalService {';
   private readonly logger = getLogger('LLMApprovalService');
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     this.brainSystem = await getBrainSystem();')    this.logger.info('LLM Approval Service initialized');`;
 }
   /**
@@ -82,10 +82,10 @@ Be conservative: when in doubt, escalate to human review.')};;
             return evalFunc(ruleContext);
 } catch (error) {
     ')            this.logger.warn('Rule condition evaluation failed,{';
-              rule: {
+              rule:  {
       taskId,
       llmDecision,
-      humanDecision: {
+      humanDecision:  {
     ')        approved: humanOverride.action ==='approve,';
         reasoning: llmDecision.approved;
     const humanApproved = humanOverride.action === 'approve')    if (llmApproved === humanApproved) {';

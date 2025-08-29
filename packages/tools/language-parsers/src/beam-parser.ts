@@ -11,7 +11,8 @@
  * @version 1.0.0
  */
 
-import { extname} from 'node:path';
+import { extname, basename } from 'node:path';
+import { readFile } from 'node:fs/promises';
 import {
   err,
   getLogger,
@@ -28,10 +29,10 @@ export interface BeamModule {
   name:string;
 
   /** File path */
-  path:string;
+  path: string;
 
   /** Programming language */
-  language:'elixir' | ' erlang' | ' gleam';
+  language: 'elixir' | 'erlang' | 'gleam';
 
   /** Exported functions */
   exports:BeamFunction[];
@@ -208,12 +209,12 @@ export class BeamLanguageParser {
 }
 
       this.logger.info(
-        `Successfully parsed ${language} module:${module.name}`,`
+        `Successfully parsed ${language} module: ${module.name}`,
         {
           functions:module.exports.length,
           types:module.types.length,
           dependencies:module.dependencies.length,
-}
+        }
       );
 
       return ok(module);
@@ -258,15 +259,15 @@ export class BeamLanguageParser {
 });
 }
 
-      this.logger.info(`Parsed ${modules.length} BEAM modules successfully`, {`
+      this.logger.info(`Parsed ${modules.length} BEAM modules successfully`, {
         totalAttempted:filePaths.length,
         successCount:modules.length,
         errorCount:errors.length,
-});
+      });
 
       return ok(modules);
 } catch (error) {
-      const _err_msg = `Failed to parse BEAM files:${error instanceof Error ? error.message : String(error)}`;`
+      const err_msg = `Failed to parse BEAM files: ${error instanceof Error ? error.message : String(error)}`;
       this.logger.error(err_msg, { error, fileCount:filePaths.length});
       return err(new Error(err_msg));
 }
@@ -275,15 +276,20 @@ export class BeamLanguageParser {
   /**
    * Detect language from file extension
    */
-  private detectLanguage(ext:string): 'elixir|erlang|gleam'|null {
-    ')    switch (ext.toLowerCase()) {
-      case'.ex': ')'      case '.exs': ')'        return 'elixir;
-      case '.erl': ')'      case '.hrl': ')'        return 'erlang;
-      case '.gleam': ')'        return 'gleam;
+  private detectLanguage(ext:string): 'elixir' | 'erlang' | 'gleam' | null {
+    switch (ext.toLowerCase()) {
+      case '.ex':
+      case '.exs':
+        return 'elixir';
+      case '.erl':
+      case '.hrl':
+        return 'erlang';
+      case '.gleam':
+        return 'gleam';
       default:
         return null;
-}
-}
+    }
+  }
 
   /**
    * Parse Elixir file using enhanced regex patterns
@@ -303,7 +309,8 @@ export class BeamLanguageParser {
     return {
       name:moduleName,
       path:filePath,
-      language: 'elixir',      exports:functions,
+      language: 'elixir',
+      exports:functions,
       types:types,
       documentation:docs,
       dependencies:deps,
@@ -339,7 +346,8 @@ export class BeamLanguageParser {
     return {
       name:moduleName,
       path:filePath,
-      language: 'erlang',      exports:functions,
+      language: 'erlang',
+      exports:functions,
       types:types,
       documentation:docs,
       dependencies:deps,
@@ -370,7 +378,8 @@ export class BeamLanguageParser {
     return {
       name:moduleName,
       path:filePath,
-      language: 'gleam',      exports:functions,
+      language: 'gleam',
+      exports:functions,
       types:types,
       documentation:docs,
       dependencies:deps,
@@ -393,31 +402,35 @@ export class BeamLanguageParser {
   private extractElixirFunctions(content:string): BeamFunction[] {
     const functions:BeamFunction[] = [];
     const defRegex =
-      /(?:def|defp|defmacro|defmacrop)s+([_a-z]w*[!?]?)s*(?:(([^)]*)))?/g;
+      /(?:def|defp|defmacro|defmacrop)\s+([_a-z]\w*[!?]?)\s*(?:\(([^)]*)\))?/g;
 
     let match;
     while ((match = defRegex.exec(content)) !== null) {
       const functionName = match[1];
-      const params = match[2]||';
-      const arity = params ? params.split(',    ').length:0;')      const lineNumber = content.substring(0, match.index).split('\n').length;')      const isPrivate = content
+      const params = match[2] || '';
+      const arity = params ? params.split(',').length : 0;
+      const lineNumber = content.substring(0, match.index).split('\n').length;
+      const isPrivate = content
         .substring(Math.max(0, match.index - 10), match.index)
-        .includes('defp');')      const isMacro = content
+        .includes('defp');
+      const isMacro = content
         .substring(Math.max(0, match.index - 10), match.index)
-        .includes('defmacro');')
-      const func:BeamFunction = {
-        name:functionName,
-        arity:arity,
-        visibility:isPrivate ? 'private' : ' public',        signature:`$functionName($params)`,`
-        lineNumber:lineNumber,
-        attributes:isMacro ? ['macro'] : [],
-};
+        .includes('defmacro');
+      const func: BeamFunction = {
+        name: functionName,
+        arity: arity,
+        visibility: isPrivate ? 'private' : 'public',
+        signature: `${functionName}(${params})`,
+        lineNumber: lineNumber,
+        attributes: isMacro ? ['macro'] : [],
+      };
 
-      if (this._options._analyzeFunctionComplexity) {
+      if (this.options.analyzeFunctionComplexity) {
         func.complexity = this.calculateFunctionComplexity(
           content,
           match.index
         );
-}
+      }
 
       functions.push(func);
 }
@@ -432,33 +445,40 @@ export class BeamLanguageParser {
     const typeRegex = /@type\s+([_a-z]\w*(?:\([^)]*\))?)\s*::\s*([^\n]+)/g;
     let match;
     while ((match = typeRegex.exec(content)) !== null) {
-      const __lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
+      const lineNumber = content.substring(0, match.index).split('\n').length;
+      types.push({
         name:match[1],
         definition:match[2].trim(),
         lineNumber:lineNumber,
-        category: 'custom',);
-}
+        category: 'custom',
+      });
+    }
 
     // @typep (private types)
     const privateTypeRegex =
       /@typep\s+([_a-z]\w*(?:\([^)]*\))?)\s*::\s*([^\n]+)/g;
     while ((match = privateTypeRegex.exec(content)) !== null) {
-      const __lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
+      const lineNumber = content.substring(0, match.index).split('\n').length;
+      types.push({
         name:match[1],
         definition:match[2].trim(),
         lineNumber:lineNumber,
-        category: 'custom',);
+        category: 'custom',
+      });
+    }
 }
 
     // @spec definitions
     const specRegex = /@spec\s+([_a-z]\w*(?:\([^)]*\))?)\s*::\s*([^\n]+)/g;
     while ((match = specRegex.exec(content)) !== null) {
-      const __lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
+      const lineNumber = content.substring(0, match.index).split('\n').length;
+      types.push({
         name:match[1],
         definition:match[2].trim(),
         lineNumber:lineNumber,
-        category: 'spec',);
-}
+        category: 'spec',
+      });
+    }
 
     return types;
 }
@@ -470,8 +490,8 @@ export class BeamLanguageParser {
     const moduleDocRegex = /@moduledoc\s+"""(.*?)"""/gs;
     let match;
     while ((match = moduleDocRegex.exec(content)) !== null) {
-      docs.push(match[1].trim())();
-}
+      docs.push(match[1].trim());
+    }
 
     // @doc
     const docRegex = /@doc\s+"""(.*?)"""/gs;
@@ -566,32 +586,32 @@ export class BeamLanguageParser {
     const typeRegex = /-type\s+([_a-z]\w*(?:\([^)]*\))?)\s*::\s*([^.]+)\./g;
     let match;
     while ((match = typeRegex.exec(content)) !== null) {
-      const __lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
+      const lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
         name:match[1],
         definition:match[2].trim(),
         lineNumber:lineNumber,
-        category: 'custom',);
+        category: 'custom'});
 }
 
     // -opaque definitions - ReDoS-safe regex with atomic groups and limits
     const opaqueRegex =
       /-opaque\s+([_a-z]\w*(?:\([^)]{0,100}\))?)\s*::\s*([^.]{1,200})\./g;
     while ((match = opaqueRegex.exec(content)) !== null) {
-      const __lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
+      const lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
         name:match[1],
         definition:match[2].trim(),
         lineNumber:lineNumber,
-        category: 'opaque',);
+        category: 'opaque'});
 }
 
     // -spec definitions
     const specRegex = /-spec\s+([_a-z]\w*(?:\([^)]*\))?)\s*->\s*([^.]+)\./g;
     while ((match = specRegex.exec(content)) !== null) {
-      const __lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
+      const lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
         name:match[1],
         definition:match[2].trim(),
         lineNumber:lineNumber,
-        category: 'spec',);
+        category: 'spec'});
 }
 
     return types;
@@ -641,7 +661,7 @@ export class BeamLanguageParser {
 
     let match;
     while ((match = exportRegex.exec(content)) !== null) {
-      const __funcs = match[1].split(',    ').map((f) => f.trim())();')      exports.push(...funcs);
+      const funcs = match[1].split(',    ').map((f) => f.trim())();')      exports.push(...funcs);
 }
 
     return exports;
@@ -681,7 +701,7 @@ export class BeamLanguageParser {
     const otpBehaviours = [
       'gen_server',      'gen_statem',      'supervisor',      'application',];
     return otpBehaviours.some((behaviour) =>
-      content.includes(`-behaviour(${behaviour})`)`
+      content.includes(`-behaviour(${behaviour})`
     );
 }
 
@@ -725,21 +745,21 @@ export class BeamLanguageParser {
       /(?:pub\s+)?type\s+([A-Z]\w*)\s*(?:\([^)]*\))?\s*=\s*([^\n]+)/g;
     let match;
     while ((match = typeRegex.exec(content)) !== null) {
-      const __lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
+      const lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
         name:match[1],
         definition:match[2].trim(),
         lineNumber:lineNumber,
-        category: 'custom',);
+        category: 'custom'});
 }
 
     // Type aliases
     const aliasRegex = /(?:pub\s+)?type\s+([A-Z]\w*)\s*=\s*([A-Z]\w*)/g;
     while ((match = aliasRegex.exec(content)) !== null) {
-      const __lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
+      const lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
         name:match[1],
         definition:match[2].trim(),
         lineNumber:lineNumber,
-        category: 'alias',);
+        category: 'alias'});
 }
 
     return types;
@@ -827,7 +847,9 @@ export class BeamLanguageParser {
         !line.trim().startsWith('#') &&')        !line.trim().startsWith('%')')    ).length;
 
     const publicFunctions = module.exports.filter(
-      (f) => f.visibility === 'public');')    const documentsedFunctions = module.exports.filter(
+      (f) => f.visibility === 'public'
+    );
+    const documentedFunctions = module.exports.filter(
       (f) => f.documentation
     ).length;
 
@@ -843,7 +865,7 @@ export class BeamLanguageParser {
 
     const documentationCoverage =
       module.exports.length > 0
-        ? documentsedFunctions / module.exports.length
+        ? documentedFunctions / module.exports.length
         :0;
 
     return {

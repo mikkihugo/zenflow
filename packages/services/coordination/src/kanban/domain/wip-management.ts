@@ -1,150 +1,216 @@
 /**
  * @fileoverview WIP Management Domain Service
  *
- * Pure domain logic for Work-In-Progress limit management and optimization.
- * Handles WIP limits, capacity tracking, and optimization strategies.
- *
- * **Responsibilities: getLogger('WIPManagement');
-/**
- * WIP check result interface
+ * Pure domain logic for Work-in-Progress (WIP) limit management.
+ * Enforces WIP limits, tracks violations, and provides optimization suggestions.
  */
-export interface WIPCheckResult {
-  allowed: {} as Record<TaskState, number[]>;
-  constructor(initialLimits: { ...initialLimits};
-    logger.info('WIPManagementService initialized with limits:, this.wipLimits');`;
+
+import { getLogger } from '@claude-zen/foundation';
+
+const logger = getLogger('WIPManagement');
+
+/**
+ * WIP limit configuration for each state
+ */
+export interface WIPLimits {
+  [state: string]: number;
 }
+
+/**
+ * WIP management configuration
+ */
+export interface WIPManagementConfig {
+  initialLimits: WIPLimits;
+  enableAutoAdjustment: boolean;
+  violationThreshold: number; // percentage over limit to trigger warning
+  enableAlerts: boolean;
+}
+
+/**
+ * WIP violation information
+ */
+export interface WIPViolation {
+  state: string;
+  currentCount: number;
+  limit: number;
+  overageCount: number;
+  overagePercentage: number;
+  severity: 'warning' | 'critical';
+  detectedAt: Date;
+}
+
+/**
+ * WIP status for all states
+ */
+export interface WIPStatus {
+  timestamp: Date;
+  overallUtilization: number;
+  violations: WIPViolation[];
+  stateStatus: {
+    [state: string]: {
+      current: number;
+      limit: number;
+      utilization: number;
+      status: 'healthy' | 'warning' | 'critical';
+    };
+  };
+  recommendations: string[];
+}
+
+const DEFAULT_CONFIG: WIPManagementConfig = {
+  initialLimits: {
+    'todo': 10,
+    'in-progress': 5,
+    'review': 3,
+    'done': Infinity
+  },
+  enableAutoAdjustment: false,
+  violationThreshold: 0.1, // 10% over limit
+  enableAlerts: true
+};
+
+/**
+ * Service for managing WIP limits and violations
+ */
+export class WIPManagementService {
+  private config: WIPManagementConfig;
+  private wipLimits: WIPLimits;
+  private violationHistory: WIPViolation[] = [];
+
+  constructor(config: Partial<WIPManagementConfig> = {}) {
+    this.config = { ...DEFAULT_CONFIG, ...config };
+    this.wipLimits = { ...this.config.initialLimits };
+    logger.info('WIPManagementService initialized', this.config);
+  }
+
   /**
-   * Check WIP limits for a specific state
+   * Check WIP status across all states
    */
-  async checkWIPLimits(state: currentTasks.filter(task => task.state === state);
-    const currentCount = tasksInState.length;
-    const limit = this.wipLimits[state];
-    const utilization = limit > 0 ? currentCount / limit: {
-      allowed: this.generateWIPRecommendation(state, utilization, currentCount, limit);
-}
-    return result;
-}
+  async checkWIPStatus(allTasks: any[]): Promise<WIPStatus> {
+    const timestamp = new Date();
+    const violations: WIPViolation[] = [];
+    const stateStatus: WIPStatus['stateStatus'] = {};
+    
+    // Group tasks by state
+    const tasksByState = this.groupTasksByState(allTasks);
+    
+    // Check each state against its WIP limit
+    for (const [state, limit] of Object.entries(this.wipLimits)) {
+      const currentCount = tasksByState[state]?.length || 0;
+      const utilization = limit === Infinity ? 0 : currentCount / limit;
+      
+      let status: 'healthy' | 'warning' | 'critical' = 'healthy';
+      
+      // Check for violations
+      if (currentCount > limit && limit !== Infinity) {
+        const overageCount = currentCount - limit;
+        const overagePercentage = overageCount / limit;
+        const severity = overagePercentage > this.config.violationThreshold ? 'critical' : 'warning';
+        
+        status = severity;
+        
+        const violation: WIPViolation = {
+          state,
+          currentCount,
+          limit,
+          overageCount,
+          overagePercentage,
+          severity,
+          detectedAt: timestamp
+        };
+        
+        violations.push(violation);
+        this.violationHistory.push(violation);
+        
+        if (this.config.enableAlerts) {
+          logger.warn(`WIP violation detected in ${state}`, violation);
+        }
+      } else if (utilization > 0.8) {
+        status = 'warning';
+      }
+      
+      stateStatus[state] = {
+        current: currentCount,
+        limit,
+        utilization,
+        status
+      };
+    }
+
+    // Calculate overall utilization
+    const totalTasks = allTasks.length;
+    const totalLimits = Object.values(this.wipLimits)
+      .filter(limit => limit !== Infinity)
+      .reduce((sum, limit) => sum + limit, 0);
+    
+    const overallUtilization = totalLimits > 0 ? totalTasks / totalLimits : 0;
+
+    const wipStatus: WIPStatus = {
+      timestamp,
+      overallUtilization,
+      violations,
+      stateStatus,
+      recommendations: this.generateRecommendations(violations, stateStatus)
+    };
+
+    logger.debug('WIP status checked', {
+      violationCount: violations.length,
+      overallUtilization
+    });
+
+    return wipStatus;
+  }
+
+  /**
+   * Update WIP limits for one or more states
+   */
+  async updateWIPLimits(newLimits: Partial<WIPLimits>): Promise<void> {
+    const oldLimits = { ...this.wipLimits };
+    this.wipLimits = { ...this.wipLimits, ...newLimits };
+    
+    logger.info('WIP limits updated', {
+      oldLimits,
+      newLimits: this.wipLimits
+    });
+  }
+
   /**
    * Get current WIP limits
    */
-  async getWIPLimits():Promise<WIPLimits> {
-    return { ...this.wipLimits};
-}
-  /**
-   * Update WIP limits with validation
-   */
-  async updateWIPLimits(newLimits: ImmutableWIPUtils.updateWIPLimits(
-      this.wipLimits,
-      newLimits;
-    );
-    // Validate updated limits
-    const validation = ValidationUtils.validateWIPLimits(updatedLimits);
-    if (!validation.success) {
-      throw new Error(
-        `Invalid WIP limits: `${validation.error.issues.map((i) => i.message).join(,)})      );``;
-}
-    this.wipLimits = validation.data;')    logger.info('WIP limits updated:, this.wipLimits');
-}
-  /**
-   * Generate WIP optimization recommendations
-   */
-  async getWIPOptimizationRecommendations(currentTasks: [];
+  getWIPLimits(): WIPLimits {
+    return { ...this.wipLimits };
+  }
+
+  private groupTasksByState(allTasks: any[]): Record<string, any[]> {
+    const grouped: Record<string, any[]> = {};
     
-    const workflowStates: [')     'analysis,';
-     'development,')     'testing,';
-     'review,')     'deployment,';
-];
-    for (const state of workflowStates) {
-      const tasksInState = currentTasks.filter(task => task.state === state);
-      const currentCount = tasksInState.length;
-      const currentLimit = this.wipLimits[state];
-      const utilization = currentLimit > 0 ? currentCount / currentLimit: this.analyzeWIPOptimization(state, currentCount, currentLimit, utilization);
-      if (recommendation) {
-        recommendations.push(recommendation);
-}
-}
-    // Sort by expected impact
-    recommendations.sort((a, b) => b.expectedImpact - a.expectedImpact);
+    for (const task of allTasks) {
+      const state = task.state || 'unknown';
+      if (!grouped[state]) {
+        grouped[state] = [];
+      }
+      grouped[state].push(task);
+    }
+    
+    return grouped;
+  }
+
+  private generateRecommendations(violations: WIPViolation[], stateStatus: WIPStatus['stateStatus']): string[] {
+    const recommendations: string[] = [];
+    
+    if (violations.length > 0) {
+      recommendations.push('Address WIP limit violations by moving tasks through the workflow');
+    }
+    
+    // Check for potential bottlenecks
+    const highUtilizationStates = Object.entries(stateStatus)
+      .filter(([_, status]) => status.utilization > 0.8)
+      .map(([state]) => state);
+    
+    if (highUtilizationStates.length > 0) {
+      recommendations.push(`Consider increasing WIP limits for high-utilization states: ${highUtilizationStates.join(', ')}`);
+    }
+    
     return recommendations;
-}
-  /**
-   * Calculate overall WIP efficiency
-   */
-  async calculateWIPEfficiency(currentTasks: 0;
-    let stateCount = 0;
-    const workflowStates: [
-     'analysis,')     'development,';
-     'testing,')     'review,';
-     'deployment,
-];
-    for (const state of workflowStates) {
-      const limit = this.wipLimits[state];
-      const tasksInState = currentTasks.filter(task => task.state === state);
-      const utilization = limit > 0 ? tasksInState.length / limit: 0;
-      totalUtilization += Math.min(1, utilization);
-      stateCount++;
-}
-    return stateCount > 0 ? totalUtilization / stateCount: {};
-    for (const state of Object.keys(this.utilizationHistory) as TaskState[]) {
-      const history = this.utilizationHistory[state];
-      const current = history[history.length - 1]|| 0;
-      
-      // Calculate trend (positive = increasing, negative = decreasing)
-      const trend = history.length > 1 
-        ? (current - history[history.length - 2]) ;
-        :0;
-      trends[state] = {
-        current,
-        trend,
-        history: [...history], // Copy for immutability
-};
-}
-    return trends;
-}
-  // =============================================================================
-  // PRIVATE DOMAIN LOGIC
-  // =============================================================================
-  private trackUtilization(state: [];
-}
-    this.utilizationHistory[state].push(utilization);
-    // Keep only last 24 data points (for trend analysis)
-    if (this.utilizationHistory[state].length > 24) {
-      this.utilizationHistory[state].shift();
-}
-}
-  private generateWIPRecommendation(state: TaskState, utilization: number, currentCount: number, limit: number): string {
-    if (utilization >= 1.0) {
-    `)      return `WIP limit exceeded in ${state}. Consider increasing limit or optimizing flow.``)} else if (utilization > 0.9) {`;
-      return `High utilization in ${state} (${Math.round(utilization * 100)}%). Monitor for bottlenecks.``)} else if (utilization > 0.8) {`;
-      return `Approaching WIP limit in ${state}. Consider workflow optimization.``)};;
-    
-    return `WIP utilization in ${state} is healthy (${Math.round(utilization * 100)}%).`)};;
-  private analyzeWIPOptimization(
-    state: this.utilizationHistory[state]|| [];
-    
-    // Not enough data for recommendations
-    if (history.length < 3) {
-      return null;
-}
-    const avgUtilization = history.reduce((sum, val) => sum + val, 0) / history.length;
-    const isConsistentlyHigh = avgUtilization > 0.8;
-    const isConsistentlyLow = avgUtilization < 0.3;
-    if (isConsistentlyHigh && utilization > 0.9) {
-      // Recommend increasing limit
-      const recommendedLimit = Math.ceil(currentLimit * 1.2);
-      return {
-        state,
-        currentLimit,
-        recommendedLimit,
-        reason: Math.max(2, Math.floor(currentLimit * 0.8);
-      return {
-        state,
-        currentLimit,
-        recommendedLimit,
-        reason,        confidence: 0.6,`';
-        expectedImpact: 0.4,
-};
-}
-    return null;
-}
+  }
 }

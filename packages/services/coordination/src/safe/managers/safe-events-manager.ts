@@ -11,7 +11,7 @@
  * - Event metrics and retrospective analysis
  * - Human-facilitated ceremony integration
  *
- * Part of the @claude-zen/safe-framework package providing comprehensive
+ * Part of the coordination package providing comprehensive
  * Scaled Agile Framework (SAFe) integration capabilities.
  */
 import { EventBus} from '@claude-zen/foundation')import type { ';
@@ -29,7 +29,7 @@ export class SAFeEventsManager extends EventBus {
   private eventTemplates = new Map<string, SAFeEventConfig>();
   private initialized = false;
   constructor(
-    memory: {},
+    memory:  {},
     eventBus: EventBus,
     config: SAFeEventsManagerConfig = {}
   ) {
@@ -48,23 +48,23 @@ export class SAFeEventsManager extends EventBus {
    * Schedule System Demo
    */
   async scheduleSystemDemo(
-    piId: `system-demo-`${piId}-${Date.now()})      const eventConfig: {`;
-        id: `inspect-adapt-${piId}-${artId})      const eventConfig: {`;
+    piId: `system-demo-`${piId}-${Date.now()})      const eventConfig:  {`;
+        id: `inspect-adapt-${piId}-${artId})      const eventConfig:  {`;
         id: 'safe-coach,',
         required: this.scheduledEvents.get(eventId);
       if (!event) {
-    )        return { success: {
+    )        return { success:  {
     `)        eventId``;
         status : 'completed,'
         duration: event.duration,
-        attendance: {
+        attendance:  {
           expected: event.participants.length,
           actual: event.participants.length, // Would be updated with actual attendance
           participants: event.participants,',},
         decisions: [],
         actionItems: [],
         feedback: [],
-        metrics: {
+        metrics:  {
           duration: event.duration,
           attendanceRate: 1.0,
           engagementScore: 0.8,
@@ -76,7 +76,7 @@ export class SAFeEventsManager extends EventBus {
         artifacts: [],
 };
       this.eventOutcomes.set(eventId, outcome);`)      await this.memory.store(`safe-events: outcome:`${eventId}, outcome);``)      this.emit('event: executed,{ eventId, outcome};);
-      this.eventBus.emit(';')';
+      this.eventBus.emit(';)';
        'safe-events: event: executed,';
         createEvent('safe-events: event: executed,{';
           eventId,
@@ -92,10 +92,10 @@ export class SAFeEventsManager extends EventBus {
   /**
    * Get event analytics and metrics
    */
-  async getEventAnalytics():Promise<any> {
+  async getEventAnalytics(): Promise<any> {
     if (!this.initialized) await this.initialize();
     return {
-      events: {
+      events:  {
         scheduled: this.scheduledEvents.size,
         completed: Array.from(this.eventOutcomes.values()).filter(';)';
           (o) => o.status ==='completed')        ).length,';
@@ -129,7 +129,7 @@ export class SAFeEventsManager extends EventBus {
   // ============================================================================
   // PRIVATE HELPER METHODS
   // ============================================================================
-  private setupEventTemplates():void {
+  private setupEventTemplates(): void {
     // Initialize standard SAFe event templates
     this.eventTemplates.set('system-demo,{';
     ')';
@@ -166,7 +166,7 @@ export class SAFeEventsManager extends EventBus {
   /**
    * Initialize event bus connections for production
    */
-  private async initializeEventBusConnections():Promise<void> {
+  private async initializeEventBusConnections(): Promise<void> {
     // In production, this would establish connections to: // - Message queues (Redis, RabbitMQ)
     // - Event streams (Kafka, EventBridge)
     // - Database event listeners
@@ -177,13 +177,13 @@ export class SAFeEventsManager extends EventBus {
   /**
    * Cleanup resources
    */
-  shutdown():void {
+  shutdown(): void {
     ')    this.logger.info('Shutting down SAFe Events Manager');
     this.scheduledEvents.clear();
     this.eventOutcomes.clear();
     this.eventTemplates.clear();
     this.initialized = false;
-    this.eventBus.emit(';')';
+    this.eventBus.emit(';)';
      'safe-events: shutdown,')      createEvent('safe-events: shutdown,{ timestamp: Date.now()})';
     );
 }

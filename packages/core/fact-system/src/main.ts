@@ -16,6 +16,14 @@ import type {
 	FactSystemConfig,
 } from "./typescript/types";
 
+// Simple logger for FACT system
+const logger = {
+	info: (...args: any[]) => console.log('[FACT-INFO]', ...args),
+	error: (...args: any[]) => console.error('[FACT-ERROR]', ...args),
+	warn: (...args: any[]) => console.warn('[FACT-WARN]', ...args),
+	debug: (...args: any[]) => console.debug('[FACT-DEBUG]', ...args),
+};
+
 export class FactClient {
 	private config:FactSystemConfig | undefined;
 

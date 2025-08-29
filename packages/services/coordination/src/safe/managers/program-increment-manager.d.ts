@@ -53,6 +53,6 @@ export interface PIManagerState {
  */
 export declare class ProgramIncrementManager extends EventBus {
     private readonly logger;
-    constructor(eventBus: {});
+    constructor(eventBus:  {});
 }
 //# sourceMappingURL=program-increment-manager.d.ts.map

@@ -28,7 +28,7 @@ export const SafePrioritySchema = z.enum(['critical,' high,'medium,' low]);
 /**
  * SAFe feature status schema
  */
-export const FeatureStatusSchema = z.enum([';'];;
+export const FeatureStatusSchema = z.enum([';];;
  'backlog,') 'analysis,';
  'development,') 'testing,';
  'deployment,') 'done,';

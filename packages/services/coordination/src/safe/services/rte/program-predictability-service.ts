@@ -42,7 +42,7 @@ export class ProgramPredictabilityService {
     artId: string,
     objectives: PIObjective[],
     features: Feature[]
-  ):Promise<ProgramPredictability> {
+  ): Promise<ProgramPredictability> {
     ')    this.logger.info('Measuring program predictability,{ piId, artId};);`;
     const objectivePredictability =;
       this.calculateObjectivePredictability(objectives);
@@ -52,7 +52,7 @@ export class ProgramPredictabilityService {
       objectivePredictability * 0.4 +
       featurePredictability * 0.35 +;
       velocityPredictability * 0.25;
-    const predictability: {
+    const predictability:  {
       piId,
       artId,
       measurementDate: new Date(),
@@ -72,10 +72,10 @@ export class ProgramPredictabilityService {
       objectivePredictability * 0.4 +
       featurePredictability * 0.35 +;
       velocityPredictability * 0.25;
-    const predictability: {
+    const predictability:  {
       piId,
       artId,
-      measurementDate: {
+      measurementDate:  {
       objectiveId,
       piId,
       teamId,
@@ -101,13 +101,13 @@ export class ProgramPredictabilityService {
   async trackVelocity(
     teamId: string,
     piId: string,
-    velocity: {
+    velocity:  {
       plannedVelocity: number;
       actualVelocity: number;
       historicalAverage: number;
       factors?:VelocityFactor[];
 }
-  ):Promise<VelocityTracking> {
+  ): Promise<VelocityTracking> {
     const velocityVariance =
       ((velocity.actualVelocity - velocity.plannedVelocity) /
         velocity.plannedVelocity) *;
@@ -116,10 +116,10 @@ export class ProgramPredictabilityService {
       velocity.actualVelocity,
       velocity.historicalAverage;
     );
-    const tracking: {
+    const tracking:  {
       teamId,
       piId,
-      plannedVelocity: `impact-${generateNanoId(12)})    const assessment: {``;
+      plannedVelocity: `impact-${generateNanoId(12)})    const assessment:  {``;
       impactId,
       ...impact,
 };
@@ -194,7 +194,7 @@ export class ProgramPredictabilityService {
    */
   private generateRecommendations(overallPredictability: [];
     if (overallPredictability < 60) {
-      recommendations.push(';')';
+      recommendations.push(';)';
        'Improve planning accuracy and team commitment process')      );')      recommendations.push('Increase focus on dependency management');')      recommendations.push('Enhance risk identification and mitigation');
 } else if (overallPredictability < 80) {
     ')      recommendations.push('Fine-tune capacity planning');')      recommendations.push('Strengthen cross-team coordination');

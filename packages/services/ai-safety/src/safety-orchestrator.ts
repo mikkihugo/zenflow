@@ -5,19 +5,16 @@
  * deception detection, and intervention capabilities.
  */
 
-import { getLogger} from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
 
-import {
-  AIDeceptionDetector,
-  type AIInteractionData,
-} from './ai-deception-detector';
+import { AIDeceptionDetector, type AIInteractionData,  } from './ai-deception-detector';
 
 const logger = getLogger('ai-safety-orchestrator');
 
 // Enhanced error classes
 export class SafetyError extends Error {
   constructor(
-    message:string,
+    message: string,
     public readonly context?:Record<string, unknown>
   ) {
     super(message);
@@ -29,27 +26,27 @@ export class SafetyError extends Error {
  * Enhanced safety orchestration result.
  */
 export interface SafetyOrchestrationResult {
-  id:string;
-  phase1:AutomatedDetectionResult;
-  phase2:BehavioralAnalysisResult;
+  id: string;
+  phase1: AutomatedDetectionResult;
+  phase2: BehavioralAnalysisResult;
   phase3?:HumanEscalationResult;
-  totalTime:number;
-  interventionsTriggered:number;
-  timestamp:Date;
-  success:boolean;
+  totalTime: number;
+  interventionsTriggered: number;
+  timestamp: Date;
+  success: boolean;
 }
 
 /**
  * Enhanced automated detection result.
  */
 export interface AutomatedDetectionResult {
-  id:string;
-  detectionSpeed:string;
-  alertsGenerated:number;
-  immediateInterventions:number;
-  accuracy:number;
-  timeMs:number;
-  timestamp:Date;
+  id: string;
+  detectionSpeed: string;
+  alertsGenerated: number;
+  immediateInterventions: number;
+  accuracy: number;
+  timeMs: number;
+  timestamp: Date;
   errors?:string[];
 }
 
@@ -57,13 +54,13 @@ export interface AutomatedDetectionResult {
  * Enhanced behavioral analysis result.
  */
 export interface BehavioralAnalysisResult {
-  id:string;
-  patternsAnalyzed:number;
-  behavioralDeviations:number;
-  guidedInterventions:number;
-  timeMs:number;
-  timestamp:Date;
-  analysisQuality:number;
+  id: string;
+  patternsAnalyzed: number;
+  behavioralDeviations: number;
+  guidedInterventions: number;
+  timeMs: number;
+  timestamp: Date;
+  analysisQuality: number;
   errors?:string[];
 }
 
@@ -71,12 +68,12 @@ export interface BehavioralAnalysisResult {
  * Enhanced human escalation result.
  */
 export interface HumanEscalationResult {
-  id:string;
+  id: string;
   escalationLevel:'LOW' | ' MEDIUM' | ' HIGH' | ' CRITICAL';
-  responseTime:number;
+  responseTime: number;
   resolution:'APPROVED' | ' REJECTED' | ' MODIFIED' | ' PENDING';
   humanFeedback?:string;
-  timestamp:Date;
+  timestamp: Date;
   errors?:string[];
 }
 
@@ -84,13 +81,13 @@ export interface HumanEscalationResult {
  * Safety metrics interface.
  */
 export interface SafetyMetrics {
-  totalMonitoringSessions:number;
-  alertsGenerated:number;
-  interventionsTriggered:number;
-  humanEscalations:number;
-  averageDetectionTime:number;
-  systemUptime:number;
-  lastUpdate:Date;
+  totalMonitoringSessions: number;
+  alertsGenerated: number;
+  interventionsTriggered: number;
+  humanEscalations: number;
+  averageDetectionTime: number;
+  systemUptime: number;
+  lastUpdate: Date;
 }
 
 /**
@@ -100,17 +97,17 @@ export interface SafetyMetrics {
  * deception detection, and intervention capabilities.
  */
 export class AISafetyOrchestrator {
-  private deceptionDetector:AIDeceptionDetector;
-  private isMonitoring:boolean = false;
-  private metrics:SafetyMetrics;
-  private sessionId:string;
+  private deceptionDetector: AIDeceptionDetector;
+  private isMonitoring: boolean = false;
+  private metrics: SafetyMetrics;
+  private sessionId: string;
 
   constructor() {
     this.sessionId = this.generateId();
     
     // Initialize deception detector
     this.deceptionDetector = new AIDeceptionDetector({
-      enabled:true,
+      enabled: true,
       thresholds:{
         capability:0.7,
         knowledge:0.6,
@@ -119,9 +116,9 @@ export class AISafetyOrchestrator {
         context:0.6
 },
       interventions:{
-        immediate:true,
-        humanEscalation:false,
-        toolRequired:true
+        immediate: true,
+        humanEscalation: false,
+        toolRequired: true
 }
 });
 
@@ -133,12 +130,12 @@ export class AISafetyOrchestrator {
       humanEscalations:0,
       averageDetectionTime:0,
       systemUptime:0,
-      lastUpdate:new Date()
+      lastUpdate: new Date()
 };
 
     logger.info('AI Safety Orchestrator initialized', {
-      sessionId:this.sessionId,
-      timestamp:new Date().toISOString()
+      sessionId: this.sessionId,
+      timestamp: new Date().toISOString()
 });
 }
 
@@ -155,23 +152,23 @@ export class AISafetyOrchestrator {
   public async startSafetyMonitoring():Promise<{ success: boolean; error?: SafetyError}> {
     try {
       if (this.isMonitoring) {
-        return { success:false, error:new SafetyError('Safety monitoring is already active')};
+        return { success: false, error: new SafetyError('Safety monitoring is already active')};
 }
 
       this.isMonitoring = true;
       this.metrics.totalMonitoringSessions++;
       
       logger.info('Safety monitoring started', {
-        sessionId:this.sessionId,
-        session:this.metrics.totalMonitoringSessions
+        sessionId: this.sessionId,
+        session: this.metrics.totalMonitoringSessions
 });
 
-      return { success:true};
+      return { success: true};
 } catch (error) {
       return { 
-        success:false, 
-        error:new SafetyError(
-          'Failed to start safety monitoring',          { sessionId:this.sessionId}
+        success: false, 
+        error: new SafetyError(
+          'Failed to start safety monitoring',          { sessionId: this.sessionId}
         )
 };
 }
@@ -183,23 +180,23 @@ export class AISafetyOrchestrator {
   public async stopSafetyMonitoring():Promise<{ success: boolean; error?: SafetyError}> {
     try {
       if (!this.isMonitoring) {
-        return { success:false, error:new SafetyError('Safety monitoring is not active')};
+        return { success: false, error: new SafetyError('Safety monitoring is not active')};
 }
 
       this.isMonitoring = false;
       this.metrics.lastUpdate = new Date();
       
       logger.info('Safety monitoring stopped', {
-        sessionId:this.sessionId,
-        metrics:this.metrics
+        sessionId: this.sessionId,
+        metrics: this.metrics
 });
 
-      return { success:true};
+      return { success: true};
 } catch (error) {
       return { 
-        success:false, 
-        error:new SafetyError(
-          'Failed to stop safety monitoring',          { sessionId:this.sessionId}
+        success: false, 
+        error: new SafetyError(
+          'Failed to stop safety monitoring',          { sessionId: this.sessionId}
         )
 };
 }
@@ -208,10 +205,9 @@ export class AISafetyOrchestrator {
   /**
    * Evaluate agent safety with comprehensive analysis.
    */
-  public async evaluateAgentSafety(
-    agentId:string,
-    interactionData:AIInteractionData
-  ):Promise<{ success: boolean; value?: SafetyOrchestrationResult; error?: SafetyError}> {
+  public async evaluateAgentSafety(agentId: string,
+    interactionData: AIInteractionData
+  ): Promise<{ success: boolean; value?: SafetyOrchestrationResult; error?: SafetyError}> {
     try {
       const startTime = Date.now();
       const orchestrationId = this.generateId();
@@ -239,7 +235,7 @@ export class AISafetyOrchestrator {
 }
 
       // Phase 3:Human Escalation (if needed)
-      let phase3Result:HumanEscalationResult | undefined;
+      let phase3Result: HumanEscalationResult | undefined;
       if (this.shouldEscalateToHuman(phase1Result.value!, phase2Result.value!)) {
         const escalationResult = await this.escalateToHuman(
           agentId,
@@ -265,22 +261,22 @@ export class AISafetyOrchestrator {
 }
 
       return {
-        success:true,
+        success: true,
         value:{
-          id:orchestrationId,
-          phase1:phase1Result.value!,
-          phase2:phase2Result.value!,
-          phase3:phase3Result,
+          id: orchestrationId,
+          phase1: phase1Result.value!,
+          phase2: phase2Result.value!,
+          phase3: phase3Result,
           totalTime,
           interventionsTriggered,
-          timestamp:new Date(),
-          success:true
+          timestamp: new Date(),
+          success: true
 }
 };
 } catch (error) {
       return {
-        success:false,
-        error:error instanceof SafetyError ? error : new SafetyError(error instanceof Error ? error.message : 'Unknown error')
+        success: false,
+        error: error instanceof SafetyError ? error : new SafetyError(error instanceof Error ? error.message : 'Unknown error')
 };
 }
 }
@@ -288,11 +284,10 @@ export class AISafetyOrchestrator {
   /**
    * Perform automated detection using deception detector.
    */
-  private async performAutomatedDetection(
-    agentId:string,
-    interactionData:AIInteractionData,
-    orchestrationId:string
-  ):Promise<{ success: boolean; value?: AutomatedDetectionResult; error?: SafetyError}> {
+  private async performAutomatedDetection(agentId: string,
+    interactionData: AIInteractionData,
+    orchestrationId: string
+  ): Promise<{ success: boolean; value?: AutomatedDetectionResult; error?: SafetyError}> {
     try {
       const startTime = Date.now();
       
@@ -301,21 +296,21 @@ export class AISafetyOrchestrator {
         alert.severity === 'CRITICAL' || alert.severity === ' HIGH')      ).length;
 
       return {
-        success:true,
+        success: true,
         value:{
-          id:this.generateId(),
-          detectionSpeed: 'REAL_TIME',          alertsGenerated:alerts.length,
+          id: this.generateId(),
+          detectionSpeed: 'REAL_TIME',          alertsGenerated: alerts.length,
           immediateInterventions,
-          accuracy:alerts.length > 0 ? 0.95 : 1.0,
-          timeMs:Date.now() - startTime,
-          timestamp:new Date(),
+          accuracy: alerts.length > 0 ? 0.95 : 1.0,
+          timeMs: Date.now() - startTime,
+          timestamp: new Date(),
           errors:[]
 }
 };
 } catch (error) {
       return {
-        success:false,
-        error:new SafetyError('Automated detection failed')
+        success: false,
+        error: new SafetyError('Automated detection failed')
 };
 }
 }
@@ -323,11 +318,10 @@ export class AISafetyOrchestrator {
   /**
    * Perform behavioral analysis with pattern detection.
    */
-  private async performBehavioralAnalysis(
-    agentId:string,
-    interactionData:AIInteractionData,
-    orchestrationId:string
-  ):Promise<{ success: boolean; value?: BehavioralAnalysisResult; error?: SafetyError}> {
+  private async performBehavioralAnalysis(agentId: string,
+    interactionData: AIInteractionData,
+    orchestrationId: string
+  ): Promise<{ success: boolean; value?: BehavioralAnalysisResult; error?: SafetyError}> {
     try {
       const startTime = Date.now();
       
@@ -337,22 +331,22 @@ export class AISafetyOrchestrator {
       const guidedInterventions = behavioralDeviations > 2 ? 1:0;
 
       return {
-        success:true,
+        success: true,
         value:{
-          id:this.generateId(),
+          id: this.generateId(),
           patternsAnalyzed,
           behavioralDeviations,
           guidedInterventions,
-          timeMs:Date.now() - startTime,
-          timestamp:new Date(),
+          timeMs: Date.now() - startTime,
+          timestamp: new Date(),
           analysisQuality:0.9,
           errors:[]
 }
 };
 } catch (error) {
       return {
-        success:false,
-        error:new SafetyError('Behavioral analysis failed')
+        success: false,
+        error: new SafetyError('Behavioral analysis failed')
 };
 }
 }
@@ -360,7 +354,7 @@ export class AISafetyOrchestrator {
   /**
    * Analyze behavioral patterns in interaction data.
    */
-  private analyzeBehavioralPatterns(data:AIInteractionData): number {
+  private analyzeBehavioralPatterns(data: AIInteractionData): number {
     let patterns = 0;
     
     // Check for tool usage patterns
@@ -384,7 +378,7 @@ export class AISafetyOrchestrator {
   /**
    * Detect behavioral deviations from normal patterns.
    */
-  private detectBehavioralDeviations(data:AIInteractionData): number {
+  private detectBehavioralDeviations(data: AIInteractionData): number {
     let deviations = 0;
 
     // Check for unusual confidence levels
@@ -409,8 +403,8 @@ export class AISafetyOrchestrator {
    * Determine if human escalation is needed.
    */
   private shouldEscalateToHuman(
-    phase1:AutomatedDetectionResult,
-    phase2:BehavioralAnalysisResult
+    phase1: AutomatedDetectionResult,
+    phase2: BehavioralAnalysisResult
   ):boolean {
     return phase1.immediateInterventions > 2 ||
            phase2.behavioralDeviations > 3 ||
@@ -420,30 +414,29 @@ export class AISafetyOrchestrator {
   /**
    * Escalate to human oversight.
    */
-  private async escalateToHuman(
-    agentId:string,
-    phase1:AutomatedDetectionResult,
-    phase2:BehavioralAnalysisResult,
-    orchestrationId:string
-  ):Promise<{ success: boolean; value?: HumanEscalationResult; error?: SafetyError}> {
+  private async escalateToHuman(agentId: string,
+    phase1: AutomatedDetectionResult,
+    phase2: BehavioralAnalysisResult,
+    orchestrationId: string
+  ): Promise<{ success: boolean; value?: HumanEscalationResult; error?: SafetyError}> {
     try {
       // Simulate human escalation process
       const escalationLevel = this.determineEscalationLevel(phase1, phase2);
       
       return {
-        success:true,
+        success: true,
         value:{
-          id:this.generateId(),
+          id: this.generateId(),
           escalationLevel,
           responseTime:0, // Immediate for now
-          resolution: 'PENDING',          timestamp:new Date(),
+          resolution: 'PENDING',          timestamp: new Date(),
           errors:[]
 }
 };
 } catch (error) {
       return {
-        success:false,
-        error:new SafetyError('Human escalation failed')
+        success: false,
+        error: new SafetyError('Human escalation failed')
 };
 }
 }
@@ -452,8 +445,8 @@ export class AISafetyOrchestrator {
    * Determine escalation level based on detection results.
    */
   private determineEscalationLevel(
-    phase1:AutomatedDetectionResult,
-    phase2:BehavioralAnalysisResult
+    phase1: AutomatedDetectionResult,
+    phase2: BehavioralAnalysisResult
   ):'LOW' | ' MEDIUM' | ' HIGH' | ' CRITICAL' {
     if (phase1.immediateInterventions > 3 || phase2.behavioralDeviations > 4) {
       return 'CRITICAL';
@@ -473,8 +466,8 @@ export class AISafetyOrchestrator {
   public getSafetyMetrics():SafetyMetrics {
     return {
       ...this.metrics,
-      systemUptime:this.isMonitoring ? Date.now() - this.metrics.lastUpdate.getTime() : 0,
-      lastUpdate:new Date()
+      systemUptime: this.isMonitoring ? Date.now() - this.metrics.lastUpdate.getTime() : 0,
+      lastUpdate: new Date()
 };
 }
 
@@ -483,10 +476,10 @@ export class AISafetyOrchestrator {
    */
   public getSafetyStatus() {
     return {
-      isMonitoring:this.isMonitoring,
-      sessionId:this.sessionId,
-      metrics:this.getSafetyMetrics(),
-      deceptionDetectorStatus:this.deceptionDetector.getDetectionMetrics()
+      isMonitoring: this.isMonitoring,
+      sessionId: this.sessionId,
+      metrics: this.getSafetyMetrics(),
+      deceptionDetectorStatus: this.deceptionDetector.getDetectionMetrics()
 };
 }
 
@@ -496,23 +489,23 @@ export class AISafetyOrchestrator {
   public async emergencyShutdown():Promise<{ success: boolean; error?: SafetyError}> {
     try {
       logger.warn('Emergency shutdown initiated', {
-        sessionId:this.sessionId,
-        timestamp:new Date().toISOString()
+        sessionId: this.sessionId,
+        timestamp: new Date().toISOString()
 });
 
       this.isMonitoring = false;
       this.deceptionDetector.clearHistory();
 
       logger.info('Emergency shutdown completed', {
-        sessionId:this.sessionId
+        sessionId: this.sessionId
 });
 
-      return { success:true};
+      return { success: true};
 } catch (error) {
       return {
-        success:false,
-        error:new SafetyError(
-          'Emergency shutdown failed',          { sessionId:this.sessionId}
+        success: false,
+        error: new SafetyError(
+          'Emergency shutdown failed',          { sessionId: this.sessionId}
         )
 };
 }
@@ -535,14 +528,14 @@ export async function createInitializedAISafetyOrchestrator():Promise<{ success:
     const startResult = await orchestrator.startSafetyMonitoring();
     
     if (!startResult.success) {
-      return { success:false, error:startResult.error};
+      return { success: false, error: startResult.error};
 }
 
-    return { success:true, value:orchestrator};
+    return { success: true, value: orchestrator};
 } catch (error) {
     return {
-      success:false,
-      error:new SafetyError(
+      success: false,
+      error: new SafetyError(
         'Failed to create and initialize AI safety orchestrator')      )
 };
 }

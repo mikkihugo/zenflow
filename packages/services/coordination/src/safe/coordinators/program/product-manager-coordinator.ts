@@ -21,7 +21,7 @@ interface CustomerNeed {
     const reasoning = this.generatePrioritizationReasoning(
       businessValue, urgency, jobSize, marketValidation, wsjfScore;
     );')    await this.emitSafe('feature: []
-  ):Promise<void> {
+  ): Promise<void> {
     const existingBacklog = this.programBacklog.get(programId)|| [];
     
     // Remove features
@@ -34,7 +34,7 @@ interface CustomerNeed {
     const reorderedFeatures = this.reorderBacklogByPriority(updatedBacklog);
     
     this.programBacklog.set(programId, reorderedFeatures);
-    await this.emitSafe(``backlog: {`
+    await this.emitSafe(``backlog:  {`
       id,      description,';
       priority,
       businessValue,
@@ -45,7 +45,7 @@ interface CustomerNeed {
     const relatedFeatures = this.findFeaturesForCustomerNeed(need);
     const marketOpportunity = this.calculateMarketOpportunity(need);
     await this.emitSafe('customer: 12 // months
-  ):Promise<void> {
+  ): Promise<void> {
     const backlog = this.programBacklog.get(programId)|| [];
     const quarters = this.planFeaturesByQuarter(backlog, timeHorizon);
     const milestones = this.identifyKeyMilestones(quarters);
@@ -74,11 +74,11 @@ interface CustomerNeed {
     feature: Feature,
     businessJustification: string``';
     requiredApprover: string =product-owner`;
-  ):Promise<FeatureApprovalRequest> {
-    const approvalRequest: {
+  ): Promise<FeatureApprovalRequest> {
+    const approvalRequest:  {
     `)      id:`approval-${feature.id}-${Date.now()},`;
       featureId: true
-  ):Promise<void> {
+  ): Promise<void> {
     const feedback: requestFeedback ? 
       await this.collectStakeholderFeedback(stakeholderGroup, features) :[];)    await this.emitSafe('stakeholder: communicated,{';
       stakeholderGroup,
@@ -134,7 +134,7 @@ interface CustomerNeed {
   private async collectStakeholderFeedback(
     stakeholderGroup: string,
     features: Feature[]
-  ):Promise<string[]> {
+  ): Promise<string[]> {
     // Simulated feedback collection - would integrate with actual feedback systems
     return [
       `${{stakeholderGroup} feedback on feature priorities};,`;

@@ -14,7 +14,7 @@ import { generateNanoId} from '@claude-zen/foundation')/**';
  * Approval request event data
  */
 export interface ApprovalRequestEvent {
-  readonly requestId: 'epic| feature| architecture| business-case|| resource| process',)  readonly title: {
+  readonly requestId: 'epic| feature| architecture| business-case|| resource| process',)  readonly title:  {
   REQUEST_APPROVAL = 'approval: 'approval: 'approval: 'approval: new Map<string, ApprovalRequestEvent>();
   private approvalTimeouts = new Map<string, NodeJS.Timeout>();
   /**
@@ -60,7 +60,7 @@ export interface ApprovalRequestEvent {
   /**
    * Clean up all timeouts
    */
-  destroy():void {
+  destroy(): void {
     for (const timeout of this.approvalTimeouts.values()) {
       clearTimeout(timeout);
 }

@@ -59,7 +59,7 @@ export interface PIPlanningTeam {
 export interface BusinessContext {
   vision: string;
   roadmap: string[];
-  milestones: {
+  milestones:  {
     name: string;
     date: Date;
     description: string;
@@ -72,7 +72,7 @@ export interface BusinessContext {
  * Program risks and dependencies
  */
 export interface ProgramRisksAndDependencies {
-  risks: {
+  risks:  {
     id: string;
     description: string;
     impact: 'high' | 'medium' | 'low';
@@ -80,7 +80,7 @@ export interface ProgramRisksAndDependencies {
     mitigation: string;
     owner: string;
   }[];
-  dependencies: {
+  dependencies:  {
     id: string;
     description: string;
     fromTeam: string;
@@ -119,7 +119,7 @@ export interface PIPlanningEvent {
   systemArchitect?: string;
   teams: PIPlanningTeam[];
   businessContext: BusinessContext;
-  agenda: {
+  agenda:  {
     phase: PIPlanningPhase;
     startTime: Date;
     endTime: Date;
@@ -128,13 +128,13 @@ export interface PIPlanningEvent {
   }[];
   risksAndDependencies: ProgramRisksAndDependencies;
   planCommitments: PlanCommitment[];
-  boardOfCommitment: {
+  boardOfCommitment:  {
     teamCommitments: PlanCommitment[];
     overallConfidence: number;
     managementSupport: boolean;
     readyToProceed: boolean;
   };
-  artifacts: {
+  artifacts:  {
     teamBoards: string[];
     dependencyWall: string[];
     riskBoard: string[];
@@ -173,7 +173,7 @@ export class PIPlanningCoordinationManager extends EventBus {
   /**
    * Create PI Planning event
    */
-  createPIPlanningEvent(config: {
+  createPIPlanningEvent(config:  {
     piNumber: number;
     artId: string;
     artName: string;
@@ -204,18 +204,18 @@ export class PIPlanningCoordinationManager extends EventBus {
       })),
       businessContext: config.businessContext,
       agenda: this.createDefaultAgenda(config.startDate, config.endDate),
-      risksAndDependencies: {
+      risksAndDependencies:  {
         risks: [],
         dependencies: []
       },
       planCommitments: [],
-      boardOfCommitment: {
+      boardOfCommitment:  {
         teamCommitments: [],
         overallConfidence: 0,
         managementSupport: false,
         readyToProceed: false
       },
-      artifacts: {
+      artifacts:  {
         teamBoards: [],
         dependencyWall: [],
         riskBoard: [],
@@ -233,7 +233,7 @@ export class PIPlanningCoordinationManager extends EventBus {
   /**
    * Handle planning start
    */
-  private handlePlanningStart(data: { eventId: string }): void {
+  private handlePlanningStart(data:  { eventId: string }): void {
     const event = this.planningEvents.get(data.eventId);
     if (!event) {
       logger.error(`PI Planning event not found: ${data.eventId}`);
@@ -250,7 +250,7 @@ export class PIPlanningCoordinationManager extends EventBus {
   /**
    * Handle phase transitions
    */
-  private handlePhaseTransition(data: { 
+  private handlePhaseTransition(data:  { 
     eventId: string; 
     newPhase: PIPlanningPhase;
   }): void {
@@ -276,7 +276,7 @@ export class PIPlanningCoordinationManager extends EventBus {
   /**
    * Handle team breakouts
    */
-  private handleTeamBreakout(data: {
+  private handleTeamBreakout(data:  {
     eventId: string;
     teamId: string;
     breakoutType: 'planning' | 'dependency' | 'risk';
@@ -304,7 +304,7 @@ export class PIPlanningCoordinationManager extends EventBus {
   /**
    * Handle objective updates
    */
-  private handleObjectiveUpdate(data: {
+  private handleObjectiveUpdate(data:  {
     eventId: string;
     teamId: string;
     objective: TeamPIObjective;
@@ -342,7 +342,7 @@ export class PIPlanningCoordinationManager extends EventBus {
   /**
    * Handle dependency identification
    */
-  private handleDependencyIdentified(data: {
+  private handleDependencyIdentified(data:  {
     eventId: string;
     dependency: Omit<ProgramRisksAndDependencies['dependencies'][0], 'id'>;
   }): void {
@@ -368,7 +368,7 @@ export class PIPlanningCoordinationManager extends EventBus {
   /**
    * Handle risk identification
    */
-  private handleRiskIdentified(data: {
+  private handleRiskIdentified(data:  {
     eventId: string;
     risk: Omit<ProgramRisksAndDependencies['risks'][0], 'id'>;
   }): void {
@@ -394,7 +394,7 @@ export class PIPlanningCoordinationManager extends EventBus {
   /**
    * Handle commitment voting
    */
-  private handleCommitmentVote(data: {
+  private handleCommitmentVote(data:  {
     eventId: string;
     teamId: string;
     commitment: Omit<PlanCommitment, 'teamId'>;
@@ -429,7 +429,7 @@ export class PIPlanningCoordinationManager extends EventBus {
   /**
    * Handle planning completion
    */
-  private handlePlanningComplete(data: { eventId: string }): void {
+  private handlePlanningComplete(data:  { eventId: string }): void {
     const event = this.planningEvents.get(data.eventId);
     if (!event) {
       logger.error(`PI Planning event not found: ${data.eventId}`);
@@ -530,9 +530,9 @@ export class PIPlanningCoordinationManager extends EventBus {
   /**
    * Get planning event status
    */
-  getPlanningEventStatus(eventId: string): {
+  getPlanningEventStatus(eventId: string):  {
     event?: PIPlanningEvent;
-    progress: {
+    progress:  {
       currentPhase: PIPlanningPhase;
       teamsPlanning: number;
       objectivesCreated: number;
@@ -545,7 +545,7 @@ export class PIPlanningCoordinationManager extends EventBus {
     const event = this.planningEvents.get(eventId);
     if (!event) {
       return {
-        progress: {
+        progress:  {
           currentPhase: PIPlanningPhase.PREPARATION,
           teamsPlanning: 0,
           objectivesCreated: 0,
@@ -569,7 +569,7 @@ export class PIPlanningCoordinationManager extends EventBus {
 
     return {
       event,
-      progress: {
+      progress:  {
         currentPhase: event.currentPhase,
         teamsPlanning: activeBreakouts,
         objectivesCreated: totalObjectives,

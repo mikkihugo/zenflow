@@ -17,7 +17,7 @@ export interface LLMApprovalDecision {
   reasoning: string;
   concerns: string[];
   suggestedActions: string[];
-  metadata: {
+  metadata:  {
     model: string;
     processingTime: number;
     tokenUsage: number;
@@ -72,7 +72,7 @@ export interface HumanOverride {
   metadata: Record<string, unknown>;
 }
 export interface LLMApprovalContext {
-  task: {
+  task:  {
     id: string;
     title: string;
     description?:string;
@@ -84,30 +84,30 @@ export interface LLMApprovalContext {
     dependencies: string[];
     customData: Record<string, unknown>;
 };
-  workflow: {
+  workflow:  {
     id: string;
     name: string;
     currentState: string;
     previousStates: string[];
 };
-  history: {
+  history:  {
     similarTasks: Array<{
       taskId: string;
       decision : 'approved' | ' rejected')      confidence: number;;
       reasoning: string;
 }>;
-    userPatterns: {
+    userPatterns:  {
       userId: string;
       approvalRate: number;
       commonCriteria: string[];
 };
 };
-  security: {
+  security:  {
     hasSecrets: boolean;
     affectedSystems: string[];
     riskLevel : 'low| medium| high' | ' critical')    complianceFlags: string[];;
 };
-  codeAnalysis?:{
+  codeAnalysis?:  {
     changedFiles: string[];
     linesAdded: number;
     linesDeleted: number;
@@ -129,7 +129,7 @@ export interface LLMApprovalResult {
 export interface ApprovalLearning {
   taskId: string;
   llmDecision: LLMApprovalDecision;
-  humanDecision: {
+  humanDecision:  {
     approved: boolean;
     reasoning: string;
     userId: string;
@@ -149,8 +149,8 @@ export interface LLMApprovalMetrics {
     count: number;
     successRate: number;
 }>;
-  improvementTrends: {
-    accuracyOverTime: Array<{ date: Date; accuracy: number}>;
-    confidenceOverTime: Array<{ date: Date; confidence: number}>;
+  improvementTrends:  {
+    accuracyOverTime: Array<{ date: Date, accuracy: number}>;
+    confidenceOverTime: Array<{ date: Date, confidence: number}>;
 };
 };

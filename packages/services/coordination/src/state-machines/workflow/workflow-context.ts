@@ -19,7 +19,9 @@ import type {
   WorkflowBottleneck,
   WorkflowKanbanConfig,
   WorkflowTask,
-} from '../../kanban/types/index')// ============================================================================ = ';
+} from '../../kanban/types/index';
+
+// ============================================================================
 // XSTATE MACHINE CONTEXT DEFINITION
 // =============================================================================
 /**
@@ -49,7 +51,7 @@ export interface WorkflowMachineContext {
   bottleneckHistory: WorkflowBottleneck[];
   // Flow metrics
   currentMetrics: FlowMetrics| null;
-  metricsHistory: Array<{ timestamp: Date; metrics: FlowMetrics}>;
+  metricsHistory: Array<{ timestamp: Date, metrics: FlowMetrics}>;
   // System status
   systemHealth: number; // 0-1 range
   lastOptimization: Date| null;
@@ -61,7 +63,7 @@ export interface WorkflowMachineContext {
     timestamp: Date;
     error: string;
     context: string;
-}>'; 
+  }>;
 }
 // =============================================================================
 // CONTEXT INITIALIZATION
@@ -73,8 +75,8 @@ export const createInitialContext = (
   config: WorkflowKanbanConfig
 ):WorkflowMachineContext => ({
   // Initialize task management structures
-  tasks:{},
-  tasksByState: {
+  tasks:  {},
+  tasksByState:  {
     backlog:[],
     analysis: [],
     development: [],
@@ -86,7 +88,7 @@ export const createInitialContext = (
     expedite: [],
 },
   // Initialize WIP management
-  wipLimits: { ...config.defaultWIPLimits},
+  wipLimits:  { ...config.defaultWIPLimits},
   wipViolations: [],
   // Initialize bottleneck tracking
   activeBottlenecks: [],
@@ -99,10 +101,11 @@ export const createInitialContext = (
   lastOptimization: null,
   optimizationStrategy: null,
   // Store configuration
-  config: { ...config},
+  config: { ...config },
   // Initialize error tracking
   errors: [],
-'});
+});
+
 // =============================================================================
 // CONTEXT UTILITIES
 // =============================================================================
@@ -114,45 +117,90 @@ export class WorkflowContextUtils {
    * Get task count for specific state
    */
   static getTaskCountForState(
-    context: WorkflowContextUtils.getTaskCountForState(
-      context,
-      state;
-    );
-    const limit = context.wipLimits[state];
-    return limit > 0 ? currentCount / limit: 1
-  ):boolean {
+    context: WorkflowMachineContext,
+    state: TaskState
+  ): number {
+    return context.tasksByState[state]?.length || 0;
+  }
+
+  /**
+   * Get WIP utilization for state (current/limit)
+   */
+  static getWIPUtilization(
+    context: WorkflowMachineContext,
+    state: TaskState
+  ): number {
     const currentCount = WorkflowContextUtils.getTaskCountForState(
       context,
-      state;
+      state
+    );
+    const limit = context.wipLimits[state];
+    return limit > 0 ? currentCount / limit : 1;
+  }
+
+  /**
+   * Check if adding tasks would violate WIP limits
+   */
+  static wouldViolateWIP(
+    context: WorkflowMachineContext,
+    state: TaskState,
+    additionalTasks: number = 1
+  ): boolean {
+    const currentCount = WorkflowContextUtils.getTaskCountForState(
+      context,
+      state
     );
     const limit = context.wipLimits[state];
     return currentCount + additionalTasks > limit;
-}
+  }
+
   /**
    * Get system health category
    */
   static getSystemHealthCategory(
-    health: number')  ):'excellent| good| warning| critical '{';
-    if (health >= 0.9) return'excellent')    if (health >= 0.7) return'good')    if (health >= 0.3) return'warning')    return'critical')};;
+    health: number
+  ): 'excellent' | 'good' | 'warning' | 'critical' {
+    if (health >= 0.9) return 'excellent';
+    if (health >= 0.7) return 'good';
+    if (health >= 0.3) return 'warning';
+    return 'critical';
+  }
+
   /**
    * Get recent errors (last N errors)
    */
   static getRecentErrors(
-    context: 5
-  ):Array<{ timestamp: [
-     'analysis,')     'development,';
-     'testing,')     'review,';
-     'deployment,';
-];
+    context: WorkflowMachineContext,
+    count: number = 5
+  ): Array<{ timestamp: Date; error: string; context: string }> {
+    return context.errors
+      .slice(-count)
+      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+  }
+
+  /**
+   * Calculate overall WIP utilization across work states
+   */
+  static getOverallWIPUtilization(
+    context: WorkflowMachineContext
+  ): number {
+    const workStates: TaskState[] = [
+      'analysis',
+      'development',
+      'testing',
+      'review',
+      'deployment',
+    ];
     let totalUtilization = 0;
     let stateCount = 0;
     for (const state of workStates) {
       const utilization = WorkflowContextUtils.getWIPUtilization(
         context,
-        state;
+        state
       );
       totalUtilization += Math.min(1, utilization); // Cap at 100%
       stateCount++;
+    }
+    return stateCount > 0 ? totalUtilization / stateCount : 0;
+  }
 }
-    return stateCount > 0 ? totalUtilization / stateCount: 0;
-};)};;

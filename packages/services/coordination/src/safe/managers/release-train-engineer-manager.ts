@@ -11,11 +11,11 @@
   /**
    * Initialize with service delegation - LAZY LOADING
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     if (this.initialized) return;
     try {
       // Delegate to PI Planning Facilitation Service
-      const { PIPlanningFacilitationService} = await import(';')';
+      const { PIPlanningFacilitationService} = await import(';)';
        '../services/rte/pi-planning-facilitation-service'));
       this.piPlanningService = new PIPlanningFacilitationService(this.logger);
       // Delegate to Scrum of Scrums Service
@@ -23,7 +23,7 @@
        '../services/rte/scrum-of-scrums-service'));
       this.scrumOfScrumsService = new ScrumOfScrumsService(this.logger);
       // Delegate to Program Predictability Service
-      const { ProgramPredictabilityService} = await import(';')';
+      const { ProgramPredictabilityService} = await import(';)';
        '../services/rte/program-predictability-service'));
       this.predictabilityService = new ProgramPredictabilityService(
         this.logger
@@ -31,7 +31,7 @@
       this.initialized = true;
       this.logger.info('ReleaseTrainEngineerManager initialized successfully');
 } catch (error) {
-      this.logger.error(';')';
+      this.logger.error(';)';
        'Failed to initialize ReleaseTrainEngineerManager:,';
         error
       );
@@ -41,7 +41,7 @@
   /**
    * Facilitate PI Planning event - Delegates to PI Planning Facilitation Service
    */
-  async facilitatePIPlanning(input: {
+  async facilitatePIPlanning(input:  {
     piId: string;
     artId: string;
     duration: number;
@@ -49,7 +49,7 @@
     facilitators: string[];
     objectives: any[];
     features: any[];
-}):Promise<any> {
+}): Promise<any> {
     if (!this.initialized) await this.initialize();
     this.logger.info('Facilitating PI Planning,{';
       piId: input.piId,
@@ -86,7 +86,7 @@
     artId: string,
     objectives: any[],
     features: any[]
-  ):Promise<any> {
+  ): Promise<any> {
     if (!this.initialized) await this.initialize();)    this.logger.info('Measuring program predictability,{ piId, artId};);
     try {
       const predictability =
@@ -110,7 +110,7 @@
   /**
    * Track program impediment - Delegates to Scrum of Scrums Service
    */
-  async trackImpediment(impediment: {
+  async trackImpediment(impediment:  {
     title: string;
     description: string;
     reportedBy: string;
@@ -118,7 +118,7 @@
     severity: any;
     affectedTeams: string[];
     impact: string;
-}):Promise<any> {
+}): Promise<any> {
     if (!this.initialized) await this.initialize();')    this.logger.info('Tracking program impediment,{';
       title: impediment.title,')';
 });
@@ -229,7 +229,7 @@
     piId: string,
     artId: string,
     config: any
-  ):Promise<any> {
+  ): Promise<any> {
     this.logger.info('Facilitating Inspect & Adapt session', {
       piId,
       artId,

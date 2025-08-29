@@ -87,27 +87,27 @@ export interface IncidentResolution {
     // Create initial impact assessment
     const impact = this.performInitialImpactAssessment(incidentData);
     // Create incident
-    const incident: {
+    const incident:  {
       incidentId,
       title: this.incidents.get(incidentId);
     if (!incident) {
-    `)      throw new Error(`Incident not found: {`
-    `)      entryId,    `)      timestamp: {`
+    `)      throw new Error(`Incident not found:  {`
+    `)      entryId,    `)      timestamp:  {`
       ...incident,
       status,
       timeline: this.incidents.get(incidentId);
     if (!incident) {
-    `)      throw new Error(`Incident not found: {`
+    `)      throw new Error(`Incident not found:  {`
       evidenceId,    ')      collectedDate: 'Digital collection',)          notes : 'Evidence collected for incident investigation,,'
 ],
       ...evidence,',};;
-    const updatedIncident: {
+    const updatedIncident:  {
       ...incident,
       evidence: 'analysis,',
           evidence: this.incidents.get(incidentId);
     if (!incident) {
     `)      throw new Error(`Incident not found: actions.map((action) => ({`
-    ')      actionId,    ')      status: {
+    ')      actionId,    ')      status:  {
       ...incident,
       status: 'system',)          category,},
 ],
@@ -126,10 +126,10 @@ export interface IncidentResolution {
     const totalResponseTime = Math.floor(
       (resolutionDate.getTime() - incident.detectedDate.getTime()) / (1000 * 60);
     );
-    const updatedIncident: {
+    const updatedIncident:  {
       ...incident,
       status: IncidentStatus.RESOLVED,
-      resolution: {
+      resolution:  {
         ...resolution,
         resolutionDate,
         totalResponseTime,
@@ -239,7 +239,7 @@ export interface IncidentResolution {
   private sendStatusNotification(
     incident: SecurityIncident,
     message: string
-  ):void {
+  ): void {
     ')    this.logger.info('Sending status notification,{';
       incidentId: incident.incidentId,
       message,');
@@ -249,7 +249,7 @@ export interface IncidentResolution {
   private async executeContainmentActions(
     incidentId: string,
     actions: ContainmentAction[]
-  ):Promise<void> {
+  ): Promise<void> {
     for (const action of actions) {
       try {
         // Simulate action execution
@@ -269,7 +269,7 @@ export interface IncidentResolution {
     ')    this.logger.info('Scheduling post-incident review,{ incidentId};);
     // Implementation would schedule PIR
 }
-  private initializeResponseTeams():void {
+  private initializeResponseTeams(): void {
     // Initialize with default teams from config
     for (const team of this.responseConfig.responseTeams) {
       this.responseTeams.set(team.teamId, team);
@@ -286,26 +286,26 @@ export interface IncidentResolution {
           notificationChannels: ['email,' sms],`;
 },
 ],
-      communicationPlan: {
+      communicationPlan:  {
         internalChannels:[],
         externalChannels: [],
         stakeholderMatrix: [],
         templates: [],
 },
-      slaThresholds: {
-        acknowledgmentTime:{
+      slaThresholds:  {
+        acknowledgmentTime:  {
           [IncidentPriority.P1]:15, // 15 minutes
           [IncidentPriority.P2]:30, // 30 minutes
           [IncidentPriority.P3]:60, // 1 hour
           [IncidentPriority.P4]:120, // 2 hours
 },
-        responseTime: {
+        responseTime:  {
           [IncidentPriority.P1]:30, // 30 minutes
           [IncidentPriority.P2]:120, // 2 hours
           [IncidentPriority.P3]:480, // 8 hours
           [IncidentPriority.P4]:1440, // 24 hours
 },
-        resolutionTime: {
+        resolutionTime:  {
           [IncidentPriority.P1]:4, // 4 hours
           [IncidentPriority.P2]:24, // 24 hours
           [IncidentPriority.P3]:72, // 3 days

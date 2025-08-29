@@ -11,7 +11,7 @@
  * **EXTENSION PATTERN:**
  * Applications should extend these base types for custom business logic:
  * `typescript') * // In application: claude-code-zen-server/src/types/safe-sparc-integration.ts';
- * import type { IntegratedAgentProfile} from '@claude-zen/safe-framework') *';
+ * import type { IntegratedAgentProfile } from '../safe/types/integration-bridge.js';
  * interface ClaudeZenAgentProfile extends IntegratedAgentProfile {
  *   claudeSpecificCapabilities: string[];
  *   customWorkflows: CustomWorkflow[];

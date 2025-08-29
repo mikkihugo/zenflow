@@ -54,11 +54,11 @@ export interface ProgramIncrement {
   objectives: PIObjective[];
   teams: ARTTeam[];
   risks: string[];
-  dependencies: {
+  dependencies:  {
     internal: string[];
     external: string[];
   };
-  metrics: {
+  metrics:  {
     predictability: number;
     velocity: number;
     quality: number;
@@ -126,7 +126,7 @@ export class ARTSyncCoordinationManager extends EventBus {
   /**
    * Create Program Increment
    */
-  createProgramIncrement(config: {
+  createProgramIncrement(config:  {
     name: string;
     startDate: Date;
     endDate: Date;
@@ -145,11 +145,11 @@ export class ARTSyncCoordinationManager extends EventBus {
       objectives: [],
       teams: config.teams,
       risks: [],
-      dependencies: {
+      dependencies:  {
         internal: [],
         external: []
       },
-      metrics: {
+      metrics:  {
         predictability: 0,
         velocity: 0,
         quality: 0,
@@ -167,7 +167,7 @@ export class ARTSyncCoordinationManager extends EventBus {
   /**
    * Handle PI Planning start
    */
-  private handlePIPlanningStart(data: { piId: string; teams: ARTTeam[] }): void {
+  private handlePIPlanningStart(data:  { piId: string, teams: ARTTeam[] }): void {
     const pi = this.arts.get(data.piId);
     if (!pi) {
       logger.error(`PI not found: ${data.piId}`);
@@ -236,7 +236,7 @@ export class ARTSyncCoordinationManager extends EventBus {
   /**
    * Create dependency coordination
    */
-  createDependency(config: {
+  createDependency(config:  {
     description: string;
     type: DependencyCoordination['type'];
     priority: DependencyCoordination['priority'];
@@ -268,7 +268,7 @@ export class ARTSyncCoordinationManager extends EventBus {
   /**
    * Handle dependency updates
    */
-  private handleDependencyUpdate(data: {
+  private handleDependencyUpdate(data:  {
     depId: string;
     status: DependencyCoordination['status'];
     actualDate?: Date;
@@ -302,7 +302,7 @@ export class ARTSyncCoordinationManager extends EventBus {
   /**
    * Handle team updates
    */
-  private handleTeamUpdate(data: {
+  private handleTeamUpdate(data:  {
     artId: string;
     teamId: string;
     updates: Partial<ARTTeam>;
@@ -334,7 +334,7 @@ export class ARTSyncCoordinationManager extends EventBus {
   /**
    * Handle objective updates
    */
-  private handleObjectiveUpdate(data: {
+  private handleObjectiveUpdate(data:  {
     artId: string;
     objectiveId: string;
     updates: Partial<PIObjective>;
@@ -366,12 +366,12 @@ export class ARTSyncCoordinationManager extends EventBus {
   /**
    * Get ART coordination status
    */
-  getARTStatus(artId: string): {
+  getARTStatus(artId: string):  {
     pi?: ProgramIncrement;
     dependencies: DependencyCoordination[];
     activeSyncs: ARTSyncEventData[];
     health: 'green' | 'yellow' | 'red';
-    metrics: {
+    metrics:  {
       teamsCount: number;
       objectivesCount: number;
       dependenciesCount: number;
@@ -419,7 +419,7 @@ export class ARTSyncCoordinationManager extends EventBus {
       dependencies,
       activeSyncs,
       health,
-      metrics: {
+      metrics:  {
         teamsCount: totalTeams,
         objectivesCount: pi ? pi.objectives.length : 0,
         dependenciesCount: dependencies.length,

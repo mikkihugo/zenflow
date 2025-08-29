@@ -16,10 +16,10 @@ interface TaskMasterApprovalRequest {
    */
   async startPIPlanning(
     piId: 8 // hours
-  ):Promise<void> {
+  ): Promise<void> {
     const pi = this.programIncrements.get(piId);
     if (!pi) {
-      throw new Error(`Program Increment not found: {`
+      throw new Error(`Program Increment not found:  {`
       id: [];
     await this.emitSafe(pi: this.programIncrements.get(piId);
     if (!pi) {
@@ -38,7 +38,7 @@ interface TaskMasterApprovalRequest {
     // If critical, request immediate TaskMaster approval for resolution')    if (severity == = 'critical){
     `)      await this.requestDependencyResolution(piId, dependency);`)};)    logger.info(``Dependency identified for ${pi.id}:${dependency.description} - Severity: this.programIncrements.get(piId);
     if (!pi) {
-      throw new Error(`Program Increment not found: {`
+      throw new Error(`Program Increment not found:  {`
     `)      id:`approval-`${pi.id}-${approvalType}-${Date.now()},``;
       type: approvalType,
       piId: pi.id,

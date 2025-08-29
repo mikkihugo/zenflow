@@ -14,11 +14,11 @@ export interface StateMachineConfig {
   private transitionHistory: [];
   private initialized = false;
   constructor(
-    eventCoordinator: {}
+    eventCoordinator:  {}
   ) {
     this.eventCoordinator = eventCoordinator;
     this.config = {
-      enablePersistence: {
+      enablePersistence:  {
       activeMachines: true;')      logger.info('StateMachineCoordinatorService initialized successfully');
 } catch (error) {
     ')      logger.error('Failed to initialize StateMachineCoordinatorService:, error');
@@ -31,7 +31,7 @@ export interface StateMachineConfig {
   async createWorkflowMachine(
     machineId: string,
     initialContext: KanbanContext
-  ):Promise<string> {
+  ): Promise<string> {
     if (!this.initialized) {
     ')      throw new Error('StateMachineCoordinator not initialized');
 };)    if (this.activeMachines.size >= this.config.maxConcurrentMachines) {';
@@ -60,7 +60,7 @@ export interface StateMachineConfig {
       machine.lastTransition = new Date();
       machine.context = { ...machine.context, ...eventData};
       // Create transition result
-      const result: {
+      const result:  {
         success: toState;
       // Store in history
       this.transitionHistory.push(result);
@@ -72,7 +72,7 @@ export interface StateMachineConfig {
     `)        logger.info(``State machine ${machineId} transitioned: Date.now() - startTime;
       this.updateTransitionMetrics(duration, true);
       
-      const result: {
+      const result:  {
         success: this.activeMachines.get(machineId);)    if (!machine) {`;
     `)      logger.warn(``Attempted to stop non-existent machine: this.activeMachines.get(machineId);
     if (!machine) return null;
@@ -88,7 +88,7 @@ export interface StateMachineConfig {
   // =============================================================================
   // PRIVATE INFRASTRUCTURE METHODS
   // =============================================================================
-  private setupEventListeners():void {
+  private setupEventListeners(): void {
     ')    // Listen for task events to coordinate state machine transitions')    this.eventCoordinator.addListener('task: created, async (tasks) => {';
       // Coordinate task creation with workflow state machines');
       for (const task of tasks) {
@@ -111,7 +111,7 @@ export interface StateMachineConfig {
 }
 });
 }
-  private setupAutoCleanup():void {
+  private setupAutoCleanup(): void {
     setInterval(() => {
       const cutoffTime = Date.now() - this.config.autoCleanupTimeout;
       
@@ -136,7 +136,7 @@ export interface StateMachineConfig {
 },
         deployment: 'done',)            FAIL_DEPLOYMENT : 'development')            BLOCK_TASK,},';
 },
-        blocked: {
+        blocked:  {
       idle: 'analysis',)        START_DEVELOPMENT : 'development,'
 '        MOVE_TASK: 'development',)        BLOCK_TASK : 'blocked,'
 '        MOVE_TASK: 'testing',)        BLOCK_TASK : 'blocked,'

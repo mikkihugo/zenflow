@@ -23,7 +23,7 @@ export enum SafeConfigurationLevel {
  */
 export interface SafeFeatureToggles {
   // Essential SAFe Features (Always enabled for Step 1+)
-  essential: {
+  essential:  {
     artCoordination: boolean; // ART Sync, PI Planning, team coordination
     coreRoles: boolean; // RTE, Business Owners, Agile Teams
     coreEvents: boolean; // Essential events only
@@ -33,7 +33,7 @@ export interface SafeFeatureToggles {
     continuousLearningCulture: boolean; // NEW in SAFe 6.0 - added to foundation
 };
   // Large Solution Features (Step 2+)
-  largeSolution: {
+  largeSolution:  {
     solutionTrain: boolean; // Solution Train coordination
     solutionManagement: boolean; // Solution Manager, Solution Architect
     supplierManagement: boolean; // External supplier coordination
@@ -42,7 +42,7 @@ export interface SafeFeatureToggles {
     enterpriseSolutionDelivery: boolean; // Large solution competency
 };
   // Portfolio Features (Step 3+)
-  portfolio: {
+  portfolio:  {
     portfolioManagement: boolean; // Portfolio level governance
     epicManagement: boolean; // Epic Owners, epic lifecycle
     strategicThemes: boolean; // Strategic theme management
@@ -52,7 +52,7 @@ export interface SafeFeatureToggles {
     leanPortfolioManagement: boolean; // Portfolio competency
 };
   // Full SAFe Features (Step 4)
-  full: {
+  full:  {
     organizationalAgility: boolean; // Complete org transformation
     leanAgileLeadership: boolean; // Leadership transformation
     spanningPalette: boolean; // All spanning palette elements
@@ -67,13 +67,13 @@ export interface SafeFeatureToggles {
 export interface SafeConfiguration {
   level: SafeConfigurationLevel;
   features: SafeFeatureToggles;
-  customizations: {
+  customizations:  {
     organizationSize: 'small' | 'medium' | 'large' | 'enterprise';
     industry: string;
     complianceRequirements: string[];
     aiIntegrationLevel: 'basic' | 'advanced' | 'full';
   };
-  metadata: {
+  metadata:  {
     version: string;
     lastUpdated: Date;
     configuredBy: string;
@@ -89,8 +89,8 @@ export interface SafeConfiguration {
  */
 export const ESSENTIAL_SAFE_6_0_CONFIG: SafeConfiguration = {
   level: SafeConfigurationLevel.ESSENTIAL,
-  features: {
-    essential: {
+  features:  {
+    essential:  {
       artCoordination: true,
       coreRoles: true,
       coreEvents: true,
@@ -99,7 +99,7 @@ export const ESSENTIAL_SAFE_6_0_CONFIG: SafeConfiguration = {
       agileProductDelivery: true,
       continuousLearningCulture: true
     },
-    largeSolution: {
+    largeSolution:  {
       solutionTrain: false,
       solutionManagement: false,
       supplierManagement: false,
@@ -107,7 +107,7 @@ export const ESSENTIAL_SAFE_6_0_CONFIG: SafeConfiguration = {
       solutionArtifacts: false,
       enterpriseSolutionDelivery: false
     },
-    portfolio: {
+    portfolio:  {
       portfolioManagement: false,
       epicManagement: false,
       strategicThemes: false,
@@ -116,7 +116,7 @@ export const ESSENTIAL_SAFE_6_0_CONFIG: SafeConfiguration = {
       portfolioArtifacts: false,
       leanPortfolioManagement: false
     },
-    full: {
+    full:  {
       organizationalAgility: false,
       leanAgileLeadership: false,
       spanningPalette: false,
@@ -125,13 +125,13 @@ export const ESSENTIAL_SAFE_6_0_CONFIG: SafeConfiguration = {
       advancedPractices: false
     }
   },
-  customizations: {
+  customizations:  {
     organizationSize: 'medium', // Typical Essential SAFe target
     industry: 'software',
     complianceRequirements: ['TaskMaster'],
     aiIntegrationLevel: 'advanced'
   },
-  metadata: {
+  metadata:  {
     version: '6.0.0',
     lastUpdated: new Date(),
     configuredBy: 'system',
@@ -194,7 +194,7 @@ export class SafeConfigurationManager {
   /**
    * Get configuration readiness assessment
    */
-  getConfigurationReadiness(): {
+  getConfigurationReadiness():  {
     level: SafeConfigurationLevel;
     enabledFeatures: number;
     totalFeatures: number;

@@ -37,7 +37,7 @@ export { WorkflowEngine as default, WorkflowEngine } from './engine'; // =======
 // =============================================================================
 export async function getWorkflowSystemAccess(
   config?:WorkflowEngineConfig
-):Promise<any> {
+): Promise<any> {
   const engine = new WorkflowEngine(config);
   await engine.initialize();
   return {
@@ -62,14 +62,14 @@ export async function getWorkflowSystemAccess(
 }
 export async function getWorkflowEngine(
   config?:WorkflowEngineConfig
-):Promise<WorkflowEngine> {
+): Promise<WorkflowEngine> {
   const engine = new WorkflowEngine(config);
   await engine.initialize();
   return engine;
 }
 export async function getWorkflowOrchestration(
   config?:WorkflowEngineConfig
-):Promise<any> {
+): Promise<any> {
   const system = await getWorkflowSystemAccess(config);
   return {
     execute: (definition: WorkflowDefinition, context?:WorkflowContext) =>
@@ -88,7 +88,7 @@ export async function getWorkflowOrchestration(
 }
 export async function getWorkflowManagement(
   config?:WorkflowEngineConfig
-):Promise<any> {
+): Promise<any> {
   const system = await getWorkflowSystemAccess(config);
   return {
     listActive: () => system.listActiveWorkflows(),
@@ -104,7 +104,7 @@ export async function getWorkflowManagement(
 }
 export async function getWorkflowVisualization(
   config?:WorkflowEngineConfig
-):Promise<any> {
+): Promise<any> {
   const system = await getWorkflowSystemAccess(config); 
   return {
     generate: (workflow: WorkflowDefinition) =>
@@ -152,7 +152,7 @@ export const WORKFLOWS_INFO = {
    'Mermaid workflow visualization,')   'Production cron scheduling,';
    'Battle-tested persistence layer,';
 ],
-  security: {
+  security:  {
     safeExpressionEvaluation: true,
     noArbitraryCodeExecution: true,
     foundationStorageIntegration: true,

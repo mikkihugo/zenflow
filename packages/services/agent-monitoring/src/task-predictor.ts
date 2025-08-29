@@ -6,15 +6,15 @@
  */
 
 // Simple logger placeholder
-const getLogger = (name:string) => ({
+const getLogger = (name: string) => ({
   info:(msg: string, meta?:unknown) =>
-    logger.info(`[INFO:${name}] ${msg}`, meta || '),
+    logger.info(`[INFO: ${name}] ${msg}`, meta || '),
   debug:(msg: string, meta?:unknown) =>
-    logger.info(`[DEBUG:${name}] ${msg}`, meta || '),
+    logger.info(`[DEBUG: ${name}] ${msg}`, meta || '),
   warn:(msg: string, meta?:unknown) =>
-    logger.warn(`[WARN:${name}] ${msg}`, meta || '),
+    logger.warn(`[WARN: ${name}] ${msg}`, meta || '),
   error:(msg: string, meta?:unknown) =>
-    logger.error(`[ERROR:${name}] ${msg}`, meta || '),
+    logger.error(`[ERROR: ${name}] ${msg}`, meta || '),
 });
 import type { AgentId, PredictionRequest} from './types';
 
@@ -24,15 +24,15 @@ const logger = getLogger('agent-monitoring-task-predictor');
  * Basic task prediction result
  */
 export interface TaskPrediction {
-  agentId:string;
-  taskType:string;
-  predictedDuration:number;
-  confidence:number;
-  factors:PredictionFactor[];
-  lastUpdated:Date;
+  agentId: string;
+  taskType: string;
+  predictedDuration: number;
+  confidence: number;
+  factors: PredictionFactor[];
+  lastUpdated: Date;
   metadata?:{
-    sampleSize:number;
-    algorithm:string;
+    sampleSize: number;
+    algorithm: string;
     trendDirection:'improving' | ' stable' | ' declining';
 };
 }
@@ -41,21 +41,21 @@ export interface TaskPrediction {
  * Factors affecting prediction accuracy
  */
 export interface PredictionFactor {
-  name:string;
-  impact:number;
-  confidence:number;
-  description:string;
+  name: string;
+  impact: number;
+  confidence: number;
+  description: string;
 }
 
 /**
  * Task completion record
  */
 export interface TaskCompletionRecord {
-  agentId:AgentId;
-  taskType:string;
-  duration:number;
-  success:boolean;
-  timestamp:number;
+  agentId: AgentId;
+  taskType: string;
+  duration: number;
+  success: boolean;
+  timestamp: number;
   complexity?:number;
   quality?:number;
   resourceUsage?:number;
@@ -66,16 +66,16 @@ export interface TaskCompletionRecord {
  * Basic task predictor configuration
  */
 export interface TaskPredictorConfig {
-  historyWindowSize:number;
-  confidenceThreshold:number;
-  minSamplesRequired:number;
-  maxPredictionTime:number;
+  historyWindowSize: number;
+  confidenceThreshold: number;
+  minSamplesRequired: number;
+  maxPredictionTime: number;
 }
 
 /**
  * Default configuration for Task Predictor
  */
-export const DEFAULT_TASK_PREDICTOR_CONFIG:TaskPredictorConfig = {
+export const DEFAULT_TASK_PREDICTOR_CONFIG: TaskPredictorConfig = {
   historyWindowSize:50,
   confidenceThreshold:0.7,
   minSamplesRequired:3,
@@ -90,18 +90,17 @@ export const DEFAULT_TASK_PREDICTOR_CONFIG:TaskPredictorConfig = {
  */
 export interface TaskPredictor {
   recordTaskCompletion(
-    agentId:AgentId,
-    taskType:string,
-    duration:number,
-    success:boolean,
+    agentId: AgentId,
+    taskType: string,
+    duration: number,
+    success: boolean,
     metadata?:Record<string, unknown>
   ):void;
 
-  predictTaskDuration(
-    agentId:AgentId,
-    taskType:string,
+  predictTaskDuration(agentId: AgentId,
+    taskType: string,
     contextFactors?:Record<string, unknown>
-  ):TaskPrediction;
+  ): TaskPrediction;
 
   clearCache(olderThanMs?:number): void;
 }
@@ -113,35 +112,35 @@ export interface TaskPredictor {
  * Production applications should implement more sophisticated algorithms.
  */
 export class SimpleTaskPredictor implements TaskPredictor {
-  private taskHistory:Map<string, TaskCompletionRecord[]> = new Map();
-  private config:TaskPredictorConfig;
+  private taskHistory: Map<string, TaskCompletionRecord[]> = new Map();
+  private config: TaskPredictorConfig;
 
   constructor(config?:Partial<TaskPredictorConfig>) {
     this.config = { ...DEFAULT_TASK_PREDICTOR_CONFIG, ...config};
-    logger.info('SimpleTaskPredictor initialized', { config:this.config});
+    logger.info('SimpleTaskPredictor initialized', { config: this.config});
 }
 
   /**
    * Record a task completion for future predictions
    */
   recordTaskCompletion(
-    agentId:AgentId,
-    taskType:string,
-    duration:number,
-    success:boolean,
+    agentId: AgentId,
+    taskType: string,
+    duration: number,
+    success: boolean,
     metadata?:Record<string, unknown>
   ):void {
     const key = `${agentId.id}-${taskType}`;
 
-    const record:TaskCompletionRecord = {
+    const record: TaskCompletionRecord = {
       agentId,
       taskType,
       duration,
       success,
-      timestamp:Date.now(),
-      complexity:metadata?.complexity as number,
-      quality:metadata?.quality as number,
-      resourceUsage:metadata?.resourceUsage as number,
+      timestamp: Date.now(),
+      complexity: metadata?.complexity as number,
+      quality: metadata?.quality as number,
+      resourceUsage: metadata?.resourceUsage as number,
       metadata,
 };
 
@@ -159,7 +158,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
 }
 
     logger.debug('Task completion recorded', {
-      agentId:agentId.id,
+      agentId: agentId.id,
       taskType,
       duration,
       success,
@@ -169,11 +168,10 @@ export class SimpleTaskPredictor implements TaskPredictor {
   /**
    * Predict task duration using simple moving average
    */
-  predictTaskDuration(
-    agentId:AgentId,
-    taskType:string,
+  predictTaskDuration(agentId: AgentId,
+    taskType: string,
     _contextFactors?:Record<string, unknown>
-  ):TaskPrediction {
+  ): TaskPrediction {
     const key = `${agentId.id}-${taskType}`;
     const history = this.taskHistory.get(key) || [];
 
@@ -193,10 +191,10 @@ export class SimpleTaskPredictor implements TaskPredictor {
     const cv = Math.sqrt(variance) / mean; // coefficient of variation
     const confidence = Math.max(0.1, Math.min(0.95, 1 - cv));
 
-    const prediction:TaskPrediction = {
-      agentId:agentId.id,
+    const prediction: TaskPrediction = {
+      agentId: agentId.id,
       taskType,
-      predictedDuration:Math.round(averageDuration),
+      predictedDuration: Math.round(averageDuration),
       confidence,
       factors:[
         {
@@ -205,18 +203,18 @@ export class SimpleTaskPredictor implements TaskPredictor {
           description:`Based on ${recentHistory.length} recent completions`,
 },
 ],
-      lastUpdated:new Date(),
+      lastUpdated: new Date(),
       metadata:{
-        sampleSize:recentHistory.length,
-        algorithm: 'simple_average',        trendDirection:this.calculateTrendDirection(durations),
+        sampleSize: recentHistory.length,
+        algorithm: 'simple_average',        trendDirection: this.calculateTrendDirection(durations),
 },
 };
 
     logger.debug('Task duration predicted', {
-      agentId:agentId.id,
+      agentId: agentId.id,
       taskType,
-      predictedDuration:prediction.predictedDuration,
-      confidence:prediction.confidence,
+      predictedDuration: prediction.predictedDuration,
+      confidence: prediction.confidence,
 });
 
     return prediction;
@@ -225,10 +223,10 @@ export class SimpleTaskPredictor implements TaskPredictor {
   /**
    * Generic predict method (wrapper for predictTaskDuration)
    */
-  async predict(request:PredictionRequest): Promise<TaskPrediction> {
+  async predict(request: PredictionRequest): Promise<TaskPrediction> {
     // Convert string agentId to AgentId object and use default task type
-    const agentId:AgentId = {
-      id:request.agentId || 'unknown',      swarmId:request.swarmId || 'default',      type: 'coordinator',      instance:1,
+    const agentId: AgentId = {
+      id: request.agentId || 'unknown',      swarmId: request.swarmId || 'default',      type: 'coordinator',      instance:1,
 };
     return await this.predictTaskDuration(
       agentId,
@@ -239,7 +237,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
   /**
    * Update learning from task completion records
    */
-  updateLearning(records:TaskCompletionRecord[]): void {
+  updateLearning(records: TaskCompletionRecord[]): void {
     for (const record of records) {
       this.recordTaskCompletion(
         record.agentId,
@@ -278,14 +276,13 @@ export class SimpleTaskPredictor implements TaskPredictor {
   /**
    * Create fallback prediction when insufficient data is available
    */
-  private createFallbackPrediction(
-    agentId:string,
-    taskType:string
-  ):TaskPrediction {
+  private createFallbackPrediction(agentId: string,
+    taskType: string
+  ): TaskPrediction {
     return {
       agentId,
       taskType,
-      predictedDuration:this.config.maxPredictionTime / 2, // Conservative estimate
+      predictedDuration: this.config.maxPredictionTime / 2, // Conservative estimate
       confidence:0.3, // Low confidence
       factors:[
         {
@@ -293,7 +290,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
           confidence:0.3,
           description: 'Insufficient historical data for reliable prediction',},
 ],
-      lastUpdated:new Date(),
+      lastUpdated: new Date(),
       metadata:{
         sampleSize:0,
         algorithm: 'fallback',        trendDirection: 'stable',},
@@ -304,7 +301,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
    * Calculate performance trend direction
    */
   private calculateTrendDirection(
-    durations:number[]
+    durations: number[]
   ):'improving' | ' stable' | ' declining' {
     if (durations.length < 3) return 'stable';
 
@@ -324,7 +321,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
   /**
    * Calculate variance of an array of numbers
    */
-  private calculateVariance(numbers:number[]): number {
+  private calculateVariance(numbers: number[]): number {
     if (numbers.length === 0) return 0;
     const mean = this.calculateMean(numbers);
     const squaredDiffs = numbers.map((n) => (n - mean) ** 2);
@@ -334,7 +331,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
   /**
    * Calculate mean of an array of numbers
    */
-  private calculateMean(numbers:number[]): number {
+  private calculateMean(numbers: number[]): number {
     if (numbers.length === 0) return 0;
     return numbers.reduce((sum, n) => sum + n, 0) / numbers.length;
 }
@@ -343,9 +340,8 @@ export class SimpleTaskPredictor implements TaskPredictor {
 /**
  * Factory function to create Task Predictor with default configuration
  */
-export function createTaskPredictor(
-  config?:Partial<TaskPredictorConfig>
-):TaskPredictor {
+export function createTaskPredictor(config?:Partial<TaskPredictorConfig>
+): TaskPredictor {
   return new SimpleTaskPredictor(config);
 }
 
@@ -353,7 +349,7 @@ export function createTaskPredictor(
  * Utility function to validate prediction confidence
  */
 export function isHighConfidencePrediction(
-  prediction:TaskPrediction,
+  prediction: TaskPrediction,
   threshold = 0.8
 ):boolean {
   return prediction.confidence >= threshold;
@@ -362,7 +358,7 @@ export function isHighConfidencePrediction(
 /**
  * Utility function to get prediction summary
  */
-export function getPredictionSummary(prediction:TaskPrediction): string {
+export function getPredictionSummary(prediction: TaskPrediction): string {
   const duration = (prediction.predictedDuration / 1000).toFixed(1);
   const confidence = (prediction.confidence * 100).toFixed(0);
   return `${duration}s (${confidence}% confidence)`;

@@ -70,14 +70,14 @@ export class SPARCNeuralOptimizer {
     return {
       requestId: `sparc-${phase}-${Date.now()}`,
       domain: `sparc-${phase}`,
-      context: {
+      context:  {
         complexity,
         priority: project.priority || 'medium',
         timeLimit: 30000
       },
       useAdvancedOptimization: complexity > 0.7,
       prompt: `Optimize SPARC ${phase} phase for project: ${requirements}`,
-      data: {
+      data:  {
         phase,
         projectSize: project.requirements?.length || 1,
         previousPhases: project.completedPhases || []
@@ -157,11 +157,11 @@ export class SPARCNeuralOptimizer {
    */
   private getDefaultConfig(phase: SPARCPhase): SparcPhaseConfig {
     const defaultConfigs = {
-      SPECIFICATION: { maxTokens: 2000, temperature: 0.3, complexity: 0.6 },
-      PSEUDOCODE: { maxTokens: 3000, temperature: 0.4, complexity: 0.7 },
-      ARCHITECTURE: { maxTokens: 4000, temperature: 0.3, complexity: 0.8 },
-      REFINEMENT: { maxTokens: 3500, temperature: 0.5, complexity: 0.9 },
-      COMPLETION: { maxTokens: 2500, temperature: 0.4, complexity: 0.7 }
+      SPECIFICATION:  { maxTokens: 2000, temperature: 0.3, complexity: 0.6 },
+      PSEUDOCODE:  { maxTokens: 3000, temperature: 0.4, complexity: 0.7 },
+      ARCHITECTURE:  { maxTokens: 4000, temperature: 0.3, complexity: 0.8 },
+      REFINEMENT:  { maxTokens: 3500, temperature: 0.5, complexity: 0.9 },
+      COMPLETION:  { maxTokens: 2500, temperature: 0.4, complexity: 0.7 }
     };
     
     const config = defaultConfigs[phase] || defaultConfigs.SPECIFICATION;
@@ -199,7 +199,7 @@ export default sparcNeuralOptimizer;
   /**
    * Use event-driven Brain to predict optimal configuration
    */
-  private async predictOptimalConfig(context: {';
+  private async predictOptimalConfig(context:  {';
         domain : 'sparc-optimization,'
 '        context: await eventDrivenBrain.predictOptimal(brainRequest);
       if (!result.predictions) {
@@ -261,13 +261,13 @@ export default sparcNeuralOptimizer;
   /**
    * Get optimization statistics
    */
-  getOptimizationStats():{
+  getOptimizationStats():  {
     totalPredictions: 0;
-    const phaseStats: {};
+    const phaseStats:  {};
     let totalConfidence = 0;
     for (const [phase, history] of this.performanceHistory.entries()) {
       const count = history.length;
-      const avgQuality = count > 0 ? history.reduce((sum, data) => sum + data.qualityScore, 0) / count: { count, avgQuality};
+      const avgQuality = count > 0 ? history.reduce((sum, data) => sum + data.qualityScore, 0) / count:  { count, avgQuality};
       totalPredictions += count;
       totalConfidence += avgQuality;
 }

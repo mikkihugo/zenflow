@@ -38,7 +38,7 @@ export interface ComplianceFramework {
       );
       // Generate trends
       const trends = this.generateComplianceTrends(frameworkId);
-      const complianceStatus: {
+      const complianceStatus:  {
         frameworkId,
         frameworkName: 'compliance_assessment,',
 '        details: 'summary| detailed| executive| audit,',
@@ -60,7 +60,7 @@ export interface ComplianceFramework {
       );
       // Generate recommendations
       const recommendations = this.generateRecommendations(frameworkReports);
-      const report: {
+      const report:  {
         reportId,
         reportType,
         generatedDate: this.executeValidationRules(
@@ -93,7 +93,7 @@ export interface ComplianceFramework {
       // Simulate evidence collection
       evidence.push({
     ')        evidenceId,    ')        type: 'valid,',
-'        metadata: {';
+'        metadata:  {';
           requirement: requirement.id,
           automated: true,',},';
 });
@@ -124,7 +124,7 @@ export interface ComplianceFramework {
    */
   private validateMonitoringConfiguration(
     config: ComplianceMonitoringConfig
-  ):void {
+  ): void {
     if (!config.monitoringId|| config.monitoringId.trim() ===){
     ')      throw new Error('Monitoring ID is required');
 };)    if (config.frameworks.length === 0) {';
@@ -153,7 +153,7 @@ export interface ComplianceFramework {
     return validationResults
       .filter((result) => !result.passed)
       .map((result) => ({
-    `)        violationId: ',',requirementId: 'open ',as const,';
+    `)        violationId: ',requirementId: 'open ',as const,';
         evidence: 'last_30_days,',
 '        complianceScore: 'stable',)        factors:['Regular assessments,' Automated monitoring'],';
 },

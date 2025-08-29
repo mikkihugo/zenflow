@@ -10,7 +10,7 @@ export interface WorkflowTemplate {
     description: string;
     category: string;
     definition: WorkflowDefinition;
-    metadata: {
+    metadata:  {
         version: string;
         author?: string;
         tags?: string[];
@@ -26,7 +26,7 @@ export interface WorkflowExecution {
     currentStep: number;
     totalSteps: number;
     results: Record<string, unknown>;
-    metrics: {
+    metrics:  {
         duration?: number;
         stepsCompleted: number;
         stepsFailed: number;

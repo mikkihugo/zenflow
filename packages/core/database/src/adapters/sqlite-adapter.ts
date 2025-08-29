@@ -5,8 +5,8 @@
  * and comprehensive error handling for enterprise applications.
  */
 
-import { existsSync, mkdirSync} from 'node:fs';
-import { dirname} from 'node:path';
+import { existsSync, mkdirSync } from 'node:fs';
+import { dirname } from 'node:path';
 import Database from 'better-sqlite3';
 import { getLogger} from '../logger.js';
 import {
@@ -34,20 +34,20 @@ import {
 const logger = getLogger('sqlite-adapter');
 
 interface PooledConnection {
-  db:Database.Database;
-  id:string;
-  createdAt:Date;
-  lastUsedAt:Date;
-  inUse:boolean;
-  queryCount:number;
-  transactionCount:number;
+  db: Database.Database;
+  id: string;
+  createdAt: Date;
+  lastUsedAt: Date;
+  inUse: boolean;
+  queryCount: number;
+  transactionCount: number;
 }
 
 export class SQLiteAdapter implements DatabaseConnection {
-  private readonly config:DatabaseConfig;
+  private readonly config: DatabaseConfig;
   private readonly pool:PooledConnection[] = [];
   private connected = false;
-  private readonly __stats = {
+  private readonly stats = {
     totalQueries:0,
     totalTransactions:0,
     totalErrors:0,
@@ -56,7 +56,7 @@ export class SQLiteAdapter implements DatabaseConnection {
     connectionDestroyed:0,
 };
 
-  constructor(config:DatabaseConfig) {
+  constructor(config: DatabaseConfig) {
     this.config = {
       ...config,
       pool:{
@@ -68,7 +68,7 @@ export class SQLiteAdapter implements DatabaseConnection {
         createTimeoutMillis:3000,
         destroyTimeoutMillis:5000,
         createRetryIntervalMillis:200,
-        propagateCreateError:true,
+        propagateCreateError: true,
         ...config.pool,
 },
       retryPolicy:{
@@ -76,7 +76,7 @@ export class SQLiteAdapter implements DatabaseConnection {
         initialDelayMs:100,
         maxDelayMs:5000,
         backoffFactor:2,
-        retryableErrors:['SQLITE_BUSY',    'SQLITE_LOCKED'],
+        retryableErrors:['SQLITE_BUSY', 'SQLITE_LOCKED'],
         ...config.retryPolicy,
 },
 };
@@ -85,14 +85,14 @@ export class SQLiteAdapter implements DatabaseConnection {
     this.startPoolMaintenance();
 }
 
-  async connect():Promise<void> {
+  async connect(): Promise<void> {
     if (this.connected) return;
 
     const correlationId = this.generateCorrelationId();
     logger.info('Connecting to SQLite database', {
       correlationId,
-      database:this.config.database,
-});
+      database: this.config.database,
+    });
 
     try {
       // Ensure database directory exists
@@ -106,13 +106,13 @@ export class SQLiteAdapter implements DatabaseConnection {
       this.connected = true;
       logger.info('Successfully connected to SQLite database', {
         correlationId,
-        poolSize:this.pool.length,
-});
+        poolSize: this.pool.length,
+      });
 } catch (error) {
       logger.error('Failed to connect to SQLite database', {
         correlationId,
-        error:error instanceof Error ? error.message : String(error),
-});
+        error: error instanceof Error ? error.message : String(error),
+      });
       throw new ConnectionError(
         `Failed to connect to SQLite database:${error instanceof Error ? error.message : String(error)}`,
         correlationId,
@@ -121,11 +121,11 @@ export class SQLiteAdapter implements DatabaseConnection {
 }
 }
 
-  async disconnect():Promise<void> {
+  async disconnect(): Promise<void> {
     if (!this.connected) return;
 
     const correlationId = this.generateCorrelationId();
-    logger.info('Disconnecting from SQLite database', { correlationId});
+    logger.info('Disconnecting from SQLite database', { correlationId          });
 
     try {
       // Close all pooled connections
@@ -139,12 +139,12 @@ export class SQLiteAdapter implements DatabaseConnection {
 
       logger.info('Successfully disconnected from SQLite database', {
         correlationId,
-});
+      });
 } catch (error) {
       logger.error('Error during SQLite disconnect', {
         correlationId,
-        error:error instanceof Error ? error.message : String(error),
-});
+        error: error instanceof Error ? error.message : String(error),
+      });
       throw new ConnectionError(
         `Failed to disconnect from SQLite:${error instanceof Error ? error.message : String(error)}`,
         correlationId,
@@ -193,7 +193,7 @@ export class SQLiteAdapter implements DatabaseConnection {
         correlationId,
         executionTimeMs:result.executionTimeMs,
         rowCount:result.rowCount,
-});
+          });
 
       return result;
 } catch (error) {
@@ -202,7 +202,7 @@ export class SQLiteAdapter implements DatabaseConnection {
         correlationId,
         sql:sql.substring(0, 200),
         error:error instanceof Error ? error.message : String(error),
-});
+          });
 
       if (error instanceof DatabaseError) {
         throw error;
@@ -267,13 +267,13 @@ export class SQLiteAdapter implements DatabaseConnection {
         connection.db.exec('COMMIT');
 
         this.stats.totalTransactions++;
-        logger.debug('Transaction committed successfully', { correlationId});
+        logger.debug('Transaction committed successfully', { correlationId          });
 } catch (error) {
         connection.db.exec('ROLLBACK');
         logger.error('Transaction rolled back', {
           correlationId,
           error:error instanceof Error ? error.message : String(error),
-});
+          });
         throw error;
 }
 
@@ -338,7 +338,8 @@ export class SQLiteAdapter implements DatabaseConnection {
       return {
         healthy:score >= 70,
         status:
-          score >= 70 ? 'healthy' :score >= 40 ? ' degraded' : ' unhealthy',        score,
+          score >= 70 ? 'healthy' : score >= 40 ? 'degraded' : 'unhealthy',
+        score,
         timestamp:new Date(),
         responseTimeMs:responseTime,
         connectionPool:poolStats,
@@ -361,15 +362,16 @@ export class SQLiteAdapter implements DatabaseConnection {
 } catch (error) {
       return {
         healthy:false,
-        status: 'unhealthy',        score:0,
-        timestamp:new Date(),
-        responseTimeMs:Date.now() - startTime,
-        lastError:error instanceof Error ? error.message : String(error),
-        details:{
-          connected:this.connected,
-          error:error instanceof Error ? error.message : String(error),
-},
-};
+        status: 'unhealthy',
+        score: 0,
+        timestamp: new Date(),
+        responseTimeMs: Date.now() - startTime,
+        lastError: error instanceof Error ? error.message : String(error),
+        details: {
+          connected: this.connected,
+          error: error instanceof Error ? error.message : String(error),
+        },
+      };
 }
 }
 
@@ -381,7 +383,7 @@ export class SQLiteAdapter implements DatabaseConnection {
       waiting:number;
 }>((resolve) => {
       resolve(this.getPoolStats());
-});
+          });
 
     return {
       total:poolStats.total,
@@ -399,7 +401,8 @@ export class SQLiteAdapter implements DatabaseConnection {
 
   async getSchema():Promise<SchemaInfo> {
     const tables = await this.query<{ name:string}>(
-      'SELECT name FROM sqlite_master WHERE type = ?',      ['table']
+      'SELECT name FROM sqlite_master WHERE type = ?',
+      ['table']
     );
     const tableSchemas:TableSchema[] = [];
 
@@ -438,41 +441,41 @@ export class SQLiteAdapter implements DatabaseConnection {
             version:migration.version,
             applied:false,
             executionTimeMs:0,
-});
+          });
           continue;
 }
 
         await this.transaction(async () => {
           await migration.up(this);
           await this.recordMigration(migration.version, migration.name);
-});
+          });
 
         results.push({
-          version:migration.version,
-          applied:true,
-          executionTimeMs:Date.now() - startTime,
-});
+          version: migration.version,
+          applied: true,
+          executionTimeMs: Date.now() - startTime,
+        });
 
         logger.info('Migration applied successfully', {
           version:migration.version,
           name:migration.name,
-});
+          });
 } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message:String(error);
 
         results.push({
-          version:migration.version,
-          applied:false,
-          executionTimeMs:Date.now() - startTime,
-          error:errorMessage,
-});
+          version: migration.version,
+          applied: false,
+          executionTimeMs: Date.now() - startTime,
+          error: errorMessage,
+        });
 
         logger.error('Migration failed', {
-          version:migration.version,
-          name:migration.name,
-          error:errorMessage,
-});
+          version: migration.version,
+          name: migration.name,
+          error: errorMessage,
+        });
 
         // Stop on first failure
         break;
@@ -485,7 +488,8 @@ export class SQLiteAdapter implements DatabaseConnection {
   async getCurrentMigrationVersion():Promise<string | null> {
     try {
       const result = await this.query<{ version:string}>(
-        'SELECT version FROM _migrations ORDER BY version DESC LIMIT 1')      );
+        'SELECT version FROM _migrations ORDER BY version DESC LIMIT 1'
+      );
       return result.rows[0]?.version || null;
 } catch {
       // Migrations table doesn't exist yet
@@ -534,10 +538,11 @@ export class SQLiteAdapter implements DatabaseConnection {
             executionTimeMs:Date.now() - startTime,
             affectedRows:runResult.changes,
             insertId:
-              typeof runResult.lastInsertRowid === 'bigint')                ? Number(runResult.lastInsertRowid)
-                :(runResult.lastInsertRowid as number | undefined),
+              typeof runResult.lastInsertRowid === 'bigint'
+                ? Number(runResult.lastInsertRowid)
+                : (runResult.lastInsertRowid as number | undefined),
             fields:[],
-});
+                    });
           return;
 }
 
@@ -548,11 +553,11 @@ export class SQLiteAdapter implements DatabaseConnection {
           fields:rows.length > 0 ? Object.keys(rows[0] || {}) :[],
           affectedRows:undefined,
           insertId:undefined,
-});
+          });
 } catch (error) {
         reject(error);
 }
-});
+          });
 }
 
   private async createConnection():Promise<PooledConnection> {
@@ -567,9 +572,9 @@ export class SQLiteAdapter implements DatabaseConnection {
             fileMustExist:false,
             timeout:this.config.pool?.createTimeoutMillis,
             verbose:(message?: unknown) => {
-              logger.debug('SQLite operation', { message, connectionId:id});
+              logger.debug('SQLite operation', { message, connectionId:id          });
 },
-});
+          });
 
           // Configure SQLite for better performance
           db.exec('PRAGMA journal_mode = WAL');
@@ -578,30 +583,30 @@ export class SQLiteAdapter implements DatabaseConnection {
           db.exec('PRAGMA foreign_keys = ON');
           db.exec('PRAGMA temp_store = MEMORY');
 
-          const connection:PooledConnection = {
+          const connection: PooledConnection = {
             db,
             id,
-            createdAt:new Date(),
-            lastUsedAt:new Date(),
-            inUse:false,
-            queryCount:0,
-            transactionCount:0,
-};
+            createdAt: new Date(),
+            lastUsedAt: new Date(),
+            inUse: false,
+            queryCount: 0,
+            transactionCount: 0,
+          };
 
           this.pool.push(connection);
           this.stats.connectionCreated++;
 
-          logger.debug('Created new SQLite connection', { connectionId:id});
+          logger.debug('Created new SQLite connection', { connectionId: id });
           resolve(connection);
 } catch (error) {
           logger.error('Failed to create SQLite connection', {
             connectionId:id,
             error:error instanceof Error ? error.message : String(error),
-});
+          });
           reject(error);
 }
-});
-});
+          });
+          });
 }
 
   private async destroyConnection(connection:PooledConnection): Promise<void> {
@@ -613,17 +618,17 @@ export class SQLiteAdapter implements DatabaseConnection {
 
           logger.debug('Destroyed SQLite connection', {
             connectionId:connection.id,
-});
+          });
           resolve();
 } catch (error) {
           logger.error('Error destroying SQLite connection', {
             connectionId:connection.id,
             error:error instanceof Error ? error.message : String(error),
-});
+          });
           resolve(); // Don't reject on connection destruction errors
 }
-});
-});
+          });
+          });
 }
 
   private async acquireConnection(
@@ -699,7 +704,7 @@ export class SQLiteAdapter implements DatabaseConnection {
           maxRetries:retryPolicy.maxRetries,
           delayMs:delay,
           error:lastError.message,
-});
+          });
 
         await this.sleep(delay);
 }
@@ -717,8 +722,8 @@ export class SQLiteAdapter implements DatabaseConnection {
 }
 
   private extractSQLiteErrorCode(error:Error): string {
-    if (error.message.includes('SQLITE_BUSY')) return ' SQLITE_BUSY';
-    if (error.message.includes('SQLITE_LOCKED')) return ' SQLITE_LOCKED';
+    if (error.message.includes('SQLITE_BUSY')) return 'SQLITE_BUSY';
+    if (error.message.includes('SQLITE_LOCKED')) return 'SQLITE_LOCKED';
     return 'UNKNOWN';
 }
 
@@ -802,7 +807,8 @@ export class SQLiteAdapter implements DatabaseConnection {
           tableName,
           columns:indexInfo.rows.map((col) => col.name),
           unique:false, // TODO:Get unique info from sqlite_master
-          type: 'btree',});
+          type: 'btree',
+                  });
 }
 
       return {
@@ -813,7 +819,7 @@ export class SQLiteAdapter implements DatabaseConnection {
         indexes,
 };
 } catch (error) {
-      logger.error('Failed to get table schema', { tableName, error});
+      logger.error('Failed to get table schema', { tableName, error          });
       return null;
 }
 }
@@ -821,7 +827,8 @@ export class SQLiteAdapter implements DatabaseConnection {
   private async getDatabaseVersion():Promise<string> {
     try {
       const result = await this.query<{ version:string}>(
-        'SELECT sqlite_version() as version')      );
+        'SELECT sqlite_version() as version'
+      );
       return result.rows[0]?.version || 'unknown';
 } catch {
       return 'unknown';
@@ -872,8 +879,8 @@ export class SQLiteAdapter implements DatabaseConnection {
 } catch (error) {
           reject(error);
 }
-});
-});
+          });
+          });
 }
 
   private startPoolMaintenance():void {
@@ -907,7 +914,7 @@ export class SQLiteAdapter implements DatabaseConnection {
   private ensureDatabaseDirectory():void {
     const dbDir = dirname(this.config.database);
     if (!existsSync(dbDir)) {
-      mkdirSync(dbDir, { recursive:true});
+      mkdirSync(dbDir, { recursive:true          });
 }
 }
 
@@ -939,7 +946,7 @@ class SQLiteTransactionConnection implements TransactionConnection {
           // Use instance method for transaction connections
           const paramArray = Array.isArray(params)
             ? [...params]
-            :Object.values(params || {});
+            :Object.values(params || {          });
 
           let rows:unknown[];
           if (
@@ -957,7 +964,7 @@ class SQLiteTransactionConnection implements TransactionConnection {
               insertId:
                 typeof runResult.lastInsertRowid === 'bigint')                  ? Number(runResult.lastInsertRowid)
                   :(runResult.lastInsertRowid as number | undefined),
-});
+          });
             return;
 }
 
@@ -966,7 +973,7 @@ class SQLiteTransactionConnection implements TransactionConnection {
             rowCount:rows ? rows.length : 0,
             executionTimeMs:Date.now() - startTime,
             fields:rows.length > 0 ? Object.keys(rows[0] || {}) :[],
-});
+          });
 } catch (error) {
           reject(
             new QueryError(
@@ -980,8 +987,8 @@ class SQLiteTransactionConnection implements TransactionConnection {
             )
           );
 }
-});
-});
+          });
+          });
 }
 
   async execute(sql:string, params?:QueryParams): Promise<QueryResult> {
@@ -997,8 +1004,8 @@ class SQLiteTransactionConnection implements TransactionConnection {
 } catch (error) {
           reject(error);
 }
-});
-});
+          });
+          });
 }
 
   async commit():Promise<void> {
@@ -1010,8 +1017,8 @@ class SQLiteTransactionConnection implements TransactionConnection {
 } catch (error) {
           reject(error);
 }
-});
-});
+          });
+          });
 }
 
   async savepoint(name:string): Promise<void> {
@@ -1023,8 +1030,8 @@ class SQLiteTransactionConnection implements TransactionConnection {
 } catch (error) {
           reject(error);
 }
-});
-});
+          });
+          });
 }
 
   async releaseSavepoint(name:string): Promise<void> {
@@ -1036,8 +1043,8 @@ class SQLiteTransactionConnection implements TransactionConnection {
 } catch (error) {
           reject(error);
 }
-});
-});
+          });
+          });
 }
 
   async rollbackToSavepoint(name:string): Promise<void> {
@@ -1049,8 +1056,8 @@ class SQLiteTransactionConnection implements TransactionConnection {
 } catch (error) {
           reject(error);
 }
-});
-});
+          });
+          });
 }
 
   private normalizeParams(params?:QueryParams): unknown[] {

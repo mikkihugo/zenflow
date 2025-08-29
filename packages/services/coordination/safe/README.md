@@ -1,4 +1,4 @@
-# @claude-zen/safe-framework
+# SAFe Framework (Coordination Package)
 
 **SAFe (Scaled Agile Framework) Implementation with Clean Architecture**
 
@@ -76,7 +76,7 @@ class SafeManager {
 ### **Basic Usage (Infrastructure Only)**
 
 ```typescript
-import { EpicOwnerManager } from '@claude-zen/safe-framework';
+import { EpicOwnerManager } from '../src/safe/managers/epic-owner-manager.js';
 import { getLogger } from '@claude-zen/foundation/logging';
 import {
   PerformanceTracker,
@@ -100,7 +100,7 @@ const metrics = await epicManager.getPortfolioMetrics();
 
 ```typescript
 import { BrainCoordinator } from '@claude-zen/brain';
-import type { OptionalAIEnhancements } from '@claude-zen/safe-framework';
+import type { OptionalAIEnhancements } from '../src/safe/types.js';
 
 // Optional AI enhancements for intelligent decision making
 const aiEnhancements: OptionalAIEnhancements = {
@@ -254,7 +254,7 @@ class SafeManager {
 ### **Basic Configuration**
 
 ```typescript
-import type { EpicOwnerManagerConfig } from '@claude-zen/safe-framework';
+import type { EpicOwnerManagerConfig } from '../src/safe/types/epic-management.js';
 
 const config: EpicOwnerManagerConfig = {
   enablePortfolioKanban: true,
@@ -269,7 +269,7 @@ const config: EpicOwnerManagerConfig = {
 ### **AI Enhancement Configuration**
 
 ```typescript
-import type { AIEnhancementConfig } from '@claude-zen/safe-framework';
+import type { AIEnhancementConfig } from '../src/safe/types.js';
 
 const aiConfig: AIEnhancementConfig = {
   enableBrainCoordinator: true,
@@ -325,7 +325,7 @@ if (aiEnhancements.brainCoordinator) {
 ## 🧪 **Testing**
 
 ```typescript
-import { EpicOwnerManager } from '@claude-zen/safe-framework';
+import { EpicOwnerManager } from '../src/safe/managers/epic-owner-manager.js';
 import {
   createMockLogger,
   createMockEventBus,
@@ -414,7 +414,7 @@ MIT License - See LICENSE file for details.
 
 ## 🎯 **Summary**
 
-The `@claude-zen/safe-framework` provides a clean, scalable implementation of SAFe with:
+The coordination package SAFe framework provides a clean, scalable implementation of SAFe with:
 
 - **✅ Infrastructure Services** - Always available core functionality
 - **✅ Optional AI Enhancements** - Intelligent decision making when needed

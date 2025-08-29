@@ -115,16 +115,16 @@ export interface ApprovalGateManagerConfig {
   enableMetrics: boolean;
   enablePersistence: boolean;
   enableXStateInspector?: boolean;
-  integrations: {
-    redis: {
+  integrations:  {
+    redis:  {
       enabled: boolean;
       connectionString?: string;
     };
-    database: {
+    database:  {
       enabled: boolean;
       provider: 'sqlite' | 'postgresql' | 'mysql';
     };
-    notifications: {
+    notifications:  {
       enabled: boolean;
       channels: string[];
     };
@@ -240,7 +240,7 @@ export class ApprovalGateManager extends EventBus {
     success: boolean;
     gateId?: ApprovalGateId;
     error?: any;
-    metadata: {
+    metadata:  {
       timestamp: Date;
       requestId: string;
       version: string;
@@ -267,7 +267,7 @@ export class ApprovalGateManager extends EventBus {
         timeoutAt: requirement.timeoutHours 
           ? addHours(new Date(), requirement.timeoutHours) 
           : undefined,
-        metadata: { requestId }
+        metadata:  { requestId }
       };
       
       // Store gate instance
@@ -295,7 +295,7 @@ export class ApprovalGateManager extends EventBus {
       return {
         success: true,
         gateId,
-        metadata: {
+        metadata:  {
           timestamp: new Date(),
           requestId,
           version: '2.0.0',
@@ -310,13 +310,13 @@ export class ApprovalGateManager extends EventBus {
         code: 'APPROVAL_GATE_CREATION_FAILED',
         message: error.message || 'Unknown error',
         correlationId: requestId,
-        metadata: { taskId, requestId }
+        metadata:  { taskId, requestId }
       };
       
       return {
         success: false,
         error: apiError,
-        metadata: {
+        metadata:  {
           timestamp: new Date(),
           requestId,
           version: '2.0.0',
@@ -338,7 +338,7 @@ export class ApprovalGateManager extends EventBus {
     success: boolean;
     approved?: boolean;
     error?: any;
-    metadata: {
+    metadata:  {
       timestamp: Date;
       requestId: string;
       version: string;
@@ -375,7 +375,7 @@ export class ApprovalGateManager extends EventBus {
         decision,
         reason,
         timestamp: new Date(),
-        metadata: { requestId }
+        metadata:  { requestId }
       };
       
       // Update gate with approval
@@ -423,7 +423,7 @@ export class ApprovalGateManager extends EventBus {
       return {
         success: true,
         approved: evaluation.approved,
-        metadata: {
+        metadata:  {
           timestamp: new Date(),
           requestId,
           version: '2.0.0',
@@ -438,13 +438,13 @@ export class ApprovalGateManager extends EventBus {
         code: 'APPROVAL_PROCESSING_FAILED',
         message: error.message || 'Unknown error',
         correlationId: requestId,
-        metadata: { gateId, approverId, decision, requestId }
+        metadata:  { gateId, approverId, decision, requestId }
       };
       
       return {
         success: false,
         error: apiError,
-        metadata: {
+        metadata:  {
           timestamp: new Date(),
           requestId,
           version: '2.0.0',
@@ -487,7 +487,7 @@ export class ApprovalGateManager extends EventBus {
       receivedApprovals: approvedCount,
       pendingApprovers,
       autoApprovalTriggered,
-      evaluationDetails: {
+      evaluationDetails:  {
         approvedCount,
         rejectedCount,
         totalApprovers: gate.requirement.requiredApprovers.length,
@@ -506,49 +506,49 @@ export class ApprovalGateManager extends EventBus {
     return createMachine({
       id: `approval-gate-${gateId}`,
       initial: 'pending',
-      context: {
+      context:  {
         gate: gateInstance,
         evaluationResult: undefined,
         escalationLevel: 0
       },
-      states: {
-        pending: {
+      states:  {
+        pending:  {
           entry: ['logStateChange', 'notifyApprovers'],
-          on: {
+          on:  {
             APPROVE: 'evaluating',
             REJECT: 'evaluating',
             TIMEOUT: 'timed_out',
             CANCEL: 'cancelled'
           },
-          after: {
-            timeoutDelay: {
+          after:  {
+            timeoutDelay:  {
               target: 'timed_out',
               guard: 'hasTimeout'
             },
-            escalationDelay: {
+            escalationDelay:  {
               target: 'escalating',
               guard: 'shouldEscalate'
             }
           }
         },
         
-        evaluating: {
+        evaluating:  {
           entry: 'logStateChange',
-          invoke: {
+          invoke:  {
             src: 'evaluateGate',
             input: ({ context }) => ({ gate: context.gate }),
-            onDone: {
+            onDone:  {
               target: 'checking_result',
               actions: 'setEvaluationResult'
             },
-            onError: {
+            onError:  {
               target: 'pending',
               actions: 'logStateChange'
             }
           }
         },
         
-        checking_result: {
+        checking_result:  {
           always: [
             {
               target: 'approved',
@@ -571,9 +571,9 @@ export class ApprovalGateManager extends EventBus {
           ]
         },
         
-        escalating: {
+        escalating:  {
           entry: ['logStateChange', 'incrementEscalationLevel'],
-          invoke: {
+          invoke:  {
             src: 'escalateGate',
             input: ({ context }) => ({ 
               gate: context.gate, 
@@ -582,7 +582,7 @@ export class ApprovalGateManager extends EventBus {
             onDone: 'pending',
             onError: 'pending'
           },
-          on: {
+          on:  {
             APPROVE: 'evaluating',
             REJECT: 'evaluating',
             TIMEOUT: 'timed_out',
@@ -590,33 +590,33 @@ export class ApprovalGateManager extends EventBus {
           }
         },
         
-        approved: {
+        approved:  {
           type: 'final',
           entry: ['logStateChange', 'completeGate']
         },
         
-        rejected: {
+        rejected:  {
           type: 'final',
           entry: ['logStateChange', 'completeGate']
         },
         
-        timed_out: {
+        timed_out:  {
           type: 'final',
           entry: ['logStateChange', 'notifyTimeout']
         },
         
-        cancelled: {
+        cancelled:  {
           type: 'final',
           entry: ['logStateChange']
         }
       }
     }, {
-      actors: {
-        evaluateGate: fromPromise(async ({ input }: { input: { gate: ApprovalGateInstance }}) => await this.evaluateApprovalGate(input.gate)),
-        escalateGate: fromPromise(async ({ input }: { input: { gate: ApprovalGateInstance; level: number }}) => await this.escalateApprovalGate(input.gate, input.level)),
-        notifyApprovers: fromPromise(async ({ input }: { input: { gate: ApprovalGateInstance }}) => await this.notifyApprovers(input.gate))
+      actors:  {
+        evaluateGate: fromPromise(async ({ input }:  { input:  { gate: ApprovalGateInstance }}) => await this.evaluateApprovalGate(input.gate)),
+        escalateGate: fromPromise(async ({ input }:  { input:  { gate: ApprovalGateInstance, level: number }}) => await this.escalateApprovalGate(input.gate, input.level)),
+        notifyApprovers: fromPromise(async ({ input }:  { input:  { gate: ApprovalGateInstance }}) => await this.notifyApprovers(input.gate))
       },
-      actions: {
+      actions:  {
         updateGateState: assign({
           gate: ({ context, event }) => {
             if (event.type === 'APPROVE' || event.type === 'REJECT') {
@@ -654,14 +654,14 @@ export class ApprovalGateManager extends EventBus {
           this.completeApprovalGate(context.gate.id, finalState);
         }
       },
-      guards: {
+      guards:  {
         isApproved: ({ context }) => context.evaluationResult?.approved === true,
         shouldEscalate: ({ context }) => this.escalationConfig.enabled && 
                  context.escalationLevel < this.escalationConfig.maxEscalationLevels,
         hasTimeout: ({ context }) => context.gate.timeoutAt !== undefined,
         isTimedOut: ({ context }) => context.gate.timeoutAt ? isAfter(new Date(), context.gate.timeoutAt) : false
       },
-      delays: {
+      delays:  {
         timeoutDelay: ({ context }) => {
           if (!context.gate.timeoutAt) return 999999999;
           return Math.max(0, context.gate.timeoutAt.getTime() - Date.now());
@@ -956,7 +956,7 @@ export class ApprovalGateManager extends EventBus {
   ): Promise<{
     success: boolean;
     error?: any;
-    metadata: {
+    metadata:  {
       timestamp: Date;
       requestId: string;
       version: string;
@@ -974,7 +974,7 @@ export class ApprovalGateManager extends EventBus {
       
       return {
         success: true,
-        metadata: {
+        metadata:  {
           timestamp: new Date(),
           requestId,
           version: '2.0.0',
@@ -987,13 +987,13 @@ export class ApprovalGateManager extends EventBus {
         code: 'APPROVAL_GATE_CANCELLATION_FAILED',
         message: error.message || 'Unknown error',
         correlationId: requestId,
-        metadata: { gateId, requestId }
+        metadata:  { gateId, requestId }
       };
       
       return {
         success: false,
         error: apiError,
-        metadata: {
+        metadata:  {
           timestamp: new Date(),
           requestId,
           version: '2.0.0',

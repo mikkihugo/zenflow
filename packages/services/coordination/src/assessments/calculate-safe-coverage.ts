@@ -21,7 +21,7 @@ const ESSENTIAL_SAFE_COMPONENTS = [
 /**
  * Calculate realistic SAFe coverage based on actual implementations
  */
-export function calculateActualSafeCoverage(): {
+export function calculateActualSafeCoverage():  {
   essentialSafeCoverage: number;
   implementedComponents: number;
   partialComponents: number;

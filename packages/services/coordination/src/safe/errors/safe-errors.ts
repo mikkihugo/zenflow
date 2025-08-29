@@ -159,7 +159,7 @@ export class ErrorRecovery {
   static async attemptRecovery(
     error: SAFeError,
     retryCallback?:() => Promise<any>
-  ):Promise<{
+  ): Promise<{
     recovered: 'validation_retry')      // For validation errors, provide detailed feedback';
       return {
         recovered: 'configuration_fallback')      // Could implement fallback configuration logic';
@@ -169,7 +169,7 @@ export class ErrorRecovery {
         recovered: 'retry_operation')      try {';
         const result = await retryCallback();
         return {
-          recovered: {
+          recovered:  {
   /**
    * Create epic validation error
    */
@@ -179,7 +179,7 @@ export class ErrorRecovery {
   ) =>
     new ValidationError(`Epic validation failed for `${epicId}, {``;
     ')      validationType : 'epic,'
-      validationErrors,',      context: { epicId},';
+      validationErrors,',      context:  { epicId},';
       cause,
 }),
   /**
@@ -210,7 +210,7 @@ export class ErrorRecovery {
        'Check epic state transition rules,')       'Verify required evidence is provided,';
        'Ensure portfolio kanban gates are satisfied,';
 ],
-      context: { operation},
+      context:  { operation},
       cause,
 }),
   /**

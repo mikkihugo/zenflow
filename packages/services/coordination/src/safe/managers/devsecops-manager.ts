@@ -143,7 +143,7 @@ export type SecurityAssessmentType =|'vulnerability_scan| penetration_test| code
  */
 export interface AssessmentScope {
   readonly targets: string[];
-  readonly timeframe: {
+  readonly timeframe:  {
     readonly start: Date;
     readonly end: Date;
 };
@@ -179,12 +179,12 @@ export interface CVSSScore {
   /**
    * Initialize with service delegation - LAZY LOADING
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     if (this.initialized) return;
     try {
     ')      this.logger.info('Initializing DevSecOps Manager...');
       // Delegate to Security Scanning Service
-      const { SecurityScanningService} = await import(';')';
+      const { SecurityScanningService} = await import(';)';
        '../services/devsecops/security-scanning-service'));
       this.securityScanningService = new SecurityScanningService(this.logger);
       // Delegate to Compliance Monitoring Service
@@ -194,7 +194,7 @@ export interface CVSSScore {
         this.logger
       );
       // Delegate to Security Incident Response Service
-      const { SecurityIncidentResponseService} = await import(';')';
+      const { SecurityIncidentResponseService} = await import(';)';
        '../services/devsecops/security-incident-response-service'));
       this.incidentResponseService = new SecurityIncidentResponseService(
         this.logger
@@ -211,14 +211,14 @@ export interface CVSSScore {
   /**
    * Perform security assessment - Delegates to Security Scanning Service
    */
-  async performSecurityAssessment(assessmentConfig: {
+  async performSecurityAssessment(assessmentConfig:  {
         scanId,    ')        scanType: '0 2 * * *,// 2 AM daily',
 '          maxDuration: 'json ',as const,';
           destinations: await this.securityScanningService.executeScan(
         scanConfig.scanId;
       );
       // Convert to security assessment format
-      const assessment: {
+      const assessment:  {
         assessmentId: [];
       if (frameworkId) {
         const status =
@@ -249,14 +249,14 @@ export interface CVSSScore {
   /**
    * Create security incident - Delegates to Security Incident Response Service
    */
-  async createSecurityIncident(incidentData: {
+  async createSecurityIncident(incidentData:  {
     title: string;
     description: string;
     severity: IncidentSeverity;
     category: IncidentCategory;
     reportedBy: string;
     initialEvidence?:any[];
-}):Promise<any> {
+}): Promise<any> {
     if (!this.initialized) await this.initialize();')    this.logger.info('Creating security incident,{';
       title: incidentData.title,
       severity: incidentData.severity,
@@ -284,14 +284,14 @@ export interface CVSSScore {
   /**
    * Generate compliance report - Delegates to Compliance Monitoring Service
    */
-  async generateComplianceReport(';')';
+  async generateComplianceReport(';)';
     reportType : 'summary| detailed| executive| audit,'
 '    frameworkIds: string[],';
-    period: {
+    period:  {
       startDate: Date;
       endDate: Date;
       description: string;,};;
-  ):Promise<any> {
+  ): Promise<any> {
     if (!this.initialized) await this.initialize();')    this.logger.info('Generating compliance report,{';
       reportType,
       frameworks: frameworkIds.length,')';
@@ -303,7 +303,7 @@ export interface CVSSScore {
           frameworkIds,
           period;
         );')      this.emit('compliance-report-generated,{';
-        reportId: {
+        reportId:  {
     ')        monitoringId : 'main-compliance,'
 '        frameworks: 'monthly ',as const,';
           format: ';

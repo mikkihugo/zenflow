@@ -84,7 +84,7 @@ export interface SynchronizationStrategy {
         synchronizationOutcomes,
         issuesIdentified;
       );
-      const result: {
+      const result:  {
         coordinationId: resultId,
         timestamp: new Date(),
         participatingARTs: config.coordinatedARTs.map((art) => art.artId),
@@ -98,7 +98,7 @@ export interface SynchronizationStrategy {
       this.coordinationResults.set(resultId, result);')      this.logger.info('ART coordination completed,{
         coordinationId,
         resultId,
-        duration: `dep-${generateNanoId(12)})    const trackedDependency: {``;
+        duration: `dep-${generateNanoId(12)})    const trackedDependency:  {``;
       dependencyId,
       ...dependency,
 };
@@ -107,7 +107,7 @@ export interface SynchronizationStrategy {
       dependencyId,
       fromART: this.dependencies.get(dependencyId);
     if (!dependency) {
-    `)      throw new Error(`Dependency not found: {`
+    `)      throw new Error(`Dependency not found:  {`
       ...dependency,
       status,
       actualDeliveryDate,

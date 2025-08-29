@@ -78,7 +78,7 @@ export class ImmutableWIPUtils {
    */
   static optimizeWIPLimits<T extends Record<string, number>>(
     currentLimits: T,
-    utilizationData: Record<string, { current: number; target: number}>
+    utilizationData: Record<string, { current: number, target: number}>
   ): T {
     return produce(currentLimits, (draft) => {
       const draftLimits = draft as Record<string, number>;
@@ -132,7 +132,7 @@ export class ImmutableMetricsUtils {
     allTasks: TaskForMetrics[],
     completedTasks: TaskForMetrics[],
     blockedTasks: TaskForMetrics[],
-    calculators: {
+    calculators:  {
       wipEfficiency: number;
       predictabilityCalculator: (cycleTimes: number[]) => number;
       qualityCalculator: (tasks: TaskForMetrics[]) => number;

@@ -26,7 +26,7 @@ interface ConversationSummary {
       (artId) => ({
         id: 'release-train-engineer',)        status : 'active 'as const,';
         capabilities: 'solution-train-engineer',)      status : 'active 'as const,';
-      capabilities: {
+      capabilities:  {
       title:`Solution Train Sync - ${params.solutionId};``;
       pattern: 'Coordinate dependencies and align on solution objectives,',
 '        constraints: 'safe-framework',)        expertise:['solution-architecture,' art-coordination'],';
@@ -39,7 +39,7 @@ interface ConversationSummary {
       );
     const conversationId = conversation.id;
     // Emit coordination started event
-    this.eventBus.emit(cross-art: {
+    this.eventBus.emit(cross-art:  {
     `)      name:`PI Planning Sync - `${params.piId};``)      description : 'Multi-ART PI Planning coordination workflow,'`
 '      steps: 'pre-planning-sync',)          name : 'Pre-Planning ART Sync')          type : 'parallel,'
 '          params: 'dependency-identification',)          name : 'Cross-ART Dependency Identification')          type : 'sequence,'
@@ -56,7 +56,7 @@ interface ConversationSummary {
         capabilities: params.severity === 'critical')    if (escalationRequired) {';
       participants.push({
         id : 'ste-escalation')        name : 'Solution Train Engineer')        role : 'solution-train-engineer')        status : 'active 'as const,
-        capabilities: {
+        capabilities:  {
       title:`Cross-ART Impediment Resolution: `${p}arams.impedimentId``')      pattern,      initialParticipants: [], // Convert participants to AgentId later'')      timeout: (params.severity ==='critical '? 120: 'Identify resolution path and assign ownership,',
 '        constraints: 'safe-framework',)        expertise:['impediment-resolution,' cross-art-coordination'],';
         impedimentId: params.impedimentId,
@@ -68,7 +68,7 @@ interface ConversationSummary {
       );
     const conversationId = conversation.id;
     // Emit impediment resolution event
-    this.eventBus.emit('cross-art: {
+    this.eventBus.emit('cross-art:  {
   COORDINATION_STARTED = 'cross-art: 'cross-art: 'cross-art: 'cross-art: 'cross-art: pi-commitment-finalized',)'} as const;;
 /**
  * Factory function for creating cross-ART coordinator with dependencies

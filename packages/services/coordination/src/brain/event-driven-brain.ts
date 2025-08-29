@@ -24,7 +24,7 @@ const DSPY_OPTIMIZATION_COMPLETE = DSPY_OPTIMIZATION_COMPLETE;
 export interface BrainPredictionRequest {
   requestId: string;
   domain: string;
-  context: {
+  context:  {
     complexity: number;
     priority: string;
     timeLimit?: number;
@@ -237,7 +237,7 @@ export class EventDrivenBrain extends EventBus {
   /**
    * Predict via DSPy optimization
    */
-  private predictViaDSPy(request: BrainPredictionRequest): Promise<{ predictions: BrainPrediction[]; optimizationUsed: boolean }> {
+  private predictViaDSPy(request: BrainPredictionRequest): Promise<{ predictions: BrainPrediction[], optimizationUsed: boolean }> {
     return new Promise((resolve, reject) => {
       const dspyRequest: DspyOptimizationRequest = {
         requestId: request.requestId,
@@ -303,7 +303,7 @@ export class EventDrivenBrain extends EventBus {
   /**
    * Predict via hybrid approach
    */
-  private async predictViaHybrid(request: BrainPredictionRequest): Promise<{ predictions: BrainPrediction[]; optimizationUsed: boolean }> {
+  private async predictViaHybrid(request: BrainPredictionRequest): Promise<{ predictions: BrainPrediction[], optimizationUsed: boolean }> {
     // Combine DSPy and neural approaches
     const [dspyResult, neuralResult] = await Promise.allSettled([
       this.predictViaDSPy(request),
@@ -406,7 +406,7 @@ export class EventDrivenBrain extends EventBus {
   /**
    * Handle knowledge system responses
    */
-  private handleKnowledgeResponse(response: { requestId: string; knowledge: Record<string, unknown>; confidence: number }): void {
+  private handleKnowledgeResponse(response:  { requestId: string, knowledge: Record<string, unknown>, confidence: number }): void {
     logger.info(`Knowledge response received: ${response.requestId}`);
     // Integrate knowledge into active predictions
     const prediction = this.activePredictions.get(response.requestId);
@@ -418,7 +418,7 @@ export class EventDrivenBrain extends EventBus {
   /**
    * Handle facts system responses
    */
-  private handleFactsResponse(response: { requestId: string; facts: Record<string, unknown>[]; validated: boolean }): void {
+  private handleFactsResponse(response:  { requestId: string, facts: Record<string, unknown>[], validated: boolean }): void {
     logger.info(`Facts validation response: ${response.requestId}`);
     // Integrate facts validation into active predictions
     const prediction = this.activePredictions.get(response.requestId);
@@ -437,7 +437,7 @@ export class EventDrivenBrain extends EventBus {
   /**
    * Get system status
    */
-  public getSystemStatus(): {
+  public getSystemStatus():  {
     dspyAvailable: boolean;
     llmAvailable: boolean;
     activePredictions: number;

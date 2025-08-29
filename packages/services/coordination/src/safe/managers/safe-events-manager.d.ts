@@ -11,7 +11,7 @@
  * - Event metrics and retrospective analysis
  * - Human-facilitated ceremony integration
  *
- * Part of the @claude-zen/safe-framework package providing comprehensive
+ * Part of the coordination package providing comprehensive
  * Scaled Agile Framework (SAFe) integration capabilities.
  */
 import { EventBus } from '@claude-zen/foundation';
@@ -24,11 +24,11 @@ export declare class SAFeEventsManager extends EventBus {
     private eventOutcomes;
     private eventTemplates;
     private initialized;
-    constructor(_memory: {});
+    constructor(_memory:  {});
     /**
      * Schedule System Demo
      */
-    scheduleSystemDemo(piId: `system-demo-`, $: any, { piId }: {
+    scheduleSystemDemo(piId: `system-demo-`, $: any, { piId }:  {
         piId: any;
     }): any;
 }

@@ -2,7 +2,7 @@
 
 ## 🎯 Implementation Complete
 
-A comprehensive Release Train Engineer Management system has been successfully implemented for the @claude-zen/safe-framework package, enhancing SAFe 6.0 completeness with program-level coordination capabilities.
+A comprehensive Release Train Engineer Management system has been successfully implemented for the coordination package SAFe framework, enhancing SAFe 6.0 completeness with program-level coordination capabilities.
 
 ## 📁 Files Created
 
@@ -165,7 +165,7 @@ A comprehensive Release Train Engineer Management system has been successfully i
 ## 🎯 Usage Example
 
 ```typescript
-import { ReleaseTrainEngineerManager } from '@claude-zen/safe-framework';
+import { ReleaseTrainEngineerManager } from '../src/safe/managers/rte/release-train-engineer-manager.js';
 
 // Initialize RTE Manager
 const rteManager = new ReleaseTrainEngineerManager(logger, memory, eventBus, {
@@ -209,7 +209,7 @@ const predictabilityReport = await rteManager.trackProgramPredictability(
 
 ## ✨ Summary
 
-The Release Train Engineer Manager represents a **complete, enterprise-grade implementation** of the RTE role as defined in SAFe 6.0. With 50+ types, comprehensive functionality, and full integration with the existing SAFe framework, it significantly enhances the program-level management capabilities of the @claude-zen/safe-framework package.
+The Release Train Engineer Manager represents a **complete, enterprise-grade implementation** of the RTE role as defined in SAFe 6.0. With 50+ types, comprehensive functionality, and full integration with the existing SAFe framework, it significantly enhances the program-level management capabilities of the coordination package SAFe framework.
 
 **Key Achievements:**
 

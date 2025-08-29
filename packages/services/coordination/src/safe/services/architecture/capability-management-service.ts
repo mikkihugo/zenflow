@@ -98,13 +98,13 @@ export class CapabilityManagementService {
   private readonly logger: false;
   // Capability state
   private capabilities = new Map<string, ArchitectureCapability>();
-  private config: {}) {
+  private config:  {}) {
     this.logger = logger;
     this.config = {
       enableAIAnalysis: 'quarterly,',
 '      maxCapabilities: await import('@claude-zen/brain');
       this.brainCoordinator = new BrainCoordinator(
-          enabled: await import(';')';
+          enabled: await import(';)';
        '@claude-zen/foundation'));
       this.performanceTracker = new PerformanceTracker();
       this.telemetryManager = new TelemetryManager({
@@ -116,12 +116,12 @@ export class CapabilityManagementService {
     ')        aguiType : 'terminal,'
 '        taskApprovalConfig: aguiResult.agui;
       // Lazy load @claude-zen/brain for LoadBalancer - resource optimization')      const { LoadBalancer} = await import('@claude-zen/brain');
-      this.loadBalancer = new LoadBalancer(';')';
+      this.loadBalancer = new LoadBalancer(';)';
         strategy : 'intelligent_distribution,'
-'        enablePredictiveScaling: true;',      this.logger.info(';')';
+'        enablePredictiveScaling: true;',      this.logger.info(';)';
        'Capability Management Service initialized successfully'));
 } catch (error) {
-      this.logger.error(';')';
+      this.logger.error(';)';
        'Failed to initialize Capability Management Service:,';
         error
       );
@@ -163,7 +163,7 @@ export class CapabilityManagementService {
         capabilityAnalysis;
       );
       // Create capability with AI-enhanced data
-      const newCapability: {
+      const newCapability:  {
         id,    `)        businessValue,`;
         technicalComplexity,
         investmentPlan,
@@ -180,7 +180,7 @@ export class CapabilityManagementService {
       // Use workflow engine for status transition validation
       const statusTransition =
         await this.workflowEngine.validateStatusTransition({
-          fromStatus: {
+          fromStatus:  {
         ...capability,
         status: this.performanceTracker.startTimer('generate_capability_dashboard');
     try {
@@ -188,7 +188,7 @@ export class CapabilityManagementService {
       // Use brain coordinator for intelligent dashboard insights
       const dashboardInsights =
         await this.brainCoordinator.generateCapabilityDashboardInsights({
-          capabilities: {
+          capabilities:  {
         totalCapabilities: allCapabilities.length,
         capabilitiesByCategory: this.groupCapabilitiesByCategory(allCapabilities),
         capabilitiesByStatus: this.groupCapabilitiesByStatus(allCapabilities),
@@ -290,10 +290,10 @@ export class CapabilityManagementService {
       (sum, phase) => sum + phase.investment,
       0;
     );
-    const timeline: {
-      startDate: 'planning-complete',)          name : 'Planning Complete')          description,          targetDate: {
+    const timeline:  {
+      startDate: 'planning-complete',)          name : 'Planning Complete')          description,          targetDate:  {
       method : 'net_present_value,'
-'      timeHorizon: {
+'      timeHorizon:  {
       risks:[],
       overallRiskScore: analysis.roadmap
       ?.initiatives|| [
@@ -309,10 +309,10 @@ export class CapabilityManagementService {
 '        lastMeasured: new Date(),',},';
 ];
     // Add category-specific metrics')    if (capability.category ==='technology_capability){';
-    ')      baseMetrics.push(';')';
+    ')      baseMetrics.push(';)';
         metricId : 'availability')        name : 'System Availability')        description : 'Percentage uptime of the technology capability')        type : 'quality,'
 '        currentValue: 'percentage',)        trend : 'stable,'
-'        benchmarkValue: {
+'        benchmarkValue:  {
       business_capability: 9,
       technology_capability: 7,
       process_capability: 6,

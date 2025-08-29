@@ -8,8 +8,8 @@
 /**
  * Default configuration for clean workflow kanban
  */
-declare const DEFAULT_CONFIG: {
+declare const DEFAULT_CONFIG:  {
     enableIntelligentWIP: false;
-    constructor(config: {}): any;
+    constructor(config:  {}): any;
 }, : any, config: any;
 //# sourceMappingURL=kanban-engine.d.ts.map

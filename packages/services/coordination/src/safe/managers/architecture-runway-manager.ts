@@ -11,7 +11,7 @@
  *
  * REDUCTION: 650 → 630 lines (3.1% reduction) through service delegation and code cleanup
  *
- * Part of the @claude-zen/safe-framework package providing comprehensive
+ * Part of the coordination package providing comprehensive
  * Scaled Agile Framework (SAFe) integration capabilities.
  */
 import { EventBus} from '@claude-zen/foundation')import type { Logger, MemorySystem, EventBus} from '../types')import { createEvent, EventPriority, getLogger} from '../types')// =========================================================================== = ''; 
@@ -28,7 +28,7 @@ export interface ArchitectureRunwayConfig {
  *   title, *   type : 'infrastructure,'
  *   priority: false;
   constructor(
-    memory: {},
+    memory:  {},
     eventBus: EventBus,
     config: ArchitectureRunwayConfig = {}
   ) {
@@ -36,7 +36,7 @@ export interface ArchitectureRunwayConfig {
     this.memory = memory;
     this.eventBus = eventBus;
     this.config = {
-      enableAGUIIntegration: await import(';')';
+      enableAGUIIntegration: await import(';)';
        '../services/architecture/runway-item-management-service'));
       this.runwayItemService = new RunwayItemManagementService(this.logger);
       await this.runwayItemService.initialize();
@@ -48,7 +48,7 @@ export interface ArchitectureRunwayConfig {
       );
       await this.technicalDebtService.initialize();
       // Delegate to ArchitectureDecisionManagementService
-      const { ArchitectureDecisionManagementService} = await import(';')';
+      const { ArchitectureDecisionManagementService} = await import(';)';
        '../services/architecture/architecture-decision-management-service'));
       this.architectureDecisionService =
         new ArchitectureDecisionManagementService(this.logger);
@@ -59,10 +59,10 @@ export interface ArchitectureRunwayConfig {
       this.capabilityService = new CapabilityManagementService(this.logger);
       await this.capabilityService.initialize();
       // Emit initialization event
-      this.eventBus.emit(';')';
+      this.eventBus.emit(';)';
        'architecture-runway: true;')      this.logger.info('Architecture Runway Manager initialized successfully');
 } catch (error) {
-      this.logger.error(';')';
+      this.logger.error(';)';
        'Failed to initialize Architecture Runway Manager:,';
         error
       );
@@ -85,7 +85,7 @@ export interface ArchitectureRunwayConfig {
           item: updatedItem,
           oldStatus: status,')';
 });
-        this.eventBus.emit(';')';
+        this.eventBus.emit(';)';
          'architecture-runway: item: status-updated,';
           createEvent('architecture-runway: item: status-updated,{';
             itemId,
@@ -103,9 +103,9 @@ export interface ArchitectureRunwayConfig {
   /**
    * Add Technical Debt Item - Delegates to TechnicalDebtManagementService
    */
-  async addTechnicalDebtItem(';')';
+  async addTechnicalDebtItem(';)';
     item: Omit<TechnicalDebtItem,'id| createdAt| updatedAt| status'>';
-  ):Promise<TechnicalDebtItem> {
+  ): Promise<TechnicalDebtItem> {
     if (!this.initialized) await this.initialize();
     if (!this.config.enableTechnicalDebtManagement) {
       throw new Error('Technical debt management is not enabled');
@@ -114,7 +114,7 @@ export interface ArchitectureRunwayConfig {
       // Delegate to specialized service
       const debtItem =;
         await this.technicalDebtService.addTechnicalDebtItem(item);')      // Emit local events for backward compatibility')      this.emit('technical-debt: added,{ item: debtItem};);
-      this.eventBus.emit(';')';
+      this.eventBus.emit(';)';
        'architecture-runway: debt: added,';
         createEvent('architecture-runway: debt: added,';
           itemId: debtItem.id,
@@ -132,7 +132,7 @@ export interface ArchitectureRunwayConfig {
   async createArchitectureDecisionRecord(
     decision: Omit<
       ArchitectureDecisionRecord,')     'id| createdAt| updatedAt| status')    >';
-  ):Promise<ArchitectureDecisionRecord> {
+  ): Promise<ArchitectureDecisionRecord> {
     if (!this.initialized) await this.initialize();
     try {
       // Delegate to specialized service
@@ -149,7 +149,7 @@ export interface ArchitectureRunwayConfig {
 ]);
       // Combine all dashboard data
       return {
-        runwayItems: {
+        runwayItems:  {
         title: decision.title,
         description: decision.description``;
         context,    ')        options: decision.options.map((opt) => ({';
@@ -177,21 +177,21 @@ export interface ArchitectureRunwayConfig {
         this.capabilityService.getCapabilityAnalytics(),
 ]);
       return {
-        runway: {
+        runway:  {
           totalItems: runwayAnalytics?.totalItems|| 0,
           itemsByStatus: runwayAnalytics?.itemsByStatus|| {},
           itemsByPriority: runwayAnalytics?.itemsByPriority|| {},
 },
-        technicalDebt: {
+        technicalDebt:  {
           totalDebt: debtAnalytics.totalDebtItems,
           debtByStatus: debtAnalytics.debtByStatus,
           debtBySeverity: debtAnalytics.debtBySeverity,
 },
-        capabilities: {
+        capabilities:  {
           totalCapabilities: capabilityAnalytics?.totalCapabilities|| 0,
           capabilitiesByCategory: capabilityAnalytics?.capabilitiesByCategory|| {},
 },
-        decisions: {
+        decisions:  {
           totalDecisions: adrAnalytics.totalDecisions,
           decisionsByStatus: adrAnalytics.decisionsByStatus,
 },
@@ -264,7 +264,7 @@ export interface ArchitectureRunwayConfig {
   // ============================================================================
   //
   // This facade delegates all operations to: false;
-      this.eventBus.emit(';')';
+      this.eventBus.emit(';)';
        'architecture-runway: shutdown,';
         createEvent('architecture-runway: shutdown,{ timestamp: Date.now()})';
       );')      this.logger.info('Architecture Runway Manager shutdown complete');

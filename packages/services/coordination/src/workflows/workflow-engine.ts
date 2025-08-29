@@ -38,7 +38,7 @@ export type {
   private readonly documentManager?:DocumentManager;
   private readonly gatesManager?:WorkflowGatesManager;
   constructor(
-    config: {},
+    config:  {},
     documentManager?:DocumentManager,
     memoryFactory?:MemorySystemFactory,
     gatesManager?:WorkflowGatesManager
@@ -68,7 +68,7 @@ export type {
   // --------------------------------------------------------------------------
   // LIFECYCLE METHODS
   // --------------------------------------------------------------------------')  @tracedAsync('workflow-engine-initialize')')  @metered('workflow_engine_initialization')';
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     if (this.isInitialized) {
     ')      recordEvent('workflow_engine_already_initialized,{';
         timestamp: Date.now(),')';
@@ -76,23 +76,23 @@ export type {
       return;
 };)    return withAsyncTrace('workflow-engine-initialization, async (_span) => {';
     ')';
-      setTraceAttributes(';')';
+      setTraceAttributes(';)';
        'workflow.engine.config: Date.now();
       try {
         // 🔧 Register default step handlers with telemetry')        recordEvent('workflow_step_handlers_registration_started,{';
           timestamp: true;
         const initDuration = Date.now() - initStartTime;
         // 📊 Record initialization metrics
-        recordHistogram(';')';
+        recordHistogram(';)';
          'workflow_engine_initialization_duration,';
           initDuration
         );
         recordGauge('workflow_engine_initialized_timestamp, Date.now())(');')        recordMetric('workflow_engine_initialized_successfully,1');')        this.emit('initialized, timestamp: ';
-            this.workflowDefinitions.size,);',)        logger.info(';')';
+            this.workflowDefinitions.size,);',)        logger.info(';)';
          'WorkflowEngine initialized successfully with Foundation monitoring,';
           {
             initializationDuration: Date.now() - initStartTime;')        recordMetric('workflow_engine_initialization_failed,1');
-        recordHistogram(';')';
+        recordHistogram(';)';
          'workflow_engine_initialization_error_duration,';
           initDuration
         );
@@ -100,7 +100,7 @@ export type {
           error: error instanceof Error ? error.message: String(error),
           initializationDuration: initDuration,')';
 });
-        throw new EnhancedError(';')';
+        throw new EnhancedError(';)';
          'Failed to initialize WorkflowEngine,';
           { cause: error, duration: initDuration},
          'WORKFLOW_INITIALIZATION_ERROR'));
@@ -108,10 +108,10 @@ export type {
 });
 }
   @tracedAsync('workflow-engine-shutdown')')  @metered('workflow_engine_shutdown')';
-  async shutdown():Promise<void> {
+  async shutdown(): Promise<void> {
     ')    return withAsyncTrace('workflow-engine-shutdown, async (_span) => {';
       const __shutdownStartTime = Date.now();')';
-      logger.info(';')';
+      logger.info(';)';
        'Shutting down WorkflowEngine with comprehensive Foundation cleanup'));
       try {
         setTraceAttributes({
@@ -127,16 +127,16 @@ export type {
         );
 } catch (error) {
     ')        const shutdownDuration = Date.now() - shutdownStartTime;')        recordMetric('workflow_engine_shutdown_failed,1');
-        recordHistogram(';')';
+        recordHistogram(';)';
          'workflow_engine_shutdown_error_duration,';
           shutdownDuration
         );
         logger.error('WorkflowEngine shutdown encountered errors,{';
           error: false;
-        throw new EnhancedError(';')';
+        throw new EnhancedError(';)';
          'WorkflowEngine shutdown completed with errors,';
-          { cause: {}
-  ):Promise<{ success: boolean; workflowId?: string; error?: string}> {
+          { cause:  {}
+  ): Promise<{ success: boolean; workflowId?: string; error?: string}> {
     ')    return withAsyncTrace('workflow-start, async (span) => {';
       const startTime = Date.now();
       try {
@@ -156,7 +156,7 @@ export type {
         return this.workflowExecutionCircuitBreaker.execute(async () => {
     ')          if (this.activeWorkflows.size >= this.config.maxConcurrentWorkflows) {';
     ')            recordMetric('workflow_start_capacity_exceeded,1');
-            recordGauge(';')';
+            recordGauge(';)';
              'workflow_active_count_at_capacity,';
               this.activeWorkflows.size
             );
@@ -164,7 +164,7 @@ export type {
     ')';
               reason : 'capacity_exceeded,'
 '              activeWorkflows: this.generateWorkflowId();
-          const workflow: {
+          const workflow:  {
             id: 'pending,',
 '            context,';
             currentStep: ' started',)           'workflow.active_count: this.activeWorkflows.size,';
@@ -201,7 +201,7 @@ export type {
   async processDocumentEvent(
     eventType: string,
     documentData: unknown
-  ):Promise<void> {
+  ): Promise<void> {
     ')    return withAsyncTrace('document-event-processing, async (span) => {';
       const processingStartTime = Date.now();')';
       const docData = documentData as { type?:string; id?: string};
@@ -235,7 +235,7 @@ export type {
                   documentData,
                   eventType,
                   triggerIndex: Date.now() - workflowStartTime;
-                recordHistogram(';')';
+                recordHistogram(';)';
                  'document_workflow_trigger_duration,';
                   workflowTriggerDuration,
                   {
@@ -251,7 +251,7 @@ export type {
           // 📊 Analyze and record results
           const successfulWorkflows = results.filter((r) => r.result.success);
           const failedWorkflows = results.filter((r) => !r.result.success);
-          recordHistogram(';')';
+          recordHistogram(';)';
            'document_event_total_processing_duration,';
             totalProcessingDuration,
             {
@@ -261,12 +261,12 @@ export type {
 });
           // 📝 Log detailed results
           results.forEach(({ workflowName, result, duration}) => {
-    ',)            const logLevel = result.success ?'info : ' warn';')            const status = result.success ?'SUCCESS =  FAILED`,)            logger[logLevel](`Document workflow `${workflowName}:${status}, {``;
+    ',)            const logLevel = result.success ?'info : ' warn';)            const status = result.success ?'SUCCESS =  FAILED`,)            logger[logLevel](`Document workflow `${workflowName}:${status}, {``;
     ')              workflowName,';
               status,
               duration,
               workflowId: Date.now() - processingStartTime;')        recordMetric('document_event_processing_circuit_breaker_failure,1');
-        recordHistogram(';')';
+        recordHistogram(';)';
          'document_event_processing_error_duration,';
           processingDuration
         );
@@ -277,7 +277,7 @@ export type {
             documentType: this.activeWorkflows.get(workflowId);
     if (!workflow) return null;
     return {
-      id: {
+      id:  {
       name: await this.startWorkflow(definition, data.data);
     if (!(result.success && result.workflowId)) {
     `)      throw new Error(`Failed to create workflow: this.activeWorkflows.get(workflowId);
@@ -332,7 +332,7 @@ export type {
           workflowId: new Date().toISOString();
         const totalExecutionDuration = Date.now() - executionStartTime;
         // 📊 Record final execution metrics
-        recordHistogram(';')';
+        recordHistogram(';)';
          'workflow_total_execution_duration,';
           totalExecutionDuration,
           {
@@ -355,7 +355,7 @@ export type {
         duration: Date.now() - startTime,',};;
 }
 }
-  private registerDefaultStepHandlers():void {
+  private registerDefaultStepHandlers(): void {
     // Default step handlers')    this.registerStepHandler('delay, async (_context, params) => {';
     ')';
       const duration = (params as { duration?:number}).duration|| 1000;
@@ -363,7 +363,7 @@ export type {
       return { delayed: duration};
 });')    this.registerStepHandler('log,(_context, params) => {';
     ')';
-      const message =';')        (params as { message?:string}).message||'Step executed')      logger.info(message);
+      const message =';)        (params as { message?:string}).message||'Step executed')      logger.info(message);
       return Promise.resolve({ logged: message});
 });
     this.registerStepHandler('transform,(context, params) => {';
@@ -386,14 +386,14 @@ export type {
 }
   private generateWorkflowId():string {
     return `workflow-`${Date.now()}-${Math.random().toString(36).substring(2, 11)})};;
-  private getWorkflowsForDocumentType(documentType?:string): {
+  private getWorkflowsForDocumentType(documentType?:string):  {
     ``)      vision: ['vision-to-prds'],';
       prd: ['prd-to-epics'],';
       epic: [epic-to-features`],`;
 };
     return typeWorkflowMap[documentType || `] || [];`;
 }
-  private async ensureInitialized():Promise<void> {
+  private async ensureInitialized(): Promise<void> {
     if (!this.isInitialized) {
       await this.initialize();
 }
@@ -520,7 +520,7 @@ export type {
     ')      return { success: new Map();
 }
     // Record gate result
-    const gateResult: {
+    const gateResult:  {
       success: failed`)      workflow.error = `Gate rejected: new Date().toISOString();``;
       this.activeWorkflows.delete(workflowId);
       this.emit('workflow: 'gate_rejected,',

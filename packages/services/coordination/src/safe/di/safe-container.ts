@@ -72,7 +72,7 @@ export class SafeContainer {
    */
   private async registerAIEnhancements(
     aiConfig?:AIEnhancementConfig
-  ):Promise<void> {
+  ): Promise<void> {
     if (!aiConfig) {
     ')      logger.debug('No AI enhancements configured');
       return;
@@ -145,7 +145,7 @@ export class SafeContainer {
     ')          logger.warn('Load Balancer not available:, error);')';
 }
 }
-      // Note: await import(';')';
+      // Note: await import(';)';
            '../../teamwork'));
           const conversationOrchestrator = new ConversationOrchestrator();
           this.container.registerInstance(
@@ -158,7 +158,7 @@ export class SafeContainer {
 }
 };)      logger.info('AI enhancements registration completed');
 } catch (error) {
-      logger.warn(';')';
+      logger.warn(';)';
        'Error registering AI enhancements (continuing without them):,';
         error
       );
@@ -175,7 +175,7 @@ export class SafeContainer {
   /**
    * Clear all registrations
    */
-  clear():void {
+  clear(): void {
     this.container.clear();
     this.initialized = false;
     logger.debug('SAFe container cleared');
@@ -210,7 +210,7 @@ export async function configureGlobalSAFeContainer(
 /**
  * Clear the global SAFe container
  */
-export function clearGlobalSAFeContainer():void {
+export function clearGlobalSAFeContainer(): void {
   if (globalSAFeContainer) {
     globalSAFeContainer.clear();
     globalSAFeContainer = null;

@@ -20,8 +20,8 @@ export class AsyncUtils {
     wait: number;
   ):T & { cancel(): void; flush(): void} {
     return debounce(func, wait) as unknown as T & {
-      cancel():void;
-      flush():void;
+      cancel(): void;
+      flush(): void;
 };
 }
   /**
@@ -32,8 +32,8 @@ export class AsyncUtils {
     wait: number
   ):T & { cancel(): void; flush(): void} {
     return throttle(func, wait) as unknown as T & {
-      cancel():void;
-      flush():void;
+      cancel(): void;
+      flush(): void;
 };
 }
   /**
@@ -48,7 +48,7 @@ export class AsyncUtils {
   static createTimeout<T>(
     promise: Promise<T>,
     milliseconds: number
-  ):Promise<T> {
+  ): Promise<T> {
     return Promise.race([
       promise,
       new Promise<never>((_resolve, reject) =>

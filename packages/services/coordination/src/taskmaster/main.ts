@@ -12,10 +12,10 @@ export interface TaskMasterSystem {
   kanban: KanbanEngine;              // Task flow management, WIP limits
   approvalGates: ApprovalGateManager; // General workflow orchestration  
   database: any;                      // Data persistence
-  initialize():Promise<void>;
+  initialize(): Promise<void>;
   
   // SAFe integration available on demand
-  getSafeIntegration?():Promise<any>;')};;
+  getSafeIntegration?(): Promise<any>;')};;
 // ============================================================================
 // MAIN TASKMASTER SYSTEM EXPORT
 // ============================================================================
@@ -27,13 +27,13 @@ export interface TaskMasterSystem {
  * const taskMaster = await getTaskMaster();
  * await taskMaster.initialize();
  * ') */';
-export async function getTaskMaster():Promise<TaskMasterSystem> {
+export async function getTaskMaster(): Promise<TaskMasterSystem> {
   try {
     const kanban = new KanbanEngine();
     const approvalGates = new ApprovalGateManager();
     const database = await DatabaseProvider.create();
     
-    const system: {
+    const system:  {
       kanban,
       approvalGates,
       database,
@@ -52,17 +52,17 @@ export async function getTaskMaster():Promise<TaskMasterSystem> {
 /**
  * Create TaskMaster system with custom configuration
  */
-export async function createTaskMaster(config?:{
+export async function createTaskMaster(config?:  {
   enableIntelligentWIP?:boolean;
   enableBottleneckDetection?:boolean;
   enableFlowOptimization?:boolean;
-'}):Promise<TaskMasterSystem> {';
+'}): Promise<TaskMasterSystem> {';
   try {
     const kanban = new KanbanEngine(config);
     const approvalGates = new ApprovalGateManager();
     const database = await DatabaseProvider.create();
     
-    const system: {
+    const system:  {
       kanban,
       approvalGates,
       database,

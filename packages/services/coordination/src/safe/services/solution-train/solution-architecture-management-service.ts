@@ -118,7 +118,7 @@ export interface ComponentLifecycle {
     );
     // Select best alternative
     const selectedAlternative = this.selectBestAlternative(evaluation);
-    const architecturalDecision: {
+    const architecturalDecision:  {
       decisionId,
       title: this.configurations.get(configId);
     if (!config) {
@@ -140,15 +140,15 @@ export interface ComponentLifecycle {
       principleCompliance,
       qualityCompliance;
     );
-    const report: {
+    const report:  {
       reportId,
       configId,
       timestamp: this.runwayComponents.get(componentId);
     if (!component) {
-    `)      throw new Error(`Runway component not found: {`
+    `)      throw new Error(`Runway component not found:  {`
           ...component,
           status: this.getNextStatus(component.status),
-          lifecycle: {
+          lifecycle:  {
             ...component.lifecycle,
             availableDate: component.status === ComponentStatus.IN_DEVELOPMENT
                 ? new Date()
@@ -156,9 +156,9 @@ export interface ComponentLifecycle {
 },
 };
         break;
-      case ComponentOperation.DEPRECATE: {
+      case ComponentOperation.DEPRECATE:  {
           ...component,
-          status: {
+          status:  {
           ...component,
           status: )`,throw new Error(`Unknown component operation: `${o}peration``);')};;
     this.runwayComponents.set(componentId, updatedComponent);')    this.logger.info('Runway component updated,{';
@@ -179,7 +179,7 @@ export interface ComponentLifecycle {
   private async evaluateAlternatives(
     alternatives: Alternative[],
     criteria: DecisionCriteria[]
-  ):Promise<AlternativeEvaluation[]> 
+  ): Promise<AlternativeEvaluation[]> 
     return alternatives.map((alternative) => ({
       alternative,
       scores: criteria.map((criterion) => ({
@@ -304,7 +304,7 @@ interface RunwayTimebox {
 interface RunwayRisk {
   readonly riskId: string;
   readonly description: string;
-  readonly probability : 'low' | ' medium'|' high';')  readonly impact : 'low' | ' medium'|' high)  readonly mitigation: string;`;
+  readonly probability : 'low' | ' medium'|' high';)  readonly impact : 'low' | ' medium'|' high)  readonly mitigation: string;`;
 }
 interface ComplianceRequirement {
   readonly requirementId: string;

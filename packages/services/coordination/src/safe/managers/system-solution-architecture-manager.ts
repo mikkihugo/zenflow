@@ -127,11 +127,11 @@ export class SystemSolutionArchitectureManager extends EventBus {
   /**
    * Initialize with service delegation - LAZY LOADING
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     if (this.initialized) return;
     try {
       // Delegate to System Design Management Service
-      const { SystemDesignManagementService} = await import(';')';
+      const { SystemDesignManagementService} = await import(';)';
        '../services/system-solution/system-design-management-service'));
       this.systemDesignService = new SystemDesignManagementService(
         this.logger,
@@ -147,7 +147,7 @@ export class SystemSolutionArchitectureManager extends EventBus {
       this.telemetryManager = new TelemetryManager({
     ')        serviceName : 'system-solution-architecture,'
 '        enableTracing: true;
-      this.logger.info(';')';
+      this.logger.info(';)';
        'System Solution Architecture Manager initialized successfully with service delegation')      );')      this.emit('initialized,{';
         timestamp: this.performanceTracker.startTimer('create_system_design');
     try {
@@ -161,7 +161,7 @@ export class SystemSolutionArchitectureManager extends EventBus {
         pattern,);`)`;
       this.logger.info(`Created system design: 'peer| formal| compliance| security,',
     reviewerId: ')      this.systemDesignService.getSystemDesign(systemDesignId);')    if (!systemDesign) {
-    `)      throw new Error(`System design not found: {`
+    `)      throw new Error(`System design not found:  {`
         systemDesignId,
         reviewType,
         reviewerId,')        priority: medium'as const,';
@@ -191,7 +191,7 @@ export class SystemSolutionArchitectureManager extends EventBus {
    */
   async validateCompliance(
     systemDesignId: string
-  ):Promise<{
+  ): Promise<{
     compliant: boolean;
     violations: string[];
     recommendations: string[];
@@ -254,7 +254,7 @@ export class SystemSolutionArchitectureManager extends EventBus {
   /**
    * Get architecture metrics - Aggregates from all services
    */
-  async getArchitectureMetrics():Promise<any> {
+  async getArchitectureMetrics(): Promise<any> {
     if (!this.initialized) await this.initialize();
     try {
       // Get metrics from each service
@@ -266,7 +266,7 @@ export class SystemSolutionArchitectureManager extends EventBus {
 ]);
       return {
         systemDesigns: false;
-      this.logger.info(';')';
+      this.logger.info(';)';
        'System Solution Architecture Manager shutdown completed'));
 } catch (error) {
       this.logger.error('Error during shutdown:, error');
@@ -276,7 +276,7 @@ export class SystemSolutionArchitectureManager extends EventBus {
   // ============================================================================
   // PRIVATE HELPER METHODS
   // ============================================================================
-  private setupEventHandlers():void {
+  private setupEventHandlers(): void {
     // Forward events from System Design Service
     if (this.systemDesignService) {
       // Note: In production, would set up proper event forwarding from services
@@ -305,7 +305,7 @@ export class SystemSolutionArchitectureManager extends EventBus {
  * Create a System Solution Architecture Manager with default configuration
  */
 export function createSystemSolutionArchitectureManager(
-  memorySystem: {
+  memorySystem:  {
     enableSystemDesignCoordination: true,
     enableSolutionArchitectWorkflow: true,
     enableArchitectureReviews: true,

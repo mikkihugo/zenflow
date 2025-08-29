@@ -1,12 +1,30 @@
 /**
  * @fileoverview PI Planning Success Prediction - ML-Powered SAFe Intelligence
  *
- * **PREDICTIVE ANALYTICS FOR PI PLANNING SUCCESS: getLogger('PIPlanningSuccessPrediction');
+ * **PREDICTIVE ANALYTICS FOR PI PLANNING SUCCESS**
+ *
+ * Advanced ML models predict the likelihood of successful PI completion
+ * based on team metrics, dependencies, risks, and historical performance.
+ * Integrated with Brain package for neural network-powered predictions.
+ */
+import { getLogger } from '@claude-zen/foundation';
+
+const logger = getLogger('PIPlanningSuccessPrediction');
+
 // ============================================================================
 // PREDICTION MODEL TYPES
 // ============================================================================
 export interface PISuccessPredictionInput {
-  piId: 'increasing|',improving' | ' stable'| ' declining' | ' decreasing')  teamStability: more debt
+  piId: string;
+  artId: string;
+  teamCount: number;
+  objectiveCount: number;
+  dependencyCount: number;
+  riskCount: number;
+  teamMaturity: 'forming' | 'storming' | 'norming' | 'performing';
+  velocityTrend: 'increasing' | 'improving' | 'stable' | 'declining' | 'decreasing';
+  teamStability: number; // 0-1, percentage of team members unchanged
+  technicalDebt: number; // 1-10, perceived technical debt level
   morale: number; // 1-10
   previousPIPerformance: number[]; // % of objectives completed
 }
@@ -14,14 +32,19 @@ export interface DependencyInput {
   id: string;
   providerTeam: string;
   consumerTeam: string;
-  complexity : 'low| medium| high' | ' critical')  riskLevel : 'low' | ' medium'|' high')  historicalResolutionTime: number; // days';
+  complexity: 'low' | 'medium' | 'high' | 'critical';
+  riskLevel: 'low' | 'medium' | 'high';
+  historicalResolutionTime: number; // days
   crossTeamExperience: number; // 1-10, how well teams work together
 }
+
 export interface RiskInput {
   id: string;
   description: string;
   probability: number; // 0-1
-  impact : 'low| medium| high' | ' critical')  category : 'technical| resource| external' | ' process')  mitigationPlan?:string;';
+  impact: 'low' | 'medium' | 'high' | 'critical';
+  category: 'technical' | 'resource' | 'external' | 'process';
+  mitigationPlan?: string;
 }
 export interface HistoricalPIData {
   piId: string;
@@ -29,36 +52,36 @@ export interface HistoricalPIData {
   artId: string;
   startDate: string;
   endDate: string;
-  planned: {
+  planned:  {
     objectives: number;
     totalBusinessValue: number;
     totalEffort: number;
     teamCount: number;
 };
-  actual: {
+  actual:  {
     objectivesCompleted: number;
     businessValueDelivered: number;
     effortSpent: number;
     daysOverrun: number;
 };
-  success: {
+  success:  {
     overallSuccess: boolean;
     successScore: number; // 0-100
     businessValueRealization: number; // % of planned value delivered
     scheduleAdherence: number; // % on time
-    qualityMetrics: {
+    qualityMetrics:  {
       defectEscapeRate: number;
       techDebtIncurred: number;
       customerSatisfaction: number;
 };
 };
-  challenges: {
+  challenges:  {
     majorImpediments: string[];
     failedDependencies: string[];
     resourceConstraints: string[];
     externalFactors: string[];
 };
-  lessons: {
+  lessons:  {
     whatWorked: string[];
     whatDidntWork: string[];
     improvements: string[];
@@ -113,7 +136,7 @@ export interface PredictionConfidence {
   dataQuality: number; // 0-1
   modelAccuracy: number; // 0-1 based on historical validation
   uncertaintyFactors: string[];
-  confidenceInterval: {
+  confidenceInterval:  {
     lower: number;
     upper: number;
 };
@@ -146,7 +169,7 @@ export class PIPlanningSuccessPredictionService {
   /**
    * Initialize neural ML models for PI prediction
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     try {
       this.neuralML = await getNeuralMLAccess();
       await this.loadPredictionModels();
@@ -192,7 +215,7 @@ export class PIPlanningSuccessPredictionService {
         input,
         neuralPredictions;
       );
-      const prediction: {
+      const prediction:  {
         piId: input.piId,
         predictionId,    ')        timestamp: new Date().toISOString(),
         overall: successProbability: neuralPredictions.overallSuccess,
@@ -220,9 +243,9 @@ export class PIPlanningSuccessPredictionService {
   // ============================================================================
   private async prepareAnalysisData(
     input: PISuccessPredictionInput
-  ):Promise<any> {
+  ): Promise<any> {
     return {
-      features:{
+      features:  {
         // Team features
         totalCapacity: input.teams.reduce(
           (sum, t) => sum + t.plannedCapacity,
@@ -286,7 +309,7 @@ export class PIPlanningSuccessPredictionService {
   private async predictTeamPerformance(
     teams: TeamCapacityInput[],
     objectives: PIObjectiveInput[]
-  ):Promise<TeamPrediction[]> {
+  ): Promise<TeamPrediction[]> {
     return teams.map((team) => {
       const teamObjectives = objectives.filter(
         (o) => o.assignedTeam === team.teamId;
@@ -321,7 +344,7 @@ export class PIPlanningSuccessPredictionService {
   private async predictObjectiveSuccess(
     objectives: PIObjectiveInput[],
     teams: TeamCapacityInput[]
-  ):Promise<ObjectivePrediction[]> {
+  ): Promise<ObjectivePrediction[]> {
     return objectives.map((objective) => {
       const assignedTeam = teams.find(
         (t) => t.teamId === objective.assignedTeam;
@@ -374,7 +397,7 @@ export class PIPlanningSuccessPredictionService {
 }
   private async predictDependencyResolution(
     dependencies: DependencyInput[]
-  ):Promise<DependencyPrediction[]> {
+  ): Promise<DependencyPrediction[]> {
     return dependencies.map((dependency) => {
       // Calculate resolution probability based on complexity, risk, and historical data
       let resolutionProbability = 0.8; // Base probability
@@ -402,7 +425,7 @@ export class PIPlanningSuccessPredictionService {
 };
       const expectedResolutionTime =;
         baseTime * complexityMultiplier[dependency.complexity];
-      // Determine impact on PI')      let impactOnPI : 'minimal| moderate| significant| critical =';')       'minimal')      if (';
+      // Determine impact on PI')      let impactOnPI : 'minimal| moderate| significant| critical =';)       'minimal')      if (';
         dependency.complexity ==='critical'|| dependency.riskLevel ===high')      ) ')        impactOnPI = 'critical';else if (';
         dependency.complexity ==='high'|| dependency.riskLevel ===medium')      ) ')        impactOnPI = 'significant';else if (dependency.complexity ===' medium){';
     ')        impactOnPI = 'moderate')};;
@@ -459,29 +482,29 @@ export class PIPlanningSuccessPredictionService {
     );
     return totalRealization / historicalData.length / 100; // Convert percentage to decimal
 }
-  private initializeModels():void {
+  private initializeModels(): void {
     // Initialize prediction models
     logger.info('Initializing PI prediction models');
 }
-  private async loadPredictionModels():Promise<void> {
+  private async loadPredictionModels(): Promise<void> {
     // Load pre-trained models or initialize new ones')    logger.info('Loading PI prediction models');
 }
-  private async validateModelAccuracy():Promise<void> {
+  private async validateModelAccuracy(): Promise<void> {
     // Validate model accuracy with historical data')    this.modelAccuracy.set('default,0.85');')    logger.info('PI prediction model accuracy validated');
 };)  private mapConfidenceToLevel(confidence: number):'low| medium| high '{';
     if (confidence < 0.6) return'low')    if (confidence < 0.8) return'medium')    returnhigh`)};;
   private async storePredictionForLearning(
     prediction: PISuccessPrediction
-  ):Promise<void> {
+  ): Promise<void> {
     // Store prediction for future model improvement
     logger.info(``Stored prediction ${prediction.predictionId} for learning`)};;
   private async updateModelWithActual(
     predictionId: string,
     actualData: any
-  ):Promise<void> {
+  ): Promise<void> {
     // Update model with actual outcomes for learning
     logger.info(`Updated model with actual data for ${predictionId});`)};;
-  private async recalibrateModels():Promise<void> {
+  private async recalibrateModels(): Promise<void> {
     // Recalibrate models based on new data
     logger.info(``Recalibrated PI prediction models');
 }
@@ -531,7 +554,7 @@ export const piPlanningSuccessPredictionService =;
 // INTEGRATION HOOKS
 // ============================================================================
 export interface PISuccessPredictionIntegration {
-  initialize: {
+  initialize:  {
   initialize: piPlanningSuccessPredictionService.initialize.bind(
     piPlanningSuccessPredictionService
   ),

@@ -4,7 +4,7 @@
  */
 
 
-import { err, getLogger, ok, type Result} from '@claude-zen/foundation';
+import { err, getLogger, ok, type Result } from '@claude-zen/foundation';
 
 import type {
   BeamAnalysisError,
@@ -18,16 +18,15 @@ export class BeamPatternAnalyzer {
   /**
    * Analyze BEAM project for common patterns and anti-patterns
    */
-  async analyzePatterns(
-    project:BeamProject,
-    _customRules:BeamAnalysisRule[] = []
-  ):Promise<Result<BeamFinding[], BeamAnalysisError>> {
+  async analyzePatterns(project: BeamProject,
+    _customRules: BeamAnalysisRule[] = []
+  ): Promise<Result<BeamFinding[], BeamAnalysisError>> {
     try {
       this.logger.info(
         `Analyzing BEAM patterns for ${project.language} project``
       );
 
-      const findings:BeamFinding[] = [];
+      const findings: BeamFinding[] = [];
 
       // Get default rules for the project's languages')      const defaultRules = this.getDefaultRules([
         project.language,
@@ -51,13 +50,13 @@ export class BeamPatternAnalyzer {
 }
 
       this.logger.info(
-        `Pattern analysis completed:${findings.length} findings``
+        `Pattern analysis completed: ${findings.length} findings``
       );
       return ok(findings);
 } catch (error) {
       this.logger.error('Pattern analysis failed:', error);')      return err({
         code: 'ANALYSIS_FAILED',        message:`Pattern analysis failed: ${error instanceof Error ? error.message : String(error)}`,`
-        originalError:error instanceof Error ? error : undefined,
+        originalError: error instanceof Error ? error : undefined,
 });
 }
 }
@@ -69,18 +68,17 @@ export class BeamPatternAnalyzer {
   /**
    * Get location information from regex match
    */
-  private getLocationFromMatch(
-    match:RegExpExecArray,
-    lines:string[]
-  ):BeamLocation {
+  private getLocationFromMatch(match: RegExpExecArray,
+    lines: string[]
+  ): BeamLocation {
     const beforeMatch = match.input?.substring(0, match.index);
     const lineCount = (beforeMatch.match(/\n/g)||[]).length;
     const lineStart = beforeMatch.lastIndexOf('\n') + 1;')    const column = match.index! - lineStart + 1;
 
     return {
-      file:', // Will be set by caller')      line:lineCount + 1,
+      file:', // Will be set by caller')      line: lineCount + 1,
       column,
-      context:lines[lineCount]?.trim(),
+      context: lines[lineCount]?.trim(),
 };
 }
 
@@ -88,9 +86,9 @@ export class BeamPatternAnalyzer {
    * Check pattern constraints
    */
   private checkConstraints(
-    match:RegExpExecArray,
-    content:string,
-    constraints:Record<string, unknown>
+    match: RegExpExecArray,
+    content: string,
+    constraints: Record<string, unknown>
   ):boolean {
     // This is a simplified constraint checker
     // In a real implementation, you'd have more sophisticated constraint checking')
@@ -114,7 +112,7 @@ export class BeamPatternAnalyzer {
   /**
    * Map rule to finding category
    */
-  private getCategoryFromRule(rule:BeamAnalysisRule): BeamFindingCategory {
+  private getCategoryFromRule(rule: BeamAnalysisRule): BeamFindingCategory {
     if (rule.name.includes('leak')||rule.name.includes(' monitor')) {
     ')      return 'reliability;
 }
@@ -137,11 +135,10 @@ export class BeamPatternAnalyzer {
   /**
    * Get source files for analysis
    */
-  private async getSourceFiles(
-    sourceDir:string,
-    language:BeamLanguage
-  ):Promise<string[]> {
-    const files:string[] = [];
+  private async getSourceFiles(sourceDir: string,
+    language: BeamLanguage
+  ): Promise<string[]> {
+    const files: string[] = [];
 
     const extensions = {
       erlang:['.erl',    '.hrl'],
@@ -164,13 +161,12 @@ export class BeamPatternAnalyzer {
   /**
    * Recursively scan directory for source files
    */
-  private async scanDirectory(
-    dir:string,
-    extensions:string[],
-    files:string[]
-  ):Promise<void> {
+  private async scanDirectory(dir: string,
+    extensions: string[],
+    files: string[]
+  ): Promise<void> {
     try {
-      const entries = await fs.readdir(dir, { withFileTypes:true});
+      const entries = await fs.readdir(dir, { withFileTypes: true});
 
       for (const entry of entries) {
         const fullPath = path.join(dir, entry.name);
@@ -186,7 +182,7 @@ export class BeamPatternAnalyzer {
 }
 } catch (error) {
       // Directory might not exist or be accessible
-      this.logger.debug(`Directory scan failed:$error`);`
+      this.logger.debug(`Directory scan failed: $error`);`
 }
 }
 }

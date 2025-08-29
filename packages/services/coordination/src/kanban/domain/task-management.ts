@@ -1,93 +1,160 @@
 /**
  * @fileoverview Task Management Domain Service
  *
- * Pure domain logic for task lifecycle management.
- * Handles task creation, state transitions, and business rules.
- *
- * **Responsibilities: getLogger('TaskManagement');
-/**
- * Task creation input interface
+ * Pure domain logic for task management within kanban workflows.
+ * Handles task lifecycle, state transitions, and validation.
  */
-export interface TaskCreationInput {
-  title: new Map<string, WorkflowTask>();
-  constructor() {
-    logger.info('TaskManagementService initialized');`;
+
+import { getLogger } from '@claude-zen/foundation';
+
+const logger = getLogger('TaskManagement');
+
+/**
+ * Task management configuration
+ */
+export interface TaskManagementConfig {
+  allowedStates: string[];
+  defaultState: string;
+  enableValidation: boolean;
+  maxTasksPerState?: number;
 }
+
+/**
+ * Task interface
+ */
+export interface Task {
+  id: string;
+  title: string;
+  description?: string;
+  state: string;
+  assignee?: string;
+  priority: 'low' | 'medium' | 'high' | 'critical';
+  createdAt: Date;
+  updatedAt: Date;
+  dueDate?: Date;
+  tags?: string[];
+  metadata?: Record<string, any>;
+}
+
+const DEFAULT_CONFIG: TaskManagementConfig = {
+  allowedStates: ['backlog', 'todo', 'in-progress', 'review', 'done'],
+  defaultState: 'backlog',
+  enableValidation: true
+};
+
+/**
+ * Service for managing tasks in kanban workflow
+ */
+export class TaskManagementService {
+  private config: TaskManagementConfig;
+  private tasks: Map<string, Task> = new Map();
+
+  constructor(config: Partial<TaskManagementConfig> = {}) {
+    this.config = { ...DEFAULT_CONFIG, ...config };
+    logger.info('TaskManagementService initialized', this.config);
+  }
+
   /**
-   * Create a new workflow task with validation
+   * Create a new task
    */
-  async createTask(taskData: performance.now();
-    try {
-      // Validate input with domain rules
-      const validationResult = ValidationUtils.validateTaskCreation(taskData);
-      if (!validationResult.success) {
-        throw new Error(
-          `Invalid task data: `${validationResult.error.issues.map((i) => i.message).join(,)})        );``;
-}
-      const validatedData = validationResult.data;
-      // Create task with domain defaults
-      const task: {
-        id: 'backlog,// Domain rule: 'Unknown error,,
-        timestamp: this.taskIndex.get(taskId);
-      if (!task) {
-    `)        throw new Error(`Task not found: task.state;
-      // Business rule: ImmutableTaskUtils.updateTask(
-        [task],
-        taskId,
-        (draft) => {
-          draft.state = toState;
-          draft.updatedAt = new Date();
-          // Business rules for specific states')          if (toState ==='development '&& !draft.startedAt) {';
-            draft.startedAt = new Date();')};)          if (toState ==='done){';
-    ')            draft.completedAt = new Date();')};)          if (toState === 'blocked){';
-            draft.blockedAt = new Date()')            draft.blockingReason = reason;`)};;
-}
-      )[0];
-      // Update domain index
-      this.taskIndex.set(taskId, updatedTask);
-      const result: {
-        success: 'Unknown error,',
-        timestamp: [];
-    for (const task of this.taskIndex.values()) {
-      if (task.state === state) {
-        tasks.push(task);
-}
-}
-    return tasks;
-}
+  async createTask(taskData: Partial<Task>): Promise<Task> {
+    const task: Task = {
+      id: taskData.id || `task-${Date.now()}`,
+      title: taskData.title || 'Untitled Task',
+      description: taskData.description,
+      state: taskData.state || this.config.defaultState,
+      assignee: taskData.assignee,
+      priority: taskData.priority || 'medium',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      dueDate: taskData.dueDate,
+      tags: taskData.tags || [],
+      metadata: taskData.metadata || {}
+    };
+
+    if (this.config.enableValidation) {
+      this.validateTask(task);
+    }
+
+    this.tasks.set(task.id, task);
+    logger.info('Task created', { taskId: task.id, state: task.state });
+    
+    return task;
+  }
+
+  /**
+   * Update an existing task
+   */
+  async updateTask(taskId: string, updates: Partial<Task>): Promise<Task> {
+    const existingTask = this.tasks.get(taskId);
+    if (!existingTask) {
+      throw new Error(`Task not found: ${taskId}`);
+    }
+
+    const updatedTask: Task = {
+      ...existingTask,
+      ...updates,
+      id: existingTask.id, // Prevent ID changes
+      updatedAt: new Date()
+    };
+
+    if (this.config.enableValidation) {
+      this.validateTask(updatedTask);
+    }
+
+    this.tasks.set(taskId, updatedTask);
+    logger.info('Task updated', { taskId, updates: Object.keys(updates) });
+    
+    return updatedTask;
+  }
+
+  /**
+   * Get task by ID
+   */
+  async getTask(taskId: string): Promise<Task | null> {
+    return this.tasks.get(taskId) || null;
+  }
+
   /**
    * Get all tasks
    */
-  async getAllTasks():Promise<WorkflowTask[]> {
-    return Array.from(this.taskIndex.values();
-}
+  async getAllTasks(): Promise<Task[]> {
+    return Array.from(this.tasks.values());
+  }
+
   /**
-   * Get tasks by priority
-   */')  async getTasksByPriority(priority: [];
-    for (const task of this.taskIndex.values()) {
-      if (task.priority === priority) {
-        tasks.push(task);
-}
-}
-    return tasks;
-}
-  /**
-   * Get tasks by assignee
+   * Get tasks by state
    */
-  async getTasksByAssignee(assignedAgent: [];
-    for (const task of this.taskIndex.values()) {
-      if (task.assignedAgent === assignedAgent) {
-        tasks.push(task);
+  async getTasksByState(state: string): Promise<Task[]> {
+    const allTasks = await this.getAllTasks();
+    return allTasks.filter(task => task.state === state);
+  }
+
+  /**
+   * Delete a task
+   */
+  async deleteTask(taskId: string): Promise<boolean> {
+    const deleted = this.tasks.delete(taskId);
+    if (deleted) {
+      logger.info('Task deleted', { taskId });
+    }
+    return deleted;
+  }
+
+  private validateTask(task: Task): void {
+    if (!task.title?.trim()) {
+      throw new Error('Task title is required');
+    }
+
+    if (!this.config.allowedStates.includes(task.state)) {
+      throw new Error(`Invalid task state: ${task.state}. Allowed states: ${this.config.allowedStates.join(', ')}`);
+    }
+
+    if (this.config.maxTasksPerState) {
+      const tasksInState = Array.from(this.tasks.values()).filter(t => t.state === task.state);
+      if (tasksInState.length >= this.config.maxTasksPerState) {
+        throw new Error(`Maximum tasks exceeded for state ${task.state}`);
+      }
+    }
+  }
 }
-}
-    return tasks;
-}
-  // =============================================================================
-  // PRIVATE DOMAIN LOGIC
-  // =============================================================================
-  private generateTaskId():string {
-    `)    return `task-`${Date.now()}-${Math.random().toString(36).substr(2, 9)})};;
-  private isValidStateTransition(fromState: {
-    ``)      backlog: validTransitions[fromState]|| [];
-    return allowedStates.includes(toState);
-};)};;

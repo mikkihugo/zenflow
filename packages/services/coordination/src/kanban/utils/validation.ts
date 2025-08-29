@@ -38,5 +38,5 @@ export const WIPLimitsSchema = z.object({
     const toStateValidation = validateInput(TaskStateSchema, toState);
     if (!toStateValidation.success) return toStateValidation;
     // Additional business rule validation could go here
-    return { success: true, data: { from: stateValidation.data, to: toStateValidation.data}};
+    return { success: true, data:  { from: stateValidation.data, to: toStateValidation.data}};
 };)};;

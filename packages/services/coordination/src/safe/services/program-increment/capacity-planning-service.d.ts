@@ -156,7 +156,7 @@ export declare class CapacityPlanningService extends EventBus {
     private readonly logger;
     private readonly allocations;
     private readonly config;
-    constructor(logger: {});
+    constructor(logger:  {});
     /**
      * Calculate comprehensive team capacities with intelligent analysis
      */

@@ -4,8 +4,8 @@
  */
 
 
-import { spawn} from 'node:child_process';
-import { err, getLogger, ok, type Result} from '@claude-zen/foundation';
+import { spawn } from 'node: child_process';
+import { err, getLogger, ok, type Result } from '@claude-zen/foundation';
 
 import type {
   BeamAnalysisContext,
@@ -22,9 +22,8 @@ export class SobelowIntegration {
   /**
    * Run Sobelow security analysis on an Elixir/Phoenix project
    */
-  async analyze(
-    project:BeamProject,
-    context:BeamAnalysisContext,
+  async analyze(project: BeamProject,
+    context: BeamAnalysisContext,
     options:{
       format?:'json' | ' txt' | ' compact';
       confidence?:'high' | ' medium' | ' low';
@@ -32,7 +31,7 @@ export class SobelowIntegration {
       configFile?:string;
       verbose?:boolean;
 } = {}
-  ):Promise<Result<SobelowResult, BeamAnalysisError>> {
+  ): Promise<Result<SobelowResult, BeamAnalysisError>> {
     try {
       if (project.language !== 'elixir') {
     ')        return err({
@@ -56,13 +55,13 @@ export class SobelowIntegration {
         options.format||'json')      );
 
       this.logger.info(
-        `Sobelow analysis completed:${result.findings.length} security findings``
+        `Sobelow analysis completed: ${result.findings.length} security findings``
       );
       return ok(result);
 } catch (error) {
       this.logger.error('Sobelow analysis failed:', error);')      return err({
         code: 'ANALYSIS_FAILED',        message:`Sobelow analysis failed: ${error instanceof Error ? error.message : String(error)}`,`
-        tool: 'sobelow',        originalError:error instanceof Error ? error : undefined,
+        tool: 'sobelow',        originalError: error instanceof Error ? error : undefined,
 });
 }
 }
@@ -70,9 +69,8 @@ export class SobelowIntegration {
   /**
    * Run Sobelow analysis command
    */
-  private async runSobelowAnalysis(
-    project:BeamProject,
-    context:BeamAnalysisContext,
+  private async runSobelowAnalysis(project: BeamProject,
+    context: BeamAnalysisContext,
     options:{
       format?:string;
       confidence?:string;
@@ -80,9 +78,9 @@ export class SobelowIntegration {
       configFile?:string;
       verbose?:boolean;
 }
-  ):Promise<Result<string, BeamAnalysisError>> {
+  ): Promise<Result<string, BeamAnalysisError>> {
     return new Promise((resolve) => {
-      const args:string[] = [];
+      const args: string[] = [];
 
       // Set output format
       if (options.format) {
@@ -116,11 +114,11 @@ export class SobelowIntegration {
       // Add project root
       args.push('.');')
       this.logger.debug(
-        `Running Sobelow with command:sobelow $args.join(' ')``
+        `Running Sobelow with command: sobelow $args.join(' ')``
       );
 
       const child = spawn('sobelow', args, {
-    ')        cwd:context.workingDirectory,
+    ')        cwd: context.workingDirectory,
         stdio:['ignore',    'pipe',    'pipe'],
 });
 
@@ -153,7 +151,7 @@ export class SobelowIntegration {
     ')        resolve(
           err(
             code: 'TOOL_NOT_FOUND',            message:`Failed to spawn sobelow: $error.message`,`
-            tool: 'sobelow',            originalError:error,)
+            tool: 'sobelow',            originalError: error,)
         );
 });
 });
@@ -162,8 +160,8 @@ export class SobelowIntegration {
   /**
    * Parse Sobelow output into structured results
    */
-  private parseSobelowOutput(output:string, format:string): SobelowResult {
-    const result:SobelowResult = {
+  private parseSobelowOutput(output: string, format: string): SobelowResult {
+    const result: SobelowResult = {
       findings:[],
       phoenixIssues:[],
       configIssues:[],
@@ -190,23 +188,23 @@ export class SobelowIntegration {
   /**
    * Parse JSON format findings
    */
-  private parseJsonFindings(jsonData:any): SobelowFinding[] {
-    const findings:SobelowFinding[] = [];
+  private parseJsonFindings(jsonData: any): SobelowFinding[] {
+    const findings: SobelowFinding[] = [];
 
     if (!jsonData.findings) {
       return findings;
 }
 
     for (const finding of jsonData.findings) {
-      const sobelowFinding:SobelowFinding = {
-        category:this.mapSobelowCategory(finding.type),
-        confidence:finding.confidence||'medium',        details:finding.details||finding.message||',        location:{
-          file:finding.file||',          line:finding.line||1,
-          column:finding.column,
-          context:finding.fun||finding.variable||finding.module,
+      const sobelowFinding: SobelowFinding = {
+        category: this.mapSobelowCategory(finding.type),
+        confidence: finding.confidence||'medium',        details: finding.details||finding.message||',        location:{
+          file: finding.file||',          line: finding.line||1,
+          column: finding.column,
+          context: finding.fun||finding.variable||finding.module,
 },
-        owasp:finding.owasp,
-        cwe:finding.cwe ? parseInt(finding.cwe, 10) :undefined,
+        owasp: finding.owasp,
+        cwe: finding.cwe ? parseInt(finding.cwe, 10) :undefined,
 };
 
       findings.push(sobelowFinding);
@@ -218,10 +216,10 @@ export class SobelowIntegration {
   /**
    * Parse text format findings
    */
-  private parseTextFindings(output:string): SobelowFinding[] {
-    const findings:SobelowFinding[] = [];
+  private parseTextFindings(output: string): SobelowFinding[] {
+    const findings: SobelowFinding[] = [];
     const lines = output.split('\n');')
-    let currentFinding:Partial<SobelowFinding>|null = null;
+    let currentFinding: Partial<SobelowFinding>|null = null;
 
     for (const line of lines) {
       const trimmed = line.trim();
@@ -242,8 +240,8 @@ export class SobelowIntegration {
 }
 
         currentFinding = {
-          category:this.mapSobelowCategoryFromText(headerMatch[1]),
-          confidence:headerMatch[2].toLowerCase() as 'high'|' medium'|' low',          details:headerMatch[1],
+          category: this.mapSobelowCategoryFromText(headerMatch[1]),
+          confidence: headerMatch[2].toLowerCase() as 'high'|' medium'|' low',          details: headerMatch[1],
           location:{
             file: ','            line:1,
 },
@@ -251,12 +249,12 @@ export class SobelowIntegration {
         continue;
 }
 
-      // Match file location like "File:lib/my_app_web/controllers/user_controller.ex:42"
+      // Match file location like "File: lib/my_app_web/controllers/user_controller.ex:42"
       const fileMatch = trimmed.match(/^File:\s+(.+):(\d+)/);
       if (fileMatch && currentFinding) {
         currentFinding.location = {
-          file:fileMatch[1],
-          line:parseInt(fileMatch[2], 10),
+          file: fileMatch[1],
+          line: parseInt(fileMatch[2], 10),
 };
         continue;
 }
@@ -277,8 +275,8 @@ export class SobelowIntegration {
   /**
    * Parse Phoenix-specific security issues
    */
-  private parsePhoenixIssues(jsonData:any): PhoenixSecurityIssue[] {
-    const issues:PhoenixSecurityIssue[] = [];
+  private parsePhoenixIssues(jsonData: any): PhoenixSecurityIssue[] {
+    const issues: PhoenixSecurityIssue[] = [];
 
     if (!jsonData.phoenix) {
       return issues;
@@ -286,9 +284,9 @@ export class SobelowIntegration {
 
     for (const issue of jsonData.phoenix) {
       issues.push({
-        type:issue.type,
+        type: issue.type,
         component:
-          issue.component||issue.controller||issue.view||'unknown',        risk:this.mapSeverity(issue.severity||'medium'),
+          issue.component||issue.controller||issue.view||'unknown',        risk: this.mapSeverity(issue.severity||'medium'),
         mitigation:
           issue.mitigation||'Review and apply security best practices',});
 }
@@ -299,8 +297,8 @@ export class SobelowIntegration {
   /**
    * Parse configuration security issues
    */
-  private parseConfigIssues(jsonData:any): ConfigSecurityIssue[] {
-    const issues:ConfigSecurityIssue[] = [];
+  private parseConfigIssues(jsonData: any): ConfigSecurityIssue[] {
+    const issues: ConfigSecurityIssue[] = [];
 
     if (!jsonData.config) {
       return issues;
@@ -308,7 +306,7 @@ export class SobelowIntegration {
 
     for (const issue of jsonData.config) {
       issues.push({
-        file:issue.file||'config/config.exs',        setting:issue.setting||'unknown',        issue:issue.issue||issue.message||',        recommendation:issue.recommendation||'Apply security best practices',});
+        file: issue.file||'config/config.exs',        setting: issue.setting||'unknown',        issue: issue.issue||issue.message||',        recommendation: issue.recommendation||'Apply security best practices',});
 }
 
     return issues;
@@ -317,7 +315,7 @@ export class SobelowIntegration {
   /**
    * Map Sobelow category strings to enum values
    */
-  private mapSobelowCategory(category:string): SobelowCategory {
+  private mapSobelowCategory(category: string): SobelowCategory {
     const lowerCategory = category.toLowerCase().replace(/[\s_-]/g, ');')
     switch (lowerCategory) {
       case 'sqlinjection': ')'      case 'sql': ')'        return 'sql_injection;
@@ -338,7 +336,7 @@ export class SobelowIntegration {
   /**
    * Map category from text descriptions
    */
-  private mapSobelowCategoryFromText(text:string): SobelowCategory {
+  private mapSobelowCategoryFromText(text: string): SobelowCategory {
     const lowerText = text.toLowerCase();
 
     if (lowerText.includes('sql')) return ' sql_injection;
@@ -358,7 +356,7 @@ export class SobelowIntegration {
   /**
    * Map severity strings to BeamSeverity enum
    */
-  private mapSeverity(severity:string): BeamSeverity {
+  private mapSeverity(severity: string): BeamSeverity {
     switch (severity.toLowerCase()) {
       case 'critical': ')'        return 'critical;
       case 'high': ')'        return 'high;
@@ -405,7 +403,7 @@ export class SobelowIntegration {
     ')        resolve(
           err(
             code: 'TOOL_NOT_FOUND',            message:`Sobelow not available: $error.message`,`
-            tool: 'sobelow',            originalError:error,)
+            tool: 'sobelow',            originalError: error,)
         );
 });
 });
@@ -419,40 +417,40 @@ export class SobelowIntegration {
 # Generated by Claude Zen BEAM Analyzer
 
 [
-  verbose:false,
-  private:false,
+  verbose: false,
+  private: false,
   skip_files:[],
   ignore_files:[],
-  details:true,
+  details: true,
   
   # Security checks to run
   checks:%
     # SQL Injection
-    sql_injection:true,
+    sql_injection: true,
     
     # Cross-Site Scripting (XSS)
-    xss:true,
+    xss: true,
     
     # Cross-Site Request Forgery (CSRF)
-    csrf:true,
+    csrf: true,
     
     # Directory Traversal
-    traversal:true,
+    traversal: true,
     
     # Command Injection
-    command_injection:true,
+    command_injection: true,
     
     # Code Injection
-    code_injection:true,
+    code_injection: true,
     
     # Open Redirect
-    redirect:true,
+    redirect: true,
     
     # Denial of Service
-    dos:true,
+    dos: true,
     
     # Miscellaneous
-    misc:true,
+    misc: true,
   
   # Custom rules
   custom_rules:[]

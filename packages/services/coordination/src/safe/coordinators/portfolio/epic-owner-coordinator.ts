@@ -15,7 +15,7 @@ interface TaskMasterApprovalRequest {
    * Create and ideate a new portfolio epic with business case
    */
   async ideateEpic(
-    title: {
+    title:  {
       id,      title,';
       description,
       businessValue: 'backlog,',
@@ -30,7 +30,7 @@ interface TaskMasterApprovalRequest {
     const userBusinessValue = businessCase.expectedValue / 100000; // Normalize
     const timeCriticality = businessCase.costOfDelay / 10000; // Normalize
     const rroeValue = (businessCase.risks?.length|| 0) > 0 ? 3: Math.max(businessCase.estimatedEffort / 40, 1); // Story points normalized
-    const wsjfScore: {
+    const wsjfScore:  {
       userBusinessValue,
       timeCriticality,
       rroeValue,
@@ -41,7 +41,7 @@ interface TaskMasterApprovalRequest {
     const businessCase = this.businessCases.get(epicId);
     
     if (!epic|| !businessCase) {
-    `)      throw new Error(`Epic not found: {`
+    `)      throw new Error(`Epic not found:  {`
     `)      id:`approval-${epic.id}-${approvalType}-${Date.now()},`;
       type: 'low,,
       dueDate: epic.lifecycleStage;
@@ -52,7 +52,7 @@ interface TaskMasterApprovalRequest {
     epic.updatedAt = new Date();
     this.epics.set(epicId, epic);')    await this.emitSafe('epic: businessValue;
     epic.updatedAt = new Date();
-    this.epics.set(epicId, epic);')    await this.emitSafe('epic: {
+    this.epics.set(epicId, epic);')    await this.emitSafe('epic:  {
      'funnel: [' analyzing,'done'],';
      'analyzing: [' portfolio_backlog,'funnel,' done'],';
      'portfolio_backlog: [' implementing,'analyzing,' done'],';

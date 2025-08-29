@@ -145,7 +145,7 @@ export interface TrendForecast {
         config.analyticsId,
         model;
       );
-      const result: {
+      const result:  {
         predictionId: '1.0.0,',
 '          trainedOn: new Date(),';
           features: config.dataConfig.features.map((f) => f.featureName),
@@ -184,7 +184,7 @@ export interface TrendForecast {
   private async trainPredictiveModel(
     config: this.models.get(config.algorithm);
     if (!modelTemplate) {
-    `)      throw new Error(`Unknown algorithm: {`
+    `)      throw new Error(`Unknown algorithm:  {`
       ...modelTemplate,
       trained: [];
     const today = new Date();

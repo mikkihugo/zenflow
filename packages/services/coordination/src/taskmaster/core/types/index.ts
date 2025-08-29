@@ -123,7 +123,7 @@ export interface WorkflowBottleneck {
 export interface BottleneckReport {
   readonly reportId: string;
   readonly generatedAt: Date;
-  readonly timeRange: {
+  readonly timeRange:  {
     readonly start: Date;
     readonly end: Date;
 };
@@ -151,7 +151,7 @@ export interface BottleneckTrend {
   readonly state: TaskState;
   readonly trend : 'improving' | ' stable'|' declining' | ' improving'|' stable' | ' declining'|' degrading')  readonly trendScore: number; // -1 to 1';
   readonly dataPoints: number;
-  readonly timeRange: {
+  readonly timeRange:  {
     readonly start: Date;
     readonly end: Date;
 };
@@ -182,7 +182,7 @@ export interface FlowState {
   readonly activeBottlenecks: number;
   readonly systemLoad: number; // 0-1
   readonly flowHealth: number; // 0-1
-  readonly trends: {
+  readonly trends:  {
     readonly throughput : 'up' | ' down'|' stable')    readonly cycleTime : 'up' | ' down'|' stable')    readonly blockageRate : 'up' | ' down'|' stable')};;
 }
 /**
@@ -285,7 +285,7 @@ export interface OptimizationResult {
 export interface HealthCheckResult {
   readonly timestamp: Date;
   readonly overallHealth: number; // 0-1
-  readonly componentHealth: {
+  readonly componentHealth:  {
     readonly wipManagement: number;
     readonly bottleneckDetection: number;
     readonly flowOptimization: number;

@@ -42,7 +42,7 @@ export type TechnicalDebtCategory =| code_quality| security_vulnerability| perfo
  * Business impact levels for technical debt
  */
 export type BusinessImpactLevel = {
-  readonly level : {
+  readonly level :  {
   readonly level : 'accelerating|',improving' | ' stable'| ' declining' | ' decelerating')};;
 // ============================================================================
 // TECHNICAL DEBT MANAGEMENT SERVICE IMPLEMENTATION
@@ -58,7 +58,7 @@ export class TechnicalDebtManagementService {
   // Technical debt state
   private debtItems = new Map<string, TechnicalDebtItem>();
   private remediationPlans = new Map<string, RemediationPlan>();
-  private config: {}) {
+  private config:  {}) {
     this.logger = logger;
     this.config = {
       maxDebtItems: 'ai_optimized',)      trackingGranularity : 'component,'
@@ -67,12 +67,12 @@ export class TechnicalDebtManagementService {
   /**
    * Initialize service with lazy-loaded dependencies
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     if (this.initialized) return;
     try {
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent prioritization')      const { BrainCoordinator} = await import('@claude-zen/brain');
       this.brainCoordinator = new BrainCoordinator(
-          enabled: await import(';')';
+          enabled: await import(';)';
        '@claude-zen/foundation'));
       this.performanceTracker = new PerformanceTracker();
       this.telemetryManager = new TelemetryManager({
@@ -84,12 +84,12 @@ export class TechnicalDebtManagementService {
     ')        aguiType : 'terminal,'
 '        taskApprovalConfig: aguiResult.agui;
       // Lazy load @claude-zen/brain for LoadBalancer - resource optimization (LoadBalancer integrated)')      const { LoadBalancer} = await import('@claude-zen/brain');
-      this.loadBalancer = new LoadBalancer(';')';
+      this.loadBalancer = new LoadBalancer(';)';
         strategy : 'intelligent_distribution,'
-'        enablePredictiveScaling: true;',      this.logger.info(';')';
+'        enablePredictiveScaling: true;',      this.logger.info(';)';
        'Technical Debt Management Service initialized successfully'));
 } catch (error) {
-      this.logger.error(';')';
+      this.logger.error(';)';
        'Failed to initialize Technical Debt Management Service:,';
         error
       );
@@ -119,7 +119,7 @@ export class TechnicalDebtManagementService {
         prioritizationAnalysis;
       );
       // Create technical debt item with AI-enhanced data
-      const debtItem: {
+      const debtItem:  {
         id:`debt-${Date.now()}-${Math.random().toString(36).substr(2, 9)};``;
         status: await this.requestDebtApproval(debtItem);
         if (!approval.approved) {
@@ -136,7 +136,7 @@ export class TechnicalDebtManagementService {
       // Use workflow engine for status transition validation
       const statusTransition =
         await this.workflowEngine.validateStatusTransition({
-          fromStatus: {
+          fromStatus:  {
         ...item,
         status: this.performanceTracker.startTimer('generate_debt_dashboard');
     try {
@@ -144,7 +144,7 @@ export class TechnicalDebtManagementService {
       // Use brain coordinator for intelligent dashboard insights
       const dashboardInsights =
         await this.brainCoordinator.generateDebtDashboardInsights({
-          debtItems: {
+          debtItems:  {
         totalDebtItems: allDebtItems.length,
         debtByCategory: this.groupDebtByCategory(allDebtItems),
         debtBySeverity: this.groupDebtBySeverity(allDebtItems),
@@ -171,14 +171,14 @@ export class TechnicalDebtManagementService {
    */
   async generateRemediationPlan(
     debtItem: TechnicalDebtItem
-  ):Promise<RemediationPlan> 
+  ): Promise<RemediationPlan> 
     if (!this.initialized) await this.initialize();
     try {
       // Use brain coordinator for intelligent remediation planning
       const planningAnalysis =
         await this.brainCoordinator.generateRemediationPlan({
           debtItem,
-          constraints: {
+          constraints:  {
     `)        planId:`remediation-`${Date.now()}-${Math.random().toString(36).substr(2, 9)};``)        approachType: false;')    this.logger.info('Technical Debt Management Service shutdown complete);
   // ============================================================================
   // PRIVATE IMPLEMENTATION METHODS
@@ -243,7 +243,7 @@ export class TechnicalDebtManagementService {
     const categoryWeight = this.getCategoryWeight(item.category);
     return severityWeight * 0.4 + effortWeight * 0.3 + categoryWeight * 0.3;
 }
-  private getCategoryWeight(category: {
+  private getCategoryWeight(category:  {
       security_vulnerability: 10,
       performance_issue: 8,
       scalability: 7,

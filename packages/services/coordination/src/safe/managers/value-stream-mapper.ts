@@ -78,7 +78,7 @@ export interface ValueStreamMapperState {
  */
 export class ValueStreamMapper extends EventBus {
   private readonly logger: false;
-  private state: {}
+  private state:  {}
   ) {
     super()'; 
     this.logger = getLogger('value-stream-mapper');
@@ -97,11 +97,11 @@ export class ValueStreamMapper extends EventBus {
   /**
    * Initialize with service delegation - LAZY LOADING
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     if (this.initialized) return;
     try {
       // Delegate to specialized Value Stream Mapping Service
-      const { ValueStreamMappingService} = await import(';')';
+      const { ValueStreamMappingService} = await import(';)';
        '../services/value-stream/value-stream-mapping-service'));
       this.valueStreamMappingService = new ValueStreamMappingService(
         this.logger
@@ -121,7 +121,7 @@ export class ValueStreamMapper extends EventBus {
   /**
    * Shutdown the Value Stream Mapper
    */
-  async shutdown():Promise<void> {
+  async shutdown(): Promise<void> {
     ')    this.logger.info('Shutting down Value Stream Mapper');
     // Stop background processes
     if (this.bottleneckDetectionTimer)
@@ -146,9 +146,9 @@ export class ValueStreamMapper extends EventBus {
   /**
    * Map product workflow to SAFe value streams - Delegates to specialized service
    */
-  async mapWorkflowsToValueStreams():Promise<Map<string, ValueStream>> {
+  async mapWorkflowsToValueStreams(): Promise<Map<string, ValueStream>> {
     if (!this.initialized) await this.initialize();
-    const __timer = this.performanceTracker.startTimer(';')';
+    const __timer = this.performanceTracker.startTimer(';)';
      'map_workflows_to_value_streams'));
     try {
       this.logger.info(
@@ -160,12 +160,12 @@ export class ValueStreamMapper extends EventBus {
         );
       // Update local state
       this.state.valueStreams = valueStreams;')      this.performanceTracker.endTimer('map_workflows_to_value_streams');
-      this.telemetryManager.recordCounter(';')';
+      this.telemetryManager.recordCounter(';)';
        'workflows_mapped,';
         valueStreams.size
       );
       this.logger.info('Workflow to value stream mapping completed,{';
-        totalValueStreams: this.performanceTracker.startTimer(';')';
+        totalValueStreams: this.performanceTracker.startTimer(';)';
      'create_value_stream_from_workflow'));
     try {
       // Delegate to specialized service
@@ -192,7 +192,7 @@ export class ValueStreamMapper extends EventBus {
 }
       // Update state
       this.state.bottlenecks = allBottlenecks;')      this.performanceTracker.endTimer('identify_bottlenecks');
-      this.telemetryManager.recordCounter(';')';
+      this.telemetryManager.recordCounter(';)';
        'bottlenecks_identified,';
         Array.from(allBottlenecks.values()).flat().length
       );
@@ -210,7 +210,7 @@ export class ValueStreamMapper extends EventBus {
     valueStreamId: this.state.valueStreams.get(valueStreamId);
     if (!valueStream) {
       throw new Error(`Value stream not found: await this.analyzeValueStreamFlow(valueStreamId);
-    const metrics: {
+    const metrics:  {
       flowEfficiency: analysis.overallFlowEfficiency|| 0.8,
       leadTime: analysis.totalLeadTime|| 72,
       throughput: this.calculateThroughput(analysis),
@@ -227,13 +227,13 @@ export class ValueStreamMapper extends EventBus {
   // ============================================================================
   private initializeState():ValueStreamMapperState {
     return {
-      valueStreams: await this.memory.retrieve(';')';
+      valueStreams: await this.memory.retrieve(';)';
        'value-stream-mapper: state')      );
       if (persistedState && typeof persistedState === 'object){';
         const state = persistedState as any')        this.state = {';
           ...this.state,
           ...state,
-          valueStreams: {
+          valueStreams:  {
         ...this.state,
         valueStreams: setInterval(async () => {
       try {
@@ -243,7 +243,7 @@ export class ValueStreamMapper extends EventBus {
 }
 }, this.config.bottleneckDetectionInterval);
 }
-  private startFlowAnalysis():void {
+  private startFlowAnalysis(): void {
     this.flowAnalysisTimer = setInterval(() => {
       try {
         // Flow analysis implementation would go here')        this.logger.debug('Running flow analysis for all streams');
@@ -252,7 +252,7 @@ export class ValueStreamMapper extends EventBus {
 }
 }, this.config.flowAnalysisInterval);
 }
-  private startOptimizationEngine():void {
+  private startOptimizationEngine(): void {
     if (!this.config.enableFlowOptimization) return;
     this.optimizationTimer = setInterval(() => {
       try {
@@ -262,7 +262,7 @@ export class ValueStreamMapper extends EventBus {
 }
 }, this.config.optimizationRecommendationInterval);
 }
-  private startValueDeliveryTracking():void {
+  private startValueDeliveryTracking(): void {
     if (!this.config.enableValueDeliveryTracking) return;
     this.valueTrackingTimer = setInterval(() => {
       try {
@@ -272,7 +272,7 @@ export class ValueStreamMapper extends EventBus {
 }
 }, this.config.valueDeliveryTrackingInterval);
 }
-  private registerEventHandlers():void {
+  private registerEventHandlers(): void {
     ')    this.eventBus.registerHandler('workflow-completed, async (event) => {';
       // Handle workflow completion')';
 });

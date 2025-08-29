@@ -41,7 +41,7 @@ export const moveTask = assign({
     if (!task) return context.tasks;
     return {
       ...context.tasks,
-      [event.taskId]:{
+      [event.taskId]:  {
         ...task,
         state: event.toState,
         updatedAt: new Date(),
@@ -67,7 +67,7 @@ export const updateTask = assign({
     if (!task) return context.tasks;
     return {
       ...context.tasks,
-      [event.taskId]:{
+      [event.taskId]:  {
         ...task,
         ...event.updates,
         updatedAt: new Date(),
@@ -150,7 +150,7 @@ export const addBottleneck = assign({
     if (!resolvedBottleneck) return context.bottleneckHistory;
     const historicalBottleneck = {
       ...resolvedBottleneck,
-      metadata: {
+      metadata:  {
         ...resolvedBottleneck.metadata,
         resolvedAt: new Date(),
 },
@@ -167,7 +167,7 @@ export const addBottleneck = assign({
     if (!resolvedBottleneck) return context.bottleneckHistory;
     const historicalBottleneck = {
       ...resolvedBottleneck,
-      metadata: {
+      metadata:  {
         ...resolvedBottleneck.metadata,
         resolvedAt: new Date(),
 },

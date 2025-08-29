@@ -7,8 +7,8 @@
 	"types": "dist/index.d.ts",
 	"type": "module",
 	"scripts": {
-		"build": "tsc && pnpm run build:rust",
-		"build:rust": "cd src/rust && cargo build --release",
+		"build": "tsc",
+		"build:rust": "echo 'Rust build temporarily disabled due to workspace conflicts'",
 		"build:wasm": "cd src/rust && wasm-pack build --target nodejs --out-dir ../../wasm",
 		"dev": "tsc --watch",
 		"clean": "rm -rf dist wasm target",

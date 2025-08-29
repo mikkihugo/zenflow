@@ -25,7 +25,7 @@ export interface CustomerResearchConfig {
     _segmentData: Omit<CustomerSegment,'id'>`;
   ):CustomerSegment {
     if (this.segments.size >= this.config.maxSegments) {
-      throw new Error(`Maximum segments reached: {`
+      throw new Error(`Maximum segments reached:  {`
       id,      ...segmentData,';
 };
     this.segments.set(segment.id, segment);')    this.logger.info('Customer segment created,{';
@@ -42,7 +42,7 @@ export interface CustomerResearchConfig {
       const avgFrequency = meanBy(needs, (n) =>
         this.getFrequencyScore(n.frequency)
       );')      const avgSatisfaction = meanBy(needs,'satisfactionLevel');
-      const maxWillingness =';')        maxBy(needs,'willingnessToPay')?.willingnessToPay||'0')      // Calculate composite priority score';
+      const maxWillingness =';)        maxBy(needs,'willingnessToPay')?.willingnessToPay||'0')      // Calculate composite priority score';
       const priorityScore =
         avgFrequency * 0.3 +
         (100 - avgSatisfaction) * 0.4 + // Lower satisfaction = higher priority;
@@ -63,7 +63,7 @@ export interface CustomerResearchConfig {
 }
   /**
    * Collect and categorize customer feedback
-   */')  collectFeedback(feedbackData: {
+   */')  collectFeedback(feedbackData:  {
     ')      id,    ')      ...feedbackData,';
 };
     this.feedback.set(feedback.id, feedback);
@@ -137,7 +137,7 @@ export interface CustomerResearchConfig {
   /**
    * Convert frequency pattern to numeric score
    */
-  private getFrequencyScore(frequency: {
+  private getFrequencyScore(frequency:  {
       continuous: 100,
       daily: 90,
       weekly: 70,
@@ -211,7 +211,7 @@ export interface CustomerResearchConfig {
   /**
    * Clean up old feedback data
    */
-  private cleanupOldFeedback():void {
+  private cleanupOldFeedback(): void {
     const cutoffDate = addDays(new Date(), -this.config.feedbackRetentionDays);
     for (const [id, feedback] of this.feedback.entries()) {
       if (feedback.collectedAt < cutoffDate) {
