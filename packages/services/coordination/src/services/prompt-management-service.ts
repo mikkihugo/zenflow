@@ -271,10 +271,35 @@
 });
   private async getPromptTemplate(
     promptId: string
-  ): Promise<PromptTemplate| null> 
-    // Implementation would fetch from database and reconstruct object
-    // This is a placeholder
-    return null;
+  ): Promise<PromptTemplate | null> {
+    try {
+      const query = `
+        SELECT id, name, content, gate_type, variables, metadata, 
+               is_active, created_at, updated_at
+        FROM prompt_templates 
+        WHERE id = ? AND is_active = true
+      `;
+      
+      const row = await this.db.get(query, [promptId]);
+      
+      if (!row) return null;
+      
+      return {
+        id: row.id,
+        name: row.name,
+        content: row.content,
+        gateType: row.gate_type,
+        variables: JSON.parse(row.variables || '[]'),
+        metadata: JSON.parse(row.metadata || '{}'),
+        isActive: Boolean(row.is_active),
+        createdAt: new Date(row.created_at),
+        updatedAt: new Date(row.updated_at)
+      };
+    } catch (error) {
+      this.logger.error('Failed to fetch prompt template', { error, promptId });
+      return null;
+    }
+  }
   private async getPromptTemplatesByGateType(
     gateType: string
   ): Promise<PromptTemplate[]> 

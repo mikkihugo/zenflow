@@ -4,39 +4,95 @@
  * Centralized exports for all infrastructure services in the Kanban system.
  * Infrastructure services handle technical concerns like persistence, events,
  * state management, and performance monitoring.
- *
- * **Infrastructure Services: new EventCoordinatorService(config);
-}
+ */
+
+// Core infrastructure services
+export { EventCoordinator } from './event-coordinator';
+export { StateMachineCoordinatorService } from './state-machine-coordinator';
+export { PerformanceTrackerService } from './performance-tracker';
+export { PersistenceCoordinatorService } from './persistence-coordinator';
+
+// Infrastructure service factory
+export class InfrastructureServiceFactory {
+  private eventCoordinator?: EventCoordinator;
+  private stateMachineCoordinator?: StateMachineCoordinatorService;
+  private performanceTracker?: PerformanceTrackerService;
+  private persistenceCoordinator?: PersistenceCoordinatorService;
+
+  /**
+   * Create event coordinator service
+   */
+  createEventCoordinator(config?: any): EventCoordinator {
+    if (!this.eventCoordinator) {
+      this.eventCoordinator = new EventCoordinator(config);
+    }
     return this.eventCoordinator;
-}
+  }
+
   /**
    * Create state machine coordinator service
    */
   createStateMachineCoordinator(
-    eventCoordinator: new StateMachineCoordinatorService(eventCoordinator, config);
-}
+    eventCoordinator: EventCoordinator,
+    config?: any
+  ): StateMachineCoordinatorService {
+    if (!this.stateMachineCoordinator) {
+      this.stateMachineCoordinator = new StateMachineCoordinatorService(eventCoordinator, config);
+    }
     return this.stateMachineCoordinator;
-}
+  }
+
   /**
    * Create performance tracker service
    */
   createPerformanceTracker(
-    eventCoordinator: new PerformanceTrackerService(eventCoordinator, config);
-}
+    eventCoordinator: EventCoordinator,
+    config?: any
+  ): PerformanceTrackerService {
+    if (!this.performanceTracker) {
+      this.performanceTracker = new PerformanceTrackerService(eventCoordinator, config);
+    }
     return this.performanceTracker;
-}
+  }
+
   /**
    * Create persistence coordinator service
    */
   createPersistenceCoordinator(
-    eventCoordinator: new PersistenceCoordinatorService(eventCoordinator, config);
-}
+    eventCoordinator: EventCoordinator,
+    config?: any
+  ): PersistenceCoordinatorService {
+    if (!this.persistenceCoordinator) {
+      this.persistenceCoordinator = new PersistenceCoordinatorService(eventCoordinator, config);
+    }
     return this.persistenceCoordinator;
-}
+  }
+
   /**
    * Create all infrastructure services with proper dependencies
    */
-  createAllServices(config?:  {
+  createAllServices(config?: any): {
+    eventCoordinator: EventCoordinator;
+    stateMachineCoordinator: StateMachineCoordinatorService;
+    performanceTracker: PerformanceTrackerService;
+    persistenceCoordinator: PersistenceCoordinatorService;
+  } {
+    const eventCoordinator = this.createEventCoordinator(config);
+    const stateMachineCoordinator = this.createStateMachineCoordinator(eventCoordinator, config);
+    const performanceTracker = this.createPerformanceTracker(eventCoordinator, config);
+    const persistenceCoordinator = this.createPersistenceCoordinator(eventCoordinator, config);
+
+    return {
+      eventCoordinator,
+      stateMachineCoordinator,
+      performanceTracker,
+      persistenceCoordinator
+    };
+  }
+}
+
+// Export default factory instance
+export const infrastructureServiceFactory = new InfrastructureServiceFactory();  {
     eventCoordinator?:Partial<EventCoordinationConfig>;
     stateMachine?:Partial<StateMachineConfig>;
     performance?:Partial<PerformanceTrackerConfig>;
