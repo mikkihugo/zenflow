@@ -22,159 +22,159 @@
 /**
  * Language and framework types for principle research
  */
-export type ProgrammingLanguage = 'typescript' | ' javascript' | ' python' | ' rust' | ' go' | ' java' | ' csharp' | ' swift' | ' kotlin';
+export type ProgrammingLanguage = 'typescript' | 'javascript' | 'python' | 'rust' | 'go' | 'java' | 'csharp' | 'swift' | 'kotlin';
 
-export type TaskDomain = 'rest-api' | ' web-app' | ' mobile-app' | ' desktop-app' | ' microservices' | ' data-pipeline' | ' ml-model' | ' blockchain' | ' game-dev' | ' embedded';
+export type TaskDomain = 'rest-api' | 'web-app' | 'mobile-app' | 'desktop-app' | 'microservices' | 'data-pipeline' | 'ml-model' | 'blockchain' | 'game-dev' | 'embedded';
 
-export type DevelopmentRole = 'backend-developer' | ' frontend-developer' | ' fullstack-developer' | ' mobile-developer' | ' devops-engineer' | ' ml-engineer' | ' architect' | ' tech-lead';
+export type DevelopmentRole = 'backend-developer' | 'frontend-developer' | 'fullstack-developer' | 'mobile-developer' | 'devops-engineer' | 'ml-engineer' | 'architect' | 'tech-lead';
 
 /**
  * Coding principles research configuration
  */
 export interface PrinciplesResearchConfig {
   /** Language to research */
-  language:ProgrammingLanguage;
+  language: ProgrammingLanguage;
   /** Task domain context */
-  domain?:TaskDomain;
+  domain?: TaskDomain;
   /** Developer role context */
-  role?:DevelopmentRole;
+  role?: DevelopmentRole;
   /** Include performance guidelines */
-  includePerformance?:boolean;
+  includePerformance?: boolean;
   /** Include security guidelines */
-  includeSecurity?:boolean;
+  includeSecurity?: boolean;
   /** Include testing guidelines */
-  includeTesting?:boolean;
+  includeTesting?: boolean;
   /** Research depth level */
-  depth?: 'basic|intermediate|advanced|expert;
-'}
+  depth?: 'basic' | 'intermediate' | 'advanced' | 'expert';
+}
 
 /**
  * Researched coding principles result
  */
 export interface CodingPrinciples {
   /** Language and context */
-  language:ProgrammingLanguage;
-  domain?:TaskDomain;
-  role?:DevelopmentRole;
+  language: ProgrammingLanguage;
+  domain?: TaskDomain;
+  role?: DevelopmentRole;
 
   /** Core principles */
-  coreStandards:{
-    repositoryStructure:string[];
-    fileNaming:string[];
-    folderOrganization:string[];
-    functionComplexity:string[];
-    codeOrganization:string[];
-    errorHandling:string[];
-    documentation:string[];
-    codeQuality:string[];
-    testingStrategy:string[];
-};
+  coreStandards: {
+    repositoryStructure: string[];
+    fileNaming: string[];
+    folderOrganization: string[];
+    functionComplexity: string[];
+    codeOrganization: string[];
+    errorHandling: string[];
+    documentation: string[];
+    codeQuality: string[];
+    testingStrategy: string[];
+  };
 
   /** Language-specific guidelines */
-  languageSpecific:{
-    typeSystem:string[];
-    memoryManagement:string[];
-    concurrency:string[];
-    packageManagement:string[];
-    buildTools:string[];
-};
+  languageSpecific: {
+    typeSystem: string[];
+    memoryManagement: string[];
+    concurrency: string[];
+    packageManagement: string[];
+    buildTools: string[];
+  };
 
   /** Domain-specific practices */
-  domainSpecific?:{
-    architecture:string[];
-    dataHandling:string[];
-    apiDesign:string[];
-    userInterface:string[];
-    deployment:string[];
-};
+  domainSpecific?: {
+    architecture: string[];
+    dataHandling: string[];
+    apiDesign: string[];
+    userInterface: string[];
+    deployment: string[];
+  };
 
   /** Quality metrics */
-  qualityMetrics:{
-    complexity:{ metric: string; threshold: number};
-    coverage:{ metric: string; threshold: number};
-    maintainability:{ metric: string; threshold: number};
-    performance:{ metric: string; threshold: number};
-};
+  qualityMetrics: {
+    complexity: { metric: string; threshold: number };
+    coverage: { metric: string; threshold: number };
+    maintainability: { metric: string; threshold: number };
+    performance: { metric: string; threshold: number };
+  };
 
   /** Best practices from successful patterns */
-  bestPractices:string[];
+  bestPractices: string[];
 
   /** Anti-patterns to avoid */
-  antiPatterns:string[];
+  antiPatterns: string[];
 
   /** Human-reviewable template */
-  template:string;
+  template: string;
 
   /** Research metadata */
-  researchMetadata:{
-    researchedAt:Date;
-    sources:string[];
-    confidence:number;
-    humanReviewed:boolean;
-    lastUpdated:Date;
-    version:string;
-};
+  researchMetadata: {
+    researchedAt: Date;
+    sources: string[];
+    confidence: number;
+    humanReviewed: boolean;
+    lastUpdated: Date;
+    version: string;
+  };
 }
 
 /**
  * Human review feedback for improving templates
  */
 export interface HumanFeedback {
-  principlesId:string;
-  reviewer:string;
-  rating:1 | 2 | 3 | 4 | 5;
-  improvements:string[];
-  approvedSections:string[];
-  rejectedSections:string[];
-  additionalGuidelines:string[];
-  notes:string;
-  reviewedAt:Date;
+  principlesId: string;
+  reviewer: string;
+  rating: 1 | 2 | 3 | 4 | 5;
+  improvements: string[];
+  approvedSections: string[];
+  rejectedSections: string[];
+  additionalGuidelines: string[];
+  notes: string;
+  reviewedAt: Date;
 }
 
 /**
  * Agent execution feedback for improving prompts
  */
 export interface AgentExecutionFeedback {
-  principlesId:string;
-  agentId:string;
-  taskType:string;
-  accuracy:number; // 0-1 score
-  completeness:number; // 0-1 score
-  usefulness:number; // 0-1 score
-  missingAreas:string[]; // What was missing from the principles
-  incorrectGuidelines:string[]; // What guidelines were wrong/unhelpful
-  additionalNeeds:string[]; // What additional guidance was needed
-  actualCodeQuality:number; // 0-1 score of resulting code quality
-  executionTime:number; // Time taken to complete task
-  context:{
-    language:ProgrammingLanguage;
-    domain?:TaskDomain;
-    role?:DevelopmentRole;
-    taskComplexity:'simple' | ' moderate' | ' complex';
-    requirementsCount:number;
-};
-  timestamp:Date;
+  principlesId: string;
+  agentId: string;
+  taskType: string;
+  accuracy: number; // 0-1 score
+  completeness: number; // 0-1 score
+  usefulness: number; // 0-1 score
+  missingAreas: string[]; // What was missing from the principles
+  incorrectGuidelines: string[]; // What guidelines were wrong/unhelpful
+  additionalNeeds: string[]; // What additional guidance was needed
+  actualCodeQuality: number; // 0-1 score of resulting code quality
+  executionTime: number; // Time taken to complete task
+  context: {
+    language: ProgrammingLanguage;
+    domain?: TaskDomain;
+    role?: DevelopmentRole;
+    taskComplexity: 'simple' | 'moderate' | 'complex';
+    requirementsCount: number;
+  };
+  timestamp: Date;
 }
 
 /**
  * Prompt confidence tracking
  */
 export interface PromptConfidence {
-  principlesId:string;
-  initialConfidence:number; // 0-1 based on research quality
-  executionCount:number; // How many times used
-  averageAccuracy:number; // Average accuracy from agent feedback
-  averageCompleteness:number; // Average completeness from agent feedback
-  averageUsefulness:number; // Average usefulness from agent feedback
-  overallConfidence:number; // Calculated confidence (0-1)
-  needsImprovement:boolean; // Whether prompt needs research update
-  lastUpdated:Date;
-  improvementHistory:Array<{
-    version:string;
-    changes:string[];
-    confidenceChange:number;
-    timestamp:Date;
-}>;
+  principlesId: string;
+  initialConfidence: number; // 0-1 based on research quality
+  executionCount: number; // How many times used
+  averageAccuracy: number; // Average accuracy from agent feedback
+  averageCompleteness: number; // Average completeness from agent feedback
+  averageUsefulness: number; // Average usefulness from agent feedback
+  overallConfidence: number; // Calculated confidence (0-1)
+  needsImprovement: boolean; // Whether prompt needs research update
+  lastUpdated: Date;
+  improvementHistory: Array<{
+    version: string;
+    changes: string[];
+    confidenceChange: number;
+    timestamp: Date;
+  }>;
 }
 
 /**
@@ -184,40 +184,50 @@ export interface PromptConfidence {
  * domains, and roles using AI research and human feedback loops.
  */
 export class CodingPrinciplesResearcher {
-    ')
-  constructor(,
-  ) {}
+  private cache: Map<string, CodingPrinciples> = new Map();
+  private humanFeedback: Map<string, HumanFeedback[]> = new Map();
+  private executionFeedback: Map<string, AgentExecutionFeedback[]> = new Map();
+  private confidenceTracking: Map<string, PromptConfidence> = new Map();
+  private logger: any; // TODO: Add proper logger type
+  private dspyBridge: any; // TODO: Add proper DSPy bridge type
+
+  constructor() {
+    // Initialize logger and DSPy bridge
+    this.logger = { warn: console.warn, info: console.info, debug: console.debug };
+    this.dspyBridge = { processCoordinationTask: async () => ({ success: false }) };
+  }
 
   /**
    * Research coding principles for a specific language/domain/role combination
    */
   async researchPrinciples(
-    config:PrinciplesResearchConfig
-  ):Promise<CodingPrinciples> {
+    config: PrinciplesResearchConfig
+  ): Promise<CodingPrinciples> {
     const cacheKey = this.generateCacheKey(config);
 
     // Check cache first
     const cached = this.cache.get(cacheKey);
     if (cached && this.isCacheValid(cached)) {
       return cached;
-}
+    }
 
     try {
       // Use DSPy to research coding principles
       const researchTask = {
-        id:`principles-research-${cacheKey}-${Date.now()}`,`
-        type:'reasoning' as const,
-        input:this.buildResearchPrompt(config),
-        context:{
-          language:config.language,
-          domain:config.domain,
-          role:config.role,
-          depth:config.depth || 'intermediate',          includePerformance:config.includePerformance,
-          includeSecurity:config.includeSecurity,
-          includeTesting:config.includeTesting,
-},
-        priority:'high' as const,
-};
+        id: "principles-research-" + cacheKey + "-" + Date.now(),
+        type: 'reasoning' as const,
+        input: this.buildResearchPrompt(config),
+        context: {
+          language: config.language,
+          domain: config.domain,
+          role: config.role,
+          depth: config.depth || 'intermediate',
+          includePerformance: config.includePerformance,
+          includeSecurity: config.includeSecurity,
+          includeTesting: config.includeTesting,
+        },
+        priority: 'high' as const,
+      };
 
       const researchResult =
         await this.dspyBridge.processCoordinationTask(researchTask);
@@ -232,31 +242,33 @@ export class CodingPrinciplesResearcher {
         this.cache.set(cacheKey, principles);
 
         return principles;
-}
+      }
 
-      throw new Error('Research failed to produce valid results');')} catch (error) {
-      this.logger.warn('Principles research failed, using fallback:', error);')      return this.getFallbackPrinciples(config);
-}
-}
+      throw new Error('Research failed to produce valid results');
+    } catch (error) {
+      this.logger.warn('Principles research failed, using fallback:', error);
+      return this.getFallbackPrinciples(config);
+    }
+  }
 
   /**
    * Submit human feedback for improving principles
    */
-  async submitHumanFeedback(feedback:HumanFeedback): Promise<void> {
+  async submitHumanFeedback(feedback: HumanFeedback): Promise<void> {
     const existing = this.humanFeedback.get(feedback.principlesId) || [];
     existing.push(feedback);
     this.humanFeedback.set(feedback.principlesId, existing);
 
     // Use feedback to improve future research
     await this.incorporateFeedback(feedback);
-}
+  }
 
   /**
    * Get human-reviewable template for a language/domain
    */
   async getReviewableTemplate(
-    config:PrinciplesResearchConfig
-  ):Promise<string> {
+    config: PrinciplesResearchConfig
+  ): Promise<string> {
     const principles = await this.researchPrinciples(config);
     return this.generateReviewableTemplate(principles);
 }
@@ -265,14 +277,14 @@ export class CodingPrinciplesResearcher {
    * Update principles based on successful project patterns
    */
   async learnFromSuccess(
-    config:PrinciplesResearchConfig,
-    successPatterns:{
-      fileNamingPatterns:string[];
-      successfulArchitectures:string[];
-      performanceOptimizations:string[];
-      commonPitfalls:string[];
-}
-  ):Promise<void> {
+    config: PrinciplesResearchConfig,
+    successPatterns: {
+      fileNamingPatterns: string[];
+      successfulArchitectures: string[];
+      performanceOptimizations: string[];
+      commonPitfalls: string[];
+    }
+  ): Promise<void> {
     const cacheKey = this.generateCacheKey(config);
     const existing = this.cache.get(cacheKey);
 
@@ -280,8 +292,8 @@ export class CodingPrinciplesResearcher {
       // Enhance existing principles with learned patterns
       await this.enhancePrinciplesWithLearning(existing, successPatterns);
       this.cache.set(cacheKey, existing);
-}
-}
+    }
+  }
 
   /**
    * Meta-learning:Research principles with confidence building
@@ -289,9 +301,9 @@ export class CodingPrinciplesResearcher {
    * Iteratively researches and improves prompts until confidence threshold is met
    */
   async researchPrinciplesWithConfidence(
-    config:PrinciplesResearchConfig,
-    targetConfidence:number = this.minimumConfidenceThreshold
-  ):Promise<CodingPrinciples> {
+    config: PrinciplesResearchConfig,
+    targetConfidence: number = 0.8
+  ): Promise<CodingPrinciples> {
     const cacheKey = this.generateCacheKey(config);
     let confidence = this.getPromptConfidence(cacheKey);
 
@@ -303,11 +315,11 @@ export class CodingPrinciplesResearcher {
       const cached = this.cache.get(cacheKey);
       if (cached) {
         return cached;
-}
-}
+      }
+    }
 
     // Research multiple versions until we achieve confidence
-    let bestPrinciples:CodingPrinciples | null = null;
+    let bestPrinciples: CodingPrinciples | null = null;
     let bestConfidence = 0;
     let researchAttempts = 0;
     const maxAttempts = 5;
@@ -338,39 +350,39 @@ export class CodingPrinciplesResearcher {
 
           // Update confidence tracking
           confidence = this.updatePromptConfidence(cacheKey, {
-            initialConfidence:researchConfidence,
-            version:`research-v${researchAttempts}`,`
-            improvements:[
-              `Research attempt ${researchAttempts}:confidence ${researchConfidence.toFixed(3)}`,`
-],
-});
-}
+            initialConfidence: researchConfidence,
+            version: "research-v" + researchAttempts,
+            improvements: [
+              "Research attempt " + researchAttempts + ": confidence " + researchConfidence.toFixed(3),
+            ],
+          });
+        }
 
-        this.logger.info(`Research attempt ${researchAttempts}:confidence ${researchConfidence.toFixed(3)} (_target:${targetConfidence})`);`
-} catch (error) {
-        this.logger.warn(`Research attempt ${researchAttempts} failed:`, error);`
-}
-}
+        this.logger.info("Research attempt " + researchAttempts + ": confidence " + researchConfidence.toFixed(3) + " (target: " + targetConfidence + ")");
+      } catch (error) {
+        this.logger.warn("Research attempt " + researchAttempts + " failed:", error);
+      }
+    }
 
     if (!bestPrinciples) {
       // Fallback to basic research if all attempts failed
       return await this.researchPrinciples(config);
-}
+    }
 
     // Cache the best principles found
     this.cache.set(cacheKey, bestPrinciples);
 
-    this.logger.info(`Research completed after $researchAttemptsattempts. Final confidence:$bestConfidence.toFixed(3)`);`
+    this.logger.info("Research completed after " + researchAttempts + " attempts. Final confidence: " + bestConfidence.toFixed(3));
     return bestPrinciples;
-}
+  }
 
   /**
    * Submit agent execution feedback for continuous improvement
    */
-  async submitAgentFeedback(feedback:AgentExecutionFeedback): Promise<void> {
-    const existing = this.agentFeedback.get(feedback.principlesId) || [];
+  async submitAgentFeedback(feedback: AgentExecutionFeedback): Promise<void> {
+    const existing = this.executionFeedback.get(feedback.principlesId) || [];
     existing.push(feedback);
-    this.agentFeedback.set(feedback.principlesId, existing);
+    this.executionFeedback.set(feedback.principlesId, existing);
 
     // Update confidence based on agent feedback
     await this.updateConfidenceFromAgentFeedback(feedback);
@@ -383,8 +395,8 @@ export class CodingPrinciplesResearcher {
    * Get principles with automatic improvement based on feedback
    */
   async getAdaptivePrinciples(
-    config:PrinciplesResearchConfig
-  ):Promise<CodingPrinciples> {
+    config: PrinciplesResearchConfig
+  ): Promise<CodingPrinciples> {
     const cacheKey = this.generateCacheKey(config);
     const confidence = this.getPromptConfidence(cacheKey);
 

@@ -589,6 +589,7 @@ export class AutonomousCoordinator {
     } catch (error) {
       logger.error('Error in autonomous parameter tuning:', error);
     }
+  }
 
   /**
    * Get autonomous decision insights
@@ -636,31 +637,31 @@ export class AutonomousCoordinator {
   // Private helper methods
 
   private calculatePressureLevel(
-    usage:number,
-    thresholds:any
-  ):'low|medium|high|critical' {
-    ')    if (usage >= thresholds.critical) return 'critical;
-    if (usage >= thresholds.high) return 'high;
-    if (usage >= thresholds.medium) return 'medium;
-    return 'low;
-}
+    usage: number,
+    thresholds: any
+  ): 'low' | 'medium' | 'high' | 'critical' {
+    if (usage >= thresholds.critical) return 'critical';
+    if (usage >= thresholds.high) return 'high';
+    if (usage >= thresholds.medium) return 'medium';
+    return 'low';
+  }
 
   private calculateResponseTimePressure(
-    responseTime:number
-  ):'excellent|good|acceptable|poor' {
-    ')    const { excellent, good, acceptable} =
+    responseTime: number
+  ): 'excellent' | 'good' | 'acceptable' | 'poor' {
+    const { excellent, good, acceptable } =
       this.autonomousConfig.resourceThresholds.responseTime;
 
-    if (responseTime <= excellent) return 'excellent;
-    if (responseTime <= good) return 'good;
-    if (responseTime <= acceptable) return 'acceptable;
-    return 'poor;
-}
+    if (responseTime <= excellent) return 'excellent';
+    if (responseTime <= good) return 'good';
+    if (responseTime <= acceptable) return 'acceptable';
+    return 'poor';
+  }
 
   private async analyzeRoutingEfficiency(
-    metrics:SystemMetrics,
-    agentProfiles:Map<string, any>
-  ):Promise<number> {
+    metrics: SystemMetrics,
+    agentProfiles: Map<string, any>
+  ): Promise<number> {
     // Async routing pattern analysis
     const routingPatterns = await this.analyzeRoutingPatterns(metrics, agentProfiles);
     const coordinationEfficiency = await this.calculateEventCoordinationEfficiency(agentProfiles);
@@ -746,33 +747,38 @@ export class AutonomousCoordinator {
 
     return {
       action: 'maintain',      targetAgents:metrics.activeAgents,
-      confidence:0.6,
-      reasoning: 'System pressure within acceptable range',      urgency: 'low',};
-}
+      confidence: 0.6,
+      reasoning: 'System pressure within acceptable range',
+      urgency: 'low',
+    };
+  }
 
   private adjustParametersForType(
-    type:string,
-    direction:'aggressive' | ' conservative')  ):void {
-    const factor = direction === 'aggressive' ? 0.9:1.1;')
+    type: string,
+    direction: 'aggressive' | 'conservative'
+  ): void {
+    const factor = direction === 'aggressive' ? 0.9 : 1.1;
     switch (type) {
-      case 'resource_allocation': ')'        Object.keys(this.autonomousConfig.resourceThresholds).forEach(
-          (_resource:string) => {
+      case 'resource_allocation':
+        Object.keys(this.autonomousConfig.resourceThresholds).forEach(
+          (resource: string) => {
             const thresholds = (
               this.autonomousConfig.resourceThresholds as Record<string, any>
             )[resource];
             if (typeof thresholds === 'object') {
-    ')              Object.keys(thresholds).forEach((level:string) => {
+              Object.keys(thresholds).forEach((level: string) => {
                 thresholds[level] *= factor;
-});
-}
-}
+              });
+            }
+          }
         );
         break;
-      case 'scaling': ')'        this.autonomousConfig.scalingPolicy.scaleUpThreshold *= factor;
+      case 'scaling':
+        this.autonomousConfig.scalingPolicy.scaleUpThreshold *= factor;
         this.autonomousConfig.scalingPolicy.scaleDownThreshold *= factor;
         break;
-}
-}
+    }
+  }
 
   private calculateSystemHealth(
     recentMetrics:SystemMetrics[]
