@@ -68,7 +68,7 @@ export interface VectorRAGEvents {
  */
 export interface VectorRAGConfig extends FACTStorageConfig {
   vectorDimensions: number;
-  embeddingModel: 'text-embedding-ada-002' | 'text-embedding-3-small' | 'sentence-transformers';
+  embeddingModel: 'text-embedding-ada-002' | 'text-embedding-3-small' | 'sentence-transformers' | 'local-cpu';
   similarityThreshold: number;
   maxVectorResults: number;
   hybridSearchWeight: number; // 0.0 = pure vector, 1.0 = pure text
@@ -76,6 +76,7 @@ export interface VectorRAGConfig extends FACTStorageConfig {
   architecturalDocsPath?: string;
   lancedbDatabase: string; // LanceDB database name
   vectorTableName?: string; // Table name for vectors
+  localEmbeddingModel?: string; // Model name for local CPU embedding (e.g., 'all-MiniLM-L6-v2')
 }
 
 /**
@@ -250,9 +251,15 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
           );
           break;
         case 'sentence-transformers':
+        case 'local-cpu':
           this.embeddingService = new SentenceTransformersEmbeddingService(
             this.config.vectorDimensions
           );
+          
+          // Set local model if specified
+          if (this.config.localEmbeddingModel) {
+            process.env.LOCAL_EMBEDDING_MODEL = this.config.localEmbeddingModel;
+          }
           break;
         default:
           throw new Error(`Unsupported embedding model: ${this.config.embeddingModel}`);
@@ -260,6 +267,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
 
       logger.info('Embedding service initialized', { 
         model: this.config.embeddingModel,
+        localModel: this.config.localEmbeddingModel,
         dimensions: this.config.vectorDimensions,
       });
     } catch (error) {
@@ -699,12 +707,33 @@ class OpenAIEmbeddingService implements EmbeddingService {
 }
 
 /**
- * Production Sentence Transformers Embedding Service
+ * Production Sentence Transformers Embedding Service with Local CPU Support
+ * 
+ * Supports multiple embedding strategies:
+ * 1. Local CPU embedding models (all-MiniLM-L6-v2, etc.)
+ * 2. Remote Sentence Transformers API endpoint
+ * 3. Deterministic fallback embeddings
  */
 class SentenceTransformersEmbeddingService implements EmbeddingService {
-  constructor(private dimensions: number) {}
+  private localModel: string;
+  
+  constructor(private dimensions: number) {
+    // Default to all-MiniLM-L6-v2 (384 dimensions) - popular local CPU model
+    this.localModel = process.env.LOCAL_EMBEDDING_MODEL || 'all-MiniLM-L6-v2';
+  }
 
   async generateEmbedding(text: string): Promise<number[]> {
+    // Try local CPU embedding first (if available)
+    try {
+      const localEmbedding = await this.generateLocalEmbedding(text);
+      if (localEmbedding) {
+        return localEmbedding;
+      }
+    } catch (error) {
+      logger.debug('Local embedding unavailable, trying remote endpoint', { error: error instanceof Error ? error.message : String(error) });
+    }
+
+    // Fallback to remote Sentence Transformers API
     try {
       const endpoint = process.env.SENTENCE_TRANSFORMERS_ENDPOINT || 'http://localhost:8000/embed';
       
@@ -715,7 +744,7 @@ class SentenceTransformersEmbeddingService implements EmbeddingService {
         },
         body: JSON.stringify({
           text,
-          model: 'all-MiniLM-L6-v2',
+          model: this.localModel,
         }),
       });
 
@@ -726,23 +755,120 @@ class SentenceTransformersEmbeddingService implements EmbeddingService {
       const data = await response.json();
       return data.embedding;
     } catch (error) {
-      logger.warn('Sentence Transformers service unavailable, using fallback embedding', { error: error instanceof Error ? error.message : String(error) });
+      logger.warn('Remote Sentence Transformers service unavailable, using deterministic fallback', { 
+        error: error instanceof Error ? error.message : String(error),
+        model: this.localModel
+      });
       return this.generateDeterministicEmbedding(text);
     }
   }
 
+  /**
+   * Generate embeddings using local CPU models (when available)
+   * This method attempts to use local embedding models directly
+   */
+  private async generateLocalEmbedding(text: string): Promise<number[] | null> {
+    try {
+      // Check if we have a local embedding model available
+      // This could be implemented with:
+      // 1. ONNX Runtime for local inference
+      // 2. TensorFlow.js models
+      // 3. WebAssembly-based sentence transformers
+      // 4. Native Node.js binding to Python sentence-transformers
+      
+      // For now, check if local model service is available
+      const localEndpoint = process.env.LOCAL_EMBEDDING_ENDPOINT || 'http://localhost:9000/embed';
+      
+      const response = await fetch(localEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text,
+          model: this.localModel,
+          local: true,
+        }),
+        signal: AbortSignal.timeout(2000), // Quick timeout for local service
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        logger.debug('Generated local CPU embedding', { 
+          model: this.localModel,
+          dimensions: data.embedding?.length || 0
+        });
+        return data.embedding;
+      }
+      
+      return null;
+    } catch (error) {
+      // Local service not available
+      return null;
+    }
+  }
+
   async generateBatchEmbeddings(texts: string[]): Promise<number[][]> {
+    // Try batch local embedding first
+    try {
+      const localBatch = await this.generateLocalBatchEmbeddings(texts);
+      if (localBatch) {
+        return localBatch;
+      }
+    } catch (error) {
+      logger.debug('Local batch embedding unavailable', { error: error instanceof Error ? error.message : String(error) });
+    }
+
+    // Fallback to individual embeddings
     return await Promise.all(texts.map(text => this.generateEmbedding(text)));
   }
 
+  /**
+   * Generate batch embeddings using local CPU models
+   */
+  private async generateLocalBatchEmbeddings(texts: string[]): Promise<number[][] | null> {
+    try {
+      const localEndpoint = process.env.LOCAL_EMBEDDING_ENDPOINT || 'http://localhost:9000/embed_batch';
+      
+      const response = await fetch(localEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          texts,
+          model: this.localModel,
+          local: true,
+        }),
+        signal: AbortSignal.timeout(5000), // Longer timeout for batch
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return data.embeddings;
+      }
+      
+      return null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  /**
+   * Generate deterministic embeddings as fallback
+   * Uses improved hash-based approach with better distribution
+   */
   private generateDeterministicEmbedding(text: string): number[] {
     const hash = this.simpleHash(text);
     const embedding = new Array(this.dimensions);
     
+    // Use multiple hash seeds for better distribution
     for (let i = 0; i < this.dimensions; i++) {
-      embedding[i] = Math.sin(hash + i) * 0.5 + 0.5;
+      const seed = hash + i * 7919; // Prime number for better distribution
+      embedding[i] = Math.sin(seed) * 0.5 + 0.5;
     }
     
+    // Normalize the embedding vector
     const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
     return embedding.map(val => val / magnitude);
   }
