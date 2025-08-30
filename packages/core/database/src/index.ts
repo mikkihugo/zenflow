@@ -15,6 +15,7 @@
 import { EventEmitter } from '@claude-zen/foundation';
 
 export { SQLiteAdapter } from './adapters/sqlite-adapter.js';
+export { LanceDBAdapter } from './adapters/lancedb-adapter.js';
 import {
   createDatabaseConnection,
   createStorageConfig,
