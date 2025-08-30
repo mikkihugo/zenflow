@@ -253,13 +253,16 @@ export class FoundationBrainCoordinator {
 
     try {
       // Import Rust automatic optimization selection with proper type guard (conditionally)
-      const rustModule:any = null;
-      // Note:'../rust/core/optimization_selector' module is not yet implemented')      this.logger.warn(
-        'Rust optimization module not available, using fallback strategy')      );
+      const rustModule: any = null;
+      // Note: '../rust/core/optimization_selector' module is not yet implemented
+      this.logger.warn(
+        'Rust optimization module not available, using fallback strategy'
+      );
 
       // Type guard for Rust module
       if (!this.isValidRustModule(rustModule)) {
-        throw new Error('Invalid Rust optimization module structure');')}
+        throw new Error('Invalid Rust optimization module structure');
+      }
 
       const { auto_select_strategy, record_optimization_performance} =
         rustModule;
@@ -272,7 +275,9 @@ export class FoundationBrainCoordinator {
       let expectedPerformance:number;
 
       switch (strategy) {
-        case 'DSPy': ')'          logger.debug('🎯 Using DSPy optimization for complex task');')          optimizedPrompt = await this.optimizeWithDSPy(
+        case 'DSPy':
+          logger.debug('🎯 Using DSPy optimization for complex task');
+          optimizedPrompt = await this.optimizeWithDSPy(
             request.basePrompt,
             request.context
           );
@@ -280,7 +285,9 @@ export class FoundationBrainCoordinator {
           expectedPerformance = 0.85;
           break;
 
-        case 'DSPyConstrained': ')'          logger.debug('⚡ Using constrained DSPy optimization');')          optimizedPrompt = await this.optimizeWithConstrainedDSPy(
+        case 'DSPyConstrained':
+          logger.debug('⚡ Using constrained DSPy optimization');
+          optimizedPrompt = await this.optimizeWithConstrainedDSPy(
             request.basePrompt,
             request.context
           );

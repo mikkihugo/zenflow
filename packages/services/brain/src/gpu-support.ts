@@ -104,13 +104,15 @@ export async function initializeGPUAcceleration(
   accelerated:boolean;
   device?:string;
 }> {
-  const { preferGPU = true, backend = 'auto', memoryFraction = 0.9} = options;')
-  if (!preferGPU||backend ==='cpu') {
-    ')    logger.info('GPU acceleration disabled, using CPU');')    return { backend: 'cpu', accelerated:false};')}
+  const { preferGPU = true, backend = 'auto', memoryFraction = 0.9 } = options;
+  if (!preferGPU || backend === 'cpu') {
+    logger.info('GPU acceleration disabled, using CPU');
+    return { backend: 'cpu', accelerated: false };
+  }
 
   const capabilities = await detectGPUCapabilities();
   const selectedBackend =
-    backend === 'auto' ? capabilities.recommendedBackend:backend;')
+    backend === 'auto' ? capabilities.recommendedBackend : backend;
   // Try to initialize the selected backend
   try {
     switch (selectedBackend) {
