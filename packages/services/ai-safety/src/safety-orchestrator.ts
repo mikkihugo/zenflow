@@ -293,7 +293,8 @@ export class AISafetyOrchestrator {
       
       const alerts = this.deceptionDetector.analyzeAIResponse(interactionData);
       const immediateInterventions = alerts.filter(alert => 
-        alert.severity === 'CRITICAL' || alert.severity === ' HIGH')      ).length;
+        alert.severity === 'CRITICAL' || alert.severity === 'HIGH'
+      ).length;
 
       return {
         success: true,
@@ -536,7 +537,8 @@ export async function createInitializedAISafetyOrchestrator():Promise<{ success:
     return {
       success: false,
       error: new SafetyError(
-        'Failed to create and initialize AI safety orchestrator')      )
-};
+        'Failed to create and initialize AI safety orchestrator'
+      )
+    };
 }
 }

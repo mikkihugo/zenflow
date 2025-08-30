@@ -342,9 +342,9 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 
 			if (!pred.lm) {
 				throw new Error(
-					`Predictor ${predInd} does not have an LM assigned. ` +`
-						`Please ensure the module's predictors have their LM set before fine-tuning. ` +`
-						`You can set it using:your_module.set_lm(your_lm)`,
+					`Predictor ${predInd} does not have an LM assigned. ` +
+						`Please ensure the module's predictors have their LM set before fine-tuning. ` +
+						`You can set it using: your_module.set_lm(your_lm)`,
 				);
 }
 
@@ -373,8 +373,8 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 		logger.info("Starting LM fine-tuning...");
 		if (keyToData.size > numThreads) {
 			throw new Error(
-				`BootstrapFinetune requires \`num_threads\` to be bigger than or equal to the number of fine-tuning ` +`
-					`jobs. There are ${keyToData.size} fine-tuning jobs to start, but the number of threads is:` +`
+				`BootstrapFinetune requires \`num_threads\` to be bigger than or equal to the number of fine-tuning ` +
+					`jobs. There are ${keyToData.size} fine-tuning jobs to start, but the number of threads is: ` +
 					`${numThreads}!`,
 			);
 }
@@ -571,9 +571,9 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 		for (const [i, predictor] of predictors.entries()) {
 			if (!predictor.lm) {
 				throw new Error(
-					`Predictor ${i} does not have an LM assigned. ` +`
-						`Please ensure the module's predictors have their LM set before fine-tuning. ` +`
-						`You can set it using:your_module.set_lm(your_lm)`,
+					`Predictor ${i} does not have an LM assigned. ` +
+						`Please ensure the module's predictors have their LM set before fine-tuning. ` +
+						`You can set it using: your_module.set_lm(your_lm)`,
 				);
 }
 }
@@ -610,7 +610,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 
 		if (studentPredictors.length !== teacherPredictors.length) {
 			throw new Error(
-				`Structurally equivalent programs must have the same number of predictors. ` +`
+				`Structurally equivalent programs must have the same number of predictors. ` +
 					`Student has ${studentPredictors.length}, Teacher has ${teacherPredictors.length}.`,
 			);
 }
@@ -629,8 +629,8 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 		for (const [i, studentPredictor] of studentPredictors.entries()) {
 			if (studentPredictor === teacherPredictors[i]) {
 				throw new Error(
-					`The programs share predictor ${i}. ` +`
-						`This is not allowed for BootstrapFinetune. ` +`
+					`The programs share predictor ${i}. ` +
+						`This is not allowed for BootstrapFinetune. ` +
 						`Please ensure the teacher is a separate instance.`,
 				);
 }

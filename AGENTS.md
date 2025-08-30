@@ -20,13 +20,62 @@ src/
 
 ### Package Organization
 
-**52+ packages** organized across strategic domains:
+**25+ packages** organized for project structure across strategic domains:
 
 - **apps/**: Primary applications (server + web dashboard)
-- **packages/core/**: Foundation systems (database, memory, neural)
-- **packages/services/**: Enterprise services (coordination, brain, monitoring)
+- **packages/core/**: Foundation systems and core libraries 
+- **packages/services/**: Enterprise services and coordination systems
 - **packages/tools/**: Development and analysis utilities
 - **packages/integrations/**: External system connectors
+
+#### Complete Package List with Purposes
+
+**📦 Core Packages (packages/core/):**
+- `@claude-zen/foundation` - Self-contained foundation with Node.js built-ins: logging, config, DI, error handling, utilities
+- `@claude-zen/database` - Multi-database abstraction layer (SQLite, LanceDB, Kuzu)
+- `@claude-zen/memory` - Advanced memory coordination and orchestration system
+- `@claude-zen/neural-ml` - High-performance neural ML library (private, used by brain)
+- `@claude-zen/dspy` - DSPy Stanford integration engine (private, used by brain)
+- `@claude-zen/fact-system` - FACT system with Rust engine (private, used by knowledge)
+
+**🔧 Services Packages (packages/services/):**
+- `@claude-zen/coordination` - Unified coordination: SPARC, SAFe, workflows, orchestration, teamwork
+- `@claude-zen/brain` - Comprehensive neural brain system with behavioral intelligence
+- `@claude-zen/knowledge` - Advanced knowledge management with distributed learning
+- `@claude-zen/agent-registry` - Dedicated agent registry with DI container integration
+- `@claude-zen/agent-monitoring` - Comprehensive agent health monitoring and performance tracking
+- `@claude-zen/document-intelligence` - Unified document intelligence with semantic analysis
+- `@claude-zen/load-balancing` - Advanced load balancing and resource optimization
+- `@claude-zen/system-monitoring` - System and infrastructure monitoring (CPU, memory, performance)
+- `@claude-zen/telemetry` - Core telemetry infrastructure with OpenTelemetry and metrics
+- `@claude-zen/ai-safety` - AI safety monitoring with deception detection
+
+**🛠️ Tools Packages (packages/tools/):**
+- `@claude-zen/code-analyzer` - Live code analysis with AI-powered insights
+- `@claude-zen/git-operations` - AI-powered Git operations with intelligent conflict resolution
+- `@claude-zen/language-parsers` - Multi-language parsers for code analysis
+- `@claude-zen/beam-analyzer` - BEAM ecosystem analysis for Erlang, Elixir, Gleam, LFE
+- `@claude-zen/codeql` - CodeQL integration for semantic analysis and vulnerability detection
+- `@claude-zen/ai-linter` - AI-powered TypeScript/JavaScript linter with GPT integration
+- `@claude-zen/singularity-coder` - Advanced file-aware AI engine with CodeMesh analysis
+
+**🔌 Integration Packages (packages/integrations/):**
+- `@claude-zen/llm-providers` - LLM provider integrations: CLI tools, Direct APIs, AI services
+- `@claude-zen/exporters` - Export utilities and systems
+- `@claude-zen/otel-collector` - Internal OpenTelemetry collector for observability
+
+#### Architecture Principles
+
+**Foundation Package:**
+- **Self-contained** - Minimal external dependencies, uses Node.js built-ins primarily
+- **Centralized utilities** - All common utilities (lodash, date-fns, commander, etc.) exported from foundation
+- **Core infrastructure** - Logging, configuration, dependency injection, error handling
+
+**Other Packages:**
+- **Organizational structure** - For managing complexity in large project, NOT self-contained libraries
+- **Depend on foundation** - Import utilities from foundation rather than direct dependencies
+- **Depend on each other** - Can import from other packages as needed for functionality
+- **Project coherence** - Work together as integrated system rather than independent libraries
 
 ## 🤖 Agent Coordination System
 

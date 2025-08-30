@@ -83,49 +83,51 @@ claude-zen
 
 ## 🚀 System Architecture
 
-### **Direct Package Architecture - ENTERPRISE READY**
+### **Direct Package Architecture - PROJECT ORGANIZATION**
 
-claude-code-zen uses **direct package imports** with **50+ packages** providing enterprise coordination, systematic development, and tool integration:
+claude-code-zen uses **direct package imports** with **25+ packages** providing enterprise coordination, systematic development, and tool integration:
 
-#### **🏗️ Package Organization:**
+#### **🏗️ Package Organization (Project Structure):**
 
 ```
 📦 Core Packages (packages/core/):
-├── @claude-zen/foundation       ✅ Core utilities, centralized common utilities
-├── @claude-zen/database         ✅ Database adapters (SQLite, LanceDB, Kuzu)
-├── @claude-zen/event-system     ✅ Type-safe event communication
-├── @claude-zen/memory           ✅ Memory management and persistence
-├── @claude-zen/neural-ml        ✅ Neural networks and ML models
-├── @claude-zen/dspy             ✅ DSPy neural optimization
-├── @claude-zen/fact-system      ✅ Knowledge facts and reasoning
-└── @claude-zen/architecture     ✅ System architecture validation
+├── @claude-zen/foundation       ✅ Self-contained foundation with Node.js built-ins
+├── @claude-zen/database         ✅ Multi-database abstraction (SQLite, LanceDB, Kuzu)
+├── @claude-zen/memory           ✅ Advanced memory coordination and orchestration
+├── @claude-zen/neural-ml        ✅ High-performance neural ML (private, used by brain)
+├── @claude-zen/dspy             ✅ DSPy Stanford integration (private, used by brain)
+└── @claude-zen/fact-system      ✅ FACT system with Rust engine (private, used by knowledge)
 
 🔧 Services Packages (packages/services/):
-├── @claude-zen/brain            ✅ AI coordination and optimization
-├── @claude-zen/knowledge        ✅ Knowledge management
 ├── @claude-zen/coordination     ✅ Unified coordination package includes:
 │   ├── SAFe 6.0 framework       ✅ Enterprise portfolio planning
 │   ├── SPARC methodology        ✅ 5-phase development process
 │   ├── Teamwork orchestration   ✅ Multi-agent coordination
 │   ├── Workflow engines         ✅ XState process orchestration
 │   └── TaskMaster management    ✅ SOC2-compliant task management
-├── @claude-zen/load-balancing   ✅ Intelligent load distribution
-├── @claude-zen/system-monitoring ✅ Performance and health tracking
-├── @claude-zen/telemetry        ✅ Metrics collection and analysis
-└── @claude-zen/ai-safety        ✅ AI safety monitoring
+├── @claude-zen/brain            ✅ Neural brain system with behavioral intelligence
+├── @claude-zen/knowledge        ✅ Advanced knowledge management with distributed learning
+├── @claude-zen/agent-registry   ✅ Dedicated agent registry with DI container integration
+├── @claude-zen/agent-monitoring ✅ Agent health monitoring and performance tracking
+├── @claude-zen/document-intelligence ✅ Document intelligence with semantic analysis
+├── @claude-zen/load-balancing   ✅ Advanced load balancing and resource optimization
+├── @claude-zen/system-monitoring ✅ System/infrastructure monitoring (CPU, memory)
+├── @claude-zen/telemetry        ✅ Core telemetry with OpenTelemetry and metrics
+└── @claude-zen/ai-safety        ✅ AI safety monitoring with deception detection
 
 🛠️ Tools Packages (packages/tools/):
-├── @claude-zen/code-analyzer    ✅ Static code analysis
-├── @claude-zen/git-operations   ✅ Git workflow automation
-├── @claude-zen/repo-analyzer    ✅ Repository analysis
-├── @claude-zen/beam-analyzer    ✅ Beam language support
-├── @claude-zen/codeql           ✅ Security analysis
-└── @claude-zen/ai-linter        ✅ AI-powered code quality
+├── @claude-zen/code-analyzer    ✅ Live code analysis with AI-powered insights
+├── @claude-zen/git-operations   ✅ AI-powered Git operations with conflict resolution
+├── @claude-zen/language-parsers ✅ Multi-language parsers for code analysis
+├── @claude-zen/beam-analyzer    ✅ BEAM ecosystem analysis (Erlang, Elixir, Gleam, LFE)
+├── @claude-zen/codeql           ✅ CodeQL integration for vulnerability detection
+├── @claude-zen/ai-linter        ✅ AI-powered TypeScript/JavaScript linter
+└── @claude-zen/singularity-coder ✅ Advanced file-aware AI engine with CodeMesh
 
 🔌 Integration Packages (packages/integrations/):
-├── @claude-zen/llm-providers    ✅ LLM provider integrations
-├── @claude-zen/exporters        ✅ Data export functionality
-└── @claude-zen/otel-collector   ✅ OpenTelemetry integration
+├── @claude-zen/llm-providers    ✅ LLM provider integrations (CLI, APIs, services)
+├── @claude-zen/exporters        ✅ Export utilities and systems
+└── @claude-zen/otel-collector   ✅ OpenTelemetry collector for observability
 ```
 
 #### **🎯 Direct Import Principles:**
@@ -155,15 +157,16 @@ import { RepositoryAnalyzer } from '@claude-zen/repo-analyzer';
 import { CodeAnalyzer } from '@claude-zen/code-analyzer';
 ```
 
-**🏗️ Direct Import Architecture Benefits:**
+**🏗️ Project Structure Benefits:**
 
-- **Explicit Dependencies** - Clear what each package needs
-- **Faster Builds** - No indirection layers
+- **Foundation Self-Contained** - Minimal dependencies, uses Node.js built-ins
+- **Organized Complexity** - Packages provide structure for large project
+- **Clear Dependencies** - Foundation provides common utilities, packages depend on each other as needed
+- **Faster Builds** - No indirection layers, direct imports
 - **Better Debugging** - Direct error traces to source
-- **Simpler Code** - No lazy loading complexity
+- **Simpler Code** - No artificial isolation, natural project organization
 - **Clear Failure Points** - Build fails show exactly what's missing
-- **Package Independence** - Fix packages in any order
-- **Easier Maintenance** - One place per functionality
+- **Package Cohesion** - Work together as integrated system
 
 #### **✅ Current Import Patterns:**
 
@@ -245,6 +248,18 @@ import { LLMProvider } from '@claude-zen/llm-providers';
 // import pino from 'pino';                  // Use: import { getLogger } from '@claude-zen/foundation'
 // import dotenv from 'dotenv';              // Use: import { getConfig } from '@claude-zen/foundation'
 // import Ajv from 'ajv';                    // Use: import { z, validateInput } from '@claude-zen/foundation'
+
+// ❌ FORBIDDEN - Custom Result types (USE FOUNDATION INSTEAD)
+// type Result<T, E> = { success: true; data: T } | { success: false; error: E };
+// const ok = <T>(data: T) => ({ success: true, data });
+// const err = <E>(error: E) => ({ success: false, error });
+// Use: import { Result, ok, err } from '@claude-zen/foundation'
+
+// ❌ FORBIDDEN - Custom logger implementations (USE FOUNDATION INSTEAD)  
+// const logger = { info: console.log, error: console.error };
+// Use: import { getLogger } from '@claude-zen/foundation'
+
+// Note: src/ files outside packages may need simple implementations due to import limitations
 ```
 
 **🏗️ Architecture Enforcement:**
@@ -257,16 +272,16 @@ pnpm validate:architecture
 pnpm run validate:architecture
 ```
 
-#### **🎯 5-Tier Strategic Benefits:**
+#### **🎯 Project Architecture Benefits:**
 
-- **70%+ Code Reduction** through intelligent delegation
-- **Battle-Tested Logic** via proven package implementations
-- **Lazy Loading** for optimal performance
-- **Type Safety** with comprehensive TypeScript support
-- **Zero Breaking Changes** through package compatibility patterns
-- **Professional Patterns** matching enterprise architecture standards
-- **Security Isolation** through 5-tier access control
-- **Dependency Simplification** - import only from Tier 1
+- **Foundation Self-Contained** - Minimal external dependencies, uses Node.js built-ins primarily
+- **Package Organization** - Structured project management for complex enterprise system  
+- **Clear Dependency Flow** - Foundation provides utilities, packages depend on foundation and each other as needed
+- **Faster Builds** - No indirection layers, direct imports
+- **Better Debugging** - Direct error traces to source
+- **Integrated System** - Packages work together cohesively rather than in isolation
+- **Clear Failure Points** - Build fails show exactly what's missing
+- **Project Coherence** - All components work together as unified enterprise system
 
 ### **Enterprise Coordination System**
 

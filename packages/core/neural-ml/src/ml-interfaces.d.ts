@@ -240,12 +240,14 @@ export declare class SimpleMLEngine implements MLEngine {
 export declare function createMLEngine(config?: any, logger?: Logger): MLEngine;
 export declare function createBayesianOptimizer(config: OptimizationBounds): BayesianOptimizer;
 export declare function createMultiObjectiveOptimizer(config: OptimizationBounds): MultiObjectiveOptimizer;
-export declare function createStatisticalAnalyzer(): StatisticalAnalyzer;
+export declare function createGradientOptimizer(config: any): GradientOptimizer;
+export declare function createPatternLearner(config: any): PatternLearner;
+export declare function createOnlineLearner(config: any): OnlineLearner;
 declare const _default: {
     MLEngine: typeof SimpleMLEngine;
     createMLEngine: typeof createMLEngine;
     createBayesianOptimizer: typeof createBayesianOptimizer;
-    createStatisticalAnalyzer: typeof createStatisticalAnalyzer;
+    createStatisticalAnalyzer: any;
     createMultiObjectiveOptimizer: typeof createMultiObjectiveOptimizer;
     createGradientOptimizer: typeof createGradientOptimizer;
     createPatternLearner: typeof createPatternLearner;

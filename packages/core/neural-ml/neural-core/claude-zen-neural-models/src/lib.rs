@@ -8,6 +8,30 @@ use serde::{Deserialize, Serialize};
 use anyhow::Result;
 use rand::prelude::*;
 
+// WASM support
+#[cfg(target_arch = "wasm32")]
+#[allow(unused_imports)]
+use wasm_bindgen::prelude::*;
+
+#[cfg(target_arch = "wasm32")]
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(s: &str);
+}
+
+#[cfg(target_arch = "wasm32")]
+#[macro_export]
+macro_rules! console_log {
+    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
+}
+
+#[cfg(target_arch = "wasm32")]
+#[wasm_bindgen(start)]
+pub fn main() {
+    console_error_panic_hook::set_once();
+}
+
 /// Activation function enumeration
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum ActivationFunction {
@@ -436,3 +460,187 @@ impl TrainingAlgorithm for Adam {
 // Re-export key types for compatibility
 pub use ActivationFunction as ActivationFunc;
 pub use NetworkError as TrainingError;
+
+// Advanced modules
+pub mod advanced;
+
+// Re-export optimization types for easy access
+pub use advanced::optimization::{
+    GeneticOptimizer, ParticleSwarmOptimizer, HyperparameterOptimizer,
+    OptimizationResult, Individual, Particle
+};
+
+// Re-export financial operations
+pub use advanced::financial_ops::{
+    FinancialMatrix, TechnicalIndicators, PatternRecognition
+};
+
+// Re-export ensemble learning
+pub use advanced::ensemble::{
+    EnsembleModel, BaggingEnsemble, BoostingEnsemble, StackingEnsemble,
+    EnsembleFactory, EnsembleMetrics, AggregationMethod
+};
+
+// Re-export memory-efficient architectures
+pub use advanced::memory_efficient::{
+    QuantizedNetwork, StreamingNetwork, SparseNetwork, MemoryEfficientFactory,
+    QuantizedLayer, StreamingLayer, SparseLayer
+};
+
+// WASM Bindings
+#[cfg(target_arch = "wasm32")]
+mod wasm_bindings {
+    use super::*;
+    use serde_wasm_bindgen::{to_value, from_value};
+
+    /// WASM wrapper for the GeneticOptimizer
+    #[wasm_bindgen]
+    pub struct WasmGeneticOptimizer {
+        inner: advanced::optimization::GeneticOptimizer,
+    }
+
+    #[wasm_bindgen]
+    impl WasmGeneticOptimizer {
+        #[wasm_bindgen(constructor)]
+        pub fn new(bounds: JsValue) -> Result<WasmGeneticOptimizer, JsValue> {
+            let bounds_f64: Vec<(f64, f64)> = from_value(bounds)
+                .map_err(|e| JsValue::from_str(&format!("Invalid bounds: {}", e)))?;
+            
+            // Convert f64 bounds to f32
+            let bounds_f32: Vec<(f32, f32)> = bounds_f64.into_iter()
+                .map(|(a, b)| (a as f32, b as f32))
+                .collect();
+            
+            let optimizer = advanced::optimization::GeneticOptimizer::new(bounds_f32);
+            Ok(WasmGeneticOptimizer { inner: optimizer })
+        }
+
+        #[wasm_bindgen]
+        pub fn optimize(&self, _fitness_fn: &js_sys::Function) -> Result<JsValue, JsValue> {
+            // Simplified optimization for demonstration
+            // In practice, would need to properly handle JS function calls
+            let dummy_fitness = |_params: &Array1<f32>| -> f32 { 0.5 };
+            let result = self.inner.optimize(dummy_fitness);
+            let result_f64: Vec<f64> = result.iter().map(|&x| x as f64).collect();
+            to_value(&result_f64).map_err(|e| JsValue::from_str(&format!("Serialization error: {}", e)))
+        }
+    }
+
+    /// WASM wrapper for FinancialMatrix operations
+    #[wasm_bindgen]
+    pub struct WasmFinancialMatrix;
+
+    #[wasm_bindgen]
+    impl WasmFinancialMatrix {
+        #[wasm_bindgen]
+        pub fn rsi(prices: &[f64], period: usize) -> Result<JsValue, JsValue> {
+            let prices_f32: Vec<f32> = prices.iter().map(|&x| x as f32).collect();
+            let prices_array = Array1::from(prices_f32);
+            let result = advanced::financial_ops::FinancialMatrix::rsi(&prices_array, period);
+            let result_f64: Vec<f64> = result.iter().map(|&x| x as f64).collect();
+            to_value(&result_f64).map_err(|e| JsValue::from_str(&format!("RSI calculation error: {}", e)))
+        }
+
+        #[wasm_bindgen]
+        pub fn macd(prices: &[f64], fast: f64, slow: f64, signal: f64) -> Result<JsValue, JsValue> {
+            let prices_f32: Vec<f32> = prices.iter().map(|&x| x as f32).collect();
+            let prices_array = Array1::from(prices_f32);
+            let (macd_line, signal_line, histogram) = 
+                advanced::financial_ops::TechnicalIndicators::macd(
+                    &prices_array, fast as f32, slow as f32, signal as f32
+                );
+            
+            let result = serde_json::json!({
+                "macd": macd_line.iter().map(|&x| x as f64).collect::<Vec<f64>>(),
+                "signal": signal_line.iter().map(|&x| x as f64).collect::<Vec<f64>>(),
+                "histogram": histogram.iter().map(|&x| x as f64).collect::<Vec<f64>>()
+            });
+            
+            to_value(&result).map_err(|e| JsValue::from_str(&format!("MACD calculation error: {}", e)))
+        }
+
+        #[wasm_bindgen]
+        pub fn moving_average(data: &[f64], window: usize) -> Result<JsValue, JsValue> {
+            let data_f32: Vec<f32> = data.iter().map(|&x| x as f32).collect();
+            let data_array = Array1::from(data_f32);
+            let result = advanced::financial_ops::FinancialMatrix::moving_average(&data_array, window);
+            let result_f64: Vec<f64> = result.iter().map(|&x| x as f64).collect();
+            to_value(&result_f64).map_err(|e| JsValue::from_str(&format!("Moving average error: {}", e)))
+        }
+    }
+
+    /// WASM wrapper for BaggingEnsemble
+    #[wasm_bindgen]
+    pub struct WasmBaggingEnsemble {
+        #[allow(dead_code)]
+        inner: advanced::ensemble::BaggingEnsemble,
+    }
+
+    #[wasm_bindgen]
+    impl WasmBaggingEnsemble {
+        #[wasm_bindgen(constructor)]
+        pub fn new(sample_ratio: f64, method: &str) -> Result<WasmBaggingEnsemble, JsValue> {
+            let agg_method = match method {
+                "mean" => advanced::ensemble::AggregationMethod::Mean,
+                "median" => advanced::ensemble::AggregationMethod::Median,
+                _ => advanced::ensemble::AggregationMethod::Mean, // Default to mean
+            };
+
+            let ensemble = advanced::ensemble::BaggingEnsemble::new(sample_ratio as f32, agg_method);
+            Ok(WasmBaggingEnsemble { inner: ensemble })
+        }
+
+        #[wasm_bindgen]
+        pub fn predict(&self, _input: &[f64]) -> Result<JsValue, JsValue> {
+            // Note: This is a simplified version - in practice would need model integration
+            let result = vec![0.0]; // Placeholder
+            to_value(&result).map_err(|e| JsValue::from_str(&format!("Prediction error: {}", e)))
+        }
+    }
+
+    /// WASM wrapper for QuantizedNetwork
+    #[wasm_bindgen]
+    pub struct WasmQuantizedNetwork {
+        inner: advanced::memory_efficient::QuantizedNetwork,
+    }
+
+    #[wasm_bindgen]
+    impl WasmQuantizedNetwork {
+        #[wasm_bindgen(constructor)]
+        pub fn new(layer_sizes: &[usize], activations: JsValue, learning_rate: f64, bits: u8) -> Result<WasmQuantizedNetwork, JsValue> {
+            let activations: Vec<String> = from_value(activations)
+                .map_err(|e| JsValue::from_str(&format!("Invalid activations: {}", e)))?;
+            
+            let act_funcs: Vec<ActivationFunction> = activations.iter().map(|a| match a.as_str() {
+                "relu" => ActivationFunction::ReLU,
+                "sigmoid" => ActivationFunction::Sigmoid,
+                "tanh" => ActivationFunction::Tanh,
+                _ => ActivationFunction::ReLU,
+            }).collect();
+
+            let network = advanced::memory_efficient::QuantizedNetwork::new(
+                layer_sizes, &act_funcs, learning_rate as f32, bits
+            );
+            Ok(WasmQuantizedNetwork { inner: network })
+        }
+
+        #[wasm_bindgen]
+        pub fn predict(&mut self, input: &[f64]) -> Result<JsValue, JsValue> {
+            let input_f32: Vec<f32> = input.iter().map(|&x| x as f32).collect();
+            let input_array = Array1::from(input_f32);
+            
+            let result = self.inner.predict(&input_array);
+            let result_f64: Vec<f64> = result.iter().map(|&x| x as f64).collect();
+            
+            to_value(&result_f64).map_err(|e| JsValue::from_str(&format!("Prediction error: {}", e)))
+        }
+
+        #[wasm_bindgen]
+        pub fn memory_usage(&self) -> usize {
+            self.inner.memory_usage()
+        }
+    }
+}
+
+#[cfg(target_arch = "wasm32")]
+pub use wasm_bindings::*;
