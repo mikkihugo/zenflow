@@ -50,17 +50,17 @@ let openaiModule: any = null;
 // Interface definitions
 export interface NeuralBackendConfig {
   /** Primary model strategy */
-  primaryModel:'all-mpnet-base-v2' | ' all-MiniLM-L6-v2' | ' custom;
+  primaryModel: 'all-mpnet-base-v2' | 'all-MiniLM-L6-v2' | 'custom';
 
   /** Enable smart fallback chain */
   enableFallbacks: boolean;
 
   /** Cache configuration */
-  cache:{
+  cache: {
     maxSize: number;
     ttlMs: number;
     performanceBasedEviction: boolean;
-};
+  };
 
   /** Model loading configuration */
   loading:{
@@ -108,19 +108,19 @@ export interface NeuralEmbeddingResult {
   success: boolean;
   embedding: number[];
   confidence: number;
-  model:'transformers' | ' brain-js' | ' basic' | ' openai;
+  model: 'transformers' | 'brain-js' | 'basic' | 'openai';
   processingTime: number;
   fromCache: boolean;
   qualityScore: number;
-  fallbacksUsed?:string[];
-  error?:string;
-  metadata:{
+  fallbacksUsed?: string[];
+  error?: string;
+  metadata: {
     model: string;
     processingTime: number;
     fromCache: boolean;
-    priority?:'low' | ' medium' | ' high';
-    qualityLevel?:'basic' | ' standard' | ' premium';
-    context?:string;
+    priority?: 'low' | 'medium' | 'high';
+    qualityLevel?: 'basic' | 'standard' | 'premium';
+    context?: string;
     confidence: number;
     qualityScore: number;
 };
@@ -131,13 +131,13 @@ export interface NeuralEmbeddingResult {
  */
 export interface NeuralClassificationRequest {
   text: string;
-  taskType:|'sentiment|intent|category|toxicity|language|custom;
-  categories?:string[]; // For custom classification
-  context?:string;
-  priority?:'low' | ' medium' | ' high';
-  qualityLevel?:'basic' | ' standard' | ' premium';
-  confidenceThreshold?:number;
-  cacheKey?:string;
+  taskType: 'sentiment' | 'intent' | 'category' | 'toxicity' | 'language' | 'custom';
+  categories?: string[]; // For custom classification
+  context?: string;
+  priority?: 'low' | 'medium' | 'high';
+  qualityLevel?: 'basic' | 'standard' | 'premium';
+  confidenceThreshold?: number;
+  cacheKey?: string;
 }
 
 export interface NeuralClassificationResult {
@@ -146,14 +146,14 @@ export interface NeuralClassificationResult {
     label: string;
     confidence: number;
     scores: Record<string, number>; // All category scores
-};
-  model:'transformers' | ' brain-js' | ' basic' | ' openai;
+  };
+  model: 'transformers' | 'brain-js' | 'basic' | 'openai';
   processingTime: number;
   fromCache: boolean;
   qualityScore: number;
-  fallbacksUsed?:string[];
-  error?:string;
-  metadata:{
+  fallbacksUsed?: string[];
+  error?: string;
+  metadata: {
     taskType: string;
     model: string;
     processingTime: number;
@@ -171,27 +171,27 @@ export interface NeuralClassificationResult {
  */
 export interface NeuralGenerationRequest {
   prompt: string;
-  taskType:'completion' | ' summarization' | ' translation' | ' paraphrase' | ' creative' | ' code' | ' custom;
-  maxLength?:number;
-  temperature?:number; // 0.0 - 2.0
-  topP?:number;
-  topK?:number;
-  context?:string;
-  priority?:'low' | ' medium' | ' high';
-  qualityLevel?:'basic' | ' standard' | ' premium';
-  cacheKey?:string;
-  stopSequences?:string[];
+  taskType: 'completion' | 'summarization' | 'translation' | 'paraphrase' | 'creative' | 'code' | 'custom';
+  maxLength?: number;
+  temperature?: number; // 0.0 - 2.0
+  topP?: number;
+  topK?: number;
+  context?: string;
+  priority?: 'low' | 'medium' | 'high';
+  qualityLevel?: 'basic' | 'standard' | 'premium';
+  cacheKey?: string;
+  stopSequences?: string[];
 }
 
 export interface NeuralGenerationResult {
   success: boolean;
-  generated:{
+  generated: {
     text: string;
-    finishReason: 'completed|length|stop_sequence|error;
-'    tokensGenerated: number;
-    alternatives?:string[]; // Multiple generation candidates
-};
-  model:'transformers' | ' brain-js' | ' basic' | ' openai;
+    finishReason: 'completed' | 'length' | 'stop_sequence' | 'error';
+    tokensGenerated: number;
+    alternatives?: string[]; // Multiple generation candidates
+  };
+  model: 'transformers' | 'brain-js' | 'basic' | 'openai';
   processingTime: number;
   fromCache: boolean;
   qualityScore: number;
@@ -219,14 +219,14 @@ export interface NeuralGenerationResult {
  * Phase 4:Vision Phase
  */
 export interface NeuralVisionRequest {
-  image: string|Buffer|ArrayBuffer; // Base64 string, Buffer, or ArrayBuffer
-  taskType:|'describe|ocr|classify|detect_objects|analyze_scene|custom;
-  prompt?:string; // Additional context for vision-language tasks
-  context?:string;
-  priority?:'low' | ' medium' | ' high';
-  qualityLevel?:'basic' | ' standard' | ' premium';
-  maxTokens?:number;
-  cacheKey?:string;
+  image: string | Buffer | ArrayBuffer; // Base64 string, Buffer, or ArrayBuffer
+  taskType: 'describe' | 'ocr' | 'classify' | 'detect_objects' | 'analyze_scene' | 'custom';
+  prompt?: string; // Additional context for vision-language tasks
+  context?: string;
+  priority?: 'low' | 'medium' | 'high';
+  qualityLevel?: 'basic' | 'standard' | 'premium';
+  maxTokens?: number;
+  cacheKey?: string;
 }
 
 export interface NeuralVisionResult {
@@ -244,15 +244,15 @@ export interface NeuralVisionResult {
       confidence: number;
       scores: Record<string, number>;
 };
-    analysis?:Record<string, any>; // Custom analysis results
-};
-  model:'transformers' | ' brain-js' | ' basic' | ' openai;
+    analysis?: Record<string, any>; // Custom analysis results
+  };
+  model: 'transformers' | 'brain-js' | 'basic' | 'openai';
   processingTime: number;
   fromCache: boolean;
   qualityScore: number;
-  fallbacksUsed?:string[];
-  error?:string;
-  metadata:{
+  fallbacksUsed?: string[];
+  error?: string;
+  metadata: {
     taskType: string;
     model: string;
     processingTime: number;
@@ -273,26 +273,26 @@ export interface NeuralVisionResult {
  * Phase 5:Other Neural Tasks
  */
 export interface NeuralTaskRequest {
-  taskType:|'question_answering|similarity|clustering|anomaly_detection|feature_extraction|custom;
-  input:{
-    text?:string;
-    texts?:string[]; // For similarity, clustering
-    question?:string;
-    context?:string;
-    data?:any[]; // For anomaly detection, clustering
-    reference?:string; // For similarity tasks
-};
-  parameters?:{
-    threshold?:number;
-    topK?:number;
-    algorithm?:string;
-    metric?: 'cosine|euclidean|manhattan|jaccard;
-'    clusterCount?:number;
+  taskType: 'question_answering' | 'similarity' | 'clustering' | 'anomaly_detection' | 'feature_extraction' | 'custom';
+  input: {
+    text?: string;
+    texts?: string[]; // For similarity, clustering
+    question?: string;
+    context?: string;
+    data?: any[]; // For anomaly detection, clustering
+    reference?: string; // For similarity tasks
+  };
+  parameters?: {
+    threshold?: number;
+    topK?: number;
+    algorithm?: string;
+    metric?: 'cosine' | 'euclidean' | 'manhattan' | 'jaccard';
+    clusterCount?: number;
     [key: string]: any;
-};
-  priority?:'low' | ' medium' | ' high';
-  qualityLevel?:'basic' | ' standard' | ' premium';
-  cacheKey?:string;
+  };
+  priority?: 'low' | 'medium' | 'high';
+  qualityLevel?: 'basic' | 'standard' | 'premium';
+  cacheKey?: string;
 }
 
 export interface NeuralTaskResult {
@@ -335,14 +335,14 @@ export interface NeuralTaskResult {
 };
 
     // Custom results
-    custom?:Record<string, any>;
-};
-  model:'transformers' | ' brain-js' | ' basic' | ' openai;
+    custom?: Record<string, any>;
+  };
+  model: 'transformers' | 'brain-js' | 'basic' | 'openai';
   processingTime: number;
   fromCache: boolean;
   qualityScore: number;
-  fallbacksUsed?:string[];
-  error?:string;
+  fallbacksUsed?: string[];
+  error?: string;
   metadata:{
     taskType: string;
     model: string;
@@ -432,28 +432,34 @@ export class SmartNeuralCoordinator {
     this.logger = getLogger('smart-neural-coordinator');
 
     // Default configuration with intelligent defaults
-    this.config = 
-      primaryModel: 'all-mpnet-base-v2',      enableFallbacks: true,
-      cache:
-        maxSize:10000,
-        ttlMs:3600000, // 1 hour
-        performanceBasedEviction: true,,
-      loading:
-        timeoutMs:30000, // 30 seconds
-        retryAttempts:3,
-        lazyLoading: true,,
-      performance:
-        batchSize:32,
-        maxConcurrency:4,
-        enableProfiling: true,,
-      ...config,;
+    this.config = {
+      primaryModel: 'all-mpnet-base-v2',
+      enableFallbacks: true,
+      cache: {
+        maxSize: 10000,
+        ttlMs: 3600000, // 1 hour
+        performanceBasedEviction: true,
+      },
+      loading: {
+        timeoutMs: 30000, // 30 seconds
+        retryAttempts: 3,
+        lazyLoading: true,
+      },
+      performance: {
+        batchSize: 32,
+        maxConcurrency: 4,
+        enableProfiling: true,
+      },
+      ...config,
+    };
 
     this.logger.info(
-      'SmartNeuralCoordinator created with intelligent backend configuration')    );
+      'SmartNeuralCoordinator created with intelligent backend configuration'
+    );
 
     // Record initialization metric
     recordMetric('smart_neural_coordinator_created', 1, {
-    ')      primary_model: this.config.primaryModel,
+      primary_model: this.config.primaryModel,
       fallbacks_enabled: String(this.config.enableFallbacks),
       cache_enabled: String(this.config.cache.maxSize > 0),
 });
@@ -462,13 +468,15 @@ export class SmartNeuralCoordinator {
   /**
    * Initialize the Smart Neural Coordinator with intelligent model loading
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     if (this.initialized) {
-      this.logger.debug('SmartNeuralCoordinator already initialized');')      return;
-}
+      this.logger.debug('SmartNeuralCoordinator already initialized');
+      return;
+    }
 
     return withAsyncTrace(
-      'smart-neural-coordinator-initialize',      async (span: Span) => {
+      'smart-neural-coordinator-initialize',
+      async (span: Span) => {
         const initTimer = Date.now();
 
         try {
@@ -505,10 +513,11 @@ export class SmartNeuralCoordinator {
 
           // Record comprehensive initialization metrics
           recordMetric('smart_neural_coordinator_initialized', 1, {
-    ')            status: 'success',            duration_ms: String(initTime),
+            status: 'success',
+            duration_ms: String(initTime),
             models_loaded: String(this.getLoadedModelsCount()),
             primary_model_ready: String(this.isPrimaryModelReady()),
-});
+          });
 
           recordHistogram('smart_neural_initialization_duration_ms', initTime, {
     ')            lazy_loading: String(this.config.loading.lazyLoading),
@@ -1587,13 +1596,17 @@ export class SmartNeuralCoordinator {
 
     // Try premium OpenAI first if requested and available
     if (request.qualityLevel === 'premium' && this.openaiClient) {
-    ')      try {
+      try {
         const result = await this.generateOpenAIEmbedding(request.text);
         span.setAttributes({
-    'neural.embedding.primary_method': ' openai'});')        return { ...result, fallbacksUsed};
-} catch (error) {
-        fallbacksUsed.push('openai-failed');')        this.logger.debug('OpenAI embedding failed, falling back:', error);')}
-}
+          'neural.embedding.primary_method': 'openai'
+        });
+        return { ...result, fallbacksUsed };
+      } catch (error) {
+        fallbacksUsed.push('openai-failed');
+        this.logger.debug('OpenAI embedding failed, falling back:', error);
+      }
+    }
 
     // Try primary transformers model
     if (this.transformerModel||this.config.loading.lazyLoading) {

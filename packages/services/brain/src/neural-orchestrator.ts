@@ -1244,8 +1244,9 @@ export class NeuralOrchestrator {
   /**
    * Get task complexity prediction
    */
-  predictTaskComplexity(task:Omit<NeuralTask, 'id'>):TaskComplexity {
-    ')    return this.analyzeTaskComplexity({ ...task, id: 'prediction'});')}
+  predictTaskComplexity(task: Omit<NeuralTask, 'id'>): TaskComplexity {
+    return this.analyzeTaskComplexity({ ...task, id: 'prediction' });
+  }
 
   /**
    * Get numeric complexity level for comparison

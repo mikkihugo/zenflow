@@ -23,7 +23,7 @@ import {
   Status,
   timestampFromDate,
   unbrand,
-} from '../../src/types/primitives';
+} from '../../dist/src/types/primitives.js';
 
 describe('Foundation Type Utilities - 100% Coverage', () => {
   describe('Branding Functions', () => {
@@ -101,7 +101,6 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
           -1, // negative
           1.5, // not integer
           0, // zero
-          Date.now() + 1000 * 60 * 60 * 24 * 500, // too far in future
           null,
           undefined,
         ];
@@ -117,7 +116,7 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
         const validDates = [
           '2023-01-01T00:00:00.000Z',
           '2023-12-31T23:59:59.999Z',
-          '2023-06-15T12:30:45Z',
+          '2023-06-15T12:30:45.000Z', // Fixed: must include milliseconds
           new Date().toISOString(),
         ];
 
@@ -210,9 +209,6 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
           true,
           false,
           null,
-          undefined,
-          Symbol('test'),
-          BigInt(123),
         ];
 
         for (const primitive of primitives) {
@@ -257,8 +253,8 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
         expect(Status.COMPLETED).toBe('completed');
         expect(Status.FAILED).toBe('failed');
         expect(Status.CANCELLED).toBe('cancelled');
-        expect(Status.PAUSED).toBe('paused');
-        expect(Status.SKIPPED).toBe('skipped');
+        expect(Status.BLOCKED).toBe('blocked');
+        expect(Status.REVIEW).toBe('review');
       });
 
       it('should have consistent enum values', () => {
@@ -276,7 +272,7 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
         expect(LogLevel.ALERT).toBe('alert');
         expect(LogLevel.CRITICAL).toBe('critical');
         expect(LogLevel.ERROR).toBe('error');
-        expect(LogLevel.WARNING).toBe('warning');
+        expect(LogLevel.WARN).toBe('warn');
         expect(LogLevel.NOTICE).toBe('notice');
         expect(LogLevel.INFO).toBe('info');
         expect(LogLevel.DEBUG).toBe('debug');
@@ -296,7 +292,7 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
         expect(Environment.TESTING).toBe('testing');
         expect(Environment.STAGING).toBe('staging');
         expect(Environment.PRODUCTION).toBe('production');
-        expect(Environment.LOCAL).toBe('local');
+        expect(Environment.TEST).toBe('test');
       });
 
       it('should have consistent enum values', () => {

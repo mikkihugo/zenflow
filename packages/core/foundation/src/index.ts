@@ -350,6 +350,11 @@ export {
   parseISO,
   timestampFromDate,
 } from './utilities/time.js';
+// Type utilities and branding functions
+export {
+  brand,
+  unbrand,
+} from './types/primitives.js';
 
 // =============================================================================
 // TREE-SHAKING GUIDANCE COMMENTS

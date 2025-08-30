@@ -34,10 +34,14 @@ import { ActivationFunction} from './types/index';
 
 // 🧠 Enhanced ML Imports - Using validated API patterns
 
-const brain = require('brain.js');')
+const brain = require('brain.js');
 // Validate brain.js availability and capabilities
 const brainCapabilities = {
-  neuralNetworks:typeof brain.NeuralNetwork === 'function',  recurrentNetworks:typeof brain.recurrent?.LSTM === 'function',  feedForward:typeof brain.FeedForward === 'function',  version:brain.version||'unknown',};
+  neuralNetworks: typeof brain.NeuralNetwork === 'function',
+  recurrentNetworks: typeof brain.recurrent?.LSTM === 'function',
+  feedForward: typeof brain.FeedForward === 'function',
+  version: brain.version || 'unknown',
+};
 
 // Optional ML packages (API compatibility issues - available for future enhancement)
 // import { RandomForestClassifier} from 'ml-random-forest';
@@ -83,8 +87,8 @@ export interface TaskComplexityAnalysis {
   readonly estimatedComplexity:number; // 0-1 scale
   readonly requiredSkills:string[];
   readonly estimatedDuration:number;
-  readonly difficulty: 'easy|medium|hard|expert;
-'  readonly confidence:number;
+  readonly difficulty: 'easy' | 'medium' | 'hard' | 'expert';
+  readonly confidence: number;
 }
 
 /**
@@ -162,9 +166,11 @@ export class BehavioralIntelligence {
         const trainingStrategy = await this.optimizeTrainingStrategy(id, data, options);
         const preprocessedData = await this.preprocessTrainingData(data);
         
-        logger.debug(`Mock:Training neural network ${id}`, {`
-          dataPoints:Array.isArray(data) ? data.length : 'unknown',          options:options ? Object.keys(options) : 'none',          strategy:trainingStrategy
-});
+        logger.debug('Mock: Training neural network ' + id, {
+          dataPoints: Array.isArray(data) ? data.length : 'unknown',
+          options: options ? Object.keys(options) : 'none',
+          strategy: trainingStrategy
+        });
         
         await this.executeTrainingPipeline(id, preprocessedData, trainingStrategy);
         return Promise.resolve();
@@ -1673,16 +1679,26 @@ export async function demoBehavioralIntelligence(
     logger.info(`   • Reasoning:$bestAgent.reasoning\n`);`
 
     // 5. Show behavioral intelligence stats
-    logger.info('📈 Behavioral Intelligence Statistics:');')    const __stats = behavioral.getStats();
-    logger.info(`   • Total agents:$stats.totalAgents`);`
-    logger.info(`   • Training data points:${stats.trainingDataPoints}`);`
-    logger.info(`   • Networks initialized:$stats.networksInitialized`);`
+    logger.info('📈 Behavioral Intelligence Statistics:');
+    const stats = behavioral.getStats();
+    logger.info(`   • Total agents: ${stats.totalAgents}`);
+    logger.info(`   • Training data points: ${stats.trainingDataPoints}`);
+    logger.info(`   • Networks initialized: ${stats.networksInitialized}`);
     logger.info(
-      `   • Average performance:${(stats.averagePerformance * 100).toFixed(1)}%``
+      `   • Average performance: ${(stats.averagePerformance * 100).toFixed(1)}%`
     );
     logger.info(
-      `   • Most active agents:${stats.mostActiveAgents.join(',    ')}``
+      `   • Most active agents: ${stats.mostActiveAgents.join(', ')}`
     );
 
-    logger.info('\n🎉 Behavioral Intelligence Demo Complete!');')    logger.info('\n💡 Key Benefits for claude-code-zen:');')    logger.info('   • Real-time agent performance prediction');')    logger.info('   • Intelligent task-agent matching');')    logger.info('   • Behavioral pattern learning and adaptation');')    logger.info('   • Task complexity estimation for better routing');')    logger.info('   • Data-driven swarm optimization');' catch (error) 
-    logger.error('❌ Demo failed:', error);')}
+    logger.info('\n🎉 Behavioral Intelligence Demo Complete!');
+    logger.info('\n💡 Key Benefits for claude-code-zen:');
+    logger.info('   • Real-time agent performance prediction');
+    logger.info('   • Intelligent task-agent matching');
+    logger.info('   • Behavioral pattern learning and adaptation');
+    logger.info('   • Task complexity estimation for better routing');
+    logger.info('   • Data-driven swarm optimization');
+  } catch (error) {
+    logger.error('❌ Demo failed:', error);
+  }
+}

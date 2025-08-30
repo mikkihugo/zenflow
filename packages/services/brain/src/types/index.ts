@@ -93,18 +93,18 @@ export interface RetentionPolicy {
  * Consolidation strategy for memory
  */
 export interface ConsolidationStrategy {
-  type: '...[proper format needed]
-'  interval?:number;
-  threshold?:number;
+  type: string; // TODO: Define proper enum values
+  interval?: number;
+  threshold?: number;
 }
 
 /**
  * Retrieval mechanism for memory
  */
 export interface RetrievalMechanism {
-  type: '...[proper format needed]
-'  similarity:number;
-  context:boolean;
+  type: string; // TODO: Define proper enum values
+  similarity: number;
+  context: boolean;
 }
 
 /**
@@ -185,18 +185,18 @@ export interface AdaptationEvent {
  * Consensus algorithm
  */
 export interface ConsensusAlgorithm {
-  type: '...[proper format needed]
-'  threshold?:number;
-  weights?:Record<string, number>;
+  type: string; // TODO: Define proper enum values
+  threshold?: number;
+  weights?: Record<string, number>;
 }
 
 /**
  * Synchronization strategy
  */
 export interface SynchronizationStrategy {
-  type: '...[proper format needed]
-'  interval?:number;
-  tolerance?:number;
+  type: string; // TODO: Define proper enum values
+  interval?: number;
+  tolerance?: number;
 }
 
 /**
@@ -226,8 +226,7 @@ export interface Attachment {
  */
 export interface FeatureSpec {
   name:string;
-  type: '...[proper format needed]
-'  description?:string;
+  type: string; // TODO: Define proper enum values
   range?:[number, number];
   categories?:string[];
 }
@@ -256,10 +255,9 @@ export interface PreprocessingConfig {
  * Validation configuration
  */
 export interface ValidationConfig {
-  method: 'holdout|kfold|stratified|timeseries;
-'  splits:number;
-  testSize:number;
-  randomState?:number;
+  method: 'holdout' | 'kfold' | 'stratified' | 'timeseries';
+  testSize: number;
+  randomState?: number;
 }
 
 /**
@@ -311,8 +309,7 @@ export interface NetworkArchitecture {
  * Layer configuration for neural networks
  */
 export interface LayerConfig {
-  type: '...[proper format needed]
-'  size:number;
+  type: string; // TODO: Define proper enum values
   activation?:ActivationFunction;
   dropout?:number;
   regularization?:RegularizationConfig;
@@ -351,8 +348,8 @@ export interface EarlyStoppingConfig {
   enabled:boolean;
   patience:number;
   minDelta:number;
-  metric:'loss' | ' accuracy' | ' f1' | ' precision' | ' recall;
-  mode:'min' | ' max;
+  metric: 'loss' | 'accuracy' | 'f1' | 'precision' | 'recall';
+  mode: 'min' | 'max';
   restoreBestWeights:boolean;
 }
 
@@ -360,8 +357,7 @@ export interface EarlyStoppingConfig {
  * Learning rate scheduler configuration
  */
 export interface LearningRateScheduler {
-  type: '...[proper format needed]
-'  parameters:Record<string, number>;
+  type: string; // TODO: Define proper enum values
   warmupSteps?:number;
 }
 
@@ -434,8 +430,7 @@ export enum ReasoningStyle {
  * Memory model configuration
  */
 export interface MemoryModel {
-  type: '...[proper format needed]
-'  capacity:number;
+  type: string; // TODO: Define proper enum values
   retention:RetentionPolicy;
   consolidation:ConsolidationStrategy;
   retrieval:RetrievalMechanism;
@@ -445,8 +440,7 @@ export interface MemoryModel {
  * Attention mechanism configuration
  */
 export interface AttentionMechanism {
-  type: '...[proper format needed]
-'  scope:number; // attention span
+  type: string; // TODO: Define proper enum values
   intensity:number; // attention strength
   adaptability:number; // dynamic adjustment
 }
@@ -584,7 +578,7 @@ export interface PerformanceTrend {
   metric:MetricType;
   timeWindow:TimeWindow;
   values:TimeSeriesData[];
-  trend:'increasing|decreasing|' improving' | ' stable' | ' declining'|volatile;
+  trend: 'increasing' | 'decreasing' | 'improving' | 'stable' | 'declining' | 'volatile';
   confidence:number;
 }
 
@@ -603,9 +597,7 @@ export interface TimeSeriesData {
 export interface TimeWindow {
   start:Timestamp;
   end:Timestamp;
-  granularity: 'second|minute|hour|day|week|month;
-'  aggregation: 'mean|median|max|min|sum|count;
-'}
+  granularity: 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month';
 
 // =============================================================================
 // COORDINATION AND COMMUNICATION TYPES
@@ -632,11 +624,10 @@ export enum CoordinationTopology {
  * Communication protocols for neural agents
  */
 export interface CommunicationProtocol {
-  type:|'message_passing|shared_memory|event_driven|rpc|streaming;
-  format: 'json|binary|protobuf|custom;
-'  encryption:boolean;
-  compression:boolean;
-  reliability:ReliabilityLevel;
+  type: 'message_passing' | 'shared_memory' | 'event_driven' | 'rpc' | 'streaming';
+  format: 'json' | 'binary' | 'protobuf' | 'custom';
+  compression: boolean;
+  reliability: ReliabilityLevel;
 }
 
 /**
@@ -716,7 +707,6 @@ export enum AgentStatus {
  */
 export interface HealthStatus {
   status: 'healthy|degraded|critical|unknown;
-'  score:number; // 0.0 - 1.0
   issues:HealthIssue[];
   lastCheck:Timestamp;
   nextCheck:Timestamp;
@@ -726,9 +716,7 @@ export interface HealthStatus {
  * Health issue tracking
  */
 export interface HealthIssue {
-  type: '...[proper format needed]
-'  severity: 'low|medium|high|critical;
-'  message:string;
+  type: string; // TODO: Define proper enum values
   timestamp:Timestamp;
   resolved:boolean;
   resolvedAt?:Timestamp;
@@ -882,11 +870,10 @@ export type CoordinationResult = Result<
  * Neural-specific error types
  */
 export interface NeuralError extends Error {
-  readonly type: 'NeuralError;
-'  readonly message:string;
-  readonly category:|'training|inference|coordination|configuration;
-  readonly modelId?:UUID;
-  readonly agentId?:UUID;
+  readonly type: 'NeuralError';
+  readonly category: 'training' | 'inference' | 'coordination' | 'configuration';
+  readonly modelId?: UUID;
+  readonly agentId?: UUID;
   readonly timestamp:Timestamp;
   readonly code:string;
   readonly errorId:UUID;
@@ -903,7 +890,6 @@ export interface NeuralError extends Error {
  */
 export interface TrainingError extends NeuralError {
   readonly category: 'training;
-'  readonly epochNumber?:number;
   readonly batchNumber?:number;
   readonly lossValue?:number;
 }
@@ -913,7 +899,6 @@ export interface TrainingError extends NeuralError {
  */
 export interface CoordinationError extends NeuralError {
   readonly category: 'coordination;
-'  readonly topology?:CoordinationTopology;
   readonly participantCount?:number;
 }
 

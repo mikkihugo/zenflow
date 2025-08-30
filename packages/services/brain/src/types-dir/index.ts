@@ -6,12 +6,13 @@
 
 // DSPy types - optional import to avoid circular dependencies
 try {
-  const dspy = require('@claude-zen/dspy');')  // Export types only if dspy is available
+  const dspy = require('@claude-zen/dspy');
+  // Export types only if dspy is available
   if (dspy) {
     module.exports.DSPyExample = dspy.Example;
     module.exports.DSPyPrediction = dspy.Prediction;
     module.exports.DSPyModule = dspy.DSPyModule;
-}
+  }
 } catch {
   // DSPy not available - provide fallback types
 }

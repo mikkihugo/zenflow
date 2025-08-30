@@ -28,26 +28,26 @@ import type {
 /**
  * Development phase types for prompt generation
  */
-export type DevelopmentPhase =|specification|pseudocode|architecture|refinement|completion|'general;
+export type DevelopmentPhase = 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion' | 'general';
 
 /**
  * Coding standards configuration
  */
 export interface CodingStandardsConfig {
-  /** Target language (default:typescript) */
-  language?: 'typescript|javascript|rust|python;
-'  /** Maximum function complexity (default:10) */
-  maxComplexity?:number;
-  /** Maximum lines per function (default:30) */
-  maxLinesPerFunction?:number;
-  /** Maximum parameters per function (default:5) */
-  maxParameters?:number;
-  /** File naming convention (default:kebab-case) */
-  fileNaming?: 'kebab-case|camelCase|PascalCase|snake_case;
-'  /** Include performance guidelines */
-  includePerformance?:boolean;
+  /** Target language (default: typescript) */
+  language?: 'typescript' | 'javascript' | 'rust' | 'python';
+  /** Maximum function complexity (default: 10) */
+  maxComplexity?: number;
+  /** Maximum lines per function (default: 30) */
+  maxLinesPerFunction?: number;
+  /** Maximum parameters per function (default: 5) */
+  maxParameters?: number;
+  /** File naming convention (default: kebab-case) */
+  fileNaming?: 'kebab-case' | 'camelCase' | 'PascalCase' | 'snake_case';
+  /** Include performance guidelines */
+  includePerformance?: boolean;
   /** Include security guidelines */
-  includeSecurity?:boolean;
+  includeSecurity?: boolean;
 }
 
 /**
@@ -100,7 +100,6 @@ export interface IntelligentPrompt {
  * integrated coding standards and best practices.
  */
 export class IntelligentPromptGenerator {
-    ')
   constructor(
     behavioralIntelligence?:BehavioralIntelligence,
     codingPrinciplesResearcher?:CodingPrinciplesResearcher
@@ -132,14 +131,15 @@ export class IntelligentPromptGenerator {
       const researchConfig = {
         language:mergedConfig.language as ProgrammingLanguage,
         domain:this.inferDomainFromContext(context),
-        role:this.inferRoleFromPhase(phase),
-        includePerformance:mergedConfig.includePerformance,
-        includeSecurity:mergedConfig.includeSecurity,
-        includeTesting:true,
+        role: this.inferRoleFromPhase(phase),
+        includePerformance: mergedConfig.includePerformance,
+        includeSecurity: mergedConfig.includeSecurity,
+        includeTesting: true,
         depth:
           complexityScore > 7
-            ? ('advanced' as const)')            :('intermediate' as const),
-};
+            ? ('advanced' as const)
+            : ('intermediate' as const),
+      };
 
       // Get adaptive principles that improve over time with agent feedback
       const adaptivePrinciples =
