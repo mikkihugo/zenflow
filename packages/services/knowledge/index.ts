@@ -636,6 +636,7 @@ export { PerformanceOptimizationSystem, PerformanceOptimizationSystem as Perform
 export { ProjectContextAnalyzer} from './src/project-context-analyzer';
 // Storage Backends
 export { SQLiteBackend} from './src/storage-backends/sqlite-backend';
+export { VectorRAGBackend, type VectorRAGConfig, type VectorKnowledgeEntry, type SemanticSearchResult } from './knowledge-cache-backends/vector-rag-backend';
 // export { StorageInterface} from './src/storage-interface';
 
 /**
