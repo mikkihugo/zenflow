@@ -1,27 +1,34 @@
 [workspace]
 resolver = "2"
 members = [
-    # Core services - new organized structure
-    # "packages/services/brain/rust/core",  # Disabled - path does not exist
-    
-    # Tools - singularity coder components moved under packages/tools/coder workspace
-    # Build them via the nested workspace at packages/tools/coder
-    
-    # Core components (moved to new structure)
-    "packages/core/fact-system/src/rust",
-    "packages/core/neural-ml/neural-core",
-    "packages/core/neural-ml/neural-core/claude-zen-neural-core",
-    "packages/core/neural-ml/neural-core/claude-zen-neural-data",
-    "packages/core/neural-ml/neural-core/claude-zen-neural-models",
-    "packages/core/neural-ml/neural-core/claude-zen-neural-registry",
-    "packages/core/neural-ml/neural-core/claude-zen-neural-training",
-    
-    # taskmaster wasm has dependency conflicts, exclude for now
-    # "packages/services/taskmaster/src/wasm",
+    # Singularity Coder core crates
+    "../packages/tools/singularity-coder/rust-core/code-mesh-core",
+    "../packages/tools/singularity-coder/rust-core/code-mesh-cli",
+    # Optional UI/TUI and WASM crates (comment out if not needed)
+    # "../packages/tools/singularity-coder/rust-core/code-mesh-tui",
+    # "../packages/tools/singularity-coder/rust-core/code-mesh-wasm",
+
+    # Neural core crates (pure Rust ML components)
+    "../packages/core/neural-ml/neural-core/claude-zen-neural-core",
+    "../packages/core/neural-ml/neural-core/claude-zen-neural-data",
+    "../packages/core/neural-ml/neural-core/claude-zen-neural-models",
+    "../packages/core/neural-ml/neural-core/claude-zen-neural-registry",
+    "../packages/core/neural-ml/neural-core/claude-zen-neural-training",
+    "../packages/core/neural-ml/neural-core/claude-zen-neural-feedforward",
+    "../packages/core/neural-ml/neural-core/claude-zen-neural-framework",
+    "../packages/core/neural-ml/neural-core/claude-zen-neural-language",
+    "../packages/core/neural-ml/neural-core/claude-zen-neural-onnx",
+
+    # Fact system crate
+    "../packages/core/fact-system/src/rust",
 ]
 
+[workspace.package]
+edition = "2021"
+authors = ["Zenflow contributors"]
+license = "MIT"
+
 [workspace.dependencies]
-# Commonly used workspace dependencies for singularity-coder
 toml = "0.8"
 walkdir = "2.5"
 which = "3.0"
@@ -39,60 +46,41 @@ dashmap = "5.5"
 futures = "0.3"
 futures-util = "0.3"
 
-# Fix libsqlite3-sys version conflicts
 libsqlite3-sys = "0.37"
 rusqlite = "0.37"
 
-# Shared dependencies across neural-core crates (mirrored here so { workspace = true } resolves
-# when building from the repository root workspace)
+# Neural core shared deps (mirrored from neural-core workspace)
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 thiserror = "2.0"
 anyhow = "1.0"
 log = "0.4"
 chrono = { version = "0.4", features = ["serde"] }
-rayon = "1.10"
 tokio = { version = "1.0", features = ["full"] }
 num-traits = "0.2"
-
-# ML and neural network dependencies
 polars = { version = "0.41", features = ["lazy", "temporal", "csv", "parquet", "json"] }
 ndarray = { version = "0.16", features = ["serde"] }
-
-# Burn deep learning framework
 burn = { version = "0.18", default-features = false, features = ["std"] }
 burn-core = "0.18"
 burn-tensor = "0.18"
 burn-autodiff = "0.18"
 burn-wgpu = "0.18"
 burn-ndarray = "0.18"
-
-# Candle deep learning
 candle-core = "0.9"
 candle-nn = "0.9"
-
-# ONNX runtimes
 ort = { version = "2.0.0-rc.10", features = ["download-binaries"] }
 tract-onnx = "0.21"
-
-# Text processing
 tokenizers = "0.21"
 regex = "1.11"
-
-# HTTP and downloads
 reqwest = { version = "0.12", features = ["json"] }
-
-# Traditional ML
 smartcore = { version = "0.4", default-features = false, features = ["ndarray-bindings"] }
-
-# WASM support
 wasm-bindgen = "0.2.93"
 js-sys = "0.3.70"
-web-sys = "0.3.70"
+web-sys = { version = "0.3.70" }
 
 [workspace.lints.rust]
 unused_variables = "warn"
-unused_imports = "warn" 
+unused_imports = "warn"
 dead_code = "warn"
 unused_mut = "warn"
 unreachable_code = "warn"

@@ -1,8 +1,0 @@
----
-const { slug } = Astro.locals.starlightRoute.entry;
----
-
-{ slug === ""
-  ? <Lander {...Astro.props} />
-  : <Default {...Astro.props}><slot /></Default>
-}
