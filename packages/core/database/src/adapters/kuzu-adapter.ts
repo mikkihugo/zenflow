@@ -21,6 +21,7 @@ import {
   type Migration,
   type MigrationResult,
   QueryError,
+  type QueryErrorOptions,
   type QueryParams,
   type QueryResult,
   type SchemaInfo,
@@ -241,11 +242,13 @@ export class KuzuAdapter implements DatabaseConnection {
     }
 
     if (!this.connection) {
-      throw new QueryError('Connection not available', {
+      const errorOptions: QueryErrorOptions = {
         query: sql,
-        params,
         correlationId,
-      });
+      };
+      if (params !== undefined) errorOptions.params = params;
+      
+      throw new QueryError('Connection not available', errorOptions);
     }
 
     try {
@@ -312,14 +315,16 @@ export class KuzuAdapter implements DatabaseConnection {
         throw error;
       }
 
+      const errorOptions: QueryErrorOptions = {
+        query: sql,
+        correlationId,
+      };
+      if (params !== undefined) errorOptions.params = params;
+      if (error instanceof Error) errorOptions.cause = error;
+      
       throw new QueryError(
         `Kuzu query execution failed:${error instanceof Error ? error.message : String(error)}`,
-        {
-          query: sql,
-          params,
-          correlationId,
-          cause: error instanceof Error ? error : undefined,
-        }
+        errorOptions
       );
     }
   }
@@ -415,7 +420,7 @@ export class KuzuAdapter implements DatabaseConnection {
       return {
         healthy: score >= 70,
         status:
-          score >= 70 ? 'healthy' : score >= 40 ? ' degraded' : ' unhealthy',
+          score >= 70 ? 'healthy' : score >= 40 ? 'degraded' : 'unhealthy',
         score,
         timestamp: new Date(),
         responseTimeMs: responseTime,
@@ -471,17 +476,17 @@ export class KuzuAdapter implements DatabaseConnection {
       // Get basic schema information (simplified to avoid unused results)
       await this.query(SHOW_TABLES_QUERY);
 
+      const lastMigration = await this.getLastMigrationVersion();
       return {
         tables: [], // Graph databases don't have traditional table schemas
         version: await this.getDatabaseVersion(),
-        lastMigration: await this.getLastMigrationVersion(),
+        ...(lastMigration && { lastMigration }),
       };
     } catch (error) {
       logger.error('Failed to get Kuzu schema', { error });
       return {
         tables: [],
         version: 'unknown',
-        lastMigration: undefined,
       };
     }
   }
@@ -977,14 +982,16 @@ export class KuzuAdapter implements DatabaseConnection {
       }
     }
 
+    const errorOptions: QueryErrorOptions = {
+      correlationId,
+    };
+    if (sql !== undefined) errorOptions.query = sql;
+    if (params !== undefined) errorOptions.params = params;
+    if (lastError !== undefined) errorOptions.cause = lastError;
+    
     throw new QueryError(
       `Operation failed after ${retryPolicy.maxRetries} retries:${lastError?.message}`,
-      {
-        query: sql,
-        params,
-        correlationId,
-        cause: lastError,
-      }
+      errorOptions
     );
   }
 

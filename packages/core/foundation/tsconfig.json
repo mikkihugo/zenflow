@@ -35,7 +35,7 @@
     "useDefineForClassFields": true,
     "experimentalDecorators": true
   },
-  "include": ["./**/*.ts", "./src/infrastructure/database/database-shim.d.ts"],
+  "include": ["./**/*.ts"],
   "exclude": [
     "./dist/**/*",
     "./node_modules/**/*",

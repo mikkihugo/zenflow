@@ -1,26 +1,88 @@
 /**
  * @fileoverview Database Infrastructure Module Exports
  *
- * Direct re-exports from @claude-zen/database package.
- * No facade pattern - direct access to database functionality.
+ * Backend-agnostic database access through foundation types.
+ * Provides unified interfaces that can be implemented by concrete database adapters.
  */
 
-// Re-export database package directly - no facade
+// Export the unified facade interface
 export {
-  createDatabase,
-  createKeyValueStorage,
-  createDatabaseAccess,
-  DatabaseProvider,
-  DatabaseEventCoordinator,
-  SQLiteAdapter,
-} from '@claude-zen/database';
+  databaseFacade,
+  createDatabaseAdapter,
+  createKeyValueStore,
+  createVectorStore,
+  createGraphStore,
+  getDatabaseCapability,
+} from './database-facade.js';
 
-// Also re-export types for consumers through foundation layer
+// Export all backend-agnostic types for consumers  
 export type {
+  // Core types
+  DatabaseType,
+  StorageType,
+  QueryParams,
+  
+  // Configuration
   DatabaseConfig,
+  PoolConfig,
+  RetryPolicy,
+  HealthCheckConfig,
+  
+  // Connection and adapter interfaces
   DatabaseConnection,
-  // Provide legacy-friendly aliases expected by foundation consumers
+  TransactionConnection,
+  DatabaseAdapter,
+  
+  // Storage interfaces (using foundation names)
   KeyValueStorage as KeyValueStore,
   VectorStorage as VectorStore,
   GraphStorage as GraphStore,
-} from '@claude-zen/database';
+  SqlStorage,
+  
+  // Health and monitoring
+  HealthStatus,
+  QueryResult,
+  ConnectionStats,
+  
+  // Schema and migration
+  SchemaInfo,
+  TableSchema,
+  ColumnSchema,
+  ViewSchema,
+  IndexSchema,
+  ConstraintSchema,
+  ForeignKeySchema,
+  Migration,
+  MigrationResult,
+  
+  // Vector types
+  VectorSearchOptions,
+  VectorResult,
+  
+  // Graph types
+  GraphNode,
+  GraphEdge,
+  GraphResult,
+  
+  // Transaction types
+  TransactionContext,
+  IsolationLevel,
+  
+  // Error types
+  DatabaseError,
+  ConnectionError,
+  QueryError,
+  TransactionError,
+  DatabaseErrorOptions,
+  QueryErrorOptions,
+  
+  // Factory interfaces
+  DatabaseFactory,
+  DatabaseProvider,
+  DatabaseAccess,
+  
+  // Function signatures
+  CreateDatabaseFunction,
+  CreateKeyValueStorageFunction,
+  CreateDatabaseAccessFunction,
+} from './types.js';
