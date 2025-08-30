@@ -865,6 +865,9 @@ importers:
 
   packages/core/foundation:
     dependencies:
+      '@claude-zen/database':
+        specifier: workspace:*
+        version: link:../database
       '@logtape/logtape':
         specifier: ^1.0.4
         version: 1.0.4
