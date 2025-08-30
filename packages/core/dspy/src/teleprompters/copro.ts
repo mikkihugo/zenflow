@@ -279,7 +279,7 @@ export class COPRO extends Teleprompter {
 					this._updateSignature(p_new, instruction, prefix);
 
 					logger.info(
-						`At Depth ${d + 1}/${this.depth}, Evaluating Prompt Candidate #${c_i + 1}/${candidates_.proposed_instruction.length} for ` +`
+						`At Depth ${d + 1}/${this.depth}, Evaluating Prompt Candidate #${c_i + 1}/${candidates_.proposed_instruction.length} for ` +
 							`Predictor ${p_i + 1} of ${modulePredictors.length}.`,
 					);
 

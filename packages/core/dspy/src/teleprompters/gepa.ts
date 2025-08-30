@@ -377,9 +377,9 @@ export class GEPA extends Teleprompter {
 
 		if (budgetOptions !== 1) {
 			throw new Error(
-				`Exactly one of max_metric_calls, max_full_evals, auto must be set. ` +`
-					`You set max_metric_calls=${config.max_metric_calls}, ` +`
-					`max_full_evals=${config.max_full_evals}, ` +`
+				`Exactly one of max_metric_calls, max_full_evals, auto must be set. ` +
+					`You set max_metric_calls=${config.max_metric_calls}, ` +
+					`max_full_evals=${config.max_full_evals}, ` +
 					`auto=${config.auto}.`,
 			);
 }
@@ -396,7 +396,7 @@ export class GEPA extends Teleprompter {
 		if (!config.reflection_lm) {
 			throw new Error(
 				"GEPA requires a reflection language model to be provided. " +
-					"Typically, you can use `new LM({ model: 'gpt-4', temperature:1.0, max_tokens:32000})` " +`
+					"Typically, you can use `new LM({ model: 'gpt-4', temperature: 1.0, max_tokens: 32000})` " +
 					"to get a good reflection model. Reflection LM is used by GEPA to reflect on the behavior " +
 					"of the program and propose new instructions, and will benefit from a strong model.",
 			);
@@ -534,21 +534,21 @@ export class GEPA extends Teleprompter {
 }
 
 		logger.info(
-			`Running GEPA for approx ${this.max_metric_calls} metric calls of the program. ` +`
-				`This amounts to ${(`
+			`Running GEPA for approx ${this.max_metric_calls} metric calls of the program. ` +
+				`This amounts to ${(
 					this.max_metric_calls /
 						(valset === null
 							? trainset.length
-							:trainset.length + valset.length)
+							: trainset.length + valset.length)
 				).toFixed(
 					2,
-				)} full evals on the ${valset === null ? "train" :"train+val"} set.`,
+				)} full evals on the ${valset === null ? "train" : "train+val"} set.`,
 		);
 
 		const actualValset = valset || trainset;
 		logger.info(
-			`Using ${actualValset.length} examples for tracking Pareto scores. ` +`
-				`You can consider using a smaller sample of the valset to allow GEPA to explore ` +`
+			`Using ${actualValset.length} examples for tracking Pareto scores. ` +
+				`You can consider using a smaller sample of the valset to allow GEPA to explore ` +
 				`more diverse solutions within the same budget.`,
 		);
 

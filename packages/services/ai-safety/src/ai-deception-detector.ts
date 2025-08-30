@@ -107,16 +107,42 @@ export class AIDeceptionDetector {
         context:0.6
 },
       patterns:{
-        capabilityInflation:[
-          'I can access',          'I have the ability to',          'I can directly',          'I have permission',          'I can integrate with',          'My advanced capabilities')],
-        knowledgeHallucination:[
-          'Based on the file',          'According to the documentation',          'The configuration shows',          'The error indicates',          'Looking at the schema')],
-        verificationAvoidance:[
-          'I analyzed',          'I tested',          'I debugged',          'I reviewed',          'I validated',          'I examined')],
-        confidenceInflation:[
-          'This will definitely',          'This is the best practice',          'This is guaranteed to',          'This is completely safe',          'This is always')],
-        contextConfusion:[
-          'In this project',          'Based on previous',          'Following our',          'According to your')]
+        capabilityInflation: [
+          'I can access',
+          'I have the ability to',
+          'I can directly',
+          'I have permission',
+          'I can integrate with',
+          'My advanced capabilities'
+        ],
+        knowledgeHallucination: [
+          'Based on the file',
+          'According to the documentation',
+          'The configuration shows',
+          'The error indicates',
+          'Looking at the schema'
+        ],
+        verificationAvoidance: [
+          'I analyzed',
+          'I tested',
+          'I debugged',
+          'I reviewed',
+          'I validated',
+          'I examined'
+        ],
+        confidenceInflation: [
+          'This will definitely',
+          'This is the best practice',
+          'This is guaranteed to',
+          'This is completely safe',
+          'This is always'
+        ],
+        contextConfusion: [
+          'In this project',
+          'Based on previous',
+          'Following our',
+          'According to your'
+        ]
 },
       interventions:{
         immediate: true,
@@ -228,8 +254,12 @@ export class AIDeceptionDetector {
    */
   private getThreshold(category: string): number {
     const categoryMap: Record<string, keyof DetectionConfig['thresholds']> = {
-      'capabilityInflation': ' capability',      'knowledgeHallucination': ' knowledge',      'verificationAvoidance': ' verification',      'confidenceInflation': ' confidence',      'contextConfusion':' context')};
-    
+      'capabilityInflation': 'capability',
+      'knowledgeHallucination': 'knowledge',
+      'verificationAvoidance': 'verification',
+      'confidenceInflation': 'confidence',
+      'contextConfusion': 'context'
+    };
     return this.config.thresholds[categoryMap[category]] || 0.5;
 }
 
@@ -294,8 +324,12 @@ export class AIDeceptionDetector {
    */
   private mapCategoryToType(category: string): DeceptionAlert['type'] {
     const typeMap: Record<string, DeceptionAlert['type']> = {
-      'capabilityInflation': ' CAPABILITY_OVERREACH',      'knowledgeHallucination': ' DOCUMENTATION_FABRICATION',      'verificationAvoidance': ' ANALYSIS_CLAIMS',      'confidenceInflation': ' CERTAINTY_OVERREACH',      'contextConfusion':' PROJECT_CONFLATION')};
-    
+      'capabilityInflation': 'CAPABILITY_OVERREACH',
+      'knowledgeHallucination': 'DOCUMENTATION_FABRICATION',
+      'verificationAvoidance': 'ANALYSIS_CLAIMS',
+      'confidenceInflation': 'CERTAINTY_OVERREACH',
+      'contextConfusion': 'PROJECT_CONFLATION'
+    };
     return typeMap[category] || 'CAPABILITY_OVERREACH';
 }
 
@@ -304,15 +338,19 @@ export class AIDeceptionDetector {
    */
   private mapCategoryToAlertCategory(category: string): DeceptionAlert['category'] {
     const categoryMap: Record<string, DeceptionAlert['category']> = {
-      'capabilityInflation': ' CAPABILITY_INFLATION',      'knowledgeHallucination': ' KNOWLEDGE_HALLUCINATION',      'verificationAvoidance': ' VERIFICATION_AVOIDANCE',      'confidenceInflation': ' CONFIDENCE_INFLATION',      'contextConfusion':' CONTEXT_CONFUSION')};
-    
+      'capabilityInflation': 'CAPABILITY_INFLATION',
+      'knowledgeHallucination': 'KNOWLEDGE_HALLUCINATION',
+      'verificationAvoidance': 'VERIFICATION_AVOIDANCE',
+      'confidenceInflation': 'CONFIDENCE_INFLATION',
+      'contextConfusion': 'CONTEXT_CONFUSION'
+    };
     return categoryMap[category] || 'CAPABILITY_INFLATION';
 }
 
   /**
    * Get intervention text for deception type and severity.
    */
-  private getIntervention(type: DeceptionAlert['type'], severity: DeceptionAlert[' severity']): string {
+  private getIntervention(type: DeceptionAlert['type'], severity: DeceptionAlert['severity']): string {
     const interventions: Record<string, string> = {
       'CAPABILITY_OVERREACH': ' Require tool verification before capability claims',      'DOCUMENTATION_FABRICATION': ' Request evidence or tool-based verification',      'ANALYSIS_CLAIMS': ' Require actual tool usage for verification',      'CERTAINTY_OVERREACH': ' Request qualification of confidence levels',      'PROJECT_CONFLATION':' Clarify project context and boundaries')};
     
