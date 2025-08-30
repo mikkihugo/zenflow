@@ -696,7 +696,7 @@ export class GRPO extends FinetuneTeleprompter {
 		logger.info("Preparing the GRPO training job(s)...");
 		const grpo_training_jobs = new Map<string, any>();
 		for (const [pred_ind, pred] of student.predictors().entries()) {
-			const data_key = this.multitask ? null:pred_ind;
+			const data_key = this.multitask ? null : pred_ind;
 			const job_key = `${pred.lm}_${data_key}`;
 			if (!grpo_training_jobs.has(job_key)) {
 				const train_kwargs = this.trainKwargs?.get(pred.lm);
@@ -1014,23 +1014,23 @@ export class GRPO extends FinetuneTeleprompter {
 				logger,
 				train_step_idx,
 			);
-}
+		}
 
 		logger.info("Done with the iterations! Retrieving the final model(s)...");
 		for (const [, job] of grpo_training_jobs.entries()) {
 			job.terminate();
-}
+		}
 
 		// Revert cache states to their initial values
 		recover_lm_cache(student, lm_cache_dict);
 		for (const t of teachers) {
 			recover_lm_cache(t, lm_cache_dict);
-}
+		}
 
 		logger.info("GRPO compiler has finished compiling the student program");
 		(student as any)._compiled = true;
 		return student;
-}
+	}
 
 	/**
 	 * Check if prediction is a failed prediction
@@ -1041,7 +1041,7 @@ export class GRPO extends FinetuneTeleprompter {
 			typeof prediction === "object" &&
 			"completion_text" in prediction
 		);
-}
+	}
 }
 
 /**

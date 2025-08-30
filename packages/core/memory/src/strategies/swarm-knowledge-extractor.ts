@@ -220,6 +220,11 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
         sessionDuration: sessionData.endTime - sessionData.startTime,
       });
 
+      // Add the extraction logic here
+      return this.extractAllKnowledgeTypes(sessionData);
+    });
+  }
+
   private async extractAllKnowledgeTypes(sessionData: SwarmSession): Promise<{
     successPatterns: SuccessPattern[];
     performanceMetrics: PerformanceMetrics;
