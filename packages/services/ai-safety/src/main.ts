@@ -83,8 +83,9 @@ export { AISafetyOrchestrator as SafetyGuard,
  * ```
  */
 export async function initializeAISafety() {
-  const { createInitializedAISafetyOrchestrator} = await import(
-    './safety-orchestrator')  );
+  const { createInitializedAISafetyOrchestrator } = await import(
+    './safety-orchestrator'
+  );
 
   const orchestratorResult = await createInitializedAISafetyOrchestrator();
   if (!orchestratorResult.success) {
@@ -121,28 +122,28 @@ export async function emergencySafetyShutdown() {
     logger.info('🛑 ENTERPRISE EMERGENCY SAFETY SHUTDOWN INITIATED');
 
     // Enhanced safety logging with error handling capabilities
-    const safetyResult = { success: true, message: 'Safety shutdown initiated'};
+    const safetyResult = { success: true, message: 'Safety shutdown initiated' };
     logger.info('Safety result: ', safetyResult);
-'    
+    
     // Error scenario demonstration (expanded functionality)
     if (process.env.NODE_ENV === 'test') {
       const testError = new Error('Test safety error for validation');
       logger.info('Test error created: ', testError.message);
-'}
+    }
 
     // This would coordinate with all safety systems
     // For now, return success - full implementation would coordinate shutdown
 
     logger.info('🚨 Emergency safety protocols activated');
-    return { success: true};
-} catch (error) {
+    return { success: true };
+  } catch (error) {
     return {
       success: false,
       error: new Error(
         `Emergency safety shutdown failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       )
-};
-}
+    };
+  }
 }
 
 // =============================================================================
