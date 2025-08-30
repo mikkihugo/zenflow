@@ -427,50 +427,76 @@ export class CodingPrinciplesResearcher {
     // Get comprehensive research areas based on role and domain
     const researchAreas = this.getComprehensiveResearchAreas(role, domain);
 
-    return `Research and compile comprehensive coding principles for ${language} development.`
+    return `Research and compile comprehensive coding principles for ${language} development.
 
 Context:
-- Language:${language}
-- Domain:${domain || 'general'}')- Role:${role || 'general-developer'}')- Depth:${depth || 'intermediate'}')- Include Performance:${includePerformance ? 'Yes' : ' No'}')- Include Security:${includeSecurity ? 'Yes' : ' No'}')- Include Testing:${includeTesting ? 'Yes' : ' No'}')
+- Language: ${language}
+- Domain: ${domain || 'general'}
+- Role: ${role || 'general-developer'}
+- Depth: ${depth || 'intermediate'}
+- Include Performance: ${includePerformance ? 'Yes' : 'No'}
+- Include Security: ${includeSecurity ? 'Yes' : 'No'}
+- Include Testing: ${includeTesting ? 'Yes' : 'No'}
+
 Research the following comprehensive areas and provide specific, actionable guidelines:
 
 1. CORE STANDARDS:
-   - Repository structure and organization for ${domain || 'general'} projects')   - File naming conventions specific to ${language} and ${role || 'general-developer'} workflows')   - Folder organization patterns for ${domain || 'general'} applications')   - Function complexity guidelines appropriate for ${role || 'developer'} responsibilities')   - Code organization patterns that scale with team size
-   - Error handling best practices for ${domain || 'general'} environments')   - Documentation standards for ${role || 'developer'} deliverables')   - Code quality metrics and enforcement strategies
-   - Testing strategy for ${language} in ${domain || 'general'} context')
+   - Repository structure and organization for ${domain || 'general'} projects
+   - File naming conventions specific to ${language} and ${role || 'general-developer'} workflows
+   - Folder organization patterns for ${domain || 'general'} applications
+   - Function complexity guidelines appropriate for ${role || 'developer'} responsibilities
+   - Code organization patterns that scale with team size
+   - Error handling best practices for ${domain || 'general'} environments
+   - Documentation standards for ${role || 'developer'} deliverables
+   - Code quality metrics and enforcement strategies
+   - Testing strategy for ${language} in ${domain || 'general'} context
+
 2. LANGUAGE-SPECIFIC:
-   - ${language} type system best practices for ${role || 'developer'} work')   - Memory management patterns (if applicable to ${language})
-   - Concurrency and async patterns for ${domain || 'general'} applications')   - Package/module management strategies
+   - ${language} type system best practices for ${role || 'developer'} work
+   - Memory management patterns (if applicable to ${language})
+   - Concurrency and async patterns for ${domain || 'general'} applications
+   - Package/module management strategies
    - Build tools and CI/CD pipeline recommendations for ${language}
 
 ${
   researchAreas.domainSpecific.length > 0
-    ? ``
-3. DOMAIN-SPECIFIC (${domain || 'general'}): ')'${researchAreas.domainSpecific.map((area) => `   - ${area}`).join('\n')}')``
-    :'}')
+    ? `3. DOMAIN-SPECIFIC (${domain || 'general'}):
+${researchAreas.domainSpecific.map((area) => `   - ${area}`).join('\n')}`
+    : ''
+}
+
 ${
   researchAreas.roleSpecific.length > 0
-    ? ``
-4. ROLE-SPECIFIC (${role || 'general-developer'}): ')'${researchAreas.roleSpecific.map((area) => `   - ${area}`).join('\n')}')``
-    :'}')
+    ? `4. ROLE-SPECIFIC (${role || 'general-developer'}):
+${researchAreas.roleSpecific.map((area) => `   - ${area}`).join('\n')}`
+    : ''
+}
+
 5. QUALITY METRICS & STANDARDS:
    - Measurable complexity thresholds for ${language}
-   - Code coverage expectations for ${domain || 'general'} projects')   - Maintainability indices and technical debt management
-   - Performance benchmarks relevant to ${role || 'developer'} work')   - Security validation requirements for ${domain || 'general'} applications')
+   - Code coverage expectations for ${domain || 'general'} projects
+   - Maintainability indices and technical debt management
+   - Performance benchmarks relevant to ${role || 'developer'} work
+   - Security validation requirements for ${domain || 'general'} applications
+
 6. ADVANCED PRACTICES:
-${researchAreas.advanced.map((area) => `   - ${area}`).join('\n')}')`
-Provide specific, actionable guidelines that a ${role || 'developer'} can immediately apply in ${language} development.')Focus on current industry best practices and emerging patterns for ${domain || 'general'} domain.')Include specific examples and anti-patterns to avoid.
-Consider the unique challenges and responsibilities of ${role || 'developer'} role.')
-Respond in JSON format with structured guidelines that cover all research areas comprehensively.`;`
-}
+${researchAreas.advanced.map((area) => `   - ${area}`).join('\n')}
+
+Provide specific, actionable guidelines that a ${role || 'developer'} can immediately apply in ${language} development.
+Focus on current industry best practices and emerging patterns for ${domain || 'general'} domain.
+Include specific examples and anti-patterns to avoid.
+Consider the unique challenges and responsibilities of ${role || 'developer'} role.
+
+Respond in JSON format with structured guidelines that cover all research areas comprehensively.`;
+  }
 
   /**
    * Get comprehensive research areas based on role and domain
    */
   private getComprehensiveResearchAreas(
-    role?:DevelopmentRole,
-    domain?:TaskDomain
-  ):{
+    role?: DevelopmentRole,
+    domain?: TaskDomain
+  ): {
     domainSpecific:string[];
     roleSpecific:string[];
     advanced:string[];
@@ -854,58 +880,61 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
   /**
    * Calculate success rate from patterns data
    */
-  private calculatePatternSuccessRate(patterns:any): number {
+  private calculatePatternSuccessRate(patterns: any): number {
     try {
       if (Array.isArray(patterns)) {
         // If patterns is an array of success/failure data
         const successCount = patterns.filter(
-          (p:any) => p.success === true || p.successful === true
+          (p: any) => p.success === true || p.successful === true
         ).length;
-        return patterns.length > 0 ? successCount / patterns.length:0;
-} else if (typeof patterns ==='object') {
-    ')        // If patterns has success metrics
+        return patterns.length > 0 ? successCount / patterns.length : 0;
+      } else if (typeof patterns === 'object') {
+        // If patterns has success metrics
         if (patterns.successRate) return patterns.successRate;
         if (patterns.success !== undefined && patterns.total !== undefined) {
-          return patterns.total > 0 ? patterns.success / patterns.total:0;
-}
+          return patterns.total > 0 ? patterns.success / patterns.total : 0;
+        }
         // Default success rate based on pattern existence and structure
         const patternCount = Object.keys(patterns).length;
-        return patternCount > 3 ? 0.7:0.5; // Heuristic: more patterns indicate higher success
-}
+        return patternCount > 3 ? 0.7 : 0.5; // Heuristic: more patterns indicate higher success
+      }
       return 0.5; // Default moderate success rate
-} catch (error) {
-      this.logger.warn('Error calculating pattern success rate:', error);')      return 0.5;
-}
+    } catch (error) {
+      this.logger.warn('Error calculating pattern success rate:', error);
+      return 0.5;
+    }
 }
 
   /**
    * Extract best practices from successful patterns
    */
   private extractBestPracticesFromPatterns(
-    principles:CodingPrinciples,
-    patterns:any
-  ):void {
+    principles: CodingPrinciples,
+    patterns: any
+  ): void {
     try {
       // Look for common successful patterns to enhance principles
       if (patterns.commonPatterns) {
         principles.bestPractices.push(
           ...patterns.commonPatterns.filter(
-            (p:string) =>
-              typeof p === 'string' &&')              p.length > 10 &&
+            (p: string) =>
+              typeof p === 'string' &&
+              p.length > 10 &&
               !principles.bestPractices.includes(p)
           )
         );
-}
+      }
 
       if (patterns.recommendations) {
         principles.antiPatterns.push(
           ...(patterns.recommendations.avoid?.filter(
-            (p:string) =>
-              typeof p === 'string'&&')              p.length > 10 &&
+            (p: string) =>
+              typeof p === 'string' &&
+              p.length > 10 &&
               !principles.antiPatterns.includes(p)
           ) || [])
         );
-}
+      }
 
       // Extract quality metrics if available
       if (patterns.qualityMetrics) {
@@ -914,72 +943,73 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
             (patterns.qualityMetrics.score || 0) * 0.1,
           1.0
         );
-}
-} catch (error) {
-      this.logger.warn('Error extracting best practices from patterns:', error);')}
-}
+      }
+    } catch (error) {
+      this.logger.warn('Error extracting best practices from patterns:', error);
+    }
+  }
 
   /**
    * Get or initialize prompt confidence for a cache key
    */
-  private getPromptConfidence(cacheKey:string): PromptConfidence {
+  private getPromptConfidence(cacheKey: string): PromptConfidence {
     if (!this.promptConfidence.has(cacheKey)) {
       this.promptConfidence.set(cacheKey, {
-        principlesId:cacheKey,
-        initialConfidence:0.5,
-        executionCount:0,
-        averageAccuracy:0,
-        averageCompleteness:0,
-        averageUsefulness:0,
-        overallConfidence:0.5,
-        needsImprovement:true,
-        lastUpdated:new Date(),
-        improvementHistory:[],
-});
-}
+        principlesId: cacheKey,
+        initialConfidence: 0.5,
+        executionCount: 0,
+        averageAccuracy: 0,
+        averageCompleteness: 0,
+        averageUsefulness: 0,
+        overallConfidence: 0.5,
+        needsImprovement: true,
+        lastUpdated: new Date(),
+        improvementHistory: [],
+      });
+    }
     return this.promptConfidence.get(cacheKey)!;
-}
+  }
 
   /**
    * Update prompt confidence based on research quality
    */
   private updatePromptConfidence(
-    cacheKey:string,
-    update:{
-      initialConfidence?:number;
-      version:string;
-      improvements:string[];
-}
-  ):PromptConfidence {
+    cacheKey: string,
+    update: {
+      initialConfidence?: number;
+      version: string;
+      improvements: string[];
+    }
+  ): PromptConfidence {
     const confidence = this.getPromptConfidence(cacheKey);
 
     if (update.initialConfidence !== undefined) {
       confidence.initialConfidence = update.initialConfidence;
       confidence.overallConfidence = update.initialConfidence;
-}
+    }
 
     confidence.improvementHistory.push({
-      version:update.version,
-      changes:update.improvements,
-      confidenceChange:update.initialConfidence
+      version: update.version,
+      changes: update.improvements,
+      confidenceChange: update.initialConfidence
         ? update.initialConfidence - confidence.initialConfidence
-        :0,
-      timestamp:new Date(),
-});
+        : 0,
+      timestamp: new Date(),
+    });
 
     confidence.lastUpdated = new Date();
     this.promptConfidence.set(cacheKey, confidence);
 
     return confidence;
-}
+  }
 
   /**
    * Evaluate research quality to determine initial confidence
    */
   private async evaluateResearchQuality(
-    principles:CodingPrinciples,
-    config:PrinciplesResearchConfig
-  ):Promise<number> {
+    principles: CodingPrinciples,
+    config: PrinciplesResearchConfig
+  ): Promise<number> {
     await new Promise(resolve => setTimeout(resolve, 0));
     let qualityScore = 0;
     let maxScore = 0;
@@ -1000,7 +1030,7 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
       (area) =>
         principles.languageSpecific[
           area as keyof typeof principles.languageSpecific
-].length > 0
+        ].length > 0
     );
     qualityScore += (filledLangAreas.length / requiredLangAreas.length) * 0.2;
     maxScore += 0.2;
@@ -1012,19 +1042,19 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
         (area) =>
           principles.domainSpecific![
             area as keyof typeof principles.domainSpecific
-].length > 0
+          ].length > 0
       );
       qualityScore +=
         (filledDomainAreas.length / Math.max(requiredDomainAreas.length, 1)) *
         0.2;
-}
+    }
     maxScore += 0.2;
 
     // Evaluate quality metrics completeness
     const hasValidMetrics = Object.values(principles.qualityMetrics).every(
       (metric) => metric.threshold > 0 && metric.metric.length > 0
     );
-    qualityScore += hasValidMetrics ? 0.2:0;
+    qualityScore += hasValidMetrics ? 0.2 : 0;
     maxScore += 0.2;
 
     // Evaluate template quality (basic check for content length)
@@ -1039,10 +1069,10 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
    * Enhance research config based on existing feedback
    */
   private enhanceConfigWithFeedback(
-    config:PrinciplesResearchConfig,
-    confidence:PromptConfidence
-  ):PrinciplesResearchConfig {
-    const enhancedConfig = { ...config};
+    config: PrinciplesResearchConfig,
+    confidence: PromptConfidence
+  ): PrinciplesResearchConfig {
+    const enhancedConfig = { ...config };
 
     // Get agent feedback for this principles ID
     const feedbacks = this.agentFeedback.get(confidence.principlesId) || [];
@@ -1057,29 +1087,33 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
         feedbacks.reduce(
           (sum, f) =>
             sum +
-            (f.context.taskComplexity ==='simple')              ? 1
-              :f.context.taskComplexity === 'moderate')                ? 2
-                :3),
+            (f.context.taskComplexity === 'simple'
+              ? 1
+              : f.context.taskComplexity === 'moderate'
+                ? 2
+                : 3),
           0
         ) / feedbacks.length;
 
       if (avgComplexity > 2) {
         enhancedConfig.depth = 'advanced';
-}
+      }
 
       // Enable additional areas based on feedback
       if (
-        commonMissing.some((area) => area.toLowerCase().includes('performance'))')      ) {
+        commonMissing.some((area) => area.toLowerCase().includes('performance'))
+      ) {
         enhancedConfig.includePerformance = true;
-}
+      }
       if (
-        commonMissing.some((area) => area.toLowerCase().includes('security'))')      ) {
+        commonMissing.some((area) => area.toLowerCase().includes('security'))
+      ) {
         enhancedConfig.includeSecurity = true;
-}
+      }
       if (commonMissing.some((area) => area.toLowerCase().includes('test'))) {
-    ')        enhancedConfig.includeTesting = true;
-}
-}
+        enhancedConfig.includeTesting = true;
+      }
+    }
 
     return enhancedConfig;
 }
@@ -1088,8 +1122,8 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
    * Update confidence based on agent execution feedback
    */
   private async updateConfidenceFromAgentFeedback(
-    feedback:AgentExecutionFeedback
-  ):Promise<void> {
+    feedback: AgentExecutionFeedback
+  ): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 0));
     const confidence = this.getPromptConfidence(feedback.principlesId);
 
@@ -1116,12 +1150,12 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
 
     confidence.lastUpdated = new Date();
     this.promptConfidence.set(feedback.principlesId, confidence);
-}
+  }
 
   /**
    * Evaluate whether principles need improvement based on feedback
    */
-  private async evaluateImprovementNeeds(principlesId:string): Promise<void> {
+  private async evaluateImprovementNeeds(principlesId: string): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 0));
     const confidence = this.getPromptConfidence(principlesId);
     const feedbacks = this.agentFeedback.get(principlesId) || [];
@@ -1129,7 +1163,7 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
     if (feedbacks.length < 3) {
       // Need more data before making decisions
       return;
-}
+    }
 
     // Check recent feedback for declining performance
     const recentFeedbacks = feedbacks.slice(-5); // Last 5 executions
@@ -1142,34 +1176,37 @@ ${principles.languageSpecific.packageManagement.map((item) => `- ${item}`).join(
 
     // Mark for improvement if performance is declining or below threshold
     confidence.needsImprovement =
-      confidence.overallConfidence < this.minimumConfidenceThreshold || recentAvgAccuracy < 0.7 || recentAvgUsefulness < 0.7 || feedbacks.some((f) => f.missingAreas.length > 2); // Many missing areas
+      confidence.overallConfidence < this.minimumConfidenceThreshold ||
+      recentAvgAccuracy < 0.7 ||
+      recentAvgUsefulness < 0.7 ||
+      feedbacks.some((f) => f.missingAreas.length > 2); // Many missing areas
 
     this.promptConfidence.set(principlesId, confidence);
-}
+  }
 
   /**
    * Get most common items from an array
    */
-  private getMostCommon(items:string[]): string[] {
+  private getMostCommon(items: string[]): string[] {
     const frequency = new Map<string, number>();
     items.forEach((item) => {
       frequency.set(item, (frequency.get(item) || 0) + 1);
-});
+    });
 
     return Array.from(frequency.entries())
       .sort((a, b) => b[1] - a[1])
       .slice(0, 3)
       .map(([item]) => item);
-}
+  }
 }
 
 /**
  * Export factory function
  */
 export function createCodingPrinciplesResearcher(
-  dspyBridge:DSPyLLMBridge,
-  behavioralIntelligence?:BehavioralIntelligence
-):CodingPrinciplesResearcher {
+  dspyBridge: DSPyLLMBridge,
+  behavioralIntelligence?: BehavioralIntelligence
+): CodingPrinciplesResearcher {
   return new CodingPrinciplesResearcher(dspyBridge, behavioralIntelligence);
 }
 
@@ -1180,49 +1217,67 @@ export const DEFAULT_LANGUAGE_CONFIGS:Record<
   ProgrammingLanguage,
   PrinciplesResearchConfig
 > = {
-  typescript:{
-    language: 'typescript',    includePerformance:true,
-    includeSecurity:true,
-    includeTesting:true,
-    depth: 'intermediate',},
-  javascript:{
-    language: 'javascript',    includePerformance:true,
-    includeSecurity:true,
-    includeTesting:true,
-    depth: 'intermediate',},
-  python:{
-    language: 'python',    includePerformance:true,
-    includeSecurity:true,
-    includeTesting:true,
-    depth: 'intermediate',},
-  rust:{
-    language: 'rust',    includePerformance:true,
-    includeSecurity:true,
-    includeTesting:true,
-    depth: 'advanced',},
-  go:{
-    language: 'go',    includePerformance:true,
-    includeSecurity:true,
-    includeTesting:true,
-    depth: 'intermediate',},
-  java:{
-    language: 'java',    includePerformance:true,
-    includeSecurity:true,
-    includeTesting:true,
-    depth: 'intermediate',},
-  csharp:{
-    language: 'csharp',    includePerformance:true,
-    includeSecurity:true,
-    includeTesting:true,
-    depth: 'intermediate',},
-  swift:{
-    language: 'swift',    includePerformance:true,
-    includeSecurity:false,
-    includeTesting:true,
-    depth: 'intermediate',},
-  kotlin:{
-    language: 'kotlin',    includePerformance:true,
-    includeSecurity:true,
-    includeTesting:true,
-    depth: 'intermediate',},
+  typescript: {
+    language: 'typescript',
+    includePerformance: true,
+    includeSecurity: true,
+    includeTesting: true,
+    depth: 'intermediate',
+  },
+  javascript: {
+    language: 'javascript',
+    includePerformance: true,
+    includeSecurity: true,
+    includeTesting: true,
+    depth: 'intermediate',
+  },
+  python: {
+    language: 'python',
+    includePerformance: true,
+    includeSecurity: true,
+    includeTesting: true,
+    depth: 'intermediate',
+  },
+  rust: {
+    language: 'rust',
+    includePerformance: true,
+    includeSecurity: true,
+    includeTesting: true,
+    depth: 'advanced',
+  },
+  go: {
+    language: 'go',
+    includePerformance: true,
+    includeSecurity: true,
+    includeTesting: true,
+    depth: 'intermediate',
+  },
+  java: {
+    language: 'java',
+    includePerformance: true,
+    includeSecurity: true,
+    includeTesting: true,
+    depth: 'intermediate',
+  },
+  csharp: {
+    language: 'csharp',
+    includePerformance: true,
+    includeSecurity: true,
+    includeTesting: true,
+    depth: 'intermediate',
+  },
+  swift: {
+    language: 'swift',
+    includePerformance: true,
+    includeSecurity: false,
+    includeTesting: true,
+    depth: 'intermediate',
+  },
+  kotlin: {
+    language: 'kotlin',
+    includePerformance: true,
+    includeSecurity: true,
+    includeTesting: true,
+    depth: 'intermediate',
+  },
 };
