@@ -182,12 +182,13 @@ export class AutonomousCoordinator {
       await this.autonomousParameterTuning();
 
       logger.debug(
-        `🤖 Autonomous monitoring complete:${decisions.length} decisions made``
+        "🤖 Autonomous monitoring complete: " + decisions.length + " decisions made"
       );
       return decisions;
-} catch (error) {
-      logger.error('❌ Autonomous system monitoring failed:', error);')      return [];
-}
+    } catch (error) {
+      logger.error('❌ Autonomous system monitoring failed:', error);
+      return [];
+    }
 }
 
   /**
@@ -575,10 +576,12 @@ export class AutonomousCoordinator {
         // Adjust parameters based on effectiveness
         if (avgConfidence > 0.8 && avgImpact > 0.6) {
           // High effectiveness - be more aggressive
-          this.adjustParametersForType(type,'aggressive');')} else if (avgConfidence < 0.6||avgImpact < 0.4) {
+          this.adjustParametersForType(type, 'aggressive');
+        } else if (avgConfidence < 0.6 || avgImpact < 0.4) {
           // Low effectiveness - be more conservative
-        if (decisionsByType.has(type)) {
-          this.adjustParametersForType(type, 'conservative');
+          if (decisionsByType.has(type)) {
+            this.adjustParametersForType(type, 'conservative');
+          }
         }
       });
 

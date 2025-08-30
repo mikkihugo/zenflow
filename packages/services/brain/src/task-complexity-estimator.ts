@@ -36,10 +36,10 @@ export interface ComplexityEstimate {
   readonly estimatedComplexity:number; // 0-1 scale
   readonly confidence:number;
   readonly reasoning:string[];
-  readonly suggestedMethod:'dspy' | ' ml' | ' hybrid';
-  readonly estimatedDuration:number; // milliseconds
-  readonly difficultyLevel: 'trivial|easy|medium|hard|expert;
-'  readonly keyFactors:string[];
+  readonly suggestedMethod: 'dspy' | 'ml' | 'hybrid';
+  readonly estimatedDuration: number; // milliseconds
+  readonly difficultyLevel: 'trivial' | 'easy' | 'medium' | 'hard' | 'expert';
+  readonly keyFactors: string[];
 }
 
 export interface ComplexityPattern {
@@ -64,16 +64,17 @@ export class TaskComplexityEstimator {
   private keywordWeights:Map<string, number> = new Map();
 
   constructor() {
-    logger.info('🎯 Task Complexity Estimator created');')}
+    logger.info('🎯 Task Complexity Estimator created');
+  }
 
   /**
    * Initialize the complexity estimation system
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     if (this.initialized) return;
 
     try {
-      logger.info('🚀 Initializing Task Complexity Estimation System...');')
+      logger.info('🚀 Initializing Task Complexity Estimation System...');
       // Initialize complexity patterns based on domain knowledge
       await this.initializeComplexityPatterns();
 
@@ -81,23 +82,25 @@ export class TaskComplexityEstimator {
       await this.initializeKeywordWeights();
 
       this.initialized = true;
-      logger.info('✅ Task Complexity Estimator initialized successfully');')} catch (error) {
-      logger.error('❌ Failed to initialize Task Complexity Estimator:', error);')      throw error;
-}
-}
+      logger.info('✅ Task Complexity Estimator initialized successfully');
+    } catch (error) {
+      logger.error('❌ Failed to initialize Task Complexity Estimator:', error);
+      throw error;
+    }
+  }
 
   /**
    * Estimate the complexity of a task
    */
   async estimateComplexity(
-    task:string,
-    prompt:string,
-    context:Record<string, any> = {},
-    agentRole?:string
-  ):Promise<ComplexityEstimate> {
+    task: string,
+    prompt: string,
+    context: Record<string, any> = {},
+    agentRole?: string
+  ): Promise<ComplexityEstimate> {
     if (!this.initialized) {
       await this.initialize();
-}
+    }
 
     try {
       const reasoning:string[] = [];
@@ -112,7 +115,7 @@ export class TaskComplexityEstimator {
       // 2. Analyze context complexity
       const contextComplexity = this.analyzeContextComplexity(context);
       totalComplexity += contextComplexity.score * 0.3;
-      reasoning.push(`Context analysis:$contextComplexity.reasoning`);`
+      reasoning.push("Context analysis: " + contextComplexity.reasoning);
 
       // 3. Pattern matching against historical data
       const patternComplexity = await this.matchComplexityPatterns(
@@ -121,12 +124,12 @@ export class TaskComplexityEstimator {
         context
       );
       totalComplexity += patternComplexity.score * 0.2;
-      reasoning.push(`Pattern matching:${patternComplexity.reasoning}`);`
+      reasoning.push("Pattern matching: " + patternComplexity.reasoning);
 
       // 4. Agent role complexity adjustment
       const roleComplexity = this.analyzeRoleComplexity(agentRole);
       totalComplexity += roleComplexity.score * 0.1;
-      reasoning.push(`Role analysis:$roleComplexity.reasoning`);`
+      reasoning.push("Role analysis: " + roleComplexity.reasoning);
 
       // Normalize complexity to 0-1 range
       const finalComplexity = Math.max(0, Math.min(1, totalComplexity));
@@ -231,10 +234,11 @@ export class TaskComplexityEstimator {
       await this.updateKeywordWeights(prompt, actualComplexity);
 
       logger.debug(
-        `📚 Learned from task outcome:${task} (_complexity:${actualComplexity.toFixed(2)})``
+        "📚 Learned from task outcome: " + task + " (complexity: " + actualComplexity.toFixed(2) + ")"
       );
-} catch (error) {
-      logger.error('❌ Failed to learn from outcome:', error);')}
+    } catch (error) {
+      logger.error('❌ Failed to learn from outcome:', error);
+    }
 }
 
   /**
