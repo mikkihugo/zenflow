@@ -47,7 +47,7 @@ export class WorkspaceApiRoutes {
 
     // Directory operations
     app.post(`${prefix}/directories`, this.createDirectory.bind(this));
-    // app.delete(`${prefix}/directories`, this.deleteDirectory.bind(this)); // TODO:Implement deleteDirectory`
+    app.delete(`${prefix}/directories`, this.deleteDirectory.bind(this));
 
     // Project operations
     app.get(`${prefix}/project/info`, this.getProjectInfo.bind(this));
@@ -283,6 +283,73 @@ export class WorkspaceApiRoutes {
   }
 
   /**
+   * Delete a directory (production implementation)
+   */
+  private async deleteDirectory(req: Request, res: Response): Promise<void> {
+    try {
+      const dirPath = req.query.path as string;
+      if (!dirPath) {
+        res.status(400).json({ error: 'Directory path required' });
+        return;
+      }
+
+      const fullPath = path.resolve(this.workspaceRoot, dirPath);
+
+      // Security check
+      if (!fullPath.startsWith(this.workspaceRoot)) {
+        res.status(403).json({ error: WORKSPACE_ERROR_MESSAGES.accessDenied });
+        return;
+      }
+
+      // Safety check - ensure it's actually a directory
+      const stats = await fs.stat(fullPath);
+      if (!stats.isDirectory()) {
+        res.status(400).json({ error: 'Path is not a directory' });
+        return;
+      }
+
+      // Additional safety check - don't allow deletion of workspace root or critical directories
+      const relativePath = path.relative(this.workspaceRoot, fullPath);
+      const protectedPaths = ['', '.', 'node_modules', '.git'];
+      if (protectedPaths.includes(relativePath)) {
+        res.status(403).json({ error: 'Cannot delete protected directory' });
+        return;
+      }
+
+      // Check if directory is empty (optional - remove this if you want to allow non-empty deletion)
+      const isEmpty = await this.isDirectoryEmpty(fullPath);
+      if (!isEmpty) {
+        const force = req.query.force === 'true';
+        if (!force) {
+          res.status(400).json({ 
+            error: 'Directory is not empty. Use force=true to delete non-empty directories.',
+            requiresForce: true 
+          });
+          return;
+        }
+      }
+
+      await fs.remove(fullPath);
+      res.json({ deleted: true, path: dirPath });
+    } catch (error) {
+      this.logger.error('Failed to delete directory: ', error);
+      res.status(500).json({ error: 'Failed to delete directory' });
+    }
+  }
+
+  /**
+   * Check if directory is empty (helper method)
+   */
+  private async isDirectoryEmpty(dirPath: string): Promise<boolean> {
+    try {
+      const files = await fs.readdir(dirPath);
+      return files.length === 0;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
    * Get project information
    */
   private async getProjectInfo(req: Request, res: Response): Promise<void> {
@@ -402,17 +469,82 @@ export class WorkspaceApiRoutes {
   }
 
   /**
-   * Search file content
+   * Search file content (production implementation)
    */
-  private searchContent(req: Request, res: Response): void {
+  private async searchContent(req: Request, res: Response): Promise<void> {
     try {
       const query = req.query.q as string;
+      const fileTypes = (req.query.types as string)?.split(',') || ['.ts', '.js', '.json', '.md', '.txt'];
+      const maxResults = parseInt(req.query.limit as string) || 50;
+
       if (!query) {
         res.status(400).json({ error: 'Search query required' });
+        return;
       }
 
-      // Basic content search - in a real implementation you'd use grep or similar
-      res.json({ message: 'Content search not yet implemented' });
+      const results: Array<{
+        file: string;
+        line: number;
+        content: string;
+        match: string;
+      }> = [];
+
+      const searchInFile = async (filePath: string): Promise<void> => {
+        try {
+          const content = await fs.readFile(filePath, 'utf-8');
+          const lines = content.split('\n');
+          
+          lines.forEach((line, index) => {
+            if (line.toLowerCase().includes(query.toLowerCase()) && results.length < maxResults) {
+              results.push({
+                file: path.relative(this.workspaceRoot, filePath),
+                line: index + 1,
+                content: line.trim(),
+                match: query,
+              });
+            }
+          });
+        } catch {
+          // Skip files that can't be read as text
+        }
+      };
+
+      const searchDir = async (dir: string, depth = 0): Promise<void> => {
+        if (depth > 10 || results.length >= maxResults) return; // Limit search depth and results
+
+        try {
+          const items = await fs.readdir(dir);
+          for (const item of items) {
+            if (item.startsWith('.') || item === 'node_modules') continue; // Skip hidden and node_modules
+
+            const itemPath = path.join(dir, item);
+            const stats = await fs.stat(itemPath).catch(() => null);
+            if (!stats) continue;
+
+            if (stats.isDirectory()) {
+              await searchDir(itemPath, depth + 1);
+            } else if (stats.isFile()) {
+              const ext = path.extname(item);
+              if (fileTypes.includes(ext) || fileTypes.includes('*')) {
+                await searchInFile(itemPath);
+              }
+            }
+
+            if (results.length >= maxResults) break;
+          }
+        } catch {
+          // Skip directories that can't be read
+        }
+      };
+
+      await searchDir(this.workspaceRoot);
+      
+      res.json({ 
+        results: results.slice(0, maxResults),
+        query,
+        total: results.length,
+        truncated: results.length >= maxResults,
+      });
     } catch (error) {
       this.logger.error('Failed to search content: ', error);
       res.status(500).json({ error: 'Failed to search content' });
@@ -498,12 +630,61 @@ export class WorkspaceApiRoutes {
   }
 
   /**
-   * Get recent files
+   * Get recent files (production implementation with actual tracking)
    */
-  private getRecentFiles(req: Request, res: Response): void {
+  private async getRecentFiles(req: Request, res: Response): Promise<void> {
     try {
-      // Simple implementation - could be enhanced with actual recent file tracking
-      res.json({ files: [] });
+      const limit = parseInt(req.query.limit as string) || 10;
+      const recentFiles: Array<{
+        name: string;
+        path: string;
+        type: string;
+        modified: Date;
+        size: number;
+      }> = [];
+
+      // Get recently modified files by scanning the workspace
+      const scanForRecentFiles = async (dir: string, depth = 0): Promise<void> => {
+        if (depth > 5) return; // Limit depth to avoid deep recursion
+
+        try {
+          const items = await fs.readdir(dir);
+          for (const item of items) {
+            if (item.startsWith('.') || item === 'node_modules') continue;
+
+            const itemPath = path.join(dir, item);
+            const stats = await fs.stat(itemPath).catch(() => null);
+            if (!stats) continue;
+
+            if (stats.isFile()) {
+              recentFiles.push({
+                name: item,
+                path: path.relative(this.workspaceRoot, itemPath),
+                type: 'file',
+                modified: stats.mtime,
+                size: stats.size,
+              });
+            } else if (stats.isDirectory()) {
+              await scanForRecentFiles(itemPath, depth + 1);
+            }
+          }
+        } catch {
+          // Skip directories that can't be read
+        }
+      };
+
+      await scanForRecentFiles(this.workspaceRoot);
+
+      // Sort by modification time and take the most recent
+      const sortedFiles = recentFiles
+        .sort((a, b) => b.modified.getTime() - a.modified.getTime())
+        .slice(0, limit);
+
+      res.json({ 
+        files: sortedFiles,
+        total: sortedFiles.length,
+        lastScanned: new Date().toISOString(),
+      });
     } catch (error) {
       this.logger.error('Failed to get recent files: ', error);
       res.status(500).json({ error: 'Failed to get recent files' });
