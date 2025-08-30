@@ -255,12 +255,12 @@ export class DSPyEngine {
 			const optimizationPrompt = `
 Improve this prompt for better results:
 
-Current prompt:"${program.prompt}"
+Current prompt: "${program.prompt}"
 
 Few-shot examples:
 ${examples
 	.slice(0, this.config.fewShotExamples)
-	.map((ex) => `Input:${ex.input}\nExpected:${ex.output}`)`
+	.map((ex) => `Input: ${ex.input}\nExpected: ${ex.output}`)
 	.join("\n\n")}
 
 Generate an improved version that:
@@ -274,20 +274,20 @@ Improved prompt:`;
 			const response = await llm.analyze(optimizationPrompt);
 
 			return {
-				prompt:this.extractPromptFromResponse(response),
-				strategy:"few-shot-optimization",
-				iteration:0,
-				score:0,
-};
-} catch (_error) {
+				prompt: this.extractPromptFromResponse(response),
+				strategy: "few-shot-optimization",
+				iteration: 0,
+				score: 0,
+			};
+		} catch (_error) {
 			logger.warn("Failed to generate prompt variation, using fallback");
 			return {
-				prompt:`${program.prompt} (Please be specific and detailed in your response.)`,
-				strategy:"fallback",
-				iteration:0,
-				score:0,
-};
-}
+				prompt: `${program.prompt} (Please be specific and detailed in your response.)`,
+				strategy: "fallback",
+				iteration: 0,
+				score: 0,
+			};
+		}
 }
 
 	/**

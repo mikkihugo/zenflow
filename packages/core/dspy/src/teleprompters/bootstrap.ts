@@ -242,7 +242,7 @@ export class BootstrapFewShot extends Teleprompter {
 				JSON.stringify(predictor2.signature)
 			) {
 				throw new Error(
-					`Student and teacher must have the same signatures. ` +`
+					`Student and teacher must have the same signatures. ` +
 						`${JSON.stringify(predictor1.signature)} != ${JSON.stringify(predictor2.signature)}`,
 				);
 }
@@ -297,7 +297,7 @@ export class BootstrapFewShot extends Teleprompter {
 }
 
 		logger.info(
-			`Bootstrapped ${Object.keys(bootstrapped).length} full traces after ${this.trainset.length} examples ` +`
+			`Bootstrapped ${Object.keys(bootstrapped).length} full traces after ${this.trainset.length} examples ` +
 				`for up to ${this.max_rounds} rounds, amounting to ${bootstrap_attempts} attempts.`,
 		);
 

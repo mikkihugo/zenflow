@@ -940,42 +940,45 @@ Remember:This prompt learns from your execution. The better you follow and provi
    * and identifies misunderstandings
    */
   async generateSecondOpinionPrompt(
-    originalPrompt:string,
-    agentResponse:string,
-    context:ProjectContext
-  ):Promise<string> {
+    originalPrompt: string,
+    agentResponse: string,
+    context: ProjectContext
+  ): Promise<string> {
     // Allow event loop processing for prompt generation
     await new Promise(resolve => setTimeout(resolve, 0));
-    return `# 🔍 SECOND OPINION VALIDATION`
+    return `# 🔍 SECOND OPINION VALIDATION
 
 ## Original Task Prompt:
-\`\`\``
-$originalPrompt
-\`\`\``
+\`\`\`
+${originalPrompt}
+\`\`\`
 
-## Agent's Implementation: ')'\`\`\``
-$agentResponse
-\`\`\``
+## Agent's Implementation:
+\`\`\`
+${agentResponse}
+\`\`\`
 
 ## Project Context:
-- **Project**:$context.name
-- **Domain**:$context.domain
-- **Requirements**:$context.requirements?.join(',    ') || ' Not specified')
+- **Project**: ${context.name}
+- **Domain**: ${context.domain}
+- **Requirements**: ${context.requirements?.join(', ') || 'Not specified'}
+
 ## Validation Instructions:
 
 ### 1. 📋 Requirement Compliance Check
 - Did the agent address all requirements from the original prompt?
 - Are there any missing or misunderstood requirements?
-- Rate compliance:0-100%
+- Rate compliance: 0-100%
 
 ### 2. 🎯 Quality Standards Validation  
 - Does the implementation follow the coding standards specified?
 - Are naming conventions, complexity, and structure appropriate?
-- Rate quality adherence:0-100%
+- Rate quality adherence: 0-100%
 
 ### 3. 🔍 Misunderstanding Detection
 - Identify any apparent misunderstandings of the task
-- Note any implementations that don't match the intent')- Highlight areas where clarification might have helped
+- Note any implementations that don't match the intent
+- Highlight areas where clarification might have helped
 
 ### 4. ✅ Correctness Assessment
 - Is the implementation functionally correct?
@@ -989,19 +992,21 @@ $agentResponse
 
 ## Output Format:
 Provide your validation in JSON format:
-\`\`\`json`
-  "compliance_score":85,
-  "quality_score":90,
-  "correctness_score":95,
-  "misunderstandings":["Example: Agent interpreted X as Y instead of Z"],
-  "missing_requirements":["Example: Error handling was not implemented"],
-  "improvement_suggestions":["Example: Could use more descriptive variable names"],
-  "overall_assessment":"Good implementation with minor areas for improvement",
-  "validation_confidence":0.9
-\`\`\``
-
-Be thorough but constructive. Focus on helping improve both the implementation and future prompt clarity.`;`
+\`\`\`json
+{
+  "compliance_score": 85,
+  "quality_score": 90,
+  "correctness_score": 95,
+  "misunderstandings": ["Example: Agent interpreted X as Y instead of Z"],
+  "missing_requirements": ["Example: Error handling was not implemented"],
+  "improvement_suggestions": ["Example: Could use more descriptive variable names"],
+  "overall_assessment": "Good implementation with minor areas for improvement",
+  "validation_confidence": 0.9
 }
+\`\`\`
+
+Be thorough but constructive. Focus on helping improve both the implementation and future prompt clarity.`;
+  }
 
   /**
    * Analyze project feature requirements based on configuration flags
@@ -1012,7 +1017,8 @@ Be thorough but constructive. Focus on helping improve both the implementation a
     const analysis = {
       performanceProfile:config.includePerformance ? {
         requiresOptimization:config.maxComplexity > 15 || config.maxLinesPerFunction > 50,
-        complexityLevel:config.maxComplexity > 20 ? 'high' : config.maxComplexity > 10 ? ' medium' : ' low',        languageSpecific:this.getLanguageSpecificPerformanceTips(config.language),
+        complexityLevel: config.maxComplexity > 20 ? 'high' : config.maxComplexity > 10 ? 'medium' : 'low',
+        languageSpecific: this.getLanguageSpecificPerformanceTips(config.language),
         recommendedTools:this.getPerformanceTools(config.language)
 } :null,
       
@@ -1033,12 +1039,13 @@ Be thorough but constructive. Focus on helping improve both the implementation a
       projectMetadata:{
         language:config.language,
         complexity:config.maxComplexity,
-        codebaseSize:config.maxLinesPerFunction > 100 ? 'large' : ' medium',        analysisTimestamp:new Date()
+        codebaseSize: config.maxLinesPerFunction > 100 ? 'large' : 'medium',
+        analysisTimestamp: new Date()
 }
 };
 
     this.logger.debug('Feature analysis completed', {
-    ')      hasPerformance:!!analysis.performanceProfile,
+      hasPerformance: !!analysis.performanceProfile,
       hasSecurity:!!analysis.securityProfile,
       hasTesting:!!analysis.testingProfile,
       language:config.language
@@ -1054,14 +1061,20 @@ Be thorough but constructive. Focus on helping improve both the implementation a
     await new Promise(resolve => setTimeout(resolve, 5));
     
     const recommendations = [
-      '⚡ **Performance Optimization Guidelines**',      `- Big O complexity:Keep algorithms under O(n log n) when possible`,`
-      `- Memory management:${this.getMemoryTips(language)}`,`
-      `- Lazy loading:Implement for ${this.getLazyLoadingOpportunities(language)}`,`
-      '- Caching strategies:Use memoization for expensive computations',      '- Bundle optimization:Tree-shake unused code and minimize dependencies')];
+      '⚡ **Performance Optimization Guidelines**',
+      `- Big O complexity: Keep algorithms under O(n log n) when possible`,
+      `- Memory management: ${this.getMemoryTips(language)}`,
+      `- Lazy loading: Implement for ${this.getLazyLoadingOpportunities(language)}`,
+      '- Caching strategies: Use memoization for expensive computations',
+      '- Bundle optimization: Tree-shake unused code and minimize dependencies'
+    ];
 
     if (analysis.performanceProfile?.requiresOptimization) {
       recommendations.push(
-        '- **Critical**:High complexity detected - implement performance monitoring',        '- Consider code splitting and async loading for large modules',        '- Use performance profiling tools for bottleneck identification')      );
+        '- **Critical**: High complexity detected - implement performance monitoring',
+        '- Consider code splitting and async loading for large modules',
+        '- Use performance profiling tools for bottleneck identification'
+      );
 }
 
     recommendations.push(...analysis.performanceProfile?.recommendedTools.map((tool:string) => 

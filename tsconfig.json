@@ -5,6 +5,10 @@
     "resolveJsonModule": true,
     "downlevelIteration": true
   },
-  "include": ["src/**/*"],
+  "include": [
+    "apps/**/*",
+    "packages/**/*",
+    "scripts/**/*"
+  ],
   "exclude": ["node_modules", "dist", "tests", "**/*.test.ts", "**/*.spec.ts"]
 }

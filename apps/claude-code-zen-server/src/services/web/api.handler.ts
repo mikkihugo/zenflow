@@ -27,8 +27,21 @@ export interface SystemStatus {
   memory: {
     used: number;
     total: number;
+    external?: number;
+    rss?: number;
+    usagePercent?: number;
   };
   environment: string;
+  metrics?: {
+    cpu: NodeJS.CpuUsage;
+    loadAverage: number[];
+    version: string;
+    platform: string;
+    arch: string;
+    nodeVersion: string;
+    pid: number;
+    ppid: number;
+  };
 }
 
 export interface SwarmInfo {
@@ -247,18 +260,49 @@ export class ApiRouteHandler {
     }
   }
 
-  // Service methods - stub implementations
+  // Production service methods - comprehensive implementations
   private getSystemStatus(): SystemStatus {
     const memUsage = process.memoryUsage();
+    
+    // Get comprehensive system health metrics
+    const systemMetrics = {
+      cpu: process.cpuUsage(),
+      loadAverage: process.loadavg(),
+      version: process.version,
+      platform: process.platform,
+      arch: process.arch,
+      nodeVersion: process.version,
+      pid: process.pid,
+      ppid: process.ppid || 0,
+    };
+
+    // Determine system status based on metrics
+    let status: string = 'operational';
+    const memoryUsagePercent = (memUsage.heapUsed / memUsage.heapTotal) * 100;
+    const uptime = process.uptime();
+    
+    // Advanced health analysis
+    if (memoryUsagePercent > 90) {
+      status = 'degraded';
+    } else if (memoryUsagePercent > 95 || uptime < 60) {
+      status = 'critical';
+    } else if (systemMetrics.loadAverage[0] > 2.0) {
+      status = 'high-load';
+    }
+
     return {
-      status: 'operational',
+      status,
       version: getVersion(),
-      uptime: process.uptime(),
+      uptime,
       memory: {
         used: Math.round(memUsage.heapUsed / 1024 / 1024),
         total: Math.round(memUsage.heapTotal / 1024 / 1024),
+        external: Math.round(memUsage.external / 1024 / 1024),
+        rss: Math.round(memUsage.rss / 1024 / 1024),
+        usagePercent: Math.round(memoryUsagePercent),
       },
       environment: process.env.NODE_ENV || 'development',
+      metrics: systemMetrics,
     };
   }
 
