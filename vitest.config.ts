@@ -73,34 +73,52 @@ export default defineConfig({
     /**
      * Test file inclusion patterns.
      * Includes TypeScript and TypeScript React test files from multiple directories.
+     * Updated to include all test files across packages and apps.
      *
      * @type {string[]}
-     * @example ['src/__tests__/coordination/memory.test.ts',    'tests/integration/api.test.ts']
+     * @example ['packages/core/foundation/tests/unit/memory.test.ts', 'apps/web-dashboard/src/index.test.ts']
      */
     include: [
-      'src/__tests__/**/*.test.ts',
-      'src/__tests__/**/*.test.tsx',
+      // Main test directories
       'tests/**/*.test.ts',
       'tests/**/*.test.tsx',
+      // Package-level tests
+      'packages/**/tests/**/*.test.ts',
+      'packages/**/tests/**/*.test.tsx',
+      'packages/**/__tests__/**/*.test.ts',
+      'packages/**/__tests__/**/*.test.tsx',
+      'packages/**/src/**/*.test.ts',
+      'packages/**/src/**/*.test.tsx',
+      // App-level tests
+      'apps/**/tests/**/*.test.ts',
+      'apps/**/tests/**/*.test.tsx',
+      'apps/**/src/**/*.test.ts',
+      'apps/**/src/**/*.test.tsx',
     ],
 
     /**
      * File and directory exclusion patterns.
-     * Excludes build artifacts, dependencies, and legacy JavaScript test files.
+     * Excludes build artifacts, dependencies, and problematic test files.
      *
      * @type {string[]}
-     * @rationale Excluding swarm-zen JS files as they're legacy and cause type conflicts
+     * @rationale Excluding node_modules tests and legacy JavaScript files
      */
     exclude: [
-      'node_modules',
-      'dist',
-      '.git',
-      'coverage',
+      'node_modules/**',
+      '**/node_modules/**',
+      'dist/**',
+      '.git/**',
+      'coverage/**',
+      'target/**',
+      // Legacy and disabled code
       'src/__tests__/swarm-zen/**/*.js',
       'src/interfaces/cli.disabled/**/*',
       'src/__tests__/e2e/complete-workflow.test.ts',
       'src/__tests__/coordination/shared-fact-system.test.ts',
       'src/__tests__/coordination/collective-knowledge-*.test.ts',
+      // Configuration files
+      '**/*.config.ts',
+      '**/*.config.js',
     ],
 
     /**
@@ -130,12 +148,13 @@ export default defineConfig({
 
     /**
      * Maximum number of concurrent test suites.
+     * Reduced to prevent memory issues with large codebase.
      *
      * @type {number}
-     * @default 8
-     * @performance Balances speed with system resource usage
+     * @default 2
+     * @performance Balances speed with memory usage
      */
-    maxConcurrency: 8,
+    maxConcurrency: 2,
 
     /**
      * Test execution sequence configuration.
@@ -206,28 +225,50 @@ export default defineConfig({
 
       /**
        * Files to include in coverage analysis.
-       * Only source TypeScript files, excluding tests and type definitions.
+       * Only source TypeScript files from packages and apps, excluding tests and type definitions.
        *
        * @type {string[]}
-       * @pattern Glob patterns for TypeScript source files
+       * @pattern Glob patterns for TypeScript source files across all packages
        */
-      include: ['src/**/*.{ts,tsx}'],
+      include: [
+        'packages/*/src/**/*.{ts,tsx}',
+        'packages/*/*/src/**/*.{ts,tsx}',
+        'apps/*/src/**/*.{ts,tsx}',
+        'src/**/*.{ts,tsx}',
+      ],
 
       /**
        * Files and directories to exclude from coverage.
-       * Excludes test files, type definitions, and build artifacts.
+       * Excludes test files, type definitions, build artifacts, and test setup files.
        *
        * @type {string[]}
        * @rationale Test files shouldn't count toward coverage metrics
        */
       exclude: [
-        'src/__tests__/**',
-        'src/**/*.test.{ts,tsx}',
-        'src/**/*.spec.{ts,tsx}',
-        'src/**/*.d.ts',
-        'src/types/**',
-        'node_modules',
-        'dist',
+        // Test files
+        '**/tests/**',
+        '**/__tests__/**',
+        '**/*.test.{ts,tsx}',
+        '**/*.spec.{ts,tsx}',
+        // Type definitions
+        '**/*.d.ts',
+        '**/types/**',
+        // Build artifacts and dependencies
+        'node_modules/**',
+        'dist/**',
+        'coverage/**',
+        'target/**',
+        // Configuration and setup files
+        '**/vitest.config.ts',
+        '**/jest.config.js',
+        '**/test-*.ts',
+        '**/setup*.ts',
+        // Disabled or legacy code
+        '**/cli.disabled/**',
+        '**/legacy/**',
+        // Generated files
+        '**/*.generated.{ts,tsx}',
+        '**/*.map',
       ],
 
       /**
@@ -284,40 +325,49 @@ export default defineConfig({
 
     /**
 		 * Test execution pool configuration.
-		 * Uses worker threads for parallel test execution.
+		 * Uses forks for better memory isolation to prevent OOM errors.
 		 *
-		 * @type {
-    'threads'}
-		 * @alternative 'forks|vmThreads')		 * @performance Threads provide best balance of speed and isolation
+		 * @type {'forks'}
+		 * @alternative 'threads|vmThreads'
+		 * @performance Forks provide better isolation for large codebases
 		 */
-    pool: 'threads',
+    pool: 'forks',
 
     /**
-     * Thread pool optimization settings.
-     * Controls resource allocation for parallel test execution.
+     * Fork pool optimization settings.
+     * Controls resource allocation for parallel test execution with memory constraints.
      *
      * @type {object}
-     * @property {object} threads - Thread-specific configuration
+     * @property {object} forks - Fork-specific configuration
      */
     poolOptions: {
-      threads: {
+      forks: {
         /**
-         * Maximum number of worker threads.
-         *
-         * @type {number}
-         * @default 4
-         * @performance Limited to prevent system overload
-         */
-        maxThreads: 4,
-
-        /**
-         * Minimum number of worker threads.
+         * Maximum number of worker forks.
          *
          * @type {number}
          * @default 2
-         * @performance Ensures consistent performance baseline
+         * @performance Limited to prevent memory exhaustion
          */
-        minThreads: 2,
+        maxForks: 2,
+
+        /**
+         * Minimum number of worker forks.
+         *
+         * @type {number}
+         * @default 1
+         * @performance Ensures consistent baseline
+         */
+        minForks: 1,
+
+        /**
+         * Use single fork to prevent memory issues.
+         *
+         * @type {boolean}
+         * @default true
+         * @rationale Large codebase with complex dependencies needs memory isolation
+         */
+        singleFork: true,
       },
     },
   },

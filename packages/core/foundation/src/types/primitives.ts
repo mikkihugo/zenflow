@@ -21,12 +21,16 @@ export type JsonArray = JsonValue[];
 export type UnknownRecord = Record<string, unknown>;
 export type Email = string & { __brand: 'Email' };
 
+// Branded type helper
+export type Branded<T, Brand> = T & { __brand: Brand };
+
 // Enums
 export enum Priority {
   LOW = 'low',
   MEDIUM = 'medium',
   HIGH = 'high',
   CRITICAL = 'critical',
+  URGENT = 'urgent',
 }
 
 export enum Status {
@@ -34,82 +38,95 @@ export enum Status {
   IN_PROGRESS = 'in_progress',
   COMPLETED = 'completed',
   FAILED = 'failed',
+  CANCELLED = 'cancelled',
+  BLOCKED = 'blocked',
+  REVIEW = 'review',
 }
 
 export enum LogLevel {
+  EMERGENCY = 'emergency',
+  ALERT = 'alert',
+  CRITICAL = 'critical',
   ERROR = 'error',
   WARN = 'warn',
+  NOTICE = 'notice',
   INFO = 'info',
   DEBUG = 'debug',
 }
 
 export enum Environment {
   DEVELOPMENT = 'development',
+  TESTING = 'testing',
+  STAGING = 'staging',
   PRODUCTION = 'production',
   TEST = 'test',
 }
 
-// Type guards
-export function isUUID(value: unknown): value is UUID {
-  return (
-    typeof value === 'string' &&
-    /^[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i.test(
-      value
-    )
-  );
+// Utility functions for branded types
+export function brand<T, Brand>(value: T): Branded<T, Brand> {
+  return value as Branded<T, Brand>;
 }
 
-export function isTimestamp(value: unknown): value is Timestamp {
-  return typeof value === 'number' && value > 0;
+export function unbrand<T, Brand>(value: Branded<T, Brand>): T {
+  return value as T;
 }
 
-export function isISODateString(value: unknown): value is ISODateString {
-  return typeof value === 'string' && !Number.isNaN(Date.parse(value));
-}
-
-export function isEmail(value: unknown): value is Email {
-  return typeof value === 'string' && value.includes('@');
-}
-
-export function isPrimitive(value: unknown): boolean {
-  return (
-    value === null ||
-    ['string', 'number', 'boolean', 'undefined'].includes(typeof value)
-  );
-}
-
-export function isNonEmptyArray<T>(arr: T[]): boolean {
-  return Array.isArray(arr) && arr.length > 0;
-}
-
-// Utility functions
-export function generateUUID(): UUID {
-  if (
-    typeof globalThis.crypto !== 'undefined' &&
-    globalThis.crypto.randomUUID
-  ) {
-    return globalThis.crypto.randomUUID() as UUID;
-  }
-  // Fallback UUID v4 generation for Node.js environments without crypto.randomUUID
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = (Math.random() * 16) | 0;
-    const v = c === 'x' ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  }) as UUID;
-}
-
+// Timestamp utilities
 export function now(): Timestamp {
-  return Date.now() as Timestamp;
+  return brand<number, 'Timestamp'>(Date.now());
 }
 
 export function timestampFromDate(date: Date): Timestamp {
-  return date.getTime() as Timestamp;
+  return brand<number, 'Timestamp'>(date.getTime());
 }
 
 export function dateFromTimestamp(timestamp: Timestamp): Date {
-  return new Date(timestamp);
+  return new Date(unbrand(timestamp));
 }
 
 export function isoStringFromTimestamp(timestamp: Timestamp): ISODateString {
-  return new Date(timestamp).toISOString() as ISODateString;
+  return brand<string, 'ISODateString'>(dateFromTimestamp(timestamp).toISOString());
+}
+
+// Type guards
+export function isTimestamp(value: unknown): value is Timestamp {
+  return typeof value === 'number' && value > 0 && Number.isInteger(value);
+}
+
+export function isISODateString(value: unknown): value is ISODateString {
+  if (typeof value !== 'string') return false;
+  const date = new Date(value);
+  return !isNaN(date.getTime()) && value === date.toISOString();
+}
+
+export function isUUID(value: unknown): value is UUID {
+  if (typeof value !== 'string') return false;
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(value);
+}
+
+export function isEmail(value: unknown): value is Email {
+  if (typeof value !== 'string') return false;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(value);
+}
+
+export function isPrimitive(value: unknown): value is JsonPrimitive {
+  return value === null || ['string', 'number', 'boolean'].includes(typeof value);
+}
+
+export function isNonEmptyArray<T>(value: T[]): value is [T, ...T[]] {
+  return Array.isArray(value) && value.length > 0;
+}
+
+// UUID generation
+export function generateUUID(): UUID {
+  // Simple UUID v4 generation
+  const template = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
+  const uuid = template.replace(/[xy]/g, (c) => {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+  return brand<string, 'UUID'>(uuid);
 }

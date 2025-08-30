@@ -139,22 +139,22 @@ export class AgentPerformancePredictor {
       logger.debug(
         `Performance recorded for agent ${data.agentId}:success rate ${data.successRate.toFixed(2)}`
       );
-} catch (error) {
+    } catch (error) {
       logger.error('Failed to record performance: ', error);
-'}
+    }
 }
 
   /**
    * Predict agent performance for a given task
    */
   async predictPerformance(
-    agentId:string,
-    taskType:string,
-    complexity:number
-  ):Promise<PerformancePrediction> {
+    agentId: string,
+    taskType: string,
+    complexity: number
+  ): Promise<PerformancePrediction> {
     if (!this.initialized) {
       await this.initialize();
-}
+    }
 
     try {
       const history = this.performanceHistory.get(agentId)||[];
@@ -291,31 +291,31 @@ export class AgentPerformancePredictor {
         predictedBottlenecks,
         optimizationSuggestions,
 };
-} catch (error) {
+    } catch (error) {
       logger.error('Failed to generate performance insights: ', error);
-'      return {
-        topPerformers:[],
-        underPerformers:[],
-        capacityUtilization:0,
-        predictedBottlenecks:[],
-        optimizationSuggestions:[],
-};
-}
+      return {
+        topPerformers: [],
+        underPerformers: [],
+        capacityUtilization: 0,
+        predictedBottlenecks: [],
+        optimizationSuggestions: [],
+      };
+    }
 }
 
   /**
    * Update performance data for continuous learning
    */
-  async updatePerformanceData(data:{
-    agentId:string;
-    taskType:string;
-    duration:number;
-    success:boolean;
-    efficiency:number;
-    complexity?:number;
-    resourceUsage?:number;
-    errorCount?:number;
-}):Promise<void> {
+  async updatePerformanceData(data: {
+    agentId: string;
+    taskType: string;
+    duration: number;
+    success: boolean;
+    efficiency: number;
+    complexity?: number;
+    resourceUsage?: number;
+    errorCount?: number;
+  }): Promise<void> {
     try {
       logger.debug(`Updating performance data for agent ${data.agentId}`);
 
@@ -419,10 +419,10 @@ export class AgentPerformancePredictor {
       if (slope > 0.01) return 'improving';
       if (slope < -0.01) return 'declining';
       return 'stable';
-} catch (error) {
+    } catch (error) {
       logger.warn('Error analyzing performance trend: ', error);
-'      return 'stable';
-}
+      return 'stable';
+    }
 }
 
   private async forecastAgentLoad(agentId:string): Promise<number> {
