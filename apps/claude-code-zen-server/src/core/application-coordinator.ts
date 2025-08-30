@@ -9,26 +9,9 @@
 import { EventEmitter } from 'events';
 import type { Server as HTTPServer } from 'http';
 import type { Server as SocketIOServer } from 'socket.io';
+import { getLogger, createContainer } from '@claude-zen/foundation';
 
-// Basic logger implementation to avoid foundation dependency
-const createLogger = (name: string) => ({
-  info: (message: string, ...args: any[]) => console.log(`[${name}] INFO:`, message, ...args),
-  error: (message: string, ...args: any[]) => console.error(`[${name}] ERROR:`, message, ...args),
-  warn: (message: string, ...args: any[]) => console.warn(`[${name}] WARN:`, message, ...args),
-  debug: (message: string, ...args: any[]) => console.debug(`[${name}] DEBUG:`, message, ...args),
-});
-
-// Simple container implementation
-const createContainer = () => {
-  const services = new Map();
-  return {
-    register: (name: string, service: any) => services.set(name, service),
-    resolve: (name: string) => services.get(name),
-    has: (name: string) => services.has(name),
-  };
-};
-
-const logger = createLogger('application-coordinator');
+const logger = getLogger('application-coordinator');
 
 // Constants for duplicate strings
 const STATUS_CHANGED_EVENT = 'status-changed';
