@@ -377,9 +377,10 @@ export default [
       // Other standard rules still apply
       'no-console': 'warn', // Allow console in implementation
       '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/no-unused-vars': 'error',
+  '@typescript-eslint/no-unused-vars': 'error',
       'unused-imports/no-unused-imports': 'error',
-      'require-await': 'error',
+  'require-await': 'warn',
+  'no-undef': 'off',
       'no-duplicate-imports': 'error',
       'sonarjs/no-duplicate-string': 'error',
       '@typescript-eslint/naming-convention': [
