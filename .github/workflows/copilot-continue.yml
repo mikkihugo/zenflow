@@ -8,7 +8,7 @@ on:
       pr:
         description: "Pull request number to ping"
         required: false
-        default: "32"
+        default: "44"
 
 permissions:
   contents: read
@@ -24,7 +24,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const prNumber = Number((context.payload && context.payload.inputs && context.payload.inputs.pr) || 32)
+            const prNumber = Number((context.payload && context.payload.inputs && context.payload.inputs.pr) || 44)
 
             // Ensure PR exists and is open; otherwise skip
             try {
