@@ -231,7 +231,7 @@ export class SPARCManager extends EventBus {
       system: 'large ',as const,';
       needsFileAccess: 'large ',as const,';
       needsFileAccess: 'medium ',as const,';
-      needsFileAccess: 'gemini ',as const';
+
 };
 }
   /**

@@ -31,7 +31,7 @@ const logger = getLogger('multi-swarm-ab-testing');
 /**
  * Supported AI model backends for swarm A/B testing
  */
-export type AIModelBackend = 'claude-sonnet' | ' claude-opus' | ' claude-haiku' | ' gemini-pro' | ' gemini-flash' | ' gpt-4' | ' gpt-4-turbo' | ' aider' | ' custom';
+export type AIModelBackend = 'claude-sonnet' | 'claude-opus' | 'claude-haiku' | 'gpt-4' | 'gpt-4-turbo' | 'aider' | 'custom';
 
 /**
  * A/B test strategy configuration
@@ -289,13 +289,7 @@ export class MultiSwarmABTesting {
             promptVariations:{
               style: 'concise',              focus: 'speed',},
 },
-          {
-            id: 'performance-gemini',            name: 'Performance Gemini',            modelBackend: 'gemini-flash',            swarmConfig:{
-              topology: 'hierarchical',              maxAgents:4,
-              strategy: 'balanced',              coordinationApproach: 'conservative',},
-            promptVariations:{
-              style: 'step-by-step',              focus: 'performance',},
-},
+
 ];
 
       case 'quality': ')'        return [
@@ -323,13 +317,7 @@ export class MultiSwarmABTesting {
             promptVariations:{
               style: 'creative',              focus: 'innovation',},
 },
-          {
-            id: 'innovative-gemini',            name: 'Innovative Gemini Pro',            modelBackend: 'gemini-pro',            swarmConfig:{
-              topology: 'mesh',              maxAgents:7,
-              strategy: 'adaptive',              coordinationApproach: 'aggressive',},
-            promptVariations:{
-              style: 'creative',              focus: 'innovation',},
-},
+
           {
             id: 'aider-experimental',            name: 'Aider Experimental',            modelBackend: 'aider',            swarmConfig:{
               topology: 'hierarchical',              maxAgents:4,

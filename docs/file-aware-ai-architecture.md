@@ -24,7 +24,7 @@ Build a comprehensive file-aware AI system that integrates with our existing LLM
 ├─────────────────────────────────────────────────────────────┤
 │              Existing LLM Routing System                    │
 │    ┌──────────────┐ ┌──────────────┐ ┌──────────────┐      │
-│    │ GitHub       │ │ Claude Code  │ │ Gemini       │      │
+│    │ GitHub       │ │ Claude Code  │ │              │      │
 │    │ Copilot GPT-5│ │              │ │              │      │
 │    └──────────────┘ └──────────────┘ └──────────────┘      │
 └─────────────────────────────────────────────────────────────┘
@@ -164,13 +164,13 @@ interface ProviderConfig {
 // Update routing strategy
 RULES: {
   // File-aware tasks: Use our new system with any LLM
-  fileAwareTasks: ['copilot', 'claude-code', 'gemini-direct'],
+  fileAwareTasks: ['copilot', 'claude-code'],
 
   // Large refactoring: Use models with big context windows
-  largeRefactoring: ['gemini-direct', 'copilot', 'claude-code'],
+  largeRefactoring: ['copilot', 'claude-code'],
 
   // Multi-file editing: Use our file-aware system
-  multiFileEditing: ['copilot', 'gemini-direct', 'claude-code'],
+  multiFileEditing: ['copilot', 'claude-code'],
 }
 ```
 
@@ -219,7 +219,7 @@ RULES: {
 - **No CLI Required**: Pure API/web interface option
 - **Swarm Coordination**: Multiple AI agents working together
 - **Enterprise Ready**: Built for team environments
-- **Model Agnostic**: Switch between GPT-5, Claude, Gemini seamlessly
+- **Model Agnostic**: Switch between GPT-5, Claude seamlessly
 - **Memory Persistence**: Long-term project understanding
 
 ## 📊 **Success Metrics**
@@ -246,10 +246,10 @@ RULES: {
 A file-aware AI system that:
 
 1. **Understands** your entire codebase structure and relationships
-2. **Uses** any AI model (GPT-5, Claude, Gemini) for code understanding
+2. **Uses** any AI model (GPT-5, Claude) for code understanding
 3. **Modifies** multiple files safely with atomic operations
 4. **Learns** from your patterns and improves over time
 5. **Integrates** seamlessly with your existing workflow
 6. **Provides** both API and web interface (no CLI required)
 
-This would make claude-code-zen a comprehensive alternative to Cursor/Cline while leveraging our existing LLM routing and swarm coordination systems.
+This would make claude-code-zen a comprehensive alternative to other code generation tools while leveraging our existing LLM routing and swarm coordination systems.

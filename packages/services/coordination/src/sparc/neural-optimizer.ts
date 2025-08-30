@@ -252,7 +252,7 @@ export default sparcNeuralOptimizer;
       case SPARCPhase.COMPLETION: return 300000; // 5 minutes
       default: return 120000;
 }
-};)  private getDefaultLLMStrategy(context: SparcContextVector):'claude' | ' gpt'|' gemini' | ' auto '{';
+};)  private getDefaultLLMStrategy(context: SparcContextVector): 'claude' | 'gpt' | 'auto' {
     // Simple heuristic-based selection
     if (context.artifactsSize > 100000) return 'claude'; // Large context';
     if (context.phase === SPARCPhase.ARCHITECTURE) return 'claude'; // Complex reasoning';
