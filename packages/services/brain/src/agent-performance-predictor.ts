@@ -15,7 +15,7 @@
  */
 
 import { getLogger} from '@claude-zen/foundation';
-import { mean, standardDeviation, linearRegression, rSquared, sum} from 'simple-statistics';
+import { mean, standardDeviation, sum} from 'simple-statistics';
 import regression from 'regression';
 
 const logger = getLogger('AgentPerformancePredictor');
@@ -484,7 +484,7 @@ export class AgentPerformancePredictor {
     // Find the task count that historically gave best performance
     const performanceByTaskCount = new Map<number, number[]>();
 
-    history.forEach((data) => {
+    for (const data of history) {
       const taskCount = data.concurrentTasks;
       const performance =
         data.successRate * (1 / (data.completionTime / 1000 + 1));
@@ -493,18 +493,18 @@ export class AgentPerformancePredictor {
         performanceByTaskCount.set(taskCount, []);
 }
       performanceByTaskCount.get(taskCount)!.push(performance);
-});
+}
 
     let bestTaskCount = 1;
     let bestPerformance = 0;
 
-    performanceByTaskCount.forEach((performances, taskCount) => {
+    for (const [taskCount, performances] of performanceByTaskCount.entries()) {
       const avgPerformance = mean(performances);
       if (avgPerformance > bestPerformance) {
         bestPerformance = avgPerformance;
         bestTaskCount = taskCount;
 }
-});
+}
 
     // Adjust based on load forecast
     const adjustedTaskCount = Math.round(
@@ -970,7 +970,7 @@ export class AgentPerformancePredictor {
         const avgErrorRate = mean(recentData.map((d) => d.errorRate));
 
         if (avgCpuUsage > 0.9 || avgErrorRate > 0.15) {
-          bottlenecks.push('Agent ' + agentId + ' (high resource usage/errors)');
+          bottlenecks.push(`Agent ${  agentId  } (high resource usage/errors)`);
 }
 }
 }
@@ -1080,7 +1080,7 @@ export class AgentPerformancePredictor {
         queueSize:Math.floor(Math.random() * 20)
 };
 } catch (error) {
-      logger.warn('Failed to load realtime metrics for ' + agentId + ':', error);
+      logger.warn(`Failed to load realtime metrics for ${  agentId  }:`, error);
       return {};
 }
 }
@@ -1101,7 +1101,7 @@ export class AgentPerformancePredictor {
       
       return (cpuFactor + memoryFactor + queueFactor) / 3;
 } catch (error) {
-      logger.warn('Failed to apply ML forecast for ' + agentId + ':', error);
+      logger.warn(`Failed to apply ML forecast for ${  agentId  }:`, error);
       return 0.5; // Default prediction
 }
 }
@@ -1133,7 +1133,7 @@ export class AgentPerformancePredictor {
 };
 
       // In production, this would write to a time-series database
-      logger.debug('Performance snapshot logged for agent ' + agentId, performanceSnapshot);
+      logger.debug(`Performance snapshot logged for agent ${  agentId}`, performanceSnapshot);
       
       // Store in memory for immediate access (would be database in production)
       if (!this.performanceHistory.has(agentId)) {
@@ -1155,7 +1155,7 @@ export class AgentPerformancePredictor {
         history.splice(0, history.length - 1000);
 }
 } catch (error) {
-      logger.error('Failed to log performance snapshot for agent ' + agentId + ':', error);
+      logger.error(`Failed to log performance snapshot for agent ${  agentId  }:`, error);
 }
 }
 
@@ -1194,7 +1194,7 @@ export class AgentPerformancePredictor {
 } :null
 };
 
-      logger.debug('Agent profile calculated for ' + agentId, {
+      logger.debug(`Agent profile calculated for ${  agentId}`, {
         completeness: profile.profileCompleteness,
         samples: profile.totalSamples,
         learningPhase: profile.learningPhase
@@ -1202,7 +1202,7 @@ export class AgentPerformancePredictor {
 
       return profile;
 } catch (error) {
-      logger.error('Failed to get agent performance profile for ' + agentId + ':', error);
+      logger.error(`Failed to get agent performance profile for ${  agentId  }:`, error);
       return {
         historicalCpuAvg:0.1,
         historicalMemoryAvg:0.1,
@@ -1253,7 +1253,7 @@ export class AgentPerformancePredictor {
 }
 };
 
-      logger.debug('Baseline calculated for agent ' + agentId, {
+      logger.debug(`Baseline calculated for agent ${  agentId}`, {
         cpu: baseline.cpu.toFixed(3),
         memory: baseline.memory.toFixed(3),
         confidence: baseline.confidence.toFixed(2),
@@ -1262,7 +1262,7 @@ export class AgentPerformancePredictor {
 
       return baseline;
 } catch (error) {
-      logger.error('Failed to calculate baseline for agent ' + agentId + ':', error);
+      logger.error(`Failed to calculate baseline for agent ${  agentId  }:`, error);
       return {
         cpu:0.1,
         memory:0.1,
@@ -1323,7 +1323,7 @@ export class AgentPerformancePredictor {
       const normalizedRisk = factors > 0 ? riskScore / factors:0;
       const confidenceAdjustedRisk = normalizedRisk * profile.profileCompleteness;
 
-      logger.debug('Risk score calculated for agent ' + agentId + ': ' + confidenceAdjustedRisk.toFixed(3), {
+      logger.debug(`Risk score calculated for agent ${  agentId  }: ${  confidenceAdjustedRisk.toFixed(3)}`, {
         factors,
         profileCompleteness: profile.profileCompleteness,
         trends: metrics.trends,
@@ -1332,7 +1332,7 @@ export class AgentPerformancePredictor {
 
       return Math.max(0, Math.min(1, confidenceAdjustedRisk)); // Clamp between 0 and 1
 } catch (error) {
-      logger.error('Failed to calculate risk score for agent ' + agentId + ':', error);
+      logger.error(`Failed to calculate risk score for agent ${  agentId  }:`, error);
       return 0.5; // Default moderate risk
 }
 }
@@ -1361,7 +1361,7 @@ export class AgentPerformancePredictor {
 };
 
       // Delegate to TaskMaster for human-in-the-loop workflow
-      logger.warn('Critical performance event for agent ' + agentId, criticalEvent);
+      logger.warn(`Critical performance event for agent ${  agentId}`, criticalEvent);
 
       // Use TaskMaster for human approval workflows instead of automated remediation
       if (criticalEvent.severity === 'critical') {
@@ -1369,7 +1369,7 @@ export class AgentPerformancePredictor {
 }
 
 } catch (error) {
-      logger.error('Failed to log critical performance event for agent ' + agentId + ':', error);
+      logger.error(`Failed to log critical performance event for agent ${  agentId  }:`, error);
 }
 }
 
@@ -1397,7 +1397,7 @@ export class AgentPerformancePredictor {
         break;
 }
 
-    recommendations.push('Current risk score: ' + eventData.riskScore.toFixed(2) + ' - monitor closely');
+    recommendations.push(`Current risk score: ${  eventData.riskScore.toFixed(2)  } - monitor closely`);
     return recommendations;
 }
 
@@ -1411,14 +1411,14 @@ export class AgentPerformancePredictor {
     criticalEvent:any
   ):Promise<void> {
     try {
-      logger.info('Creating TaskMaster incident for agent ' + agentId + ', event: ' + eventType);
+      logger.info(`Creating TaskMaster incident for agent ${  agentId  }, event: ${  eventType}`);
 
       // Create a task for human approval via TaskMaster facade
       const incidentTask = {
         type: 'performance_incident',        agentId,
         eventType,
         severity:criticalEvent.severity,
-        description: 'Critical performance event: ' + eventType + ' for agent ' + agentId,
+        description: `Critical performance event: ${  eventType  } for agent ${  agentId}`,
         recommendedActions:this.getRecommendedActions(eventType),
         eventData,
         criticalEvent,
@@ -1441,7 +1441,7 @@ export class AgentPerformancePredictor {
 });
 
 } catch (error) {
-      logger.error('Failed to trigger automated remediation for agent ' + agentId + ':', error);
+      logger.error(`Failed to trigger automated remediation for agent ${  agentId  }:`, error);
 }
 }
 
@@ -1497,13 +1497,13 @@ export class AgentPerformancePredictor {
         success:true // Would be determined by actual remediation results
 };
 
-      logger.info('Performance remediation logged for agent ' + agentId, remediationLog);
+      logger.info(`Performance remediation logged for agent ${  agentId}`, remediationLog);
 
       // In production, store in remediation tracking database
       // This enables learning from remediation effectiveness
 
 } catch (error) {
-      logger.error('Failed to log performance remediation for agent ' + agentId + ':', error);
+      logger.error(`Failed to log performance remediation for agent ${  agentId  }:`, error);
 }
 }
 }

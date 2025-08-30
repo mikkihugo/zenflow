@@ -450,9 +450,7 @@ export class NeuralDomainMapper {
       'strategy', 'observer', 'decorator', 'facade', 'proxy'
     ];
 
-    const semanticVector = conceptKeywords.map(concept => {
-      return words.filter(word => word.includes(concept)).length / words.length;
-    });
+    const semanticVector = conceptKeywords.map(concept => words.filter(word => word.includes(concept)).length / words.length);
 
     // Pad or truncate to fixed size
     while (semanticVector.length < 50) {
@@ -641,13 +639,13 @@ export class NeuralDomainMapper {
     }
 
     // Assign domains to clusters based on embedding similarity
-    domains.forEach((domain, index) => {
+    for (const [index, domain] of domains.entries()) {
       const clusterIndex = index % k;
       const targetCluster = clusters[clusterIndex];
       if (targetCluster) {
         targetCluster.domains.push(domain.id);
       }
-    });
+    }
 
     return clusters;
   }
@@ -669,14 +667,14 @@ export class NeuralDomainMapper {
   ): Promise<Map<string, number>> {
     const predictions = new Map<string, number>();
     
-    domains.forEach(domain => {
+    for (const domain of domains) {
       // Simple growth prediction (in production, use temporal neural networks)
       const growthRate = Math.random() * 0.1 + 0.02; // 2-12% growth
       const currentComplexity = domain.complexity;
       const predictedComplexity = currentComplexity * (1 + growthRate * timeHorizon / 30);
       
       predictions.set(domain.id, predictedComplexity);
-    });
+    }
 
     return predictions;
   }
@@ -727,17 +725,13 @@ export class NeuralDomainMapper {
     // In production, this would create an actual GNN model
     return {
       config,
-      predict: async (graphData: any, nodeFeatures: number[][]) => {
-        return this.simulateGNNResults(graphData, nodeFeatures);
-      },
+      predict: async (graphData: any, nodeFeatures: number[][]) => this.simulateGNNResults(graphData, nodeFeatures),
     };
   }
 
   private createMockGNNModel(): any {
     return {
-      predict: async (graphData: any, nodeFeatures: number[][]) => {
-        return this.simulateGNNResults(graphData, nodeFeatures);
-      },
+      predict: async (graphData: any, nodeFeatures: number[][]) => this.simulateGNNResults(graphData, nodeFeatures),
     };
   }
 

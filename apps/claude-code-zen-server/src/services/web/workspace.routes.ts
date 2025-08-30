@@ -494,7 +494,7 @@ export class WorkspaceApiRoutes {
           const content = await fs.readFile(filePath, 'utf-8');
           const lines = content.split('\n');
           
-          lines.forEach((line, index) => {
+          for (const [index, line] of lines.entries()) {
             if (line.toLowerCase().includes(query.toLowerCase()) && results.length < maxResults) {
               results.push({
                 file: path.relative(this.workspaceRoot, filePath),
@@ -503,7 +503,7 @@ export class WorkspaceApiRoutes {
                 match: query,
               });
             }
-          });
+          }
         } catch {
           // Skip files that can't be read as text
         }

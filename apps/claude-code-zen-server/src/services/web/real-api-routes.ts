@@ -157,11 +157,11 @@ export class RealApiRoutes {
         const swarmsArray = Array.from(this.swarms.values());
         
         // Update uptime for active swarms
-        swarmsArray.forEach(swarm => {
+        for (const swarm of swarmsArray) {
           if (swarm.status === 'active') {
             swarm.uptime = Math.floor((Date.now() - new Date(swarm.created).getTime()) / 1000);
           }
-        });
+        }
         
         res.json({
           success: true,
@@ -269,11 +269,11 @@ export class RealApiRoutes {
         this.tasks.set(taskId, newTask);
         
         // Update swarm task count
-        this.swarms.forEach(swarm => {
+        for (const swarm of this.swarms) {
           if (swarm.status === 'active') {
             swarm.activeTasks++;
           }
-        });
+        }
         
         logger.info(`Task orchestrated: ${taskId}`);
         
@@ -337,23 +337,23 @@ export class RealApiRoutes {
     app.post(`${api}/v1/swarm/shutdown`, (req: Request, res: Response) => {
       try {
         // Set all swarms to inactive
-        this.swarms.forEach(swarm => {
+        for (const swarm of this.swarms) {
           swarm.status = 'inactive';
           swarm.activeAgents = 0;
           swarm.activeTasks = 0;
-        });
+        }
         
         // Set all agents to inactive
-        this.agents.forEach(agent => {
+        for (const agent of this.agents) {
           agent.status = 'inactive';
-        });
+        }
         
         // Set all running tasks to cancelled
-        this.tasks.forEach(task => {
+        for (const task of this.tasks) {
           if (task.status === 'running' || task.status === 'in_progress') {
             task.status = 'cancelled';
           }
-        });
+        }
         
         logger.info('Swarm shutdown completed');
         

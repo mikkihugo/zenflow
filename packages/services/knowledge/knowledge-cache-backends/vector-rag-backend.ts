@@ -24,18 +24,12 @@ import {
   createCircuitBreaker,
   EnhancedError,
   getLogger,
-  type Logger,
-  ok,
   TypedEventBase,
-  withRetry,
 } from '@claude-zen/foundation';
 
 import {
   LanceDBAdapter,
-  type VectorResult,
-  type VectorSearchOptions,
   type DatabaseConfig,
-  createDatabaseConnection,
 } from '@claude-zen/database';
 
 import type {
@@ -624,7 +618,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
     }
 
     // Calculate hybrid scores and sort
-    const rankedResults = Array.from(uniqueResults.values())
+    return Array.from(uniqueResults.values())
       .map(result => {
         const exactWeight = result.searchType === 'exact' ? hybridWeight : 0;
         const semanticWeight = result.searchType === 'semantic' ? (1 - hybridWeight) : 0;
@@ -637,8 +631,6 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
         };
       })
       .sort((a, b) => b.similarityScore - a.similarityScore);
-
-    return rankedResults;
   }
 
 }

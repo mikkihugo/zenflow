@@ -215,7 +215,7 @@ app.post('/api/v1/coordination/agents', async (req, res) => {
       }
 
       // Fallback to memory storage
-      const agent = {
+      return {
         id: `agent-${Date.now()}`,
         name: agentData.name || 'New Agent',
         type: agentData.type || 'general',
@@ -225,8 +225,6 @@ app.post('/api/v1/coordination/agents', async (req, res) => {
         currentTask: null,
         createdAt: new Date().toISOString(),
       };
-
-      return agent;
     }, null);
 
     if (newAgent) {
@@ -293,7 +291,7 @@ app.post('/api/v1/coordination/tasks', async (req, res) => {
       }
 
       // Fallback implementation
-      const task = {
+      return {
         id: `task-${Date.now()}`,
         title: taskData.title || 'New Task',
         description: taskData.description || 'Task description',
@@ -303,8 +301,6 @@ app.post('/api/v1/coordination/tasks', async (req, res) => {
         createdAt: new Date().toISOString(),
         estimatedCompletion: new Date(Date.now() + 3600000).toISOString(),
       };
-
-      return task;
     }, null);
 
     if (newTask) {

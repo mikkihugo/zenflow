@@ -620,7 +620,7 @@ export class ApplicationCoordinator extends EventEmitter {
           .filter(([key]) => key !== 'status')
           .map(([key, value]) => `    ${key}: ${value}`)
           .join('\n');
-        return `- **${name}**: ${info.status}${details ? '\n' + details : ''}`;
+        return `- **${name}**: ${info.status}${details ? `\n${  details}` : ''}`;
       })
       .join('\n');
 

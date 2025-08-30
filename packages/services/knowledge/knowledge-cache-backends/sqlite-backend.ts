@@ -62,7 +62,6 @@ class EnhancedError extends Error {
 }
 
 import type {
-  FACTBackendStats,
   FACTKnowledgeEntry,
   FACTSearchQuery,
   FACTStorageBackend,
