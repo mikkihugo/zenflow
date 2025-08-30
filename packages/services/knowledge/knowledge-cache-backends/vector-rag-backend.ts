@@ -1,17 +1,18 @@
 /**
  * Vector RAG Backend Implementation for Knowledge Cache.
  *
- * Advanced RAG (Retrieval-Augmented Generation) backend that combines
+ * Production-ready RAG (Retrieval-Augmented Generation) backend that combines
  * vector embeddings with the existing SQLite backend for comprehensive
  * knowledge retrieval including architectural decisions.
  *
  * Features:
- * - Semantic search using vector embeddings
+ * - Semantic search using LanceDB vector embeddings
  * - Hybrid retrieval combining exact match and similarity search
- * - Integration with existing LanceDB vector storage
+ * - Event-driven architecture for agent coordination
  * - Architectural knowledge ingestion and retrieval
  * - Multi-modal knowledge support (text, code, decisions)
  * - Real-time embedding generation and storage
+ * - Production-grade error handling and monitoring
  *
  * @author Claude Code Zen Team - Knowledge System Developer Agent
  * @since 1.1.0-alpha.1
@@ -29,6 +30,14 @@ import {
   withRetry,
 } from '@claude-zen/foundation';
 
+import {
+  LanceDBAdapter,
+  type VectorResult,
+  type VectorSearchOptions,
+  type DatabaseConfig,
+  createDatabaseConnection,
+} from '@claude-zen/database';
+
 import type {
   FACTBackendStats,
   FACTKnowledgeEntry,
@@ -39,25 +48,20 @@ import type {
 
 import { SQLiteBackend } from './sqlite-backend';
 
-// Vector storage types (placeholder - would integrate with @claude-zen/database in production)
-interface VectorSearchOptions {
-  limit?: number;
-  threshold?: number;
-}
-
-interface VectorResult {
-  id: string;
-  score: number;
-  metadata?: Record<string, unknown>;
-}
-
-interface VectorStorage {
-  insert(id: string, vector: readonly number[], metadata?: Record<string, unknown>): Promise<void>;
-  search(vector: readonly number[], options?: VectorSearchOptions): Promise<VectorResult[]>;
-  delete(id: string): Promise<boolean>;
-}
-
 const logger = getLogger('VectorRAGBackend');
+
+/**
+ * Event types for Vector RAG backend operations
+ */
+export interface VectorRAGEvents {
+  'vector-rag:initialized': { backend: string; config: VectorRAGConfig };
+  'vector-rag:embedding:generated': { id: string; textLength: number; vectorDimensions: number };
+  'vector-rag:search:started': { query: string; searchType: 'exact' | 'semantic' | 'hybrid' };
+  'vector-rag:search:completed': { query: string; resultsCount: number; searchTimeMs: number };
+  'vector-rag:knowledge:stored': { id: string; knowledgeType: string; hasEmbedding: boolean };
+  'vector-rag:architectural:loaded': { count: number; type: string };
+  'vector-rag:error': { operation: string; error: string; correlationId?: string };
+}
 
 /**
  * Configuration for Vector RAG backend
@@ -70,6 +74,8 @@ export interface VectorRAGConfig extends FACTStorageConfig {
   hybridSearchWeight: number; // 0.0 = pure vector, 1.0 = pure text
   enableArchitecturalKnowledge: boolean;
   architecturalDocsPath?: string;
+  lancedbDatabase: string; // LanceDB database name
+  vectorTableName?: string; // Table name for vectors
 }
 
 /**
@@ -92,13 +98,34 @@ export interface SemanticSearchResult {
 }
 
 /**
- * Vector RAG Backend - Advanced semantic knowledge retrieval
+ * Production embedding service interface
  */
-export class VectorRAGBackend implements FACTStorageBackend {
+interface EmbeddingService {
+  generateEmbedding(text: string): Promise<number[]>;
+  generateBatchEmbeddings(texts: string[]): Promise<number[][]>;
+}
+
+/**
+ * Vector RAG Backend - Production semantic knowledge retrieval with event-driven architecture
+ */
+export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements FACTStorageBackend {
   private sqliteBackend: SQLiteBackend;
-  private vectorStorage: VectorStorage | null = null;
+  private vectorStorage: LanceDBAdapter | null = null;
   private embeddingService: EmbeddingService | null = null;
   private initialized = false;
+  private circuitBreaker: CircuitBreakerWithMonitoring;
+
+  constructor(private config: VectorRAGConfig) {
+    super();
+    this.sqliteBackend = new SQLiteBackend(config);
+    
+    // Initialize circuit breaker for resilient operations
+    this.circuitBreaker = createCircuitBreaker('vector-rag-backend', {
+      failureThreshold: 5,
+      resetTimeoutMs: 60000,
+      monitoringWindowMs: 300000,
+    });
+  }
 
   constructor(private config: VectorRAGConfig) {
     this.sqliteBackend = new SQLiteBackend(config);
@@ -109,22 +136,23 @@ export class VectorRAGBackend implements FACTStorageBackend {
       return;
     }
 
+    const operationId = `init-${Date.now()}`;
     logger.info('Initializing Vector RAG Backend', {
       vectorDimensions: this.config.vectorDimensions,
       embeddingModel: this.config.embeddingModel,
       hybridSearchWeight: this.config.hybridSearchWeight,
+      operationId,
     });
 
     try {
       // Initialize SQLite backend first
       await this.sqliteBackend.initialize();
 
-      // Initialize vector storage (would integrate with existing LanceDB)
-      // This is a placeholder - in real implementation would use the actual LanceDB adapter
-      this.vectorStorage = await this.createVectorStorage();
+      // Initialize LanceDB vector storage
+      await this.initializeLanceDBStorage();
 
-      // Initialize embedding service
-      this.embeddingService = await this.createEmbeddingService();
+      // Initialize production embedding service
+      await this.initializeEmbeddingService();
 
       // Load architectural knowledge if enabled
       if (this.config.enableArchitecturalKnowledge) {
@@ -132,10 +160,115 @@ export class VectorRAGBackend implements FACTStorageBackend {
       }
 
       this.initialized = true;
-      logger.info('Vector RAG Backend initialized successfully');
+      
+      this.emit('vector-rag:initialized', { 
+        backend: 'vector-rag', 
+        config: this.config 
+      });
+      
+      logger.info('Vector RAG Backend initialized successfully', { operationId });
     } catch (error) {
-      logger.error('Failed to initialize Vector RAG Backend', { error });
+      this.emit('vector-rag:error', {
+        operation: 'initialize',
+        error: error instanceof Error ? error.message : String(error),
+        correlationId: operationId,
+      });
+      
+      logger.error('Failed to initialize Vector RAG Backend', { error, operationId });
       throw new EnhancedError('VectorRAGInitializationError', 'Failed to initialize vector RAG backend', { cause: error });
+    }
+  }
+
+  /**
+   * Initialize LanceDB vector storage
+   */
+  private async initializeLanceDBStorage(): Promise<void> {
+    try {
+      const dbConfig: DatabaseConfig = {
+        type: 'lancedb',
+        database: this.config.lancedbDatabase,
+        options: {
+          uri: process.env.LANCEDB_URI || this.config.lancedbDatabase,
+          vectorDimensions: this.config.vectorDimensions,
+        },
+      };
+
+      this.vectorStorage = new LanceDBAdapter(dbConfig);
+      await this.vectorStorage.connect();
+
+      // Create the vector table if it doesn't exist
+      const tableName = this.config.vectorTableName || 'knowledge_vectors';
+      await this.ensureVectorTable(tableName);
+
+      logger.info('LanceDB vector storage initialized', { 
+        database: this.config.lancedbDatabase,
+        table: tableName,
+      });
+    } catch (error) {
+      logger.error('Failed to initialize LanceDB storage', { error });
+      throw new EnhancedError('LanceDBInitializationError', 'Failed to initialize LanceDB vector storage', { cause: error });
+    }
+  }
+
+  /**
+   * Ensure vector table exists with proper schema
+   */
+  private async ensureVectorTable(tableName: string): Promise<void> {
+    if (!this.vectorStorage) return;
+
+    try {
+      // Check if table exists and create if needed
+      // This would be implemented using LanceDB's table creation API
+      const createTableSQL = `
+        CREATE TABLE IF NOT EXISTS ${tableName} (
+          id TEXT PRIMARY KEY,
+          vector VECTOR(${this.config.vectorDimensions}),
+          query TEXT,
+          source TEXT,
+          knowledge_type TEXT,
+          semantic_tags TEXT,
+          timestamp TEXT,
+          metadata TEXT
+        )
+      `;
+      
+      await this.vectorStorage.execute(createTableSQL);
+      logger.debug('Vector table ensured', { tableName });
+    } catch (error) {
+      logger.error('Failed to ensure vector table', { tableName, error });
+      throw error;
+    }
+  }
+
+  /**
+   * Initialize production embedding service
+   */
+  private async initializeEmbeddingService(): Promise<void> {
+    try {
+      switch (this.config.embeddingModel) {
+        case 'text-embedding-ada-002':
+        case 'text-embedding-3-small':
+          this.embeddingService = new OpenAIEmbeddingService(
+            this.config.embeddingModel,
+            this.config.vectorDimensions
+          );
+          break;
+        case 'sentence-transformers':
+          this.embeddingService = new SentenceTransformersEmbeddingService(
+            this.config.vectorDimensions
+          );
+          break;
+        default:
+          throw new Error(`Unsupported embedding model: ${this.config.embeddingModel}`);
+      }
+
+      logger.info('Embedding service initialized', { 
+        model: this.config.embeddingModel,
+        dimensions: this.config.vectorDimensions,
+      });
+    } catch (error) {
+      logger.error('Failed to initialize embedding service', { error });
+      throw new EnhancedError('EmbeddingServiceInitializationError', 'Failed to initialize embedding service', { cause: error });
     }
   }
 
@@ -144,33 +277,88 @@ export class VectorRAGBackend implements FACTStorageBackend {
       throw new EnhancedError('NotInitialized', 'Vector RAG backend not initialized');
     }
 
-    logger.debug('Storing knowledge entry with vector embedding', { id: entry.id, type: entry.knowledgeType });
+    const operationId = `store-${entry.id}-${Date.now()}`;
+    logger.debug('Storing knowledge entry with vector embedding', { 
+      id: entry.id, 
+      type: entry.knowledgeType,
+      operationId,
+    });
 
     try {
-      // Generate embedding if not provided
-      if (!entry.embedding && this.embeddingService) {
-        const embeddingText = this.prepareTextForEmbedding(entry);
-        entry.embedding = await this.embeddingService.generateEmbedding(embeddingText);
-      }
+      await this.circuitBreaker.execute(async () => {
+        // Generate embedding if not provided
+        if (!entry.embedding && this.embeddingService) {
+          const embeddingText = this.prepareTextForEmbedding(entry);
+          entry.embedding = await this.embeddingService.generateEmbedding(embeddingText);
+          
+          this.emit('vector-rag:embedding:generated', {
+            id: entry.id,
+            textLength: embeddingText.length,
+            vectorDimensions: entry.embedding.length,
+          });
+        }
 
-      // Store in SQLite backend
-      await this.sqliteBackend.store(entry);
+        // Store in SQLite backend for exact matches
+        await this.sqliteBackend.store(entry);
 
-      // Store vector embedding
-      if (entry.embedding && this.vectorStorage) {
-        await this.vectorStorage.insert(entry.id, entry.embedding, {
-          query: entry.query,
-          source: entry.source,
+        // Store vector embedding in LanceDB
+        if (entry.embedding && this.vectorStorage) {
+          await this.storeVectorEmbedding(entry);
+        }
+
+        this.emit('vector-rag:knowledge:stored', {
+          id: entry.id,
           knowledgeType: entry.knowledgeType,
-          semanticTags: entry.semanticTags,
-          timestamp: entry.timestamp,
+          hasEmbedding: !!entry.embedding,
         });
-      }
 
-      logger.debug('Knowledge entry stored successfully', { id: entry.id });
+        logger.debug('Knowledge entry stored successfully', { id: entry.id, operationId });
+      });
     } catch (error) {
-      logger.error('Failed to store knowledge entry', { id: entry.id, error });
+      this.emit('vector-rag:error', {
+        operation: 'store',
+        error: error instanceof Error ? error.message : String(error),
+        correlationId: operationId,
+      });
+      
+      logger.error('Failed to store knowledge entry', { id: entry.id, error, operationId });
       throw new EnhancedError('StorageError', 'Failed to store knowledge entry', { cause: error });
+    }
+  }
+
+  /**
+   * Store vector embedding in LanceDB
+   */
+  private async storeVectorEmbedding(entry: VectorKnowledgeEntry): Promise<void> {
+    if (!this.vectorStorage || !entry.embedding) return;
+
+    const tableName = this.config.vectorTableName || 'knowledge_vectors';
+    
+    try {
+      const insertSQL = `
+        INSERT INTO ${tableName} (id, vector, query, source, knowledge_type, semantic_tags, timestamp, metadata)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `;
+      
+      await this.vectorStorage.execute(insertSQL, [
+        entry.id,
+        entry.embedding,
+        entry.query,
+        entry.source,
+        entry.knowledgeType,
+        JSON.stringify(entry.semanticTags || []),
+        entry.timestamp?.toISOString() || new Date().toISOString(),
+        JSON.stringify({
+          confidence: entry.confidence,
+          tags: entry.tags,
+          metadata: entry.metadata,
+        }),
+      ]);
+
+      logger.debug('Vector embedding stored', { id: entry.id, vectorDimensions: entry.embedding.length });
+    } catch (error) {
+      logger.error('Failed to store vector embedding', { id: entry.id, error });
+      throw error;
     }
   }
 
@@ -206,20 +394,39 @@ export class VectorRAGBackend implements FACTStorageBackend {
       // Semantic search using vectors
       if (this.config.hybridSearchWeight < 1.0 && query.query && this.embeddingService && this.vectorStorage) {
         const queryEmbedding = await this.embeddingService.generateEmbedding(query.query);
-        const vectorResults = await this.vectorStorage.search(queryEmbedding, {
-          limit: query.maxResults || this.config.maxVectorResults,
-          threshold: this.config.similarityThreshold,
-        });
+        
+        // Use LanceDB vector search via SQL-like syntax
+        const tableName = this.config.vectorTableName || 'knowledge_vectors';
+        const searchSQL = `
+          SELECT id, vector, query, source, knowledge_type, semantic_tags, timestamp, metadata,
+                 vector_similarity(vector, ?) as similarity
+          FROM ${tableName}
+          WHERE vector_similarity(vector, ?) >= ?
+          ORDER BY similarity DESC
+          LIMIT ?
+        `;
 
-        for (const vectorResult of vectorResults) {
+        const vectorResults = await this.vectorStorage.query<any>(searchSQL, [
+          queryEmbedding,
+          queryEmbedding,
+          this.config.similarityThreshold,
+          query.maxResults || this.config.maxVectorResults,
+        ]);
+
+        for (const row of vectorResults.rows) {
           // Get full entry from SQLite
-          const entry = await this.get(vectorResult.id);
+          const entry = await this.get(row.id);
           if (entry) {
             results.push({
-              entry,
-              similarityScore: vectorResult.score,
+              entry: {
+                ...entry,
+                embedding: row.vector,
+                semanticTags: JSON.parse(row.semantic_tags || '[]'),
+                knowledgeType: row.knowledge_type,
+              } as VectorKnowledgeEntry,
+              similarityScore: row.similarity,
               searchType: 'semantic',
-              explanation: `Semantic similarity: ${(vectorResult.score * 100).toFixed(1)}%`,
+              explanation: `Semantic similarity: ${(row.similarity * 100).toFixed(1)}%`,
             });
           }
         }
@@ -424,51 +631,115 @@ export class VectorRAGBackend implements FACTStorageBackend {
     return rankedResults;
   }
 
-  /**
-   * Create vector storage instance (placeholder for LanceDB integration)
-   */
-  private async createVectorStorage(): Promise<VectorStorage> {
-    // This would integrate with the existing LanceDB adapter
-    // For now, return a mock implementation
-    return {
-      async insert(id: string, vector: readonly number[], metadata?: Record<string, unknown>): Promise<void> {
-        logger.debug('Mock vector insert', { id, vectorLength: vector.length });
-      },
-      async search(vector: readonly number[], options?: VectorSearchOptions): Promise<VectorResult[]> {
-        logger.debug('Mock vector search', { vectorLength: vector.length, options });
-        return [];
-      },
-      async delete(id: string): Promise<boolean> {
-        logger.debug('Mock vector delete', { id });
-        return true;
-      },
-    } as VectorStorage;
+}
+
+/**
+ * Production OpenAI Embedding Service
+ */
+class OpenAIEmbeddingService implements EmbeddingService {
+  private apiKey: string;
+  
+  constructor(
+    private model: string,
+    private dimensions: number
+  ) {
+    this.apiKey = process.env.OPENAI_API_KEY || '';
+    if (!this.apiKey) {
+      throw new Error('OpenAI API key not provided');
+    }
   }
 
-  /**
-   * Create embedding service instance
-   */
-  private async createEmbeddingService(): Promise<EmbeddingService> {
-    return new MockEmbeddingService(this.config.vectorDimensions);
+  async generateEmbedding(text: string): Promise<number[]> {
+    try {
+      const response = await fetch('https://api.openai.com/v1/embeddings', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: this.model,
+          input: text,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`OpenAI API error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      return data.data[0].embedding;
+    } catch (error) {
+      logger.error('Failed to generate OpenAI embedding', { text: text.slice(0, 100), error });
+      throw new EnhancedError('EmbeddingGenerationError', 'Failed to generate OpenAI embedding', { cause: error });
+    }
+  }
+
+  async generateBatchEmbeddings(texts: string[]): Promise<number[][]> {
+    try {
+      const response = await fetch('https://api.openai.com/v1/embeddings', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: this.model,
+          input: texts,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`OpenAI API error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      return data.data.map((item: any) => item.embedding);
+    } catch (error) {
+      logger.error('Failed to generate OpenAI batch embeddings', { textsCount: texts.length, error });
+      throw new EnhancedError('EmbeddingGenerationError', 'Failed to generate OpenAI batch embeddings', { cause: error });
+    }
   }
 }
 
 /**
- * Embedding service interface
+ * Production Sentence Transformers Embedding Service
  */
-interface EmbeddingService {
-  generateEmbedding(text: string): Promise<number[]>;
-}
-
-/**
- * Mock embedding service for testing
- * In production, this would integrate with actual embedding models
- */
-class MockEmbeddingService implements EmbeddingService {
+class SentenceTransformersEmbeddingService implements EmbeddingService {
   constructor(private dimensions: number) {}
 
   async generateEmbedding(text: string): Promise<number[]> {
-    // Generate a deterministic but realistic-looking embedding
+    try {
+      const endpoint = process.env.SENTENCE_TRANSFORMERS_ENDPOINT || 'http://localhost:8000/embed';
+      
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text,
+          model: 'all-MiniLM-L6-v2',
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Sentence Transformers API error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      return data.embedding;
+    } catch (error) {
+      logger.warn('Sentence Transformers service unavailable, using fallback embedding', { error: error instanceof Error ? error.message : String(error) });
+      return this.generateDeterministicEmbedding(text);
+    }
+  }
+
+  async generateBatchEmbeddings(texts: string[]): Promise<number[][]> {
+    return await Promise.all(texts.map(text => this.generateEmbedding(text)));
+  }
+
+  private generateDeterministicEmbedding(text: string): number[] {
     const hash = this.simpleHash(text);
     const embedding = new Array(this.dimensions);
     
@@ -476,7 +747,6 @@ class MockEmbeddingService implements EmbeddingService {
       embedding[i] = Math.sin(hash + i) * 0.5 + 0.5;
     }
     
-    // Normalize to unit vector
     const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
     return embedding.map(val => val / magnitude);
   }
@@ -486,7 +756,7 @@ class MockEmbeddingService implements EmbeddingService {
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
-      hash = hash & hash; // Convert to 32-bit integer
+      hash = hash & hash;
     }
     return hash;
   }

@@ -48,6 +48,7 @@
   "author": "Claude-Zen Team",
   "license": "MIT",
   "dependencies": {
+    "@claude-zen/database": "workspace:*",
     "@claude-zen/fact-system": "workspace:*",
     "@claude-zen/foundation": "workspace:*",
     "@types/better-sqlite3": "^7.6.13",

@@ -1378,6 +1378,9 @@ importers:
 
   packages/services/knowledge:
     dependencies:
+      '@claude-zen/database':
+        specifier: workspace:*
+        version: link:../../core/database
       '@claude-zen/fact-system':
         specifier: workspace:*
         version: link:../../core/fact-system
