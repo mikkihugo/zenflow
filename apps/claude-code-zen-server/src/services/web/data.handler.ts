@@ -518,57 +518,72 @@ export class WebDataService {
     };
   }
 
-  private getMockSwarmData(): SwarmStatusData[] {
-    return [
-      {
-        id: 'queen-001',
-        name: 'Queen Coordinator',
-        type: 'queen',
-        status: 'active',
-        tasks: { current: 3, completed: 456, failed: 8 },
-        performance: {
-          efficiency: 0.94,
-          responseTime: 125,
-          successRate: 0.96,
-        },
-        lastActive: new Date(Date.now() - 30000).toISOString(),
+  private async getPersistedSwarmData(): Promise<SwarmStatusData[]> {
+    // Get swarm data from persistent storage instead of mock data
+    try {
+      if (this.memorySystem) {
+        const storedSwarms = await this.memorySystem.retrieve('swarm:status:all');
+        if (storedSwarms && Array.isArray(storedSwarms)) {
+          return storedSwarms.map((swarm: any) => this.normalizeSwarmData(swarm));
+        }
+      }
+
+      if (this.databaseSystem) {
+        const swarmQuery = await this.databaseSystem.query(
+          'SELECT * FROM swarm_status ORDER BY last_active DESC'
+        );
+        if (swarmQuery && swarmQuery.rows) {
+          return swarmQuery.rows.map((row: any) => this.normalizeSwarmData(row));
+        }
+      }
+
+      return [];
+    } catch (error) {
+      logger.warn('Failed to retrieve persisted swarm data:', error);
+      return [];
+    }
+  }
+
+  private normalizeSwarmData(data: any): SwarmStatusData {
+    return {
+      id: data.id || `swarm-${Date.now()}`,
+      name: data.name || 'Unknown Swarm',
+      type: data.type || 'agent',
+      status: data.status || 'unknown',
+      tasks: {
+        current: data.current_tasks || data.tasks?.current || 0,
+        completed: data.completed_tasks || data.tasks?.completed || 0,
+        failed: data.failed_tasks || data.tasks?.failed || 0,
       },
-      {
-        id: 'cmd-001',
-        name: 'Primary Commander',
-        type: 'commander',
-        status: 'busy',
-        tasks: { current: 7, completed: 234, failed: 3 },
-        performance: {
-          efficiency: 0.89,
-          responseTime: 180,
-          successRate: 0.93,
-        },
-        lastActive: new Date(Date.now() - 15000).toISOString(),
+      performance: {
+        efficiency: data.efficiency || data.performance?.efficiency || 0.85,
+        responseTime: data.response_time || data.performance?.responseTime || 150,
+        successRate: data.success_rate || data.performance?.successRate || 0.9,
       },
-      {
-        id: 'cmd-002',
-        name: 'SPARC Commander',
-        type: 'commander',
-        status: 'active',
-        tasks: { current: 4, completed: 189, failed: 2 },
-        performance: {
-          efficiency: 0.91,
-          responseTime: 160,
-          successRate: 0.95,
-        },
-        lastActive: new Date(Date.now() - 60000).toISOString(),
-      },
-    ];
+      lastActive: data.last_active || data.lastActive || new Date().toISOString(),
+    };
   }
 
   /**
-   * Get real swarm status data
+   * Get real swarm status data from foundation services
    */
   async getSwarmStatus(): Promise<SwarmStatusData[]> {
     return await safeAsync(async () => {
-      const swarms = await this.getBrainCoordinationData();
-      return swarms.length === 0 ? this.getMockSwarmData() : swarms;
+      // First try to get from brain coordination
+      const brainSwarms = await this.getBrainCoordinationData();
+      if (brainSwarms.length > 0) {
+        return brainSwarms;
+      }
+
+      // Fallback to persisted data
+      const persistedSwarms = await this.getPersistedSwarmData();
+      if (persistedSwarms.length > 0) {
+        return persistedSwarms;
+      }
+
+      // If no data available, return empty array instead of mock data
+      logger.info('No swarm data available from any source');
+      return [];
     }, []);
   }
 
