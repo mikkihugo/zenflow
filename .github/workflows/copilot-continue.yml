@@ -8,7 +8,7 @@ on:
       pr:
         description: "Pull request number to ping"
         required: false
-        default: "20"
+        default: "32"
 
 permissions:
   contents: read
@@ -19,12 +19,12 @@ jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Comment "@copilot continue" on PR #20
+      - name: Comment "@copilot continue" on PR #32
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const prNumber = Number((context.payload && context.payload.inputs && context.payload.inputs.pr) || 20)
+            const prNumber = Number((context.payload && context.payload.inputs && context.payload.inputs.pr) || 32)
 
             // Ensure PR exists and is open; otherwise skip
             try {
