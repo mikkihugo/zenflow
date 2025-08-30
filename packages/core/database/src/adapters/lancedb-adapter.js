@@ -14,7 +14,7 @@ export class LanceDBAdapter {
     lancedbModule = null;
     database = null;
     isConnectedState = false;
-    __stats = {
+    stats = {
         totalQueries: 0,
         totalTransactions: 0,
         totalErrors: 0,
@@ -123,11 +123,13 @@ export class LanceDBAdapter {
             await this.connect();
         }
         if (!this.database) {
-            throw new QueryError('Connection not available', {
+            const errorOptions = {
                 query: sql,
-                params,
                 correlationId,
-            });
+            };
+            if (params !== undefined)
+                errorOptions.params = params;
+            throw new QueryError('Connection not available', errorOptions);
         }
         try {
             logger.debug('Executing LanceDB operation', {
@@ -166,12 +168,15 @@ export class LanceDBAdapter {
             if (error instanceof DatabaseError) {
                 throw error;
             }
-            throw new QueryError(`LanceDB operation execution failed:${error instanceof Error ? error.message : String(error)}`, {
+            const errorOptions = {
                 query: sql,
-                params,
                 correlationId,
-                cause: error instanceof Error ? error : undefined,
-            });
+            };
+            if (params !== undefined)
+                errorOptions.params = params;
+            if (error instanceof Error)
+                errorOptions.cause = error;
+            throw new QueryError(`LanceDB operation execution failed:${error instanceof Error ? error.message : String(error)}`, errorOptions);
         }
     }
     async execute(sql, params, options) {
@@ -967,12 +972,16 @@ export class LanceDBAdapter {
                 await this.sleep(delay);
             }
         }
-        throw new QueryError(`Operation failed after ${retryPolicy.maxRetries} retries:${lastError?.message}`, {
-            query: sql,
-            params,
+        const errorOptions = {
             correlationId,
-            cause: lastError,
-        });
+        };
+        if (sql !== undefined)
+            errorOptions.query = sql;
+        if (params !== undefined)
+            errorOptions.params = params;
+        if (lastError !== undefined)
+            errorOptions.cause = lastError;
+        throw new QueryError(`Operation failed after ${retryPolicy.maxRetries} retries:${lastError?.message}`, errorOptions);
     }
     updateAverageQueryTime(executionTime) {
         const { totalQueries, averageQueryTimeMs } = this.stats;

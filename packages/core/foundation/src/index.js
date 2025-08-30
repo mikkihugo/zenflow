@@ -59,9 +59,9 @@ export { eventRegistryInitializer } from './events/event-registry-initializer.js
 // INFRASTRUCTURE - Facade system and infrastructure utilities
 // =============================================================================
 export { facadeStatusManager, getSystemStatus, hasService, registerFacade, } from './infrastructure/facades/index.js';
-// DATABASE ACCESS - Direct access to @claude-zen/database
+// DATABASE ACCESS - Backend-agnostic database interfaces
 // =============================================================================
-export { createDatabase, createKeyValueStorage, createDatabaseAccess, DatabaseProvider, DatabaseEventCoordinator, SQLiteAdapter, } from './infrastructure/database/index.js';
+export { databaseFacade, createDatabaseAdapter, createKeyValueStore, createVectorStore, createGraphStore, getDatabaseCapability, } from './infrastructure/database/index.js';
 // RESILIENCE PATTERNS - Advanced resilience utilities (using cockatiel)
 // =============================================================================
 export { BrokenCircuitError, BulkheadRejectedError, bulkhead, CircuitState, ConsecutiveBreaker, ConstantBackoff, CountBreaker, circuitBreaker, DelegateBackoff, decorrelatedJitterGenerator, Event, ExponentialBackoff, fallback, handleAll, handleResultType, handleType, handleWhen, handleWhenResult, IsolatedCircuitError, IterableBackoff, noJitterGenerator, noop, Policy, 

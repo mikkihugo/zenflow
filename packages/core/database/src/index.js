@@ -13,6 +13,7 @@
 // Import event system from foundation
 import { EventEmitter } from '@claude-zen/foundation';
 export { SQLiteAdapter } from './adapters/sqlite-adapter.js';
+export { LanceDBAdapter } from './adapters/lancedb-adapter.js';
 import { createDatabaseConnection, createStorageConfig, getDatabaseFactory, createOptimalConfig, createOptimalStorageConfig, } from './factory/database-factory';
 export { createDatabaseConnection, createStorageConfig, getDatabaseFactory, createOptimalConfig, createOptimalStorageConfig, };
 export { getLogger } from './logger.js';
