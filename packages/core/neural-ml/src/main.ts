@@ -176,7 +176,7 @@ function startTrace(name: string): Span {
 };
 }
 function withTrace<T>(
-  _name: string,
+  name: string,
   fn:(span: Span) => Promise<T>,
 ):Promise<T> {
   const span: Span = { setAttributes: () => {}, end:() => {}};
@@ -329,23 +329,25 @@ function createSystemMonitor():SystemMonitor {
 
 // Simple injectable decorator (no-op for now)
 function injectable() {
-  return (target: any) => target;
+  return (target: unknown) => target;
 }
-// Simple dependency injection registry
-const __injectionRegistry = new Map<any, any>();
 
-function _inject(token: any) {
-  return (target: any, key: string, index: number) => {
+// Simple dependency injection registry
+const INJECTION_REGISTRY = new Map<unknown, unknown>();
+
+function inject(token: unknown) {
+  return (target: unknown, key: string, index: number) => {
     // Store injection metadata for later resolution
-    if (!target.__injections) {
-      target.__injections = [];
-}
-    target.__injections.push({ token, key, index});
+    const targetAny = target as any;
+    if (!targetAny.__injections) {
+      targetAny.__injections = [];
+    }
+    targetAny.__injections.push({ token, key, index});
     logger.debug(
       `Dependency injection registered: ${key} at index ${index}`,
       token,
     );
-};
+  };
 }
 
 // Circuit breaker and timeout utilities

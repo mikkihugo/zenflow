@@ -27,6 +27,13 @@ import { getLogger, EventEmitter, type EventMap } from '@claude-zen/foundation';
 
 // Constants for commonly used strings to avoid duplication
 const UNKNOWN_ERROR_MESSAGE = 'Unknown error';
+const SUCCESS_MESSAGES = {
+  REPOSITORY_CLONED: '✅ Repository cloned successfully',
+  BRANCH_CREATED: '✅ Branch created successfully', 
+  BRANCH_DELETED: '✅ Branch deleted successfully',
+  BRANCH_MERGED: '✅ Branch merged successfully',
+  BRANCH_REBASED: '✅ Branch rebased successfully',
+} as const;
 
 // Real implementation of Git sandbox for secure operations
 class SimpleGitSandbox {
@@ -569,7 +576,7 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
 
       this.completeOperation(operation, { sandbox: sandbox.id});
 
-      logger.info('✅ Repository cloned successfully', {
+      logger.info(SUCCESS_MESSAGES.REPOSITORY_CLONED, {
         managerId: this.managerId,
         projectId,
         repoUrl,
@@ -617,7 +624,7 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
 
       this.completeOperation(operation, { branchName: formattedName});
 
-      logger.info('✅ Branch created successfully', {
+      logger.info(SUCCESS_MESSAGES.BRANCH_CREATED, {
         managerId: this.managerId,
         projectId,
         branchName: formattedName,
@@ -666,7 +673,7 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
 
       this.completeOperation(operation, { deleted: true});
 
-      logger.info('✅ Branch deleted successfully', {
+      logger.info(SUCCESS_MESSAGES.BRANCH_DELETED, {
         managerId: this.managerId,
         projectId,
         branchName,
@@ -743,7 +750,7 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
         conflictResolution,
 });
 
-      logger.info('✅ Branch merged successfully', {
+      logger.info(SUCCESS_MESSAGES.BRANCH_MERGED, {
         managerId: this.managerId,
         projectId,
         sourceBranch,
@@ -814,7 +821,7 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
         conflictResolution,
 });
 
-      logger.info('✅ Branch rebased successfully', {
+      logger.info(SUCCESS_MESSAGES.BRANCH_REBASED, {
         managerId: this.managerId,
         projectId,
         targetBranch,
