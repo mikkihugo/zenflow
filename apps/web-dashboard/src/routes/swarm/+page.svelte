@@ -517,9 +517,9 @@ function _formatUptime(seconds: number): string {
 					<button 
 						class="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors w-full md:w-auto" 
 						on:click={initializeSwarm}
-						disabled={initLoading}
+						disabled={_initLoading}
 					>
-						{#if initLoading}
+						{#if _initLoading}
 							<div class="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
 						{:else}
 							<span>🚀</span>
@@ -585,9 +585,9 @@ function _formatUptime(seconds: number): string {
 					<button 
 						class="bg-purple-600 dark:bg-purple-700 text-white px-4 py-2 rounded-lg hover:bg-purple-700 dark:hover:bg-purple-600 transition-colors w-full md:w-auto" 
 						on:click={spawnAgent}
-						disabled={agentSpawningLoading || !agentSwarmId}
+						disabled={_agentSpawningLoading || !agentSwarmId}
 					>
-						{#if agentSpawningLoading}
+						{#if _agentSpawningLoading}
 							<div class="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
 						{:else}
 							<span>🤖</span>
@@ -656,9 +656,9 @@ function _formatUptime(seconds: number): string {
 							<button 
 								class="bg-indigo-600 dark:bg-indigo-700 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors w-full md:w-auto" 
 								on:click={orchestrateTask}
-								disabled={taskCreationLoading || !taskDescription}
+								disabled={_taskCreationLoading || !taskDescription}
 							>
-								{#if taskCreationLoading}
+								{#if _taskCreationLoading}
 									<div class="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
 								{:else}
 									<span>📋</span>
