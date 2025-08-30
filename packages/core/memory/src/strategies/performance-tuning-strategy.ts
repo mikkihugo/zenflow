@@ -13,10 +13,6 @@ import {
   withTrace,
   type Logger,
 } from '@claude-zen/foundation';
-<<<<<<< HEAD
-=======
-import type { Logger } from '@claude-zen/foundation';
->>>>>>> origin/main
 
 import type {
   PerformanceConfig,
@@ -118,13 +114,8 @@ export class PerformanceTuningStrategy extends EventEmitter {
 
     return await withTrace('performance-tuning-cycle', async (span) => {
       span?.setAttributes({
-<<<<<<< HEAD
         tuningAuto: this.config.tuning.autoTune,
         tuningSnapshots: this.snapshots.length,
-=======
-        'tuning.auto': this.config.tuning.autoTune,
-        'tuning.snapshots': this.snapshots.length,
->>>>>>> origin/main
       });
 
       try {
@@ -232,13 +223,8 @@ export class PerformanceTuningStrategy extends EventEmitter {
     });
   }
 
-<<<<<<< HEAD
   private async takePerformanceSnapshot():Promise<PerformanceSnapshot> {
     // Real system monitoring implementations
-=======
-  private async takePerformanceSnapshot(): Promise<PerformanceSnapshot> {
-    // In a real implementation, these would come from actual system monitoring
->>>>>>> origin/main
     return {
       timestamp: Date.now(),
       responseTime: await this.measureResponseTime(),
@@ -252,7 +238,6 @@ export class PerformanceTuningStrategy extends EventEmitter {
     };
   }
 
-<<<<<<< HEAD
   private measureResponseTime():Promise<number> {
     // Mock implementation
     return Promise.resolve(Math.random() * 100 + 10); // 10-110ms
@@ -287,42 +272,6 @@ export class PerformanceTuningStrategy extends EventEmitter {
     // Mock implementation - no need for async
     return Promise.resolve(Math.floor(Math.random() * 20)); // 0-20 queued requests
 }
-=======
-  private async measureResponseTime(): Promise<number> {
-    // Mock implementation
-    return Math.random() * 100 + 10; // 10-110ms
-  }
-
-  private async measureThroughput(): Promise<number> {
-    // Mock implementation - requests per second
-    return Math.random() * 2000 + 500; // 500-2500 rps
-  }
-
-  private async measureCacheHitRate(): Promise<number> {
-    // Mock implementation
-    return Math.random() * 0.4 + 0.6; // 60-100%
-  }
-
-  private async measureErrorRate(): Promise<number> {
-    // Mock implementation
-    return Math.random() * 0.05; // 0-5%
-  }
-
-  private async measureCpuUsage(): Promise<number> {
-    // Mock implementation
-    return Math.random() * 0.7 + 0.1; // 10-80%
-  }
-
-  private async measureActiveConnections(): Promise<number> {
-    // Mock implementation
-    return Math.floor(Math.random() * 50 + 10); // 10-60 connections
-  }
-
-  private async measureQueueSize(): Promise<number> {
-    // Mock implementation
-    return Math.floor(Math.random() * 20); // 0-20 queued requests
-  }
->>>>>>> origin/main
 
   private trimSnapshots(): void {
     // Keep last 100 snapshots (about 3+ hours if taken every 2 minutes)
@@ -449,22 +398,12 @@ export class PerformanceTuningStrategy extends EventEmitter {
       : 0;
   }
 
-<<<<<<< HEAD
   private generateResponseTimeRecommendations(
     analysis: unknown,
     snapshot: PerformanceSnapshot
   ): TuningRecommendation[] {
     const recommendations: TuningRecommendation[] = [];
     
-=======
-  private async generateTuningRecommendations(
-    analysis: any,
-    snapshot: PerformanceSnapshot
-  ): Promise<TuningRecommendation[]> {
-    const recommendations: TuningRecommendation[] = [];
-
-    // Response time optimization
->>>>>>> origin/main
     if (
       (analysis as { responseTimeTrend?: string }).responseTimeTrend === 'degrading' ||
       snapshot.responseTime > this.config.targets.responseTime
@@ -482,12 +421,7 @@ export class PerformanceTuningStrategy extends EventEmitter {
           parameters: {
             currentSize: this.tuningParameters.get('cacheSize')?.currentValue,
             newSize: Math.min(
-<<<<<<< HEAD
               (this.tuningParameters.get('cacheSize')?.currentValue || 1000) * 1.2,
-=======
-              (this.tuningParameters.get('cacheSize')?.currentValue || 1000) *
-                1.2,
->>>>>>> origin/main
               this.tuningParameters.get('cacheSize')?.maxValue || 10000
             ),
           },
@@ -521,12 +455,9 @@ export class PerformanceTuningStrategy extends EventEmitter {
         });
       }
     }
-<<<<<<< HEAD
     
     return recommendations;
   }
-=======
->>>>>>> origin/main
 
   private generateThroughputRecommendations(
     analysis: unknown,
@@ -583,12 +514,9 @@ export class PerformanceTuningStrategy extends EventEmitter {
         });
       }
     }
-<<<<<<< HEAD
     
     return recommendations;
   }
-=======
->>>>>>> origin/main
 
   private generateMemoryRecommendations(
     analysis: unknown,
@@ -620,12 +548,9 @@ export class PerformanceTuningStrategy extends EventEmitter {
         },
       });
     }
-<<<<<<< HEAD
     
     return recommendations;
   }
-=======
->>>>>>> origin/main
 
   private generateCacheRecommendations(snapshot: PerformanceSnapshot): TuningRecommendation[] {
     const recommendations: TuningRecommendation[] = [];
@@ -651,28 +576,19 @@ export class PerformanceTuningStrategy extends EventEmitter {
         },
       });
     }
-<<<<<<< HEAD
     
     return recommendations;
   }
-=======
->>>>>>> origin/main
 
   private sortRecommendationsByPriority(recommendations: TuningRecommendation[]): TuningRecommendation[] {
     return recommendations.sort((a, b) => {
       const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
-<<<<<<< HEAD
       const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority];
-=======
-      const priorityDiff =
-        priorityOrder[b.priority] - priorityOrder[a.priority];
->>>>>>> origin/main
       if (priorityDiff !== 0) return priorityDiff;
 
       return b.impact.performance - a.impact.performance;
     });
   }
-<<<<<<< HEAD
 
   private generateTuningRecommendations(
     analysis: unknown,
@@ -689,8 +605,6 @@ export class PerformanceTuningStrategy extends EventEmitter {
     // Sort by priority and expected impact
     return Promise.resolve(this.sortRecommendationsByPriority(recommendations));
   }
-=======
->>>>>>> origin/main
 
   private calculateOptimalTtl(snapshot: PerformanceSnapshot): number {
     // Simple heuristic:adjust TTL based on cache hit rate
@@ -782,15 +696,9 @@ export class PerformanceTuningStrategy extends EventEmitter {
     }
   }
 
-<<<<<<< HEAD
   private applyTuningAction(
     recommendation:TuningRecommendation
   ):Promise<boolean> {
-=======
-  private async applyTuningAction(
-    recommendation: TuningRecommendation
-  ): Promise<boolean> {
->>>>>>> origin/main
     // Mock implementation - in real scenario, would apply actual configuration changes
     switch (recommendation.action) {
       case 'increase_cache_size': {
@@ -823,13 +731,8 @@ export class PerformanceTuningStrategy extends EventEmitter {
     }
 
     // Simulate success/failure
-<<<<<<< HEAD
     return Promise.resolve(Math.random() > 0.1); // 90% success rate
 }
-=======
-    return Math.random() > 0.1; // 90% success rate
-  }
->>>>>>> origin/main
 
   private updateTuningParameter(name: string, value: number): void {
     const param = this.tuningParameters.get(name);
@@ -923,11 +826,7 @@ export class PerformanceTuningStrategy extends EventEmitter {
     return new Map(this.tuningParameters);
   }
 
-<<<<<<< HEAD
   forceOptimization():Promise<TuningRecommendation[]> {
-=======
-  async forceOptimization(): Promise<TuningRecommendation[]> {
->>>>>>> origin/main
     this.logger.info('Force optimization requested');
     return this.tune();
   }
@@ -963,11 +862,7 @@ export class PerformanceTuningStrategy extends EventEmitter {
     this.logger.info('Performance tuning configuration updated', newConfig);
   }
 
-<<<<<<< HEAD
   shutdown():Promise<void> {
-=======
-  async shutdown(): Promise<void> {
->>>>>>> origin/main
     if (this.tuningTimer) {
       clearInterval(this.tuningTimer);
     }
@@ -977,10 +872,6 @@ export class PerformanceTuningStrategy extends EventEmitter {
     this.initialized = false;
 
     this.logger.info('Performance tuning strategy shut down');
-<<<<<<< HEAD
     return Promise.resolve();
 }
-=======
-  }
->>>>>>> origin/main
 }

@@ -243,7 +243,8 @@ export class KuzuAdapter {
             if (!this.isConnected()) {
                 return {
                     healthy: false,
-                    status: 'unhealthy', score: 0,
+                    status: 'unhealthy',
+                    score: 0,
                     timestamp: new Date(),
                     details: { connected: false, reason: 'Not connected' },
                 };
@@ -269,7 +270,8 @@ export class KuzuAdapter {
             score = Math.max(0, score);
             return {
                 healthy: score >= 70,
-                status: score >= 70 ? 'healthy' : score >= 40 ? ' degraded' : ' unhealthy', score,
+                status: score >= 70 ? 'healthy' : score >= 40 ? ' degraded' : ' unhealthy',
+                score,
                 timestamp: new Date(),
                 responseTimeMs: responseTime,
                 metrics: {
@@ -290,7 +292,8 @@ export class KuzuAdapter {
         catch (error) {
             return {
                 healthy: false,
-                status: 'unhealthy', score: 0,
+                status: 'unhealthy',
+                score: 0,
                 timestamp: new Date(),
                 responseTimeMs: Date.now() - startTime,
                 lastError: error instanceof Error ? error.message : String(error),
@@ -330,7 +333,8 @@ export class KuzuAdapter {
             logger.error('Failed to get Kuzu schema', { error });
             return {
                 tables: [],
-                version: 'unknown', lastMigration: undefined,
+                version: 'unknown',
+                lastMigration: undefined,
             };
         }
     }
@@ -620,7 +624,9 @@ export class KuzuAdapter {
         const correlationId = this.generateCorrelationId();
         try {
             // Get node table names
-            const nodeTablesResult = await this.query(SHOW_TABLES_QUERY, undefined, { correlationId });
+            const nodeTablesResult = await this.query(SHOW_TABLES_QUERY, undefined, {
+                correlationId,
+            });
             const nodeLabels = nodeTablesResult.rows
                 .map((row) => row.name)
                 .filter((name) => !!name);
@@ -812,3 +818,4 @@ class KuzuTransactionConnection {
         });
     }
 }
+//# sourceMappingURL=kuzu-adapter.js.map

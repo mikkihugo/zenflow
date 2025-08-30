@@ -4,9 +4,9 @@
  * Provides SQL database operations with comprehensive error handling,
  * connection pooling, and performance monitoring.
  */
-import { getLogger } from "../logger.js";
-import { QueryError, TransactionError, } from "../types/index.js";
-const logger = getLogger("sql-storage");
+import { getLogger } from '../logger.js';
+import { QueryError, TransactionError, } from '../types/index.js';
+const logger = getLogger('sql-storage');
 // Transaction wrapper that adapts TransactionConnection to work with SqlStorage
 class TransactionSQLStorageImpl {
     txConnection;
@@ -32,20 +32,20 @@ class TransactionSQLStorageImpl {
             ?.map((col) => {
             let columnDef = `${col.name} ${col.type}`;
             if (!col.nullable)
-                columnDef += " NOT NULL";
+                columnDef += ' NOT NULL';
             if (col.defaultValue !== undefined)
                 columnDef += ` DEFAULT ${col.defaultValue}`;
             return columnDef;
         })
-            .join(", ") || "";
+            .join(', ') || '';
         const primaryKey = schema.primaryKey?.length > 0
-            ? `, PRIMARY KEY (${schema.primaryKey.join(", ")})`
-            : "";
+            ? `, PRIMARY KEY (${schema.primaryKey.join(', ')})`
+            : '';
         const sql = `CREATE TABLE IF NOT EXISTS ${name} (${columns}${primaryKey})`;
         await this.execute(sql);
     }
     async dropTable(name, options) {
-        const ifExists = options?.ifExists !== false ? "IF EXISTS " : "";
+        const ifExists = options?.ifExists !== false ? 'IF EXISTS ' : '';
         const sql = `DROP TABLE ${ifExists}${name}`;
         await this.execute(sql);
     }
@@ -53,8 +53,8 @@ class TransactionSQLStorageImpl {
         await this.execute(`DELETE FROM ${name}`);
     }
     async createIndex(name, tableName, columns, options) {
-        const unique = options?.unique ? "UNIQUE" : "";
-        const sql = `CREATE ${unique} INDEX IF NOT EXISTS ${name} ON ${tableName} (${columns.join(", ")})`;
+        const unique = options?.unique ? 'UNIQUE' : '';
+        const sql = `CREATE ${unique} INDEX IF NOT EXISTS ${name} ON ${tableName} (${columns.join(', ')})`;
         await this.execute(sql);
     }
     async dropIndex(name, options) {
@@ -99,18 +99,18 @@ export class SQLStorageImpl {
     }
     async query(sql, params) {
         try {
-            logger.debug("Executing SQL query", {
+            logger.debug('Executing SQL query', {
                 sql: sql.slice(0, 100),
                 paramCount: params?.length || 0,
             });
             const result = await this.connection.query(sql, params);
-            logger.debug("SQL query completed", {
+            logger.debug('SQL query completed', {
                 rowCount: Array.isArray(result.rows) ? result.rows.length : 0,
             });
             return result;
         }
         catch (error) {
-            logger.error("SQL query failed", {
+            logger.error('SQL query failed', {
                 sql: sql.slice(0, 100),
                 error: error instanceof Error ? error.message : String(error),
             });
@@ -119,13 +119,13 @@ export class SQLStorageImpl {
     }
     async execute(sql, params, options) {
         try {
-            logger.debug("Executing SQL command", {
+            logger.debug('Executing SQL command', {
                 correlationId: options?.correlationId,
                 sql: sql.slice(0, 100),
                 paramCount: params?.length || 0,
             });
             const result = await this.connection.execute(sql, params);
-            logger.debug("SQL command completed", {
+            logger.debug('SQL command completed', {
                 affectedRows: result.affectedRows,
                 insertId: result.insertId,
             });
@@ -138,7 +138,7 @@ export class SQLStorageImpl {
             };
         }
         catch (error) {
-            logger.error("SQL command failed", {
+            logger.error('SQL command failed', {
                 sql: sql.slice(0, 100),
                 error: error instanceof Error ? error.message : String(error),
             });
@@ -147,17 +147,17 @@ export class SQLStorageImpl {
     }
     async transaction(fn, context) {
         try {
-            logger.debug("Starting SQL transaction");
+            logger.debug('Starting SQL transaction');
             const result = await this.connection.transaction(async (txConnection) => {
                 // Create a wrapper SqlStorage that uses the transaction connection
                 const txStorage = new TransactionSQLStorageImpl(txConnection, this.config);
                 return await fn(txStorage);
             }, context);
-            logger.debug("SQL transaction completed successfully");
+            logger.debug('SQL transaction completed successfully');
             return result;
         }
         catch (error) {
-            logger.error("SQL transaction failed", {
+            logger.error('SQL transaction failed', {
                 error: error instanceof Error ? error.message : String(error),
             });
             throw new TransactionError(`Transaction failed:${error instanceof Error ? error.message : String(error)}`);
@@ -165,7 +165,7 @@ export class SQLStorageImpl {
     }
     async createTable(name, schema) {
         try {
-            logger.debug("Creating table", {
+            logger.debug('Creating table', {
                 name,
                 columnCount: schema.columns?.length,
             });
@@ -174,21 +174,21 @@ export class SQLStorageImpl {
                 ?.map((col) => {
                 let columnDef = `${col.name} ${col.type}`;
                 if (!col.nullable)
-                    columnDef += " NOT NULL";
+                    columnDef += ' NOT NULL';
                 if (col.defaultValue !== undefined)
                     columnDef += ` DEFAULT ${col.defaultValue}`;
                 return columnDef;
             })
-                .join(", ") || "";
+                .join(', ') || '';
             const primaryKey = schema.primaryKey?.length > 0
-                ? `, PRIMARY KEY (${schema.primaryKey.join(", ")})`
-                : "";
+                ? `, PRIMARY KEY (${schema.primaryKey.join(', ')})`
+                : '';
             const sql = `CREATE TABLE IF NOT EXISTS ${name} (${columns}${primaryKey})`;
             await this.execute(sql);
-            logger.info("Table created successfully", { name });
+            logger.info('Table created successfully', { name });
         }
         catch (error) {
-            logger.error("Failed to create table", {
+            logger.error('Failed to create table', {
                 name,
                 error: error instanceof Error ? error.message : String(error),
             });
@@ -200,14 +200,14 @@ export class SQLStorageImpl {
     }
     async dropTable(name, options) {
         try {
-            logger.debug("Dropping table", { name, ifExists: options?.ifExists });
-            const ifExists = options?.ifExists !== false ? "IF EXISTS " : "";
+            logger.debug('Dropping table', { name, ifExists: options?.ifExists });
+            const ifExists = options?.ifExists !== false ? 'IF EXISTS ' : '';
             const sql = `DROP TABLE ${ifExists}${name}`;
             await this.execute(sql);
-            logger.info("Table dropped successfully", { name });
+            logger.info('Table dropped successfully', { name });
         }
         catch (error) {
-            logger.error("Failed to drop table", {
+            logger.error('Failed to drop table', {
                 name,
                 error: error instanceof Error ? error.message : String(error),
             });
@@ -219,12 +219,12 @@ export class SQLStorageImpl {
     }
     async truncateTable(name) {
         try {
-            logger.debug("Truncating table", { name });
+            logger.debug('Truncating table', { name });
             await this.execute(`DELETE FROM ${name}`);
-            logger.info("Table truncated successfully", { name });
+            logger.info('Table truncated successfully', { name });
         }
         catch (error) {
-            logger.error("Failed to truncate table", {
+            logger.error('Failed to truncate table', {
                 name,
                 error: error instanceof Error ? error.message : String(error),
             });
@@ -236,7 +236,7 @@ export class SQLStorageImpl {
     }
     async getTableSchema(name) {
         try {
-            logger.debug("Getting table schema", { name });
+            logger.debug('Getting table schema', { name });
             const columns = await this.getTableInfo(name);
             if (columns.length === 0) {
                 return null;
@@ -258,7 +258,7 @@ export class SQLStorageImpl {
             };
         }
         catch (error) {
-            logger.error("Failed to get table schema", {
+            logger.error('Failed to get table schema', {
                 name,
                 error: error instanceof Error ? error.message : String(error),
             });
@@ -270,21 +270,21 @@ export class SQLStorageImpl {
     }
     async getTableInfo(tableName) {
         try {
-            logger.debug("Getting table info", { tableName });
+            logger.debug('Getting table info', { tableName });
             const result = await this.query(`PRAGMA table_info(${tableName})`);
             const columns = result.rows.map((row) => ({
                 name: row.name,
                 type: row.type,
                 nullable: row.notnull === 0,
             }));
-            logger.debug("Table info retrieved", {
+            logger.debug('Table info retrieved', {
                 tableName,
                 columnCount: columns.length,
             });
             return columns;
         }
         catch (error) {
-            logger.error("Failed to get table info", {
+            logger.error('Failed to get table info', {
                 tableName,
                 error: error instanceof Error ? error.message : String(error),
             });
@@ -293,14 +293,14 @@ export class SQLStorageImpl {
     }
     async listTables() {
         try {
-            logger.debug("Listing tables");
+            logger.debug('Listing tables');
             const result = await this.query("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE ' sqlite_%'");
             const tables = result.rows.map((row) => row.name);
-            logger.debug("Tables listed", { tableCount: tables.length });
+            logger.debug('Tables listed', { tableCount: tables.length });
             return tables;
         }
         catch (error) {
-            logger.error("Failed to list tables", {
+            logger.error('Failed to list tables', {
                 error: error instanceof Error ? error.message : String(error),
             });
             throw new QueryError(`Failed to list tables:${error instanceof Error ? error.message : String(error)}`);
@@ -309,19 +309,19 @@ export class SQLStorageImpl {
     async createIndex(name, tableName, columns, options) {
         try {
             const indexName = name;
-            const unique = options?.unique ? "UNIQUE" : "";
-            const sql = `CREATE ${unique} INDEX IF NOT EXISTS ${indexName} ON ${tableName} (${columns.join(", ")})`;
-            logger.debug("Creating index", {
+            const unique = options?.unique ? 'UNIQUE' : '';
+            const sql = `CREATE ${unique} INDEX IF NOT EXISTS ${indexName} ON ${tableName} (${columns.join(', ')})`;
+            logger.debug('Creating index', {
                 tableName,
                 columns,
                 indexName,
                 unique: !!options?.unique,
             });
             await this.execute(sql);
-            logger.info("Index created successfully", { tableName, indexName });
+            logger.info('Index created successfully', { tableName, indexName });
         }
         catch (error) {
-            logger.error("Failed to create index", {
+            logger.error('Failed to create index', {
                 tableName,
                 columns,
                 error: error instanceof Error ? error.message : String(error),
@@ -331,15 +331,15 @@ export class SQLStorageImpl {
     }
     async dropIndex(indexName, options) {
         try {
-            logger.debug("Dropping index", { indexName, options });
+            logger.debug('Dropping index', { indexName, options });
             const query = options?.ifExists
                 ? `DROP INDEX IF EXISTS ${indexName}`
                 : `DROP INDEX ${indexName}`;
             await this.execute(query);
-            logger.info("Index dropped successfully", { indexName });
+            logger.info('Index dropped successfully', { indexName });
         }
         catch (error) {
-            logger.error("Failed to drop index", {
+            logger.error('Failed to drop index', {
                 indexName,
                 error: error instanceof Error ? error.message : String(error),
             });
@@ -349,7 +349,7 @@ export class SQLStorageImpl {
     // Health and monitoring methods
     async isHealthy() {
         try {
-            await this.query("SELECT 1");
+            await this.query('SELECT 1');
             return true;
         }
         catch {
@@ -361,33 +361,33 @@ export class SQLStorageImpl {
             const isConnected = this.connection.isConnected();
             const tables = isConnected ? await this.listTables() : [];
             const versionResult = isConnected
-                ? await this.query("SELECT sqlite_version() as version")
+                ? await this.query('SELECT sqlite_version() as version')
                 : null;
             return {
-                connectionStatus: isConnected ? "connected" : "disconnected",
+                connectionStatus: isConnected ? 'connected' : 'disconnected',
                 tableCount: tables.length,
-                version: versionResult?.rows[0]?.version || "unknown",
+                version: versionResult?.rows[0]?.version || 'unknown',
             };
         }
         catch (error) {
-            logger.error("Failed to get statistics", {
+            logger.error('Failed to get statistics', {
                 error: error instanceof Error ? error.message : String(error),
             });
             return {
-                connectionStatus: "disconnected",
+                connectionStatus: 'disconnected',
                 tableCount: 0,
-                version: "unknown",
+                version: 'unknown',
             };
         }
     }
     async close() {
         try {
-            logger.debug("Closing SQL storage");
+            logger.debug('Closing SQL storage');
             await this.connection.disconnect();
-            logger.info("SQL storage closed successfully");
+            logger.info('SQL storage closed successfully');
         }
         catch (error) {
-            logger.error("Failed to close SQL storage", {
+            logger.error('Failed to close SQL storage', {
                 error: error instanceof Error ? error.message : String(error),
             });
             throw error;
@@ -397,3 +397,4 @@ export class SQLStorageImpl {
         return `sql-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     }
 }
+//# sourceMappingURL=sql-storage.js.map

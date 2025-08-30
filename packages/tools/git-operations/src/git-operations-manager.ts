@@ -82,17 +82,10 @@ class SimpleGitSandbox {
     } catch (error) {
       return {
         success: false,
-<<<<<<< HEAD
         error: this.getErrorMessage(error),
-      };
-}
-}
-=======
-        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }
->>>>>>> origin/main
 
   async initialize(): Promise<void> {
     // Create sandbox root directory
@@ -148,12 +141,8 @@ class SimpleGitSandbox {
     } catch (error) {
       logger.error('Git operation failed in sandbox', {
         sandboxId: sandboxEnv.id,
-<<<<<<< HEAD
-        error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
-=======
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
       });
->>>>>>> origin/main
       throw error;
     }
   }
@@ -358,11 +347,7 @@ export interface GitOperationStartedEvent {
   operationType: GitOperation['type'];
   projectId: string;
   timestamp: string;
-<<<<<<< HEAD
-  metadata?:Record<string, unknown>;
-=======
-  metadata?: Record<string, any>;
->>>>>>> origin/main
+  metadata?: Record<string, unknown>;
 }
 
 export interface GitOperationCompletedEvent {
@@ -395,11 +380,7 @@ export interface GitConflictResolvedEvent {
 }
 
 export interface GitWorktreeEvent {
-<<<<<<< HEAD
-  type:'gitWorktreeCreated' | 'gitWorktreeRemoved';
-=======
   type: 'git: worktree: created' | ' git: worktree: removed';
->>>>>>> origin/main
   projectId: string;
   worktreeName: string;
   worktreePath: string;
@@ -408,11 +389,6 @@ export interface GitWorktreeEvent {
 }
 
 export interface GitMaintenanceEvent {
-<<<<<<< HEAD
-  type:'gitMaintenanceStarted' | 'gitMaintenanceCompleted';
-  taskType:'cleanup-stale' | ' compress-trees' | ' update-remotes' | ' verify-integrity';
-  projectsAffected?:number;
-=======
   type: 'git: maintenance: started' | ' git: maintenance: completed';
   taskType:
     | 'cleanup-stale'
@@ -420,7 +396,6 @@ export interface GitMaintenanceEvent {
     | ' update-remotes'
     | ' verify-integrity';
   projectsAffected?: number;
->>>>>>> origin/main
   timestamp: string;
 }
 
@@ -594,12 +569,8 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
     } catch (error) {
       logger.error('❌ Failed to initialize GitOperationsManager', {
         managerId: this.managerId,
-<<<<<<< HEAD
-        error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
-=======
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
       });
->>>>>>> origin/main
       throw error;
     }
   }
@@ -1146,12 +1117,8 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
       logger.error('❌ AI conflict resolution failed', {
         managerId: this.managerId,
         conflictType,
-<<<<<<< HEAD
-        error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
-=======
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
       });
->>>>>>> origin/main
 
       return {
         type: conflictType,
@@ -1242,12 +1209,8 @@ Respond in JSON format:
       } catch (error) {
         logger.warn(`Failed to get AI suggestion for conflict in ${fileName}`, {
           managerId: this.managerId,
-<<<<<<< HEAD
-          error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
-=======
-          error: error instanceof Error ? error.message : 'Unknown error',
+          error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
         });
->>>>>>> origin/main
 
         // Fallback suggestion
         suggestions.push({
@@ -1462,16 +1425,10 @@ Respond in JSON format:
       logger.error(`❌ Maintenance task failed: ${task.type}`, {
         managerId: this.managerId,
         taskId: task.id,
-<<<<<<< HEAD
-        error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
-}
-}
-=======
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
       });
     }
   }
->>>>>>> origin/main
 
   /**
    * Cleanup stale git trees
@@ -1496,18 +1453,11 @@ Respond in JSON format:
         } catch (error) {
           logger.warn(`Failed to cleanup stale tree: ${projectId}`, {
             managerId: this.managerId,
-<<<<<<< HEAD
-            error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
-}
-}
-}
-=======
-            error: error instanceof Error ? error.message : 'Unknown error',
+            error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
           });
         }
       }
     }
->>>>>>> origin/main
 
     logger.info('🧹 Stale tree cleanup completed', {
       managerId: this.managerId,
@@ -1542,16 +1492,10 @@ Respond in JSON format:
       } catch (error) {
         logger.warn(`Failed to compress git tree: ${projectId}`, {
           managerId: this.managerId,
-<<<<<<< HEAD
-          error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
-}
-}
-=======
-          error: error instanceof Error ? error.message : 'Unknown error',
+          error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
         });
       }
     }
->>>>>>> origin/main
 
     logger.info('🗜️ Git tree compression completed', {
       managerId: this.managerId,
@@ -1585,16 +1529,10 @@ Respond in JSON format:
       } catch (error) {
         logger.warn(`Failed to update remote refs: ${projectId}`, {
           managerId: this.managerId,
-<<<<<<< HEAD
-          error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
-}
-}
-=======
-          error: error instanceof Error ? error.message : 'Unknown error',
+          error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
         });
       }
     }
->>>>>>> origin/main
 
     logger.info('🔄 Remote reference update completed', {
       managerId: this.managerId,
@@ -1625,29 +1563,17 @@ Respond in JSON format:
 
         logger.debug(`✅ Verified repository integrity: ${projectId}`, {
           managerId: this.managerId,
-<<<<<<< HEAD
-});
-} catch (error) {
-        const issue = `Repository integrity issue in ${projectId}:${error instanceof Error ? error.message: UNKNOWN_ERROR_MESSAGE}`;
-=======
         });
       } catch (error) {
-        const issue = `Repository integrity issue in ${projectId}:${error instanceof Error ? error.message : 'Unknown error'}`;
->>>>>>> origin/main
+        const issue = `Repository integrity issue in ${projectId}:${error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE}`;
         issues.push(issue);
 
         logger.warn(`Repository integrity issue: ${projectId}`, {
           managerId: this.managerId,
-<<<<<<< HEAD
-          error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
-}
-}
-=======
-          error: error instanceof Error ? error.message : 'Unknown error',
+          error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
         });
       }
     }
->>>>>>> origin/main
 
     logger.info('🔍 Repository integrity verification completed', {
       managerId: this.managerId,
@@ -1680,12 +1606,8 @@ Respond in JSON format:
     } catch (error) {
       logger.warn(`Creating new sandbox for project: ${projectId}`, {
         managerId: this.managerId,
-<<<<<<< HEAD
-        error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
-=======
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
       });
->>>>>>> origin/main
       const sandbox = await this.sandbox.createSandbox(
         `${projectId}-${Date.now()}`
       );
@@ -1713,11 +1635,7 @@ Respond in JSON format:
     type: GitOperation['type'],
     projectId: string,
     operationId: string,
-<<<<<<< HEAD
-    metadata?: Record<string, unknown>
-=======
-    metadata?: Record<string, any>
->>>>>>> origin/main
+  metadata?: Record<string, unknown>
   ): GitOperation {
     const operation: GitOperation = {
       id: operationId,
@@ -1781,11 +1699,7 @@ Respond in JSON format:
     const completedAt = new Date();
     operation.status = 'failed';
     operation.completedAt = completedAt;
-<<<<<<< HEAD
-    operation.error = error instanceof Error ? error.message: UNKNOWN_ERROR_MESSAGE;
-=======
-    operation.error = error instanceof Error ? error.message : 'Unknown error';
->>>>>>> origin/main
+  operation.error = error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE;
 
     this.activeOperations.delete(operation.id);
     this.operationHistory.push(operation);
@@ -1937,12 +1851,8 @@ Respond in JSON format:
     } catch (error) {
       logger.error('❌ Error during GitOperationsManager shutdown', {
         managerId: this.managerId,
-<<<<<<< HEAD
-        error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
-=======
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
       });
->>>>>>> origin/main
       throw error;
     }
   }
@@ -2127,12 +2037,8 @@ Respond in JSON format:
     } catch (error) {
       logger.warn('Failed to list worktrees', {
         projectId,
-<<<<<<< HEAD
-        error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
-=======
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
       });
->>>>>>> origin/main
       return [];
     }
   }

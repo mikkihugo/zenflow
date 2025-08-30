@@ -148,21 +148,12 @@ export class SqliteMemoryBackend implements MemoryBackend {
 
     try {
       await this.repository.create({
-<<<<<<< HEAD
         id:key,
         data:value,
         createdAt:new Date().toISOString(),
         metadata:{ type: 'memory_entry'},
 });
       this.logger.debug(`${LOG_MESSAGES.successfullyStored}: ${key}`);
-=======
-        id: key,
-        data: value,
-        createdAt: new Date().toISOString(),
-        metadata: { type: 'memory_entry' },
-      });
-      this.logger.debug(`Successfully stored key:${key}`);
->>>>>>> origin/main
     } catch (error) {
       this.logger.error(`Failed to store key ${key}:${error}`);
       throw error;
@@ -212,27 +203,16 @@ export class SqliteMemoryBackend implements MemoryBackend {
       const allEntries = await this.repository.findAll({});
       for (const entry of allEntries) {
         await this.repository.delete(entry.id);
-<<<<<<< HEAD
 }
       this.logger.info(LOG_MESSAGES.successfullyCleared);
 } catch (error) {
-=======
-      }
-      this.logger.info('Successfully cleared all data');
-    } catch (error) {
->>>>>>> origin/main
       this.logger.error(`Failed to clear data:${error}`);
       throw error;
     }
   }
 
-<<<<<<< HEAD
   async size():Promise<number> {
     this.ensureInitialized();
-=======
-  async size(): Promise<number> {
-    await this.ensureInitialized();
->>>>>>> origin/main
 
     try {
       const allEntries = await this.repository.findAll({});
@@ -383,37 +363,19 @@ export class LanceDBMemoryBackend implements MemoryBackend {
         limit: 10000,
       });
       for (const vector of allVectors) {
-<<<<<<< HEAD
         if (vector && 'id' in vector && typeof vector.id === 'string') {
           await this.repository.delete(vector.id);
 }
 }
       this.logger.info(LOG_MESSAGES.successfullyCleared);
 } catch (error) {
-=======
-        if (
-          vector &&
-          'id' in vector &&
-          typeof (vector as any).id === 'string'
-        ) {
-          await this.repository.delete(vector.id);
-        }
-      }
-      this.logger.info('Successfully cleared all data');
-    } catch (error) {
->>>>>>> origin/main
       this.logger.error(`Failed to clear data:${error}`);
       throw error;
     }
   }
 
-<<<<<<< HEAD
   async size():Promise<number> {
     this.ensureInitialized();
-=======
-  async size(): Promise<number> {
-    await this.ensureInitialized();
->>>>>>> origin/main
 
     try {
       const allVectors = await this.repository.similaritySearch([0], {
@@ -498,31 +460,18 @@ export class JsonMemoryBackend implements MemoryBackend {
     }
   }
 
-<<<<<<< HEAD
   retrieve<T = unknown>(key:string): Promise<T | null> {
-=======
-  async retrieve<T = unknown>(key: string): Promise<T | null> {
->>>>>>> origin/main
     this.logger.debug(`Retrieving key:${key} from JSON backend`);
     this.ensureInitialized();
 
     try {
       const value = this.data.get(key);
-<<<<<<< HEAD
       return Promise.resolve(value !== undefined ? (value as T) :null);
 } catch (error) {
       this.logger.error(`Failed to retrieve key ${key}:${error}`);
       return Promise.reject(error);
 }
 }
-=======
-      return value !== undefined ? (value as T) : null;
-    } catch (error) {
-      this.logger.error(`Failed to retrieve key ${key}:${error}`);
-      throw error;
-    }
-  }
->>>>>>> origin/main
 
   async delete(key: string): Promise<boolean> {
     this.logger.debug(`Deleting key:${key} from JSON backend`);
@@ -551,19 +500,13 @@ export class JsonMemoryBackend implements MemoryBackend {
     try {
       this.data.clear();
       await this.persistToFile();
-<<<<<<< HEAD
       this.logger.info(LOG_MESSAGES.successfullyCleared);
 } catch (error) {
-=======
-      this.logger.info('Successfully cleared all data');
-    } catch (error) {
->>>>>>> origin/main
       this.logger.error(`Failed to clear data:${error}`);
       throw error;
     }
   }
 
-<<<<<<< HEAD
   size():Promise<number> {
     this.ensureInitialized();
     return Promise.resolve(this.data.size);
@@ -580,24 +523,6 @@ export class JsonMemoryBackend implements MemoryBackend {
 }
 
   private ensureInitialized():void {
-=======
-  async size(): Promise<number> {
-    await this.ensureInitialized();
-    return this.data.size;
-  }
-
-  async health(): Promise<boolean> {
-    try {
-      await this.ensureInitialized();
-      return true;
-    } catch (error) {
-      this.logger.error(`Health check failed:${error}`);
-      return false;
-    }
-  }
-
-  private async ensureInitialized(): Promise<void> {
->>>>>>> origin/main
     if (this.initialized) return;
 
     try {
@@ -610,30 +535,18 @@ export class JsonMemoryBackend implements MemoryBackend {
     }
   }
 
-<<<<<<< HEAD
   private loadFromFile():void {
-=======
-  private async loadFromFile(): Promise<void> {
->>>>>>> origin/main
     // File loading implementation would go here
     // For now, just initialize empty
     this.data = new Map();
   }
 
-<<<<<<< HEAD
   private persistToFile():Promise<void> {
     // File persistence implementation would go here
     // For now, just log
     this.logger.debug('JSON data persisted to file');
     return Promise.resolve();
 }
-=======
-  private async persistToFile(): Promise<void> {
-    // File persistence implementation would go here
-    // For now, just log
-    this.logger.debug('JSON data persisted to file');
-  }
->>>>>>> origin/main
 }
 
 /**
@@ -656,17 +569,12 @@ export class InMemoryBackend implements MemoryBackend {
     );
   }
 
-<<<<<<< HEAD
   store(key:string, value:unknown): Promise<void> {
-=======
-  async store(key: string, value: unknown): Promise<void> {
->>>>>>> origin/main
     this.logger.debug(`Storing key:${key} in memory backend`);
 
     try {
       // Check size limits
       if (this.data.size >= this.maxSize && !this.data.has(key)) {
-<<<<<<< HEAD
         return Promise.reject(new Error(`Memory limit exceeded. Max size:${this.maxSize}`));
 }
 
@@ -680,25 +588,10 @@ export class InMemoryBackend implements MemoryBackend {
 }
 
   retrieve<T = unknown>(key:string): Promise<T | null> {
-=======
-        throw new Error(`Memory limit exceeded. Max size:${this.maxSize}`);
-      }
-
-      this.data.set(key, value);
-      this.logger.debug(`Successfully stored key:${key}`);
-    } catch (error) {
-      this.logger.error(`Failed to store key ${key}:${error}`);
-      throw error;
-    }
-  }
-
-  async retrieve<T = unknown>(key: string): Promise<T | null> {
->>>>>>> origin/main
     this.logger.debug(`Retrieving key:${key} from memory backend`);
 
     try {
       const value = this.data.get(key);
-<<<<<<< HEAD
       return Promise.resolve(value !== undefined ? (value as T) :null);
 } catch (error) {
       this.logger.error(`Failed to retrieve key ${key}:${error}`);
@@ -707,16 +600,6 @@ export class InMemoryBackend implements MemoryBackend {
 }
 
   delete(key:string): Promise<boolean> {
-=======
-      return value !== undefined ? (value as T) : null;
-    } catch (error) {
-      this.logger.error(`Failed to retrieve key ${key}:${error}`);
-      throw error;
-    }
-  }
-
-  async delete(key: string): Promise<boolean> {
->>>>>>> origin/main
     this.logger.debug(`Deleting key:${key} from memory backend`);
 
     try {
@@ -725,7 +608,6 @@ export class InMemoryBackend implements MemoryBackend {
         this.logger.debug(`Successfully deleted key:${key}`);
       } else {
         this.logger.debug(`Key not found for deletion:${key}`);
-<<<<<<< HEAD
 }
       return Promise.resolve(deleted);
 } catch (error) {
@@ -735,22 +617,10 @@ export class InMemoryBackend implements MemoryBackend {
 }
 
   clear():Promise<void> {
-=======
-      }
-      return deleted;
-    } catch (error) {
-      this.logger.error(`Failed to delete key ${key}:${error}`);
-      throw error;
-    }
-  }
-
-  async clear(): Promise<void> {
->>>>>>> origin/main
     this.logger.info('Clearing all data from memory backend');
 
     try {
       this.data.clear();
-<<<<<<< HEAD
       this.logger.info(LOG_MESSAGES.successfullyCleared);
       return Promise.resolve();
 } catch (error) {
@@ -764,40 +634,17 @@ export class InMemoryBackend implements MemoryBackend {
 }
 
   health():Promise<boolean> {
-=======
-      this.logger.info('Successfully cleared all data');
-    } catch (error) {
-      this.logger.error(`Failed to clear data:${error}`);
-      throw error;
-    }
-  }
-
-  async size(): Promise<number> {
-    return this.data.size;
-  }
-
-  async health(): Promise<boolean> {
->>>>>>> origin/main
     try {
       // Check if we can perform basic operations
       const testKey = '__health_check__';
       this.data.set(testKey, 'test');
       this.data.delete(testKey);
-<<<<<<< HEAD
       return Promise.resolve(true);
 } catch (error) {
       this.logger.error(`Health check failed:${error}`);
       return Promise.resolve(false);
 }
 }
-=======
-      return true;
-    } catch (error) {
-      this.logger.error(`Health check failed:${error}`);
-      return false;
-    }
-  }
->>>>>>> origin/main
 }
 
 // Memory backends now properly integrated with DAL Factory

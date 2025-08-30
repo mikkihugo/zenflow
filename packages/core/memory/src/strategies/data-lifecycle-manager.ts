@@ -13,10 +13,6 @@ import {
   withTrace,
   type Logger,
 } from '@claude-zen/foundation';
-<<<<<<< HEAD
-=======
-import type { Logger } from '@claude-zen/foundation';
->>>>>>> origin/main
 
 import type {
   LifecycleConfig,
@@ -25,19 +21,6 @@ import type {
   StrategyMetrics,
 } from './types';
 
-<<<<<<< HEAD
-=======
-interface LifecycleAction {
-  type: 'promote|demote|migrate|cleanup|archive';
-  key: string;
-  fromStage: LifecycleStage;
-  toStage: LifecycleStage;
-  reason: string;
-  timestamp: number;
-  metadata: Record<string, unknown>;
-}
-
->>>>>>> origin/main
 interface StageStats {
   count: number;
   totalSize: number;
@@ -689,11 +672,7 @@ export class DataLifecycleManager extends EventEmitter {
     this.logger.info('Data lifecycle configuration updated', newConfig);
   }
 
-<<<<<<< HEAD
   shutdown():Promise<void> {
-=======
-  async shutdown(): Promise<void> {
->>>>>>> origin/main
     if (this.migrationTimer) {
       clearInterval(this.migrationTimer);
     }
@@ -708,9 +687,6 @@ export class DataLifecycleManager extends EventEmitter {
 
     this.initialized = false;
     this.logger.info('Data lifecycle manager shut down');
-<<<<<<< HEAD
     return Promise.resolve();
-=======
->>>>>>> origin/main
   }
 }

@@ -78,13 +78,8 @@ export class MemoryCoordinator extends EventEmitter {
    * @param id
    * @param backend
    */
-<<<<<<< HEAD
   registerNode(id:string, backend:BackendInterface): void {
     const node:MemoryNode = {
-=======
-  async registerNode(id: string, backend: BackendInterface): Promise<void> {
-    const node: MemoryNode = {
->>>>>>> origin/main
       id,
       backend,
       status: 'active',
@@ -102,11 +97,7 @@ export class MemoryCoordinator extends EventEmitter {
    *
    * @param id
    */
-<<<<<<< HEAD
   unregisterNode(id:string): void {
-=======
-  async unregisterNode(id: string): Promise<void> {
->>>>>>> origin/main
     this.nodes.delete(id);
     this.emit('nodeUnregistered', { nodeId: id });
   }
@@ -444,16 +435,11 @@ export class MemoryCoordinator extends EventEmitter {
    *
    * @param pattern
    */
-<<<<<<< HEAD
   async list(pattern:string): Promise<Array<{ key: string; value: unknown}>> {
     const activeNodes = this.getActiveNodes();
     const results = await this.collectKeysFromNodes(activeNodes, pattern);
     return this.removeDuplicateResults(results);
   }
-=======
-  async list(pattern: string): Promise<Array<{ key: string; value: unknown }>> {
-    const results: Array<{ key: string; value: unknown }> = [];
->>>>>>> origin/main
 
   private getActiveNodes(): MemoryNode[] {
     return Array.from(this.nodes.values()).filter(
@@ -476,26 +462,8 @@ export class MemoryCoordinator extends EventEmitter {
       }
     }
 
-<<<<<<< HEAD
     return results;
   }
-=======
-          for (const key of matchingKeys) {
-            try {
-              const value = await node?.backend?.retrieve(key);
-              results?.push({ key, value });
-            } catch (error) {
-              this.logger.warn(`Failed to retrieve key ${key} from node`, {
-                error,
-              });
-            }
-          }
-        }
-      } catch (error) {
-        this.logger.warn('Failed to query node during search', { error });
-      }
-    }
->>>>>>> origin/main
 
   private async getMatchingKeysFromNode(
     node: MemoryNode, 
@@ -534,22 +502,12 @@ export class MemoryCoordinator extends EventEmitter {
   ): Array<{ key: string; value: unknown}> {
     const uniqueResults = new Map();
     for (const result of results) {
-<<<<<<< HEAD
       if (!uniqueResults.has(result.key)) {
         uniqueResults.set(result.key, result);
       }
     }
     return Array.from(uniqueResults.values());
 }
-=======
-      if (!uniqueResults?.has(result?.key)) {
-        uniqueResults?.set(result?.key, result);
-      }
-    }
-
-    return Array.from(uniqueResults?.values())();
-  }
->>>>>>> origin/main
 
   /**
    * Simple pattern matching for key listing.
@@ -573,13 +531,8 @@ export class MemoryCoordinator extends EventEmitter {
   /**
    * Health check for coordinator.
    */
-<<<<<<< HEAD
   healthCheck():{ status: string; details: unknown} {
     const stats = this.getStats();
-=======
-  async healthCheck(): Promise<{ status: string; details: unknown }> {
-    const __stats = this.getStats();
->>>>>>> origin/main
     const unhealthyNodes = Array.from(this.nodes.values()).filter(
       (n) => n.status !== 'active'
     );
@@ -588,7 +541,6 @@ export class MemoryCoordinator extends EventEmitter {
       status: unhealthyNodes.length === 0 ? 'healthy' : ' degraded',
       details: {
         ...stats,
-<<<<<<< HEAD
         unhealthyNodes:unhealthyNodes.map((n) => ({
           id:n.id,
           status:n.status,
@@ -596,13 +548,4 @@ export class MemoryCoordinator extends EventEmitter {
 },
 };
 }
-=======
-        unhealthyNodes: unhealthyNodes?.map((n) => ({
-          id: n.id,
-          status: n.status,
-        })),
-      },
-    };
-  }
->>>>>>> origin/main
 }

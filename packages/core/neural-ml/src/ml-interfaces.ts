@@ -9,16 +9,9 @@
  * @version 1.0.0
  */
 
-<<<<<<< HEAD
 import type { Logger } from "@claude-zen/foundation";
 import { getLogger } from "@claude-zen/foundation/logging";
 import { RustNeuralML, type RustMLConfig, type RustOptimizationTask } from "./rust-binding";
-=======
-import type { Logger } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation/logging';
-import type { RustMLConfig, RustOptimizationTask } from './rust-binding';
-import { RustNeuralML } from './rust-binding';
->>>>>>> origin/main
 
 // Additional exports for DSPy teleprompters
 export interface ConceptDriftDetection {
@@ -40,26 +33,17 @@ export interface OnlineLearnerConfig {
  * Simple ML Engine interface - routes to Rust implementation
  */
 export interface MLEngine {
-<<<<<<< HEAD
 	initialize(): Promise<void>;
 	optimize(task: OptimizationTask): Promise<OptimizationResult>;
 	analyze(data: unknown[]): Promise<StatisticalResult>;
 	learn(data: unknown[], target?: unknown[]): Promise<PatternResult>;
 	destroy(): Promise<void>;
-=======
-  initialize(): Promise<void>;
-  optimize(task: OptimizationTask): Promise<OptimizationResult>;
-  analyze(data: any[]): Promise<StatisticalResult>;
-  learn(data: any[], target?: any[]): Promise<PatternResult>;
-  destroy(): Promise<void>;
->>>>>>> origin/main
 }
 
 /**
  * Bayesian Optimizer interface - maps to Rust Bayesian optimization
  */
 export interface BayesianOptimizer {
-<<<<<<< HEAD
 	initialize(config:OptimizationBounds): Promise<void>;
 	optimize(
 		objective:(params: number[]) => Promise<number>,
@@ -69,24 +53,12 @@ export interface BayesianOptimizer {
 	updateObservation(params:number[], value:number): Promise<void>;
 	observe(params: number[], value: number): Promise<void>; // Alias for updateObservation
 	configure(config: Record<string, unknown>): Promise<void>;
-=======
-  initialize(config: OptimizationBounds): Promise<void>;
-  optimize(
-    objective: (params: number[]) => Promise<number>
-  ): Promise<OptimizationResult>;
-  suggestNext(): Promise<number[]>;
-  suggest(): Promise<{ point: number[] }>; // Return format expected by teleprompters
-  updateObservation(params: number[], value: number): Promise<void>;
-  observe(params: number[], value: number): Promise<void>; // Alias for updateObservation
-  configure(config: any): Promise<void>;
->>>>>>> origin/main
 }
 
 /**
  * Multi-objective optimizer interface - maps to Rust NSGA-II implementation
  */
 export interface MultiObjectiveOptimizer {
-<<<<<<< HEAD
 	initialize(config:OptimizationBounds): Promise<void>;
 	optimize(
 		objectives:Array<(params: number[]) => Promise<number>>,
@@ -94,43 +66,24 @@ export interface MultiObjectiveOptimizer {
 	getParetoFront():Promise<ParetoFront>;
 	findParetoFront(solutions?: number[][]): Promise<ParetoFront>; // Accept solutions array
 	configure(config: Record<string, unknown>): Promise<void>;
-=======
-  initialize(config: OptimizationBounds): Promise<void>;
-  optimize(
-    objectives: Array<(params: number[]) => Promise<number>>
-  ): Promise<ParetoFront>;
-  getParetoFront(): Promise<ParetoFront>;
-  findParetoFront(solutions?: number[][]): Promise<ParetoFront>; // Accept solutions array
-  configure(config: any): Promise<void>;
->>>>>>> origin/main
 }
 
 /**
  * Gradient optimizer interface - maps to Rust auto-differentiation
  */
 export interface GradientOptimizer {
-<<<<<<< HEAD
 	initialize(config: Record<string, unknown>): Promise<void>;
 	computeGradient(
 		params:number[],
 		objective:(params: number[]) => Promise<number>,
 	):Promise<GradientResult>;
 	step(gradients:number[]): Promise<number[]>;
-=======
-  initialize(config: any): Promise<void>;
-  computeGradient(
-    params: number[],
-    objective: (params: number[]) => Promise<number>
-  ): Promise<GradientResult>;
-  step(gradients: number[]): Promise<number[]>;
->>>>>>> origin/main
 }
 
 /**
  * Pattern learner interface - maps to Rust pattern recognition
  */
 export interface PatternLearner {
-<<<<<<< HEAD
 	initialize(config: Record<string, unknown>): Promise<void>;
 	learnPatterns(data: unknown[]): Promise<PatternResult>;
 	recognizePattern(input: unknown): Promise<PatternResult>;
@@ -143,27 +96,12 @@ export interface PatternLearner {
 		k:number,
 	):Promise<Array<{ center: number[]; members: number; inertia: number}>>;
 	calculateSimilarity(data:number[]): number;
-=======
-  initialize(config: any): Promise<void>;
-  learnPatterns(data: any[]): Promise<PatternResult>;
-  recognizePattern(input: any): Promise<PatternResult>;
-  // Additional methods expected by teleprompters
-  trainPatterns(data: any[], labels?: any[]): Promise<PatternResult>;
-  configure(config: any): Promise<void>;
-  // Helper methods for implementation
-  performClustering(
-    data: number[],
-    k: number
-  ): Promise<Array<{ center: number[]; members: number; inertia: number }>>;
-  calculateSimilarity(data: number[]): number;
->>>>>>> origin/main
 }
 
 /**
  * Online learner interface - maps to Rust online learning
  */
 export interface OnlineLearner {
-<<<<<<< HEAD
 	initialize(config: Record<string, unknown>): Promise<void>;
 	configure(config: OnlineLearnerConfig): Promise<void>;
 	updateModel(data: unknown, target?: unknown): Promise<void>;
@@ -188,32 +126,6 @@ export interface OnlineLearner {
 		error:number,
 		learningRate:number,
 	):void;
-=======
-  initialize(config: any): Promise<void>;
-  configure(config: OnlineLearnerConfig): Promise<void>;
-  updateModel(data: any, target?: any): Promise<void>;
-  predict(input: any): Promise<any>;
-  update(features: MLVector, target: number): Promise<void>;
-  adaptLearningRate(performance: number): Promise<number>;
-  detectDrift(
-    predictions: number[],
-    targets: number[]
-  ): Promise<ConceptDriftDetection>;
-  reset(keepHistory: boolean): Promise<void>;
-  // Helper methods for implementation
-  extractFeatures(data: any): number[];
-  dotProduct(a: number[], b: number[]): number;
-  updateWeightsSGD(
-    features: number[],
-    error: number,
-    learningRate: number
-  ): void;
-  updateWeightsMomentum(
-    features: number[],
-    error: number,
-    learningRate: number
-  ): void;
->>>>>>> origin/main
 }
 
 /**
@@ -1180,7 +1092,6 @@ export function createOnlineLearner(config: any): OnlineLearner {
   };
 }
 
-<<<<<<< HEAD
 export function createGradientOptimizer(config:any): GradientOptimizer {
 	let learningRate = config?.learningRate || 0.01;
 	let epsilon = config?.epsilon || 1e-8;
@@ -1755,86 +1666,6 @@ export function createStatisticalAnalyzer():StatisticalAnalyzer {
 			return this.analyze(data);
 },
 };
-=======
-export function createStatisticalAnalyzer(): StatisticalAnalyzer {
-  // Returns a wrapper that routes to RustNeuralML
-  return {
-    async initialize(): Promise<void> {
-      // Initialization handled in analyze call
-    },
-    async analyze(data: number[]): Promise<StatisticalResult> {
-      // This would route to Rust statistical analysis
-      const mean = data.reduce((a, b) => a + b, 0) / data.length;
-      const variance =
-        data.reduce((a, b) => a + (b - mean) ** 2, 0) / data.length;
-      const std = Math.sqrt(variance);
-      const sorted = data.slice().sort((a, b) => a - b);
-      const median = sorted[Math.floor(sorted.length / 2)];
-
-      return {
-        mean,
-        std,
-        median,
-        quantiles: [
-          sorted[0] ?? 0,
-          sorted[Math.floor(sorted.length * 0.25)] ?? 0,
-          median,
-          sorted[Math.floor(sorted.length * 0.75)] ?? 0,
-          sorted[sorted.length - 1] ?? 0,
-        ],
-        distribution: 'unknown',
-        outliers: [],
-        normalityTest: { statistic: 0, pValue: 1, isNormal: false },
-      };
-    },
-    async hypothesisTest(
-      _data1: number[],
-      _data2: number[]
-    ): Promise<HypothesisTest> {
-      // Simple t-test approximation - would use Rust for real implementation
-      return {
-        statistic: 0,
-        pValue: 0.5,
-        significant: false,
-        effectSize: 0,
-        confidenceInterval: [0, 0],
-      };
-    },
-    async confidenceInterval(
-      data: number[],
-      confidence: number
-    ): Promise<[number, number]> {
-      const mean = data.reduce((a, b) => a + b, 0) / data.length;
-      const margin = confidence * 0.1; // Simplified
-      return [mean - margin, mean + margin];
-    },
-    async tTest(_data1: number[], _data2: number[]): Promise<HypothesisTest> {
-      // Simple t-test approximation - would use Rust for real implementation
-      return {
-        statistic: 0,
-        pValue: 0.5,
-        significant: false,
-        effectSize: 0,
-        confidenceInterval: [0, 0],
-        critical: 1.96,
-      };
-    },
-    async polynomialRegression(
-      _x: number[],
-      _y: number[],
-      degree: number
-    ): Promise<{ coefficients: number[]; rSquared: number }> {
-      // Simplified polynomial regression - would use Rust for real implementation
-      return {
-        coefficients: new Array(degree + 1).fill(0),
-        rSquared: 0.8,
-      };
-    },
-    async descriptiveStats(data: number[]): Promise<StatisticalResult> {
-      return this.analyze(data);
-    },
-  };
->>>>>>> origin/main
 }
 
 export default {

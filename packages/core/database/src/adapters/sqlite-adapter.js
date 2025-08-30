@@ -199,7 +199,8 @@ export class SQLiteAdapter {
             if (!this.connected) {
                 return {
                     healthy: false,
-                    status: 'unhealthy', score: 0,
+                    status: 'unhealthy',
+                    score: 0,
                     timestamp: new Date(),
                     details: { connected: false, reason: 'Not connected' },
                 };
@@ -729,7 +730,7 @@ class SQLiteTransactionConnection {
                             rowCount: 0,
                             executionTimeMs: Date.now() - startTime,
                             affectedRows: runResult.changes,
-                            insertId: (typeof runResult.lastInsertRowid === 'bigint')
+                            insertId: typeof runResult.lastInsertRowid === 'bigint'
                                 ? Number(runResult.lastInsertRowid)
                                 : runResult.lastInsertRowid,
                         });
@@ -831,3 +832,4 @@ class SQLiteTransactionConnection {
         return Object.values(params);
     }
 }
+//# sourceMappingURL=sqlite-adapter.js.map

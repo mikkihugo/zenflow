@@ -100,14 +100,8 @@ export class MemoryCoordinationSystem extends EventEmitter {
     try {
       await withTrace('memory-coordination-add-node', async (span) => {
         span?.setAttributes({
-<<<<<<< HEAD
           'memory_node_id':id,
           'memory_node_tier':options.tier || ' warm',});
-=======
-          'memory.node.id': id,
-          'memory.node.tier': options.tier || ' warm',
-        });
->>>>>>> origin/main
 
         // Initialize the backend
         await backend.initialize();
@@ -175,12 +169,7 @@ export class MemoryCoordinationSystem extends EventEmitter {
     try {
       await withTrace('memory-coordination-remove-node', async (span) => {
         span?.setAttributes({
-<<<<<<< HEAD
     'memory_node_id':id});
-=======
-          'memory.node.id': id,
-        });
->>>>>>> origin/main
 
         // Remove from monitoring and load balancing
         this.healthMonitor.removeNode(id);
@@ -207,20 +196,11 @@ export class MemoryCoordinationSystem extends EventEmitter {
     }
   }
 
-<<<<<<< HEAD
   store(
     key:string,
     value:JSONValue,
     namespace = 'default',    options?:{
       consistency?:'strong' | ' eventual';
-=======
-  async store(
-    key: string,
-    value: JSONValue,
-    namespace = 'default',
-    options?: {
-      consistency?: 'strong' | ' eventual';
->>>>>>> origin/main
       tier?: 'hot|warm|cold';
       replicate?: boolean;
     }
@@ -238,7 +218,6 @@ export class MemoryCoordinationSystem extends EventEmitter {
     return this.executeOperation(request);
   }
 
-<<<<<<< HEAD
   retrieve<T = JSONValue>(
     key:string,
     namespace = 'default',    options?:{
@@ -246,16 +225,6 @@ export class MemoryCoordinationSystem extends EventEmitter {
       timeout?:number;
 }
   ):Promise<MemoryOperationResult<T>> {
-=======
-  async retrieve<T = JSONValue>(
-    key: string,
-    namespace = 'default',
-    options?: {
-      consistency?: 'strong' | ' eventual';
-      timeout?: number;
-    }
-  ): Promise<MemoryOperationResult<T>> {
->>>>>>> origin/main
     this.ensureInitialized();
 
     const request: MemoryOperationRequest = {
@@ -268,22 +237,12 @@ export class MemoryCoordinationSystem extends EventEmitter {
     return this.executeOperation<T>(request);
   }
 
-<<<<<<< HEAD
   delete(
     key:string,
     namespace = 'default',    options?:{
       consistency?:'strong' | ' eventual';
 }
   ):Promise<MemoryOperationResult<boolean>> {
-=======
-  async delete(
-    key: string,
-    namespace = 'default',
-    options?: {
-      consistency?: 'strong' | ' eventual';
-    }
-  ): Promise<MemoryOperationResult<boolean>> {
->>>>>>> origin/main
     this.ensureInitialized();
 
     const request: MemoryOperationRequest = {
@@ -296,13 +255,8 @@ export class MemoryCoordinationSystem extends EventEmitter {
     return this.executeOperation<boolean>(request);
   }
 
-<<<<<<< HEAD
   list(
     pattern?:string,
-=======
-  async list(
-    pattern?: string,
->>>>>>> origin/main
     namespace = 'default'
   ): Promise<MemoryOperationResult<string[]>> {
     this.ensureInitialized();
@@ -316,13 +270,8 @@ export class MemoryCoordinationSystem extends EventEmitter {
     return this.executeOperation<string[]>(request);
   }
 
-<<<<<<< HEAD
   search(
     pattern:string,
-=======
-  async search(
-    pattern: string,
->>>>>>> origin/main
     namespace = 'default'
   ): Promise<MemoryOperationResult<Record<string, JSONValue>>> {
     this.ensureInitialized();
@@ -336,11 +285,7 @@ export class MemoryCoordinationSystem extends EventEmitter {
     return this.executeOperation<Record<string, JSONValue>>(request);
   }
 
-<<<<<<< HEAD
   clear(namespace?:string): Promise<MemoryOperationResult> {
-=======
-  async clear(namespace?: string): Promise<MemoryOperationResult> {
->>>>>>> origin/main
     this.ensureInitialized();
 
     const request: MemoryOperationRequest = {
@@ -354,7 +299,6 @@ export class MemoryCoordinationSystem extends EventEmitter {
   // Private methods
 
   private async executeOperation<T = unknown>(
-<<<<<<< HEAD
     request:MemoryOperationRequest
   ):Promise<MemoryOperationResult<T>> {
     return await withTrace('memory-coordination-operation', async (span) => {
@@ -364,17 +308,6 @@ export class MemoryCoordinationSystem extends EventEmitter {
         'memory_namespace':request.namespace || 'default',
         'memory_strategy':this.config.strategy,
 });
-=======
-    request: MemoryOperationRequest
-  ): Promise<MemoryOperationResult<T>> {
-    return withTrace('memory-coordination-operation', async (span) => {
-      span?.setAttributes({
-        'memory.operation': request.operation,
-        'memory.key': request.key || '',
-        'memory.namespace': request.namespace || 'default',
-        'memory.strategy': this.config.strategy,
-      });
->>>>>>> origin/main
 
       const startTime = Date.now();
 
@@ -454,15 +387,9 @@ export class MemoryCoordinationSystem extends EventEmitter {
     });
   }
 
-<<<<<<< HEAD
   private selectNodes(
     request:MemoryOperationRequest
   ):MemoryNode[] {
-=======
-  private async selectNodes(
-    request: MemoryOperationRequest
-  ): Promise<MemoryNode[]> {
->>>>>>> origin/main
     const healthyNodes = Array.from(this.nodes.values()).filter(
       (node) => node.status.healthy
     );
@@ -637,47 +564,26 @@ export class MemoryCoordinationSystem extends EventEmitter {
     return primaryResult?.value || successfulResults[0].value;
   }
 
-<<<<<<< HEAD
   private executeSharded<T>(
     request:MemoryOperationRequest,
     nodes:MemoryNode[]
   ):Promise<MemoryOperationResult<T>> {
-=======
-  private async executeSharded<T>(
-    request: MemoryOperationRequest,
-    nodes: MemoryNode[]
-  ): Promise<MemoryOperationResult<T>> {
->>>>>>> origin/main
     // For sharded operations, we already selected the correct node
     return this.executeSingleNode<T>(request, nodes[0]);
   }
 
-<<<<<<< HEAD
   private executeTiered<T>(
     request:MemoryOperationRequest,
     nodes:MemoryNode[]
   ):Promise<MemoryOperationResult<T>> {
-=======
-  private async executeTiered<T>(
-    request: MemoryOperationRequest,
-    nodes: MemoryNode[]
-  ): Promise<MemoryOperationResult<T>> {
->>>>>>> origin/main
     // For tiered operations, we already selected the correct tier
     return this.executeSingleNode<T>(request, nodes[0]);
   }
 
-<<<<<<< HEAD
   private executeIntelligent<T>(
     request:MemoryOperationRequest,
     nodes:MemoryNode[]
   ):Promise<MemoryOperationResult<T>> {
-=======
-  private async executeIntelligent<T>(
-    request: MemoryOperationRequest,
-    nodes: MemoryNode[]
-  ): Promise<MemoryOperationResult<T>> {
->>>>>>> origin/main
     // Intelligent execution with fallback and optimization
     return this.executeSingleNode<T>(request, nodes[0]);
   }
@@ -706,19 +612,10 @@ export class MemoryCoordinationSystem extends EventEmitter {
         break;
     }
 
-<<<<<<< HEAD
     node.status.errorRate = !success 
       ? (node.status.errorRate + 1) / 2 
       : node.status.errorRate * 0.95; // Decay error rate
 }
-=======
-    if (!success) {
-      node.status.errorRate = (node.status.errorRate + 1) / 2;
-    } else {
-      node.status.errorRate = node.status.errorRate * 0.95; // Decay error rate
-    }
-  }
->>>>>>> origin/main
 
   private handleNodeUnhealthy(nodeId: string): void {
     this.logger.warn(`Memory node unhealthy:${nodeId}`);

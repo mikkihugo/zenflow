@@ -357,15 +357,9 @@ export class MemoryError extends ContextError {
 
 export class MemoryConnectionError extends MemoryError {
   constructor(
-<<<<<<< HEAD
     message:string,
     backend:string,
     context:Record<string, unknown> = {}
-=======
-    message: string,
-    backend: string,
-    context: Record<string, any> = {}
->>>>>>> origin/main
   ) {
     super(message, { ...context, backend }, 'MEMORY_CONNECTION_ERROR');
     this.name = 'MemoryConnectionError';
@@ -373,11 +367,7 @@ export class MemoryConnectionError extends MemoryError {
 }
 
 export class MemoryStorageError extends MemoryError {
-<<<<<<< HEAD
   constructor(message:string, context:Record<string, unknown> = {}) {
-=======
-  constructor(message: string, context: Record<string, any> = {}) {
->>>>>>> origin/main
     super(message, context, 'MEMORY_STORAGE_ERROR');
     this.name = 'MemoryStorageError';
   }
@@ -385,17 +375,10 @@ export class MemoryStorageError extends MemoryError {
 
 export class MemoryCapacityError extends MemoryError {
   constructor(
-<<<<<<< HEAD
     message:string,
     currentSize:number,
     maxSize:number,
     context:Record<string, unknown> = {}
-=======
-    message: string,
-    currentSize: number,
-    maxSize: number,
-    context: Record<string, any> = {}
->>>>>>> origin/main
   ) {
     super(
       message,

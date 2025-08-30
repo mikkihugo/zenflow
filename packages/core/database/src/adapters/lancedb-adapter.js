@@ -213,7 +213,8 @@ export class LanceDBAdapter {
             if (!this.isConnected()) {
                 return {
                     healthy: false,
-                    status: 'unhealthy', score: 0,
+                    status: 'unhealthy',
+                    score: 0,
                     timestamp: new Date(),
                     details: { connected: false, reason: 'Not connected' },
                 };
@@ -239,7 +240,8 @@ export class LanceDBAdapter {
             score = Math.max(0, score);
             return {
                 healthy: score >= 70,
-                status: score >= 70 ? 'healthy' : score >= 40 ? ' degraded' : ' unhealthy', score,
+                status: score >= 70 ? 'healthy' : score >= 40 ? ' degraded' : ' unhealthy',
+                score,
                 timestamp: new Date(),
                 responseTimeMs: responseTime,
                 metrics: {
@@ -260,7 +262,8 @@ export class LanceDBAdapter {
         catch (error) {
             return {
                 healthy: false,
-                status: 'unhealthy', score: 0,
+                status: 'unhealthy',
+                score: 0,
                 timestamp: new Date(),
                 responseTimeMs: Date.now() - startTime,
                 lastError: error instanceof Error ? error.message : String(error),
@@ -299,7 +302,8 @@ export class LanceDBAdapter {
             logger.error('Failed to get LanceDB schema', { error });
             return {
                 tables: [],
-                version: 'unknown', lastMigration: undefined,
+                version: 'unknown',
+                lastMigration: undefined,
             };
         }
     }
@@ -404,7 +408,8 @@ export class LanceDBAdapter {
             // Create initial sample data with the schema
             const sampleData = [
                 {
-                    id: 'sample', [schema.vectorColumn || 'vector']: new Array(schema.dimensions || 384).fill(0.1),
+                    id: 'sample',
+                    [schema.vectorColumn || 'vector']: new Array(schema.dimensions || 384).fill(0.1),
                     ...Object.keys(schema.columns).reduce((acc, col) => {
                         acc[col] = col === 'text' ? ' sample text' : ' sample value';
                         return acc;
@@ -418,7 +423,8 @@ export class LanceDBAdapter {
                 correlationId,
                 tableName,
                 schema: schema.columns,
-                vectorColumn: schema.vectorColumn || 'vector', dimensions: schema.dimensions || 384,
+                vectorColumn: schema.vectorColumn || 'vector',
+                dimensions: schema.dimensions || 384,
                 embeddingModel: embeddingFunction?.model || 'default',
             });
         }
@@ -523,7 +529,8 @@ export class LanceDBAdapter {
                     ? Object.keys(filteredResults[0] || {})
                     : [],
                 metadata: {
-                    distanceType: options.distanceType || 'l2', queryVector: queryVector.slice(0, 10), // First 10 dimensions for logging
+                    distanceType: options.distanceType || 'l2',
+                    queryVector: queryVector.slice(0, 10), // First 10 dimensions for logging
                     vectorDimensions: queryVector.length,
                 },
             };
@@ -571,7 +578,9 @@ export class LanceDBAdapter {
             logger.info('Vector index created successfully', {
                 correlationId,
                 tableName,
-                column: options.column || 'vector', indexType: options.indexType || 'default', metric: options.metric || 'L2',
+                column: options.column || 'vector',
+                indexType: options.indexType || 'default',
+                metric: options.metric || 'L2',
             });
         }
         catch (error) {
@@ -981,9 +990,12 @@ export class LanceDBAdapter {
     async createMigrationsTable() {
         try {
             await this.database?.createTable({
-                name: '_migrations', data: [
+                name: '_migrations',
+                data: [
                     {
-                        version: 'placeholder', name: 'placeholder', applied_at: new Date().toISOString(),
+                        version: 'placeholder',
+                        name: 'placeholder',
+                        applied_at: new Date().toISOString(),
                     },
                 ],
             });
@@ -1079,3 +1091,4 @@ class LanceDBTransactionConnection {
         });
     }
 }
+//# sourceMappingURL=lancedb-adapter.js.map

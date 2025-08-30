@@ -12,10 +12,6 @@ import {
   TelemetryManager,
   type Logger,
 } from '@claude-zen/foundation';
-<<<<<<< HEAD
-=======
-import type { Logger } from '@claude-zen/foundation';
->>>>>>> origin/main
 
 import type {
   CacheEvictionConfig,
@@ -562,20 +558,13 @@ export class CacheEvictionStrategy extends EventEmitter {
     this.logger.info('Cache eviction configuration updated', newConfig);
   }
 
-<<<<<<< HEAD
   shutdown():Promise<void> {
-=======
-  async shutdown(): Promise<void> {
->>>>>>> origin/main
     if (this.cleanupTimer) {
       clearInterval(this.cleanupTimer);
     }
 
     this.clear();
     this.logger.info('Cache eviction strategy shut down');
-<<<<<<< HEAD
     return Promise.resolve();
-=======
->>>>>>> origin/main
   }
 }

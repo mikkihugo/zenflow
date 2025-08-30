@@ -29,12 +29,7 @@
  */
 
 // Import minimal functionality needed - production grade approach
-<<<<<<< HEAD
 import { getLogger, type Logger } from "@claude-zen/foundation";
-=======
-import type { Logger } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation';
->>>>>>> origin/main
 
 // Foundation-optimized logging - moved to top for utility functions
 const logger = getLogger('NeuralMLEngine');
@@ -71,19 +66,12 @@ function err<E>(error: E): Result<never, E> {
 class ContextError extends Error {
   constructor(
     message: string,
-<<<<<<< HEAD
     public context?: unknown,
-=======
-    public context?: any
->>>>>>> origin/main
   ) {
     super(message);
   }
 }
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/main
 class ValidationError extends ContextError {}
 class ConfigurationError extends ContextError {}
 
@@ -129,26 +117,15 @@ async function withRetry<T>(
 }
 
 // Simple Span type for tracing
-<<<<<<< HEAD
 type Span = { setAttributes:(attrs: unknown) => void; end: () => void};
-=======
-type Span = { setAttributes: (attrs: any) => void; end: () => void };
->>>>>>> origin/main
 
 // Monitoring functions with basic implementations
 const metrics = new Map<
   string,
-<<<<<<< HEAD
   { value: number; timestamp: number; tags: unknown }
 >();
 
 function recordMetric(name: string, value?:number, tags?:unknown): Promise<void> {
-=======
-  { value: number; timestamp: number; tags: any }
->();
-
-function recordMetric(name: string, value?: number, tags?: any): Promise<void> {
->>>>>>> origin/main
   metrics.set(name, {
     value: value ?? 1,
     timestamp: Date.now(),
@@ -161,11 +138,7 @@ function recordMetric(name: string, value?: number, tags?: any): Promise<void> {
 function recordHistogram(
   name: string,
   value: number,
-<<<<<<< HEAD
   tags?: Record<string, unknown>,
-=======
-  tags?: any
->>>>>>> origin/main
 ): Promise<void> {
   const histogramKey = `${name}_histogram`;
   const existing = metrics.get(histogramKey);
@@ -180,11 +153,7 @@ function recordHistogram(
   return Promise.resolve();
 }
 
-<<<<<<< HEAD
 function recordGauge(name: string, value: number, tags?: Record<string, unknown>): Promise<void> {
-=======
-function recordGauge(name: string, value: number, tags?: any): Promise<void> {
->>>>>>> origin/main
   metrics.set(`${name}_gauge`, {
     value,
     timestamp: Date.now(),
@@ -198,34 +167,20 @@ function startTrace(name: string): Span {
   logger.debug(`Trace started: ${name}`);
 
   return {
-<<<<<<< HEAD
     setAttributes:(attrs: Record<string, unknown>) => {
       logger.debug(`Trace attributes for ${name}:`, attrs);
     },
     end:() => {
-=======
-    setAttributes: (attrs: any) => {
-      logger.debug(`Trace attributes for ${name}:`, attrs);
-    },
-    end: () => {
->>>>>>> origin/main
       const duration = Date.now() - startTime;
       logger.debug(`Trace ended: ${name} (${duration}ms)`);
     },
   };
 }
 function withTrace<T>(
-<<<<<<< HEAD
   name: string,
   fn:(span: Span) => Promise<T>,
 ):Promise<T> {
   const span: Span = { setAttributes: () => {}, end:() => {}};
-=======
-  _name: string,
-  fn: (span: Span) => Promise<T>
-): Promise<T> {
-  const span: Span = { setAttributes: () => {}, end: () => {} };
->>>>>>> origin/main
   return fn(span);
 }
 
@@ -255,7 +210,6 @@ function getDatabaseAccess() {
           const existed = kvStore.delete(key);
           logger.debug(`KV Delete: ${namespace}.${key} (existed: ${existed})`);
           return Promise.resolve();
-<<<<<<< HEAD
 },
 };
 },
@@ -265,28 +219,12 @@ function getDatabaseAccess() {
 },
     transaction: (fn: () => unknown) => {
       logger.debug("Database transaction started");
-=======
-        },
-      };
-    },
-    query: () => {
-      logger.debug('Database query executed');
-      return Promise.resolve({ rows: [] });
-    },
-    transaction: (fn: any) => {
-      logger.debug('Database transaction started');
->>>>>>> origin/main
       const result = fn();
       logger.debug('Database transaction completed');
       return Promise.resolve(result);
     },
-<<<<<<< HEAD
     close:() => {
       logger.debug("Database connection closed");
-=======
-    close: () => {
-      logger.debug('Database connection closed');
->>>>>>> origin/main
       return Promise.resolve();
     },
   };
@@ -401,7 +339,6 @@ export const INJECTION_REGISTRY = new Map<unknown, unknown>();
 export function inject(token: unknown) {
   return (target: unknown, key: string, index: number) => {
     // Store injection metadata for later resolution
-<<<<<<< HEAD
     const targetWithInjections = target as Record<string, unknown> & {
       __injections?: Array<{ token: unknown; key: string; index: number }>;
     };
@@ -409,12 +346,6 @@ export function inject(token: unknown) {
       targetWithInjections.__injections = [];
     }
     targetWithInjections.__injections.push({ token, key, index });
-=======
-    if (!target.__injections) {
-      target.__injections = [];
-    }
-    target.__injections.push({ token, key, index });
->>>>>>> origin/main
     logger.debug(
       `Dependency injection registered: ${key} at index ${index}`,
       token
@@ -429,15 +360,7 @@ interface CircuitBreakerWithMonitoring {
   getStats?(): { failures?: number };
 }
 
-<<<<<<< HEAD
 function createCircuitBreaker(): CircuitBreakerWithMonitoring {
-=======
-function createCircuitBreaker(
-  _fn?: any,
-  _options?: any,
-  _name?: string
-): CircuitBreakerWithMonitoring {
->>>>>>> origin/main
   return {
     async execute<T>(fn: () => Promise<T>): Promise<Result<T, Error>> {
       try {
@@ -525,11 +448,7 @@ export interface NeuralMLConfig {
   /** Enable comprehensive telemetry and monitoring */
   readonly enableTelemetry?: boolean;
   /** Circuit breaker configuration for GPU operations */
-<<<<<<< HEAD
   readonly circuitBreakerOptions?: Record<string, unknown>;
-=======
-  readonly circuitBreakerOptions?: any;
->>>>>>> origin/main
   /** Operation timeout in milliseconds */
   readonly operationTimeoutMs?: number;
   /** Retry configuration for failed operations */
@@ -714,25 +633,10 @@ export class NeuralMLEngine {
     this.systemMonitor = createSystemMonitor();
 
     // Initialize circuit breakers for different operation types
-<<<<<<< HEAD
     this.gpuCircuitBreaker = createCircuitBreaker();
 
     this.cpuCircuitBreaker = createCircuitBreaker();
 }
-=======
-    this.gpuCircuitBreaker = createCircuitBreaker(
-      async (...args: any[]) => await Promise.resolve(args),
-      this.config.circuitBreakerOptions,
-      'neural-ml-gpu-operations'
-    );
-
-    this.cpuCircuitBreaker = createCircuitBreaker(
-      async (...args: any[]) => await Promise.resolve(args),
-      { ...this.config.circuitBreakerOptions, timeout: 60000 },
-      'neural-ml-cpu-operations'
-    );
-  }
->>>>>>> origin/main
 
   /**
    * Initialize the neural-ml engine and detect optimal hardware backend
@@ -1913,11 +1817,7 @@ export class NeuralMLEngine {
   /**
    * Load the neural-ml Rust module (placeholder for actual implementation)
    */
-<<<<<<< HEAD
   private async loadNeuralMLModule(): Promise<Record<string, unknown>> {
-=======
-  private async loadNeuralMLModule(): Promise<any> {
->>>>>>> origin/main
     // This would load the actual Rust WASM or native module
     // For now, we'll use a placeholder that demonstrates the interface
 
@@ -1938,11 +1838,7 @@ export class NeuralMLEngine {
    * Detect optimization backend using Rust implementation
    */
   private async detectOptimizationBackend(
-<<<<<<< HEAD
     neuralML: Record<string, unknown>,
-=======
-    neuralML: any
->>>>>>> origin/main
   ): Promise<OptimizationBackend> {
     try {
       // Call Rust backend detection

@@ -166,19 +166,11 @@ export class RecoveryStrategyManager extends EventEmitter {
    * @param error
    * @param context
    */
-<<<<<<< HEAD
   private executeWithTimeout(
     strategy:RecoveryStrategy,
     error:MemoryError,
     context:RecoveryContext
   ):Promise<RecoveryResult> {
-=======
-  private async executeWithTimeout(
-    strategy: RecoveryStrategy,
-    error: MemoryError,
-    context: RecoveryContext
-  ): Promise<RecoveryResult> {
->>>>>>> origin/main
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         reject(
@@ -193,7 +185,6 @@ export class RecoveryStrategyManager extends EventEmitter {
         .then((result) => {
           clearTimeout(timeout);
           resolve(result);
-<<<<<<< HEAD
 })
         .catch((strategyError) => {
           clearTimeout(timeout);
@@ -201,15 +192,6 @@ export class RecoveryStrategyManager extends EventEmitter {
 });
 });
 }
-=======
-        })
-        .catch((error) => {
-          clearTimeout(timeout);
-          reject(error);
-        });
-    });
-  }
->>>>>>> origin/main
 
   /**
    * Find strategies applicable to an error.
@@ -244,7 +226,6 @@ export class RecoveryStrategyManager extends EventEmitter {
   /**
    * Register default recovery strategies.
    */
-<<<<<<< HEAD
   private registerDefaultStrategies(): void {
     this.registerNodeReconnectionStrategy();
     this.registerDataRepairStrategy();
@@ -256,11 +237,6 @@ export class RecoveryStrategyManager extends EventEmitter {
    * Register node reconnection strategy.
    */
   private registerNodeReconnectionStrategy(): void {
-=======
-  /* eslint-disable max-lines-per-function */
-  private registerDefaultStrategies(): void {
-    // Node Reconnection Strategy
->>>>>>> origin/main
     this.registerStrategy({
       name: 'node_reconnection',
       description: 'Attempt to reconnect to unreachable nodes',
@@ -321,10 +297,7 @@ export class RecoveryStrategyManager extends EventEmitter {
         }
       },
     });
-<<<<<<< HEAD
   }
-=======
->>>>>>> origin/main
 
   /**
    * Register data repair strategy.
@@ -356,39 +329,7 @@ export class RecoveryStrategyManager extends EventEmitter {
 
         try {
           // Collect data from all healthy backends
-<<<<<<< HEAD
           const { dataVersions } = await this.collectDataVersions(key, context.backends);
-=======
-          const dataVersions = new Map();
-
-          for (const [id, backend] of Array.from(context.backends.entries())) {
-            void id;
-            try {
-              let data;
-              if ('get' in backend && typeof backend.get === 'function') {
-                data = await backend.get(key);
-              } else if (
-                'retrieve' in backend &&
-                typeof backend.retrieve === 'function'
-              ) {
-                data = await backend.retrieve(key);
-              } else {
-                continue; // Skip backends without compatible methods
-              }
-
-              if (data !== null) {
-                const dataKey = JSON.stringify(data);
-                dataVersions?.set(
-                  dataKey,
-                  (dataVersions?.get(dataKey) || 0) + 1
-                );
-                // Collected consensus via dataVersions map; no need to store per-backend entries
-              }
-            } catch {
-              // Skip unhealthy backends
-            }
-          }
->>>>>>> origin/main
 
           if (dataVersions.size === 0) {
             return {
@@ -401,51 +342,10 @@ export class RecoveryStrategyManager extends EventEmitter {
           }
 
           // Find the most common version (consensus)
-<<<<<<< HEAD
           const consensusData = this.findConsensusData(dataVersions);
 
           // Repair all backends with consensus data
           const repairResults = await this.repairBackends(key, consensusData, context.backends);
-=======
-          let consensusData = null;
-          let maxCount = 0;
-
-          // Convert to array to ensure the collection is used and avoid sonarjs/no-unused-collection
-          const versionEntries = Array.from(dataVersions.entries());
-          for (const [dataStr, count] of versionEntries) {
-            if (count > maxCount) {
-              maxCount = count;
-              consensusData = JSON.parse(dataStr);
-            }
-          }
-
-          // Repair all backends with consensus data
-          const repairPromises = Array.from(context.backends.entries()).map(
-            async ([id, backend]) => {
-              try {
-                if ('set' in backend && typeof backend.set === 'function') {
-                  await backend.set(key, consensusData);
-                } else if (
-                  'store' in backend &&
-                  typeof backend.store === 'function'
-                ) {
-                  await backend.store(key, consensusData);
-                } else {
-                  throw new Error('Backend lacks required set/store method');
-                }
-                return { id, status: 'repaired' };
-              } catch (repairError) {
-                return {
-                  id,
-                  status: 'failed',
-                  error: (repairError as Error).message,
-                };
-              }
-            }
-          );
-
-          const repairResults = await Promise.all(repairPromises);
->>>>>>> origin/main
           const successfulRepairs = repairResults?.filter(
             (r) => r.status === 'repaired'
           ).length;
@@ -474,10 +374,7 @@ export class RecoveryStrategyManager extends EventEmitter {
         }
       },
     });
-<<<<<<< HEAD
   }
-=======
->>>>>>> origin/main
 
   /**
    * Register cache optimization strategy.
@@ -496,11 +393,7 @@ export class RecoveryStrategyManager extends EventEmitter {
       priority: 5,
       timeoutMs: 5000,
       maxRetries: 1,
-<<<<<<< HEAD
       execute: (error, context) => {
-=======
-      execute: async (errorIgnored, context) => {
->>>>>>> origin/main
         const startTime = Date.now();
 
         try {
@@ -540,10 +433,7 @@ export class RecoveryStrategyManager extends EventEmitter {
         }
       },
     });
-<<<<<<< HEAD
   }
-=======
->>>>>>> origin/main
 
   /**
    * Register system cleanup strategy.
@@ -583,7 +473,6 @@ export class RecoveryStrategyManager extends EventEmitter {
             if (context.operation && context.key) {
               const backend = Array.from(context.backends.values())[0];
 
-<<<<<<< HEAD
               const result = await this.performBackendOperation(
                 backend,
                 context.operation,
@@ -599,52 +488,6 @@ export class RecoveryStrategyManager extends EventEmitter {
                 data: result,
                 metadata: { attempt, delay },
               };
-=======
-              switch (context.operation) {
-                case 'read': {
-                  let data;
-                  if ('get' in backend && typeof backend.get === 'function') {
-                    data = await backend.get(context.key);
-                  } else if (
-                    'retrieve' in backend &&
-                    typeof backend.retrieve === 'function'
-                  ) {
-                    data = await backend.retrieve(context.key);
-                  } else {
-                    throw new Error(
-                      'Backend lacks required get/retrieve method'
-                    );
-                  }
-                  return {
-                    success: true,
-                    strategy: 'retry_with_backoff',
-                    action: 'retry_succeeded',
-                    duration: Date.now() - startTime,
-                    data,
-                    metadata: { attempt, delay },
-                  };
-                }
-
-                case 'write':
-                  if ('set' in backend && typeof backend.set === 'function') {
-                    await backend.set(context.key, context.originalValue);
-                  } else if (
-                    'store' in backend &&
-                    typeof backend.store === 'function'
-                  ) {
-                    await backend.store(context.key, context.originalValue);
-                  } else {
-                    throw new Error('Backend lacks required set/store method');
-                  }
-                  return {
-                    success: true,
-                    strategy: 'retry_with_backoff',
-                    action: 'retry_succeeded',
-                    duration: Date.now() - startTime,
-                    metadata: { attempt, delay },
-                  };
-              }
->>>>>>> origin/main
             }
 
             // If we can't retry the specific operation, just wait and return success
@@ -655,11 +498,7 @@ export class RecoveryStrategyManager extends EventEmitter {
               duration: Date.now() - startTime,
               metadata: { attempt, delay },
             };
-<<<<<<< HEAD
 } catch (retryError) {
-=======
-          } catch (retryError) {
->>>>>>> origin/main
             lastError = retryError;
             if (attempt === maxRetries) {
               return {
@@ -683,10 +522,7 @@ export class RecoveryStrategyManager extends EventEmitter {
         };
       },
     });
-<<<<<<< HEAD
   }
-=======
->>>>>>> origin/main
 
   /**
    * Register system reset strategy.
@@ -705,13 +541,7 @@ export class RecoveryStrategyManager extends EventEmitter {
       priority: 2,
       timeoutMs: 3000,
       maxRetries: 1,
-<<<<<<< HEAD
       execute: (error) => {
-=======
-      execute: async (error, context) => {
-        // context not used here; explicitly ignore
-        void context;
->>>>>>> origin/main
         const startTime = Date.now();
 
         try {
@@ -737,19 +567,10 @@ export class RecoveryStrategyManager extends EventEmitter {
 
           return {
             success: true,
-<<<<<<< HEAD
             strategy: 'graceful_degradation',            action: 'degradation_applied',            duration:Date.now() - startTime,
             metadata:{ degradationActions},
 };
 } catch (degradationError) {
-=======
-            strategy: 'graceful_degradation',
-            action: 'degradation_applied',
-            duration: Date.now() - startTime,
-            metadata: { degradationActions },
-          };
-        } catch (degradationError) {
->>>>>>> origin/main
           return {
             success: false,
             strategy: 'graceful_degradation',
@@ -818,7 +639,6 @@ export class RecoveryStrategyManager extends EventEmitter {
     return this.findApplicableStrategies(error).sort(
       (a, b) => b.priority - a.priority
     );
-<<<<<<< HEAD
 }
 
   /**
@@ -933,7 +753,5 @@ export class RecoveryStrategyManager extends EventEmitter {
       default:
         throw new Error(`Unsupported operation: ${operation}`);
     }
-=======
->>>>>>> origin/main
   }
 }

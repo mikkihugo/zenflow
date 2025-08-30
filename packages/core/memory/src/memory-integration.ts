@@ -204,37 +204,21 @@ export function registerMemoryProviders(
  * @param container
  * @example
  */
-<<<<<<< HEAD
 export function createMemoryBackends(container:DIContainer): {
   cache:unknown;
   session:unknown;
   semantic:unknown;
   debug:unknown;
 } {
-=======
-export async function createMemoryBackends(container: DIContainer): Promise<{
-  cache: unknown;
-  session: unknown;
-  semantic: unknown;
-  debug: unknown;
-}> {
->>>>>>> origin/main
   const factory = container.resolve(
     MEMORY_TOKENS['ProviderFactory']
   ) as MemoryProviderFactory;
 
   return {
-<<<<<<< HEAD
     cache:factory.createProvider(defaultMemoryConfigurations?.cache),
     session:factory.createProvider(defaultMemoryConfigurations?.session),
     semantic:factory.createProvider(defaultMemoryConfigurations?.semantic),
     debug:factory.createProvider(defaultMemoryConfigurations?.debug),
-=======
-    cache: factory.createProvider(defaultMemoryConfigurations?.cache),
-    session: factory.createProvider(defaultMemoryConfigurations?.session),
-    semantic: factory.createProvider(defaultMemoryConfigurations?.semantic),
-    debug: factory.createProvider(defaultMemoryConfigurations?.debug),
->>>>>>> origin/main
   };
 }
 
@@ -249,7 +233,6 @@ export async function createMemoryBackends(container: DIContainer): Promise<{
  * @param options.enableDebug
  * @example
  */
-<<<<<<< HEAD
 /**
  * Creates memory backends based on configuration options
  */
@@ -316,8 +299,6 @@ async function performBackendHealthChecks(
   );
 }
 
-=======
->>>>>>> origin/main
 export async function initializeMemorySystem(
   container: DIContainer,
   options: {
@@ -347,72 +328,10 @@ export async function initializeMemorySystem(
   const controller = container.resolve(MEMORY_TOKENS.Controller);
 
   // Create backends based on options
-<<<<<<< HEAD
   const { backends, enabledBackends } = createConfiguredMemoryBackends(container, options);
 
   // Test all backends
   await performBackendHealthChecks(backends, enabledBackends, logger);
-=======
-  const backends: Record<string, unknown> = {};
-  const enabledBackends: string[] = [];
-
-  if (options?.['enableCache']) {
-    backends.cache = (
-      container.resolve(
-        MEMORY_TOKENS['ProviderFactory']
-      ) as MemoryProviderFactory
-    ).createProvider(defaultMemoryConfigurations?.cache);
-    enabledBackends.push('cache');
-  }
-
-  if (options?.['enableSessions']) {
-    backends.session = (
-      container.resolve(
-        MEMORY_TOKENS['ProviderFactory']
-      ) as MemoryProviderFactory
-    ).createProvider(defaultMemoryConfigurations?.session);
-    enabledBackends.push('session');
-  }
-
-  if (options?.['enableSemantic']) {
-    backends.semantic = (
-      container.resolve(
-        MEMORY_TOKENS['ProviderFactory']
-      ) as MemoryProviderFactory
-    ).createProvider(defaultMemoryConfigurations?.semantic);
-    enabledBackends.push('semantic');
-  }
-
-  if (options?.['enableDebug']) {
-    backends.debug = (
-      container.resolve(
-        MEMORY_TOKENS['ProviderFactory']
-      ) as MemoryProviderFactory
-    ).createProvider(defaultMemoryConfigurations?.debug);
-    enabledBackends.push('debug');
-  }
-
-  // Test all backends
-  const healthChecks = await Promise.allSettled(
-    Object.entries(backends).map(async ([name, backend]) => {
-      const healthy = await backend.health();
-      return { name, healthy };
-    })
-  );
-
-  const healthyBackends = healthChecks
-    .filter(
-      (
-        result
-      ): result is PromiseFulfilledResult<{ name: string; healthy: boolean }> =>
-        result?.status === 'fulfilled' && result?.value?.healthy
-    )
-    .map((result) => result?.value?.name);
-
-  logger.info(
-    `Memory system initialized:${healthyBackends.length}/${enabledBackends.length} backends healthy`
-  );
->>>>>>> origin/main
 
   return {
     controller,
@@ -440,13 +359,8 @@ export function createMemoryContainer(
   container.register(CORE_TOKENS.Logger, {
     type: 'singleton',
     create: () => ({
-<<<<<<< HEAD
       debug: () => {},
       info: () => {},
-=======
-      debug: (msg: string) => {},
-      info: (msg: string) => {},
->>>>>>> origin/main
       warn: (msg: string) => logger.warn(`[MEMORY WARN] ${msg}`),
       error: (msg: string) => logger.error(`[MEMORY ERROR] ${msg}`),
     }),
@@ -456,13 +370,8 @@ export function createMemoryContainer(
     type: 'singleton',
     create: () => ({
       get: (key: string, defaultValue?: unknown) => defaultValue,
-<<<<<<< HEAD
       set: () => {},
       has: () => false,
-=======
-      set: (key: string, value: unknown) => {},
-      has: (key: string) => false,
->>>>>>> origin/main
     }),
   });
 
@@ -470,15 +379,9 @@ export function createMemoryContainer(
   container.register(DATABASE_TOKENS?.DALFactory, {
     type: 'singleton',
     create: (container) => {
-<<<<<<< HEAD
       const { DALFactory: dalFactory } = require('../database/factory');
       const {
         DatabaseProviderFactory: databaseProviderFactory,
-=======
-      const { DALFactory } = require('../database/factory');
-      const {
-        DatabaseProviderFactory,
->>>>>>> origin/main
       } = require('../database/providers/database-providers');
 
       return new dalFactory(

@@ -4,9 +4,9 @@
  * Provides graph database operations with node/edge management,
  * path traversal, and performance monitoring.
  */
-import { getLogger } from "../logger.js";
-import { QueryError, } from "../types/index.js";
-const logger = getLogger("graph-storage");
+import { getLogger } from '../logger.js';
+import { QueryError, } from '../types/index.js';
+const logger = getLogger('graph-storage');
 export class GraphStorageImpl {
     connection;
     config;
@@ -17,7 +17,7 @@ export class GraphStorageImpl {
     async addNode(node) {
         try {
             const nodeId = node.id || this.generateNodeId();
-            logger.debug("Creating graph node", {
+            logger.debug('Creating graph node', {
                 labels: node.labels,
                 nodeId,
                 propertyCount: Object.keys(node.properties || {}).length,
@@ -29,11 +29,11 @@ export class GraphStorageImpl {
                 JSON.stringify(node.labels || []),
                 JSON.stringify(node.properties || {}),
             ]);
-            logger.debug("Graph node created", { labels: node.labels, nodeId });
+            logger.debug('Graph node created', { labels: node.labels, nodeId });
             return nodeId;
         }
         catch (error) {
-            logger.error("Failed to create graph node", {
+            logger.error('Failed to create graph node', {
                 id: node.id,
                 error: error instanceof Error ? error.message : String(error),
             });
@@ -45,7 +45,7 @@ export class GraphStorageImpl {
     }
     async getNode(id) {
         try {
-            logger.debug("Getting graph node", { id });
+            logger.debug('Getting graph node', { id });
             await this.ensureNodesTable();
             const sql = `SELECT id, labels, properties FROM graph_nodes WHERE id = ?`;
             const result = await this.connection.query(sql, [id]);
@@ -60,7 +60,7 @@ export class GraphStorageImpl {
             };
         }
         catch (error) {
-            logger.error("Failed to get graph node", {
+            logger.error('Failed to get graph node', {
                 id,
                 error: error instanceof Error ? error.message : String(error),
             });
@@ -72,7 +72,7 @@ export class GraphStorageImpl {
     }
     async updateNode(id, updates) {
         try {
-            logger.debug("Updating graph node", {
+            logger.debug('Updating graph node', {
                 id,
                 hasLabels: !!updates.labels,
                 hasProperties: !!updates.properties,
@@ -81,24 +81,24 @@ export class GraphStorageImpl {
             const setParts = [];
             const params = [];
             if (updates.labels) {
-                setParts.push("labels = ?");
+                setParts.push('labels = ?');
                 params.push(JSON.stringify(updates.labels));
             }
             if (updates.properties) {
-                setParts.push("properties = ?");
+                setParts.push('properties = ?');
                 params.push(JSON.stringify(updates.properties));
             }
             if (setParts.length === 0) {
-                logger.debug("No updates specified for node", { id });
+                logger.debug('No updates specified for node', { id });
                 return;
             }
             params.push(id);
-            const sql = `UPDATE graph_nodes SET ${setParts.join(", ")} WHERE id = ?`;
+            const sql = `UPDATE graph_nodes SET ${setParts.join(', ')} WHERE id = ?`;
             await this.connection.execute(sql, params);
-            logger.debug("Graph node updated", { id });
+            logger.debug('Graph node updated', { id });
         }
         catch (error) {
-            logger.error("Failed to update graph node", {
+            logger.error('Failed to update graph node', {
                 id,
                 error: error instanceof Error ? error.message : String(error),
             });
@@ -110,15 +110,15 @@ export class GraphStorageImpl {
     }
     async deleteNode(id) {
         try {
-            logger.debug("Deleting graph node", { id });
+            logger.debug('Deleting graph node', { id });
             await this.ensureNodesTable();
             const result = await this.connection.execute(`DELETE FROM graph_nodes WHERE id = ?`, [id]);
             const deleted = (result.affectedRows ?? 0) > 0;
-            logger.debug("Graph node deletion completed", { id, deleted });
+            logger.debug('Graph node deletion completed', { id, deleted });
             return deleted;
         }
         catch (error) {
-            logger.error("Failed to delete graph node", {
+            logger.error('Failed to delete graph node', {
                 id,
                 error: error instanceof Error ? error.message : String(error),
             });
@@ -131,7 +131,7 @@ export class GraphStorageImpl {
     async addEdge(edge) {
         try {
             const edgeId = edge.id || this.generateEdgeId();
-            logger.debug("Creating graph edge", {
+            logger.debug('Creating graph edge', {
                 type: edge.type,
                 edgeId,
                 fromId: edge.fromId,
@@ -146,11 +146,11 @@ export class GraphStorageImpl {
                 edge.type,
                 JSON.stringify(edge.properties || {}),
             ]);
-            logger.debug("Graph edge created", { type: edge.type, edgeId });
+            logger.debug('Graph edge created', { type: edge.type, edgeId });
             return edgeId;
         }
         catch (error) {
-            logger.error("Failed to create graph edge", {
+            logger.error('Failed to create graph edge', {
                 id: edge.id,
                 error: error instanceof Error ? error.message : String(error),
             });
@@ -162,7 +162,7 @@ export class GraphStorageImpl {
     }
     async getEdge(id) {
         try {
-            logger.debug("Getting graph edge", { id });
+            logger.debug('Getting graph edge', { id });
             await this.ensureEdgesTable();
             const sql = `SELECT id, from_id, to_id, type, properties FROM graph_edges WHERE id = ?`;
             const result = await this.connection.query(sql, [id]);
@@ -179,7 +179,7 @@ export class GraphStorageImpl {
             };
         }
         catch (error) {
-            logger.error("Failed to get graph edge", {
+            logger.error('Failed to get graph edge', {
                 id,
                 error: error instanceof Error ? error.message : String(error),
             });
@@ -191,7 +191,7 @@ export class GraphStorageImpl {
     }
     async updateEdge(id, updates) {
         try {
-            logger.debug("Updating graph edge", {
+            logger.debug('Updating graph edge', {
                 id,
                 hasType: !!updates.type,
                 hasProperties: !!updates.properties,
@@ -200,32 +200,32 @@ export class GraphStorageImpl {
             const setParts = [];
             const params = [];
             if (updates.type) {
-                setParts.push("type = ?");
+                setParts.push('type = ?');
                 params.push(updates.type);
             }
             if (updates.properties) {
-                setParts.push("properties = ?");
+                setParts.push('properties = ?');
                 params.push(JSON.stringify(updates.properties));
             }
             if (updates.fromId) {
-                setParts.push("from_id = ?");
+                setParts.push('from_id = ?');
                 params.push(updates.fromId);
             }
             if (updates.toId) {
-                setParts.push("to_id = ?");
+                setParts.push('to_id = ?');
                 params.push(updates.toId);
             }
             if (setParts.length === 0) {
-                logger.debug("No updates specified for edge", { id });
+                logger.debug('No updates specified for edge', { id });
                 return;
             }
             params.push(id);
-            const sql = `UPDATE graph_edges SET ${setParts.join(", ")} WHERE id = ?`;
+            const sql = `UPDATE graph_edges SET ${setParts.join(', ')} WHERE id = ?`;
             await this.connection.execute(sql, params);
-            logger.debug("Graph edge updated", { id });
+            logger.debug('Graph edge updated', { id });
         }
         catch (error) {
-            logger.error("Failed to update graph edge", {
+            logger.error('Failed to update graph edge', {
                 id,
                 error: error instanceof Error ? error.message : String(error),
             });
@@ -237,15 +237,15 @@ export class GraphStorageImpl {
     }
     async deleteEdge(id) {
         try {
-            logger.debug("Deleting graph edge", { id });
+            logger.debug('Deleting graph edge', { id });
             await this.ensureEdgesTable();
             const result = await this.connection.execute(`DELETE FROM graph_edges WHERE id = ?`, [id]);
             const deleted = (result.affectedRows ?? 0) > 0;
-            logger.debug("Graph edge deletion completed", { id, deleted });
+            logger.debug('Graph edge deletion completed', { id, deleted });
             return deleted;
         }
         catch (error) {
-            logger.error("Failed to delete graph edge", {
+            logger.error('Failed to delete graph edge', {
                 id,
                 error: error instanceof Error ? error.message : String(error),
             });
@@ -257,24 +257,24 @@ export class GraphStorageImpl {
     }
     async getConnections(nodeId, direction, edgeType) {
         try {
-            logger.debug("Getting node connections", { nodeId, direction, edgeType });
+            logger.debug('Getting node connections', { nodeId, direction, edgeType });
             await this.ensureEdgesTable();
-            let whereClause = "";
+            let whereClause = '';
             const params = [];
-            if (direction === "in") {
-                whereClause = "WHERE to_id = ?";
+            if (direction === 'in') {
+                whereClause = 'WHERE to_id = ?';
                 params.push(nodeId);
             }
-            else if (direction === "out") {
-                whereClause = "WHERE from_id = ?";
+            else if (direction === 'out') {
+                whereClause = 'WHERE from_id = ?';
                 params.push(nodeId);
             }
             else {
-                whereClause = "WHERE from_id = ? OR to_id = ?";
+                whereClause = 'WHERE from_id = ? OR to_id = ?';
                 params.push(nodeId, nodeId);
             }
             if (edgeType) {
-                whereClause += params.length > 0 ? " AND type = ?" : "WHERE type = ?";
+                whereClause += params.length > 0 ? ' AND type = ?' : 'WHERE type = ?';
                 params.push(edgeType);
             }
             const sql = `SELECT id, from_id, to_id, type, properties FROM graph_edges ${whereClause}`;
@@ -286,14 +286,14 @@ export class GraphStorageImpl {
                 type: row.type,
                 properties: JSON.parse(row.properties),
             }));
-            logger.debug("Node connections retrieved", {
+            logger.debug('Node connections retrieved', {
                 nodeId,
                 edgeCount: edges.length,
             });
             return edges;
         }
         catch (error) {
-            logger.error("Failed to get node connections", {
+            logger.error('Failed to get node connections', {
                 nodeId,
                 error: error instanceof Error ? error.message : String(error),
             });
@@ -305,7 +305,7 @@ export class GraphStorageImpl {
     }
     async findPath(fromId, toId, options) {
         try {
-            logger.debug("Finding path between nodes", {
+            logger.debug('Finding path between nodes', {
                 fromId,
                 toId,
                 maxDepth: options?.maxDepth,
@@ -327,7 +327,7 @@ export class GraphStorageImpl {
                 }
                 visited.add(current.nodeId);
                 // Get outgoing connections
-                const connections = await this.getConnections(current.nodeId, "out");
+                const connections = await this.getConnections(current.nodeId, 'out');
                 for (const edge of connections) {
                     if (!options?.edgeTypes || options.edgeTypes.includes(edge.type)) {
                         queue.push({
@@ -337,11 +337,11 @@ export class GraphStorageImpl {
                     }
                 }
             }
-            logger.debug("No path found between nodes", { fromId, toId });
+            logger.debug('No path found between nodes', { fromId, toId });
             return [];
         }
         catch (error) {
-            logger.error("Failed to find path", {
+            logger.error('Failed to find path', {
                 fromId,
                 toId,
                 error: error instanceof Error ? error.message : String(error),
@@ -363,7 +363,7 @@ export class GraphStorageImpl {
     }
     async query(cypher, params) {
         try {
-            logger.debug("Executing graph query", {
+            logger.debug('Executing graph query', {
                 cypher: cypher.slice(0, 100),
                 paramCount: Object.keys(params || {}).length,
             });
@@ -371,8 +371,8 @@ export class GraphStorageImpl {
             // In a real implementation, this would use a proper Cypher engine
             const startTime = Date.now();
             // Very basic Cypher-to-SQL translation for demonstration
-            if (cypher.toLowerCase().includes("match") &&
-                cypher.toLowerCase().includes("return")) {
+            if (cypher.toLowerCase().includes('match') &&
+                cypher.toLowerCase().includes('return')) {
                 // Simple node query
                 const nodeResult = await this.connection.query(`SELECT id, labels, properties FROM graph_nodes LIMIT 10`);
                 const nodes = nodeResult.rows.map((row) => ({
@@ -393,7 +393,7 @@ export class GraphStorageImpl {
             };
         }
         catch (error) {
-            logger.error("Failed to execute graph query", {
+            logger.error('Failed to execute graph query', {
                 cypher: cypher.slice(0, 100),
                 error: error instanceof Error ? error.message : String(error),
             });
@@ -405,20 +405,20 @@ export class GraphStorageImpl {
     }
     async createNodeLabel(label, properties) {
         try {
-            logger.debug("Creating node label", {
+            logger.debug('Creating node label', {
                 label,
                 propertyCount: Object.keys(properties || {}).length,
             });
             // Create constraint for node uniqueness
             const constraintQuery = `CREATE TABLE IF NOT EXISTS node_labels_${label} (id TEXT PRIMARY KEY)`;
             await this.connection.execute(constraintQuery);
-            logger.info("Node label created", {
+            logger.info('Node label created', {
                 label,
                 properties,
             });
         }
         catch (error) {
-            logger.error("Failed to create node label", {
+            logger.error('Failed to create node label', {
                 label,
                 error: error instanceof Error ? error.message : String(error),
             });
@@ -430,20 +430,20 @@ export class GraphStorageImpl {
     }
     async createEdgeType(type, properties) {
         try {
-            logger.debug("Creating edge type", {
+            logger.debug('Creating edge type', {
                 type,
                 propertyCount: Object.keys(properties || {}).length,
             });
             // Create table for edge type
             const edgeTableQuery = `CREATE TABLE IF NOT EXISTS edge_types_${type} (from_id TEXT, to_id TEXT, properties TEXT)`;
             await this.connection.execute(edgeTableQuery);
-            logger.info("Edge type created", {
+            logger.info('Edge type created', {
                 type,
                 properties,
             });
         }
         catch (error) {
-            logger.error("Failed to create edge type", {
+            logger.error('Failed to create edge type', {
                 type,
                 error: error instanceof Error ? error.message : String(error),
             });
@@ -482,7 +482,7 @@ export class GraphStorageImpl {
             };
         }
         catch (error) {
-            logger.error("Failed to get graph stats", {
+            logger.error('Failed to get graph stats', {
                 error: error instanceof Error ? error.message : String(error),
             });
             throw new QueryError(`Failed to get stats:${error instanceof Error ? error.message : String(error)}`, {
@@ -512,7 +512,7 @@ export class GraphStorageImpl {
             await this.connection.execute(sql);
         }
         catch (error) {
-            logger.error("Failed to create nodes table", {
+            logger.error('Failed to create nodes table', {
                 error: error instanceof Error ? error.message : String(error),
             });
             throw new QueryError(`Failed to create nodes table:${error instanceof Error ? error.message : String(error)}`, {
@@ -536,7 +536,7 @@ export class GraphStorageImpl {
             await this.connection.execute(sql);
         }
         catch (error) {
-            logger.error("Failed to create edges table", {
+            logger.error('Failed to create edges table', {
                 error: error instanceof Error ? error.message : String(error),
             });
             throw new QueryError(`Failed to create edges table:${error instanceof Error ? error.message : String(error)}`, {
@@ -546,3 +546,4 @@ export class GraphStorageImpl {
         }
     }
 }
+//# sourceMappingURL=graph-storage.js.map

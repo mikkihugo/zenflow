@@ -75,11 +75,7 @@ export interface MemoryBatchRequest {
     /** Value for store operations */
     value?: unknown;
     /** Options for the operation */
-<<<<<<< HEAD
     options?:MemoryRequest['options'];
-=======
-    options?: MemoryRequest['options'];
->>>>>>> origin/main
   }>;
   /** Whether to stop on first error or continue */
   continueOnError?: boolean;
@@ -217,19 +213,11 @@ export class MemoryController {
       this._logger.error(`Failed to get memory status:${error}`);
 
       return {
-<<<<<<< HEAD
         success:false,
         error:`Failed to get memory status: ${this.getErrorMessage(error)}`,
         metadata:{
           size:0,
           timestamp:Date.now(),
-=======
-        success: false,
-        error: `Failed to get memory status: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        metadata: {
-          size: 0,
-          timestamp: Date.now(),
->>>>>>> origin/main
           executionTime,
           backend: this._config.type,
         },
@@ -292,19 +280,11 @@ export class MemoryController {
       this._logger.error(`Failed to store memory key ${request.key}:${error}`);
 
       return {
-<<<<<<< HEAD
         success:false,
         error:`Failed to store memory: ${this.getErrorMessage(error)}`,
         metadata:{
           size:0,
           timestamp:Date.now(),
-=======
-        success: false,
-        error: `Failed to store memory: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        metadata: {
-          size: 0,
-          timestamp: Date.now(),
->>>>>>> origin/main
           executionTime,
           backend: this._config.type,
         },
@@ -359,19 +339,11 @@ export class MemoryController {
       this._logger.error(`Failed to retrieve memory key ${key}:${error}`);
 
       return {
-<<<<<<< HEAD
         success:false,
         error:`Failed to retrieve memory: ${this.getErrorMessage(error)}`,
         metadata:{
           size:0,
           timestamp:Date.now(),
-=======
-        success: false,
-        error: `Failed to retrieve memory: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        metadata: {
-          size: 0,
-          timestamp: Date.now(),
->>>>>>> origin/main
           executionTime,
           backend: this._config.type,
         },
@@ -422,19 +394,11 @@ export class MemoryController {
       this._logger.error(`Failed to delete memory key ${key}:${error}`);
 
       return {
-<<<<<<< HEAD
         success:false,
         error:`Failed to delete memory: ${this.getErrorMessage(error)}`,
         metadata:{
           size:0,
           timestamp:Date.now(),
-=======
-        success: false,
-        error: `Failed to delete memory: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        metadata: {
-          size: 0,
-          timestamp: Date.now(),
->>>>>>> origin/main
           executionTime,
           backend: this._config.type,
         },
@@ -478,19 +442,11 @@ export class MemoryController {
       this._logger.error(`Failed to clear memory:${error}`);
 
       return {
-<<<<<<< HEAD
         success:false,
         error:`Failed to clear memory: ${this.getErrorMessage(error)}`,
         metadata:{
           size:0,
           timestamp:Date.now(),
-=======
-        success: false,
-        error: `Failed to clear memory: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        metadata: {
-          size: 0,
-          timestamp: Date.now(),
->>>>>>> origin/main
           executionTime,
           backend: this._config.type,
         },
@@ -566,7 +522,6 @@ export class MemoryController {
           const result = await this.processBatchOperation(operation);
           results.push(result);
 
-<<<<<<< HEAD
           if (!result.success) {
             errorCount++;
           }
@@ -580,52 +535,6 @@ export class MemoryController {
           if (shouldStop) {
             break;
           }
-=======
-          switch (operation.type) {
-            case 'store':
-              result = await this.storeMemory({
-                key: operation.key,
-                value: operation.value,
-                options: operation.options,
-              });
-              break;
-            case 'retrieve':
-              result = await this.retrieveMemory(operation.key);
-              break;
-            case 'delete':
-              result = await this.deleteMemory(operation.key);
-              break;
-            default:
-              throw new Error(`Unsupported operation type:${operation.type}`);
-          }
-
-          results.push({
-            operation: operation.type,
-            key: operation.key,
-            success: result?.success,
-            data: result?.data,
-            error: result?.error,
-          });
-
-          if (!result?.success) {
-            errorCount++;
-            if (!request.continueOnError) {
-              break;
-            }
-          }
-        } catch (error) {
-          errorCount++;
-          results.push({
-            operation: operation.type,
-            key: operation.key,
-            success: false,
-            error: error instanceof Error ? error.message : 'Unknown error',
-          });
-
-          if (!request.continueOnError) {
-            break;
-          }
->>>>>>> origin/main
         }
       }
 
@@ -658,19 +567,11 @@ export class MemoryController {
       this._logger.error(`Batch operations failed:${error}`);
 
       return {
-<<<<<<< HEAD
         success:false,
         error:`Batch operations failed: ${this.getErrorMessage(error)}`,
         metadata:{
           size:0,
           timestamp:Date.now(),
-=======
-        success: false,
-        error: `Batch operations failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        metadata: {
-          size: 0,
-          timestamp: Date.now(),
->>>>>>> origin/main
           executionTime,
           backend: this._config.type,
         },
@@ -750,19 +651,11 @@ export class MemoryController {
       this._logger.error(`Failed to get analytics:${error}`);
 
       return {
-<<<<<<< HEAD
         success:false,
         error:`Failed to get analytics: ${this.getErrorMessage(error)}`,
         metadata:{
           size:0,
           timestamp:Date.now(),
-=======
-        success: false,
-        error: `Failed to get analytics: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        metadata: {
-          size: 0,
-          timestamp: Date.now(),
->>>>>>> origin/main
           executionTime,
           backend: this._config.type,
         },

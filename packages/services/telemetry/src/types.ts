@@ -13,15 +13,11 @@ export interface TelemetryConfig {
   /** Enable tracing */
   enableTracing?: boolean;
   /** Enable metrics */
-<<<<<<< HEAD
-  enableMetrics?:boolean;
-=======
   enableMetrics?: boolean;
   /** Jaeger collector endpoint */
   jaegerEndpoint?: string;
   /** Prometheus metrics port */
   prometheusPort?: number;
->>>>>>> origin/main
   /** Sampling ratio for traces (0.0 to 1.0) */
   samplingRatio?: number;
   /** Additional attributes for all telemetry */
@@ -61,14 +57,8 @@ export interface TelemetryEvent {
  * Span options for tracing
  */
 export interface SpanOptions {
-<<<<<<< HEAD
-  attributes?:Attributes;
-  kind?:'client' | 'server' | 'producer' | 'consumer' | 'internal';
-=======
   attributes?: Attributes;
-  kind?: import('@opentelemetry/api').SpanKind;
-  parent?: OTelSpan;
->>>>>>> origin/main
+  kind?: 'client' | 'server' | 'producer' | 'consumer' | 'internal';
 }
 
 /**
@@ -82,7 +72,6 @@ export type Attributes = Record<
 /**
  * Simple span interface for event-driven telemetry
  */
-<<<<<<< HEAD
 export interface Span {
   addEvent(name:string, attributes?:Attributes): void;
   setAttribute(key:string, value:string | number | boolean): void;
@@ -111,8 +100,3 @@ export interface Meter {
     record(value:number, attributes?:Attributes): void;
   };
 }
-=======
-export type Span = OTelSpan;
-export type Tracer = OTelTracer;
-export type { Meter } from '@opentelemetry/api';
->>>>>>> origin/main

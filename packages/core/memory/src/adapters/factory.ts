@@ -352,17 +352,10 @@ export class MemoryBackendFactory {
   private async loadMemoryBackend(): Promise<
     new (config: MemoryConfig) => BaseMemoryBackend
   > {
-<<<<<<< HEAD
     const { FoundationMemoryBackend: foundationMemoryBackend} = await import('./foundation-adapter');
 
     return class InMemoryBackend extends foundationMemoryBackend {
       public constructor(config:MemoryConfig) {
-=======
-    const { FoundationMemoryBackend } = await import('./foundation-adapter');
-
-    return class InMemoryBackend extends FoundationMemoryBackend {
-      public constructor(config: MemoryConfig) {
->>>>>>> origin/main
         super({
           ...config,
           storageType: 'kv', // In-memory uses KV with no persistence
@@ -375,17 +368,10 @@ export class MemoryBackendFactory {
   private async loadSQLiteBackend(): Promise<
     new (config: MemoryConfig) => BaseMemoryBackend
   > {
-<<<<<<< HEAD
     const { FoundationMemoryBackend: foundationMemoryBackend} = await import('./foundation-adapter');
 
     return class extends foundationMemoryBackend {
       public constructor(config:MemoryConfig) {
-=======
-    const { FoundationMemoryBackend } = await import('./foundation-adapter');
-
-    return class extends FoundationMemoryBackend {
-      public constructor(config: MemoryConfig) {
->>>>>>> origin/main
         super({
           ...config,
           storageType: 'database',
@@ -399,17 +385,10 @@ export class MemoryBackendFactory {
     new (config: MemoryConfig) => BaseMemoryBackend
   > {
     // LanceDB backend using Foundation's database access (closest to JSONB)
-<<<<<<< HEAD
     const { FoundationMemoryBackend: foundationMemoryBackend} = await import('./foundation-adapter');
 
     return class JSONBBackend extends foundationMemoryBackend {
       public constructor(config:MemoryConfig) {
-=======
-    const { FoundationMemoryBackend } = await import('./foundation-adapter');
-
-    return class JSONBBackend extends FoundationMemoryBackend {
-      public constructor(config: MemoryConfig) {
->>>>>>> origin/main
         super({
           ...config,
           storageType: 'database',
@@ -423,17 +402,10 @@ export class MemoryBackendFactory {
     new (config: MemoryConfig) => BaseMemoryBackend
   > {
     // LanceDB vector backend
-<<<<<<< HEAD
     const { FoundationMemoryBackend: foundationMemoryBackend} = await import('./foundation-adapter');
 
     return class LanceDBBackend extends foundationMemoryBackend {
       public constructor(config:MemoryConfig) {
-=======
-    const { FoundationMemoryBackend } = await import('./foundation-adapter');
-
-    return class LanceDBBackend extends FoundationMemoryBackend {
-      public constructor(config: MemoryConfig) {
->>>>>>> origin/main
         super({
           ...config,
           storageType: 'database',

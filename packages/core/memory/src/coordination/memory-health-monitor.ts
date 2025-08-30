@@ -13,10 +13,6 @@ import {
   withRetry,
   type Logger,
 } from '@claude-zen/foundation';
-<<<<<<< HEAD
-=======
-import type { Logger } from '@claude-zen/foundation';
->>>>>>> origin/main
 
 import type { MemoryNode, MemoryHealthStatus } from './types';
 
@@ -80,11 +76,7 @@ export class MemoryHealthMonitor extends EventEmitter {
     };
   }
 
-<<<<<<< HEAD
   initialize():void {
-=======
-  async initialize(): Promise<void> {
->>>>>>> origin/main
     if (this.initialized || !this.config.enabled) return;
 
     try {
@@ -298,13 +290,7 @@ export class MemoryHealthMonitor extends EventEmitter {
     this.healthHistory.set(result.nodeId, history);
   }
 
-<<<<<<< HEAD
   private updateNodeStatus(node:MemoryNode, result:HealthCheckResult): void {
-=======
-  private updateNodeStatus(node: MemoryNode, result: HealthCheckResult): void {
-    const __previouslyHealthy = node.status.healthy;
-
->>>>>>> origin/main
     // Update node status
     node.status = {
       healthy: result.healthy,
@@ -530,11 +516,7 @@ export class MemoryHealthMonitor extends EventEmitter {
     this.logger.info('Health monitor statistics reset');
   }
 
-<<<<<<< HEAD
   shutdown():void {
-=======
-  async shutdown(): Promise<void> {
->>>>>>> origin/main
     if (!this.initialized) return;
 
     try {

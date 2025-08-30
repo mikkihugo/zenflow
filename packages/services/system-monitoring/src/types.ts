@@ -82,15 +82,9 @@ export interface HealthStatus {
     string,
     {
       status: 'ok' | 'warning' | 'error';
-<<<<<<< HEAD
-      message?:string;
-      value?:number;
-      threshold?:number;
-=======
       message?: string;
       value?: number;
       threshold?: number;
->>>>>>> origin/main
 }
   >;
   /** Additional health details */
