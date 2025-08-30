@@ -10,9 +10,14 @@
 // pub mod nhits;
 
 pub mod optimization;
+pub mod financial_ops;
 
 // Re-export key types and functions
 pub use optimization::{
     GeneticOptimizer, ParticleSwarmOptimizer, HyperparameterOptimizer,
     OptimizationResult, Individual, Particle
+};
+
+pub use financial_ops::{
+    FinancialMatrix, TechnicalIndicators, PatternRecognition
 };

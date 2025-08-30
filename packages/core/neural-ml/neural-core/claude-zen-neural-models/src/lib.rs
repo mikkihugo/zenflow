@@ -445,3 +445,8 @@ pub use advanced::optimization::{
     GeneticOptimizer, ParticleSwarmOptimizer, HyperparameterOptimizer,
     OptimizationResult, Individual, Particle
 };
+
+// Re-export financial operations
+pub use advanced::financial_ops::{
+    FinancialMatrix, TechnicalIndicators, PatternRecognition
+};
