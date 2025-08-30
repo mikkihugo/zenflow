@@ -781,9 +781,9 @@ export class AutonomousCoordinator {
   }
 
   private calculateSystemHealth(
-    recentMetrics:SystemMetrics[]
-  ):'excellent|good|fair|poor' {
-    ')    if (recentMetrics.length === 0) return 'fair;
+    recentMetrics: SystemMetrics[]
+  ): 'excellent' | 'good' | 'fair' | 'poor' {
+    if (recentMetrics.length === 0) return 'fair';
 
     const avgCpuUsage = ss.mean(recentMetrics.map((m) => m.cpuUsage));
     const avgMemoryUsage = ss.mean(recentMetrics.map((m) => m.memoryUsage));
@@ -798,11 +798,11 @@ export class AutonomousCoordinator {
       (1 - avgErrorRate) * 0.25 +
       Math.max(0, 1 - avgResponseTime / 5000) * 0.25;
 
-    if (healthScore >= 0.8) return 'excellent;
-    if (healthScore >= 0.6) return 'good;
-    if (healthScore >= 0.4) return 'fair;
-    return 'poor;
-}
+    if (healthScore >= 0.8) return 'excellent';
+    if (healthScore >= 0.6) return 'good';
+    if (healthScore >= 0.4) return 'fair';
+    return 'poor';
+  }
 
   private generateRecentTrends():string[] {
     const trends:string[] = [];
@@ -820,17 +820,21 @@ export class AutonomousCoordinator {
         );
 
         if (recentAvgResponseTime < olderAvgResponseTime * 0.9) {
-          trends.push('Response time improving');')} else if (recentAvgResponseTime > olderAvgResponseTime * 1.1) {
-          trends.push('Response time degrading');')}
+          trends.push('Response time improving');
+        } else if (recentAvgResponseTime > olderAvgResponseTime * 1.1) {
+          trends.push('Response time degrading');
+        }
 
         const recentAvgThroughput = ss.mean(recent.map((m) => m.throughput));
         const olderAvgThroughput = ss.mean(older.map((m) => m.throughput));
 
         if (recentAvgThroughput > olderAvgThroughput * 1.1) {
-          trends.push('Throughput increasing');')} else if (recentAvgThroughput < olderAvgThroughput * 0.9) {
-          trends.push('Throughput decreasing');')}
-}
-}
+          trends.push('Throughput increasing');
+        } else if (recentAvgThroughput < olderAvgThroughput * 0.9) {
+          trends.push('Throughput decreasing');
+        }
+      }
+    }
 
     if (trends.length === 0) {
       trends.push('System metrics stable');')}
