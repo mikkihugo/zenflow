@@ -456,3 +456,9 @@ pub use advanced::ensemble::{
     EnsembleModel, BaggingEnsemble, BoostingEnsemble, StackingEnsemble,
     EnsembleFactory, EnsembleMetrics, AggregationMethod
 };
+
+// Re-export memory-efficient architectures
+pub use advanced::memory_efficient::{
+    QuantizedNetwork, StreamingNetwork, SparseNetwork, MemoryEfficientFactory,
+    QuantizedLayer, StreamingLayer, SparseLayer
+};

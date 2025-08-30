@@ -12,6 +12,7 @@
 pub mod optimization;
 pub mod financial_ops;
 pub mod ensemble;
+pub mod memory_efficient;
 
 // Re-export key types and functions
 pub use optimization::{
@@ -26,4 +27,9 @@ pub use financial_ops::{
 pub use ensemble::{
     EnsembleModel, BaggingEnsemble, BoostingEnsemble, StackingEnsemble,
     EnsembleFactory, EnsembleMetrics, AggregationMethod
+};
+
+pub use memory_efficient::{
+    QuantizedNetwork, StreamingNetwork, SparseNetwork, MemoryEfficientFactory,
+    QuantizedLayer, StreamingLayer, SparseLayer
 };
