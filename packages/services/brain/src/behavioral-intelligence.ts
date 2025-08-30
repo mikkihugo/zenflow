@@ -34,10 +34,14 @@ import { ActivationFunction} from './types/index';
 
 // 🧠 Enhanced ML Imports - Using validated API patterns
 
-const brain = require('brain.js');')
+const brain = require('brain.js');
 // Validate brain.js availability and capabilities
 const brainCapabilities = {
-  neuralNetworks:typeof brain.NeuralNetwork === 'function',  recurrentNetworks:typeof brain.recurrent?.LSTM === 'function',  feedForward:typeof brain.FeedForward === 'function',  version:brain.version||'unknown',};
+  neuralNetworks: typeof brain.NeuralNetwork === 'function',
+  recurrentNetworks: typeof brain.recurrent?.LSTM === 'function',
+  feedForward: typeof brain.FeedForward === 'function',
+  version: brain.version || 'unknown',
+};
 
 // Optional ML packages (API compatibility issues - available for future enhancement)
 // import { RandomForestClassifier} from 'ml-random-forest';
@@ -83,8 +87,8 @@ export interface TaskComplexityAnalysis {
   readonly estimatedComplexity:number; // 0-1 scale
   readonly requiredSkills:string[];
   readonly estimatedDuration:number;
-  readonly difficulty: 'easy|medium|hard|expert;
-'  readonly confidence:number;
+  readonly difficulty: 'easy' | 'medium' | 'hard' | 'expert';
+  readonly confidence: number;
 }
 
 /**
@@ -162,9 +166,11 @@ export class BehavioralIntelligence {
         const trainingStrategy = await this.optimizeTrainingStrategy(id, data, options);
         const preprocessedData = await this.preprocessTrainingData(data);
         
-        logger.debug(`Mock:Training neural network ${id}`, {`
-          dataPoints:Array.isArray(data) ? data.length : 'unknown',          options:options ? Object.keys(options) : 'none',          strategy:trainingStrategy
-});
+        logger.debug('Mock: Training neural network ' + id, {
+          dataPoints: Array.isArray(data) ? data.length : 'unknown',
+          options: options ? Object.keys(options) : 'none',
+          strategy: trainingStrategy
+        });
         
         await this.executeTrainingPipeline(id, preprocessedData, trainingStrategy);
         return Promise.resolve();
