@@ -18,8 +18,6 @@ const createLogger = (name: string) => ({
   debug: (message: string, ...args: any[]) => console.debug(`[${name}] DEBUG:`, message, ...args),
 });
 
-const logger = createLogger('application-coordinator');
-
 // Simple container implementation
 const createContainer = () => {
   const services = new Map();
@@ -28,7 +26,9 @@ const createContainer = () => {
     resolve: (name: string) => services.get(name),
     has: (name: string) => services.has(name),
   };
-;
+};
+
+const logger = createLogger('application-coordinator');
 
 // Constants for duplicate strings
 const STATUS_CHANGED_EVENT = 'status-changed';
