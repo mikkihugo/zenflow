@@ -49,7 +49,9 @@
   "license": "MIT",
   "dependencies": {
     "@claude-zen/fact-system": "workspace:*",
-    "@claude-zen/foundation": "workspace:*"
+    "@claude-zen/foundation": "workspace:*",
+    "@types/better-sqlite3": "^7.6.13",
+    "better-sqlite3": "^12.2.0"
   },
   "_comment_fact_system": "fact-system is a private implementation detail - only knowledge package should access it",
   "devDependencies": {
