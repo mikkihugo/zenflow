@@ -268,9 +268,12 @@ export class IntelligenceOrchestrator extends EventBus<IntelligenceEvents> {
 },
 };
 
-    // 🧠 100% EVENT-BASED:No logger import, use event-based logging only')    // 🧠 100% EVENT-BASED:Emit log events instead of direct logging
+    // 🧠 100% EVENT-BASED: No logger import, use event-based logging only
+    // 🧠 100% EVENT-BASED: Emit log events instead of direct logging
     this.emitSafe('brain:log', {
-      level: 'info',      message: '🧠 Intelligence Orchestrator created - initialization pending',      timestamp:Date.now(),
+      level: 'info',
+      message: '🧠 Intelligence Orchestrator created - initialization pending',
+      timestamp: Date.now(),
 });')}
 
   /**
@@ -279,15 +282,19 @@ export class IntelligenceOrchestrator extends EventBus<IntelligenceEvents> {
   async initialize():Promise<void> {
     if (this.initialized) {
       await this.emitSafe('brain:log', {
-        level: 'debug',        message: 'Intelligence Orchestrator already initialized',        timestamp:Date.now(),
-});')      return;
-}
+        level: 'debug',
+        message: 'Intelligence Orchestrator already initialized',
+        timestamp: Date.now(),
+      });
+      return;
+    }
 
     const initStartTime = Date.now();
 
     try {
       this.logger.info(
-        '🧠 Initializing Intelligence Orchestrator with foundation EventBus...')      );
+        '🧠 Initializing Intelligence Orchestrator with foundation EventBus...'
+      );
 
       // Initialize EventBus first
       const eventBusResult = await super.initialize();
@@ -325,11 +332,12 @@ export class IntelligenceOrchestrator extends EventBus<IntelligenceEvents> {
       const duration = Date.now() - initStartTime;
 
       this.logger.info('✅ Intelligence Orchestrator initialized successfully', {
-    ')        duration:`${duration}ms`,`
-        monitoring: 'operations-facade',        performanceTracker:!!this.performanceTracker,
-        agentMonitor:!!this.agentMonitor,
-        sessionId:this.config.sessionId,
-});
+        duration: `${duration}ms`,
+        monitoring: 'operations-facade',
+        performanceTracker: !!this.performanceTracker,
+        agentMonitor: !!this.agentMonitor,
+        sessionId: this.config.sessionId,
+      });
 
       // Emit initialization event
       await this.emitSafe('intelligence:initialized', {
@@ -340,9 +348,9 @@ export class IntelligenceOrchestrator extends EventBus<IntelligenceEvents> {
 } catch (error) {
       const duration = Date.now() - initStartTime;
       this.logger.error('❌ Intelligence Orchestrator initialization failed', {
-    ')        error:error instanceof Error ? error.message : String(error),
-        duration:`${duration}ms`,`
-});
+        error: error instanceof Error ? error.message : String(error),
+        duration: `${duration}ms`,
+      });
 
       // Emit error event
       await this.emitSafe('intelligence:error', {
@@ -396,7 +404,7 @@ export class IntelligenceOrchestrator extends EventBus<IntelligenceEvents> {
       );
 }
 
-    this.logger.debug(`Optimizing prompt for task:${request.task}`);`
+    this.logger.debug('Optimizing prompt for task: ' + request.task);
 
     // Allow event loop to process the optimization request
     await new Promise(resolve => setTimeout(resolve, 0));
@@ -404,9 +412,10 @@ export class IntelligenceOrchestrator extends EventBus<IntelligenceEvents> {
     // Simple optimization implementation
     // In a real implementation, this would use DSPy coordination
     return {
-      strategy: 'autonomous',      prompt:`Optimized: $request.basePrompt`,`
-      confidence:0.85,
-};
+      strategy: 'autonomous',
+      prompt: 'Optimized: ' + request.basePrompt,
+      confidence: 0.85,
+    };
 }
 
   /**
