@@ -1,18 +1,16 @@
 /**
- * Database Types
- *
- * Comprehensive TypeScript types for multi-database abstractions with full type safety.
- * Designed for enterprise-grade applications with proper error handling and performance monitoring.
+ * @fileoverview Backend-Agnostic Database Types
+ * 
+ * Comprehensive database types that provide a unified interface across all database backends.
+ * These types are designed to be implemented by concrete database adapters while maintaining
+ * backend independence for foundation consumers.
  */
 
+import { type Result } from '../../error-handling/index.js';
+
 // Core Database Types
-export type DatabaseType = 'sqlite' | ' lancedb' | ' kuzu' | ' memory';
-export type StorageType =
-  | 'keyValue'
-  | ' sql'
-  | ' vector'
-  | ' graph'
-  | ' hybrid';
+export type DatabaseType = 'sqlite' | 'lancedb' | 'kuzu' | 'memory';
+export type StorageType = 'keyValue' | 'sql' | 'vector' | 'graph' | 'hybrid';
 
 // Generic Query Parameters with strict typing
 export type QueryParams =
@@ -79,10 +77,10 @@ export interface DatabaseErrorOptions {
 
 export class DatabaseError extends Error {
   public readonly code: string;
-  public readonly correlationId?: string | undefined;
-  public readonly query?: string | undefined;
-  public readonly params?: QueryParams | undefined;
-  public override readonly cause?: Error | undefined;
+  public readonly correlationId?: string;
+  public readonly query?: string;
+  public readonly params?: QueryParams;
+  public override readonly cause?: Error;
 
   constructor(message: string, options: DatabaseErrorOptions) {
     super(message);
@@ -97,12 +95,11 @@ export class DatabaseError extends Error {
 
 export class ConnectionError extends DatabaseError {
   constructor(message: string, correlationId?: string, cause?: Error) {
-    const options: DatabaseErrorOptions = { code: 'CONNECTION_ERROR' };
-    if (correlationId !== undefined) options.correlationId = correlationId;
-    if (cause !== undefined) options.cause = cause;
-    
-    super(message, options);
-    this.name = 'ConnectionError';
+    super(message, {
+      code: 'CONNECTION_ERROR',
+      correlationId,
+      cause,
+    });
   }
 }
 
@@ -115,25 +112,23 @@ export interface QueryErrorOptions {
 
 export class QueryError extends DatabaseError {
   constructor(message: string, options: QueryErrorOptions = {}) {
-    const dbOptions: DatabaseErrorOptions = { code: 'QUERY_ERROR' };
-    if (options.correlationId !== undefined) dbOptions.correlationId = options.correlationId;
-    if (options.query !== undefined) dbOptions.query = options.query;
-    if (options.params !== undefined) dbOptions.params = options.params;
-    if (options.cause !== undefined) dbOptions.cause = options.cause;
-    
-    super(message, dbOptions);
-    this.name = 'QueryError';
+    super(message, {
+      code: 'QUERY_ERROR',
+      correlationId: options.correlationId,
+      query: options.query,
+      params: options.params,
+      cause: options.cause,
+    });
   }
 }
 
 export class TransactionError extends DatabaseError {
   constructor(message: string, correlationId?: string, cause?: Error) {
-    const options: DatabaseErrorOptions = { code: 'TRANSACTION_ERROR' };
-    if (correlationId !== undefined) options.correlationId = correlationId;
-    if (cause !== undefined) options.cause = cause;
-    
-    super(message, options);
-    this.name = 'TransactionError';
+    super(message, {
+      code: 'TRANSACTION_ERROR',
+      correlationId,
+      cause,
+    });
   }
 }
 
@@ -176,6 +171,36 @@ export interface TransactionContext {
   readonly readOnly?: boolean;
   readonly timeoutMs?: number;
   readonly correlationId?: string;
+}
+
+// Database Connection Interface
+export interface DatabaseConnection {
+  query<T = unknown>(sql: string, params?: QueryParams): Promise<QueryResult<T>>;
+  execute(
+    sql: string,
+    params?: QueryParams
+  ): Promise<{ affectedRows: number; insertId?: number }>;
+  close(): Promise<void>;
+}
+
+// Transaction Connection Interface
+export interface TransactionConnection extends DatabaseConnection {
+  commit(): Promise<void>;
+  rollback(): Promise<void>;
+  savepoint(name: string): Promise<void>;
+  releaseSavepoint(name: string): Promise<void>;
+  rollbackToSavepoint(name: string): Promise<void>;
+}
+
+// Database Adapter Interface
+export interface DatabaseAdapter {
+  connect(config: DatabaseConfig): Promise<Result<DatabaseConnection, Error>>;
+  getHealth(): Promise<HealthStatus>;
+  disconnect(): Promise<void>;
+  transaction<T>(
+    operation: (conn: TransactionConnection) => Promise<T>,
+    context?: TransactionContext
+  ): Promise<T>;
 }
 
 // Vector Search Types
@@ -225,7 +250,7 @@ export interface ConnectionStats {
   readonly errors: number;
   readonly averageAcquisitionTimeMs: number;
   readonly averageIdleTimeMs: number;
-  readonly currentLoad: number; // 0-1
+  readonly currentLoad: number;
 }
 
 // Database Schema Information
@@ -267,12 +292,12 @@ export interface IndexSchema {
   readonly tableName: string;
   readonly columns: readonly string[];
   readonly unique: boolean;
-  readonly type: 'btree' | ' hash' | ' gin' | ' gist' | ' vector' | ' other';
+  readonly type: 'btree' | 'hash' | 'gin' | 'gist' | 'vector' | 'other';
 }
 
 export interface ConstraintSchema {
   readonly name: string;
-  readonly type: 'primary_key' | ' foreign_key' | ' unique' | ' check';
+  readonly type: 'primary_key' | 'foreign_key' | 'unique' | 'check';
   readonly tableName: string;
   readonly columns: readonly string[];
   readonly definition: string;
@@ -283,133 +308,54 @@ export interface ForeignKeySchema {
   readonly columns: readonly string[];
   readonly referencedTable: string;
   readonly referencedColumns: readonly string[];
-  readonly onDelete: 'cascade' | ' set_null' | ' restrict' | ' no_action';
-  readonly onUpdate: 'cascade' | ' set_null' | ' restrict' | ' no_action';
+  readonly onDelete: 'cascade' | 'set_null' | 'restrict' | 'no_action';
+  readonly onUpdate: 'cascade' | 'set_null' | 'restrict' | 'no_action';
 }
 
 // Migration Types
 export interface Migration {
-  readonly version: string;
+  readonly id: string;
+  readonly version: number;
   readonly name: string;
-  readonly up: (connection: DatabaseConnection) => Promise<void>;
-  readonly down: (connection: DatabaseConnection) => Promise<void>;
-  readonly timestamp: Date;
+  readonly description?: string;
+  up(adapter: DatabaseAdapter): Promise<void>;
+  down(adapter: DatabaseAdapter): Promise<void>;
 }
 
 export interface MigrationResult {
-  readonly version: string;
-  readonly applied: boolean;
+  readonly migration: string;
+  readonly status: 'success' | 'failed' | 'skipped';
   readonly executionTimeMs: number;
   readonly error?: string;
 }
 
-// Database Connection Interface
-export interface DatabaseConnection {
-  // Connection Management
-  connect(): Promise<void>;
-  disconnect(): Promise<void>;
-  isConnected(): boolean;
-
-  // Query Operations with full type safety
-  query<T = unknown>(
-    sql: string,
-    params?: QueryParams,
-    options?: { correlationId?: string; timeoutMs?: number }
-  ): Promise<QueryResult<T>>;
-
-  execute(
-    sql: string,
-    params?: QueryParams,
-    options?: { correlationId?: string; timeoutMs?: number }
-  ): Promise<QueryResult>;
-
-  // Transaction Support with proper isolation
-  transaction<T>(
-    fn: (tx: TransactionConnection) => Promise<T>,
-    context?: TransactionContext
-  ): Promise<T>;
-
-  // Health and Monitoring
-  health(): Promise<HealthStatus>;
-  getStats(): Promise<ConnectionStats>;
-  getSchema(): Promise<SchemaInfo>;
-
-  // Migration Support
-  migrate(
-    migrations: readonly Migration[]
-  ): Promise<readonly MigrationResult[]>;
-  getCurrentMigrationVersion(): Promise<string | null>;
-
-  // Advanced Features
-  explain(sql: string, params?: QueryParams): Promise<QueryResult>;
-  vacuum(): Promise<void>;
-  analyze(): Promise<void>;
-}
-
-// Transaction Connection Interface
-export interface TransactionConnection {
-  query<T = unknown>(
-    sql: string,
-    params?: QueryParams
-  ): Promise<QueryResult<T>>;
-
-  execute(sql: string, params?: QueryParams): Promise<QueryResult>;
-
-  rollback(): Promise<void>;
-  commit(): Promise<void>;
-  savepoint(name: string): Promise<void>;
-  releaseSavepoint(name: string): Promise<void>;
-  rollbackToSavepoint(name: string): Promise<void>;
-}
-
-// Storage Paradigm Interfaces with improved type safety
+// Storage Paradigm Interfaces
 
 export interface KeyValueStorage {
   get<T = unknown>(key: string): Promise<T | null>;
-  set<T>(key: string, value: T, options?: { ttl?: number }): Promise<void>;
+  set<T = unknown>(key: string, value: T, ttl?: number): Promise<void>;
   delete(key: string): Promise<boolean>;
-  has(key: string): Promise<boolean>;
-  keys(pattern?: string): Promise<readonly string[]>;
   clear(): Promise<void>;
-  size(): Promise<number>;
-  mget<T = unknown>(keys: readonly string[]): Promise<ReadonlyMap<string, T>>;
-  mset<T>(entries: ReadonlyMap<string, T>): Promise<void>;
-  mdelete(keys: readonly string[]): Promise<number>;
+  keys(pattern?: string): Promise<string[]>;
+  exists(key: string): Promise<boolean>;
+  increment(key: string, amount?: number): Promise<number>;
+  decrement(key: string, amount?: number): Promise<number>;
+  expire(key: string, ttl: number): Promise<boolean>;
+  getStats(): Promise<{ keys: number; memoryUsage: number }>;
 }
 
 export interface SqlStorage {
-  query<T = unknown>(
-    sql: string,
-    params?: QueryParams,
-    options?: { correlationId?: string }
-  ): Promise<QueryResult<T>>;
-
-  execute(
-    sql: string,
-    params?: QueryParams,
-    options?: { correlationId?: string }
-  ): Promise<QueryResult>;
-
+  query<T = unknown>(sql: string, params?: QueryParams): Promise<QueryResult<T>>;
+  execute(sql: string, params?: QueryParams): Promise<{
+    affectedRows: number;
+    insertId?: number;
+  }>;
   transaction<T>(
-    fn: (tx: SqlStorage) => Promise<T>,
+    operation: (conn: TransactionConnection) => Promise<T>,
     context?: TransactionContext
   ): Promise<T>;
-
-  createTable(name: string, schema: TableSchema): Promise<void>;
-  dropTable(name: string, options?: { ifExists?: boolean }): Promise<void>;
-  truncateTable(name: string): Promise<void>;
-
-  createIndex(
-    name: string,
-    tableName: string,
-    columns: readonly string[],
-    options?: { unique?: boolean; type?: string }
-  ): Promise<void>;
-
-  dropIndex(name: string, options?: { ifExists?: boolean }): Promise<void>;
-
-  getTableSchema(name: string): Promise<TableSchema | null>;
-  listTables(): Promise<readonly string[]>;
+  getSchema(): Promise<SchemaInfo>;
+  migrate(migrations: readonly Migration[]): Promise<readonly MigrationResult[]>;
 }
 
 export interface VectorStorage {
@@ -418,108 +364,72 @@ export interface VectorStorage {
     vector: readonly number[],
     metadata?: Readonly<Record<string, unknown>>
   ): Promise<void>;
-
   search(
-    vector: readonly number[],
+    query: readonly number[],
     options?: VectorSearchOptions
   ): Promise<readonly VectorResult[]>;
-
-  get(id: string): Promise<VectorResult | null>;
-
+  delete(id: string): Promise<boolean>;
   update(
     id: string,
     vector?: readonly number[],
     metadata?: Readonly<Record<string, unknown>>
-  ): Promise<void>;
-
-  delete(id: string): Promise<boolean>;
-
-  createIndex(
-    name: string,
-    options?: {
-      dimensions?: number;
-      metric?: 'l2' | ' cosine' | ' dot';
-      nprobes?: number;
-    }
-  ): Promise<void>;
-
-  dropIndex(name: string): Promise<void>;
-
-  count(): Promise<number>;
-  getStats(): Promise<{
-    totalVectors: number;
-    dimensions: number;
-    indexType: string;
-    memoryUsageMB: number;
-  }>;
+  ): Promise<boolean>;
+  clear(): Promise<void>;
+  getStats(): Promise<{ count: number; dimensions: number }>;
 }
 
 export interface GraphStorage {
-  // Node Operations
-  addNode(node: Omit<GraphNode, 'id'> & { id?: string }): Promise<string>;
-  getNode(id: string): Promise<GraphNode | null>;
-  updateNode(
+  addNode(
     id: string,
-    updates: Partial<Omit<GraphNode, 'id'>>
+    labels: readonly string[],
+    properties?: Readonly<Record<string, unknown>>
   ): Promise<void>;
-  deleteNode(id: string): Promise<boolean>;
-
-  // Edge Operations
-  addEdge(edge: Omit<GraphEdge, 'id'> & { id?: string }): Promise<string>;
-  getEdge(id: string): Promise<GraphEdge | null>;
-  updateEdge(
+  addEdge(
     id: string,
-    updates: Partial<Omit<GraphEdge, 'id'>>
-  ): Promise<void>;
-  deleteEdge(id: string): Promise<boolean>;
-
-  // Traversal Operations
-  getConnections(
-    nodeId: string,
-    direction?: 'in' | ' out' | ' both',
-    edgeType?: string
-  ): Promise<readonly GraphEdge[]>;
-
-  findPath(
     fromId: string,
     toId: string,
-    options?: {
-      maxDepth?: number;
-      edgeTypes?: readonly string[];
-      algorithm?: 'bfs' | ' dfs' | ' dijkstra' | ' astar';
-    }
-  ): Promise<readonly GraphNode[]>;
-
-  // Query Operations
-  query(
-    cypher: string,
-    params?: Readonly<Record<string, unknown>>
-  ): Promise<GraphResult>;
-
-  // Schema Operations
-  createNodeLabel(
-    label: string,
-    properties?: Readonly<Record<string, string>>
-  ): Promise<void>;
-  createEdgeType(
     type: string,
-    properties?: Readonly<Record<string, string>>
+    properties?: Readonly<Record<string, unknown>>
   ): Promise<void>;
-
-  // Statistics
-  getStats(): Promise<{
-    nodeCount: number;
-    edgeCount: number;
-    labelCounts: Readonly<Record<string, number>>;
-    edgeTypeCounts: Readonly<Record<string, number>>;
-  }>;
+  query(cypher: string, params?: QueryParams): Promise<GraphResult>;
+  deleteNode(id: string): Promise<boolean>;
+  deleteEdge(id: string): Promise<boolean>;
+  clear(): Promise<void>;
+  getStats(): Promise<{ nodes: number; edges: number }>;
 }
 
 // Factory Interfaces
 export interface DatabaseFactory {
-  createConnection(config: DatabaseConfig): DatabaseConnection;
-  createKeyValueStorage(config: DatabaseConfig): KeyValueStorage;
-  createSqlStorage(config: DatabaseConfig): SqlStorage;
-  createVectorStorage(config: DatabaseConfig): VectorStorage;
-  createGraphStorage(config: DatabaseConfig): GraphStorage;
+  createConnection(config: DatabaseConfig): Promise<DatabaseConnection>;
+  createKeyValueStorage(config: DatabaseConfig): Promise<KeyValueStorage>;
+  createSqlStorage(config: DatabaseConfig): Promise<SqlStorage>;
+  createVectorStorage(config: DatabaseConfig): Promise<VectorStorage>;
+  createGraphStorage(config: DatabaseConfig): Promise<GraphStorage>;
+}
+
+// Provider and Access Interfaces  
+export interface DatabaseProvider {
+  getAdapter(type: DatabaseType): Promise<DatabaseAdapter>;
+  createFactory(type: DatabaseType): Promise<DatabaseFactory>;
+  getHealthStatus(): Promise<HealthStatus>;
+}
+
+export interface DatabaseAccess {
+  sql: SqlStorage;
+  keyValue: KeyValueStorage;
+  vector: VectorStorage;
+  graph: GraphStorage;
+}
+
+// Export factory functions signatures
+export interface CreateDatabaseFunction {
+  (config: DatabaseConfig): Promise<DatabaseConnection>;
+}
+
+export interface CreateKeyValueStorageFunction {
+  (config?: Partial<DatabaseConfig>): Promise<KeyValueStorage>;
+}
+
+export interface CreateDatabaseAccessFunction {
+  (config: DatabaseConfig): Promise<DatabaseAccess>;
 }

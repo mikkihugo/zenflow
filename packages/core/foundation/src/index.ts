@@ -215,22 +215,29 @@ export {
   registerFacade,
 } from './infrastructure/facades/index.js';
 
-// DATABASE ACCESS - Direct access to @claude-zen/database
+// DATABASE ACCESS - Backend-agnostic database interfaces
 // =============================================================================
 export {
-  createDatabase,
-  createKeyValueStorage,
-  createDatabaseAccess,
-  DatabaseProvider,
-  DatabaseEventCoordinator,
-  SQLiteAdapter,
+  databaseFacade,
+  createDatabaseAdapter,
+  createKeyValueStore,
+  createVectorStore,
+  createGraphStore,
+  getDatabaseCapability,
 } from './infrastructure/database/index.js';
 export type {
   DatabaseConfig,
   DatabaseConnection,
+  DatabaseAdapter,
   KeyValueStore,
   VectorStore,
   GraphStore,
+  SqlStorage,
+  HealthStatus,
+  QueryResult,
+  QueryParams,
+  DatabaseType,
+  StorageType,
 } from './infrastructure/database/index.js';
 // Export resilience types
 export type { CircuitBreakerOptions, RetryOptions } from './resilience.js';
