@@ -332,10 +332,10 @@ function injectable() {
   return (target: unknown) => target;
 }
 
-// Simple dependency injection registry
-const INJECTION_REGISTRY = new Map<unknown, unknown>();
+// Simple dependency injection registry (exported for future use)
+export const INJECTION_REGISTRY = new Map<unknown, unknown>();
 
-function inject(token: unknown) {
+export function inject(token: unknown) {
   return (target: unknown, key: string, index: number) => {
     // Store injection metadata for later resolution
     const targetAny = target as any;
@@ -357,9 +357,10 @@ interface CircuitBreakerWithMonitoring {
   getStats?():{ failures?: number};
 }
 
-function createCircuitBreaker(_fn?:any,
-  _options?:any,
-  _name?:string,
+function createCircuitBreaker(
+  _fn?: unknown,
+  _options?: unknown,
+  _name?: string,
 ): CircuitBreakerWithMonitoring {
   return {
     async execute<T>(fn:() => Promise<T>): Promise<Result<T, Error>> {
