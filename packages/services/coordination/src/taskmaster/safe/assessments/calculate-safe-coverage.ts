@@ -55,7 +55,7 @@ export function calculateActualSafeCoverage():  {
  */
 function generateRecommendation(
   essentialCoverage: number,
-  _overallCoverage: number
+  overallCoverage: number
 ): string {
   if (essentialCoverage >= 80) {
     return 'Strong foundation - focus on completing Essential SAFe before expanding';

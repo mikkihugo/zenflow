@@ -1124,9 +1124,9 @@ export function createStatisticalAnalyzer():StatisticalAnalyzer {
 };
 },
 		async hypothesisTest(
-			_data1:number[],
-			_data2:number[],
-		):Promise<HypothesisTest> {
+			data1: number[],
+			data2: number[],
+		): Promise<HypothesisTest> {
 			// Simple t-test approximation - would use Rust for real implementation
 			return {
 				statistic:0,
@@ -1144,7 +1144,7 @@ export function createStatisticalAnalyzer():StatisticalAnalyzer {
 			const margin = confidence * 0.1; // Simplified
 			return [mean - margin, mean + margin];
 },
-		async tTest(_data1:number[], _data2:number[]): Promise<HypothesisTest> {
+		async tTest(data1: number[], data2: number[]): Promise<HypothesisTest> {
 			// Simple t-test approximation - would use Rust for real implementation
 			return {
 				statistic:0,
@@ -1156,8 +1156,8 @@ export function createStatisticalAnalyzer():StatisticalAnalyzer {
 };
 },
 		async polynomialRegression(
-			_x:number[],
-			_y:number[],
+			x: number[],
+			y: number[],
 			degree:number,
 		):Promise<{ coefficients: number[]; rSquared: number}> {
 			// Simplified polynomial regression - would use Rust for real implementation

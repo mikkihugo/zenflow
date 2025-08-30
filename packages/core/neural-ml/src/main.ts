@@ -216,7 +216,7 @@ function getDatabaseAccess() {
       logger.debug("Database query executed");
       return Promise.resolve({ rows:[]});
 },
-    transaction:(fn: () => unknown) => {
+    transaction: (fn: () => unknown) => {
       logger.debug("Database transaction started");
       const result = fn();
       logger.debug("Database transaction completed");
@@ -244,7 +244,7 @@ class MLMonitor {
     logger.debug(`Prediction tracked: ${name}`, data);
 }
 
-  getPredictionHistory(name: string): any[] {
+  getPredictionHistory(name: string): unknown[] {
     return this.predictions.get(name) || [];
 }
 }
@@ -338,11 +338,13 @@ export const INJECTION_REGISTRY = new Map<unknown, unknown>();
 export function inject(token: unknown) {
   return (target: unknown, key: string, index: number) => {
     // Store injection metadata for later resolution
-    const targetAny = target as any;
-    if (!targetAny.__injections) {
-      targetAny.__injections = [];
+    const targetWithInjections = target as Record<string, unknown> & {
+      __injections?: Array<{ token: unknown; key: string; index: number }>;
+    };
+    if (!targetWithInjections.__injections) {
+      targetWithInjections.__injections = [];
     }
-    targetAny.__injections.push({ token, key, index});
+    targetWithInjections.__injections.push({ token, key, index });
     logger.debug(
       `Dependency injection registered: ${key} at index ${index}`,
       token,
@@ -357,11 +359,7 @@ interface CircuitBreakerWithMonitoring {
   getStats?():{ failures?: number};
 }
 
-function createCircuitBreaker(
-  _fn?: unknown,
-  _options?: unknown,
-  _name?: string,
-): CircuitBreakerWithMonitoring {
+function createCircuitBreaker(): CircuitBreakerWithMonitoring {
   return {
     async execute<T>(fn:() => Promise<T>): Promise<Result<T, Error>> {
       try {
@@ -449,7 +447,7 @@ export interface NeuralMLConfig {
   /** Enable comprehensive telemetry and monitoring */
   readonly enableTelemetry?:boolean;
   /** Circuit breaker configuration for GPU operations */
-  readonly circuitBreakerOptions?:any;
+  readonly circuitBreakerOptions?: Record<string, unknown>;
   /** Operation timeout in milliseconds */
   readonly operationTimeoutMs?:number;
   /** Retry configuration for failed operations */
@@ -594,7 +592,7 @@ export class NeuralMLEngine {
   private optimizers: Map<string, NeuralMLOptimizerInstance> = new Map();
   private config: NeuralMLConfig;
   private initialized = false;
-  private dbAccess: any | null = null;
+  private dbAccess: Record<string, unknown> | null = null;
   private detectedBackend: OptimizationBackend | null = null;
 
   // Foundation monitoring and telemetry
@@ -634,17 +632,9 @@ export class NeuralMLEngine {
     this.systemMonitor = createSystemMonitor();
 
     // Initialize circuit breakers for different operation types
-    this.gpuCircuitBreaker = createCircuitBreaker(
-      async (...args: any[]) => await Promise.resolve(args),
-      this.config.circuitBreakerOptions,
-      "neural-ml-gpu-operations",
-    );
+    this.gpuCircuitBreaker = createCircuitBreaker();
 
-    this.cpuCircuitBreaker = createCircuitBreaker(
-      async (...args: any[]) => await Promise.resolve(args),
-      { ...this.config.circuitBreakerOptions, timeout:60000},
-      "neural-ml-cpu-operations",
-    );
+    this.cpuCircuitBreaker = createCircuitBreaker();
 }
 
   /**

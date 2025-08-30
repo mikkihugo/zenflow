@@ -894,16 +894,16 @@ export class MemoryManager {
     );
 }
 
-  async initialize():Promise<Result<void, MemoryConnectionError>> {
+  async initialize(): Promise<Result<void, MemoryConnectionError>> {
     if (this.managerInitialized) {
       return ok();
-}
+    }
 
     const timer = this.performanceTracker.startTimer(
       'memory_manager_initialize'
     );
 
-    return withTrace('memory-manager-initialize', async () => withRetry(
+    return await withTrace('memory-manager-initialize', async () => withRetry(
         async () => safeAsync(async () => {
             // Initialize telemetry first
             const telemetryResult = await this.telemetryManager.initialize();
@@ -953,7 +953,9 @@ export class MemoryManager {
       )).then((result) => {
       if (result.isErr()) {
         const error = new MemoryConnectionError(
-          'Failed to initialize memory manager',          SERVICE_NAME,          { originalError:result.error.message}
+          'Failed to initialize memory manager',
+          SERVICE_NAME,
+          { originalError: result.error.message }
         );
         this.errorAggregator.add(error);
         recordMetric('memory_manager_initialization_failures', 1);
@@ -964,19 +966,20 @@ export class MemoryManager {
 }
 
   async storeData(
-    key:string,
-    data:unknown,
-    options?:StoreOptions
-  ):Promise<Result<void, MemoryError>> {
+    key: string,
+    data: unknown,
+    options?: StoreOptions
+  ): Promise<Result<void, MemoryError>> {
     const timer = this.performanceTracker.startTimer('memory_manager_store');
 
-    return withTrace('memory-manager-store', async () => withRetry(
+    return await withTrace('memory-manager-store', async () => withRetry(
         async () => safeAsync(async () => {
             await this.circuitBreaker.execute({
-              operation: 'store',              key,
+              operation: 'store',
+              key,
               data,
               options,
-});
+            });
 
             this.performanceTracker.endTimer('memory_manager_store');
             const storeTime = timer.duration || 0;
@@ -984,14 +987,15 @@ export class MemoryManager {
             recordMetric('memory_manager_store_operations', 1);
             recordHistogram('memory_manager_store_duration_ms', storeTime);
             recordMetric(
-              'memory_manager_stored_data_size_bytes',              JSON.stringify(data).length
+              'memory_manager_stored_data_size_bytes',
+              JSON.stringify(data).length
             );
 
             this.managerLogger.debug('Memory manager store completed', {
               key,
-              dataSize:JSON.stringify(data).length,
-              duration:storeTime,
-});
+              dataSize: JSON.stringify(data).length,
+              duration: storeTime,
+            });
 }),
         {
           retries:2,
@@ -1018,28 +1022,31 @@ export class MemoryManager {
 }
 
   async retrieve<T = unknown>(
-    key:string
-  ):Promise<Result<T | null, MemoryError>> {
+    key: string
+  ): Promise<Result<T | null, MemoryError>> {
     const timer = this.performanceTracker.startTimer('memory_manager_retrieve');
 
-    return withTrace('memory-manager-retrieve', async () => withRetry(
+    return await withTrace('memory-manager-retrieve', async () => withRetry(
         async () => safeAsync(async () => {
             const result = await this.circuitBreaker.execute({
-              operation: 'retrieve',              key,
-});
+              operation: 'retrieve',
+              key,
+            });
 
             this.performanceTracker.endTimer('memory_manager_retrieve');
             const retrieveTime = timer.duration || 0;
 
             recordMetric('memory_manager_retrieve_operations', 1);
             recordHistogram(
-              'memory_manager_retrieve_duration_ms',              retrieveTime
+              'memory_manager_retrieve_duration_ms',
+              retrieveTime
             );
 
             if (result !== null) {
               recordMetric('memory_manager_retrieve_successes', 1);
               recordMetric(
-                'memory_manager_retrieved_data_size_bytes',                JSON.stringify(result).length
+                'memory_manager_retrieved_data_size_bytes',
+                JSON.stringify(result).length
               );
 } else {
               recordMetric('memory_manager_retrieve_not_found', 1);
@@ -1047,10 +1054,10 @@ export class MemoryManager {
 
             this.managerLogger.debug('Memory manager retrieve completed', {
               key,
-              found:result !== null,
-              dataSize:result ? JSON.stringify(result).length : 0,
-              duration:retrieveTime,
-});
+              found: result !== null,
+              dataSize: result ? JSON.stringify(result).length : 0,
+              duration: retrieveTime,
+            });
 
             return result as T | null;
 }),
@@ -1078,10 +1085,10 @@ export class MemoryManager {
 });
 }
 
-  async shutdown():Promise<Result<void, MemoryError>> {
+  async shutdown(): Promise<Result<void, MemoryError>> {
     const timer = this.performanceTracker.startTimer('memory_manager_shutdown');
 
-    return withTrace('memory-manager-shutdown', async () => safeAsync(async () => {
+    return await withTrace('memory-manager-shutdown', async () => safeAsync(async () => {
         // Shutdown telemetry first
         await this.telemetryManager.shutdown();
 
@@ -1114,12 +1121,13 @@ export class MemoryManager {
 });
 }
 
-  async clear():Promise<Result<void, MemoryError>> {
+  async clear(): Promise<Result<void, MemoryError>> {
     const timer = this.performanceTracker.startTimer('memory_manager_clear');
 
-    return withTrace('memory-manager-clear', async () => safeAsync(async () => {
+    return await withTrace('memory-manager-clear', async () => safeAsync(async () => {
         await this.circuitBreaker.execute({
-          operation: 'clear',});
+          operation: 'clear',
+        });
 
         this.performanceTracker.endTimer('memory_manager_clear');
         const clearTime = timer.duration || 0;
@@ -1128,8 +1136,8 @@ export class MemoryManager {
         recordHistogram('memory_manager_clear_duration_ms', clearTime);
 
         this.managerLogger.info('Memory manager clear completed', {
-          duration:clearTime,
-});
+          duration: clearTime,
+        });
 })).then((result) => {
       if (result.isErr()) {
         const error = new MemoryStorageError(

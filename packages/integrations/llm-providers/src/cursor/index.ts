@@ -44,12 +44,12 @@ export class CursorCLI implements CLIProvider {
     };
   }
 
-  async execute(): Promise<CLIResult> {
+  execute(): Promise<CLIResult> {
     const error: CLIError = {
       code: 'NOT_IMPLEMENTED',
       message: 'Cursor CLI provider not yet implemented.',
     };
-    return err(error);
+    return Promise.resolve(err(error));
   }
 
   setRole(): Result<void, CLIError> {
@@ -64,20 +64,20 @@ export class CursorCLI implements CLIProvider {
     return undefined;
   }
 
-  async complete(): Promise<Result<string, CLIError>> {
+  complete(): Promise<Result<string, CLIError>> {
     const error: CLIError = {
       code: 'NOT_IMPLEMENTED',
       message: 'Cursor CLI provider not yet implemented.',
     };
-    return err(error);
+    return Promise.resolve(err(error));
   }
 
-  async executeTask(): Promise<Result<unknown, CLIError>> {
+  executeTask(): Promise<Result<unknown, CLIError>> {
     const error: CLIError = {
       code: 'NOT_IMPLEMENTED',
       message: 'Cursor CLI provider not yet implemented.',
     };
-    return err(error);
+    return Promise.resolve(err(error));
   }
 
   getUsageStats() {
