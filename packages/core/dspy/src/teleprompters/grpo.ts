@@ -599,7 +599,7 @@ export class GRPO extends FinetuneTeleprompter {
 
 		if (trainset.length < this.num_dspy_examples_per_grpo_step) {
 			logger.warning(
-				`Number of training examples ${trainset.length} is less than the number of examples per GRPO step ${this.num_dspy_examples_per_grpo_step}. ` +`
+				`Number of training examples ${trainset.length} is less than the number of examples per GRPO step ${this.num_dspy_examples_per_grpo_step}. ` +
 					"Repeating the training set to fill the GRPO step. This could lead to overfitting and training instability.",
 			);
 			const multiplier = Math.ceil(
@@ -624,11 +624,11 @@ export class GRPO extends FinetuneTeleprompter {
 		const student_lms = new Set(student.predictors().map((pred) => pred.lm));
 		if (student_lms.size !== 1) {
 			throw new Error(
-				`Student program has multiple LMs:${Array.from(student_lms)}. ` +`
+				`Student program has multiple LMs:${Array.from(student_lms)}. ` +
 					"GRPO only supports student programs with a single LM. " +
 					"You can set the LM for a program with `program.set_lm(...)`",
 			);
-}
+		}
 
 		// Regular input validation starts here
 		if (this.use_train_as_val && valset !== null) {
@@ -661,10 +661,10 @@ export class GRPO extends FinetuneTeleprompter {
 		// Ensure that the teachers list contains the student program
 		if (!teachers.includes(student)) {
 			throw new Error(
-				`Student program ${student} is not in the list of teachers ${teachers}. Please provide the student program as one of the teachers. ` +`
+				`Student program ${student} is not in the list of teachers ${teachers}. Please provide the student program as one of the teachers. ` +
 					"Alternatively, you can leave the teacher argument as None, and the student program will be used as the teacher program.",
 			);
-}
+		}
 
 		if (this.num_rollouts_per_grpo_step % teachers.length !== 0) {
 			throw new Error(

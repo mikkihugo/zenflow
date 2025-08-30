@@ -58,7 +58,7 @@ export class AgentRegistry extends TypedEventBase {
   private serviceAccessHandler?:(name: string) => void;
 
   constructor(
-    _memoryCoordinator?:JsonObject,
+    memoryCoordinator?:JsonObject,
     sessionPrefix = 'enhanced-agents'
   ) {
     super();
@@ -531,9 +531,9 @@ export class AgentRegistry extends TypedEventBase {
       // Use config for factory customization
       const factoryConfig = config||{};
       return {
-        createAgent:(spec: JsonObject) => {
+        createAgent:(spec: JsonObject) => 
           // Professional agent creation with performance optimization
-          return {
+           ({
             ...spec,
             created:Date.now(),
             optimized:true,
@@ -541,8 +541,8 @@ export class AgentRegistry extends TypedEventBase {
             factorySettings:factoryConfig,
             priority:factoryConfig.priority || 50,
             maxConcurrency:factoryConfig.maxConcurrency || 10,
-};
-},
+})
+,
 };
 };
 }
@@ -631,7 +631,7 @@ export class AgentRegistry extends TypedEventBase {
   /**
    * Helper:Basic agent selection fallback
    */
-  private basicAgentSelection(criteria:any): any[] {
+  private basicAgentSelection(criteria:JsonObject): JsonValue[] {
     const agents = Array.from(this.agentCache.values())();
 
     return agents
@@ -652,7 +652,7 @@ export class AgentRegistry extends TypedEventBase {
  * Factory function to create professional agent registry
  */
 export function createEnhancedAgentRegistry(
-  memoryCoordinator?:any,
+  memoryCoordinator?:JsonObject,
   sessionPrefix ='enhanced-agents'):EnhancedAgentRegistry {
   return new EnhancedAgentRegistry(memoryCoordinator, sessionPrefix);
 }
