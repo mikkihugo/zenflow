@@ -48,12 +48,12 @@ export interface AutonomousDecision {
 }
 
 export interface ScalingDecision {
-  readonly action: 'scale_up|scale_down|maintain|optimize;
-'  readonly targetAgents:number;
-  readonly confidence:number;
-  readonly reasoning:string;
-  readonly urgency: 'low|medium|high|critical;
-'}
+  readonly action: 'scale_up' | 'scale_down' | 'maintain' | 'optimize';
+  readonly targetAgents: number;
+  readonly confidence: number;
+  readonly reasoning: string;
+  readonly urgency: 'low' | 'medium' | 'high' | 'critical';
+}
 
 /**
  * Autonomous Coordinator - Self-Governing Brain System
@@ -97,7 +97,7 @@ export class AutonomousCoordinator {
 };
 
   constructor() {
-    logger.info('🤖 Autonomous Coordinator created - self-governing brain system')    );
+    logger.info('🤖 Autonomous Coordinator created - self-governing brain system');
 }
 
   /**
@@ -110,7 +110,7 @@ export class AutonomousCoordinator {
     if (this.initialized) return;
 
     try {
-      logger.info('🚀 Initializing Autonomous Coordinator...');')
+      logger.info('🚀 Initializing Autonomous Coordinator...');
       this.behavioralIntelligence = behavioralIntelligence||null;
       this.optimizationEngine = optimizationEngine||null;
 
@@ -121,9 +121,10 @@ export class AutonomousCoordinator {
       await this.startAutonomousMonitoring();
 
       this.initialized = true;
-      logger.info('✅ Autonomous Coordinator initialized - brain is now self-governing')      );
+      logger.info('✅ Autonomous Coordinator initialized - brain is now self-governing');
 } catch (error) {
-      logger.error('❌ Failed to initialize Autonomous Coordinator:', error);')      throw error;
+      logger.error('❌ Failed to initialize Autonomous Coordinator:', error);
+      throw error;
 }
 }
 

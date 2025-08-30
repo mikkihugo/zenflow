@@ -11,27 +11,26 @@ declare module 'moving-averages' {
 
 declare module 'regression' {
   export interface DataPoint {
-    0:number;
-    1:number;
-}
-}
+    0: number;
+    1: number;
+  }
 
   export interface RegressionResult {
-    equation:number[];
-    points:DataPoint[];
-    r2:number;
-    string:string;
-    predict(x:number): [number, number];
-}
+    equation: number[];
+    points: DataPoint[];
+    r2: number;
+    string: string;
+    predict(x: number): [number, number];
+  }
 
-  export function linear(data:DataPoint[]): RegressionResult;
-  export function exponential(data:DataPoint[]): RegressionResult;
-  export function logarithmic(data:DataPoint[]): RegressionResult;
-  export function power(data:DataPoint[]): RegressionResult;
+  export function linear(data: DataPoint[]): RegressionResult;
+  export function exponential(data: DataPoint[]): RegressionResult;
+  export function logarithmic(data: DataPoint[]): RegressionResult;
+  export function power(data: DataPoint[]): RegressionResult;
   export function polynomial(
-    data:DataPoint[],
-    order?:number
-  ):RegressionResult;
+    data: DataPoint[],
+    order?: number
+  ): RegressionResult;
 }
 
 declare module 'density-clustering' {
