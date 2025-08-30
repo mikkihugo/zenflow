@@ -567,18 +567,7 @@ export class NeuralOrchestrator {
         };
     }
 }
-confidence ?  : number;
-storageStrategy: StorageStrategy;
-memoryUsed ?  : number;
-;
-'    persistenceLevel:';
-temporary;
-' | ';
-session;
-' | ';
-permanent;
-';;
-relationships ?  : string[]; // Related data IDs
+// (Remove everything after line 569 so that the file ends at the valid NeuralOrchestrator implementation)
 ;
 /**
  * Neural Orchestrator - Brain as intelligent coordinator
