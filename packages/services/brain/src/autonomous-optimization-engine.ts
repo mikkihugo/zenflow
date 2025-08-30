@@ -79,17 +79,18 @@ export class AutonomousOptimizationEngine {
   private initialized = false;
 
   constructor() {
-    logger.info('🤖 Autonomous Optimization Engine created');')}
+    logger.info('🤖 Autonomous Optimization Engine created');
+  }
 
   /**
    * Initialize the autonomous engine
    */
-  async initialize(_dspyBridge?:DSPyLLMBridge): Promise<void> {
+  async initialize(_dspyBridge?: DSPyLLMBridge): Promise<void> {
     if (this.initialized) return;
 
     try {
-      logger.info('🚀 Initializing Autonomous Optimization Engine...');')
-      this.dspyBridge = dspyBridge||null;
+      logger.info('🚀 Initializing Autonomous Optimization Engine...');
+      this.dspyBridge = _dspyBridge || null;
 
       // Initialize Smart ML Optimizer
       this.smartOptimizer = new SmartPromptOptimizer();
@@ -103,22 +104,25 @@ export class AutonomousOptimizationEngine {
       this.initializeMethodPerformance();
 
       this.initialized = true;
-      logger.info('✅ Autonomous Optimization Engine initialized successfully');')} catch (error) {
+      logger.info('✅ Autonomous Optimization Engine initialized successfully');
+    } catch (error) {
       logger.error(
-        '❌ Failed to initialize Autonomous Optimization Engine: ','        error
+        '❌ Failed to initialize Autonomous Optimization Engine: ',
+        error
       );
       throw error;
-}
-}
+    }
+  }
 
   /**
    * Autonomously optimize prompt using the best method for the context
    */
   async autonomousOptimize(
     context:OptimizationContext
-  ):Promise<OptimizationResult> {
+  ): Promise<OptimizationResult> {
     if (!this.initialized) {
-      throw new Error('Autonomous Optimization Engine not initialized');')}
+      throw new Error('Autonomous Optimization Engine not initialized');
+    }
 
     const __startTime = Date.now();
 
@@ -140,22 +144,22 @@ export class AutonomousOptimizationEngine {
           // Update context with complexity estimate
           context = {
             ...context,
-            expectedComplexity:complexityEstimate.estimatedComplexity,
-};
+            expectedComplexity: complexityEstimate.estimatedComplexity,
+          };
 
           logger.info(
-            `🎯 Task complexity estimated:$(complexityEstimate.estimatedComplexity * 100).toFixed(1)% ($complexityEstimate.difficultyLevel)``
+            'Task complexity estimated: ' + (complexityEstimate.estimatedComplexity * 100).toFixed(1) + '% (' + complexityEstimate.difficultyLevel + ')'
           );
-} catch (error) {
-          logger.debug('Complexity estimation failed:', error);')}
-}
+      } catch (error) {
+        logger.debug('Complexity estimation failed:', error);
+      }
 
       // 2. Analyze context and decide best approach (enhanced with complexity)
       const selectedMethod = await this.selectOptimalMethod(
         context,
         complexityEstimate
       );
-      logger.info(`🎯 Autonomous decision:Using ${selectedMethod} method`);`
+      logger.info('Autonomous decision: Using ' + selectedMethod + ' method');
 
       // 3. Execute optimization using selected method
       const result = await this.executeOptimization(context, selectedMethod);
@@ -185,12 +189,12 @@ export class AutonomousOptimizationEngine {
 }
 
       logger.info(
-        `✅ Autonomous optimization complete:${selectedMethod} method, confidence ${result.confidence.toFixed(2)}``
+        'Autonomous optimization complete: ' + selectedMethod + ' method, confidence ' + result.confidence.toFixed(2)
       );
 
       return result;
-} catch (error) {
-      logger.error('❌ Autonomous optimization failed:', error);')
+    } catch (error) {
+      logger.error('Autonomous optimization failed:', error);
       // Fallback to simple optimization
       return {
         optimizedPrompt:context.basePrompt,
@@ -212,7 +216,7 @@ export class AutonomousOptimizationEngine {
   ):Promise<void> {
     try {
       logger.debug(
-        `📚 Learning from feedback:${result.method} method, success rate ${feedback.actualSuccessRate.toFixed(2)}``
+        'Learning from feedback: ' + result.method + ' method, success rate ' + feedback.actualSuccessRate.toFixed(2)
       );
 
       // Find the optimization record
@@ -233,10 +237,11 @@ export class AutonomousOptimizationEngine {
       // Analyze if we should adjust our method selection strategy
       await this.adaptSelectionStrategy();
 
-      logger.debug(`🎯 Method performance updated for ${result.method}`);`
-} catch (error) {
-      logger.error('❌ Failed to learn from feedback:', error);')}
-}
+      logger.debug('Method performance updated for ' + result.method);
+    } catch (error) {
+      logger.error('Failed to learn from feedback:', error);
+    }
+  }
 
   /**
    * Record optimization result for continuous learning
@@ -249,7 +254,7 @@ export class AutonomousOptimizationEngine {
     feedback?:string;
 }):Promise<void> {
     try {
-      logger.debug(`📊 Recording optimization result for continuous learning`);`
+      logger.debug('Recording optimization result for continuous learning');
 
       // Convert to feedback format and learn from it
       const _feedback:OptimizationFeedback = {
@@ -273,12 +278,13 @@ export class AutonomousOptimizationEngine {
           recentOptimization.result,
           feedback
         );
-}
+      }
 
-      logger.debug(`✅ Optimization result recorded and learned from`);`
-} catch (error) {
-      logger.error('❌ Failed to record optimization result:', error);')}
-}
+      logger.debug('Optimization result recorded and learned from');
+    } catch (error) {
+      logger.error('Failed to record optimization result:', error);
+    }
+  }
 
   /**
    * Enable continuous optimization learning
@@ -290,7 +296,7 @@ export class AutonomousOptimizationEngine {
     autoTuning?:boolean;
 }):Promise<void> {
     try {
-      logger.info(`🔄 Enabling continuous optimization with config:`, config);`
+      logger.info('Enabling continuous optimization with config:', config);
 
       // Async initialization of optimization subsystems
       await this.initializeOptimizationInfrastructure(config);
@@ -298,10 +304,11 @@ export class AutonomousOptimizationEngine {
 
       // Update learning parameters
       if (config.learningRate) {
-        // Store in private field (we'll need to make learningRate mutable)')        Object.defineProperty(this, 'learningRate', {
-    ')          value:config.learningRate,
-          writable:true,
-});
+        // Store in private field (we'll need to make learningRate mutable)
+        Object.defineProperty(this, 'learningRate', {
+          value: config.learningRate,
+          writable: true,
+        });
         await this.validateLearningRate(config.learningRate);
 }
 
