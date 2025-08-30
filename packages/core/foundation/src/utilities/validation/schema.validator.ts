@@ -34,16 +34,10 @@ import Ajv, { type ValidateFunction } from 'ajv';
 
 import type { Logger } from '../../core/logging/index.js';
 import type {
-<<<<<<< HEAD
-	JsonObject,
-	JsonValue,
-} from "../../types/primitives";
-=======
   JsonObject,
   JsonValue,
   UnknownRecord,
 } from '../../types/primitives';
->>>>>>> origin/main
 
 // Node.js fetch polyfill for older versions
 declare const fetch: (url: string) => Promise<{
@@ -254,25 +248,18 @@ export class JsonSchemaManager {
       };
     }
 
-    const isValid = schemaEntry.validator(data);
+  const isValid = schemaEntry.validator(data);
 
-<<<<<<< HEAD
-		if (!isValid) {
-			const errors = schemaEntry.validator.errors?.map((err: import('ajv').ErrorObject) => 
-				`${err.instancePath || err.schemaPath || "root"}: ${err.message || "Unknown error"}`
-			) || ["Unknown validation error"];
-=======
     if (!isValid) {
       const errors = schemaEntry.validator.errors?.map((err) => {
         const error = err as unknown as UnknownRecord;
         const instancePath =
-          (error.instancePath as string) ||
-          (error.schemaPath as string) ||
+          (error['instancePath'] as string) ||
+          (error['schemaPath'] as string) ||
           'root';
-        const message = (error.message as string) || 'Unknown error';
+        const message = (error['message'] as string) || 'Unknown error';
         return `${instancePath}: ${message}`;
       }) || ['Unknown validation error'];
->>>>>>> origin/main
 
       return { isValid: false, errors };
     }

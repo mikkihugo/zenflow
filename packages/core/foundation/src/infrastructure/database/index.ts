@@ -17,5 +17,10 @@ export {
 
 // Also re-export types for consumers through foundation layer
 export type {
-  KeyValueStorageImpl as KeyValueStorage,
+  DatabaseConfig,
+  DatabaseConnection,
+  // Provide legacy-friendly aliases expected by foundation consumers
+  KeyValueStorage as KeyValueStore,
+  VectorStorage as VectorStore,
+  GraphStorage as GraphStore,
 } from '@claude-zen/database';

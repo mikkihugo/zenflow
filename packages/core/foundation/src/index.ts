@@ -228,7 +228,6 @@ export {
 export type {
   DatabaseConfig,
   DatabaseConnection,
-  DatabaseAdapter,
   KeyValueStore,
   VectorStore,
   GraphStore,
