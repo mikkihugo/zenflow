@@ -525,8 +525,10 @@ Respond in JSON format with structured guidelines that cover all research areas 
     const roleAdvanced:Partial<Record<DevelopmentRole, string[]>> = {
       architect:[
         'Enterprise architecture patterns and frameworks',        'Distributed systems design and CAP theorem',        'Event-driven architecture and CQRS patterns',        'Performance engineering and capacity planning',        'Security architecture and threat modeling',],
-      'tech-lead':[')        'Team scaling and knowledge transfer strategies',        'Technical roadmap planning and prioritization',        'Cross-team collaboration and dependency management',        'Innovation management and technology adoption',        'Performance management and career development',],
-      'devops-engineer':[')        'Site reliability engineering (SRE) practices',        'Chaos engineering and fault tolerance',        'Cloud-native architecture and serverless patterns',        'Security automation and compliance as code',        'Performance monitoring and optimization',],
+      'tech-lead':[
+        'Team scaling and knowledge transfer strategies',        'Technical roadmap planning and prioritization',        'Cross-team collaboration and dependency management',        'Innovation management and technology adoption',        'Performance management and career development',],
+      'devops-engineer':[
+        'Site reliability engineering (SRE) practices',        'Chaos engineering and fault tolerance',        'Cloud-native architecture and serverless patterns',        'Security automation and compliance as code',        'Performance monitoring and optimization',],
 };
 
     // Add domain-specific advanced areas
