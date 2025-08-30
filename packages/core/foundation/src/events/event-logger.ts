@@ -17,10 +17,10 @@ const logger = getLogger('EventLogger');
  * Development-mode event logger with forced enable capability
  */
 export class EventLogger {
-  private static enabled = process.env['NODE_ENV'] === ' development';
+  private static enabled = process.env['NODE_ENV'] === 'development';
   private static forceEnabled = false;
   private static foundationConfigEnabled =
-    process.env['CLAUDE_EVENT_LOGGING'] === ' true';
+    process.env['CLAUDE_EVENT_LOGGING'] === 'true';
 
   /**
    * Force enable event logging regardless of NODE_ENV
