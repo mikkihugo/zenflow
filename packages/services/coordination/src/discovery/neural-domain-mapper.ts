@@ -12,20 +12,9 @@
  * - docs/archive/CODE_ANALYSIS_STATUS_REPORT.md: Neural Domain Mapper features
  */
 
-// Simple logger implementation (src/ files don't have access to packages)
-const getLogger = (_name: string) => ({ 
-  info: console.log, 
-  warn: console.warn, 
-  error: console.error, 
-  debug: console.debug 
-});
+import { getLogger, Result, ok, err } from '@claude-zen/foundation';
 
 const logger = getLogger('NeuralDomainMapper');
-
-// Simple Result type and helpers (avoiding foundation dependency in src/)
-type Result<T, E> = { success: true; data: T } | { success: false; error: E };
-const ok = <T>(data: T): Result<T, never> => ({ success: true, data });
-const err = <E>(error: E): Result<never, E> => ({ success: false, error });
 
 // Production neural presets for GNN model
 const NEURAL_PRESETS = {

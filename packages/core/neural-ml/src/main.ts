@@ -29,21 +29,13 @@
  */
 
 // Import minimal functionality needed - production grade approach
-import { getLogger, type Logger } from "@claude-zen/foundation";
+import { getLogger, type Logger, Result, ok, err } from "@claude-zen/foundation";
 
 // Foundation-optimized logging - moved to top for utility functions
 const logger = getLogger('NeuralMLEngine');
 
 // Constants to avoid duplicate string literals
-const OPTIMIZER_NOT_FOUND_ERROR = OPTIMIZER_NOT_FOUND_ERROR;
-
-// Define minimal types needed locally
-type Result<T, E = Error> = {
-  isOk(): boolean;
-  isErr(): boolean;
-  value?: T;
-  error?: E;
-  mapErr<F>(fn: (e: E) => F): Result<T, F>;
+const OPTIMIZER_NOT_FOUND_ERROR = 'Optimizer not found';
 };
 function ok<T>(value: T): Result<T, never> {
   return {
