@@ -697,32 +697,36 @@ export class BeamLanguageParser {
     return attributes;
 }
 
-  private isOTPBehaviour(content:string): boolean {
+  private isOTPBehaviour(content: string): boolean {
     const otpBehaviours = [
-      'gen_server',      'gen_statem',      'supervisor',      'application',];
+      'gen_server', 'gen_statem', 'supervisor', 'application'
+    ];
     return otpBehaviours.some((behaviour) =>
-      content.includes(`-behaviour(${behaviour})`
+      content.includes(`-behaviour(${behaviour})`)
     );
-}
+  }
 
   // Enhanced Gleam parsing methods
-  private extractGleamFunctions(content:string): BeamFunction[] {
+  private extractGleamFunctions(content: string): BeamFunction[] {
     const functions:BeamFunction[] = [];
     const funcRegex = /(?:pub\s+)?fn\s+([_a-z]\w*)\s*\(([^)]*)\)/g;
 
     let match;
     while ((match = funcRegex.exec(content)) !== null) {
       const functionName = match[1];
-      const params = match[2]||';
-      const arity = params ? params.split(',    ').length:0;')      const lineNumber = content.substring(0, match.index).split('\n').length;')      const isPublic = content
+      const params = match[2] || '';
+      const arity = params ? params.split(',').length : 0;
+      const lineNumber = content.substring(0, match.index).split('\n').length;
+      const isPublic = content
         .substring(Math.max(0, match.index - 10), match.index)
-        .includes('pub');')
-      const func:BeamFunction = {
-        name:functionName,
-        arity:arity,
-        visibility:isPublic ? 'public' : ' private',        signature:`${functionName}(${params})`,`
-        lineNumber:lineNumber,
-};
+        .includes('pub');
+      const func: BeamFunction = {
+        name: functionName,
+        arity: arity,
+        visibility: isPublic ? 'public' : 'private',
+        signature: `${functionName}(${params})`,
+        lineNumber: lineNumber,
+      };
 
       if (this.options.analyzeFunctionComplexity) {
         func.complexity = this.calculateFunctionComplexity(
@@ -882,15 +886,16 @@ export class BeamLanguageParser {
   /**
    * Get parser statistics
    */
-  getStatistics():Record<string, unknown> {
+  getStatistics(): Record<string, unknown> {
     return {
-      version: '1.0.0',      supportedLanguages:['elixir',    'erlang',    'gleam'],
-      supportedExtensions:['.ex',    '.exs',    '.erl',    '.hrl',    '.gleam'],
-      features:{
-        includeMetrics:this.options.includeMetrics,
-        analyzeFunctionComplexity:this.options.analyzeFunctionComplexity,
-        extractDocumentation:this.options.extractDocumentation,
-},
-};
-}
+      version: '1.0.0',
+      supportedLanguages: ['elixir', 'erlang', 'gleam'],
+      supportedExtensions: ['.ex', '.exs', '.erl', '.hrl', '.gleam'],
+      features: {
+        includeMetrics: this.options.includeMetrics,
+        analyzeFunctionComplexity: this.options.analyzeFunctionComplexity,
+        extractDocumentation: this.options.extractDocumentation,
+      },
+    };
+  }
 }

@@ -49,28 +49,28 @@ export interface CollectorConfig {
 export interface ExporterConfig {
   /** Exporter type */
   type:
-    | 'jaeger')    | 'otlp-http')    | 'otlp-grpc')    | 'prometheus')    | 'console')    | 'file';
+    | 'jaeger' | 'otlp-http' | 'otlp-grpc' | 'prometheus' | 'console' | 'file';
 
   /** Exporter name/identifier */
-  name:string;
+  name: string;
 
   /** Whether this exporter is enabled */
-  enabled?:boolean;
+  enabled?: boolean;
 
   /** Backend endpoint URL */
-  endpoint?:string;
+  endpoint?: string;
 
   /** Authentication headers */
-  headers?:Record<string, string>;
+  headers?: Record<string, string>;
 
   /** Timeout in milliseconds */
-  timeout?:number;
+  timeout?: number;
 
   /** Which signals to export */
-  signals?:('traces' | ' metrics' | ' logs')[];
+  signals?: ('traces' | 'metrics' | 'logs')[];
 
   /** Exporter-specific configuration */
-  config?:Record<string, any>;
+  config?: Record<string, any>;
 }
 
 /**

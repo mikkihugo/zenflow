@@ -91,7 +91,6 @@ export class DefaultParserFactory implements ParserFactory {
     // return new BeamLanguageParser(options);
   }
 }
-}
 
 /**
  * Create default parser factory instance
