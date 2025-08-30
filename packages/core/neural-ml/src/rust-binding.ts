@@ -65,7 +65,7 @@ export class RustNeuralML {
   constructor(config: RustMLConfig, logger: Logger) {
     this.config = config;
     this.logger = logger;
-    this.cargoProjectPath = './neural-core';
+    this.cargoProjectPath = './neural-core/claude-zen-neural-core';
     this.rustPath = this.detectRustBinary();
   }
 
@@ -198,13 +198,15 @@ export class RustNeuralML {
 
   private detectRustBinary(): string {
     // Try to find the compiled Rust binary
-    const __possiblePaths = [
+    const possiblePaths = [
+      './neural-core/claude-zen-neural-core/target/release/neural-ml',
+      './neural-core/claude-zen-neural-core/target/debug/neural-ml',
       './neural-core/target/release/neural-ml',
       './neural-core/target/debug/neural-ml',
       'cargo',
     ];
 
-    // For now, use cargo run as fallback
+    // For now, use cargo run as fallback - in production, use compiled binary
     return 'cargo';
   }
 
@@ -215,8 +217,8 @@ export class RustNeuralML {
     } catch {
       // Build if needed
       this.logger.info('Building Rust components...');
-      await this.executeCommand('cargo', ['build', '--release'], {
-        cwd: './neural-core',
+      await this.executeCommand('cargo', ['build', '--release', '--bin', 'neural-ml'], {
+        cwd: this.cargoProjectPath,
       });
     }
   }
