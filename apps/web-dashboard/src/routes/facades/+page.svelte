@@ -1,6 +1,5 @@
 <script lang="ts">
 import { onDestroy, onMount } from "svelte";
-import { apiClient } from "../../lib/api";
 import { webSocketManager } from "../../lib/websocket";
 
 // Facade monitoring data
@@ -8,10 +7,12 @@ let facadeStatus: any = null;
 let systemStatus: any = null;
 let _loading = true;
 let _error: string | null = null;
-
-// Real-time updates
-let updateInterval: NodeJS.Timeout | null = null;
 let _connectionState: any = null;
+
+// WebSocket unsubscribe functions
+let unsubscribeFacades: (() => void) | null = null;
+let unsubscribeSystem: (() => void) | null = null;
+let unsubscribeConnection: (() => void) | null = null;
 
 // Mock facade data for demonstration when API is unavailable
 const mockFacadeData = {
@@ -135,52 +136,70 @@ const mockFacadeData = {
 };
 
 onMount(async () => {
-	// Subscribe to WebSocket connection state
-	webSocketManager.connectionState.subscribe((state) => {
-		_connectionState = state;
-	});
-
-	// Load facade status from API or use mock data
-	await loadFacadeStatus();
-
-	// Set up periodic refresh
-	updateInterval = setInterval(loadFacadeStatus, 30000); // Every 30 seconds
+	// Setup WebSocket subscriptions for real-time facade updates
+	setupWebSocketSubscriptions();
+	
+	// Subscribe to facade and system data
+	webSocketManager.subscribe('facades');
+	webSocketManager.subscribe('system');
+	
+	console.log("✅ Facade monitor initialized with WebSocket real-time updates");
 });
 
 onDestroy(() => {
-	if (updateInterval) {
-		clearInterval(updateInterval);
-	}
+	// Clean up WebSocket subscriptions
+	if (unsubscribeFacades) unsubscribeFacades();
+	if (unsubscribeSystem) unsubscribeSystem();
+	if (unsubscribeConnection) unsubscribeConnection();
 });
 
-async function loadFacadeStatus() {
-	try {
-		_loading = true;
-		_error = null;
+function setupWebSocketSubscriptions() {
+	// Subscribe to facade status updates
+	unsubscribeFacades = webSocketManager.facades.subscribe((data) => {
+		if (data) {
+			console.log("📊 Real-time facade data received:", data);
+			facadeStatus = data;
+			systemStatus = data;
+			_loading = false;
+			_error = null;
+		}
+	});
 
-		// Try to load from API first
-		try {
-			facadeStatus = await apiClient.getFacadeStatus();
-			systemStatus = facadeStatus;
-		} catch (apiError) {
-			console.warn("API unavailable, using mock facade data:", apiError);
-			// Use mock data when API is unavailable
+	// Subscribe to system status for fallback
+	unsubscribeSystem = webSocketManager.systemStatus.subscribe((data) => {
+		if (data && !facadeStatus) {
+			console.log("📊 Using system status data for facades:", data);
+			// Use mock data as fallback with real connection status
 			facadeStatus = mockFacadeData;
 			systemStatus = mockFacadeData;
+			_loading = false;
 		}
+	});
 
-		console.log("✅ Loaded facade status:", facadeStatus);
-	} catch (err) {
-		_error =
-			err instanceof Error ? err.message : "Failed to load facade status";
-		console.error("❌ Failed to load facade status:", err);
+	// Subscribe to connection state
+	unsubscribeConnection = webSocketManager.connectionState.subscribe((state) => {
+		_connectionState = state;
+		
+		if (!state.connected) {
+			// Use mock data when WebSocket is disconnected
+			if (!facadeStatus) {
+				console.log("🔌 WebSocket disconnected, using mock facade data");
+				facadeStatus = mockFacadeData;
+				systemStatus = mockFacadeData;
+				_loading = false;
+				_error = "WebSocket disconnected - showing mock data";
+			}
+		} else {
+			_error = null;
+		}
+	});
+}
 
-		// Fallback to mock data on error
-		facadeStatus = mockFacadeData;
-		systemStatus = mockFacadeData;
-	} finally {
-		_loading = false;
-	}
+function refreshFacadeData() {
+	// Re-subscribe to WebSocket channels to get latest data
+	webSocketManager.subscribe('facades');
+	webSocketManager.subscribe('system');
+	console.log("🔄 Refreshing facade data via WebSocket");
 }
 
 function getCapabilityColor(capability: string): string {
@@ -376,7 +395,7 @@ $: healthyFacades = systemStatus
 		<div class="p-8 text-center">
 			<h3 class="text-xl font-bold text-red-600 dark:text-red-400 mb-4">❌ Error Loading Facades</h3>
 			<p class="text-red-700 dark:text-red-300 mb-4">{_error}</p>
-			<button on:click={loadFacadeStatus} class="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-4 py-2 rounded-lg hover:bg-red-200 dark:hover:bg-red-700 transition-colors">
+			<button on:click={refreshFacadeData} class="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-4 py-2 rounded-lg hover:bg-red-200 dark:hover:bg-red-700 transition-colors">
 				<span>🔄</span>
 				<span>Retry</span>
 			</button>
@@ -478,7 +497,7 @@ $: healthyFacades = systemStatus
 <!-- Refresh Controls -->
 <div class="mt-8 text-center">
 	<button 
-		on:click={loadFacadeStatus} 
+		on:click={refreshFacadeData} 
 		class="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 		disabled={_loading}
 	>

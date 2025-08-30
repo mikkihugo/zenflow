@@ -134,6 +134,42 @@ export class WebSocketManager {
           });
           break;
         }
+        case 'facades': {
+          // Send facade status data
+          const facadeStatus = await this.getFacadeStatus();
+          socket.emit('facades:initial', {
+            data: facadeStatus,
+            timestamp: new Date().toISOString(),
+          });
+          break;
+        }
+        case 'swarm-stats': {
+          // Send swarm statistics
+          const swarmStats = await this.getSwarmStats();
+          socket.emit('swarm-stats:initial', {
+            data: swarmStats,
+            timestamp: new Date().toISOString(),
+          });
+          break;
+        }
+        case 'memory': {
+          // Send memory status
+          const memoryStatus = await this.getMemoryStatus();
+          socket.emit('memory:initial', {
+            data: memoryStatus,
+            timestamp: new Date().toISOString(),
+          });
+          break;
+        }
+        case 'database': {
+          // Send database status
+          const databaseStatus = await this.getDatabaseStatus();
+          socket.emit('database:initial', {
+            data: databaseStatus,
+            timestamp: new Date().toISOString(),
+          });
+          break;
+        }
         case 'logs': {
           // Send initial logs from the logging system
           try {
@@ -208,12 +244,56 @@ export class WebSocketManager {
       }
     }, 2000);
 
+    // Facade status updates every 15 seconds
+    const facadeInterval = setInterval(async () => {
+      try {
+        const facadeStatus = await this.getFacadeStatus();
+        this.broadcast('facades:status', facadeStatus);
+      } catch (error) {
+        this.logger.error('Failed to broadcast facade status: ', error);
+      }
+    }, 15000);
+
+    // Swarm stats updates every 8 seconds
+    const swarmStatsInterval = setInterval(async () => {
+      try {
+        const swarmStats = await this.getSwarmStats();
+        this.broadcast('swarm-stats:update', swarmStats);
+      } catch (error) {
+        this.logger.error('Failed to broadcast swarm stats: ', error);
+      }
+    }, 8000);
+
+    // Memory status updates every 12 seconds
+    const memoryInterval = setInterval(async () => {
+      try {
+        const memoryStatus = await this.getMemoryStatus();
+        this.broadcast('memory:status', memoryStatus);
+      } catch (error) {
+        this.logger.error('Failed to broadcast memory status: ', error);
+      }
+    }, 12000);
+
+    // Database status updates every 20 seconds
+    const databaseInterval = setInterval(async () => {
+      try {
+        const databaseStatus = await this.getDatabaseStatus();
+        this.broadcast('database:status', databaseStatus);
+      } catch (error) {
+        this.logger.error('Failed to broadcast database status: ', error);
+      }
+    }, 20000);
+
     // Store intervals for cleanup
     this.broadcastIntervals.push(
       systemInterval,
       tasksInterval,
       metricsInterval,
-      logsInterval
+      logsInterval,
+      facadeInterval,
+      swarmStatsInterval,
+      memoryInterval,
+      databaseInterval
     );
 
     this.logger.info('Real-time data broadcasting started');
@@ -304,6 +384,104 @@ export class WebSocketManager {
         });
     } catch (error) {
       this.logger.error('Error setting up log broadcaster: ', error);
+    }
+  }
+
+  /**
+   * Get facade status data
+   */
+  private async getFacadeStatus(): Promise<Record<string, unknown>> {
+    try {
+      // Mock facade data - in real implementation this would query actual facade health
+      return {
+        overall: "partial",
+        healthScore: 75,
+        facades: {
+          foundation: { 
+            name: "foundation", 
+            capability: "full", 
+            healthScore: 95,
+            packages: { "@claude-zen/foundation": { status: "registered", version: "1.1.1" } }
+          },
+          infrastructure: { 
+            name: "infrastructure", 
+            capability: "partial", 
+            healthScore: 75,
+            packages: { "@claude-zen/database": { status: "fallback", version: null } }
+          }
+        },
+        timestamp: new Date().toISOString()
+      };
+    } catch (error) {
+      this.logger.error('Failed to get facade status: ', error);
+      return { error: 'Failed to get facade status', timestamp: new Date().toISOString() };
+    }
+  }
+
+  /**
+   * Get swarm statistics
+   */
+  private async getSwarmStats(): Promise<Record<string, unknown>> {
+    try {
+      // Mock swarm stats - in real implementation this would query actual swarm metrics
+      return {
+        totalSwarms: 3,
+        activeSwarms: 2,
+        totalAgents: 12,
+        activeAgents: 8,
+        tasksCompleted: 145,
+        tasksInProgress: 7,
+        averageResponseTime: 250,
+        successRate: 0.94,
+        timestamp: new Date().toISOString()
+      };
+    } catch (error) {
+      this.logger.error('Failed to get swarm stats: ', error);
+      return { error: 'Failed to get swarm stats', timestamp: new Date().toISOString() };
+    }
+  }
+
+  /**
+   * Get memory status
+   */
+  private async getMemoryStatus(): Promise<Record<string, unknown>> {
+    try {
+      // Mock memory status - in real implementation this would query actual memory usage
+      return {
+        totalMemory: '16GB',
+        usedMemory: '8.2GB',
+        freeMemory: '7.8GB',
+        cacheSize: '2.1GB',
+        activeConnections: 156,
+        poolUtilization: 0.68,
+        timestamp: new Date().toISOString()
+      };
+    } catch (error) {
+      this.logger.error('Failed to get memory status: ', error);
+      return { error: 'Failed to get memory status', timestamp: new Date().toISOString() };
+    }
+  }
+
+  /**
+   * Get database status
+   */
+  private async getDatabaseStatus(): Promise<Record<string, unknown>> {
+    try {
+      // Mock database status - in real implementation this would query actual database health
+      return {
+        databases: {
+          sqlite: { status: 'healthy', connections: 12, latency: '15ms' },
+          lancedb: { status: 'healthy', connections: 5, latency: '25ms' },
+          kuzu: { status: 'partial', connections: 2, latency: '45ms' }
+        },
+        totalConnections: 19,
+        averageLatency: '22ms',
+        healthScore: 0.89,
+        timestamp: new Date().toISOString()
+      };
+    } catch (error) {
+      this.logger.error('Failed to get database status: ', error);
+      return { error: 'Failed to get database status', timestamp: new Date().toISOString() };
     }
   }
 

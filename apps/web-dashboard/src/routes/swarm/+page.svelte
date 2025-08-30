@@ -1,6 +1,6 @@
 <script lang="ts">
-import { onMount } from "svelte";
-import { apiClient } from "../../lib/api";
+import { onMount, onDestroy } from "svelte";
+import { webSocketManager } from "../../lib/websocket";
 
 // Swarm management data
 let swarmStatus: any = null;
@@ -25,6 +25,12 @@ let _taskDetailsError: string | null = null;
 let _initError: string | null = null;
 let _agentSpawnError: string | null = null;
 let _taskCreationError: string | null = null;
+
+// WebSocket unsubscribe functions
+let unsubscribeSwarms: (() => void) | null = null;
+let unsubscribeSwarmStats: (() => void) | null = null;
+let unsubscribeTasks: (() => void) | null = null;
+let unsubscribeConnection: (() => void) | null = null;
 
 // Form states
 let activeTab = 0;
@@ -59,11 +65,22 @@ const _agentTypes = [
 const _priorities = ["low", "medium", "high", "critical"];
 
 onMount(async () => {
-	await loadSwarmStatus();
+	// Setup WebSocket subscriptions for real-time swarm updates
+	setupWebSocketSubscriptions();
+	
+	// Subscribe to swarm, stats, and task data
+	webSocketManager.subscribe('swarms');
+	webSocketManager.subscribe('swarm-stats');
+	webSocketManager.subscribe('tasks');
+	
+	console.log("✅ Swarm management initialized with WebSocket real-time updates");
 
 	// Listen for project changes
 	const handleProjectChange = async () => {
-		await loadSwarmStatus();
+		// Refresh WebSocket subscriptions
+		webSocketManager.subscribe('swarms');
+		webSocketManager.subscribe('swarm-stats');
+		webSocketManager.subscribe('tasks');
 		// Clear cached data when project changes
 		swarmStats = null;
 		swarmTasks = [];
@@ -83,52 +100,76 @@ onMount(async () => {
 	};
 });
 
-async function loadSwarmStatus() {
-	try {
-		_statusLoading = true;
-		swarmStatus = await apiClient.getSwarmStatus();
-		_statusError = null;
-		console.log("🐝 Loaded swarm status:", swarmStatus);
-	} catch (error) {
-		_statusError =
-			error instanceof Error ? error.message : "Failed to load swarm status";
-		console.error("❌ Failed to load swarm status:", error);
-	} finally {
-		_statusLoading = false;
-	}
+onDestroy(() => {
+	// Clean up WebSocket subscriptions
+	if (unsubscribeSwarms) unsubscribeSwarms();
+	if (unsubscribeSwarmStats) unsubscribeSwarmStats();
+	if (unsubscribeTasks) unsubscribeTasks();
+	if (unsubscribeConnection) unsubscribeConnection();
+});
+
+function setupWebSocketSubscriptions() {
+	// Subscribe to swarm status updates
+	unsubscribeSwarms = webSocketManager.swarms.subscribe((data) => {
+		if (data) {
+			console.log("🐝 Real-time swarm data received:", data);
+			swarmStatus = Array.isArray(data) && data.length > 0 ? data[0] : data;
+			_statusLoading = false;
+			_statusError = null;
+		}
+	});
+
+	// Subscribe to swarm stats updates
+	unsubscribeSwarmStats = webSocketManager.swarmStats.subscribe((data) => {
+		if (data) {
+			console.log("📊 Real-time swarm stats received:", data);
+			swarmStats = data;
+			_statsLoading = false;
+			_statsError = null;
+		}
+	});
+
+	// Subscribe to task updates
+	unsubscribeTasks = webSocketManager.tasks.subscribe((data) => {
+		if (data) {
+			console.log("📋 Real-time task data received:", data);
+			swarmTasks = Array.isArray(data) ? data : [];
+			_tasksLoading = false;
+			_tasksError = null;
+		}
+	});
+
+	// Subscribe to connection state
+	unsubscribeConnection = webSocketManager.connectionState.subscribe((state) => {
+		if (!state.connected) {
+			_statusError = "WebSocket disconnected - data may be stale";
+			_statsError = "WebSocket disconnected - data may be stale";
+			_tasksError = "WebSocket disconnected - data may be stale";
+		} else {
+			// Clear errors when reconnected
+			if (_statusError?.includes("WebSocket disconnected")) _statusError = null;
+			if (_statsError?.includes("WebSocket disconnected")) _statsError = null;
+			if (_tasksError?.includes("WebSocket disconnected")) _tasksError = null;
+		}
+	});
 }
 
-async function _loadSwarmStats() {
-	try {
-		_statsLoading = true;
-		swarmStats = await apiClient.getSwarmStats();
-		_statsError = null;
-		console.log("📊 Loaded swarm stats:", swarmStats);
-	} catch (error) {
-		_statsError =
-			error instanceof Error ? error.message : "Failed to load swarm stats";
-		console.error("❌ Failed to load swarm stats:", error);
-	} finally {
-		_statsLoading = false;
-	}
+function refreshSwarmData() {
+	// Re-subscribe to WebSocket channels to get latest data
+	webSocketManager.subscribe('swarms');
+	console.log("🔄 Refreshing swarm status via WebSocket");
 }
 
-async function loadSwarmTasks() {
-	try {
-		_tasksLoading = true;
-		const result = await apiClient.getSwarmTasks();
-		swarmTasks = Array.isArray(result?.data)
-			? result.data
-			: result?.tasks || [];
-		_tasksError = null;
-		console.log("📋 Loaded swarm tasks:", swarmTasks.length);
-	} catch (error) {
-		_tasksError =
-			error instanceof Error ? error.message : "Failed to load swarm tasks";
-		console.error("❌ Failed to load swarm tasks:", error);
-	} finally {
-		_tasksLoading = false;
-	}
+function refreshSwarmStats() {
+	// Re-subscribe to WebSocket channel to get latest stats
+	webSocketManager.subscribe('swarm-stats');
+	console.log("🔄 Refreshing swarm stats via WebSocket");
+}
+
+function refreshSwarmTasks() {
+	// Re-subscribe to WebSocket channel to get latest tasks
+	webSocketManager.subscribe('tasks');
+	console.log("🔄 Refreshing swarm tasks via WebSocket");
 }
 
 async function _loadTaskDetails(taskId: string) {
@@ -158,7 +199,7 @@ async function _initializeSwarm() {
 		});
 
 		console.log("✅ Swarm initialized:", result);
-		await loadSwarmStatus();
+		refreshSwarmData();
 
 		// Update swarmId for agent spawning
 		if (result?.data?.swarmId) {
@@ -201,7 +242,7 @@ async function _spawnAgent() {
 		agentCapabilities = "coordination,analysis";
 
 		// Refresh status
-		await loadSwarmStatus();
+		refreshSwarmData();
 	} catch (error) {
 		_agentSpawnError =
 			error instanceof Error ? error.message : "Failed to spawn agent";
@@ -234,7 +275,7 @@ async function _orchestrateTask() {
 		taskDescription = "";
 
 		// Refresh tasks
-		await loadSwarmTasks();
+		refreshSwarmTasks();
 	} catch (error) {
 		_taskCreationError =
 			error instanceof Error ? error.message : "Failed to orchestrate task";
@@ -256,7 +297,7 @@ async function _shutdownSwarm() {
 	try {
 		await apiClient.shutdownSwarm();
 		console.log("🛑 Swarm shutdown initiated");
-		await loadSwarmStatus();
+		refreshSwarmData();
 	} catch (error) {
 		console.error("❌ Swarm shutdown failed:", error);
 		alert(
@@ -307,7 +348,7 @@ function _formatUptime(seconds: number): string {
 			<p class="text-gray-600 dark:text-gray-300">Advanced swarm orchestration, agent management, and task coordination</p>
 		</div>
 		<div class="flex gap-2">
-			<button class="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors" on:click={loadSwarmStatus}>
+			<button class="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors" on:click={refreshSwarmData}>
 				<span>🔄</span>
 				<span>Refresh</span>
 			</button>
@@ -335,7 +376,7 @@ function _formatUptime(seconds: number): string {
 		{:else if statusError}
 			<div class="text-center text-red-600 dark:text-red-400 py-8">
 				<p class="text-sm">❌ {statusError}</p>
-				<button on:click={loadSwarmStatus} class="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-3 py-1 rounded text-sm hover:bg-red-200 dark:hover:bg-red-700 transition-colors mt-2">Retry</button>
+				<button on:click={refreshSwarmData} class="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-3 py-1 rounded text-sm hover:bg-red-200 dark:hover:bg-red-700 transition-colors mt-2">Retry</button>
 			</div>
 		{:else if swarmStatus}
 			<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -634,7 +675,7 @@ function _formatUptime(seconds: number): string {
 							<h5 class="text-lg font-medium">Active Tasks</h5>
 							<button 
 								class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-1 rounded text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" 
-								on:click={loadSwarmTasks}
+								on:click={refreshSwarmTasks}
 								disabled={tasksLoading}
 							>
 								{#if tasksLoading}
@@ -661,7 +702,7 @@ function _formatUptime(seconds: number): string {
 								{:else if tasksError}
 									<div class="text-center text-red-600 dark:text-red-400 py-8">
 										<p class="text-sm">❌ {tasksError}</p>
-										<button on:click={loadSwarmTasks} class="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-3 py-1 rounded text-sm hover:bg-red-200 dark:hover:bg-red-700 transition-colors mt-2">Retry</button>
+										<button on:click={refreshSwarmTasks} class="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-3 py-1 rounded text-sm hover:bg-red-200 dark:hover:bg-red-700 transition-colors mt-2">Retry</button>
 									</div>
 								{:else if swarmTasks.length > 0}
 									<div class="space-y-2">
