@@ -597,7 +597,7 @@ export interface TimeSeriesData {
 export interface TimeWindow {
   start:Timestamp;
   end:Timestamp;
-  granularity: 'second|minute|hour|day|week|month;
+  granularity: 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month';
 
 // =============================================================================
 // COORDINATION AND COMMUNICATION TYPES
@@ -624,10 +624,10 @@ export enum CoordinationTopology {
  * Communication protocols for neural agents
  */
 export interface CommunicationProtocol {
-  type:|'message_passing|shared_memory|event_driven|rpc|streaming;
-  format: 'json|binary|protobuf|custom;
-  compression:boolean;
-  reliability:ReliabilityLevel;
+  type: 'message_passing' | 'shared_memory' | 'event_driven' | 'rpc' | 'streaming';
+  format: 'json' | 'binary' | 'protobuf' | 'custom';
+  compression: boolean;
+  reliability: ReliabilityLevel;
 }
 
 /**
@@ -870,10 +870,10 @@ export type CoordinationResult = Result<
  * Neural-specific error types
  */
 export interface NeuralError extends Error {
-  readonly type: 'NeuralError;
-  readonly category:|'training|inference|coordination|configuration;
-  readonly modelId?:UUID;
-  readonly agentId?:UUID;
+  readonly type: 'NeuralError';
+  readonly category: 'training' | 'inference' | 'coordination' | 'configuration';
+  readonly modelId?: UUID;
+  readonly agentId?: UUID;
   readonly timestamp:Timestamp;
   readonly code:string;
   readonly errorId:UUID;
