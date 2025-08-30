@@ -65,7 +65,7 @@ export function Part(props: PartProps) {
               const { origin, pathname, search } = window.location
               navigator.clipboard
                 .writeText(`${origin}${pathname}${search}${hash}`)
-                .catch((error) => console.error("Copy failed", error))
+                .catch(() => {})
 
               setCopied(true)
               setTimeout(() => setCopied(false), 3000)
@@ -293,7 +293,7 @@ interface Todo {
 function stripWorkingDirectory(filePath?: string, workingDir?: string) {
   if (filePath === undefined || workingDir === undefined) return filePath
 
-  const prefix = workingDir.endsWith("/") ? workingDir : `${workingDir}/
+  const prefix = workingDir.endsWith("/") ? workingDir : `${workingDir}/`
 
   if (filePath === workingDir) {
     return ""
@@ -404,6 +404,10 @@ export function TodoWriteTool(props: ToolProps) {
 }
 
 export function GrepTool(props: ToolProps) {
+  const matchesLabel = createMemo(() => {
+    const count = props.state.metadata?.matches ?? 0
+    return count === 1 ? '1 match' : `${count} matches`
+  })
   return (
     <>
       <div data-component="tool-title">
@@ -413,9 +417,7 @@ export function GrepTool(props: ToolProps) {
       <div data-component="tool-result">
         <Switch>
           <Match when={props.state.metadata?.matches && props.state.metadata?.matches > 0}>
-            <ResultsButton
-              showCopy={props.state.metadata?.matches === 1 ? "1 match" : `${props.state.metadata?.matches} matches`}
-            >
+            <ResultsButton showCopy={matchesLabel()}>
               <ContentText expand compact text={props.state.output} />
             </ResultsButton>
           </Match>
@@ -594,7 +596,11 @@ export function GlobTool(props: ToolProps) {
         <Match when={props.state.metadata?.count && props.state.metadata?.count > 0}>
           <div data-component="tool-result">
             <ResultsButton
-              showCopy={props.state.metadata?.count === 1 ? "1 result" : `${props.state.metadata?.count} results}
+              showCopy={
+                props.state.metadata?.count === 1
+                  ? '1 result'
+                  : `${props.state.metadata?.count ?? 0} results`
+              }
             >
               <ContentText expand compact text={props.state.output} />
             </ResultsButton>
@@ -643,7 +649,9 @@ function Footer(props: ParentProps<{ title: string }>) {
 }
 
 function ToolFooter(props: { time: number }) {
-  return props.time > MIN_DURATION && <Footer title={`${props.time}ms}>{formatDuration(props.time)}</Footer>
+  return props.time > MIN_DURATION ? (
+  <Footer title={`${String(props.time)}ms`}>{formatDuration(props.time)}</Footer>
+  ) : null
 }
 
 function TaskTool(props: ToolProps) {
@@ -699,12 +707,12 @@ function flattenToolArgs(obj: any, prefix: string = ""): Array<[string, any]> {
   const entries: Array<[string, any]> = []
 
   for (const [key, value] of Object.entries(obj)) {
-    const path = prefix ? `${prefix}.${key} : key
+    const path = prefix ? `${prefix}.${String(key)}` : String(key)
 
     if (value !== null && typeof value === "object") {
       if (Array.isArray(value)) {
         for (const [index, item] of value.entries()) {
-          const arrayPath = `${path}[${index}]
+          const arrayPath = `${path}[${index}]`
           if (item !== null && typeof item === "object") {
             entries.push(...flattenToolArgs(item, arrayPath))
           } else {
