@@ -32,34 +32,35 @@ export var Environment;
 })(Environment || (Environment = {}));
 // Type guards
 export function isUUID(value) {
-    return (typeof value === "string" &&
+    return (typeof value === 'string' &&
         /^[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i.test(value));
 }
 export function isTimestamp(value) {
-    return typeof value === "number" && value > 0;
+    return typeof value === 'number' && value > 0;
 }
 export function isISODateString(value) {
-    return typeof value === "string" && !Number.isNaN(Date.parse(value));
+    return typeof value === 'string' && !Number.isNaN(Date.parse(value));
 }
 export function isEmail(value) {
-    return typeof value === "string" && value.includes("@");
+    return typeof value === 'string' && value.includes('@');
 }
 export function isPrimitive(value) {
     return (value === null ||
-        ["string", "number", "boolean", "undefined"].includes(typeof value));
+        ['string', 'number', 'boolean', 'undefined'].includes(typeof value));
 }
 export function isNonEmptyArray(arr) {
     return Array.isArray(arr) && arr.length > 0;
 }
 // Utility functions
 export function generateUUID() {
-    if (typeof globalThis.crypto !== 'undefined' && globalThis.crypto.randomUUID) {
+    if (typeof globalThis.crypto !== 'undefined' &&
+        globalThis.crypto.randomUUID) {
         return globalThis.crypto.randomUUID();
     }
     // Fallback UUID v4 generation for Node.js environments without crypto.randomUUID
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-        const r = Math.random() * 16 | 0;
-        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        const r = (Math.random() * 16) | 0;
+        const v = c === 'x' ? r : (r & 0x3) | 0x8;
         return v.toString(16);
     });
 }

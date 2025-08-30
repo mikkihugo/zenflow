@@ -1,7 +1,7 @@
 /**
  * Container implementation class - extracted for complexity reduction
  */
-const ASYNC_FACTORY_TYPE = "async-factory";
+const ASYNC_FACTORY_TYPE = 'async-factory';
 export class ContainerImpl {
     services = new Map();
     serviceMetadata = new Map();
@@ -42,43 +42,43 @@ export class ContainerImpl {
         this.services.set(token, implementation);
         this.serviceMetadata.set(token, {
             name: token,
-            type: "class",
+            type: 'class',
             capabilities: options.capabilities || [],
             tags: options.tags || [],
             singleton: options.singleton === true,
             registeredAt: Date.now(),
         });
-        this.emit("serviceRegistered", { token, type: "class" });
+        this.emit('serviceRegistered', { token, type: 'class' });
     }
     registerFunction(token, factory, options = {}) {
         this.services.set(token, factory);
         this.serviceMetadata.set(token, {
             name: token,
-            type: "factory",
+            type: 'factory',
             capabilities: options.capabilities || [],
             tags: options.tags || [],
             singleton: options.singleton === true,
             registeredAt: Date.now(),
         });
-        this.emit("serviceRegistered", { token, type: "function" });
+        this.emit('serviceRegistered', { token, type: 'function' });
     }
     registerValue(token, value, options = {}) {
         this.services.set(token, value);
         this.serviceMetadata.set(token, {
             name: token,
-            type: "instance",
+            type: 'instance',
             capabilities: options.capabilities || [],
             tags: options.tags || [],
             singleton: true,
             registeredAt: Date.now(),
         });
-        this.emit("serviceRegistered", { token, type: "instance" });
+        this.emit('serviceRegistered', { token, type: 'instance' });
     }
     registerInstance(token, instance, options = {}) {
         this.registerValue(token, instance, options);
     }
     registerSingleton(token, factory, options = {}) {
-        if (typeof factory === "function" && factory.prototype) {
+        if (typeof factory === 'function' && factory.prototype) {
             this.register(token, factory, {
                 ...options,
                 singleton: true,
@@ -101,7 +101,7 @@ export class ContainerImpl {
             singleton: true,
             registeredAt: Date.now(),
         });
-        this.emit("serviceRegistered", { token, type: ASYNC_FACTORY_TYPE });
+        this.emit('serviceRegistered', { token, type: ASYNC_FACTORY_TYPE });
     }
     async resolveAsync(token) {
         const metadata = this.serviceMetadata.get(token);
@@ -117,7 +117,7 @@ export class ContainerImpl {
             if (metadata.singleton) {
                 this.singletonCache.set(token, instance);
             }
-            this.emit("serviceResolved", { token, type: metadata.type });
+            this.emit('serviceResolved', { token, type: metadata.type });
             return instance;
         }
         // Fallback to sync resolution
@@ -142,16 +142,16 @@ export class ContainerImpl {
     createServiceInstance(serviceDefinition, metadata, token) {
         try {
             switch (metadata.type) {
-                case "class": {
+                case 'class': {
                     const serviceClass = serviceDefinition;
                     return new serviceClass();
                 }
-                case "factory": {
+                case 'factory': {
                     const factory = serviceDefinition;
                     return factory();
                 }
-                case "instance":
-                case "singleton":
+                case 'instance':
+                case 'singleton':
                     return serviceDefinition;
                 default:
                     throw new Error(`Unknown service type '${metadata.type}' for '${token}'`);
@@ -159,7 +159,7 @@ export class ContainerImpl {
         }
         catch (error) {
             const message = `Failed to resolve service '${token}': ${error instanceof Error ? error.message : String(error)}`;
-            this.emit("serviceResolutionFailed", { token, error: message });
+            this.emit('serviceResolutionFailed', { token, error: message });
             throw new Error(message);
         }
     }
@@ -169,10 +169,10 @@ export class ContainerImpl {
         }
         if (instance &&
             typeof instance.dispose ===
-                "function") {
+                'function') {
             this.disposableServices.add(instance);
         }
-        this.emit("serviceResolved", { token, type: metadata.type });
+        this.emit('serviceResolved', { token, type: metadata.type });
     }
     has(token) {
         return this.services.has(token);
@@ -184,7 +184,7 @@ export class ContainerImpl {
         this.services.delete(token);
         this.serviceMetadata.delete(token);
         this.singletonCache.delete(token);
-        this.emit("serviceUnregistered", { token });
+        this.emit('serviceUnregistered', { token });
         return true;
     }
     clear() {
@@ -192,7 +192,7 @@ export class ContainerImpl {
         this.serviceMetadata.clear();
         this.singletonCache.clear();
         this.disposableServices.clear();
-        this.emit("containerCleared");
+        this.emit('containerCleared');
     }
     getServicesByTags(tags) {
         const matchingServices = [];
@@ -220,7 +220,7 @@ export class ContainerImpl {
     }
     registerConditional(token, factory, condition, options) {
         if (condition()) {
-            if (typeof factory === "function" && factory.prototype) {
+            if (typeof factory === 'function' && factory.prototype) {
                 this.register(token, factory, options);
             }
             else {
@@ -243,7 +243,7 @@ export class ContainerImpl {
         }
         await Promise.all(disposePromises);
         this.clear();
-        this.emit("containerDisposed", { timestamp: Date.now() });
+        this.emit('containerDisposed', { timestamp: Date.now() });
     }
     getServiceMetadata(token) {
         return this.serviceMetadata.get(token);
@@ -255,18 +255,18 @@ export class ContainerImpl {
         const discoveredServices = [];
         void options; // Use options parameter
         for (const pattern of patterns) {
-            if (pattern.includes("service")) {
+            if (pattern.includes('service')) {
                 discoveredServices.push({
                     name: pattern,
-                    type: "class",
+                    type: 'class',
                     capabilities: [],
-                    tags: ["discovered"],
+                    tags: ['discovered'],
                     registeredAt: Date.now(),
                     singleton: false,
                 });
             }
         }
-        this.emit("servicesDiscovered", {
+        this.emit('servicesDiscovered', {
             count: discoveredServices.length,
             timestamp: Date.now(),
         });
@@ -274,7 +274,7 @@ export class ContainerImpl {
     }
     startHealthMonitoring(interval) {
         setInterval(() => {
-            this.emit("healthCheck", {
+            this.emit('healthCheck', {
                 servicesCount: this.services.size,
                 timestamp: Date.now(),
             });
@@ -292,7 +292,7 @@ export class ContainerImpl {
         const matchingServices = [];
         for (const [serviceToken, metadata] of this.serviceMetadata.entries()) {
             if (metadata.capabilities?.includes(capability)) {
-                const logger = require("../core/logging").getLogger("foundation:service-discovery");
+                const logger = require('../core/logging').getLogger('foundation:service-discovery');
                 logger.debug(`Service ${serviceToken} provides capability:${capability}`);
                 matchingServices.push(metadata);
             }
@@ -303,7 +303,7 @@ export class ContainerImpl {
         const matchingServices = [];
         for (const [serviceToken, metadata] of this.serviceMetadata.entries()) {
             if (metadata.tags?.includes(tag)) {
-                const logger = require("../core/logging").getLogger("foundation:service-discovery");
+                const logger = require('../core/logging').getLogger('foundation:service-discovery');
                 logger.debug(`Service ${serviceToken} has tag:${tag}`);
                 matchingServices.push(metadata);
             }
@@ -312,14 +312,14 @@ export class ContainerImpl {
     }
     getHealthStatus() {
         return {
-            status: "healthy",
+            status: 'healthy',
             serviceCount: this.services.size,
             timestamp: Date.now(),
             uptime: Date.now(),
         };
     }
     getName() {
-        return "ServiceContainer";
+        return 'ServiceContainer';
     }
     getServiceInfo(name) {
         return this.serviceMetadata.get(name);

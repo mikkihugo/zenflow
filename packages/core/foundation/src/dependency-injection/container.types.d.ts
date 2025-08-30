@@ -10,12 +10,12 @@
  * @interface ServiceInfo
  */
 export interface ServiceInfo {
-  name: string;
-  type: 'class' | 'factory' | 'instance' | 'singleton' | 'async-factory';
-  capabilities: string[];
-  tags: string[];
-  registeredAt: number;
-  singleton: boolean;
+    name: string;
+    type: 'class' | 'factory' | 'instance' | 'singleton' | 'async-factory';
+    capabilities: string[];
+    tags: string[];
+    registeredAt: number;
+    singleton: boolean;
 }
 /**
  * Options for automatic service discovery in the filesystem.
@@ -33,11 +33,11 @@ export interface ServiceInfo {
  * ```
  */
 export interface ServiceDiscoveryOptions {
-  recursive?: boolean;
-  includeTests?: boolean;
-  extensions?: string[];
-  cwd?: string;
-  ignore?: string[];
+    recursive?: boolean;
+    includeTests?: boolean;
+    extensions?: string[];
+    cwd?: string;
+    ignore?: string[];
 }
 /**
  * Statistics about the container health and performance.
@@ -46,29 +46,26 @@ export interface ServiceDiscoveryOptions {
  * @interface ContainerStats
  */
 export interface ContainerStats {
-  totalServices: number;
-  healthyServices: number;
-  unhealthyServices: number;
-  lastHealthCheck: number;
+    totalServices: number;
+    healthyServices: number;
+    unhealthyServices: number;
+    lastHealthCheck: number;
 }
 /**
  * Professional dependency injection container interface.
  * Provides full featured dependency injection with monitoring and health checks.
  */
 export interface Container {
-  register<T>(
-    name: string,
-    implementation: new (...args: unknown[]) => T
-  ): void;
-  registerFunction<T>(name: string, factory: (...args: unknown[]) => T): void;
-  registerInstance<T>(name: string, instance: T): void;
-  resolve<T>(name: string): T;
-  has(name: string): boolean;
-  remove(name: string): boolean;
-  clear(): void;
-  getStats(): ContainerStats;
-  getServiceInfo(name: string): ServiceInfo | undefined;
-  getAllServices(): string[];
-  dispose(): Promise<void>;
+    register<T>(name: string, implementation: new (...args: unknown[]) => T): void;
+    registerFunction<T>(name: string, factory: (...args: unknown[]) => T): void;
+    registerInstance<T>(name: string, instance: T): void;
+    resolve<T>(name: string): T;
+    has(name: string): boolean;
+    remove(name: string): boolean;
+    clear(): void;
+    getStats(): ContainerStats;
+    getServiceInfo(name: string): ServiceInfo | undefined;
+    getAllServices(): string[];
+    dispose(): Promise<void>;
 }
 //# sourceMappingURL=container.types.d.ts.map

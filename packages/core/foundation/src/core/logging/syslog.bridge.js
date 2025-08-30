@@ -8,15 +8,15 @@
  * This is part of the foundation logging infrastructure, providing
  * enterprise-grade system integration for all claude-zen packages.
  */
-import { spawn } from "node:child_process";
-import { getLogger } from "../logging/index.js";
+import { spawn } from 'node:child_process';
+import { getLogger } from '../logging/index.js';
 export class LogTapeSyslogBridge {
     logger;
     isEnabled = true;
     componentName;
-    constructor(componentName = "claude-zen") {
+    constructor(componentName = 'claude-zen') {
         this.componentName = componentName;
-        this.logger = getLogger("SyslogBridge");
+        this.logger = getLogger('SyslogBridge');
         this.setupSyslogLogging();
     }
     /**
@@ -25,7 +25,7 @@ export class LogTapeSyslogBridge {
     setupSyslogLogging() {
         try {
             // Create a structured logging format that syslog can understand
-            this.logger.info("LogTape syslog bridge initialized", {
+            this.logger.info('LogTape syslog bridge initialized', {
                 component: this.componentName,
                 pid: process.pid,
                 node_version: process.version,
@@ -83,8 +83,8 @@ export class LogTapeSyslogBridge {
             // Map LogTape levels to syslog priorities
             const syslogPriority = this.mapLogLevel(level);
             // Use logger command to send to syslog
-            const loggerProcess = spawn("logger", ["-t", this.componentName, "-p", syslogPriority, message], {
-                stdio: "ignore",
+            const loggerProcess = spawn('logger', ['-t', this.componentName, '-p', syslogPriority, message], {
+                stdio: 'ignore',
                 detached: true,
             });
             loggerProcess.unref();
@@ -101,17 +101,17 @@ export class LogTapeSyslogBridge {
      */
     mapLogLevel(level) {
         switch (level.toLowerCase()) {
-            case "fatal":
-            case "error":
-                return "user.err";
-            case "warn":
-                return "user.warning";
-            case "info":
-                return "user.info";
-            case "debug":
-                return "user.debug";
+            case 'fatal':
+            case 'error':
+                return 'user.err';
+            case 'warn':
+                return 'user.warning';
+            case 'info':
+                return 'user.info';
+            case 'debug':
+                return 'user.debug';
             default:
-                return "user.info";
+                return 'user.info';
         }
     }
     /**
@@ -119,7 +119,7 @@ export class LogTapeSyslogBridge {
      */
     logViaLogTape(entry) {
         // Map to LogTape methods (no 'fatal' method)
-        const logMethod = entry.level === "fatal"
+        const logMethod = entry.level === 'fatal'
             ? this.logger.error
             : this.logger[entry.level] || this.logger.info;
         logMethod.call(this.logger, entry['message'], {
@@ -136,7 +136,7 @@ export class LogTapeSyslogBridge {
     info(component, message, metadata) {
         this.logToSyslog({
             timestamp: new Date().toISOString(),
-            level: "info",
+            level: 'info',
             component,
             message,
             metadata,
@@ -145,7 +145,7 @@ export class LogTapeSyslogBridge {
     warn(component, message, metadata) {
         this.logToSyslog({
             timestamp: new Date().toISOString(),
-            level: "warn",
+            level: 'warn',
             component,
             message,
             metadata,
@@ -154,7 +154,7 @@ export class LogTapeSyslogBridge {
     error(component, message, metadata) {
         this.logToSyslog({
             timestamp: new Date().toISOString(),
-            level: "error",
+            level: 'error',
             component,
             message,
             metadata,
@@ -163,7 +163,7 @@ export class LogTapeSyslogBridge {
     debug(component, message, metadata) {
         this.logToSyslog({
             timestamp: new Date().toISOString(),
-            level: "debug",
+            level: 'debug',
             component,
             message,
             metadata,
@@ -182,20 +182,20 @@ export class LogTapeSyslogBridge {
      */
     setEnabled(enabled) {
         this.isEnabled = enabled;
-        this.logger.info(`Syslog bridge ${enabled ? "enabled" : "disabled"}`);
+        this.logger.info(`Syslog bridge ${enabled ? 'enabled' : 'disabled'}`);
     }
     /**
      * Check if syslog integration is working
      */
     async testSyslogIntegration() {
         try {
-            this.info("test", "Syslog integration test message");
+            this.info('test', 'Syslog integration test message');
             // Allow time for syslog message to be processed
             await new Promise((resolve) => setTimeout(resolve, 100));
             return true;
         }
         catch (error) {
-            this.logger.error("Syslog test failed", { error });
+            this.logger.error('Syslog test failed', { error });
             return false;
         }
     }
@@ -216,7 +216,7 @@ export class LogTapeSyslogBridge {
      */
     checkLoggerCommand() {
         try {
-            const result = spawn("which", ["logger"], { stdio: "pipe" });
+            const result = spawn('which', ['logger'], { stdio: 'pipe' });
             return result !== null;
         }
         catch {
@@ -225,7 +225,7 @@ export class LogTapeSyslogBridge {
     }
 }
 // Singleton instance for global use
-export const syslogBridge = new LogTapeSyslogBridge("claude-zen");
+export const syslogBridge = new LogTapeSyslogBridge('claude-zen');
 // Export convenience functions
 export const logToSyslog = {
     info: (component, message, metadata) => syslogBridge.info(component, message, metadata),

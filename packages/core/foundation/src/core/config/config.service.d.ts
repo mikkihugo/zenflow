@@ -23,32 +23,32 @@ import type { JsonObject } from '../../types/primitives';
  * logger.info(config.env); // 'development' | ' production' | ' test') * logger.info(config.logging.level); // 'error' | ' warn' | ' info' | ' debug') * ```
  */
 export interface Config {
-  env: string;
-  logging: {
-    level: string;
-    format: string;
-    console: boolean;
-    file: string;
-    timestamp: boolean;
-  };
-  system: {
-    hostname: string;
-    instanceId: string;
-  };
-  development: {
-    debug: boolean;
-    inNixShell: boolean;
-    flakeDevShell: boolean;
-  };
-  project: {
-    configDir: string;
-    storeInUserHome: boolean;
-  };
-  otel: {
-    enabled: boolean;
-    useInternalCollector: boolean;
-    internalCollectorEndpoint: string;
-  };
+    env: string;
+    logging: {
+        level: string;
+        format: string;
+        console: boolean;
+        file: string;
+        timestamp: boolean;
+    };
+    system: {
+        hostname: string;
+        instanceId: string;
+    };
+    development: {
+        debug: boolean;
+        inNixShell: boolean;
+        flakeDevShell: boolean;
+    };
+    project: {
+        configDir: string;
+        storeInUserHome: boolean;
+    };
+    otel: {
+        enabled: boolean;
+        useInternalCollector: boolean;
+        internalCollectorEndpoint: string;
+    };
 }
 /**
  * Foundation configuration management class.
@@ -64,45 +64,45 @@ export interface Config {
  * ```
  */
 export declare class FoundationConfig {
-  private config;
-  private isInitialized;
-  constructor();
-  /**
-   * Initializes the configuration by parsing and validating environment variables.
-   * Must be called before using any configuration values.
-   *
-   * @throws {Error} When configuration validation fails
-   */
-  initialize(): void;
-  /**
-   * Gets a configuration value by key path.
-   * Supports nested key access using dot notation.
-   *
-   * @param key - The configuration key path (e.g., 'logging.level')
-   * @returns The configuration value
-   * @throws {Error} When the key is not found or configuration is not initialized
-   *
-   * @example
-   * ```typescript`
-   * const level = config.get('logging.level'); // Gets nested value
-   * const env = config.get('env'); // Gets top-level value
-   * ```
-   */
-  get(key: string): unknown;
-  /**
-   * Gets the complete configuration object.
-   *
-   * @returns The complete validated configuration
-   * @throws {Error} When configuration is not initialized
-   */
-  getAll(): JsonObject;
-  /**
-   * Validates the current environment variables against the schema.
-   *
-   * @returns True if validation passes, false otherwise
-   */
-  validate(): boolean;
-  private ensureInitialized;
+    private config;
+    private isInitialized;
+    constructor();
+    /**
+     * Initializes the configuration by parsing and validating environment variables.
+     * Must be called before using any configuration values.
+     *
+     * @throws {Error} When configuration validation fails
+     */
+    initialize(): void;
+    /**
+     * Gets a configuration value by key path.
+     * Supports nested key access using dot notation.
+     *
+     * @param key - The configuration key path (e.g., 'logging.level')
+     * @returns The configuration value
+     * @throws {Error} When the key is not found or configuration is not initialized
+     *
+     * @example
+     * ```typescript`
+     * const level = config.get('logging.level'); // Gets nested value
+     * const env = config.get('env'); // Gets top-level value
+     * ```
+     */
+    get(key: string): unknown;
+    /**
+     * Gets the complete configuration object.
+     *
+     * @returns The complete validated configuration
+     * @throws {Error} When configuration is not initialized
+     */
+    getAll(): JsonObject;
+    /**
+     * Validates the current environment variables against the schema.
+     *
+     * @returns True if validation passes, false otherwise
+     */
+    validate(): boolean;
+    private ensureInitialized;
 }
 declare const globalConfig: FoundationConfig;
 /**
@@ -146,24 +146,22 @@ export declare const isProduction: () => boolean;
 export declare const isTest: () => boolean;
 export declare const getEnv: (key: string, defaultValue?: string) => string;
 export declare const requireEnv: (key: string) => string;
-export declare const shouldLog: (
-  level: 'error' | 'warn' | 'info' | 'debug'
-) => boolean;
+export declare const shouldLog: (level: "error" | "warn" | "info" | "debug") => boolean;
 export declare const configHelpers: {
-  get: (key: string) => unknown;
-  getAll: () => JsonObject;
-  validate: typeof validateConfig;
-  reload: typeof reloadConfig;
-  isDebug: typeof isDebugMode;
-  config: typeof getConfig;
-  env: typeof getConfig;
-  settings: typeof getConfig;
-  isDevelopment: () => boolean;
-  isProduction: () => boolean;
-  isTest: () => boolean;
-  getEnv: (key: string, defaultValue?: string) => string;
-  requireEnv: (key: string) => string;
-  shouldLog: (level: 'error' | 'warn' | 'info' | 'debug') => boolean;
+    get: (key: string) => unknown;
+    getAll: () => JsonObject;
+    validate: typeof validateConfig;
+    reload: typeof reloadConfig;
+    isDebug: typeof isDebugMode;
+    config: typeof getConfig;
+    env: typeof getConfig;
+    settings: typeof getConfig;
+    isDevelopment: () => boolean;
+    isProduction: () => boolean;
+    isTest: () => boolean;
+    getEnv: (key: string, defaultValue?: string) => string;
+    requireEnv: (key: string) => string;
+    shouldLog: (level: "error" | "warn" | "info" | "debug") => boolean;
 };
 /**
  * Placeholder for neural config - should be implemented in neural packages

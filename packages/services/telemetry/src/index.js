@@ -42,36 +42,15 @@
  */
 // PRIMARY EVENT-DRIVEN EXPORTS (ZERO IMPORTS)
 export { createEventDrivenTelemetryManager, EventDrivenTelemetryManager, EventDrivenTelemetryManager as default, getEventDrivenTelemetry, initializeEventDrivenTelemetry, shutdownEventDrivenTelemetry, } from './telemetry-event-driven.js';
-// LEGACY EXPORTS (WITH IMPORTS - DEPRECATED)
-// OpenTelemetry re-exports for convenience
-export { SpanKind, SpanStatusCode } from '@opentelemetry/api';
-export { getTelemetry, initializeTelemetry, metered, recordEvent, recordGauge, recordHistogram, recordMetric, setTraceAttributes, shutdownTelemetry, startTrace, TelemetryManager, TelemetryManager as default, traced, tracedAsync, withAsyncTrace, withTrace, } from './telemetry.js';
-// Import TelemetryManager class
-import { TelemetryManager } from './telemetry.js';
-// Factory function expected by infrastructure facade
+// Direct telemetry creation functions (no facade pattern)
 export function createTelemetryManager(config) {
-    return new TelemetryManager(config);
+    return new EventDrivenTelemetryManager(config);
 }
-// Provider class expected by infrastructure facade
-export class TelemetryProvider {
-    config;
-    constructor(config) {
-        this.config = config;
-    }
-    async createTelemetryManager(config) {
-        return createTelemetryManager({ ...this.config, ...config });
-    }
-    async createCollector(config) {
-        return createTelemetryManager({ ...this.config, ...config });
-    }
-}
-// Main factory function for infrastructure facade
-export function createTelemetryAccess(_config) {
+export function createTelemetryAccess(config) {
     return {
-        createTelemetryManager,
-        createCollector: createTelemetryManager,
-        createProvider: (providerConfig) => new TelemetryProvider(providerConfig),
-        TelemetryManager,
-        TelemetryProvider,
+        createTelemetryManager: () => createTelemetryManager(config),
+        getEventDrivenTelemetry,
+        initializeEventDrivenTelemetry,
+        shutdownEventDrivenTelemetry
     };
 }

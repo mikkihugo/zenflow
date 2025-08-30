@@ -54,7 +54,7 @@ export interface PerformanceMetrics {
         p99?: number;
         stdDev?: number;
         throughput?: number;
-        trend?: 'improving' | ' stable' | ' declining' | stable | degrading;
+        trend?: 'improving' | 'stable' | 'declining' | 'degrading';
     }>;
     /** System performance */
     system: {
@@ -70,11 +70,11 @@ export interface PerformanceMetrics {
  */
 export interface HealthStatus {
     /** Overall health status */
-    status: 'healthy | degraded|unhealthy;;
-    '  /** Individual check results */: any;
+    status: 'healthy' | 'degraded' | 'unhealthy';
+    /** Individual check results */
     checks: Record<string, {
-        status: 'ok | warning|error;;
-        '      message?:string;: any;
+        status: 'ok' | 'warning' | 'error';
+        message?: string;
         value?: number;
         threshold?: number;
     }>;
@@ -87,7 +87,7 @@ export interface HealthStatus {
             used: string;
             free: string;
         };
-        [key: string]: any;
+        [key: string]: unknown;
     };
     /** Timestamp */
     timestamp: number;

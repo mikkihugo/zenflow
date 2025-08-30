@@ -397,4 +397,3 @@ export class SQLStorageImpl {
         return `sql-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     }
 }
-//# sourceMappingURL=sql-storage.js.map

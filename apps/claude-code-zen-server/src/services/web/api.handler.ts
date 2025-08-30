@@ -123,9 +123,9 @@ export class ApiRouteHandler {
   /**
    * Get swarms handler.
    */
-  private handleGetSwarms(req: Request, res: Response): void {
+  private async handleGetSwarms(req: Request, res: Response): Promise<void> {
     try {
-      const swarms = this.getSwarms();
+      const swarms = await this.getSwarms();
       res.json(swarms);
     } catch (error) {
       this.logger.error('Failed to get swarms: ', error);
@@ -136,9 +136,9 @@ export class ApiRouteHandler {
   /**
    * Create swarm handler.
    */
-  private handleCreateSwarm(req: Request, res: Response): void {
+  private async handleCreateSwarm(req: Request, res: Response): Promise<void> {
     try {
-      const swarm = this.createSwarm(req.body);
+      const swarm = await this.createSwarm(req.body);
       this.webSocket.broadcast('swarm:created', swarm);
       res.json(swarm);
     } catch (error) {
@@ -150,9 +150,9 @@ export class ApiRouteHandler {
   /**
    * Get tasks handler.
    */
-  private handleGetTasks(req: Request, res: Response): void {
+  private async handleGetTasks(req: Request, res: Response): Promise<void> {
     try {
-      const tasks = this.getTasks();
+      const tasks = await this.getTasks();
       res.json(tasks);
     } catch (error) {
       this.logger.error('Failed to get tasks: ', error);
@@ -163,9 +163,9 @@ export class ApiRouteHandler {
   /**
    * Create task handler.
    */
-  private handleCreateTask(req: Request, res: Response): void {
+  private async handleCreateTask(req: Request, res: Response): Promise<void> {
     try {
-      const task = this.createTask(req.body);
+      const task = await this.createTask(req.body);
       this.webSocket.broadcast('task:created', task);
       res.json(task);
     } catch (error) {
@@ -262,66 +262,217 @@ export class ApiRouteHandler {
     };
   }
 
-  private getSwarms(): SwarmInfo[] {
-    // Get swarms from foundation or return mock data for development
-    return [
-      {
-        id: 'swarm-main',
-        name: 'Main Development Swarm',
-        status: 'active',
-        agents: 3,
-      },
-      {
-        id: 'swarm-analysis',
-        name: 'Analysis & Review Swarm',
-        status: 'idle',
-        agents: 2,
-      },
-    ];
+  private async getSwarms(): Promise<SwarmInfo[]> {
+    try {
+      // Use foundation brain coordinator to get real swarm data
+      const { BrainCoordinator } = (global as { foundation?: { getBrainCoordinator: () => any } })
+        .foundation || { getBrainCoordinator: () => null };
+
+      const brainCoordinator = BrainCoordinator || (await import('@claude-zen/brain').catch(() => null))?.BrainCoordinator;
+      
+      if (brainCoordinator) {
+        const coordinator = new brainCoordinator();
+        const coordination = await coordinator.getSwarmCoordination();
+        
+        return coordination.swarms?.map((swarm: any) => ({
+          id: swarm.id || `swarm-${Date.now()}`,
+          name: swarm.name || 'Unnamed Swarm',
+          status: swarm.status || 'unknown',
+          agents: swarm.agents?.length || 0,
+        })) || [];
+      }
+
+      // Fallback to foundation memory for swarm data
+      const { MemoryManager } = (global as { foundation?: { getMemoryManager: () => any } })
+        .foundation || { getMemoryManager: () => null };
+
+      if (MemoryManager) {
+        const memoryManager = new MemoryManager();
+        const swarmData = await memoryManager.get('swarms') || [];
+        return swarmData.map((swarm: any) => ({
+          id: swarm.id || `swarm-${Date.now()}`,
+          name: swarm.name || 'Unnamed Swarm',
+          status: swarm.status || 'unknown',
+          agents: swarm.agentCount || 0,
+        }));
+      }
+
+      // If no foundation services available, return empty array instead of mock data
+      this.logger.warn('No foundation services available for swarm data');
+      return [];
+    } catch (error) {
+      this.logger.error('Failed to get swarms from foundation services:', error);
+      return [];
+    }
   }
 
-  private createSwarm(data: unknown): SwarmInfo {
-    // Stub implementation
-    return {
-      id: `swarm-${Date.now()}`,
-      name: (data as { name?: string }).name || 'New Swarm',
-      status: 'created',
-      agents: 0,
-    };
+  private async createSwarm(data: unknown): Promise<SwarmInfo> {
+    try {
+      const swarmData = data as { name?: string; type?: string; capabilities?: string[] };
+      
+      // Use foundation brain coordinator to create real swarm
+      const { BrainCoordinator } = (global as { foundation?: { getBrainCoordinator: () => any } })
+        .foundation || { getBrainCoordinator: () => null };
+
+      const brainCoordinator = BrainCoordinator || (await import('@claude-zen/brain').catch(() => null))?.BrainCoordinator;
+      
+      if (brainCoordinator) {
+        const coordinator = new brainCoordinator();
+        const newSwarm = await coordinator.createSwarm({
+          name: swarmData.name || 'New Swarm',
+          type: swarmData.type || 'general',
+          capabilities: swarmData.capabilities || ['coordination'],
+        });
+        
+        return {
+          id: newSwarm.id,
+          name: newSwarm.name,
+          status: newSwarm.status || 'created',
+          agents: 0,
+        };
+      }
+
+      // Fallback to memory storage
+      const { MemoryManager } = (global as { foundation?: { getMemoryManager: () => any } })
+        .foundation || { getMemoryManager: () => null };
+
+      if (MemoryManager) {
+        const memoryManager = new MemoryManager();
+        const newSwarm = {
+          id: `swarm-${Date.now()}`,
+          name: swarmData.name || 'New Swarm',
+          status: 'created',
+          agentCount: 0,
+          createdAt: new Date().toISOString(),
+        };
+        
+        await memoryManager.store(`swarm:${newSwarm.id}`, newSwarm);
+        
+        return {
+          id: newSwarm.id,
+          name: newSwarm.name,
+          status: newSwarm.status,
+          agents: newSwarm.agentCount,
+        };
+      }
+
+      throw new Error('No foundation services available for swarm creation');
+    } catch (error) {
+      this.logger.error('Failed to create swarm:', error);
+      throw error;
+    }
   }
 
-  private getTasks(): TaskInfo[] {
-    // Get tasks from foundation system or return mock data for development
-    return [
-      {
-        id: 'task-linting',
-        title: 'Fix ESLint Issues',
-        status: 'in-progress',
-        priority: 'high',
-      },
-      {
-        id: 'task-architecture',
-        title: 'Review 5-Tier Architecture',
-        status: 'pending',
-        priority: 'medium',
-      },
-      {
-        id: 'task-testing',
-        title: 'Update Test Coverage',
-        status: 'completed',
-        priority: 'low',
-      },
-    ];
+  private async getTasks(): Promise<TaskInfo[]> {
+    try {
+      // Use foundation task master to get real task data
+      const { TaskMaster } = (global as { foundation?: { getTaskMaster: () => any } })
+        .foundation || { getTaskMaster: () => null };
+
+      const taskMaster = TaskMaster || (await import('@claude-zen/coordination').catch(() => null))?.TaskMaster;
+      
+      if (taskMaster) {
+        const master = new taskMaster();
+        const tasks = await master.getAllTasks();
+        
+        return tasks.map((task: any) => ({
+          id: task.id || `task-${Date.now()}`,
+          title: task.title || task.name || 'Unnamed Task',
+          status: task.status || 'unknown',
+          priority: task.priority || 'medium',
+        }));
+      }
+
+      // Fallback to foundation memory for task data
+      const { MemoryManager } = (global as { foundation?: { getMemoryManager: () => any } })
+        .foundation || { getMemoryManager: () => null };
+
+      if (MemoryManager) {
+        const memoryManager = new MemoryManager();
+        const taskData = await memoryManager.get('tasks') || [];
+        return taskData.map((task: any) => ({
+          id: task.id || `task-${Date.now()}`,
+          title: task.title || task.name || 'Unnamed Task',
+          status: task.status || 'unknown',
+          priority: task.priority || 'medium',
+        }));
+      }
+
+      // If no foundation services available, return empty array instead of mock data
+      this.logger.warn('No foundation services available for task data');
+      return [];
+    } catch (error) {
+      this.logger.error('Failed to get tasks from foundation services:', error);
+      return [];
+    }
   }
 
-  private createTask(data: unknown): TaskInfo {
-    // Stub implementation
-    return {
-      id: `task-${Date.now()}`,
-      title: (data as { title?: string }).title || 'New Task',
-      status: 'pending',
-      priority: (data as { priority?: string }).priority || 'medium',
-    };
+  private async createTask(data: unknown): Promise<TaskInfo> {
+    try {
+      const taskData = data as { 
+        title?: string; 
+        description?: string; 
+        priority?: string; 
+        assignee?: string;
+        dueDate?: string;
+      };
+      
+      // Use foundation task master to create real task
+      const { TaskMaster } = (global as { foundation?: { getTaskMaster: () => any } })
+        .foundation || { getTaskMaster: () => null };
+
+      const taskMaster = TaskMaster || (await import('@claude-zen/coordination').catch(() => null))?.TaskMaster;
+      
+      if (taskMaster) {
+        const master = new taskMaster();
+        const newTask = await master.createTask({
+          title: taskData.title || 'New Task',
+          description: taskData.description || 'Task description',
+          priority: taskData.priority || 'medium',
+          assignee: taskData.assignee,
+          dueDate: taskData.dueDate ? new Date(taskData.dueDate) : undefined,
+        });
+        
+        return {
+          id: newTask.id,
+          title: newTask.title,
+          status: newTask.status || 'pending',
+          priority: newTask.priority || 'medium',
+        };
+      }
+
+      // Fallback to memory storage
+      const { MemoryManager } = (global as { foundation?: { getMemoryManager: () => any } })
+        .foundation || { getMemoryManager: () => null };
+
+      if (MemoryManager) {
+        const memoryManager = new MemoryManager();
+        const newTask = {
+          id: `task-${Date.now()}`,
+          title: taskData.title || 'New Task',
+          description: taskData.description || 'Task description',
+          status: 'pending',
+          priority: taskData.priority || 'medium',
+          assignee: taskData.assignee,
+          dueDate: taskData.dueDate,
+          createdAt: new Date().toISOString(),
+        };
+        
+        await memoryManager.store(`task:${newTask.id}`, newTask);
+        
+        return {
+          id: newTask.id,
+          title: newTask.title,
+          status: newTask.status,
+          priority: newTask.priority,
+        };
+      }
+
+      throw new Error('No foundation services available for task creation');
+    } catch (error) {
+      this.logger.error('Failed to create task:', error);
+      throw error;
+    }
   }
 
   private async getDocuments(): Promise<

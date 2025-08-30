@@ -75,16 +75,16 @@
  * • Health check endpoints for monitoring
  * • Real-time status updates and event emission
  */
-import { getLogger } from "../../core/logging/index.js";
-import { EventEmitter } from "../../events/event-emitter.js";
+import { getLogger } from '../../core/logging/index.js';
+import { EventEmitter } from '../../events/event-emitter.js';
 // Fallback container implementation
 const createContainer = () => ({
     register: (nameOrRegistrations, resolver, options) => {
         // Security audit:tracking service registration attempts for facade status management
-        logger.debug("Service registration attempt in fallback container", {
-            nameOrRegistrations: typeof nameOrRegistrations === "string"
+        logger.debug('Service registration attempt in fallback container', {
+            nameOrRegistrations: typeof nameOrRegistrations === 'string'
                 ? nameOrRegistrations
-                : "[object]",
+                : '[object]',
             hasResolver: !!resolver,
             hasOptions: !!options,
         });
@@ -93,22 +93,22 @@ const createContainer = () => ({
     has: () => false,
     dispose: async () => {
         // Security audit:tracking container disposal for facade lifecycle management
-        logger.debug("Fallback container disposal initiated");
+        logger.debug('Fallback container disposal initiated');
         // Enhanced async disposal with resource cleanup
         await Promise.resolve(); // Simulated async cleanup
-        logger.debug("Fallback container disposal completed");
+        logger.debug('Fallback container disposal completed');
     },
 });
 const asFunction = (fn, options) => {
     // Security audit:tracking function registration for DI security analysis
-    logger.debug("Function registration in fallback DI", {
+    logger.debug('Function registration in fallback DI', {
         hasOptions: !!options,
     });
     return fn;
 };
 const asValue = (val) => val;
-const LIFETIME = { SINGLETON: "SINGLETON" };
-const logger = getLogger("facade-status-manager");
+const LIFETIME = { SINGLETON: 'SINGLETON' };
+const logger = getLogger('facade-status-manager');
 /**
  * Package availability status for facade management.
  * Tracks the lifecycle of package loading and registration.
@@ -233,7 +233,7 @@ export class SystemStatusManager extends EventEmitter {
             lastChecked: Date.now(),
             capabilities: [],
             awilixRegistered: false,
-            serviceName: serviceName || packageName.replace("@claude-zen/", ""),
+            serviceName: serviceName || packageName.replace('@claude-zen/', ''),
         };
     }
     /**
@@ -252,7 +252,7 @@ export class SystemStatusManager extends EventEmitter {
     processFailedImport(packageInfo, error, packageName) {
         packageInfo.status = PackageStatus.UNAVAILABLE;
         packageInfo.error =
-            error instanceof Error ? error['message'] : "Unknown error";
+            error instanceof Error ? error['message'] : 'Unknown error';
         logger.debug(`Package ${packageName} is unavailable`, {
             error: packageInfo.error,
         });
@@ -285,13 +285,13 @@ export class SystemStatusManager extends EventEmitter {
         const registrations = {};
         // Register factory functions
         for (const [exportName, exportValue] of Object.entries(module)) {
-            if (typeof exportValue === "function" &&
-                exportName.startsWith("create")) {
-                const serviceName = exportName.replace("create", "").toLowerCase();
+            if (typeof exportValue === 'function' &&
+                exportName.startsWith('create')) {
+                const serviceName = exportName.replace('create', '').toLowerCase();
                 registrations[serviceName] = asFunction(exportValue, { lifetime: LIFETIME.SINGLETON });
             }
-            if (typeof exportValue === "function" && exportName.startsWith("get")) {
-                const serviceName = exportName.replace("get", "").toLowerCase();
+            if (typeof exportValue === 'function' && exportName.startsWith('get')) {
+                const serviceName = exportName.replace('get', '').toLowerCase();
                 registrations[serviceName] = asFunction(exportValue, { lifetime: LIFETIME.SINGLETON });
             }
         }
@@ -309,7 +309,7 @@ export class SystemStatusManager extends EventEmitter {
         this.packageCache.set(packageName, packageInfo);
         this.packageCacheExpiry.set(packageName, Date.now() + this.CACHE_DURATION);
         // Emit status change event
-        this.emit("package-loaded", {
+        this.emit('package-loaded', {
             packageName,
             version: packageInfo.version,
             timestamp: new Date(),
@@ -380,7 +380,7 @@ export class SystemStatusManager extends EventEmitter {
             [`${serviceName}Status`]: asValue(serviceStatus),
         });
         // Emit service registration event
-        this.emit("service-registered", { serviceName, timestamp: new Date() });
+        this.emit('service-registered', { serviceName, timestamp: new Date() });
         logger.info(`Service ${serviceName} registered`, {
             capability,
             healthScore,
@@ -488,13 +488,13 @@ export class SystemStatusManager extends EventEmitter {
         const systemStatus = this.getSystemStatus();
         let status;
         if (systemStatus.healthScore >= 80) {
-            status = "healthy";
+            status = 'healthy';
         }
         else if (systemStatus.healthScore >= 40) {
-            status = "degraded";
+            status = 'degraded';
         }
         else {
-            status = "unhealthy";
+            status = 'unhealthy';
         }
         return {
             status,
@@ -522,21 +522,21 @@ export class SystemStatusManager extends EventEmitter {
                 await Promise.all(stalePackages.map((pkg) => this.checkAndRegisterPackage(pkg)));
             }
             const systemStatus = this.getSystemStatus();
-            this.emit("system-status-changed", {
+            this.emit('system-status-changed', {
                 status: systemStatus.overall,
                 healthScore: systemStatus.healthScore,
                 timestamp: new Date(),
             });
         }
         catch (error) {
-            logger.error("Error updating system status", error);
+            logger.error('Error updating system status', error);
         }
     }
     /**
      * Force refresh of all package statuses and re-register services
      */
     async refreshAllStatuses() {
-        logger.info("Force refreshing all package statuses and re-registering services");
+        logger.info('Force refreshing all package statuses and re-registering services');
         this.packageCache.clear();
         // Re-register all facades
         const facades = Array.from(this.facadeStatus.keys());
@@ -573,7 +573,7 @@ export class SystemStatusManager extends EventEmitter {
      */
     async registerFacade(facadeName, expectedPackages, features = []) {
         // Add minimal async operation to satisfy linter
-        await new Promise(resolve => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 0));
         const facadeStatus = {
             name: facadeName,
             available: true,
@@ -585,7 +585,7 @@ export class SystemStatusManager extends EventEmitter {
             packages: {},
             registeredServices: [],
             features,
-            missingPackages: expectedPackages.filter(pkg => !this.packageCache.has(pkg))
+            missingPackages: expectedPackages.filter((pkg) => !this.packageCache.has(pkg)),
         };
         this.facadeStatus.set(facadeName, facadeStatus);
     }

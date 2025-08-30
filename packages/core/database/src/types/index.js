@@ -60,4 +60,3 @@ export class TransactionError extends DatabaseError {
         this.name = 'TransactionError';
     }
 }
-//# sourceMappingURL=index.js.map

@@ -11,39 +11,39 @@
  * Neural task complexity levels
  */
 export declare enum TaskComplexity {
-  SIMPLE = 'simple', // brain.js internal processing')  MODERATE = 'moderate', // Enhanced brain.js with some ML')  COMPLEX = 'complex', // Requires neural-ml lightweight models')  HEAVY = 'heavy', // Requires neural-ml heavy models (LSTM, Transformers)')}
-  /**
-   * Storage strategy types
-   */
-  export,
-  enum,
-  StorageStrategy,
+    SIMPLE = "simple",// brain.js internal processing')  MODERATE = 'moderate', // Enhanced brain.js with some ML')  COMPLEX = 'complex', // Requires neural-ml lightweight models')  HEAVY = 'heavy', // Requires neural-ml heavy models (LSTM, Transformers)')}
+    /**
+     * Storage strategy types
+     */
+    export,
+    enum,
+    StorageStrategy
 }
 /**
  * Neural orchestration metrics
  */
 export interface OrchestrationMetrics {
-  tasksProcessed: number;
-  complexityDistribution: Record<TaskComplexity, number>;
-  averageLatency: Record<TaskComplexity, number>;
-  cacheHitRate: number;
-  neuralMlLoadCount: number;
-  storageDistribution: Record<StorageStrategy, number>;
+    tasksProcessed: number;
+    complexityDistribution: Record<TaskComplexity, number>;
+    averageLatency: Record<TaskComplexity, number>;
+    cacheHitRate: number;
+    neuralMlLoadCount: number;
+    storageDistribution: Record<StorageStrategy, number>;
 }
 /**
  * Neural Orchestrator - Brain as intelligent coordinator
  */
 export declare class NeuralOrchestrator {
-  constructor();
-  catch(error: any): void;
-  if(needsLowLatency: any): void;
-  taskTypeComplexity: {
-    prediction: TaskComplexity;
-    classification: any;
-    clustering: any;
-    forecasting: any;
-    optimization: any;
-    pattern_recognition: any;
-  };
+    constructor();
+    catch(error: any): void;
+    if(needsLowLatency: any): void;
+    const taskTypeComplexity: {
+        prediction: TaskComplexity;
+        classification: any;
+        clustering: any;
+        forecasting: any;
+        optimization: any;
+        pattern_recognition: any;
+    };
 }
 //# sourceMappingURL=neural-orchestrator.d.ts.map

@@ -8,8 +8,8 @@
  * @since 2.1.0
  * @version 1.0.0
  */
-import { spawn } from "node:child_process";
-import { promisify } from "node:util";
+import { spawn } from 'node:child_process';
+import { promisify } from 'node:util';
 /**
  * Simple Rust Neural ML Engine - Direct Rust Interface
  *
@@ -31,7 +31,7 @@ export class RustNeuralML {
     constructor(config, logger) {
         this.config = config;
         this.logger = logger;
-        this.cargoProjectPath = "./neural-core";
+        this.cargoProjectPath = './neural-core';
         this.rustPath = this.detectRustBinary();
     }
     /**
@@ -41,10 +41,10 @@ export class RustNeuralML {
         try {
             // Build Rust components if needed
             await this.buildRustIfNeeded();
-            this.logger.info("Rust Neural ML initialized");
+            this.logger.info('Rust Neural ML initialized');
         }
         catch (error) {
-            this.logger.error("Failed to initialize Rust Neural ML:", error);
+            this.logger.error('Failed to initialize Rust Neural ML:', error);
             throw error;
         }
     }
@@ -67,7 +67,7 @@ export class RustNeuralML {
             };
         }
         catch (error) {
-            this.logger.error("Rust optimization failed:", error);
+            this.logger.error('Rust optimization failed:', error);
             return {
                 success: false,
                 result: {},
@@ -85,40 +85,40 @@ export class RustNeuralML {
     getAvailableAlgorithms() {
         return [
             // Bayesian Optimization (sophisticated Gaussian processes)
-            "bayesian_optimization_rbf",
-            "bayesian_optimization_matern",
-            "bayesian_optimization_linear",
-            "bayesian_optimization_periodic",
+            'bayesian_optimization_rbf',
+            'bayesian_optimization_matern',
+            'bayesian_optimization_linear',
+            'bayesian_optimization_periodic',
             // Acquisition Functions
-            "expected_improvement",
-            "upper_confidence_bound",
-            "probability_of_improvement",
-            "knowledge_gradient",
+            'expected_improvement',
+            'upper_confidence_bound',
+            'probability_of_improvement',
+            'knowledge_gradient',
             // Multi-Objective Optimization
-            "nsga_ii",
-            "pareto_optimization",
-            "hypervolume_calculation",
-            "crowding_distance",
+            'nsga_ii',
+            'pareto_optimization',
+            'hypervolume_calculation',
+            'crowding_distance',
             // Gradient Optimization
-            "gradient_descent",
-            "auto_differentiation",
-            "backpropagation",
-            "tensor_operations",
+            'gradient_descent',
+            'auto_differentiation',
+            'backpropagation',
+            'tensor_operations',
             // Online Learning
-            "adaptive_learning_rate",
-            "concept_drift_detection",
-            "replay_buffer",
-            "online_perceptron",
+            'adaptive_learning_rate',
+            'concept_drift_detection',
+            'replay_buffer',
+            'online_perceptron',
             // Pattern Recognition
-            "pattern_extraction",
-            "embedding_models",
-            "similarity_metrics",
-            "clustering_algorithms",
+            'pattern_extraction',
+            'embedding_models',
+            'similarity_metrics',
+            'clustering_algorithms',
             // Statistical Analysis
-            "time_series_forecasting",
-            "performance_metrics",
-            "quality_metrics",
-            "model_serialization",
+            'time_series_forecasting',
+            'performance_metrics',
+            'quality_metrics',
+            'model_serialization',
         ];
     }
     /**
@@ -126,8 +126,8 @@ export class RustNeuralML {
      */
     async hasGpuSupport() {
         try {
-            const result = await this.executeRustCommand(["--check-gpu"]);
-            return result.includes("GPU:Available");
+            const result = await this.executeRustCommand(['--check-gpu']);
+            return result.includes('GPU:Available');
         }
         catch {
             return false;
@@ -138,11 +138,11 @@ export class RustNeuralML {
      */
     async getPerformanceStats() {
         try {
-            const result = await this.executeRustCommand(["--stats"]);
+            const result = await this.executeRustCommand(['--stats']);
             return JSON.parse(result);
         }
         catch (error) {
-            this.logger.warn("Could not get performance stats:", error);
+            this.logger.warn('Could not get performance stats:', error);
             return {
                 backend: this.config.backend,
                 threads: this.config.threads || 1,
@@ -154,23 +154,23 @@ export class RustNeuralML {
     detectRustBinary() {
         // Try to find the compiled Rust binary
         const __possiblePaths = [
-            "./neural-core/target/release/neural-ml",
-            "./neural-core/target/debug/neural-ml",
-            "cargo",
+            './neural-core/target/release/neural-ml',
+            './neural-core/target/debug/neural-ml',
+            'cargo',
         ];
         // For now, use cargo run as fallback
-        return "cargo";
+        return 'cargo';
     }
     async buildRustIfNeeded() {
         try {
             // Check if Rust components are built
-            await this.executeRustCommand(["--version"]);
+            await this.executeRustCommand(['--version']);
         }
         catch {
             // Build if needed
-            this.logger.info("Building Rust components...");
-            await this.executeCommand("cargo", ["build", "--release"], {
-                cwd: "./neural-core",
+            this.logger.info('Building Rust components...');
+            await this.executeCommand('cargo', ['build', '--release'], {
+                cwd: './neural-core',
             });
         }
     }
@@ -183,8 +183,8 @@ export class RustNeuralML {
             target: task.target ? Array.from(task.target) : undefined,
         });
         const result = await this.executeRustCommand([
-            "optimize",
-            "--task",
+            'optimize',
+            '--task',
             taskJson,
         ]);
         try {
@@ -201,13 +201,13 @@ export class RustNeuralML {
         }
     }
     async executeRustCommand(args) {
-        if (this.rustPath === "cargo") {
+        if (this.rustPath === 'cargo') {
             // Use cargo run with all sophisticated ML features enabled
             const features = [
-                "--features",
-                "dspy-ml,full-acceleration,ml-optimization,bayesian-optimization,multi-objective,pattern-learning,statistical-analysis",
+                '--features',
+                'dspy-ml,full-acceleration,ml-optimization,bayesian-optimization,multi-objective,pattern-learning,statistical-analysis',
             ];
-            return await this.executeCommand("cargo", ["run", "--release", ...features, "--"].concat(args), {
+            return await this.executeCommand('cargo', ['run', '--release', ...features, '--'].concat(args), {
                 cwd: this.cargoProjectPath,
             });
         }
@@ -219,18 +219,18 @@ export class RustNeuralML {
     executeCommand(command, args, options = {}) {
         return new Promise((resolve, reject) => {
             const child = spawn(command, args, {
-                stdio: ["pipe", "pipe", "pipe"],
+                stdio: ['pipe', 'pipe', 'pipe'],
                 cwd: options.cwd,
             });
-            let stdout = "";
-            let stderr = "";
-            child.stdout?.on("data", (data) => {
+            let stdout = '';
+            let stderr = '';
+            child.stdout?.on('data', (data) => {
                 stdout += data.toString();
             });
-            child.stderr?.on("data", (data) => {
+            child.stderr?.on('data', (data) => {
                 stderr += data.toString();
             });
-            child.on("close", (code) => {
+            child.on('close', (code) => {
                 if (code === 0) {
                     resolve(stdout.trim());
                 }
@@ -238,7 +238,7 @@ export class RustNeuralML {
                     reject(new Error(`Command failed with code ${code}:${stderr}`));
                 }
             });
-            child.on("error", reject);
+            child.on('error', reject);
         });
     }
 }
@@ -253,10 +253,10 @@ export function createRustNeuralML(config, logger) {
  */
 export async function checkRustAvailability() {
     try {
-        const { exec } = await import("node:child_process");
+        const { exec } = await import('node:child_process');
         const execPromise = promisify(exec);
-        const { stdout } = await execPromise("cargo --version");
-        return stdout.includes("cargo");
+        const { stdout } = await execPromise('cargo --version');
+        return stdout.includes('cargo');
     }
     catch {
         return false;

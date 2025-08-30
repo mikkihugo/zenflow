@@ -41,13 +41,13 @@
  *});
  * ```
  */
-import { ContainerImpl } from "./container-impl.js";
+import { ContainerImpl } from './container-impl.js';
 export const createContainer = () => new ContainerImpl();
 // Service tokens for common services
 export const TOKENS = {
-    logger: "logger",
-    config: "config",
-    database: "database",
+    logger: 'logger',
+    config: 'config',
+    database: 'database',
 };
 // STRATEGIC FORCING EXPORTS - Guide developers to industry-standard patterns
 // These remain because they teach correct patterns and prevent bad habits

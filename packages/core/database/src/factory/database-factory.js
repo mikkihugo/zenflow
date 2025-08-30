@@ -415,4 +415,3 @@ export function createStorage(type, database, baseConfig) {
             throw new Error(`Unsupported storage type:${type}`);
     }
 }
-//# sourceMappingURL=database-factory.js.map

@@ -22,7 +22,7 @@
  *}
  * ```
  */
-import { LogLevel } from "./primitives";
+import { LogLevel } from './primitives';
 // =============================================================================
 // ERROR SEVERITY AND CLASSIFICATION
 // =============================================================================
@@ -60,16 +60,18 @@ export var ErrorCategory;
  */
 export function createValidationError(message, options) {
     return {
-        type: "ValidationError",
-        name: "ValidationError",
-        code: "VALIDATION_FAILED",
+        type: 'ValidationError',
+        name: 'ValidationError',
+        code: 'VALIDATION_FAILED',
         message,
         timestamp: Date.now(),
-        errorId: (typeof globalThis.crypto !== 'undefined' ? globalThis.crypto.randomUUID() : ' xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-            const r = Math.random() * 16 | 0;
-            const v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        })),
+        errorId: (typeof globalThis.crypto !== 'undefined'
+            ? globalThis.crypto.randomUUID()
+            : ' xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+                const r = (Math.random() * 16) | 0;
+                const v = c === 'x' ? r : (r & 0x3) | 0x8;
+                return v.toString(16);
+            })),
         retryable: false,
         logLevel: LogLevel.WARN,
         field: options?.field,
@@ -86,16 +88,18 @@ export function createValidationError(message, options) {
  */
 export function createSystemError(message, options) {
     return {
-        type: "SystemError",
-        name: "SystemError",
-        code: "SYSTEM_ERROR",
+        type: 'SystemError',
+        name: 'SystemError',
+        code: 'SYSTEM_ERROR',
         message,
         timestamp: Date.now(),
-        errorId: (typeof globalThis.crypto !== 'undefined' ? globalThis.crypto.randomUUID() : ' xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-            const r = Math.random() * 16 | 0;
-            const v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        })),
+        errorId: (typeof globalThis.crypto !== 'undefined'
+            ? globalThis.crypto.randomUUID()
+            : ' xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+                const r = (Math.random() * 16) | 0;
+                const v = c === 'x' ? r : (r & 0x3) | 0x8;
+                return v.toString(16);
+            })),
         retryable: true,
         logLevel: LogLevel.ERROR,
         component: options?.component,
@@ -111,16 +115,18 @@ export function createSystemError(message, options) {
  */
 export function createNetworkError(message, options) {
     return {
-        type: "NetworkError",
-        name: "NetworkError",
-        code: "NETWORK_ERROR",
+        type: 'NetworkError',
+        name: 'NetworkError',
+        code: 'NETWORK_ERROR',
         message,
         timestamp: Date.now(),
-        errorId: (typeof globalThis.crypto !== 'undefined' ? globalThis.crypto.randomUUID() : ' xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-            const r = Math.random() * 16 | 0;
-            const v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        })),
+        errorId: (typeof globalThis.crypto !== 'undefined'
+            ? globalThis.crypto.randomUUID()
+            : ' xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+                const r = (Math.random() * 16) | 0;
+                const v = c === 'x' ? r : (r & 0x3) | 0x8;
+                return v.toString(16);
+            })),
         retryable: !options?.isTimeout,
         logLevel: LogLevel.ERROR,
         url: options?.url,
@@ -137,16 +143,18 @@ export function createNetworkError(message, options) {
  */
 export function createResourceError(message, options) {
     return {
-        type: "ResourceError",
-        name: "ResourceError",
-        code: "RESOURCE_ERROR",
+        type: 'ResourceError',
+        name: 'ResourceError',
+        code: 'RESOURCE_ERROR',
         message,
         timestamp: Date.now(),
-        errorId: (typeof globalThis.crypto !== 'undefined' ? globalThis.crypto.randomUUID() : ' xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-            const r = Math.random() * 16 | 0;
-            const v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        })),
+        errorId: (typeof globalThis.crypto !== 'undefined'
+            ? globalThis.crypto.randomUUID()
+            : ' xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+                const r = (Math.random() * 16) | 0;
+                const v = c === 'x' ? r : (r & 0x3) | 0x8;
+                return v.toString(16);
+            })),
         retryable: true,
         logLevel: LogLevel.ERROR,
         resourceId: options?.resourceId,
@@ -188,37 +196,37 @@ export function isError(result) {
  * Check if error is a validation error
  */
 export function isValidationError(error) {
-    return (typeof error === "object" &&
+    return (typeof error === 'object' &&
         error !== null &&
-        "type" in error &&
-        error.type === "ValidationError");
+        'type' in error &&
+        error.type === 'ValidationError');
 }
 /**
  * Check if error is a system error
  */
 export function isSystemError(error) {
-    return (typeof error === "object" &&
+    return (typeof error === 'object' &&
         error !== null &&
-        "type" in error &&
-        error.type === "SystemError");
+        'type' in error &&
+        error.type === 'SystemError');
 }
 /**
  * Check if error is a network error
  */
 export function isNetworkError(error) {
-    return (typeof error === "object" &&
+    return (typeof error === 'object' &&
         error !== null &&
-        "type" in error &&
-        error.type === "NetworkError");
+        'type' in error &&
+        error.type === 'NetworkError');
 }
 /**
  * Check if error is a resource error
  */
 export function isResourceError(error) {
-    return (typeof error === "object" &&
+    return (typeof error === 'object' &&
         error !== null &&
-        "type" in error &&
-        error.type === "ResourceError");
+        'type' in error &&
+        error.type === 'ResourceError');
 }
 /**
  * Check if error is retryable
@@ -230,13 +238,13 @@ export function isRetryableError(error) {
  * Check if error is a base error (has required BaseError fields)
  */
 export function isBaseError(error) {
-    return (typeof error === "object" &&
+    return (typeof error === 'object' &&
         error !== null &&
-        "type" in error &&
-        "code" in error &&
-        "message" in error &&
-        "timestamp" in error &&
-        "errorId" in error &&
-        "retryable" in error &&
-        "logLevel" in error);
+        'type' in error &&
+        'code' in error &&
+        'message' in error &&
+        'timestamp' in error &&
+        'errorId' in error &&
+        'retryable' in error &&
+        'logLevel' in error);
 }

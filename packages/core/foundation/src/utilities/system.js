@@ -5,14 +5,14 @@
  * Provides comprehensive system utilities including platform detection, process information,
  * monorepo detection, system capabilities, and environment validation.
  */
-import * as os from "node:os";
-import * as process from "node:process";
-import { displaySystemStatus, getCapabilityScores, getSystemCapabilityData, startSystemMonitoring, } from "./system/capability.provider.js";
-import { WorkspaceDetector, } from "./system/monorepo.detector.js";
+import * as os from 'node:os';
+import * as process from 'node:process';
+import { displaySystemStatus, getCapabilityScores, getSystemCapabilityData, startSystemMonitoring, } from './system/capability.provider.js';
+import { WorkspaceDetector, } from './system/monorepo.detector.js';
 // Re-export available functions from capability provider
-export { createHealthDataProviders, displaySystemStatus, getCapabilityScores, getInstallationSuggestions, getSystemCapabilityData, startSystemMonitoring, } from "./system/capability.provider.js";
+export { createHealthDataProviders, displaySystemStatus, getCapabilityScores, getInstallationSuggestions, getSystemCapabilityData, startSystemMonitoring, } from './system/capability.provider.js';
 // Re-export system modules for convenience
-export { WorkspaceDetector } from "./system/monorepo.detector.js";
+export { WorkspaceDetector } from './system/monorepo.detector.js';
 /**
  * Get current platform with normalization
  *
@@ -27,15 +27,15 @@ export { WorkspaceDetector } from "./system/monorepo.detector.js";
 export function getPlatform() {
     const { platform } = process;
     // Handle known platforms
-    if (["win32", "darwin", "linux", "freebsd", "openbsd", "aix", "sunos"].includes(platform)) {
+    if (['win32', 'darwin', 'linux', 'freebsd', 'openbsd', 'aix', 'sunos'].includes(platform)) {
         return platform;
     }
     // Check for Android (common in Node.js environments)
     const { env } = process;
-    if (platform === "linux" && env['ANDROID_ROOT']) {
-        return "android";
+    if (platform === 'linux' && env['ANDROID_ROOT']) {
+        return 'android';
     }
-    return "unknown";
+    return 'unknown';
 }
 /**
  * Get system architecture with normalization
@@ -51,10 +51,10 @@ export function getPlatform() {
 export function getArchitecture() {
     const { arch } = process;
     // Handle known architectures
-    if (["x64", "arm64", "ia32", "arm", "ppc64", "s390x", "mips"].includes(arch)) {
+    if (['x64', 'arm64', 'ia32', 'arm', 'ppc64', 's390x', 'mips'].includes(arch)) {
         return arch;
     }
-    return "unknown";
+    return 'unknown';
 }
 /**
  * Check if running on Windows
@@ -69,7 +69,7 @@ export function getArchitecture() {
  * ```
  */
 export function isWindows() {
-    return getPlatform() === "win32";
+    return getPlatform() === 'win32';
 }
 /**
  * Check if running on macOS
@@ -84,7 +84,7 @@ export function isWindows() {
  * ```
  */
 export function isMacOS() {
-    return getPlatform() === "darwin";
+    return getPlatform() === 'darwin';
 }
 /**
  * Check if running on Linux
@@ -99,7 +99,7 @@ export function isMacOS() {
  * ```
  */
 export function isLinux() {
-    return getPlatform() === "linux";
+    return getPlatform() === 'linux';
 }
 /**
  * Check if running in CI environment
@@ -140,14 +140,14 @@ export function isCI() {
 export function isDocker() {
     try {
         // Check for .dockerenv file
-        const fs = require("node:fs");
-        if (fs.existsSync("/.dockerenv")) {
+        const fs = require('node:fs');
+        if (fs.existsSync('/.dockerenv')) {
             return true;
         }
         // Check for Docker-specific cgroup entries
-        if (fs.existsSync("/proc/1/cgroup")) {
-            const cgroup = fs.readFileSync("/proc/1/cgroup", "utf8");
-            return cgroup.includes("docker") || cgroup.includes("containerd");
+        if (fs.existsSync('/proc/1/cgroup')) {
+            const cgroup = fs.readFileSync('/proc/1/cgroup', 'utf8');
+            return cgroup.includes('docker') || cgroup.includes('containerd');
         }
         return false;
     }
@@ -172,11 +172,11 @@ export function isWSL() {
         return false;
     }
     try {
-        const fs = require("node:fs");
+        const fs = require('node:fs');
         // Check for WSL-specific files
-        if (fs.existsSync("/proc/version")) {
-            const version = fs.readFileSync("/proc/version", "utf8").toLowerCase();
-            return version.includes("microsoft") || version.includes("wsl");
+        if (fs.existsSync('/proc/version')) {
+            const version = fs.readFileSync('/proc/version', 'utf8').toLowerCase();
+            return version.includes('microsoft') || version.includes('wsl');
         }
         return false;
     }
@@ -200,35 +200,35 @@ export function isWSL() {
 export function getEnvironment() {
     const nodeEnv = process.env['NODE_ENV']?.toLowerCase();
     // Direct NODE_ENV mapping
-    if (nodeEnv === "production")
-        return "production";
-    if (nodeEnv === "development" || nodeEnv === "dev")
-        return "development";
-    if (nodeEnv === "test")
-        return "test";
-    if (nodeEnv === "staging")
-        return "staging";
-    if (nodeEnv === "preview")
-        return "preview";
+    if (nodeEnv === 'production')
+        return 'production';
+    if (nodeEnv === 'development' || nodeEnv === 'dev')
+        return 'development';
+    if (nodeEnv === 'test')
+        return 'test';
+    if (nodeEnv === 'staging')
+        return 'staging';
+    if (nodeEnv === 'preview')
+        return 'preview';
     // Infer from other environment variables
-    if (process.env['VERCEL_ENV'] === "production" ||
-        (process.env['NETLIFY'] && process.env[' CONTEXT'] === "production")) {
-        return "production";
+    if (process.env['VERCEL_ENV'] === 'production' ||
+        (process.env['NETLIFY'] && process.env[' CONTEXT'] === 'production')) {
+        return 'production';
     }
-    if (process.env['VERCEL_ENV'] === "preview" ||
-        (process.env['NETLIFY'] && process.env[' CONTEXT'] === "deploy-preview")) {
-        return "preview";
+    if (process.env['VERCEL_ENV'] === 'preview' ||
+        (process.env['NETLIFY'] && process.env[' CONTEXT'] === 'deploy-preview')) {
+        return 'preview';
     }
-    if (process.env['VERCEL_ENV'] === "development" ||
-        (process.env['NETLIFY'] && process.env[' CONTEXT'] === "dev")) {
-        return "development";
+    if (process.env['VERCEL_ENV'] === 'development' ||
+        (process.env['NETLIFY'] && process.env[' CONTEXT'] === 'dev')) {
+        return 'development';
     }
     // CI environments usually indicate production-like environments
     if (isCI()) {
-        return "production";
+        return 'production';
     }
     // Default to development if no clear indicators
-    return nodeEnv ? "unknown" : "development";
+    return nodeEnv ? 'unknown' : 'development';
 }
 /**
  * Check if running in development environment
@@ -243,7 +243,7 @@ export function getEnvironment() {
  * ```
  */
 export function isDevelopment() {
-    return getEnvironment() === "development";
+    return getEnvironment() === 'development';
 }
 /**
  * Check if running in production environment
@@ -258,7 +258,7 @@ export function isDevelopment() {
  * ```
  */
 export function isProduction() {
-    return getEnvironment() === "production";
+    return getEnvironment() === 'production';
 }
 /**
  * Check if running in test environment
@@ -273,7 +273,7 @@ export function isProduction() {
  * ```
  */
 export function isTest() {
-    return getEnvironment() === "test";
+    return getEnvironment() === 'test';
 }
 /**
  * Get comprehensive system information
@@ -444,13 +444,13 @@ export function createSystemSummary() {
     let summary = `${info.platform} ${info.arch} (Node.js ${info.nodeVersion}) - ${info.cpuCount} CPUs, ${info.totalMemoryGB}GB RAM - ${env}`;
     const indicators = [];
     if (info.isCI)
-        indicators.push("CI");
+        indicators.push('CI');
     if (info.isDocker)
-        indicators.push("Docker");
+        indicators.push('Docker');
     if (info.isWSL)
-        indicators.push("WSL");
+        indicators.push('WSL');
     if (indicators.length > 0) {
-        summary += ` (${indicators.join(", ")})`;
+        summary += ` (${indicators.join(', ')})`;
     }
     return summary;
 }
@@ -476,11 +476,11 @@ export function checkSystemRequirements(requirements) {
     const info = getSystemInfo();
     // Check Node.js version
     if (requirements.nodeVersion) {
-        const currentVersion = process.version.replace("v", "");
-        const requiredVersion = requirements.nodeVersion.replace("v", "");
+        const currentVersion = process.version.replace('v', '');
+        const requiredVersion = requirements.nodeVersion.replace('v', '');
         // Simple version comparison (assumes semantic versioning)
-        const currentParts = currentVersion.split(".").map(Number);
-        const requiredParts = requiredVersion.split(".").map(Number);
+        const currentParts = currentVersion.split('.').map(Number);
+        const requiredParts = requiredVersion.split('.').map(Number);
         const currentMajor = currentParts[0] ?? 0;
         const currentMinor = currentParts[1] ?? 0;
         const requiredMajor = requiredParts[0] ?? 0;

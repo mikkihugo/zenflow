@@ -30,13 +30,13 @@
  * await delay(5000); // Wait 5 seconds
  * ```
  */
-import { setTimeout as nodeSetTimeout } from "node:timers/promises";
+import { setTimeout as nodeSetTimeout } from 'node:timers/promises';
 // Foundation re-exports date-fns internally to avoid circular dependency
-import { format } from "date-fns";
-import * as dateFnsLib from "date-fns";
+import { format } from 'date-fns';
+import * as dateFnsLib from 'date-fns';
 // Re-export date-fns for comprehensive date operations
 export const dateFns = dateFnsLib;
-export { addDays, addHours, addMilliseconds, addMinutes, addSeconds, differenceInDays, differenceInHours, differenceInMilliseconds, differenceInMinutes, differenceInSeconds, endOfDay, endOfMonth, endOfWeek, endOfYear, format, fromUnixTime, getTime, getUnixTime, isAfter, isBefore, isEqual, isSameDay, parseISO, startOfDay, startOfMonth, startOfWeek, startOfYear, subDays, subHours, subMilliseconds, subMinutes, subSeconds, } from "date-fns";
+export { addDays, addHours, addMilliseconds, addMinutes, addSeconds, differenceInDays, differenceInHours, differenceInMilliseconds, differenceInMinutes, differenceInSeconds, endOfDay, endOfMonth, endOfWeek, endOfYear, format, fromUnixTime, getTime, getUnixTime, isAfter, isBefore, isEqual, isSameDay, parseISO, startOfDay, startOfMonth, startOfWeek, startOfYear, subDays, subHours, subMilliseconds, subMinutes, subSeconds, } from 'date-fns';
 // =============================================================================
 // TIMESTAMP UTILITIES - Branded timestamp type operations
 // =============================================================================
@@ -128,7 +128,7 @@ export function timestampFromISOString(isoString) {
  * // "2024-01-01 12:00:00"
  * ```
  */
-export function formatTimestamp(timestamp, formatStr = "yyyy-MM-dd HH:mm:ss") {
+export function formatTimestamp(timestamp, formatStr = 'yyyy-MM-dd HH:mm:ss') {
     return format(new Date(timestamp), formatStr);
 }
 // =============================================================================
@@ -179,7 +179,7 @@ export function delay(ms) {
  *]);
  * ```
  */
-export function timeout(ms, message = "Operation timed out") {
+export function timeout(ms, message = 'Operation timed out') {
     return new Promise((_, reject) => {
         setTimeout(() => reject(new Error(message)), ms);
     });
@@ -270,14 +270,14 @@ export function createTimer() {
         },
         stop() {
             if (startTime === null) {
-                throw new Error("Timer not started");
+                throw new Error('Timer not started');
             }
             endTime = highResTime();
             return Number(endTime - startTime) / 1_000_000;
         },
         elapsed() {
             if (startTime === null) {
-                throw new Error("Timer not started");
+                throw new Error('Timer not started');
             }
             const currentTime = endTime || highResTime();
             return Number(currentTime - startTime) / 1_000_000;
@@ -306,12 +306,12 @@ export function createTimer() {
  * ```
  */
 export function isValidTimestamp(timestamp) {
-    if (typeof timestamp !== "number" || !Number.isInteger(timestamp)) {
+    if (typeof timestamp !== 'number' || !Number.isInteger(timestamp)) {
         return false;
     }
     // Must be positive and reasonable (after 1970, before year 3000)
     const minTimestamp = 0;
-    const maxTimestamp = new Date("3000-01-01").getTime();
+    const maxTimestamp = new Date('3000-01-01').getTime();
     return timestamp >= minTimestamp && timestamp <= maxTimestamp;
 }
 /**
@@ -328,7 +328,7 @@ export function isValidTimestamp(timestamp) {
  * ```
  */
 export function isValidISOString(dateString) {
-    if (typeof dateString !== "string")
+    if (typeof dateString !== 'string')
         return false;
     // Check ISO 8601 format pattern
     const isoPattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/;
@@ -342,4 +342,4 @@ export function isValidISOString(dateString) {
 // COMPATIBILITY ALIASES
 // =============================================================================
 // Alias for Node.js timers/promises setTimeout
-export { setInterval as recurring, setTimeout as nodeDelay, } from "node:timers/promises";
+export { setInterval as recurring, setTimeout as nodeDelay, } from 'node:timers/promises';

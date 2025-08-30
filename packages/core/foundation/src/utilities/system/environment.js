@@ -3,26 +3,26 @@
  *
  * Comprehensive environment and system detection utilities.
  */
-import * as os from "node:os";
-import * as process from "node:process";
+import * as os from 'node:os';
+import * as process from 'node:process';
 /**
  * Environment detection utilities
  */
 export function isDevelopment() {
-    return process.env['NODE_ENV'] === "development";
+    return process.env['NODE_ENV'] === 'development';
 }
 export function isProduction() {
-    return process.env['NODE_ENV'] === "production";
+    return process.env['NODE_ENV'] === 'production';
 }
 export function isTest() {
-    return process.env['NODE_ENV'] === "test";
+    return process.env['NODE_ENV'] === 'test';
 }
 export function getEnvironment() {
     const env = process.env['NODE_ENV'];
-    if (env === "development" || env === "production" || env === "test") {
+    if (env === 'development' || env === 'production' || env === 'test') {
         return env;
     }
-    return "unknown";
+    return 'unknown';
 }
 /**
  * System information utilities
@@ -66,13 +66,13 @@ export function getArchitecture() {
  * Platform detection utilities
  */
 export function isWindows() {
-    return os.platform() === "win32";
+    return os.platform() === 'win32';
 }
 export function isMacOS() {
-    return os.platform() === "darwin";
+    return os.platform() === 'darwin';
 }
 export function isLinux() {
-    return os.platform() === "linux";
+    return os.platform() === 'linux';
 }
 /**
  * Environment context detection
@@ -85,9 +85,9 @@ export function isCI() {
 }
 export function isDocker() {
     try {
-        const fs = require("node:fs");
-        return (fs.existsSync("/.dockerenv") ||
-            fs.readFileSync("/proc/1/cgroup", "utf8").includes("docker"));
+        const fs = require('node:fs');
+        return (fs.existsSync('/.dockerenv') ||
+            fs.readFileSync('/proc/1/cgroup', 'utf8').includes('docker'));
     }
     catch {
         return false;
@@ -95,9 +95,9 @@ export function isDocker() {
 }
 export function isWSL() {
     try {
-        const fs = require("node:fs");
-        const release = fs.readFileSync("/proc/version", "utf8");
-        return release.toLowerCase().includes("microsoft");
+        const fs = require('node:fs');
+        const release = fs.readFileSync('/proc/version', 'utf8');
+        return release.toLowerCase().includes('microsoft');
     }
     catch {
         return false;
@@ -110,11 +110,11 @@ export function getWorkspaceDetector() {
     return {
         isMonorepo: () => {
             try {
-                const fs = require("node:fs");
-                const path = require("node:path");
-                return (fs.existsSync(path.join(process.cwd(), "pnpm-workspace.yaml")) ||
-                    fs.existsSync(path.join(process.cwd(), "yarn.lock")) ||
-                    fs.existsSync(path.join(process.cwd(), "lerna.json")));
+                const fs = require('node:fs');
+                const path = require('node:path');
+                return (fs.existsSync(path.join(process.cwd(), 'pnpm-workspace.yaml')) ||
+                    fs.existsSync(path.join(process.cwd(), 'yarn.lock')) ||
+                    fs.existsSync(path.join(process.cwd(), 'lerna.json')));
             }
             catch {
                 return false;
@@ -122,9 +122,9 @@ export function getWorkspaceDetector() {
         },
         hasPackageJson: () => {
             try {
-                const fs = require("node:fs");
-                const path = require("node:path");
-                return fs.existsSync(path.join(process.cwd(), "package.json"));
+                const fs = require('node:fs');
+                const path = require('node:path');
+                return fs.existsSync(path.join(process.cwd(), 'package.json'));
             }
             catch {
                 return false;
@@ -136,14 +136,14 @@ export function getWorkspaceDetector() {
  * System monitoring
  */
 export function startMonitoring() {
-    const logger = require("../../core/logging").getLogger("system:monitoring");
+    const logger = require('../../core/logging').getLogger('system:monitoring');
     return {
         start: () => {
             // Basic system monitoring implementation
-            logger.info("System monitoring started");
+            logger.info('System monitoring started');
         },
         stop: () => {
-            logger.info("System monitoring stopped");
+            logger.info('System monitoring stopped');
         },
     };
 }
@@ -170,15 +170,15 @@ export function createSystemSummary() {
  */
 export function checkSystemRequirements() {
     const nodeVersion = process.version;
-    const majorVersion = parseInt(nodeVersion.slice(1).split(".")[0] || "0", 10);
+    const majorVersion = parseInt(nodeVersion.slice(1).split('.')[0] || '0', 10);
     return {
         nodeVersion: {
             current: nodeVersion,
             supported: majorVersion >= 18,
-            minimum: "18.0.0",
+            minimum: '18.0.0',
         },
         platform: {
-            supported: ["win32", "darwin", "linux"].includes(process.platform),
+            supported: ['win32', 'darwin', 'linux'].includes(process.platform),
             current: process.platform,
         },
         memory: {

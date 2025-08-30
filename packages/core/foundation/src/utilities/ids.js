@@ -20,8 +20,8 @@
  * const customId = generateCustomId(16); // hex-based
  * ```
  */
-import { randomBytes, randomUUID } from "node:crypto";
-import { customAlphabet, nanoid } from "nanoid";
+import { randomBytes, randomUUID } from 'node:crypto';
+import { customAlphabet, nanoid } from 'nanoid';
 // =============================================================================
 // UUID UTILITIES - Standard RFC 4122 UUIDs
 // =============================================================================
@@ -51,7 +51,7 @@ export function generateUUID() {
  * ```
  */
 export function isUUID(value) {
-    return (typeof value === "string" &&
+    return (typeof value === 'string' &&
         /^[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i.test(value));
 }
 // =============================================================================
@@ -104,7 +104,7 @@ export function createCustomGenerator(alphabet, size = 21) {
  * ```
  */
 export function generateCustomId(bytes = 16) {
-    return randomBytes(bytes).toString("hex");
+    return randomBytes(bytes).toString('hex');
 }
 /**
  * Generate a timestamped ID with optional prefix.
@@ -121,7 +121,7 @@ export function generateCustomId(bytes = 16) {
  */
 export function generateTimestampId(prefix, randomBytesCount = 4) {
     const timestamp = Date.now();
-    const random = randomBytes(randomBytesCount).toString("hex");
+    const random = randomBytes(randomBytesCount).toString('hex');
     return prefix ? `${prefix}-${timestamp}-${random}` : `${timestamp}-${random}`;
 }
 // =============================================================================
@@ -139,7 +139,7 @@ export function generateTimestampId(prefix, randomBytesCount = 4) {
  * ```
  */
 export function generateSessionId() {
-    return randomBytes(32).toString("hex");
+    return randomBytes(32).toString('hex');
 }
 /**
  * Generate an API key with specified format.
@@ -154,8 +154,8 @@ export function generateSessionId() {
  * const publicKey = generateApiKey("pk", 16); // "pk_1a2b3c4d..."
  * ```
  */
-export function generateApiKey(prefix = "key", bytes = 24) {
-    const keyData = randomBytes(bytes).toString("base64url");
+export function generateApiKey(prefix = 'key', bytes = 24) {
+    const keyData = randomBytes(bytes).toString('base64url');
     return `${prefix}_${keyData}`;
 }
 // =============================================================================

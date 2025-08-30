@@ -85,8 +85,8 @@ export class SimpleMLEngine {
     async analyze(data) {
         // Route to Rust statistical analysis
         const task = {
-            algorithm: "statistical_analysis",
-            parameters: { analysis_type: "comprehensive" },
+            algorithm: 'statistical_analysis',
+            parameters: { analysis_type: 'comprehensive' },
             data: new Float32Array(data),
         };
         const result = await this.rustML.optimize(task);
@@ -95,7 +95,7 @@ export class SimpleMLEngine {
             std: result.result.std || 0,
             median: result.result.median || 0,
             quantiles: result.result.quantiles || [0, 0.25, 0.5, 0.75, 1],
-            distribution: result.result.distribution || "unknown",
+            distribution: result.result.distribution || 'unknown',
             outliers: result.result.outliers || [],
             normalityTest: {
                 statistic: result.result.normality_statistic || 0,
@@ -107,8 +107,8 @@ export class SimpleMLEngine {
     async learn(data, target) {
         // Route to Rust pattern learning
         const task = {
-            algorithm: "pattern_learning",
-            parameters: { learning_type: "unsupervised" },
+            algorithm: 'pattern_learning',
+            parameters: { learning_type: 'unsupervised' },
             data: new Float32Array(data),
             target: target ? new Float32Array(target) : new Float32Array(0),
         };
@@ -131,12 +131,12 @@ export function createMLEngine(config, logger) {
     // Handle different call signatures - support both (config, logger) and (config) patterns
     const rustConfig = {
         enableTelemetry: config?.enableTelemetry || config?.enableProfiling || false,
-        optimizationLevel: config?.optimizationLevel || "moderate",
+        optimizationLevel: config?.optimizationLevel || 'moderate',
         parallelExecution: config?.parallelExecution || config?.parallelEvaluation || false,
         enableProfiling: config?.enableProfiling || false,
         parallelEvaluation: config?.parallelEvaluation || false,
     };
-    const loggerInstance = logger || getLogger("neural-ml");
+    const loggerInstance = logger || getLogger('neural-ml');
     return new SimpleMLEngine(rustConfig, loggerInstance);
 }
 export function createBayesianOptimizer(config) {
@@ -276,6 +276,386 @@ export function createMultiObjectiveOptimizer(config) {
         async configure(config) {
             if (config.bounds) {
                 bounds = config.bounds;
+            }
+        },
+    };
+}
+export function createGradientOptimizer(config) {
+    let learningRate = config?.learningRate || 0.01;
+    let epsilon = config?.epsilon || 1e-8;
+    return {
+        async initialize(cfg) {
+            if (cfg?.learningRate)
+                learningRate = cfg.learningRate;
+            if (cfg?.epsilon)
+                epsilon = cfg.epsilon;
+        },
+        async computeGradient(params, objective) {
+            // Numerical gradient computation using finite differences
+            const gradients = [];
+            const h = epsilon; // Step size for finite differences
+            for (let i = 0; i < params.length; i++) {
+                // Forward difference
+                const paramsPlus = [...params];
+                paramsPlus[i] += h;
+                const fPlus = await objective(paramsPlus);
+                const paramsMinus = [...params];
+                paramsMinus[i] -= h;
+                const fMinus = await objective(paramsMinus);
+                // Central difference approximation
+                const gradient = (fPlus - fMinus) / (2 * h);
+                gradients.push(gradient);
+            }
+            // Check convergence (gradients close to zero)
+            const gradientNorm = Math.sqrt(gradients.reduce((sum, g) => sum + g * g, 0));
+            const convergence = gradientNorm < epsilon * 10;
+            return {
+                gradients,
+                convergence,
+                stepSize: learningRate,
+            };
+        },
+        async step(gradients) {
+            // Apply gradient descent step
+            return gradients.map((g) => -learningRate * g);
+        },
+    };
+}
+export function createPatternLearner(config) {
+    let clusterCount = config?.clusterCount || 3;
+    let similarityThreshold = config?.similarityThreshold || 0.7;
+    let windowSize = config?.windowSize || 5;
+    return {
+        async initialize(cfg) {
+            if (cfg?.clusterCount)
+                clusterCount = cfg.clusterCount;
+            if (cfg?.similarityThreshold)
+                similarityThreshold = cfg.similarityThreshold;
+            if (cfg?.windowSize)
+                windowSize = cfg.windowSize;
+        },
+        async learnPatterns(data) {
+            // Convert data to numerical format for pattern analysis
+            const numericalData = data.map((item) => {
+                if (typeof item === 'number')
+                    return item;
+                if (typeof item === 'string')
+                    return item.length; // Simple text->number conversion
+                if (Array.isArray(item))
+                    return item.length;
+                return 0;
+            });
+            // Find sequential patterns using sliding window
+            const patterns = [];
+            const patternCounts = new Map();
+            for (let i = 0; i <= numericalData.length - windowSize; i++) {
+                const window = numericalData.slice(i, i + windowSize);
+                const patternKey = window.join(',');
+                patternCounts.set(patternKey, (patternCounts.get(patternKey) || 0) + 1);
+            }
+            // Convert frequent patterns to results
+            for (const [patternKey, count] of Array.from(patternCounts.entries())) {
+                const frequency = count / (numericalData.length - windowSize + 1);
+                if (frequency >= similarityThreshold * 0.5) {
+                    // Adjust threshold
+                    patterns.push({
+                        pattern: patternKey,
+                        frequency,
+                        confidence: Math.min(frequency * 1.2, 1.0), // Simple confidence estimate
+                    });
+                }
+            }
+            // Perform simple k-means clustering
+            const clusters = await this.performClustering(numericalData, clusterCount);
+            // Calculate similarity metrics
+            const similarity = this.calculateSimilarity(numericalData);
+            return {
+                patterns,
+                clusters,
+                similarity,
+            };
+        },
+        async performClustering(data, k) {
+            if (data.length === 0)
+                return [];
+            // Simple 1D k-means clustering
+            const min = Math.min(...data);
+            const max = Math.max(...data);
+            // Initialize centroids evenly spaced
+            let centroids = Array.from({ length: k }, (_, i) => min + ((max - min) * i) / (k - 1));
+            for (let iteration = 0; iteration < 10; iteration++) {
+                // Assign points to nearest centroid
+                const clusters = Array.from({ length: k }, () => []);
+                for (const point of data) {
+                    let nearestIdx = 0;
+                    let nearestDist = Math.abs(point - centroids[0]);
+                    for (let i = 1; i < k; i++) {
+                        const dist = Math.abs(point - centroids[i]);
+                        if (dist < nearestDist) {
+                            nearestDist = dist;
+                            nearestIdx = i;
+                        }
+                    }
+                    clusters[nearestIdx].push(point);
+                }
+                // Update centroids
+                const newCentroids = clusters.map((cluster) => cluster.length > 0
+                    ? cluster.reduce((a, b) => a + b, 0) / cluster.length
+                    : 0);
+                // Check convergence
+                const converged = centroids.every((c, i) => Math.abs(c - newCentroids[i]) < 1e-6);
+                centroids = newCentroids;
+                if (converged)
+                    break;
+            }
+            // Calculate final cluster stats
+            return centroids.map((centroid, i) => {
+                const clusterPoints = data.filter((point) => {
+                    const distances = centroids.map((c) => Math.abs(point - c));
+                    const nearestIdx = distances.indexOf(Math.min(...distances));
+                    return nearestIdx === i;
+                });
+                const inertia = clusterPoints.reduce((sum, point) => sum + (point - centroid) ** 2, 0);
+                return {
+                    center: [centroid],
+                    members: clusterPoints.length,
+                    inertia,
+                };
+            });
+        },
+        calculateSimilarity(data) {
+            if (data.length < 2)
+                return 1.0;
+            // Calculate coefficient of variation as inverse similarity measure
+            const mean = data.reduce((a, b) => a + b, 0) / data.length;
+            const variance = data.reduce((sum, x) => sum + (x - mean) ** 2, 0) / data.length;
+            const stdDev = Math.sqrt(variance);
+            const coefficientOfVariation = stdDev / Math.abs(mean);
+            // Convert to similarity (lower variation = higher similarity)
+            return Math.max(0, 1 - Math.min(coefficientOfVariation, 1));
+        },
+        async recognizePattern(input) {
+            // Recognize pattern in a single input by comparing against learned patterns
+            return this.learnPatterns([input]);
+        },
+        async trainPatterns(data, labels) {
+            // Train on labeled data (supervised learning)
+            if (labels) {
+                // Use labels to guide pattern learning
+                const labeledData = data.map((item, i) => ({ item, label: labels[i] }));
+                // Group by label and learn patterns within each group
+                const groupedPatterns = [];
+                const labelSet = [...new Set(labels)];
+                for (const label of labelSet) {
+                    const groupData = labeledData
+                        .filter((ld) => ld.label === label)
+                        .map((ld) => ld.item);
+                    if (groupData.length > 0) {
+                        const groupResult = await this.learnPatterns(groupData);
+                        groupedPatterns.push({
+                            label,
+                            patterns: groupResult.patterns,
+                            clusters: groupResult.clusters,
+                            similarity: groupResult.similarity,
+                        });
+                    }
+                }
+                // Combine results from all groups
+                const allPatterns = groupedPatterns.flatMap((gp) => gp.patterns.map((p) => ({ ...p, label: gp.label })));
+                const allClusters = groupedPatterns.flatMap((gp) => gp.clusters || []);
+                const avgSimilarity = groupedPatterns.reduce((sum, gp) => sum + gp.similarity, 0) /
+                    groupedPatterns.length;
+                return {
+                    patterns: allPatterns,
+                    clusters: allClusters,
+                    similarity: avgSimilarity,
+                };
+            }
+            return this.learnPatterns(data);
+        },
+        async configure(config) {
+            if (config?.clusterCount)
+                clusterCount = config.clusterCount;
+            if (config?.similarityThreshold)
+                similarityThreshold = config.similarityThreshold;
+            if (config?.windowSize)
+                windowSize = config.windowSize;
+        },
+    };
+}
+export function createOnlineLearner(config) {
+    let learnerConfig = {
+        algorithm: config?.algorithm || 'sgd',
+        learningRate: config?.learningRate || 0.01,
+        regularization: config?.regularization || 0.001,
+        adaptiveLearningRate: config?.adaptiveLearningRate ?? true,
+        forgettingFactor: config?.forgettingFactor || 0.95,
+    };
+    let weights = [];
+    let momentum = [];
+    let iteration = 0;
+    return {
+        async initialize(cfg) {
+            if (cfg?.weights)
+                weights = [...cfg.weights];
+            if (cfg?.dimensions) {
+                weights = new Array(cfg.dimensions)
+                    .fill(0)
+                    .map(() => Math.random() * 0.01);
+                momentum = new Array(cfg.dimensions).fill(0);
+            }
+            iteration = 0;
+        },
+        async configure(params) {
+            learnerConfig = { ...learnerConfig, ...params };
+        },
+        async updateModel(data, target) {
+            iteration++;
+            // Convert input to feature vector
+            const features = this.extractFeatures(data);
+            if (weights.length === 0) {
+                weights = new Array(features.length)
+                    .fill(0)
+                    .map(() => Math.random() * 0.01);
+                momentum = new Array(features.length).fill(0);
+            }
+            if (target !== undefined) {
+                // Supervised learning update
+                const prediction = this.dotProduct(features, weights);
+                const error = target - prediction;
+                // Adaptive learning rate
+                let currentLR = learnerConfig.learningRate;
+                if (learnerConfig.adaptiveLearningRate) {
+                    currentLR = learnerConfig.learningRate / Math.sqrt(iteration);
+                }
+                // Update weights based on algorithm
+                switch (learnerConfig.algorithm) {
+                    case 'sgd':
+                        this.updateWeightsSGD(features, error, currentLR);
+                        break;
+                    case 'momentum':
+                        this.updateWeightsMomentum(features, error, currentLR);
+                        break;
+                    default:
+                        this.updateWeightsSGD(features, error, currentLR);
+                }
+            }
+        },
+        async predict(input) {
+            const features = this.extractFeatures(input);
+            if (weights.length === 0)
+                return 0.5; // Default prediction
+            const rawPrediction = this.dotProduct(features, weights);
+            // Apply sigmoid activation for binary classification
+            return 1 / (1 + Math.exp(-rawPrediction));
+        },
+        async update(features, target) {
+            return this.updateModel(features, target);
+        },
+        async adaptLearningRate(performance) {
+            // Adapt learning rate based on performance
+            if (performance > 0.8) {
+                learnerConfig.learningRate *= 1.05; // Increase if performing well
+            }
+            else if (performance < 0.6) {
+                learnerConfig.learningRate *= 0.95; // Decrease if performing poorly
+            }
+            // Keep learning rate within reasonable bounds
+            learnerConfig.learningRate = Math.max(0.001, Math.min(0.1, learnerConfig.learningRate));
+            return learnerConfig.learningRate;
+        },
+        async detectDrift(predictions, targets) {
+            if (predictions.length !== targets.length || predictions.length < 10) {
+                return {
+                    driftDetected: false,
+                    driftStrength: 0,
+                    confidence: 0.9,
+                };
+            }
+            // Calculate error rates for recent and older windows
+            const windowSize = Math.floor(predictions.length / 2);
+            const recentErrors = predictions
+                .slice(-windowSize)
+                .map((pred, i) => Math.abs(pred - targets[targets.length - windowSize + i]));
+            const olderErrors = predictions
+                .slice(0, windowSize)
+                .map((pred, i) => Math.abs(pred - targets[i]));
+            const recentErrorRate = recentErrors.reduce((a, b) => a + b, 0) / recentErrors.length;
+            const olderErrorRate = olderErrors.reduce((a, b) => a + b, 0) / olderErrors.length;
+            const driftStrength = Math.abs(recentErrorRate - olderErrorRate);
+            const driftDetected = driftStrength > 0.1; // Threshold for drift detection
+            let changePoint;
+            if (driftDetected) {
+                // Simple change point detection - find where error rate starts increasing
+                for (let i = windowSize; i < predictions.length - 5; i++) {
+                    const localErrors = predictions
+                        .slice(i, i + 5)
+                        .map((pred, j) => Math.abs(pred - targets[i + j]));
+                    const localErrorRate = localErrors.reduce((a, b) => a + b, 0) / localErrors.length;
+                    if (localErrorRate > olderErrorRate * 1.5) {
+                        changePoint = i;
+                        break;
+                    }
+                }
+            }
+            return {
+                driftDetected,
+                driftStrength,
+                changePoint,
+                confidence: Math.min(0.95, 1 - driftStrength),
+            };
+        },
+        async reset(keepHistory = false) {
+            if (!keepHistory) {
+                weights = [];
+                momentum = [];
+                iteration = 0;
+            }
+            else {
+                // Keep structure but reset learning state
+                momentum.fill(0);
+                iteration = 0;
+            }
+        },
+        // Helper methods
+        extractFeatures(data) {
+            if (typeof data === 'number')
+                return [data];
+            if (Array.isArray(data))
+                return data.filter((x) => typeof x === 'number');
+            if (typeof data === 'string') {
+                // Simple text features:length, vowel count, word count
+                const vowelCount = (data.match(/[aeiou]/gi) || []).length;
+                const wordCount = data.split(/\s+/).length;
+                return [data.length, vowelCount, wordCount];
+            }
+            if (typeof data === 'object' && data !== null) {
+                // Extract numeric properties
+                return Object.values(data).filter((v) => typeof v === 'number');
+            }
+            return [0]; // Fallback
+        },
+        dotProduct(a, b) {
+            const minLen = Math.min(a.length, b.length);
+            let result = 0;
+            for (let i = 0; i < minLen; i++) {
+                result += a[i] * b[i];
+            }
+            return result;
+        },
+        updateWeightsSGD(features, error, learningRate) {
+            for (let i = 0; i < Math.min(weights.length, features.length); i++) {
+                // Gradient descent with L2 regularization
+                const gradient = error * features[i] - learnerConfig.regularization * weights[i];
+                weights[i] += learningRate * gradient;
+            }
+        },
+        updateWeightsMomentum(features, error, learningRate) {
+            const momentumFactor = 0.9;
+            for (let i = 0; i < Math.min(weights.length, features.length); i++) {
+                const gradient = error * features[i] - learnerConfig.regularization * weights[i];
+                momentum[i] = momentumFactor * momentum[i] + learningRate * gradient;
+                weights[i] += momentum[i];
             }
         },
     };

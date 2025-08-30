@@ -29,8 +29,8 @@
  * ```
  */
 // Foundation re-exports zod - use internal import to avoid circular dependency
-import { ZodError, z as zodInstance } from "zod";
-import { err, ok } from "../error-handling/index.js";
+import { ZodError, z as zodInstance } from 'zod';
+import { err, ok } from '../error-handling/index.js';
 // =============================================================================
 // ZOD SCHEMA UTILITIES - Re-export for convenience
 // =============================================================================
@@ -68,8 +68,8 @@ export function validateInput(schema, data) {
         }
         return err(new ZodError([
             {
-                code: "custom",
-                message: "Unknown validation error",
+                code: 'custom',
+                message: 'Unknown validation error',
                 path: [],
             },
         ]));
@@ -110,7 +110,7 @@ export function createValidator(schema) {
  * ```
  */
 export function isUUID(value) {
-    return (typeof value === "string" &&
+    return (typeof value === 'string' &&
         /^[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i.test(value));
 }
 /**
@@ -128,7 +128,7 @@ export function isUUID(value) {
  * ```
  */
 export function isEmail(value) {
-    return typeof value === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    return typeof value === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 /**
  * Check if value is a valid timestamp.
@@ -144,7 +144,7 @@ export function isEmail(value) {
  * ```
  */
 export function isTimestamp(value) {
-    return typeof value === "number" && value > 0 && Number.isInteger(value);
+    return typeof value === 'number' && value > 0 && Number.isInteger(value);
 }
 /**
  * Check if value is a valid ISO date string.
@@ -160,7 +160,7 @@ export function isTimestamp(value) {
  * ```
  */
 export function isISODateString(value) {
-    return (typeof value === "string" &&
+    return (typeof value === 'string' &&
         !Number.isNaN(Date.parse(value)) &&
         /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/.test(value));
 }
@@ -180,9 +180,9 @@ export function isISODateString(value) {
 export function isPrimitive(value) {
     return (value === null ||
         value === undefined ||
-        typeof value === "string" ||
-        typeof value === "number" ||
-        typeof value === "boolean");
+        typeof value === 'string' ||
+        typeof value === 'number' ||
+        typeof value === 'boolean');
 }
 /**
  * Check if array is non-empty.
@@ -215,7 +215,7 @@ export function isNonEmptyArray(arr) {
  * ```
  */
 export function isURL(value) {
-    if (typeof value !== "string")
+    if (typeof value !== 'string')
         return false;
     try {
         if (typeof globalThis.URL !== 'undefined') {

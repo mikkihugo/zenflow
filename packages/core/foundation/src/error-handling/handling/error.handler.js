@@ -17,11 +17,11 @@
  * @since 2.0.0
  * @version 2.0.0
  */
-import { CircuitState, ConsecutiveBreaker, circuitBreaker as createCircuitBreakerPolicy, retry as createRetryPolicy, timeout as createTimeoutPolicy, ExponentialBackoff, handleAll, TaskCancelledError, TimeoutStrategy, } from "cockatiel";
+import { CircuitState, ConsecutiveBreaker, circuitBreaker as createCircuitBreakerPolicy, retry as createRetryPolicy, timeout as createTimeoutPolicy, ExponentialBackoff, handleAll, TaskCancelledError, TimeoutStrategy, } from 'cockatiel';
 // Use internal neverthrow import to avoid circular dependency (foundation internal implementation)
-import { err, errAsync, ok, okAsync, Result, ResultAsync } from "neverthrow";
-import { getLogger } from "../../core/logging/index.js";
-const logger = getLogger("error-handling");
+import { err, errAsync, ok, okAsync, Result, ResultAsync } from 'neverthrow';
+import { getLogger } from '../../core/logging/index.js';
+const logger = getLogger('error-handling');
 /**
  * Enhanced error class with structured context and metadata.
  * Provides rich error information for debugging and monitoring.
@@ -48,7 +48,7 @@ export class EnhancedError extends Error {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             this.cause = options.cause; // Error.cause is not widely supported yet
         }
-        this.name = "EnhancedError";
+        this.name = 'EnhancedError';
         this.context = context;
         this.timestamp = new Date();
         this.code = code;
@@ -105,7 +105,7 @@ export class ContextError extends Error {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             this.cause = options.cause; // Error.cause is not widely supported yet
         }
-        this.name = "ContextError";
+        this.name = 'ContextError';
         this.context = context;
         this.timestamp = new Date();
         this.code = code;
@@ -138,10 +138,10 @@ export class ContextError extends Error {
         // Add enhanced context information for ContextError
         return {
             ...baseObject,
-            errorType: "ContextError",
+            errorType: 'ContextError',
             contextKeys: Object.keys(this.context || {}),
             hasContext: Boolean(this.context && Object.keys(this.context).length > 0),
-            contextSummary: Object.keys(this.context || {}).join(", ") || "no context",
+            contextSummary: Object.keys(this.context || {}).join(', ') || 'no context',
         };
     }
 }
@@ -150,32 +150,32 @@ export class ContextError extends Error {
  */
 export class ValidationError extends ContextError {
     constructor(message, context = {}) {
-        super(message, context, "VALIDATION_ERROR");
-        this.name = "ValidationError";
+        super(message, context, 'VALIDATION_ERROR');
+        this.name = 'ValidationError';
     }
 }
 export class ConfigurationError extends ContextError {
     constructor(message, context = {}) {
-        super(message, context, "CONFIGURATION_ERROR");
-        this.name = "ConfigurationError";
+        super(message, context, 'CONFIGURATION_ERROR');
+        this.name = 'ConfigurationError';
     }
 }
 export class NetworkError extends ContextError {
     constructor(message, context = {}) {
-        super(message, context, "NETWORK_ERROR");
-        this.name = "NetworkError";
+        super(message, context, 'NETWORK_ERROR');
+        this.name = 'NetworkError';
     }
 }
 export class TimeoutError extends ContextError {
     constructor(message, context = {}) {
-        super(message, context, "TIMEOUT_ERROR");
-        this.name = "TimeoutError";
+        super(message, context, 'TIMEOUT_ERROR');
+        this.name = 'TimeoutError';
     }
 }
 export class ResourceError extends ContextError {
     constructor(message, context = {}) {
-        super(message, context, "RESOURCE_ERROR");
-        this.name = "ResourceError";
+        super(message, context, 'RESOURCE_ERROR');
+        this.name = 'ResourceError';
     }
 }
 /**
@@ -191,7 +191,7 @@ export function ensureError(value) {
     if (isError(value)) {
         return value;
     }
-    if (typeof value === "string") {
+    if (typeof value === 'string') {
         return new Error(value);
     }
     return new Error(String(value));
@@ -260,7 +260,7 @@ export async function withRetry(fn, options = {}) {
     });
     const giveUpListener = retryPolicy.onGiveUp((data) => {
         const error = data.error || new Error(String(data.reason || data.value || data));
-        logger.error("Retry failed permanently:", error);
+        logger.error('Retry failed permanently:', error);
     });
     try {
         const result = await retryPolicy.execute(fn);
@@ -268,7 +268,7 @@ export async function withRetry(fn, options = {}) {
     }
     catch (error) {
         const enhancedError = withContext(error, {
-            operation: "retry",
+            operation: 'retry',
             maxRetries: maxAttempts,
             finalAttempt: true,
         });
@@ -286,7 +286,7 @@ export class CircuitBreakerWithMonitoring {
     policy;
     name;
     action;
-    constructor(action, options = {}, name = "circuit-breaker") {
+    constructor(action, options = {}, name = 'circuit-breaker') {
         this.name = name;
         this.action = action;
         const { errorThresholdPercentage = 50, resetTimeout = 30000, minimumThroughput = 10, } = options;
@@ -382,10 +382,10 @@ export async function withTimeout(fn, timeoutMs, timeoutMessage, strategy = Time
     const failureListener = timeoutPolicy.onFailure((data) => {
         const reason = data.reason || data;
         if (reason instanceof TaskCancelledError) {
-            logger.debug("Timeout policy cancelled operation");
+            logger.debug('Timeout policy cancelled operation');
         }
         else {
-            logger.warn("Timeout policy failed:", reason);
+            logger.warn('Timeout policy failed:', reason);
         }
     });
     try {
@@ -422,7 +422,7 @@ export function withTimeoutLegacy(fn, timeoutMs, timeoutMessage) {
         fn(),
         new Promise((resolve, reject) => {
             resolve; // Mark as used for linter
-            signal.addEventListener("abort", () => {
+            signal.addEventListener('abort', () => {
                 reject(new TaskCancelledError());
             });
         }),
@@ -436,7 +436,7 @@ export async function executeAll(operations) {
     const successes = [];
     const failures = [];
     for (const result of results) {
-        if (result.status === "fulfilled") {
+        if (result.status === 'fulfilled') {
             successes.push(result.value);
         }
         else {
@@ -458,7 +458,7 @@ export async function executeAllSuccessful(operations) {
         const results = await Promise.allSettled(operations.map((op) => op()));
         const successes = [];
         for (const result of results) {
-            if (result.status === "fulfilled") {
+            if (result.status === 'fulfilled') {
                 successes.push(result.value);
             }
         }
@@ -477,7 +477,7 @@ export function transformError(result, transformer) {
 export function createErrorRecovery(fallbackValue, shouldRecover) {
     return (error) => {
         if (!shouldRecover || shouldRecover(error)) {
-            logger.debug("Recovering from error with fallback value:", error.message);
+            logger.debug('Recovering from error with fallback value:', error.message);
             return ok(fallbackValue);
         }
         return err(error);
@@ -541,16 +541,16 @@ export function createErrorChain(baseError, ...additionalErrors) {
         .filter(isErrorWithContext)
         .map((e) => e.context)
         .reduce((acc, ctx) => ({ ...acc, ...ctx }), {});
-    return new ContextError(messages.join(" -> "), {
+    return new ContextError(messages.join(' -> '), {
         ...contexts,
         errorChain: messages,
         errorCount: allErrors.length,
-    }, "ERROR_CHAIN", { cause: baseError });
+    }, 'ERROR_CHAIN', { cause: baseError });
 }
 // FORCING PATTERNS - Use Result instead of try/catch
 export { Result, ok, err, ResultAsync, errAsync, okAsync };
 // Re-export cockatiel types and errors
-export { CircuitState, ConstantBackoff, DelegateBackoff, ExponentialBackoff, IterableBackoff, TaskCancelledError, TimeoutStrategy, } from "cockatiel";
+export { CircuitState, ConstantBackoff, DelegateBackoff, ExponentialBackoff, IterableBackoff, TaskCancelledError, TimeoutStrategy, } from 'cockatiel';
 // FORCING EXPORTS - Force Result pattern usage
 export const attempt = safe;
 export const attemptAsync = safeAsync;
@@ -565,11 +565,11 @@ export const chain = createErrorChain;
 export const context = withContext;
 // FORCING PATTERN - Replace console.error, process.exit patterns
 export const exit = (error, code = 1) => {
-    logger.error("Process exiting due to error:", error);
+    logger.error('Process exiting due to error:', error);
     process.exit(code);
 };
 export const panic = (error) => {
-    logger.error("PANIC - Unrecoverable error:", error);
+    logger.error('PANIC - Unrecoverable error:', error);
     process.exit(1);
 };
 const createAssertion = (defaultMessage) => (condition, errorMessage = defaultMessage) => {
@@ -577,8 +577,8 @@ const createAssertion = (defaultMessage) => (condition, errorMessage = defaultMe
         throw new Error(errorMessage);
     }
 };
-export const assert = createAssertion("Assertion failed");
-export const invariant = createAssertion("Invariant violation");
+export const assert = createAssertion('Assertion failed');
+export const invariant = createAssertion('Invariant violation');
 // FORCING PATTERN - Replace throw statements
 export const fail = (message, context) => {
     throw new ContextError(message, context || {});
@@ -587,7 +587,7 @@ export const failWith = (error) => {
     throw error;
 };
 // Export enums with clear naming to avoid conflicts
-export { ErrorCategory as ErrorCategoryEnum, ErrorSeverity as ErrorSeverityEnum, } from "../../types/errors";
+export { ErrorCategory as ErrorCategoryEnum, ErrorSeverity as ErrorSeverityEnum, } from '../../types/errors';
 export const ERROR_HANDLING = {
     safe,
     safeAsync,

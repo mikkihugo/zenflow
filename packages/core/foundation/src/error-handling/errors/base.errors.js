@@ -7,14 +7,14 @@
 /**
  * @file Errors implementation.
  */
-import { getLogger } from "../../core/logging/index.js";
+import { getLogger } from '../../core/logging/index.js';
 // Define ValidationError and ConfigurationError locally to avoid circular import
 export class ValidationError extends Error {
     field;
     constructor(message, field) {
         super(message);
         this.field = field;
-        this.name = "ValidationError";
+        this.name = 'ValidationError';
     }
 }
 export class ConfigurationError extends Error {
@@ -22,10 +22,10 @@ export class ConfigurationError extends Error {
     constructor(message, configKey) {
         super(message);
         this.configKey = configKey;
-        this.name = "ConfigurationError";
+        this.name = 'ConfigurationError';
     }
 }
-const logger = getLogger("ErrorSystem");
+const logger = getLogger('ErrorSystem');
 // ===============================
 // Base Error Classes
 // ===============================
@@ -73,23 +73,23 @@ export class BaseClaudeZenError extends Error {
     constructor(message, options) {
         super(message);
         this.category = options.category;
-        this.severity = options.severity ?? "medium";
+        this.severity = options.severity ?? 'medium';
         this.recoverable = options.recoverable ?? true;
         this.context = {
             timestamp: Date.now(),
             component: this.category,
-            stackTrace: this.stack || "",
+            stackTrace: this.stack || '',
             ...(options.context ?? {}),
         };
         // Log error immediately
         this.logError();
     }
     logError() {
-        const logLevel = this.severity === "critical"
-            ? "error"
-            : this.severity === "high"
-                ? "warn"
-                : "info";
+        const logLevel = this.severity === 'critical'
+            ? 'error'
+            : this.severity === 'high'
+                ? 'warn'
+                : 'info';
         logger[logLevel](`[${this.category}] ${this.message}`, {
             severity: this.severity,
             context: this.context,
@@ -155,14 +155,14 @@ export class SwarmError extends BaseClaudeZenError {
      * @param severity - Error severity level (defaults to 'medium').
      * @param context - Additional error context (optional).
      */
-    constructor(message, swarmId, severity = "medium", context = {}) {
+    constructor(message, swarmId, severity = 'medium', context = {}) {
         super(message, {
-            category: "Swarm",
+            category: 'Swarm',
             severity,
             context: { ...context, metadata: { swarmId } },
         });
         this.swarmId = swarmId;
-        this.name = "SwarmError";
+        this.name = 'SwarmError';
     }
 }
 /**
@@ -187,15 +187,15 @@ export class AgentError extends BaseClaudeZenError {
      * @param agentType - Type of agent (e.g., 'researcher',    'coder') (optional).
      * @param severity - Error severity level (defaults to 'medium').
      */
-    constructor(message, agentId, agentType, severity = "medium") {
+    constructor(message, agentId, agentType, severity = 'medium') {
         super(message, {
-            category: "Agent",
+            category: 'Agent',
             severity,
             context: { metadata: { agentId, agentType } },
         });
         this.agentId = agentId;
         this.agentType = agentType;
-        this.name = "AgentError";
+        this.name = 'AgentError';
     }
 }
 export class SwarmCommunicationError extends SwarmError {
@@ -203,14 +203,14 @@ export class SwarmCommunicationError extends SwarmError {
     toAgent;
     messageType;
     constructor(message, options) {
-        super(message, undefined, options.severity ?? "high", {
+        super(message, undefined, options.severity ?? 'high', {
             metadata: {
                 fromAgent: options.fromAgent,
                 toAgent: options.toAgent,
                 messageType: options.messageType,
             },
         });
-        this.name = "SwarmCommunicationError";
+        this.name = 'SwarmCommunicationError';
         this.fromAgent = options.fromAgent;
         this.toAgent = options.toAgent;
         this.messageType = options.messageType;
@@ -219,13 +219,13 @@ export class SwarmCommunicationError extends SwarmError {
 export class SwarmCoordinationError extends SwarmError {
     coordinationType;
     participantCount;
-    constructor(message, coordinationType, participantCount, severity = "high") {
+    constructor(message, coordinationType, participantCount, severity = 'high') {
         super(message, undefined, severity, {
             metadata: { coordinationType, participantCount },
         });
         this.coordinationType = coordinationType;
         this.participantCount = participantCount;
-        this.name = "SwarmCoordinationError";
+        this.name = 'SwarmCoordinationError';
     }
 }
 // ===============================
@@ -240,15 +240,15 @@ export class SwarmCoordinationError extends SwarmError {
 export class TaskError extends BaseClaudeZenError {
     taskId;
     taskType;
-    constructor(message, taskId, taskType, severity = "medium") {
+    constructor(message, taskId, taskType, severity = 'medium') {
         super(message, {
-            category: "Task",
+            category: 'Task',
             severity,
             context: { metadata: { taskId, taskType } },
         });
         this.taskId = taskId;
         this.taskType = taskType;
-        this.name = "TaskError";
+        this.name = 'TaskError';
     }
 }
 /**
@@ -259,13 +259,13 @@ export class NotFoundError extends BaseClaudeZenError {
     resourceId;
     constructor(message, resource, resourceId) {
         super(message, {
-            category: "NotFound",
-            severity: "medium",
+            category: 'NotFound',
+            severity: 'medium',
             context: { metadata: { resource, resourceId } },
         });
         this.resource = resource;
         this.resourceId = resourceId;
-        this.name = "NotFoundError";
+        this.name = 'NotFoundError';
     }
 }
 // ===============================
@@ -304,8 +304,8 @@ export function isRecoverableError(error) {
     // Default classification for non-Claude-Zen errors
     return !(error instanceof TypeError ||
         error instanceof ReferenceError ||
-        error.message.includes("out of memory") ||
-        error.message.includes("segmentation fault"));
+        error.message.includes('out of memory') ||
+        error.message.includes('segmentation fault'));
 }
 /**
  * Gets the severity level of an error for prioritization and handling.
@@ -331,13 +331,13 @@ export function getErrorSeverity(error) {
         return error.severity;
     }
     // Default severity classification
-    if (error.message.includes("timeout") || error.message.includes("network")) {
-        return "medium";
+    if (error.message.includes('timeout') || error.message.includes('network')) {
+        return 'medium';
     }
-    if (error.message.includes("memory") || error.message.includes("critical")) {
-        return "critical";
+    if (error.message.includes('memory') || error.message.includes('critical')) {
+        return 'critical';
     }
-    return "high";
+    return 'high';
 }
 /**
  * Determines if an operation should be retried based on error type and attempt count.

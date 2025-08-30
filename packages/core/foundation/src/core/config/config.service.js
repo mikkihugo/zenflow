@@ -10,9 +10,9 @@
  * All other configurations (storage, neural, telemetry, etc.) belong in
  * their respective implementation packages.
  */
-import { z as zodInstance } from "../../utilities/validation.js";
-import { getLogger } from "../logging/index.js";
-const logger = getLogger("foundation-config");
+import { z as zodInstance } from '../../utilities/validation.js';
+import { getLogger } from '../logging/index.js';
+const logger = getLogger('foundation-config');
 // =============================================================================
 // MINIMAL CONFIGURATION SCHEMA - Foundation Core Only (Using Zod)
 // =============================================================================
@@ -31,19 +31,21 @@ const logger = getLogger("foundation-config");
  */
 const configSchema = zodInstance.object({
     // Environment Configuration
-    env: zodInstance.enum(["production", "development", "test"]).default("development"),
+    env: zodInstance
+        .enum(['production', 'development', 'test'])
+        .default('development'),
     // Logging Configuration (Foundation Core System)
     logging: zodInstance.object({
-        level: zodInstance.enum(["error", "warn", "info", "debug"]).default("info"),
-        format: zodInstance.enum(["json", "text"]).default("text"),
+        level: zodInstance.enum(['error', 'warn', 'info', 'debug']).default('info'),
+        format: zodInstance.enum(['json', 'text']).default('text'),
         console: zodInstance.boolean().default(true),
-        file: zodInstance.string().default(""),
+        file: zodInstance.string().default(''),
         timestamp: zodInstance.boolean().default(true),
     }),
     // System Configuration
     system: zodInstance.object({
-        hostname: zodInstance.string().default("localhost"),
-        instanceId: zodInstance.string().default("foundation-default"),
+        hostname: zodInstance.string().default('localhost'),
+        instanceId: zodInstance.string().default('foundation-default'),
     }),
     // Development Environment Detection
     development: zodInstance.object({
@@ -96,7 +98,7 @@ const configSchema = zodInstance.object({
          * @see {@link storeInUserHome} for location selection logic
          * @since 1.0.0
          */
-        configDir: zodInstance.string().default(".claude-zen"),
+        configDir: zodInstance.string().default('.claude-zen'),
         /**
          * Controls whether configuration and data are stored in user home or project directory.
          *
@@ -139,7 +141,9 @@ const configSchema = zodInstance.object({
     otel: zodInstance.object({
         enabled: zodInstance.boolean().default(false),
         useInternalCollector: zodInstance.boolean().default(true),
-        internalCollectorEndpoint: zodInstance.string().default("http://localhost:4318"),
+        internalCollectorEndpoint: zodInstance
+            .string()
+            .default('http://localhost:4318'),
     }),
 });
 /**
@@ -160,10 +164,10 @@ function parseEnvValue(value) {
         return undefined;
     }
     // Boolean parsing
-    if (value.toLowerCase() === "true") {
+    if (value.toLowerCase() === 'true') {
         return true;
     }
-    if (value.toLowerCase() === "false") {
+    if (value.toLowerCase() === 'false') {
         return false;
     }
     // Number parsing
@@ -299,11 +303,11 @@ export class FoundationConfig {
             const envConfig = buildConfigFromEnv();
             this.config = configSchema.parse(envConfig);
             this.isInitialized = true;
-            logger.info("Foundation configuration initialized successfully");
+            logger.info('Foundation configuration initialized successfully');
         }
         catch (error) {
-            logger.error("Foundation configuration initialization failed:", error);
-            throw new Error(`Configuration error:${error instanceof Error ? error['message'] : "Unknown error"}`);
+            logger.error('Foundation configuration initialization failed:', error);
+            throw new Error(`Configuration error:${error instanceof Error ? error['message'] : 'Unknown error'}`);
         }
     }
     /**
@@ -324,11 +328,11 @@ export class FoundationConfig {
         this.ensureInitialized();
         try {
             // Handle nested key access (e.g., 'logging.level')
-            const keys = key.split(".");
+            const keys = key.split('.');
             let value = this.config;
             for (const k of keys) {
                 if (value &&
-                    typeof value === "object" &&
+                    typeof value === 'object' &&
                     value !== null &&
                     k in value) {
                     value = value[k];
@@ -366,13 +370,13 @@ export class FoundationConfig {
             return true;
         }
         catch (error) {
-            logger.error("Configuration validation failed:", error);
+            logger.error('Configuration validation failed:', error);
             return false;
         }
     }
     ensureInitialized() {
         if (!this.isInitialized) {
-            throw new Error("Configuration not initialized. Call initialize() first.");
+            throw new Error('Configuration not initialized. Call initialize() first.');
         }
     }
 }
@@ -421,7 +425,7 @@ export function reloadConfig() {
  * @returns True if debug mode is active
  */
 export function isDebugMode() {
-    return globalConfig.get("development.debug");
+    return globalConfig.get('development.debug');
 }
 // FORCING EXPORTS - Force using central config instead of process.env
 export const config = getConfig;
@@ -430,11 +434,11 @@ export const settings = getConfig;
 export const validate = validateConfig;
 export const reload = reloadConfig;
 export const isDebug = isDebugMode;
-export const isDevelopment = () => getConfig().env === "development";
-export const isProduction = () => getConfig().env === "production";
-export const isTest = () => getConfig().env === "test";
+export const isDevelopment = () => getConfig().env === 'development';
+export const isProduction = () => getConfig().env === 'production';
+export const isTest = () => getConfig().env === 'test';
 // FORCING PATTERN - Replace direct process.env access
-export const getEnv = (key, defaultValue) => process.env[key] || defaultValue || "";
+export const getEnv = (key, defaultValue) => process.env[key] || defaultValue || '';
 export const requireEnv = (key) => {
     const value = process.env[key];
     if (!value) {
@@ -477,9 +481,9 @@ export function getNeuralConfig() {
         timeout: 30000,
         retries: 3,
         models: {
-            default: "claude-3",
-            reasoning: "o3-mini",
-            fast: "gpt-4",
+            default: 'claude-3',
+            reasoning: 'o3-mini',
+            fast: 'gpt-4',
         },
     };
 }
