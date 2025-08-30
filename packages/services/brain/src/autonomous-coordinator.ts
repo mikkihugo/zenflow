@@ -38,7 +38,7 @@ export interface SystemMetrics {
 }
 
 export interface AutonomousDecision {
-  readonly type: 'resource_allocation' | ' agent_routing' | ' performance_tuning' | ' scaling' | ' optimization';
+  readonly type: 'resource_allocation' | 'agent_routing' | 'performance_tuning' | 'scaling' | 'optimization';
   readonly action:string;
   readonly reasoning:string[];
   readonly confidence:number;
@@ -221,44 +221,50 @@ export class AutonomousCoordinator {
 
     // Make autonomous resource decisions
     if (
-      cpuPressure ==='critical'||memoryPressure ===' critical'||timePressure ===' poor')    ) {
+      cpuPressure === 'critical' || memoryPressure === 'critical' || timePressure === 'poor') {
       return {
-        type: 'resource_allocation',        action: 'emergency_resource_reallocation',        reasoning:[
-          `Critical resource pressure detected`,`
-          `CPU:${(metrics.cpuUsage * 100).toFixed(1)}% (${cpuPressure})`,`
-          `Memory:${(metrics.memoryUsage * 100).toFixed(1)}% (${memoryPressure})`,`
-          `Response time:${metrics.averageResponseTime}ms (${timePressure})`,`
-          `Response time analysis:$responseTimeAnalysis.category($responseTimeAnalysis.severity)`,`
-          `Initiating emergency resource reallocation`,`
-],
-        confidence:0.95,
-        expectedImpact:0.8,
-        timestamp:Date.now(),
-        parameters:
+        type: 'resource_allocation',
+        action: 'emergency_resource_reallocation',
+        reasoning: [
+          "Critical resource pressure detected",
+          "CPU: " + (metrics.cpuUsage * 100).toFixed(1) + "% (" + cpuPressure + ")",
+          "Memory: " + (metrics.memoryUsage * 100).toFixed(1) + "% (" + memoryPressure + ")",
+          "Response time: " + metrics.averageResponseTime + "ms (" + timePressure + ")",
+          "Response time analysis: " + responseTimeAnalysis.category + " (" + responseTimeAnalysis.severity + ")",
+          "Initiating emergency resource reallocation",
+        ],
+        confidence: 0.95,
+        expectedImpact: 0.8,
+        timestamp: Date.now(),
+        parameters: {
           cpuPressure,
           memoryPressure,
           timePressure,
-          redistributeLoad:true,
-          prioritizeHigh:true,,
-};
-}
+          redistributeLoad: true,
+          prioritizeHigh: true,
+        },
+      };
+    }
 
-    if (_cpuPressure === 'high' && __memoryPressure === ' high') {
-    ')      return {
-        type: 'resource_allocation',        action: 'optimize_resource_allocation',        reasoning:[
-          `High resource pressure across CPU and memory`,`
-          `Implementing predictive resource optimization`,`
-          `Redistributing workload based on historical patterns`,`
-],
-        confidence:0.8,
-        expectedImpact:0.6,
-        timestamp:Date.now(),
-        parameters:{
-          optimizeFor: 'balanced_performance',          predictiveAllocation:true,
-          eventCoordination:true, // Replaces load balancing with brain events
-},
-};
-}
+    if (cpuPressure === 'high' && memoryPressure === 'high') {
+      return {
+        type: 'resource_allocation',
+        action: 'optimize_resource_allocation',
+        reasoning: [
+          "High resource pressure across CPU and memory",
+          "Implementing predictive resource optimization",
+          "Redistributing workload based on historical patterns",
+        ],
+        confidence: 0.8,
+        expectedImpact: 0.6,
+        timestamp: Date.now(),
+        parameters: {
+          optimizeFor: 'balanced_performance',
+          predictiveAllocation: true,
+          eventCoordination: true, // Replaces load balancing with brain events
+        },
+      };
+    }
 
     return null;
 }
@@ -290,56 +296,64 @@ export class AutonomousCoordinator {
       const highPerformanceAgents = Object.entries(
         agentStats.performanceTrends
       ).filter(
-        ([_, trend]) => trend ==='improving' | ' stable' | ' declining''||trend ===' excellent')      ).length;
+        ([_, trend]) => trend === 'improving' || trend === 'stable' || trend === 'excellent'
+      ).length;
 
       if (routingEfficiency < 0.6) {
         return {
-          type: 'agent_routing',          action: 'optimize_agent_routing',          reasoning:[
-            `Routing efficiency below threshold:${(routingEfficiency * 100).toFixed(1)}%`,`
-            `Total agents:${totalAgents}, High performers:${highPerformanceAgents}`,`
-            `Average performance:${averagePerformance.toFixed(3)}`,`
-            `Implementing ML-based routing optimization`,`
-            `Using behavioral patterns for intelligent routing`,`
-],
-          confidence:0.85,
-          expectedImpact:0.7,
-          timestamp:Date.now(),
-          parameters:{
-            routingStrategy: 'behavioral_ml',            efficiency:routingEfficiency,
-            agentCount:agentProfiles.size,
+          type: 'agent_routing',
+          action: 'optimize_agent_routing',
+          reasoning: [
+            "Routing efficiency below threshold: " + (routingEfficiency * 100).toFixed(1) + "%",
+            "Total agents: " + totalAgents + ", High performers: " + highPerformanceAgents,
+            "Average performance: " + averagePerformance.toFixed(3),
+            "Implementing ML-based routing optimization",
+            "Using behavioral patterns for intelligent routing",
+          ],
+          confidence: 0.85,
+          expectedImpact: 0.7,
+          timestamp: Date.now(),
+          parameters: {
+            routingStrategy: 'behavioral_ml',
+            efficiency: routingEfficiency,
+            agentCount: agentProfiles.size,
             totalAgents,
             highPerformanceAgents,
             averagePerformance,
-            usePerformanceTrends:true,
-},
-};
-}
+            usePerformanceTrends: true,
+          },
+        };
+      }
 
       // Detect underperforming agents
       const underperformers = Array.from(agentProfiles.values()).filter(
         (profile) => profile.averagePerformance < 0.4
       );
 
-      if (underperformers._length > 0) {
+      if (underperformers.length > 0) {
         return {
-          type: 'agent_routing',          action: 'redirect_from_underperformers',          reasoning:[
-            `${underperformers.length} underperforming agents detected`,`
-            `Automatically redirecting traffic to high-performers`,`
-            `Implementing adaptive load redistribution`,`
-],
-          confidence:0.9,
-          expectedImpact:0.5,
-          timestamp:Date.now(),
-          parameters:{
-            underperformers:underperformers.map((a) => a.agentId),
-            redistributionStrategy: 'performance_based',},
-};
-}
+          type: 'agent_routing',
+          action: 'redirect_from_underperformers',
+          reasoning: [
+            underperformers.length + " underperforming agents detected",
+            "Automatically redirecting traffic to high-performers",
+            "Implementing adaptive load redistribution",
+          ],
+          confidence: 0.9,
+          expectedImpact: 0.5,
+          timestamp: Date.now(),
+          parameters: {
+            underperformers: underperformers.map((a) => a.agentId),
+            redistributionStrategy: 'performance_based',
+          },
+        };
+      }
 
       return null;
-} catch (error) {
-      logger.error('Error in autonomous agent routing:', error);')      return null;
-}
+    } catch (error) {
+      logger.error('Error in autonomous agent routing:', error);
+      return null;
+    }
 }
 
   /**
@@ -381,51 +395,58 @@ export class AutonomousCoordinator {
       // Apply ML insights to tuning decisions
       if (performanceAnomalies.length > 0) {
         await this.applyPerformanceCorrections(performanceAnomalies);
-}
+      }
 
       // Autonomous performance tuning decisions
       if (responseTimeSlope > 100) {
         // Response time increasing
         return {
-          type: 'performance_tuning',          action: 'optimize_response_time',          reasoning:[
-            `Response time trending upward:+${responseTimeSlope.toFixed(1)}ms/period`,`
-            `Implementing autonomous performance optimization`,`
-            `Adjusting system parameters for better responsiveness`,`
-],
-          confidence:0.8,
-          expectedImpact:0.6,
-          timestamp:Date.now(),
-          parameters:{
+          type: 'performance_tuning',
+          action: 'optimize_response_time',
+          reasoning: [
+            "Response time trending upward: +" + responseTimeSlope.toFixed(1) + "ms/period",
+            "Implementing autonomous performance optimization",
+            "Adjusting system parameters for better responsiveness",
+          ],
+          confidence: 0.8,
+          expectedImpact: 0.6,
+          timestamp: Date.now(),
+          parameters: {
             responseTimeSlope,
-            optimizationTarget: 'response_time',            adjustCaching:true,
-            adjustConcurrency:true,
-},
-};
-}
+            optimizationTarget: 'response_time',
+            adjustCaching: true,
+            adjustConcurrency: true,
+          },
+        };
+      }
 
       if (throughputSlope < -5) {
         // Throughput decreasing
         return {
-          type: 'performance_tuning',          action: 'optimize_throughput',          reasoning:[
-            `Throughput trending downward:${throughputSlope.toFixed(1)} tasks/period`,`
-            `Implementing autonomous throughput optimization`,`
-            `Adjusting parallelism and resource allocation`,`
-],
-          confidence:0.85,
-          expectedImpact:0.7,
-          timestamp:Date.now(),
-          parameters:{
+          type: 'performance_tuning',
+          action: 'optimize_throughput',
+          reasoning: [
+            "Throughput trending downward: " + throughputSlope.toFixed(1) + " tasks/period",
+            "Implementing autonomous throughput optimization",
+            "Adjusting parallelism and resource allocation",
+          ],
+          confidence: 0.85,
+          expectedImpact: 0.7,
+          timestamp: Date.now(),
+          parameters: {
             throughputSlope,
-            optimizationTarget: 'throughput',            increaseParallelism:true,
-            optimizeQueuing:true,
-},
-};
-}
+            optimizationTarget: 'throughput',
+            increaseParallelism: true,
+            optimizeQueuing: true,
+          },
+        };
+      }
 
       return null;
-} catch (error) {
-      logger.debug('Performance trend analysis failed:', error);')      return null;
-}
+    } catch (error) {
+      logger.debug('Performance trend analysis failed:', error);
+      return null;
+    }
 }
 
   /**
@@ -436,26 +457,27 @@ export class AutonomousCoordinator {
   ):Promise<AutonomousDecision|null> {
     const scalingDecision = await this.calculateScalingDecision(metrics);
 
-    if (scalingDecision.action !=='maintain') {
-    ')      return {
-        type: 'scaling',        action:`autonomous_${scalingDecision.action}`,`
-        reasoning:[
+    if (scalingDecision.action !== 'maintain') {
+      return {
+        type: 'scaling',
+        action: "autonomous_" + scalingDecision.action,
+        reasoning: [
           scalingDecision.reasoning,
-          `Target agents:${scalingDecision.targetAgents}`,`
-          `Confidence:${(scalingDecision.confidence * 100).toFixed(1)}%`,`
-          `Urgency:${scalingDecision.urgency}`,`
-],
-        confidence:scalingDecision.confidence,
-        expectedImpact:scalingDecision.urgency === 'critical'? 0.9 : 0.7,
-        timestamp:Date.now(),
-        parameters:{
-          currentAgents:metrics.activeAgents,
-          targetAgents:scalingDecision.targetAgents,
-          urgency:scalingDecision.urgency,
-          scalingReason:scalingDecision.action,
-},
-};
-}
+          "Target agents: " + scalingDecision.targetAgents,
+          "Confidence: " + (scalingDecision.confidence * 100).toFixed(1) + "%",
+          "Urgency: " + scalingDecision.urgency,
+        ],
+        confidence: scalingDecision.confidence,
+        expectedImpact: scalingDecision.urgency === 'critical' ? 0.9 : 0.7,
+        timestamp: Date.now(),
+        parameters: {
+          currentAgents: metrics.activeAgents,
+          targetAgents: scalingDecision.targetAgents,
+          urgency: scalingDecision.urgency,
+          scalingReason: scalingDecision.action,
+        },
+      };
+    }
 
     return null;
 }
@@ -480,37 +502,40 @@ export class AutonomousCoordinator {
 
     // Check if current system performance indicates need for optimization
     const needsOptimization =
-      metrics.cpuUsage > 0.8||metrics.averageResponseTime > 1000||metrics.errorRate > 0.05;
+      metrics.cpuUsage > 0.8 || metrics.averageResponseTime > 1000 || metrics.errorRate > 0.05;
 
     // Apply optimization strategy based on analysis
     if (systemBottlenecks.length > 0) {
       await this.applyBottleneckOptimizations(systemBottlenecks);
-}
+    }
 
     // Decide if system-wide optimization is needed
     if (
-      (insights.adaptationRate < 0.1 && insights.totalOptimizations > 20)||needsOptimization
+      (insights.adaptationRate < 0.1 && insights.totalOptimizations > 20) || needsOptimization
     ) {
       return {
-        type: 'optimization',        action: 'system_wide_optimization',        reasoning:[
-          `Low adaptation rate detected:${(insights.adaptationRate * 100).toFixed(1)}%`,`
-          `Current CPU usage:${(metrics.cpuUsage * 100).toFixed(1)}%`,`
-          `Current response time:${metrics.averageResponseTime}ms`,`
-          `Current error rate:${(metrics.errorRate * 100).toFixed(2)}%`,`
-          `Best performing method:${insights.bestMethod}`,`
-          `Implementing autonomous system optimization`,`
-          `Focusing on proven optimization strategies`,`
-],
-        confidence:0.75,
-        expectedImpact:0.5,
-        timestamp:Date.now(),
-        parameters:{
-          bestMethod:insights.bestMethod,
-          adaptationRate:insights.adaptationRate,
-          totalOptimizations:insights.totalOptimizations,
-          optimizationFocus: 'proven_methods',},
-};
-}
+        type: 'optimization',
+        action: 'system_wide_optimization',
+        reasoning: [
+          "Low adaptation rate detected: " + (insights.adaptationRate * 100).toFixed(1) + "%",
+          "Current CPU usage: " + (metrics.cpuUsage * 100).toFixed(1) + "%",
+          "Current response time: " + metrics.averageResponseTime + "ms",
+          "Current error rate: " + (metrics.errorRate * 100).toFixed(2) + "%",
+          "Best performing method: " + insights.bestMethod,
+          "Implementing autonomous system optimization",
+          "Focusing on proven optimization strategies",
+        ],
+        confidence: 0.75,
+        expectedImpact: 0.5,
+        timestamp: Date.now(),
+        parameters: {
+          bestMethod: insights.bestMethod,
+          adaptationRate: insights.adaptationRate,
+          totalOptimizations: insights.totalOptimizations,
+          optimizationFocus: 'proven_methods',
+        },
+      };
+    }
 
     return null;
 }
@@ -552,37 +577,40 @@ export class AutonomousCoordinator {
           // High effectiveness - be more aggressive
           this.adjustParametersForType(type,'aggressive');')} else if (avgConfidence < 0.6||avgImpact < 0.4) {
           // Low effectiveness - be more conservative
-          this.adjustParametersForType(type,'conservative');')}
-});
+        if (decisionsByType.has(type)) {
+          this.adjustParametersForType(type, 'conservative');
+        }
+      });
 
-      logger.debug('🎯 Autonomous parameter tuning complete');')} catch (error) {
-      logger.error('Error in autonomous parameter tuning:', error);')}
-}
+      logger.debug('🎯 Autonomous parameter tuning complete');
+    } catch (error) {
+      logger.error('Error in autonomous parameter tuning:', error);
+    }
 
   /**
    * Get autonomous decision insights
    */
-  getAutonomousInsights():{
-    totalDecisions:number;
-    decisionsByType:Record<string, number>;
-    averageConfidence:number;
-    recentTrends:string[];
-    systemHealth: 'excellent|good|fair|poor;
-'    autonomyLevel:number;
-} {
-    const decisionsByType:Record<string, number> = {};
+  getAutonomousInsights(): {
+    totalDecisions: number;
+    decisionsByType: Record<string, number>;
+    averageConfidence: number;
+    recentTrends: string[];
+    systemHealth: 'excellent' | 'good' | 'fair' | 'poor';
+    autonomyLevel: number;
+  } {
+    const decisionsByType: Record<string, number> = {};
     let totalConfidence = 0;
 
     this.decisionHistory.forEach((decision) => {
       decisionsByType[decision.type] =
-        (decisionsByType[decision.type]||0) + 1;
+        (decisionsByType[decision.type] || 0) + 1;
       totalConfidence += decision.confidence;
-});
+    });
 
     const averageConfidence =
       this.decisionHistory.length > 0
         ? totalConfidence / this.decisionHistory.length
-        :0;
+        : 0;
 
     // Calculate system health
     const recentMetrics = this.systemMetricsHistory.slice(-5);
@@ -690,11 +718,12 @@ export class AutonomousCoordinator {
         Math.ceil(metrics.activeAgents * 1.5)
       );
       return {
-        action: 'scale_up',        targetAgents,
-        confidence:0.8,
-        reasoning:`High system pressure: ${(overallPressure * 100).toFixed(1)}%`,`
-        urgency:overallPressure > 0.9 ? 'critical' : ' high',};
-}
+        action: 'scale_up',
+        targetAgents,
+        confidence: 0.8,
+        reasoning: "High system pressure: " + (overallPressure * 100).toFixed(1) + "%",
+        urgency: overallPressure > 0.9 ? 'critical' : 'high',
+      };
 
     if (
       overallPressure <= scaleDownThreshold &&
@@ -705,11 +734,12 @@ export class AutonomousCoordinator {
         Math.floor(metrics.activeAgents * 0.7)
       );
       return {
-        action: 'scale_down',        targetAgents,
-        confidence:0.7,
-        reasoning:`Low system pressure: ${(overallPressure * 100).toFixed(1)}%`,`
-        urgency: 'low',};
-}
+        action: 'scale_down',
+        targetAgents,
+        confidence: 0.7,
+        reasoning: "Low system pressure: " + (overallPressure * 100).toFixed(1) + "%",
+        urgency: 'low',
+      };
 
     return {
       action: 'maintain',      targetAgents:metrics.activeAgents,
@@ -951,19 +981,22 @@ export class AutonomousCoordinator {
   /**
    * Apply performance corrections based on anomaly analysis
    */
-  private async applyPerformanceCorrections(anomalies:any[]): Promise<void> {
+  private async applyPerformanceCorrections(anomalies: any[]): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 125));
-    logger.debug(`Applied corrections for ${anomalies.length} performance anomalies`);`
-}
+    logger.debug("Applied corrections for " + anomalies.length + " performance anomalies");
+  }
 
   /**
    * Analyze optimization strategy based on current system state
    */
-  private async analyzeOptimizationStrategy(metrics:SystemMetrics): Promise<any> {
+  private async analyzeOptimizationStrategy(metrics: SystemMetrics): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 100));
     return {
-      strategy: 'adaptive_optimization',      priority:metrics.cpuUsage > 0.8 ? 'high' : ' medium',      focus:['cpu_optimization',    'memory_efficiency',    'response_time']')};
-}
+      strategy: 'adaptive_optimization',
+      priority: metrics.cpuUsage > 0.8 ? 'high' : 'medium',
+      focus: ['cpu_optimization', 'memory_efficiency', 'response_time']
+    };
+  }
 
   /**
    * Identify system bottlenecks through comprehensive analysis
@@ -1002,23 +1035,23 @@ export class AutonomousCoordinator {
   /**
    * Apply bottleneck-specific optimizations
    */
-  private async applyBottleneckOptimizations(bottlenecks:any[]): Promise<void> {
+  private async applyBottleneckOptimizations(bottlenecks: any[]): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 150));
-    logger.debug(`Applied optimizations for ${bottlenecks.length} system bottlenecks`);`
-}
+    logger.debug("Applied optimizations for " + bottlenecks.length + " system bottlenecks");
+  }
 
   /**
    * Analyze parameter effectiveness using ML
    */
-  private async analyzeParameterEffectiveness():Promise<any> {
+  private async analyzeParameterEffectiveness(): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 125));
     return {
-      effectivenessScore:0.74,
-      topPerformingParameters:['aggressiveThreshold',    'scalingFactor'],
-      underperformingParameters:['conservativeBackoff'],
-      confidence:0.89
-};
-}
+      effectivenessScore: 0.74,
+      topPerformingParameters: ['aggressiveThreshold', 'scalingFactor'],
+      underperformingParameters: ['conservativeBackoff'],
+      confidence: 0.89
+    };
+  }
 
   /**
    * Calculate optimal parameters using ML optimization
