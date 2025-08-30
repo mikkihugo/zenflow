@@ -16,7 +16,7 @@
 class FactBridge {
   constructor() {
     // Placeholder implementation
-}
+  }
   initialize():Promise<void> {
     return Promise.resolve();
 }

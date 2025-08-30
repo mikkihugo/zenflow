@@ -226,15 +226,20 @@ export class SamplerProcessor implements BaseProcessor {
     rule:SamplingRule
   ):boolean | null {
     switch (rule.strategy) {
-      case'rate': ')'        return this.applyRateSampling(rule.rate  ||  1);
+      case 'rate':
+        return this.applyRateSampling(rule.rate || 1);
 
-      case'probabilistic': ')'        return Math.random() < (rule.probability  ||  0.1);
+      case 'probabilistic':
+        return Math.random() < (rule.probability || 0.1);
 
-      case'attribute': ')'        return this.applyAttributeSampling(data, rule);
+      case 'attribute':
+        return this.applyAttributeSampling(data, rule);
 
-      case 'priority': ')'        return this.applyPrioritySampling(data, rule);
+      case 'priority':
+        return this.applyPrioritySampling(data, rule);
 
-      case 'adaptive': ')'        return Math.random() < this.currentRate;
+      case 'adaptive':
+        return Math.random() < this.currentRate;
 
       default:
         return null;
@@ -310,11 +315,11 @@ export class SamplerProcessor implements BaseProcessor {
         continue;
 }
 
-      if (rule.strategy === 'probabilistic'  &&  rule.probability) {
-    ')        return rule.probability;
-} else if (rule.strategy === 'rate'  &&  rule.rate) {
-    ')        return 1 / rule.rate;
-}
+      if (rule.strategy === 'probabilistic' && rule.probability) {
+        return rule.probability;
+      } else if (rule.strategy === 'rate' && rule.rate) {
+        return 1 / rule.rate;
+      }
 }
 
     return this.currentRate;
