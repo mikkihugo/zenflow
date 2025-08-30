@@ -21,6 +21,7 @@ import {
   type Migration,
   type MigrationResult,
   QueryError,
+  type QueryErrorOptions,
   type QueryParams,
   type QueryResult,
   type SchemaInfo,

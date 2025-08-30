@@ -18,6 +18,7 @@ import {
   type Migration,
   type MigrationResult,
   QueryError,
+  type QueryErrorOptions,
   type QueryParams,
   type QueryResult,
   type SchemaInfo,
@@ -147,7 +148,7 @@ export class LanceDBAdapter implements DatabaseConnection {
   private lancedbModule: LanceDBModule | null = null;
   private database: LanceDBConnection | null = null;
   private isConnectedState = false;
-  private readonly __stats = {
+  private readonly stats = {
     totalQueries: 0,
     totalTransactions: 0,
     totalErrors: 0,
@@ -294,11 +295,13 @@ export class LanceDBAdapter implements DatabaseConnection {
     }
 
     if (!this.database) {
-      throw new QueryError('Connection not available', {
+      const errorOptions: QueryErrorOptions = {
         query: sql,
-        params,
         correlationId,
-      });
+      };
+      if (params !== undefined) errorOptions.params = params;
+      
+      throw new QueryError('Connection not available', errorOptions);
     }
 
     try {
@@ -349,14 +352,16 @@ export class LanceDBAdapter implements DatabaseConnection {
         throw error;
       }
 
+      const errorOptions: QueryErrorOptions = {
+        query: sql,
+        correlationId,
+      };
+      if (params !== undefined) errorOptions.params = params;
+      if (error instanceof Error) errorOptions.cause = error;
+
       throw new QueryError(
         `LanceDB operation execution failed:${error instanceof Error ? error.message : String(error)}`,
-        {
-          query: sql,
-          params,
-          correlationId,
-          cause: error instanceof Error ? error : undefined,
-        }
+        errorOptions
       );
     }
   }
@@ -1394,14 +1399,16 @@ export class LanceDBAdapter implements DatabaseConnection {
       }
     }
 
+    const errorOptions: QueryErrorOptions = {
+      correlationId,
+    };
+    if (sql !== undefined) errorOptions.query = sql;
+    if (params !== undefined) errorOptions.params = params;
+    if (lastError !== undefined) errorOptions.cause = lastError;
+
     throw new QueryError(
       `Operation failed after ${retryPolicy.maxRetries} retries:${lastError?.message}`,
-      {
-        query: sql,
-        params,
-        correlationId,
-        cause: lastError,
-      }
+      errorOptions
     );
   }
 
