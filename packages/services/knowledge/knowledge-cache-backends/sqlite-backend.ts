@@ -101,41 +101,45 @@ export class SQLiteBackend extends TypedEventBase implements FACTStorageBackend 
     
     this.logger = getLogger('sqlite-backend');
     
-    this._stats = 
-      totalEntries:0,
-      totalSize:0,
-      cacheHits:0,
-      cacheMisses:0,
-      lastAccessed:0,
-      backendType: 'sqlite',      created:Date.now(),
-      modified:Date.now(),;
+    this._stats = {
+      totalEntries: 0,
+      totalSize: 0,
+      cacheHits: 0,
+      cacheMisses: 0,
+      lastAccessed: 0,
+      backendType: 'sqlite',
+      created: Date.now(),
+      modified: Date.now(),
+    };
 
     // Initialize circuit breaker for database operations
     this.circuitBreaker = createCircuitBreaker(
       async (operation:() => Promise<any>) => await operation(),
       {
         timeout:10000,
-        errorThresholdPercentage:50,
-}
+        errorThresholdPercentage: 50,
+      }
     );
 
     this.logger.info('SQLite backend initialized', {
-    ')      maxSize:this.config.maxSize,
-      maxAge:this.config.maxAge,
-      path:this.config.path || ':memory:',});
-}
+      maxSize: this.config.maxSize,
+      maxAge: this.config.maxAge,
+      path: this.config.path || ':memory:',
+    });
+  }
 
   /**
    * Initialize SQLite database and create required tables.
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     if (this.isInitialized) {
-      this.logger.debug('SQLite backend already initialized');')      return;
-}
+      this.logger.debug('SQLite backend already initialized');
+      return;
+    }
 
     try {
       await this.circuitBreaker.execute(async () => {
-        this.logger.info('Initializing SQLite database and connection pool');')        
+        this.logger.info('Initializing SQLite database and connection pool');        
         // In a real implementation, this would use better-sqlite3
         // For now, we'll create a mock implementation that demonstrates the structure')        await this.initializeDatabase();
         await this.createTables();

@@ -127,10 +127,6 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
     });
   }
 
-  constructor(private config: VectorRAGConfig) {
-    this.sqliteBackend = new SQLiteBackend(config);
-  }
-
   async initialize(): Promise<void> {
     if (this.initialized) {
       return;
