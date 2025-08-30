@@ -450,3 +450,9 @@ pub use advanced::optimization::{
 pub use advanced::financial_ops::{
     FinancialMatrix, TechnicalIndicators, PatternRecognition
 };
+
+// Re-export ensemble learning
+pub use advanced::ensemble::{
+    EnsembleModel, BaggingEnsemble, BoostingEnsemble, StackingEnsemble,
+    EnsembleFactory, EnsembleMetrics, AggregationMethod
+};

@@ -11,6 +11,7 @@
 
 pub mod optimization;
 pub mod financial_ops;
+pub mod ensemble;
 
 // Re-export key types and functions
 pub use optimization::{
@@ -20,4 +21,9 @@ pub use optimization::{
 
 pub use financial_ops::{
     FinancialMatrix, TechnicalIndicators, PatternRecognition
+};
+
+pub use ensemble::{
+    EnsembleModel, BaggingEnsemble, BoostingEnsemble, StackingEnsemble,
+    EnsembleFactory, EnsembleMetrics, AggregationMethod
 };
