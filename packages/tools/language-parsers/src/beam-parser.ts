@@ -845,10 +845,13 @@ export class BeamLanguageParser {
     module:BeamModule,
     content:string
   ):BeamModuleMetrics {
-    const lines = content.split('\n');')    const linesOfCode = lines.filter(
+    const lines = content.split('\n');
+    const linesOfCode = lines.filter(
       (line) =>
         line.trim().length > 0 &&
-        !line.trim().startsWith('#') &&')        !line.trim().startsWith('%')')    ).length;
+        !line.trim().startsWith('#') &&
+        !line.trim().startsWith('%')
+    ).length;
 
     const publicFunctions = module.exports.filter(
       (f) => f.visibility === 'public'
