@@ -30,33 +30,38 @@ export class DatabaseError extends Error {
 }
 export class ConnectionError extends DatabaseError {
     constructor(message, correlationId, cause) {
-        super(message, {
-            code: 'CONNECTION_ERROR',
-            correlationId,
-            cause,
-        });
+        const options = { code: 'CONNECTION_ERROR' };
+        if (correlationId !== undefined)
+            options.correlationId = correlationId;
+        if (cause !== undefined)
+            options.cause = cause;
+        super(message, options);
         this.name = 'ConnectionError';
     }
 }
 export class QueryError extends DatabaseError {
     constructor(message, options = {}) {
-        super(message, {
-            code: 'QUERY_ERROR',
-            correlationId: options.correlationId,
-            query: options.query,
-            params: options.params,
-            cause: options.cause,
-        });
+        const dbOptions = { code: 'QUERY_ERROR' };
+        if (options.correlationId !== undefined)
+            dbOptions.correlationId = options.correlationId;
+        if (options.query !== undefined)
+            dbOptions.query = options.query;
+        if (options.params !== undefined)
+            dbOptions.params = options.params;
+        if (options.cause !== undefined)
+            dbOptions.cause = options.cause;
+        super(message, dbOptions);
         this.name = 'QueryError';
     }
 }
 export class TransactionError extends DatabaseError {
     constructor(message, correlationId, cause) {
-        super(message, {
-            code: 'TRANSACTION_ERROR',
-            correlationId,
-            cause,
-        });
+        const options = { code: 'TRANSACTION_ERROR' };
+        if (correlationId !== undefined)
+            options.correlationId = correlationId;
+        if (cause !== undefined)
+            options.cause = cause;
+        super(message, options);
         this.name = 'TransactionError';
     }
 }

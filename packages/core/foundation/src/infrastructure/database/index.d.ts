@@ -1,9 +1,9 @@
 /**
  * @fileoverview Database Infrastructure Module Exports
  *
- * Direct re-exports from @claude-zen/database package.
- * No facade pattern - direct access to database functionality.
+ * Backend-agnostic database access through foundation types.
+ * Provides unified interfaces that can be implemented by concrete database adapters.
  */
-export { createDatabase, createKeyValueStorage, createDatabaseAccess, DatabaseProvider, DatabaseEventCoordinator, SQLiteAdapter, } from '@claude-zen/database';
-export type { DatabaseConfig, DatabaseConnection, KeyValueStorage as KeyValueStore, VectorStorage as VectorStore, GraphStorage as GraphStore, } from '@claude-zen/database';
+export { databaseFacade, createDatabaseAdapter, createKeyValueStore, createVectorStore, createGraphStore, getDatabaseCapability, } from './database-facade.js';
+export type { DatabaseType, StorageType, QueryParams, DatabaseConfig, PoolConfig, RetryPolicy, HealthCheckConfig, DatabaseConnection, TransactionConnection, DatabaseAdapter, KeyValueStorage as KeyValueStore, VectorStorage as VectorStore, GraphStorage as GraphStore, SqlStorage, HealthStatus, QueryResult, ConnectionStats, SchemaInfo, TableSchema, ColumnSchema, ViewSchema, IndexSchema, ConstraintSchema, ForeignKeySchema, Migration, MigrationResult, VectorSearchOptions, VectorResult, GraphNode, GraphEdge, GraphResult, TransactionContext, IsolationLevel, DatabaseError, ConnectionError, QueryError, TransactionError, DatabaseErrorOptions, QueryErrorOptions, DatabaseFactory, DatabaseProvider, DatabaseAccess, CreateDatabaseFunction, CreateKeyValueStorageFunction, CreateDatabaseAccessFunction, } from './types.js';
 //# sourceMappingURL=index.d.ts.map
