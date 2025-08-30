@@ -218,7 +218,7 @@ export function createMemoryBackends(container:DIContainer): {
 /**
  * Creates memory backends based on configuration options
  */
-function createMemoryBackends(
+function createConfiguredMemoryBackends(
   container: DIContainer,
   options: {
     enableCache: boolean;
@@ -310,7 +310,7 @@ export async function initializeMemorySystem(
   const controller = container.resolve(MEMORY_TOKENS.Controller);
 
   // Create backends based on options
-  const { backends, enabledBackends } = createMemoryBackends(container, options);
+  const { backends, enabledBackends } = createConfiguredMemoryBackends(container, options);
 
   // Test all backends
   await performBackendHealthChecks(backends, enabledBackends, logger);

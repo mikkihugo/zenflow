@@ -5,7 +5,7 @@
  * This replaces the removed hook system's performance tracking functionality.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from '@claude-zen/foundation';
 
 // Real logger implementation using event-driven telemetry
 const getLogger = (name: string) => ({
@@ -90,11 +90,11 @@ export interface PerformanceStats {
 /**
  * Performance statistics
  */
-export interface PerformanceStats {
+export interface AgentPerformanceStats {
   totalOperations: number;
   avgDuration: number;
   successRate: number;
-  memoryTrend:'increasing' | ' stable' | ' decreasing';
+  memoryTrend: 'increasing' | 'stable' | 'decreasing';
   cpuEfficiency: number;
   recentFailures: number;
 }
@@ -286,7 +286,7 @@ export class PerformanceTracker {
   /**
    * Get performance statistics for an agent
    */
-  getAgentPerformanceStats(agentId: string): PerformanceStats | null {
+  getAgentPerformanceStats(agentId: string): AgentPerformanceStats | null {
     const snapshots = this.snapshots.get(agentId);
     if (!snapshots || snapshots.length === 0) {
       return null;

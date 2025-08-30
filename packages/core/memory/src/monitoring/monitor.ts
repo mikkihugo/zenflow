@@ -9,6 +9,13 @@ import type { MemoryCoordinator} from '../core/memory-coordinator';
 import type { BackendInterface} from '../core/memory-system';
 import type { PerformanceOptimizer} from '../optimization/performance-optimizer';
 
+interface OperationRecord {
+  timestamp: number;
+  duration: number;
+  operation: string;
+  success: boolean;
+}
+
 export interface MemoryMetrics {
   timestamp:number;
 

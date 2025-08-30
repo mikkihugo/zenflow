@@ -772,7 +772,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
 });
           return { success:true};
 
-        case 'retrieve':
+        case 'retrieve': {
           const sessionDataStr = await this.storage.get(storageKey);
           if (sessionDataStr) {
             try {
@@ -781,18 +781,19 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
               recordMetric('memory_circuit_breaker_retrieves', 1);
               logger.debug('Circuit breaker retrieve operation completed', {
                 sessionId,
-});
+              });
               return session;
-} catch (parseError) {
+            } catch (parseError) {
               const error = new MemoryError(
                 `Failed to parse session data for ${sessionId}`,
-                { sessionId, parseError:ensureError(parseError).message}
+                { sessionId, parseError: ensureError(parseError).message }
               );
               recordMetric('memory_circuit_breaker_parse_errors', 1);
               throw error;
-}
-}
+            }
+          }
           return null;
+        }
 
         default:
           throw new MemoryError(
