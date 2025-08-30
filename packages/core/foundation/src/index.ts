@@ -354,13 +354,6 @@ export {
 export {
   brand,
   unbrand,
-  isEmail,
-  isTimestamp,
-  isISODateString,
-  isUUID,
-  isPrimitive,
-  isNonEmptyArray,
-  generateUUID,
 } from './types/primitives.js';
 
 // =============================================================================
