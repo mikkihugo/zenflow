@@ -41,7 +41,7 @@ export interface PromptAnalysisData {
 }
 
 export interface OptimizationPattern {
-  readonly patternType:|'length_optimization|structure_enhancement|context_addition|clarity_improvement;
+  readonly patternType: 'length_optimization' | 'structure_enhancement' | 'context_addition' | 'clarity_improvement';
   readonly confidence:number;
   readonly improvement:number;
   readonly applicableContexts:string[];
@@ -67,44 +67,47 @@ export class SmartPromptOptimizer {
   private initialized = false;
 
   constructor() {
-    logger.info('🧠 Smart Prompt Optimizer created');')}
+    logger.info('🧠 Smart Prompt Optimizer created');
+  }
 
   /**
    * Initialize the optimization system
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     if (this.initialized) return;
 
     try {
-      logger.info('🚀 Initializing Smart Prompt Optimization System...');')
+      logger.info('🚀 Initializing Smart Prompt Optimization System...');
       // Initialize with some baseline optimization patterns
       await this.initializeBaselinePatterns();
 
       this.initialized = true;
-      logger.info('✅ Smart Prompt Optimizer initialized successfully');')} catch (error) {
-      logger.error('❌ Failed to initialize Smart Prompt Optimizer:', error);')      throw error;
-}
-}
+      logger.info('✅ Smart Prompt Optimizer initialized successfully');
+    } catch (error) {
+      logger.error('❌ Failed to initialize Smart Prompt Optimizer:', error);
+      throw error;
+    }
+  }
 
   /**
    * Optimize a prompt using ML-powered analysis
    */
   async optimizePrompt(
-    originalPrompt:string,
-    _context:{
-      taskComplexity?:number;
-      agentType?:string;
-      expectedResponseTime?:number;
-      domainSpecific?:boolean;
-} = {}
-  ):Promise<SmartOptimizationResult> {
+    originalPrompt: string,
+    _context: {
+      taskComplexity?: number;
+      agentType?: string;
+      expectedResponseTime?: number;
+      domainSpecific?: boolean;
+    } = {}
+  ): Promise<SmartOptimizationResult> {
     if (!this.initialized) {
       await this.initialize();
-}
+    }
 
     try {
       logger.info(
-        `🔍 Analyzing prompt for optimization:"${originalPrompt.substring(0, 50)}..."``
+        `🔍 Analyzing prompt for optimization: "${originalPrompt.substring(0, 50)}..."`
       );
 
       // Analyze prompt characteristics
@@ -149,29 +152,30 @@ export class SmartPromptOptimizer {
       const statisticalSignificance =
         this.calculateStatisticalSignificance(similarPrompts);
 
-      const result:SmartOptimizationResult = {
+      const result: SmartOptimizationResult = {
         optimizedPrompt,
         confidence,
         improvementFactor,
         appliedPatterns,
         reasoning,
         statisticalSignificance,
-};
+      };
 
       logger.info(
-        `✅ Prompt optimization complete - confidence:${confidence.toFixed(2)}, improvement:${improvementFactor.toFixed(2)}x``
+        `✅ Prompt optimization complete - confidence: ${confidence.toFixed(2)}, improvement: ${improvementFactor.toFixed(2)}x`
       );
 
       return result;
-} catch (error) {
-      logger.error('❌ Prompt optimization failed:', error);')      throw error;
-}
-}
+    } catch (error) {
+      logger.error('❌ Prompt optimization failed:', error);
+      throw error;
+    }
+  }
 
   /**
    * Learn from prompt performance feedback
    */
-  async learnFromPerformance(analysisData:PromptAnalysisData): Promise<void> {
+  async learnFromPerformance(analysisData: PromptAnalysisData): Promise<void> {
     try {
       logger.debug(
         `📊 Learning from prompt performance:success rate ${analysisData.successRate.toFixed(2)}``
@@ -205,7 +209,7 @@ export class SmartPromptOptimizer {
   /**
    * Get optimization statistics
    */
-  getOptimizationStats():{
+  getOptimizationStats(): {
     totalOptimizations:number;
     averageImprovement:number;
     patternCount:number;
@@ -238,7 +242,7 @@ export class SmartPromptOptimizer {
 
   // Private helper methods
 
-  private initializeBaselinePatterns():void {
+  private initializeBaselinePatterns(): void {
     // Add baseline optimization patterns
     const patterns:OptimizationPattern[] = [
       {
@@ -273,7 +277,7 @@ export class SmartPromptOptimizer {
     );
 }
 
-  private extractPromptFeatures(prompt:string): Record<string, number> {
+  private extractPromptFeatures(prompt: string): Record<string, number> {
     return {
       length:prompt.length,
       wordCount:prompt.split(/\s+/).length,
@@ -329,7 +333,7 @@ export class SmartPromptOptimizer {
   private calculateFeatureSimilarity(
     features1:Record<string, number>,
     features2:Record<string, number>
-  ):number {
+  ): number {
     const keys = Object.keys(features1);
     let similarity = 0;
 
@@ -345,7 +349,7 @@ export class SmartPromptOptimizer {
   private performRegressionAnalysis(
     features:Record<string, number>,
     similarPrompts:PromptAnalysisData[]
-  ):any {
+  ): any {
     if (similarPrompts.length < 3) {
       return { slope:0, intercept:0.5, r2:0};
 }
@@ -414,7 +418,7 @@ export class SmartPromptOptimizer {
   private applyOptimizations(
     originalPrompt:string,
     patterns:OptimizationPattern[]
-  ):string {
+  ): string {
     const __optimizedPrompt = originalPrompt;
 
     for (const pattern of patterns) {
@@ -440,7 +444,7 @@ export class SmartPromptOptimizer {
   private calculateOptimizationConfidence(
     patterns:OptimizationPattern[],
     similarPrompts:PromptAnalysisData[]
-  ):number {
+  ): number {
     if (patterns.length === 0) return 0.5;
 
     const patternConfidence = ss.mean(patterns.map((p) => p.confidence));
@@ -460,7 +464,7 @@ export class SmartPromptOptimizer {
   private generateOptimizationReasoning(
     patterns:OptimizationPattern[],
     regressionInsights:any
-  ):string[] {
+  ): string[] {
     const reasoning:string[] = [];
 
     reasoning.push(
@@ -484,7 +488,7 @@ export class SmartPromptOptimizer {
 
   private calculateStatisticalSignificance(
     similarPrompts:PromptAnalysisData[]
-  ):number {
+  ): number {
     if (similarPrompts.length < 5) return 0.1;
 
     const successRates = similarPrompts.map((p) => p.successRate);
@@ -495,7 +499,7 @@ export class SmartPromptOptimizer {
     return Math.min(1, (successRates.length * (1 - standardError)) / 20);
 }
 
-  private updateOptimizationPatterns(analysisData:PromptAnalysisData): void {
+  private updateOptimizationPatterns(analysisData: PromptAnalysisData): void {
     // Update pattern effectiveness based on performance feedback
     const features = this.extractPromptFeatures(analysisData.originalPrompt);
 
@@ -545,16 +549,17 @@ export class SmartPromptOptimizer {
 }
 }
 
-    logger.debug('Updated optimization patterns based on performance feedback');')    // For now, just log the learning event
+    logger.debug('Updated optimization patterns based on performance feedback');
+    // For now, just log the learning event
     logger.debug(
-      `🎯 Pattern learning:$analysisData.successRate > 0.7 ? 'positive' : ' negative'feedback received``
+      `🎯 Pattern learning: ${analysisData.successRate > 0.7 ? 'positive' : 'negative'} feedback received`
     );
 }
 
   /**
    * Calculate complexity score based on prompt features
    */
-  private calculateFeatureComplexity(features:Map<string, number>):number {
+  private calculateFeatureComplexity(features:Map<string, number>): number {
     let complexity = 1;
 
     // Feature count contributes to complexity
