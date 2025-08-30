@@ -37,6 +37,7 @@ const logger = getLogger('GitHubModelsAPI');
 const CONTENT_TYPE_JSON = 'application/json';
 const ACCEPT_JSON = 'application/vnd.github+json';
 const BEARER_PREFIX = 'Bearer ';
+const GITHUB_API_VERSION = '2022-11-28';
 
 export interface GitHubModelsOptions {
   token: string;
@@ -166,20 +167,22 @@ export class GitHubModelsAPI implements APIProvider {
 
         if (modelId) {
           // Return specific model details
-          const model = models.find((m: any) => m.id === modelId);
+          const model = models.find((m: unknown) => (m as { id: string }).id === modelId);
           return model || null;
         }
 
         // Return all model details with context sizes and limits
-        return models.map((model: any) => ({
-          id: model.id,
-          name: model.name,
-          publisher: model.publisher,
-          summary: model.summary,
-          maxInputTokens: model.limits?.max_input_tokens || 0,
-          maxOutputTokens: model.limits?.max_output_tokens || 0,
-          rateLimitTier: model.rate_limit_tier,
-          supportedInputModalities: model.supported_input_modalities || [],
+        return models.map((model: unknown) => {
+          const m = model as { id: string; name: string; displayName?: string; endpoint?: string };
+          return {
+            id: m.id,
+            name: m.name,
+            publisher: (m as any).publisher,
+            summary: (m as any).summary,
+            maxInputTokens: (m as any).limits?.max_input_tokens || 0,
+            maxOutputTokens: (m as any).limits?.max_output_tokens || 0,
+            rateLimitTier: (m as any).rate_limit_tier,
+            supportedInputModalities: (m as any).supported_input_modalities || [],
           supportedOutputModalities: model.supported_output_modalities || [],
           capabilities: model.capabilities || [],
           tags: model.tags || [],
@@ -201,24 +204,34 @@ export class GitHubModelsAPI implements APIProvider {
       const modelDetails = await this.getModelDetails();
 
       if (modelDetails && Array.isArray(modelDetails)) {
-        const hasStreaming = modelDetails.some((m: any) =>
-          m.capabilities?.includes('streaming')
-        );
-        const hasMultimodal = modelDetails.some((m: any) =>
-          m.supportedInputModalities?.includes('image')
-        );
-        const hasReasoning = modelDetails.some((m: any) =>
-          m.capabilities?.includes('reasoning')
-        );
-        const hasToolCalling = modelDetails.some((m: any) =>
-          m.capabilities?.includes('tool-calling')
-        );
+        const hasStreaming = modelDetails.some((m: unknown) => {
+          const model = m as { capabilities?: string[] };
+          return model.capabilities?.includes('streaming');
+        });
+        const hasMultimodal = modelDetails.some((m: unknown) => {
+          const model = m as { supportedInputModalities?: string[] };
+          return model.supportedInputModalities?.length && model.supportedInputModalities.length > 1;
+        });
+        const hasReasoning = modelDetails.some((m: unknown) => {
+          const model = m as { capabilities?: string[] };
+          return model.capabilities?.includes('reasoning');
+        });
+        const hasToolCalling = modelDetails.some((m: unknown) => {
+          const model = m as { capabilities?: string[] };
+          return model.capabilities?.includes('tool_calling');
+        });
 
         const maxInputTokens = Math.max(
-          ...modelDetails.map((m: any) => m.maxInputTokens || 0)
+          ...modelDetails.map((m: unknown) => {
+            const model = m as { maxInputTokens?: number };
+            return model.maxInputTokens || 0;
+          })
         );
         const maxOutputTokens = Math.max(
-          ...modelDetails.map((m: any) => m.maxOutputTokens || 0)
+          ...modelDetails.map((m: unknown) => {
+            const model = m as { maxOutputTokens?: number };
+            return model.maxOutputTokens || 0;
+          })
         );
 
         return {
@@ -294,9 +307,9 @@ export class GitHubModelsAPI implements APIProvider {
       const response = await fetch(catalogEndpoint, {
         method: 'GET',
         headers: {
-          Accept: ' application/vnd.github+json',
+          Accept: ACCEPT_JSON,
           Authorization: `Bearer ${this.options.token}`,
-          'X-GitHub-Api-Version': '2022-11-28',
+          'X-GitHub-Api-Version': GITHUB_API_VERSION,
         },
       });
 
@@ -337,8 +350,8 @@ export class GitHubModelsAPI implements APIProvider {
             method: 'GET',
             headers: {
               Authorization: `Bearer ${this.options.token}`,
-              Accept: ' application/vnd.github+json',
-              'X-GitHub-Api-Version': '2022-11-28',
+              Accept: ACCEPT_JSON,
+              'X-GitHub-Api-Version': GITHUB_API_VERSION,
             },
           });
 
@@ -464,8 +477,8 @@ export const gitHubModelsConfig = {
     tokenFormat: 'ghp_xxx (Personal Access Token)',
     scopes: ['models'],
     requiredHeaders: {
-      Accept: 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28',
+      Accept: ACCEPT_JSON,
+      'X-GitHub-Api-Version': GITHUB_API_VERSION,
     },
   },
   endpoints: {

@@ -43,32 +43,33 @@ type Result<T, E = Error> = {
   isErr(): boolean;
   value?: T;
   error?: E;
-  mapErr(fn: (e: E) => any): any;
+  mapErr<F>(fn: (e: E) => F): Result<T, F>;
 };
-function ok<T>(value: T): Result<T, any> {
+function ok<T>(value: T): Result<T, never> {
   return {
-    isOk:() => true,
-    isErr:() => false,
+    isOk: () => true,
+    isErr: () => false,
     value,
-    mapErr:() => ok(value),
-};
+    mapErr: () => ok(value),
+  };
 }
-function err<E>(error: E): Result<any, E> {
+function err<E>(error: E): Result<never, E> {
   return {
-    isOk:() => false,
-    isErr:() => true,
+    isOk: () => false,
+    isErr: () => true,
     error,
-    mapErr:(fn) => err(fn(error)),
-};
+    mapErr: (fn) => err(fn(error)),
+  };
 }
 
 // Simple error classes
 class ContextError extends Error {
   constructor(
     message: string,
-    public context?:any,
+    public context?: unknown,
   ) {
     super(message);
+  }
 }
 }
 class ValidationError extends ContextError {}
@@ -89,7 +90,7 @@ async function safeAsync<T>(
 }
 
 // Simple context wrapper
-function withContext<E extends Error>(error: E, context: any): ContextError {
+function withContext<E extends Error>(error: E, context: unknown): ContextError {
   return new ContextError(error.message, context);
 }
 
@@ -116,15 +117,15 @@ async function withRetry<T>(
 }
 
 // Simple Span type for tracing
-type Span = { setAttributes:(attrs: any) => void; end: () => void};
+type Span = { setAttributes:(attrs: unknown) => void; end: () => void};
 
 // Monitoring functions with basic implementations
 const metrics = new Map<
   string,
-  { value: number; timestamp: number; tags: any}
+  { value: number; timestamp: number; tags: unknown }
 >();
 
-function recordMetric(name: string, value?:number, tags?:any): Promise<void> {
+function recordMetric(name: string, value?:number, tags?:unknown): Promise<void> {
   metrics.set(name, {
     value: value ?? 1,
     timestamp: Date.now(),
