@@ -1,6 +1,6 @@
 /**
  * @fileoverview Svelte Integration Example for Central WebSocket Hub
- * 
+ *
  * Example showing how Svelte dashboard would connect to and use the
  * unified Central WebSocket Hub for real-time coordination updates.
  */
@@ -30,22 +30,22 @@ export class SvelteWebSocketManager {
     return new Promise((resolve, reject) => {
       try {
         this.ws = new WebSocket(this.hubEndpoint);
-        
+
         this.ws.onopen = () => {
           logger.info('🔌 Connected to Central WebSocket Hub');
           this.reconnectAttempts = 0;
           resolve();
         };
-        
+
         this.ws.onmessage = (event) => {
           this.handleMessage(JSON.parse(event.data));
         };
-        
+
         this.ws.onclose = () => {
           logger.info('❌ Disconnected from Central WebSocket Hub');
           this.handleReconnect();
         };
-        
+
         this.ws.onerror = (error) => {
           logger.error('🚨 WebSocket error:', error);
           reject(error);
@@ -88,18 +88,21 @@ export class SvelteWebSocketManager {
     this.availableServices = discoveryData.services.map((s: any) => s.name);
     logger.info('🔍 Discovered services:', this.availableServices);
     logger.info('📡 Available message types:', discoveryData.totalMessageTypes);
-    
+
     // Auto-subscribe to common dashboard events
-    this.subscribe([
-      'taskmaster',   // TaskMaster events
-      'coordination'  // System coordination events
-    ], [
-      'task_updated',
-      'approval_gate_changed',
-      'pi_planning_progress',
-      'flow_metrics_updated',
-      'system_health_update'
-    ]);
+    this.subscribe(
+      [
+        'taskmaster', // TaskMaster events
+        'coordination', // System coordination events
+      ],
+      [
+        'task_updated',
+        'approval_gate_changed',
+        'pi_planning_progress',
+        'flow_metrics_updated',
+        'system_health_update',
+      ]
+    );
   }
 
   /**
@@ -111,11 +114,13 @@ export class SvelteWebSocketManager {
       return;
     }
 
-    this.ws.send(JSON.stringify({
-      type: 'subscribe',
-      services,
-      messageTypes
-    }));
+    this.ws.send(
+      JSON.stringify({
+        type: 'subscribe',
+        services,
+        messageTypes,
+      })
+    );
   }
 
   /**
@@ -155,7 +160,7 @@ export class SvelteWebSocketManager {
         }
       }
     }
-    
+
     // Also emit to wildcard listeners
     const wildcardCallbacks = this.subscribers.get('*');
     if (wildcardCallbacks) {
@@ -176,10 +181,12 @@ export class SvelteWebSocketManager {
     if (this.reconnectAttempts < this.maxReconnectAttempts) {
       this.reconnectAttempts++;
       const delay = Math.pow(2, this.reconnectAttempts) * 1000; // Exponential backoff
-      logger.info(`🔄 Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
-      
+      logger.info(
+        `🔄 Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`
+      );
+
       setTimeout(() => {
-        this.connect().catch(error => {
+        this.connect().catch((error) => {
           logger.error('Reconnection failed:', error);
         });
       }, delay);
@@ -193,16 +200,18 @@ export class SvelteWebSocketManager {
    */
   discoverServices(): void {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
-    
-    this.ws.send(JSON.stringify({
-      type: 'discover_services'
-    }));
+
+    this.ws.send(
+      JSON.stringify({
+        type: 'discover_services',
+      })
+    );
   }
 
   /**
    * Get connection statistics
    */
-  getStats():  {
+  getStats(): {
     connected: boolean;
     availableServices: string[];
     activeSubscriptions: number;
@@ -212,7 +221,7 @@ export class SvelteWebSocketManager {
       connected: this.ws?.readyState === WebSocket.OPEN,
       availableServices: this.availableServices,
       activeSubscriptions: this.subscribers.size,
-      reconnectAttempts: this.reconnectAttempts
+      reconnectAttempts: this.reconnectAttempts,
     };
   }
 

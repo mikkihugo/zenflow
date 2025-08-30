@@ -19,7 +19,7 @@ export type * from './document-driven-system';
 /**
  * @deprecated Use EventDrivenDocumentIntelligence instead for event-based brain coordination
  */
-export { DocumentDrivenSystem} from './document-driven-system';
+export { DocumentDrivenSystem } from './document-driven-system';
 /**
  * @deprecated Use EventDrivenDocumentIntelligence instead for event-based brain coordination
  */
@@ -35,7 +35,7 @@ export {
 /**
  * @deprecated Use EventDrivenDocumentIntelligence instead for event-based brain coordination
  */
-export { DocumentWorkflowService} from './services/document-workflow-service';
+export { DocumentWorkflowService } from './services/document-workflow-service';
 /**
  * @deprecated Use EventDrivenDocumentIntelligence instead for event-based brain coordination
  */
@@ -49,8 +49,8 @@ export type {
 /**
  * @deprecated Use EventDrivenDocumentIntelligence instead for event-based brain coordination
  */
-export { DocumentTaskCoordinator} from './services/document-task-coordinator';
+export { DocumentTaskCoordinator } from './services/document-task-coordinator';
 /**
  * @deprecated Use EventDrivenDocumentIntelligence instead for event-based brain coordination
  */
-export { StrategicVisionService} from './services/strategic-vision-service';
+export { StrategicVisionService } from './services/strategic-vision-service';

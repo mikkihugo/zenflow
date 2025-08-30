@@ -6,7 +6,7 @@
  */
 export * from './main';
 export * from './intelligent-doc-import';
-export { BasicKnowledgeManager} from './main';
+export { BasicKnowledgeManager } from './main';
 export {
   getCoordinationFactSystem,
   initializeCoordinationFactSystem,

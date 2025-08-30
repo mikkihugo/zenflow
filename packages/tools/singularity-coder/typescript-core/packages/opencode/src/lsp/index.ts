@@ -92,10 +92,10 @@ export namespace LSP {
         serverID:server.id,
         server:handle,
         root,
-}).catch((err) => {
+}).catch((error) => {
         s.broken.add(root + server.id)
         handle.process.kill()
-        log.error("", { error:err})
+        log.error("", { error})
 })
       if (!client) continue
       s.clients.push(client)
@@ -127,17 +127,15 @@ export namespace LSP {
 }
 
   export async function hover(input:{ file: string; line: number; character: number}) {
-    return run((client) => {
-      return client.connection.sendRequest("textDocument/hover", {
+    return run((client) => client.connection.sendRequest("textDocument/hover", {
         textDocument:{
-          uri:`file://${input.file}`,`
+          uri:`file://${input.file}`,
 },
         position:{
           line:input.line,
           character:input.character,
 },
-})
-})
+}))
 }
 
   enum SymbolKind {
@@ -225,7 +223,7 @@ export namespace LSP {
       const line = diagnostic.range.start.line + 1
       const col = diagnostic.range.start.character + 1
 
-      return `${severity} [${line}:${col}] ${diagnostic.message}``
+      return `${severity} [${line}:${col}] ${diagnostic.message}
 }
 }
 }

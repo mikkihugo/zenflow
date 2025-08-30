@@ -54,11 +54,11 @@ export class LLMApprovalService {
   ): Promise<LLMApprovalResult> {
     const startTime = Date.now();
     const gateId = `gate_${context.task.id}_${Date.now()}`;
-    
+
     try {
       this.logger.info('Starting LLM approval evaluation', {
         taskId: context.task.id,
-        gateId
+        gateId,
       });
 
       // First, check auto-approval rules
@@ -74,17 +74,17 @@ export class LLMApprovalService {
             model: 'rule-based',
             processingTime: Date.now() - startTime,
             tokenUsage: 0,
-            version: 'rules-v1.0.0'
+            version: 'rules-v1.0.0',
           },
           autoApproved: true,
           escalatedToHuman: false,
-          processingTime: Date.now() - startTime
+          processingTime: Date.now() - startTime,
         };
       }
 
       // Get LLM decision
       const llmDecision = await this.getLLMDecision(context, config);
-      
+
       // Determine if auto-approval threshold is met
       const autoApproved =
         llmDecision.approved &&
@@ -94,7 +94,7 @@ export class LLMApprovalService {
       if (autoApproved) {
         this.logger.info('LLM auto-approved task', {
           taskId: context.task.id,
-          confidence: llmDecision.confidence
+          confidence: llmDecision.confidence,
         });
       }
 
@@ -108,18 +108,18 @@ export class LLMApprovalService {
           model: config.model || 'claude-3-5-sonnet',
           processingTime: Date.now() - startTime,
           tokenUsage: 0, // Would be populated by actual LLM call
-          version: 'llm-v1.0.0'
+          version: 'llm-v1.0.0',
         },
         autoApproved,
         escalatedToHuman,
-        processingTime: Date.now() - startTime
+        processingTime: Date.now() - startTime,
       };
     } catch (error) {
-      this.logger.error('LLM evaluation failed', { 
-        taskId: context.task.id, 
-        error 
+      this.logger.error('LLM evaluation failed', {
+        taskId: context.task.id,
+        error,
       });
-      
+
       return {
         gateId,
         taskId: context.task.id,
@@ -130,11 +130,11 @@ export class LLMApprovalService {
           model: 'error-fallback',
           processingTime: Date.now() - startTime,
           tokenUsage: 0,
-          version: 'error-v1.0.0'
+          version: 'error-v1.0.0',
         },
         autoApproved: false,
         escalatedToHuman: true,
-        processingTime: Date.now() - startTime
+        processingTime: Date.now() - startTime,
       };
     }
   }
@@ -151,7 +151,7 @@ export class LLMApprovalService {
       prompt,
       model: config.model || 'claude-3-5-sonnet',
       maxTokens: 1000,
-      temperature: 0.1 // Low temperature for consistent decisions
+      temperature: 0.1, // Low temperature for consistent decisions
     });
 
     return this.parseLLMResponse(response, config);
@@ -160,9 +160,12 @@ export class LLMApprovalService {
   /**
    * Build the approval prompt for LLM evaluation
    */
-  private buildApprovalPrompt(context: LLMApprovalContext, config: LLMApprovalConfig): string {
+  private buildApprovalPrompt(
+    context: LLMApprovalContext,
+    config: LLMApprovalConfig
+  ): string {
     const { task, workflow, security, codeAnalysis, history } = context;
-    
+
     return `You are an intelligent task approval system. Analyze this task and decide whether to approve it based on the criteria.
 
 TASK DETAILS:
@@ -186,12 +189,16 @@ SECURITY ASSESSMENT:
 - Compliance Required: ${security.complianceRequired}
 - Security Scan Status: ${security.scanStatus}
 
-${codeAnalysis ? `CODE ANALYSIS:
+${
+  codeAnalysis
+    ? `CODE ANALYSIS:
 - Files Changed: ${codeAnalysis.filesChanged}
 - Lines Added: ${codeAnalysis.linesAdded}
 - Lines Removed: ${codeAnalysis.linesRemoved}
 - Test Coverage: ${codeAnalysis.testCoverage}%
-- Quality Score: ${codeAnalysis.qualityScore}%` : ''}
+- Quality Score: ${codeAnalysis.qualityScore}%`
+    : ''
+}
 
 HISTORICAL CONTEXT:
 - Similar tasks: ${history.similarTasks.length}
@@ -231,14 +238,17 @@ Be conservative: when in doubt, escalate to human review.`;
     config: LLMApprovalConfig
   ): LLMApprovalDecision {
     try {
-      const parsed = typeof response === 'string' ? JSON.parse(response) : response;
-      
+      const parsed =
+        typeof response === 'string' ? JSON.parse(response) : response;
+
       return {
         approved: Boolean(parsed.approved),
         confidence: Math.max(0, Math.min(1, Number(parsed.confidence) || 0)),
         reasoning: String(parsed.reasoning || ''),
         concerns: Array.isArray(parsed.concerns) ? parsed.concerns : [],
-        suggestedActions: Array.isArray(parsed.suggestedActions) ? parsed.suggestedActions : []
+        suggestedActions: Array.isArray(parsed.suggestedActions)
+          ? parsed.suggestedActions
+          : [],
       };
     } catch (error) {
       this.logger.error('Failed to parse LLM response', { error, response });
@@ -247,7 +257,7 @@ Be conservative: when in doubt, escalate to human review.`;
         confidence: 0,
         reasoning: 'Failed to parse LLM response - escalated to human review',
         concerns: ['parsing_error', 'requires_human_review'],
-        suggestedActions: ['Review task manually', 'Check LLM response format']
+        suggestedActions: ['Review task manually', 'Check LLM response format'],
       };
     }
   }
@@ -269,7 +279,7 @@ Be conservative: when in doubt, escalate to human review.`;
           task: context.task,
           workflow: context.workflow,
           security: context.security,
-          codeAnalysis: context.codeAnalysis
+          codeAnalysis: context.codeAnalysis,
         };
 
         const ruleMatches = rule.conditions.every((condition) => {
@@ -287,7 +297,7 @@ Be conservative: when in doubt, escalate to human review.`;
             this.logger.warn('Rule condition evaluation failed', {
               rule: rule.name,
               condition,
-              error
+              error,
             });
             return false;
           }
@@ -298,7 +308,7 @@ Be conservative: when in doubt, escalate to human review.`;
           return {
             autoApprove: true,
             rule,
-            confidence: rule.confidence
+            confidence: rule.confidence,
           };
         }
       } catch (error) {
@@ -308,7 +318,7 @@ Be conservative: when in doubt, escalate to human review.`;
 
     return {
       autoApprove: false,
-      confidence: 0
+      confidence: 0,
     };
   }
 
@@ -324,15 +334,15 @@ Be conservative: when in doubt, escalate to human review.`;
       taskId,
       llmDecision: {
         approved: llmDecision.approved,
-        reasoning: llmDecision.reasoning
+        reasoning: llmDecision.reasoning,
       },
       humanDecision: {
         approved: humanOverride.action === 'approve',
-        reasoning: humanOverride.reason
+        reasoning: humanOverride.reason,
       },
       patterns: this.extractLearningPatterns(llmDecision, humanOverride),
       confidence: this.calculateLearningWeight(humanOverride),
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     await this.updateLearningModel(learning);
@@ -347,7 +357,7 @@ Be conservative: when in doubt, escalate to human review.`;
   ): 'correct' | 'partially_correct' | 'incorrect' {
     const llmApproved = llmDecision.approved;
     const humanApproved = humanOverride.action === 'approve';
-    
+
     if (llmApproved === humanApproved) {
       return llmDecision.confidence > 0.8 ? 'correct' : 'partially_correct';
     } else {
@@ -363,7 +373,7 @@ Be conservative: when in doubt, escalate to human review.`;
     const baseWeight = 0.5;
     const reasoningWeight = humanOverride.reason.length > 50 ? 0.3 : 0.1;
     const timeWeight = humanOverride.reviewTime > 300 ? 0.2 : 0.1; // 5+ minutes
-    
+
     return Math.min(1.0, baseWeight + reasoningWeight + timeWeight);
   }
 
@@ -375,7 +385,7 @@ Be conservative: when in doubt, escalate to human review.`;
     humanOverride: HumanOverride
   ): string[] {
     const patterns: string[] = [];
-    
+
     // Extract patterns from reasoning differences
     if (llmDecision.reasoning && humanOverride.reason) {
       if (humanOverride.reason.toLowerCase().includes('security')) {
@@ -391,7 +401,7 @@ Be conservative: when in doubt, escalate to human review.`;
         patterns.push('reasoning_mismatch');
       }
     }
-    
+
     return patterns;
   }
 
@@ -407,21 +417,21 @@ Be conservative: when in doubt, escalate to human review.`;
         confidence: learning.confidence,
         humanFeedback: learning.humanDecision,
         aiPrediction: learning.llmDecision,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       // Update auto-approval rules based on learning
       await this.updateAutoApprovalRules(learning);
 
-      this.logger.info('Learning model updated successfully', { 
+      this.logger.info('Learning model updated successfully', {
         taskId: learning.taskId,
         patterns: learning.patterns.length,
-        confidence: learning.confidence
+        confidence: learning.confidence,
       });
     } catch (error) {
-      this.logger.error('Failed to update learning model', { 
-        taskId: learning.taskId, 
-        error 
+      this.logger.error('Failed to update learning model', {
+        taskId: learning.taskId,
+        error,
       });
     }
   }
@@ -429,12 +439,17 @@ Be conservative: when in doubt, escalate to human review.`;
   /**
    * Update auto-approval rules based on learning patterns
    */
-  private async updateAutoApprovalRules(learning: ApprovalLearning): Promise<void> {
+  private async updateAutoApprovalRules(
+    learning: ApprovalLearning
+  ): Promise<void> {
     // Improve rule conditions based on learning patterns
     for (const pattern of learning.patterns) {
       if (pattern === 'reasoning_mismatch') {
         // Adjust confidence thresholds for similar tasks
-        await this.adjustConfidenceThresholds(learning.taskId, learning.confidence);
+        await this.adjustConfidenceThresholds(
+          learning.taskId,
+          learning.confidence
+        );
       } else if (pattern === 'security_concern') {
         // Strengthen security-related rules
         await this.strengthenSecurityRules(learning);
@@ -448,23 +463,35 @@ Be conservative: when in doubt, escalate to human review.`;
   /**
    * Adjust confidence thresholds based on learning
    */
-  private async adjustConfidenceThresholds(taskId: string, learnedConfidence: number): Promise<void> {
+  private async adjustConfidenceThresholds(
+    taskId: string,
+    learnedConfidence: number
+  ): Promise<void> {
     // Implementation would adjust thresholds in the brain system
-    this.logger.debug('Adjusted confidence thresholds', { taskId, learnedConfidence });
+    this.logger.debug('Adjusted confidence thresholds', {
+      taskId,
+      learnedConfidence,
+    });
   }
 
   /**
    * Strengthen security rules based on feedback
    */
-  private async strengthenSecurityRules(learning: ApprovalLearning): Promise<void> {
+  private async strengthenSecurityRules(
+    learning: ApprovalLearning
+  ): Promise<void> {
     // Implementation would update security validation rules
-    this.logger.debug('Strengthened security rules', { taskId: learning.taskId });
+    this.logger.debug('Strengthened security rules', {
+      taskId: learning.taskId,
+    });
   }
 
   /**
    * Update complexity assessment rules
    */
-  private async updateComplexityRules(learning: ApprovalLearning): Promise<void> {
+  private async updateComplexityRules(
+    learning: ApprovalLearning
+  ): Promise<void> {
     // Implementation would refine complexity detection algorithms
     this.logger.debug('Updated complexity rules', { taskId: learning.taskId });
   }
@@ -482,11 +509,11 @@ Be conservative: when in doubt, escalate to human review.`;
         conditions: [
           'task.type === "documentation"',
           'security.riskLevel === "low"',
-          'codeAnalysis?.linesAdded <= 100'
+          'codeAnalysis?.linesAdded <= 100',
         ],
         confidence: 0.9,
         priority: 1,
-        enabled: true
+        enabled: true,
       },
       {
         id: 'minor-bug-fix',
@@ -495,11 +522,11 @@ Be conservative: when in doubt, escalate to human review.`;
         conditions: [
           'task.type === "bug_fix"',
           'codeAnalysis?.linesChanged <= 50',
-          'codeAnalysis?.testCoverage >= 80'
+          'codeAnalysis?.testCoverage >= 80',
         ],
         confidence: 0.85,
         priority: 2,
-        enabled: true
+        enabled: true,
       },
       {
         id: 'routine-maintenance',
@@ -508,16 +535,16 @@ Be conservative: when in doubt, escalate to human review.`;
         conditions: [
           'task.type === "maintenance"',
           'security.scanStatus === "passed"',
-          'workflow.currentStage === "testing"'
+          'workflow.currentStage === "testing"',
         ],
         confidence: 0.8,
         priority: 3,
-        enabled: true
-      }
+        enabled: true,
+      },
     ];
 
-    this.logger.info('Loaded auto-approval rules', { 
-      count: this.autoApprovalRules.length 
+    this.logger.info('Loaded auto-approval rules', {
+      count: this.autoApprovalRules.length,
     });
   }
 
@@ -539,10 +566,16 @@ Be conservative: when in doubt, escalate to human review.`;
   /**
    * Update existing auto-approval rule
    */
-  updateAutoApprovalRule(ruleId: string, updates: Partial<AutoApprovalRule>): void {
-    const index = this.autoApprovalRules.findIndex(r => r.id === ruleId);
+  updateAutoApprovalRule(
+    ruleId: string,
+    updates: Partial<AutoApprovalRule>
+  ): void {
+    const index = this.autoApprovalRules.findIndex((r) => r.id === ruleId);
     if (index >= 0) {
-      this.autoApprovalRules[index] = { ...this.autoApprovalRules[index], ...updates };
+      this.autoApprovalRules[index] = {
+        ...this.autoApprovalRules[index],
+        ...updates,
+      };
       this.logger.info('Updated auto-approval rule', { ruleId });
     }
   }
@@ -551,7 +584,9 @@ Be conservative: when in doubt, escalate to human review.`;
    * Remove auto-approval rule
    */
   removeAutoApprovalRule(ruleId: string): void {
-    this.autoApprovalRules = this.autoApprovalRules.filter(r => r.id !== ruleId);
+    this.autoApprovalRules = this.autoApprovalRules.filter(
+      (r) => r.id !== ruleId
+    );
     this.logger.info('Removed auto-approval rule', { ruleId });
   }
 }

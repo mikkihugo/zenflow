@@ -97,10 +97,9 @@ export function createDatabaseAccess(config?: unknown) {
 
 // Event-driven database coordinator
 export class DatabaseEventCoordinator extends EventEmitter {
-  constructor(private config?:unknown) {
+  constructor(private config?: unknown) {
     super();
-}
-
+  }
   async connect(type: 'sqlite' | 'memory', database: string) {
     this.emit('database:connection:initiated', { type, database });
     
@@ -135,7 +134,6 @@ export class DatabaseEventCoordinator extends EventEmitter {
     this.emit('database:health:status_change', { status, details, timestamp: Date.now() });
   }
 }
-
 // Provider class expected by infrastructure facade  
 export class DatabaseProvider extends DatabaseEventCoordinator {
   constructor(config?: unknown) {

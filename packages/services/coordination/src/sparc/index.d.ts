@@ -111,16 +111,16 @@ export interface TeamworkResponse {
  * Event-driven SPARC Manager that works independently or with Teamwork
  */
 export declare class SPARCManager extends EventBus {
-    private config;
-    private collaborationTimeouts;
-    private pendingReviews;
+  private config;
+  private collaborationTimeouts;
+  private pendingReviews;
 }
 export default class SPARC extends EventBus {
-    private manager?;
-    constructor();
-    /**
-     * Setup event coordination for SPARC system
-     */
-    private setupEventCoordination;
+  private manager?;
+  constructor();
+  /**
+   * Setup event coordination for SPARC system
+   */
+  private setupEventCoordination;
 }
 //# sourceMappingURL=index.d.ts.map

@@ -10,5 +10,15 @@ export { MemoryOptimizationEngine } from './memory-optimization-engine';
 export { DataLifecycleManager } from './data-lifecycle-manager';
 export { PerformanceTuningStrategy } from './performance-tuning-strategy';
 export { SwarmKnowledgeExtractor } from './swarm-knowledge-extractor';
-export type { CacheEvictionConfig, CacheEntry, EvictionReason, OptimizationConfig, OptimizationMetrics, LifecycleConfig, LifecycleStage, PerformanceConfig, TuningAction, } from './types';
+export type {
+  CacheEvictionConfig,
+  CacheEntry,
+  EvictionReason,
+  OptimizationConfig,
+  OptimizationMetrics,
+  LifecycleConfig,
+  LifecycleStage,
+  PerformanceConfig,
+  TuningAction,
+} from './types';
 //# sourceMappingURL=index.d.ts.map

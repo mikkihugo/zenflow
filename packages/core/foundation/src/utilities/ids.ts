@@ -21,9 +21,9 @@
  * ```
  */
 
-import { randomBytes, randomUUID} from "node:crypto";
-import { customAlphabet, nanoid} from "nanoid";
-import type { UUID} from "../types/primitives";
+import { randomBytes, randomUUID } from 'node:crypto';
+import { customAlphabet, nanoid } from 'nanoid';
+import type { UUID } from '../types/primitives';
 
 // =============================================================================
 // UUID UTILITIES - Standard RFC 4122 UUIDs
@@ -39,8 +39,8 @@ import type { UUID} from "../types/primitives";
  * const id = generateUUID(); // "f47ac10b-58cc-4372-a567-0e02b2c3d479"
  * ```
  */
-export function generateUUID():UUID {
-	return randomUUID() as UUID;
+export function generateUUID(): UUID {
+  return randomUUID() as UUID;
 }
 
 /**
@@ -55,13 +55,13 @@ export function generateUUID():UUID {
  * logger.info(isUUID("not-a-uuid")); // false
  * ```
  */
-export function isUUID(value:unknown): value is UUID {
-	return (
-		typeof value === "string" &&
-		/^[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i.test(
-			value,
-		)
-	);
+export function isUUID(value: unknown): value is UUID {
+  return (
+    typeof value === 'string' &&
+    /^[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i.test(
+      value
+    )
+  );
 }
 
 // =============================================================================
@@ -80,8 +80,8 @@ export function isUUID(value:unknown): value is UUID {
  * const shortId = generateShortId(10); // "V1StGXR8_Z"
  * ```
  */
-export function generateShortId(size?:number): string {
-	return nanoid(size);
+export function generateShortId(size?: number): string {
+  return nanoid(size);
 }
 
 /**
@@ -97,8 +97,8 @@ export function generateShortId(size?:number): string {
  * const id = generateNumericId(); // "84751249"
  * ```
  */
-export function createCustomGenerator(alphabet:string, size:number = 21) {
-	return customAlphabet(alphabet, size);
+export function createCustomGenerator(alphabet: string, size: number = 21) {
+  return customAlphabet(alphabet, size);
 }
 
 // =============================================================================
@@ -117,8 +117,8 @@ export function createCustomGenerator(alphabet:string, size:number = 21) {
  * const shortId = generateCustomId(8); // "a1b2c3d4e5f6"
  * ```
  */
-export function generateCustomId(bytes:number = 16): string {
-	return randomBytes(bytes).toString("hex");
+export function generateCustomId(bytes: number = 16): string {
+  return randomBytes(bytes).toString('hex');
 }
 
 /**
@@ -135,13 +135,13 @@ export function generateCustomId(bytes:number = 16): string {
  * ```
  */
 export function generateTimestampId(
-	prefix?:string,
-	randomBytesCount:number = 4,
-):string {
-	const timestamp = Date.now();
-	const random = randomBytes(randomBytesCount).toString("hex");
+  prefix?: string,
+  randomBytesCount: number = 4
+): string {
+  const timestamp = Date.now();
+  const random = randomBytes(randomBytesCount).toString('hex');
 
-	return prefix ? `${prefix}-${timestamp}-${random}` :`${timestamp}-${random}`;
+  return prefix ? `${prefix}-${timestamp}-${random}` : `${timestamp}-${random}`;
 }
 
 // =============================================================================
@@ -159,8 +159,8 @@ export function generateTimestampId(
  * // "a1b2c3d4e5f67890123456789abcdef01234567890abcdef1234567890abcdef"
  * ```
  */
-export function generateSessionId():string {
-	return randomBytes(32).toString("hex");
+export function generateSessionId(): string {
+  return randomBytes(32).toString('hex');
 }
 
 /**
@@ -177,11 +177,11 @@ export function generateSessionId():string {
  * ```
  */
 export function generateApiKey(
-	prefix:string = "key",
-	bytes:number = 24,
-):string {
-	const keyData = randomBytes(bytes).toString("base64url");
-	return `${prefix}_${keyData}`;
+  prefix: string = 'key',
+  bytes: number = 24
+): string {
+  const keyData = randomBytes(bytes).toString('base64url');
+  return `${prefix}_${keyData}`;
 }
 
 // =============================================================================
@@ -189,8 +189,8 @@ export function generateApiKey(
 // =============================================================================
 
 // Re-export nanoid and customAlphabet for direct access
-export { nanoid, customAlphabet};
+export { nanoid, customAlphabet };
 
 // Alias for backward compatibility
-export { generateUUID as generateSecureId};
-export { generateCustomId as generateId}; // Replaces old helpers.ts version
+export { generateUUID as generateSecureId };
+export { generateCustomId as generateId }; // Replaces old helpers.ts version

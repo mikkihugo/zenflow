@@ -4,9 +4,7 @@
  * Calculates actual SAFe implementation coverage based on real capabilities
  * rather than placeholder code or theoretical implementations.
  */
-import {
-  ESSENTIAL_SAFE_COMPONENTS
-} from './essential-safe-readiness.js';
+import { ESSENTIAL_SAFE_COMPONENTS } from './essential-safe-readiness.js';
 
 // ============================================================================
 // COVERAGE CALCULATION ENGINE
@@ -14,7 +12,7 @@ import {
 /**
  * Calculate realistic SAFe coverage based on actual implementations
  */
-export function calculateActualSafeCoverage():  {
+export function calculateActualSafeCoverage(): {
   essentialSafeCoverage: number;
   implementedComponents: number;
   partialComponents: number;
@@ -36,7 +34,7 @@ export function calculateActualSafeCoverage():  {
       ESSENTIAL_SAFE_COMPONENTS.length) *
       100
   );
-  
+
   return {
     essentialSafeCoverage,
     implementedComponents: completeComponents.length,
@@ -45,8 +43,8 @@ export function calculateActualSafeCoverage():  {
     recommendations: [
       'Focus on completing missing components for full Essential SAFe coverage',
       'Enhance partial implementations to achieve complete component coverage',
-      'Consider progression to Large Solution SAFe once Essential SAFe is fully implemented'
-    ]
+      'Consider progression to Large Solution SAFe once Essential SAFe is fully implemented',
+    ],
   };
 }
 
@@ -72,7 +70,7 @@ function generateRecommendation(
  */
 export function generateHonestAssessmentReport(): string {
   const coverage = calculateActualSafeCoverage();
-  
+
   return `# TaskMaster SAFe Implementation - Honest Assessment
 
 ## Executive Summary
@@ -82,7 +80,7 @@ export function generateHonestAssessmentReport(): string {
 - **Missing Components**: ${coverage.missingComponents}
 
 ## Recommendations
-${coverage.recommendations.map(r => `- ${r}`).join('\n')}
+${coverage.recommendations.map((r) => `- ${r}`).join('\n')}
 
 ## Next Steps
 Focus on completing missing components for full Essential SAFe coverage

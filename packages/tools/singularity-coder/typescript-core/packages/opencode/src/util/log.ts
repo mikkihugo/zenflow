@@ -63,7 +63,7 @@ export namespace Log {
     await fs.mkdir(dir, { recursive:true})
     cleanup(dir)
     if (options.print) return
-    logpath = path.join(dir, `${new Date().toISOString().split(".")[0].replace(/:/g, "")}.log`)`
+    logpath = path.join(dir, `${new Date().toISOString().split(".")[0].replace(/:/g, "")}.log)
     const logfile = Bun.file(logpath)
     await fs.truncate(logpath).catch(() => {})
     const writer = logfile.writer()
@@ -105,7 +105,7 @@ export namespace Log {
         ...extra,
 })
         .filter(([_, value]) => value !== undefined && value !== null)
-        .map(([key, value]) => `${key}=${value}`)`
+        .map(([key, value]) => `${key}=${value}`)
         .join(" ")
       const next = new Date()
       const diff = next.getTime() - last

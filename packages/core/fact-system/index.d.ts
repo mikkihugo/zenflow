@@ -339,14 +339,54 @@
  * @license MIT
  * @since 1.0.0
  */
-export type { APIDocumentationFactResult, FactCacheEntry, FactProcessingOptions, FactSearchQuery, FactSearchResult, FactSourceType, FactSystemConfig, FactSystemStats, GitHubFactResult, NPMFactResult, RustEngineConfig, SecurityFactResult} from "./src/main";
-export { createFactClient, createKuzuFactClient, createLanceDBFactClient, createSQLiteFactClient, DocumentationProcessor, FactBridge, FactClient as FactSystem, FactClient as default, IntelligentCache, LiveAPIConnector, NaturalLanguageQuery} from "./src/main";
-export declare const FACT_SYSTEM_INFO:{
-    readonly name:"@claude-zen/fact-system";
-    readonly version:"1.0.0";
-    readonly description:"High-performance FACT system with Rust engine and TypeScript coordination";
-    readonly features:readonly ["Multi-source fact gathering", "High-performance Rust processing", "Smart caching with multiple backends", "GitHub GraphQL integration", "NPM package analysis", "Security advisory lookup", "API documentation retrieval", "Type-safe TypeScript API", "Command-line interface"];
-    readonly backends:readonly ["SQLite", "LanceDB", "Kuzu", "PostgreSQL"];
-    readonly sources:readonly ["NPM Registry", "GitHub API", "NVD Security", "API Documentation"];
+export type {
+  APIDocumentationFactResult,
+  FactCacheEntry,
+  FactProcessingOptions,
+  FactSearchQuery,
+  FactSearchResult,
+  FactSourceType,
+  FactSystemConfig,
+  FactSystemStats,
+  GitHubFactResult,
+  NPMFactResult,
+  RustEngineConfig,
+  SecurityFactResult,
+} from './src/main';
+export {
+  createFactClient,
+  createKuzuFactClient,
+  createLanceDBFactClient,
+  createSQLiteFactClient,
+  DocumentationProcessor,
+  FactBridge,
+  FactClient as FactSystem,
+  FactClient as default,
+  IntelligentCache,
+  LiveAPIConnector,
+  NaturalLanguageQuery,
+} from './src/main';
+export declare const FACT_SYSTEM_INFO: {
+  readonly name: '@claude-zen/fact-system';
+  readonly version: '1.0.0';
+  readonly description: 'High-performance FACT system with Rust engine and TypeScript coordination';
+  readonly features: readonly [
+    'Multi-source fact gathering',
+    'High-performance Rust processing',
+    'Smart caching with multiple backends',
+    'GitHub GraphQL integration',
+    'NPM package analysis',
+    'Security advisory lookup',
+    'API documentation retrieval',
+    'Type-safe TypeScript API',
+    'Command-line interface',
+  ];
+  readonly backends: readonly ['SQLite', 'LanceDB', 'Kuzu', 'PostgreSQL'];
+  readonly sources: readonly [
+    'NPM Registry',
+    'GitHub API',
+    'NVD Security',
+    'API Documentation',
+  ];
 };
 //# sourceMappingURL=index.d.ts.map

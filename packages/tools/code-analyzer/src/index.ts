@@ -17,23 +17,32 @@
  */
 
 // Export main CodeAnalyzer class and utilities
-export { analyzeFile, CodeAnalyzer, createCodeAnalyzer, DependencyRelationshipMapper} from './code-analyzer';
+export {
+  analyzeFile,
+  CodeAnalyzer,
+  createCodeAnalyzer,
+  DependencyRelationshipMapper,
+} from './code-analyzer';
 
-import { CodeAnalyzer} from './code-analyzer';
+import { CodeAnalyzer } from './code-analyzer';
 
 // Export all types
 export type * from './types/code-analysis';
 
 // Export repository analysis functionality
 export { RepoAnalyzer } from './repo-analyzer';
-export type { RepoAnalyzerConfig, RepositoryAnalysisResult, DomainBoundaryValidation } from './repo-analyzer';
+export type {
+  RepoAnalyzerConfig,
+  RepositoryAnalysisResult,
+  DomainBoundaryValidation,
+} from './repo-analyzer';
 
 // Export factory functions for common use cases
-export function createLiveCodeAnalyzer(repositoryPath:string) {
+export function createLiveCodeAnalyzer(repositoryPath: string) {
   return new CodeAnalyzer(repositoryPath);
 }
 
-export function createAICodeAnalyzer(repositoryPath:string, aiConfig?:any) {
+export function createAICodeAnalyzer(repositoryPath: string, aiConfig?: any) {
   const analyzer = new CodeAnalyzer(repositoryPath);
   // Configure AI features when available
   if (aiConfig) {
@@ -46,21 +55,23 @@ export function createAICodeAnalyzer(repositoryPath:string, aiConfig?:any) {
   return analyzer;
 }
 
-export function createRepoAnalyzer(repositoryPath:string, config?:any) {
+export function createRepoAnalyzer(repositoryPath: string, config?: any) {
   const { RepoAnalyzer } = require('./repo-analyzer');
   return new RepoAnalyzer({ rootPath: repositoryPath, ...config });
 }
 
-export function createUnifiedAnalyzer(repositoryPath:string) {
+export function createUnifiedAnalyzer(repositoryPath: string) {
   return {
     codeAnalyzer: new CodeAnalyzer(repositoryPath),
     repoAnalyzer: createRepoAnalyzer(repositoryPath),
     async analyzeAll() {
       const [repoResults, dependencyMap] = await Promise.all([
         this.repoAnalyzer.analyzeDomainBoundaries(),
-        this.codeAnalyzer.buildDependencyMap ? this.codeAnalyzer.buildDependencyMap() : Promise.resolve(null)
+        this.codeAnalyzer.buildDependencyMap
+          ? this.codeAnalyzer.buildDependencyMap()
+          : Promise.resolve(null),
       ]);
       return { repoResults, dependencyMap };
-    }
+    },
   };
 }

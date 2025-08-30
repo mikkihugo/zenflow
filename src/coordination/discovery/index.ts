@@ -1,6 +1,6 @@
 /**
  * @fileoverview Domain Discovery Module
- * 
+ *
  * Exports neural domain mapping functionality for domain relationship analysis.
  * Implements the GNN-based domain discovery documented in the architecture.
  */
@@ -15,5 +15,5 @@ export type {
   DependencyGraph,
   DomainRelationshipMap,
   DomainRelationship,
-  TopologyRecommendation
+  TopologyRecommendation,
 } from './neural-domain-mapper.js';

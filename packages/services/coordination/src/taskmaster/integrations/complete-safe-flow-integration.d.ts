@@ -12,70 +12,70 @@ import { SafeFrameworkIntegration } from './safe-framework-integration.js';
  * SAFE flow stage definitions
  */
 export declare enum SafeFlowStage {
-    STRATEGIC_PLANNING = "strategic_planning",
-    PORTFOLIO_BACKLOG = "portfolio_backlog",
-    EPIC_DEVELOPMENT = "epic_development,",
-    /**
-     * Complete SAFE entity types that flow through gates
-     */
-    export,
-    interface,
-    SafeEntity
+  STRATEGIC_PLANNING = 'strategic_planning',
+  PORTFOLIO_BACKLOG = 'portfolio_backlog',
+  EPIC_DEVELOPMENT = 'epic_development,',
+  /**
+   * Complete SAFE entity types that flow through gates
+   */
+  export,
+  interface,
+  SafeEntity,
 }
 /**
  * Complete SAFE flow configuration
  */
 export interface CompleteSafeFlowConfig {
-    portfolio:  {
-        enableStrategicThemeGates: boolean;
-        enableInvestmentGates: boolean;
-        enableValueStreamGates: boolean;
-        enableEpicGates: boolean;
-        autoApprovalThresholds: Record<string, number>;
-    };
-    art:  {
-        enablePlanningIntervalPlanningGates: boolean;
-        enableFeatureGates: boolean;
-        enableCapabilityGates: boolean;
-        enableSystemDemoGates: boolean;
-        autoApprovalThresholds: Record<string, number>;
-    };
-    team:  {
-        enableStoryGates: boolean;
-        enableTaskGates: boolean;
-        enableCodeReviewGates: boolean;
-        enableSprintGates: boolean;
-        autoApprovalThresholds: Record<string, number>;
-    };
-    solution:  {
-        enableSolutionIntentGates: boolean;
-        enableArchitectureGates: boolean;
-        enableComplianceGates: boolean;
-        enableIntegrationGates: boolean;
-        autoApprovalThresholds: Record<string, number>;
-    };
-    continuousDelivery:  {
-        enableBuildGates: boolean;
-        enableTestGates: boolean;
-        enableSecurityGates: boolean;
-        enablePerformanceGates: boolean;
-        enableReleaseGates: boolean;
-        autoApprovalThresholds: Record<string, number>;
-    };
-    crossCutting:  {
-        enableRiskGates: boolean;
-        enableDependencyGates: boolean;
-        enableResourceGates: boolean;
-        enableStakeholderGates: boolean;
-        globalEscalationRules: any[];
-    };
-    traceability:  {
-        enableFullTraceability: boolean;
-        enableLearning: boolean;
-        enablePatternRecognition: boolean;
-        auditLevel: 'basic| soc2' | ' comprehensive';
-        retentionDays: number;
-    };
+  portfolio: {
+    enableStrategicThemeGates: boolean;
+    enableInvestmentGates: boolean;
+    enableValueStreamGates: boolean;
+    enableEpicGates: boolean;
+    autoApprovalThresholds: Record<string, number>;
+  };
+  art: {
+    enablePlanningIntervalPlanningGates: boolean;
+    enableFeatureGates: boolean;
+    enableCapabilityGates: boolean;
+    enableSystemDemoGates: boolean;
+    autoApprovalThresholds: Record<string, number>;
+  };
+  team: {
+    enableStoryGates: boolean;
+    enableTaskGates: boolean;
+    enableCodeReviewGates: boolean;
+    enableSprintGates: boolean;
+    autoApprovalThresholds: Record<string, number>;
+  };
+  solution: {
+    enableSolutionIntentGates: boolean;
+    enableArchitectureGates: boolean;
+    enableComplianceGates: boolean;
+    enableIntegrationGates: boolean;
+    autoApprovalThresholds: Record<string, number>;
+  };
+  continuousDelivery: {
+    enableBuildGates: boolean;
+    enableTestGates: boolean;
+    enableSecurityGates: boolean;
+    enablePerformanceGates: boolean;
+    enableReleaseGates: boolean;
+    autoApprovalThresholds: Record<string, number>;
+  };
+  crossCutting: {
+    enableRiskGates: boolean;
+    enableDependencyGates: boolean;
+    enableResourceGates: boolean;
+    enableStakeholderGates: boolean;
+    globalEscalationRules: any[];
+  };
+  traceability: {
+    enableFullTraceability: boolean;
+    enableLearning: boolean;
+    enablePatternRecognition: boolean;
+    auditLevel: 'basic| soc2' | ' comprehensive';
+    retentionDays: number;
+  };
 }
 /**
  * Complete SAFE Flow Integration Service
@@ -84,10 +84,16 @@ export interface CompleteSafeFlowConfig {
  * Provides end-to-end traceability, learning, and AGUI visibility.
  */
 export declare class CompleteSafeFlowIntegration {
-    private readonly logger;
-    private llmApprovalService;
-    private gateOrchestration;
-    constructor(approvalGateManager: approvalGateManager, this: any, config: any, this: any, baseIntegration?: SafeFrameworkIntegration);
+  private readonly logger;
+  private llmApprovalService;
+  private gateOrchestration;
+  constructor(
+    approvalGateManager: approvalGateManager,
+    this: any,
+    config: any,
+    this: any,
+    baseIntegration?: SafeFrameworkIntegration
+  );
 }
 export default CompleteSafeFlowIntegration;
 //# sourceMappingURL=complete-safe-flow-integration.d.ts.map

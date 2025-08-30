@@ -20,8 +20,8 @@
  * const customId = generateCustomId(16); // hex-based
  * ```
  */
-import { customAlphabet, nanoid } from "nanoid";
-import type { UUID } from "../types/primitives";
+import { customAlphabet, nanoid } from 'nanoid';
+import type { UUID } from '../types/primitives';
 /**
  * Generate a cryptographically secure UUID v4.
  * Uses Node.js crypto.randomUUID() for maximum security.
@@ -72,7 +72,10 @@ export declare function generateShortId(size?: number): string;
  * const id = generateNumericId(); // "84751249"
  * ```
  */
-export declare function createCustomGenerator(alphabet: string, size?: number): (size?: number) => string;
+export declare function createCustomGenerator(
+  alphabet: string,
+  size?: number
+): (size?: number) => string;
 /**
  * Generate a custom hex-based ID.
  * Uses crypto.randomBytes for security.
@@ -99,7 +102,10 @@ export declare function generateCustomId(bytes?: number): string;
  * const prefixedId = generateTimestampId("user"); // "user-1640995200000-a1b2c3d4"
  * ```
  */
-export declare function generateTimestampId(prefix?: string, randomBytesCount?: number): string;
+export declare function generateTimestampId(
+  prefix?: string,
+  randomBytesCount?: number
+): string;
 /**
  * Generate a session ID suitable for web sessions.
  * 32 bytes of randomness, hex-encoded (64 characters).

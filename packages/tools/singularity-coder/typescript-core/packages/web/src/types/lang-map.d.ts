@@ -1,5 +1,5 @@
 declare module "lang-map" {
-  /** Returned by calling `map()` */`
+  /** Returned by calling `map()` */
   export interface MapReturn {
     /** All extensions keyed by language name */
     extensions:Record<string, string[]>
@@ -8,11 +8,11 @@ declare module "lang-map" {
 }
 
   /**
-   * Calling `map()` gives you the raw lookup tables:`
+   * Calling `map()` gives you the raw lookup tables:
    *
-   * ```js`
+   * ```js
    * const { extensions, languages} = map();
-   * ````
+   * ```
    */
   function map():MapReturn
 

@@ -42,7 +42,13 @@ import { KanbanEngine as WorkflowKanban } from '../kanban/api/kanban-engine';
 /**
  * Task flow states for development pipeline
  */
-export type TaskFlowState = 'backlog' | 'analysis' | 'development' | 'testing' | 'deployment' | 'done';
+export type TaskFlowState =
+  | 'backlog'
+  | 'analysis'
+  | 'development'
+  | 'testing'
+  | 'deployment'
+  | 'done';
 /**
  * Approval gate configuration for task flow control
  */
@@ -75,7 +81,7 @@ export interface TaskFlowConfig {
   gates: Partial<Record<TaskFlowState, TaskFlowGate>>;
 
   /** Global system limits */
-  systemLimits:  {
+  systemLimits: {
     /** Maximum total pending approvals across all gates */
     maxTotalPending: number;
 
@@ -87,7 +93,7 @@ export interface TaskFlowConfig {
   };
 
   /** Flow optimization settings */
-  optimization:  {
+  optimization: {
     /** Enable automatic bottleneck detection */
     enableBottleneckDetection: boolean;
 
@@ -105,14 +111,14 @@ export interface TaskFlowStatus {
   /** Current WIP usage per state */
   wipUsage: Record<
     TaskFlowState,
-    { current: number, limit: number, utilization: number }
+    { current: number; limit: number; utilization: number }
   >;
 
   /** Approval queue status */
-  approvalQueues: Record<string, { pending: number, avgWaitTime: number }>;
+  approvalQueues: Record<string, { pending: number; avgWaitTime: number }>;
 
   /** System capacity status */
-  systemCapacity:  {
+  systemCapacity: {
     totalPending: number;
     maxPending: number;
     utilizationPercent: number;
@@ -163,18 +169,18 @@ export class TaskFlowController extends EventBus {
     super();
     this.logger = getLogger('TaskFlowController');
     this.config = config;
-    
+
     // Initialize Kanban workflow engine
     this.kanban = new WorkflowKanban({
       states: Object.keys(config.wipLimits) as TaskFlowState[],
     });
     this.aguiSystem = new AGUISystem({
-      type: "approval",
+      type: 'approval',
     });
     this.approvalSystem = new TaskApprovalSystem({
-      enableBatchMode: true
+      enableBatchMode: true,
     });
-    
+
     this.initializeDatabase();
     this.setupEventHandlers();
   }
@@ -183,9 +189,10 @@ export class TaskFlowController extends EventBus {
     try {
       const dbSystem = await DatabaseProvider.create();
       this.dbProvider = dbSystem.createProvider('sqlite');
-      
+
       // Create task flow tables if they dont exist
-      await this.dbProvider.execute(`CREATE TABLE IF NOT EXISTS task_flow_states (
+      await this.dbProvider
+        .execute(`CREATE TABLE IF NOT EXISTS task_flow_states (
           task_id TEXT PRIMARY KEY,
           current_state TEXT NOT NULL,
           previous_state TEXT,
@@ -193,8 +200,9 @@ export class TaskFlowController extends EventBus {
           confidence REAL DEFAULT 0.5,
           metadata TEXT
         )`);
-      
-      await this.dbProvider.execute(`CREATE TABLE IF NOT EXISTS task_flow_metrics (
+
+      await this.dbProvider
+        .execute(`CREATE TABLE IF NOT EXISTS task_flow_metrics (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           state TEXT NOT NULL,
           task_count INTEGER NOT NULL,
@@ -202,8 +210,9 @@ export class TaskFlowController extends EventBus {
           bottleneck_score REAL DEFAULT 0.0,
           timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         )`);
-      
-      await this.dbProvider.execute(`CREATE TABLE IF NOT EXISTS approval_queue_history (
+
+      await this.dbProvider
+        .execute(`CREATE TABLE IF NOT EXISTS approval_queue_history (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           task_id TEXT NOT NULL,
           state TEXT NOT NULL,
@@ -212,7 +221,7 @@ export class TaskFlowController extends EventBus {
           wait_time_ms INTEGER,
           approval_result TEXT
         )`);
-      
+
       await this.dbProvider.execute(`CREATE TABLE IF NOT EXISTS system_events (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           event_type TEXT NOT NULL,
@@ -220,7 +229,9 @@ export class TaskFlowController extends EventBus {
           timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
           severity TEXT DEFAULT 'info'
         )`);
-      this.logger.info('Database initialized successfully for TaskFlowController');
+      this.logger.info(
+        'Database initialized successfully for TaskFlowController'
+      );
     } catch (error) {
       this.logger.error('Failed to initialize database:', error);
       // Continue without database - graceful degradation
@@ -240,51 +251,60 @@ export class TaskFlowController extends EventBus {
       this.logger.warn('System at critical capacity - halting task movement', {
         taskId,
         toState,
-        systemCapacity: systemStatus.systemCapacity
+        systemCapacity: systemStatus.systemCapacity,
       });
       return false;
     }
-    
+
     // 2. Check approval gate
     const gate = this.config.gates[toState];
-      if (gate?.enabled) {
-        const approved = await this.processApprovalGate(
+    if (gate?.enabled) {
+      const approved = await this.processApprovalGate(
+        taskId,
+        toState,
+        confidence,
+        gate
+      );
+      if (!approved) {
+        this.logger.info('Task movement rejected by approval gate', {
           taskId,
           toState,
           confidence,
-          gate
-        );
-        if (!approved) {
-          this.logger.info('Task movement rejected by approval gate', {
-            taskId,
-            toState,
-            confidence,
-          });
-          return false;
-        }
+        });
+        return false;
       }
-      
-      // 3. Execute movement through Kanban
-      const moved = await this.kanban.moveTask(taskId, toState);
+    }
 
-      if (moved) {
-        this.emit('taskMoved', { taskId, toState, timestamp: new Date() });
-        return true;
-      }
-      
-      return false;
+    // 3. Execute movement through Kanban
+    const moved = await this.kanban.moveTask(taskId, toState);
+
+    if (moved) {
+      this.emit('taskMoved', { taskId, toState, timestamp: new Date() });
+      return true;
+    }
+
+    return false;
   }
-  
+
   async getSystemStatus(): Promise<TaskFlowStatus> {
-    const wipUsage: Record<TaskFlowState, { current: number, limit: number, utilization: number }> = {} as Record<TaskFlowState, { current: number, limit: number, utilization: number }>;
-    const approvalQueues: Record<string, { pending: number, avgWaitTime: number }> = {};
+    const wipUsage: Record<
+      TaskFlowState,
+      { current: number; limit: number; utilization: number }
+    > = {} as Record<
+      TaskFlowState,
+      { current: number; limit: number; utilization: number }
+    >;
+    const approvalQueues: Record<
+      string,
+      { pending: number; avgWaitTime: number }
+    > = {};
     // Calculate WIP usage for each state
     for (const [state, limit] of Object.entries(this.config.wipLimits)) {
       const current = this.kanban.getStateTaskCount(state as TaskFlowState);
       wipUsage[state as TaskFlowState] = {
         current,
         limit,
-        utilization: current / limit
+        utilization: current / limit,
       };
     }
 
@@ -294,7 +314,7 @@ export class TaskFlowController extends EventBus {
         const pending = await this.getGateQueueDepth(state as TaskFlowState);
         approvalQueues[`${state}-gate`] = {
           pending,
-          avgWaitTime: await this.getAverageWaitTime(state as TaskFlowState)
+          avgWaitTime: await this.getAverageWaitTime(state as TaskFlowState),
         };
       }
     }
@@ -320,23 +340,27 @@ export class TaskFlowController extends EventBus {
     // Generate recommendations
     const recommendations: string[] = [];
     if (totalPending > maxPending * 0.8) {
-      recommendations.push('Consider pausing task intake - approaching capacity limits');
+      recommendations.push(
+        'Consider pausing task intake - approaching capacity limits'
+      );
     }
     for (const bottleneck of bottlenecks) {
-      recommendations.push(`Bottleneck detected in ${bottleneck} - consider increasing WIP limit`);
+      recommendations.push(
+        `Bottleneck detected in ${bottleneck} - consider increasing WIP limit`
+      );
     }
 
     return {
       wipUsage,
       approvalQueues,
-      systemCapacity:  {
+      systemCapacity: {
         totalPending,
         maxPending,
         utilizationPercent,
-        status
+        status,
       },
       bottlenecks,
-      recommendations
+      recommendations,
     };
   }
 
@@ -344,7 +368,7 @@ export class TaskFlowController extends EventBus {
     if (!this.dbProvider) {
       return this.calculateInMemoryQueueDepth(state);
     }
-    
+
     try {
       const result = await this.dbProvider.query(
         'SELECT COUNT(*) as queue_depth FROM approval_queue_history WHERE state = ? AND processed_at IS NULL',
@@ -359,7 +383,7 @@ export class TaskFlowController extends EventBus {
 
   private async getAverageWaitTime(state: TaskFlowState): Promise<number> {
     if (!this.dbProvider) return 300000; // 5 minutes default
-    
+
     try {
       const result = await this.dbProvider.query(
         'SELECT AVG(wait_time_ms) as avg_wait_time FROM approval_queue_history WHERE state = ? AND processed_at IS NOT NULL AND queued_at > datetime("now", "-7 days")',
@@ -367,7 +391,10 @@ export class TaskFlowController extends EventBus {
       );
       return result.rows[0]?.avg_wait_time || 300000;
     } catch (error) {
-      this.logger.error('Error calculating average wait time', { state, error });
+      this.logger.error('Error calculating average wait time', {
+        state,
+        error,
+      });
       return 300000;
     }
   }
@@ -397,7 +424,7 @@ export class TaskFlowController extends EventBus {
         taskId,
         toState,
         confidence,
-        threshold: gate.autoApproveThreshold
+        threshold: gate.autoApproveThreshold,
       });
       return true;
     }
@@ -413,11 +440,15 @@ export class TaskFlowController extends EventBus {
       const response = await this.aguiSystem.askQuestion({
         id: `${taskId}-${toState}`,
         question: gate.approvalQuestion,
-        metadata:  { taskId, toState, confidence }
+        metadata: { taskId, toState, confidence },
       });
       return response.approved === true;
     } catch (error) {
-      this.logger.error('Error processing approval gate', { taskId, toState, error });
+      this.logger.error('Error processing approval gate', {
+        taskId,
+        toState,
+        error,
+      });
       return false;
     }
   }
@@ -428,12 +459,12 @@ export class TaskFlowController extends EventBus {
     gate: TaskFlowGate
   ): Promise<boolean> {
     const gateCast = gate as TaskFlowGate;
-    
+
     if (gateCast?.onQueueFull === 'spillover' && gateCast.spilloverTarget) {
       this.logger.info('WIP limit reached - redirecting to spillover state', {
         taskId,
         originalState: toState,
-        spilloverState: gateCast.spilloverTarget
+        spilloverState: gateCast.spilloverTarget,
       });
       return await this.moveTask(taskId, gateCast.spilloverTarget);
     }
@@ -443,7 +474,10 @@ export class TaskFlowController extends EventBus {
     }
 
     if (gateCast?.onQueueFull === 'auto-approve') {
-      this.logger.info('Auto-approving due to queue overflow', { taskId, toState });
+      this.logger.info('Auto-approving due to queue overflow', {
+        taskId,
+        toState,
+      });
       return true;
     }
 
@@ -452,13 +486,16 @@ export class TaskFlowController extends EventBus {
     return false;
   }
 
-  private async escalateCapacityDecision(taskId: string, toState: TaskFlowState): Promise<boolean> {
+  private async escalateCapacityDecision(
+    taskId: string,
+    toState: TaskFlowState
+  ): Promise<boolean> {
     // Placeholder for capacity escalation logic
     this.logger.info('Escalating capacity decision', { taskId, toState });
-    
+
     // Simulate async escalation process
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     return false;
   }
 
@@ -468,9 +505,11 @@ export class TaskFlowController extends EventBus {
     return Math.max(0, currentTasks - wipLimit);
   }
 
-  private async calculateRecentWaitTimeTrend(state: TaskFlowState): Promise<number | null> {
+  private async calculateRecentWaitTimeTrend(
+    state: TaskFlowState
+  ): Promise<number | null> {
     if (!this.dbProvider) return null;
-    
+
     try {
       const recentResult = await this.dbProvider.query(
         'SELECT AVG(wait_time_ms) as avg_wait FROM approval_queue_history WHERE state = ? AND queued_at > datetime("now", "-1 day")',
@@ -501,10 +540,10 @@ export class TaskFlowController extends EventBus {
     try {
       // Restart task processing queues
       await this.reinitializeTaskProcessingQueues();
-      
+
       // Reconnect to external services
       await this.reconnectToExternalServices();
-      
+
       this.isHalted = false;
       this.emit('systemResumed', { timestamp: new Date() });
     } catch (error) {
@@ -527,18 +566,27 @@ export class TaskFlowController extends EventBus {
   /**
    * Persist bottleneck analysis to database for historical tracking
    */
-  private async persistBottleneckAnalysis(status: TaskFlowStatus): Promise<void> {
+  private async persistBottleneckAnalysis(
+    status: TaskFlowStatus
+  ): Promise<void> {
     if (this.dbProvider) {
       try {
         for (const [state, usage] of Object.entries(status.wipUsage)) {
           await this.dbProvider.execute(
             'INSERT INTO task_flow_metrics (state, task_count, wip_utilization, bottleneck_score) VALUES (?, ?, ?, ?)',
-            [state, usage.current, usage.utilization, usage.utilization > 0.9 ? 1.0 : 0.0]
+            [
+              state,
+              usage.current,
+              usage.utilization,
+              usage.utilization > 0.9 ? 1.0 : 0.0,
+            ]
           );
         }
-        
-        const enhancedBottlenecks = await this.analyzeBottleneckPatterns(status.bottlenecks);
-        
+
+        const enhancedBottlenecks = await this.analyzeBottleneckPatterns(
+          status.bottlenecks
+        );
+
         for (const bottleneck of enhancedBottlenecks) {
           // Record bottleneck event in database
           await this.recordBottleneckEvent(bottleneck);
@@ -554,11 +602,15 @@ export class TaskFlowController extends EventBus {
   /**
    * Record bottleneck event
    */
-  private async recordBottleneckEvent(bottleneck: BottleneckAnalysis): Promise<void> {
+  private async recordBottleneckEvent(
+    bottleneck: BottleneckAnalysis
+  ): Promise<void> {
     try {
       // Generate intelligent recommendations based on historical data
-      const recommendations = await this.generateBottleneckRecommendations(bottleneck.state);
-      
+      const recommendations = await this.generateBottleneckRecommendations(
+        bottleneck.state
+      );
+
       this.emit('bottleneckDetected', {
         state: bottleneck.state,
         utilization: bottleneck.utilization,
@@ -567,31 +619,36 @@ export class TaskFlowController extends EventBus {
         recommendations,
         timestamp: Date.now(),
       });
-      
+
       this.logger.warn('Bottleneck detected with enhanced analysis', {
         state: bottleneck.state,
         utilization: bottleneck.utilization,
         severity: bottleneck.severity,
-        recommendations: recommendations.slice(0, 3) // Log top 3 recommendations
+        recommendations: recommendations.slice(0, 3), // Log top 3 recommendations
       });
     } catch (error) {
-      this.logger.error('Error recording bottleneck event', { error, bottleneck });
+      this.logger.error('Error recording bottleneck event', {
+        error,
+        bottleneck,
+      });
     }
   }
 
   /**
    * Generate bottleneck recommendations
    */
-  private async generateBottleneckRecommendations(state: string): Promise<string[]> {
+  private async generateBottleneckRecommendations(
+    state: string
+  ): Promise<string[]> {
     // Implementation for generating recommendations
-    
+
     // Simulate async recommendation generation
-    await new Promise(resolve => setTimeout(resolve, 50));
-    
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
     return [
       `Consider increasing WIP limit for ${state}`,
       `Add more resources to ${state} processing`,
-      `Review process efficiency for ${state}`
+      `Review process efficiency for ${state}`,
     ];
   }
   // =============================================================================
@@ -605,12 +662,15 @@ export class TaskFlowController extends EventBus {
   /**
    * Analyze bottleneck patterns (overriding the earlier stub)
    */
-  private async analyzeBottleneckPatterns(bottlenecks: string[]): Promise<BottleneckAnalysis[]> {
+  private async analyzeBottleneckPatterns(
+    bottlenecks: string[]
+  ): Promise<BottleneckAnalysis[]> {
     const enhancedBottlenecks: BottleneckAnalysis[] = [];
 
     for (const state of bottlenecks) {
-      const utilization = this.kanban.getStateTaskCount(state) / this.config.wipLimits[state];
-      
+      const utilization =
+        this.kanban.getStateTaskCount(state) / this.config.wipLimits[state];
+
       // Calculate historical frequency from database
       let historicalFrequency = 0.5; // Default
       if (this.dbProvider) {
@@ -619,33 +679,40 @@ export class TaskFlowController extends EventBus {
             'SELECT COUNT(*) as bottleneck_count, (SELECT COUNT(*) FROM task_flow_metrics WHERE state = ?) as total_measurements FROM task_flow_metrics WHERE state = ? AND bottleneck_score > 0.5 AND timestamp > datetime("now", "-30 days")',
             [state, state]
           );
-          
+
           const row = result.rows[0];
           if (row && row.total_measurements > 0) {
             historicalFrequency = row.bottleneck_count / row.total_measurements;
           }
         } catch (error) {
-          this.logger.error('Error calculating historical bottleneck frequency', { error, state });
+          this.logger.error(
+            'Error calculating historical bottleneck frequency',
+            { error, state }
+          );
         }
       }
-      
+
       // Determine severity based on utilization and historical frequency
       let severity: 'low' | 'medium' | 'high' | 'critical' = 'low';
-      if (utilization > 0.95 || historicalFrequency > 0.8) severity = 'critical';
-      else if (utilization > 0.9 || historicalFrequency > 0.6) severity = 'high';
-      else if (utilization > 0.85 || historicalFrequency > 0.4) severity = 'medium';
-      
+      if (utilization > 0.95 || historicalFrequency > 0.8)
+        severity = 'critical';
+      else if (utilization > 0.9 || historicalFrequency > 0.6)
+        severity = 'high';
+      else if (utilization > 0.85 || historicalFrequency > 0.4)
+        severity = 'medium';
+
       enhancedBottlenecks.push({
         state,
         severity,
         impact: utilization,
-        recommendations: [`Historical bottleneck frequency: ${historicalFrequency.toFixed(2)}`],
-        timestamp: new Date()
+        recommendations: [
+          `Historical bottleneck frequency: ${historicalFrequency.toFixed(2)}`,
+        ],
+        timestamp: new Date(),
       });
     }
     return enhancedBottlenecks;
   }
-
 }
 
 // =============================================================================

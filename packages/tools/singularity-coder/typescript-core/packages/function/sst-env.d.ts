@@ -3,30 +3,30 @@
 /* eslint-disable */
 /* deno-fmt-ignore-file */
 
-import "sst";
+import "sst"
 declare module "sst" {
-	export interface Resource {
-		GITHUB_APP_ID:{
-			type:"sst.sst.Secret";
-			value:string;
-};
-		GITHUB_APP_PRIVATE_KEY:{
-			type:"sst.sst.Secret";
-			value:string;
-};
-		Web:{
-			type:"sst.cloudflare.Astro";
-			url:string;
-};
-}
+  export interface Resource {
+    GITHUB_APP_ID: {
+      type: "sst.sst.Secret"
+      value: string
+    }
+    GITHUB_APP_PRIVATE_KEY: {
+      type: "sst.sst.Secret"
+      value: string
+    }
+    Web: {
+      type: "sst.cloudflare.Astro"
+      url: string
+    }
+  }
 }
 // cloudflare
-import * as cloudflare from "@cloudflare/workers-types";
+import * as cloudflare from "@cloudflare/workers-types"
 declare module "sst" {
-	export interface Resource {
-		Api:cloudflare.Service;
-		Bucket:cloudflare.R2Bucket;
-}
+  export interface Resource {
+    Api: cloudflare.Service
+    Bucket: cloudflare.R2Bucket
+  }
 }
 
-import "sst";
+import "sst"

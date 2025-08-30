@@ -1,6 +1,6 @@
 /**
  * @fileoverview Solution Manager - Strategic SAFe Orchestration Brain
- * 
+ *
  * The central strategic orchestrator for SAFe 6.0 coordination.
  * Manages solution development, strategic themes, and value delivery.
  */
@@ -30,7 +30,12 @@ export interface PortfolioEpic {
   id: string;
   title: string;
   description: string;
-  status: 'funnel' | 'analyzing' | 'portfolio_backlog' | 'implementing' | 'done';
+  status:
+    | 'funnel'
+    | 'analyzing'
+    | 'portfolio_backlog'
+    | 'implementing'
+    | 'done';
   businessValue: number;
   estimatedCost: number;
   wsjfScore: number;
@@ -96,22 +101,22 @@ export interface ValueDeliveryDashboard {
   solutionId: string;
   strategicAlignment: number;
   deliveryVelocity: number;
-  qualityMetrics:  {
+  qualityMetrics: {
     defectDensity: number;
     customerSatisfaction: number;
     technicalDebt: number;
   };
-  flowMetrics:  {
+  flowMetrics: {
     leadTime: number;
     cycleTime: number;
     throughput: number;
   };
-  businessMetrics:  {
+  businessMetrics: {
     revenueImpact: number;
     costReduction: number;
     marketShare: number;
   };
-  technicalMetrics:  {
+  technicalMetrics: {
     codeQuality: number;
     testCoverage: number;
     deploymentFrequency: number;
@@ -122,11 +127,17 @@ export interface ValueDeliveryDashboard {
  * Solution Manager Events
  */
 export interface SolutionManagerEvents {
-  'solution:strategic-theme-analyzed':  { themeId: string, decomposition: any };
-  'solution:portfolio-epic-created':  { epicId: string, epic: PortfolioEpic };
-  'solution:program-increment-planned':  { piId: string, pi: ProgramIncrement };
-  'solution:coordination-established':  { solutionId: string, coordination: SolutionCoordination };
-  'solution:value-delivered':  { solutionId: string, metrics: ValueDeliveryDashboard };
+  'solution:strategic-theme-analyzed': { themeId: string; decomposition: any };
+  'solution:portfolio-epic-created': { epicId: string; epic: PortfolioEpic };
+  'solution:program-increment-planned': { piId: string; pi: ProgramIncrement };
+  'solution:coordination-established': {
+    solutionId: string;
+    coordination: SolutionCoordination;
+  };
+  'solution:value-delivered': {
+    solutionId: string;
+    metrics: ValueDeliveryDashboard;
+  };
 }
 
 /**
@@ -141,7 +152,9 @@ export class SolutionManager extends EventBus {
 
   constructor() {
     super();
-    logger.info('SolutionManager - SAFe Strategic Orchestration Brain initialized');
+    logger.info(
+      'SolutionManager - SAFe Strategic Orchestration Brain initialized'
+    );
   }
 
   /**
@@ -153,27 +166,32 @@ export class SolutionManager extends EventBus {
     complexity: number;
   }> {
     this.strategicThemes.set(theme.id, theme);
-    
+
     // Decompose theme into portfolio epics
     const portfolioEpics = await this.decomposeIntoPortfolioEpics(
       theme.title,
       theme.businessObjectives,
       100 // base business value
     );
-    
+
     // Store portfolio epics
     for (const epic of portfolioEpics) {
       this.portfolioEpics.set(epic.id, epic);
     }
 
-    const estimatedValue = portfolioEpics.reduce((sum, epic) => sum + epic.businessValue, 0);
+    const estimatedValue = portfolioEpics.reduce(
+      (sum, epic) => sum + epic.businessValue,
+      0
+    );
     const complexity = this.calculateComplexity(theme);
 
-    logger.info(`Strategic theme analyzed: ${theme.title} - ${portfolioEpics.length} epics, value: ${estimatedValue}`);
-    
+    logger.info(
+      `Strategic theme analyzed: ${theme.title} - ${portfolioEpics.length} epics, value: ${estimatedValue}`
+    );
+
     this.emit('solution:strategic-theme-analyzed', {
       themeId: theme.id,
-      decomposition:  { portfolioEpics, estimatedValue, complexity }
+      decomposition: { portfolioEpics, estimatedValue, complexity },
     });
 
     return { portfolioEpics, estimatedValue, complexity };
@@ -197,26 +215,30 @@ export class SolutionManager extends EventBus {
       id: `pi-${Date.now()}`,
       title: `PI ${new Date().getFullYear()}.${Math.ceil(Date.now() / (1000 * 60 * 60 * 24 * 70))}`,
       startDate: new Date(),
-      endDate: new Date(Date.now() + (piDuration * 7 * 24 * 60 * 60 * 1000)),
-      objectives: piFeatures.map(f => ({
+      endDate: new Date(Date.now() + piDuration * 7 * 24 * 60 * 60 * 1000),
+      objectives: piFeatures.map((f) => ({
         id: `obj-${f.id}`,
         title: f.title,
         description: f.description,
         businessValue: f.businessValue,
         status: 'draft' as const,
         teamId: f.teamId || 'unassigned',
-        features: [f.id]
+        features: [f.id],
       })),
       status: 'planning',
-      artIds: [...new Set(piFeatures.map(f => f.teamId).filter(Boolean))] as string[]
+      artIds: [
+        ...new Set(piFeatures.map((f) => f.teamId).filter(Boolean)),
+      ] as string[],
     };
 
     this.programIncrements.set(programIncrement.id, programIncrement);
-    logger.info(`Program Increment planned: ${programIncrement.title} with ${piFeatures.length} features`);
+    logger.info(
+      `Program Increment planned: ${programIncrement.title} with ${piFeatures.length} features`
+    );
 
     this.emit('solution:program-increment-planned', {
       piId: programIncrement.id,
-      pi: programIncrement
+      pi: programIncrement,
     });
 
     return programIncrement;
@@ -229,23 +251,27 @@ export class SolutionManager extends EventBus {
     solutionId: string,
     involvedARTs: string[]
   ): Promise<SolutionCoordination> {
-    const synchronizationNeeds = this.identifySynchronizationNeeds(involvedARTs);
-    const crossARTDependencies = this.identifyCrossARTDependencies(involvedARTs);
+    const synchronizationNeeds =
+      this.identifySynchronizationNeeds(involvedARTs);
+    const crossARTDependencies =
+      this.identifyCrossARTDependencies(involvedARTs);
     const syncPoints = this.defineSynchronizationPoints(synchronizationNeeds);
 
     const coordination: SolutionCoordination = {
       involvedARTs,
       synchronizationNeeds,
       crossARTDependencies,
-      syncPoints
+      syncPoints,
     };
 
     this.solutionCoordination.set(solutionId, coordination);
-    logger.info(`Solution coordination established for ${involvedARTs.length} ARTs`);
+    logger.info(
+      `Solution coordination established for ${involvedARTs.length} ARTs`
+    );
 
     this.emit('solution:coordination-established', {
       solutionId,
-      coordination
+      coordination,
     });
 
     return coordination;
@@ -254,7 +280,9 @@ export class SolutionManager extends EventBus {
   /**
    * Generate value delivery dashboard
    */
-  async generateValueDeliveryDashboard(solutionId: string): Promise<ValueDeliveryDashboard> {
+  async generateValueDeliveryDashboard(
+    solutionId: string
+  ): Promise<ValueDeliveryDashboard> {
     const flowMetrics = this.calculateFlowMetrics(solutionId);
     const businessMetrics = this.calculateBusinessMetrics(solutionId);
     const technicalMetrics = this.calculateTechnicalMetrics(solutionId);
@@ -263,26 +291,26 @@ export class SolutionManager extends EventBus {
       solutionId,
       strategicAlignment: this.calculateStrategicAlignment(solutionId),
       deliveryVelocity: flowMetrics.throughput,
-      qualityMetrics:  {
+      qualityMetrics: {
         defectDensity: technicalMetrics.defectDensity || 2.1,
         customerSatisfaction: businessMetrics.customerSatisfaction || 4.2,
-        technicalDebt: technicalMetrics.technicalDebt || 15
+        technicalDebt: technicalMetrics.technicalDebt || 15,
       },
-      flowMetrics:  {
+      flowMetrics: {
         leadTime: flowMetrics.leadTime,
         cycleTime: flowMetrics.cycleTime,
-        throughput: flowMetrics.throughput
+        throughput: flowMetrics.throughput,
       },
-      businessMetrics:  {
+      businessMetrics: {
         revenueImpact: businessMetrics.revenueImpact,
         costReduction: businessMetrics.costReduction,
-        marketShare: businessMetrics.marketShare
+        marketShare: businessMetrics.marketShare,
       },
-      technicalMetrics:  {
+      technicalMetrics: {
         codeQuality: technicalMetrics.codeQuality,
         testCoverage: technicalMetrics.testCoverage,
-        deploymentFrequency: technicalMetrics.deploymentFrequency
-      }
+        deploymentFrequency: technicalMetrics.deploymentFrequency,
+      },
     };
 
     this.emit('solution:value-delivered', { solutionId, metrics: dashboard });
@@ -294,17 +322,17 @@ export class SolutionManager extends EventBus {
    */
   private calculateComplexity(theme: StrategicTheme): number {
     let complexity = 0.3; // base complexity
-    
+
     // Add complexity for multiple business objectives
     complexity += theme.businessObjectives.length * 0.1;
-    
+
     // Add complexity for longer time horizons
     if (theme.horizonTimeframe === '3+ years') complexity += 0.3;
     else if (theme.horizonTimeframe === '2-3 years') complexity += 0.2;
-    
+
     // Add complexity for multiple investment categories
     complexity += theme.investmentCategories.length * 0.1;
-    
+
     return Math.min(complexity, 1.0);
   }
 
@@ -325,7 +353,7 @@ export class SolutionManager extends EventBus {
       estimatedCost: Math.floor(Math.random() * 500000) + 100000,
       wsjfScore: Math.floor(Math.random() * 100) + 50,
       strategicThemeId: theme,
-      priority: index + 1
+      priority: index + 1,
     }));
   }
 
@@ -343,7 +371,10 @@ export class SolutionManager extends EventBus {
   /**
    * Select features for PI based on capacity
    */
-  private selectFeaturesForPI(features: Feature[], capacity: number): Feature[] {
+  private selectFeaturesForPI(
+    features: Feature[],
+    capacity: number
+  ): Feature[] {
     const selected: Feature[] = [];
     let usedCapacity = 0;
 
@@ -363,19 +394,22 @@ export class SolutionManager extends EventBus {
   private identifyDependencies(features: Feature[]): string[] {
     // Simplified dependency identification
     return features
-      .filter(f => f.portfolioEpicId) // Features with epic dependencies
-      .map(f => `${f.id} depends on epic ${f.portfolioEpicId}`);
+      .filter((f) => f.portfolioEpicId) // Features with epic dependencies
+      .map((f) => `${f.id} depends on epic ${f.portfolioEpicId}`);
   }
 
   /**
    * Assess PI risk level
    */
-  private assessPIRisk(features: Feature[], dependencies: string[]): 'low' | 'medium' | 'high' {
+  private assessPIRisk(
+    features: Feature[],
+    dependencies: string[]
+  ): 'low' | 'medium' | 'high' {
     const complexityScore = features.reduce((sum, f) => sum + f.storyPoints, 0);
     const dependencyScore = dependencies.length * 10;
-    
+
     const totalRisk = complexityScore + dependencyScore;
-    
+
     if (totalRisk > 200) return 'high';
     if (totalRisk > 100) return 'medium';
     return 'low';
@@ -389,7 +423,7 @@ export class SolutionManager extends EventBus {
       'PI Planning alignment',
       'Dependency management',
       'Integration testing coordination',
-      'Release coordination'
+      'Release coordination',
     ];
   }
 
@@ -397,9 +431,10 @@ export class SolutionManager extends EventBus {
    * Identify cross-ART dependencies
    */
   private identifyCrossARTDependencies(artIds: string[]): string[] {
-    return artIds.flatMap(artId => 
-      artIds.filter(otherId => otherId !== artId)
-        .map(otherId => `${artId} → ${otherId}`)
+    return artIds.flatMap((artId) =>
+      artIds
+        .filter((otherId) => otherId !== artId)
+        .map((otherId) => `${artId} → ${otherId}`)
     );
   }
 
@@ -408,8 +443,9 @@ export class SolutionManager extends EventBus {
    */
   private defineSynchronizationPoints(needs: string[]): Date[] {
     const now = new Date();
-    return needs.map((_, index) => 
-      new Date(now.getTime() + (index + 1) * 14 * 24 * 60 * 60 * 1000) // Every 2 weeks
+    return needs.map(
+      (_, index) =>
+        new Date(now.getTime() + (index + 1) * 14 * 24 * 60 * 60 * 1000) // Every 2 weeks
     );
   }
 
@@ -419,8 +455,8 @@ export class SolutionManager extends EventBus {
   private calculateFlowMetrics(solutionId: string) {
     return {
       leadTime: 15.5, // days
-      cycleTime: 8.2, // days  
-      throughput: 12.3 // features per week
+      cycleTime: 8.2, // days
+      throughput: 12.3, // features per week
     };
   }
 
@@ -432,7 +468,7 @@ export class SolutionManager extends EventBus {
       revenueImpact: 2500000, // dollars
       costReduction: 150000, // dollars
       marketShare: 0.15, // 15%
-      customerSatisfaction: 4.2 // out of 5
+      customerSatisfaction: 4.2, // out of 5
     };
   }
 
@@ -445,7 +481,7 @@ export class SolutionManager extends EventBus {
       testCoverage: 85, // percentage
       deploymentFrequency: 2.3, // per week
       defectDensity: 2.1, // per 1000 lines
-      technicalDebt: 15 // percentage
+      technicalDebt: 15, // percentage
     };
   }
 

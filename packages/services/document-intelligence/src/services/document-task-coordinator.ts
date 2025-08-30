@@ -8,7 +8,7 @@
 
 import type { DocumentType} from '@claude-zen/enterprise';
 import { getLogger} from '@claude-zen/foundation';
-import { DocumentManager} from '@claude-zen/intelligence';
+import type { DocumentManager as IDocumentManager } from '@claude-zen/intelligence';
 
 import {
   type StrategicVisionAnalysis,
@@ -21,11 +21,11 @@ export interface StrategicTask {
   id:string;
   title:string;
   description:string;
-  priority:'low' | ' medium' | ' high' | ' critical;
-  status:'todo' | ' in_progress' | ' blocked' | ' completed;
+  priority: 'low' | 'medium' | 'high' | 'critical';
+  status: 'todo' | 'in_progress' | 'blocked' | 'completed';
   strategicGoalId:string;
   relatedDocuments:string[];
-  estimatedEffort:'small' | ' medium' | ' large' | ' xl;
+  estimatedEffort: 'small' | 'medium' | 'large' | 'xl';
   dueDate?:Date;
   assignedTo?:string;
   tags:string[];
@@ -72,13 +72,31 @@ export interface VisionTaskDashboard {
 }
 
 export class DocumentTaskVisionCoordinator {
-  private documentManager:DocumentManager;
+  private documentManager: IDocumentManager;
   private visionService:StrategicVisionService;
 
-  constructor() {
-    this.documentManager = new DocumentManager();
+  constructor(documentManager?: IDocumentManager) {
+    this.documentManager = documentManager ?? new (class DocumentManagerStub {
+      async getDocumentsByProject() {
+        return { success: false, error: new Error('DocumentManager not available') } as const;
+      }
+      async createDocument() {
+        return { success: false, error: new Error('DocumentManager not available') } as const;
+      }
+      async updateDocument() {
+        return { success: false, error: new Error('DocumentManager not available') } as const;
+      }
+      async getDocument() {
+        return { success: false, error: new Error('DocumentManager not available') } as const;
+      }
+      async searchDocuments() {
+        return { success: false, error: new Error('DocumentManager not available') } as const;
+      }
+      async initialize() { /* noop */ }
+      async store() { /* noop */ }
+    })();
     this.visionService = new StrategicVisionService();
-}
+  }
 
   /**
    * Get comprehensive dashboard integrating vision, documents, and tasks
@@ -140,11 +158,11 @@ export class DocumentTaskVisionCoordinator {
 };
 
       logger.info(
-        `Dashboard built successfully with ${tasks.length} tasks and $documents.lengthdocuments``
+        `Dashboard built successfully with ${tasks.length} tasks and ${documents.length} documents`
       );
       return dashboard;
 } catch (error) {
-      logger.error(`Error building dashboard for ${projectId}:`, error);`
+  logger.error(`Error building dashboard for ${projectId}:`, error);
       throw error;
 }
 }
@@ -161,7 +179,7 @@ export class DocumentTaskVisionCoordinator {
     errors:string[];
 }> {
     try {
-      logger.info(`Generating strategic tasks for project:$projectId`);`
+  logger.info(`Generating strategic tasks for project:${projectId}`);
 
       const vision = await this.visionService.getVisionForWorkspace(projectId);
 

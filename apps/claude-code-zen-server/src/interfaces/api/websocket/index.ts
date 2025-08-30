@@ -8,4 +8,4 @@
  */
 
 export * from './client';
-export { WebSocketClient as default} from './client';
+export { WebSocketClient as default } from './client';

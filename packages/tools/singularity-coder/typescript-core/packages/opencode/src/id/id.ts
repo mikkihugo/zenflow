@@ -33,7 +33,7 @@ export namespace Identifier {
 }
 
     if (!given.startsWith(prefixes[prefix])) {
-      throw new Error(`ID ${given} does not start with ${prefixes[prefix]}`)`
+      throw new Error(`ID ${given} does not start with ${prefixes[prefix]}`)
 }
     return given
 }
@@ -66,6 +66,6 @@ export namespace Identifier {
       timeBytes[i] = Number((now >> BigInt(40 - 8 * i)) & BigInt(0xff))
 }
 
-    return `${prefixes[prefix]  }_${  timeBytes.toString("hex")  }${randomBase62(LENGTH - 12)}`
+    return `${prefixes[prefix]  }_${  timeBytes.toString("hex")  }${randomBase62(LENGTH - 12)}
 }
 }

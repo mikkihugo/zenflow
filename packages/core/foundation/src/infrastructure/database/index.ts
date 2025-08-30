@@ -12,5 +12,10 @@ export {
   createDatabaseAccess,
   DatabaseProvider,
   DatabaseEventCoordinator,
-  SQLiteAdapter
+  SQLiteAdapter,
+} from '@claude-zen/database';
+
+// Also re-export types for consumers through foundation layer
+export type {
+  KeyValueStorageImpl as KeyValueStorage,
 } from '@claude-zen/database';

@@ -1,6 +1,6 @@
 /**
  * @fileoverview Teamwork Domain - Multi-Agent Conversation and Collaboration
- * 
+ *
  * Event-driven teamwork implementation that optionally integrates with SPARC.
  * Provides multi-agent coordination with graceful SPARC integration.
  */
@@ -44,7 +44,7 @@ export interface SPARCCollaborationRequest {
   phase: string;
   requiresReview: boolean;
   suggestedAgents: string[];
-  context:  {
+  context: {
     artifacts: unknown[];
     requirements: string[];
   };
@@ -98,8 +98,17 @@ export interface TeamCapacity {
 
 export interface SAFeMeeting {
   id: string;
-  type: 'daily-standup' | 'iteration-planning' | 'iteration-review' | 'iteration-retrospective' | 
-        'pi-planning' | 'system-demo' | 'inspect-adapt' | 'scrum-of-scrums' | 'po-sync' | 'art-sync';
+  type:
+    | 'daily-standup'
+    | 'iteration-planning'
+    | 'iteration-review'
+    | 'iteration-retrospective'
+    | 'pi-planning'
+    | 'system-demo'
+    | 'inspect-adapt'
+    | 'scrum-of-scrums'
+    | 'po-sync'
+    | 'art-sync';
   teamId?: string;
   artId?: string;
   participants: string[];
@@ -132,7 +141,11 @@ export interface MeetingOutcome {
 export interface TeamworkCoordinationRequest {
   requestId: string;
   teamId: string;
-  type: 'cross-team-collaboration' | 'dependency-resolution' | 'knowledge-sharing' | 'problem-solving';
+  type:
+    | 'cross-team-collaboration'
+    | 'dependency-resolution'
+    | 'knowledge-sharing'
+    | 'problem-solving';
   description: string;
   priority: 'low' | 'medium' | 'high' | 'urgent';
   requestedParticipants: string[];
@@ -161,97 +174,130 @@ export class ConversationManager extends EventBus {
 
   constructor() {
     super();
-    
+
     // Listen for SPARC collaboration requests (optional - only if SPARC active)
-    this.on('sparc:collaboration:request', async (request: SPARCCollaborationRequest) => {
-      const conversationName = `SPARC ${request.phase} Review - ${request.projectId}`;
-      const conversation = await this.createConversation(conversationName, request.suggestedAgents);
-      
-      // Store SPARC review context
-      this.sparcReviews.set(conversation.id, request);
-      
-      // Add initial context message
-      await this.addMessage(conversation.id, {
-        fromAgent: 'system',
-        content: `SPARC ${request.phase} phase review requested. Context: ${JSON.stringify(request.context, null, 2)}`,
-        type: 'notification'
-      });
-      
-      // Simulate review process (in real implementation, this would be actual agent conversations)
-      setTimeout(() => {
-        this.completeSPARCReview(conversation.id, true, ['Phase looks good'], ['Continue to next phase']);
-      }, 5000); // 5 second simulated review
-      
-      logger.info(`Created SPARC review conversation: ${conversation.id}`);
-    });
+    this.on(
+      'sparc:collaboration:request',
+      async (request: SPARCCollaborationRequest) => {
+        const conversationName = `SPARC ${request.phase} Review - ${request.projectId}`;
+        const conversation = await this.createConversation(
+          conversationName,
+          request.suggestedAgents
+        );
+
+        // Store SPARC review context
+        this.sparcReviews.set(conversation.id, request);
+
+        // Add initial context message
+        await this.addMessage(conversation.id, {
+          fromAgent: 'system',
+          content: `SPARC ${request.phase} phase review requested. Context: ${JSON.stringify(request.context, null, 2)}`,
+          type: 'notification',
+        });
+
+        // Simulate review process (in real implementation, this would be actual agent conversations)
+        setTimeout(() => {
+          this.completeSPARCReview(
+            conversation.id,
+            true,
+            ['Phase looks good'],
+            ['Continue to next phase']
+          );
+        }, 5000); // 5 second simulated review
+
+        logger.info(`Created SPARC review conversation: ${conversation.id}`);
+      }
+    );
 
     // Listen for SAFe meeting requests
     this.on('safe:meeting:scheduled', async (meeting: SAFeMeeting) => {
       const conversationName = `${meeting.type.toUpperCase()} - ${meeting.teamId || meeting.artId}`;
-      const conversation = await this.createConversation(conversationName, meeting.participants);
-      
+      const conversation = await this.createConversation(
+        conversationName,
+        meeting.participants
+      );
+
       // Store meeting context
       meeting.conversationId = conversation.id;
       this.safeMeetings.set(meeting.id, meeting);
-      
+
       // Add meeting agenda as initial message
-      const agendaContent = meeting.agenda.map(item => 
-        `${item.title} (${item.duration}min) - ${item.presenter}`
-      ).join('\n');
-      
+      const agendaContent = meeting.agenda
+        .map(
+          (item) => `${item.title} (${item.duration}min) - ${item.presenter}`
+        )
+        .join('\n');
+
       await this.addMessage(conversation.id, {
         fromAgent: 'facilitator',
         content: `Meeting started: ${meeting.type}\nAgenda:\n${agendaContent}`,
-        type: 'notification'
+        type: 'notification',
       });
-      
-      logger.info(`Created SAFe meeting conversation: ${conversation.id} for ${meeting.type}`);
+
+      logger.info(
+        `Created SAFe meeting conversation: ${conversation.id} for ${meeting.type}`
+      );
     });
 
     // Listen for teamwork coordination requests
-    this.on('teamwork:coordination:request', async (request: TeamworkCoordinationRequest) => {
-      const conversationName = `Team Coordination: ${request.type} - ${request.teamId}`;
-      const conversation = await this.createConversation(conversationName, request.requestedParticipants);
-      
-      // Store coordination context
-      this.teamworkRequests.set(request.requestId, request);
-      
-      // Add initial coordination message
-      await this.addMessage(conversation.id, {
-        fromAgent: 'team-coordinator',
-        content: `Coordination request: ${request.description}\nPriority: ${request.priority}\nContext: ${JSON.stringify(request.context, null, 2)}`,
-        type: 'request'
-      });
-      
-      logger.info(`Created teamwork coordination conversation: ${conversation.id}`);
-    });
+    this.on(
+      'teamwork:coordination:request',
+      async (request: TeamworkCoordinationRequest) => {
+        const conversationName = `Team Coordination: ${request.type} - ${request.teamId}`;
+        const conversation = await this.createConversation(
+          conversationName,
+          request.requestedParticipants
+        );
+
+        // Store coordination context
+        this.teamworkRequests.set(request.requestId, request);
+
+        // Add initial coordination message
+        await this.addMessage(conversation.id, {
+          fromAgent: 'team-coordinator',
+          content: `Coordination request: ${request.description}\nPriority: ${request.priority}\nContext: ${JSON.stringify(request.context, null, 2)}`,
+          type: 'request',
+        });
+
+        logger.info(
+          `Created teamwork coordination conversation: ${conversation.id}`
+        );
+      }
+    );
 
     // Listen for team member availability updates
-    this.on('team:member:availability', async (update: { agentId: string; availability: AgentAvailability }) => {
-      const agent = this.agents.get(update.agentId);
-      if (agent) {
-        // Update agent status based on availability
-        agent.status = update.availability.status === 'available' ? 'idle' : 'busy';
-        
-        // Notify relevant conversations about availability change
-        const relevantConversations = this.listConversations(update.agentId);
-        for (const conversation of relevantConversations) {
-          if (conversation.status === 'active') {
-            await this.addMessage(conversation.id, {
-              fromAgent: 'system',
-              content: `${agent.name} is now ${update.availability.status}`,
-              type: 'notification'
-            });
+    this.on(
+      'team:member:availability',
+      async (update: { agentId: string; availability: AgentAvailability }) => {
+        const agent = this.agents.get(update.agentId);
+        if (agent) {
+          // Update agent status based on availability
+          agent.status =
+            update.availability.status === 'available' ? 'idle' : 'busy';
+
+          // Notify relevant conversations about availability change
+          const relevantConversations = this.listConversations(update.agentId);
+          for (const conversation of relevantConversations) {
+            if (conversation.status === 'active') {
+              await this.addMessage(conversation.id, {
+                fromAgent: 'system',
+                content: `${agent.name} is now ${update.availability.status}`,
+                type: 'notification',
+              });
+            }
           }
         }
       }
-    });
+    );
   }
 
   /**
    * Create a new conversation
    */
-  async createConversation(name: string, participantIds: string[]): Promise<Conversation> {
+  async createConversation(
+    name: string,
+    participantIds: string[]
+  ): Promise<Conversation> {
     const conversation: Conversation = {
       id: this.generateConversationId(),
       name,
@@ -259,19 +305,22 @@ export class ConversationManager extends EventBus {
       messages: [],
       status: 'active',
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
-    
+
     this.conversations.set(conversation.id, conversation);
     this.emit('conversationCreated', conversation);
-    
+
     return conversation;
   }
 
   /**
    * Add message to conversation
    */
-  async addMessage(conversationId: string, message: Omit<ConversationMessage, 'id' | 'timestamp'>): Promise<ConversationMessage> {
+  async addMessage(
+    conversationId: string,
+    message: Omit<ConversationMessage, 'id' | 'timestamp'>
+  ): Promise<ConversationMessage> {
     const conversation = this.conversations.get(conversationId);
     if (!conversation) {
       throw new Error(`Conversation not found: ${conversationId}`);
@@ -280,21 +329,21 @@ export class ConversationManager extends EventBus {
     const fullMessage: ConversationMessage = {
       ...message,
       id: this.generateMessageId(),
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     conversation.messages.push(fullMessage);
     conversation.updatedAt = new Date();
-    
+
     this.emit('messageAdded', { conversationId, message: fullMessage });
-    
+
     return fullMessage;
   }
 
   /**
    * Send message to conversation
    */
-  async sendMessage(params:  {
+  async sendMessage(params: {
     conversationId: string;
     fromAgent: string;
     content: string;
@@ -302,7 +351,7 @@ export class ConversationManager extends EventBus {
     type?: ConversationMessage['type'];
   }): Promise<ConversationMessage> {
     const { type = 'request' } = params;
-    
+
     const conversation = this.conversations.get(params.conversationId);
     if (!conversation) {
       throw new Error(`Conversation not found: ${params.conversationId}`);
@@ -314,14 +363,17 @@ export class ConversationManager extends EventBus {
       toAgent: params.toAgent,
       content: params.content,
       type,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     conversation.messages.push(message);
     conversation.updatedAt = new Date();
-    
-    this.emit('messageSent', { conversationId: params.conversationId, message });
-    
+
+    this.emit('messageSent', {
+      conversationId: params.conversationId,
+      message,
+    });
+
     return message;
   }
 
@@ -337,18 +389,23 @@ export class ConversationManager extends EventBus {
    */
   listConversations(agentId?: string): Conversation[] {
     const conversations = Array.from(this.conversations.values());
-    
+
     if (agentId) {
-      return conversations.filter(c => c.participants.includes(agentId));
+      return conversations.filter((c) => c.participants.includes(agentId));
     }
-    
+
     return conversations;
   }
 
   /**
    * Complete SPARC review
    */
-  private completeSPARCReview(conversationId: string, approved: boolean, feedback: string[], recommendations: string[]): void {
+  private completeSPARCReview(
+    conversationId: string,
+    approved: boolean,
+    feedback: string[],
+    recommendations: string[]
+  ): void {
     const request = this.sparcReviews.get(conversationId);
     if (!request) {
       logger.warn(`No SPARC review found for conversation: ${conversationId}`);
@@ -361,7 +418,7 @@ export class ConversationManager extends EventBus {
       approved,
       feedback,
       recommendations,
-      conversationId
+      conversationId,
     };
 
     this.emit('sparc:review:completed', result);
@@ -373,7 +430,7 @@ export class ConversationManager extends EventBus {
    */
   async registerSAFeTeam(team: SAFeTeam): Promise<void> {
     this.safeTeams.set(team.id, team);
-    
+
     // Register team members as agents
     for (const member of team.members) {
       const agent: Agent = {
@@ -381,13 +438,15 @@ export class ConversationManager extends EventBus {
         name: member.name,
         role: `${member.role} (${team.name})`,
         capabilities: member.skills,
-        status: member.availability.status === 'available' ? 'idle' : 'busy'
+        status: member.availability.status === 'available' ? 'idle' : 'busy',
       };
       this.agents.set(member.id, agent);
     }
-    
+
     this.emit('safe:team:registered', team);
-    logger.info(`Registered SAFe team: ${team.name} with ${team.members.length} members`);
+    logger.info(
+      `Registered SAFe team: ${team.name} with ${team.members.length} members`
+    );
   }
 
   /**
@@ -403,21 +462,29 @@ export class ConversationManager extends EventBus {
       }
     }
 
-    if (unavailableParticipants.length > 0 && meeting.type !== 'daily-standup') {
-      logger.warn(`Some participants unavailable for ${meeting.type}: ${unavailableParticipants.join(', ')}`);
+    if (
+      unavailableParticipants.length > 0 &&
+      meeting.type !== 'daily-standup'
+    ) {
+      logger.warn(
+        `Some participants unavailable for ${meeting.type}: ${unavailableParticipants.join(', ')}`
+      );
     }
 
     // Store meeting and emit event to trigger conversation creation
     this.safeMeetings.set(meeting.id, meeting);
     this.emit('safe:meeting:scheduled', meeting);
-    
+
     return meeting.conversationId || '';
   }
 
   /**
    * Complete a SAFe meeting and capture outcomes
    */
-  async completeSAFeMeeting(meetingId: string, outcomes: MeetingOutcome[]): Promise<void> {
+  async completeSAFeMeeting(
+    meetingId: string,
+    outcomes: MeetingOutcome[]
+  ): Promise<void> {
     const meeting = this.safeMeetings.get(meetingId);
     if (!meeting) {
       throw new Error(`Meeting not found: ${meetingId}`);
@@ -428,25 +495,32 @@ export class ConversationManager extends EventBus {
 
     if (meeting.conversationId) {
       // Add meeting outcomes to conversation
-      const outcomesSummary = outcomes.map(outcome => 
-        `${outcome.type.toUpperCase()}: ${outcome.description} ${outcome.owner ? `(Owner: ${outcome.owner})` : ''}`
-      ).join('\n');
+      const outcomesSummary = outcomes
+        .map(
+          (outcome) =>
+            `${outcome.type.toUpperCase()}: ${outcome.description} ${outcome.owner ? `(Owner: ${outcome.owner})` : ''}`
+        )
+        .join('\n');
 
       await this.addMessage(meeting.conversationId, {
         fromAgent: 'facilitator',
         content: `Meeting completed. Outcomes:\n${outcomesSummary}`,
-        type: 'notification'
+        type: 'notification',
       });
     }
 
     this.emit('safe:meeting:completed', { meeting, outcomes });
-    logger.info(`Completed SAFe meeting: ${meeting.type} with ${outcomes.length} outcomes`);
+    logger.info(
+      `Completed SAFe meeting: ${meeting.type} with ${outcomes.length} outcomes`
+    );
   }
 
   /**
    * Request cross-team coordination
    */
-  async requestTeamworkCoordination(request: TeamworkCoordinationRequest): Promise<string> {
+  async requestTeamworkCoordination(
+    request: TeamworkCoordinationRequest
+  ): Promise<string> {
     // Validate team exists
     const team = this.safeTeams.get(request.teamId);
     if (!team) {
@@ -456,7 +530,7 @@ export class ConversationManager extends EventBus {
     // Store request and emit event to trigger conversation creation
     this.teamworkRequests.set(request.requestId, request);
     this.emit('teamwork:coordination:request', request);
-    
+
     return request.requestId;
   }
 
@@ -486,22 +560,25 @@ export class ConversationManager extends EventBus {
    */
   listSAFeMeetings(teamId?: string, artId?: string): SAFeMeeting[] {
     const meetings = Array.from(this.safeMeetings.values());
-    
+
     if (teamId) {
-      return meetings.filter(m => m.teamId === teamId);
+      return meetings.filter((m) => m.teamId === teamId);
     }
-    
+
     if (artId) {
-      return meetings.filter(m => m.artId === artId);
+      return meetings.filter((m) => m.artId === artId);
     }
-    
+
     return meetings;
   }
 
   /**
    * Update team member availability
    */
-  async updateMemberAvailability(agentId: string, availability: AgentAvailability): Promise<void> {
+  async updateMemberAvailability(
+    agentId: string,
+    availability: AgentAvailability
+  ): Promise<void> {
     this.emit('team:member:availability', { agentId, availability });
   }
 
@@ -544,9 +621,9 @@ export class TeamworkOrchestrator {
       agents,
       conversations: [],
       status: 'idle',
-      createdAt: new Date()
+      createdAt: new Date(),
     };
-    
+
     this.sessions.set(session.id, session);
     return session;
   }
@@ -555,19 +632,22 @@ export class TeamworkOrchestrator {
    * Create session from SAFe team
    */
   async createSAFeTeamSession(team: SAFeTeam): Promise<TeamworkSession> {
-    const agents: Agent[] = team.members.map(member => ({
+    const agents: Agent[] = team.members.map((member) => ({
       id: member.id,
       name: member.name,
       role: `${member.role} (${team.name})`,
       capabilities: member.skills,
-      status: member.availability.status === 'available' ? 'idle' : 'busy'
+      status: member.availability.status === 'available' ? 'idle' : 'busy',
     }));
 
-    const session = await this.createSession(`SAFe Team Session - ${team.name}`, agents);
-    
+    const session = await this.createSession(
+      `SAFe Team Session - ${team.name}`,
+      agents
+    );
+
     // Register the SAFe team with the conversation manager
     await this.conversationManager.registerSAFeTeam(team);
-    
+
     return session;
   }
 
@@ -580,12 +660,12 @@ export class TeamworkOrchestrator {
       throw new Error(`Session not found: ${sessionId}`);
     }
 
-    const agentIds = session.agents.map(a => a.id);
+    const agentIds = session.agents.map((a) => a.id);
     const conversation = await this.conversationManager.createConversation(
       `${session.name} - Main Discussion`,
       agentIds
     );
-    
+
     session.conversations.push(conversation);
     session.status = 'executing';
   }
@@ -594,8 +674,8 @@ export class TeamworkOrchestrator {
    * Schedule SAFe ceremony with conversation support
    */
   async scheduleSAFeCeremony(
-    teamId: string, 
-    ceremonyType: SAFeMeeting['type'], 
+    teamId: string,
+    ceremonyType: SAFeMeeting['type'],
     duration: number,
     agenda: MeetingAgenda[]
   ): Promise<string> {
@@ -608,12 +688,12 @@ export class TeamworkOrchestrator {
       id: `meeting_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       type: ceremonyType,
       teamId,
-      participants: team.members.map(m => m.id),
+      participants: team.members.map((m) => m.id),
       duration,
       scheduledAt: new Date(),
       status: 'scheduled',
       agenda,
-      outcomes: []
+      outcomes: [],
     };
 
     return await this.conversationManager.scheduleSAFeMeeting(meeting);
@@ -630,15 +710,15 @@ export class TeamworkOrchestrator {
         description: 'Share completed work and progress',
         duration: 5,
         presenter: 'team',
-        topics: ['completed-work', 'progress-updates']
+        topics: ['completed-work', 'progress-updates'],
       },
       {
-        id: 'standup-2', 
+        id: 'standup-2',
         title: 'What will you work on today?',
         description: 'Share planned work for today',
         duration: 5,
         presenter: 'team',
-        topics: ['planned-work', 'commitments']
+        topics: ['planned-work', 'commitments'],
       },
       {
         id: 'standup-3',
@@ -646,8 +726,8 @@ export class TeamworkOrchestrator {
         description: 'Identify and discuss blockers',
         duration: 5,
         presenter: 'team',
-        topics: ['impediments', 'blockers', 'help-needed']
-      }
+        topics: ['impediments', 'blockers', 'help-needed'],
+      },
     ];
 
     return await this.scheduleSAFeCeremony(teamId, 'daily-standup', 15, agenda);
@@ -664,7 +744,7 @@ export class TeamworkOrchestrator {
         description: 'Understand objectives for the iteration',
         duration: 30,
         presenter: 'product-owner',
-        topics: ['iteration-goals', 'business-objectives']
+        topics: ['iteration-goals', 'business-objectives'],
       },
       {
         id: 'planning-2',
@@ -672,7 +752,7 @@ export class TeamworkOrchestrator {
         description: 'Break down and estimate stories',
         duration: 90,
         presenter: 'team',
-        topics: ['story-breakdown', 'estimation', 'acceptance-criteria']
+        topics: ['story-breakdown', 'estimation', 'acceptance-criteria'],
       },
       {
         id: 'planning-3',
@@ -680,11 +760,16 @@ export class TeamworkOrchestrator {
         description: 'Determine team capacity and commitment',
         duration: 30,
         presenter: 'scrum-master',
-        topics: ['capacity-planning', 'commitment']
-      }
+        topics: ['capacity-planning', 'commitment'],
+      },
     ];
 
-    return await this.scheduleSAFeCeremony(teamId, 'iteration-planning', 150, agenda);
+    return await this.scheduleSAFeCeremony(
+      teamId,
+      'iteration-planning',
+      150,
+      agenda
+    );
   }
 
   /**
@@ -708,11 +793,19 @@ export class ConversationMemoryManager {
   /**
    * Store memory for conversation
    */
-  async storeMemory(memory:  { conversationId: string, key: string, value: any }): Promise<void> {
+  async storeMemory(memory: {
+    conversationId: string;
+    key: string;
+    value: any;
+  }): Promise<void> {
     const existing = this.memories.get(memory.conversationId) || {};
     const updates = { [memory.key]: memory.value };
-    
-    this.memories.set(memory.conversationId, { ...existing, ...updates, lastUpdated: new Date() });
+
+    this.memories.set(memory.conversationId, {
+      ...existing,
+      ...updates,
+      lastUpdated: new Date(),
+    });
   }
 
   /**
@@ -748,22 +841,22 @@ export function createSAFeTeam(config: {
     id: `team_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
     name: config.name,
     artId: config.artId,
-    members: config.members.map(member => ({
+    members: config.members.map((member) => ({
       ...member,
       availability: {
         status: 'available',
-        nextAvailable: new Date()
-      }
+        nextAvailable: new Date(),
+      },
     })),
     role: config.role || 'development',
     capacity: {
       totalStoryPoints: 0,
       availableHours: config.members.length * 40, // Default 40 hours per member
       commitmentLevel: 0.8, // Default 80% commitment
-      velocityHistory: []
+      velocityHistory: [],
     },
-    skills: [...new Set(config.members.flatMap(m => m.skills))],
-    status: 'forming'
+    skills: [...new Set(config.members.flatMap((m) => m.skills))],
+    status: 'forming',
   };
 }
 
@@ -785,7 +878,7 @@ export function createSAFeMeeting(config: {
     scheduledAt: new Date(),
     status: 'scheduled',
     agenda: config.agenda,
-    outcomes: []
+    outcomes: [],
   };
 }
 
@@ -807,18 +900,18 @@ export function createTeamworkCoordinationRequest(config: {
     context: config.context || {
       relatedFeatures: [],
       dependencies: [],
-      constraints: []
-    }
+      constraints: [],
+    },
   };
 }
 
 // Enhanced teamwork orchestrator with SAFe integration
 export function createSAFeTeamworkOrchestrator(): TeamworkOrchestrator {
   const orchestrator = new TeamworkOrchestrator();
-  
+
   // Pre-configure common SAFe ceremonies
   const originalCreate = orchestrator.createSAFeTeamSession.bind(orchestrator);
-  
+
   return orchestrator;
 }
 

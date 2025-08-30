@@ -459,32 +459,32 @@
 
 // Export commonly used Foundation types for convenience
 export type {
-	ConfigurationError,
-	ContextError,
-	NetworkError,
-	ResourceError,
-	Result,
-	TimeoutError,
-	ValidationError,
-} from "@claude-zen/foundation";
+  ConfigurationError,
+  ContextError,
+  NetworkError,
+  ResourceError,
+  Result,
+  TimeoutError,
+  ValidationError,
+} from '@claude-zen/foundation';
 
 // Export comprehensive ML interfaces for DSPy teleprompters
-export * from "./src/index";
+export * from './src/index';
 // Export the main implementation from src/
 export {
-	type ActivationType,
-	createAdaptiveOptimizer,
-	type MatrixMultiplyResult,
-	matrixMultiplyAdaptive,
-	type NeuralActivationResult,
-	type NeuralMLConfig,
-	NeuralMLEngine,
-	type OptimizationBackend,
-	type OptimizerConfig,
-	type OptimizerPerformanceStats,
-	type VectorOperationResult,
-	vectorAddAdaptive,
-} from "./src/main";
+  type ActivationType,
+  createAdaptiveOptimizer,
+  type MatrixMultiplyResult,
+  matrixMultiplyAdaptive,
+  type NeuralActivationResult,
+  type NeuralMLConfig,
+  NeuralMLEngine,
+  type OptimizationBackend,
+  type OptimizerConfig,
+  type OptimizerPerformanceStats,
+  type VectorOperationResult,
+  vectorAddAdaptive,
+} from './src/main';
 
 /**
  * Neural-ML Library Documentation

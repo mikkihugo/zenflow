@@ -7,9 +7,9 @@
  */
 
 export class FailoverManager {
-  private failoverStrategies:Map<string, string> = new Map();
+  private failoverStrategies: Map<string, string> = new Map();
 
-  public async activateFailover(failedAgentId:string): Promise<void> {
+  public async activateFailover(failedAgentId: string): Promise<void> {
     // Implement failover logic
     const strategy =
       this.failoverStrategies.get(failedAgentId) || 'redistribute';
@@ -26,12 +26,12 @@ export class FailoverManager {
         break;
       default:
         await this.redistributeLoad(failedAgentId);
-}
-}
+    }
+  }
 
-  private async redistributeLoad(_failedAgentId:string): Promise<void> {}
+  private async redistributeLoad(_failedAgentId: string): Promise<void> {}
 
-  private async activateStandbyAgent(_failedAgentId:string): Promise<void> {}
+  private async activateStandbyAgent(_failedAgentId: string): Promise<void> {}
 
-  private async gracefulDegradation(_failedAgentId:string): Promise<void> {}
+  private async gracefulDegradation(_failedAgentId: string): Promise<void> {}
 }

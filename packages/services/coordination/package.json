@@ -16,7 +16,7 @@
       "import": "./dist/sparc/index.js"
     },
     "./safe": {
-      "types": "./dist/safe/index.d.ts", 
+      "types": "./dist/safe/index.d.ts",
       "import": "./dist/safe/index.js"
     },
     "./workflows": {
@@ -80,7 +80,7 @@
     "coordination",
     "sparc",
     "safe",
-    "workflows", 
+    "workflows",
     "orchestration",
     "teamwork",
     "enterprise",

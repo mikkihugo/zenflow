@@ -3,523 +3,533 @@
  * Comprehensive types for CodeQL CLI integration and SARIF result processing
  */
 
-import type { Result} from '@claude-zen/foundation';
+import type { Result } from '@claude-zen/foundation';
 
 // Core CodeQL Configuration
 export interface CodeQLConfig {
   /** Path to CodeQL CLI executable */
-  codeqlPath?:string;
+  codeqlPath?: string;
   /** Maximum memory for CodeQL operations (MB) */
-  maxMemory?:number;
+  maxMemory?: number;
   /** Number of threads for parallel analysis */
-  threads?:number;
+  threads?: number;
   /** Enable verbose logging */
-  verbose?:boolean;
+  verbose?: boolean;
   /** Timeout for operations (ms) */
-  timeout?:number;
+  timeout?: number;
   /** Temporary directory for databases */
-  tempDir?:string;
+  tempDir?: string;
 }
 
 // Supported Languages
-export type CodeQLLanguage = 'javascript' | ' typescript' | ' python' | ' java' | ' csharp' | ' cpp' | ' go' | ' ruby' | ' swift' | ' kotlin';
+export type CodeQLLanguage =
+  | 'javascript'
+  | ' typescript'
+  | ' python'
+  | ' java'
+  | ' csharp'
+  | ' cpp'
+  | ' go'
+  | ' ruby'
+  | ' swift'
+  | ' kotlin';
 
 // Database Management
 export interface CodeQLDatabase {
   /** Unique database identifier */
-  id:string;
+  id: string;
   /** File system path to database */
-  path:string;
+  path: string;
   /** Primary language of the database */
-  language:CodeQLLanguage;
+  language: CodeQLLanguage;
   /** Additional languages included */
-  additionalLanguages?:CodeQLLanguage[];
+  additionalLanguages?: CodeQLLanguage[];
   /** Source root that was analyzed */
-  sourceRoot:string;
+  sourceRoot: string;
   /** Database creation timestamp */
-  createdAt:Date;
+  createdAt: Date;
   /** Database size in bytes */
-  sizeBytes:number;
+  sizeBytes: number;
   /** Whether database is ready for queries */
-  isReady:boolean;
+  isReady: boolean;
   /** Build command used for compilation */
-  buildCommand?:string;
+  buildCommand?: string;
   /** Database metadata */
-  metadata:Record<string, unknown>;
+  metadata: Record<string, unknown>;
 }
 
 export interface DatabaseCreationOptions {
   /** Languages to analyze */
-  languages:CodeQLLanguage[];
+  languages: CodeQLLanguage[];
   /** Build command for compiled languages */
-  buildCommand?:string;
+  buildCommand?: string;
   /** Additional source directories */
-  additionalSources?:string[];
+  additionalSources?: string[];
   /** Files/patterns to exclude */
-  excludePatterns?:string[];
+  excludePatterns?: string[];
   /** Overwrite existing database */
-  overwrite?:boolean;
+  overwrite?: boolean;
   /** Working directory for build commands */
-  workingDirectory?:string;
+  workingDirectory?: string;
   /** Environment variables for build */
-  environmentVariables?:Record<string, string>;
+  environmentVariables?: Record<string, string>;
 }
 
 // Query Execution
 export interface QueryPack {
   /** Name of the query pack */
-  name:string;
+  name: string;
   /** Version of query pack */
-  version?:string;
+  version?: string;
   /** Path to query pack directory */
-  path?:string;
+  path?: string;
   /** Individual queries to run */
-  queries?:string[];
+  queries?: string[];
   /** Query pack metadata */
-  metadata?:Record<string, unknown>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface QueryExecutionOptions {
   /** Output format for results */
-  format:'sarif-latest' | ' sarif-2.1.0' | ' csv' | ' json';
+  format: 'sarif-latest' | ' sarif-2.1.0' | ' csv' | ' json';
   /** Output file path */
-  outputPath?:string;
+  outputPath?: string;
   /** Maximum number of results per query */
-  maxResults?:number;
+  maxResults?: number;
   /** Timeout per query (ms) */
-  queryTimeout?:number;
+  queryTimeout?: number;
   /** Additional CLI arguments */
-  additionalArgs?:string[];
+  additionalArgs?: string[];
 }
 
 // SARIF Result Types (Subset of SARIF 2.1.0 schema)
 export interface SARIFResult {
   /** SARIF format version */
-  version:string;
+  version: string;
   /** Schema URI */
-  $schema:string;
+  $schema: string;
   /** Analysis runs */
-  runs:SARIFRun[];
+  runs: SARIFRun[];
 }
 
 export interface SARIFRun {
   /** Analysis tool information */
-  tool:SARIFTool;
+  tool: SARIFTool;
   /** Analysis results */
-  results:SARIFAnalysisResult[];
+  results: SARIFAnalysisResult[];
   /** Analyzed artifacts (files) */
-  artifacts?:SARIFArtifact[];
+  artifacts?: SARIFArtifact[];
   /** Analysis invocation details */
-  invocations?:SARIFInvocation[];
+  invocations?: SARIFInvocation[];
   /** Run properties */
-  properties?:Record<string, unknown>;
+  properties?: Record<string, unknown>;
 }
 
 export interface SARIFTool {
   /** Tool driver (CodeQL) */
-  driver:SARIFDriver;
+  driver: SARIFDriver;
   /** Additional tool extensions */
-  extensions?:SARIFExtension[];
+  extensions?: SARIFExtension[];
 }
 
 export interface SARIFDriver {
   /** Tool name */
-  name:string;
+  name: string;
   /** Tool version */
-  version?:string;
+  version?: string;
   /** Information URI */
-  informationUri?:string;
+  informationUri?: string;
   /** Available rules */
-  rules?:SARIFRule[];
+  rules?: SARIFRule[];
   /** Tool notifications */
-  notifications?:SARIFNotification[];
+  notifications?: SARIFNotification[];
 }
 
 export interface SARIFRule {
   /** Unique rule identifier */
-  id:string;
+  id: string;
   /** Rule name */
-  name?:string;
+  name?: string;
   /** Short description */
-  shortDescription?:SARIFMessage;
+  shortDescription?: SARIFMessage;
   /** Full description */
-  fullDescription?:SARIFMessage;
+  fullDescription?: SARIFMessage;
   /** Default severity level */
-  defaultConfiguration?:{
-    level:'error' | ' warning' | ' note' | ' info';
-    rank?:number;
-};
+  defaultConfiguration?: {
+    level: 'error' | ' warning' | ' note' | ' info';
+    rank?: number;
+  };
   /** Help information */
-  help?:SARIFMessage;
+  help?: SARIFMessage;
   /** Rule properties */
-  properties?:Record<string, unknown>;
+  properties?: Record<string, unknown>;
 }
 
 export interface SARIFAnalysisResult {
   /** Rule that generated this result */
-  ruleId:string;
+  ruleId: string;
   /** Rule index in driver.rules array */
-  ruleIndex?:number;
+  ruleIndex?: number;
   /** Result message */
-  message:SARIFMessage;
+  message: SARIFMessage;
   /** Primary location of the result */
-  locations:SARIFLocation[];
+  locations: SARIFLocation[];
   /** Additional related locations */
-  relatedLocations?:SARIFLocation[];
+  relatedLocations?: SARIFLocation[];
   /** Code flows (for taint tracking) */
-  codeFlows?:SARIFCodeFlow[];
+  codeFlows?: SARIFCodeFlow[];
   /** Result severity level */
-  level?:'error' | ' warning' | ' note' | ' info';
+  level?: 'error' | ' warning' | ' note' | ' info';
   /** Analysis target */
-  analysisTarget?:SARIFArtifactLocation;
+  analysisTarget?: SARIFArtifactLocation;
   /** Result properties */
-  properties?:Record<string, unknown>;
+  properties?: Record<string, unknown>;
 }
 
 export interface SARIFMessage {
   /** Message text */
-  text:string;
+  text: string;
   /** Markdown-formatted message */
-  markdown?:string;
+  markdown?: string;
   /** Message arguments */
-  arguments?:string[];
+  arguments?: string[];
 }
 
 export interface SARIFLocation {
   /** Physical location in source */
-  physicalLocation?:SARIFPhysicalLocation;
+  physicalLocation?: SARIFPhysicalLocation;
   /** Logical location (function, class, etc.) */
-  logicalLocations?:SARIFLogicalLocation[];
+  logicalLocations?: SARIFLogicalLocation[];
   /** Location message */
-  message?:SARIFMessage;
+  message?: SARIFMessage;
   /** Location properties */
-  properties?:Record<string, unknown>;
+  properties?: Record<string, unknown>;
 }
 
 export interface SARIFPhysicalLocation {
   /** File artifact */
-  artifactLocation:SARIFArtifactLocation;
+  artifactLocation: SARIFArtifactLocation;
   /** Text region */
-  region?:SARIFRegion;
+  region?: SARIFRegion;
   /** Context region */
-  contextRegion?:SARIFRegion;
+  contextRegion?: SARIFRegion;
 }
 
 export interface SARIFArtifactLocation {
   /** Relative file path */
-  uri:string;
+  uri: string;
   /** URI base ID */
-  uriBaseId?:string;
+  uriBaseId?: string;
   /** File index in artifacts array */
-  index?:number;
+  index?: number;
 }
 
 export interface SARIFRegion {
   /** Start line (1-based) */
-  startLine:number;
+  startLine: number;
   /** Start column (1-based) */
-  startColumn?:number;
+  startColumn?: number;
   /** End line (1-based) */
-  endLine?:number;
+  endLine?: number;
   /** End column (1-based) */
-  endColumn?:number;
+  endColumn?: number;
   /** Character offset */
-  charOffset?:number;
+  charOffset?: number;
   /** Character length */
-  charLength?:number;
+  charLength?: number;
   /** Snippet of code */
-  snippet?:SARIFArtifactContent;
+  snippet?: SARIFArtifactContent;
 }
 
 export interface SARIFLogicalLocation {
   /** Logical location name */
-  name?:string;
+  name?: string;
   /** Location index */
-  index?:number;
+  index?: number;
   /** Fully qualified name */
-  fullyQualifiedName?:string;
+  fullyQualifiedName?: string;
   /** Decorated name */
-  decoratedName?:string;
+  decoratedName?: string;
   /** Parent location index */
-  parentIndex?:number;
+  parentIndex?: number;
   /** Location kind */
-  kind?:string;
+  kind?: string;
 }
 
 export interface SARIFCodeFlow {
   /** Thread flows */
-  threadFlows:SARIFThreadFlow[];
+  threadFlows: SARIFThreadFlow[];
   /** Flow message */
-  message?:SARIFMessage;
+  message?: SARIFMessage;
 }
 
 export interface SARIFThreadFlow {
   /** Flow locations */
-  locations:SARIFThreadFlowLocation[];
+  locations: SARIFThreadFlowLocation[];
   /** Thread flow message */
-  message?:SARIFMessage;
+  message?: SARIFMessage;
 }
 
 export interface SARIFThreadFlowLocation {
   /** Flow step location */
-  location:SARIFLocation;
+  location: SARIFLocation;
   /** Stack frame */
-  stack?:SARIFStack;
+  stack?: SARIFStack;
   /** Execution order */
-  executionOrder?:number;
+  executionOrder?: number;
   /** Location importance */
-  importance?:'important' | ' essential' | ' unimportant';
+  importance?: 'important' | ' essential' | ' unimportant';
 }
 
 export interface SARIFArtifact {
   /** Artifact location */
-  location?:SARIFArtifactLocation;
+  location?: SARIFArtifactLocation;
   /** File length */
-  length?:number;
+  length?: number;
   /** MIME type */
-  mimeType?:string;
+  mimeType?: string;
   /** File contents */
-  contents?:SARIFArtifactContent;
+  contents?: SARIFArtifactContent;
   /** File encoding */
-  encoding?:string;
+  encoding?: string;
   /** Source language */
-  sourceLanguage?:string;
+  sourceLanguage?: string;
   /** File hashes */
-  hashes?:Record<string, string>;
+  hashes?: Record<string, string>;
 }
 
 export interface SARIFArtifactContent {
   /** Text content */
-  text?:string;
+  text?: string;
   /** Binary content (base64) */
-  binary?:string;
+  binary?: string;
   /** Rendered content */
-  rendered?:SARIFMultiformatMessageString;
+  rendered?: SARIFMultiformatMessageString;
 }
 
 export interface SARIFMultiformatMessageString {
   /** Plain text */
-  text:string;
+  text: string;
   /** Markdown format */
-  markdown?:string;
+  markdown?: string;
 }
 
 export interface SARIFInvocation {
   /** Command line */
-  commandLine?:string;
+  commandLine?: string;
   /** Exit code */
-  exitCode?:number;
+  exitCode?: number;
   /** Start time */
-  startTimeUtc?:string;
+  startTimeUtc?: string;
   /** End time */
-  endTimeUtc?:string;
+  endTimeUtc?: string;
   /** Working directory */
-  workingDirectory?:SARIFArtifactLocation;
+  workingDirectory?: SARIFArtifactLocation;
   /** Environment variables */
-  environmentVariables?:Record<string, string>;
+  environmentVariables?: Record<string, string>;
 }
 
 export interface SARIFExtension {
   /** Extension name */
-  name:string;
+  name: string;
   /** Extension version */
-  version?:string;
+  version?: string;
   /** Extension rules */
-  rules?:SARIFRule[];
+  rules?: SARIFRule[];
 }
 
 export interface SARIFNotification {
   /** Notification ID */
-  id?:string;
+  id?: string;
   /** Notification message */
-  message:SARIFMessage;
+  message: SARIFMessage;
   /** Severity level */
-  level?:'error' | ' warning' | ' note' | ' info';
+  level?: 'error' | ' warning' | ' note' | ' info';
   /** Associated locations */
-  locations?:SARIFLocation[];
+  locations?: SARIFLocation[];
 }
 
 export interface SARIFStack {
   /** Stack frames */
-  frames:SARIFStackFrame[];
+  frames: SARIFStackFrame[];
   /** Stack message */
-  message?:SARIFMessage;
+  message?: SARIFMessage;
 }
 
 export interface SARIFStackFrame {
   /** Frame location */
-  location:SARIFLocation;
+  location: SARIFLocation;
   /** Module name */
-  module?:string;
+  module?: string;
   /** Function name */
-  function?:string;
+  function?: string;
   /** Frame parameters */
-  parameters?:string[];
+  parameters?: string[];
 }
 
 // CodeQL Analysis Results (Processed)
 export interface CodeQLAnalysisResult {
   /** Unique analysis ID */
-  id:string;
+  id: string;
   /** Database that was analyzed */
-  database:CodeQLDatabase;
+  database: CodeQLDatabase;
   /** Query packs that were executed */
-  queryPacks:QueryPack[];
+  queryPacks: QueryPack[];
   /** Raw SARIF results */
-  sarifResults:SARIFResult;
+  sarifResults: SARIFResult;
   /** Processed findings */
-  findings:CodeQLFinding[];
+  findings: CodeQLFinding[];
   /** Analysis metadata */
-  metadata:AnalysisMetadata;
+  metadata: AnalysisMetadata;
   /** Performance metrics */
-  metrics:AnalysisMetrics;
+  metrics: AnalysisMetrics;
 }
 
 export interface CodeQLFinding {
   /** Unique finding ID */
-  id:string;
+  id: string;
   /** CodeQL rule that triggered */
-  ruleId:string;
+  ruleId: string;
   /** Rule name */
-  ruleName?:string;
+  ruleName?: string;
   /** Severity level */
-  severity:'error' | ' warning' | ' note' | ' info';
+  severity: 'error' | ' warning' | ' note' | ' info';
   /** Primary file path */
-  filePath:string;
+  filePath: string;
   /** Primary location */
-  location:SourceLocation;
+  location: SourceLocation;
   /** Additional locations */
-  relatedLocations?:SourceLocation[];
+  relatedLocations?: SourceLocation[];
   /** Finding message */
-  message:string;
+  message: string;
   /** Detailed description */
-  description?:string;
+  description?: string;
   /** Code snippet */
-  snippet?:string;
+  snippet?: string;
   /** Data flow path (for taint tracking) */
-  dataFlow?:DataFlowPath;
+  dataFlow?: DataFlowPath;
   /** Security classification */
-  security?:SecurityClassification;
+  security?: SecurityClassification;
   /** Fix suggestions */
-  fixSuggestions?:FixSuggestion[];
+  fixSuggestions?: FixSuggestion[];
   /** Finding confidence score */
-  confidence:number;
+  confidence: number;
   /** Custom properties */
-  properties:Record<string, unknown>;
+  properties: Record<string, unknown>;
 }
 
 export interface SourceLocation {
   /** File path */
-  filePath:string;
+  filePath: string;
   /** Start line (1-based) */
-  startLine:number;
+  startLine: number;
   /** Start column (1-based) */
-  startColumn?:number;
+  startColumn?: number;
   /** End line (1-based) */
-  endLine?:number;
+  endLine?: number;
   /** End column (1-based) */
-  endColumn?:number;
+  endColumn?: number;
   /** Location message */
-  message?:string;
+  message?: string;
 }
 
 export interface DataFlowPath {
   /** Flow steps */
-  steps:DataFlowStep[];
+  steps: DataFlowStep[];
   /** Source of the flow */
-  source:SourceLocation;
+  source: SourceLocation;
   /** Sink of the flow */
-  sink:SourceLocation;
+  sink: SourceLocation;
   /** Flow type */
-  type:'taint' | ' value' | ' control';
+  type: 'taint' | ' value' | ' control';
 }
 
 export interface DataFlowStep {
   /** Step location */
-  location:SourceLocation;
+  location: SourceLocation;
   /** Step description */
-  description:string;
+  description: string;
   /** Step number in flow */
-  stepNumber:number;
+  stepNumber: number;
   /** Whether this is a sanitizer */
-  isSanitizer?:boolean;
+  isSanitizer?: boolean;
 }
 
 export interface SecurityClassification {
   /** CWE (Common Weakness Enumeration) ID */
-  cweId?:number;
+  cweId?: number;
   /** OWASP Top 10 category */
-  owaspCategory?:string;
+  owaspCategory?: string;
   /** Security severity */
-  securitySeverity:'critical' | ' high' | ' medium' | ' low';
+  securitySeverity: 'critical' | ' high' | ' medium' | ' low';
   /** Attack vector */
-  attackVector?:'network' | ' adjacent' | ' local' | ' physical';
+  attackVector?: 'network' | ' adjacent' | ' local' | ' physical';
   /** Exploitability score (0-1) */
-  exploitability?:number;
+  exploitability?: number;
 }
 
 export interface FixSuggestion {
   /** Suggested fix description */
-  description:string;
+  description: string;
   /** File to modify */
-  filePath:string;
+  filePath: string;
   /** Text replacement */
-  replacement?:TextReplacement;
+  replacement?: TextReplacement;
   /** Confidence in fix (0-1) */
-  confidence:number;
+  confidence: number;
   /** Fix type */
-  type:'replace' | ' insert' | ' delete' | ' rewrite';
+  type: 'replace' | ' insert' | ' delete' | ' rewrite';
 }
 
 export interface TextReplacement {
   /** Original text to replace */
-  originalText:string;
+  originalText: string;
   /** New text */
-  newText:string;
+  newText: string;
   /** Location of replacement */
-  location:SourceLocation;
+  location: SourceLocation;
 }
 
 export interface AnalysisMetadata {
   /** Analysis start time */
-  startTime:Date;
+  startTime: Date;
   /** Analysis end time */
-  endTime:Date;
+  endTime: Date;
   /** CodeQL version used */
-  codeqlVersion:string;
+  codeqlVersion: string;
   /** Query pack versions */
-  queryPackVersions:Record<string, string>;
+  queryPackVersions: Record<string, string>;
   /** Analysis configuration */
-  configuration:Record<string, unknown>;
+  configuration: Record<string, unknown>;
 }
 
 export interface AnalysisMetrics {
   /** Total analysis duration (ms) */
-  durationMs:number;
+  durationMs: number;
   /** Database size (bytes) */
-  databaseSizeBytes:number;
+  databaseSizeBytes: number;
   /** Files analyzed */
-  filesAnalyzed:number;
+  filesAnalyzed: number;
   /** Lines of code analyzed */
-  linesAnalyzed:number;
+  linesAnalyzed: number;
   /** Memory usage peak (MB) */
-  peakMemoryMb:number;
+  peakMemoryMb: number;
   /** CPU time used (ms) */
-  cpuTimeMs:number;
+  cpuTimeMs: number;
 }
 
 // Error Types
 export interface CodeQLError extends Error {
   /** Error type */
-  type:'config' | ' database' | ' query' | ' parse' | ' system';
+  type: 'config' | ' database' | ' query' | ' parse' | ' system';
   /** Error code */
-  code?:string|number;
+  code?: string | number;
   /** Command that failed */
-  command?:string;
+  command?: string;
   /** Exit code */
-  exitCode?:number;
+  exitCode?: number;
   /** Standard error output */
-  stderr?:string;
+  stderr?: string;
 }
 
 // API Response Types

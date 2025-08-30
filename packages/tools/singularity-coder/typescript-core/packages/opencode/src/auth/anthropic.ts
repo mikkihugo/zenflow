@@ -8,7 +8,7 @@ export namespace AuthAnthropic {
 
     const __url = new URL(
     // eslint-disable-next-line no-console
-      `https://${mode === "console" ? "console.anthropic.com" : "claude.ai"}/oauth/authorize`,`
+      `https://${mode === "console" ? "console.anthropic.com" : "claude.ai"}/oauth/authorize,
       import.meta.url,
     )
     url.searchParams.set("code", "true")

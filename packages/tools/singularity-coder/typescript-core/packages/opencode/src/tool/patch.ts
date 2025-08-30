@@ -119,7 +119,7 @@ function textToPatch(patchText:string, _currentFiles:Record<string, string>):[Pa
 
       while (i < lines.length && !lines[i].startsWith("***")) {
         if (lines[i].startsWith("+")) {
-          content += `${lines[i].substring(1)}\n`
+          content += `${lines[i].substring(1)}\n
 }
         i++
 }
@@ -160,7 +160,7 @@ function _patchToCommit(operations:PatchOperation[], currentFiles:Record<string,
       for (const hunk of op.hunks) {
         const contextIndex = lines.findIndex((line) => line.includes(hunk.contextLine))
         if (contextIndex === -1) {
-          throw new Error(`Context line not found:${hunk.contextLine}`)`
+          throw new Error(`Context line not found:${hunk.contextLine}`)
 }
 
         let currentIndex = contextIndex
@@ -193,7 +193,7 @@ function generateDiff(oldContent:string, newContent:string, filePath:string): [s
   const lines2 = newContent.split("\n")
   const additions = Math.max(0, lines2.length - lines1.length)
   const removals = Math.max(0, lines1.length - lines2.length)
-  return [`--- $filePath\n+++ $filePath\n`, additions, removals]`
+  return [`--- $filePath\n+++ $filePath\n, additions, removals]
 }
 
 async function _applyCommit(
@@ -227,13 +227,13 @@ export const __PatchTool = Tool.define({
       try {
         const __stats = await fs.stat(absPath)
         if (stats.isDirectory()) {
-          throw new Error(`path is a directory, not a file:${absPath}`)`
+          throw new Error(`path is a directory, not a file:${absPath}`)
 }
 } catch (error:any) {
         if (error.code === "ENOENT") {
-          throw new Error(`file not found:$absPath`)`
+          throw new Error(`file not found:$absPath)
 }
-        throw new Error(`failed to access file:${error.message}`)`
+        throw new Error(`failed to access file:${error.message}`)
 }
 }
 
@@ -246,10 +246,10 @@ export const __PatchTool = Tool.define({
 
       try {
         await fs.stat(absPath)
-        throw new Error(`file already exists and cannot be added:$absPath`)`
+        throw new Error(`file already exists and cannot be added:$absPath)
 } catch (error:any) {
         if (error.code !== "ENOENT") {
-          throw new Error(`failed to check file:${error.message}`)`
+          throw new Error(`failed to check file:${error.message}`)
 }
 }
 }
@@ -266,14 +266,14 @@ export const __PatchTool = Tool.define({
         const content = await fs.readFile(absPath, "utf-8")
         currentFiles[filePath] = content
 } catch (error:any) {
-        throw new Error(`failed to read file $absPath:$error.message`)`
+        throw new Error(`failed to read file $absPath:$error.message)
 }
 }
 
     // Process the patch
     const [_patch, fuzz] = textToPatch(params.patchText, currentFiles)
     if (fuzz > 3) {
-      throw new Error(`patch contains fuzzy matches (fuzz level:${fuzz}). Please make your context lines more precise`)`
+      throw new Error(`patch contains fuzzy matches (fuzz level:${fuzz}). Please make your context lines more precise)
 }
 
     // Convert patch to commit
@@ -325,11 +325,11 @@ export const __PatchTool = Tool.define({
       FileTime.read(ctx.sessionID, absPath)
 }
 
-    const result = `Patch applied successfully. $changedFiles.lengthfiles changed, $totalAdditionsadditions, $totalRemovalsremovals``
+    const result = `Patch applied successfully. $changedFiles.lengthfiles changed, $totalAdditionsadditions, $totalRemovalsremovals
     const output = result
 
     return {
-      title:`${filesToRead.length} files`,`
+      title:`${filesToRead.length} files,
       metadata:{
         changed:changedFiles,
         additions:totalAdditions,

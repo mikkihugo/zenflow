@@ -2,9 +2,9 @@
  * @file Memory management:memory-integration.
  */
 
-import { DIContainer, TOKENS, createContainer} from '@claude-zen/foundation';
+import { DIContainer, TOKENS, createContainer } from '@claude-zen/foundation';
 
-import { getLogger} from '../config/logging-config';
+import { getLogger } from '../config/logging-config';
 
 /**
  * Memory Domain DI Integration.
@@ -13,11 +13,11 @@ import { getLogger} from '../config/logging-config';
  * With proper DAL Factory integration.
  */
 
-import type { DALFactory} from '../database/factory';
-import type { MemoryConfig} from '../memory/interfaces';
+import type { DALFactory } from '../database/factory';
+import type { MemoryConfig } from '../memory/interfaces';
 
-import { MemoryController} from './controllers/memory-controller';
-import { MemoryProviderFactory} from './providers/memory-providers';
+import { MemoryController } from './controllers/memory-controller';
+import { MemoryProviderFactory } from './providers/memory-providers';
 
 const logger = getLogger('src-memory-memory-integration');
 
@@ -31,16 +31,16 @@ const MEMORY_TOKENS = TOKENS;
  */
 export const defaultMemoryConfigurations = {
   // High-performance cache (in-memory)
-  cache:{
-    type:'memory' as const,
-    maxSize:10000,
-    ttl:300000, // 5 minutes
-    compression:false,
-},
+  cache: {
+    type: 'memory' as const,
+    maxSize: 10000,
+    ttl: 300000, // 5 minutes
+    compression: false,
+  },
 
   // Persistent session storage (SQLite via DAL Factory)
-  session:{
-    type:'sqlite' as const,
+  session: {
+    type: 'sqlite' as const,
     /**
      * Session storage path following Claude Zen storage architecture.
      *
@@ -58,14 +58,15 @@ export const defaultMemoryConfigurations = {
      *
      * @see {@link CONFIG_PATH} for directory structure documentation
      */
-    path: './.claude-zen/memory/sessions',    maxSize:50000,
-    ttl:86400000, // 24 hours
-    compression:true,
-},
+    path: './.claude-zen/memory/sessions',
+    maxSize: 50000,
+    ttl: 86400000, // 24 hours
+    compression: true,
+  },
 
   // Vector-based semantic memory (LanceDB via DAL Factory)
-  semantic:{
-    type:'lancedb' as const,
+  semantic: {
+    type: 'lancedb' as const,
     /**
      * Semantic memory storage path following Claude Zen storage architecture.
      *
@@ -83,13 +84,14 @@ export const defaultMemoryConfigurations = {
      *
      * @see {@link CONFIG_PATH} for directory structure documentation
      */
-    path: './.claude-zen/memory/vectors',    maxSize:100000,
-    compression:false,
-},
+    path: './.claude-zen/memory/vectors',
+    maxSize: 100000,
+    compression: false,
+  },
 
   // Development/debugging (JSON)
-  debug:{
-    type:'json' as const,
+  debug: {
+    type: 'json' as const,
     /**
      * Debug memory storage path following Claude Zen storage architecture.
      *
@@ -107,27 +109,40 @@ export const defaultMemoryConfigurations = {
      *
      * @see {@link CONFIG_PATH} for directory structure documentation
      */
-    path: './.claude-zen/memory/debug.json',    maxSize:1000,
-    compression:false,
-},
+    path: './.claude-zen/memory/debug.json',
+    maxSize: 1000,
+    compression: false,
+  },
 } as const;
 
 /**
  * Memory backend performance characteristics.
  */
 export const memoryBackendSpecs = {
-  memory:{
-    speed: 'fastest',    persistence:false,
-    searchCapability: 'exact-match',    bestFor: 'caching, temporary data',},
-  sqlite:{
-    speed: 'fast',    persistence:true,
-    searchCapability: 'SQL queries',    bestFor: 'session data, structured storage',},
-  lancedb:{
-    speed: 'fast',    persistence:true,
-    searchCapability: 'similarity search',    bestFor: 'semantic memory, embeddings',},
-  json:{
-    speed: 'slower',    persistence:true,
-    searchCapability: 'none',    bestFor: 'development, debugging',},
+  memory: {
+    speed: 'fastest',
+    persistence: false,
+    searchCapability: 'exact-match',
+    bestFor: 'caching, temporary data',
+  },
+  sqlite: {
+    speed: 'fast',
+    persistence: true,
+    searchCapability: 'SQL queries',
+    bestFor: 'session data, structured storage',
+  },
+  lancedb: {
+    speed: 'fast',
+    persistence: true,
+    searchCapability: 'similarity search',
+    bestFor: 'semantic memory, embeddings',
+  },
+  json: {
+    speed: 'slower',
+    persistence: true,
+    searchCapability: 'none',
+    bestFor: 'development, debugging',
+  },
 } as const;
 
 /**
@@ -137,20 +152,21 @@ export const memoryBackendSpecs = {
  * @example
  */
 export function registerMemoryProviders(
-  container:DIContainer,
-  customConfigs?:{
-    [key:string]: Partial<MemoryConfig>;
-}
-):void {
+  container: DIContainer,
+  customConfigs?: {
+    [key: string]: Partial<MemoryConfig>;
+  }
+): void {
   // Register memory provider factory (uses DAL Factory)
   container.register(MEMORY_TOKENS['ProviderFactory'], {
-    type: 'singleton',    create:(container) =>
+    type: 'singleton',
+    create: (container) =>
       new MemoryProviderFactory(
         container.resolve(CORE_TOKENS.Logger),
         container.resolve(CORE_TOKENS.Config),
         container.resolve(DATABASE_TOKENS?.DALFactory) as DALFactory
       ),
-});
+  });
 
   // Register default memory configurations
   for (const [name, defaultConfig] of Object.entries(
@@ -160,16 +176,18 @@ export function registerMemoryProviders(
       `${name.charAt(0).toUpperCase()}${name.slice(1)}Config` as const;
 
     container.register(MEMORY_TOKENS[tokenName] || MEMORY_TOKENS.Config, {
-      type: 'singleton',      create:() => ({
+      type: 'singleton',
+      create: () => ({
         ...defaultConfig,
         ...customConfigs?.[name],
-}),
-});
-}
+      }),
+    });
+  }
 
   // Register memory controller
   container.register(MEMORY_TOKENS.Controller, {
-    type: 'singleton',    create:(container) =>
+    type: 'singleton',
+    create: (container) =>
       new MemoryController(
         container.resolve(
           MEMORY_TOKENS['ProviderFactory']
@@ -177,7 +195,7 @@ export function registerMemoryProviders(
         container.resolve(MEMORY_TOKENS.Config) as MemoryConfig,
         container.resolve(CORE_TOKENS.Logger)
       ),
-});
+  });
 }
 
 /**
@@ -186,21 +204,37 @@ export function registerMemoryProviders(
  * @param container
  * @example
  */
+<<<<<<< HEAD
 export function createMemoryBackends(container:DIContainer): {
   cache:unknown;
   session:unknown;
   semantic:unknown;
   debug:unknown;
 } {
+=======
+export async function createMemoryBackends(container: DIContainer): Promise<{
+  cache: unknown;
+  session: unknown;
+  semantic: unknown;
+  debug: unknown;
+}> {
+>>>>>>> origin/main
   const factory = container.resolve(
     MEMORY_TOKENS['ProviderFactory']
   ) as MemoryProviderFactory;
 
   return {
+<<<<<<< HEAD
     cache:factory.createProvider(defaultMemoryConfigurations?.cache),
     session:factory.createProvider(defaultMemoryConfigurations?.session),
     semantic:factory.createProvider(defaultMemoryConfigurations?.semantic),
     debug:factory.createProvider(defaultMemoryConfigurations?.debug),
+=======
+    cache: factory.createProvider(defaultMemoryConfigurations?.cache),
+    session: factory.createProvider(defaultMemoryConfigurations?.session),
+    semantic: factory.createProvider(defaultMemoryConfigurations?.semantic),
+    debug: factory.createProvider(defaultMemoryConfigurations?.debug),
+>>>>>>> origin/main
   };
 }
 
@@ -215,6 +249,7 @@ export function createMemoryBackends(container:DIContainer): {
  * @param options.enableDebug
  * @example
  */
+<<<<<<< HEAD
 /**
  * Creates memory backends based on configuration options
  */
@@ -281,6 +316,8 @@ async function performBackendHealthChecks(
   );
 }
 
+=======
+>>>>>>> origin/main
 export async function initializeMemorySystem(
   container: DIContainer,
   options: {
@@ -310,10 +347,72 @@ export async function initializeMemorySystem(
   const controller = container.resolve(MEMORY_TOKENS.Controller);
 
   // Create backends based on options
+<<<<<<< HEAD
   const { backends, enabledBackends } = createConfiguredMemoryBackends(container, options);
 
   // Test all backends
   await performBackendHealthChecks(backends, enabledBackends, logger);
+=======
+  const backends: Record<string, unknown> = {};
+  const enabledBackends: string[] = [];
+
+  if (options?.['enableCache']) {
+    backends.cache = (
+      container.resolve(
+        MEMORY_TOKENS['ProviderFactory']
+      ) as MemoryProviderFactory
+    ).createProvider(defaultMemoryConfigurations?.cache);
+    enabledBackends.push('cache');
+  }
+
+  if (options?.['enableSessions']) {
+    backends.session = (
+      container.resolve(
+        MEMORY_TOKENS['ProviderFactory']
+      ) as MemoryProviderFactory
+    ).createProvider(defaultMemoryConfigurations?.session);
+    enabledBackends.push('session');
+  }
+
+  if (options?.['enableSemantic']) {
+    backends.semantic = (
+      container.resolve(
+        MEMORY_TOKENS['ProviderFactory']
+      ) as MemoryProviderFactory
+    ).createProvider(defaultMemoryConfigurations?.semantic);
+    enabledBackends.push('semantic');
+  }
+
+  if (options?.['enableDebug']) {
+    backends.debug = (
+      container.resolve(
+        MEMORY_TOKENS['ProviderFactory']
+      ) as MemoryProviderFactory
+    ).createProvider(defaultMemoryConfigurations?.debug);
+    enabledBackends.push('debug');
+  }
+
+  // Test all backends
+  const healthChecks = await Promise.allSettled(
+    Object.entries(backends).map(async ([name, backend]) => {
+      const healthy = await backend.health();
+      return { name, healthy };
+    })
+  );
+
+  const healthyBackends = healthChecks
+    .filter(
+      (
+        result
+      ): result is PromiseFulfilledResult<{ name: string; healthy: boolean }> =>
+        result?.status === 'fulfilled' && result?.value?.healthy
+    )
+    .map((result) => result?.value?.name);
+
+  logger.info(
+    `Memory system initialized:${healthyBackends.length}/${enabledBackends.length} backends healthy`
+  );
+>>>>>>> origin/main
 
   return {
     controller,
@@ -333,16 +432,21 @@ export async function initializeMemorySystem(
  * @example
  */
 export function createMemoryContainer(
-  customConfigs?:Parameters<typeof registerMemoryProviders>[1]
-):DIContainer {
+  customConfigs?: Parameters<typeof registerMemoryProviders>[1]
+): DIContainer {
   const container = createContainer('memory-integration');
 
   // Register core services (would normally come from main app)
   container.register(CORE_TOKENS.Logger, {
     type: 'singleton',
     create: () => ({
+<<<<<<< HEAD
       debug: () => {},
       info: () => {},
+=======
+      debug: (msg: string) => {},
+      info: (msg: string) => {},
+>>>>>>> origin/main
       warn: (msg: string) => logger.warn(`[MEMORY WARN] ${msg}`),
       error: (msg: string) => logger.error(`[MEMORY ERROR] ${msg}`),
     }),
@@ -352,8 +456,13 @@ export function createMemoryContainer(
     type: 'singleton',
     create: () => ({
       get: (key: string, defaultValue?: unknown) => defaultValue,
+<<<<<<< HEAD
       set: () => {},
       has: () => false,
+=======
+      set: (key: string, value: unknown) => {},
+      has: (key: string) => false,
+>>>>>>> origin/main
     }),
   });
 
@@ -361,9 +470,15 @@ export function createMemoryContainer(
   container.register(DATABASE_TOKENS?.DALFactory, {
     type: 'singleton',
     create: (container) => {
+<<<<<<< HEAD
       const { DALFactory: dalFactory } = require('../database/factory');
       const {
         DatabaseProviderFactory: databaseProviderFactory,
+=======
+      const { DALFactory } = require('../database/factory');
+      const {
+        DatabaseProviderFactory,
+>>>>>>> origin/main
       } = require('../database/providers/database-providers');
 
       return new dalFactory(
@@ -374,8 +489,8 @@ export function createMemoryContainer(
           container.resolve(CORE_TOKENS.Config)
         )
       );
-},
-});
+    },
+  });
 
   // Register memory providers
   registerMemoryProviders(container, customConfigs);
@@ -388,20 +503,32 @@ export function createMemoryContainer(
  */
 export const memoryUsageGuide = {
   // Use in-memory backend for frequently accessed data
-  cache:{
-    example: 'Storing API responses, computed results, temporary user state',    performance: '~100,000 ops/sec',    limitations: 'No persistence, memory limited',},
+  cache: {
+    example: 'Storing API responses, computed results, temporary user state',
+    performance: '~100,000 ops/sec',
+    limitations: 'No persistence, memory limited',
+  },
 
   // Use SQLite backend for persistent structured data
-  session:{
-    example: 'User sessions, application state, configuration data',    performance: '~10,000 ops/sec',    limitations: 'File-based, single-writer',},
+  session: {
+    example: 'User sessions, application state, configuration data',
+    performance: '~10,000 ops/sec',
+    limitations: 'File-based, single-writer',
+  },
 
   // Use LanceDB backend for semantic/similarity searches
-  semantic:{
-    example: 'Document embeddings, semantic memory, AI context',    performance: '~5,000 ops/sec',    limitations: 'Vector operations only',},
+  semantic: {
+    example: 'Document embeddings, semantic memory, AI context',
+    performance: '~5,000 ops/sec',
+    limitations: 'Vector operations only',
+  },
 
   // Use JSON backend for development and debugging
-  debug:{
-    example: 'Development data, debugging, configuration files',    performance: '~1,000 ops/sec',    limitations: 'Slow, not production-ready',},
+  debug: {
+    example: 'Development data, debugging, configuration files',
+    performance: '~1,000 ops/sec',
+    limitations: 'Slow, not production-ready',
+  },
 } as const;
 
 export default {

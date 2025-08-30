@@ -25,7 +25,7 @@ export const UpgradeCommand = {
     const detectedMethod = await Installation.method()
     const method = (args.method as Installation.Method) ?? detectedMethod
     if (method === "unknown") {
-      prompts.log.error(`opencode is installed to ${process.execPath} and seems to be managed by a package manager`)`
+      prompts.log.error(`opencode is installed to ${process.execPath} and seems to be managed by a package manager)
       prompts.outro("Done")
       return
 }
@@ -33,12 +33,12 @@ export const UpgradeCommand = {
     const target = args.target ?? (await Installation.latest())
 
     if (Installation.VERSION === target) {
-      prompts.log.warn(`opencode upgrade skipped:$targetis already installed`)`
+      prompts.log.warn(`opencode upgrade skipped:$targetis already installed)
       prompts.outro("Done")
       return
 }
 
-    prompts.log.info(`From ${Installation.VERSION} → ${target}`)`
+    prompts.log.info(`From ${Installation.VERSION} → ${target}`)
     const spinner = prompts.spinner()
     spinner.start("Upgrading...")
     const err = await Installation.upgrade(method, target).catch((error) => error)

@@ -1,17 +1,15 @@
 {
-	"extends": "../../../tsconfig.base.json",
-	"compilerOptions": {
-		"downlevelIteration": true
-	},
-	"include": ["src/**/*.ts"],
-	"exclude": [
-		"node_modules",
-		"dist",
-		"**/*.test.ts",
-		"**/*.spec.ts",
-		"rust/**/*"
-	],
-	"references": [
-		{ "path": "../foundation" }
-	]
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "downlevelIteration": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "rust/**/*"
+  ],
+  "references": [{ "path": "../foundation" }]
 }

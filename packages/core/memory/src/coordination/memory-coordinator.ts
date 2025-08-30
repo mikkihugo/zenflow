@@ -3,57 +3,57 @@
  * Provides advanced coordination capabilities for distributed memory management.
  */
 
-import { EventEmitter} from '@claude-zen/foundation';
+import { EventEmitter } from '@claude-zen/foundation';
 
 // BackendInterface type for compatibility - matches core memory-system.ts
 export interface BackendInterface {
-  initialize():Promise<void>;
-  store(key:string, value:unknown, namespace?:string): Promise<unknown>;
-  retrieve(key:string, namespace?:string): Promise<unknown | null>;
-  search(pattern:string, namespace?:string): Promise<Record<string, unknown>>;
-  delete(key:string, namespace?:string): Promise<boolean>;
-  listNamespaces():Promise<string[]>;
-  getStats():Promise<unknown>;
-  close?():Promise<void>;
+  initialize(): Promise<void>;
+  store(key: string, value: unknown, namespace?: string): Promise<unknown>;
+  retrieve(key: string, namespace?: string): Promise<unknown | null>;
+  search(pattern: string, namespace?: string): Promise<Record<string, unknown>>;
+  delete(key: string, namespace?: string): Promise<boolean>;
+  listNamespaces(): Promise<string[]>;
+  getStats(): Promise<unknown>;
+  close?(): Promise<void>;
 }
 
 export interface MemoryCoordinationConfig {
-  enabled:boolean;
-  consensus:{
-    quorum:number;
-    timeout:number;
+  enabled: boolean;
+  consensus: {
+    quorum: number;
+    timeout: number;
     strategy: 'majority|unanimous|leader';
-};
-  distributed:{
-    replication:number;
+  };
+  distributed: {
+    replication: number;
     consistency: 'eventual|strong|weak';
     partitioning: 'hash|range|consistent';
-};
-  optimization:{
-    autoCompaction:boolean;
+  };
+  optimization: {
+    autoCompaction: boolean;
     cacheEviction: 'lru|lfu|adaptive';
-    memoryThreshold:number;
-};
+    memoryThreshold: number;
+  };
 }
 
 export interface MemoryNode {
-  id:string;
-  backend:BackendInterface;
+  id: string;
+  backend: BackendInterface;
   status: 'active|inactive|degraded';
-  lastHeartbeat:number;
-  load:number;
-  capacity:number;
+  lastHeartbeat: number;
+  load: number;
+  capacity: number;
 }
 
 export interface CoordinationDecision {
-  id:string;
+  id: string;
   type: 'read|write|delete|sync|repair';
-  sessionId:string;
-  target:string;
-  participants:string[];
+  sessionId: string;
+  target: string;
+  participants: string[];
   status: 'pending|executing|completed|failed';
-  timestamp:number;
-  metadata?:Record<string, unknown>;
+  timestamp: number;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -65,12 +65,12 @@ export interface CoordinationDecision {
 export class MemoryCoordinator extends EventEmitter {
   private nodes = new Map<string, MemoryNode>();
   private decisions = new Map<string, CoordinationDecision>();
-  private configuration:MemoryCoordinationConfig;
+  private configuration: MemoryCoordinationConfig;
 
-  constructor(config:MemoryCoordinationConfig) {
+  constructor(config: MemoryCoordinationConfig) {
     super();
     this.config = config;
-}
+  }
 
   /**
    * Register a memory node for coordination.
@@ -78,28 +78,38 @@ export class MemoryCoordinator extends EventEmitter {
    * @param id
    * @param backend
    */
+<<<<<<< HEAD
   registerNode(id:string, backend:BackendInterface): void {
     const node:MemoryNode = {
+=======
+  async registerNode(id: string, backend: BackendInterface): Promise<void> {
+    const node: MemoryNode = {
+>>>>>>> origin/main
       id,
       backend,
-      status: 'active',      lastHeartbeat:Date.now(),
-      load:0,
-      capacity:1000, // Default capacity
-};
+      status: 'active',
+      lastHeartbeat: Date.now(),
+      load: 0,
+      capacity: 1000, // Default capacity
+    };
 
     this.nodes.set(id, node);
-    this.emit('nodeRegistered', { nodeId:id, node});
-}
+    this.emit('nodeRegistered', { nodeId: id, node });
+  }
 
   /**
    * Unregister a memory node.
    *
    * @param id
    */
+<<<<<<< HEAD
   unregisterNode(id:string): void {
+=======
+  async unregisterNode(id: string): Promise<void> {
+>>>>>>> origin/main
     this.nodes.delete(id);
-    this.emit('nodeUnregistered', { nodeId:id});
-}
+    this.emit('nodeUnregistered', { nodeId: id });
+  }
 
   /**
    * Coordinate a distributed memory operation.
@@ -107,14 +117,18 @@ export class MemoryCoordinator extends EventEmitter {
    * @param operation
    */
   async coordinate(
-    operation:Partial<CoordinationDecision>
-  ):Promise<CoordinationDecision> {
-    const decision:CoordinationDecision = {
-      id:`coord_${Date.now()}_${Math.random().toString(36).slice(2)}`,
-      type:operation.type || 'read',      sessionId:operation.sessionId || 'default',      target:operation.target || 'default',      participants:this.selectParticipants(operation.type || 'read'),
-      status: 'pending',      timestamp:Date.now(),
-      metadata:operation.metadata,
-};
+    operation: Partial<CoordinationDecision>
+  ): Promise<CoordinationDecision> {
+    const decision: CoordinationDecision = {
+      id: `coord_${Date.now()}_${Math.random().toString(36).slice(2)}`,
+      type: operation.type || 'read',
+      sessionId: operation.sessionId || 'default',
+      target: operation.target || 'default',
+      participants: this.selectParticipants(operation.type || 'read'),
+      status: 'pending',
+      timestamp: Date.now(),
+      metadata: operation.metadata,
+    };
 
     this.decisions.set(decision.id, decision);
     this.emit('coordinationStarted', decision);
@@ -123,21 +137,21 @@ export class MemoryCoordinator extends EventEmitter {
       await this.executeCoordination(decision);
       decision.status = 'completed';
       this.emit('coordinationCompleted', decision);
-} catch (error) {
+    } catch (error) {
       decision.status = 'failed';
-      this.emit('coordinationFailed', { decision, error});
+      this.emit('coordinationFailed', { decision, error });
       throw error;
-}
+    }
 
     return decision;
-}
+  }
 
   /**
    * Select optimal nodes for an operation.
    *
    * @param operationType
    */
-  private selectParticipants(operationType:string): string[] {
+  private selectParticipants(operationType: string): string[] {
     const activeNodes = Array.from(this.nodes.entries())
       .filter(([, node]) => node?.status === 'active')
       .sort(([, a], [, b]) => a.load - b.load);
@@ -145,7 +159,7 @@ export class MemoryCoordinator extends EventEmitter {
     if (operationType === 'read') {
       // For reads, prefer nodes with lower load
       return activeNodes?.slice(0, 1).map(([id]) => id);
-}
+    }
 
     if (operationType === 'write') {
       // For writes, use replication factor
@@ -154,11 +168,11 @@ export class MemoryCoordinator extends EventEmitter {
         activeNodes.length
       );
       return activeNodes?.slice(0, replicationCount).map(([id]) => id);
-}
+    }
 
     // Default to single node for other operations
     return activeNodes?.slice(0, 1).map(([id]) => id);
-}
+  }
 
   /**
    * Execute coordination decision.
@@ -166,8 +180,8 @@ export class MemoryCoordinator extends EventEmitter {
    * @param decision
    */
   private async executeCoordination(
-    decision:CoordinationDecision
-  ):Promise<void> {
+    decision: CoordinationDecision
+  ): Promise<void> {
     decision.status = 'executing';
 
     switch (decision.type) {
@@ -188,45 +202,45 @@ export class MemoryCoordinator extends EventEmitter {
         break;
       default:
         throw new Error(`Unknown coordination type:${decision.type}`);
-}
-}
+    }
+  }
 
   /**
    * Execute distributed read operation.
    *
    * @param decision
    */
-  private async executeRead(decision:CoordinationDecision): Promise<unknown> {
+  private async executeRead(decision: CoordinationDecision): Promise<unknown> {
     const node = this.nodes.get(decision.participants[0]);
     if (!node) {
       throw new Error(`Node not found:${decision.participants[0]}`);
-}
+    }
 
     return await node?.backend?.retrieve(decision.target);
-}
+  }
 
   /**
    * Execute distributed write operation.
    *
    * @param decision
    */
-  private async executeWrite(decision:CoordinationDecision): Promise<void> {
+  private async executeWrite(decision: CoordinationDecision): Promise<void> {
     const writePromises = decision.participants.map(async (nodeId) => {
       const node = this.nodes.get(nodeId);
       if (!node) {
         throw new Error(`Node not found:${nodeId}`);
-}
+      }
 
       return await node?.backend?.store(
         decision.target,
         decision.metadata?.data
       );
-});
+    });
 
     if (this.config.distributed.consistency === 'strong') {
       // Wait for all writes to complete
       await Promise.all(writePromises);
-} else {
+    } else {
       // Wait for quorum
       const quorum = Math.ceil(
         decision.participants.length * this.config.consensus.quorum
@@ -239,59 +253,59 @@ export class MemoryCoordinator extends EventEmitter {
             this.config.consensus.timeout
           )
         ),
-]);
-}
-}
+      ]);
+    }
+  }
 
   /**
    * Execute distributed delete operation.
    *
    * @param decision
    */
-  private async executeDelete(decision:CoordinationDecision): Promise<void> {
+  private async executeDelete(decision: CoordinationDecision): Promise<void> {
     const deletePromises = decision.participants.map(async (nodeId) => {
       const node = this.nodes.get(nodeId);
       if (!node) {
         throw new Error(`Node not found:${nodeId}`);
-}
+      }
 
       return await node?.backend?.delete(decision.target);
-});
+    });
 
     await Promise.all(deletePromises);
-}
+  }
 
   /**
    * Execute sync operation between nodes.
    *
    * @param decision
    */
-  private async executeSync(decision:CoordinationDecision): Promise<void> {
+  private async executeSync(decision: CoordinationDecision): Promise<void> {
     // Synchronize data between nodes
     const sourceNode = this.nodes.get(decision.participants[0]);
     if (!sourceNode) {
       throw new Error(`Source node not found:${decision.participants[0]}`);
-}
+    }
 
     for (let i = 1; i < decision.participants.length; i++) {
       const targetNode = this.nodes.get(decision.participants[i]);
       if (!targetNode) {
         continue;
-}
+      }
 
       const data = await sourceNode?.backend?.retrieve(decision.target);
       if (data) {
         await targetNode?.backend?.store(decision.target, data);
-}
-}
-}
+      }
+    }
+  }
 
   /**
    * Execute repair operation for inconsistent data.
    *
    * @param decision
    */
-  private async executeRepair(decision:CoordinationDecision): Promise<void> {
+  private async executeRepair(decision: CoordinationDecision): Promise<void> {
     // Implement repair logic for data inconsistencies
     const values = await Promise.all(
       decision.participants.map(async (nodeId) => {
@@ -300,10 +314,10 @@ export class MemoryCoordinator extends EventEmitter {
 
         try {
           return await node?.backend?.retrieve(decision.target);
-} catch {
+        } catch {
           return null;
-}
-})
+        }
+      })
     );
 
     // Find the most common value (simple consensus)
@@ -314,7 +328,7 @@ export class MemoryCoordinator extends EventEmitter {
     for (const value of validValues) {
       const key = JSON.stringify(value);
       valueCount.set(key, (valueCount.get(key) || 0) + 1);
-}
+    }
 
     const [winningValue] = Array.from(valueCount.entries()).sort(
       ([, a], [, b]) => b - a
@@ -328,43 +342,43 @@ export class MemoryCoordinator extends EventEmitter {
       if (!node) return;
 
       await node?.backend?.store(decision.target, correctValue);
-});
+    });
 
     await Promise.all(repairPromises);
-}
+  }
 
   /**
    * Get coordination statistics.
    */
   getStats() {
     return {
-      nodes:{
-        total:this.nodes.size,
-        active:Array.from(this.nodes.values()).filter(
+      nodes: {
+        total: this.nodes.size,
+        active: Array.from(this.nodes.values()).filter(
           (n) => n.status === 'active'
         ).length,
-        degraded:Array.from(this.nodes.values()).filter(
+        degraded: Array.from(this.nodes.values()).filter(
           (n) => n.status === 'degraded'
         ).length,
-},
-      decisions:{
-        total:this.decisions.size,
-        pending:Array.from(this.decisions.values()).filter(
+      },
+      decisions: {
+        total: this.decisions.size,
+        pending: Array.from(this.decisions.values()).filter(
           (d) => d.status === 'pending'
         ).length,
-        executing:Array.from(this.decisions.values()).filter(
+        executing: Array.from(this.decisions.values()).filter(
           (d) => d.status === 'executing'
         ).length,
-        completed:Array.from(this.decisions.values()).filter(
+        completed: Array.from(this.decisions.values()).filter(
           (d) => d.status === 'completed'
         ).length,
-        failed:Array.from(this.decisions.values()).filter(
+        failed: Array.from(this.decisions.values()).filter(
           (d) => d.status === 'failed'
         ).length,
-},
-      config:this.config,
-};
-}
+      },
+      config: this.config,
+    };
+  }
 
   /**
    * Store data across distributed memory nodes.
@@ -376,62 +390,70 @@ export class MemoryCoordinator extends EventEmitter {
    * @param options.replicas
    */
   async store(
-    key:string,
-    data:unknown,
-    options?:{ ttl?: number; replicas?: number}
-  ):Promise<void> {
+    key: string,
+    data: unknown,
+    options?: { ttl?: number; replicas?: number }
+  ): Promise<void> {
     const decision = await this.coordinate({
-      type: 'write',      target:key,
-      metadata:{ data, options},
-});
+      type: 'write',
+      target: key,
+      metadata: { data, options },
+    });
 
     if (decision.status === 'failed') {
       throw new Error(`Failed to store data for key:${key}`);
-}
-}
+    }
+  }
 
   /**
    * Retrieve data from distributed memory nodes.
    *
    * @param key
    */
-  async get(key:string): Promise<unknown> {
+  async get(key: string): Promise<unknown> {
     const decision = await this.coordinate({
-      type: 'read',      target:key,
-});
+      type: 'read',
+      target: key,
+    });
 
     if (decision.status === 'failed') {
       throw new Error(`Failed to retrieve data for key:${key}`);
-}
+    }
 
     return await this.executeRead(decision);
-}
+  }
 
   /**
    * Delete data from distributed memory nodes.
    *
    * @param key
    */
-  async deleteEntry(key:string): Promise<void> {
+  async deleteEntry(key: string): Promise<void> {
     const decision = await this.coordinate({
-      type: 'delete',      target:key,
-});
+      type: 'delete',
+      target: key,
+    });
 
     if (decision.status === 'failed') {
       throw new Error(`Failed to delete data for key:${key}`);
-}
-}
+    }
+  }
 
   /**
    * List all keys matching a pattern across distributed nodes.
    *
    * @param pattern
    */
+<<<<<<< HEAD
   async list(pattern:string): Promise<Array<{ key: string; value: unknown}>> {
     const activeNodes = this.getActiveNodes();
     const results = await this.collectKeysFromNodes(activeNodes, pattern);
     return this.removeDuplicateResults(results);
   }
+=======
+  async list(pattern: string): Promise<Array<{ key: string; value: unknown }>> {
+    const results: Array<{ key: string; value: unknown }> = [];
+>>>>>>> origin/main
 
   private getActiveNodes(): MemoryNode[] {
     return Array.from(this.nodes.values()).filter(
@@ -454,8 +476,26 @@ export class MemoryCoordinator extends EventEmitter {
       }
     }
 
+<<<<<<< HEAD
     return results;
   }
+=======
+          for (const key of matchingKeys) {
+            try {
+              const value = await node?.backend?.retrieve(key);
+              results?.push({ key, value });
+            } catch (error) {
+              this.logger.warn(`Failed to retrieve key ${key} from node`, {
+                error,
+              });
+            }
+          }
+        }
+      } catch (error) {
+        this.logger.warn('Failed to query node during search', { error });
+      }
+    }
+>>>>>>> origin/main
 
   private async getMatchingKeysFromNode(
     node: MemoryNode, 
@@ -494,12 +534,22 @@ export class MemoryCoordinator extends EventEmitter {
   ): Array<{ key: string; value: unknown}> {
     const uniqueResults = new Map();
     for (const result of results) {
+<<<<<<< HEAD
       if (!uniqueResults.has(result.key)) {
         uniqueResults.set(result.key, result);
       }
     }
     return Array.from(uniqueResults.values());
 }
+=======
+      if (!uniqueResults?.has(result?.key)) {
+        uniqueResults?.set(result?.key, result);
+      }
+    }
+
+    return Array.from(uniqueResults?.values())();
+  }
+>>>>>>> origin/main
 
   /**
    * Simple pattern matching for key listing.
@@ -507,7 +557,7 @@ export class MemoryCoordinator extends EventEmitter {
    * @param key
    * @param pattern
    */
-  private matchesPattern(key:string, pattern:string): boolean {
+  private matchesPattern(key: string, pattern: string): boolean {
     // Convert simple glob pattern to regex
     const regexPattern = pattern
       .replace(/\\/g, '\\\\')
@@ -518,20 +568,27 @@ export class MemoryCoordinator extends EventEmitter {
 
     const regex = new RegExp(`^${regexPattern}$`);
     return regex.test(key);
-}
+  }
 
   /**
    * Health check for coordinator.
    */
+<<<<<<< HEAD
   healthCheck():{ status: string; details: unknown} {
     const stats = this.getStats();
+=======
+  async healthCheck(): Promise<{ status: string; details: unknown }> {
+    const __stats = this.getStats();
+>>>>>>> origin/main
     const unhealthyNodes = Array.from(this.nodes.values()).filter(
       (n) => n.status !== 'active'
     );
 
     return {
-      status:unhealthyNodes.length === 0 ? 'healthy' : ' degraded',      details:{
+      status: unhealthyNodes.length === 0 ? 'healthy' : ' degraded',
+      details: {
         ...stats,
+<<<<<<< HEAD
         unhealthyNodes:unhealthyNodes.map((n) => ({
           id:n.id,
           status:n.status,
@@ -539,4 +596,13 @@ export class MemoryCoordinator extends EventEmitter {
 },
 };
 }
+=======
+        unhealthyNodes: unhealthyNodes?.map((n) => ({
+          id: n.id,
+          status: n.status,
+        })),
+      },
+    };
+  }
+>>>>>>> origin/main
 }

@@ -1,6 +1,6 @@
 /**
  * @fileoverview Event-Driven DSPy - Complete Event Architecture
- * 
+ *
  * Event-driven DSPy implementation that coordinates via events
  */
 
@@ -18,7 +18,7 @@ export interface DspyOptimizationRequest {
 
 export interface DspyLlmRequest {
   requestId: string;
-  messages:  { role: string, content: string }[];
+  messages: { role: string; content: string }[];
   model: string;
 }
 
@@ -36,38 +36,52 @@ export interface DspyOptimizationResult {
 
 export class EventDrivenDspy extends EventBus {
   private pendingOptimizations = new Map<string, DspyOptimizationRequest>();
-  private pendingLlmCalls = new Map<string, {
-    resolve: (response: DspyLlmResponse) => void;
-    reject: (error: Error) => void;
-    timeout: NodeJS.Timeout;
-  }>();
+  private pendingLlmCalls = new Map<
+    string,
+    {
+      resolve: (response: DspyLlmResponse) => void;
+      reject: (error: Error) => void;
+      timeout: NodeJS.Timeout;
+    }
+  >();
   private optimizationHistory = new Map<string, DspyOptimizationResult[]>();
 
   constructor() {
     super();
     this.setupEventHandlers();
     logger.info('Event-driven DSPy engine initialized');
-}
+  }
   /**
    * Setup event handlers for complete event-driven architecture
    */
   private setupEventHandlers(): void {
     // Handle optimization requests
-    this.on('dspy:optimization:request', async (request: DspyOptimizationRequest) => {
-      try {
-        const result = await this.processOptimizationRequest(request);
-        this.emit('dspy:optimization:result', result);
-      } catch (error) {
-        logger.error('Failed to process optimization request', { requestId: request.requestId, error });
-        this.emit('dspy:optimization:error', { requestId: request.requestId, error });
+    this.on(
+      'dspy:optimization:request',
+      async (request: DspyOptimizationRequest) => {
+        try {
+          const result = await this.processOptimizationRequest(request);
+          this.emit('dspy:optimization:result', result);
+        } catch (error) {
+          logger.error('Failed to process optimization request', {
+            requestId: request.requestId,
+            error,
+          });
+          this.emit('dspy:optimization:error', {
+            requestId: request.requestId,
+            error,
+          });
+        }
       }
-    });
+    );
 
     // Handle LLM responses
     this.on('dspy:llm:response', (response: DspyLlmResponse) => {
       const pendingCall = this.pendingLlmCalls.get(response.requestId);
       if (!pendingCall) {
-        logger.warn('Received LLM response for unknown request', { requestId: response.requestId });
+        logger.warn('Received LLM response for unknown request', {
+          requestId: response.requestId,
+        });
         return;
       }
 
@@ -80,12 +94,14 @@ export class EventDrivenDspy extends EventBus {
   /**
    * Process optimization request via events
    */
-  private async processOptimizationRequest(request: DspyOptimizationRequest): Promise<DspyOptimizationResult> {
+  private async processOptimizationRequest(
+    request: DspyOptimizationRequest
+  ): Promise<DspyOptimizationResult> {
     const requestId = `dspy-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const startTime = Date.now();
-    
+
     this.pendingOptimizations.set(requestId, request);
-    
+
     // Production DSPy optimization logic
     const result: DspyOptimizationResult = {
       requestId,
@@ -93,25 +109,31 @@ export class EventDrivenDspy extends EventBus {
       confidence: this.calculateOptimizationConfidence(request),
       predictions: this.generateDSPyPredictions(request),
       optimizationUsed: request.useOptimization !== false,
-      metadata:  {
+      metadata: {
         originalPromptLength: request.prompt.length,
         optimizationTechnique: 'dspy-few-shot',
-        contextComplexity: request.context?.complexity || 0.5
-      }
+        contextComplexity: request.context?.complexity || 0.5,
+      },
     };
-    
+
     this.storeOptimizationResult('default', result);
-    
+
     const duration = Date.now() - startTime;
-    logger.info('DSPy optimization completed', { requestId, duration, confidence: result.confidence });
-    
+    logger.info('DSPy optimization completed', {
+      requestId,
+      duration,
+      confidence: result.confidence,
+    });
+
     return result;
   }
 
   /**
    * Call LLM via events
    */
-  private async callLlmViaEvents(request: DspyLlmRequest): Promise<DspyLlmResponse> {
+  private async callLlmViaEvents(
+    request: DspyLlmRequest
+  ): Promise<DspyLlmResponse> {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         this.pendingLlmCalls.delete(request.requestId);
@@ -129,7 +151,7 @@ export class EventDrivenDspy extends EventBus {
   private async generatePromptVariation(
     request: DspyOptimizationRequest,
     currentPrompt: string,
-    examples:  { input: string, output: string }[],
+    examples: { input: string; output: string }[],
     iteration: number
   ): Promise<string> {
     try {
@@ -138,10 +160,13 @@ export class EventDrivenDspy extends EventBus {
         messages: [
           {
             role: 'user',
-            content: `Improve this prompt: ${currentPrompt}\n\nExamples: ${examples.slice(0, 3).map(ex => `Input: ${ex.input}\nOutput: ${ex.output}`).join('\n\n')}`
-          }
+            content: `Improve this prompt: ${currentPrompt}\n\nExamples: ${examples
+              .slice(0, 3)
+              .map((ex) => `Input: ${ex.input}\nOutput: ${ex.output}`)
+              .join('\n\n')}`,
+          },
         ],
-        model: 'default'
+        model: 'default',
       };
 
       const response = await this.callLlmViaEvents(llmRequest);
@@ -158,28 +183,35 @@ export class EventDrivenDspy extends EventBus {
   private async evaluatePromptVariation(
     request: DspyOptimizationRequest,
     prompt: string,
-    examples:  { input: string, output: string }[],
+    examples: { input: string; output: string }[],
     iteration: number
   ): Promise<number> {
     const testExamples = examples.slice(0, Math.min(3, examples.length));
     let totalScore = 0;
-    
+
     for (const example of testExamples) {
       try {
         const llmRequest: DspyLlmRequest = {
           requestId: `eval-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          messages: [{ role: 'user', content: `${prompt}\n\nInput: ${example.input}` }],
-          model: 'default'
+          messages: [
+            { role: 'user', content: `${prompt}\n\nInput: ${example.input}` },
+          ],
+          model: 'default',
         };
-        
+
         const response = await this.callLlmViaEvents(llmRequest);
-        const similarity = this.calculateSimilarity(response.content || '', example.output);
+        const similarity = this.calculateSimilarity(
+          response.content || '',
+          example.output
+        );
         totalScore += similarity;
       } catch (error) {
-        logger.warn('Failed to evaluate prompt variation via events', { error });
+        logger.warn('Failed to evaluate prompt variation via events', {
+          error,
+        });
       }
     }
-    
+
     return testExamples.length > 0 ? totalScore / testExamples.length : 0;
   }
 
@@ -187,15 +219,20 @@ export class EventDrivenDspy extends EventBus {
    * Extract prompt from LLM response
    */
   private extractPromptFromResponse(response: string): string {
-    const markers = ['Improved prompt:', 'Better prompt:', 'Optimized prompt:', 'New prompt:'];
-    
+    const markers = [
+      'Improved prompt:',
+      'Better prompt:',
+      'Optimized prompt:',
+      'New prompt:',
+    ];
+
     for (const marker of markers) {
       const index = response.indexOf(marker);
       if (index !== -1) {
         return response.substring(index + marker.length).trim();
       }
     }
-    
+
     return response.trim();
   }
   /**
@@ -204,26 +241,31 @@ export class EventDrivenDspy extends EventBus {
   private calculateSimilarity(response: string, expected: string): number {
     const responseWords = response.toLowerCase().split(/\s+/);
     const expectedWords = expected.toLowerCase().split(/\s+/);
-    
-    const commonWords = responseWords.filter(word => expectedWords.includes(word));
+
+    const commonWords = responseWords.filter((word) =>
+      expectedWords.includes(word)
+    );
     const totalWords = Math.max(responseWords.length, expectedWords.length);
-    
+
     return totalWords > 0 ? commonWords.length / totalWords : 0;
   }
 
   /**
    * Store optimization result
    */
-  private storeOptimizationResult(domain: string, result: DspyOptimizationResult): void {
+  private storeOptimizationResult(
+    domain: string,
+    result: DspyOptimizationResult
+  ): void {
     try {
       const history = this.optimizationHistory.get(domain) || [];
       history.push(result);
-      
+
       // Keep last 50 results per domain
       if (history.length > 50) {
         history.shift();
       }
-      
+
       this.optimizationHistory.set(domain, history);
       logger.debug('Stored DSPy optimization result for domain', { domain });
     } catch (error) {

@@ -59,14 +59,14 @@ export interface WIPStatus {
 
 const DEFAULT_CONFIG: WIPManagementConfig = {
   initialLimits: {
-    'todo': 10,
+    todo: 10,
     'in-progress': 5,
-    'review': 3,
-    'done': Infinity
+    review: 3,
+    done: Infinity,
   },
   enableAutoAdjustment: false,
   violationThreshold: 0.1, // 10% over limit
-  enableAlerts: true
+  enableAlerts: true,
 };
 
 /**
@@ -90,25 +90,28 @@ export class WIPManagementService {
     const timestamp = new Date();
     const violations: WIPViolation[] = [];
     const stateStatus: WIPStatus['stateStatus'] = {};
-    
+
     // Group tasks by state
     const tasksByState = this.groupTasksByState(allTasks);
-    
+
     // Check each state against its WIP limit
     for (const [state, limit] of Object.entries(this.wipLimits)) {
       const currentCount = tasksByState[state]?.length || 0;
       const utilization = limit === Infinity ? 0 : currentCount / limit;
-      
+
       let status: 'healthy' | 'warning' | 'critical' = 'healthy';
-      
+
       // Check for violations
       if (currentCount > limit && limit !== Infinity) {
         const overageCount = currentCount - limit;
         const overagePercentage = overageCount / limit;
-        const severity = overagePercentage > this.config.violationThreshold ? 'critical' : 'warning';
-        
+        const severity =
+          overagePercentage > this.config.violationThreshold
+            ? 'critical'
+            : 'warning';
+
         status = severity;
-        
+
         const violation: WIPViolation = {
           state,
           currentCount,
@@ -116,33 +119,33 @@ export class WIPManagementService {
           overageCount,
           overagePercentage,
           severity,
-          detectedAt: timestamp
+          detectedAt: timestamp,
         };
-        
+
         violations.push(violation);
         this.violationHistory.push(violation);
-        
+
         if (this.config.enableAlerts) {
           logger.warn(`WIP violation detected in ${state}`, violation);
         }
       } else if (utilization > 0.8) {
         status = 'warning';
       }
-      
+
       stateStatus[state] = {
         current: currentCount,
         limit,
         utilization,
-        status
+        status,
       };
     }
 
     // Calculate overall utilization
     const totalTasks = allTasks.length;
     const totalLimits = Object.values(this.wipLimits)
-      .filter(limit => limit !== Infinity)
+      .filter((limit) => limit !== Infinity)
       .reduce((sum, limit) => sum + limit, 0);
-    
+
     const overallUtilization = totalLimits > 0 ? totalTasks / totalLimits : 0;
 
     const wipStatus: WIPStatus = {
@@ -150,12 +153,12 @@ export class WIPManagementService {
       overallUtilization,
       violations,
       stateStatus,
-      recommendations: this.generateRecommendations(violations, stateStatus)
+      recommendations: this.generateRecommendations(violations, stateStatus),
     };
 
     logger.debug('WIP status checked', {
       violationCount: violations.length,
-      overallUtilization
+      overallUtilization,
     });
 
     return wipStatus;
@@ -167,10 +170,10 @@ export class WIPManagementService {
   async updateWIPLimits(newLimits: Partial<WIPLimits>): Promise<void> {
     const oldLimits = { ...this.wipLimits };
     this.wipLimits = { ...this.wipLimits, ...newLimits };
-    
+
     logger.info('WIP limits updated', {
       oldLimits,
-      newLimits: this.wipLimits
+      newLimits: this.wipLimits,
     });
   }
 
@@ -183,7 +186,7 @@ export class WIPManagementService {
 
   private groupTasksByState(allTasks: any[]): Record<string, any[]> {
     const grouped: Record<string, any[]> = {};
-    
+
     for (const task of allTasks) {
       const state = task.state || 'unknown';
       if (!grouped[state]) {
@@ -191,26 +194,33 @@ export class WIPManagementService {
       }
       grouped[state].push(task);
     }
-    
+
     return grouped;
   }
 
-  private generateRecommendations(violations: WIPViolation[], stateStatus: WIPStatus['stateStatus']): string[] {
+  private generateRecommendations(
+    violations: WIPViolation[],
+    stateStatus: WIPStatus['stateStatus']
+  ): string[] {
     const recommendations: string[] = [];
-    
+
     if (violations.length > 0) {
-      recommendations.push('Address WIP limit violations by moving tasks through the workflow');
+      recommendations.push(
+        'Address WIP limit violations by moving tasks through the workflow'
+      );
     }
-    
+
     // Check for potential bottlenecks
     const highUtilizationStates = Object.entries(stateStatus)
       .filter(([_, status]) => status.utilization > 0.8)
       .map(([state]) => state);
-    
+
     if (highUtilizationStates.length > 0) {
-      recommendations.push(`Consider increasing WIP limits for high-utilization states: ${highUtilizationStates.join(', ')}`);
+      recommendations.push(
+        `Consider increasing WIP limits for high-utilization states: ${highUtilizationStates.join(', ')}`
+      );
     }
-    
+
     return recommendations;
   }
 }

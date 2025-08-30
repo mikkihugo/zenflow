@@ -1,23 +1,23 @@
 /**
  * @fileoverview Events - Foundation Event System
- * 
+ *
  * Comprehensive event system with EventEmitter and EventBus
  */
 
-export { EventEmitter} from './event-emitter.js';
-export type { EventMap, EventArgs} from './event-emitter.js';
+export { EventEmitter } from './event-emitter.js';
+export type { EventMap, EventArgs } from './event-emitter.js';
 
-export { EventBus} from './event-bus.js';
-export type { 
-  EventBusConfig, 
-  EventListener, 
-  EventMetrics, 
-  EventContext, 
+export { EventBus } from './event-bus.js';
+export type {
+  EventBusConfig,
+  EventListener,
+  EventMetrics,
+  EventContext,
   EventMiddleware,
-  Event as EventBusEvent 
+  Event as EventBusEvent,
 } from './event-bus.js';
 
-export { EventLogger, logEvent, logFlow, logError} from './event-logger.js';
+export { EventLogger, logEvent, logFlow, logError } from './event-logger.js';
 
 // Dynamic event registry
 export {
@@ -28,31 +28,31 @@ export {
   getActiveModules,
   getEventMetrics,
   getEventFlows,
-  getDynamicEventCatalog
+  getDynamicEventCatalog,
 } from './dynamic-event-registry.js';
 export type {
   ActiveModule,
   EventFlow,
   EventMetrics as DynamicEventMetrics,
-  ModuleRegistration
+  ModuleRegistration,
 } from './dynamic-event-registry.js';
 
 // Event catalog and validation
-export { 
+export {
   EVENT_CATALOG,
   isValidEventName,
-  getEventType, 
+  getEventType,
   getAllEventNames,
   getEventsByCategory,
-  CatalogEventLogger
+  CatalogEventLogger,
 } from './event-catalog.js';
-export type { 
+export type {
   BaseEvent,
   EventPayload,
   EventName,
   // SPARC Events
   SPARCPhaseReviewEvent,
-  SPARCProjectCompleteEvent, 
+  SPARCProjectCompleteEvent,
   SPARCPhaseCompleteEvent,
   // LLM Events
   LLMInferenceRequestEvent,
@@ -78,5 +78,5 @@ export type {
   GitMaintenanceEvent,
   // System Events
   SystemStartEvent,
-  SystemErrorEvent
+  SystemErrorEvent,
 } from './event-catalog.js';

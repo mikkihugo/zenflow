@@ -16,27 +16,27 @@
 // Direct package imports - no facades
 
 // Utility function to replace facade
-function getWebDashboardURL(options?:{ protocol?: string}):string {
+function getWebDashboardURL(options?: { protocol?: string }): string {
   const protocol = options?.protocol || 'http';
   return `${protocol}://localhost:3002`;
 }
 
 // Import WebSocketClient for internal use in this file
-import { WebSocketClient} from './websocket/client';
+import { WebSocketClient } from './websocket/client';
 
 // HTTP API removed - using WebSocket-only architecture
 
 // WebSocket API (real-time communication)
 export * from './websocket/index';
-export { WebSocketClient};
+export { WebSocketClient };
 
 // API interface configuration
 export interface APIInterfaceConfig {
-  baseUrl?:string;
-  websocketUrl?:string;
-  timeout?:number;
-  retries?:number;
-  reconnect?:boolean;
+  baseUrl?: string;
+  websocketUrl?: string;
+  timeout?: number;
+  retries?: number;
+  reconnect?: boolean;
 }
 
 // API utilities
@@ -47,7 +47,7 @@ export const apiUtils = {
    * @param baseUrl - The base HTTP URL to convert
    * @returns WebSocket URL
    */
-  createWebSocketUrl:(baseUrl: string): string =>
+  createWebSocketUrl: (baseUrl: string): string =>
     `${baseUrl.replace(/^http/, 'ws').replace(/\/$/, '')}/ws`,
 
   /**
@@ -56,7 +56,7 @@ export const apiUtils = {
    * @param config - API configuration to validate
    * @returns True if configuration is valid
    */
-  validateConfig:(config: APIInterfaceConfig): boolean =>
+  validateConfig: (config: APIInterfaceConfig): boolean =>
     Boolean(config?.baseUrl || config?.websocketUrl),
 
   /**
@@ -65,27 +65,27 @@ export const apiUtils = {
    * @param response - Raw API response
    * @returns Parsed response with success/error status
    */
-  parseResponse:(
-    response:unknown
-  ):{ success: boolean; data?: unknown; error?: string} => {
+  parseResponse: (
+    response: unknown
+  ): { success: boolean; data?: unknown; error?: string } => {
     if (response && typeof response === 'object') {
-      const resp = response as { error?:string; data?: unknown};
+      const resp = response as { error?: string; data?: unknown };
       if (resp.error) {
         return {
-          success:false,
-          error:resp.error,
-};
-}
+          success: false,
+          error: resp.error,
+        };
+      }
       return {
-        success:true,
-        data:response,
-};
-}
+        success: true,
+        data: response,
+      };
+    }
     return {
-      success:true,
-      data:response,
-};
-},
+      success: true,
+      data: response,
+    };
+  },
 
   /**
    * Format API request.
@@ -94,11 +94,12 @@ export const apiUtils = {
    * @param params - Request parameters
    * @returns Formatted JSON-RPC request
    */
-  formatRequest:(method: string, params:unknown = {}):unknown => ({
-    jsonrpc: '2.0',    method,
+  formatRequest: (method: string, params: unknown = {}): unknown => ({
+    jsonrpc: '2.0',
+    method,
     params,
-    id:Date.now(),
-}),
+    id: Date.now(),
+  }),
 };
 
 // API client factory
@@ -120,38 +121,38 @@ export class APIClientFactory {
     if (!APIClientFactory.instances.has(key)) {
       const client = new WebSocketClient(url);
       APIClientFactory.instances.set(key, client);
-}
+    }
     return APIClientFactory.instances.get(key)!;
-}
+  }
 
   /**
    * Clear all cached instances.
    */
-  static clearInstances():void {
+  static clearInstances(): void {
     for (const [, client] of APIClientFactory.instances) {
       client?.disconnect?.();
-}
+    }
     APIClientFactory.instances.clear();
-}
+  }
 
   /**
    * Get all active instances.
    *
    * @returns Array of instance keys
    */
-  static getActiveInstances():string[] {
+  static getActiveInstances(): string[] {
     return Array.from(APIClientFactory.instances.keys());
-}
+  }
 }
 
 // Default configuration
-export const DEFAULT_API_CONFIG:APIInterfaceConfig = {
-  baseUrl:getWebDashboardURL(),
+export const DEFAULT_API_CONFIG: APIInterfaceConfig = {
+  baseUrl: getWebDashboardURL(),
   websocketUrl: `${getWebDashboardURL({ protocol: 'ws' }).replace(
     /^https?/,
     'ws'
   )}/ws`,
-  timeout:5000,
-  retries:3,
-  reconnect:true,
+  timeout: 5000,
+  retries: 3,
+  reconnect: true,
 };

@@ -7,50 +7,68 @@
  */
 export interface TelemetryConfig {
   /** Service name for telemetry identification */
-  serviceName:string;
+  serviceName: string;
   /** Service version */
-  serviceVersion?:string;
+  serviceVersion?: string;
   /** Enable tracing */
-  enableTracing?:boolean;
+  enableTracing?: boolean;
   /** Enable metrics */
+<<<<<<< HEAD
   enableMetrics?:boolean;
+=======
+  enableMetrics?: boolean;
+  /** Jaeger collector endpoint */
+  jaegerEndpoint?: string;
+  /** Prometheus metrics port */
+  prometheusPort?: number;
+>>>>>>> origin/main
   /** Sampling ratio for traces (0.0 to 1.0) */
-  samplingRatio?:number;
+  samplingRatio?: number;
   /** Additional attributes for all telemetry */
-  globalAttributes?:Record<string, string | number | boolean>;
+  globalAttributes?: Record<string, string | number | boolean>;
 }
 
 /**
  * Metric definition
  */
 export interface MetricDefinition {
-  name:string;
-  description?:string;
-  unit?:string;
-  type:MetricType;
+  name: string;
+  description?: string;
+  unit?: string;
+  type: MetricType;
 }
 
 /**
  * Metric types
  */
-export type MetricType = 'counter' | ' histogram' | ' gauge' | ' up_down_counter';
+export type MetricType =
+  | 'counter'
+  | ' histogram'
+  | ' gauge'
+  | ' up_down_counter';
 
 /**
  * Telemetry event
  */
 export interface TelemetryEvent {
-  name:string;
-  timestamp?:number;
-  attributes?:Attributes;
-  severity?:'debug' | ' info' | ' warn' | ' error';
+  name: string;
+  timestamp?: number;
+  attributes?: Attributes;
+  severity?: 'debug' | ' info' | ' warn' | ' error';
 }
 
 /**
  * Span options for tracing
  */
 export interface SpanOptions {
+<<<<<<< HEAD
   attributes?:Attributes;
   kind?:'client' | 'server' | 'producer' | 'consumer' | 'internal';
+=======
+  attributes?: Attributes;
+  kind?: import('@opentelemetry/api').SpanKind;
+  parent?: OTelSpan;
+>>>>>>> origin/main
 }
 
 /**
@@ -64,6 +82,7 @@ export type Attributes = Record<
 /**
  * Simple span interface for event-driven telemetry
  */
+<<<<<<< HEAD
 export interface Span {
   addEvent(name:string, attributes?:Attributes): void;
   setAttribute(key:string, value:string | number | boolean): void;
@@ -92,3 +111,8 @@ export interface Meter {
     record(value:number, attributes?:Attributes): void;
   };
 }
+=======
+export type Span = OTelSpan;
+export type Tracer = OTelTracer;
+export type { Meter } from '@opentelemetry/api';
+>>>>>>> origin/main

@@ -2,7 +2,7 @@
 
 /**
  * @file Claude Code Zen - Server Entry Point
- * 
+ *
  * Complete server implementation with core functionality and static dashboard serving.
  */
 
@@ -13,7 +13,7 @@ import {
   err,
   eventRegistryInitializer,
 } from '@claude-zen/foundation';
-import { eventRegistryWebSocketService} from './services/websocket/event-registry-websocket.js';
+import { eventRegistryWebSocketService } from './services/websocket/event-registry-websocket.js';
 import type { Express, Request, Response } from 'express';
 import type { Server as HTTPServer } from 'http';
 import type { Server as SocketIOServer, Socket } from 'socket.io';
@@ -21,16 +21,16 @@ import type { Server as SocketIOServer, Socket } from 'socket.io';
 const logger = getLogger('claude-zen-server');
 
 class ClaudeZenServer {
-  private port:number = process.env.PORT ? parseInt(process.env.PORT) : 3000;
-  private host:string = process.env.HOST || '0.0.0.0';
+  private port: number = process.env.PORT ? parseInt(process.env.PORT) : 3000;
+  private host: string = process.env.HOST || '0.0.0.0';
 
-  async start():Promise<Result<void, Error>> {
+  async start(): Promise<Result<void, Error>> {
     try {
       logger.info('🚀 Starting Claude Code Zen Server');
-      
+
       const express = (await import('express')).default;
       const app = express();
-      
+
       await this.setupMiddleware(app);
       this.setupRoutes(app);
       this.startServer();
@@ -44,7 +44,7 @@ class ClaudeZenServer {
         });
         server.on('error', reject);
       });
-      
+
       return ok();
     } catch (error) {
       logger.error('❌ Failed to start server: ', error);
@@ -57,33 +57,35 @@ class ClaudeZenServer {
    */
   private async setupMiddleware(app: Express): Promise<void> {
     logger.debug('Setting up middleware...');
-    
+
     // Import middleware dynamically
     const cors = (await import('cors')).default;
     const compression = (await import('compression')).default;
     const express = (await import('express')).default;
-    
+
     // CORS middleware - allow all origins for development
-    app.use(cors({
-      origin: "*",
-      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-      allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-      credentials: true
-    }));
-    
+    app.use(
+      cors({
+        origin: '*',
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+        credentials: true,
+      })
+    );
+
     // Compression middleware
     app.use(compression());
-    
+
     // Body parsing middleware
     app.use(express.json({ limit: '10mb' }));
     app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-    
+
     // Request logging middleware
     if (process.env.NODE_ENV !== 'production') {
       const morgan = (await import('morgan')).default;
       app.use(morgan('combined'));
     }
-    
+
     logger.debug('✅ Middleware setup complete');
   }
 
@@ -92,27 +94,27 @@ class ClaudeZenServer {
    */
   private setupRoutes(app: Express): void {
     logger.debug('Setting up routes...');
-    
+
     // Health check endpoint
     app.get('/health', (req: Request, res: Response) => {
-      res.json({ 
-        status: 'ok', 
+      res.json({
+        status: 'ok',
         timestamp: new Date().toISOString(),
         uptime: process.uptime(),
-        version: '1.0.0'
+        version: '1.0.0',
       });
     });
-    
+
     // API routes
     app.get('/api/v1/health', (req: Request, res: Response) => {
-      res.json({ 
-        status: 'healthy', 
+      res.json({
+        status: 'healthy',
         service: 'claude-code-zen-server',
         timestamp: new Date().toISOString(),
-        uptime: process.uptime()
+        uptime: process.uptime(),
       });
     });
-    
+
     // Basic dashboard route (if no static serving is set up)
     app.get('/', (req: Request, res: Response) => {
       res.json({
@@ -122,20 +124,20 @@ class ClaudeZenServer {
         endpoints: {
           health: '/health',
           api: '/api/v1/health',
-          websocket: '/socket.io/'
-        }
+          websocket: '/socket.io/',
+        },
       });
     });
-    
+
     // Catch all for API routes
     app.use('/api', (req: Request, res: Response) => {
       res.status(404).json({
         error: 'API endpoint not found',
         path: req.path,
-        method: req.method
+        method: req.method,
       });
     });
-    
+
     logger.debug('✅ Routes setup complete');
   }
 
@@ -152,11 +154,24 @@ class ClaudeZenServer {
   private async initializeWebSockets(server: HTTPServer): Promise<void> {
     // Initialize WebSocket service for event registry
     eventRegistryWebSocketService.initialize(server);
-    
+
     // Set up broadcast callback to connect event registry with WebSocket service
-    eventRegistryInitializer.setBroadcastCallback((type:string, data:unknown) => {
-      eventRegistryWebSocketService.broadcast(type as 'module-status' | ' module-registry' | ' module-list' | ' module-update' | ' event-flows' | ' event-metrics' | ' event-flow' | ' heartbeat', data);
-    });
+    eventRegistryInitializer.setBroadcastCallback(
+      (type: string, data: unknown) => {
+        eventRegistryWebSocketService.broadcast(
+          type as
+            | 'module-status'
+            | ' module-registry'
+            | ' module-list'
+            | ' module-update'
+            | ' event-flows'
+            | ' event-metrics'
+            | ' event-flow'
+            | ' heartbeat',
+          data
+        );
+      }
+    );
 
     await this.initializeSocketIO(server);
   }
@@ -169,17 +184,22 @@ class ClaudeZenServer {
       const { Server: socketIOServer } = await import('socket.io');
       const io = new socketIOServer(server, {
         cors: {
-          origin: "*",
-          methods: ["GET", "POST"]
+          origin: '*',
+          methods: ['GET', 'POST'],
         },
         transports: ['polling', 'websocket'],
-        allowEIO3: true
+        allowEIO3: true,
       });
 
       this.setupSocketHandlers(io);
-      logger.info(`🔌 Socket.IO server initialized for dashboard real-time updates`);
+      logger.info(
+        `🔌 Socket.IO server initialized for dashboard real-time updates`
+      );
     } catch (error) {
-      logger.warn('Failed to initialize Socket.IO, dashboard real-time features may not work:', error);
+      logger.warn(
+        'Failed to initialize Socket.IO, dashboard real-time features may not work:',
+        error
+      );
     }
   }
 
@@ -194,7 +214,7 @@ class ClaudeZenServer {
       socket.emit('connected', {
         sessionId: socket.id,
         timestamp: new Date().toISOString(),
-        serverVersion: '1.0.0'
+        serverVersion: '1.0.0',
       });
 
       this.setupSocketSubscriptions(socket);
@@ -211,23 +231,23 @@ class ClaudeZenServer {
       logger.debug(`Client ${socket.id} subscribed to ${channel}`);
 
       // Send initial data based on channel
-      switch(channel) {
+      switch (channel) {
         case 'system':
           socket.emit('system:initial', {
             data: { status: 'operational', uptime: process.uptime() },
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           });
           break;
         case 'tasks':
           socket.emit('tasks:initial', {
             data: [],
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           });
           break;
         case 'logs':
           socket.emit('logs:initial', {
             data: [],
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           });
           break;
       }
@@ -249,7 +269,9 @@ class ClaudeZenServer {
     });
 
     socket.on('disconnect', (reason: string) => {
-      logger.debug(`Dashboard client disconnected: ${socket.id}, reason: ${reason}`);
+      logger.debug(
+        `Dashboard client disconnected: ${socket.id}, reason: ${reason}`
+      );
     });
   }
 
@@ -257,20 +279,27 @@ class ClaudeZenServer {
    * Log server startup information
    */
   private logServerStartup(): void {
-    logger.info(`✅ Claude Code Zen Server running on http://${this.host}:${this.port}`);
+    logger.info(
+      `✅ Claude Code Zen Server running on http://${this.host}:${this.port}`
+    );
     logger.info(`📊 Dashboard available at http://${this.host}:${this.port}`);
-    logger.info(`🔌 Event Registry WebSocket available at ws://${this.host}:${this.port}/api/events/ws`);
+    logger.info(
+      `🔌 Event Registry WebSocket available at ws://${this.host}:${this.port}/api/events/ws`
+    );
   }
 }
 
 // Start the server
 const server = new ClaudeZenServer();
-server.start().then(result => {
-  if (result.isErr()) {
-    logger.error('Failed to start server: ', result.error);
+server
+  .start()
+  .then((result) => {
+    if (result.isErr()) {
+      logger.error('Failed to start server: ', result.error);
+      process.exit(1);
+    }
+  })
+  .catch((error) => {
+    logger.error('Unexpected error: ', error);
     process.exit(1);
-  }
-}).catch(error => {
-  logger.error('Unexpected error: ', error);
-  process.exit(1);
-});
+  });

@@ -39,7 +39,7 @@ export interface Task {
 const DEFAULT_CONFIG: TaskManagementConfig = {
   allowedStates: ['backlog', 'todo', 'in-progress', 'review', 'done'],
   defaultState: 'backlog',
-  enableValidation: true
+  enableValidation: true,
 };
 
 /**
@@ -69,7 +69,7 @@ export class TaskManagementService {
       updatedAt: new Date(),
       dueDate: taskData.dueDate,
       tags: taskData.tags || [],
-      metadata: taskData.metadata || {}
+      metadata: taskData.metadata || {},
     };
 
     if (this.config.enableValidation) {
@@ -78,7 +78,7 @@ export class TaskManagementService {
 
     this.tasks.set(task.id, task);
     logger.info('Task created', { taskId: task.id, state: task.state });
-    
+
     return task;
   }
 
@@ -95,7 +95,7 @@ export class TaskManagementService {
       ...existingTask,
       ...updates,
       id: existingTask.id, // Prevent ID changes
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
     if (this.config.enableValidation) {
@@ -104,7 +104,7 @@ export class TaskManagementService {
 
     this.tasks.set(taskId, updatedTask);
     logger.info('Task updated', { taskId, updates: Object.keys(updates) });
-    
+
     return updatedTask;
   }
 
@@ -127,7 +127,7 @@ export class TaskManagementService {
    */
   async getTasksByState(state: string): Promise<Task[]> {
     const allTasks = await this.getAllTasks();
-    return allTasks.filter(task => task.state === state);
+    return allTasks.filter((task) => task.state === state);
   }
 
   /**
@@ -147,11 +147,15 @@ export class TaskManagementService {
     }
 
     if (!this.config.allowedStates.includes(task.state)) {
-      throw new Error(`Invalid task state: ${task.state}. Allowed states: ${this.config.allowedStates.join(', ')}`);
+      throw new Error(
+        `Invalid task state: ${task.state}. Allowed states: ${this.config.allowedStates.join(', ')}`
+      );
     }
 
     if (this.config.maxTasksPerState) {
-      const tasksInState = Array.from(this.tasks.values()).filter(t => t.state === task.state);
+      const tasksInState = Array.from(this.tasks.values()).filter(
+        (t) => t.state === task.state
+      );
       if (tasksInState.length >= this.config.maxTasksPerState) {
         throw new Error(`Maximum tasks exceeded for state ${task.state}`);
       }

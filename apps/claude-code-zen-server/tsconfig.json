@@ -1,38 +1,38 @@
 {
-	"extends": "../../tsconfig.base.json",
-	"compilerOptions": {
-		"outDir": "./dist",
-		"composite": true,
-		"declaration": true,
-		"declarationMap": true,
-		"skipLibCheck": true,
-		"moduleResolution": "bundler",
-		"downlevelIteration": true,
-		"paths": {
-			"@claude-zen/foundation": [
-				"../../packages/core/foundation/src",
-				"../../packages/core/foundation/dist"
-			],
-			"@claude-zen/*": [
-				"../../packages/services/*/src",
-				"../../packages/services/*/dist",
-				"../../packages/core/*/src", 
-				"../../packages/core/*/dist"
-			],
-			"$lib/*": ["./src/lib/*"],
-			"$components/*": ["./src/components/*"],
-			"$stores/*": ["./src/stores/*"],
-			"$utils/*": ["./src/utils/*"],
-			"$types/*": ["./src/types/*"]
-		}
-	},
-	"include": ["src/**/*"],
-	"exclude": [
-		"dist",
-		"node_modules",
-		"**/*.test.ts",
-		"**/*.spec.ts",
-		"src/__tests__/**/*",
-		"../../packages-old/**/*"
-	]
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "downlevelIteration": true,
+    "paths": {
+      "@claude-zen/foundation": [
+        "../../packages/core/foundation/src",
+        "../../packages/core/foundation/dist"
+      ],
+      "@claude-zen/*": [
+        "../../packages/services/*/src",
+        "../../packages/services/*/dist",
+        "../../packages/core/*/src",
+        "../../packages/core/*/dist"
+      ],
+      "$lib/*": ["./src/lib/*"],
+      "$components/*": ["./src/components/*"],
+      "$stores/*": ["./src/stores/*"],
+      "$utils/*": ["./src/utils/*"],
+      "$types/*": ["./src/types/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "src/__tests__/**/*",
+    "../../packages-old/**/*"
+  ]
 }

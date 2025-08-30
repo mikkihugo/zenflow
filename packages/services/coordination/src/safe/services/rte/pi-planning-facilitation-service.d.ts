@@ -20,6 +20,6 @@ import {
  * PI Planning event configuration
  */
 export interface PIPlanningEventConfig {
-    readonly eventId: logger;
+  readonly eventId: logger;
 }
 //# sourceMappingURL=pi-planning-facilitation-service.d.ts.map

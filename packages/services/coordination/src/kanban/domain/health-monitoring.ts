@@ -51,9 +51,9 @@ const DEFAULT_CONFIG: HealthMonitoringConfig = {
   healthCheckInterval: 300000, // 5 minutes
   alertThresholds: {
     criticalHealth: 0.3,
-    warningHealth: 0.6
+    warningHealth: 0.6,
   },
-  retentionDays: 30
+  retentionDays: 30,
 };
 
 /**
@@ -73,7 +73,7 @@ export class HealthMonitoringService {
       throughput: 50,
       errorRate: 0.01,
       uptimePercentage: 99.9,
-      ...initialPerformanceMetrics
+      ...initialPerformanceMetrics,
     };
     logger.info('HealthMonitoringService initialized', this.config);
   }
@@ -87,7 +87,7 @@ export class HealthMonitoringService {
     flowMetrics: any
   ): Promise<HealthStatus> {
     logger.debug('Performing health check', {
-      totalTasks: allTasks.length
+      totalTasks: allTasks.length,
     });
 
     const wipHealth = this.calculateWIPHealth(allTasks);
@@ -100,10 +100,10 @@ export class HealthMonitoringService {
       wipManagement: 0.25,
       bottleneckDetection: 0.25,
       flowOptimization: 0.25,
-      taskCoordination: 0.25
+      taskCoordination: 0.25,
     };
 
-    const overallHealth = 
+    const overallHealth =
       wipHealth * componentWeights.wipManagement +
       bottleneckHealth * componentWeights.bottleneckDetection +
       flowHealth * componentWeights.flowOptimization +
@@ -119,15 +119,15 @@ export class HealthMonitoringService {
         wipManagement: wipHealth,
         bottleneckDetection: bottleneckHealth,
         flowOptimization: flowHealth,
-        taskCoordination: coordinationHealth
+        taskCoordination: coordinationHealth,
       },
       alerts: this.generateAlerts(overallHealth),
-      recommendations: this.generateRecommendations(overallHealth)
+      recommendations: this.generateRecommendations(overallHealth),
     };
 
     logger.info('Health check completed', {
       overallHealth,
-      alertCount: healthResult.alerts.length
+      alertCount: healthResult.alerts.length,
     });
 
     return healthResult;

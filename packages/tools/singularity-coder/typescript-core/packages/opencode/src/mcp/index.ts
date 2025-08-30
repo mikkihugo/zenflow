@@ -44,7 +44,7 @@ export namespace MCP {
               error:{
                 name:"UnknownError",
                 data:{
-                  message:`MCP server ${key} failed to start`,`
+                  message:`MCP server ${key} failed to start,
 },
 },
 })
@@ -73,7 +73,7 @@ export namespace MCP {
               error:{
                 name:"UnknownError",
                 data:{
-                  message:`MCP server ${key} failed to start`,`
+                  message:`MCP server ${key} failed to start,
 },
 },
 })
@@ -102,7 +102,7 @@ export namespace MCP {
     const result:Record<string, Tool> = {}
     for (const [clientName, client] of Object.entries(await clients())) {
       for (const [toolName, tool] of Object.entries(await client.tools())) {
-        result[`${clientName}_${toolName}`] = tool`
+        result[`${clientName}_${toolName}`] = tool
 }
 }
     return result

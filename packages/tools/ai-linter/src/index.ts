@@ -22,11 +22,11 @@ function createLogger(name: string) {
 }
 
 export type Result<T, E> =
-  | { success:true; data: T}
-  | { success:false; error: E};
+  | { success: true; data: T }
+  | { success: false; error: E };
 
-const ok = <T>(data:T): Result<T, never> => ({ success:true, data});
-const err = <E>(error:E): Result<never, E> => ({ success:false, error});
+const ok = <T>(data: T): Result<T, never> => ({ success: true, data });
+const err = <E>(error: E): Result<never, E> => ({ success: false, error });
 
 import type {
   AILinterConfig,
@@ -53,7 +53,7 @@ const logger = createLogger('ai-linter');
  * - Validation and error handling
  */
 export class AILinter {
-  private config:AILinterConfig;
+  private config: AILinterConfig;
 
   constructor(config?: Partial<AILinterConfig>) {
     this.config = {
@@ -74,27 +74,27 @@ export class AILinter {
    * Process a single file with AI fixing
    */
   async processFile(
-    filePath:string
-  ):Promise<Result<ProcessingResult, string>> {
+    filePath: string
+  ): Promise<Result<ProcessingResult, string>> {
     try {
-      logger.info('Processing file', { filePath, aiMode:this.config.aiMode});
+      logger.info('Processing file', { filePath, aiMode: this.config.aiMode });
 
       const startTime = Date.now();
 
       // Step 1:Run ESLint to detect errors
       const eslintErrors = await this.runESLint(filePath);
-      logger.info('ESLint found errors', { count:eslintErrors.length});
+      logger.info('ESLint found errors', { count: eslintErrors.length });
 
       if (eslintErrors.length === 0) {
         return ok({
           filePath,
-          success:true,
-          originalErrors:0,
-          fixedErrors:0,
-          timeTaken:Date.now() - startTime,
-          aiModel:this.config.aiMode,
-});
-}
+          success: true,
+          originalErrors: 0,
+          fixedErrors: 0,
+          timeTaken: Date.now() - startTime,
+          aiModel: this.config.aiMode,
+        });
+      }
 
       // Step 2:Read file content
       const originalContent = fs.readFileSync(filePath, 'utf8');
@@ -111,7 +111,7 @@ export class AILinter {
         // Create backup if enabled
         if (this.config.backupEnabled) {
           fs.writeFileSync(`${filePath}.backup`, originalContent);
-}
+        }
 
         // Write fixed content
         fs.writeFileSync(filePath, fixedContent);
@@ -121,46 +121,46 @@ export class AILinter {
         fixedErrors = eslintErrors.length - remainingErrors.length;
 
         logger.info('AI fixed errors', {
-          original:eslintErrors.length,
-          remaining:remainingErrors.length,
-          fixed:fixedErrors,
-});
-}
+          original: eslintErrors.length,
+          remaining: remainingErrors.length,
+          fixed: fixedErrors,
+        });
+      }
 
-      const result:ProcessingResult = {
+      const result: ProcessingResult = {
         filePath,
-        success:fixedErrors > 0,
-        originalErrors:eslintErrors.length,
+        success: fixedErrors > 0,
+        originalErrors: eslintErrors.length,
         fixedErrors,
-        timeTaken:Date.now() - startTime,
-        aiModel:this.config.aiMode,
-        backupPath:this.config.backupEnabled
+        timeTaken: Date.now() - startTime,
+        aiModel: this.config.aiMode,
+        backupPath: this.config.backupEnabled
           ? `${filePath}.backup`
-          :undefined,
-};
+          : undefined,
+      };
 
       return ok(result);
-} catch (error) {
+    } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message:String(error);
-      logger.error('Failed to process file', { filePath, error:errorMessage});
+        error instanceof Error ? error.message : String(error);
+      logger.error('Failed to process file', { filePath, error: errorMessage });
       return err(errorMessage);
-}
-}
+    }
+  }
 
   /**
    * Process multiple files in batch mode
    */
   async processBatch(
-    filePaths:string[]
-  ):Promise<Result<BatchResult, string>> {
+    filePaths: string[]
+  ): Promise<Result<BatchResult, string>> {
     try {
       logger.info('Starting batch processing', {
-        fileCount:filePaths.length,
-        mode:this.config.processingMode,
-});
+        fileCount: filePaths.length,
+        mode: this.config.processingMode,
+      });
 
-      const results:ProcessingResult[] = [];
+      const results: ProcessingResult[] = [];
       const startTime = Date.now();
 
       if (this.config.processingMode === 'sequential') {
@@ -168,19 +168,19 @@ export class AILinter {
           const result = await this.processFile(filePath);
           if (result.success) {
             results.push(result.data);
-} else {
+          } else {
             results.push({
               filePath,
-              success:false,
-              originalErrors:0,
-              fixedErrors:0,
-              timeTaken:0,
-              aiModel:this.config.aiMode,
-              error:result.error,
-});
-}
-}
-} else {
+              success: false,
+              originalErrors: 0,
+              fixedErrors: 0,
+              timeTaken: 0,
+              aiModel: this.config.aiMode,
+              error: result.error,
+            });
+          }
+        }
+      } else {
         // Parallel processing
         const promises = filePaths.map((filePath) =>
           this.processFile(filePath)
@@ -190,60 +190,60 @@ export class AILinter {
         for (const [i, result] of settled.entries()) {
           if (result.status === 'fulfilled' && result.value.success) {
             results.push(result.value.data);
-} else {
+          } else {
             results.push({
-              filePath:filePaths[i],
-              success:false,
-              originalErrors:0,
-              fixedErrors:0,
-              timeTaken:0,
-              aiModel:this.config.aiMode,
+              filePath: filePaths[i],
+              success: false,
+              originalErrors: 0,
+              fixedErrors: 0,
+              timeTaken: 0,
+              aiModel: this.config.aiMode,
               error:
-                result.status === 'rejected' 
+                result.status === 'rejected'
                   ? result.reason
                   : result.value.success
                     ? undefined
                     : result.value.error,
             });
-}
-}
-}
+          }
+        }
+      }
 
-      const batchResult:BatchResult = {
-        totalFiles:filePaths.length,
-        processedFiles:results.length,
-        successCount:results.filter((r) => r.success).length,
-        failureCount:results.filter((r) => !r.success).length,
-        totalErrors:results.reduce((sum, r) => sum + r.originalErrors, 0),
-        totalFixed:results.reduce((sum, r) => sum + r.fixedErrors, 0),
-        totalTime:Date.now() - startTime,
+      const batchResult: BatchResult = {
+        totalFiles: filePaths.length,
+        processedFiles: results.length,
+        successCount: results.filter((r) => r.success).length,
+        failureCount: results.filter((r) => !r.success).length,
+        totalErrors: results.reduce((sum, r) => sum + r.originalErrors, 0),
+        totalFixed: results.reduce((sum, r) => sum + r.fixedErrors, 0),
+        totalTime: Date.now() - startTime,
         results,
-};
+      };
 
       logger.info('Batch processing completed', batchResult);
       return ok(batchResult);
-} catch (error) {
+    } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message:String(error);
-      logger.error('Batch processing failed', { error:errorMessage});
+        error instanceof Error ? error.message : String(error);
+      logger.error('Batch processing failed', { error: errorMessage });
       return err(errorMessage);
-}
-}
+    }
+  }
 
   /**
    * Discover files that need processing
    */
   async discoverFiles(
-    options?:Partial<FileDiscoveryOptions>
-  ):Promise<Result<string[], string>> {
+    options?: Partial<FileDiscoveryOptions>
+  ): Promise<Result<string[], string>> {
     try {
-      const opts:FileDiscoveryOptions = {
-        scope:this.config.scopeMode,
-        extensions:['.ts', '.tsx', '.js', '.jsx'],
-        excludePatterns:['node_modules/**', 'dist/**', '**/*.d.ts'],
-        includePatterns:['**/*.{ts,tsx,js,jsx}'],
+      const opts: FileDiscoveryOptions = {
+        scope: this.config.scopeMode,
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        excludePatterns: ['node_modules/**', 'dist/**', '**/*.d.ts'],
+        includePatterns: ['**/*.{ts,tsx,js,jsx}'],
         ...options,
-};
+      };
 
       logger.info('Discovering files', opts);
 
@@ -255,87 +255,99 @@ export class AILinter {
         for (const f of found) matches.add(f);
       }
       return ok(Array.from(matches));
-} catch (error) {
+    } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message:String(error);
-      logger.error('File discovery failed', { error:errorMessage});
+        error instanceof Error ? error.message : String(error);
+      logger.error('File discovery failed', { error: errorMessage });
       return err(errorMessage);
-}
-}
+    }
+  }
 
   /**
    * Update configuration
    */
-  updateConfig(config:Partial<AILinterConfig>): void {
-    this.config = { ...this.config, ...config};
-    logger.info('Configuration updated', { config:this.config});
-}
+  updateConfig(config: Partial<AILinterConfig>): void {
+    this.config = { ...this.config, ...config };
+    logger.info('Configuration updated', { config: this.config });
+  }
 
   /**
    * Get current configuration
    */
-  getConfig():AILinterConfig {
-    return { ...this.config};
-}
+  getConfig(): AILinterConfig {
+    return { ...this.config };
+  }
 
   /**
    * Run ESLint on a file to detect errors
    */
   private runESLint(
-    filePath:string
-  ):Promise<
-    Array<{ line:number; column: number; message: string; severity: string}>
+    filePath: string
+  ): Promise<
+    Array<{ line: number; column: number; message: string; severity: string }>
   > {
     return new Promise((resolve) => {
       const eslint = spawn('npx', ['eslint', filePath, '--format', 'json'], {
-        cwd:process.cwd(),
-        stdio:['pipe','pipe','pipe'],
-});
+        cwd: process.cwd(),
+        stdio: ['pipe', 'pipe', 'pipe'],
+      });
 
       let stdout = '';
       eslint.stdout.on('data', (data) => (stdout += data));
 
-  eslint.on('close', () => {
+      eslint.on('close', () => {
         try {
           if (stdout.trim()) {
-    const results = JSON.parse(stdout) as Array<{ messages: Array<{ line:number; column:number; message:string; severity:number }> }>;
-    const errors = (results[0]?.messages || []) as Array<{ line:number; column:number; message:string; severity:number }>;
+            const results = JSON.parse(stdout) as Array<{
+              messages: Array<{
+                line: number;
+                column: number;
+                message: string;
+                severity: number;
+              }>;
+            }>;
+            const errors = (results[0]?.messages || []) as Array<{
+              line: number;
+              column: number;
+              message: string;
+              severity: number;
+            }>;
             resolve(
-      errors.map((msg) => ({
+              errors.map((msg) => ({
                 line: msg.line,
                 column: msg.column,
                 message: msg.message,
                 severity: msg.severity === 2 ? 'error' : 'warning',
               }))
             );
-} else {
+          } else {
             resolve([]);
-}
-} catch {
+          }
+        } catch {
           resolve([]);
-}
-});
-});
-}
+        }
+      });
+    });
+  }
 
   /**
    * Use AI to intelligently fix code issues
    */
   private async fixWithAI(
-    filePath:string,
-    content:string,
-    errors:Array<{ line: number; column: number; message: string}>
-  ):Promise<string | null> {
+    filePath: string,
+    content: string,
+    errors: Array<{ line: number; column: number; message: string }>
+  ): Promise<string | null> {
     try {
       logger.info('Real GPT-4.1 AI analyzing code for intelligent fixes', {
-        aiMode:this.config.aiMode,
-        errors:errors.length,
-});
+        aiMode: this.config.aiMode,
+        errors: errors.length,
+      });
 
       const prompt = this.buildIntelligentPrompt(filePath, content, errors);
       logger.debug('Generated intelligent prompt', {
-        promptLength:prompt.length,
-});
+        promptLength: prompt.length,
+      });
 
       // Use real GitHub Copilot API with GPT-4.1
       const token = process.env.GITHUB_COPILOT_TOKEN || '';
@@ -355,34 +367,39 @@ export class AILinter {
 
         if (fixedCode && fixedCode !== content) {
           logger.info('Real GPT-4.1 successfully applied intelligent fixes', {
-            originalLength:content.length,
-            fixedLength:fixedCode.length,
-});
+            originalLength: content.length,
+            fixedLength: fixedCode.length,
+          });
           return fixedCode;
-}
-}
+        }
+      }
 
-  logger.warn('GPT-4.1 did not provide usable fixes, falling back to rule-based fixes');
+      logger.warn(
+        'GPT-4.1 did not provide usable fixes, falling back to rule-based fixes'
+      );
 
       // Fallback to rule-based fixes if GPT fails
       let fixedCode = content;
 
-  // Fix 1: Skipped complex regex optimization in fallback to reduce risk
+      // Fix 1: Skipped complex regex optimization in fallback to reduce risk
 
       // Fix 2:Replace 'any' with proper types
-      if (errors.some((e) => e.message.includes('no-explicit-any')) && content.includes(' updateStats(')) {
-          fixedCode = fixedCode.replace(
-            /:any/g,
-            ':string | number | boolean | undefined'
-          );
-          logger.info('Applied fallback type inference fix');
-}
+      if (
+        errors.some((e) => e.message.includes('no-explicit-any')) &&
+        content.includes(' updateStats(')
+      ) {
+        fixedCode = fixedCode.replace(
+          /:any/g,
+          ':string | number | boolean | undefined'
+        );
+        logger.info('Applied fallback type inference fix');
+      }
 
       // Fix 3:Fix unused parameter naming
       if (errors.some((e) => e.message.includes('leading underscore'))) {
         fixedCode = fixedCode.replace(/\b_namespace\b/g, 'namespace');
         logger.info('Applied fallback parameter naming fix');
-}
+      }
 
       // Fix 4:Remove unused parameters
       if (errors.some((e) => e.message.includes('defined but never used'))) {
@@ -391,30 +408,30 @@ export class AILinter {
           '$1$2'
         );
         logger.info('Applied fallback unused parameter removal');
-}
+      }
 
       if (fixedCode !== content) {
         logger.info('Fallback fixes applied successfully');
         return fixedCode;
-}
+      }
 
       return null;
-} catch (error) {
+    } catch (error) {
       logger.error('AI fixing failed', {
-        error:error instanceof Error ? error.message : String(error),
-});
+        error: error instanceof Error ? error.message : String(error),
+      });
       return null;
-}
-}
+    }
+  }
 
   /**
    * Build intelligent prompt for AI code fixing
    */
   private buildIntelligentPrompt(
-    filePath:string,
-    content:string,
-    errors:Array<{ line: number; column: number; message: string}>
-  ):string {
+    filePath: string,
+    content: string,
+    errors: Array<{ line: number; column: number; message: string }>
+  ): string {
     const errorSummary = errors
       .map(
         (err, i) =>
@@ -448,28 +465,30 @@ export class AILinter {
       '',
       'Return ONLY the fixed code without explanation, wrapped in ```typescript``` blocks.',
     ].join('\n');
-}
+  }
 
   /**
    * Extract code from AI response
    */
-  private extractCodeFromResponse(response:string): string | null {
+  private extractCodeFromResponse(response: string): string | null {
     // Look for code blocks
-  const codeBlockMatch = response.match(/```(?:typescript|ts|javascript|js)?\n([\S\s]*?)\n```/);
+    const codeBlockMatch = response.match(
+      /```(?:typescript|ts|javascript|js)?\n([\S\s]*?)\n```/
+    );
     if (codeBlockMatch && codeBlockMatch[1]) {
       return codeBlockMatch[1].trim();
-}
+    }
 
     // If no code blocks, return the whole response (fallback)
     return response.trim() || null;
-}
+  }
 }
 
 /**
  * Factory function for creating AI Linter instances
  * This is the function called by the @claude-zen/development facade
  */
-export function createAILinter(config?:Partial<AILinterConfig>): AILinter {
+export function createAILinter(config?: Partial<AILinterConfig>): AILinter {
   return new AILinter(config);
 }
 

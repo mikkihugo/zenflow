@@ -15,7 +15,7 @@ import { filter, meanBy} from 'lodash-es')import type { Logger} from '../types')
  * Product vision service configuration
  */
 export interface ProductVisionServiceConfig {
-    readonly visionValidationThreshold: new () => Map<string, ProductVision>;
-    (): any;
+  readonly visionValidationThreshold: new () => Map<string, ProductVision>;
+  (): any;
 }
 //# sourceMappingURL=product-vision-service.d.ts.map

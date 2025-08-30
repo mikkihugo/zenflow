@@ -141,7 +141,7 @@ export namespace Session {
 }
     log.info("created", result)
     state().sessions.set(result.id, result)
-    await Storage.writeJSON(`session/info/${result.id}`, result)`
+    await Storage.writeJSON(`session/info/${result.id}`, result)
     const cfg = await Config.get()
     if (!result.parentID && (Flag.OPENCODE_AUTO_SHARE || cfg.share === "auto"))
       share(result.id)
@@ -164,13 +164,13 @@ export namespace Session {
     if (result) {
       return result
 }
-    const read = await Storage.readJSON<Info>(`session/info/${id}`)`
+    const read = await Storage.readJSON<Info>(`session/info/${id}`)
     state().sessions.set(id, read)
     return read as Info
 }
 
   export async function getShare(id:string) {
-    return Storage.readJSON<ShareInfo>(`session/share/${id}`)`
+    return Storage.readJSON<ShareInfo>(`session/share/${id}`)
 }
 
   export async function share(id:string) {
@@ -187,12 +187,12 @@ export namespace Session {
         url:share.url,
 }
 })
-    await Storage.writeJSON<ShareInfo>(`session/share/${id}`, share)`
-    await Share.sync(`session/info/${id}`, session)`
+    await Storage.writeJSON<ShareInfo>(`session/share/${id}`, share)
+    await Share.sync(`session/info/${id}`, session)
     for (const msg of await messages(id)) {
-      await Share.sync(`session/message/${id}/${msg.info.id}`, msg.info)`
+      await Share.sync(`session/message/${id}/${msg.info.id}`, msg.info)
       for (const part of msg.parts) {
-        await Share.sync(`session/part/${id}/${msg.info.id}/${part.id}`, part)`
+        await Share.sync(`session/part/${id}/${msg.info.id}/${part.id}`, part)
 }
 }
     return share
@@ -201,7 +201,7 @@ export namespace Session {
   export async function unshare(id:string) {
     const share = await getShare(id)
     if (!share) return
-    await Storage.remove(`session/share/${id}`)`
+    await Storage.remove(`session/share/${id}`)
     await update(id, (draft) => {
       draft.share = undefined
 })
@@ -215,7 +215,7 @@ export namespace Session {
     editor(session)
     session.time.updated = Date.now()
     sessions.set(id, session)
-    await Storage.writeJSON(`session/info/${id}`, session)`
+    await Storage.writeJSON(`session/info/${id}`, session)
     Bus.publish(Event.Updated, {
       info:session,
 })
@@ -227,7 +227,7 @@ export namespace Session {
       info:MessageV2.Info
       parts:MessageV2.Part[]
 }[]
-    for (const p of await Storage.list(`session/message/${sessionID}`)) {`
+    for (const p of await Storage.list(`session/message/${sessionID}`)) {
       const read = await Storage.readJSON<MessageV2.Info>(p)
       result.push({
         info:read,
@@ -239,12 +239,12 @@ export namespace Session {
 }
 
   export async function getMessage(sessionID:string, messageID:string) {
-    return Storage.readJSON<MessageV2.Info>(`session/message/${sessionID}/${messageID}`)`
+    return Storage.readJSON<MessageV2.Info>(`session/message/${sessionID}/${messageID}`)
 }
 
   export async function parts(sessionID:string, messageID:string) {
     const result = [] as MessageV2.Part[]
-    for (const item of await Storage.list(`session/part/${sessionID}/${messageID}`)) {`
+    for (const item of await Storage.list(`session/part/${sessionID}/${messageID}`)) {
       const read = await Storage.readJSON<MessageV2.Part>(item)
       result.push(read)
 }
@@ -286,8 +286,8 @@ export namespace Session {
         await remove(child.id, false)
 }
       await unshare(sessionID).catch(() => {})
-      await Storage.remove(`session/info/${sessionID}`).catch(() => {})`
-      await Storage.removeDir(`session/message/$sessionID/`).catch(() => {})`
+      await Storage.remove(`session/info/${sessionID}`).catch(() => {})
+      await Storage.removeDir(`session/message/$sessionID/`).catch(() => {})
       state().sessions.delete(sessionID)
       state().messages.delete(sessionID)
       if (emitEvent) {
@@ -301,7 +301,7 @@ export namespace Session {
 }
 
   async function updateMessage(msg:MessageV2.Info) {
-    await Storage.writeJSON(`session/message/${msg.sessionID}/${msg.id}`, msg)`
+    await Storage.writeJSON(`session/message/${msg.sessionID}/${msg.id}`, msg)
     Bus.publish(MessageV2.Event.Updated, {
       info:msg,
 })
@@ -337,7 +337,7 @@ export namespace Session {
           msg.info.id > session.revert.messageID ||
           (msg.info.id === session.revert.messageID && session.revert.part === 0)
         ) {
-          await Storage.remove(`session/message/${input.sessionID}/${msg.info.id}`)`
+          await Storage.remove(`session/message/${input.sessionID}/${msg.info.id}`)
           await Bus.publish(MessageV2.Event.Removed, {
             sessionID:input.sessionID,
             messageID:msg.info.id,
@@ -447,7 +447,7 @@ export namespace Session {
                     sessionID:input.sessionID,
                     type:"text",
                     synthetic:true,
-                    text:`Called the Read tool with the following input: ${JSON.stringify(args)}`,`
+                    text:`Called the Read tool with the following input: ${JSON.stringify(args)},
 },
                   {
                     id:Identifier.ascending("part"),
@@ -468,7 +468,7 @@ export namespace Session {
                   messageID:userMsg.id,
                   sessionID:input.sessionID,
                   type:"text",
-                  text:`Called the Read tool with the following input: {"filePath":"${pathname}"}`,`
+                  text:`Called the Read tool with the following input: {"filePath":"${pathname}"}`,
                   synthetic:true,
 },
                 {
@@ -476,7 +476,7 @@ export namespace Session {
                   messageID:userMsg.id,
                   sessionID:input.sessionID,
                   type:"file",
-                  url:`data:${part.mime};base64,${Buffer.from(await file.bytes()).toString("base64")}`,`
+                  url:`data:${part.mime};base64,${Buffer.from(await file.bytes()).toString("base64")},
                   mime:part.mime,
                   filename:part.filename!,
 },
@@ -1081,7 +1081,7 @@ export namespace Session {
 
   export class BusyError extends Error {
     constructor(public readonly sessionID:string) {
-      super(`Session ${sessionID} is busy`)`
+      super(`Session ${sessionID} is busy)
 }
 }
 

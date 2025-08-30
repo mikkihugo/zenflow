@@ -1,176 +1,176 @@
 {
-	"production": {
-		"workflow": {
-			"architecture": "multi-level",
-			"topology": "hierarchical",
-			"mlOptimization": "enterprise",
-			"conservativeMode": false,
-			"features": {
-				"advancedKanbanFlow": true,
-				"mlOptimization": true,
-				"bottleneckDetection": true,
-				"predictiveAnalytics": true,
-				"realTimeMonitoring": true,
-				"intelligentResourceManagement": true,
-				"aguiGates": true,
-				"crossLevelOptimization": true
-			},
-			"limits": {
-				"maxPortfolioStreams": 8,
-				"maxProgramStreams": 32,
-				"maxSwarmStreams": 128,
-				"memoryLimitGB": 16,
-				"cpuCoreLimit": 16
-			},
-			"scaling": {
-				"autoScale": true,
-				"scaleUpThreshold": 0.7,
-				"scaleDownThreshold": 0.3,
-				"maxScalePercent": 50,
-				"cooldownPeriod": 300000
-			},
-			"monitoring": {
-				"enableRealTime": true,
-				"metricsRetention": "30d",
-				"performanceThresholds": {
-					"memoryUtilization": 0.8,
-					"cpuUtilization": 0.75,
-					"responseTime": 500,
-					"errorRate": 0.01
-				},
-				"alerting": {
-					"enabled": true,
-					"channels": ["email", "webhook"],
-					"severities": ["critical", "warning"]
-				}
-			}
-		},
-		"system": {
-			"logLevel": "info",
-			"enableMetrics": true,
-			"enableTracing": true,
-			"healthCheckInterval": 30000,
-			"gracefulShutdownTimeout": 30000
-		},
-		"security": {
-			"enableAuthentication": true,
-			"enableAuthorization": true,
-			"tokenExpiration": 3600,
-			"maxRequestSize": "10mb",
-			"rateLimiting": {
-				"enabled": true,
-				"windowMs": 900000,
-				"maxRequests": 1000
-			}
-		}
-	},
-	"development": {
-		"workflow": {
-			"architecture": "multi-level",
-			"topology": "mesh",
-			"mlOptimization": "advanced",
-			"conservativeMode": true,
-			"features": {
-				"advancedKanbanFlow": true,
-				"mlOptimization": true,
-				"bottleneckDetection": true,
-				"predictiveAnalytics": false,
-				"realTimeMonitoring": true,
-				"intelligentResourceManagement": true,
-				"aguiGates": false,
-				"crossLevelOptimization": false
-			},
-			"limits": {
-				"maxPortfolioStreams": 2,
-				"maxProgramStreams": 8,
-				"maxSwarmStreams": 32,
-				"memoryLimitGB": 4,
-				"cpuCoreLimit": 4
-			},
-			"scaling": {
-				"autoScale": false,
-				"scaleUpThreshold": 0.8,
-				"scaleDownThreshold": 0.2,
-				"maxScalePercent": 25,
-				"cooldownPeriod": 60000
-			},
-			"monitoring": {
-				"enableRealTime": true,
-				"metricsRetention": "7d",
-				"performanceThresholds": {
-					"memoryUtilization": 0.9,
-					"cpuUtilization": 0.8,
-					"responseTime": 1000,
-					"errorRate": 0.05
-				},
-				"alerting": {
-					"enabled": false
-				}
-			}
-		},
-		"system": {
-			"logLevel": "debug",
-			"enableMetrics": true,
-			"enableTracing": true,
-			"healthCheckInterval": 10000,
-			"gracefulShutdownTimeout": 5000
-		},
-		"security": {
-			"enableAuthentication": false,
-			"enableAuthorization": false,
-			"tokenExpiration": 7200,
-			"maxRequestSize": "50mb",
-			"rateLimiting": {
-				"enabled": false
-			}
-		}
-	},
-	"testing": {
-		"workflow": {
-			"architecture": "single-level",
-			"topology": "star",
-			"mlOptimization": "basic",
-			"conservativeMode": true,
-			"features": {
-				"advancedKanbanFlow": false,
-				"mlOptimization": false,
-				"bottleneckDetection": true,
-				"predictiveAnalytics": false,
-				"realTimeMonitoring": false,
-				"intelligentResourceManagement": false,
-				"aguiGates": false,
-				"crossLevelOptimization": false
-			},
-			"limits": {
-				"maxPortfolioStreams": 1,
-				"maxProgramStreams": 2,
-				"maxSwarmStreams": 4,
-				"memoryLimitGB": 1,
-				"cpuCoreLimit": 2
-			},
-			"scaling": {
-				"autoScale": false
-			},
-			"monitoring": {
-				"enableRealTime": false,
-				"metricsRetention": "1d",
-				"alerting": {
-					"enabled": false
-				}
-			}
-		},
-		"system": {
-			"logLevel": "warn",
-			"enableMetrics": false,
-			"enableTracing": false,
-			"healthCheckInterval": 5000
-		},
-		"security": {
-			"enableAuthentication": false,
-			"enableAuthorization": false,
-			"rateLimiting": {
-				"enabled": false
-			}
-		}
-	}
+  "production": {
+    "workflow": {
+      "architecture": "multi-level",
+      "topology": "hierarchical",
+      "mlOptimization": "enterprise",
+      "conservativeMode": false,
+      "features": {
+        "advancedKanbanFlow": true,
+        "mlOptimization": true,
+        "bottleneckDetection": true,
+        "predictiveAnalytics": true,
+        "realTimeMonitoring": true,
+        "intelligentResourceManagement": true,
+        "aguiGates": true,
+        "crossLevelOptimization": true
+      },
+      "limits": {
+        "maxPortfolioStreams": 8,
+        "maxProgramStreams": 32,
+        "maxSwarmStreams": 128,
+        "memoryLimitGB": 16,
+        "cpuCoreLimit": 16
+      },
+      "scaling": {
+        "autoScale": true,
+        "scaleUpThreshold": 0.7,
+        "scaleDownThreshold": 0.3,
+        "maxScalePercent": 50,
+        "cooldownPeriod": 300000
+      },
+      "monitoring": {
+        "enableRealTime": true,
+        "metricsRetention": "30d",
+        "performanceThresholds": {
+          "memoryUtilization": 0.8,
+          "cpuUtilization": 0.75,
+          "responseTime": 500,
+          "errorRate": 0.01
+        },
+        "alerting": {
+          "enabled": true,
+          "channels": ["email", "webhook"],
+          "severities": ["critical", "warning"]
+        }
+      }
+    },
+    "system": {
+      "logLevel": "info",
+      "enableMetrics": true,
+      "enableTracing": true,
+      "healthCheckInterval": 30000,
+      "gracefulShutdownTimeout": 30000
+    },
+    "security": {
+      "enableAuthentication": true,
+      "enableAuthorization": true,
+      "tokenExpiration": 3600,
+      "maxRequestSize": "10mb",
+      "rateLimiting": {
+        "enabled": true,
+        "windowMs": 900000,
+        "maxRequests": 1000
+      }
+    }
+  },
+  "development": {
+    "workflow": {
+      "architecture": "multi-level",
+      "topology": "mesh",
+      "mlOptimization": "advanced",
+      "conservativeMode": true,
+      "features": {
+        "advancedKanbanFlow": true,
+        "mlOptimization": true,
+        "bottleneckDetection": true,
+        "predictiveAnalytics": false,
+        "realTimeMonitoring": true,
+        "intelligentResourceManagement": true,
+        "aguiGates": false,
+        "crossLevelOptimization": false
+      },
+      "limits": {
+        "maxPortfolioStreams": 2,
+        "maxProgramStreams": 8,
+        "maxSwarmStreams": 32,
+        "memoryLimitGB": 4,
+        "cpuCoreLimit": 4
+      },
+      "scaling": {
+        "autoScale": false,
+        "scaleUpThreshold": 0.8,
+        "scaleDownThreshold": 0.2,
+        "maxScalePercent": 25,
+        "cooldownPeriod": 60000
+      },
+      "monitoring": {
+        "enableRealTime": true,
+        "metricsRetention": "7d",
+        "performanceThresholds": {
+          "memoryUtilization": 0.9,
+          "cpuUtilization": 0.8,
+          "responseTime": 1000,
+          "errorRate": 0.05
+        },
+        "alerting": {
+          "enabled": false
+        }
+      }
+    },
+    "system": {
+      "logLevel": "debug",
+      "enableMetrics": true,
+      "enableTracing": true,
+      "healthCheckInterval": 10000,
+      "gracefulShutdownTimeout": 5000
+    },
+    "security": {
+      "enableAuthentication": false,
+      "enableAuthorization": false,
+      "tokenExpiration": 7200,
+      "maxRequestSize": "50mb",
+      "rateLimiting": {
+        "enabled": false
+      }
+    }
+  },
+  "testing": {
+    "workflow": {
+      "architecture": "single-level",
+      "topology": "star",
+      "mlOptimization": "basic",
+      "conservativeMode": true,
+      "features": {
+        "advancedKanbanFlow": false,
+        "mlOptimization": false,
+        "bottleneckDetection": true,
+        "predictiveAnalytics": false,
+        "realTimeMonitoring": false,
+        "intelligentResourceManagement": false,
+        "aguiGates": false,
+        "crossLevelOptimization": false
+      },
+      "limits": {
+        "maxPortfolioStreams": 1,
+        "maxProgramStreams": 2,
+        "maxSwarmStreams": 4,
+        "memoryLimitGB": 1,
+        "cpuCoreLimit": 2
+      },
+      "scaling": {
+        "autoScale": false
+      },
+      "monitoring": {
+        "enableRealTime": false,
+        "metricsRetention": "1d",
+        "alerting": {
+          "enabled": false
+        }
+      }
+    },
+    "system": {
+      "logLevel": "warn",
+      "enableMetrics": false,
+      "enableTracing": false,
+      "healthCheckInterval": 5000
+    },
+    "security": {
+      "enableAuthentication": false,
+      "enableAuthorization": false,
+      "rateLimiting": {
+        "enabled": false
+      }
+    }
+  }
 }

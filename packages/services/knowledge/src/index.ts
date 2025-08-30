@@ -58,4 +58,4 @@ export {
 } from './coordination-api';
 // export * from './intelligent-doc-import'; // Temporarily disabled due to compilation issues
 export * from './main';
-export { BasicKnowledgeManager} from './main';
+export { BasicKnowledgeManager } from './main';

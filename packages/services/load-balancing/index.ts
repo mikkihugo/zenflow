@@ -47,7 +47,7 @@ export * from './algorithms/weighted-round-robin';
 // Export capacity management
 export * from './capacity/agent-capacity-manager';
 export * from './capacity/capacity-predictor';
-export { ResourceMonitor} from './capacity/resource-monitor';
+export { ResourceMonitor } from './capacity/resource-monitor';
 // Export interfaces without re-exporting duplicates
 export type {
   HealthChecker as HealthCheckerInterface,
@@ -56,13 +56,13 @@ export type {
 // Export main load balancing manager and types
 export * from './main';
 // Default export for convenience
-export { LoadBalancer} from './main';
+export { LoadBalancer } from './main';
 // Export optimization features
 export * from './optimization/emergency-protocol-handler';
 export * from './optimization/network-latency-optimizer';
 // Export routing components
 export * from './routing/failover-manager';
-export { HealthChecker} from './routing/health-checker';
+export { HealthChecker } from './routing/health-checker';
 export * from './routing/intelligent-routing-engine';
 export * from './routing/task-agent-matcher';
 
@@ -75,47 +75,47 @@ export * from './src/traffic-controller';
 export * from './types';
 
 // Import LoadBalancer class
-import { LoadBalancer} from './main';
+import { LoadBalancer } from './main';
 
 // Factory functions expected by infrastructure facade
-export function createLoadBalancer(config?:any) {
+export function createLoadBalancer(config?: any) {
   return new LoadBalancer(config);
 }
 
-export function createPerformanceTracker(config?:any) {
+export function createPerformanceTracker(config?: any) {
   // Performance tracking functionality from the load balancer
-  const { LoadBalancer} = require('./main');
+  const { LoadBalancer } = require('./main');
   const loadBalancer = new LoadBalancer(config);
   return {
-    track:(metric: string, value:number) => {
+    track: (metric: string, value: number) => {
       // Track performance metrics via load balancer
-},
-    getMetrics:() => loadBalancer.getEnhancedStats(),
-    getStatistics:() => loadBalancer.getStatistics(),
-};
+    },
+    getMetrics: () => loadBalancer.getEnhancedStats(),
+    getStatistics: () => loadBalancer.getStatistics(),
+  };
 }
 
 // Provider class expected by infrastructure facade
 export class LoadBalancingProvider {
-  constructor(private config?:any) {}
+  constructor(private config?: any) {}
 
-  async createLoadBalancer(config?:any) {
-    return createLoadBalancer({ ...this.config, ...config});
-}
+  async createLoadBalancer(config?: any) {
+    return createLoadBalancer({ ...this.config, ...config });
+  }
 
-  async createPerformanceTracker(config?:any) {
-    return createPerformanceTracker({ ...this.config, ...config});
-}
+  async createPerformanceTracker(config?: any) {
+    return createPerformanceTracker({ ...this.config, ...config });
+  }
 }
 
 // Main factory function for infrastructure facade
-export function createLoadBalancingAccess(config?:any) {
+export function createLoadBalancingAccess(config?: any) {
   return {
     createLoadBalancer,
     createPerformanceTracker,
-    createProvider:(providerConfig?: any) =>
+    createProvider: (providerConfig?: any) =>
       new LoadBalancingProvider(providerConfig),
     LoadBalancer,
     LoadBalancingProvider,
-};
+  };
 }

@@ -140,9 +140,9 @@ const testCases:TestCase[] = [
     replace:"const str = 'It' s fixed';",
 },
   {
-    content:"const template = `Hello ${name}`;",`
-    find:"const template = `Hello \\${name}`;",`
-    replace:"const template = `Hi ${name}`;",`
+    content:"const template = `Hello ${name}`;",
+    find:"const template = `Hello \\${name}`;",
+    replace:"const template = `Hi ${name}`;",
 },
   {
     content:"const path = 'C:\\Users\\test';",
@@ -292,9 +292,9 @@ const testCases:TestCase[] = [
 
   // Test escape sequences in template literals
   {
-    content:"const msg = `Hello\\tWorld`;",`
-    find:"const msg = `Hello\\tWorld`;",`
-    replace:"const msg = `Hi\\tWorld`;",`
+    content:"const msg = `Hello\\tWorld`;",
+    find:"const msg = `Hello\\tWorld`;",
+    replace:"const msg = `Hi\\tWorld`;",
 },
 ]
 

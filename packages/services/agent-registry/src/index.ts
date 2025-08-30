@@ -37,10 +37,10 @@
 
 // Core agent registry implementation
 // Factory functions
-import { AgentRegistry} from './agent-registry';
-import type { AgentRegistryOptions} from './types';
+import { AgentRegistry } from './agent-registry';
+import type { AgentRegistryOptions } from './types';
 
-export { AgentRegistry} from './agent-registry';
+export { AgentRegistry } from './agent-registry';
 
 // Registry adapter for migration and compatibility
 export {
@@ -64,31 +64,31 @@ export type {
  * Create a new agent registry instance with default configuration
  */
 export function createAgentRegistry(
-  options?:AgentRegistryOptions
-):AgentRegistry {
+  options?: AgentRegistryOptions
+): AgentRegistry {
   return new AgentRegistry(options);
 }
 
 /**
  * Global registry instance for singleton pattern usage
  */
-let globalAgentRegistry:AgentRegistry | null = null;
+let globalAgentRegistry: AgentRegistry | null = null;
 
 /**
  * Get or create the global agent registry instance
  */
 export function getGlobalAgentRegistry(
-  options?:AgentRegistryOptions
-):AgentRegistry {
+  options?: AgentRegistryOptions
+): AgentRegistry {
   if (!globalAgentRegistry) {
     globalAgentRegistry = new AgentRegistry(options);
-}
+  }
   return globalAgentRegistry;
 }
 
 /**
  * Reset the global agent registry (primarily for testing)
  */
-export function resetGlobalAgentRegistry():void {
+export function resetGlobalAgentRegistry(): void {
   globalAgentRegistry = null;
 }

@@ -1,6 +1,6 @@
 /**
  * @fileoverview ART Sync Coordination
- * 
+ *
  * Agile Release Train (ART) synchronization and coordination system.
  * Handles PI planning, team coordination, and dependency management.
  */
@@ -54,11 +54,11 @@ export interface ProgramIncrement {
   objectives: PIObjective[];
   teams: ARTTeam[];
   risks: string[];
-  dependencies:  {
+  dependencies: {
     internal: string[];
     external: string[];
   };
-  metrics:  {
+  metrics: {
     predictability: number;
     velocity: number;
     quality: number;
@@ -71,7 +71,12 @@ export interface ProgramIncrement {
  */
 export interface ARTSyncEventData {
   artId: string;
-  eventType: 'pi-planning' | 'scrum-of-scrums' | 'po-sync' | 'coach-sync' | 'art-sync';
+  eventType:
+    | 'pi-planning'
+    | 'scrum-of-scrums'
+    | 'po-sync'
+    | 'coach-sync'
+    | 'art-sync';
   timestamp: Date;
   participants: string[];
   agenda: string[];
@@ -126,14 +131,14 @@ export class ARTSyncCoordinationManager extends EventBus {
   /**
    * Create Program Increment
    */
-  createProgramIncrement(config:  {
+  createProgramIncrement(config: {
     name: string;
     startDate: Date;
     endDate: Date;
     teams: ARTTeam[];
   }): ProgramIncrement {
     const piId = `pi-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    
+
     const pi: ProgramIncrement = {
       id: piId,
       name: config.name,
@@ -145,16 +150,16 @@ export class ARTSyncCoordinationManager extends EventBus {
       objectives: [],
       teams: config.teams,
       risks: [],
-      dependencies:  {
+      dependencies: {
         internal: [],
-        external: []
+        external: [],
       },
-      metrics:  {
+      metrics: {
         predictability: 0,
         velocity: 0,
         quality: 0,
-        timeToMarket: 0
-      }
+        timeToMarket: 0,
+      },
     };
 
     this.arts.set(piId, pi);
@@ -167,7 +172,10 @@ export class ARTSyncCoordinationManager extends EventBus {
   /**
    * Handle PI Planning start
    */
-  private handlePIPlanningStart(data:  { piId: string, teams: ARTTeam[] }): void {
+  private handlePIPlanningStart(data: {
+    piId: string;
+    teams: ARTTeam[];
+  }): void {
     const pi = this.arts.get(data.piId);
     if (!pi) {
       logger.error(`PI not found: ${data.piId}`);
@@ -181,7 +189,7 @@ export class ARTSyncCoordinationManager extends EventBus {
       artId: data.piId,
       eventType: 'pi-planning',
       timestamp: new Date(),
-      participants: data.teams.map(t => t.id),
+      participants: data.teams.map((t) => t.id),
       agenda: [
         'Business Context',
         'Product/Solution Vision',
@@ -192,12 +200,12 @@ export class ARTSyncCoordinationManager extends EventBus {
         'Management Review',
         'Plan Rework',
         'Final Plan Review',
-        'Plan Commitment'
+        'Plan Commitment',
       ],
       decisions: [],
       impediments: [],
       dependencies: [],
-      nextActions: []
+      nextActions: [],
     };
 
     this.activeSync.set(`planning-${data.piId}`, planningEvent);
@@ -208,7 +216,9 @@ export class ARTSyncCoordinationManager extends EventBus {
    * Handle sync events
    */
   private handleSyncEvent(eventData: ARTSyncEventData): void {
-    logger.info(`ART Sync Event: ${eventData.eventType} for ART ${eventData.artId}`);
+    logger.info(
+      `ART Sync Event: ${eventData.eventType} for ART ${eventData.artId}`
+    );
 
     // Store sync event
     const eventKey = `${eventData.eventType}-${eventData.artId}-${Date.now()}`;
@@ -221,7 +231,7 @@ export class ARTSyncCoordinationManager extends EventBus {
         type: 'feature',
         priority: 'medium',
         fromTeam: eventData.participants[0],
-        toTeam: eventData.participants[1] || 'external'
+        toTeam: eventData.participants[1] || 'external',
       });
     }
 
@@ -229,14 +239,14 @@ export class ARTSyncCoordinationManager extends EventBus {
     this.emit('art:sync-processed', {
       eventKey,
       eventData,
-      dependenciesCreated: eventData.dependencies.length
+      dependenciesCreated: eventData.dependencies.length,
     });
   }
 
   /**
    * Create dependency coordination
    */
-  createDependency(config:  {
+  createDependency(config: {
     description: string;
     type: DependencyCoordination['type'];
     priority: DependencyCoordination['priority'];
@@ -244,7 +254,7 @@ export class ARTSyncCoordinationManager extends EventBus {
     toTeam: string;
   }): DependencyCoordination {
     const depId = `dep-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    
+
     const dependency: DependencyCoordination = {
       id: depId,
       fromTeam: config.fromTeam,
@@ -253,9 +263,9 @@ export class ARTSyncCoordinationManager extends EventBus {
       type: config.type,
       priority: config.priority,
       status: 'identified',
-      plannedDate: new Date(Date.now() + (14 * 24 * 60 * 60 * 1000)), // 2 weeks from now
+      plannedDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 2 weeks from now
       risks: [],
-      mitigations: []
+      mitigations: [],
     };
 
     this.dependencies.set(depId, dependency);
@@ -268,7 +278,7 @@ export class ARTSyncCoordinationManager extends EventBus {
   /**
    * Handle dependency updates
    */
-  private handleDependencyUpdate(data:  {
+  private handleDependencyUpdate(data: {
     depId: string;
     status: DependencyCoordination['status'];
     actualDate?: Date;
@@ -302,7 +312,7 @@ export class ARTSyncCoordinationManager extends EventBus {
   /**
    * Handle team updates
    */
-  private handleTeamUpdate(data:  {
+  private handleTeamUpdate(data: {
     artId: string;
     teamId: string;
     updates: Partial<ARTTeam>;
@@ -313,7 +323,7 @@ export class ARTSyncCoordinationManager extends EventBus {
       return;
     }
 
-    const teamIndex = pi.teams.findIndex(t => t.id === data.teamId);
+    const teamIndex = pi.teams.findIndex((t) => t.id === data.teamId);
     if (teamIndex === -1) {
       logger.error(`Team not found: ${data.teamId}`);
       return;
@@ -327,14 +337,14 @@ export class ARTSyncCoordinationManager extends EventBus {
     this.emit('art:team-updated', {
       artId: data.artId,
       teamId: data.teamId,
-      team: pi.teams[teamIndex]
+      team: pi.teams[teamIndex],
     });
   }
 
   /**
    * Handle objective updates
    */
-  private handleObjectiveUpdate(data:  {
+  private handleObjectiveUpdate(data: {
     artId: string;
     objectiveId: string;
     updates: Partial<PIObjective>;
@@ -345,7 +355,7 @@ export class ARTSyncCoordinationManager extends EventBus {
       return;
     }
 
-    const objIndex = pi.objectives.findIndex(o => o.id === data.objectiveId);
+    const objIndex = pi.objectives.findIndex((o) => o.id === data.objectiveId);
     if (objIndex === -1) {
       logger.error(`Objective not found: ${data.objectiveId}`);
       return;
@@ -359,19 +369,19 @@ export class ARTSyncCoordinationManager extends EventBus {
     this.emit('art:objective-updated', {
       artId: data.artId,
       objectiveId: data.objectiveId,
-      objective: pi.objectives[objIndex]
+      objective: pi.objectives[objIndex],
     });
   }
 
   /**
    * Get ART coordination status
    */
-  getARTStatus(artId: string):  {
+  getARTStatus(artId: string): {
     pi?: ProgramIncrement;
     dependencies: DependencyCoordination[];
     activeSyncs: ARTSyncEventData[];
     health: 'green' | 'yellow' | 'red';
-    metrics:  {
+    metrics: {
       teamsCount: number;
       objectivesCount: number;
       dependenciesCount: number;
@@ -382,30 +392,40 @@ export class ARTSyncCoordinationManager extends EventBus {
     };
   } {
     const pi = this.arts.get(artId);
-    const dependencies = Array.from(this.dependencies.values())
-      .filter(d => this.isRelatedToART(d, artId));
-    
-    const activeSyncs = Array.from(this.activeSync.values())
-      .filter(s => s.artId === artId);
+    const dependencies = Array.from(this.dependencies.values()).filter((d) =>
+      this.isRelatedToART(d, artId)
+    );
+
+    const activeSyncs = Array.from(this.activeSync.values()).filter(
+      (s) => s.artId === artId
+    );
 
     // Calculate health metrics
     let teamHealthGreen = 0;
     let teamHealthYellow = 0;
     let teamHealthRed = 0;
-    
+
     if (pi) {
       for (const team of pi.teams) {
         switch (team.backlogHealth) {
-          case 'green': teamHealthGreen++; break;
-          case 'yellow': teamHealthYellow++; break;
-          case 'red': teamHealthRed++; break;
+          case 'green':
+            teamHealthGreen++;
+            break;
+          case 'yellow':
+            teamHealthYellow++;
+            break;
+          case 'red':
+            teamHealthRed++;
+            break;
         }
       }
     }
 
-    const blockedDependencies = dependencies.filter(d => d.status === 'identified' && d.risks.length > 0).length;
+    const blockedDependencies = dependencies.filter(
+      (d) => d.status === 'identified' && d.risks.length > 0
+    ).length;
     const totalTeams = pi ? pi.teams.length : 0;
-    
+
     // Overall health calculation
     let health: 'green' | 'yellow' | 'red' = 'green';
     if (teamHealthRed > 0 || blockedDependencies > 2) {
@@ -419,27 +439,33 @@ export class ARTSyncCoordinationManager extends EventBus {
       dependencies,
       activeSyncs,
       health,
-      metrics:  {
+      metrics: {
         teamsCount: totalTeams,
         objectivesCount: pi ? pi.objectives.length : 0,
         dependenciesCount: dependencies.length,
         blockedDependencies,
         teamHealthGreen,
         teamHealthYellow,
-        teamHealthRed
-      }
+        teamHealthRed,
+      },
     };
   }
 
   /**
    * Check if dependency is related to ART
    */
-  private isRelatedToART(dependency: DependencyCoordination, artId: string): boolean {
+  private isRelatedToART(
+    dependency: DependencyCoordination,
+    artId: string
+  ): boolean {
     const pi = this.arts.get(artId);
     if (!pi) return false;
 
-    const teamIds = pi.teams.map(t => t.id);
-    return teamIds.includes(dependency.fromTeam) || teamIds.includes(dependency.toTeam);
+    const teamIds = pi.teams.map((t) => t.id);
+    return (
+      teamIds.includes(dependency.fromTeam) ||
+      teamIds.includes(dependency.toTeam)
+    );
   }
 
   /**

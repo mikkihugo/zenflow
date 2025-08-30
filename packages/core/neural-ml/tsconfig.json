@@ -1,19 +1,17 @@
 {
-	"extends": "../../../tsconfig.base.json",
-	"compilerOptions": {
-		"sourceMap": true,
-		"rootDir": "./src",
-		"outDir": "./dist"
-	},
-	"include": ["src/**/*.ts"],
-	"exclude": [
-		"node_modules",
-		"dist",
-		"**/*.test.ts",
-		"**/*.spec.ts",
-		"neuro-divergent/**/*"
-	],
-	"references": [
-		{ "path": "../foundation" }
-	]
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "sourceMap": true,
+    "rootDir": "./src",
+    "outDir": "./dist"
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "neuro-divergent/**/*"
+  ],
+  "references": [{ "path": "../foundation" }]
 }

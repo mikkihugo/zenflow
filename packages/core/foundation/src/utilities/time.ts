@@ -31,48 +31,48 @@
  * ```
  */
 
-import { setTimeout as nodeSetTimeout} from "node:timers/promises";
+import { setTimeout as nodeSetTimeout } from 'node:timers/promises';
 // Foundation re-exports date-fns internally to avoid circular dependency
-import { format} from "date-fns";
-import * as dateFnsLib from "date-fns";
-import type { ISODateString, Timestamp} from "../types/primitives";
+import { format } from 'date-fns';
+import * as dateFnsLib from 'date-fns';
+import type { ISODateString, Timestamp } from '../types/primitives';
 
 // Re-export date-fns for comprehensive date operations
 export const dateFns = dateFnsLib;
 export {
-	addDays,
-	addHours,
-	addMilliseconds,
-	addMinutes,
-	addSeconds,
-	differenceInDays,
-	differenceInHours,
-	differenceInMilliseconds,
-	differenceInMinutes,
-	differenceInSeconds,
-	endOfDay,
-	endOfMonth,
-	endOfWeek,
-	endOfYear,
-	format,
-	fromUnixTime,
-	getTime,
-	getUnixTime,
-	isAfter,
-	isBefore,
-	isEqual,
-	isSameDay,
-	parseISO,
-	startOfDay,
-	startOfMonth,
-	startOfWeek,
-	startOfYear,
-	subDays,
-	subHours,
-	subMilliseconds,
-	subMinutes,
-	subSeconds,
-} from "date-fns";
+  addDays,
+  addHours,
+  addMilliseconds,
+  addMinutes,
+  addSeconds,
+  differenceInDays,
+  differenceInHours,
+  differenceInMilliseconds,
+  differenceInMinutes,
+  differenceInSeconds,
+  endOfDay,
+  endOfMonth,
+  endOfWeek,
+  endOfYear,
+  format,
+  fromUnixTime,
+  getTime,
+  getUnixTime,
+  isAfter,
+  isBefore,
+  isEqual,
+  isSameDay,
+  parseISO,
+  startOfDay,
+  startOfMonth,
+  startOfWeek,
+  startOfYear,
+  subDays,
+  subHours,
+  subMilliseconds,
+  subMinutes,
+  subSeconds,
+} from 'date-fns';
 
 // =============================================================================
 // TIMESTAMP UTILITIES - Branded timestamp type operations
@@ -89,8 +89,8 @@ export {
  * logger.info(typeof timestamp); // number (but branded as Timestamp)
  * ```
  */
-export function now():Timestamp {
-	return Date.now() as Timestamp;
+export function now(): Timestamp {
+  return Date.now() as Timestamp;
 }
 
 /**
@@ -105,8 +105,8 @@ export function now():Timestamp {
  * const timestamp = timestampFromDate(date);
  * ```
  */
-export function timestampFromDate(date:Date): Timestamp {
-	return date.getTime() as Timestamp;
+export function timestampFromDate(date: Date): Timestamp {
+  return date.getTime() as Timestamp;
 }
 
 /**
@@ -121,8 +121,8 @@ export function timestampFromDate(date:Date): Timestamp {
  * const date = dateFromTimestamp(timestamp);
  * ```
  */
-export function dateFromTimestamp(timestamp:Timestamp): Date {
-	return new Date(timestamp);
+export function dateFromTimestamp(timestamp: Timestamp): Date {
+  return new Date(timestamp);
 }
 
 /**
@@ -138,8 +138,8 @@ export function dateFromTimestamp(timestamp:Timestamp): Date {
  * // "2024-01-01T12:00:00.000Z"
  * ```
  */
-export function isoStringFromTimestamp(timestamp:Timestamp): ISODateString {
-	return new Date(timestamp).toISOString() as ISODateString;
+export function isoStringFromTimestamp(timestamp: Timestamp): ISODateString {
+  return new Date(timestamp).toISOString() as ISODateString;
 }
 
 /**
@@ -153,8 +153,8 @@ export function isoStringFromTimestamp(timestamp:Timestamp): ISODateString {
  * const timestamp = timestampFromISOString("2024-01-01T12:00:00.000Z");
  * ```
  */
-export function timestampFromISOString(isoString:string): Timestamp {
-	return Date.parse(isoString) as Timestamp;
+export function timestampFromISOString(isoString: string): Timestamp {
+  return Date.parse(isoString) as Timestamp;
 }
 
 /**
@@ -172,10 +172,10 @@ export function timestampFromISOString(isoString:string): Timestamp {
  * ```
  */
 export function formatTimestamp(
-	timestamp:Timestamp,
-	formatStr:string = "yyyy-MM-dd HH:mm:ss",
-):string {
-	return format(new Date(timestamp), formatStr);
+  timestamp: Timestamp,
+  formatStr: string = 'yyyy-MM-dd HH:mm:ss'
+): string {
+  return format(new Date(timestamp), formatStr);
 }
 
 // =============================================================================
@@ -194,8 +194,8 @@ export function formatTimestamp(
  * logger.info('1 second later');
  * ```
  */
-export function sleep(ms:number): Promise<void> {
-	return new Promise((resolve) => setTimeout(resolve, ms));
+export function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
@@ -210,8 +210,8 @@ export function sleep(ms:number): Promise<void> {
  * logger.info('5 seconds later');
  * ```
  */
-export function delay(ms:number): Promise<void> {
-	return nodeSetTimeout(ms);
+export function delay(ms: number): Promise<void> {
+  return nodeSetTimeout(ms);
 }
 
 /**
@@ -230,12 +230,12 @@ export function delay(ms:number): Promise<void> {
  * ```
  */
 export function timeout(
-	ms:number,
-	message:string = "Operation timed out",
-):Promise<never> {
-	return new Promise((_, reject) => {
-		setTimeout(() => reject(new Error(message)), ms);
-});
+  ms: number,
+  message: string = 'Operation timed out'
+): Promise<never> {
+  return new Promise((_, reject) => {
+    setTimeout(() => reject(new Error(message)), ms);
+  });
 }
 
 /**
@@ -255,11 +255,11 @@ export function timeout(
  * ```
  */
 export function withTimeout<T>(
-	operation:Promise<T>,
-	timeoutMs:number,
-	timeoutMessage?:string,
-):Promise<T> {
-	return Promise.race([operation, timeout(timeoutMs, timeoutMessage)]);
+  operation: Promise<T>,
+  timeoutMs: number,
+  timeoutMessage?: string
+): Promise<T> {
+  return Promise.race([operation, timeout(timeoutMs, timeoutMessage)]);
 }
 
 // =============================================================================
@@ -280,8 +280,8 @@ export function withTimeout<T>(
  * const durationMs = Number(durationNs) / 1_000_000;
  * ```
  */
-export function highResTime():bigint {
-	return process.hrtime.bigint();
+export function highResTime(): bigint {
+  return process.hrtime.bigint();
 }
 
 /**
@@ -299,14 +299,14 @@ export function highResTime():bigint {
  * ```
  */
 export async function measureTime<T>(
-	operation:() => Promise<T>,
-):Promise<{ result: T; durationMs: number}> {
-	const start = highResTime();
-	const result = await operation();
-	const end = highResTime();
-	const durationMs = Number(end - start) / 1_000_000;
+  operation: () => Promise<T>
+): Promise<{ result: T; durationMs: number }> {
+  const start = highResTime();
+  const result = await operation();
+  const end = highResTime();
+  const durationMs = Number(end - start) / 1_000_000;
 
-	return { result, durationMs};
+  return { result, durationMs };
 }
 
 /**
@@ -326,36 +326,36 @@ export async function measureTime<T>(
  * ```
  */
 export function createTimer() {
-	let startTime:bigint | null = null;
-	let endTime:bigint | null = null;
+  let startTime: bigint | null = null;
+  let endTime: bigint | null = null;
 
-	return {
-		start() {
-			startTime = highResTime();
-			endTime = null;
-},
+  return {
+    start() {
+      startTime = highResTime();
+      endTime = null;
+    },
 
-		stop():number {
-			if (startTime === null) {
-				throw new Error("Timer not started");
-}
-			endTime = highResTime();
-			return Number(endTime - startTime) / 1_000_000;
-},
+    stop(): number {
+      if (startTime === null) {
+        throw new Error('Timer not started');
+      }
+      endTime = highResTime();
+      return Number(endTime - startTime) / 1_000_000;
+    },
 
-		elapsed():number {
-			if (startTime === null) {
-				throw new Error("Timer not started");
-}
-			const currentTime = endTime || highResTime();
-			return Number(currentTime - startTime) / 1_000_000;
-},
+    elapsed(): number {
+      if (startTime === null) {
+        throw new Error('Timer not started');
+      }
+      const currentTime = endTime || highResTime();
+      return Number(currentTime - startTime) / 1_000_000;
+    },
 
-		reset() {
-			startTime = null;
-			endTime = null;
-},
-};
+    reset() {
+      startTime = null;
+      endTime = null;
+    },
+  };
 }
 
 // =============================================================================
@@ -376,16 +376,16 @@ export function createTimer() {
  *}
  * ```
  */
-export function isValidTimestamp(timestamp:unknown): timestamp is Timestamp {
-	if (typeof timestamp !== "number" || !Number.isInteger(timestamp)) {
-		return false;
-}
+export function isValidTimestamp(timestamp: unknown): timestamp is Timestamp {
+  if (typeof timestamp !== 'number' || !Number.isInteger(timestamp)) {
+    return false;
+  }
 
-	// Must be positive and reasonable (after 1970, before year 3000)
-	const minTimestamp = 0;
-	const maxTimestamp = new Date("3000-01-01").getTime();
+  // Must be positive and reasonable (after 1970, before year 3000)
+  const minTimestamp = 0;
+  const maxTimestamp = new Date('3000-01-01').getTime();
 
-	return timestamp >= minTimestamp && timestamp <= maxTimestamp;
+  return timestamp >= minTimestamp && timestamp <= maxTimestamp;
 }
 
 /**
@@ -402,17 +402,17 @@ export function isValidTimestamp(timestamp:unknown): timestamp is Timestamp {
  * ```
  */
 export function isValidISOString(
-	dateString:unknown,
-):dateString is ISODateString {
-	if (typeof dateString !== "string") return false;
+  dateString: unknown
+): dateString is ISODateString {
+  if (typeof dateString !== 'string') return false;
 
-	// Check ISO 8601 format pattern
-	const isoPattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/;
-	if (!isoPattern.test(dateString)) return false;
+  // Check ISO 8601 format pattern
+  const isoPattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/;
+  if (!isoPattern.test(dateString)) return false;
 
-	// Check if actually parseable
-	const parsed = Date.parse(dateString);
-	return !Number.isNaN(parsed);
+  // Check if actually parseable
+  const parsed = Date.parse(dateString);
+  return !Number.isNaN(parsed);
 }
 
 // =============================================================================
@@ -421,6 +421,6 @@ export function isValidISOString(
 
 // Alias for Node.js timers/promises setTimeout
 export {
-	setInterval as recurring,
-	setTimeout as nodeDelay,
-} from "node:timers/promises";
+  setInterval as recurring,
+  setTimeout as nodeDelay,
+} from 'node:timers/promises';

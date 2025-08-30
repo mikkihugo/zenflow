@@ -1,7 +1,7 @@
 // Vitest setup file for Hybrid TDD tests
 
 // Global test timeout for complex operations
-import { vi} from "vitest";
+import { vi } from 'vitest';
 
 // Global test timeout set via vitest config
 
@@ -9,6 +9,6 @@ import { vi} from "vitest";
 import { beforeEach } from 'vitest';
 
 beforeEach(() => {
-	// Clear mocks for London TDD
-	vi.clearAllMocks();
+  // Clear mocks for London TDD
+  vi.clearAllMocks();
 });

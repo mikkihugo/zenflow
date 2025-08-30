@@ -20,73 +20,73 @@
  * @see {@link https://github.com/stanfordnlp/dspy} Stanford DSPy Documentation
  */
 
-import type { MetricFunction} from "../interfaces/types";
-import type { Example} from "../primitives/example";
-import type { DSPyModule} from "../primitives/module";
-import { BootstrapFewShot} from "./bootstrap";
-import { Teleprompter} from "./teleprompter";
+import type { MetricFunction } from '../interfaces/types';
+import type { Example } from '../primitives/example';
+import type { DSPyModule } from '../primitives/module';
+import { BootstrapFewShot } from './bootstrap';
+import { Teleprompter } from './teleprompter';
 
 /**
  * LabeledFewShot helper class for vanilla labeled demonstrations
  * Matches Stanford DSPy vanilla.py implementation exactly
  */
 class LabeledFewShot extends Teleprompter {
-	private k:number;
-	private sample:boolean;
+  private k: number;
+  private sample: boolean;
 
-	constructor(k:number = 16, sample:boolean = true) {
-		super();
-		this.k = k;
-		this.sample = sample;
-}
+  constructor(k: number = 16, sample: boolean = true) {
+    super();
+    this.k = k;
+    this.sample = sample;
+  }
 
-	async compile(
-		student:DSPyModule,
-		config:{
-			trainset:Example[];
-			teacher?:DSPyModule | null;
-			valset?:Example[] | null;
-			sample?:boolean;
-			[key:string]: any;
-},
-	):Promise<DSPyModule> {
-		const { trainset, sample = this.sample} = config;
+  async compile(
+    student: DSPyModule,
+    config: {
+      trainset: Example[];
+      teacher?: DSPyModule | null;
+      valset?: Example[] | null;
+      sample?: boolean;
+      [key: string]: any;
+    }
+  ): Promise<DSPyModule> {
+    const { trainset, sample = this.sample } = config;
 
-		const compiled = student.reset_copy();
+    const compiled = student.reset_copy();
 
-		// Sample k examples from trainset (matching Stanford implementation)
-		let demos:Example[];
-		if (sample && trainset.length > this.k) {
-			// Random sample
-			const shuffled = [...trainset];
-			for (let i = shuffled.length - 1; i > 0; i--) {
-				const j = Math.floor(Math.random() * (i + 1));
-				[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-}
-			demos = shuffled.slice(0, this.k);
-} else {
-			// First k examples
-			demos = trainset.slice(0, Math.min(this.k, trainset.length));
-}
+    // Sample k examples from trainset (matching Stanford implementation)
+    let demos: Example[];
+    if (sample && trainset.length > this.k) {
+      // Random sample
+      const shuffled = [...trainset];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      demos = shuffled.slice(0, this.k);
+    } else {
+      // First k examples
+      demos = trainset.slice(0, Math.min(this.k, trainset.length));
+    }
 
-		// Add to all predictors
-		for (const predictor of compiled.predictors()) {
-			predictor.updateDemos(demos);
-}
+    // Add to all predictors
+    for (const predictor of compiled.predictors()) {
+      predictor.updateDemos(demos);
+    }
 
-		(compiled as any)._compiled = true;
-		return compiled;
-}
+    (compiled as any)._compiled = true;
+    return compiled;
+  }
 }
 
 /**
  * Candidate program evaluation result exactly matching Stanford DSPy
  */
 export interface CandidateResult {
-	score:number;
-	subscores:number[];
-	seed:number;
-	program:DSPyModule;
+  score: number;
+  subscores: number[];
+  seed: number;
+  program: DSPyModule;
 }
 
 /**
@@ -203,277 +203,277 @@ export interface CandidateResult {
  * ```
  */
 export class BootstrapFewShotWithRandomSearch extends Teleprompter {
-	private metric:MetricFunction;
-	private teacher_settings:Record<string, any>;
-	private max_rounds:number;
-	private num_threads?:number;
-	private stop_at_score?:number;
-	private metric_threshold?:number;
-	private min_num_samples:number;
-	private max_num_samples:number;
-	private max_errors?:number;
-	private num_candidate_sets:number;
-	private max_labeled_demos:number;
+  private metric: MetricFunction;
+  private teacher_settings: Record<string, any>;
+  private max_rounds: number;
+  private num_threads?: number;
+  private stop_at_score?: number;
+  private metric_threshold?: number;
+  private min_num_samples: number;
+  private max_num_samples: number;
+  private max_errors?: number;
+  private num_candidate_sets: number;
+  private max_labeled_demos: number;
 
-	// Internal state
-	private trainset:Example[] = [];
-	private valset:Example[] = [];
+  // Internal state
+  private trainset: Example[] = [];
+  private valset: Example[] = [];
 
-	constructor(config:{
-		metric:MetricFunction;
-		teacher_settings?:Record<string, any> | null;
-		max_bootstrapped_demos?:number;
-		max_labeled_demos?:number;
-		max_rounds?:number;
-		num_candidate_programs?:number;
-		num_threads?:number | null;
-		max_errors?:number | null;
-		stop_at_score?:number | null;
-		metric_threshold?:number | null;
-}) {
-		super();
+  constructor(config: {
+    metric: MetricFunction;
+    teacher_settings?: Record<string, any> | null;
+    max_bootstrapped_demos?: number;
+    max_labeled_demos?: number;
+    max_rounds?: number;
+    num_candidate_programs?: number;
+    num_threads?: number | null;
+    max_errors?: number | null;
+    stop_at_score?: number | null;
+    metric_threshold?: number | null;
+  }) {
+    super();
 
-		this.metric = config.metric;
-		this.teacher_settings = config.teacher_settings || {};
-		this.max_rounds = config.max_rounds ?? 1;
+    this.metric = config.metric;
+    this.teacher_settings = config.teacher_settings || {};
+    this.max_rounds = config.max_rounds ?? 1;
 
-		this.num_threads = config.num_threads ?? undefined;
-		this.stop_at_score = config.stop_at_score ?? undefined;
-		this.metric_threshold = config.metric_threshold ?? undefined;
-		this.min_num_samples = 1;
-		this.max_num_samples = config.max_bootstrapped_demos ?? 4;
-		this.max_errors = config.max_errors ?? undefined;
-		this.num_candidate_sets = config.num_candidate_programs ?? 16;
-		this.max_labeled_demos = config.max_labeled_demos ?? 16;
+    this.num_threads = config.num_threads ?? undefined;
+    this.stop_at_score = config.stop_at_score ?? undefined;
+    this.metric_threshold = config.metric_threshold ?? undefined;
+    this.min_num_samples = 1;
+    this.max_num_samples = config.max_bootstrapped_demos ?? 4;
+    this.max_errors = config.max_errors ?? undefined;
+    this.num_candidate_sets = config.num_candidate_programs ?? 16;
+    this.max_labeled_demos = config.max_labeled_demos ?? 16;
 
-		logger.info(
-			`Going to sample between ${this.min_num_samples} and ${this.max_num_samples} traces per predictor.`,
-		);
-		logger.info(
-			`Will attempt to bootstrap ${this.num_candidate_sets} candidate sets.`,
-		);
-}
+    logger.info(
+      `Going to sample between ${this.min_num_samples} and ${this.max_num_samples} traces per predictor.`
+    );
+    logger.info(
+      `Will attempt to bootstrap ${this.num_candidate_sets} candidate sets.`
+    );
+  }
 
-	/**
-	 * Compile method exactly matching Stanford DSPy API
-	 */
-	async compile(
-		student:DSPyModule,
-		config:{
-			trainset:Example[];
-			teacher?:DSPyModule | null;
-			valset?:Example[] | null;
-			restrict?:number[] | null;
-			labeled_sample?:boolean;
-			[key:string]: any;
-},
-	):Promise<DSPyModule> {
-		const {
-			teacher,
-			trainset,
-			valset,
-			restrict,
-			labeled_sample = true,
-} = config;
+  /**
+   * Compile method exactly matching Stanford DSPy API
+   */
+  async compile(
+    student: DSPyModule,
+    config: {
+      trainset: Example[];
+      teacher?: DSPyModule | null;
+      valset?: Example[] | null;
+      restrict?: number[] | null;
+      labeled_sample?: boolean;
+      [key: string]: any;
+    }
+  ): Promise<DSPyModule> {
+    const {
+      teacher,
+      trainset,
+      valset,
+      restrict,
+      labeled_sample = true,
+    } = config;
 
-		this.trainset = trainset;
-		this.valset = valset || trainset; // Note:Stanford DSPy uses trainset as fallback
+    this.trainset = trainset;
+    this.valset = valset || trainset; // Note:Stanford DSPy uses trainset as fallback
 
-		const effective_max_errors = this.max_errors ?? 10; // dspy.settings.max_errors equivalent
+    const effective_max_errors = this.max_errors ?? 10; // dspy.settings.max_errors equivalent
 
-		const scores:number[] = [];
-		const all_subscores:number[][] = [];
-		const score_data:CandidateResult[] = [];
-		let best_program:DSPyModule | undefined;
+    const scores: number[] = [];
+    const all_subscores: number[][] = [];
+    const score_data: CandidateResult[] = [];
+    let best_program: DSPyModule | undefined;
 
-		// Generate candidate programs exactly matching Stanford implementation
-		for (let seed = -3; seed < this.num_candidate_sets; seed++) {
-			if (
-				restrict !== null &&
-				restrict !== undefined &&
-				!restrict.includes(seed)
-			) {
-				continue;
-}
+    // Generate candidate programs exactly matching Stanford implementation
+    for (let seed = -3; seed < this.num_candidate_sets; seed++) {
+      if (
+        restrict !== null &&
+        restrict !== undefined &&
+        !restrict.includes(seed)
+      ) {
+        continue;
+      }
 
-			const trainset_copy = [...this.trainset];
-			let program:DSPyModule;
+      const trainset_copy = [...this.trainset];
+      let program: DSPyModule;
 
-			if (seed === -3) {
-				// Zero-shot
-				program = student.reset_copy();
-} else if (seed === -2) {
-				// Labels only
-				const teleprompter = new LabeledFewShot(this.max_labeled_demos);
-				program = await teleprompter.compile(student, {
-					trainset:trainset_copy,
-					sample:labeled_sample,
-});
-} else if (seed === -1) {
-				// Unshuffled few-shot
-				const optimizer = new BootstrapFewShot({
-					metric:this.metric,
-					metric_threshold:this.metric_threshold,
-					teacher_settings:this.teacher_settings,
-					max_bootstrapped_demos:this.max_num_samples,
-					max_labeled_demos:this.max_labeled_demos,
-					max_rounds:this.max_rounds,
-					max_errors:effective_max_errors,
-});
+      if (seed === -3) {
+        // Zero-shot
+        program = student.reset_copy();
+      } else if (seed === -2) {
+        // Labels only
+        const teleprompter = new LabeledFewShot(this.max_labeled_demos);
+        program = await teleprompter.compile(student, {
+          trainset: trainset_copy,
+          sample: labeled_sample,
+        });
+      } else if (seed === -1) {
+        // Unshuffled few-shot
+        const optimizer = new BootstrapFewShot({
+          metric: this.metric,
+          metric_threshold: this.metric_threshold,
+          teacher_settings: this.teacher_settings,
+          max_bootstrapped_demos: this.max_num_samples,
+          max_labeled_demos: this.max_labeled_demos,
+          max_rounds: this.max_rounds,
+          max_errors: effective_max_errors,
+        });
 
-				program = await optimizer.compile(student, {
-					trainset:trainset_copy,
-					teacher,
-});
-} else {
-				if (seed < 0) {
-					throw new Error(`Invalid seed:${seed}`);
-}
+        program = await optimizer.compile(student, {
+          trainset: trainset_copy,
+          teacher,
+        });
+      } else {
+        if (seed < 0) {
+          throw new Error(`Invalid seed:${seed}`);
+        }
 
-				// Random shuffle and size exactly matching Stanford implementation
-				this.shuffleArray(trainset_copy, seed);
-				const size = this.seededRandomInt(
-					seed,
-					this.min_num_samples,
-					this.max_num_samples,
-				);
+        // Random shuffle and size exactly matching Stanford implementation
+        this.shuffleArray(trainset_copy, seed);
+        const size = this.seededRandomInt(
+          seed,
+          this.min_num_samples,
+          this.max_num_samples
+        );
 
-				const optimizer = new BootstrapFewShot({
-					metric:this.metric,
-					metric_threshold:this.metric_threshold,
-					teacher_settings:this.teacher_settings,
-					max_bootstrapped_demos:size,
-					max_labeled_demos:this.max_labeled_demos,
-					max_rounds:this.max_rounds,
-					max_errors:effective_max_errors,
-});
+        const optimizer = new BootstrapFewShot({
+          metric: this.metric,
+          metric_threshold: this.metric_threshold,
+          teacher_settings: this.teacher_settings,
+          max_bootstrapped_demos: size,
+          max_labeled_demos: this.max_labeled_demos,
+          max_rounds: this.max_rounds,
+          max_errors: effective_max_errors,
+        });
 
-				program = await optimizer.compile(student, {
-					trainset:trainset_copy,
-					teacher,
-});
-}
+        program = await optimizer.compile(student, {
+          trainset: trainset_copy,
+          teacher,
+        });
+      }
 
-			// Evaluate exactly matching Stanford Evaluate class
-			const evaluate_result = await this.evaluateProgram(program, this.valset);
-			const {score} = evaluate_result;
-			const {subscores} = evaluate_result;
+      // Evaluate exactly matching Stanford Evaluate class
+      const evaluate_result = await this.evaluateProgram(program, this.valset);
+      const { score } = evaluate_result;
+      const { subscores } = evaluate_result;
 
-			all_subscores.push(subscores);
+      all_subscores.push(subscores);
 
-			if (scores.length === 0 || score > Math.max(...scores)) {
-				logger.info("New best score:", score, "for seed", seed);
-				best_program = program;
-}
+      if (scores.length === 0 || score > Math.max(...scores)) {
+        logger.info('New best score:', score, 'for seed', seed);
+        best_program = program;
+      }
 
-			scores.push(score);
-			logger.info(`Scores so far:${scores}`);
-			logger.info(`Best score so far:${Math.max(...scores)}`);
+      scores.push(score);
+      logger.info(`Scores so far:${scores}`);
+      logger.info(`Best score so far:${Math.max(...scores)}`);
 
-			score_data.push({
-				score,
-				subscores,
-				seed,
-				program,
-});
+      score_data.push({
+        score,
+        subscores,
+        seed,
+        program,
+      });
 
-			if (
-				this.stop_at_score !== null &&
-				this.stop_at_score !== undefined &&
-				score >= this.stop_at_score
-			) {
-				logger.info(
-					`Stopping early because score ${score} is >= stop_at_score ${this.stop_at_score}`,
-				);
-				break;
-}
-}
+      if (
+        this.stop_at_score !== null &&
+        this.stop_at_score !== undefined &&
+        score >= this.stop_at_score
+      ) {
+        logger.info(
+          `Stopping early because score ${score} is >= stop_at_score ${this.stop_at_score}`
+        );
+        break;
+      }
+    }
 
-		if (!best_program) {
-			throw new Error("No candidate programs were successfully generated");
-}
+    if (!best_program) {
+      throw new Error('No candidate programs were successfully generated');
+    }
 
-		// Attach metadata exactly matching Stanford implementation
-		(best_program as any).candidate_programs = score_data;
-		(best_program as any).candidate_programs = score_data.sort(
-			(a, b) => b.score - a.score,
-		);
+    // Attach metadata exactly matching Stanford implementation
+    (best_program as any).candidate_programs = score_data;
+    (best_program as any).candidate_programs = score_data.sort(
+      (a, b) => b.score - a.score
+    );
 
-		logger.info(`${score_data.length} candidate programs found.`);
+    logger.info(`${score_data.length} candidate programs found.`);
 
-		(best_program as any)._compiled = true;
-		return best_program;
-}
+    (best_program as any)._compiled = true;
+    return best_program;
+  }
 
-	/**
-	 * Evaluate program exactly matching Stanford Evaluate class behavior
-	 */
-	private async evaluateProgram(
-		program:DSPyModule,
-		devset:Example[],
-	):Promise<{ score: number; subscores: number[]}> {
-		const subscores:number[] = [];
-		let total_score = 0;
-		let valid_evaluations = 0;
+  /**
+   * Evaluate program exactly matching Stanford Evaluate class behavior
+   */
+  private async evaluateProgram(
+    program: DSPyModule,
+    devset: Example[]
+  ): Promise<{ score: number; subscores: number[] }> {
+    const subscores: number[] = [];
+    let total_score = 0;
+    let valid_evaluations = 0;
 
-		for (const example of devset) {
-			try {
-				const prediction = await program.forward(example.inputs);
-				const trace:any[] = []; // Simplified trace for metric evaluation
+    for (const example of devset) {
+      try {
+        const prediction = await program.forward(example.inputs);
+        const trace: any[] = []; // Simplified trace for metric evaluation
 
-				const result = this.metric(example, prediction, trace);
-				const score =
-					typeof result === "boolean" ? (result ? 1:0) : (result as number);
+        const result = this.metric(example, prediction, trace);
+        const score =
+          typeof result === 'boolean' ? (result ? 1 : 0) : (result as number);
 
-				subscores.push(score);
-				total_score += score;
-				valid_evaluations++;
-} catch (_error) {
-				subscores.push(0);
-				// Continue evaluation like Stanford implementation
-}
-}
+        subscores.push(score);
+        total_score += score;
+        valid_evaluations++;
+      } catch (_error) {
+        subscores.push(0);
+        // Continue evaluation like Stanford implementation
+      }
+    }
 
-		const average_score =
-			valid_evaluations > 0 ? total_score / valid_evaluations:0;
+    const average_score =
+      valid_evaluations > 0 ? total_score / valid_evaluations : 0;
 
-		return {
-			score:average_score,
-			subscores,
-};
-}
+    return {
+      score: average_score,
+      subscores,
+    };
+  }
 
-	/**
-	 * Shuffle array with seeded random exactly matching Stanford random.Random(seed).shuffle
-	 */
-	private shuffleArray(array:any[], seed:number): void {
-		const rng = this.createSeededRNG(seed);
-		for (let i = array.length - 1; i > 0; i--) {
-			const j = Math.floor(rng.random() * (i + 1));
-			[array[i], array[j]] = [array[j], array[i]];
-}
-}
+  /**
+   * Shuffle array with seeded random exactly matching Stanford random.Random(seed).shuffle
+   */
+  private shuffleArray(array: any[], seed: number): void {
+    const rng = this.createSeededRNG(seed);
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(rng.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
 
-	/**
-	 * Seeded random integer exactly matching Stanford random.Random(seed).randint
-	 */
-	private seededRandomInt(seed:number, min:number, max:number): number {
-		const rng = this.createSeededRNG(seed);
-		return Math.floor(rng.random() * (max - min + 1)) + min;
-}
+  /**
+   * Seeded random integer exactly matching Stanford random.Random(seed).randint
+   */
+  private seededRandomInt(seed: number, min: number, max: number): number {
+    const rng = this.createSeededRNG(seed);
+    return Math.floor(rng.random() * (max - min + 1)) + min;
+  }
 
-	/**
-	 * Create seeded RNG exactly matching Stanford random.Random behavior
-	 */
-	private createSeededRNG(seed:number): { random: () => number} {
-		let state = seed;
-		return {
-			random:() => {
-				state = (state * 1103515245 + 12345) & 0x7fffffff;
-				return state / 0x7fffffff;
-},
-};
-}
+  /**
+   * Create seeded RNG exactly matching Stanford random.Random behavior
+   */
+  private createSeededRNG(seed: number): { random: () => number } {
+    let state = seed;
+    return {
+      random: () => {
+        state = (state * 1103515245 + 12345) & 0x7fffffff;
+        return state / 0x7fffffff;
+      },
+    };
+  }
 }
 
 // Export for backward compatibility

@@ -37,7 +37,7 @@ export namespace BunProc {
       stderr,
 })
     if (code !== 0) {
-      throw new Error(`Command failed with exit code ${result.exitCode}`)`
+      throw new Error(`Command failed with exit code ${result.exitCode}`)
 }
     return result
 }

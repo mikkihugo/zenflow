@@ -13,6 +13,10 @@ import {
   withTrace,
   type Logger,
 } from '@claude-zen/foundation';
+<<<<<<< HEAD
+=======
+import type { Logger } from '@claude-zen/foundation';
+>>>>>>> origin/main
 
 import type {
   PerformanceConfig,
@@ -22,63 +26,64 @@ import type {
 } from './types';
 
 interface PerformanceSnapshot {
-  timestamp:number;
-  responseTime:number;
-  throughput:number;
-  memoryUsage:number;
-  cacheHitRate:number;
-  errorRate:number;
-  cpuUsage:number;
-  activeConnections:number;
-  queueSize:number;
+  timestamp: number;
+  responseTime: number;
+  throughput: number;
+  memoryUsage: number;
+  cacheHitRate: number;
+  errorRate: number;
+  cpuUsage: number;
+  activeConnections: number;
+  queueSize: number;
 }
 
 interface TuningParameter {
-  name:string;
-  currentValue:number;
-  minValue:number;
-  maxValue:number;
-  step:number;
-  impact:number;
-  lastAdjusted:number;
+  name: string;
+  currentValue: number;
+  minValue: number;
+  maxValue: number;
+  step: number;
+  impact: number;
+  lastAdjusted: number;
 }
 
 interface TuningResult {
-  action:TuningAction;
-  parameters:Record<string, unknown>;
-  beforeSnapshot:PerformanceSnapshot;
-  afterSnapshot?:PerformanceSnapshot;
-  improvement:number;
-  success:boolean;
-  timestamp:number;
+  action: TuningAction;
+  parameters: Record<string, unknown>;
+  beforeSnapshot: PerformanceSnapshot;
+  afterSnapshot?: PerformanceSnapshot;
+  improvement: number;
+  success: boolean;
+  timestamp: number;
 }
 
 export class PerformanceTuningStrategy extends EventEmitter {
-  private logger:Logger;
-  private config:PerformanceConfig;
-  private telemetry:TelemetryManager;
-  private snapshots:PerformanceSnapshot[] = [];
+  private logger: Logger;
+  private config: PerformanceConfig;
+  private telemetry: TelemetryManager;
+  private snapshots: PerformanceSnapshot[] = [];
   private tuningParameters = new Map<string, TuningParameter>();
-  private tuningHistory:TuningResult[] = [];
-  private tuningTimer?:NodeJS.Timeout;
-  private metrics:StrategyMetrics['performance'];
+  private tuningHistory: TuningResult[] = [];
+  private tuningTimer?: NodeJS.Timeout;
+  private metrics: StrategyMetrics['performance'];
   private initialized = false;
   private stabilityCounter = 0;
   private lastTuningTime = 0;
 
-  constructor(config:PerformanceConfig) {
+  constructor(config: PerformanceConfig) {
     super();
     this.config = config;
     this.logger = getLogger('PerformanceTuningStrategy');
     this.telemetry = new TelemetryManager({
-      serviceName: 'performance-tuning',      enableTracing:true,
-      enableMetrics:true,
-});
+      serviceName: 'performance-tuning',
+      enableTracing: true,
+      enableMetrics: true,
+    });
     this.initializeMetrics();
     this.initializeTuningParameters();
-}
+  }
 
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     if (this.initialized) return;
 
     try {
@@ -88,33 +93,38 @@ export class PerformanceTuningStrategy extends EventEmitter {
         // Start performance monitoring
         if (this.config.enabled && this.config.tuning.autoTune) {
           this.startPerformanceMonitoring();
-}
+        }
 
         this.initialized = true;
         this.logger.info('Performance tuning strategy initialized', {
-          autoTune:this.config.tuning.autoTune,
-          interval:this.config.tuning.interval,
-});
+          autoTune: this.config.tuning.autoTune,
+          interval: this.config.tuning.interval,
+        });
         recordMetric('performance_tuning_initialized', 1);
-});
-} catch (error) {
+      });
+    } catch (error) {
       this.logger.error(
         'Failed to initialize performance tuning strategy: ',
         error
       );
       throw error;
-}
-}
+    }
+  }
 
-  async tune():Promise<TuningRecommendation[]> {
+  async tune(): Promise<TuningRecommendation[]> {
     if (!this.config.enabled) {
       return [];
     }
 
     return await withTrace('performance-tuning-cycle', async (span) => {
       span?.setAttributes({
+<<<<<<< HEAD
         tuningAuto: this.config.tuning.autoTune,
         tuningSnapshots: this.snapshots.length,
+=======
+        'tuning.auto': this.config.tuning.autoTune,
+        'tuning.snapshots': this.snapshots.length,
+>>>>>>> origin/main
       });
 
       try {
@@ -135,103 +145,114 @@ export class PerformanceTuningStrategy extends EventEmitter {
         // Apply automatic tuning if enabled
         if (this.config.tuning.autoTune && this.canPerformTuning()) {
           await this.applyTuning(recommendations.slice(0, 3)); // Apply top 3 recommendations
-}
+        }
 
         this.emit('tuningAnalysisCompleted', {
-          snapshot:currentSnapshot,
+          snapshot: currentSnapshot,
           analysis,
           recommendations,
-});
+        });
 
         recordMetric('performance_tuning_analysis_completed', 1, {
-          recommendationsCount:recommendations.length,
-});
+          recommendationsCount: recommendations.length,
+        });
 
         return recommendations;
-} catch (error) {
+      } catch (error) {
         this.logger.error('Performance tuning cycle failed: ', error);
         recordMetric('performance_tuning_cycle_failed', 1);
         throw error;
-}
-});
-}
+      }
+    });
+  }
 
-  private initializeMetrics():void {
+  private initializeMetrics(): void {
     this.metrics = {
-      tuningActions:0,
-      performanceImprovements:0,
-      regressions:0,
-      stabilityScore:100,
-};
-}
+      tuningActions: 0,
+      performanceImprovements: 0,
+      regressions: 0,
+      stabilityScore: 100,
+    };
+  }
 
-  private initializeTuningParameters():void {
+  private initializeTuningParameters(): void {
     // Cache size parameter
     this.tuningParameters.set('cacheSize', {
-      name: 'cacheSize',      currentValue:1000,
-      minValue:100,
-      maxValue:10000,
-      step:100,
-      impact:0.3,
-      lastAdjusted:0,
-});
+      name: 'cacheSize',
+      currentValue: 1000,
+      minValue: 100,
+      maxValue: 10000,
+      step: 100,
+      impact: 0.3,
+      lastAdjusted: 0,
+    });
 
     // Cache TTL parameter
     this.tuningParameters.set('cacheTtl', {
-      name: 'cacheTtl',      currentValue:300000, // 5 minutes
-      minValue:60000, // 1 minute
-      maxValue:3600000, // 1 hour
-      step:60000,
-      impact:0.2,
-      lastAdjusted:0,
-});
+      name: 'cacheTtl',
+      currentValue: 300000, // 5 minutes
+      minValue: 60000, // 1 minute
+      maxValue: 3600000, // 1 hour
+      step: 60000,
+      impact: 0.2,
+      lastAdjusted: 0,
+    });
 
     // Connection pool size
     this.tuningParameters.set('connectionPoolSize', {
-      name: 'connectionPoolSize',      currentValue:10,
-      minValue:5,
-      maxValue:100,
-      step:5,
-      impact:0.25,
-      lastAdjusted:0,
-});
+      name: 'connectionPoolSize',
+      currentValue: 10,
+      minValue: 5,
+      maxValue: 100,
+      step: 5,
+      impact: 0.25,
+      lastAdjusted: 0,
+    });
 
     // Batch size
     this.tuningParameters.set('batchSize', {
-      name: 'batchSize',      currentValue:50,
-      minValue:10,
-      maxValue:500,
-      step:10,
-      impact:0.15,
-      lastAdjusted:0,
-});
+      name: 'batchSize',
+      currentValue: 50,
+      minValue: 10,
+      maxValue: 500,
+      step: 10,
+      impact: 0.15,
+      lastAdjusted: 0,
+    });
 
     // Compression level
     this.tuningParameters.set('compressionLevel', {
-      name: 'compressionLevel',      currentValue:6,
-      minValue:1,
-      maxValue:9,
-      step:1,
-      impact:0.1,
-      lastAdjusted:0,
-});
-}
+      name: 'compressionLevel',
+      currentValue: 6,
+      minValue: 1,
+      maxValue: 9,
+      step: 1,
+      impact: 0.1,
+      lastAdjusted: 0,
+    });
+  }
 
+<<<<<<< HEAD
   private async takePerformanceSnapshot():Promise<PerformanceSnapshot> {
     // Real system monitoring implementations
+=======
+  private async takePerformanceSnapshot(): Promise<PerformanceSnapshot> {
+    // In a real implementation, these would come from actual system monitoring
+>>>>>>> origin/main
     return {
-      timestamp:Date.now(),
-      responseTime:await this.measureResponseTime(),
-      throughput:await this.measureThroughput(),
-      memoryUsage:process.memoryUsage().heapUsed / 1024 / 1024, // MB
-      cacheHitRate:await this.measureCacheHitRate(),
-      errorRate:await this.measureErrorRate(),
-      cpuUsage:await this.measureCpuUsage(),
-      activeConnections:await this.measureActiveConnections(),
-      queueSize:await this.measureQueueSize(),
-};
-}
+      timestamp: Date.now(),
+      responseTime: await this.measureResponseTime(),
+      throughput: await this.measureThroughput(),
+      memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024, // MB
+      cacheHitRate: await this.measureCacheHitRate(),
+      errorRate: await this.measureErrorRate(),
+      cpuUsage: await this.measureCpuUsage(),
+      activeConnections: await this.measureActiveConnections(),
+      queueSize: await this.measureQueueSize(),
+    };
+  }
 
+<<<<<<< HEAD
   private measureResponseTime():Promise<number> {
     // Mock implementation
     return Promise.resolve(Math.random() * 100 + 10); // 10-110ms
@@ -266,27 +287,66 @@ export class PerformanceTuningStrategy extends EventEmitter {
     // Mock implementation - no need for async
     return Promise.resolve(Math.floor(Math.random() * 20)); // 0-20 queued requests
 }
+=======
+  private async measureResponseTime(): Promise<number> {
+    // Mock implementation
+    return Math.random() * 100 + 10; // 10-110ms
+  }
 
-  private trimSnapshots():void {
+  private async measureThroughput(): Promise<number> {
+    // Mock implementation - requests per second
+    return Math.random() * 2000 + 500; // 500-2500 rps
+  }
+
+  private async measureCacheHitRate(): Promise<number> {
+    // Mock implementation
+    return Math.random() * 0.4 + 0.6; // 60-100%
+  }
+
+  private async measureErrorRate(): Promise<number> {
+    // Mock implementation
+    return Math.random() * 0.05; // 0-5%
+  }
+
+  private async measureCpuUsage(): Promise<number> {
+    // Mock implementation
+    return Math.random() * 0.7 + 0.1; // 10-80%
+  }
+
+  private async measureActiveConnections(): Promise<number> {
+    // Mock implementation
+    return Math.floor(Math.random() * 50 + 10); // 10-60 connections
+  }
+
+  private async measureQueueSize(): Promise<number> {
+    // Mock implementation
+    return Math.floor(Math.random() * 20); // 0-20 queued requests
+  }
+>>>>>>> origin/main
+
+  private trimSnapshots(): void {
     // Keep last 100 snapshots (about 3+ hours if taken every 2 minutes)
     if (this.snapshots.length > 100) {
       this.snapshots = this.snapshots.slice(-100);
-}
-}
+    }
+  }
 
-  private analyzePerformanceTrends():{
+  private analyzePerformanceTrends(): {
     responseTimeTrend: 'improving|stable|degrading';
     throughputTrend: 'improving|stable|degrading';
     memoryTrend: 'improving|stable|degrading';
-    overallHealth:number;
-    bottlenecks:string[];
-} {
+    overallHealth: number;
+    bottlenecks: string[];
+  } {
     if (this.snapshots.length < 2) {
       return {
-        responseTimeTrend: 'stable',        throughputTrend: 'stable',        memoryTrend: 'stable',        overallHealth:100,
-        bottlenecks:[],
-};
-}
+        responseTimeTrend: 'stable',
+        throughputTrend: 'stable',
+        memoryTrend: 'stable',
+        overallHealth: 100,
+        bottlenecks: [],
+      };
+    }
 
     const recent = this.snapshots.slice(-10); // Last 10 snapshots
     const older = this.snapshots.slice(-20, -10); // Previous 10 snapshots
@@ -319,54 +379,54 @@ export class PerformanceTuningStrategy extends EventEmitter {
 
     if (latestSnapshot.responseTime > this.config.targets.responseTime) {
       health -= 25;
-}
+    }
     if (latestSnapshot.throughput < this.config.targets.throughput) {
       health -= 20;
-}
+    }
     if (latestSnapshot.cacheHitRate < this.config.targets.cacheEfficiency) {
       health -= 15;
-}
+    }
     if (latestSnapshot.errorRate > 0.01) {
       // 1%
       health -= 30;
-}
+    }
     if (latestSnapshot.memoryUsage > 1000) {
       // 1GB
       health -= 10;
-}
+    }
 
     // Identify bottlenecks
-    const bottlenecks:string[] = [];
+    const bottlenecks: string[] = [];
     if (recentAvgResponseTime > this.config.targets.responseTime * 1.5) {
       bottlenecks.push('High response time');
-}
+    }
     if (latestSnapshot.queueSize > 10) {
       bottlenecks.push('High queue size');
-}
+    }
     if (latestSnapshot.cpuUsage > 0.8) {
       bottlenecks.push('High CPU usage');
-}
+    }
     if (
       latestSnapshot.memoryUsage >
       this.config.targets.memoryEfficiency * 1000
     ) {
       bottlenecks.push('High memory usage');
-}
+    }
 
     return {
       responseTimeTrend,
       throughputTrend,
       memoryTrend,
-      overallHealth:Math.max(0, health),
+      overallHealth: Math.max(0, health),
       bottlenecks,
-};
-}
+    };
+  }
 
   private getTrend(
-    recent:number,
-    older:number,
-    higherIsBetter:boolean
-  ):'improving|stable|degrading' {
+    recent: number,
+    older: number,
+    higherIsBetter: boolean
+  ): 'improving|stable|degrading' {
     if (older === 0) return 'stable';
 
     const change = (recent - older) / older;
@@ -374,27 +434,37 @@ export class PerformanceTuningStrategy extends EventEmitter {
 
     if (Math.abs(change) < threshold) {
       return 'stable';
-}
+    }
 
     if (higherIsBetter) {
       return change > 0 ? 'improving' : ' degrading';
-} else {
+    } else {
       return change < 0 ? 'improving' : ' degrading';
-}
-}
+    }
+  }
 
-  private average(values:number[]): number {
+  private average(values: number[]): number {
     return values.length > 0
       ? values.reduce((sum, val) => sum + val, 0) / values.length
-      :0;
-}
+      : 0;
+  }
 
+<<<<<<< HEAD
   private generateResponseTimeRecommendations(
     analysis: unknown,
     snapshot: PerformanceSnapshot
   ): TuningRecommendation[] {
     const recommendations: TuningRecommendation[] = [];
     
+=======
+  private async generateTuningRecommendations(
+    analysis: any,
+    snapshot: PerformanceSnapshot
+  ): Promise<TuningRecommendation[]> {
+    const recommendations: TuningRecommendation[] = [];
+
+    // Response time optimization
+>>>>>>> origin/main
     if (
       (analysis as { responseTimeTrend?: string }).responseTimeTrend === 'degrading' ||
       snapshot.responseTime > this.config.targets.responseTime
@@ -412,7 +482,12 @@ export class PerformanceTuningStrategy extends EventEmitter {
           parameters: {
             currentSize: this.tuningParameters.get('cacheSize')?.currentValue,
             newSize: Math.min(
+<<<<<<< HEAD
               (this.tuningParameters.get('cacheSize')?.currentValue || 1000) * 1.2,
+=======
+              (this.tuningParameters.get('cacheSize')?.currentValue || 1000) *
+                1.2,
+>>>>>>> origin/main
               this.tuningParameters.get('cacheSize')?.maxValue || 10000
             ),
           },
@@ -446,9 +521,12 @@ export class PerformanceTuningStrategy extends EventEmitter {
         });
       }
     }
+<<<<<<< HEAD
     
     return recommendations;
   }
+=======
+>>>>>>> origin/main
 
   private generateThroughputRecommendations(
     analysis: unknown,
@@ -505,9 +583,12 @@ export class PerformanceTuningStrategy extends EventEmitter {
         });
       }
     }
+<<<<<<< HEAD
     
     return recommendations;
   }
+=======
+>>>>>>> origin/main
 
   private generateMemoryRecommendations(
     analysis: unknown,
@@ -539,9 +620,12 @@ export class PerformanceTuningStrategy extends EventEmitter {
         },
       });
     }
+<<<<<<< HEAD
     
     return recommendations;
   }
+=======
+>>>>>>> origin/main
 
   private generateCacheRecommendations(snapshot: PerformanceSnapshot): TuningRecommendation[] {
     const recommendations: TuningRecommendation[] = [];
@@ -567,19 +651,28 @@ export class PerformanceTuningStrategy extends EventEmitter {
         },
       });
     }
+<<<<<<< HEAD
     
     return recommendations;
   }
+=======
+>>>>>>> origin/main
 
   private sortRecommendationsByPriority(recommendations: TuningRecommendation[]): TuningRecommendation[] {
     return recommendations.sort((a, b) => {
       const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
+<<<<<<< HEAD
       const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority];
+=======
+      const priorityDiff =
+        priorityOrder[b.priority] - priorityOrder[a.priority];
+>>>>>>> origin/main
       if (priorityDiff !== 0) return priorityDiff;
 
       return b.impact.performance - a.impact.performance;
     });
   }
+<<<<<<< HEAD
 
   private generateTuningRecommendations(
     analysis: unknown,
@@ -596,8 +689,10 @@ export class PerformanceTuningStrategy extends EventEmitter {
     // Sort by priority and expected impact
     return Promise.resolve(this.sortRecommendationsByPriority(recommendations));
   }
+=======
+>>>>>>> origin/main
 
-  private calculateOptimalTtl(snapshot:PerformanceSnapshot): number {
+  private calculateOptimalTtl(snapshot: PerformanceSnapshot): number {
     // Simple heuristic:adjust TTL based on cache hit rate
     const currentTtl =
       this.tuningParameters.get('cacheTtl')?.currentValue || 300000;
@@ -605,34 +700,34 @@ export class PerformanceTuningStrategy extends EventEmitter {
     if (snapshot.cacheHitRate < 0.7) {
       // Low hit rate, increase TTL
       return Math.min(currentTtl * 1.5, 3600000);
-} else if (snapshot.cacheHitRate > 0.95) {
+    } else if (snapshot.cacheHitRate > 0.95) {
       // Very high hit rate, might be able to decrease TTL
       return Math.max(currentTtl * 0.8, 60000);
-}
+    }
 
     return currentTtl;
-}
+  }
 
-  private canPerformTuning():boolean {
+  private canPerformTuning(): boolean {
     const now = Date.now();
     const minInterval = this.config.tuning.interval;
 
     // Respect minimum tuning frequency
     if (now - this.lastTuningTime < minInterval) {
       return false;
-}
+    }
 
     // Check stability - don't tune if system is unstable
     if (this.stabilityCounter < this.config.tuning.stabilityThreshold) {
       return false;
-}
+    }
 
     return true;
-}
+  }
 
   private async applyTuning(
-    recommendations:TuningRecommendation[]
-  ):Promise<void> {
+    recommendations: TuningRecommendation[]
+  ): Promise<void> {
     for (const recommendation of recommendations) {
       try {
         const beforeSnapshot = this.snapshots[this.snapshots.length - 1];
@@ -649,54 +744,60 @@ export class PerformanceTuningStrategy extends EventEmitter {
             afterSnapshot
           );
 
-          const result:TuningResult = {
-            action:recommendation.action,
-            parameters:recommendation.parameters,
+          const result: TuningResult = {
+            action: recommendation.action,
+            parameters: recommendation.parameters,
             beforeSnapshot,
             afterSnapshot,
             improvement,
-            success:true,
-            timestamp:Date.now(),
-};
+            success: true,
+            timestamp: Date.now(),
+          };
 
           this.tuningHistory.push(result);
           this.updateMetrics(result);
 
-          this.emit('tuningApplied', { recommendation, result});
+          this.emit('tuningApplied', { recommendation, result });
           recordMetric('performance_tuning_applied', 1, {
-            action:recommendation.action,
+            action: recommendation.action,
             improvement,
-});
+          });
 
           this.lastTuningTime = Date.now();
 
           this.logger.info(`Applied tuning:${recommendation.action}`, {
             improvement,
-            parameters:recommendation.parameters,
-});
-}
-} catch (error) {
+            parameters: recommendation.parameters,
+          });
+        }
+      } catch (error) {
         this.logger.error(
           `Failed to apply tuning:${recommendation.action}`,
           error
         );
         recordMetric('performance_tuning_failed', 1, {
-          action:recommendation.action,
-});
-}
-}
-}
+          action: recommendation.action,
+        });
+      }
+    }
+  }
 
+<<<<<<< HEAD
   private applyTuningAction(
     recommendation:TuningRecommendation
   ):Promise<boolean> {
+=======
+  private async applyTuningAction(
+    recommendation: TuningRecommendation
+  ): Promise<boolean> {
+>>>>>>> origin/main
     // Mock implementation - in real scenario, would apply actual configuration changes
     switch (recommendation.action) {
-      case 'increase_cache_size':{
+      case 'increase_cache_size': {
         const newSize = recommendation.parameters.newSize as number;
         this.updateTuningParameter('cacheSize', newSize);
         break;
-}
+      }
 
       case 'enable_compression':
         this.updateTuningParameter('compressionLevel', 6);
@@ -714,18 +815,23 @@ export class PerformanceTuningStrategy extends EventEmitter {
         // Would update cleanup interval
         break;
 
-      case 'optimize_ttl':{
+      case 'optimize_ttl': {
         const newTtl = recommendation.parameters.ttl as number;
         this.updateTuningParameter('cacheTtl', newTtl);
         break;
-}
-}
+      }
+    }
 
     // Simulate success/failure
+<<<<<<< HEAD
     return Promise.resolve(Math.random() > 0.1); // 90% success rate
 }
+=======
+    return Math.random() > 0.1; // 90% success rate
+  }
+>>>>>>> origin/main
 
-  private updateTuningParameter(name:string, value:number): void {
+  private updateTuningParameter(name: string, value: number): void {
     const param = this.tuningParameters.get(name);
     if (param) {
       param.currentValue = Math.max(
@@ -733,13 +839,13 @@ export class PerformanceTuningStrategy extends EventEmitter {
         Math.min(param.maxValue, value)
       );
       param.lastAdjusted = Date.now();
-}
-}
+    }
+  }
 
   private calculateImprovement(
-    before:PerformanceSnapshot,
-    after:PerformanceSnapshot
-  ):number {
+    before: PerformanceSnapshot,
+    after: PerformanceSnapshot
+  ): number {
     let improvement = 0;
     let factors = 0;
 
@@ -748,118 +854,133 @@ export class PerformanceTuningStrategy extends EventEmitter {
       improvement +=
         (before.responseTime - after.responseTime) / before.responseTime;
       factors++;
-}
+    }
 
     // Throughput improvement (higher is better)
     if (before.throughput > 0) {
       improvement += (after.throughput - before.throughput) / before.throughput;
       factors++;
-}
+    }
 
     // Cache hit rate improvement (higher is better)
     if (before.cacheHitRate > 0) {
       improvement +=
         (after.cacheHitRate - before.cacheHitRate) / before.cacheHitRate;
       factors++;
-}
+    }
 
-    return factors > 0 ? improvement / factors:0;
-}
+    return factors > 0 ? improvement / factors : 0;
+  }
 
-  private updateMetrics(result:TuningResult): void {
+  private updateMetrics(result: TuningResult): void {
     this.metrics.tuningActions++;
 
     if (result.improvement > 0.05) {
       // 5% improvement threshold
       this.metrics.performanceImprovements++;
       this.stabilityCounter = Math.min(this.stabilityCounter + 2, 10);
-} else if (result.improvement < -0.05) {
+    } else if (result.improvement < -0.05) {
       // 5% regression threshold
       this.metrics.regressions++;
       this.stabilityCounter = Math.max(this.stabilityCounter - 3, 0);
-} else {
+    } else {
       // Neutral result
       this.stabilityCounter = Math.max(this.stabilityCounter - 1, 0);
-}
+    }
 
     // Update stability score
     this.metrics.stabilityScore = (this.stabilityCounter / 10) * 100;
-}
+  }
 
-  private startPerformanceMonitoring():void {
+  private startPerformanceMonitoring(): void {
     this.tuningTimer = setInterval(async () => {
       try {
         await this.tune();
-} catch (error) {
-        this.logger.error('Performance tuning monitoring cycle failed: ', error);
-}
-}, this.config.tuning.interval);
-}
+      } catch (error) {
+        this.logger.error(
+          'Performance tuning monitoring cycle failed: ',
+          error
+        );
+      }
+    }, this.config.tuning.interval);
+  }
 
   // Public methods
 
-  getMetrics():StrategyMetrics['performance'] {
-    return { ...this.metrics};
-}
+  getMetrics(): StrategyMetrics['performance'] {
+    return { ...this.metrics };
+  }
 
-  getTuningHistory(limit = 50):TuningResult[] {
+  getTuningHistory(limit = 50): TuningResult[] {
     return this.tuningHistory.slice(-limit);
-}
+  }
 
-  getPerformanceSnapshots(limit = 100):PerformanceSnapshot[] {
+  getPerformanceSnapshots(limit = 100): PerformanceSnapshot[] {
     return this.snapshots.slice(-limit);
-}
+  }
 
-  getTuningParameters():Map<string, TuningParameter> {
+  getTuningParameters(): Map<string, TuningParameter> {
     return new Map(this.tuningParameters);
-}
+  }
 
+<<<<<<< HEAD
   forceOptimization():Promise<TuningRecommendation[]> {
+=======
+  async forceOptimization(): Promise<TuningRecommendation[]> {
+>>>>>>> origin/main
     this.logger.info('Force optimization requested');
     return this.tune();
-}
+  }
 
-  public setTuningParameter(name:string, value:number): boolean {
+  public setTuningParameter(name: string, value: number): boolean {
     const param = this.tuningParameters.get(name);
     if (!param) return false;
 
     if (value < param.minValue || value > param.maxValue) {
       return false;
-}
+    }
 
     param.currentValue = value;
     param.lastAdjusted = Date.now();
 
     this.logger.info(`Tuning parameter updated:${name} = ${value}`);
     return true;
-}
+  }
 
-  updateConfig(newConfig:Partial<PerformanceConfig>): void {
-    this.config = { ...this.config, ...newConfig};
+  updateConfig(newConfig: Partial<PerformanceConfig>): void {
+    this.config = { ...this.config, ...newConfig };
 
     // Restart monitoring if interval changed
     if (newConfig.tuning?.interval !== undefined) {
       if (this.tuningTimer) {
         clearInterval(this.tuningTimer);
-}
+      }
       if (this.config.enabled && this.config.tuning.autoTune) {
         this.startPerformanceMonitoring();
-}
-}
+      }
+    }
 
     this.logger.info('Performance tuning configuration updated', newConfig);
-}
+  }
 
+<<<<<<< HEAD
   shutdown():Promise<void> {
+=======
+  async shutdown(): Promise<void> {
+>>>>>>> origin/main
     if (this.tuningTimer) {
       clearInterval(this.tuningTimer);
-}
+    }
 
     this.snapshots = [];
     this.tuningHistory = [];
     this.initialized = false;
 
     this.logger.info('Performance tuning strategy shut down');
+<<<<<<< HEAD
     return Promise.resolve();
 }
+=======
+  }
+>>>>>>> origin/main
 }

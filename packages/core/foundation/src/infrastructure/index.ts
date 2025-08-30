@@ -5,4 +5,4 @@
  * Direct imports - no facade pattern.
  */
 
-export * from "./database/index.js";
+export * from './database/index.js';

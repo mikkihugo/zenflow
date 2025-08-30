@@ -8,10 +8,14 @@
 import type { CapacityManager } from '../interfaces';
 import type { Agent, Task } from '../types';
 export declare class TaskAgentMatcher {
-    private matchingHistory;
-    findCandidates(task: Task, availableAgents: Agent[], capacityManager: CapacityManager): Promise<Agent[]>;
-    private calculateMatchingScore;
-    private calculateCapabilityMatch;
-    private calculatePerformanceMatch;
+  private matchingHistory;
+  findCandidates(
+    task: Task,
+    availableAgents: Agent[],
+    capacityManager: CapacityManager
+  ): Promise<Agent[]>;
+  private calculateMatchingScore;
+  private calculateCapabilityMatch;
+  private calculatePerformanceMatch;
 }
 //# sourceMappingURL=task-agent-matcher.d.ts.map

@@ -58,7 +58,7 @@ export interface PerformanceMetrics {
       p99?:number;
       stdDev?:number;
       throughput?:number;
-      trend?:'improving' | ' stable' | ' declining' | stable|degrading;
+  trend?: 'improving' | 'stable' | 'declining' | 'degrading';
 }
   >;
   /** System performance */
@@ -82,9 +82,15 @@ export interface HealthStatus {
     string,
     {
       status: 'ok' | 'warning' | 'error';
+<<<<<<< HEAD
       message?:string;
       value?:number;
       threshold?:number;
+=======
+      message?: string;
+      value?: number;
+      threshold?: number;
+>>>>>>> origin/main
 }
   >;
   /** Additional health details */
@@ -96,7 +102,7 @@ export interface HealthStatus {
       used:string;
       free:string;
 };
-    [key:string]: any;
+    [key:string]: unknown;
 };
   /** Timestamp */
   timestamp:number;

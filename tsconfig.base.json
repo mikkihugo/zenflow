@@ -1,41 +1,41 @@
 {
-	"compilerOptions": {
-		"target": "ES2022",
-		"module": "ES2022",
-		"moduleResolution": "bundler",
-		"allowSyntheticDefaultImports": true,
-		"esModuleInterop": true,
-		"declaration": true,
-		"declarationMap": true,
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "declaration": true,
+    "declarationMap": true,
 
-		/* Output Configuration */
-		"outDir": "./dist",
+    /* Output Configuration */
+    "outDir": "./dist",
 
-		/* Strict Type Checking - Best Practices */
-		"strict": true,
-		"noImplicitAny": true,
-		"noImplicitReturns": true,
-		"noImplicitThis": true,
-		"noImplicitOverride": true,
-		"noFallthroughCasesInSwitch": true,
-		"noUncheckedIndexedAccess": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"exactOptionalPropertyTypes": true,
-		"noPropertyAccessFromIndexSignature": true,
-		"useDefineForClassFields": true,
+    /* Strict Type Checking - Best Practices */
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "exactOptionalPropertyTypes": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "useDefineForClassFields": true,
 
-		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": true,
-		"lib": ["ES2022", "DOM"],
-		"types": ["node"],
-		"incremental": true,
-		"composite": true
-	},
-	"references": [
-		{ "path": "packages/core/foundation" },
-		{ "path": "packages/core/database" },
-		{ "path": "apps/claude-code-zen-server" },
-		{ "path": "apps/web-dashboard" }
-	]
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["ES2022", "DOM"],
+    "types": ["node"],
+    "incremental": true,
+    "composite": true
+  },
+  "references": [
+    { "path": "packages/core/foundation" },
+    { "path": "packages/core/database" },
+    { "path": "apps/claude-code-zen-server" },
+    { "path": "apps/web-dashboard" }
+  ]
 }

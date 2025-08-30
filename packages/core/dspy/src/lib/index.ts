@@ -326,147 +326,147 @@
 
 // Adapters
 export {
-	ChatAdapter,
-	type ChatAdapterConfig,
-	type ChatMessage,
-} from "../adapters/chat-adapter";
+  ChatAdapter,
+  type ChatAdapterConfig,
+  type ChatMessage,
+} from '../adapters/chat-adapter';
 // PRIMARY SYSTEM INTERFACE - Brain Service
 export {
-	type BrainAnalysisRequest,
-	type BrainOptimizationRequest,
-	type BrainResponse,
-	BrainService,
-	getBrainService,
-	initializeBrainService,
-} from "../core/brain-service.js";
+  type BrainAnalysisRequest,
+  type BrainOptimizationRequest,
+  type BrainResponse,
+  BrainService,
+  getBrainService,
+  initializeBrainService,
+} from '../core/brain-service.js';
 // INTERNAL DSPy ENGINE (use Brain service instead of direct access)
-export { createDSPyEngine, DSPyEngine} from "../core/dspy-engine.js";
-export { getDSPyService, initializeDSPyService} from "../core/service.js";
+export { createDSPyEngine, DSPyEngine } from '../core/dspy-engine.js';
+export { getDSPyService, initializeDSPyService } from '../core/service.js';
 export {
-	type Adapter,
-	BaseAdapter,
-	type EvaluationDataInput,
-	type EvaluationDataOutput,
-	type FinetuneDataInput,
-	type FinetuneDataOutput,
-	type InferenceDataInput,
-	type InferenceDataOutput,
-} from "../interfaces/adapter";
+  type Adapter,
+  BaseAdapter,
+  type EvaluationDataInput,
+  type EvaluationDataOutput,
+  type FinetuneDataInput,
+  type FinetuneDataOutput,
+  type InferenceDataInput,
+  type InferenceDataOutput,
+} from '../interfaces/adapter';
 // Interfaces
 export {
-	BaseLM,
-	type GenerationOptions,
-	type LMInterface,
-	type ModelInfo,
-	type ModelUsage,
-} from "../interfaces/lm";
+  BaseLM,
+  type GenerationOptions,
+  type LMInterface,
+  type ModelInfo,
+  type ModelUsage,
+} from '../interfaces/lm';
 export {
-	type CacheEntry,
-	type CompileOptions,
-	DSPyError,
-	type EvaluationResult,
-	type FieldSpec,
-	type Hyperparameter,
-	type Logger,
-	type MetricFunction,
-	type ModelConfig,
-	ModelError,
-	type OptimizationCandidate,
-	type OptimizationConfig,
-	OptimizationError,
-	type Predictor,
-	type PredictorSignature,
-	type ProgressCallback,
-	type TrainingData,
-	ValidationError,
-} from "../interfaces/types";
-export { Example} from "../primitives/example";
+  type CacheEntry,
+  type CompileOptions,
+  DSPyError,
+  type EvaluationResult,
+  type FieldSpec,
+  type Hyperparameter,
+  type Logger,
+  type MetricFunction,
+  type ModelConfig,
+  ModelError,
+  type OptimizationCandidate,
+  type OptimizationConfig,
+  OptimizationError,
+  type Predictor,
+  type PredictorSignature,
+  type ProgressCallback,
+  type TrainingData,
+  ValidationError,
+} from '../interfaces/types';
+export { Example } from '../primitives/example';
 // Core primitives
-export { DSPyModule} from "../primitives/module";
-export { type Prediction, PredictionUtils} from "../primitives/prediction";
-export { SeededRNG} from "../primitives/seeded-rng";
+export { DSPyModule } from '../primitives/module';
+export { type Prediction, PredictionUtils } from '../primitives/prediction';
+export { SeededRNG } from '../primitives/seeded-rng';
 export {
-	type ActionOutput,
-	type AvatarModule,
-	AvatarOptimizer,
-	type ComparatorSignature,
-	type EvalResult,
-	type FeedbackBasedInstructionSignature,
-} from "../teleprompters/avatar-optimizer";
-export { BetterTogether} from "../teleprompters/better-together";
+  type ActionOutput,
+  type AvatarModule,
+  AvatarOptimizer,
+  type ComparatorSignature,
+  type EvalResult,
+  type FeedbackBasedInstructionSignature,
+} from '../teleprompters/avatar-optimizer';
+export { BetterTogether } from '../teleprompters/better-together';
 export {
-	type BootstrapCompileOptions,
-	type BootstrapConfig,
-	BootstrapFewShot,
-	DEFAULT_BOOTSTRAP_CONFIG,
-	LabeledFewShot,
-} from "../teleprompters/bootstrap";
+  type BootstrapCompileOptions,
+  type BootstrapConfig,
+  BootstrapFewShot,
+  DEFAULT_BOOTSTRAP_CONFIG,
+  LabeledFewShot,
+} from '../teleprompters/bootstrap';
 export type {
-	BootstrapFinetuneConfig,
-	TraceData,
-} from "../teleprompters/bootstrap-finetune";
+  BootstrapFinetuneConfig,
+  TraceData,
+} from '../teleprompters/bootstrap-finetune';
 export {
-	BootstrapFinetune,
-	FailedPrediction,
-	FinetuneTeleprompter,
-} from "../teleprompters/bootstrap-finetune";
+  BootstrapFinetune,
+  FailedPrediction,
+  FinetuneTeleprompter,
+} from '../teleprompters/bootstrap-finetune';
 export {
-	BootstrapFewShotWithRandomSearch,
-	type CandidateResult,
-} from "../teleprompters/bootstrap-random-search";
+  BootstrapFewShotWithRandomSearch,
+  type CandidateResult,
+} from '../teleprompters/bootstrap-random-search';
 export {
-	type BasicGenerateInstructionSignature,
-	COPRO,
-	type CoproCandidate,
-	type CoproStats,
-	type GenerateInstructionGivenAttemptsSignature,
-	type InstructionCompletions,
-} from "../teleprompters/copro";
-export type { EnsembleConfig} from "../teleprompters/ensemble";
-export { Ensemble} from "../teleprompters/ensemble";
+  type BasicGenerateInstructionSignature,
+  COPRO,
+  type CoproCandidate,
+  type CoproStats,
+  type GenerateInstructionGivenAttemptsSignature,
+  type InstructionCompletions,
+} from '../teleprompters/copro';
+export type { EnsembleConfig } from '../teleprompters/ensemble';
+export { Ensemble } from '../teleprompters/ensemble';
 export {
-	AUTO_RUN_SETTINGS,
-	type DSPyTrace,
-	DspyGEPAResult,
-	GEPA,
-	type GEPAFeedbackMetric,
-	type ScoreWithFeedback,
-} from "../teleprompters/gepa";
+  AUTO_RUN_SETTINGS,
+  type DSPyTrace,
+  DspyGEPAResult,
+  GEPA,
+  type GEPAFeedbackMetric,
+  type ScoreWithFeedback,
+} from '../teleprompters/gepa';
 export type {
-	DemoCandidates,
-	InstructionCandidates,
-	MIPROv2Config,
-	TrialLog,
-} from "../teleprompters/miprov2";
-export { MIPROv2} from "../teleprompters/miprov2";
-export { SignatureOptimizer} from "../teleprompters/signature-opt";
+  DemoCandidates,
+  InstructionCandidates,
+  MIPROv2Config,
+  TrialLog,
+} from '../teleprompters/miprov2';
+export { MIPROv2 } from '../teleprompters/miprov2';
+export { SignatureOptimizer } from '../teleprompters/signature-opt';
 // Teleprompters
-export { Teleprompter} from "../teleprompters/teleprompter";
+export { Teleprompter } from '../teleprompters/teleprompter';
 
 /**
  * Foundation-based Evaluate class for real evaluation
  */
 export class Evaluate {
-	async evaluate(program:any, dataset:any[]): Promise<{ score: number}> {
-		try {
-			// Use foundation to perform real evaluation
-			const { getDSPyService} = await import("../core/service.js");
-			const dspyService = await getDSPyService();
+  async evaluate(program: any, dataset: any[]): Promise<{ score: number }> {
+    try {
+      // Use foundation to perform real evaluation
+      const { getDSPyService } = await import('../core/service.js');
+      const dspyService = await getDSPyService();
 
-			let totalScore = 0;
-			let validEvaluations = 0;
+      let totalScore = 0;
+      let validEvaluations = 0;
 
-			for (const item of dataset) {
-				try {
-					// Execute the program with the test input
-					const result = await program.forward(item.input || item);
+      for (const item of dataset) {
+        try {
+          // Execute the program with the test input
+          const result = await program.forward(item.input || item);
 
-					// Evaluate result using foundation LLM
-					const evaluationPrompt = `
+          // Evaluate result using foundation LLM
+          const evaluationPrompt = `
 Evaluate this DSPy program output for accuracy and quality:
 
 Input:${JSON.stringify(item.input || item)}
-Expected:${JSON.stringify(item.output || item.expected || "No expected output")}
+Expected:${JSON.stringify(item.output || item.expected || 'No expected output')}
 Actual:${JSON.stringify(result)}
 
 Rate the accuracy on a scale of 0.0 to 1.0 where:
@@ -478,73 +478,73 @@ Rate the accuracy on a scale of 0.0 to 1.0 where:
 
 Respond with just the numeric score (e.g., 0.85):`;
 
-					const scoreResponse = await dspyService.executePrompt(
-						evaluationPrompt,
-						{
-							temperature:0.1,
-							maxTokens:50,
-							role:"analyst" as "user" | "analyst" | "architect",
-},
-					);
+          const scoreResponse = await dspyService.executePrompt(
+            evaluationPrompt,
+            {
+              temperature: 0.1,
+              maxTokens: 50,
+              role: 'analyst' as 'user' | 'analyst' | 'architect',
+            }
+          );
 
-					// Extract numeric score from response
-					const scoreMatch = scoreResponse.match(/([01](?:\.\d+)?)/);
-					if (scoreMatch?.[1]) {
-						const score = parseFloat(scoreMatch[1]);
-						if (!Number.isNaN(score) && score >= 0 && score <= 1) {
-							totalScore += score;
-							validEvaluations++;
-}
-}
-} catch (error) {
-					// Log error but continue evaluation
-					dspyService.getLogger().warn("Evaluation failed for item:", error);
-}
-}
+          // Extract numeric score from response
+          const scoreMatch = scoreResponse.match(/([01](?:\.\d+)?)/);
+          if (scoreMatch?.[1]) {
+            const score = parseFloat(scoreMatch[1]);
+            if (!Number.isNaN(score) && score >= 0 && score <= 1) {
+              totalScore += score;
+              validEvaluations++;
+            }
+          }
+        } catch (error) {
+          // Log error but continue evaluation
+          dspyService.getLogger().warn('Evaluation failed for item:', error);
+        }
+      }
 
-			const finalScore =
-				validEvaluations > 0 ? totalScore / validEvaluations:0.5;
+      const finalScore =
+        validEvaluations > 0 ? totalScore / validEvaluations : 0.5;
 
-			dspyService.getLogger().info("DSPy evaluation completed", {
-				totalItems:dataset.length,
-				validEvaluations,
-				averageScore:finalScore,
-});
+      dspyService.getLogger().info('DSPy evaluation completed', {
+        totalItems: dataset.length,
+        validEvaluations,
+        averageScore: finalScore,
+      });
 
-			return { score:finalScore};
-} catch (error) {
-			// Fallback to simple heuristic evaluation if foundation fails
-			logger.warn("Foundation evaluation failed, using fallback:", error);
+      return { score: finalScore };
+    } catch (error) {
+      // Fallback to simple heuristic evaluation if foundation fails
+      logger.warn('Foundation evaluation failed, using fallback:', error);
 
-			let totalScore = 0;
-			for (const item of dataset) {
-				try {
-					const result = await program.forward(item.input || item);
-					// Simple string similarity scoring as fallback
-					const expected = item.output || item.expected || "";
-					const actual = JSON.stringify(result);
-					const similarity = this.calculateStringSimilarity(
-						expected.toString(),
-						actual,
-					);
-					totalScore += similarity;
-} catch {
-					totalScore += 0.1; // Small score for failed executions
-}
-}
+      let totalScore = 0;
+      for (const item of dataset) {
+        try {
+          const result = await program.forward(item.input || item);
+          // Simple string similarity scoring as fallback
+          const expected = item.output || item.expected || '';
+          const actual = JSON.stringify(result);
+          const similarity = this.calculateStringSimilarity(
+            expected.toString(),
+            actual
+          );
+          totalScore += similarity;
+        } catch {
+          totalScore += 0.1; // Small score for failed executions
+        }
+      }
 
-			return { score:dataset.length > 0 ? totalScore / dataset.length : 0.5};
-}
-}
+      return { score: dataset.length > 0 ? totalScore / dataset.length : 0.5 };
+    }
+  }
 
-	private calculateStringSimilarity(str1:string, str2:string): number {
-		// Simple Jaccard similarity for fallback
-		const set1 = new Set(str1.toLowerCase().split(/\s+/));
-		const set2 = new Set(str2.toLowerCase().split(/\s+/));
-		const intersection = new Set([...set1].filter((x) => set2.has(x)));
-		const union = new Set([...set1, ...set2]);
-		return union.size > 0 ? intersection.size / union.size:0;
-}
+  private calculateStringSimilarity(str1: string, str2: string): number {
+    // Simple Jaccard similarity for fallback
+    const set1 = new Set(str1.toLowerCase().split(/\s+/));
+    const set2 = new Set(str2.toLowerCase().split(/\s+/));
+    const intersection = new Set([...set1].filter((x) => set2.has(x)));
+    const union = new Set([...set1, ...set2]);
+    return union.size > 0 ? intersection.size / union.size : 0;
+  }
 }
 
 // Re-export as named exports for better tree-shaking

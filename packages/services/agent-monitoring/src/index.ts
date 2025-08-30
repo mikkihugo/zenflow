@@ -6,11 +6,11 @@
  */
 
 // Core monitoring components
-export { CompleteIntelligenceSystem} from './intelligence-system.js';
-export type { CompleteIntelligenceSystem as IntelligenceSystemType} from './intelligence-system.js';
+export { CompleteIntelligenceSystem } from './intelligence-system.js';
+export type { CompleteIntelligenceSystem as IntelligenceSystemType } from './intelligence-system.js';
 export * from './performance-tracker.js';
-export type { TaskPredictor} from './task-predictor.js';
-export { SimpleTaskPredictor} from './task-predictor.js';
+export type { TaskPredictor } from './task-predictor.js';
+export { SimpleTaskPredictor } from './task-predictor.js';
 export * from './intelligence-factory.js';
 // Types and interfaces
 export type * from './types.js';

@@ -4,4 +4,4 @@
  * Project management and detection utilities.
  */
 
-export * from "./project.manager.js";
+export * from './project.manager.js';

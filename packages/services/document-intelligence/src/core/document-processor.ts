@@ -22,14 +22,26 @@
 import { existsSync} from 'node:fs';
 import { dirname} from 'node:path';
 import { getLogger, TypedEventBase} from '@claude-zen/foundation';
-import type { BrainCoordinator, WorkflowEngine} from '@claude-zen/intelligence';
+// Removed intelligence facade; define minimal local interfaces
+interface BrainCoordinator {
+  store<T = unknown>(key: string, data: T, category?: string): Promise<void>;
+}
+interface WorkflowEngine { initialize(): Promise<void>; }
 
 const logger = getLogger('DocumentProcessor');
 
 /**
  * Document types in the processing workflow.
  */
-export type DocumentType =|'vision|architecture_runway|business_epic|program_epic|feature|task|story|spec;
+export type DocumentType =
+  | 'vision'
+  | 'architecture_runway'
+  | 'business_epic'
+  | 'program_epic'
+  | 'feature'
+  | 'task'
+  | 'story'
+  | 'spec';
 
 /**
  * Document processing configuration.
@@ -74,7 +86,7 @@ export interface DocumentMetadata {
   /** Document tags */
   tags?:string[];
   /** Document priority */
-  priority?:'low' | ' medium' | ' high';
+  priority?: 'low' | 'medium' | 'high';
 }
 
 /**
@@ -132,8 +144,8 @@ export interface ProcessingContext {
   /** Active documents */
   activeDocuments:Map<string, Document>;
   /** Current processing phase */
-  phase?: 'requirements|design|planning|execution|validation;
-'  /** Enable background processing */
+  phase?: 'requirements' | 'design' | 'planning' | 'execution' | 'validation';
+  /** Enable background processing */
   backgroundProcessing:boolean;
 }
 

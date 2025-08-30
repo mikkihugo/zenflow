@@ -22,7 +22,7 @@
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import * as cron from 'node-cron';
-import type { SimpleGit, BranchSummary} from 'simple-git';
+import type { SimpleGit, BranchSummary } from 'simple-git';
 import { getLogger, EventEmitter, type EventMap } from '@claude-zen/foundation';
 
 // Constants for commonly used strings to avoid duplication
@@ -37,12 +37,12 @@ const SUCCESS_MESSAGES = {
 
 // Real implementation of Git sandbox for secure operations
 class SimpleGitSandbox {
-  private config:{
+  private config: {
     sandboxRoot: string;
     maxAgeHours: number;
     restrictedEnvVars: string[];
-};
-  
+  };
+
   private activeSandboxes = new Map<string, SandboxEnvironment>();
 
   constructor(config: {
@@ -68,8 +68,8 @@ class SimpleGitSandbox {
     error?: string;
   }> {
     // Execute git command safely in sandbox
-    const { exec} = await import('node:child_process');
-    const { promisify} = await import('node:util');
+    const { exec } = await import('node:child_process');
+    const { promisify } = await import('node:util');
     const execAsync = promisify(exec);
 
     try {
@@ -82,10 +82,17 @@ class SimpleGitSandbox {
     } catch (error) {
       return {
         success: false,
+<<<<<<< HEAD
         error: this.getErrorMessage(error),
       };
 }
 }
+=======
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
+    }
+  }
+>>>>>>> origin/main
 
   async initialize(): Promise<void> {
     // Create sandbox root directory
@@ -107,91 +114,97 @@ class SimpleGitSandbox {
       projectId,
       created: new Date(),
       lastAccess: new Date(),
-};
+    };
 
     this.activeSandboxes.set(sandboxId, sandbox);
-    logger.debug('Created git sandbox', { sandboxId, sandboxPath, projectId});
+    logger.debug('Created git sandbox', { sandboxId, sandboxPath, projectId });
 
     return sandbox;
-}
+  }
 
   async executeSafeGitOp(
-    sandbox: SandboxEnvironment|string,
-    gitOp:(git: SimpleGit) => Promise<void>
-  ):Promise<unknown> {
+    sandbox: SandboxEnvironment | string,
+    gitOp: (git: SimpleGit) => Promise<void>
+  ): Promise<unknown> {
     const sandboxEnv =
-      typeof sandbox === 'string' ? this.activeSandboxes.get(sandbox) || (await this.createSandbox(sandbox))
-        :sandbox;
+      typeof sandbox === 'string'
+        ? this.activeSandboxes.get(sandbox) ||
+          (await this.createSandbox(sandbox))
+        : sandbox;
 
     if (!sandboxEnv) {
       throw new Error('Invalid sandbox environment');
-}
+    }
 
     // Update last access
     sandboxEnv.lastAccess = new Date();
 
     try {
-      const { simpleGit} = await import('simple-git');
+      const { simpleGit } = await import('simple-git');
       const git = simpleGit(sandboxEnv.path);
       await gitOp(git);
 
-      return { success: true, sandboxId: sandboxEnv.id, path: sandboxEnv.path};
-} catch (error) {
+      return { success: true, sandboxId: sandboxEnv.id, path: sandboxEnv.path };
+    } catch (error) {
       logger.error('Git operation failed in sandbox', {
         sandboxId: sandboxEnv.id,
+<<<<<<< HEAD
         error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
+=======
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+>>>>>>> origin/main
       throw error;
-}
-}
+    }
+  }
 
-  async cleanupSandbox(sandboxId?:string): Promise<void> {
+  async cleanupSandbox(sandboxId?: string): Promise<void> {
     if (sandboxId) {
       const sandbox = this.activeSandboxes.get(sandboxId);
       if (sandbox) {
-        await fs.rm(sandbox.path, { recursive: true, force: true});
+        await fs.rm(sandbox.path, { recursive: true, force: true });
         this.activeSandboxes.delete(sandboxId);
-        logger.debug('Cleaned up sandbox', { sandboxId});
-}
-} else {
+        logger.debug('Cleaned up sandbox', { sandboxId });
+      }
+    } else {
       // Cleanup stale sandboxes
       const staleThreshold =
         Date.now() - this.config.maxAgeHours * 60 * 60 * 1000;
       for (const [id, sandbox] of this.activeSandboxes.entries()) {
         if (sandbox.lastAccess.getTime() < staleThreshold) {
-          await fs.rm(sandbox.path, { recursive: true, force: true});
+          await fs.rm(sandbox.path, { recursive: true, force: true });
           this.activeSandboxes.delete(id);
-          logger.debug('Cleaned up stale sandbox', { sandboxId: id});
-}
-}
-}
-}
+          logger.debug('Cleaned up stale sandbox', { sandboxId: id });
+        }
+      }
+    }
+  }
 
-  async shutdown():Promise<void> {
+  async shutdown(): Promise<void> {
     // Cleanup all active sandboxes
     for (const [id] of this.activeSandboxes.entries()) {
       await this.cleanupSandbox(id);
-}
+    }
     logger.info('Git sandbox shutdown complete');
-}
+  }
 
-  private getSafeEnvironment():Record<string, string> {
+  private getSafeEnvironment(): Record<string, string> {
     const env: Record<string, string> = {};
 
     // Include only safe environment variables
-    const safeVars = ['PATH',    'HOME',    'USER',    'SHELL'];
+    const safeVars = ['PATH', 'HOME', 'USER', 'SHELL'];
     for (const varName of safeVars) {
       if (
         process.env[varName] &&
         !this.config.restrictedEnvVars.includes(varName)
       ) {
         env[varName] = process.env[varName]!;
-}
-}
+      }
+    }
 
     return env;
+  }
 }
-}
-
 
 // Enhanced sandbox interface with proper typing
 interface SandboxEnvironment {
@@ -202,11 +215,10 @@ interface SandboxEnvironment {
   lastAccess: Date;
 }
 
-
 // AI Integration for conflict resolution - TODO: Add when @anthropic/sdk is installed
 // import type { Claude} from '@anthropic/sdk';
 interface Claude {
-  messages?:unknown;
+  messages?: unknown;
 }
 
 const logger = getLogger('git-operations');
@@ -231,39 +243,43 @@ export interface GitOperationConfig {
 export interface RemoteConfig {
   name: string;
   url: string;
-  credentials?:{
-    type:'token' | ' ssh' | ' basic';
-    token?:string;
-    username?:string;
-    password?:string;
-    sshKey?:string;
-};
+  credentials?: {
+    type: 'token' | ' ssh' | ' basic';
+    token?: string;
+    username?: string;
+    password?: string;
+    sshKey?: string;
+  };
 }
 
 export interface BranchStrategy {
   /** Branch naming convention */
-  namingPattern:'feature/{name}' | ' hotfix/{name}' | ' release/{name}' | ' custom';
+  namingPattern:
+    | 'feature/{name}'
+    | ' hotfix/{name}'
+    | ' release/{name}'
+    | ' custom';
   /** Custom naming pattern */
-  customPattern?:string;
+  customPattern?: string;
   /** Auto-cleanup old branches */
   autoCleanup: boolean;
   /** Branch protection rules */
   protectedBranches: string[];
   /** Merge strategy preference */
-  defaultMergeStrategy:'merge' | ' rebase' | ' squash';
+  defaultMergeStrategy: 'merge' | ' rebase' | ' squash';
 }
 
 export interface ConflictResolution {
   /** Conflict type */
-  type:'merge' | ' rebase' | ' cherry-pick';
+  type: 'merge' | ' rebase' | ' cherry-pick';
   /** Files with conflicts */
   conflictFiles: string[];
   /** AI resolution suggestions */
   aiSuggestions: ConflictSuggestion[];
   /** Resolution strategy */
-  strategy:'auto' | ' manual' | ' ai-assisted';
+  strategy: 'auto' | ' manual' | ' ai-assisted';
   /** Resolution result */
-  result?:'resolved' | ' requires-manual' | ' failed';
+  result?: 'resolved' | ' requires-manual' | ' failed';
 }
 
 export interface ConflictSuggestion {
@@ -275,7 +291,7 @@ export interface ConflictSuggestion {
     aiRecommendation: string;
     confidence: number;
     reasoning: string;
-}>;
+  }>;
 }
 
 export interface GitTreeStatus {
@@ -288,32 +304,49 @@ export interface GitTreeStatus {
   /** Last maintenance run */
   lastMaintenance: Date;
   /** Trees by age */
-  treesByAge:{
+  treesByAge: {
     fresh: number; // < 1 hour
     recent: number; // 1-24 hours
     old: number; // 1-7 days
     stale: number; // > 7 days
-};
+  };
 }
 
 export interface GitOperation {
   id: string;
-  type:'clone' | ' pull' | ' push' | ' merge' | ' rebase' | ' branch' | ' commit' | ' fetch';
+  type:
+    | 'clone'
+    | ' pull'
+    | ' push'
+    | ' merge'
+    | ' rebase'
+    | ' branch'
+    | ' commit'
+    | ' fetch';
   projectId: string;
   sandboxId: string;
-  status:'pending' | ' running' | ' completed' | ' failed' | ' requires-resolution';
+  status:
+    | 'pending'
+    | ' running'
+    | ' completed'
+    | ' failed'
+    | ' requires-resolution';
   startedAt: Date;
-  completedAt?:Date;
-  result?:unknown;
-  error?:string;
-  conflictResolution?:ConflictResolution;
+  completedAt?: Date;
+  result?: unknown;
+  error?: string;
+  conflictResolution?: ConflictResolution;
 }
 
 export interface MaintenanceTask {
   id: string;
-  type:'cleanup-stale' | ' compress-trees' | ' update-remotes' | ' verify-integrity';
+  type:
+    | 'cleanup-stale'
+    | ' compress-trees'
+    | ' update-remotes'
+    | ' verify-integrity';
   schedule: string; // cron expression
-  lastRun?:Date;
+  lastRun?: Date;
   nextRun: Date;
   enabled: boolean;
 }
@@ -325,7 +358,11 @@ export interface GitOperationStartedEvent {
   operationType: GitOperation['type'];
   projectId: string;
   timestamp: string;
+<<<<<<< HEAD
   metadata?:Record<string, unknown>;
+=======
+  metadata?: Record<string, any>;
+>>>>>>> origin/main
 }
 
 export interface GitOperationCompletedEvent {
@@ -334,7 +371,7 @@ export interface GitOperationCompletedEvent {
   operationType: GitOperation['type'];
   projectId: string;
   success: boolean;
-  result?:unknown;
+  result?: unknown;
   duration: number;
   timestamp: string;
 }
@@ -351,14 +388,18 @@ export interface GitOperationFailedEvent {
 export interface GitConflictResolvedEvent {
   type: 'gitConflictResolved';
   projectId: string;
-  conflictType:'merge' | ' rebase' | ' cherry-pick';
+  conflictType: 'merge' | ' rebase' | ' cherry-pick';
   filesResolved: string[];
   aiAssisted: boolean;
   timestamp: string;
 }
 
 export interface GitWorktreeEvent {
+<<<<<<< HEAD
   type:'gitWorktreeCreated' | 'gitWorktreeRemoved';
+=======
+  type: 'git: worktree: created' | ' git: worktree: removed';
+>>>>>>> origin/main
   projectId: string;
   worktreeName: string;
   worktreePath: string;
@@ -367,16 +408,26 @@ export interface GitWorktreeEvent {
 }
 
 export interface GitMaintenanceEvent {
+<<<<<<< HEAD
   type:'gitMaintenanceStarted' | 'gitMaintenanceCompleted';
   taskType:'cleanup-stale' | ' compress-trees' | ' update-remotes' | ' verify-integrity';
   projectsAffected?:number;
+=======
+  type: 'git: maintenance: started' | ' git: maintenance: completed';
+  taskType:
+    | 'cleanup-stale'
+    | ' compress-trees'
+    | ' update-remotes'
+    | ' verify-integrity';
+  projectsAffected?: number;
+>>>>>>> origin/main
   timestamp: string;
 }
 
 // Union type for all git events
-export type GitEvent = 
+export type GitEvent =
   | GitOperationStartedEvent
-  | GitOperationCompletedEvent 
+  | GitOperationCompletedEvent
   | GitOperationFailedEvent
   | GitConflictResolvedEvent
   | GitWorktreeEvent
@@ -389,11 +440,11 @@ export interface GitOperationsResult {
   branchesManaged: number;
   maintenancePerformed: boolean;
   aiAssistanceUsed: boolean;
-  metrics?:{
+  metrics?: {
     operationTime: number;
     resourceUsage: number;
-    duration?:number;
-};
+    duration?: number;
+  };
 }
 
 // Define event map for GitOperationsManager
@@ -414,7 +465,7 @@ interface GitEventMap extends EventMap {
  * Manages git operations with AI conflict resolution, intelligent branching,
  * and automated maintenance. Designed as a pure library for use by applications.
  * Primary focus on git worktrees for parallel development workflows.
- * 
+ *
  * Event-Driven Architecture:
  * - Emits typed events for all git operations
  * - Integrates with claude-code-zen event system
@@ -425,7 +476,7 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
   private sandbox: SimpleGitSandbox;
   private config: GitOperationConfig;
   private branchStrategy: BranchStrategy;
-  private claude?:Claude|undefined; // AI for conflict resolution
+  private claude?: Claude | undefined; // AI for conflict resolution
 
   // Operation tracking
   private activeOperations = new Map<string, GitOperation>();
@@ -436,7 +487,7 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
   // Note: Currently unused but reserved for future branch tracking features
   // @ts-ignore: Variable reserved for future use
   private activeBranches = new Map<string, BranchSummary>();
-  
+
   private treeMetrics = new Map<
     string,
     {
@@ -444,15 +495,14 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
       lastAccess: Date;
       operationCount: number;
       branchCount: number;
-}
+    }
   >();
 
-
   constructor(
-    managerId?:string,
+    managerId?: string,
     config: Partial<GitOperationConfig> = {},
     branchStrategy: Partial<BranchStrategy> = {},
-    claude?:Claude | undefined
+    claude?: Claude | undefined
   ) {
     super();
     this.managerId = managerId || 'git-manager';
@@ -461,28 +511,42 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
       aiConflictResolution: true,
       intelligentBranching: true,
       automatedMaintenance: true,
-      maxConcurrentOps:10,
-      operationTimeout:300000, // 5 minutes
-      remotes:[],
+      maxConcurrentOps: 10,
+      operationTimeout: 300000, // 5 minutes
+      remotes: [],
       alwaysUseWorktrees: true, // DEFAULT: Always use worktrees for isolation
       ...config,
-};
+    };
 
     this.branchStrategy = {
-      namingPattern: 'feature/{name}',      autoCleanup: true,
-      protectedBranches:['main',    'master',    'develop'],
-      defaultMergeStrategy: 'merge',      ...branchStrategy,
-};
+      namingPattern: 'feature/{name}',
+      autoCleanup: true,
+      protectedBranches: ['main', 'master', 'develop'],
+      defaultMergeStrategy: 'merge',
+      ...branchStrategy,
+    };
 
     this.claude = claude;
 
     // Initialize sandbox for safe operations
     this.sandbox = new SimpleGitSandbox({
       sandboxRoot: path.join(process.cwd(), '.git-operations', this.managerId),
-      maxAgeHours:24, // Longer retention for complex operations
-      restrictedEnvVars:[
-        'HOME',        'PATH',        'SHELL',        'USER',        'SSH_AUTH_SOCK',        'AWS_*',        'DOCKER_*',        'GITHUB_TOKEN',        'NPM_TOKEN',        'CI_*',        'BUILD_*',        'DEPLOY_*',],
-});
+      maxAgeHours: 24, // Longer retention for complex operations
+      restrictedEnvVars: [
+        'HOME',
+        'PATH',
+        'SHELL',
+        'USER',
+        'SSH_AUTH_SOCK',
+        'AWS_*',
+        'DOCKER_*',
+        'GITHUB_TOKEN',
+        'NPM_TOKEN',
+        'CI_*',
+        'BUILD_*',
+        'DEPLOY_*',
+      ],
+    });
 
     this.initializeMaintenanceTasks();
 
@@ -491,10 +555,10 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
       aiConflictResolution: this.config.aiConflictResolution,
       intelligentBranching: this.config.intelligentBranching,
       automatedMaintenance: this.config.automatedMaintenance,
-});
+    });
 
     // Foundation integration test placeholder
-}
+  }
 
   /**
    * Helper to get error message from unknown error
@@ -506,34 +570,39 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
   /**
    * Get manager ID
    */
-  getManagerId():string {
+  getManagerId(): string {
     return this.managerId;
-}
+  }
 
   /**
    * Initialize the GitOperationsManager system
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     try {
       await this.sandbox.initialize();
 
       if (this.config.automatedMaintenance) {
         this.startMaintenanceScheduler();
-}
+      }
 
       logger.info('✅ GitOperationsManager ready', {
         managerId: this.managerId,
         maxConcurrentOps: this.config.maxConcurrentOps,
         maintenanceTasks: this.maintenanceTasks.length,
-        aiEnabled:!!this.claude,
-});
-} catch (error) {
+        aiEnabled: !!this.claude,
+      });
+    } catch (error) {
       logger.error('❌ Failed to initialize GitOperationsManager', {
         managerId: this.managerId,
+<<<<<<< HEAD
         error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
+=======
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+>>>>>>> origin/main
       throw error;
-}
-}
+    }
+  }
 
   // ====================================================================
   // CORE GIT OPERATIONS - All basic git commands in safe sandboxes
@@ -542,17 +611,19 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
   /**
    * Clone repository into sandbox
    */
-  async cloneRepository(projectId: string,
+  async cloneRepository(
+    projectId: string,
     repoUrl: string,
-    options:{
-      branch?:string;
-      depth?:number;
-      recursive?:boolean;
-} = {}
+    options: {
+      branch?: string;
+      depth?: number;
+      recursive?: boolean;
+    } = {}
   ): Promise<string> {
     const operation = this.createOperation(
-      'clone',      projectId,
-      `clone-${  projectId}`
+      'clone',
+      projectId,
+      `clone-${projectId}`
     );
 
     try {
@@ -563,47 +634,49 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
 
         if (options.branch) {
           cloneOptions.push('--branch', options.branch);
-}
+        }
         if (options.depth) {
           cloneOptions.push('--depth', options.depth.toString());
-}
+        }
         if (options.recursive) {
           cloneOptions.push('--recursive');
-}
+        }
 
         await git.clone(repoUrl, '.', cloneOptions);
-});
+      });
 
-      this.completeOperation(operation, { sandbox: sandbox.id});
+      this.completeOperation(operation, { sandbox: sandbox.id });
 
       logger.info(SUCCESS_MESSAGES.REPOSITORY_CLONED, {
         managerId: this.managerId,
         projectId,
         repoUrl,
         sandboxId: sandbox.id,
-});
+      });
 
       return sandbox.id;
-} catch (error) {
+    } catch (error) {
       this.failOperation(operation, error);
       throw error;
-}
-}
+    }
+  }
 
   /**
    * Create new branch with intelligent naming
    */
-  async createBranch(projectId: string,
+  async createBranch(
+    projectId: string,
     branchName: string,
-    options:{
-      fromBranch?:string;
-      checkout?:boolean;
-      push?:boolean;
-} = {}
+    options: {
+      fromBranch?: string;
+      checkout?: boolean;
+      push?: boolean;
+    } = {}
   ): Promise<void> {
     const operation = this.createOperation(
-      'branch',      projectId,
-      `branch-${  branchName}`
+      'branch',
+      projectId,
+      `branch-${branchName}`
     );
 
     try {
@@ -614,15 +687,15 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
         // Create branch
         await (options.fromBranch
           ? git.checkoutBranch(formattedName, options.fromBranch)
-          :git.checkoutLocalBranch(formattedName));
+          : git.checkoutLocalBranch(formattedName));
 
         // Push to remote if requested
         if (options.push) {
           await git.push('origin', formattedName, ['--set-upstream']);
-}
-});
+        }
+      });
 
-      this.completeOperation(operation, { branchName: formattedName});
+      this.completeOperation(operation, { branchName: formattedName });
 
       logger.info(SUCCESS_MESSAGES.BRANCH_CREATED, {
         managerId: this.managerId,
@@ -630,33 +703,35 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
         branchName: formattedName,
         fromBranch: options.fromBranch,
         pushed: options.push,
-});
-} catch (error) {
+      });
+    } catch (error) {
       this.failOperation(operation, error);
       throw error;
-}
-}
+    }
+  }
 
   /**
    * Delete branch with safety checks
    */
-  async deleteBranch(projectId: string,
+  async deleteBranch(
+    projectId: string,
     branchName: string,
-    options:{
-      force?:boolean;
-      deleteRemote?:boolean;
-} = {}
+    options: {
+      force?: boolean;
+      deleteRemote?: boolean;
+    } = {}
   ): Promise<void> {
     const operation = this.createOperation(
-      'branch',      projectId,
-      `delete-${  branchName}`
+      'branch',
+      projectId,
+      `delete-${branchName}`
     );
 
     try {
       // Safety check: don't delete protected branches
       if (this.branchStrategy.protectedBranches.includes(branchName)) {
         throw new Error(`Cannot delete protected branch: ${branchName}`);
-}
+      }
 
       const sandbox = await this.getSandboxForProject(projectId);
 
@@ -667,11 +742,11 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
 
         // Delete remote branch if requested
         if (options.deleteRemote) {
-          await git.push(['origin',    '--delete', branchName]);
-}
-});
+          await git.push(['origin', '--delete', branchName]);
+        }
+      });
 
-      this.completeOperation(operation, { deleted: true});
+      this.completeOperation(operation, { deleted: true });
 
       logger.info(SUCCESS_MESSAGES.BRANCH_DELETED, {
         managerId: this.managerId,
@@ -679,33 +754,35 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
         branchName,
         force: options.force,
         deletedRemote: options.deleteRemote,
-});
-} catch (error) {
+      });
+    } catch (error) {
       this.failOperation(operation, error);
       throw error;
-}
-}
+    }
+  }
 
   /**
    * AI-powered merge with conflict resolution
    */
-  async mergeBranch(projectId: string,
+  async mergeBranch(
+    projectId: string,
     sourceBranch: string,
     targetBranch: string,
-    options:{
-      strategy?:'merge' | ' squash' | ' rebase';
-      message?:string;
-      autoResolveConflicts?:boolean;
-} = {}
-  ): Promise<ConflictResolution|null> {
+    options: {
+      strategy?: 'merge' | ' squash' | ' rebase';
+      message?: string;
+      autoResolveConflicts?: boolean;
+    } = {}
+  ): Promise<ConflictResolution | null> {
     const operation = this.createOperation(
-      'merge',      projectId,
+      'merge',
+      projectId,
       `merge-${sourceBranch}-${targetBranch}`
     );
 
     try {
       const sandbox = await this.getSandboxForProject(projectId);
-      let conflictResolution: ConflictResolution|null = null;
+      let conflictResolution: ConflictResolution | null = null;
 
       await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
         // Checkout target branch
@@ -726,29 +803,30 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
             case 'rebase':
               await git.rebase([sourceBranch]);
               break;
-}
-} catch (mergeError) {
+          }
+        } catch (mergeError) {
           // Handle merge conflicts with AI
           if (
             this.config.aiConflictResolution &&
             options.autoResolveConflicts !== false
           ) {
             const sandboxEnv =
-              typeof sandbox === 'string' ? { path: sandbox} :sandbox;
+              typeof sandbox === 'string' ? { path: sandbox } : sandbox;
             conflictResolution = await this.resolveConflictsWithAI(
               git,
-              'merge',              sandboxEnv.path
+              'merge',
+              sandboxEnv.path
             );
-} else {
+          } else {
             throw mergeError;
-}
-}
-});
+          }
+        }
+      });
 
       this.completeOperation(operation, {
         merged: true,
         conflictResolution,
-});
+      });
 
       logger.info(SUCCESS_MESSAGES.BRANCH_MERGED, {
         managerId: this.managerId,
@@ -756,35 +834,37 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
         sourceBranch,
         targetBranch,
         strategy: options.strategy,
-        hadConflicts:!!conflictResolution,
-});
+        hadConflicts: !!conflictResolution,
+      });
 
       return conflictResolution;
-} catch (error) {
+    } catch (error) {
       this.failOperation(operation, error);
       throw error;
-}
-}
+    }
+  }
 
   /**
    * Smart rebase with AI conflict resolution
    */
-  async rebaseBranch(projectId: string,
+  async rebaseBranch(
+    projectId: string,
     targetBranch: string,
-    options:{
-      interactive?:boolean;
-      preserveMerges?:boolean;
-      autoResolveConflicts?:boolean;
-} = {}
-  ): Promise<ConflictResolution|null> {
+    options: {
+      interactive?: boolean;
+      preserveMerges?: boolean;
+      autoResolveConflicts?: boolean;
+    } = {}
+  ): Promise<ConflictResolution | null> {
     const operation = this.createOperation(
-      'rebase',      projectId,
+      'rebase',
+      projectId,
       `rebase-${targetBranch}`
     );
 
     try {
       const sandbox = await this.getSandboxForProject(projectId);
-      let conflictResolution: ConflictResolution|null = null;
+      let conflictResolution: ConflictResolution | null = null;
 
       await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
         try {
@@ -792,63 +872,66 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
 
           if (options.interactive) {
             rebaseOptions.push('--interactive');
-}
+          }
           if (options.preserveMerges) {
             rebaseOptions.push('--preserve-merges');
-}
+          }
 
           await git.rebase(rebaseOptions);
-} catch (rebaseError) {
+        } catch (rebaseError) {
           // Handle rebase conflicts with AI
           if (
             this.config.aiConflictResolution &&
             options.autoResolveConflicts !== false
           ) {
             const sandboxEnv =
-              typeof sandbox === 'string' ? { path: sandbox} :sandbox;
+              typeof sandbox === 'string' ? { path: sandbox } : sandbox;
             conflictResolution = await this.resolveConflictsWithAI(
               git,
-              'rebase',              sandboxEnv.path
+              'rebase',
+              sandboxEnv.path
             );
-} else {
+          } else {
             throw rebaseError;
-}
-}
-});
+          }
+        }
+      });
 
       this.completeOperation(operation, {
         rebased: true,
         conflictResolution,
-});
+      });
 
       logger.info(SUCCESS_MESSAGES.BRANCH_REBASED, {
         managerId: this.managerId,
         projectId,
         targetBranch,
         interactive: options.interactive,
-        hadConflicts:!!conflictResolution,
-});
+        hadConflicts: !!conflictResolution,
+      });
 
       return conflictResolution;
-} catch (error) {
+    } catch (error) {
       this.failOperation(operation, error);
       throw error;
-}
-}
+    }
+  }
 
   /**
    * Push changes with intelligent conflict handling
    */
-  async push(projectId: string,
-    options:{
-      remote?:string;
-      branch?:string;
-      force?:boolean;
-      setUpstream?:boolean;
-} = {}
+  async push(
+    projectId: string,
+    options: {
+      remote?: string;
+      branch?: string;
+      force?: boolean;
+      setUpstream?: boolean;
+    } = {}
   ): Promise<void> {
     const operation = this.createOperation(
-      'push',      projectId,
+      'push',
+      projectId,
       `push-${options.branch || 'current'}`
     );
 
@@ -860,50 +943,53 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
 
         if (options.force) {
           pushOptions.push('--force');
-}
+        }
         if (options.setUpstream) {
           pushOptions.push('--set-upstream');
-}
+        }
 
         const remote = options.remote || 'origin';
         const branch = options.branch || (await this.getCurrentBranch(git));
 
         await git.push(remote, branch, pushOptions);
-});
+      });
 
-      this.completeOperation(operation, { pushed: true});
+      this.completeOperation(operation, { pushed: true });
 
       logger.info('✅ Changes pushed successfully', {
         managerId: this.managerId,
         projectId,
-        remote: options.remote || 'origin',        branch: options.branch,
+        remote: options.remote || 'origin',
+        branch: options.branch,
         force: options.force,
-});
-} catch (error) {
+      });
+    } catch (error) {
       this.failOperation(operation, error);
       throw error;
-}
-}
+    }
+  }
 
   /**
    * Pull changes with merge conflict handling
    */
-  async pull(projectId: string,
-    options:{
-      remote?:string;
-      branch?:string;
-      rebase?:boolean;
-      autoResolveConflicts?:boolean;
-} = {}
-  ): Promise<ConflictResolution|null> {
+  async pull(
+    projectId: string,
+    options: {
+      remote?: string;
+      branch?: string;
+      rebase?: boolean;
+      autoResolveConflicts?: boolean;
+    } = {}
+  ): Promise<ConflictResolution | null> {
     const operation = this.createOperation(
-      'pull',      projectId,
+      'pull',
+      projectId,
       `pull-${options.branch || 'current'}`
     );
 
     try {
       const sandbox = await this.getSandboxForProject(projectId);
-      let conflictResolution: ConflictResolution|null = null;
+      let conflictResolution: ConflictResolution | null = null;
 
       await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
         try {
@@ -911,13 +997,13 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
 
           if (options.rebase) {
             pullOptions.push('--rebase');
-}
+          }
 
           const remote = options.remote || 'origin';
           const branch = options.branch || (await this.getCurrentBranch(git));
 
           await git.pull(remote, branch, pullOptions);
-} catch (pullError) {
+        } catch (pullError) {
           // Handle pull conflicts with AI
           if (
             this.config.aiConflictResolution &&
@@ -925,37 +1011,38 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
           ) {
             const conflictType = options.rebase ? 'rebase' : ' merge';
             const sandboxEnv =
-              typeof sandbox === 'string' ? { path: sandbox} :sandbox;
+              typeof sandbox === 'string' ? { path: sandbox } : sandbox;
             conflictResolution = await this.resolveConflictsWithAI(
               git,
               conflictType,
               sandboxEnv.path
             );
-} else {
+          } else {
             throw pullError;
-}
-}
-});
+          }
+        }
+      });
 
       this.completeOperation(operation, {
         pulled: true,
         conflictResolution,
-});
+      });
 
       logger.info('✅ Changes pulled successfully', {
         managerId: this.managerId,
         projectId,
-        remote: options.remote || 'origin',        branch: options.branch,
+        remote: options.remote || 'origin',
+        branch: options.branch,
         rebase: options.rebase,
-        hadConflicts:!!conflictResolution,
-});
+        hadConflicts: !!conflictResolution,
+      });
 
       return conflictResolution;
-} catch (error) {
+    } catch (error) {
       this.failOperation(operation, error);
       throw error;
-}
-}
+    }
+  }
 
   // ====================================================================
   // AI-POWERED CONFLICT RESOLUTION - Smart merge conflict handling
@@ -964,14 +1051,16 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
   /**
    * Resolve merge conflicts using AI
    */
-  private async resolveConflictsWithAI(git: SimpleGit,
-    conflictType:'merge' | ' rebase' | ' cherry-pick',    workingDir: string
+  private async resolveConflictsWithAI(
+    git: SimpleGit,
+    conflictType: 'merge' | ' rebase' | ' cherry-pick',
+    workingDir: string
   ): Promise<ConflictResolution> {
     logger.info('🤖 Starting AI conflict resolution', {
       managerId: this.managerId,
       conflictType,
       workingDir,
-});
+    });
 
     try {
       // Get status to identify conflicted files
@@ -981,10 +1070,12 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
       if (conflictFiles.length === 0) {
         return {
           type: conflictType,
-          conflictFiles:[],
-          aiSuggestions:[],
-          strategy: 'auto',          result: 'resolved',};
-}
+          conflictFiles: [],
+          aiSuggestions: [],
+          strategy: 'auto',
+          result: 'resolved',
+        };
+      }
 
       const aiSuggestions: ConflictSuggestion[] = [];
 
@@ -1004,9 +1095,9 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
           if (suggestion.conflicts.every((c) => c.confidence > 0.8)) {
             await this.applyAISuggestion(filePath, suggestion);
             await git.add(file);
-}
-}
-}
+          }
+        }
+      }
 
       // Check if all conflicts were resolved
       const newStatus = await git.status();
@@ -1016,17 +1107,19 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
         type: conflictType,
         conflictFiles,
         aiSuggestions,
-        strategy: 'ai-assisted',        result:
-          remainingConflicts.length === 0 ? 'resolved' : ' requires-manual',};
+        strategy: 'ai-assisted',
+        result:
+          remainingConflicts.length === 0 ? 'resolved' : ' requires-manual',
+      };
 
       // Complete the merge/rebase if all conflicts resolved
       if (remainingConflicts.length === 0) {
         if (conflictType === 'merge') {
           await git.commit('AI-resolved merge conflicts');
-} else if (conflictType === 'rebase') {
-          await git.raw(['rebase',    '--continue']);
-}
-}
+        } else if (conflictType === 'rebase') {
+          await git.raw(['rebase', '--continue']);
+        }
+      }
 
       logger.info('🤖 AI conflict resolution completed', {
         managerId: this.managerId,
@@ -1034,43 +1127,52 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
         originalConflicts: conflictFiles.length,
         remainingConflicts: remainingConflicts.length,
         result: result.result,
-});
+      });
 
       // Emit conflict resolved event
       if (result.result === 'resolved') {
         this.emit('git: conflict: resolved', {
-          type: 'git: conflict: resolved',          projectId: 'unknown', // Would need to pass projectId to this method
+          type: 'git: conflict: resolved',
+          projectId: 'unknown', // Would need to pass projectId to this method
           conflictType,
           filesResolved: conflictFiles,
           aiAssisted: true,
           timestamp: new Date().toISOString(),
-});
-}
+        });
+      }
 
       return result;
-} catch (error) {
+    } catch (error) {
       logger.error('❌ AI conflict resolution failed', {
         managerId: this.managerId,
         conflictType,
+<<<<<<< HEAD
         error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
+=======
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+>>>>>>> origin/main
 
       return {
         type: conflictType,
-        conflictFiles:[],
-        aiSuggestions:[],
-        strategy: 'manual',        result: 'failed',};
-}
-}
+        conflictFiles: [],
+        aiSuggestions: [],
+        strategy: 'manual',
+        result: 'failed',
+      };
+    }
+  }
 
   /**
    * Get AI suggestion for conflict resolution
    */
-  private async getAIConflictSuggestion(fileName: string,
+  private async getAIConflictSuggestion(
+    fileName: string,
     fileContent: string
   ): Promise<ConflictSuggestion> {
     if (!this.claude?.messages) {
       throw new Error('Claude AI not available for conflict resolution');
-}
+    }
 
     const conflictMarkers = this.parseConflictMarkers(fileContent);
     const suggestions: ConflictSuggestion['conflicts'] = [];
@@ -1078,10 +1180,12 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
     for (const conflict of conflictMarkers) {
       try {
         const response = await this.claude.messages.create({
-          model: 'claude-3-5-sonnet-20241022',          max_tokens:4000,
-          messages:[
+          model: 'claude-3-5-sonnet-20241022',
+          max_tokens: 4000,
+          messages: [
             {
-              role: 'user',              content:`
+              role: 'user',
+              content: `
 # Git Merge Conflict Resolution
 
 **File**:${fileName}
@@ -1115,9 +1219,9 @@ Respond in JSON format:
 }
 \`\`\`
 `,
-},
-],
-});
+            },
+          ],
+        });
 
         const content = response.content[0];
         if (content.type === 'text') {
@@ -1132,13 +1236,18 @@ Respond in JSON format:
               aiRecommendation: aiResponse.resolution,
               confidence: aiResponse.confidence / 100,
               reasoning: aiResponse.reasoning,
-});
-}
-}
-} catch (error) {
+            });
+          }
+        }
+      } catch (error) {
         logger.warn(`Failed to get AI suggestion for conflict in ${fileName}`, {
           managerId: this.managerId,
+<<<<<<< HEAD
           error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
+=======
+          error: error instanceof Error ? error.message : 'Unknown error',
+        });
+>>>>>>> origin/main
 
         // Fallback suggestion
         suggestions.push({
@@ -1146,16 +1255,17 @@ Respond in JSON format:
           ourVersion: conflict.ourVersion,
           theirVersion: conflict.theirVersion,
           aiRecommendation: conflict.ourVersion, // Default to our version
-          confidence:0.3,
-          reasoning: 'AI analysis failed, defaulting to our version',});
-}
-}
+          confidence: 0.3,
+          reasoning: 'AI analysis failed, defaulting to our version',
+        });
+      }
+    }
 
     return {
       file: fileName,
       conflicts: suggestions,
-};
-}
+    };
+  }
 
   /**
    * Parse git conflict markers from file content
@@ -1164,12 +1274,12 @@ Respond in JSON format:
     section: string;
     ourVersion: string;
     theirVersion: string;
-}> {
+  }> {
     const conflicts: Array<{
       section: string;
       ourVersion: string;
       theirVersion: string;
-}> = [];
+    }> = [];
 
     const lines = content.split('\n');
     let i = 0;
@@ -1188,10 +1298,10 @@ Respond in JSON format:
           const line = lines[i];
           if (!line || line.startsWith('=======')) {
             break;
-}
+          }
           ourLines.push(line);
           i++;
-}
+        }
 
         i++; // Skip separator
 
@@ -1200,10 +1310,10 @@ Respond in JSON format:
           const line = lines[i];
           if (!line || line.startsWith('>>>>>>>')) {
             break;
-}
+          }
           theirLines.push(line);
           i++;
-}
+        }
 
         if (i < lines.length) {
           const endIndex = i;
@@ -1213,19 +1323,20 @@ Respond in JSON format:
             section,
             ourVersion: ourLines.join('\n'),
             theirVersion: theirLines.join('\n'),
-});
-}
-}
+          });
+        }
+      }
       i++;
-}
+    }
 
     return conflicts;
-}
+  }
 
   /**
    * Apply AI suggestion to resolve conflict
    */
-  private async applyAISuggestion(filePath: string,
+  private async applyAISuggestion(
+    filePath: string,
     suggestion: ConflictSuggestion
   ): Promise<void> {
     let content = await fs.readFile(filePath, 'utf-8');
@@ -1233,10 +1344,10 @@ Respond in JSON format:
     // Replace each conflict section with AI recommendation
     for (const conflict of suggestion.conflicts) {
       content = content.replace(conflict.section, conflict.aiRecommendation);
-}
+    }
 
     await fs.writeFile(filePath, content, 'utf-8');
-}
+  }
 
   // ====================================================================
   // TREE MAINTENANCE - Automated cleanup and optimization
@@ -1245,51 +1356,60 @@ Respond in JSON format:
   /**
    * Initialize maintenance tasks
    */
-  private initializeMaintenanceTasks():void {
+  private initializeMaintenanceTasks(): void {
     this.maintenanceTasks = [
       {
-        id: 'cleanup-stale-trees',        type: 'cleanup-stale',        schedule: '0 2 * * *', // Daily at 2 AM')        nextRun: new Date(),
+        id: 'cleanup-stale-trees',
+        type: 'cleanup-stale',
+        schedule: '0 2 * * *', // Daily at 2 AM')        nextRun: new Date(),
         enabled: true,
-},
+      },
       {
-        id: 'compress-git-objects',        type: 'compress-trees',        schedule: '0 3 * * 0', // Weekly on Sunday at 3 AM')        nextRun: new Date(),
+        id: 'compress-git-objects',
+        type: 'compress-trees',
+        schedule: '0 3 * * 0', // Weekly on Sunday at 3 AM')        nextRun: new Date(),
         enabled: true,
-},
+      },
       {
-        id: 'update-remote-refs',        type: 'update-remotes',        schedule: '0 1 * * *', // Daily at 1 AM')        nextRun: new Date(),
+        id: 'update-remote-refs',
+        type: 'update-remotes',
+        schedule: '0 1 * * *', // Daily at 1 AM')        nextRun: new Date(),
         enabled: true,
-},
+      },
       {
-        id: 'verify-repository-integrity',        type: 'verify-integrity',        schedule: '0 4 * * 1', // Weekly on Monday at 4 AM')        nextRun: new Date(),
+        id: 'verify-repository-integrity',
+        type: 'verify-integrity',
+        schedule: '0 4 * * 1', // Weekly on Monday at 4 AM')        nextRun: new Date(),
         enabled: true,
-},
-];
-}
+      },
+    ];
+  }
 
   /**
    * Start automated maintenance scheduler
    */
-  private startMaintenanceScheduler():void {
+  private startMaintenanceScheduler(): void {
     for (const task of this.maintenanceTasks) {
       if (task.enabled) {
         cron.schedule(
           task.schedule,
           async () => {
             await this.runMaintenanceTask(task);
-},
+          },
           {
             scheduled: true,
-            timezone: 'UTC',}
+            timezone: 'UTC',
+          }
         );
 
         logger.info(`📅 Scheduled maintenance task: ${task.type}`, {
           managerId: this.managerId,
           schedule: task.schedule,
           nextRun: task.nextRun,
-});
-}
-}
-}
+        });
+      }
+    }
+  }
 
   /**
    * Run individual maintenance task with event emission
@@ -1298,13 +1418,14 @@ Respond in JSON format:
     logger.info(`🔧 Running maintenance task: ${task.type}`, {
       managerId: this.managerId,
       taskId: task.id,
-});
+    });
 
     // Emit maintenance started event
     this.emit('git: maintenance: started', {
-      type: 'git: maintenance: started',      taskType: task.type,
+      type: 'git: maintenance: started',
+      taskType: task.type,
       timestamp: new Date().toISOString(),
-});
+    });
 
     try {
       switch (task.type) {
@@ -1320,7 +1441,7 @@ Respond in JSON format:
         case 'verify-integrity':
           await this.verifyRepositoryIntegrity();
           break;
-}
+      }
 
       task.lastRun = new Date();
 
@@ -1328,26 +1449,34 @@ Respond in JSON format:
         managerId: this.managerId,
         taskId: task.id,
         completedAt: task.lastRun,
-});
+      });
 
       // Emit maintenance completed event
       this.emit('git: maintenance: completed', {
-        type: 'git: maintenance: completed',        taskType: task.type,
+        type: 'git: maintenance: completed',
+        taskType: task.type,
         projectsAffected: this.treeMetrics.size,
         timestamp: new Date().toISOString(),
-});
-} catch (error) {
+      });
+    } catch (error) {
       logger.error(`❌ Maintenance task failed: ${task.type}`, {
         managerId: this.managerId,
         taskId: task.id,
+<<<<<<< HEAD
         error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
 }
 }
+=======
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+    }
+  }
+>>>>>>> origin/main
 
   /**
    * Cleanup stale git trees
    */
-  private async cleanupStaleTrees():Promise<void> {
+  private async cleanupStaleTrees(): Promise<void> {
     const staleThreshold = 7 * 24 * 60 * 60 * 1000; // 7 days
     const now = Date.now();
     let cleanedCount = 0;
@@ -1363,26 +1492,34 @@ Respond in JSON format:
             managerId: this.managerId,
             lastAccess: metrics.lastAccess,
             operationCount: metrics.operationCount,
-});
-} catch (error) {
+          });
+        } catch (error) {
           logger.warn(`Failed to cleanup stale tree: ${projectId}`, {
             managerId: this.managerId,
+<<<<<<< HEAD
             error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
 }
 }
 }
+=======
+            error: error instanceof Error ? error.message : 'Unknown error',
+          });
+        }
+      }
+    }
+>>>>>>> origin/main
 
     logger.info('🧹 Stale tree cleanup completed', {
       managerId: this.managerId,
       treesCleanedUp: cleanedCount,
       remainingTrees: this.treeMetrics.size,
-});
-}
+    });
+  }
 
   /**
    * Compress git objects for space optimization
    */
-  private async compressGitTrees():Promise<void> {
+  private async compressGitTrees(): Promise<void> {
     let compressedCount = 0;
 
     for (const [projectId] of this.treeMetrics.entries()) {
@@ -1391,34 +1528,41 @@ Respond in JSON format:
 
         await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
           // Run git garbage collection
-          await git.raw(['gc',    '--aggressive',    '--prune=now']);
+          await git.raw(['gc', '--aggressive', '--prune=now']);
 
           // Compress loose objects
-          await git.raw(['repack',    '-ad']);
-});
+          await git.raw(['repack', '-ad']);
+        });
 
         compressedCount++;
 
         logger.debug(`🗜️ Compressed git tree: ${projectId}`, {
           managerId: this.managerId,
-});
-} catch (error) {
+        });
+      } catch (error) {
         logger.warn(`Failed to compress git tree: ${projectId}`, {
           managerId: this.managerId,
+<<<<<<< HEAD
           error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
 }
 }
+=======
+          error: error instanceof Error ? error.message : 'Unknown error',
+        });
+      }
+    }
+>>>>>>> origin/main
 
     logger.info('🗜️ Git tree compression completed', {
       managerId: this.managerId,
       treesCompressed: compressedCount,
-});
-}
+    });
+  }
 
   /**
    * Update remote references
    */
-  private async updateRemoteReferences():Promise<void> {
+  private async updateRemoteReferences(): Promise<void> {
     let updatedCount = 0;
 
     for (const [projectId] of this.treeMetrics.entries()) {
@@ -1427,34 +1571,41 @@ Respond in JSON format:
 
         await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
           // Fetch all remotes
-          await git.fetch(['--all',    '--prune']);
+          await git.fetch(['--all', '--prune']);
 
           // Update remote tracking branches
-          await git.raw(['remote',    'update']);
-});
+          await git.raw(['remote', 'update']);
+        });
 
         updatedCount++;
 
         logger.debug(`🔄 Updated remote refs: ${projectId}`, {
           managerId: this.managerId,
-});
-} catch (error) {
+        });
+      } catch (error) {
         logger.warn(`Failed to update remote refs: ${projectId}`, {
           managerId: this.managerId,
+<<<<<<< HEAD
           error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
 }
 }
+=======
+          error: error instanceof Error ? error.message : 'Unknown error',
+        });
+      }
+    }
+>>>>>>> origin/main
 
     logger.info('🔄 Remote reference update completed', {
       managerId: this.managerId,
       treesUpdated: updatedCount,
-});
-}
+    });
+  }
 
   /**
    * Verify repository integrity
    */
-  private async verifyRepositoryIntegrity():Promise<void> {
+  private async verifyRepositoryIntegrity(): Promise<void> {
     let verifiedCount = 0;
     const issues: string[] = [];
 
@@ -1464,35 +1615,47 @@ Respond in JSON format:
 
         await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
           // Verify repository integrity
-          await git.raw(['fsck',    '--full']);
+          await git.raw(['fsck', '--full']);
 
           // Check for corrupted objects
-          await git.raw(['cat-file',    '--batch-check',    '--batch-all-objects']);
-});
+          await git.raw(['cat-file', '--batch-check', '--batch-all-objects']);
+        });
 
         verifiedCount++;
 
         logger.debug(`✅ Verified repository integrity: ${projectId}`, {
           managerId: this.managerId,
+<<<<<<< HEAD
 });
 } catch (error) {
         const issue = `Repository integrity issue in ${projectId}:${error instanceof Error ? error.message: UNKNOWN_ERROR_MESSAGE}`;
+=======
+        });
+      } catch (error) {
+        const issue = `Repository integrity issue in ${projectId}:${error instanceof Error ? error.message : 'Unknown error'}`;
+>>>>>>> origin/main
         issues.push(issue);
 
         logger.warn(`Repository integrity issue: ${projectId}`, {
           managerId: this.managerId,
+<<<<<<< HEAD
           error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
 }
 }
+=======
+          error: error instanceof Error ? error.message : 'Unknown error',
+        });
+      }
+    }
+>>>>>>> origin/main
 
     logger.info('🔍 Repository integrity verification completed', {
       managerId: this.managerId,
       treesVerified: verifiedCount,
       issuesFound: issues.length,
       issues,
-});
-}
-
+    });
+  }
 
   // ====================================================================
   // UTILITY METHODS - Helper functions for git operations
@@ -1504,7 +1667,7 @@ Respond in JSON format:
   private async getCurrentBranch(git: SimpleGit): Promise<string> {
     const status = await git.status();
     return status.current || 'main';
-}
+  }
 
   /**
    * Get sandbox for project
@@ -1514,60 +1677,72 @@ Respond in JSON format:
     try {
       const sandbox = await this.sandbox.createSandbox(projectId);
       return sandbox.id;
-} catch (error) {
+    } catch (error) {
       logger.warn(`Creating new sandbox for project: ${projectId}`, {
         managerId: this.managerId,
+<<<<<<< HEAD
         error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
+=======
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+>>>>>>> origin/main
       const sandbox = await this.sandbox.createSandbox(
         `${projectId}-${Date.now()}`
       );
       return sandbox.id;
-}
-}
+    }
+  }
 
   /**
    * Format branch name according to strategy
    */
   private formatBranchName(baseName: string): string {
-    const { namingPattern, customPattern} = this.branchStrategy;
+    const { namingPattern, customPattern } = this.branchStrategy;
 
     if (namingPattern === 'custom' && customPattern) {
       return customPattern.replace('{name}', baseName);
-}
+    }
 
     return namingPattern.replace('{name}', baseName);
-}
+  }
 
   /**
    * Create new git operation tracking with event emission
    */
-  private createOperation(type: GitOperation['type'],
+  private createOperation(
+    type: GitOperation['type'],
     projectId: string,
     operationId: string,
+<<<<<<< HEAD
     metadata?: Record<string, unknown>
+=======
+    metadata?: Record<string, any>
+>>>>>>> origin/main
   ): GitOperation {
     const operation: GitOperation = {
       id: operationId,
       type,
       projectId,
       sandboxId: projectId,
-      status: 'pending',      startedAt: new Date(),
-};
+      status: 'pending',
+      startedAt: new Date(),
+    };
 
     this.activeOperations.set(operationId, operation);
     operation.status = 'running';
 
     // Emit operation started event
     this.emit('git: operation: started', {
-      type: 'git: operation: started',      operationId,
+      type: 'git: operation: started',
+      operationId,
       operationType: type,
       projectId,
       timestamp: new Date().toISOString(),
       metadata,
-});
+    });
 
     return operation;
-}
+  }
 
   /**
    * Complete git operation with event emission
@@ -1585,18 +1760,19 @@ Respond in JSON format:
 
     // Emit operation completed event
     this.emit('git: operation: completed', {
-      type: 'git: operation: completed',      operationId: operation.id,
+      type: 'git: operation: completed',
+      operationId: operation.id,
       operationType: operation.type,
       projectId: operation.projectId,
       success: true,
       result,
       duration,
       timestamp: completedAt.toISOString(),
-});
+    });
 
     // Update metrics
     this.updateTreeMetrics(operation.projectId);
-}
+  }
 
   /**
    * Fail git operation with event emission
@@ -1605,20 +1781,25 @@ Respond in JSON format:
     const completedAt = new Date();
     operation.status = 'failed';
     operation.completedAt = completedAt;
+<<<<<<< HEAD
     operation.error = error instanceof Error ? error.message: UNKNOWN_ERROR_MESSAGE;
+=======
+    operation.error = error instanceof Error ? error.message : 'Unknown error';
+>>>>>>> origin/main
 
     this.activeOperations.delete(operation.id);
     this.operationHistory.push(operation);
 
     // Emit operation failed event
     this.emit('git: operation: failed', {
-      type: 'git: operation: failed',      operationId: operation.id,
+      type: 'git: operation: failed',
+      operationId: operation.id,
       operationType: operation.type,
       projectId: operation.projectId,
       error: operation.error,
       timestamp: completedAt.toISOString(),
-});
-}
+    });
+  }
 
   /**
    * Update tree metrics
@@ -1629,15 +1810,15 @@ Respond in JSON format:
     if (existing) {
       existing.lastAccess = new Date();
       existing.operationCount++;
-} else {
+    } else {
       this.treeMetrics.set(projectId, {
-        size:0, // Would calculate actual size
+        size: 0, // Would calculate actual size
         lastAccess: new Date(),
-        operationCount:1,
-        branchCount:0, // Would calculate actual branch count
-});
-}
-}
+        operationCount: 1,
+        branchCount: 0, // Would calculate actual branch count
+      });
+    }
+  }
 
   // ====================================================================
   // STATUS AND MONITORING - System status and metrics
@@ -1646,29 +1827,29 @@ Respond in JSON format:
   /**
    * Get comprehensive git system status
    */
-  getGitSystemStatus():{
+  getGitSystemStatus(): {
     activeOperations: number;
     totalTrees: number;
-    systemHealth:'healthy' | ' warning' | ' critical';
+    systemHealth: 'healthy' | ' warning' | ' critical';
     treeStatus: GitTreeStatus;
     recentOperations: GitOperation[];
-    maintenance:{
+    maintenance: {
       enabled: boolean;
       tasksScheduled: number;
-      lastMaintenance?:Date;
-};
-} {
+      lastMaintenance?: Date;
+    };
+  } {
     const now = Date.now();
     const hourAgo = now - 60 * 60 * 1000;
     const dayAgo = now - 24 * 60 * 60 * 1000;
     const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
 
     const treesByAge = {
-      fresh:0,
-      recent:0,
-      old:0,
-      stale:0,
-};
+      fresh: 0,
+      recent: 0,
+      old: 0,
+      stale: 0,
+    };
 
     let maintenanceRequired = 0;
 
@@ -1677,15 +1858,15 @@ Respond in JSON format:
 
       if (age < hourAgo) {
         treesByAge.fresh++;
-} else if (age < dayAgo) {
+      } else if (age < dayAgo) {
         treesByAge.recent++;
-} else if (age < weekAgo) {
+      } else if (age < weekAgo) {
         treesByAge.old++;
-} else {
+      } else {
         treesByAge.stale++;
         maintenanceRequired++;
-}
-}
+      }
+    }
 
     const systemHealth =
       maintenanceRequired > 10
@@ -1698,44 +1879,49 @@ Respond in JSON format:
       activeOperations: this.activeOperations.size,
       totalTrees: this.treeMetrics.size,
       systemHealth,
-      treeStatus:{
+      treeStatus: {
         activeTrees: this.treeMetrics.size,
         maintenanceRequired,
-        diskUsage:0, // Would calculate actual usage
+        diskUsage: 0, // Would calculate actual usage
         lastMaintenance:
           this.maintenanceTasks.find((t) => t.lastRun)?.lastRun || new Date(),
         treesByAge,
-},
+      },
       recentOperations: this.operationHistory.slice(-10),
-      maintenance:{
+      maintenance: {
         enabled: this.config.automatedMaintenance,
         tasksScheduled: this.maintenanceTasks.filter((t) => t.enabled).length,
-        ...(this.maintenanceTasks.find((t) => t.lastRun)?.lastRun ? { lastMaintenance: this.maintenanceTasks.find((t) => t.lastRun)!.lastRun} :{}),
-},
-};
-}
+        ...(this.maintenanceTasks.find((t) => t.lastRun)?.lastRun
+          ? {
+              lastMaintenance: this.maintenanceTasks.find((t) => t.lastRun)!
+                .lastRun,
+            }
+          : {}),
+      },
+    };
+  }
 
   /**
    * Get operation history
    */
-  getOperationHistory(projectId?:string): GitOperation[] {
+  getOperationHistory(projectId?: string): GitOperation[] {
     if (projectId) {
       return this.operationHistory.filter((op) => op.projectId === projectId);
-}
+    }
     return this.operationHistory;
-}
+  }
 
   /**
    * Shutdown the GitCommander system
    */
-  async shutdown():Promise<void> {
+  async shutdown(): Promise<void> {
     try {
       // Complete any pending operations
       for (const operation of this.activeOperations.values()) {
         operation.status = 'failed';
         operation.error = 'System shutdown';
         operation.completedAt = new Date();
-}
+      }
 
       // Shutdown sandbox
       await this.sandbox.shutdown();
@@ -1747,14 +1933,19 @@ Respond in JSON format:
         managerId: this.managerId,
         operationsCompleted: this.operationHistory.length,
         treesManaged: this.treeMetrics.size,
-});
-} catch (error) {
+      });
+    } catch (error) {
       logger.error('❌ Error during GitOperationsManager shutdown', {
         managerId: this.managerId,
+<<<<<<< HEAD
         error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
+=======
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+>>>>>>> origin/main
       throw error;
-}
-}
+    }
+  }
 
   // ====================================================================
   // GIT WORKTREE OPERATIONS - For parallel development workflows
@@ -1763,16 +1954,18 @@ Respond in JSON format:
   /**
    * Create git worktree for parallel development
    */
-  async createWorktree(projectId: string,
+  async createWorktree(
+    projectId: string,
     worktreeName: string,
-    options:{
-      branch?:string;
-      baseBranch?:string;
-      path?:string;
-} = {}
+    options: {
+      branch?: string;
+      baseBranch?: string;
+      path?: string;
+    } = {}
   ): Promise<string> {
     const operation = this.createOperation(
-      'branch',      projectId,
+      'branch',
+      projectId,
       `worktree-${worktreeName}`
     );
 
@@ -1786,16 +1979,16 @@ Respond in JSON format:
         // Create new branch from base branch
         await git.checkout(baseBranch);
         await git.checkoutLocalBranch(branch);
-        
-        // Create worktree
-        await git.raw(['worktree',    'add', worktreePath, branch]);
-});
 
-      this.completeOperation(operation, { 
+        // Create worktree
+        await git.raw(['worktree', 'add', worktreePath, branch]);
+      });
+
+      this.completeOperation(operation, {
         worktreeName,
         branch,
         path: worktreePath,
-});
+      });
 
       logger.info('✅ Git worktree created successfully', {
         managerId: this.managerId,
@@ -1803,36 +1996,39 @@ Respond in JSON format:
         worktreeName,
         branch,
         path: worktreePath,
-});
+      });
 
       // Emit worktree created event
       this.emit('git: worktree: created', {
-        type: 'git: worktree: created',        projectId,
+        type: 'git: worktree: created',
+        projectId,
         worktreeName,
         worktreePath,
         branch,
         timestamp: new Date().toISOString(),
-});
+      });
 
       return worktreePath;
-} catch (error) {
+    } catch (error) {
       this.failOperation(operation, error);
       throw error;
-}
-}
+    }
+  }
 
   /**
    * Remove git worktree and cleanup
    */
-  async removeWorktree(projectId: string,
+  async removeWorktree(
+    projectId: string,
     worktreeName: string,
-    options:{
-      deleteBranch?:boolean;
-      force?:boolean;
-} = {}
+    options: {
+      deleteBranch?: boolean;
+      force?: boolean;
+    } = {}
   ): Promise<void> {
     const operation = this.createOperation(
-      'branch',      projectId,
+      'branch',
+      projectId,
       `remove-worktree-${worktreeName}`
     );
 
@@ -1841,54 +2037,57 @@ Respond in JSON format:
       const worktreePath = `../worktrees/${worktreeName}`;
 
       await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
-        const removeFlags = options.force ? ['--force'] :[];
-        
+        const removeFlags = options.force ? ['--force'] : [];
+
         // Remove worktree
-        await git.raw(['worktree',    'remove', worktreePath, ...removeFlags]);
-        
+        await git.raw(['worktree', 'remove', worktreePath, ...removeFlags]);
+
         // Delete branch if requested
         if (options.deleteBranch) {
           const branch = `worktree/${worktreeName}`;
           const deleteFlag = options.force ? '-D' : '-d';
           await git.raw(['branch', deleteFlag, branch]);
-}
-});
+        }
+      });
 
-      this.completeOperation(operation, { 
+      this.completeOperation(operation, {
         worktreeName,
         deletedBranch: options.deleteBranch,
-});
+      });
 
       logger.info('✅ Git worktree removed successfully', {
         managerId: this.managerId,
         projectId,
         worktreeName,
         deletedBranch: options.deleteBranch,
-});
+      });
 
       // Emit worktree removed event
       this.emit('git: worktree: removed', {
-        type: 'git: worktree: removed',        projectId,
+        type: 'git: worktree: removed',
+        projectId,
         worktreeName,
-        worktreePath:`../worktrees/${worktreeName}`,
-        branch:`worktree/${worktreeName}`,
+        worktreePath: `../worktrees/${worktreeName}`,
+        branch: `worktree/${worktreeName}`,
         timestamp: new Date().toISOString(),
-});
-} catch (error) {
+      });
+    } catch (error) {
       this.failOperation(operation, error);
       throw error;
-}
-}
+    }
+  }
 
   /**
    * List all git worktrees
    */
-  async listWorktrees(projectId: string): Promise<Array<{
-    path: string;
-    branch: string;
-    commit: string;
-    isMain: boolean;
-}>> {
+  async listWorktrees(projectId: string): Promise<
+    Array<{
+      path: string;
+      branch: string;
+      commit: string;
+      isMain: boolean;
+    }>
+  > {
     try {
       const sandbox = await this.getSandboxForProject(projectId);
       const worktrees: Array<{
@@ -1896,42 +2095,47 @@ Respond in JSON format:
         branch: string;
         commit: string;
         isMain: boolean;
-}> = [];
+      }> = [];
 
       await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
-        const result = await git.raw(['worktree',    'list',    '--porcelain']);
+        const result = await git.raw(['worktree', 'list', '--porcelain']);
         const lines = result.split('\n');
-        
+
         let currentWorktree: Record<string, unknown> = {};
-        
+
         for (const line of lines) {
           if (line.startsWith('worktree ')) {
             if (currentWorktree.path) {
               worktrees.push(currentWorktree);
-}
-            currentWorktree = { path: line.substring(9), isMain: false};
-} else if (line.startsWith('branch ')) {
+            }
+            currentWorktree = { path: line.substring(9), isMain: false };
+          } else if (line.startsWith('branch ')) {
             currentWorktree.branch = line.substring(7);
-} else if (line.startsWith('HEAD ')) {
+          } else if (line.startsWith('HEAD ')) {
             currentWorktree.commit = line.substring(5);
-} else if (line === 'bare') {
+          } else if (line === 'bare') {
             currentWorktree.isMain = true;
-}
-}
-        
+          }
+        }
+
         if (currentWorktree.path) {
           worktrees.push(currentWorktree);
-}
-});
+        }
+      });
 
       return worktrees;
-} catch (error) {
+    } catch (error) {
       logger.warn('Failed to list worktrees', {
         projectId,
+<<<<<<< HEAD
         error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,});
+=======
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+>>>>>>> origin/main
       return [];
-}
-}
+    }
+  }
 
   // ====================================================================
   // EVENT-DRIVEN HELPERS - Convenience methods for event handling
@@ -1941,45 +2145,51 @@ Respond in JSON format:
    * Subscribe to git operation events
    */
   onOperation(
-    eventType:'started' | ' completed' | ' failed',    handler:(event: GitOperationStartedEvent | GitOperationCompletedEvent | GitOperationFailedEvent) => void
-  ):void {
+    eventType: 'started' | ' completed' | ' failed',
+    handler: (
+      event:
+        | GitOperationStartedEvent
+        | GitOperationCompletedEvent
+        | GitOperationFailedEvent
+    ) => void
+  ): void {
     const type = `git: operation: ${eventType}` as const;
     this.on(type, handler as any);
-}
+  }
 
   /**
    * Subscribe to git conflict events
    */
-  onConflict(
-    handler:(event: GitConflictResolvedEvent) => void
-  ):void {
+  onConflict(handler: (event: GitConflictResolvedEvent) => void): void {
     this.on('git: conflict: resolved', handler as any);
-}
+  }
 
   /**
    * Subscribe to git worktree events
    */
   onWorktree(
-    eventType:'created' | ' removed',    handler:(event: GitWorktreeEvent) => void
-  ):void {
+    eventType: 'created' | ' removed',
+    handler: (event: GitWorktreeEvent) => void
+  ): void {
     const type = `git: worktree: ${eventType}` as const;
     this.on(type, handler as any);
-}
+  }
 
   /**
    * Subscribe to git maintenance events
    */
   onMaintenance(
-    eventType:'started' | ' completed',    handler:(event: GitMaintenanceEvent) => void
-  ):void {
+    eventType: 'started' | ' completed',
+    handler: (event: GitMaintenanceEvent) => void
+  ): void {
     const type = `git: maintenance: ${eventType}` as const;
     this.on(type, handler as any);
-}
+  }
 
   /**
    * Subscribe to all git events
    */
-  onAnyGitEvent(handler:(event: GitEvent) => void): void {
+  onAnyGitEvent(handler: (event: GitEvent) => void): void {
     // Subscribe to all event types
     this.on('git: operation: started', handler as any);
     this.on('git: operation: completed', handler as any);
@@ -1989,6 +2199,5 @@ Respond in JSON format:
     this.on('git: worktree: removed', handler as any);
     this.on('git: maintenance: started', handler as any);
     this.on('git: maintenance: completed', handler as any);
-}
-
+  }
 }

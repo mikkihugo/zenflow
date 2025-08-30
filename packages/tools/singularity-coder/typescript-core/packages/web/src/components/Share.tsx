@@ -49,7 +49,7 @@ export default function Share(props: {
   let scrollSentinel: HTMLElement | undefined
   let scrollObserver: IntersectionObserver | undefined
 
-  const {id} = props
+  const { id } = props
   const params = new URLSearchParams(window.location.search)
   const debug = params.get("debug") === "true"
 
@@ -95,7 +95,7 @@ export default function Share(props: {
 
       // Always use secure WebSocket protocol (wss)
       const wsBaseUrl = apiUrl.replace(/^https?:\/\//, "wss://")
-      const wsUrl = `${wsBaseUrl}/share_poll?id=${id}`
+      const wsUrl = `${wsBaseUrl}/share_poll?id=${id}
       console.log("Connecting to WebSocket URL:", wsUrl)
 
       // Create WebSocket connection
@@ -264,7 +264,6 @@ export default function Share(props: {
 
     const msgs = messages()
     for (const msg of msgs) {
-
       result.messages.push(msg)
 
       if (msg.role === "assistant") {
