@@ -4,7 +4,7 @@
  * Comprehensive event system for TaskMaster coordination and workflow management.
  * Provides type-safe event handling for task lifecycle, workflow management,
  * and approval processes.
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -221,14 +221,16 @@ export interface TaskMasterEventMap {
   'approval:escalated': (event: ApprovalEscalatedEvent) => void;
 
   // Performance and monitoring events
-  'performance:threshold_exceeded': (event: PerformanceThresholdExceededEvent) => void;
+  'performance:threshold_exceeded': (
+    event: PerformanceThresholdExceededEvent
+  ) => void;
   'wip:violation': (event: WIPViolationEvent) => void;
 }
 
 /**
  * Union type of all TaskMaster events
  */
-export type TaskMasterEvent = 
+export type TaskMasterEvent =
   | TaskCreatedEvent
   | TaskUpdatedEvent
   | TaskDeletedEvent
@@ -266,26 +268,52 @@ export function createBaseEvent(
     timestamp: new Date(),
     source,
     version: '1.0.0',
-    metadata
+    metadata,
   };
 }
 
 /**
  * Type guards for event types
  */
-export function isTaskEvent(event: TaskMasterEvent): event is TaskCreatedEvent | TaskUpdatedEvent | TaskDeletedEvent | TaskStateChangedEvent | TaskAssignedEvent | TaskCompletedEvent | TaskBlockedEvent | TaskUnblockedEvent {
+export function isTaskEvent(
+  event: TaskMasterEvent
+): event is
+  | TaskCreatedEvent
+  | TaskUpdatedEvent
+  | TaskDeletedEvent
+  | TaskStateChangedEvent
+  | TaskAssignedEvent
+  | TaskCompletedEvent
+  | TaskBlockedEvent
+  | TaskUnblockedEvent {
   return event.type.startsWith('task:');
 }
 
-export function isWorkflowEvent(event: TaskMasterEvent): event is WorkflowStartedEvent | WorkflowCompletedEvent | WorkflowFailedEvent | WorkflowPausedEvent | WorkflowResumedEvent {
+export function isWorkflowEvent(
+  event: TaskMasterEvent
+): event is
+  | WorkflowStartedEvent
+  | WorkflowCompletedEvent
+  | WorkflowFailedEvent
+  | WorkflowPausedEvent
+  | WorkflowResumedEvent {
   return event.type.startsWith('workflow:');
 }
 
-export function isApprovalEvent(event: TaskMasterEvent): event is ApprovalRequestedEvent | ApprovalGrantedEvent | ApprovalRejectedEvent | ApprovalTimeoutEvent | ApprovalEscalatedEvent {
+export function isApprovalEvent(
+  event: TaskMasterEvent
+): event is
+  | ApprovalRequestedEvent
+  | ApprovalGrantedEvent
+  | ApprovalRejectedEvent
+  | ApprovalTimeoutEvent
+  | ApprovalEscalatedEvent {
   return event.type.startsWith('approval:');
 }
 
-export function isPerformanceEvent(event: TaskMasterEvent): event is PerformanceThresholdExceededEvent | WIPViolationEvent {
+export function isPerformanceEvent(
+  event: TaskMasterEvent
+): event is PerformanceThresholdExceededEvent | WIPViolationEvent {
   return event.type.startsWith('performance:') || event.type.startsWith('wip:');
 }
 
@@ -296,7 +324,7 @@ export enum EventSeverity {
   INFO = 'info',
   WARNING = 'warning',
   ERROR = 'error',
-  CRITICAL = 'critical'
+  CRITICAL = 'critical',
 }
 
 /**
@@ -309,20 +337,21 @@ export function getEventSeverity(event: TaskMasterEvent): EventSeverity {
     case 'approval:rejected':
     case 'approval:timeout':
       return EventSeverity.WARNING;
-    
+
     case 'performance:threshold_exceeded':
-      return (event as PerformanceThresholdExceededEvent).severity === 'critical' 
-        ? EventSeverity.CRITICAL 
+      return (event as PerformanceThresholdExceededEvent).severity ===
+        'critical'
+        ? EventSeverity.CRITICAL
         : EventSeverity.WARNING;
-    
+
     case 'wip:violation':
-      return (event as WIPViolationEvent).severity === 'critical' 
-        ? EventSeverity.CRITICAL 
+      return (event as WIPViolationEvent).severity === 'critical'
+        ? EventSeverity.CRITICAL
         : EventSeverity.WARNING;
-    
+
     case 'approval:escalated':
       return EventSeverity.ERROR;
-    
+
     default:
       return EventSeverity.INFO;
   }
@@ -335,5 +364,5 @@ export default {
   isApprovalEvent,
   isPerformanceEvent,
   getEventSeverity,
-  EventSeverity
+  EventSeverity,
 };

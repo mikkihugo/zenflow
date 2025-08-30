@@ -8,10 +8,10 @@
  * @file Memory management:memory-system.
  */
 
-import type { MemoryStats} from '../backends/base-backend';
+import type { MemoryStats } from '../backends/base-backend';
 
 // Re-export MemoryStats for convenience
-export type { MemoryStats};
+export type { MemoryStats };
 
 // JSON Value type for database compatibility
 export type JSONValue =
@@ -19,7 +19,7 @@ export type JSONValue =
   | number
   | boolean
   | null
-  | { [key:string]: JSONValue}
+  | { [key: string]: JSONValue }
   | JSONValue[];
 
 /**
@@ -30,13 +30,13 @@ export type JSONValue =
  */
 export interface BackendStats {
   /** Number of entries */
-  entries:number;
+  entries: number;
   /** Total size in bytes */
-  size:number;
+  size: number;
   /** Last modified timestamp */
-  lastModified:number;
+  lastModified: number;
   /** Number of namespaces */
-  namespaces?:number;
+  namespaces?: number;
 }
 
 /**
@@ -47,14 +47,14 @@ export interface BackendStats {
  * @example
  */
 export function memoryStatsToBackendStats(
-  memoryStats:MemoryStats
-):BackendStats {
+  memoryStats: MemoryStats
+): BackendStats {
   return {
-    entries:memoryStats.totalEntries,
-    size:memoryStats.totalSize,
-    lastModified:memoryStats.modified,
-    namespaces:undefined, // Not tracked in MemoryStats
-};
+    entries: memoryStats.totalEntries,
+    size: memoryStats.totalSize,
+    lastModified: memoryStats.modified,
+    namespaces: undefined, // Not tracked in MemoryStats
+  };
 }
 
 /**
@@ -65,17 +65,17 @@ export function memoryStatsToBackendStats(
  * @example
  */
 export function backendStatsToMemoryStats(
-  backendStats:BackendStats
-):MemoryStats {
+  backendStats: BackendStats
+): MemoryStats {
   return {
-    totalEntries:backendStats.entries,
-    totalSize:backendStats.size,
-    cacheHits:0, // Not tracked in BackendStats
-    cacheMisses:0, // Not tracked in BackendStats
-    lastAccessed:backendStats.lastModified,
-    created:Date.now(), // Not tracked in BackendStats
-    modified:backendStats.lastModified,
-};
+    totalEntries: backendStats.entries,
+    totalSize: backendStats.size,
+    cacheHits: 0, // Not tracked in BackendStats
+    cacheMisses: 0, // Not tracked in BackendStats
+    lastAccessed: backendStats.lastModified,
+    created: Date.now(), // Not tracked in BackendStats
+    modified: backendStats.lastModified,
+  };
 }
 
 /**
@@ -86,46 +86,46 @@ export function backendStatsToMemoryStats(
  */
 export interface BackendInterface {
   /** Initialize the backend */
-  initialize():Promise<void>;
+  initialize(): Promise<void>;
 
   /** Store a value with the given key */
-  store(key:string, value:JSONValue, namespace?:string): Promise<void>;
+  store(key: string, value: JSONValue, namespace?: string): Promise<void>;
 
   /** Retrieve a value by key */
-  retrieve<T = JSONValue>(key:string): Promise<T | null>;
+  retrieve<T = JSONValue>(key: string): Promise<T | null>;
 
   /** Alternative method name for retrieve */
-  get<T = JSONValue>(key:string): Promise<T | null>;
+  get<T = JSONValue>(key: string): Promise<T | null>;
 
   /** Alternative method name for store */
-  set(key:string, value:JSONValue): Promise<void>;
+  set(key: string, value: JSONValue): Promise<void>;
 
   /** Delete a value by key - returns true if key existed and was deleted, false otherwise */
-  delete(key:string): Promise<boolean>;
+  delete(key: string): Promise<boolean>;
 
   /** Search for values matching a pattern */
   search(
-    pattern:string,
-    namespace?:string
-  ):Promise<Record<string, JSONValue>>;
+    pattern: string,
+    namespace?: string
+  ): Promise<Record<string, JSONValue>>;
 
   /** List available namespaces */
-  listNamespaces():Promise<string[]>;
+  listNamespaces(): Promise<string[]>;
 
   /** Clear all data */
-  clear():Promise<void>;
+  clear(): Promise<void>;
 
   /** Close the backend connection */
-  close():Promise<void>;
+  close(): Promise<void>;
 
   /** Get backend statistics - async version for interface compatibility */
-  getStats?():Promise<MemoryStats> | MemoryStats;
+  getStats?(): Promise<MemoryStats> | MemoryStats;
 
   /** Get backend health status */
-  health?():Promise<boolean>;
+  health?(): Promise<boolean>;
 
   /** Get the size/count of stored items */
-  size?():Promise<number>;
+  size?(): Promise<number>;
 }
 
 /**
@@ -135,10 +135,10 @@ export interface BackendInterface {
  */
 export interface BackendConfig {
   type: 'sqlite|lancedb|json|memory';
-  path?:string;
-  maxSize?:number;
-  ttl?:number;
-  compression?:boolean;
+  path?: string;
+  maxSize?: number;
+  ttl?: number;
+  compression?: boolean;
 }
 
 /**
@@ -147,12 +147,12 @@ export interface BackendConfig {
  * @example
  */
 export interface MemorySystemConfig {
-  backend:BackendConfig;
-  enableCache?:boolean;
-  cacheSize?:number;
-  cacheTTL?:number;
-  enableVectorStorage?:boolean;
-  vectorDimensions?:number;
+  backend: BackendConfig;
+  enableCache?: boolean;
+  cacheSize?: number;
+  cacheTTL?: number;
+  enableVectorStorage?: boolean;
+  vectorDimensions?: number;
 }
 
 /**
@@ -161,12 +161,12 @@ export interface MemorySystemConfig {
  * @example
  */
 export interface MemoryEntryMetadata {
-  created:Date;
-  updated:Date;
-  accessed:Date;
-  size:number;
-  ttl?:number;
-  tags?:string[];
+  created: Date;
+  updated: Date;
+  accessed: Date;
+  size: number;
+  ttl?: number;
+  tags?: string[];
   priority?: 'low|medium|high';
 }
 
@@ -176,9 +176,9 @@ export interface MemoryEntryMetadata {
  * @example
  */
 export interface MemoryEntryWithMetadata<T = JSONValue> {
-  key:string;
-  value:T;
-  metadata:MemoryEntryMetadata;
+  key: string;
+  value: T;
+  metadata: MemoryEntryMetadata;
 }
 
 /**
@@ -187,14 +187,14 @@ export interface MemoryEntryWithMetadata<T = JSONValue> {
  * @example
  */
 export interface MemoryOperationResult<T = unknown> {
-  success:boolean;
-  data?:T;
-  error?:string;
-  metadata?:{
-    executionTime:number;
-    backend:string;
-    timestamp:number;
-};
+  success: boolean;
+  data?: T;
+  error?: string;
+  metadata?: {
+    executionTime: number;
+    backend: string;
+    timestamp: number;
+  };
 }
 
 /**
@@ -203,11 +203,11 @@ export interface MemoryOperationResult<T = unknown> {
  * @example
  */
 export interface MemorySearchOptions {
-  pattern?:string;
-  limit?:number;
-  offset?:number;
-  namespace?:string;
-  includeMetadata?:boolean;
+  pattern?: string;
+  limit?: number;
+  offset?: number;
+  namespace?: string;
+  includeMetadata?: boolean;
 }
 
 /**
@@ -216,9 +216,9 @@ export interface MemorySearchOptions {
  * @example
  */
 export interface MemoryHealthCheck {
-  healthy:boolean;
-  latency:number;
-  backend:string;
-  timestamp:number;
-  details?:Record<string, unknown>;
+  healthy: boolean;
+  latency: number;
+  backend: string;
+  timestamp: number;
+  details?: Record<string, unknown>;
 }

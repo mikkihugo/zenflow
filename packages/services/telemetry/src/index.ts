@@ -53,7 +53,7 @@ export {
 
 // LEGACY EXPORTS (WITH IMPORTS - DEPRECATED)
 // OpenTelemetry re-exports for convenience
-export { SpanKind, SpanStatusCode} from '@opentelemetry/api';
+export { SpanKind, SpanStatusCode } from '@opentelemetry/api';
 export {
   getTelemetry,
   initializeTelemetry,
@@ -86,34 +86,34 @@ export type {
 } from './types.js';
 
 // Import TelemetryManager class
-import { TelemetryManager} from './telemetry.js';
+import { TelemetryManager } from './telemetry.js';
 
 // Factory function expected by infrastructure facade
-export function createTelemetryManager(config?:unknown) {
+export function createTelemetryManager(config?: unknown) {
   return new TelemetryManager(config);
 }
 
 // Provider class expected by infrastructure facade
 export class TelemetryProvider {
-  constructor(private config?:unknown) {}
+  constructor(private config?: unknown) {}
 
-  async createTelemetryManager(config?:unknown) {
-    return createTelemetryManager({ ...this.config, ...config});
-}
+  async createTelemetryManager(config?: unknown) {
+    return createTelemetryManager({ ...this.config, ...config });
+  }
 
-  async createCollector(config?:unknown) {
-    return createTelemetryManager({ ...this.config, ...config});
-}
+  async createCollector(config?: unknown) {
+    return createTelemetryManager({ ...this.config, ...config });
+  }
 }
 
 // Main factory function for infrastructure facade
-export function createTelemetryAccess(_config?:unknown) {
+export function createTelemetryAccess(_config?: unknown) {
   return {
     createTelemetryManager,
-    createCollector:createTelemetryManager,
-    createProvider:(providerConfig?: unknown) =>
+    createCollector: createTelemetryManager,
+    createProvider: (providerConfig?: unknown) =>
       new TelemetryProvider(providerConfig),
     TelemetryManager,
     TelemetryProvider,
-};
+  };
 }

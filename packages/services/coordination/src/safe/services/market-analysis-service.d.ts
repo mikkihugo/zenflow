@@ -21,7 +21,7 @@ import {
  * Market analysis configuration
  */
 export interface MarketAnalysisConfig {
-    readonly analysisDepth: new () => Map<string, CompetitorAnalysis>;
-    (): any;
+  readonly analysisDepth: new () => Map<string, CompetitorAnalysis>;
+  (): any;
 }
 //# sourceMappingURL=market-analysis-service.d.ts.map

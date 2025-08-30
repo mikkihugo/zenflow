@@ -293,7 +293,7 @@ interface Todo {
 function stripWorkingDirectory(filePath?: string, workingDir?: string) {
   if (filePath === undefined || workingDir === undefined) return filePath
 
-  const prefix = workingDir.endsWith("/") ? workingDir : `${workingDir}/`
+  const prefix = workingDir.endsWith("/") ? workingDir : `${workingDir}/
 
   if (filePath === workingDir) {
     return ""
@@ -594,7 +594,7 @@ export function GlobTool(props: ToolProps) {
         <Match when={props.state.metadata?.count && props.state.metadata?.count > 0}>
           <div data-component="tool-result">
             <ResultsButton
-              showCopy={props.state.metadata?.count === 1 ? "1 result" : `${props.state.metadata?.count} results`}
+              showCopy={props.state.metadata?.count === 1 ? "1 result" : `${props.state.metadata?.count} results}
             >
               <ContentText expand compact text={props.state.output} />
             </ResultsButton>
@@ -643,7 +643,7 @@ function Footer(props: ParentProps<{ title: string }>) {
 }
 
 function ToolFooter(props: { time: number }) {
-  return props.time > MIN_DURATION && <Footer title={`${props.time}ms`}>{formatDuration(props.time)}</Footer>
+  return props.time > MIN_DURATION && <Footer title={`${props.time}ms}>{formatDuration(props.time)}</Footer>
 }
 
 function TaskTool(props: ToolProps) {
@@ -699,12 +699,12 @@ function flattenToolArgs(obj: any, prefix: string = ""): Array<[string, any]> {
   const entries: Array<[string, any]> = []
 
   for (const [key, value] of Object.entries(obj)) {
-    const path = prefix ? `${prefix}.${key}` : key
+    const path = prefix ? `${prefix}.${key} : key
 
     if (value !== null && typeof value === "object") {
       if (Array.isArray(value)) {
         for (const [index, item] of value.entries()) {
-          const arrayPath = `${path}[${index}]`
+          const arrayPath = `${path}[${index}]
           if (item !== null && typeof item === "object") {
             entries.push(...flattenToolArgs(item, arrayPath))
           } else {

@@ -1,15 +1,15 @@
 import fs from "node:fs/promises"
 import path from "node:path"
-import type { CommandModule} from "yargs"
-import { Server} from "../../server/server"
+import type { CommandModule } from "yargs"
+import { Server } from "../../server/server"
 
 export const GenerateCommand = {
-  command:"generate",
-  handler:async () => {
+  command: "generate",
+  handler: async () => {
     const specs = await Server.openapi()
     const dir = "gen"
-    await fs.rmdir(dir, { recursive:true}).catch(() => {})
-    await fs.mkdir(dir, { recursive:true})
+    await fs.rmdir(dir, { recursive: true }).catch(() => {})
+    await fs.mkdir(dir, { recursive: true })
     await Bun.write(path.join(dir, "openapi.json"), JSON.stringify(specs, null, 2))
-},
+  },
 } satisfies CommandModule

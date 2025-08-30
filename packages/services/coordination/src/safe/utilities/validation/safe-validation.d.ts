@@ -19,22 +19,28 @@ export declare const SafePrioritySchema: z.ZodEnum<any>;
 /**
  * SAFe feature status schema
  */
-export declare const FeatureStatusSchema: z.ZodEnum<[";"]>;
+export declare const FeatureStatusSchema: z.ZodEnum<[';']>;
 /**
  * SAFe value stream schema
  */
-export declare const ValueStreamSchema: z.ZodObject<z.ZodRawShape, "strip", z.ZodTypeAny, {
+export declare const ValueStreamSchema: z.ZodObject<
+  z.ZodRawShape,
+  'strip',
+  z.ZodTypeAny,
+  {
     [x: string]: any;
-}, {
+  },
+  {
     [x: string]: any;
-}>;
+  }
+>;
 /**
  * SAFe validation utilities class
  */
 export declare class SafeValidationUtils {
-    /**
-     * Validate epic creation input
-     */
-    static validateEpic(input: z.object): any;
+  /**
+   * Validate epic creation input
+   */
+  static validateEpic(input: z.object): any;
 }
 //# sourceMappingURL=safe-validation.d.ts.map

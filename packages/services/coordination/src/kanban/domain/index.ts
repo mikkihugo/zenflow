@@ -15,15 +15,15 @@ export { WIPManagementService } from './wip-management.js';
 // Export interfaces and types
 export type { BottleneckDetectionConfig } from './bottleneck-detection.js';
 export type { FlowTrend, FlowMetrics } from './flow-analysis.js';
-export type { 
-  HealthMonitoringConfig, 
-  PerformanceMetrics, 
-  HealthStatus 
+export type {
+  HealthMonitoringConfig,
+  PerformanceMetrics,
+  HealthStatus,
 } from './health-monitoring.js';
 export type { TaskManagementConfig, Task } from './task-management.js';
-export type { 
-  WIPManagementConfig, 
-  WIPLimits, 
-  WIPViolation, 
-  WIPStatus 
+export type {
+  WIPManagementConfig,
+  WIPLimits,
+  WIPViolation,
+  WIPStatus,
 } from './wip-management.js';

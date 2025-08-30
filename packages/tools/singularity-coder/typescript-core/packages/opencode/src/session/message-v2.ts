@@ -430,7 +430,7 @@ export namespace MessageV2 {
               if (part.state.status === "completed")
                 return [
                   {
-                    type:(`tool-${part.tool}`) as `tool-${string}`,`
+                    type:(`tool-${part.tool}`) as `tool-${string}`,
                     state:"output-available",
                     toolCallId:part.callID,
                     input:part.state.input,
@@ -440,7 +440,7 @@ export namespace MessageV2 {
               if (part.state.status === "error")
                 return [
                   {
-                    type:(`tool-${part.tool}`) as `tool-${string}`,`
+                    type:(`tool-${part.tool}`) as `tool-${string}`,
                     state:"output-error",
                     toolCallId:part.callID,
                     input:part.state.input,

@@ -46,7 +46,7 @@ export const McpAddCommand = cmd({
 })
       if (prompts.isCancel(command)) throw new UI.CancelledError()
 
-      prompts.log.info(`Local MCP server "${name}" configured with command:${command}`)`
+      prompts.log.info(`Local MCP server "${name}" configured with command:${command}`)
       prompts.outro("MCP server added successfully")
       return
 }
@@ -69,7 +69,7 @@ export const McpAddCommand = cmd({
 })
       const transport = new StreamableHTTPClientTransport(new URL(url))
       await client.connect(transport)
-      prompts.log.info(`Remote MCP server "${name}" configured with URL:$url`)`
+      prompts.log.info(`Remote MCP server "${name}" configured with URL:$url)
 }
 
     prompts.outro("MCP server added successfully")

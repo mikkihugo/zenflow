@@ -26,16 +26,16 @@ export const AuthListCommand = cmd({
     const authPath = path.join(Global.Path.data, "auth.json")
     const homedir = os.homedir()
     const displayPath = authPath.startsWith(homedir) ? authPath.replace(homedir, "~") :authPath
-    prompts.intro(`Credentials ${UI.Style.TEXT_DIM}${displayPath}`)`
+    prompts.intro(`Credentials ${UI.Style.TEXT_DIM}${displayPath}`)
     const results = await Auth.all().then((x) => Object.entries(x))
     const database = await ModelsDev.get()
 
     for (const [providerID, result] of results) {
       const name = database[providerID]?.name || providerID
-      prompts.log.info(`$name$UI.Style.TEXT_DIM$result.type`)`
+      prompts.log.info(`$name$UI.Style.TEXT_DIM$result.type)
 }
 
-    prompts.outro(`${results.length} credentials`)`
+    prompts.outro(`${results.length} credentials)
 
     // Environment variables section
     const activeEnvVars:Array<{ provider: string; envVar: string}> = []
@@ -56,10 +56,10 @@ export const AuthListCommand = cmd({
       prompts.intro("Environment")
 
       for (const { provider, envVar} of activeEnvVars) {
-        prompts.log.info(`${provider} ${UI.Style.TEXT_DIM}${envVar}`)`
+        prompts.log.info(`${provider} ${UI.Style.TEXT_DIM}${envVar}`)
 }
 
-      prompts.outro(`$activeEnvVars.lengthenvironment variables`)`
+      prompts.outro(`$activeEnvVars.lengthenvironment variables)
 }
 },
 })
@@ -112,7 +112,7 @@ export const AuthLoginCommand = cmd({
       provider = provider.replace(/^@ai-sdk\//, "")
       if (prompts.isCancel(provider)) throw new UI.CancelledError()
       prompts.log.warn(
-        `This only stores a credential for ${provider} - you will need configure it in opencode.json, check the docs for examples.`,`
+        `This only stores a credential for ${provider} - you will need configure it in opencode.json, check the docs for examples.`,
       )
 }
 
@@ -206,7 +206,7 @@ export const AuthLoginCommand = cmd({
           const response = await fetch("https://api.anthropic.com/api/oauth/claude_cli/create_api_key", {
             method:"POST",
             headers:{
-              Authorization:`Bearer ${accessToken}`,`
+              Authorization:`Bearer ${accessToken}`,
               "Content-Type":"application/x-www-form-urlencoded",
               Accept:"application/json, text/plain, */*",
 },
@@ -234,7 +234,7 @@ export const AuthLoginCommand = cmd({
       await new Promise((resolve) => setTimeout(resolve, 10))
       const deviceInfo = await copilot.authorize()
 
-      prompts.note(`Please visit:${deviceInfo.verification}\nEnter code:${deviceInfo.user}`)`
+      prompts.note(`Please visit:${deviceInfo.verification}\nEnter code:${deviceInfo.user}`)
 
       const spinner = prompts.spinner()
       spinner.start("Waiting for authorization...")

@@ -30,22 +30,22 @@
  */
 
 // Foundation re-exports zod - use internal import to avoid circular dependency
-import { ZodError, type ZodSchema, type ZodType, z as zodInstance} from "zod";
-import { err, ok, type Result} from "../error-handling/index.js";
+import { ZodError, type ZodSchema, type ZodType, z as zodInstance } from 'zod';
+import { err, ok, type Result } from '../error-handling/index.js';
 import type {
-	Email,
-	ISODateString,
-	JsonPrimitive,
-	Timestamp,
-	UUID,
-} from "../types/primitives";
+  Email,
+  ISODateString,
+  JsonPrimitive,
+  Timestamp,
+  UUID,
+} from '../types/primitives';
 
 // =============================================================================
 // ZOD SCHEMA UTILITIES - Re-export for convenience
 // =============================================================================
 
-export { zodInstance as z, ZodError};
-export type { ZodSchema, ZodType};
+export { zodInstance as z, ZodError };
+export type { ZodSchema, ZodType };
 
 // =============================================================================
 // INPUT VALIDATION WITH RESULT PATTERN
@@ -71,26 +71,26 @@ export type { ZodSchema, ZodType};
  * ```
  */
 export function validateInput<T>(
-	schema:ZodSchema<T>,
-	data:unknown,
-):Result<T, ZodError> {
-	try {
-		const validated = schema.parse(data);
-		return ok(validated);
-} catch (error) {
-		if (error instanceof ZodError) {
-			return err(error);
-}
-		return err(
-			new ZodError([
-				{
-					code:"custom",
-					message:"Unknown validation error",
-					path:[],
-},
-]),
-		);
-}
+  schema: ZodSchema<T>,
+  data: unknown
+): Result<T, ZodError> {
+  try {
+    const validated = schema.parse(data);
+    return ok(validated);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return err(error);
+    }
+    return err(
+      new ZodError([
+        {
+          code: 'custom',
+          message: 'Unknown validation error',
+          path: [],
+        },
+      ])
+    );
+  }
 }
 
 /**
@@ -108,9 +108,9 @@ export function validateInput<T>(
  * ```
  */
 export function createValidator<T>(
-	schema:ZodSchema<T>,
-):(data: unknown) => Result<T, ZodError> {
-	return (data:unknown) => validateInput(schema, data);
+  schema: ZodSchema<T>
+): (data: unknown) => Result<T, ZodError> {
+  return (data: unknown) => validateInput(schema, data);
 }
 
 // =============================================================================
@@ -131,13 +131,13 @@ export function createValidator<T>(
  *}
  * ```
  */
-export function isUUID(value:unknown): value is UUID {
-	return (
-		typeof value === "string" &&
-		/^[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i.test(
-			value,
-		)
-	);
+export function isUUID(value: unknown): value is UUID {
+  return (
+    typeof value === 'string' &&
+    /^[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i.test(
+      value
+    )
+  );
 }
 
 /**
@@ -154,8 +154,8 @@ export function isUUID(value:unknown): value is UUID {
  *}
  * ```
  */
-export function isEmail(value:unknown): value is Email {
-	return typeof value === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+export function isEmail(value: unknown): value is Email {
+  return typeof value === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
 /**
@@ -171,8 +171,8 @@ export function isEmail(value:unknown): value is Email {
  *}
  * ```
  */
-export function isTimestamp(value:unknown): value is Timestamp {
-	return typeof value === "number" && value > 0 && Number.isInteger(value);
+export function isTimestamp(value: unknown): value is Timestamp {
+  return typeof value === 'number' && value > 0 && Number.isInteger(value);
 }
 
 /**
@@ -188,12 +188,12 @@ export function isTimestamp(value:unknown): value is Timestamp {
  *}
  * ```
  */
-export function isISODateString(value:unknown): value is ISODateString {
-	return (
-		typeof value === "string" &&
-		!Number.isNaN(Date.parse(value)) &&
-		/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/.test(value)
-	);
+export function isISODateString(value: unknown): value is ISODateString {
+  return (
+    typeof value === 'string' &&
+    !Number.isNaN(Date.parse(value)) &&
+    /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/.test(value)
+  );
 }
 
 /**
@@ -209,14 +209,14 @@ export function isISODateString(value:unknown): value is ISODateString {
  *}
  * ```
  */
-export function isPrimitive(value:unknown): value is JsonPrimitive {
-	return (
-		value === null ||
-		value === undefined ||
-		typeof value === "string" ||
-		typeof value === "number" ||
-		typeof value === "boolean"
-	);
+export function isPrimitive(value: unknown): value is JsonPrimitive {
+  return (
+    value === null ||
+    value === undefined ||
+    typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'boolean'
+  );
 }
 
 /**
@@ -233,8 +233,8 @@ export function isPrimitive(value:unknown): value is JsonPrimitive {
  *}
  * ```
  */
-export function isNonEmptyArray<T>(arr:T[]): arr is [T, ...T[]] {
-	return Array.isArray(arr) && arr.length > 0;
+export function isNonEmptyArray<T>(arr: T[]): arr is [T, ...T[]] {
+  return Array.isArray(arr) && arr.length > 0;
 }
 
 /**
@@ -250,18 +250,18 @@ export function isNonEmptyArray<T>(arr:T[]): arr is [T, ...T[]] {
  *}
  * ```
  */
-export function isURL(value:unknown): value is string {
-	if (typeof value !== "string") return false;
-	try {
-		if (typeof globalThis.URL !== 'undefined') {
-			new globalThis.URL(value);
-			return true;
-}
-		// Basic URL pattern fallback when URL constructor not available
-		return /^https?:\/\/.+/.test(value);
-} catch {
-		return false;
-}
+export function isURL(value: unknown): value is string {
+  if (typeof value !== 'string') return false;
+  try {
+    if (typeof globalThis.URL !== 'undefined') {
+      new globalThis.URL(value);
+      return true;
+    }
+    // Basic URL pattern fallback when URL constructor not available
+    return /^https?:\/\/.+/.test(value);
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -277,13 +277,13 @@ export function isURL(value:unknown): value is string {
  *}
  * ```
  */
-export function isValidJSON(value:string): boolean {
-	try {
-		JSON.parse(value);
-		return true;
-} catch {
-		return false;
-}
+export function isValidJSON(value: string): boolean {
+  try {
+    JSON.parse(value);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 // =============================================================================
@@ -330,11 +330,11 @@ export const positiveNumberSchema = zodInstance.number().positive();
  * ```
  */
 export function hasValidationError(
-	result:Result<unknown, ZodError>,
-	code:string,
-):boolean {
-	if (result.isOk()) return false;
-	return result.error.issues.some((issue) => issue.code === code);
+  result: Result<unknown, ZodError>,
+  code: string
+): boolean {
+  if (result.isOk()) return false;
+  return result.error.issues.some((issue) => issue.code === code);
 }
 
 /**
@@ -351,8 +351,8 @@ export function hasValidationError(
  * ```
  */
 export function getValidationErrors(
-	result:Result<unknown, ZodError>,
-):string[] {
-	if (result.isOk()) return [];
-	return result.error.issues.map((issue) => issue['message']);
+  result: Result<unknown, ZodError>
+): string[] {
+  if (result.isOk()) return [];
+  return result.error.issues.map((issue) => issue['message']);
 }

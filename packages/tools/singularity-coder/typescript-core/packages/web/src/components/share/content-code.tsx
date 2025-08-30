@@ -11,18 +11,17 @@ interface Props {
 export function ContentCode(props: Props) {
   const [html] = createResource(
     () => [props.code, props.lang],
-    async ([code, lang]) => 
+    async ([code, lang]) =>
       // TODO: For testing delays
       // await new Promise((resolve) => setTimeout(resolve, 3000))
-       (await codeToHtml(code || "", {
+      (await codeToHtml(code || "", {
         lang: lang && lang in bundledLanguages ? lang : "text",
         themes: {
           light: "github-light",
           dark: "github-dark",
         },
         transformers: [transformerNotationDiff()],
-      })) as string
-    ,
+      })) as string,
   )
   return (
     <Suspense>

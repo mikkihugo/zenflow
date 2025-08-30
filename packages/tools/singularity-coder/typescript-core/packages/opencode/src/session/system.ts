@@ -22,23 +22,23 @@ export namespace SystemPrompt {
     const app = App.info()
     return [
       [
-        `Here is some useful information about the environment you are running in:`,`
-        `<env>`,`
-        `  Working directory:${app.path.cwd}`,`
-        `  Is directory a git repo:${app.git ? "yes" : "no"}`,`
-        `  Platform:${process.platform}`,`
-        `  Today's date:${new Date().toDateString()}`,`
-        `</env>`,`
-        `<project>`,`
-        `  ${`
+        `Here is some useful information about the environment you are running in:`,
+        `<env>`,
+        `  Working directory:${app.path.cwd}`,
+        `  Is directory a git repo:${app.git ? "yes" : "no"}`,
+        `  Platform:${process.platform}`,
+        `  Today's date:${new Date().toDateString()},
+        `</env>`,
+        `<project>`,
+        `  ${
           app.git
             ? await Ripgrep.tree({
                 cwd:app.path.cwd,
                 limit:200,
 })
             :""
-}`,`
-        `</project>`,`
+}`,
+        `</project>`,
 ].join("\n"),
 ]
 }

@@ -65,7 +65,7 @@ const cli = yargs(hideBin(process.argv))
       args:process.argv.slice(2),
 })
 })
-  .usage(`\n${UI.logo()}`)`
+  .usage(`\n${UI.logo()})
   .command(McpCommand)
   .command(TuiCommand)
   .command(RunCommand)
@@ -116,7 +116,7 @@ try {
   Log.Default.error("fatal", data)
   const formatted = FormatError(error)
   if (formatted) UI.error(formatted)
-  if (formatted === undefined) UI.error(`Unexpected error, check log file at ${Log.file()} for more details`)`
+  if (formatted === undefined) UI.error(`Unexpected error, check log file at ${Log.file()} for more details)
   process.exitCode = 1
 }
 

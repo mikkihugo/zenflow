@@ -12,7 +12,7 @@
 const ESSENTIAL_SAFE_COMPONENTS = [
   { taskMasterSupport: 'complete' },
   { taskMasterSupport: 'partial' },
-  { taskMasterSupport: 'missing' }
+  { taskMasterSupport: 'missing' },
 ];
 
 // ============================================================================
@@ -21,7 +21,7 @@ const ESSENTIAL_SAFE_COMPONENTS = [
 /**
  * Calculate realistic SAFe coverage based on actual implementations
  */
-export function calculateActualSafeCoverage():  {
+export function calculateActualSafeCoverage(): {
   essentialSafeCoverage: number;
   implementedComponents: number;
   partialComponents: number;
@@ -43,7 +43,7 @@ export function calculateActualSafeCoverage():  {
       ESSENTIAL_SAFE_COMPONENTS.length) *
       100
   );
-  
+
   return {
     essentialSafeCoverage,
     implementedComponents: completeComponents.length,
@@ -52,8 +52,8 @@ export function calculateActualSafeCoverage():  {
     recommendations: [
       'Focus on completing missing components for full Essential SAFe coverage',
       'Enhance partial implementations to achieve complete component coverage',
-      'Consider progression to Large Solution SAFe once Essential SAFe is fully implemented'
-    ]
+      'Consider progression to Large Solution SAFe once Essential SAFe is fully implemented',
+    ],
   };
 }
 
@@ -66,7 +66,7 @@ function generateRecommendation(
 ): string {
   // Advanced recommendation logic that considers both essential and overall coverage
   const coverageGap = Math.abs(essentialCoverage - overallCoverage);
-  
+
   if (essentialCoverage >= 80) {
     if (overallCoverage >= 60 && coverageGap < 10) {
       return 'Strong foundation with balanced implementation - ready for next SAFe level';
@@ -76,11 +76,17 @@ function generateRecommendation(
       return 'Strong foundation - focus on completing Essential SAFe before expanding';
     }
   } else if (essentialCoverage >= 60) {
-    return overallCoverage >= essentialCoverage + 15 ? 'Good progress with advanced features - consolidate Essential SAFe first' : 'Good progress - complete remaining Essential SAFe components';
+    return overallCoverage >= essentialCoverage + 15
+      ? 'Good progress with advanced features - consolidate Essential SAFe first'
+      : 'Good progress - complete remaining Essential SAFe components';
   } else if (essentialCoverage >= 40) {
-    return coverageGap > 20 ? 'Unbalanced implementation - focus on Essential SAFe core before advanced features' : 'Solid foundation - systematic approach to complete Essential SAFe';
+    return coverageGap > 20
+      ? 'Unbalanced implementation - focus on Essential SAFe core before advanced features'
+      : 'Solid foundation - systematic approach to complete Essential SAFe';
   } else {
-    return overallCoverage > essentialCoverage + 20 ? 'Focus on Essential SAFe fundamentals before advanced implementations' : 'Early stage - focus on core Essential SAFe implementation';
+    return overallCoverage > essentialCoverage + 20
+      ? 'Focus on Essential SAFe fundamentals before advanced implementations'
+      : 'Early stage - focus on core Essential SAFe implementation';
   }
 }
 /**
@@ -88,13 +94,16 @@ function generateRecommendation(
  */
 export function generateHonestAssessmentReport(): string {
   const coverage = calculateActualSafeCoverage();
-  
+
   // Calculate overall coverage including large solution and portfolio components
   const overallCoverage = Math.round(coverage.essentialSafeCoverage * 0.7); // Estimate based on essential coverage
-  
+
   // Generate strategic recommendation
-  const strategicRecommendation = generateRecommendation(coverage.essentialSafeCoverage, overallCoverage);
-  
+  const strategicRecommendation = generateRecommendation(
+    coverage.essentialSafeCoverage,
+    overallCoverage
+  );
+
   return `# TaskMaster SAFe Implementation - Honest Assessment
 
 ## Executive Summary
@@ -108,7 +117,7 @@ export function generateHonestAssessmentReport(): string {
 ${strategicRecommendation}
 
 ## Recommendations
-${coverage.recommendations.map(r => `- ${r}`).join('\n')}
+${coverage.recommendations.map((r) => `- ${r}`).join('\n')}
 
 ## Next Steps
 Focus on completing missing components for full Essential SAFe coverage

@@ -13,6 +13,6 @@ export type {
 } from '../../../services/web/data.handler';
 
 // Data handlers
-export { WebDataService} from '../../../services/web/data.handler';
+export { WebDataService } from '../../../services/web/data.handler';
 // Route handlers
-export { SystemCapabilityRoutes} from '../../../services/web/system.routes';
+export { SystemCapabilityRoutes } from '../../../services/web/system.routes';

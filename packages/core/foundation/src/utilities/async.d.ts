@@ -5,77 +5,81 @@
  * Provides comprehensive async utilities including retry patterns, timeouts,
  * circuit breakers, and concurrent execution helpers.
  */
-import { type Result } from "../error-handling/index.js";
-export declare function pTimeout<T>(promise: Promise<T>, timeoutMs: number, message?: string): Promise<T>;
+import { type Result } from '../error-handling/index.js';
+export declare function pTimeout<T>(
+  promise: Promise<T>,
+  timeoutMs: number,
+  message?: string
+): Promise<T>;
 /**
  * Configuration for retry operations
  */
 export interface RetryConfig {
-    /** Maximum number of retry attempts (default:3) */
-    maxAttempts?: number;
-    /** Base delay between retries in milliseconds (default:1000) */
-    baseDelay?: number;
-    /** Maximum delay between retries in milliseconds (default:30000) */
-    maxDelay?: number;
-    /** Backoff multiplier for exponential backoff (default:2) */
-    backoffMultiplier?: number;
-    /** Jitter factor to randomize delays (0-1, default:0.1) */
-    jitter?: number;
-    /** Custom function to determine if an error should trigger a retry */
-    shouldRetry?: (error: unknown, attempt: number) => boolean;
+  /** Maximum number of retry attempts (default:3) */
+  maxAttempts?: number;
+  /** Base delay between retries in milliseconds (default:1000) */
+  baseDelay?: number;
+  /** Maximum delay between retries in milliseconds (default:30000) */
+  maxDelay?: number;
+  /** Backoff multiplier for exponential backoff (default:2) */
+  backoffMultiplier?: number;
+  /** Jitter factor to randomize delays (0-1, default:0.1) */
+  jitter?: number;
+  /** Custom function to determine if an error should trigger a retry */
+  shouldRetry?: (error: unknown, attempt: number) => boolean;
 }
 /**
  * Configuration for timeout operations
  */
 export interface TimeoutConfig {
-    /** Timeout duration in milliseconds */
-    timeout: number;
-    /** Custom timeout message */
-    message?: string;
-    /** Whether to reject with TimeoutError (default:true) */
-    rejectWithTimeoutError?: boolean;
+  /** Timeout duration in milliseconds */
+  timeout: number;
+  /** Custom timeout message */
+  message?: string;
+  /** Whether to reject with TimeoutError (default:true) */
+  rejectWithTimeoutError?: boolean;
 }
 /**
  * Configuration for circuit breaker
  */
 export interface CircuitBreakerConfig {
-    /** Number of failures before opening circuit (default:5) */
-    failureThreshold?: number;
-    /** Time to wait before attempting to close circuit in milliseconds (default:60000) */
-    resetTimeout?: number;
-    /** Function to determine if an error should count as a failure */
-    shouldTrack?: (error: unknown) => boolean;
-    /** Optional monitoring callback */
-    onStateChange?: (state: CircuitBreakerState, error?: unknown) => void;
+  /** Number of failures before opening circuit (default:5) */
+  failureThreshold?: number;
+  /** Time to wait before attempting to close circuit in milliseconds (default:60000) */
+  resetTimeout?: number;
+  /** Function to determine if an error should count as a failure */
+  shouldTrack?: (error: unknown) => boolean;
+  /** Optional monitoring callback */
+  onStateChange?: (state: CircuitBreakerState, error?: unknown) => void;
 }
 /**
  * Circuit breaker states
  */
-export type CircuitBreakerState = "closed" | "open" | "half-open";
+export type CircuitBreakerState = 'closed' | 'open' | 'half-open';
 /**
  * Circuit breaker implementation for handling cascading failures
  */
 export declare class CircuitBreaker<T extends unknown[], R> {
-    private readonly fn;
-    private state;
-    private failureCount;
-    private lastFailureTime;
-    private readonly config;
-    constructor(fn: (...args: T) => Promise<R>, config?: CircuitBreakerConfig);
-    /**
-     * Execute the wrapped function with circuit breaker protection
-     */
-    execute(...args: T): Promise<R>;
-    private onSuccess;
-    private onFailure;
-    /**
-     * Get current circuit breaker state
-     */
-    getState(): CircuitBreakerState;
-    /**
-     * Reset circuit breaker to closed state
-     */
-    reset(): void;
+  private readonly fn;
+  private state;
+  private failureCount;
+  private lastFailureTime;
+  private readonly config;
+  constructor(fn: (...args: T) => Promise<R>, config?: CircuitBreakerConfig);
+  /**
+   * Execute the wrapped function with circuit breaker protection
+   */
+  execute(...args: T): Promise<R>;
+  private onSuccess;
+  private onFailure;
+  /**
+   * Get current circuit breaker state
+   */
+  getState(): CircuitBreakerState;
+  /**
+   * Reset circuit breaker to closed state
+   */
+  reset(): void;
 }
 /**
  * Retry an async operation with exponential backoff and jitter
@@ -96,7 +100,10 @@ export declare class CircuitBreaker<T extends unknown[], R> {
  * );
  * ```
  */
-export declare function withRetry<T>(fn: () => Promise<T>, config?: RetryConfig): Promise<T>;
+export declare function withRetry<T>(
+  fn: () => Promise<T>,
+  config?: RetryConfig
+): Promise<T>;
 /**
  * Add timeout to an async operation using Result pattern
  *
@@ -118,7 +125,10 @@ export declare function withRetry<T>(fn: () => Promise<T>, config?: RetryConfig)
 ' *}
  * ```
  */
-export declare function withTimeout<T>(promise: Promise<T>, config: TimeoutConfig): Promise<Result<T, Error>>;
+export declare function withTimeout<T>(
+  promise: Promise<T>,
+  config: TimeoutConfig
+): Promise<Result<T, Error>>;
 /**
  * Execute async operations with timeout using Result pattern
  *
@@ -137,7 +147,10 @@ export declare function withTimeout<T>(promise: Promise<T>, config: TimeoutConfi
  * );
  * ```
  */
-export declare function safeAsync<T>(fn: () => Promise<T>, config?: TimeoutConfig): Promise<Result<T, Error>>;
+export declare function safeAsync<T>(
+  fn: () => Promise<T>,
+  config?: TimeoutConfig
+): Promise<Result<T, Error>>;
 /**
  * Create a circuit breaker for an async function
  *
@@ -163,7 +176,10 @@ export declare function safeAsync<T>(fn: () => Promise<T>, config?: TimeoutConfi
  *}
  * ```
  */
-export declare function createCircuitBreaker<T extends unknown[], R>(fn: (...args: T) => Promise<R>, config?: CircuitBreakerConfig): CircuitBreaker<T, R>;
+export declare function createCircuitBreaker<T extends unknown[], R>(
+  fn: (...args: T) => Promise<R>,
+  config?: CircuitBreakerConfig
+): CircuitBreaker<T, R>;
 /**
  * Sleep for specified milliseconds
  *
@@ -192,7 +208,10 @@ export declare function sleep(ms: number): Promise<void>;
  * );
  * ```
  */
-export declare function concurrent<T>(tasks: (() => Promise<T>)[], concurrency?: number): Promise<T[]>;
+export declare function concurrent<T>(
+  tasks: (() => Promise<T>)[],
+  concurrency?: number
+): Promise<T[]>;
 /**
  * Execute multiple promises and return results with Result pattern
  *
@@ -216,7 +235,9 @@ export declare function concurrent<T>(tasks: (() => Promise<T>)[], concurrency?:
  *});
  * ```
  */
-export declare function allSettledSafe<T>(promises: Promise<T>[]): Promise<Result<T, Error>[]>;
+export declare function allSettledSafe<T>(
+  promises: Promise<T>[]
+): Promise<Result<T, Error>[]>;
 /**
  * Debounce an async function call
  *
@@ -239,7 +260,10 @@ export declare function allSettledSafe<T>(promises: Promise<T>[]): Promise<Resul
  * debouncedSave(data3); // Only this call will execute after 1 second
  * ```
  */
-export declare function debounce<T extends unknown[], R>(fn: (...args: T) => Promise<R>, delay: number): (...args: T) => Promise<R>;
+export declare function debounce<T extends unknown[], R>(
+  fn: (...args: T) => Promise<R>,
+  delay: number
+): (...args: T) => Promise<R>;
 /**
  * Throttle an async function call
  *
@@ -257,5 +281,8 @@ export declare function debounce<T extends unknown[], R>(fn: (...args: T) => Pro
  * );
  * ```
  */
-export declare function throttle<T extends unknown[], R>(fn: (...args: T) => Promise<R>, limit: number): (...args: T) => Promise<R>;
+export declare function throttle<T extends unknown[], R>(
+  fn: (...args: T) => Promise<R>,
+  limit: number
+): (...args: T) => Promise<R>;
 //# sourceMappingURL=async.d.ts.map

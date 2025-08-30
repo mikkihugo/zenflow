@@ -9,17 +9,17 @@
  */
 import { z } from '@claude-zen/foundation';
 export declare class SchemaValidator {
-    /**
-     * Create safe parser with custom schema
-     */
-    static createSafeParser<T>(schema: z.ZodSchema<T>): (data: unknown) => {
-        success: boolean;
-        data?: T;
-        errors?: string[];
-    };
-    /**
-     * Check if data matches schema
-     */
-    static isValid<T>(schema: this, validate: any): any;
+  /**
+   * Create safe parser with custom schema
+   */
+  static createSafeParser<T>(schema: z.ZodSchema<T>): (data: unknown) => {
+    success: boolean;
+    data?: T;
+    errors?: string[];
+  };
+  /**
+   * Check if data matches schema
+   */
+  static isValid<T>(schema: this, validate: any): any;
 }
 //# sourceMappingURL=schema-validator.d.ts.map

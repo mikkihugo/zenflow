@@ -1,9 +1,9 @@
 /**
  * @fileoverview Neural Domain Mapper - Graph Neural Network Analysis for Domain Relationships
- * 
+ *
  * Implements GNN-based domain relationship detection, dependency graph analysis,
  * and cross-domain coupling strength calculation as documented in the architecture.
- * 
+ *
  * References:
  * - docs/TODO.md: GNN Integration for Domain Relationships [COMPLETED]
  * - docs/archive/CODE_ANALYSIS_STATUS_REPORT.md: Neural Domain Mapper features
@@ -32,8 +32,12 @@ try {
       outputActivation: 'sigmoid',
       learningRate: 0.001,
       batchSize: 32,
-      useCase: ['node_classification', 'graph_classification', 'domain_relationships']
-    }
+      useCase: [
+        'node_classification',
+        'graph_classification',
+        'domain_relationships',
+      ],
+    },
   };
 }
 
@@ -115,7 +119,7 @@ export interface WasmNeuralAccelerator {
 
 /**
  * Neural Domain Mapper - Implements GNN-based domain relationship analysis
- * 
+ *
  * This class provides the neural enhancement for domain discovery and boundary
  * analysis as documented in the architecture specifications.
  */
@@ -134,33 +138,35 @@ export class NeuralDomainMapper {
   async initialize(): Promise<Result<void, Error>> {
     try {
       logger.debug('Loading GNN model and WASM accelerator');
-      
+
       // Initialize mock GNN model based on available presets
       this.gnnModel = this.createGNNModel();
-      
+
       // Initialize WASM accelerator if available
       try {
         this.wasmAccelerator = await this.initializeWasmAccelerator();
       } catch (error) {
-        logger.warn('WASM accelerator not available, using CPU fallback', { error });
+        logger.warn('WASM accelerator not available, using CPU fallback', {
+          error,
+        });
       }
 
       this.initialized = true;
       logger.info('Neural Domain Mapper initialized successfully');
-      
+
       return { success: true, data: undefined };
     } catch (error) {
       logger.error('Failed to initialize Neural Domain Mapper', { error });
-      return { 
-        success: false, 
-        error: error instanceof Error ? error : new Error(String(error))
+      return {
+        success: false,
+        error: error instanceof Error ? error : new Error(String(error)),
       };
     }
   }
 
   /**
    * Map domain relationships using Graph Neural Network analysis
-   * 
+   *
    * @param domains - Array of discovered domains
    * @param dependencies - Dependency graph between domains
    * @returns Promise of domain relationship map with GNN insights
@@ -179,28 +185,31 @@ export class NeuralDomainMapper {
 
       logger.info('Starting GNN-based domain relationship mapping', {
         domainCount: domains.length,
-        edgeCount: dependencies.edges.length
+        edgeCount: dependencies.edges.length,
       });
 
       // Convert domains and dependencies to graph format suitable for GNN
       const graphData = this.convertToGraphData(domains, dependencies);
-      
+
       // Run GNN analysis to predict domain relationships
       const predictions = await this.runGNNAnalysis(graphData);
-      
+
       // Extract domain boundaries and relationships from predictions
       const relationships = this.extractRelationships(predictions, domains);
-      
+
       // Calculate domain cohesion scores using neural insights
       const cohesionScores = this.calculateCohesionScores(predictions, domains);
-      
+
       // Generate coupling matrix for cross-domain dependencies
-      const couplingMatrix = this.generateCouplingMatrix(relationships, domains);
-      
+      const couplingMatrix = this.generateCouplingMatrix(
+        relationships,
+        domains
+      );
+
       // Recommend topology based on neural analysis
       const topologyRecommendation = this.recommendTopology(
-        relationships, 
-        cohesionScores, 
+        relationships,
+        cohesionScores,
         couplingMatrix
       );
 
@@ -209,14 +218,16 @@ export class NeuralDomainMapper {
         cohesionScores,
         couplingMatrix,
         topologyRecommendation,
-        confidence: this.calculateOverallConfidence(predictions)
+        confidence: this.calculateOverallConfidence(predictions),
       };
 
       logger.info('GNN domain relationship mapping completed', {
         relationshipCount: relationships.length,
-        avgCohesion: Array.from(cohesionScores.values()).reduce((a, b) => a + b, 0) / cohesionScores.size,
+        avgCohesion:
+          Array.from(cohesionScores.values()).reduce((a, b) => a + b, 0) /
+          cohesionScores.size,
         recommendedTopology: topologyRecommendation.recommended,
-        confidence: result.confidence
+        confidence: result.confidence,
       });
 
       return { success: true, data: result };
@@ -224,7 +235,7 @@ export class NeuralDomainMapper {
       logger.error('Failed to map domain relationships', { error });
       return {
         success: false,
-        error: error instanceof Error ? error : new Error(String(error))
+        error: error instanceof Error ? error : new Error(String(error)),
       };
     }
   }
@@ -232,16 +243,19 @@ export class NeuralDomainMapper {
   /**
    * Convert domain structure to graph format suitable for GNN processing
    */
-  private convertToGraphData(domains: Domain[], dependencies: DependencyGraph): any {
+  private convertToGraphData(
+    domains: Domain[],
+    dependencies: DependencyGraph
+  ): any {
     logger.debug('Converting domains to graph format for GNN');
-    
+
     // Create node features based on domain characteristics
-    const nodeFeatures = domains.map(domain => [
-      domain.files.length,                    // Number of files
-      domain.dependencies.length,             // Number of dependencies
-      domain.complexity,                      // Complexity score
-      domain.path.split('/').length,         // Directory depth
-      this.calculateDomainConnectivity(domain, dependencies) // Connectivity measure
+    const nodeFeatures = domains.map((domain) => [
+      domain.files.length, // Number of files
+      domain.dependencies.length, // Number of dependencies
+      domain.complexity, // Complexity score
+      domain.path.split('/').length, // Directory depth
+      this.calculateDomainConnectivity(domain, dependencies), // Connectivity measure
     ]);
 
     // Create adjacency matrix from dependency edges
@@ -250,8 +264,8 @@ export class NeuralDomainMapper {
     return {
       nodeFeatures,
       adjacencyMatrix,
-      nodeLabels: domains.map(d => d.name),
-      metadata: dependencies.metadata
+      nodeLabels: domains.map((d) => d.name),
+      metadata: dependencies.metadata,
     };
   }
 
@@ -268,7 +282,8 @@ export class NeuralDomainMapper {
     try {
       // Use WASM acceleration if available
       if (this.wasmAccelerator) {
-        const acceleratedData = await this.wasmAccelerator.accelerate(graphData);
+        const acceleratedData =
+          await this.wasmAccelerator.accelerate(graphData);
         return await this.gnnModel.forward(acceleratedData);
       } else {
         return await this.gnnModel.forward(graphData);
@@ -282,22 +297,26 @@ export class NeuralDomainMapper {
   /**
    * Extract domain relationship insights from GNN predictions
    */
-  private extractRelationships(predictions: any, domains: Domain[]): DomainRelationship[] {
+  private extractRelationships(
+    predictions: any,
+    domains: Domain[]
+  ): DomainRelationship[] {
     const relationships: DomainRelationship[] = [];
-    
+
     // Process GNN predictions to identify relationships
     for (let i = 0; i < domains.length; i++) {
       for (let j = i + 1; j < domains.length; j++) {
         const strength = this.calculateRelationshipStrength(predictions, i, j);
-        
-        if (strength > 0.3) { // Threshold for significant relationships
+
+        if (strength > 0.3) {
+          // Threshold for significant relationships
           relationships.push({
             sourceDomain: domains[i].id,
             targetDomain: domains[j].id,
             relationshipType: this.classifyRelationshipType(strength),
             strength,
             direction: this.determineDirection(predictions, i, j),
-            confidence: this.calculateRelationshipConfidence(predictions, i, j)
+            confidence: this.calculateRelationshipConfidence(predictions, i, j),
           });
         }
       }
@@ -309,9 +328,12 @@ export class NeuralDomainMapper {
   /**
    * Calculate domain cohesion scores using neural insights
    */
-  private calculateCohesionScores(predictions: any, domains: Domain[]): Map<string, number> {
+  private calculateCohesionScores(
+    predictions: any,
+    domains: Domain[]
+  ): Map<string, number> {
     const cohesionScores = new Map<string, number>();
-    
+
     for (const [index, domain] of domains.entries()) {
       // Extract cohesion score from GNN predictions
       const cohesion = this.extractCohesionFromPredictions(predictions, index);
@@ -324,13 +346,18 @@ export class NeuralDomainMapper {
   /**
    * Generate coupling matrix for cross-domain dependencies
    */
-  private generateCouplingMatrix(relationships: DomainRelationship[], domains: Domain[]): number[][] {
-    const matrix = Array(domains.length).fill(null).map(() => Array(domains.length).fill(0));
-    
+  private generateCouplingMatrix(
+    relationships: DomainRelationship[],
+    domains: Domain[]
+  ): number[][] {
+    const matrix = Array(domains.length)
+      .fill(null)
+      .map(() => Array(domains.length).fill(0));
+
     for (const rel of relationships) {
-      const sourceIndex = domains.findIndex(d => d.id === rel.sourceDomain);
-      const targetIndex = domains.findIndex(d => d.id === rel.targetDomain);
-      
+      const sourceIndex = domains.findIndex((d) => d.id === rel.sourceDomain);
+      const targetIndex = domains.findIndex((d) => d.id === rel.targetDomain);
+
       if (sourceIndex >= 0 && targetIndex >= 0) {
         matrix[sourceIndex][targetIndex] = rel.strength;
         if (rel.direction === 'bidirectional') {
@@ -351,7 +378,9 @@ export class NeuralDomainMapper {
     couplingMatrix: number[][]
   ): TopologyRecommendation {
     // Analyze relationship patterns to recommend topology
-    const avgCohesion = Array.from(cohesionScores.values()).reduce((a, b) => a + b, 0) / cohesionScores.size;
+    const avgCohesion =
+      Array.from(cohesionScores.values()).reduce((a, b) => a + b, 0) /
+      cohesionScores.size;
     const maxCoupling = Math.max(...couplingMatrix.flat());
     const totalRelationships = relationships.length;
 
@@ -373,7 +402,7 @@ export class NeuralDomainMapper {
       reasons.push('Few relationships suggest star topology');
     } else {
       recommended = 'ring';
-      confidence = 0.60;
+      confidence = 0.6;
       reasons.push('Balanced metrics suggest ring topology');
     }
 
@@ -382,11 +411,23 @@ export class NeuralDomainMapper {
       confidence,
       reasons,
       alternatives: [
-        { topology: 'mesh', score: maxCoupling, rationale: 'Best for high coupling' },
-        { topology: 'hierarchical', score: avgCohesion, rationale: 'Best for high cohesion' },
-        { topology: 'star', score: 1 - (totalRelationships / 20), rationale: 'Best for simple structures' },
-        { topology: 'ring', score: 0.5, rationale: 'Balanced approach' }
-      ].filter(alt => alt.topology !== recommended)
+        {
+          topology: 'mesh',
+          score: maxCoupling,
+          rationale: 'Best for high coupling',
+        },
+        {
+          topology: 'hierarchical',
+          score: avgCohesion,
+          rationale: 'Best for high cohesion',
+        },
+        {
+          topology: 'star',
+          score: 1 - totalRelationships / 20,
+          rationale: 'Best for simple structures',
+        },
+        { topology: 'ring', score: 0.5, rationale: 'Balanced approach' },
+      ].filter((alt) => alt.topology !== recommended),
     };
   }
 
@@ -395,25 +436,33 @@ export class NeuralDomainMapper {
   private createGNNModel(): GNNModel {
     const preset = NEURAL_PRESETS.gnn;
     logger.debug('Creating GNN model with preset configuration', { preset });
-    
+
     return {
       async forward(graphData: any): Promise<any> {
         // Mock GNN forward pass
         const nodeCount = graphData.nodeFeatures.length;
         return {
-          nodeEmbeddings: Array(nodeCount).fill(0).map(() => 
-            Array(preset.layers[preset.layers.length - 1]).fill(0).map(() => Math.random())
-          ),
-          relationshipProbabilities: Array(nodeCount).fill(0).map(() => 
-            Array(nodeCount).fill(0).map(() => Math.random())
-          ),
-          confidence: Math.random() * 0.3 + 0.7 // 0.7-1.0 range
+          nodeEmbeddings: Array(nodeCount)
+            .fill(0)
+            .map(() =>
+              Array(preset.layers[preset.layers.length - 1])
+                .fill(0)
+                .map(() => Math.random())
+            ),
+          relationshipProbabilities: Array(nodeCount)
+            .fill(0)
+            .map(() =>
+              Array(nodeCount)
+                .fill(0)
+                .map(() => Math.random())
+            ),
+          confidence: Math.random() * 0.3 + 0.7, // 0.7-1.0 range
         };
       },
-      
+
       async predict(input: any): Promise<any> {
         return this.forward(input);
-      }
+      },
     };
   }
 
@@ -423,32 +472,40 @@ export class NeuralDomainMapper {
       async initialize(): Promise<void> {
         logger.debug('WASM neural accelerator initialized');
       },
-      
+
       async accelerate(computation: any): Promise<any> {
         // Mock acceleration - just pass through
         return computation;
       },
-      
+
       async optimize(model: any): Promise<any> {
         return model;
-      }
+      },
     };
   }
 
-  private calculateDomainConnectivity(domain: Domain, dependencies: DependencyGraph): number {
+  private calculateDomainConnectivity(
+    domain: Domain,
+    dependencies: DependencyGraph
+  ): number {
     const connections = dependencies.edges.filter(
-      edge => edge.source === domain.id || edge.target === domain.id
+      (edge) => edge.source === domain.id || edge.target === domain.id
     );
     return connections.length;
   }
 
-  private createAdjacencyMatrix(domains: Domain[], dependencies: DependencyGraph): number[][] {
-    const matrix = Array(domains.length).fill(null).map(() => Array(domains.length).fill(0));
-    
+  private createAdjacencyMatrix(
+    domains: Domain[],
+    dependencies: DependencyGraph
+  ): number[][] {
+    const matrix = Array(domains.length)
+      .fill(null)
+      .map(() => Array(domains.length).fill(0));
+
     for (const edge of dependencies.edges) {
-      const sourceIndex = domains.findIndex(d => d.id === edge.source);
-      const targetIndex = domains.findIndex(d => d.id === edge.target);
-      
+      const sourceIndex = domains.findIndex((d) => d.id === edge.source);
+      const targetIndex = domains.findIndex((d) => d.id === edge.target);
+
       if (sourceIndex >= 0 && targetIndex >= 0) {
         matrix[sourceIndex][targetIndex] = edge.weight;
       }
@@ -457,32 +514,55 @@ export class NeuralDomainMapper {
     return matrix;
   }
 
-  private calculateRelationshipStrength(predictions: any, i: number, j: number): number {
+  private calculateRelationshipStrength(
+    predictions: any,
+    i: number,
+    j: number
+  ): number {
     return predictions.relationshipProbabilities?.[i]?.[j] || 0;
   }
 
-  private classifyRelationshipType(strength: number): 'dependency' | 'coupling' | 'cohesion' | 'boundary' {
+  private classifyRelationshipType(
+    strength: number
+  ): 'dependency' | 'coupling' | 'cohesion' | 'boundary' {
     if (strength > 0.8) return 'coupling';
     if (strength > 0.6) return 'dependency';
     if (strength > 0.4) return 'cohesion';
     return 'boundary';
   }
 
-  private determineDirection(predictions: any, i: number, j: number): 'bidirectional' | 'unidirectional' {
-    const forwardStrength = predictions.relationshipProbabilities?.[i]?.[j] || 0;
-    const backwardStrength = predictions.relationshipProbabilities?.[j]?.[i] || 0;
-    
-    return Math.abs(forwardStrength - backwardStrength) < 0.2 ? 'bidirectional' : 'unidirectional';
+  private determineDirection(
+    predictions: any,
+    i: number,
+    j: number
+  ): 'bidirectional' | 'unidirectional' {
+    const forwardStrength =
+      predictions.relationshipProbabilities?.[i]?.[j] || 0;
+    const backwardStrength =
+      predictions.relationshipProbabilities?.[j]?.[i] || 0;
+
+    return Math.abs(forwardStrength - backwardStrength) < 0.2
+      ? 'bidirectional'
+      : 'unidirectional';
   }
 
-  private calculateRelationshipConfidence(predictions: any, i: number, j: number): number {
+  private calculateRelationshipConfidence(
+    predictions: any,
+    i: number,
+    j: number
+  ): number {
     return predictions.confidence || 0.8;
   }
 
-  private extractCohesionFromPredictions(predictions: any, index: number): number {
+  private extractCohesionFromPredictions(
+    predictions: any,
+    index: number
+  ): number {
     // Extract cohesion score from node embeddings
     const embedding = predictions.nodeEmbeddings?.[index];
-    return embedding ? embedding.reduce((a: number, b: number) => a + b, 0) / embedding.length : 0.5;
+    return embedding
+      ? embedding.reduce((a: number, b: number) => a + b, 0) / embedding.length
+      : 0.5;
   }
 
   private calculateOverallConfidence(predictions: any): number {
@@ -491,14 +571,20 @@ export class NeuralDomainMapper {
 
   private heuristicFallback(graphData: any): any {
     logger.info('Using heuristic fallback for domain relationship analysis');
-    
+
     const nodeCount = graphData.nodeFeatures.length;
     return {
-      nodeEmbeddings: Array(nodeCount).fill(0).map(() => Array(16).fill(0.5)),
-      relationshipProbabilities: Array(nodeCount).fill(0).map(() => 
-        Array(nodeCount).fill(0).map(() => Math.random() * 0.5)
-      ),
-      confidence: 0.6
+      nodeEmbeddings: Array(nodeCount)
+        .fill(0)
+        .map(() => Array(16).fill(0.5)),
+      relationshipProbabilities: Array(nodeCount)
+        .fill(0)
+        .map(() =>
+          Array(nodeCount)
+            .fill(0)
+            .map(() => Math.random() * 0.5)
+        ),
+      confidence: 0.6,
     };
   }
 }

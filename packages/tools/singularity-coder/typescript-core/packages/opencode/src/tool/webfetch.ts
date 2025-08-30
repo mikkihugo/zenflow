@@ -46,7 +46,7 @@ export const WebFetchTool = Tool.define({
     clearTimeout(timeoutId)
 
     if (!response.ok) {
-      throw new Error(`Request failed with status code:${response.status}`)`
+      throw new Error(`Request failed with status code:${response.status}`)
 }
 
     // Check content length
@@ -63,7 +63,7 @@ export const WebFetchTool = Tool.define({
     const content = new TextDecoder().decode(arrayBuffer)
     const contentType = response.headers.get("content-type") || ""
 
-    const title = `${params.url} (${contentType})``
+    const title = `${params.url} (${contentType})
     switch (params.format) {
       case "text":
         if (contentType.includes("text/html")) {
@@ -90,7 +90,7 @@ export const WebFetchTool = Tool.define({
 }
 }
         return {
-          output:"```\n" + content + "\n```",`
+          output:"`\n" + content + "\n```",
           title,
           metadata:{},
 }

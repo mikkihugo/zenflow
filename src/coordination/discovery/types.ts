@@ -1,6 +1,6 @@
 /**
  * @fileoverview Types for Domain Discovery and Neural Analysis
- * 
+ *
  * Shared type definitions for domain discovery, neural domain mapping,
  * and graph neural network analysis functionality.
  */
@@ -16,7 +16,7 @@ export type {
   DomainRelationship,
   TopologyRecommendation,
   GNNModel,
-  WasmNeuralAccelerator
+  WasmNeuralAccelerator,
 } from './neural-domain-mapper';
 
 // Additional discovery-specific types
@@ -48,7 +48,10 @@ export interface DiscoveryMetadata {
 
 export interface ValidationCheckpoint {
   id: string;
-  type: 'domain_boundaries' | 'neural_relationships' | 'topology_recommendation';
+  type:
+    | 'domain_boundaries'
+    | 'neural_relationships'
+    | 'topology_recommendation';
   confidence: number;
   requiresHumanApproval: boolean;
   question: string;
@@ -123,7 +126,12 @@ export interface GraphBottleneck {
 // Integration with existing domain validation
 export interface EnhancedDomainBoundary {
   name: string;
-  type: 'public-api' | 'private-implementation' | 'internal-specialized' | 'restricted-access' | 'deep-core';
+  type:
+    | 'public-api'
+    | 'private-implementation'
+    | 'internal-specialized'
+    | 'restricted-access'
+    | 'deep-core';
   packages: string[];
   allowedImports: string[];
   violations: DomainViolation[];
@@ -134,7 +142,12 @@ export interface EnhancedDomainBoundary {
 }
 
 export interface DomainViolation {
-  type: 'tier-boundary' | 'circular-dependency' | 'forbidden-import' | 'facade-bypass' | 'neural-anomaly';
+  type:
+    | 'tier-boundary'
+    | 'circular-dependency'
+    | 'forbidden-import'
+    | 'facade-bypass'
+    | 'neural-anomaly';
   severity: 'low' | 'medium' | 'high' | 'critical';
   description: string;
   file: string;
@@ -153,7 +166,13 @@ export interface AlternativeStructure {
 
 // Event types for discovery process
 export interface DiscoveryEvent {
-  type: 'started' | 'progress' | 'neural_analysis' | 'validation_required' | 'completed' | 'error';
+  type:
+    | 'started'
+    | 'progress'
+    | 'neural_analysis'
+    | 'validation_required'
+    | 'completed'
+    | 'error';
   timestamp: Date;
   data: any;
   source: 'domain_scanner' | 'neural_mapper' | 'validator' | 'human_interface';

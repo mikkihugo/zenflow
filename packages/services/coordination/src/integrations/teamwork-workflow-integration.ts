@@ -1,6 +1,6 @@
 /**
  * @fileoverview Teamwork Workflow Integration - Clean Implementation
- * 
+ *
  * Simplified clean version to restore build functionality while maintaining
  * the core teamwork workflow integration structure.
  */
@@ -16,12 +16,12 @@ const logger = getLogger('TeamworkWorkflowIntegration');
 export interface ConversationWorkflow {
   id: string;
   name: string;
-  trigger:  {
+  trigger: {
     conditions: any[];
     type: string;
   };
   actions: any[];
-  safeAlignment:  {
+  safeAlignment: {
     level: 'team' | 'art' | 'portfolio';
     processArea: string;
   };
@@ -36,7 +36,7 @@ export interface WorkflowOutcome {
 
 /**
  * Teamwork Workflow Integration Service
- * 
+ *
  * Integrates teamwork patterns with SAFe workflows and coordination.
  */
 export class TeamworkWorkflowIntegration {
@@ -46,7 +46,7 @@ export class TeamworkWorkflowIntegration {
   /**
    * Initialize workflow integration
    */
-  async initialize(params:  {
+  async initialize(params: {
     workflowEngine: any;
     safeCoordination: any;
   }): Promise<void> {
@@ -66,9 +66,9 @@ export class TeamworkWorkflowIntegration {
   ): Promise<void> {
     try {
       this.workflows.set(conversationWorkflow.id, conversationWorkflow);
-      logger.info('Registered conversation workflow', { 
+      logger.info('Registered conversation workflow', {
         workflowId: conversationWorkflow.id,
-        name: conversationWorkflow.name 
+        name: conversationWorkflow.name,
       });
     } catch (error) {
       logger.error('Failed to register conversation workflow:', error);
@@ -82,15 +82,16 @@ export class TeamworkWorkflowIntegration {
   async processWorkflowOutcome(outcome: WorkflowOutcome): Promise<void> {
     try {
       // Find applicable workflows
-      const applicableWorkflows = Array.from(this.workflows.values())
-        .filter(workflow => this.evaluateTriggerConditions(workflow.trigger, outcome));
+      const applicableWorkflows = Array.from(this.workflows.values()).filter(
+        (workflow) => this.evaluateTriggerConditions(workflow.trigger, outcome)
+      );
 
       for (const workflow of applicableWorkflows) {
         if (this.shouldTriggerWorkflow(workflow, outcome)) {
           const workflowContext = {
             conversationId: outcome.conversationId,
             triggeredBy: 'conversation_outcome',
-            safeContext: workflow.safeAlignment
+            safeContext: workflow.safeAlignment,
           };
 
           await this.startWorkflow(workflow, workflowContext);
@@ -105,7 +106,7 @@ export class TeamworkWorkflowIntegration {
    * Start workflow execution
    */
   private async startWorkflow(
-    workflow: ConversationWorkflow, 
+    workflow: ConversationWorkflow,
     context: any
   ): Promise<void> {
     try {
@@ -114,14 +115,14 @@ export class TeamworkWorkflowIntegration {
         workflowId: workflow.id,
         context,
         status: 'running',
-        startedAt: new Date()
+        startedAt: new Date(),
       };
 
       this.activeWorkflows.set(workflowInstance.id, workflowInstance);
-      
-      logger.info('Started workflow', { 
+
+      logger.info('Started workflow', {
         workflowId: workflow.id,
-        instanceId: workflowInstance.id 
+        instanceId: workflowInstance.id,
       });
     } catch (error) {
       logger.error(`Failed to start workflow ${workflow.name}:`, error);
@@ -131,18 +132,29 @@ export class TeamworkWorkflowIntegration {
   /**
    * Evaluate trigger conditions
    */
-  private evaluateTriggerConditions(trigger: any, outcome: WorkflowOutcome): boolean {
+  private evaluateTriggerConditions(
+    trigger: any,
+    outcome: WorkflowOutcome
+  ): boolean {
     // Simplified condition evaluation
-    return trigger.conditions.length === 0 || trigger.type === 'conversation_outcome';
+    return (
+      trigger.conditions.length === 0 || trigger.type === 'conversation_outcome'
+    );
   }
 
   /**
    * Check if workflow should be triggered
    */
-  private shouldTriggerWorkflow(workflow: ConversationWorkflow, outcome: WorkflowOutcome): boolean {
+  private shouldTriggerWorkflow(
+    workflow: ConversationWorkflow,
+    outcome: WorkflowOutcome
+  ): boolean {
     // Check if workflow is already running for this conversation
-    const existingWorkflows = Array.from(this.activeWorkflows.values())
-      .filter(wf => wf.workflowId === workflow.id && wf.context.conversationId === outcome.conversationId);
+    const existingWorkflows = Array.from(this.activeWorkflows.values()).filter(
+      (wf) =>
+        wf.workflowId === workflow.id &&
+        wf.context.conversationId === outcome.conversationId
+    );
 
     return existingWorkflows.length === 0;
   }

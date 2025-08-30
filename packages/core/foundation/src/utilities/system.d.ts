@@ -5,56 +5,89 @@
  * Provides comprehensive system utilities including platform detection, process information,
  * monorepo detection, system capabilities, and environment validation.
  */
-import { type SystemCapabilityData } from "./system/capability.provider.js";
-import { type DetectedWorkspace, WorkspaceDetector } from "./system/monorepo.detector.js";
-export { createHealthDataProviders, displaySystemStatus, getCapabilityScores, getInstallationSuggestions, getSystemCapabilityData, startSystemMonitoring, } from "./system/capability.provider.js";
-export type { DetectedWorkspace } from "./system/monorepo.detector.js";
-export { WorkspaceDetector } from "./system/monorepo.detector.js";
+import { type SystemCapabilityData } from './system/capability.provider.js';
+import {
+  type DetectedWorkspace,
+  WorkspaceDetector,
+} from './system/monorepo.detector.js';
+export {
+  createHealthDataProviders,
+  displaySystemStatus,
+  getCapabilityScores,
+  getInstallationSuggestions,
+  getSystemCapabilityData,
+  startSystemMonitoring,
+} from './system/capability.provider.js';
+export type { DetectedWorkspace } from './system/monorepo.detector.js';
+export { WorkspaceDetector } from './system/monorepo.detector.js';
 /**
  * Platform types
  */
-export type Platform = "win32" | "darwin" | "linux" | "freebsd" | "openbsd" | "android" | "aix" | "sunos" | "unknown";
+export type Platform =
+  | 'win32'
+  | 'darwin'
+  | 'linux'
+  | 'freebsd'
+  | 'openbsd'
+  | 'android'
+  | 'aix'
+  | 'sunos'
+  | 'unknown';
 /**
  * Architecture types
  */
-export type Architecture = "x64" | "arm64" | "ia32" | "arm" | "ppc64" | "s390x" | "mips" | "unknown";
+export type Architecture =
+  | 'x64'
+  | 'arm64'
+  | 'ia32'
+  | 'arm'
+  | 'ppc64'
+  | 's390x'
+  | 'mips'
+  | 'unknown';
 /**
  * System information interface
  */
 export interface SystemInfo {
-    platform: Platform;
-    arch: Architecture;
-    nodeVersion: string;
-    osVersion: string;
-    cpuCount: number;
-    totalMemoryGB: number;
-    availableMemoryGB: number;
-    hostname: string;
-    username: string;
-    homeDir: string;
-    tempDir: string;
-    isCI: boolean;
-    isDocker: boolean;
-    isWSL: boolean;
+  platform: Platform;
+  arch: Architecture;
+  nodeVersion: string;
+  osVersion: string;
+  cpuCount: number;
+  totalMemoryGB: number;
+  availableMemoryGB: number;
+  hostname: string;
+  username: string;
+  homeDir: string;
+  tempDir: string;
+  isCI: boolean;
+  isDocker: boolean;
+  isWSL: boolean;
 }
 /**
  * Process information interface
  */
 export interface ProcessInfo {
-    pid: number;
-    ppid: number;
-    title: string;
-    argv: string[];
-    execPath: string;
-    cwd: string;
-    env: Record<string, string | undefined>;
-    uptime: number;
-    memoryUsage: NodeJS.MemoryUsage;
+  pid: number;
+  ppid: number;
+  title: string;
+  argv: string[];
+  execPath: string;
+  cwd: string;
+  env: Record<string, string | undefined>;
+  uptime: number;
+  memoryUsage: NodeJS.MemoryUsage;
 }
 /**
  * Environment type
  */
-export type EnvironmentType = "development" | "production" | "test" | "staging" | "preview" | "unknown";
+export type EnvironmentType =
+  | 'development'
+  | 'production'
+  | 'test'
+  | 'staging'
+  | 'preview'
+  | 'unknown';
 /**
  * Get current platform with normalization
  *
@@ -265,7 +298,9 @@ export declare function getWorkspaceDetector(): WorkspaceDetector;
  *}
  * ```
  */
-export declare function detectWorkspace(startPath?: string): Promise<DetectedWorkspace | null>;
+export declare function detectWorkspace(
+  startPath?: string
+): Promise<DetectedWorkspace | null>;
 /**
  * Get system capabilities and health information
  *
@@ -311,7 +346,9 @@ export declare function startMonitoring(): void;
 ' * logger.info('Infrastructure capability: ', scores.infrastructure);
 ' * ```
  */
-export declare function getCapabilityScoreMap(): Promise<Record<string, number>>;
+export declare function getCapabilityScoreMap(): Promise<
+  Record<string, number>
+>;
 /**
  * Create a formatted system summary for logging or display
  *
@@ -344,9 +381,9 @@ export declare function createSystemSummary(): string;
  * ```
  */
 export declare function checkSystemRequirements(requirements: {
-    nodeVersion?: string;
-    totalMemoryGB?: number;
-    cpuCount?: number;
-    supportedPlatforms?: Platform[];
+  nodeVersion?: string;
+  totalMemoryGB?: number;
+  cpuCount?: number;
+  supportedPlatforms?: Platform[];
 }): boolean;
 //# sourceMappingURL=system.d.ts.map

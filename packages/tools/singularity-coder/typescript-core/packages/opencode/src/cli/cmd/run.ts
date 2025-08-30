@@ -58,7 +58,7 @@ export const RunCommand = cmd({
   handler:async (args) => {
     let __message = args.message.join(" ")
 
-    if (!process.stdin.isTTY) _message += `\n${await Bun.stdin.text()}`
+    if (!process.stdin.isTTY) _message += `\n${await Bun.stdin.text()}
 
     await bootstrap({ cwd:process.cwd()}, async () => {
       const session = await (async () => {
@@ -88,10 +88,10 @@ export const RunCommand = cmd({
       if (cfg.share === "auto" || Flag.OPENCODE_AUTO_SHARE || args.share) {
         try {
           await Session.share(session.id)
-          UI.println(`${UI.Style.TEXT_INFO_BOLD}~  https://opencode.ai/s/${session.id.slice(-8)}`)`
+          UI.println(`${UI.Style.TEXT_INFO_BOLD}~  https://opencode.ai/s/${session.id.slice(-8)})
 } catch (error) {
           if (error instanceof Error && error.message.includes("disabled")) {
-            UI.println(`${UI.Style.TEXT_DANGER_BOLD}!  ${error.message}`)`
+            UI.println(`${UI.Style.TEXT_DANGER_BOLD}!  ${error.message}`)
 } else {
             throw error
 }
@@ -100,13 +100,13 @@ export const RunCommand = cmd({
       UI.empty()
 
       const { providerID, modelID} = args.model ? Provider.parseModel(args.model) :await Provider.defaultModel()
-      UI.println(`${UI.Style.TEXT_NORMAL_BOLD}@ `, `${UI.Style.TEXT_NORMAL}${providerID}/${modelID}`)`
+      UI.println(`${UI.Style.TEXT_NORMAL_BOLD}@ `, `${UI.Style.TEXT_NORMAL}${providerID}/${modelID}`)
       UI.empty()
 
       function printEvent(color:string, type:string, title:string) {
         UI.println(
-          color + `|`,`
-          `${UI.Style.TEXT_NORMAL + UI.Style.TEXT_DIM} ${type.padEnd(7, " ")}`,`
+          color + `|`,
+          `${UI.Style.TEXT_NORMAL + UI.Style.TEXT_DIM} ${type.padEnd(7, " ")},
           "",
           UI.Style.TEXT_NORMAL + title,
         )

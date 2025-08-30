@@ -1,6 +1,6 @@
 /**
  * @fileoverview Coordination Domain Integration Test
- * 
+ *
  * Test our production-ready coordination implementations
  */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
@@ -10,48 +10,56 @@ const mockLogger = {
   info: () => {},
   debug: () => {},
   warn: () => {},
-  error: () => {}
+  error: () => {},
 };
 
 // Mock foundation imports
 vi.mock('@claude-zen/foundation', () => ({
-  getLogger: () => mockLogger
+  getLogger: () => mockLogger,
 }));
 
-// Mock intelligence imports  
+// Mock intelligence imports
 vi.mock('@claude-zen/intelligence', () => ({
   getBrainSystem: () => ({
-    query: async () => ({ approved: true, confidence: 0.9, reasoning: 'Test approval' }),
+    query: async () => ({
+      approved: true,
+      confidence: 0.9,
+      reasoning: 'Test approval',
+    }),
     learnFromFeedback: async () => {},
-  })
+  }),
 }));
 
 describe('Coordination Domain Production Implementation', () => {
   describe('WebSocket Hub', () => {
     it('should create and initialize hub', async () => {
-      const { CentralWebSocketHub } = await import('/home/runner/work/zenflow/zenflow/packages/services/coordination/src/events/websocket-hub.ts');
-      
+      const { CentralWebSocketHub } = await import(
+        '/home/runner/work/zenflow/zenflow/packages/services/coordination/src/events/websocket-hub.ts'
+      );
+
       const hub = new CentralWebSocketHub();
       await hub.initialize();
-      
+
       const status = hub.getHubStatus();
       expect(status.isInitialized).toBe(true);
       expect(status.registeredServices).toBeGreaterThan(0);
     });
 
     it('should register services correctly', async () => {
-      const { CentralWebSocketHub } = await import('/home/runner/work/zenflow/zenflow/packages/services/coordination/src/events/websocket-hub.ts');
-      
+      const { CentralWebSocketHub } = await import(
+        '/home/runner/work/zenflow/zenflow/packages/services/coordination/src/events/websocket-hub.ts'
+      );
+
       const hub = new CentralWebSocketHub();
       await hub.initialize();
-      
+
       hub.registerService({
         name: 'test-service',
         version: '1.0.0',
         endpoint: '/api/test',
         capabilities: ['testing'],
         messageTypes: ['test_message'],
-        registeredAt: new Date()
+        registeredAt: new Date(),
       });
 
       const status = hub.getHubStatus();
@@ -61,11 +69,13 @@ describe('Coordination Domain Production Implementation', () => {
 
   describe('LLM Approval Service', () => {
     it('should initialize and process approvals', async () => {
-      const { LLMApprovalService } = await import('/home/runner/work/zenflow/zenflow/packages/services/coordination/src/services/llm-approval-service.ts');
-      
+      const { LLMApprovalService } = await import(
+        '/home/runner/work/zenflow/zenflow/packages/services/coordination/src/services/llm-approval-service.ts'
+      );
+
       const service = new LLMApprovalService();
       await service.initialize();
-      
+
       const context = {
         task: {
           id: 'test-task',
@@ -73,42 +83,44 @@ describe('Coordination Domain Production Implementation', () => {
           description: 'Test description',
           type: 'feature',
           priority: 'medium',
-          assignee: 'test-user'
+          assignee: 'test-user',
         },
         workflow: {
           currentStage: 'development',
           previousStages: ['planning'],
-          dependencies: []
+          dependencies: [],
         },
         security: {
           riskLevel: 'low',
           complianceRequired: false,
-          scanStatus: 'passed'
+          scanStatus: 'passed',
         },
         history: {
-          similarTasks: []
-        }
+          similarTasks: [],
+        },
       };
 
       const config = {
         model: 'claude-3-5-sonnet',
         criteria: ['quality', 'security'],
-        confidenceThreshold: 0.8
+        confidenceThreshold: 0.8,
       };
 
       const result = await service.evaluateForApproval(context, config, []);
-      
+
       expect(result.success).toBeDefined();
       expect(result.gateId).toBeDefined();
       expect(result.taskId).toBe('test-task');
     });
 
     it('should load auto-approval rules', async () => {
-      const { LLMApprovalService } = await import('/home/runner/work/zenflow/zenflow/packages/services/coordination/src/services/llm-approval-service.ts');
-      
+      const { LLMApprovalService } = await import(
+        '/home/runner/work/zenflow/zenflow/packages/services/coordination/src/services/llm-approval-service.ts'
+      );
+
       const service = new LLMApprovalService();
       await service.initialize();
-      
+
       const rules = service.getAutoApprovalRules();
       expect(rules.length).toBeGreaterThan(0);
       expect(rules[0]).toHaveProperty('name');
@@ -119,15 +131,17 @@ describe('Coordination Domain Production Implementation', () => {
 
   describe('Workflow Engine', () => {
     it('should create and start workflows', async () => {
-      const { WorkflowEngine } = await import('/home/runner/work/zenflow/zenflow/packages/services/coordination/src/workflows/main.ts');
-      
+      const { WorkflowEngine } = await import(
+        '/home/runner/work/zenflow/zenflow/packages/services/coordination/src/workflows/main.ts'
+      );
+
       const engine = new WorkflowEngine({
         maxConcurrentInstances: 10,
-        defaultStepTimeout: 5000
+        defaultStepTimeout: 5000,
       });
-      
+
       await engine.initialize();
-      
+
       const workflow = {
         id: 'test-workflow',
         name: 'Test Workflow',
@@ -138,26 +152,30 @@ describe('Coordination Domain Production Implementation', () => {
             id: 'step1',
             name: 'First Step',
             type: 'task' as const,
-            dependencies: []
-          }
-        ]
+            dependencies: [],
+          },
+        ],
       };
 
       await engine.registerWorkflow(workflow);
-      
-      const result = await engine.startWorkflow('test-workflow', { testData: 'value' });
-      
+
+      const result = await engine.startWorkflow('test-workflow', {
+        testData: 'value',
+      });
+
       expect(result.success).toBe(true);
       expect(result.context.workflowId).toBe('test-workflow');
       expect(result.metrics.stepCount).toBe(1);
     });
 
     it('should handle step handlers correctly', async () => {
-      const { WorkflowEngine } = await import('/home/runner/work/zenflow/zenflow/packages/services/coordination/src/workflows/main.ts');
-      
+      const { WorkflowEngine } = await import(
+        '/home/runner/work/zenflow/zenflow/packages/services/coordination/src/workflows/main.ts'
+      );
+
       const engine = new WorkflowEngine();
       await engine.initialize();
-      
+
       let handlerCalled = false;
       engine.registerStepHandler('custom', async (step, context) => {
         handlerCalled = true;
@@ -174,14 +192,14 @@ describe('Coordination Domain Production Implementation', () => {
             id: 'custom-step',
             name: 'Custom Step',
             type: 'custom' as any,
-            dependencies: []
-          }
-        ]
+            dependencies: [],
+          },
+        ],
       };
 
       await engine.registerWorkflow(workflow);
       await engine.startWorkflow('custom-workflow');
-      
+
       expect(handlerCalled).toBe(true);
     });
   });

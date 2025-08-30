@@ -16,7 +16,7 @@ import {
  * Epic lifecycle service configuration
  */
 export interface EpicLifecycleConfig {
-    readonly analysisTimeLimit: new () => Map<string, PortfolioEpic>;
-    (): any;
+  readonly analysisTimeLimit: new () => Map<string, PortfolioEpic>;
+  (): any;
 }
 //# sourceMappingURL=epic-lifecycle-service.d.ts.map

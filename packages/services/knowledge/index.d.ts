@@ -502,109 +502,109 @@
  * @file Knowledge module exports.
  */
 export type {
-	CollaborativeSolution,
-	ConsensusResult,
-	DistributedReasoningResult,
-	Problem,
-	ProblemDecomposition,
-} from "./src/collaborative-reasoning-engine";
-export { CollaborativeReasoningEngine} from "./src/collaborative-reasoning-engine";
-export { CollaborativeReasoningEngine as ReasoningEngine} from "./src/collaborative-reasoning-engine";
+  CollaborativeSolution,
+  ConsensusResult,
+  DistributedReasoningResult,
+  Problem,
+  ProblemDecomposition,
+} from './src/collaborative-reasoning-engine';
+export { CollaborativeReasoningEngine } from './src/collaborative-reasoning-engine';
+export { CollaborativeReasoningEngine as ReasoningEngine } from './src/collaborative-reasoning-engine';
 export type {
-	AgentContribution,
-	AggregatedKnowledge,
-	CollectiveDecision,
-	DecisionContext,
-	KnowledgeExchangeProtocol,
-	KnowledgePacket,
-	WorkDistributionResult,
-} from "./src/collective-intelligence-coordinator";
-export { CollectiveIntelligenceCoordinator} from "./src/collective-intelligence-coordinator";
-export { CollectiveIntelligenceCoordinator as IntelligenceHub} from "./src/collective-intelligence-coordinator";
+  AgentContribution,
+  AggregatedKnowledge,
+  CollectiveDecision,
+  DecisionContext,
+  KnowledgeExchangeProtocol,
+  KnowledgePacket,
+  WorkDistributionResult,
+} from './src/collective-intelligence-coordinator';
+export { CollectiveIntelligenceCoordinator } from './src/collective-intelligence-coordinator';
+export { CollectiveIntelligenceCoordinator as IntelligenceHub } from './src/collective-intelligence-coordinator';
 export type {
-	CollectiveKnowledgeResponse,
-	CollectiveProcessingOptions,
-	ComponentHealth,
-	CrossAgentKnowledgeConfig,
-	CrossDomainTransferRequest,
-	CrossDomainTransferResult,
-	DistributedLearningRequest,
-	DistributedLearningResult,
-	FACTIntegrationConfig,
-	IntegrationConfig,
-	IntegrationMetrics,
-	IntegrationStatus,
-	KnowledgeProcessingResult,
-	KnowledgeQuery,
-	RAGIntegrationConfig,
-	SystemStatus,
-} from "./src/cross-agent-knowledge-integration";
+  CollectiveKnowledgeResponse,
+  CollectiveProcessingOptions,
+  ComponentHealth,
+  CrossAgentKnowledgeConfig,
+  CrossDomainTransferRequest,
+  CrossDomainTransferResult,
+  DistributedLearningRequest,
+  DistributedLearningResult,
+  FACTIntegrationConfig,
+  IntegrationConfig,
+  IntegrationMetrics,
+  IntegrationStatus,
+  KnowledgeProcessingResult,
+  KnowledgeQuery,
+  RAGIntegrationConfig,
+  SystemStatus,
+} from './src/cross-agent-knowledge-integration';
 export {
-	CrossAgentKnowledgeIntegration,
-	createCrossAgentKnowledgeIntegration,
-	getDefaultConfig as getDefaultKnowledgeConfig,
-} from "./src/cross-agent-knowledge-integration";
+  CrossAgentKnowledgeIntegration,
+  createCrossAgentKnowledgeIntegration,
+  getDefaultConfig as getDefaultKnowledgeConfig,
+} from './src/cross-agent-knowledge-integration';
 export type {
-	CollectiveExperienceAggregation,
-	FederatedLearningRound,
-	KnowledgeTransferResult,
-	ModelSnapshot,
-	ModelSynchronizationResult,
-} from "./src/distributed-learning-system";
-export { DistributedLearningSystem} from "./src/distributed-learning-system";
+  CollectiveExperienceAggregation,
+  FederatedLearningRound,
+  KnowledgeTransferResult,
+  ModelSnapshot,
+  ModelSynchronizationResult,
+} from './src/distributed-learning-system';
+export { DistributedLearningSystem } from './src/distributed-learning-system';
 export type {
-	CrossDomainTransferResult as IntelligenceTransferResult,
-	ExpertiseDiscoveryResult,
-	ExpertiseProfile,
-	RoutingResult,
-	SpecializationEmergenceResult,
-} from "./src/intelligence-coordination-system";
-export { IntelligenceCoordinationSystem} from "./src/intelligence-coordination-system";
-export { KnowledgeClient} from "./src/knowledge-client";
+  CrossDomainTransferResult as IntelligenceTransferResult,
+  ExpertiseDiscoveryResult,
+  ExpertiseProfile,
+  RoutingResult,
+  SpecializationEmergenceResult,
+} from './src/intelligence-coordination-system';
+export { IntelligenceCoordinationSystem } from './src/intelligence-coordination-system';
+export { KnowledgeClient } from './src/knowledge-client';
 export type {
-	ContributionRecord,
-	KnowledgeItem,
-	QualityMonitoringReport,
-	ReputationScore,
-	ReviewResult,
-	ValidationResult,
-} from "./src/knowledge-quality-management";
-export { KnowledgeQualityManagementSystem} from "./src/knowledge-quality-management";
-export { KnowledgeQualityManagementSystem as KnowledgeValidator} from "./src/knowledge-quality-management";
+  ContributionRecord,
+  KnowledgeItem,
+  QualityMonitoringReport,
+  ReputationScore,
+  ReviewResult,
+  ValidationResult,
+} from './src/knowledge-quality-management';
+export { KnowledgeQualityManagementSystem } from './src/knowledge-quality-management';
+export { KnowledgeQualityManagementSystem as KnowledgeValidator } from './src/knowledge-quality-management';
 export type {
-	KnowledgeSwarmConfig,
-	SwarmAgent,
-	SwarmQuery,
-	SwarmResult,
-} from "./src/knowledge-swarm";
-export { KnowledgeSwarm} from "./src/knowledge-swarm";
+  KnowledgeSwarmConfig,
+  SwarmAgent,
+  SwarmQuery,
+  SwarmResult,
+} from './src/knowledge-swarm';
+export { KnowledgeSwarm } from './src/knowledge-swarm';
 export type {
-	CacheOptimizationResult,
-	KnowledgeRequest,
-	KnowledgeSharingOptimization,
-	KnowledgeSharingRequest,
-	OptimizedKnowledgeResponse,
-} from "./src/performance-optimization-system";
-export { PerformanceOptimizationSystem} from "./src/performance-optimization-system";
-export { PerformanceOptimizationSystem as PerformanceOptimizer} from "./src/performance-optimization-system";
-export { ProjectContextAnalyzer} from "./src/project-context-analyzer";
-export { SQLiteBackend} from "./src/storage-backends/sqlite-backend";
+  CacheOptimizationResult,
+  KnowledgeRequest,
+  KnowledgeSharingOptimization,
+  KnowledgeSharingRequest,
+  OptimizedKnowledgeResponse,
+} from './src/performance-optimization-system';
+export { PerformanceOptimizationSystem } from './src/performance-optimization-system';
+export { PerformanceOptimizationSystem as PerformanceOptimizer } from './src/performance-optimization-system';
+export { ProjectContextAnalyzer } from './src/project-context-analyzer';
+export { SQLiteBackend } from './src/storage-backends/sqlite-backend';
 export {
-	BaseKnowledgeError,
-	FACTError,
-	FACTStorageError,
-	FACTGatheringError,
-	FACTProcessingError,
-	RAGError,
-	RAGVectorError,
-	RAGEmbeddingError,
-	RAGRetrievalError,
-	isRecoverableKnowledgeError,
-	getKnowledgeErrorSeverity,
-	createKnowledgeError,
-} from "./src/errors";
-export type { KnowledgeErrorContext} from "./src/errors";
-export * from "./src/errors.js";
+  BaseKnowledgeError,
+  FACTError,
+  FACTStorageError,
+  FACTGatheringError,
+  FACTProcessingError,
+  RAGError,
+  RAGVectorError,
+  RAGEmbeddingError,
+  RAGRetrievalError,
+  isRecoverableKnowledgeError,
+  getKnowledgeErrorSeverity,
+  createKnowledgeError,
+} from './src/errors';
+export type { KnowledgeErrorContext } from './src/errors';
+export * from './src/errors.js';
 /**
  * Factory Functions for Easy System Creation.
  */
@@ -617,10 +617,10 @@ export * from "./src/errors.js";
  * @example
  */
 export declare function createKnowledgeSharingSystem(
-	config?:unknown,
-	logger?:unknown,
-	eventBus?:unknown,
-):Promise<unknown>;
+  config?: unknown,
+  logger?: unknown,
+  eventBus?: unknown
+): Promise<unknown>;
 /**
  * Create a knowledge swarm system.
  *
@@ -629,8 +629,8 @@ export declare function createKnowledgeSharingSystem(
  * @example
  */
 export declare function createKnowledgeSwarm(
-	config?:unknown,
-):Promise<unknown>;
+  config?: unknown
+): Promise<unknown>;
 /**
  * Utility Functions.
  */
@@ -640,10 +640,10 @@ export declare function createKnowledgeSwarm(
  * @param config
  * @example
  */
-export declare function validateKnowledgeConfig(config:unknown): {
-	isValid:boolean;
-	errors:string[];
-	warnings:string[];
+export declare function validateKnowledgeConfig(config: unknown): {
+  isValid: boolean;
+  errors: string[];
+  warnings: string[];
 };
 /**
  * Get system capabilities based on configuration.
@@ -651,22 +651,22 @@ export declare function validateKnowledgeConfig(config:unknown): {
  * @param config
  * @example
  */
-export declare function getSystemCapabilities(config:unknown): {
-	collectiveIntelligence:boolean;
-	distributedLearning:boolean;
-	collaborativeReasoning:boolean;
-	crossDomainTransfer:boolean;
-	qualityManagement:boolean;
-	performanceOptimization:boolean;
-	factIntegration:boolean;
-	ragIntegration:boolean;
+export declare function getSystemCapabilities(config: unknown): {
+  collectiveIntelligence: boolean;
+  distributedLearning: boolean;
+  collaborativeReasoning: boolean;
+  crossDomainTransfer: boolean;
+  qualityManagement: boolean;
+  performanceOptimization: boolean;
+  factIntegration: boolean;
+  ragIntegration: boolean;
 };
 /**
  * Helper function to create minimal configuration for testing.
  *
  * @example
  */
-export declare function createTestConfig():unknown;
+export declare function createTestConfig(): unknown;
 /**
  * Storage and Persistence Utilities.
  */
@@ -676,11 +676,11 @@ export declare function createTestConfig():unknown;
  * @param basePath
  * @example
  */
-export declare function ensureStorageDirectory(basePath?:string): Promise<{
-	swarmDir:string;
-	hiveMindDir:string;
-	knowledgeDir:string;
-	cacheDir:string;
+export declare function ensureStorageDirectory(basePath?: string): Promise<{
+  swarmDir: string;
+  hiveMindDir: string;
+  knowledgeDir: string;
+  cacheDir: string;
 }>;
 /**
  * Get storage paths for knowledge systems.
@@ -688,13 +688,13 @@ export declare function ensureStorageDirectory(basePath?:string): Promise<{
  * @param basePath
  * @example
  */
-export declare function getKnowledgeStoragePaths(basePath?:string): {
-	collective:string;
-	distributed:string;
-	collaborative:string;
-	intelligence:string;
-	quality:string;
-	performance:string;
+export declare function getKnowledgeStoragePaths(basePath?: string): {
+  collective: string;
+  distributed: string;
+  collaborative: string;
+  intelligence: string;
+  quality: string;
+  performance: string;
 };
 /**
  * Main Integration System Class is exported above.

@@ -22,18 +22,18 @@ export class ImmutableTaskUtils {
   /**
    * Update task state immutably
    */
-  static updateTask<T extends { id: string}>(
+  static updateTask<T extends { id: string }>(
     tasks: T[],
     taskId: string,
     updater: (task: Draft<T>) => void
-  ):T[] {
+  ): T[] {
     return produce(tasks, (draft) => {
       const taskIndex = draft.findIndex((t) => t.id === taskId);
       if (taskIndex >= 0) {
         updater(draft[taskIndex]);
       }
     });
-}
+  }
   /**
    * Add task to collection immutably
    */
@@ -41,18 +41,18 @@ export class ImmutableTaskUtils {
     return produce(tasks, (draft) => {
       draft.push(newTask as Draft<T>);
     });
-}
+  }
   /**
    * Remove task from collection immutably
    */
-  static removeTask<T extends { id: string}>(tasks: T[], taskId: string): T[] {
+  static removeTask<T extends { id: string }>(tasks: T[], taskId: string): T[] {
     return produce(tasks, (draft) => {
       const index = draft.findIndex((t) => t.id === taskId);
       if (index >= 0) {
         draft.splice(index, 1);
       }
     });
-}
+  }
 }
 /**
  * Immutable WIP limits utilities using battle-tested Immer
@@ -72,13 +72,13 @@ export class ImmutableWIPUtils {
         }
       }
     });
-}
+  }
   /**
    * Optimize WIP limits based on utilization
    */
   static optimizeWIPLimits<T extends Record<string, number>>(
     currentLimits: T,
-    utilizationData: Record<string, { current: number, target: number}>
+    utilizationData: Record<string, { current: number; target: number }>
   ): T {
     return produce(currentLimits, (draft) => {
       const draftLimits = draft as Record<string, number>;
@@ -95,19 +95,19 @@ export class ImmutableWIPUtils {
         }
       }
     });
-}
+  }
 }
 // Task interface for metrics calculations - compatible with WorkflowTask
 interface TaskForMetrics {
   readonly createdAt: Date;
-  readonly startedAt?:Date;
-  readonly completedAt?:Date;
+  readonly startedAt?: Date;
+  readonly completedAt?: Date;
   readonly state: string;
   // Optional additional fields to make compatible with WorkflowTask
-  readonly id?:string;
-  readonly title?:string;
-  readonly priority?:string;
-  readonly estimatedEffort?:number;
+  readonly id?: string;
+  readonly title?: string;
+  readonly priority?: string;
+  readonly estimatedEffort?: number;
   [key: string]: any; // Allow additional properties
 }
 // Flow metrics return type
@@ -132,18 +132,18 @@ export class ImmutableMetricsUtils {
     allTasks: TaskForMetrics[],
     completedTasks: TaskForMetrics[],
     blockedTasks: TaskForMetrics[],
-    calculators:  {
+    calculators: {
       wipEfficiency: number;
       predictabilityCalculator: (cycleTimes: number[]) => number;
       qualityCalculator: (tasks: TaskForMetrics[]) => number;
-}
-  ):FlowMetrics {
+    }
+  ): FlowMetrics {
     // Calculate cycle times
     const cycleTimes = completedTasks
       .filter((t) => t.startedAt && t.completedAt)
       .map(
         (t) =>
-          ((t.completedAt?.getTime()|| 0) - (t.startedAt?.getTime()|| 0)) /
+          ((t.completedAt?.getTime() || 0) - (t.startedAt?.getTime() || 0)) /
           (1000 * 60 * 60)
       ); // hours
     const averageCycleTime =
@@ -156,7 +156,7 @@ export class ImmutableMetricsUtils {
       .filter((t) => t.completedAt)
       .map(
         (t) =>
-          ((t.completedAt?.getTime()|| 0) - t.createdAt.getTime()) /
+          ((t.completedAt?.getTime() || 0) - t.createdAt.getTime()) /
           (1000 * 60 * 60)
       ); // hours
 
@@ -176,12 +176,14 @@ export class ImmutableMetricsUtils {
       cycleTime: averageCycleTime,
       leadTime: averageLeadTime,
       wipEfficiency: calculators.wipEfficiency,
-      blockageRate: allTasks.length > 0 ? blockedTasks.length / allTasks.length : 0,
-      flowEfficiency: cycleTimes.length > 0 ? Math.min(1, 168 / averageCycleTime) : 1, // Efficiency relative to 1 week
+      blockageRate:
+        allTasks.length > 0 ? blockedTasks.length / allTasks.length : 0,
+      flowEfficiency:
+        cycleTimes.length > 0 ? Math.min(1, 168 / averageCycleTime) : 1, // Efficiency relative to 1 week
       predictability: calculators.predictabilityCalculator(cycleTimes),
       qualityIndex: calculators.qualityCalculator(completedTasks),
     };
-}
+  }
   /**
    * Update metrics state immutably
    */
@@ -196,7 +198,7 @@ export class ImmutableMetricsUtils {
         }
       }
     });
-}
+  }
 }
 /**
  * Immutable context utilities using battle-tested Immer
@@ -207,11 +209,11 @@ export class ImmutableContextUtils {
    */
   static updateContext<T>(context: T, updater: (draft: Draft<T>) => void): T {
     return produce(context, updater);
-}
+  }
   /**
    * Add error to context errors array
    */
-  static addError<T extends { errors: any[]}>(context: T, error: any): T {
+  static addError<T extends { errors: any[] }>(context: T, error: any): T {
     return produce(context, (draft) => {
       draft.errors.push({
         ...error,
@@ -239,4 +241,4 @@ export class ImmutableUtils {
       Object.assign(draft, updates);
     });
   }
-};
+}

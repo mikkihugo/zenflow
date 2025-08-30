@@ -53,28 +53,32 @@ import {
 } from '@claude-zen/foundation';
 
 // Direct imports from packages
-import { BrainCoordinator} from '@claude-zen/brain';
-import { DatabaseProvider} from '@claude-zen/database';
-import { PerformanceTracker, SystemMonitor} from '@claude-zen/system-monitoring';
+import { BrainCoordinator } from '@claude-zen/brain';
+import { DatabaseProvider } from '@claude-zen/database';
+import {
+  PerformanceTracker,
+  SystemMonitor,
+} from '@claude-zen/system-monitoring';
 
 // Constants to avoid string duplication
 const ERROR_MESSAGES = {
-  healthMonitorNotInitialized: 'Health monitor not initialized',} as const;
+  healthMonitorNotInitialized: 'Health monitor not initialized',
+} as const;
 
 // External dependencies
-import type { Express, Request, Response} from 'express';
+import type { Express, Request, Response } from 'express';
 
 // TaskMaster interface type (without importing restricted package)
 interface TaskMasterGUIInterface {
-  initialize?():Promise<void>;
-  shutdown?():Promise<void>;
-  getConfiguration?():Record<string, unknown>;
-  [key:string]: unknown;
+  initialize?(): Promise<void>;
+  shutdown?(): Promise<void>;
+  getConfiguration?(): Record<string, unknown>;
+  [key: string]: unknown;
 }
 
 // Add missing interface definitions
 interface WebConfig {
-  apiPrefix?:string;
+  apiPrefix?: string;
 }
 
 type WebSessionManager = {};
@@ -84,8 +88,8 @@ type WebDataService = {};
 // Strategic imports from @claude-zen packages
 // Foundation utilities for web operations
 
-const { getVersion} = (global as { foundation?:{ getVersion: () => string}})
-  .foundation || { getVersion:() => '1.0.0'};
+const { getVersion } = (global as { foundation?: { getVersion: () => string } })
+  .foundation || { getVersion: () => '1.0.0' };
 
 // Import our API types from the translation layer
 
@@ -112,34 +116,34 @@ const { getVersion} = (global as { foundation?:{ getVersion: () => string}})
  */
 export class WebApiRoutes {
   private logger = getLogger('WebAPI');
-  private config:WebConfig;
+  private config: WebConfig;
 
   // Strategic delegation instances with proper typing
   // Note:AGUI functionality handled by TaskMaster service
-  private workflowEngine:unknown | null = null;
-  private healthMonitor:unknown | null = null;
-  private webMiddleware:unknown | null = null;
-  private collaborationEngine:unknown | null = null;
-  private documentationManager:unknown | null = null;
-  private sessionManager:WebSessionManager;
-  private dataService:WebDataService;
-  private advancedGUI:TaskMasterGUIInterface | null = null;
+  private workflowEngine: unknown | null = null;
+  private healthMonitor: unknown | null = null;
+  private webMiddleware: unknown | null = null;
+  private collaborationEngine: unknown | null = null;
+  private documentationManager: unknown | null = null;
+  private sessionManager: WebSessionManager;
+  private dataService: WebDataService;
+  private advancedGUI: TaskMasterGUIInterface | null = null;
   private initialized = false;
 
   constructor(
-    config:WebConfig,
-    sessionManager:WebSessionManager,
-    dataService:WebDataService
+    config: WebConfig,
+    sessionManager: WebSessionManager,
+    dataService: WebDataService
   ) {
     this.config = config;
     this.sessionManager = sessionManager;
     this.dataService = dataService;
-}
+  }
 
   /**
    * Initialize web API routes with @claude-zen package delegation
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     if (this.initialized) return;
 
     try {
@@ -150,58 +154,58 @@ export class WebApiRoutes {
       const brainSystem = new BrainCoordinator();
       await brainSystem.initialize();
       this.workflowEngine = brainSystem.getWorkflowEngine({
-        enableWebIntegration:true,
-        enableRESTAPI:true,
-});
+        enableWebIntegration: true,
+        enableRESTAPI: true,
+      });
       await this.workflowEngine?.initialize();
 
       // Direct performance tracker instantiation
       const performanceTracker = new PerformanceTracker();
       await performanceTracker.initialize();
       this.healthMonitor = new SystemMonitor({
-        enableWebEndpoints:true,
-        enableMetricsCollection:true,
-});
+        enableWebEndpoints: true,
+        enableMetricsCollection: true,
+      });
       await this.healthMonitor?.initialize();
 
       // Direct database system instantiation
       const databaseSystem = new DatabaseProvider();
       await databaseSystem.initialize();
       this.collaborationEngine = databaseSystem.getCollaborationEngine({
-        enableWebAPI:true,
-        enableRealTimeUpdates:true,
-});
+        enableWebAPI: true,
+        enableRealTimeUpdates: true,
+      });
       await this.collaborationEngine?.initialize();
 
       // Initialize web middleware through foundation
       this.webMiddleware = {
-        enableSecurity:true,
-        enableValidation:true,
-        enableCORS:true,
-        enableRateLimit:true,
-};
+        enableSecurity: true,
+        enableValidation: true,
+        enableCORS: true,
+        enableRateLimit: true,
+      };
 
       // Initialize documentation manager
       this.documentationManager = brainSystem.getDocumentationManager({
-        enableAPIDocumentation:true,
-        enableSwagger:true,
-});
+        enableAPIDocumentation: true,
+        enableSwagger: true,
+      });
       await this.documentationManager?.initialize();
 
       this.initialized = true;
       this.logger.info(
         'Web API Routes facade initialized successfully with @claude-zen delegation'
       );
-} catch (error) {
+    } catch (error) {
       this.logger.error('Failed to initialize Web API Routes facade: ', error);
       throw error;
-}
-}
+    }
+  }
 
-/**
+  /**
    * Setup all API routes with strategic delegation
    */
-  async setupRoutes(app:Express): Promise<void> {
+  async setupRoutes(app: Express): Promise<void> {
     if (!this.initialized) await this.initialize();
 
     const api = this.config.apiPrefix || '/api';
@@ -223,23 +227,23 @@ export class WebApiRoutes {
     await this.setupCollaborationRoutes(app, api);
 
     this.logger.info('✅ All API routes configured with strategic delegation');
-} /**
+  } /**
    * Setup middleware with @claude-zen/foundation delegation
    */
-  private setupMiddleware():void {
+  private setupMiddleware(): void {
     assertDefined(this.webMiddleware, 'Web middleware not initialized');
 
     // Basic middleware setup - simplified for now
     this.logger.info('📦 Middleware configured via @claude-zen/foundation');
-}
+  }
 
   /**
    * Setup API documentation with @claude-zen/intelligence delegation
    */
   private async setupAPIDocumentation(
-    app:Express,
-    api:string
-  ):Promise<void> {
+    app: Express,
+    api: string
+  ): Promise<void> {
     assertDefined(
       this.documentationManager,
       'Documentation manager not initialized'
@@ -247,20 +251,21 @@ export class WebApiRoutes {
 
     // Delegate Swagger/OpenAPI documentation to knowledge package
     await this.documentationManager.setupSwaggerDocumentation(app, {
-      routePrefix:`${api}/docs`,
-      apiPrefix:api,
-      version:getVersion(),
-      title: 'Claude Code Zen API',});
+      routePrefix: `${api}/docs`,
+      apiPrefix: api,
+      version: getVersion(),
+      title: 'Claude Code Zen API',
+    });
 
     this.logger.info(
       '📚 API documentation configured via @claude-zen/intelligence'
     );
-}
+  }
 
   /**
    * Setup core routes with strategic delegation
    */
-  private setupCoreRoutes(app:Express, api:string): void {
+  private setupCoreRoutes(app: Express, api: string): void {
     // Root route
     app.get('/', (req, res) => {
       res.json({
@@ -269,7 +274,7 @@ export class WebApiRoutes {
         documentation: `${api}/docs`,
         health: `${api}/health`,
       });
-});
+    });
 
     // Health check - delegate to monitoring package
     app.get(`${api}/health`, async (req: Request, res: Response) => {
@@ -302,21 +307,21 @@ export class WebApiRoutes {
           error: 'System status failed',
           message: getErrorMessage(error),
         });
-}
-});
+      }
+    });
 
     // Missing endpoints that frontend expects - temporary mock implementations
     app.get(`${api}/agents/status`, (req: Request, res: Response) => {
       res.json({
         success: true,
-        data: []
+        data: [],
       });
     });
 
     app.get(`${api}/tasks`, (req: Request, res: Response) => {
       res.json({
         success: true,
-        data: []
+        data: [],
       });
     });
 
@@ -325,15 +330,15 @@ export class WebApiRoutes {
         success: true,
         data: {
           metrics: {},
-          summary: "No active metrics"
-        }
+          summary: 'No active metrics',
+        },
       });
     });
 
     app.get(`${api}/events`, (req: Request, res: Response) => {
       res.json({
         success: true,
-        data: []
+        data: [],
       });
     });
 
@@ -343,20 +348,20 @@ export class WebApiRoutes {
         data: {
           total: 1024,
           used: 512,
-          free: 512
-        }
+          free: 512,
+        },
       });
     });
 
     this.logger.info('🔧 Core routes configured with delegation');
-}
+  }
   /**
    * Setup Advanced GUI routes with @claude-zen/enterprise delegation
    */
   private async setupAdvancedGUIRoutes(
-    app:Express,
-    api:string
-  ):Promise<void> {
+    app: Express,
+    api: string
+  ): Promise<void> {
     assertDefined(this.advancedGUI, 'Advanced GUI not initialized');
 
     // Delegate all advanced GUI routes to AGUI package
@@ -380,7 +385,7 @@ export class WebApiRoutes {
 
     app.post(
       `${api}/agui/approvals/:id/approve`,
-      async (req:Request, res:Response) => {
+      async (req: Request, res: Response) => {
         try {
           const result = await this.advancedGUI.approveTask(
             req.params.id,
@@ -402,12 +407,12 @@ export class WebApiRoutes {
     this.logger.info(
       '🎨 Advanced GUI routes configured via @claude-zen/enterprise'
     );
-}
+  }
 
   /**
    * Setup workflow routes with @claude-zen/intelligence delegation
    */
-  private async setupWorkflowRoutes(app:Express, api:string): Promise<void> {
+  private async setupWorkflowRoutes(app: Express, api: string): Promise<void> {
     assertDefined(this.workflowEngine, 'Workflow engine not initialized');
 
     // Delegate all workflow routes to workflows package
@@ -421,12 +426,13 @@ export class WebApiRoutes {
           success: true,
           data: tasks,
         });
-} catch (error) {
+      } catch (error) {
         res.status(500).json({
-          error: 'Failed to get tasks',          message:getErrorMessage(error),
-});
-}
-});
+          error: 'Failed to get tasks',
+          message: getErrorMessage(error),
+        });
+      }
+    });
 
     app.post(`${api}/tasks`, async (req: Request, res: Response) => {
       try {
@@ -435,42 +441,44 @@ export class WebApiRoutes {
           success: true,
           data: task,
         });
-} catch (error) {
+      } catch (error) {
         res.status(500).json({
-          error: 'Failed to create task',          message:getErrorMessage(error),
-});
-}
-});
+          error: 'Failed to create task',
+          message: getErrorMessage(error),
+        });
+      }
+    });
 
     app.post(
       `${api}/tasks/:id/execute`,
-      async (req:Request, res:Response) => {
+      async (req: Request, res: Response) => {
         try {
           const result = await this.workflowEngine?.executeTask(req.params.id);
           res.json({
             success: true,
             data: result,
           });
-} catch (error) {
+        } catch (error) {
           res.status(500).json({
-            error: 'Failed to execute task',            message:getErrorMessage(error),
-});
-}
-}
+            error: 'Failed to execute task',
+            message: getErrorMessage(error),
+          });
+        }
+      }
     );
 
     this.logger.info(
       '⚙️ Workflow routes configured via @claude-zen/intelligence'
     );
-}
+  }
 
   /**
    * Setup monitoring routes with @claude-zen/monitoring delegation
    */
   private async setupMonitoringRoutes(
-    app:Express,
-    api:string
-  ):Promise<void> {
+    app: Express,
+    api: string
+  ): Promise<void> {
     assertDefined(this.healthMonitor, 'Health monitor not initialized');
 
     // Delegate all monitoring routes to monitoring package
@@ -484,12 +492,13 @@ export class WebApiRoutes {
           success: true,
           data: metrics,
         });
-} catch (error) {
+      } catch (error) {
         res.status(500).json({
-          error: 'Failed to get metrics',          message:getErrorMessage(error),
-});
-}
-});
+          error: 'Failed to get metrics',
+          message: getErrorMessage(error),
+        });
+      }
+    });
 
     app.get(`${api}/analytics/llm`, async (req: Request, res: Response) => {
       try {
@@ -498,25 +507,25 @@ export class WebApiRoutes {
           success: true,
           data: analytics,
         });
-} catch (error) {
+      } catch (error) {
         res.status(500).json({
           error: 'Failed to get LLM analytics',
           message: getErrorMessage(error),
         });
-}
-});
+      }
+    });
 
     this.logger.info(
       '📊 Monitoring routes configured via @claude-zen/monitoring'
     );
-}
+  }
   /**
    * Setup collaboration routes with @claude-zen/intelligence delegation
    */
   private async setupCollaborationRoutes(
-    app:Express,
-    api:string
-  ):Promise<void> {
+    app: Express,
+    api: string
+  ): Promise<void> {
     assertDefined(
       this.collaborationEngine,
       'Collaboration engine not initialized'
@@ -530,52 +539,54 @@ export class WebApiRoutes {
       try {
         // Delegate WebSocket upgrade to collaboration engine
         await this.collaborationEngine?.handleWebSocketUpgrade(req, res);
-} catch (error) {
+      } catch (error) {
         res.status(500).json({
-          error: 'WebSocket upgrade failed',          message:getErrorMessage(error),
-});
-}
-});
+          error: 'WebSocket upgrade failed',
+          message: getErrorMessage(error),
+        });
+      }
+    });
 
     this.logger.info(
       '🤝 Collaboration routes configured via @claude-zen/intelligence'
     );
-}
+  }
   /**
    * Error handling middleware with foundation delegation
    */
-  setupErrorHandling(app:Express): void {
+  setupErrorHandling(app: Express): void {
     if (this.webMiddleware) {
       this.webMiddleware.setupErrorHandling(app);
-} else {
+    } else {
       // Fallback error handler
-      app.use((err:Error, req:Request, res:Response) => {
+      app.use((err: Error, req: Request, res: Response) => {
         this.logger.error('Unhandled error: ', err);
-      res.status(500).json({
-          error: 'Internal server error',          message:getErrorMessage(err),
-});
-});
-}
-}
+        res.status(500).json({
+          error: 'Internal server error',
+          message: getErrorMessage(err),
+        });
+      });
+    }
+  }
 
   /**
    * Get route summary for monitoring
    */
-  getRouteSummary():{
-    totalRoutes:number;
-    routesByPackage:Record<string, number>;
-} {
+  getRouteSummary(): {
+    totalRoutes: number;
+    routesByPackage: Record<string, number>;
+  } {
     return {
-      totalRoutes:25, // Comprehensive route count via delegation
-      routesByPackage:{
-        core:4,
-        taskmaster:6, // AGUI functionality provided by TaskMaster
-        workflows:8,
-        monitoring:4,
-        collaboration:3,
-},
-};
-}
+      totalRoutes: 25, // Comprehensive route count via delegation
+      routesByPackage: {
+        core: 4,
+        taskmaster: 6, // AGUI functionality provided by TaskMaster
+        workflows: 8,
+        monitoring: 4,
+        collaboration: 3,
+      },
+    };
+  }
 }
 
 // =============================================================================
@@ -586,15 +597,15 @@ export class WebApiRoutes {
  * Create Web API Routes with strategic delegation
  */
 export function createWebApiRoutes(
-  config:WebConfig,
-  sessionManager:WebSessionManager,
-  dataService:WebDataService
-):WebApiRoutes {
+  config: WebConfig,
+  sessionManager: WebSessionManager,
+  dataService: WebDataService
+): WebApiRoutes {
   return new WebApiRoutes(config, sessionManager, dataService);
 }
 
 // Re-export types for compatibility
-export type { WebConfig, WebSessionManager, WebDataService};
+export type { WebConfig, WebSessionManager, WebDataService };
 
 /**
  * SOPHISTICATED TYPE ARCHITECTURE DEMONSTRATION

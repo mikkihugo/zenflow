@@ -33,8 +33,23 @@
  * import { AIDeceptionDetector} from '@claude-zen/ai-safety';
  * ```
  */
-export { AIDeceptionDetector, analyzeAIResponse, createAIDeceptionDetector, } from './ai-deception-detector';
-export { AISafetyOrchestrator as SafetyGuard, AISafetyOrchestrator, AutomatedDetectionResult, BehavioralAnalysisResult, createAISafetyOrchestrator as createSafetyGuard, createAISafetyOrchestrator, createInitializedAISafetyOrchestrator, HumanEscalationResult, SafetyError, SafetyOrchestrationResult } from './safety-orchestrator';
+export {
+  AIDeceptionDetector,
+  analyzeAIResponse,
+  createAIDeceptionDetector,
+} from './ai-deception-detector';
+export {
+  AISafetyOrchestrator as SafetyGuard,
+  AISafetyOrchestrator,
+  AutomatedDetectionResult,
+  BehavioralAnalysisResult,
+  createAISafetyOrchestrator as createSafetyGuard,
+  createAISafetyOrchestrator,
+  createInitializedAISafetyOrchestrator,
+  HumanEscalationResult,
+  SafetyError,
+  SafetyOrchestrationResult,
+} from './safety-orchestrator';
 /**
  * Enterprise setup function for AI safety monitoring with comprehensive foundation integration.
  *
@@ -51,9 +66,9 @@ export { AISafetyOrchestrator as SafetyGuard, AISafetyOrchestrator, AutomatedDet
  * ```
  */
 export declare function initializeAISafety(): Promise<{
-    success: boolean;
-    value?: import("./safety-orchestrator").AISafetyOrchestrator;
-    error?: import("./safety-orchestrator").SafetyError;
+  success: boolean;
+  value?: import('./safety-orchestrator').AISafetyOrchestrator;
+  error?: import('./safety-orchestrator').SafetyError;
 }>;
 /**
  * Enterprise emergency safety shutdown with comprehensive cleanup.
@@ -69,11 +84,14 @@ export declare function initializeAISafety(): Promise<{
 ' *}
  * ```
  */
-export declare function emergencySafetyShutdown(): Promise<{
-    success: boolean;
-    error?: undefined;
-} | {
-    success: boolean;
-    error: Error;
-}>;
+export declare function emergencySafetyShutdown(): Promise<
+  | {
+      success: boolean;
+      error?: undefined;
+    }
+  | {
+      success: boolean;
+      error: Error;
+    }
+>;
 //# sourceMappingURL=main.d.ts.map

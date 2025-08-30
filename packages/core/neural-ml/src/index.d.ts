@@ -8,6 +8,6 @@
  * @since 2.1.0
  * @version 1.0.0
  */
-export * from "./ml-interfaces";
-export * from "./rust-binding";
+export * from './ml-interfaces';
+export * from './rust-binding';
 //# sourceMappingURL=index.d.ts.map

@@ -27,7 +27,7 @@ export const WriteTool = Tool.define({
     await Permission.ask({
       id:"write",
       sessionID:ctx.sessionID,
-      title:exists ? `Overwrite this file: ${filepath}` :`Create new file: ${filepath}`,
+      title:exists ? `Overwrite this file: ${filepath} :`Create new file: ${filepath}`,
       metadata:{
         filePath:filepath,
         content:params.content,
@@ -47,11 +47,10 @@ export const WriteTool = Tool.define({
     for (const [file, issues] of Object.entries(diagnostics)) {
       if (issues.length === 0) continue
       if (file === filepath) {
-        output += `\nThis file has errors, please fix\n<file_diagnostics>\n${issues.map(LSP.Diagnostic.pretty).join("\n")}\n</file_diagnostics>\n``
+        output += `\nThis file has errors, please fix\n<file_diagnostics>\n${issues.map(LSP.Diagnostic.pretty).join("\n")}\n</file_diagnostics>\n
         continue
 }
-      output += `\n<project_diagnostics>\n$file\n$issues.map(LSP.Diagnostic.pretty).join("\n")\n</project_diagnostics>\n``
-}
+      output += `\n<project_diagnostics>\n$file\n$issues.map(LSP.Diagnostic.pretty).join("\n")\n</project_diagnostics>\n}
 
     return {
       title:path.relative(app.path.root, filepath),

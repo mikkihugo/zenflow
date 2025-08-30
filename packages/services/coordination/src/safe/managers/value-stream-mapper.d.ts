@@ -18,19 +18,29 @@
  */
 import { EventBus } from '@claude-zen/foundation';
 import type { ValueStream } from '../types';
-export type { BusinessContext, MappingValidationIssue, MappingValidationResult, StakeholderContext, TechnicalContext, ValueStreamCreationContext, ValueStreamMappingConfig, WorkflowStepMapping, WorkflowValueStreamMapping, } from '../services/value-stream/value-stream-mapping-service';
+export type {
+  BusinessContext,
+  MappingValidationIssue,
+  MappingValidationResult,
+  StakeholderContext,
+  TechnicalContext,
+  ValueStreamCreationContext,
+  ValueStreamMappingConfig,
+  WorkflowStepMapping,
+  WorkflowValueStreamMapping,
+} from '../services/value-stream/value-stream-mapping-service';
 /**
  * Value Stream Mapper state
  */
 export interface ValueStreamMapperState {
-    valueStreams: Map<string, ValueStream>;
-    flowAnalyses: Map<string, any>;
-    bottlenecks: Map<string, any[]>;
-    optimizationRecommendations: Map<string, any[]>;
-    valueDeliveryTracking: Map<string, any>;
-    continuousImprovements: any[];
-    lastAnalysis: Date;
-    lastOptimization: Date;
+  valueStreams: Map<string, ValueStream>;
+  flowAnalyses: Map<string, any>;
+  bottlenecks: Map<string, any[]>;
+  optimizationRecommendations: Map<string, any[]>;
+  valueDeliveryTracking: Map<string, any>;
+  continuousImprovements: any[];
+  lastAnalysis: Date;
+  lastOptimization: Date;
 }
 /**
  * Value Stream Mapper - SAFe value stream mapping and optimization facade
@@ -39,12 +49,12 @@ export interface ValueStreamMapperState {
  * multi-level orchestration integration, and AI-powered mapping optimization through service delegation.
  */
 export declare class ValueStreamMapper extends EventBus {
-    private readonly logger;
-    private state;
+  private readonly logger;
+  private state;
 }
 export interface DateRange {
-    readonly start: Date;
-    readonly end: Date;
+  readonly start: Date;
+  readonly end: Date;
 }
 export default ValueStreamMapper;
 //# sourceMappingURL=value-stream-mapper.d.ts.map

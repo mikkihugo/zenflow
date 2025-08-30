@@ -27,7 +27,7 @@ export const BashTool = Tool.define({
       cwd:App.info().path.cwd,
       maxBuffer:MAX_OUTPUT_LENGTH,
       signal:ctx.abort,
-      timeout:timeout,
+      timeout,
       stdout:"pipe",
       stderr:"pipe",
 })
@@ -43,7 +43,7 @@ export const BashTool = Tool.define({
         exit:process.exitCode,
         description:params.description,
 },
-      output:[`<stdout>`, stdout ?? "", `</stdout>`, `<stderr>`, stderr ?? "", `</stderr>`].join("\n"),`
+      output:[`<stdout>`, stdout ?? "", `</stdout>`, `<stderr>`, stderr ?? "", `</stderr>`].join("\n"),
 }
 },
 })

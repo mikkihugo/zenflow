@@ -35,24 +35,24 @@ interface WorkflowKanbanConfig {
  */
 export interface WorkflowKanbanIntegrationConfig {
   /** Enable kanban state management for workflow steps */
-  enableKanbanSteps?:boolean;
+  enableKanbanSteps?: boolean;
   /** Enable workflow triggers from kanban state transitions */
-  enableKanbanTriggers?:boolean;
+  enableKanbanTriggers?: boolean;
   /** Enable bidirectional event coordination */
-  enableBidirectionalEvents?:boolean;
+  enableBidirectionalEvents?: boolean;
   /** Custom kanban configuration for workflow integration */
-  kanbanConfig?:Partial<WorkflowKanbanConfig>;
+  kanbanConfig?: Partial<WorkflowKanbanConfig>;
 }
 /**
  * Workflow step with kanban state integration
  */
 export interface KanbanWorkflowStep extends WorkflowStep {
   /** Kanban state for this step */
-  kanbanState?:TaskState;
+  kanbanState?: TaskState;
   /** Enable kanban tracking for this step */
-  useKanban?:boolean;
+  useKanban?: boolean;
   /** WIP limits for this step type */
-  wipLimit?:number;
+  wipLimit?: number;
 }
 /**
  * Workflow definition with kanban integration
@@ -61,9 +61,9 @@ export interface KanbanWorkflowDefinition extends WorkflowDefinition {
   /** Steps with kanban integration */
   steps: KanbanWorkflowStep[];
   /** Enable kanban integration for this workflow */
-  useKanban?:boolean;
+  useKanban?: boolean;
   /** Custom kanban configuration */
-  kanbanConfig?:Partial<WorkflowKanbanConfig>;
+  kanbanConfig?: Partial<WorkflowKanbanConfig>;
 }
 // =============================================================================
 // WORKFLOW-KANBAN INTEGRATION CLASS
@@ -76,19 +76,19 @@ export class WorkflowKanbanIntegration {
   private initialized = false;
   constructor(config: WorkflowKanbanIntegrationConfig) {
     this.config = config;
-    
+
     try {
       // Initialize kanban configuration with defaults
       const defaultKanbanConfig = {
         boardId: 'workflow-board',
-        columns: ['todo', 'in-progress', 'review', 'done']
+        columns: ['todo', 'in-progress', 'review', 'done'],
       };
-      
+
       // Set up event coordination if enabled
       if (this.config.enableBidirectionalEvents) {
         this.setupEventCoordination();
       }
-      
+
       this.initialized = true;
       logger.info('WorkflowKanbanIntegration initialized successfully');
     } catch (error) {
@@ -104,7 +104,7 @@ export class WorkflowKanbanIntegration {
     step: KanbanWorkflowStep
   ): Promise<string> {
     const taskId = `kanban-task-${workflowId}-${step.id || Date.now()}`;
-    
+
     // Create task structure for integration
     const task = {
       id: taskId,
@@ -113,10 +113,13 @@ export class WorkflowKanbanIntegration {
       name: step.name,
       status: 'todo',
       created: new Date(),
-      wipLimit: step.wipLimit || 3
+      wipLimit: step.wipLimit || 3,
     };
-    
-    logger.info(`Created kanban task for workflow ${workflowId}, step ${step.name}`, { taskId });
+
+    logger.info(
+      `Created kanban task for workflow ${workflowId}, step ${step.name}`,
+      { taskId }
+    );
     return taskId;
   }
 
@@ -134,19 +137,19 @@ export class WorkflowKanbanIntegration {
       if (!validStates.includes(newState)) {
         throw new Error(`Invalid kanban state: ${newState}`);
       }
-      
+
       logger.info('Updated kanban task state', {
         taskId,
         newState,
         reason,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
       return true;
     } catch (error) {
       logger.error('Failed to update kanban task state', {
         taskId,
         newState,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       });
       return false;
     }
@@ -163,14 +166,14 @@ export class WorkflowKanbanIntegration {
         tasksCompleted: 0,
         tasksInProgress: 0,
         averageCycleTime: 0,
-        wipUtilization: 0.0
+        wipUtilization: 0.0,
       };
-      
+
       const health = {
         status: this.initialized ? 'healthy' : 'degraded',
-        integrationActive: this.config.enableKanbanSteps === true
+        integrationActive: this.config.enableKanbanSteps === true,
       };
-      
+
       return {
         flowMetrics: metrics,
         systemHealth: health,
@@ -197,12 +200,12 @@ export class WorkflowKanbanIntegration {
       'kanban:task:created': 'workflow:step:started',
       'kanban:task:moved': 'workflow:step:transitioned',
       'kanban:task:completed': 'workflow:step:completed',
-      'workflow:step:failed': 'kanban:task:blocked'
+      'workflow:step:failed': 'kanban:task:blocked',
     };
-    
-    logger.info('Setting up workflow-kanban event coordination', { 
+
+    logger.info('Setting up workflow-kanban event coordination', {
       eventMappings: Object.keys(events).length,
-      bidirectional: true
+      bidirectional: true,
     });
   }
 }
@@ -213,19 +216,19 @@ export class WorkflowKanbanIntegration {
  * Create workflow-kanban integration with default configuration
  */
 export function createWorkflowKanbanIntegration(
-  config?:WorkflowKanbanIntegrationConfig
-):WorkflowKanbanIntegration {
+  config?: WorkflowKanbanIntegrationConfig
+): WorkflowKanbanIntegration {
   return new WorkflowKanbanIntegration(config);
 }
 /**
  * Create workflow-kanban integration optimized for high-throughput scenarios
  */
-export function createHighThroughputWorkflowKanbanIntegration():WorkflowKanbanIntegration {
+export function createHighThroughputWorkflowKanbanIntegration(): WorkflowKanbanIntegration {
   return new WorkflowKanbanIntegration({
     enableKanbanSteps: true,
     enableKanbanTriggers: true,
     enableBidirectionalEvents: true,
-    kanbanConfig:  {
+    kanbanConfig: {
       enableIntelligentWIP: true,
       enableBottleneckDetection: true,
       enableFlowOptimization: true,
@@ -233,8 +236,8 @@ export function createHighThroughputWorkflowKanbanIntegration():WorkflowKanbanIn
       wipCalculationInterval: 15000, // 15 seconds
       bottleneckDetectionInterval: 30000, // 30 seconds
       maxConcurrentTasks: 100,
-},
-});
+    },
+  });
 }
 // =============================================================================
 // INTEGRATION SUMMARY
@@ -244,7 +247,7 @@ export function createHighThroughputWorkflowKanbanIntegration():WorkflowKanbanIn
  *
  * This integration provides:
  * - Kanban state management for workflow steps
- * - Workflow triggers based on kanban state transitions  
+ * - Workflow triggers based on kanban state transitions
  * - Bidirectional event coordination between systems
  * - Flow metrics integration for workflow optimization
  * - Production-ready error handling and logging

@@ -12,5 +12,9 @@ export { workflowActions } from './workflow-actions';
 export type { WorkflowMachineContext } from './workflow-context';
 export { WorkflowContextUtils } from './workflow-context';
 export { workflowGuards } from './workflow-guards';
-export { createConfiguredWorkflowMachine, createDefaultWorkflowConfig, createWorkflowMachine, } from './workflow-machine';
+export {
+  createConfiguredWorkflowMachine,
+  createDefaultWorkflowConfig,
+  createWorkflowMachine,
+} from './workflow-machine';
 //# sourceMappingURL=index.d.ts.map

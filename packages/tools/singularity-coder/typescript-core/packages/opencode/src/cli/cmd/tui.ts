@@ -42,7 +42,7 @@ export const TuiCommand = cmd({
       try {
         process.chdir(cwd)
 } catch (error) {
-        UI.error(`Failed to change directory to ${cwd}`)`
+        UI.error(`Failed to change directory to ${cwd}`)
         return
 }
       const result = await bootstrap({ cwd}, async (app) => {

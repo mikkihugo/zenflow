@@ -19,7 +19,7 @@ const logger = getLogger('CoreCompetencyFrameworks');
 export enum CoreCompetencyType {
   TEAM_AND_TECHNICAL_AGILITY = 'team_and_technical_agility',
   AGILE_PRODUCT_DELIVERY = 'agile_product_delivery',
-  CONTINUOUS_LEARNING_CULTURE = 'continuous_learning_culture' // Foundation competency
+  CONTINUOUS_LEARNING_CULTURE = 'continuous_learning_culture', // Foundation competency
 }
 
 /**
@@ -30,7 +30,7 @@ export enum PracticeMaturityLevel {
   DEVELOPING = 'developing', // Some practices in place
   DEFINED = 'defined', // Standardized practices
   MANAGED = 'managed', // Measured and controlled
-  OPTIMIZING = 'optimizing' // Continuously improving
+  OPTIMIZING = 'optimizing', // Continuously improving
 }
 
 /**
@@ -41,26 +41,30 @@ export interface CompetencyAssessmentConfig {
   competencyType: CoreCompetencyType;
   assessmentName: string;
   description: string;
-  
+
   // Assessment scope
-  scope:  {
+  scope: {
     teamLevel: boolean;
     programLevel: boolean;
     portfolioLevel: boolean;
     organizationLevel: boolean;
   };
-  
+
   // Assessment methodology
-  methodology:  {
-    assessmentType: 'self_assessment' | 'peer_assessment' | 'expert_assessment' | 'comprehensive';
+  methodology: {
+    assessmentType:
+      | 'self_assessment'
+      | 'peer_assessment'
+      | 'expert_assessment'
+      | 'comprehensive';
     evidenceRequired: boolean;
     practiceDemonstration: boolean;
     metricsValidation: boolean;
     stakeholderInput: boolean;
   };
-  
+
   // Improvement planning
-  improvementPlanning:  {
+  improvementPlanning: {
     generateImprovementPlan: boolean;
     prioritizeByBusinessValue: boolean;
     alignWithPIObjectives: boolean;
@@ -95,7 +99,7 @@ export interface PracticeMetric {
   targetValue: number;
   unit: string;
   trend: 'improving' | 'stable' | 'declining';
-  measurementPeriod:  {
+  measurementPeriod: {
     startDate: Date;
     endDate: Date;
   };
@@ -108,24 +112,29 @@ export interface PracticeImprovementAction {
   id: string;
   title: string;
   description: string;
-  
+
   // Action details
   practiceArea: string;
-  improvementType: 'process' | 'training' | 'tooling' | 'culture' | 'measurement';
+  improvementType:
+    | 'process'
+    | 'training'
+    | 'tooling'
+    | 'culture'
+    | 'measurement';
   priority: 'low' | 'medium' | 'high' | 'critical';
-  
+
   // Implementation planning
   assignedTo: string;
   assignedTeam: string;
   targetDate: Date;
   estimatedEffort: string;
   dependencies: string[];
-  
+
   // Business impact
   businessJustification: string;
   expectedBenefit: string;
   successCriteria: string[];
-  
+
   // Progress tracking
   status: 'planned' | 'in_progress' | 'completed' | 'blocked';
   completionPercentage: number;
@@ -144,7 +153,7 @@ export enum TTATeamFormationPractice {
   STABLE_TEAM_COMPOSITION = 'stable_team_composition',
   OPTIMAL_TEAM_SIZE = 'optimal_team_size',
   CLEAR_TEAM_CHARTER = 'clear_team_charter',
-  DEFINED_ROLES_RESPONSIBILITIES = 'defined_roles_responsibilities'
+  DEFINED_ROLES_RESPONSIBILITIES = 'defined_roles_responsibilities',
 }
 
 /**
@@ -155,7 +164,7 @@ export enum TTATeamPerformancePractice {
   DAILY_STANDUPS = 'daily_standups',
   ITERATION_REVIEW = 'iteration_review',
   ITERATION_RETROSPECTIVE = 'iteration_retrospective',
-  TEAM_PI_PLANNING = 'team_pi_planning'
+  TEAM_PI_PLANNING = 'team_pi_planning',
 }
 
 /**
@@ -167,7 +176,7 @@ export enum TTABuiltInQualityPractice {
   CONTINUOUS_DEPLOYMENT = 'continuous_deployment',
   CODE_REVIEW_PRACTICES = 'code_review_practices',
   AUTOMATED_TESTING = 'automated_testing',
-  DEFINITION_OF_DONE = 'definition_of_done'
+  DEFINITION_OF_DONE = 'definition_of_done',
 }
 
 /**
@@ -175,34 +184,34 @@ export enum TTABuiltInQualityPractice {
  */
 export interface TeamTechnicalAgilityFramework {
   competencyType: CoreCompetencyType.TEAM_AND_TECHNICAL_AGILITY;
-  
+
   // Dimension 1: Agile Teams
-  agileTeams:  {
-    teamFormation:  {
+  agileTeams: {
+    teamFormation: {
       practices: TTATeamFormationPractice[];
       maturityLevel: PracticeMaturityLevel;
       assessment: PracticeAssessment;
       metrics: PracticeMetric[];
     };
-    teamPerformance:  {
+    teamPerformance: {
       practices: TTATeamPerformancePractice[];
       maturityLevel: PracticeMaturityLevel;
       assessment: PracticeAssessment;
       metrics: PracticeMetric[];
     };
   };
-  
+
   // Dimension 2: Built-in Quality
-  builtInQuality:  {
+  builtInQuality: {
     practices: TTABuiltInQualityPractice[];
     maturityLevel: PracticeMaturityLevel;
     assessment: PracticeAssessment;
     metrics: PracticeMetric[];
   };
-  
+
   // Improvement planning
   improvementActions: PracticeImprovementAction[];
-  
+
   // Overall assessment
   overallMaturity: PracticeMaturityLevel;
   assessmentSummary: string;
@@ -221,7 +230,7 @@ export enum APDCustomerCentricityPractice {
   USER_STORY_MAPPING = 'user_story_mapping',
   CUSTOMER_JOURNEY_MAPPING = 'customer_journey_mapping',
   CUSTOMER_FEEDBACK_LOOPS = 'customer_feedback_loops',
-  DESIGN_THINKING = 'design_thinking'
+  DESIGN_THINKING = 'design_thinking',
 }
 
 /**
@@ -232,7 +241,7 @@ export enum APDDevOpsPractice {
   INFRASTRUCTURE_AS_CODE = 'infrastructure_as_code',
   MONITORING_OBSERVABILITY = 'monitoring_observability',
   RELEASE_ON_DEMAND = 'release_on_demand',
-  VALUE_STREAM_MAPPING = 'value_stream_mapping'
+  VALUE_STREAM_MAPPING = 'value_stream_mapping',
 }
 
 /**
@@ -243,7 +252,7 @@ export enum APDBusinessSolutionsPractice {
   SOLUTION_CONTEXT = 'solution_context',
   MODEL_BASED_SYSTEMS_ENGINEERING = 'model_based_systems_engineering',
   SET_BASED_DESIGN = 'set_based_design',
-  AGILE_ARCHITECTURE = 'agile_architecture'
+  AGILE_ARCHITECTURE = 'agile_architecture',
 }
 
 /**
@@ -251,34 +260,34 @@ export enum APDBusinessSolutionsPractice {
  */
 export interface AgileProductDeliveryFramework {
   competencyType: CoreCompetencyType.AGILE_PRODUCT_DELIVERY;
-  
+
   // Dimension 1: Customer Centricity
-  customerCentricity:  {
+  customerCentricity: {
     practices: APDCustomerCentricityPractice[];
     maturityLevel: PracticeMaturityLevel;
     assessment: PracticeAssessment;
     metrics: PracticeMetric[];
   };
-  
+
   // Dimension 2: DevOps
-  devOps:  {
+  devOps: {
     practices: APDDevOpsPractice[];
     maturityLevel: PracticeMaturityLevel;
     assessment: PracticeAssessment;
     metrics: PracticeMetric[];
   };
-  
+
   // Dimension 3: Business Solutions (Large Solution Level)
-  businessSolutions:  {
+  businessSolutions: {
     practices: APDBusinessSolutionsPractice[];
     maturityLevel: PracticeMaturityLevel;
     assessment: PracticeAssessment;
     metrics: PracticeMetric[];
   };
-  
+
   // Improvement planning
   improvementActions: PracticeImprovementAction[];
-  
+
   // Overall assessment
   overallMaturity: PracticeMaturityLevel;
   assessmentSummary: string;
@@ -297,7 +306,7 @@ export enum CLCLearningOrganizationPractice {
   INNOVATION_CULTURE = 'innovation_culture',
   RELENTLESS_IMPROVEMENT = 'relentless_improvement',
   IP_ITERATION = 'ip_iteration',
-  COMMUNITIES_OF_PRACTICE = 'communities_of_practice'
+  COMMUNITIES_OF_PRACTICE = 'communities_of_practice',
 }
 
 /**
@@ -308,7 +317,7 @@ export enum CLCInnovationPractice {
   INNOVATION_ACCOUNTING = 'innovation_accounting',
   MINIMUM_VIABLE_PRODUCTS = 'minimum_viable_products',
   PIVOT_OR_PERSEVERE = 'pivot_or_persevere',
-  INNOVATION_RIPTIDES = 'innovation_riptides'
+  INNOVATION_RIPTIDES = 'innovation_riptides',
 }
 
 /**
@@ -319,7 +328,7 @@ export enum CLCOrganizationalAgilityPractice {
   SAFe_IMPLEMENTATION_ROADMAP = 'safe_implementation_roadmap',
   LEAN_AGILE_CENTER_OF_EXCELLENCE = 'lean_agile_center_of_excellence',
   MEASURE_AND_GROW = 'measure_and_grow',
-  ORGANIZATIONAL_CHANGE_MANAGEMENT = 'organizational_change_management'
+  ORGANIZATIONAL_CHANGE_MANAGEMENT = 'organizational_change_management',
 }
 
 /**
@@ -327,34 +336,34 @@ export enum CLCOrganizationalAgilityPractice {
  */
 export interface ContinuousLearningCultureFramework {
   competencyType: CoreCompetencyType.CONTINUOUS_LEARNING_CULTURE;
-  
+
   // Dimension 1: Learning Organization
-  learningOrganization:  {
+  learningOrganization: {
     practices: CLCLearningOrganizationPractice[];
     maturityLevel: PracticeMaturityLevel;
     assessment: PracticeAssessment;
     metrics: PracticeMetric[];
   };
-  
+
   // Dimension 2: Innovation Culture
-  innovationCulture:  {
+  innovationCulture: {
     practices: CLCInnovationPractice[];
     maturityLevel: PracticeMaturityLevel;
     assessment: PracticeAssessment;
     metrics: PracticeMetric[];
   };
-  
+
   // Dimension 3: Organizational Agility
-  organizationalAgility:  {
+  organizationalAgility: {
     practices: CLCOrganizationalAgilityPractice[];
     maturityLevel: PracticeMaturityLevel;
     assessment: PracticeAssessment;
     metrics: PracticeMetric[];
   };
-  
+
   // Improvement planning
   improvementActions: PracticeImprovementAction[];
-  
+
   // Overall assessment
   overallMaturity: PracticeMaturityLevel;
   assessmentSummary: string;
@@ -372,44 +381,44 @@ export interface SAFeCoreCompetenciesFramework {
   organizationId: string;
   assessmentId: string;
   assessmentDate: Date;
-  assessmentPeriod:  {
+  assessmentPeriod: {
     startDate: Date;
     endDate: Date;
   };
-  
+
   // Core competency frameworks
   teamTechnicalAgility: TeamTechnicalAgilityFramework;
   agileProductDelivery: AgileProductDeliveryFramework;
   continuousLearningCulture: ContinuousLearningCultureFramework;
-  
+
   // Overall organization assessment
   overallMaturityLevel: PracticeMaturityLevel;
   competencyReadiness: number; // 0-100 percentage
-  
+
   // Strategic alignment
   businessObjectivesAlignment: string[];
   valueStreamAlignment: string[];
   PIObjectivesAlignment: string[];
-  
+
   // Organization-wide improvement plan
-  organizationImprovementPlan:  {
+  organizationImprovementPlan: {
     strategicInitiatives: PracticeImprovementAction[];
     quickWins: PracticeImprovementAction[];
     longTermInvestments: PracticeImprovementAction[];
     changeManagementActivities: PracticeImprovementAction[];
   };
-  
+
   // Progress tracking
   progressMetrics: PracticeMetric[];
-  milestones:  {
+  milestones: {
     name: string;
     targetDate: Date;
     status: 'planned' | 'in_progress' | 'completed' | 'at_risk';
     description: string;
   }[];
-  
+
   // Stakeholder engagement
-  stakeholders:  {
+  stakeholders: {
     name: string;
     role: string;
     involvement: 'sponsor' | 'champion' | 'participant' | 'informed';
@@ -439,14 +448,14 @@ export class CoreCompetencyFrameworkManager {
     config: CompetencyAssessmentConfig
   ): SAFeCoreCompetenciesFramework {
     const assessmentId = `competency-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    
+
     const framework: SAFeCoreCompetenciesFramework = {
       organizationId,
       assessmentId,
       assessmentDate: new Date(),
-      assessmentPeriod:  {
+      assessmentPeriod: {
         startDate: new Date(),
-        endDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000) // 90 days
+        endDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000), // 90 days
       },
       teamTechnicalAgility: this.createTTAFramework(),
       agileProductDelivery: this.createAPDFramework(),
@@ -456,27 +465,31 @@ export class CoreCompetencyFrameworkManager {
       businessObjectivesAlignment: [],
       valueStreamAlignment: [],
       PIObjectivesAlignment: [],
-      organizationImprovementPlan:  {
+      organizationImprovementPlan: {
         strategicInitiatives: [],
         quickWins: [],
         longTermInvestments: [],
-        changeManagementActivities: []
+        changeManagementActivities: [],
       },
       progressMetrics: [],
       milestones: [],
-      stakeholders: []
+      stakeholders: [],
     };
 
     this.frameworks.set(assessmentId, framework);
-    logger.info(`Created competency assessment: ${assessmentId} for organization: ${organizationId}`);
-    
+    logger.info(
+      `Created competency assessment: ${assessmentId} for organization: ${organizationId}`
+    );
+
     return framework;
   }
 
   /**
    * Get competency assessment by ID
    */
-  getCompetencyAssessment(assessmentId: string): SAFeCoreCompetenciesFramework | undefined {
+  getCompetencyAssessment(
+    assessmentId: string
+  ): SAFeCoreCompetenciesFramework | undefined {
     return this.frameworks.get(assessmentId);
   }
 
@@ -508,12 +521,15 @@ export class CoreCompetencyFrameworkManager {
       [PracticeMaturityLevel.DEVELOPING]: 2,
       [PracticeMaturityLevel.DEFINED]: 3,
       [PracticeMaturityLevel.MANAGED]: 4,
-      [PracticeMaturityLevel.OPTIMIZING]: 5
+      [PracticeMaturityLevel.OPTIMIZING]: 5,
     };
 
-    const ttaScore = maturityScores[framework.teamTechnicalAgility.overallMaturity];
-    const apdScore = maturityScores[framework.agileProductDelivery.overallMaturity];
-    const clcScore = maturityScores[framework.continuousLearningCulture.overallMaturity];
+    const ttaScore =
+      maturityScores[framework.teamTechnicalAgility.overallMaturity];
+    const apdScore =
+      maturityScores[framework.agileProductDelivery.overallMaturity];
+    const clcScore =
+      maturityScores[framework.continuousLearningCulture.overallMaturity];
 
     const averageScore = (ttaScore + apdScore + clcScore) / 3;
     return Math.round((averageScore / 5) * 100); // Convert to percentage
@@ -522,86 +538,86 @@ export class CoreCompetencyFrameworkManager {
   private createTTAFramework(): TeamTechnicalAgilityFramework {
     return {
       competencyType: CoreCompetencyType.TEAM_AND_TECHNICAL_AGILITY,
-      agileTeams:  {
-        teamFormation:  {
+      agileTeams: {
+        teamFormation: {
           practices: [],
           maturityLevel: PracticeMaturityLevel.INITIAL,
           assessment: this.createEmptyAssessment('tta_team_formation'),
-          metrics: []
+          metrics: [],
         },
-        teamPerformance:  {
+        teamPerformance: {
           practices: [],
           maturityLevel: PracticeMaturityLevel.INITIAL,
           assessment: this.createEmptyAssessment('tta_team_performance'),
-          metrics: []
-        }
+          metrics: [],
+        },
       },
-      builtInQuality:  {
+      builtInQuality: {
         practices: [],
         maturityLevel: PracticeMaturityLevel.INITIAL,
         assessment: this.createEmptyAssessment('tta_built_in_quality'),
-        metrics: []
+        metrics: [],
       },
       improvementActions: [],
       overallMaturity: PracticeMaturityLevel.INITIAL,
       assessmentSummary: '',
-      nextSteps: []
+      nextSteps: [],
     };
   }
 
   private createAPDFramework(): AgileProductDeliveryFramework {
     return {
       competencyType: CoreCompetencyType.AGILE_PRODUCT_DELIVERY,
-      customerCentricity:  {
+      customerCentricity: {
         practices: [],
         maturityLevel: PracticeMaturityLevel.INITIAL,
         assessment: this.createEmptyAssessment('apd_customer_centricity'),
-        metrics: []
+        metrics: [],
       },
-      devOps:  {
+      devOps: {
         practices: [],
         maturityLevel: PracticeMaturityLevel.INITIAL,
         assessment: this.createEmptyAssessment('apd_devops'),
-        metrics: []
+        metrics: [],
       },
-      businessSolutions:  {
+      businessSolutions: {
         practices: [],
         maturityLevel: PracticeMaturityLevel.INITIAL,
         assessment: this.createEmptyAssessment('apd_business_solutions'),
-        metrics: []
+        metrics: [],
       },
       improvementActions: [],
       overallMaturity: PracticeMaturityLevel.INITIAL,
       assessmentSummary: '',
-      nextSteps: []
+      nextSteps: [],
     };
   }
 
   private createCLCFramework(): ContinuousLearningCultureFramework {
     return {
       competencyType: CoreCompetencyType.CONTINUOUS_LEARNING_CULTURE,
-      learningOrganization:  {
+      learningOrganization: {
         practices: [],
         maturityLevel: PracticeMaturityLevel.INITIAL,
         assessment: this.createEmptyAssessment('clc_learning_organization'),
-        metrics: []
+        metrics: [],
       },
-      innovationCulture:  {
+      innovationCulture: {
         practices: [],
         maturityLevel: PracticeMaturityLevel.INITIAL,
         assessment: this.createEmptyAssessment('clc_innovation_culture'),
-        metrics: []
+        metrics: [],
       },
-      organizationalAgility:  {
+      organizationalAgility: {
         practices: [],
         maturityLevel: PracticeMaturityLevel.INITIAL,
         assessment: this.createEmptyAssessment('clc_organizational_agility'),
-        metrics: []
+        metrics: [],
       },
       improvementActions: [],
       overallMaturity: PracticeMaturityLevel.INITIAL,
       assessmentSummary: '',
-      nextSteps: []
+      nextSteps: [],
     };
   }
 
@@ -617,7 +633,7 @@ export class CoreCompetencyFrameworkManager {
       gaps: [],
       strengths: [],
       improvementRecommendations: [],
-      nextAssessmentDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)
+      nextAssessmentDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
     };
   }
 }

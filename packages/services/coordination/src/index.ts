@@ -1,12 +1,12 @@
 /**
  * @fileoverview Unified Coordination Package
- * 
- * Consolidated coordination functionality eliminating overlaps between: * - SPARC methodology 
+ *
+ * Consolidated coordination functionality eliminating overlaps between: * - SPARC methodology
  * - SAFe framework
  * - Workflow engines
  * - Task orchestration
  * - Multi-agent teamwork
- * 
+ *
  * Domain-based organization for clean separation of concerns.
  */
 // =============================================================================
@@ -24,7 +24,7 @@ export * as eventDrivenDSPy from './dspy/event-driven-dspy';
 // =============================================================================
 // export * from './brain/event-driven-brain';
 // export * as eventDrivenBrain from './brain/event-driven-brain';
-// =============================================================================  
+// =============================================================================
 // SAFE FRAMEWORK - Scaled Agile Framework integration
 // =============================================================================
 // export * from './safe';
@@ -77,17 +77,14 @@ export interface CoordinationSystem {
  * Create a unified coordination system by loading all domains
  */
 export async function createCoordinationSystem(): Promise<CoordinationSystem> {
-  const [
-    teamwork,
-    dspy
-  ] = await Promise.all([
+  const [teamwork, dspy] = await Promise.all([
     import('./teamwork'),
-    import('./dspy/event-driven-dspy')
+    import('./dspy/event-driven-dspy'),
   ]);
-  
+
   return {
     teamwork,
-    dspy
+    dspy,
   };
 }
 // =============================================================================
@@ -96,20 +93,21 @@ export async function createCoordinationSystem(): Promise<CoordinationSystem> {
 export const COORDINATION_PACKAGE_INFO = {
   name: '@claude-zen/coordination',
   version: '1.0.0',
-  description: 'Unified coordination package consolidating multiple coordination domains',
+  description:
+    'Unified coordination package consolidating multiple coordination domains',
   domains: [
     'SPARC methodology - Systematic development workflow',
     'SAFe framework - Scaled Agile Framework integration',
     'Workflows - Core workflow engine with multi-level orchestration',
     'Orchestration - Task flow management and coordination',
     'Teamwork - Multi-agent conversation and collaboration',
-    'TaskMaster - Enterprise task management with human approval gates and SOC2 compliance'
+    'TaskMaster - Enterprise task management with human approval gates and SOC2 compliance',
   ],
   benefits: [
     'Eliminates coordination overlap between packages',
     'Clean domain-based organization',
     'Unified coordination API',
     'Preserved functionality from all source packages',
-    'Modular imports for specific domains'
-  ]
+    'Modular imports for specific domains',
+  ],
 };

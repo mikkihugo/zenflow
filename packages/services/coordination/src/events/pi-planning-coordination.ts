@@ -1,6 +1,6 @@
 /**
  * @fileoverview PI Planning Coordination
- * 
+ *
  * SAFe 6.0 Program Increment Planning coordination system.
  * Handles PI planning events, team breakouts, and plan commitment.
  */
@@ -18,7 +18,7 @@ export enum PIPlanningPhase {
   DAY_ONE_AFTERNOON = 'day_one_afternoon',
   DAY_TWO_MORNING = 'day_two_morning',
   DAY_TWO_AFTERNOON = 'day_two_afternoon',
-  COMPLETION = 'completion'
+  COMPLETION = 'completion',
 }
 
 /**
@@ -59,7 +59,7 @@ export interface PIPlanningTeam {
 export interface BusinessContext {
   vision: string;
   roadmap: string[];
-  milestones:  {
+  milestones: {
     name: string;
     date: Date;
     description: string;
@@ -72,7 +72,7 @@ export interface BusinessContext {
  * Program risks and dependencies
  */
 export interface ProgramRisksAndDependencies {
-  risks:  {
+  risks: {
     id: string;
     description: string;
     impact: 'high' | 'medium' | 'low';
@@ -80,7 +80,7 @@ export interface ProgramRisksAndDependencies {
     mitigation: string;
     owner: string;
   }[];
-  dependencies:  {
+  dependencies: {
     id: string;
     description: string;
     fromTeam: string;
@@ -119,7 +119,7 @@ export interface PIPlanningEvent {
   systemArchitect?: string;
   teams: PIPlanningTeam[];
   businessContext: BusinessContext;
-  agenda:  {
+  agenda: {
     phase: PIPlanningPhase;
     startTime: Date;
     endTime: Date;
@@ -128,13 +128,13 @@ export interface PIPlanningEvent {
   }[];
   risksAndDependencies: ProgramRisksAndDependencies;
   planCommitments: PlanCommitment[];
-  boardOfCommitment:  {
+  boardOfCommitment: {
     teamCommitments: PlanCommitment[];
     overallConfidence: number;
     managementSupport: boolean;
     readyToProceed: boolean;
   };
-  artifacts:  {
+  artifacts: {
     teamBoards: string[];
     dependencyWall: string[];
     riskBoard: string[];
@@ -164,7 +164,10 @@ export class PIPlanningCoordinationManager extends EventBus {
     this.on('pi:phase-transition', this.handlePhaseTransition.bind(this));
     this.on('pi:team-breakout', this.handleTeamBreakout.bind(this));
     this.on('pi:objective-update', this.handleObjectiveUpdate.bind(this));
-    this.on('pi:dependency-identified', this.handleDependencyIdentified.bind(this));
+    this.on(
+      'pi:dependency-identified',
+      this.handleDependencyIdentified.bind(this)
+    );
     this.on('pi:risk-identified', this.handleRiskIdentified.bind(this));
     this.on('pi:commitment-vote', this.handleCommitmentVote.bind(this));
     this.on('pi:planning-complete', this.handlePlanningComplete.bind(this));
@@ -173,7 +176,7 @@ export class PIPlanningCoordinationManager extends EventBus {
   /**
    * Create PI Planning event
    */
-  createPIPlanningEvent(config:  {
+  createPIPlanningEvent(config: {
     piNumber: number;
     artId: string;
     artName: string;
@@ -185,7 +188,7 @@ export class PIPlanningCoordinationManager extends EventBus {
     businessContext: BusinessContext;
   }): PIPlanningEvent {
     const eventId = `pi-planning-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    
+
     const event: PIPlanningEvent = {
       id: eventId,
       piNumber: config.piNumber,
@@ -196,35 +199,37 @@ export class PIPlanningCoordinationManager extends EventBus {
       currentPhase: PIPlanningPhase.PREPARATION,
       facilitator: config.facilitator,
       businessOwners: config.businessOwners,
-      teams: config.teams.map(team => ({
+      teams: config.teams.map((team) => ({
         ...team,
         objectives: [],
         risks: [],
-        dependencies: []
+        dependencies: [],
       })),
       businessContext: config.businessContext,
       agenda: this.createDefaultAgenda(config.startDate, config.endDate),
-      risksAndDependencies:  {
+      risksAndDependencies: {
         risks: [],
-        dependencies: []
+        dependencies: [],
       },
       planCommitments: [],
-      boardOfCommitment:  {
+      boardOfCommitment: {
         teamCommitments: [],
         overallConfidence: 0,
         managementSupport: false,
-        readyToProceed: false
+        readyToProceed: false,
       },
-      artifacts:  {
+      artifacts: {
         teamBoards: [],
         dependencyWall: [],
         riskBoard: [],
-        votingResults: []
-      }
+        votingResults: [],
+      },
     };
 
     this.planningEvents.set(eventId, event);
-    logger.info(`PI Planning event created: PI ${config.piNumber} for ${config.artName}`);
+    logger.info(
+      `PI Planning event created: PI ${config.piNumber} for ${config.artName}`
+    );
 
     this.emit('pi:event-created', { eventId, event });
     return event;
@@ -233,7 +238,7 @@ export class PIPlanningCoordinationManager extends EventBus {
   /**
    * Handle planning start
    */
-  private handlePlanningStart(data:  { eventId: string }): void {
+  private handlePlanningStart(data: { eventId: string }): void {
     const event = this.planningEvents.get(data.eventId);
     if (!event) {
       logger.error(`PI Planning event not found: ${data.eventId}`);
@@ -250,8 +255,8 @@ export class PIPlanningCoordinationManager extends EventBus {
   /**
    * Handle phase transitions
    */
-  private handlePhaseTransition(data:  { 
-    eventId: string; 
+  private handlePhaseTransition(data: {
+    eventId: string;
     newPhase: PIPlanningPhase;
   }): void {
     const event = this.planningEvents.get(data.eventId);
@@ -264,19 +269,21 @@ export class PIPlanningCoordinationManager extends EventBus {
     event.currentPhase = data.newPhase;
     this.planningEvents.set(data.eventId, event);
 
-    logger.info(`PI Planning phase transition: ${previousPhase} → ${data.newPhase}`);
+    logger.info(
+      `PI Planning phase transition: ${previousPhase} → ${data.newPhase}`
+    );
     this.emit('pi:phase-changed', {
       eventId: data.eventId,
       previousPhase,
       newPhase: data.newPhase,
-      event
+      event,
     });
   }
 
   /**
    * Handle team breakouts
    */
-  private handleTeamBreakout(data:  {
+  private handleTeamBreakout(data: {
     eventId: string;
     teamId: string;
     breakoutType: 'planning' | 'dependency' | 'risk';
@@ -297,14 +304,14 @@ export class PIPlanningCoordinationManager extends EventBus {
     this.emit('pi:breakout-started', {
       eventId: data.eventId,
       teamId: data.teamId,
-      breakoutType: data.breakoutType
+      breakoutType: data.breakoutType,
     });
   }
 
   /**
    * Handle objective updates
    */
-  private handleObjectiveUpdate(data:  {
+  private handleObjectiveUpdate(data: {
     eventId: string;
     teamId: string;
     objective: TeamPIObjective;
@@ -315,14 +322,16 @@ export class PIPlanningCoordinationManager extends EventBus {
       return;
     }
 
-    const team = event.teams.find(t => t.id === data.teamId);
+    const team = event.teams.find((t) => t.id === data.teamId);
     if (!team) {
       logger.error(`Team not found: ${data.teamId}`);
       return;
     }
 
     // Add or update objective
-    const existingIndex = team.objectives.findIndex(o => o.id === data.objective.id);
+    const existingIndex = team.objectives.findIndex(
+      (o) => o.id === data.objective.id
+    );
     if (existingIndex >= 0) {
       team.objectives[existingIndex] = data.objective;
     } else {
@@ -335,14 +344,14 @@ export class PIPlanningCoordinationManager extends EventBus {
     this.emit('pi:objective-updated', {
       eventId: data.eventId,
       teamId: data.teamId,
-      objective: data.objective
+      objective: data.objective,
     });
   }
 
   /**
    * Handle dependency identification
    */
-  private handleDependencyIdentified(data:  {
+  private handleDependencyIdentified(data: {
     eventId: string;
     dependency: Omit<ProgramRisksAndDependencies['dependencies'][0], 'id'>;
   }): void {
@@ -355,7 +364,7 @@ export class PIPlanningCoordinationManager extends EventBus {
     const dependencyId = `dep-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const dependency = {
       id: dependencyId,
-      ...data.dependency
+      ...data.dependency,
     };
 
     event.risksAndDependencies.dependencies.push(dependency);
@@ -368,7 +377,7 @@ export class PIPlanningCoordinationManager extends EventBus {
   /**
    * Handle risk identification
    */
-  private handleRiskIdentified(data:  {
+  private handleRiskIdentified(data: {
     eventId: string;
     risk: Omit<ProgramRisksAndDependencies['risks'][0], 'id'>;
   }): void {
@@ -381,7 +390,7 @@ export class PIPlanningCoordinationManager extends EventBus {
     const riskId = `risk-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const risk = {
       id: riskId,
-      ...data.risk
+      ...data.risk,
     };
 
     event.risksAndDependencies.risks.push(risk);
@@ -394,7 +403,7 @@ export class PIPlanningCoordinationManager extends EventBus {
   /**
    * Handle commitment voting
    */
-  private handleCommitmentVote(data:  {
+  private handleCommitmentVote(data: {
     eventId: string;
     teamId: string;
     commitment: Omit<PlanCommitment, 'teamId'>;
@@ -407,11 +416,13 @@ export class PIPlanningCoordinationManager extends EventBus {
 
     const commitment: PlanCommitment = {
       teamId: data.teamId,
-      ...data.commitment
+      ...data.commitment,
     };
 
     // Add or update commitment
-    const existingIndex = event.planCommitments.findIndex(c => c.teamId === data.teamId);
+    const existingIndex = event.planCommitments.findIndex(
+      (c) => c.teamId === data.teamId
+    );
     if (existingIndex >= 0) {
       event.planCommitments[existingIndex] = commitment;
     } else {
@@ -422,14 +433,16 @@ export class PIPlanningCoordinationManager extends EventBus {
     this.updateBoardOfCommitment(event);
     this.planningEvents.set(data.eventId, event);
 
-    logger.info(`Commitment received from team: ${data.teamId} - Level ${commitment.commitmentLevel}`);
+    logger.info(
+      `Commitment received from team: ${data.teamId} - Level ${commitment.commitmentLevel}`
+    );
     this.emit('pi:commitment-recorded', { eventId: data.eventId, commitment });
   }
 
   /**
    * Handle planning completion
    */
-  private handlePlanningComplete(data:  { eventId: string }): void {
+  private handlePlanningComplete(data: { eventId: string }): void {
     const event = this.planningEvents.get(data.eventId);
     if (!event) {
       logger.error(`PI Planning event not found: ${data.eventId}`);
@@ -446,7 +459,10 @@ export class PIPlanningCoordinationManager extends EventBus {
   /**
    * Create default agenda
    */
-  private createDefaultAgenda(startDate: Date, endDate: Date): PIPlanningEvent['agenda'] {
+  private createDefaultAgenda(
+    startDate: Date,
+    endDate: Date
+  ): PIPlanningEvent['agenda'] {
     const day1Start = new Date(startDate);
     const day2Start = new Date(startDate);
     day2Start.setDate(day2Start.getDate() + 1);
@@ -460,9 +476,9 @@ export class PIPlanningCoordinationManager extends EventBus {
           'Business Context',
           'Product/Solution Vision',
           'Architecture Vision',
-          'Planning Context'
+          'Planning Context',
         ],
-        facilitator: 'RTE'
+        facilitator: 'RTE',
       },
       {
         phase: PIPlanningPhase.DAY_ONE_AFTERNOON,
@@ -471,20 +487,16 @@ export class PIPlanningCoordinationManager extends EventBus {
         activities: [
           'Team Breakouts',
           'Draft Plan Review',
-          'Dependency Discussion'
+          'Dependency Discussion',
         ],
-        facilitator: 'Team Leads'
+        facilitator: 'Team Leads',
       },
       {
         phase: PIPlanningPhase.DAY_TWO_MORNING,
         startTime: day2Start,
         endTime: new Date(day2Start.getTime() + 4 * 60 * 60 * 1000),
-        activities: [
-          'Management Review',
-          'Problem Solving',
-          'Risk Mitigation'
-        ],
-        facilitator: 'RTE'
+        activities: ['Management Review', 'Problem Solving', 'Risk Mitigation'],
+        facilitator: 'RTE',
       },
       {
         phase: PIPlanningPhase.DAY_TWO_AFTERNOON,
@@ -494,10 +506,10 @@ export class PIPlanningCoordinationManager extends EventBus {
           'Final Plan Review',
           'Vote of Confidence',
           'Plan Rework (if needed)',
-          'Final Commitment'
+          'Final Commitment',
         ],
-        facilitator: 'RTE'
-      }
+        facilitator: 'RTE',
+      },
     ];
   }
 
@@ -506,33 +518,38 @@ export class PIPlanningCoordinationManager extends EventBus {
    */
   private updateBoardOfCommitment(event: PIPlanningEvent): void {
     const commitments = event.planCommitments;
-    
+
     if (commitments.length === 0) {
       return;
     }
 
     // Calculate overall confidence
-    const totalConfidence = commitments.reduce((sum, c) => sum + c.confidence, 0);
+    const totalConfidence = commitments.reduce(
+      (sum, c) => sum + c.confidence,
+      0
+    );
     const overallConfidence = totalConfidence / commitments.length;
 
     // Check if all teams have committed
     const allTeamsCommitted = event.teams.length === commitments.length;
-    const averageCommitment = commitments.reduce((sum, c) => sum + c.commitmentLevel, 0) / commitments.length;
+    const averageCommitment =
+      commitments.reduce((sum, c) => sum + c.commitmentLevel, 0) /
+      commitments.length;
 
     event.boardOfCommitment = {
       teamCommitments: commitments,
       overallConfidence,
       managementSupport: overallConfidence >= 3 && averageCommitment >= 3,
-      readyToProceed: allTeamsCommitted && overallConfidence >= 3
+      readyToProceed: allTeamsCommitted && overallConfidence >= 3,
     };
   }
 
   /**
    * Get planning event status
    */
-  getPlanningEventStatus(eventId: string):  {
+  getPlanningEventStatus(eventId: string): {
     event?: PIPlanningEvent;
-    progress:  {
+    progress: {
       currentPhase: PIPlanningPhase;
       teamsPlanning: number;
       objectivesCreated: number;
@@ -545,39 +562,48 @@ export class PIPlanningCoordinationManager extends EventBus {
     const event = this.planningEvents.get(eventId);
     if (!event) {
       return {
-        progress:  {
+        progress: {
           currentPhase: PIPlanningPhase.PREPARATION,
           teamsPlanning: 0,
           objectivesCreated: 0,
           dependenciesIdentified: 0,
           risksIdentified: 0,
           commitmentsReceived: 0,
-          overallReadiness: 0
-        }
+          overallReadiness: 0,
+        },
       };
     }
 
     const activeBreakouts = this.activeBreakouts.get(eventId)?.length || 0;
-    const totalObjectives = event.teams.reduce((sum, team) => sum + team.objectives.length, 0);
-    
+    const totalObjectives = event.teams.reduce(
+      (sum, team) => sum + team.objectives.length,
+      0
+    );
+
     // Calculate readiness based on multiple factors
-    const phaseProgress = Object.values(PIPlanningPhase).indexOf(event.currentPhase) / 5;
-    const objectiveProgress = Math.min(totalObjectives / (event.teams.length * 3), 1); // Assume 3 objectives per team
-    const commitmentProgress = event.planCommitments.length / event.teams.length;
-    
-    const overallReadiness = (phaseProgress + objectiveProgress + commitmentProgress) / 3;
+    const phaseProgress =
+      Object.values(PIPlanningPhase).indexOf(event.currentPhase) / 5;
+    const objectiveProgress = Math.min(
+      totalObjectives / (event.teams.length * 3),
+      1
+    ); // Assume 3 objectives per team
+    const commitmentProgress =
+      event.planCommitments.length / event.teams.length;
+
+    const overallReadiness =
+      (phaseProgress + objectiveProgress + commitmentProgress) / 3;
 
     return {
       event,
-      progress:  {
+      progress: {
         currentPhase: event.currentPhase,
         teamsPlanning: activeBreakouts,
         objectivesCreated: totalObjectives,
         dependenciesIdentified: event.risksAndDependencies.dependencies.length,
         risksIdentified: event.risksAndDependencies.risks.length,
         commitmentsReceived: event.planCommitments.length,
-        overallReadiness: Math.round(overallReadiness * 100)
-      }
+        overallReadiness: Math.round(overallReadiness * 100),
+      },
     };
   }
 
@@ -591,7 +617,9 @@ export class PIPlanningCoordinationManager extends EventBus {
   /**
    * Get program dependencies
    */
-  getProgramDependencies(eventId: string): ProgramRisksAndDependencies['dependencies'] {
+  getProgramDependencies(
+    eventId: string
+  ): ProgramRisksAndDependencies['dependencies'] {
     const event = this.planningEvents.get(eventId);
     return event?.risksAndDependencies.dependencies || [];
   }

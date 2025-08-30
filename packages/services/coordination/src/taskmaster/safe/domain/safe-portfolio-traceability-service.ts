@@ -1,10 +1,10 @@
 /**
  * @fileoverview SAFe Portfolio Traceability Service - TaskMaster Domain Integration
- * 
+ *
  * Re-exports the main SafePortfolioTraceabilityService for use within the
  * TaskMaster domain. This maintains consistency while providing domain-specific
  * integration patterns.
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -13,7 +13,7 @@
 // Re-export the main implementation
 export {
   SafePortfolioTraceabilityService as default,
-  SafePortfolioTraceabilityService
+  SafePortfolioTraceabilityService,
 } from '../../../services/safe-portfolio-traceability-service.js';
 
 // Re-export types for convenience
@@ -22,7 +22,7 @@ export type {
   EpicGenerationContext,
   EpicTraceabilityRecord,
   ApprovalRecord,
-  LearningOutcome
+  LearningOutcome,
 } from '../../../services/safe-portfolio-traceability-service.js';
 
 /**
@@ -49,7 +49,7 @@ export class TaskMasterSafeIntegration {
       requireHumanApproval: true,
       wsjfThreshold: 5.0,
       maxConcurrentEpics: 25,
-      aiConfidenceThreshold: 0.8
+      aiConfidenceThreshold: 0.8,
     };
   }
 

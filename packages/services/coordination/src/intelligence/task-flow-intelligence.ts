@@ -48,13 +48,13 @@ export class TaskFlowIntelligence {
   /**
    * Predict potential bottlenecks based on flow history
    */
-  async predictBottlenecks(
-    currentStatus: TaskFlowStatus
-  ): Promise<any[]> {
+  async predictBottlenecks(currentStatus: TaskFlowStatus): Promise<any[]> {
     const predictions: any[] = [];
-    
+
     if (this.brainPredictor) {
-      for (const [state, _usage] of Object.entries(currentStatus.wipUsage || {})) {
+      for (const [state, _usage] of Object.entries(
+        currentStatus.wipUsage || {}
+      )) {
         const prediction = await this.brainPredictor.predictBottleneck(
           this.getRecentFlowHistory(state as TaskFlowState)
         );
@@ -90,7 +90,4 @@ export function createTaskFlowIntelligence(): TaskFlowIntelligence {
 // =============================================================================
 // EXPORTS
 // =============================================================================
-export type {
-  TaskFlowState,
-  TaskFlowStatus
-};
+export type { TaskFlowState, TaskFlowStatus };

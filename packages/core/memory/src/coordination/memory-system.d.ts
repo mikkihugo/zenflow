@@ -9,9 +9,15 @@
  */
 import type { MemoryStats } from '../backends/base-backend';
 export type { MemoryStats };
-export type JSONValue = string | number | boolean | null | {
-    [key: string]: JSONValue;
-} | JSONValue[];
+export type JSONValue =
+  | string
+  | number
+  | boolean
+  | null
+  | {
+      [key: string]: JSONValue;
+    }
+  | JSONValue[];
 /**
  * Backend Stats format used by some legacy implementations.
  *
@@ -19,14 +25,14 @@ export type JSONValue = string | number | boolean | null | {
  * @example
  */
 export interface BackendStats {
-    /** Number of entries */
-    entries: number;
-    /** Total size in bytes */
-    size: number;
-    /** Last modified timestamp */
-    lastModified: number;
-    /** Number of namespaces */
-    namespaces?: number;
+  /** Number of entries */
+  entries: number;
+  /** Total size in bytes */
+  size: number;
+  /** Last modified timestamp */
+  lastModified: number;
+  /** Number of namespaces */
+  namespaces?: number;
 }
 /**
  * Utility function to convert MemoryStats to BackendStats format
@@ -35,7 +41,9 @@ export interface BackendStats {
  * @param memoryStats
  * @example
  */
-export declare function memoryStatsToBackendStats(memoryStats: MemoryStats): BackendStats;
+export declare function memoryStatsToBackendStats(
+  memoryStats: MemoryStats
+): BackendStats;
 /**
  * Utility function to convert BackendStats to MemoryStats format
  * for compatibility with BaseMemoryBackend.
@@ -43,7 +51,9 @@ export declare function memoryStatsToBackendStats(memoryStats: MemoryStats): Bac
  * @param backendStats
  * @example
  */
-export declare function backendStatsToMemoryStats(backendStats: BackendStats): MemoryStats;
+export declare function backendStatsToMemoryStats(
+  backendStats: BackendStats
+): MemoryStats;
 /**
  * Backend Interface for memory storage implementations.
  * Compatible with BaseMemoryBackend implementations.
@@ -51,32 +61,35 @@ export declare function backendStatsToMemoryStats(backendStats: BackendStats): M
  * @example
  */
 export interface BackendInterface {
-    /** Initialize the backend */
-    initialize(): Promise<void>;
-    /** Store a value with the given key */
-    store(key: string, value: JSONValue, namespace?: string): Promise<void>;
-    /** Retrieve a value by key */
-    retrieve<T = JSONValue>(key: string): Promise<T | null>;
-    /** Alternative method name for retrieve */
-    get<T = JSONValue>(key: string): Promise<T | null>;
-    /** Alternative method name for store */
-    set(key: string, value: JSONValue): Promise<void>;
-    /** Delete a value by key - returns true if key existed and was deleted, false otherwise */
-    delete(key: string): Promise<boolean>;
-    /** Search for values matching a pattern */
-    search(pattern: string, namespace?: string): Promise<Record<string, JSONValue>>;
-    /** List available namespaces */
-    listNamespaces(): Promise<string[]>;
-    /** Clear all data */
-    clear(): Promise<void>;
-    /** Close the backend connection */
-    close(): Promise<void>;
-    /** Get backend statistics - async version for interface compatibility */
-    getStats?(): Promise<MemoryStats> | MemoryStats;
-    /** Get backend health status */
-    health?(): Promise<boolean>;
-    /** Get the size/count of stored items */
-    size?(): Promise<number>;
+  /** Initialize the backend */
+  initialize(): Promise<void>;
+  /** Store a value with the given key */
+  store(key: string, value: JSONValue, namespace?: string): Promise<void>;
+  /** Retrieve a value by key */
+  retrieve<T = JSONValue>(key: string): Promise<T | null>;
+  /** Alternative method name for retrieve */
+  get<T = JSONValue>(key: string): Promise<T | null>;
+  /** Alternative method name for store */
+  set(key: string, value: JSONValue): Promise<void>;
+  /** Delete a value by key - returns true if key existed and was deleted, false otherwise */
+  delete(key: string): Promise<boolean>;
+  /** Search for values matching a pattern */
+  search(
+    pattern: string,
+    namespace?: string
+  ): Promise<Record<string, JSONValue>>;
+  /** List available namespaces */
+  listNamespaces(): Promise<string[]>;
+  /** Clear all data */
+  clear(): Promise<void>;
+  /** Close the backend connection */
+  close(): Promise<void>;
+  /** Get backend statistics - async version for interface compatibility */
+  getStats?(): Promise<MemoryStats> | MemoryStats;
+  /** Get backend health status */
+  health?(): Promise<boolean>;
+  /** Get the size/count of stored items */
+  size?(): Promise<number>;
 }
 /**
  * Backend Configuration.
@@ -84,11 +97,11 @@ export interface BackendInterface {
  * @example
  */
 export interface BackendConfig {
-    type: 'sqlite|lancedb|json|memory';
-    path?: string;
-    maxSize?: number;
-    ttl?: number;
-    compression?: boolean;
+  type: 'sqlite|lancedb|json|memory';
+  path?: string;
+  maxSize?: number;
+  ttl?: number;
+  compression?: boolean;
 }
 /**
  * Memory System Configuration.
@@ -96,12 +109,12 @@ export interface BackendConfig {
  * @example
  */
 export interface MemorySystemConfig {
-    backend: BackendConfig;
-    enableCache?: boolean;
-    cacheSize?: number;
-    cacheTTL?: number;
-    enableVectorStorage?: boolean;
-    vectorDimensions?: number;
+  backend: BackendConfig;
+  enableCache?: boolean;
+  cacheSize?: number;
+  cacheTTL?: number;
+  enableVectorStorage?: boolean;
+  vectorDimensions?: number;
 }
 /**
  * Memory Entry Metadata.
@@ -109,13 +122,13 @@ export interface MemorySystemConfig {
  * @example
  */
 export interface MemoryEntryMetadata {
-    created: Date;
-    updated: Date;
-    accessed: Date;
-    size: number;
-    ttl?: number;
-    tags?: string[];
-    priority?: 'low|medium|high';
+  created: Date;
+  updated: Date;
+  accessed: Date;
+  size: number;
+  ttl?: number;
+  tags?: string[];
+  priority?: 'low|medium|high';
 }
 /**
  * Memory Entry with metadata.
@@ -123,9 +136,9 @@ export interface MemoryEntryMetadata {
  * @example
  */
 export interface MemoryEntryWithMetadata<T = JSONValue> {
-    key: string;
-    value: T;
-    metadata: MemoryEntryMetadata;
+  key: string;
+  value: T;
+  metadata: MemoryEntryMetadata;
 }
 /**
  * Memory Operation Result.
@@ -133,14 +146,14 @@ export interface MemoryEntryWithMetadata<T = JSONValue> {
  * @example
  */
 export interface MemoryOperationResult<T = unknown> {
-    success: boolean;
-    data?: T;
-    error?: string;
-    metadata?: {
-        executionTime: number;
-        backend: string;
-        timestamp: number;
-    };
+  success: boolean;
+  data?: T;
+  error?: string;
+  metadata?: {
+    executionTime: number;
+    backend: string;
+    timestamp: number;
+  };
 }
 /**
  * Memory Search Options.
@@ -148,11 +161,11 @@ export interface MemoryOperationResult<T = unknown> {
  * @example
  */
 export interface MemorySearchOptions {
-    pattern?: string;
-    limit?: number;
-    offset?: number;
-    namespace?: string;
-    includeMetadata?: boolean;
+  pattern?: string;
+  limit?: number;
+  offset?: number;
+  namespace?: string;
+  includeMetadata?: boolean;
 }
 /**
  * Memory Health Check Result.
@@ -160,10 +173,10 @@ export interface MemorySearchOptions {
  * @example
  */
 export interface MemoryHealthCheck {
-    healthy: boolean;
-    latency: number;
-    backend: string;
-    timestamp: number;
-    details?: Record<string, unknown>;
+  healthy: boolean;
+  latency: number;
+  backend: string;
+  timestamp: number;
+  details?: Record<string, unknown>;
 }
 //# sourceMappingURL=memory-system.d.ts.map

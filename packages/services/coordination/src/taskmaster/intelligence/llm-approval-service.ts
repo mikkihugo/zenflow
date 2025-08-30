@@ -22,7 +22,7 @@ export class LLMApprovalService {
 
   async initialize(): Promise<void> {
     if (this.initialized) return;
-    
+
     this.brainSystem = await getBrainSystem();
     this.initialized = true;
     this.logger.info('LLM Approval Service initialized');
@@ -38,17 +38,17 @@ export class LLMApprovalService {
 
     const startTime = Date.now();
     const gateId = `gate_${context.task.id}_${Date.now()}`;
-    
+
     try {
       this.logger.info('Starting LLM approval evaluation', {
         taskId: context.task.id,
-        gateId
+        gateId,
       });
 
       // Step 1: Check auto-approval rules first (fast path)
       const rules = config.autoApprovalRules || [];
       const ruleResult = await this.evaluateAutoApprovalRules(context, rules);
-      
+
       if (ruleResult.autoApprove) {
         return {
           gateId,
@@ -60,30 +60,30 @@ export class LLMApprovalService {
           model: 'rule-based',
           concerns: [],
           suggestedActions: [],
-          processingTime: Date.now() - startTime
+          processingTime: Date.now() - startTime,
         };
       }
 
       // Step 2: Use LLM for complex decision making
       const llmDecision = await this.getLLMDecision(context, config);
-      
+
       // Determine if auto-approval threshold is met
-      const autoApproved = 
-        llmDecision.approved && 
+      const autoApproved =
+        llmDecision.approved &&
         llmDecision.confidence >= config.confidenceThreshold;
-        
+
       const escalatedToHuman = !autoApproved || llmDecision.concerns.length > 0;
 
       if (autoApproved) {
         this.logger.info('LLM auto-approved task', {
           taskId: context.task.id,
-          confidence: llmDecision.confidence
+          confidence: llmDecision.confidence,
         });
       } else {
         this.logger.info('Task escalated to human review', {
           taskId: context.task.id,
           confidence: llmDecision.confidence,
-          concerns: llmDecision.concerns
+          concerns: llmDecision.concerns,
         });
       }
 
@@ -97,12 +97,14 @@ export class LLMApprovalService {
         model: 'llm',
         concerns: llmDecision.concerns,
         suggestedActions: llmDecision.suggestedActions,
-        processingTime: Date.now() - startTime
+        processingTime: Date.now() - startTime,
       };
-
     } catch (error) {
-      this.logger.error('LLM approval evaluation failed', { error, taskId: context.task.id });
-      
+      this.logger.error('LLM approval evaluation failed', {
+        error,
+        taskId: context.task.id,
+      });
+
       return {
         gateId,
         taskId: context.task.id,
@@ -113,7 +115,7 @@ export class LLMApprovalService {
         model: 'error',
         concerns: ['llm_error', 'requires_human_review'],
         suggestedActions: ['Manual review required', 'Check system logs'],
-        processingTime: Date.now() - startTime
+        processingTime: Date.now() - startTime,
       };
     }
   }
@@ -124,12 +126,13 @@ export class LLMApprovalService {
   private async getLLMDecision(
     context: LLMApprovalContext,
     config: LLMApprovalConfig
-  ): Promise<LLMApprovalDecision> {    const prompt = this.buildApprovalPrompt(context, config);
-    
+  ): Promise<LLMApprovalDecision> {
+    const prompt = this.buildApprovalPrompt(context, config);
+
     const response = await this.brainSystem.query({
       prompt,
       model: config.model || 'claude-3-sonnet',
-      temperature: 0.1 // Low temperature for consistent decision making
+      temperature: 0.1, // Low temperature for consistent decision making
     });
 
     return this.parseLLMResponse(response, config);
@@ -138,9 +141,12 @@ export class LLMApprovalService {
   /**
    * Build approval prompt for LLM
    */
-  private buildApprovalPrompt(context: LLMApprovalContext, config: LLMApprovalConfig): string {
+  private buildApprovalPrompt(
+    context: LLMApprovalContext,
+    config: LLMApprovalConfig
+  ): string {
     const { task, workflow, security, codeAnalysis, history } = context;
-    
+
     return `You are an intelligent task approval system. Analyze this task and decide whether to approve it based on the criteria.
 
 TASK DETAILS:
@@ -200,24 +206,27 @@ Be conservative: when in doubt, escalate to human review.`;
     config: LLMApprovalConfig
   ): LLMApprovalDecision {
     try {
-      const parsed = typeof response === 'string' ? JSON.parse(response) : response;
-      
+      const parsed =
+        typeof response === 'string' ? JSON.parse(response) : response;
+
       return {
         approved: Boolean(parsed.approved),
         confidence: Math.max(0, Math.min(1, Number(parsed.confidence) || 0)),
         reasoning: String(parsed.reasoning || 'No reasoning provided'),
         concerns: Array.isArray(parsed.concerns) ? parsed.concerns : [],
-        suggestedActions: Array.isArray(parsed.suggestedActions) ? parsed.suggestedActions : []
+        suggestedActions: Array.isArray(parsed.suggestedActions)
+          ? parsed.suggestedActions
+          : [],
       };
     } catch (error) {
       this.logger.error('Failed to parse LLM response', { error, response });
-      
+
       return {
         approved: false,
         confidence: 0,
         reasoning: 'Failed to parse LLM response - escalated to human review',
         concerns: ['llm_parse_error'],
-        suggestedActions: ['Manual review required']
+        suggestedActions: ['Manual review required'],
       };
     }
   }
@@ -239,7 +248,7 @@ Be conservative: when in doubt, escalate to human review.`;
           task: context.task,
           workflow: context.workflow,
           security: context.security,
-          codeAnalysis: context.codeAnalysis
+          codeAnalysis: context.codeAnalysis,
         };
 
         const conditionsMet = rule.conditions.every((condition) => {
@@ -257,7 +266,7 @@ Be conservative: when in doubt, escalate to human review.`;
             this.logger.warn('Rule condition evaluation failed', {
               rule: rule.name,
               condition,
-              error
+              error,
             });
             return false;
           }
@@ -268,7 +277,7 @@ Be conservative: when in doubt, escalate to human review.`;
           return {
             autoApprove: true,
             confidence: rule.confidence,
-            reasoning: `Auto-approved by rule: ${rule.name} - ${rule.description}`
+            reasoning: `Auto-approved by rule: ${rule.name} - ${rule.description}`,
           };
         }
       } catch (error) {
@@ -279,7 +288,7 @@ Be conservative: when in doubt, escalate to human review.`;
     return {
       autoApprove: false,
       confidence: 0,
-      reasoning: 'No auto-approval rules matched'
+      reasoning: 'No auto-approval rules matched',
     };
   }
 
@@ -296,15 +305,18 @@ Be conservative: when in doubt, escalate to human review.`;
       llmDecision,
       humanDecision: {
         approved: humanOverride.action === 'approve',
-        reasoning: humanOverride.reason
+        reasoning: humanOverride.reason,
       },
       learningType: this.determineLearningType(llmDecision, humanOverride),
       patterns: this.extractPatterns(llmDecision, humanOverride),
-      weight: this.calculateLearningWeight(humanOverride)
+      weight: this.calculateLearningWeight(humanOverride),
     };
 
     await this.updateLearningModel(learning);
-    this.logger.info('Learned from human feedback', { taskId, learningType: learning.learningType });
+    this.logger.info('Learned from human feedback', {
+      taskId,
+      learningType: learning.learningType,
+    });
   }
 
   /**
@@ -316,7 +328,7 @@ Be conservative: when in doubt, escalate to human review.`;
   ): 'correct' | 'incorrect' | 'partially_correct' {
     const llmApproved = llmDecision.approved;
     const humanApproved = humanOverride.action === 'approve';
-    
+
     if (llmApproved === humanApproved) {
       return llmDecision.confidence > 0.8 ? 'correct' : 'partially_correct';
     } else {
@@ -332,23 +344,29 @@ Be conservative: when in doubt, escalate to human review.`;
     humanOverride: HumanOverride
   ): string[] {
     const patterns: string[] = [];
-    
+
     // Extract patterns from reasoning differences
     if (llmDecision.reasoning && humanOverride.reason) {
       // Analyze discrepancies in reasoning approaches
       patterns.push('reasoning_analysis_pattern');
-      
+
       // Check for security vs. efficiency trade-offs
-      if (llmDecision.reasoning.includes('security') && humanOverride.reason.includes('efficiency')) {
+      if (
+        llmDecision.reasoning.includes('security') &&
+        humanOverride.reason.includes('efficiency')
+      ) {
         patterns.push('security_efficiency_tradeoff');
       }
-      
+
       // Check for risk assessment differences
-      if (llmDecision.reasoning.includes('risk') !== humanOverride.reason.includes('risk')) {
+      if (
+        llmDecision.reasoning.includes('risk') !==
+        humanOverride.reason.includes('risk')
+      ) {
         patterns.push('risk_assessment_difference');
       }
     }
-    
+
     return patterns;
   }
 
@@ -368,16 +386,19 @@ Be conservative: when in doubt, escalate to human review.`;
     try {
       const memoryKey = `llm_approval_learning:${learning.taskId}`;
       // This would integrate with the memory system to store learning patterns
-      this.logger.debug('Stored learning pattern', { 
+      this.logger.debug('Stored learning pattern', {
         taskId: learning.taskId,
         learningType: learning.learningType,
-        patterns: learning.patterns
+        patterns: learning.patterns,
       });
-      
+
       // Future enhancement: Use patterns to adjust confidence thresholds
       // and refine approval criteria based on human feedback patterns
     } catch (error) {
-      this.logger.error('Failed to update learning model', { error, taskId: learning.taskId });
+      this.logger.error('Failed to update learning model', {
+        error,
+        taskId: learning.taskId,
+      });
     }
   }
 }

@@ -26,5 +26,5 @@ export const defaultLoggerConfig = {
   format: 'json' as const,
   timestamp: true,
   colorize: false,
-  component: 'SAFe'
+  component: 'SAFe',
 };

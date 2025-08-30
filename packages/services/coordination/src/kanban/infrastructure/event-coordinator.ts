@@ -36,11 +36,13 @@ export class EventCoordinatorService {
       enableMonitoring: false,
       enableMiddleware: false,
       maxListeners: 100,
-      ...config
+      ...config,
     };
-    this.eventBus = eventBus || new EventBus<WorkflowKanbanEvents>({
-      maxListeners: this.config.maxListeners
-    });
+    this.eventBus =
+      eventBus ||
+      new EventBus<WorkflowKanbanEvents>({
+        maxListeners: this.config.maxListeners,
+      });
   }
 
   async initialize(): Promise<void> {
@@ -49,30 +51,30 @@ export class EventCoordinatorService {
       if (result.isErr()) {
         throw result.error;
       }
-      
+
       // Set up monitoring if enabled
       if (this.config.enableMonitoring) {
         this.setupEventMonitoring();
       }
-      
+
       // Set up middleware if enabled
       if (this.config.enableMiddleware) {
         this.setupEventMiddleware();
       }
-      
+
       this.initialized = true;
       logger.info('EventCoordinatorService initialized successfully');
     } catch (error) {
       logger.error('Failed to initialize EventCoordinatorService:', error);
       throw error;
-}
-}
+    }
+  }
   /**
    * Get event bus instance
    */
-  getEventBus():EventBus<WorkflowKanbanEvents> {
+  getEventBus(): EventBus<WorkflowKanbanEvents> {
     return this.eventBus;
-}
+  }
   /**
    * Emit event through coordinator
    */
@@ -83,10 +85,10 @@ export class EventCoordinatorService {
     const startTime = Date.now();
     try {
       this.eventBus.emit(eventType, payload);
-      
+
       // Update metrics
       this.updateMetrics(startTime, false);
-      
+
       logger.debug(`Event emitted: ${String(eventType)}`, { payload });
     } catch (error) {
       this.updateMetrics(startTime, true);
@@ -131,8 +133,11 @@ export class EventCoordinatorService {
     listener: (payload: WorkflowKanbanEvents[K]) => void | Promise<void>
   ): void {
     this.eventBus.off(eventType as string, listener);
-    this.metrics.activeListeners = Math.max(0, this.metrics.activeListeners - 1);
-    
+    this.metrics.activeListeners = Math.max(
+      0,
+      this.metrics.activeListeners - 1
+    );
+
     logger.debug(`Listener removed for event: ${String(eventType)}`);
   }
 
@@ -165,10 +170,10 @@ export class EventCoordinatorService {
     // Add performance tracking middleware
     this.eventBus.use(async (context, next) => {
       const startTime = Date.now();
-      
+
       try {
         await next();
-        
+
         // Track successful processing
         this.metrics.eventsProcessed++;
         this.updateMetrics(startTime, false);
@@ -179,19 +184,19 @@ export class EventCoordinatorService {
         throw error;
       }
     });
-    
+
     logger.debug('Event middleware setup complete');
   }
 
   private updateMetrics(startTime: number, isError: boolean): void {
     const processingTime = Date.now() - startTime;
-    
+
     if (isError) {
       this.metrics.eventsErrored++;
     } else {
       this.metrics.eventsProcessed++;
     }
-    
+
     // Update average processing time
     this.metrics.lastEventProcessingTime = processingTime;
   }

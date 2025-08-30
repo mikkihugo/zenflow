@@ -1,127 +1,127 @@
 {
-	"name": "@claude-zen/foundation",
-	"version": "2.0.0",
-	"description": "Foundation utilities for claude-code-zen ecosystem - logging, config, DI, error handling, and type utilities",
-	"type": "module",
-	"main": "dist/src/index.js",
-	"types": "dist/src/index.d.ts",
-	"scripts": {
-		"build": "tsc",
-		"dev": "tsc --watch",
-		"clean": "rm -rf dist",
-		"type-check": "tsc --noEmit",
-		"type-check:watch": "tsc --noEmit --watch",
-		"prepublishOnly": "pnpm run clean && pnpm run build",
-		"test": "vitest run tests/unit",
-		"test:watch": "vitest tests/unit",
-		"test:unit": "vitest run tests/unit",
-		"test:integration": "RUN_INTEGRATION=true vitest run tests/integration",
-		"test:e2e": "RUN_INTEGRATION=true vitest run tests/e2e",
-		"test:performance": "RUN_PERFORMANCE=true vitest run tests/integration tests/e2e",
-		"test:all": "pnpm test:unit && pnpm test:integration && pnpm test:e2e",
-		"test:coverage": "vitest run --coverage",
-		"test:ci": "vitest run --reporter=verbose --coverage",
-		"docs:check": "node scripts/check-tsdoc.mjs",
-		"docs:check-verbose": "node scripts/check-tsdoc.mjs --verbose --show-documented",
-		"docs:check-strict": "node scripts/check-tsdoc.mjs --threshold 100",
-		"docs:fix": "node scripts/fix-tsdoc.mjs",
-		"docs:fix-verbose": "node scripts/fix-tsdoc.mjs --verbose",
-		"docs:fix-opus": "node scripts/fix-tsdoc.mjs --model opus",
-		"lint": "eslint src --ext .ts",
-		"lint:fix": "eslint src --ext .ts --fix"
-	},
-	"keywords": [
-		"foundation",
-		"utilities",
-		"logging",
-		"dependency-injection",
-		"config",
-		"claude-code-zen",
-		"infrastructure",
-		"error-handling",
-		"result-pattern",
-		"circuit-breaker",
-		"retry-logic",
-		"typescript",
-		"forcing-patterns"
-	],
-	"author": "Claude Code Zen Team",
-	"license": "MIT",
-	"dependencies": {
-		"@logtape/logtape": "^1.0.4",
-		"ajv": "^8.17.1",
-		"awilix": "^12.0.5",
-		"cockatiel": "^3.2.1",
-		"commander": "^12.1.0",
-		"date-fns": "^4.1.0",
-		"envalid": "^8.1.0",
-		"exit-hook": "^4.0.0",
-		"lodash": "^4.17.21",
-		"nanoid": "^5.1.5",
-		"neverthrow": "^8.2.0",
-		"zod": "^3.25.76"
-	},
-	"peerDependencies": {
-		"typescript": ">=5.0.0"
-	},
-	"optionalDependencies": {
-		"@manypkg/find-root": "^2.2.3",
-		"find-workspaces": "^0.3.1",
-		"type-fest": "^4.41.0"
-	},
-	"_comment_database": "database is now integrated directly into foundation package",
-	"devDependencies": {
-		"@eslint/js": "^9.33.0",
-		"@types/lodash": "^4.17.7",
-		"@types/node": "22.17.1",
-		"@typescript-eslint/eslint-plugin": "^8.40.0",
-		"@typescript-eslint/parser": "^8.40.0",
-		"eslint": "^9.33.0",
-		"typescript": "^5.9.2",
-		"vitest": "^3.2.4"
-	},
-	"exports": {
-		".": {
-			"types": "./dist/src/index.d.ts",
-			"import": "./dist/src/index.js",
-			"require": "./dist/src/index.js"
-		},
-		"./core": {
-			"types": "./dist/src/core.d.ts",
-			"import": "./dist/src/core.js"
-		},
-		"./di": {
-			"types": "./dist/src/di.d.ts",
-			"import": "./dist/src/di.js"
-		},
-		"./resilience": {
-			"types": "./dist/src/resilience.d.ts",
-			"import": "./dist/src/resilience.js"
-		},
-		"./utils": {
-			"types": "./dist/src/utils.d.ts",
-			"import": "./dist/src/utils.js"
-		},
-		"./error-handling": {
-			"import": "./dist/src/error-handling/index.js",
-			"types": "./dist/src/error-handling/index.d.ts"
-		},
-		"./types": {
-			"import": "./dist/src/types/index.js",
-			"types": "./dist/src/types/index.d.ts"
-		}
-	},
-	"files": [
-		"dist",
-		"README.md",
-		"LICENSE"
-	],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/zen-neural/claude-code-zen.git",
-		"directory": "packages/foundation"
-	},
-	"publishConfig": {
-		"access": "public"
-	}
+  "name": "@claude-zen/foundation",
+  "version": "2.0.0",
+  "description": "Foundation utilities for claude-code-zen ecosystem - logging, config, DI, error handling, and type utilities",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "tsc --noEmit --watch",
+    "prepublishOnly": "pnpm run clean && pnpm run build",
+    "test": "vitest run tests/unit",
+    "test:watch": "vitest tests/unit",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "RUN_INTEGRATION=true vitest run tests/integration",
+    "test:e2e": "RUN_INTEGRATION=true vitest run tests/e2e",
+    "test:performance": "RUN_PERFORMANCE=true vitest run tests/integration tests/e2e",
+    "test:all": "pnpm test:unit && pnpm test:integration && pnpm test:e2e",
+    "test:coverage": "vitest run --coverage",
+    "test:ci": "vitest run --reporter=verbose --coverage",
+    "docs:check": "node scripts/check-tsdoc.mjs",
+    "docs:check-verbose": "node scripts/check-tsdoc.mjs --verbose --show-documented",
+    "docs:check-strict": "node scripts/check-tsdoc.mjs --threshold 100",
+    "docs:fix": "node scripts/fix-tsdoc.mjs",
+    "docs:fix-verbose": "node scripts/fix-tsdoc.mjs --verbose",
+    "docs:fix-opus": "node scripts/fix-tsdoc.mjs --model opus",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix"
+  },
+  "keywords": [
+    "foundation",
+    "utilities",
+    "logging",
+    "dependency-injection",
+    "config",
+    "claude-code-zen",
+    "infrastructure",
+    "error-handling",
+    "result-pattern",
+    "circuit-breaker",
+    "retry-logic",
+    "typescript",
+    "forcing-patterns"
+  ],
+  "author": "Claude Code Zen Team",
+  "license": "MIT",
+  "dependencies": {
+    "@logtape/logtape": "^1.0.4",
+    "ajv": "^8.17.1",
+    "awilix": "^12.0.5",
+    "cockatiel": "^3.2.1",
+    "commander": "^12.1.0",
+    "date-fns": "^4.1.0",
+    "envalid": "^8.1.0",
+    "exit-hook": "^4.0.0",
+    "lodash": "^4.17.21",
+    "nanoid": "^5.1.5",
+    "neverthrow": "^8.2.0",
+    "zod": "^3.25.76"
+  },
+  "peerDependencies": {
+    "typescript": ">=5.0.0"
+  },
+  "optionalDependencies": {
+    "@manypkg/find-root": "^2.2.3",
+    "find-workspaces": "^0.3.1",
+    "type-fest": "^4.41.0"
+  },
+  "_comment_database": "database is now integrated directly into foundation package",
+  "devDependencies": {
+    "@eslint/js": "^9.33.0",
+    "@types/lodash": "^4.17.7",
+    "@types/node": "22.17.1",
+    "@typescript-eslint/eslint-plugin": "^8.40.0",
+    "@typescript-eslint/parser": "^8.40.0",
+    "eslint": "^9.33.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js",
+      "require": "./dist/src/index.js"
+    },
+    "./core": {
+      "types": "./dist/src/core.d.ts",
+      "import": "./dist/src/core.js"
+    },
+    "./di": {
+      "types": "./dist/src/di.d.ts",
+      "import": "./dist/src/di.js"
+    },
+    "./resilience": {
+      "types": "./dist/src/resilience.d.ts",
+      "import": "./dist/src/resilience.js"
+    },
+    "./utils": {
+      "types": "./dist/src/utils.d.ts",
+      "import": "./dist/src/utils.js"
+    },
+    "./error-handling": {
+      "import": "./dist/src/error-handling/index.js",
+      "types": "./dist/src/error-handling/index.d.ts"
+    },
+    "./types": {
+      "import": "./dist/src/types/index.js",
+      "types": "./dist/src/types/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zen-neural/claude-code-zen.git",
+    "directory": "packages/foundation"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }

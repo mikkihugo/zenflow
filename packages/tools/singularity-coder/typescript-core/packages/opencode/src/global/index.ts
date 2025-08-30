@@ -1,6 +1,6 @@
 import fs from "node:fs/promises"
 import path from "node:path"
-import { xdgCache, xdgConfig, xdgData, xdgState} from "xdg-basedir"
+import { xdgCache, xdgConfig, xdgData, xdgState } from "xdg-basedir"
 
 const app = "opencode"
 
@@ -12,19 +12,19 @@ const state = path.join(xdgState!, app)
 export namespace Global {
   export const Path = {
     data,
-    bin:path.join(data, "bin"),
-    providers:path.join(config, "providers"),
+    bin: path.join(data, "bin"),
+    providers: path.join(config, "providers"),
     cache,
     config,
     state,
-} as const
+  } as const
 }
 
 await Promise.all([
-  fs.mkdir(Global.Path.data, { recursive:true}),
-  fs.mkdir(Global.Path.config, { recursive:true}),
-  fs.mkdir(Global.Path.providers, { recursive:true}),
-  fs.mkdir(Global.Path.state, { recursive:true}),
+  fs.mkdir(Global.Path.data, { recursive: true }),
+  fs.mkdir(Global.Path.config, { recursive: true }),
+  fs.mkdir(Global.Path.providers, { recursive: true }),
+  fs.mkdir(Global.Path.state, { recursive: true }),
 ])
 
 const CACHE_VERSION = "2"
@@ -34,6 +34,6 @@ const version = await Bun.file(path.join(Global.Path.cache, "version"))
   .catch(() => "0")
 
 if (version !== CACHE_VERSION) {
-  await fs.rm(Global.Path.cache, { recursive:true, force:true})
+  await fs.rm(Global.Path.cache, { recursive: true, force: true })
   await Bun.file(path.join(Global.Path.cache, "version")).write(CACHE_VERSION)
 }

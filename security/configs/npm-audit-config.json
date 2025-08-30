@@ -1,7 +1,7 @@
 {
-	"auditLevel": "moderate",
-	"production": true,
-	"dev": false,
-	"packageLock": true,
-	"dryRun": false
+  "auditLevel": "moderate",
+  "production": true,
+  "dev": false,
+  "packageLock": true,
+  "dryRun": false
 }

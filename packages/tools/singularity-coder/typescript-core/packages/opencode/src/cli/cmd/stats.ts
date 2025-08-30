@@ -34,7 +34,7 @@ export function displayStats(_stats:SessionStats) {
     const availableWidth = width - 1
     const paddingNeeded = availableWidth - label.length - value.length
     const __padding = Math.max(0, paddingNeeded)
-    return `│${label}${" ".repeat(padding)}${value} │``
+    return `│${label}${" ".repeat(padding)}${value} │
 }
 
   // Overview section
@@ -53,8 +53,8 @@ export function displayStats(_stats:SessionStats) {
   logger.info("├────────────────────────────────────────────────────────┤")
   const cost = isNaN(stats.totalCost) ? 0:stats.totalCost
   const costPerDay = isNaN(stats.costPerDay) ? 0:stats.costPerDay
-  logger.info(renderRow("Total Cost", `$$cost.toFixed(2)`))`
-  logger.info(_renderRow("Cost/Day", `$${costPerDay.toFixed(2)}`))`
+  logger.info(renderRow("Total Cost", `$$cost.toFixed(2)`))
+  logger.info(_renderRow("Cost/Day", `$${costPerDay.toFixed(2)}))
   logger.info(renderRow("Input", formatNumber(stats.totalTokens.input)))
   logger.info(renderRow("Output", formatNumber(stats.totalTokens.output)))
   logger.info(renderRow("Cache Read", formatNumber(stats.totalTokens.cache.read)))
@@ -80,9 +80,9 @@ export function displayStats(_stats:SessionStats) {
       const bar = "█".repeat(barLength)
       const percentage = ((count / totalToolUsage) * 100).toFixed(1)
 
-      const content = ` $tool.padEnd(10)$bar.padEnd(20)$count.toString().padStart(3)($percentage.padStart(4)%)``
+      const content = ` $tool.padEnd(10)$bar.padEnd(20)$count.toString().padStart(3)($percentage.padStart(4)%)
       const padding = Math.max(0, width - content.length)
-      logger.info(`│${content}${" ".repeat(padding)} │`)`
+      logger.info(`│${content}${" ".repeat(padding)} │`)
 }
     logger.info("└────────────────────────────────────────────────────────┘")
 }
@@ -90,9 +90,9 @@ export function displayStats(_stats:SessionStats) {
 }
 function formatNumber(num:number): string {
   if (num >= 1000000) {
-    return `${(num / 1000000).toFixed(1)  }M`
+    return `${(num / 1000000).toFixed(1)  }M
 } else if (num >= 1000) {
-    return `${(num / 1000).toFixed(1)  }K`
+    return `${(num / 1000).toFixed(1)  }K
 }
   return num.toString()
 }

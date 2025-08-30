@@ -30,10 +30,43 @@
  * await delay(5000); // Wait 5 seconds
  * ```
  */
-import * as dateFnsLib from "date-fns";
-import type { ISODateString, Timestamp } from "../types/primitives";
+import * as dateFnsLib from 'date-fns';
+import type { ISODateString, Timestamp } from '../types/primitives';
 export declare const dateFns: typeof dateFnsLib;
-export { addDays, addHours, addMilliseconds, addMinutes, addSeconds, differenceInDays, differenceInHours, differenceInMilliseconds, differenceInMinutes, differenceInSeconds, endOfDay, endOfMonth, endOfWeek, endOfYear, format, fromUnixTime, getTime, getUnixTime, isAfter, isBefore, isEqual, isSameDay, parseISO, startOfDay, startOfMonth, startOfWeek, startOfYear, subDays, subHours, subMilliseconds, subMinutes, subSeconds, } from "date-fns";
+export {
+  addDays,
+  addHours,
+  addMilliseconds,
+  addMinutes,
+  addSeconds,
+  differenceInDays,
+  differenceInHours,
+  differenceInMilliseconds,
+  differenceInMinutes,
+  differenceInSeconds,
+  endOfDay,
+  endOfMonth,
+  endOfWeek,
+  endOfYear,
+  format,
+  fromUnixTime,
+  getTime,
+  getUnixTime,
+  isAfter,
+  isBefore,
+  isEqual,
+  isSameDay,
+  parseISO,
+  startOfDay,
+  startOfMonth,
+  startOfWeek,
+  startOfYear,
+  subDays,
+  subHours,
+  subMilliseconds,
+  subMinutes,
+  subSeconds,
+} from 'date-fns';
 /**
  * Get current timestamp as branded Timestamp type.
  * Uses Date.now() for high precision.
@@ -85,7 +118,9 @@ export declare function dateFromTimestamp(timestamp: Timestamp): Date;
  * // "2024-01-01T12:00:00.000Z"
  * ```
  */
-export declare function isoStringFromTimestamp(timestamp: Timestamp): ISODateString;
+export declare function isoStringFromTimestamp(
+  timestamp: Timestamp
+): ISODateString;
 /**
  * Create timestamp from ISO string.
  * Parses ISO string to branded Timestamp.
@@ -112,7 +147,10 @@ export declare function timestampFromISOString(isoString: string): Timestamp;
  * // "2024-01-01 12:00:00"
  * ```
  */
-export declare function formatTimestamp(timestamp: Timestamp, formatStr?: string): string;
+export declare function formatTimestamp(
+  timestamp: Timestamp,
+  formatStr?: string
+): string;
 /**
  * Sleep for specified milliseconds using Promise.
  * Modern alternative to setTimeout with Promise.
@@ -171,7 +209,11 @@ export declare function timeout(ms: number, message?: string): Promise<never>;
  *   'User data fetch timeout') * );
  * ```
  */
-export declare function withTimeout<T>(operation: Promise<T>, timeoutMs: number, timeoutMessage?: string): Promise<T>;
+export declare function withTimeout<T>(
+  operation: Promise<T>,
+  timeoutMs: number,
+  timeoutMessage?: string
+): Promise<T>;
 /**
  * High-resolution time measurement for performance timing.
  * Uses process.hrtime.bigint() for nanosecond precision.
@@ -202,8 +244,8 @@ export declare function highResTime(): bigint;
  * ```
  */
 export declare function measureTime<T>(operation: () => Promise<T>): Promise<{
-    result: T;
-    durationMs: number;
+  result: T;
+  durationMs: number;
 }>;
 /**
  * Create a simple timer for manual time measurement.
@@ -222,10 +264,10 @@ export declare function measureTime<T>(operation: () => Promise<T>): Promise<{
  * ```
  */
 export declare function createTimer(): {
-    start(): void;
-    stop(): number;
-    elapsed(): number;
-    reset(): void;
+  start(): void;
+  stop(): number;
+  elapsed(): number;
+  reset(): void;
 };
 /**
  * Check if timestamp is valid and within reasonable range.
@@ -241,7 +283,9 @@ export declare function createTimer(): {
  *}
  * ```
  */
-export declare function isValidTimestamp(timestamp: unknown): timestamp is Timestamp;
+export declare function isValidTimestamp(
+  timestamp: unknown
+): timestamp is Timestamp;
 /**
  * Check if ISO date string is valid format and parseable.
  * More comprehensive than basic date parsing.
@@ -255,6 +299,11 @@ export declare function isValidTimestamp(timestamp: unknown): timestamp is Times
  *}
  * ```
  */
-export declare function isValidISOString(dateString: unknown): dateString is ISODateString;
-export { setInterval as recurring, setTimeout as nodeDelay, } from "node:timers/promises";
+export declare function isValidISOString(
+  dateString: unknown
+): dateString is ISODateString;
+export {
+  setInterval as recurring,
+  setTimeout as nodeDelay,
+} from 'node:timers/promises';
 //# sourceMappingURL=time.d.ts.map

@@ -210,7 +210,7 @@ export namespace Config {
 })
       .then(async (mod) => {
         const { provider, model, ...rest} = mod.default
-        if (provider && model) result.model = `${provider}/${model}``
+        if (provider && model) result.model = `${provider}/${model}
         result["$schema"] = "https://opencode.ai/config.json"
         result = mergeDeep(result, rest)
         await Bun.write(path.join(Global.Path.config, "config.json"), JSON.stringify(result, null, 2))

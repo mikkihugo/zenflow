@@ -32,7 +32,7 @@ export {
 // =============================================================================
 // PRIMARY INTELLIGENCE SYSTEM - Main implementation
 // =============================================================================
-export { CompleteIntelligenceSystem} from './intelligence-system';
+export { CompleteIntelligenceSystem } from './intelligence-system';
 export type {
   PerformanceSnapshot,
   PerformanceStats,
@@ -49,7 +49,7 @@ export {
   PerformanceTracker,
   withPerformanceTracking,
 } from './performance-tracker';
-export type { TaskPredictor} from './task-predictor';
+export type { TaskPredictor } from './task-predictor';
 // =============================================================================
 // TASK PREDICTION - Core Monitoring Primitives
 // =============================================================================
@@ -126,6 +126,14 @@ export type {
  * Package metadata and version information
  */
 export const PACKAGE_INFO = {
-  name: '@claude-zen/agent-monitoring',  version: '1.0.0',  description: 'Core agent monitoring primitives for Claude Code Zen',  features:[
-    'Basic task prediction interfaces',    'Simple intelligence system implementations',    'Core monitoring types and configurations',    'Foundation logging and storage integration',    'Tree-shakable exports for optimal bundles',],
+  name: '@claude-zen/agent-monitoring',
+  version: '1.0.0',
+  description: 'Core agent monitoring primitives for Claude Code Zen',
+  features: [
+    'Basic task prediction interfaces',
+    'Simple intelligence system implementations',
+    'Core monitoring types and configurations',
+    'Foundation logging and storage integration',
+    'Tree-shakable exports for optimal bundles',
+  ],
 } as const;

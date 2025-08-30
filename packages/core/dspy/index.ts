@@ -310,35 +310,35 @@
 
 // Export adapter
 export {
-	ChatAdapter,
-	type ChatAdapterConfig,
-	type ChatMessage,
-} from "./src/adapters/chat-adapter";
+  ChatAdapter,
+  type ChatAdapterConfig,
+  type ChatMessage,
+} from './src/adapters/chat-adapter';
 export type {
-	Config,
-	SharedLLMService,
-	SharedLogger,
-	SharedStorage,
-} from "./src/core/service";
+  Config,
+  SharedLLMService,
+  SharedLogger,
+  SharedStorage,
+} from './src/core/service';
 export {
-	type Adapter,
-	BaseAdapter,
-	type EvaluationDataInput,
-	type EvaluationDataOutput,
-	type FinetuneDataInput,
-	type FinetuneDataOutput,
-	type InferenceDataInput,
-	type InferenceDataOutput,
-} from "./src/interfaces/adapter";
+  type Adapter,
+  BaseAdapter,
+  type EvaluationDataInput,
+  type EvaluationDataOutput,
+  type FinetuneDataInput,
+  type FinetuneDataOutput,
+  type InferenceDataInput,
+  type InferenceDataOutput,
+} from './src/interfaces/adapter';
 // Export interfaces
 export {
-	BaseLM,
-	type GenerationOptions,
-	type LMInterface,
-	type ModelInfo,
-	type ModelUsage,
-} from "./src/interfaces/lm";
-export type { DSPyKV} from "./src/main";
+  BaseLM,
+  type GenerationOptions,
+  type LMInterface,
+  type ModelInfo,
+  type ModelUsage,
+} from './src/interfaces/lm';
+export type { DSPyKV } from './src/main';
 // =============================================================================
 // MAIN ENTRY POINT - Complete DSPy system
 // =============================================================================
@@ -346,52 +346,49 @@ export type { DSPyKV} from "./src/main";
 // DSPY SERVICE LAYER AND FOUNDATION INTEGRATION
 // =============================================================================
 export {
-	createDSPyEngine,
-	DSPyEngine,
-	DSPyService,
-	dspyUtils,
-	getDSPyService,
-	initializeDSPyService,
-} from "./src/main";
-export { Example} from "./src/primitives/example";
+  createDSPyEngine,
+  DSPyEngine,
+  DSPyService,
+  dspyUtils,
+  getDSPyService,
+  initializeDSPyService,
+} from './src/main';
+export { Example } from './src/primitives/example';
 // Export core DSPy components only - working modules without complex Stanford DSPy issues
-export { DSPyModule} from "./src/primitives/module";
-export {
-	type Prediction,
-	PredictionUtils,
-} from "./src/primitives/prediction";
-export { SeededRNG} from "./src/primitives/seeded-rng";
+export { DSPyModule } from './src/primitives/module';
+export { type Prediction, PredictionUtils } from './src/primitives/prediction';
+export { SeededRNG } from './src/primitives/seeded-rng';
 // Export all DSPy types
 export type {
-	DSPyConfig,
-	DSPyConfigValidator,
-	DSPyEngineStats,
-	DSPyExample,
-	DSPyExampleGenerator,
-	DSPyMetrics,
-	DSPyOptimizationResult,
-	DSPyOptimizationStrategy,
-	DSPyPattern,
-	DSPyProgram,
-	DSPyPromptEvaluator,
-	DSPyPromptVariation,
-	DSPyStorage,
-	DSPyTaskConfig,
-} from "./src/types/interfaces";
+  DSPyConfig,
+  DSPyConfigValidator,
+  DSPyEngineStats,
+  DSPyExample,
+  DSPyExampleGenerator,
+  DSPyMetrics,
+  DSPyOptimizationResult,
+  DSPyOptimizationStrategy,
+  DSPyPattern,
+  DSPyProgram,
+  DSPyPromptEvaluator,
+  DSPyPromptVariation,
+  DSPyStorage,
+  DSPyTaskConfig,
+} from './src/types/interfaces';
 
 // Import the necessary functions
-import { createDSPyEngine, DSPyEngine, dspyUtils} from "./src/main";
+import { createDSPyEngine, DSPyEngine, dspyUtils } from './src/main';
 
 /**
  * Production DSPy Library
  */
 export const DSPy = {
-	// Simple engine for basic optimization
-	Engine:{
-		DSPyEngine,
-		createDSPyEngine,
-		utils:dspyUtils,
-},
+  // Simple engine for basic optimization
+  Engine: {
+    DSPyEngine,
+    createDSPyEngine,
+    utils: dspyUtils,
+  },
 } as const;
 
 // Default export

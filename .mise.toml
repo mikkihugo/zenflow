@@ -1,9 +1,0 @@
-[tools]
-node = "22.18.0"   # Required by repo (see .github/copilot-instructions.md)
-pnpm = "10.15.0"   # Required minimum version
-rust = "stable"    # Track latest stable toolchain
-
-[env]
-NPM_CONFIG_ENGINE_STRICT = "true"
-RUST_BACKTRACE = "1"
-

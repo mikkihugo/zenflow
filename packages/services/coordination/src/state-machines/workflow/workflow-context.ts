@@ -45,17 +45,17 @@ export interface WorkflowMachineContext {
     count: number;
     limit: number;
     timestamp: Date;
-}>;
+  }>;
   // Bottleneck detection
   activeBottlenecks: WorkflowBottleneck[];
   bottleneckHistory: WorkflowBottleneck[];
   // Flow metrics
-  currentMetrics: FlowMetrics| null;
-  metricsHistory: Array<{ timestamp: Date, metrics: FlowMetrics}>;
+  currentMetrics: FlowMetrics | null;
+  metricsHistory: Array<{ timestamp: Date; metrics: FlowMetrics }>;
   // System status
   systemHealth: number; // 0-1 range
-  lastOptimization: Date| null;
-  optimizationStrategy: OptimizationStrategy| null;
+  lastOptimization: Date | null;
+  optimizationStrategy: OptimizationStrategy | null;
   // Configuration
   config: WorkflowKanbanConfig;
   // Error handling
@@ -73,11 +73,11 @@ export interface WorkflowMachineContext {
  */
 export const createInitialContext = (
   config: WorkflowKanbanConfig
-):WorkflowMachineContext => ({
+): WorkflowMachineContext => ({
   // Initialize task management structures
-  tasks:  {},
-  tasksByState:  {
-    backlog:[],
+  tasks: {},
+  tasksByState: {
+    backlog: [],
     analysis: [],
     development: [],
     testing: [],
@@ -86,9 +86,9 @@ export const createInitialContext = (
     done: [],
     blocked: [],
     expedite: [],
-},
+  },
   // Initialize WIP management
-  wipLimits:  { ...config.defaultWIPLimits},
+  wipLimits: { ...config.defaultWIPLimits },
   wipViolations: [],
   // Initialize bottleneck tracking
   activeBottlenecks: [],
@@ -181,9 +181,7 @@ export class WorkflowContextUtils {
   /**
    * Calculate overall WIP utilization across work states
    */
-  static getOverallWIPUtilization(
-    context: WorkflowMachineContext
-  ): number {
+  static getOverallWIPUtilization(context: WorkflowMachineContext): number {
     const workStates: TaskState[] = [
       'analysis',
       'development',

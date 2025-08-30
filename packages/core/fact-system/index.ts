@@ -344,19 +344,19 @@
 // TYPE DEFINITIONS - Interfaces and types (tree-shakable)
 // =============================================================================
 export type {
-	APIDocumentationFactResult,
-	FactCacheEntry,
-	FactProcessingOptions,
-	FactSearchQuery,
-	FactSearchResult,
-	FactSourceType,
-	FactSystemConfig,
-	FactSystemStats,
-	GitHubFactResult,
-	NPMFactResult,
-	RustEngineConfig,
-	SecurityFactResult,
-} from "./src/main";
+  APIDocumentationFactResult,
+  FactCacheEntry,
+  FactProcessingOptions,
+  FactSearchQuery,
+  FactSearchResult,
+  FactSourceType,
+  FactSystemConfig,
+  FactSystemStats,
+  GitHubFactResult,
+  NPMFactResult,
+  RustEngineConfig,
+  SecurityFactResult,
+} from './src/main';
 // =============================================================================
 // PRIMARY ENTRY POINT - Main FACT system
 // =============================================================================
@@ -373,38 +373,38 @@ export type {
 // PROCESSORS - Data processing components
 // =============================================================================
 export {
-	createFactClient,
-	createKuzuFactClient,
-	createLanceDBFactClient,
-	createSQLiteFactClient,
-	DocumentationProcessor,
-	FactBridge,
-	FactClient as FactSystem,
-	FactClient as default,
-	IntelligentCache,
-	LiveAPIConnector,
-	NaturalLanguageQuery,
-} from "./src/main";
+  createFactClient,
+  createKuzuFactClient,
+  createLanceDBFactClient,
+  createSQLiteFactClient,
+  DocumentationProcessor,
+  FactBridge,
+  FactClient as FactSystem,
+  FactClient as default,
+  IntelligentCache,
+  LiveAPIConnector,
+  NaturalLanguageQuery,
+} from './src/main';
 
 // =============================================================================
 // METADATA - System information
 // =============================================================================
 export const FACT_SYSTEM_INFO = {
-	name:"@claude-zen/fact-system",
-	version:"1.0.0",
-	description:
-		"High-performance FACT system with Rust engine and TypeScript coordination",
-	features:[
-		"Multi-source fact gathering",
-		"High-performance Rust processing",
-		"Smart caching with multiple backends",
-		"GitHub GraphQL integration",
-		"NPM package analysis",
-		"Security advisory lookup",
-		"API documentation retrieval",
-		"Type-safe TypeScript API",
-		"Command-line interface",
-],
-	backends:["SQLite", "LanceDB", "Kuzu", "PostgreSQL"],
-	sources:["NPM Registry", "GitHub API", "NVD Security", "API Documentation"],
+  name: '@claude-zen/fact-system',
+  version: '1.0.0',
+  description:
+    'High-performance FACT system with Rust engine and TypeScript coordination',
+  features: [
+    'Multi-source fact gathering',
+    'High-performance Rust processing',
+    'Smart caching with multiple backends',
+    'GitHub GraphQL integration',
+    'NPM package analysis',
+    'Security advisory lookup',
+    'API documentation retrieval',
+    'Type-safe TypeScript API',
+    'Command-line interface',
+  ],
+  backends: ['SQLite', 'LanceDB', 'Kuzu', 'PostgreSQL'],
+  sources: ['NPM Registry', 'GitHub API', 'NVD Security', 'API Documentation'],
 } as const;

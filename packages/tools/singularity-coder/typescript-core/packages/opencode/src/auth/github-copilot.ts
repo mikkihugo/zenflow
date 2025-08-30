@@ -100,7 +100,7 @@ export namespace AuthGithubCopilot {
     const response = await fetch(COPILOT_API_KEY_URL, {
       headers:{
         Accept:"application/json",
-        Authorization:`Bearer ${info.refresh}`,`
+        Authorization:`Bearer ${info.refresh}`,
         "User-Agent":"GitHubCopilotChat/0.26.7",
         "Editor-Version":"vscode/1.99.3",
         "Editor-Plugin-Version":"copilot-chat/0.26.7",

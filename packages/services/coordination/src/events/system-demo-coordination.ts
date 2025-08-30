@@ -3,7 +3,7 @@
  *
  * Provides comprehensive SAFe 6.0 System Demo coordination capabilities
  * including demo planning, stakeholder management, and feedback collection.
- * 
+ *
  * @author Claude-Zen Team
  * @since 1.0.0
  * @version 1.0.0
@@ -27,20 +27,20 @@ export interface SystemDemoConfig {
   iterationNumber: number;
   demoDate: Date;
   duration: number; // minutes
-  
+
   // Demo environment
-  environment:  {
+  environment: {
     type: 'production' | 'staging' | 'demo';
     url?: string;
     credentials?: string;
     setupInstructions: string;
   };
-  
+
   // Participating teams and features
   teamDemonstrations: TeamDemonstration[];
-  
+
   // Stakeholders and attendees
-  attendees:  {
+  attendees: {
     businessOwners: string[];
     productManagement: string[];
     customers: string[];
@@ -48,18 +48,18 @@ export interface SystemDemoConfig {
     systemArchitects: string[];
     allTeamMembers: string[];
   };
-  
+
   // Demo configuration
-  settings:  {
+  settings: {
     recordDemo: boolean;
     enableLiveFeedback: boolean;
     requireFormalApproval: boolean;
     feedbackCollectionMethod: 'real_time' | 'post_demo' | 'hybrid';
     businessValueValidation: boolean;
   };
-  
+
   // Success criteria
-  successCriteria:  {
+  successCriteria: {
     piObjectiveProgress: string[];
     businessValueTargets: string[];
     stakeholderSatisfaction: number; // 1-10 scale
@@ -73,18 +73,18 @@ export interface SystemDemoConfig {
 export interface TeamDemonstration {
   teamId: string;
   teamName: string;
-  
+
   // Demo content
   featuresDemo: FeatureDemo[];
-  demoScript:  {
+  demoScript: {
     overview: string;
     keyMessages: string[];
     demoFlow: DemoStep[];
     timeAllocation: number; // minutes
   };
-  
+
   // Preparation status
-  preparation:  {
+  preparation: {
     environmentReady: boolean;
     dataSetup: boolean;
     scriptsValidated: boolean;
@@ -92,16 +92,16 @@ export interface TeamDemonstration {
     demoApproved: boolean;
     approvalGateId?: string;
   };
-  
+
   // Team representatives
-  presenters:  {
+  presenters: {
     primary: string; // usually Product Owner
     technical: string; // usually tech lead or developer
     backup: string;
   };
-  
+
   // Demo artifacts
-  artifacts:  {
+  artifacts: {
     screenshots: string[];
     demoVideos: string[];
     setupScripts: string[];
@@ -116,18 +116,18 @@ export interface FeatureDemo {
   featureId: string;
   featureName: string;
   businessValue: string;
-  
+
   // Demo content
   userStories: string[];
   acceptanceCriteria: string[];
   demoScenarios: DemoScenario[];
-  
+
   // PI Objective alignment
   piObjectiveId?: string;
   piObjectiveContribution: string;
-  
+
   // Business value metrics
-  metrics:  {
+  metrics: {
     performanceImprovements?: string[];
     userExperienceGains?: string[];
     businessProcessImpacts?: string[];
@@ -143,14 +143,14 @@ export interface DemoScenario {
   scenarioName: string;
   description: string;
   userPersona: string;
-  
+
   // Demo steps
   steps: DemoStep[];
-  
+
   // Expected outcomes
   expectedOutcome: string;
   businessValueDemonstrated: string;
-  
+
   // Technical details
   technicalHighlights: string[];
   integrationPoints: string[];
@@ -165,7 +165,7 @@ export interface DemoStep {
   expectedResult: string;
   notes?: string;
   duration: number; // seconds
-  
+
   // Technical setup
   prerequisiteSteps?: string[];
   dataRequirements?: string[];
@@ -179,31 +179,48 @@ export interface DemoFeedback {
   id: string;
   demoId: string;
   teamId?: string;
-  
+
   // Feedback source
   providedBy: string;
-  role: 'business_owner' | 'customer' | 'product_manager' | 'stakeholder' | 'team_member';
+  role:
+    | 'business_owner'
+    | 'customer'
+    | 'product_manager'
+    | 'stakeholder'
+    | 'team_member';
   timestamp: Date;
-  
+
   // Feedback content
-  feedback:  {
-    type: 'positive' | 'concern' | 'suggestion' | 'question' | 'approval' | 'rejection';
-    category: 'functionality' | 'usability' | 'performance' | 'business_value' | 'technical' | 'process';
+  feedback: {
+    type:
+      | 'positive'
+      | 'concern'
+      | 'suggestion'
+      | 'question'
+      | 'approval'
+      | 'rejection';
+    category:
+      | 'functionality'
+      | 'usability'
+      | 'performance'
+      | 'business_value'
+      | 'technical'
+      | 'process';
     priority: 'low' | 'medium' | 'high' | 'critical';
     description: string;
     specificDetails: string;
   };
-  
+
   // Business context
-  businessImpact:  {
+  businessImpact: {
     affectedProcesses: string[];
     customerImpact: string;
     businessValue: number; // 1-10 rating
     adoptionConcerns: string[];
   };
-  
+
   // Response and follow-up
-  response:  {
+  response: {
     acknowledgedBy: string;
     responseRequired: boolean;
     targetResponseDate?: Date;
@@ -211,7 +228,7 @@ export interface DemoFeedback {
     responseDate?: Date;
     followUpActions: string[];
   };
-  
+
   // Approval workflow integration
   triggersApproval: boolean;
   approvalGateId?: string;
@@ -224,12 +241,12 @@ export interface DemoFeedback {
 export interface DemoOutcome {
   demoId: string;
   completedAt: Date;
-  
+
   // Overall assessment
   overallSuccess: boolean;
   stakeholderSatisfaction: number; // 1-10 scale
   businessValueDemonstrated: boolean;
-  
+
   // PI Objective progress
   piObjectiveProgress: Array<{
     objectiveId: string;
@@ -237,9 +254,9 @@ export interface DemoOutcome {
     demonstratedCapabilities: string[];
     remainingWork: string[];
   }>;
-  
+
   // Feedback summary
-  feedbackSummary:  {
+  feedbackSummary: {
     totalFeedbackItems: number;
     positiveCount: number;
     concernsCount: number;
@@ -247,18 +264,22 @@ export interface DemoOutcome {
     approvalCount: number;
     rejectionCount: number;
   };
-  
+
   // Action items
   actionItems: Array<{
     item: string;
     priority: 'low' | 'medium' | 'high' | 'critical';
     assignedTo: string;
     dueDate: Date;
-    category: 'feature_enhancement' | 'bug_fix' | 'process_improvement' | 'documentation';
+    category:
+      | 'feature_enhancement'
+      | 'bug_fix'
+      | 'process_improvement'
+      | 'documentation';
   }>;
-  
+
   // Next steps
-  nextSteps:  {
+  nextSteps: {
     nextDemoDate?: Date;
     iterationPlanning: string[];
     stakeholderFollowUp: string[];
@@ -272,7 +293,7 @@ export interface DemoOutcome {
 
 /**
  * System Demo Coordination Service
- * 
+ *
  * Manages the complete SAFe System Demo lifecycle including planning,
  * execution coordination, feedback collection, and outcome tracking.
  */
@@ -298,7 +319,7 @@ export class SystemDemoCoordination {
     this.logger.info('Scheduling system demo', {
       artName: config.artName,
       piNumber: config.piNumber,
-      demoDate: config.demoDate
+      demoDate: config.demoDate,
     });
 
     // Store demo configuration
@@ -307,12 +328,12 @@ export class SystemDemoCoordination {
 
     // Validate demo readiness
     const readinessCheck = this.validateDemoReadiness(config);
-    
+
     return {
       demoId: config.id,
       scheduled: readinessCheck.ready,
       conflicts: readinessCheck.conflicts,
-      recommendations: readinessCheck.recommendations
+      recommendations: readinessCheck.recommendations,
     };
   }
 
@@ -328,7 +349,7 @@ export class SystemDemoCoordination {
     this.logger.info('Collecting demo feedback', {
       demoId: feedback.demoId,
       type: feedback.feedback.type,
-      priority: feedback.feedback.priority
+      priority: feedback.feedback.priority,
     });
 
     // Store feedback
@@ -337,8 +358,9 @@ export class SystemDemoCoordination {
     this.demoFeedback.set(feedback.demoId, existingFeedback);
 
     // Determine if immediate action is required
-    const triggersAction = feedback.feedback.priority === 'critical' || 
-                          feedback.feedback.type === 'rejection';
+    const triggersAction =
+      feedback.feedback.priority === 'critical' ||
+      feedback.feedback.type === 'rejection';
 
     const nextSteps = this.determineNextSteps(feedback);
 
@@ -346,7 +368,7 @@ export class SystemDemoCoordination {
       feedbackId: feedback.id,
       recorded: true,
       triggersAction,
-      nextSteps
+      nextSteps,
     };
   }
 
@@ -360,7 +382,7 @@ export class SystemDemoCoordination {
     }
 
     const feedback = this.demoFeedback.get(demoId) || [];
-    
+
     // Generate demo outcome
     const outcome = this.generateDemoOutcome(demo, feedback);
     this.demoOutcomes.set(demoId, outcome);
@@ -368,7 +390,7 @@ export class SystemDemoCoordination {
     this.logger.info('Demo completed', {
       demoId,
       overallSuccess: outcome.overallSuccess,
-      stakeholderSatisfaction: outcome.stakeholderSatisfaction
+      stakeholderSatisfaction: outcome.stakeholderSatisfaction,
     });
 
     return outcome;
@@ -377,11 +399,11 @@ export class SystemDemoCoordination {
   /**
    * Get demo status and metrics
    */
-  getDemoMetrics(demoId: string):  {
+  getDemoMetrics(demoId: string): {
     demo: SystemDemoConfig;
     feedback: DemoFeedback[];
     outcome?: DemoOutcome;
-    realTimeMetrics:  {
+    realTimeMetrics: {
       attendeeCount: number;
       feedbackCount: number;
       avgSatisfaction: number;
@@ -400,17 +422,21 @@ export class SystemDemoCoordination {
     const realTimeMetrics = {
       attendeeCount: Object.values(demo.attendees).flat().length,
       feedbackCount: feedback.length,
-      avgSatisfaction: feedback.length > 0 
-        ? feedback.reduce((sum, f) => sum + f.businessImpact.businessValue, 0) / feedback.length
-        : 0,
-      issueCount: feedback.filter(f => f.feedback.type === 'concern').length
+      avgSatisfaction:
+        feedback.length > 0
+          ? feedback.reduce(
+              (sum, f) => sum + f.businessImpact.businessValue,
+              0
+            ) / feedback.length
+          : 0,
+      issueCount: feedback.filter((f) => f.feedback.type === 'concern').length,
     };
 
     return {
       demo,
       feedback,
       outcome,
-      realTimeMetrics
+      realTimeMetrics,
     };
   }
 
@@ -418,7 +444,7 @@ export class SystemDemoCoordination {
   // PRIVATE HELPER METHODS
   // ============================================================================
 
-  private validateDemoReadiness(config: SystemDemoConfig):  {
+  private validateDemoReadiness(config: SystemDemoConfig): {
     ready: boolean;
     conflicts: string[];
     recommendations: string[];
@@ -447,7 +473,7 @@ export class SystemDemoCoordination {
     return {
       ready: conflicts.length === 0,
       conflicts,
-      recommendations
+      recommendations,
     };
   }
 
@@ -472,48 +498,66 @@ export class SystemDemoCoordination {
     return nextSteps;
   }
 
-  private generateDemoOutcome(demo: SystemDemoConfig, feedback: DemoFeedback[]): DemoOutcome {
+  private generateDemoOutcome(
+    demo: SystemDemoConfig,
+    feedback: DemoFeedback[]
+  ): DemoOutcome {
     // Calculate feedback summary
     const feedbackSummary = {
       totalFeedbackItems: feedback.length,
-      positiveCount: feedback.filter(f => f.feedback.type === 'positive').length,
-      concernsCount: feedback.filter(f => f.feedback.type === 'concern').length,
-      suggestionsCount: feedback.filter(f => f.feedback.type === 'suggestion').length,
-      approvalCount: feedback.filter(f => f.feedback.type === 'approval').length,
-      rejectionCount: feedback.filter(f => f.feedback.type === 'rejection').length
+      positiveCount: feedback.filter((f) => f.feedback.type === 'positive')
+        .length,
+      concernsCount: feedback.filter((f) => f.feedback.type === 'concern')
+        .length,
+      suggestionsCount: feedback.filter((f) => f.feedback.type === 'suggestion')
+        .length,
+      approvalCount: feedback.filter((f) => f.feedback.type === 'approval')
+        .length,
+      rejectionCount: feedback.filter((f) => f.feedback.type === 'rejection')
+        .length,
     };
 
     // Calculate overall satisfaction
-    const avgSatisfaction = feedback.length > 0
-      ? feedback.reduce((sum, f) => sum + f.businessImpact.businessValue, 0) / feedback.length
-      : 7; // Default neutral satisfaction
+    const avgSatisfaction =
+      feedback.length > 0
+        ? feedback.reduce((sum, f) => sum + f.businessImpact.businessValue, 0) /
+          feedback.length
+        : 7; // Default neutral satisfaction
 
     // Generate action items from feedback
     const actionItems = feedback
-      .filter(f => f.feedback.type === 'concern' || f.feedback.type === 'suggestion')
+      .filter(
+        (f) => f.feedback.type === 'concern' || f.feedback.type === 'suggestion'
+      )
       .map((f, index) => ({
         item: f.feedback.description,
         priority: f.feedback.priority,
         assignedTo: f.response.acknowledgedBy || 'TBD',
         dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
-        category: 'feature_enhancement' as const
+        category: 'feature_enhancement' as const,
       }));
 
     return {
       demoId: demo.id,
       completedAt: new Date(),
-      overallSuccess: feedbackSummary.rejectionCount === 0 && avgSatisfaction >= 6,
+      overallSuccess:
+        feedbackSummary.rejectionCount === 0 && avgSatisfaction >= 6,
       stakeholderSatisfaction: avgSatisfaction,
-      businessValueDemonstrated: feedbackSummary.positiveCount > feedbackSummary.concernsCount,
+      businessValueDemonstrated:
+        feedbackSummary.positiveCount > feedbackSummary.concernsCount,
       piObjectiveProgress: [], // Would be calculated from actual PI objectives
       feedbackSummary,
       actionItems,
-      nextSteps:  {
+      nextSteps: {
         nextDemoDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 2 weeks from now
         iterationPlanning: ['Review feedback', 'Update iteration goals'],
-        stakeholderFollowUp: ['Send demo recording', 'Schedule follow-up meetings'],
-        businessApprovals: feedbackSummary.approvalCount > 0 ? ['Process approvals'] : []
-      }
+        stakeholderFollowUp: [
+          'Send demo recording',
+          'Schedule follow-up meetings',
+        ],
+        businessApprovals:
+          feedbackSummary.approvalCount > 0 ? ['Process approvals'] : [],
+      },
     };
   }
 }

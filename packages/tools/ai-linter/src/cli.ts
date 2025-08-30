@@ -26,7 +26,11 @@ function parseArgs(argv: string[]) {
   return { args, files };
 }
 
-type MinimalResult = { filePath: string; originalErrors: number; fixedErrors: number };
+type MinimalResult = {
+  filePath: string;
+  originalErrors: number;
+  fixedErrors: number;
+};
 function toSarif(results: MinimalResult[]) {
   return {
     version: '2.1.0',

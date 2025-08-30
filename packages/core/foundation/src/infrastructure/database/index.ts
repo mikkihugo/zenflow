@@ -4,4 +4,4 @@
  * Database facade and related utilities for foundation-based database access.
  */
 
-export * from "./database-facade.js";
+export * from './database-facade.js';

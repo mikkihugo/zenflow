@@ -1,49 +1,49 @@
-import { z} from "@claude-zen/foundation"
-import { mergeDeep} from "remeda"
-import { App} from "../app/app"
-import { Config} from "../config/config"
+import { z } from "@claude-zen/foundation"
+import { mergeDeep } from "remeda"
+import { App } from "../app/app"
+import { Config } from "../config/config"
 
 export namespace Mode {
   export const Info = z
     .object({
-      name:z.string(),
-      model:z
+      name: z.string(),
+      model: z
         .object({
-          modelID:z.string(),
-          providerID:z.string(),
-})
+          modelID: z.string(),
+          providerID: z.string(),
+        })
         .optional(),
-      prompt:z.string().optional(),
-      tools:z.record(z.boolean()),
-})
+      prompt: z.string().optional(),
+      tools: z.record(z.boolean()),
+    })
     .openapi({
-      ref:"Mode",
-})
+      ref: "Mode",
+    })
   export type Info = z.infer<typeof Info>
   const state = App.state("mode", async () => {
     const cfg = await Config.get()
     const mode = mergeDeep(
       {
-        build:{},
-        plan:{
-          tools:{
-            write:false,
-            edit:false,
-            patch:false,
-            bash:false,
-},
-},
-},
+        build: {},
+        plan: {
+          tools: {
+            write: false,
+            edit: false,
+            patch: false,
+            bash: false,
+          },
+        },
+      },
       cfg.mode ?? {},
     )
-    const result:Record<string, Info> = {}
+    const result: Record<string, Info> = {}
     for (const [key, value] of Object.entries(mode)) {
       let item = result[key]
       if (!item)
         item = result[key] = {
-          name:key,
-          tools:{},
-}
+          name: key,
+          tools: {},
+        }
       const model = value.model ?? cfg.model
       if (model) {
         const [providerID, ...rest] = model.split("/")
@@ -51,20 +51,20 @@ export namespace Mode {
         item.model = {
           modelID,
           providerID,
-}
-}
+        }
+      }
       if (value.prompt) item.prompt = value.prompt
       if (value.tools) item.tools = value.tools
-}
+    }
 
     return result
-})
+  })
 
-  export async function get(mode:string) {
+  export async function get(mode: string) {
     return state().then((x) => x[mode])
-}
+  }
 
   export async function list() {
     return state().then((x) => Object.values(x))
-}
+  }
 }

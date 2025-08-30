@@ -120,7 +120,9 @@ function setupClassicalTDD() {
    * @param config - Configuration for data generation
    * @returns Array of training data points
    */
-  globalThis.generateNeuralTestData = (config: NeuralTestConfig): NeuralTestData[] => {
+  globalThis.generateNeuralTestData = (
+    config: NeuralTestConfig
+  ): NeuralTestData[] => {
     switch (config.type) {
       case 'xor':
         return [
@@ -182,7 +184,9 @@ function setupHybridTDD() {
   };
 
   // Memory-specific test utilities
-  globalThis.createMemoryTestScenario = (type: 'sqlite' | 'lancedb' | 'json') => {
+  globalThis.createMemoryTestScenario = (
+    type: 'sqlite' | 'lancedb' | 'json'
+  ) => {
     switch (type) {
       case 'sqlite':
         return {
@@ -213,7 +217,9 @@ function setupHybridTDD() {
  */
 function cleanupClassicalResources() {
   const g = (globalThis as any).gc;
-  const startMem = (globalThis as any).testStartMemory as NodeJS.MemoryUsage | undefined;
+  const startMem = (globalThis as any).testStartMemory as
+    | NodeJS.MemoryUsage
+    | undefined;
   if (typeof g === 'function' && startMem) {
     try {
       g();
@@ -268,7 +274,12 @@ function cleanupClassicalResources() {
  * @param phase
  */
 (globalThis as any).createSPARCTestScenario = (
-  phase: 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion'
+  phase:
+    | 'specification'
+    | 'pseudocode'
+    | 'architecture'
+    | 'refinement'
+    | 'completion'
 ) => {
   return {
     phase,
@@ -313,7 +324,12 @@ interface TestContainer {
  */
 interface SPARCTestScenario {
   /** SPARC phase */
-  phase: 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion';
+  phase:
+    | 'specification'
+    | 'pseudocode'
+    | 'architecture'
+    | 'refinement'
+    | 'completion';
   /** Test input */
   input: string;
   /** Expected output */
@@ -324,6 +340,5 @@ interface SPARCTestScenario {
 
 // Type declarations for global test utilities
 // Types are now declared in global-types.ts
-
 
 export { HYBRID_CONFIG };

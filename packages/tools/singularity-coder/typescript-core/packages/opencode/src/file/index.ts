@@ -37,7 +37,7 @@ export namespace File {
     const app = App.info()
     if (!app.git) return []
 
-    const __diffOutput = await $`git diff --numstat HEAD`.cwd(app.path.cwd).quiet().nothrow().text()`
+    const __diffOutput = await $`git diff --numstat HEAD`.cwd(app.path.cwd).quiet().nothrow().text()
 
     const changedFiles:Info[] = []
 
@@ -54,7 +54,7 @@ export namespace File {
 }
 }
 
-    const untrackedOutput = await $`git ls-files --others --exclude-standard`.cwd(app.path.cwd).quiet().nothrow().text()`
+    const untrackedOutput = await $`git ls-files --others --exclude-standard`.cwd(app.path.cwd).quiet().nothrow().text()
 
     if (untrackedOutput.trim()) {
       const untrackedFiles = untrackedOutput.trim().split("\n")
@@ -74,7 +74,7 @@ export namespace File {
 }
 
     // Get deleted files
-    const __deletedOutput = await $`git diff --name-only --diff-filter=D HEAD`.cwd(app.path.cwd).quiet().nothrow().text()`
+    const __deletedOutput = await $`git diff --name-only --diff-filter=D HEAD`.cwd(app.path.cwd).quiet().nothrow().text()
 
     if (deletedOutput.trim()) {
       const deletedFiles = deletedOutput.trim().split("\n")
@@ -110,7 +110,7 @@ export namespace File {
         filepath:rel,
 })
       if (diff !== "unmodified") {
-        const original = await $`git show HEAD:$rel`.cwd(app.path.root).quiet().nothrow().text()`
+        const original = await $`git show HEAD:$rel`.cwd(app.path.root).quiet().nothrow().text()
         const patch = createPatch(file, original, content, "old", "new", {
           context:Infinity,
 })

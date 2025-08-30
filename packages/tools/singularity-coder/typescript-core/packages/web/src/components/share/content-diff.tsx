@@ -23,7 +23,7 @@ export function ContentDiff(props: Props) {
 
       for (const patch of patches) {
         for (const hunk of patch.hunks) {
-          const {lines} = hunk
+          const { lines } = hunk
           let i = 0
 
           while (i < lines.length) {

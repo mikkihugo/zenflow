@@ -7,8 +7,5 @@
   },
   "include": ["src/**/*.ts"],
   "exclude": ["dist", "node_modules", "**/*.test.ts", "**/*.spec.ts"],
-  "references": [
-    { "path": "../foundation" },
-    { "path": "../database" }
-  ]
+  "references": [{ "path": "../foundation" }, { "path": "../database" }]
 }

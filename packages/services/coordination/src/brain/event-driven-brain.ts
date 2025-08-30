@@ -1,6 +1,6 @@
 /**
  * @fileoverview Event-Driven Brain Integration
- * 
+ *
  * Brain system that coordinates with DSPy via events instead of direct calls.
  * Provides ML-powered coordination through event architecture.
  */
@@ -10,7 +10,7 @@ import type {
   DspyOptimizationRequest,
   DspyOptimizationResult,
   DspyLlmRequest,
-  DspyLlmResponse
+  DspyLlmResponse,
 } from '../dspy/event-driven-dspy.js';
 
 const logger = getLogger('EventDrivenBrain');
@@ -24,7 +24,7 @@ const DSPY_OPTIMIZATION_COMPLETE = DSPY_OPTIMIZATION_COMPLETE;
 export interface BrainPredictionRequest {
   requestId: string;
   domain: string;
-  context:  {
+  context: {
     complexity: number;
     priority: string;
     timeLimit?: number;
@@ -80,24 +80,35 @@ export class EventDrivenBrain extends EventBus {
   private setupEventHandlers(): void {
     // Handle prediction requests
     this.on('brain:predict-request', this.handlePredictionRequest.bind(this));
-    
+
     // Handle DSPy optimization results
     this.on(DSPY_OPTIMIZATION_COMPLETE, this.handleDspyResult.bind(this));
-    
+
     // Handle DSPy LLM requests (Brain coordinates LLM calls)
     this.on('dspy:llm-request', this.handleDspyLlmRequest.bind(this));
-    
+
     // Handle LLM responses for DSPy
     this.on('llm:inference-response', this.handleLlmResponse.bind(this));
-    
+
     // System availability detection
-    this.on('system:dspy-available', () => { this.dspySystemAvailable = true; });
-    this.on('system:llm-available', () => { this.llmSystemAvailable = true; });
-    this.on('system:knowledge-available', () => { this.knowledgeSystemAvailable = true; });
-    this.on('system:facts-available', () => { this.factsSystemAvailable = true; });
-    
+    this.on('system:dspy-available', () => {
+      this.dspySystemAvailable = true;
+    });
+    this.on('system:llm-available', () => {
+      this.llmSystemAvailable = true;
+    });
+    this.on('system:knowledge-available', () => {
+      this.knowledgeSystemAvailable = true;
+    });
+    this.on('system:facts-available', () => {
+      this.factsSystemAvailable = true;
+    });
+
     // Handle knowledge integration
-    this.on('knowledge:query-response', this.handleKnowledgeResponse.bind(this));
+    this.on(
+      'knowledge:query-response',
+      this.handleKnowledgeResponse.bind(this)
+    );
     this.on('facts:validation-response', this.handleFactsResponse.bind(this));
   }
 
@@ -107,13 +118,13 @@ export class EventDrivenBrain extends EventBus {
   private detectAvailableSystems(): void {
     // Emit detection events
     this.emit('brain:system-detection', { timestamp: new Date() });
-    
+
     // Detect Knowledge system
     this.emit('brain:detect-knowledge', { requestId: `detect-${Date.now()}` });
-    
-    // Detect Facts system  
+
+    // Detect Facts system
     this.emit('brain:detect-facts', { requestId: `detect-${Date.now()}` });
-    
+
     // Production system detection with fallback
     setTimeout(() => {
       // Default to available for production stability
@@ -125,24 +136,32 @@ export class EventDrivenBrain extends EventBus {
         this.llmSystemAvailable = true;
         logger.info('LLM system defaulted to available for production');
       }
-      logger.info(`Brain systems detected - DSPy: ${this.dspySystemAvailable}, LLM: ${this.llmSystemAvailable}`);
+      logger.info(
+        `Brain systems detected - DSPy: ${this.dspySystemAvailable}, LLM: ${this.llmSystemAvailable}`
+      );
     }, 1000);
   }
 
   /**
    * Handle brain prediction requests
    */
-  private async handlePredictionRequest(request: BrainPredictionRequest): Promise<void> {
-    const requestId = request.requestId || `brain-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    
+  private async handlePredictionRequest(
+    request: BrainPredictionRequest
+  ): Promise<void> {
+    const requestId =
+      request.requestId ||
+      `brain-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
     const fullRequest: BrainPredictionRequest = {
       ...request,
       requestId,
-      useAdvancedOptimization: request.useAdvancedOptimization !== false // Default to true
+      useAdvancedOptimization: request.useAdvancedOptimization !== false, // Default to true
     };
 
     this.activePredictions.set(requestId, fullRequest);
-    logger.info(`Brain prediction requested: ${request.domain} - complexity ${request.context.complexity}`);
+    logger.info(
+      `Brain prediction requested: ${request.domain} - complexity ${request.context.complexity}`
+    );
 
     try {
       // Query knowledge system for context
@@ -151,7 +170,7 @@ export class EventDrivenBrain extends EventBus {
           requestId,
           domain: request.domain,
           context: request.context,
-          query: request.prompt || `Knowledge for ${request.domain}`
+          query: request.prompt || `Knowledge for ${request.domain}`,
         });
       }
 
@@ -160,7 +179,7 @@ export class EventDrivenBrain extends EventBus {
         this.emit('facts:validate', {
           requestId,
           domain: request.domain,
-          claims: [request.prompt || `Facts for ${request.domain}`]
+          claims: [request.prompt || `Facts for ${request.domain}`],
         });
       }
 
@@ -171,13 +190,15 @@ export class EventDrivenBrain extends EventBus {
 
       switch (strategy) {
         case 'dspy':
-          ({ predictions, optimizationUsed } = await this.predictViaDSPy(request));
+          ({ predictions, optimizationUsed } =
+            await this.predictViaDSPy(request));
           break;
         case 'neural':
           predictions = await this.predictViaNeural(request);
           break;
         case 'hybrid':
-          ({ predictions, optimizationUsed } = await this.predictViaHybrid(request));
+          ({ predictions, optimizationUsed } =
+            await this.predictViaHybrid(request));
           break;
         default:
           predictions = await this.predictViaBasic(request);
@@ -190,7 +211,7 @@ export class EventDrivenBrain extends EventBus {
         confidence: this.calculateConfidence(predictions, strategy),
         strategy,
         optimizationUsed,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
 
       // Store in history
@@ -201,7 +222,6 @@ export class EventDrivenBrain extends EventBus {
 
       // Emit result
       this.emit('brain:prediction-complete', result);
-      
     } catch (error) {
       logger.error(`Brain prediction failed: ${error}`);
       this.emit('brain:prediction-error', { requestId, error: error.message });
@@ -213,37 +233,45 @@ export class EventDrivenBrain extends EventBus {
   /**
    * Select optimal prediction strategy
    */
-  private selectPredictionStrategy(request: BrainPredictionRequest): 'dspy' | 'neural' | 'hybrid' | 'basic' {
+  private selectPredictionStrategy(
+    request: BrainPredictionRequest
+  ): 'dspy' | 'neural' | 'hybrid' | 'basic' {
     const { complexity, timeLimit } = request.context;
-    
+
     // High complexity + available DSPy = DSPy strategy
     if (complexity > 0.7 && this.dspySystemAvailable) {
       return 'dspy';
     }
-    
+
     // Medium complexity + both systems = Hybrid
-    if (complexity > 0.5 && this.dspySystemAvailable && this.llmSystemAvailable) {
+    if (
+      complexity > 0.5 &&
+      this.dspySystemAvailable &&
+      this.llmSystemAvailable
+    ) {
       return 'hybrid';
     }
-    
+
     // Low complexity or time constraints = Basic
     if (complexity < 0.3 || (timeLimit && timeLimit < 5000)) {
       return 'basic';
     }
-    
+
     return 'neural';
   }
 
   /**
    * Predict via DSPy optimization
    */
-  private predictViaDSPy(request: BrainPredictionRequest): Promise<{ predictions: BrainPrediction[], optimizationUsed: boolean }> {
+  private predictViaDSPy(
+    request: BrainPredictionRequest
+  ): Promise<{ predictions: BrainPrediction[]; optimizationUsed: boolean }> {
     return new Promise((resolve, reject) => {
       const dspyRequest: DspyOptimizationRequest = {
         requestId: request.requestId,
         prompt: request.prompt || '',
         context: request.context,
-        useOptimization: request.useAdvancedOptimization !== false
+        useOptimization: request.useAdvancedOptimization !== false,
       };
 
       const timeout = setTimeout(() => {
@@ -256,7 +284,7 @@ export class EventDrivenBrain extends EventBus {
           this.off(DSPY_OPTIMIZATION_COMPLETE, handler);
           resolve({
             predictions: result.predictions || [],
-            optimizationUsed: result.optimizationUsed || false
+            optimizationUsed: result.optimizationUsed || false,
           });
         }
       };
@@ -269,52 +297,60 @@ export class EventDrivenBrain extends EventBus {
   /**
    * Predict via neural networks
    */
-  private predictViaNeural(request: BrainPredictionRequest): Promise<BrainPrediction[]> {
+  private predictViaNeural(
+    request: BrainPredictionRequest
+  ): Promise<BrainPrediction[]> {
     // Enhanced neural prediction with knowledge integration
     logger.info(`Neural prediction for ${request.domain}`);
-    
+
     const knowledgeData = request.data?.knowledge;
     const factsData = request.data?.facts;
-    
+
     let confidence = 0.8;
     let reasoning = 'Neural network inference';
-    
+
     // Boost confidence with knowledge validation
     if (knowledgeData && request.data?.knowledgeConfidence) {
-      confidence = Math.min(0.95, confidence + (request.data.knowledgeConfidence * 0.1));
+      confidence = Math.min(
+        0.95,
+        confidence + request.data.knowledgeConfidence * 0.1
+      );
       reasoning += ' enhanced with knowledge base';
     }
-    
+
     // Boost confidence with facts validation
     if (factsData && request.data?.factsValidated) {
       confidence = Math.min(0.98, confidence + 0.05);
       reasoning += ' and validated facts';
     }
-    
+
     const result: BrainPrediction = {
       confidence,
       value: `neural-prediction-${request.domain}`,
-      reasoning
+      reasoning,
     };
-    
+
     return Promise.resolve([result]);
   }
 
   /**
    * Predict via hybrid approach
    */
-  private async predictViaHybrid(request: BrainPredictionRequest): Promise<{ predictions: BrainPrediction[], optimizationUsed: boolean }> {
+  private async predictViaHybrid(
+    request: BrainPredictionRequest
+  ): Promise<{ predictions: BrainPrediction[]; optimizationUsed: boolean }> {
     // Combine DSPy and neural approaches
     const [dspyResult, neuralResult] = await Promise.allSettled([
       this.predictViaDSPy(request),
-      this.predictViaNeural(request)
+      this.predictViaNeural(request),
     ]);
 
     const predictions: BrainPrediction[] = [];
     let optimizationUsed = false;
 
     if (dspyResult.status === 'fulfilled') {
-      const { predictions: dspyPredictions, optimizationUsed: dspyOptimized } = dspyResult.value;
+      const { predictions: dspyPredictions, optimizationUsed: dspyOptimized } =
+        dspyResult.value;
       predictions.push(...dspyPredictions);
       optimizationUsed = dspyOptimized;
     }
@@ -329,52 +365,62 @@ export class EventDrivenBrain extends EventBus {
   /**
    * Basic prediction fallback
    */
-  private predictViaBasic(request: BrainPredictionRequest): Promise<BrainPrediction[]> {
+  private predictViaBasic(
+    request: BrainPredictionRequest
+  ): Promise<BrainPrediction[]> {
     logger.info(`Basic prediction for ${request.domain}`);
-    
+
     const knowledgeData = request.data?.knowledge;
     const factsData = request.data?.facts;
-    
+
     let confidence = 0.6;
     let reasoning = 'Simple heuristic inference';
-    
+
     // Even basic predictions benefit from knowledge
     if (knowledgeData) {
       confidence = Math.min(0.75, confidence + 0.1);
       reasoning += ' with knowledge context';
     }
-    
+
     if (factsData && request.data?.factsValidated) {
       confidence = Math.min(0.8, confidence + 0.05);
       reasoning += ' and fact validation';
     }
-    
+
     const result: BrainPrediction = {
       confidence,
       value: `basic-prediction-${request.domain}`,
-      reasoning
+      reasoning,
     };
-    
+
     return Promise.resolve([result]);
   }
 
   /**
    * Calculate prediction confidence
    */
-  private calculateConfidence(predictions: BrainPrediction[], strategy: string): number {
+  private calculateConfidence(
+    predictions: BrainPrediction[],
+    strategy: string
+  ): number {
     if (!predictions || predictions.length === 0) return 0;
-    
-    const baseConfidence = predictions.reduce((sum, pred) => sum + (pred.confidence || 0.5), 0) / predictions.length;
+
+    const baseConfidence =
+      predictions.reduce((sum, pred) => sum + (pred.confidence || 0.5), 0) /
+      predictions.length;
 
     // Adjust based on strategy
     const strategyMultiplier = {
       dspy: 1.2,
       hybrid: 1.1,
       neural: 1.0,
-      basic: 0.8
+      basic: 0.8,
     };
 
-    return Math.min(1.0, baseConfidence * (strategyMultiplier[strategy] || 1.0));
+    return Math.min(
+      1.0,
+      baseConfidence * (strategyMultiplier[strategy] || 1.0)
+    );
   }
 
   /**
@@ -406,24 +452,40 @@ export class EventDrivenBrain extends EventBus {
   /**
    * Handle knowledge system responses
    */
-  private handleKnowledgeResponse(response:  { requestId: string, knowledge: Record<string, unknown>, confidence: number }): void {
+  private handleKnowledgeResponse(response: {
+    requestId: string;
+    knowledge: Record<string, unknown>;
+    confidence: number;
+  }): void {
     logger.info(`Knowledge response received: ${response.requestId}`);
     // Integrate knowledge into active predictions
     const prediction = this.activePredictions.get(response.requestId);
     if (prediction) {
-      prediction.data = { ...prediction.data, knowledge: response.knowledge, knowledgeConfidence: response.confidence };
+      prediction.data = {
+        ...prediction.data,
+        knowledge: response.knowledge,
+        knowledgeConfidence: response.confidence,
+      };
     }
   }
 
   /**
    * Handle facts system responses
    */
-  private handleFactsResponse(response:  { requestId: string, facts: Record<string, unknown>[], validated: boolean }): void {
+  private handleFactsResponse(response: {
+    requestId: string;
+    facts: Record<string, unknown>[];
+    validated: boolean;
+  }): void {
     logger.info(`Facts validation response: ${response.requestId}`);
     // Integrate facts validation into active predictions
     const prediction = this.activePredictions.get(response.requestId);
     if (prediction) {
-      prediction.data = { ...prediction.data, facts: response.facts, factsValidated: response.validated };
+      prediction.data = {
+        ...prediction.data,
+        facts: response.facts,
+        factsValidated: response.validated,
+      };
     }
   }
 
@@ -437,7 +499,7 @@ export class EventDrivenBrain extends EventBus {
   /**
    * Get system status
    */
-  public getSystemStatus():  {
+  public getSystemStatus(): {
     dspyAvailable: boolean;
     llmAvailable: boolean;
     activePredictions: number;
@@ -452,7 +514,7 @@ export class EventDrivenBrain extends EventBus {
       dspyAvailable: this.dspySystemAvailable,
       llmAvailable: this.llmSystemAvailable,
       activePredictions: this.activePredictions.size,
-      totalHistoryEntries
+      totalHistoryEntries,
     };
   }
 }
