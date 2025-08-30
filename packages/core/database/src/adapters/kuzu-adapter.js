@@ -818,4 +818,3 @@ class KuzuTransactionConnection {
         });
     }
 }
-//# sourceMappingURL=kuzu-adapter.js.map

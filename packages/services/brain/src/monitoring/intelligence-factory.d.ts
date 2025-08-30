@@ -16,7 +16,5 @@ export declare function createProductionIntelligenceSystem(): CompleteIntelligen
 /**
  * Create a custom intelligence system with provided configuration
  */
-export declare function createIntelligenceSystem(
-  config: IntelligenceSystemConfig
-): CompleteIntelligenceSystem;
+export declare function createIntelligenceSystem(config: IntelligenceSystemConfig): CompleteIntelligenceSystem;
 //# sourceMappingURL=intelligence-factory.d.ts.map

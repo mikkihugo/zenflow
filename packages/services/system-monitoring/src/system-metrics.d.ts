@@ -26,73 +26,70 @@
  */
 import type { Logger } from '@claude-zen/foundation';
 export interface CpuMetrics {
-  usage_percent: number;
-  user_time_ms: number;
-  system_time_ms: number;
-  cores: number;
-  load_average: number[];
+    usage_percent: number;
+    user_time_ms: number;
+    system_time_ms: number;
+    cores: number;
+    load_average: number[];
 }
 export interface MemoryMetrics {
-  used_mb: number;
-  total_mb: number;
-  free_mb: number;
-  heap_used_mb: number;
-  heap_total_mb: number;
-  external_mb: number;
-  rss_mb: number;
+    used_mb: number;
+    total_mb: number;
+    free_mb: number;
+    heap_used_mb: number;
+    heap_total_mb: number;
+    external_mb: number;
+    rss_mb: number;
 }
 export interface SystemPerformanceTracker {
-  start_time: number;
-  end_time?: number;
-  duration_ms?: number;
-  memory_start: NodeJS.MemoryUsage;
-  memory_end?: NodeJS.MemoryUsage;
-  memory_delta_mb?: number;
+    start_time: number;
+    end_time?: number;
+    duration_ms?: number;
+    memory_start: NodeJS.MemoryUsage;
+    memory_end?: NodeJS.MemoryUsage;
+    memory_delta_mb?: number;
 }
 export interface SystemHealth {
-  status: 'healthy' | ' warning' | ' critical';
-  cpu_health: 'good' | ' high' | ' critical';
-  memory_health: 'good' | ' high' | ' critical';
-  load_health: 'good' | ' high' | ' critical';
-  recommendations: string[];
+    status: 'healthy' | ' warning' | ' critical';
+    cpu_health: 'good' | ' high' | ' critical';
+    memory_health: 'good' | ' high' | ' critical';
+    load_health: 'good' | ' high' | ' critical';
+    recommendations: string[];
 }
 export declare class SystemMetricsError extends Error {
-  readonly metric?: string | undefined;
-  constructor(message: string, metric?: string | undefined);
+    readonly metric?: string | undefined;
+    constructor(message: string, metric?: string | undefined);
 }
 export declare class SystemMetricsCollector {
-  private static instance;
-  private cpuBaseline;
-  private lastCpuCheck;
-  private performanceTrackers;
-  private logger;
-  private constructor();
-  /**
-   * Get singleton instance with optional logger
-   */
-  static getInstance(logger?: Logger): SystemMetricsCollector;
-  /**
-   * Get CPU metrics
-   */
-  getCpuMetrics(): CpuMetrics;
-  /**
-   * Get memory metrics
-   */
-  getMemoryMetrics(): MemoryMetrics;
-  /**
-   * Start performance tracking for an operation
-   */
-  startPerformanceTracking(operationId: string): void;
-  endTime: number;
-  endMemory: NodeJS.MemoryUsage;
-  MB_DIVISOR: number;
-  tracker: any;
-  end_time: any;
-  tracker: any;
-  duration_ms: number;
-  tracker: any;
-  memory_end: any;
-  tracker: any;
-  memory_delta_mb: number;
+    private static instance;
+    private cpuBaseline;
+    private lastCpuCheck;
+    private performanceTrackers;
+    private logger;
+    private constructor();
+    /**
+     * Get singleton instance with optional logger
+     */
+    static getInstance(logger?: Logger): SystemMetricsCollector;
+    /**
+     * Get CPU metrics
+     */
+    getCpuMetrics(): CpuMetrics;
+    /**
+     * Get memory metrics
+     */
+    getMemoryMetrics(): MemoryMetrics;
+    /**
+     * Start performance tracking for an operation
+     */
+    startPerformanceTracking(operationId: string): void;
 }
+/**
+ * DI token for SystemMetricsCollector
+ */
+export declare const SYSTEM_METRICS_COLLECTOR_TOKEN: unique symbol;
+/**
+ * Create SystemMetricsCollector with DI
+ */
+export declare function createSystemMetricsCollector(logger?: Logger): SystemMetricsCollector;
 //# sourceMappingURL=system-metrics.d.ts.map

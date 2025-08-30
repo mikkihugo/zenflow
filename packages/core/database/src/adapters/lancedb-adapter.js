@@ -1091,4 +1091,3 @@ class LanceDBTransactionConnection {
         });
     }
 }
-//# sourceMappingURL=lancedb-adapter.js.map

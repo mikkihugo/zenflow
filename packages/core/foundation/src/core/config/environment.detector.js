@@ -31,21 +31,21 @@
  * @since 2.1.0
  * @version 1.0.0
  */
-import { exec } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
-import { access, readFile, writeFile } from "node:fs/promises";
-import { homedir } from "node:os";
-import { join } from "node:path";
-import { promisify } from "node:util";
-import { EventEmitter } from "../../events/event-emitter.js";
-import { WorkspaceDetector, } from "../../utilities/system/index.js";
-import { getLogger } from "../logging/index.js";
+import { exec } from 'node:child_process';
+import { existsSync, readFileSync } from 'node:fs';
+import { access, readFile, writeFile } from 'node:fs/promises';
+import { homedir } from 'node:os';
+import { join } from 'node:path';
+import { promisify } from 'node:util';
+import { EventEmitter } from '../../events/event-emitter.js';
+import { WorkspaceDetector, } from '../../utilities/system/index.js';
+import { getLogger } from '../logging/index.js';
 const execAsync = promisify(exec);
 // Constants for common tool types and commands
-const PACKAGE_MANAGER_TYPE = "package-manager";
-const VERSION_CMD = " --version";
-const BUILD_TOOL_TYPE = "build-tool";
-const COMPILER_TYPE = "compiler";
+const PACKAGE_MANAGER_TYPE = 'package-manager';
+const VERSION_CMD = ' --version';
+const BUILD_TOOL_TYPE = 'build-tool';
+const COMPILER_TYPE = 'compiler';
 /**
  * Specialized error for environment detection failures.
  * Provides context about which tool or component caused the failure.
@@ -58,7 +58,7 @@ export class EnvironmentDetectionError extends Error {
     constructor(message, tool) {
         super(message);
         this.tool = tool;
-        this.name = "EnvironmentDetectionError";
+        this.name = 'EnvironmentDetectionError';
     }
 }
 // ============================================================================
@@ -101,7 +101,7 @@ export class EnvironmentDetector extends EventEmitter {
         });
         this.projectRoot = projectRoot;
         this.refreshInterval = refreshInterval;
-        this.logger = logger || getLogger("EnvironmentDetector");
+        this.logger = logger || getLogger('EnvironmentDetector');
         // Initialize workspace detector for comprehensive environment analysis
         this.workspaceDetector = null;
         if (autoRefresh) {
@@ -131,7 +131,7 @@ export class EnvironmentDetector extends EventEmitter {
         if (this.detectionInterval) {
             clearInterval(this.detectionInterval);
             this.detectionInterval = null;
-            this.logger.info("Stopped auto-detection");
+            this.logger.info('Stopped auto-detection');
         }
     }
     /**
@@ -146,7 +146,7 @@ export class EnvironmentDetector extends EventEmitter {
             return this.snapshot || this.createEmptySnapshot();
         }
         this.isDetecting = true;
-        this.logger.info("Starting environment detection...");
+        this.logger.info('Starting environment detection...');
         try {
             const [tools, projectContext, systemCapabilities, nixEnvironment] = await Promise.all([
                 this.detectTools(),
@@ -163,11 +163,11 @@ export class EnvironmentDetector extends EventEmitter {
                 nixEnvironment,
                 suggestions,
             };
-            this.emit("service-started", {
-                serviceName: "environment-detector",
+            this.emit('service-started', {
+                serviceName: 'environment-detector',
                 timestamp: new Date(),
             });
-            this.logger.info("Environment detection completed", {
+            this.logger.info('Environment detection completed', {
                 toolsFound: tools.filter((t) => t.available).length,
                 totalTools: tools.length,
                 languages: projectContext.languages,
@@ -176,8 +176,8 @@ export class EnvironmentDetector extends EventEmitter {
             return this.snapshot;
         }
         catch (error) {
-            this.logger.error("Environment detection failed:", error);
-            throw new EnvironmentDetectionError(`Failed to detect environment:${error instanceof Error ? error['message'] : "Unknown error"}`);
+            this.logger.error('Environment detection failed:', error);
+            throw new EnvironmentDetectionError(`Failed to detect environment:${error instanceof Error ? error['message'] : 'Unknown error'}`);
         }
         finally {
             this.isDetecting = false;
@@ -198,82 +198,82 @@ export class EnvironmentDetector extends EventEmitter {
         return [
             // Package Managers
             {
-                name: "npm",
+                name: 'npm',
                 type: PACKAGE_MANAGER_TYPE,
                 command: `npm${VERSION_CMD}`,
             },
             {
-                name: "yarn",
+                name: 'yarn',
                 type: PACKAGE_MANAGER_TYPE,
                 command: `yarn${VERSION_CMD}`,
             },
             {
-                name: "pnpm",
+                name: 'pnpm',
                 type: PACKAGE_MANAGER_TYPE,
                 command: `pnpm${VERSION_CMD}`,
             },
             {
-                name: "bun",
+                name: 'bun',
                 type: PACKAGE_MANAGER_TYPE,
                 command: `bun${VERSION_CMD}`,
             },
             // Runtimes
-            { name: "node", type: "runtime", command: "node --version" },
-            { name: "deno", type: "runtime", command: "deno --version" },
-            { name: "python", type: "runtime", command: "python --version" },
+            { name: 'node', type: 'runtime', command: 'node --version' },
+            { name: 'deno', type: 'runtime', command: 'deno --version' },
+            { name: 'python', type: 'runtime', command: 'python --version' },
             {
-                name: "python3",
-                type: "runtime",
-                command: "python3 --version",
+                name: 'python3',
+                type: 'runtime',
+                command: 'python3 --version',
             },
-            { name: "rust", type: "runtime", command: "rustc --version" },
+            { name: 'rust', type: 'runtime', command: 'rustc --version' },
             // Build Tools
             {
-                name: "cargo",
+                name: 'cargo',
                 type: BUILD_TOOL_TYPE,
-                command: "cargo --version",
+                command: 'cargo --version',
             },
-            { name: "go", type: COMPILER_TYPE, command: "go version" },
-            { name: "gcc", type: "compiler", command: "gcc --version" },
-            { name: "clang", type: "compiler", command: "clang --version" },
+            { name: 'go', type: COMPILER_TYPE, command: 'go version' },
+            { name: 'gcc', type: 'compiler', command: 'gcc --version' },
+            { name: 'clang', type: 'compiler', command: 'clang --version' },
             // CLI Tools
             {
-                name: "git",
-                type: "version-control",
-                command: "git --version",
+                name: 'git',
+                type: 'version-control',
+                command: 'git --version',
             },
             {
-                name: "docker",
-                type: "cli-tool",
-                command: "docker --version",
+                name: 'docker',
+                type: 'cli-tool',
+                command: 'docker --version',
             },
             {
-                name: "podman",
-                type: "cli-tool",
-                command: "podman --version",
+                name: 'podman',
+                type: 'cli-tool',
+                command: 'podman --version',
             },
             // Build Systems
-            { name: "nx", type: "build-tool", command: "nx --version" },
+            { name: 'nx', type: 'build-tool', command: 'nx --version' },
             {
-                name: "turbo",
+                name: 'turbo',
                 type: BUILD_TOOL_TYPE,
-                command: "turbo --version",
+                command: 'turbo --version',
             },
             {
-                name: "lerna",
+                name: 'lerna',
                 type: BUILD_TOOL_TYPE,
-                command: "lerna --version",
+                command: 'lerna --version',
             },
             // Nix ecosystem
             {
-                name: "nix",
+                name: 'nix',
                 type: PACKAGE_MANAGER_TYPE,
-                command: "nix --version",
+                command: 'nix --version',
             },
             {
-                name: "nix-shell",
-                type: "cli-tool",
-                command: "nix-shell --version",
+                name: 'nix-shell',
+                type: 'cli-tool',
+                command: 'nix-shell --version',
             },
         ];
     }
@@ -307,7 +307,7 @@ export class EnvironmentDetector extends EventEmitter {
      * Log tool detection failure for security audit
      */
     logToolDetectionFailure(tool, error) {
-        this.logger.debug("Tool detection failed - security audit", {
+        this.logger.debug('Tool detection failed - security audit', {
             toolName: tool.name,
             toolType: tool.type,
             error: error instanceof Error ? error['message'] : String(error),
@@ -317,11 +317,11 @@ export class EnvironmentDetector extends EventEmitter {
      * Process tool detection results
      */
     processToolResults(results, toolsToDetect) {
-        return results.map((result, index) => result.status === "fulfilled"
+        return results.map((result, index) => result.status === 'fulfilled'
             ? result.value
             : {
-                name: toolsToDetect[index]?.name || "unknown",
-                type: toolsToDetect[index]?.type || "cli-tool",
+                name: toolsToDetect[index]?.name || 'unknown',
+                type: toolsToDetect[index]?.type || 'cli-tool',
                 available: false,
             });
     }
@@ -330,13 +330,13 @@ export class EnvironmentDetector extends EventEmitter {
      */
     async detectProjectContext() {
         const projectFiles = [
-            "package.json",
-            "Cargo.toml",
-            "mix.exs",
-            "flake.nix",
-            "shell.nix",
-            "Dockerfile",
-            ".gitignore",
+            'package.json',
+            'Cargo.toml',
+            'mix.exs',
+            'flake.nix',
+            'shell.nix',
+            'Dockerfile',
+            '.gitignore',
         ];
         const fileChecks = await Promise.allSettled(projectFiles.map((file) => access(join(this.projectRoot, file))
             .then(() => true)
@@ -352,7 +352,7 @@ export class EnvironmentDetector extends EventEmitter {
             workspace = detected ?? undefined;
         }
         catch (error) {
-            this.logger.warn("Failed to detect workspace:", error);
+            this.logger.warn('Failed to detect workspace:', error);
             workspace = undefined;
         }
         // Detect languages and frameworks
@@ -360,13 +360,13 @@ export class EnvironmentDetector extends EventEmitter {
         const frameworks = await this.detectFrameworks();
         const buildTools = await this.detectBuildTools();
         return {
-            hasPackageJson: Boolean(fileChecks[0]?.status === "fulfilled" && fileChecks[0].value),
-            hasCargoToml: Boolean(fileChecks[1]?.status === "fulfilled" && fileChecks[1].value),
-            hasMixExs: Boolean(fileChecks[2]?.status === "fulfilled" && fileChecks[2].value),
-            hasFlakeNix: Boolean(fileChecks[3]?.status === "fulfilled" && fileChecks[3].value),
-            hasShellNix: Boolean(fileChecks[4]?.status === "fulfilled" && fileChecks[4].value),
-            hasDockerfile: Boolean(fileChecks[5]?.status === "fulfilled" && fileChecks[5].value),
-            hasGitignore: Boolean(fileChecks[6]?.status === "fulfilled" && fileChecks[6].value),
+            hasPackageJson: Boolean(fileChecks[0]?.status === 'fulfilled' && fileChecks[0].value),
+            hasCargoToml: Boolean(fileChecks[1]?.status === 'fulfilled' && fileChecks[1].value),
+            hasMixExs: Boolean(fileChecks[2]?.status === 'fulfilled' && fileChecks[2].value),
+            hasFlakeNix: Boolean(fileChecks[3]?.status === 'fulfilled' && fileChecks[3].value),
+            hasShellNix: Boolean(fileChecks[4]?.status === 'fulfilled' && fileChecks[4].value),
+            hasDockerfile: Boolean(fileChecks[5]?.status === 'fulfilled' && fileChecks[5].value),
+            hasGitignore: Boolean(fileChecks[6]?.status === 'fulfilled' && fileChecks[6].value),
             languages,
             frameworks,
             buildTools,
@@ -380,8 +380,8 @@ export class EnvironmentDetector extends EventEmitter {
         const os = process.platform;
         const { arch, version } = process;
         // Check for containerization
-        const dockerAvailable = await this.checkCommandExists("docker");
-        const podmanAvailable = await this.checkCommandExists("podman");
+        const dockerAvailable = await this.checkCommandExists('docker');
+        const podmanAvailable = await this.checkCommandExists('podman');
         // Basic virtualization detection
         const virtualizationAvailable = dockerAvailable || podmanAvailable;
         return {
@@ -395,9 +395,9 @@ export class EnvironmentDetector extends EventEmitter {
             virtualization: {
                 available: virtualizationAvailable,
                 type: dockerAvailable
-                    ? "docker"
+                    ? 'docker'
                     : podmanAvailable
-                        ? "podman"
+                        ? 'podman'
                         : undefined,
             },
         };
@@ -408,7 +408,7 @@ export class EnvironmentDetector extends EventEmitter {
     async detectNixEnvironment() {
         try {
             // Check if Nix is available
-            const nixTool = await this.checkCommandExists("nix");
+            const nixTool = await this.checkCommandExists('nix');
             if (!nixTool) {
                 return {
                     nixAvailable: false,
@@ -416,7 +416,7 @@ export class EnvironmentDetector extends EventEmitter {
                     currentShell: null,
                     packages: [],
                     suggestedSetup: [
-                        "Install Nix:curl -L https://nixos.org/nix/install|sh",
+                        'Install Nix:curl -L https://nixos.org/nix/install|sh',
                     ],
                 };
             }
@@ -433,7 +433,7 @@ export class EnvironmentDetector extends EventEmitter {
             };
         }
         catch (error) {
-            this.logger.error("Failed to detect Nix environment:", error);
+            this.logger.error('Failed to detect Nix environment:', error);
             return undefined;
         }
     }
@@ -442,7 +442,7 @@ export class EnvironmentDetector extends EventEmitter {
      */
     async areFlakesEnabled() {
         try {
-            await execAsync("nix flake --help", { timeout: 2000 });
+            await execAsync('nix flake --help', { timeout: 2000 });
             return true;
         }
         catch {
@@ -454,10 +454,10 @@ export class EnvironmentDetector extends EventEmitter {
      */
     getCurrentNixShell() {
         if (process.env['IN_NIX_SHELL']) {
-            return "nix-shell";
+            return 'nix-shell';
         }
         if (process.env['FLAKE_DEVSHELL']) {
-            return "flake-devshell";
+            return 'flake-devshell';
         }
         return null;
     }
@@ -469,57 +469,57 @@ export class EnvironmentDetector extends EventEmitter {
         const relevantPackages = [
             // Node.js ecosystem
             {
-                name: "nodejs_20",
-                category: "nodejs",
-                description: "Node.js runtime v20",
+                name: 'nodejs_20',
+                category: 'nodejs',
+                description: 'Node.js runtime v20',
             },
             {
-                name: "nodejs_18",
-                category: "nodejs",
-                description: "Node.js runtime v18",
+                name: 'nodejs_18',
+                category: 'nodejs',
+                description: 'Node.js runtime v18',
             },
             {
-                name: "nodePackages.npm",
-                category: "nodejs",
-                description: "NPM package manager",
+                name: 'nodePackages.npm',
+                category: 'nodejs',
+                description: 'NPM package manager',
             },
             {
-                name: "nodePackages.typescript",
-                category: "nodejs",
-                description: "TypeScript compiler",
+                name: 'nodePackages.typescript',
+                category: 'nodejs',
+                description: 'TypeScript compiler',
             },
             // Development tools
             {
-                name: "git",
-                category: "dev-tools",
-                description: "Version control system",
+                name: 'git',
+                category: 'dev-tools',
+                description: 'Version control system',
             },
             {
-                name: "ripgrep",
-                category: "dev-tools",
-                description: "Fast text search tool",
+                name: 'ripgrep',
+                category: 'dev-tools',
+                description: 'Fast text search tool',
             },
             {
-                name: "fd",
-                category: "dev-tools",
-                description: "Fast file finder",
+                name: 'fd',
+                category: 'dev-tools',
+                description: 'Fast file finder',
             },
             {
-                name: "tree",
-                category: "dev-tools",
-                description: "Directory tree viewer",
+                name: 'tree',
+                category: 'dev-tools',
+                description: 'Directory tree viewer',
             },
             {
-                name: "jq",
-                category: "dev-tools",
-                description: "JSON processor",
+                name: 'jq',
+                category: 'dev-tools',
+                description: 'JSON processor',
             },
             // System utilities
-            { name: "curl", category: "system", description: "HTTP client" },
+            { name: 'curl', category: 'system', description: 'HTTP client' },
             {
-                name: "wget",
-                category: "system",
-                description: "Web downloader",
+                name: 'wget',
+                category: 'system',
+                description: 'Web downloader',
             },
         ];
         for (const pkg of relevantPackages) {
@@ -566,12 +566,12 @@ export class EnvironmentDetector extends EventEmitter {
         try {
             // Extract binary name from package name
             let binaryName = packageName;
-            if (packageName.includes(".")) {
-                const parts = packageName.split(".");
+            if (packageName.includes('.')) {
+                const parts = packageName.split('.');
                 binaryName = parts[parts.length - 1] || packageName;
             }
-            if (packageName.includes("_")) {
-                const parts = packageName.split("_");
+            if (packageName.includes('_')) {
+                const parts = packageName.split('_');
                 binaryName = parts[0] || packageName;
             }
             return await this.checkCommandExists(binaryName);
@@ -591,17 +591,17 @@ export class EnvironmentDetector extends EventEmitter {
         // Check if flake.nix exists
         const hasFlakeNix = this.hasFlakeNix();
         if (hasFlakeNix) {
-            suggestions.push("Enter development shell:nix develop");
+            suggestions.push('Enter development shell:nix develop');
         }
         else {
-            suggestions.push("Create flake.nix for reproducible development environment");
+            suggestions.push('Create flake.nix for reproducible development environment');
         }
         // No BEAM-specific suggestions (foundation focuses on claude-zen core)
         // Suggest missing dev tools
-        const devTools = packages.filter((p) => p.category === "dev-tools");
+        const devTools = packages.filter((p) => p.category === 'dev-tools');
         const missingDev = devTools.filter((p) => p.available && !p.installed);
         if (missingDev.length > 0) {
-            suggestions.push(`Install dev tools:nix-shell -p ${missingDev.map((p) => p.name).join(" ")}`);
+            suggestions.push(`Install dev tools:nix-shell -p ${missingDev.map((p) => p.name).join(' ')}`);
         }
         return suggestions;
     }
@@ -610,7 +610,7 @@ export class EnvironmentDetector extends EventEmitter {
      */
     hasFlakeNix() {
         try {
-            const flakePath = join(this.projectRoot, "flake.nix");
+            const flakePath = join(this.projectRoot, 'flake.nix');
             return existsSync(flakePath);
         }
         catch {
@@ -624,18 +624,18 @@ export class EnvironmentDetector extends EventEmitter {
         const suggestions = [];
         // Package manager suggestions
         if (projectContext.hasPackageJson &&
-            !tools.some((t) => t.name === "pnpm" && t.available)) {
-            suggestions.push("Consider installing pnpm for faster package management");
+            !tools.some((t) => t.name === 'pnpm' && t.available)) {
+            suggestions.push('Consider installing pnpm for faster package management');
         }
         // Monorepo tool suggestions
         if (projectContext.workspace &&
-            !tools.some((t) => t.name === "nx" && t.available)) {
-            suggestions.push("Consider installing Nx for better monorepo management");
+            !tools.some((t) => t.name === 'nx' && t.available)) {
+            suggestions.push('Consider installing Nx for better monorepo management');
         }
         // Container suggestions
         if (!systemCapabilities.containers.docker &&
             !systemCapabilities.containers.podman) {
-            suggestions.push("Consider installing Docker for containerized development");
+            suggestions.push('Consider installing Docker for containerized development');
         }
         // Nix-specific suggestions
         if (nixEnvironment) {
@@ -646,7 +646,7 @@ export class EnvironmentDetector extends EventEmitter {
     // Helper methods
     parseVersion(output) {
         const versionMatch = output.match(/v?(\d+\.\d+\.\d+)/);
-        return versionMatch?.[1] || output.split("\n")[0] || "unknown";
+        return versionMatch?.[1] || output.split('\n')[0] || 'unknown';
     }
     async checkCommandExists(command) {
         try {
@@ -659,7 +659,7 @@ export class EnvironmentDetector extends EventEmitter {
     }
     detectToolCapabilities(toolName) {
         // Security audit:tracking tool capability detection for security analysis
-        this.logger.debug("Detecting tool capabilities for security audit", {
+        this.logger.debug('Detecting tool capabilities for security audit', {
             toolName,
         });
         // Tool-specific capability detection could be implemented here
@@ -758,7 +758,7 @@ export class EnvironmentDetector extends EventEmitter {
         this.removeAllListeners();
         // Clear snapshot
         this.snapshot = null;
-        this.logger.info("Environment detector cleanup completed");
+        this.logger.info('Environment detector cleanup completed');
     }
     /**
      * Dispose of the environment detector (alias for cleanup)
@@ -797,8 +797,8 @@ export class NixIntegration {
     constructor(projectRoot = process.cwd(), environmentDetector, logger) {
         this.projectRoot = projectRoot;
         this.environmentDetector = environmentDetector;
-        this.logger = logger || getLogger("NixIntegration");
-        this.cachePath = join(projectRoot, ".cache", "nix-integration.json");
+        this.logger = logger || getLogger('NixIntegration');
+        this.cachePath = join(projectRoot, '.cache', 'nix-integration.json');
         // Create environment detector if not provided
         if (!this.environmentDetector) {
             this.environmentDetector = new EnvironmentDetector(projectRoot, false, 30000, this.logger);
@@ -818,7 +818,7 @@ export class NixIntegration {
         }
         // Use environment detector to get Nix environment
         if (!this.environmentDetector) {
-            throw new Error("Environment detector not initialized");
+            throw new Error('Environment detector not initialized');
         }
         const snapshot = await this.environmentDetector.detectEnvironment();
         const nixEnvironment = snapshot.nixEnvironment || {
@@ -827,7 +827,7 @@ export class NixIntegration {
             currentShell: null,
             packages: [],
             suggestedSetup: [
-                "Install Nix:curl -L https://nixos.org/nix/install | sh",
+                'Install Nix:curl -L https://nixos.org/nix/install | sh',
             ],
         };
         // Cache the results
@@ -846,27 +846,27 @@ export class NixIntegration {
         try {
             const env = await this.detectEnvironment();
             if (!env.nixAvailable) {
-                errors.push("Nix is not installed. Please install Nix first.");
+                errors.push('Nix is not installed. Please install Nix first.');
                 return { success: false, steps, errors };
             }
-            steps.push("✓ Nix is available");
+            steps.push('✓ Nix is available');
             // Create flake.nix if it doesn't exist
             const hasFlakeNix = this.hasFlakeNix();
             if (hasFlakeNix) {
-                steps.push("✓ flake.nix already exists");
+                steps.push('✓ flake.nix already exists');
             }
             else {
                 await this.createFlakeNix();
-                steps.push("✓ Created flake.nix with BEAM language support");
+                steps.push('✓ Created flake.nix with BEAM language support');
             }
             // Enable flakes if not enabled
             if (env.flakesEnabled) {
-                steps.push("✓ Nix flakes already enabled");
+                steps.push('✓ Nix flakes already enabled');
             }
             else {
                 try {
                     await this.enableFlakes();
-                    steps.push("✓ Enabled Nix flakes");
+                    steps.push('✓ Enabled Nix flakes');
                 }
                 catch (error) {
                     errors.push(`Failed to enable flakes:${error}`);
@@ -921,7 +921,7 @@ export class NixIntegration {
 };
 });
 }`;
-        await writeFile(join(this.projectRoot, "flake.nix"), flakeContent);
+        await writeFile(join(this.projectRoot, 'flake.nix'), flakeContent);
     }
     /**
      * Enable Nix flakes
@@ -929,13 +929,13 @@ export class NixIntegration {
     async enableFlakes() {
         try {
             // Create nix config directory if it doesn't exist
-            await execAsync("mkdir -p ~/.config/nix");
+            await execAsync('mkdir -p ~/.config/nix');
             // Add flakes configuration
             const configPath = `${homedir()}/.config/nix/nix.conf`;
-            const configContent = "experimental-features = nix-command flakes\n";
+            const configContent = 'experimental-features = nix-command flakes\n';
             try {
-                const existing = await readFile(configPath, "utf8");
-                if (!existing.includes("experimental-features")) {
+                const existing = await readFile(configPath, 'utf8');
+                if (!existing.includes('experimental-features')) {
                     await writeFile(configPath, existing + configContent);
                 }
             }
@@ -953,14 +953,14 @@ export class NixIntegration {
      */
     hasFlakeNix() {
         try {
-            const flakePath = join(this.projectRoot, "flake.nix");
+            const flakePath = join(this.projectRoot, 'flake.nix');
             if (!existsSync(flakePath)) {
                 return false;
             }
             // Enhanced validation:check if the flake.nix file is readable and non-empty
             try {
-                const content = readFileSync(flakePath, "utf-8");
-                return content.trim().length > 0 && content.includes("outputs");
+                const content = readFileSync(flakePath, 'utf-8');
+                return content.trim().length > 0 && content.includes('outputs');
             }
             catch {
                 // If we can't read the file, still consider it as existing
@@ -976,7 +976,7 @@ export class NixIntegration {
      */
     async loadCache() {
         try {
-            const content = await readFile(this.cachePath, "utf8");
+            const content = await readFile(this.cachePath, 'utf8');
             return JSON.parse(content);
         }
         catch {
@@ -988,7 +988,7 @@ export class NixIntegration {
      */
     async saveCache(data) {
         try {
-            const cacheDir = join(this.cachePath, "..");
+            const cacheDir = join(this.cachePath, '..');
             await execAsync(`mkdir -p ${cacheDir}`);
             const cache = {
                 timestamp: Date.now(),
@@ -997,7 +997,7 @@ export class NixIntegration {
             await writeFile(this.cachePath, JSON.stringify(cache, null, 2));
         }
         catch (error) {
-            this.logger.error("Failed to save Nix cache:", error);
+            this.logger.error('Failed to save Nix cache:', error);
         }
     }
     /**
@@ -1006,13 +1006,13 @@ export class NixIntegration {
     async getEnvironmentSummary() {
         const env = await this.detectEnvironment();
         if (!env.nixAvailable) {
-            return "❌ Nix not available";
+            return '❌ Nix not available';
         }
         const installedCount = env.packages.filter((p) => p.installed).length;
         const totalCount = env.packages.length;
-        let status = "✓ Nix available";
+        let status = '✓ Nix available';
         if (env.flakesEnabled) {
-            status += ", flakes enabled";
+            status += ', flakes enabled';
         }
         if (env.currentShell) {
             status += `, in ${env.currentShell}`;
@@ -1027,11 +1027,11 @@ export class NixIntegration {
 /**
  * DI token for EnvironmentDetector
  */
-export const ENVIRONMENT_DETECTOR_TOKEN = Symbol("EnvironmentDetector");
+export const ENVIRONMENT_DETECTOR_TOKEN = Symbol('EnvironmentDetector');
 /**
  * DI token for NixIntegration
  */
-export const NIX_INTEGRATION_TOKEN = Symbol("NixIntegration");
+export const NIX_INTEGRATION_TOKEN = Symbol('NixIntegration');
 /**
  * Create EnvironmentDetector with DI
  */

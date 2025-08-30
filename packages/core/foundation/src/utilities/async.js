@@ -5,8 +5,8 @@
  * Provides comprehensive async utilities including retry patterns, timeouts,
  * circuit breakers, and concurrent execution helpers.
  */
-import { TimeoutStrategy, timeout } from "cockatiel";
-import { err, ok } from "../error-handling/index.js";
+import { TimeoutStrategy, timeout } from 'cockatiel';
+import { err, ok } from '../error-handling/index.js';
 // Use cockatiel's timeout - more robust than custom implementation
 export function pTimeout(promise, timeoutMs, message) {
     const policy = timeout(timeoutMs, TimeoutStrategy.Aggressive);
@@ -16,9 +16,9 @@ export function pTimeout(promise, timeoutMs, message) {
         }
         catch (error) {
             if (error &&
-                typeof error === "object" &&
-                "name" in error &&
-                (error.name === "TaskCancelledError" || error.name === "TimeoutError")) {
+                typeof error === 'object' &&
+                'name' in error &&
+                (error.name === 'TaskCancelledError' || error.name === 'TimeoutError')) {
                 throw new Error(message ?? `Operation timed out after ${timeoutMs}ms`);
             }
             throw error;
@@ -30,7 +30,7 @@ export function pTimeout(promise, timeoutMs, message) {
  */
 export class CircuitBreaker {
     fn;
-    state = "closed";
+    state = 'closed';
     failureCount = 0;
     lastFailureTime = 0;
     config;
@@ -48,13 +48,13 @@ export class CircuitBreaker {
      * Execute the wrapped function with circuit breaker protection
      */
     async execute(...args) {
-        if (this.state === "open") {
+        if (this.state === 'open') {
             if (Date.now() - this.lastFailureTime >= this.config.resetTimeout) {
-                this.state = "half-open";
+                this.state = 'half-open';
                 this.config.onStateChange(this.state);
             }
             else {
-                throw new Error("Circuit breaker is open");
+                throw new Error('Circuit breaker is open');
             }
         }
         try {
@@ -68,8 +68,8 @@ export class CircuitBreaker {
         }
     }
     onSuccess() {
-        if (this.state === "half-open") {
-            this.state = "closed";
+        if (this.state === 'half-open') {
+            this.state = 'closed';
             this.failureCount = 0;
             this.config.onStateChange(this.state);
         }
@@ -79,7 +79,7 @@ export class CircuitBreaker {
             this.failureCount++;
             this.lastFailureTime = Date.now();
             if (this.failureCount >= this.config.failureThreshold) {
-                this.state = "open";
+                this.state = 'open';
                 this.config.onStateChange(this.state, error);
             }
         }
@@ -94,7 +94,7 @@ export class CircuitBreaker {
      * Reset circuit breaker to closed state
      */
     reset() {
-        this.state = "closed";
+        this.state = 'closed';
         this.failureCount = 0;
         this.lastFailureTime = 0;
         this.config.onStateChange(this.state);
@@ -167,7 +167,8 @@ export async function withTimeout(promise, config) {
             promise,
             new Promise((_, reject) => {
                 setTimeout(() => {
-                    reject(new Error(config['message'] || `Operation timed out after ${config.timeout}ms`));
+                    reject(new Error(config['message'] ||
+                        `Operation timed out after ${config.timeout}ms`));
                 }, config.timeout);
             }),
         ]);
@@ -314,7 +315,7 @@ export async function concurrent(tasks, concurrency) {
  */
 export async function allSettledSafe(promises) {
     const settled = await Promise.allSettled(promises);
-    return settled.map((result) => result.status === "fulfilled"
+    return settled.map((result) => result.status === 'fulfilled'
         ? ok(result.value)
         : err(result.reason instanceof Error
             ? result.reason

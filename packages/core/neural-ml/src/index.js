@@ -9,6 +9,6 @@
  * @version 1.0.0
  */
 // Export ML interfaces for DSPy teleprompters
-export * from "./ml-interfaces";
+export * from './ml-interfaces';
 // Export simple Rust binding
-export * from "./rust-binding";
+export * from './rust-binding';

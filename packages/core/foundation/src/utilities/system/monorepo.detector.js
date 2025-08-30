@@ -7,14 +7,14 @@
  *
  * Supports all major monorepo tools and build systems.
  */
-import * as fs from "node:fs";
-import * as path from "node:path";
-import { findRoot } from "@manypkg/find-root";
-import { findWorkspaces } from "find-workspaces";
-import { getLogger } from "../../core/logging/index.js";
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { findRoot } from '@manypkg/find-root';
+import { findWorkspaces } from 'find-workspaces';
+import { getLogger } from '../../core/logging/index.js';
 // Constants
-const PACKAGE_JSON_FILE = "package.json";
-const logger = getLogger("monorepo-detector");
+const PACKAGE_JSON_FILE = 'package.json';
+const logger = getLogger('monorepo-detector');
 /**
  * Workspace detector using industry-standard libraries
  */
@@ -27,7 +27,7 @@ export class WorkspaceDetector {
             // Use @manypkg/find-root which supports Yarn, npm, Lerna, pnpm, Bun, Rush
             const result = await findRoot(startPath);
             if (!result) {
-                logger.debug("No monorepo root found");
+                logger.debug('No monorepo root found');
                 return null;
             }
             const workspaceInfo = {
@@ -45,7 +45,7 @@ export class WorkspaceDetector {
             return workspaceInfo;
         }
         catch (error) {
-            logger.warn("Workspace detection failed:", error);
+            logger.warn('Workspace detection failed:', error);
             return null;
         }
     }
@@ -75,7 +75,7 @@ export class WorkspaceDetector {
             });
         }
         catch (error) {
-            logger.warn("Failed to get workspace packages:", error);
+            logger.warn('Failed to get workspace packages:', error);
             return [];
         }
     }
@@ -84,17 +84,17 @@ export class WorkspaceDetector {
      */
     detectWorkspaceTool(rootDir) {
         const configFiles = [
-            { file: "pnpm-workspace.yaml", tool: "pnpm" },
-            { file: "pnpm-workspace.yml", tool: "pnpm" },
-            { file: "lerna.json", tool: "lerna" },
-            { file: "rush.json", tool: "rush" },
-            { file: "nx.json", tool: "nx" },
-            { file: "workspace.json", tool: "nx" },
-            { file: "bun.lockb", tool: "bun" },
-            { file: "yarn.lock", tool: "yarn" },
-            { file: "package-lock.json", tool: "npm" },
-            { file: "WORKSPACE", tool: "bazel" },
-            { file: "WORKSPACE.bazel", tool: "bazel" },
+            { file: 'pnpm-workspace.yaml', tool: 'pnpm' },
+            { file: 'pnpm-workspace.yml', tool: 'pnpm' },
+            { file: 'lerna.json', tool: 'lerna' },
+            { file: 'rush.json', tool: 'rush' },
+            { file: 'nx.json', tool: 'nx' },
+            { file: 'workspace.json', tool: 'nx' },
+            { file: 'bun.lockb', tool: 'bun' },
+            { file: 'yarn.lock', tool: 'yarn' },
+            { file: 'package-lock.json', tool: 'npm' },
+            { file: 'WORKSPACE', tool: 'bazel' },
+            { file: 'WORKSPACE.bazel', tool: 'bazel' },
         ];
         for (const { file, tool } of configFiles) {
             if (fs.existsSync(path.join(rootDir, file))) {
@@ -105,31 +105,31 @@ export class WorkspaceDetector {
         const packageJsonPath = path.join(rootDir, PACKAGE_JSON_FILE);
         if (fs.existsSync(packageJsonPath)) {
             try {
-                const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
+                const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
                 if (packageJson.workspaces) {
-                    return "npm"; // Default to npm if workspaces are defined but no specific tool detected
+                    return 'npm'; // Default to npm if workspaces are defined but no specific tool detected
                 }
             }
             catch {
                 // Ignore JSON parse errors
             }
         }
-        return "unknown";
+        return 'unknown';
     }
     /**
      * Find workspace configuration file
      */
     findWorkspaceConfigFile(rootDir) {
         const configFiles = [
-            "pnpm-workspace.yaml",
-            "pnpm-workspace.yml",
-            "lerna.json",
-            "rush.json",
-            "nx.json",
-            "workspace.json",
+            'pnpm-workspace.yaml',
+            'pnpm-workspace.yml',
+            'lerna.json',
+            'rush.json',
+            'nx.json',
+            'workspace.json',
             PACKAGE_JSON_FILE,
-            "WORKSPACE",
-            "WORKSPACE.bazel",
+            'WORKSPACE',
+            'WORKSPACE.bazel',
         ];
         for (const file of configFiles) {
             if (fs.existsSync(path.join(rootDir, file))) {
@@ -144,13 +144,13 @@ export class WorkspaceDetector {
     detectProjectFile(projectDir) {
         const projectFiles = [
             PACKAGE_JSON_FILE, // Node.js/TypeScript/React Native'Cargo.toml', // Rust
-            "go.mod", // Go
-            "build.gradle", // Android
-            "build.gradle.kts", // Android (Kotlin DSL)
-            "app.json", // React Native/Expo
-            "expo.json", // Expo
-            "Podfile", // iOS (CocoaPods)
-            "project.pbxproj", // iOS (Xcode)
+            'go.mod', // Go
+            'build.gradle', // Android
+            'build.gradle.kts', // Android (Kotlin DSL)
+            'app.json', // React Native/Expo
+            'expo.json', // Expo
+            'Podfile', // iOS (CocoaPods)
+            'project.pbxproj', // iOS (Xcode)
         ];
         for (const file of projectFiles) {
             if (fs.existsSync(path.join(projectDir, file))) {
@@ -168,7 +168,7 @@ export class WorkspaceDetector {
         }
         try {
             const packageJsonPath = path.join(projectDir, PACKAGE_JSON_FILE);
-            const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
+            const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
             const deps = {
                 ...packageJson.dependencies,
                 ...packageJson.devDependencies,
@@ -181,18 +181,18 @@ export class WorkspaceDetector {
     }
     findFrameworkInDependencies(deps) {
         const frameworkMap = [
-            ["next", "Next"],
-            ["react-native", "React Native"],
-            ["expo", "Expo"],
-            ["@angular/core", "Angular"],
-            ["vue", "Vue"],
-            ["svelte", "Svelte"],
-            ["nuxt", "Nuxt"],
-            ["gatsby", "Gatsby"],
-            ["react", "React"],
-            ["express", "Express"],
-            ["fastify", "Fastify"],
-            ["nest", "NestJS"],
+            ['next', 'Next'],
+            ['react-native', 'React Native'],
+            ['expo', 'Expo'],
+            ['@angular/core', 'Angular'],
+            ['vue', 'Vue'],
+            ['svelte', 'Svelte'],
+            ['nuxt', 'Nuxt'],
+            ['gatsby', 'Gatsby'],
+            ['react', 'React'],
+            ['express', 'Express'],
+            ['fastify', 'Fastify'],
+            ['nest', 'NestJS'],
         ];
         return frameworkMap.find(([dep]) => deps[dep])?.[1];
     }
@@ -204,11 +204,11 @@ export class WorkspaceDetector {
             return undefined;
         }
         const languageMap = {
-            PACKAGE_JSON_FILE: "TypeScript", // Default for JS/TS projects
-            "Cargo.toml": "Rust",
-            "go.mod": "Go",
-            "build.gradle": "Kotlin",
-            "build.gradle.kts": "Kotlin",
+            PACKAGE_JSON_FILE: 'TypeScript', // Default for JS/TS projects
+            'Cargo.toml': 'Rust',
+            'go.mod': 'Go',
+            'build.gradle': 'Kotlin',
+            'build.gradle.kts': 'Kotlin',
         };
         return languageMap[packageFile];
     }
@@ -217,21 +217,21 @@ export class WorkspaceDetector {
      */
     inferProjectType(relativePath, name) {
         const pathLower = relativePath.toLowerCase();
-        const nameLower = name?.toLowerCase() || "";
+        const nameLower = name?.toLowerCase() || '';
         return (this.detectTypeFromPath(pathLower) ||
             this.detectTypeFromName(nameLower) ||
-            "package");
+            'package');
     }
     detectTypeFromPath(pathLower) {
         const pathPatterns = [
-            [["apps/"], "app"],
-            [["packages/"], "package"],
-            [["libs/"], "lib"],
-            [["services/"], "service"],
-            [["tools/"], "tool"],
-            [["examples/"], "example"],
-            [["test", "spec"], "test"],
-            [["docs/", "documentation/"], "doc"],
+            [['apps/'], 'app'],
+            [['packages/'], 'package'],
+            [['libs/'], 'lib'],
+            [['services/'], 'service'],
+            [['tools/'], 'tool'],
+            [['examples/'], 'example'],
+            [['test', 'spec'], 'test'],
+            [['docs/', 'documentation/'], 'doc'],
         ];
         for (const [patterns, type] of pathPatterns) {
             if (patterns.some((pattern) => pathLower.includes(pattern) || pathLower.startsWith(pattern))) {
@@ -242,13 +242,13 @@ export class WorkspaceDetector {
     }
     detectTypeFromName(nameLower) {
         const namePatterns = [
-            ["service", "service"],
-            ["app", "app"],
-            ["lib", "lib"],
-            ["tool", "tool"],
-            ["example", "example"],
-            ["test", "test"],
-            ["doc", "doc"],
+            ['service', 'service'],
+            ['app', 'app'],
+            ['lib', 'lib'],
+            ['tool', 'tool'],
+            ['example', 'example'],
+            ['test', 'test'],
+            ['doc', 'doc'],
         ];
         return (namePatterns.find(([pattern]) => nameLower.includes(pattern))?.[1] || null);
     }

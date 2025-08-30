@@ -10,29 +10,29 @@
  */
 import type { Logger } from '@claude-zen/foundation';
 export interface RustMLConfig {
-  backend?: 'cpu|gpu|auto';
-  threads?: number;
-  memory_limit?: number;
-  enableTelemetry?: boolean;
-  optimizationLevel?: string;
-  parallelExecution?: boolean;
-  enableProfiling?: boolean;
-  parallelEvaluation?: boolean;
+    backend?: 'cpu|gpu|auto';
+    threads?: number;
+    memory_limit?: number;
+    enableTelemetry?: boolean;
+    optimizationLevel?: string;
+    parallelExecution?: boolean;
+    enableProfiling?: boolean;
+    parallelEvaluation?: boolean;
 }
 export interface RustOptimizationTask {
-  algorithm: string;
-  parameters: Record<string, any>;
-  data: Float32Array;
-  target?: Float32Array;
+    algorithm: string;
+    parameters: Record<string, any>;
+    data: Float32Array;
+    target?: Float32Array;
 }
 export interface RustOptimizationResult {
-  success: boolean;
-  result: Record<string, any>;
-  performance: {
-    duration_ms: number;
-    memory_used: number;
-    iterations: number;
-  };
+    success: boolean;
+    result: Record<string, any>;
+    performance: {
+        duration_ms: number;
+        memory_used: number;
+        iterations: number;
+    };
 }
 /**
  * Simple Rust Neural ML Engine - Direct Rust Interface
@@ -48,44 +48,41 @@ export interface RustOptimizationResult {
  * All the fancy ML is implemented in Rust for maximum performance.
  */
 export declare class RustNeuralML {
-  private config;
-  private logger;
-  private rustPath;
-  private cargoProjectPath;
-  constructor(config: RustMLConfig, logger: Logger);
-  /**
-   * Initialize Rust backend
-   */
-  initialize(): Promise<void>;
-  /**
-   * Run optimization using Rust backend
-   */
-  optimize(task: RustOptimizationTask): Promise<RustOptimizationResult>;
-  /**
-   * Get available Rust ML algorithms (implemented with battle-tested crates)
-   */
-  getAvailableAlgorithms(): string[];
-  /**
-   * Check if GPU acceleration is available
-   */
-  hasGpuSupport(): Promise<boolean>;
-  /**
-   * Get Rust backend performance stats
-   */
-  getPerformanceStats(): Promise<Record<string, any>>;
-  private detectRustBinary;
-  private buildRustIfNeeded;
-  private executeRustOptimization;
-  private executeRustCommand;
-  private executeCommand;
+    private config;
+    private logger;
+    private rustPath;
+    private cargoProjectPath;
+    constructor(config: RustMLConfig, logger: Logger);
+    /**
+     * Initialize Rust backend
+     */
+    initialize(): Promise<void>;
+    /**
+     * Run optimization using Rust backend
+     */
+    optimize(task: RustOptimizationTask): Promise<RustOptimizationResult>;
+    /**
+     * Get available Rust ML algorithms (implemented with battle-tested crates)
+     */
+    getAvailableAlgorithms(): string[];
+    /**
+     * Check if GPU acceleration is available
+     */
+    hasGpuSupport(): Promise<boolean>;
+    /**
+     * Get Rust backend performance stats
+     */
+    getPerformanceStats(): Promise<Record<string, any>>;
+    private detectRustBinary;
+    private buildRustIfNeeded;
+    private executeRustOptimization;
+    private executeRustCommand;
+    private executeCommand;
 }
 /**
  * Factory function for creating Rust Neural ML instance
  */
-export declare function createRustNeuralML(
-  config: RustMLConfig,
-  logger: Logger
-): RustNeuralML;
+export declare function createRustNeuralML(config: RustMLConfig, logger: Logger): RustNeuralML;
 /**
  * Simple utility to check if Rust components are available
  */

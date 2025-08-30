@@ -17,13 +17,13 @@ export { createDatabaseConnection, createStorageConfig, getDatabaseFactory, crea
 export { getLogger } from './logger.js';
 export { KeyValueStorageImpl } from './storage/key-value-storage.js';
 export * from './types/index.js';
-export declare function createDatabase(type: 'sqlite' | 'memory', database: string): Promise<import("./index.js").SQLiteAdapter>;
+export declare function createDatabase(type: 'sqlite' | 'memory', database: string): Promise<import("@claude-zen/foundation").SQLiteAdapter>;
 export declare function createKeyValueStorage(database: string): Promise<import("./index.js").KeyValueStorageImpl>;
 export declare function createDatabaseAccess(config?: unknown): {
     createConnection: (dbConfig: {
         type?: string;
         database: string;
-    }) => Promise<import("./index.js").SQLiteAdapter>;
+    }) => Promise<import("@claude-zen/foundation").SQLiteAdapter>;
     createKeyValueStorage: typeof createKeyValueStorage;
     getDatabaseFactory: typeof getDatabaseFactory;
     createStorageConfig: typeof createStorageConfig;
@@ -36,14 +36,14 @@ export declare function createDatabaseAccess(config?: unknown): {
 export declare class DatabaseEventCoordinator extends EventEmitter {
     private config?;
     constructor(config?: unknown | undefined);
-    connect(type: 'sqlite' | 'memory', database: string): Promise<import("./index.js").SQLiteAdapter>;
+    connect(type: 'sqlite' | 'memory', database: string): Promise<import("@claude-zen/foundation").SQLiteAdapter>;
     createStorage(database: string): Promise<import("./index.js").KeyValueStorageImpl>;
     emitOperation(operation: string, details: Record<string, unknown>): void;
     emitHealthStatus(status: 'healthy' | 'degraded' | 'unhealthy', details?: Record<string, unknown>): void;
 }
 export declare class DatabaseProvider extends DatabaseEventCoordinator {
     constructor(config?: unknown);
-    createConnection(type: 'sqlite' | 'memory', database: string): Promise<import("./index.js").SQLiteAdapter>;
+    createConnection(type: 'sqlite' | 'memory', database: string): Promise<import("@claude-zen/foundation").SQLiteAdapter>;
     createKeyValue(database: string): Promise<import("./index.js").KeyValueStorageImpl>;
 }
 export declare const version = "1.0.0";

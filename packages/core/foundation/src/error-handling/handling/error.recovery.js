@@ -47,18 +47,18 @@
  * ```
  */
 // Foundation re-exports Result types - use internal imports to avoid circular dependency
-import { ok, err } from "./error.handler.js";
-import { getLogger } from "../../core/logging/index.js";
-import { EventEmitter } from "../../events/event-emitter.js";
+import { ok, err } from './error.handler.js';
+import { getLogger } from '../../core/logging/index.js';
+import { EventEmitter } from '../../events/event-emitter.js';
 // Constants for duplicate string literals
 const SERVICE_NAMES = {
-    ERROR_RECOVERY_SYSTEM: "error-recovery-system",
-    ERROR_RECOVERY: "error-recovery",
-    RECOVERY_STRATEGY: "recovery-strategy"
+    ERROR_RECOVERY_SYSTEM: 'error-recovery-system',
+    ERROR_RECOVERY: 'error-recovery',
+    RECOVERY_STRATEGY: 'recovery-strategy',
 };
 const EVENT_NAMES = {
-    SERVICE_STOPPED: "service-stopped",
-    SERVICE_STARTED: "service-started"
+    SERVICE_STOPPED: 'service-stopped',
+    SERVICE_STARTED: 'service-started',
 };
 // =============================================================================
 // ERROR RECOVERY SYSTEM
@@ -96,7 +96,7 @@ export class ErrorRecoverySystem extends EventEmitter {
         for (const strategy of this.recoveryConfig.strategies) {
             this.strategies.set(strategy.id, strategy);
         }
-        this.logger.info("Error recovery system initialized", {
+        this.logger.info('Error recovery system initialized', {
             strategiesCount: this.strategies.size,
             autoRecovery: this.recoveryConfig.autoRecovery,
         });
@@ -110,36 +110,36 @@ export class ErrorRecoverySystem extends EventEmitter {
      */
     async handleError(errorInfo) {
         try {
-            this.logger.info("Handling error for recovery", {
+            this.logger.info('Handling error for recovery', {
                 errorId: errorInfo.errorId,
                 component: errorInfo.component,
                 severity: errorInfo.severity,
             });
             // Check if recovery is already in progress for this error
             if (this.activeRecoveries.has(errorInfo.errorId)) {
-                this.logger.warn("Recovery already in progress", {
+                this.logger.warn('Recovery already in progress', {
                     errorId: errorInfo.errorId,
                 });
-                return err(new Error("Recovery already in progress"));
+                return err(new Error('Recovery already in progress'));
             }
             // Find suitable recovery strategy
             const strategy = this.findRecoveryStrategy(errorInfo);
             if (!strategy) {
-                this.logger.warn("No suitable recovery strategy found", {
+                this.logger.warn('No suitable recovery strategy found', {
                     errorId: errorInfo.errorId,
                     component: errorInfo.component,
                     errorType: errorInfo.errorType,
                 });
-                return err(new Error("No suitable recovery strategy found"));
+                return err(new Error('No suitable recovery strategy found'));
             }
             // Check concurrent recovery limit
             if (this.activeRecoveries.size >=
                 this.recoveryConfig.maxConcurrentRecoveries) {
-                this.logger.warn("Maximum concurrent recoveries reached", {
+                this.logger.warn('Maximum concurrent recoveries reached', {
                     current: this.activeRecoveries.size,
                     max: this.recoveryConfig.maxConcurrentRecoveries,
                 });
-                return err(new Error("Maximum concurrent recoveries reached"));
+                return err(new Error('Maximum concurrent recoveries reached'));
             }
             // Execute recovery
             const recoveryPromise = this.executeRecovery(errorInfo, strategy);
@@ -158,7 +158,7 @@ export class ErrorRecoverySystem extends EventEmitter {
             }
         }
         catch (error) {
-            this.logger.error("Error recovery system failure", {
+            this.logger.error('Error recovery system failure', {
                 errorId: errorInfo.errorId,
                 error: error instanceof Error ? error.message : String(error),
             });
@@ -174,7 +174,7 @@ export class ErrorRecoverySystem extends EventEmitter {
             serviceName: SERVICE_NAMES.RECOVERY_STRATEGY,
             timestamp: new Date(),
         });
-        this.logger.info("Recovery strategy added", {
+        this.logger.info('Recovery strategy added', {
             strategyId: strategy.id,
             name: strategy.name,
             severity: strategy.severity,
@@ -190,7 +190,7 @@ export class ErrorRecoverySystem extends EventEmitter {
                 serviceName: SERVICE_NAMES.RECOVERY_STRATEGY,
                 timestamp: new Date(),
             });
-            this.logger.info("Recovery strategy removed", { strategyId });
+            this.logger.info('Recovery strategy removed', { strategyId });
         }
         return removed;
     }
@@ -229,29 +229,29 @@ export class ErrorRecoverySystem extends EventEmitter {
             return false;
         }
         this.activeRecoveries.delete(errorId);
-        this.emit("service-error", {
+        this.emit('service-error', {
             serviceName: SERVICE_NAMES.ERROR_RECOVERY,
-            error: new Error("Recovery cancelled"),
+            error: new Error('Recovery cancelled'),
             timestamp: new Date(),
         });
-        this.logger.info("Recovery cancelled", { errorId });
+        this.logger.info('Recovery cancelled', { errorId });
         return true;
     }
     /**
      * Shutdown the recovery system gracefully.
      */
     async shutdown() {
-        this.logger.info("Shutting down error recovery system");
+        this.logger.info('Shutting down error recovery system');
         // Wait for active recoveries to complete or timeout
         const activeRecoveries = Array.from(this.activeRecoveries.values());
         if (activeRecoveries.length > 0) {
-            this.logger.info("Waiting for active recoveries to complete", {
+            this.logger.info('Waiting for active recoveries to complete', {
                 count: activeRecoveries.length,
             });
             await Promise.allSettled(activeRecoveries);
         }
         this.activeRecoveries.clear();
-        this.emit("service-stopped", {
+        this.emit('service-stopped', {
             serviceName: SERVICE_NAMES.ERROR_RECOVERY_SYSTEM,
             timestamp: new Date(),
         });
@@ -274,7 +274,7 @@ export class ErrorRecoverySystem extends EventEmitter {
         // Check conditions
         return strategy.conditions.some((condition) => 
         // Simple pattern matching - could be extended with regex or more complex rules
-        condition === "*" ||
+        condition === '*' ||
             condition === errorInfo.component ||
             condition === errorInfo.errorType ||
             condition === errorInfo.operation ||
@@ -288,7 +288,7 @@ export class ErrorRecoverySystem extends EventEmitter {
             actionsExecuted: [],
             duration: 0,
         };
-        this.logger.info("Executing recovery strategy", {
+        this.logger.info('Executing recovery strategy', {
             errorId: errorInfo.errorId,
             strategyId: strategy.id,
             actionsCount: strategy.actions.length,
@@ -307,7 +307,7 @@ export class ErrorRecoverySystem extends EventEmitter {
                 }
             }
             result.success = true;
-            this.logger.info("Recovery strategy completed successfully", {
+            this.logger.info('Recovery strategy completed successfully', {
                 errorId: errorInfo.errorId,
                 strategyId: strategy.id,
                 duration: Date.now() - startTime,
@@ -315,7 +315,7 @@ export class ErrorRecoverySystem extends EventEmitter {
         }
         catch (error) {
             result.error = error instanceof Error ? error.message : String(error);
-            this.logger.error("Recovery strategy failed", {
+            this.logger.error('Recovery strategy failed', {
                 errorId: errorInfo.errorId,
                 strategyId: strategy.id,
                 error: result.error,
@@ -327,7 +327,7 @@ export class ErrorRecoverySystem extends EventEmitter {
     async executeRecoveryAction(action, errorInfo, strategy) {
         const startTime = Date.now();
         const actionTimeout = action.timeout || strategy.timeout;
-        this.logger.debug("Executing recovery action", {
+        this.logger.debug('Executing recovery action', {
             actionType: action.type,
             target: action.target,
             timeout: actionTimeout,
@@ -355,50 +355,50 @@ export class ErrorRecoverySystem extends EventEmitter {
     async executeActionByType(action, errorInfo) {
         // This is a simulation - in real implementation, these would be actual recovery operations
         switch (action.type) {
-            case "restart":
-                this.logger.info("Simulating restart action", {
+            case 'restart':
+                this.logger.info('Simulating restart action', {
                     target: action.target,
                     component: errorInfo.component,
                 });
                 await this.delay(1000); // Simulate restart time
                 return { restarted: true, target: action.target };
-            case "rollback":
-                this.logger.info("Simulating rollback action", {
+            case 'rollback':
+                this.logger.info('Simulating rollback action', {
                     target: action.target,
                     component: errorInfo.component,
                 });
                 await this.delay(2000); // Simulate rollback time
                 return { rolledBack: true, target: action.target };
-            case "failover":
-                this.logger.info("Simulating failover action", {
+            case 'failover':
+                this.logger.info('Simulating failover action', {
                     target: action.target,
                     component: errorInfo.component,
                 });
                 await this.delay(1500); // Simulate failover time
                 return { failedOver: true, target: action.target };
-            case "scale":
-                this.logger.info("Simulating scale action", {
+            case 'scale':
+                this.logger.info('Simulating scale action', {
                     target: action.target,
                     component: errorInfo.component,
                 });
                 await this.delay(3000); // Simulate scaling time
                 return { scaled: true, target: action.target };
-            case "notify":
-                this.logger.info("Simulating notify action", {
+            case 'notify':
+                this.logger.info('Simulating notify action', {
                     target: action.target,
                     component: errorInfo.component,
                 });
                 await this.delay(500); // Simulate notification time
                 return { notified: true, target: action.target };
-            case "repair":
-                this.logger.info("Simulating repair action", {
+            case 'repair':
+                this.logger.info('Simulating repair action', {
                     target: action.target,
                     component: errorInfo.component,
                 });
                 await this.delay(2500); // Simulate repair time
                 return { repaired: true, target: action.target };
-            case "custom":
-                this.logger.info("Simulating custom action", {
+            case 'custom':
+                this.logger.info('Simulating custom action', {
                     target: action.target,
                     component: errorInfo.component,
                     parameters: action.parameters,
@@ -419,12 +419,12 @@ export class ErrorRecoverySystem extends EventEmitter {
     startMonitoring() {
         setInterval(() => {
             const metrics = this.getRecoveryMetrics();
-            this.emit("health-check", {
+            this.emit('health-check', {
                 serviceName: SERVICE_NAMES.ERROR_RECOVERY,
                 healthy: true,
                 timestamp: new Date(),
             });
-            this.logger.debug("Recovery system metrics", metrics);
+            this.logger.debug('Recovery system metrics', metrics);
         }, this.recoveryConfig.monitoring.metricsInterval);
     }
 }
@@ -459,23 +459,23 @@ export function createRetryStrategy(options) {
         id: options.id,
         name: options.name,
         description: `Retry with exponential backoff (max ${maxRetries} attempts)`,
-        severity: options.severity ?? "medium",
-        type: "retry",
+        severity: options.severity ?? 'medium',
+        type: 'retry',
         timeout: maxDelay * maxRetries * 2,
-        canRecover: (errorInfo) => Promise.resolve(errorInfo.severity !== "critical" &&
+        canRecover: (errorInfo) => Promise.resolve(errorInfo.severity !== 'critical' &&
             !errorInfo.metadata?.['permanent'] &&
             (errorInfo.metadata?.['retryCount'] ?? 0) < maxRetries),
         recover: async (errorInfo) => {
             const retryCount = (errorInfo.metadata?.['retryCount'] ?? 0) + 1;
             const delay = Math.min(baseDelay * Math.pow(2, retryCount - 1), maxDelay);
-            await new Promise(resolve => setTimeout(resolve, delay));
+            await new Promise((resolve) => setTimeout(resolve, delay));
             return {
                 success: true,
                 message: `Retry attempt ${retryCount}/${maxRetries} after ${delay}ms delay`,
                 recoverTime: delay,
-                metadata: { retryCount, delay, strategy: "exponential_backoff" }
+                metadata: { retryCount, delay, strategy: 'exponential_backoff' },
             };
-        }
+        },
     };
 }
 /**
@@ -485,25 +485,26 @@ export function createFallbackStrategy(options) {
     return {
         id: options.id,
         name: options.name,
-        description: "Provides fallback functionality when primary operation fails",
-        severity: options.severity ?? "low",
-        type: "fallback",
+        description: 'Provides fallback functionality when primary operation fails',
+        severity: options.severity ?? 'low',
+        type: 'fallback',
         timeout: 5000,
-        canRecover: (errorInfo) => Promise.resolve(errorInfo.severity !== "critical" && !errorInfo.metadata?.['fallbackUsed']),
+        canRecover: (errorInfo) => Promise.resolve(errorInfo.severity !== 'critical' &&
+            !errorInfo.metadata?.['fallbackUsed']),
         recover: async () => {
             try {
-                const result = options.fallbackFunction ?
-                    await options.fallbackFunction() :
-                    options.fallbackValue;
+                const result = options.fallbackFunction
+                    ? await options.fallbackFunction()
+                    : options.fallbackValue;
                 return {
                     success: true,
-                    message: "Successfully executed fallback operation",
+                    message: 'Successfully executed fallback operation',
                     recoverTime: 0,
                     metadata: {
                         fallbackUsed: true,
                         fallbackResult: result,
-                        strategy: "fallback"
-                    }
+                        strategy: 'fallback',
+                    },
                 };
             }
             catch (fallbackError) {
@@ -512,12 +513,14 @@ export function createFallbackStrategy(options) {
                     message: `Fallback operation failed: ${fallbackError instanceof Error ? fallbackError.message : String(fallbackError)}`,
                     recoverTime: 0,
                     metadata: {
-                        fallbackError: fallbackError instanceof Error ? fallbackError.message : String(fallbackError),
-                        strategy: "fallback"
-                    }
+                        fallbackError: fallbackError instanceof Error
+                            ? fallbackError.message
+                            : String(fallbackError),
+                        strategy: 'fallback',
+                    },
                 };
             }
-        }
+        },
     };
 }
 /**
@@ -533,8 +536,8 @@ export function createCircuitBreakerStrategy(options) {
         id: options.id,
         name: options.name,
         description: `Circuit breaker with ${failureThreshold} failure threshold`,
-        severity: options.severity ?? "high",
-        type: "circuit_breaker",
+        severity: options.severity ?? 'high',
+        type: 'circuit_breaker',
         timeout: resetTimeout,
         canRecover: async () => {
             const now = Date.now();
@@ -552,12 +555,12 @@ export function createCircuitBreakerStrategy(options) {
                 return false;
             }
             // Add minimal async operation to satisfy linter
-            await new Promise(resolve => setTimeout(resolve, 0));
+            await new Promise((resolve) => setTimeout(resolve, 0));
             return true;
         },
         recover: async () => {
             // Add minimal async operation to satisfy linter
-            await new Promise(resolve => setTimeout(resolve, 0));
+            await new Promise((resolve) => setTimeout(resolve, 0));
             return {
                 success: true,
                 message: `Circuit breaker allowing operation (failures: ${failureCount}/${failureThreshold})`,
@@ -566,10 +569,10 @@ export function createCircuitBreakerStrategy(options) {
                     failureCount,
                     threshold: failureThreshold,
                     circuitOpen,
-                    strategy: "circuit_breaker"
-                }
+                    strategy: 'circuit_breaker',
+                },
             };
-        }
+        },
     };
 }
 /**
@@ -579,14 +582,14 @@ export function createGracefulDegradationStrategy(options) {
     return {
         id: options.id,
         name: options.name,
-        description: "Gracefully degrade functionality when primary service fails",
-        severity: options.severity ?? "low",
-        type: "graceful_degradation",
+        description: 'Gracefully degrade functionality when primary service fails',
+        severity: options.severity ?? 'low',
+        type: 'graceful_degradation',
         timeout: 5000,
         canRecover: async (errorInfo) => {
             // Add minimal async operation to satisfy linter
-            await new Promise(resolve => setTimeout(resolve, 0));
-            return errorInfo.severity !== "critical" && !errorInfo.metadata?.['permanent'];
+            await new Promise((resolve) => setTimeout(resolve, 0));
+            return (errorInfo.severity !== 'critical' && !errorInfo.metadata?.['permanent']);
         },
         recover: async () => {
             if (options.degradedFunction) {
@@ -594,9 +597,9 @@ export function createGracefulDegradationStrategy(options) {
                     const result = await options.degradedFunction();
                     return {
                         success: true,
-                        message: "Gracefully degraded to limited functionality",
+                        message: 'Gracefully degraded to limited functionality',
                         recoverTime: 0,
-                        metadata: { strategy: "graceful_degradation", result },
+                        metadata: { strategy: 'graceful_degradation', result },
                     };
                 }
                 catch (degradationError) {
@@ -604,15 +607,18 @@ export function createGracefulDegradationStrategy(options) {
                         success: false,
                         message: `Graceful degradation failed: ${degradationError instanceof Error ? degradationError.message : String(degradationError)}`,
                         recoverTime: 0,
-                        metadata: { strategy: "graceful_degradation", degradationError: String(degradationError) },
+                        metadata: {
+                            strategy: 'graceful_degradation',
+                            degradationError: String(degradationError),
+                        },
                     };
                 }
             }
             return {
                 success: true,
-                message: "Service temporarily unavailable - degraded mode active",
+                message: 'Service temporarily unavailable - degraded mode active',
                 recoverTime: 0,
-                metadata: { strategy: "graceful_degradation", mode: "disabled" },
+                metadata: { strategy: 'graceful_degradation', mode: 'disabled' },
             };
         },
     };
@@ -626,23 +632,23 @@ export function createTimeoutStrategy(options) {
         id: options.id,
         name: options.name,
         description: `Timeout after ${timeoutMs}ms and attempt recovery`,
-        severity: options.severity ?? "medium",
-        type: "timeout",
+        severity: options.severity ?? 'medium',
+        type: 'timeout',
         timeout: timeoutMs,
         canRecover: async (errorInfo) => {
             // Add minimal async operation to satisfy linter
-            await new Promise(resolve => setTimeout(resolve, 0));
-            return errorInfo.errorType === "TimeoutError" ||
-                errorInfo.metadata?.['timeout'] === true;
+            await new Promise((resolve) => setTimeout(resolve, 0));
+            return (errorInfo.errorType === 'TimeoutError' ||
+                errorInfo.metadata?.['timeout'] === true);
         },
         recover: async () => {
             // Add minimal async operation to satisfy linter
-            await new Promise(resolve => setTimeout(resolve, 0));
+            await new Promise((resolve) => setTimeout(resolve, 0));
             return {
                 success: true,
                 message: `Operation timed out after ${timeoutMs}ms - recovery initiated`,
                 recoverTime: 0,
-                metadata: { strategy: "timeout_recovery", timeoutMs },
+                metadata: { strategy: 'timeout_recovery', timeoutMs },
             };
         },
     };
@@ -659,8 +665,8 @@ export function createRateLimitStrategy(options) {
         id: options.id,
         name: options.name,
         description: `Rate limiting with max ${maxRequestsPerSecond} requests per second`,
-        severity: options.severity ?? "medium",
-        type: "custom",
+        severity: options.severity ?? 'medium',
+        type: 'custom',
         timeout: backoffMs * 2,
         canRecover: async (errorInfo) => {
             const now = Date.now();
@@ -670,22 +676,22 @@ export function createRateLimitStrategy(options) {
                 lastResetTime = now;
             }
             // Add minimal async operation to satisfy linter
-            await new Promise(resolve => setTimeout(resolve, 0));
+            await new Promise((resolve) => setTimeout(resolve, 0));
             // Check if we're over the limit
-            return errorInfo.errorType === "RateLimitError" ||
-                requestCount >= maxRequestsPerSecond;
+            return (errorInfo.errorType === 'RateLimitError' ||
+                requestCount >= maxRequestsPerSecond);
         },
         recover: async () => {
             // Wait for the backoff period
-            await new Promise(resolve => setTimeout(resolve, backoffMs));
+            await new Promise((resolve) => setTimeout(resolve, backoffMs));
             return {
                 success: true,
                 message: `Rate limit backoff completed after ${backoffMs}ms`,
                 recoverTime: backoffMs,
                 metadata: {
-                    strategy: "rate_limit",
+                    strategy: 'rate_limit',
                     backoffMs,
-                    maxRequestsPerSecond
+                    maxRequestsPerSecond,
                 },
             };
         },
@@ -697,41 +703,41 @@ export function createRateLimitStrategy(options) {
 export function createCommonRecoveryStrategies() {
     return [
         createRetryStrategy({
-            id: "default-retry",
-            name: "Default Retry",
+            id: 'default-retry',
+            name: 'Default Retry',
             maxRetries: 3,
             baseDelay: 1000,
-            severity: "medium",
+            severity: 'medium',
         }),
         createFallbackStrategy({
-            id: "default-fallback",
-            name: "Default Fallback",
+            id: 'default-fallback',
+            name: 'Default Fallback',
             fallbackValue: null,
-            severity: "low",
+            severity: 'low',
         }),
         createCircuitBreakerStrategy({
-            id: "default-circuit-breaker",
-            name: "Default Circuit Breaker",
+            id: 'default-circuit-breaker',
+            name: 'Default Circuit Breaker',
             failureThreshold: 5,
             resetTimeout: 30000,
-            severity: "high",
+            severity: 'high',
         }),
         createGracefulDegradationStrategy({
-            id: "graceful-degradation",
-            name: "Graceful Degradation",
-            severity: "low",
+            id: 'graceful-degradation',
+            name: 'Graceful Degradation',
+            severity: 'low',
         }),
         createTimeoutStrategy({
-            id: "timeout-recovery",
-            name: "Timeout Recovery",
+            id: 'timeout-recovery',
+            name: 'Timeout Recovery',
             timeoutMs: 30000,
-            severity: "medium",
+            severity: 'medium',
         }),
         createRateLimitStrategy({
-            id: "rate-limiting",
-            name: "Rate Limiting",
+            id: 'rate-limiting',
+            name: 'Rate Limiting',
             maxRequestsPerSecond: 10,
-            severity: "medium",
+            severity: 'medium',
         }),
     ];
 }
@@ -741,39 +747,39 @@ export function createCommonRecoveryStrategies() {
 export function createEnterpriseRecoveryStrategies() {
     return [
         createRetryStrategy({
-            id: "enterprise-retry",
-            name: "Enterprise Retry with Extended Backoff",
+            id: 'enterprise-retry',
+            name: 'Enterprise Retry with Extended Backoff',
             maxRetries: 5,
             baseDelay: 2000,
             maxDelay: 30000,
-            severity: "high",
+            severity: 'high',
         }),
         createCircuitBreakerStrategy({
-            id: "enterprise-circuit-breaker",
-            name: "Enterprise Circuit Breaker",
+            id: 'enterprise-circuit-breaker',
+            name: 'Enterprise Circuit Breaker',
             failureThreshold: 10,
             resetTimeout: 60000,
-            severity: "critical",
+            severity: 'critical',
         }),
         createFallbackStrategy({
-            id: "enterprise-fallback",
-            name: "Enterprise Fallback System",
+            id: 'enterprise-fallback',
+            name: 'Enterprise Fallback System',
             fallbackFunction: async () => {
                 // Add minimal async operation to satisfy linter
-                await new Promise(resolve => setTimeout(resolve, 0));
+                await new Promise((resolve) => setTimeout(resolve, 0));
                 return {
-                    status: "degraded",
-                    message: "Operating in degraded mode"
+                    status: 'degraded',
+                    message: 'Operating in degraded mode',
                 };
             },
-            severity: "medium",
+            severity: 'medium',
         }),
         createRateLimitStrategy({
-            id: "enterprise-rate-limit",
-            name: "Enterprise Rate Limiting",
+            id: 'enterprise-rate-limit',
+            name: 'Enterprise Rate Limiting',
             maxRequestsPerSecond: 100,
             backoffMs: 500,
-            severity: "medium",
+            severity: 'medium',
         }),
     ];
 }
@@ -786,17 +792,21 @@ function convertToRecoveryStrategy(simple) {
         name: simple.name,
         description: simple.description ?? `${simple.name} recovery strategy`,
         severity: simple.severity,
-        type: simple.type ?? "custom",
+        type: simple.type ?? 'custom',
         timeout: simple.timeout,
         maxRetries: 3,
-        backoffStrategy: "exponential",
+        backoffStrategy: 'exponential',
         baseDelay: 1000,
         maxDelay: simple.timeout,
-        conditions: ["*"], // Accept all conditions - specific logic in canRecover
-        actions: [{ type: "custom", target: simple.id, retryable: true }],
-        priority: simple.severity === "critical" ? 1000 :
-            simple.severity === "high" ? 500 :
-                simple.severity === "medium" ? 100 : 50,
+        conditions: ['*'], // Accept all conditions - specific logic in canRecover
+        actions: [{ type: 'custom', target: simple.id, retryable: true }],
+        priority: simple.severity === 'critical'
+            ? 1000
+            : simple.severity === 'high'
+                ? 500
+                : simple.severity === 'medium'
+                    ? 100
+                    : 50,
         enabled: true,
     };
 }
@@ -879,11 +889,11 @@ export async function tryMultipleRecoveryStrategies(strategies, errorInfo) {
     }
     return {
         success: false,
-        message: "All recovery strategies failed",
+        message: 'All recovery strategies failed',
         recoverTime: 0,
         metadata: {
-            strategiesTried: strategies.map(s => s.name),
-            errorInfo
+            strategiesTried: strategies.map((s) => s.name),
+            errorInfo,
         },
     };
 }

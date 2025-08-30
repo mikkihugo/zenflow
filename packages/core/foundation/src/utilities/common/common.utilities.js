@@ -61,32 +61,32 @@
  */
 // Re-export zod for type-safe validation
 // Foundation integration utilities
-import { bool, cleanEnv, email, host, json, num, port, str, url } from "envalid";
-import { z } from "zod";
-import { err, ok } from "../../error-handling/index.js";
-import { getLogger } from "../../core/logging/logging.service.js";
+import { bool, cleanEnv, email, host, json, num, port, str, url, } from 'envalid';
+import { z } from 'zod';
+import { err, ok } from '../../error-handling/index.js';
+import { getLogger } from '../../core/logging/logging.service.js';
 // Logger for utility functions
 const logger = getLogger('CommonUtilities');
 // Constants for duplicate string literals
 const ERROR_MESSAGES = {
-    UNKNOWN_ERROR: "Unknown error"
+    UNKNOWN_ERROR: 'Unknown error',
 };
 /**
  * Common environment configuration schema and validation utilities.
  * Provides type-safe environment variable processing.
  */
 // Re-export date-fns for date utilities
-export * as dateFns from "date-fns";
-export { addDays, differenceInDays, format, formatISO, parseISO, subDays, } from "date-fns";
+export * as dateFns from 'date-fns';
+export { addDays, differenceInDays, format, formatISO, parseISO, subDays, } from 'date-fns';
 // Re-export envalid for environment validation
 export { bool, email, host, json, num, port, str, url };
 // Re-export exit-hook for process lifecycle
-export { default as onExit } from "exit-hook";
+export { default as onExit } from 'exit-hook';
 // Re-export lodash for utility functions
-export { default as _, default as lodash } from "lodash";
+export { default as _, default as lodash } from 'lodash';
 // Re-export nanoid for ID generation
-export { customAlphabet, nanoid } from "nanoid";
-export { z } from "zod";
+export { customAlphabet, nanoid } from 'nanoid';
+export { z } from 'zod';
 // Use cockatiel timeout policies:import { timeout, TimeoutStrategy } from '@claude-zen/foundation')const logger = getLogger("foundation-utilities");
 /**
  * Validates input data using a Zod schema with type-safe Result pattern.
@@ -119,10 +119,10 @@ export function validateInput(schema, input) {
     }
     catch (error) {
         if (error instanceof z.ZodError) {
-            const message = `Validation failed: ${error.issues.map((e) => `${e.path.join(".")}: ${e.message}`).join(", ")}`;
+            const message = `Validation failed: ${error.issues.map((e) => `${e.path.join('.')}: ${e.message}`).join(', ')}`;
             return err(new Error(message));
         }
-        return err(error instanceof Error ? error : new Error("Unknown validation error"));
+        return err(error instanceof Error ? error : new Error('Unknown validation error'));
     }
 }
 /**
@@ -175,7 +175,7 @@ export function createEnvValidator(specs) {
         return cleanEnv(process.env, specs);
     }
     catch (error) {
-        logger.error("Environment validation failed:", error);
+        logger.error('Environment validation failed:', error);
         throw error;
     }
 }
@@ -237,12 +237,12 @@ export async function withTimeout(promise, timeoutMs, timeoutMessage) {
 }
 export const commonEnvSchema = {
     NODE_ENV: str({
-        choices: ["development", "production", "test"],
-        default: "development",
+        choices: ['development', 'production', 'test'],
+        default: 'development',
     }),
     LOG_LEVEL: str({
-        choices: ["error", "warn", "info", "debug"],
-        default: "info",
+        choices: ['error', 'warn', 'info', 'debug'],
+        default: 'info',
     }),
     DEBUG: bool({ default: false }),
 };
@@ -256,19 +256,19 @@ export function getCommonEnv() {
  * Utility to check if we're in development mode
  */
 export function isDevelopment() {
-    return process.env['NODE_ENV'] === "development";
+    return process.env['NODE_ENV'] === 'development';
 }
 /**
  * Utility to check if we're in production mode
  */
 export function isProduction() {
-    return process.env['NODE_ENV'] === "production";
+    return process.env['NODE_ENV'] === 'production';
 }
 /**
  * Utility to check if we're in test mode
  */
 export function isTest() {
-    return process.env['NODE_ENV'] === "test";
+    return process.env['NODE_ENV'] === 'test';
 }
 // =============================================================================
 // JSON FORCING PATTERNS - Safe JSON operations with Result pattern
@@ -294,7 +294,7 @@ export function stringifyJSON(value, space) {
     try {
         const result = JSON.stringify(value, null, space);
         if (result === undefined) {
-            return err(new Error("Value cannot be serialized to JSON"));
+            return err(new Error('Value cannot be serialized to JSON'));
         }
         return ok(result);
     }
@@ -329,7 +329,7 @@ export function validate(schema, data) {
  */
 export function validateRequest(schema, body) {
     if (body === null || body === undefined) {
-        return err(new Error("Request body is required"));
+        return err(new Error('Request body is required'));
     }
     return validate(schema, body);
 }
@@ -353,10 +353,10 @@ export function validateConfig(schema, config) {
  */
 export function safeGet(obj, path, schema) {
     try {
-        const keys = path.split(".");
+        const keys = path.split('.');
         let current = obj;
         for (const key of keys) {
-            if (current && typeof current === "object" && key in current) {
+            if (current && typeof current === 'object' && key in current) {
                 current = current[key];
             }
             else {
@@ -372,13 +372,13 @@ export function safeGet(obj, path, schema) {
 // =============================================================================
 // FILE OPERATIONS FORCING PATTERNS - Safe async file operations
 // =============================================================================
-import { promises as fs } from "node:fs";
-import path from "node:path";
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
 /**
  * Safe file reading with Result pattern
  * Forces async operations and proper error handling
  */
-export async function readFile(filePath, encoding = "utf8") {
+export async function readFile(filePath, encoding = 'utf8') {
     try {
         const content = await fs.readFile(filePath, encoding);
         return ok(content);
@@ -391,7 +391,7 @@ export async function readFile(filePath, encoding = "utf8") {
  * Safe file writing with Result pattern
  * Forces async operations and proper error handling
  */
-export async function writeFile(filePath, content, encoding = "utf8") {
+export async function writeFile(filePath, content, encoding = 'utf8') {
     try {
         await fs.writeFile(filePath, content, encoding);
         return ok();
@@ -410,7 +410,7 @@ export async function directoryExists(dirPath) {
         return ok(stats.isDirectory());
     }
     catch (error) {
-        if (error.code === "ENOENT") {
+        if (error.code === 'ENOENT') {
             return ok(false);
         }
         return err(new Error(`Failed to check directory '${dirPath}':${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`));
@@ -426,7 +426,7 @@ export async function fileExists(filePath) {
         return ok(stats.isFile());
     }
     catch (error) {
-        if (error.code === "ENOENT") {
+        if (error.code === 'ENOENT') {
             return ok(false);
         }
         return err(new Error(`Failed to check file '${filePath}':${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`));
@@ -441,7 +441,7 @@ export function safePath(...segments) {
         const joined = path.join(...segments);
         const normalized = path.normalize(joined);
         // Prevent directory traversal
-        if (normalized.includes("..")) {
+        if (normalized.includes('..')) {
             return err(new Error('Path traversal detected:path contains ".."'));
         }
         return ok(normalized);

@@ -40,59 +40,12 @@
  * @author Claude Code Zen Team
  * @version 2.0.0-event-driven
  */
-export {
-  createEventDrivenTelemetryManager,
-  EventDrivenTelemetryManager,
-  EventDrivenTelemetryManager as default,
-  getEventDrivenTelemetry,
-  initializeEventDrivenTelemetry,
-  shutdownEventDrivenTelemetry,
-} from './telemetry-event-driven.js';
-export { SpanKind, SpanStatusCode } from '@opentelemetry/api';
-export {
-  getTelemetry,
-  initializeTelemetry,
-  metered,
-  recordEvent,
-  recordGauge,
-  recordHistogram,
-  recordMetric,
-  setTraceAttributes,
-  shutdownTelemetry,
-  startTrace,
-  TelemetryManager,
-  TelemetryManager as default,
-  traced,
-  tracedAsync,
-  withAsyncTrace,
-  withTrace,
-} from './telemetry.js';
-export type {
-  Attributes,
-  Meter,
-  MetricDefinition,
-  MetricType,
-  Span,
-  SpanOptions,
-  TelemetryConfig,
-  TelemetryEvent,
-  Tracer,
-} from './types.js';
-import { TelemetryManager } from './telemetry.js';
-export declare function createTelemetryManager(
-  config?: unknown
-): TelemetryManager;
-export declare class TelemetryProvider {
-  private config?;
-  constructor(config?: unknown | undefined);
-  createTelemetryManager(config?: unknown): Promise<TelemetryManager>;
-  createCollector(config?: unknown): Promise<TelemetryManager>;
-}
-export declare function createTelemetryAccess(_config?: unknown): {
-  createTelemetryManager: typeof createTelemetryManager;
-  createCollector: typeof createTelemetryManager;
-  createProvider: (providerConfig?: unknown) => TelemetryProvider;
-  TelemetryManager: typeof TelemetryManager;
-  TelemetryProvider: typeof TelemetryProvider;
+export { createEventDrivenTelemetryManager, EventDrivenTelemetryManager, EventDrivenTelemetryManager as default, getEventDrivenTelemetry, initializeEventDrivenTelemetry, shutdownEventDrivenTelemetry, } from './telemetry-event-driven.js';
+export declare function createTelemetryManager(config?: unknown): any;
+export declare function createTelemetryAccess(config?: unknown): {
+    createTelemetryManager: () => any;
+    getEventDrivenTelemetry: any;
+    initializeEventDrivenTelemetry: any;
+    shutdownEventDrivenTelemetry: any;
 };
 //# sourceMappingURL=index.d.ts.map

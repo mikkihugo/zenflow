@@ -19,7 +19,7 @@ const logger = {
             component: 'EventBus',
             message: msg,
             data: data || null,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
         })}\n`);
     },
     error: (msg, data) => {
@@ -28,7 +28,7 @@ const logger = {
             component: 'EventBus',
             message: msg,
             data: data || null,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
         })}\n`);
     },
     warn: (msg, data) => {
@@ -37,18 +37,21 @@ const logger = {
             component: 'EventBus',
             message: msg,
             data: data || null,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
         })}\n`);
     },
     debug: (msg, data) => {
-        if (process.env['NODE_ENV'] === ' development' || process.env[' DEBUG'] === ' true') {
+        if (process.env['NODE_ENV'] === ' development' ||
+            process.env[' DEBUG'] === ' true') {
             process.stdout.write(`${JSON.stringify({
-                level: 'debug', component: 'EventBus', message: msg,
+                level: 'debug',
+                component: 'EventBus',
+                message: msg,
                 data: data || null,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
             })}\n`);
         }
-    }
+    },
 };
 const safeAsync = async (fn) => {
     try {
@@ -96,7 +99,8 @@ export class EventBus extends EventEmitter {
             enableMiddleware: true,
             enableMetrics: true,
             enableLogging: false,
-            logLevel: 'info', ...config,
+            logLevel: 'info',
+            ...config,
         };
         this.setMaxListeners(this.busConfig.maxListeners);
         this.busMetrics = {
@@ -132,7 +136,7 @@ export class EventBus extends EventEmitter {
                 this.emit('eventbus:initialized', { timestamp: Date.now() });
             }
             // Minimal async operation to satisfy lint
-            await new Promise(resolve => setTimeout(resolve, 0));
+            await new Promise((resolve) => setTimeout(resolve, 0));
             // Set up error handling
             this.on('error', (error) => {
                 if (this.busConfig.enableLogging) {
@@ -149,7 +153,7 @@ export class EventBus extends EventEmitter {
                 });
             }
             // Small delay to ensure proper initialization order
-            await new Promise(resolve => setTimeout(resolve, 1));
+            await new Promise((resolve) => setTimeout(resolve, 1));
         });
     }
     emit(event, payload) {
@@ -159,7 +163,8 @@ export class EventBus extends EventEmitter {
             if (this.busConfig.enableMetrics) {
                 this.busMetrics.eventCount++;
                 const eventKey = String(event);
-                this.busMetrics.eventTypes[eventKey] = (this.busMetrics.eventTypes[eventKey] || 0) + 1;
+                this.busMetrics.eventTypes[eventKey] =
+                    (this.busMetrics.eventTypes[eventKey] || 0) + 1;
             }
             // Handle middleware for synchronous usage
             if (this.busConfig.enableMiddleware && this.middleware.length > 0) {
@@ -199,7 +204,8 @@ export class EventBus extends EventEmitter {
             // Update metrics
             if (this.busConfig.enableMetrics) {
                 this.busMetrics.eventCount++;
-                this.busMetrics.eventTypes[event] = (this.busMetrics.eventTypes[event] || 0) + 1;
+                this.busMetrics.eventTypes[event] =
+                    (this.busMetrics.eventTypes[event] || 0) + 1;
             }
             // Run middleware if enabled
             if (this.busConfig.enableMiddleware && this.middleware.length > 0) {

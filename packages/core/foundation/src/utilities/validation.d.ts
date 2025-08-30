@@ -30,13 +30,7 @@
  */
 import { ZodError, type ZodSchema, type ZodType, z as zodInstance } from 'zod';
 import { type Result } from '../error-handling/index.js';
-import type {
-  Email,
-  ISODateString,
-  JsonPrimitive,
-  Timestamp,
-  UUID,
-} from '../types/primitives';
+import type { Email, ISODateString, JsonPrimitive, Timestamp, UUID } from '../types/primitives';
 export { zodInstance as z, ZodError };
 export type { ZodSchema, ZodType };
 /**
@@ -58,10 +52,7 @@ export type { ZodSchema, ZodType };
  *}
  * ```
  */
-export declare function validateInput<T>(
-  schema: ZodSchema<T>,
-  data: unknown
-): Result<T, ZodError>;
+export declare function validateInput<T>(schema: ZodSchema<T>, data: unknown): Result<T, ZodError>;
 /**
  * Create a reusable validator function from a Zod schema.
  * Returns a function that validates data and returns Result.
@@ -76,9 +67,7 @@ export declare function validateInput<T>(
  * const result2 = validateUser(userData2);
  * ```
  */
-export declare function createValidator<T>(
-  schema: ZodSchema<T>
-): (data: unknown) => Result<T, ZodError>;
+export declare function createValidator<T>(schema: ZodSchema<T>): (data: unknown) => Result<T, ZodError>;
 /**
  * Check if value is a valid UUID format.
  * Supports UUID v1, v3, v4, and v5.
@@ -221,10 +210,7 @@ export declare const positiveNumberSchema: zodInstance.ZodNumber;
  *}
  * ```
  */
-export declare function hasValidationError(
-  result: Result<unknown, ZodError>,
-  code: string
-): boolean;
+export declare function hasValidationError(result: Result<unknown, ZodError>, code: string): boolean;
 /**
  * Extract all validation error messages from Result.
  * Returns array of human-readable error messages.
@@ -238,7 +224,5 @@ export declare function hasValidationError(
  * errors.forEach(error => logger.info(error));
  * ```
  */
-export declare function getValidationErrors(
-  result: Result<unknown, ZodError>
-): string[];
+export declare function getValidationErrors(result: Result<unknown, ZodError>): string[];
 //# sourceMappingURL=validation.d.ts.map

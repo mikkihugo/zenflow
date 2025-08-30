@@ -5,12 +5,12 @@
  * Provides TypeScript definitions and development-time validation.
  */
 export interface BaseEvent {
-  timestamp?: Date;
-  requestId?: string;
-  correlationId?: string;
+    timestamp?: Date;
+    requestId?: string;
+    correlationId?: string;
 }
 export interface EventPayload<T = unknown> extends BaseEvent {
-  data: T;
+    data: T;
 }
 /**
  * SPARC requests specific phase review from Teamwork
@@ -18,23 +18,14 @@ export interface EventPayload<T = unknown> extends BaseEvent {
  * @listener TeamworkManager
  */
 export interface SPARCPhaseReviewEvent extends BaseEvent {
-  requestId: string;
-  projectId: string;
-  phase:
-    | 'specification'
-    | ' pseudocode'
-    | ' architecture'
-    | ' refinement'
-    | ' completion';
-  reviewType:
-    | 'architecture'
-    | ' specification'
-    | ' implementation'
-    | ' quality';
-  artifacts: unknown[];
-  requirements: string[];
-  suggestedReviewers: string[];
-  timeout?: number;
+    requestId: string;
+    projectId: string;
+    phase: 'specification' | ' pseudocode' | ' architecture' | ' refinement' | ' completion';
+    reviewType: 'architecture' | ' specification' | ' implementation' | ' quality';
+    artifacts: unknown[];
+    requirements: string[];
+    suggestedReviewers: string[];
+    timeout?: number;
 }
 /**
  * SPARC project reaches completion
@@ -42,12 +33,12 @@ export interface SPARCPhaseReviewEvent extends BaseEvent {
  * @listener System
  */
 export interface SPARCProjectCompleteEvent extends BaseEvent {
-  projectId: string;
-  project: {
-    id: string;
-    name: string;
-    artifacts: Record<string, unknown[]>;
-  };
+    projectId: string;
+    project: {
+        id: string;
+        name: string;
+        artifacts: Record<string, unknown[]>;
+    };
 }
 /**
  * SPARC phase execution completes successfully
@@ -55,12 +46,12 @@ export interface SPARCProjectCompleteEvent extends BaseEvent {
  * @listener System
  */
 export interface SPARCPhaseCompleteEvent extends BaseEvent {
-  projectId: string;
-  phase: string;
-  artifacts: unknown[];
-  completedBy: 'llm-inference' | ' claude-code' | ' teamwork';
-  sparcValidated: boolean;
-  filesModified?: string[];
+    projectId: string;
+    phase: string;
+    artifacts: unknown[];
+    completedBy: 'llm-inference' | ' claude-code' | ' teamwork';
+    sparcValidated: boolean;
+    filesModified?: string[];
 }
 /**
  * Request LLM inference with methodology context
@@ -68,30 +59,26 @@ export interface SPARCPhaseCompleteEvent extends BaseEvent {
  * @listener LLMPackage
  */
 export interface LLMInferenceRequestEvent extends BaseEvent {
-  requestId: string;
-  type:
-    | 'simple-inference'
-    | ' structured-generation'
-    | ' analysis'
-    | ' code-generation';
-  projectId: string;
-  phase?: string;
-  prompt: string;
-  sparcMethodology?: {
-    phaseName: string;
-    requirements: string[];
-    validationCriteria: string[];
-  };
-  llmConfig: {
-    strategy: 'auto' | ' gemini' | ' claude' | ' github-copilot';
-    contextSize: 'small' | ' medium' | ' large';
-    maxTokens: number;
-    temperature: number;
-  };
-  context: {
-    requirements: string[];
-    previousArtifacts: Record<string, unknown[]>;
-  };
+    requestId: string;
+    type: 'simple-inference' | ' structured-generation' | ' analysis' | ' code-generation';
+    projectId: string;
+    phase?: string;
+    prompt: string;
+    sparcMethodology?: {
+        phaseName: string;
+        requirements: string[];
+        validationCriteria: string[];
+    };
+    llmConfig: {
+        strategy: 'auto' | ' gemini' | ' claude' | ' github-copilot';
+        contextSize: 'small' | ' medium' | ' large';
+        maxTokens: number;
+        temperature: number;
+    };
+    context: {
+        requirements: string[];
+        previousArtifacts: Record<string, unknown[]>;
+    };
 }
 /**
  * LLM inference completes successfully
@@ -99,16 +86,16 @@ export interface LLMInferenceRequestEvent extends BaseEvent {
  * @listener SPARCManager
  */
 export interface LLMInferenceCompleteEvent extends BaseEvent {
-  requestId: string;
-  projectId: string;
-  phase?: string;
-  success: boolean;
-  artifacts: unknown[];
-  metadata?: {
-    provider: string;
-    tokensUsed: number;
-    processingTime: number;
-  };
+    requestId: string;
+    projectId: string;
+    phase?: string;
+    success: boolean;
+    artifacts: unknown[];
+    metadata?: {
+        provider: string;
+        tokensUsed: number;
+        processingTime: number;
+    };
 }
 /**
  * LLM inference fails
@@ -116,11 +103,11 @@ export interface LLMInferenceCompleteEvent extends BaseEvent {
  * @listener SPARCManager
  */
 export interface LLMInferenceFailedEvent extends BaseEvent {
-  requestId: string;
-  projectId: string;
-  phase?: string;
-  error: string;
-  retryable?: boolean;
+    requestId: string;
+    projectId: string;
+    phase?: string;
+    error: string;
+    retryable?: boolean;
 }
 /**
  * Request Claude Code to execute task with file access
@@ -128,19 +115,19 @@ export interface LLMInferenceFailedEvent extends BaseEvent {
  * @listener ClaudeCode
  */
 export interface ClaudeCodeExecuteTaskEvent extends BaseEvent {
-  projectId: string;
-  phase?: string;
-  sparcMethodology?: {
-    phaseName: string;
-    requirements: string[];
-    validationCriteria: string[];
-    methodologyNotes: string[];
-  };
-  context: {
-    requirements: string[];
-    previousArtifacts: Record<string, unknown[]>;
-    needsFileAccess: boolean;
-  };
+    projectId: string;
+    phase?: string;
+    sparcMethodology?: {
+        phaseName: string;
+        requirements: string[];
+        validationCriteria: string[];
+        methodologyNotes: string[];
+    };
+    context: {
+        requirements: string[];
+        previousArtifacts: Record<string, unknown[]>;
+        needsFileAccess: boolean;
+    };
 }
 /**
  * Claude Code task completes successfully
@@ -148,13 +135,13 @@ export interface ClaudeCodeExecuteTaskEvent extends BaseEvent {
  * @listener SPARCManager
  */
 export interface ClaudeCodeTaskCompleteEvent extends BaseEvent {
-  requestId: string;
-  projectId: string;
-  phase?: string;
-  success: boolean;
-  artifacts: unknown[];
-  filesModified?: string[];
-  summary?: string;
+    requestId: string;
+    projectId: string;
+    phase?: string;
+    success: boolean;
+    artifacts: unknown[];
+    filesModified?: string[];
+    summary?: string;
 }
 /**
  * Claude Code task fails
@@ -162,11 +149,11 @@ export interface ClaudeCodeTaskCompleteEvent extends BaseEvent {
  * @listener SPARCManager
  */
 export interface ClaudeCodeTaskFailedEvent extends BaseEvent {
-  requestId: string;
-  projectId: string;
-  phase?: string;
-  error: string;
-  filesAffected?: string[];
+    requestId: string;
+    projectId: string;
+    phase?: string;
+    error: string;
+    filesAffected?: string[];
 }
 /**
  * Teamwork acknowledges collaboration request
@@ -174,9 +161,9 @@ export interface ClaudeCodeTaskFailedEvent extends BaseEvent {
  * @listener SPARCManager
  */
 export interface TeamworkReviewAcknowledgedEvent extends BaseEvent {
-  requestId: string;
-  estimatedDuration: number;
-  assignedAgents: string[];
+    requestId: string;
+    estimatedDuration: number;
+    assignedAgents: string[];
 }
 /**
  * Teamwork completes review process
@@ -184,17 +171,13 @@ export interface TeamworkReviewAcknowledgedEvent extends BaseEvent {
  * @listener SPARCManager
  */
 export interface TeamworkReviewCompleteEvent extends BaseEvent {
-  projectId: string;
-  phase: string;
-  reviewType:
-    | 'architecture'
-    | ' specification'
-    | ' implementation'
-    | ' quality';
-  approved: boolean;
-  feedback: string[];
-  actionItems: string[];
-  conversationId: string;
+    projectId: string;
+    phase: string;
+    reviewType: 'architecture' | ' specification' | ' implementation' | ' quality';
+    approved: boolean;
+    feedback: string[];
+    actionItems: string[];
+    conversationId: string;
 }
 /**
  * Teamwork collaboration fails
@@ -202,10 +185,10 @@ export interface TeamworkReviewCompleteEvent extends BaseEvent {
  * @listener SPARCManager
  */
 export interface TeamworkCollaborationFailedEvent extends BaseEvent {
-  projectId: string;
-  phase: string;
-  error: string;
-  reason: 'timeout' | ' resource_unavailable' | ' system_error';
+    projectId: string;
+    phase: string;
+    error: string;
+    reason: 'timeout' | ' resource_unavailable' | ' system_error';
 }
 /**
  * SAFe Program Increment planning initiated
@@ -213,11 +196,11 @@ export interface TeamworkCollaborationFailedEvent extends BaseEvent {
  * @listener System
  */
 export interface SafePIPlanningEvent extends BaseEvent {
-  programIncrementId: string;
-  startDate: Date;
-  endDate: Date;
-  objectives: string[];
-  teams: string[];
+    programIncrementId: string;
+    startDate: Date;
+    endDate: Date;
+    objectives: string[];
+    teams: string[];
 }
 /**
  * SAFe Epic created or updated
@@ -225,11 +208,11 @@ export interface SafePIPlanningEvent extends BaseEvent {
  * @listener System
  */
 export interface SafeEpicEvent extends BaseEvent {
-  epicId: string;
-  title: string;
-  businessValue: number;
-  state: string;
-  owner: string;
+    epicId: string;
+    title: string;
+    businessValue: number;
+    state: string;
+    owner: string;
 }
 /**
  * Git operation starts execution
@@ -237,19 +220,11 @@ export interface SafeEpicEvent extends BaseEvent {
  * @listener System
  */
 export interface GitOperationStartedEvent extends BaseEvent {
-  operationId: string;
-  type:
-    | 'clone'
-    | ' commit'
-    | ' push'
-    | ' pull'
-    | ' merge'
-    | ' rebase'
-    | ' worktree'
-    | ' maintenance';
-  repositoryPath: string;
-  branchName?: string;
-  worktreePath?: string;
+    operationId: string;
+    type: 'clone' | ' commit' | ' push' | ' pull' | ' merge' | ' rebase' | ' worktree' | ' maintenance';
+    repositoryPath: string;
+    branchName?: string;
+    worktreePath?: string;
 }
 /**
  * Git operation completes successfully
@@ -257,21 +232,13 @@ export interface GitOperationStartedEvent extends BaseEvent {
  * @listener System
  */
 export interface GitOperationCompletedEvent extends BaseEvent {
-  operationId: string;
-  type:
-    | 'clone'
-    | ' commit'
-    | ' push'
-    | ' pull'
-    | ' merge'
-    | ' rebase'
-    | ' worktree'
-    | ' maintenance';
-  repositoryPath: string;
-  result: unknown;
-  branchName?: string;
-  worktreePath?: string;
-  filesAffected?: string[];
+    operationId: string;
+    type: 'clone' | ' commit' | ' push' | ' pull' | ' merge' | ' rebase' | ' worktree' | ' maintenance';
+    repositoryPath: string;
+    result: unknown;
+    branchName?: string;
+    worktreePath?: string;
+    filesAffected?: string[];
 }
 /**
  * Git operation fails
@@ -279,20 +246,12 @@ export interface GitOperationCompletedEvent extends BaseEvent {
  * @listener System
  */
 export interface GitOperationFailedEvent extends BaseEvent {
-  operationId: string;
-  type:
-    | 'clone'
-    | ' commit'
-    | ' push'
-    | ' pull'
-    | ' merge'
-    | ' rebase'
-    | ' worktree'
-    | ' maintenance';
-  repositoryPath: string;
-  error: string;
-  branchName?: string;
-  worktreePath?: string;
+    operationId: string;
+    type: 'clone' | ' commit' | ' push' | ' pull' | ' merge' | ' rebase' | ' worktree' | ' maintenance';
+    repositoryPath: string;
+    error: string;
+    branchName?: string;
+    worktreePath?: string;
 }
 /**
  * Git conflict resolved with AI assistance
@@ -300,11 +259,11 @@ export interface GitOperationFailedEvent extends BaseEvent {
  * @listener System
  */
 export interface GitConflictResolvedEvent extends BaseEvent {
-  repositoryPath: string;
-  conflictFiles: string[];
-  resolutionStrategy: 'ai-suggested' | ' manual' | ' automatic';
-  success: boolean;
-  branchName?: string;
+    repositoryPath: string;
+    conflictFiles: string[];
+    resolutionStrategy: 'ai-suggested' | ' manual' | ' automatic';
+    success: boolean;
+    branchName?: string;
 }
 /**
  * Git worktree lifecycle events
@@ -312,10 +271,10 @@ export interface GitConflictResolvedEvent extends BaseEvent {
  * @listener System
  */
 export interface GitWorktreeEvent extends BaseEvent {
-  repositoryPath: string;
-  worktreePath: string;
-  branchName: string;
-  action: 'created' | ' removed' | ' pruned';
+    repositoryPath: string;
+    worktreePath: string;
+    branchName: string;
+    action: 'created' | ' removed' | ' pruned';
 }
 /**
  * Git maintenance task events
@@ -323,11 +282,11 @@ export interface GitWorktreeEvent extends BaseEvent {
  * @listener System
  */
 export interface GitMaintenanceEvent extends BaseEvent {
-  repositoryPath: string;
-  taskType: 'gc' | ' prune' | ' repack' | ' fsck' | ' cleanup';
-  status: 'started' | ' completed' | ' failed';
-  result?: unknown;
-  error?: string;
+    repositoryPath: string;
+    taskType: 'gc' | ' prune' | ' repack' | ' fsck' | ' cleanup';
+    status: 'started' | ' completed' | ' failed';
+    result?: unknown;
+    error?: string;
 }
 /**
  * Database connection event
@@ -335,10 +294,10 @@ export interface GitMaintenanceEvent extends BaseEvent {
  * @listener System
  */
 export interface DatabaseConnectionEvent extends BaseEvent {
-  type: 'sqlite' | ' memory';
-  database: string;
-  status?: 'connected' | ' failed';
-  error?: string;
+    type: 'sqlite' | ' memory';
+    database: string;
+    status?: 'connected' | ' failed';
+    error?: string;
 }
 /**
  * Database storage creation event
@@ -346,9 +305,9 @@ export interface DatabaseConnectionEvent extends BaseEvent {
  * @listener System
  */
 export interface DatabaseStorageEvent extends BaseEvent {
-  database: string;
-  status?: 'ready' | ' failed';
-  error?: string;
+    database: string;
+    status?: 'ready' | ' failed';
+    error?: string;
 }
 /**
  * Database operation event
@@ -356,8 +315,8 @@ export interface DatabaseStorageEvent extends BaseEvent {
  * @listener System
  */
 export interface DatabaseOperationEvent extends BaseEvent {
-  operation: string;
-  details: Record<string, unknown>;
+    operation: string;
+    details: Record<string, unknown>;
 }
 /**
  * Database health status change event
@@ -365,8 +324,8 @@ export interface DatabaseOperationEvent extends BaseEvent {
  * @listener System
  */
 export interface DatabaseHealthEvent extends BaseEvent {
-  status: 'healthy' | ' degraded' | ' unhealthy';
-  details?: Record<string, unknown>;
+    status: 'healthy' | ' degraded' | ' unhealthy';
+    details?: Record<string, unknown>;
 }
 /**
  * System component starts
@@ -374,9 +333,9 @@ export interface DatabaseHealthEvent extends BaseEvent {
  * @listener SystemMonitor
  */
 export interface SystemStartEvent extends BaseEvent {
-  component: string;
-  version: string;
-  config?: Record<string, unknown>;
+    component: string;
+    version: string;
+    config?: Record<string, unknown>;
 }
 /**
  * System error occurs
@@ -384,71 +343,69 @@ export interface SystemStartEvent extends BaseEvent {
  * @listener SystemMonitor
  */
 export interface SystemErrorEvent extends BaseEvent {
-  component: string;
-  error: string;
-  severity: 'low' | ' medium' | ' high' | ' critical';
-  context?: Record<string, unknown>;
+    component: string;
+    error: string;
+    severity: 'low' | ' medium' | ' high' | ' critical';
+    context?: Record<string, unknown>;
 }
 export declare const EVENT_CATALOG: {
-  readonly 'sparc:architecture-review-needed': ' SPARCPhaseReviewEvent';
-  readonly 'sparc:code-review-needed': ' SPARCPhaseReviewEvent';
-  readonly 'sparc:phase-review-needed': ' SPARCPhaseReviewEvent';
-  readonly 'sparc:project-complete': ' SPARCProjectCompleteEvent';
-  readonly 'sparc:phase-complete': ' SPARCPhaseCompleteEvent';
-  readonly 'sparc:phase-fallback': ' BaseEvent';
-  readonly 'llm:inference-request': ' LLMInferenceRequestEvent';
-  readonly 'llm:inference-complete': ' LLMInferenceCompleteEvent';
-  readonly 'llm:inference-failed': ' LLMInferenceFailedEvent';
-  readonly 'claude-code:execute-task': ' ClaudeCodeExecuteTaskEvent';
-  readonly 'claude-code:task-complete': ' ClaudeCodeTaskCompleteEvent';
-  readonly 'claude-code:task-failed': ' ClaudeCodeTaskFailedEvent';
-  readonly 'teamwork:review-acknowledged': ' TeamworkReviewAcknowledgedEvent';
-  readonly 'teamwork:review-complete': ' TeamworkReviewCompleteEvent';
-  readonly 'teamwork:collaboration-failed': ' TeamworkCollaborationFailedEvent';
-  readonly 'safe:pi-planning-initiated': ' SafePIPlanningEvent';
-  readonly 'safe:epic-updated': ' SafeEpicEvent';
-  readonly 'git:operation:started': ' GitOperationStartedEvent';
-  readonly 'git:operation:completed': ' GitOperationCompletedEvent';
-  readonly 'git:operation:failed': ' GitOperationFailedEvent';
-  readonly 'git:conflict:resolved': ' GitConflictResolvedEvent';
-  readonly 'git:worktree:created': ' GitWorktreeEvent';
-  readonly 'git:worktree:removed': ' GitWorktreeEvent';
-  readonly 'git:maintenance:started': ' GitMaintenanceEvent';
-  readonly 'git:maintenance:completed': ' GitMaintenanceEvent';
-  readonly 'database:connection:initiated': ' DatabaseConnectionEvent';
-  readonly 'database:connection:established': ' DatabaseConnectionEvent';
-  readonly 'database:connection:failed': ' DatabaseConnectionEvent';
-  readonly 'database:storage:creation_started': ' DatabaseStorageEvent';
-  readonly 'database:storage:creation_completed': ' DatabaseStorageEvent';
-  readonly 'database:storage:creation_failed': ' DatabaseStorageEvent';
-  readonly 'database:operation': ' DatabaseOperationEvent';
-  readonly 'database:health:status_change': ' DatabaseHealthEvent';
-  readonly 'dspy:optimize-request': ' DspyOptimizationRequest';
-  readonly 'dspy:optimization-complete': ' DspyOptimizationResult';
-  readonly 'dspy:llm-request': ' DspyLlmRequest';
-  readonly 'dspy:llm-response': ' DspyLlmResponse';
-  readonly 'dspy:request-timeout': ' BaseEvent';
-  readonly 'brain:predict-request': ' BrainPredictionRequest';
-  readonly 'brain:prediction-complete': ' BrainPredictionResult';
-  readonly 'brain:learning-update': ' BaseEvent';
-  readonly 'brain:performance-tracked': ' BaseEvent';
-  readonly 'registry:module-register': ' ModuleRegistration';
-  readonly 'registry:module-unregister': ' BaseEvent';
-  readonly 'registry:module-registered': ' ActiveModule';
-  readonly 'registry:module-unregistered': ' ActiveModule';
-  readonly 'registry:heartbeat': ' BaseEvent';
-  readonly 'registry:module-idle': ' BaseEvent';
-  readonly 'registry:module-disconnected': ' BaseEvent';
-  readonly 'system:component-started': ' SystemStartEvent';
-  readonly 'system:error': ' SystemErrorEvent';
+    readonly 'sparc:architecture-review-needed': " SPARCPhaseReviewEvent";
+    readonly 'sparc:code-review-needed': " SPARCPhaseReviewEvent";
+    readonly 'sparc:phase-review-needed': " SPARCPhaseReviewEvent";
+    readonly 'sparc:project-complete': " SPARCProjectCompleteEvent";
+    readonly 'sparc:phase-complete': " SPARCPhaseCompleteEvent";
+    readonly 'sparc:phase-fallback': " BaseEvent";
+    readonly 'llm:inference-request': " LLMInferenceRequestEvent";
+    readonly 'llm:inference-complete': " LLMInferenceCompleteEvent";
+    readonly 'llm:inference-failed': " LLMInferenceFailedEvent";
+    readonly 'claude-code:execute-task': " ClaudeCodeExecuteTaskEvent";
+    readonly 'claude-code:task-complete': " ClaudeCodeTaskCompleteEvent";
+    readonly 'claude-code:task-failed': " ClaudeCodeTaskFailedEvent";
+    readonly 'teamwork:review-acknowledged': " TeamworkReviewAcknowledgedEvent";
+    readonly 'teamwork:review-complete': " TeamworkReviewCompleteEvent";
+    readonly 'teamwork:collaboration-failed': " TeamworkCollaborationFailedEvent";
+    readonly 'safe:pi-planning-initiated': " SafePIPlanningEvent";
+    readonly 'safe:epic-updated': " SafeEpicEvent";
+    readonly 'git:operation:started': " GitOperationStartedEvent";
+    readonly 'git:operation:completed': " GitOperationCompletedEvent";
+    readonly 'git:operation:failed': " GitOperationFailedEvent";
+    readonly 'git:conflict:resolved': " GitConflictResolvedEvent";
+    readonly 'git:worktree:created': " GitWorktreeEvent";
+    readonly 'git:worktree:removed': " GitWorktreeEvent";
+    readonly 'git:maintenance:started': " GitMaintenanceEvent";
+    readonly 'git:maintenance:completed': " GitMaintenanceEvent";
+    readonly 'database:connection:initiated': " DatabaseConnectionEvent";
+    readonly 'database:connection:established': " DatabaseConnectionEvent";
+    readonly 'database:connection:failed': " DatabaseConnectionEvent";
+    readonly 'database:storage:creation_started': " DatabaseStorageEvent";
+    readonly 'database:storage:creation_completed': " DatabaseStorageEvent";
+    readonly 'database:storage:creation_failed': " DatabaseStorageEvent";
+    readonly 'database:operation': " DatabaseOperationEvent";
+    readonly 'database:health:status_change': " DatabaseHealthEvent";
+    readonly 'dspy:optimize-request': " DspyOptimizationRequest";
+    readonly 'dspy:optimization-complete': " DspyOptimizationResult";
+    readonly 'dspy:llm-request': " DspyLlmRequest";
+    readonly 'dspy:llm-response': " DspyLlmResponse";
+    readonly 'dspy:request-timeout': " BaseEvent";
+    readonly 'brain:predict-request': " BrainPredictionRequest";
+    readonly 'brain:prediction-complete': " BrainPredictionResult";
+    readonly 'brain:learning-update': " BaseEvent";
+    readonly 'brain:performance-tracked': " BaseEvent";
+    readonly 'registry:module-register': " ModuleRegistration";
+    readonly 'registry:module-unregister': " BaseEvent";
+    readonly 'registry:module-registered': " ActiveModule";
+    readonly 'registry:module-unregistered': " ActiveModule";
+    readonly 'registry:heartbeat': " BaseEvent";
+    readonly 'registry:module-idle': " BaseEvent";
+    readonly 'registry:module-disconnected': " BaseEvent";
+    readonly 'system:component-started': " SystemStartEvent";
+    readonly 'system:error': " SystemErrorEvent";
 };
 export type EventName = keyof typeof EVENT_CATALOG;
 /**
  * Validate that event name exists in catalog
  */
-export declare function isValidEventName(
-  eventName: string
-): eventName is EventName;
+export declare function isValidEventName(eventName: string): eventName is EventName;
 /**
  * Get event type for an event name
  */
@@ -460,32 +417,19 @@ export declare function getAllEventNames(): EventName[];
 /**
  * Get events by category
  */
-export declare function getEventsByCategory(
-  category:
-    | 'sparc'
-    | ' llm'
-    | ' claude-code'
-    | ' teamwork'
-    | ' safe'
-    | ' git'
-    | ' database'
-    | ' dspy'
-    | ' brain'
-    | ' registry'
-    | ' system'
-): EventName[];
+export declare function getEventsByCategory(category: 'sparc' | ' llm' | ' claude-code' | ' teamwork' | ' safe' | ' git' | ' database' | ' dspy' | ' brain' | ' registry' | ' system'): EventName[];
 /**
  * Enhanced EventLogger with catalog validation
  */
 export declare class CatalogEventLogger {
-  /**
-   * Log event with catalog validation
-   */
-  static logValidatedEvent(eventName: string, payload?: unknown): void;
-  /**
-   * Log flow with validation
-   */
-  static logValidatedFlow(from: string, to: string, eventName: string): void;
+    /**
+     * Log event with catalog validation
+     */
+    static logValidatedEvent(eventName: string, payload?: unknown): void;
+    /**
+     * Log flow with validation
+     */
+    static logValidatedFlow(from: string, to: string, eventName: string): void;
 }
 /**
  * Common Event Flow Patterns in claude-code-zen:

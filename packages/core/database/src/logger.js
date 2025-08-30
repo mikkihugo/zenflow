@@ -68,4 +68,3 @@ export function getLogger(component) {
         return new SimpleLogger(component);
     }
 }
-//# sourceMappingURL=logger.js.map
