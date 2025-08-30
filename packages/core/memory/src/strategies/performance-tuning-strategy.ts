@@ -109,13 +109,13 @@ export class PerformanceTuningStrategy extends EventEmitter {
   async tune():Promise<TuningRecommendation[]> {
     if (!this.config.enabled) {
       return [];
-}
+    }
 
-    return withTrace('performance-tuning-cycle', async (span) => {
+    return await withTrace('performance-tuning-cycle', async (span) => {
       span?.setAttributes({
-        'tuning.auto':this.config.tuning.autoTune,
-        'tuning.snapshots':this.snapshots.length,
-});
+        tuningAuto: this.config.tuning.autoTune,
+        tuningSnapshots: this.snapshots.length,
+      });
 
       try {
         // Take performance snapshot
@@ -232,30 +232,30 @@ export class PerformanceTuningStrategy extends EventEmitter {
 };
 }
 
-  private async measureResponseTime():Promise<number> {
+  private measureResponseTime():Promise<number> {
     // Mock implementation
-    return Math.random() * 100 + 10; // 10-110ms
-}
+    return Promise.resolve(Math.random() * 100 + 10); // 10-110ms
+  }
 
-  private async measureThroughput():Promise<number> {
+  private measureThroughput():Promise<number> {
     // Mock implementation - requests per second
-    return Math.random() * 2000 + 500; // 500-2500 rps
-}
+    return Promise.resolve(Math.random() * 2000 + 500); // 500-2500 rps
+  }
 
-  private async measureCacheHitRate():Promise<number> {
+  private measureCacheHitRate():Promise<number> {
     // Mock implementation
-    return Math.random() * 0.4 + 0.6; // 60-100%
-}
+    return Promise.resolve(Math.random() * 0.4 + 0.6); // 60-100%
+  }
 
-  private async measureErrorRate():Promise<number> {
+  private measureErrorRate():Promise<number> {
     // Mock implementation
-    return Math.random() * 0.05; // 0-5%
-}
+    return Promise.resolve(Math.random() * 0.05); // 0-5%
+  }
 
-  private async measureCpuUsage():Promise<number> {
+  private measureCpuUsage():Promise<number> {
     // Mock implementation
-    return Math.random() * 0.7 + 0.1; // 10-80%
-}
+    return Promise.resolve(Math.random() * 0.7 + 0.1); // 10-80%
+  }
 
   private async measureActiveConnections():Promise<number> {
     // Mock implementation
