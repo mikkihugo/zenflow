@@ -5,14 +5,14 @@
  * Supports rate-based, probabilistic, and attribute-based sampling.
  */
 
-import { getLogger} from '@claude-zen/foundation/logging';
-import type { ProcessorConfig} from '../types.js';
-import type { BaseProcessor} from './index.js';
+import { getLogger, JsonObject, JsonValue } from '@claude-zen/foundation';
+import type { ProcessorConfig, TelemetryData } from '../types.js';
+import type { BaseProcessor } from './index.js';
 
 /**
  * Sampling strategy types
  */
-type SamplingStrategy = | 'rate | probabilistic | attribute | priority | adaptive;
+type SamplingStrategy = 'rate' | 'probabilistic' | 'attribute' | 'priority' | 'adaptive';
 
 /**
  * Sampling rule interface
@@ -23,7 +23,7 @@ interface SamplingRule {
   probability?:number;
   attribute?:string;
   value?:any;
-  priority?:'high''  |  ' medium''  |  ' low';
+  priority?: 'high' | 'medium' | 'low';
   condition?:string;
 }
 
@@ -31,14 +31,22 @@ interface SamplingRule {
  * Sampler processor implementation
  */
 export class SamplerProcessor implements BaseProcessor {
+  private config: ProcessorConfig;
+  private logger: any;
+  private samplingRules: SamplingRule[];
+  private targetRate: number;
+  private currentRate: number;
+  private processedCount: number = 0;
+  private lastProcessedTime: number = Date.now();
+  private lastError: Error | null = null;
 
-  constructor(config:ProcessorConfig) {
+  constructor(config: ProcessorConfig) {
     this.config = config;
-    this.logger = getLogger(`SamplerProcessor:${config.name}`);`
+    this.logger = getLogger(`SamplerProcessor:${config.name}`);
 
     // Parse sampling rules
-    this.samplingRules = this.parseSamplingRules(config.config?.rules  |  |  []);
-    this.targetRate = config.config?.targetRate  |  |  0.1;
+    this.samplingRules = this.parseSamplingRules(config.config?.rules || []);
+    this.targetRate = config.config?.targetRate || 0.1;
     this.currentRate = this.targetRate;
 }
 
@@ -315,35 +323,38 @@ export class SamplerProcessor implements BaseProcessor {
   /**
    * Infer priority from telemetry data
    */
-  private inferPriority(data:TelemetryData): 'high | medium | low'' {
-    ')    // Check for error indicators
-    if (data.type ===  'logs'  &&&&  data.data  &&&&  typeof data.data ===  ' object') {
-    ')      const level = (data.data as any).level;
-      if (level ===  'error''  |  |  level === ' critical''  |  |  level === ' fatal') {
-    ')        return 'high;
-}
-      if (level ===  'warn') {
-    ')        return 'medium;
-}
-}
+  private inferPriority(data: TelemetryData): 'high' | 'medium' | 'low' {
+    // Check for error indicators
+    if (data.type === 'logs' && data.data && typeof data.data === 'object') {
+      const level = (data.data as any).level;
+      if (level === 'error' || level === 'critical' || level === 'fatal') {
+        return 'high';
+      }
+      if (level === 'warn') {
+        return 'medium';
+      }
+    }
 
     // Check for trace errors
     if (
-      data.type ===  'traces'  &&&& ')      data.data  &&&& 
-      (data.data as any).status ===  'ERROR')    ) 
-      return 'high;
+      data.type === 'traces' &&
+      data.data &&
+      (data.data as any).status === 'ERROR'
+    ) {
+      return 'high';
+    }
 
     // Check attributes for priority hints
-    const priority = data.attributes?.priority  |  |  data.attributes?.level;
-    if (priority === 'high''  |  |  priority === ' error') {
-    ')      return 'high;
-}
-    if (priority ===  'medium''  |  |  priority === ' warn') {
-    ')      return 'medium;
-}
+    const priority = data.attributes?.priority || data.attributes?.level;
+    if (priority === 'high' || priority === 'error') {
+      return 'high';
+    }
+    if (priority === 'medium' || priority === 'warn') {
+      return 'medium';
+    }
 
-    return 'low;
-}
+    return 'low';
+  }
 
   /**
    * Start adaptive sampling adjustment
@@ -398,39 +409,45 @@ export class SamplerProcessor implements BaseProcessor {
   /**
    * Get field value using dot notation
    */
-  private getFieldValue(data:any, fieldPath:string): any {
-    const parts = fieldPath.split('.');')    let value = data;
+  private getFieldValue(data: JsonObject, fieldPath: string): JsonValue {
+    const parts = fieldPath.split('.');
+    let value = data;
 
     for (const part of parts) {
-      if (value ===  null  |  |  value ===  undefined) {
+      if (value === null || value === undefined) {
         return undefined;
-}
+      }
       value = value[part];
-}
+    }
 
     return value;
-}
+  }
 
   /**
    * Evaluate simple conditions
    */
-  private evaluateCondition(data:TelemetryData, condition:string): boolean {
+  private evaluateCondition(data: TelemetryData, condition: string): boolean {
     try {
       // Simple condition evaluation
-      const parts = condition.split(' ');')      if (parts.length ===  3) {
+      const parts = condition.split(' ');
+      if (parts.length === 3) {
         const [field, operator, expectedValue] = parts;
         const actualValue = this.getFieldValue(data, field);
 
         switch (operator) {
-          case '==': ')'            return actualValue ===  expectedValue;
-          case '!=': ')'            return actualValue !== expectedValue;
-          case 'contains': ')'            return String(actualValue).includes(expectedValue);
-          case 'exists': ')'            return actualValue !== undefined;
-}
-}
-} catch (error) {
-      this.logger.warn(`Failed to evaluate condition:${condition}`, error);`
-}
+          case '==':
+            return actualValue === expectedValue;
+          case '!=':
+            return actualValue !== expectedValue;
+          case 'contains':
+            return String(actualValue).includes(expectedValue);
+          case 'exists':
+            return actualValue !== undefined;
+        }
+      }
+    } catch (error) {
+      this.logger.warn(`Failed to evaluate condition: ${condition}`, error);
+    }
 
     return true;
 }
