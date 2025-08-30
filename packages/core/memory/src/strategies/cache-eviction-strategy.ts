@@ -554,12 +554,13 @@ export class CacheEvictionStrategy extends EventEmitter {
     this.logger.info('Cache eviction configuration updated', newConfig);
 }
 
-  async shutdown():Promise<void> {
+  shutdown():Promise<void> {
     if (this.cleanupTimer) {
       clearInterval(this.cleanupTimer);
-}
+    }
 
     this.clear();
     this.logger.info('Cache eviction strategy shut down');
-}
+    return Promise.resolve();
+  }
 }
