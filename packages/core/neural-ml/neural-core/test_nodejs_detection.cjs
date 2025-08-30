@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-// Simple logger for test
+// Simple logger for test using stdout instead of console
 const logger = {
-  info: (msg, ...args) => console.log(msg, ...args)
+  info: (msg, ...args) => process.stdout.write(`${msg} ${args.join(' ')}\n`)
 };
 
 // Test Node.js runtime detection

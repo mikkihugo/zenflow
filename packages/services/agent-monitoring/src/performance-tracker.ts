@@ -9,14 +9,14 @@ import { EventEmitter } from 'events';
 
 // Real logger implementation using event-driven telemetry
 const getLogger = (name: string) => ({
-  info:(msg: string, meta?:unknown) =>
-    console.info(`[INFO: ${name}] ${msg}`, meta ? JSON.stringify(meta) : ''),
-  debug:(msg: string, meta?:unknown) =>
-    console.debug(`[DEBUG: ${name}] ${msg}`, meta ? JSON.stringify(meta) : ''),
-  warn:(msg: string, meta?:unknown) =>
-    console.warn(`[WARN: ${name}] ${msg}`, meta ? JSON.stringify(meta) : ''),
-  error:(msg: string, meta?:unknown) =>
-    console.error(`[ERROR: ${name}] ${msg}`, meta ? JSON.stringify(meta) : ''),
+  info: (msg: string, meta?: unknown) =>
+    process.stdout.write(`[INFO: ${name}] ${msg} ${meta ? JSON.stringify(meta) : ''}\n`),
+  debug: (msg: string, meta?: unknown) =>
+    process.stdout.write(`[DEBUG: ${name}] ${msg} ${meta ? JSON.stringify(meta) : ''}\n`),
+  warn: (msg: string, meta?: unknown) =>
+    process.stderr.write(`[WARN: ${name}] ${msg} ${meta ? JSON.stringify(meta) : ''}\n`),
+  error: (msg: string, meta?: unknown) =>
+    process.stderr.write(`[ERROR: ${name}] ${msg} ${meta ? JSON.stringify(meta) : ''}\n`),
 });
 
 // Event-driven metric recording

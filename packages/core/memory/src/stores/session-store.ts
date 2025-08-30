@@ -111,6 +111,62 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
     // Storage will be created during initialization using foundation
 }
 
+  /**
+   * Initialize telemetry system
+   */
+  private async initializeTelemetry(): Promise<void> {
+    if (!this.telemetryInitialized) {
+      const telemetryResult = await telemetry.initialize();
+      if (telemetryResult.isOk()) {
+        this.telemetryInitialized = true;
+        logger.debug('Telemetry initialized successfully');
+      } else {
+        logger.warn('Failed to initialize telemetry: ', telemetryResult.error);
+      }
+    }
+  }
+
+  /**
+   * Initialize storage backend
+   */
+  private async initializeStorage(): Promise<void> {
+    try {
+      this.storage = await Storage.getNamespacedKV('memory-sessions');
+      logger.debug('Foundation KV storage initialized successfully');
+    } catch (storageError) {
+      const error = new MemoryConnectionError(
+        'Failed to initialize foundation storage',
+        this.options.backendConfig.type,
+        { originalError: storageError }
+      );
+      this.errorAggregator.add(error);
+      recordMetric('memory_initialization_errors', 1);
+      throw error;
+    }
+  }
+
+  /**
+   * Record initialization metrics and emit events
+   */
+  private recordInitializationMetrics(timer: { duration?: number }): void {
+    performanceTracker.endTimer('memory_initialize');
+    const initTime = timer.duration || 0;
+
+    // Record comprehensive metrics
+    recordMetric('memory_store_initializations', 1);
+    recordHistogram('memory_initialization_duration_ms', initTime);
+    recordMetric('memory_sessions_loaded', this.sessions.size);
+
+    logger.info('Session memory store initialized successfully', {
+      initializationTime: initTime,
+      sessionsLoaded: this.sessions.size,
+      hasCircuitBreaker: !!this.circuitBreaker,
+      telemetryEnabled: this.telemetryInitialized,
+    });
+
+    this.emit('initialized', {});
+  }
+
   async initialize(): Promise<Result<void, MemoryConnectionError>> {
     if (this.initialized) return ok();
 
@@ -119,62 +175,22 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
     return await withTrace('memory-store-initialize', () =>
       withRetry(
         async () => safeAsync(async () => {
-            logger.info(
-              'Initializing session memory store with foundation storage...',              {
-                cacheEnabled:this.options.enableCache,
-                vectorEnabled:this.options.enableVectorStorage,
-                backendType:this.options.backendConfig.type,
-}
-            );
+          logger.info(
+            'Initializing session memory store with foundation storage...',
+            {
+              cacheEnabled: this.options.enableCache,
+              vectorEnabled: this.options.enableVectorStorage,
+              backendType: this.options.backendConfig.type,
+            }
+          );
 
-            // Initialize telemetry
-            if (!this.telemetryInitialized) {
-              const telemetryResult = await telemetry.initialize();
-              if (telemetryResult.isOk()) {
-                this.telemetryInitialized = true;
-                logger.debug('Telemetry initialized successfully');
-} else {
-                logger.warn(
-                  'Failed to initialize telemetry: ',
-                  telemetryResult.error
-                );
-}
-}
-
-            // Use foundation's storage system instead of custom backend
-            try {
-              this.storage = await Storage.getNamespacedKV('memory-sessions');
-              logger.debug('Foundation KV storage initialized successfully');
-} catch (storageError) {
-              const error = new MemoryConnectionError(
-                'Failed to initialize foundation storage',                this.options.backendConfig.type,
-                { originalError:storageError}
-              );
-              this.errorAggregator.add(error);
-              recordMetric('memory_initialization_errors', 1);
-              throw error;
-}
-
-            await this.loadFromStorage();
-            this.initialized = true;
-
-            performanceTracker.endTimer('memory_initialize');
-            const initTime = timer.duration || 0;
-
-            // Record comprehensive metrics
-            recordMetric('memory_store_initializations', 1);
-            recordHistogram('memory_initialization_duration_ms', initTime);
-            recordMetric('memory_sessions_loaded', this.sessions.size);
-
-            logger.info('Session memory store initialized successfully', {
-              initializationTime:initTime,
-              sessionsLoaded:this.sessions.size,
-              hasCircuitBreaker:!!this.circuitBreaker,
-              telemetryEnabled:this.telemetryInitialized,
-});
-
-            this.emit('initialized', {});
-}),
+          await this.initializeTelemetry();
+          await this.initializeStorage();
+          await this.loadFromStorage();
+          
+          this.initialized = true;
+          this.recordInitializationMetrics(timer);
+        }),
         {
           retries:3,
           minTimeout:1000,
@@ -549,7 +565,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
 });
 }
 
-  async getStats():Promise<MemoryStats> {
+  getStats(): MemoryStats {
     this.ensureInitialized();
 
     let totalEntries = 0;
@@ -560,15 +576,15 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
       totalEntries += Object.keys(session.data).length;
       totalSize += JSON.stringify(session.data).length;
       lastModified = Math.max(lastModified, session.metadata.updated);
-}
+    }
 
     return {
-      entries:totalEntries,
-      size:totalSize,
+      entries: totalEntries,
+      size: totalSize,
       lastModified,
-      namespaces:this.sessions.size,
-};
-}
+      namespaces: this.sessions.size,
+    };
+  }
 
   async shutdown():Promise<Result<void, MemoryError>> {
     if (!this.initialized) {
@@ -620,16 +636,16 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
 }
 }
 
-  async size():Promise<number> {
+  size(): number {
     this.ensureInitialized();
     let totalEntries = 0;
     for (const session of Array.from(this.sessions.values())) {
       totalEntries += Object.keys(session.data).length;
-}
+    }
     return totalEntries;
-}
+  }
 
-  async health():Promise<boolean> {
+  health(): boolean {
     try {
       this.ensureInitialized();
       return this.backend !== null && this.initialized;
@@ -638,9 +654,9 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
 }
 }
 
-  async stats():Promise<MemoryStats> {
+  stats(): MemoryStats {
     return this.getStats();
-}
+  }
 
   private async loadFromStorage():Promise<void> {
     if (!this.storage) return;
@@ -730,12 +746,12 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
   /**
    * Circuit breaker operation handler with comprehensive error handling and metrics
    */
-  private async performStorageOperation(params:{
-    operation:'store' | ' retrieve';
-    sessionId:string;
-    key?:string;
-    data?:any;
-}):Promise<any> {
+  private async performStorageOperation(params: {
+    operation: 'store' | 'retrieve';
+    sessionId: string;
+    key?: string;
+    data?: unknown;
+  }): Promise<unknown> {
     return safeAsync(async () => {
       if (!this.storage) {
         throw new MemoryError(

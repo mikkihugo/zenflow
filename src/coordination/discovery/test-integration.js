@@ -12,11 +12,14 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// Logger utility for test output
+const log = (message) => process.stdout.write(`${message}\n`);
+
 async function testIntegration() {
-  console.log('🔍 Testing Repository Analysis Integration...\n');
+  log('🔍 Testing Repository Analysis Integration...\n');
 
   // Test 1: Repo Analyzer functionality
-  console.log('1️⃣  Testing existing repo-analyzer...');
+  log('1️⃣  Testing existing repo-analyzer...');
   try {
     // Use dynamic import for CommonJS module
     const { RepoAnalyzer } = await import('../../../packages/tools/repo-analyzer/dist/index.js');
@@ -27,31 +30,31 @@ async function testIntegration() {
     });
 
     // Test that the analyzer initializes
-    console.log('   ✅ RepoAnalyzer initialized');
+    log('   ✅ RepoAnalyzer initialized');
 
     // Test domain boundary analysis
     const result = await repoAnalyzer.analyzeDomainBoundaries();
-    console.log('   ✅ Domain boundary analysis completed');
-    console.log(`   📊 Found ${result.data?.domains?.length || 0} domain violations`);
+    log('   ✅ Domain boundary analysis completed');
+    log(`   📊 Found ${result.data?.domains?.length || 0} domain violations`);
     
   } catch (error) {
-    console.log('   ❌ RepoAnalyzer test failed:', error.message);
+    log(`   ❌ RepoAnalyzer test failed: ${  error.message}`);
   }
 
-  console.log();
+  log();
 
   // Test 2: Neural Domain Mapper (simulated - since we need foundation to compile)
-  console.log('2️⃣  Testing neural domain mapper integration...');
+  log('2️⃣  Testing neural domain mapper integration...');
   try {
     // Check that files exist
     const neuralMapperPath = path.join(__dirname, 'neural-domain-mapper.ts');
     const typesPath = path.join(__dirname, 'types.ts');
     const gnnPresetPath = path.join(__dirname, '../../../src/neural/models/presets/gnn.js');
 
-    console.log('   📁 Checking file structure:');
-    console.log(`   ${fs.existsSync(neuralMapperPath) ? '✅' : '❌'} neural-domain-mapper.ts`);
-    console.log(`   ${fs.existsSync(typesPath) ? '✅' : '❌'} types.ts`);
-    console.log(`   ${fs.existsSync(gnnPresetPath) ? '✅' : '❌'} gnn.js preset`);
+    log('   📁 Checking file structure:');
+    log(`   ${fs.existsSync(neuralMapperPath) ? '✅' : '❌'} neural-domain-mapper.ts`);
+    log(`   ${fs.existsSync(typesPath) ? '✅' : '❌'} types.ts`);
+    log(`   ${fs.existsSync(gnnPresetPath) ? '✅' : '❌'} gnn.js preset`);
 
     // Check that the code has the expected functionality
     const neuralMapperCode = fs.readFileSync(neuralMapperPath, 'utf8');
@@ -64,7 +67,7 @@ async function testIntegration() {
       'recommendTopology'
     ].every(method => neuralMapperCode.includes(method));
 
-    console.log(`   ${hasRequiredMethods ? '✅' : '❌'} Required GNN methods implemented`);
+    log(`   ${hasRequiredMethods ? '✅' : '❌'} Required GNN methods implemented`);
 
     // Check GNN preset functionality
     const gnnPresetCode = fs.readFileSync(gnnPresetPath, 'utf8');
@@ -76,16 +79,16 @@ async function testIntegration() {
       'topology_recommendation'
     ].every(feature => gnnPresetCode.includes(feature));
 
-    console.log(`   ${hasGNNFeatures ? '✅' : '❌'} GNN domain analysis features present`);
+    log(`   ${hasGNNFeatures ? '✅' : '❌'} GNN domain analysis features present`);
 
   } catch (error) {
-    console.log('   ❌ Neural domain mapper test failed:', error.message);
+    log('   ❌ Neural domain mapper test failed:', error.message);
   }
 
-  console.log();
+  log();
 
   // Test 3: Functionality comparison
-  console.log('3️⃣  Comparing functionality coverage...');
+  log('3️⃣  Comparing functionality coverage...');
   
   const repoAnalyzerFeatures = [
     'Domain boundary validation',
@@ -104,16 +107,16 @@ async function testIntegration() {
     'Confidence scoring'
   ];
 
-  console.log('   📋 RepoAnalyzer features:');
-  repoAnalyzerFeatures.forEach(feature => console.log(`      - ${feature}`));
+  log('   📋 RepoAnalyzer features:');
+  repoAnalyzerFeatures.forEach(feature => log(`      - ${feature}`));
   
-  console.log('   📋 NeuralDomainMapper features:');
-  neuralDomainMapperFeatures.forEach(feature => console.log(`      - ${feature}`));
+  log('   📋 NeuralDomainMapper features:');
+  neuralDomainMapperFeatures.forEach(feature => log(`      - ${feature}`));
 
-  console.log();
+  log();
 
   // Test 4: Integration readiness
-  console.log('4️⃣  Checking integration readiness...');
+  log('4️⃣  Checking integration readiness...');
   
   const integrationChecks = [
     { name: 'RepoAnalyzer builds successfully', status: '✅' },
@@ -125,46 +128,46 @@ async function testIntegration() {
   ];
 
   integrationChecks.forEach(check => {
-    console.log(`   ${check.status} ${check.name}`);
+    log(`   ${check.status} ${check.name}`);
   });
 
-  console.log();
+  log();
 
   // Final assessment
-  console.log('📋 ASSESSMENT SUMMARY:');
-  console.log('═══════════════════════\n');
+  log('📋 ASSESSMENT SUMMARY:');
+  log('═══════════════════════\n');
   
-  console.log('✅ GOOD NEWS: Graph Neural Network functionality is now implemented!');
-  console.log();
-  console.log('📊 What was found:');
-  console.log('   - RepoAnalyzer: Working domain boundary validation ✅');
-  console.log('   - NeuralDomainMapper: Complete GNN implementation ✅');
-  console.log('   - GNN Presets: Domain-specific configuration ✅');
-  console.log('   - Integration: Ready for use ✅');
-  console.log();
+  log('✅ GOOD NEWS: Graph Neural Network functionality is now implemented!');
+  log();
+  log('📊 What was found:');
+  log('   - RepoAnalyzer: Working domain boundary validation ✅');
+  log('   - NeuralDomainMapper: Complete GNN implementation ✅');
+  log('   - GNN Presets: Domain-specific configuration ✅');
+  log('   - Integration: Ready for use ✅');
+  log();
   
-  console.log('🚀 Implementation Status:');
-  console.log('   - GNN-based domain relationship detection: IMPLEMENTED ✅');
-  console.log('   - Dependency graph analysis with neural insights: IMPLEMENTED ✅');
-  console.log('   - Cross-domain coupling strength calculation: IMPLEMENTED ✅');
-  console.log('   - Topology recommendation based on neural insights: IMPLEMENTED ✅');
-  console.log('   - Bazel workspace metadata integration: FRAMEWORK READY ✅');
-  console.log();
+  log('🚀 Implementation Status:');
+  log('   - GNN-based domain relationship detection: IMPLEMENTED ✅');
+  log('   - Dependency graph analysis with neural insights: IMPLEMENTED ✅');
+  log('   - Cross-domain coupling strength calculation: IMPLEMENTED ✅');
+  log('   - Topology recommendation based on neural insights: IMPLEMENTED ✅');
+  log('   - Bazel workspace metadata integration: FRAMEWORK READY ✅');
+  log();
 
-  console.log('💡 ANSWER TO ORIGINAL QUESTION:');
-  console.log('   "Do we have graph neural network for domain relationships etc in code analyzer?"');
-  console.log('   ✅ YES - It is now implemented in src/coordination/discovery/neural-domain-mapper.ts');
-  console.log();
-  console.log('   "The repo analyzer was migrated to code analyzer and can be removed but check so we don\'t lose anything"');
-  console.log('   ✅ SAFE TO PROCEED - RepoAnalyzer functionality preserved + enhanced with GNN capabilities');
-  console.log();
+  log('💡 ANSWER TO ORIGINAL QUESTION:');
+  log('   "Do we have graph neural network for domain relationships etc in code analyzer?"');
+  log('   ✅ YES - It is now implemented in src/coordination/discovery/neural-domain-mapper.ts');
+  log();
+  log('   "The repo analyzer was migrated to code analyzer and can be removed but check so we don\'t lose anything"');
+  log('   ✅ SAFE TO PROCEED - RepoAnalyzer functionality preserved + enhanced with GNN capabilities');
+  log();
 
-  console.log('🎯 NEXT STEPS:');
-  console.log('   1. Code-analyzer needs syntax fixes to build properly');
-  console.log('   2. Neural domain mapper is ready for integration');
-  console.log('   3. RepoAnalyzer can be deprecated once code-analyzer is fixed');
-  console.log('   4. GNN functionality provides the missing neural enhancement');
+  log('🎯 NEXT STEPS:');
+  log('   1. Code-analyzer needs syntax fixes to build properly');
+  log('   2. Neural domain mapper is ready for integration');
+  log('   3. RepoAnalyzer can be deprecated once code-analyzer is fixed');
+  log('   4. GNN functionality provides the missing neural enhancement');
 }
 
 // Run the test
-testIntegration().catch(console.error);
+testIntegration().catch(error => process.stderr.write(`Error: ${error.message}\n`));

@@ -209,9 +209,138 @@ export class MemoryMonitor extends EventEmitter {
 }
 
   /**
+   * Calculate performance metrics from recent operations
+   */
+  private calculatePerformanceMetrics(recentOperations: OperationRecord[]): {
+    operationsPerSecond: number;
+    averageLatency: number;
+    p95Latency: number;
+    p99Latency: number;
+  } {
+    const windowMs = this.configuration.collectInterval * 5;
+    const operationsPerSecond = (recentOperations.length / windowMs) * 1000;
+    const latencies = recentOperations
+      .map((op) => op.duration)
+      .sort((a, b) => a - b);
+    
+    const averageLatency = latencies.length > 0
+      ? latencies.reduce((sum, l) => sum + l, 0) / latencies.length
+      : 0;
+    
+    const p95Latency = latencies.length > 0
+      ? latencies[Math.floor(latencies.length * 0.95)]
+      : 0;
+    
+    const p99Latency = latencies.length > 0
+      ? latencies[Math.floor(latencies.length * 0.99)]
+      : 0;
+
+    return { operationsPerSecond, averageLatency, p95Latency, p99Latency };
+  }
+
+  /**
+   * Calculate cache metrics
+   */
+  private calculateCacheMetrics(totalOperations: number): {
+    cacheHitRate: number;
+    cacheMissRate: number;
+  } {
+    const cacheHits = Math.floor(totalOperations * 0.8); // Simulated 80% hit rate
+    const cacheHitRate = totalOperations > 0 ? cacheHits / totalOperations : 0;
+    const cacheMissRate = 1 - cacheHitRate;
+    
+    return { cacheHitRate, cacheMissRate };
+  }
+
+  /**
+   * Get coordinator metrics
+   */
+  private getCoordinatorMetrics(): {
+    consensusMetrics: {
+      decisions: number;
+      successful: number;
+      failed: number;
+      averageTime: number;
+    };
+    activeNodes: number;
+    healthyNodes: number;
+  } {
+    let consensusMetrics = {
+      decisions: 0,
+      successful: 0,
+      failed: 0,
+      averageTime: 0,
+    };
+
+    let activeNodes = 0;
+    let healthyNodes = 0;
+
+    if (this.coordinator) {
+      const coordStats = this.coordinator.getStats();
+      activeNodes = coordStats.nodes.total;
+      healthyNodes = coordStats.nodes.active;
+
+      consensusMetrics = {
+        decisions: coordStats.decisions.total,
+        successful: coordStats.decisions.completed,
+        failed: coordStats.decisions.failed,
+        averageTime: 50, // Simulated average consensus time
+      };
+    }
+
+    return { consensusMetrics, activeNodes, healthyNodes };
+  }
+
+  /**
+   * Calculate backend metrics
+   */
+  private calculateBackendMetrics(recentOperations: OperationRecord[]): MemoryMetrics['backends'] {
+    const backendMetrics: MemoryMetrics['backends'] = {};
+    
+    for (const [id] of this.backends) {
+      const backendOps = recentOperations.filter((op) =>
+        op.operation.includes(id)
+      );
+      const errors = backendOps.filter((op) => !op.success).length;
+      const avgLatency = backendOps.length > 0
+        ? backendOps.reduce((sum, op) => sum + op.duration, 0) / backendOps.length
+        : 0;
+
+      backendMetrics[id] = {
+        status: errors / Math.max(backendOps.length, 1) > 0.1 ? 'degraded' : 'healthy',
+        operations: backendOps.length,
+        errors,
+        latency: avgLatency,
+      };
+    }
+
+    return backendMetrics;
+  }
+
+  /**
+   * Calculate error metrics
+   */
+  private calculateErrorMetrics(recentOperations: OperationRecord[], totalOperations: number): {
+    errorRate: number;
+    errorsByType: Record<string, number>;
+  } {
+    const errorOperations = recentOperations.filter((op) => !op.success);
+    const errorRate = totalOperations > 0 ? errorOperations.length / totalOperations : 0;
+    const errorsByType = errorOperations.reduce(
+      (acc, op) => {
+        acc[op.operation] = (acc[op.operation] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+
+    return { errorRate, errorsByType };
+  }
+
+  /**
    * Collect current metrics.
    */
-  private collectMetrics():void {
+  private collectMetrics(): void {
     try {
       const now = Date.now();
       const windowMs = this.configuration.collectInterval * 5; // 5 collection periods
@@ -219,109 +348,34 @@ export class MemoryMonitor extends EventEmitter {
         (op) => now - op.timestamp < windowMs
       );
 
-      // Calculate performance metrics
-      const operationsPerSecond = (recentOperations.length / windowMs) * 1000;
-      const latencies = recentOperations
-        .map((op) => op.duration)
-        .sort((a, b) => a - b);
-      const averageLatency =
-        latencies.length > 0
-          ? latencies.reduce((sum, l) => sum + l, 0) / latencies.length
-          :0;
-      const p95Latency =
-        latencies.length > 0
-          ? latencies[Math.floor(latencies.length * 0.95)]
-          :0;
-      const p99Latency =
-        latencies.length > 0
-          ? latencies[Math.floor(latencies.length * 0.99)]
-          :0;
+      const { operationsPerSecond, averageLatency, p95Latency, p99Latency } = 
+        this.calculatePerformanceMetrics(recentOperations);
 
-      // Calculate cache metrics (simulated)
       const totalOperations = recentOperations.length;
-      const cacheHits = Math.floor(totalOperations * 0.8); // Simulated 80% hit rate
-      const cacheHitRate =
-        totalOperations > 0 ? cacheHits / totalOperations:0;
-      const cacheMissRate = 1 - cacheHitRate;
+      const { cacheHitRate, cacheMissRate } = this.calculateCacheMetrics(totalOperations);
 
-      // Get coordinator metrics
-      let consensusMetrics = {
-        decisions:0,
-        successful:0,
-        failed:0,
-        averageTime:0,
-};
+      const { consensusMetrics, activeNodes, healthyNodes } = this.getCoordinatorMetrics();
+      const backendMetrics = this.calculateBackendMetrics(recentOperations);
+      const { errorRate, errorsByType } = this.calculateErrorMetrics(recentOperations, totalOperations);
 
-      let activeNodes = 0;
-      let healthyNodes = 0;
-
-      if (this.coordinator) {
-        const coordStats = this.coordinator.getStats();
-        activeNodes = coordStats.nodes.total;
-        healthyNodes = coordStats.nodes.active;
-
-        consensusMetrics = {
-          decisions:coordStats.decisions.total,
-          successful:coordStats.decisions.completed,
-          failed:coordStats.decisions.failed,
-          averageTime:50, // Simulated average consensus time
-};
-}
-
-      // Get backend metrics
-      const backendMetrics:MemoryMetrics['backends'] = {};
-      for (const [id] of this.backends) {
-        const backendOps = recentOperations.filter((op) =>
-          op.operation.includes(id)
-        );
-        const errors = backendOps.filter((op) => !op.success).length;
-        const avgLatency =
-          backendOps.length > 0
-            ? backendOps.reduce((sum, op) => sum + op.duration, 0) /
-              backendOps.length
-            :0;
-
-        backendMetrics[id] = {
-          status:
-            errors / Math.max(backendOps.length, 1) > 0.1
-              ? 'degraded'
-              : 'healthy',
-          operations:backendOps.length,
-          errors,
-          latency:avgLatency,
-};
-}
-
-      // Calculate error metrics
-      const errorOperations = recentOperations.filter((op) => !op.success);
-      const errorRate =
-        totalOperations > 0 ? errorOperations.length / totalOperations:0;
-      const errorsByType = errorOperations.reduce(
-        (acc, op) => {
-          acc[op.operation] = (acc[op.operation] || 0) + 1;
-          return acc;
-},
-        {} as Record<string, number>
-      );
-
-      const metrics:MemoryMetrics = {
-        timestamp:now,
+      const metrics: MemoryMetrics = {
+        timestamp: now,
         operationsPerSecond,
         averageLatency,
-        p95Latency:p95Latency || 0,
-        p99Latency:p99Latency || 0,
-        totalMemoryUsage:process.memoryUsage().heapUsed / 1024 / 1024, // MB
-        cacheSize:100, // Simulated cache size in MB
+        p95Latency: p95Latency || 0,
+        p99Latency: p99Latency || 0,
+        totalMemoryUsage: process.memoryUsage().heapUsed / 1024 / 1024, // MB
+        cacheSize: 100, // Simulated cache size in MB
         cacheHitRate,
         cacheMissRate,
         activeNodes,
         healthyNodes,
-        consensus:consensusMetrics,
-        backends:backendMetrics,
+        consensus: consensusMetrics,
+        backends: backendMetrics,
         errorRate,
         errorsByType,
-        recoveryRate:0.95, // Simulated recovery rate
-};
+        recoveryRate: 0.95, // Simulated recovery rate
+      };
 
       this.metrics.push(metrics);
 

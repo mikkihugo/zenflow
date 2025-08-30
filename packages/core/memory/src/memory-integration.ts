@@ -215,27 +215,93 @@ export function createMemoryBackends(container:DIContainer): {
  * @param options.enableDebug
  * @example
  */
-export async function initializeMemorySystem(
-  container:DIContainer,
-  options:{
-    enableCache:boolean;
-    enableSessions:boolean;
-    enableSemantic:boolean;
-    enableDebug:boolean;
-} = {
-    enableCache:true,
-    enableSessions:true,
-    enableSemantic:true,
-    enableDebug:true,
+/**
+ * Creates memory backends based on configuration options
+ */
+function createMemoryBackends(
+  container: DIContainer,
+  options: {
+    enableCache: boolean;
+    enableSessions: boolean;
+    enableSemantic: boolean;
+    enableDebug: boolean;
+  }
+): { backends: Record<string, unknown>; enabledBackends: string[] } {
+  const backends: Record<string, unknown> = {};
+  const enabledBackends: string[] = [];
+  const providerFactory = container.resolve(MEMORY_TOKENS.ProviderFactory) as MemoryProviderFactory;
+
+  if (options.enableCache) {
+    backends.cache = providerFactory.createProvider(defaultMemoryConfigurations?.cache);
+    enabledBackends.push('cache');
+  }
+
+  if (options.enableSessions) {
+    backends.session = providerFactory.createProvider(defaultMemoryConfigurations?.session);
+    enabledBackends.push('session');
+  }
+
+  if (options.enableSemantic) {
+    backends.semantic = providerFactory.createProvider(defaultMemoryConfigurations?.semantic);
+    enabledBackends.push('semantic');
+  }
+
+  if (options.enableDebug) {
+    backends.debug = providerFactory.createProvider(defaultMemoryConfigurations?.debug);
+    enabledBackends.push('debug');
+  }
+
+  return { backends, enabledBackends };
 }
-):Promise<{
-  controller:unknown;
-  backends:Record<string, unknown>;
-  metrics:{
-    totalBackends:number;
-    enabledBackends:string[];
-    performance:typeof memoryBackendSpecs;
-};
+
+/**
+ * Performs health checks on all backends
+ */
+async function performBackendHealthChecks(
+  backends: Record<string, unknown>,
+  enabledBackends: string[],
+  logger: unknown
+): Promise<void> {
+  const healthChecks = await Promise.allSettled(
+    Object.entries(backends).map(async ([name, backend]) => {
+      const healthy = await backend.health();
+      return { name, healthy };
+    })
+  );
+
+  const healthyBackends = healthChecks
+    .filter(
+      (result): result is PromiseFulfilledResult<{ name: string; healthy: boolean }> =>
+        result?.status === 'fulfilled' && result?.value?.healthy
+    )
+    .map((result) => result?.value?.name);
+
+  logger.info(
+    `Memory system initialized: ${healthyBackends.length}/${enabledBackends.length} backends healthy`
+  );
+}
+
+export async function initializeMemorySystem(
+  container: DIContainer,
+  options: {
+    enableCache: boolean;
+    enableSessions: boolean;
+    enableSemantic: boolean;
+    enableDebug: boolean;
+  } = {
+    enableCache: true,
+    enableSessions: true,
+    enableSemantic: true,
+    enableDebug: true,
+  }
+): Promise<{
+  controller: unknown;
+  backends: Record<string, unknown>;
+  metrics: {
+    totalBackends: number;
+    enabledBackends: string[];
+    performance: typeof memoryBackendSpecs;
+  };
 }> {
   const logger = container.resolve(CORE_TOKENS.Logger);
   logger.info('Initializing memory system with DAL Factory integration');
@@ -244,75 +310,20 @@ export async function initializeMemorySystem(
   const controller = container.resolve(MEMORY_TOKENS.Controller);
 
   // Create backends based on options
-  const backends:Record<string, unknown> = {};
-  const enabledBackends:string[] = [];
-
-  if (options?.['enableCache']) {
-    backends.cache = (
-      container.resolve(
-        MEMORY_TOKENS['ProviderFactory']
-      ) as MemoryProviderFactory
-    ).createProvider(defaultMemoryConfigurations?.cache);
-    enabledBackends.push('cache');
-}
-
-  if (options?.['enableSessions']) {
-    backends.session = (
-      container.resolve(
-        MEMORY_TOKENS['ProviderFactory']
-      ) as MemoryProviderFactory
-    ).createProvider(defaultMemoryConfigurations?.session);
-    enabledBackends.push('session');
-}
-
-  if (options?.['enableSemantic']) {
-    backends.semantic = (
-      container.resolve(
-        MEMORY_TOKENS['ProviderFactory']
-      ) as MemoryProviderFactory
-    ).createProvider(defaultMemoryConfigurations?.semantic);
-    enabledBackends.push('semantic');
-}
-
-  if (options?.['enableDebug']) {
-    backends.debug = (
-      container.resolve(
-        MEMORY_TOKENS['ProviderFactory']
-      ) as MemoryProviderFactory
-    ).createProvider(defaultMemoryConfigurations?.debug);
-    enabledBackends.push('debug');
-}
+  const { backends, enabledBackends } = createMemoryBackends(container, options);
 
   // Test all backends
-  const healthChecks = await Promise.allSettled(
-    Object.entries(backends).map(async ([name, backend]) => {
-      const healthy = await backend.health();
-      return { name, healthy};
-})
-  );
-
-  const healthyBackends = healthChecks
-    .filter(
-      (
-        result
-      ):result is PromiseFulfilledResult<{ name: string; healthy: boolean}> =>
-        result?.status === 'fulfilled' && result?.value?.healthy
-    )
-    .map((result) => result?.value?.name);
-
-  logger.info(
-    `Memory system initialized:${healthyBackends.length}/${enabledBackends.length} backends healthy`
-  );
+  await performBackendHealthChecks(backends, enabledBackends, logger);
 
   return {
     controller,
     backends,
-    metrics:{
-      totalBackends:enabledBackends.length,
+    metrics: {
+      totalBackends: enabledBackends.length,
       enabledBackends,
-      performance:memoryBackendSpecs,
-},
-};
+      performance: memoryBackendSpecs,
+    },
+  };
 }
 
 /**
