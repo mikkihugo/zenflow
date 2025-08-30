@@ -14,127 +14,6 @@ let unsubscribeFacades: (() => void) | null = null;
 let unsubscribeSystem: (() => void) | null = null;
 let unsubscribeConnection: (() => void) | null = null;
 
-// Mock facade data for demonstration when API is unavailable
-const mockFacadeData = {
-	overall: "partial",
-	facades: {
-		foundation: {
-			name: "foundation",
-			capability: "full",
-			healthScore: 95,
-			packages: {
-				"@claude-zen/foundation": { status: "registered", version: "1.1.1" },
-			},
-			features: [
-				"Core utilities",
-				"Logging",
-				"Error handling",
-				"Type-safe primitives",
-			],
-			missingPackages: [],
-			registeredServices: ["logger", "errorHandler", "typeGuards"],
-		},
-		infrastructure: {
-			name: "infrastructure",
-			capability: "partial",
-			healthScore: 75,
-			packages: {
-				"@claude-zen/database": { status: "fallback", version: null },
-				"@claude-zen/event-system": { status: "fallback", version: null },
-				"@claude-zen/otel-collector": { status: "fallback", version: null },
-				"@claude-zen/service-container": { status: "fallback", version: null },
-			},
-			features: [
-				"Database abstraction",
-				"Event system",
-				"OpenTelemetry",
-				"Service container",
-			],
-			missingPackages: [
-				"@claude-zen/database",
-				"@claude-zen/event-system",
-				"@claude-zen/otel-collector",
-			],
-			registeredServices: ["fallbackDatabase", "fallbackEvents"],
-		},
-		intelligence: {
-			name: "intelligence",
-			capability: "partial",
-			healthScore: 60,
-			packages: {
-				"@claude-zen/brain": { status: "fallback", version: null },
-				"@claude-zen/neural-ml": { status: "fallback", version: null },
-				"@claude-zen/dspy": { status: "fallback", version: null },
-			},
-			features: ["Neural coordination", "Brain systems", "DSPy optimization"],
-			missingPackages: [
-				"@claude-zen/brain",
-				"@claude-zen/neural-ml",
-				"@claude-zen/dspy",
-			],
-			registeredServices: ["fallbackBrain"],
-		},
-		enterprise: {
-			name: "enterprise",
-			capability: "fallback",
-			healthScore: 40,
-			packages: {
-				"@claude-zen/coordination": { status: "active", version: null },
-				"@claude-zen/workflows": { status: "fallback", version: null },
-				"@claude-zen/portfolio": { status: "fallback", version: null },
-			},
-			features: [
-				"SAFE framework",
-				"Business workflows",
-				"Portfolio management",
-			],
-			missingPackages: [
-				// SAFe framework now included in coordination package
-				"@claude-zen/workflows",
-				"@claude-zen/portfolio",
-			],
-			registeredServices: ["fallbackWorkflows"],
-		},
-		operations: {
-			name: "operations",
-			capability: "partial",
-			healthScore: 70,
-			packages: {
-				"@claude-zen/system-monitoring": { status: "fallback", version: null },
-				"@claude-zen/chaos-engineering": { status: "fallback", version: null },
-				"@claude-zen/load-balancing": { status: "fallback", version: null },
-			},
-			features: ["System monitoring", "Chaos engineering", "Load balancing"],
-			missingPackages: [
-				"@claude-zen/system-monitoring",
-				"@claude-zen/chaos-engineering",
-			],
-			registeredServices: ["fallbackMonitoring"],
-		},
-		development: {
-			name: "development",
-			capability: "partial",
-			healthScore: 85,
-			packages: {
-				"@claude-zen/code-analyzer": { status: "fallback", version: null },
-				"@claude-zen/git-operations": { status: "fallback", version: null },
-				"@claude-zen/architecture": { status: "fallback", version: null },
-			},
-			features: ["Code analysis", "Git operations", "Architecture validation"],
-			missingPackages: [
-				"@claude-zen/code-analyzer",
-				"@claude-zen/git-operations",
-			],
-			registeredServices: ["fallbackCodeAnalyzer", "fallbackGitOps"],
-		},
-	},
-	totalPackages: 18,
-	availablePackages: 1,
-	registeredServices: 8,
-	healthScore: 71,
-	lastUpdated: Date.now(),
-};
-
 onMount(async () => {
 	// Setup WebSocket subscriptions for real-time facade updates
 	setupWebSocketSubscriptions();
@@ -169,9 +48,8 @@ function setupWebSocketSubscriptions() {
 	unsubscribeSystem = webSocketManager.systemStatus.subscribe((data) => {
 		if (data && !facadeStatus) {
 			console.log("📊 Using system status data for facades:", data);
-			// Use mock data as fallback with real connection status
-			facadeStatus = mockFacadeData;
-			systemStatus = mockFacadeData;
+			facadeStatus = data;
+			systemStatus = data;
 			_loading = false;
 		}
 	});
@@ -181,14 +59,7 @@ function setupWebSocketSubscriptions() {
 		_connectionState = state;
 		
 		if (!state.connected) {
-			// Use mock data when WebSocket is disconnected
-			if (!facadeStatus) {
-				console.log("🔌 WebSocket disconnected, using mock facade data");
-				facadeStatus = mockFacadeData;
-				systemStatus = mockFacadeData;
-				_loading = false;
-				_error = "WebSocket disconnected - showing mock data";
-			}
+			_error = "WebSocket disconnected - waiting for real data";
 		} else {
 			_error = null;
 		}

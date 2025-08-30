@@ -1,6 +1,7 @@
 <script lang="ts">
 import { onMount, onDestroy } from "svelte";
 import { webSocketManager } from "../../lib/websocket";
+import { apiClient } from "../../lib/api";
 
 // Swarm management data
 let swarmStatus: any = null;
@@ -63,6 +64,12 @@ const _agentTypes = [
 	"coordinator",
 ];
 const _priorities = ["low", "medium", "high", "critical"];
+
+// Fix undefined variable references
+const agentTypes = _agentTypes;
+const tasksLoading = _tasksLoading;
+const tasksError = _tasksError;
+const statsError = _statsError;
 
 onMount(async () => {
 	// Setup WebSocket subscriptions for real-time swarm updates
@@ -172,7 +179,7 @@ function refreshSwarmTasks() {
 	console.log("🔄 Refreshing swarm tasks via WebSocket");
 }
 
-async function _loadTaskDetails(taskId: string) {
+async function loadTaskDetails(taskId: string) {
 	try {
 		_taskDetailsLoading = true;
 		selectedTask = await apiClient.getSwarmTasks(taskId);
@@ -187,7 +194,7 @@ async function _loadTaskDetails(taskId: string) {
 	}
 }
 
-async function _initializeSwarm() {
+async function initializeSwarm() {
 	try {
 		_initLoading = true;
 		_initError = null;
@@ -214,7 +221,7 @@ async function _initializeSwarm() {
 	}
 }
 
-async function _spawnAgent() {
+async function spawnAgent() {
 	if (!agentSwarmId) {
 		_agentSpawnError = "Please provide a swarm ID";
 		return;
@@ -252,7 +259,7 @@ async function _spawnAgent() {
 	}
 }
 
-async function _orchestrateTask() {
+async function orchestrateTask() {
 	if (!taskDescription) {
 		_taskCreationError = "Please provide a task description";
 		return;
@@ -285,7 +292,7 @@ async function _orchestrateTask() {
 	}
 }
 
-async function _shutdownSwarm() {
+async function shutdownSwarm() {
 	if (
 		!confirm(
 			"Are you sure you want to shutdown the swarm? This will stop all agents and tasks.",
@@ -325,7 +332,7 @@ function _getStatusColor(status: string): string {
 	}
 }
 
-function _formatUptime(seconds: number): string {
+function formatUptime(seconds: number): string {
 	const minutes = Math.floor(seconds / 60);
 	const hours = Math.floor(minutes / 60);
 	const days = Math.floor(hours / 24);

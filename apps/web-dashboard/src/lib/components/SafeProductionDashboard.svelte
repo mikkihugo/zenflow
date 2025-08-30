@@ -601,7 +601,7 @@ function showAchievementNotification(achievement: any) {
 	console.log("Achievement notification:", notification);
 }
 
-function _getGridStyle(widget: DashboardWidget) {
+function getGridStyle(widget: DashboardWidget) {
 	const sizeMap = {
 		small: { gridColumn: "span 1", gridRow: "span 1" },
 		medium: { gridColumn: "span 2", gridRow: "span 1" },
