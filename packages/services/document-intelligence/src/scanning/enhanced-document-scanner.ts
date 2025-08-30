@@ -13,50 +13,62 @@
  * @file Enhanced document scanner for code analysis and task generation.
  */
 
-import { readdir, stat} from 'node:fs/promises';
-import { join, relative} from 'node:path';
-import { getLogger, TypedEventBase} from '@claude-zen/foundation';
+import { readdir, readFile, stat } from 'node:fs/promises';
+import { extname, join, relative } from 'node:path';
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
 
 const logger = getLogger('EnhancedDocumentScanner');
 
 /**
  * Types of analysis patterns we can detect in code and documents
  */
-export type AnalysisPattern =|'todo|fixme|hack|deprecated|missing_implementation|empty_function|code_quality | documentation_gap'|test_missing|performance_issue | security_concern'|refactor_needed;
+export type AnalysisPattern = 
+  | 'todo'
+  | 'fixme'
+  | 'hack'
+  | 'deprecated'
+  | 'missing_implementation'
+  | 'empty_function'
+  | 'code_quality'
+  | 'documentation_gap'
+  | 'test_missing'
+  | 'performance_issue'
+  | 'security_concern'
+  | 'refactor_needed';
 
 /**
  * Detected code issue or improvement opportunity
  */
 export interface CodeAnalysisResult {
-  id:string;
-  type:AnalysisPattern;
-  severity: 'low|medium|high|critical;
-'  title:string;
-  description:string;
-  filePath:string;
-  lineNumber?:number;
-  codeSnippet?:string;
-  suggestedAction:string;
-  estimatedEffort:'small' | ' medium' | ' large';
-  tags:string[];
-  relatedFiles?:string[];
+  id: string;
+  type: AnalysisPattern;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  title: string;
+  description: string;
+  filePath: string;
+  lineNumber?: number;
+  codeSnippet?: string;
+  suggestedAction: string;
+  estimatedEffort: 'small' | 'medium' | 'large';
+  tags: string[];
+  relatedFiles?: string[];
 }
 
 /**
  * Generated swarm task from code analysis
  */
 export interface GeneratedSwarmTask {
-  id:string;
-  title:string;
-  description:string;
-  type:'task' | ' feature' | ' epic';
-  priority: 'low|medium|high|critical;
-'  estimatedHours:number;
-  sourceAnalysis:CodeAnalysisResult;
-  suggestedSwarmType:|'single_agent|collaborative|research|implementation;
-  requiredAgentTypes:string[];
-  dependencies:string[];
-  acceptanceCriteria:string[];
+  id: string;
+  title: string;
+  description: string;
+  type: 'task' | 'feature' | 'epic';
+  priority: 'low' | 'medium' | 'high' | 'critical';
+  estimatedHours: number;
+  sourceAnalysis: CodeAnalysisResult;
+  suggestedSwarmType: 'single_agent' | 'collaborative' | 'research' | 'implementation';
+  requiredAgentTypes: string[];
+  dependencies: string[];
+  acceptanceCriteria: string[];
 }
 
 /**
@@ -64,115 +76,144 @@ export interface GeneratedSwarmTask {
  */
 export interface ScannerConfig {
   /** Root directory to scan */
-  rootPath:string;
+  rootPath: string;
   /** File patterns to include */
-  includePatterns:string[];
+  includePatterns: string[];
   /** File patterns to exclude */
-  excludePatterns:string[];
+  excludePatterns: string[];
   /** Analysis patterns to detect */
-  enabledPatterns:AnalysisPattern[];
+  enabledPatterns: AnalysisPattern[];
   /** Maximum depth for directory traversal */
-  maxDepth:number;
+  maxDepth: number;
   /** Enable deep code analysis */
-  deepAnalysis:boolean;
+  deepAnalysis: boolean;
 }
 
 /**
  * Scan results summary
  */
 export interface ScanResults {
-  analysisResults:CodeAnalysisResult[];
-  generatedTasks:GeneratedSwarmTask[];
-  scannedFiles:number;
-  totalIssues:number;
-  severityCounts:Record<string, number>;
-  patternCounts:Record<AnalysisPattern, number>;
-  scanDuration:number;
+  analysisResults: CodeAnalysisResult[];
+  generatedTasks: GeneratedSwarmTask[];
+  scannedFiles: number;
+  totalIssues: number;
+  severityCounts: Record<string, number>;
+  patternCounts: Record<AnalysisPattern, number>;
+  scanDuration: number;
 }
 
 /**
  * Enhanced document and code scanner with AI-powered analysis
  */
 export class EnhancedDocumentScanner extends TypedEventBase {
-  private config:ScannerConfig;
+  private config: ScannerConfig;
   private isScanning = false;
+  private analysisPatterns: Map<AnalysisPattern, RegExp[]>;
 
-  constructor(config:Partial<ScannerConfig> = {}) {
+  constructor(config: Partial<ScannerConfig> = {}) {
     super();
 
     this.config = {
-      rootPath:config.rootPath||'./src',      includePatterns:config.includePatterns||['**/*.md',        '**/*',        '**/*',        '**/*.tsx',        '**/*.jsx',],
-      excludePatterns:config.excludePatterns||['**/node_modules/**',        '**/dist/**',        '**/*.test.*',        '**/*.spec.*',],
-      enabledPatterns:config.enabledPatterns||['todo',        'fixme',        'hack',        'deprecated',        'missing_implementation',        'empty_function',        'code_quality',        'documentation_gap',],
-      maxDepth:config.maxDepth||10,
-      deepAnalysis:config.deepAnalysis !== false,
-};
+      rootPath: config.rootPath || './src',
+      includePatterns: config.includePatterns || [
+        '**/*.md',
+        '**/*.ts',
+        '**/*.js',
+        '**/*.tsx',
+        '**/*.jsx',
+      ],
+      excludePatterns: config.excludePatterns || [
+        '**/node_modules/**',
+        '**/dist/**',
+        '**/*.test.*',
+        '**/*.spec.*',
+      ],
+      enabledPatterns: config.enabledPatterns || [
+        'todo',
+        'fixme',
+        'hack',
+        'deprecated',
+        'missing_implementation',
+        'empty_function',
+        'code_quality',
+        'documentation_gap',
+      ],
+      maxDepth: config.maxDepth || 10,
+      deepAnalysis: config.deepAnalysis !== false,
+    };
 
     this.analysisPatterns = this.initializeAnalysisPatterns();
-}
+  }
 
   /**
    * Initialize regex patterns for different analysis types
    */
-  private initializeAnalysisPatterns():Map<AnalysisPattern, RegExp[]> {
+  private initializeAnalysisPatterns(): Map<AnalysisPattern, RegExp[]> {
     const patterns = new Map<AnalysisPattern, RegExp[]>();
 
     // TODO pattern detection
-    patterns.set('todo', [')      /(?:\/\/|#|<!--)\s*todo[\s:](.*?)(?:-->|$)/gi,
+    patterns.set('todo', [
+      /(?:\/\/|#|<!--)\s*todo[\s:](.*?)(?:-->|$)/gi,
       /(?:\/\*|\*)\s*todo[\s:](.*?)(?:\*\/|$)/gi,
       /\b(?:todo|to-do|@todo)[\s:](.*?)(?:\n|$)/gi,
-]);
+    ]);
 
     // FIXME pattern detection
-    patterns.set('fixme', [')      /(?:\/\/|#|<!--)\s*fixme[\s:](.*?)(?:-->|$)/gi,
+    patterns.set('fixme', [
+      /(?:\/\/|#|<!--)\s*fixme[\s:](.*?)(?:-->|$)/gi,
       /(?:\/\*|\*)\s*fixme[\s:](.*?)(?:\*\/|$)/gi,
       /\b(?:fixme|fix|@fixme)[\s:](.*?)(?:\n|$)/gi,
-]);
+    ]);
 
     // HACK pattern detection
-    patterns.set('hack', [')      /(?:\/\/|#|<!--)\s*hack[\s:](.*?)(?:-->|$)/gi,
+    patterns.set('hack', [
+      /(?:\/\/|#|<!--)\s*hack[\s:](.*?)(?:-->|$)/gi,
       /(?:\/\*|\*)\s*hack[\s:](.*?)(?:\*\/|$)/gi,
       /\b(?:hack|hacky|@hack)[\s:](.*?)(?:\n|$)/gi,
-]);
+    ]);
 
     // Deprecated pattern detection
-    patterns.set('deprecated', [')      /@deprecated[\s:](.*?)(?:\n|$)/gi,
+    patterns.set('deprecated', [
+      /@deprecated[\s:](.*?)(?:\n|$)/gi,
       /\b(?:deprecated|@deprecated)[\s:](.*?)(?:\n|$)/gi,
       /(?:\/\/|#)\s*deprecated[\s:](.*?)(?:\n|$)/gi,
-]);
+    ]);
 
     // Missing implementation patterns
-    patterns.set('missing_implementation', [')      /throw new error\(["'`]not implemented["'`]\)/gi,`
+    patterns.set('missing_implementation', [
+      /throw new error\(["'`]not implemented["'`]\)/gi,
       /throw new notimplementederror/gi,
       /\/\/ todo[\s:]*implement/gi,
       /\/\* todo[\s:]*implement/gi,
-]);
+    ]);
 
     // Empty function patterns
-    patterns.set('empty_function', [')      /function\s+\w+\s*\([^)]*\)\s*{\s*}/gi,
+    patterns.set('empty_function', [
+      /function\s+\w+\s*\([^)]*\)\s*{\s*}/gi,
       /\w+\s*=\s*\([^)]*\)\s*=>\s*{\s*}/gi,
       /async\s+function\s+\w+\s*\([^)]*\)\s*{\s*}/gi,
-]);
+    ]);
 
     return patterns;
-}
+  }
 
   /**
    * Scan the configured directory for issues and generate tasks
    */
-  async scanAndGenerateTasks():Promise<ScanResults> {
+  async scanAndGenerateTasks(): Promise<ScanResults> {
     if (this.isScanning) {
-      throw new Error('Scanner is already running');')}
+      throw new Error('Scanner is already running');
+    }
 
     this.isScanning = true;
-    const __startTime = Date.now();
+    const startTime = Date.now();
 
     try {
       logger.info(
-        `🔍 Starting enhanced document scan in ${this.config.rootPath}``
+        `🔍 Starting enhanced document scan in ${this.config.rootPath}`
       );
 
-      const analysisResults:CodeAnalysisResult[] = [];
+      const analysisResults: CodeAnalysisResult[] = [];
       const scannedFiles = await this.scanDirectory(
         this.config.rootPath,
         analysisResults
@@ -208,57 +249,59 @@ export class EnhancedDocumentScanner extends TypedEventBase {
    * Recursively scan directory for files to analyze
    */
   private async scanDirectory(
-    dirPath:string,
-    analysisResults:CodeAnalysisResult[],
+    dirPath: string,
+    analysisResults: CodeAnalysisResult[],
     depth = 0
-  ):Promise<number> {
+  ): Promise<number> {
     if (depth > this.config.maxDepth) {
       return 0;
-}
+    }
 
-    let __scannedFiles = 0;
+    let scannedFiles = 0;
 
     try {
       const entries = await readdir(dirPath);
 
       for (const entry of entries) {
         const fullPath = join(dirPath, entry);
-        const __stats = await stat(fullPath);
+        const stats = await stat(fullPath);
 
         if (stats.isDirectory()) {
           // Check if directory should be excluded
           if (this.shouldExcludePath(fullPath)) {
             continue;
-}
-          _scannedFiles += await this.scanDirectory(
+          }
+          scannedFiles += await this.scanDirectory(
             fullPath,
             analysisResults,
             depth + 1
           );
-} else if (
+        } else if (
           stats.isFile() && // Check if file should be included
           this.shouldIncludeFile(fullPath)
         ) {
           await this.analyzeFile(fullPath, analysisResults);
-          _scannedFiles++;
-}
-}
-} catch (error) {
-      logger.warn(`Failed to scan directory ${dirPath}:`, error);`
-}
+          scannedFiles++;
+        }
+      }
+    } catch (error) {
+      logger.warn(`Failed to scan directory ${dirPath}:`, error);
+    }
 
     return scannedFiles;
-}
+  }
 
   /**
    * Analyze a single file for issues
    */
   private async analyzeFile(
-    filePath:string,
-    results:CodeAnalysisResult[]
-  ):Promise<void> {
+    filePath: string,
+    results: CodeAnalysisResult[]
+  ): Promise<void> {
     try {
-      const content = await readFile(filePath, 'utf8');')      const lines = content.split('\n');')      const fileExt = extname(filePath);
+      const content = await readFile(filePath, 'utf8');
+      const lines = content.split('\n');
+      const fileExt = extname(filePath);
 
       // Analyze each enabled pattern
       for (const pattern of this.config.enabledPatterns) {
@@ -278,91 +321,103 @@ export class EnhancedDocumentScanner extends TypedEventBase {
             );
             if (result) {
               results.push(result);
-}
-}
-}
-}
+            }
+          }
+        }
+      }
 
       // Deep analysis for TypeScript/JavaScript files
       if (
         this.config.deepAnalysis &&
-        [',    '.tsx',    ',    '.jsx'].includes(fileExt)')      ) {
+        ['.ts', '.tsx', '.js', '.jsx'].includes(fileExt)
+      ) {
         await this.performDeepAnalysis(filePath, content, lines, results);
-}
+      }
 
       // Markdown-specific analysis
       if (fileExt === '.md') {
-    ')        await this.analyzeMarkdownDocument(filePath, content, results);
-}
-} catch (error) {
-      logger.warn(`Failed to analyze file $filePath:`, error);`
-}
-}
+        await this.analyzeMarkdownDocument(filePath, content, results);
+      }
+    } catch (error) {
+      logger.warn(`Failed to analyze file ${filePath}:`, error);
+    }
+  }
 
   /**
    * Perform deep code analysis using AST parsing
    */
   private async performDeepAnalysis(
-    filePath:string,
-    content:string,
-    lines:string[],
-    results:CodeAnalysisResult[]
-  ):Promise<void> {
+    filePath: string,
+    content: string,
+    lines: string[],
+    results: CodeAnalysisResult[]
+  ): Promise<void> {
     try {
       // Check for empty functions
       const emptyFunctionMatches = content.matchAll(
-        /(?:functions+(w+)|(w+)s*=s*(?:asyncs+)?(?:function|([^)]*)s*=>))s*([^)]*)s*{s*(?://[^\n]*\ns*)*}/g
+        /(?:function\s+(\w+)|(\w+)\s*=\s*(?:async\s+)?(?:function|([^)]*)\s*=&gt;))\s*([^)]*)\s*{\s*(?:\/\/[^\n]*\n\s*)*}/g
       );
 
       for (const match of emptyFunctionMatches) {
-        const functionName = match[1]||match[2];
-        const lineNumber = this.getLineNumber(content, match.index||0);
+        const functionName = match[1] || match[2];
+        const lineNumber = this.getLineNumber(content, match.index || 0);
 
         results.push({
-          id:this.generateId(),
-          type: 'empty_function',          severity: 'medium',          title:`Empty function: ${functionName}`,`
-          description:`Function '${functionName}' appears to be empty and may need implementation`,`
+          id: this.generateId(),
+          type: 'empty_function',
+          severity: 'medium',
+          title: `Empty function: ${functionName}`,
+          description: `Function '${functionName}' appears to be empty and may need implementation`,
           filePath,
           lineNumber,
-          codeSnippet:lines[lineNumber - 1],
-          suggestedAction:`Implement the $functionNamefunction _or add documentation explaining why it's empty`,`
-          estimatedEffort: 'small',          tags:['implementation',    'code-quality'],
-});
-}
+          codeSnippet: lines[lineNumber - 1],
+          suggestedAction: `Implement the ${functionName} function or add documentation explaining why it's empty`,
+          estimatedEffort: 'small',
+          tags: ['implementation', 'code-quality'],
+        });
+      }
 
       // Check for missing error handling
       const asyncFunctionMatches = content.matchAll(
         /async\s+function\s+\w+|=\s*async\s*\([^)]*\)\s*=>/g
       );
-      for (const match _of _asyncFunctionMatches) {
+      for (const match of asyncFunctionMatches) {
         const functionText = this.extractFunctionBody(
           content,
-          match.index||0
+          match.index || 0
         );
         if (
           functionText &&
-          !functionText.includes('try') &&')          !functionText.includes('catch')')        ) {
-          const lineNumber = this.getLineNumber(content, match.index||0);
+          !functionText.includes('try') &&
+          !functionText.includes('catch')
+        ) {
+          const lineNumber = this.getLineNumber(content, match.index || 0);
           results.push({
-            id:this.generateId(),
-            type: 'code_quality',            severity: 'medium',            title: 'Missing error handling in async function',            description: 'Async function lacks proper try-catch error handling',            filePath,
+            id: this.generateId(),
+            type: 'code_quality',
+            severity: 'medium',
+            title: 'Missing error handling in async function',
+            description: 'Async function lacks proper try-catch error handling',
+            filePath,
             lineNumber,
-            codeSnippet:lines[lineNumber - 1],
-            suggestedAction: 'Add try-catch blocks to handle potential errors',            estimatedEffort: 'small',            tags:['error-handling',    'robustness'],
-});
-}
-}
-} catch (error) {
-      logger.debug(`Deep analysis failed for ${filePath}:`, error);`
-}
-}
+            codeSnippet: lines[lineNumber - 1],
+            suggestedAction: 'Add try-catch blocks to handle potential errors',
+            estimatedEffort: 'small',
+            tags: ['error-handling', 'robustness'],
+          });
+        }
+      }
+    } catch (error) {
+      logger.debug(`Deep analysis failed for ${filePath}:`, error);
+    }
+  }
 
   /**
    * Analyze markdown documents for documentation issues
    */
   private async analyzeMarkdownDocument(
-    filePath:string,
-    content:string,
+    filePath: string,
+    content: string,
     results:CodeAnalysisResult[]
   ):Promise<void> {
     const lines = content.split('\n');')
