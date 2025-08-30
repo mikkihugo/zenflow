@@ -23,8 +23,8 @@ import express, { type Express, type Request, type Response } from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import { ControlApiRoutes } from './control-api-routes';
-import { SystemCapabilityRoutes } from './system-capability-routes';
+import { WebApiRoutes } from './api.routes';
+import { createRealApiRoutes } from './real-api-routes';
 import { eventRegistryWebSocketService } from '../websocket/event-registry-websocket';
 import { eventRegistryInitializer } from '../event-system/event-registry-initializer';
 
@@ -49,17 +49,15 @@ export class ApiServer {
   private server: Server;
   private app: Express;
   private readonly logger = getLogger(ApiServer);
-  private controlApiRoutes: ControlApiRoutes;
-  private systemCapabilityRoutes: SystemCapabilityRoutes;
+  private webApiRoutes: WebApiRoutes | null = null;
+  private realApiRoutes: ReturnType<typeof createRealApiRoutes>;
 
   constructor(private config: ApiServerConfig) {
     this.logger.info('🚀 Creating ApiServer...');
     // Create Express app
     this.app = express();
-    // Initialize control API routes
-    this.controlApiRoutes = new ControlApiRoutes();
-    // Initialize system capability routes
-    this.systemCapabilityRoutes = new SystemCapabilityRoutes();
+    // Initialize real API routes  
+    this.realApiRoutes = createRealApiRoutes();
     // Setup middleware and routes
     this.setupMiddleware();
     this.setupRoutes();
@@ -152,35 +150,20 @@ export class ApiServer {
     this.logger.info('📋 Setting up API routes...');
     this.setupHealthRoutes();
     this.setupSystemRoutes();
-    this.setupSystemCapabilityRoutes();
+    this.setupRealApiRoutes();
     this.setupWorkspaceRoutes();
-    this.setupControlRoutes();
     this.setupSvelteStaticFiles();
     this.setupDefaultRoutes();
     this.logger.info('✅ API routes configured');
   }
 
   /**
-   * Set up system capability dashboard routes
+   * Set up real API routes for dashboard functionality
    */
-  private setupSystemCapabilityRoutes(): void {
-    this.logger.info('📊 Setting up system capability routes...');
-    // Mount system capability routes under /api/v1/system/capability
-    this.app.use(
-      '/api/v1/system/capability',
-      this.systemCapabilityRoutes.getRouter()
-    );
-    this.logger.info('✅ System capability routes configured');
-  }
-
-  /**
-   * Set up comprehensive control API routes
-   */
-  private setupControlRoutes(): void {
-    this.logger.info('🎛️ Setting up control API routes...');
-    // Initialize control APIs with the HTTP server for WebSocket support
-    this.controlApiRoutes.setupRoutes(this.app, this.server);
-    this.logger.info('✅ Control API routes configured');
+  private setupRealApiRoutes(): void {
+    this.logger.info('🔧 Setting up real API routes...');
+    this.realApiRoutes.setupRoutes(this.app);
+    this.logger.info('✅ Real API routes configured');
   }
 
   /**

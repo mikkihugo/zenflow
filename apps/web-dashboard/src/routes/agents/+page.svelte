@@ -38,14 +38,8 @@
     webSocketManager.connectionState.subscribe((connectionState) => {
       if (!connectionState.connected) {
         error = 'WebSocket disconnected - showing cached data';
-        // Show fallback mock data when disconnected
-        if (agents.length === 0) {
-          agents = [
-            { id: 1, name: 'Coordination Agent', status: 'offline', type: 'Coordination', lastActivity: 'Disconnected', capabilities: ['Planning', 'Task Management'] },
-            { id: 2, name: 'Analysis Agent', status: 'offline', type: 'Analysis', lastActivity: 'Disconnected', capabilities: ['Data Processing', 'Insights'] },
-            { id: 3, name: 'Processing Agent', status: 'offline', type: 'Processing', lastActivity: 'Disconnected', capabilities: ['File Processing', 'Automation'] }
-          ];
-        }
+        // When disconnected, keep existing real data instead of showing mock data
+        // Real agents will remain from last successful WebSocket update
         loading = false;
       } else {
         error = '';

@@ -82,27 +82,10 @@ onMount(async () => {
 async function loadDatabaseStatus() {
 	try {
 		_statusLoading = true;
-		// Show mock database status for now
-		databaseStatus = {
-			data: {
-				status: 'Connected',
-				responseTime: 45,
-				type: 'SQLite',
-				version: '3.43.0',
-				config: {
-					database: 'claude-zen.db',
-					mode: 'WAL',
-					cache_size: -64000
-				},
-				metadata: {
-					tables: 12,
-					size: '2.4MB',
-					last_vacuum: '2024-08-28T10:30:00Z'
-				}
-			}
-		};
+		// Use real API call to get database status
+		databaseStatus = await apiClient.getDatabaseStatus();
 		_statusError = null;
-		console.log("✅ Loaded database status:", databaseStatus);
+		console.log("✅ Loaded database status from API:", databaseStatus);
 	} catch (error) {
 		_statusError =
 			error instanceof Error ? error.message : "Failed to load database status";
