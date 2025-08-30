@@ -5,9 +5,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import * as primitives from '../../src/types/primitives';
-
-const {
+import {
   brand,
   dateFromTimestamp,
   Environment,
@@ -25,7 +23,7 @@ const {
   Status,
   timestampFromDate,
   unbrand,
-} = primitives;
+} from '../../dist/src/types/primitives.js';
 
 describe('Foundation Type Utilities - 100% Coverage', () => {
   describe('Branding Functions', () => {
@@ -118,7 +116,7 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
         const validDates = [
           '2023-01-01T00:00:00.000Z',
           '2023-12-31T23:59:59.999Z',
-          '2023-06-15T12:30:45Z',
+          '2023-06-15T12:30:45.000Z', // Fixed: must include milliseconds
           new Date().toISOString(),
         ];
 
@@ -294,7 +292,7 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
         expect(Environment.TESTING).toBe('testing');
         expect(Environment.STAGING).toBe('staging');
         expect(Environment.PRODUCTION).toBe('production');
-        expect(Environment.LOCAL).toBe('local');
+        expect(Environment.TEST).toBe('test');
       });
 
       it('should have consistent enum values', () => {

@@ -1596,13 +1596,17 @@ export class SmartNeuralCoordinator {
 
     // Try premium OpenAI first if requested and available
     if (request.qualityLevel === 'premium' && this.openaiClient) {
-    ')      try {
+      try {
         const result = await this.generateOpenAIEmbedding(request.text);
         span.setAttributes({
-    'neural.embedding.primary_method': ' openai'});')        return { ...result, fallbacksUsed};
-} catch (error) {
-        fallbacksUsed.push('openai-failed');')        this.logger.debug('OpenAI embedding failed, falling back:', error);')}
-}
+          'neural.embedding.primary_method': 'openai'
+        });
+        return { ...result, fallbacksUsed };
+      } catch (error) {
+        fallbacksUsed.push('openai-failed');
+        this.logger.debug('OpenAI embedding failed, falling back:', error);
+      }
+    }
 
     // Try primary transformers model
     if (this.transformerModel||this.config.loading.lazyLoading) {

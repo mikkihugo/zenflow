@@ -1679,16 +1679,26 @@ export async function demoBehavioralIntelligence(
     logger.info(`   • Reasoning:$bestAgent.reasoning\n`);`
 
     // 5. Show behavioral intelligence stats
-    logger.info('📈 Behavioral Intelligence Statistics:');')    const __stats = behavioral.getStats();
-    logger.info(`   • Total agents:$stats.totalAgents`);`
-    logger.info(`   • Training data points:${stats.trainingDataPoints}`);`
-    logger.info(`   • Networks initialized:$stats.networksInitialized`);`
+    logger.info('📈 Behavioral Intelligence Statistics:');
+    const stats = behavioral.getStats();
+    logger.info(`   • Total agents: ${stats.totalAgents}`);
+    logger.info(`   • Training data points: ${stats.trainingDataPoints}`);
+    logger.info(`   • Networks initialized: ${stats.networksInitialized}`);
     logger.info(
-      `   • Average performance:${(stats.averagePerformance * 100).toFixed(1)}%``
+      `   • Average performance: ${(stats.averagePerformance * 100).toFixed(1)}%`
     );
     logger.info(
-      `   • Most active agents:${stats.mostActiveAgents.join(',    ')}``
+      `   • Most active agents: ${stats.mostActiveAgents.join(', ')}`
     );
 
-    logger.info('\n🎉 Behavioral Intelligence Demo Complete!');')    logger.info('\n💡 Key Benefits for claude-code-zen:');')    logger.info('   • Real-time agent performance prediction');')    logger.info('   • Intelligent task-agent matching');')    logger.info('   • Behavioral pattern learning and adaptation');')    logger.info('   • Task complexity estimation for better routing');')    logger.info('   • Data-driven swarm optimization');' catch (error) 
-    logger.error('❌ Demo failed:', error);')}
+    logger.info('\n🎉 Behavioral Intelligence Demo Complete!');
+    logger.info('\n💡 Key Benefits for claude-code-zen:');
+    logger.info('   • Real-time agent performance prediction');
+    logger.info('   • Intelligent task-agent matching');
+    logger.info('   • Behavioral pattern learning and adaptation');
+    logger.info('   • Task complexity estimation for better routing');
+    logger.info('   • Data-driven swarm optimization');
+  } catch (error) {
+    logger.error('❌ Demo failed:', error);
+  }
+}

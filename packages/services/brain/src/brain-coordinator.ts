@@ -274,12 +274,13 @@ export class IntelligenceOrchestrator extends EventBus<IntelligenceEvents> {
       level: 'info',
       message: '🧠 Intelligence Orchestrator created - initialization pending',
       timestamp: Date.now(),
-});')}
+    });
+  }
 
   /**
    * Initialize the Intelligence Orchestrator with EventBus
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     if (this.initialized) {
       await this.emitSafe('brain:log', {
         level: 'debug',
