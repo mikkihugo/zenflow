@@ -71,7 +71,7 @@ class ContextError extends Error {
     super(message);
   }
 }
-}
+
 class ValidationError extends ContextError {}
 class ConfigurationError extends ContextError {}
 
@@ -137,7 +137,7 @@ function recordMetric(name: string, value?:number, tags?:unknown): Promise<void>
 
 function recordHistogram(name: string,
   value: number,
-  tags?:any,
+  tags?: Record<string, unknown>,
 ): Promise<void> {
   const histogramKey = `${name}_histogram`;
   const existing = metrics.get(histogramKey);
@@ -152,7 +152,7 @@ function recordHistogram(name: string,
   return Promise.resolve();
 }
 
-function recordGauge(name: string, value: number, tags?:any): Promise<void> {
+function recordGauge(name: string, value: number, tags?: Record<string, unknown>): Promise<void> {
   metrics.set(`${name}_gauge`, {
     value,
     timestamp: Date.now(),
@@ -166,9 +166,9 @@ function startTrace(name: string): Span {
   logger.debug(`Trace started: ${name}`);
 
   return {
-    setAttributes:(attrs: any) => {
+    setAttributes:(attrs: Record<string, unknown>) => {
       logger.debug(`Trace attributes for ${name}:`, attrs);
-},
+    },
     end:() => {
       const duration = Date.now() - startTime;
       logger.debug(`Trace ended: ${name} (${duration}ms)`);
@@ -216,12 +216,12 @@ function getDatabaseAccess() {
       logger.debug("Database query executed");
       return Promise.resolve({ rows:[]});
 },
-    transaction:(fn: any) => {
+    transaction:(fn: () => unknown) => {
       logger.debug("Database transaction started");
       const result = fn();
       logger.debug("Database transaction completed");
       return Promise.resolve(result);
-},
+    },
     close:() => {
       logger.debug("Database connection closed");
       return Promise.resolve();
@@ -231,9 +231,9 @@ function getDatabaseAccess() {
 
 // Simple ML monitoring classes
 class MLMonitor {
-  private predictions = new Map<string, any[]>();
+  private predictions = new Map<string, unknown[]>();
 
-  trackPrediction(name: string, data: any): void {
+  trackPrediction(name: string, data: unknown): void {
     if (!this.predictions.has(name)) {
       this.predictions.set(name, []);
 }

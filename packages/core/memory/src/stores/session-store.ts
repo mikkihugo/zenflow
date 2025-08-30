@@ -789,7 +789,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
     key?: string;
     data?: unknown;
   }): Promise<unknown> {
-    return safeAsync(async () => {
+    const result = await safeAsync(async () => {
       if (!this.storage) {
         throw new MemoryError(
           'Storage not available for circuit breaker operation'
@@ -839,19 +839,19 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
           );
         }
 }
-}).then((result) => {
-      if (result.isErr()) {
-        const error = ensureError(result.error);
-        recordMetric('memory_circuit_breaker_errors', 1);
-        logger.error('Circuit breaker operation failed', {
-          operation: params.operation,
-          sessionId: params.sessionId,
-          error:error.message,
 });
-        throw error;
+      
+    if (result.isErr()) {
+      const error = ensureError(result.error);
+      recordMetric('memory_circuit_breaker_errors', 1);
+      logger.error('Circuit breaker operation failed', {
+        operation: params.operation,
+        sessionId: params.sessionId,
+        error:error.message,
+});
+      throw error;
 }
-      return result.value;
-});
+    return result.value;
 }
 }
 

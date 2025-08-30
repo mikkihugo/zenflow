@@ -183,11 +183,11 @@ export class GitHubModelsAPI implements APIProvider {
             maxOutputTokens: (m as any).limits?.max_output_tokens || 0,
             rateLimitTier: (m as any).rate_limit_tier,
             supportedInputModalities: (m as any).supported_input_modalities || [],
-          supportedOutputModalities: model.supported_output_modalities || [],
-          capabilities: model.capabilities || [],
-          tags: model.tags || [],
-          version: model.version,
-          htmlUrl: model.html_url,
+            supportedOutputModalities: (model as any).supported_output_modalities || [],
+            capabilities: (model as any).capabilities || [],
+            tags: (model as any).tags || [],
+            version: (model as any).version,
+            htmlUrl: (model as any).html_url,
         }));
       }
     } catch (error) {
