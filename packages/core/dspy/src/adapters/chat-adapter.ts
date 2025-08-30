@@ -157,15 +157,15 @@ export class ChatAdapter extends BaseAdapter {
 					key === "prompt"
 				) {
 					return String(value);
-}
-}
-}
+				}
+			}
+		}
 
 		// For multiple inputs, format as key-value pairs
 		return inputPairs
-			.map(([key, value]) => `${this.capitalizeFirst(key)}:${value}`)`
+			.map(([key, value]) => `${this.capitalizeFirst(key)}: ${value}`)
 			.join("\n");
-}
+	}
 
 	/**
 	 * Format outputs as assistant message content
@@ -193,15 +193,15 @@ export class ChatAdapter extends BaseAdapter {
 					key === "completion"
 				) {
 					return String(value);
-}
-}
-}
+				}
+			}
+		}
 
 		// For multiple outputs, format as key-value pairs
 		return outputPairs
-			.map(([key, value]) => `${this.capitalizeFirst(key)}:${value}`)`
+			.map(([key, value]) => `${this.capitalizeFirst(key)}: ${value}`)
 			.join("\n");
-}
+	}
 
 	/**
 	 * Format prediction as assistant message content
@@ -271,7 +271,7 @@ export class ChatAdapter extends BaseAdapter {
 		return messages
 			.map((msg) => {
 				const roleLabel = msg.role.toUpperCase();
-				return `${roleLabel}:${msg.content}`;
+				return `${roleLabel}: ${msg.content}`;
 })
 			.join("\n\n");
 }

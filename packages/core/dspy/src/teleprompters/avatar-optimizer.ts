@@ -338,31 +338,31 @@ export class AvatarOptimizer extends Teleprompter {
 	 */
 	private _createComparator():any {
 		// Mock predictor for comparator signature
-		return async (_inputs:ComparatorSignature) => {
+		return async (_inputs: ComparatorSignature) => {
 			// Simulate LLM-based feedback generation
 			const feedback =
-				`Based on the analysis of positive vs negative examples, ` +`
-				`the tool usage needs improvement. Focus on better action selection and ` +`
+				`Based on the analysis of positive vs negative examples, ` +
+				`the tool usage needs improvement. Focus on better action selection and ` +
 				`more effective instruction following for the problematic cases.`;
 
-			return { feedback};
-};
+			return { feedback };
+		};
 }
 
 	/**
 	 * Create feedback instruction predictor exactly matching Stanford implementation
 	 */
-	private _createFeedbackInstruction():any {
+	private _createFeedbackInstruction(): any {
 		// Mock predictor for feedback-based instruction generation
-		return async (inputs:FeedbackBasedInstructionSignature) => {
+		return async (inputs: FeedbackBasedInstructionSignature) => {
 			// Simulate instruction improvement
 			const new_instruction =
-				`${inputs.previous_instruction}\n\nBased on feedback:${inputs.feedback}\n` +`
+				`${inputs.previous_instruction}\n\nBased on feedback: ${inputs.feedback}\n` +
 				`Please pay special attention to tool selection and action planning to improve performance on challenging cases.`;
 
-			return { new_instruction};
-};
-}
+			return { new_instruction };
+		};
+	}
 
 	/**
 	 * Sample array exactly matching Stanford random.sample
