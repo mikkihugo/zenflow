@@ -9,10 +9,9 @@
  * @version 1.0.0
  */
 
-import type { Logger} from "@claude-zen/foundation";
-import { getLogger} from "@claude-zen/foundation/logging";
-import type { RustMLConfig, RustOptimizationTask} from "./rust-binding";
-import { RustNeuralML} from "./rust-binding";
+import type { Logger } from "@claude-zen/foundation";
+import { getLogger } from "@claude-zen/foundation/logging";
+import { RustNeuralML, type RustMLConfig, type RustOptimizationTask } from "./rust-binding";
 
 // Additional exports for DSPy teleprompters
 export interface ConceptDriftDetection {

@@ -29,8 +29,7 @@
  */
 
 // Import minimal functionality needed - production grade approach
-import type { Logger } from "@claude-zen/foundation";
-import { getLogger } from "@claude-zen/foundation";
+import { getLogger, type Logger } from "@claude-zen/foundation";
 
 // Foundation-optimized logging - moved to top for utility functions
 const logger = getLogger("NeuralMLEngine");

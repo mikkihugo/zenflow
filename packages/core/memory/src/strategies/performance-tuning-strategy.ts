@@ -11,8 +11,8 @@ import {
   recordMetric,
   TelemetryManager,
   withTrace,
+  type Logger,
 } from '@claude-zen/foundation';
-import type { Logger} from '@claude-zen/foundation';
 
 import type {
   PerformanceConfig,

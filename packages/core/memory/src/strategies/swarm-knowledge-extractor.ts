@@ -12,8 +12,8 @@ import {
   recordMetric,
   withTrace,
   TelemetryManager,
+  type Logger,
 } from '@claude-zen/foundation';
-import type { Logger} from '@claude-zen/foundation';
 import { DataLifecycleManager} from './data-lifecycle-manager';
 
 // Types for extracted knowledge
@@ -124,7 +124,7 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
   private brainCoordinator?:unknown; // Will be dynamically imported
   private mlCoordinator?:unknown; // Will be dynamically imported
   private patternRecognizer?:unknown; // Will be dynamically imported
-  private sparcEngine?:any; // Will be dynamically imported
+  private sparcEngine?: unknown; // Will be dynamically imported
   private initialized = false;
 
   constructor(config:ExtractionConfig) {
@@ -343,18 +343,21 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
     try {
       // Dynamic import to avoid circular dependencies
       // @ts-ignore - Package may not exist yet, graceful degradation
-      const { MLNeuralCoordinator} = await import('@claude-zen/neural-ml');
+      const { MLNeuralCoordinator: mlNeuralCoordinatorClass } = await import('@claude-zen/neural-ml');
       // @ts-ignore - Package may not exist yet, graceful degradation
-      const { PatternRecognizer} = await import('@claude-zen/neural-ml');
+      const { PatternRecognizer: patternRecognizerClass } = await import('@claude-zen/neural-ml');
 
-      this.mlCoordinator = new MLNeuralCoordinator({
-        enabled:true,
-        modelType: 'pattern-analysis',        optimizationStrategy: 'swarm-intelligence',});
+      this.mlCoordinator = new mlNeuralCoordinatorClass({
+        enabled: true,
+        modelType: 'pattern-analysis',
+        optimizationStrategy: 'swarm-intelligence',
+      });
 
-      this.patternRecognizer = new PatternRecognizer({
-        algorithm: 'clustering',        minPatternSupport:0.3,
-        confidenceThreshold:0.7,
-});
+      this.patternRecognizer = new patternRecognizerClass({
+        algorithm: 'clustering',
+        minPatternSupport: 0.3,
+        confidenceThreshold: 0.7,
+      });
 
       await this.mlCoordinator.initialize();
       await this.patternRecognizer.initialize();
@@ -367,12 +370,12 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
 }
 }
 
-  private async initializeBrainTools():Promise<void> {
+  private async initializeBrainTools(): Promise<void> {
     try {
       // @ts-ignore - Package may not exist yet, graceful degradation
-      const { BrainCoordinator} = await import('@claude-zen/brain');
+      const { BrainCoordinator: brainCoordinatorClass } = await import('@claude-zen/brain');
 
-      this.brainCoordinator = new BrainCoordinator({
+      this.brainCoordinator = new brainCoordinatorClass({
         autonomous:{
           enabled:true,
           learningRate:0.1,
