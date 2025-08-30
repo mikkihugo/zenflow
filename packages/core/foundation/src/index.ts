@@ -350,6 +350,18 @@ export {
   parseISO,
   timestampFromDate,
 } from './utilities/time.js';
+// Type utilities and branding functions
+export {
+  brand,
+  unbrand,
+  isEmail,
+  isTimestamp,
+  isISODateString,
+  isUUID,
+  isPrimitive,
+  isNonEmptyArray,
+  generateUUID,
+} from './types/primitives.js';
 
 // =============================================================================
 // TREE-SHAKING GUIDANCE COMMENTS

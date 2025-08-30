@@ -18,15 +18,5 @@
  * Use selective imports for production builds.
  */
 
-// Re-export everything from the main index
+// Re-export everything from the main index (this includes all utilities already)
 export * from './index.js';
-
-// Export specific available modules that exist
-export * from './browser.js';
-export * from './core.js';
-export * from './di.js';
-export * from './utils.js';
-export * from './resilience.js';
-
-// Export utilities that we know exist
-export * from './utilities/index.js';
