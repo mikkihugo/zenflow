@@ -1,0 +1,36 @@
+{
+  "name": "@claude-zen/llm",
+  "version": "0.1.0",
+  "description": "Core LLM contracts: provider-agnostic types and interfaces for Zenflow (no provider implementations)",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "llm",
+    "contracts",
+    "types",
+    "zenflow",
+    "core"
+  ],
+  "author": "Zenflow Team",
+  "license": "MIT",
+  "dependencies": {
+    "@claude-zen/foundation": "workspace:*"
+  },
+  "peerDependencies": {
+    "typescript": ">=5.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
