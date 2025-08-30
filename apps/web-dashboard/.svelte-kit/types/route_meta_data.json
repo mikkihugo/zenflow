@@ -1,14 +1,14 @@
 {
-  "/": [],
-  "/agents": [],
-  "/agui": [],
-  "/database": [],
-  "/events": [],
-  "/facades": [],
-  "/memory": [],
-  "/safe-production": [],
-  "/safe": [],
-  "/stories": [],
-  "/swarm": [],
-  "/system": []
+	"/": [],
+	"/agents": [],
+	"/agui": [],
+	"/database": [],
+	"/events": [],
+	"/facades": [],
+	"/memory": [],
+	"/safe-production": [],
+	"/safe": [],
+	"/stories": [],
+	"/swarm": [],
+	"/system": []
 }
