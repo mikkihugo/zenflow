@@ -60,6 +60,13 @@ export class WebSocketManager {
   public teams = writable<Array<Record<string, unknown>>>([]);
   public safeMetrics = writable<Record<string, unknown> | null>(null);
 
+  // Additional stores for full dashboard integration
+  public facades = writable<Record<string, unknown> | null>(null);
+  public swarms = writable<Array<Record<string, unknown>>>([]);
+  public swarmStats = writable<Record<string, unknown> | null>(null);
+  public memoryStatus = writable<Record<string, unknown> | null>(null);
+  public databaseStatus = writable<Record<string, unknown> | null>(null);
+
   constructor(private serverUrl: string = 'http://localhost:3000') {}
 
   /**
@@ -186,6 +193,71 @@ export class WebSocketManager {
         store: this.performance,
         icon: '📈',
         name: 'Performance',
+      },
+      // New facade events
+      {
+        event: 'facades:initial',
+        store: this.facades,
+        icon: '🏗️',
+        name: 'Facades initial',
+      },
+      {
+        event: 'facades:status',
+        store: this.facades,
+        icon: '🏗️',
+        name: 'Facades status',
+      },
+      // New swarm events
+      {
+        event: 'swarms:initial', 
+        store: this.swarms,
+        icon: '🐝',
+        name: 'Swarms initial',
+      },
+      {
+        event: 'swarms:update',
+        store: this.swarms,
+        icon: '🐝', 
+        name: 'Swarms',
+      },
+      // New swarm stats events
+      {
+        event: 'swarm-stats:initial',
+        store: this.swarmStats,
+        icon: '📊',
+        name: 'Swarm Stats initial',
+      },
+      {
+        event: 'swarm-stats:update',
+        store: this.swarmStats,
+        icon: '📊',
+        name: 'Swarm Stats',
+      },
+      // New memory events
+      {
+        event: 'memory:initial',
+        store: this.memoryStatus,
+        icon: '💾',
+        name: 'Memory initial',
+      },
+      {
+        event: 'memory:status',
+        store: this.memoryStatus,
+        icon: '💾',
+        name: 'Memory status',
+      },
+      // New database events
+      {
+        event: 'database:initial',
+        store: this.databaseStatus,
+        icon: '🗄️',
+        name: 'Database initial',
+      },
+      {
+        event: 'database:status',
+        store: this.databaseStatus,
+        icon: '🗄️',
+        name: 'Database status',
       },
     ];
 

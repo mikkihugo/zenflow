@@ -1,6 +1,5 @@
 <script lang="ts">
 import { onDestroy, onMount } from "svelte";
-import { apiClient } from "../../lib/api";
 import { webSocketManager } from "../../lib/websocket";
 
 // Facade monitoring data
@@ -8,179 +7,70 @@ let facadeStatus: any = null;
 let systemStatus: any = null;
 let _loading = true;
 let _error: string | null = null;
-
-// Real-time updates
-let updateInterval: NodeJS.Timeout | null = null;
 let _connectionState: any = null;
 
-// Mock facade data for demonstration when API is unavailable
-const mockFacadeData = {
-	overall: "partial",
-	facades: {
-		foundation: {
-			name: "foundation",
-			capability: "full",
-			healthScore: 95,
-			packages: {
-				"@claude-zen/foundation": { status: "registered", version: "1.1.1" },
-			},
-			features: [
-				"Core utilities",
-				"Logging",
-				"Error handling",
-				"Type-safe primitives",
-			],
-			missingPackages: [],
-			registeredServices: ["logger", "errorHandler", "typeGuards"],
-		},
-		infrastructure: {
-			name: "infrastructure",
-			capability: "partial",
-			healthScore: 75,
-			packages: {
-				"@claude-zen/database": { status: "fallback", version: null },
-				"@claude-zen/event-system": { status: "fallback", version: null },
-				"@claude-zen/otel-collector": { status: "fallback", version: null },
-				"@claude-zen/service-container": { status: "fallback", version: null },
-			},
-			features: [
-				"Database abstraction",
-				"Event system",
-				"OpenTelemetry",
-				"Service container",
-			],
-			missingPackages: [
-				"@claude-zen/database",
-				"@claude-zen/event-system",
-				"@claude-zen/otel-collector",
-			],
-			registeredServices: ["fallbackDatabase", "fallbackEvents"],
-		},
-		intelligence: {
-			name: "intelligence",
-			capability: "partial",
-			healthScore: 60,
-			packages: {
-				"@claude-zen/brain": { status: "fallback", version: null },
-				"@claude-zen/neural-ml": { status: "fallback", version: null },
-				"@claude-zen/dspy": { status: "fallback", version: null },
-			},
-			features: ["Neural coordination", "Brain systems", "DSPy optimization"],
-			missingPackages: [
-				"@claude-zen/brain",
-				"@claude-zen/neural-ml",
-				"@claude-zen/dspy",
-			],
-			registeredServices: ["fallbackBrain"],
-		},
-		enterprise: {
-			name: "enterprise",
-			capability: "fallback",
-			healthScore: 40,
-			packages: {
-				"@claude-zen/coordination": { status: "active", version: null },
-				"@claude-zen/workflows": { status: "fallback", version: null },
-				"@claude-zen/portfolio": { status: "fallback", version: null },
-			},
-			features: [
-				"SAFE framework",
-				"Business workflows",
-				"Portfolio management",
-			],
-			missingPackages: [
-				// SAFe framework now included in coordination package
-				"@claude-zen/workflows",
-				"@claude-zen/portfolio",
-			],
-			registeredServices: ["fallbackWorkflows"],
-		},
-		operations: {
-			name: "operations",
-			capability: "partial",
-			healthScore: 70,
-			packages: {
-				"@claude-zen/system-monitoring": { status: "fallback", version: null },
-				"@claude-zen/chaos-engineering": { status: "fallback", version: null },
-				"@claude-zen/load-balancing": { status: "fallback", version: null },
-			},
-			features: ["System monitoring", "Chaos engineering", "Load balancing"],
-			missingPackages: [
-				"@claude-zen/system-monitoring",
-				"@claude-zen/chaos-engineering",
-			],
-			registeredServices: ["fallbackMonitoring"],
-		},
-		development: {
-			name: "development",
-			capability: "partial",
-			healthScore: 85,
-			packages: {
-				"@claude-zen/code-analyzer": { status: "fallback", version: null },
-				"@claude-zen/git-operations": { status: "fallback", version: null },
-				"@claude-zen/architecture": { status: "fallback", version: null },
-			},
-			features: ["Code analysis", "Git operations", "Architecture validation"],
-			missingPackages: [
-				"@claude-zen/code-analyzer",
-				"@claude-zen/git-operations",
-			],
-			registeredServices: ["fallbackCodeAnalyzer", "fallbackGitOps"],
-		},
-	},
-	totalPackages: 18,
-	availablePackages: 1,
-	registeredServices: 8,
-	healthScore: 71,
-	lastUpdated: Date.now(),
-};
+// WebSocket unsubscribe functions
+let unsubscribeFacades: (() => void) | null = null;
+let unsubscribeSystem: (() => void) | null = null;
+let unsubscribeConnection: (() => void) | null = null;
 
 onMount(async () => {
-	// Subscribe to WebSocket connection state
-	webSocketManager.connectionState.subscribe((state) => {
-		_connectionState = state;
-	});
-
-	// Load facade status from API or use mock data
-	await loadFacadeStatus();
-
-	// Set up periodic refresh
-	updateInterval = setInterval(loadFacadeStatus, 30000); // Every 30 seconds
+	// Setup WebSocket subscriptions for real-time facade updates
+	setupWebSocketSubscriptions();
+	
+	// Subscribe to facade and system data
+	webSocketManager.subscribe('facades');
+	webSocketManager.subscribe('system');
+	
+	console.log("✅ Facade monitor initialized with WebSocket real-time updates");
 });
 
 onDestroy(() => {
-	if (updateInterval) {
-		clearInterval(updateInterval);
-	}
+	// Clean up WebSocket subscriptions
+	if (unsubscribeFacades) unsubscribeFacades();
+	if (unsubscribeSystem) unsubscribeSystem();
+	if (unsubscribeConnection) unsubscribeConnection();
 });
 
-async function loadFacadeStatus() {
-	try {
-		_loading = true;
-		_error = null;
-
-		// Try to load from API first
-		try {
-			facadeStatus = await apiClient.getFacadeStatus();
-			systemStatus = facadeStatus;
-		} catch (apiError) {
-			console.warn("API unavailable, using mock facade data:", apiError);
-			// Use mock data when API is unavailable
-			facadeStatus = mockFacadeData;
-			systemStatus = mockFacadeData;
+function setupWebSocketSubscriptions() {
+	// Subscribe to facade status updates
+	unsubscribeFacades = webSocketManager.facades.subscribe((data) => {
+		if (data) {
+			console.log("📊 Real-time facade data received:", data);
+			facadeStatus = data;
+			systemStatus = data;
+			_loading = false;
+			_error = null;
 		}
+	});
 
-		console.log("✅ Loaded facade status:", facadeStatus);
-	} catch (err) {
-		_error =
-			err instanceof Error ? err.message : "Failed to load facade status";
-		console.error("❌ Failed to load facade status:", err);
+	// Subscribe to system status for fallback
+	unsubscribeSystem = webSocketManager.systemStatus.subscribe((data) => {
+		if (data && !facadeStatus) {
+			console.log("📊 Using system status data for facades:", data);
+			facadeStatus = data;
+			systemStatus = data;
+			_loading = false;
+		}
+	});
 
-		// Fallback to mock data on error
-		facadeStatus = mockFacadeData;
-		systemStatus = mockFacadeData;
-	} finally {
-		_loading = false;
-	}
+	// Subscribe to connection state
+	unsubscribeConnection = webSocketManager.connectionState.subscribe((state) => {
+		_connectionState = state;
+		
+		if (!state.connected) {
+			_error = "WebSocket disconnected - waiting for real data";
+		} else {
+			_error = null;
+		}
+	});
+}
+
+function refreshFacadeData() {
+	// Re-subscribe to WebSocket channels to get latest data
+	webSocketManager.subscribe('facades');
+	webSocketManager.subscribe('system');
+	console.log("🔄 Refreshing facade data via WebSocket");
 }
 
 function getCapabilityColor(capability: string): string {
@@ -376,7 +266,7 @@ $: healthyFacades = systemStatus
 		<div class="p-8 text-center">
 			<h3 class="text-xl font-bold text-red-600 dark:text-red-400 mb-4">❌ Error Loading Facades</h3>
 			<p class="text-red-700 dark:text-red-300 mb-4">{_error}</p>
-			<button on:click={loadFacadeStatus} class="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-4 py-2 rounded-lg hover:bg-red-200 dark:hover:bg-red-700 transition-colors">
+			<button on:click={refreshFacadeData} class="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-4 py-2 rounded-lg hover:bg-red-200 dark:hover:bg-red-700 transition-colors">
 				<span>🔄</span>
 				<span>Retry</span>
 			</button>
@@ -478,7 +368,7 @@ $: healthyFacades = systemStatus
 <!-- Refresh Controls -->
 <div class="mt-8 text-center">
 	<button 
-		on:click={loadFacadeStatus} 
+		on:click={refreshFacadeData} 
 		class="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 		disabled={_loading}
 	>

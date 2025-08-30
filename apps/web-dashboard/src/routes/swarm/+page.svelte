@@ -1,5 +1,6 @@
 <script lang="ts">
-import { onMount } from "svelte";
+import { onMount, onDestroy } from "svelte";
+import { webSocketManager } from "../../lib/websocket";
 import { apiClient } from "../../lib/api";
 
 // Swarm management data
@@ -11,7 +12,7 @@ let selectedTask: any = null;
 // Loading states
 let _statusLoading = true;
 let _statsLoading = false;
-let _tasksLoading = false;
+let __tasksLoading = false;
 let _taskDetailsLoading = false;
 let _initLoading = false;
 let _agentSpawningLoading = false;
@@ -19,12 +20,18 @@ let _taskCreationLoading = false;
 
 // Error states
 let _statusError: string | null = null;
-let _statsError: string | null = null;
-let _tasksError: string | null = null;
+let __statsError: string | null = null;
+let __tasksError: string | null = null;
 let _taskDetailsError: string | null = null;
 let _initError: string | null = null;
 let _agentSpawnError: string | null = null;
 let _taskCreationError: string | null = null;
+
+// WebSocket unsubscribe functions
+let unsubscribeSwarms: (() => void) | null = null;
+let unsubscribeSwarmStats: (() => void) | null = null;
+let unsubscribeTasks: (() => void) | null = null;
+let unsubscribeConnection: (() => void) | null = null;
 
 // Form states
 let activeTab = 0;
@@ -59,11 +66,22 @@ const _agentTypes = [
 const _priorities = ["low", "medium", "high", "critical"];
 
 onMount(async () => {
-	await loadSwarmStatus();
+	// Setup WebSocket subscriptions for real-time swarm updates
+	setupWebSocketSubscriptions();
+	
+	// Subscribe to swarm, stats, and task data
+	webSocketManager.subscribe('swarms');
+	webSocketManager.subscribe('swarm-stats');
+	webSocketManager.subscribe('tasks');
+	
+	console.log("✅ Swarm management initialized with WebSocket real-time updates");
 
 	// Listen for project changes
 	const handleProjectChange = async () => {
-		await loadSwarmStatus();
+		// Refresh WebSocket subscriptions
+		webSocketManager.subscribe('swarms');
+		webSocketManager.subscribe('swarm-stats');
+		webSocketManager.subscribe('tasks');
 		// Clear cached data when project changes
 		swarmStats = null;
 		swarmTasks = [];
@@ -83,55 +101,79 @@ onMount(async () => {
 	};
 });
 
-async function loadSwarmStatus() {
-	try {
-		_statusLoading = true;
-		swarmStatus = await apiClient.getSwarmStatus();
-		_statusError = null;
-		console.log("🐝 Loaded swarm status:", swarmStatus);
-	} catch (error) {
-		_statusError =
-			error instanceof Error ? error.message : "Failed to load swarm status";
-		console.error("❌ Failed to load swarm status:", error);
-	} finally {
-		_statusLoading = false;
-	}
+onDestroy(() => {
+	// Clean up WebSocket subscriptions
+	if (unsubscribeSwarms) unsubscribeSwarms();
+	if (unsubscribeSwarmStats) unsubscribeSwarmStats();
+	if (unsubscribeTasks) unsubscribeTasks();
+	if (unsubscribeConnection) unsubscribeConnection();
+});
+
+function setupWebSocketSubscriptions() {
+	// Subscribe to swarm status updates
+	unsubscribeSwarms = webSocketManager.swarms.subscribe((data) => {
+		if (data) {
+			console.log("🐝 Real-time swarm data received:", data);
+			swarmStatus = Array.isArray(data) && data.length > 0 ? data[0] : data;
+			_statusLoading = false;
+			_statusError = null;
+		}
+	});
+
+	// Subscribe to swarm stats updates
+	unsubscribeSwarmStats = webSocketManager.swarmStats.subscribe((data) => {
+		if (data) {
+			console.log("📊 Real-time swarm stats received:", data);
+			swarmStats = data;
+			_statsLoading = false;
+			__statsError = null;
+		}
+	});
+
+	// Subscribe to task updates
+	unsubscribeTasks = webSocketManager.tasks.subscribe((data) => {
+		if (data) {
+			console.log("📋 Real-time task data received:", data);
+			swarmTasks = Array.isArray(data) ? data : [];
+			__tasksLoading = false;
+			__tasksError = null;
+		}
+	});
+
+	// Subscribe to connection state
+	unsubscribeConnection = webSocketManager.connectionState.subscribe((state) => {
+		if (!state.connected) {
+			_statusError = "WebSocket disconnected - data may be stale";
+			__statsError = "WebSocket disconnected - data may be stale";
+			__tasksError = "WebSocket disconnected - data may be stale";
+		} else {
+			// Clear errors when reconnected
+			if (_statusError?.includes("WebSocket disconnected")) _statusError = null;
+			if (__statsError?.includes("WebSocket disconnected")) __statsError = null;
+			if (__tasksError?.includes("WebSocket disconnected")) __tasksError = null;
+		}
+	});
 }
 
-async function _loadSwarmStats() {
-	try {
-		_statsLoading = true;
-		swarmStats = await apiClient.getSwarmStats();
-		_statsError = null;
-		console.log("📊 Loaded swarm stats:", swarmStats);
-	} catch (error) {
-		_statsError =
-			error instanceof Error ? error.message : "Failed to load swarm stats";
-		console.error("❌ Failed to load swarm stats:", error);
-	} finally {
-		_statsLoading = false;
-	}
+function refreshSwarmData() {
+	// Re-subscribe to WebSocket channels to get latest data
+	webSocketManager.subscribe('swarms');
+	console.log("🔄 Refreshing swarm status via WebSocket");
 }
 
-async function loadSwarmTasks() {
-	try {
-		_tasksLoading = true;
-		const result = await apiClient.getSwarmTasks();
-		swarmTasks = Array.isArray(result?.data)
-			? result.data
-			: result?.tasks || [];
-		_tasksError = null;
-		console.log("📋 Loaded swarm tasks:", swarmTasks.length);
-	} catch (error) {
-		_tasksError =
-			error instanceof Error ? error.message : "Failed to load swarm tasks";
-		console.error("❌ Failed to load swarm tasks:", error);
-	} finally {
-		_tasksLoading = false;
-	}
+function refreshSwarmStats() {
+	// Re-subscribe to WebSocket channel to get latest stats
+	webSocketManager.subscribe('swarm-stats');
+	console.log("🔄 Refreshing swarm stats via WebSocket");
 }
 
-async function _loadTaskDetails(taskId: string) {
+function refreshSwarmTasks() {
+	// Re-subscribe to WebSocket channel to get latest tasks
+	webSocketManager.subscribe('tasks');
+	console.log("🔄 Refreshing swarm tasks via WebSocket");
+}
+
+async function loadTaskDetails(taskId: string) {
 	try {
 		_taskDetailsLoading = true;
 		selectedTask = await apiClient.getSwarmTasks(taskId);
@@ -146,7 +188,7 @@ async function _loadTaskDetails(taskId: string) {
 	}
 }
 
-async function _initializeSwarm() {
+async function initializeSwarm() {
 	try {
 		_initLoading = true;
 		_initError = null;
@@ -158,7 +200,7 @@ async function _initializeSwarm() {
 		});
 
 		console.log("✅ Swarm initialized:", result);
-		await loadSwarmStatus();
+		refreshSwarmData();
 
 		// Update swarmId for agent spawning
 		if (result?.data?.swarmId) {
@@ -173,7 +215,7 @@ async function _initializeSwarm() {
 	}
 }
 
-async function _spawnAgent() {
+async function spawnAgent() {
 	if (!agentSwarmId) {
 		_agentSpawnError = "Please provide a swarm ID";
 		return;
@@ -201,7 +243,7 @@ async function _spawnAgent() {
 		agentCapabilities = "coordination,analysis";
 
 		// Refresh status
-		await loadSwarmStatus();
+		refreshSwarmData();
 	} catch (error) {
 		_agentSpawnError =
 			error instanceof Error ? error.message : "Failed to spawn agent";
@@ -211,7 +253,7 @@ async function _spawnAgent() {
 	}
 }
 
-async function _orchestrateTask() {
+async function orchestrateTask() {
 	if (!taskDescription) {
 		_taskCreationError = "Please provide a task description";
 		return;
@@ -234,7 +276,7 @@ async function _orchestrateTask() {
 		taskDescription = "";
 
 		// Refresh tasks
-		await loadSwarmTasks();
+		refreshSwarmTasks();
 	} catch (error) {
 		_taskCreationError =
 			error instanceof Error ? error.message : "Failed to orchestrate task";
@@ -244,7 +286,7 @@ async function _orchestrateTask() {
 	}
 }
 
-async function _shutdownSwarm() {
+async function shutdownSwarm() {
 	if (
 		!confirm(
 			"Are you sure you want to shutdown the swarm? This will stop all agents and tasks.",
@@ -256,7 +298,7 @@ async function _shutdownSwarm() {
 	try {
 		await apiClient.shutdownSwarm();
 		console.log("🛑 Swarm shutdown initiated");
-		await loadSwarmStatus();
+		refreshSwarmData();
 	} catch (error) {
 		console.error("❌ Swarm shutdown failed:", error);
 		alert(
@@ -284,7 +326,7 @@ function _getStatusColor(status: string): string {
 	}
 }
 
-function _formatUptime(seconds: number): string {
+function formatUptime(seconds: number): string {
 	const minutes = Math.floor(seconds / 60);
 	const hours = Math.floor(minutes / 60);
 	const days = Math.floor(hours / 24);
@@ -307,7 +349,7 @@ function _formatUptime(seconds: number): string {
 			<p class="text-gray-600 dark:text-gray-300">Advanced swarm orchestration, agent management, and task coordination</p>
 		</div>
 		<div class="flex gap-2">
-			<button class="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors" on:click={loadSwarmStatus}>
+			<button class="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors" on:click={refreshSwarmData}>
 				<span>🔄</span>
 				<span>Refresh</span>
 			</button>
@@ -325,7 +367,7 @@ function _formatUptime(seconds: number): string {
 		<h3 class="text-xl font-bold text-blue-600 dark:text-blue-400">🐝 Swarm Status</h3>
 	</div>
 	<section class="p-4">
-		{#if statusLoading}
+		{#if _statusLoading}
 			<div class="flex items-center justify-center py-12">
 				<div class="flex flex-col items-center gap-4">
 					<div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
@@ -335,7 +377,7 @@ function _formatUptime(seconds: number): string {
 		{:else if statusError}
 			<div class="text-center text-red-600 dark:text-red-400 py-8">
 				<p class="text-sm">❌ {statusError}</p>
-				<button on:click={loadSwarmStatus} class="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-3 py-1 rounded text-sm hover:bg-red-200 dark:hover:bg-red-700 transition-colors mt-2">Retry</button>
+				<button on:click={refreshSwarmData} class="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-3 py-1 rounded text-sm hover:bg-red-200 dark:hover:bg-red-700 transition-colors mt-2">Retry</button>
 			</div>
 		{:else if swarmStatus}
 			<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -350,7 +392,7 @@ function _formatUptime(seconds: number): string {
 						</div>
 					</div>
 					<div class="font-medium text-sm">Swarm Status</div>
-					<div class="bg-{getStatusColor(swarmStatus.data?.status)}-100 dark:bg-{getStatusColor(swarmStatus.data?.status)}-900 text-{getStatusColor(swarmStatus.data?.status)}-800 dark:text-{getStatusColor(swarmStatus.data?.status)}-200 px-2 py-1 rounded text-xs mt-1">
+					<div class="bg-{_getStatusColor(swarmStatus.data?.status)}-100 dark:bg-{_getStatusColor(swarmStatus.data?.status)}-900 text-{_getStatusColor(swarmStatus.data?.status)}-800 dark:text-{_getStatusColor(swarmStatus.data?.status)}-200 px-2 py-1 rounded text-xs mt-1">
 						{swarmStatus.data?.status || 'Unknown'}
 					</div>
 				</div>
@@ -434,10 +476,10 @@ function _formatUptime(seconds: number): string {
 				<div class="space-y-4">
 					<h5 class="text-lg font-medium">Initialize New Swarm</h5>
 					
-					{#if initError}
+					{#if _initError}
 						<div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-600/50 rounded-lg p-4">
 							<div class="alert-message">
-								<p>❌ {initError}</p>
+								<p>❌ {_initError}</p>
 							</div>
 						</div>
 					{/if}
@@ -446,7 +488,7 @@ function _formatUptime(seconds: number): string {
 						<label class="block">
 							<span class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Topology</span>
 							<select bind:value={swarmTopology} class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-								{#each topologies as topology}
+								{#each _topologies as topology}
 									<option value={topology}>{topology}</option>
 								{/each}
 							</select>
@@ -466,7 +508,7 @@ function _formatUptime(seconds: number): string {
 						<label class="block">
 							<span class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Strategy</span>
 							<select bind:value={swarmStrategy} class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-								{#each strategies as strategy}
+								{#each _strategies as strategy}
 									<option value={strategy}>{strategy}</option>
 								{/each}
 							</select>
@@ -476,9 +518,9 @@ function _formatUptime(seconds: number): string {
 					<button 
 						class="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors w-full md:w-auto" 
 						on:click={initializeSwarm}
-						disabled={initLoading}
+						disabled={_initLoading}
 					>
-						{#if initLoading}
+						{#if _initLoading}
 							<div class="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
 						{:else}
 							<span>🚀</span>
@@ -492,10 +534,10 @@ function _formatUptime(seconds: number): string {
 				<div class="space-y-4">
 					<h5 class="text-lg font-medium">Spawn New Agent</h5>
 					
-					{#if agentSpawnError}
+					{#if _agentSpawnError}
 						<div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-600/50 rounded-lg p-4">
 							<div class="alert-message">
-								<p>❌ {agentSpawnError}</p>
+								<p>❌ {_agentSpawnError}</p>
 							</div>
 						</div>
 					{/if}
@@ -514,7 +556,7 @@ function _formatUptime(seconds: number): string {
 						<label class="block">
 							<span class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Agent Type</span>
 							<select bind:value={agentType} class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-								{#each agentTypes as type}
+								{#each _agentTypes as type}
 									<option value={type}>{type}</option>
 								{/each}
 							</select>
@@ -544,9 +586,9 @@ function _formatUptime(seconds: number): string {
 					<button 
 						class="bg-purple-600 dark:bg-purple-700 text-white px-4 py-2 rounded-lg hover:bg-purple-700 dark:hover:bg-purple-600 transition-colors w-full md:w-auto" 
 						on:click={spawnAgent}
-						disabled={agentSpawningLoading || !agentSwarmId}
+						disabled={_agentSpawningLoading || !agentSwarmId}
 					>
-						{#if agentSpawningLoading}
+						{#if _agentSpawningLoading}
 							<div class="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
 						{:else}
 							<span>🤖</span>
@@ -562,10 +604,10 @@ function _formatUptime(seconds: number): string {
 					<div class="space-y-4">
 						<h5 class="text-lg font-medium">Orchestrate New Task</h5>
 						
-						{#if taskCreationError}
+						{#if _taskCreationError}
 							<div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-600/50 rounded-lg p-4">
 								<div class="alert-message">
-									<p>❌ {taskCreationError}</p>
+									<p>❌ {_taskCreationError}</p>
 								</div>
 							</div>
 						{/if}
@@ -585,7 +627,7 @@ function _formatUptime(seconds: number): string {
 								<label class="block">
 									<span class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Strategy</span>
 									<select bind:value={taskStrategy} class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-										{#each strategies as strategy}
+										{#each _strategies as strategy}
 											<option value={strategy}>{strategy}</option>
 										{/each}
 									</select>
@@ -594,7 +636,7 @@ function _formatUptime(seconds: number): string {
 								<label class="block">
 									<span class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Priority</span>
 									<select bind:value={taskPriority} class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-										{#each priorities as priority}
+										{#each _priorities as priority}
 											<option value={priority}>{priority}</option>
 										{/each}
 									</select>
@@ -615,9 +657,9 @@ function _formatUptime(seconds: number): string {
 							<button 
 								class="bg-indigo-600 dark:bg-indigo-700 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors w-full md:w-auto" 
 								on:click={orchestrateTask}
-								disabled={taskCreationLoading || !taskDescription}
+								disabled={_taskCreationLoading || !taskDescription}
 							>
-								{#if taskCreationLoading}
+								{#if _taskCreationLoading}
 									<div class="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
 								{:else}
 									<span>📋</span>
@@ -634,10 +676,10 @@ function _formatUptime(seconds: number): string {
 							<h5 class="text-lg font-medium">Active Tasks</h5>
 							<button 
 								class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-1 rounded text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" 
-								on:click={loadSwarmTasks}
-								disabled={tasksLoading}
+								on:click={refreshSwarmTasks}
+								disabled={__tasksLoading}
 							>
-								{#if tasksLoading}
+								{#if _tasksLoading}
 									<div class="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
 								{:else}
 									<span>🔄</span>
@@ -649,7 +691,7 @@ function _formatUptime(seconds: number): string {
 						<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 							<!-- Task List -->
 							<div>
-								{#if tasksLoading}
+								{#if _tasksLoading}
 									<div class="space-y-3">
 										{#each Array(3) as _}
 											<div class="card gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-4 animate-pulse">
@@ -658,10 +700,10 @@ function _formatUptime(seconds: number): string {
 											</div>
 										{/each}
 									</div>
-								{:else if tasksError}
+								{:else if _tasksError}
 									<div class="text-center text-red-600 dark:text-red-400 py-8">
-										<p class="text-sm">❌ {tasksError}</p>
-										<button on:click={loadSwarmTasks} class="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-3 py-1 rounded text-sm hover:bg-red-200 dark:hover:bg-red-700 transition-colors mt-2">Retry</button>
+										<p class="text-sm">❌ {_tasksError}</p>
+										<button on:click={refreshSwarmTasks} class="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-3 py-1 rounded text-sm hover:bg-red-200 dark:hover:bg-red-700 transition-colors mt-2">Retry</button>
 									</div>
 								{:else if swarmTasks.length > 0}
 									<div class="space-y-2">
@@ -672,7 +714,7 @@ function _formatUptime(seconds: number): string {
 											>
 												<div class="flex justify-between items-start mb-2">
 													<h6 class="font-medium text-sm">{task.id}</h6>
-													<span class="bg-{getStatusColor(task.status)}-100 dark:bg-{getStatusColor(task.status)}-900 text-{getStatusColor(task.status)}-800 dark:text-{getStatusColor(task.status)}-200 px-2 py-1 rounded text-xs">
+													<span class="bg-{_getStatusColor(task.status)}-100 dark:bg-{_getStatusColor(task.status)}-900 text-{_getStatusColor(task.status)}-800 dark:text-{_getStatusColor(task.status)}-200 px-2 py-1 rounded text-xs">
 														{task.status}
 													</span>
 												</div>
@@ -701,14 +743,14 @@ function _formatUptime(seconds: number): string {
 							<div>
 								<h6 class="text-sm font-medium mb-2">Task Details</h6>
 								<div class="card gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-4">
-									{#if taskDetailsLoading}
+									{#if _taskDetailsLoading}
 										<div class="text-center py-8">
 											<div class="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
 											<p class="text-sm opacity-75">Loading task details...</p>
 										</div>
-									{:else if taskDetailsError}
+									{:else if _taskDetailsError}
 										<div class="text-center text-red-600 dark:text-red-400 py-8">
-											<p class="text-sm">❌ {taskDetailsError}</p>
+											<p class="text-sm">❌ {_taskDetailsError}</p>
 										</div>
 									{:else if selectedTask}
 										<pre class="bg-gray-900 text-green-400 p-4 rounded text-sm overflow-x-auto max-h-64 overflow-y-auto">{JSON.stringify(selectedTask, null, 2)}</pre>
@@ -728,10 +770,10 @@ function _formatUptime(seconds: number): string {
 						<h5 class="text-lg font-medium">Swarm Statistics</h5>
 						<button 
 							class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-1 rounded text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" 
-							on:click={loadSwarmStats}
-							disabled={statsLoading}
+							on:click={refreshSwarmStats}
+							disabled={_statsLoading}
 						>
-							{#if statsLoading}
+							{#if _statsLoading}
 								<div class="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
 							{:else}
 								<span>📊</span>
@@ -741,15 +783,15 @@ function _formatUptime(seconds: number): string {
 					</div>
 
 					<div class="card gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-4">
-						{#if statsLoading}
+						{#if _statsLoading}
 							<div class="text-center py-12">
 								<div class="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
 								<p class="text-sm opacity-75">Loading swarm statistics...</p>
 							</div>
-						{:else if statsError}
+						{:else if _statsError}
 							<div class="text-center text-red-600 dark:text-red-400 py-8">
-								<p class="text-sm">❌ {statsError}</p>
-								<button on:click={loadSwarmStats} class="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-3 py-1 rounded text-sm hover:bg-red-200 dark:hover:bg-red-700 transition-colors mt-2">Retry</button>
+								<p class="text-sm">❌ {_statsError}</p>
+								<button on:click={refreshSwarmStats} class="bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200 px-3 py-1 rounded text-sm hover:bg-red-200 dark:hover:bg-red-700 transition-colors mt-2">Retry</button>
 							</div>
 						{:else if swarmStats}
 							<pre class="bg-gray-900 text-green-400 p-4 rounded text-sm overflow-x-auto max-h-96 overflow-y-auto">{JSON.stringify(swarmStats, null, 2)}</pre>
