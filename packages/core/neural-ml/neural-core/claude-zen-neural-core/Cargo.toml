@@ -66,3 +66,7 @@ name = "claude_zen_neural_core"
 path = "src/lib.rs"
 doctest = true
 
+[[bin]]
+name = "neural-ml"
+path = "src/bin/neural-ml.rs"
+
