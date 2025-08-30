@@ -26,7 +26,7 @@ num-traits = "0.2"
 
 # ML and neural network dependencies - Polars is the BEST DataFrame library  
 polars = { version = "0.41", features = ["lazy", "temporal", "csv", "parquet", "json"] }
-ndarray = "0.16"
+ndarray = { version = "0.16", features = ["serde"] }
 
 # Burn deep learning framework (replaces TensorFlow.js)
 burn = { version = "0.18", default-features = false, features = ["std"] }

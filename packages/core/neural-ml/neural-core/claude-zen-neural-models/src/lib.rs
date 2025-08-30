@@ -436,3 +436,12 @@ impl TrainingAlgorithm for Adam {
 // Re-export key types for compatibility
 pub use ActivationFunction as ActivationFunc;
 pub use NetworkError as TrainingError;
+
+// Advanced modules
+pub mod advanced;
+
+// Re-export optimization types for easy access
+pub use advanced::optimization::{
+    GeneticOptimizer, ParticleSwarmOptimizer, HyperparameterOptimizer,
+    OptimizationResult, Individual, Particle
+};

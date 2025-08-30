@@ -16,7 +16,7 @@ anyhow = { workspace = true }
 thiserror = { workspace = true }
 
 # Math and arrays
-ndarray = { workspace = true }
+ndarray = { workspace = true, features = ["serde"] }
 
 # Random number generation
 rand = "0.8"
