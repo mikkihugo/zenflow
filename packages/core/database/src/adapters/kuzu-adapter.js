@@ -141,11 +141,13 @@ export class KuzuAdapter {
             await this.connect();
         }
         if (!this.connection) {
-            throw new QueryError('Connection not available', {
+            const errorOptions = {
                 query: sql,
-                params,
                 correlationId,
-            });
+            };
+            if (params !== undefined)
+                errorOptions.params = params;
+            throw new QueryError('Connection not available', errorOptions);
         }
         try {
             logger.debug('Executing Kuzu Cypher query', {
@@ -196,12 +198,15 @@ export class KuzuAdapter {
             if (error instanceof DatabaseError) {
                 throw error;
             }
-            throw new QueryError(`Kuzu query execution failed:${error instanceof Error ? error.message : String(error)}`, {
+            const errorOptions = {
                 query: sql,
-                params,
                 correlationId,
-                cause: error instanceof Error ? error : undefined,
-            });
+            };
+            if (params !== undefined)
+                errorOptions.params = params;
+            if (error instanceof Error)
+                errorOptions.cause = error;
+            throw new QueryError(`Kuzu query execution failed:${error instanceof Error ? error.message : String(error)}`, errorOptions);
         }
     }
     async execute(sql, params, options) {
@@ -270,7 +275,7 @@ export class KuzuAdapter {
             score = Math.max(0, score);
             return {
                 healthy: score >= 70,
-                status: score >= 70 ? 'healthy' : score >= 40 ? ' degraded' : ' unhealthy',
+                status: score >= 70 ? 'healthy' : score >= 40 ? 'degraded' : 'unhealthy',
                 score,
                 timestamp: new Date(),
                 responseTimeMs: responseTime,
@@ -323,10 +328,11 @@ export class KuzuAdapter {
         try {
             // Get basic schema information (simplified to avoid unused results)
             await this.query(SHOW_TABLES_QUERY);
+            const lastMigration = await this.getLastMigrationVersion();
             return {
                 tables: [], // Graph databases don't have traditional table schemas
                 version: await this.getDatabaseVersion(),
-                lastMigration: await this.getLastMigrationVersion(),
+                ...(lastMigration && { lastMigration }),
             };
         }
         catch (error) {
@@ -334,7 +340,6 @@ export class KuzuAdapter {
             return {
                 tables: [],
                 version: 'unknown',
-                lastMigration: undefined,
             };
         }
     }
@@ -712,12 +717,16 @@ export class KuzuAdapter {
                 await this.sleep(delay);
             }
         }
-        throw new QueryError(`Operation failed after ${retryPolicy.maxRetries} retries:${lastError?.message}`, {
-            query: sql,
-            params,
+        const errorOptions = {
             correlationId,
-            cause: lastError,
-        });
+        };
+        if (sql !== undefined)
+            errorOptions.query = sql;
+        if (params !== undefined)
+            errorOptions.params = params;
+        if (lastError !== undefined)
+            errorOptions.cause = lastError;
+        throw new QueryError(`Operation failed after ${retryPolicy.maxRetries} retries:${lastError?.message}`, errorOptions);
     }
     updateAverageQueryTime(executionTime) {
         const { totalQueries, averageQueryTimeMs } = this.stats;
