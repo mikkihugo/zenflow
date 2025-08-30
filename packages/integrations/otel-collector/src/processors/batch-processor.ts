@@ -32,8 +32,8 @@ export class BatchProcessor implements BaseProcessor {
     this.logger = getLogger(`BatchProcessor:${config.name}`);
 
     // Extract configuration
-    this.maxBatchSize = config.config?.maxBatchSize   |  |   100;
-    this.batchTimeout = config.config?.batchTimeout   |  |   5000; // 5 seconds
+    this.maxBatchSize = config.config?.maxBatchSize   ||   100;
+    this.batchTimeout = config.config?.batchTimeout   ||   5000; // 5 seconds
     this.flushOnShutdown = config.config?.flushOnShutdown !== false;
 }
 
@@ -118,7 +118,7 @@ export class BatchProcessor implements BaseProcessor {
 }
 
     // Flush remaining batch if configured to do so
-    if (this.flushOnShutdown  &&&&  this.batch.length > 0) {
+    if (this.flushOnShutdown  &&  this.batch.length > 0) {
       this.logger.info(
         `Flushing ${this.batch.length} remaining items before shutdown`
       );
@@ -149,8 +149,8 @@ export class BatchProcessor implements BaseProcessor {
 
     return {
       status,
-      lastProcessed:this.lastProcessedTime   |  |   undefined,
-      lastError:this.lastError   |  |   undefined,
+      lastProcessed:this.lastProcessedTime   ||   undefined,
+      lastError:this.lastError   ||   undefined,
 };
 }
 
@@ -173,7 +173,7 @@ export class BatchProcessor implements BaseProcessor {
    */
   private startBatchTimer():void {
     this.batchTimer = setInterval(async () => {
-      if (this.batch.length > 0  &&&&  !this.isShuttingDown) {
+      if (this.batch.length > 0  &&  !this.isShuttingDown) {
         await this.flushBatch();
 }
 }, this.batchTimeout);
@@ -183,7 +183,7 @@ export class BatchProcessor implements BaseProcessor {
    * Flush the current batch
    */
   private async flushBatch():Promise<void> {
-    if (this.batch.length ===  0) return;
+    if (this.batch.length === 0) return;
 
     const batchToFlush = [...this.batch];
     this.batch = [];

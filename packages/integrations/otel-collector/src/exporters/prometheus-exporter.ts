@@ -45,7 +45,7 @@ export class PrometheusExporter implements BaseExporter {
 
   async export(data:TelemetryData): Promise<ExportResult> {
     try {
-      if (data.type ===  'metrics') {
+      if (data.type === 'metrics') {
     ')        await this.processMetricData(data);
         this.exportCount++;
         this.lastExportTime = Date.now();
@@ -87,7 +87,7 @@ export class PrometheusExporter implements BaseExporter {
       let processedCount = 0;
 
       // Filter and process metric data
-      const metricItems = dataItems.filter((item) => item.type ===  'metrics');')
+      const metricItems = dataItems.filter((item) => item.type === 'metrics');')
       for (const data of metricItems) {
         await this.processMetricData(data);
         processedCount++;
@@ -147,8 +147,8 @@ export class PrometheusExporter implements BaseExporter {
     lastError?:string;
 }> {
     return {
-      status:this.lastError ? 'unhealthy' : ' healthy',      lastSuccess:this.lastExportTime  |  |  undefined,
-      lastError:this.lastError  |  |  undefined,
+      status:this.lastError ? 'unhealthy' : ' healthy',      lastSuccess:this.lastExportTime  ||  undefined,
+      lastError:this.lastError  ||  undefined,
 };
 }
 
@@ -174,7 +174,7 @@ export class PrometheusExporter implements BaseExporter {
 });
 
     // Custom metrics endpoint (if configured)
-    const customPath = this.config.config?.metricsPath  |  |  '/metrics;
+    const customPath = this.config.config?.metricsPath  ||  '/metrics;
     if (customPath !== '/metrics') {
     ')      app.get(customPath, async (req, res) => {
         try {
@@ -210,9 +210,9 @@ export class PrometheusExporter implements BaseExporter {
 
       if (Array.isArray(data.data)) {
         metricsData = data.data;
-} else if (data.data.metrics  &&&&  Array.isArray(data.data.metrics)) {
+} else if (data.data.metrics  &&  Array.isArray(data.data.metrics)) {
         metricsData = data.data.metrics;
-} else if (typeof data.data ===  'object') {
+} else if (typeof data.data === 'object') {
     ')        // Single metric object
         metricsData = [data.data];
 }
@@ -234,23 +234,23 @@ export class PrometheusExporter implements BaseExporter {
     metricData:any,
     telemetryData:TelemetryData
   ):Promise<void> {
-    const name = this.sanitizeMetricName(metricData.name  |  |  'unnamed_metric');')    const __help =
-      metricData.description  |  |  `Metric ${name} from ${telemetryData.service.name}`;`
-    const value = metricData.value  |  |  metricData.count  |  |  metricData.sum  |  |  0;
+    const name = this.sanitizeMetricName(metricData.name  ||  'unnamed_metric');')    const __help =
+      metricData.description  ||  `Metric ${name} from ${telemetryData.service.name}`;`
+    const value = metricData.value  ||  metricData.count  ||  metricData.sum  ||  0;
     const labels = {
       ...metricData.labels,
       ...metricData.attributes,
       service:telemetryData.service.name,
-      ...(telemetryData.service.version  &&&&  {
+      ...(telemetryData.service.version  &&  {
         version:telemetryData.service.version,
 }),
-      ...(telemetryData.service.instance  &&&&  {
+      ...(telemetryData.service.instance  &&  {
         instance:telemetryData.service.instance,
 }),
 };
 
     // Determine metric type
-    const metricType = metricData.type  |  |  this.inferMetricType(metricData);
+    const metricType = metricData.type  ||  this.inferMetricType(metricData);
 
     try {
       let metric = this.metrics.get(name);
@@ -269,7 +269,7 @@ export class PrometheusExporter implements BaseExporter {
               name,
               help,
               labelNames:Object.keys(labels),
-              buckets:metricData.buckets  |  |  [0.1, 0.5, 1, 2.5, 5, 10],
+              buckets:metricData.buckets  ||  [0.1, 0.5, 1, 2.5, 5, 10],
               registers:[this.metricsRegistry],
 });
             break;
@@ -314,9 +314,9 @@ export class PrometheusExporter implements BaseExporter {
    * Infer metric type from metric data
    */
   private inferMetricType(metricData:any): string {
-    if (metricData.buckets  |  |  metricData.histogram) {
+    if (metricData.buckets  ||  metricData.histogram) {
       return'histogram;
-} else if (metricData.monotonic  |  |  metricData.counter) {
+} else if (metricData.monotonic  ||  metricData.counter) {
       return'counter;
 } else {
       return 'gauge;
@@ -327,7 +327,7 @@ export class PrometheusExporter implements BaseExporter {
    * Get port for metrics server
    */
   private getPort():number {
-    return this.config.config?.port  |  |  9090;
+    return this.config.config?.port  ||  9090;
 }
 
   /**
@@ -335,7 +335,7 @@ export class PrometheusExporter implements BaseExporter {
    */
   private getMetricsEndpoint():string {
     const port = this.getPort();
-    const path = this.config.config?.metricsPath  |  |  '/metrics;
+    const path = this.config.config?.metricsPath  ||  '/metrics;
     return `http://localhost:${port}${path}`;`
 }
 }

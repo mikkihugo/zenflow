@@ -168,8 +168,8 @@ export class SamplerProcessor implements BaseProcessor {
 
     return {
       status,
-      lastProcessed:this.lastProcessedTime  |  |  undefined,
-      lastError:this.lastError  |  |  undefined,
+      lastProcessed:this.lastProcessedTime  ||  undefined,
+      lastError:this.lastError  ||  undefined,
 };
 }
 
@@ -204,7 +204,7 @@ export class SamplerProcessor implements BaseProcessor {
     // Apply sampling rules in order
     for (const rule of this.samplingRules) {
       // Check condition if present
-      if (rule.condition  &&&&  !this.evaluateCondition(data, rule.condition)) {
+      if (rule.condition  &&  !this.evaluateCondition(data, rule.condition)) {
         continue;
 }
 
@@ -226,9 +226,9 @@ export class SamplerProcessor implements BaseProcessor {
     rule:SamplingRule
   ):boolean | null {
     switch (rule.strategy) {
-      case'rate': ')'        return this.applyRateSampling(rule.rate  |  |  1);
+      case'rate': ')'        return this.applyRateSampling(rule.rate  ||  1);
 
-      case'probabilistic': ')'        return Math.random() < (rule.probability  |  |  0.1);
+      case'probabilistic': ')'        return Math.random() < (rule.probability  ||  0.1);
 
       case'attribute': ')'        return this.applyAttributeSampling(data, rule);
 
@@ -271,7 +271,7 @@ export class SamplerProcessor implements BaseProcessor {
 
     if (rule.value !== undefined) {
       // Sample only if attribute matches value
-      return attributeValue ===  rule.value;
+      return attributeValue === rule.value;
 } else {
       // Sample if attribute exists
       return attributeValue !== undefined;
@@ -296,7 +296,7 @@ export class SamplerProcessor implements BaseProcessor {
       low:0.1, // 10% for low priority
 };
 
-    const samplingRate = rates[rule.priority]  |  |  0.1;
+    const samplingRate = rates[rule.priority]  ||  0.1;
     return Math.random() < samplingRate;
 }
 
@@ -306,13 +306,13 @@ export class SamplerProcessor implements BaseProcessor {
   private getCurrentSampleRate(data:TelemetryData): number {
     // Find the most specific applicable rate
     for (const rule of this.samplingRules) {
-      if (rule.condition  &&&&  !this.evaluateCondition(data, rule.condition)) {
+      if (rule.condition  &&  !this.evaluateCondition(data, rule.condition)) {
         continue;
 }
 
-      if (rule.strategy === 'probabilistic'  &&&&  rule.probability) {
+      if (rule.strategy === 'probabilistic'  &&  rule.probability) {
     ')        return rule.probability;
-} else if (rule.strategy ===  'rate'  &&&&  rule.rate) {
+} else if (rule.strategy === 'rate'  &&  rule.rate) {
     ')        return 1 / rule.rate;
 }
 }
@@ -457,7 +457,7 @@ export class SamplerProcessor implements BaseProcessor {
    */
   private parseSamplingRules(rules:any[]): SamplingRule[] {
     return rules.map((rule) => ({
-      strategy:rule.strategy  |  |  'probabilistic',      rate:rule.rate,
+      strategy:rule.strategy  ||  'probabilistic',      rate:rule.rate,
       probability:rule.probability,
       attribute:rule.attribute,
       value:rule.value,

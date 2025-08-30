@@ -37,12 +37,12 @@ export class FileExporter implements BaseExporter {
     this.logger = getLogger(`FileExporter:${config.name}`);
 
     // Extract configuration
-    this.baseFilePath = config.config?.filePath   |  |   './telemetry-data';
-    this.format = config.config?.format   |  |   'jsonl';
-    this.maxFileSize = config.config?.maxFileSize   |  |   50 * 1024 * 1024; // 50MB
-    this.rotationInterval = config.config?.rotationInterval   |  |   3600000; // 1 hour
+    this.baseFilePath = config.config?.filePath   ||   './telemetry-data';
+    this.format = config.config?.format   ||   'jsonl';
+    this.maxFileSize = config.config?.maxFileSize   ||   50 * 1024 * 1024; // 50MB
+    this.rotationInterval = config.config?.rotationInterval   ||   3600000; // 1 hour
     this.compression = config.config?.compression !== false; // Default true
-    this.maxFiles = config.config?.maxFiles   |  |   10;
+    this.maxFiles = config.config?.maxFiles   ||   10;
 }
 
   async initialize():Promise<void> {
@@ -167,14 +167,14 @@ export class FileExporter implements BaseExporter {
 
     if (this.lastError) {
       status = 'unhealthy';
-} else if (!this.writeStream   |  |   this.writeStream.destroyed) {
+} else if (!this.writeStream   ||   this.writeStream.destroyed) {
       status = 'degraded';
 }
 
     return {
       status,
-      lastSuccess:this.lastExportTime   |  |   undefined,
-      lastError:this.lastError   |  |   undefined,
+      lastSuccess:this.lastExportTime   ||   undefined,
+      lastError:this.lastError   ||   undefined,
 };
 }
 
@@ -182,18 +182,18 @@ export class FileExporter implements BaseExporter {
    * Write telemetry data to file
    */
   private async writeToFile(data:TelemetryData): Promise<void> {
-    if (!this.writeStream   |  |   this.writeStream.destroyed) {
+    if (!this.writeStream   ||   this.writeStream.destroyed) {
       await this.rotateFile();
 }
 
     // Check if file rotation is needed due to size
-    if (this.writeStream  &&&&  this.writeStream.bytesWritten > this.maxFileSize) {
+    if (this.writeStream  &&  this.writeStream.bytesWritten > this.maxFileSize) {
       await this.rotateFile();
 }
 
     // Format data based on configured format
     let output:string;
-    if (this.format ===  'jsonl') {
+    if (this.format === 'jsonl') {
       // JSON Lines format - one JSON object per line
       output = JSON.stringify(data) + '\n';
 } else {
@@ -226,7 +226,7 @@ export class FileExporter implements BaseExporter {
 
     // Generate new file path
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const extension = this.format ===  'jsonl' ? ' jsonl' : ' json';
+    const extension = this.format === 'jsonl' ? ' jsonl' : ' json';
     this.currentFilePath = `${{}this.baseFilePath}-${timestamp}.${extension}`;
 
     // Create new write stream

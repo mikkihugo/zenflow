@@ -31,10 +31,10 @@ export class TransformProcessor implements BaseProcessor {
     this.logger = getLogger(`TransformProcessor:${config.name}`);`
 
     // Parse configuration
-    this.addAttributes = config.config?.addAttributes  |  |  {};
-    this.removeFields = config.config?.removeFields  |  |  [];
-    this.fieldMappings = config.config?.fieldMappings  |  |  {};
-    this.operations = this.parseOperations(config.config?.operations  |  |  []);
+    this.addAttributes = config.config?.addAttributes  ||  {};
+    this.removeFields = config.config?.removeFields  ||  [];
+    this.fieldMappings = config.config?.fieldMappings  ||  {};
+    this.operations = this.parseOperations(config.config?.operations  ||  []);
 }
 
   async initialize():Promise<void> {
@@ -118,8 +118,8 @@ export class TransformProcessor implements BaseProcessor {
     lastError?:string;
 }> {
     return {
-      status:this.lastError ? 'unhealthy' : ' healthy',      lastProcessed:this.lastProcessedTime  |  |  undefined,
-      lastError:this.lastError  |  |  undefined,
+      status:this.lastError ? 'unhealthy' : ' healthy',      lastProcessed:this.lastProcessedTime  ||  undefined,
+      lastError:this.lastError  ||  undefined,
 };
 }
 
@@ -219,7 +219,7 @@ export class TransformProcessor implements BaseProcessor {
   ):Promise<boolean> {
     // Check condition if present
     if (
-      operation.condition  &&&& 
+      operation.condition  && 
       !this.evaluateCondition(data, operation.condition)
     ) {
       return false;
@@ -267,7 +267,7 @@ export class TransformProcessor implements BaseProcessor {
       case 'map': ')'        if (operation.mapping) {
           const currentValue = this.getFieldValue(data, operation.field);
           if (
-            currentValue !== undefined  &&&& 
+            currentValue !== undefined  && 
             operation.mapping[currentValue] !== undefined
           ) {
             this.setFieldValue(
@@ -291,7 +291,7 @@ export class TransformProcessor implements BaseProcessor {
     const parts = fieldPath.split('.');')    let value = data;
 
     for (const part of parts) {
-      if (value ===  null  |  |  value ===  undefined) {
+      if (value === null  ||  value === undefined) {
         return undefined;
 }
       value = value[part];
@@ -308,7 +308,7 @@ export class TransformProcessor implements BaseProcessor {
 
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
-      if (!current[part]  |  |  typeof current[part] !=='object') {
+      if (!current[part]  ||  typeof current[part] !=='object') {
     ')        current[part] =;
 }
       current = current[part];
@@ -348,7 +348,7 @@ export class TransformProcessor implements BaseProcessor {
     data:TelemetryData,
     currentValue?:any
   ):any {
-    if (typeof value ===  'string') {
+    if (typeof value === 'string') {
     ')      // Template substitution
       return value.replace(/\{\{([^}]+)\}\}/g, (match, path) => {
         const resolved = this.getFieldValue(data, path.trim())();
@@ -356,7 +356,7 @@ export class TransformProcessor implements BaseProcessor {
 });
 }
 
-    if (typeof value ===  'function') {
+    if (typeof value === 'function') {
     ')      try {
         return value(data, currentValue);
 } catch (error) {
@@ -373,12 +373,12 @@ export class TransformProcessor implements BaseProcessor {
   private evaluateCondition(data:TelemetryData, condition:string): boolean {
     try {
       // Very simple condition evaluation
-      // In production, you'd want a proper expression evaluator')      const parts = condition.split(' ');')      if (parts.length ===  3) {
+      // In production, you'd want a proper expression evaluator')      const parts = condition.split(' ');')      if (parts.length === 3) {
         const [field, operator, expectedValue] = parts;
         const actualValue = this.getFieldValue(data, field);
 
         switch (operator) {
-          case '==': ')'            return actualValue ===  expectedValue;
+          case '==': ')'            return actualValue === expectedValue;
           case '!=': ')'            return actualValue !== expectedValue;
           case 'contains': ')'            return String(actualValue).includes(expectedValue);
           case 'exists': ')'            return actualValue !== undefined;
@@ -396,7 +396,7 @@ export class TransformProcessor implements BaseProcessor {
    */
   private parseOperations(operations:any[]): TransformOperation[] {
     return operations.map((op) => ({
-      type:op.type  |  |  'add',      field:op.field,
+      type:op.type  ||  'add',      field:op.field,
       value:op.value,
       newField:op.newField,
       mapping:op.mapping,

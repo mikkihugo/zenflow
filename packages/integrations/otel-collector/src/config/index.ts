@@ -103,11 +103,11 @@ export class ConfigManager {
   private getDefaultConfig():CollectorConfig {
     return {
       service:{
-        name: 'claude-zen-otel-collector',        version: '1.0.0',        instance:process.env.HOSTNAME  |  |  'localhost',},
+        name: 'claude-zen-otel-collector',        version: '1.0.0',        instance:process.env.HOSTNAME  ||  'localhost',},
       http:{
         enabled:true,
-        port:parseInt(process.env.OTEL_COLLECTOR_PORT  |  |  '4318'),
-        host:process.env.OTEL_COLLECTOR_HOST  |  |  '0.0.0.0',        cors:{
+        port:parseInt(process.env.OTEL_COLLECTOR_PORT  ||  '4318'),
+        host:process.env.OTEL_COLLECTOR_HOST  ||  '0.0.0.0',        cors:{
           enabled:true,
           origins:['*'],
           methods:['GET',    'POST',    'PUT',    'DELETE'],
@@ -143,7 +143,7 @@ export class ConfigManager {
 ],
       exporters:[
         {
-          name: 'console',          type: 'console',          enabled:process.env.NODE_ENV ===  'development',          signals:['traces',    'metrics',    'logs'],
+          name: 'console',          type: 'console',          enabled:process.env.NODE_ENV === 'development',          signals:['traces',    'metrics',    'logs'],
           config:{},
 },
         {
@@ -298,7 +298,7 @@ export class ConfigManager {
 };
 
       envOverrides.exporters = [
-        ...(envOverrides.exporters  |  |  config.exporters),
+        ...(envOverrides.exporters  ||  config.exporters),
         otlpExporter,
 ];
 }
@@ -313,7 +313,7 @@ export class ConfigManager {
 };
 
       envOverrides.exporters = [
-        ...(envOverrides.exporters  |  |  config.exporters),
+        ...(envOverrides.exporters  ||  config.exporters),
         prometheusExporter,
 ];
 }
@@ -331,18 +331,18 @@ export class ConfigManager {
 }
 
     if (
-      !config.http?.port   |  |   config.http.port < 1   |  |   config.http.port > 65535
+      !config.http?.port   ||   config.http.port < 1   ||   config.http.port > 65535
     ) {
       throw new Error('Configuration invalid http.port');
 }
 
     // Validate exporters
-    if (!Array.isArray(config.exporters)   |  |   config.exporters.length ===  0) {
+    if (!Array.isArray(config.exporters)   ||   config.exporters.length === 0) {
       throw new Error('Configuration must have at least one exporter');
 }
 
     const enabledExporters = config.exporters.filter((e) => e.enabled);
-    if (enabledExporters.length ===  0) {
+    if (enabledExporters.length === 0) {
       throw new Error('Configuration must have at least one enabled exporter');
 }
 
@@ -369,7 +369,7 @@ export class ConfigManager {
 
     this.logger.debug('Configuration validation passed', {
       exporters:enabledExporters.length,
-      processors:config.processors?.length   |  |   0,
+      processors:config.processors?.length   ||   0,
 });
 }
 }
@@ -394,19 +394,19 @@ export function _createDevelopmentConfig():CollectorConfig {
   const devConfig = config.getDefaultConfig();
 
   // Enable console exporter for development
-  const consoleExporter = devConfig.exporters.find((e) => e.name ===  'console');
+  const consoleExporter = devConfig.exporters.find((e) => e.name === 'console');
   if (consoleExporter) {
     consoleExporter.enabled = true;
 }
 
   // Disable file exporter for development
-  const fileExporter = devConfig.exporters.find((e) => e.name ===  'file');
+  const fileExporter = devConfig.exporters.find((e) => e.name === 'file');
   if (fileExporter) {
     fileExporter.enabled = false;
 }
 
   // Reduce batch sizes for faster feedback
-  const batchProcessor = devConfig.processors.find((p) => p.name ===  'batch');
+  const batchProcessor = devConfig.processors.find((p) => p.name === 'batch');
   if (batchProcessor?.config) {
     batchProcessor.config.maxBatchSize = 10;
     batchProcessor.config.batchTimeout = 1000;
@@ -424,19 +424,20 @@ export function _createProductionConfig():CollectorConfig {
 
   // Disable console exporter for production
   const consoleExporter = prodConfig.exporters.find(
-    (e) => e.name ===  'console')  );
+    (e) => e.name === 'console'
+  );
   if (consoleExporter) {
     consoleExporter.enabled = false;
 }
 
   // Enable file exporter for production
-  const fileExporter = prodConfig.exporters.find((e) => e.name ===  'file');
+  const fileExporter = prodConfig.exporters.find((e) => e.name === 'file');
   if (fileExporter) {
     fileExporter.enabled = true;
 }
 
   // Increase batch sizes for efficiency
-  const batchProcessor = prodConfig.processors.find((p) => p.name ===  'batch');
+  const batchProcessor = prodConfig.processors.find((p) => p.name === 'batch');
   if (batchProcessor?.config) {
     batchProcessor.config.maxBatchSize = 500;
     batchProcessor.config.batchTimeout = 10000;
