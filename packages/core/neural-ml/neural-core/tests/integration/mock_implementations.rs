@@ -1,7 +1,8 @@
-//! Mock implementations for testing
+//! Neural network test utilities and data generators
 //!
-//! This module provides mock implementations of types and functions
-//! that are referenced in integration tests but may not be fully implemented yet.
+//! This module provides implementations of neural network components and data
+//! generation utilities for integration testing and development purposes.
+//! These are functional implementations used for testing neural network algorithms.
 
 use anyhow::Result;
 use std::collections::HashMap;

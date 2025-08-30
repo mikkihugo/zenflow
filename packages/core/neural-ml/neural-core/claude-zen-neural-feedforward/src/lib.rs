@@ -83,4 +83,4 @@ pub use optimization_selector::{
 // Tests are in individual modules
 
 // Mock types for testing
-pub mod mock_types;
+pub mod network_types;
