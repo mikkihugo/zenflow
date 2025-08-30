@@ -257,14 +257,14 @@ export class PerformanceTuningStrategy extends EventEmitter {
     return Promise.resolve(Math.random() * 0.7 + 0.1); // 10-80%
   }
 
-  private async measureActiveConnections():Promise<number> {
-    // Mock implementation
-    return Math.floor(Math.random() * 50 + 10); // 10-60 connections
+  private measureActiveConnections():Promise<number> {
+    // Mock implementation - no need for async
+    return Promise.resolve(Math.floor(Math.random() * 50 + 10)); // 10-60 connections
 }
 
-  private async measureQueueSize():Promise<number> {
-    // Mock implementation
-    return Math.floor(Math.random() * 20); // 0-20 queued requests
+  private measureQueueSize():Promise<number> {
+    // Mock implementation - no need for async
+    return Promise.resolve(Math.floor(Math.random() * 20)); // 0-20 queued requests
 }
 
   private trimSnapshots():void {
@@ -389,157 +389,213 @@ export class PerformanceTuningStrategy extends EventEmitter {
       :0;
 }
 
-  private async generateTuningRecommendations(
-    analysis:any,
-    snapshot:PerformanceSnapshot
-  ):Promise<TuningRecommendation[]> {
-    const recommendations:TuningRecommendation[] = [];
-
-    // Response time optimization
+  private generateResponseTimeRecommendations(
+    analysis: unknown,
+    snapshot: PerformanceSnapshot
+  ): TuningRecommendation[] {
+    const recommendations: TuningRecommendation[] = [];
+    
     if (
-      analysis.responseTimeTrend === 'degrading' ||
+      (analysis as { responseTimeTrend?: string }).responseTimeTrend === 'degrading' ||
       snapshot.responseTime > this.config.targets.responseTime
     ) {
       if (this.config.actions.adjustCacheSize) {
         recommendations.push({
-          action: 'increase_cache_size',          priority: 'high',          impact:{
-            performance:0.3,
-            memory:-0.2,
-            complexity:0.1,
-},
-          description: 'Increase cache size to improve response time',          parameters:{
-            currentSize:this.tuningParameters.get('cacheSize')?.currentValue,
-            newSize:Math.min(
-              (this.tuningParameters.get('cacheSize')?.currentValue || 1000) *
-                1.2,
+          action: 'increase_cache_size',
+          priority: 'high',
+          impact: {
+            performance: 0.3,
+            memory: -0.2,
+            complexity: 0.1,
+          },
+          description: 'Increase cache size to improve response time',
+          parameters: {
+            currentSize: this.tuningParameters.get('cacheSize')?.currentValue,
+            newSize: Math.min(
+              (this.tuningParameters.get('cacheSize')?.currentValue || 1000) * 1.2,
               this.tuningParameters.get('cacheSize')?.maxValue || 10000
             ),
-},
-          estimatedImprovement:{
-            responseTime:-0.15, // 15% improvement
-            throughput:0.1, // 10% improvement
-            memoryUsage:0.2, // 20% increase
-},
-});
-}
+          },
+          estimatedImprovement: {
+            responseTime: -0.15, // 15% improvement
+            throughput: 0.1, // 10% improvement
+            memoryUsage: 0.2, // 20% increase
+          },
+        });
+      }
 
       if (this.config.actions.enableCompression) {
         recommendations.push({
-          action: 'enable_compression',          priority: 'medium',          impact:{
-            performance:0.2,
-            memory:0.1,
-            complexity:0.15,
-},
-          description: 'Enable compression to reduce payload size',          parameters:{
-            compressionLevel:6,
-            enabled:true,
-},
-          estimatedImprovement:{
-            responseTime:-0.1,
-            throughput:0.05,
-            memoryUsage:-0.05,
-},
-});
-}
-}
+          action: 'enable_compression',
+          priority: 'medium',
+          impact: {
+            performance: 0.2,
+            memory: 0.1,
+            complexity: 0.15,
+          },
+          description: 'Enable compression to reduce payload size',
+          parameters: {
+            compressionLevel: 6,
+            enabled: true,
+          },
+          estimatedImprovement: {
+            responseTime: -0.1,
+            throughput: 0.05,
+            memoryUsage: -0.05,
+          },
+        });
+      }
+    }
+    
+    return recommendations;
+  }
 
-    // Throughput optimization
+  private generateThroughputRecommendations(
+    analysis: unknown,
+    snapshot: PerformanceSnapshot
+  ): TuningRecommendation[] {
+    const recommendations: TuningRecommendation[] = [];
+    
     if (
-      analysis.throughputTrend === 'degrading' ||
+      (analysis as { throughputTrend?: string }).throughputTrend === 'degrading' ||
       snapshot.throughput < this.config.targets.throughput
     ) {
       if (this.config.actions.balanceLoad) {
         recommendations.push({
-          action: 'rebalance_load',          priority: 'high',          impact:{
-            performance:0.25,
-            memory:0.05,
-            complexity:0.2,
-},
-          description: 'Rebalance load distribution to improve throughput',          parameters:{
-            algorithm: 'resource-aware',            enableAdaptive:true,
-},
-          estimatedImprovement:{
-            responseTime:-0.1,
-            throughput:0.2,
-            memoryUsage:0.05,
-},
-});
-}
+          action: 'rebalance_load',
+          priority: 'high',
+          impact: {
+            performance: 0.25,
+            memory: 0.05,
+            complexity: 0.2,
+          },
+          description: 'Rebalance load distribution to improve throughput',
+          parameters: {
+            algorithm: 'resource-aware',
+            enableAdaptive: true,
+          },
+          estimatedImprovement: {
+            responseTime: -0.1,
+            throughput: 0.2,
+            memoryUsage: 0.05,
+          },
+        });
+      }
 
       if (this.config.actions.tunePrefetching) {
         recommendations.push({
-          action: 'adjust_prefetching',          priority: 'medium',          impact:{
-            performance:0.15,
-            memory:-0.1,
-            complexity:0.1,
-},
-          description: 'Optimize prefetching strategy',          parameters:{
-            enabled:true,
-            lookahead:3,
-            threshold:0.8,
-},
-          estimatedImprovement:{
-            responseTime:-0.05,
-            throughput:0.15,
-            memoryUsage:0.1,
-},
-});
-}
-}
+          action: 'adjust_prefetching',
+          priority: 'medium',
+          impact: {
+            performance: 0.15,
+            memory: -0.1,
+            complexity: 0.1,
+          },
+          description: 'Optimize prefetching strategy',
+          parameters: {
+            enabled: true,
+            lookahead: 3,
+            threshold: 0.8,
+          },
+          estimatedImprovement: {
+            responseTime: -0.05,
+            throughput: 0.15,
+            memoryUsage: 0.1,
+          },
+        });
+      }
+    }
+    
+    return recommendations;
+  }
 
-    // Memory optimization
+  private generateMemoryRecommendations(
+    analysis: unknown,
+    snapshot: PerformanceSnapshot
+  ): TuningRecommendation[] {
+    const recommendations: TuningRecommendation[] = [];
+    
     if (
-      analysis.memoryTrend === 'degrading' ||
+      (analysis as { memoryTrend?: string }).memoryTrend === 'degrading' ||
       snapshot.memoryUsage > this.config.targets.memoryEfficiency * 1000
     ) {
       recommendations.push({
-        action: 'increase_cleanup_frequency',        priority: 'medium',        impact:{
-          performance:-0.05,
-          memory:0.3,
-          complexity:0.05,
-},
-        description: 'Increase cleanup frequency to reduce memory usage',        parameters:{
-          interval:30000, // 30 seconds
-          threshold:0.8,
-},
-        estimatedImprovement:{
-          responseTime:0.02,
-          throughput:-0.05,
-          memoryUsage:-0.25,
-},
-});
-}
+        action: 'increase_cleanup_frequency',
+        priority: 'medium',
+        impact: {
+          performance: -0.05,
+          memory: 0.3,
+          complexity: 0.05,
+        },
+        description: 'Increase cleanup frequency to reduce memory usage',
+        parameters: {
+          interval: 30000, // 30 seconds
+          threshold: 0.8,
+        },
+        estimatedImprovement: {
+          responseTime: 0.02,
+          throughput: -0.05,
+          memoryUsage: -0.25,
+        },
+      });
+    }
+    
+    return recommendations;
+  }
 
-    // Cache efficiency optimization
+  private generateCacheRecommendations(snapshot: PerformanceSnapshot): TuningRecommendation[] {
+    const recommendations: TuningRecommendation[] = [];
+    
     if (snapshot.cacheHitRate < this.config.targets.cacheEfficiency) {
       recommendations.push({
-        action: 'optimize_ttl',        priority: 'medium',        impact:{
-          performance:0.2,
-          memory:-0.1,
-          complexity:0.1,
-},
-        description: 'Optimize TTL settings for better cache efficiency',        parameters:{
-          ttl:this.calculateOptimalTtl(snapshot),
-          adaptive:true,
-},
-        estimatedImprovement:{
-          responseTime:-0.1,
-          throughput:0.05,
-          memoryUsage:0.05,
-},
-});
-}
+        action: 'optimize_ttl',
+        priority: 'medium',
+        impact: {
+          performance: 0.2,
+          memory: -0.1,
+          complexity: 0.1,
+        },
+        description: 'Optimize TTL settings for better cache efficiency',
+        parameters: {
+          ttl: this.calculateOptimalTtl(snapshot),
+          adaptive: true,
+        },
+        estimatedImprovement: {
+          responseTime: -0.1,
+          throughput: 0.05,
+          memoryUsage: 0.05,
+        },
+      });
+    }
+    
+    return recommendations;
+  }
 
-    // Sort by priority and expected impact
+  private sortRecommendationsByPriority(recommendations: TuningRecommendation[]): TuningRecommendation[] {
     return recommendations.sort((a, b) => {
-      const priorityOrder = { critical:4, high:3, medium:2, low:1};
-      const priorityDiff =
-        priorityOrder[b.priority] - priorityOrder[a.priority];
+      const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
+      const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority];
       if (priorityDiff !== 0) return priorityDiff;
 
       return b.impact.performance - a.impact.performance;
-});
-}
+    });
+  }
+
+  private generateTuningRecommendations(
+    analysis: unknown,
+    snapshot: PerformanceSnapshot
+  ): Promise<TuningRecommendation[]> {
+    const recommendations: TuningRecommendation[] = [];
+
+    // Generate recommendations by category
+    recommendations.push(...this.generateResponseTimeRecommendations(analysis, snapshot));
+    recommendations.push(...this.generateThroughputRecommendations(analysis, snapshot));
+    recommendations.push(...this.generateMemoryRecommendations(analysis, snapshot));
+    recommendations.push(...this.generateCacheRecommendations(snapshot));
+
+    // Sort by priority and expected impact
+    return Promise.resolve(this.sortRecommendationsByPriority(recommendations));
+  }
 
   private calculateOptimalTtl(snapshot:PerformanceSnapshot): number {
     // Simple heuristic:adjust TTL based on cache hit rate
@@ -631,7 +687,7 @@ export class PerformanceTuningStrategy extends EventEmitter {
 }
 }
 
-  private async applyTuningAction(
+  private applyTuningAction(
     recommendation:TuningRecommendation
   ):Promise<boolean> {
     // Mock implementation - in real scenario, would apply actual configuration changes
@@ -666,7 +722,7 @@ export class PerformanceTuningStrategy extends EventEmitter {
 }
 
     // Simulate success/failure
-    return Math.random() > 0.1; // 90% success rate
+    return Promise.resolve(Math.random() > 0.1); // 90% success rate
 }
 
   private updateTuningParameter(name:string, value:number): void {
@@ -758,7 +814,7 @@ export class PerformanceTuningStrategy extends EventEmitter {
     return new Map(this.tuningParameters);
 }
 
-  async forceOptimization():Promise<TuningRecommendation[]> {
+  forceOptimization():Promise<TuningRecommendation[]> {
     this.logger.info('Force optimization requested');
     return this.tune();
 }
@@ -794,7 +850,7 @@ export class PerformanceTuningStrategy extends EventEmitter {
     this.logger.info('Performance tuning configuration updated', newConfig);
 }
 
-  async shutdown():Promise<void> {
+  shutdown():Promise<void> {
     if (this.tuningTimer) {
       clearInterval(this.tuningTimer);
 }
@@ -804,5 +860,6 @@ export class PerformanceTuningStrategy extends EventEmitter {
     this.initialized = false;
 
     this.logger.info('Performance tuning strategy shut down');
+    return Promise.resolve();
 }
 }

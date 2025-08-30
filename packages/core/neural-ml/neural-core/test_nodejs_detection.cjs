@@ -35,7 +35,7 @@ const cpus = os.cpus();
 
 logger.info("⚡ Hardware Features Detected:");
 logger.info("  CPU Model:", cpus[0]?.model || "Unknown");
-logger.info("  CPU Speed:", `${cpus[0]?.speed} MHz` || "Unknown");
+logger.info("  CPU Speed:", cpus[0]?.speed ? `${cpus[0].speed} MHz` : "Unknown");
 logger.info("  SIMD Support: Detected via WASM SIMD (if available)");
 logger.info(`  Parallelism: ${cpus.length} threads available`);
 logger.info("");

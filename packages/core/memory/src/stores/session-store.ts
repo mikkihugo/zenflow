@@ -238,26 +238,24 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
     dataOrOptions?: unknown | StoreOptions,
     options?: StoreOptions
   ): { sessionId: string; key: string; data: unknown; storeOptions: StoreOptions | undefined } {
-    if (typeof keyOrData === 'string') {
-      // (sessionId, key, data, options) overload
-      return {
-        sessionId: sessionIdOrKey,
-        key: keyOrData,
-        data: dataOrOptions,
-        storeOptions: options,
-      };
-    } else {
-      // (key, data, options) overload - use default session
-      return {
-        sessionId: 'default',
-        key: sessionIdOrKey,
-        data: keyOrData,
-        storeOptions: dataOrOptions as StoreOptions | undefined,
-      };
-    }
+    return typeof keyOrData === 'string'
+      ? {
+          // (sessionId, key, data, options) overload
+          sessionId: sessionIdOrKey,
+          key: keyOrData,
+          data: dataOrOptions,
+          storeOptions: options,
+        }
+      : {
+          // (key, data, options) overload - use default session
+          sessionId: 'default',
+          key: sessionIdOrKey,
+          data: keyOrData,
+          storeOptions: dataOrOptions as StoreOptions | undefined,
+        };
   }
 
-  private ensureSession(sessionId: string, storeOptions?: StoreOptions): SessionData {
+  private ensureSession(sessionId: string, storeOptions?: StoreOptions): SessionState {
     let session = this.sessions.get(sessionId);
     if (!session) {
       session = {
@@ -280,7 +278,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
     return session;
   }
 
-  private async persistSessionData(sessionId: string, key: string, session: SessionData): Promise<void> {
+  private async persistSessionData(sessionId: string, key: string, session: SessionState): Promise<void> {
     if (this.storage) {
       await this.circuitBreaker.execute({
         operation: 'store',
@@ -291,13 +289,14 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
     }
   }
 
-  private recordStoreMetrics(
-    sessionId: string,
-    storeKey: string,
-    data: unknown,
-    storeOptions: StoreOptions | undefined,
-    timer: { duration?: number }
-  ): void {
+  private recordStoreMetrics(metricsData: {
+    sessionId: string;
+    storeKey: string;
+    data: unknown;
+    storeOptions: StoreOptions | undefined;
+    timer: { duration?: number };
+  }): void {
+    const { sessionId, storeKey, data, storeOptions, timer } = metricsData;
     const storeTime = timer.duration || 0;
     const dataSize = JSON.stringify(data).length;
 
@@ -332,7 +331,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
     const timer = performanceTracker.startTimer('memory_store');
     const storeKey = `${sessionId}:${key}`;
 
-    return withTrace('memory-store-operation', () => withRetry(
+    const result = await withTrace('memory-store-operation', () => withRetry(
         () => safeAsync(async () => {
             const session = this.ensureSession(sessionId, storeOptions);
 
@@ -353,7 +352,13 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
             }
 
             performanceTracker.endTimer('memory_store');
-            this.recordStoreMetrics(sessionId, storeKey, data, storeOptions, timer);
+            this.recordStoreMetrics({
+              sessionId,
+              storeKey,
+              data,
+              storeOptions,
+              timer
+            });
         }),
         {
           retries:2,
@@ -366,19 +371,19 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
             recordMetric('memory_store_retries', 1);
           },
         }
-      )).then((result) => {
-      if (result.isErr()) {
-        const error = ensureError(result.error);
-        this.errorAggregator.add(error);
-        recordMetric('memory_store_errors', 1);
-        logger.error('Memory store operation failed', {
-          sessionId,
-          key:storeKey,
-          error:error.message,
-        });
-        throw error;
-      }
-    });
+      ));
+      
+    if (result.isErr()) {
+      const error = ensureError(result.error);
+      this.errorAggregator.add(error);
+      recordMetric('memory_store_errors', 1);
+      logger.error('Memory store operation failed', {
+        sessionId,
+        key:storeKey,
+        error:error.message,
+      });
+      throw error;
+    }
   }
 
   retrieve<T = unknown>(
@@ -399,7 +404,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
 
     const timer = performanceTracker.startTimer('memory_retrieve');
 
-    return withTrace('memory-retrieve-operation', () => withRetry(
+    const result = await withTrace('memory-retrieve-operation', () => withRetry(
         () => safeAsync(async () => {
             // Check cache first with detailed metrics
             if (this.options.enableCache) {
@@ -427,7 +432,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
               operation: 'retrieve',              sessionId:actualSessionId,
 });
 
-            const result = (session?.data[actualKey] as T) ?? null;
+            const retrievedData = (session?.data[actualKey] as T) ?? null;
 
             performanceTracker.endTimer('memory_retrieve');
             const retrieveTime = timer.duration || 0;
@@ -436,10 +441,10 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
             recordMetric('memory_retrieve_operations', 1);
             recordHistogram('memory_retrieve_duration_ms', retrieveTime);
 
-            if (result !== null) {
+            if (retrievedData !== null) {
               recordMetric('memory_retrieve_successes', 1);
               recordMetric(
-                'memory_retrieved_data_size_bytes',                JSON.stringify(result).length
+                'memory_retrieved_data_size_bytes',                JSON.stringify(retrievedData).length
               );
 } else {
               recordMetric('memory_retrieve_not_found', 1);
@@ -447,12 +452,12 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
 
             logger.debug('Memory retrieve operation completed', {
               key:retrieveKey,
-              found:result !== null,
-              dataSize:result ? JSON.stringify(result).length : 0,
+              found:retrievedData !== null,
+              dataSize:retrievedData ? JSON.stringify(retrievedData).length : 0,
               duration:retrieveTime,
 });
 
-            return result;
+            return retrievedData;
 }),
         {
           retries:2,
@@ -465,19 +470,19 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
             recordMetric('memory_retrieve_retries', 1);
 },
 }
-      )).then((result) => {
-      if (result.isErr()) {
-        const error = ensureError(result.error);
-        this.errorAggregator.add(error);
-        recordMetric('memory_retrieve_errors', 1);
-        logger.error('Memory retrieve operation failed', {
-          key:retrieveKey,
-          error:error.message,
+      ));
+      
+    if (result.isErr()) {
+      const error = ensureError(result.error);
+      this.errorAggregator.add(error);
+      recordMetric('memory_retrieve_errors', 1);
+      logger.error('Memory retrieve operation failed', {
+        key:retrieveKey,
+        error:error.message,
 });
-        throw error;
+      throw error;
 }
-      return result.value;
-});
+    return result.value;
 }
 
   async retrieveSession(sessionId:string): Promise<SessionState | null> {
@@ -518,7 +523,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
 
     const timer = performanceTracker.startTimer('memory_delete');
 
-    return withTrace('memory-delete-operation', () => withRetry(
+    const result = await withTrace('memory-delete-operation', () => withRetry(
         () => safeAsync(async () => {
             const session = this.sessions.get(actualSessionId);
             if (!(session && actualKey in session.data)) {
@@ -582,19 +587,19 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
             recordMetric('memory_delete_retries', 1);
 },
 }
-      )).then((result) => {
-      if (result.isErr()) {
-        const error = ensureError(result.error);
-        this.errorAggregator.add(error);
-        recordMetric('memory_delete_errors', 1);
-        logger.error('Memory delete operation failed', {
-          key:deleteKey,
-          error:error.message,
+      ));
+      
+    if (result.isErr()) {
+      const error = ensureError(result.error);
+      this.errorAggregator.add(error);
+      recordMetric('memory_delete_errors', 1);
+      logger.error('Memory delete operation failed', {
+        key:deleteKey,
+        error:error.message,
 });
-        throw error;
+      throw error;
 }
-      return result.value;
-});
+    return result.value;
 }
 
   getStats(): MemoryStats {
@@ -625,7 +630,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
 
     const timer = performanceTracker.startTimer('memory_shutdown');
 
-    return safeAsync(async () => {
+    const result = await safeAsync(async () => {
       await this.saveToStorage();
       this.initialized = false;
       this.storage = null;
@@ -636,18 +641,18 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
 });
 
       this.emit('shutdown', {});
-}).then((result) => {
-      if (result.isErr()) {
-        const error = new MemoryError(
-          'Failed to shutdown session memory store',          { originalError:result.error.message}
-        );
-        logger.error(
-          'Session memory store shutdown failed',          error.toObject()
-        )();
-        return err(error);
-}
-      return ok();
 });
+      
+    if (result.isErr()) {
+      const error = new MemoryError(
+        'Failed to shutdown session memory store',        { originalError:result.error.message}
+      );
+      logger.error(
+        'Session memory store shutdown failed',        error.toObject()
+      )();
+      return err(error);
+}
+    return ok();
 }
 
   // Additional methods to implement MemoryStore interface
