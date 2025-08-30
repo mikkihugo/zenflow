@@ -69,8 +69,8 @@ export interface BeamDependency {
   /** Version specification */
   version: string;
   /** Dependency source */
-  source: 'hex|git|path|unknown;
-'  /** Security vulnerabilities */
+  source: 'hex' | 'git' | 'path' | 'unknown';
+  /** Security vulnerabilities */
   vulnerabilities?:BeamVulnerability[];
 }
 
@@ -228,7 +228,14 @@ export interface PhoenixSecurityIssue {
   mitigation: string;
 }
 
-export type PhoenixIssueType =|'unsafe_params|missing_csrf|weak_session|insecure_headers|unsafe_redirect|mass_assignment|weak_crypto;
+export type PhoenixIssueType = 
+  | 'unsafe_params'
+  | 'missing_csrf'
+  | 'weak_session'
+  | 'insecure_headers'
+  | 'unsafe_redirect'
+  | 'mass_assignment'
+  | 'weak_crypto';
 
 export interface ConfigSecurityIssue {
   /** Configuration file */
@@ -267,8 +274,8 @@ export interface CustomAnalysisResult {
   /** Rule name */
   rule: string;
   /** Analysis type */
-  type: 'pattern|security|performance|otp;
-'  /** Findings */
+  type: 'pattern' | 'security' | 'performance' | 'otp';
+  /** Findings */
   findings: BeamFinding[];
   /** Execution time */
   executionTime: number;

@@ -22,7 +22,7 @@ export * from './types/index.js';
 export async function createDatabase(type, database) {
     const { SQLiteAdapter: sqliteAdapter } = await import('./adapters/sqlite-adapter.js');
     return new sqliteAdapter({
-        type: type === 'memory' ? ' sqlite' : type,
+        type: type === 'memory' ? 'sqlite' : type,
         database: type === 'memory' ? ':memory:' : database,
         pool: {
             min: 1,
@@ -77,7 +77,7 @@ export class DatabaseEventCoordinator extends EventEmitter {
         this.emit('database:connection:initiated', { type, database });
         try {
             const connection = await createDatabase(type, database);
-            this.emit('database:connection:established', { type, database, status: ' connected' });
+            this.emit('database:connection:established', { type, database, status: 'connected' });
             return connection;
         }
         catch (error) {
@@ -89,7 +89,7 @@ export class DatabaseEventCoordinator extends EventEmitter {
         this.emit('database:storage:creation_started', { database });
         try {
             const storage = await createKeyValueStorage(database);
-            this.emit('database:storage:creation_completed', { database, status: ' ready' });
+            this.emit('database:storage:creation_completed', { database, status: 'ready' });
             return storage;
         }
         catch (error) {
@@ -117,3 +117,4 @@ export class DatabaseProvider extends DatabaseEventCoordinator {
     }
 }
 export const version = '1.0.0';
+//# sourceMappingURL=index.js.map

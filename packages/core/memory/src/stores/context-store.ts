@@ -464,7 +464,7 @@ export class ContextManager extends EventEmitter {
   /**
    * Shutdown context manager
    */
-  async shutdown(): Promise<void> {
+  shutdown():void {
     if (this.syncTimer) {
       clearInterval(this.syncTimer);
       this.syncTimer = undefined;

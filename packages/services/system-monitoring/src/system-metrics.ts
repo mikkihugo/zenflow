@@ -178,7 +178,7 @@ export class SystemMetricsCollector {
   ):SystemPerformanceTracker|null {
     const tracker = this.performanceTrackers.get(operationId);
     if (!tracker) {
-      this.logger.warn(`No performance tracker found for:$operationId`);`
+      this.logger.warn(`No performance tracker found for: ${operationId}`);
       return null;
 }
 

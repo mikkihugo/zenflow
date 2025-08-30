@@ -3,10 +3,7 @@
  *
  * Production-ready workflow engine with battle-tested utilities and comprehensive orchestration
  */
-import { getLogger } from '@claude-zen/foundation';
-import { EventEmitter } from 'events';
-
-const logger = getLogger('workflow-engine');
+import { getLogger, EventEmitter } from '@claude-zen/foundation';
 
 // Core workflow types
 export interface WorkflowStep {

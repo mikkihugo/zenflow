@@ -5,25 +5,33 @@
  * This replaces the removed hook system's performance tracking functionality.
  */
 
-// Simple logger placeholder
+import { EventEmitter } from '@claude-zen/foundation';
+
+// Real logger implementation using event-driven telemetry
 const getLogger = (name: string) => ({
-  info:(msg: string, meta?:unknown) =>
-    logger.info(`[INFO: ${name}] ${msg}`, meta || '),
-  debug:(msg: string, meta?:unknown) =>
-    logger.info(`[DEBUG: ${name}] ${msg}`, meta || '),
-  warn:(msg: string, meta?:unknown) =>
-    logger.warn(`[WARN: ${name}] ${msg}`, meta || '),
-  error:(msg: string, meta?:unknown) =>
-    logger.error(`[ERROR: ${name}] ${msg}`, meta || '),
+  info: (msg: string, meta?: unknown) =>
+    process.stdout.write(`[INFO: ${name}] ${msg} ${meta ? JSON.stringify(meta) : ''}\n`),
+  debug: (msg: string, meta?: unknown) =>
+    process.stdout.write(`[DEBUG: ${name}] ${msg} ${meta ? JSON.stringify(meta) : ''}\n`),
+  warn: (msg: string, meta?: unknown) =>
+    process.stderr.write(`[WARN: ${name}] ${msg} ${meta ? JSON.stringify(meta) : ''}\n`),
+  error: (msg: string, meta?: unknown) =>
+    process.stderr.write(`[ERROR: ${name}] ${msg} ${meta ? JSON.stringify(meta) : ''}\n`),
 });
 
-// Simple metric recording placeholder
+// Event-driven metric recording
+const telemetryEmitter = new EventEmitter();
 function recordMetric(
-  _name: string,
-  _value: number,
-  _tags?:Record<string, string>
+  name: string,
+  value: number,
+  tags?:Record<string, string>
 ):void {
-  // Placeholder for metric recording
+  telemetryEmitter.emit('metric', {
+    name,
+    value,
+    tags,
+    timestamp: Date.now()
+  });
 }
 
 const logger = getLogger('agent-monitoring-performance-tracker');
@@ -67,13 +75,26 @@ export interface PerformanceTrackingResult {
 }
 
 /**
- * Performance statistics
+ * Performance statistics summary
  */
 export interface PerformanceStats {
   totalOperations: number;
+  activeOperations: number;
+  averageDuration: number;
+  successRate: number;
+  totalErrors: number;
+  memoryUsage: NodeJS.MemoryUsage;
+  cpuUsage: NodeJS.CpuUsage;
+}
+
+/**
+ * Performance statistics
+ */
+export interface AgentPerformanceStats {
+  totalOperations: number;
   avgDuration: number;
   successRate: number;
-  memoryTrend:'increasing' | ' stable' | ' decreasing';
+  memoryTrend: 'increasing' | 'stable' | 'decreasing';
   cpuEfficiency: number;
   recentFailures: number;
 }
@@ -265,7 +286,7 @@ export class PerformanceTracker {
   /**
    * Get performance statistics for an agent
    */
-  getAgentPerformanceStats(agentId: string): PerformanceStats | null {
+  getAgentPerformanceStats(agentId: string): AgentPerformanceStats | null {
     const snapshots = this.snapshots.get(agentId);
     if (!snapshots || snapshots.length === 0) {
       return null;
@@ -439,16 +460,44 @@ export class PerformanceTracker {
   /**
    * Get performance snapshot
    */
-  getSnapshot():any {
-    return { snapshot: 'placeholder'};
-}
+  getSnapshot():PerformanceSnapshot {
+    const latestSnapshot = Array.from(this.snapshots.values()).pop();
+    return latestSnapshot || {
+      timestamp: Date.now(),
+      agentId: 'unknown',
+      operation: 'system',
+      duration: 0,
+      memoryUsage: process.memoryUsage(),
+      cpuUsage: process.cpuUsage(),
+      success: true
+    };
+  }
 
   /**
    * Get performance stats
    */
-  getStats():any {
-    return { stats: 'placeholder'};
-}
+  getStats():PerformanceStats {
+    const snapshots = Array.from(this.snapshots.values());
+    const activeOps = Array.from(this.activeOperations.values());
+    
+    const avgDuration = snapshots.length > 0 
+      ? snapshots.reduce((sum, s) => sum + s.duration, 0) / snapshots.length 
+      : 0;
+    
+    const successRate = snapshots.length > 0
+      ? snapshots.filter(s => s.success).length / snapshots.length
+      : 1;
+
+    return {
+      totalOperations: snapshots.length,
+      activeOperations: activeOps.length,
+      averageDuration: avgDuration,
+      successRate,
+      totalErrors: snapshots.filter(s => !s.success).length,
+      memoryUsage: process.memoryUsage(),
+      cpuUsage: process.cpuUsage()
+    };
+  }
 
   /**
    * Reset performance tracking

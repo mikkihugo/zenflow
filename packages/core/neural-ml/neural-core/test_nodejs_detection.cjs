@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 
+// Simple logger for test using stdout instead of console
+const logger = {
+  info: (msg, ...args) => process.stdout.write(`${msg} ${args.join(' ')}\n`)
+};
+
 // Test Node.js runtime detection
 logger.info("🧪 Testing Node.js Runtime Detection");
 logger.info("");
@@ -30,7 +35,7 @@ const cpus = os.cpus();
 
 logger.info("⚡ Hardware Features Detected:");
 logger.info("  CPU Model:", cpus[0]?.model || "Unknown");
-logger.info("  CPU Speed:", `${cpus[0]?.speed} MHz` || "Unknown");
+logger.info("  CPU Speed:", cpus[0]?.speed ? `${cpus[0].speed} MHz` : "Unknown");
 logger.info("  SIMD Support: Detected via WASM SIMD (if available)");
 logger.info(`  Parallelism: ${cpus.length} threads available`);
 logger.info("");

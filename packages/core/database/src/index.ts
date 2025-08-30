@@ -36,7 +36,7 @@ export * from './types/index.js';
 
 // Simple factory function for backward compatibility
 export async function createDatabase(
-  type: 'sqlite' | ' memory',
+  type: 'sqlite' | 'memory',
   database: string
 ) {
   const { SQLiteAdapter: sqliteAdapter } = await import(
@@ -44,7 +44,7 @@ export async function createDatabase(
   );
 
   return new sqliteAdapter({
-    type: type === 'memory' ? ' sqlite' : type,
+    type: type === 'memory' ? 'sqlite' : type,
     database: type === 'memory' ? ':memory:' : database,
     pool: {
       min: 1,
@@ -82,12 +82,10 @@ export async function createKeyValueStorage(database: string) {
 }
 
 export function createDatabaseAccess(config?: unknown) {
-  const configuration = config
-    ? { ...(config as Record<string, unknown>) }
-    : {};
+  const configuration = config ? { ...config as Record<string, unknown> } : {};
   return {
     createConnection: (dbConfig: { type?: string; database: string }) =>
-      createDatabase(dbConfig.type || 'sqlite', dbConfig.database),
+      createDatabase(dbConfig.type as 'sqlite' | 'memory' || 'sqlite', dbConfig.database),
     createKeyValueStorage,
     getDatabaseFactory,
     createStorageConfig,
@@ -102,74 +100,47 @@ export class DatabaseEventCoordinator extends EventEmitter {
   constructor(private config?: unknown) {
     super();
   }
-
-  async connect(type: 'sqlite' | ' memory', database: string) {
+  async connect(type: 'sqlite' | 'memory', database: string) {
     this.emit('database:connection:initiated', { type, database });
-
+    
     try {
       const connection = await createDatabase(type, database);
-      this.emit('database:connection:established', {
-        type,
-        database,
-        status: ' connected',
-      });
+      this.emit('database:connection:established', { type, database, status: 'connected' });
       return connection;
     } catch (error) {
-      this.emit('database:connection:failed', {
-        type,
-        database,
-        error: error.message,
-      });
+      this.emit('database:connection:failed', { type, database, error: (error as Error).message });
       throw error;
     }
   }
 
   async createStorage(database: string) {
     this.emit('database:storage:creation_started', { database });
-
+    
     try {
       const storage = await createKeyValueStorage(database);
-      this.emit('database:storage:creation_completed', {
-        database,
-        status: ' ready',
-      });
+      this.emit('database:storage:creation_completed', { database, status: 'ready' });
       return storage;
     } catch (error) {
-      this.emit('database:storage:creation_failed', {
-        database,
-        error: error.message,
-      });
+      this.emit('database:storage:creation_failed', { database, error: (error as Error).message });
       throw error;
     }
   }
 
   emitOperation(operation: string, details: Record<string, unknown>) {
-    this.emit('database:operation', {
-      operation,
-      details,
-      timestamp: Date.now(),
-    });
+    this.emit('database:operation', { operation, details, timestamp: Date.now() });
   }
 
-  emitHealthStatus(
-    status: 'healthy' | ' degraded' | ' unhealthy',
-    details?: Record<string, unknown>
-  ) {
-    this.emit('database:health:status_change', {
-      status,
-      details,
-      timestamp: Date.now(),
-    });
+  emitHealthStatus(status: 'healthy' | 'degraded' | 'unhealthy', details?: Record<string, unknown>) {
+    this.emit('database:health:status_change', { status, details, timestamp: Date.now() });
   }
 }
-
-// Provider class expected by infrastructure facade
+// Provider class expected by infrastructure facade  
 export class DatabaseProvider extends DatabaseEventCoordinator {
   constructor(config?: unknown) {
     super(config);
   }
 
-  createConnection(type: 'sqlite' | ' memory', database: string) {
+  createConnection(type: 'sqlite' | 'memory', database: string) {
     return this.connect(type, database);
   }
 

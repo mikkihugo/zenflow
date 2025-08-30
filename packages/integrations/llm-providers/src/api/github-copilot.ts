@@ -141,11 +141,11 @@ import type {
 
 // Error codes enum for API responses
 export const API_ERROR_CODES = {
-  MODEL_ERROR: 'MODEL_ERROR',
-  NETWORK_ERROR: 'NETWORK_ERROR',
-  AUTH_ERROR: 'AUTH_ERROR',
-  RATE_LIMIT: 'RATE_LIMIT',
-  VALIDATION_ERROR: 'VALIDATION_ERROR',
+  modelError: 'MODEL_ERROR',
+  networkError: 'NETWORK_ERROR',
+  authError: 'AUTH_ERROR',
+  rateLimit: 'RATE_LIMIT',
+  validationError: 'VALIDATION_ERROR',
 } as const;
 
 import {
@@ -271,7 +271,7 @@ export class GitHubCopilotAPI implements APIProvider {
         );
 
         return err({
-          code: API_ERROR_CODES.MODEL_ERROR,
+          code: API_ERROR_CODES.modelError,
           message: `GitHub Copilot API error: ${response.status} ${response.statusText}`,
           details: {
             status: response.status,
@@ -303,7 +303,7 @@ export class GitHubCopilotAPI implements APIProvider {
     } catch (error) {
       logger.error('GitHub Copilot API execution failed: ', error);
       return err({
-        code: API_ERROR_CODES.NETWORK_ERROR,
+        code: API_ERROR_CODES.networkError,
         message: `GitHub Copilot API network error: ${error}`,
         details: {
           error: error instanceof Error ? error['message'] : String(error),

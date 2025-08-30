@@ -11,8 +11,8 @@ import {
   recordMetric,
   TelemetryManager,
   withTrace,
+  type Logger,
 } from '@claude-zen/foundation';
-import type { Logger } from '@claude-zen/foundation';
 
 import type {
   LifecycleConfig,
@@ -20,16 +20,6 @@ import type {
   LifecycleStage,
   StrategyMetrics,
 } from './types';
-
-interface LifecycleAction {
-  type: 'promote|demote|migrate|cleanup|archive';
-  key: string;
-  fromStage: LifecycleStage;
-  toStage: LifecycleStage;
-  reason: string;
-  timestamp: number;
-  metadata: Record<string, unknown>;
-}
 
 interface StageStats {
   count: number;
@@ -246,7 +236,6 @@ export class DataLifecycleManager extends EventEmitter {
 
   private updateAccessTracking(entry: LifecycleEntry): void {
     const now = Date.now();
-    const timeSinceLastAccess = now - entry.lastAccessed;
 
     entry.lastAccessed = now;
     entry.accessCount++;
@@ -295,7 +284,7 @@ export class DataLifecycleManager extends EventEmitter {
     if (!this.configuration.enabled) return;
 
     try {
-      await withTrace('data-lifecycle-migration', async () => {
+      await withTrace('data-lifecycle-migration', () => {
         const now = Date.now();
         const entries = Array.from(this.entries.values())();
         let migrated = 0;
@@ -541,7 +530,7 @@ export class DataLifecycleManager extends EventEmitter {
     if (!this.configuration.enabled) return;
 
     try {
-      await withTrace('data-lifecycle-cleanup', async () => {
+      await withTrace('data-lifecycle-cleanup', () => {
         const now = Date.now();
         let cleaned = 0;
 
@@ -683,7 +672,7 @@ export class DataLifecycleManager extends EventEmitter {
     this.logger.info('Data lifecycle configuration updated', newConfig);
   }
 
-  async shutdown(): Promise<void> {
+  shutdown():Promise<void> {
     if (this.migrationTimer) {
       clearInterval(this.migrationTimer);
     }
@@ -698,5 +687,6 @@ export class DataLifecycleManager extends EventEmitter {
 
     this.initialized = false;
     this.logger.info('Data lifecycle manager shut down');
+    return Promise.resolve();
   }
 }

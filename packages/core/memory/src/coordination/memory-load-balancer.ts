@@ -5,10 +5,13 @@
  * including round-robin, least-connections, weighted, and resource-aware strategies.
  */
 
-import { EventEmitter } from '@claude-zen/foundation';
-import { getLogger, recordMetric } from '@claude-zen/foundation';
-import type { Logger } from '@claude-zen/foundation';
-import type { MemoryNode, MemoryLoadMetrics } from './types';
+import { 
+  EventEmitter, 
+  getLogger, 
+  recordMetric,
+  type Logger,
+} from '@claude-zen/foundation';
+import type { MemoryNode, MemoryLoadMetrics} from './types';
 
 interface LoadBalancingConfig {
   enabled: boolean;
@@ -124,15 +127,15 @@ export class MemoryLoadBalancer extends EventEmitter {
 
   private selectLeastConnections(nodes: MemoryNode[]): MemoryNode {
     return nodes.reduce((least, current) => {
-      if (current.metrics.connections < least.metrics.connections) {
+      const { connections: currentConnections, averageResponseTime: currentResponseTime } = current.metrics;
+      const { connections: leastConnections, averageResponseTime: leastResponseTime } = least.metrics;
+      
+      if (currentConnections < leastConnections) {
         return current;
       }
-      if (current.metrics.connections === least.metrics.connections) {
+      if (currentConnections === leastConnections) {
         // Secondary sort by response time
-        return current.metrics.averageResponseTime <
-          least.metrics.averageResponseTime
-          ? current
-          : least;
+        return currentResponseTime < leastResponseTime ? current : least;
       }
       return least;
     });
@@ -175,8 +178,16 @@ export class MemoryLoadBalancer extends EventEmitter {
     return scoredNodes[0].node;
   }
 
-  private calculateNodeScore(node: MemoryNode): number {
-    const { metrics } = node;
+  private calculateNodeScore(node:MemoryNode): number {
+    const {metrics, status, weight} = node;
+    const { errorRate } = status;
+    const { 
+      averageResponseTime, 
+      connections, 
+      memoryUsage, 
+      cacheHitRate 
+    } = metrics;
+    
     const thresholds = this.config.thresholds || {
       maxLatency: 100,
       maxErrorRate: 0.05,
@@ -188,30 +199,30 @@ export class MemoryLoadBalancer extends EventEmitter {
     let score = 100;
 
     // Penalize high latency
-    if (metrics.averageResponseTime > thresholds.maxLatency) {
-      score -= (metrics.averageResponseTime / thresholds.maxLatency) * 20;
-    }
+    if (averageResponseTime > thresholds.maxLatency) {
+      score -= (averageResponseTime / thresholds.maxLatency) * 20;
+}
 
     // Penalize high error rate
-    if (node.status.errorRate > thresholds.maxErrorRate) {
-      score -= (node.status.errorRate / thresholds.maxErrorRate) * 30;
-    }
+    if (errorRate > thresholds.maxErrorRate) {
+      score -= (errorRate / thresholds.maxErrorRate) * 30;
+}
 
     // Penalize high connection count
-    if (metrics.connections > thresholds.maxConnectionsPerNode) {
-      score -= (metrics.connections / thresholds.maxConnectionsPerNode) * 15;
-    }
+    if (connections > thresholds.maxConnectionsPerNode) {
+      score -= (connections / thresholds.maxConnectionsPerNode) * 15;
+}
 
     // Penalize high memory usage
-    if (metrics.memoryUsage > thresholds.maxMemoryUsage) {
-      score -= (metrics.memoryUsage / thresholds.maxMemoryUsage) * 25;
-    }
+    if (memoryUsage > thresholds.maxMemoryUsage) {
+      score -= (memoryUsage / thresholds.maxMemoryUsage) * 25;
+}
 
     // Bonus for high cache hit rate
-    score += metrics.cacheHitRate * 10;
+    score += cacheHitRate * 10;
 
     // Apply node weight multiplier
-    score *= node.weight;
+    score *= weight;
 
     return Math.max(0, score);
   }
@@ -282,9 +293,8 @@ export class MemoryLoadBalancer extends EventEmitter {
 
   getOptimalNodeCount(): number {
     // Calculate optimal node count based on current load
-    const { totalRequests } = this.stats;
-    const avgLatency = this.stats.averageLatency;
-    const overloadedCount = this.stats.overloadedNodes.length;
+    const {totalRequests, averageLatency, overloadedNodes} = this.stats;
+    const overloadedCount = overloadedNodes.length;
 
     if (totalRequests === 0) return 1;
 
@@ -298,12 +308,12 @@ export class MemoryLoadBalancer extends EventEmitter {
 
     // If average latency is high, recommend more nodes
     const maxLatency = this.config.thresholds?.maxLatency || 100;
-    if (avgLatency > maxLatency) {
+    if (averageLatency > maxLatency) {
       return Math.ceil(currentNodes * 1.2);
     }
 
     // If load is very low, we might be able to reduce nodes
-    if (overloadRatio === 0 && avgLatency < maxLatency * 0.5) {
+    if (overloadRatio === 0 && averageLatency < maxLatency * 0.5) {
       return Math.max(1, Math.floor(currentNodes * 0.8));
     }
 

@@ -4,9 +4,7 @@
  * Single WebSocket endpoint that integrates with the existing event system,
  * providing auto-discovery and unified real-time updates for Svelte dashboard.
  */
-import { getLogger } from '@claude-zen/foundation';
-import type { WebSocket, RawData } from 'ws';
-import { EventEmitter } from 'events';
+import { getLogger, EventEmitter } from '@claude-zen/foundation';
 
 const logger = getLogger('websocket-hub');
 

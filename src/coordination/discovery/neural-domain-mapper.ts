@@ -9,8 +9,14 @@
  * - docs/archive/CODE_ANALYSIS_STATUS_REPORT.md: Neural Domain Mapper features
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import type { Result } from '@claude-zen/foundation';
+// Simple stubs to avoid foundation dependency for now
+type Result<T, E> = { success: true; data: T } | { success: false; error: E };
+const getLogger = (_name: string) => ({ 
+  info: console.log, 
+  warn: console.warn, 
+  error: console.error, 
+  debug: console.debug 
+});
 
 const logger = getLogger('NeuralDomainMapper');
 
@@ -306,13 +312,20 @@ export class NeuralDomainMapper {
     // Process GNN predictions to identify relationships
     for (let i = 0; i < domains.length; i++) {
       for (let j = i + 1; j < domains.length; j++) {
+        const sourceDomain = domains[i];
+        const targetDomain = domains[j];
+        
+        if (!sourceDomain || !targetDomain) {
+          continue;
+        }
+        
         const strength = this.calculateRelationshipStrength(predictions, i, j);
 
         if (strength > 0.3) {
           // Threshold for significant relationships
           relationships.push({
-            sourceDomain: domains[i].id,
-            targetDomain: domains[j].id,
+            sourceDomain: sourceDomain.id,
+            targetDomain: targetDomain.id,
             relationshipType: this.classifyRelationshipType(strength),
             strength,
             direction: this.determineDirection(predictions, i, j),
@@ -359,9 +372,14 @@ export class NeuralDomainMapper {
       const targetIndex = domains.findIndex((d) => d.id === rel.targetDomain);
 
       if (sourceIndex >= 0 && targetIndex >= 0) {
-        matrix[sourceIndex][targetIndex] = rel.strength;
-        if (rel.direction === 'bidirectional') {
-          matrix[targetIndex][sourceIndex] = rel.strength;
+        const sourceRow = matrix[sourceIndex];
+        const targetRow = matrix[targetIndex];
+        
+        if (sourceRow && targetRow) {
+          sourceRow[targetIndex] = rel.strength;
+          if (rel.direction === 'bidirectional') {
+            targetRow[sourceIndex] = rel.strength;
+          }
         }
       }
     }
@@ -507,7 +525,10 @@ export class NeuralDomainMapper {
       const targetIndex = domains.findIndex((d) => d.id === edge.target);
 
       if (sourceIndex >= 0 && targetIndex >= 0) {
-        matrix[sourceIndex][targetIndex] = edge.weight;
+        const sourceRow = matrix[sourceIndex];
+        if (sourceRow) {
+          sourceRow[targetIndex] = edge.weight;
+        }
       }
     }
 
@@ -548,8 +569,8 @@ export class NeuralDomainMapper {
 
   private calculateRelationshipConfidence(
     predictions: any,
-    i: number,
-    j: number
+  _i: number,
+  _j: number
   ): number {
     return predictions.confidence || 0.8;
   }

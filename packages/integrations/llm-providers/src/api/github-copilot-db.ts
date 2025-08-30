@@ -117,79 +117,16 @@ class GitHubCopilotDatabase {
 
       logger.info('🔄 Updating GitHub Copilot Models from API...');
 
-      const response = await fetch('https://api.githubcopilot.com/models', {
-        headers: {
-          Authorization: `Bearer ${this.token}`,
-          'Copilot-Integration-Id': ' vscode-chat',
-        },
-      });
-
-      if (!response.ok) {
-        return err(
-          new Error(
-            `API request failed:${response.status} ${response.statusText}`
-          )
-        );
+      const response = await this.fetchModelsFromAPI();
+      if (response.isErr()) {
+        return response;
       }
 
-      const data = await response.json();
-      const updatedModels = new Map<string, GitHubCopilotModelMetadata>();
+      const data = response.value;
+      const updatedModels = this.processModelsData(data);
 
-      for (const modelData of data['data'] || []) {
-        const { capabilities = {} } = modelData;
-        const { limits = {}, supports = {} } = capabilities;
-        const { vision } = limits;
-
-        const model: GitHubCopilotModelMetadata = {
-          id: modelData.id,
-          name: modelData.name,
-          vendor: modelData['vendor'] || ' Unknown',
-          family: capabilities?.family || 'unknown',
-          version: modelData['version'] || modelData.id,
-          contextWindow: limits['max_context_window_tokens'] || 128000,
-          maxOutputTokens: limits['max_output_tokens'] || 4096,
-          maxPromptTokens: limits['max_prompt_tokens'] || 128000,
-          category: modelData['model_picker_category'] || ' versatile',
-          supportsVision: !!vision,
-          supportsToolCalls: !!supports.tool_calls,
-          supportsStreaming: !!supports.streaming,
-          supportsParallelToolCalls: !!supports.parallel_tool_calls,
-          supportsStructuredOutputs: !!supports.structured_outputs,
-          modelPickerEnabled: !!modelData.model_picker_enabled,
-          preview: !!modelData.preview,
-          tokenizer: capabilities?.tokenizer || 'unknown',
-          type: capabilities?.type || 'chat',
-          lastUpdated: new Date(),
-        };
-
-        if (vision) {
-          model['visionLimits'] = {
-            maxImageSize: vision['max_prompt_image_size'] || 0,
-            maxImages: vision['max_prompt_images'] || 0,
-            supportedFormats: vision['supported_media_types'] || [],
-          };
-        }
-
-        if (supports['max_thinking_budget'] || supports.min_thinking_budget) {
-          model['thinkingBudget'] = {
-            min: supports['min_thinking_budget'] || 0,
-            max: supports['max_thinking_budget'] || 0,
-          };
-        }
-
-        updatedModels.set(modelData.id, model);
-      }
-
-      this['models'] = updatedModels;
-      this['lastUpdate'] = new Date();
-
-      logger.info(` Updated ${this.models.size} GitHub Copilot Models`);
-      logger.info(` Models by vendor:${this.getVendorStats()}`);
-      logger.info(
-        `🎯 Primary models:${this.getPrimaryModels()
-          .map((m) => m.id)
-          .join(',    ')}`
-      );
+      this.updateInternalState(updatedModels);
+      this.logUpdateResults();
 
       return ok(void 0);
     } catch (error) {
@@ -198,6 +135,129 @@ class GitHubCopilotDatabase {
         error instanceof Error ? error : new Error('Failed to update models')
       );
     }
+  }
+
+  /**
+   * Fetch models data from GitHub Copilot API
+   */
+  private async fetchModelsFromAPI(): Promise<Result<unknown, Error>> {
+    const response = await fetch('https://api.githubcopilot.com/models', {
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+        'Copilot-Integration-Id': ' vscode-chat',
+      },
+    });
+
+    if (!response.ok) {
+      return err(
+        new Error(
+          `API request failed:${response.status} ${response.statusText}`
+        )
+      );
+    }
+
+    const data = await response.json();
+    return ok(data);
+  }
+
+  /**
+   * Process raw models data into structured metadata
+   */
+  private processModelsData(data: unknown): Map<string, GitHubCopilotModelMetadata> {
+    const updatedModels = new Map<string, GitHubCopilotModelMetadata>();
+    const dataArray = (data as { data?: unknown[] })['data'] || [];
+
+    for (const modelData of dataArray) {
+      const model = this.createModelMetadata(modelData);
+      updatedModels.set(model.id, model);
+    }
+
+    return updatedModels;
+  }
+
+  /**
+   * Create model metadata from raw model data
+   */
+  private createModelMetadata(modelData: Record<string, unknown>): GitHubCopilotModelMetadata {
+    const { capabilities = {} } = modelData;
+    const capabilitiesTyped = capabilities as Record<string, unknown>;
+    const { limits = {}, supports = {} } = capabilitiesTyped;
+    const limitsTyped = limits as Record<string, unknown>;
+    const supportsTyped = supports as Record<string, unknown>;
+    const { vision } = limitsTyped;
+
+    const model: GitHubCopilotModelMetadata = {
+      id: modelData.id as string,
+      name: modelData.name as string,
+      vendor: (modelData['vendor'] as string) || ' Unknown',
+      family: (capabilitiesTyped?.family as string) || 'unknown',
+      version: (modelData['version'] as string) || (modelData.id as string),
+      contextWindow: (limitsTyped['max_context_window_tokens'] as number) || 128000,
+      maxOutputTokens: (limitsTyped['max_output_tokens'] as number) || 4096,
+      maxPromptTokens: (limitsTyped['max_prompt_tokens'] as number) || 128000,
+      category: (modelData['model_picker_category'] as string) || ' versatile',
+      supportsVision: !!vision,
+      supportsToolCalls: !!supportsTyped.tool_calls,
+      supportsStreaming: !!supportsTyped.streaming,
+      supportsParallelToolCalls: !!supportsTyped.parallel_tool_calls,
+      supportsStructuredOutputs: !!supportsTyped.structured_outputs,
+      modelPickerEnabled: !!modelData.model_picker_enabled,
+      preview: !!modelData.preview,
+      tokenizer: (capabilitiesTyped?.tokenizer as string) || 'unknown',
+      type: (capabilitiesTyped?.type as string) || 'chat',
+      lastUpdated: new Date(),
+    };
+
+    this.addVisionLimits(model, vision as Record<string, unknown>);
+    this.addThinkingBudget(model, supportsTyped);
+
+    return model;
+  }
+
+  /**
+   * Add vision limits if available
+   */
+  private addVisionLimits(model: GitHubCopilotModelMetadata, vision: Record<string, unknown>): void {
+    if (vision) {
+      model['visionLimits'] = {
+        maxImageSize: (vision['max_prompt_image_size'] as number) || 0,
+        maxImages: (vision['max_prompt_images'] as number) || 0,
+        supportedFormats: (vision['supported_media_types'] as string[]) || [],
+      };
+    }
+  }
+
+  /**
+   * Add thinking budget if available
+   */
+  private addThinkingBudget(model: GitHubCopilotModelMetadata, supports: Record<string, unknown>): void {
+    if (supports['max_thinking_budget'] || supports.min_thinking_budget) {
+      model['thinkingBudget'] = {
+        min: (supports['min_thinking_budget'] as number) || 0,
+        max: (supports['max_thinking_budget'] as number) || 0,
+      };
+    }
+  }
+
+  /**
+   * Update internal state with new models
+   */
+  private updateInternalState(updatedModels: Map<string, GitHubCopilotModelMetadata>): void {
+    this['models'] = updatedModels;
+    this['lastUpdate'] = new Date();
+  }
+
+  /**
+   * Log update results
+   */
+  private logUpdateResults(): void {
+    logger.info(` Updated ${this.models.size} GitHub Copilot Models`);
+    logger.info(` Models by vendor:${this.getVendorStats()}`);
+    logger.info(
+      `🎯 Primary models:${this.getPrimaryModels()
+        .map((m) => m.id)
+        .join(',    ')}`
+    );
   }
 
   /**

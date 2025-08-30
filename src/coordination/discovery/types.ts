@@ -7,17 +7,18 @@
 
 // Re-export from neural domain mapper for backward compatibility
 export type {
-  Domain,
   DependencyGraph,
   DomainNode,
   DependencyEdge,
   GraphMetadata,
-  DomainRelationshipMap,
   DomainRelationship,
   TopologyRecommendation,
   GNNModel,
   WasmNeuralAccelerator,
-} from './neural-domain-mapper';
+} from './neural-domain-mapper.js';
+
+// Import directly for use in this file
+import type { DomainRelationshipMap } from './neural-domain-mapper.js';
 
 // Additional discovery-specific types
 
@@ -55,14 +56,14 @@ export interface ValidationCheckpoint {
   confidence: number;
   requiresHumanApproval: boolean;
   question: string;
-  context: any;
+  context: unknown;
   timestamp: Date;
 }
 
 export interface HumanValidationResponse {
   checkpointId: string;
   approved: boolean;
-  modifications?: any;
+  modifications?: unknown;
   feedback?: string;
   timestamp: Date;
 }
@@ -174,7 +175,7 @@ export interface DiscoveryEvent {
     | 'completed'
     | 'error';
   timestamp: Date;
-  data: any;
+  data: unknown;
   source: 'domain_scanner' | 'neural_mapper' | 'validator' | 'human_interface';
 }
 
@@ -185,13 +186,13 @@ export interface AGUIValidationRequest {
   description: string;
   priority: 'low' | 'medium' | 'high' | 'urgent';
   requiredActions: string[];
-  context: any;
+  context: unknown;
   timeoutMs?: number;
 }
 
 export interface AGUIValidationResult {
   requestId: string;
-  response: any;
+  response: unknown;
   confidence: number;
   processingTimeMs: number;
   validatorId?: string;
@@ -227,17 +228,17 @@ export namespace DiscoveryTypes {
   export type Context = DiscoveryContext;
   export type Result = DiscoveryResult;
   export type Metadata = DiscoveryMetadata;
-  export type ValidationCheckpoint = ValidationCheckpoint;
-  export type HumanValidationResponse = HumanValidationResponse;
-  export type NeuralAnalysisConfig = NeuralAnalysisConfig;
-  export type GraphAnalysisResult = GraphAnalysisResult;
-  export type CommunityCluster = CommunityCluster;
-  export type GraphBottleneck = GraphBottleneck;
-  export type EnhancedDomainBoundary = EnhancedDomainBoundary;
-  export type DomainViolation = DomainViolation;
-  export type AlternativeStructure = AlternativeStructure;
-  export type DiscoveryEvent = DiscoveryEvent;
-  export type AGUIValidationRequest = AGUIValidationRequest;
-  export type AGUIValidationResult = AGUIValidationResult;
-  export type DiscoveryPerformanceMetrics = DiscoveryPerformanceMetrics;
+  export type ValidationCheckpointT = ValidationCheckpoint;
+  export type HumanValidationResponseT = HumanValidationResponse;
+  export type NeuralAnalysisConfigT = NeuralAnalysisConfig;
+  export type GraphAnalysisResultT = GraphAnalysisResult;
+  export type CommunityClusterT = CommunityCluster;
+  export type GraphBottleneckT = GraphBottleneck;
+  export type EnhancedDomainBoundaryT = EnhancedDomainBoundary;
+  export type DomainViolationT = DomainViolation;
+  export type AlternativeStructureT = AlternativeStructure;
+  export type DiscoveryEventT = DiscoveryEvent;
+  export type AGUIValidationRequestT = AGUIValidationRequest;
+  export type AGUIValidationResultT = AGUIValidationResult;
+  export type DiscoveryPerformanceMetricsT = DiscoveryPerformanceMetrics;
 }

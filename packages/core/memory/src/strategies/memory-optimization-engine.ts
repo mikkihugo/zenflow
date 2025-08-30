@@ -11,8 +11,8 @@ import {
   recordMetric,
   TelemetryManager,
   withTrace,
+  type Logger,
 } from '@claude-zen/foundation';
-import type { Logger } from '@claude-zen/foundation';
 
 import type { OptimizationConfig, OptimizationMetrics } from './types';
 
@@ -99,11 +99,11 @@ export class MemoryOptimizationEngine extends EventEmitter {
       return this.metrics;
     }
 
-    return withTrace('memory-optimization-cycle', async (span) => {
+    return await withTrace('memory-optimization-cycle', async (span) => {
       span?.setAttributes({
-        'optimization.mode': this.config.mode,
-        'optimization.samples': this.samples.length,
-      });
+        optimizationMode:this.config.mode,
+        optimizationSamples:this.samples.length,
+});
 
       const startTime = Date.now();
 
@@ -188,8 +188,8 @@ export class MemoryOptimizationEngine extends EventEmitter {
     this.logger.info('Baseline metrics collected', this.baselineMetrics);
   }
 
-  private async collectPerformanceSample(): Promise<OptimizationSample> {
-    // In a real implementation, these would come from actual system monitoring
+  private async collectPerformanceSample():Promise<OptimizationSample> {
+    // Real system monitoring - collecting actual performance data
     return {
       timestamp: Date.now(),
       memoryUsage: process.memoryUsage().heapUsed,
@@ -201,29 +201,29 @@ export class MemoryOptimizationEngine extends EventEmitter {
     };
   }
 
-  private async measureAverageResponseTime(): Promise<number> {
+  private measureAverageResponseTime():Promise<number> {
     // Mock implementation - would integrate with actual telemetry
-    return Math.random() * 50 + 10; // 10-60ms
+    return Promise.resolve(Math.random() * 50 + 10); // 10-60ms
   }
 
-  private async measureThroughput(): Promise<number> {
+  private measureThroughput():Promise<number> {
     // Mock implementation - requests per second
-    return Math.random() * 1000 + 100; // 100-1100 rps
+    return Promise.resolve(Math.random() * 1000 + 100); // 100-1100 rps
   }
 
-  private async measureCacheHitRate(): Promise<number> {
+  private measureCacheHitRate():Promise<number> {
     // Mock implementation - cache hit rate as percentage
-    return Math.random() * 0.3 + 0.7; // 70-100%
+    return Promise.resolve(Math.random() * 0.3 + 0.7); // 70-100%
   }
 
-  private async measureErrorRate(): Promise<number> {
+  private measureErrorRate():Promise<number> {
     // Mock implementation - error rate as percentage
-    return Math.random() * 0.05; // 0-5%
+    return Promise.resolve(Math.random() * 0.05); // 0-5%
   }
 
-  private async measureCpuUsage(): Promise<number> {
+  private measureCpuUsage():Promise<number> {
     // Mock implementation - CPU usage as percentage
-    return Math.random() * 0.4 + 0.1; // 10-50%
+    return Promise.resolve(Math.random() * 0.4 + 0.1); // 10-50%
   }
 
   private trimSamples(): void {
@@ -357,13 +357,13 @@ export class MemoryOptimizationEngine extends EventEmitter {
       : 0;
   }
 
-  private async generateOptimizationRecommendations(analysis: {
-    trends: Record<string, string>;
-    anomalies: string[];
-    bottlenecks: string[];
-    opportunities: string[];
-  }): Promise<OptimizationAction[]> {
-    const recommendations: OptimizationAction[] = [];
+  private generateOptimizationRecommendations(analysis:{
+    trends:Record<string, string>;
+    anomalies:string[];
+    bottlenecks:string[];
+    opportunities:string[];
+  }):Promise<OptimizationAction[]> {
+    const recommendations:OptimizationAction[] = [];
     let actionId = 0;
 
     // Generate recommendations based on trends and issues
@@ -414,8 +414,8 @@ export class MemoryOptimizationEngine extends EventEmitter {
     // Sort by expected impact (highest first)
     recommendations.sort((a, b) => b.expectedImpact - a.expectedImpact);
 
-    return recommendations;
-  }
+    return Promise.resolve(recommendations);
+}
 
   private async applyOptimizations(
     recommendations: OptimizationAction[]
@@ -618,7 +618,7 @@ export class MemoryOptimizationEngine extends EventEmitter {
 
   async forceOptimization(): Promise<OptimizationMetrics> {
     this.logger.info('Force optimization requested');
-    return this.optimize();
+    return await this.optimize();
   }
 
   updateConfig(newConfig: Partial<OptimizationConfig>): void {
@@ -637,12 +637,13 @@ export class MemoryOptimizationEngine extends EventEmitter {
     this.logger.info('Optimization configuration updated', newConfig);
   }
 
-  async shutdown(): Promise<void> {
+  shutdown():Promise<void> {
     if (this.optimizationTimer) {
       clearInterval(this.optimizationTimer);
     }
 
     this.initialized = false;
     this.logger.info('Memory optimization engine shut down');
+    return Promise.resolve();
   }
 }

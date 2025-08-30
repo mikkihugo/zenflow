@@ -5,9 +5,7 @@
  * automatic escalation, and comprehensive metrics tracking.
  */
 
-import { EventBus, getLogger, generateUUID } from '@claude-zen/foundation';
-import { produce } from 'immer';
-import { addHours, isAfter } from 'date-fns';
+import { EventBus, getLogger, generateUUID, addHours, isAfter } from '@claude-zen/foundation';
 import { createMachine, createActor, fromPromise, assign } from 'xstate';
 import type {
   ApprovalGateRequirement,

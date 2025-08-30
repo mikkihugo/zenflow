@@ -49,10 +49,10 @@ export interface DocumentAnalysisOptions {
  * Semantic analysis options
  */
 export interface SemanticAnalysisOptions {
-  content: string;
-  enablePatternRecognition?: boolean;
-  enableDensityAnalysis?: boolean;
-  customPatterns?: any;
+  content:string;
+  enablePatternRecognition?:boolean;
+  enableDensityAnalysis?:boolean;
+  customPatterns?: unknown;
 }
 
 /**
@@ -172,15 +172,15 @@ export type DocumentIntelligenceEvent =
  * Event payload types
  */
 export interface EventPayloads {
-  initialized: { config: DocumentIntelligenceConfig };
-  analysis_started: { options: DocumentAnalysisOptions };
-  analysis_complete: { result: any };
-  classification_complete: { classification: any };
-  segmentation_complete: { segmentation: any };
-  scanning_complete: { scanResults: any };
-  processing_complete: { processingResult: any };
-  error: { error: Error; context?: string };
-  shutdown: {};
+  initialized:{ config: DocumentIntelligenceConfig};
+  analysis_started:{ options: DocumentAnalysisOptions};
+  analysis_complete: { result: unknown };
+  classification_complete: { classification: unknown };
+  segmentation_complete: { segmentation: unknown };
+  scanning_complete: { scanResults: unknown };
+  processing_complete: { processingResult: unknown };
+  error:{ error: Error; context?: string};
+  shutdown:{};
 }
 
 /**
@@ -188,9 +188,9 @@ export interface EventPayloads {
  */
 export class DocumentIntelligenceError extends Error {
   constructor(
-    message: string,
-    public readonly code: string,
-    public readonly context?: any
+    message:string,
+    public readonly code:string,
+    public readonly context?: unknown
   ) {
     super(message);
     this.name = 'DocumentIntelligenceError';

@@ -56,7 +56,7 @@ export class SystemMonitor {
       const telemetry = getTelemetry();
       if (!telemetry.isInitialized()) {
         await initializeTelemetry({ serviceName: 'system-monitoring' });
-      }
+  }
 
       if (this.config.enableSystemMetrics) {
         this.startSystemMetricsCollection();

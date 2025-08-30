@@ -4,9 +4,9 @@
  * High-performance key-value storage with caching, TTL support, batch operations,
  * and comprehensive error handling for enterprise applications.
  */
-import { getLogger } from "../logger.js";
-import { QueryError, } from "../types/index.js";
-const logger = getLogger("key-value-storage");
+import { getLogger } from '../logger.js';
+import { QueryError, } from '../types/index.js';
+const logger = getLogger('key-value-storage');
 // Removed unused BatchOperation interface
 export class KeyValueStorageImpl {
     config;
@@ -37,16 +37,16 @@ export class KeyValueStorageImpl {
             if (this.cacheEnabled) {
                 const cached = this.getFromCache(key);
                 if (cached !== undefined) {
-                    logger.debug("Cache hit for key", { key, correlationId });
+                    logger.debug('Cache hit for key', { key, correlationId });
                     return cached;
                 }
             }
             // Query database
-            const result = await this.connection.query("SELECT value, ttl, stored_at FROM kv_store WHERE key = ?", [key], {
+            const result = await this.connection.query('SELECT value, ttl, stored_at FROM kv_store WHERE key = ?', [key], {
                 correlationId,
             });
             if (result.rows.length === 0) {
-                logger.debug("Key not found", { key, correlationId });
+                logger.debug('Key not found', { key, correlationId });
                 return null;
             }
             const row = result.rows[0];
@@ -54,7 +54,7 @@ export class KeyValueStorageImpl {
             if (row.ttl && Date.now() > row.stored_at + row.ttl) {
                 // Expired, delete asynchronously
                 this.delete(key).catch((error) => {
-                    logger.error("Failed to delete expired key", { key, error });
+                    logger.error('Failed to delete expired key', { key, error });
                 });
                 return null;
             }
@@ -71,11 +71,11 @@ export class KeyValueStorageImpl {
             if (this.cacheEnabled) {
                 this.setInCache(key, value, ttl);
             }
-            logger.debug("Retrieved value from database", { key, correlationId });
+            logger.debug('Retrieved value from database', { key, correlationId });
             return value;
         }
         catch (error) {
-            logger.error("Failed to get value", {
+            logger.error('Failed to get value', {
                 key,
                 correlationId,
                 error: error instanceof Error ? error.message : String(error),
@@ -94,7 +94,7 @@ export class KeyValueStorageImpl {
         try {
             await this.ensureInitialized();
             // Serialize value
-            const serializedValue = typeof value === "string" ? value : JSON.stringify(value);
+            const serializedValue = typeof value === 'string' ? value : JSON.stringify(value);
             const storedAt = Date.now();
             // Store in database
             await this.connection.execute(`INSERT OR REPLACE INTO kv_store (key, value, ttl, stored_at, updated_at)
@@ -103,14 +103,14 @@ export class KeyValueStorageImpl {
             if (this.cacheEnabled) {
                 this.setInCache(key, value, ttl);
             }
-            logger.debug("Stored value successfully", {
+            logger.debug('Stored value successfully', {
                 key,
                 correlationId,
                 hasTtl: ttl !== undefined,
             });
         }
         catch (error) {
-            logger.error("Failed to set value", {
+            logger.error('Failed to set value', {
                 key,
                 correlationId,
                 error: error instanceof Error ? error.message : String(error),
@@ -128,13 +128,13 @@ export class KeyValueStorageImpl {
         try {
             await this.ensureInitialized();
             // Delete from database
-            const result = await this.connection.execute("DELETE FROM kv_store WHERE key = ?", [key], { correlationId });
+            const result = await this.connection.execute('DELETE FROM kv_store WHERE key = ?', [key], { correlationId });
             // Remove from cache
             if (this.cacheEnabled) {
                 this.memoryCache.delete(key);
             }
             const deleted = (result.affectedRows || 0) > 0;
-            logger.debug("Delete operation completed", {
+            logger.debug('Delete operation completed', {
                 key,
                 correlationId,
                 deleted,
@@ -142,7 +142,7 @@ export class KeyValueStorageImpl {
             return deleted;
         }
         catch (error) {
-            logger.error("Failed to delete value", {
+            logger.error('Failed to delete value', {
                 key,
                 correlationId,
                 error: error instanceof Error ? error.message : String(error),
@@ -167,9 +167,9 @@ export class KeyValueStorageImpl {
                 }
             }
             // Query database
-            const result = await this.connection.query("SELECT COUNT(*) as count FROM kv_store WHERE key = ? AND (ttl IS NULL OR ? < stored_at + ttl)", [key, Date.now()], { correlationId });
+            const result = await this.connection.query('SELECT COUNT(*) as count FROM kv_store WHERE key = ? AND (ttl IS NULL OR ? < stored_at + ttl)', [key, Date.now()], { correlationId });
             const exists = (result.rows[0]?.count || 0) > 0;
-            logger.debug("Checked key existence", {
+            logger.debug('Checked key existence', {
                 key,
                 correlationId,
                 exists,
@@ -177,7 +177,7 @@ export class KeyValueStorageImpl {
             return exists;
         }
         catch (error) {
-            logger.error("Failed to check key existence", {
+            logger.error('Failed to check key existence', {
                 key,
                 correlationId,
                 error: error instanceof Error ? error.message : String(error),
@@ -194,17 +194,17 @@ export class KeyValueStorageImpl {
         const correlationId = this.generateCorrelationId();
         try {
             await this.ensureInitialized();
-            let query = "SELECT key FROM kv_store WHERE (ttl IS NULL OR ? < stored_at + ttl)";
+            let query = 'SELECT key FROM kv_store WHERE (ttl IS NULL OR ? < stored_at + ttl)';
             const params = [Date.now()];
             // Add pattern matching if provided
             if (pattern) {
-                query += " AND key GLOB ?";
+                query += ' AND key GLOB ?';
                 params.push(pattern);
             }
-            query += " ORDER BY key";
+            query += ' ORDER BY key';
             const result = await this.connection.query(query, params, { correlationId });
             const keys = result.rows.map((row) => row.key);
-            logger.debug("Retrieved keys", {
+            logger.debug('Retrieved keys', {
                 correlationId,
                 pattern,
                 keyCount: keys.length,
@@ -212,7 +212,7 @@ export class KeyValueStorageImpl {
             return keys;
         }
         catch (error) {
-            logger.error("Failed to get keys", {
+            logger.error('Failed to get keys', {
                 correlationId,
                 pattern,
                 error: error instanceof Error ? error.message : String(error),
@@ -230,17 +230,17 @@ export class KeyValueStorageImpl {
         try {
             await this.ensureInitialized();
             // Clear database
-            await this.connection.execute("DELETE FROM kv_store", [], {
+            await this.connection.execute('DELETE FROM kv_store', [], {
                 correlationId,
             });
             // Clear cache
             if (this.cacheEnabled) {
                 this.memoryCache.clear();
             }
-            logger.info("Cleared all key-value data", { correlationId });
+            logger.info('Cleared all key-value data', { correlationId });
         }
         catch (error) {
-            logger.error("Failed to clear all data", {
+            logger.error('Failed to clear all data', {
                 correlationId,
                 error: error instanceof Error ? error.message : String(error),
             });
@@ -256,13 +256,13 @@ export class KeyValueStorageImpl {
         const correlationId = this.generateCorrelationId();
         try {
             await this.ensureInitialized();
-            const result = await this.connection.query("SELECT COUNT(*) as count FROM kv_store WHERE (ttl IS NULL OR ? < stored_at + ttl)", [Date.now()], { correlationId });
+            const result = await this.connection.query('SELECT COUNT(*) as count FROM kv_store WHERE (ttl IS NULL OR ? < stored_at + ttl)', [Date.now()], { correlationId });
             const size = result.rows[0]?.count || 0;
-            logger.debug("Retrieved storage size", { correlationId, size });
+            logger.debug('Retrieved storage size', { correlationId, size });
             return size;
         }
         catch (error) {
-            logger.error("Failed to get storage size", {
+            logger.error('Failed to get storage size', {
                 correlationId,
                 error: error instanceof Error ? error.message : String(error),
             });
@@ -300,7 +300,7 @@ export class KeyValueStorageImpl {
             }
             // Query database for uncached keys
             if (uncachedKeys.length > 0) {
-                const placeholders = uncachedKeys.map(() => "?").join(",");
+                const placeholders = uncachedKeys.map(() => '?').join(',');
                 const dbResult = await this.connection.query(`SELECT key, value, ttl, stored_at FROM kv_store 
            WHERE key IN (${placeholders}) 
            AND (ttl IS NULL OR ? < stored_at + ttl)`, [...uncachedKeys, Date.now()], { correlationId });
@@ -320,7 +320,7 @@ export class KeyValueStorageImpl {
                     }
                 }
             }
-            logger.debug("Multi-get operation completed", {
+            logger.debug('Multi-get operation completed', {
                 correlationId,
                 requestedKeys: keys.length,
                 foundKeys: result.size,
@@ -328,13 +328,13 @@ export class KeyValueStorageImpl {
             return result;
         }
         catch (error) {
-            logger.error("Failed to multi-get values", {
+            logger.error('Failed to multi-get values', {
                 correlationId,
                 keyCount: keys.length,
                 error: error instanceof Error ? error.message : String(error),
             });
             throw new QueryError(`Failed to multi-get ${keys.length} keys:${error instanceof Error ? error.message : String(error)}`, {
-                query: "SELECT key, value, ttl, stored_at FROM kv_store WHERE key IN (...) AND (ttl IS NULL OR ? < stored_at + ttl)",
+                query: 'SELECT key, value, ttl, stored_at FROM kv_store WHERE key IN (...) AND (ttl IS NULL OR ? < stored_at + ttl)',
                 params: keys,
                 correlationId,
                 cause: error instanceof Error ? error : undefined,
@@ -352,7 +352,7 @@ export class KeyValueStorageImpl {
             await this.connection.transaction(async (tx) => {
                 const storedAt = Date.now();
                 for (const [key, value] of entries) {
-                    const serializedValue = typeof value === "string" ? value : JSON.stringify(value);
+                    const serializedValue = typeof value === 'string' ? value : JSON.stringify(value);
                     await tx.execute(`INSERT OR REPLACE INTO kv_store (key, value, ttl, stored_at, updated_at) VALUES (?, ?, ?, ?, ?)`, [key, serializedValue, this.defaultTtl, storedAt, storedAt]);
                     // Update cache
                     if (this.cacheEnabled) {
@@ -360,19 +360,19 @@ export class KeyValueStorageImpl {
                     }
                 }
             });
-            logger.debug("Multi-set operation completed", {
+            logger.debug('Multi-set operation completed', {
                 correlationId,
                 entryCount: entries.size,
             });
         }
         catch (error) {
-            logger.error("Failed to multi-set values", {
+            logger.error('Failed to multi-set values', {
                 correlationId,
                 entryCount: entries.size,
                 error: error instanceof Error ? error.message : String(error),
             });
             throw new QueryError(`Failed to multi-set ${entries.size} entries:${error instanceof Error ? error.message : String(error)}`, {
-                query: "INSERT OR REPLACE INTO kv_store (key, value, ttl, stored_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+                query: 'INSERT OR REPLACE INTO kv_store (key, value, ttl, stored_at, updated_at) VALUES (?, ?, ?, ?, ?)',
                 params: Array.from(entries.keys()),
                 correlationId,
                 cause: error instanceof Error ? error : undefined,
@@ -386,7 +386,7 @@ export class KeyValueStorageImpl {
             if (keys.length === 0) {
                 return 0;
             }
-            const placeholders = keys.map(() => "?").join(",");
+            const placeholders = keys.map(() => '?').join(',');
             const result = await this.connection.execute(`DELETE FROM kv_store WHERE key IN (${placeholders})`, [...keys], { correlationId });
             // Remove from cache
             if (this.cacheEnabled) {
@@ -395,7 +395,7 @@ export class KeyValueStorageImpl {
                 }
             }
             const deletedCount = result.affectedRows || 0;
-            logger.debug("Multi-delete operation completed", {
+            logger.debug('Multi-delete operation completed', {
                 correlationId,
                 requestedKeys: keys.length,
                 deletedCount,
@@ -403,13 +403,13 @@ export class KeyValueStorageImpl {
             return deletedCount;
         }
         catch (error) {
-            logger.error("Failed to multi-delete values", {
+            logger.error('Failed to multi-delete values', {
                 correlationId,
                 keyCount: keys.length,
                 error: error instanceof Error ? error.message : String(error),
             });
             throw new QueryError(`Failed to multi-delete ${keys.length} keys:${error instanceof Error ? error.message : String(error)}`, {
-                query: "DELETE FROM kv_store WHERE key IN (...)",
+                query: 'DELETE FROM kv_store WHERE key IN (...)',
                 params: keys,
                 correlationId,
                 cause: error instanceof Error ? error : undefined,
@@ -440,7 +440,7 @@ export class KeyValueStorageImpl {
       WHERE ttl IS NOT NULL
     `);
         this.initialized = true;
-        logger.debug("Key-value storage initialized");
+        logger.debug('Key-value storage initialized');
     }
     getFromCache(key) {
         const cached = this.memoryCache.get(key);
@@ -486,7 +486,7 @@ export class KeyValueStorageImpl {
                 this.memoryCache.delete(key);
             }
             if (keysToDelete.length > 0) {
-                logger.debug("Cleaned up expired cache entries", {
+                logger.debug('Cleaned up expired cache entries', {
                     count: keysToDelete.length,
                 });
             }
@@ -496,3 +496,4 @@ export class KeyValueStorageImpl {
         return `kv-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     }
 }
+//# sourceMappingURL=key-value-storage.js.map

@@ -163,9 +163,10 @@ function createFactTool(config:TaskSpecificSDKConfig) {
             type:"text",
             text:JSON.stringify({
               error:"Fact retrieval failed",
-              reason:error instanceof Error ? error.message : 'Unknown error')})
-}]
-};
+              reason:error instanceof Error ? error.message : 'Unknown error'
+            })
+          }]
+        };
 }
 }
   );

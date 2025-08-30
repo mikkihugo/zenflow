@@ -1,11 +1,6 @@
 /**
- * @fileoverview Telemetry Types - Core interfaces and types for telemetry infrastructure
+ * @fileoverview Telemetry Types - Core interfaces for event-driven telemetry
  */
-
-import type {
-  Span as OTelSpan,
-  Tracer as OTelTracer,
-} from '@opentelemetry/api';
 
 /**
  * Configuration for telemetry system
@@ -63,8 +58,7 @@ export interface TelemetryEvent {
  */
 export interface SpanOptions {
   attributes?: Attributes;
-  kind?: import('@opentelemetry/api').SpanKind;
-  parent?: OTelSpan;
+  kind?: 'client' | 'server' | 'producer' | 'consumer' | 'internal';
 }
 
 /**
@@ -76,8 +70,33 @@ export type Attributes = Record<
 >;
 
 /**
- * Re-export OpenTelemetry types
+ * Simple span interface for event-driven telemetry
  */
-export type Span = OTelSpan;
-export type Tracer = OTelTracer;
-export type { Meter } from '@opentelemetry/api';
+export interface Span {
+  addEvent(name:string, attributes?:Attributes): void;
+  setAttribute(key:string, value:string | number | boolean): void;
+  setStatus(status:'ok' | 'error', message?:string): void;
+  end(): void;
+}
+
+/**
+ * Simple tracer interface for event-driven telemetry
+ */
+export interface Tracer {
+  startSpan(name:string, options?:SpanOptions): Span;
+}
+
+/**
+ * Simple meter interface for event-driven telemetry
+ */
+export interface Meter {
+  createCounter(name:string, options?:{ description?:string; unit?:string}): {
+    add(value:number, attributes?:Attributes): void;
+  };
+  createHistogram(name:string, options?:{ description?:string; unit?:string}): {
+    record(value:number, attributes?:Attributes): void;
+  };
+  createGauge(name:string, options?:{ description?:string; unit?:string}): {
+    record(value:number, attributes?:Attributes): void;
+  };
+}

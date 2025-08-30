@@ -160,7 +160,8 @@ function extractContent(msg:Record<string, unknown>):string {
 
   // Fallback to string representation
   return String(
-    msg['content'] || msg[' message'] || msg[' text'] || ' Empty message')  );
+    msg['content'] || msg[' message'] || msg[' text'] || ' Empty message'
+  );
 }
 
 // =============================================================================

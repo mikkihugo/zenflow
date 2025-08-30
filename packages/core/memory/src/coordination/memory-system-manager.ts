@@ -5,20 +5,21 @@
  * optimization strategies, lifecycle management, and comprehensive monitoring.
  */
 
-import { EventEmitter } from '@claude-zen/foundation';
-import {
+import { 
+  EventEmitter,
   getLogger,
   recordMetric,
   withTrace,
   TelemetryManager,
   createCircuitBreaker,
+  type Logger, 
+  type CircuitBreakerOptions,
 } from '@claude-zen/foundation';
-import type { Logger, CircuitBreakerOptions } from '@claude-zen/foundation';
-import { MemoryCoordinationSystem } from '../coordinators/memory-coordination-system';
-import { MemoryOptimizationEngine } from '../strategies/memory-optimization-engine';
-import { DataLifecycleManager } from '../strategies/data-lifecycle-manager';
-import { PerformanceTuningStrategy } from '../strategies/performance-tuning-strategy';
-import { CacheEvictionStrategy } from '../strategies/cache-eviction-strategy';
+import { MemoryCoordinationSystem} from '../coordinators/memory-coordination-system';
+import { MemoryOptimizationEngine} from '../strategies/memory-optimization-engine';
+import { DataLifecycleManager} from '../strategies/data-lifecycle-manager';
+import { PerformanceTuningStrategy} from '../strategies/performance-tuning-strategy';
+import { CacheEvictionStrategy} from '../strategies/cache-eviction-strategy';
 import type {
   MemorySystemConfig,
   MemorySystemStatus,
@@ -28,12 +29,14 @@ import type { BaseMemoryBackend } from '../backends/base-backend';
 import type { JSONValue } from '../core/memory-system';
 
 interface ManagedComponent {
-  name: string;
-  instance: any;
-  initialized: boolean;
-  healthy: boolean;
-  lastHealthCheck: number;
+  name:string;
+  instance:unknown;
+  initialized:boolean;
+  healthy:boolean;
+  lastHealthCheck:number;
 }
+
+const COORDINATION_NOT_INITIALIZED_ERROR = COORDINATION_NOT_INITIALIZED_ERROR;
 
 export class MemorySystemManager extends EventEmitter {
   private logger: Logger;
@@ -49,7 +52,7 @@ export class MemorySystemManager extends EventEmitter {
   private healthCheckTimer?: NodeJS.Timeout;
   private initialized = false;
   private startTime = Date.now();
-  private circuitBreaker: any;
+  private circuitBreaker:unknown;
 
   constructor(config: MemorySystemConfig) {
     super();
@@ -75,9 +78,9 @@ export class MemorySystemManager extends EventEmitter {
     try {
       await withTrace('memory-system-manager-init', async (span) => {
         span?.setAttributes({
-          'system.name': this.config.name,
-          'system.mode': this.config.mode,
-        });
+          'system_name':this.config.name,
+          'system_mode':this.config.mode,
+});
 
         await this.telemetry.initialize();
 
@@ -146,10 +149,10 @@ export class MemorySystemManager extends EventEmitter {
     } = {}
   ): Promise<void> {
     if (!this.coordination) {
-      throw new Error('Coordination system not initialized');
-    }
+      throw new Error(COORDINATION_NOT_INITIALIZED_ERROR);
+}
 
-    return this.circuitBreaker.execute(async () => {
+    return await this.circuitBreaker.execute(async () => {
       await this.coordination!.addNode(id, backend, options);
 
       this.emit('nodeAdded', { id, options });
@@ -162,10 +165,10 @@ export class MemorySystemManager extends EventEmitter {
 
   async removeNode(id: string): Promise<void> {
     if (!this.coordination) {
-      throw new Error('Coordination system not initialized');
-    }
+      throw new Error(COORDINATION_NOT_INITIALIZED_ERROR);
+}
 
-    return this.circuitBreaker.execute(async () => {
+    return await this.circuitBreaker.execute(async () => {
       await this.coordination!.removeNode(id);
 
       this.emit('nodeRemoved', { id });
@@ -183,21 +186,20 @@ export class MemorySystemManager extends EventEmitter {
     options?: {
       consistency?: 'strong' | ' eventual';
       tier?: 'hot|warm|cold';
-      ttl?: number;
-      priority?: number;
-      tags?: string[];
-    }
-  ): Promise<any> {
+      ttl?:number;
+      priority?:number;
+      tags?:string[];
+}
+  ):Promise<unknown> {
     if (!this.coordination) {
-      throw new Error('Coordination system not initialized');
-    }
+      throw new Error(COORDINATION_NOT_INITIALIZED_ERROR);
+}
 
-    return withTrace('memory-system-store', async (span) => {
+    return await withTrace('memory-system-store', async (span) => {
       span?.setAttributes({
-        'memory.key': key,
-        'memory.namespace': namespace,
-        'memory.tier': options?.tier || ' warm',
-      });
+        'memory_key':key,
+        'memory_namespace':namespace,
+        'memory_tier':options?.tier || ' warm',});
 
       // Store via coordination system
       const result = await this.coordination!.store(key, value, namespace, {
@@ -235,14 +237,14 @@ export class MemorySystemManager extends EventEmitter {
     }
   ): Promise<T | null> {
     if (!this.coordination) {
-      throw new Error('Coordination system not initialized');
-    }
+      throw new Error(COORDINATION_NOT_INITIALIZED_ERROR);
+}
 
-    return withTrace('memory-system-retrieve', async (span) => {
+    return await withTrace('memory-system-retrieve', async (span) => {
       span?.setAttributes({
-        'memory.key': key,
-        'memory.namespace': namespace,
-      });
+        'memory_key':key,
+        'memory_namespace':namespace,
+});
 
       // Try lifecycle manager first if enabled
       if (this.lifecycle && this.config.lifecycle?.enabled) {
@@ -277,14 +279,14 @@ export class MemorySystemManager extends EventEmitter {
 
   async delete(key: string, namespace = 'default'): Promise<boolean> {
     if (!this.coordination) {
-      throw new Error('Coordination system not initialized');
-    }
+      throw new Error(COORDINATION_NOT_INITIALIZED_ERROR);
+}
 
-    return withTrace('memory-system-delete', async (span) => {
+    return await withTrace('memory-system-delete', async (span) => {
       span?.setAttributes({
-        'memory.key': key,
-        'memory.namespace': namespace,
-      });
+        'memory_key':key,
+        'memory_namespace':namespace,
+});
 
       // Delete from lifecycle manager if enabled
       if (this.lifecycle && this.config.lifecycle?.enabled) {
@@ -306,13 +308,12 @@ export class MemorySystemManager extends EventEmitter {
 
   async clear(namespace?: string): Promise<void> {
     if (!this.coordination) {
-      throw new Error('Coordination system not initialized');
-    }
+      throw new Error(COORDINATION_NOT_INITIALIZED_ERROR);
+}
 
-    return withTrace('memory-system-clear', async (span) => {
+    return await withTrace('memory-system-clear', async (span) => {
       span?.setAttributes({
-        'memory.namespace': namespace || ' all',
-      });
+        'memory_namespace':namespace || ' all',});
 
       // Clear cache eviction if enabled
       if (this.cacheEviction) {
@@ -381,63 +382,88 @@ export class MemorySystemManager extends EventEmitter {
     const performanceMetrics = this.performance?.getMetrics();
 
     return {
-      system: {
-        name: this.config.name,
-        uptime: Date.now() - this.startTime,
-        version: '2.1.0',
-        mode: this.config.mode,
+      system: this.getSystemInfo(),
+      coordination: this.getCoordinationMetrics(coordinationStatus),
+      optimization: this.getOptimizationMetrics(optimizationMetrics),
+      lifecycle: this.getLifecycleMetrics(lifecycleMetrics),
+      performance: this.getPerformanceMetrics(performanceMetrics),
+      resources: this.getResourceMetrics(),
+    };
+  }
+
+  private getSystemInfo() {
+    return {
+      name: this.config.name,
+      uptime: Date.now() - this.startTime,
+      version: '2.1.0',
+      mode: this.config.mode,
+    };
+  }
+
+  private getCoordinationMetrics(coordinationStatus: unknown) {
+    return {
+      totalNodes: coordinationStatus?.totalNodes || 0,
+      healthyNodes: coordinationStatus?.healthyNodes || 0,
+      operationsPerSecond: 0, // Would come from actual metrics
+      averageLatency: 0, // Would come from actual metrics
+      successRate: 0.99, // Would come from actual metrics
+    };
+  }
+
+  private getOptimizationMetrics(optimizationMetrics: unknown) {
+    return {
+      optimizationCycles: optimizationMetrics?.operations.compressions || 0,
+      improvementsApplied: optimizationMetrics?.operations.reads || 0,
+      performanceGain: optimizationMetrics?.health.score || 0,
+      memoryEfficiency: optimizationMetrics?.memoryUsage.current || 0,
+    };
+  }
+
+  private getLifecycleMetrics(lifecycleMetrics: unknown) {
+    return {
+      totalEntries: 0, // Would get from lifecycle manager
+      hotEntries: 0,
+      warmEntries: 0,
+      coldEntries: 0,
+      archivedEntries: 0,
+      migrationsPerHour: lifecycleMetrics?.migrations || 0,
+    };
+  }
+
+  private getPerformanceMetrics(performanceMetrics: unknown) {
+    return {
+      responseTime: {
+        p50: performanceMetrics?.stabilityScore || 0,
+        p95: performanceMetrics?.stabilityScore || 0,
+        p99: performanceMetrics?.stabilityScore || 0,
       },
-      coordination: {
-        totalNodes: coordinationStatus?.totalNodes || 0,
-        healthyNodes: coordinationStatus?.healthyNodes || 0,
-        operationsPerSecond: 0, // Would come from actual metrics
-        averageLatency: 0, // Would come from actual metrics
-        successRate: 0.99, // Would come from actual metrics
+      throughput: 0,
+      cacheMetrics: {
+        hitRate: 0.85,
+        evictionsPerHour: 0,
+        compressionRatio: 0.7,
       },
-      optimization: {
-        optimizationCycles: optimizationMetrics?.operations.compressions || 0,
-        improvementsApplied: optimizationMetrics?.operations.reads || 0,
-        performanceGain: optimizationMetrics?.health.score || 0,
-        memoryEfficiency: optimizationMetrics?.memoryUsage.current || 0,
+      errorRate: 0.01,
+    };
+  }
+
+  private getResourceMetrics() {
+    const memUsage = process.memoryUsage();
+    return {
+      memory: {
+        used: memUsage.heapUsed,
+        available: memUsage.heapTotal,
+        peak: memUsage.heapUsed,
       },
-      lifecycle: {
-        totalEntries: 0, // Would get from lifecycle manager
-        hotEntries: 0,
-        warmEntries: 0,
-        coldEntries: 0,
-        archivedEntries: 0,
-        migrationsPerHour: lifecycleMetrics?.migrations || 0,
+      storage: {
+        used: 0,
+        available: 0,
+        iops: 0,
       },
-      performance: {
-        responseTime: {
-          p50: performanceMetrics?.stabilityScore || 0,
-          p95: performanceMetrics?.stabilityScore || 0,
-          p99: performanceMetrics?.stabilityScore || 0,
-        },
-        throughput: 0,
-        cacheMetrics: {
-          hitRate: 0.85,
-          evictionsPerHour: 0,
-          compressionRatio: 0.7,
-        },
-        errorRate: 0.01,
-      },
-      resources: {
-        memory: {
-          used: process.memoryUsage().heapUsed,
-          available: process.memoryUsage().heapTotal,
-          peak: process.memoryUsage().heapUsed,
-        },
-        storage: {
-          used: 0,
-          available: 0,
-          iops: 0,
-        },
-        network: {
-          bytesIn: 0,
-          bytesOut: 0,
-          connectionsActive: 0,
-        },
+      network: {
+        bytesIn: 0,
+        bytesOut: 0,
+        connectionsActive: 0,
       },
     };
   }
@@ -593,7 +619,7 @@ export class MemorySystemManager extends EventEmitter {
     }
   }
 
-  private async performMonitoringCycle(): Promise<void> {
+  private performMonitoringCycle():void {
     try {
       const status = this.getSystemStatus();
       const metrics = this.getSystemMetrics();
@@ -619,12 +645,12 @@ export class MemorySystemManager extends EventEmitter {
     }
   }
 
-  private async performHealthChecks(): Promise<void> {
+  private performHealthChecks():void {
     for (const [name, component] of this.components) {
       try {
         // Perform health check if component has one
         if (typeof component.instance.getStats === 'function') {
-          const __stats = component.instance.getStats();
+          component.instance.getStats(); // Call for health check but don't store result
           component.healthy = true;
           component.lastHealthCheck = Date.now();
         }

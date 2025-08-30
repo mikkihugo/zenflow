@@ -248,16 +248,16 @@ export class JsonSchemaManager {
       };
     }
 
-    const isValid = schemaEntry.validator(data);
+  const isValid = schemaEntry.validator(data);
 
     if (!isValid) {
       const errors = schemaEntry.validator.errors?.map((err) => {
         const error = err as unknown as UnknownRecord;
         const instancePath =
-          (error.instancePath as string) ||
-          (error.schemaPath as string) ||
+          (error['instancePath'] as string) ||
+          (error['schemaPath'] as string) ||
           'root';
-        const message = (error.message as string) || 'Unknown error';
+        const message = (error['message'] as string) || 'Unknown error';
         return `${instancePath}: ${message}`;
       }) || ['Unknown validation error'];
 

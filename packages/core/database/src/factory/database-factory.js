@@ -167,7 +167,11 @@ export class DatabaseFactoryImpl {
      */
     getRecommendedBackend(storageType) {
         const recommendedBackends = {
-            keyValue: 'sqlite', sql: 'sqlite', vector: 'lancedb', graph: 'kuzu', hybrid: 'sqlite', // Default fallback
+            keyValue: 'sqlite',
+            sql: 'sqlite',
+            vector: 'lancedb',
+            graph: 'kuzu',
+            hybrid: 'sqlite', // Default fallback
         };
         return recommendedBackends[storageType];
     }
@@ -312,7 +316,8 @@ export class DatabaseFactoryImpl {
                     // Settings for key-value workload
                     pragma: {
                         cache_size: 2000,
-                        journal_mode: 'WAL', synchronous: 'NORMAL',
+                        journal_mode: 'WAL',
+                        synchronous: 'NORMAL',
                     },
                 },
             },
@@ -321,14 +326,17 @@ export class DatabaseFactoryImpl {
                     // Settings for OLTP workload
                     pragma: {
                         cache_size: 5000,
-                        journal_mode: 'WAL', synchronous: 'NORMAL', foreign_keys: 'ON',
+                        journal_mode: 'WAL',
+                        synchronous: 'NORMAL',
+                        foreign_keys: 'ON',
                     },
                 },
             },
             vector: {
                 lancedb: {
                     // Settings for vector operations
-                    writeMode: 'append', readConsistencyInterval: 1000,
+                    writeMode: 'append',
+                    readConsistencyInterval: 1000,
                 },
             },
             graph: {
@@ -407,3 +415,4 @@ export function createStorage(type, database, baseConfig) {
             throw new Error(`Unsupported storage type:${type}`);
     }
 }
+//# sourceMappingURL=database-factory.js.map
