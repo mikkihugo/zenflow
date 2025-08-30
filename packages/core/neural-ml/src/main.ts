@@ -1799,7 +1799,7 @@ export class NeuralMLEngine {
   /**
    * Load the neural-ml Rust module (placeholder for actual implementation)
    */
-  private async loadNeuralMLModule():Promise<any> {
+  private async loadNeuralMLModule(): Promise<Record<string, unknown>> {
     // This would load the actual Rust WASM or native module
     // For now, we'll use a placeholder that demonstrates the interface
 
@@ -1819,7 +1819,8 @@ export class NeuralMLEngine {
   /**
    * Detect optimization backend using Rust implementation
    */
-  private async detectOptimizationBackend(neuralML: any,
+  private async detectOptimizationBackend(
+    neuralML: Record<string, unknown>,
   ): Promise<OptimizationBackend> {
     try {
       // Call Rust backend detection

@@ -33,11 +33,11 @@ export interface OnlineLearnerConfig {
  * Simple ML Engine interface - routes to Rust implementation
  */
 export interface MLEngine {
-	initialize():Promise<void>;
-	optimize(task:OptimizationTask): Promise<OptimizationResult>;
-	analyze(data:any[]): Promise<StatisticalResult>;
-	learn(data:any[], target?:any[]): Promise<PatternResult>;
-	destroy():Promise<void>;
+	initialize(): Promise<void>;
+	optimize(task: OptimizationTask): Promise<OptimizationResult>;
+	analyze(data: unknown[]): Promise<StatisticalResult>;
+	learn(data: unknown[], target?: unknown[]): Promise<PatternResult>;
+	destroy(): Promise<void>;
 }
 
 /**
@@ -51,8 +51,8 @@ export interface BayesianOptimizer {
 	suggestNext():Promise<number[]>;
 	suggest():Promise<{ point: number[]}>; // Return format expected by teleprompters
 	updateObservation(params:number[], value:number): Promise<void>;
-	observe(params:number[], value:number): Promise<void>; // Alias for updateObservation
-	configure(config:any): Promise<void>;
+	observe(params: number[], value: number): Promise<void>; // Alias for updateObservation
+	configure(config: Record<string, unknown>): Promise<void>;
 }
 
 /**
@@ -64,15 +64,15 @@ export interface MultiObjectiveOptimizer {
 		objectives:Array<(params: number[]) => Promise<number>>,
 	):Promise<ParetoFront>;
 	getParetoFront():Promise<ParetoFront>;
-	findParetoFront(solutions?:number[][]): Promise<ParetoFront>; // Accept solutions array
-	configure(config:any): Promise<void>;
+	findParetoFront(solutions?: number[][]): Promise<ParetoFront>; // Accept solutions array
+	configure(config: Record<string, unknown>): Promise<void>;
 }
 
 /**
  * Gradient optimizer interface - maps to Rust auto-differentiation
  */
 export interface GradientOptimizer {
-	initialize(config:any): Promise<void>;
+	initialize(config: Record<string, unknown>): Promise<void>;
 	computeGradient(
 		params:number[],
 		objective:(params: number[]) => Promise<number>,
@@ -84,12 +84,12 @@ export interface GradientOptimizer {
  * Pattern learner interface - maps to Rust pattern recognition
  */
 export interface PatternLearner {
-	initialize(config:any): Promise<void>;
-	learnPatterns(data:any[]): Promise<PatternResult>;
-	recognizePattern(input:any): Promise<PatternResult>;
+	initialize(config: Record<string, unknown>): Promise<void>;
+	learnPatterns(data: unknown[]): Promise<PatternResult>;
+	recognizePattern(input: unknown): Promise<PatternResult>;
 	// Additional methods expected by teleprompters
-	trainPatterns(data:any[], labels?:any[]): Promise<PatternResult>;
-	configure(config:any): Promise<void>;
+	trainPatterns(data: unknown[], labels?: unknown[]): Promise<PatternResult>;
+	configure(config: Record<string, unknown>): Promise<void>;
 	// Helper methods for implementation
 	performClustering(
 		data:number[],
@@ -102,19 +102,19 @@ export interface PatternLearner {
  * Online learner interface - maps to Rust online learning
  */
 export interface OnlineLearner {
-	initialize(config:any): Promise<void>;
-	configure(config:OnlineLearnerConfig): Promise<void>;
-	updateModel(data:any, target?:any): Promise<void>;
-	predict(input:any): Promise<any>;
-	update(features:MLVector, target:number): Promise<void>;
-	adaptLearningRate(performance:number): Promise<number>;
+	initialize(config: Record<string, unknown>): Promise<void>;
+	configure(config: OnlineLearnerConfig): Promise<void>;
+	updateModel(data: unknown, target?: unknown): Promise<void>;
+	predict(input: unknown): Promise<unknown>;
+	update(features: MLVector, target: number): Promise<void>;
+	adaptLearningRate(performance: number): Promise<number>;
 	detectDrift(
-		predictions:number[],
-		targets:number[],
-	):Promise<ConceptDriftDetection>;
-	reset(keepHistory:boolean): Promise<void>;
+		predictions: number[],
+		targets: number[],
+	): Promise<ConceptDriftDetection>;
+	reset(keepHistory: boolean): Promise<void>;
 	// Helper methods for implementation
-	extractFeatures(data:any): number[];
+	extractFeatures(data: unknown): number[];
 	dotProduct(a:number[], b:number[]): number;
 	updateWeightsSGD(
 		features:number[],
@@ -1124,8 +1124,8 @@ export function createStatisticalAnalyzer():StatisticalAnalyzer {
 };
 },
 		async hypothesisTest(
-			data1: number[],
-			data2: number[],
+			_data1: number[],
+			_data2: number[],
 		): Promise<HypothesisTest> {
 			// Simple t-test approximation - would use Rust for real implementation
 			return {
@@ -1144,7 +1144,7 @@ export function createStatisticalAnalyzer():StatisticalAnalyzer {
 			const margin = confidence * 0.1; // Simplified
 			return [mean - margin, mean + margin];
 },
-		async tTest(data1: number[], data2: number[]): Promise<HypothesisTest> {
+		async tTest(_data1: number[], _data2: number[]): Promise<HypothesisTest> {
 			// Simple t-test approximation - would use Rust for real implementation
 			return {
 				statistic:0,
@@ -1156,10 +1156,10 @@ export function createStatisticalAnalyzer():StatisticalAnalyzer {
 };
 },
 		async polynomialRegression(
-			x: number[],
-			y: number[],
-			degree:number,
-		):Promise<{ coefficients: number[]; rSquared: number}> {
+			_x: number[],
+			_y: number[],
+			degree: number,
+		): Promise<{ coefficients: number[]; rSquared: number }> {
 			// Simplified polynomial regression - would use Rust for real implementation
 			return {
 				coefficients:new Array(degree + 1).fill(0),
