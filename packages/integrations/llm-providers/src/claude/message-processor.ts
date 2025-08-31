@@ -6,7 +6,7 @@
  */
 
 import { getLogger} from '@claude-zen/foundation';
-import type { JsonObject} from '@claude-zen/foundation/types';
+import type { JsonObject} from '@claude-zen/foundation';
 
 import type { ClaudeMessage} from './types';
 import {

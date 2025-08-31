@@ -84,6 +84,7 @@ import {
   err,
   getLogger,
   ok,
+  Result,
   TypedEventBase,
   validateInput,
   withRetry,
@@ -92,7 +93,7 @@ import {
 } from '@claude-zen/foundation';
 
 import { CLAUDE_SWARM_AGENT_ROLES} from './claude';
-import type { CLIProviderConfig, CLIRequest} from './types/cli-providers';
+import type { CLIProviderConfig, CLIRequest, CLIProviderCapabilities, CLIError} from './types/cli-providers';
 import { CLI_ERROR_CODES} from './types/cli-providers';
 
 // Export CLI types with proper names
@@ -400,10 +401,10 @@ export class LLMProvider extends TypedEventBase {
 }
 
   // Switch CLI provider
-  async switchProvider(providerId:string): Promise<void> {
+  async switchProvider(providerId: string): Promise<void> {
     if (!this.cliProvider) {
       await this.initializeProvider();
-}
+    }
 
     const currentRole = this.cliProvider?.getRole();
     this['providerId'] = providerId;
@@ -418,6 +419,7 @@ export class LLMProvider extends TypedEventBase {
     ) {
       this.cliProvider.setRole(currentRole.role);
     }
+  }
 
   // Get current provider info
   getProviderInfo(): {

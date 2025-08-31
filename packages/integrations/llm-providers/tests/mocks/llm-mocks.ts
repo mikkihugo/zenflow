@@ -17,19 +17,23 @@ export const mockClaudeSDK = {
 }),
   createSession:vi.fn().mockResolvedValue('session-123'),
   closeSession:vi.fn().mockResolvedValue(undefined),
-  streamMessage:vi.fn().mockImplementation(async function* () {
-    yield { type: 'content', content: ' Mock'};')    yield type: 'content', content: ' streaming';')    yield type: 'content', content: ' response';')}),
-  getTools:vi.fn().mockResolvedValue(['read',    'write',    'bash']),
-  checkPermissions:vi
+  streamMessage: vi.fn().mockImplementation(async function* () {
+    yield { type: 'content', content: 'Mock' };
+    yield { type: 'content', content: 'streaming' };
+    yield { type: 'content', content: 'response' };
+  }),
+  getTools: vi.fn().mockResolvedValue(['read', 'write', 'bash']),
+  checkPermissions: vi
     .fn()
-    .mockResolvedValue({ allowed:true, reason: 'test'}),
+    .mockResolvedValue({ allowed: true, reason: 'test' }),
 };
 
 // Mock LLM Provider base class
-export const createMockLLMProvider = (providerId:string = 'claude-code') => ({
-    ')  id:providerId,
-  name:`Mock ${providerId}`,`
-  type:providerId.includes('api') ? ' api' : ' cli',  available:true,
+export const createMockLLMProvider = (providerId: string = 'claude-code') => ({
+  id: providerId,
+  name: `Mock ${providerId}`,
+  type: providerId.includes('api') ? 'api' : 'cli',
+  available: true,
   sendMessage:vi.fn().mockResolvedValue({
     content:`Mock response from ${providerId}`,`
     role: 'assistant',    metadata:{ provider: providerId},

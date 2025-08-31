@@ -10,10 +10,10 @@ import type {
   LiteralUnion,
   Merge,
   SetOptional,
-} from '@claude-zen/foundation/types';
+} from '@claude-zen/foundation';
 
 export interface CLIMessage {
-  role:'system' | ' user' | ' assistant';
+  role: 'system' | 'user' | 'assistant';
   content:string;
 }
 
@@ -136,10 +136,12 @@ export interface CLIProviderFactory {
 // Type utilities for CLI providers with Result pattern support
 export type OptionalCLIRequest = SetOptional<
   CLIRequest,
-  'model' | ' temperature' | ' maxTokens' | ' metadata')>;
+  'model' | 'temperature' | 'maxTokens' | 'metadata'
+>;
 export type MinimalCLIProvider = SetOptional<
   CLIProvider,
-  'setRole' | ' getRole')>;
+  'setRole' | 'getRole'
+>;
 export type CLIProviderWithDefaults = Merge<
   CLIProvider,
   { getCapabilities():Required<CLIProviderCapabilities>}
