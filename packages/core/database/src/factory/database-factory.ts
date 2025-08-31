@@ -116,7 +116,7 @@ export class DatabaseFactoryImpl implements DatabaseFactory {
     });
 
     const connection = this.createConnection(config);
-    const storage = new SQLStorageImpl(connection, config);
+    const storage = new SQLStorageImpl(connection);
 
     this.storageCache.set(cacheKey, storage);
     return storage;
@@ -143,7 +143,7 @@ export class DatabaseFactoryImpl implements DatabaseFactory {
     });
 
     const connection = this.createConnection(config);
-    const storage = new VectorStorageImpl(connection, config);
+    const storage = new VectorStorageImpl(connection);
 
     this.storageCache.set(cacheKey, storage);
     return storage;
@@ -170,7 +170,7 @@ export class DatabaseFactoryImpl implements DatabaseFactory {
     });
 
     const connection = this.createConnection(config);
-    const storage = new GraphStorageImpl(connection, config);
+    const storage = new GraphStorageImpl(connection);
 
     this.storageCache.set(cacheKey, storage);
     return storage;

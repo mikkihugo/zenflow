@@ -8,7 +8,6 @@
 import { getLogger } from '../logger.js';
 import { createErrorOptions } from '../utils/error-helpers.js';
 import {
-  type DatabaseConfig,
   type DatabaseConnection,
   QueryError,
   type VectorResult,
@@ -23,8 +22,7 @@ export class VectorStorageImpl implements VectorStorage {
   private indexCache = new Map<string, boolean>();
 
   constructor(
-    private connection: DatabaseConnection,
-    private config: DatabaseConfig
+    private connection: DatabaseConnection
   ) {}
 
   async insert(
@@ -140,6 +138,10 @@ export class VectorStorageImpl implements VectorStorage {
       }
 
       const row = result.rows[0];
+      if (!row) {
+        return null;
+      }
+      
       const vector = Array.from(new Float32Array(row.vector.buffer));
       const metadata = row.metadata ? JSON.parse(row.metadata) : undefined;
 

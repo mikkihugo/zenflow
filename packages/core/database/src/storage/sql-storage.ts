@@ -8,7 +8,6 @@
 import { getLogger } from '../logger.js';
 import { createErrorOptions } from '../utils/error-helpers.js';
 import {
-  type DatabaseConfig,
   type DatabaseConnection,
   QueryError,
   type QueryResult,
@@ -24,8 +23,7 @@ const logger = getLogger('sql-storage');
 // Transaction wrapper that adapts TransactionConnection to work with SqlStorage
 class TransactionSQLStorageImpl implements SqlStorage {
   constructor(
-    private txConnection: TransactionConnection,
-    private config: DatabaseConfig
+    private txConnection: TransactionConnection
   ) {}
 
   async query<T = unknown>(
@@ -119,10 +117,6 @@ class TransactionSQLStorageImpl implements SqlStorage {
         name: row.name,
         type: row.type,
         nullable: row.notnull === 0,
-        defaultValue: undefined,
-        maxLength: undefined,
-        precision: undefined,
-        scale: undefined,
       })),
       primaryKey: [],
       foreignKeys: [],
@@ -140,8 +134,7 @@ class TransactionSQLStorageImpl implements SqlStorage {
 
 export class SQLStorageImpl implements SqlStorage {
   constructor(
-    private connection: DatabaseConnection,
-    private config: DatabaseConfig
+    private connection: DatabaseConnection
   ) {}
 
   async query<T = unknown>(
@@ -166,9 +159,13 @@ export class SQLStorageImpl implements SqlStorage {
         sql: sql.slice(0, 100),
         error: error instanceof Error ? error.message : String(error),
       });
+      const errorOptions: { query: string; params?: unknown[] } = { query: sql };
+      if (params !== undefined) {
+        errorOptions.params = params;
+      }
       throw new QueryError(
         `SQL query failed:${error instanceof Error ? error.message : String(error)}`,
-        { query: sql, params }
+        errorOptions
       );
     }
   }
@@ -192,21 +189,32 @@ export class SQLStorageImpl implements SqlStorage {
         insertId: result.insertId,
       });
 
-      return {
+      const queryResult: QueryResult<unknown> = {
         rows: [],
         rowCount: result.affectedRows || 0,
         executionTimeMs: 0,
-        affectedRows: result.affectedRows,
-        insertId: result.insertId,
       };
+
+      if (result.affectedRows !== undefined) {
+        (queryResult as any).affectedRows = result.affectedRows;
+      }
+      if (result.insertId !== undefined) {
+        (queryResult as any).insertId = result.insertId;
+      }
+
+      return queryResult;
     } catch (error) {
       logger.error('SQL command failed', {
         sql: sql.slice(0, 100),
         error: error instanceof Error ? error.message : String(error),
       });
+      const errorOptions: { query: string; params?: unknown[] } = { query: sql };
+      if (params !== undefined) {
+        errorOptions.params = params;
+      }
       throw new QueryError(
         `SQL command failed:${error instanceof Error ? error.message : String(error)}`,
-        { query: sql, params }
+        errorOptions
       );
     }
   }
@@ -221,8 +229,7 @@ export class SQLStorageImpl implements SqlStorage {
       const result = await this.connection.transaction(async (txConnection) => {
         // Create a wrapper SqlStorage that uses the transaction connection
         const txStorage = new TransactionSQLStorageImpl(
-          txConnection,
-          this.config
+          txConnection
         );
         return await fn(txStorage);
       }, context);
@@ -255,6 +262,7 @@ export class SQLStorageImpl implements SqlStorage {
               type: string;
               nullable?: boolean;
               primaryKey?: boolean;
+              defaultValue?: unknown;
             }) => {
               let columnDef = `${col.name} ${col.type}`;
               if (!col.nullable) columnDef += ' NOT NULL';
@@ -345,10 +353,6 @@ export class SQLStorageImpl implements SqlStorage {
           name: col.name,
           type: col.type,
           nullable: col.nullable,
-          defaultValue: undefined,
-          maxLength: undefined,
-          precision: undefined,
-          scale: undefined,
         })),
         primaryKey: [],
         foreignKeys: [],
