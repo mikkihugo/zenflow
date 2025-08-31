@@ -6,10 +6,12 @@
  */
 
 import type { Result } from '@claude-zen/foundation';
-import type { LiteralUnion } from '@claude-zen/foundation/types';
+
+// Basic utility type - surgical replacement for type-fest import
+type LiteralUnion<T extends string, U = string> = T | (U & {});
 
 export interface APIMessage {
-  role: 'system' | ' user' | ' assistant';
+  role: 'system' | 'user' | 'assistant';
   content: string;
 }
 

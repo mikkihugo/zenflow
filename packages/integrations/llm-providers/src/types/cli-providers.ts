@@ -6,11 +6,11 @@
  */
 
 import type { Result} from '@claude-zen/foundation';
-import type {
-  LiteralUnion,
-  Merge,
-  SetOptional,
-} from '@claude-zen/foundation';
+
+// Basic utility types - surgical replacement for type-fest imports
+type LiteralUnion<T extends string, U = string> = T | (U & {});
+type Merge<A, B> = Omit<A, keyof B> & B;
+type SetOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
 export interface CLIMessage {
   role: 'system' | 'user' | 'assistant';
