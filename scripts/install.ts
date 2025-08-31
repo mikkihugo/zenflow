@@ -8,6 +8,16 @@
  * @version 2.0.0
  */
 
+// Simple logger implementation
+const logger = {
+  error: (message: string, error?: unknown) => {
+    console.error(message, error ? JSON.stringify(error) : '');
+  },
+  info: (message: string) => {
+    console.info(message);
+  },
+};
+
 /**
  * Main installation verification function
  * Verifies that Claude-Zen has been installed correctly

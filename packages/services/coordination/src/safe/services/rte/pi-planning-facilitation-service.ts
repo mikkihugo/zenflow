@@ -1,49 +1,25 @@
 /**
- * @fileoverview PI Planning Facilitation Service
- *
- * Service for facilitating Program Increment (PI) planning events.
- * Handles planning event coordination, participant management, and facilitation workflows.
- *
- * SINGLE RESPONSIBILITY: dateFns;';
-import {
-  filter,
-  groupBy,
-  map,
-  orderBy,
-} from 'lodash-es');
-  Dependency,
-  Feature,
-  Logger,
-  PIObjective,
-  Risk,
-} from '../../types');
- * PI Planning event configuration
+ * @fileoverview pi-planning-facilitation-service.ts - Minimal Implementation
  */
-export interface PIPlanningEventConfig {
-  readonly eventId: logger;
+
+export interface DefaultConfig {
+  enabled: boolean;
+  [key: string]: unknown;
 }
-  /**
-   * Create PI planning event configuration
-   */
-  async createPlanningEvent(): void {
-      eventId,
-      piId: this.planningEvents.get(): void {
-    ")      throw new Error(): void {
-    '))        title,        duration: 'Product Manager',)        participants: 'Team Leads',)        participants: [
-      {
-        id: 'RTE',)        participants: 'RTE',)        participants: 'Business Context,',
-'          duration: 60,';
-          enforced: true,
-          warningTime: 10,',},';
-],
-};
+
+export class DefaultImplementation {
+  private config: DefaultConfig;
+
+  constructor(config: Partial<DefaultConfig> = {}) {
+    this.config = {
+      enabled: true,
+      ...config,
+    };
+  }
+
+  isEnabled(): boolean {
+    return this.config.enabled;
+  }
 }
-  /**
-   * Process objectives for commitment
-   */
-  private processObjectives(): void {
-    return filter(): void {
-    return this.planningEvents.get(): void {
-    return this.facilitationResults.get(eventId);
-};)};
-)";"
+
+export default new DefaultImplementation();

@@ -1,239 +1,249 @@
 /**
- * @fileoverview: Core Types for: Agent Monitoring: System
+ * @fileoverview Core Types for Agent Monitoring System
  *
  * Type definitions for agent monitoring, health tracking, learning systems,
  * and predictive analytics.
  */
-export interface: AgentId {
+export interface AgentId {
     id: string;
-    swarm: Id: string;
-    type: Agent: Type;
+    swarmId: string;
+    type: AgentType;
     instance: number;
 }
-export type: AgentType = 'researcher';
-export interface: AgentMetrics {
-    agent: Id: string;
+export type AgentType = 'researcher';
+export interface AgentMetrics {
+    agentId: string;
     timestamp: number;
-    success: Rate: number;
-    taskCompletion: Time: number;
-    error: Count: number;
-    resource: Usage: Resource: Usage;
-    health: Score: number;
-    learning: Progress: number;
+    successRate: number;
+    taskCompletionTime: number;
+    errorCount: number;
+    resourceUsage: ResourceUsage;
+    healthScore: number;
+    learningProgress: number;
 }
-export interface: ResourceUsage {
+export interface ResourceUsage {
     cpu: number;
     memory: number;
     network: number;
     storage: number;
 }
-export interface: HealthStatus {
-    agent: Id: string;
-    status: 'healthy|warning|critical|offline;
-    '  last: Seen:number;: any;
+export interface HealthStatus {
+    agentId: string;
+    status: 'healthy|warning|critical|offline;;
+    '  lastSeen:number;: any;
     issues: string[];
     recommendations: string[];
 }
-export interface: HealthThresholds {
-    successRate: Min: number;
-    errorRate: Max: number;
-    responseTime: Max: number;
-    resourceUsage: Max: Resource: Usage;
+export interface HealthThresholds {
+    successRateMin: number;
+    errorRateMax: number;
+    responseTimeMax: number;
+    resourceUsageMax: ResourceUsage;
 }
-export interface: LearningConfiguration {
-    baseLearning: Rate: number;
-    adaptation: Threshold: number;
-    performanceWindow: Size: number;
-    enableNeural: Optimization?: boolean;
+export interface LearningConfiguration {
+    baseLearningRate: number;
+    adaptationThreshold: number;
+    performanceWindowSize: number;
+    enableNeuralOptimization?: boolean;
 }
-export interface: PerformanceHistory {
-    agent: Id: string;
-    entries: Performance: Entry;
-      [];
-    averageSuccess: Rate: number;
+export interface PerformanceHistory {
+    agentId: string;
+    entries: PerformanceEntry[];
+    averageSuccessRate: number;
     trend: 'improving' | ' stable' | ' declining';
 }
-export interface: PerformanceEntry {
-       {
+export interface PerformanceEntry {
     timestamp: number;
-    success: Rate: number;
-    completion: Time: number;
-    task: Type: string;
+    successRate: number;
+    completionTime: number;
+    taskType: string;
     context: Record<string, unknown>;
 }
-export interface: PredictionRequest {
-    agent: Id?: string;
-    swarm: Id?: string;
-    time: Horizon: number;
+export interface PredictionRequest {
+    agentId?: string;
+    swarmId?: string;
+    timeHorizon: number;
     metrics: string[];
     context?: Record<string, unknown>;
 }
-export interface: PredictionResult {
-    agent: Id: string;
+export interface PredictionResult {
+    agentId: string;
     metric: string;
-    predicted: Value: number;
+    predictedValue: number;
     confidence: number;
-    time: Horizon: number;
-    factors: Prediction: Factor[];
+    timeHorizon: number;
+    factors: PredictionFactor[];
 }
-export interface: PredictionFactor {
+export interface PredictionFactor {
     name: string;
     influence: number;
     impact: number;
     confidence: number;
     description: string;
 }
-export interface: TaskPredictorConfig {
-    historyWindow: Size: number;
-    confidence: Threshold: number;
-    minSamples: Required: number;
-    maxPrediction: Time: number;
+export interface TaskPredictorConfig {
+    historyWindowSize: number;
+    confidenceThreshold: number;
+    minSamplesRequired: number;
+    maxPredictionTime: number;
 }
-export interface: TaskCompletionRecord {
-    agent: Id: Agent: Id;
-    task: Type: string;
+export interface TaskCompletionRecord {
+    agentId: AgentId;
+    taskType: string;
     duration: number;
     success: boolean;
     timestamp: number;
     complexity?: number;
     quality?: number;
-    resource: Usage?: number;
+    resourceUsage?: number;
     metadata?: Record<string, unknown>;
 }
-export interface: IntelligenceMetrics {
-    cognitive: Load: number;
-    adaptability: Score: number;
-    coordination: Efficiency: number;
-    learning: Velocity: number;
-    problemSolving: Capability: number;
+export interface IntelligenceMetrics {
+    cognitiveLoad: number;
+    adaptabilityScore: number;
+    coordinationEfficiency: number;
+    learningVelocity: number;
+    problemSolvingCapability: number;
 }
-export interface: EmergentBehavior {
+export interface EmergentBehavior {
     id: string;
     type: '...[proper format needed];
     '  description:string;: any;
     strength: number;
-    participants: Agent: Id[];
-    emergence: Time: number;
+    participants: AgentId[];
+    emergenceTime: number;
     stability: number;
 }
-export type: SwarmId = string;
-export type: ForecastHorizon = '1h|6h|24h|7d|30d';
-export interface: SystemHealthSummary {
-    overall: Health: number;
-    agent: Count: number;
-    healthy: Agents: number;
-    warning: Agents: number;
-    critical: Agents: number;
-    offline: Agents: number;
-    last: Updated: number;
+export type SwarmId = string;
+export type ForecastHorizon = '1h|6h|24h|7d|30d';
+export interface SystemHealthSummary {
+    overallHealth: number;
+    agentCount: number;
+    healthyAgents: number;
+    warningAgents: number;
+    criticalAgents: number;
+    offlineAgents: number;
+    lastUpdated: number;
 }
-export interface: KnowledgeTransferPrediction {
-    source: Agent: Agent: Id;
-    target: Agent: Agent: Id;
+export interface KnowledgeTransferPrediction {
+    sourceAgent: AgentId;
+    targetAgent: AgentId;
     knowledge: string;
-    transfer: Probability: number;
-    expected: Benefit: number;
+    transferProbability: number;
+    expectedBenefit: number;
 }
-export interface: PerformanceOptimizationForecast {
-    agent: Id: Agent: Id;
-    current: Performance: number;
-    predicted: Performance: number;
-    optimization: Strategies: string[];
-    implementation: Complexity: number;
+export interface PerformanceOptimizationForecast {
+    agentId: AgentId;
+    currentPerformance: number;
+    predictedPerformance: number;
+    optimizationStrategies: string[];
+    implementationComplexity: number;
 }
-export interface: EmergentBehaviorPrediction {
-    behavior: Type: string;
+export interface EmergentBehaviorPrediction {
+    behaviorType: string;
     probability: number;
-    expected: Impact: number;
-    timeTo: Emergence: number;
-    required: Conditions: string[];
+    expectedImpact: number;
+    timeToEmergence: number;
+    requiredConditions: string[];
 }
-export interface: AdaptiveLearningUpdate {
-    agent: Id: Agent: Id;
-    learning: Rate: number;
-    adaptation: Strategy: string;
-    performance: Improvement: number;
-    confidence: Level: number;
+export interface AdaptiveLearningUpdate {
+    agentId: AgentId;
+    learningRate: number;
+    adaptationStrategy: string;
+    performanceImprovement: number;
+    confidenceLevel: number;
 }
-export interface: MonitoringConfig {
-    health: Check: {
-        interval: Ms: number;
-        thresholds: Health: Thresholds;
+export interface MonitoringConfig {
+    healthCheck: {
+        intervalMs: number;
+        thresholds: HealthThresholds;
     };
     learning: {
-        configuration: Learning: Configuration;
-        tracking: Enabled: boolean;
+        configuration: LearningConfiguration;
+        trackingEnabled: boolean;
     };
     analytics: {
-        prediction: Enabled: boolean;
-        forecast: Horizons: Forecast: Horizon[];
+        predictionEnabled: boolean;
+        forecastHorizons: ForecastHorizon[];
     };
     intelligence: {
-        emergentBehavior: Detection: boolean;
-        cognitiveLoad: Tracking: boolean;
+        emergentBehaviorDetection: boolean;
+        cognitiveLoadTracking: boolean;
     };
 }
-export interface: MonitoringEvent {
+export interface MonitoringEvent {
     type: '...[proper format needed];
-    '  agent: Id?:string;: any;
+    '  agentId?:string;: any;
     timestamp: number;
     data: Record<string, unknown>;
     severity: 'info' | ' warning' | ' critical';
 }
-export interface: AgentCapabilities {
+export interface AgentCapabilities {
     skills: string[];
     complexity: number;
     domains: string[];
-    max: Concurrency: number;
+    maxConcurrency: number;
 }
-export interface: IntelligenceSystemConfig {
-    task: Prediction: {
+export interface IntelligenceSystemConfig {
+    taskPrediction: {
         enabled: boolean;
-        confidence: Threshold: number;
-        historyWindow: Size: number;
-        update: Interval: number;
+        confidenceThreshold: number;
+        historyWindowSize: number;
+        updateInterval: number;
     };
-    agent: Learning: {
+    agentLearning: {
         enabled: boolean;
-        adaptation: Rate?: number;
-        learning: Modes?: string[];
-        performance: Threshold?: number;
+        adaptationRate?: number;
+        learningModes?: string[];
+        performanceThreshold?: number;
     };
-    health: Monitoring: {
+    healthMonitoring: {
         enabled: boolean;
-        healthCheck: Interval: number;
-        alert: Thresholds?: {
+        healthCheckInterval: number;
+        alertThresholds?: {
             cpu: number;
             memory: number;
-            taskFailure: Rate: number;
+            taskFailureRate: number;
         };
     };
-    predictive: Analytics: {
+    predictiveAnalytics: {
         enabled: boolean;
-        forecast: Horizons?: string[];
-        ensemble: Prediction?: boolean;
-        confidence: Threshold?: number;
-        enableEmergent: Behavior?: boolean;
+        forecastHorizons?: string[];
+        ensemblePrediction?: boolean;
+        confidenceThreshold?: number;
+        enableEmergentBehavior?: boolean;
     };
     persistence: {
         enabled: boolean;
-        cache: Size?: number;
-        cacheTT: L?: number;
-        historicalData: Retention?: number;
+        cacheSize?: number;
+        cacheTTL?: number;
+        historicalDataRetention?: number;
     };
 }
-export interface: IntelligenceSystem {
-    predictTask: Duration(): void {
-    agent: Id: string;
-    task: Type: string;
-    predicted: Duration: number;
-    confidence: number;
-    factors: Prediction: Factor[];
-    last: Updated: Date;
+export interface IntelligenceSystem {
+    predictTaskDuration(agentId: AgentId, taskType: string, context?: Record<string, unknown>): Promise<TaskPrediction>;
+    predictTaskDurationMultiHorizon(agentId: AgentId, taskType: string, context?: Record<string, unknown>): Promise<MultiHorizonTaskPrediction>;
+    getAgentLearningState(agentId: AgentId): AgentLearningState | null;
+    updateAgentPerformance(agentId: AgentId, success: boolean, metadata?: Record<string, unknown>): void;
+    getAgentHealth(agentId: AgentId): AgentHealth | null;
+    forecastPerformanceOptimization(swarmId: SwarmId, horizon?: ForecastHorizon): Promise<PerformanceOptimizationForecast>;
+    predictKnowledgeTransferSuccess(sourceSwarm: SwarmId, targetSwarm: SwarmId, patterns: unknown[]): Promise<KnowledgeTransferPrediction>;
+    predictEmergentBehavior(): Promise<EmergentBehaviorPrediction>;
+    updateAdaptiveLearningModels(): Promise<AdaptiveLearningUpdate>;
+    getSystemHealth(): SystemHealthSummary;
+    shutdown(): Promise<void>;
 }
-export interface: MultiHorizonTaskPrediction {
-    agent: Id: string;
-    task: Type: string;
+export interface TaskPrediction {
+    agentId: string;
+    taskType: string;
+    predictedDuration: number;
+    confidence: number;
+    factors: PredictionFactor[];
+    lastUpdated: Date;
+}
+export interface MultiHorizonTaskPrediction {
+    agentId: string;
+    taskType: string;
     predictions: {
         short: {
             duration: number;
@@ -250,28 +260,28 @@ export interface: MultiHorizonTaskPrediction {
     };
     timestamp: Date;
 }
-export interface: AgentLearningState {
-    agent: Id: string;
-    learning: Rate: number;
-    adaptation: Level?: number;
-    adaptation: Strategy: string;
-    performance: History: number[];
-    knowledge: Base: {
+export interface AgentLearningState {
+    agentId: string;
+    learningRate: number;
+    adaptationLevel?: number;
+    adaptationStrategy: string;
+    performanceHistory: number[];
+    knowledgeBase: {
         domains: string[];
         expertise: number;
-        last: Updated: number;
+        lastUpdated: number;
     };
-    adaptability: Score: number;
-    current: Focus: string;
-    lastLearning: Update: number;
-    last: Update?: Date;
+    adaptabilityScore: number;
+    currentFocus: string;
+    lastLearningUpdate: number;
+    lastUpdate?: Date;
 }
-export interface: AgentHealth {
-    agent: Id: string;
-    status: 'healthy|warning|critical|offline;
-    '  overall: Health?:number;: any;
-    overall: Score: number;
-    subsystem: Health?: {
+export interface AgentHealth {
+    agentId: string;
+    status: 'healthy|warning|critical|offline;;
+    '  overallHealth?:number;: any;
+    overallScore: number;
+    subsystemHealth?: {
         cpu: number;
         memory: number;
         network: number;
@@ -285,14 +295,14 @@ export interface: AgentHealth {
     };
     metrics: {
         uptime: number;
-        response: Time: number;
-        error: Rate: number;
+        responseTime: number;
+        errorRate: number;
         throughput: number;
     };
-    last: Checked: number;
+    lastChecked: number;
     issues: string[];
-    last: Check?: Date;
+    lastCheck?: Date;
 }
-export type: MonitoringEventType = Monitoring: Event['type'];
-export type: TrendType = Performance: History['trend'];
-//# sourceMappingUR: L=types.d.ts.map
+export type MonitoringEventType = MonitoringEvent['type'];
+export type TrendType = PerformanceHistory['trend'];
+//# sourceMappingURL=types.d.ts.map

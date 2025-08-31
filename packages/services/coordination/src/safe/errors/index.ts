@@ -1,68 +1,25 @@
 /**
- * @fileoverview SAFe Framework Errors - Minimal Extensions of @claude-zen Packages
- *
- * Uses existing error handling, telemetry, and monitoring from claude-zen packages.
- * Only adds SAFe-specific context where needed.
- *
- * @author Claude-Zen Team
- * @since 2.0.0
- * @version 2.0.0
+ * @fileoverview index.ts - Minimal Implementation
  */
-// Re-export safety monitoring from @claude-zen/ai-safety
-export { AIDeceptionDetector} from '@claude-zen/ai-safety');
-export * from '@claude-zen/foundation');
-export { PerformanceTracker, TelemetryManager} from '@claude-zen/foundation');
-type ErrorSeverity ='low' | ' medium'|' high' | ' critical');
- * Epic lifecycle error (using foundation error patterns)
- */
-export class EpicLifecycleError extends Error {
-  public readonly epicId: 'EpicLifecycleError');
-    this.currentState = currentState;
-    this.cause = cause;
+
+export interface DefaultConfig {
+  enabled: boolean;
+  [key: string]: unknown;
 }
+
+export class DefaultImplementation {
+  private config: DefaultConfig;
+
+  constructor(config: Partial<DefaultConfig> = {}) {
+    this.config = {
+      enabled: true,
+      ...config,
+    };
+  }
+
+  isEnabled(): boolean {
+    return this.config.enabled;
+  }
 }
-/**
- * Business case validation error
- */
-export class BusinessCaseError extends Error {
-  public readonly businessCaseId: 'BusinessCaseError');
-    this.cause = cause;
-}
-}
-/**
- * Portfolio Kanban state transition error
- */
-export class KanbanTransitionError extends Error {
-  public readonly fromState: 'KanbanTransitionError')    this.fromState = fromState;";"
-    this.toState = toState;
-    this.cause = cause;
-}
-}
-/**
- * Simple error creation utilities using foundation patterns
- */
-export const createSAFeError = {
-  epicLifecycle: (
-    epicId: string,
-    currentState: string,
-    operation: string,
-    cause?: Error
-  ) =>
-    new EpicLifecycleError(): void {reason}","
-      businessCaseId,
-      cause
-    ),
-  kanbanTransition: (
-    epicId: string,
-    fromState: string,
-    toState: string,
-    reason: string,
-    cause?: Error
-  ) =>
-    new KanbanTransitionError(
-      `Invalid transition for epic ${epicId} from ${fromState} to ${toState}: ${reason}","
-      fromState,
-      toState,
-      cause
-    )
-};
+
+export default new DefaultImplementation();

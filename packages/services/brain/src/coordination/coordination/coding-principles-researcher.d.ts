@@ -1,84 +1,84 @@
 /**
- * @fileoverview: Coding Principles: Researcher - Dynamic: Language Standards: Research
+ * @fileoverview Coding Principles Researcher - Dynamic Language Standards Research
  *
- * A: I-powered research system that dynamically discovers and learns coding principles
+ * AI-powered research system that dynamically discovers and learns coding principles
  * for different languages, frameworks, and task types. Provides human-reviewable
  * templates that can be improved over time.
  *
  * Features:
  * - Language-specific principle research
- * - Task type optimization (AP: I, web-app, mobile, etc.)
+ * - Task type optimization (API, web-app, mobile, etc.)
  * - Human-reviewable template generation
  * - Continuous learning from successful patterns
- * - DS: Py-optimized principle discovery
+ * - DSPy-optimized principle discovery
  *
- * @author: Claude Code: Zen Team
+ * @author Claude Code Zen Team
  * @version 1.0.0
  * @since 2024-01-01
  */
 /**
  * Language and framework types for principle research
  */
-export type: ProgrammingLanguage = 'typescript' | ' javascript' | ' python' | ' rust' | ' go' | ' java' | ' csharp' | ' swift' | ' kotlin';
-export type: TaskDomain = 'rest-api' | ' web-app' | ' mobile-app' | ' desktop-app' | ' microservices' | ' data-pipeline' | ' ml-model' | ' blockchain' | ' game-dev' | ' embedded';
-export type: DevelopmentRole = 'backend-developer' | ' frontend-developer' | ' fullstack-developer' | ' mobile-developer' | ' devops-engineer' | ' ml-engineer' | ' architect' | ' tech-lead';
+export type ProgrammingLanguage = 'typescript' | ' javascript' | ' python' | ' rust' | ' go' | ' java' | ' csharp' | ' swift' | ' kotlin';
+export type TaskDomain = 'rest-api' | ' web-app' | ' mobile-app' | ' desktop-app' | ' microservices' | ' data-pipeline' | ' ml-model' | ' blockchain' | ' game-dev' | ' embedded';
+export type DevelopmentRole = 'backend-developer' | ' frontend-developer' | ' fullstack-developer' | ' mobile-developer' | ' devops-engineer' | ' ml-engineer' | ' architect' | ' tech-lead';
 /**
  * Coding principles research configuration
  */
-export interface: PrinciplesResearchConfig {
+export interface PrinciplesResearchConfig {
     /** Language to research */
-    language:Programming: Language;
+    language:ProgrammingLanguage;
     /** Task domain context */
-    domain?:Task: Domain;
+    domain?:TaskDomain;
     /** Developer role context */
-    role?:Development: Role;
+    role?:DevelopmentRole;
     /** Include performance guidelines */
-    include: Performance?:boolean;
+    includePerformance?:boolean;
     /** Include security guidelines */
-    include: Security?:boolean;
+    includeSecurity?:boolean;
     /** Include testing guidelines */
-    include: Testing?:boolean;
+    includeTesting?:boolean;
     /** Research depth level */
-    depth?: 'basic|intermediate|advanced|expert;
+    depth?: 'basic|intermediate|advanced|expert;;
 '}
 /**
  * Researched coding principles result
  */
-export interface: CodingPrinciples {
+export interface CodingPrinciples {
     /** Language and context */
-    language:Programming: Language;
-    domain?:Task: Domain;
-    role?:Development: Role;
+    language:ProgrammingLanguage;
+    domain?:TaskDomain;
+    role?:DevelopmentRole;
     /** Core principles */
-    core: Standards:{
-        repository: Structure:string[];
-        file: Naming:string[];
-        folder: Organization:string[];
-        function: Complexity:string[];
-        code: Organization:string[];
-        error: Handling:string[];
+    coreStandards:{
+        repositoryStructure:string[];
+        fileNaming:string[];
+        folderOrganization:string[];
+        functionComplexity:string[];
+        codeOrganization:string[];
+        errorHandling:string[];
         documentation:string[];
-        code: Quality:string[];
-        testing: Strategy:string[];
+        codeQuality:string[];
+        testingStrategy:string[];
 };
     /** Language-specific guidelines */
-    language: Specific:{
-        type: System:string[];
-        memory: Management:string[];
+    languageSpecific:{
+        typeSystem:string[];
+        memoryManagement:string[];
         concurrency:string[];
-        package: Management:string[];
-        build: Tools:string[];
+        packageManagement:string[];
+        buildTools:string[];
 };
     /** Domain-specific practices */
-    domain: Specific?:{
+    domainSpecific?:{
         architecture:string[];
-        data: Handling:string[];
-        api: Design:string[];
-        user: Interface:string[];
+        dataHandling:string[];
+        apiDesign:string[];
+        userInterface:string[];
         deployment:string[];
 };
     /** Quality metrics */
-    quality: Metrics:{
+    qualityMetrics:{
         complexity:{
             metric:string;
             threshold:number;
@@ -97,101 +97,101 @@ export interface: CodingPrinciples {
 };
 };
     /** Best practices from successful patterns */
-    best: Practices:string[];
+    bestPractices:string[];
     /** Anti-patterns to avoid */
-    anti: Patterns:string[];
+    antiPatterns:string[];
     /** Human-reviewable template */
     template:string;
     /** Research metadata */
-    research: Metadata:{
-        researched: At:Date;
+    researchMetadata:{
+        researchedAt:Date;
         sources:string[];
         confidence:number;
-        human: Reviewed:boolean;
-        last: Updated:Date;
+        humanReviewed:boolean;
+        lastUpdated:Date;
         version:string;
 };
 }
 /**
  * Human review feedback for improving templates
  */
-export interface: HumanFeedback {
-    principles: Id:string;
+export interface HumanFeedback {
+    principlesId:string;
     reviewer:string;
     rating:1 | 2 | 3 | 4 | 5;
     improvements:string[];
-    approved: Sections:string[];
-    rejected: Sections:string[];
-    additional: Guidelines:string[];
+    approvedSections:string[];
+    rejectedSections:string[];
+    additionalGuidelines:string[];
     notes:string;
-    reviewed: At:Date;
+    reviewedAt:Date;
 }
 /**
  * Agent execution feedback for improving prompts
  */
-export interface: AgentExecutionFeedback {
-    principles: Id:string;
-    agent: Id:string;
-    task: Type:string;
+export interface AgentExecutionFeedback {
+    principlesId:string;
+    agentId:string;
+    taskType:string;
     accuracy:number;
     completeness:number;
     usefulness:number;
-    missing: Areas:string[];
-    incorrect: Guidelines:string[];
-    additional: Needs:string[];
-    actualCode: Quality:number;
-    execution: Time:number;
+    missingAreas:string[];
+    incorrectGuidelines:string[];
+    additionalNeeds:string[];
+    actualCodeQuality:number;
+    executionTime:number;
     context:{
-        language:Programming: Language;
-        domain?:Task: Domain;
-        role?:Development: Role;
-        task: Complexity:'simple' | ' moderate' | ' complex';
-        requirements: Count:number;
+        language:ProgrammingLanguage;
+        domain?:TaskDomain;
+        role?:DevelopmentRole;
+        taskComplexity:'simple' | ' moderate' | ' complex';
+        requirementsCount:number;
 };
     timestamp:Date;
 }
 /**
  * Prompt confidence tracking
  */
-export interface: PromptConfidence {
-    principles: Id:string;
-    initial: Confidence:number;
-    execution: Count:number;
-    average: Accuracy:number;
-    average: Completeness:number;
-    average: Usefulness:number;
-    overall: Confidence:number;
-    needs: Improvement:boolean;
-    last: Updated:Date;
-    improvement: History:Array<{
+export interface PromptConfidence {
+    principlesId:string;
+    initialConfidence:number;
+    executionCount:number;
+    averageAccuracy:number;
+    averageCompleteness:number;
+    averageUsefulness:number;
+    overallConfidence:number;
+    needsImprovement:boolean;
+    lastUpdated:Date;
+    improvementHistory:Array<{
         version:string;
         changes:string[];
-        confidence: Change:number;
+        confidenceChange:number;
         timestamp:Date;
 }>;
 }
 /**
- * Coding: Principles Researcher
+ * Coding Principles Researcher
  *
  * Dynamically researches and learns coding principles for different languages,
- * domains, and roles using: AI research and human feedback loops.
+ * domains, and roles using AI research and human feedback loops.
  */
-export declare class: CodingPrinciplesResearcher {
+export declare class CodingPrinciplesResearcher {
     ':any;
     constructor();
     /**
      * Research coding principles for a specific language/domain/role combination
      */
-    research: Principles(config:PrinciplesResearch: Config): Promise<Coding: Principles>;
+    researchPrinciples(config:PrinciplesResearchConfig): Promise<CodingPrinciples>;
     ':any;
     $:any;
 }
 /**
  * Export factory function
  */
-export declare function createCodingPrinciples: Researcher(dspy: Bridge:DSPyLLM: Bridge, behavioral: Intelligence?:Behavioral: Intelligence): CodingPrinciples: Researcher;
+export declare function createCodingPrinciplesResearcher(dspyBridge:DSPyLLMBridge, behavioralIntelligence?:BehavioralIntelligence): CodingPrinciplesResearcher;
 /**
  * Export default configuration for common languages
  */
-export declare const: DEFAULT_LANGUAGE_CONFIGS:Record<Programming: Language, PrinciplesResearch: Config>;
-//# sourceMappingUR: L=coding-principles-researcher.d.ts.map
+export declare const DEFAULT_LANGUAGE_CONFIGS:Record<ProgrammingLanguage, PrinciplesResearchConfig>;
+//# sourceMappingURL=coding-principles-researcher.d.ts.map

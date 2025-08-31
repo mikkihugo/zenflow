@@ -1,33 +1,37 @@
 /**
- * @fileoverview: GPU Support: Detection and: Acceleration
+ * @fileoverview GPU Support Detection and Acceleration
  *
- * Optional: GPU acceleration support for neural networks.
- * Falls back gracefully to: CPU-only operation if: GPU is not available.
+ * Optional GPU acceleration support for neural networks.
+ * Falls back gracefully to CPU-only operation if GPU is not available.
  */
 /**
- * GP: U acceleration capabilities
+ * GPU acceleration capabilities
  */
-export interface: GPUCapabilities {
-    hasWebGP: U:boolean;
-    hasTensorFlowGP: U:boolean;
-    hasGPUJ: S:boolean;
-    hasONNXGP: U:boolean;
-    recommended: Backend:'webgpu' | ' tensorflow-gpu' | ' gpu.js' | ' onnx' | ' cpu;
+export interface GPUCapabilities {
+    hasWebGPU:boolean;
+    hasTensorFlowGPU:boolean;
+    hasGPUJS:boolean;
+    hasONNXGPU:boolean;
+    recommendedBackend:'webgpu' | ' tensorflow-gpu' | ' gpu.js' | ' onnx' | ' cpu;;
 }
 /**
- * GP: U acceleration options
+ * GPU acceleration options
  */
-export interface: GPUOptions {
-    preferGP: U?:boolean;
-    backend?:'webgpu' | ' tensorflow-gpu' | ' gpu.js' | ' onnx' | ' auto' | ' cpu;
-    memory: Fraction?:number;
+export interface GPUOptions {
+    preferGPU?:boolean;
+    backend?:'webgpu' | ' tensorflow-gpu' | ' gpu.js' | ' onnx' | ' auto' | ' cpu;;
+    memoryFraction?:number;
 }
 /**
- * Detect available: GPU capabilities
+ * Detect available GPU capabilities
  */
-export declare function detectGPU: Capabilities(): void {
+export declare function detectGPUCapabilities():Promise<GPUCapabilities>;
+/**
+ * Initialize GPU acceleration if available
+ */
+export declare function initializeGPUAcceleration(options?:GPUOptions): Promise<{
     backend:string;
     accelerated:boolean;
     device?:string;
 }>;
-//# sourceMappingUR: L=gpu-support.d.ts.map
+//# sourceMappingURL=gpu-support.d.ts.map

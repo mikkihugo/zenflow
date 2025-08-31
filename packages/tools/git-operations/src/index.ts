@@ -31,7 +31,9 @@ export type {
 export { GitOperationsManager } from './git-operations-manager';
 
 // Export factory functions for common use cases
-export function createEnterpriseGitManager(): void {
+export function createEnterpriseGitManager(
+  repositoryPath: string
+): GitOperationsManager {
   const config = {
     aiConflictResolution: true,
     intelligentBranching: true,
@@ -53,7 +55,14 @@ export function createEnterpriseGitManager(): void {
     defaultMergeStrategy: 'merge' as const,
   };
 
-  return new GitOperationsManager(): void {
+  return new GitOperationsManager(
+    `enterprise-git-${Date.now()}`,
+    config,
+    branchStrategy
+  );
+}
+
+export function createSAFEGitManager(artId: string): GitOperationsManager {
   const config = {
     aiConflictResolution: true,
     intelligentBranching: true,
@@ -64,5 +73,11 @@ export function createEnterpriseGitManager(): void {
   };
 
   const branchStrategy = {
-    namingPattern: 'feature/" + JSON.stringify(): void {artId}", config, branchStrategy);"
+    namingPattern: 'feature/{name}' as const,
+    autoCleanup: true,
+    protectedBranches: ['main', 'develop', 'release/*', 'hotfix/*'],
+    defaultMergeStrategy: 'rebase' as const,
+  };
+
+  return new GitOperationsManager(`safe-git-${artId}`, config, branchStrategy);
 }

@@ -1,20 +1,20 @@
 /**
- * Neural: Model Presets
+ * Neural Model Presets
  */
-export interface: NeuralPreset {
+export interface NeuralPreset {
     id: string;
     name: string;
     type: string;
     architecture: string;
     layers: number[];
     activation: string;
-    output: Activation: string;
-    learning: Rate: number;
-    batch: Size: number;
-    use: Case: string[];
+    outputActivation: string;
+    learningRate: number;
+    batchSize: number;
+    useCase: string[];
 }
-export interface: NeuralPresetMap {
-    [key: string]: Neural: Preset;
+export interface NeuralPresetMap {
+    [key: string]: NeuralPreset;
 }
-export declare const: NEURAL_PRESETS: NeuralPreset: Map;
-//# sourceMappingUR: L=presets.d.ts.map
+export declare const NEURAL_PRESETS: NeuralPresetMap;
+//# sourceMappingURL=presets.d.ts.map

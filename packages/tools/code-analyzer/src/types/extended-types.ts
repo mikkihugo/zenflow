@@ -27,6 +27,9 @@ export interface TypeMethod {
 // Control flow types
 export interface ControlFlowNode {
   id: string;
+  type: 'entry' | 'exit' | 'statement' | 'condition' | 'loop';
+  statement?: string;
+  location: CodeLocation;
 }
 
 export interface ControlFlowEdge {
@@ -39,6 +42,9 @@ export interface ControlFlowEdge {
 // Data flow types
 export interface DataFlowNode {
   id: string;
+  variable: string;
+  type: 'definition' | 'use' | 'kill';
+  location: CodeLocation;
 }
 
 export interface DataFlowEdge {
@@ -64,6 +70,10 @@ export interface Use {
 // Call graph types
 export interface CallGraphNode {
   id: string;
+  name: string;
+  type: 'function' | 'method' | 'constructor' | 'external';
+  location?: CodeLocation;
+  signature?: string;
 }
 
 export interface CallGraphEdge {
@@ -100,19 +110,37 @@ export interface ComplexityReduction {
 
 export interface RefactoringStep {
   id: string;
+  type: 'extract' | 'inline' | 'move' | 'rename' | 'simplify';
+  description: string;
+  effort: number;
+  risk: 'low' | 'medium' | 'high';
+  benefits: string[];
+  prerequisites: string[];
 }
 
 // Business logic types
 export interface BusinessRule {
   id: string;
+  name: string;
+  description: string;
+  conditions: string[];
+  actions: string[];
+  priority: 'low' | 'medium' | 'high' | 'critical';
 }
 
 export interface Workflow {
   id: string;
+  name: string;
+  steps: WorkflowStep[];
+  inputs: WorkflowData[];
+  outputs: WorkflowData[];
 }
 
 export interface WorkflowStep {
   id: string;
+  name: string;
+  type: 'process' | 'decision' | 'data' | 'external';
+  description: string;
 }
 
 export interface WorkflowData {

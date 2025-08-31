@@ -1,46 +1,46 @@
 /**
- * @fileoverview: Autonomous Optimization: Engine
+ * @fileoverview Autonomous Optimization Engine
  *
  * Intelligent system that automatically chooses the best optimization approach
- * (DS: Py vs: Smart M: L vs: Hybrid) based on context, performance history, and
+ * (DSPy vs Smart ML vs Hybrid) based on context, performance history, and
  * continuous learning. Makes autonomous decisions to maximize effectiveness.
  *
  * Features:
  * - Automatic method selection based on performance history
  * - Continuous learning from optimization results
- * - Dynamic switching between: DSPy, M: L, and hybrid approaches
+ * - Dynamic switching between DSPy, ML, and hybrid approaches
  * - Performance-driven decision making
  * - Real-time adaptation to changing patterns
  *
- * @author: Claude Code: Zen Team
+ * @author Claude Code Zen Team
  * @since 2.1.0
  */
-export interface: OptimizationContext {
+export interface OptimizationContext {
     readonly task: string;
-    readonly base: Prompt: string;
-    readonly agent: Role?: string;
+    readonly basePrompt: string;
+    readonly agentRole?: string;
     readonly priority?: 'low' | ' medium' | ' high';
     readonly context?: Record<string, any>;
-    readonly expected: Complexity?: number;
-    readonly time: Constraint?: number;
+    readonly expectedComplexity?: number;
+    readonly timeConstraint?: number;
 }
-export interface: OptimizationResult {
-    readonly optimized: Prompt: string;
+export interface OptimizationResult {
+    readonly optimizedPrompt: string;
     readonly confidence: number;
     readonly method: 'dspy' | 'ml' | 'hybrid' | 'fallback';
-    readonly processing: Time: number;
-    readonly improvement: Score: number;
+    readonly processingTime: number;
+    readonly improvementScore: number;
     readonly reasoning: string[];
 }
-export interface: OptimizationFeedback {
-    readonly actualSuccess: Rate: number;
-    readonly actualResponse: Time: number;
-    readonly user: Satisfaction: number;
-    readonly task: Completed: boolean;
-    readonly error: Occurred: boolean;
+export interface OptimizationFeedback {
+    readonly actualSuccessRate: number;
+    readonly actualResponseTime: number;
+    readonly userSatisfaction: number;
+    readonly taskCompleted: boolean;
+    readonly errorOccurred: boolean;
 }
 /**
- * Autonomous: Optimization Engine
+ * Autonomous Optimization Engine
  *
  * Intelligently decides which optimization method to use based on:
  * - Historical performance of each method
@@ -48,29 +48,33 @@ export interface: OptimizationFeedback {
  * - Time constraints and priorities
  * - Continuous learning from results
  */
-export declare class: AutonomousOptimizationEngine {
-    private smart: Optimizer;
-    private complexity: Estimator;
+export declare class AutonomousOptimizationEngine {
+    private smartOptimizer;
+    private complexityEstimator;
     private initialized;
-    constructor(): void {
-      : void;
+    constructor();
+    /**
+     * Learn from optimization results to improve future decisions
+     */
+    learnFromFeedback(context: OptimizationContext, result: OptimizationResult, feedback: OptimizationFeedback): Promise<void>;
+    catch(error: any): void;
     /**
      * Enable continuous optimization learning
      */
-    enableContinuous: Optimization(config: {
-        learning: Rate?: number;
-        adaptation: Threshold?: number;
-        evaluation: Interval?: number;
-        auto: Tuning?: boolean;
+    enableContinuousOptimization(config: {
+        learningRate?: number;
+        adaptationThreshold?: number;
+        evaluationInterval?: number;
+        autoTuning?: boolean;
     }): Promise<void>;
-    const enhanced: Scores: any;
-    const dspy: Score: any;
-    '): any;
+    const enhancedScores: any;
+    const dspyScore: any;
+    ')    const mlScore = this.calculateMethodScore(': any;
     ml: any;
-    ', context) + enhanced: Scores.ml: Boost;': any;
-    const hybrid: Score: any;
+    ', context) + enhancedScores.mlBoost;': any;
+    const hybridScore: any;
     '): any;
     logger: any;
-    debug(: any, dspy: Score: any, to: Fixed: any): any;
+    debug(: any, dspyScore: any, toFixed: any): any;
 }
-//# sourceMappingUR: L=autonomous-optimization-engine.d.ts.map
+//# sourceMappingURL=autonomous-optimization-engine.d.ts.map

@@ -1,20 +1,20 @@
 /**
- * @fileoverview: Intelligence System: Factory Functions
+ * @fileoverview Intelligence System Factory Functions
  *
  * Factory functions for creating different intelligence system configurations
  */
-import { CompleteIntelligence: System } from './intelligence-system';
-import type { IntelligenceSystem: Config } from './types';
+import { CompleteIntelligenceSystem } from './intelligence-system';
+import type { IntelligenceSystemConfig } from './types';
 /**
  * Create a basic intelligence system with minimal features
  */
-export declare function createBasicIntelligence: System(): CompleteIntelligence: System;
+export declare function createBasicIntelligenceSystem(): CompleteIntelligenceSystem;
 /**
  * Create a production-ready intelligence system with all features
  */
-export declare function createProductionIntelligence: System(): CompleteIntelligence: System;
+export declare function createProductionIntelligenceSystem(): CompleteIntelligenceSystem;
 /**
  * Create a custom intelligence system with provided configuration
  */
-export declare function createIntelligence: System(config: IntelligenceSystem: Config): CompleteIntelligence: System;
-//# sourceMappingUR: L=intelligence-factory.d.ts.map
+export declare function createIntelligenceSystem(config: IntelligenceSystemConfig): CompleteIntelligenceSystem;
+//# sourceMappingURL=intelligence-factory.d.ts.map

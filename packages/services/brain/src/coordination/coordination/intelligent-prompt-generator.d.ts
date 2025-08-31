@@ -1,121 +1,121 @@
 /**
- * @fileoverview: Intelligent Prompt: Generator for: Brain Package
+ * @fileoverview Intelligent Prompt Generator for Brain Package
  *
- * A: I-powered prompt generation system that provides context-aware,
+ * AI-powered prompt generation system that provides context-aware,
  * high-quality development prompts with built-in coding standards
- * and best practices for: TypeScript development.
+ * and best practices for TypeScript development.
  *
  * Features:
  * - Phase-specific prompt generation
  * - Coding standards integration
- * - Type: Script best practices
+ * - TypeScript best practices
  * - Complexity management guidelines
  * - File organization standards
  *
- * @author: Claude Code: Zen Team
+ * @author Claude Code Zen Team
  * @version 1.0.0
  * @since 2024-01-01
  */
-import type { Behavioral: Intelligence} from '../../behavioral-intelligence';
-import type { CodingPrinciples: Researcher} from './coding-principles-researcher';
+import type { BehavioralIntelligence} from '../../behavioral-intelligence';
+import type { CodingPrinciplesResearcher} from './coding-principles-researcher';
 /**
  * Development phase types for prompt generation
  */
-export type: DevelopmentPhase = specification | pseudocode | architecture | refinement | completion | 'general;
+export type DevelopmentPhase = specification | pseudocode | architecture | refinement | completion | 'general;;
 /**
  * Coding standards configuration
  */
-export interface: CodingStandardsConfig {
+export interface CodingStandardsConfig {
     /** Target language (default:typescript) */
-    language?: 'typescript|javascript|rust|python;
+    language?: 'typescript|javascript|rust|python;;
 '    /** Maximum function complexity (default:10) */
-    max: Complexity?:number;
+    maxComplexity?:number;
     /** Maximum lines per function (default:30) */
-    maxLinesPer: Function?:number;
+    maxLinesPerFunction?:number;
     /** Maximum parameters per function (default:5) */
-    max: Parameters?:number;
+    maxParameters?:number;
     /** File naming convention (default:kebab-case) */
-    file: Naming?: 'kebab-case|camel: Case|Pascal: Case|snake_case;
+    fileNaming?: 'kebab-case|camelCase|PascalCase|snake_case;;
 '    /** Include performance guidelines */
-    include: Performance?:boolean;
+    includePerformance?:boolean;
     /** Include security guidelines */
-    include: Security?:boolean;
+    includeSecurity?:boolean;
 }
 /**
  * Project context for prompt generation
  */
-export interface: ProjectContext {
+export interface ProjectContext {
     /** Project name */
     name:string;
     /** Project domain/type */
     domain:string;
     /** Current phase of the project */
-    current: Phase?:string;
+    currentPhase?:string;
     /** Domain-specific context */
-    domain: Specific?:Record<string, unknown>;
+    domainSpecific?:Record<string, unknown>;
     /** Current requirements */
     requirements?:string[];
     /** Existing architecture patterns */
-    architecture: Patterns?:string[];
+    architecturePatterns?:string[];
     /** Technology stack */
-    tech: Stack?:string[];
+    techStack?:string[];
 }
 /**
  * Generated prompt result
  */
-export interface: IntelligentPrompt {
+export interface IntelligentPrompt {
     /** Main prompt content */
     content:string;
     /** Coding standards section */
-    coding: Standards:string;
+    codingStandards:string;
     /** Phase-specific guidelines */
-    phase: Guidelines:string;
+    phaseGuidelines:string;
     /** Quality metrics */
-    quality: Metrics:string[];
+    qualityMetrics:string[];
     /** Estimated complexity score */
-    complexity: Score:number;
+    complexityScore:number;
     /** Meta-learning metadata */
     metadata?:{
-        principles: Id?:string;
-        research: Confidence?:number;
-        usesPrinciples: Research?:boolean;
-        researched: At?:Date;
+        principlesId?:string;
+        researchConfidence?:number;
+        usesPrinciplesResearch?:boolean;
+        researchedAt?:Date;
 };
 }
 /**
- * Intelligent: Prompt Generator
+ * Intelligent Prompt Generator
  *
  * Generates context-aware, high-quality development prompts with
  * integrated coding standards and best practices.
  */
-export declare class: IntelligentPromptGenerator {
+export declare class IntelligentPromptGenerator {
     ':any;
-    constructor(behavioral: Intelligence?:Behavioral: Intelligence, codingPrinciples: Researcher?:CodingPrinciples: Researcher);
+    constructor(behavioralIntelligence?:BehavioralIntelligence, codingPrinciplesResearcher?:CodingPrinciplesResearcher);
     /**
      * Generate intelligent prompt for development phase using meta-learning with confidence tracking
      */
-    generate: Prompt(phase:Development: Phase, context:Project: Context, config?:Partial<CodingStandards: Config>): Promise<Intelligent: Prompt>;
+    generatePrompt(phase:DevelopmentPhase, context:ProjectContext, config?:Partial<CodingStandardsConfig>): Promise<IntelligentPrompt>;
     /**
      * Generate comprehensive coding standards
      */
-    private generateCoding: Standards;
+    private generateCodingStandards;
     /**
      * Generate phase-specific guidelines
      */
-    private generatePhase: Guidelines;
+    private generatePhaseGuidelines;
     /**
      * Generate quality metrics for the phase
      */
-    private generateQuality: Metrics;
+    private generateQualityMetrics;
     const result:any;
     if(result:any, success:any): any;
 }
 /**
  * Export convenient factory function
  */
-export declare function createIntelligentPrompt: Generator(behavioral: Intelligence?:Behavioral: Intelligence): IntelligentPrompt: Generator;
+export declare function createIntelligentPromptGenerator(behavioralIntelligence?:BehavioralIntelligence): IntelligentPromptGenerator;
 /**
  * Export default configuration
  */
-export declare const: DEFAULT_CODING_STANDARDS:Required<CodingStandards: Config>;
-//# sourceMappingUR: L=intelligent-prompt-generator.d.ts.map
+export declare const DEFAULT_CODING_STANDARDS:Required<CodingStandardsConfig>;
+//# sourceMappingURL=intelligent-prompt-generator.d.ts.map

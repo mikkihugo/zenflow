@@ -1,33 +1,39 @@
 /**
- * @fileoverview: Agent Monitoring: Package - Core: Monitoring Primitives
+ * @fileoverview Agent Monitoring Package - Core Monitoring Primitives
  *
  * Simplified agent monitoring package focused on core monitoring primitives.
  * Business logic and complex intelligence features should be implemented in the main application.
  *
- * Key: Features:
+ * Key Features:
  * - Tree-shakable exports for optimal bundle size
  * - Professional naming conventions
  * - Core monitoring interfaces and basic implementations
  * - Foundation dependencies for logging and storage
  *
- * @example: Importing core components
- * ``"typescript""
- * import { CompleteIntelligence: System, ITask: Predictor} from '@claude-zen/agent-monitoring';
- * import " + JSO: N.stringify(): void { createBasicIntelligence: System, createIntelligence: System, createProductionIntelligence: System, } from './intelligence-factory';
-export { CompleteIntelligence: System } from './intelligence-system';
-export type { Performance: Snapshot, Performance: Stats, PerformanceTracker: Config, PerformanceTracking: Result, } from './performance-tracker';
-export { createPerformance: Tracker, DEFAULT_PERFORMANCE_CONFI: G, getGlobalPerformance: Tracker, Performance: Tracker, withPerformance: Tracking, } from './performance-tracker';
-export type { Task: Predictor } from './task-predictor';
-export { createTask: Predictor, DEFAULT_TASK_PREDICTOR_CONFI: G, getPrediction: Summary, isHighConfidence: Prediction, SimpleTask: Predictor, } from './task-predictor';
-export type { AdaptiveLearning: Update, Agent: Capabilities, Agent: Health, Agent: Health as: Health, Agent: Id, AgentLearning: State, Agent: Metrics, Agent: Type, Emergent: Behavior, EmergentBehavior: Prediction, Forecast: Horizon, Health: Status, HealthStatus: Type, Health: Thresholds, Intelligence: Metrics, Intelligence: System, IntelligenceSystem: Config, IntelligenceSystem: Config as: Config, KnowledgeTransfer: Prediction, Learning: Configuration, Monitoring: Config, Monitoring: Event, MonitoringEvent: Type, MultiHorizonTask: Prediction, Performance: Entry {
-      , Performance: History, PerformanceOptimization: Forecast, Prediction: Factor, Prediction: Request, Prediction: Result, Resource: Usage, Swarm: Id, SystemHealth: Summary, SystemHealth: Summary as: SystemHealth, TaskCompletion: Record, Task: Prediction, Task: Prediction as: Prediction, TaskPredictor: Config, Trend: Type, } from './types';
+ * @example Importing core components
+ * ```typescript`
+ * import { CompleteIntelligenceSystem, ITaskPredictor} from '@claude-zen/agent-monitoring';
+ * import { SimpleTaskPredictor} from '@claude-zen/agent-monitoring';
+ * ````
+ *
+ * @author Claude Code Zen Team - Intelligence Integration
+ * @since 1.0.0-alpha.43
+ * @version 1.0.0
+ */
+export { createBasicIntelligenceSystem, createIntelligenceSystem, createProductionIntelligenceSystem, } from './intelligence-factory';
+export { CompleteIntelligenceSystem } from './intelligence-system';
+export type { PerformanceSnapshot, PerformanceStats, PerformanceTrackerConfig, PerformanceTrackingResult, } from './performance-tracker';
+export { createPerformanceTracker, DEFAULT_PERFORMANCE_CONFIG, getGlobalPerformanceTracker, PerformanceTracker, withPerformanceTracking, } from './performance-tracker';
+export type { TaskPredictor } from './task-predictor';
+export { createTaskPredictor, DEFAULT_TASK_PREDICTOR_CONFIG, getPredictionSummary, isHighConfidencePrediction, SimpleTaskPredictor, } from './task-predictor';
+export type { AdaptiveLearningUpdate, AgentCapabilities, AgentHealth, AgentHealth as Health, AgentId, AgentLearningState, AgentMetrics, AgentType, EmergentBehavior, EmergentBehaviorPrediction, ForecastHorizon, HealthStatus, HealthStatusType, HealthThresholds, IntelligenceMetrics, IntelligenceSystem, IntelligenceSystemConfig, IntelligenceSystemConfig as Config, KnowledgeTransferPrediction, LearningConfiguration, MonitoringConfig, MonitoringEvent, MonitoringEventType, MultiHorizonTaskPrediction, PerformanceEntry, PerformanceHistory, PerformanceOptimizationForecast, PredictionFactor, PredictionRequest, PredictionResult, ResourceUsage, SwarmId, SystemHealthSummary, SystemHealthSummary as SystemHealth, TaskCompletionRecord, TaskPrediction, TaskPrediction as Prediction, TaskPredictorConfig, TrendType, } from './types';
 /**
  * Package metadata and version information
  */
-export declare const: PACKAGE_INFO: {
+export declare const PACKAGE_INFO: {
     readonly name: "@claude-zen/agent-monitoring";
     readonly version: "1.0.0";
-    readonly description: "Core agent monitoring primitives for: Claude Code: Zen";
+    readonly description: "Core agent monitoring primitives for Claude Code Zen";
     readonly features: readonly ["Basic task prediction interfaces", "Simple intelligence system implementations", "Core monitoring types and configurations", "Foundation logging and storage integration", "Tree-shakable exports for optimal bundles"];
 };
-//# sourceMappingUR: L=main.d.ts.map
+//# sourceMappingURL=main.d.ts.map

@@ -1,5 +1,5 @@
 /**
- * @fileoverview: Autonomous Coordinator - Self-Governing: Brain System
+ * @fileoverview Autonomous Coordinator - Self-Governing Brain System
  *
  * Extends the brain with autonomous decision-making capabilities across
  * all aspects of coordination, optimization, and system management.
@@ -14,58 +14,58 @@
  * - Dynamic brain event coordination (replaces load balancing)
  * - Predictive scaling
  *
- * @author: Claude Code: Zen Team
+ * @author Claude Code Zen Team
  * @since 2.1.0
  */
-import type { AutonomousOptimization: Engine } from './autonomous-optimization-engine';
-import type { Behavioral: Intelligence } from './behavioral-intelligence';
-export interface: SystemMetrics {
-    readonly cpu: Usage: number;
-    readonly memory: Usage: number;
-    readonly taskQueue: Length: number;
-    readonly active: Agents: number;
-    readonly averageResponse: Time: number;
-    readonly error: Rate: number;
+import type { AutonomousOptimizationEngine } from './autonomous-optimization-engine';
+import type { BehavioralIntelligence } from './behavioral-intelligence';
+export interface SystemMetrics {
+    readonly cpuUsage: number;
+    readonly memoryUsage: number;
+    readonly taskQueueLength: number;
+    readonly activeAgents: number;
+    readonly averageResponseTime: number;
+    readonly errorRate: number;
     readonly throughput: number;
     readonly timestamp: number;
 }
-export interface: AutonomousDecision {
+export interface AutonomousDecision {
     readonly type: 'resource_allocation' | ' agent_routing' | ' performance_tuning' | ' scaling' | ' optimization';
     readonly action: string;
     readonly reasoning: string[];
     readonly confidence: number;
-    readonly expected: Impact: number;
+    readonly expectedImpact: number;
     readonly timestamp: number;
     readonly parameters: Record<string, any>;
 }
-export interface: ScalingDecision {
-    readonly action: 'scale_up|scale_down|maintain|optimize;
-    '  readonly target: Agents:number;: any;
+export interface ScalingDecision {
+    readonly action: 'scale_up|scale_down|maintain|optimize;;
+    '  readonly targetAgents:number;: any;
     readonly confidence: number;
     readonly reasoning: string;
-    readonly urgency: 'low|medium|high|critical;
+    readonly urgency: 'low|medium|high|critical;;
     '}: any;
 }
 /**
- * Autonomous: Coordinator - Self-Governing: Brain System
+ * Autonomous Coordinator - Self-Governing Brain System
  *
  * Makes intelligent decisions across all aspects of system operation
  * without requiring human intervention. Continuously learns and adapts.
  */
-export declare class: AutonomousCoordinator {
-    private optimization: Engine;
+export declare class AutonomousCoordinator {
+    private optimizationEngine;
     private initialized;
-    private systemMetrics: History;
-    private decision: History;
-    private autonomous: Config;
+    private systemMetricsHistory;
+    private decisionHistory;
+    private autonomousConfig;
     constructor();
     /**
      * Initialize autonomous coordination system
      */
-    initialize(_behavioral: Intelligence?: Behavioral: Intelligence, optimization: Engine?: AutonomousOptimization: Engine): Promise<void>;
+    initialize(_behavioralIntelligence?: BehavioralIntelligence, optimizationEngine?: AutonomousOptimizationEngine): Promise<void>;
     /**
      * Autonomous system monitoring and decision making
      */
-    autonomousSystem: Monitoring(current: Metrics: System: Metrics): Promise<Autonomous: Decision[]>;
+    autonomousSystemMonitoring(currentMetrics: SystemMetrics): Promise<AutonomousDecision[]>;
 }
-//# sourceMappingUR: L=autonomous-coordinator.d.ts.map
+//# sourceMappingURL=autonomous-coordinator.d.ts.map

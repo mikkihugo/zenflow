@@ -1,91 +1,102 @@
 /**
- * @file: Models module exports.
+ * @file Models module exports.
  */
-export type { Neural: Preset, NeuralPreset: Map } from './presets';
+export type { NeuralPreset, NeuralPresetMap } from './presets';
 export * from './presets';
-export { NEURAL_PRESET: S, NEURAL_PRESET: S as: COMPLETE_NEURAL_PRESETS, NEURAL_PRESET: S as: NeuralModelPresets } from './presets';
-export declare const: AutoencoderPreset: {
+export { NEURAL_PRESETS, NEURAL_PRESETS as COMPLETE_NEURAL_PRESETS, NEURAL_PRESETS as NeuralModelPresets } from './presets';
+export declare const AutoencoderPreset: {
     id: string;
     name: string;
     type: string;
     architecture: string;
     layers: number[];
     activation: string;
-    output: Activation: string;
-    learning: Rate: number;
-    batch: Size: number;
-    use: Case: string[];
+    outputActivation: string;
+    learningRate: number;
+    batchSize: number;
+    useCase: string[];
 };
-export declare const: CNNPreset: {
+export declare const CNNPreset: {
     id: string;
     name: string;
     type: string;
     architecture: string;
     layers: number[];
     activation: string;
-    output: Activation: string;
-    learning: Rate: number;
-    batch: Size: number;
-    use: Case: string[];
+    outputActivation: string;
+    learningRate: number;
+    batchSize: number;
+    useCase: string[];
 };
-export declare const: LSTMPreset: {
+export declare const LSTMPreset: {
     id: string;
     name: string;
     type: string;
     architecture: string;
     layers: number[];
     activation: string;
-    output: Activation: string;
-    learning: Rate: number;
-    batch: Size: number;
-    use: Case: string[];
+    outputActivation: string;
+    learningRate: number;
+    batchSize: number;
+    useCase: string[];
 };
-export declare class: GraphNeuralNetwork {
+export declare class GraphNeuralNetwork {
     config: any;
-    constructor(): void {
+    constructor(config?: any);
+    train(data: any): Promise<void>;
+}
+export declare class TransformerModel {
     config: any;
-    constructor(): void {
+    constructor(config?: any);
+    train(data: any): Promise<void>;
+}
+export declare class VAEModel {
     config: any;
-    constructor(): void {
-    NEURAL_PRESET: S: import(): void {
+    constructor(config?: any);
+    train(data: any): Promise<void>;
+}
+declare const _default: {
+    NEURAL_PRESETS: import("./presets").NeuralPresetMap;
+    NeuralModelPresets: import("./presets").NeuralPresetMap;
+    AutoencoderPreset: {
         id: string;
         name: string;
         type: string;
         architecture: string;
         layers: number[];
         activation: string;
-        output: Activation: string;
-        learning: Rate: number;
-        batch: Size: number;
-        use: Case: string[];
+        outputActivation: string;
+        learningRate: number;
+        batchSize: number;
+        useCase: string[];
     };
-    CNN: Preset: {
+    CNNPreset: {
         id: string;
         name: string;
         type: string;
         architecture: string;
         layers: number[];
         activation: string;
-        output: Activation: string;
-        learning: Rate: number;
-        batch: Size: number;
-        use: Case: string[];
+        outputActivation: string;
+        learningRate: number;
+        batchSize: number;
+        useCase: string[];
     };
-    LSTM: Preset: {
+    LSTMPreset: {
         id: string;
         name: string;
         type: string;
         architecture: string;
         layers: number[];
         activation: string;
-        output: Activation: string;
-        learning: Rate: number;
-        batch: Size: number;
-        use: Case: string[];
+        outputActivation: string;
+        learningRate: number;
+        batchSize: number;
+        useCase: string[];
     };
-    GraphNeural: Network: typeof: GraphNeuralNetwork;
-    Transformer: Model: typeof: TransformerModel;
-    VAE: Model: typeof: VAEModel;
+    GraphNeuralNetwork: typeof GraphNeuralNetwork;
+    TransformerModel: typeof TransformerModel;
+    VAEModel: typeof VAEModel;
 };
 export default _default;
-//# sourceMappingUR: L=index.d.ts.map
+//# sourceMappingURL=index.d.ts.map

@@ -1,19 +1,23 @@
 /**
- * @fileoverview: Complete Intelligence: System Implementation
+ * @fileoverview Complete Intelligence System Implementation
  *
  * Stub implementation for the main intelligence system
  */
-import type { Agent: Id, AgentLearning: State, Intelligence: System, IntelligenceSystem: Config, MultiHorizonTask: Prediction } from './types';
+import type { AgentId, AgentLearningState, IntelligenceSystem, IntelligenceSystemConfig, MultiHorizonTaskPrediction } from './types';
 /**
- * Complete: Intelligence System - Main implementation
+ * Complete Intelligence System - Main implementation
  */
-export declare class: CompleteIntelligenceSystem implements: IntelligenceSystem {
-    constructor(): void { ')      agent: Id:agent: Id.id,: status, overall: Score: overall: Health, response: Time: agent: Health, metrics, response: Time, error: Rate: agent: Health, metrics, error: Rate, }: {
-        ")      agent: Id:agent: Id.id,": any;
-        overall: Score: any;
-        response: Time: any;
+export declare class CompleteIntelligenceSystem implements IntelligenceSystem {
+    constructor(config: IntelligenceSystemConfig);
+    predictTaskDurationMultiHorizon(agentId: AgentId, taskType: string, context?: Record<string, unknown>): Promise<MultiHorizonTaskPrediction>;
+    getAgentLearningState(agentId: AgentId): AgentLearningState | null;
+    logger: any;
+    debug(: any, { ')      agentId:agentId.id,: status, overallScore: overallHealth, responseTime: agentHealth, metrics, responseTime, errorRate: agentHealth, metrics, errorRate, }: {
+        ")      agentId:agentId.id,": any;
+        overallScore: any;
+        responseTime: any;
         metrics: any;
-        error: Rate: any;
+        errorRate: any;
     }): any;
 }
-//# sourceMappingUR: L=intelligence-system.d.ts.map
+//# sourceMappingURL=intelligence-system.d.ts.map

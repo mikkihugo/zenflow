@@ -1,7 +1,7 @@
 /**
- * @fileoverview: Smart Prompt: Optimization System
+ * @fileoverview Smart Prompt Optimization System
  *
- * Uses: ML-powered analysis to optimize prompts based on historical performance,
+ * Uses ML-powered analysis to optimize prompts based on historical performance,
  * context analysis, and regression modeling for continuous improvement.
  *
  * Features:
@@ -10,70 +10,74 @@
  * - Continuous learning from prompt success/failure
  * - Statistical significance testing
  *
- * @author: Claude Code: Zen Team
+ * @author Claude Code Zen Team
  * @since 2.1.0
  */
-export interface: PromptAnalysisData {
-    readonly original: Prompt: string;
-    readonly optimized: Prompt: string;
-    readonly context: Size: number;
-    readonly task: Complexity: number;
-    readonly agent: Type: string;
-    readonly success: Rate: number;
-    readonly response: Time: number;
-    readonly user: Satisfaction: number;
+export interface PromptAnalysisData {
+    readonly originalPrompt: string;
+    readonly optimizedPrompt: string;
+    readonly contextSize: number;
+    readonly taskComplexity: number;
+    readonly agentType: string;
+    readonly successRate: number;
+    readonly responseTime: number;
+    readonly userSatisfaction: number;
     readonly timestamp: number;
     readonly metadata?: {
         domain?: string;
         complexity?: number;
-        task: Type?: string;
+        taskType?: string;
     };
     readonly context?: string;
     readonly metrics?: Record<string, number>;
 }
-export interface: OptimizationPattern {
-    readonly pattern: Type: 'length_optimization|structure_enhancement|context_addition|clarity_improvement;
+export interface OptimizationPattern {
+    readonly patternType: 'length_optimization|structure_enhancement|context_addition|clarity_improvement;;
     readonly confidence: number;
     readonly improvement: number;
-    readonly applicable: Contexts: string[];
+    readonly applicableContexts: string[];
     readonly examples: string[];
 }
-export interface: SmartOptimizationResult {
-    readonly optimized: Prompt: string;
+export interface SmartOptimizationResult {
+    readonly optimizedPrompt: string;
     readonly confidence: number;
-    readonly improvement: Factor: number;
-    readonly applied: Patterns: Optimization: Pattern[];
+    readonly improvementFactor: number;
+    readonly appliedPatterns: OptimizationPattern[];
     readonly reasoning: string[];
-    readonly statistical: Significance: number;
+    readonly statisticalSignificance: number;
 }
 /**
- * Smart: Prompt Optimization: System
+ * Smart Prompt Optimization System
  *
  * Uses machine learning to continuously improve prompt optimization
  * based on historical performance data and statistical analysis.
  */
-export declare class: SmartPromptOptimizer {
+export declare class SmartPromptOptimizer {
     private initialized;
-    constructor(): void {
-      : void;
+    constructor();
+    /**
+     * Learn from prompt performance feedback
+     */
+    learnFromPerformance(analysisData: PromptAnalysisData): Promise<void>;
+    catch(error: any): void;
     /**
      * Get optimization statistics
      */
-    getOptimization: Stats(): void {
-        total: Optimizations: number;
-        average: Improvement: number;
-        pattern: Count: number;
-        success: Rate: number;
-        recent: Trend: number;
+    getOptimizationStats(): {
+        totalOptimizations: number;
+        averageImprovement: number;
+        patternCount: number;
+        successRate: number;
+        recentTrend: number;
     };
-    private initializeBaseline: Patterns;
-    private extractPrompt: Features;
-    private findSimilar: Prompts;
-    private calculateFeature: Similarity;
-    private performRegression: Analysis;
-    private generateOptimization: Patterns;
-    private apply: Optimizations;
-    private calculateStatistical: Significance;
-    private updateOptimization: Patterns;
+    private initializeBaselinePatterns;
+    private extractPromptFeatures;
+    private findSimilarPrompts;
+    private calculateFeatureSimilarity;
+    private performRegressionAnalysis;
+    private generateOptimizationPatterns;
+    private applyOptimizations;
+    private calculateStatisticalSignificance;
+    private updateOptimizationPatterns;
 }
-//# sourceMappingUR: L=smart-prompt-optimizer.d.ts.map
+//# sourceMappingURL=smart-prompt-optimizer.d.ts.map

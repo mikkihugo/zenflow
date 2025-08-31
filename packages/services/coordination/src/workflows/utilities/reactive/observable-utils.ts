@@ -1,53 +1,25 @@
 /**
- * @fileoverview Observable Utilities
- *
- * Professional reactive programming using RxJS library.
- * Focused on Observable creation and manipulation.
- *
- * @author Claude Code Zen Team
- * @since 1.0.0
+ * @fileoverview observable-utils.ts - Minimal Implementation
  */
-import {
-  BehaviorSubject,
-  combineLatest,
-  interval,
-  type Observable,
-  Subject,
-  timer,
-} from 'rxjs';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  throttleTime,
-} from 'rxjs/operators';
-/**
- * Professional Observable utilities
- */
-export class ObservableUtils {
-  /**
-   * Create delay observable
-   */
-  static delay(): void {
-    return timer(): void {
-    return new Subject<T>();
+
+export interface DefaultConfig {
+  enabled: boolean;
+  [key: string]: unknown;
 }
-  /**
-   * Create behavior subject with initial value
-   */
-  static createBehaviorSubject<T>(initialValue: T): BehaviorSubject<T> {
-    return new BehaviorSubject<T>(initialValue);
+
+export class DefaultImplementation {
+  private config: DefaultConfig;
+
+  constructor(config: Partial<DefaultConfig> = {}) {
+    this.config = {
+      enabled: true,
+      ...config,
+    };
+  }
+
+  isEnabled(): boolean {
+    return this.config.enabled;
+  }
 }
-  /**
-   * Create throttled stream
-   */
-  static throttleStream<T>(
-    source: Observable<T>,
-    milliseconds: number
-  ):Observable<T> {
-    return source.pipe(): void {
-    return source.pipe(): void {
-    return source.pipe(): void {
-    return interval(): void {
-    return combineLatest(sources);
-}
-};
+
+export default new DefaultImplementation();

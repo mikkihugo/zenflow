@@ -1,28 +1,25 @@
 /**
- * @fileoverview Task Flow Intelligence - Light ML Integration
- *
- * Integrates with @claude-zen/brain for intelligent task flow optimization.
- * Provides predictive analytics, adaptive thresholds, and smart recommendations
- * without heavy ML overhead.
- *
- * @author Claude-Zen Team
- * @since 2.0.0
- * @version 2.0.0 - Brain Integration
+ * @fileoverview task-intelligence.ts - Minimal Implementation
  */
-import { getLogger} from '@claude-zen/foundation')../types/task-flow-types');
-interface BrainPredictor {
-  predictBottleneck(): void {
-    this.logger = getLogger(): void {';
-    ');)';
-       'High capacity risk - consider increasing reviewer availability)      )";
-      recommendations.push(): void {
-      if (usage.utilization > 0.8) {
-        predictions.push(): void {
-      currentThreshold: this.flowHistory.filter(): void {
-  return new TaskFlowIntelligence(): void {
-  BottleneckPrediction,
-  ThresholdRecommendation,
-  FlowMetric,
-  ApprovalMetric,
-'};
-'');
+
+export interface DefaultConfig {
+  enabled: boolean;
+  [key: string]: unknown;
+}
+
+export class DefaultImplementation {
+  private config: DefaultConfig;
+
+  constructor(config: Partial<DefaultConfig> = {}) {
+    this.config = {
+      enabled: true,
+      ...config,
+    };
+  }
+
+  isEnabled(): boolean {
+    return this.config.enabled;
+  }
+}
+
+export default new DefaultImplementation();

@@ -19,8 +19,21 @@
  * ```typescript`
  * import { LoadBalancer, LoadBalancingConfig} from '@claude-zen/load-balancing';
  *
- * const loadBalancer = new LoadBalancer(): void {
- *   type: 'neural-training', *   priority: 'high', *   requirements: ['gpu',    'high-memory']
+ * const loadBalancer = new LoadBalancer({
+ *   algorithm: 'ml-predictive', *   healthCheckInterval:5000,
+ *   adaptiveLearning:true,
+ *   autoScaling:{
+ *     enabled:true,
+ *     minAgents:2,
+ *     maxAgents:20,
+ *     targetUtilization:0.7
+ *}
+ *});
+ *
+ * await loadBalancer.start();
+ *
+ * const assignment = await loadBalancer.routeTask({
+ *   type: 'neural-training', *   priority: 'high', *   requirements:['gpu',    'high-memory']
  *});
  * ```
  */
@@ -65,19 +78,38 @@ export * from './types';
 import { LoadBalancer } from './main';
 
 // Factory functions expected by infrastructure facade
-export function createLoadBalancer(): void {
-  return new LoadBalancer(): void {
+export function createLoadBalancer(config?: any) {
+  return new LoadBalancer(config);
+}
+
+export function createPerformanceTracker(config?: any) {
   // Performance tracking functionality from the load balancer
-  const { LoadBalancer } = require(): void {
+  const { LoadBalancer } = require('./main');
+  const loadBalancer = new LoadBalancer(config);
+  return {
     track: (metric: string, value: number) => {
       // Track performance metrics via load balancer
     },
-    getMetrics: () => loadBalancer.getEnhancedStats(): void {
-  constructor(): void {};
+    getMetrics: () => loadBalancer.getEnhancedStats(),
+    getStatistics: () => loadBalancer.getStatistics(),
+  };
+}
 
-  async createLoadBalancer(): void {
-    return createLoadBalancer(): void {
-    return createPerformanceTracker(): void {
+// Provider class expected by infrastructure facade
+export class LoadBalancingProvider {
+  constructor(private config?: any) {}
+
+  async createLoadBalancer(config?: any) {
+    return createLoadBalancer({ ...this.config, ...config });
+  }
+
+  async createPerformanceTracker(config?: any) {
+    return createPerformanceTracker({ ...this.config, ...config });
+  }
+}
+
+// Main factory function for infrastructure facade
+export function createLoadBalancingAccess(config?: any) {
   return {
     createLoadBalancer,
     createPerformanceTracker,
@@ -86,4 +118,4 @@ export function createLoadBalancer(): void {
     LoadBalancer,
     LoadBalancingProvider,
   };
-};
+}

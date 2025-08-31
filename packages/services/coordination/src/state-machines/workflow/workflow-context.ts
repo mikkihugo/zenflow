@@ -44,7 +44,8 @@ export interface WorkflowMachineContext {
     state: TaskState;
     count: number;
     limit: number;
-    timestamp: Date;}>;
+    timestamp: Date;
+  }>;
   // Bottleneck detection
   activeBottlenecks: WorkflowBottleneck[];
   bottleneckHistory: WorkflowBottleneck[];
@@ -61,9 +62,9 @@ export interface WorkflowMachineContext {
   errors: Array<{
     timestamp: Date;
     error: string;
-    context: string;}>;
-};
-
+    context: string;
+  }>;
+}
 // =============================================================================
 // CONTEXT INITIALIZATION
 // =============================================================================
@@ -115,28 +116,72 @@ export class WorkflowContextUtils {
   /**
    * Get task count for specific state
    */
-  static getTaskCountForState(): void {
+  static getTaskCountForState(
+    context: WorkflowMachineContext,
+    state: TaskState
+  ): number {
     return context.tasksByState[state]?.length || 0;
-  };
+  }
 
   /**
    * Get WIP utilization for state (current/limit)
    */
-  static getWIPUtilization(): void {
-    const currentCount = WorkflowContextUtils.getTaskCountForState(): void {
-    const currentCount = WorkflowContextUtils.getTaskCountForState(): void {
+  static getWIPUtilization(
+    context: WorkflowMachineContext,
+    state: TaskState
+  ): number {
+    const currentCount = WorkflowContextUtils.getTaskCountForState(
+      context,
+      state
+    );
+    const limit = context.wipLimits[state];
+    return limit > 0 ? currentCount / limit : 1;
+  }
+
+  /**
+   * Check if adding tasks would violate WIP limits
+   */
+  static wouldViolateWIP(
+    context: WorkflowMachineContext,
+    state: TaskState,
+    additionalTasks: number = 1
+  ): boolean {
+    const currentCount = WorkflowContextUtils.getTaskCountForState(
+      context,
+      state
+    );
+    const limit = context.wipLimits[state];
+    return currentCount + additionalTasks > limit;
+  }
+
+  /**
+   * Get system health category
+   */
+  static getSystemHealthCategory(
+    health: number
+  ): 'excellent' | 'good' | 'warning' | 'critical' {
     if (health >= 0.9) return 'excellent';
     if (health >= 0.7) return 'good';
     if (health >= 0.3) return 'warning';
     return 'critical';
-  };
+  }
 
   /**
    * Get recent errors (last N errors)
    */
-  static getRecentErrors(): void { timestamp: Date; error: string; context: string }> {
+  static getRecentErrors(
+    context: WorkflowMachineContext,
+    count: number = 5
+  ): Array<{ timestamp: Date; error: string; context: string }> {
     return context.errors
-      .slice(): void {
+      .slice(-count)
+      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+  }
+
+  /**
+   * Calculate overall WIP utilization across work states
+   */
+  static getOverallWIPUtilization(context: WorkflowMachineContext): number {
     const workStates: TaskState[] = [
       'analysis',
       'development',
@@ -153,8 +198,7 @@ export class WorkflowContextUtils {
       );
       totalUtilization += Math.min(1, utilization); // Cap at 100%
       stateCount++;
-    };
-
-    return stateCount > 0 ? totalUtilization / stateCount: 0;};
-
-};
+    }
+    return stateCount > 0 ? totalUtilization / stateCount : 0;
+  }
+}

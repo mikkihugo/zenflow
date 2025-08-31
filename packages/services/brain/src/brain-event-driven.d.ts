@@ -1,135 +1,186 @@
 /**
- * @fileoverview: Brain Service: Event-Driven: Implementation
+ * @fileoverview Brain Service Event-Driven Implementation
  *
- * **100% EVEN: T-DRIVEN: BRAIN COORDINATION: WITH FOUNDATIO: N**
+ * **100% EVENT-DRIVEN BRAIN COORDINATION WITH FOUNDATION**
  *
- * Foundation-powered event-driven brain service providing autonomous: AI decision-making
+ * Foundation-powered event-driven brain service providing autonomous AI decision-making
  * through pure event coordination with zero package dependencies. Implements the
  * established event-driven pattern for brain coordination via typed events.
  *
- * **ARCHITECTUR: E:**
- * - Foundation imports internally (get: Logger, record: Metric, with: Trace, generateUUI: D, TypedEvent: Base)
+ * **ARCHITECTURE:**
+ * - Foundation imports internally (getLogger, recordMetric, withTrace, generateUUID, TypedEventBase)
  * - Event-based brain coordination only (no package dependencies)
- * - Event interfaces:'brain:brain-service:action' → ' brain-service:response')brain:brain-service:optimize-prompt' → ' brain-service:prompt-optimized')brain:brain-service:estimate-complexity' → ' brain-service:complexity-estimated')brain:brain-service:predict-performance' → ' brain-service:performance-predicted')brain:brain-service:coordinate-autonomous' → ' brain-service:autonomous-coordinated')brain:brain-service:analyze-behavioral' → ' brain-service:behavioral-analyzed')brain:brain-service:process-neural' → ' brain-service:neural-processed')@claude-zen/brain';
+ * - Event interfaces:'brain:brain-service:action' → ' brain-service:response') * - Internal professional service operations using foundation utilities
+ * - Clean factory exports following established patterns
+ *
+ * **EVENT COORDINATION:**
+ * - 'brain:brain-service:optimize-prompt' → ' brain-service:prompt-optimized') * - 'brain:brain-service:estimate-complexity' → ' brain-service:complexity-estimated') * - 'brain:brain-service:predict-performance' → ' brain-service:performance-predicted') * - 'brain:brain-service:coordinate-autonomous' → ' brain-service:autonomous-coordinated') * - 'brain:brain-service:analyze-behavioral' → ' brain-service:behavioral-analyzed') * - 'brain:brain-service:process-neural' → ' brain-service:neural-processed') *
+ * @example Event-Driven Brain Coordination
+ * ```typescript`
+ * import { createEventDrivenBrain, EventDrivenBrain} from '@claude-zen/brain';
  *
  * // Create event-driven brain with brain coordination
- * const brain: Service = await createEventDriven: Brain(): void {
- *   request: Id: 'req-123', *   task: 'complex-architecture-design', *   prompt: 'Design a scalable microservices architecture...', *   context:{ complexity: 0.8, priority: 'high', time: Limit:30000}
+ * const brainService = await createEventDrivenBrain({
+ *   autonomous:{ enabled: true, learningRate:0.01},
+ *   neural:{ rustAcceleration: true, gpuAcceleration:true},
+ *   optimization:{ autoSelection: true, performanceTracking:true},
+ *   enterprise:{ auditTrail: true, securityLevel: 'high'}
+ *});
+ *
+ * // Event-driven prompt optimization
+ * brainService.eventBus.emit('brain:brain-service:optimize-prompt', {
+ *   requestId: 'req-123', *   task: 'complex-architecture-design', *   prompt: 'Design a scalable microservices architecture...', *   context:{ complexity: 0.8, priority: 'high', timeLimit:30000}
  *});
  *
  * // Listen for optimization results
- * brain: Service.event: Bus.on(): void {
- *   logger.info(): void {
- *   request: Id: 'complexity-456', *   task: 'enterprise-system-design', *   content: 'Build a fault-tolerant distributed system...', *   context:{ domain: 'enterprise-architecture', scale: ' global'}
+ * brainService.eventBus.on('brain-service:prompt-optimized', (result) => {
+ *   logger.info('Optimization completed: ', {
+' *     strategy:result.strategy,
+ *     confidence:result.confidence,
+ *     optimizedPrompt:result.optimizedPrompt
+ *});
+ *});
+ * ```
+ *
+ * @example Autonomous Decision-Making
+ * ```typescript`
+ * // Autonomous complexity estimation and strategy selection
+ * brainService.eventBus.emit('brain:brain-service:estimate-complexity', {
+ *   requestId: 'complexity-456', *   task: 'enterprise-system-design', *   content: 'Build a fault-tolerant distributed system...', *   context:{ domain: 'enterprise-architecture', scale: ' global'}
  *});
  *
  * // Autonomous coordination based on complexity
- * brain: Service.event: Bus.on(): void {
- *   brain: Service.event: Bus.emit(): void { TypedEvent: Base, Result } from '@claude-zen/foundation';
-/**
- * Brain: Service Configuration
+ * brainService.eventBus.on('brain-service:complexity-estimated', (analysis) => {
+ *   brainService.eventBus.emit('brain:brain-service:coordinate-autonomous', {
+ *     requestId: 'coord-789', *     complexityAnalysis:analysis,
+ *     objectives:{
+ *       performance:0.4,
+ *       reliability:0.3,
+ *       efficiency:0.3
+ *}
+ *});
+ *});
+ * ```
+ *
+ * @author Claude Code Zen Team
+ * @since 2.0.0
+ * @version 2.1.0
  */
-export interface: EventDrivenBrainConfig {
+import { TypedEventBase, Result } from '@claude-zen/foundation';
+/**
+ * Brain Service Configuration
+ */
+export interface EventDrivenBrainConfig {
     /** Service identification */
-    service: Id?: string;
-    service: Name?: string;
+    serviceId?: string;
+    serviceName?: string;
     /** Autonomous decision-making configuration */
     autonomous?: {
         enabled?: boolean;
-        learning: Rate?: number;
-        adaptation: Threshold?: number;
-        decisionConfidence: Minimum?: number;
-        enableSelf: Improvement?: boolean;
+        learningRate?: number;
+        adaptationThreshold?: number;
+        decisionConfidenceMinimum?: number;
+        enableSelfImprovement?: boolean;
     };
     /** Neural computation configuration */
     neural?: {
         backend?: 'rust-fann' | ' brain-js' | ' gpu-accelerated';
-        rust: Acceleration?: boolean;
-        gpu: Acceleration?: boolean;
-        parallel: Processing?: number;
-        memoryPool: Size?: string;
+        rustAcceleration?: boolean;
+        gpuAcceleration?: boolean;
+        parallelProcessing?: number;
+        memoryPoolSize?: string;
         acceleration?: {
             gpu?: boolean;
-            multi: Threading?: boolean;
+            multiThreading?: boolean;
             vectorization?: 'avx512' | ' avx2' | ' sse4';
-            memory: Optimization?: boolean;
+            memoryOptimization?: boolean;
         };
     };
     /** Optimization strategy configuration */
     optimization?: {
-        strategies?: ('dspy' | ' ml' | ' hybrid' | ' ensemble')low' | ' medium' | ' high' | ' critical';
-        multi: Tenant?: boolean;
-        governance: Compliance?: 'soc2' | ' iso27001' | ' gdpr';
-        model: Encryption?: boolean;
-        access: Control?: 'rbac' | ' rbac-with-abac';
+        strategies?: ('dspy' | ' ml' | ' hybrid' | ' ensemble')[];
+        autoSelection?: boolean;
+        performanceTracking?: boolean;
+        kernelFusion?: boolean;
+        memoryOptimization?: boolean;
+        pipelineParallelism?: boolean;
+    };
+    /** Enterprise features configuration */
+    enterprise?: {
+        auditTrail?: boolean;
+        securityLevel?: 'low' | ' medium' | ' high' | ' critical';
+        multiTenant?: boolean;
+        governanceCompliance?: 'soc2' | ' iso27001' | ' gdpr';
+        modelEncryption?: boolean;
+        accessControl?: 'rbac' | ' rbac-with-abac';
     };
     /** Behavioral intelligence configuration */
     behavioral?: {
         enabled?: boolean;
-        realTime: Adaptation?: boolean;
-        crossAgent: Learning?: boolean;
-        feedback: Integration?: boolean;
-        privacy: Preservation?: boolean;
+        realTimeAdaptation?: boolean;
+        crossAgentLearning?: boolean;
+        feedbackIntegration?: boolean;
+        privacyPreservation?: boolean;
     };
     /** Performance and monitoring */
     monitoring?: {
-        realTime: Metrics?: boolean;
-        performance: Profiler?: boolean;
-        memory: Tracker?: boolean;
-        checkpoint: Interval?: number;
-        validation: Interval?: number;
+        realTimeMetrics?: boolean;
+        performanceProfiler?: boolean;
+        memoryTracker?: boolean;
+        checkpointInterval?: number;
+        validationInterval?: number;
     };
     /** Advanced features */
     advanced?: {
-        distributed: Training?: boolean;
-        federated: Learning?: boolean;
-        transfer: Learning?: boolean;
-        ensemble: Methods?: boolean;
+        distributedTraining?: boolean;
+        federatedLearning?: boolean;
+        transferLearning?: boolean;
+        ensembleMethods?: boolean;
         quantization?: 'int8' | ' int16' | ' fp16' | ' mixed';
     };
 }
 /**
- * Prompt: Optimization Request
+ * Prompt Optimization Request
  */
-export interface: PromptOptimizationRequest {
-    request: Id: string;
+export interface PromptOptimizationRequest {
+    requestId: string;
     task: string;
     prompt: string;
     context?: {
         complexity?: number;
         domain?: string;
         priority?: 'low' | ' medium' | ' high' | ' critical';
-        time: Limit?: number;
-        quality: Requirement?: number;
-        resource: Budget?: 'low' | ' medium' | ' high';
+        timeLimit?: number;
+        qualityRequirement?: number;
+        resourceBudget?: 'low' | ' medium' | ' high';
     };
-    enable: Learning?: boolean;
+    enableLearning?: boolean;
 }
 /**
- * Prompt: Optimization Result
+ * Prompt Optimization Result
  */
-export interface: PromptOptimizationResult {
-    request: Id: string;
+export interface PromptOptimizationResult {
+    requestId: string;
     strategy: 'dspy' | ' ml' | ' hybrid' | ' basic';
     confidence: number;
-    optimized: Prompt: string;
+    optimizedPrompt: string;
     reasoning: string;
-    performance: Prediction: {
-        expected: Accuracy: number;
-        estimated: Duration: number;
-        resource: Requirements: string;
+    performancePrediction: {
+        expectedAccuracy: number;
+        estimatedDuration: number;
+        resourceRequirements: string;
     };
     metadata: {
-        processing: Time: number;
-        model: Used: string;
-        complexity: Score: number;
+        processingTime: number;
+        modelUsed: string;
+        complexityScore: number;
     };
 }
 /**
- * Complexity: Estimation Request
+ * Complexity Estimation Request
  */
-export interface: ComplexityEstimationRequest {
-    request: Id: string;
+export interface ComplexityEstimationRequest {
+    requestId: string;
     task: string;
     content: string;
     context?: {
@@ -141,11 +192,11 @@ export interface: ComplexityEstimationRequest {
     expertise?: 'junior' | ' mid' | ' senior' | ' expert';
 }
 /**
- * Complexity: Analysis Result
+ * Complexity Analysis Result
  */
-export interface: ComplexityAnalysisResult {
-    request: Id: string;
-    overall: Complexity: number;
+export interface ComplexityAnalysisResult {
+    requestId: string;
+    overallComplexity: number;
     dimensions: {
         technical: number;
         architectural: number;
@@ -153,62 +204,95 @@ export interface: ComplexityAnalysisResult {
         business: number;
     };
     recommendations: {
-        optimization: Strategy: 'dspy' | ' ml' | ' hybrid';
-        time: Estimate: number;
-        resource: Requirements: string;
-        risk: Factors: string[];
+        optimizationStrategy: 'dspy' | ' ml' | ' hybrid';
+        timeEstimate: number;
+        resourceRequirements: string;
+        riskFactors: string[];
     };
     confidence: number;
 }
 /**
- * Performance: Prediction Request
+ * Performance Prediction Request
  */
-export interface: PerformancePredictionRequest {
-    request: Id: string;
-    agent: Id: string;
-    task: Type: string;
+export interface PerformancePredictionRequest {
+    requestId: string;
+    agentId: string;
+    taskType: string;
     complexity: number;
     context: {
-        timeOf: Day?: string;
+        timeOfDay?: string;
         workload?: 'light' | ' moderate' | ' heavy';
         collaboration?: boolean;
         urgency?: 'low' | ' medium' | ' high';
     };
-    horizons: ('1h' | '4h' | '1d')low' | ' medium' | ' high';
+    horizons: ('1h' | '4h' | '1d')[];
+}
+/**
+ * Performance Prediction Result
+ */
+export interface PerformancePredictionResult {
+    requestId: string;
+    predictions: {
+        [horizon: string]: {
+            expectedQuality: number;
+            confidence: number;
+            influencingFactors: string[];
+            adaptationPotential?: number;
+            improvement?: number;
+        };
+    };
+    optimizationRecommendations: string[];
+}
+/**
+ * Autonomous Coordination Request
+ */
+export interface AutonomousCoordinationRequest {
+    requestId: string;
+    complexityAnalysis: ComplexityAnalysisResult;
+    objectives: {
+        performance: number;
+        reliability: number;
+        efficiency: number;
+        learning?: number;
+    };
+    constraints?: {
+        timeLimit?: number;
+        qualityRequirement?: number;
+        resourceBudget?: 'low' | ' medium' | ' high';
     };
 }
 /**
- * Autonomous: Coordination Result
+ * Autonomous Coordination Result
  */
-export interface: AutonomousCoordinationResult {
-    request: Id: string;
+export interface AutonomousCoordinationResult {
+    requestId: string;
     decisions: {
         strategy: string;
-        resource: Allocation: Record<string, any>;
-        scaling: Decisions: Record<string, any>;
-        optimization: Actions: string[];
+        resourceAllocation: Record<string, any>;
+        scalingDecisions: Record<string, any>;
+        optimizationActions: string[];
     };
-    expected: Impact: {
-        performance: Gain: number;
-        cost: Impact: number;
-        reliability: Change: number;
+    expectedImpact: {
+        performanceGain: number;
+        costImpact: number;
+        reliabilityChange: number;
     };
     confidence: number;
-    implementation: Plan: string[];
-    rollback: Strategy: string[];
+    implementationPlan: string[];
+    rollbackStrategy: string[];
 }
 /**
- * Behavioral: Analysis Request
+ * Behavioral Analysis Request
  */
-export interface: BehavioralAnalysisRequest {
-    request: Id: string;
-    agent: Id: string;
-    execution: Data: {
-        task: Type: string;
-        start: Time: number;
-        end: Time: number;
+export interface BehavioralAnalysisRequest {
+    requestId: string;
+    agentId: string;
+    executionData: {
+        taskType: string;
+        startTime: number;
+        endTime: number;
         performance: {
-            quality: Score: number;
+            qualityScore: number;
             efficiency: number;
             innovation: number;
             completeness: number;
@@ -218,100 +302,202 @@ export interface: BehavioralAnalysisRequest {
     };
 }
 /**
- * Behavioral: Analysis Result
+ * Behavioral Analysis Result
  */
-export interface: BehavioralAnalysisResult {
-    request: Id: string;
+export interface BehavioralAnalysisResult {
+    requestId: string;
     patterns: {
-        performance: Trends: Record<string, number>;
-        behavioral: Clusters: string[];
+        performanceTrends: Record<string, number>;
+        behavioralClusters: string[];
         anomalies: string[];
     };
     insights: {
         strengths: string[];
-        improvement: Areas: string[];
+        improvementAreas: string[];
         recommendations: string[];
     };
-    learning: Outcomes: {
-        model: Updates: boolean;
-        adaptation: Rate: number;
-        confidence: Impact: number;
+    learningOutcomes: {
+        modelUpdates: boolean;
+        adaptationRate: number;
+        confidenceImpact: number;
     };
 }
 /**
- * Neural: Processing Request
+ * Neural Processing Request
  */
-export interface: NeuralProcessingRequest {
-    request: Id: string;
-    task: Type: 'embedding' | ' inference' | ' training' | ' optimization';
-    input: Data: any;
-    model: Config?: {
+export interface NeuralProcessingRequest {
+    requestId: string;
+    taskType: 'embedding' | ' inference' | ' training' | ' optimization';
+    inputData: any;
+    modelConfig?: {
         architecture: string;
         parameters: Record<string, any>;
         optimization: Record<string, any>;
     };
-    processing: Options?: {
-        useGP: U?: boolean;
-        batch: Size?: number;
+    processingOptions?: {
+        useGPU?: boolean;
+        batchSize?: number;
         precision?: 'fp16' | ' fp32' | ' mixed';
     };
 }
 /**
- * Neural: Processing Result
+ * Neural Processing Result
  */
-export interface: NeuralProcessingResult {
-    request: Id: string;
+export interface NeuralProcessingResult {
+    requestId: string;
     output: any;
     metadata: {
-        processing: Time: number;
-        model: Used: string;
-        compute: Resources: string;
+        processingTime: number;
+        modelUsed: string;
+        computeResources: string;
         accuracy?: number;
     };
     performance: {
         throughput: number;
         latency: number;
-        memory: Usage: number;
+        memoryUsage: number;
     };
 }
 /**
- * Brain: Service Events: Interface
+ * Brain Service Events Interface
  */
-export interface: BrainServiceEvents {
-    'brain:brain-service:optimize-prompt': PromptOptimization: Request;
-    'brain:brain-service:estimate-complexity': ComplexityEstimation: Request;
-    'brain:brain-service:predict-performance': PerformancePrediction: Request;
-    'brain:brain-service:coordinate-autonomous': AutonomousCoordination: Request;
-    'brain:brain-service:analyze-behavioral': BehavioralAnalysis: Request;
-    'brain:brain-service:process-neural': NeuralProcessing: Request;
-    'brain-service:prompt-optimized': PromptOptimization: Result;
-    'brain-service:complexity-estimated': ComplexityAnalysis: Result;
-    'brain-service:performance-predicted': PerformancePrediction: Result;
-    'brain-service:autonomous-coordinated': AutonomousCoordination: Result;
-    'brain-service:behavioral-analyzed': BehavioralAnalysis: Result;
-    'brain-service:neural-processed': NeuralProcessing: Result;
+export interface BrainServiceEvents {
+    'brain:brain-service:optimize-prompt': PromptOptimizationRequest;
+    'brain:brain-service:estimate-complexity': ComplexityEstimationRequest;
+    'brain:brain-service:predict-performance': PerformancePredictionRequest;
+    'brain:brain-service:coordinate-autonomous': AutonomousCoordinationRequest;
+    'brain:brain-service:analyze-behavioral': BehavioralAnalysisRequest;
+    'brain:brain-service:process-neural': NeuralProcessingRequest;
+    'brain-service:prompt-optimized': PromptOptimizationResult;
+    'brain-service:complexity-estimated': ComplexityAnalysisResult;
+    'brain-service:performance-predicted': PerformancePredictionResult;
+    'brain-service:autonomous-coordinated': AutonomousCoordinationResult;
+    'brain-service:behavioral-analyzed': BehavioralAnalysisResult;
+    'brain-service:neural-processed': NeuralProcessingResult;
     'brain-service:error': {
-        request: Id: string;
+        requestId: string;
         operation: string;
         error: string;
         context: Record<string, any>;
     };
     'brain-service:status': {
-        service: Id: string;
+        serviceId: string;
         status: 'initializing' | ' ready' | ' busy' | ' error';
         metrics: Record<string, any>;
     };
 }
 /**
- * Event-Driven: Brain Service: Implementation
+ * Event-Driven Brain Service Implementation
  *
- * Foundation-powered brain service providing autonomous: AI decision-making
+ * Foundation-powered brain service providing autonomous AI decision-making
  * through pure event coordination with zero external package dependencies.
  */
-export declare class: EventDrivenBrain " + JSO: N.stringify(): void {
- *   autonomous:{ enabled: true, learning: Rate:0.01},
- *   neural:{ rust: Acceleration: true, gpu: Acceleration:true},
- *   enterprise:" + JSO: N.stringify(): void { EventDriven: Brain };
-export default: EventDrivenBrain;
-export type { EventDrivenBrain: Config, PromptOptimization: Request, PromptOptimization: Result, ComplexityEstimation: Request, ComplexityAnalysis: Result, PerformancePrediction: Request, PerformancePrediction: Result, AutonomousCoordination: Request, AutonomousCoordination: Result, BehavioralAnalysis: Request, BehavioralAnalysis: Result, NeuralProcessing: Request, NeuralProcessing: Result, BrainService: Events };
-//# sourceMappingUR: L=brain-event-driven.d.ts.map
+export declare class EventDrivenBrain {
+    private readonly serviceId;
+    private readonly config;
+    private readonly logger;
+    private readonly container;
+    readonly eventBus: TypedEventBase<BrainServiceEvents>;
+    private readonly promptOptimizationBreaker;
+    private readonly complexityEstimationBreaker;
+    private readonly performancePredictionBreaker;
+    private readonly autonomousCoordinationBreaker;
+    private isInitialized;
+    private performanceHistory;
+    private behavioralModels;
+    private neuralNetworks;
+    constructor(config?: EventDrivenBrainConfig);
+    /**
+     * Initialize the event-driven brain service
+     */
+    initialize(): Promise<Result<void, string>>;
+    /**
+     * Setup event handlers for brain coordination
+     */
+    private setupEventHandlers;
+    /**
+     * Handle prompt optimization with autonomous strategy selection
+     */
+    private handlePromptOptimization;
+    /**
+     * Handle complexity estimation with ML-powered analysis
+     */
+    private handleComplexityEstimation;
+    /**
+     * Handle performance prediction with behavioral intelligence
+     */
+    private handlePerformancePrediction;
+    /**
+     * Handle autonomous coordination with system-wide optimization
+     */
+    private handleAutonomousCoordination;
+    /**
+     * Handle behavioral analysis with learning integration
+     */
+    private handleBehavioralAnalysis;
+    /**
+     * Handle neural processing with GPU acceleration
+     */
+    private handleNeuralProcessing;
+    /**
+     * Perform intelligent prompt optimization
+     */
+    private performPromptOptimization;
+    private analyzeTechnicalComplexity;
+    private analyzeArchitecturalComplexity;
+    private analyzeOperationalComplexity;
+    private analyzeBusinessComplexity;
+    private generateComplexityRecommendations;
+    private calculateComplexityConfidence;
+    private getBehavioralProfile;
+    private predictPerformanceForHorizon;
+    private calculateContextAdjustments;
+    private identifyInfluencingFactors;
+    private generatePerformanceRecommendations;
+    private makeAutonomousDecisions;
+    private selectCoordinationStrategy;
+    private calculateResourceAllocation;
+    private makeScalingDecisions;
+    private generateOptimizationActions;
+    private predictCoordinationImpact;
+    private calculateCoordinationConfidence;
+    private generateImplementationPlan;
+    private generateRollbackStrategy;
+    private analyzeBehavioralPatterns;
+    private generateBehavioralInsights;
+    private updateBehavioralModels;
+    private selectNeuralModel;
+    private processEmbedding;
+    private processInference;
+    private processTraining;
+    private processOptimization;
+    private calculateThroughput;
+    private getMemoryUsage;
+    private getComputeResources;
+    private getActiveRequestCount;
+    private getCpuUsage;
+    private learnFromOptimization;
+}
+/**
+ * Create Event-Driven Brain Service
+ *
+ * Factory function for creating event-driven brain service with brain coordination.
+ * Returns initialized service ready for autonomous AI decision-making operations.
+ *
+ * @param config - Brain service configuration
+ * @returns Initialized EventDrivenBrain service
+ *
+ * @example
+ * ```typescript`
+ * const brainService = await createEventDrivenBrain({
+ *   autonomous:{ enabled: true, learningRate:0.01},
+ *   neural:{ rustAcceleration: true, gpuAcceleration:true},
+ *   enterprise:{ auditTrail: true, securityLevel: 'high'}
+ *});
+ * ```
+ */
+export declare function createEventDrivenBrain(config?: EventDrivenBrainConfig): Promise<EventDrivenBrain>;
+export { EventDrivenBrain };
+export default EventDrivenBrain;
+export type { EventDrivenBrainConfig, PromptOptimizationRequest, PromptOptimizationResult, ComplexityEstimationRequest, ComplexityAnalysisResult, PerformancePredictionRequest, PerformancePredictionResult, AutonomousCoordinationRequest, AutonomousCoordinationResult, BehavioralAnalysisRequest, BehavioralAnalysisResult, NeuralProcessingRequest, NeuralProcessingResult, BrainServiceEvents };
+//# sourceMappingURL=brain-event-driven.d.ts.map

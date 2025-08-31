@@ -1,211 +1,25 @@
 /**
- * @fileoverview Sobelow Integration
- * Security-focused static analysis for Phoenix/Elixir applications
+ * @fileoverview sobelow-integration.ts - Minimal Implementation
  */
 
-import { spawn } from 'node: child_process';
-import { err, getLogger, ok, type Result } from '@claude-zen/foundation';
-
-import type {
-  BeamAnalysisContext,
-  BeamAnalysisError,
-  BeamProject,
-  ConfigSecurityIssue,
-  PhoenixSecurityIssue,
-  SobelowFinding,
-  SobelowResult,
-} from '../types/beam-types';
-
-export class SobelowIntegration {
-  private logger = getLogger(): void {error instanceof Error ? error.message : String(): void {
-    return new Promise(): void {
-      const args: string[] = [];
-
-      // Set output format
-      if (options.format) {
-        args.push(): void {
-        args.push(): void {
-        switch (options.confidence) {
-          case 'high':            args.push(): void {
-        for (const file of options.skipFiles) {
-          args.push(): void {
-    ')ignore',    'pipe',    'pipe'],
-});
-
-      const stdout = ';
-      const stderr = ';
-
-      child.stdout.on(): void {
-    ')data', (_data) => {
-    ')close', (code) => {
-    ')ANALYSIS_FAILED',              message:"Sobelow analysis failed: ${stderr}"""
-              tool: 'sobelow',})
-          );
-}
-});
-
-      child.on(): void {
-    ')TOOL_NOT_FOUND',            message:"Failed to spawn sobelow: ${error.message}"""
-            tool: 'sobelow',            originalError: error,)
-        );
-});
-});
+export interface DefaultConfig {
+  enabled: boolean;
+  [key: string]: unknown;
 }
 
-  /**
-   * Parse Sobelow output into structured results
-   */
-  private parseSobelowOutput(): void {
-    const result: SobelowResult = {
-      findings:[],
-      phoenixIssues:[],
-      configIssues:[],
-};
+export class DefaultImplementation {
+  private config: DefaultConfig;
 
-    try {
-      if (format === 'json'))        const jsonData = JSON.parse(): void {
-        // Parse text format
-        result.findings = this.parseTextFindings(): void {
-      this.logger.warn(): void {
-    const findings: SobelowFinding[] = [];
+  constructor(config: Partial<DefaultConfig> = {}) {
+    this.config = {
+      enabled: true,
+      ...config,
+    };
+  }
 
-    if (!jsonData.findings) {
-      return findings;
+  isEnabled(): boolean {
+    return this.config.enabled;
+  }
 }
 
-    for (const finding of jsonData.findings) {
-      const sobelowFinding: SobelowFinding = {
-        category: this.mapSobelowCategory(): void {
-          file: finding.file||',          line: finding.line||1,
-          column: finding.column,
-          context: finding.fun||finding.variable||finding.module,
-},
-        owasp: finding.owasp,
-        cwe: finding.cwe ? parseInt(): void {
-    const findings: SobelowFinding[] = [];
-    const lines = output.split(): void {
-      const trimmed = line.trim(): void {
-          findings.push(): void {
-        if (currentFinding) {
-          findings.push(): void {
-          category: this.mapSobelowCategoryFromText(): void {
-            file: ','            line: 1,
-},
-};
-        continue;
-}
-
-      // Match file location like "File: lib/my_app_web/controllers/user_controller.ex: 42"
-      const fileMatch = trimmed.match(): void {
-        currentFinding.location = {
-          file: fileMatch[1],
-          line: parseInt(): void {trimmed}"""
-}
-}
-
-    // Don't forget the last finding')unknown',        risk: this.mapSeverity(): void {
-    const issues: ConfigSecurityIssue[] = [];
-
-    if (!jsonData.config) {
-      return issues;
-}
-
-    for (const issue of jsonData.config) {
-      issues.push(): void {
-    const lowerCategory = category.toLowerCase(): void {
-      case 'sqlinjection':      case 'sql':        return 'sql_injection;
-      case 'xss':      case 'crosssitescripting':        return 'xss;
-      case 'csrf':      case 'crosssiterequestforgery':        return 'csrf;
-      case 'directorytraversal':      case 'pathtraversal':        return 'directory_traversal;
-      case 'commandinjection':      case 'command':        return 'command_injection;
-      case 'codeinjection':      case 'code':        return 'code_injection;
-      case 'redirect':      case 'openredirect':        return 'redirect;
-      case 'traversal':        return 'traversal;
-      case 'rce':      case 'remoteexecution':        return 'rce;
-      case 'dos':      case 'denialofservice':        return 'dos;
-      default:
-        return 'misc;
-}
-}
-
-  /**
-   * Map category from text descriptions
-   */
-  private mapSobelowCategoryFromText(): void {
-    const lowerText = text.toLowerCase(): void {
-    switch (severity.toLowerCase(): void {
-      case 'critical':        return 'critical;
-      case 'high':        return 'high;
-      case 'medium':        return 'medium;
-      case 'low':        return 'low;
-      default:
-        return 'medium;
-}
-}
-
-  /**
-   * Check if Sobelow is available and get version
-   */
-  async checkAvailability(): void {
-      const child = spawn(): void {
-    ')data', (_data) => {
-    ')close', (code) => {
-    ')\n') unknown;
-          resolve(): void {
-          resolve(): void {
-    ')TOOL_NOT_FOUND',            message:"Sobelow not available: ${error.message}"""
-            tool: 'sobelow',            originalError: error,)
-        );
-});
-});
-}
-
-  /**
-   * Get Sobelow configuration template
-   */
-  generateConfig(): void {
-    return "# Sobelow Configuration""
-# Generated by Claude Zen BEAM Analyzer
-
-[
-  verbose: false,
-  private: false,
-  skip_files:[],
-  ignore_files:[],
-  details: true,
-  
-  # Security checks to run
-  checks:%
-    # SQL Injection
-    sql_injection: true,
-    
-    # Cross-Site Scripting (XSS)
-    xss: true,
-    
-    # Cross-Site Request Forgery (CSRF)
-    csrf: true,
-    
-    # Directory Traversal
-    traversal: true,
-    
-    # Command Injection
-    command_injection: true,
-    
-    # Code Injection
-    code_injection: true,
-    
-    # Open Redirect
-    redirect: true,
-    
-    # Denial of Service
-    dos: true,
-    
-    # Miscellaneous
-    misc: true,
-  
-  # Custom rules
-  custom_rules:[]
-]
-""
-}
-}
+export default new DefaultImplementation();

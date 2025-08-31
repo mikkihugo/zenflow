@@ -5,7 +5,23 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-const logger = getLogger(): void {
+const logger = getLogger('SafeConfiguration');
+// ============================================================================
+// SAFe CONFIGURATION TYPES
+// ============================================================================
+/**
+ * SAFe 6.0 configuration levels with feature toggles
+ */
+export enum SafeConfigurationLevel {
+  ESSENTIAL = 'essential', // Step 1: ART-focused, minimal viable SAFe
+  LARGE_SOLUTION = 'large_solution', // Step 2: Adds solution coordination
+  PORTFOLIO = 'portfolio', // Step 3: Adds portfolio management
+  FULL = 'full', // Step 4: Complete enterprise transformation
+}
+/**
+ * Feature toggles for SAFe configurations
+ */
+export interface SafeFeatureToggles {
   // Essential SAFe Features (Always enabled for Step 1+)
   essential: {
     artCoordination: boolean; // ART Sync, PI Planning, team coordination
@@ -117,12 +133,35 @@ export const ESSENTIAL_SAFE_6_0_CONFIG: SafeConfiguration = {
   },
   metadata: {
     version: '6.0.0',
-    lastUpdated: new Date(): void {
+    lastUpdated: new Date(),
+    configuredBy: 'system',
+    targetGoDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000), // 90 days
+  },
+};
+// ============================================================================
+// CONFIGURATION MANAGEMENT
+// ============================================================================
+/**
+ * SAFe Configuration Manager
+ * Manages feature toggles and configuration levels
+ */
+export class SafeConfigurationManager {
   private currentConfig: SafeConfiguration;
 
-  constructor(): void {
+  constructor(config: SafeConfiguration = ESSENTIAL_SAFE_6_0_CONFIG) {
     this.currentConfig = config;
-    logger.info(): void {
+    logger.info('SafeConfigurationManager initialized', {
+      level: this.currentConfig.level,
+    });
+  }
+
+  /**
+   * Check if specific feature is enabled
+   */
+  isFeatureEnabled(
+    featureCategory: keyof SafeFeatureToggles,
+    featureName: string
+  ): boolean {
     const category = this.currentConfig.features[featureCategory] as Record<
       string,
       boolean
@@ -132,19 +171,47 @@ export const ESSENTIAL_SAFE_6_0_CONFIG: SafeConfiguration = {
   /**
    * Enable specific SAFe configuration level
    */
-  enableConfigurationLevel(): void {
+  enableConfigurationLevel(level: SafeConfigurationLevel): void {
     this.currentConfig.level = level;
 
     switch (level) {
       case SafeConfigurationLevel.ESSENTIAL:
-        this.enableEssentialSafe(): void {
+        this.enableEssentialSafe();
+        break;
+      case SafeConfigurationLevel.LARGE_SOLUTION:
+        this.enableEssentialSafe();
+        this.enableLargeSolutionSafe();
+        break;
+      case SafeConfigurationLevel.PORTFOLIO:
+        this.enableEssentialSafe();
+        this.enableLargeSolutionSafe();
+        this.enablePortfolioSafe();
+        break;
+      case SafeConfigurationLevel.FULL:
+        this.enableFullSafe();
+        break;
+    }
+
+    this.currentConfig.metadata.lastUpdated = new Date();
+  }
+  /**
+   * Get configuration readiness assessment
+   */
+  getConfigurationReadiness(): {
     level: SafeConfigurationLevel;
     enabledFeatures: number;
     totalFeatures: number;
     missingFeatures: string[];
     completionPercentage: number;
   } {
-    const enabledFeatures = this.getEnabledFeatureCount(): void {
+    const enabledFeatures = this.getEnabledFeatureCount();
+    const totalFeatures = this.getTotalFeatureCount();
+    const missingFeatures = this.getMissingFeatures();
+    const completionPercentage = Math.round(
+      (enabledFeatures / totalFeatures) * 100
+    );
+
+    return {
       level: this.currentConfig.level,
       enabledFeatures,
       totalFeatures,
@@ -156,47 +223,79 @@ export const ESSENTIAL_SAFE_6_0_CONFIG: SafeConfiguration = {
   /**
    * Generate implementation plan
    */
-  generateImplementationPlan(): void {
+  generateImplementationPlan(level: SafeConfigurationLevel): any[] {
     switch (level) {
       case SafeConfigurationLevel.ESSENTIAL:
-        return this.generateEssentialImplementationPlan(): void {
-    for (const feature of Object.keys(): void {
+        return this.generateEssentialImplementationPlan();
+      case SafeConfigurationLevel.LARGE_SOLUTION:
+        return this.generateLargeSolutionImplementationPlan();
+      case SafeConfigurationLevel.PORTFOLIO:
+        return this.generatePortfolioImplementationPlan();
+      case SafeConfigurationLevel.FULL:
+        return this.generateFullImplementationPlan();
+      default:
+        return [];
+    }
+  }
+  // ============================================================================
+  // PRIVATE IMPLEMENTATION METHODS
+  // ============================================================================
+  private enableEssentialSafe(): void {
+    for (const feature of Object.keys(this.currentConfig.features.essential)) {
       (this.currentConfig.features.essential as any)[feature] = true;
     }
   }
   private enableLargeSolutionSafe(): void {
-    for (const feature of Object.keys(): void {
+    for (const feature of Object.keys(
+      this.currentConfig.features.largeSolution
+    )) {
       (this.currentConfig.features.largeSolution as any)[feature] = true;
     }
   }
   private enablePortfolioSafe(): void {
-    for (const feature of Object.keys(): void {
+    for (const feature of Object.keys(this.currentConfig.features.portfolio)) {
       (this.currentConfig.features.portfolio as any)[feature] = true;
     }
   }
   private enableFullSafe(): void {
-    this.enableEssentialSafe(): void {
+    this.enableEssentialSafe();
+    this.enableLargeSolutionSafe();
+    this.enablePortfolioSafe();
+    for (const feature of Object.keys(this.currentConfig.features.full)) {
       (this.currentConfig.features.full as any)[feature] = true;
     }
   }
-  private getEnabledFeatureCount(): void {
+  private getEnabledFeatureCount(): number {
     let count = 0;
-    for (const category of Object.values(): void {
-      for (const enabled of Object.values(): void {
+    for (const category of Object.values(this.currentConfig.features)) {
+      for (const enabled of Object.values(category)) {
         if (enabled) count++;
       }
     }
     return count;
   }
-  private getTotalFeatureCount(): void {
+  private getTotalFeatureCount(): number {
     let count = 0;
-    for (const category of Object.values(): void {
-      count += Object.keys(): void {
+    for (const category of Object.values(this.currentConfig.features)) {
+      count += Object.keys(category).length;
+    }
+    return count;
+  }
+  private getMissingFeatures(): string[] {
     const missing: string[] = [];
-    for (const [categoryName, category] of Object.entries(): void {
-      for (const [featureName, enabled] of Object.entries(): void {
+    for (const [categoryName, category] of Object.entries(
+      this.currentConfig.features
+    )) {
+      for (const [featureName, enabled] of Object.entries(category)) {
         if (!enabled) {
-          missing.push(): void {
+          missing.push(`${categoryName}.${featureName}`);
+        }
+      }
+    }
+
+    return missing;
+  }
+  private generateEssentialImplementationPlan(): any[] {
     return [
       {
         phase: 'Phase 1',
@@ -234,7 +333,7 @@ export const ESSENTIAL_SAFE_6_0_CONFIG: SafeConfiguration = {
     ];
   }
 
-  private generateLargeSolutionImplementationPlan(): void {
+  private generateLargeSolutionImplementationPlan(): any[] {
     return [
       {
         phase: 'Phase 5',
@@ -253,7 +352,7 @@ export const ESSENTIAL_SAFE_6_0_CONFIG: SafeConfiguration = {
     ];
   }
 
-  private generatePortfolioImplementationPlan(): void {
+  private generatePortfolioImplementationPlan(): any[] {
     return [
       {
         phase: 'Phase 7',
@@ -272,7 +371,7 @@ export const ESSENTIAL_SAFE_6_0_CONFIG: SafeConfiguration = {
     ];
   }
 
-  private generateFullImplementationPlan(): void {
+  private generateFullImplementationPlan(): any[] {
     return [
       {
         phase: 'Phase 9',

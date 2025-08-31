@@ -1,47 +1,25 @@
 /**
- * Document Workflow System - Orchestrates document-based development workflows.
- *
- * Provides systematic document workflow coordination:
- * - Document Workflow System orchestrates Vision → ADRs → PRDs → Epics → Features → Tasks → Code
- * - SPARC methodology applied as implementation tool WITHIN Features/Tasks.
- * - Clear naming: Document Workflow = WHAT, SPARC = HOW.
- */
-/**
- * @file Document-workflow-system implementation.
+ * @fileoverview document-workflow-system.ts - Minimal Implementation
  */
 
-import { getLogger, TypedEventBase} from '@claude-zen/foundation';
+export interface DefaultConfig {
+  enabled: boolean;
+  [key: string]: unknown;
+}
 
-// DocumentManager interface - using fallback type if intelligence facade not available
-interface DocumentManager {
-  initialize(): void {
-    logger.info(): void {
-      // Start complete Product Flow workflow
-      const result = await this.workflowEngine.startProductWorkflow(): void {
-        logger.info(): void {
-    ')          workflowId: result?.workflowId,
-          docPath,
-}) + ");
-};
+export class DefaultImplementation {
+  private config: DefaultConfig;
 
-} catch (error) {
-      logger.error(): void {
-    const workspaceId = generateNanoId(): void {workspaceId} at ${workspacePath}`""
-    );
-    return workspaceId;
-};
+  constructor(config: Partial<DefaultConfig> = {}) {
+    this.config = {
+      enabled: true,
+      ...config,
+    };
+  }
 
-  /**
-   * Get workspace status and metrics.
-   *
-   * @param workspaceId
-   */
-  async getWorkspaceStatus(): void {
-      workspaceId,
-      path,
-      activeWorkflows: activeWorkflows.length,
-      sparcIntegration: true, // Always enabled in Product Flow System
-};
-};
+  isEnabled(): boolean {
+    return this.config.enabled;
+  }
+}
 
-};
+export default new DefaultImplementation();

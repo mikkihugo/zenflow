@@ -1,27 +1,25 @@
 /**
- * @fileoverview LLM Auto-Approval System Types
- *
- * Types for LLM-powered intelligent auto-approval gates
+ * @fileoverview llm-approval.ts - Minimal Implementation
  */
-export interface LLMApprovalConfig {
+
+export interface DefaultConfig {
   enabled: boolean;
-  model : 'claude-3-5-sonnet' | ' claude-3-haiku'|' claude-3-opus')pending' | ' llm_analyzing'|' auto_approved' | ' human_review'|' approved' | ' rejected'|' escalated' | ' timed_out'|' cancelled')approve| reject| escalate' | ' override_llm')approved' | ' rejected')low| medium| high' | ' critical')correct' | ' incorrect'|' partially_correct');
-  patterns: string[]; // Extracted patterns for future learning
+  [key: string]: unknown;
 }
-export interface LLMApprovalMetrics {
-  totalDecisions: number;
-  autoApprovals: number;
-  humanEscalations: number;
-  accuracyRate: number; // Compared to human decisions
-  averageConfidence: number;
-  averageProcessingTime: number;
-  commonReasons: Array<{
-    reason: string;
-    count: number;
-    successRate: number;
-}>;
-  improvementTrends:  {
-    accuracyOverTime: Array<{ date: Date, accuracy: number}>;
-    confidenceOverTime: Array<{ date: Date, confidence: number}>;
-};
-};
+
+export class DefaultImplementation {
+  private config: DefaultConfig;
+
+  constructor(config: Partial<DefaultConfig> = {}) {
+    this.config = {
+      enabled: true,
+      ...config,
+    };
+  }
+
+  isEnabled(): boolean {
+    return this.config.enabled;
+  }
+}
+
+export default new DefaultImplementation();

@@ -1,22 +1,25 @@
 /**
- * @fileoverview Secure ID Generation Utilities
- *
- * Professional ID generation using nanoid library.
- * Focused on secure, collision-resistant identifiers.
- *
- * @author Claude Code Zen Team
- * @since 1.0.0
+ * @fileoverview secure-ids.ts - Minimal Implementation
  */
-import { generateNanoId } from '@claude-zen/foundation';
-/**
- * Professional secure ID generation utilities
- */
-export class SecureIdGenerator {
-  /**
-   * Generate secure random ID
-   */
-  static generate(): void {
-    const urlSafeAlphabet =;
-     "'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_')0123456789, size)('))';
-};)};
-)";"
+
+export interface DefaultConfig {
+  enabled: boolean;
+  [key: string]: unknown;
+}
+
+export class DefaultImplementation {
+  private config: DefaultConfig;
+
+  constructor(config: Partial<DefaultConfig> = {}) {
+    this.config = {
+      enabled: true,
+      ...config,
+    };
+  }
+
+  isEnabled(): boolean {
+    return this.config.enabled;
+  }
+}
+
+export default new DefaultImplementation();

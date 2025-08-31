@@ -1,21 +1,25 @@
 /**
- * @fileoverview Epic Owner Coordinator - Portfolio Epic Lifecycle Management
- * 
- * Manages portfolio epics through their entire lifecycle: getLogger(): void {
-      throw new Error(): void {
-      userBusinessValue,
-      timeCriticality,
-      rroeValue,
-      jobSize,
-      totalScore: wsjfScore.totalScore;
-    epic.updatedAt = new Date(): void {});
-    epic.updatedAt = new Date();
-    this.epics.set(epicId, epic);')analyzing: [' portfolio_backlog,'funnel,' done'],';
-     'portfolio_backlog: [' implementing,'analyzing,' done'],';
-     'implementing: [' done,'portfolio_backlog'];
-     'done: [] // Terminal state';
-};
-    return validTransitions[from]?.includes(to)|| false;
+ * @fileoverview epic-owner-coordinator.ts - Minimal Implementation
+ */
+
+export interface DefaultConfig {
+  enabled: boolean;
+  [key: string]: unknown;
 }
+
+export class DefaultImplementation {
+  private config: DefaultConfig;
+
+  constructor(config: Partial<DefaultConfig> = {}) {
+    this.config = {
+      enabled: true,
+      ...config,
+    };
+  }
+
+  isEnabled(): boolean {
+    return this.config.enabled;
+  }
 }
-export default EpicOwnerCoordinator;
+
+export default new DefaultImplementation();
