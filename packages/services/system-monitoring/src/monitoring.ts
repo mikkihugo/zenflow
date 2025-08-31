@@ -32,15 +32,15 @@ interface PerformanceMetrics {
 
 // Helper functions for telemetry
 function recordMetric(name: string, value: number): void {
-  logger.debug('Metric recorded: ${name} = ' + value);
+  logger.debug('Metric recorded: ' + (name) + ' = ' + value);
 }
 
 function recordHistogram(name: string, value: number): void {
-  logger.debug('Histogram recorded: ${name} = ' + value);
+  logger.debug('Histogram recorded: ' + (name) + ' = ' + value);
 }
 
 function recordGauge(name: string, value: number): void {
-  logger.debug('Gauge recorded: ${name} = ' + value);
+  logger.debug('Gauge recorded: ' + (name) + ' = ' + value);
 }
 
 function withAsyncTrace<T>(name: string, fn: () => Promise<T>): Promise<T> {
@@ -48,11 +48,11 @@ function withAsyncTrace<T>(name: string, fn: () => Promise<T>): Promise<T> {
   logger.debug('Trace started: ' + name);
   return fn().then(
     (result) => {
-      logger.debug('Trace completed: ${name} (' + Date.now() - start + 'ms)');
+      logger.debug('Trace completed: ' + (name) + ' (' + Date.now() - start + 'ms)');
       return result;
     },
     (error) => {
-      logger.debug('Trace failed: ${name} (' + Date.now() - start + 'ms)');
+      logger.debug('Trace failed: ' + (name) + ' (' + Date.now() - start + 'ms)');
       throw error;
     }
   );

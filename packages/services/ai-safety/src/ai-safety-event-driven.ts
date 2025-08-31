@@ -832,7 +832,7 @@ export class EventDrivenAISafety extends TypedEventBase {
       type: 'deception',
       severity: this.mapRiskToSeverity(analysis.riskLevel),
       agentId,
-      description: 'Deception detected with ${(analysis.confidence * 100).toFixed(1)}% confidence: ' + analysis.indicators.join(',    '),
+      description: 'Deception detected with ' + ((analysis.confidence * 100).toFixed(1)) + '% confidence: ' + analysis.indicators.join(',    '),
       timestamp: Date.now(),
       resolved: false,
     };

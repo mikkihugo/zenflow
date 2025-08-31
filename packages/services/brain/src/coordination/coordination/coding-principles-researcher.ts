@@ -132,7 +132,7 @@ export class CodingPrinciplesResearcher {
   }
 
   private generateCacheKey(config: PrinciplesResearchConfig): string {
-    return '${config.language}-${config.domain || 'general'}-${config.role || 'general'}-' + config.depth || 'intermediate';
+    return (config.language) + '-${config.domain || ' + config.depth || 'intermediate';
   }
 
   private getFallbackPrinciples(config: PrinciplesResearchConfig): CodingPrinciples {
@@ -179,7 +179,7 @@ export class CodingPrinciplesResearcher {
   }
 
   private formatTemplate(principles: CodingPrinciples): string {
-    return '# ${principles.language.toUpperCase()} Coding Principles
+    return '# ' + (principles.language.toUpperCase()) + ' Coding Principles
 
 ' + principles.domain ? '## Domain: ' + principles.domain : '' + '
 ' + principles.role ? '## Role: ' + principles.role : '' + '

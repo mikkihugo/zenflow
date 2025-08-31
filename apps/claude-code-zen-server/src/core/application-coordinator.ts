@@ -256,7 +256,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
           this.exportManager = {
             getSupportedFormats: () => ['json', 'yaml', 'xml'],
             exportSystemData: (format: string) =>
-              Promise.resolve({ filename: 'export-${Date.now()}.' + format }),
+              Promise.resolve({ filename: 'export-' + (Date.now()) + '.' + format }),
             initialize: () => Promise.resolve(),
             shutdown: () => Promise.resolve(),
           };
@@ -344,7 +344,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       this.on('websocket:connected', (...args: unknown[]) => { 
         const socketId = args[0] as string;
         this.activeConnections++;
-        logger.debug('WebSocket client connected: ${socketId} (total: ' + this.activeConnections + ')');
+        logger.debug('WebSocket client connected: ' + (socketId) + ' (total: ' + this.activeConnections + ')');
         this.broadcastEvent('websocket:client:connected', { 
           socketId, 
           totalConnections: this.activeConnections 
@@ -354,7 +354,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       this.on('websocket:disconnected', (...args: unknown[]) => { 
         const socketId = args[0] as string;
         this.activeConnections = Math.max(0, this.activeConnections - 1);
-        logger.debug('WebSocket client disconnected: ${socketId} (total: ' + this.activeConnections + ')');
+        logger.debug('WebSocket client disconnected: ' + (socketId) + ' (total: ' + this.activeConnections + ')');
         this.broadcastEvent('websocket:client:disconnected', { 
           socketId, 
           totalConnections: this.activeConnections 
@@ -631,9 +631,9 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       .map(([name, info]) => {
         const details = Object.entries(info)
           .filter(([key]) => key !== 'status')
-          .map(([key, value]) => '    ${key}: ' + value)
+          .map(([key, value]) => '    ' + (key) + ': ' + value)
           .join('\n');
-        return '- **${name}**: ${info.status}' + details ? '\n' +   details : '';
+        return '- **' + (name) + '**: ' + (info.status) + details ? '\n' +   details : '';
       })
       .join('\n');
 

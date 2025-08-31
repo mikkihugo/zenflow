@@ -692,7 +692,7 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
 
         if (metrics.iterations > 3) {
           bottlenecks.push(
-            '${phase}:excessive iterations (' + metrics.iterations + ')'
+            (phase) + ':excessive iterations (' + metrics.iterations + ')'
           );
           optimizations.push(
             'Improve ' + phase + ' initial quality to reduce iterations'
@@ -700,7 +700,7 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
         }
 
         if (metrics.quality < 0.7) {
-          bottlenecks.push('${phase}:low quality output (' + metrics.quality + ')');
+          bottlenecks.push((phase) + ':low quality output (' + metrics.quality + ')');
           optimizations.push('Focus on ' + phase + ' quality improvement');
         }
       }

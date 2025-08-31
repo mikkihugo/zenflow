@@ -322,18 +322,7 @@ export async function getFactIntelligence(
       ({
         insights: facts.map(
           (fact) =>
-            '${(fact as any).source || 'unknown'}:' + (fact as any).summary || (fact as any).content || 'no content'
-        ),
-        patterns: [], // Pattern detection would be implemented here
-        recommendations: [], // Recommendations based on facts
-      }),
-    correlate: (facts: FactSearchResult[]) => {
-      // Correlation analysis
-      const correlations = [];
-      for (let i = 0; i < facts.length; i++) {
-        for (let j = i + 1; j < facts.length; j++) {
-          // Simple correlation based on common terms
-          const fact1Terms = ((facts[i] as any).content || '')
+            '${(fact as any).source || '')
             .toLowerCase()
             .split(' ');
           const fact2Terms = ((facts[j] as any).content || '')

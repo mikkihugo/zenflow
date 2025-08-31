@@ -161,7 +161,7 @@ export class SmartPromptOptimizer {
       };
 
       logger.info(
-        ' Prompt optimization complete - confidence: ${confidence.toFixed(2)}, improvement: ' + improvementFactor.toFixed(2) + 'x'
+        ' Prompt optimization complete - confidence: ' + (confidence.toFixed(2)) + ', improvement: ' + improvementFactor.toFixed(2) + 'x'
       );
 
       return result;
@@ -473,76 +473,7 @@ export class SmartPromptOptimizer {
 
     patterns.forEach((pattern) => {
       reasoning.push(
-        '${pattern.patternType.replace('_',    ' ' applied with ' + (pattern.confidence * 100).toFixed(0) + '% confidence');
-});
-
-    return reasoning;
-}
-
-  private calculateStatisticalSignificance(
-    similarPrompts: PromptAnalysisData[]
-  ): number {
-    if (similarPrompts.length < 5) return 0.1;
-
-    const successRates = similarPrompts.map((p) => p.successRate);
-    const standardError =
-      ss.standardDeviation(successRates) / Math.sqrt(successRates.length);
-
-    // Simple significance calculation (higher sample size and lower variance = higher significance)
-    return Math.min(1, (successRates.length * (1 - standardError)) / 20);
-}
-
-  private updateOptimizationPatterns(analysisData: PromptAnalysisData): void {
-    // Update pattern effectiveness based on performance feedback
-    const features = this.extractPromptFeatures(analysisData.originalPrompt);
-
-    // Use features to adjust pattern scoring based on prompt characteristics
-    const featuresMap = new Map(Object.entries(features));
-    const featureComplexity = this.calculateFeatureComplexity(featuresMap);
-
-    // Update pattern scores based on performance
-    for (const pattern of this.optimizationPatterns.values()) {
-      if (
-        pattern.applicableContexts.some((ctx:string) =>
-          analysisData.context?.includes(ctx)
-        )
-      ) {
-        // Adjust confidence based on performance metrics and feature complexity
-        const performanceScore = analysisData.metrics?.qualityScore||0.5;
-        const complexityAdjustment = 1 - featureComplexity * 0.1; // High complexity reduces confidence gain
-
-        // Create updated pattern with new confidence (immutable update)
-        const updatedPattern: OptimizationPattern = {
-          ...pattern,
-          confidence:
-            pattern.confidence * 0.9 +
-            performanceScore * complexityAdjustment * 0.1,
-          improvement:
-            performanceScore > 0.7
-              ? Math.min(
-                  pattern.improvement * (1.1 / Math.max(featureComplexity, 1)),
-                  2.0
-                )
-              :performanceScore < 0.3
-                ? Math.max(
-                    pattern.improvement *
-                      (0.9 * Math.max(featureComplexity, 1)),
-                    0.5
-                  )
-                :pattern.improvement,
-};
-
-        // Update the pattern in the map
-        for (const [key, mapPattern] of this.optimizationPatterns.entries()) {
-          if (mapPattern === pattern) {
-            this.optimizationPatterns.set(key, updatedPattern);
-            break;
-}
-}
-}
-}
-
-    logger.debug('Updated optimization patterns based on performance feedback');
+        '${pattern.patternType.replace('Updated optimization patterns based on performance feedback');
     // For now, just log the learning event
     logger.debug(
       ' Pattern learning: ' + analysisData.successRate > 0.7 ? 'positive' : 'negative' + ' feedback received'

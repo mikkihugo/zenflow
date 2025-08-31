@@ -383,7 +383,7 @@ export class MultiSwarmABTesting {
       recommendedStrategy: recommended,
       confidence: successRate,
       reasoning:[
-        'Based on ${relevantTests.length} historical tests for "' + taskType + '"','
+        'Based on ' + (relevantTests.length) + ' historical tests for "' + taskType + '"','
         'Success rate:' + (successRate * 100).toFixed(1) + '%','
         'Model:' + recommended?.modelBackend,'
         'Topology:' + recommended?.swarmConfig.topology,'
@@ -413,7 +413,7 @@ export class MultiSwarmABTesting {
     // Validate git configuration
     if (strategies.length > maxWorktrees) {
       logger.warn(
-        'Strategy count ${strategies.length} exceeds max worktrees ' + maxWorktrees,'
+        'Strategy count ' + (strategies.length) + ' exceeds max worktrees ' + maxWorktrees,'
         {
           strategies:strategies.length,
           maxWorktrees,
@@ -431,7 +431,7 @@ export class MultiSwarmABTesting {
 });
 
     for (const strategy of strategiesToProcess) {
-      const branchName = '${branchPrefix}-${strategy.id}-' + generateNanoId(6);'
+      const branchName = (branchPrefix) + '-' + (strategy.id) + '-' + generateNanoId(6);'
       const worktreePath = joinPath(getHomeDirectory(), '.claude-zen',    'tmp',    'ab-test-worktrees', branchName);'
 
       // Log worktree creation with gitConfig details
@@ -447,7 +447,7 @@ export class MultiSwarmABTesting {
       // await exec('git worktree add ' + worktreePath + ' -b ' + branchName + ' ' + baseBranch)'
 
       worktreePaths[strategy.id] = worktreePath;
-      logger.info(' Created worktree for ${strategy.name}:' + worktreePath);'
+      logger.info(' Created worktree for ' + (strategy.name) + ':' + worktreePath);'
 }
 
     // Log final worktree configuration summary
@@ -493,7 +493,7 @@ export class MultiSwarmABTesting {
       logger.info(
         '⏭️ Executing $strategies.lengthstrategies sequentially...');
       logger.info(
-        ' Sequential options:delay=${delayBetweenStrategies}ms, continueOnFailure=' + enableContinueOnFailure);
+        ' Sequential options:delay=' + (delayBetweenStrategies) + 'ms, continueOnFailure=' + enableContinueOnFailure);
 } else {
       logger.info(
         '⏭️ Executing ' + strategies.length + ' strategies sequentially...');
@@ -507,7 +507,7 @@ export class MultiSwarmABTesting {
       try {
         if (enableProgressLogging) {
           logger.info(
-            ' Executing strategy ${i + 1}/${strategies.length}:' + strategy.name);
+            ' Executing strategy ' + (i + 1) + '/' + (strategies.length) + ':' + strategy.name);
 }
 
         const result = await this.executeStrategy(
@@ -520,10 +520,10 @@ export class MultiSwarmABTesting {
 
         if (enableProgressLogging) {
           logger.info(
-            ' Strategy ${i + 1} completed:${strategy.name} (' + result.success ?'SUCCESS' : ' FAILED' + ')');
+            ' Strategy ' + (i + 1) + ' completed:' + (strategy.name) + ' (' + result.success ?'SUCCESS' : ' FAILED' + ')');
 }
 } catch (error) {
-        logger.error(' Strategy ${i + 1} failed:' + strategy.name, error);'
+        logger.error(' Strategy ' + (i + 1) + ' failed:' + strategy.name, error);'
 
         if (!enableContinueOnFailure) {
           throw error;

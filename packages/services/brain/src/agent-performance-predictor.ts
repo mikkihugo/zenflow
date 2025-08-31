@@ -137,7 +137,7 @@ export class AgentPerformancePredictor {
       await this.updatePerformanceTrends(data.agentId, history);
 
       logger.debug(
-        'Performance recorded for agent ${data.agentId}:success rate ' + data.successRate.toFixed(2)
+        'Performance recorded for agent ' + (data.agentId) + ':success rate ' + data.successRate.toFixed(2)
       );
     } catch (error) {
       logger.error('Failed to record performance: ', error);
@@ -218,7 +218,7 @@ export class AgentPerformancePredictor {
 };
 
       logger.info(
-        'Performance prediction for ${agentId}:${predictedSuccessRate.toFixed(2)} success rate, ' + predictedCompletionTime.toFixed(0) + 'ms completion time'
+        'Performance prediction for ' + (agentId) + ':' + (predictedSuccessRate.toFixed(2)) + ' success rate, ' + predictedCompletionTime.toFixed(0) + 'ms completion time'
       );
 
       return prediction;
@@ -799,7 +799,7 @@ export class AgentPerformancePredictor {
     // Perform advanced bottleneck analysis
     const issues = await this.identifyAdvancedPerformanceIssues(enhancedMetrics, systemLoad, agentId);
 
-    return issues.length > 0 ? ['Agent ${agentId}: ' + issues.join(', ''] : [];
+    return issues.length > 0 ? ['Agent ' + (agentId) + ': ' + issues.join(', ''] : [];
  + '
 
   private async loadPersistedMetrics(agentId:string): Promise<any> {
@@ -865,7 +865,7 @@ export class AgentPerformancePredictor {
     if (metrics.avgCpuUsage > cpuThreshold) {
       const severity = metrics.trends?.cpu === 'increasing' ? ' critical' : ' high';
       const deviationFromBaseline = ((metrics.avgCpuUsage - agentBaseline.cpu) * 100).toFixed(1);
-      issues.push('CPU usage (${(metrics.avgCpuUsage * 100).toFixed(1)}%, +' + deviationFromBaseline + '% vs baseline)');
+      issues.push('CPU usage (' + ((metrics.avgCpuUsage * 100).toFixed(1)) + '%, +' + deviationFromBaseline + '% vs baseline)');
       
       // Log critical performance event for this specific agent
       await this.logCriticalPerformanceEvent(agentId, 'cpu_spike', {
@@ -878,12 +878,12 @@ export class AgentPerformancePredictor {
     
     if (metrics.avgMemoryUsage > 0.80) {
       const trend = metrics.trends?.memory === 'increasing' ? ' trending up' : '';
-      issues.push('high memory usage (${(metrics.avgMemoryUsage * 100).toFixed(1)}%' + trend + ')');
+      issues.push('high memory usage (' + ((metrics.avgMemoryUsage * 100).toFixed(1)) + '%' + trend + ')');
 }
     
     if (metrics.avgErrorRate > 0.15) {
       const volatility = metrics.volatility?.errors > 0.1 ? ' with high volatility' : '';
-      issues.push('elevated error rate (${(metrics.avgErrorRate * 100).toFixed(1)}%' + volatility + ')');
+      issues.push('elevated error rate (' + ((metrics.avgErrorRate * 100).toFixed(1)) + '%' + volatility + ')');
 }
     
     if (metrics.avgCompletionTime > 30000) {
@@ -1319,7 +1319,7 @@ export class AgentPerformancePredictor {
       const normalizedRisk = factors > 0 ? riskScore / factors:0;
       const confidenceAdjustedRisk = normalizedRisk * profile.profileCompleteness;
 
-      logger.debug('Risk score calculated for agent ${  agentId  }: ' +   confidenceAdjustedRisk.toFixed(3), {
+      logger.debug('Risk score calculated for agent ' + (agentId) + ': ' +   confidenceAdjustedRisk.toFixed(3), {
         factors,
         profileCompleteness: profile.profileCompleteness,
         trends: metrics.trends,
@@ -1405,14 +1405,14 @@ export class AgentPerformancePredictor {
     criticalEvent:any
   ): Promise<void> {
     try {
-      logger.info('Creating TaskMaster incident for agent ${  agentId  }, event: ' +   eventType);
+      logger.info('Creating TaskMaster incident for agent ' + (agentId) + ', event: ' +   eventType);
 
       // Create a task for human approval via TaskMaster facade
       const incidentTask = {
         type: 'performance_incident',        agentId,
         eventType,
         severity:criticalEvent.severity,
-        description: 'Critical performance event: ${eventType} for agent ' + agentId,
+        description: 'Critical performance event: ' + (eventType) + ' for agent ' + agentId,
         recommendedActions:this.getRecommendedActions(eventType),
         eventData,
         criticalEvent,

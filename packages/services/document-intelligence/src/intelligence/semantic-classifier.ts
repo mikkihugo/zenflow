@@ -217,7 +217,7 @@ export class SemanticClassifier extends TypedEventBase {
     
     // Apply confidence threshold
     if (topScore < this.config.confidenceThreshold) {
-      logger.warn('Low confidence classification:${topCategory} (' + topScore.toFixed(2) + ')');`
+      logger.warn('Low confidence classification:' + (topCategory) + ' (' + topScore.toFixed(2) + ')');`
 }
 
     // Map categories to document types

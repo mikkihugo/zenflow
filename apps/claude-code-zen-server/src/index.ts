@@ -228,7 +228,7 @@ class ClaudeZenServer {
   private setupSocketSubscriptions(socket: Socket): void {
     socket.on('subscribe', (channel: string) => {
       socket.join(channel);
-      logger.debug('Client ${socket.id} subscribed to ' + channel);
+      logger.debug('Client ' + (socket.id) + ' subscribed to ' + channel);
 
       // Send initial data based on channel
       switch (channel) {
@@ -255,7 +255,7 @@ class ClaudeZenServer {
 
     socket.on('unsubscribe', (channel: string) => {
       socket.leave(channel);
-      logger.debug('Client ${socket.id} unsubscribed from ' + channel);
+      logger.debug('Client ' + (socket.id) + ' unsubscribed from ' + channel);
     });
   }
 
@@ -270,7 +270,7 @@ class ClaudeZenServer {
 
     socket.on('disconnect', (reason: string) => {
       logger.debug(
-        'Dashboard client disconnected: ${socket.id}, reason: ' + reason
+        'Dashboard client disconnected: ' + (socket.id) + ', reason: ' + reason
       );
     });
   }
@@ -280,11 +280,11 @@ class ClaudeZenServer {
    */
   private logServerStartup(): void {
     logger.info(
-      ' Claude Code Zen Server running on http://${this.host}:' + this.port
+      ' Claude Code Zen Server running on http://' + (this.host) + ':' + this.port
     );
-    logger.info(' Dashboard available at http://${this.host}:' + this.port);
+    logger.info(' Dashboard available at http://' + (this.host) + ':' + this.port);
     logger.info(
-      ' Event Registry WebSocket available at ws://${this.host}:' + this.port + '/api/events/ws'
+      ' Event Registry WebSocket available at ws://' + (this.host) + ':' + this.port + '/api/events/ws'
     );
   }
 }

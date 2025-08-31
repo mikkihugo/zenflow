@@ -391,7 +391,7 @@ export class SafeMemoryStore extends EventEmitter {
   // ============================================
 
   private createKey(key: string): string {
-    return '${this.options.namespace}:' + key;
+    return (this.options.namespace) + ':' + key;
   }
 
   private createMemoryError(

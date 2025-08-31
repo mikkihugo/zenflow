@@ -454,7 +454,7 @@ export class ProjectSwitcher extends EventEmitter {
       });
     } catch (_error) {
       throw new Error(
-        'Failed to switch to project directory ${absolutePath}:' + (error as Error).message
+        'Failed to switch to project directory ' + (absolutePath) + ':' + (error as Error).message
       );
     }
   }

@@ -721,7 +721,7 @@ export class SegmentationEngine extends TypedEventBase {
     segmentType: DocumentSegment['segmentType'],
     algorithmBlocks: AlgorithmBlock[]
   ):DocumentSegment {
-    const id = 'segment_${startPosition}_' + Date.now();'
+    const id = 'segment_' + (startPosition) + '_' + Date.now();'
     const endPosition = startPosition + content.length;
     
     // Check if this segment overlaps with algorithm blocks

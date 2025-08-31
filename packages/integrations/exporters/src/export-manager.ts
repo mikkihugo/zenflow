@@ -192,7 +192,7 @@ export class ExportSystem extends EventEmitter {
       const size = Buffer.byteLength(exportedData, 'utf8');
 
       const filename =
-        options?.filename || 'export_${timestamp}' + exporter.extension;
+        options?.filename || 'export_' + (timestamp) + exporter.extension;
 
       if (options?.outputPath) {
         const filePath = join(options?.outputPath, filename);
@@ -218,7 +218,7 @@ export class ExportSystem extends EventEmitter {
       this.exportHistory.push(result);
       this.emit('export:success', result);
       logger.info(
-        'Successfully exported data as ${format.toUpperCase()}:' + filename
+        'Successfully exported data as ' + (format.toUpperCase()) + ':' + filename
       );
 
       return result;
@@ -276,7 +276,7 @@ export class ExportSystem extends EventEmitter {
     if (Array.isArray(obj)) {
       if (obj.length === 0) return '[]';
       return obj
-        .map((item) => '${spaces}- ' + this.convertToYAML(item, 0))
+        .map((item) => (spaces) + '- ' + this.convertToYAML(item, 0))
         .join('\n');
     }
 
@@ -287,7 +287,7 @@ export class ExportSystem extends EventEmitter {
       return entries
         .map(
           ([key, value]) =>
-            '${spaces}${key}: ' + this.convertToYAML(value, indent + 1)
+            (spaces) + (key) + ': ' + this.convertToYAML(value, indent + 1)
         )
         .join('\n');
     }
@@ -303,14 +303,14 @@ export class ExportSystem extends EventEmitter {
       typeof obj === 'number' ||
       typeof obj === 'boolean'
     ) {
-      return '${spaces}<value>' + this.escapeXML(String(obj)) + '</value>';
+      return (spaces) + '<value>' + this.escapeXML(String(obj)) + '</value>';
     }
 
     if (Array.isArray(obj)) {
       return obj
         .map(
           (item, index) =>
-            '${spaces}<item index="${index}">\n${this.convertToXML(item, indent + 1)}\n' + spaces + '</item>'
+            (spaces) + '<item index="' + (index) + '">\n' + (this.convertToXML(item, indent + 1)) + '\n' + spaces + '</item>'
         )
         .join('\n');
     }
@@ -319,12 +319,12 @@ export class ExportSystem extends EventEmitter {
       return Object.entries(obj)
         .map(
           ([key, value]) =>
-            '${spaces}<${this.sanitizeXMLTag(key)}>\n${this.convertToXML(value, indent + 1)}\n${spaces}</' + this.sanitizeXMLTag(key) + '>'
+            (spaces) + '<' + (this.sanitizeXMLTag(key)) + '>\n' + (this.convertToXML(value, indent + 1)) + '\n' + (spaces) + '</' + this.sanitizeXMLTag(key) + '>'
         )
         .join('\n');
     }
 
-    return '${spaces}<value>' + this.escapeXML(String(obj)) + '</value>';
+    return (spaces) + '<value>' + this.escapeXML(String(obj)) + '</value>';
   }
 
   private convertToMarkdown(data: unknown): string {
@@ -414,7 +414,7 @@ export class ExportSystem extends EventEmitter {
   }
 
   private generateId(): string {
-    return 'export-${Date.now()}-' + Math.random().toString(36).substring(2, 11);
+    return 'export-' + (Date.now()) + '-' + Math.random().toString(36).substring(2, 11);
   }
 
   getAvailableFormats(): Array<{

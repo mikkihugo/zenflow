@@ -190,7 +190,7 @@ export class DatabaseFactoryImpl implements DatabaseFactory {
     // Create configuration
     const config: DatabaseConfig = {
       type: recommendedBackend,
-      database: '${database}_' + storageType,
+      database: (database) + '_' + storageType,
       ...baseConfig,
       options: {
         // Storage-specific settings

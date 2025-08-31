@@ -214,7 +214,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
       // Check if table exists and create if needed
       // This would be implemented using LanceDB's table creation API
       const createTableSQL = '
-        CREATE TABLE IF NOT EXISTS ${tableName} (
+        CREATE TABLE IF NOT EXISTS ' + (tableName) + ' (
           id TEXT PRIMARY KEY,
           vector VECTOR(' + this.config.vectorDimensions + '),
           query TEXT,
@@ -281,7 +281,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
       throw new EnhancedError('NotInitialized', 'Vector RAG backend not initialized');
     }
 
-    const operationId = 'store-${entry.id}-' + Date.now();
+    const operationId = 'store-' + (entry.id) + '-' + Date.now();
     logger.debug('Storing knowledge entry with vector embedding', { 
       id: entry.id, 
       type: entry.knowledgeType,

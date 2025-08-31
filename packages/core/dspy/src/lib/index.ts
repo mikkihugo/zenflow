@@ -462,21 +462,18 @@ export class Evaluate {
           const result = await program.forward(item.input || item);
 
           // Evaluate result using foundation LLM
-          const evaluationPrompt = '
-Evaluate this DSPy program output for accuracy and quality:
-
-Input:${JSON.stringify(item.input || item)}
-Expected:${JSON.stringify(item.output || item.expected || 'No expected output')}
-Actual:' + JSON.stringify(result) + '
-
-Rate the accuracy on a scale of 0.0 to 1.0 where:
-- 1.0 = Perfect match or excellent quality
-- 0.8-0.9 = Very good, minor issues
-- 0.6-0.7 = Good, some issues
-- 0.4-0.5 = Fair, significant issues
-- 0.0-0.3 = Poor or incorrect
-
-Respond with just the numeric score (e.g., 0.85):';
+          const evaluationPrompt = 
+            'Evaluate this DSPy program output for accuracy and quality:\n\n' +
+            'Input: ' + JSON.stringify(item.input || item) + '\n' +
+            'Expected: ' + JSON.stringify(item.output || item.expected || 'No expected output') + '\n' +
+            'Actual: ' + JSON.stringify(result) + '\n\n' +
+            'Rate the accuracy on a scale of 0.0 to 1.0 where:\n' +
+            '- 1.0 = Perfect match or excellent quality\n' +
+            '- 0.8-0.9 = Very good, minor issues\n' +
+            '- 0.6-0.7 = Good, some issues\n' +
+            '- 0.4-0.5 = Fair, significant issues\n' +
+            '- 0.0-0.3 = Poor or incorrect\n\n' +
+            'Respond with just the numeric score (e.g., 0.85):';
 
           const scoreResponse = await dspyService.executePrompt(
             evaluationPrompt,

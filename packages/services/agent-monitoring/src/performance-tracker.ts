@@ -43,13 +43,13 @@ const EventEmitter = LocalEventEmitter;
 // Real logger implementation using event-driven telemetry
 const getLogger = (name: string) => ({
   info: (msg: string, meta?: unknown) =>
-    process.stdout.write('[INFO: ${name}] ${msg} ' + meta ? JSON.stringify(meta) : '' + '\n'),
+    process.stdout.write('[INFO: ' + (name) + '] ' + (msg) + ' ' + meta ? JSON.stringify(meta) : '' + '\n'),
   debug: (msg: string, meta?: unknown) =>
-    process.stdout.write('[DEBUG: ${name}] ${msg} ' + meta ? JSON.stringify(meta) : '' + '\n'),
+    process.stdout.write('[DEBUG: ' + (name) + '] ' + (msg) + ' ' + meta ? JSON.stringify(meta) : '' + '\n'),
   warn: (msg: string, meta?: unknown) =>
-    process.stderr.write('[WARN: ${name}] ${msg} ' + meta ? JSON.stringify(meta) : '' + '\n'),
+    process.stderr.write('[WARN: ' + (name) + '] ' + (msg) + ' ' + meta ? JSON.stringify(meta) : '' + '\n'),
   error: (msg: string, meta?: unknown) =>
-    process.stderr.write('[ERROR: ${name}] ${msg} ' + meta ? JSON.stringify(meta) : '' + '\n'),
+    process.stderr.write('[ERROR: ' + (name) + '] ' + (msg) + ' ' + meta ? JSON.stringify(meta) : '' + '\n'),
 });
 
 // Event-driven metric recording
@@ -211,7 +211,7 @@ export class PerformanceTracker {
 
     try {
       const startTime = Date.now();
-      const operationId = '${context.agentId || 'unknown'}-${context.operation || ' unknown'}-' + startTime;
+      const operationId = '${context.agentId || ' + startTime;
 
       const memoryUsage = process.memoryUsage();
       const cpuUsage = process.cpuUsage();
@@ -292,7 +292,7 @@ export class PerformanceTracker {
 }
 
     // Clean up active operation
-    const operationId = '${agentId}-${operation}-' + startTime;
+    const operationId = (agentId) + '-' + (operation) + '-' + startTime;
     this.activeOperations.delete(operationId);
 
     // Record completion metrics

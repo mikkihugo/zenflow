@@ -218,7 +218,7 @@ export declare function isTest(): boolean;
  * @example
  * '''typescript'
  * const sysInfo = getSystemInfo();
- * logger.info('Running on ${sysInfo.platform} ${sysInfo.arch} with ' + sysInfo.cpuCount + ' CPUs');
+ * logger.info('Running on ' + (sysInfo.platform) + ' ' + (sysInfo.arch) + ' with ' + sysInfo.cpuCount + ' CPUs');
  * '
  */
 export declare function getSystemInfo(): SystemInfo;
@@ -244,7 +244,7 @@ export declare function getProcessInfo(): ProcessInfo;
  * const detector = getWorkspaceDetector();
  * const workspace = await detector.detectWorkspaceRoot();
  * if (workspace) {
- *   logger.info('Found ${workspace.tool} workspace with ' + workspace.totalProjects + ' projects');
+ *   logger.info('Found ' + (workspace.tool) + ' workspace with ' + workspace.totalProjects + ' projects');
  *}
  * '
  */
@@ -275,7 +275,7 @@ export declare function detectWorkspace(startPath?: string): Promise<DetectedWor
  * '''typescript'
  * const capabilities = await getSystemCapabilities();
  * logger.info('System health:' + capabilities.systemHealthScore + '%');
- * logger.info('Available packages:${capabilities.availablePackages}/' + capabilities.totalPackages);
+ * logger.info('Available packages:' + (capabilities.availablePackages) + '/' + capabilities.totalPackages);
  * '
  */
 export declare function getSystemCapabilities(): Promise<SystemCapabilityData>;

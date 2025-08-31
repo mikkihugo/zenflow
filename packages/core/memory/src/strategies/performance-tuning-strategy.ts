@@ -842,7 +842,7 @@ export class PerformanceTuningStrategy extends EventEmitter {
     param.currentValue = value;
     param.lastAdjusted = Date.now();
 
-    this.logger.info('Tuning parameter updated:${name} = ' + value);
+    this.logger.info('Tuning parameter updated:' + (name) + ' = ' + value);
     return true;
   }
 

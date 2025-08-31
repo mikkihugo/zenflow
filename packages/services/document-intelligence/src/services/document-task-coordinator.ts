@@ -295,7 +295,7 @@ export class DocumentTaskVisionCoordinator {
 }
 
       logger.info(
-        'Linked ${links.length} documents with ' + tasksCreated + ' new tasks created');
+        'Linked ' + (links.length) + ' documents with ' + tasksCreated + ' new tasks created');
       return { linked: links, tasksCreated, errors};
 } catch (error) {
       logger.error('Error linking documents to strategic goals:', error);'
@@ -383,7 +383,7 @@ export class DocumentTaskVisionCoordinator {
 }
 
       logger.info(
-        'Task ${taskId} updated successfully, ' + updatedDocuments.length + ' related documents updated');
+        'Task ' + (taskId) + ' updated successfully, ' + updatedDocuments.length + ' related documents updated');
       return { success: true, updatedDocuments};
 } catch (error) {
       logger.error('Error updating task status:', error);'
@@ -451,66 +451,7 @@ export class DocumentTaskVisionCoordinator {
       const risk = vision.risks[i];
       tasks.push({
         id:'risk_mitigation_' + i + '_' + risk?.toLowerCase.replace(/\s+/g, '_'','
-        title:'Mitigate Risk: ${risk,'
-        description:'Address and mitigate identified risk: ' + risk,'
-        priority: 'high',        status: 'todo',        strategicGoalId: 'risk_management',        relatedDocuments: [],
-        estimatedEffort: 'medium',        tags:['risk-mitigation, strategic'],
-        businessValue:.7,
-        technicalComplexity:.6,
-        dependencies: [],
-        outcomes:[risk + ' mitigated'],'
-        metrics:['Risk reduction, Mitigation effectiveness'],
-        createdAt:new Date(),
-        updatedAt:new Date(),
-});
-}
-
-    return tasks;
-}
-
-  private async createDocumentTaskLinks(documents: BaseDocumentEntity[],
-    tasks: StrategicTask[]
-  ): Promise<DocumentTaskLink[]> {
-    const links: DocumentTaskLink[] = [];
-
-    for (const doc of documents) {
-      const linkedTasks = tasks.filter(
-        (task) =>
-          task.relatedDocuments.includes(doc.id)||task.tags.some((tag) => doc.tags?.includes(tag))||doc.keywords?.some(
-            (keyword) =>
-              task.title?.toLowerCase.includes(keyword?.toLowerCase)||task.description?.toLowerCase.includes(keyword?.toLowerCase)
-          )
-      );
-
-      const completedTasks = linkedTasks.filter(
-        (task) => task.status ==='completed';
-      const completionStatus =
-        linkedTasks.length > 0 ? completedTasks.length / linkedTasks.length:0;
-
-      links.push({
-        documentId:doc.id,
-        documentType:doc.type as DocumentType,
-        documentTitle:doc.title,
-        linkedTasks:linkedTasks.map((task) => task.id),
-        strategicGoals: Array.from(
-          new Set(linkedTasks.map((task) => task.strategicGoalId))
-        ),
-        completionStatus,
-        lastUpdated:new Date(),
-});
-}
-
-    return links;
-}
-
-  private calculateDashboardMetrics(
-    vision: StrategicVisionAnalysis,
-    tasks: StrategicTask[],
-    documentLinks: DocumentTaskLink[]
-  ) {
-    const totalTasks = tasks.length;
-    const completedTasks = tasks.filter(
-      (task) => task.status === 'completed'.length;
+        title:'Mitigate Risk: ${risk,'completed'.length;
     const blockedTasks = tasks.filter(
       (task) => task.status === 'blocked'.length;
     const highPriorityTasks = tasks.filter(

@@ -64,7 +64,7 @@ export class ConsoleExporter implements BaseExporter {
   async exportBatch(dataItems:TelemetryData[]): Promise<ExportResult> {
     try {
       this.logger.info(
-        ' Batch Export (${dataItems.length} items) - ' + this.config.name
+        ' Batch Export (' + (dataItems.length) + ' items) - ' + this.config.name
       );
 
       for (const data of dataItems) {
@@ -123,7 +123,7 @@ export class ConsoleExporter implements BaseExporter {
    */
   private formatAndLog(data: TelemetryData): void {
     const timestamp = new Date(data.timestamp).toISOString();
-    const service = '${data.service.name}' + data.service.version ? '@' + data.service.version : '';
+    const service = (data.service.name) + data.service.version ? '@' + data.service.version : '';
 
     let emoji = 'METRICS';
     let color = '';
@@ -146,7 +146,7 @@ export class ConsoleExporter implements BaseExporter {
     const reset = '\x1b[0m';
 
     this.logger.info(
-      '${color}${emoji}[${timestamp}] ${data.type.toUpperCase()} ${service}' + reset
+      (color) + (emoji) + '[' + (timestamp) + '] ' + (data.type.toUpperCase()) + ' ' + (service) + reset
     );
 
     // Format the data payload
@@ -161,7 +161,7 @@ export class ConsoleExporter implements BaseExporter {
     // Log attributes if present
     if (data.attributes && Object.keys(data.attributes).length > 0) {
       this.logger.info(
-        '   ${color}Attributes:' + reset,
+        '   ' + (color) + 'Attributes:' + reset,
         JSON.stringify(data.attributes, null, 2)
       );
     }
@@ -179,11 +179,7 @@ export class ConsoleExporter implements BaseExporter {
         for (const span of data.data.spans.slice(0, 3)) {
           // Show first 3 spans
           this.logger.info(
-            '     ├─ ${span.name || 'unnamed'} (' + span.duration || ' unknown' + 'ms)'
-          );
-}
-        if (data.data.spans.length > 3) {
-          this.logger.info('     └─ ... and ' + data.data.spans.length - 3 + ' more');
+            '     ├─ ${span.name || '     └─ ... and ' + data.data.spans.length - 3 + ' more');
 }
 } else {
         this.logger.info('   DATA Data:', JSON.stringify(data.data, null, 2));
@@ -203,7 +199,7 @@ export class ConsoleExporter implements BaseExporter {
         for (const metric of data.data.metrics.slice(0, 5)) {
           // Show first 5 metrics
           const value = metric.value || metric.count || metric.sum || 'N/A';
-          this.logger.info('     ├─ ${metric.name}: ${value} ' + metric.unit || '');
+          this.logger.info('     ├─ ' + (metric.name) + ': ' + (value) + ' ' + metric.unit || '');
         }
         if (data.data.metrics.length > 5) {
           this.logger.info('     └─ ... and ' + data.data.metrics.length - 5 + ' more');
@@ -231,7 +227,7 @@ export class ConsoleExporter implements BaseExporter {
             100
           );
           this.logger.info(
-            '     ├─ [${level}] ${message}' + message.length === 100 ? '...' : ''
+            '     ├─ [' + (level) + '] ' + (message) + message.length === 100 ? '...' : ''
           );
         }
         if (data.data.logs.length > 3) {
@@ -239,7 +235,7 @@ export class ConsoleExporter implements BaseExporter {
         }
       } else if (typeof data.data === 'string') {
         this.logger.info(
-          '   LOGS Message: ${data.data.substring(0, 200)}' + data.data.length > 200 ? '...' : ''
+          '   LOGS Message: ' + (data.data.substring(0, 200)) + data.data.length > 200 ? '...' : ''
         );
       } else {
         this.logger.info('   DATA:', JSON.stringify(data.data, null, 2));

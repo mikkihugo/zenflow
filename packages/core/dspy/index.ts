@@ -210,7 +210,7 @@
  *     // Generate prompts tailored to domain
  *     const basePrompt = module.getPrompt();
  *     const domainPrompts = this.config.expertKnowledge.map(knowledge =>
- *       '${basePrompt}\n\nDomain expertise:' + knowledge
+ *       (basePrompt) + '\n\nDomain expertise:' + knowledge
  *     );
  *
  *     return domainPrompts;

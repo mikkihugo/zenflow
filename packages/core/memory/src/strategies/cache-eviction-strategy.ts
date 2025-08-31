@@ -267,7 +267,7 @@ export class CacheEvictionStrategy extends EventEmitter {
     });
 
     this.logger.debug(
-      'Eviction completed:${evicted} entries, ' + spaceReclaimed + ' bytes reclaimed'
+      'Eviction completed:' + (evicted) + ' entries, ' + spaceReclaimed + ' bytes reclaimed'
     );
   }
 

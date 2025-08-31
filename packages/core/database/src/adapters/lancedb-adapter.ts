@@ -1409,7 +1409,7 @@ export class LanceDBAdapter implements DatabaseConnection {
     if (lastError !== undefined) errorOptions.cause = lastError;
 
     throw new QueryError(
-      'Operation failed after ${retryPolicy.maxRetries} retries:' + lastError?.message,
+      'Operation failed after ' + (retryPolicy.maxRetries) + ' retries:' + lastError?.message,
       errorOptions
     );
   }
@@ -1472,7 +1472,7 @@ export class LanceDBAdapter implements DatabaseConnection {
   }
 
   private generateCorrelationId(): string {
-    return 'lancedb-${Date.now()}-' + Math.random().toString(36).substr(2, 9);
+    return 'lancedb-' + (Date.now()) + '-' + Math.random().toString(36).substr(2, 9);
   }
 
   private sleep(ms: number): Promise<void> {

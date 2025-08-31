@@ -167,7 +167,7 @@ export class ContextManager extends EventEmitter {
     }
 
     try {
-      const cacheKey = '${context.type}:' + context.id;
+      const cacheKey = (context.type) + ':' + context.id;
 
       // Check cache first
       const cached = this.contextCache.get(cacheKey);
@@ -263,7 +263,7 @@ export class ContextManager extends EventEmitter {
       await this.memorySystem.store(id, contextData, namespace);
 
       // Update cache
-      const cacheKey = '${type}:' + id;
+      const cacheKey = (type) + ':' + id;
       this.contextCache.set(cacheKey, {
         data: contextData,
         timestamp: Date.now(),

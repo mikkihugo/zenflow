@@ -311,7 +311,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
         'Optimizing ' + teleprompter_config.teleprompter_type + ' teleprompter with ML enhancement'
       );
 
-      const optimizationId = 'dspy_${teleprompter_config.teleprompter_type}_' + Date.now();
+      const optimizationId = 'dspy_' + (teleprompter_config.teleprompter_type) + '_' + Date.now();
       this.activeOptimizations.set(optimizationId, {
         type: 'dspy_optimization',
         config: teleprompter_config,
@@ -1067,7 +1067,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
       | 'refinement'
       | 'completion' = 'refinement'
   ): Promise<string> {
-    const trainingId = 'train_${modelId}_' + Date.now();
+    const trainingId = 'train_' + (modelId) + '_' + Date.now();
 
     // Create workflow state event
     const workflowEvent: MLWorkflowStateEvent = {
@@ -1100,7 +1100,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
     this.emit('training_started', trainingEvent);
 
     this.logger.info(
-      'Started training job ${trainingId} in SPARC phase:' + sparc_phase
+      'Started training job ' + (trainingId) + ' in SPARC phase:' + sparc_phase
     );
 
     return trainingId;
@@ -1152,7 +1152,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
     input: any,
     options: { timeout?: number; confidence_threshold?: number } = {}
   ): Promise<MLInferenceResultEvent> {
-    const inferenceId = 'infer_${modelId}_' + Date.now();
+    const inferenceId = 'infer_' + (modelId) + '_' + Date.now();
     const startTime = Date.now();
 
     try {
@@ -1177,7 +1177,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
       this.emit('inference_completed', inferenceEvent);
 
       this.logger.debug(
-        'Inference ${inferenceId} completed in ' + processingTime + 'ms'
+        'Inference ' + (inferenceId) + ' completed in ' + processingTime + 'ms'
       );
 
       return inferenceEvent;
@@ -1205,7 +1205,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
       | ' completion',
     testData: any[]
   ): Promise<MLModelValidationEvent> {
-    const validationId = 'val_${modelId}_' + Date.now();
+    const validationId = 'val_' + (modelId) + '_' + Date.now();
 
     try {
       // Run validation based on type

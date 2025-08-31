@@ -111,7 +111,7 @@ export class MemoryCoordinator extends EventEmitter {
     operation: Partial<CoordinationDecision>
   ): Promise<CoordinationDecision> {
     const decision: CoordinationDecision = {
-      id: 'coord_${Date.now()}_' + Math.random().toString(36).slice(2),
+      id: 'coord_' + (Date.now()) + '_' + Math.random().toString(36).slice(2),
       type: operation.type || 'read',
       sessionId: operation.sessionId || 'default',
       target: operation.target || 'default',

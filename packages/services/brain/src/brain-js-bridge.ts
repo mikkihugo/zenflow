@@ -387,7 +387,7 @@ export class BrainJsBridge {
 }
 
       this.foundationLogger.info(
-        'Created brain.js neural network:${id} (' + type + ')',
+        'Created brain.js neural network:' + (id) + ' (' + type + ')',
         {
           networkId: id,
           type,
@@ -443,7 +443,7 @@ export class BrainJsBridge {
       this.networks.set(networkId, updatedInstance);
 
       this.foundationLogger.info(
-        'Training brain.js network ${networkId} with ' + trainingData.length + ' samples'
+        'Training brain.js network ' + (networkId) + ' with ' + trainingData.length + ' samples'
       );
 
       const startTime = Date.now();
@@ -489,7 +489,7 @@ export class BrainJsBridge {
       if (this.dbAccess) {
         const kv = await this.dbAccess.getKV('neural');
         await kv.set(
-          'brainjs:training:${networkId}:' + Date.now(),
+          'brainjs:training:' + (networkId) + ':' + Date.now(),
           JSON.stringify({
             iterations:stats.iterations,
             error:stats.error,
@@ -510,7 +510,7 @@ export class BrainJsBridge {
 };
 
       this.foundationLogger.info(
-        'Brain.js training completed for ${networkId} in ' + trainingTime + 'ms',
+        'Brain.js training completed for ' + (networkId) + ' in ' + trainingTime + 'ms',
         {
           networkId,
           iterations:stats.iterations,
@@ -784,7 +784,7 @@ export class BrainJsBridge {
 }
 
       this.foundationLogger.info(
-        'Imported brain.js neural network:${id} (' + type + ')'
+        'Imported brain.js neural network:' + (id) + ' (' + type + ')'
       );
       return id;
 }).then((result) =>

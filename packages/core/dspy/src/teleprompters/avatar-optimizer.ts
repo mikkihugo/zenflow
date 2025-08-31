@@ -158,7 +158,7 @@ export class AvatarOptimizer extends Teleprompter {
 
 		for (let i = 0; i < this.max_iters; i++) {
 			logger.info("=".repeat(20));
-			logger.info('Iteration ${i + 1}/' + this.max_iters);
+			logger.info('Iteration ' + (i + 1) + '/' + this.max_iters);
 
 			const { score, pos_inputs, neg_inputs} = await this._get_pos_neg_results(
 				best_actor,
@@ -168,7 +168,7 @@ export class AvatarOptimizer extends Teleprompter {
 			logger.info('Positive examples:' + pos_inputs.length);
 			logger.info('Negative examples:' + neg_inputs.length);
 			logger.info(
-				'Sampling ${this.max_positive_inputs} positive examples and ' + this.max_negative_inputs + ' negative examples',
+				'Sampling ' + (this.max_positive_inputs) + ' positive examples and ' + this.max_negative_inputs + ' negative examples',
 			);
 
 			// Sample examples exactly matching Stanford implementation
@@ -357,7 +357,7 @@ export class AvatarOptimizer extends Teleprompter {
 		return async (inputs: FeedbackBasedInstructionSignature) => {
 			// Simulate instruction improvement
 			const new_instruction =
-				'${inputs.previous_instruction}\n\nBased on feedback: ' + inputs.feedback + '\n' +
+				(inputs.previous_instruction) + '\n\nBased on feedback: ' + inputs.feedback + '\n' +
 				'Please pay special attention to tool selection and action planning to improve performance on challenging cases.';
 
 			return { new_instruction };

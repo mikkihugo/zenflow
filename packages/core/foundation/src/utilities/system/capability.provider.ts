@@ -137,30 +137,7 @@ export async function getInstallationSuggestions(): Promise<
       suggestions.push({
         package: packageName,
         facade: facadeName,
-        reason: 'Enable ${packageFeatures.join(', ')} in ' + facadeName + ' facade',
-        priority,
-        features: packageFeatures,
-      });
-    }
-  }
-
-  // Sort by priority
-  const priorityOrder = { high: 3, medium: 2, low: 1 };
-  suggestions.sort(
-    (a, b) => priorityOrder[b.priority] - priorityOrder[a.priority]
-  );
-
-  return suggestions;
-}
-
-/**
- * Get features a package would enable
- */
-function getPackageFeatures(
-  packageName: string,
-  allFeatures: string[]
-): string[] {
-  const packageKeywords = packageName.replace('@claude-zen/', '').split('-');
+        reason: 'Enable ${packageFeatures.join('@claude-zen/', '').split('-');
 
   return allFeatures
     .filter((feature) =>
@@ -188,10 +165,10 @@ export async function displaySystemStatus(): Promise<void> {
         ? ''
         : '';
   logger.info(
-    '${statusEmoji} Overall:${dashboard.overall.toUpperCase()} (' + dashboard.systemHealthScore + '% health)'
+    (statusEmoji) + ' Overall:' + (dashboard.overall.toUpperCase()) + ' (' + dashboard.systemHealthScore + '% health)'
   );
   logger.info(
-    ' Packages:${dashboard.availablePackages}/' + dashboard.totalPackages + ' available'
+    ' Packages:' + (dashboard.availablePackages) + '/' + dashboard.totalPackages + ' available'
   );
   logger.info(
     ' Services:' + dashboard.registeredServices + ' registered in Awilix'
@@ -207,7 +184,7 @@ export async function displaySystemStatus(): Promise<void> {
           ? ''
           : '';
     logger.info(
-      '  ${facadeEmoji} ${facade.name}:${facade.capability} (' + facade.healthScore + '%)'
+      '  ' + (facadeEmoji) + ' ' + (facade.name) + ':' + (facade.capability) + ' (' + facade.healthScore + '%)'
     );
 
     if (facade.missingPackages.length > 0) {
@@ -229,7 +206,7 @@ export async function displaySystemStatus(): Promise<void> {
           : suggestion.priority === 'medium'
             ? ''
             : '';
-      logger.info('  ${priorityEmoji} pnpm add ' + suggestion.package);
+      logger.info('  ' + (priorityEmoji) + ' pnpm add ' + suggestion.package);
       logger.info('    └─ ' + suggestion.reason);
     }
   }
@@ -251,7 +228,7 @@ export function createHealthDataProviders() {
         timestamp: data.timestamp,
         summary: {
           facades: data.facades.length,
-          packages: '${data.availablePackages}/' + data.totalPackages,
+          packages: (data.availablePackages) + '/' + data.totalPackages,
           services: data.registeredServices,
         },
       };
@@ -264,7 +241,7 @@ export function createHealthDataProviders() {
           name: facade.name,
           capability: facade.capability,
           healthScore: facade.healthScore,
-          packages: '${facade.availablePackages}/' + facade.totalPackages,
+          packages: (facade.availablePackages) + '/' + facade.totalPackages,
           missingPackages: facade.missingPackages,
           features: facade.features.slice(0, 3), // Top 3 features
         })),

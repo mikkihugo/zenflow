@@ -151,7 +151,7 @@ export function validateInput<T>(
     return ok(validated);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const message = 'Validation failed: ' + error.issues.map((e: { path: (string | number)[]; message: string  + ') => '${e.path.join('.')}: ${e.message}').join(', ')}';
+      const message = 'Validation failed: ' + error.issues.map((e: { path: (string | number)[]; message: string  + ') => '${e.path.join(';
       return err(new Error(message));
     }
     return err(
@@ -459,7 +459,7 @@ export function safeGet<T>(
   } catch (error) {
     return err(
       new Error(
-        'Failed to access property '${path}':' + error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR
+        'Failed to access property (path):' + error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR
       )
     );
   }
@@ -497,7 +497,7 @@ export async function readFile(
   } catch (error) {
     return err(
       new Error(
-        'Failed to read file '${filePath}':' + error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR
+        'Failed to read file (filePath):' + error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR
       )
     );
   }
@@ -529,7 +529,7 @@ export async function writeFile(
   } catch (error) {
     return err(
       new Error(
-        'Failed to write file '${filePath}':' + error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR
+        'Failed to write file (filePath):' + error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR
       )
     );
   }
@@ -551,7 +551,7 @@ export async function directoryExists(
     }
     return err(
       new Error(
-        'Failed to check directory '${dirPath}':' + error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR
+        'Failed to check directory (dirPath):' + error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR
       )
     );
   }
@@ -573,7 +573,7 @@ export async function fileExists(
     }
     return err(
       new Error(
-        'Failed to check file '${filePath}':' + error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR
+        'Failed to check file (filePath):' + error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR
       )
     );
   }

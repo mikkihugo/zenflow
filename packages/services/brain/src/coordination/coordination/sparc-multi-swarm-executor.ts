@@ -240,7 +240,7 @@ export class SPARCMultiSwarmExecutor {
 
       logger.info(' SPARC Multi-Swarm test completed: ' + testId);
       logger.info(
-        ' Winner: ${comparison.winner.name} (' + comparison.confidence.toFixed(
+        ' Winner: ' + (comparison.winner.name) + ' (' + comparison.confidence.toFixed(
           2
         ) + ' confidence)'
       );
@@ -415,7 +415,7 @@ export class SPARCMultiSwarmExecutor {
     const startTime = Date.now();
 
     logger.info(
-      ' Executing SPARC strategy: ${strategy.name} (' + strategy.modelBackend + ')'
+      ' Executing SPARC strategy: ' + (strategy.name) + ' (' + strategy.modelBackend + ')'
     );
 
     try {
@@ -429,7 +429,7 @@ export class SPARCMultiSwarmExecutor {
       const duration = Date.now() - startTime;
 
       logger.info(
-        ' SPARC strategy completed: ${strategy.name} (' + duration + 'ms)'
+        ' SPARC strategy completed: ' + (strategy.name) + ' (' + duration + 'ms)'
       );
 
       return {
@@ -510,10 +510,8 @@ export class SPARCMultiSwarmExecutor {
     await new Promise((resolve) => setTimeout(resolve, executionDelay));
 
     // Generate git tree info
-    const worktreePath = '.claude-zen/tmp/sparc-worktrees/sparc-${
-      strategy.id
-    }-' + generateNanoId(6);
-    const branchName = 'sparc-${strategy.id}-' + Date.now();
+    const worktreePath = '.claude-zen/tmp/sparc-worktrees/sparc-' + (strategy.id) + '-' + generateNanoId(6);
+    const branchName = 'sparc-' + (strategy.id) + '-' + Date.now();
     const commitsCreated =
       strategy.sparcConfig.methodology === 'full-sparc' ? 5 : 3;
     return {
@@ -737,7 +735,7 @@ export class SPARCMultiSwarmExecutor {
       .sort((a, b) => b.avgScore - a.avgScore)[0];
 
     reasoning.push(
-      'Best methodology: ${bestMethodology.methodology} (' + bestMethodology.avgScore.toFixed(
+      'Best methodology: ' + (bestMethodology.methodology) + ' (' + bestMethodology.avgScore.toFixed(
         1
       ) + ' avg score)'
     );
@@ -749,7 +747,7 @@ export class SPARCMultiSwarmExecutor {
         (r) => r.gitTreeInfo.mergedToMain
       ).length;
       reasoning.push(
-        'Git tree isolation: ${gitTreeResults.length} worktrees created, ' + successfulMerges + ' successfully merged'
+        'Git tree isolation: ' + (gitTreeResults.length) + ' worktrees created, ' + successfulMerges + ' successfully merged'
       );
 }
 

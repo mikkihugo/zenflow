@@ -219,7 +219,7 @@ export class RealApiRoutes {
         const agent: Agent = {
           id: agentId,
           type: type || 'general',
-          name: name || '${type}-agent-' + Date.now(),
+          name: name || (type) + '-agent-' + Date.now(),
           status: 'active',
           capabilities: capabilities || ['coordination', 'analysis'],
           created: new Date().toISOString(),
@@ -235,7 +235,7 @@ export class RealApiRoutes {
           swarm.activeAgents++;
         }
         
-        logger.info('Agent spawned: ${agentId} in swarm ' + swarmId);
+        logger.info('Agent spawned: ' + (agentId) + ' in swarm ' + swarmId);
         
         res.status(201).json({
           success: true,

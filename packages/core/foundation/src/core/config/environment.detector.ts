@@ -1327,7 +1327,7 @@ export class NixIntegration {
     if (env.currentShell) {
       status += ', in ' + env.currentShell;
     }
-    status += ' • ${installedCount}/' + totalCount + ' packages';
+    status += ' • ' + (installedCount) + '/' + totalCount + ' packages';
 
     return status;
   }

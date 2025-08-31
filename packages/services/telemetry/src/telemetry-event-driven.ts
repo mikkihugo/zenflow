@@ -419,7 +419,7 @@ export class EventDrivenTelemetryManager {
       type,
     };
 
-    const key = '${name}-' + metric.timestamp;
+    const key = (name) + '-' + metric.timestamp;
     this.metrics.set(key, metric);
     this.logger.debug('Recorded metric via event', metric);
 }

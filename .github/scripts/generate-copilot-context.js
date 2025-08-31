@@ -203,18 +203,18 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: \`🤖 **Copilot Code Validation Results**
+              body: \`[BOT] **Copilot Code Validation Results**
 
-✅ Architecture compliance validated
-✅ Quality gates passed (${this.config.quality_gates.test_coverage}% coverage required)
-✅ Performance benchmarks completed
-✅ Agent system integrity maintained
-✅ MCP integration validated
+[OK] Architecture compliance validated
+[OK] Quality gates passed (${this.config.quality_gates.test_coverage}% coverage required)
+[OK] Performance benchmarks completed
+[OK] Agent system integrity maintained
+[OK] MCP integration validated
 
 **Key Metrics Checked:**
 ${this.config.performance_benchmarks.map((b) => `- ${b.name}: ${b.target}`).join("\n")}
 
-Ready for human review! 🚀\`
+Ready for human review! [LAUNCH]\`
             })`;
 
 		await fs.writeFile(".github/workflows/copilot-validation.yml", workflow);
@@ -379,11 +379,11 @@ class ArchitectureValidator {
 
   report() {
     if (this.violations.length === 0) {
-      logger.info('✅ All architecture validations passed');
+      logger.info('[OK] All architecture validations passed');
       return 0;
     }
 
-    logger.info(\`❌ Found \${this.violations.length} architecture violations:\`);
+    logger.info(\`[ERROR] Found \${this.violations.length} architecture violations:\`);
     this.violations.forEach((violation, index) => {
       logger.info(\`\\n\${index + 1}. \${violation.rule}:\`);
       logger.info(\`   File: \${violation.file}\`);

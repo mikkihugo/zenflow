@@ -97,7 +97,7 @@ export class FilterProcessor implements BaseProcessor {
 
       if (filteredItems.length < dataItems.length) {
         this.logger.debug(
-          'Filtered ${dataItems.length - filteredItems.length} out of ' + dataItems.length + ' items'
+          'Filtered ' + (dataItems.length - filteredItems.length) + ' out of ' + dataItems.length + ' items'
         );
 }
 

@@ -772,7 +772,7 @@ target/';
    * Generate unique project ID
    */
   private generateProjectId(): string {
-    return 'proj-${Date.now().toString(36)}-' + Math.random().toString(36).substr(2, 9);
+    return 'proj-' + (Date.now().toString(36)) + '-' + Math.random().toString(36).substr(2, 9);
   }
 
   /**
@@ -797,7 +797,7 @@ target/';
     );
     if (existingProject) {
       logger.info(
-        'Project already registered: ${existingProject.name} (' + existingProject.id + ')'
+        'Project already registered: ' + (existingProject.name) + ' (' + existingProject.id + ')'
       );
       return existingProject.id;
     }
@@ -828,7 +828,7 @@ target/';
     this.createProjectDirectories(projectId);
 
     logger.info(
-      'Registered new project: ${projectInfo.name} (${projectId}) at ' + resolvedPath
+      'Registered new project: ' + (projectInfo.name) + ' (' + (projectId) + ') at ' + resolvedPath
     );
     return projectId;
   }
@@ -1570,7 +1570,7 @@ target/';
       const monorepoProject = this.getProject(monorepoRoot);
       if (monorepoProject) {
         logger.debug(
-          'Found existing monorepo project: ${monorepoProject.name} (' + monorepoProject.id + ')'
+          'Found existing monorepo project: ' + (monorepoProject.name) + ' (' + monorepoProject.id + ')'
         );
         return {
           projectId: monorepoProject.id,
@@ -1623,7 +1623,7 @@ target/';
       });
 
       logger.info(
-        'Registered monorepo project: ${path.basename(monorepoRoot)} (' + projectId + ')'
+        'Registered monorepo project: ' + (path.basename(monorepoRoot)) + ' (' + projectId + ')'
       );
 
       return {
@@ -1753,7 +1753,7 @@ target/';
       }
     }
 
-    logger.info('Removed project: ${project.name} (' + project.id + ')');
+    logger.info('Removed project: ' + (project.name) + ' (' + project.id + ')');
     return true;
   }
 
@@ -1781,7 +1781,7 @@ target/';
 
     this.saveRegistry();
 
-    logger.info('Updated project: ${project.name} (' + project.id + ')');
+    logger.info('Updated project: ' + (project.name) + ' (' + project.id + ')');
     return await Promise.resolve(true);
   }
 }

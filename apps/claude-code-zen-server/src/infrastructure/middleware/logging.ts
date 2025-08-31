@@ -96,7 +96,7 @@ interface RequestMetadata {
  * Uses timestamp + random string for uniqueness.
  */
 const generateRequestId = (): string =>
-  'req-${Date.now()}-' + Math.random().toString(36).substring(2, 8);
+  'req-' + (Date.now()) + '-' + Math.random().toString(36).substring(2, 8);
 
 /**
  * Get client IP address from request.
@@ -315,12 +315,12 @@ const outputLog = (logEntry: LogEntry): void => {
     const url = httpRequest?.requestUrl || '';
 
     if (httpRequest) {
-      logger.info('${method} ${url} ${status} ' + duration);
+      logger.info((method) + ' ' + (url) + ' ' + (status) + ' ' + duration);
       if (level === LogLevel.ERROR && metadata) {
         logger.error('Error details: ', metadata);
       }
     } else {
-      logger.info('${level} ' + message);
+      logger.info((level) + ' ' + message);
     }
 
     if (metadata && level !== LogLevel.ERROR) {
@@ -462,7 +462,7 @@ export const logPerformance = (
   const level = duration > 5000 ? LogLevel.WARNING : LogLevel.INFO;
   const logEntry = createLogEntry({
     level,
-    message: 'Performance: ${operation} took ' + formatDuration(duration),
+    message: 'Performance: ' + (operation) + ' took ' + formatDuration(duration),
     req,
     metadata: {
       operation,
@@ -530,7 +530,7 @@ export const logDatabaseOperation = ({
   const level = duration > 1000 ? LogLevel.WARNING : LogLevel.DEBUG;
   const logEntry = createLogEntry({
     level,
-    message: 'Database: ${operation} on ' + table,
+    message: 'Database: ' + (operation) + ' on ' + table,
     req,
     metadata: {
       database: {
@@ -574,7 +574,7 @@ export const logExternalService = ({
     statusCode >= 400 || duration > 5000 ? LogLevel.WARNING : LogLevel.INFO;
   const logEntry = createLogEntry({
     level,
-    message: 'External: ${service} ' + operation,
+    message: 'External: ' + (service) + ' ' + operation,
     req,
     metadata: {
       externalService: {

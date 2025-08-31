@@ -556,7 +556,7 @@ export class ApiServer {
         const stats = await stat(itemPath);
         files.push({
           name: item,
-          path: requestedPath === '.' ? item : '${requestedPath}/' + item,
+          path: requestedPath === '.' ? item : (requestedPath) + '/' + item,
           type: stats.isDirectory() ? 'directory' : 'file',
           size: stats.isFile() ? stats.size : null,
           modified: stats.mtime.toISOString(),
@@ -681,7 +681,7 @@ export class ApiServer {
 
   start(): Promise<void> {
     this.logger.info(
-      ' Starting server on ${this.config.host || DEFAULT_HOST}:' + this.config.port + '...'
+      ' Starting server on ' + (this.config.host || DEFAULT_HOST) + ':' + this.config.port + '...'
     );
 
     // Setup terminus for graceful shutdown BEFORE starting server
@@ -801,7 +801,7 @@ export class ApiServer {
     startupTime: number,
     connectionMonitor: ReturnType<typeof this.createConnectionMonitor>
   ): void {
-    const serverUrl = 'http://${this.config.host || DEFAULT_HOST}:' + this.config.port;
+    const serverUrl = 'http://' + (this.config.host || DEFAULT_HOST) + ':' + this.config.port;
 
     this.logger.info(' Claude Code Zen Server started on ' + serverUrl);
     this.logger.info(' Startup completed in ' + startupTime + 'ms');
@@ -857,7 +857,7 @@ export class ApiServer {
    */
   private logConnectionMetrics(startupTime: number, errorCount: number): void {
     this.logger.info(
-      ' Connection metrics:startup=${startupTime}ms, errors=' + errorCount
+      ' Connection metrics:startup=' + (startupTime) + 'ms, errors=' + errorCount
     );
   }
 
@@ -903,7 +903,7 @@ export class ApiServer {
         this.logger.info(' API server stopped');
         this.logger.info(' Shutdown completed in ' + shutdownTime + 'ms');
         this.logger.info(
-          ' Final state:connections=${shutdownMonitor.activeConnections}, state=' + shutdownMonitor.shutdownState
+          ' Final state:connections=' + (shutdownMonitor.activeConnections) + ', state=' + shutdownMonitor.shutdownState
         );
         resolveServerStop();
       });

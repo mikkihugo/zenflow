@@ -647,15 +647,15 @@ export class GraphStorageImpl implements GraphStorage {
 
   // Private helper methods
   private generateCorrelationId(): string {
-    return 'graph-${Date.now()}-' + Math.random().toString(36).substr(2, 9);
+    return 'graph-' + (Date.now()) + '-' + Math.random().toString(36).substr(2, 9);
   }
 
   private generateNodeId(): string {
-    return 'node-${Date.now()}-' + Math.random().toString(36).substr(2, 9);
+    return 'node-' + (Date.now()) + '-' + Math.random().toString(36).substr(2, 9);
   }
 
   private generateEdgeId(): string {
-    return 'edge-${Date.now()}-' + Math.random().toString(36).substr(2, 9);
+    return 'edge-' + (Date.now()) + '-' + Math.random().toString(36).substr(2, 9);
   }
 
   private async ensureNodesTable(): Promise<void> {

@@ -175,7 +175,7 @@ export class RecoveryStrategyManager extends EventEmitter {
       const timeout = setTimeout(() => {
         reject(
           new Error(
-            'Recovery strategy '${strategy.name}' timed out after ' + strategy.timeoutMs + 'ms'
+            'Recovery strategy (strategy.name) timed out after ' + strategy.timeoutMs + 'ms'
           )
         );
       }, strategy.timeoutMs);

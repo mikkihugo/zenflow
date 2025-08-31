@@ -193,7 +193,7 @@ export class JsonSchemaManager {
       };
 
       this.logger.info(
-        'Registered schema ${name} for modes:' + modes.join(', ')
+        'Registered schema ' + (name) + ' for modes:' + modes.join(', ')
       );
     } catch (error) {
       this.logger.error('Failed to register schema ' + name + ':', error);
@@ -244,7 +244,7 @@ export class JsonSchemaManager {
     if (!schemaEntry.modes.includes(mode)) {
       return {
         isValid: false,
-        errors: ['Document type ${documentType} not available in ' + mode + ' mode'],
+        errors: ['Document type ' + (documentType) + ' not available in ' + mode + ' mode'],
       };
     }
 
@@ -258,7 +258,7 @@ export class JsonSchemaManager {
           (error['schemaPath'] as string) ||
           'root';
         const message = (error['message'] as string) || 'Unknown error';
-        return '${instancePath}: ' + message;
+        return (instancePath) + ': ' + message;
       }) || ['Unknown validation error'];
 
       return { isValid: false, errors };
@@ -306,7 +306,7 @@ export class JsonSchemaManager {
 
     if (!schemaEntry.modes.includes(mode)) {
       throw new SchemaValidationError(
-        'Document type ${documentType} not available in ' + mode + ' mode'
+        'Document type ' + (documentType) + ' not available in ' + mode + ' mode'
       );
     }
 
@@ -403,7 +403,7 @@ export class JsonSchemaManager {
       if (uri.startsWith('http://') || uri.startsWith('https://')) {
         const response = await fetch(uri);
         if (!response.ok) {
-          throw new Error('HTTP ${response.status}:' + response.statusText);
+          throw new Error('HTTP ' + (response.status) + ':' + response.statusText);
         }
         return (await response.json()) as JsonObject;
       } else if (uri.startsWith('file://') || !uri.includes('://')) {

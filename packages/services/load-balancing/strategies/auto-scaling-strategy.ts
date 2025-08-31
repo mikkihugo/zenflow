@@ -61,7 +61,7 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
     const newAgents: Agent[] = [];
 
     for (let i = 0; i < count; i++) {
-      const agentId = 'auto-agent-${Date.now()}-' + i;
+      const agentId = 'auto-agent-' + (Date.now()) + '-' + i;
       newAgents.push({
         id: agentId,
         name: 'Auto-scaled Agent ' + agentId,
@@ -144,7 +144,7 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
         action: 'scale_up',
         targetCount,
         confidence: this.calculateScalingConfidence(systemLoad),
-        reasoning: 'High utilization: avg=${(avgUtilization * 100).toFixed(1)}%, max=' + (maxUtilization * 100).toFixed(1) + '%',
+        reasoning: 'High utilization: avg=' + ((avgUtilization * 100).toFixed(1)) + '%, max=' + (maxUtilization * 100).toFixed(1) + '%',
         urgency: maxUtilization > 0.95 ? 'critical' : ' high',
       };
     }
@@ -164,7 +164,7 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
         action: 'scale_down',
         targetCount,
         confidence: this.calculateScalingConfidence(systemLoad),
-        reasoning: 'Low utilization: avg=${(avgUtilization * 100).toFixed(1)}%, max=' + (maxUtilization * 100).toFixed(1) + '%',
+        reasoning: 'Low utilization: avg=' + ((avgUtilization * 100).toFixed(1)) + '%, max=' + (maxUtilization * 100).toFixed(1) + '%',
         urgency: 'low',
       };
     }

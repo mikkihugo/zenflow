@@ -414,7 +414,7 @@ async function handleCreateTask(
       manager.webSocketCoordinator.broadcast('task:created', task);
     }
 
-    logger.info('Task created:${task.id} - ' + task.title);
+    logger.info('Task created:' + (task.id) + ' - ' + task.title);
 
     res.status(201).json({
       success: true,
@@ -737,7 +737,7 @@ async function validateWIPLimits(
         success: false,
         error: 'WIP limit exceeded',
         wipStatus: wipLimits,
-        message: 'Cannot move task to ${toState}. WIP limit reached (${wipLimits.current}/' + wipLimits.limit + ')',
+        message: 'Cannot move task to ' + (toState) + '. WIP limit reached (' + (wipLimits.current) + '/' + wipLimits.limit + ')',
         timestamp: new Date().toISOString(),
       },
       wipStatus: wipLimits,
@@ -862,7 +862,7 @@ async function handleMoveTask(
       toState,
       reason,
     });
-    logger.info('Task ${taskId} moved from ${currentTask.state} to ' + toState);
+    logger.info('Task ' + (taskId) + ' moved from ' + (currentTask.state) + ' to ' + toState);
 
     res.json({
       success: true,
@@ -980,7 +980,7 @@ async function createPIPlanningEventHandler(
     });
 
     logger.info(
-      'PI Planning event created:PI ${planningIntervalNumber} for ART ' + artId
+      'PI Planning event created:PI ' + (planningIntervalNumber) + ' for ART ' + artId
     );
     sendPIEventSuccess(res, piEvent);
   } catch (_error) {

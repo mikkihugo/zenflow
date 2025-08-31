@@ -277,7 +277,7 @@ export class AIInsightsEngine {
         type: 'anomaly',
         severity: errorRate > 0.1 ? 'high' : 'medium',
         title: 'Agent Errors Detected',
-        description: '${errorAgents.length} agents are in error state (' + (errorRate * 100).toFixed(1) + '% error rate).',
+        description: (errorAgents.length) + ' agents are in error state (' + (errorRate * 100).toFixed(1) + '% error rate).',
         recommendation:
           'Investigate agent error logs, restart failed agents, and review agent health monitoring configuration.',
         confidence: 95,
@@ -605,9 +605,9 @@ export class AIInsightsEngine {
     const highCount = insights.filter((i) => i.severity === 'high').length;
 
     if (criticalCount > 0) {
-      return 'System requires immediate attention with ${criticalCount} critical issue${criticalCount > 1 ? 's' : ''} detected. Overall health score:' + healthScore + '/100.';
+      return 'System requires immediate attention with ' + criticalCount + ' critical issue' + (criticalCount > 1 ? 's' : '') + ' detected. Overall health score: ' + healthScore + '/100.';
     } else if (highCount > 0) {
-      return 'System has ${highCount} high-priority issue${highCount > 1 ? 's' : ''} that should be addressed soon. Health score:' + healthScore + '/100.';
+      return 'System has ' + highCount + ' high-priority issue' + (highCount > 1 ? 's' : '') + ' that should be addressed soon. Health score: ' + healthScore + '/100.';
     } else if (healthScore > 90) {
       return 'System is performing excellently with minimal issues detected. Health score:' + healthScore + '/100.';
     } else if (healthScore > 70) {

@@ -377,7 +377,7 @@ export async function withRetry<T>(
     }) => {
       const { delay, attempt, error: dataError, reason } = data;
       const error = dataError || new Error(String(reason || data));
-      logger.warn('Attempt ${attempt} failed (retrying in ' + delay + 'ms):', error);
+      logger.warn('Attempt ' + (attempt) + ' failed (retrying in ' + delay + 'ms):', error);
 
       // Custom abort logic - called via onFailedAttempt if provided
       if (onFailedAttempt) {

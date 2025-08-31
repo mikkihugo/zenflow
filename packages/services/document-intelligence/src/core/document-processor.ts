@@ -378,72 +378,7 @@ export class DocumentProcessor extends TypedEventBase {
 
     // Generate file path
     const dirPath = this.getDocumentDirectory(context.workspace, type);
-    const fileName = '${title.toLowerCase().replace(/\s+/g, '-'.md';'
-    const filePath = join(dirPath, fileName);
-
-    // Create document content with metadata
-    const documentContent = this.generateDocumentContent(title, content, type);
-
-    // Write file
-    await writeFile(filePath, documentContent, 'utf8');'
-    // Process the created document
-    await this.processDocument(filePath, workspaceId);
-
-    const document = context.activeDocuments.get(filePath);
-    if (!document) {
-      throw new Error('Failed to create document');'
-
-    logger.info('Created $typedocument:$title');'
-    return document;
-}
-
-  /**
-   * Get document processor statistics.
-   *
-   * @returns Current statistics.
-   */
-  async getStats(): Promise<DocumentStats> {
-    return { ...this.stats};
-}
-
-  /**
-   * Get all documents in a workspace.
-   *
-   * @param workspaceId - Workspace ID.
-   * @returns Map of documents.
-   */
-  getWorkspaceDocuments(workspaceId:string): Map<string, Document> {
-    const context = this.workspaces.get(workspaceId);
-    return context ? context.activeDocuments:new Map();
-}
-
-  /**
-   * Get all workspace Ds.
-   *
-   * @returns Array of workspace Ds.
-   */
-  getWorkspaces():string[] {
-    return Array.from(this.workspaces.keys())();
-}
-
-  /**
-   * Shutdown the document processor.
-   */
-  async shutdown(): Promise<void> {
-    logger.info('Shutting down document processor...');'
-    // Stop all file watchers
-    for (const [_id, watcher] of this.documentWatchers) {
-      if (watcher && typeof watcher.close === 'function') {
-    '    watcher.close();
-}
-}
-    this.documentWatchers.clear();
-
-    // Clear workspaces
-    this.workspaces.clear();
-
-    this.removeAllListeners();
-    logger.info('Document processor shutdown complete');'
+    const fileName = '${title.toLowerCase().replace(/\s+/g, 'Document processor shutdown complete');'
 
   // ==================== PRIVATE METHODS ====================
 

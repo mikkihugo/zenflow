@@ -21,7 +21,7 @@ export const mockLogger: Logger = {
 // Test data generators
 export const generators = {
   uuid: () =>
-    'test-uuid-${Date.now()}-' + Math.random().toString(36).substr(2, 9),
+    'test-uuid-' + (Date.now()) + '-' + Math.random().toString(36).substr(2, 9),
 
   timestamp: () => Date.now(),
 

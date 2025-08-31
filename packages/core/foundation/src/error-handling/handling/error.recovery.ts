@@ -814,7 +814,7 @@ export function createRetryStrategy(options: {
 
       return {
         success: true,
-        message: 'Retry attempt ${retryCount}/${maxRetries} after ' + delay + 'ms delay',
+        message: 'Retry attempt ' + (retryCount) + '/' + (maxRetries) + ' after ' + delay + 'ms delay',
         recoverTime: delay,
         metadata: { retryCount, delay, strategy: 'exponential_backoff' },
       };
@@ -932,7 +932,7 @@ export function createCircuitBreakerStrategy(options: {
 
       return {
         success: true,
-        message: 'Circuit breaker allowing operation (failures: ${failureCount}/' + failureThreshold + ')',
+        message: 'Circuit breaker allowing operation (failures: ' + (failureCount) + '/' + failureThreshold + ')',
         recoverTime: 0,
         metadata: {
           failureCount,

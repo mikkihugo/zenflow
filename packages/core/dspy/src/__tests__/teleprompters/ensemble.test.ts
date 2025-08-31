@@ -68,7 +68,7 @@ const mockMajority = (outputs: Prediction[]): Prediction => {
 
   return {
     data: { answer: winner },
-    reasoning: 'Majority vote: ${winner} (${maxVotes}/' + outputs.length + ')',
+    reasoning: 'Majority vote: ' + (winner) + ' (' + (maxVotes) + '/' + outputs.length + ')',
     confidence: maxVotes / outputs.length,
   };
 };

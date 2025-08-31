@@ -48,7 +48,7 @@ class TransactionSQLStorageImpl implements SqlStorage {
     const columns =
       schema.columns
         ?.map((col) => {
-          let columnDef = '${col.name} ' + col.type;
+          let columnDef = (col.name) + ' ' + col.type;
           if (!col.nullable) columnDef += ' NOT NULL';
           if (col.defaultValue !== undefined)
             columnDef += ' DEFAULT ' + col.defaultValue;
@@ -61,7 +61,7 @@ class TransactionSQLStorageImpl implements SqlStorage {
         ? ', PRIMARY KEY (' + schema.primaryKey.join(', ') + ')'
         : '';
 
-    const sql = 'CREATE TABLE IF NOT EXISTS ${name} (${columns}' + primaryKey + ')';
+    const sql = 'CREATE TABLE IF NOT EXISTS ' + (name) + ' (' + (columns) + primaryKey + ')';
     await this.execute(sql);
   }
 
@@ -70,7 +70,7 @@ class TransactionSQLStorageImpl implements SqlStorage {
     options?: { ifExists?: boolean }
   ): Promise<void> {
     const ifExists = options?.ifExists !== false ? 'IF EXISTS ' : '';
-    const sql = 'DROP TABLE ${ifExists}' + name;
+    const sql = 'DROP TABLE ' + (ifExists) + name;
     await this.execute(sql);
   }
 
@@ -85,7 +85,7 @@ class TransactionSQLStorageImpl implements SqlStorage {
     options?: { unique?: boolean; type?: string }
   ): Promise<void> {
     const unique = options?.unique ? 'UNIQUE' : '';
-    const sql = 'CREATE ${unique} INDEX IF NOT EXISTS ${name} ON ${tableName} (' + columns.join(', ') + ')';
+    const sql = 'CREATE ' + (unique) + ' INDEX IF NOT EXISTS ' + (name) + ' ON ' + (tableName) + ' (' + columns.join(', ') + ')';
     await this.execute(sql);
   }
 
@@ -264,7 +264,7 @@ export class SQLStorageImpl implements SqlStorage {
               primaryKey?: boolean;
               defaultValue?: unknown;
             }) => {
-              let columnDef = '${col.name} ' + col.type;
+              let columnDef = (col.name) + ' ' + col.type;
               if (!col.nullable) columnDef += ' NOT NULL';
               if (col.defaultValue !== undefined)
                 columnDef += ' DEFAULT ' + col.defaultValue;
@@ -278,7 +278,7 @@ export class SQLStorageImpl implements SqlStorage {
           ? ', PRIMARY KEY (' + schema.primaryKey.join(', ') + ')'
           : '';
 
-      const sql = 'CREATE TABLE IF NOT EXISTS ${name} (${columns}' + primaryKey + ')';
+      const sql = 'CREATE TABLE IF NOT EXISTS ' + (name) + ' (' + (columns) + primaryKey + ')';
       await this.execute(sql);
 
       logger.info('Table created successfully', { name });
@@ -302,7 +302,7 @@ export class SQLStorageImpl implements SqlStorage {
       logger.debug('Dropping table', { name, ifExists: options?.ifExists });
 
       const ifExists = options?.ifExists !== false ? 'IF EXISTS ' : '';
-      const sql = 'DROP TABLE ${ifExists}' + name;
+      const sql = 'DROP TABLE ' + (ifExists) + name;
 
       await this.execute(sql);
 
@@ -436,7 +436,7 @@ export class SQLStorageImpl implements SqlStorage {
     try {
       const indexName = name;
       const unique = options?.unique ? 'UNIQUE' : '';
-      const sql = 'CREATE ${unique} INDEX IF NOT EXISTS ${indexName} ON ${tableName} (' + columns.join(', ') + ')';
+      const sql = 'CREATE ' + (unique) + ' INDEX IF NOT EXISTS ' + (indexName) + ' ON ' + (tableName) + ' (' + columns.join(', ') + ')';
 
       logger.debug('Creating index', {
         tableName,
@@ -541,6 +541,6 @@ export class SQLStorageImpl implements SqlStorage {
   }
 
   private generateCorrelationId(): string {
-    return 'sql-${Date.now()}-' + Math.random().toString(36).substr(2, 9);
+    return 'sql-' + (Date.now()) + '-' + Math.random().toString(36).substr(2, 9);
   }
 }

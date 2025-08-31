@@ -78,7 +78,7 @@
  * // Get AI-powered optimization recommendations
  * const recommendations = await engine.getOptimizationRecommendations();
  * recommendations.forEach(rec => {
- *   logger.info(' ${rec.category}:' + rec.suggestion);
+ *   logger.info(' ' + (rec.category) + ':' + rec.suggestion);
  *   logger.info('   Expected improvement:' + rec.expectedImprovement);
  *});
  * '
@@ -388,10 +388,10 @@
  *};
  *
  *       logger.info('  ' + backend.padEnd(8) + ':' + (endTime - startTime).toFixed(2) + 'ms ' +'
- *                  '(${result.backend}, ' + (results[backend].throughput / 1e6).toFixed(1) + 'M ops/sec)');
+ *                  '(' + (result.backend) + ', ' + (results[backend].throughput / 1e6).toFixed(1) + 'M ops/sec)');
  *
  *} catch (error) {
- *       logger.info('  ${backend.padEnd(8)}:Failed (' + error.message + ')');
+ *       logger.info('  ' + (backend.padEnd(8)) + ':Failed (' + error.message + ')');
  *}
  *}
  *
@@ -400,7 +400,7 @@
  *     .sort(([,a], [,b]) => a.executionTime - b.executionTime)[0];
  *
  *   if (optimal) {
- *     logger.info('   Optimal:${optimal[0]} (' + optimal[1].executionTime.toFixed(2) + 'ms)\n');
+ *     logger.info('   Optimal:' + (optimal[0]) + ' (' + optimal[1].executionTime.toFixed(2) + 'ms)\n');
  *}
  *}
  *
@@ -415,7 +415,7 @@
  *
  * logger.info(' Optimization Recommendations: ');
 ' * recommendations.forEach((rec, index) => {
- *   logger.info('  ${index + 1}. ' + rec.title);
+ *   logger.info('  ' + (index + 1) + '. ' + rec.title);
  *   logger.info('     ' + rec.description);
  *   logger.info('     Expected improvement:' + rec.expectedImprovement);
  *   logger.info('     Implementation effort:' + rec.implementationEffort);

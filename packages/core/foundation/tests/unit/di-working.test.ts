@@ -198,7 +198,7 @@ describe('Dependency Injection - Working Methods Only', () => {
         const config = container.resolve('app-config');
         return {
           baseUrl: config.api.baseUrl,
-          request: (path: string) => '${config.api.baseUrl}' + path,
+          request: (path: string) => (config.api.baseUrl) + path,
           isLoggingEnabled: () => config.features.logging,
         };
       });

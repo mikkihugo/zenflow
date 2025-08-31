@@ -318,7 +318,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 			this.selectionHistory.push(finalSelection);
 
 			this.logger.info(
-				' Selected teleprompter:${finalSelection.selectedTeleprompter.name} (confidence:' + (finalSelection.confidence * 100).toFixed(1) + '%)',
+				' Selected teleprompter:' + (finalSelection.selectedTeleprompter.name) + ' (confidence:' + (finalSelection.confidence * 100).toFixed(1) + '%)',
 			);
 
 			this.emit("teleprompter:selected", {
@@ -387,7 +387,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 		await this.adaptSelectionParameters(record);
 
 		this.logger.info(
-			' Recorded performance for ${teleprompterName}:accuracy=${actualPerformance.accuracy.toFixed(3)}, success=' + actualPerformance.success,
+			' Recorded performance for ' + (teleprompterName) + ':accuracy=' + (actualPerformance.accuracy.toFixed(3)) + ', success=' + actualPerformance.success,
 		);
 
 		this.emit("performance:recorded", { record});
@@ -556,15 +556,15 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 }
 
 	private generateTaskDescription(task:OptimizationTask): string {
-		return '
-Domain:${task.domain?.type || "general"} (${task.domain?.specificArea || "general"})
-Data:${task.domain?.dataCharacteristics?.size || "medium"} size, ${task.domain?.dataCharacteristics?.quality || "good"} quality, ${task.domain?.dataCharacteristics?.complexity || "moderate"} complexity
-Computational:${task.complexity?.computational || "moderate"} computation, ${task.complexity?.algorithmic || "moderate"} algorithm complexity
-Requirements:${task.requirements?.minimumAccuracy || 0.8} min accuracy, ${task.requirements?.maximumLatency || 5000}ms max latency
-Constraints:${task.constraints?.computationalBudget || "moderate"} budget, ${task.constraints?.timeLimit || 30000}ms time limit
-Description:' + task.description || "General optimization task" + '
-    '.trim();
-}
+		return (
+			'Domain: ' + (task.domain?.type || "general") + ' (' + (task.domain?.specificArea || "general") + ')\n' +
+			'Data: ' + (task.domain?.dataCharacteristics?.size || "medium") + ' size, ' + (task.domain?.dataCharacteristics?.quality || "good") + ' quality, ' + (task.domain?.dataCharacteristics?.complexity || "moderate") + ' complexity\n' +
+			'Computational: ' + (task.complexity?.computational || "moderate") + ' computation, ' + (task.complexity?.algorithmic || "moderate") + ' algorithm complexity\n' +
+			'Requirements: ' + (task.requirements?.minimumAccuracy || 0.8) + ' min accuracy, ' + (task.requirements?.maximumLatency || 5000) + 'ms max latency\n' +
+			'Constraints: ' + (task.constraints?.computationalBudget || "moderate") + ' budget, ' + (task.constraints?.timeLimit || 30000) + 'ms time limit\n' +
+			'Description: ' + (task.description || "General optimization task")
+		).trim();
+	}
 
 	private async evaluateAllVariants(
 		task:OptimizationTask,
@@ -954,7 +954,7 @@ Description:' + task.description || "General optimization task" + '
 		return {
 			selectedTeleprompter:fallbackVariant,
 			confidence:0.5,
-			reasoning:'Fallback selection for task ${task.id} due to analysis failure - using most reliable basic variant with complexity ' + task.expectedComplexity,
+			reasoning:'Fallback selection for task ' + (task.id) + ' due to analysis failure - using most reliable basic variant with complexity ' + task.expectedComplexity,
 			alternatives:[],
 			expectedPerformance:fallbackVariant.estimatedPerformance,
 			fallbackOptions:[],
@@ -1041,7 +1041,7 @@ Description:' + task.description || "General optimization task" + '
 		mlRecommendation:any,
 		score:number,
 	): string {
-		return 'Selected ${variant.name} based on optimal fit (score: ${score.toFixed(3)}). ML analysis recommends ${mlRecommendation.recommendedTeleprompter} with ${(mlRecommendation.confidence * 100).toFixed(1)}% confidence. Variant offers ${variant.capabilities.join(", ")} capabilities with ' + variant.type + ' implementation approach.';
+		return 'Selected ' + (variant.name) + ' based on optimal fit (score: ' + (score.toFixed(3)) + '). ML analysis recommends ' + (mlRecommendation.recommendedTeleprompter) + ' with ' + ((mlRecommendation.confidence * 100).toFixed(1)) + '% confidence. Variant offers ' + (variant.capabilities.join(", ")) + ' capabilities with ' + variant.type + ' implementation approach.';
 	}
 
 	private generateDecisionFactors(

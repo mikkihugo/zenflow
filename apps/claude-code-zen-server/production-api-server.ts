@@ -32,7 +32,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Request logging middleware
 app.use((req, _res, next) => {
-  logger.debug('${req.method} ' + req.path, { query: req.query, body: req.body });
+  logger.debug((req.method) + ' ' + req.path, { query: req.query, body: req.body });
   next();
 });
 

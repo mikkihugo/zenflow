@@ -170,7 +170,7 @@ export class ExportSystem {
 
       if (typeof obj === 'string') {
         return obj.includes('\n')
-          ? '|\n${spaces}' + obj.replace(/\n/g, '\n' + spaces + '  ')
+          ? '|\n' + (spaces) + obj.replace(/\n/g, '\n' + spaces + '  ')
           : obj;
       }
 
@@ -182,7 +182,7 @@ export class ExportSystem {
         return obj
           .map(
             (item) =>
-              '${spaces}- ' + yamlify(item, indent + 1).replace(/^\s+/, '')
+              (spaces) + '- ' + yamlify(item, indent + 1).replace(/^\s+/, '')
           )
           .join('\n');
       }
@@ -191,7 +191,7 @@ export class ExportSystem {
         return Object.entries(obj)
           .map(
             ([key, value]) =>
-              '${spaces}${key}: ' + yamlify(value, indent + 1).replace(/^\s+/, '')
+              (spaces) + (key) + ': ' + yamlify(value, indent + 1).replace(/^\s+/, '')
           )
           .join('\n');
       }
@@ -205,7 +205,7 @@ export class ExportSystem {
   public convertToXML(data: unknown): string {
     const xmlify = (obj: unknown, name = 'root'): string => {
       if (obj === null || obj === undefined) {
-        return '<${name}></' + name + '>';
+        return '<' + (name) + '></' + name + '>';
       }
 
       if (
@@ -213,21 +213,18 @@ export class ExportSystem {
         typeof obj === 'number' ||
         typeof obj === 'boolean'
       ) {
-        return '<${name}>${obj}</' + name + '>';
+        return '<' + (name) + '>' + (obj) + '</' + name + '>';
       }
 
       if (Array.isArray(obj)) {
-        return '<${name}>${obj.map((item) => xmlify(item, 'item')).join('')}</' + name + '>';
-      }
-
-      if (typeof obj === 'object') {
+        return '<' + (name) + '>${obj.map((item) => xmlify(item, 'object') {
         const content = Object.entries(obj)
           .map(([key, value]) => xmlify(value, key))
           .join('');
-        return '<${name}>${content}</' + name + '>';
+        return '<' + (name) + '>' + (content) + '</' + name + '>';
       }
 
-      return '<${name}>${obj}</' + name + '>';
+      return '<' + (name) + '>' + (obj) + '</' + name + '>';
     };
 
     return '<?xml version="1.0" encoding="UTF-8"?>\n' + xmlify(data);
@@ -276,7 +273,7 @@ export class ExportSystem {
         return Object.entries(obj)
           .map(([key, value]) => {
             const heading = '#'.repeat(level);
-            return '${heading} ${key}\n\n' + mdify(value, level + 1);
+            return (heading) + ' ' + (key) + '\n\n' + mdify(value, level + 1);
           })
           .join('\n');
       }

@@ -318,7 +318,7 @@ export class BootstrapML extends Teleprompter {
 
       while (round < this.config.maxRounds) {
         this.logger.info(
-          'Bootstrap round ${round + 1}/' + this.config.maxRounds
+          'Bootstrap round ' + (round + 1) + '/' + this.config.maxRounds
         );
 
         // Intelligent example selection
@@ -729,7 +729,7 @@ export class BootstrapML extends Teleprompter {
   private getBigrams(words: string[]): string[] {
     const bigrams: string[] = [];
     for (let i = 0; i < words.length - 1; i++) {
-      bigrams.push('${words[i]}_' + words[i + 1]);
+      bigrams.push((words[i]) + '_' + words[i + 1]);
     }
     return bigrams;
   }

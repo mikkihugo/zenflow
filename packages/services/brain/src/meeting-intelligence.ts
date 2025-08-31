@@ -24,7 +24,7 @@ export class MeetingIntelligence {
         );
         if (activeParticipants.length > 0) {
           insights.push(
-            'Active participants:${activeParticipants.length}/' + data.participants.length);
+            'Active participants:' + (activeParticipants.length) + '/' + data.participants.length);
 }
 }
 

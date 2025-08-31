@@ -125,7 +125,7 @@ export class LogTapeSyslogBridge {
       const errorMsg =
         error instanceof Error ? error['message'] : String(error);
       process.stdout.write(
-        'SYSLOG[${level.toUpperCase()}] ${this.componentName}:' + message + '\n'
+        'SYSLOG[' + (level.toUpperCase()) + '] ' + (this.componentName) + ':' + message + '\n'
       );
       process.stderr.write(
         'SYSLOG_ERROR:Failed to write to syslog: ' + errorMsg + '\n'

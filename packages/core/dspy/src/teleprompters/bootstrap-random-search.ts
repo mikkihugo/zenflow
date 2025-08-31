@@ -247,7 +247,7 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
     this.max_labeled_demos = config.max_labeled_demos ?? 16;
 
     logger.info(
-      'Going to sample between ${this.min_num_samples} and ' + this.max_num_samples + ' traces per predictor.'
+      'Going to sample between ' + (this.min_num_samples) + ' and ' + this.max_num_samples + ' traces per predictor.'
     );
     logger.info(
       'Will attempt to bootstrap ' + this.num_candidate_sets + ' candidate sets.'
@@ -383,7 +383,7 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
         score >= this.stop_at_score
       ) {
         logger.info(
-          'Stopping early because score ${score} is >= stop_at_score ' + this.stop_at_score
+          'Stopping early because score ' + (score) + ' is >= stop_at_score ' + this.stop_at_score
         );
         break;
       }

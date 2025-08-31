@@ -125,7 +125,7 @@ export class SamplerProcessor implements BaseProcessor {
 
       if (sampledItems.length < dataItems.length) {
         this.logger.debug(
-          'Sampled ${sampledItems.length} out of ' + dataItems.length + ' items'
+          'Sampled ' + (sampledItems.length) + ' out of ' + dataItems.length + ' items'
         );
 }
 

@@ -368,7 +368,7 @@ class LoggingConfigurationManager {
           ? ' ' + JSON.stringify(properties)
           : '';
 
-      console.info('${timestamp}${level} [${category}] ${message}' + props);
+      console.info((timestamp) + (level) + ' [' + (category) + '] ' + (message) + props);
     };
   }
 
@@ -630,10 +630,10 @@ class LoggingConfigurationManager {
     }
 
     if (typeof meta === 'object') {
-      return '${message} ' + JSON.stringify(meta);
+      return (message) + ' ' + JSON.stringify(meta);
     }
 
-    return '${message} ' + meta;
+    return (message) + ' ' + meta;
   }
 
   updateConfig(newConfig: Partial<LoggingConfig>): void {

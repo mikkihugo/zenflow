@@ -55,7 +55,7 @@ export const testUtils = {
 
   // Helper to create test IDs
   createTestId: () =>
-    'test-${Date.now()}-' + Math.random().toString(36).substr(2, 9),
+    'test-' + (Date.now()) + '-' + Math.random().toString(36).substr(2, 9),
 };
 
 declare global {

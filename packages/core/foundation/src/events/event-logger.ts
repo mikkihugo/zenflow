@@ -62,7 +62,7 @@ export class EventLogger {
   static logFlow(from: string, to: string, eventName: string): void {
     if (!this.isEnabled()) return;
 
-    logger.info(' Flow:${from}  ${eventName}  ' + to);
+    logger.info(' Flow:' + (from) + '  ' + (eventName) + '  ' + to);
   }
 
   /**
@@ -86,7 +86,7 @@ export class EventLogger {
     };
 
     logger.info(
-      ' Event: ${eventName} [${ctx.component}' + ctx.phase ? ':' + ctx.phase : '' + ']'
+      ' Event: ' + (eventName) + ' [' + (ctx.component) + ctx.phase ? ':' + ctx.phase : '' + ']'
     );
     logger.info(' Time:' + ctx.timestamp.toISOString());
 
@@ -113,7 +113,7 @@ export class EventLogger {
     const errorStack = error instanceof Error ? error.stack : undefined;
 
     logger.error(
-      ' Error Event: ${eventName} [${ctx.component || 'unknown'}' + ctx.phase ? ':' + ctx.phase : '' + ']'
+      ' Error Event: ' + (eventName) + ' [${ctx.component || ' + ctx.phase ? ':' + ctx.phase : '' + ']'
     );
 
     logger.error(' Error: ' + errorMessage);

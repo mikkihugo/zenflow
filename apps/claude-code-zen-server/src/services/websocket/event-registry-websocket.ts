@@ -79,7 +79,7 @@ export class EventRegistryWebSocketService {
 
     this.clients.set(clientId, client);
     logger.info(
-      ' New event registry client connected:${clientId} (' + this.clients.size + ' total)'
+      ' New event registry client connected:' + (clientId) + ' (' + this.clients.size + ' total)'
     );
 
     // Send initial data
@@ -113,7 +113,7 @@ export class EventRegistryWebSocketService {
     ws.on('close', () => {
       this.clients.delete(clientId);
       logger.info(
-        ' Event registry client disconnected:${clientId} (' + this.clients.size + ' remaining)'
+        ' Event registry client disconnected:' + (clientId) + ' (' + this.clients.size + ' remaining)'
       );
     });
 
@@ -143,7 +143,7 @@ export class EventRegistryWebSocketService {
             client.subscriptions.add(eventType);
           }
           logger.info(
-            'Client ${client.id} subscribed to ' + message.eventTypes.join(',    ')
+            'Client ' + (client.id) + ' subscribed to ' + message.eventTypes.join(',    ')
           );
         }
         break;
@@ -154,7 +154,7 @@ export class EventRegistryWebSocketService {
             client.subscriptions.delete(eventType);
           }
           logger.info(
-            'Client ${client.id} unsubscribed from ' + message.eventTypes.join(',    ')
+            'Client ' + (client.id) + ' unsubscribed from ' + message.eventTypes.join(',    ')
           );
         }
         break;
@@ -281,7 +281,7 @@ export class EventRegistryWebSocketService {
    * Generate unique client ID
    */
   private generateClientId(): string {
-    return 'client-${Date.now()}-' + Math.random().toString(36).substr(2, 9);
+    return 'client-' + (Date.now()) + '-' + Math.random().toString(36).substr(2, 9);
   }
 
   /**

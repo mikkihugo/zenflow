@@ -272,7 +272,7 @@ export async function getSafetyIntervention(
   return {
     intervene: (action: InterventionAction) => {
       // Implementation would handle different intervention types
-      logger.info('Intervention requested: ${action.type} on ' + action.target);
+      logger.info('Intervention requested: ' + (action.type) + ' on ' + action.target);
       return Promise.resolve({ success: true, action});
 },
     escalate: (alert: any) => system.escalate(alert),

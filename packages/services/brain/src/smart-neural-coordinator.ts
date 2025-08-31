@@ -397,7 +397,7 @@ export interface ModelStatus {
  *   text:"Machine learning is transforming software development",
  *   qualityLevel: 'standard', *   priority:'high') *});
  *
- * logger.info('Embedding: ${result.embedding.length}D, Quality: ' + result.qualityScore);'
+ * logger.info('Embedding: ' + (result.embedding.length) + 'D, Quality: ' + result.qualityScore);'
  * '
  */
 export class SmartNeuralCoordinator {
@@ -1788,130 +1788,7 @@ export class SmartNeuralCoordinator {
 
   private generateCacheKey(request: NeuralEmbeddingRequest): string {
     const content = '$request.text$request.context || '';'
-    return '${request.qualityLevel || 'standard'}:' + this.hashString(content);'
-}
-
-  private getCachedEmbedding(cacheKey: string): CacheEntry|null {
-    const entry = this.embeddingCache.get(cacheKey);
-
-    if (!entry) {
-      this.cacheStats.misses++;
-      return null;
-}
-
-    // Check TTL
-    if (Date.now() - entry.timestamp > this.config.cache.ttlMs) {
-      this.embeddingCache.delete(cacheKey);
-      this.cacheStats.evictions++;
-      this.cacheStats.misses++;
-      return null;
-}
-
-    // Update access statistics
-    entry.accessCount++;
-    entry.lastAccessTime = Date.now();
-    this.cacheStats.hits++;
-
-    return entry;
-}
-
-  private cacheEmbedding(cacheKey: string, entry: CacheEntry): void {
-    // Check cache size and evict if necessary
-    if (this.embeddingCache.size >= this.config.cache.maxSize) {
-      this.performCacheEviction();
-}
-
-    this.embeddingCache.set(cacheKey, entry);
-}
-
-  private performCacheEviction():void {
-    if (!this.config.cache.performanceBasedEviction) {
-      // Simple LRU eviction
-      const oldestKey = Array.from(this.embeddingCache.entries()).sort(
-        ([, a], [, b]) => a.lastAccessTime - b.lastAccessTime
-      )[0]?.[0];
-
-      if (oldestKey) {
-        this.embeddingCache.delete(oldestKey);
-        this.cacheStats.evictions++;
-}
-      return;
-}
-
-    // Performance-based eviction: remove entries with lowest performance scores
-    const entries = Array.from(this.embeddingCache.entries())();
-    entries.sort(([, a], [, b]) => a.performanceScore - b.performanceScore);
-
-    const toEvict = Math.floor(this.config.cache.maxSize * 0.1); // Evict 10%
-    for (let i = 0; i < toEvict && i < entries.length; i++) {
-      this.embeddingCache.delete(entries[i][0]);
-      this.cacheStats.evictions++;
-}
-}
-
-  private calculatePerformanceScore(
-    result: NeuralEmbeddingResult,
-    processingTime: number
-  ):number {
-    // Combine quality score, confidence, and speed for overall performance score
-    const speedScore = Math.max(0, 1 - processingTime / 5000); // Normalize to 5 seconds max
-    const qualityScore = result.qualityScore;
-    const confidenceScore = result.confidence;
-
-    return speedScore * 0.3 + qualityScore * 0.5 + confidenceScore * 0.2;
-}
-
-  private updateModelMetrics(
-    model: string,
-    processingTime: number,
-    success: boolean
-  ):void {
-    const status = this.modelStatus.get(model);
-    if (!status) return;
-
-    // Update success rate
-    const totalRequests =
-      this.performanceMetrics.modelUsageCount.get(model)||0;
-    const previousSuccesses = totalRequests * status.successRate;
-    const newSuccesses = previousSuccesses + (success ? 1:0);
-    const newTotal = totalRequests + 1;
-
-    status.successRate = newSuccesses / newTotal;
-    status.averageLatency =
-      (status.averageLatency * totalRequests + processingTime) / newTotal;
-    status.lastUsed = Date.now();
-
-    this.performanceMetrics.modelUsageCount.set(model, newTotal);
-}
-
-  private updatePerformanceMetrics(
-    model: string,
-    processingTime: number,
-    qualityScore: number
-  ):void {
-    // Update average latency
-    const totalEmbeddings = this.performanceMetrics.totalEmbeddings;
-    this.performanceMetrics.averageLatency =
-      (this.performanceMetrics.averageLatency * (totalEmbeddings - 1) +
-        processingTime) /
-      totalEmbeddings;
-
-    // Update quality distribution
-    const qualityBucket = Math.floor(qualityScore * 10) / 10; // Round to nearest 0.1
-    const currentCount =
-      this.performanceMetrics.qualityDistribution.get(String(qualityBucket))||0;
-    this.performanceMetrics.qualityDistribution.set(
-      String(qualityBucket),
-      currentCount + 1
-    );
-}
-
-  private performPerformanceOptimization():void {
-    // Optimize cache based on performance data
-    if (this.config.cache.performanceBasedEviction) {
-      const cacheEfficiency = this.calculateCacheEfficiency();
-      if (cacheEfficiency < 0.5) {
-        this.logger.info(' Cache efficiency low, performing optimization...');'    this.performCacheEviction();
+    return '${request.qualityLevel || ' Cache efficiency low, performing optimization...');'    this.performCacheEviction();
 }
 }
 
@@ -1978,38 +1855,7 @@ export class SmartNeuralCoordinator {
     request: NeuralClassificationRequest
   ):string {
     const content = '$request.text$request.taskType$request.categories?.join(',    ') || '$request.context || '';'
-    return 'classify: ${request.qualityLevel || 'standard'}:' + this.hashString(content);'
-}
-
-  private getCachedClassification(cacheKey: string): any|null {
-    return this.getCachedEmbedding(cacheKey); // Reuse same cache structure
-}
-
-  private cacheClassification(
-    cacheKey: string,
-    result: any,
-    processingTime: number
-  ):void {
-    const entry = {
-      embedding: [], // Not used for classification
-      confidence: result.classification.confidence,
-      model: result.model,
-      timestamp: Date.now(),
-      accessCount: 1,
-      lastAccessTime: Date.now(),
-      performanceScore: this.calculatePerformanceScore(result, processingTime),
-      classificationData: result.classification, // Store classification-specific data
-};
-    this.cacheEmbedding(cacheKey, entry); // Reuse same cache mechanism
-}
-
-  private async generateNewClassification(request: NeuralClassificationRequest,
-    span: Span
-  ): Promise<any> {
-    const fallbacksUsed: string[] = [];
-
-    // Try premium OpenAI first if requested and available
-    if (request.qualityLevel ==='premium' && this.openaiClient) {
+    return 'classify: ${request.qualityLevel || 'premium' && this.openaiClient) {
     '  try {
         const result = await this.generateOpenAIClassification(request);
         span.setAttributes({
@@ -2184,38 +2030,7 @@ export class SmartNeuralCoordinator {
 
   private generateGenerationCacheKey(request: NeuralGenerationRequest): string {
     const content = '$request.prompt$request.taskType$request.temperature||0.7$request.maxLength||1000$request.context||'';'
-    return 'generate: ${request.qualityLevel||'standard'}:' + this.hashString(content);'
-}
-
-  private getCachedGeneration(cacheKey: string): any|null {
-    return this.getCachedEmbedding(cacheKey); // Reuse same cache structure
-}
-
-  private cacheGeneration(
-    cacheKey: string,
-    result: any,
-    processingTime: number
-  ):void {
-    const entry = {
-      embedding: [], // Not used for generation
-      confidence:0.8, // Default confidence for generation
-      model: result.model,
-      timestamp: Date.now(),
-      accessCount: 1,
-      lastAccessTime: Date.now(),
-      performanceScore: this.calculatePerformanceScore(result, processingTime),
-      generationData: result.generated, // Store generation-specific data
-};
-    this.cacheEmbedding(cacheKey, entry); // Reuse same cache mechanism
-}
-
-  private async generateNewText(request: NeuralGenerationRequest,
-    span: Span
-  ): Promise<any> {
-    const fallbacksUsed: string[] = [];
-
-    // Try premium OpenAI first if requested and available
-    if (request.qualityLevel ==='premium' && this.openaiClient) {
+    return 'generate: ${request.qualityLevel||'premium' && this.openaiClient) {
     '  try {
         const result = await this.generateOpenAIText(request);
         span.setAttributes({
@@ -2278,23 +2093,7 @@ export class SmartNeuralCoordinator {
     // Include image metadata in cache key for better cache differentiation
     const content = '$imageHash$request.taskType$request.prompt||'}' + request.context|||'$'  imageMetadata.format_$imageMetadata.size_$imageMetadata.valid ? 'valid' :' invalid'';'
 
-    const cacheKey = 'vision: ${request.qualityLevel||'standard' + ':${this.hashString(content)}';'
-
-    // Log cache key generation with image metadata
-    this.logger.debug('Vision cache key generated with image info', {
-    '  imageFormat: imageMetadata.format,
-      imageSize: imageMetadata.size,
-      imageValid: imageMetadata.valid,
-      taskType: request.taskType,
-      qualityLevel: request.qualityLevel||'standard',      cacheKeyLength: cacheKey.length,
-});
-
-    return cacheKey;
-}
-
-  private analyzeImageInput(image: string | Buffer | ArrayBuffer): any {
-    try {
-      let format ='unknown;
+    const cacheKey = 'vision: ${request.qualityLevel||'unknown;
       let size = 0;
       let valid = false;
 
@@ -2393,7 +2192,7 @@ export class SmartNeuralCoordinator {
   private generateNeuralTaskCacheKey(request: NeuralTaskRequest): string {
     const inputStr = JSON.stringify(request.input).substring(0, 1000); // Limit size
     const paramsStr = JSON.stringify(request.parameters  || {});
-    const content = '${request.taskType}${inputStr}' + paramsStr;'
+    const content = (request.taskType) + (inputStr) + paramsStr;'
     return 'task: $this.hashString(content)';'
 }
 
@@ -2722,7 +2521,7 @@ export class SmartNeuralCoordinator {
     this.cacheStats.totalRequests++;
 
     this.logger.debug(
-      'Neural task metrics recorded: ${processingTime}ms, fromCache: ' + fromCache);
+      'Neural task metrics recorded: ' + (processingTime) + 'ms, fromCache: ' + fromCache);
 }
   private recordNeuralTaskError(
     error: any,
@@ -2738,7 +2537,7 @@ export class SmartNeuralCoordinator {
     span.setStatus({ code: 2, message: error.message});
 
     this.logger.error(
-      'Neural task error: ${error.message} (' + processingTime + 'ms)','
+      'Neural task error: ' + (error.message) + ' (' + processingTime + 'ms)','
         taskType: request.taskType,
         error: error.message,
     );
@@ -2851,7 +2650,7 @@ export class SmartNeuralCoordinator {
     this.cacheStats.totalRequests++;
 
     this.logger.debug(
-      'Generation metrics recorded: ${processingTime}ms, fromCache: ' + fromCache);
+      'Generation metrics recorded: ' + (processingTime) + 'ms, fromCache: ' + fromCache);
   private recordGenerationError(
     error: any,
     processingTime: number,
@@ -2866,7 +2665,7 @@ export class SmartNeuralCoordinator {
     span.setStatus({ code: 2, message: error.message});
 
     this.logger.error(
-      'Generation error: ${error.message} (' + processingTime + 'ms)','
+      'Generation error: ' + (error.message) + ' (' + processingTime + 'ms)','
       {
         prompt: request.prompt.substring(0, 100),
         error: error.message,

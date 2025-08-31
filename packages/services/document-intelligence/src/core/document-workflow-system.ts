@@ -104,7 +104,7 @@ export class DocumentWorkflowSystem extends TypedEventBase {
     this.activeWorkspaces.set(workspaceId, workspacePath);
 
     logger.info(
-      ' Loaded Product Flow workspace:${workspaceId} at ' + workspacePath);
+      ' Loaded Product Flow workspace:' + (workspaceId) + ' at ' + workspacePath);
     return workspaceId;
 }
 

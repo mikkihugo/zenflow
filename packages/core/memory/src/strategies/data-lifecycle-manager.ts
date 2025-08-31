@@ -127,7 +127,7 @@ export class DataLifecycleManager extends EventEmitter {
     this.emit('dataStored', { key, stage, entry });
     recordMetric('data_lifecycle_stored', 1, { stage });
 
-    this.logger.debug('Data stored in ${stage} stage:' + key);
+    this.logger.debug('Data stored in ' + (stage) + ' stage:' + key);
   }
 
   retrieve(key: string): { value: unknown; entry: LifecycleEntry } | null {
@@ -472,7 +472,7 @@ export class DataLifecycleManager extends EventEmitter {
     });
 
     this.logger.debug(
-      'Data migrated:${key} from ${currentStage} to ${targetStage} (' + reason + ')'
+      'Data migrated:' + (key) + ' from ' + (currentStage) + ' to ' + (targetStage) + ' (' + reason + ')'
     );
     return true;
   }

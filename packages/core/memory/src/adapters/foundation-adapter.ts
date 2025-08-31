@@ -61,7 +61,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
   ): Promise<void> {
     await this.ensureInitialized();
 
-    const finalKey = '${namespace}:' + key;
+    const finalKey = (namespace) + ':' + key;
     const entry = {
       key,
       value,
@@ -98,7 +98,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
   ): Promise<T | null> {
     await this.ensureInitialized();
 
-    const finalKey = '${namespace}:' + key;
+    const finalKey = (namespace) + ':' + key;
 
     try {
       // Try database system first
@@ -142,7 +142,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
   override async delete(key: string, namespace = 'default'): Promise<boolean> {
     await this.ensureInitialized();
 
-    const finalKey = '${namespace}:' + key;
+    const finalKey = (namespace) + ':' + key;
     let deleted = false;
 
     try {
@@ -278,7 +278,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
     // Enhanced stats tracking with operation logging and size metrics
     const timestamp = Date.now();
 
-    this.logger.debug('Memory operation:${operation} at ' + timestamp, {
+    this.logger.debug('Memory operation:' + (operation) + ' at ' + timestamp, {
       operation,
       size: size || 0,
       backend: 'foundation-adapter',
@@ -288,7 +288,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
     // Track operation counts and data size metrics
     if (size && size > 0) {
       this.logger.debug(
-        'Operation ${operation} processed ' + size + ' bytes of data'
+        'Operation ' + (operation) + ' processed ' + size + ' bytes of data'
       );
     }
   }

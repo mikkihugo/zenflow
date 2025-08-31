@@ -202,7 +202,7 @@ export class NeuralOrchestrator {
   async processTask(task: NeuralTask): Promise<Result<NeuralResult, Error>> {
     try {
       const startTime = performance.now();
-      this.logger.info('Processing neural task: ${task.id} (type: ${task.type}, priority: ' + task.priority + ')');
+      this.logger.info('Processing neural task: ' + (task.id) + ' (type: ' + (task.type) + ', priority: ' + task.priority + ')');
 
       // Check cache first
       const cachedResult = this.checkCache(task);
@@ -242,7 +242,7 @@ export class NeuralOrchestrator {
       // Cache result if successful
       if (result.success) {
         this.cacheResult(task, result.data);
-        this.logger.info('Task ${task.id} completed successfully in ' + duration.toFixed(2) + 'ms');
+        this.logger.info('Task ' + (task.id) + ' completed successfully in ' + duration.toFixed(2) + 'ms');
         
         // Process next queued task
         this.processNextQueuedTask();
@@ -639,7 +639,7 @@ export class NeuralOrchestrator {
   }
 
   private generateCacheKey(task: NeuralTask): string {
-    return '${task.type}_' + JSON.stringify(task.data.input).slice(0, 100);
+    return (task.type) + '_' + JSON.stringify(task.data.input).slice(0, 100);
   }
 
   private async loadTaskStatistics(): Promise<void> {
@@ -654,11 +654,11 @@ export class NeuralOrchestrator {
   }
 
   private getTaskStatistics(taskType: string, complexity: TaskComplexity): TaskStatistics | undefined {
-    return this.taskStatistics.get('${taskType}_' + complexity);
+    return this.taskStatistics.get((taskType) + '_' + complexity);
   }
 
   private updateTaskStatistics(task: NeuralTask, engine: ProcessingEngine, duration: number, success: boolean): void {
-    const key = '${task.type}_' + this.analyzeTaskComplexity(task);
+    const key = (task.type) + '_' + this.analyzeTaskComplexity(task);
     const existing = this.taskStatistics.get(key);
     
     if (existing) {
@@ -779,7 +779,7 @@ export class NeuralOrchestrator {
   async processNeuralTask(task: NeuralTask): Promise<NeuralResult> {
     const startTime = Date.now();
     logger.debug(
-      ' Orchestrating neural task:${task.id} (type:' + task.type + ')');
+      ' Orchestrating neural task:' + (task.id) + ' (type:' + task.type + ')');
 
     // Analyze task complexity
     const complexity = this.analyzeTaskComplexity(task);
@@ -814,7 +814,7 @@ export class NeuralOrchestrator {
       result.metadata.complexity = complexity;
 
       logger.info(
-        ' Neural task completed:${task.id} (${complexity}, ' + duration + 'ms)');
+        ' Neural task completed:' + (task.id) + ' (' + (complexity) + ', ' + duration + 'ms)');
       return result;
 } catch (error) {
       logger.error(' Neural task failed:' + task.id, error);'
@@ -902,7 +902,7 @@ export class NeuralOrchestrator {
 
     // Learn from historical performance
     const historicalComplexity = this.taskHistory.get(
-      '${type}-' + Math.floor(inputSize / 1000));
+      (type) + '-' + Math.floor(inputSize / 1000));
     if (
       historicalComplexity &&
       this.shouldUpgradeBasedOnHistory(historicalComplexity, baseComplexity)
@@ -1119,7 +1119,7 @@ export class NeuralOrchestrator {
         break;
 }
 
-    logger.debug(' Neural data stored:${data.id} (strategy:' + strategy + ')');'
+    logger.debug(' Neural data stored:' + (data.id) + ' (strategy:' + strategy + ')');'
 }
 
   /**

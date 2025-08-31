@@ -290,31 +290,7 @@ export class DocumentWorkflowService {
 ' + requirements?.functionalRequirements?.map((req:string) => '- ' + req).join('\n') || ' + ''
 
 ## Non-Functional Requirements  
-' + requirements?.nonFunctionalRequirements?.map((req:string) => '- ${req).join('\n') || '}'
-
-## Constraints
-' + requirements?.constraints?.map((constraint:string) => '- ' + constraint).join('\n') || ' + ''
-
-## Assumptions
-' + requirements?.assumptions?.map((assumption:string) => '- ${assumption).join('\n') || '}'
-      '.trim(),
-      metadata:{
-        generatedAt:new Date().toISOString(),
-        sourceWorkflow:'vision-to-prds'
-};
-
-    return {
-      [params.outputKey as string]:prdDocument
-};
-}
-
-  /**
-   * Analyze requirements for epic extraction
-   */
-  private async analyzeRequirements(context: Record<string, unknown>,
-    params: Record<string, unknown>
-  ): Promise<Record<string, unknown>> {
-    logger.debug('Analyzing requirements for epic extraction');
+' + requirements?.nonFunctionalRequirements?.map((req:string) => '- ${req).join('Analyzing requirements for epic extraction');
     
     // Analyze PRD document for epic opportunities
     const epicRequirements = {
@@ -341,10 +317,10 @@ export class DocumentWorkflowService {
 
     for (const [epicName, features] of Object.entries(epicRequirements  || {})) {
       const epicDoc: DocumentContent = {
-        id:'epic-${epicName}-' + Date.now(),
+        id:'epic-' + (epicName) + '-' + Date.now(),
         type: 'epic',        title:'Epic: ' + epicName.replace(/([A-Z])/g, ' $1').trim(),
         content:'
-# Epic:${epicName}
+# Epic:' + (epicName) + '
 
 ## Features
 ' + (features as string[])?.map(feature => '- ' + feature).join('\n') || '

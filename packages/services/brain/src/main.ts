@@ -371,7 +371,7 @@ export class FoundationBrainCoordinator {
       throw new Error('Brain coordinator not initialized');'
 
     logger.debug(
-      ' Brain routing neural task:${task.id} (type:' + task.type + ')');
+      ' Brain routing neural task:' + (task.id) + ' (type:' + task.type + ')');
     return await this.orchestrator.processNeuralTask(task);
 }
 
@@ -1071,13 +1071,13 @@ export class FoundationBrainCoordinator {
   ):string {
     switch (strategy) {
       case 'DSPy':
-        return 'Selected DSPy optimization due to high complexity (${taskMetrics.complexity.toFixed(2)}) and sufficient resources (Memory:${(resourceState.memory_usage * 100).toFixed(1)}%, CPU:${resourceState.cpu_usage.toFixed(2)}s). Task requires advanced reasoning with ' + taskMetrics.token_count + ' tokens.';'
+        return 'Selected DSPy optimization due to high complexity (' + (taskMetrics.complexity.toFixed(2)) + ') and sufficient resources (Memory:' + ((resourceState.memory_usage * 100).toFixed(1)) + '%, CPU:' + (resourceState.cpu_usage.toFixed(2)) + 's). Task requires advanced reasoning with ' + taskMetrics.token_count + ' tokens.';'
 
       case 'DSPyConstrained':
         return 'Selected constrained DSPy optimization balancing complexity (' + taskMetrics.complexity.toFixed(2) + ') with resource constraints (Memory:' + (resourceState.memory_usage * 100).toFixed(1) + '%, Load:' + resourceState.system_load.toFixed(2) + '). Optimized for ' + taskMetrics.priority + ' priority task.';'
 
       case 'Basic': ')'      default:
-        return 'Selected basic optimization for simple task (complexity:${taskMetrics.complexity.toFixed(2)}) to minimize resource usage (Memory:${(resourceState.memory_usage * 100).toFixed(1)}%, ' + taskMetrics.token_count + ' tokens). Fast execution prioritized.';'
+        return 'Selected basic optimization for simple task (complexity:' + (taskMetrics.complexity.toFixed(2)) + ') to minimize resource usage (Memory:' + ((resourceState.memory_usage * 100).toFixed(1)) + '%, ' + taskMetrics.token_count + ' tokens). Fast execution prioritized.';'
 }
 
   /**

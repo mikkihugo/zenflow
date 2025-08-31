@@ -527,7 +527,7 @@ Remember: Write code that tells a story - it should be self-documenting and easy
 
       // Create coordination task with DSPy examples for prompt generation
       const promptTask = {
-        id:'prompt-gen-${phase}-' + Date.now(),'
+        id:'prompt-gen-' + (phase) + '-' + Date.now(),'
         type:'generation' as const,
         input:'Generate a high-quality development prompt for ' + phase + ' phase.'
 
@@ -611,11 +611,11 @@ Generate a complete, ready-to-use development prompt.','
     return [
       {
         input:'Generate $phasephase prompt for e-commerce API project in rest-api domain using $config.language','
-        output:'# Development Prompt for ${phase} Phase\n\n##  Project Context\n##  Coding Standards\n##  CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Keep functions simple and focused\n3. Follow ' + config.language + ' best practices','
+        output:'# Development Prompt for ' + (phase) + ' Phase\n\n##  Project Context\n##  Coding Standards\n##  CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Keep functions simple and focused\n3. Follow ' + config.language + ' best practices','
 },
       {
         input:'Generate $phasephase prompt for mobile app project in mobile domain using $config.language','
-        output:'# Development Prompt for ${phase} Phase\n\n##  Project Context\n##  Coding Standards\n##  CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Optimize for mobile performance\n3. Follow ' + config.language + ' best practices','
+        output:'# Development Prompt for ' + (phase) + ' Phase\n\n##  Project Context\n##  Coding Standards\n##  CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Optimize for mobile performance\n3. Follow ' + config.language + ' best practices','
 },
 ];
 }
@@ -664,31 +664,9 @@ Generate a complete, ready-to-use development prompt.','
       return '$content'
 
 ##  AI-Enhanced Recommendations:
-Based on ${agentProfiles.size} agent profiles and project context analysis:
-${contextualInsights}
-- Focus on areas where similar ${projectTags.join(',    ' projects typically encounter issues')- Leverage patterns that have proven successful in comparable domains
-- Pay special attention to complexity hotspots identified by behavioral analysis
-- Apply lessons from ' + enhancedStats.totalAgents + ' agents' collective experience';'
-} catch (error) {
-      this.logger.warn(
-        'Error enhancing prompt with behavioral intelligence: ','        error
-      );
-      return content;
-}
-}
-
-  /**
-   * Extract project tags from context for behavioral analysis
-   */
-  private extractProjectTags(context: ProjectContext): string[] {
-    const tags:string[] = [];
-
-    if (context.currentPhase) tags.push(context.currentPhase);
-    if (context.domainSpecific) tags.push(String(context.domainSpecific));
-
-    // Add additional tags based on context properties
-    if (context.requirements && context.requirements.length > 0) {
-      tags.push('$context.requirements.length-requirements');'
+Based on ' + (agentProfiles.size) + ' agent profiles and project context analysis:
+' + (contextualInsights) + '
+- Focus on areas where similar ${projectTags.join('$context.requirements.length-requirements');'
 }
 }
 
@@ -840,10 +818,10 @@ ${contextualInsights}
 $principles.template
 
 ##  Quality Metrics (Research-Based):
-- **Complexity**:$principles.qualityMetrics.complexity.metric< ${principles.qualityMetrics.complexity.threshold}
+- **Complexity**:$principles.qualityMetrics.complexity.metric< ' + (principles.qualityMetrics.complexity.threshold) + '
 - **Coverage**:$principles.qualityMetrics.coverage.metric> $principles.qualityMetrics.coverage.threshold%
 - **Maintainability**:$principles.qualityMetrics.maintainability.metric> $principles.qualityMetrics.maintainability.threshold
-- **Performance**:$principles.qualityMetrics.performance.metric< ${principles.qualityMetrics.performance.threshold}ms
+- **Performance**:$principles.qualityMetrics.performance.metric< ' + (principles.qualityMetrics.performance.threshold) + 'ms
 
 ##  Meta-Learning Instructions:
 1. **Track your execution**:Note what works well and what doesn't')2. **Report feedback**:Identify missing guidelines or incorrect assumptions
@@ -854,32 +832,19 @@ $principles.template
 1. **Follow research-based guidelines** above - these improve over time
 2. **Use descriptive, purpose-driven filenames** 
 3. **Maintain function _complexity** within researched thresholds
-4. **Consider domain-specific patterns** for ${context.domain || 'general'} applications')5. **Plan for validation** - another AI may review your work for accuracy
-
-Remember: This prompt learns from your execution. The better you follow and provide feedback on these guidelines, the more effective future prompts become.';'
-}
-
-  /**
-   * Convert principles to quality metrics
-   */
-  private convertPrinciplesToMetrics(principles:any): string[] {
-    const metrics:string[] = [];
-
-    if (principles.qualityMetrics.complexity) {
-      metrics.push(
-        'Complexity:$principles.qualityMetrics.complexity.metric< ' + principles.qualityMetrics.complexity.threshold);
+4. **Consider domain-specific patterns** for ${context.domain || 'Complexity:$principles.qualityMetrics.complexity.metric< ' + principles.qualityMetrics.complexity.threshold);
 }
     if (principles.qualityMetrics.coverage) {
       metrics.push(
-        'Coverage:${principles.qualityMetrics.coverage.metric} > ' + principles.qualityMetrics.coverage.threshold + '%');
+        'Coverage:' + (principles.qualityMetrics.coverage.metric) + ' > ' + principles.qualityMetrics.coverage.threshold + '%');
 }
     if (principles.qualityMetrics.maintainability) {
       metrics.push(
-        'Maintainability:${principles.qualityMetrics.maintainability.metric} > ' + principles.qualityMetrics.maintainability.threshold);
+        'Maintainability:' + (principles.qualityMetrics.maintainability.metric) + ' > ' + principles.qualityMetrics.maintainability.threshold);
 }
     if (principles.qualityMetrics.performance) {
       metrics.push(
-        'Performance:${principles.qualityMetrics.performance.metric} < ' + principles.qualityMetrics.performance.threshold + 'ms');
+        'Performance:' + (principles.qualityMetrics.performance.metric) + ' < ' + principles.qualityMetrics.performance.threshold + 'ms');
 }
 
     return metrics;
@@ -889,7 +854,7 @@ Remember: This prompt learns from your execution. The better you follow and prov
    * Generate principles ID for tracking
    */
   private generatePrinciplesId(config:any): string {
-    return '${config.language}-${config.domain || 'general'}-${config.role || ' general'}-' + config.depth || ' intermediate';'
+    return (config.language) + '-${config.domain || ' + config.depth || ' intermediate';'
 }
 
   /**
@@ -964,8 +929,8 @@ Remember: This prompt learns from your execution. The better you follow and prov
 \'\'\'
 
 ## Project Context:
-- **Project**: ${context.name}
-- **Domain**: ${context.domain}
+- **Project**: ' + (context.name) + '
+- **Domain**: ' + (context.domain) + '
 - **Requirements**: ' + context.requirements?.join(', ') || 'Not specified' + '
 
 ## Validation Instructions:
@@ -1099,7 +1064,7 @@ Be thorough but constructive. Focus on helping improve both the implementation a
 
     if (analysis.securityProfile) {
       recommendations.push(
-        '- **${language} Security**:' + this.getLanguageSecurityTips(language),'
+        '- **' + (language) + ' Security**:' + this.getLanguageSecurityTips(language),'
         ...analysis.securityProfile.vulnerabilityTypes.map((vuln:string) => 
           '- Prevent ' + vuln + ':' + this.getVulnerabilityPreventionTip(vuln)),
         ...analysis.securityProfile.securityFrameworks.map((framework:string) => 
@@ -1144,37 +1109,7 @@ Be thorough but constructive. Focus on helping improve both the implementation a
     const activeFeatures = [];
     if (flags.includePerformance) activeFeatures.push('Performance');'if (flags.includeSecurity) activeFeatures.push('Security');  'if (flags.includeTesting) activeFeatures.push('Testing');'
     const contextualIntro = activeFeatures.length > 0 ? 
-      '\n###  **Enhanced Features**:${activeFeatures.join(',    ' optimization enabled' :';
-
-    return {
-      contextualIntro,
-      allRecommendations:[
-        ...recommendations.performanceRecommendations,
-        ...recommendations.securityRecommendations,
-        ...recommendations.testingRecommendations
-].filter(Boolean),
-      featureMatrix:{
-        performance:flags.includePerformance,
-        security:flags.includeSecurity,
-        testing:flags.includeTesting,
-        totalFeatures:activeFeatures.length
-}
-};
-}
-
-  // Supporting utility methods for feature analysis
-  private getLanguageSpecificPerformanceTips(language:string): string[] {
-    const tips: Record<string, string[]> = {
-      typescript:['Use type-only imports',    'Leverage tree-shaking',    'Optimize TypeScript compilation'],
-      javascript:['Use WeakMap for metadata',    'Implement code splitting',    'Optimize event listeners'],
-      python:['Use list comprehensions',    'Leverage asyncio',    'Profile with cProfile'],
-      java:['Use StringBuilder',    'Optimize garbage collection',    'Implement connection pooling']';
-    return tips[language] || tips.javascript;
-}
-
-  private getPerformanceTools(language:string): string[] {
-    const tools: Record<string, string[]> = {
-      typescript:['webpack-bundle-analyzer',    'Lighthouse',    '@typescript-eslint/performance'],
+      '\n###  **Enhanced Features**:${activeFeatures.join('webpack-bundle-analyzer',    'Lighthouse',    '@typescript-eslint/performance'],
       javascript:['Chrome DevTools',    'Web Vitals',    'bundle-analyzer'],
       python:['cProfile',    'memory_profiler',    'py-spy'],
       java:['JProfiler',    'VisualVM',    'Java Flight Recorder']';

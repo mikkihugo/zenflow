@@ -573,7 +573,7 @@ export class GRPOML extends Teleprompter {
       };
 
       this.logger.info(
-        ' GRPOML optimization completed in ${totalTime}ms with ' + this.currentEpisode + ' episodes'
+        ' GRPOML optimization completed in ' + (totalTime) + 'ms with ' + this.currentEpisode + ' episodes'
       );
 
       return result;
@@ -734,7 +734,7 @@ export class GRPOML extends Teleprompter {
 
       const episodeTime = Date.now() - episodeStart;
       this.logger.debug(
-        'Episode ${this.currentEpisode}:reward=${episodeReward.toFixed(3)}, experiences=${episodeExperiences.length}, time=' + episodeTime + 'ms'
+        'Episode ' + (this.currentEpisode) + ':reward=' + (episodeReward.toFixed(3)) + ', experiences=' + (episodeExperiences.length) + ', time=' + episodeTime + 'ms'
       );
     }
 

@@ -259,7 +259,7 @@ export class VectorStore extends EventEmitter {
         // Generate ID if not provided
         const id =
           data.id ||
-          'vec_${Date.now()}_' + Math.random().toString(36).substr(2, 9);
+          'vec_' + (Date.now()) + '_' + Math.random().toString(36).substr(2, 9);
 
         // Process the insertion (in real implementation, use actual LanceDB)
         const processedAt = new Date().toISOString();
@@ -387,7 +387,7 @@ export class VectorStore extends EventEmitter {
 
           if (!options.threshold || similarity >= options.threshold) {
             results.push({
-              id: 'result_${i}_' + Date.now(),
+              id: 'result_' + (i) + '_' + Date.now(),
               similarity,
               metadata: {
                 category: 'category_' + i,

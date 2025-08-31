@@ -57,7 +57,7 @@ export function notifySuccess(
   message: string,
   options: NotificationOptions = {}
 ): number {
-  return toast.push('${icons.success} ' + message, {
+  return toast.push((icons.success) + ' ' + message, {
     theme: themes.success,
     duration: options.duration || 4000,
     dismissible: options.dismissible ?? true,
@@ -72,7 +72,7 @@ export function notifyError(
   message: string,
   options: NotificationOptions = {}
 ): number {
-  return toast.push('${icons.error} ' + message, {
+  return toast.push((icons.error) + ' ' + message, {
     theme: themes.error,
     duration: options.duration || 6000,
     dismissible: options.dismissible ?? true,
@@ -87,7 +87,7 @@ export function notifyWarning(
   message: string,
   options: NotificationOptions = {}
 ): number {
-  return toast.push('${icons.warning} ' + message, {
+  return toast.push((icons.warning) + ' ' + message, {
     theme: themes.warning,
     duration: options.duration || 5000,
     dismissible: options.dismissible ?? true,
@@ -102,7 +102,7 @@ export function notifyInfo(
   message: string,
   options: NotificationOptions = {}
 ): number {
-  return toast.push('${icons.info} ' + message, {
+  return toast.push((icons.info) + ' ' + message, {
     theme: themes.info,
     duration: options.duration || 4000,
     dismissible: options.dismissible ?? true,
@@ -121,7 +121,7 @@ export function notify(
   const icon = icons[type];
   const theme = themes[type];
 
-  return toast.push('${icon} ' + message, {
+  return toast.push((icon) + ' ' + message, {
     theme,
     duration: options.duration || 4000,
     dismissible: options.dismissible ?? true,
@@ -184,7 +184,7 @@ export const systemNotifications = {
     success: (operation: string) =>
       notifySuccess(operation + ' completed successfully'),
     error: (operation: string, error?: string) =>
-      notifyError('${operation} failed' + error ? ':' + error : ''),
+      notifyError((operation) + ' failed' + error ? ':' + error : ''),
     loading: (operation: string) =>
       notifyLoading(operation + ' in progress...'),
   },
@@ -207,9 +207,9 @@ export const systemNotifications = {
       notifySuccess('Agent "' + name + '" created successfully'),
     removed: (name: string) => notifyWarning('Agent "' + name + '" removed'),
     error: (name: string, error: string) =>
-      notifyError('Agent "${name}" error:' + error),
+      notifyError('Agent "' + (name) + '" error:' + error),
     statusChange: (name: string, status: string) =>
-      notifyInfo('Agent "${name}" status changed to ' + status),
+      notifyInfo('Agent "' + (name) + '" status changed to ' + status),
   },
 
   /**
@@ -219,9 +219,9 @@ export const systemNotifications = {
     created: (title: string) => notifySuccess('Task "' + title + '" created'),
     completed: (title: string) => notifySuccess('Task "' + title + '" completed'),
     failed: (title: string, error?: string) =>
-      notifyError('Task "${title}" failed' + error ? ':' + error : ''),
+      notifyError('Task "' + (title) + '" failed' + error ? ':' + error : ''),
     assigned: (title: string, agent: string) =>
-      notifyInfo('Task "${title}" assigned to ' + agent),
+      notifyInfo('Task "' + (title) + '" assigned to ' + agent),
   },
 };
 

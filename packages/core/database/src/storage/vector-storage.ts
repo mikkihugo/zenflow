@@ -70,7 +70,7 @@ export class VectorStorageImpl implements VectorStorage {
 
       // For a real vector database, this would use optimized vector similarity search
       // For SQLite fallback, we'll do a simplified approach
-      const sql = 'SELECT id, vector, metadata FROM "${this.collectionName}" LIMIT ' + options?.limit || 10;
+      const sql = 'SELECT id, vector, metadata FROM "' + (this.collectionName) + '" LIMIT ' + options?.limit || 10;
       const result = await this.connection.query<{
         id: string;
         vector: Buffer;
@@ -205,7 +205,7 @@ export class VectorStorageImpl implements VectorStorage {
       }
 
       params.push(id);
-      const sql = 'UPDATE "${this.collectionName}" SET ' + updates.join(', ') + ' WHERE id = ?';
+      const sql = 'UPDATE "' + (this.collectionName) + '" SET ' + updates.join(', ') + ' WHERE id = ?';
       await this.connection.execute(sql, params);
 
       logger.debug('Vector updated successfully', { id });
@@ -261,7 +261,7 @@ export class VectorStorageImpl implements VectorStorage {
 
       // For SQLite fallback, we create a regular index on the id column
       // In a real vector database implementation, this would create a vector index
-      const sql = 'CREATE INDEX IF NOT EXISTS idx_${name} ON "' + this.collectionName + '" (id)';
+      const sql = 'CREATE INDEX IF NOT EXISTS idx_' + (name) + ' ON "' + this.collectionName + '" (id)';
       await this.connection.execute(sql);
 
       this.indexCache.set(name, true);
@@ -393,7 +393,7 @@ export class VectorStorageImpl implements VectorStorage {
   }
 
   private generateCorrelationId(): string {
-    return 'vector-${Date.now()}-' + Math.random().toString(36).substr(2, 9);
+    return 'vector-' + (Date.now()) + '-' + Math.random().toString(36).substr(2, 9);
   }
 
   private calculateCosineSimilarity(

@@ -107,7 +107,7 @@ class EnsembledProgram extends DSPyModule {
       if (typeof program.namedPredictors === 'function') {
         const programPredictors = program.namedPredictors();
         for (const [name, predictor] of programPredictors) {
-          allNamedPredictors.push(['program_${i}_' + name, predictor]);
+          allNamedPredictors.push(['program_' + (i) + '_' + name, predictor]);
         }
       }
     }
@@ -206,7 +206,7 @@ class EnsembledProgram extends DSPyModule {
  *       return {
  *         data:consensus.data,
  *         confidence:consensus.normalizedWeight,
- *         reasoning:'Ensemble consensus from ${validOutputs.length}/' + outputs.length + ' members'
+ *         reasoning:'Ensemble consensus from ' + (validOutputs.length) + '/' + outputs.length + ' members'
  *};
  *} catch (error) {
  *       return {

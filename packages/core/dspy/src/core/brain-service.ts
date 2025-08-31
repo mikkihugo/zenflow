@@ -290,13 +290,13 @@ export class BrainService {
     let prompt = request.task;
 
     if (request.context) {
-      prompt = 'Context:${request.context}\n\nTask:' + prompt;
+      prompt = 'Context:' + (request.context) + '\n\nTask:' + prompt;
     }
 
     // Add conversation context if available
     if (this.conversationContext.length > 1) {
       const recentContext = this.conversationContext.slice(-3).join('\n');
-      prompt = 'Recent conversation:\n${recentContext}\n\nCurrent task:' + prompt;
+      prompt = 'Recent conversation:\n' + (recentContext) + '\n\nCurrent task:' + prompt;
     }
 
     return prompt;
@@ -357,7 +357,7 @@ export class BrainService {
    * Private:Generate cache key for optimization results
    */
   private generateCacheKey(prompt: string, domain?: string): string {
-    const content = '${prompt}-' + domain || 'general';
+    const content = (prompt) + '-' + domain || 'general';
     return Buffer.from(content).toString('base64').slice(0, 32);
   }
 }

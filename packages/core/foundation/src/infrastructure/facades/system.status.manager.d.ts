@@ -9,7 +9,7 @@
  * import { getSystemStatus, getHealthSummary} from '@claude-zen/foundation/status-manager';
  *
  * const systemStatus = getSystemStatus();
- * logger.info('Overall:${systemStatus.overall}, Health:' + systemStatus.healthScore + '%');
+ * logger.info('Overall:' + (systemStatus.overall) + ', Health:' + systemStatus.healthScore + '%');
  *
  * const health = getHealthSummary();
  * // Returns:{ status: 'healthy|degraded|unhealthy', details:{...}}

@@ -331,7 +331,7 @@ export class MemoryHealthMonitor extends EventEmitter {
       if (consecutiveFailures >= this.config.unhealthyThreshold) {
         this.emit('nodeUnhealthy', node.id);
         this.logger.warn(
-          'Node marked as unhealthy after ${consecutiveFailures} consecutive failures:' + node.id
+          'Node marked as unhealthy after ' + (consecutiveFailures) + ' consecutive failures:' + node.id
         );
         recordMetric('memory_node_status_change', 1, {
           nodeId: node.id,
@@ -346,7 +346,7 @@ export class MemoryHealthMonitor extends EventEmitter {
       if (consecutiveSuccesses >= this.config.healthyThreshold) {
         this.emit('nodeRecovered', node.id);
         this.logger.info(
-          'Node recovered after ${consecutiveSuccesses} consecutive successes:' + node.id
+          'Node recovered after ' + (consecutiveSuccesses) + ' consecutive successes:' + node.id
         );
         recordMetric('memory_node_status_change', 1, {
           nodeId: node.id,
@@ -471,7 +471,7 @@ export class MemoryHealthMonitor extends EventEmitter {
 
     score = Math.max(0, Math.min(100, score));
 
-    const summary = '${this.stats.healthyNodes}/${totalNodes} nodes healthy, avg latency:' + Math.round(this.stats.averageLatency) + 'ms';
+    const summary = (this.stats.healthyNodes) + '/' + (totalNodes) + ' nodes healthy, avg latency:' + Math.round(this.stats.averageLatency) + 'ms';
 
     return {
       status,

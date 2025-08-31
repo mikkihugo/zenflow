@@ -111,7 +111,7 @@
  *
  * // Monitor execution in real-time
  * analytics.onStepCompleted(workflowId, (stepResult) => {
- *   logger.info('Step ${stepResult.stepId} completed in ' + stepResult.duration + 'ms');'
+ *   logger.info('Step ' + (stepResult.stepId) + ' completed in ' + stepResult.duration + 'ms');'
  *});
  *
  * // Get workflow performance insights

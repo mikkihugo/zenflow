@@ -164,7 +164,7 @@ async function startService(name: string, command: string[]) {
     childProcess.on('error', reject);
     childProcess.on('exit', (code) => {
       if (code !== 0 && code !== null) {
-        reject(new Error('${name} exited with code ' + code));
+        reject(new Error((name) + ' exited with code ' + code));
       }
     });
 
@@ -232,7 +232,7 @@ async function waitForPort(port: number, timeout: number = 30000) {
       await new Promise((resolve) => setTimeout(resolve, 500));
     }
   }
-  throw new Error('Port ${port} not ready within ' + timeout + 'ms');
+  throw new Error('Port ' + (port) + ' not ready within ' + timeout + 'ms');
 }
 
 async function initializeE2EData() {
@@ -454,9 +454,9 @@ globalThis.createE2EClient = (serviceName: string): E2EHttpClient => {
   const baseURL = 'http://localhost:' + service.port;
 
   return {
-    get: (path: string) => fetch('${baseURL}' + path),
+    get: (path: string) => fetch((baseURL) + path),
     post: (path: string, data?: HttpRequestData) =>
-      fetch('${baseURL}' + path, {
+      fetch((baseURL) + path, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -464,14 +464,14 @@ globalThis.createE2EClient = (serviceName: string): E2EHttpClient => {
         body: data ? JSON.stringify(data) : undefined,
       }),
     put: (path: string, data?: HttpRequestData) =>
-      fetch('${baseURL}' + path, {
+      fetch((baseURL) + path, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: data ? JSON.stringify(data) : undefined,
       }),
-    delete: (path: string) => fetch('${baseURL}' + path, { method: 'DELETE' }),
+    delete: (path: string) => fetch((baseURL) + path, { method: 'DELETE' }),
   };
 };
 

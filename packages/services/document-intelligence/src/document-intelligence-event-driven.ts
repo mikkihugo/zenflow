@@ -877,71 +877,10 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
 # Product Requirements Document
 
 ## Overview
-${requirements.businessValue}
+' + (requirements.businessValue) + '
 
 ## Functional Requirements
-' + requirements.functional.map(req => '- ${req).join('\n''
-
-## Non-Functional Requirements
-' + requirements.nonFunctional.map(req => '- ${req).join('\n''
-
-## Stakeholders
-' + requirements.stakeholders.map(stakeholder => '- ${stakeholder).join('\n''
-
-## Constraints
-' + requirements.constraints.map(constraint => '- ${constraint).join('\n''
-
-## Assumptions
-' + requirements.assumptions.map(assumption => '- ${assumption).join('\n''
-
-## Success Criteria
-- All functional requirements implemented and tested
-- Non-functional requirements validated
-- Stakeholder acceptance achieved
-- System deployed and operational
-    '.trim();
-}
-
-  private generateEpicContent(epicName: string, features:string[]): string {
-    return '
-# Epic:' + this.formatEpicName(epicName) + '
-
-## Description
-This epic covers the ${epicName.toLowerCase().replace(/epic$/, ' functionality of the system.
-
-## Features
-' + features.map(feature => '- ${feature).join('\n''
-
-## Acceptance Criteria
-- [] All features implemented and tested
-- [] Integration testing completed
-- [] Performance requirements met
-- [] Security review passed
-- [] Documentation updated
-- [] User acceptance testing completed
-
-## Definition of Done
-- Code reviewed and merged
-- Unit tests written and passing
-- Integration tests passing
-- Documentation complete
-- Production deployment successful
-    '.trim();
-}
-
-  private formatEpicName(epicName:string): string {
-    return epicName
-      .replace(/([A-Z])/g, ' $1'
-      .replace(/^./, str => str.toUpperCase())
-      .trim()
-      .replace(/Epic$/, ');
-}
-
-  private extractDocumentsFromResult(results: Record<string, any>):DocumentData[] {
-    const documents: DocumentData[] = [];
-    
-    for (const [key, value] of Object.entries(results)) {
-      if (key.includes('document' {
+' + requirements.functional.map(req => '- ${req).join('document' {
         if (Array.isArray(value)) {
           documents.push(...value.filter(item => item && item.id));
 } else if (value && value.id) {

@@ -34,7 +34,7 @@ export default defineConfig({
             if (process.env.NODE_ENV === 'development') {
               // eslint-disable-next-line no-console
               logger.info(
-                'Proxying API request:${req.method} ${req.url} -> http://localhost:3001' + req.url
+                'Proxying API request:' + (req.method) + ' ' + (req.url) + ' -> http://localhost:3001' + req.url
               );
             }
             // Use proxyReq for logging proxy request details

@@ -187,4 +187,4 @@ describe('Neural Backend E2E Tests', () => {
  const texts = Array.from(
  { length:batchSize},
  (_, i) =>
- 'Performance test document ${i + 1} with unique content and identifier ${Math.random()} Cache pressure test ' + i:'quality-test-' + testCase.type,
+ 'Performance test document ' + (i + 1) + ' with unique content and identifier ' + (Math.random()) + ' Cache pressure test ' + i:'quality-test-' + testCase.type,

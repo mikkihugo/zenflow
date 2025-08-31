@@ -252,24 +252,20 @@ export class DSPyEngine {
 		// const fewShotPrompt = this.createFewShotPrompt(program, examples);
 
 		try {
-			const optimizationPrompt = '
-Improve this prompt for better results:
-
-Current prompt: "' + program.prompt + '"
-
-Few-shot examples:
-' + examples
-	.slice(0, this.config.fewShotExamples)
-	.map((ex) => 'Input: ${ex.input + '\nExpected: ${ex.output}')
-	.join("\n\n")}
-
-Generate an improved version that:
-1. Is more specific and clear
-2. Provides better guidance
-3. Includes relevant context
-4. Maintains the same task objective
-
-Improved prompt:';
+			const optimizationPrompt = 
+				'Improve this prompt for better results:\n\n' +
+				'Current prompt: "' + program.prompt + '"\n\n' +
+				'Few-shot examples:\n' +
+				examples
+					.slice(0, this.config.fewShotExamples)
+					.map((ex) => 'Input: ' + ex.input + '\nExpected: ' + ex.output)
+					.join("\n\n") +
+				'\n\nGenerate an improved version that:\n' +
+				'1. Is more specific and clear\n' +
+				'2. Provides better guidance\n' +
+				'3. Includes relevant context\n' +
+				'4. Maintains the same task objective\n\n' +
+				'Improved prompt:';
 
 			const response = await llm.analyze(optimizationPrompt);
 
@@ -343,7 +339,7 @@ Improved prompt:';
 	//     .map(ex => 'Input:' + ex.input + '\nOutput:' + ex.output)'
 	//     .join('\n\n');
 	//
-	//   return '${program.prompt}\n\nExamples:\n' + fewShot + '\n\nNow complete:';
+	//   return (program.prompt) + '\n\nExamples:\n' + fewShot + '\n\nNow complete:';
 	//}
 
 	/**
@@ -392,7 +388,7 @@ Improved prompt:';
 	):Promise<void> {
 		try {
 			const kv = await this.getKV();
-			const key = 'dspy-optimization:${task}:' + result.timestamp.getTime();
+			const key = 'dspy-optimization:' + (task) + ':' + result.timestamp.getTime();
 			await kv.set(key, result);
 
 			// Update history

@@ -70,7 +70,7 @@ export class WebSocketManager {
       // Handle client subscription events
       socket.on('subscribe', async (channel: string) => {
         socket.join(channel);
-        this.logger.debug('Client ${socket.id} subscribed to ' + channel);
+        this.logger.debug('Client ' + (socket.id) + ' subscribed to ' + channel);
 
         // Send initial data for the subscribed channel
         await this.sendChannelData(socket, channel);
@@ -78,7 +78,7 @@ export class WebSocketManager {
 
       socket.on('unsubscribe', (channel: string) => {
         socket.leave(channel);
-        this.logger.debug('Client ${socket.id} unsubscribed from ' + channel);
+        this.logger.debug('Client ' + (socket.id) + ' unsubscribed from ' + channel);
       });
 
       // Handle ping for connection keep-alive
@@ -88,7 +88,7 @@ export class WebSocketManager {
 
       socket.on('disconnect', (reason) => {
         this.logger.debug(
-          'Client disconnected: ${socket.id}, reason: ' + reason
+          'Client disconnected: ' + (socket.id) + ', reason: ' + reason
         );
       });
 
@@ -329,7 +329,7 @@ export class WebSocketManager {
     };
 
     this.io.to(room).emit(event, broadcastData);
-    this.logger.debug('Broadcasted event:${event} to room:' + room);
+    this.logger.debug('Broadcasted event:' + (event) + ' to room:' + room);
   }
 
   /**

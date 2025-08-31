@@ -154,7 +154,7 @@ export class BehavioralIntelligence {
         await this.initializeNeuralNetworkInfrastructure(id, type, config);
         const networkArchitecture = await this.designNetworkArchitecture(type, config);
         
-        logger.debug('Mock: Creating neural network ${id} of type ' + type, {'
+        logger.debug('Mock: Creating neural network ' + (id) + ' of type ' + type, {'
           hiddenLayers:config?.hiddenLayers||'default',          learningRate:config?.learningRate||'default',          activation:config?.activation||'default',          architecture:networkArchitecture
 });
         
@@ -293,7 +293,7 @@ export class BehavioralIntelligence {
 }
 
       logger.debug(
-        'Enhanced learning from execution:${executionData.agentId} - ' + executionData.taskType + ' (with ML algorithms)');
+        'Enhanced learning from execution:' + (executionData.agentId) + ' - ' + executionData.taskType + ' (with ML algorithms)');
 } catch (error) {
       logger.error('Error learning from execution:', error);'
 }
@@ -447,7 +447,7 @@ export class BehavioralIntelligence {
         if (score > bestScore) {
           bestScore = score;
           bestAgent = agentId;
-          bestReasoning = 'High predicted efficiency (${(_prediction._predictedEfficiency * 100).toFixed(1)}%) and success rate (' + (_prediction._predictedSuccess * 100).toFixed(1) + '%)';'
+          bestReasoning = 'High predicted efficiency (' + ((_prediction._predictedEfficiency * 100).toFixed(1)) + '%) and success rate (' + (_prediction._predictedSuccess * 100).toFixed(1) + '%)';'
 }
 }
 
@@ -832,7 +832,7 @@ export class BehavioralIntelligence {
 
     try {
       logger.debug(
-        ' Recording behavior:${data.agentId} - ' + data.behaviorType);
+        ' Recording behavior:' + (data.agentId) + ' - ' + data.behaviorType);
 
       // Convert behavior data to execution data format for learning
       const executionData: AgentExecutionData = {
@@ -1280,7 +1280,7 @@ export class BehavioralIntelligence {
    */
   private async executeTrainingPipeline(id: string, data: any, strategy:any): Promise<void> 
     await new Promise(resolve => setTimeout(resolve, 150));
-    logger.debug('Training pipeline executed for ${id} with ' + strategy.strategy + ' strategy');'
+    logger.debug('Training pipeline executed for ' + (id) + ' with ' + strategy.strategy + ' strategy');'
 }
 
   /**
@@ -1671,17 +1671,6 @@ export async function demoBehavioralIntelligence(
       '   • Average performance: ' + (stats.averagePerformance * 100).toFixed(1) + '%'
     );
     logger.info(
-      '   • Most active agents: ${stats.mostActiveAgents.join(', ''
-    );
-
-    logger.info('\n Behavioral Intelligence Demo Complete!');
-    logger.info('\n Key Benefits for claude-code-zen:');
-    logger.info('   • Real-time agent performance prediction');
-    logger.info('   • Intelligent task-agent matching');
-    logger.info('   • Behavioral pattern learning and adaptation');
-    logger.info('   • Task complexity estimation for better routing');
-    logger.info('   • Data-driven swarm optimization');
-  } catch (error) {
-    logger.error(' Demo failed:', error);
+      '   • Most active agents: ${stats.mostActiveAgents.join(' Demo failed:', error);
   }
 }

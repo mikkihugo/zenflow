@@ -33,7 +33,7 @@ export function generateCustomId(alphabet: string, size: number = 10): string {
  * Generate a timestamp-based ID
  */
 export function generateTimestampId(): string {
-  return '${Date.now()}_' + nanoid(8);
+  return (Date.now()) + '_' + nanoid(8);
 }
 
 /**

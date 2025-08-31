@@ -536,7 +536,7 @@ export class COPROML extends Teleprompter {
 }
 
 		this.logger.info(
-			'Online learning completed after ${this.currentIteration} iterations with ' + this.driftDetections.length + ' drift detections',
+			'Online learning completed after ' + (this.currentIteration) + ' iterations with ' + this.driftDetections.length + ' drift detections',
 		);
 }
 
@@ -738,7 +738,7 @@ export class COPROML extends Teleprompter {
 	private generatePrefixFromConfig(config:Record<string, any>):string {
 		// Generate prefix string based on configuration
 		const strength = Math.floor(config.prefix_strength * 10);
-		return 'Optimized prefix (strength=${strength}, lr=' + config.learning_rate.toFixed(4) + ')';
+		return 'Optimized prefix (strength=' + (strength) + ', lr=' + config.learning_rate.toFixed(4) + ')';
 }
 
 	private async evaluatePrefixConfiguration(

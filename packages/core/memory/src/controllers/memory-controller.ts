@@ -277,7 +277,7 @@ export class MemoryController {
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
-      this._logger.error('Failed to store memory key ${request.key}:' + error);
+      this._logger.error('Failed to store memory key ' + (request.key) + ':' + error);
 
       return {
         success:false,
@@ -336,7 +336,7 @@ export class MemoryController {
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
-      this._logger.error('Failed to retrieve memory key ${key}:' + error);
+      this._logger.error('Failed to retrieve memory key ' + (key) + ':' + error);
 
       return {
         success:false,
@@ -391,7 +391,7 @@ export class MemoryController {
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
-      this._logger.error('Failed to delete memory key ${key}:' + error);
+      this._logger.error('Failed to delete memory key ' + (key) + ':' + error);
 
       return {
         success:false,
@@ -543,7 +543,7 @@ export class MemoryController {
       this.updateMetrics(executionTime, errorCount === 0);
 
       this._logger.debug(
-        'Batch operations completed:${results.length} operations, ' + errorCount + ' errors'
+        'Batch operations completed:' + (results.length) + ' operations, ' + errorCount + ' errors'
       );
 
       return {

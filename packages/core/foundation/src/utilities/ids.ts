@@ -141,7 +141,7 @@ export function generateTimestampId(
   const timestamp = Date.now();
   const random = randomBytes(randomBytesCount).toString('hex');
 
-  return prefix ? '${prefix}-${timestamp}-' + random : '${timestamp}-' + random;
+  return prefix ? (prefix) + '-' + (timestamp) + '-' + random : (timestamp) + '-' + random;
 }
 
 // =============================================================================
@@ -181,7 +181,7 @@ export function generateApiKey(
   bytes: number = 24
 ): string {
   const keyData = randomBytes(bytes).toString('base64url');
-  return '${prefix}_' + keyData;
+  return (prefix) + '_' + keyData;
 }
 
 // =============================================================================

@@ -362,7 +362,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
 
       const duration = Date.now() - startTime;
       this.logger.debug(
-        ' Traffic control complete:${decisions.length} decisions made in ' + duration + 'ms'
+        ' Traffic control complete:' + (decisions.length) + ' decisions made in ' + duration + 'ms'
       );
 
       return decisions;

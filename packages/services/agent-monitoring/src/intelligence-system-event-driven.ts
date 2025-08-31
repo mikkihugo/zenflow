@@ -11,13 +11,13 @@
 
 const createLogger = (name: string) => ({
   info:(message: string, meta?:unknown) => 
-    console.info('[INFO: ${name}] ' + message, meta ? JSON.stringify(meta) :''),
+    console.info('[INFO: ' + (name) + '] ' + message, meta ? JSON.stringify(meta) :''),
   debug:(message: string, meta?:unknown) => 
-    console.info('[DEBUG: ${name}] ' + message, meta ? JSON.stringify(meta) : '{}'),
+    console.info('[DEBUG: ' + (name) + '] ' + message, meta ? JSON.stringify(meta) : '{}'),
   warn:(message: string, meta?:unknown) => 
-    console.warn('[WARN: ${name}] ' + message, meta ? JSON.stringify(meta) : '{}'),
+    console.warn('[WARN: ' + (name) + '] ' + message, meta ? JSON.stringify(meta) : '{}'),
   error:(message: string, meta?:unknown) => 
-    console.error('[ERROR: ${name}] ' + message, meta ? JSON.stringify(meta) : '{}'),
+    console.error('[ERROR: ' + (name) + '] ' + message, meta ? JSON.stringify(meta) : '{}'),
 });
 
 // =============================================================================

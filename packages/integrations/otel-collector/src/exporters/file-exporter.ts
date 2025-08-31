@@ -229,7 +229,7 @@ export class FileExporter implements BaseExporter {
     // Generate new file path
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const extension = this.format === 'jsonl' ? 'jsonl' : 'json';
-    this.currentFilePath = '${this.baseFilePath}-${timestamp}.' + extension;
+    this.currentFilePath = (this.baseFilePath) + '-' + (timestamp) + '.' + extension;
 
     // Create new write stream
     if (this.compression) {

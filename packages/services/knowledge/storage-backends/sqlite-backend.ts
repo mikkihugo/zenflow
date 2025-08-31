@@ -363,7 +363,7 @@ export class SQLiteBackend implements FACTStorageBackend {
       if (this.config.enableFullTextSearch) {
         await this.dalAdapter.execute(
           'DELETE FROM ' + this.config.tableName + '_fts '
-           WHERE id NOT N (SELECT id FROM ${this.config.tableName})');
+           WHERE id NOT N (SELECT id FROM ' + (this.config.tableName) + ')');
 }
 
       return result?.rowsAffected||0;catch (error) 
@@ -385,7 +385,7 @@ export class SQLiteBackend implements FACTStorageBackend {
       if (this.config.enableFullTextSearch) {
         await this.dalAdapter.execute(
           'DELETE FROM ' + this.config.tableName + '_fts '
-           WHERE id NOT N (SELECT id FROM ${this.config.tableName})');
+           WHERE id NOT N (SELECT id FROM ' + (this.config.tableName) + ')');
 }
 
       return result?.rowsAffected||0;

@@ -71,7 +71,7 @@ export class MemoryBackendFactory {
     instanceId?: string
   ): Promise<BaseMemoryBackend & BackendInterface> {
     const fullConfig = this.mergeConfig(config);
-    const id = instanceId || '${type}-' + Date.now();
+    const id = instanceId || (type) + '-' + Date.now();
 
     // Check if backend is already created
     if (this.backends.has(id)) {
@@ -316,7 +316,7 @@ export class MemoryBackendFactory {
       return await loader();
     } catch (error) {
       throw new Error(
-        'Failed to load backend '${type}':' + (error as Error).message
+        'Failed to load backend (type):' + (error as Error).message
       );
     }
   }

@@ -397,7 +397,7 @@ export class DSPyBrainMLBridge extends EventEmitter {
   private translateDSPyToBrainRequest(task: DSPyOptimizationTask): any {
     return {
       task: task.teleprompterType + ' optimization',
-      basePrompt: 'Optimize ${task.teleprompterType} teleprompter for ' + task.objective,
+      basePrompt: 'Optimize ' + (task.teleprompterType) + ' teleprompter for ' + task.objective,
       context: {
         domain: task.teleprompterType,
         objective: task.objective,

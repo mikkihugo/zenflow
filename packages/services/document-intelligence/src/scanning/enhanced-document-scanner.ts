@@ -195,7 +195,7 @@ export class EnhancedDocumentScanner {
         scanDuration: Date.now() - startTime,
       };
 
-      logger.info(' Enhanced scan completed: ${analysisResults.length} issues found in ' + scannedFiles + ' files');
+      logger.info(' Enhanced scan completed: ' + (analysisResults.length) + ' issues found in ' + scannedFiles + ' files');
 
       return results;
     } finally {
@@ -288,8 +288,8 @@ export class EnhancedDocumentScanner {
       id: this.generateId(),
       type: pattern,
       severity: this.getPatternSeverity(pattern),
-      title: '${pattern.toUpperCase()}: ' + matchText,
-      description: 'Found ${pattern} comment: ' + matchText,
+      title: (pattern.toUpperCase()) + ': ' + matchText,
+      description: 'Found ' + (pattern) + ' comment: ' + matchText,
       filePath,
       lineNumber,
       codeSnippet,
@@ -396,6 +396,6 @@ export class EnhancedDocumentScanner {
   }
 
   private generateId(): string {
-    return 'analysis-${Date.now()}-' + Math.random().toString(36).substring(2, 11);
+    return 'analysis-' + (Date.now()) + '-' + Math.random().toString(36).substring(2, 11);
   }
 }

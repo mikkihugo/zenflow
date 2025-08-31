@@ -153,9 +153,9 @@ export class SqliteMemoryBackend implements MemoryBackend {
         createdAt:new Date().toISOString(),
         metadata:{ type: 'memory_entry'},
 });
-      this.logger.debug('${LOG_MESSAGES.successfullyStored}: ' + key);
+      this.logger.debug((LOG_MESSAGES.successfullyStored) + ': ' + key);
     } catch (error) {
-      this.logger.error('Failed to store key ${key}:' + error);
+      this.logger.error('Failed to store key ' + (key) + ':' + error);
       throw error;
     }
   }
@@ -169,7 +169,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
       const filtered = results?.filter((r) => r.id === key);
       return filtered.length > 0 ? (filtered[0]?.data as T) : null;
     } catch (error) {
-      this.logger.error('Failed to retrieve key ${key}:' + error);
+      this.logger.error('Failed to retrieve key ' + (key) + ':' + error);
       throw error;
     }
   }
@@ -190,7 +190,7 @@ export class SqliteMemoryBackend implements MemoryBackend {
       this.logger.debug('Successfully deleted key:' + key);
       return true;
     } catch (error) {
-      this.logger.error('Failed to delete key ${key}:' + error);
+      this.logger.error('Failed to delete key ' + (key) + ':' + error);
       throw error;
     }
   }
@@ -299,7 +299,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
       ]);
       this.logger.debug('Successfully stored key:' + key);
     } catch (error) {
-      this.logger.error('Failed to store key ${key}:' + error);
+      this.logger.error('Failed to store key ' + (key) + ':' + error);
       throw error;
     }
   }
@@ -327,7 +327,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
       }
       return null;
     } catch (error) {
-      this.logger.error('Failed to retrieve key ${key}:' + error);
+      this.logger.error('Failed to retrieve key ' + (key) + ':' + error);
       throw error;
     }
   }
@@ -348,7 +348,7 @@ export class LanceDBMemoryBackend implements MemoryBackend {
       this.logger.debug('Successfully deleted key:' + key);
       return true;
     } catch (error) {
-      this.logger.error('Failed to delete key ${key}:' + error);
+      this.logger.error('Failed to delete key ' + (key) + ':' + error);
       throw error;
     }
   }
@@ -455,7 +455,7 @@ export class JsonMemoryBackend implements MemoryBackend {
       await this.persistToFile();
       this.logger.debug('Successfully stored key:' + key);
     } catch (error) {
-      this.logger.error('Failed to store key ${key}:' + error);
+      this.logger.error('Failed to store key ' + (key) + ':' + error);
       throw error;
     }
   }
@@ -468,7 +468,7 @@ export class JsonMemoryBackend implements MemoryBackend {
       const value = this.data.get(key);
       return Promise.resolve(value !== undefined ? (value as T) :null);
 } catch (error) {
-      this.logger.error('Failed to retrieve key ${key}:' + error);
+      this.logger.error('Failed to retrieve key ' + (key) + ':' + error);
       return Promise.reject(error);
 }
 }
@@ -488,7 +488,7 @@ export class JsonMemoryBackend implements MemoryBackend {
       }
       return existed;
     } catch (error) {
-      this.logger.error('Failed to delete key ${key}:' + error);
+      this.logger.error('Failed to delete key ' + (key) + ':' + error);
       throw error;
     }
   }
@@ -582,7 +582,7 @@ export class InMemoryBackend implements MemoryBackend {
       this.logger.debug('Successfully stored key:' + key);
       return Promise.resolve();
 } catch (error) {
-      this.logger.error('Failed to store key ${key}:' + error);
+      this.logger.error('Failed to store key ' + (key) + ':' + error);
       return Promise.reject(error);
 }
 }
@@ -594,7 +594,7 @@ export class InMemoryBackend implements MemoryBackend {
       const value = this.data.get(key);
       return Promise.resolve(value !== undefined ? (value as T) :null);
 } catch (error) {
-      this.logger.error('Failed to retrieve key ${key}:' + error);
+      this.logger.error('Failed to retrieve key ' + (key) + ':' + error);
       return Promise.reject(error);
 }
 }
@@ -611,7 +611,7 @@ export class InMemoryBackend implements MemoryBackend {
 }
       return Promise.resolve(deleted);
 } catch (error) {
-      this.logger.error('Failed to delete key ${key}:' + error);
+      this.logger.error('Failed to delete key ' + (key) + ':' + error);
       return Promise.reject(error);
 }
 }

@@ -95,7 +95,7 @@ export class DaemonProcessManager {
 
     child.on('exit', (code, signal) => {
       this.logger.info(
-        'Daemon process exited with code ${code}, signal ' + signal
+        'Daemon process exited with code ' + (code) + ', signal ' + signal
       );
       this.cleanupPidFile();
     });
@@ -298,7 +298,7 @@ export class DaemonProcessManager {
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
 
-    throw new Error('Process ${pid} did not stop within ' + timeout + 'ms');
+    throw new Error('Process ' + (pid) + ' did not stop within ' + timeout + 'ms');
   }
 
   /**

@@ -230,7 +230,7 @@ export class DynamicEventRegistry extends EventBus {
     }
 
     const flow: EventFlow = {
-      id: 'flow-${Date.now()}-' + Math.random().toString(36).substr(2, 9),
+      id: 'flow-' + (Date.now()) + '-' + Math.random().toString(36).substr(2, 9),
       eventName: eventName as EventName,
       source: this.inferEventSource(eventName),
       target: this.inferEventTarget(eventName),

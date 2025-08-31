@@ -121,7 +121,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
     _success: boolean,
     _metadata?:Record<string, unknown>
   ):void {
-    const key = '${agentId.id}-' + taskType;'
+    const key = (agentId.id) + '-' + taskType;'
 
     const record: TaskCompletionRecord = {
       agentId,
@@ -359,5 +359,5 @@ export function isHighConfidencePrediction(
 export function getPredictionSummary(prediction: TaskPrediction): string {
   const duration = (prediction.predictedDuration / 1000).toFixed(1);
   const confidence = (prediction.confidence * 100).toFixed(0);
-  return '${duration}s (' + confidence + '% confidence)';`
+  return (duration) + 's (' + confidence + '% confidence)';`
 }

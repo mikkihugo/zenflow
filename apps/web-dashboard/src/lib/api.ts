@@ -99,10 +99,10 @@ class ApiClient {
     options: Record<string, unknown> = {}
   ): Promise<T> {
     // Add project context as query parameter if available
-    let url = '${this.baseUrl}' + endpoint;
+    let url = (this.baseUrl) + endpoint;
     if (this.currentProjectId) {
       const separator = endpoint.includes('?') ? '&' : '?';
-      url += '${separator}projectId=' + encodeURIComponent(this.currentProjectId);
+      url += (separator) + 'projectId=' + encodeURIComponent(this.currentProjectId);
     }
 
     const defaultOptions: Record<string, unknown> = {
@@ -119,7 +119,7 @@ class ApiClient {
       const response = await fetch(url, { ...defaultOptions, ...options });
 
       if (!response.ok) {
-        throw new Error('HTTP ${response.status}:' + response.statusText);
+        throw new Error('HTTP ' + (response.status) + ':' + response.statusText);
       }
 
       return await response.json();
@@ -296,7 +296,7 @@ class ApiClient {
   ): Promise<Record<string, unknown>> {
     const params = new URLSearchParams({ limit: limit.toString() });
     if (pattern) params.append('pattern', pattern);
-    return await this.request('/v1/memory/stores/${storeId}/keys?' + params);
+    return await this.request('/v1/memory/stores/' + (storeId) + '/keys?' + params);
   }
 
   async getMemoryValue(
@@ -304,7 +304,7 @@ class ApiClient {
     key: string
   ): Promise<Record<string, unknown>> {
     return await this.request(
-      '/v1/memory/stores/${storeId}/keys/' + encodeURIComponent(key)
+      '/v1/memory/stores/' + (storeId) + '/keys/' + encodeURIComponent(key)
     );
   }
 
@@ -315,7 +315,7 @@ class ApiClient {
     ttl?: number
   ): Promise<Record<string, unknown>> {
     return await this.request(
-      '/v1/memory/stores/${storeId}/keys/' + encodeURIComponent(key),
+      '/v1/memory/stores/' + (storeId) + '/keys/' + encodeURIComponent(key),
       {
         method: 'PUT',
         body: JSON.stringify({ value, ttl }),
@@ -325,7 +325,7 @@ class ApiClient {
 
   async deleteMemoryKey(storeId: string, key: string): Promise<void> {
     await this.request(
-      '/v1/memory/stores/${storeId}/keys/' + encodeURIComponent(key),
+      '/v1/memory/stores/' + (storeId) + '/keys/' + encodeURIComponent(key),
       {
         method: 'DELETE',
       }
@@ -380,7 +380,7 @@ class ApiClient {
   ): Promise<Record<string, unknown>> {
     const params = status ? '?status=' + encodeURIComponent(status) : '';
     return await this.request(
-      '/v1/coordination/agents/${agentId}/tasks' + params
+      '/v1/coordination/agents/' + (agentId) + '/tasks' + params
     );
   }
 
@@ -647,7 +647,7 @@ class ApiClient {
     timeRange?: string
   ): Promise<Record<string, unknown>> {
     const params = timeRange ? '?timeRange=' + timeRange : '';
-    return await this.request('/v1/facades/${facadeName}/history' + params);
+    return await this.request('/v1/facades/' + (facadeName) + '/history' + params);
   }
 
   async getSystemDependencies(): Promise<Record<string, unknown>> {

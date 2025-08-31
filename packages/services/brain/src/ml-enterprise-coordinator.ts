@@ -324,7 +324,7 @@ export class MLEnterpriseCoordinator {
 			throw new Error("ML Enterprise Coordinator not initialized");
 }
 
-		const trainingId = 'train_${modelId}_' + Date.now();
+		const trainingId = 'train_' + (modelId) + '_' + Date.now();
 		
 		// Create workflow state event
 		const workflowEvent: MLWorkflowStateEvent = {
@@ -390,7 +390,7 @@ export class MLEnterpriseCoordinator {
 			this.emit("ml_training_started", trainingEvent);
 }
 		
-		this.logger.info('Started training job ${trainingId} in SPARC phase:' + sparc_phase);
+		this.logger.info('Started training job ' + (trainingId) + ' in SPARC phase:' + sparc_phase);
 		
 		return trainingId;
 }
@@ -619,7 +619,7 @@ export class MLEnterpriseCoordinator {
 			throw new Error("ML Enterprise Coordinator not initialized");
 }
 
-		const inferenceId = 'infer_${modelId}_' + Date.now();
+		const inferenceId = 'infer_' + (modelId) + '_' + Date.now();
 		const startTime = Date.now();
 		
 		try {
@@ -645,7 +645,7 @@ export class MLEnterpriseCoordinator {
 				this.emit("ml_inference_completed", inferenceEvent);
 }
 			
-			this.logger.debug('Inference ${inferenceId} completed in ' + processingTime + 'ms');
+			this.logger.debug('Inference ' + (inferenceId) + ' completed in ' + processingTime + 'ms');
 			
 			return inferenceEvent;
 } catch (error) {
@@ -668,7 +668,7 @@ export class MLEnterpriseCoordinator {
 			throw new Error("ML Enterprise Coordinator not initialized");
 }
 
-		const validationId = 'val_${modelId}_' + Date.now();
+		const validationId = 'val_' + (modelId) + '_' + Date.now();
 		
 		try {
 			// Run validation based on type

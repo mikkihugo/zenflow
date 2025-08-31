@@ -1010,7 +1010,7 @@ export class NeuralMLEngine {
           {
             operation: 'matrix_multiply',
             backend: rustResult.backendUsed,
-            dimensions: '${m}x${n}x' + k,
+            dimensions: (m) + 'x' + (n) + 'x' + k,
           }
         );
 
@@ -1032,7 +1032,7 @@ export class NeuralMLEngine {
         this.mlMonitor.trackPrediction('neural-ml-matrix-multiply', {
           confidence: Math.min(rustResult.efficiency * 1.2, 1.0), // Confidence based on efficiency
           latency: processingTime / 1000, // Convert to milliseconds
-          input: { dimensions: '${m}x${n}x' + k, operationSize },
+          input: { dimensions: (m) + 'x' + (n) + 'x' + k, operationSize },
           prediction: {
             backend: rustResult.backendUsed,
             efficiency: rustResult.efficiency,
@@ -1077,7 +1077,7 @@ export class NeuralMLEngine {
           'Matrix multiply completed with comprehensive telemetry',
           {
             optimizerId,
-            dimensions: '${m}x${n}x' + k,
+            dimensions: (m) + 'x' + (n) + 'x' + k,
             backend: rustResult.backendUsed,
             processingTime: processingTime + 'μs',
             throughput: result.metrics.throughput.toFixed(0) + ' ops/sec',

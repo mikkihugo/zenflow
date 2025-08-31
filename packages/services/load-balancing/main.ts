@@ -566,7 +566,7 @@ export class LoadBalancer extends EventEmitter {
         result && typeof result === 'object' && ' error' in result
           ? result.error
           : new Error('Unknown error');
-      const errorMsg = 'Failed to start load balancing system. Agent count:${this.agents.size}, Algorithm:' + this.loadBalancingConfig.algorithm;
+      const errorMsg = 'Failed to start load balancing system. Agent count:' + (this.agents.size) + ', Algorithm:' + this.loadBalancingConfig.algorithm;
       throw new Error(errorMsg);
     }
   }
@@ -836,7 +836,7 @@ export class LoadBalancer extends EventEmitter {
 
         if (availableAgents.length === 0) {
           recordMetric('load_balancer_no_agents_available_total', 1);
-          const errorMsg = 'No healthy agents available. Total:${this.agents.size}, Task:' + task.type;
+          const errorMsg = 'No healthy agents available. Total:' + (this.agents.size) + ', Task:' + task.type;
           throw new Error(errorMsg);
         }
 
@@ -1093,7 +1093,7 @@ export class LoadBalancer extends EventEmitter {
       };
 
       await this.foundationKVStore.set(
-        'routing-decisions:${Date.now()}-' + Math.random().toString(36).substr(2, 9),
+        'routing-decisions:' + (Date.now()) + '-' + Math.random().toString(36).substr(2, 9),
         decision
       );
     } catch (error) {

@@ -231,17 +231,7 @@ function checkDangerousPatterns(
       const issue: PromptIssue = {
         type: dangerousPattern.type,
         severity: dangerousPattern.severity,
-        message: '${dangerousPattern['message']} (found ${matches.length} occurrence' + matches.length > 1 ? 's' : '' + ')',
-        suggestion: dangerousPattern.suggestion,
-      };
-
-      issues.push(issue);
-      risk = updateRiskLevel(dangerousPattern.severity, risk);
-
-      // Apply filtering if configured
-      if (
-        PROMPT_VALIDATION_CONFIG.outputParsingProtection &&
-        dangerousPattern.type === 'parsing'
+        message: '${dangerousPattern['parsing'
       ) {
         filteredPrompt = filteredPrompt.replace(
           dangerousPattern.pattern,
@@ -450,7 +440,7 @@ export function validateAndRejectPrompt(prompt: string): string {
     );
 
     throw new Error(
-      'Prompt validation failed with ${criticalIssues.length} critical issue(s): ' + criticalIssues
+      'Prompt validation failed with ' + (criticalIssues.length) + ' critical issue(s): ' + criticalIssues
         .map((i) => i['message'])
         .join('; ')
     );
@@ -486,7 +476,7 @@ export function createSafePrompt(
 
   if (config.logValidation && validation.issues.length > 0) {
     logger.info(
-      'Prompt safety analysis found ${validation.issues.length} issue(s), risk level:' + validation.risk
+      'Prompt safety analysis found ' + (validation.issues.length) + ' issue(s), risk level:' + validation.risk
     );
   }
 

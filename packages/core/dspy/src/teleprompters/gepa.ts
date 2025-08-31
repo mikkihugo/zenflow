@@ -827,7 +827,7 @@ export class GEPA extends Teleprompter {
 				metric_calls += config.valset.length;
 
 				logger.info(
-					'   Candidate ${candidates.length - 1}:' + score.toFixed(3),
+					'   Candidate ' + (candidates.length - 1) + ':' + score.toFixed(3),
 				);
 }
 
@@ -850,7 +850,7 @@ export class GEPA extends Teleprompter {
 		);
 
 		logger.info(
-			' Optimization complete! Best candidate:${best_idx} (score:' + val_aggregate_scores[best_idx].toFixed(3) + ')',
+			' Optimization complete! Best candidate:' + (best_idx) + ' (score:' + val_aggregate_scores[best_idx].toFixed(3) + ')',
 		);
 
 		return {
@@ -969,7 +969,7 @@ export class GEPA extends Teleprompter {
 
 		const elaboration =
 			elaborations[Math.floor(Math.random() * elaborations.length)];
-		return '${instruction} ' + elaboration;
+		return (instruction) + ' ' + elaboration;
 }
 
 	/**
@@ -985,7 +985,7 @@ export class GEPA extends Teleprompter {
 
 		const specialization =
 			specializations[Math.floor(Math.random() * specializations.length)];
-		return '${instruction} ' + specialization;
+		return (instruction) + ' ' + specialization;
 }
 
 	/**
@@ -1013,7 +1013,7 @@ export class GEPA extends Teleprompter {
 			debugging_additions[
 				Math.floor(Math.random() * debugging_additions.length)
 ];
-		return '${instruction} ' + addition;
+		return (instruction) + ' ' + addition;
 }
 
 	/**

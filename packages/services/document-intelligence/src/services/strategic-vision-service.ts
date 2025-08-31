@@ -284,24 +284,7 @@ export class StrategicVisionService {
     let outcomeText = '';
 
     for (const doc of documents) {
-      const content = '${doc.content || ''  } ' +   doc.summary || '';
-      const sentences = content.split(/[!.?]+/);
-
-      for (const sentence of sentences) {
-        const lowerSentence = sentence.toLowerCase();
-        
-        if (missionKeywords.some(keyword => lowerSentence.includes(keyword)) && sentence.length > missionText.length) {
-            missionText = sentence.trim();
-          }
-        
-        if (outcomeKeywords.some(keyword => lowerSentence.includes(keyword)) && sentence.length > outcomeText.length) {
-            outcomeText = sentence.trim();
-          }
-      }
-    }
-
-    return {
-      mission: missionText || 'Mission statement to be defined based on project analysis',
+      const content = '${doc.content || 'Mission statement to be defined based on project analysis',
       outcome: outcomeText || 'Target outcomes to be defined based on strategic goals',
     };
   }
@@ -314,31 +297,7 @@ export class StrategicVisionService {
     const goals: Set<string> = new Set();
 
     for (const doc of documents) {
-      const content = '${doc.content || ''  } ' +   doc.summary || '';
-      const sentences = content.split(/[!.?]+/);
-
-      for (const sentence of sentences) {
-        const lowerSentence = sentence.toLowerCase();
-        
-        if (goalKeywords.some(keyword => lowerSentence.includes(keyword))) {
-          const trimmedSentence = sentence.trim();
-          if (trimmedSentence.length > 10 && trimmedSentence.length < 200) {
-            goals.add(trimmedSentence);
-          }
-        }
-      }
-    }
-
-    return {
-      goals: Array.from(goals).slice(0, 10), // Limit to top 10 goals
-    };
-  }
-
-  /**
-   * Analyze business value using sophisticated scoring
-   */
-  private analyzeBusinessValue(documents: BaseDocumentEntity[]): { score: number; position: string } {
-    const businessKeywords = ['revenue', 'profit', 'market', 'customer', 'value', 'business'];
+      const content = '${doc.content || 'revenue', 'profit', 'market', 'customer', 'value', 'business'];
     const competitiveKeywords = ['competitive', 'advantage', 'leader', 'innovation', 'unique'];
     
     let businessScore = 0;
@@ -346,30 +305,7 @@ export class StrategicVisionService {
     let totalRelevantSentences = 0;
 
     for (const doc of documents) {
-      const content = '${doc.content || ''  } ' +   doc.summary || '';
-      const sentences = content.split(/[!.?]+/);
-
-      for (const sentence of sentences) {
-        const lowerSentence = sentence.toLowerCase();
-        
-        const businessMatches = businessKeywords.filter(keyword => lowerSentence.includes(keyword)).length;
-        const competitiveMatches = competitiveKeywords.filter(keyword => lowerSentence.includes(keyword)).length;
-        
-        if (businessMatches > 0 || competitiveMatches > 0) {
-          totalRelevantSentences++;
-          businessScore += businessMatches * 0.1 + competitiveMatches * 0.15;
-          
-          if (competitiveMatches > 0) {
-            competitiveIndicators++;
-          }
-        }
-      }
-    }
-
-    const normalizedScore = Math.min(businessScore / Math.max(totalRelevantSentences, 1), 1.0);
-    const competitiveRatio = competitiveIndicators / Math.max(totalRelevantSentences, 1);
-
-    let position = 'market-follower';
+      const content = '${doc.content || 'market-follower';
     if (competitiveRatio > 0.3) {
       position = 'market-leader';
     } else if (competitiveRatio > 0.15) {
@@ -393,83 +329,15 @@ export class StrategicVisionService {
     let totalRelevantSentences = 0;
 
     for (const doc of documents) {
-      const content = '${doc.content || ''  } ' +   doc.summary || '';
-      const sentences = content.split(/[!.?]+/);
-
-      for (const sentence of sentences) {
-        const lowerSentence = sentence.toLowerCase();
-        
-        const techMatches = techKeywords.filter(keyword => lowerSentence.includes(keyword)).length;
-        const impactMatches = impactKeywords.filter(keyword => lowerSentence.includes(keyword)).length;
-        
-        if (techMatches > 0 || impactMatches > 0) {
-          totalRelevantSentences++;
-          techScore += techMatches * 0.1 + impactMatches * 0.2;
-        }
-      }
-    }
-
-    const normalizedScore = Math.min(techScore / Math.max(totalRelevantSentences, 1), 1.0);
-
-    return {
-      score: Math.round(normalizedScore * 100) / 100,
-    };
-  }
-
-  /**
-   * Extract stakeholders using pattern recognition
-   */
-  private extractStakeholders(documents: BaseDocumentEntity[]): { stakeholders: string[] } {
-    const stakeholderKeywords = ['stakeholder', 'customer', 'user', 'client', 'partner', 'team', 'department'];
+      const content = '${doc.content || 'stakeholder', 'customer', 'user', 'client', 'partner', 'team', 'department'];
     const stakeholders: Set<string> = new Set();
 
     for (const doc of documents) {
-      const content = '${doc.content || ''  } ' +   doc.summary || '';
-      
-      // Extract potential stakeholder names
-      const words = content.split(/\s+/);
-      for (let i = 0; i < words.length; i++) {
-        const word = words[i].toLowerCase();
-        
-        if (stakeholderKeywords.includes(word)) {
-          // Look for names or titles nearby
-          for (let j = Math.max(0, i - 3); j < Math.min(words.length, i + 4); j++) {
-            const nearbyWord = words[j];
-            if (nearbyWord.length > 2 && /^[A-Z]/.test(nearbyWord)) {
-              stakeholders.add(nearbyWord);
-            }
-          }
-        }
-      }
-    }
-
-    return {
-      stakeholders: Array.from(stakeholders).slice(0, 15), // Limit to top 15 stakeholders
-    };
-  }
-
-  /**
-   * Extract timeline information
-   */
-  private extractTimeline(documents: BaseDocumentEntity[]): { timeline: string } {
-    const timeKeywords = ['timeline', 'schedule', 'deadline', 'milestone', 'phase', 'sprint', 'quarter'];
+      const content = '${doc.content || 'timeline', 'schedule', 'deadline', 'milestone', 'phase', 'sprint', 'quarter'];
     let timelineText = '';
 
     for (const doc of documents) {
-      const content = '${doc.content || ''  } ' +   doc.summary || '';
-      const sentences = content.split(/[!.?]+/);
-
-      for (const sentence of sentences) {
-        const lowerSentence = sentence.toLowerCase();
-        
-        if (timeKeywords.some(keyword => lowerSentence.includes(keyword)) && sentence.length > timelineText.length && sentence.length < 300) {
-            timelineText = sentence.trim();
-          }
-      }
-    }
-
-    return {
-      timeline: timelineText || 'Timeline to be established based on project requirements',
+      const content = '${doc.content || 'Timeline to be established based on project requirements',
     };
   }
 
@@ -481,67 +349,11 @@ export class StrategicVisionService {
     const risks: Set<string> = new Set();
 
     for (const doc of documents) {
-      const content = '${doc.content || ''  } ' +   doc.summary || '';
-      const sentences = content.split(/[!.?]+/);
-
-      for (const sentence of sentences) {
-        const lowerSentence = sentence.toLowerCase();
-        
-        if (riskKeywords.some(keyword => lowerSentence.includes(keyword))) {
-          const trimmedSentence = sentence.trim();
-          if (trimmedSentence.length > 10 && trimmedSentence.length < 200) {
-            risks.add(trimmedSentence);
-          }
-        }
-      }
-    }
-
-    return {
-      risks: Array.from(risks).slice(0, 10), // Limit to top 10 risks
-    };
-  }
-
-  /**
-   * Extract key metrics from documents
-   */
-  private extractKeyMetrics(documents: BaseDocumentEntity[]): string[] {
-    const metricKeywords = ['metric', 'kpi', 'measure', 'target', 'goal', 'benchmark'];
+      const content = '${doc.content || 'metric', 'kpi', 'measure', 'target', 'goal', 'benchmark'];
     const metrics: Set<string> = new Set();
 
     for (const doc of documents) {
-      const content = '${doc.content || ''  } ' +   doc.summary || '';
-      const sentences = content.split(/[!.?]+/);
-
-      for (const sentence of sentences) {
-        const lowerSentence = sentence.toLowerCase();
-        
-        if (metricKeywords.some(keyword => lowerSentence.includes(keyword))) {
-          const trimmedSentence = sentence.trim();
-          if (trimmedSentence.length > 10 && trimmedSentence.length < 150) {
-            metrics.add(trimmedSentence);
-          }
-        }
-      }
-    }
-
-    return Array.from(metrics).slice(0, 8); // Limit to top 8 metrics
-  }
-
-  /**
-   * Calculate confidence score based on document quality and quantity
-   */
-  private calculateConfidenceScore(documents: BaseDocumentEntity[]): number {
-    if (documents.length === 0) return 0;
-
-    let totalScore = 0;
-    let maxPossibleScore = 0;
-
-    for (const doc of documents) {
-      let docScore = 0;
-      maxPossibleScore += 100;
-
-      // Content quality factors
-      const contentLength = (doc.content || '').length;
+      const content = '${doc.content || '').length;
       const summaryLength = (doc.summary || '').length;
       const keywordCount = (doc.keywords || []).length;
       const hasMetadata = doc.metadata && Object.keys(doc.metadata).length > 0;

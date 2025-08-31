@@ -97,7 +97,7 @@ export class TransformProcessor implements BaseProcessor {
 
       if (actuallyTransformed > 0) {
         this.logger.debug(
-          'Transformed ${transformedItems.length} of ' + dataItems.length + ' items'
+          'Transformed ' + (transformedItems.length) + ' of ' + dataItems.length + ' items'
         );
 }
 

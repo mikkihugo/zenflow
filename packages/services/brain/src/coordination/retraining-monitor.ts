@@ -112,7 +112,7 @@ export class RetrainingMonitor {
       this.isMonitoring = true;
 
       this.logger.info(
-        'Retraining monitor started, checking every ${retrainingConfig.checkIntervalMs / 1000 / 60} minutes with threshold ' + retrainingConfig.minCoordinationSuccessRateThreshold);
+        'Retraining monitor started, checking every ' + (retrainingConfig.checkIntervalMs / 1000 / 60) + ' minutes with threshold ' + retrainingConfig.minCoordinationSuccessRateThreshold);
 } catch (error) {
       this.logger.error('Failed to start retraining monitor:', error);'  throw error;
 }
@@ -468,7 +468,7 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks';'
       // Check if feedback pattern indicates need for retraining
       if (!feedback.success && feedback.accuracy && feedback.accuracy < 0.7) {
         this.logger.warn(
-          'Poor accuracy (${feedback.accuracy}) detected for prompt ' + promptId + ', may trigger retraining');
+          'Poor accuracy (' + (feedback.accuracy) + ') detected for prompt ' + promptId + ', may trigger retraining');
 }
 } catch (error) {
       this.logger.error(

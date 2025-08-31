@@ -257,7 +257,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
     // Log categorization results
     for (const [agentName, violations] of categorized.entries()) {
       if (violations.length > 0) {
-        this.logger.info(' ${agentName}:' + violations.length + ' files assigned');
+        this.logger.info(' ' + (agentName) + ':' + violations.length + ' files assigned');
       }
     }
 
@@ -327,7 +327,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
     violations: ESLintViolation[]
   ): Promise<void> {
     this.logger.info(
-      ' ${agent.name} processing ' + violations.length + ' files...'
+      ' ' + (agent.name) + ' processing ' + violations.length + ' files...'
     );
 
     const batchSize = agent.maxConcurrentFixes;
@@ -366,12 +366,12 @@ export class ESLintSwarmCoordinator extends EventEmitter {
         });
 
         this.activeProcesses.set(
-          '${agent.name}-' + violation.filePath,
+          (agent.name) + '-' + violation.filePath,
           process
         );
 
         process.on('close', (_code) => {
-          this.activeProcesses.delete('${agent.name}-' + violation.filePath);
+          this.activeProcesses.delete((agent.name) + '-' + violation.filePath);
           if (code === 0) {
             if (this.options.verboseLogging) {
               this.logger.debug('Fixed:' + violation.filePath);
@@ -380,20 +380,20 @@ export class ESLintSwarmCoordinator extends EventEmitter {
           } else {
             reject(
               new Error(
-                'ESLint fix failed for ${violation.filePath} with code ' + code
+                'ESLint fix failed for ' + (violation.filePath) + ' with code ' + code
               )
             );
           }
         });
 
         process.on('error', (_error) => {
-          this.activeProcesses.delete('${agent.name}-' + violation.filePath);
+          this.activeProcesses.delete((agent.name) + '-' + violation.filePath);
           reject(error);
         });
       });
     } catch (_error) {
       this.logger.warn(
-        ' ${agent.name} failed to fix ' + violation.filePath + ':',
+        ' ' + (agent.name) + ' failed to fix ' + violation.filePath + ':',
         error
       );
     }
@@ -438,7 +438,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
     for (const violation of violations) {
       for (const msg of violation.messages) {
         this.logger.debug(
-          'Remaining: ${violation.filePath}:${msg.line}:${msg.column} - ' + msg.ruleId
+          'Remaining: ' + (violation.filePath) + ':' + (msg.line) + ':' + (msg.column) + ' - ' + msg.ruleId
         );
       }
     }

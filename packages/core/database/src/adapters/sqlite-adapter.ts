@@ -712,7 +712,7 @@ export class SQLiteAdapter implements DatabaseConnection {
     }
 
     throw new QueryError(
-      'Operation failed after ${retryPolicy.maxRetries} retries:' + lastError?.message,
+      'Operation failed after ' + (retryPolicy.maxRetries) + ' retries:' + lastError?.message,
       createQueryErrorOptions(sql || '', params, correlationId, lastError) as any
     );
   }
@@ -915,7 +915,7 @@ export class SQLiteAdapter implements DatabaseConnection {
   }
 
   private generateCorrelationId(): string {
-    return 'sqlite-${Date.now()}-' + Math.random().toString(36).substr(2, 9);
+    return 'sqlite-' + (Date.now()) + '-' + Math.random().toString(36).substr(2, 9);
   }
 
   private sleep(ms: number): Promise<void> {

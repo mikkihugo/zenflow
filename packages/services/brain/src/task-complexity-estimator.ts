@@ -474,7 +474,7 @@ export class TaskComplexityEstimator {
 
     return {
       score:complexity * 0.3, // Scale down role impact
-      reasoning:'${agentRole} role (' + (_complexity * 100).toFixed(0) + '% complexity)',`
+      reasoning:(agentRole) + ' role (' + (_complexity * 100).toFixed(0) + '% complexity)',`
 };
 }
 
