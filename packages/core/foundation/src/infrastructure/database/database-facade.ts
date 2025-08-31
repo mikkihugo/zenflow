@@ -30,7 +30,7 @@ import type {
 const logger = getLogger('database-facade');
 // Deduplicate common string literals to satisfy sonarjs/no-duplicate-string
 const DB_PACKAGE_NAME = '@claude-zen/database';
-const FALLBACK_HEALTH_MSG = `Using fallback database adapter - ${DB_PACKAGE_NAME} not available`;
+const FALLBACK_HEALTH_MSG = 'Using fallback database adapter - ' + DB_PACKAGE_NAME + ' not available';
 
 // Re-export types for consumers
 export type {
@@ -171,13 +171,13 @@ export class DatabaseFacade {
   private createFallbackAdapter(
     type: DatabaseConfig['type']
   ): Result<DatabaseAdapter, Error> {
-    logger.debug(`Creating fallback database adapter for ${type}`);
+    logger.debug('Creating fallback database adapter for ' + type);
 
     const fallbackAdapter: DatabaseAdapter = {
       connect(
         config: DatabaseConfig
       ): Promise<Result<DatabaseConnection, Error>> {
-        logger.warn(`Fallback database connection for ${config.type}`);
+        logger.warn('Fallback database connection for ' + config.type);
 
         const fallbackConnection: DatabaseConnection = {
           query<T = unknown>(): Promise<QueryResult<T>> {

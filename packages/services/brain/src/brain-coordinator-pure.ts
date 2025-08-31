@@ -186,7 +186,7 @@ export class BrainCoordinator {
 
   constructor(config: BrainConfig = {}) {
     this.config = {
-      sessionId: config.sessionId || `brain-${Date.now()}`,
+      sessionId: config.sessionId || 'brain-' + Date.now(),
       enableLearning: config.enableLearning ?? true,
       cacheOptimizations: config.cacheOptimizations ?? true,
       autonomous: {
@@ -203,10 +203,10 @@ export class BrainCoordinator {
       },
     };
 
-    // 🧠 100% EVENT-BASED:Emit initialization start
+    //  100% EVENT-BASED:Emit initialization start
     this.emitEvent('brain:log', {
       level: 'info',
-      message: '🧠 Brain Coordinator created - zero imports, pure events',
+      message: ' Brain Coordinator created - zero imports, pure events',
       timestamp: Date.now(),
     });
   }
@@ -226,7 +226,7 @@ export class BrainCoordinator {
         // Even error handling is event-based
         this.emitEvent('brain:log', {
           level: 'error',
-          message: `Event listener error for ${event}`,
+          message: 'Event listener error for ' + event,
           data: {
             error: error instanceof Error ? error.message : String(error),
           },
@@ -267,11 +267,11 @@ export class BrainCoordinator {
     try {
       this.emitEvent('brain:log', {
         level: 'info',
-        message: '🧠 Starting Brain Coordinator initialization...',
+        message: ' Starting Brain Coordinator initialization...',
         timestamp: Date.now(),
       });
 
-      // 🧠 100% EVENT-BASED:Request external systems via events only
+      //  100% EVENT-BASED:Request external systems via events only
       this.emitEvent('brain:request_performance_tracker', {
         config: {
           enablePerformanceMonitoring: true,
@@ -296,9 +296,9 @@ export class BrainCoordinator {
 
       this.emitEvent('brain:log', {
         level: 'info',
-        message: '✅ Brain Coordinator initialized successfully',
+        message: ' Brain Coordinator initialized successfully',
         data: {
-          duration: `${duration}ms`,
+          duration: duration + 'ms',
           coordination: 'pure-event-based',
           zeroImports: true,
           sessionId: this.config.sessionId,
@@ -316,10 +316,10 @@ export class BrainCoordinator {
       const duration = Date.now() - initStartTime;
       this.emitEvent('brain:log', {
         level: 'error',
-        message: '❌ Brain Coordinator initialization failed',
+        message: ' Brain Coordinator initialization failed',
         data: {
           error: error instanceof Error ? error.message : String(error),
-          duration: `${duration}ms`,
+          duration: duration + 'ms',
         },
         timestamp: Date.now(),
       });
@@ -347,7 +347,7 @@ export class BrainCoordinator {
 
     this.emitEvent('brain:log', {
       level: 'debug',
-      message: `Analyzing request: ${task}`,
+      message: 'Analyzing request: ' + task,
       data: { requestId, priority },
       timestamp: Date.now(),
     });
@@ -401,7 +401,7 @@ export class BrainCoordinator {
   async shutdown(): Promise<void> {
     this.emitEvent('brain:log', {
       level: 'info',
-      message: '🧠 Shutting down Brain Coordinator...',
+      message: ' Shutting down Brain Coordinator...',
       timestamp: Date.now(),
     });
 
@@ -411,7 +411,7 @@ export class BrainCoordinator {
 
     this.emitEvent('brain:log', {
       level: 'info',
-      message: '✅ Brain Coordinator shutdown complete',
+      message: ' Brain Coordinator shutdown complete',
       timestamp: Date.now(),
     });
   }
@@ -450,10 +450,10 @@ export class BrainCoordinator {
 
   private getStrategyReasoning(strategy: string, complexity: number): string {
     const reasons: Record<string, string> = {
-      dspy_optimization: `High complexity (${complexity.toFixed(2)}) requires advanced DSPy optimization`,
-      hybrid_workflow: `Medium complexity (${complexity.toFixed(2)}) benefits from hybrid approach`,
-      direct_training: `Direct training approach for efficient processing`,
-      simple_coordination: `Simple coordination sufficient for low complexity tasks`,
+      dspy_optimization: 'High complexity (' + complexity.toFixed(2) + ') requires advanced DSPy optimization',
+      hybrid_workflow: 'Medium complexity (' + complexity.toFixed(2) + ') benefits from hybrid approach',
+      direct_training: 'Direct training approach for efficient processing',
+      simple_coordination: 'Simple coordination sufficient for low complexity tasks',
     };
     return reasons[strategy] || 'Standard coordination approach';
   }

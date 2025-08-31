@@ -7,15 +7,15 @@
  * Listens to brain events and responds with system metrics via events only.
  *
  * **EVENT-DRIVEN CAPABILITIES:**
- * - 🧠 **Brain Integration**:Responds to brain monitoring requests via events
- * - 🖥️ **System Resources**:CPU, memory, disk, network monitoring via events
- * - 📊 **Performance Tracking**:System performance metrics via event emission
- * - 🔍 **Health Checks**:System availability via event responses
- * - 📈 **Telemetry Events**:Metrics emission via telemetry events (no imports)
- * - ⚡ **Zero Dependencies**:No foundation or telemetry imports
+ * -  **Brain Integration**:Responds to brain monitoring requests via events
+ * - ️ **System Resources**:CPU, memory, disk, network monitoring via events
+ * -  **Performance Tracking**:System performance metrics via event emission
+ * -  **Health Checks**:System availability via event responses
+ * -  **Telemetry Events**:Metrics emission via telemetry events (no imports)
+ * -  **Zero Dependencies**:No foundation or telemetry imports
  *
  * **EVENT ARCHITECTURE:**
- * Brain emits monitoring request events → System Monitor responds with metric events
+ * Brain emits monitoring request events  System Monitor responds with metric events
  * Pure event coordination with no direct package dependencies.
  *
  * @example Event-Driven Usage (Brain Integration)

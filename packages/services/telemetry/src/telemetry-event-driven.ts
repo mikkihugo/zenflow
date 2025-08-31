@@ -215,7 +215,7 @@ export class EventDrivenTelemetryManager {
       try {
         listener(data);
 } catch (error) {
-        this.logger.error(`Event listener error for ${event}`, {
+        this.logger.error('Event listener error for ' + event, {
           error:error instanceof Error ? error.message : String(error)
 });
 }
@@ -339,7 +339,7 @@ export class EventDrivenTelemetryManager {
     this.addEventListener('telemetry:record-histogram', (data) => {
       this.recordMetricInternal(data.name, data.value, data.attributes, 'histogram');
       this.emitEvent('telemetry:metric-recorded', {
-        name: `${data.name}.histogram`,
+        name: data.name + '.histogram',
         value: data.value,
         attributes: data.attributes || {},
         timestamp: data.timestamp,
@@ -350,7 +350,7 @@ export class EventDrivenTelemetryManager {
     this.addEventListener('telemetry:record-gauge', (data) => {
       this.recordMetricInternal(data.name, data.value, data.attributes, 'gauge');
       this.emitEvent('telemetry:metric-recorded', {
-        name: `${data.name}.gauge`,
+        name: data.name + '.gauge',
         value: data.value,
         attributes: data.attributes || {},
         timestamp: data.timestamp,
@@ -419,7 +419,7 @@ export class EventDrivenTelemetryManager {
       type,
     };
 
-    const key = `${name}-${metric.timestamp}`;
+    const key = '${name}-' + metric.timestamp;
     this.metrics.set(key, metric);
     this.logger.debug('Recorded metric via event', metric);
 }

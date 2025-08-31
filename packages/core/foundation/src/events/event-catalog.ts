@@ -571,7 +571,7 @@ export function getEventsByCategory(
     | ' registry'
     | ' system'
 ): EventName[] {
-  return getAllEventNames().filter((name) => name.startsWith(`${category}:`));
+  return getAllEventNames().filter((name) => name.startsWith(category + ':'));
 }
 
 /**
@@ -583,16 +583,16 @@ export class CatalogEventLogger {
    */
   static logValidatedEvent(eventName: string, payload?: unknown): void {
     if (!isValidEventName(eventName)) {
-      logger.warn(`⚠️  Unknown event:${eventName}`);
-      logger.warn(`📋 Valid events:${getAllEventNames().join(',    ')}`);
+      logger.warn('  Unknown event:' + eventName);
+      logger.warn(' Valid events:' + getAllEventNames().join(',    '));
       return;
     }
 
     const eventType = getEventType(eventName);
-    logger.info(`📡 Event:${eventName} (${eventType})`);
+    logger.info(' Event:${eventName} (' + eventType + ')');
 
     if (payload) {
-      logger.info(`📦 Payload:`, payload);
+      logger.info(' Payload:', payload);
     }
   }
 
@@ -601,11 +601,11 @@ export class CatalogEventLogger {
    */
   static logValidatedFlow(from: string, to: string, eventName: string): void {
     if (!isValidEventName(eventName)) {
-      logger.warn(`⚠️  Unknown event in flow:${eventName}`);
+      logger.warn('  Unknown event in flow:' + eventName);
       return;
     }
 
-    logger.info(`🔄 Flow:${from} → ${eventName} → ${to}`);
+    logger.info(' Flow:${from}  ${eventName}  ' + to);
   }
 }
 
@@ -617,22 +617,22 @@ export class CatalogEventLogger {
  * Common Event Flow Patterns in claude-code-zen:
  *
  * 1. SPARC Phase Execution:
- *    SPARCManager → llm:inference-request → LLMPackage
- *    LLMPackage → llm:inference-complete → SPARCManager
- *    SPARCManager → sparc:phase-complete → System
+ *    SPARCManager  llm:inference-request  LLMPackage
+ *    LLMPackage  llm:inference-complete  SPARCManager
+ *    SPARCManager  sparc:phase-complete  System
  *
  * 2. SPARC with Teamwork Collaboration:
- *    SPARCManager → sparc:phase-review-needed → TeamworkManager
- *    TeamworkManager → teamwork:review-acknowledged → SPARCManager
- *    TeamworkManager → teamwork:review-complete → SPARCManager
+ *    SPARCManager  sparc:phase-review-needed  TeamworkManager
+ *    TeamworkManager  teamwork:review-acknowledged  SPARCManager
+ *    TeamworkManager  teamwork:review-complete  SPARCManager
  *
  * 3. Claude Code Fallback:
- *    SPARCManager → claude-code:execute-task → ClaudeCode
- *    ClaudeCode → claude-code:task-complete → SPARCManager
- *    OR:ClaudeCode → claude-code:task-failed → SPARCManager
- *    SPARCManager → llm:inference-request → LLMPackage (fallback)
+ *    SPARCManager  claude-code:execute-task  ClaudeCode
+ *    ClaudeCode  claude-code:task-complete  SPARCManager
+ *    OR:ClaudeCode  claude-code:task-failed  SPARCManager
+ *    SPARCManager  llm:inference-request  LLMPackage (fallback)
  *
  * 4. System Error Handling:
- *    AnyComponent → system:error → SystemMonitor
- *    SystemMonitor → system:recovery-initiated → AnyComponent
+ *    AnyComponent  system:error  SystemMonitor
+ *    SystemMonitor  system:recovery-initiated  AnyComponent
  */

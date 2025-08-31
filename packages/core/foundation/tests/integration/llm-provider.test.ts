@@ -484,7 +484,7 @@ describe('LLM Provider - Integration Tests (Real API)', () => {
         const promises = Array(3)
           .fill(0)
           .map((_, i) =>
-            llmProvider.complete(`Count to ${i + 1}`, {
+            llmProvider.complete('Count to ' + i + 1, {
               model: 'sonnet',
               maxTokens: 50,
             })
@@ -583,7 +583,7 @@ describe('LLM Provider - Edge Cases', () => {
       .mockResolvedValue('Handled special chars');
 
     const specialPrompt =
-      'Test with émojis 🚀 and unicode:αβγδε and symbols: @#$%^&*()';
+      'Test with émojis  and unicode:αβγδε and symbols: @#$%^&*()';
     const response = await llmProvider.complete(specialPrompt);
 
     expect(response).toBeTruthy();
@@ -705,7 +705,7 @@ describe('LLM Provider - Advanced Features', () => {
 
     // Add messages until context is full
     for (let i = 0; i < 100; i++) {
-      conversation.addMessage('user', `Message ${i}`.repeat(10));
+      conversation.addMessage('user', 'Message ' + i.repeat(10));
     }
 
     const messages = conversation.getMessages();

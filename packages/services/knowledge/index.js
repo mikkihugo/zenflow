@@ -8,21 +8,21 @@
  * multiple AI agents and domains. Built for enterprise-scale knowledge management
  * with semantic understanding, federated learning, and intelligent knowledge curation.
  *
- * **⚠️ RECOMMENDED USAGE: Access via @claude-zen/foundation Package**
+ * ** RECOMMENDED USAGE: Access via @claude-zen/foundation Package**
  *
  * While this package can be used directly, it is recommended to access knowledge
  * functionality through `@claude-zen/foundation` which provides integrated knowledge
  * management with telemetry, logging, and configuration management.
  *
  * **CORE COLLECTIVE INTELLIGENCE CAPABILITIES:**
- * - 🧠 **Collective Intelligence**: Multi-agent collaborative reasoning and decision-making
- * - 🔄 **Cross-Agent Knowledge Sharing**: Real-time knowledge exchange between agents
- * - 📚 **Distributed Learning**: Federated learning across agent networks
- * - 🎯 **Knowledge Synthesis**: Automated knowledge aggregation and distillation
- * - 🌐 **Cross-Domain Transfer**: Knowledge transfer between different problem domains
- * - 📊 **Performance Optimization**: AI-driven knowledge management optimization
- * - 💾 **Knowledge Persistence**: Long-term memory and knowledge storage
- * - 🔧 **Foundation Integration**: Complete @claude-zen/foundation support
+ * -  **Collective Intelligence**: Multi-agent collaborative reasoning and decision-making
+ * -  **Cross-Agent Knowledge Sharing**: Real-time knowledge exchange between agents
+ * -  **Distributed Learning**: Federated learning across agent networks
+ * -  **Knowledge Synthesis**: Automated knowledge aggregation and distillation
+ * -  **Cross-Domain Transfer**: Knowledge transfer between different problem domains
+ * -  **Performance Optimization**: AI-driven knowledge management optimization
+ * -  **Knowledge Persistence**: Long-term memory and knowledge storage
+ * -  **Foundation Integration**: Complete @claude-zen/foundation support
  *
  * **ADVANCED KNOWLEDGE FEATURES:**
  * - Semantic knowledge graphs with ontology management

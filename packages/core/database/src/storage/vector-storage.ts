@@ -40,7 +40,7 @@ export class VectorStorageImpl implements VectorStorage {
       const vectorBlob = Buffer.from(new Float32Array(vector).buffer);
       const metadataJson = metadata ? JSON.stringify(metadata) : null;
 
-      const sql = `INSERT OR REPLACE INTO "${this.collectionName}" (id, vector, metadata) VALUES (?, ?, ?)`;
+      const sql = 'INSERT OR REPLACE INTO "' + this.collectionName + '" (id, vector, metadata) VALUES (?, ?, ?)';
       await this.connection.execute(sql, [id, vectorBlob, metadataJson]);
 
       logger.debug('Vector inserted successfully', { id });
@@ -50,7 +50,7 @@ export class VectorStorageImpl implements VectorStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to insert vector:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to insert vector:' + error instanceof Error ? error.message : String(error),
         createErrorOptions(this.generateCorrelationId(), error) as any
       );
     }
@@ -70,7 +70,7 @@ export class VectorStorageImpl implements VectorStorage {
 
       // For a real vector database, this would use optimized vector similarity search
       // For SQLite fallback, we'll do a simplified approach
-      const sql = `SELECT id, vector, metadata FROM "${this.collectionName}" LIMIT ${options?.limit || 10}`;
+      const sql = 'SELECT id, vector, metadata FROM "${this.collectionName}" LIMIT ' + options?.limit || 10;
       const result = await this.connection.query<{
         id: string;
         vector: Buffer;
@@ -114,7 +114,7 @@ export class VectorStorageImpl implements VectorStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to search vectors:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to search vectors:' + error instanceof Error ? error.message : String(error),
         createErrorOptions(this.generateCorrelationId(), error)
       );
     }
@@ -126,7 +126,7 @@ export class VectorStorageImpl implements VectorStorage {
 
       await this.ensureCollectionExists();
 
-      const sql = `SELECT id, vector, metadata FROM "${this.collectionName}" WHERE id = ?`;
+      const sql = 'SELECT id, vector, metadata FROM "' + this.collectionName + '" WHERE id = ?';
       const result = await this.connection.query<{
         id: string;
         vector: Buffer;
@@ -159,7 +159,7 @@ export class VectorStorageImpl implements VectorStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to get vector:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to get vector:' + error instanceof Error ? error.message : String(error),
         createErrorOptions(this.generateCorrelationId(), error)
       );
     }
@@ -182,7 +182,7 @@ export class VectorStorageImpl implements VectorStorage {
       // First check if vector exists
       const existing = await this.get(id);
       if (!existing) {
-        throw new QueryError(`Vector with id ${id} does not exist`);
+        throw new QueryError('Vector with id ' + id + ' does not exist');
       }
 
       // Build update query
@@ -205,7 +205,7 @@ export class VectorStorageImpl implements VectorStorage {
       }
 
       params.push(id);
-      const sql = `UPDATE "${this.collectionName}" SET ${updates.join(', ')} WHERE id = ?`;
+      const sql = 'UPDATE "${this.collectionName}" SET ' + updates.join(', ') + ' WHERE id = ?';
       await this.connection.execute(sql, params);
 
       logger.debug('Vector updated successfully', { id });
@@ -215,7 +215,7 @@ export class VectorStorageImpl implements VectorStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to update vector:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to update vector:' + error instanceof Error ? error.message : String(error),
         createErrorOptions(this.generateCorrelationId(), error)
       );
     }
@@ -228,7 +228,7 @@ export class VectorStorageImpl implements VectorStorage {
       await this.ensureCollectionExists();
 
       const result = await this.connection.execute(
-        `DELETE FROM "${this.collectionName}" WHERE id = ?`,
+        'DELETE FROM "' + this.collectionName + '" WHERE id = ?',
         [id]
       );
 
@@ -242,7 +242,7 @@ export class VectorStorageImpl implements VectorStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to delete vector:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to delete vector:' + error instanceof Error ? error.message : String(error),
         createErrorOptions(this.generateCorrelationId(), error)
       );
     }
@@ -261,7 +261,7 @@ export class VectorStorageImpl implements VectorStorage {
 
       // For SQLite fallback, we create a regular index on the id column
       // In a real vector database implementation, this would create a vector index
-      const sql = `CREATE INDEX IF NOT EXISTS idx_${name} ON "${this.collectionName}" (id)`;
+      const sql = 'CREATE INDEX IF NOT EXISTS idx_${name} ON "' + this.collectionName + '" (id)';
       await this.connection.execute(sql);
 
       this.indexCache.set(name, true);
@@ -272,7 +272,7 @@ export class VectorStorageImpl implements VectorStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to create vector index:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to create vector index:' + error instanceof Error ? error.message : String(error),
         createErrorOptions(this.generateCorrelationId(), error)
       );
     }
@@ -282,7 +282,7 @@ export class VectorStorageImpl implements VectorStorage {
     try {
       logger.debug('Dropping vector index', { name });
 
-      const sql = `DROP INDEX IF EXISTS idx_${name}`;
+      const sql = 'DROP INDEX IF EXISTS idx_' + name;
       await this.connection.execute(sql);
 
       this.indexCache.delete(name);
@@ -300,7 +300,7 @@ export class VectorStorageImpl implements VectorStorage {
       }
       
       throw new QueryError(
-        `Failed to drop vector index:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to drop vector index:' + error instanceof Error ? error.message : String(error),
         errorOptions as any
       );
     }
@@ -310,7 +310,7 @@ export class VectorStorageImpl implements VectorStorage {
     try {
       await this.ensureCollectionExists();
       const result = await this.connection.query<{ count: number }>(
-        `SELECT COUNT(*) as count FROM "${this.collectionName}"`
+        'SELECT COUNT(*) as count FROM "' + this.collectionName + '"'
       );
       return result.rows[0]?.count || 0;
     } catch (error) {
@@ -318,7 +318,7 @@ export class VectorStorageImpl implements VectorStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to count vectors:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to count vectors:' + error instanceof Error ? error.message : String(error),
         createErrorOptions(this.generateCorrelationId(), error)
       );
     }
@@ -334,7 +334,7 @@ export class VectorStorageImpl implements VectorStorage {
       await this.ensureCollectionExists();
 
       const countResult = await this.connection.query<{ count: number }>(
-        `SELECT COUNT(*) as count FROM "${this.collectionName}"`
+        'SELECT COUNT(*) as count FROM "' + this.collectionName + '"'
       );
       const totalVectors = countResult.rows[0]?.count || 0;
 
@@ -342,7 +342,7 @@ export class VectorStorageImpl implements VectorStorage {
       let dimensions = 0;
       if (totalVectors > 0) {
         const sampleResult = await this.connection.query<{ vector: Buffer }>(
-          `SELECT vector FROM "${this.collectionName}" LIMIT 1`
+          'SELECT vector FROM "' + this.collectionName + '" LIMIT 1'
         );
         if (sampleResult.rows.length > 0 && sampleResult.rows[0]?.vector) {
           const sampleVector = new Float32Array(
@@ -365,7 +365,7 @@ export class VectorStorageImpl implements VectorStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to get vector stats:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to get vector stats:' + error instanceof Error ? error.message : String(error),
         createErrorOptions(this.generateCorrelationId(), error)
       );
     }
@@ -374,12 +374,12 @@ export class VectorStorageImpl implements VectorStorage {
   // Private helper methods
   private async ensureCollectionExists(): Promise<void> {
     try {
-      const sql = `CREATE TABLE IF NOT EXISTS "${this.collectionName}" (
+      const sql = 'CREATE TABLE IF NOT EXISTS "' + this.collectionName + '" (
         id TEXT PRIMARY KEY,
         vector BLOB,
         metadata TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )`;
+      )';
 
       await this.connection.execute(sql);
     } catch (error) {
@@ -387,13 +387,13 @@ export class VectorStorageImpl implements VectorStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to create vectors table:${error instanceof Error ? error.message : String(error)}`
+        'Failed to create vectors table:' + error instanceof Error ? error.message : String(error)
       );
     }
   }
 
   private generateCorrelationId(): string {
-    return `vector-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return 'vector-${Date.now()}-' + Math.random().toString(36).substr(2, 9);
   }
 
   private calculateCosineSimilarity(
@@ -426,7 +426,7 @@ export class VectorStorageImpl implements VectorStorage {
     try {
       await this.ensureCollectionExists();
       await this.connection.query(
-        `SELECT COUNT(*) FROM "${this.collectionName}" LIMIT 1`
+        'SELECT COUNT(*) FROM "' + this.collectionName + '" LIMIT 1'
       );
       return true;
     } catch {
@@ -450,7 +450,7 @@ export class VectorStorageImpl implements VectorStorage {
 
       await this.ensureCollectionExists();
       const result = await this.connection.query<{ count: number }>(
-        `SELECT COUNT(*) as count FROM "${this.collectionName}"`
+        'SELECT COUNT(*) as count FROM "' + this.collectionName + '"'
       );
 
       return {

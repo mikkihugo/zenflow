@@ -122,8 +122,7 @@ export async function initializeGPUAcceleration(
           // Configure memory growth to avoid GPU memory issues
           if (memoryFraction < 1.0) {
             logger.info(
-              `TensorFlow GPU initialized with ${memoryFraction * 100}% memory limit``
-            );
+              'TensorFlow GPU initialized with ' + memoryFraction * 100 + '% memory limit');
 }
           return {
             backend: 'tensorflow-gpu',            accelerated: true,
@@ -148,7 +147,7 @@ export async function initializeGPUAcceleration(
         break;
 }
 } catch (error) {
-    logger.warn(`Failed to initialize ${selectedBackend} acceleration:`, error);`
+    logger.warn('Failed to initialize ' + selectedBackend + ' acceleration:', error);`
 }
 
   // Fallback to CPU

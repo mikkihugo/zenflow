@@ -26,13 +26,13 @@ async function main(): Promise<void> {
   try {
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    logger.error('❌ Installation verification failed:', errorMessage);
+    logger.error(' Installation verification failed:', errorMessage);
     process.exit(1);
   }
 }
 
 // Execute main function with error handling
 main().catch((error) => {
-  logger.error('❌ Unhandled installation error:', error);
+  logger.error(' Unhandled installation error:', error);
   process.exit(1);
 });

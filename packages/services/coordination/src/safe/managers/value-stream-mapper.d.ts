@@ -10,7 +10,7 @@
  * - @claude-zen/workflows: WorkflowEngine for process coordination
  * - @claude-zen/agui: Human-in-loop approvals for critical mapping decisions
  *
- * REDUCTION: 1,062 → 448 lines (58% reduction) through service delegation
+ * REDUCTION: 1,062  448 lines (58% reduction) through service delegation
  *
  * @author Claude-Zen Team
  * @since 1.0.0

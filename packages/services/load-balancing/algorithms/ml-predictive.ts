@@ -162,7 +162,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     return {
       selectedAgent,
       confidence: bestPrediction.confidenceScore,
-      reasoning: `ML prediction: ${bestPrediction.predictedLatency.toFixed(0)}ms latency, ${(bestPrediction.predictedSuccessRate * 100).toFixed(1)}% success rate`,
+      reasoning: 'ML prediction: ${bestPrediction.predictedLatency.toFixed(0)}ms latency, ' + (bestPrediction.predictedSuccessRate * 100).toFixed(1) + '% success rate',
       alternativeAgents: alternatives,
       estimatedLatency: bestPrediction.predictedLatency,
       expectedQuality: bestPrediction.predictedSuccessRate,
@@ -428,7 +428,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
         );
         predictions.set(modelType, prediction);
       } catch (error) {
-        logger.warn(`Model ${modelType} prediction failed:`, error);
+        logger.warn('Model ' + modelType + ' prediction failed:', error);
       }
     }
 
@@ -586,7 +586,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
         // Evaluate model performance
         await this.evaluateModel(modelType, trainingData);
       } catch (error) {
-        logger.error(`Failed to retrain model ${modelType}:`, error);
+        logger.error('Failed to retrain model ' + modelType + ':', error);
       }
     }
 
@@ -961,7 +961,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   private generateModelVersion(currentVersion: string): string {
     const parts = currentVersion?.split('.');
     const patch = (Number.parseInt(parts[2], 10) + 1) as any;
-    return `${parts[0]}.${parts[1]}.${patch}`;
+    return '${parts[0]}.${parts[1]}.' + patch;
   }
 
   private async calculateCacheHitRate(): Promise<number> {

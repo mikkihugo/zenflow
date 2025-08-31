@@ -8,7 +8,7 @@
  * - ComplianceMonitoringService: Automated compliance validation and monitoring
  * - ArchitectureReviewManagementService: Architecture review workflows and coordination
  *
- * REDUCTION: 860 → ~300 lines (~65% reduction) through service delegation
+ * REDUCTION: 860  ~300 lines (~65% reduction) through service delegation
  *
  * @author Claude-Zen Team
  * @since 1.0.0

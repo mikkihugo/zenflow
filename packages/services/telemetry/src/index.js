@@ -7,15 +7,15 @@
  * Listens to brain and service events for metrics collection, tracing, and event logging.
  *
  * **EVENT-DRIVEN CAPABILITIES:**
- * - 🧠 **Brain Integration**:Responds to brain telemetry requests via events
- * - 📊 **Event-Based Metrics**:Collects metrics via telemetry events
- * - 🔍 **Event-Based Tracing**:Handles trace lifecycle via events
- * - 📈 **Event Logging**:Processes telemetry events from all services
- * - 🎯 **Zero Dependencies**:No foundation or external imports
- * - 🔄 **Pure Coordination**:Event-only communication with services
+ * -  **Brain Integration**:Responds to brain telemetry requests via events
+ * -  **Event-Based Metrics**:Collects metrics via telemetry events
+ * -  **Event-Based Tracing**:Handles trace lifecycle via events
+ * -  **Event Logging**:Processes telemetry events from all services
+ * -  **Zero Dependencies**:No foundation or external imports
+ * -  **Pure Coordination**:Event-only communication with services
  *
  * **EVENT ARCHITECTURE:**
- * Services emit telemetry events → Telemetry Manager processes → Brain gets aggregated data
+ * Services emit telemetry events  Telemetry Manager processes  Brain gets aggregated data
  * Pure event coordination with no direct package dependencies.
  *
  * @example Event-Driven Usage (Brain Integration)

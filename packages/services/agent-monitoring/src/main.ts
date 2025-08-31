@@ -7,19 +7,19 @@
  * Listens to brain events and responds with agent intelligence and monitoring data.
  *
  * **EVENT-DRIVEN CAPABILITIES:**
- * - 🧠 **Brain Integration**:Responds to brain agent monitoring requests via events
- * - 📊 **Agent Health**:Tracks agent health status via event responses
- * - 🔍 **Task Prediction**:Provides task duration predictions via events
- * - 📈 **Performance Tracking**:Monitors agent performance via events
- * - 🎯 **Zero Dependencies**:No foundation or external imports
- * - ⚡ **System Health**:Provides system-wide agent health summaries
+ * -  **Brain Integration**:Responds to brain agent monitoring requests via events
+ * -  **Agent Health**:Tracks agent health status via event responses
+ * -  **Task Prediction**:Provides task duration predictions via events
+ * -  **Performance Tracking**:Monitors agent performance via events
+ * -  **Zero Dependencies**:No foundation or external imports
+ * -  **System Health**:Provides system-wide agent health summaries
  *
  * **EVENT ARCHITECTURE:**
- * Brain emits agent monitoring requests → Agent Monitor responds with intelligence data
+ * Brain emits agent monitoring requests  Agent Monitor responds with intelligence data
  * Pure event coordination with no direct package dependencies.
  *
  * @example Event-Driven Usage (Brain Integration)
- * ```typescript`
+ * '''typescript'
  * // Brain requests agent health
  * eventSystem.emit('brain: agent-monitoring: get-agent-health', { 
  *   requestId: '123', *   agentId:{ id: 'agent-1', swarmId: ' swarm-1', type: ' coordinator', instance:1},
@@ -30,7 +30,7 @@
  * eventSystem.on('agent-monitoring: agent-health', (data) => {
  *   logger.info('Agent health: ', data.health);
 ' *});
- * ````
+ * `
  *
  * @author Claude Code Zen Team - Intelligence Integration
  * @since 1.0.0-alpha.43

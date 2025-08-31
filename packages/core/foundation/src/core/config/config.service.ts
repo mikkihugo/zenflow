@@ -72,10 +72,10 @@ const configSchema = zodInstance.object({
      * persistent application state. This creates a consistent storage pattern across
      * all components and packages.
      *
-     * **Default Value**:`.claude-zen`
+     * **Default Value**:'.claude-zen'
      *
      * **Directory Structure Created**:
-     * ```
+     * '
      * .claude-zen/
      * ├── config.json          # Main configuration file
      * ├── data/                # Database storage directory
@@ -89,20 +89,20 @@ const configSchema = zodInstance.object({
      * ├── projects/            # Project management storage
      * │   └── proj-{id}/       # Individual project directories
      * └── copilot-token.json   # Authentication tokens
-     * ```
+     * ''
      *
      * **Usage Locations**:
-     * - Project root:`./claude-zen/` (when `storeInUserHome: false`)`
-     * - User home:`~/.claude-zen/` (when `storeInUserHome: true`)`
+     * - Project root:'./claude-zen/' (when 'storeInUserHome: false')'
+     * - User home:'~/.claude-zen/' (when 'storeInUserHome: true')'
      *
      * @example
-     * ```typescript`
+     * 'typescript'
      * const config = await getConfig();
      * const configPath = config.project.storeInUserHome
      *   ? path.join(os.homedir(), config.project.configDir)
      *   :path.join(process.cwd(), config.project.configDir);
      * // Results in:"/home/user/.claude-zen" or "/project/.claude-zen"
-     * ```
+     * '
      *
      * @see {@link storeInUserHome} for location selection logic
      * @since 1.0.0
@@ -117,20 +117,20 @@ const configSchema = zodInstance.object({
      * all storage operations including databases, memory, authentication tokens, and
      * configuration files.
      *
-     * **Default Value**:`true` (user home storage)`
+     * **Default Value**:'true' (user home storage)'
      *
      * **Storage Patterns**:
-     * - **`true` (User Home)**:`~/.claude-zen/` - Personal settings across projects`
-     * - **`false` (Project Local)**:`./.claude-zen/` - Project-specific settings`
+     * - **'true' (User Home)**:'~/.claude-zen/' - Personal settings across projects'
+     * - **'false' (Project Local)**:'./.claude-zen/' - Project-specific settings'
      *
      * **Use Cases**:
-     * - **User Home** (`true`):Personal development, cross-project authentication,
+     * - **User Home** ('true'):Personal development, cross-project authentication,
      *   shared settings, single-user environments
-     * - **Project Local** (`false`):Team projects, CI/CD environments,
+     * - **Project Local** ('false'):Team projects, CI/CD environments,
      *   project-specific configurations, containerized deployments
      *
      * @example
-     * ```typescript`
+     * 'typescript'
      * // Environment variable override:
      * // ZEN_STORE_CONFIG_IN_USER_HOME=false
      *
@@ -140,7 +140,7 @@ const configSchema = zodInstance.object({
      *} else {
      *   logger.info('Using project-local storage:./.claude-zen/');
      *}
-     * ```
+     * '
      *
      * @see {@link configDir} for directory structure details
      * @since 1.0.0
@@ -166,10 +166,10 @@ const configSchema = zodInstance.object({
  * @returns The parsed value as boolean, number, or string
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * parseEnvValue('true')  // returns boolean true
  * parseEnvValue('42')    // returns number 42
- * parseEnvValue('hello') // returns string ' hello') * ```
+ * parseEnvValue('hello') // returns string ' hello') * '
  */
 function parseEnvValue(value: string | undefined): unknown {
   if (!value) {
@@ -210,7 +210,7 @@ function parseEnvValue(value: string | undefined): unknown {
  * - ZEN_DEBUG_MODE:Debug mode flag
  *
  * **Claude Zen Storage Architecture Variables**:
- * - ZEN_PROJECT_CONFIG_DIR:Override default `.claude-zen` directory name`
+ * - ZEN_PROJECT_CONFIG_DIR:Override default '.claude-zen' directory name'
  * - ZEN_STORE_CONFIG_IN_USER_HOME:Control user vs project storage location
  */
 function buildConfigFromEnv(): unknown {
@@ -236,35 +236,35 @@ function buildConfigFromEnv(): unknown {
       /**
        * Environment override for Claude Zen configuration directory name.
        *
-       * **Environment Variable**:`ZEN_PROJECT_CONFIG_DIR`
-       * **Default**:`.claude-zen`
+       * **Environment Variable**:'ZEN_PROJECT_CONFIG_DIR'
+       * **Default**:'.claude-zen'
        *
        * Allows customization of the standard directory name used throughout
        * the Claude Zen storage architecture. When set, this overrides the
-       * default `.claude-zen` directory name across all storage operations.`
+       * default '.claude-zen' directory name across all storage operations.'
        *
        * @example
-       * ```bash`
+       * 'bash'
        * # Use custom directory name
        * export ZEN_PROJECT_CONFIG_DIR=".my-claude-zen"
        *
        * # Results in:./.my-claude-zen/ or ~/.my-claude-zen/
-       * ```
+       * '
        */
       configDir: parseEnvValue(process.env['ZEN_PROJECT_CONFIG_DIR']),
 
       /**
        * Environment override for Claude Zen storage location selection.
        *
-       * **Environment Variable**:`ZEN_STORE_CONFIG_IN_USER_HOME`
-       * **Default**:`true` (user home storage)`
+       * **Environment Variable**:'ZEN_STORE_CONFIG_IN_USER_HOME'
+       * **Default**:'true' (user home storage)'
        *
        * Controls whether the Claude Zen directory is created in the user's
        * home directory or in the current project directory. This affects
        * all storage operations throughout the system.
        *
        * @example
-       * ```bash`
+       * 'bash'
        * # Force project-local storage
        * export ZEN_STORE_CONFIG_IN_USER_HOME=false
        *
@@ -274,7 +274,7 @@ function buildConfigFromEnv(): unknown {
        * export ZEN_STORE_CONFIG_IN_USER_HOME=true
        *
        * # Results in:~/.claude-zen/ (user-global)
-       * ```
+       * '
        */
       storeInUserHome: parseEnvValue(
         process.env['ZEN_STORE_CONFIG_IN_USER_HOME']
@@ -303,9 +303,9 @@ function buildConfigFromEnv(): unknown {
  * @interface Config
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const config:Config = getConfig();
- * logger.info(config.env); // 'development' | ' production' | ' test') * logger.info(config.logging.level); // 'error' | ' warn' | ' info' | ' debug') * ```
+ * logger.info(config.env); // 'development' | ' production' | ' test') * logger.info(config.logging.level); // 'error' | ' warn' | ' info' | ' debug') * '
  */
 export interface Config {
   env: string;
@@ -347,11 +347,11 @@ export interface Config {
  * @class FoundationConfig
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const config = new FoundationConfig();
  * config.initialize();
  * const logLevel = config.get('logging.level');
- * ```
+ * '
  */
 export class FoundationConfig {
   private config: Config;
@@ -378,7 +378,7 @@ export class FoundationConfig {
     } catch (error) {
       logger.error('Foundation configuration initialization failed:', error);
       throw new Error(
-        `Configuration error:${error instanceof Error ? error['message'] : 'Unknown error'}`
+        'Configuration error:' + error instanceof Error ? error['message'] : 'Unknown error'
       );
     }
   }
@@ -392,10 +392,10 @@ export class FoundationConfig {
    * @throws {Error} When the key is not found or configuration is not initialized
    *
    * @example
-   * ```typescript`
+   * 'typescript'
    * const level = config.get('logging.level'); // Gets nested value
    * const env = config.get('env'); // Gets top-level value
-   * ```
+   * '
    */
   get(key: string): unknown {
     this.ensureInitialized();
@@ -413,14 +413,14 @@ export class FoundationConfig {
         ) {
           value = (value as Record<string, unknown>)[k];
         } else {
-          throw new Error(`Key '${key}' not found`);
+          throw new Error('Key '' + key + '' not found');
         }
       }
 
       return value;
     } catch (error) {
-      logger.error(`Failed to get config key '${key}':`, error);
-      throw new Error(`Configuration key '${key}' not found or invalid`);
+      logger.error('Failed to get config key '' + key + '':', error);
+      throw new Error('Configuration key '' + key + '' not found or invalid');
     }
   }
 
@@ -480,10 +480,10 @@ globalConfig.initialize();
  * @returns The validated foundation configuration
  *
  * @example
- * ```typescript`
+ * 'typescript'
  * const config = getConfig();
  * logger.info(config.logging.level);
- * ```
+ * '
  */
 export function getConfig(): Config {
   return globalConfig.getAll() as unknown as Config;
@@ -533,7 +533,7 @@ export const getEnv = (key: string, defaultValue?: string): string =>
 export const requireEnv = (key: string): string => {
   const value = process.env[key];
   if (!value) {
-    throw new Error(`Required environment variable ${key} is not set`);
+    throw new Error('Required environment variable ' + key + ' is not set');
   }
   return value;
 };

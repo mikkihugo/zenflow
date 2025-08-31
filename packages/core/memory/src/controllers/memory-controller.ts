@@ -210,11 +210,11 @@ export class MemoryController {
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
-      this._logger.error(`Failed to get memory status:${error}`);
+      this._logger.error('Failed to get memory status:' + error);
 
       return {
         success:false,
-        error:`Failed to get memory status: ${this.getErrorMessage(error)}`,
+        error:'Failed to get memory status: ' + this.getErrorMessage(error),
         metadata:{
           size:0,
           timestamp:Date.now(),
@@ -235,7 +235,7 @@ export class MemoryController {
     const startTime = Date.now();
 
     try {
-      this._logger.debug(`Storing memory key:${request.key}`);
+      this._logger.debug('Storing memory key:' + request.key);
 
       if (!request.key) {
         throw new Error('Key is required for store operation');
@@ -257,7 +257,7 @@ export class MemoryController {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, true);
 
-      this._logger.debug(`Successfully stored key:${request.key}`);
+      this._logger.debug('Successfully stored key:' + request.key);
 
       return {
         success: true,
@@ -277,11 +277,11 @@ export class MemoryController {
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
-      this._logger.error(`Failed to store memory key ${request.key}:${error}`);
+      this._logger.error('Failed to store memory key ${request.key}:' + error);
 
       return {
         success:false,
-        error:`Failed to store memory: ${this.getErrorMessage(error)}`,
+        error:'Failed to store memory: ' + this.getErrorMessage(error),
         metadata:{
           size:0,
           timestamp:Date.now(),
@@ -302,7 +302,7 @@ export class MemoryController {
     const startTime = Date.now();
 
     try {
-      this._logger.debug(`Retrieving memory key:${key}`);
+      this._logger.debug('Retrieving memory key:' + key);
 
       if (!key) {
         throw new Error('Key is required for retrieve operation');
@@ -315,7 +315,7 @@ export class MemoryController {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, true);
 
-      this._logger.debug(`Successfully retrieved key:${key}`);
+      this._logger.debug('Successfully retrieved key:' + key);
 
       return {
         success: true,
@@ -336,11 +336,11 @@ export class MemoryController {
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
-      this._logger.error(`Failed to retrieve memory key ${key}:${error}`);
+      this._logger.error('Failed to retrieve memory key ${key}:' + error);
 
       return {
         success:false,
-        error:`Failed to retrieve memory: ${this.getErrorMessage(error)}`,
+        error:'Failed to retrieve memory: ' + this.getErrorMessage(error),
         metadata:{
           size:0,
           timestamp:Date.now(),
@@ -361,7 +361,7 @@ export class MemoryController {
     const startTime = Date.now();
 
     try {
-      this._logger.debug(`Deleting memory key:${key}`);
+      this._logger.debug('Deleting memory key:' + key);
 
       if (!key) {
         throw new Error('Key is required for delete operation');
@@ -373,7 +373,7 @@ export class MemoryController {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, true);
 
-      this._logger.debug(`Successfully deleted key:${key}`);
+      this._logger.debug('Successfully deleted key:' + key);
 
       return {
         success: true,
@@ -391,11 +391,11 @@ export class MemoryController {
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
-      this._logger.error(`Failed to delete memory key ${key}:${error}`);
+      this._logger.error('Failed to delete memory key ${key}:' + error);
 
       return {
         success:false,
-        error:`Failed to delete memory: ${this.getErrorMessage(error)}`,
+        error:'Failed to delete memory: ' + this.getErrorMessage(error),
         metadata:{
           size:0,
           timestamp:Date.now(),
@@ -439,11 +439,11 @@ export class MemoryController {
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
-      this._logger.error(`Failed to clear memory:${error}`);
+      this._logger.error('Failed to clear memory:' + error);
 
       return {
         success:false,
-        error:`Failed to clear memory: ${this.getErrorMessage(error)}`,
+        error:'Failed to clear memory: ' + this.getErrorMessage(error),
         metadata:{
           size:0,
           timestamp:Date.now(),
@@ -488,7 +488,7 @@ export class MemoryController {
         result = await this.deleteMemory(operation.key);
         break;
       default:
-        throw new Error(`Unsupported operation type:${operation.type}`);
+        throw new Error('Unsupported operation type:' + operation.type);
     }
 
     return {
@@ -511,7 +511,7 @@ export class MemoryController {
 
     try {
       this._logger.debug(
-        `Executing batch operations:${request.operations.length} operations`
+        'Executing batch operations:' + request.operations.length + ' operations'
       );
 
       const results = [];
@@ -543,7 +543,7 @@ export class MemoryController {
       this.updateMetrics(executionTime, errorCount === 0);
 
       this._logger.debug(
-        `Batch operations completed:${results.length} operations, ${errorCount} errors`
+        'Batch operations completed:${results.length} operations, ' + errorCount + ' errors'
       );
 
       return {
@@ -564,11 +564,11 @@ export class MemoryController {
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
-      this._logger.error(`Batch operations failed:${error}`);
+      this._logger.error('Batch operations failed:' + error);
 
       return {
         success:false,
-        error:`Batch operations failed: ${this.getErrorMessage(error)}`,
+        error:'Batch operations failed: ' + this.getErrorMessage(error),
         metadata:{
           size:0,
           timestamp:Date.now(),
@@ -648,11 +648,11 @@ export class MemoryController {
     } catch (error) {
       const executionTime = Date.now() - startTime;
       this.updateMetrics(executionTime, false);
-      this._logger.error(`Failed to get analytics:${error}`);
+      this._logger.error('Failed to get analytics:' + error);
 
       return {
         success:false,
-        error:`Failed to get analytics: ${this.getErrorMessage(error)}`,
+        error:'Failed to get analytics: ' + this.getErrorMessage(error),
         metadata:{
           size:0,
           timestamp:Date.now(),
@@ -670,10 +670,10 @@ export class MemoryController {
     try {
       this.backend = this._factory.createProvider(this._config);
       this._logger.info(
-        `Memory controller initialized with ${this._config.type} backend`
+        'Memory controller initialized with ' + this._config.type + ' backend'
       );
     } catch (error) {
-      this._logger.error(`Failed to initialize memory backend:${error}`);
+      this._logger.error('Failed to initialize memory backend:' + error);
       throw error;
     }
   }

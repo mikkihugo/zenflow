@@ -17,7 +17,7 @@ import { DatabaseProvider } from '@claude-zen/database';
 /**
  * Automated retraining monitor using foundation metrics and LLM coordination.
  *
- * Implements Option 4:Build coordination feedback loops (coordinationSuccessRate → retraining)
+ * Implements Option 4:Build coordination feedback loops (coordinationSuccessRate  retraining)
  */
 // @injectable - Temporarily removed due to constructor type incompatibility
 export class RetrainingMonitor {

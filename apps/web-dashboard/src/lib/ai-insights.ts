@@ -140,11 +140,11 @@ export class AIInsightsEngine {
     // CPU Analysis
     if (typeof performance.cpu === 'number' && performance.cpu > 80) {
       insights.push({
-        id: `cpu-high-${Date.now()}`,
+        id: 'cpu-high-' + Date.now(),
         type: 'performance',
         severity: (performance.cpu as number) > 95 ? 'critical' : 'high',
         title: 'High CPU Usage Detected',
-        description: `CPU usage is at ${(performance.cpu as number).toFixed(1)}%, indicating potential performance bottlenecks.`,
+        description: 'CPU usage is at ' + (performance.cpu as number).toFixed(1) + '%, indicating potential performance bottlenecks.',
         recommendation:
           'Consider optimizing resource-intensive processes or scaling horizontally. Monitor agent workload distribution.',
         confidence: 92,
@@ -155,11 +155,11 @@ export class AIInsightsEngine {
       });
     } else if (typeof performance.cpu === 'number' && performance.cpu < 10) {
       insights.push({
-        id: `cpu-underutilized-${Date.now()}`,
+        id: 'cpu-underutilized-' + Date.now(),
         type: 'optimization',
         severity: 'low',
         title: 'CPU Underutilization Opportunity',
-        description: `CPU usage is only ${(performance.cpu as number).toFixed(1)}%, suggesting potential for increased workload capacity.`,
+        description: 'CPU usage is only ' + (performance.cpu as number).toFixed(1) + '%, suggesting potential for increased workload capacity.',
         recommendation:
           'Consider increasing agent concurrency or processing more tasks in parallel to improve resource utilization.',
         confidence: 75,
@@ -173,11 +173,11 @@ export class AIInsightsEngine {
     // Memory Analysis
     if (typeof performance.memory === 'number' && performance.memory > 85) {
       insights.push({
-        id: `memory-high-${Date.now()}`,
+        id: 'memory-high-' + Date.now(),
         type: 'performance',
         severity: (performance.memory as number) > 95 ? 'critical' : 'high',
         title: 'High Memory Usage Warning',
-        description: `Memory usage at ${(performance.memory as number).toFixed(1)}% may lead to performance degradation or system instability.`,
+        description: 'Memory usage at ' + (performance.memory as number).toFixed(1) + '% may lead to performance degradation or system instability.',
         recommendation:
           'Review memory-intensive agents and consider implementing memory pooling or garbage collection optimizations.',
         confidence: 88,
@@ -194,12 +194,12 @@ export class AIInsightsEngine {
       performance.avgResponse > 1000
     ) {
       insights.push({
-        id: `response-slow-${Date.now()}`,
+        id: 'response-slow-' + Date.now(),
         type: 'performance',
         severity:
           (performance.avgResponse as number) > 5000 ? 'high' : 'medium',
         title: 'Slow Response Times Detected',
-        description: `Average response time of ${performance.avgResponse as number}ms exceeds optimal thresholds.`,
+        description: 'Average response time of ' + performance.avgResponse as number + 'ms exceeds optimal thresholds.',
         recommendation:
           'Analyze request processing pipeline, consider caching strategies, and optimize database queries.',
         confidence: 85,
@@ -230,11 +230,11 @@ export class AIInsightsEngine {
 
     if (utilizationRate < 0.3) {
       insights.push({
-        id: `agents-underutilized-${Date.now()}`,
+        id: 'agents-underutilized-' + Date.now(),
         type: 'optimization',
         severity: 'medium',
         title: 'Low Agent Utilization',
-        description: `Only ${(utilizationRate * 100).toFixed(1)}% of agents are active. Many agents are idle.`,
+        description: 'Only ' + (utilizationRate * 100).toFixed(1) + '% of agents are active. Many agents are idle.',
         recommendation:
           'Consider reducing agent pool size or distributing more tasks to improve efficiency and reduce resource overhead.',
         confidence: 82,
@@ -250,11 +250,11 @@ export class AIInsightsEngine {
       });
     } else if (utilizationRate > 0.9) {
       insights.push({
-        id: `agents-overutilized-${Date.now()}`,
+        id: 'agents-overutilized-' + Date.now(),
         type: 'performance',
         severity: 'medium',
         title: 'High Agent Utilization',
-        description: `${(utilizationRate * 100).toFixed(1)}% of agents are active, approaching capacity limits.`,
+        description: (utilizationRate * 100).toFixed(1) + '% of agents are active, approaching capacity limits.',
         recommendation:
           'Consider scaling up agent pool or implementing load balancing to prevent bottlenecks.',
         confidence: 87,
@@ -273,11 +273,11 @@ export class AIInsightsEngine {
     if (errorAgents.length > 0) {
       const errorRate = errorAgents.length / agents.length;
       insights.push({
-        id: `agents-errors-${Date.now()}`,
+        id: 'agents-errors-' + Date.now(),
         type: 'anomaly',
         severity: errorRate > 0.1 ? 'high' : 'medium',
         title: 'Agent Errors Detected',
-        description: `${errorAgents.length} agents are in error state (${(errorRate * 100).toFixed(1)}% error rate).`,
+        description: '${errorAgents.length} agents are in error state (' + (errorRate * 100).toFixed(1) + '% error rate).',
         recommendation:
           'Investigate agent error logs, restart failed agents, and review agent health monitoring configuration.',
         confidence: 95,
@@ -308,11 +308,11 @@ export class AIInsightsEngine {
 
     if (backlogRatio > 0.6) {
       insights.push({
-        id: `tasks-backlog-${Date.now()}`,
+        id: 'tasks-backlog-' + Date.now(),
         type: 'performance',
         severity: backlogRatio > 0.8 ? 'high' : 'medium',
         title: 'Large Task Backlog',
-        description: `${(backlogRatio * 100).toFixed(1)}% of tasks are pending, indicating potential processing bottlenecks.`,
+        description: (backlogRatio * 100).toFixed(1) + '% of tasks are pending, indicating potential processing bottlenecks.',
         recommendation:
           'Consider increasing agent capacity, optimizing task processing, or implementing task prioritization.',
         confidence: 89,
@@ -332,11 +332,11 @@ export class AIInsightsEngine {
     const progressRatio = inProgressTasks.length / tasks.length;
     if (progressRatio > 0.4 && backlogRatio > 0.3) {
       insights.push({
-        id: `tasks-bottleneck-${Date.now()}`,
+        id: 'tasks-bottleneck-' + Date.now(),
         type: 'performance',
         severity: 'medium',
         title: 'Task Processing Bottleneck',
-        description: `${(progressRatio * 100).toFixed(1)}% of tasks are in progress with significant backlog, indicating processing bottleneck.`,
+        description: (progressRatio * 100).toFixed(1) + '% of tasks are in progress with significant backlog, indicating processing bottleneck.',
         recommendation:
           'Review task complexity, consider parallel processing, or increase worker capacity.',
         confidence: 85,
@@ -357,11 +357,11 @@ export class AIInsightsEngine {
     const completionRate = completedTasks.length / tasks.length;
     if (completionRate > 0.8) {
       insights.push({
-        id: `tasks-efficient-${Date.now()}`,
+        id: 'tasks-efficient-' + Date.now(),
         type: 'optimization',
         severity: 'low',
         title: 'High Task Completion Rate',
-        description: `${(completionRate * 100).toFixed(1)}% task completion rate indicates efficient processing.`,
+        description: (completionRate * 100).toFixed(1) + '% task completion rate indicates efficient processing.',
         recommendation:
           'System is performing well. Consider taking on additional workload or optimizing for higher throughput.',
         confidence: 78,
@@ -390,11 +390,11 @@ export class AIInsightsEngine {
       if (uptimeHours > 720) {
         // 30 days
         insights.push({
-          id: `uptime-stable-${Date.now()}`,
+          id: 'uptime-stable-' + Date.now(),
           type: 'optimization',
           severity: 'low',
           title: 'Excellent System Stability',
-          description: `System has been running for ${Math.floor(uptimeHours / 24)} days without restart.`,
+          description: 'System has been running for ' + Math.floor(uptimeHours / 24) + ' days without restart.',
           recommendation:
             'System demonstrates excellent stability. Consider scheduling planned maintenance windows for updates.',
           confidence: 85,
@@ -409,11 +409,11 @@ export class AIInsightsEngine {
     // Status Analysis
     if (health.status !== 'healthy') {
       insights.push({
-        id: `health-status-${Date.now()}`,
+        id: 'health-status-' + Date.now(),
         type: 'anomaly',
         severity: 'high',
         title: 'System Health Issue',
-        description: `System status is "${health.status}", indicating potential problems.`,
+        description: 'System status is "' + health.status + '", indicating potential problems.',
         recommendation:
           'Investigate system logs, check service dependencies, and review recent changes.',
         confidence: 92,
@@ -440,11 +440,11 @@ export class AIInsightsEngine {
     if (typeof usage.requestsPerMin === 'number') {
       if (usage.requestsPerMin < 10) {
         insights.push({
-          id: `usage-low-${Date.now()}`,
+          id: 'usage-low-' + Date.now(),
           type: 'optimization',
           severity: 'low',
           title: 'Low System Usage',
-          description: `Only ${usage.requestsPerMin} requests/min, indicating underutilization.`,
+          description: 'Only ' + usage.requestsPerMin + ' requests/min, indicating underutilization.',
           recommendation:
             'Consider cost optimization by downsizing resources or finding ways to increase system utilization.',
           confidence: 70,
@@ -455,11 +455,11 @@ export class AIInsightsEngine {
         });
       } else if (usage.requestsPerMin > 1000) {
         insights.push({
-          id: `usage-high-${Date.now()}`,
+          id: 'usage-high-' + Date.now(),
           type: 'performance',
           severity: 'medium',
           title: 'High System Usage',
-          description: `${usage.requestsPerMin} requests/min indicates heavy load.`,
+          description: usage.requestsPerMin + ' requests/min indicates heavy load.',
           recommendation:
             'Monitor system capacity and consider horizontal scaling to handle increased demand.',
           confidence: 83,
@@ -498,7 +498,7 @@ export class AIInsightsEngine {
         activeAgentRatio > 0.8
       ) {
         insights.push({
-          id: `correlation-cpu-agents-${Date.now()}`,
+          id: 'correlation-cpu-agents-' + Date.now(),
           type: 'prediction',
           severity: 'medium',
           title: 'Performance-Agent Correlation Alert',
@@ -533,7 +533,7 @@ export class AIInsightsEngine {
         inProgressRatio > 0.3
       ) {
         insights.push({
-          id: `correlation-memory-tasks-${Date.now()}`,
+          id: 'correlation-memory-tasks-' + Date.now(),
           type: 'prediction',
           severity: 'medium',
           title: 'Memory-Task Processing Correlation',
@@ -605,15 +605,15 @@ export class AIInsightsEngine {
     const highCount = insights.filter((i) => i.severity === 'high').length;
 
     if (criticalCount > 0) {
-      return `System requires immediate attention with ${criticalCount} critical issue${criticalCount > 1 ? 's' : ''} detected. Overall health score:${healthScore}/100.`;
+      return 'System requires immediate attention with ${criticalCount} critical issue${criticalCount > 1 ? 's' : ''} detected. Overall health score:' + healthScore + '/100.';
     } else if (highCount > 0) {
-      return `System has ${highCount} high-priority issue${highCount > 1 ? 's' : ''} that should be addressed soon. Health score:${healthScore}/100.`;
+      return 'System has ${highCount} high-priority issue${highCount > 1 ? 's' : ''} that should be addressed soon. Health score:' + healthScore + '/100.';
     } else if (healthScore > 90) {
-      return `System is performing excellently with minimal issues detected. Health score:${healthScore}/100.`;
+      return 'System is performing excellently with minimal issues detected. Health score:' + healthScore + '/100.';
     } else if (healthScore > 70) {
-      return `System is performing well with some optimization opportunities. Health score:${healthScore}/100.`;
+      return 'System is performing well with some optimization opportunities. Health score:' + healthScore + '/100.';
     } else {
-      return `System has multiple areas for improvement. Health score:${healthScore}/100.`;
+      return 'System has multiple areas for improvement. Health score:' + healthScore + '/100.';
     }
   }
 

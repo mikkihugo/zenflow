@@ -2,7 +2,7 @@
  * Document Workflow System - Orchestrates document-based development workflows.
  *
  * Provides systematic document workflow coordination:
- * - Document Workflow System orchestrates Vision → ADRs → PRDs → Epics → Features → Tasks → Code
+ * - Document Workflow System orchestrates Vision  ADRs  PRDs  Epics  Features  Tasks  Code
  * - SPARC methodology applied as implementation tool WITHIN Features/Tasks.
  * - Clear naming: Document Workflow = WHAT, SPARC = HOW.
  */
@@ -34,7 +34,7 @@ interface ProductWorkflowEngine {
  * Document Workflow System - Main orchestrator for document-based development workflows.
  *
  * Coordinates the complete Document Workflow with SPARC integration:
- * Vision → ADRs → PRDs → Epics → Features (+ SPARC) → Tasks (+ SPARC) → Code.
+ * Vision  ADRs  PRDs  Epics  Features (+ SPARC)  Tasks (+ SPARC)  Code.
  *
  * @example
  */
@@ -67,7 +67,7 @@ export class DocumentWorkflowSystem extends TypedEventBase {
   async processVisionaryDocument(_workspaceId: string,
     docPath:string
   ): Promise<void> {
-    logger.info(` Processing visionary document:${docPath}`);`
+    logger.info(' Processing visionary document:' + docPath);'
 
     try {
       // Start complete Product Flow workflow
@@ -79,7 +79,7 @@ export class DocumentWorkflowSystem extends TypedEventBase {
       );
 
       if (result?.success && result?.workflowId) {
-        logger.info(` Product Flow workflow started:$result?.workflowId`);`
+        logger.info(' Product Flow workflow started:$result?.workflowId');'
         this.emit('product-flow:started', {
     '      workflowId:result?.workflowId,
           docPath,
@@ -87,7 +87,7 @@ export class DocumentWorkflowSystem extends TypedEventBase {
 }
 } catch (error) {
       logger.error(
-        ` Failed to process visionary document ${docPath}:`,`
+        ' Failed to process visionary document ' + docPath + ':',`
         error
       );
       throw error;
@@ -104,8 +104,7 @@ export class DocumentWorkflowSystem extends TypedEventBase {
     this.activeWorkspaces.set(workspaceId, workspacePath);
 
     logger.info(
-      `📁 Loaded Product Flow workspace:${workspaceId} at ${workspacePath}``
-    );
+      ' Loaded Product Flow workspace:${workspaceId} at ' + workspacePath);
     return workspaceId;
 }
 

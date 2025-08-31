@@ -49,10 +49,10 @@ export class EventLogger {
   static log(eventName: string, payload?: unknown): void {
     if (!this.isEnabled()) return;
 
-    logger.info(`📡 Event:${eventName}`);
+    logger.info(' Event:' + eventName);
 
     if (payload) {
-      logger.info(`📦 Payload:`, payload);
+      logger.info(' Payload:', payload);
     }
   }
 
@@ -62,7 +62,7 @@ export class EventLogger {
   static logFlow(from: string, to: string, eventName: string): void {
     if (!this.isEnabled()) return;
 
-    logger.info(`🔄 Flow:${from} → ${eventName} → ${to}`);
+    logger.info(' Flow:${from}  ${eventName}  ' + to);
   }
 
   /**
@@ -86,12 +86,12 @@ export class EventLogger {
     };
 
     logger.info(
-      `📡 Event: ${eventName} [${ctx.component}${ctx.phase ? `:${ctx.phase}` : ''}]`
+      ' Event: ${eventName} [${ctx.component}' + ctx.phase ? ':' + ctx.phase : '' + ']'
     );
-    logger.info(`🕒 Time:${ctx.timestamp.toISOString()}`);
+    logger.info(' Time:' + ctx.timestamp.toISOString());
 
     if (payload) {
-      logger.info(`📦 Payload:`, payload);
+      logger.info(' Payload:', payload);
     }
   }
 
@@ -113,13 +113,13 @@ export class EventLogger {
     const errorStack = error instanceof Error ? error.stack : undefined;
 
     logger.error(
-      `🚨 Error Event: ${eventName} [${ctx.component || 'unknown'}${ctx.phase ? `:${ctx.phase}` : ''}]`
+      ' Error Event: ${eventName} [${ctx.component || 'unknown'}' + ctx.phase ? ':' + ctx.phase : '' + ']'
     );
 
-    logger.error(`💥 Error: ${errorMessage}`);
+    logger.error(' Error: ' + errorMessage);
 
     if (errorStack) {
-      logger.error(`📍 Stack:`, errorStack);
+      logger.error(' Stack:', errorStack);
     }
   }
 }

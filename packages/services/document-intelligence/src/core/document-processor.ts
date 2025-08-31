@@ -2,18 +2,18 @@
  * Document Processor - Unified Document Processing System.
  *
  * Clean, focused document processor that consolidates DocumentDrivenSystem and DatabaseDrivenSystem.
- * Into a single, coherent document processing system. Handles Vision → PRDs → Epics → Features → Tasks → Code.
+ * Into a single, coherent document processing system. Handles Vision  PRDs  Epics  Features  Tasks  Code.
  * ADRs are independent architectural governance documents that constrain and guide implementation..
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const processor = new DocumentProcessor(memorySystem, workflowEngine, {
  *   autoWatch: true,
  *   enableWorkflows:true
  *});
  *
  * await processor.initialize();
- * await processor.processDocument('./docs/vision/product-vision.md');') * ````
+ * await processor.processDocument('./docs/vision/product-vision.md');') * '
  */
 /**
  * @file Document-processor implementation.
@@ -232,7 +232,7 @@ export class DocumentProcessor extends TypedEventBase {
    * @returns Workspace ID.
    */
   async loadWorkspace(workspacePath:string): Promise<string> {
-    const workspaceId = `workspace-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
+    const workspaceId = 'workspace-' + Date.now() + '-' + Math.random().toString(36).substring(2, 11);'
 
     // Create workspace structure
     const workspace: DocumentWorkspace = {
@@ -267,8 +267,7 @@ export class DocumentProcessor extends TypedEventBase {
 }
 
     logger.info(
-      `Loaded workspace:$workspacePath($context.activeDocuments.sizedocuments)``
-    );
+      'Loaded workspace:$workspacePath($context.activeDocuments.sizedocuments)');
     this.emit('workspace:loaded', {
     '  workspaceId,
       path: workspacePath,
@@ -299,14 +298,14 @@ export class DocumentProcessor extends TypedEventBase {
 
     const context = this.workspaces.get(workspaceId);
     if (!context) {
-      throw new Error(`Workspace not found:${workspaceId}`);`
+      throw new Error('Workspace not found:' + workspaceId);'
 }
 
     try {
       const docType = this.getDocumentType(documentPath);
       const content = await readFile(documentPath, 'utf8');'  const metadata = await this.extractMetadata(content);
 
-      logger.info(`Processing $docTypedocument:$documentPath`);`
+      logger.info('Processing $docTypedocument:$documentPath');'
 
       const document: Document = {
         type: docType,
@@ -346,7 +345,7 @@ export class DocumentProcessor extends TypedEventBase {
 });
 } catch (error) 
       this.stats.errors++;
-      logger.error(`Failed to process document ${documentPath}:`, error);`
+      logger.error('Failed to process document ' + documentPath + ':', error);'
       throw error;
 }
 }
@@ -375,11 +374,11 @@ export class DocumentProcessor extends TypedEventBase {
 
     const context = this.workspaces.get(workspaceId);
     if (!context) {
-      throw new Error(`Workspace not found:$workspaceId`);`
+      throw new Error('Workspace not found:$workspaceId');'
 
     // Generate file path
     const dirPath = this.getDocumentDirectory(context.workspace, type);
-    const fileName = `${title.toLowerCase().replace(/\s+/g, '-'.md`;`
+    const fileName = '${title.toLowerCase().replace(/\s+/g, '-'.md';'
     const filePath = join(dirPath, fileName);
 
     // Create document content with metadata
@@ -394,7 +393,7 @@ export class DocumentProcessor extends TypedEventBase {
     if (!document) {
       throw new Error('Failed to create document');'
 
-    logger.info(`Created $typedocument:$title`);`
+    logger.info('Created $typedocument:$title');'
     return document;
 }
 
@@ -467,16 +466,16 @@ export class DocumentProcessor extends TypedEventBase {
 
     switch (document.type) {
       case 'vision': ')'        context.phase = 'requirements';
-        logger.info('🔮 Processing Vision document');'    break;
-      case 'adr': ')'        logger.info('📐 Processing ADR document');'    break;
+        logger.info(' Processing Vision document');'    break;
+      case 'adr': ')'        logger.info(' Processing ADR document');'    break;
       case 'prd': ')'        context.phase = 'design';
-        logger.info('📋 Processing PRD document');'    break;
+        logger.info(' Processing PRD document');'    break;
       case 'epic': ')'        context.phase = 'planning';
-        logger.info('🏔️ Processing Epic document');'    break;
+        logger.info('️ Processing Epic document');'    break;
       case 'feature': ')'        context.phase = 'planning';
-        logger.info('⭐ Processing Feature document');'    break;
+        logger.info(' Processing Feature document');'    break;
       case 'task': ')'        context.phase = 'execution';
         logger.info(' Processing Task document');'    break;
-      case 'spec': ')'        logger.info('📄 Processing Spec document');'    break;
+      case 'spec': ')'        logger.info(' Processing Spec document');'    break;
 }
 }

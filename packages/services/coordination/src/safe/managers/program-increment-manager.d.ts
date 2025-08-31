@@ -9,7 +9,7 @@
  * - PIExecutionService: Progress tracking and metrics calculation
  * - PICompletionService: Completion workflows and reporting
  *
- * REDUCTION: 1,106 → 489 lines (55.8% reduction) through service delegation
+ * REDUCTION: 1,106  489 lines (55.8% reduction) through service delegation
  *
  * @author Claude-Zen Team
  * @since 1.0.0

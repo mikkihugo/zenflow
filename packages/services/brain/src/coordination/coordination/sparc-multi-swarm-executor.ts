@@ -4,7 +4,7 @@
  * Advanced multi-swarm A/B testing system specifically designed for SPARC Commander.
  * Since SPARC Commander is the only system that can write code, this executor
  * launches multipl} catch (error) {
-      logger.error(` SPARC Multi-Swarm test failed: ${testId}`, error);
+      logger.error(' SPARC Multi-Swarm test failed: ' + testId, error);
       throw error;
     }ARC instances in parallel using git trees for isolation.
  *
@@ -174,13 +174,13 @@ export class SPARCMultiSwarmExecutor {
       cleanupWorktrees?:boolean;
 } = {}
   ): Promise<SPARCMultiSwarmResult> {
-    const testId = `sparc-multiswarm-${generateNanoId()}`;
+    const testId = 'sparc-multiswarm-' + generateNanoId();
     const startTime = new Date();
 
-    logger.info(`🧪 Starting SPARC Multi-Swarm A/B test: ${testId}`);
-    logger.info(`📋 Task: ${taskDescription}`);
+    logger.info(' Starting SPARC Multi-Swarm A/B test: ' + testId);
+    logger.info(' Task: ' + taskDescription);
     logger.info(
-      `🔬 Testing ${sparcStrategies.length} SPARC strategies with git tree isolation`
+      ' Testing ' + sparcStrategies.length + ' SPARC strategies with git tree isolation'
     );
 
     try {
@@ -238,17 +238,17 @@ export class SPARCMultiSwarmExecutor {
 },
 };
 
-      logger.info(` SPARC Multi-Swarm test completed: ${testId}`);
+      logger.info(' SPARC Multi-Swarm test completed: ' + testId);
       logger.info(
-        `🏆 Winner: ${comparison.winner.name} (${comparison.confidence.toFixed(
+        ' Winner: ${comparison.winner.name} (' + comparison.confidence.toFixed(
           2
-        )} confidence)`
+        ) + ' confidence)'
       );
-      logger.info(`🌳 Git trees created: ${totalWorktreesCreated}`);
+      logger.info(' Git trees created: ' + totalWorktreesCreated);
 
       return multiSwarmResult;
 } catch (error) {
-      logger.error(` SPARC Multi-Swarm test failed:$testId`, error);`
+      logger.error(' SPARC Multi-Swarm test failed:$testId', error);'
       throw error;
 }
 }
@@ -348,7 +348,7 @@ export class SPARCMultiSwarmExecutor {
 ];
 
       default:{
-        throw new Error(`Unknown SPARC strategy scenario:${scenario}`);`
+        throw new Error('Unknown SPARC strategy scenario:' + scenario);'
 }
 }
 
@@ -361,7 +361,7 @@ export class SPARCMultiSwarmExecutor {
     options: any
   ): Promise<SPARCExecutionResult[]> {
     logger.info(
-      `⚡ Executing ${strategies.length} SPARC strategies in parallel with git trees...`
+      ' Executing ' + strategies.length + ' SPARC strategies in parallel with git trees...'
     );
 
     const promises = strategies.map((strategy) =>
@@ -386,7 +386,7 @@ export class SPARCMultiSwarmExecutor {
     options: any
   ): Promise<SPARCExecutionResult[]> {
     logger.info(
-      `⏭️ Executing ${strategies.length} SPARC strategies sequentially with git trees...`
+      '⏭️ Executing ' + strategies.length + ' SPARC strategies sequentially with git trees...'
     );
 
     const results: SPARCExecutionResult[] = [];
@@ -415,7 +415,7 @@ export class SPARCMultiSwarmExecutor {
     const startTime = Date.now();
 
     logger.info(
-      ` Executing SPARC strategy: ${strategy.name} (${strategy.modelBackend})`
+      ' Executing SPARC strategy: ${strategy.name} (' + strategy.modelBackend + ')'
     );
 
     try {
@@ -429,7 +429,7 @@ export class SPARCMultiSwarmExecutor {
       const duration = Date.now() - startTime;
 
       logger.info(
-        ` SPARC strategy completed: ${strategy.name} (${duration}ms)`
+        ' SPARC strategy completed: ${strategy.name} (' + duration + 'ms)'
       );
 
       return {
@@ -444,7 +444,7 @@ export class SPARCMultiSwarmExecutor {
 };
 } catch (error) {
       const duration = Date.now() - startTime;
-      logger.error(` SPARC strategy failed:${strategy.name}`, error);`
+      logger.error(' SPARC strategy failed:' + strategy.name, error);`
 
       return {
         strategy,
@@ -510,10 +510,10 @@ export class SPARCMultiSwarmExecutor {
     await new Promise((resolve) => setTimeout(resolve, executionDelay));
 
     // Generate git tree info
-    const worktreePath = `.claude-zen/tmp/sparc-worktrees/sparc-${
+    const worktreePath = '.claude-zen/tmp/sparc-worktrees/sparc-${
       strategy.id
-    }-${generateNanoId(6)}`;
-    const branchName = `sparc-${strategy.id}-${Date.now()}`;
+    }-' + generateNanoId(6);
+    const branchName = 'sparc-${strategy.id}-' + Date.now();
     const commitsCreated =
       strategy.sparcConfig.methodology === 'full-sparc' ? 5 : 3;
     return {
@@ -545,10 +545,10 @@ export class SPARCMultiSwarmExecutor {
         mergedToMain:overallScore > 75, // Only merge successful executions
 },
       insights:[
-        `SPARC ${strategy.sparcConfig.methodology} methodology completed`,
-        `Git tree isolation: ${worktreePath}`,
-        `Created ${commitsCreated} commits in isolated branch`,
-        `Overall SPARC quality score: ${overallScore.toFixed(1)}`,
+        'SPARC ' + strategy.sparcConfig.methodology + ' methodology completed',
+        'Git tree isolation: ' + worktreePath,
+        'Created ' + commitsCreated + ' commits in isolated branch',
+        'Overall SPARC quality score: ' + overallScore.toFixed(1),
 ],
 };
 }
@@ -737,9 +737,9 @@ export class SPARCMultiSwarmExecutor {
       .sort((a, b) => b.avgScore - a.avgScore)[0];
 
     reasoning.push(
-      `Best methodology: ${bestMethodology.methodology} (${bestMethodology.avgScore.toFixed(
+      'Best methodology: ${bestMethodology.methodology} (' + bestMethodology.avgScore.toFixed(
         1
-      )} avg score)`
+      ) + ' avg score)'
     );
 
     // Analyze git tree usage
@@ -749,7 +749,7 @@ export class SPARCMultiSwarmExecutor {
         (r) => r.gitTreeInfo.mergedToMain
       ).length;
       reasoning.push(
-        `Git tree isolation: ${gitTreeResults.length} worktrees created, ${successfulMerges} successfully merged`
+        'Git tree isolation: ${gitTreeResults.length} worktrees created, ' + successfulMerges + ' successfully merged'
       );
 }
 
@@ -779,9 +779,9 @@ export class SPARCMultiSwarmExecutor {
         ) / withoutIntelligence.length;
 
       reasoning.push(
-        `Intelligent systems impact: ${(
+        'Intelligent systems impact: ' + (
           avgWithIntelligence - avgWithoutIntelligence
-        ).toFixed(1)} point improvement`
+        ).toFixed(1) + ' point improvement'
       );
 }
 

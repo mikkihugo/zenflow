@@ -5,7 +5,7 @@
  * environment discovery and project context analysis.
  *
  * @example Basic Environment Detection
- * ```typescript`
+ * '''typescript'
  * import { EnvironmentDetector} from '@claude-zen/foundation';
  *
  * const detector = new EnvironmentDetector();
@@ -14,10 +14,10 @@
  * logger.info('Node version: ', env.runtime.node);
 ' * logger.info('Package manager: ', env.packageManager.type);
 ' * logger.info('Available tools: ', env.tools);
-' * ```
+' * '
  *
  * @example Advanced Usage with Caching
- * ```typescript`
+ * '''typescript'
  * const detector = new EnvironmentDetector({
  *   useCache:true,
  *   cacheTimeout:300000, // 5 minutes
@@ -25,7 +25,7 @@
  *
  * const environments = await detector.detectMultiple([
  *   '/path/to/project1', *   '/path/to/project2') *]);
- * ```
+ * '
  *
  * @package @claude-zen/foundation
  * @since 2.1.0
@@ -194,19 +194,19 @@ export class EnvironmentDetectionError extends Error {
  * @extends EventEmitter
  *
  * @example Basic Usage
- * ```typescript`
+ * '''typescript'
  * const detector = new EnvironmentDetector();
  * const env = await detector.detectEnvironment();
  * logger.info('Available tools: ', env.tools.filter(t => t.available));
-' * ```
+' * '
  *
  * @example With Caching and Auto-refresh
- * ```typescript`
+ * '''typescript'
  * const detector = new EnvironmentDetector('/project/path', true, 30000);
  * detector.on('service-started', (event) => {
  *   logger.info('Detection completed: ', event.serviceName);
 ' *});
- * ```
+ * '
  */
 export class EnvironmentDetector extends EventEmitter {
   private snapshot: EnvironmentSnapshot | null = null;
@@ -252,7 +252,7 @@ export class EnvironmentDetector extends EventEmitter {
     }, this.refreshInterval);
 
     this.logger.info(
-      `Started auto-detection with ${this.refreshInterval}ms interval`
+      'Started auto-detection with ' + this.refreshInterval + 'ms interval'
     );
   }
 
@@ -322,7 +322,7 @@ export class EnvironmentDetector extends EventEmitter {
     } catch (error) {
       this.logger.error('Environment detection failed:', error);
       throw new EnvironmentDetectionError(
-        `Failed to detect environment:${error instanceof Error ? error['message'] : 'Unknown error'}`
+        'Failed to detect environment:' + error instanceof Error ? error['message'] : 'Unknown error'
       );
     } finally {
       this.isDetecting = false;
@@ -351,22 +351,22 @@ export class EnvironmentDetector extends EventEmitter {
       {
         name: 'npm',
         type: PACKAGE_MANAGER_TYPE,
-        command: `npm${VERSION_CMD}`,
+        command: 'npm' + VERSION_CMD,
       },
       {
         name: 'yarn',
         type: PACKAGE_MANAGER_TYPE,
-        command: `yarn${VERSION_CMD}`,
+        command: 'yarn' + VERSION_CMD,
       },
       {
         name: 'pnpm',
         type: PACKAGE_MANAGER_TYPE,
-        command: `pnpm${VERSION_CMD}`,
+        command: 'pnpm' + VERSION_CMD,
       },
       {
         name: 'bun',
         type: PACKAGE_MANAGER_TYPE,
-        command: `bun${VERSION_CMD}`,
+        command: 'bun' + VERSION_CMD,
       },
 
       // Runtimes
@@ -753,7 +753,7 @@ export class EnvironmentDetector extends EventEmitter {
           installed,
         });
       } catch (error) {
-        this.logger.warn(`Failed to check Nix package ${pkg.name}:`, error);
+        this.logger.warn('Failed to check Nix package ' + pkg.name + ':', error);
         packages.push({
           name: pkg.name,
           description: pkg.description,
@@ -773,7 +773,7 @@ export class EnvironmentDetector extends EventEmitter {
   private async isNixPackageAvailable(packageName: string): Promise<boolean> {
     try {
       const { stdout } = await execAsync(
-        `nix-env -qaP ${packageName}|head -1`,
+        'nix-env -qaP ' + packageName + '|head -1',
         { timeout: 5000 }
       );
       return stdout.trim().length > 0;
@@ -836,7 +836,7 @@ export class EnvironmentDetector extends EventEmitter {
     const missingDev = devTools.filter((p) => p.available && !p.installed);
     if (missingDev.length > 0) {
       suggestions.push(
-        `Install dev tools:nix-shell -p ${missingDev.map((p) => p.name).join(' ')}`
+        'Install dev tools:nix-shell -p ' + missingDev.map((p) => p.name).join(' ')
       );
     }
 
@@ -910,7 +910,7 @@ export class EnvironmentDetector extends EventEmitter {
 
   private async checkCommandExists(command: string): Promise<boolean> {
     try {
-      await execAsync(`which ${command}`, { timeout: 2000 });
+      await execAsync('which ' + command, { timeout: 2000 });
       return true;
     } catch {
       return false;
@@ -1061,13 +1061,13 @@ export class EnvironmentDetector extends EventEmitter {
  * @class NixIntegration
  *
  * @example Basic Usage
- * ```typescript`
+ * 'typescript'
  * const nix = new NixIntegration('/project/path');
  * const result = await nix.autoSetup();
  * if (result.success) {
  *   logger.info('Nix setup completed: ', result.steps);
 ' *}
- * ```
+ * `
  */
 export class NixIntegration {
   private logger: Logger;
@@ -1148,32 +1148,32 @@ export class NixIntegration {
         return { success: false, steps, errors };
       }
 
-      steps.push('✓ Nix is available');
+      steps.push(' Nix is available');
 
       // Create flake.nix if it doesn't exist
       const hasFlakeNix = this.hasFlakeNix();
       if (hasFlakeNix) {
-        steps.push('✓ flake.nix already exists');
+        steps.push(' flake.nix already exists');
       } else {
         await this.createFlakeNix();
-        steps.push('✓ Created flake.nix with BEAM language support');
+        steps.push(' Created flake.nix with BEAM language support');
       }
 
       // Enable flakes if not enabled
       if (env.flakesEnabled) {
-        steps.push('✓ Nix flakes already enabled');
+        steps.push(' Nix flakes already enabled');
       } else {
         try {
           await this.enableFlakes();
-          steps.push('✓ Enabled Nix flakes');
+          steps.push(' Enabled Nix flakes');
         } catch (error) {
-          errors.push(`Failed to enable flakes:${error}`);
+          errors.push('Failed to enable flakes:' + error);
         }
       }
 
       return { success: errors.length === 0, steps, errors };
     } catch (error) {
-      errors.push(`Auto-setup failed:${error}`);
+      errors.push('Auto-setup failed:' + error);
       return { success: false, steps, errors };
     }
   }
@@ -1182,7 +1182,7 @@ export class NixIntegration {
    * Create a flake.nix file for the project
    */
   private async createFlakeNix(): Promise<void> {
-    const flakeContent = `{
+    const flakeContent = '{
   description = "Claude Code Zen - Development Environment";
 
   inputs = {
@@ -1193,7 +1193,7 @@ export class NixIntegration {
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        pkgs = nixpkgs.legacyPackages.\${system};
+        pkgs = nixpkgs.legacyPackages.\' + system + ';
       in
       {
         devShells['default'] = pkgs.mkShell {
@@ -1213,13 +1213,13 @@ export class NixIntegration {
 ];
           
           shellHook = ''
-            echo "🚀 Claude Code Zen Development Environment"
-            echo "📦 TypeScript/Node.js development ready"
-            echo "🛠️  Ready for development!"
+            echo " Claude Code Zen Development Environment"
+            echo " TypeScript/Node.js development ready"
+            echo "  Ready for development!"
           ';
 };
 });
-}`;
+}';
 
     await writeFile(join(this.projectRoot, 'flake.nix'), flakeContent);
   }
@@ -1233,7 +1233,7 @@ export class NixIntegration {
       await execAsync('mkdir -p ~/.config/nix');
 
       // Add flakes configuration
-      const configPath = `${homedir()}/.config/nix/nix.conf`;
+      const configPath = homedir() + '/.config/nix/nix.conf';
       const configContent = 'experimental-features = nix-command flakes\n';
 
       try {
@@ -1246,7 +1246,7 @@ export class NixIntegration {
         await writeFile(configPath, configContent);
       }
     } catch (error) {
-      throw new Error(`Failed to enable flakes:${error}`);
+      throw new Error('Failed to enable flakes:' + error);
     }
   }
 
@@ -1294,7 +1294,7 @@ export class NixIntegration {
   private async saveCache(data: NixEnvironment): Promise<void> {
     try {
       const cacheDir = join(this.cachePath, '..');
-      await execAsync(`mkdir -p ${cacheDir}`);
+      await execAsync('mkdir -p ' + cacheDir);
 
       const cache = {
         timestamp: Date.now(),
@@ -1314,20 +1314,20 @@ export class NixIntegration {
     const env = await this.detectEnvironment();
 
     if (!env.nixAvailable) {
-      return '❌ Nix not available';
+      return ' Nix not available';
     }
 
     const installedCount = env.packages.filter((p) => p.installed).length;
     const totalCount = env.packages.length;
 
-    let status = '✓ Nix available';
+    let status = ' Nix available';
     if (env.flakesEnabled) {
       status += ', flakes enabled';
     }
     if (env.currentShell) {
-      status += `, in ${env.currentShell}`;
+      status += ', in ' + env.currentShell;
     }
-    status += ` • ${installedCount}/${totalCount} packages`;
+    status += ' • ${installedCount}/' + totalCount + ' packages';
 
     return status;
   }

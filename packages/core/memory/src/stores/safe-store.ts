@@ -84,7 +84,7 @@ export class SafeMemoryStore extends EventEmitter {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown initialization error';
-      throw new Error(`Failed to initialize SafeMemoryStore:${errorMessage}`);
+      throw new Error('Failed to initialize SafeMemoryStore:' + errorMessage);
     }
   }
 
@@ -391,7 +391,7 @@ export class SafeMemoryStore extends EventEmitter {
   // ============================================
 
   private createKey(key: string): string {
-    return `${this.options.namespace}:${key}`;
+    return '${this.options.namespace}:' + key;
   }
 
   private createMemoryError(
@@ -481,9 +481,9 @@ export async function safeMemoryUsageExample(): Promise<void> {
 
   // Safe property access using type guards
   if (isMemorySuccess(storeResult)) {
-    logger.info('✅ Data stored successfully');
+    logger.info(' Data stored successfully');
   } else if (isMemoryError(storeResult)) {
-    logger.error('❌ Storage failed: ', storeResult?.error?.message);
+    logger.error(' Storage failed: ', storeResult?.error?.message);
   }
 
   // Retrieve data with safe access
@@ -492,7 +492,7 @@ export async function safeMemoryUsageExample(): Promise<void> {
   );
 
   if (isMemorySuccess(retrieveResult)) {
-    logger.info('✅ User retrieved:', retrieveResult?.data);
+    logger.info(' User retrieved:', retrieveResult?.data);
   } else if (isMemoryNotFound(retrieveResult)) {
     logger.warn('User not found');
   } else if (isMemoryError(retrieveResult)) {

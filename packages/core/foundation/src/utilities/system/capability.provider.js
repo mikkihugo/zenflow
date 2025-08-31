@@ -103,25 +103,25 @@ function getPackageFeatures(packageName, allFeatures) {
  */
 export async function displaySystemStatus() {
     const dashboard = await getSystemCapabilityData();
-    logger.info('\n🐝 claude-code-zen System Status Dashboard');
+    logger.info('\n claude-code-zen System Status Dashboard');
     logger.info('='.repeat(50));
     // Overall status
     const statusEmoji = dashboard.overall === 'full'
-        ? '✅'
+        ? ''
         : dashboard.overall === 'partial'
-            ? '⚠️'
-            : '❌';
+            ? ''
+            : '';
     logger.info(`${statusEmoji} Overall:${dashboard.overall.toUpperCase()} (${dashboard.systemHealthScore}% health)`);
-    logger.info(`📦 Packages:${dashboard.availablePackages}/${dashboard.totalPackages} available`);
-    logger.info(`🔧 Services:${dashboard.registeredServices} registered in Awilix`);
+    logger.info(` Packages:${dashboard.availablePackages}/${dashboard.totalPackages} available`);
+    logger.info(` Services:${dashboard.registeredServices} registered in Awilix`);
     // Facade breakdown
-    logger.info('\n📊 Facade Status:');
+    logger.info('\n Facade Status:');
     for (const facade of dashboard.facades) {
         const facadeEmoji = facade.capability === 'full'
-            ? '✅'
+            ? ''
             : facade.capability === 'partial'
-                ? '⚠️'
-                : '❌';
+                ? ''
+                : '';
         logger.info(`  ${facadeEmoji} ${facade.name}:${facade.capability} (${facade.healthScore}%)`);
         if (facade.missingPackages.length > 0) {
             logger.info(`    Missing:${facade.missingPackages.join(', ')}`);
@@ -132,18 +132,18 @@ export async function displaySystemStatus() {
     }
     // Installation suggestions
     if (dashboard.installationSuggestions.length > 0) {
-        logger.info('\n💡 Installation Suggestions:');
+        logger.info('\n Installation Suggestions:');
         for (const suggestion of dashboard.installationSuggestions.slice(0, 5)) {
             const priorityEmoji = suggestion.priority === 'high'
-                ? '🔥'
+                ? ''
                 : suggestion.priority === 'medium'
-                    ? '⭐'
-                    : '💡';
+                    ? ''
+                    : '';
             logger.info(`  ${priorityEmoji} pnpm add ${suggestion.package}`);
             logger.info(`    └─ ${suggestion.reason}`);
         }
     }
-    logger.info(`\n📅 Last Updated:${dashboard.timestamp}`);
+    logger.info(`\n Last Updated:${dashboard.timestamp}`);
     logger.info('='.repeat(50));
 }
 /**
@@ -198,26 +198,26 @@ export function createHealthDataProviders() {
 export function startSystemMonitoring() {
     facadeStatusManager.on('package-loaded', (...args) => {
         const data = args[0];
-        logger.info(`📦 Package ${data.packageName} loaded successfully`, {
+        logger.info(` Package ${data.packageName} loaded successfully`, {
             version: data.version || 'unknown',
             timestamp: data.timestamp.toISOString(),
         });
     });
     facadeStatusManager.on('facade-registered', (...args) => {
         const data = args[0];
-        logger.info(`🏗️ Facade ${data.facadeName} registered`, {
+        logger.info(`️ Facade ${data.facadeName} registered`, {
             timestamp: data.timestamp.toISOString(),
         });
     });
     facadeStatusManager.on('system-status-changed', (...args) => {
         const data = args[0];
-        logger.debug('📊 System status updated', {
+        logger.debug(' System status updated', {
             overall: data.status,
             healthScore: data.healthScore,
             timestamp: data.timestamp.toISOString(),
         });
     });
-    logger.info('🔍 System monitoring started');
+    logger.info(' System monitoring started');
 }
 /**
  * Get capability score for specific areas

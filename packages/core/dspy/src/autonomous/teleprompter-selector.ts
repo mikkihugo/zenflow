@@ -7,13 +7,13 @@
  * or advanced ML capabilities based on task characteristics and performance history.
  *
  * Key Features:
- * - 🤖 Autonomous teleprompter selection using ML analysis
- * - 📊 Performance-based decision making with historical data
- * - 🧠 Integration with DSPy-Brain ML Bridge for intelligent recommendations
- * - ⚡ Adaptive learning from usage patterns and success rates
- * - 🎯 Multi-objective optimization (accuracy, speed, memory, complexity)
- * - 📈 Confidence scoring and uncertainty quantification
- * - 🔄 Fallback mechanisms for robust operation
+ * -  Autonomous teleprompter selection using ML analysis
+ * -  Performance-based decision making with historical data
+ * -  Integration with DSPy-Brain ML Bridge for intelligent recommendations
+ * -  Adaptive learning from usage patterns and success rates
+ * -  Multi-objective optimization (accuracy, speed, memory, complexity)
+ * -  Confidence scoring and uncertainty quantification
+ * -  Fallback mechanisms for robust operation
  *
  * Architecture:
  * - Task analysis using natural language processing and pattern recognition
@@ -234,7 +234,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 		if (this.initialized) return;
 
 		try {
-			this.logger.info("🤖 Initializing Autonomous Teleprompter Selector");
+			this.logger.info(" Initializing Autonomous Teleprompter Selector");
 
 			// Initialize ML Bridge
 			await this.mlBridge.initialize();
@@ -247,7 +247,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 
 			this.initialized = true;
 			this.logger.info(
-				`✅ Autonomous Selector initialized with ${this.availableVariants.size} teleprompter variants`,
+				' Autonomous Selector initialized with ' + this.availableVariants.size + ' teleprompter variants',
 			);
 			this.emit("selector:initialized", { timestamp:new Date()});
 } catch (error) {
@@ -272,7 +272,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 
 		const startTime = Date.now();
 		this.logger.info(
-			`🎯 Analyzing task for optimal teleprompter selection:${task.id}`,
+			' Analyzing task for optimal teleprompter selection:' + task.id,
 		);
 
 		try {
@@ -318,7 +318,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 			this.selectionHistory.push(finalSelection);
 
 			this.logger.info(
-				`🎯 Selected teleprompter:${finalSelection.selectedTeleprompter.name} (confidence:${(finalSelection.confidence * 100).toFixed(1)}%)`,
+				' Selected teleprompter:${finalSelection.selectedTeleprompter.name} (confidence:' + (finalSelection.confidence * 100).toFixed(1) + '%)',
 			);
 
 			this.emit("teleprompter:selected", {
@@ -334,7 +334,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 			// Fallback to safest option
 			const fallbackSelection = this.createFallbackSelection(task);
 			this.logger.warn(
-				`⚠️ Using fallback selection:${fallbackSelection.selectedTeleprompter.name}`,
+				' Using fallback selection:' + fallbackSelection.selectedTeleprompter.name,
 			);
 
 			return fallbackSelection;
@@ -355,7 +355,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 	):Promise<void> {
 		const task = this.findTaskById(taskId);
 		if (!task) {
-			this.logger.warn(`Task ${taskId} not found for performance recording`);
+			this.logger.warn('Task ' + taskId + ' not found for performance recording');
 			return;
 }
 
@@ -387,7 +387,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 		await this.adaptSelectionParameters(record);
 
 		this.logger.info(
-			`📊 Recorded performance for ${teleprompterName}:accuracy=${actualPerformance.accuracy.toFixed(3)}, success=${actualPerformance.success}`,
+			' Recorded performance for ${teleprompterName}:accuracy=${actualPerformance.accuracy.toFixed(3)}, success=' + actualPerformance.success,
 		);
 
 		this.emit("performance:recorded", { record});
@@ -478,7 +478,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 		this.registerAdditionalVariants();
 
 		this.logger.info(
-			`📋 Registered ${this.availableVariants.size} teleprompter variants`,
+			' Registered ' + this.availableVariants.size + ' teleprompter variants',
 		);
 }
 
@@ -556,14 +556,14 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 }
 
 	private generateTaskDescription(task:OptimizationTask): string {
-		return `
+		return '
 Domain:${task.domain?.type || "general"} (${task.domain?.specificArea || "general"})
 Data:${task.domain?.dataCharacteristics?.size || "medium"} size, ${task.domain?.dataCharacteristics?.quality || "good"} quality, ${task.domain?.dataCharacteristics?.complexity || "moderate"} complexity
 Computational:${task.complexity?.computational || "moderate"} computation, ${task.complexity?.algorithmic || "moderate"} algorithm complexity
 Requirements:${task.requirements?.minimumAccuracy || 0.8} min accuracy, ${task.requirements?.maximumLatency || 5000}ms max latency
 Constraints:${task.constraints?.computationalBudget || "moderate"} budget, ${task.constraints?.timeLimit || 30000}ms time limit
-Description:${task.description || "General optimization task"}
-    `.trim();
+Description:' + task.description || "General optimization task" + '
+    '.trim();
 }
 
 	private async evaluateAllVariants(
@@ -757,7 +757,7 @@ Description:${task.description || "General optimization task"}
 
 		const selectedVariant = this.availableVariants.get(topCandidate[0]);
 		if (!selectedVariant) {
-			throw new Error(`Variant not found:${topCandidate[0]}`);
+			throw new Error('Variant not found:' + topCandidate[0]);
 }
 
 		// Calculate confidence based on score margin and ML recommendation alignment
@@ -855,7 +855,7 @@ Description:${task.description || "General optimization task"}
 					? {
 							variant,
 							score,
-							reasoning:`Alternative with ${(score * 100).toFixed(1)}% evaluation score`,
+							reasoning:'Alternative with ' + (score * 100).toFixed(1) + '% evaluation score',
 }
 					:null;
 })
@@ -954,7 +954,7 @@ Description:${task.description || "General optimization task"}
 		return {
 			selectedTeleprompter:fallbackVariant,
 			confidence:0.5,
-			reasoning:`Fallback selection for task ${task.id} due to analysis failure - using most reliable basic variant with complexity ${task.expectedComplexity}`,
+			reasoning:'Fallback selection for task ${task.id} due to analysis failure - using most reliable basic variant with complexity ' + task.expectedComplexity,
 			alternatives:[],
 			expectedPerformance:fallbackVariant.estimatedPerformance,
 			fallbackOptions:[],
@@ -1041,7 +1041,7 @@ Description:${task.description || "General optimization task"}
 		mlRecommendation:any,
 		score:number,
 	): string {
-		return `Selected ${variant.name} based on optimal fit (score: ${score.toFixed(3)}). ML analysis recommends ${mlRecommendation.recommendedTeleprompter} with ${(mlRecommendation.confidence * 100).toFixed(1)}% confidence. Variant offers ${variant.capabilities.join(", ")} capabilities with ${variant.type} implementation approach.`;
+		return 'Selected ${variant.name} based on optimal fit (score: ${score.toFixed(3)}). ML analysis recommends ${mlRecommendation.recommendedTeleprompter} with ${(mlRecommendation.confidence * 100).toFixed(1)}% confidence. Variant offers ${variant.capabilities.join(", ")} capabilities with ' + variant.type + ' implementation approach.';
 	}
 
 	private generateDecisionFactors(
@@ -1121,7 +1121,7 @@ Description:${task.description || "General optimization task"}
 	private async loadPerformanceHistory():Promise<void> {
 		// Mock loading historical performance data
 		// In production, this would load from persistent storage
-		this.logger.info("📊 Loading performance history (mock data)");
+		this.logger.info(" Loading performance history (mock data)");
 }
 
 	private async updatePerformanceHistory(
@@ -1220,7 +1220,7 @@ Description:${task.description || "General optimization task"}
 			this.selectionHistory.length = 0;
 			this.initialized = false;
 
-			this.logger.info("✅ Autonomous Teleprompter Selector destroyed");
+			this.logger.info(" Autonomous Teleprompter Selector destroyed");
 } catch (error) {
 			this.logger.error(
 				"Failed to destroy Autonomous Teleprompter Selector:",

@@ -197,7 +197,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
    */
   private async initializeComponents(): Promise<void> {
     try {
-      logger.info('🔧 Initializing application components with WebSocket support...');
+      logger.info(' Initializing application components with WebSocket support...');
 
       // Initialize memory management with foundation services
       if (this.configuration.memory?.enableCache !== false) {
@@ -209,7 +209,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
             initialize: () => Promise.resolve(),
             shutdown: () => Promise.resolve(),
           };
-          logger.info('✅ Memory management system initialized');
+          logger.info(' Memory management system initialized');
           this.emit('component:initialized', 'memory');
         } catch (_error) {
           logger.warn('Memory manager initialization failed, continuing...', _error);
@@ -222,11 +222,11 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
           this.workflowEngine = {
             getActiveWorkflowCount: () => 0,
             createDocumentWorkflow: (_path: string) => 
-              Promise.resolve({ workflowId: `workflow-${Date.now()}` }),
+              Promise.resolve({ workflowId: 'workflow-' + Date.now() }),
             initialize: () => Promise.resolve(),
             shutdown: () => Promise.resolve(),
           };
-          logger.info('✅ Workflow engine initialized with real-time support');
+          logger.info(' Workflow engine initialized with real-time support');
           this.emit('component:initialized', 'workflow');
         } catch (_error) {
           logger.warn('Workflow engine initialization failed, continuing...', _error);
@@ -239,11 +239,11 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
           this.documentationSystem = {
             getDocumentCount: () => 0,
             processDocument: (_path: string) =>
-              Promise.resolve({ workflowId: `doc-${Date.now()}` }),
+              Promise.resolve({ workflowId: 'doc-' + Date.now() }),
             initialize: () => Promise.resolve(),
             shutdown: () => Promise.resolve(),
           };
-          logger.info('✅ Documentation system initialized');
+          logger.info(' Documentation system initialized');
           this.emit('component:initialized', 'documentation');
         } catch (_error) {
           logger.warn('Documentation system initialization failed, continuing...', _error);
@@ -256,11 +256,11 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
           this.exportManager = {
             getSupportedFormats: () => ['json', 'yaml', 'xml'],
             exportSystemData: (format: string) =>
-              Promise.resolve({ filename: `export-${Date.now()}.${format}` }),
+              Promise.resolve({ filename: 'export-${Date.now()}.' + format }),
             initialize: () => Promise.resolve(),
             shutdown: () => Promise.resolve(),
           };
-          logger.info('✅ Export manager initialized with streaming support');
+          logger.info(' Export manager initialized with streaming support');
           this.emit('component:initialized', 'export');
         } catch (_error) {
           logger.warn('Export manager initialization failed, continuing...', _error);
@@ -279,7 +279,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
 
           if (this.configuration.workspace?.autoDetect) {
             this.activeWorkspaceId = 'default-workspace';
-            logger.info(`✅ Workspace detected: ${this.activeWorkspaceId}`);
+            logger.info(' Workspace detected: ' + this.activeWorkspaceId);
           }
           this.emit('component:initialized', 'workspace');
         } catch (_error) {
@@ -294,7 +294,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
             start: () => Promise.resolve(),
             shutdown: () => Promise.resolve(),
           };
-          logger.info('✅ Interface management system initialized with WebSocket support');
+          logger.info(' Interface management system initialized with WebSocket support');
           this.emit('component:initialized', 'interface');
         } catch (_error) {
           logger.warn('Interface manager initialization failed, continuing...', _error);
@@ -304,13 +304,13 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       // Start WebSocket heartbeat if enabled
       if (this.configuration.websocket?.enableEventStreaming) {
         this.startHeartbeat();
-        logger.info('✅ WebSocket heartbeat system initialized');
+        logger.info(' WebSocket heartbeat system initialized');
       }
 
-      logger.info('✅ All application components initialized successfully');
+      logger.info(' All application components initialized successfully');
 
     } catch (_error) {
-      logger.error('❌ Failed to initialize application components:', _error);
+      logger.error(' Failed to initialize application components:', _error);
       throw _error;
     }
   }
@@ -336,7 +336,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
 
       // Handle status changes with broadcasting
       this.on(STATUS_CHANGED_EVENT, (status) => {
-        logger.info(`Application status changed to: ${status}`);
+        logger.info('Application status changed to: ' + status);
         this.broadcastEvent('system:status', { status });
       });
 
@@ -344,7 +344,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       this.on('websocket:connected', (...args: unknown[]) => { 
         const socketId = args[0] as string;
         this.activeConnections++;
-        logger.debug(`WebSocket client connected: ${socketId} (total: ${this.activeConnections})`);
+        logger.debug('WebSocket client connected: ${socketId} (total: ' + this.activeConnections + ')');
         this.broadcastEvent('websocket:client:connected', { 
           socketId, 
           totalConnections: this.activeConnections 
@@ -354,7 +354,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       this.on('websocket:disconnected', (...args: unknown[]) => { 
         const socketId = args[0] as string;
         this.activeConnections = Math.max(0, this.activeConnections - 1);
-        logger.debug(`WebSocket client disconnected: ${socketId} (total: ${this.activeConnections})`);
+        logger.debug('WebSocket client disconnected: ${socketId} (total: ' + this.activeConnections + ')');
         this.broadcastEvent('websocket:client:disconnected', { 
           socketId, 
           totalConnections: this.activeConnections 
@@ -364,16 +364,16 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       // Component lifecycle events
       this.on('component:initialized', (...args: unknown[]) => { 
         const componentName = args[0] as string;
-        logger.info(`Component initialized: ${componentName}`);
+        logger.info('Component initialized: ' + componentName);
         this.broadcastEvent('component:status', { 
           component: componentName, 
           status: 'initialized' 
         });
       });
 
-      logger.info('✅ Application event handlers configured with WebSocket support');
+      logger.info(' Application event handlers configured with WebSocket support');
     } catch (_error) {
-      logger.error('❌ Failed to setup event handlers:', _error);
+      logger.error(' Failed to setup event handlers:', _error);
       throw _error;
     }
   }
@@ -387,7 +387,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       return;
     }
 
-    logger.info('🚀 Initializing Application Coordinator with WebSocket support');
+    logger.info(' Initializing Application Coordinator with WebSocket support');
 
     try {
       this.status = 'initializing';
@@ -405,11 +405,11 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       });
       this.emit(STATUS_CHANGED_EVENT, this.status);
 
-      logger.info('✅ Application Coordinator ready with WebSocket support');
+      logger.info(' Application Coordinator ready with WebSocket support');
     } catch (_error) {
       this.status = '_error';
       this.emit(STATUS_CHANGED_EVENT, this.status);
-      logger.error('❌ Failed to initialize Application Coordinator:', _error);
+      logger.error(' Failed to initialize Application Coordinator:', _error);
       throw _error;
     }
   }
@@ -424,7 +424,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
     if (this.interfaceManager && this.configuration.interface?.enableWebSocket) {
       try {
         await (this.interfaceManager as any).start();
-        logger.info('✅ Interface launched with WebSocket support');
+        logger.info(' Interface launched with WebSocket support');
       } catch (_error) {
         logger.warn('Interface launch failed, continuing...', _error);
       }
@@ -437,10 +437,10 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
         timestamp: new Date().toISOString(),
         configuration: this.configuration,
       });
-      logger.info('✅ WebSocket broadcasting enabled');
+      logger.info(' WebSocket broadcasting enabled');
     }
     
-    logger.info('✅ Application launched successfully');
+    logger.info(' Application launched successfully');
   }
 
   /**
@@ -504,7 +504,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
     await this.ensureInitialized();
     
     try {
-      logger.info(`Processing document: ${documentPath}`);
+      logger.info('Processing document: ' + documentPath);
       
       // Broadcast processing start event
       this.broadcastEvent('document:processing:started', {
@@ -551,7 +551,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       };
     } catch (_error) {
       const errorMessage = (_error as Error).message;
-      logger.error(`Failed to process document ${documentPath}:`, _error);
+      logger.error('Failed to process document ' + documentPath + ':', _error);
       
       this.broadcastEvent('document:processing:_error', {
         path: documentPath,
@@ -578,7 +578,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
     await this.ensureInitialized();
     
     try {
-      logger.info(`Exporting system data to ${format}`);
+      logger.info('Exporting system data to ' + format);
       
       if (!this.exportManager) {
         throw new Error('Export manager not available');
@@ -605,7 +605,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       };
     } catch (_error) {
       const errorMessage = (_error as Error).message;
-      logger.error(`Failed to export system data to ${format}:`, _error);
+      logger.error('Failed to export system data to ' + format + ':', _error);
       
       this.broadcastEvent('export:_error', {
         format,
@@ -631,9 +631,9 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       .map(([name, info]) => {
         const details = Object.entries(info)
           .filter(([key]) => key !== 'status')
-          .map(([key, value]) => `    ${key}: ${value}`)
+          .map(([key, value]) => '    ${key}: ' + value)
           .join('\n');
-        return `- **${name}**: ${info.status}${details ? `\n${  details}` : ''}`;
+        return '- **${name}**: ${info.status}' + details ? '\n' +   details : '';
       })
       .join('\n');
 
@@ -643,7 +643,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       reportSize: componentDetails.length,
     });
 
-    return `# Claude Code Zen - System Report (WebSocket Enabled)
+    return '# Claude Code Zen - System Report (WebSocket Enabled)
 Generated: ${new Date().toISOString()}
 Version: ${status.version}
 Status: ${status.status}
@@ -662,21 +662,21 @@ ${componentDetails}
 - WebSocket Broadcasting: ${this.broadcastingEnabled ? 'enabled' : 'disabled'}
 
 ## Active Workspace
-${this.activeWorkspaceId ? `ID: ${this.activeWorkspaceId}` : 'No workspace detected'}
+' + this.activeWorkspaceId ? 'ID: ' + this.activeWorkspaceId : 'No workspace detected' + '
 
 ## WebSocket Status
-- Connections: ${this.activeConnections}
-- Broadcasting: ${this.broadcastingEnabled ? 'active' : 'inactive'}
-- Event Streaming: ${this.configuration.websocket?.enableEventStreaming ? 'active' : 'inactive'}
+- Connections: ' + this.activeConnections + '
+- Broadcasting: ' + this.broadcastingEnabled ? 'active' : 'inactive' + '
+- Event Streaming: ' + this.configuration.websocket?.enableEventStreaming ? 'active' : 'inactive' + '
 
-This report is generated by the WebSocket-enabled Application Coordinator.`;
+This report is generated by the WebSocket-enabled Application Coordinator.';
   }
 
   /**
    * Graceful shutdown with WebSocket cleanup
    */
   async shutdown(): Promise<void> {
-    logger.info('🔄 Shutting down Application Coordinator...');
+    logger.info(' Shutting down Application Coordinator...');
     this.status = 'shutdown';
     this.emit(STATUS_CHANGED_EVENT, this.status);
 
@@ -728,9 +728,9 @@ This report is generated by the WebSocket-enabled Application Coordinator.`;
         timestamp: new Date().toISOString(),
       });
 
-      logger.info('✅ Application Coordinator shutdown complete');
+      logger.info(' Application Coordinator shutdown complete');
     } catch (_error) {
-      logger.error('❌ Error during shutdown:', _error);
+      logger.error(' Error during shutdown:', _error);
       throw _error;
     }
   }

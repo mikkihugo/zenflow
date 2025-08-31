@@ -7,11 +7,11 @@
 // Simple browser logger for web dashboard
 const logger = {
   info: (msg: string, ...args: unknown[]) =>
-    logger.info(`[api-client] ${msg}`, ...args),
+    logger.info('[api-client] ' + msg, ...args),
   warn: (msg: string, ...args: unknown[]) =>
-    logger.warn(`[api-client] ${msg}`, ...args),
+    logger.warn('[api-client] ' + msg, ...args),
   error: (msg: string, ...args: unknown[]) =>
-    logger.error(`[api-client] ${msg}`, ...args),
+    logger.error('[api-client] ' + msg, ...args),
 };
 const API_BASE_URL = 'http://localhost:3000/api';
 
@@ -99,10 +99,10 @@ class ApiClient {
     options: Record<string, unknown> = {}
   ): Promise<T> {
     // Add project context as query parameter if available
-    let url = `${this.baseUrl}${endpoint}`;
+    let url = '${this.baseUrl}' + endpoint;
     if (this.currentProjectId) {
       const separator = endpoint.includes('?') ? '&' : '?';
-      url += `${separator}projectId=${encodeURIComponent(this.currentProjectId)}`;
+      url += '${separator}projectId=' + encodeURIComponent(this.currentProjectId);
     }
 
     const defaultOptions: Record<string, unknown> = {
@@ -119,7 +119,7 @@ class ApiClient {
       const response = await fetch(url, { ...defaultOptions, ...options });
 
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}:${response.statusText}`);
+        throw new Error('HTTP ${response.status}:' + response.statusText);
       }
 
       return await response.json();
@@ -146,11 +146,11 @@ class ApiClient {
   }
 
   async getAgent(agentId: string): Promise<Agent> {
-    return await this.request<Agent>(`/v1/coordination/agents/${agentId}`);
+    return await this.request<Agent>('/v1/coordination/agents/' + agentId);
   }
 
   async removeAgent(agentId: string): Promise<void> {
-    await this.request<void>(`/v1/coordination/agents/${agentId}`, {
+    await this.request<void>('/v1/coordination/agents/' + agentId, {
       method: 'DELETE',
     });
   }
@@ -169,7 +169,7 @@ class ApiClient {
   }
 
   async getTask(taskId: string): Promise<Task> {
-    return await this.request<Task>(`/v1/coordination/tasks/${taskId}`);
+    return await this.request<Task>('/v1/coordination/tasks/' + taskId);
   }
 
   async getSwarmConfig(): Promise<SwarmConfig> {
@@ -199,9 +199,9 @@ class ApiClient {
   }
 
   async getMetrics(timeRange?: string): Promise<PerformanceMetrics> {
-    const params = timeRange ? `?timeRange=${timeRange}` : '';
+    const params = timeRange ? '?timeRange=' + timeRange : '';
     return await this.request<PerformanceMetrics>(
-      `/v1/coordination/metrics${params}`
+      '/v1/coordination/metrics' + params
     );
   }
 
@@ -220,7 +220,7 @@ class ApiClient {
   }
 
   async getMemoryStats(storeId: string): Promise<Record<string, unknown>> {
-    return await this.request(`/v1/memory/stores/${storeId}/stats`);
+    return await this.request('/v1/memory/stores/' + storeId + '/stats');
   }
 
   // ===== DATABASE API =====
@@ -296,7 +296,7 @@ class ApiClient {
   ): Promise<Record<string, unknown>> {
     const params = new URLSearchParams({ limit: limit.toString() });
     if (pattern) params.append('pattern', pattern);
-    return await this.request(`/v1/memory/stores/${storeId}/keys?${params}`);
+    return await this.request('/v1/memory/stores/${storeId}/keys?' + params);
   }
 
   async getMemoryValue(
@@ -304,7 +304,7 @@ class ApiClient {
     key: string
   ): Promise<Record<string, unknown>> {
     return await this.request(
-      `/v1/memory/stores/${storeId}/keys/${encodeURIComponent(key)}`
+      '/v1/memory/stores/${storeId}/keys/' + encodeURIComponent(key)
     );
   }
 
@@ -315,7 +315,7 @@ class ApiClient {
     ttl?: number
   ): Promise<Record<string, unknown>> {
     return await this.request(
-      `/v1/memory/stores/${storeId}/keys/${encodeURIComponent(key)}`,
+      '/v1/memory/stores/${storeId}/keys/' + encodeURIComponent(key),
       {
         method: 'PUT',
         body: JSON.stringify({ value, ttl }),
@@ -325,7 +325,7 @@ class ApiClient {
 
   async deleteMemoryKey(storeId: string, key: string): Promise<void> {
     await this.request(
-      `/v1/memory/stores/${storeId}/keys/${encodeURIComponent(key)}`,
+      '/v1/memory/stores/${storeId}/keys/' + encodeURIComponent(key),
       {
         method: 'DELETE',
       }
@@ -336,7 +336,7 @@ class ApiClient {
     storeId: string,
     keys: string[]
   ): Promise<Record<string, unknown>> {
-    return await this.request(`/v1/memory/stores/${storeId}/batch/get`, {
+    return await this.request('/v1/memory/stores/' + storeId + '/batch/get', {
       method: 'POST',
       body: JSON.stringify({ keys }),
     });
@@ -346,7 +346,7 @@ class ApiClient {
     storeId: string,
     items: Array<{ key: string; value: Record<string, unknown>; ttl?: number }>
   ): Promise<Record<string, unknown>> {
-    return await this.request(`/v1/memory/stores/${storeId}/batch/set`, {
+    return await this.request('/v1/memory/stores/' + storeId + '/batch/set', {
       method: 'POST',
       body: JSON.stringify({ items }),
     });
@@ -356,7 +356,7 @@ class ApiClient {
     storeId: string,
     type = 'full'
   ): Promise<Record<string, unknown>> {
-    return await this.request(`/v1/memory/stores/${storeId}/sync`, {
+    return await this.request('/v1/memory/stores/' + storeId + '/sync', {
       method: 'POST',
       body: JSON.stringify({ type }),
     });
@@ -378,9 +378,9 @@ class ApiClient {
     agentId: string,
     status?: string
   ): Promise<Record<string, unknown>> {
-    const params = status ? `?status=${encodeURIComponent(status)}` : '';
+    const params = status ? '?status=' + encodeURIComponent(status) : '';
     return await this.request(
-      `/v1/coordination/agents/${agentId}/tasks${params}`
+      '/v1/coordination/agents/${agentId}/tasks' + params
     );
   }
 
@@ -388,7 +388,7 @@ class ApiClient {
     taskId: string,
     agentId: string
   ): Promise<Record<string, unknown>> {
-    return await this.request(`/v1/coordination/tasks/${taskId}/assign`, {
+    return await this.request('/v1/coordination/tasks/' + taskId + '/assign', {
       method: 'POST',
       body: JSON.stringify({ agentId }),
     });
@@ -398,7 +398,7 @@ class ApiClient {
     agentId: string,
     heartbeatData: { workload?: Record<string, unknown>; status?: string }
   ): Promise<Record<string, unknown>> {
-    return await this.request(`/v1/coordination/agents/${agentId}/heartbeat`, {
+    return await this.request('/v1/coordination/agents/' + agentId + '/heartbeat', {
       method: 'POST',
       body: JSON.stringify(heartbeatData),
     });
@@ -425,7 +425,7 @@ class ApiClient {
       capabilities?: string[];
     }
   ): Promise<Record<string, unknown>> {
-    return await this.request(`/v1/swarm/${swarmId}/agents`, {
+    return await this.request('/v1/swarm/' + swarmId + '/agents', {
       method: 'POST',
       body: JSON.stringify(config),
     });
@@ -445,13 +445,13 @@ class ApiClient {
 
   async getSwarmStatus(swarmId?: string): Promise<Record<string, unknown>> {
     const endpoint = swarmId
-      ? `/v1/swarm/${swarmId}/status`
+      ? '/v1/swarm/' + swarmId + '/status'
       : '/v1/swarm/status';
     return await this.request(endpoint);
   }
 
   async getSwarmTasks(taskId?: string): Promise<Record<string, unknown>> {
-    const endpoint = taskId ? `/v1/swarm/tasks/${taskId}` : '/v1/swarm/tasks';
+    const endpoint = taskId ? '/v1/swarm/tasks/' + taskId : '/v1/swarm/tasks';
     return await this.request(endpoint);
   }
 
@@ -479,7 +479,7 @@ class ApiClient {
   }
 
   async getProject(projectId: string): Promise<Project> {
-    return await this.request<Project>(`/v1/projects/${projectId}`);
+    return await this.request<Project>('/v1/projects/' + projectId);
   }
 
   async switchProject(
@@ -493,7 +493,7 @@ class ApiClient {
   }
 
   async switchToProject(projectId: string): Promise<Record<string, unknown>> {
-    return await this.request(`/v1/projects/${projectId}/switch`, {
+    return await this.request('/v1/projects/' + projectId + '/switch', {
       method: 'POST',
     });
   }
@@ -518,11 +518,11 @@ class ApiClient {
   // ===== PROJECT MODE MANAGEMENT API =====
 
   async getProjectModes(projectId: string): Promise<Record<string, unknown>> {
-    return await this.request(`/v1/projects/${projectId}/modes`);
+    return await this.request('/v1/projects/' + projectId + '/modes');
   }
 
   async getModeCapabilities(mode: string): Promise<Record<string, unknown>> {
-    return await this.request(`/v1/projects/modes/${mode}/capabilities`);
+    return await this.request('/v1/projects/modes/' + mode + '/capabilities');
   }
 
   async upgradeProjectMode(
@@ -534,7 +534,7 @@ class ApiClient {
       validateAfterMigration?: boolean;
     }
   ): Promise<Record<string, unknown>> {
-    return await this.request(`/v1/projects/${projectId}/modes/upgrade`, {
+    return await this.request('/v1/projects/' + projectId + '/modes/upgrade', {
       method: 'POST',
       body: JSON.stringify(upgradeData),
     });
@@ -543,7 +543,7 @@ class ApiClient {
   async getProjectUpgradePaths(
     projectId: string
   ): Promise<Record<string, unknown>> {
-    return await this.request(`/v1/projects/${projectId}/modes/upgrade-paths`);
+    return await this.request('/v1/projects/' + projectId + '/modes/upgrade-paths');
   }
 
   async getSchemaMigrationPath(
@@ -551,7 +551,7 @@ class ApiClient {
     toVersion: string
   ): Promise<Record<string, unknown>> {
     const params = new URLSearchParams({ fromVersion, toVersion });
-    return await this.request(`/v1/projects/schema/migration-path?${params}`);
+    return await this.request('/v1/projects/schema/migration-path?' + params);
   }
 
   async getAllProjectModes(): Promise<Record<string, unknown>> {
@@ -596,7 +596,7 @@ class ApiClient {
 
   async getFacadeHealth(facadeName?: string): Promise<Record<string, unknown>> {
     const endpoint = facadeName
-      ? `/v1/facades/${facadeName}/health`
+      ? '/v1/facades/' + facadeName + '/health'
       : '/v1/facades/health';
     return await this.request(endpoint);
   }
@@ -604,20 +604,20 @@ class ApiClient {
   async getFacadePackages(
     facadeName: string
   ): Promise<Record<string, unknown>> {
-    return await this.request(`/v1/facades/${facadeName}/packages`);
+    return await this.request('/v1/facades/' + facadeName + '/packages');
   }
 
   async getFacadeServices(
     facadeName: string
   ): Promise<Record<string, unknown>> {
-    return await this.request(`/v1/facades/${facadeName}/services`);
+    return await this.request('/v1/facades/' + facadeName + '/services');
   }
 
   async refreshFacadeStatus(
     facadeName?: string
   ): Promise<Record<string, unknown>> {
     const endpoint = facadeName
-      ? `/v1/facades/${facadeName}/refresh`
+      ? '/v1/facades/' + facadeName + '/refresh'
       : '/v1/facades/refresh';
     return await this.request(endpoint, { method: 'POST' });
   }
@@ -626,7 +626,7 @@ class ApiClient {
     packageName: string
   ): Promise<Record<string, unknown>> {
     return await this.request(
-      `/v1/facades/packages/${encodeURIComponent(packageName)}/status`
+      '/v1/facades/packages/' + encodeURIComponent(packageName) + '/status'
     );
   }
 
@@ -634,7 +634,7 @@ class ApiClient {
     serviceName: string
   ): Promise<Record<string, unknown>> {
     return await this.request(
-      `/v1/facades/services/${encodeURIComponent(serviceName)}/status`
+      '/v1/facades/services/' + encodeURIComponent(serviceName) + '/status'
     );
   }
 
@@ -646,8 +646,8 @@ class ApiClient {
     facadeName: string,
     timeRange?: string
   ): Promise<Record<string, unknown>> {
-    const params = timeRange ? `?timeRange=${timeRange}` : '';
-    return await this.request(`/v1/facades/${facadeName}/history${params}`);
+    const params = timeRange ? '?timeRange=' + timeRange : '';
+    return await this.request('/v1/facades/${facadeName}/history' + params);
   }
 
   async getSystemDependencies(): Promise<Record<string, unknown>> {
@@ -682,21 +682,21 @@ class ApiClient {
   }
 
   async getTaskMasterTask(taskId: string): Promise<Record<string, unknown>> {
-    return await this.request(`/v1/taskmaster/tasks/${taskId}`);
+    return await this.request('/v1/taskmaster/tasks/' + taskId);
   }
 
   async moveSAFeTask(
     taskId: string,
     toState: string
   ): Promise<Record<string, unknown>> {
-    return await this.request(`/v1/taskmaster/tasks/${taskId}/move`, {
+    return await this.request('/v1/taskmaster/tasks/' + taskId + '/move', {
       method: 'PUT',
       body: JSON.stringify({ toState }),
     });
   }
 
   async getTasksByState(state: string): Promise<Record<string, unknown>> {
-    return await this.request(`/v1/taskmaster/tasks/state/${state}`);
+    return await this.request('/v1/taskmaster/tasks/state/' + state);
   }
 
   async createPIPlanningEvent(eventData: {

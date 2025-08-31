@@ -257,7 +257,7 @@ export class BootstrapML extends Teleprompter {
       this.logger.info('ML components initialized successfully');
     } catch (error) {
       this.logger.error('Failed to initialize ML components:', error);
-      throw new Error(`BootstrapML initialization failed:${error.message}`);
+      throw new Error('BootstrapML initialization failed:' + error.message);
     }
   }
 
@@ -318,7 +318,7 @@ export class BootstrapML extends Teleprompter {
 
       while (round < this.config.maxRounds) {
         this.logger.info(
-          `Bootstrap round ${round + 1}/${this.config.maxRounds}`
+          'Bootstrap round ${round + 1}/' + this.config.maxRounds
         );
 
         // Intelligent example selection
@@ -413,7 +413,7 @@ export class BootstrapML extends Teleprompter {
       this.logger.info('Bootstrap-ML compilation completed', {
         finalScore: bestScore,
         totalRounds: round,
-        executionTime: `${executionTime.toFixed(2)}ms`,
+        executionTime: executionTime.toFixed(2) + 'ms',
       });
 
       this.emit('compilationCompleted', result);
@@ -472,7 +472,7 @@ export class BootstrapML extends Teleprompter {
       labels: new Int32Array(embeddings.length).fill(0), // Unsupervised
       featureNames: Array.from(
         { length: this.config.embeddingDimension },
-        (_, i) => `dim_${i}`
+        (_, i) => 'dim_' + i
       ),
       size: embeddings.length,
     };
@@ -685,7 +685,7 @@ export class BootstrapML extends Teleprompter {
     // Create embedding based on word hashes and frequencies
     for (const [word, freq] of wordFreq.entries()) {
       const hash1 = this.simpleHash(word) % dimension;
-      const hash2 = this.simpleHash(`${word}_alt`) % dimension;
+      const hash2 = this.simpleHash(word + '_alt') % dimension;
 
       // Use multiple hash functions for better distribution
       embedding[hash1] += freq * 0.1;
@@ -729,7 +729,7 @@ export class BootstrapML extends Teleprompter {
   private getBigrams(words: string[]): string[] {
     const bigrams: string[] = [];
     for (let i = 0; i < words.length - 1; i++) {
-      bigrams.push(`${words[i]}_${words[i + 1]}`);
+      bigrams.push('${words[i]}_' + words[i + 1]);
     }
     return bigrams;
   }

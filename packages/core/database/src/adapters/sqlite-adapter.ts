@@ -115,7 +115,7 @@ export class SQLiteAdapter implements DatabaseConnection {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new ConnectionError(
-        `Failed to connect to SQLite database:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to connect to SQLite database:' + error instanceof Error ? error.message : String(error),
         correlationId,
         error instanceof Error ? error : undefined
       );
@@ -147,7 +147,7 @@ export class SQLiteAdapter implements DatabaseConnection {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new ConnectionError(
-        `Failed to disconnect from SQLite:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to disconnect from SQLite:' + error instanceof Error ? error.message : String(error),
         correlationId,
         error instanceof Error ? error : undefined
       );
@@ -210,7 +210,7 @@ export class SQLiteAdapter implements DatabaseConnection {
       }
 
       throw new QueryError(
-        `Query execution failed:${error instanceof Error ? error.message : String(error)}`,
+        'Query execution failed:' + error instanceof Error ? error.message : String(error),
         createQueryErrorOptions(sql, params, correlationId, error) as any
       );
     } finally {
@@ -282,7 +282,7 @@ export class SQLiteAdapter implements DatabaseConnection {
       }
 
       throw new TransactionError(
-        `Transaction failed:${error instanceof Error ? error.message : String(error)}`,
+        'Transaction failed:' + error instanceof Error ? error.message : String(error),
         correlationId,
         error instanceof Error ? error : undefined
       );
@@ -498,7 +498,7 @@ export class SQLiteAdapter implements DatabaseConnection {
   }
 
   async explain(sql: string, params?: QueryParams): Promise<QueryResult> {
-    return await this.query(`EXPLAIN QUERY PLAN ${sql}`, params);
+    return await this.query('EXPLAIN QUERY PLAN ' + sql, params);
   }
 
   async vacuum(): Promise<void> {
@@ -662,7 +662,7 @@ export class SQLiteAdapter implements DatabaseConnection {
     }
 
     throw new ConnectionError(
-      `Failed to acquire connection within ${timeout}ms`,
+      'Failed to acquire connection within ' + timeout + 'ms',
       correlationId
     );
   }
@@ -712,7 +712,7 @@ export class SQLiteAdapter implements DatabaseConnection {
     }
 
     throw new QueryError(
-      `Operation failed after ${retryPolicy.maxRetries} retries:${lastError?.message}`,
+      'Operation failed after ${retryPolicy.maxRetries} retries:' + lastError?.message,
       createQueryErrorOptions(sql || '', params, correlationId, lastError) as any
     );
   }
@@ -771,7 +771,7 @@ export class SQLiteAdapter implements DatabaseConnection {
         notnull: number;
         dflt_value: unknown;
         pk: number;
-      }>(`PRAGMA table_info(${tableName})`);
+      }>('PRAGMA table_info(' + tableName + ')');
 
       const columns: ColumnSchema[] = pragmaResult.rows.map((row) => ({
         name: row.name,
@@ -790,13 +790,13 @@ export class SQLiteAdapter implements DatabaseConnection {
 
       // Get indexes
       const indexResult = await this.query<{ name: string }>(
-        `PRAGMA index_list(${tableName})`
+        'PRAGMA index_list(' + tableName + ')'
       );
       const indexes: IndexSchema[] = [];
 
       for (const idx of indexResult.rows) {
         const indexInfo = await this.query<{ name: string }>(
-          `PRAGMA index_info(${idx.name})`
+          'PRAGMA index_info(' + idx.name + ')'
         );
         indexes.push({
           name: idx.name,
@@ -836,13 +836,13 @@ export class SQLiteAdapter implements DatabaseConnection {
   }
 
   private async createMigrationsTable(): Promise<void> {
-    await this.query(`
+    await this.query('
       CREATE TABLE IF NOT EXISTS _migrations (
         version TEXT PRIMARY KEY,
         name TEXT NOT NULL,
         applied_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
-    `);
+    ');
   }
 
   private async recordMigration(version: string, name: string): Promise<void> {
@@ -915,7 +915,7 @@ export class SQLiteAdapter implements DatabaseConnection {
   }
 
   private generateCorrelationId(): string {
-    return `sqlite-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return 'sqlite-${Date.now()}-' + Math.random().toString(36).substr(2, 9);
   }
 
   private sleep(ms: number): Promise<void> {
@@ -977,7 +977,7 @@ class SQLiteTransactionConnection implements TransactionConnection {
         } catch (error) {
           reject(
             new QueryError(
-              `Transaction query failed:${error instanceof Error ? error.message : String(error)}`,
+              'Transaction query failed:' + error instanceof Error ? error.message : String(error),
               createQueryErrorOptions(sql, params, this.correlationId, error) as any
             )
           );
@@ -1020,7 +1020,7 @@ class SQLiteTransactionConnection implements TransactionConnection {
     return await new Promise<void>((resolve, reject) => {
       setImmediate(() => {
         try {
-          this.db.exec(`SAVEPOINT ${name}`);
+          this.db.exec('SAVEPOINT ' + name);
           resolve();
         } catch (error) {
           reject(error);
@@ -1033,7 +1033,7 @@ class SQLiteTransactionConnection implements TransactionConnection {
     return await new Promise<void>((resolve, reject) => {
       setImmediate(() => {
         try {
-          this.db.exec(`RELEASE SAVEPOINT ${name}`);
+          this.db.exec('RELEASE SAVEPOINT ' + name);
           resolve();
         } catch (error) {
           reject(error);
@@ -1046,7 +1046,7 @@ class SQLiteTransactionConnection implements TransactionConnection {
     return await new Promise<void>((resolve, reject) => {
       setImmediate(() => {
         try {
-          this.db.exec(`ROLLBACK TO SAVEPOINT ${name}`);
+          this.db.exec('ROLLBACK TO SAVEPOINT ' + name);
           resolve();
         } catch (error) {
           reject(error);

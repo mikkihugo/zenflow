@@ -1,7 +1,7 @@
 /**
  * @fileoverview Foundation Package - Minimal Tree-Shakable Entry Point
  *
- * **🌳 TREE-SHAKING OPTIMIZED ENTRY POINT**
+ * ** TREE-SHAKING OPTIMIZED ENTRY POINT**
  *
  * This is the minimal entry point that imports only essential foundation utilities.
  * For better tree-shaking and smaller bundles, import from specific entry points:
@@ -83,7 +83,7 @@ export { dateFromTimestamp, formatTimestamp, isoStringFromTimestamp, now, parseI
 // TREE-SHAKING GUIDANCE COMMENTS
 // =============================================================================
 /*
-🌳 TREE-SHAKING OPTIMIZATION GUIDE:
+ TREE-SHAKING OPTIMIZATION GUIDE:
 
 For smaller bundles, import from specific entry points:
 

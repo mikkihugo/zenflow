@@ -102,7 +102,7 @@ export interface TrialLog {
  * Multi-stage Instruction and Prefix Optimization using Bayesian optimization.
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * // Basic usage with auto mode (recommended)
  * const miprov2 = new MIPROv2({
  *   metric:exactMatch,
@@ -173,7 +173,7 @@ export interface TrialLog {
  *} catch (error) {
  *   logger.error('Optimization failed: ', error.message);
 ' *}
- * ```
+ * `
  */
 export class MIPROv2 extends Teleprompter {
   private config: Required<MIPROv2Config>;
@@ -189,7 +189,7 @@ export class MIPROv2 extends Teleprompter {
     const allowedModes = new Set([null, 'light', 'medium', 'heavy']);
     if (!allowedModes.has(config.auto || null)) {
       throw new Error(
-        `Invalid value for auto:${config.auto}. Must be one of ${Array.from(allowedModes)}.`
+        'Invalid value for auto:${config.auto}. Must be one of ' + Array.from(allowedModes) + '.'
       );
     }
 
@@ -292,7 +292,7 @@ export class MIPROv2 extends Teleprompter {
       num_trials === null
     ) {
       throw new Error(
-        `If auto is None, num_trials must also be provided. Given num_candidates=${this.config.num_candidates}, we'd recommend setting num_trials to ~${this.setNumTrialsFromNumCandidates(student, zeroshot_opt, this.config.num_candidates)}.`
+        'If auto is None, num_trials must also be provided. Given num_candidates=${this.config.num_candidates}, we'd recommend setting num_trials to ~' + this.setNumTrialsFromNumCandidates(student, zeroshot_opt, this.config.num_candidates) + '.'
       );
     }
 
@@ -317,13 +317,13 @@ export class MIPROv2 extends Teleprompter {
     if (minibatch && minibatch_size > finalValset.length) {
       if (strict_minibatch_validation) {
         throw new Error(
-          `Minibatch size cannot exceed the size of the valset. Got minibatch_size=${minibatch_size}, valset size=${finalValset.length}.`
+          'Minibatch size cannot exceed the size of the valset. Got minibatch_size=${minibatch_size}, valset size=' + finalValset.length + '.'
         );
       } else {
         adjustedMinibatchSize = Math.max(1, finalValset.length);
         if (this.config.verbose) {
           logger.info(
-            `Adjusting minibatch_size from ${minibatch_size} to ${adjustedMinibatchSize} to fit validation set size of ${finalValset.length}`
+            'Adjusting minibatch_size from ${minibatch_size} to ${adjustedMinibatchSize} to fit validation set size of ' + finalValset.length
           );
         }
       }
@@ -332,7 +332,7 @@ export class MIPROv2 extends Teleprompter {
     // For now, return the optimized program (implementation would continue with full Stanford DSPy logic)
     logger.info('\n==> MIPROv2 OPTIMIZATION COMPLETE <==');
     logger.info(
-      `Optimized program with ${finalTrainset.length} training examples and ${finalValset.length} validation examples`
+      'Optimized program with ${finalTrainset.length} training examples and ' + finalValset.length + ' validation examples'
     );
 
     return program;

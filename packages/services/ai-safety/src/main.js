@@ -13,7 +13,7 @@
  * - Dependency injection with TSyringe
  * - Structured validation and type safety
  *
- * ENHANCEMENT: Basic → Comprehensive foundation integration
+ * ENHANCEMENT: Basic  Comprehensive foundation integration
  * PATTERN: Matches memory, knowledge, event-system, teamwork, brain packages
  *
  * @example Enterprise usage with Result pattern
@@ -92,7 +92,7 @@ export async function initializeAISafety() {
  */
 export async function emergencySafetyShutdown() {
     try {
-        logger.info('🛑 ENTERPRISE EMERGENCY SAFETY SHUTDOWN INITIATED');
+        logger.info(' ENTERPRISE EMERGENCY SAFETY SHUTDOWN INITIATED');
         // Enhanced safety logging with error handling capabilities
         const safetyResult = { success: true, message: 'Safety shutdown initiated' };
         logger.info('Safety result: ', safetyResult);
@@ -104,7 +104,7 @@ export async function emergencySafetyShutdown() {
             '};
             // This would coordinate with all safety systems
             // For now, return success - full implementation would coordinate shutdown
-            logger.info('🚨 Emergency safety protocols activated');
+            logger.info(' Emergency safety protocols activated');
             return { success: true };
         }
         try { }

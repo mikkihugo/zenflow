@@ -155,11 +155,11 @@ export class SemanticClassifier extends TypedEventBase {
 };
 
       this.emit('classification_complete', classification);
-      logger.info(`Document classified as:$documentType(confidence: ${confidence.toFixed(2)})`);`
+      logger.info('Document classified as:$documentType(confidence: ' + confidence.toFixed(2) + ')');'
 
       return classification;
 } catch (error) {
-      logger.error('Error during document classification:', error);'  throw new Error(`Semantic classification failed:$error`);`
+      logger.error('Error during document classification:', error);'  throw new Error('Semantic classification failed:$error');'
 }
 }
 
@@ -192,7 +192,7 @@ export class SemanticClassifier extends TypedEventBase {
         maxPossibleScore += weight;
         
         // Count occurrences with context awareness
-        const regex = new RegExp(`\\b${term}\\b`, 'gi');'    const matches = content.match(regex);
+        const regex = new RegExp('\\b' + term + '\\b', 'gi');'    const matches = content.match(regex);
         const count = matches ? matches.length:0;
         
         if (count > 0) {
@@ -217,7 +217,7 @@ export class SemanticClassifier extends TypedEventBase {
     
     // Apply confidence threshold
     if (topScore < this.config.confidenceThreshold) {
-      logger.warn(`Low confidence classification:${topCategory} (${topScore.toFixed(2)})`);`
+      logger.warn('Low confidence classification:${topCategory} (' + topScore.toFixed(2) + ')');`
 }
 
     // Map categories to document types

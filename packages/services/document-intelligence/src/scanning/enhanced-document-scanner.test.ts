@@ -41,13 +41,13 @@ describe('EnhancedDocumentScanner', () => {
 
   describe('Pattern Detection', () => {
     it('should detect TODO comments in code', async () => {
-      const testCode = `
+      const testCode = '
         // TODO: Implement this function
         function myFunction() {
           /* TODO: Add proper implementation */
           return null;
         }
-      `;
+      ';
       
       // Create test file
       await writeFile(join(testDir, 'test.ts'), testCode);
@@ -60,13 +60,13 @@ describe('EnhancedDocumentScanner', () => {
     });
 
     it('should detect FIXME comments in code', async () => {
-      const testCode = `
+      const testCode = '
         // FIXME: This has a bug
         function buggyFunction() {
           /* FIXME: Handle edge cases */
           return undefined;
         }
-      `;
+      ';
       
       // Create test file
       await writeFile(join(testDir, 'test.ts'), testCode);
@@ -79,12 +79,12 @@ describe('EnhancedDocumentScanner', () => {
     });
 
     it('should handle various comment formats', async () => {
-      const testCode = `
+      const testCode = '
         // TODO: Line comment todo
         /* TODO: Block comment todo */
         // FIXME: Line comment fixme
         /* FIXME: Block comment fixme */
-      `;
+      ';
       
       // Create test file
       await writeFile(join(testDir, 'test.ts'), testCode);

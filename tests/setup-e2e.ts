@@ -128,7 +128,7 @@ async function buildProject() {
 
     buildProcess.on('close', (code) => {
       if (code === 0) resolve();
-      else reject(new Error(`Build failed with code ${code}`));
+      else reject(new Error('Build failed with code ' + code));
     });
 
     setTimeout(() => {
@@ -158,20 +158,20 @@ async function startService(name: string, command: string[]) {
     });
 
     childProcess.stderr?.on('data', (data) => {
-      logger.warn(`${name} stderr:`, data.toString());
+      logger.warn(name + ' stderr:', data.toString());
     });
 
     childProcess.on('error', reject);
     childProcess.on('exit', (code) => {
       if (code !== 0 && code !== null) {
-        reject(new Error(`${name} exited with code ${code}`));
+        reject(new Error('${name} exited with code ' + code));
       }
     });
 
     // Timeout for service startup
     setTimeout(() => {
       if (!isServiceReady(name, output)) {
-        reject(new Error(`${name} startup timeout`));
+        reject(new Error(name + ' startup timeout'));
       }
     }, globalThis.e2eConfig.timeout.startup);
   });
@@ -232,7 +232,7 @@ async function waitForPort(port: number, timeout: number = 30000) {
       await new Promise((resolve) => setTimeout(resolve, 500));
     }
   }
-  throw new Error(`Port ${port} not ready within ${timeout}ms`);
+  throw new Error('Port ${port} not ready within ' + timeout + 'ms');
 }
 
 async function initializeE2EData() {
@@ -271,8 +271,8 @@ async function resetSystemState() {
 
 async function clearSystemCaches() {
   const cacheEndpoints = [
-    `http://localhost:${globalThis.e2eConfig.services.api.port}/cache/clear`,
-    `http://localhost:${globalThis.e2eConfig.services.web.port}/api/cache/clear`,
+    'http://localhost:' + globalThis.e2eConfig.services.api.port + '/cache/clear',
+    'http://localhost:' + globalThis.e2eConfig.services.web.port + '/api/cache/clear',
   ];
 
   for (const endpoint of cacheEndpoints) {
@@ -287,7 +287,7 @@ async function clearSystemCaches() {
 async function resetDatabaseState() {
   // Reset test databases to clean state
   const dbEndpoints = [
-    `http://localhost:${globalThis.e2eConfig.services.api.port}/test/reset`,
+    'http://localhost:' + globalThis.e2eConfig.services.api.port + '/test/reset',
   ];
 
   for (const endpoint of dbEndpoints) {
@@ -302,8 +302,8 @@ async function resetDatabaseState() {
 async function clearMemoryState() {
   // Clear in-memory state in services
   const memoryEndpoints = [
-    `http://localhost:${globalThis.e2eConfig.services.web.port}/api/memory/clear`,
-    `http://localhost:${globalThis.e2eConfig.services.swarm.port}/memory/clear`,
+    'http://localhost:' + globalThis.e2eConfig.services.web.port + '/api/memory/clear',
+    'http://localhost:' + globalThis.e2eConfig.services.swarm.port + '/memory/clear',
   ];
 
   for (const endpoint of memoryEndpoints) {
@@ -335,7 +335,7 @@ async function stopTestServices() {
       childProcess.kill('SIGTERM');
       await waitForProcessExit(childProcess, 10000);
     } catch (_error) {
-      logger.warn(`Failed to stop ${name} gracefully, force killing`);
+      logger.warn('Failed to stop ' + name + ' gracefully, force killing');
       childProcess.kill('SIGKILL');
     }
   }
@@ -451,12 +451,12 @@ globalThis.createE2EClient = (serviceName: string): E2EHttpClient => {
     globalThis.e2eConfig.services[
       serviceName as keyof typeof globalThis.e2eConfig.services
     ];
-  const baseURL = `http://localhost:${service.port}`;
+  const baseURL = 'http://localhost:' + service.port;
 
   return {
-    get: (path: string) => fetch(`${baseURL}${path}`),
+    get: (path: string) => fetch('${baseURL}' + path),
     post: (path: string, data?: HttpRequestData) =>
-      fetch(`${baseURL}${path}`, {
+      fetch('${baseURL}' + path, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -464,14 +464,14 @@ globalThis.createE2EClient = (serviceName: string): E2EHttpClient => {
         body: data ? JSON.stringify(data) : undefined,
       }),
     put: (path: string, data?: HttpRequestData) =>
-      fetch(`${baseURL}${path}`, {
+      fetch('${baseURL}' + path, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: data ? JSON.stringify(data) : undefined,
       }),
-    delete: (path: string) => fetch(`${baseURL}${path}`, { method: 'DELETE' }),
+    delete: (path: string) => fetch('${baseURL}' + path, { method: 'DELETE' }),
   };
 };
 
@@ -523,7 +523,7 @@ async function executeWorkflowStep(step: WorkflowStep): Promise<unknown> {
       }
       return await step.execute();
     default:
-      throw new Error(`Unknown workflow step type:${step.type}`);
+      throw new Error('Unknown workflow step type:' + step.type);
   }
 }
 

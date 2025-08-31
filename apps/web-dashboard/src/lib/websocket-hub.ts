@@ -94,7 +94,7 @@ export class WebSocketHubManager {
   public logs = writable<Array<Record<string, unknown>>>([]);
 
   constructor(private hubEndpoint: string = 'ws://localhost:3000/ws/hub') {
-    this.connectionId = `svelte_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    this.connectionId = 'svelte_${Date.now()}_' + Math.random().toString(36).substr(2, 9);
   }
 
   /**
@@ -146,7 +146,7 @@ export class WebSocketHubManager {
       error: null,
     }));
 
-    toast.push('🌐 Connected to WebSocket Hub', {
+    toast.push(' Connected to WebSocket Hub', {
       theme: {
         '--toastBackground': '#48cc6c',
         '--toastColor': 'white',
@@ -165,7 +165,7 @@ export class WebSocketHubManager {
       connecting: false,
     }));
 
-    toast.push('🌐 WebSocket Hub disconnected', {
+    toast.push(' WebSocket Hub disconnected', {
       theme: {
         '--toastBackground': '#f56565',
         '--toastColor': 'white',
@@ -412,7 +412,7 @@ export class WebSocketHubManager {
     }));
 
     logger.info(
-      `Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`
+      'Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/' + this.maxReconnectAttempts + ')'
     );
 
     setTimeout(() => {

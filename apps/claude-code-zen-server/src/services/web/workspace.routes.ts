@@ -36,36 +36,36 @@ export class WorkspaceApiRoutes {
    * Setup workspace API routes
    */
   setupRoutes(app: Express): void {
-    const prefix = `/api${WORKSPACE_PATHS.basePath}`;
+    const prefix = '/api' + WORKSPACE_PATHS.basePath;
 
     // File system operations
-    app.get(`${prefix}/files`, this.listFiles.bind(this));
-    app.get(`${prefix}/files/content`, this.getFileContent.bind(this));
-    app.post(`${prefix}/files`, this.createFile.bind(this));
-    app.put(`${prefix}/files`, this.updateFile.bind(this));
-    app.delete(`${prefix}/files`, this.deleteFile.bind(this));
+    app.get(prefix + '/files', this.listFiles.bind(this));
+    app.get(prefix + '/files/content', this.getFileContent.bind(this));
+    app.post(prefix + '/files', this.createFile.bind(this));
+    app.put(prefix + '/files', this.updateFile.bind(this));
+    app.delete(prefix + '/files', this.deleteFile.bind(this));
 
     // Directory operations
-    app.post(`${prefix}/directories`, this.createDirectory.bind(this));
-    app.delete(`${prefix}/directories`, this.deleteDirectory.bind(this));
+    app.post(prefix + '/directories', this.createDirectory.bind(this));
+    app.delete(prefix + '/directories', this.deleteDirectory.bind(this));
 
     // Project operations
-    app.get(`${prefix}/project/info`, this.getProjectInfo.bind(this));
+    app.get(prefix + '/project/info', this.getProjectInfo.bind(this));
     app.post(
-      `${prefix}/project/commands`,
+      prefix + '/project/commands',
       this.executeProjectCommand.bind(this)
     );
 
     // Search operations
-    app.get(`${prefix}/search/files`, this.searchFiles.bind(this));
-    app.get(`${prefix}/search/content`, this.searchContent.bind(this));
+    app.get(prefix + '/search/files', this.searchFiles.bind(this));
+    app.get(prefix + '/search/content', this.searchContent.bind(this));
 
     // Git operations
-    app.get(`${prefix}/git/status`, this.getGitStatus.bind(this));
-    app.post(`${prefix}/git/commands`, this.executeGitCommand.bind(this));
+    app.get(prefix + '/git/status', this.getGitStatus.bind(this));
+    app.post(prefix + '/git/commands', this.executeGitCommand.bind(this));
 
     // Recent files
-    app.get(`${prefix}/recent`, this.getRecentFiles.bind(this));
+    app.get(prefix + '/recent', this.getRecentFiles.bind(this));
 
     this.logger.info('Workspace API routes registered');
   }

@@ -6,7 +6,7 @@
  * Designed for enterprise-grade applications requiring reliable process management.
  *
  * @example Basic Usage
- * ```typescript`
+ * '''typescript'
  * import { ProcessLifecycleManager, setupProcessLifecycle} from '@claude-zen/foundation';
  *
  * // Simple setup
@@ -23,7 +23,7 @@
  *   gracefulShutdownTimeout:30000,
  *   exitOnUncaughtException:true
  *});
- * ```
+ * '
  *
  * @package @claude-zen/foundation
  * @since 2.1.0
@@ -67,7 +67,7 @@ export interface ProcessOptions {
  * Designed for production environments requiring reliable process control.
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const manager = new ProcessLifecycleManager({
  *   onShutdown:async () => {
  *     await database.close();
@@ -77,7 +77,7 @@ export interface ProcessOptions {
  *     await logger.error('Process error: ', error);
 ' *}
  *});
- * ```
+ * '
  */
 export declare class ProcessLifecycleManager {
     private handlers;
@@ -138,12 +138,12 @@ export declare class ProcessLifecycleManager {
  * @returns Configured ProcessLifecycleManager instance
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const lifecycle = setupProcessLifecycle(async () => {
  *   await cleanup();
  *   logger.info('Shutdown complete');
  *});
- * ```
+ * `
  */
 export declare function setupProcessLifecycle(shutdownHandler: () => Promise<void>): ProcessLifecycleManager;
 //# sourceMappingURL=process.lifecycle.d.ts.map

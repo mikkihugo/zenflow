@@ -31,7 +31,7 @@ export class TaskComplexityEstimator {
     initialized = false;
     keywordWeights = new Map();
     constructor() {
-        logger.info('🎯 Task Complexity Estimator created');
+        logger.info(' Task Complexity Estimator created');
         ')};
         /**
          * Initialize the complexity estimation system
@@ -41,13 +41,13 @@ export class TaskComplexityEstimator {
         Promise < void  > {
             : .initialized, return: ,
             try: {
-                logger, : .info('🚀 Initializing Task Complexity Estimation System...'), '): 
+                logger, : .info(' Initializing Task Complexity Estimation System...'), '): 
                 // Initialize complexity patterns based on domain knowledge
                 await this.initializeComplexityPatterns(),
                 // Initialize keyword weight analysis
                 await, this: .initializeKeywordWeights(),
                 this: .initialized = true,
-                logger, : .info('✅ Task Complexity Estimator initialized successfully'), ')} catch (error) {: logger.error('❌ Failed to initialize Task Complexity Estimator:', error), ')      throw error;: 
+                logger, : .info(' Task Complexity Estimator initialized successfully'), ')} catch (error) {: logger.error(' Failed to initialize Task Complexity Estimator:', error), ')      throw error;: 
             }
         };
         /**
@@ -112,12 +112,12 @@ export class TaskComplexityEstimator {
                 difficultyLevel,
                 keyFactors,
             };
-            logger.info(`🎯 Complexity estimated:${(finalComplexity * 100).toFixed(1)}% (${difficultyLevel}) - ${suggestedMethod} suggested` `
+            logger.info(` Complexity estimated:${(finalComplexity * 100).toFixed(1)}% (${difficultyLevel}) - ${suggestedMethod} suggested` `
       );
 
       return estimate;
 } catch (error) {
-      logger.error('❌ Complexity estimation failed:', error);')
+      logger.error(' Complexity estimation failed:', error);')
       // Return safe default estimate
       return {
         estimatedComplexity:0.5,
@@ -177,7 +177,7 @@ export class TaskComplexityEstimator {
         `, Learned, from, task, outcome, $, { task }(_complexity, $, { actualComplexity, : .toFixed(2) }) ``);
         }
         catch (error) {
-            logger.error('❌ Failed to learn from outcome:', error);
+            logger.error(' Failed to learn from outcome:', error);
             ')};
         }
         /**

@@ -79,33 +79,33 @@ export class ApiRouteHandler {
     const api = this.config.prefix;
 
     // Health check endpoint
-    this.app.get(`${api}/health`, this.handleHealth.bind(this));
+    this.app.get(api + '/health', this.handleHealth.bind(this));
 
     // System status endpoint
-    this.app.get(`${api}/status`, this.handleSystemStatus.bind(this));
+    this.app.get(api + '/status', this.handleSystemStatus.bind(this));
 
     // Swarm management endpoints
-    this.app.get(`${api}/swarms`, this.handleGetSwarms.bind(this));
-    this.app.post(`${api}/swarms`, this.handleCreateSwarm.bind(this));
+    this.app.get(api + '/swarms', this.handleGetSwarms.bind(this));
+    this.app.post(api + '/swarms', this.handleCreateSwarm.bind(this));
 
     // Task management endpoints
-    this.app.get(`${api}/tasks`, this.handleGetTasks.bind(this));
-    this.app.post(`${api}/tasks`, this.handleCreateTask.bind(this));
+    this.app.get(api + '/tasks', this.handleGetTasks.bind(this));
+    this.app.post(api + '/tasks', this.handleCreateTask.bind(this));
 
     // Document management endpoints
-    this.app.get(`${api}/documents`, this.handleGetDocuments.bind(this));
+    this.app.get(api + '/documents', this.handleGetDocuments.bind(this));
 
     // Command execution endpoint
-    this.app.post(`${api}/execute`, this.handleExecuteCommand.bind(this));
+    this.app.post(api + '/execute', this.handleExecuteCommand.bind(this));
 
     // Settings management endpoints
-    this.app.get(`${api}/settings`, this.handleGetSettings.bind(this));
-    this.app.post(`${api}/settings`, this.handleUpdateSettings.bind(this));
+    this.app.get(api + '/settings', this.handleGetSettings.bind(this));
+    this.app.post(api + '/settings', this.handleUpdateSettings.bind(this));
 
     // Logs management endpoint
-    this.app.get(`${api}/logs`, this.handleGetLogs.bind(this));
+    this.app.get(api + '/logs', this.handleGetLogs.bind(this));
 
-    this.logger.info(`API routes initialized with prefix:${api}`);
+    this.logger.info('API routes initialized with prefix:' + api);
   }
 
   /**
@@ -319,7 +319,7 @@ export class ApiRouteHandler {
         const coordination = await coordinator.getSwarmCoordination();
         
         return coordination.swarms?.map((swarm: any) => ({
-          id: swarm.id || `swarm-${Date.now()}`,
+          id: swarm.id || 'swarm-' + Date.now(),
           name: swarm.name || 'Unnamed Swarm',
           status: swarm.status || 'unknown',
           agents: swarm.agents?.length || 0,
@@ -334,7 +334,7 @@ export class ApiRouteHandler {
         const memoryManager = new MemoryManager();
         const swarmData = await memoryManager.get('swarms') || [];
         return swarmData.map((swarm: any) => ({
-          id: swarm.id || `swarm-${Date.now()}`,
+          id: swarm.id || 'swarm-' + Date.now(),
           name: swarm.name || 'Unnamed Swarm',
           status: swarm.status || 'unknown',
           agents: swarm.agentCount || 0,
@@ -383,14 +383,14 @@ export class ApiRouteHandler {
       if (MemoryManager) {
         const memoryManager = new MemoryManager();
         const newSwarm = {
-          id: `swarm-${Date.now()}`,
+          id: 'swarm-' + Date.now(),
           name: swarmData.name || 'New Swarm',
           status: 'created',
           agentCount: 0,
           createdAt: new Date().toISOString(),
         };
         
-        await memoryManager.store(`swarm:${newSwarm.id}`, newSwarm);
+        await memoryManager.store('swarm:' + newSwarm.id, newSwarm);
         
         return {
           id: newSwarm.id,
@@ -420,7 +420,7 @@ export class ApiRouteHandler {
         const tasks = await master.getAllTasks();
         
         return tasks.map((task: any) => ({
-          id: task.id || `task-${Date.now()}`,
+          id: task.id || 'task-' + Date.now(),
           title: task.title || task.name || 'Unnamed Task',
           status: task.status || 'unknown',
           priority: task.priority || 'medium',
@@ -435,7 +435,7 @@ export class ApiRouteHandler {
         const memoryManager = new MemoryManager();
         const taskData = await memoryManager.get('tasks') || [];
         return taskData.map((task: any) => ({
-          id: task.id || `task-${Date.now()}`,
+          id: task.id || 'task-' + Date.now(),
           title: task.title || task.name || 'Unnamed Task',
           status: task.status || 'unknown',
           priority: task.priority || 'medium',
@@ -492,7 +492,7 @@ export class ApiRouteHandler {
       if (MemoryManager) {
         const memoryManager = new MemoryManager();
         const newTask = {
-          id: `task-${Date.now()}`,
+          id: 'task-' + Date.now(),
           title: taskData.title || 'New Task',
           description: taskData.description || 'Task description',
           status: 'pending',
@@ -502,7 +502,7 @@ export class ApiRouteHandler {
           createdAt: new Date().toISOString(),
         };
         
-        await memoryManager.store(`task:${newTask.id}`, newTask);
+        await memoryManager.store('task:' + newTask.id, newTask);
         
         return {
           id: newTask.id,
@@ -606,7 +606,7 @@ export class ApiRouteHandler {
       };
 
       return {
-        result: `Command execution failed: ${errorDetails.message}`,
+        result: 'Command execution failed: ' + errorDetails.message,
         timestamp: errorDetails.timestamp,
         status: 'error',
       };
@@ -769,7 +769,7 @@ export class ApiRouteHandler {
             module?: string;
           };
           return {
-            id: `log-${offset + index}`,
+            id: 'log-' + offset + index,
             timestamp: logEntry.timestamp || new Date().toISOString(),
             level: logEntry.level || 'info',
             message: logEntry.message || 'No message',
@@ -780,10 +780,10 @@ export class ApiRouteHandler {
 
       // Fallback:return sample logs for development
       return Array.from({ length: Math.min(limit, 10) }, (unusedValue, i) => ({
-        id: `log-${offset + i}`,
+        id: 'log-' + offset + i,
         timestamp: new Date(Date.now() - i * 60000).toISOString(),
         level: ['info', 'warn', 'error'][i % 3],
-        message: `Log message ${offset + i + 1}`,
+        message: 'Log message ' + offset + i + 1,
         module: 'api-handler',
       }));
     } catch (logError) {

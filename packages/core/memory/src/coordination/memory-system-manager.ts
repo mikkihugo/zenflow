@@ -57,9 +57,9 @@ export class MemorySystemManager extends EventEmitter {
   constructor(config: MemorySystemConfig) {
     super();
     this.config = config;
-    this.logger = getLogger(`MemorySystemManager:${config.name}`);
+    this.logger = getLogger('MemorySystemManager:' + config.name);
     this.telemetry = new TelemetryManager({
-      serviceName: `memory-system-${config.name}`,
+      serviceName: 'memory-system-' + config.name,
       enableTracing: true,
       enableMetrics: true,
     });
@@ -112,7 +112,7 @@ export class MemorySystemManager extends EventEmitter {
 
         this.initialized = true;
         this.logger.info(
-          `Memory system '${this.config.name}' initialized successfully`,
+          'Memory system '' + this.config.name + '' initialized successfully',
           {
             mode: this.config.mode,
             components: Array.from(this.components.keys()),
@@ -132,7 +132,7 @@ export class MemorySystemManager extends EventEmitter {
       });
     } catch (error) {
       this.logger.error(
-        `Failed to initialize memory system '${this.config.name}':`,
+        'Failed to initialize memory system '' + this.config.name + '':',
         error
       );
       throw error;
@@ -655,7 +655,7 @@ export class MemorySystemManager extends EventEmitter {
           component.lastHealthCheck = Date.now();
         }
       } catch (error) {
-        this.logger.warn(`Health check failed for component ${name}:`, error);
+        this.logger.warn('Health check failed for component ' + name + ':', error);
         component.healthy = false;
         component.lastHealthCheck = Date.now();
       }
@@ -703,7 +703,7 @@ export class MemorySystemManager extends EventEmitter {
 
     for (const [name, component] of this.components) {
       if (!component.healthy) {
-        issues.push(`Component '${name}' is unhealthy`);
+        issues.push('Component '' + name + '' is unhealthy');
       }
     }
 
@@ -728,7 +728,7 @@ export class MemorySystemManager extends EventEmitter {
 
     if (unhealthyComponents.length > 0) {
       recommendations.push(
-        `Investigate unhealthy components:${unhealthyComponents.join(',    ')}`
+        'Investigate unhealthy components:' + unhealthyComponents.join(',    ')
       );
     }
 
@@ -830,7 +830,7 @@ export class MemorySystemManager extends EventEmitter {
             await component.instance.shutdown();
           }
         } catch (error) {
-          this.logger.error(`Failed to shutdown component ${name}:`, error);
+          this.logger.error('Failed to shutdown component ' + name + ':', error);
         }
       }
 
@@ -838,9 +838,9 @@ export class MemorySystemManager extends EventEmitter {
       this.initialized = false;
 
       this.emit('systemShutdown', { name: this.config.name });
-      this.logger.info(`Memory system '${this.config.name}' shut down`);
+      this.logger.info('Memory system '' + this.config.name + '' shut down');
     } catch (error) {
-      this.logger.error(`Error during memory system shutdown:`, error);
+      this.logger.error('Error during memory system shutdown:', error);
       throw error;
     }
   }

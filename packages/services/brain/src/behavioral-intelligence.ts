@@ -113,7 +113,7 @@ export interface AgentBehavioralProfile {
  * task assignment and swarm coordination.
  *
  * @example Basic Usage
- * ```typescript`
+ * '''typescript'
  * const behavioral = new BehavioralIntelligence(brainJsBridge);
  * await behavioral.initialize();
  *
@@ -128,8 +128,8 @@ export interface AgentBehavioralProfile {
  * await behavioral.learnFromExecution(executionData);
  *
  * // Predict agent performance
- * const prediction = await behavioral.predictAgentPerformance('agent-1',    'data-processing', 0.7);') * logger.info(`Predicted efficiency:${prediction.predictedEfficiency}`);`
- * ````
+ * const prediction = await behavioral.predictAgentPerformance('agent-1',    'data-processing', 0.7);') * logger.info('Predicted efficiency:' + prediction.predictedEfficiency);'
+ * '
  */
 export class BehavioralIntelligence {
   private brainJsBridge: BrainJsBridge;
@@ -154,7 +154,7 @@ export class BehavioralIntelligence {
         await this.initializeNeuralNetworkInfrastructure(id, type, config);
         const networkArchitecture = await this.designNetworkArchitecture(type, config);
         
-        logger.debug(`Mock: Creating neural network ${id} of type ${type}`, {`
+        logger.debug('Mock: Creating neural network ${id} of type ' + type, {'
           hiddenLayers:config?.hiddenLayers||'default',          learningRate:config?.learningRate||'default',          activation:config?.activation||'default',          architecture:networkArchitecture
 });
         
@@ -180,7 +180,7 @@ export class BehavioralIntelligence {
         const predictionContext = await this.analyzePredictionContext(id, input);
         const optimizedInput = await this.optimizeInputFeatures(input, predictionContext);
         
-        logger.debug(`Mock: Predicting with neural network ${id}`, {`
+        logger.debug('Mock: Predicting with neural network ' + id, {'
           inputSize:input.length,
           contextualFactors:predictionContext.factors
 });
@@ -248,7 +248,7 @@ export class BehavioralIntelligence {
       );
 
       //  Initialize Enhanced ML Models
-      logger.info('🔬 Initializing advanced ML algorithms...');'
+      logger.info(' Initializing advanced ML algorithms...');'
       // DBSCAN for behavioral clustering
       this.behaviorClusterer = new clustering.DBSCAN();
 
@@ -293,8 +293,7 @@ export class BehavioralIntelligence {
 }
 
       logger.debug(
-        `Enhanced learning from execution:${executionData.agentId} - ${executionData.taskType} (with ML algorithms)``
-      );
+        'Enhanced learning from execution:${executionData.agentId} - ' + executionData.taskType + ' (with ML algorithms)');
 } catch (error) {
       logger.error('Error learning from execution:', error);'
 }
@@ -448,13 +447,12 @@ export class BehavioralIntelligence {
         if (score > bestScore) {
           bestScore = score;
           bestAgent = agentId;
-          bestReasoning = `High predicted efficiency (${(_prediction._predictedEfficiency * 100).toFixed(1)}%) and success rate (${(_prediction._predictedSuccess * 100).toFixed(1)}%)`;`
+          bestReasoning = 'High predicted efficiency (${(_prediction._predictedEfficiency * 100).toFixed(1)}%) and success rate (' + (_prediction._predictedSuccess * 100).toFixed(1) + '%)';'
 }
 }
 
       logger.info(
-        `Selected best agent:${bestAgent} for ${taskType} (score:${bestScore.toFixed(3)})``
-      );
+        'Selected best agent:' + bestAgent + ' for ' + taskType + ' (score:' + bestScore.toFixed(3) + ')');
 
       return {
         agentId: bestAgent,
@@ -596,7 +594,7 @@ export class BehavioralIntelligence {
    */
   private async trainAdvancedMLModels(): Promise<void> {
     try {
-      logger.info('🔬 Training advanced ML models...');'
+      logger.info(' Training advanced ML models...');'
       // Async model preparation and optimization
       const modelStrategy = await this.analyzeOptimalModelStrategy();
       const trainingConfiguration = await this.optimizeTrainingConfiguration();
@@ -627,8 +625,7 @@ export class BehavioralIntelligence {
           clusteringParams.minPts
         );
         logger.info(
-          ` DBSCAN clustering identified ${clusters.length} behavioral groups``
-        );
+          ' DBSCAN clustering identified ' + clusters.length + ' behavioral groups');
 
         // Analyze label distribution across clusters for behavioral insights
         const labelStats = this.analyzeLabelDistribution(labels, clusters);
@@ -791,7 +788,7 @@ export class BehavioralIntelligence {
       // Update learning parameters if provided
       if (config.learningRate) {
         // Apply learning rate to neural networks
-        logger.debug(`Setting learning rate to ${config.learningRate}`);`
+        logger.debug('Setting learning rate to ' + config.learningRate);'
 }
 
       if (config.maxMemorySize) {
@@ -835,8 +832,7 @@ export class BehavioralIntelligence {
 
     try {
       logger.debug(
-        ` Recording behavior:${data.agentId} - ${data.behaviorType}``
-      );
+        ' Recording behavior:${data.agentId} - ' + data.behaviorType);
 
       // Convert behavior data to execution data format for learning
       const executionData: AgentExecutionData = {
@@ -859,7 +855,7 @@ export class BehavioralIntelligence {
       // Learn from the behavior data
       await this.learnFromExecution(executionData);
 
-      logger.debug(` Behavior recorded and learned from:${data.agentId}`);`
+      logger.debug(' Behavior recorded and learned from:' + data.agentId);'
 } catch (error) {
       logger.error(' Failed to record behavior:', error);'
 }
@@ -983,8 +979,7 @@ export class BehavioralIntelligence {
 
     try {
       logger.info(
-        `Training networks with ${this.trainingBuffer.length} data points``
-      );
+        'Training networks with ' + this.trainingBuffer.length + ' data points');
 
       // Prepare training data for performance network
       const performanceTrainingData = this.trainingBuffer.map((data) => ({
@@ -1125,7 +1120,7 @@ export class BehavioralIntelligence {
   ):string {
     const [duration, success, _efficiency] = output;
 
-    let reasoning = `Agent ${agentId} for ${taskType}:`;`
+    let reasoning = 'Agent ' + agentId + ' for ' + taskType + ':';'
 
     // Analyze efficiency prediction
     if (efficiency > 0.7) {
@@ -1138,16 +1133,16 @@ export class BehavioralIntelligence {
 
     // Analyze success probability
     const successProbability = success * 100;
-    reasoning += `(${successProbability.toFixed(0)}% success probability, `;`
+    reasoning += '(' + successProbability.toFixed(0) + '% success probability, ';'
 
     // Analyze duration estimate
     const durationSeconds = duration / 1000;
     if (durationSeconds < 2) {
       _reasoning += 'quick completion)';
 } else if (durationSeconds < 10) {
-      _reasoning += `${durationSeconds.toFixed(1)}s expected)`;`
+      _reasoning += durationSeconds.toFixed(1) + 's expected)';'
 } else {
-      reasoning += `$durationSeconds.toFixed(0)s duration)`;`
+      reasoning += '$durationSeconds.toFixed(0)s duration)';'
 }
 
     reasoning += profile?.specializations.includes(taskType)
@@ -1243,7 +1238,7 @@ export class BehavioralIntelligence {
    */
   private async initializeNeuralNetworkInfrastructure(id: string, _type: string, _config:any): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 100));
-    logger.debug(`Neural network infrastructure initialized for ${id}`);`
+    logger.debug('Neural network infrastructure initialized for ' + id);'
 }
 
   /**
@@ -1285,7 +1280,7 @@ export class BehavioralIntelligence {
    */
   private async executeTrainingPipeline(id: string, data: any, strategy:any): Promise<void> 
     await new Promise(resolve => setTimeout(resolve, 150));
-    logger.debug(`Training pipeline executed for ${id} with ${strategy.strategy} strategy`);`
+    logger.debug('Training pipeline executed for ${id} with ' + strategy.strategy + ' strategy');'
 }
 
   /**
@@ -1624,26 +1619,23 @@ export async function demoBehavioralIntelligence(
 
   try {
     // 1. Learn from execution data
-    logger.info('📚 Learning from agent executions...');'for (const data of executionData) {
+    logger.info(' Learning from agent executions...');'for (const data of executionData) {
       await behavioral.learnFromExecution(data);
 }
     logger.info(' Learning completed\n');'
     // 2. Predict agent performance
-    logger.info('🔮 Predicting agent performance...');'const prediction = await behavioral.predictAgentPerformance(
+    logger.info(' Predicting agent performance...');'const prediction = await behavioral.predictAgentPerformance(
       'agent-1',      'data-processing',      0.7
     );
-    logger.info(` Prediction for agent-1:`);`
-    logger.info(`   • Duration:$prediction.predictedDuration.toFixed(0)ms`);`
+    logger.info(' Prediction for agent-1:');'
+    logger.info('   • Duration:$prediction.predictedDuration.toFixed(0)ms');'
     logger.info(
-      `   • Success rate:${(prediction.predictedSuccess * 100).toFixed(1)}%``
-    );
+      '   • Success rate:' + (prediction.predictedSuccess * 100).toFixed(1) + '%');
     logger.info(
-      `   • Efficiency:${(prediction.predictedEfficiency * 100).toFixed(1)}%``
-    );
+      '   • Efficiency:' + (prediction.predictedEfficiency * 100).toFixed(1) + '%');
     logger.info(
-      `   • Confidence:${(prediction.confidence * 100).toFixed(1)}%``
-    );
-    logger.info(`   • Reasoning:${prediction.reasoning}\n`);`
+      '   • Confidence:' + (prediction.confidence * 100).toFixed(1) + '%');
+    logger.info('   • Reasoning:' + prediction.reasoning + '\n');'
 
     // 3. Analyze task complexity
     logger.info(' Analyzing task complexity...');'const complexityAnalysis = await behavioral.analyzeTaskComplexity(
@@ -1651,42 +1643,39 @@ export async function demoBehavioralIntelligence(
         modelSize: 'large',        dataSize: 100000,
 }
     );
-    logger.info(` Task complexity analysis:`);`
+    logger.info(' Task complexity analysis:');'
     logger.info(
-      `   • Complexity:$(complexityAnalysis.estimatedComplexity * 100).toFixed(1)%``
-    );
-    logger.info(`   • Difficulty:${complexityAnalysis.difficulty}`);`
+      '   • Complexity:$(complexityAnalysis.estimatedComplexity * 100).toFixed(1)%');
+    logger.info('   • Difficulty:' + complexityAnalysis.difficulty);'
     logger.info(
-      `   • Required skills:$complexityAnalysis.requiredSkills.join(',    ')``
-    );
+      '   • Required skills:$complexityAnalysis.requiredSkills.join(',    ')');
     logger.info(
-      `   • Estimated duration:${complexityAnalysis.estimatedDuration.toFixed(0)}ms\n``
-    );
+      '   • Estimated duration:' + complexityAnalysis.estimatedDuration.toFixed(0) + 'ms\n');
 
     // 4. Find best agent for task
     logger.info(' Finding best agent for task...');'const bestAgent = await behavioral.findBestAgentForTask(
       'data-processing',      0.5,
       ['agent-1',    'agent-2']';
-    logger.info(`🏆 Best agent selection:`);`
-    logger.info(`   • Selected:$bestAgent.agentId`);`
-    logger.info(`   • Confidence:${(bestAgent.confidence * 100).toFixed(1)}%`);`
-    logger.info(`   • Reasoning:$bestAgent.reasoning\n`);`
+    logger.info(' Best agent selection:');'
+    logger.info('   • Selected:$bestAgent.agentId');'
+    logger.info('   • Confidence:' + (bestAgent.confidence * 100).toFixed(1) + '%');'
+    logger.info('   • Reasoning:$bestAgent.reasoning\n');'
 
     // 5. Show behavioral intelligence stats
-    logger.info('📈 Behavioral Intelligence Statistics:');
+    logger.info(' Behavioral Intelligence Statistics:');
     const stats = behavioral.getStats();
-    logger.info(`   • Total agents: ${stats.totalAgents}`);
-    logger.info(`   • Training data points: ${stats.trainingDataPoints}`);
-    logger.info(`   • Networks initialized: ${stats.networksInitialized}`);
+    logger.info('   • Total agents: ' + stats.totalAgents);
+    logger.info('   • Training data points: ' + stats.trainingDataPoints);
+    logger.info('   • Networks initialized: ' + stats.networksInitialized);
     logger.info(
-      `   • Average performance: ${(stats.averagePerformance * 100).toFixed(1)}%`
+      '   • Average performance: ' + (stats.averagePerformance * 100).toFixed(1) + '%'
     );
     logger.info(
-      `   • Most active agents: ${stats.mostActiveAgents.join(', '`
+      '   • Most active agents: ${stats.mostActiveAgents.join(', ''
     );
 
-    logger.info('\n🎉 Behavioral Intelligence Demo Complete!');
-    logger.info('\n💡 Key Benefits for claude-code-zen:');
+    logger.info('\n Behavioral Intelligence Demo Complete!');
+    logger.info('\n Key Benefits for claude-code-zen:');
     logger.info('   • Real-time agent performance prediction');
     logger.info('   • Intelligent task-agent matching');
     logger.info('   • Behavioral pattern learning and adaptation');

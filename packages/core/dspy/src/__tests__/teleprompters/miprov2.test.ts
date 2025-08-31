@@ -40,7 +40,7 @@ class MockModule extends DSPyModule {
   predictors() {
     return [
       {
-        name: `${this.name}_predictor`,
+        name: this.name + '_predictor',
         signature: { instructions: 'Follow the instructions carefully.' },
         lm: { model: 'mock-model', generate: async () => 'mock response' },
         demos: [],
@@ -49,7 +49,7 @@ class MockModule extends DSPyModule {
   }
 
   namedPredictors() {
-    return [[`${this.name}_predictor`, this.predictors()[0]]];
+    return [[this.name + '_predictor', this.predictors()[0]]];
   }
 
   deepcopy(): MockModule {
@@ -665,7 +665,7 @@ describe('MIPROv2 Teleprompter', () => {
       const largeTrainset = Array.from(
         { length: 50 },
         (_, i) =>
-          new Example({ question: `What is ${i}+${i}?`, answer: `${i * 2}` })
+          new Example({ question: 'What is ${i}+' + i + '?', answer: i * 2 })
       );
 
       const localMiprov2 = new MIPROv2({

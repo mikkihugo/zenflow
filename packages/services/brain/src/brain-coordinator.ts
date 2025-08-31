@@ -300,7 +300,7 @@ export class IntelligenceOrchestrator extends EventBus<IntelligenceEvents> {
       // Initialize EventBus first
       const eventBusResult = await super.initialize();
       if (eventBusResult.isErr()) {
-        throw new Error(`EventBus initialization failed:${eventBusResult.error?.message}`);
+        throw new Error('EventBus initialization failed:' + eventBusResult.error?.message);
 }
 
       // Initialize monitoring components through operations facade
@@ -333,7 +333,7 @@ export class IntelligenceOrchestrator extends EventBus<IntelligenceEvents> {
       const duration = Date.now() - initStartTime;
 
       this.logger.info(' Intelligence Orchestrator initialized successfully', {
-        duration: `${duration}ms`,
+        duration: duration + 'ms',
         monitoring: 'operations-facade',
         performanceTracker: !!this.performanceTracker,
         agentMonitor: !!this.agentMonitor,
@@ -350,7 +350,7 @@ export class IntelligenceOrchestrator extends EventBus<IntelligenceEvents> {
       const duration = Date.now() - initStartTime;
       this.logger.error(' Intelligence Orchestrator initialization failed', {
         error: error instanceof Error ? error.message : String(error),
-        duration: `${duration}ms`,
+        duration: duration + 'ms',
       });
 
       // Emit error event

@@ -60,7 +60,7 @@ class MockModule extends DSPyModule {
     this.mockResponse = mockResponse;
     this.mockPredictors = [
       {
-        name: `${name}_predictor`,
+        name: name + '_predictor',
         signature: { instructions: 'Follow instructions carefully.' },
         lm: lm || new MockLM(),
         demos: [],
@@ -85,7 +85,7 @@ class MockModule extends DSPyModule {
 
   namedPredictors(): [string, any][] {
     return this.mockPredictors.map(
-      (pred, i) => [`predictor_${i}`, pred] as [string, any]
+      (pred, i) => ['predictor_' + i, pred] as [string, any]
     );
   }
 
@@ -432,9 +432,9 @@ describe('BootstrapFinetune Teleprompter', () => {
 
       // Mock many predictors with different LMs
       const predictors = Array.from({ length: 5 }, (_, i) => ({
-        name: `predictor_${i}`,
+        name: 'predictor_' + i,
         signature: { instructions: 'Test' },
-        lm: new MockLM(`model_${i}`),
+        lm: new MockLM('model_' + i),
         demos: [],
       }));
 
@@ -449,7 +449,7 @@ describe('BootstrapFinetune Teleprompter', () => {
       await expect(
         bootstrapFinetune.compile(manyPredictorsStudent, trainset)
       ).rejects.toThrow(
-        'BootstrapFinetune requires `num_threads` to be bigger than or equal to the number of fine-tuning jobs'
+        'BootstrapFinetune requires 'num_threads' to be bigger than or equal to the number of fine-tuning jobs'
       );
     });
   });
@@ -737,7 +737,7 @@ describe('BootstrapFinetune Teleprompter', () => {
       const largeTrainset = Array.from(
         { length: 100 },
         (_, i) =>
-          new Example({ question: `What is ${i}+${i}?`, answer: `${i * 2}` })
+          new Example({ question: 'What is ${i}+' + i + '?', answer: i * 2 })
       );
 
       const result = await bootstrapFinetune.compile(

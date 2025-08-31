@@ -106,7 +106,7 @@ export class SmartPromptOptimizer {
 
     try {
       logger.info(
-        `🔍 Analyzing prompt for optimization: "${originalPrompt.substring(0, 50)}..."`
+        ' Analyzing prompt for optimization: "' + originalPrompt.substring(0, 50) + '..."'
       );
 
       // Analyze prompt characteristics
@@ -161,7 +161,7 @@ export class SmartPromptOptimizer {
       };
 
       logger.info(
-        ` Prompt optimization complete - confidence: ${confidence.toFixed(2)}, improvement: ${improvementFactor.toFixed(2)}x`
+        ' Prompt optimization complete - confidence: ${confidence.toFixed(2)}, improvement: ' + improvementFactor.toFixed(2) + 'x'
       );
 
       return result;
@@ -177,8 +177,7 @@ export class SmartPromptOptimizer {
   async learnFromPerformance(analysisData: PromptAnalysisData): Promise<void> {
     try {
       logger.debug(
-        ` Learning from prompt performance:success rate ${analysisData.successRate.toFixed(2)}``
-      );
+        ' Learning from prompt performance:success rate ' + analysisData.successRate.toFixed(2));
 
       // Add to performance history
       this.performanceHistory.push(analysisData);
@@ -198,8 +197,7 @@ export class SmartPromptOptimizer {
         const trend = sma(successRates, 3);
 
         logger.debug(
-          `📈 Performance trend:${trend[trend.length - 1]?.toFixed(2)||'N/A'}``
-        );
+          ' Performance trend:' + trend[trend.length - 1]?.toFixed(2)||'N/A');
 }
 } catch (error) {
       logger.error(' Failed to learn from performance:', error);'
@@ -268,12 +266,11 @@ export class SmartPromptOptimizer {
 ];
 
     patterns.forEach((pattern, index) => {
-      this.optimizationPatterns.set(`baseline_${index}`, pattern);`
+      this.optimizationPatterns.set('baseline_' + index, pattern);'
 });
 
     logger.debug(
-      `📋 Initialized $patterns.lengthbaseline optimization patterns``
-    );
+      ' Initialized $patterns.lengthbaseline optimization patterns');
 }
 
   private extractPromptFeatures(prompt: string): Record<string, number> {
@@ -425,7 +422,7 @@ export class SmartPromptOptimizer {
         case 'clarity_improvement': ')'          optimizedPrompt +=
             '\n\nPlease be specific and provide detailed explanations.;
           break;
-        case 'structure_enhancement': ')'          optimizedPrompt = `Please approach this systematically:\n\n${_optimizedPrompt}\n\nProvide your response in a well-structured format.`;`
+        case 'structure_enhancement': ')'          optimizedPrompt = 'Please approach this systematically:\n\n' + _optimizedPrompt + '\n\nProvide your response in a well-structured format.';'
           break;
         case 'context_addition': ')'          optimizedPrompt +=
             '\n\nConsider the specific context and requirements when responding.;
@@ -467,19 +464,16 @@ export class SmartPromptOptimizer {
     const reasoning:string[] = [];
 
     reasoning.push(
-      `Applied ${patterns.length} optimization pattern(s) based on historical analysis``
-    );
+      'Applied ' + patterns.length + ' optimization pattern(s) based on historical analysis');
 
     if (regressionInsights.r2 > 0.5) {
       reasoning.push(
-        `Strong correlation (R² = ${regressionInsights.r2.toFixed(2)}) found in similar prompts``
-      );
+        'Strong correlation (R² = ' + regressionInsights.r2.toFixed(2) + ') found in similar prompts');
 }
 
     patterns.forEach((pattern) => {
       reasoning.push(
-        `${pattern.patternType.replace('_',    ' ' applied with ${(pattern.confidence * 100).toFixed(0)}% confidence``
-      );
+        '${pattern.patternType.replace('_',    ' ' applied with ' + (pattern.confidence * 100).toFixed(0) + '% confidence');
 });
 
     return reasoning;
@@ -551,7 +545,7 @@ export class SmartPromptOptimizer {
     logger.debug('Updated optimization patterns based on performance feedback');
     // For now, just log the learning event
     logger.debug(
-      ` Pattern learning: ${analysisData.successRate > 0.7 ? 'positive' : 'negative'} feedback received`
+      ' Pattern learning: ' + analysisData.successRate > 0.7 ? 'positive' : 'negative' + ' feedback received'
     );
 }
 

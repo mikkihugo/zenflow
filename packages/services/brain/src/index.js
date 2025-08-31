@@ -8,21 +8,21 @@
  * learning and adaptation capabilities. Built with Rust/WASM acceleration for maximum
  * performance and enterprise-scale neural coordination.
  *
- * **⚠️ RECOMMENDED USAGE:Access via @claude-zen/foundation Package**
+ * ** RECOMMENDED USAGE:Access via @claude-zen/foundation Package**
  *
  * While this package can be used directly, it is recommended to access brain
  * functionality through `@claude-zen/foundation` which provides integrated neural`
  * coordination with telemetry, logging, and configuration management.
  *
  * **CORE AUTONOMOUS CAPABILITIES:**
- * - 🤖 **Autonomous Decision-Making**:Intelligent choice between DSPy, ML, and hybrid strategies
- * - 🎯 **Task Complexity Estimation**:ML-powered complexity analysis and optimization selection
- * - 📊 **Self-Governing Resource Allocation**:Automatic scaling and resource optimization
- * - 🧠 **Behavioral Intelligence**:Performance prediction and pattern recognition
- * - ⚡ **Real-Time Adaptation**:Continuous learning and strategy refinement
- * - 🔄 **Method Selection**:Automatic optimization based on performance history
- * - 🚀 **Rust/WASM Integration**:High-performance neural computation with FANN
- * - 🔧 **Foundation Integration**:Complete @claude-zen/foundation support
+ * -  **Autonomous Decision-Making**:Intelligent choice between DSPy, ML, and hybrid strategies
+ * -  **Task Complexity Estimation**:ML-powered complexity analysis and optimization selection
+ * -  **Self-Governing Resource Allocation**:Automatic scaling and resource optimization
+ * -  **Behavioral Intelligence**:Performance prediction and pattern recognition
+ * -  **Real-Time Adaptation**:Continuous learning and strategy refinement
+ * -  **Method Selection**:Automatic optimization based on performance history
+ * -  **Rust/WASM Integration**:High-performance neural computation with FANN
+ * -  **Foundation Integration**:Complete @claude-zen/foundation support
  *
  * **NEURAL COMPUTATION FEATURES:**
  * - FANN (Fast Artificial Neural Network) integration with Rust/WASM acceleration
@@ -649,7 +649,7 @@ export { SmartNeuralCoordinator } from './smart-neural-coordinator';
 // AUTONOMOUS DECISION-MAKING SYSTEM - Core autonomous intelligence capabilities
 // =============================================================================
 /**
- * 📊 AgentPerformancePredictor - Behavioral prediction and optimization
+ *  AgentPerformancePredictor - Behavioral prediction and optimization
  *
  * Predicts agent performance using time series analysis and clustering:
  * - Performance trend prediction
@@ -659,7 +659,7 @@ export { SmartNeuralCoordinator } from './smart-neural-coordinator';
  */
 export { AgentPerformancePredictor } from './agent-performance-predictor';
 /**
- * 🏛️ AutonomousCoordinator - Self-governing system management
+ * ️ AutonomousCoordinator - Self-governing system management
  *
  * Comprehensive autonomous system coordination and resource management:
  * - Automatic resource allocation
@@ -671,7 +671,7 @@ export { AgentPerformancePredictor } from './agent-performance-predictor';
  */
 export { AutonomousCoordinator } from './autonomous-coordinator';
 /**
- * 🤖 AutonomousOptimizationEngine - Intelligently chooses optimization methods
+ *  AutonomousOptimizationEngine - Intelligently chooses optimization methods
  *
  * Automatically decides between DSPy, ML, and hybrid optimization based on:
  * - Task complexity analysis
@@ -702,7 +702,7 @@ export { AutoencoderPreset, CNNPreset, GraphNeuralNetwork, LSTMPreset, NeuralMod
 // =============================================================================
 export { NeuralBridge as IntelligenceBridge } from './neural-bridge';
 /**
- * 🧠 SmartPromptOptimizer - ML-powered prompt enhancement
+ *  SmartPromptOptimizer - ML-powered prompt enhancement
  *
  * Advanced prompt optimization using machine learning algorithms:
  * - Pattern recognition and template matching
@@ -712,7 +712,7 @@ export { NeuralBridge as IntelligenceBridge } from './neural-bridge';
  */
 export { SmartPromptOptimizer } from './smart-prompt-optimizer';
 /**
- * 🎯 TaskComplexityEstimator - ML-based automatic task complexity analysis
+ *  TaskComplexityEstimator - ML-based automatic task complexity analysis
  *
  * Uses machine learning to estimate task complexity and suggest optimal approaches:
  * - Natural language analysis of prompts
@@ -939,10 +939,10 @@ export { CompleteIntelligenceSystem, createBasicIntelligenceSystem, createIntell
 //   SystemHealth
 //} from './monitoring/types';
 // =============================================================================
-// LOAD BALANCING SYSTEM - ⚠️ DEPRECATED (formerly @claude-zen/load-balancing)
+// LOAD BALANCING SYSTEM -  DEPRECATED (formerly @claude-zen/load-balancing)
 // =============================================================================
 // 
-// 🚫 DEPRECATED - DO NOT USE
+//  DEPRECATED - DO NOT USE
 // Load balancing is unnecessary for 1-2 user systems.
 // Use brain event coordination instead for intelligent task distribution.
 //

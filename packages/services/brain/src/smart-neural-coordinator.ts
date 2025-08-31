@@ -7,7 +7,7 @@
  *
  * Key Features:
  * - Single primary model (all-mpnet-base-v2) for optimal quality/performance balance
- * - Intelligent fallback chain (transformers → brain.js → basic features)
+ * - Intelligent fallback chain (transformers  brain.js  basic features)
  * - Smart caching system with performance-based eviction
  * - Optional OpenAI upgrade for premium quality
  * - Graceful degradation if models fail to load
@@ -385,7 +385,7 @@ export interface ModelStatus {
  * with comprehensive monitoring and telemetry integration.
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const coordinator = new SmartNeuralCoordinator({
  *   primaryModel: 'all-mpnet-base-v2', *   enableFallbacks: true,
  *   cache:{ maxSize: 10000, ttlMs: 3600000, performanceBasedEviction: true}
@@ -397,8 +397,8 @@ export interface ModelStatus {
  *   text:"Machine learning is transforming software development",
  *   qualityLevel: 'standard', *   priority:'high') *});
  *
- * logger.info(`Embedding: ${result.embedding.length}D, Quality: ${result.qualityScore}`);`
- * ````
+ * logger.info('Embedding: ${result.embedding.length}D, Quality: ' + result.qualityScore);'
+ * '
  */
 export class SmartNeuralCoordinator {
   private logger: Logger;
@@ -531,8 +531,7 @@ export class SmartNeuralCoordinator {
 });
 
           this.logger.info(
-            ` SmartNeuralCoordinator initialized successfully in ${initTime}ms``
-          );
+            ' SmartNeuralCoordinator initialized successfully in ' + initTime + 'ms');
 
           recordEvent('smart-neural-coordinator-initialized', {
     '        duration_ms: String(initTime),
@@ -555,7 +554,7 @@ export class SmartNeuralCoordinator {
             ' Failed to initialize SmartNeuralCoordinator: ','            error
           );
           throw new ContextError(
-            `SmartNeuralCoordinator initialization failed: ${error}`,`
+            'SmartNeuralCoordinator initialization failed: ' + error,'
             {
               code: 'NEURAL_INIT_ERROR',}
           );
@@ -644,8 +643,7 @@ export class SmartNeuralCoordinator {
             const processingTime = Date.now() - startTime;
 
             this.logger.debug(
-              `📦 Using cached embedding for request (${processingTime}ms)``
-            );
+              ' Using cached embedding for request (' + processingTime + 'ms)');
 
             recordMetric('smart_neural_embedding_generated', 1, {
     '          cache_hit: 'true',              model: cachedResult.model,
@@ -732,8 +730,7 @@ export class SmartNeuralCoordinator {
 });
 
           this.logger.info(
-            ` Generated embedding using ${result.model} (${processingTime}ms, quality: ${result.qualityScore.toFixed(2)})``
-          );
+            ' Generated embedding using ' + result.model + ' (' + processingTime + 'ms, quality: ' + result.qualityScore.toFixed(2) + ')');
 
           recordEvent('smart-neural-embedding-generated', {
     '        model: result.model,
@@ -1358,7 +1355,7 @@ export class SmartNeuralCoordinator {
         'neural.cache.cleared':true,
 });
 
-      this.logger.info('🗑️ SmartNeuralCoordinator cache cleared', {
+      this.logger.info('️ SmartNeuralCoordinator cache cleared', {
     '    previousSize: cacheSize,
 });
 
@@ -1375,7 +1372,7 @@ export class SmartNeuralCoordinator {
     return withAsyncTrace(
       'smart-neural-coordinator-shutdown',      async (span: Span) => {
         try {
-          this.logger.info('🛑 Shutting down SmartNeuralCoordinator...');'
+          this.logger.info(' Shutting down SmartNeuralCoordinator...');'
           // Clear caches
           await this.clearCache();
 
@@ -1446,7 +1443,7 @@ export class SmartNeuralCoordinator {
 
   private async initializeEagerLoading(): Promise<void> {
     this.logger.info(
-      '⚡ Eager loading mode - attempting to load all models...');
+      ' Eager loading mode - attempting to load all models...');
 
     // Load primary model first
     await this.loadTransformersModel();
@@ -1481,8 +1478,7 @@ export class SmartNeuralCoordinator {
 }
 
       this.logger.info(
-        `✨ OpenAI client initialized for premium features (${loadingTime}ms)``
-      );
+        ' OpenAI client initialized for premium features (' + loadingTime + 'ms)');
 } catch (error) {
       const openaiStatus = this.modelStatus.get('openai');'  if (openaiStatus) {
         openaiStatus.loaded = false;
@@ -1513,8 +1509,7 @@ export class SmartNeuralCoordinator {
 }
 
       this.logger.info(
-        ` Transformers model loaded: ${this.config.primaryModel} (${loadingTime}ms)``
-      );
+        ' Transformers model loaded: ' + this.config.primaryModel + ' (' + loadingTime + 'ms)');
 } catch (error) {
       const transformersStatus = this.modelStatus.get('transformers');'  if (transformersStatus) {
         transformersStatus.loaded = false;
@@ -1543,7 +1538,7 @@ export class SmartNeuralCoordinator {
         brainJsStatus.loadingTime = loadingTime;
 }
 
-      this.logger.info(` Brain.js model loaded (${loadingTime}ms)`);`
+      this.logger.info(' Brain.js model loaded (' + loadingTime + 'ms)');'
 } catch (error) {
       const brainJsStatus = this.modelStatus.get('brain-js');'  if (brainJsStatus) {
         brainJsStatus.loaded = false;
@@ -1570,7 +1565,7 @@ export class SmartNeuralCoordinator {
         onnxStatus.loadingTime = loadingTime;
 }
 
-      this.logger.info(` ONNX runtime loaded ($loadingTimems)`);`
+      this.logger.info(' ONNX runtime loaded ($loadingTimems)');'
 } catch (error) {
       const onnxStatus = this.modelStatus.get('onnx');'  if (onnxStatus) {
         onnxStatus.loaded = false;
@@ -1792,8 +1787,8 @@ export class SmartNeuralCoordinator {
 }
 
   private generateCacheKey(request: NeuralEmbeddingRequest): string {
-    const content = `$request.text$request.context || '`;`
-    return `${request.qualityLevel || 'standard'}:${this.hashString(content)}`;`
+    const content = '$request.text$request.context || '';'
+    return '${request.qualityLevel || 'standard'}:' + this.hashString(content);'
 }
 
   private getCachedEmbedding(cacheKey: string): CacheEntry|null {
@@ -1982,8 +1977,8 @@ export class SmartNeuralCoordinator {
   private generateClassificationCacheKey(
     request: NeuralClassificationRequest
   ):string {
-    const content = `$request.text$request.taskType$request.categories?.join(',    ') || '$request.context || '`;`
-    return `classify: ${request.qualityLevel || 'standard'}:${this.hashString(content)}`;`
+    const content = '$request.text$request.taskType$request.categories?.join(',    ') || '$request.context || '';'
+    return 'classify: ${request.qualityLevel || 'standard'}:' + this.hashString(content);'
 }
 
   private getCachedClassification(cacheKey: string): any|null {
@@ -2188,8 +2183,8 @@ export class SmartNeuralCoordinator {
   // =============================================================================
 
   private generateGenerationCacheKey(request: NeuralGenerationRequest): string {
-    const content = `$request.prompt$request.taskType$request.temperature||0.7$request.maxLength||1000$request.context||'`;`
-    return `generate: ${request.qualityLevel||'standard'}:${this.hashString(content)}`;`
+    const content = '$request.prompt$request.taskType$request.temperature||0.7$request.maxLength||1000$request.context||'';'
+    return 'generate: ${request.qualityLevel||'standard'}:' + this.hashString(content);'
 }
 
   private getCachedGeneration(cacheKey: string): any|null {
@@ -2281,9 +2276,9 @@ export class SmartNeuralCoordinator {
 }
       :{ format: 'unknown', size: 0, valid: true};'
     // Include image metadata in cache key for better cache differentiation
-    const content = `$imageHash$request.taskType$request.prompt||'}${request.context|||'$'  imageMetadata.format_$imageMetadata.size_$imageMetadata.valid ? 'valid' :' invalid'`;`
+    const content = '$imageHash$request.taskType$request.prompt||'}' + request.context|||'$'  imageMetadata.format_$imageMetadata.size_$imageMetadata.valid ? 'valid' :' invalid'';'
 
-    const cacheKey = `vision: ${request.qualityLevel||'standard'}:${this.hashString(content)}`;`
+    const cacheKey = 'vision: ${request.qualityLevel||'standard' + ':${this.hashString(content)}';'
 
     // Log cache key generation with image metadata
     this.logger.debug('Vision cache key generated with image info', {
@@ -2362,7 +2357,7 @@ export class SmartNeuralCoordinator {
 });
 
       // Return error-specific hash for better debugging
-      return `invalid_image_$errorMessage.replace(/[^\dA-Za-z]/g, '_').substring(0, 20)`;`
+      return 'invalid_image_$errorMessage.replace(/[^\dA-Za-z]/g, '_').substring(0, 20)';'
 }
 }
 
@@ -2398,8 +2393,8 @@ export class SmartNeuralCoordinator {
   private generateNeuralTaskCacheKey(request: NeuralTaskRequest): string {
     const inputStr = JSON.stringify(request.input).substring(0, 1000); // Limit size
     const paramsStr = JSON.stringify(request.parameters  || {});
-    const content = `${request.taskType}${inputStr}${paramsStr}`;`
-    return `task: $this.hashString(content)`;`
+    const content = '${request.taskType}${inputStr}' + paramsStr;'
+    return 'task: $this.hashString(content)';'
 }
 
   // =============================================================================
@@ -2727,8 +2722,7 @@ export class SmartNeuralCoordinator {
     this.cacheStats.totalRequests++;
 
     this.logger.debug(
-      `Neural task metrics recorded: ${processingTime}ms, fromCache: ${fromCache}``
-    );
+      'Neural task metrics recorded: ${processingTime}ms, fromCache: ' + fromCache);
 }
   private recordNeuralTaskError(
     error: any,
@@ -2744,7 +2738,7 @@ export class SmartNeuralCoordinator {
     span.setStatus({ code: 2, message: error.message});
 
     this.logger.error(
-      `Neural task error: ${error.message} (${processingTime}ms)`,`
+      'Neural task error: ${error.message} (' + processingTime + 'ms)','
         taskType: request.taskType,
         error: error.message,
     );
@@ -2782,7 +2776,7 @@ export class SmartNeuralCoordinator {
 };
 } catch (fallbackError) 
       return this.createNeuralTaskErrorResult(
-        `Fallback failed: ${String(fallbackError)}`,`
+        'Fallback failed: ' + String(fallbackError),'
         Date.now(),
         request
       );
@@ -2857,8 +2851,7 @@ export class SmartNeuralCoordinator {
     this.cacheStats.totalRequests++;
 
     this.logger.debug(
-      `Generation metrics recorded: ${processingTime}ms, fromCache: ${fromCache}``
-    );
+      'Generation metrics recorded: ${processingTime}ms, fromCache: ' + fromCache);
   private recordGenerationError(
     error: any,
     processingTime: number,
@@ -2873,7 +2866,7 @@ export class SmartNeuralCoordinator {
     span.setStatus({ code: 2, message: error.message});
 
     this.logger.error(
-      `Generation error: ${error.message} (${processingTime}ms)`,`
+      'Generation error: ${error.message} (' + processingTime + 'ms)','
       {
         prompt: request.prompt.substring(0, 100),
         error: error.message,
@@ -2889,8 +2882,8 @@ export class SmartNeuralCoordinator {
     try {
       const generatedText =
         prompt.length > 50
-          ? `${prompt.substring(0, 47)}...``
-          :`$prompt[Generation unavailable]`;`
+          ? prompt.substring(0, 47) + '...'
+          :'$prompt[Generation unavailable]';'
 
       return {
         success: true,
@@ -2912,7 +2905,7 @@ export class SmartNeuralCoordinator {
 },
 };catch (fallbackError) 
       return this.createGenerationErrorResult(
-        `Fallback failed: ${String(fallbackError)}`,`
+        'Fallback failed: ' + String(fallbackError),`
         Date.now(),
         request
       );

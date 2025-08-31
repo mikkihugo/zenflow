@@ -44,7 +44,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
       await this.databaseSystem.connect();
       this.initialized = true;
       this.logger.info(
-        `Foundation backend initialized with ${config.storageType} storage`
+        'Foundation backend initialized with ' + config.storageType + ' storage'
       );
       // TODO:recordMetric('memory_backend_initialized', 1, { storageType:config.storageType});
     } catch (error) {
@@ -61,7 +61,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
   ): Promise<void> {
     await this.ensureInitialized();
 
-    const finalKey = `${namespace}:${key}`;
+    const finalKey = '${namespace}:' + key;
     const entry = {
       key,
       value,
@@ -82,7 +82,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
 
       // TODO:recordMetric('memory_operations_total', 1, { operation: ' store', namespace});
     } catch (error) {
-      this.logger.error(`Failed to store key ${finalKey}:`, error);
+      this.logger.error('Failed to store key ' + finalKey + ':', error);
       // Fallback to in-memory on database error
       this.memoryStore.set(finalKey, JSON.stringify(entry));
     }
@@ -98,7 +98,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
   ): Promise<T | null> {
     await this.ensureInitialized();
 
-    const finalKey = `${namespace}:${key}`;
+    const finalKey = '${namespace}:' + key;
 
     try {
       // Try database system first
@@ -124,7 +124,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
       // TODO:recordMetric('memory_operations_total', 1, { operation: ' retrieve_miss', namespace});
       return null;
     } catch (error) {
-      this.logger.error(`Failed to retrieve key ${finalKey}:`, error);
+      this.logger.error('Failed to retrieve key ' + finalKey + ':', error);
       // Fallback to in-memory on database error
       const data = this.memoryStore.get(finalKey);
       if (data) {
@@ -142,7 +142,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
   override async delete(key: string, namespace = 'default'): Promise<boolean> {
     await this.ensureInitialized();
 
-    const finalKey = `${namespace}:${key}`;
+    const finalKey = '${namespace}:' + key;
     let deleted = false;
 
     try {
@@ -167,7 +167,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
 
       return deleted;
     } catch (error) {
-      this.logger.error(`Failed to delete key ${finalKey}:`, error);
+      this.logger.error('Failed to delete key ' + finalKey + ':', error);
       // Fallback to in-memory deletion on database error
       const existed = this.memoryStore.has(finalKey);
       if (existed) {
@@ -187,7 +187,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
     let keys: string[] = [];
 
     const allKeys = Array.from(this.memoryStore.keys());
-    const namespacePrefix = `${namespace}:`;
+    const namespacePrefix = namespace + ':';
 
     keys = allKeys
       .filter((key) => key.startsWith(namespacePrefix))
@@ -202,7 +202,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
 
     if (namespace) {
       const allKeys = Array.from(this.memoryStore.keys());
-      const namespacePrefix = `${namespace}:`;
+      const namespacePrefix = namespace + ':';
 
       for (const key of allKeys) {
         if (key.startsWith(namespacePrefix)) {
@@ -278,7 +278,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
     // Enhanced stats tracking with operation logging and size metrics
     const timestamp = Date.now();
 
-    this.logger.debug(`Memory operation:${operation} at ${timestamp}`, {
+    this.logger.debug('Memory operation:${operation} at ' + timestamp, {
       operation,
       size: size || 0,
       backend: 'foundation-adapter',
@@ -288,14 +288,14 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
     // Track operation counts and data size metrics
     if (size && size > 0) {
       this.logger.debug(
-        `Operation ${operation} processed ${size} bytes of data`
+        'Operation ${operation} processed ' + size + ' bytes of data'
       );
     }
   }
 
   private override matchesPattern(str: string, pattern: string): boolean {
     const regexPattern = pattern.replace(/\*/g, '.*');
-    const regex = new RegExp(`^${regexPattern}$`, 'i');
+    const regex = new RegExp('^' + regexPattern + '$', 'i');
     return regex.test(str);
   }
 }

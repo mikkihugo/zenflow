@@ -38,7 +38,7 @@ export class TransformProcessor implements BaseProcessor {
 
   constructor(config: ProcessorConfig) {
     this.config = config;
-    this.logger = getLogger(`TransformProcessor:${config.name}`);
+    this.logger = getLogger('TransformProcessor:' + config.name);
 
     // Parse configuration
     this.addAttributes = config.config?.addAttributes || {};
@@ -97,7 +97,7 @@ export class TransformProcessor implements BaseProcessor {
 
       if (actuallyTransformed > 0) {
         this.logger.debug(
-          `Transformed ${transformedItems.length} of ${dataItems.length} items`
+          'Transformed ${transformedItems.length} of ' + dataItems.length + ' items'
         );
 }
 
@@ -157,7 +157,7 @@ export class TransformProcessor implements BaseProcessor {
 } {
     const transformRate =
       this.processedCount > 0
-        ? `${((this.transformedCount / this.processedCount) * 100).toFixed(1)}%`
+        ? ((this.transformedCount / this.processedCount) * 100).toFixed(1) + '%'
         : '0%';
 
     return {
@@ -430,7 +430,7 @@ export class TransformProcessor implements BaseProcessor {
         }
       }
     } catch (error) {
-      this.logger.warn(`Failed to evaluate condition: ${condition}`, error);
+      this.logger.warn('Failed to evaluate condition: ' + condition, error);
     }
 
     return true; // Default to true on condition evaluation error

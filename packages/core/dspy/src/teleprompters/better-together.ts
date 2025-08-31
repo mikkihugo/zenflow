@@ -56,7 +56,7 @@ export class BetterTogether extends Teleprompter {
     // Check experimental settings exactly matching Stanford implementation
     if (!(globalThis as any).dspy?.settings?.experimental) {
       throw new Error(
-        'This is an experimental optimizer. Set `dspy.settings.experimental` to `True` to use it.'
+        'This is an experimental optimizer. Set 'dspy.settings.experimental' to 'True' to use it.'
       );
     }
 
@@ -141,7 +141,7 @@ export class BetterTogether extends Teleprompter {
 
     if (!parsed_strategy.every((s) => s === 'p' || s === 'w')) {
       throw new Error(
-        `The strategy should be a sequence of 'p' and ' w' separated by '${STRAT_SEP}', but found:${strategy}`
+        'The strategy should be a sequence of 'p' and ' w' separated by '${STRAT_SEP}', but found:' + strategy
       );
     }
 
@@ -190,7 +190,7 @@ export class BetterTogether extends Teleprompter {
         .join(STRAT_SEP);
 
       logger.info(
-        `\n########## Step ${ind + 1} of ${parsed_strategy.length} - Strategy '${current_strategy}' ##########`
+        '\n########## Step ${ind + 1} of ${parsed_strategy.length} - Strategy '' + current_strategy + '' ##########'
       );
 
       logger.info('Shuffling the trainset...');

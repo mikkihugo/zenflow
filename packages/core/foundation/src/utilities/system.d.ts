@@ -61,10 +61,10 @@ export type EnvironmentType = 'development' | 'production' | 'test' | 'staging' 
  * @returns Normalized platform name
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const platform = getPlatform();
  * logger.info(platform); // 'darwin',    'linux',    'win32', etc.
- * ```
+ * '
  */
 export declare function getPlatform(): Platform;
 /**
@@ -73,10 +73,10 @@ export declare function getPlatform(): Platform;
  * @returns Normalized architecture name
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const arch = getArchitecture();
  * logger.info(arch); // 'x64',    'arm64', etc.
- * ```
+ * '
  */
 export declare function getArchitecture(): Architecture;
 /**
@@ -85,11 +85,11 @@ export declare function getArchitecture(): Architecture;
  * @returns True if running on Windows
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * if (isWindows()) {
  *   // Windows-specific logic
  *}
- * ```
+ * '
  */
 export declare function isWindows(): boolean;
 /**
@@ -98,11 +98,11 @@ export declare function isWindows(): boolean;
  * @returns True if running on macOS
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * if (isMacOS()) {
  *   // macOS-specific logic
  *}
- * ```
+ * '
  */
 export declare function isMacOS(): boolean;
 /**
@@ -111,11 +111,11 @@ export declare function isMacOS(): boolean;
  * @returns True if running on Linux
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * if (isLinux()) {
  *   // Linux-specific logic
  *}
- * ```
+ * '
  */
 export declare function isLinux(): boolean;
 /**
@@ -124,11 +124,11 @@ export declare function isLinux(): boolean;
  * @returns True if running in CI
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * if (isCI()) {
  *   logger.info('Running in CI environment');
  *}
- * ```
+ * '
  */
 export declare function isCI(): boolean;
 /**
@@ -137,11 +137,11 @@ export declare function isCI(): boolean;
  * @returns True if running in Docker
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * if (isDocker()) {
  *   logger.info('Running in Docker container');
  *}
- * ```
+ * '
  */
 export declare function isDocker(): boolean;
 /**
@@ -150,11 +150,11 @@ export declare function isDocker(): boolean;
  * @returns True if running in WSL
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * if (isWSL()) {
  *   logger.info('Running in WSL');
  *}
- * ```
+ * '
  */
 export declare function isWSL(): boolean;
 /**
@@ -163,12 +163,12 @@ export declare function isWSL(): boolean;
  * @returns Environment type
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const env = getEnvironment();
  * if (env === 'production') {
  *   // Production-specific configuration
  *}
- * ```
+ * '
  */
 export declare function getEnvironment(): EnvironmentType;
 /**
@@ -177,11 +177,11 @@ export declare function getEnvironment(): EnvironmentType;
  * @returns True if in development mode
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * if (isDevelopment()) {
  *   // Development-only features
  *}
- * ```
+ * '
  */
 export declare function isDevelopment(): boolean;
 /**
@@ -190,11 +190,11 @@ export declare function isDevelopment(): boolean;
  * @returns True if in production mode
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * if (isProduction()) {
  *   // Production optimizations
  *}
- * ```
+ * '
  */
 export declare function isProduction(): boolean;
 /**
@@ -203,11 +203,11 @@ export declare function isProduction(): boolean;
  * @returns True if in test mode
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * if (isTest()) {
  *   // Test-specific setup
  *}
- * ```
+ * '
  */
 export declare function isTest(): boolean;
 /**
@@ -216,10 +216,10 @@ export declare function isTest(): boolean;
  * @returns System information object
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const sysInfo = getSystemInfo();
- * logger.info(`Running on ${sysInfo.platform} ${sysInfo.arch} with ${sysInfo.cpuCount} CPUs`);
- * ```
+ * logger.info('Running on ${sysInfo.platform} ${sysInfo.arch} with ' + sysInfo.cpuCount + ' CPUs');
+ * '
  */
 export declare function getSystemInfo(): SystemInfo;
 /**
@@ -228,10 +228,10 @@ export declare function getSystemInfo(): SystemInfo;
  * @returns Process information object
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const procInfo = getProcessInfo();
- * logger.info(`Process ${procInfo.pid} running for ${procInfo.uptime}s`);
- * ```
+ * logger.info('Process ' + procInfo.pid + ' running for ' + procInfo.uptime + 's');
+ * '
  */
 export declare function getProcessInfo(): ProcessInfo;
 /**
@@ -240,13 +240,13 @@ export declare function getProcessInfo(): ProcessInfo;
  * @returns WorkspaceDetector instance
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const detector = getWorkspaceDetector();
  * const workspace = await detector.detectWorkspaceRoot();
  * if (workspace) {
- *   logger.info(`Found ${workspace.tool} workspace with ${workspace.totalProjects} projects`);
+ *   logger.info('Found ${workspace.tool} workspace with ' + workspace.totalProjects + ' projects');
  *}
- * ```
+ * '
  */
 export declare function getWorkspaceDetector(): WorkspaceDetector;
 /**
@@ -256,14 +256,14 @@ export declare function getWorkspaceDetector(): WorkspaceDetector;
  * @returns Detected workspace information or null
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const workspace = await detectWorkspace();
  * if (workspace) {
- *   logger.info(`Detected ${workspace.tool} monorepo with ${workspace.totalProjects} projects`);
+ *   logger.info('Detected ' + workspace.tool + ' monorepo with ' + workspace.totalProjects + ' projects');
  *} else {
  *   logger.info('No monorepo detected');
  *}
- * ```
+ * '
  */
 export declare function detectWorkspace(startPath?: string): Promise<DetectedWorkspace | null>;
 /**
@@ -272,31 +272,31 @@ export declare function detectWorkspace(startPath?: string): Promise<DetectedWor
  * @returns System capability data
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const capabilities = await getSystemCapabilities();
- * logger.info(`System health:${capabilities.systemHealthScore}%`);
- * logger.info(`Available packages:${capabilities.availablePackages}/${capabilities.totalPackages}`);
- * ```
+ * logger.info('System health:' + capabilities.systemHealthScore + '%');
+ * logger.info('Available packages:${capabilities.availablePackages}/' + capabilities.totalPackages);
+ * '
  */
 export declare function getSystemCapabilities(): Promise<SystemCapabilityData>;
 /**
  * Display system status information to console
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * await showSystemStatus();
  * // Outputs detailed system status with colors and emojis
- * ```
+ * '
  */
 export declare function showSystemStatus(): Promise<void>;
 /**
  * Start system monitoring for status changes
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * startMonitoring();
  * // Begins logging system events and status changes
- * ```
+ * '
  */
 export declare function startMonitoring(): void;
 /**
@@ -305,11 +305,11 @@ export declare function startMonitoring(): void;
  * @returns Record of capability area names to scores
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const scores = await getCapabilityScoreMap();
  * logger.info('Intelligence capability: ', scores.intelligence);
 ' * logger.info('Infrastructure capability: ', scores.infrastructure);
-' * ```
+' * '
  */
 export declare function getCapabilityScoreMap(): Promise<Record<string, number>>;
 /**
@@ -318,11 +318,11 @@ export declare function getCapabilityScoreMap(): Promise<Record<string, number>>
  * @returns Formatted system summary string
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const summary = createSystemSummary();
  * logger.info(summary);
  * // Outputs:"Linux x64 (Node.js v18.17.0) - 8 CPUs, 16.0GB RAM - Development"
- * ```
+ * '
  */
 export declare function createSystemSummary(): string;
 /**
@@ -332,7 +332,7 @@ export declare function createSystemSummary(): string;
  * @returns True if requirements are met
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const meetsRequirements = checkSystemRequirements({
  *   nodeVersion: '18.0.0', *   totalMemoryGB:8,
  *   cpuCount:4
@@ -341,7 +341,7 @@ export declare function createSystemSummary(): string;
  * if (!meetsRequirements) {
  *   logger.warn('System does not meet minimum requirements');
  *}
- * ```
+ * '
  */
 export declare function checkSystemRequirements(requirements: {
     nodeVersion?: string;

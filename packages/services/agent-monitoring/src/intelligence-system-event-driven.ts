@@ -11,13 +11,13 @@
 
 const createLogger = (name: string) => ({
   info:(message: string, meta?:unknown) => 
-    console.info(`[INFO: ${name}] ${message}`, meta ? JSON.stringify(meta) :''),
+    console.info('[INFO: ${name}] ' + message, meta ? JSON.stringify(meta) :''),
   debug:(message: string, meta?:unknown) => 
-    console.info(`[DEBUG: ${name}] ${message}`, meta ? JSON.stringify(meta) : '{}'),
+    console.info('[DEBUG: ${name}] ' + message, meta ? JSON.stringify(meta) : '{}'),
   warn:(message: string, meta?:unknown) => 
-    console.warn(`[WARN: ${name}] ${message}`, meta ? JSON.stringify(meta) : '{}'),
+    console.warn('[WARN: ${name}] ' + message, meta ? JSON.stringify(meta) : '{}'),
   error:(message: string, meta?:unknown) => 
-    console.error(`[ERROR: ${name}] ${message}`, meta ? JSON.stringify(meta) : '{}'),
+    console.error('[ERROR: ${name}] ' + message, meta ? JSON.stringify(meta) : '{}'),
 });
 
 // =============================================================================
@@ -196,7 +196,7 @@ export class EventDrivenIntelligenceSystem {
       try {
         listener(data);
 } catch (error) {
-        this.logger.error(`Event listener error for ${event}`, {
+        this.logger.error('Event listener error for ' + event, {
           error: error instanceof Error ? error.message : String(error)
 });
 }
@@ -378,7 +378,7 @@ export class EventDrivenIntelligenceSystem {
       taskType,
       predictedDuration,
       confidence,
-      factors:[`complexity: ${complexity}`, `agent_type: ${agentId.type}`, `base_time: ${baseTime}`],
+      factors:['complexity: ' + complexity, 'agent_type: ' + agentId.type, 'base_time: ' + baseTime],
       lastUpdated: new Date(),
 };
 }

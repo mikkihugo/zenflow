@@ -152,7 +152,7 @@ export class ProjectSwitcher extends EventEmitter {
 
       logger.info('Project switch completed successfully', {
         projectId: result.projectId,
-        duration: `${Date.now() - startTime}ms`,
+        duration: Date.now() - startTime + 'ms',
         previousProject: result.previousProject,
       });
 
@@ -231,13 +231,13 @@ export class ProjectSwitcher extends EventEmitter {
 
       if (!project) {
         throw new Error(
-          `Project with ID ${request.projectId} not found in registry`
+          'Project with ID ' + request.projectId + ' not found in registry'
         );
       }
 
       // Verify project path still exists
       if (!fs.existsSync(project._path)) {
-        throw new Error(`Project path ${project.path} no longer exists`);
+        throw new Error('Project path ' + project.path + ' no longer exists');
       }
 
       return {
@@ -250,7 +250,7 @@ export class ProjectSwitcher extends EventEmitter {
       const absolutePath = path.resolve(request.projectPath);
 
       if (!fs.existsSync(absolutePath)) {
-        throw new Error(`Project path ${absolutePath} does not exist`);
+        throw new Error('Project path ' + absolutePath + ' does not exist');
       }
 
       // Generate project info for new path
@@ -419,7 +419,7 @@ export class ProjectSwitcher extends EventEmitter {
     // Create timeout promise
     const timeoutPromise = new Promise<never>((resolve, reject) => {
       setTimeout(() => {
-        reject(new Error(`Shutdown timeout after ${timeout}ms`));
+        reject(new Error('Shutdown timeout after ' + timeout + 'ms'));
       }, timeout);
     });
 
@@ -454,7 +454,7 @@ export class ProjectSwitcher extends EventEmitter {
       });
     } catch (_error) {
       throw new Error(
-        `Failed to switch to project directory ${absolutePath}:${(error as Error).message}`
+        'Failed to switch to project directory ${absolutePath}:' + (error as Error).message
       );
     }
   }

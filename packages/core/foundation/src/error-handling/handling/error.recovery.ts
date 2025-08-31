@@ -31,7 +31,7 @@
  * @see {@link https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/} Retry Strategies
  *
  * @example Basic Recovery Strategy
- * ```typescript`
+ * '''typescript'
  * import { ErrorRecoverySystem} from '@claude-zen/foundation';
  *
  * const recovery = new ErrorRecoverySystem({
@@ -44,7 +44,7 @@
  *
  * const result = await recovery.handleError({
  *   errorId: 'neural-training-failure', *   component: 'neural-network', *   operation: 'train', *   errorType: 'timeout', *   severity:'high') *});
- * ```
+ * `
  */
 
 // Foundation re-exports Result types - use internal imports to avoid circular dependency
@@ -575,7 +575,7 @@ export class ErrorRecoverySystem extends EventEmitter<ServiceEvents> {
         result.actionsExecuted.push(actionResult);
 
         if (!actionResult.success && !action.retryable) {
-          throw new Error(`Recovery action failed:${actionResult.error}`);
+          throw new Error('Recovery action failed:' + actionResult.error);
         }
       }
 
@@ -701,7 +701,7 @@ export class ErrorRecoverySystem extends EventEmitter<ServiceEvents> {
         };
 
       default:
-        throw new Error(`Unknown recovery action type:${action.type}`);
+        throw new Error('Unknown recovery action type:' + action.type);
     }
   }
 
@@ -795,7 +795,7 @@ export function createRetryStrategy(options: {
   return {
     id: options.id,
     name: options.name,
-    description: `Retry with exponential backoff (max ${maxRetries} attempts)`,
+    description: 'Retry with exponential backoff (max ' + maxRetries + ' attempts)',
     severity: options.severity ?? 'medium',
     type: 'retry',
     timeout: maxDelay * maxRetries * 2,
@@ -814,7 +814,7 @@ export function createRetryStrategy(options: {
 
       return {
         success: true,
-        message: `Retry attempt ${retryCount}/${maxRetries} after ${delay}ms delay`,
+        message: 'Retry attempt ${retryCount}/${maxRetries} after ' + delay + 'ms delay',
         recoverTime: delay,
         metadata: { retryCount, delay, strategy: 'exponential_backoff' },
       };
@@ -863,7 +863,7 @@ export function createFallbackStrategy(options: {
       } catch (fallbackError) {
         return {
           success: false,
-          message: `Fallback operation failed: ${fallbackError instanceof Error ? fallbackError.message : String(fallbackError)}`,
+          message: 'Fallback operation failed: ' + fallbackError instanceof Error ? fallbackError.message : String(fallbackError),
           recoverTime: 0,
           metadata: {
             fallbackError:
@@ -898,7 +898,7 @@ export function createCircuitBreakerStrategy(options: {
   return {
     id: options.id,
     name: options.name,
-    description: `Circuit breaker with ${failureThreshold} failure threshold`,
+    description: 'Circuit breaker with ' + failureThreshold + ' failure threshold',
     severity: options.severity ?? 'high',
     type: 'circuit_breaker',
     timeout: resetTimeout,
@@ -932,7 +932,7 @@ export function createCircuitBreakerStrategy(options: {
 
       return {
         success: true,
-        message: `Circuit breaker allowing operation (failures: ${failureCount}/${failureThreshold})`,
+        message: 'Circuit breaker allowing operation (failures: ${failureCount}/' + failureThreshold + ')',
         recoverTime: 0,
         metadata: {
           failureCount,
@@ -981,7 +981,7 @@ export function createGracefulDegradationStrategy(options: {
         } catch (degradationError) {
           return {
             success: false,
-            message: `Graceful degradation failed: ${degradationError instanceof Error ? degradationError.message : String(degradationError)}`,
+            message: 'Graceful degradation failed: ' + degradationError instanceof Error ? degradationError.message : String(degradationError),
             recoverTime: 0,
             metadata: {
               strategy: 'graceful_degradation',
@@ -1015,7 +1015,7 @@ export function createTimeoutStrategy(options: {
   return {
     id: options.id,
     name: options.name,
-    description: `Timeout after ${timeoutMs}ms and attempt recovery`,
+    description: 'Timeout after ' + timeoutMs + 'ms and attempt recovery',
     severity: options.severity ?? 'medium',
     type: 'timeout',
     timeout: timeoutMs,
@@ -1033,7 +1033,7 @@ export function createTimeoutStrategy(options: {
 
       return {
         success: true,
-        message: `Operation timed out after ${timeoutMs}ms - recovery initiated`,
+        message: 'Operation timed out after ' + timeoutMs + 'ms - recovery initiated',
         recoverTime: 0,
         metadata: { strategy: 'timeout_recovery', timeoutMs },
       };
@@ -1060,7 +1060,7 @@ export function createRateLimitStrategy(options: {
   return {
     id: options.id,
     name: options.name,
-    description: `Rate limiting with max ${maxRequestsPerSecond} requests per second`,
+    description: 'Rate limiting with max ' + maxRequestsPerSecond + ' requests per second',
     severity: options.severity ?? 'medium',
     type: 'custom',
     timeout: backoffMs * 2,
@@ -1088,7 +1088,7 @@ export function createRateLimitStrategy(options: {
 
       return {
         success: true,
-        message: `Rate limit backoff completed after ${backoffMs}ms`,
+        message: 'Rate limit backoff completed after ' + backoffMs + 'ms',
         recoverTime: backoffMs,
         metadata: {
           strategy: 'rate_limit',
@@ -1198,7 +1198,7 @@ function convertToRecoveryStrategy(
   return {
     id: simple.id,
     name: simple.name,
-    description: simple.description ?? `${simple.name} recovery strategy`,
+    description: simple.description ?? simple.name + ' recovery strategy',
     severity: simple.severity,
     type: simple.type ?? 'custom',
     timeout: simple.timeout,
@@ -1293,7 +1293,7 @@ export async function executeSimpleRecovery(
   } catch (error) {
     return {
       success: false,
-      message: `Simple recovery failed: ${error instanceof Error ? error.message : String(error)}`,
+      message: 'Simple recovery failed: ' + error instanceof Error ? error.message : String(error),
       recoverTime: 0,
       metadata: { error: String(error), strategy: strategy.id },
     };

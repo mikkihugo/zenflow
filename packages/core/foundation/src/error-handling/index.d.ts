@@ -5,7 +5,7 @@
  * Provides Result pattern, circuit breakers, retry logic, and error recovery mechanisms.
  *
  * @example Basic Error Handling
- * ```typescript`
+ * '''typescript'
  * import { Result, ok, err, safeAsync} from '@claude-zen/foundation/error-handling';
  *
  * const result = await safeAsync(async () => {
@@ -17,10 +17,10 @@
 ' *} else {
  *   logger.error('Error: ', result.error);
 ' *}
- * ```
+ * '
  *
  * @example Circuit Breaker Pattern
- * ```typescript`
+ * '''typescript'
  * import { createCircuitBreaker} from '@claude-zen/foundation/error-handling';
  *
  * const breaker = createCircuitBreaker({
@@ -28,7 +28,7 @@
  *   timeout:60000,
  *   monitor:true
  *});
- * ```
+ * '
  */
 export * from './errors/base.errors';
 export type { CircuitBreakerOptions, CockatielRetryOptions, CockatielTimeoutOptions, RetryOptions, } from './handling/error.handler';

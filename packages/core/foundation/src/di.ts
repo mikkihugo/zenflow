@@ -49,10 +49,10 @@ export {
  *
  * @template T - The type of service this token represents
  * @example
- * ```typescript`
+ * '''typescript'
  * const USER_SERVICE:InjectionToken<UserService> = Symbol('UserService');
  * const API_URL:InjectionToken<string> = 'apiUrl';
- * ```
+ * '
  */
 export type InjectionToken<T = unknown> =
   | string
@@ -61,9 +61,9 @@ export type InjectionToken<T = unknown> =
 
 /**
  * Service lifecycle options compatible with Awilix.
- * - `singleton`:One instance shared across the application`
- * - `transient`:New instance created for each resolution`
- * - `scoped`:One instance per scope/request`
+ * - 'singleton':One instance shared across the application'
+ * - 'transient':New instance created for each resolution'
+ * - 'scoped':One instance per scope/request'
  */
 export type LifecycleCompat = 'singleton' | 'transient' | 'scoped';
 
@@ -71,13 +71,13 @@ export type LifecycleCompat = 'singleton' | 'transient' | 'scoped';
  * Options for service registration in the DI container.
  *
  * @example
- * ```typescript`
+ * 'typescript'
  * const options:ServiceRegistrationOptions = {
  *   lifetime: 'singleton', *   capabilities: ['database',    'auth'],
  *   tags: ['critical',    'external'],
  *   healthCheck:() => database.isConnected()
  *};
- * ```
+ * '
  */
 export interface ServiceRegistrationOptions {
   /** Service lifecycle - how instances are managed */
@@ -94,11 +94,11 @@ export interface ServiceRegistrationOptions {
  * Service lifetime enumeration for type-safe lifecycle management.
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * container.register('service', asClass(MyService).scoped());
  * // Equivalent to:
  * container.register('service', asClass(MyService).lifetime(Lifetime.Scoped));
- * ```
+ * '
  */
 export enum Lifetime {
   /** Single instance shared across the application */

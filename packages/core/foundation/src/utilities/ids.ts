@@ -5,20 +5,20 @@
  * All ID generation functions unified in one location.
  *
  * @example UUID Generation
- * ```typescript`
+ * '''typescript'
  * import { generateUUID, isUUID} from '@claude-zen/foundation/utilities/ids';
  *
  * const id = generateUUID();
  * logger.info(isUUID(id)); // true
- * ```
+ * '
  *
  * @example Short ID Generation
- * ```typescript`
+ * '''typescript'
  * import { generateShortId, generateCustomId} from '@claude-zen/foundation/utilities/ids';
  *
  * const shortId = generateShortId(); // nanoid
  * const customId = generateCustomId(16); // hex-based
- * ```
+ * '
  */
 
 import { randomBytes, randomUUID } from 'node:crypto';
@@ -35,9 +35,9 @@ import type { UUID } from '../types/primitives';
  *
  * @returns UUID v4 string
  * @example
- * ```typescript`
+ * '''typescript'
  * const id = generateUUID(); // "f47ac10b-58cc-4372-a567-0e02b2c3d479"
- * ```
+ * '
  */
 export function generateUUID(): UUID {
   return randomUUID() as UUID;
@@ -50,10 +50,10 @@ export function generateUUID(): UUID {
  * @param value - String to validate
  * @returns True if valid UUID format
  * @example
- * ```typescript`
+ * '''typescript'
  * logger.info(isUUID("f47ac10b-58cc-4372-a567-0e02b2c3d479")); // true
  * logger.info(isUUID("not-a-uuid")); // false
- * ```
+ * '
  */
 export function isUUID(value: unknown): value is UUID {
   return (
@@ -75,10 +75,10 @@ export function isUUID(value: unknown): value is UUID {
  * @param size - Optional size (default:21)
  * @returns URL-safe short ID
  * @example
- * ```typescript`
+ * '''typescript'
  * const id = generateShortId(); // "V1StGXR8_Z5jdHi6B-myT"
  * const shortId = generateShortId(10); // "V1StGXR8_Z"
- * ```
+ * '
  */
 export function generateShortId(size?: number): string {
   return nanoid(size);
@@ -92,10 +92,10 @@ export function generateShortId(size?: number): string {
  * @param size - Default size for generated IDs
  * @returns Custom ID generator function
  * @example
- * ```typescript`
+ * '''typescript'
  * const generateNumericId = createCustomGenerator('0123456789', 8);
  * const id = generateNumericId(); // "84751249"
- * ```
+ * '
  */
 export function createCustomGenerator(alphabet: string, size: number = 21) {
   return customAlphabet(alphabet, size);
@@ -112,10 +112,10 @@ export function createCustomGenerator(alphabet: string, size: number = 21) {
  * @param bytes - Number of random bytes (default:16)
  * @returns Hex string ID
  * @example
- * ```typescript`
+ * '''typescript'
  * const id = generateCustomId(); // "a1b2c3d4e5f6789012345678"
  * const shortId = generateCustomId(8); // "a1b2c3d4e5f6"
- * ```
+ * '
  */
 export function generateCustomId(bytes: number = 16): string {
   return randomBytes(bytes).toString('hex');
@@ -129,10 +129,10 @@ export function generateCustomId(bytes: number = 16): string {
  * @param randomBytes - Number of random bytes to append (default:4)
  * @returns Timestamped ID
  * @example
- * ```typescript`
+ * '''typescript'
  * const id = generateTimestampId(); // "1640995200000-a1b2c3d4"
  * const prefixedId = generateTimestampId("user"); // "user-1640995200000-a1b2c3d4"
- * ```
+ * '
  */
 export function generateTimestampId(
   prefix?: string,
@@ -141,7 +141,7 @@ export function generateTimestampId(
   const timestamp = Date.now();
   const random = randomBytes(randomBytesCount).toString('hex');
 
-  return prefix ? `${prefix}-${timestamp}-${random}` : `${timestamp}-${random}`;
+  return prefix ? '${prefix}-${timestamp}-' + random : '${timestamp}-' + random;
 }
 
 // =============================================================================
@@ -154,10 +154,10 @@ export function generateTimestampId(
  *
  * @returns Secure session ID
  * @example
- * ```typescript`
+ * 'typescript'
  * const sessionId = generateSessionId();
  * // "a1b2c3d4e5f67890123456789abcdef01234567890abcdef1234567890abcdef"
- * ```
+ * '
  */
 export function generateSessionId(): string {
   return randomBytes(32).toString('hex');
@@ -171,17 +171,17 @@ export function generateSessionId(): string {
  * @param bytes - Random bytes for key data (default:24)
  * @returns Formatted API key
  * @example
- * ```typescript`
+ * '''typescript'
  * const apiKey = generateApiKey("sk"); // "sk_1a2b3c4d5e6f..."
  * const publicKey = generateApiKey("pk", 16); // "pk_1a2b3c4d..."
- * ```
+ * '
  */
 export function generateApiKey(
   prefix: string = 'key',
   bytes: number = 24
 ): string {
   const keyData = randomBytes(bytes).toString('base64url');
-  return `${prefix}_${keyData}`;
+  return '${prefix}_' + keyData;
 }
 
 // =============================================================================

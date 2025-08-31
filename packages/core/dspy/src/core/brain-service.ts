@@ -5,7 +5,7 @@
  * internally and provides intelligent, optimized responses to system requests.
  *
  * Architecture:
- * System → Brain → DSPy → Foundation (LLM)
+ * System  Brain  DSPy  Foundation (LLM)
  *
  * @author Claude Code Zen Team
  * @version 2.0.0
@@ -101,7 +101,7 @@ export class BrainService {
     const startTime = Date.now();
 
     // Add context to conversation history
-    this.conversationContext.push(`Task:${request.task}`);
+    this.conversationContext.push('Task:' + request.task);
     if (this.conversationContext.length > 10) {
       this.conversationContext = this.conversationContext.slice(-10); // Keep last 10
     }
@@ -133,7 +133,7 @@ export class BrainService {
       };
     } catch (error) {
       logger.error('[Brain] Analysis failed:', error);
-      throw new Error(`Brain analysis failed:${error}`);
+      throw new Error('Brain analysis failed:' + error);
     }
   }
 
@@ -178,7 +178,7 @@ export class BrainService {
       this.optimizationCache.set(cacheKey, optimization);
 
       logger.info(
-        `[Brain] Optimized prompt with ${optimization.improvement.toFixed(3)} improvement`
+        '[Brain] Optimized prompt with ' + optimization.improvement.toFixed(3) + ' improvement'
       );
 
       return {
@@ -189,7 +189,7 @@ export class BrainService {
       };
     } catch (error) {
       logger.error('[Brain] Prompt optimization failed:', error);
-      throw new Error(`Brain prompt optimization failed:${error}`);
+      throw new Error('Brain prompt optimization failed:' + error);
     }
   }
 
@@ -262,7 +262,7 @@ export class BrainService {
     );
 
     logger.info(
-      `[Brain] Used DSPy optimization (${optimization.improvement.toFixed(3)} improvement)`
+      '[Brain] Used DSPy optimization (' + optimization.improvement.toFixed(3) + ' improvement)'
     );
     return result;
   }
@@ -290,13 +290,13 @@ export class BrainService {
     let prompt = request.task;
 
     if (request.context) {
-      prompt = `Context:${request.context}\n\nTask:${prompt}`;
+      prompt = 'Context:${request.context}\n\nTask:' + prompt;
     }
 
     // Add conversation context if available
     if (this.conversationContext.length > 1) {
       const recentContext = this.conversationContext.slice(-3).join('\n');
-      prompt = `Recent conversation:\n${recentContext}\n\nCurrent task:${prompt}`;
+      prompt = 'Recent conversation:\n${recentContext}\n\nCurrent task:' + prompt;
     }
 
     return prompt;
@@ -316,9 +316,9 @@ export class BrainService {
 
       for (const [index, taskCtx] of recentTasks.entries()) {
         examples.push({
-          id: `context-${index}`,
+          id: 'context-' + index,
           input: taskCtx.replace('Task: ', ''),
-          output: `Analyzed and provided insights for: ${taskCtx.replace('Task: ', '')}`,
+          output: 'Analyzed and provided insights for: ' + taskCtx.replace('Task: ', ''),
           metadata: { createdAt: new Date(), source: 'conversation-context' },
         });
       }
@@ -357,7 +357,7 @@ export class BrainService {
    * Private:Generate cache key for optimization results
    */
   private generateCacheKey(prompt: string, domain?: string): string {
-    const content = `${prompt}-${domain || 'general'}`;
+    const content = '${prompt}-' + domain || 'general';
     return Buffer.from(content).toString('base64').slice(0, 32);
   }
 }

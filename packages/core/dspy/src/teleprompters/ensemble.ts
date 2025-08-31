@@ -77,7 +77,7 @@ class EnsembledProgram extends DSPyModule {
     // Return outputs as-is (note:this matches Python behavior)
     return {
       data: { outputs },
-      reasoning: `Ensemble of ${outputs.length} programs`,
+      reasoning: 'Ensemble of ' + outputs.length + ' programs',
       confidence:
         outputs.reduce((sum, output) => sum + (output.confidence || 0), 0) /
         outputs.length,
@@ -107,7 +107,7 @@ class EnsembledProgram extends DSPyModule {
       if (typeof program.namedPredictors === 'function') {
         const programPredictors = program.namedPredictors();
         for (const [name, predictor] of programPredictors) {
-          allNamedPredictors.push([`program_${i}_${name}`, predictor]);
+          allNamedPredictors.push(['program_${i}_' + name, predictor]);
         }
       }
     }
@@ -132,7 +132,7 @@ class EnsembledProgram extends DSPyModule {
  * Combines multiple programs into an ensemble with optional reduce function.
  *
  * @example
- * ```typescript`
+ * 'typescript'
  * // Basic ensemble with all programs
  * const ensemble = new Ensemble();
  * const ensembledProgram = ensemble.compile([
@@ -206,11 +206,11 @@ class EnsembledProgram extends DSPyModule {
  *       return {
  *         data:consensus.data,
  *         confidence:consensus.normalizedWeight,
- *         reasoning:`Ensemble consensus from ${validOutputs.length}/${outputs.length} members`
+ *         reasoning:'Ensemble consensus from ${validOutputs.length}/' + outputs.length + ' members'
  *};
  *} catch (error) {
  *       return {
- *         data:{ error: `Ensemble reduce failed: ${error.message}`},
+ *         data:{ error: 'Ensemble reduce failed: ' + error.message},
  *         confidence:0
  *};
  *}
@@ -236,7 +236,7 @@ class EnsembledProgram extends DSPyModule {
  *     return {
  *       data:expertChoice.data,
  *       confidence:expertChoice.expertise,
- *       reasoning:`Selected expert for domain: ${expertChoice.domain}`
+ *       reasoning:'Selected expert for domain: ' + expertChoice.domain
  *};
  *}
  *});
@@ -255,7 +255,7 @@ class EnsembledProgram extends DSPyModule {
  * // Access ensemble configuration
  * const config = ensemble.getConfig();
  * logger.info('Ensemble settings: ', config);
-' * ```
+' * `
  */
 export class Ensemble {
   private config: Required<EnsembleConfig>;

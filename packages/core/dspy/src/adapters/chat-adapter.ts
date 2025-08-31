@@ -163,7 +163,7 @@ export class ChatAdapter extends BaseAdapter {
 
 		// For multiple inputs, format as key-value pairs
 		return inputPairs
-			.map(([key, value]) => `${this.capitalizeFirst(key)}: ${value}`)
+			.map(([key, value]) => '${this.capitalizeFirst(key)}: ' + value)
 			.join("\n");
 	}
 
@@ -199,7 +199,7 @@ export class ChatAdapter extends BaseAdapter {
 
 		// For multiple outputs, format as key-value pairs
 		return outputPairs
-			.map(([key, value]) => `${this.capitalizeFirst(key)}: ${value}`)
+			.map(([key, value]) => '${this.capitalizeFirst(key)}: ' + value)
 			.join("\n");
 	}
 
@@ -271,7 +271,7 @@ export class ChatAdapter extends BaseAdapter {
 		return messages
 			.map((msg) => {
 				const roleLabel = msg.role.toUpperCase();
-				return `${roleLabel}: ${msg.content}`;
+				return '${roleLabel}: ' + msg.content;
 })
 			.join("\n\n");
 }

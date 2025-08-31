@@ -264,7 +264,7 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
   ): Promise<void> {
     if (this.lifecycleManager) {
       await this.lifecycleManager.store(
-        `knowledge:${sessionData.sessionId}`,
+        'knowledge:' + sessionData.sessionId,
         extractedKnowledge,
         {
           stage: 'warm',
@@ -272,7 +272,7 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
           tags: [
             'extracted-knowledge',
             sessionData.type,
-            `swarm:${sessionData.swarmId}`,
+            'swarm:' + sessionData.swarmId,
           ],
         }
       );
@@ -302,7 +302,7 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
     });
 
     this.logger.info(
-      `Knowledge extracted from session ${sessionData.sessionId}`,
+      'Knowledge extracted from session ' + sessionData.sessionId,
       {
         importance,
         confidence,
@@ -333,7 +333,7 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
         // Check if session meets extraction criteria
         if (!this.shouldExtract(sessionData)) {
           this.logger.debug(
-            `Skipping extraction for session ${sessionData.sessionId}:does not meet criteria`
+            'Skipping extraction for session ' + sessionData.sessionId + ':does not meet criteria'
           );
           throw new Error('Session does not meet extraction criteria');
         }
@@ -371,7 +371,7 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
         return extractedKnowledge;
       } catch (error) {
         this.logger.error(
-          `Failed to extract knowledge from session ${sessionData.sessionId}:`,
+          'Failed to extract knowledge from session ' + sessionData.sessionId + ':',
           error
         );
         recordMetric('swarm_knowledge_extraction_failed', 1);
@@ -399,7 +399,7 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
       });
     } catch (error) {
       this.logger.error(
-        `Pre-deletion extraction failed for entry ${entryId}:`,
+        'Pre-deletion extraction failed for entry ' + entryId + ':',
         error
       );
     }
@@ -505,7 +505,7 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
   private parseSessionData(entryData:unknown): SwarmSession {
     // Parse and normalize session data from various formats
     return {
-      sessionId: entryData.sessionId || entryData.id || `session-${Date.now()}`,
+      sessionId: entryData.sessionId || entryData.id || 'session-' + Date.now(),
       swarmId: entryData.swarmId || 'unknown',
       type: entryData.type || 'coordination-swarm',
       startTime: entryData.startTime || Date.now() - 3600000,
@@ -550,10 +550,10 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
       const collaborationSuccess = sessionData.collaborationPatterns
         .filter((p) => p.effectiveness > 0.7)
         .map((p) => ({
-          pattern: `Collaboration: ${p.pattern}`,
+          pattern: 'Collaboration: ' + p.pattern,
           successRate: p.effectiveness,
           contexts: ['team-coordination'],
-          recommendations: [`Repeat pattern: ${p.pattern}`],
+          recommendations: ['Repeat pattern: ' + p.pattern],
         }));
 
       patterns.push(...collaborationSuccess);
@@ -622,7 +622,7 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
     )) {
       outcomes.push({
         topic: 'decision-making',
-        insight: `Successful decision in context: ${decision.context}`,
+        insight: 'Successful decision in context: ' + decision.context,
         confidence: 0.8,
         applicability: ['similar-contexts', 'team-decisions'],
       });
@@ -633,10 +633,10 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
       (a) => a.quality > 0.8
     )) {
       outcomes.push({
-        topic: `${artifact.type}-creation`,
-        insight: `High-quality ${artifact.type} production methods`,
+        topic: artifact.type + '-creation',
+        insight: 'High-quality ' + artifact.type + ' production methods',
         confidence: artifact.quality,
-        applicability: [`${artifact.type}-tasks`, 'quality-improvement'],
+        applicability: [artifact.type + '-tasks', 'quality-improvement'],
       });
     }
 
@@ -664,7 +664,7 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
 
       for (const [context, failureList] of failureGroups.entries()) {
         patterns.push({
-          pattern: `Failures in ${context}`,
+          pattern: 'Failures in ' + context,
           frequency: failureList.length / sessionData.decisions.length,
           rootCauses: ['context-specific-challenges', 'coordination-issues'],
           mitigations: ['additional-context-analysis', 'improved-coordination'],
@@ -692,16 +692,16 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
 
         if (metrics.iterations > 3) {
           bottlenecks.push(
-            `${phase}:excessive iterations (${metrics.iterations})`
+            '${phase}:excessive iterations (' + metrics.iterations + ')'
           );
           optimizations.push(
-            `Improve ${phase} initial quality to reduce iterations`
+            'Improve ' + phase + ' initial quality to reduce iterations'
           );
         }
 
         if (metrics.quality < 0.7) {
-          bottlenecks.push(`${phase}:low quality output (${metrics.quality})`);
-          optimizations.push(`Focus on ${phase} quality improvement`);
+          bottlenecks.push('${phase}:low quality output (' + metrics.quality + ')');
+          optimizations.push('Focus on ' + phase + ' quality improvement');
         }
       }
 

@@ -252,7 +252,7 @@ export class MIPROv2ML extends Teleprompter {
       );
     } catch (error) {
       this.logger.error('Failed to initialize MIPROv2ML:', error);
-      throw new Error(`MIPROv2ML initialization failed:${error}`);
+      throw new Error('MIPROv2ML initialization failed:' + error);
     }
   }
 
@@ -364,7 +364,7 @@ export class MIPROv2ML extends Teleprompter {
       };
     } catch (error) {
       this.logger.error('MIPROv2ML compilation failed:', error);
-      throw new Error(`MIPROv2ML compilation error:${error}`);
+      throw new Error('MIPROv2ML compilation error:' + error);
     }
   }
 
@@ -406,7 +406,7 @@ export class MIPROv2ML extends Teleprompter {
     const bestSolution = this.selectBestSolution(result, weights);
 
     this.logger.info(
-      `Multi-objective optimization completed. Found ${result.solutions.length} Pareto solutions`
+      'Multi-objective optimization completed. Found ' + result.solutions.length + ' Pareto solutions'
     );
 
     return {
@@ -451,7 +451,7 @@ export class MIPROv2ML extends Teleprompter {
     const result = await this.bayesianOptimizer?.optimize(objectiveFunction);
 
     this.logger.info(
-      `Bayesian optimization completed after ${result.iterations} iterations`
+      'Bayesian optimization completed after ' + result.iterations + ' iterations'
     );
 
     return result;
@@ -484,7 +484,7 @@ export class MIPROv2ML extends Teleprompter {
     const embeddings = trajectoryFeatures.map((features) => [features]);
 
     const trainingExamples = embeddings.map((embedding, i) => ({
-      text: `optimization_point_${i}`,
+      text: 'optimization_point_' + i,
       embedding,
       success: this.optimizationHistory[i].accuracy > 0.7,
       metadata: {
@@ -499,7 +499,7 @@ export class MIPROv2ML extends Teleprompter {
       ? patternResult
       : patternResult.patterns || [];
 
-    this.logger.info(`Detected ${patterns.length} optimization patterns`);
+    this.logger.info('Detected ' + patterns.length + ' optimization patterns');
 
     return patterns;
   }
@@ -563,7 +563,7 @@ export class MIPROv2ML extends Teleprompter {
       });
     }
 
-    this.logger.info(`Completed ${tests.length} statistical tests`);
+    this.logger.info('Completed ' + tests.length + ' statistical tests');
 
     return tests;
   }
@@ -691,7 +691,7 @@ export class MIPROv2ML extends Teleprompter {
       );
       if (highQualityPatterns.length > 0) {
         recommendations.push(
-          `Found ${highQualityPatterns.length} high-quality optimization patterns - consider pattern-based initialization for future runs`
+          'Found ' + highQualityPatterns.length + ' high-quality optimization patterns - consider pattern-based initialization for future runs'
         );
       }
     }
@@ -700,7 +700,7 @@ export class MIPROv2ML extends Teleprompter {
     const significantTests = tests.filter((test) => test.significant);
     if (significantTests.length > 0) {
       recommendations.push(
-        `${significantTests.length} statistical tests show significant improvement - results are statistically reliable`
+        significantTests.length + ' statistical tests show significant improvement - results are statistically reliable'
       );
     }
 

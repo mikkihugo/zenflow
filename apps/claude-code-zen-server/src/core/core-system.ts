@@ -174,7 +174,7 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       if (!this.taskMasterService) {
         this.taskMasterService = await getTaskMasterService();
         await this.taskMasterService.initialize();
-        logger.info('✅ TaskMaster service initialized');
+        logger.info(' TaskMaster service initialized');
       }
 
       // Register services in container
@@ -183,12 +183,12 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       // Initialize WebSocket heartbeat if enabled
       if (this.configuration.websocket?.enableEventStreaming) {
         this.startHeartbeat();
-        logger.info('✅ WebSocket heartbeat initialized');
+        logger.info(' WebSocket heartbeat initialized');
       }
 
-      logger.info('✅ Core components initialization complete');
+      logger.info(' Core components initialization complete');
     } catch (_error) {
-      logger.error('❌ Failed to initialize core components:', _error);
+      logger.error(' Failed to initialize core components:', _error);
       throw _error;
     }
   }
@@ -213,7 +213,7 @@ export class System extends EventEmitter<CoreSystemEventMap> {
 
       // Handle status changes
       this.on(STATUS_CHANGED_EVENT, (status) => {
-        logger.info(`System status changed to: ${status}`);
+        logger.info('System status changed to: ' + status);
         this.broadcastStatusUpdate(status);
       });
 
@@ -221,18 +221,18 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       this.on('websocket:connected', (...args: unknown[]) => { 
         const socketId = args[0] as string;
         this.activeConnections++;
-        logger.debug(`WebSocket client connected: ${socketId} (total: ${this.activeConnections})`);
+        logger.debug('WebSocket client connected: ${socketId} (total: ' + this.activeConnections + ')');
       });
 
       this.on('websocket:disconnected', (...args: unknown[]) => { 
         const socketId = args[0] as string;
         this.activeConnections = Math.max(0, this.activeConnections - 1);
-        logger.debug(`WebSocket client disconnected: ${socketId} (total: ${this.activeConnections})`);
+        logger.debug('WebSocket client disconnected: ${socketId} (total: ' + this.activeConnections + ')');
       });
 
-      logger.info('✅ Event handlers configured');
+      logger.info(' Event handlers configured');
     } catch (_error) {
-      logger.error('❌ Failed to setup event handlers:', _error);
+      logger.error(' Failed to setup event handlers:', _error);
       throw _error;
     }
   }
@@ -246,7 +246,7 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       return;
     }
 
-    logger.info('🚀 Initializing Core System with WebSocket support');
+    logger.info(' Initializing Core System with WebSocket support');
 
     try {
       this.status = INITIALIZING_STATUS;
@@ -263,11 +263,11 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       });
       this.emit(STATUS_CHANGED_EVENT, this.status);
 
-      logger.info('✅ Core System ready with WebSocket support');
+      logger.info(' Core System ready with WebSocket support');
     } catch (_error) {
       this.status = ERROR_STATUS;
       this.emit(STATUS_CHANGED_EVENT, this.status);
-      logger.error('❌ Failed to initialize Core System:', _error);
+      logger.error(' Failed to initialize Core System:', _error);
       throw _error;
     }
   }
@@ -281,10 +281,10 @@ export class System extends EventEmitter<CoreSystemEventMap> {
     // Launch WebSocket services if enabled
     if (this.configuration.interface?.enableWebSocket) {
       this.initializeWebSocketIntegration();
-      logger.info('✅ WebSocket integration launched');
+      logger.info(' WebSocket integration launched');
     }
     
-    logger.info('✅ System launched successfully');
+    logger.info(' System launched successfully');
   }
 
   /**
@@ -348,7 +348,7 @@ export class System extends EventEmitter<CoreSystemEventMap> {
     await this.ensureInitialized();
     
     try {
-      logger.info(`Processing document: ${documentPath}`);
+      logger.info('Processing document: ' + documentPath);
       
       // Broadcast processing event via WebSocket
       this.broadcastEvent('document:processing', {
@@ -357,7 +357,7 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       });
 
       // Basic document processing simulation
-      const workflowIds = [`workflow-${Date.now()}`];
+      const workflowIds = ['workflow-' + Date.now()];
       
       // Broadcast completion event
       this.broadcastEvent('document:processed', {
@@ -369,7 +369,7 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       return { success: true, workflowIds };
     } catch (_error) {
       const errorMessage = (_error as Error).message;
-      logger.error(`Failed to process document ${documentPath}:`, _error);
+      logger.error('Failed to process document ' + documentPath + ':', _error);
       
       this.broadcastEvent('document:_error', {
         path: documentPath,
@@ -392,9 +392,9 @@ export class System extends EventEmitter<CoreSystemEventMap> {
     await this.ensureInitialized();
     
     try {
-      logger.info(`Exporting system data to ${format}`);
+      logger.info('Exporting system data to ' + format);
       
-      const filename = `system-export-${Date.now()}.${format}`;
+      const filename = 'system-export-${Date.now()}.' + format;
       
       // Broadcast export start event
       this.broadcastEvent('export:started', {
@@ -416,7 +416,7 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       return { success: true, filename };
     } catch (_error) {
       const errorMessage = (_error as Error).message;
-      logger.error(`Failed to export system data to ${format}:`, _error);
+      logger.error('Failed to export system data to ' + format + ':', _error);
       
       this.broadcastEvent('export:_error', {
         format,
@@ -432,7 +432,7 @@ export class System extends EventEmitter<CoreSystemEventMap> {
    * Graceful system shutdown
    */
   async shutdown(): Promise<void> {
-    logger.info('🔄 Shutting down Core System...');
+    logger.info(' Shutting down Core System...');
 
     try {
       this.status = SHUTDOWN_STATUS;
@@ -448,7 +448,7 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       if (this.taskMasterService) {
         try {
           await this.taskMasterService.shutdown();
-          logger.info('✅ TaskMaster service shutdown complete');
+          logger.info(' TaskMaster service shutdown complete');
         } catch (_error) {
           logger.error('Error shutting down TaskMaster service:', _error);
         }
@@ -466,9 +466,9 @@ export class System extends EventEmitter<CoreSystemEventMap> {
         timestamp: new Date().toISOString(),
       });
 
-      logger.info('✅ Core System shutdown complete');
+      logger.info(' Core System shutdown complete');
     } catch (_error) {
-      logger.error('❌ Error during shutdown:', _error);
+      logger.error(' Error during shutdown:', _error);
       throw _error;
     }
   }

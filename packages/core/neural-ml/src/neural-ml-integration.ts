@@ -252,7 +252,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
       // Initialize WASM module
       const wasmResult = await initializeWASM();
       if (!wasmResult.success) {
-        throw new Error(`WASM initialization failed:${wasmResult.error}`);
+        throw new Error('WASM initialization failed:' + wasmResult.error);
       }
 
       // Initialize ML algorithms with default configurations
@@ -289,7 +289,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
       this.logger.error('Failed to initialize ML Neural Coordinator:', error);
       return {
         success: false,
-        error: `Initialization failed: ${error}`,
+        error: 'Initialization failed: ' + error,
       };
     }
   }
@@ -308,10 +308,10 @@ export class MLNeuralCoordinator extends TypedEventBase {
 
     try {
       this.logger.info(
-        `Optimizing ${teleprompter_config.teleprompter_type} teleprompter with ML enhancement`
+        'Optimizing ' + teleprompter_config.teleprompter_type + ' teleprompter with ML enhancement'
       );
 
-      const optimizationId = `dspy_${teleprompter_config.teleprompter_type}_${Date.now()}`;
+      const optimizationId = 'dspy_${teleprompter_config.teleprompter_type}_' + Date.now();
       this.activeOptimizations.set(optimizationId, {
         type: 'dspy_optimization',
         config: teleprompter_config,
@@ -344,7 +344,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
           break;
         default:
           throw new Error(
-            `Unsupported teleprompter type:${teleprompter_config.teleprompter_type}`
+            'Unsupported teleprompter type:' + teleprompter_config.teleprompter_type
           );
       }
 
@@ -356,7 +356,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
       this.logger.error('DSPy teleprompter optimization failed:', error);
       return {
         success: false,
-        error: `Optimization failed: ${error}`,
+        error: 'Optimization failed: ' + error,
       };
     }
   }
@@ -393,7 +393,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
 
     if (!optimizationResult.success) {
       throw new Error(
-        `Multi-objective optimization failed:${optimizationResult.error}`
+        'Multi-objective optimization failed:' + optimizationResult.error
       );
     }
 
@@ -485,7 +485,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
     // Initial suggestions from Bayesian optimizer
     const suggestions = await this.bayesianOptimizer.optimize([], bounds, 5);
     if (!suggestions.success) {
-      throw new Error(`Bayesian optimization failed:${suggestions.error}`);
+      throw new Error('Bayesian optimization failed:' + suggestions.error);
     }
 
     let bestPoint = suggestions.data?.[0];
@@ -690,7 +690,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
     } catch (error) {
       return {
         success: false,
-        error: `Failed to get coordination metrics: ${error}`,
+        error: 'Failed to get coordination metrics: ' + error,
       };
     }
   }
@@ -711,7 +711,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
       const prediction = await this.bayesianOptimizer.predict(paramVector);
 
       if (!prediction.success) {
-        throw new Error(`Prediction failed:${prediction.error}`);
+        throw new Error('Prediction failed:' + prediction.error);
       }
 
       const { mean, variance } = prediction.data!;
@@ -728,7 +728,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
     } catch (error) {
       return {
         success: false,
-        error: `Performance prediction failed: ${error}`,
+        error: 'Performance prediction failed: ' + error,
       };
     }
   }
@@ -753,13 +753,13 @@ export class MLNeuralCoordinator extends TypedEventBase {
 
         if (driftResult.success && driftResult.data?.detected) {
           adaptations.push(
-            `Detected ${driftResult.data?.drift_type} drift in coordination patterns`
+            'Detected ' + driftResult.data?.drift_type + ' drift in coordination patterns'
           );
 
           // Adapt learning rate
           const adaptResult = await this.onlineLearner.adaptLearningRate();
           if (adaptResult.success) {
-            adaptations.push(`Adapted learning rate to ${adaptResult.data}`);
+            adaptations.push('Adapted learning rate to ' + adaptResult.data);
           }
 
           // Consider strategy change based on drift type
@@ -796,7 +796,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
     } catch (error) {
       return {
         success: false,
-        error: `Strategy adaptation failed: ${error}`,
+        error: 'Strategy adaptation failed: ' + error,
       };
     }
   }
@@ -876,7 +876,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
       const trajectoryData = solutions.map((sol) => sol.parameters);
       return await this.patternRecognizer.extractPatterns(trajectoryData);
     } catch (error) {
-      return { success: false, error: `Pattern analysis failed: ${error}` };
+      return { success: false, error: 'Pattern analysis failed: ' + error };
     }
   }
 
@@ -907,7 +907,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
 
     if (patterns.length > 0) {
       recommendations.push(
-        `Detected ${patterns.length} optimization patterns for future reference`
+        'Detected ' + patterns.length + ' optimization patterns for future reference'
       );
     }
 
@@ -921,12 +921,12 @@ export class MLNeuralCoordinator extends TypedEventBase {
     const recommendations: string[] = [];
 
     recommendations.push(
-      `Optimal learning rate found:${bestPoint.parameters[0].toFixed(4)}`
+      'Optimal learning rate found:' + bestPoint.parameters[0].toFixed(4)
     );
 
     if (driftAlerts.length > 0) {
       recommendations.push(
-        `${driftAlerts.length} concept drift alerts detected - consider adaptive strategies`
+        driftAlerts.length + ' concept drift alerts detected - consider adaptive strategies'
       );
     }
 
@@ -940,7 +940,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
     const recommendations: string[] = [];
 
     recommendations.push(
-      `Gradient optimization converged with parameters:${bestPoint.parameters.map((p) => p.toFixed(4)).join(', ')}`
+      'Gradient optimization converged with parameters:' + bestPoint.parameters.map((p) => p.toFixed(4)).join(', ')
     );
 
     if (patterns.some((p) => p.pattern_type === 'optimization')) {
@@ -1032,7 +1032,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
     // Monitor system performance every 5 seconds
     setInterval(() => {
       const performanceData: MLPerformanceMetricsEvent = {
-        metricId: `perf_${Date.now()}`,
+        metricId: 'perf_' + Date.now(),
         cpu_usage: process.cpuUsage().user / 1000000, // Convert to seconds
         memory_usage: process.memoryUsage().heapUsed / 1024 / 1024, // MB
         gpu_usage: undefined, // Would need GPU monitoring library
@@ -1067,7 +1067,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
       | 'refinement'
       | 'completion' = 'refinement'
   ): Promise<string> {
-    const trainingId = `train_${modelId}_${Date.now()}`;
+    const trainingId = 'train_${modelId}_' + Date.now();
 
     // Create workflow state event
     const workflowEvent: MLWorkflowStateEvent = {
@@ -1100,7 +1100,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
     this.emit('training_started', trainingEvent);
 
     this.logger.info(
-      `Started training job ${trainingId} in SPARC phase:${sparc_phase}`
+      'Started training job ${trainingId} in SPARC phase:' + sparc_phase
     );
 
     return trainingId;
@@ -1119,7 +1119,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
   ): void {
     const existingJob = this.activeTrainingJobs.get(trainingId);
     if (!existingJob) {
-      this.logger.warn(`Training job ${trainingId} not found`);
+      this.logger.warn('Training job ' + trainingId + ' not found');
       return;
     }
 
@@ -1152,7 +1152,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
     input: any,
     options: { timeout?: number; confidence_threshold?: number } = {}
   ): Promise<MLInferenceResultEvent> {
-    const inferenceId = `infer_${modelId}_${Date.now()}`;
+    const inferenceId = 'infer_${modelId}_' + Date.now();
     const startTime = Date.now();
 
     try {
@@ -1177,12 +1177,12 @@ export class MLNeuralCoordinator extends TypedEventBase {
       this.emit('inference_completed', inferenceEvent);
 
       this.logger.debug(
-        `Inference ${inferenceId} completed in ${processingTime}ms`
+        'Inference ${inferenceId} completed in ' + processingTime + 'ms'
       );
 
       return inferenceEvent;
     } catch (error) {
-      this.logger.error(`Inference ${inferenceId} failed:`, error);
+      this.logger.error('Inference ' + inferenceId + ' failed:', error);
       throw error;
     }
   }
@@ -1205,7 +1205,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
       | ' completion',
     testData: any[]
   ): Promise<MLModelValidationEvent> {
-    const validationId = `val_${modelId}_${Date.now()}`;
+    const validationId = 'val_${modelId}_' + Date.now();
 
     try {
       // Run validation based on type
@@ -1242,7 +1242,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
 
       return validationEvent;
     } catch (error) {
-      this.logger.error(`Model validation failed for ${modelId}:`, error);
+      this.logger.error('Model validation failed for ' + modelId + ':', error);
       throw error;
     }
   }
@@ -1397,7 +1397,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
     // Clean up
     this.activeTrainingJobs.delete(trainingId);
 
-    this.logger.info(`Training job ${trainingId} completed successfully`);
+    this.logger.info('Training job ' + trainingId + ' completed successfully');
   }
 
   private async performInference(
@@ -1409,7 +1409,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
     // Would integrate with Rust neural network models
     await new Promise((resolve) => setTimeout(resolve, Math.random() * 100));
     return {
-      output: `processed_${JSON.stringify(input).slice(0, 20)}`,
+      output: 'processed_' + JSON.stringify(input).slice(0, 20),
       confidence: 0.95 + Math.random() * 0.05,
     };
   }

@@ -56,7 +56,7 @@ export interface MonitoringMetrics {
 /**
  * Automated retraining monitor using foundation metrics and LLM coordination.
  *
- * Implements Option 4:Build coordination feedback loops (coordinationSuccessRate → retraining)
+ * Implements Option 4:Build coordination feedback loops (coordinationSuccessRate  retraining)
  */
 // @injectable - Temporarily removed due to constructor type incompatibility
 export class RetrainingMonitor {
@@ -112,8 +112,7 @@ export class RetrainingMonitor {
       this.isMonitoring = true;
 
       this.logger.info(
-        `Retraining monitor started, checking every ${retrainingConfig.checkIntervalMs / 1000 / 60} minutes with threshold ${retrainingConfig.minCoordinationSuccessRateThreshold}``
-      );
+        'Retraining monitor started, checking every ${retrainingConfig.checkIntervalMs / 1000 / 60} minutes with threshold ' + retrainingConfig.minCoordinationSuccessRateThreshold);
 } catch (error) {
       this.logger.error('Failed to start retraining monitor:', error);'  throw error;
 }
@@ -136,7 +135,7 @@ export class RetrainingMonitor {
   public async manualRetrain(reason: string,
     additionalMetrics: Record<string, number> = {}
   ): Promise<RetrainingResult> {
-    this.logger.info(`Manual retraining triggered:${reason}`);`
+    this.logger.info('Manual retraining triggered:' + reason);'
 
     const trigger: RetrainingTrigger = {
       timestamp:new Date(),
@@ -188,27 +187,24 @@ export class RetrainingMonitor {
         currentMetrics.coordinationSuccessRate||0;
 
       this.logger.debug(
-        `Current coordination success rate:$coordinationSuccessRate(_threshold: ${config.minCoordinationSuccessRateThreshold})``
-      );
+        'Current coordination success rate:$coordinationSuccessRate(_threshold: ' + config.minCoordinationSuccessRateThreshold + ')');
 
       if (
         coordinationSuccessRate < config.minCoordinationSuccessRateThreshold
       ) {
         this.logger.warn(
-          `Coordination success rate (${coordinationSuccessRate}) below threshold (${config.minCoordinationSuccessRateThreshold}). Triggering retraining.``
-        );
+          'Coordination success rate (' + coordinationSuccessRate + ') below threshold (' + config.minCoordinationSuccessRateThreshold + '). Triggering retraining.');
 
         const trigger: RetrainingTrigger = {
           timestamp:new Date(),
-          reason:`Coordination success rate (${coordinationSuccessRate}) below threshold (${config.minCoordinationSuccessRateThreshold})`,`
+          reason:'Coordination success rate (' + coordinationSuccessRate + ') below threshold (' + config.minCoordinationSuccessRateThreshold + ')','
           metrics: currentMetrics,
           strategy: 'performance',};
 
         await this.executeRetrainingWorkflow(trigger);
 } else 
         this.logger.debug(
-          `Coordination success rate (${coordinationSuccessRate}) is healthy``
-        );
+          'Coordination success rate (' + coordinationSuccessRate + ') is healthy');
 }
 } catch (error) {
       this.logger.error('Error during retraining check:', error);'
@@ -230,12 +226,12 @@ export class RetrainingMonitor {
       // Store the retraining trigger in database
       if (this.dbAccess) {
         const kv = await this.dbAccess.getKV('brain');'    await kv.set(
-          `retraining:trigger:${trigger.timestamp.getTime()}`,`
+          'retraining:trigger:' + trigger.timestamp.getTime(),'
           JSON.stringify(trigger)
         );
 
       // Use LLMProvider for retraining strategy generation (no file tools needed)
-      const retrainingPrompt = `Generate a neural network retraining plan based on the following performance metrics:`
+      const retrainingPrompt = 'Generate a neural network retraining plan based on the following performance metrics:'
 
 Trigger Reason:$trigger.reason
 Current Metrics:$JSON.stringify(trigger.metrics, null, 2)
@@ -247,7 +243,7 @@ Please provide:
 3. Success criteria for the retraining
 4. Risk mitigation strategies
 
-Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;`
+Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks';'
 
       // Use operations facade for LLM access
       let retrainingPlan =
@@ -294,13 +290,13 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;`
       // Store retraining result
       if (this.dbAccess) {
         const kv = await this.dbAccess.getKV('brain');'    await kv.set(
-          `retraining:result:$trigger.timestamp.getTime()`,`
+          'retraining:result:$trigger.timestamp.getTime()','
           JSON.stringify(result)
         );
 }
 
       this.logger.info(
-        `Retraining workflow completed successfully in ${duration}ms`,`
+        'Retraining workflow completed successfully in ' + duration + 'ms','
         result
       );
 
@@ -320,7 +316,7 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;`
       // Store failed result
       if (this.dbAccess) {
         const kv = await this.dbAccess.getKV('brain');'    await kv.set(
-          `retraining:result:$trigger.timestamp.getTime()`,`
+          'retraining:result:$trigger.timestamp.getTime()','
           JSON.stringify(result)
         );
 }
@@ -378,7 +374,7 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;`
     if (!this.dbAccess) return false;
 
     try {
-      const today = new Date().toISOString().split('T')[0];'  const kv = await this.dbAccess.getKV('brain');'  const attemptsData = await kv.get(`retraining:attempts:${today}`);`
+      const today = new Date().toISOString().split('T')[0];'  const kv = await this.dbAccess.getKV('brain');'  const attemptsData = await kv.get('retraining:attempts:' + today);'
 
       if (!attemptsData) return false;
 
@@ -402,7 +398,7 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;`
       // This would retrieve and combine retraining triggers and results
       // Implementation depends on the specific database structure
 
-      this.logger.info(`Retrieved retraining history (limit:${limit})`);`
+      this.logger.info('Retrieved retraining history (limit:' + limit + ')');'
       return []; // Placeholder
 } catch (error) {
       this.logger.error('Failed to retrieve retraining history:', error);'  return [];
@@ -444,7 +440,7 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;`
 }
   ): Promise<void> {
     try {
-      this.logger.debug(`Recording prompt feedback for ${promptId}`, feedback);
+      this.logger.debug('Recording prompt feedback for ' + promptId, feedback);
 
       if (!this.dbAccess) {
         this.logger.warn(
@@ -461,7 +457,7 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;`
 };
 
       // Log feedback record details for monitoring
-      this.logger.info(`Prompt feedback recorded for ${promptId}`, {
+      this.logger.info('Prompt feedback recorded for ' + promptId, {
         promptId: feedbackRecord.promptId,
         success: feedbackRecord.success,
         accuracy: feedbackRecord.accuracy,
@@ -472,12 +468,11 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;`
       // Check if feedback pattern indicates need for retraining
       if (!feedback.success && feedback.accuracy && feedback.accuracy < 0.7) {
         this.logger.warn(
-          `Poor accuracy (${feedback.accuracy}) detected for prompt ${promptId}, may trigger retraining``
-        );
+          'Poor accuracy (${feedback.accuracy}) detected for prompt ' + promptId + ', may trigger retraining');
 }
 } catch (error) {
       this.logger.error(
-        `Failed to record prompt feedback for ${promptId}:`,`
+        'Failed to record prompt feedback for ' + promptId + ':',`
         error
       );
 }

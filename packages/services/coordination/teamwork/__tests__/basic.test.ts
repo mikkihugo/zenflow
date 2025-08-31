@@ -23,7 +23,7 @@ describe(): void {
 };
 
       const session = await orchestrator.createConversation(): void {
-    ')t break the orchestrator')🧠 Hybrid Brain Integration', () => {
+    ')t break the orchestrator') Hybrid Brain Integration', () => {
     ')should maintain hybrid brain functionality during conversation lifecycle', async () => {
     ')Brain Test Conversation',        pattern: 'code-review',        _context:{
           goal: 'Test neural coordination',          domain: 'neural-testing',          constraints:[],

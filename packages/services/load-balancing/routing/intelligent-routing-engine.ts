@@ -142,7 +142,7 @@ export class IntelligentRoutingEngine
       return {
         selectedAgent: decision.selectedAgent,
         confidence: decision.confidence,
-        reasoning: `Intelligent routing: ${decision.routingPath.join(' -> ')} (${decision.estimatedLatency}ms)`,
+        reasoning: 'Intelligent routing: ${decision.routingPath.join(' -> ')} (' + decision.estimatedLatency + 'ms)',
         alternativeAgents: decision.fallbackOptions,
         estimatedLatency: decision.estimatedLatency,
         expectedQuality: this.calculateExpectedQuality(decision),
@@ -243,13 +243,13 @@ export class IntelligentRoutingEngine
       // Create agent object from routing table entry
       agents.push({
         id: agentId,
-        name: `Agent-${agentId}`,
+        name: 'Agent-' + agentId,
         capabilities: [], // Would be populated from actual agent data
         status:
           routingEntry.reliability > 0.8
             ? AgentStatus.HEALTHY
             : AgentStatus.DEGRADED,
-        endpoint: `http://agent-${agentId}:8080`,
+        endpoint: 'http://agent-' + agentId + ':8080',
         lastHealthCheck: routingEntry.lastUpdate,
         metadata: {
           reliability: routingEntry.reliability,

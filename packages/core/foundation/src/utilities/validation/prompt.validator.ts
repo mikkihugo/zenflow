@@ -62,7 +62,7 @@ export interface PromptIssue {
 const DANGEROUS_PATTERNS = [
   // Output parsing interference patterns
   {
-    pattern: /📁\s*file:\s*[/\\]\S+/gi,
+    pattern: /\s*file:\s*[/\\]\S+/gi,
     type: 'parsing' as const,
     severity: 'error' as const,
     message:
@@ -166,7 +166,7 @@ function validatePromptLength(
     issues.push({
       type: 'performance',
       severity: 'error',
-      message: `Prompt exceeds maximum length of ${PROMPT_VALIDATION_CONFIG.maxPromptLength} characters`,
+      message: 'Prompt exceeds maximum length of ' + PROMPT_VALIDATION_CONFIG.maxPromptLength + ' characters',
       suggestion: 'Break down the prompt into smaller, focused requests',
     });
     risk = 'high';
@@ -176,7 +176,7 @@ function validatePromptLength(
     issues.push({
       type: 'quality',
       severity: 'warning',
-      message: `Prompt is very short (${prompt.length} characters)`,
+      message: 'Prompt is very short (' + prompt.length + ' characters)',
       suggestion: 'Provide more specific details about what you need',
     });
   }
@@ -186,7 +186,7 @@ function validatePromptLength(
     issues.push({
       type: 'performance',
       severity: 'error',
-      message: `Prompt has too many lines (${lines.length})`,
+      message: 'Prompt has too many lines (' + lines.length + ')',
       suggestion: 'Reduce prompt complexity or split into multiple requests',
     });
     risk = 'high';
@@ -231,7 +231,7 @@ function checkDangerousPatterns(
       const issue: PromptIssue = {
         type: dangerousPattern.type,
         severity: dangerousPattern.severity,
-        message: `${dangerousPattern['message']} (found ${matches.length} occurrence${matches.length > 1 ? 's' : ''})`,
+        message: '${dangerousPattern['message']} (found ${matches.length} occurrence' + matches.length > 1 ? 's' : '' + ')',
         suggestion: dangerousPattern.suggestion,
       };
 
@@ -247,7 +247,7 @@ function checkDangerousPatterns(
           dangerousPattern.pattern,
           '[FILTERED_CONTENT]'
         );
-        logger.debug('🧹 Filtered parsing interference pattern from prompt');
+        logger.debug(' Filtered parsing interference pattern from prompt');
       }
     }
   }
@@ -281,17 +281,17 @@ function generateRecommendations(issues: PromptIssue[]): string[] {
 
   if (criticalIssues.length > 0) {
     recommendations.push(
-      '🚨 Address critical security issues before proceeding'
+      ' Address critical security issues before proceeding'
     );
     recommendations.push(
-      ...criticalIssues.map((i) => `• ${i.suggestion}`).filter(Boolean)
+      ...criticalIssues.map((i) => '• ' + i.suggestion).filter(Boolean)
     );
   }
 
   if (errorIssues.length > 0) {
-    recommendations.push('⚠️  Fix error-level issues for better reliability');
+    recommendations.push('  Fix error-level issues for better reliability');
     recommendations.push(
-      ...errorIssues.map((i) => `• ${i.suggestion}`).filter(Boolean)
+      ...errorIssues.map((i) => '• ' + i.suggestion).filter(Boolean)
     );
   }
 
@@ -388,11 +388,11 @@ export function filterClaudeOutput(
     // Detect Claude's descriptive output patterns that should not be parsed as data
     const isDescriptivePattern = [
       // File path patterns with emojis (Claude's descriptive output)
-      /^📁\s+(File:|Directory:|Path:)/,
-      /^📄\s+/,
-      /^🔍\s+/,
+      /^\s+(File:|Directory:|Path:)/,
+      /^\s+/,
+      /^\s+/,
       // Progress indicators
-      /^(✅|❌|⚠️|🔄|⏳|🚀|📊|📈|📉)\s+/,
+      /^(||||⏳||||)\s+/,
       // Conversational patterns
       /^(i'll | i' m|let me|here's|this|the|based on)/i,
       // Analysis patterns
@@ -413,7 +413,7 @@ export function filterClaudeOutput(
       if (isDescriptivePattern && !isActualError) {
         filteredLines.push(line);
         parsingWarnings.push(
-          `Filtered descriptive pattern from stderr:${trimmedLine.substring(0, 80)}...`
+          'Filtered descriptive pattern from stderr:' + trimmedLine.substring(0, 80) + '...'
         );
         continue;
       }
@@ -423,7 +423,7 @@ export function filterClaudeOutput(
     if (isDescriptivePattern) {
       filteredLines.push(line);
       parsingWarnings.push(
-        `Filtered descriptive pattern:${trimmedLine.substring(0, 80)}...`
+        'Filtered descriptive pattern:' + trimmedLine.substring(0, 80) + '...'
       );
       continue;
     }
@@ -450,9 +450,9 @@ export function validateAndRejectPrompt(prompt: string): string {
     );
 
     throw new Error(
-      `Prompt validation failed with ${criticalIssues.length} critical issue(s): ${criticalIssues
+      'Prompt validation failed with ${criticalIssues.length} critical issue(s): ' + criticalIssues
         .map((i) => i['message'])
-        .join('; ')}`
+        .join('; ')
     );
   }
 
@@ -486,17 +486,17 @@ export function createSafePrompt(
 
   if (config.logValidation && validation.issues.length > 0) {
     logger.info(
-      `Prompt safety analysis found ${validation.issues.length} issue(s), risk level:${validation.risk}`
+      'Prompt safety analysis found ${validation.issues.length} issue(s), risk level:' + validation.risk
     );
   }
 
   // Reject if strict validation enabled and prompt has critical issues
   if (config.strictValidation && !validation.isValid) {
     throw new Error(
-      `Prompt rejected due to safety concerns: ${validation.issues
+      'Prompt rejected due to safety concerns: ' + validation.issues
         .filter((i) => i.severity === 'critical')
         .map((i) => i['message'])
-        .join('; ')}`
+        .join('; ')
     );
   }
 

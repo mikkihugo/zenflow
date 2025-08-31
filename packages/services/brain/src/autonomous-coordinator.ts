@@ -904,7 +904,7 @@ export class AutonomousCoordinator {
    */
   private async setupAlertingSystem(): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 75));
-    logger.debug('🚨 Alerting system configured');
+    logger.debug(' Alerting system configured');
   }
 
   /**
@@ -912,7 +912,7 @@ export class AutonomousCoordinator {
    */
   private async enablePerformanceTracking(): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 100));
-    logger.debug('📈 Performance tracking enabled');
+    logger.debug(' Performance tracking enabled');
   }
 
   /**

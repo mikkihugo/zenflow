@@ -405,7 +405,7 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
       this.workflows.set(workflow.name, workflow);
 }
 
-    this.logger.info(`Registered ${workflows.length} default workflows`);
+    this.logger.info('Registered ' + workflows.length + ' default workflows');
 }
 
   private async processDocumentInternal(documentData: DocumentData,
@@ -478,7 +478,7 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
 });
 }
 } catch (error) {
-        this.logger.warn(`Workflow ${workflowName} failed`, { error});
+        this.logger.warn('Workflow ' + workflowName + ' failed', { error});
 }
 }
 
@@ -504,7 +504,7 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
   ): Promise<WorkflowExecutionResult> {
     const workflow = this.workflows.get(workflowName);
     if (!workflow) {
-      throw new Error(`Workflow not found:${workflowName}`);
+      throw new Error('Workflow not found:' + workflowName);
 }
 
     this.workflowsExecuted++;
@@ -512,7 +512,7 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
     const results: Record<string, any> = {};
     const steps: StepResult[] = [];
 
-    this.logger.debug(`Executing workflow:${workflowName}`);
+    this.logger.debug('Executing workflow:' + workflowName);
 
     for (const step of workflow.steps) {
       try {
@@ -527,9 +527,9 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
           output: stepResult,
 });
 
-        recordMetric(`document_intelligence_step_${step.type}`, 1);
+        recordMetric('document_intelligence_step_' + step.type, 1);
 } catch (error) {
-        this.logger.error(`Workflow step ${step.type} failed`, { error});
+        this.logger.error('Workflow step ' + step.type + ' failed', { error});
         
         steps.push({
           stepType:step.type,
@@ -571,7 +571,7 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
         return await this.extractEntitiesStep(context, step.params);
       
       default:
-        throw new Error(`Unknown workflow step type:${step.type}`);
+        throw new Error('Unknown workflow step type:' + step.type);
 }
 }
 
@@ -694,7 +694,7 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
     for (const [epicName, features] of Object.entries(epicRequirements)) {
       const epicDoc: DocumentData = {
         id:generateUUID(),
-        type: 'epic',        title:`Epic: ${this.formatEpicName(epicName)}`,
+        type: 'epic',        title:'Epic: ' + this.formatEpicName(epicName),
         content:this.generateEpicContent(epicName, features as string[]),
         metadata:{
           generatedAt: Date.now(),
@@ -873,44 +873,44 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
 }
 
   private generatePRDContent(requirements: ProductRequirements): string {
-    return `
+    return '
 # Product Requirements Document
 
 ## Overview
 ${requirements.businessValue}
 
 ## Functional Requirements
-${requirements.functional.map(req => `- ${req}`).join('\n'`
+' + requirements.functional.map(req => '- ${req).join('\n''
 
 ## Non-Functional Requirements
-${requirements.nonFunctional.map(req => `- ${req}`).join('\n'`
+' + requirements.nonFunctional.map(req => '- ${req).join('\n''
 
 ## Stakeholders
-${requirements.stakeholders.map(stakeholder => `- ${stakeholder}`).join('\n'`
+' + requirements.stakeholders.map(stakeholder => '- ${stakeholder).join('\n''
 
 ## Constraints
-${requirements.constraints.map(constraint => `- ${constraint}`).join('\n'`
+' + requirements.constraints.map(constraint => '- ${constraint).join('\n''
 
 ## Assumptions
-${requirements.assumptions.map(assumption => `- ${assumption}`).join('\n'`
+' + requirements.assumptions.map(assumption => '- ${assumption).join('\n''
 
 ## Success Criteria
 - All functional requirements implemented and tested
 - Non-functional requirements validated
 - Stakeholder acceptance achieved
 - System deployed and operational
-    `.trim();
+    '.trim();
 }
 
   private generateEpicContent(epicName: string, features:string[]): string {
-    return `
-# Epic:${this.formatEpicName(epicName)}
+    return '
+# Epic:' + this.formatEpicName(epicName) + '
 
 ## Description
 This epic covers the ${epicName.toLowerCase().replace(/epic$/, ' functionality of the system.
 
 ## Features
-${features.map(feature => `- ${feature}`).join('\n'`
+' + features.map(feature => '- ${feature).join('\n''
 
 ## Acceptance Criteria
 - [] All features implemented and tested
@@ -926,7 +926,7 @@ ${features.map(feature => `- ${feature}`).join('\n'`
 - Integration tests passing
 - Documentation complete
 - Production deployment successful
-    `.trim();
+    '.trim();
 }
 
   private formatEpicName(epicName:string): string {

@@ -217,7 +217,7 @@ export class Orchestrator {
         result = await this.executeSystemCoordination(task);
         break;
       default:
-        throw new Error(`Unknown task type:${task.type}`);
+        throw new Error('Unknown task type:' + task.type);
     }
 
     return {

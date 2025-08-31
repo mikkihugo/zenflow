@@ -62,7 +62,7 @@ export class AgentRegistry extends TypedEventBase {
     sessionPrefix = 'enhanced-agents'
   ) {
     super();
-    this.logger = getLogger(`EnhancedAgentRegistry:${sessionPrefix}`);
+    this.logger = getLogger('EnhancedAgentRegistry:' + sessionPrefix);
 
     // Create service container
     this.container = createServiceContainer();
@@ -145,7 +145,7 @@ export class AgentRegistry extends TypedEventBase {
     try {
       // Track service access for performance monitoring
       if (this.serviceAccessHandler) {
-        this.serviceAccessHandler(`agent-${agent.id}`);
+        this.serviceAccessHandler('agent-' + agent.id);
       }
       
       // Perform async validation
@@ -168,7 +168,7 @@ export class AgentRegistry extends TypedEventBase {
 
       // Register with advanced DI features
       const registrationResult = this.container.registerInstance(
-        `agent-${agent.id}`,
+        'agent-' + agent.id,
         enhancedAgent,
         {
           lifetime:Lifetime.SCOPED, // Scoped for better performance
@@ -193,7 +193,7 @@ export class AgentRegistry extends TypedEventBase {
               healthMetrics.isResponding;
 
             if (!isHealthy) {
-              this.logger.warn(`WARNING: Agent ${agent.id} health check failed`, {
+              this.logger.warn('WARNING: Agent ' + agent.id + ' health check failed', {
                 timeSinceLastSeen,
                 health:enhancedAgent.health,
                 metrics:healthMetrics,
@@ -237,15 +237,15 @@ export class AgentRegistry extends TypedEventBase {
       });
 
       this.logger.debug(
-        `Agent registered with advanced features: ${agent.id}`,
+        'Agent registered with advanced features: ' + agent.id,
         {
           type:agent.type,
           capabilities:Object.keys(agent.capabilities),
-          registrationTime: `${registrationTime.toFixed(2)}ms`,
+          registrationTime: registrationTime.toFixed(2) + 'ms',
         }
       );
     } catch (error) {
-      this.logger.error(`ERROR: Failed to register agent ${agent.id}:`, error);
+      this.logger.error('ERROR: Failed to register agent ' + agent.id + ':', error);
       throw error;
     }
 }
@@ -273,7 +273,7 @@ export class AgentRegistry extends TypedEventBase {
 }
 
       // Resolve from container if not cached
-      const resolveResult = this.container.resolve(`agent-${agentId}`);
+      const resolveResult = this.container.resolve('agent-' + agentId);
       if (resolveResult.isOk()) {
         const agent = resolveResult.value;
 
@@ -296,7 +296,7 @@ export class AgentRegistry extends TypedEventBase {
 
       return undefined;
     } catch (error) {
-      this.logger.error(`ERROR: Failed to get agent ${agentId}:`, error);
+      this.logger.error('ERROR: Failed to get agent ' + agentId + ':', error);
       return undefined;
     }
 }
@@ -328,9 +328,9 @@ export class AgentRegistry extends TypedEventBase {
           selectionTime,
         });
 
-        this.logger.debug(`Agents selected: ${results.length} matches`, {
+        this.logger.debug('Agents selected: ' + results.length + ' matches', {
           criteria,
-          selectionTime: `${selectionTime.toFixed(2)}ms`,
+          selectionTime: selectionTime.toFixed(2) + 'ms',
         });
 
         return results;
@@ -506,7 +506,7 @@ export class AgentRegistry extends TypedEventBase {
    * Graceful shutdown with resource cleanup
    */
   async shutdown():Promise<void> {
-    this.logger.info('🔄 Shutting down Professional Agent Registry...');
+    this.logger.info(' Shutting down Professional Agent Registry...');
     try {
       // Clear caches
       this.agentCache.clear();
@@ -516,9 +516,9 @@ export class AgentRegistry extends TypedEventBase {
       await this.container.dispose();
 
       this.emit('shutdown', {});
-      this.logger.info('✅ Professional Agent Registry shutdown complete');
+      this.logger.info(' Professional Agent Registry shutdown complete');
     } catch (error) {
-      this.logger.error('❌ Error during registry shutdown:', error);
+      this.logger.error(' Error during registry shutdown:', error);
       throw error;
 }
 }

@@ -287,7 +287,7 @@ export class Example {
    * String representation
    */
   toString(): string {
-    return `Example(${JSON.stringify(this.data)})`;
+    return 'Example(' + JSON.stringify(this.data) + ')';
   }
 
   /**

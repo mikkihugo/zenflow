@@ -585,7 +585,7 @@ relationships ?  : string[]; // Related data IDs
  */
 export class NeuralOrchestrator {
     constructor() {
-        logger.info('🧠 Neural Orchestrator initialized - Brain as intelligent coordinator');
+        logger.info(' Neural Orchestrator initialized - Brain as intelligent coordinator');
         ')};
         /**
          * Main orchestration method - analyzes and routes neural tasks
@@ -594,7 +594,7 @@ export class NeuralOrchestrator {
         processNeuralTask(task, NeuralTask);
         Promise < NeuralResult > {
             const: __startTime = Date.now(),
-            logger, : .debug(`🎯 Orchestrating neural task:${task.id} (type:${task.type})` `
+            logger, : .debug(` Orchestrating neural task:${task.id} (type:${task.type})` `
     );
 
     // Analyze task complexity
@@ -648,7 +648,7 @@ export class NeuralOrchestrator {
         return result;
     }
     catch(error) {
-        logger.error(`❌ Neural task failed:${task.id}`, error);
+        logger.error(` Neural task failed:${task.id}`, error);
         `
       throw error;
 }
@@ -813,7 +813,7 @@ return {
 async;
 processComplexTask(task, NeuralTask);
 Promise < NeuralResult > {
-    logger, : .debug(`🔶 Processing complex task - loading neural-ml:${task.id}`)
+    logger, : .debug(` Processing complex task - loading neural-ml:${task.id}`)
 } `
 
     const neuralMl = await this.loadNeuralML();
@@ -899,7 +899,7 @@ Promise < any > {
 {
     return this.neuralMlCache;
 }
-logger.info('📦 Lazy loading @claude-zen/neural-ml...');
+logger.info(' Lazy loading @claude-zen/neural-ml...');
 ');
 try {
     // Dynamic import of neural-ml package
@@ -907,11 +907,11 @@ try {
     ')      this.neuralMlCache = neuralMl;;
     this.isNeuralMlLoaded = true;
     this.metrics.neuralMlLoadCount++;
-    logger.info('✅ Neural-ML package loaded successfully');
+    logger.info(' Neural-ML package loaded successfully');
     ')      return neuralMl;;
 }
 catch (error) {
-    logger.warn('⚠️ Neural-ML package not available, falling back to brain.js', error);
+    logger.warn(' Neural-ML package not available, falling back to brain.js', error);
     // Return a mock object for development
     return {
         processLight: async (task) => this.processModerateTask(task),
@@ -943,7 +943,7 @@ async;
 storeNeuralData(data, NeuralData);
 Promise < void  > {
     const: strategy = this.determineStorageStrategy(data),
-    logger, : .debug(`💾 Storing neural data with strategy:${strategy}`, {} `
+    logger, : .debug(` Storing neural data with strategy:${strategy}`, {} `
       id:data.id,
       type:data.type,
       size:data.characteristics.size,
@@ -1002,7 +1002,7 @@ async;
 storeInMemory(data, NeuralData);
 Promise < void  > {
     // Use internal memory storage
-    logger, : .debug(`💭 Storing in memory:${data.id}`)
+    logger, : .debug(` Storing in memory:${data.id}`)
 } `
 }
 
@@ -1017,18 +1017,18 @@ $;
 async;
 storeInVectorDB(data, NeuralData);
 Promise < void  > {
-// Use foundation's LanceDB storage')    logger.debug(`📊 Storing in vector DB:$data.id`);`
+// Use foundation's LanceDB storage')    logger.debug(` Storing in vector DB:$data.id`);`
 };
 async;
 storeInGraphDB(data, NeuralData);
 Promise < void  > {
-// Use foundation's Kuzu graph storage')    logger.debug(`🕸️ Storing in graph DB:${data.id}`);`
+// Use foundation's Kuzu graph storage')    logger.debug(`️ Storing in graph DB:${data.id}`);`
 };
 async;
 storeInHybrid(data, NeuralData);
 Promise < void  > {
     // Use multiple storage backends
-    logger, : .debug(`🔀 Storing in hybrid mode:$data.id`)
+    logger, : .debug(` Storing in hybrid mode:$data.id`)
 } `
     await Promise.all([this.storeInDatabase(data), this.storeInVectorDB(data)]);
 }

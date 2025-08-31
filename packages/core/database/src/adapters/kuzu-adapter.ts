@@ -150,7 +150,7 @@ export class KuzuAdapter implements DatabaseConnection {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new ConnectionError(
-        `Failed to connect to Kuzu:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to connect to Kuzu:' + error instanceof Error ? error.message : String(error),
         correlationId,
         error instanceof Error ? error : undefined
       );
@@ -189,7 +189,7 @@ export class KuzuAdapter implements DatabaseConnection {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new ConnectionError(
-        `Failed to disconnect from Kuzu:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to disconnect from Kuzu:' + error instanceof Error ? error.message : String(error),
         correlationId,
         error instanceof Error ? error : undefined
       );
@@ -295,7 +295,7 @@ export class KuzuAdapter implements DatabaseConnection {
       if (error instanceof Error) errorOptions.cause = error;
       
       throw new QueryError(
-        `Kuzu query execution failed:${error instanceof Error ? error.message : String(error)}`,
+        'Kuzu query execution failed:' + error instanceof Error ? error.message : String(error),
         errorOptions
       );
     }
@@ -347,7 +347,7 @@ export class KuzuAdapter implements DatabaseConnection {
       }
 
       throw new TransactionError(
-        `Transaction failed:${error instanceof Error ? error.message : String(error)}`,
+        'Transaction failed:' + error instanceof Error ? error.message : String(error),
         correlationId,
         error instanceof Error ? error : undefined
       );
@@ -539,7 +539,7 @@ export class KuzuAdapter implements DatabaseConnection {
   }
 
   async explain(sql: string, params?: QueryParams): Promise<QueryResult> {
-    return await this.query(`EXPLAIN ${sql}`, params);
+    return await this.query('EXPLAIN ' + sql, params);
   }
 
   async vacuum(): Promise<void> {
@@ -577,13 +577,13 @@ export class KuzuAdapter implements DatabaseConnection {
     try {
       // Build property definitions
       const propertyDefs = Object.entries(properties)
-        .map(([name, type]) => `${name} ${type.toUpperCase()}`)
+        .map(([name, type]) => '${name} ' + type.toUpperCase())
         .join(', ');
 
       const primaryKeyClause = primaryKey
-        ? `, PRIMARY KEY (${primaryKey})`
+        ? ', PRIMARY KEY (' + primaryKey + ')'
         : '';
-      const cypher = `CREATE NODE TABLE IF NOT EXISTS ${tableName} (${propertyDefs}${primaryKeyClause})`;
+      const cypher = 'CREATE NODE TABLE IF NOT EXISTS ${tableName} (${propertyDefs}' + primaryKeyClause + ')';
 
       await this.query(cypher, undefined, { correlationId });
 
@@ -618,13 +618,13 @@ export class KuzuAdapter implements DatabaseConnection {
     const correlationId = this.generateCorrelationId();
 
     try {
-      let cypher = `CREATE REL TABLE IF NOT EXISTS ${tableName} (FROM ${fromNodeTable} TO ${toNodeTable}`;
+      let cypher = 'CREATE REL TABLE IF NOT EXISTS ${tableName} (FROM ${fromNodeTable} TO ' + toNodeTable;
 
       if (properties && Object.keys(properties).length > 0) {
         const propertyDefs = Object.entries(properties)
-          .map(([name, type]) => `${name} ${type.toUpperCase()}`)
+          .map(([name, type]) => '${name} ' + type.toUpperCase())
           .join(', ');
-        cypher += `, ${propertyDefs}`;
+        cypher += ', ' + propertyDefs;
       }
 
       cypher += ')';
@@ -667,12 +667,12 @@ export class KuzuAdapter implements DatabaseConnection {
       for (const node of nodes) {
         const properties = Object.keys(node);
         const values = Object.values(node);
-        const cypher = `CREATE (:${tableName} {${properties.map((prop, i) => `${prop}:$param${i}`).join(', ')}})`;
+        const cypher = 'CREATE (:${tableName} {' + properties.map((prop, i) => prop + ':$param${i + '').join(', ')}})';
 
         // Convert values array to params object
         const params: Record<string, unknown> = {};
         for (const [i, value] of values.entries()) {
-          params[`param${i}`] = value;
+          params['param' + i] = value;
         }
 
         await this.query(cypher, params, { correlationId });
@@ -715,21 +715,21 @@ export class KuzuAdapter implements DatabaseConnection {
       for (const rel of relationships) {
         // Build match clauses for from and to nodes
         const fromProps = Object.entries(rel.from)
-          .map(([key, value]) => `${key}:"${value}"`)
+          .map(([key, value]) => '${key}:"' + value + '"')
           .join(', ');
         const toProps = Object.entries(rel.to)
-          .map(([key, value]) => `${key}:"${value}"`)
+          .map(([key, value]) => '${key}:"' + value + '"')
           .join(', ');
 
-        let cypher = `MATCH (from), (to) WHERE {${fromProps}} AND {${toProps}}`;
+        let cypher = 'MATCH (from), (to) WHERE {${fromProps}} AND {' + toProps + '}';
 
         if (rel.properties && Object.keys(rel.properties).length > 0) {
           const relProps = Object.entries(rel.properties)
-            .map(([key, value]) => `${key}:"${value}"`)
+            .map(([key, value]) => '${key}:"' + value + '"')
             .join(', ');
-          cypher += ` CREATE (from)-[:${tableName} {${relProps}}]->(to)`;
+          cypher += ' CREATE (from)-[:${tableName} {' + relProps + '}]->(to)';
         } else {
-          cypher += ` CREATE (from)-[:${tableName}]->(to)`;
+          cypher += ' CREATE (from)-[:' + tableName + ']->(to)';
         }
 
         await this.query(cypher, undefined, { correlationId });
@@ -770,22 +770,22 @@ export class KuzuAdapter implements DatabaseConnection {
     try {
       // Build start node condition
       const startProps = Object.entries(startNodeCondition)
-        .map(([key, value]) => `${key}:"${value}"`)
+        .map(([key, value]) => '${key}:"' + value + '"')
         .join(', ');
 
-      let cypher = `MATCH path = (start {${startProps}})`;
+      let cypher = 'MATCH path = (start {' + startProps + '})';
 
       // Add relationship pattern with optional hop limits
       cypher += options?.maxHops
-        ? `-[r:${relationshipPattern}*1..${options.maxHops}]-`
-        : `-[r:${relationshipPattern}]-`;
+        ? '-[r:${relationshipPattern}*1..' + options.maxHops + ']-'
+        : '-[r:' + relationshipPattern + ']-';
 
       // Add end node condition if specified
       if (endNodeCondition) {
         const endProps = Object.entries(endNodeCondition)
-          .map(([key, value]) => `${key}:"${value}"`)
+          .map(([key, value]) => '${key}:"' + value + '"')
           .join(', ');
-        cypher += `(end {${endProps}})`;
+        cypher += '(end {' + endProps + '})';
       } else {
         cypher += '(end)';
       }
@@ -899,7 +899,7 @@ export class KuzuAdapter implements DatabaseConnection {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new ConnectionError(
-        `Connection test failed:${error instanceof Error ? error.message : String(error)}`,
+        'Connection test failed:' + error instanceof Error ? error.message : String(error),
         correlationId,
         error instanceof Error ? error : undefined
       );
@@ -962,7 +962,7 @@ export class KuzuAdapter implements DatabaseConnection {
     if (lastError !== undefined) errorOptions.cause = lastError;
     
     throw new QueryError(
-      `Operation failed after ${retryPolicy.maxRetries} retries:${lastError?.message}`,
+      'Operation failed after ${retryPolicy.maxRetries} retries:' + lastError?.message,
       errorOptions
     );
   }
@@ -985,14 +985,14 @@ export class KuzuAdapter implements DatabaseConnection {
 
   private async createMigrationsTable(): Promise<void> {
     try {
-      await this.query(`
+      await this.query('
         CREATE NODE TABLE IF NOT EXISTS _Migration (
           version STRING, 
           name STRING, 
           applied_at TIMESTAMP,
           PRIMARY KEY (version)
         )
-      `);
+      ');
     } catch (error) {
       logger.warn('Could not create migrations table', { error });
     }
@@ -1013,7 +1013,7 @@ export class KuzuAdapter implements DatabaseConnection {
   }
 
   private generateCorrelationId(): string {
-    return `kuzu-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return 'kuzu-${Date.now()}-' + Math.random().toString(36).substr(2, 9);
   }
 
   private sleep(ms: number): Promise<void> {

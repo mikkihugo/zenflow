@@ -219,24 +219,24 @@ export class GRPO extends FinetuneTeleprompter {
 		// Shape validation matching Stanford exactly
 		if (trace_data.length !== subsample_training_dataset.length) {
 			throw new Error(
-				`Trace data length ${trace_data.length} does not match the number of examples ${subsample_training_dataset.length}`,
+				'Trace data length ${trace_data.length} does not match the number of examples ' + subsample_training_dataset.length,
 			);
 }
 
 		if (trace_data[0].length !== num_teachers) {
 			throw new Error(
-				`Trace data length ${trace_data[0].length} does not match the number of teachers ${num_teachers}`,
+				'Trace data length ${trace_data[0].length} does not match the number of teachers ' + num_teachers,
 			);
 }
 
 		// Trace validation with warnings exactly like Stanford
 		if (trace_data[0][0].length === 0) {
 			logger.warn(
-				`Trace data for example 0 and teacher 0 is empty. This is likely due to all examples in the training set input, resulting in the model generating output not following the dspy response format.`,
+				'Trace data for example 0 and teacher 0 is empty. This is likely due to all examples in the training set input, resulting in the model generating output not following the dspy response format.',
 			);
 } else if (trace_data[0][0].length !== num_samples_per_input) {
 			logger.warn(
-				`Trace data length ${trace_data[0][0].length} does not match the expected number of samples per input ${num_samples_per_input}`,
+				'Trace data length ${trace_data[0][0].length} does not match the expected number of samples per input ' + num_samples_per_input,
 			);
 
 			if (!("trace" in trace_data[0][0][0])) {
@@ -247,7 +247,7 @@ export class GRPO extends FinetuneTeleprompter {
 }
 			if (trace_data[0][0][0].trace[0].length !== 3) {
 				throw new Error(
-					`Trace tuple length ${trace_data[0][0][0].trace[0].length} does not match the expected length 3`,
+					'Trace tuple length ' + trace_data[0][0][0].trace[0].length + ' does not match the expected length 3',
 				);
 }
 }
@@ -259,7 +259,7 @@ export class GRPO extends FinetuneTeleprompter {
 					for (const t of sample.trace) {
 						const hash_val = this.hash_signature(t[0].signature);
 						if (!pred_signature_hash_to_ind.has(hash_val)) {
-							throw new Error(`Unknown signature hash:${hash_val}`);
+							throw new Error('Unknown signature hash:' + hash_val);
 }
 }
 }
@@ -337,7 +337,7 @@ export class GRPO extends FinetuneTeleprompter {
 					);
 } else {
 					logger.info(
-						`Evaluating the student program on the validation set after training step ${step_idx + 1}/${this.num_train_steps}`,
+						'Evaluating the student program on the validation set after training step ${step_idx + 1}/' + this.num_train_steps,
 					);
 }
 
@@ -360,17 +360,17 @@ export class GRPO extends FinetuneTeleprompter {
 
 				if (step_idx === -1) {
 					logger.info(
-						`Student program training set score before training loop:${trainset_agg}`,
+						'Student program training set score before training loop:' + trainset_agg,
 					);
 					logger.info(
-						`Student program validation set score before training loop:${valset_agg}`,
+						'Student program validation set score before training loop:' + valset_agg,
 					);
 } else {
 					logger.info(
-						`Student program training set score after training step ${step_idx + 1}/${this.num_train_steps}:${trainset_agg}`,
+						'Student program training set score after training step ${step_idx + 1}/${this.num_train_steps}:' + trainset_agg,
 					);
 					logger.info(
-						`Student program validation set score after training step ${step_idx + 1}/${this.num_train_steps}:${valset_agg}`,
+						'Student program validation set score after training step ${step_idx + 1}/${this.num_train_steps}:' + valset_agg,
 					);
 }
 } else {
@@ -395,7 +395,7 @@ export class GRPO extends FinetuneTeleprompter {
 					);
 } else {
 					logger.info(
-						`Evaluating the student program on the validation set after training step ${step_idx + 1}/${this.num_train_steps}`,
+						'Evaluating the student program on the validation set after training step ${step_idx + 1}/' + this.num_train_steps,
 					);
 }
 
@@ -406,11 +406,11 @@ export class GRPO extends FinetuneTeleprompter {
 
 				if (step_idx === -1) {
 					logger.info(
-						`Student program validation set score before training loop:${valset_evaluation.score}`,
+						'Student program validation set score before training loop:' + valset_evaluation.score,
 					);
 } else {
 					logger.info(
-						`Student program validation set score after training step ${step_idx + 1}/${this.num_train_steps}:${valset_evaluation.score}`,
+						'Student program validation set score after training step ${step_idx + 1}/${this.num_train_steps}:' + valset_evaluation.score,
 					);
 }
 }
@@ -450,7 +450,7 @@ export class GRPO extends FinetuneTeleprompter {
 					);
 } else {
 					logger.info(
-						`Evaluating the student program on the validation set after training step ${step_idx + 1}/${this.num_train_steps}`,
+						'Evaluating the student program on the validation set after training step ${step_idx + 1}/' + this.num_train_steps,
 					);
 }
 
@@ -461,11 +461,11 @@ export class GRPO extends FinetuneTeleprompter {
 
 				if (step_idx === -1) {
 					logger.info(
-						`Student program training set score before training loop:${valset_evaluation.score}`,
+						'Student program training set score before training loop:' + valset_evaluation.score,
 					);
 } else {
 					logger.info(
-						`Student program training set score after training step ${step_idx + 1}/${this.num_train_steps}:${valset_evaluation.score}`,
+						'Student program training set score after training step ${step_idx + 1}/${this.num_train_steps}:' + valset_evaluation.score,
 					);
 }
 } else {
@@ -532,7 +532,7 @@ export class GRPO extends FinetuneTeleprompter {
 				:Math.floor(base_idx / this.shuffled_trainset_ids.length);
 
 		if (curr_epoch > this.epoch) {
-			logger.info(`Updating shuffled trainset for epoch ${curr_epoch}...`);
+			logger.info('Updating shuffled trainset for epoch ' + curr_epoch + '...');
 			this.epoch = curr_epoch;
 			this.update_shuffled_trainset(original_trainset);
 }
@@ -541,7 +541,7 @@ export class GRPO extends FinetuneTeleprompter {
 			this.shuffled_trainset_ids.length < this.num_dspy_examples_per_grpo_step
 		) {
 			throw new Error(
-				`Shuffled trainset length ${this.shuffled_trainset_ids.length} is less than num_dspy_examples_per_grpo_step ${this.num_dspy_examples_per_grpo_step}`,
+				'Shuffled trainset length ${this.shuffled_trainset_ids.length} is less than num_dspy_examples_per_grpo_step ' + this.num_dspy_examples_per_grpo_step,
 			);
 }
 		if (
@@ -550,7 +550,7 @@ export class GRPO extends FinetuneTeleprompter {
 			0
 		) {
 			throw new Error(
-				`Shuffled trainset length ${this.shuffled_trainset_ids.length} is not divisible by num_dspy_examples_per_grpo_step ${this.num_dspy_examples_per_grpo_step}`,
+				'Shuffled trainset length ${this.shuffled_trainset_ids.length} is not divisible by num_dspy_examples_per_grpo_step ' + this.num_dspy_examples_per_grpo_step,
 			);
 }
 
@@ -559,7 +559,7 @@ export class GRPO extends FinetuneTeleprompter {
 
 		if (end_idx > this.shuffled_trainset_ids.length) {
 			throw new Error(
-				`End index ${end_idx} is out of bounds for shuffled trainset length ${this.shuffled_trainset_ids.length}`,
+				'End index ${end_idx} is out of bounds for shuffled trainset length ' + this.shuffled_trainset_ids.length,
 			);
 }
 
@@ -599,7 +599,7 @@ export class GRPO extends FinetuneTeleprompter {
 
 		if (trainset.length < this.num_dspy_examples_per_grpo_step) {
 			logger.warning(
-				`Number of training examples ${trainset.length} is less than the number of examples per GRPO step ${this.num_dspy_examples_per_grpo_step}. ` +
+				'Number of training examples ${trainset.length} is less than the number of examples per GRPO step ' + this.num_dspy_examples_per_grpo_step + '. ' +
 					"Repeating the training set to fill the GRPO step. This could lead to overfitting and training instability.",
 			);
 			const multiplier = Math.ceil(
@@ -607,7 +607,7 @@ export class GRPO extends FinetuneTeleprompter {
 			);
 			if (multiplier > 1) {
 				logger.warning(
-					`Repeating the training set ${multiplier} times to fill the GRPO step. This could lead to overfitting and training instability.`,
+					'Repeating the training set ' + multiplier + ' times to fill the GRPO step. This could lead to overfitting and training instability.',
 				);
 				trainset = Array(multiplier).fill(trainset).flat();
 }
@@ -624,9 +624,9 @@ export class GRPO extends FinetuneTeleprompter {
 		const student_lms = new Set(student.predictors().map((pred) => pred.lm));
 		if (student_lms.size !== 1) {
 			throw new Error(
-				`Student program has multiple LMs:${Array.from(student_lms)}. ` +
+				'Student program has multiple LMs:' + Array.from(student_lms) + '. ' +
 					"GRPO only supports student programs with a single LM. " +
-					"You can set the LM for a program with `program.set_lm(...)`",
+					"You can set the LM for a program with 'program.set_lm(...)',
 			);
 		}
 
@@ -661,14 +661,14 @@ export class GRPO extends FinetuneTeleprompter {
 		// Ensure that the teachers list contains the student program
 		if (!teachers.includes(student)) {
 			throw new Error(
-				`Student program ${student} is not in the list of teachers ${teachers}. Please provide the student program as one of the teachers. ` +
+				'Student program ${student} is not in the list of teachers ' + teachers + '. Please provide the student program as one of the teachers. ' +
 					"Alternatively, you can leave the teacher argument as None, and the student program will be used as the teacher program.",
 			);
 		}
 
 		if (this.num_rollouts_per_grpo_step % teachers.length !== 0) {
 			throw new Error(
-				`The GRPO group size (num_rollouts_per_grpo_step) ${this.num_rollouts_per_grpo_step} is not divisible by the number of teachers ${teachers.length}. ` +
+				'The GRPO group size (num_rollouts_per_grpo_step) ${this.num_rollouts_per_grpo_step} is not divisible by the number of teachers ' + teachers.length + '. ' +
 					"This is required to ensure that each teacher gets the same number of examples. " +
 					"Please provide a number of examples that is divisible by the number of teachers.",
 			);
@@ -697,7 +697,7 @@ export class GRPO extends FinetuneTeleprompter {
 		const grpo_training_jobs = new Map<string, any>();
 		for (const [pred_ind, pred] of student.predictors().entries()) {
 			const data_key = this.multitask ? null : pred_ind;
-			const job_key = `${pred.lm}_${data_key}`;
+			const job_key = '${pred.lm}_' + data_key;
 			if (!grpo_training_jobs.has(job_key)) {
 				const train_kwargs = this.trainKwargs?.get(pred.lm);
 				const job = pred.lm.reinforce({ train_kwargs});
@@ -714,7 +714,7 @@ export class GRPO extends FinetuneTeleprompter {
 			train_step_idx++
 		) {
 			logger.info(
-				`GRPO training step ${train_step_idx + 1}/${this.num_train_steps}...`,
+				'GRPO training step ${train_step_idx + 1}/' + this.num_train_steps + '...',
 			);
 
 			const subsample_training_dataset =
@@ -783,7 +783,7 @@ export class GRPO extends FinetuneTeleprompter {
 						for (const sample of teacher_data) {
 							if (sample.example_ind !== example_ind) {
 								throw new Error(
-									`Example index ${sample.example_ind} does not match the expected index ${example_ind}`,
+									'Example index ${sample.example_ind} does not match the expected index ' + example_ind,
 								);
 }
 
@@ -805,7 +805,7 @@ export class GRPO extends FinetuneTeleprompter {
 
 					if (predictor_example_invocations.length === 0) {
 						logger.warning(
-							`Skipping example ${example_ind} for predictor ${pred_id} as it has no invocations. This is likely due to all examples in the training set input, resulting in the model generating output not following the dspy response format.`,
+							'Skipping example ${example_ind} for predictor ' + pred_id + ' as it has no invocations. This is likely due to all examples in the training set input, resulting in the model generating output not following the dspy response format.',
 						);
 						continue;
 } else if (
@@ -813,7 +813,7 @@ export class GRPO extends FinetuneTeleprompter {
 						this.num_rollouts_per_grpo_step
 					) {
 						logger.warning(
-							`Number of predictor example invocations ${predictor_example_invocations.length} does not match the expected batch size ${this.num_rollouts_per_grpo_step}. This is likely due to all examples in the training set input, resulting in the model generating output not following the dspy response format.`,
+							'Number of predictor example invocations ${predictor_example_invocations.length} does not match the expected batch size ' + this.num_rollouts_per_grpo_step + '. This is likely due to all examples in the training set input, resulting in the model generating output not following the dspy response format.',
 						);
 }
 
@@ -825,7 +825,7 @@ export class GRPO extends FinetuneTeleprompter {
 
 					if (min_len === 0) {
 						logger.warning(
-							`Skipping example ${example_ind} for predictor ${pred_id} as it has no invocations.`,
+							'Skipping example ${example_ind} for predictor ' + pred_id + ' as it has no invocations.',
 						);
 						continue;
 }
@@ -854,7 +854,7 @@ export class GRPO extends FinetuneTeleprompter {
 						// ragged mode - no processing needed
 						if (this.variably_invoked_predictor_grouping_mode !== "ragged") {
 							throw new Error(
-								`Unknown variably invoked predictor grouping mode ${this.variably_invoked_predictor_grouping_mode}`,
+								'Unknown variably invoked predictor grouping mode ' + this.variably_invoked_predictor_grouping_mode,
 							);
 }
 }
@@ -880,7 +880,7 @@ export class GRPO extends FinetuneTeleprompter {
 								const adapter = this.adapter.get(pred_lm) || new ChatAdapter();
 								if (!(adapter instanceof ChatAdapter)) {
 									throw new Error(
-										`Adapter ${adapter} is not a ChatAdapter. GRPO training is not supported for this adapter.`,
+										'Adapter ' + adapter + ' is not a ChatAdapter. GRPO training is not supported for this adapter.',
 									);
 }
 
@@ -904,7 +904,7 @@ export class GRPO extends FinetuneTeleprompter {
 										reward:failure_score,
 });
 									logger.warning(
-										`Adding a format failure example to the training data for predictor ${pred_id} and example ${example_ind}.`,
+										'Adding a format failure example to the training data for predictor ${pred_id} and example ' + example_ind + '.',
 									);
 } else {
 									const all_messages = adapter.formatFinetuneData({
@@ -919,7 +919,7 @@ export class GRPO extends FinetuneTeleprompter {
 										JSON.stringify(inp_messages)
 									) {
 										throw new Error(
-											`Input messages ${JSON.stringify(inp_messages)} do not match the expected messages ${JSON.stringify(all_messages.slice(0, -1))}`,
+											'Input messages ${JSON.stringify(inp_messages)} do not match the expected messages ' + JSON.stringify(all_messages.slice(0, -1)),
 										);
 }
 
@@ -952,11 +952,11 @@ export class GRPO extends FinetuneTeleprompter {
 				for (const grpo_train_group of predictor_train_batch) {
 					if (grpo_train_group.length !== this.num_rollouts_per_grpo_step) {
 						logger.warning(
-							`Number of completions ${grpo_train_group.length} does not match the expected number num_rollouts_per_grpo_step=${this.num_rollouts_per_grpo_step}`,
+							'Number of completions ${grpo_train_group.length} does not match the expected number num_rollouts_per_grpo_step=' + this.num_rollouts_per_grpo_step,
 						);
 						if (grpo_train_group.length > this.num_rollouts_per_grpo_step) {
 							throw new Error(
-								`Number of completions ${grpo_train_group.length} is greater than the expected number num_rollouts_per_grpo_step=${this.num_rollouts_per_grpo_step}`,
+								'Number of completions ${grpo_train_group.length} is greater than the expected number num_rollouts_per_grpo_step=' + this.num_rollouts_per_grpo_step,
 							);
 }
 }
@@ -965,7 +965,7 @@ export class GRPO extends FinetuneTeleprompter {
 						2
 					) {
 						logger.warning(
-							`GRPOGroup has no diversity. This could be due to low temperature, or low number of rollouts, or the cache could be enabled inadvertently. The GRPOGroup is ${JSON.stringify(grpo_train_group)}.`,
+							'GRPOGroup has no diversity. This could be due to low temperature, or low number of rollouts, or the cache could be enabled inadvertently. The GRPOGroup is ' + JSON.stringify(grpo_train_group) + '.',
 						);
 }
 }
@@ -995,7 +995,7 @@ export class GRPO extends FinetuneTeleprompter {
 }
 					if (group.length !== this.num_rollouts_per_grpo_step) {
 						throw new Error(
-							`Number of completions ${group.length} does not match the expected number self.num_rollouts_per_grpo_step=${this.num_rollouts_per_grpo_step}`,
+							'Number of completions ${group.length} does not match the expected number self.num_rollouts_per_grpo_step=' + this.num_rollouts_per_grpo_step,
 						);
 }
 }
@@ -1004,7 +1004,7 @@ export class GRPO extends FinetuneTeleprompter {
 }
 
 			logger.info(
-				`GRPO training step ${train_step_idx + 1}/${this.num_train_steps} completed.`,
+				'GRPO training step ${train_step_idx + 1}/' + this.num_train_steps + ' completed.',
 			);
 
 			await this.report_validation_metrics(
@@ -1054,7 +1054,7 @@ function disable_lm_cache(
 	for (const pred of program.predictors()) {
 		if (!pred.lm) {
 			throw new Error(
-				`Cannot disable cache:predictor ${pred} does not have an LM set.`,
+				'Cannot disable cache:predictor ' + pred + ' does not have an LM set.',
 			);
 }
 		if (!lm_cache_dict.has(pred.lm)) {

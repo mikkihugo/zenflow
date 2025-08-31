@@ -218,7 +218,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
 
       // Initialize service container
       Object.assign(this, {
-        serviceContainer: await createContainer(`server-${this.id}`),
+        serviceContainer: await createContainer('server-' + this.id),
       });
 
       // Initialize strategic facades
@@ -400,7 +400,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
         healthChecks.push({
           name: 'http',
           status: 'error',
-          message: `HTTP adapter health check failed: ${error}`,
+          message: 'HTTP adapter health check failed: ' + error,
         });
       }
     }
@@ -417,7 +417,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
         healthChecks.push({
           name: 'database',
           status: 'error',
-          message: `Database adapter health check failed: ${error}`,
+          message: 'Database adapter health check failed: ' + error,
         });
       }
     }

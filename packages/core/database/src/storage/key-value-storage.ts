@@ -117,9 +117,9 @@ export class KeyValueStorageImpl implements KeyValueStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to get key "${key}": ${error instanceof Error ? error.message : String(error)}`,
+        'Failed to get key "${key}": ' + error instanceof Error ? error.message : String(error),
         createQueryErrorOptions(
-          `SELECT value, ttl, stored_at FROM kv_store WHERE key = ?`,
+          'SELECT value, ttl, stored_at FROM kv_store WHERE key = ?',
           [key],
           correlationId,
           error
@@ -146,8 +146,8 @@ export class KeyValueStorageImpl implements KeyValueStorage {
 
       // Store in database
       await this.connection.execute(
-        `INSERT OR REPLACE INTO kv_store (key, value, ttl, stored_at, updated_at)
-         VALUES (?, ?, ?, ?, ?)`,
+        'INSERT OR REPLACE INTO kv_store (key, value, ttl, stored_at, updated_at)
+         VALUES (?, ?, ?, ?, ?)',
         [key, serializedValue, ttl, storedAt, storedAt],
         { correlationId }
       );
@@ -169,9 +169,9 @@ export class KeyValueStorageImpl implements KeyValueStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to set key "${key}":${error instanceof Error ? error.message : String(error)}`,
+        'Failed to set key "${key}":' + error instanceof Error ? error.message : String(error),
         {
-          query: `INSERT OR REPLACE INTO kv_store (key, value, ttl, stored_at, updated_at) VALUES (?, ?, ?, ?, ?)`,
+          query: 'INSERT OR REPLACE INTO kv_store (key, value, ttl, stored_at, updated_at) VALUES (?, ?, ?, ?, ?)',
           params: [key],
           correlationId,
           ...(error instanceof Error ? { cause: error } : {}),
@@ -214,9 +214,9 @@ export class KeyValueStorageImpl implements KeyValueStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to delete key "${key}":${error instanceof Error ? error.message : String(error)}`,
+        'Failed to delete key "${key}":' + error instanceof Error ? error.message : String(error),
         {
-          query: `DELETE FROM kv_store WHERE key = ?`,
+          query: 'DELETE FROM kv_store WHERE key = ?',
           params: [key],
           correlationId,
           ...(error instanceof Error ? { cause: error } : {}),
@@ -262,9 +262,9 @@ export class KeyValueStorageImpl implements KeyValueStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to check key "${key}":${error instanceof Error ? error.message : String(error)}`,
+        'Failed to check key "${key}":' + error instanceof Error ? error.message : String(error),
         {
-          query: `SELECT COUNT(*) as count FROM kv_store WHERE key = ? AND (ttl IS NULL OR ? < stored_at + ttl)`,
+          query: 'SELECT COUNT(*) as count FROM kv_store WHERE key = ? AND (ttl IS NULL OR ? < stored_at + ttl)',
           params: [key, Date.now()],
           correlationId,
           ...(error instanceof Error ? { cause: error } : {}),
@@ -313,9 +313,9 @@ export class KeyValueStorageImpl implements KeyValueStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to get keys with pattern "${pattern}":${error instanceof Error ? error.message : String(error)}`,
+        'Failed to get keys with pattern "${pattern}":' + error instanceof Error ? error.message : String(error),
         {
-          query: `SELECT key FROM kv_store WHERE (ttl IS NULL OR ? < stored_at + ttl)`,
+          query: 'SELECT key FROM kv_store WHERE (ttl IS NULL OR ? < stored_at + ttl)',
           params: [Date.now()],
           correlationId,
           ...(error instanceof Error ? { cause: error } : {}),
@@ -347,9 +347,9 @@ export class KeyValueStorageImpl implements KeyValueStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to clear all data:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to clear all data:' + error instanceof Error ? error.message : String(error),
         {
-          query: `DELETE FROM kv_store`,
+          query: 'DELETE FROM kv_store',
           params: [],
           correlationId,
           ...(error instanceof Error ? { cause: error } : {}),
@@ -381,9 +381,9 @@ export class KeyValueStorageImpl implements KeyValueStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to get storage size:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to get storage size:' + error instanceof Error ? error.message : String(error),
         {
-          query: `SELECT COUNT(*) as count FROM kv_store WHERE (ttl IS NULL OR ? < stored_at + ttl)`,
+          query: 'SELECT COUNT(*) as count FROM kv_store WHERE (ttl IS NULL OR ? < stored_at + ttl)',
           params: [Date.now()],
           correlationId,
           ...(error instanceof Error ? { cause: error } : {}),
@@ -430,9 +430,9 @@ export class KeyValueStorageImpl implements KeyValueStorage {
           ttl?: number;
           stored_at: number;
         }>(
-          `SELECT key, value, ttl, stored_at FROM kv_store 
-           WHERE key IN (${placeholders}) 
-           AND (ttl IS NULL OR ? < stored_at + ttl)`,
+          'SELECT key, value, ttl, stored_at FROM kv_store 
+           WHERE key IN (' + placeholders + ') 
+           AND (ttl IS NULL OR ? < stored_at + ttl)',
           [...uncachedKeys, Date.now()],
           { correlationId }
         );
@@ -469,7 +469,7 @@ export class KeyValueStorageImpl implements KeyValueStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to multi-get ${keys.length} keys:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to multi-get ${keys.length} keys:' + error instanceof Error ? error.message : String(error),
         {
           query:
             'SELECT key, value, ttl, stored_at FROM kv_store WHERE key IN (...) AND (ttl IS NULL OR ? < stored_at + ttl)',
@@ -500,7 +500,7 @@ export class KeyValueStorageImpl implements KeyValueStorage {
             typeof value === 'string' ? value : JSON.stringify(value);
 
           await tx.execute(
-            `INSERT OR REPLACE INTO kv_store (key, value, ttl, stored_at, updated_at) VALUES (?, ?, ?, ?, ?)`,
+            'INSERT OR REPLACE INTO kv_store (key, value, ttl, stored_at, updated_at) VALUES (?, ?, ?, ?, ?)',
             [key, serializedValue, this.defaultTtl, storedAt, storedAt]
           );
 
@@ -522,7 +522,7 @@ export class KeyValueStorageImpl implements KeyValueStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to multi-set ${entries.size} entries:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to multi-set ${entries.size} entries:' + error instanceof Error ? error.message : String(error),
         {
           query:
             'INSERT OR REPLACE INTO kv_store (key, value, ttl, stored_at, updated_at) VALUES (?, ?, ?, ?, ?)',
@@ -546,7 +546,7 @@ export class KeyValueStorageImpl implements KeyValueStorage {
 
       const placeholders = keys.map(() => '?').join(',');
       const result = await this.connection.execute(
-        `DELETE FROM kv_store WHERE key IN (${placeholders})`,
+        'DELETE FROM kv_store WHERE key IN (' + placeholders + ')',
         [...keys],
         { correlationId }
       );
@@ -574,7 +574,7 @@ export class KeyValueStorageImpl implements KeyValueStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to multi-delete ${keys.length} keys:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to multi-delete ${keys.length} keys:' + error instanceof Error ? error.message : String(error),
         {
           query: 'DELETE FROM kv_store WHERE key IN (...)',
           params: keys,
@@ -595,7 +595,7 @@ export class KeyValueStorageImpl implements KeyValueStorage {
     }
 
     // Create key-value table
-    await this.connection.execute(`
+    await this.connection.execute('
       CREATE TABLE IF NOT EXISTS kv_store (
         key TEXT PRIMARY KEY,
         value TEXT NOT NULL,
@@ -603,14 +603,14 @@ export class KeyValueStorageImpl implements KeyValueStorage {
         stored_at INTEGER NOT NULL,
         updated_at INTEGER NOT NULL
       )
-    `);
+    ');
 
     // Create indexes for performance
-    await this.connection.execute(`
+    await this.connection.execute('
       CREATE INDEX IF NOT EXISTS idx_kv_store_ttl_expiry 
       ON kv_store(stored_at, ttl) 
       WHERE ttl IS NOT NULL
-    `);
+    ');
 
     this.initialized = true;
     logger.debug('Key-value storage initialized');
@@ -678,6 +678,6 @@ export class KeyValueStorageImpl implements KeyValueStorage {
   }
 
   private generateCorrelationId(): string {
-    return `kv-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return 'kv-${Date.now()}-' + Math.random().toString(36).substr(2, 9);
   }
 }

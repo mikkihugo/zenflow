@@ -121,7 +121,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
     _success: boolean,
     _metadata?:Record<string, unknown>
   ):void {
-    const key = `${agentId.id}-${taskType}`;`
+    const key = '${agentId.id}-' + taskType;'
 
     const record: TaskCompletionRecord = {
       agentId,
@@ -164,7 +164,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
     taskType: string,
     contextFactors?:Record<string, unknown>
   ):TaskPrediction {
-    const key = `$agentId.id-$taskType`;`
+    const key = '$agentId.id-$taskType';'
     const history = this.taskHistory.get(key)||[];
 
     if (history.length < this.config.minSamplesRequired) {
@@ -187,7 +187,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
       contextAdjustmentFactors.push({
         name: 'Complexity Factor',        impact: complexityFactor,
         confidence:0.8,
-        description:`Task complexity adjustment: ${complexityFactor}x`,`
+        description:'Task complexity adjustment: ' + complexityFactor + 'x','
 });
 }
 
@@ -197,7 +197,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
       contextAdjustmentFactors.push({
         name: 'Urgency Factor',        impact: urgencyFactor,
         confidence:0.7,
-        description:`Urgency-based time pressure: ${urgencyFactor}x`,`
+        description:'Urgency-based time pressure: ' + urgencyFactor + 'x','
 });
 }
 
@@ -207,7 +207,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
       contextAdjustmentFactors.push({
         name: 'Resource Load Factor',        impact: resourceFactor,
         confidence:0.6,
-        description:`Resource contention impact: ${resourceFactor}x`,`
+        description:'Resource contention impact: ' + resourceFactor + 'x','
 });
 }
 
@@ -226,7 +226,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
         {
           name: 'Historical Average',          impact:1.0,
           confidence: confidence,
-          description:`Based on ${recentHistory.length} recent completions`,`
+          description:'Based on ' + recentHistory.length + ' recent completions','
 },
         ...contextAdjustmentFactors,
 ],
@@ -359,5 +359,5 @@ export function isHighConfidencePrediction(
 export function getPredictionSummary(prediction: TaskPrediction): string {
   const duration = (prediction.predictedDuration / 1000).toFixed(1);
   const confidence = (prediction.confidence * 100).toFixed(0);
-  return `${duration}s (${confidence}% confidence)`;`
+  return '${duration}s (' + confidence + '% confidence)';`
 }

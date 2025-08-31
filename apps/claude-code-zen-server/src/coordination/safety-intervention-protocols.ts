@@ -29,7 +29,7 @@ export class SafetyInterventionProtocols {
 
     // Using direct log for initialization message
 
-    logger.info('🛡️ Initializing Safety Intervention Protocols...');
+    logger.info('️ Initializing Safety Intervention Protocols...');
 
     // Mock initialization - in a real system this would set up monitoring
     await new Promise((resolve) => setTimeout(resolve, 100));
@@ -37,7 +37,7 @@ export class SafetyInterventionProtocols {
     this.initialized = true;
     // Using direct log for completion message
 
-    logger.info('✅ Safety Intervention Protocols initialized');
+    logger.info(' Safety Intervention Protocols initialized');
   }
 
   isEnabled(): boolean {

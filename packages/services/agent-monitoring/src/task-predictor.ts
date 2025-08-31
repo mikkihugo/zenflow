@@ -10,13 +10,13 @@ import type { AgentId, PredictionRequest} from './types';
 // Simple logger placeholder
 const getLogger = (name: string) => ({
   info:(msg: string, meta?:unknown) =>
-    console.info(`[INFO: ${name}] ${msg}`, meta || {}),
+    console.info('[INFO: ${name}] ' + msg, meta || {}),
   debug:(msg: string, meta?:unknown) =>
-    console.info(`[DEBUG: ${name}] ${msg}`, meta || {}),
+    console.info('[DEBUG: ${name}] ' + msg, meta || {}),
   warn:(msg: string, meta?:unknown) =>
-    console.warn(`[WARN: ${name}] ${msg}`, meta || {}),
+    console.warn('[WARN: ${name}] ' + msg, meta || {}),
   error:(msg: string, meta?:unknown) =>
-    console.error(`[ERROR: ${name}] ${msg}`, meta || {}),
+    console.error('[ERROR: ${name}] ' + msg, meta || {}),
 });
 
 const logger = getLogger('agent-monitoring-task-predictor');
@@ -131,7 +131,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
     success: boolean,
     metadata?:Record<string, unknown>
   ):void {
-    const key = `${agentId.id}-${taskType}`;
+    const key = '${agentId.id}-' + taskType;
 
     const record: TaskCompletionRecord = {
       agentId,
@@ -173,7 +173,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
     taskType: string,
     _contextFactors?:Record<string, unknown>
   ): TaskPrediction {
-    const key = `${agentId.id}-${taskType}`;
+    const key = '${agentId.id}-' + taskType;
     const history = this.taskHistory.get(key) || [];
 
     if (history.length < this.config.minSamplesRequired) {
@@ -201,7 +201,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
         {
           name: 'Historical Average',          impact:1.0,
           confidence,
-          description:`Based on ${recentHistory.length} recent completions`,
+          description:'Based on ' + recentHistory.length + ' recent completions',
 },
 ],
       lastUpdated: new Date(),
@@ -248,7 +248,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
         record.metadata
       );
 }
-    logger.info(`Updated learning with ${records.length} records`);
+    logger.info('Updated learning with ' + records.length + ' records');
 }
 
   /**
@@ -363,5 +363,5 @@ export function isHighConfidencePrediction(
 export function getPredictionSummary(prediction: TaskPrediction): string {
   const duration = (prediction.predictedDuration / 1000).toFixed(1);
   const confidence = (prediction.confidence * 100).toFixed(0);
-  return `${duration}s (${confidence}% confidence)`;
+  return '${duration}s (' + confidence + '% confidence)';
 }

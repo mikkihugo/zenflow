@@ -37,7 +37,7 @@ export class FilterProcessor implements BaseProcessor {
   constructor(config:ProcessorConfig) {
     this.name = config.name;
     this.config = config;
-    this.logger = getLogger(`FilterProcessor:${config.name}`);
+    this.logger = getLogger('FilterProcessor:' + config.name);
 
     // Parse filter rules
     this.includeRules = this.parseFilterRules(config.config?.include  ||  []);
@@ -97,7 +97,7 @@ export class FilterProcessor implements BaseProcessor {
 
       if (filteredItems.length < dataItems.length) {
         this.logger.debug(
-          `Filtered ${dataItems.length - filteredItems.length} out of ${dataItems.length} items`
+          'Filtered ${dataItems.length - filteredItems.length} out of ' + dataItems.length + ' items'
         );
 }
 
@@ -118,7 +118,7 @@ export class FilterProcessor implements BaseProcessor {
       totalFiltered:this.filteredCount,
       filterRate:
         this.processedCount > 0
-          ? `${((this.filteredCount / this.processedCount) * 100).toFixed(1)}%`
+          ? ((this.filteredCount / this.processedCount) * 100).toFixed(1) + '%'
           : '0%',
     });
 }
@@ -147,7 +147,7 @@ export class FilterProcessor implements BaseProcessor {
     const passed = this.processedCount - this.filteredCount;
     const filterRate =
       this.processedCount > 0
-        ? `${{}((this.filteredCount / this.processedCount) * 100).toFixed(1)}%`
+        ? { + '((this.filteredCount / this.processedCount) * 100).toFixed(1)}%'
         : '0%';
 
     return {
@@ -255,7 +255,7 @@ export class FilterProcessor implements BaseProcessor {
         try {
           parsed.regex = new RegExp(rule.value, rule.flags  ||  'i');
 } catch (error) {
-          this.logger.warn(`Invalid regex pattern:${rule.value}`, error);
+          this.logger.warn('Invalid regex pattern:' + rule.value, error);
           // Fallback to contains operator
           parsed.operator = 'contains';
 }

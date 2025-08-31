@@ -10,7 +10,7 @@
  * @package @claude-zen/foundation
  * @since 2.1.0
  * @example
- * ```typescript`
+ * '''typescript'
  * import type { BaseError, ValidationError, SystemError} from '@claude-zen/foundation/types';
  * import { createValidationError, isValidationError} from '@claude-zen/foundation/types';
  *
@@ -20,7 +20,7 @@
  *}
  *   return null;
  *}
- * ```
+ * `
  */
 
 import { LogLevel, type Timestamp, type UUID } from './primitives';

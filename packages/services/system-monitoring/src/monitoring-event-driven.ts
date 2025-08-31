@@ -214,7 +214,7 @@ export class EventDrivenSystemMonitor {
       try {
         listener(data);
 } catch (error) {
-        this.logger.error(`Event listener error for ${event}`, {
+        this.logger.error('Event listener error for ' + event, {
           error:error instanceof Error ? error.message : String(error)
 });
 }
@@ -406,7 +406,7 @@ export class EventDrivenSystemMonitor {
               : 'ok',
         value: metrics.cpu.usage,
         threshold: this.config.cpuWarningThreshold,
-        message: `System CPU usage: ${metrics.cpu.usage}%`,
+        message: 'System CPU usage: ' + metrics.cpu.usage + '%',
       },
       memory: {
         status:
@@ -417,7 +417,7 @@ export class EventDrivenSystemMonitor {
               : 'ok',
         value: metrics.memory.usage,
         threshold: this.config.memoryWarningThreshold,
-        message: `System memory usage: ${metrics.memory.usage}%`,
+        message: 'System memory usage: ' + metrics.memory.usage + '%',
       },
       disk: {
         status:
@@ -428,12 +428,12 @@ export class EventDrivenSystemMonitor {
               : 'ok',
         value: metrics.disk.usage,
         threshold:this.config.diskWarningThreshold,
-        message:`Disk usage: ${metrics.disk.usage}%`,
+        message:'Disk usage: ' + metrics.disk.usage + '%',
 },
       uptime:{
         status: 'ok',        value:metrics.uptime,
         threshold:0,
-        message:`System uptime: ${Math.round(metrics.uptime / 3600)} hours`,
+        message:'System uptime: ' + Math.round(metrics.uptime / 3600) + ' hours',
 },
 };
 
@@ -447,9 +447,9 @@ export class EventDrivenSystemMonitor {
         systemLoad:metrics.cpu.load,
         processCount:Math.round(Math.random() * 200), // Mock process count
         memoryDetails:{
-          total:`${Math.round(metrics.memory.total / (1024 * 1024 * 1024))} GB`,
-          used:`${Math.round(metrics.memory.used / (1024 * 1024 * 1024))} GB`,
-          free:`${Math.round(metrics.memory.free / (1024 * 1024 * 1024))} GB`,
+          total:Math.round(metrics.memory.total / (1024 * 1024 * 1024)) + ' GB',
+          used:Math.round(metrics.memory.used / (1024 * 1024 * 1024)) + ' GB',
+          free:Math.round(metrics.memory.free / (1024 * 1024 * 1024)) + ' GB',
 },
 },
 };

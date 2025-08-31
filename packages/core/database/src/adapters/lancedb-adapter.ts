@@ -222,7 +222,7 @@ export class LanceDBAdapter implements DatabaseConnection {
               : String(lancedbError),
         });
         throw new ConnectionError(
-          `Failed to create LanceDB connection:${lancedbError instanceof Error ? lancedbError.message : String(lancedbError)}`,
+          'Failed to create LanceDB connection:' + lancedbError instanceof Error ? lancedbError.message : String(lancedbError),
           correlationId,
           lancedbError instanceof Error ? lancedbError : undefined
         );
@@ -238,7 +238,7 @@ export class LanceDBAdapter implements DatabaseConnection {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new ConnectionError(
-        `Failed to connect to LanceDB:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to connect to LanceDB:' + error instanceof Error ? error.message : String(error),
         correlationId,
         error instanceof Error ? error : undefined
       );
@@ -270,7 +270,7 @@ export class LanceDBAdapter implements DatabaseConnection {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new ConnectionError(
-        `Failed to disconnect from LanceDB:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to disconnect from LanceDB:' + error instanceof Error ? error.message : String(error),
         correlationId,
         error instanceof Error ? error : undefined
       );
@@ -360,7 +360,7 @@ export class LanceDBAdapter implements DatabaseConnection {
       if (error instanceof Error) errorOptions.cause = error;
 
       throw new QueryError(
-        `LanceDB operation execution failed:${error instanceof Error ? error.message : String(error)}`,
+        'LanceDB operation execution failed:' + error instanceof Error ? error.message : String(error),
         errorOptions
       );
     }
@@ -415,7 +415,7 @@ export class LanceDBAdapter implements DatabaseConnection {
       }
 
       throw new TransactionError(
-        `Transaction failed:${error instanceof Error ? error.message : String(error)}`,
+        'Transaction failed:' + error instanceof Error ? error.message : String(error),
         correlationId,
         error instanceof Error ? error : undefined
       );
@@ -1191,7 +1191,7 @@ export class LanceDBAdapter implements DatabaseConnection {
     try {
       const table = await this.database?.openTable(tableName);
       if (!table) {
-        throw new Error(`Failed to open table:${tableName}`);
+        throw new Error('Failed to open table:' + tableName);
       }
       let query = table.vectorSearch([...vector]);
 
@@ -1231,9 +1231,9 @@ export class LanceDBAdapter implements DatabaseConnection {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Vector search failed:${error instanceof Error ? error.message : String(error)}`,
+        'Vector search failed:' + error instanceof Error ? error.message : String(error),
         {
-          query: `VECTOR_SEARCH ${tableName}`,
+          query: 'VECTOR_SEARCH ' + tableName,
           params: { vector, options },
         }
       );
@@ -1258,7 +1258,7 @@ export class LanceDBAdapter implements DatabaseConnection {
       try {
         const openedTable = await this.database?.openTable(tableName);
         if (!openedTable) {
-          throw new Error(`Failed to open table:${tableName}`);
+          throw new Error('Failed to open table:' + tableName);
         }
         table = openedTable;
       } catch {
@@ -1273,7 +1273,7 @@ export class LanceDBAdapter implements DatabaseConnection {
           data: sampleData,
         });
         if (!createdTable) {
-          throw new Error(`Failed to create table:${tableName}`);
+          throw new Error('Failed to create table:' + tableName);
         }
         table = createdTable;
       }
@@ -1296,9 +1296,9 @@ export class LanceDBAdapter implements DatabaseConnection {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Vector insertion failed:${error instanceof Error ? error.message : String(error)}`,
+        'Vector insertion failed:' + error instanceof Error ? error.message : String(error),
         {
-          query: `INSERT_VECTORS ${tableName}`,
+          query: 'INSERT_VECTORS ' + tableName,
           params: { vectors },
         }
       );
@@ -1317,7 +1317,7 @@ export class LanceDBAdapter implements DatabaseConnection {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new ConnectionError(
-        `Connection test failed:${error instanceof Error ? error.message : String(error)}`,
+        'Connection test failed:' + error instanceof Error ? error.message : String(error),
         correlationId,
         error instanceof Error ? error : undefined
       );
@@ -1409,7 +1409,7 @@ export class LanceDBAdapter implements DatabaseConnection {
     if (lastError !== undefined) errorOptions.cause = lastError;
 
     throw new QueryError(
-      `Operation failed after ${retryPolicy.maxRetries} retries:${lastError?.message}`,
+      'Operation failed after ${retryPolicy.maxRetries} retries:' + lastError?.message,
       errorOptions
     );
   }
@@ -1472,7 +1472,7 @@ export class LanceDBAdapter implements DatabaseConnection {
   }
 
   private generateCorrelationId(): string {
-    return `lancedb-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return 'lancedb-${Date.now()}-' + Math.random().toString(36).substr(2, 9);
   }
 
   private sleep(ms: number): Promise<void> {

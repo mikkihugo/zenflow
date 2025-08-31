@@ -216,4 +216,4 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
  const results = await Promise.all(
  priorities.map(async (priority) => {
  const _request:NeuralEmbeddingRequest = {
- text:`Priority test ${priority}`,:`Quality test ${qualityLevel}`,:`Performance test ${i}`,:`Quality test for ${qualityLevel} classification`, ` `;
+ text:'Priority test ' + priority,:'Quality test ' + qualityLevel,:'Performance test ' + i,:'Quality test for ' + qualityLevel + ' classification', ' ';

@@ -103,4 +103,4 @@ describe(): void {
  for (const conv of conversations) {
  await storage.storeSession(): void {
  ')completed', _context:{
- goal:`Goal ${i}`,
+ goal:'Goal ' + i,

@@ -53,7 +53,7 @@ export class WebSessionManager {
             notifications: true,
           },
         });
-        this.logger.debug(`Created new session:${sessionId}`);
+        this.logger.debug('Created new session:' + sessionId);
       }
       next();
     };
@@ -84,7 +84,7 @@ export class WebSessionManager {
         ...session.preferences,
         ...preferences,
       };
-      this.logger.debug(`Updated preferences for session:${sessionId}`);
+      this.logger.debug('Updated preferences for session:' + sessionId);
       return true;
     }
     return false;
@@ -115,7 +115,7 @@ export class WebSessionManager {
     }
 
     if (cleanedCount > 0) {
-      this.logger.info(`Cleaned up ${cleanedCount} expired sessions`);
+      this.logger.info('Cleaned up ' + cleanedCount + ' expired sessions');
     }
     return cleanedCount;
   }
@@ -124,7 +124,7 @@ export class WebSessionManager {
    * Generate unique session ID.
    */
   private generateSessionId(): string {
-    return `session-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+    return 'session-${Date.now()}-' + Math.random().toString(36).substring(2, 11);
   }
 
   /**

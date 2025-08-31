@@ -12,11 +12,11 @@ export class MeetingIntelligence {
     if (data && typeof data === 'object') {
     '  // Extract basic meeting information
       if (data.duration) {
-        insights.push(`Meeting duration:${data.duration} minutes`);`
+        insights.push('Meeting duration:' + data.duration + ' minutes');'
 }
 
       if (data.participants && Array.isArray(data.participants)) {
-        insights.push(`Participants:$data.participants.lengthattendees`);`
+        insights.push('Participants:$data.participants.lengthattendees');'
 
         // Analyze participant engagement
         const activeParticipants = data.participants.filter(
@@ -24,35 +24,32 @@ export class MeetingIntelligence {
         );
         if (activeParticipants.length > 0) {
           insights.push(
-            `Active participants:${activeParticipants.length}/${data.participants.length}``
-          );
+            'Active participants:${activeParticipants.length}/' + data.participants.length);
 }
 }
 
       if (data.topics && Array.isArray(data.topics)) {
-        insights.push(`Discussion topics:${data.topics.length} items covered`);`
+        insights.push('Discussion topics:' + data.topics.length + ' items covered');'
 
         // Identify key themes
         const keyTopics = data.topics
           .slice(0, 3)
           .map((topic:any) => topic.title||topic.name||topic);
         if (keyTopics.length > 0) {
-          insights.push(`Key themes:$keyTopics.join(',    ')`);`
+          insights.push('Key themes:$keyTopics.join(',    ')');'
 }
 }
 
       if (data.actionItems && Array.isArray(data.actionItems)) {
         insights.push(
-          `Action items:${data.actionItems.length} tasks identified``
-        );
+          'Action items:' + data.actionItems.length + ' tasks identified');
 
         // Analyze urgency
         const urgentItems = data.actionItems.filter(
           (item:any) => item.priority === 'high'||item.urgent';
         if (urgentItems.length > 0) {
           insights.push(
-            `Urgent actions:${urgentItems.length} high-priority items``
-          );
+            'Urgent actions:' + urgentItems.length + ' high-priority items');
 }
 }
 
@@ -65,8 +62,7 @@ export class MeetingIntelligence {
             ?'positive'        :sentimentScore < 0.4
               ? 'negative'          : 'neutral;
 '        insights.push(
-          `Meeting sentiment:$_sentimentLabel($(sentimentScore * 100).toFixed(1)%)``
-        );
+          'Meeting sentiment:$_sentimentLabel($(sentimentScore * 100).toFixed(1)%)');
 }
 }
 
@@ -74,7 +70,7 @@ export class MeetingIntelligence {
       analysis: 'meeting_analysis_complete',      insights,
       summary:
         insights.length > 0
-          ? `Analyzed meeting with ${insights.length} key insights``
+          ? 'Analyzed meeting with ' + insights.length + ' key insights'
           : 'Basic meeting analysis completed',      recommendations:this.generateMeetingRecommendations(data, insights),
 };
 }

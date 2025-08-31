@@ -62,7 +62,7 @@ export class EventRegistryWebSocketService {
     this.startDataBroadcast();
     this.startPingClients();
 
-    logger.info('🔌 Event Registry WebSocket server started at /api/events/ws');
+    logger.info(' Event Registry WebSocket server started at /api/events/ws');
   }
 
   /**
@@ -79,7 +79,7 @@ export class EventRegistryWebSocketService {
 
     this.clients.set(clientId, client);
     logger.info(
-      `📡 New event registry client connected:${clientId} (${this.clients.size} total)`
+      ' New event registry client connected:${clientId} (' + this.clients.size + ' total)'
     );
 
     // Send initial data
@@ -113,13 +113,13 @@ export class EventRegistryWebSocketService {
     ws.on('close', () => {
       this.clients.delete(clientId);
       logger.info(
-        `📡 Event registry client disconnected:${clientId} (${this.clients.size} remaining)`
+        ' Event registry client disconnected:${clientId} (' + this.clients.size + ' remaining)'
       );
     });
 
     // Handle client errors
     ws.on('error', (_error) => {
-      logger.error(`WebSocket client error (${clientId}):`, error);
+      logger.error('WebSocket client error (' + clientId + '):', error);
       this.clients.delete(clientId);
     });
 
@@ -143,7 +143,7 @@ export class EventRegistryWebSocketService {
             client.subscriptions.add(eventType);
           }
           logger.info(
-            `Client ${client.id} subscribed to ${message.eventTypes.join(',    ')}`
+            'Client ${client.id} subscribed to ' + message.eventTypes.join(',    ')
           );
         }
         break;
@@ -154,7 +154,7 @@ export class EventRegistryWebSocketService {
             client.subscriptions.delete(eventType);
           }
           logger.info(
-            `Client ${client.id} unsubscribed from ${message.eventTypes.join(',    ')}`
+            'Client ${client.id} unsubscribed from ' + message.eventTypes.join(',    ')
           );
         }
         break;
@@ -193,7 +193,7 @@ export class EventRegistryWebSocketService {
 
       default:
         logger.warn(
-          `Unknown message type from client ${client.id}:`,
+          'Unknown message type from client ' + client.id + ':',
           message.type
         );
     }
@@ -246,7 +246,7 @@ export class EventRegistryWebSocketService {
   private startDataBroadcast(): void {
     // Start the event registry initializer
     eventRegistryInitializer.start();
-    logger.info('📡 Event registry broadcasting started');
+    logger.info(' Event registry broadcasting started');
   }
 
   /**
@@ -263,7 +263,7 @@ export class EventRegistryWebSocketService {
 
           // Check if client is stale (no pong received in last 60 seconds)
           if (now.getTime() - client.lastPing.getTime() > 60000) {
-            logger.info(`Removing stale client:${clientId}`);
+            logger.info('Removing stale client:' + clientId);
             client.ws.terminate();
             this.clients.delete(clientId);
           }
@@ -274,14 +274,14 @@ export class EventRegistryWebSocketService {
       }
     }, 30000); // Ping every 30 seconds
 
-    logger.info('📡 Started pinging clients every 30 seconds');
+    logger.info(' Started pinging clients every 30 seconds');
   }
 
   /**
    * Generate unique client ID
    */
   private generateClientId(): string {
-    return `client-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return 'client-${Date.now()}-' + Math.random().toString(36).substr(2, 9);
   }
 
   /**
@@ -320,7 +320,7 @@ export class EventRegistryWebSocketService {
       this.wss = null;
     }
 
-    logger.info('📡 Event Registry WebSocket service stopped');
+    logger.info(' Event Registry WebSocket service stopped');
 
     // Stop the event registry initializer
     eventRegistryInitializer.stop();

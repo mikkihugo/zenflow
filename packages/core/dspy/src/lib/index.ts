@@ -12,29 +12,29 @@
  * to automatically improve program behavior based on metrics and examples.
  *
  * **CORE DSPY CONCEPTS:**
- * - 🎯 **Signatures**:Declare what your function should do (input/output spec)
- * - 🔧 **Modules**:Composable building blocks that use signatures
- * - 📊 **Teleprompters**:Optimization algorithms that improve programs
- * - 📈 **Metrics**:Functions that measure program quality
- * - 📚 **Examples**:Training data for optimization
- * - 🔄 **Compilation**:Automatic program improvement process
+ * -  **Signatures**:Declare what your function should do (input/output spec)
+ * -  **Modules**:Composable building blocks that use signatures
+ * -  **Teleprompters**:Optimization algorithms that improve programs
+ * -  **Metrics**:Functions that measure program quality
+ * -  **Examples**:Training data for optimization
+ * -  **Compilation**:Automatic program improvement process
  *
  * **ARCHITECTURE FLOW:**
- * ```
- * System → Brain Coordinator → DSPy Engine → Foundation LLM → Results
- *    ↑                           ↓
- * Feedback ← Teleprompters ← Metrics ← Evaluation
- * ```
+ * ''
+ * System  Brain Coordinator  DSPy Engine  Foundation LLM  Results
+ *                               
+ * Feedback  Teleprompters  Metrics  Evaluation
+ * '
  *
  * **SUPPORTED OPTIMIZATION ALGORITHMS:**
- * - 🚀 **BootstrapFewShot**:Learn from examples automatically
- * - 🎯 **MIPROv2**:Multi-prompt instruction optimization
- * - 🔄 **COPRO**:Collaborative prompt optimization
- * - 📊 **GEPA**:Generalized error-based prompt adaptation
- * - 🧠 **Ensemble**:Combine multiple optimized programs
- * - ⚡ **Random Search**:Bootstrap with random sampling
- * - 🎨 **Avatar Optimizer**:Action-based program optimization
- * - 🤝 **Better Together**:Collaborative multi-model optimization
+ * -  **BootstrapFewShot**:Learn from examples automatically
+ * -  **MIPROv2**:Multi-prompt instruction optimization
+ * -  **COPRO**:Collaborative prompt optimization
+ * -  **GEPA**:Generalized error-based prompt adaptation
+ * -  **Ensemble**:Combine multiple optimized programs
+ * -  **Random Search**:Bootstrap with random sampling
+ * -  **Avatar Optimizer**:Action-based program optimization
+ * -  **Better Together**:Collaborative multi-model optimization
  *
  * **KEY CAPABILITIES:**
  * 1. **Automatic Prompt Optimization**:No more manual prompt engineering
@@ -55,50 +55,50 @@
  *
  * **WHEN TO USE EACH OPTIMIZER:**
  *
- * 🚀 **BootstrapFewShot** - Quick optimization with examples
- * ```typescript`
+ *  **BootstrapFewShot** - Quick optimization with examples
+ * '''typescript'
  * import { BootstrapFewShot} from '@claude-zen/dspy';
  * // USE FOR:Fast optimization, limited examples, simple tasks
  * // PERFORMANCE:Quick convergence, good baseline performance
  * // FEATURES:Few-shot learning, example-based optimization
- * ```
+ * '
  *
- * 🎯 **MIPROv2** - Advanced multi-prompt optimization
- * ```typescript`
+ *  **MIPROv2** - Advanced multi-prompt optimization
+ * '''typescript'
  * import { MIPROv2} from '@claude-zen/dspy';
  * // USE FOR:Complex tasks, multiple instruction candidates
  * // PERFORMANCE:Best quality results, slower optimization
  * // FEATURES:Multi-prompt search, instruction optimization
- * ```
+ * '
  *
- * 🔄 **COPRO** - Collaborative prompt optimization
- * ```typescript`
+ *  **COPRO** - Collaborative prompt optimization
+ * '''typescript'
  * import { COPRO} from '@claude-zen/dspy';
  * // USE FOR:Iterative improvement, collaborative optimization
  * // PERFORMANCE:Continuous improvement, adaptive learning
  * // FEATURES:Collaborative search, meta-optimization
- * ```
+ * '
  *
- * 📊 **GEPA** - Error-based adaptation
- * ```typescript`
+ *  **GEPA** - Error-based adaptation
+ * '''typescript'
  * import { GEPA} from '@claude-zen/dspy';
  * // USE FOR:Error-driven optimization, feedback-based improvement
  * // PERFORMANCE:Learns from failures, robust optimization
  * // FEATURES:Error analysis, adaptive feedback loops
- * ```
+ * '
  *
- * 🧠 **Ensemble** - Combine multiple optimized programs
- * ```typescript`
+ *  **Ensemble** - Combine multiple optimized programs
+ * '''typescript'
  * import { Ensemble} from '@claude-zen/dspy';
  * // USE FOR:Maximum accuracy, combining different approaches
  * // PERFORMANCE:Best overall quality, higher computational cost
  * // FEATURES:Multi-model ensemble, voting mechanisms
- * ```
+ * '
  *
  * **INTEGRATION EXAMPLES:**
  *
  * @example Basic DSPy Program with Automatic Optimization
- * ```typescript`
+ * '''typescript'
  * import { DSPyModule, BootstrapFewShot, BrainService} from '@claude-zen/dspy';
  *
  * // Define a signature (what the program should do)
@@ -132,10 +132,10 @@
  * // Use the optimized program
  * const result = await optimized_qa.forward("What is the largest planet?");
  * logger.info(result.answer); // Automatically optimized response
- * ```
+ * '
  *
  * @example Advanced Multi-Step Reasoning with Chain-of-Thought
- * ```typescript`
+ * '''typescript'
  * import { DSPyModule, MIPROv2, Example} from '@claude-zen/dspy';
  *
  * class ChainOfThoughtReasoner extends DSPyModule {
@@ -187,10 +187,10 @@
  *     return reasoning_score + answer_score;
  *}
  *});
- * ```
+ * '
  *
  * @example Brain Integration - Autonomous DSPy Optimization
- * ```typescript`
+ * '''typescript'
  * import { getBrainService, BrainService} from '@claude-zen/dspy';
  *
  * // Get brain-integrated DSPy service
@@ -205,12 +205,12 @@
  *});
  *
  * // Brain tracks performance and improves over time
- * logger.info(`Optimized program achieved ${result.performance.f1_score} F1 score`);
- * logger.info(`Brain recommendation:${result.brainInsights.recommendedStrategy}`);
- * ```
+ * logger.info('Optimized program achieved ' + result.performance.f1_score + ' F1 score');
+ * logger.info('Brain recommendation:' + result.brainInsights.recommendedStrategy);
+ * '
  *
  * @example Production Ensemble with Multiple Optimizers
- * ```typescript`
+ * '''typescript'
  * import { Ensemble, BootstrapFewShot, MIPROv2, COPRO} from '@claude-zen/dspy';
  *
  * class ProductionClassifier extends DSPyModule {
@@ -248,11 +248,11 @@
  *
  * // Production-ready classifier with ensemble power
  * const production_result = await ensemble.forward("This product is amazing!");
- * logger.info(`Category:${production_result.category}, Confidence:${production_result.confidence}`);
- * ```
+ * logger.info('Category:' + production_result.category + ', Confidence:' + production_result.confidence);
+ * '
  *
  * @example Real-World Foundation LLM Integration
- * ```typescript`
+ * '''typescript'
  * import { DSPyEngine, createDSPyEngine} from '@claude-zen/dspy';
  *
  * // Create DSPy engine with Foundation LLM integration
@@ -279,8 +279,8 @@
  *});
  *
  * const evaluation_results = await evaluator.evaluate(optimized_program, test_set);
- * logger.info(`Program performance:${evaluation_results.score}`);
- * ```
+ * logger.info('Program performance:' + evaluation_results.score);
+ * `
  *
  * **OPTIMIZATION STRATEGIES:**
  *
@@ -462,12 +462,12 @@ export class Evaluate {
           const result = await program.forward(item.input || item);
 
           // Evaluate result using foundation LLM
-          const evaluationPrompt = `
+          const evaluationPrompt = '
 Evaluate this DSPy program output for accuracy and quality:
 
 Input:${JSON.stringify(item.input || item)}
 Expected:${JSON.stringify(item.output || item.expected || 'No expected output')}
-Actual:${JSON.stringify(result)}
+Actual:' + JSON.stringify(result) + '
 
 Rate the accuracy on a scale of 0.0 to 1.0 where:
 - 1.0 = Perfect match or excellent quality
@@ -476,7 +476,7 @@ Rate the accuracy on a scale of 0.0 to 1.0 where:
 - 0.4-0.5 = Fair, significant issues
 - 0.0-0.3 = Poor or incorrect
 
-Respond with just the numeric score (e.g., 0.85):`;
+Respond with just the numeric score (e.g., 0.85):';
 
           const scoreResponse = await dspyService.executePrompt(
             evaluationPrompt,

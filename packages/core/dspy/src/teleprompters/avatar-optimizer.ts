@@ -120,7 +120,7 @@ export class AvatarOptimizer extends Teleprompter {
 
 		if (!config.metric) {
 			throw new Error(
-				"`metric` argument cannot be None. Please provide a metric function.",
+				"'metric' argument cannot be None. Please provide a metric function.",
 			);
 }
 
@@ -158,17 +158,17 @@ export class AvatarOptimizer extends Teleprompter {
 
 		for (let i = 0; i < this.max_iters; i++) {
 			logger.info("=".repeat(20));
-			logger.info(`Iteration ${i + 1}/${this.max_iters}`);
+			logger.info('Iteration ${i + 1}/' + this.max_iters);
 
 			const { score, pos_inputs, neg_inputs} = await this._get_pos_neg_results(
 				best_actor,
 				trainset,
 			);
 
-			logger.info(`Positive examples:${pos_inputs.length}`);
-			logger.info(`Negative examples:${neg_inputs.length}`);
+			logger.info('Positive examples:' + pos_inputs.length);
+			logger.info('Negative examples:' + neg_inputs.length);
 			logger.info(
-				`Sampling ${this.max_positive_inputs} positive examples and ${this.max_negative_inputs} negative examples`,
+				'Sampling ${this.max_positive_inputs} positive examples and ' + this.max_negative_inputs + ' negative examples',
 			);
 
 			// Sample examples exactly matching Stanford implementation
@@ -206,7 +206,7 @@ export class AvatarOptimizer extends Teleprompter {
 
 			const {new_instruction} = new_instruction_result;
 
-			logger.info(`Generated new instruction:${new_instruction}`);
+			logger.info('Generated new instruction:' + new_instruction);
 
 			// Update best actor exactly matching Stanford logic
 			const should_update =
@@ -221,7 +221,7 @@ export class AvatarOptimizer extends Teleprompter {
 }
 }
 
-		logger.info(`Best Actor:${best_actor}`);
+		logger.info('Best Actor:' + best_actor);
 
 		(best_actor as any)._compiled = true;
 		return best_actor;
@@ -301,7 +301,7 @@ export class AvatarOptimizer extends Teleprompter {
 		const avg_score = evaluation_result.score;
 		const {results} = evaluation_result;
 
-		logger.info(`Average Score:${avg_score}`);
+		logger.info('Average Score:' + avg_score);
 
 		for (const { example, prediction, score} of results) {
 			if (score >= this.upper_bound) {
@@ -341,9 +341,9 @@ export class AvatarOptimizer extends Teleprompter {
 		return async (_inputs: ComparatorSignature) => {
 			// Simulate LLM-based feedback generation
 			const feedback =
-				`Based on the analysis of positive vs negative examples, ` +
-				`the tool usage needs improvement. Focus on better action selection and ` +
-				`more effective instruction following for the problematic cases.`;
+				'Based on the analysis of positive vs negative examples, ' +
+				'the tool usage needs improvement. Focus on better action selection and ' +
+				'more effective instruction following for the problematic cases.';
 
 			return { feedback };
 		};
@@ -357,8 +357,8 @@ export class AvatarOptimizer extends Teleprompter {
 		return async (inputs: FeedbackBasedInstructionSignature) => {
 			// Simulate instruction improvement
 			const new_instruction =
-				`${inputs.previous_instruction}\n\nBased on feedback: ${inputs.feedback}\n` +
-				`Please pay special attention to tool selection and action planning to improve performance on challenging cases.`;
+				'${inputs.previous_instruction}\n\nBased on feedback: ' + inputs.feedback + '\n' +
+				'Please pay special attention to tool selection and action planning to improve performance on challenging cases.';
 
 			return { new_instruction };
 		};

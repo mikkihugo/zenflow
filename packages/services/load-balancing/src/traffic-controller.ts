@@ -192,7 +192,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
     };
 
     this.logger = getLogger('traffic-controller');
-    this.logger.info('🚦 Traffic Controller created - initialization pending');
+    this.logger.info(' Traffic Controller created - initialization pending');
   }
 
   /**
@@ -208,14 +208,14 @@ export class TrafficController extends EventBus<TrafficEvents> {
 
     try {
       this.logger.info(
-        '🚦 Initializing Traffic Controller with foundation EventBus...'
+        ' Initializing Traffic Controller with foundation EventBus...'
       );
 
       // Initialize EventBus first
       const eventBusResult = await super.initialize();
       if (eventBusResult.isErr()) {
         throw new Error(
-          `EventBus initialization failed:${eventBusResult.error?.message}`
+          'EventBus initialization failed:' + eventBusResult.error?.message
         );
       }
 
@@ -232,8 +232,8 @@ export class TrafficController extends EventBus<TrafficEvents> {
       this.initialized = true;
       const duration = Date.now() - initStartTime;
 
-      this.logger.info('✅ Traffic Controller initialized successfully', {
-        duration: `${duration}ms`,
+      this.logger.info(' Traffic Controller initialized successfully', {
+        duration: duration + 'ms',
         components: 'all-load-balancing-components',
         predictiveScaling: this.config.enablePredictiveScaling,
         mlRouting: this.config.enableMLRouting,
@@ -246,9 +246,9 @@ export class TrafficController extends EventBus<TrafficEvents> {
       });
     } catch (error) {
       const duration = Date.now() - initStartTime;
-      this.logger.error('❌ Traffic Controller initialization failed', {
+      this.logger.error(' Traffic Controller initialization failed', {
         error: error instanceof Error ? error.message : String(error),
-        duration: `${duration}ms`,
+        duration: duration + 'ms',
       });
 
       // Emit error event
@@ -268,7 +268,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
   async shutdown(): Promise<void> {
     if (!this.initialized) return;
 
-    this.logger.info('🚦 Shutting down Traffic Controller...');
+    this.logger.info(' Shutting down Traffic Controller...');
 
     // Emit shutdown event before cleanup
     await this.emitSafe('traffic:shutdown', {
@@ -287,7 +287,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
     // Allow event loop to process cleanup
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    this.logger.info('✅ Traffic Controller shutdown complete');
+    this.logger.info(' Traffic Controller shutdown complete');
   }
 
   /**
@@ -362,7 +362,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
 
       const duration = Date.now() - startTime;
       this.logger.debug(
-        `🚦 Traffic control complete:${decisions.length} decisions made in ${duration}ms`
+        ' Traffic control complete:${decisions.length} decisions made in ' + duration + 'ms'
       );
 
       return decisions;
@@ -373,7 +373,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
         timestamp: Date.now(),
       });
 
-      this.logger.error('❌ Traffic control failed: ', error);
+      this.logger.error(' Traffic control failed: ', error);
       return [];
     }
   }
@@ -477,11 +477,11 @@ export class TrafficController extends EventBus<TrafficEvents> {
         type: 'emergency',
         action: 'emergency_protocol_activated',
         reasoning: [
-          `Critical system conditions detected`,
-          `CPU:${(metrics.cpuUsage * 100).toFixed(1)}%`,
-          `Memory:${(metrics.memoryUsage * 100).toFixed(1)}%`,
-          `Response time:${metrics.averageResponseTime}ms`,
-          `Error rate:${(metrics.errorRate * 100).toFixed(2)}%`,
+          'Critical system conditions detected',
+          'CPU:' + (metrics.cpuUsage * 100).toFixed(1) + '%',
+          'Memory:' + (metrics.memoryUsage * 100).toFixed(1) + '%',
+          'Response time:' + metrics.averageResponseTime + 'ms',
+          'Error rate:' + (metrics.errorRate * 100).toFixed(2) + '%',
           'Activating emergency load redistribution',
         ],
         confidence: 0.95,
@@ -512,7 +512,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
         type: 'routing',
         action: 'optimize_ml_routing',
         reasoning: [
-          `Routing efficiency below threshold:${(routingEfficiency * 100).toFixed(1)}%`,
+          'Routing efficiency below threshold:' + (routingEfficiency * 100).toFixed(1) + '%',
           'Implementing ML-based routing optimization',
           'Using performance patterns for intelligent routing',
         ],
@@ -542,10 +542,10 @@ export class TrafficController extends EventBus<TrafficEvents> {
         action: scalingDecision.action,
         reasoning: [
           scalingDecision.reasoning,
-          `Target agents:${scalingDecision.targetAgents}`,
-          `Current agents:${metrics.activeAgents}`,
-          `Confidence:${(scalingDecision.confidence * 100).toFixed(1)}%`,
-          `Urgency:${scalingDecision.urgency}`,
+          'Target agents:' + scalingDecision.targetAgents,
+          'Current agents:' + metrics.activeAgents,
+          'Confidence:' + (scalingDecision.confidence * 100).toFixed(1) + '%',
+          'Urgency:' + scalingDecision.urgency,
         ],
         confidence: scalingDecision.confidence,
         expectedImpact: scalingDecision.urgency === 'critical' ? 0.9 : 0.7,
@@ -582,9 +582,9 @@ export class TrafficController extends EventBus<TrafficEvents> {
         type: 'optimization',
         action: 'performance_optimization',
         reasoning: [
-          `Performance degradation detected`,
-          `Response time:${metrics.averageResponseTime}ms`,
-          `Throughput:${metrics.throughput} tasks/min`,
+          'Performance degradation detected',
+          'Response time:' + metrics.averageResponseTime + 'ms',
+          'Throughput:' + metrics.throughput + ' tasks/min',
           'Implementing latency and throughput optimization',
         ],
         confidence: 0.75,
@@ -666,7 +666,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
         action: 'scale_up',
         targetAgents,
         confidence: 0.8,
-        reasoning: `High system pressure: ${(overallPressure * 100).toFixed(1)}%`,
+        reasoning: 'High system pressure: ' + (overallPressure * 100).toFixed(1) + '%',
         urgency: overallPressure > 0.9 ? 'critical' : ' high',
       };
     }
@@ -683,7 +683,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
         action: 'scale_down',
         targetAgents,
         confidence: 0.7,
-        reasoning: `Low system pressure: ${(overallPressure * 100).toFixed(1)}%`,
+        reasoning: 'Low system pressure: ' + (overallPressure * 100).toFixed(1) + '%',
         urgency: 'low',
       };
     }

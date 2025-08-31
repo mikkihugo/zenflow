@@ -37,10 +37,10 @@ export declare abstract class BaseKnowledgeError extends EnhancedError {
  * Base error class for FACT (Flexible AI Context Transfer) system failures.
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * throw new FACTError(
  *   'Failed to process FACT data', *   'high', *   { operation: 'dataProcessing', metadata:{ factId: ' fact-123'}}') * );
- * ````
+ * '
  */
 export declare class FACTError extends BaseKnowledgeError {
   constructor(
@@ -88,10 +88,10 @@ export declare class FACTProcessingError extends FACTError {
  * Base error class for RAG (Retrieval Augmented Generation) system failures.
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * throw new RAGError(
  *   'RAG processing failed', *   'high', *   { operation: 'retrieval', metadata:{ queryId: ' query-456'}}') * );
- * ````
+ * '
  */
 export declare class RAGError extends BaseKnowledgeError {
   constructor(

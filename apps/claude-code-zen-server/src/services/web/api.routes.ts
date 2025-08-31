@@ -3,7 +3,7 @@
  *
  * **SOPHISTICATED TYPE ARCHITECTURE - WEB API FACADE**
  *
- * **MASSIVE CODE REDUCTION:1,854 → 420 lines (77.3% reduction)**
+ * **MASSIVE CODE REDUCTION:1,854  420 lines (77.3% reduction)**
  *
  * This file serves as a lightweight facade that delegates comprehensive web API route
  * management to specialized @claude-zen packages, demonstrating the power of our
@@ -11,20 +11,20 @@
  *
  * **ARCHITECTURE PATTERN:STRATEGIC WEB API DELEGATION CASCADE**
  *
- * 1. **Web API Routes** (this file) → @claude-zen packages → API implementation
+ * 1. **Web API Routes** (this file)  @claude-zen packages  API implementation
  * 2. **Perfect Express.js Compatibility** with sophisticated delegation
  * 3. **77%+ Code Reduction** through strategic package reuse
  * 4. **Zero Breaking Changes** - Full API contract preservation
  *
  * **LAYER INTEGRATION ACHIEVED:**
- * - **Layer 1**:Foundation Types (@claude-zen/foundation) - Core utilities ✅
- * - **Layer 2**:Domain Types - Web-specific types from specialized packages ✅
- * - **Layer 3**:API Types - REST API integration via translation layer ✅
- * - **Layer 4**:Service Types - This facade provides web service integration ✅
+ * - **Layer 1**:Foundation Types (@claude-zen/foundation) - Core utilities 
+ * - **Layer 2**:Domain Types - Web-specific types from specialized packages 
+ * - **Layer 3**:API Types - REST API integration via translation layer 
+ * - **Layer 4**:Service Types - This facade provides web service integration 
  *
  * **DELEGATION HIERARCHY:**
- * ``') * Express.js App ↔ web-api-routes-optimized.ts ↔ @claude-zen packages ↔ API Logic`
- * (External) (This File) (Specialized) (Business Logic)' * ``') *`
+ * ''') * Express.js App  web-api-routes-optimized.ts  @claude-zen packages  API Logic'
+ * (External) (This File) (Specialized) (Business Logic)' * ') *`
  * **Delegates to:**
  * - @claude-zen/enterprise:Advanced GUI and human-in-the-loop API endpoints
  * - @claude-zen/intelligence:Task and workflow management endpoints
@@ -42,10 +42,10 @@
  * @requires @claude-zen/monitoring - Health and performance tracking
  * @requires @claude-zen/foundation - Core web utilities and middleware
  *
- * **REDUCTION ACHIEVED:1,854 → 420 lines (77.3% reduction) through strategic delegation**
+ * **REDUCTION ACHIEVED:1,854  420 lines (77.3% reduction) through strategic delegation**
  */
 
-// ✅ Direct package imports
+//  Direct package imports
 import {
   assertDefined,
   getErrorMessage,
@@ -209,7 +209,7 @@ export class WebApiRoutes {
     if (!this.initialized) await this.initialize();
 
     const api = this.config.apiPrefix || '/api';
-    this.logger.info('🛠️ Setting up API routes with @claude-zen delegation...');
+    this.logger.info(' Setting up API routes with @claude-zen delegation...');
 
     // Apply middleware delegation first
     this.setupMiddleware();
@@ -226,7 +226,7 @@ export class WebApiRoutes {
     await this.setupMonitoringRoutes(app, api);
     await this.setupCollaborationRoutes(app, api);
 
-    this.logger.info('✅ All API routes configured with strategic delegation');
+    this.logger.info(' All API routes configured with strategic delegation');
   } /**
    * Setup middleware with @claude-zen/foundation delegation
    */
@@ -234,7 +234,7 @@ export class WebApiRoutes {
     assertDefined(this.webMiddleware, 'Web middleware not initialized');
 
     // Production middleware setup with comprehensive security and validation
-    this.logger.info('📦 Production middleware configured via @claude-zen/foundation');
+    this.logger.info(' Production middleware configured via @claude-zen/foundation');
     
     // Configure comprehensive middleware via foundation services
     if (this.webMiddleware) {
@@ -251,7 +251,7 @@ export class WebApiRoutes {
         enableMetrics: true,
       });
       
-      this.logger.info('✅ Advanced middleware features enabled via foundation');
+      this.logger.info(' Advanced middleware features enabled via foundation');
     }
   }
 
@@ -269,14 +269,14 @@ export class WebApiRoutes {
 
     // Delegate Swagger/OpenAPI documentation to knowledge package
     await this.documentationManager.setupSwaggerDocumentation(app, {
-      routePrefix: `${api}/docs`,
+      routePrefix: api + '/docs',
       apiPrefix: api,
       version: getVersion(),
       title: 'Claude Code Zen API',
     });
 
     this.logger.info(
-      '📚 API documentation configured via @claude-zen/intelligence'
+      ' API documentation configured via @claude-zen/intelligence'
     );
   }
 
@@ -289,13 +289,13 @@ export class WebApiRoutes {
       res.json({
         message: 'Claude Code Zen API Server',
         version: getVersion(),
-        documentation: `${api}/docs`,
-        health: `${api}/health`,
+        documentation: api + '/docs',
+        health: api + '/health',
       });
     });
 
     // Health check - delegate to monitoring package
-    app.get(`${api}/health`, async (_req: Request, _res: Response) => {
+    app.get(api + '/health', async (_req: Request, _res: Response) => {
       try {
         assertDefined(
           this.healthMonitor,
@@ -312,7 +312,7 @@ export class WebApiRoutes {
     });
 
     // System status - delegate to monitoring package
-    app.get(`${api}/system/status`, async (_req: Request, _res: Response) => {
+    app.get(api + '/system/status', async (_req: Request, _res: Response) => {
       try {
         assertDefined(
           this.healthMonitor,
@@ -329,7 +329,7 @@ export class WebApiRoutes {
     });
 
     // Production endpoints that integrate with foundation services
-    app.get(`${api}/agents/status`, async (_req: Request, _res: Response) => {
+    app.get(api + '/agents/status', async (_req: Request, _res: Response) => {
       try {
         assertDefined(this.workflowEngine, 'Workflow engine not initialized');
         const agents = await this.workflowEngine?.getAgents();
@@ -345,7 +345,7 @@ export class WebApiRoutes {
       }
     });
 
-    app.get(`${api}/tasks`, async (_req: Request, _res: Response) => {
+    app.get(api + '/tasks', async (_req: Request, _res: Response) => {
       try {
         assertDefined(this.workflowEngine, 'Workflow engine not initialized');
         const tasks = await this.workflowEngine?.getTasks(req.query);
@@ -361,7 +361,7 @@ export class WebApiRoutes {
       }
     });
 
-    app.get(`${api}/safe/metrics`, async (_req: Request, _res: Response) => {
+    app.get(api + '/safe/metrics', async (_req: Request, _res: Response) => {
       try {
         assertDefined(this.healthMonitor, ERROR_MESSAGES.healthMonitorNotInitialized);
         const safetyMetrics = await this.healthMonitor?.getSafetyMetrics();
@@ -380,7 +380,7 @@ export class WebApiRoutes {
       }
     });
 
-    app.get(`${api}/events`, async (_req: Request, _res: Response) => {
+    app.get(api + '/events', async (_req: Request, _res: Response) => {
       try {
         assertDefined(this.collaborationEngine, 'Collaboration engine not initialized');
         const events = await this.collaborationEngine?.getEvents(req.query);
@@ -396,7 +396,7 @@ export class WebApiRoutes {
       }
     });
 
-    app.get(`${api}/memory/status`, async (_req: Request, _res: Response) => {
+    app.get(api + '/memory/status', async (_req: Request, _res: Response) => {
       try {
         assertDefined(this.healthMonitor, ERROR_MESSAGES.healthMonitorNotInitialized);
         const memoryStatus = await this.healthMonitor?.getMemoryStatus();
@@ -416,7 +416,7 @@ export class WebApiRoutes {
       }
     });
 
-    this.logger.info('🔧 Core routes configured with delegation');
+    this.logger.info(' Core routes configured with delegation');
   }
   /**
    * Setup Advanced GUI routes with @claude-zen/enterprise delegation
@@ -428,10 +428,10 @@ export class WebApiRoutes {
     assertDefined(this.advancedGUI, 'Advanced GUI not initialized');
 
     // Delegate all advanced GUI routes to AGUI package
-    await this.advancedGUI.setupWebRoutes(app, `${api}/agui`);
+    await this.advancedGUI.setupWebRoutes(app, api + '/agui');
 
     // Task approval routes
-    app.get(`${api}/agui/approvals`, async (_req: Request, _res: Response) => {
+    app.get(api + '/agui/approvals', async (_req: Request, _res: Response) => {
       try {
         const approvals = await this.advancedGUI?.getPendingApprovals();
         res.json({
@@ -447,7 +447,7 @@ export class WebApiRoutes {
     });
 
     app.post(
-      `${api}/agui/approvals/:id/approve`,
+      api + '/agui/approvals/:id/approve',
       async (_req: Request, _res: Response) => {
         try {
           const result = await this.advancedGUI.approveTask(
@@ -468,7 +468,7 @@ export class WebApiRoutes {
     );
 
     this.logger.info(
-      '🎨 Advanced GUI routes configured via @claude-zen/enterprise'
+      ' Advanced GUI routes configured via @claude-zen/enterprise'
     );
   }
 
@@ -479,10 +479,10 @@ export class WebApiRoutes {
     assertDefined(this.workflowEngine, 'Workflow engine not initialized');
 
     // Delegate all workflow routes to workflows package
-    await this.workflowEngine?.setupWebRoutes(app, `${api}/workflows`);
+    await this.workflowEngine?.setupWebRoutes(app, api + '/workflows');
 
     // Task management routes
-    app.get(`${api}/tasks`, async (_req: Request, _res: Response) => {
+    app.get(api + '/tasks', async (_req: Request, _res: Response) => {
       try {
         const tasks = await this.workflowEngine?.getTasks(req.query);
         res.json({
@@ -497,7 +497,7 @@ export class WebApiRoutes {
       }
     });
 
-    app.post(`${api}/tasks`, async (_req: Request, _res: Response) => {
+    app.post(api + '/tasks', async (_req: Request, _res: Response) => {
       try {
         const task = await this.workflowEngine?.createTask(req.body);
         res.status(201).json({
@@ -513,7 +513,7 @@ export class WebApiRoutes {
     });
 
     app.post(
-      `${api}/tasks/:id/execute`,
+      api + '/tasks/:id/execute',
       async (_req: Request, _res: Response) => {
         try {
           const result = await this.workflowEngine?.executeTask(req.params.id);
@@ -531,7 +531,7 @@ export class WebApiRoutes {
     );
 
     this.logger.info(
-      '⚙️ Workflow routes configured via @claude-zen/intelligence'
+      '️ Workflow routes configured via @claude-zen/intelligence'
     );
   }
 
@@ -545,10 +545,10 @@ export class WebApiRoutes {
     assertDefined(this.healthMonitor, 'Health monitor not initialized');
 
     // Delegate all monitoring routes to monitoring package
-    await this.healthMonitor.setupWebRoutes(app, `${api}/monitoring`);
+    await this.healthMonitor.setupWebRoutes(app, api + '/monitoring');
 
     // Metrics endpoints
-    app.get(`${api}/metrics`, async (_req: Request, _res: Response) => {
+    app.get(api + '/metrics', async (_req: Request, _res: Response) => {
       try {
         const metrics = await this.healthMonitor?.getMetrics();
         res.json({
@@ -563,7 +563,7 @@ export class WebApiRoutes {
       }
     });
 
-    app.get(`${api}/analytics/llm`, async (_req: Request, _res: Response) => {
+    app.get(api + '/analytics/llm', async (_req: Request, _res: Response) => {
       try {
         const analytics = await this.healthMonitor.getLLMAnalytics(req.query);
         res.json({
@@ -579,7 +579,7 @@ export class WebApiRoutes {
     });
 
     this.logger.info(
-      '📊 Monitoring routes configured via @claude-zen/monitoring'
+      ' Monitoring routes configured via @claude-zen/monitoring'
     );
   }
   /**
@@ -595,10 +595,10 @@ export class WebApiRoutes {
     );
 
     // Delegate all collaboration routes to teamwork package
-    await this.collaborationEngine?.setupWebRoutes(app, `${api}/collaboration`);
+    await this.collaborationEngine?.setupWebRoutes(app, api + '/collaboration');
 
     // WebSocket setup for real-time collaboration
-    app.get(`${api}/ws`, async (_req: Request, _res: Response) => {
+    app.get(api + '/ws', async (_req: Request, _res: Response) => {
       try {
         // Delegate WebSocket upgrade to collaboration engine
         await this.collaborationEngine?.handleWebSocketUpgrade(req, res);
@@ -611,7 +611,7 @@ export class WebApiRoutes {
     });
 
     this.logger.info(
-      '🤝 Collaboration routes configured via @claude-zen/intelligence'
+      ' Collaboration routes configured via @claude-zen/intelligence'
     );
   }
   /**

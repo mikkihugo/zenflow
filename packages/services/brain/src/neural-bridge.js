@@ -49,7 +49,7 @@ export class NeuralBridge {
             if (this.config.smartNeuralBackend !== undefined) {
                 this.smartNeuralCoordinator = new SmartNeuralCoordinator(this.config.smartNeuralBackend || {});
                 await this.smartNeuralCoordinator.initialize();
-                this.foundationLogger.info('✅ SmartNeuralCoordinator integrated successfully');
+                this.foundationLogger.info(' SmartNeuralCoordinator integrated successfully');
                 ;
             }
             // Load WASM module if available

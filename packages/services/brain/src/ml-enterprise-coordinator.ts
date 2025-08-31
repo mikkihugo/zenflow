@@ -164,7 +164,7 @@ export class MLEnterpriseCoordinator {
 		try {
 			// Check database capability through foundation
 			const capability = getDatabaseCapability();
-			this.logger.info(` Database capability level:${capability}`);
+			this.logger.info(' Database capability level:' + capability);
 
 			// Initialize ML model storage (dedicated vector store for ML model embeddings)
 			const mlModelStoreResult = await createVectorStore({
@@ -179,7 +179,7 @@ export class MLEnterpriseCoordinator {
 				this.mlModelStore = mlModelStoreResult.data;
 				this.logger.info(' ML model store initialized - dedicated vector store for ML');
 } else {
-				this.logger.warn('⚠️ ML model store using fallback implementation', {
+				this.logger.warn(' ML model store using fallback implementation', {
 					error:mlModelStoreResult.error?.message
 });
 }
@@ -196,7 +196,7 @@ export class MLEnterpriseCoordinator {
 				this.mlTrainingDataStore = mlTrainingDataStoreResult.data;
 				this.logger.info(' ML training data store initialized - dedicated KV store for ML');
 } else {
-				this.logger.warn('⚠️ ML training data store using fallback implementation', {
+				this.logger.warn(' ML training data store using fallback implementation', {
 					error:mlTrainingDataStoreResult.error?.message
 });
 }
@@ -214,7 +214,7 @@ export class MLEnterpriseCoordinator {
 				this.mlWorkflowGraph = mlWorkflowGraphResult.data;
 				this.logger.info(' ML workflow graph initialized - dedicated graph store for ML');
 } else {
-				this.logger.warn('⚠️ ML workflow graph using fallback implementation', {
+				this.logger.warn(' ML workflow graph using fallback implementation', {
 					error:mlWorkflowGraphResult.error?.message
 });
 }
@@ -231,7 +231,7 @@ export class MLEnterpriseCoordinator {
 				this.mlMetricsStore = mlMetricsStoreResult.data;
 				this.logger.info(' ML metrics store initialized - dedicated KV store for ML');
 } else {
-				this.logger.warn('⚠️ ML metrics store using fallback implementation', {
+				this.logger.warn(' ML metrics store using fallback implementation', {
 					error:mlMetricsStoreResult.error?.message
 });
 }
@@ -239,7 +239,7 @@ export class MLEnterpriseCoordinator {
 			this.logger.info(' ML-specific database storage initialization complete');
 
 } catch (error) {
-			this.logger.warn('⚠️ ML database storage initialization failed, using fallbacks', {
+			this.logger.warn(' ML database storage initialization failed, using fallbacks', {
 				error:error instanceof Error ? error.message : String(error)
 });
 			// Continue with fallbacks - ML coordinator can still function
@@ -285,7 +285,7 @@ export class MLEnterpriseCoordinator {
 			this.logger.error("Failed to initialize ML Enterprise Coordinator:", error);
 			return {
 				success: false,
-				error:`Initialization failed: ${error}`,
+				error:'Initialization failed: ' + error,
 };
 }
 }
@@ -324,7 +324,7 @@ export class MLEnterpriseCoordinator {
 			throw new Error("ML Enterprise Coordinator not initialized");
 }
 
-		const trainingId = `train_${modelId}_${Date.now()}`;
+		const trainingId = 'train_${modelId}_' + Date.now();
 		
 		// Create workflow state event
 		const workflowEvent: MLWorkflowStateEvent = {
@@ -390,7 +390,7 @@ export class MLEnterpriseCoordinator {
 			this.emit("ml_training_started", trainingEvent);
 }
 		
-		this.logger.info(`Started training job ${trainingId} in SPARC phase:${sparc_phase}`);
+		this.logger.info('Started training job ${trainingId} in SPARC phase:' + sparc_phase);
 		
 		return trainingId;
 }
@@ -546,7 +546,7 @@ export class MLEnterpriseCoordinator {
 
 		const existingJob = this.activeTrainingJobs.get(trainingId);
 		if (!existingJob) {
-			this.logger.warn(`Training job ${trainingId} not found`);
+			this.logger.warn('Training job ' + trainingId + ' not found');
 			return;
 }
 
@@ -601,7 +601,7 @@ export class MLEnterpriseCoordinator {
 		// Clean up
 		this.activeTrainingJobs.delete(trainingId);
 		
-		this.logger.info(`Training job ${trainingId} completed successfully`);
+		this.logger.info('Training job ' + trainingId + ' completed successfully');
 }
 
 	// =============================================================================
@@ -619,7 +619,7 @@ export class MLEnterpriseCoordinator {
 			throw new Error("ML Enterprise Coordinator not initialized");
 }
 
-		const inferenceId = `infer_${modelId}_${Date.now()}`;
+		const inferenceId = 'infer_${modelId}_' + Date.now();
 		const startTime = Date.now();
 		
 		try {
@@ -645,11 +645,11 @@ export class MLEnterpriseCoordinator {
 				this.emit("ml_inference_completed", inferenceEvent);
 }
 			
-			this.logger.debug(`Inference ${inferenceId} completed in ${processingTime}ms`);
+			this.logger.debug('Inference ${inferenceId} completed in ' + processingTime + 'ms');
 			
 			return inferenceEvent;
 } catch (error) {
-			this.logger.error(`Inference ${inferenceId} failed:`, error);
+			this.logger.error('Inference ' + inferenceId + ' failed:', error);
 			throw error;
 }
 }
@@ -668,7 +668,7 @@ export class MLEnterpriseCoordinator {
 			throw new Error("ML Enterprise Coordinator not initialized");
 }
 
-		const validationId = `val_${modelId}_${Date.now()}`;
+		const validationId = 'val_${modelId}_' + Date.now();
 		
 		try {
 			// Run validation based on type
@@ -702,7 +702,7 @@ export class MLEnterpriseCoordinator {
 			
 			return validationEvent;
 } catch (error) {
-			this.logger.error(`Model validation failed for ${modelId}:`, error);
+			this.logger.error('Model validation failed for ' + modelId + ':', error);
 			throw error;
 }
 }
@@ -805,7 +805,7 @@ export class MLEnterpriseCoordinator {
 		// Monitor system performance at configured interval
 		this.performanceMonitoringInterval = setInterval(() => {
 			const performanceData: MLPerformanceMetricsEvent = {
-				metricId:`perf_${Date.now()}`,
+				metricId:'perf_' + Date.now(),
 				cpu_usage:process.cpuUsage().user / 1000000, // Convert to seconds
 				memory_usage:process.memoryUsage().heapUsed / 1024 / 1024, // MB
 				gpu_usage: undefined, // Would need GPU monitoring library
@@ -877,7 +877,7 @@ export class MLEnterpriseCoordinator {
 		// Would integrate with Rust neural-ml models via WASM bindings
 		await new Promise(resolve => setTimeout(resolve, Math.random() * 100));
 		return {
-			output:`processed_${JSON.stringify(input).slice(0, 20)}`,
+			output:'processed_' + JSON.stringify(input).slice(0, 20),
 			confidence:0.95 + Math.random() * 0.05
 };
 }

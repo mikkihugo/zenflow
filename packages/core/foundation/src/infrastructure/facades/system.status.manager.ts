@@ -5,18 +5,18 @@
  * health status, and capability reporting using service management.
  *
  * @example Basic Usage - Check System Status
- * ```typescript`
+ * '''typescript'
  * import { getSystemStatus, getHealthSummary} from '@claude-zen/foundation/status-manager';
  *
  * const systemStatus = getSystemStatus();
- * logger.info(`Overall:${systemStatus.overall}, Health:${systemStatus.healthScore}%`);
+ * logger.info('Overall:${systemStatus.overall}, Health:' + systemStatus.healthScore + '%');
  *
  * const health = getHealthSummary();
  * // Returns:{ status: 'healthy|degraded|unhealthy', details:{...}}
- * ```
+ * '
  *
  * @example Service Resolution with Fallbacks
- * ```typescript`
+ * '''typescript'
  * import { getService, hasService} from '@claude-zen/foundation/status-manager';
  *
  * // Check if monitoring service is registered in container
@@ -29,20 +29,20 @@
  *     PerformanceTracker:class FallbackTracker { startTimer() { return () => {};}}
  *}));
  *}
- * ```
+ * '
  *
  * @example Service Registration
- * ```typescript`
+ * '''typescript'
  * import { registerService} from '@claude-zen/foundation/status-manager';
  *
  * // Register infrastructure service with expected packages
  * await registerService('infrastructure', [
  *   '@claude-zen/event-system', *   '@claude-zen/database', *   '@claude-zen/system-monitoring') *], [
  *   'Event system management', *   'Database access and ORM', *   'System monitoring and telemetry') *]);
- * ```
+ * '
  *
  * @example Health Check Endpoints
- * ```typescript`
+ * '''typescript'
  * import { getHealthSummary, getSystemStatus} from '@claude-zen/foundation/status-manager';
  *
  * // Basic health endpoint
@@ -66,7 +66,7 @@
  *}))
  *});
  *});
- * ```
+ * '
  *
  * Features:
  * • Package availability detection with service container integration
@@ -324,12 +324,12 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
    * Check if a package is available and register it with Awilix
    *
    * @example
-   * ```typescript`
+   * '''typescript'
    * const packageInfo = await statusManager.checkAndRegisterPackage('@claude-zen/brain',    'brainService');
    * if (packageInfo.status === PackageStatus.REGISTERED) {
    *   logger.info('Brain package available and registered in Awilix');
    *}
-   * ```
+   * '
    */
   async checkAndRegisterPackage(
     packageName: string,
@@ -399,7 +399,7 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
     packageInfo.capabilities = Object.keys(module);
 
     this.registerModuleInAwilix(packageInfo, module, packageName);
-    logger.debug(`Package ${packageName} is available`, packageInfo);
+    logger.debug('Package ' + packageName + ' is available', packageInfo);
   }
 
   /**
@@ -414,7 +414,7 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
     packageInfo.error =
       error instanceof Error ? error['message'] : 'Unknown error';
 
-    logger.debug(`Package ${packageName} is unavailable`, {
+    logger.debug('Package ' + packageName + ' is unavailable', {
       error: packageInfo.error,
     });
   }
@@ -435,13 +435,13 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
         packageInfo.awilixRegistered = true;
         packageInfo.status = PackageStatus.REGISTERED;
 
-        logger.info(`Package ${packageName} registered in Awilix`, {
+        logger.info('Package ' + packageName + ' registered in Awilix', {
           services: Object.keys(registrations),
           serviceName: packageInfo.serviceName,
         });
       }
     } catch (regError) {
-      logger.warn(`Failed to register ${packageName} in Awilix`, regError);
+      logger.warn('Failed to register ' + packageName + ' in Awilix', regError);
       packageInfo.awilixRegistered = false;
     }
   }
@@ -507,18 +507,18 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
    * Register a service with its expected packages
    *
    * @example
-   * ```typescript`
+   * 'typescript'
    * await statusManager.registerService('intelligence', [
    *   '@claude-zen/brain',	 *   '@claude-zen/ai-safety')	 *], [
    *   'Neural coordination',	 *   'AI safety protocols'*]);
-   * ```
+   * '
    */
   async registerService(
     serviceName: string,
     expectedPackages: string[],
     features: string[] = []
   ): Promise<void> {
-    logger.info(`Registering service:${serviceName}`, {
+    logger.info('Registering service:' + serviceName, {
       expectedPackages,
       features,
     });
@@ -579,13 +579,13 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
 
     // Register service status in container
     this.container.register({
-      [`${serviceName}Status`]: asValue(serviceStatus as unknown as JsonValue),
+      [serviceName + 'Status']: asValue(serviceStatus as unknown as JsonValue),
     });
 
     // Emit service registration event
     this.emit('service-registered', { serviceName, timestamp: new Date() });
 
-    logger.info(`Service ${serviceName} registered`, {
+    logger.info('Service ' + serviceName + ' registered', {
       capability,
       healthScore,
       availablePackages: availableCount,
@@ -598,14 +598,14 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
    * Get a service from the Awilix container with fallback
    *
    * @example
-   * ```typescript`
+   * 'typescript'
    * // Try to get real monitoring service, fall back to stub
    * const monitoring = await statusManager.getService('systemmonitoring', () => ({
    *   PerformanceTracker:class FallbackTracker {
    *     startTimer() { return () => logger.info('Fallback timer');}
    *}
    *}));
-   * ```
+   * `
    */
   getService<T>(serviceName: string, fallback?: () => T): T | null {
     try {
@@ -613,13 +613,13 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
       return this.container.resolve<T>(serviceName);
     } catch (error) {
       logger.debug(
-        `Service ${serviceName} not registered or failed to resolve`,
+        'Service ' + serviceName + ' not registered or failed to resolve',
         error
       );
     }
 
     if (fallback) {
-      logger.debug(`Using fallback for service ${serviceName}`);
+      logger.debug('Using fallback for service ' + serviceName);
       return fallback();
     }
 
@@ -740,7 +740,7 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
 
       if (stalePackages.length > 0) {
         logger.debug(
-          `Refreshing ${stalePackages.length} stale package statuses`
+          'Refreshing ' + stalePackages.length + ' stale package statuses'
         );
         await Promise.all(
           stalePackages.map((pkg) => this.checkAndRegisterPackage(pkg))
@@ -798,7 +798,7 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
     }
 
     if (cleanedCount > 0) {
-      logger.debug(`Cleaned up ${cleanedCount} expired cache entries`);
+      logger.debug('Cleaned up ' + cleanedCount + ' expired cache entries');
     }
   }
 

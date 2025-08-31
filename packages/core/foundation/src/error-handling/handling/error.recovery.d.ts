@@ -31,7 +31,7 @@
  * @see {@link https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/} Retry Strategies
  *
  * @example Basic Recovery Strategy
- * ```typescript`
+ * '''typescript'
  * import { ErrorRecoverySystem} from '@claude-zen/foundation';
  *
  * const recovery = new ErrorRecoverySystem({
@@ -44,7 +44,7 @@
  *
  * const result = await recovery.handleError({
  *   errorId: 'neural-training-failure', *   component: 'neural-network', *   operation: 'train', *   errorType: 'timeout', *   severity:'high') *});
- * ```
+ * `
  */
 import { type Result } from './error.handler.js';
 import { EventEmitter } from '../../events/event-emitter.js';

@@ -319,7 +319,7 @@ export class NaturalLanguageQuery {
 			`I understand you want information about: ${parsed.intent.replace("-", " ")}`,
 		);
 		if (parsed.entities.packageNames?.length) {
-			parts.push(`📦 NPM packages: ${parsed.entities.packageNames.join(", ")}`);
+			parts.push(` NPM packages: ${parsed.entities.packageNames.join(", ")}`);
 		}
 		if (
 			parsed.entities.repoOwners?.length &&
@@ -328,21 +328,21 @@ export class NaturalLanguageQuery {
 			const repos = parsed.entities.repoOwners.map(
 				(owner, i) => `${owner}/${parsed.entities.repoNames[i]}`,
 			);
-			parts.push(`🔗 GitHub repositories: ${repos.join(", ")}`);
+			parts.push(` GitHub repositories: ${repos.join(", ")}`);
 		}
 		if (parsed.entities.cveIds?.length) {
 			parts.push(
-				`🔒 Security advisories: ${parsed.entities.cveIds.join(", ")}`,
+				` Security advisories: ${parsed.entities.cveIds.join(", ")}`,
 			);
 		}
 		if (parsed.modifiers.securityFocus) {
-			parts.push(`🛡️ Focus: Security analysis`);
+			parts.push(`️ Focus: Security analysis`);
 		}
 		if (parsed.modifiers.performanceFocus) {
-			parts.push(`⚡ Focus: Performance metrics`);
+			parts.push(` Focus: Performance metrics`);
 		}
 		parts.push(
-			`🔍 Executing ${queries.length} targeted queries to gather comprehensive information`,
+			` Executing ${queries.length} targeted queries to gather comprehensive information`,
 		);
 		return parts.join("\n");
 	}

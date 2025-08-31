@@ -57,13 +57,13 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
           name: 'Context Complexity',          influence:0.6,
           impact: contextComplexity,
           confidence:0.7,
-          description:`Complexity factor from context: ${contextComplexity}`,`
+          description:'Complexity factor from context: ' + contextComplexity,'
 },
         {
           name: 'Context Urgency',          influence:0.4,
           impact: contextUrgency,
           confidence:0.7,
-          description:`Urgency factor from context: ${contextUrgency}`,`
+          description:'Urgency factor from context: ' + contextUrgency,'
 },
 ],
       lastUpdated:new Date(),
@@ -133,7 +133,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
         expertise:agentId.instance > 1 ? 0.8 : 0.6, // Senior instances have higher expertise
         lastUpdated: Date.now(),,
       adaptabilityScore: Math.min(0.9, 0.5 + agentId.instance * 0.1), // More experienced agents adapt better
-      currentFocus:`$agentId.type-optimization`,`
+      currentFocus:'$agentId.type-optimization','
       lastLearningUpdate: Date.now(),
 };
 
@@ -230,7 +230,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
         throughput:agentId.type === 'optimizer' ? 150 : 100, // Optimizers have higher throughput',
       lastChecked: Date.now(),
       issues:
-        status !== 'healthy'      ? [`${agentId.type} agent showing reduced performance`]`
+        status !== 'healthy'      ? [agentId.type + ' agent showing reduced performance']'
           :[],
 };
 
@@ -289,8 +289,8 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
       currentPerformance:0.8,
       predictedPerformance: Math.min(predictedPerformance, 1.0),
       optimizationStrategies:[
-        `Optimize for ${horizonDays}-day horizon`,`
-        `Target confidence:${(horizonConfidence * 100).toFixed(1)}%`,`
+        'Optimize for ' + horizonDays + '-day horizon','
+        'Target confidence:' + (horizonConfidence * 100).toFixed(1) + '%','
 ],
       implementationComplexity: Math.min(implementationComplexity, 1.0),
 };
@@ -334,7 +334,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
         id: 'target-1',        swarmId: targetSwarm,
         type: 'coder',        instance: 1,
 },
-      knowledge:`patterns-$patternCount-items`,`
+      knowledge:'patterns-$patternCount-items',`
       transferProbability: adjustedProbability,
       expectedBenefit: adjustedBenefit,
 };

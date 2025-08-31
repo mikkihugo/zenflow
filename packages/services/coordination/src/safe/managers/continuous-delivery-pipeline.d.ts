@@ -9,7 +9,7 @@
  * - @claude-zen/services/continuous-delivery/deployment-automation-service: Deployment automation with intelligent strategies
  * - @claude-zen/services/continuous-delivery/pipeline-performance-service: Pipeline performance monitoring and optimization
  *
- * REDUCTION: 1,098 → 457 lines (58.4% reduction) through specialized service delegation
+ * REDUCTION: 1,098  457 lines (58.4% reduction) through specialized service delegation
  *
  * @author Claude-Zen Team
  * @since 1.0.0

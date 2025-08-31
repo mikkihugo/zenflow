@@ -524,7 +524,7 @@ export class EventDrivenAISafety extends TypedEventBase {
     }
 
     recordHistogram('ai_safety_analysis_confidence', confidence);
-    recordMetric(`ai_safety_risk_level_${riskLevel}`, 1);
+    recordMetric('ai_safety_risk_level_' + riskLevel, 1);
 
     return {
       isDeceptive,
@@ -579,7 +579,7 @@ export class EventDrivenAISafety extends TypedEventBase {
   }
 
   private async emergencyShutdownInternal(reason: string): Promise<void> {
-    this.logger.warn('🛑 EMERGENCY SAFETY SHUTDOWN', { reason });
+    this.logger.warn(' EMERGENCY SAFETY SHUTDOWN', { reason });
 
     // Stop all monitoring
     await this.stopMonitoringInternal();
@@ -589,7 +589,7 @@ export class EventDrivenAISafety extends TypedEventBase {
       interventionId: generateUUID(),
       type: 'terminate',
       agentId: 'system',
-      reason: `Emergency shutdown: ${reason}`,
+      reason: 'Emergency shutdown: ' + reason,
       timestamp: Date.now(),
     });
 
@@ -832,7 +832,7 @@ export class EventDrivenAISafety extends TypedEventBase {
       type: 'deception',
       severity: this.mapRiskToSeverity(analysis.riskLevel),
       agentId,
-      description: `Deception detected with ${(analysis.confidence * 100).toFixed(1)}% confidence: ${analysis.indicators.join(',    ')}`,
+      description: 'Deception detected with ${(analysis.confidence * 100).toFixed(1)}% confidence: ' + analysis.indicators.join(',    '),
       timestamp: Date.now(),
       resolved: false,
     };
@@ -849,7 +849,7 @@ export class EventDrivenAISafety extends TypedEventBase {
       timestamp: alert.timestamp,
     });
 
-    recordMetric(`ai_safety_alerts_${alert.severity}`, 1);
+    recordMetric('ai_safety_alerts_' + alert.severity, 1);
     this.logger.warn('Safety alert raised', alert);
   }
 

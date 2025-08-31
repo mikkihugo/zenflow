@@ -130,7 +130,7 @@ export interface BootstrapFinetuneConfig {
  * Bootstraps training data and fine-tunes language models for improved performance.
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * // Basic fine-tuning with bootstrapped demonstrations
  * const bootstrapFinetune = new BootstrapFinetune({
  *   metric:exactMatchMetric
@@ -270,7 +270,7 @@ export interface BootstrapFinetuneConfig {
  *   taskSpecific:taskTrainingData,
  *   validation:validationData
  *});
- * ```
+ * '
  */
 export class BootstrapFinetune extends FinetuneTeleprompter {
 	private config:Required<BootstrapFinetuneConfig>;
@@ -342,13 +342,13 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 
 			if (!pred.lm) {
 				throw new Error(
-					`Predictor ${predInd} does not have an LM assigned. ` +
-						`Please ensure the module's predictors have their LM set before fine-tuning. ` +
-						`You can set it using: your_module.set_lm(your_lm)`,
+					'Predictor ' + predInd + ' does not have an LM assigned. ' +
+						'Please ensure the module's predictors have their LM set before fine-tuning. ' +
+						'You can set it using: your_module.set_lm(your_lm)',
 				);
 }
 
-			const trainingKey = `${pred.lm.model || "default"}_${dataPredInd}`;
+			const trainingKey = '' + pred.lm.model || "default" + '_' + dataPredInd;
 
 			if (!keyToData.has(trainingKey)) {
 				const { trainData, dataFormat} = await this.prepareFinetuneData(
@@ -357,7 +357,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 					dataPredInd,
 				);
 				logger.info(
-					`Using ${trainData.length} data points for fine-tuning the model:${pred.lm.model || "unknown"}`,
+					'Using ' + trainData.length + ' data points for fine-tuning the model:' + pred.lm.model || "unknown",
 				);
 
 				const finetuneKwargs = {
@@ -373,24 +373,24 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 		logger.info("Starting LM fine-tuning...");
 		if (keyToData.size > numThreads) {
 			throw new Error(
-				`BootstrapFinetune requires \`num_threads\` to be bigger than or equal to the number of fine-tuning ` +
-					`jobs. There are ${keyToData.size} fine-tuning jobs to start, but the number of threads is: ` +
-					`${numThreads}!`,
+				'BootstrapFinetune requires \'num_threads\' to be bigger than or equal to the number of fine-tuning ' +
+					'jobs. There are ' + keyToData.size + ' fine-tuning jobs to start, but the number of threads is: ' +
+					numThreads + '!',
 			);
 }
 
-		logger.info(`${keyToData.size} fine-tuning job(s) to start`);
+		logger.info(keyToData.size + ' fine-tuning job(s) to start');
 		const keyToLM = await this.finetuneLMs(keyToData);
 
 		logger.info("Updating the student program with the fine-tuned LMs...");
 		for (let predInd = 0; predInd < student.predictors().length; predInd++) {
 			const pred = student.predictors()[predInd];
 			const dataPredInd = this.config.multitask ? null:predInd;
-			const trainingKey = `${pred.lm?.model || "default"}_${dataPredInd}`;
+			const trainingKey = '' + pred.lm?.model || "default" + '_' + dataPredInd;
 			const finetunedLM = keyToLM.get(trainingKey);
 
 			if (finetunedLM instanceof Error) {
-				throw new Error(`Finetuned LM for predictor ${predInd} failed.`);
+				throw new Error('Finetuned LM for predictor ' + predInd + ' failed.');
 }
 
 			if (finetunedLM) {
@@ -414,7 +414,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 		finetuneDict:Map<string, any>,
 	):Promise<Map<string, LMInterface | Error>> {
 		const numJobs = finetuneDict.size;
-		logger.info(`Starting ${numJobs} fine-tuning job(s)...`);
+		logger.info('Starting ' + numJobs + ' fine-tuning job(s)...');
 
 		const keyToJob = new Map<string, FinetuneJob>();
 
@@ -434,7 +434,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 			const job:FinetuneJob = {
 				async result():Promise<LMInterface | Error> {
 					try {
-						logger.info(`Fine-tuning job for ${key} completed`);
+						logger.info('Fine-tuning job for ' + key + ' completed');
 						return lm; // Return the fine-tuned LM
 } catch (error) {
 						return error instanceof Error ? error:new Error(String(error));
@@ -457,7 +457,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 }
 			keyToLM.set(key, result);
 			job.thread.join();
-			logger.info(`Job ${++jobIndex}/${numJobs} is done`);
+			logger.info('Job ' + ++jobIndex + '/' + numJobs + ' is done');
 }
 
 		return keyToLM;
@@ -472,10 +472,10 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 		predInd:number | null = null,
 	):Promise<{ trainData: any[]; dataFormat: DataFormat}> {
 		if (this.config.metric) {
-			logger.info(`Collected data for ${traceData.length} examples`);
+			logger.info('Collected data for ' + traceData.length + ' examples');
 			traceData = traceData.filter((d) => d.score);
 			logger.info(
-				`After filtering with the metric, ${traceData.length} examples remain`,
+				'After filtering with the metric, ' + traceData.length + ' examples remain',
 			);
 }
 
@@ -571,9 +571,9 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 		for (const [i, predictor] of predictors.entries()) {
 			if (!predictor.lm) {
 				throw new Error(
-					`Predictor ${i} does not have an LM assigned. ` +
-						`Please ensure the module's predictors have their LM set before fine-tuning. ` +
-						`You can set it using: your_module.set_lm(your_lm)`,
+					'Predictor ' + i + ' does not have an LM assigned. ' +
+						'Please ensure the module's predictors have their LM set before fine-tuning. ' +
+						'You can set it using: your_module.set_lm(your_lm)',
 				);
 }
 }
@@ -610,8 +610,8 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 
 		if (studentPredictors.length !== teacherPredictors.length) {
 			throw new Error(
-				`Structurally equivalent programs must have the same number of predictors. ` +
-					`Student has ${studentPredictors.length}, Teacher has ${teacherPredictors.length}.`,
+				'Structurally equivalent programs must have the same number of predictors. ' +
+					'Student has ' + studentPredictors.length + ', Teacher has ' + teacherPredictors.length + '.',
 			);
 }
 }
@@ -629,9 +629,9 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 		for (const [i, studentPredictor] of studentPredictors.entries()) {
 			if (studentPredictor === teacherPredictors[i]) {
 				throw new Error(
-					`The programs share predictor ${i}. ` +
-						`This is not allowed for BootstrapFinetune. ` +
-						`Please ensure the teacher is a separate instance.`,
+					'The programs share predictor ' + i + '. ' +
+						'This is not allowed for BootstrapFinetune. ' +
+						'Please ensure the teacher is a separate instance.`,
 				);
 }
 }

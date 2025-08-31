@@ -214,7 +214,7 @@ export class DspyGEPAResult {
  * on the behavior to propose new instructions.
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * // Basic GEPA optimization with auto mode
  * const gepa = new GEPA({
  *   metric:(gold, pred) => gold.answer === pred.answer ? 1:0,
@@ -285,14 +285,14 @@ export class DspyGEPAResult {
  *});
  *
  * // Access detailed optimization results
- * logger.info(`Best score:${customResult.val_aggregate_scores[customResult.best_idx]}`);
- * logger.info(`Total evaluations:${customResult.total_metric_calls}`);
- * logger.info(`Discovery budget:${customResult.discovery_eval_counts}`);
+ * logger.info('Best score:' + customResult.val_aggregate_scores[customResult.best_idx]);
+ * logger.info('Total evaluations:' + customResult.total_metric_calls);
+ * logger.info('Discovery budget:' + customResult.discovery_eval_counts);
  *
  * // Get per-instance best candidates
  * const perInstanceBest = customResult.per_val_instance_best_candidates;
- * logger.info(`Best candidates per validation instance:`, perInstanceBest);
- * ```
+ * logger.info('Best candidates per validation instance:', perInstanceBest);
+ * '
  */
 export class GEPA extends Teleprompter {
 	private metric_fn:GEPAFeedbackMetric;
@@ -377,10 +377,10 @@ export class GEPA extends Teleprompter {
 
 		if (budgetOptions !== 1) {
 			throw new Error(
-				`Exactly one of max_metric_calls, max_full_evals, auto must be set. ` +
-					`You set max_metric_calls=${config.max_metric_calls}, ` +
-					`max_full_evals=${config.max_full_evals}, ` +
-					`auto=${config.auto}.`,
+				'Exactly one of max_metric_calls, max_full_evals, auto must be set. ' +
+					'You set max_metric_calls=' + config.max_metric_calls + ', ' +
+					'max_full_evals=' + config.max_full_evals + ', ' +
+					'auto=' + config.auto + '.',
 			);
 }
 
@@ -396,7 +396,7 @@ export class GEPA extends Teleprompter {
 		if (!config.reflection_lm) {
 			throw new Error(
 				"GEPA requires a reflection language model to be provided. " +
-					"Typically, you can use `new LM({ model: 'gpt-4', temperature: 1.0, max_tokens: 32000})` " +
+					"Typically, you can use 'new LM({ model: 'gpt-4', temperature: 1.0, max_tokens: 32000})' " +
 					"to get a good reflection model. Reflection LM is used by GEPA to reflect on the behavior " +
 					"of the program and propose new instructions, and will benefit from a strong model.",
 			);
@@ -404,7 +404,7 @@ export class GEPA extends Teleprompter {
 
 		this.reflection_lm = (x:string) => 
 			// Simplified reflection LM interface - in production would call actual LM
-			 `Reflected analysis:${x}`
+			 'Reflected analysis:' + x
 ;
 
 		this.skip_perfect_score = config.skip_perfect_score ?? true;
@@ -534,22 +534,22 @@ export class GEPA extends Teleprompter {
 }
 
 		logger.info(
-			`Running GEPA for approx ${this.max_metric_calls} metric calls of the program. ` +
-				`This amounts to ${(
+			'Running GEPA for approx ' + this.max_metric_calls + ' metric calls of the program. ' +
+				'This amounts to ' + (
 					this.max_metric_calls /
 						(valset === null
 							? trainset.length
 							: trainset.length + valset.length)
 				).toFixed(
 					2,
-				)} full evals on the ${valset === null ? "train" : "train+val"} set.`,
+				) + ' full evals on the ' + valset === null ? "train" : "train+val" + ' set.',
 		);
 
 		const actualValset = valset || trainset;
 		logger.info(
-			`Using ${actualValset.length} examples for tracking Pareto scores. ` +
-				`You can consider using a smaller sample of the valset to allow GEPA to explore ` +
-				`more diverse solutions within the same budget.`,
+			'Using ' + actualValset.length + ' examples for tracking Pareto scores. ' +
+				'You can consider using a smaller sample of the valset to allow GEPA to explore ' +
+				'more diverse solutions within the same budget.`,
 		);
 
 		// Initialize random number generator
@@ -649,13 +649,13 @@ export class GEPA extends Teleprompter {
 
 			if (typeof result === "object" && "feedback" in result) {
 				if (!result.feedback) {
-					result.feedback = `This trajectory got a score of ${result.score}.`;
+					result.feedback = 'This trajectory got a score of ' + result.score + '.';
 }
 				return result;
 } else {
 				return {
 					score:result,
-					feedback:`This trajectory got a score of ${result}.`,
+					feedback:'This trajectory got a score of ' + result + '.',
 };
 }
 };
@@ -737,7 +737,7 @@ export class GEPA extends Teleprompter {
 		track_best_outputs:boolean;
 		seed?:number | null;
 }):Promise<any> {
-		logger.info("🧬 Starting GEPA optimization...");
+		logger.info(" Starting GEPA optimization...");
 
 		// Initialize candidates with seed candidate
 		const candidates = [config.seed_candidate];
@@ -771,7 +771,7 @@ export class GEPA extends Teleprompter {
 			config.max_metric_calls / config.valset.length,
 		);
 
-		logger.info(`📊 Running for up to ${max_generations} generations`);
+		logger.info(' Running for up to ' + max_generations + ' generations');
 
 		// Evolution loop
 		while (
@@ -779,7 +779,7 @@ export class GEPA extends Teleprompter {
 			generation < max_generations
 		) {
 			generation++;
-			logger.info(`\n🔄 Generation ${generation}`);
+			logger.info('\n Generation ' + generation);
 
 			// Generate new candidates through reflection
 			const new_candidates = await this.generateCandidates(
@@ -827,17 +827,17 @@ export class GEPA extends Teleprompter {
 				metric_calls += config.valset.length;
 
 				logger.info(
-					`   Candidate ${candidates.length - 1}:${score.toFixed(3)}`,
+					'   Candidate ${candidates.length - 1}:' + score.toFixed(3),
 				);
 }
 
 			// Report best score
 			const best_score = Math.max(...val_aggregate_scores);
-			logger.info(`✨ Best score so far:${best_score.toFixed(3)}`);
+			logger.info(' Best score so far:' + best_score.toFixed(3));
 
 			// Early stopping if perfect score achieved
 			if (best_score >= config.perfect_score && config.skip_perfect_score) {
-				logger.info("🎯 Perfect score achieved, stopping early");
+				logger.info(" Perfect score achieved, stopping early");
 				break;
 }
 }
@@ -850,7 +850,7 @@ export class GEPA extends Teleprompter {
 		);
 
 		logger.info(
-			`🏆 Optimization complete! Best candidate:${best_idx} (score:${val_aggregate_scores[best_idx].toFixed(3)})`,
+			' Optimization complete! Best candidate:${best_idx} (score:' + val_aggregate_scores[best_idx].toFixed(3) + ')',
 		);
 
 		return {
@@ -969,7 +969,7 @@ export class GEPA extends Teleprompter {
 
 		const elaboration =
 			elaborations[Math.floor(Math.random() * elaborations.length)];
-		return `${instruction} ${elaboration}`;
+		return '${instruction} ' + elaboration;
 }
 
 	/**
@@ -985,7 +985,7 @@ export class GEPA extends Teleprompter {
 
 		const specialization =
 			specializations[Math.floor(Math.random() * specializations.length)];
-		return `${instruction} ${specialization}`;
+		return '${instruction} ' + specialization;
 }
 
 	/**
@@ -1013,7 +1013,7 @@ export class GEPA extends Teleprompter {
 			debugging_additions[
 				Math.floor(Math.random() * debugging_additions.length)
 ];
-		return `${instruction} ${addition}`;
+		return '${instruction} ' + addition;
 }
 
 	/**

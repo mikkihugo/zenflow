@@ -72,7 +72,7 @@ export class DatabaseFactoryImpl implements DatabaseFactory {
    * Creates a key-value storage instance
    */
   createKeyValueStorage(config: DatabaseConfig): KeyValueStorage {
-    const cacheKey = `kv-${this.generateCacheKey(config)}`;
+    const cacheKey = 'kv-' + this.generateCacheKey(config);
 
     const cached = this.storageCache.get(cacheKey);
     if (cached) {
@@ -99,7 +99,7 @@ export class DatabaseFactoryImpl implements DatabaseFactory {
    * Creates a SQL storage instance
    */
   createSqlStorage(config: DatabaseConfig): SqlStorage {
-    const cacheKey = `sql-${this.generateCacheKey(config)}`;
+    const cacheKey = 'sql-' + this.generateCacheKey(config);
 
     const cached = this.storageCache.get(cacheKey);
     if (cached) {
@@ -126,7 +126,7 @@ export class DatabaseFactoryImpl implements DatabaseFactory {
    * Creates a vector storage instance
    */
   createVectorStorage(config: DatabaseConfig): VectorStorage {
-    const cacheKey = `vector-${this.generateCacheKey(config)}`;
+    const cacheKey = 'vector-' + this.generateCacheKey(config);
 
     const cached = this.storageCache.get(cacheKey);
     if (cached) {
@@ -153,7 +153,7 @@ export class DatabaseFactoryImpl implements DatabaseFactory {
    * Creates a graph storage instance
    */
   createGraphStorage(config: DatabaseConfig): GraphStorage {
-    const cacheKey = `graph-${this.generateCacheKey(config)}`;
+    const cacheKey = 'graph-' + this.generateCacheKey(config);
 
     const cached = this.storageCache.get(cacheKey);
     if (cached) {
@@ -190,7 +190,7 @@ export class DatabaseFactoryImpl implements DatabaseFactory {
     // Create configuration
     const config: DatabaseConfig = {
       type: recommendedBackend,
-      database: `${database}_${storageType}`,
+      database: '${database}_' + storageType,
       ...baseConfig,
       options: {
         // Storage-specific settings
@@ -308,7 +308,7 @@ export class DatabaseFactoryImpl implements DatabaseFactory {
         });
 
       default:
-        throw new Error(`Unsupported database type:${config.type}`);
+        throw new Error('Unsupported database type:' + config.type);
     }
   }
 
@@ -575,6 +575,6 @@ export function createStorage<T extends StorageType>(
     case 'graph':
       return factory.createGraphStorage(config) as any;
     default:
-      throw new Error(`Unsupported storage type:${type}`);
+      throw new Error('Unsupported storage type:' + type);
   }
 }

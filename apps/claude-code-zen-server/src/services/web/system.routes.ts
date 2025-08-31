@@ -12,12 +12,12 @@
  * - GET /api/v1/system/capability/health - Health monitoring endpoint
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * import { SystemCapabilityRoutes} from './system-capability-routes';
  *
  * const routes = new SystemCapabilityRoutes();
  * app.use('/api/v1/system/capability', routes.getRouter());
- * ```
+ * `
  */
 
 import { getLogger } from '@claude-zen/foundation';
@@ -64,7 +64,7 @@ export class SystemCapabilityRoutes {
     // Capability scores by facade
     this.router.get('/scores', this.handleGetScores.bind(this));
 
-    logger.info('✅ System capability routes configured');
+    logger.info(' System capability routes configured');
   }
 
   /**
@@ -190,7 +190,7 @@ export class SystemCapabilityRoutes {
         health: {
           score: capabilityData.systemHealthScore,
           overall: capabilityData.overall,
-          packages: `${capabilityData.availablePackages}/${capabilityData.totalPackages}`,
+          packages: '${capabilityData.availablePackages}/' + capabilityData.totalPackages,
           services: capabilityData.registeredServices,
         },
       };

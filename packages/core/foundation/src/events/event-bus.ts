@@ -17,35 +17,35 @@ const logger = {
   info: (msg: string, data?: unknown) => {
     // Use structured logging in production
     process.stdout.write(
-      `${JSON.stringify({
+      JSON.stringify({
         level: 'info',
         component: 'EventBus',
         message: msg,
         data: data || null,
         timestamp: new Date().toISOString(),
-      })}\n`
+       + ')}\n'
     );
   },
   error: (msg: string, data?: unknown) => {
     process.stderr.write(
-      `${JSON.stringify({
+      JSON.stringify({
         level: 'error',
         component: 'EventBus',
         message: msg,
         data: data || null,
         timestamp: new Date().toISOString(),
-      })}\n`
+       + ')}\n'
     );
   },
   warn: (msg: string, data?: unknown) => {
     process.stderr.write(
-      `${JSON.stringify({
+      JSON.stringify({
         level: 'warn',
         component: 'EventBus',
         message: msg,
         data: data || null,
         timestamp: new Date().toISOString(),
-      })}\n`
+       + ')}\n'
     );
   },
   debug: (msg: string, data?: unknown) => {
@@ -54,13 +54,13 @@ const logger = {
       process.env[' DEBUG'] === ' true'
     ) {
       process.stdout.write(
-        `${JSON.stringify({
+        JSON.stringify({
           level: 'debug',
           component: 'EventBus',
           message: msg,
           data: data || null,
           timestamp: new Date().toISOString(),
-        })}\n`
+         + ')}\n'
       );
     }
   },
@@ -121,7 +121,7 @@ export interface Event<T = unknown> {
  * Single implementation replacing all previous event system variants.
  *
  * @example
- * ```typescript`
+ * 'typescript'
  * // Define your event map
  * interface MyEvents {
  *   userAction:{ action: string; target: string};
@@ -139,7 +139,7 @@ export interface Event<T = unknown> {
  *
  * // Fully typed emission
  * eventBus.emit('userAction', { action: ' click', target: ' button'});
- * ```
+ * `
  */
 export class EventBus<
   TEventMap extends Record<string, unknown> = Record<string, unknown>,
@@ -255,7 +255,7 @@ export class EventBus<
           if (this.busConfig.enableMetrics) this.busMetrics.errorCount++;
           if (this.busConfig.enableLogging) {
             logger.error(
-              `Middleware error in sync emit for '${String(event)}':`,
+              'Middleware error in sync emit for '' + String(event) + '':',
               error
             );
           }
@@ -264,7 +264,7 @@ export class EventBus<
 
       // Log if enabled
       if (this.busConfig.enableLogging) {
-        logger.info(`Emitting event:${String(event)}`, { payload });
+        logger.info('Emitting event:' + String(event), { payload });
       }
 
       // Emit event
@@ -280,7 +280,7 @@ export class EventBus<
     } catch (error) {
       if (this.busConfig.enableMetrics) this.busMetrics.errorCount++;
       if (this.busConfig.enableLogging) {
-        logger.error(`Error in event '${String(event)}':`, error);
+        logger.error('Error in event '' + String(event) + '':', error);
       }
       return false;
     }
@@ -315,7 +315,7 @@ export class EventBus<
 
       // Log if enabled
       if (this.busConfig.enableLogging) {
-        logger.info(`Emitting event:${event}`, { payload });
+        logger.info('Emitting event:' + event, { payload });
       }
 
       // Emit event
@@ -480,7 +480,7 @@ export class EventBus<
     } catch (error) {
       if (this.busConfig.enableMetrics) this.busMetrics.errorCount++;
       if (this.busConfig.enableLogging) {
-        logger.error(`Middleware error for event '${event}':`, error);
+        logger.error('Middleware error for event '' + event + '':', error);
       }
       throw error;
     }

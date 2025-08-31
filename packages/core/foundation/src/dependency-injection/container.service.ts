@@ -5,7 +5,7 @@
  * Uses awilix-compatible patterns with comprehensive service lifecycle management.
  *
  * @example Basic Usage
- * ```typescript`
+ * '''typescript'
  * import { createContainer} from './container.service';
  *
  * const container = createContainer();
@@ -17,7 +17,7 @@
  *
  * // Resolve services
  * const userService = container.resolve<UserService>('userService');
- * ```
+ * '
  */
 
 /**
@@ -41,13 +41,13 @@ export interface ServiceInfo {
  * @interface ServiceDiscoveryOptions
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const options:ServiceDiscoveryOptions = {
  *   recursive:true,
  *   extensions:['.service.ts',    '.provider.ts'],
  *   ignore:['node_modules',    'dist']
  *};
- * ```
+ * '
  */
 export interface ServiceDiscoveryOptions {
   recursive?: boolean;
@@ -79,7 +79,7 @@ export interface ContainerStats {
  * @extends EventEmitter
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const container = createContainer();
  *
  * // Register different types of services
@@ -89,7 +89,7 @@ export interface ContainerStats {
  *
  * // Resolve services with type safety
  * const userService = container.resolve<UserService>('userService');
- * ```
+ * '
  */
 export interface Container {
   // Event emitter methods
@@ -172,7 +172,7 @@ export interface Container {
  * @returns A fully configured DI container instance
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const container = createContainer();
  *
  * // Register services
@@ -183,9 +183,9 @@ export interface Container {
  *
  * // Listen to events
  * container.on('serviceRegistered', (event) => {
- *   logger.info(`Service ${event.name} registered`);
+ *   logger.info('Service ' + event.name + ' registered');
  *});
- * ```
+ * '
  */
 import { ContainerImpl } from './container-impl.js';
 

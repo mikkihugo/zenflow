@@ -32,7 +32,7 @@ export class FactBridge {
 		if (this.useRustEngine) {
 			try {
 				await this.loadRustEngine();
-				logger.info("✅ Rust FACT engine loaded successfully");
+				logger.info(" Rust FACT engine loaded successfully");
 			} catch (error) {
 				logger.warn(
 					"Failed to load Rust engine, falling back to TypeScript:",

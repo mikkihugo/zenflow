@@ -130,7 +130,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
       return;
     }
 
-    const operationId = `init-${Date.now()}`;
+    const operationId = 'init-' + Date.now();
     logger.info('Initializing Vector RAG Backend', {
       vectorDimensions: this.config.vectorDimensions,
       embeddingModel: this.config.embeddingModel,
@@ -213,10 +213,10 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
     try {
       // Check if table exists and create if needed
       // This would be implemented using LanceDB's table creation API
-      const createTableSQL = `
+      const createTableSQL = '
         CREATE TABLE IF NOT EXISTS ${tableName} (
           id TEXT PRIMARY KEY,
-          vector VECTOR(${this.config.vectorDimensions}),
+          vector VECTOR(' + this.config.vectorDimensions + '),
           query TEXT,
           source TEXT,
           knowledge_type TEXT,
@@ -224,7 +224,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
           timestamp TEXT,
           metadata TEXT
         )
-      `;
+      ';
       
       await this.vectorStorage.execute(createTableSQL);
       logger.debug('Vector table ensured', { tableName });
@@ -262,7 +262,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
           }
           break;
         default:
-          throw new Error(`Unsupported embedding model: ${this.config.embeddingModel}`);
+          throw new Error('Unsupported embedding model: ' + this.config.embeddingModel);
       }
 
       logger.info('Embedding service initialized', { 
@@ -281,7 +281,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
       throw new EnhancedError('NotInitialized', 'Vector RAG backend not initialized');
     }
 
-    const operationId = `store-${entry.id}-${Date.now()}`;
+    const operationId = 'store-${entry.id}-' + Date.now();
     logger.debug('Storing knowledge entry with vector embedding', { 
       id: entry.id, 
       type: entry.knowledgeType,
@@ -339,10 +339,10 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
     const tableName = this.config.vectorTableName || 'knowledge_vectors';
     
     try {
-      const insertSQL = `
-        INSERT INTO ${tableName} (id, vector, query, source, knowledge_type, semantic_tags, timestamp, metadata)
+      const insertSQL = '
+        INSERT INTO ' + tableName + ' (id, vector, query, source, knowledge_type, semantic_tags, timestamp, metadata)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-      `;
+      ';
       
       await this.vectorStorage.execute(insertSQL, [
         entry.id,
@@ -401,14 +401,14 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
         
         // Use LanceDB vector search via SQL-like syntax
         const tableName = this.config.vectorTableName || 'knowledge_vectors';
-        const searchSQL = `
+        const searchSQL = '
           SELECT id, vector, query, source, knowledge_type, semantic_tags, timestamp, metadata,
                  vector_similarity(vector, ?) as similarity
-          FROM ${tableName}
+          FROM ' + tableName + '
           WHERE vector_similarity(vector, ?) >= ?
           ORDER BY similarity DESC
           LIMIT ?
-        `;
+        ';
 
         const vectorResults = await this.vectorStorage.query<any>(searchSQL, [
           queryEmbedding,
@@ -430,7 +430,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
               } as VectorKnowledgeEntry,
               similarityScore: row.similarity,
               searchType: 'semantic',
-              explanation: `Semantic similarity: ${(row.similarity * 100).toFixed(1)}%`,
+              explanation: 'Semantic similarity: ' + (row.similarity * 100).toFixed(1) + '%',
             });
           }
         }
@@ -533,7 +533,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
           decision: 'Multi-Level Workflow Architecture',
           description: 'Transform linear workflows to parallel streams with portfolio, program, and swarm levels',
           benefits: ['Parallel execution', 'Human oversight', 'SAFe integration', 'Scalable coordination'],
-          implementation: 'Portfolio → Program → Swarm orchestrators with AGUI gates',
+          implementation: 'Portfolio  Program  Swarm orchestrators with AGUI gates',
         },
         source: 'ARCHITECTURE.md',
         timestamp: Date.now(),
@@ -579,7 +579,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
       await this.store(knowledge);
     }
 
-    logger.info(`Ingested ${architecturalKnowledge.length} architectural knowledge entries`);
+    logger.info('Ingested ' + architecturalKnowledge.length + ' architectural knowledge entries');
   }
 
   /**
@@ -656,7 +656,7 @@ class OpenAIEmbeddingService implements EmbeddingService {
       const response = await fetch('https://api.openai.com/v1/embeddings', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
+          'Authorization': 'Bearer ' + this.apiKey,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -666,7 +666,7 @@ class OpenAIEmbeddingService implements EmbeddingService {
       });
 
       if (!response.ok) {
-        throw new Error(`OpenAI API error: ${response.statusText}`);
+        throw new Error('OpenAI API error: ' + response.statusText);
       }
 
       const data = await response.json();
@@ -682,7 +682,7 @@ class OpenAIEmbeddingService implements EmbeddingService {
       const response = await fetch('https://api.openai.com/v1/embeddings', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
+          'Authorization': 'Bearer ' + this.apiKey,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -692,7 +692,7 @@ class OpenAIEmbeddingService implements EmbeddingService {
       });
 
       if (!response.ok) {
-        throw new Error(`OpenAI API error: ${response.statusText}`);
+        throw new Error('OpenAI API error: ' + response.statusText);
       }
 
       const data = await response.json();
@@ -758,7 +758,7 @@ class SentenceTransformersEmbeddingService implements EmbeddingService {
       });
 
       if (!response.ok) {
-        throw new Error(`Sentence Transformers API error: ${response.statusText}`);
+        throw new Error('Sentence Transformers API error: ' + response.statusText);
       }
 
       const data = await response.json();
@@ -809,7 +809,7 @@ class SentenceTransformersEmbeddingService implements EmbeddingService {
         const { pipeline } = await import('@xenova/transformers');
         
         // Initialize feature extraction pipeline with local model
-        this.transformersModel = await pipeline('feature-extraction', `sentence-transformers/${this.localModel}`, {
+        this.transformersModel = await pipeline('feature-extraction', 'sentence-transformers/' + this.localModel, {
           local_files_only: false, // Allow downloading if not cached
           cache_dir: process.env.TRANSFORMERS_CACHE_DIR || './models_cache',
         });

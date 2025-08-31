@@ -6,7 +6,7 @@
  * load balancing algorithms and automatic scaling strategies.
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const loadBalancer = new LoadBalancer({
  *   algorithm: 'ml-predictive', *   healthCheckInterval:5000,
  *   adaptiveLearning:true,
@@ -26,8 +26,8 @@
  *   estimatedDuration:300000
  *});
  *
- * logger.info(`Task assigned to agent:${assignment.agent.id}`);`
- * ````
+ * logger.info('Task assigned to agent:' + assignment.agent.id);'
+ * '
  * @features
  * - **ML-Predictive Routing**:Uses machine learning to predict optimal agent assignments
  * - **Real-time Health Monitoring**:Continuous agent health checks with automatic failover
@@ -180,7 +180,7 @@ export class LoadBalancer extends EventEmitter {
   private hashRing: any;
   private mlModel: any = null;
 
-  // 🔬 Foundation Monitoring Classes - All 4 monitoring systems
+  //  Foundation Monitoring Classes - All 4 monitoring systems
   private systemMonitor: any;
   private performanceTracker: any;
   private agentMonitor: any;
@@ -206,7 +206,7 @@ export class LoadBalancer extends EventEmitter {
     // Initialize battle-tested dependencies from foundation with comprehensive monitoring
     this.logger = getLogger('load-balancer');
 
-    // 🔬 Initialize comprehensive Foundation monitoring
+    //  Initialize comprehensive Foundation monitoring
     this.systemMonitor = { collect: () => ({}) }; // System resource monitoring fallback
     this.performanceTracker = { startTimer: () => ({}) }; // Basic performance tracking
     this.agentMonitor = { trackAgent: () => {} }; // Agent health monitoring
@@ -240,7 +240,7 @@ export class LoadBalancer extends EventEmitter {
       'Initializing load balancing components with battle-tested dependencies and comprehensive monitoring'
     );
 
-    // 🔬 Start comprehensive monitoring systems
+    //  Start comprehensive monitoring systems
     await this.systemMonitor.start();
     this.performanceTracker.startTimer('initialization');
 
@@ -277,7 +277,7 @@ export class LoadBalancer extends EventEmitter {
       this.loadBalancingConfig.algorithm
     )!;
     this.logger.info(
-      `Selected algorithm:${this.loadBalancingConfig.algorithm}`
+      'Selected algorithm:' + this.loadBalancingConfig.algorithm
     );
 
     // Initialize core components with foundation integration
@@ -297,7 +297,7 @@ export class LoadBalancer extends EventEmitter {
     // Add agents to consistent hashing ring
     this.setupConsistentHashing();
 
-    // 🔬 Complete initialization monitoring
+    //  Complete initialization monitoring
     const initTime = this.getDuration(
       this.performanceTracker.endTimer('initialization')
     );
@@ -350,7 +350,7 @@ export class LoadBalancer extends EventEmitter {
    */
 
   private setupMetrics(): void {
-    // 🔬 Comprehensive metrics collection with all Foundation monitoring classes
+    //  Comprehensive metrics collection with all Foundation monitoring classes
     setInterval(() => {
       const healthyAgents = Array.from(this.agents.values()).filter(
         (agent) => agent.status === AgentStatus.HEALTHY
@@ -566,7 +566,7 @@ export class LoadBalancer extends EventEmitter {
         result && typeof result === 'object' && ' error' in result
           ? result.error
           : new Error('Unknown error');
-      const errorMsg = `Failed to start load balancing system. Agent count:${this.agents.size}, Algorithm:${this.loadBalancingConfig.algorithm}`;
+      const errorMsg = 'Failed to start load balancing system. Agent count:${this.agents.size}, Algorithm:' + this.loadBalancingConfig.algorithm;
       throw new Error(errorMsg);
     }
   }
@@ -684,7 +684,7 @@ export class LoadBalancer extends EventEmitter {
           // Store agent in memory and persistent storage
           this.agents.set(agent.id, agent);
           // await this.kvStore.set(
-          //   `agent:${agent.id}`,
+          //   'agent:' + agent.id,
           //   agent as unknown as Record<string, unknown>
           // );
 
@@ -774,7 +774,7 @@ export class LoadBalancer extends EventEmitter {
             ? result.error
             : 'Unknown error',
       });
-      const errorMsg = `Failed to add agent to load balancing pool. Agent ID:${agent.id}`;
+      const errorMsg = 'Failed to add agent to load balancing pool. Agent ID:' + agent.id;
       throw new Error(errorMsg);
     }
   }
@@ -836,7 +836,7 @@ export class LoadBalancer extends EventEmitter {
 
         if (availableAgents.length === 0) {
           recordMetric('load_balancer_no_agents_available_total', 1);
-          const errorMsg = `No healthy agents available. Total:${this.agents.size}, Task:${task.type}`;
+          const errorMsg = 'No healthy agents available. Total:${this.agents.size}, Task:' + task.type;
           throw new Error(errorMsg);
         }
 
@@ -1093,7 +1093,7 @@ export class LoadBalancer extends EventEmitter {
       };
 
       await this.foundationKVStore.set(
-        `routing-decisions:${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        'routing-decisions:${Date.now()}-' + Math.random().toString(36).substr(2, 9),
         decision
       );
     } catch (error) {
@@ -1155,7 +1155,7 @@ export class LoadBalancer extends EventEmitter {
   ): Promise<void> {
     const newAlgorithm = this.algorithms.get(algorithm);
     if (!newAlgorithm) {
-      throw new Error(`Algorithm ${algorithm} not available`);
+      throw new Error('Algorithm ' + algorithm + ' not available');
     }
 
     this.currentAlgorithm = newAlgorithm;
@@ -1587,7 +1587,7 @@ export class LoadBalancer extends EventEmitter {
     return loads.length > 0 ? stats.variance(loads) : 0;
   }
 
-  // 🔬 Enhanced monitoring helper methods for comprehensive Foundation integration
+  //  Enhanced monitoring helper methods for comprehensive Foundation integration
 
   /**
    * Calculate total active tasks across all agents.

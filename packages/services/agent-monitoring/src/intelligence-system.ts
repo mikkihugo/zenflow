@@ -7,13 +7,13 @@
 // Local logger implementation for zero-import design
 const getLogger = (name: string) => ({
   info: (message: string, meta?: unknown) => 
-    console.info(`[INFO: ${name}] ${message}`, meta ? JSON.stringify(meta) : ''),
+    console.info('[INFO: ${name}] ' + message, meta ? JSON.stringify(meta) : ''),
   debug: (message: string, meta?: unknown) => 
-    console.info(`[DEBUG: ${name}] ${message}`, meta ? JSON.stringify(meta) : '{}'),
+    console.info('[DEBUG: ${name}] ' + message, meta ? JSON.stringify(meta) : '{}'),
   warn: (message: string, meta?: unknown) => 
-    console.warn(`[WARN: ${name}] ${message}`, meta ? JSON.stringify(meta) : '{}'),
+    console.warn('[WARN: ${name}] ' + message, meta ? JSON.stringify(meta) : '{}'),
   error: (message: string, meta?: unknown) => 
-    console.error(`[ERROR: ${name}] ${message}`, meta ? JSON.stringify(meta) : '{}'),
+    console.error('[ERROR: ${name}] ' + message, meta ? JSON.stringify(meta) : '{}'),
 });
 
 const logger = getLogger('agent-monitoring-intelligence-system');
@@ -55,7 +55,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
   async predict(request: any): Promise<any> {
     // Real prediction implementation using collected data
     const prediction = {
-      id: `pred_${Date.now()}`,
+      id: 'pred_' + Date.now(),
       type: request.type || 'performance',
       confidence: Math.random() * 0.4 + 0.6, // 60-100% confidence
       forecast: this.generateForecast(request),

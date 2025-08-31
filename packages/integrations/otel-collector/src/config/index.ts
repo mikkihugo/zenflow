@@ -53,7 +53,7 @@ export class ConfigManager {
           if (path && existsSync(path)) {
             const fileConfig = this.loadConfigFromFile(path);
             config = this.mergeConfigs(config, fileConfig);
-            this.logger.info(`Loaded configuration from ${path}`);
+            this.logger.info('Loaded configuration from ' + path);
             break;
 }
 }
@@ -176,7 +176,7 @@ export class ConfigManager {
     const resolvedPath = resolve(configPath);
 
     if (!existsSync(resolvedPath)) {
-      throw new Error(`Configuration file not found:${resolvedPath}`);
+      throw new Error('Configuration file not found:' + resolvedPath);
 }
 
     try {
@@ -189,11 +189,11 @@ export class ConfigManager {
         const config = require(resolvedPath);
         return config.default || config;
 } else {
-        throw new Error(`Unsupported configuration file format:${configPath}`);
+        throw new Error('Unsupported configuration file format:' + configPath);
 }
 } catch (error) {
       this.logger.error(
-        `Failed to parse configuration file:${configPath}`,
+        'Failed to parse configuration file:' + configPath,
         error
       );
       throw error;

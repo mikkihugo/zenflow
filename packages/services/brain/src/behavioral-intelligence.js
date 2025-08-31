@@ -26,7 +26,7 @@
  */
 import { getLogger } from '@claude-zen/foundation';
 import { sma } from 'moving-averages';
-// 🧠 Enhanced ML Imports - Using validated API patterns
+//  Enhanced ML Imports - Using validated API patterns
 const brain = require('brain.js');
 ');
 // Validate brain.js availability and capabilities
@@ -174,8 +174,8 @@ export class BehavioralIntelligence {
 }
       );
 
-      // 🧠 Initialize Enhanced ML Models
-      logger.info('🔬 Initializing advanced ML algorithms...');')
+      //  Initialize Enhanced ML Models
+      logger.info(' Initializing advanced ML algorithms...');')
       // DBSCAN for behavioral clustering
       this.behaviorClusterer = new clustering.DBSCAN();
 
@@ -183,7 +183,7 @@ export class BehavioralIntelligence {
       this.kmeansClusterer = kmeans;
 
       logger.info(
-        '✅ Enhanced ML algorithms initialized (DBSCAN + KMeans + Regression + Statistics + Time Series)')      );
+        ' Enhanced ML algorithms initialized (DBSCAN + KMeans + Regression + Statistics + Time Series)')      );
 
       this.initialized = true;
       logger.info(
@@ -205,7 +205,7 @@ export class BehavioralIntelligence {
       // Add to training buffer
       this.trainingBuffer.push(executionData);
 
-      // 🧠 Enhanced ML Learning:Update time series and feature vectors
+      //  Enhanced ML Learning:Update time series and feature vectors
       await this.updateAgentPerformanceTimeSeries(executionData);
       await this.updateAgentFeatureVector(executionData);
 
@@ -215,7 +215,7 @@ export class BehavioralIntelligence {
       // Train networks when buffer is full
       if (this.trainingBuffer.length >= this.bufferSize) {
         await this.trainNetworksFromBuffer();
-        await this.trainAdvancedMLModels(); // 🧠 Train Random Forest and DBSCAN
+        await this.trainAdvancedMLModels(); //  Train Random Forest and DBSCAN
         this.trainingBuffer = []; // Clear buffer
 }
 
@@ -436,12 +436,12 @@ Promise < { agentId: string, confidence: number, reasoning: string } > {
                 mostActiveAgents: mostActive,
             };
         }
-        // 🧠 Enhanced ML Methods
+        //  Enhanced ML Methods
         /**
          * Update agent performance time series using moving averages
          */
         ,
-        // 🧠 Enhanced ML Methods
+        //  Enhanced ML Methods
         /**
          * Update agent performance time series using moving averages
          */
@@ -506,7 +506,7 @@ Promise < { agentId: string, confidence: number, reasoning: string } > {
          */
         async trainAdvancedMLModels() {
             try {
-                logger.info('🔬 Training advanced ML models...');
+                logger.info(' Training advanced ML models...');
                 ');
                 // Async model preparation and optimization
                 const modelStrategy = await this.analyzeOptimalModelStrategy();
@@ -526,7 +526,7 @@ Promise < { agentId: string, confidence: number, reasoning: string } > {
                     // Async clustering optimization
                     const clusteringParams = await this.optimizeClusteringParameters(enhancedFeatures);
                     const clusters = this.behaviorClusterer.run(enhancedFeatures, clusteringParams.eps, clusteringParams.minPts);
-                    logger.info(`✅ DBSCAN clustering identified ${clusters.length} behavioral groups` `
+                    logger.info(` DBSCAN clustering identified ${clusters.length} behavioral groups` `
         );
 
         // Analyze label distribution across clusters for behavioral insights
@@ -684,7 +684,7 @@ Promise < { agentId: string, confidence: number, reasoning: string } > {
     if (!this.initialized) await this.initialize();
 
     try {
-      logger.info('🔄 Enabling continuous learning for behavioral intelligence...',        config
+      logger.info(' Enabling continuous learning for behavioral intelligence...',        config
       );
 
       // Update learning parameters if provided
@@ -705,12 +705,12 @@ Promise < { agentId: string, confidence: number, reasoning: string } > {
                             // Trigger model retraining with accumulated data
                             if (this.trainingBuffer.length >= 10) {
                                 await this.trainAdvancedMLModels();
-                                logger.debug('🔄 Continuous learning evaluation completed');
+                                logger.debug(' Continuous learning evaluation completed');
                                 ')};
                             }
                             try { }
                             catch (error) {
-                                logger.error('❌ Continuous learning evaluation failed:', error);
+                                logger.error(' Continuous learning evaluation failed:', error);
                                 ')};
                             }
                             config.evaluationInterval;
@@ -718,9 +718,9 @@ Promise < { agentId: string, confidence: number, reasoning: string } > {
                         finally { }
                     });
                 }
-                logger.info('✅ Continuous learning enabled successfully');
+                logger.info(' Continuous learning enabled successfully');
                 ')} catch (error) {;
-                logger.error('❌ Failed to enable continuous learning:', error);
+                logger.error(' Failed to enable continuous learning:', error);
                 ')      throw error;;
             }
             finally {
@@ -737,7 +737,7 @@ Promise < { agentId: string, confidence: number, reasoning: string } > {
             if (!this.initialized)
                 await this.initialize();
             try {
-                logger.debug(`📝 Recording behavior:${data.agentId} - ${data.behaviorType}` `
+                logger.debug(` Recording behavior:${data.agentId} - ${data.behaviorType}` `
       );
 
       // Convert behavior data to execution data format for learning
@@ -764,7 +764,7 @@ Promise < { agentId: string, confidence: number, reasoning: string } > {
       logger.debug(`, Behavior, recorded, and, learned, from, $, { data, : .agentId } `);`);
             }
             catch (error) {
-                logger.error('❌ Failed to record behavior:', error);
+                logger.error(' Failed to record behavior:', error);
                 ')};
             }
             /**
@@ -1489,7 +1489,7 @@ if (!config?.hiddenLayers) {
 export async function demoBehavioralIntelligence(
   brainJsBridge:BrainJsBridge
 ):Promise<void> {
-  logger.info('🧠 Behavioral Intelligence Demo Starting...\n');')
+  logger.info(' Behavioral Intelligence Demo Starting...\n');')
   const behavioral = new BehavioralIntelligence(brainJsBridge);
   await behavioral.initialize();
 
@@ -1529,12 +1529,12 @@ export async function demoBehavioralIntelligence(
 
   try {
     // 1. Learn from execution data
-    logger.info('📚 Learning from agent executions...');')    for (const data of executionData) {
+    logger.info(' Learning from agent executions...');')    for (const data of executionData) {
       await behavioral.learnFromExecution(data);
 }
-    logger.info('✅ Learning completed\n');')
+    logger.info(' Learning completed\n');')
     // 2. Predict agent performance
-    logger.info('🔮 Predicting agent performance...');')    const prediction = await behavioral.predictAgentPerformance(
+    logger.info(' Predicting agent performance...');')    const prediction = await behavioral.predictAgentPerformance(
       'agent-1',      'data-processing',      0.7
     );
     logger.info(`;
@@ -1563,7 +1563,7 @@ logger.info(`   • Reasoning:${prediction.reasoning}\n`);
 `
 
     // 3. Analyze task complexity
-    logger.info('📝 Analyzing task complexity...');')    const complexityAnalysis = await behavioral.analyzeTaskComplexity(
+    logger.info(' Analyzing task complexity...');')    const complexityAnalysis = await behavioral.analyzeTaskComplexity(
       'neural-training',      {
         modelSize: 'large',        dataSize:100000,
 }
@@ -1579,12 +1579,12 @@ logger.info(`   • Complexity:$(complexityAnalysis.estimatedComplexity * 100).t
     logger.info(
       `, Estimated, duration, $, { complexityAnalysis, : .estimatedDuration.toFixed(0) }, ms, n ``));
 // 4. Find best agent for task
-logger.info('🎯 Finding best agent for task...');
+logger.info(' Finding best agent for task...');
 ')    const bestAgent = await behavioral.findBestAgentForTask(;
 'data-processing', 0.5,
     ['agent-1', 'agent-2'];
 ')    );;
-logger.info(`🏆 Best agent selection:`);
+logger.info(` Best agent selection:`);
 `
     logger.info(`;
 Selected: $bestAgent.agentId `);`;
@@ -1594,7 +1594,7 @@ logger.info(`   • Confidence:${(bestAgent.confidence * 100).toFixed(1)}%`);
 Reasoning: $bestAgent.reasoning;
 n `);`;
 // 5. Show behavioral intelligence stats
-logger.info('📈 Behavioral Intelligence Statistics:');
+logger.info(' Behavioral Intelligence Statistics:');
 ')    const __stats = behavioral.getStats();;
 logger.info(`   • Total agents:$stats.totalAgents`);
 `
@@ -1620,6 +1620,6 @@ performance: $;
 logger.info(`   • Most active agents:${stats.mostActiveAgents.join(',    ')}` `
     );
 
-    logger.info('\n🎉 Behavioral Intelligence Demo Complete!');')    logger.info('\n💡 Key Benefits for claude-code-zen:');')    logger.info('   • Real-time agent performance prediction');')    logger.info('   • Intelligent task-agent matching');')    logger.info('   • Behavioral pattern learning and adaptation');')    logger.info('   • Task complexity estimation for better routing');')    logger.info('   • Data-driven swarm optimization');' catch (error) 
-    logger.error('❌ Demo failed:', error);')}
+    logger.info('\n Behavioral Intelligence Demo Complete!');')    logger.info('\n Key Benefits for claude-code-zen:');')    logger.info('   • Real-time agent performance prediction');')    logger.info('   • Intelligent task-agent matching');')    logger.info('   • Behavioral pattern learning and adaptation');')    logger.info('   • Task complexity estimation for better routing');')    logger.info('   • Data-driven swarm optimization');' catch (error) 
+    logger.error(' Demo failed:', error);')}
 );

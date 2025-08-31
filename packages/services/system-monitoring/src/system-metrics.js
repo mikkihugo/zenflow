@@ -1,7 +1,7 @@
 /**
  * @fileoverview System Metrics Collection - System Monitoring Implementation
  *
- * **MOVED FROM FOUNDATION → SYSTEM MONITORING IMPLEMENTATION**
+ * **MOVED FROM FOUNDATION  SYSTEM MONITORING IMPLEMENTATION**
  *
  * Real system metrics collection implementation for accurate CPU, memory, and performance measurements.
  * This belongs in the implementation package, not in the foundation facade.

@@ -26,7 +26,7 @@ export function pTimeout<T>(
         'name' in error &&
         (error.name === 'TaskCancelledError' || error.name === 'TimeoutError')
       ) {
-        throw new Error(message ?? `Operation timed out after ${timeoutMs}ms`);
+        throw new Error(message ?? 'Operation timed out after ' + timeoutMs + 'ms');
       }
       throw error;
     }
@@ -173,7 +173,7 @@ export class CircuitBreaker<T extends unknown[], R> {
  * @returns Promise that resolves with the function result or rejects after max attempts
  *
  * @example
- * ```typescript`
+ * 'typescript'
  * const result = await withRetry(
  *   async () => {
  *     const response = await fetch('/api/data');
@@ -182,7 +182,7 @@ export class CircuitBreaker<T extends unknown[], R> {
  *},
  *   { maxAttempts:5, baseDelay:1000}
  * );
- * ```
+ * '
  */
 export async function withRetry<T>(
   fn: () => Promise<T>,
@@ -233,7 +233,7 @@ export async function withRetry<T>(
  * @returns Promise that resolves with Result containing success or timeout error
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const result = await withTimeout(
  *   fetch('/api/slow-endpoint'),
  *   { timeout:5000, message: 'API request timed out'}
@@ -244,7 +244,7 @@ export async function withRetry<T>(
 ' *} else {
  *   logger.info('Error: ', result.error);
 ' *}
- * ```
+ * '
  */
 export async function withTimeout<T>(
   promise: Promise<T>,
@@ -258,7 +258,7 @@ export async function withTimeout<T>(
           reject(
             new Error(
               config['message'] ||
-                `Operation timed out after ${config.timeout}ms`
+                'Operation timed out after ' + config.timeout + 'ms'
             )
           );
         }, config.timeout);
@@ -278,7 +278,7 @@ export async function withTimeout<T>(
  * @returns Promise that resolves with Result containing success or timeout error
  *
  * @example
- * ```typescript`
+ * 'typescript'
  * const result = await safeAsync(
  *   async () => {
  *     const response = await fetch('/api/data');
@@ -286,7 +286,7 @@ export async function withTimeout<T>(
  *},
  *   { timeout:5000}
  * );
- * ```
+ * '
  */
 export async function safeAsync<T>(
   fn: () => Promise<T>,
@@ -314,7 +314,7 @@ export async function safeAsync<T>(
  * @returns Circuit breaker instance
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const apiCall = createCircuitBreaker(
  *   async (url:string) => {
  *     const response = await fetch(url);
@@ -329,7 +329,7 @@ export async function safeAsync<T>(
  *} catch (error) {
  *   logger.info('Circuit breaker prevented call or API failed');
  *}
- * ```
+ * '
  */
 export function createCircuitBreaker<T extends unknown[], R>(
   fn: (...args: T) => Promise<R>,
@@ -345,9 +345,9 @@ export function createCircuitBreaker<T extends unknown[], R>(
  * @returns Promise that resolves after delay
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * await sleep(1000); // Wait 1 second
- * ```
+ * '
  */
 export function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -361,13 +361,13 @@ export function sleep(ms: number): Promise<void> {
  * @returns Promise that resolves with array of results
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const urls = ['url1',    'url2',    'url3',    'url4',    'url5'];
  * const results = await concurrent(
  *   urls.map(url => () => fetch(url)),
  *   3 // Max 3 concurrent requests
  * );
- * ```
+ * '
  */
 export async function concurrent<T>(
   tasks: (() => Promise<T>)[],
@@ -408,7 +408,7 @@ export async function concurrent<T>(
  * @returns Promise that resolves with array of Results
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const results = await allSettledSafe([
  *   fetch('/api/data1'),
  *   fetch('/api/data2'),
@@ -417,12 +417,12 @@ export async function concurrent<T>(
  *
  * results.forEach((result, index) => {
  *   if (result.isOk()) {
- *     logger.info(`Request ${index} succeeded:`, result.value);
+ *     logger.info('Request ' + index + ' succeeded:', result.value);
  *} else {
- *     logger.info(`Request ${index} failed:`, result.error);
+ *     logger.info('Request ' + index + ' failed:', result.error);
  *}
  *});
- * ```
+ * '
  */
 export async function allSettledSafe<T>(
   promises: Promise<T>[]
@@ -448,7 +448,7 @@ export async function allSettledSafe<T>(
  * @returns Debounced function
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const debouncedSave = debounce(
  *   async (data:any) => {
  *     await saveToDatabase(data);
@@ -460,7 +460,7 @@ export async function allSettledSafe<T>(
  * debouncedSave(data1);
  * debouncedSave(data2);
  * debouncedSave(data3); // Only this call will execute after 1 second
- * ```
+ * '
  */
 export function debounce<T extends unknown[], R>(
   fn: (...args: T) => Promise<R>,
@@ -510,14 +510,14 @@ export function debounce<T extends unknown[], R>(
  * @returns Throttled function
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const throttledAPI = throttle(
  *   async (query:string) => {
- *     return fetch(`/api/search?q=${query}`);
+ *     return fetch('/api/search?q=' + query);
  *},
  *   1000
  * );
- * ```
+ * `
  */
 export function throttle<T extends unknown[], R>(
   fn: (...args: T) => Promise<R>,

@@ -1,18 +1,18 @@
 /**
  * @fileoverview Foundation Package - Browser Entry Point
  *
- * **🌐 BROWSER-COMPATIBLE ENTRY POINT**
+ * ** BROWSER-COMPATIBLE ENTRY POINT**
  *
  * This entry point only includes browser-compatible modules from the foundation package.
  * Node.js specific modules like syslog, system utilities, and file operations are excluded.
  *
  * @example Browser Usage
- * ```typescript`
+ * '''typescript'
  * import { getLogger, Result, ok, err} from '@claude-zen/foundation';
  *
  * const logger = getLogger('browser-component');
  * logger.info('Browser component initialized');
- * ```
+ * `
  */
 
 // =============================================================================
@@ -55,19 +55,19 @@ export enum LogLevel {
 // Simple browser logger implementation
 export const getLogger = (name: string): Logger => ({
   debug: (message: string, ...args: unknown[]) =>
-    console.debug(`[${name}] ${String(message)}`, ...args),
+    console.debug('[${name}] ' + String(message), ...args),
 
   info: (message: string, ...args: unknown[]) =>
-    console.info(`[${name}] ${String(message)}`, ...args),
+    console.info('[${name}] ' + String(message), ...args),
 
   warn: (message: string, ...args: unknown[]) =>
-    console.warn(`[${name}] ${String(message)}`, ...args),
+    console.warn('[${name}] ' + String(message), ...args),
 
   error: (message: string, ...args: unknown[]) =>
-    console.error(`[${name}] ${String(message)}`, ...args),
+    console.error('[${name}] ' + String(message), ...args),
 
   fatal: (message: string, ...args: unknown[]) =>
-    console.error(`[${name}] FATAL: ${String(message)}`, ...args),
+    console.error('[${name}] FATAL: ' + String(message), ...args),
 });
 
 export const getLogEntries = () => [];
@@ -468,7 +468,7 @@ export const usePolicy = <T>(fn: () => Promise<T>) => fn();
 // =============================================================================
 
 /*
-🌐 BROWSER-COMPATIBLE MODULES:
+ BROWSER-COMPATIBLE MODULES:
 
 INCLUDED:
 // CHECK Core logging (browser console based)

@@ -152,7 +152,7 @@ export class DynamicEventRegistry extends EventBus {
         version: (registration.metadata?.['version'] as string) || '1.0.0',
         description:
           (registration.metadata?.['description'] as string) ||
-          `${registration.moduleName} module`,
+          registration.moduleName + ' module',
       },
     };
 
@@ -230,7 +230,7 @@ export class DynamicEventRegistry extends EventBus {
     }
 
     const flow: EventFlow = {
-      id: `flow-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: 'flow-${Date.now()}-' + Math.random().toString(36).substr(2, 9),
       eventName: eventName as EventName,
       source: this.inferEventSource(eventName),
       target: this.inferEventTarget(eventName),
@@ -344,7 +344,7 @@ export class DynamicEventRegistry extends EventBus {
         module.status = 'idle';
         EventLogger.logError(
           'registry:module-idle',
-          `Module ${moduleId} is idle`,
+          'Module ' + moduleId + ' is idle',
           { component: ' DynamicEventRegistry' }
         );
       }
@@ -353,7 +353,7 @@ export class DynamicEventRegistry extends EventBus {
         module.status = 'disconnected';
         EventLogger.logError(
           'registry:module-disconnected',
-          `Module ${moduleId} disconnected`,
+          'Module ' + moduleId + ' disconnected',
           { component: ' DynamicEventRegistry' }
         );
       }

@@ -54,7 +54,7 @@ export class WebProcessManager {
     // Setup signal handlers for graceful shutdown
     this.setupSignalHandlers();
 
-    this.logger.info(`Daemon started with PID:${this.pid}`);
+    this.logger.info('Daemon started with PID:' + this.pid);
   }
 
   /**
@@ -64,10 +64,10 @@ export class WebProcessManager {
     try {
       await mkdir(dirname(this.pidFile), { recursive: true });
       await writeFile(this.pidFile, (this.pid || process.pid).toString());
-      this.logger.debug(`PID file saved:${this.pidFile}`);
+      this.logger.debug('PID file saved:' + this.pidFile);
     } catch (_error) {
       this.logger.error('Failed to save PID file: ', error);
-      throw new Error(`Failed to save PID file:${error}`);
+      throw new Error('Failed to save PID file:' + error);
     }
   }
 
@@ -78,7 +78,7 @@ export class WebProcessManager {
     try {
       if (existsSync(this.pidFile)) {
         await unlink(this.pidFile);
-        this.logger.debug(`PID file removed:${this.pidFile}`);
+        this.logger.debug('PID file removed:' + this.pidFile);
       }
     } catch (_error) {
       this.logger.warn('Failed to remove PID file: ', error);
@@ -94,7 +94,7 @@ export class WebProcessManager {
 
     for (const signal of signals) {
       process.on(signal, () => {
-        this.logger.info(`Received ${signal}, initiating graceful shutdown`);
+        this.logger.info('Received ' + signal + ', initiating graceful shutdown');
         this.gracefulShutdown(signal);
       });
     }
@@ -128,7 +128,7 @@ export class WebProcessManager {
 
     this.isShuttingDown = true;
     this.logger.info(
-      `Starting graceful shutdown${signal ? ` (${signal})` : ''}`
+      'Starting graceful shutdown' + signal ? ' (' + signal + ')' : ''
     );
 
     try {
@@ -220,7 +220,7 @@ export class WebProcessManager {
         targetPid = runningInstance.pid;
       }
 
-      this.logger.info(`Stopping instance with PID:${targetPid}`);
+      this.logger.info('Stopping instance with PID:' + targetPid);
 
       // Send SIGTERM for graceful shutdown
       process.kill(targetPid, 'SIGTERM');
@@ -229,14 +229,14 @@ export class WebProcessManager {
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       if (this.isProcessRunning(targetPid)) {
-        this.logger.warn(`Process ${targetPid} still running, sending SIGKILL`);
+        this.logger.warn('Process ' + targetPid + ' still running, sending SIGKILL');
         process.kill(targetPid, 'SIGKILL');
       }
 
       // Clean up PID file
       await this.removePidFile();
 
-      this.logger.info(`Instance ${targetPid} stopped successfully`);
+      this.logger.info('Instance ' + targetPid + ' stopped successfully');
       return true;
     } catch (_error) {
       this.logger.error('Error stopping instance: ', error);

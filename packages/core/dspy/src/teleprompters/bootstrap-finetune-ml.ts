@@ -386,7 +386,7 @@ export class BootstrapFinetuneML extends Teleprompter {
     } catch (error) {
       this.logger.error('Failed to initialize ML components:', error);
       throw new Error(
-        `BootstrapFinetuneML initialization failed:${error.message}`
+        'BootstrapFinetuneML initialization failed:' + error.message
       );
     }
   }
@@ -486,7 +486,7 @@ export class BootstrapFinetuneML extends Teleprompter {
       this.logger.info('Bootstrap finetune ML compilation completed', {
         finalPerformance: result.finalPerformance,
         totalIterations: result.optimizationMetrics.totalIterations,
-        executionTime: `${result.executionTime.toFixed(2)}ms`,
+        executionTime: result.executionTime.toFixed(2) + 'ms',
       });
 
       this.emit('compilationCompleted', result);

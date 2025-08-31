@@ -16,7 +16,7 @@ describe('SQLiteBackend Integration Tests', () => {
 
   beforeEach(async () => {
     // Create a temporary database file path
-    tempDbPath = join(tmpdir(), `test-knowledge-cache-${Date.now()}-${Math.random().toString(36).substr(2, 9)}.db`);
+    tempDbPath = join(tmpdir(), 'test-knowledge-cache-${Date.now()}-' + Math.random().toString(36).substr(2, 9) + '.db');
     
     backend = new SQLiteBackend({
       dbPath: tempDbPath,

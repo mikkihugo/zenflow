@@ -291,7 +291,7 @@ export class COPROML extends Teleprompter {
 			);
 } catch (error) {
 			this.logger.error("Failed to initialize COPROML:", error);
-			throw new Error(`COPROML initialization failed:${error}`);
+			throw new Error('COPROML initialization failed:' + error);
 }
 }
 
@@ -402,7 +402,7 @@ export class COPROML extends Teleprompter {
 };
 } catch (error) {
 			this.logger.error("COPROML compilation failed:", error);
-			throw new Error(`COPROML compilation error:${error}`);
+			throw new Error('COPROML compilation error:' + error);
 }
 }
 
@@ -451,7 +451,7 @@ export class COPROML extends Teleprompter {
 
 		this.explorationBudget -= this.config.initialExplorationBudget;
 		this.logger.info(
-			`Initial exploration completed. Explored ${this.config.initialExplorationBudget} prefix configurations`,
+			'Initial exploration completed. Explored ' + this.config.initialExplorationBudget + ' prefix configurations',
 		);
 }
 
@@ -536,7 +536,7 @@ export class COPROML extends Teleprompter {
 }
 
 		this.logger.info(
-			`Online learning completed after ${this.currentIteration} iterations with ${this.driftDetections.length} drift detections`,
+			'Online learning completed after ${this.currentIteration} iterations with ' + this.driftDetections.length + ' drift detections',
 		);
 }
 
@@ -563,7 +563,7 @@ export class COPROML extends Teleprompter {
 		const embeddings = feedbackFeatures.map((features) => [features]);
 
 		const trainingExamples = embeddings.map((embedding, i) => ({
-			text:`feedback_${i}`,
+			text:'feedback_' + i,
 			embedding,
 			success:
 				this.feedbackBuffer[i].accuracy > this.config.qualityGates.minAccuracy,
@@ -579,7 +579,7 @@ export class COPROML extends Teleprompter {
 			? patternResult
 			:patternResult.patterns || [];
 
-		this.logger.info(`Detected ${patterns.length} feedback patterns`);
+		this.logger.info('Detected ' + patterns.length + ' feedback patterns');
 
 		return patterns;
 }
@@ -635,7 +635,7 @@ export class COPROML extends Teleprompter {
 			confidenceInterval:[correlation - 0.1, correlation + 0.1],
 });
 
-		this.logger.info(`Completed ${tests.length} statistical validation tests`);
+		this.logger.info('Completed ' + tests.length + ' statistical validation tests');
 
 		return tests;
 }
@@ -659,7 +659,7 @@ export class COPROML extends Teleprompter {
 		drift:ConceptDriftDetection,
 	):Promise<void> {
 		this.logger.info(
-			`Concept drift detected:${drift.changePoint ? `at point ${drift.changePoint}` :"gradual"} with strength ${drift.driftStrength}`,
+			'Concept drift detected:' + drift.changePoint ? 'at point ' + drift.changePoint :"gradual" + ' with strength ' + drift.driftStrength,
 		);
 
 		this.adaptationEvents++;
@@ -738,7 +738,7 @@ export class COPROML extends Teleprompter {
 	private generatePrefixFromConfig(config:Record<string, any>):string {
 		// Generate prefix string based on configuration
 		const strength = Math.floor(config.prefix_strength * 10);
-		return `Optimized prefix (strength=${strength}, lr=${config.learning_rate.toFixed(4)})`;
+		return 'Optimized prefix (strength=${strength}, lr=' + config.learning_rate.toFixed(4) + ')';
 }
 
 	private async evaluatePrefixConfiguration(
@@ -962,7 +962,7 @@ export class COPROML extends Teleprompter {
 
 		if (this.driftDetections.length > 3) {
 			recommendations.push(
-				`High concept drift detected (${this.driftDetections.length} events) - consider more robust prefix strategies`,
+				'High concept drift detected (' + this.driftDetections.length + ' events) - consider more robust prefix strategies',
 			);
 }
 
@@ -978,7 +978,7 @@ export class COPROML extends Teleprompter {
 			);
 			if (highQualityPatterns.length > 0) {
 				recommendations.push(
-					`Detected ${highQualityPatterns.length} high-quality feedback patterns - consider pattern-based prefix generation`,
+					'Detected ' + highQualityPatterns.length + ' high-quality feedback patterns - consider pattern-based prefix generation',
 				);
 }
 }

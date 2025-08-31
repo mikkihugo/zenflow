@@ -32,7 +32,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Request logging middleware
 app.use((req, _res, next) => {
-  logger.debug(`${req.method} ${req.path}`, { query: req.query, body: req.body });
+  logger.debug('${req.method} ' + req.path, { query: req.query, body: req.body });
   next();
 });
 
@@ -51,7 +51,7 @@ async function initializeServices(): Promise<void> {
     // Note: Temporarily commented out to avoid type mismatch
     // const webSocketCoordinator = {
     //   broadcast: (_event: string, _data: unknown) => {
-    //     logger.debug(`Broadcasting ${event}:`, data);
+    //     logger.debug('Broadcasting ' + event + ':', data);
     //     // In production, this would broadcast to actual WebSocket clients
     //   }
     // };
@@ -62,7 +62,7 @@ async function initializeServices(): Promise<void> {
     //   { prefix: '/api/v1', enableCors: true }
     // );
     
-    logger.info('✅ Production foundation services initialized');
+    logger.info(' Production foundation services initialized');
   }, { retries: 3, minTimeout: 1000 });
 }
 
@@ -122,7 +122,7 @@ app.get('/api/v1/coordination/projects', async (_req, _res) => { const res = _re
 
     res.json({
       projects: projects.map((project: any) => ({
-        id: project.id || `proj-${Date.now()}`,
+        id: project.id || 'proj-' + Date.now(),
         name: project.name || 'Unnamed Project',
         description: project.description || 'No description',
         status: project.status || 'unknown',
@@ -177,7 +177,7 @@ app.get('/api/v1/coordination/agents', async (_req, _res) => { const res = _res;
 
     res.json({
       agents: agents.map((agent: any) => ({
-        id: agent.id || `agent-${Date.now()}`,
+        id: agent.id || 'agent-' + Date.now(),
         name: agent.name || 'Unnamed Agent',
         type: agent.type || 'general',
         status: agent.status || 'unknown',
@@ -216,7 +216,7 @@ app.post('/api/v1/coordination/agents', async (req, _res) => { const res = _res;
 
       // Fallback to memory storage
       return {
-        id: `agent-${Date.now()}`,
+        id: 'agent-' + Date.now(),
         name: agentData.name || 'New Agent',
         type: agentData.type || 'general',
         status: 'idle',
@@ -255,7 +255,7 @@ app.get('/api/v1/coordination/tasks', async (req, _res) => { const res = _res;
 
     res.json({
       tasks: tasks.map((task: any) => ({
-        id: task.id || `task-${Date.now()}`,
+        id: task.id || 'task-' + Date.now(),
         title: task.title || task.name || 'Unnamed Task',
         description: task.description || 'No description',
         status: task.status || 'pending',
@@ -292,7 +292,7 @@ app.post('/api/v1/coordination/tasks', async (req, _res) => { const res = _res;
 
       // Fallback implementation
       return {
-        id: `task-${Date.now()}`,
+        id: 'task-' + Date.now(),
         title: taskData.title || 'New Task',
         description: taskData.description || 'Task description',
         status: 'pending',
@@ -385,8 +385,8 @@ app.get('/api/v1/memory/status', async (req, _res) => { const res = _res;
 
     res.json({
       status: memoryStatus.status,
-      totalMemory: `${Math.round(memoryStatus.totalMemory / 1024 / 1024)}MB`,
-      usedMemory: `${Math.round(memoryStatus.usedMemory / 1024 / 1024)}MB`,
+      totalMemory: Math.round(memoryStatus.totalMemory / 1024 / 1024) + 'MB',
+      usedMemory: Math.round(memoryStatus.usedMemory / 1024 / 1024) + 'MB',
       sessions: memoryStatus.sessions,
       lastBackup: new Date(Date.now() - 1800000).toISOString(),
     });
@@ -455,9 +455,9 @@ async function startServer(): Promise<void> {
     await initializeServices();
     
     const server = app.listen(port, () => {
-      logger.info('🚀 Claude Code Zen Production API Server');
-      logger.info(`📡 Server running at: http://localhost:${port}`);
-      logger.info('🔗 Production endpoints available:');
+      logger.info(' Claude Code Zen Production API Server');
+      logger.info(' Server running at: http://localhost:' + port);
+      logger.info(' Production endpoints available:');
       logger.info('   GET  /api/v1/coordination/health');
       logger.info('   GET  /api/v1/coordination/projects');
       logger.info('   GET  /api/v1/coordination/agents');
@@ -468,8 +468,8 @@ async function startServer(): Promise<void> {
       logger.info('   GET  /api/v1/memory/status');
       logger.info('   GET  /api/v1/database/status');
       logger.info('');
-      logger.info('🎯 Dashboard URL: http://localhost:3002');
-      logger.info('✅ Ready for production API integration!');
+      logger.info(' Dashboard URL: http://localhost:3002');
+      logger.info(' Ready for production API integration!');
     });
 
     // Graceful shutdown

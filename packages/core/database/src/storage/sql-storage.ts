@@ -48,20 +48,20 @@ class TransactionSQLStorageImpl implements SqlStorage {
     const columns =
       schema.columns
         ?.map((col) => {
-          let columnDef = `${col.name} ${col.type}`;
+          let columnDef = '${col.name} ' + col.type;
           if (!col.nullable) columnDef += ' NOT NULL';
           if (col.defaultValue !== undefined)
-            columnDef += ` DEFAULT ${col.defaultValue}`;
+            columnDef += ' DEFAULT ' + col.defaultValue;
           return columnDef;
         })
         .join(', ') || '';
 
     const primaryKey =
       schema.primaryKey?.length > 0
-        ? `, PRIMARY KEY (${schema.primaryKey.join(', ')})`
+        ? ', PRIMARY KEY (' + schema.primaryKey.join(', ') + ')'
         : '';
 
-    const sql = `CREATE TABLE IF NOT EXISTS ${name} (${columns}${primaryKey})`;
+    const sql = 'CREATE TABLE IF NOT EXISTS ${name} (${columns}' + primaryKey + ')';
     await this.execute(sql);
   }
 
@@ -70,12 +70,12 @@ class TransactionSQLStorageImpl implements SqlStorage {
     options?: { ifExists?: boolean }
   ): Promise<void> {
     const ifExists = options?.ifExists !== false ? 'IF EXISTS ' : '';
-    const sql = `DROP TABLE ${ifExists}${name}`;
+    const sql = 'DROP TABLE ${ifExists}' + name;
     await this.execute(sql);
   }
 
   async truncateTable(name: string): Promise<void> {
-    await this.execute(`DELETE FROM ${name}`);
+    await this.execute('DELETE FROM ' + name);
   }
 
   async createIndex(
@@ -85,7 +85,7 @@ class TransactionSQLStorageImpl implements SqlStorage {
     options?: { unique?: boolean; type?: string }
   ): Promise<void> {
     const unique = options?.unique ? 'UNIQUE' : '';
-    const sql = `CREATE ${unique} INDEX IF NOT EXISTS ${name} ON ${tableName} (${columns.join(', ')})`;
+    const sql = 'CREATE ${unique} INDEX IF NOT EXISTS ${name} ON ${tableName} (' + columns.join(', ') + ')';
     await this.execute(sql);
   }
 
@@ -94,8 +94,8 @@ class TransactionSQLStorageImpl implements SqlStorage {
     options?: { ifExists?: boolean }
   ): Promise<void> {
     const query = options?.ifExists
-      ? `DROP INDEX IF EXISTS ${name}`
-      : `DROP INDEX ${name}`;
+      ? 'DROP INDEX IF EXISTS ' + name
+      : 'DROP INDEX ' + name;
     await this.execute(query);
   }
 
@@ -105,7 +105,7 @@ class TransactionSQLStorageImpl implements SqlStorage {
       name: string;
       type: string;
       notnull: number;
-    }>(`PRAGMA table_info(${name})`);
+    }>('PRAGMA table_info(' + name + ')');
 
     if (result.rows.length === 0) {
       return null;
@@ -164,7 +164,7 @@ export class SQLStorageImpl implements SqlStorage {
         errorOptions.params = params;
       }
       throw new QueryError(
-        `SQL query failed:${error instanceof Error ? error.message : String(error)}`,
+        'SQL query failed:' + error instanceof Error ? error.message : String(error),
         errorOptions
       );
     }
@@ -213,7 +213,7 @@ export class SQLStorageImpl implements SqlStorage {
         errorOptions.params = params;
       }
       throw new QueryError(
-        `SQL command failed:${error instanceof Error ? error.message : String(error)}`,
+        'SQL command failed:' + error instanceof Error ? error.message : String(error),
         errorOptions
       );
     }
@@ -241,7 +241,7 @@ export class SQLStorageImpl implements SqlStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new TransactionError(
-        `Transaction failed:${error instanceof Error ? error.message : String(error)}`
+        'Transaction failed:' + error instanceof Error ? error.message : String(error)
       );
     }
   }
@@ -264,10 +264,10 @@ export class SQLStorageImpl implements SqlStorage {
               primaryKey?: boolean;
               defaultValue?: unknown;
             }) => {
-              let columnDef = `${col.name} ${col.type}`;
+              let columnDef = '${col.name} ' + col.type;
               if (!col.nullable) columnDef += ' NOT NULL';
               if (col.defaultValue !== undefined)
-                columnDef += ` DEFAULT ${col.defaultValue}`;
+                columnDef += ' DEFAULT ' + col.defaultValue;
               return columnDef;
             }
           )
@@ -275,10 +275,10 @@ export class SQLStorageImpl implements SqlStorage {
 
       const primaryKey =
         schema.primaryKey?.length > 0
-          ? `, PRIMARY KEY (${schema.primaryKey.join(', ')})`
+          ? ', PRIMARY KEY (' + schema.primaryKey.join(', ') + ')'
           : '';
 
-      const sql = `CREATE TABLE IF NOT EXISTS ${name} (${columns}${primaryKey})`;
+      const sql = 'CREATE TABLE IF NOT EXISTS ${name} (${columns}' + primaryKey + ')';
       await this.execute(sql);
 
       logger.info('Table created successfully', { name });
@@ -288,7 +288,7 @@ export class SQLStorageImpl implements SqlStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to create table:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to create table:' + error instanceof Error ? error.message : String(error),
         createErrorOptions(this.generateCorrelationId(), error)
       );
     }
@@ -302,7 +302,7 @@ export class SQLStorageImpl implements SqlStorage {
       logger.debug('Dropping table', { name, ifExists: options?.ifExists });
 
       const ifExists = options?.ifExists !== false ? 'IF EXISTS ' : '';
-      const sql = `DROP TABLE ${ifExists}${name}`;
+      const sql = 'DROP TABLE ${ifExists}' + name;
 
       await this.execute(sql);
 
@@ -313,7 +313,7 @@ export class SQLStorageImpl implements SqlStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to drop table:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to drop table:' + error instanceof Error ? error.message : String(error),
         createErrorOptions(this.generateCorrelationId(), error)
       );
     }
@@ -323,7 +323,7 @@ export class SQLStorageImpl implements SqlStorage {
     try {
       logger.debug('Truncating table', { name });
 
-      await this.execute(`DELETE FROM ${name}`);
+      await this.execute('DELETE FROM ' + name);
 
       logger.info('Table truncated successfully', { name });
     } catch (error) {
@@ -332,7 +332,7 @@ export class SQLStorageImpl implements SqlStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to truncate table:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to truncate table:' + error instanceof Error ? error.message : String(error),
         createErrorOptions(this.generateCorrelationId(), error)
       );
     }
@@ -364,7 +364,7 @@ export class SQLStorageImpl implements SqlStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to get table schema:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to get table schema:' + error instanceof Error ? error.message : String(error),
         createErrorOptions(this.generateCorrelationId(), error)
       );
     }
@@ -380,7 +380,7 @@ export class SQLStorageImpl implements SqlStorage {
         name: string;
         type: string;
         notnull: number;
-      }>(`PRAGMA table_info(${tableName})`);
+      }>('PRAGMA table_info(' + tableName + ')');
 
       const columns = result.rows.map((row) => ({
         name: row.name,
@@ -399,7 +399,7 @@ export class SQLStorageImpl implements SqlStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to get table info:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to get table info:' + error instanceof Error ? error.message : String(error),
         { correlationId: this.generateCorrelationId() }
       );
     }
@@ -422,7 +422,7 @@ export class SQLStorageImpl implements SqlStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to list tables:${error instanceof Error ? error.message : String(error)}`
+        'Failed to list tables:' + error instanceof Error ? error.message : String(error)
       );
     }
   }
@@ -436,7 +436,7 @@ export class SQLStorageImpl implements SqlStorage {
     try {
       const indexName = name;
       const unique = options?.unique ? 'UNIQUE' : '';
-      const sql = `CREATE ${unique} INDEX IF NOT EXISTS ${indexName} ON ${tableName} (${columns.join(', ')})`;
+      const sql = 'CREATE ${unique} INDEX IF NOT EXISTS ${indexName} ON ${tableName} (' + columns.join(', ') + ')';
 
       logger.debug('Creating index', {
         tableName,
@@ -455,7 +455,7 @@ export class SQLStorageImpl implements SqlStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to create index:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to create index:' + error instanceof Error ? error.message : String(error),
         { correlationId: this.generateCorrelationId() }
       );
     }
@@ -469,8 +469,8 @@ export class SQLStorageImpl implements SqlStorage {
       logger.debug('Dropping index', { indexName, options });
 
       const query = options?.ifExists
-        ? `DROP INDEX IF EXISTS ${indexName}`
-        : `DROP INDEX ${indexName}`;
+        ? 'DROP INDEX IF EXISTS ' + indexName
+        : 'DROP INDEX ' + indexName;
       await this.execute(query);
 
       logger.info('Index dropped successfully', { indexName });
@@ -480,7 +480,7 @@ export class SQLStorageImpl implements SqlStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to drop index:${error instanceof Error ? error.message : String(error)}`,
+        'Failed to drop index:' + error instanceof Error ? error.message : String(error),
         { correlationId: this.generateCorrelationId() }
       );
     }
@@ -541,6 +541,6 @@ export class SQLStorageImpl implements SqlStorage {
   }
 
   private generateCorrelationId(): string {
-    return `sql-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return 'sql-${Date.now()}-' + Math.random().toString(36).substr(2, 9);
   }
 }

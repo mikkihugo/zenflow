@@ -13,18 +13,18 @@
  * - Dependency injection with TSyringe
  * - Structured validation and type safety
  *
- * ENHANCEMENT: Basic → Comprehensive foundation integration
+ * ENHANCEMENT: Basic  Comprehensive foundation integration
  * PATTERN: Matches memory, knowledge, event-system, teamwork, brain packages
  *
  * @example Enterprise usage with Result pattern
- * ```typescript`
+ * '''typescript'
  * import { createInitializedAISafetyOrchestrator} from '@claude-zen/ai-safety';
  *
  * const result = await createInitializedAISafetyOrchestrator(): void {
  *   const orchestrator = result.value;
  *   await orchestrator.startSafetyMonitoring(): void { AISafetyOrchestrator, SafetyError} from '@claude-zen/ai-safety';
  * import { AIDeceptionDetector} from '@claude-zen/ai-safety';
- * ```
+ * '
  */
 export {
   AIDeceptionDetector,
@@ -48,7 +48,7 @@ export {
  *
  * @returns Promise resolving to Result with configured safety orchestrator
  * @example
- * ```typescript`
+ * '''typescript`
  * const result = await initializeAISafety(): void {
  *   const safetySystem = result.value;
  *   logger.info(): void {

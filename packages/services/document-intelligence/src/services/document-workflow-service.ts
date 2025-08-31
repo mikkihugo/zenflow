@@ -115,7 +115,7 @@ export class DocumentWorkflowService {
       this.documentWorkflows.set(workflow.name, workflow);
 }
 
-    logger.info(`Registered ${documentWorkflows.length} document workflows`);
+    logger.info('Registered ' + documentWorkflows.length + ' document workflows');
 }
 
   /**
@@ -125,7 +125,7 @@ export class DocumentWorkflowService {
   async processDocumentEvent(eventType: string,
     documentData:unknown
   ): Promise<DocumentWorkflowResult> {
-    logger.info(`Processing document event:${eventType}`);
+    logger.info('Processing document event:' + eventType);
 
     try {
       // Auto-trigger workflows based on document type
@@ -140,7 +140,7 @@ export class DocumentWorkflowService {
           triggerWorkflows.push('prds-to-epics');
           break;
         default:
-          logger.debug(`No automatic workflow for document type:${documentType}`);
+          logger.debug('No automatic workflow for document type:' + documentType);
           return {
             success: true,
             workflowId: 'none',            results:{ message: 'No workflow triggered for document type'}
@@ -159,7 +159,7 @@ export class DocumentWorkflowService {
           
           results[workflowName] = workflowResult;
           
-          logger.info(`Triggered workflow ${workflowName}:SUCCESS`);
+          logger.info('Triggered workflow ' + workflowName + ':SUCCESS');
           
           // Emit completion event for coordination layer
           this.eventBus.emit('document-workflow:completed', {
@@ -169,7 +169,7 @@ export class DocumentWorkflowService {
 });
           
 } catch (error) {
-          logger.error(`Failed to trigger workflow ${workflowName}:`, error);
+          logger.error('Failed to trigger workflow ' + workflowName + ':', error);
           results[workflowName] = { error:error instanceof Error ? error.message : String(error)};
 }
 }
@@ -197,10 +197,10 @@ export class DocumentWorkflowService {
   ): Promise<Record<string, unknown>> {
     const workflow = this.documentWorkflows.get(workflowName);
     if (!workflow) {
-      throw new Error(`Document workflow not found:${workflowName}`);
+      throw new Error('Document workflow not found:' + workflowName);
 }
 
-    logger.info(`Executing document workflow:${workflowName}`);
+    logger.info('Executing document workflow:' + workflowName);
     
     const results: Record<string, unknown> = {};
     
@@ -213,7 +213,7 @@ export class DocumentWorkflowService {
         Object.assign(context, stepResult);
         
 } catch (error) {
-        logger.error(`Error in workflow step ${step.type}:`, error);
+        logger.error('Error in workflow step ' + step.type + ':', error);
         throw error;
 }
 }
@@ -227,7 +227,7 @@ export class DocumentWorkflowService {
   private async executeDocumentWorkflowStep(step: DocumentWorkflowStep,
     context: Record<string, unknown>
   ): Promise<Record<string, unknown>> {
-    logger.debug(`Executing document workflow step:${step.type}`);
+    logger.debug('Executing document workflow step:' + step.type);
 
     switch (step.type) {
       case 'extract-product-requirements':
@@ -243,7 +243,7 @@ export class DocumentWorkflowService {
         return await this.createEpicDocuments(context, step.params);
       
       default:
-        throw new Error(`Unknown document workflow step type:${step.type}`);
+        throw new Error('Unknown document workflow step type:' + step.type);
 }
 }
 
@@ -282,22 +282,22 @@ export class DocumentWorkflowService {
     const requirements = context.product_requirements as any;
     
     const prdDocument: DocumentContent = {
-      id:`prd-${Date.now()}`,
-      type: 'prd',      title: 'Product Requirements Document',      content:`
+      id:'prd-' + Date.now(),
+      type: 'prd',      title: 'Product Requirements Document',      content:'
 # Product Requirements Document
 
 ## Functional Requirements
-${requirements?.functionalRequirements?.map((req:string) => `- ${req}`).join('\n') || '}`
+' + requirements?.functionalRequirements?.map((req:string) => '- ' + req).join('\n') || ' + ''
 
 ## Non-Functional Requirements  
-${requirements?.nonFunctionalRequirements?.map((req:string) => `- ${req}`).join('\n') || '}`
+' + requirements?.nonFunctionalRequirements?.map((req:string) => '- ${req).join('\n') || '}'
 
 ## Constraints
-${requirements?.constraints?.map((constraint:string) => `- ${constraint}`).join('\n') || '}`
+' + requirements?.constraints?.map((constraint:string) => '- ' + constraint).join('\n') || ' + ''
 
 ## Assumptions
-${requirements?.assumptions?.map((assumption:string) => `- ${assumption}`).join('\n') || '}`
-      `.trim(),
+' + requirements?.assumptions?.map((assumption:string) => '- ${assumption).join('\n') || '}'
+      '.trim(),
       metadata:{
         generatedAt:new Date().toISOString(),
         sourceWorkflow:'vision-to-prds'
@@ -341,13 +341,13 @@ ${requirements?.assumptions?.map((assumption:string) => `- ${assumption}`).join(
 
     for (const [epicName, features] of Object.entries(epicRequirements  || {})) {
       const epicDoc: DocumentContent = {
-        id:`epic-${epicName}-${Date.now()}`,
-        type: 'epic',        title:`Epic: ${epicName.replace(/([A-Z])/g, ' $1').trim()}`,
-        content:`
+        id:'epic-${epicName}-' + Date.now(),
+        type: 'epic',        title:'Epic: ' + epicName.replace(/([A-Z])/g, ' $1').trim(),
+        content:'
 # Epic:${epicName}
 
 ## Features
-${(features as string[])?.map(feature => `- ${feature}`).join('\n') || '}`
+' + (features as string[])?.map(feature => '- ' + feature).join('\n') || '
 
 ## Acceptance Criteria
 - [] Feature implementation complete
@@ -376,7 +376,7 @@ ${(features as string[])?.map(feature => `- ${feature}`).join('\n') || '}`
     return {
       id:entity.id,
       type:entity.type,
-      title:entity.title || `${entity.type} Document`,
+      title:entity.title || entity.type + ' Document',
       content:entity.content || ',      metadata:entity.metadata  || {}
 };
 }
@@ -404,7 +404,7 @@ ${(features as string[])?.map(feature => `- ${feature}`).join('\n') || '}`
 
     // Listen for workflow coordination requests
     this.eventBus.on('document-workflow:execute', async (data:any) => {
-      logger.info(`Received workflow execution request:${data.workflowName}`);
+      logger.info('Received workflow execution request:' + data.workflowName);
       try {
         const result = await this.executeDocumentWorkflow(data.workflowName, data.context  || {});
         this.eventBus.emit('document-workflow:completed', {

@@ -53,7 +53,7 @@ export class SPARCMultiSwarmExecutor {
         Multi - Swarm;
         A / B;
         test: $testId `);`;
-        logger.info(`📋 Task: ${taskDescription}`);
+        logger.info(` Task: ${taskDescription}`);
         `
     logger.info(
       `;
@@ -99,13 +99,13 @@ export class SPARCMultiSwarmExecutor {
                     totalWorktreesCreated,
                 },
             };
-            logger.info(`✅ SPARC Multi-Swarm test completed: ${testId}`);
+            logger.info(` SPARC Multi-Swarm test completed: ${testId}`);
             `
       logger.info(
         `;
             Winner: $comparison.winner.name($comparison.confidence.toFixed(2), confidence) ``;
             ;
-            logger.info(`🌳 Git trees created: ${totalWorktreesCreated}`);
+            logger.info(` Git trees created: ${totalWorktreesCreated}`);
             `
 
       return multiSwarmResult;
@@ -355,7 +355,7 @@ async;
 executeSingleSPARCStrategy(taskDescription, string, strategy, SPARCStrategy, gitConfig, GitTreeConfig, options, any);
 Promise < SPARCExecutionResult > {
     const: startTime = Date.now(),
-    console, : .log(`🚀 Executing SPARC strategy: ${strategy.name} (${strategy.modelBackend})` `
+    console, : .log(` Executing SPARC strategy: ${strategy.name} (${strategy.modelBackend})` `
     );
 
     try {
@@ -384,7 +384,7 @@ Promise < SPARCExecutionResult > {
 try { }
 catch (error) {
     const duration = Date.now() - startTime;
-    logger.error(`❌ SPARC strategy failed: ${strategy.name}`, error);
+    logger.error(` SPARC strategy failed: ${strategy.name}`, error);
     `
 
       return {

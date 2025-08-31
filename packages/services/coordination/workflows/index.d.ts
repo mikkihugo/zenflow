@@ -7,14 +7,14 @@
  * task automation, and business process management with full observability.
  *
  * **CORE CAPABILITIES:**
- * - 🔄 **Workflow Orchestration**:Complex multi-step process automation
- * - 📊 **Visual Workflow Designer**:Graphical workflow creation and editing
- * - 🎯 **Step-by-Step Execution**:Granular control over workflow execution
- * - 🔀 **Conditional Logic**:Dynamic branching and decision-making
- * - 🔄 **Error Handling**:Comprehensive error recovery and retry mechanisms
- * - 📈 **Performance Monitoring**:Real-time workflow execution analytics
- * - 💾 **State Management**:Persistent workflow state and context preservation
- * - 🔧 **Foundation Integration**:Complete @claude-zen/foundation support
+ * -  **Workflow Orchestration**:Complex multi-step process automation
+ * -  **Visual Workflow Designer**:Graphical workflow creation and editing
+ * -  **Step-by-Step Execution**:Granular control over workflow execution
+ * -  **Conditional Logic**:Dynamic branching and decision-making
+ * -  **Error Handling**:Comprehensive error recovery and retry mechanisms
+ * -  **Performance Monitoring**:Real-time workflow execution analytics
+ * -  **State Management**:Persistent workflow state and context preservation
+ * -  **Foundation Integration**:Complete @claude-zen/foundation support
  *
  * **Enterprise Features:**
  * - Workflow versioning and rollback capabilities
@@ -25,7 +25,7 @@
  * - Emergency workflow termination and cleanup
  *
  * @example Basic Workflow Creation and Execution
- * ```typescript`
+ * '''typescript'
  * import { WorkflowEngine, WorkflowUtils} from '@claude-zen/coordination/workflows';
  *
  * const engine = new WorkflowEngine({
@@ -57,10 +57,10 @@
  * // Execute workflow
  * const result = await engine.execute(workflow, {
  *   data:{ userId: '123', payload:{...}}') *});
- * ````
+ * '
  *
  * @example Conditional Workflow with Error Handling
- * ```typescript`
+ * '''typescript'
  * import { WorkflowEngine} from '@claude-zen/coordination/workflows';
  *
  * const conditionalWorkflow = {
@@ -93,10 +93,10 @@
  *
  * const result = await engine.execute(conditionalWorkflow, {
  *   user:{ id: '123', type: ' premium', email: ' user@example.com'}') *});
- * ````
+ * '
  *
  * @example Workflow Monitoring and Analytics
- * ```typescript`
+ * '''typescript'
  * import { WorkflowEngine, WorkflowAnalytics} from '@claude-zen/coordination/workflows';
  *
  * const engine = new WorkflowEngine({
@@ -111,15 +111,15 @@
  *
  * // Monitor execution in real-time
  * analytics.onStepCompleted(workflowId, (stepResult) => {
- *   logger.info(`Step ${stepResult.stepId} completed in ${stepResult.duration}ms`);`
+ *   logger.info('Step ${stepResult.stepId} completed in ' + stepResult.duration + 'ms');'
  *});
  *
  * // Get workflow performance insights
  * const insights = await analytics.getWorkflowInsights(workflowId);
- * logger.info(`Total execution time:${insights.totalDuration}ms`);`
- * logger.info(`Bottleneck step:${insights.bottleneckStep}`);`
- * logger.info(`Success rate:${insights.successRate}%`);`
- * ````
+ * logger.info('Total execution time:' + insights.totalDuration + 'ms');'
+ * logger.info('Bottleneck step:' + insights.bottleneckStep);'
+ * logger.info('Success rate:' + insights.successRate + '%');'
+ * '
  *
  * @author Claude Code Zen Team
  * @since 1.0.0
@@ -178,7 +178,7 @@ export declare const WORKFLOWS_INFO:{
  *
  * ## Architecture
  *
- * ````
+ * '''
  * ┌─────────────────────────────────────────────────────┐
  * │                Workflow Designer                    │
  * │           (Visual workflow creation)                │
@@ -204,7 +204,7 @@ export declare const WORKFLOWS_INFO:{
  * │  • Circuit breaker protection                      │
  * │  • Configuration management                        │
  * └─────────────────────────────────────────────────────┘
- * ````
+ * '
  *
  * ## Workflow Types and Patterns
  *
@@ -227,9 +227,9 @@ export declare const WORKFLOWS_INFO:{
  *
  * ## Getting Started
  *
- * ```bash`
+ * '''bash'
  * npm install @claude-zen/coordination/workflows @claude-zen/foundation
- * ````
+ * '
  *
  * See the examples above for usage patterns.
  */

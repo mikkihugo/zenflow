@@ -44,8 +44,8 @@ export const defaultMemoryConfigurations = {
     /**
      * Session storage path following Claude Zen storage architecture.
      *
-     * **Storage Location**:`./.claude-zen/memory/sessions`
-     * - **Project-local**:Uses project's `.claude-zen/memory/` subdirectory`
+     * **Storage Location**:'./.claude-zen/memory/sessions'
+     * - **Project-local**:Uses project's '.claude-zen/memory/' subdirectory'
      * - **Purpose**:Persistent session storage with SQLite backend
      * - **Features**:ACID compliance, 24-hour TTL, compression enabled
      * - **Use case**:User sessions, authentication state, temporary data
@@ -70,8 +70,8 @@ export const defaultMemoryConfigurations = {
     /**
      * Semantic memory storage path following Claude Zen storage architecture.
      *
-     * **Storage Location**:`./.claude-zen/memory/vectors`
-     * - **Project-local**:Uses project's `.claude-zen/memory/` subdirectory`
+     * **Storage Location**:'./.claude-zen/memory/vectors'
+     * - **Project-local**:Uses project's '.claude-zen/memory/' subdirectory'
      * - **Purpose**:Vector embeddings and semantic search using LanceDB
      * - **Features**:High-performance vector operations, no compression for speed
      * - **Use case**:AI embeddings, semantic search, similarity matching
@@ -95,8 +95,8 @@ export const defaultMemoryConfigurations = {
     /**
      * Debug memory storage path following Claude Zen storage architecture.
      *
-     * **Storage Location**:`./.claude-zen/memory/debug.json`
-     * - **Project-local**:Uses project's `.claude-zen/memory/` subdirectory`
+     * **Storage Location**:'./.claude-zen/memory/debug.json'
+     * - **Project-local**:Uses project's '.claude-zen/memory/' subdirectory`
      * - **Purpose**:Development debugging and inspection storage
      * - **Features**:Human-readable JSON format, small size limit
      * - **Use case**:Development debugging, memory inspection, testing
@@ -173,7 +173,7 @@ export function registerMemoryProviders(
     defaultMemoryConfigurations
   )) {
     const tokenName =
-      `${name.charAt(0).toUpperCase()}${name.slice(1)}Config` as const;
+      '${name.charAt(0).toUpperCase()}' + name.slice(1) + 'Config' as const;
 
     container.register(MEMORY_TOKENS[tokenName] || MEMORY_TOKENS.Config, {
       type: 'singleton',
@@ -295,7 +295,7 @@ async function performBackendHealthChecks(
     .map((result) => result?.value?.name);
 
   logger.info(
-    `Memory system initialized: ${healthyBackends.length}/${enabledBackends.length} backends healthy`
+    'Memory system initialized: ${healthyBackends.length}/' + enabledBackends.length + ' backends healthy'
   );
 }
 
@@ -361,8 +361,8 @@ export function createMemoryContainer(
     create: () => ({
       debug: () => {},
       info: () => {},
-      warn: (msg: string) => logger.warn(`[MEMORY WARN] ${msg}`),
-      error: (msg: string) => logger.error(`[MEMORY ERROR] ${msg}`),
+      warn: (msg: string) => logger.warn('[MEMORY WARN] ' + msg),
+      error: (msg: string) => logger.error('[MEMORY ERROR] ' + msg),
     }),
   });
 

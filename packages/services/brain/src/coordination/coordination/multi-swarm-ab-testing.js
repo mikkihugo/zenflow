@@ -58,7 +58,7 @@ export class MultiSwarmABTesting {
         Starting;
         A / B;
         test: $testId `);`;
-        logger.info(`📋 Task: ${taskDescription}`);
+        logger.info(` Task: ${taskDescription}`);
         `
     logger.info(`;
         Testing;
@@ -98,7 +98,7 @@ export class MultiSwarmABTesting {
             if (options.gitConfig?.cleanupAfterTest) {
                 await this.cleanupGitWorktrees(worktreePaths);
             }
-            logger.info(`✅ A/B test completed: ${testId}`);
+            logger.info(` A/B test completed: ${testId}`);
             `
       logger.info(
         `;
@@ -107,7 +107,7 @@ export class MultiSwarmABTesting {
             return testResult;
         }
         catch (error) {
-            logger.error(`❌ A/B test failed: ${testId}`, error);
+            logger.error(` A/B test failed: ${testId}`, error);
             `
       throw error;
     }
@@ -349,7 +349,7 @@ export class MultiSwarmABTesting {
             ;
         }
         const strategiesToProcess = strategies.slice(0, maxWorktrees);
-        logger.info(`🌳 Creating ${strategiesToProcess.length} git worktrees...`, {} `
+        logger.info(` Creating ${strategiesToProcess.length} git worktrees...`, {} `
       baseBranch,
       branchPrefix,
       cleanupAfterTest,
@@ -395,7 +395,7 @@ return worktreePaths;
 async;
 executeStrategiesParallel(taskDescription, string, strategies, ABTestStrategy[], worktreePaths, (Record), options, any);
 Promise < SwarmTestResult[] > {
-    logger, : .info(`⚡ Executing $strategies.lengthstrategies in parallel...`)
+    logger, : .info(` Executing $strategies.lengthstrategies in parallel...`)
 } `
 
     const promises = strategies.map((strategy) =>
@@ -429,7 +429,7 @@ $strategies.lengthstrategies;
 sequentially;
 ``;
 ;
-logger.info(`📊 Sequential options: delay=${delayBetweenStrategies}ms, continueOnFailure=${enableContinueOnFailure}` `
+logger.info(` Sequential options: delay=${delayBetweenStrategies}ms, continueOnFailure=${enableContinueOnFailure}` `
       );
     } else {
       logger.info(
@@ -439,7 +439,7 @@ for (let i = 0; i < strategies.length; i++) {
     const strategy = strategies[i];
     try {
         if (enableProgressLogging) {
-            logger.info(`📋 Executing strategy ${i + 1}/${strategies.length}: ${strategy.name}` `
+            logger.info(` Executing strategy ${i + 1}/${strategies.length}: ${strategy.name}` `
           );
         }
 
@@ -471,7 +471,7 @@ for (let i = 0; i < strategies.length; i++) {
 }
 try { }
 catch (error) {
-    logger.error(`❌ Strategy ${i + 1} failed: ${strategy.name}`, error);
+    logger.error(` Strategy ${i + 1} failed: ${strategy.name}`, error);
     `
 
         if (!enableContinueOnFailure) {
@@ -536,7 +536,7 @@ async;
 persistTestResult(testResult, ABTestResult);
 Promise < void  > {
     // In a real implementation, this would save to database
-    logger, : .info(`💾 Persisted A/B test result: ${testResult.testId}`)
+    logger, : .info(` Persisted A/B test result: ${testResult.testId}`)
 } `
   }
 }

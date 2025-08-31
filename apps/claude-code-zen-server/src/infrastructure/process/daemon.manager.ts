@@ -57,7 +57,7 @@ export class DaemonProcessManager {
     // Check if already running
     const existing = await this.getRunningProcess();
     if (existing) {
-      throw new Error(`Daemon already running with PID:${existing.pid}`);
+      throw new Error('Daemon already running with PID:' + existing.pid);
     }
 
     this.logger.info('Starting daemon process...', { command, args });
@@ -95,7 +95,7 @@ export class DaemonProcessManager {
 
     child.on('exit', (code, signal) => {
       this.logger.info(
-        `Daemon process exited with code ${code}, signal ${signal}`
+        'Daemon process exited with code ${code}, signal ' + signal
       );
       this.cleanupPidFile();
     });
@@ -106,7 +106,7 @@ export class DaemonProcessManager {
     }
 
     this.currentProcess = child;
-    this.logger.info(`Daemon started with PID: ${child.pid}`);
+    this.logger.info('Daemon started with PID: ' + child.pid);
 
     return processInfo;
   }
@@ -121,7 +121,7 @@ export class DaemonProcessManager {
       return false;
     }
 
-    this.logger.info(`Stopping daemon process:${processInfo.pid}`);
+    this.logger.info('Stopping daemon process:' + processInfo.pid);
 
     try {
       // Send signal to process
@@ -298,7 +298,7 @@ export class DaemonProcessManager {
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
 
-    throw new Error(`Process ${pid} did not stop within ${timeout}ms`);
+    throw new Error('Process ${pid} did not stop within ' + timeout + 'ms');
   }
 
   /**
@@ -345,7 +345,7 @@ export class DaemonProcessManager {
     try {
       await writeFile(
         this.config.errorFile,
-        `${JSON.stringify(errorLog, null, 2)}\n`,
+        JSON.stringify(errorLog, null, 2) + '\n',
         { flag: 'a' }
       );
     } catch (writeError) {

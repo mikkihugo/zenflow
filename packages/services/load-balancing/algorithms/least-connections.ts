@@ -82,7 +82,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
     return {
       selectedAgent,
       confidence,
-      reasoning: `Selected agent with ${scoredAgents[0]?.connections} active connections (capacity:${scoredAgents[0]?.capacity})`,
+      reasoning: 'Selected agent with ${scoredAgents[0]?.connections} active connections (capacity:' + scoredAgents[0]?.capacity + ')',
       alternativeAgents: alternatives,
       estimatedLatency: this.estimateLatency(selectedAgent, metrics),
       expectedQuality: this.estimateQuality(selectedAgent, metrics),

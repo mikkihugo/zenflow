@@ -1,25 +1,25 @@
 /**
  * @fileoverview Foundation Package - Minimal Tree-Shakable Entry Point
  *
- * **🌳 TREE-SHAKING OPTIMIZED ENTRY POINT**
+ * ** TREE-SHAKING OPTIMIZED ENTRY POINT**
  *
  * This is the minimal entry point that imports only essential foundation utilities.
  * For better tree-shaking and smaller bundles, import from specific entry points:
  *
  * @example Tree-Shakable Imports (Recommended)
- * ```typescript`
+ * '''typescript'
  * // Import only what you need for optimal bundle size:
  * import { getLogger} from '@claude-zen/foundation/core';
  * import { Result, ok, err} from '@claude-zen/foundation/resilience';
  * import { createContainer} from '@claude-zen/foundation/di';
  * import { _, nanoid} from '@claude-zen/foundation/utils';
- * ```
+ * '
  *
  * @example Full Import (Not Recommended for Production)
- * ```typescript`
+ * '''typescript'
  * // This imports everything (larger bundle):
  * import { getLogger, Result, createContainer} from '@claude-zen/foundation';
- * ```
+ * '
  */
 
 // =============================================================================
@@ -361,7 +361,7 @@ export {
 // =============================================================================
 
 /*
-🌳 TREE-SHAKING OPTIMIZATION GUIDE:
+ TREE-SHAKING OPTIMIZATION GUIDE:
 
 For smaller bundles, import from specific entry points:
 

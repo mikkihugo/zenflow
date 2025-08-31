@@ -10,13 +10,13 @@
  * **ARCHITECTURE:**
  * - Foundation imports internally (getLogger, recordMetric, withTrace, generateUUID, TypedEventBase)
  * - Event-based brain coordination only (no package dependencies)
- * - Event interfaces:'brain:brain-service:action' → ' brain-service:response') * - Internal professional service operations using foundation utilities
+ * - Event interfaces:'brain:brain-service:action'  ' brain-service:response') * - Internal professional service operations using foundation utilities
  * - Clean factory exports following established patterns
  *
  * **EVENT COORDINATION:**
- * - 'brain:brain-service:optimize-prompt' → ' brain-service:prompt-optimized') * - 'brain:brain-service:estimate-complexity' → ' brain-service:complexity-estimated') * - 'brain:brain-service:predict-performance' → ' brain-service:performance-predicted') * - 'brain:brain-service:coordinate-autonomous' → ' brain-service:autonomous-coordinated') * - 'brain:brain-service:analyze-behavioral' → ' brain-service:behavioral-analyzed') * - 'brain:brain-service:process-neural' → ' brain-service:neural-processed') *
+ * - 'brain:brain-service:optimize-prompt'  ' brain-service:prompt-optimized') * - 'brain:brain-service:estimate-complexity'  ' brain-service:complexity-estimated') * - 'brain:brain-service:predict-performance'  ' brain-service:performance-predicted') * - 'brain:brain-service:coordinate-autonomous'  ' brain-service:autonomous-coordinated') * - 'brain:brain-service:analyze-behavioral'  ' brain-service:behavioral-analyzed') * - 'brain:brain-service:process-neural'  ' brain-service:neural-processed') *
  * @example Event-Driven Brain Coordination
- * ```typescript`
+ * '''typescript'
  * import { createEventDrivenBrain, EventDrivenBrain} from '@claude-zen/brain';
  *
  * // Create event-driven brain with brain coordination
@@ -40,10 +40,10 @@
  *     optimizedPrompt:result.optimizedPrompt
  *});
  *});
- * ```
+ * '
  *
  * @example Autonomous Decision-Making
- * ```typescript`
+ * '''typescript'
  * // Autonomous complexity estimation and strategy selection
  * brainService.eventBus.emit('brain:brain-service:estimate-complexity', {
  *   requestId: 'complexity-456', *   task: 'enterprise-system-design', *   content: 'Build a fault-tolerant distributed system...', *   context:{ domain: 'enterprise-architecture', scale: ' global'}
@@ -60,7 +60,7 @@
  *}
  *});
  *});
- * ```
+ * '
  *
  * @author Claude Code Zen Team
  * @since 2.0.0
@@ -488,13 +488,13 @@ export declare class EventDrivenBrain {
  * @returns Initialized EventDrivenBrain service
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const brainService = await createEventDrivenBrain({
  *   autonomous:{ enabled: true, learningRate:0.01},
  *   neural:{ rustAcceleration: true, gpuAcceleration:true},
  *   enterprise:{ auditTrail: true, securityLevel: 'high'}
  *});
- * ```
+ * `
  */
 export declare function createEventDrivenBrain(config?: EventDrivenBrainConfig): Promise<EventDrivenBrain>;
 export { EventDrivenBrain };

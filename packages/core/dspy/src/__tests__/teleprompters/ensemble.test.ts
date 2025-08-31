@@ -33,13 +33,13 @@ class MockModule extends DSPyModule {
 
   predictors() {
     return [
-      { name: `${this.name}_predictor`, signature: { instructions: 'Test' } },
+      { name: this.name + '_predictor', signature: { instructions: 'Test' } },
     ];
   }
 
   namedPredictors() {
     return [
-      [`${this.name}_predictor`, { signature: { instructions: 'Test' } }],
+      [this.name + '_predictor', { signature: { instructions: 'Test' } }],
     ];
   }
 
@@ -68,7 +68,7 @@ const mockMajority = (outputs: Prediction[]): Prediction => {
 
   return {
     data: { answer: winner },
-    reasoning: `Majority vote: ${winner} (${maxVotes}/${outputs.length})`,
+    reasoning: 'Majority vote: ${winner} (${maxVotes}/' + outputs.length + ')',
     confidence: maxVotes / outputs.length,
   };
 };
@@ -439,7 +439,7 @@ describe('Ensemble Teleprompter', () => {
       const manyPrograms = Array.from(
         { length: 100 },
         (_, i) =>
-          new MockModule(`program${i}`, { data: { answer: `answer${i}` } })
+          new MockModule('program' + i, { data: { answer: 'answer' + i } })
       );
 
       ensemble = new Ensemble({ size: 10 });

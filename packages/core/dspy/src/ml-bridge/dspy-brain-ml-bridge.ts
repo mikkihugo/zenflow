@@ -12,12 +12,12 @@
  * - Results are translated back to DSPy optimization format
  *
  * Key Features:
- * - 🧠 Neural network coordination via Brain package
- * - ⚡ WASM acceleration for performance-critical operations
- * - 📊 Statistical analysis using battle-tested Rust crates
- * - 🎯 Multi-objective optimization (accuracy, speed, memory)
- * - 🔄 Adaptive learning with concept drift detection
- * - 📈 Bayesian optimization with Gaussian Process regression
+ * -  Neural network coordination via Brain package
+ * -  WASM acceleration for performance-critical operations
+ * -  Statistical analysis using battle-tested Rust crates
+ * -  Multi-objective optimization (accuracy, speed, memory)
+ * -  Adaptive learning with concept drift detection
+ * -  Bayesian optimization with Gaussian Process regression
  *
  * @author Claude Code Zen Team
  * @since 2.1.0
@@ -214,7 +214,7 @@ export class DSPyBrainMLBridge extends EventEmitter {
     if (this.initialized) return;
 
     try {
-      this.logger.info('🌉 Initializing DSPy-Brain ML Bridge');
+      this.logger.info(' Initializing DSPy-Brain ML Bridge');
 
       // Import Brain coordinator - fallback if not available
       let _BrainCoordinator;
@@ -278,7 +278,7 @@ export class DSPyBrainMLBridge extends EventEmitter {
       await this.brainCoordinator.initialize();
 
       this.initialized = true;
-      this.logger.info('✅ DSPy-Brain ML Bridge initialized successfully');
+      this.logger.info(' DSPy-Brain ML Bridge initialized successfully');
       this.emit('bridge:initialized', { timestamp: new Date() });
     } catch (error) {
       this.logger.error('Failed to initialize DSPy-Brain ML Bridge:', error);
@@ -302,7 +302,7 @@ export class DSPyBrainMLBridge extends EventEmitter {
     }
 
     const startTime = Date.now();
-    this.logger.info(`🎯 Starting DSPy ${task.teleprompterType} optimization`);
+    this.logger.info(' Starting DSPy ' + task.teleprompterType + ' optimization');
 
     try {
       // Convert DSPy task to Brain optimization format
@@ -319,7 +319,7 @@ export class DSPyBrainMLBridge extends EventEmitter {
       this.optimizationHistory.set(task.teleprompterType, dspyResult);
 
       const duration = Date.now() - startTime;
-      this.logger.info(`✅ DSPy optimization completed in ${duration}ms`);
+      this.logger.info(' DSPy optimization completed in ' + duration + 'ms');
 
       this.emit('optimization:completed', {
         teleprompterType: task.teleprompterType,
@@ -330,7 +330,7 @@ export class DSPyBrainMLBridge extends EventEmitter {
       return dspyResult;
     } catch (error) {
       this.logger.error(
-        `Failed to optimize DSPy ${task.teleprompterType}:`,
+        'Failed to optimize DSPy ' + task.teleprompterType + ':',
         error
       );
       throw error;
@@ -358,7 +358,7 @@ export class DSPyBrainMLBridge extends EventEmitter {
       throw new Error('Brain coordinator not initialized');
     }
 
-    this.logger.info('🤖 Analyzing task for teleprompter recommendation');
+    this.logger.info(' Analyzing task for teleprompter recommendation');
 
     try {
       // Use Brain's pattern recognition for intelligent selection (fallback if MLEngine not available)
@@ -378,7 +378,7 @@ export class DSPyBrainMLBridge extends EventEmitter {
       );
 
       this.logger.info(
-        `🎯 Recommended teleprompter:${recommendation.recommendedTeleprompter}`
+        ' Recommended teleprompter:' + recommendation.recommendedTeleprompter
       );
 
       return recommendation;
@@ -396,8 +396,8 @@ export class DSPyBrainMLBridge extends EventEmitter {
    */
   private translateDSPyToBrainRequest(task: DSPyOptimizationTask): any {
     return {
-      task: `${task.teleprompterType} optimization`,
-      basePrompt: `Optimize ${task.teleprompterType} teleprompter for ${task.objective}`,
+      task: task.teleprompterType + ' optimization',
+      basePrompt: 'Optimize ${task.teleprompterType} teleprompter for ' + task.objective,
       context: {
         domain: task.teleprompterType,
         objective: task.objective,
@@ -651,7 +651,7 @@ export class DSPyBrainMLBridge extends EventEmitter {
    */
   clearHistory(): void {
     this.optimizationHistory.clear();
-    this.logger.info('🧹 Optimization history cleared');
+    this.logger.info(' Optimization history cleared');
   }
 
   /**
@@ -698,7 +698,7 @@ export class DSPyBrainMLBridge extends EventEmitter {
       this.optimizationHistory.clear();
       this.initialized = false;
 
-      this.logger.info('✅ DSPy-Brain ML Bridge destroyed');
+      this.logger.info(' DSPy-Brain ML Bridge destroyed');
     } catch (error) {
       this.logger.error('Failed to destroy DSPy-Brain ML Bridge:', error);
     }

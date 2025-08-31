@@ -18,7 +18,7 @@ export async function pTimeout<T>(
 
   const timeoutPromise = new Promise<never>((_, reject) => {
     timeoutHandle = setTimeout(() => {
-      reject(new Error(message || `Promise timed out after ${ms}ms`));
+      reject(new Error(message || 'Promise timed out after ' + ms + 'ms'));
     }, ms);
   });
 

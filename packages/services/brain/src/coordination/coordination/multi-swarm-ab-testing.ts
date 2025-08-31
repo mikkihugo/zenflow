@@ -200,12 +200,12 @@ export class MultiSwarmABTesting {
       collectDetailedMetrics?:boolean;
 } = {}
   ): Promise<ABTestResult> {
-    const testId = `ab-test-${generateNanoId()}`;`
+    const testId = 'ab-test-' + generateNanoId();'
     const startTime = new Date();
 
-    logger.info(`🧪 Starting A/B test:$testId`);`
-    logger.info(`📋 Task:${taskDescription}`);`
-    logger.info(`🔬 Testing $strategies.lengthstrategies:$strategies.map((s) => s.name).join(',    ')`);`
+    logger.info(' Starting A/B test:$testId');'
+    logger.info(' Task:' + taskDescription);'
+    logger.info(' Testing $strategies.lengthstrategies:$strategies.map((s) => s.name).join(',    ')');'
 
     try {
       // Prepare git worktrees if configured
@@ -262,14 +262,13 @@ export class MultiSwarmABTesting {
         await this.cleanupGitWorktrees(worktreePaths);
 }
 
-      logger.info(` A/B test completed:${testId}`);`
+      logger.info(' A/B test completed:' + testId);'
       logger.info(
-        `🏆 Winner:$comparison.winner.name($comparison.confidence.toFixed(2)confidence)``
-      );
+        ' Winner:$comparison.winner.name($comparison.confidence.toFixed(2)confidence)');
 
       return testResult;
 } catch (error) {
-      logger.error(` A/B test failed:${testId}`, error);`
+      logger.error(' A/B test failed:' + testId, error);'
       throw error;
 }
 }
@@ -337,7 +336,7 @@ export class MultiSwarmABTesting {
 ];
 
       default:
-        throw new Error(`Unknown strategy scenario:$scenario`);`
+        throw new Error('Unknown strategy scenario:$scenario');'
 }
 }
 
@@ -370,7 +369,7 @@ export class MultiSwarmABTesting {
         recommendedStrategy: mostSuccessful,
         confidence:0.3,
         reasoning:[
-          `No specific data for "${taskType}" tasks`,`
+          'No specific data for "' + taskType + '" tasks','
           'Recommendation based on general performance across all task types',          'Consider running A/B test for this specific task type',],
 };
 }
@@ -384,10 +383,10 @@ export class MultiSwarmABTesting {
       recommendedStrategy: recommended,
       confidence: successRate,
       reasoning:[
-        `Based on ${relevantTests.length} historical tests for "${taskType}"`,`
-        `Success rate:${(successRate * 100).toFixed(1)}%`,`
-        `Model:${recommended?.modelBackend}`,`
-        `Topology:${recommended?.swarmConfig.topology}`,`
+        'Based on ${relevantTests.length} historical tests for "' + taskType + '"','
+        'Success rate:' + (successRate * 100).toFixed(1) + '%','
+        'Model:' + recommended?.modelBackend,'
+        'Topology:' + recommended?.swarmConfig.topology,'
 ],
 };
 }
@@ -414,7 +413,7 @@ export class MultiSwarmABTesting {
     // Validate git configuration
     if (strategies.length > maxWorktrees) {
       logger.warn(
-        `Strategy count ${strategies.length} exceeds max worktrees ${maxWorktrees}`,`
+        'Strategy count ${strategies.length} exceeds max worktrees ' + maxWorktrees,'
         {
           strategies:strategies.length,
           maxWorktrees,
@@ -424,7 +423,7 @@ export class MultiSwarmABTesting {
 }
 
     const strategiesToProcess = strategies.slice(0, maxWorktrees);
-    logger.info(`🌳 Creating ${strategiesToProcess.length} git worktrees...`, {`
+    logger.info(' Creating ' + strategiesToProcess.length + ' git worktrees...', {'
       baseBranch,
       branchPrefix,
       cleanupAfterTest,
@@ -432,11 +431,11 @@ export class MultiSwarmABTesting {
 });
 
     for (const strategy of strategiesToProcess) {
-      const branchName = `${branchPrefix}-${strategy.id}-${generateNanoId(6)}`;`
-      const worktreePath = joinPath(getHomeDirectory(), '.claude-zen',    'tmp',    'ab-test-worktrees', branchName);`
+      const branchName = '${branchPrefix}-${strategy.id}-' + generateNanoId(6);'
+      const worktreePath = joinPath(getHomeDirectory(), '.claude-zen',    'tmp',    'ab-test-worktrees', branchName);'
 
       // Log worktree creation with gitConfig details
-      logger.debug(`📁 Creating worktree for ${strategy.name}`, {`
+      logger.debug(' Creating worktree for ' + strategy.name, {'
         strategyId:strategy.id,
         branchName,
         worktreePath,
@@ -445,10 +444,10 @@ export class MultiSwarmABTesting {
 });
 
       // In a real implementation, this would execute:
-      // await exec(`git worktree add ${worktreePath} -b ${branchName} ${baseBranch}`)`
+      // await exec('git worktree add ' + worktreePath + ' -b ' + branchName + ' ' + baseBranch)'
 
       worktreePaths[strategy.id] = worktreePath;
-      logger.info(` Created worktree for ${strategy.name}:${worktreePath}`);`
+      logger.info(' Created worktree for ${strategy.name}:' + worktreePath);'
 }
 
     // Log final worktree configuration summary
@@ -466,7 +465,7 @@ export class MultiSwarmABTesting {
     worktreePaths: Record<string, string>,
     options:any
   ): Promise<SwarmTestResult[]> {
-    logger.info(`⚡ Executing $strategies.lengthstrategies in parallel...`);`
+    logger.info(' Executing $strategies.lengthstrategies in parallel...');'
 
     const promises = strategies.map((strategy) =>
       this.executeStrategy(
@@ -492,15 +491,12 @@ export class MultiSwarmABTesting {
 
     if (enableProgressLogging) {
       logger.info(
-        `⏭️ Executing $strategies.lengthstrategies sequentially...``
-      );
+        '⏭️ Executing $strategies.lengthstrategies sequentially...');
       logger.info(
-        ` Sequential options:delay=${delayBetweenStrategies}ms, continueOnFailure=${enableContinueOnFailure}``
-      );
+        ' Sequential options:delay=${delayBetweenStrategies}ms, continueOnFailure=' + enableContinueOnFailure);
 } else {
       logger.info(
-        `⏭️ Executing ${strategies.length} strategies sequentially...``
-      );
+        '⏭️ Executing ' + strategies.length + ' strategies sequentially...');
 }
 
     const _results: SwarmTestResult[] = [];
@@ -511,8 +507,7 @@ export class MultiSwarmABTesting {
       try {
         if (enableProgressLogging) {
           logger.info(
-            `📋 Executing strategy ${i + 1}/${strategies.length}:${strategy.name}``
-          );
+            ' Executing strategy ${i + 1}/${strategies.length}:' + strategy.name);
 }
 
         const result = await this.executeStrategy(
@@ -525,11 +520,10 @@ export class MultiSwarmABTesting {
 
         if (enableProgressLogging) {
           logger.info(
-            ` Strategy ${i + 1} completed:${strategy.name} (${result.success ?'SUCCESS' : ' FAILED'})``
-          );
+            ' Strategy ${i + 1} completed:${strategy.name} (' + result.success ?'SUCCESS' : ' FAILED' + ')');
 }
 } catch (error) {
-        logger.error(` Strategy ${i + 1} failed:${strategy.name}`, error);`
+        logger.error(' Strategy ${i + 1} failed:' + strategy.name, error);'
 
         if (!enableContinueOnFailure) {
           throw error;
@@ -569,8 +563,7 @@ export class MultiSwarmABTesting {
       if (i < strategies.length - 1 && delayBetweenStrategies > 0) {
         if (enableProgressLogging) {
           logger.info(
-            `⏸️ Pausing $delayBetweenStrategiesms before next strategy...``
-          );
+            '⏸️ Pausing $delayBetweenStrategiesms before next strategy...');
 }
         await new Promise((resolve) =>
           setTimeout(resolve, delayBetweenStrategies)
@@ -593,7 +586,7 @@ export class MultiSwarmABTesting {
 
   private async persistTestResult(testResult: ABTestResult): Promise<void> {
     // In a real implementation, this would save to database
-    logger.info(`💾 Persisted A/B test result:${testResult.testId}`);`
+    logger.info(' Persisted A/B test result:' + testResult.testId);'
 }
 }
 

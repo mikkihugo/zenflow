@@ -849,24 +849,24 @@ export class NixIntegration {
                 errors.push('Nix is not installed. Please install Nix first.');
                 return { success: false, steps, errors };
             }
-            steps.push('✓ Nix is available');
+            steps.push(' Nix is available');
             // Create flake.nix if it doesn't exist
             const hasFlakeNix = this.hasFlakeNix();
             if (hasFlakeNix) {
-                steps.push('✓ flake.nix already exists');
+                steps.push(' flake.nix already exists');
             }
             else {
                 await this.createFlakeNix();
-                steps.push('✓ Created flake.nix with BEAM language support');
+                steps.push(' Created flake.nix with BEAM language support');
             }
             // Enable flakes if not enabled
             if (env.flakesEnabled) {
-                steps.push('✓ Nix flakes already enabled');
+                steps.push(' Nix flakes already enabled');
             }
             else {
                 try {
                     await this.enableFlakes();
-                    steps.push('✓ Enabled Nix flakes');
+                    steps.push(' Enabled Nix flakes');
                 }
                 catch (error) {
                     errors.push(`Failed to enable flakes:${error}`);
@@ -914,9 +914,9 @@ export class NixIntegration {
 ];
           
           shellHook = ''
-            echo "🚀 Claude Code Zen Development Environment"
-            echo "📦 TypeScript/Node.js development ready"
-            echo "🛠️  Ready for development!"
+            echo " Claude Code Zen Development Environment"
+            echo " TypeScript/Node.js development ready"
+            echo "  Ready for development!"
           ';
 };
 });
@@ -1006,11 +1006,11 @@ export class NixIntegration {
     async getEnvironmentSummary() {
         const env = await this.detectEnvironment();
         if (!env.nixAvailable) {
-            return '❌ Nix not available';
+            return ' Nix not available';
         }
         const installedCount = env.packages.filter((p) => p.installed).length;
         const totalCount = env.packages.length;
-        let status = '✓ Nix available';
+        let status = ' Nix available';
         if (env.flakesEnabled) {
             status += ', flakes enabled';
         }

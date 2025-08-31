@@ -223,7 +223,7 @@ export class BayesianOptimizer {
     } catch (error) {
       return {
         success: false,
-        error: `Failed to initialize BayesianOptimizer: ${error}`,
+        error: 'Failed to initialize BayesianOptimizer: ' + error,
       };
     }
   }
@@ -253,7 +253,7 @@ export class BayesianOptimizer {
     } catch (error) {
       return {
         success: false,
-        error: `Optimization failed: ${error}`,
+        error: 'Optimization failed: ' + error,
       };
     }
   }
@@ -279,7 +279,7 @@ export class BayesianOptimizer {
     } catch (error) {
       return {
         success: false,
-        error: `Prediction failed: ${error}`,
+        error: 'Prediction failed: ' + error,
       };
     }
   }
@@ -297,7 +297,7 @@ export class BayesianOptimizer {
     } catch (error) {
       return {
         success: false,
-        error: `Failed to get metrics: ${error}`,
+        error: 'Failed to get metrics: ' + error,
       };
     }
   }
@@ -328,7 +328,7 @@ export class GradientOptimizer {
     } catch (error) {
       return {
         success: false,
-        error: `Failed to initialize GradientOptimizer: ${error}`,
+        error: 'Failed to initialize GradientOptimizer: ' + error,
       };
     }
   }
@@ -344,7 +344,7 @@ export class GradientOptimizer {
     } catch (error) {
       return {
         success: false,
-        error: `Failed to add computation node: ${error}`,
+        error: 'Failed to add computation node: ' + error,
       };
     }
   }
@@ -368,7 +368,7 @@ export class GradientOptimizer {
     } catch (error) {
       return {
         success: false,
-        error: `Forward pass failed: ${error}`,
+        error: 'Forward pass failed: ' + error,
       };
     }
   }
@@ -394,7 +394,7 @@ export class GradientOptimizer {
     } catch (error) {
       return {
         success: false,
-        error: `Backward pass failed: ${error}`,
+        error: 'Backward pass failed: ' + error,
       };
     }
   }
@@ -410,7 +410,7 @@ export class GradientOptimizer {
     } catch (error) {
       return {
         success: false,
-        error: `Parameter update failed: ${error}`,
+        error: 'Parameter update failed: ' + error,
       };
     }
   }
@@ -441,7 +441,7 @@ export class MultiObjectiveOptimizer {
     } catch (error) {
       return {
         success: false,
-        error: `Failed to initialize MultiObjectiveOptimizer: ${error}`,
+        error: 'Failed to initialize MultiObjectiveOptimizer: ' + error,
       };
     }
   }
@@ -469,7 +469,7 @@ export class MultiObjectiveOptimizer {
     } catch (error) {
       return {
         success: false,
-        error: `Multi-objective optimization failed: ${error}`,
+        error: 'Multi-objective optimization failed: ' + error,
       };
     }
   }
@@ -495,7 +495,7 @@ export class MultiObjectiveOptimizer {
     } catch (error) {
       return {
         success: false,
-        error: `Population evaluation failed: ${error}`,
+        error: 'Population evaluation failed: ' + error,
       };
     }
   }
@@ -523,7 +523,7 @@ export class MultiObjectiveOptimizer {
     } catch (error) {
       return {
         success: false,
-        error: `Hypervolume calculation failed: ${error}`,
+        error: 'Hypervolume calculation failed: ' + error,
       };
     }
   }
@@ -554,7 +554,7 @@ export class OnlineLearner {
     } catch (error) {
       return {
         success: false,
-        error: `Failed to initialize OnlineLearner: ${error}`,
+        error: 'Failed to initialize OnlineLearner: ' + error,
       };
     }
   }
@@ -582,7 +582,7 @@ export class OnlineLearner {
     } catch (error) {
       return {
         success: false,
-        error: `Stream processing failed: ${error}`,
+        error: 'Stream processing failed: ' + error,
       };
     }
   }
@@ -604,7 +604,7 @@ export class OnlineLearner {
     } catch (error) {
       return {
         success: false,
-        error: `Drift detection failed: ${error}`,
+        error: 'Drift detection failed: ' + error,
       };
     }
   }
@@ -626,7 +626,7 @@ export class OnlineLearner {
     } catch (error) {
       return {
         success: false,
-        error: `Prediction failed: ${error}`,
+        error: 'Prediction failed: ' + error,
       };
     }
   }
@@ -648,7 +648,7 @@ export class OnlineLearner {
     } catch (error) {
       return {
         success: false,
-        error: `Learning rate adaptation failed: ${error}`,
+        error: 'Learning rate adaptation failed: ' + error,
       };
     }
   }
@@ -679,7 +679,7 @@ export class PatternRecognizer {
     } catch (error) {
       return {
         success: false,
-        error: `Failed to initialize PatternRecognizer: ${error}`,
+        error: 'Failed to initialize PatternRecognizer: ' + error,
       };
     }
   }
@@ -703,7 +703,7 @@ export class PatternRecognizer {
     } catch (error) {
       return {
         success: false,
-        error: `Pattern extraction failed: ${error}`,
+        error: 'Pattern extraction failed: ' + error,
       };
     }
   }
@@ -731,7 +731,7 @@ export class PatternRecognizer {
     } catch (error) {
       return {
         success: false,
-        error: `Trend detection failed: ${error}`,
+        error: 'Trend detection failed: ' + error,
       };
     }
   }
@@ -757,7 +757,7 @@ export class PatternRecognizer {
     } catch (error) {
       return {
         success: false,
-        error: `Periodicity detection failed: ${error}`,
+        error: 'Periodicity detection failed: ' + error,
       };
     }
   }
@@ -788,7 +788,7 @@ export class EmbeddingModel {
     } catch (error) {
       return {
         success: false,
-        error: `Failed to initialize EmbeddingModel: ${error}`,
+        error: 'Failed to initialize EmbeddingModel: ' + error,
       };
     }
   }
@@ -804,7 +804,7 @@ export class EmbeddingModel {
     } catch (error) {
       return {
         success: false,
-        error: `Vocabulary fitting failed: ${error}`,
+        error: 'Vocabulary fitting failed: ' + error,
       };
     }
   }
@@ -828,7 +828,7 @@ export class EmbeddingModel {
     } catch (error) {
       return {
         success: false,
-        error: `Transform failed: ${error}`,
+        error: 'Transform failed: ' + error,
       };
     }
   }
@@ -853,7 +853,7 @@ export class EmbeddingModel {
     } catch (error) {
       return {
         success: false,
-        error: `Failed to get vocabulary size: ${error}`,
+        error: 'Failed to get vocabulary size: ' + error,
       };
     }
   }
@@ -884,7 +884,7 @@ export class SimilarityCalculator {
     } catch (error) {
       return {
         success: false,
-        error: `Failed to initialize SimilarityCalculator: ${error}`,
+        error: 'Failed to initialize SimilarityCalculator: ' + error,
       };
     }
   }
@@ -912,7 +912,7 @@ export class SimilarityCalculator {
     } catch (error) {
       return {
         success: false,
-        error: `Similarity calculation failed: ${error}`,
+        error: 'Similarity calculation failed: ' + error,
       };
     }
   }
@@ -936,7 +936,7 @@ export class SimilarityCalculator {
     } catch (error) {
       return {
         success: false,
-        error: `Similarity matrix calculation failed: ${error}`,
+        error: 'Similarity matrix calculation failed: ' + error,
       };
     }
   }
@@ -966,7 +966,7 @@ export class SimilarityCalculator {
     } catch (error) {
       return {
         success: false,
-        error: `Similar vector search failed: ${error}`,
+        error: 'Similar vector search failed: ' + error,
       };
     }
   }
@@ -997,7 +997,7 @@ export class ClusteringAlgorithm {
     } catch (error) {
       return {
         success: false,
-        error: `Failed to initialize ClusteringAlgorithm: ${error}`,
+        error: 'Failed to initialize ClusteringAlgorithm: ' + error,
       };
     }
   }
@@ -1019,7 +1019,7 @@ export class ClusteringAlgorithm {
     } catch (error) {
       return {
         success: false,
-        error: `Clustering failed: ${error}`,
+        error: 'Clustering failed: ' + error,
       };
     }
   }
@@ -1041,7 +1041,7 @@ export class ClusteringAlgorithm {
     } catch (error) {
       return {
         success: false,
-        error: `Cluster prediction failed: ${error}`,
+        error: 'Cluster prediction failed: ' + error,
       };
     }
   }
@@ -1073,7 +1073,7 @@ export class ClusteringAlgorithm {
     } catch (error) {
       return {
         success: false,
-        error: `Cluster evaluation failed: ${error}`,
+        error: 'Cluster evaluation failed: ' + error,
       };
     }
   }
@@ -1091,7 +1091,7 @@ export async function initializeWASM(): Promise<MLResult<void>> {
   } catch (error) {
     return {
       success: false,
-      error: `Failed to initialize WASM module: ${error}`,
+      error: 'Failed to initialize WASM module: ' + error,
     };
   }
 }
@@ -1152,7 +1152,7 @@ export async function getAvailableAlgorithms(): Promise<
   } catch (error) {
     return {
       success: false,
-      error: `Failed to get available algorithms: ${error}`,
+      error: 'Failed to get available algorithms: ' + error,
     };
   }
 }
@@ -1169,7 +1169,7 @@ export function validateConfig<T extends Record<string, any>>(
   if (missingFields.length > 0) {
     return {
       success: false,
-      error: `Missing required configuration fields: ${missingFields.join(',    ')}`,
+      error: 'Missing required configuration fields: ' + missingFields.join(',    '),
     };
   }
 

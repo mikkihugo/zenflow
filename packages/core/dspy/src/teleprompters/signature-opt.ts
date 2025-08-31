@@ -32,7 +32,7 @@ import { COPRO } from './copro';
  * @deprecated Use COPRO instead. This class will be removed in a future release.
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * // DEPRECATED - Use COPRO instead
  * const optimizer = new SignatureOptimizer({
  *   prompt_model:promptModel,
@@ -49,7 +49,7 @@ import { COPRO } from './copro';
  *   devset:devExamples,
  *   eval_kwargs:{ num_threads: 4}
  *});
- * ```
+ * `
  */
 export class SignatureOptimizer extends COPRO {
   constructor(
