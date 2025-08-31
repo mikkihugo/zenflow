@@ -17,8 +17,8 @@ export class ConsoleExporter implements BaseExporter {
   private config:ExporterConfig;
   private logger:Logger;
   private exportCount = 0;
-  private lastExportTime:number  |  null = null;
-  private lastError:string  |  null = null;
+  private lastExportTime:number | null = null;
+  private lastError:string | null = null;
 
   constructor(config:ExporterConfig) {
     this.config = config;
@@ -158,7 +158,7 @@ export class ConsoleExporter implements BaseExporter {
 }
 
     // Log attributes if present
-    if (data.attributes  &&  Object.keys(data.attributes).length > 0) {
+    if (data.attributes && Object.keys(data.attributes).length > 0) {
       logger.info(
         `   ${color}Attributes:${reset}`,
         JSON.stringify(data.attributes, null, 2)
@@ -173,7 +173,7 @@ export class ConsoleExporter implements BaseExporter {
    */
   private logTraceData(data:TelemetryData): void {
     try {
-      if (data.data  &&  data.data.spans) {
+      if (data.data && data.data.spans) {
         logger.info(`   🔗 Spans:${data.data.spans.length}`);
         for (const span of data.data.spans.slice(0, 3)) {
           // Show first 3 spans
@@ -197,7 +197,7 @@ export class ConsoleExporter implements BaseExporter {
    */
   private logMetricData(data:TelemetryData): void {
     try {
-      if (data.data  &&  data.data.metrics) {
+      if (data.data && data.data.metrics) {
         logger.info(`   📈 Metrics:${data.data.metrics.length}`);
         for (const metric of data.data.metrics.slice(0, 5)) {
           // Show first 5 metrics
@@ -220,7 +220,7 @@ export class ConsoleExporter implements BaseExporter {
    */
   private logLogData(data:TelemetryData): void {
     try {
-      if (data.data  &&  data.data.logs) {
+      if (data.data && data.data.logs) {
         logger.info(`   📄 Logs:${data.data.logs.length}`);
         for (const log of data.data.logs.slice(0, 3)) {
           // Show first 3 logs

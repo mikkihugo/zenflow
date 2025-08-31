@@ -40,9 +40,9 @@ export class FilterProcessor implements BaseProcessor {
     this.logger = getLogger(`FilterProcessor:${config.name}`);
 
     // Parse filter rules
-    this.includeRules = this.parseFilterRules(config.config?.include   ||   []);
-    this.excludeRules = this.parseFilterRules(config.config?.exclude   ||   []);
-    this.filterMode = config.config?.mode   ||   'exclude';
+    this.includeRules = this.parseFilterRules(config.config?.include  ||  []);
+    this.excludeRules = this.parseFilterRules(config.config?.exclude  ||  []);
+    this.filterMode = config.config?.mode  ||  'exclude';
 }
 
   async initialize():Promise<void> {
@@ -118,25 +118,27 @@ export class FilterProcessor implements BaseProcessor {
       totalFiltered:this.filteredCount,
       filterRate:
         this.processedCount > 0
-          ? `${{}((this.filteredCount / this.processedCount) * 100).toFixed(1)}%`
-          : '0%',});
+          ? `${((this.filteredCount / this.processedCount) * 100).toFixed(1)}%`
+          : '0%',
+    });
 }
 
-  async getHealthStatus():Promise<{
-    status:'healthy''  |  ' degraded''  |  ' unhealthy';
-    lastProcessed?:number;
-    lastError?:string;
+  async getHealthStatus(): Promise<{
+    status: 'healthy' | 'degraded' | 'unhealthy';
+    lastProcessed?: number;
+    lastError?: string;
 }> {
     return {
-      status:this.lastError ? 'unhealthy' : ' healthy',      lastProcessed:this.lastProcessedTime   ||   undefined,
-      lastError:this.lastError   ||   undefined,
-};
+      status: this.lastError ? 'unhealthy' : 'healthy',
+      lastProcessed: this.lastProcessedTime || undefined,
+      lastError: this.lastError || undefined,
+    };
 }
 
   /**
    * Get filter statistics
    */
-  getFilterStats():{
+  getFilterStats(): {
     processed:number;
     filtered:number;
     passed:number;
@@ -164,7 +166,7 @@ export class FilterProcessor implements BaseProcessor {
       case 'include':
         // Must match at least one include rule
         return (
-          this.includeRules.length === 0   ||   this.includeRules.some((rule) => this.matchesRule(data, rule))
+          this.includeRules.length === 0  ||  this.includeRules.some((rule) => this.matchesRule(data, rule))
         );
 
       case 'exclude':
@@ -174,11 +176,11 @@ export class FilterProcessor implements BaseProcessor {
       case 'both':{
         // Must match include rules AND not match exclude rules
         const passesInclude =
-          this.includeRules.length === 0   ||   this.includeRules.some((rule) => this.matchesRule(data, rule));
+          this.includeRules.length === 0  ||  this.includeRules.some((rule) => this.matchesRule(data, rule));
         const passesExclude = !this.excludeRules.some((rule) =>
           this.matchesRule(data, rule)
         );
-        return passesInclude  &&  passesExclude;
+        return passesInclude && passesExclude;
 }
 
       default:
@@ -229,7 +231,7 @@ export class FilterProcessor implements BaseProcessor {
     let value:any = data;
 
     for (const part of parts) {
-      if (value === null   ||   value === undefined) {
+      if (value === null  ||  value === undefined) {
         return undefined;
 }
       value = value[part];
@@ -245,13 +247,13 @@ export class FilterProcessor implements BaseProcessor {
     return rules.map((rule:any) => {
       const parsed:FilterRule = {
         field:rule.field,
-        operator:rule.operator   ||   'equals',        value:rule.value,
+        operator:rule.operator  ||  'equals',        value:rule.value,
 };
 
       // Compile regex if needed
-      if (parsed.operator === 'regex'  &&  typeof rule.value === ' string') {
+      if (parsed.operator === 'regex' && typeof rule.value === 'string') {
         try {
-          parsed.regex = new RegExp(rule.value, rule.flags   ||   'i');
+          parsed.regex = new RegExp(rule.value, rule.flags  ||  'i');
 } catch (error) {
           this.logger.warn(`Invalid regex pattern:${rule.value}`, error);
           // Fallback to contains operator

@@ -19,11 +19,11 @@ import type { BaseExporter} from './index.js';
 export class FileExporter implements BaseExporter {
   private logger:Logger;
   private writeStream:WriteStream  |  null = null;
-  private currentFilePath:string  |  null = null;
+  private currentFilePath:string | null = null;
   private fileRotationTimer:NodeJS.Timeout  |  null = null;
   private exportCount = 0;
-  private lastExportTime:number  |  null = null;
-  private lastError:string  |  null = null;
+  private lastExportTime:number | null = null;
+  private lastError:string | null = null;
 
   // Configuration
   private readonly baseFilePath:string;

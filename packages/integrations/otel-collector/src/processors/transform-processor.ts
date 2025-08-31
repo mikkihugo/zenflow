@@ -133,8 +133,8 @@ export class TransformProcessor implements BaseProcessor {
 } {
     const transformRate =
       this.processedCount > 0
-        ? `${{}((this.transformedCount / this.processedCount) * 100).toFixed(1)}%`
-        : '0%;
+        ? `${((this.transformedCount / this.processedCount) * 100).toFixed(1)}%`
+        : '0%';
 '
     return {
       processed:this.processedCount,
@@ -385,7 +385,7 @@ export class TransformProcessor implements BaseProcessor {
 }
 }
 } catch (error) {
-      this.logger.warn(`Failed to evaluate condition:${condition}`, error);`
+      this.logger.warn(`Failed to evaluate condition: ${condition}`, error);
 }
 
     return true; // Default to true on condition evaluation error

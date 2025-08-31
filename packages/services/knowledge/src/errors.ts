@@ -8,7 +8,7 @@
  * Uses foundation error patterns for consistency with the rest of the system.
  */
 
-import { getLogger} from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('KnowledgeErrors');
 

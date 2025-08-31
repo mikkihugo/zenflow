@@ -668,7 +668,7 @@ export class GRPO extends FinetuneTeleprompter {
 
 		if (this.num_rollouts_per_grpo_step % teachers.length !== 0) {
 			throw new Error(
-				`The GRPO group size (num_rollouts_per_grpo_step) ${this.num_rollouts_per_grpo_step} is not divisible by the number of teachers ${teachers.length}. ` +`
+				`The GRPO group size (num_rollouts_per_grpo_step) ${this.num_rollouts_per_grpo_step} is not divisible by the number of teachers ${teachers.length}. ` +
 					"This is required to ensure that each teacher gets the same number of examples. " +
 					"Please provide a number of examples that is divisible by the number of teachers.",
 			);

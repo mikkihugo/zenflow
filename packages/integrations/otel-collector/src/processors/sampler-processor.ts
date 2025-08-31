@@ -37,6 +37,9 @@ export class SamplerProcessor implements BaseProcessor {
   private targetRate: number;
   private currentRate: number;
   private processedCount: number = 0;
+  private sampledCount: number = 0;
+  private rateCounter: number = 0;
+  private rateResetTime: number = Date.now();
   private lastProcessedTime: number = Date.now();
   private lastError: Error | null = null;
 
@@ -122,7 +125,7 @@ export class SamplerProcessor implements BaseProcessor {
 
       if (sampledItems.length < dataItems.length) {
         this.logger.debug(
-          `Sampled ${\1}.lengthout of ${\1}.lengthitems``
+          `Sampled ${sampledItems.length} out of ${dataItems.length} items`
         );
 }
 
@@ -143,17 +146,18 @@ export class SamplerProcessor implements BaseProcessor {
       totalSampled:this.sampledCount,
       sampleRate:
         this.processedCount > 0
-          ? `${{}((this.sampledCount / this.processedCount) * 100).toFixed(1)}%`
-          : '0%',      finalAdaptiveRate:this.currentRate,
+          ? `${((this.sampledCount / this.processedCount) * 100).toFixed(1)}%`
+          : '0%',
+      finalAdaptiveRate: this.currentRate,
 });
 }
 
-  async getHealthStatus():Promise<{
-    status:'healthy''  |  ' degraded''  |  ' unhealthy';
-    lastProcessed?:number;
-    lastError?:string;
+  async getHealthStatus(): Promise<{
+    status: 'healthy' | 'degraded' | 'unhealthy';
+    lastProcessed?: number;
+    lastError?: string;
 }> {
-    let status:'healthy | degraded | unhealthy'' = ' healthy';
+    let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
 
     if (this.lastError) {
       status = 'unhealthy';
@@ -168,8 +172,8 @@ export class SamplerProcessor implements BaseProcessor {
 
     return {
       status,
-      lastProcessed:this.lastProcessedTime  ||  undefined,
-      lastError:this.lastError  ||  undefined,
+      lastProcessed: this.lastProcessedTime || undefined,
+      lastError: this.lastError || undefined,
 };
 }
 
@@ -204,7 +208,7 @@ export class SamplerProcessor implements BaseProcessor {
     // Apply sampling rules in order
     for (const rule of this.samplingRules) {
       // Check condition if present
-      if (rule.condition  &&  !this.evaluateCondition(data, rule.condition)) {
+      if (rule.condition && !this.evaluateCondition(data, rule.condition)) {
         continue;
 }
 
@@ -301,7 +305,7 @@ export class SamplerProcessor implements BaseProcessor {
       low:0.1, // 10% for low priority
 };
 
-    const samplingRate = rates[rule.priority]  ||  0.1;
+    const samplingRate = rates[rule.priority] || 0.1;
     return Math.random() < samplingRate;
 }
 
@@ -311,7 +315,7 @@ export class SamplerProcessor implements BaseProcessor {
   private getCurrentSampleRate(data:TelemetryData): number {
     // Find the most specific applicable rate
     for (const rule of this.samplingRules) {
-      if (rule.condition  &&  !this.evaluateCondition(data, rule.condition)) {
+      if (rule.condition && !this.evaluateCondition(data, rule.condition)) {
         continue;
 }
 
@@ -462,7 +466,8 @@ export class SamplerProcessor implements BaseProcessor {
    */
   private parseSamplingRules(rules:any[]): SamplingRule[] {
     return rules.map((rule) => ({
-      strategy:rule.strategy  ||  'probabilistic',      rate:rule.rate,
+      strategy: rule.strategy || 'probabilistic',
+      rate: rule.rate,
       probability:rule.probability,
       attribute:rule.attribute,
       value:rule.value,
