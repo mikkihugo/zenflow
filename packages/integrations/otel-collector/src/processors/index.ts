@@ -105,7 +105,7 @@ export class ProcessorManager extends TypedEventBase {
    * Process telemetry data through all processors
    */
   async process(data:TelemetryData): Promise<TelemetryData  |  null> {
-    if (!this.initialized   ||   this.isShuttingDown) {
+    if (!this.initialized  ||  this.isShuttingDown) {
       return data;
 }
 
@@ -143,7 +143,7 @@ export class ProcessorManager extends TypedEventBase {
    * Process batch of telemetry data
    */
   async processBatch(dataItems:TelemetryData[]): Promise<TelemetryData[]> {
-    if (!this.initialized   ||   this.isShuttingDown) {
+    if (!this.initialized  ||  this.isShuttingDown) {
       return dataItems;
 }
 
@@ -254,8 +254,8 @@ export class ProcessorManager extends TypedEventBase {
     return {
       status:overallStatus,
       processorCount:this.processors.size,
-      lastProcessed:this.lastProcessedTime   ||   undefined,
-      lastError:this.lastError   ||   undefined,
+      lastProcessed:this.lastProcessedTime  ||  undefined,
+      lastError:this.lastError  ||  undefined,
       processors:processorStatuses,
 };
 }

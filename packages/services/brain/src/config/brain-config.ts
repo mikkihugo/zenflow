@@ -84,10 +84,10 @@ export function getBrainConfig():BrainSpecificConfig & Partial<Config> {
     const debugMode = isDebugMode();
     // Use NODE_ENV or fallback to debug mode inference
     const __environment =
-      process.env.NODE_ENV||(debugMode ?'development' :' production');')
-    logger.info(`Loading brain config for _environment:$_environment`, {`
+      process.env.NODE_ENV || (debugMode ? 'development' : 'production');
+    logger.info(`Loading brain config for environment: ${__environment}`, {
       debugMode,
-});
+    });
 
     // Merge configurations with proper precedence
     const brainConfig:BrainSpecificConfig = {

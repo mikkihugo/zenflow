@@ -31,10 +31,10 @@ export class TransformProcessor implements BaseProcessor {
     this.logger = getLogger(`TransformProcessor:${config.name}`);`
 
     // Parse configuration
-    this.addAttributes = config.config?.addAttributes  ||  {};
-    this.removeFields = config.config?.removeFields  ||  [];
-    this.fieldMappings = config.config?.fieldMappings  ||  {};
-    this.operations = this.parseOperations(config.config?.operations  ||  []);
+    this.addAttributes = config.config?.addAttributes || {};
+    this.removeFields = config.config?.removeFields || [];
+    this.fieldMappings = config.config?.fieldMappings || {};
+    this.operations = this.parseOperations(config.config?.operations || []);
 }
 
   async initialize():Promise<void> {
@@ -118,8 +118,8 @@ export class TransformProcessor implements BaseProcessor {
     lastError?:string;
 }> {
     return {
-      status:this.lastError ? 'unhealthy' : ' healthy',      lastProcessed:this.lastProcessedTime  ||  undefined,
-      lastError:this.lastError  ||  undefined,
+      status:this.lastError ? 'unhealthy' : ' healthy',      lastProcessed:this.lastProcessedTime || undefined,
+      lastError:this.lastError || undefined,
 };
 }
 
@@ -291,7 +291,7 @@ export class TransformProcessor implements BaseProcessor {
     const parts = fieldPath.split('.');')    let value = data;
 
     for (const part of parts) {
-      if (value === null  ||  value === undefined) {
+      if (value === null || value === undefined) {
         return undefined;
 }
       value = value[part];
@@ -308,7 +308,7 @@ export class TransformProcessor implements BaseProcessor {
 
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
-      if (!current[part]  ||  typeof current[part] !=='object') {
+      if (!current[part] || typeof current[part] !=='object') {
     ')        current[part] =;
 }
       current = current[part];
@@ -396,7 +396,7 @@ export class TransformProcessor implements BaseProcessor {
    */
   private parseOperations(operations:any[]): TransformOperation[] {
     return operations.map((op) => ({
-      type:op.type  ||  'add',      field:op.field,
+      type:op.type || 'add',      field:op.field,
       value:op.value,
       newField:op.newField,
       mapping:op.mapping,

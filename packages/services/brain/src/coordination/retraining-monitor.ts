@@ -448,7 +448,7 @@ Format as JSON with keys:approach, epochs, batchSize, successCriteria, risks`;`
 }
   ):Promise<void> {
     try {
-      this.logger.debug(`Recording prompt feedback for ${promptId}`, feedback);`
+      this.logger.debug(`Recording prompt feedback for ${promptId}`, feedback);
 
       if (!this.dbAccess) {
         this.logger.warn(
@@ -465,13 +465,13 @@ Format as JSON with keys:approach, epochs, batchSize, successCriteria, risks`;`
 };
 
       // Log feedback record details for monitoring
-      this.logger.info(`Prompt feedback recorded for ${promptId}`, {`
-        promptId:feedbackRecord.promptId,
-        success:feedbackRecord.success,
-        accuracy:feedbackRecord.accuracy,
-        userSatisfaction:feedbackRecord.userSatisfaction,
-        timestamp:feedbackRecord.timestamp,
-});
+      this.logger.info(`Prompt feedback recorded for ${promptId}`, {
+        promptId: feedbackRecord.promptId,
+        success: feedbackRecord.success,
+        accuracy: feedbackRecord.accuracy,
+        userSatisfaction: feedbackRecord.userSatisfaction,
+        timestamp: feedbackRecord.timestamp,
+      });
 
       // Check if feedback pattern indicates need for retraining
       if (!feedback.success && feedback.accuracy && feedback.accuracy < 0.7) {

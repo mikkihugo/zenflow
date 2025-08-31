@@ -247,9 +247,10 @@ function createSDKDocumentationTool(config:TaskSpecificSDKConfig) {
             type:"text",
             text:JSON.stringify({
               error:"SDK documentation retrieval failed",
-              reason:error instanceof Error ? error.message : 'Unknown error')})
-}]
-};
+              reason: error instanceof Error ? error.message : 'Unknown error'
+            })
+          }]
+        };
 }
 }
   );
@@ -312,15 +313,15 @@ export async function executeEnterpriseClaudeTask(
       "get_sdk_documentation",
       ...(config.customTools?.map(tool => tool.name) || [])
 ],
-    systemPrompt:`You are executing a ${config.taskCategory} task with access to enterprise knowledge.`
-    
+    systemPrompt: `You are executing a ${config.taskCategory} task with access to enterprise knowledge.
+
 Available tools:
-- get_enterprise_facts:Access enterprise knowledge system for relevant facts
-- get_sdk_documentation:Get Claude Code SDK 1.0.94 documentation
-${config.customTools?.length ? `- Custom tools:${config.customTools.map(t => t.name).join(',    ')}` : ''}`
-'
-Task Security Level:${config.securityLevel}
-Allowed Fact Types:${config.allowedFactTypes?.join(',    ') || ' all'}
+- get_enterprise_facts: Access enterprise knowledge system for relevant facts
+- get_sdk_documentation: Get Claude Code SDK 1.0.94 documentation
+${config.customTools?.length ? `- Custom tools: ${config.customTools.map(t => t.name).join(', ')}` : ''}
+
+Task Security Level: ${config.securityLevel}
+Allowed Fact Types: ${config.allowedFactTypes?.join(', ') || 'all'}
 
 Use these tools to gather the information needed to complete your task effectively.`,
     ...options

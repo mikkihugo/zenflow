@@ -112,7 +112,7 @@ export class ExporterManager {
         const config = this.configs.get(name)!;
 
         // Check if this exporter handles this signal type
-        if (config.signals  &&  !config.signals.includes(data.type)) {
+        if (config.signals && !config.signals.includes(data.type)) {
           return {
             success:true,
             exported:0,

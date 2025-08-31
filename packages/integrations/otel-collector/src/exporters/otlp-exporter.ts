@@ -18,20 +18,20 @@ export class OTLPExporter implements BaseExporter {
     this.config = config;
     this.logger = getLogger(`OTLPExporter:${config.name}`);`
 
-    this.maxQueueSize = config.config?.maxQueueSize  ||  1000;
-    this.batchTimeout = config.config?.batchTimeout  ||  5000;
-    this.maxBatchSize = config.config?.maxBatchSize  ||  100;
+    this.maxQueueSize = config.config?.maxQueueSize || 1000;
+    this.batchTimeout = config.config?.batchTimeout || 5000;
+    this.maxBatchSize = config.config?.maxBatchSize || 100;
 }
 
   async initialize():Promise<void> {
     try {
       const baseConfig = {
-        url:this.config.endpoint  ||  'http://localhost:4318',        headers:this.config.headers  ||  {},
-        ...(this.config.timeout  &&  { timeoutMillis:this.config.timeout}),
+        url:this.config.endpoint || 'http://localhost:4318',        headers:this.config.headers || {},
+        ...(this.config.timeout && { timeoutMillis:this.config.timeout}),
 };
 
       // Initialize exporters based on supported signals
-      const signals = this.config.signals  ||  ['traces',    'metrics',    'logs'];')
+      const signals = this.config.signals || ['traces',    'metrics',    'logs'];')
       if (signals.includes('traces')) {
     ')        this.traceExporter = new OTLPTraceExporter({
           ...baseConfig,
@@ -121,13 +121,13 @@ export class OTLPExporter implements BaseExporter {
       // Group by signal type
       const traceItems = dataItems.filter((item) => item.type === 'traces');')      const metricItems = dataItems.filter((item) => item.type === 'metrics');')      const logItems = dataItems.filter((item) => item.type === 'logs');')
       // Export traces
-      if (traceItems.length > 0  &&  this.traceExporter) {
+      if (traceItems.length > 0 && this.traceExporter) {
         const exported = await this.exportTraces(traceItems);
         totalExported += exported;
 }
 
       // Export metrics
-      if (metricItems.length > 0  &&  this.metricExporter) {
+      if (metricItems.length > 0 && this.metricExporter) {
         const exported = await this.exportMetrics(metricItems);
         totalExported += exported;
 }
@@ -218,8 +218,8 @@ export class OTLPExporter implements BaseExporter {
 
     return {
       status,
-      lastSuccess:this.lastExportTime  ||  undefined,
-      lastError:this.lastError  ||  undefined,
+      lastSuccess:this.lastExportTime || undefined,
+      lastError:this.lastError || undefined,
 };
 }
 
@@ -238,7 +238,7 @@ export class OTLPExporter implements BaseExporter {
    * Process queued items
    */
   private async processBatch():Promise<void> {
-    if (this.queue.length === 0  ||  this.isShuttingDown) {
+    if (this.queue.length === 0 || this.isShuttingDown) {
       return;
 }
 
@@ -267,7 +267,7 @@ export class OTLPExporter implements BaseExporter {
 } else {
           reject(
             new Error(
-              `OTLP trace export failed:${result.error  ||  'Unknown error'}``
+              `OTLP trace export failed:${result.error || 'Unknown error'}``
             )
           );
 }
@@ -291,7 +291,7 @@ export class OTLPExporter implements BaseExporter {
 } else {
           reject(
             new Error(
-              `OTLP metric export failed:${result.error  ||  'Unknown error'}``
+              `OTLP metric export failed:${result.error || 'Unknown error'}``
             )
           );
 }
@@ -319,7 +319,7 @@ export class OTLPExporter implements BaseExporter {
 
     for (const data of dataItems) {
       try {
-        if (data.type === 'traces'  &&  data.data) {
+        if (data.type === 'traces' && data.data) {
     ')          if (Array.isArray(data.data)) {
             spans.push(...data.data);
 } else if (data.data.spans) {
@@ -343,7 +343,7 @@ export class OTLPExporter implements BaseExporter {
 
     for (const data of dataItems) {
       try {
-        if (data.type === 'metrics'  &&  data.data) {
+        if (data.type === 'metrics' && data.data) {
     ')          if (Array.isArray(data.data)) {
             metrics.push(...data.data);
 } else if (data.data.metrics) {

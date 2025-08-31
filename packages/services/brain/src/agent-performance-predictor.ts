@@ -1133,7 +1133,7 @@ export class AgentPerformancePredictor {
 };
 
       // In production, this would write to a time-series database
-      logger.debug(`Performance snapshot logged for agent ${  agentId}`, performanceSnapshot);
+      logger.debug(`Performance snapshot logged for agent ${agentId}`, performanceSnapshot);
       
       // Store in memory for immediate access (would be database in production)
       if (!this.performanceHistory.has(agentId)) {
@@ -1194,7 +1194,7 @@ export class AgentPerformancePredictor {
 } :null
 };
 
-      logger.debug(`Agent profile calculated for ${  agentId}`, {
+      logger.debug(`Agent profile calculated for ${agentId}`, {
         completeness: profile.profileCompleteness,
         samples: profile.totalSamples,
         learningPhase: profile.learningPhase
@@ -1253,7 +1253,7 @@ export class AgentPerformancePredictor {
 }
 };
 
-      logger.debug(`Baseline calculated for agent ${  agentId}`, {
+      logger.debug(`Baseline calculated for agent ${agentId}`, {
         cpu: baseline.cpu.toFixed(3),
         memory: baseline.memory.toFixed(3),
         confidence: baseline.confidence.toFixed(2),
@@ -1361,7 +1361,7 @@ export class AgentPerformancePredictor {
 };
 
       // Delegate to TaskMaster for human-in-the-loop workflow
-      logger.warn(`Critical performance event for agent ${  agentId}`, criticalEvent);
+      logger.warn(`Critical performance event for agent ${agentId}`, criticalEvent);
 
       // Use TaskMaster for human approval workflows instead of automated remediation
       if (criticalEvent.severity === 'critical') {
@@ -1418,7 +1418,7 @@ export class AgentPerformancePredictor {
         type: 'performance_incident',        agentId,
         eventType,
         severity:criticalEvent.severity,
-        description: `Critical performance event: ${  eventType  } for agent ${  agentId}`,
+        description: `Critical performance event: ${eventType} for agent ${agentId}`,
         recommendedActions:this.getRecommendedActions(eventType),
         eventData,
         criticalEvent,
@@ -1497,7 +1497,7 @@ export class AgentPerformancePredictor {
         success:true // Would be determined by actual remediation results
 };
 
-      logger.info(`Performance remediation logged for agent ${  agentId}`, remediationLog);
+      logger.info(`Performance remediation logged for agent ${agentId}`, remediationLog);
 
       // In production, store in remediation tracking database
       // This enables learning from remediation effectiveness
