@@ -481,7 +481,7 @@ export class SmartNeuralCoordinator {
 
         try {
           this.logger.info(
-            '🧠 Initializing SmartNeuralCoordinator with intelligent backend loading...')          );
+            ' Initializing SmartNeuralCoordinator with intelligent backend loading...')          );
 
           span.setAttributes({
             'neural.coordinator.version': '2.1.0',            'neural.config.primary_model':this.config.primaryModel,
@@ -644,7 +644,7 @@ export class SmartNeuralCoordinator {
             const processingTime = Date.now() - startTime;
 
             this.logger.debug(
-              `📦 Using cached embedding for request (${processingTime}ms)``
+              ` Using cached embedding for request (${processingTime}ms)``
             );
 
             recordMetric('smart_neural_embedding_generated', 1, {
@@ -732,7 +732,7 @@ export class SmartNeuralCoordinator {
 });
 
           this.logger.info(
-            `🧠 Generated embedding using ${result.model} (${processingTime}ms, quality: ${result.qualityScore.toFixed(2)})``
+            ` Generated embedding using ${result.model} (${processingTime}ms, quality: ${result.qualityScore.toFixed(2)})``
           );
 
           recordEvent('smart-neural-embedding-generated', {
@@ -1358,7 +1358,7 @@ export class SmartNeuralCoordinator {
         'neural.cache.cleared':true,
 });
 
-      this.logger.info('🗑️ SmartNeuralCoordinator cache cleared', {
+      this.logger.info('️ SmartNeuralCoordinator cache cleared', {
     ')        previousSize: cacheSize,
 });
 
@@ -1375,7 +1375,7 @@ export class SmartNeuralCoordinator {
     return withAsyncTrace(
       'smart-neural-coordinator-shutdown',      async (span: Span) => {
         try {
-          this.logger.info('🛑 Shutting down SmartNeuralCoordinator...');')
+          this.logger.info(' Shutting down SmartNeuralCoordinator...');')
           // Clear caches
           await this.clearCache();
 
@@ -1435,7 +1435,7 @@ export class SmartNeuralCoordinator {
 
   private async initializeLazyLoading():Promise<void> {
     this.logger.info(
-      '🔄 Initialized lazy loading mode - models will load on demand')    );
+      ' Initialized lazy loading mode - models will load on demand')    );
 
     // Mark basic fallback as always available
     const basicStatus = this.modelStatus.get('basic');')    if (basicStatus) {
@@ -1481,7 +1481,7 @@ export class SmartNeuralCoordinator {
 }
 
       this.logger.info(
-        `✨ OpenAI client initialized for premium features (${loadingTime}ms)``
+        ` OpenAI client initialized for premium features (${loadingTime}ms)``
       );
 } catch (error) {
       const openaiStatus = this.modelStatus.get('openai');')      if (openaiStatus) {

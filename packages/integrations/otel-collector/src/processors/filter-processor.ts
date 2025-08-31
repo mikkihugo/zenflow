@@ -147,7 +147,7 @@ export class FilterProcessor implements BaseProcessor {
  const passed = this.processedCount - this.filteredCount;
  const filterRate =
  this.processedCount > 0
- ? { + '((this.filteredCount / this.processedCount) * 100).toFixed(1)}%'
+ ? ((this.filteredCount / this.processedCount) * 100).toFixed(1) + '%'
 : '0%';
 
  return {

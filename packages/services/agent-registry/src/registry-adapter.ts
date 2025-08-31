@@ -157,7 +157,7 @@ export abstract class BaseRegistryAdapter extends TypedEventBase {
  */
   protected emitMigrationEvent(event: string, data: JsonValue): void {
     if (this.options.enableMigrationLogging) {
-      this.logger.debug(`Migration event: ${event}`, data);
+      this.logger.debug('Migration event: ' + event, data);
     }
     this.emit(event, data);
   }
@@ -229,7 +229,7 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
  );
 
     if (result.isErr()) {
-      throw new Error(`Failed to register agent ${agent.id}: ${result.error.message}`);
+      throw new Error('Failed to register agent ' + agent.id + ': ' + result.error.message);
     }
 
     // Store for legacy compatibility
@@ -492,7 +492,7 @@ export class ServiceRegistryAdapter extends BaseRegistryAdapter {
    });
 
     if (result.isErr()) {
-      throw new Error(`Failed to register service ${name}: ${result.error.message}`);
+      throw new Error('Failed to register service ' + name + ': ' + result.error.message);
     }
 
     this.services.set(name, implementation);
@@ -506,7 +506,7 @@ export class ServiceRegistryAdapter extends BaseRegistryAdapter {
    const result = this.container.registerInstance(name, instance);
 
  if (result.isErr()) {
-   throw new Error(`Failed to register instance ${name}: ${result.error.message}`);
+   throw new Error('Failed to register instance ' + name + ': ' + result.error.message);
  }
 
  this.services.set(name, instance);
@@ -519,7 +519,7 @@ export class ServiceRegistryAdapter extends BaseRegistryAdapter {
    const result = this.container.resolve<T>(name);
 
  if (result.isErr()) {
-   throw new Error(`Failed to resolve service ${name}: ${result.error.message}`);
+   throw new Error('Failed to resolve service ' + name + ': ' + result.error.message);
  }
 
  return result.value;
