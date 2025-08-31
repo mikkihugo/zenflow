@@ -70,7 +70,6 @@
     "@claude-zen/memory": "workspace:*",
     "@claude-zen/neural-ml": "workspace:*",
     "@claude-zen/otel-collector": "workspace:*",
-    "@claude-zen/singularity-coder": "workspace:*",
     "@claude-zen/system-monitoring": "workspace:*",
     "@claude-zen/telemetry": "workspace:*",
     "@godaddy/terminus": "^4.12.1",
