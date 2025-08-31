@@ -289,131 +289,143 @@ export class TransformProcessor implements BaseProcessor {
               operation.mapping[currentValue]
             );
             return true;
-}
-}
+          }
+        }
         break;
-}
+      }
+    }
 
     return false;
-}
+  }
 
   /**
    * Get field value using dot notation
    */
-  private getFieldValue(data:any, fieldPath:string): any {
-    const parts = fieldPath.split('.');')    let value = data;
+  private getFieldValue(data: any, fieldPath: string): any {
+    const parts = fieldPath.split('.');
+    let value = data;
 
     for (const part of parts) {
       if (value === null || value === undefined) {
         return undefined;
-}
+      }
       value = value[part];
-}
+    }
 
     return value;
-}
+  }
 
   /**
    * Set field value using dot notation
    */
-  private setFieldValue(data:any, fieldPath:string, value:any): void {
-    const parts = fieldPath.split('.');')    let current = data;
+  private setFieldValue(data: any, fieldPath: string, value: any): void {
+    const parts = fieldPath.split('.');
+    let current = data;
 
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
-      if (!current[part] || typeof current[part] !=='object') {
-    ')        current[part] =;
-}
+      if (!current[part] || typeof current[part] !== 'object') {
+        current[part] = {};
+      }
       current = current[part];
-}
+    }
 
     current[parts[parts.length - 1]] = value;
-}
+  }
 
   /**
    * Remove field value using dot notation
    */
-  private removeFieldValue(data:any, fieldPath:string): boolean {
-    const parts = fieldPath.split('.');')    let current = data;
+  private removeFieldValue(data: any, fieldPath: string): boolean {
+    const parts = fieldPath.split('.');
+    let current = data;
 
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
       if (!current[part]) {
         return false;
-}
+      }
       current = current[part];
-}
+    }
 
     const lastPart = parts[parts.length - 1];
     if (lastPart in current) {
       delete current[lastPart];
       return true;
-}
+    }
 
     return false;
-}
+  }
 
   /**
    * Resolve value (supports templates and functions)
    */
   private resolveValue(
-    value:any,
-    data:TelemetryData,
-    currentValue?:any
-  ):any {
+    value: any,
+    data: TelemetryData,
+    currentValue?: any
+  ): any {
     if (typeof value === 'string') {
-    ')      // Template substitution
+      // Template substitution
       return value.replace(/\{\{([^}]+)\}\}/g, (match, path) => {
-        const resolved = this.getFieldValue(data, path.trim())();
-        return resolved !== undefined ? String(resolved) :match;
-});
-}
+        const resolved = this.getFieldValue(data, path.trim());
+        return resolved !== undefined ? String(resolved) : match;
+      });
+    }
 
     if (typeof value === 'function') {
-    ')      try {
+      try {
         return value(data, currentValue);
-} catch (error) {
-        this.logger.warn('Error in transform function', error);')        return currentValue;
-}
-}
+      } catch (error) {
+        this.logger.warn('Error in transform function', error);
+        return currentValue;
+      }
+    }
 
     return value;
-}
+  }
 
   /**
    * Evaluate simple conditions
    */
-  private evaluateCondition(data:TelemetryData, condition:string): boolean {
+  private evaluateCondition(data: TelemetryData, condition: string): boolean {
     try {
       // Very simple condition evaluation
-      // In production, you'd want a proper expression evaluator')      const parts = condition.split(' ');')      if (parts.length === 3) {
+      // In production, you'd want a proper expression evaluator
+      const parts = condition.split(' ');
+      if (parts.length === 3) {
         const [field, operator, expectedValue] = parts;
         const actualValue = this.getFieldValue(data, field);
 
         switch (operator) {
-          case '==': ')'            return actualValue === expectedValue;
-          case '!=': ')'            return actualValue !== expectedValue;
-          case 'contains': ')'            return String(actualValue).includes(expectedValue);
-          case 'exists': ')'            return actualValue !== undefined;
-}
-}
-} catch (error) {
+          case '==':
+            return actualValue === expectedValue;
+          case '!=':
+            return actualValue !== expectedValue;
+          case 'contains':
+            return String(actualValue).includes(expectedValue);
+          case 'exists':
+            return actualValue !== undefined;
+        }
+      }
+    } catch (error) {
       this.logger.warn(`Failed to evaluate condition: ${condition}`, error);
-}
+    }
 
     return true; // Default to true on condition evaluation error
-}
+  }
 
   /**
    * Parse transform operations from configuration
    */
-  private parseOperations(operations:any[]): TransformOperation[] {
+  private parseOperations(operations: any[]): TransformOperation[] {
     return operations.map((op) => ({
-      type:op.type || 'add',      field:op.field,
-      value:op.value,
-      newField:op.newField,
-      mapping:op.mapping,
-      condition:op.condition,
-}));
-}
+      type: op.type || 'add',
+      field: op.field,
+      value: op.value,
+      newField: op.newField,
+      mapping: op.mapping,
+      condition: op.condition,
+    }));
+  }
 }
