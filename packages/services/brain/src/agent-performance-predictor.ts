@@ -21,7 +21,7 @@ import regression from 'regression';
 const logger = getLogger('AgentPerformancePredictor');
 
 // Simple weighted moving average function
-function wma(data:number[], weights?:number[]): number[] {
+function wma(data: number[], weights?:number[]): number[] {
   if (data.length === 0) return [];
   if (!weights || weights.length !== data.length) {
     // Default exponential weights
@@ -78,7 +78,7 @@ export interface PerformanceInsights {
  * and optimize task distribution across the swarm.
  */
 export class AgentPerformancePredictor {
-  private performanceHistory:Map<string, AgentPerformanceData[]> = new Map();
+  private performanceHistory: Map<string, AgentPerformanceData[]> = new Map();
   private initialized = false;
   private readonly maxHistorySize = 1000;
 
@@ -89,7 +89,7 @@ export class AgentPerformancePredictor {
   /**
    * Initialize the prediction system
    */
-  async initialize():Promise<void> {
+  async initialize(): Promise<void> {
     if (this.initialized) return;
 
     try {
@@ -114,7 +114,7 @@ export class AgentPerformancePredictor {
   /**
    * Record agent performance data
    */
-  async recordPerformance(data:AgentPerformanceData): Promise<void> {
+  async recordPerformance(data: AgentPerformanceData): Promise<void> {
     if (!this.initialized) {
       await this.initialize();
 }
@@ -147,8 +147,7 @@ export class AgentPerformancePredictor {
   /**
    * Predict agent performance for a given task
    */
-  async predictPerformance(
-    agentId: string,
+  async predictPerformance(agentId: string,
     taskType: string,
     complexity: number
   ): Promise<PerformancePrediction> {
@@ -206,7 +205,7 @@ export class AgentPerformancePredictor {
         (1 / (predictedCompletionTime / 1000 + 1)) *
         confidence;
 
-      const prediction:PerformancePrediction = {
+      const prediction: PerformancePrediction = {
         agentId,
         predictedCompletionTime,
         predictedSuccessRate,
@@ -235,7 +234,7 @@ export class AgentPerformancePredictor {
   /**
    * Get system-wide performance insights
    */
-  async getPerformanceInsights():Promise<PerformanceInsights> {
+  async getPerformanceInsights(): Promise<PerformanceInsights> {
     if (!this.initialized) {
       await this.initialize();
 }
@@ -320,9 +319,9 @@ export class AgentPerformancePredictor {
       logger.debug(`Updating performance data for agent ${data.agentId}`);
 
       // Convert to AgentPerformanceData format
-      const performanceData:AgentPerformanceData = {
+      const performanceData: AgentPerformanceData = {
         agentId:data.agentId,
-        timestamp:Date.now(),
+        timestamp: Date.now(),
         taskType:data.taskType,
         complexity:data.complexity||0.5,
         completionTime:data.duration,
@@ -330,7 +329,7 @@ export class AgentPerformancePredictor {
         errorRate:data.success ? 0.0 : 1.0,
         cpuUsage:data.resourceUsage||0.5,
         memoryUsage:data.resourceUsage||0.5,
-        concurrentTasks:1, // Default to 1 if not provided
+        concurrentTasks: 1, // Default to 1 if not provided
 };
 
       // Record the performance data
@@ -359,10 +358,10 @@ export class AgentPerformancePredictor {
 
     if (history.length === 0) {
       return {
-        totalTasks:0,
-        averageSuccessRate:0,
-        averageCompletionTime:0,
-        performanceTrend: 'stable',        dataPoints:0,
+        totalTasks: 0,
+        averageSuccessRate: 0,
+        averageCompletionTime: 0,
+        performanceTrend: 'stable',        dataPoints: 0,
 };
 }
 
@@ -407,7 +406,7 @@ export class AgentPerformancePredictor {
 
     // Analyze recent trend using linear regression
     const recentData = history.slice(-10);
-    const dataPoints:[number, number][] = recentData.map((data, index) => [
+    const dataPoints: [number, number][] = recentData.map((data, index) => [
       index,
       data.successRate,
 ]);
@@ -456,8 +455,8 @@ export class AgentPerformancePredictor {
 }
 
   private calculatePredictionConfidence(
-    relevantData:AgentPerformanceData[],
-    allData:AgentPerformanceData[]
+    relevantData: AgentPerformanceData[],
+    allData: AgentPerformanceData[]
   ):number {
     const dataQuality = Math.min(1, relevantData.length / 10); // More relevant data = higher confidence
     const dataRecency =
@@ -474,7 +473,7 @@ export class AgentPerformancePredictor {
 }
 
   private calculateOptimalTaskCount(
-    agentId:string,
+    agentId: string,
     loadForecast:number
   ):number {
     const history = this.performanceHistory.get(agentId)||[];
@@ -514,8 +513,8 @@ export class AgentPerformancePredictor {
 }
 
   private identifyRiskFactors(
-    agentId:string,
-    data:AgentPerformanceData[]
+    agentId: string,
+    data: AgentPerformanceData[]
   ):string[] {
     const riskFactors:string[] = [];
 
@@ -555,10 +554,9 @@ export class AgentPerformancePredictor {
     return riskFactors;
 }
 
-  private async updatePerformanceTrends(
-    agentId:string,
-    history:AgentPerformanceData[]
-  ):Promise<void> {
+  private async updatePerformanceTrends(agentId: string,
+    history: AgentPerformanceData[]
+  ): Promise<void> {
     try {
       // Update performance trends for time series analysis
       const successRates = history.map((d) => d.successRate);
@@ -578,17 +576,17 @@ export class AgentPerformancePredictor {
   private getDefaultPrediction(agentId:string): PerformancePrediction {
     return {
       agentId,
-      predictedCompletionTime:5000, // 5 seconds default
+      predictedCompletionTime: 5000, // 5 seconds default
       predictedSuccessRate:0.7, // 70% default
       predictedScore:0.35, // Default score:0.7 * (1/(5+1)) * 0.1 ≈ 0.35
       confidence:0.1, // Very low confidence
       loadForecast:0.5, // Moderate load
-      recommendedTaskCount:1,
+      recommendedTaskCount: 1,
       performanceTrend: 'stable',      riskFactors:['Insufficient data for accurate prediction'],
 };
 }
 
-  private async calculateCapacityUtilization():Promise<number> {
+  private async calculateCapacityUtilization(): Promise<number> {
     try {
       // Load current capacity data from monitoring systems
       const capacityData = await this.loadSystemCapacityData();
@@ -653,7 +651,7 @@ export class AgentPerformancePredictor {
   /**
    * Load system capacity data from monitoring systems
    */
-  private async loadSystemCapacityData():Promise<{
+  private async loadSystemCapacityData(): Promise<{
     maxConcurrentTasks:number;
     currentLoad:number;
     maxLoad:number;
@@ -666,11 +664,11 @@ export class AgentPerformancePredictor {
       
       // In real implementation, this would fetch from monitoring APIs
       const systemMetrics = {
-        maxConcurrentTasks:10, // Maximum concurrent tasks per agent
-        currentLoad:Math.random() * 80 + 10, // Current system load (10-90%)
-        maxLoad:100, // Maximum system load capacity
-        cpuUtilization:Math.random() * 70 + 15, // CPU usage (15-85%)
-        memoryUtilization:Math.random() * 60 + 20, // Memory usage (20-80%)
+        maxConcurrentTasks: 10, // Maximum concurrent tasks per agent
+        currentLoad: Math.random() * 80 + 10, // Current system load (10-90%)
+        maxLoad: 100, // Maximum system load capacity
+        cpuUtilization: Math.random() * 70 + 15, // CPU usage (15-85%)
+        memoryUtilization: Math.random() * 60 + 20, // Memory usage (20-80%)
 };
       
       logger.debug('Loaded system capacity data: ', systemMetrics);
@@ -684,10 +682,9 @@ export class AgentPerformancePredictor {
   /**
    * Persist performance trends to storage for historical analysis
    */
-  private async persistPerformanceTrends(
-    agentId:string, 
+  private async persistPerformanceTrends(agentId: string, 
     successRates:number[]
-  ):Promise<void> {
+  ): Promise<void> {
     try {
       // Simulate persistence to database/storage system
       await new Promise(resolve => setTimeout(resolve, 5));
@@ -695,7 +692,7 @@ export class AgentPerformancePredictor {
       const trendData = {
         agentId,
         successRates,
-        timestamp:Date.now(),
+        timestamp: Date.now(),
         trendMetrics:{
           slope:this.calculateTrendSlope(successRates),
           volatility:this.calculateVolatility(successRates),
@@ -756,7 +753,7 @@ export class AgentPerformancePredictor {
     return isNaN(slope) ? 0:slope;
 }
 
-  private async predictBottlenecks():Promise<string[]> {
+  private async predictBottlenecks(): Promise<string[]> {
     try {
       return await this.performEnhancedBottleneckDetection();
 } catch (error) {
@@ -765,7 +762,7 @@ export class AgentPerformancePredictor {
 }
 }
 
-  private async performEnhancedBottleneckDetection():Promise<string[]> {
+  private async performEnhancedBottleneckDetection(): Promise<string[]> {
     const bottlenecks:string[] = [];
     const allAgents = Array.from(this.performanceHistory.keys());
 
@@ -785,7 +782,7 @@ export class AgentPerformancePredictor {
     return bottlenecks;
 }
 
-  private async detectAgentBottlenecks(agentId:string, systemLoad:number): Promise<string[]> {
+  private async detectAgentBottlenecks(agentId: string, systemLoad:number): Promise<string[]> {
     // Load historical performance data from persistent storage
     const persistedMetrics = await this.loadPersistedMetrics(agentId);
     const history = this.performanceHistory.get(agentId) || [];
@@ -802,7 +799,7 @@ export class AgentPerformancePredictor {
     // Perform advanced bottleneck analysis
     const issues = await this.identifyAdvancedPerformanceIssues(enhancedMetrics, systemLoad, agentId);
 
-    return issues.length > 0 ? [`Agent ${agentId}: ${issues.join(', ')}`] : [];
+    return issues.length > 0 ? [`Agent ${agentId}: ${issues.join(', '`] : [];
 }
 
   private async loadPersistedMetrics(agentId:string): Promise<any> {
@@ -817,14 +814,14 @@ export class AgentPerformancePredictor {
 }
 }
 
-  private async enhanceMetricsWithTrends(currentMetrics:ReturnType<typeof this.calculateAgentMetrics>, persistedMetrics:any): Promise<any> {
+  private async enhanceMetricsWithTrends(currentMetrics: ReturnType<typeof this.calculateAgentMetrics>, persistedMetrics:any): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 5));
     
     if (!persistedMetrics) {
       return {
         ...currentMetrics,
         trends:{ cpu: 'stable', memory: ' stable', errors:' improving' | ' stable' | ' declining'},
-        volatility:{ cpu: 0, memory:0, errors:0}
+        volatility:{ cpu: 0, memory: 0, errors:0}
 };
 }
 
@@ -848,7 +845,7 @@ export class AgentPerformancePredictor {
 };
 }
 
-  private async identifyAdvancedPerformanceIssues(metrics:any, systemLoad:number, agentId:string): Promise<string[]> {
+  private async identifyAdvancedPerformanceIssues(metrics: any, systemLoad: number, agentId:string): Promise<string[]> {
     const issues:string[] = [];
     
     // Advanced agent-specific performance analysis with database logging
@@ -874,7 +871,7 @@ export class AgentPerformancePredictor {
       await this.logCriticalPerformanceEvent(agentId, 'cpu_spike', {
         current:metrics.avgCpuUsage,
         baseline:agentBaseline.cpu,
-        threshold:cpuThreshold,
+        threshold: cpuThreshold,
         riskScore:agentRiskScore
 });
 }
@@ -915,7 +912,7 @@ export class AgentPerformancePredictor {
     return issues;
 }
 
-  private calculateAgentMetrics(recentData:PerformanceData[]) {
+  private calculateAgentMetrics(recentData: PerformanceData[]) {
     return {
       avgCpuUsage:mean(recentData.map((d) => d.cpuUsage)),
       avgErrorRate:mean(recentData.map((d) => d.errorRate)),
@@ -924,7 +921,7 @@ export class AgentPerformancePredictor {
 };
 }
 
-  private identifyPerformanceIssues(metrics:ReturnType<typeof this.calculateAgentMetrics>, systemLoad:number): string[] {
+  private identifyPerformanceIssues(metrics: ReturnType<typeof this.calculateAgentMetrics>, systemLoad:number): string[] {
     const issues:string[] = [];
 
     if (metrics.avgCpuUsage > 0.85) {
@@ -951,9 +948,9 @@ export class AgentPerformancePredictor {
     return issues;
 }
 
-  private addSystemWideBottlenecks(bottlenecks:string[], systemLoad:number): void {
+  private addSystemWideBottlenecks(bottlenecks: string[], systemLoad:number): void {
     if (systemLoad > 75) {
-      bottlenecks.push('System-wide:High load trend detected');
+      bottlenecks.push('System-wide: High load trend detected');
 }
 }
 
@@ -978,9 +975,8 @@ export class AgentPerformancePredictor {
     return bottlenecks;
 }
 
-  private async generateOptimizationSuggestions(
-    agentScores:Map<string, number>
-  ):Promise<string[]> {
+  private async generateOptimizationSuggestions(agentScores: Map<string, number>
+  ): Promise<string[]> {
     const suggestions:string[] = [];
 
     // Suggest event coordination (replaces load balancing)
@@ -1012,7 +1008,7 @@ export class AgentPerformancePredictor {
   /**
    * Load historical performance data for training prediction models
    */
-  private async loadHistoricalData():Promise<void> {
+  private async loadHistoricalData(): Promise<void> {
     try {
       // Load historical agent performance data from persistent storage
       // This would typically connect to a database or file system
@@ -1031,7 +1027,7 @@ export class AgentPerformancePredictor {
   /**
    * Initialize machine learning models for performance prediction
    */
-  private async initializePredictionModels():Promise<void> {
+  private async initializePredictionModels(): Promise<void> {
     try {
       logger.debug('Initializing prediction models...');
       
@@ -1049,7 +1045,7 @@ export class AgentPerformancePredictor {
   /**
    * Setup real-time performance monitoring
    */
-  private async setupPerformanceMonitoring():Promise<void> {
+  private async setupPerformanceMonitoring(): Promise<void> {
     try {
       logger.debug('Setting up performance monitoring...');
       
@@ -1074,10 +1070,10 @@ export class AgentPerformancePredictor {
       await new Promise(resolve => setTimeout(resolve, 10));
       
       return {
-        cpuUsage:Math.random() * 100,
-        memoryUsage:Math.random() * 100,
-        activeConnections:Math.floor(Math.random() * 50),
-        queueSize:Math.floor(Math.random() * 20)
+        cpuUsage: Math.random() * 100,
+        memoryUsage: Math.random() * 100,
+        activeConnections: Math.floor(Math.random() * 50),
+        queueSize: Math.floor(Math.random() * 20)
 };
 } catch (error) {
       logger.warn(`Failed to load realtime metrics for ${  agentId  }:`, error);
@@ -1088,7 +1084,7 @@ export class AgentPerformancePredictor {
   /**
    * Apply machine learning forecast for agent load prediction
    */
-  private async applyMLForecast(agentId:string, metrics:Record<string, any>):Promise<number> {
+  private async applyMLForecast(agentId: string, metrics: Record<string, any>): Promise<number> {
     try {
       // Apply trained ML model for load prediction
       // This would use neural networks or other ML algorithms
@@ -1109,7 +1105,7 @@ export class AgentPerformancePredictor {
   /**
    * Log comprehensive agent performance snapshot to database
    */
-  private async logAgentPerformanceSnapshot(agentId:string, metrics:any, systemLoad:number): Promise<void> {
+  private async logAgentPerformanceSnapshot(agentId: string, metrics: any, systemLoad:number): Promise<void> {
     try {
       const timestamp = new Date();
       const performanceSnapshot = {
@@ -1171,7 +1167,7 @@ export class AgentPerformancePredictor {
           historicalCpuAvg:0.1,
           historicalMemoryAvg:0.1,
           historicalErrorAvg:0.01,
-          profileCompleteness:0,
+          profileCompleteness: 0,
           learningPhase:true
 };
 }
@@ -1185,12 +1181,12 @@ export class AgentPerformancePredictor {
         historicalMemoryAvg:mean(last30Days.map(d => d.memoryUsage)),
         historicalErrorAvg:mean(last30Days.map(d => d.errorRate)),
         historicalCompletionAvg:mean(last30Days.map(d => d.completionTime)),
-        profileCompleteness:Math.min(last30Days.length / 100, 1), // 100 data points for complete profile
+        profileCompleteness: Math.min(last30Days.length / 100, 1), // 100 data points for complete profile
         learningPhase:last30Days.length < 50,
         totalSamples:last30Days.length,
         dataRange:last30Days.length > 0 ? {
-          oldest:Math.min(...last30Days.map(d => d.timestamp.getTime())),
-          newest:Math.max(...last30Days.map(d => d.timestamp.getTime()))
+          oldest: Math.min(...last30Days.map(d => d.timestamp.getTime())),
+          newest: Math.max(...last30Days.map(d => d.timestamp.getTime()))
 } :null
 };
 
@@ -1207,7 +1203,7 @@ export class AgentPerformancePredictor {
         historicalCpuAvg:0.1,
         historicalMemoryAvg:0.1,
         historicalErrorAvg:0.01,
-        profileCompleteness:0,
+        profileCompleteness: 0,
         learningPhase:true
 };
 }
@@ -1225,7 +1221,7 @@ export class AgentPerformancePredictor {
           cpu:0.1,
           memory:0.1,
           errors:0.01,
-          completionTime:5000,
+          completionTime: 5000,
           confidence:0.1
 };
 }
@@ -1240,11 +1236,11 @@ export class AgentPerformancePredictor {
       const percentile25Index = Math.floor(cpuValues.length * 0.25);
 
       const baseline = {
-        cpu:cpuValues[percentile75Index],
-        memory:memoryValues[percentile75Index],
-        errors:errorValues[percentile75Index],
-        completionTime:timeValues[percentile75Index],
-        confidence:Math.min(history.length / 100, 1),
+        cpu: cpuValues[percentile75Index],
+        memory: memoryValues[percentile75Index],
+        errors: errorValues[percentile75Index],
+        completionTime: timeValues[percentile75Index],
+        confidence: Math.min(history.length / 100, 1),
         stats:{
           cpuRange:cpuValues[percentile75Index] - cpuValues[percentile25Index],
           memoryRange:memoryValues[percentile75Index] - memoryValues[percentile25Index],
@@ -1267,7 +1263,7 @@ export class AgentPerformancePredictor {
         cpu:0.1,
         memory:0.1,
         errors:0.01,
-        completionTime:5000,
+        completionTime: 5000,
         confidence:0
 };
 }
@@ -1276,7 +1272,7 @@ export class AgentPerformancePredictor {
   /**
    * Calculate comprehensive risk score for agent based on multiple factors
    */
-  private async calculateAgentRiskScore(agentId:string, metrics:any): Promise<number> {
+  private async calculateAgentRiskScore(agentId: string, metrics:any): Promise<number> {
     try {
       const profile = await this.getAgentPerformanceProfile(agentId);
       const baseline = await this.calculateAgentBaseline(agentId);
@@ -1340,17 +1336,16 @@ export class AgentPerformancePredictor {
   /**
    * Log critical performance events with detailed context for alerting
    */
-  private async logCriticalPerformanceEvent(
-    agentId:string, 
-    eventType:string, 
+  private async logCriticalPerformanceEvent(agentId: string, 
+    eventType: string, 
     eventData:any
-  ):Promise<void> {
+  ): Promise<void> {
     try {
       const criticalEvent = {
         timestamp:new Date(),
         agentId,
         eventType,
-        severity:eventData.riskScore > 0.8 ? 'critical' : eventData.riskScore > 0.5 ? ' high' : ' medium',        data:eventData,
+        severity:eventData.riskScore > 0.8 ? 'critical' : eventData.riskScore > 0.5 ? ' high' : ' medium',        data: eventData,
         context:{
           systemLoad:process.cpuUsage(),
           memoryUsage:process.memoryUsage(),
@@ -1376,7 +1371,7 @@ export class AgentPerformancePredictor {
   /**
    * Generate actionable performance recommendations
    */
-  private generatePerformanceRecommendations(eventType:string, eventData:any): string[] {
+  private generatePerformanceRecommendations(eventType: string, eventData:any): string[] {
     const recommendations = [];
 
     switch (eventType) {
@@ -1404,12 +1399,11 @@ export class AgentPerformancePredictor {
   /**
    * Trigger automated remediation actions for critical performance issues
    */
-  private async createTaskMasterIncident(
-    agentId:string, 
-    eventType:string, 
-    eventData:any, 
+  private async createTaskMasterIncident(agentId: string, 
+    eventType: string, 
+    eventData: any, 
     criticalEvent:any
-  ):Promise<void> {
+  ): Promise<void> {
     try {
       logger.info(`Creating TaskMaster incident for agent ${  agentId  }, event: ${  eventType}`);
 
@@ -1422,11 +1416,11 @@ export class AgentPerformancePredictor {
         recommendedActions:this.getRecommendedActions(eventType),
         eventData,
         criticalEvent,
-        requiresApproval:true,
+        requiresApproval: true,
         timestamp:new Date()
 };
 
-      // TODO:Use TaskMaster facade when available
+      // TODO: Use TaskMaster facade when available
       // const taskMaster = await getTaskMasterSystem();
       // await taskMaster.createIncidentTask(incidentTask);
       
@@ -1435,7 +1429,7 @@ export class AgentPerformancePredictor {
       
       // Log the incident creation attempt
       await this.logPerformanceRemediation(agentId, eventType, 'taskmaster_incident', {
-        incidentCreated:true,
+        incidentCreated: true,
         timestamp:new Date(),
         eventData
 });
@@ -1481,19 +1475,18 @@ export class AgentPerformancePredictor {
   /**
    * Log performance remediation actions
    */
-  private async logPerformanceRemediation(
-    agentId:string, 
-    eventType:string, 
-    remediationType:string, 
+  private async logPerformanceRemediation(agentId: string, 
+    eventType: string, 
+    remediationType: string, 
     remediationData:any
-  ):Promise<void> {
+  ): Promise<void> {
     try {
       const remediationLog = {
         timestamp:new Date(),
         agentId,
         eventType,
         remediationType,
-        data:remediationData,
+        data: remediationData,
         success:true // Would be determined by actual remediation results
 };
 
