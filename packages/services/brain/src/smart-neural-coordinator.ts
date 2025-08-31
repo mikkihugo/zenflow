@@ -1358,7 +1358,7 @@ export class SmartNeuralCoordinator {
         'neural.cache.cleared':true,
 });
 
-      this.logger.info('️ SmartNeuralCoordinator cache cleared', {
+      this.logger.info(' SmartNeuralCoordinator cache cleared', {
     ')        previousSize: cacheSize,
 });
 

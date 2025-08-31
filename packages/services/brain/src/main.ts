@@ -545,7 +545,7 @@ export class FoundationBrainCoordinator {
         brainInstance: 'foundation-brain-coordinator',        savedAt:Date.now(),
         version:'1.0')});
       
-      this.logger.debug('️ Brain configuration saved', { 
+      this.logger.debug(' Brain configuration saved', { 
         keys:Object.keys(config),
         brainSession:this.brainConfig.sessionId 
 });
@@ -576,14 +576,14 @@ export class FoundationBrainCoordinator {
       if (storedConfig) {
         // Remove brain metadata and return clean config
         const { brainInstance, savedAt, version, ...cleanConfig} = storedConfig;
-        this.logger.debug('️ Brain configuration loaded', { 
+        this.logger.debug(' Brain configuration loaded', { 
           keys:Object.keys(cleanConfig),
           brainSession:this.brainConfig.sessionId,
           savedAt 
 });
         return ok(cleanConfig);
 } else {
-        this.logger.debug('️ No stored brain configuration found, using defaults');
+        this.logger.debug(' No stored brain configuration found, using defaults');
         return ok({});
 }
 

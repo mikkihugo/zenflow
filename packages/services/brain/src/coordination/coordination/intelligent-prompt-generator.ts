@@ -357,7 +357,7 @@ $enhancedStandards.contextualIntro
 - **Variable naming**:Use descriptive names in pseudocode`;`
 
       case 'architecture': ')'        return ``
-### ️ Architecture Phase Guidelines:
+###  Architecture Phase Guidelines:
 - **Modular design**:Create loosely coupled, highly cohesive modules
 - **Separation of concerns**:Separate business logic from presentation/data layers
 - **Dependency injection**:Use DI for testability and flexibility
@@ -1115,7 +1115,7 @@ Be thorough but constructive. Focus on helping improve both the implementation a
     await new Promise(resolve => setTimeout(resolve, 5));
     
     const recommendations = [
-      '🧪 **Testing Excellence Guidelines**',      '- Unit tests:Achieve 80%+ code coverage for critical functions',      '- Integration tests:Test component interactions and data flow',      '- End-to-end tests:Validate complete user workflows')];
+      ' **Testing Excellence Guidelines**',      '- Unit tests:Achieve 80%+ code coverage for critical functions',      '- Integration tests:Test component interactions and data flow',      '- End-to-end tests:Validate complete user workflows')];
 
     if (analysis.testingProfile) {
       recommendations.push(

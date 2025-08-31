@@ -204,7 +204,7 @@ export class MultiSwarmABTesting {
     const testId = `ab-test-${generateNanoId()}`;`
     const startTime = new Date();
 
-    logger.info(`🧪 Starting A/B test:$testId`);`
+    logger.info(` Starting A/B test:$testId`);`
     logger.info(` Task:${taskDescription}`);`
     logger.info(` Testing $strategies.lengthstrategies:$strategies.map((s) => s.name).join(',    ')`);`
 
@@ -492,14 +492,14 @@ export class MultiSwarmABTesting {
 
     if (enableProgressLogging) {
       logger.info(
-        `⏭️ Executing $strategies.lengthstrategies sequentially...``
+        `⏭ Executing $strategies.lengthstrategies sequentially...``
       );
       logger.info(
         ` Sequential options:delay=${delayBetweenStrategies}ms, continueOnFailure=${enableContinueOnFailure}``
       );
 } else {
       logger.info(
-        `⏭️ Executing ${strategies.length} strategies sequentially...``
+        `⏭ Executing ${strategies.length} strategies sequentially...``
       );
 }
 
@@ -569,7 +569,7 @@ export class MultiSwarmABTesting {
       if (i < strategies.length - 1 && delayBetweenStrategies > 0) {
         if (enableProgressLogging) {
           logger.info(
-            `⏸️ Pausing $delayBetweenStrategiesms before next strategy...``
+            `⏸ Pausing $delayBetweenStrategiesms before next strategy...``
           );
 }
         await new Promise((resolve) =>

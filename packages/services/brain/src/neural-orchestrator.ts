@@ -924,7 +924,7 @@ export class NeuralOrchestrator {
    * Process simple tasks with internal brain.js
    */
   private async processSimpleTask(task:NeuralTask): Promise<NeuralResult> {
-    logger.debug(`🟢 Processing simple task with brain.js:${task.id}`);`
+    logger.debug(` Processing simple task with brain.js:${task.id}`);`
 
     // Use internal brain.js for simple operations
     const input = task.data.input as number[];
@@ -947,7 +947,7 @@ export class NeuralOrchestrator {
    */
   private async processModerateTask(task:NeuralTask): Promise<NeuralResult> {
     logger.debug(
-      `🟡 Processing moderate task with enhanced brain.js:$task.id``
+      ` Processing moderate task with enhanced brain.js:$task.id``
     );
 
     // Enhanced processing with some ML features
@@ -1179,7 +1179,7 @@ export class NeuralOrchestrator {
 }
 
   private async storeInDatabase(data:NeuralData): Promise<void> {
-    // Use foundation's SQLite storage')    logger.debug(`️ Storing in database:${data.id}`);`
+    // Use foundation's SQLite storage')    logger.debug(` Storing in database:${data.id}`);`
 }
 
   private async storeInVectorDB(data:NeuralData): Promise<void> {
@@ -1187,7 +1187,7 @@ export class NeuralOrchestrator {
 }
 
   private async storeInGraphDB(data:NeuralData): Promise<void> {
-    // Use foundation's Kuzu graph storage')    logger.debug(`️ Storing in graph DB:${data.id}`);`
+    // Use foundation's Kuzu graph storage')    logger.debug(` Storing in graph DB:${data.id}`);`
 }
 
   private async storeInHybrid(data:NeuralData): Promise<void> {

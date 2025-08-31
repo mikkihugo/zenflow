@@ -27,7 +27,7 @@
  * - Access pattern analysis
  * - Data leak prevention
  * 
- * ️ **PRIVACY CONTROLS:**
+ *  **PRIVACY CONTROLS:**
  * - Personal data processing logs
  * - Consent management tracking
  * - Data retention compliance

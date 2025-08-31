@@ -863,7 +863,7 @@ export class AutonomousOptimizationEngine {
    */
   private async initializeOptimizationInfrastructure(_config:any): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 100));
-    logger.debug('️ Optimization infrastructure initialized');')}
+    logger.debug(' Optimization infrastructure initialized');')}
 
   /**
    * Create optimization profile based on configuration

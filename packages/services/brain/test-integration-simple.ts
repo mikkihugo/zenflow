@@ -44,7 +44,7 @@ require = function (id:string) {
 } as any;
 
 async function runIntegrationTest() {
-  logger.info('🧪 Starting Smart Neural Coordinator Integration Test\n');')
+  logger.info(' Starting Smart Neural Coordinator Integration Test\n');')
   try {
     // Test 1:Basic initialization
     logger.info('Test 1:Basic Initialization');')    const config:NeuralBackendConfig = {

@@ -86,7 +86,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
     this.aiDeceptionDetector = new AIDeceptionDetector();
     this.neuralDeceptionDetector = new NeuralDeceptionDetector();
 
-    this.logger.info('️ Neural Safety Bridge initialized', {
+    this.logger.info(' Neural Safety Bridge initialized', {
       enhancedDetection: config.enhancedDetection,
       behavioralLearning: config.behavioralLearning,
       realTimeMonitoring: config.realTimeMonitoring,

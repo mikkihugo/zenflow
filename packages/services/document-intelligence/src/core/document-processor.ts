@@ -475,7 +475,7 @@ export class DocumentProcessor extends TypedEventBase {
       case 'prd': ')'        context.phase = 'design';
         logger.info(' Processing PRD document');')        break;
       case 'epic': ')'        context.phase = 'planning';
-        logger.info('️ Processing Epic document');')        break;
+        logger.info(' Processing Epic document');')        break;
       case 'feature': ')'        context.phase = 'planning';
         logger.info(' Processing Feature document');')        break;
       case 'task': ')'        context.phase = 'execution';

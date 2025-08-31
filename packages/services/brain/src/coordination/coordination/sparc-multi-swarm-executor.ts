@@ -178,7 +178,7 @@ export class SPARCMultiSwarmExecutor {
     const testId = `sparc-multiswarm-${generateNanoId()}`;
     const startTime = new Date();
 
-    logger.info(`🧪 Starting SPARC Multi-Swarm A/B test: ${testId}`);
+    logger.info(` Starting SPARC Multi-Swarm A/B test: ${testId}`);
     logger.info(` Task: ${taskDescription}`);
     logger.info(
       ` Testing ${sparcStrategies.length} SPARC strategies with git tree isolation`
@@ -385,7 +385,7 @@ export class SPARCMultiSwarmExecutor {
     options: any
   ): Promise<SPARCExecutionResult[]> {
     logger.info(
-      `⏭️ Executing ${strategies.length} SPARC strategies sequentially with git trees...`
+      `⏭ Executing ${strategies.length} SPARC strategies sequentially with git trees...`
     );
 
     const results:SPARCExecutionResult[] = [];
