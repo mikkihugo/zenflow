@@ -114,20 +114,22 @@ export class TransformProcessor implements BaseProcessor {
       totalTransformed:this.transformedCount,
       transformRate:
         this.processedCount > 0
-          ? ((this.transformedCount / this.processedCount) * 100).toFixed(1) +
-            '%')          : '0%',});
-}
+          ? ((this.transformedCount / this.processedCount) * 100).toFixed(1) + '%'
+          : '0%',
+    };
+  }
 
-  async getHealthStatus():Promise<{
-    status:'healthy''  |  ' degraded''  |  ' unhealthy';
-    lastProcessed?:number;
-    lastError?:string;
-}> {
+  async getHealthStatus(): Promise<{
+    status: 'healthy' | 'degraded' | 'unhealthy';
+    lastProcessed?: number;
+    lastError?: string;
+  }> {
     return {
-      status:this.lastError ? 'unhealthy' : ' healthy',      lastProcessed:this.lastProcessedTime || undefined,
-      lastError:this.lastError || undefined,
-};
-}
+      status: this.lastError ? 'unhealthy' : 'healthy',
+      lastProcessed: this.lastProcessedTime || undefined,
+      lastError: this.lastError || undefined,
+    };
+  }
 
   /**
    * Get transform statistics

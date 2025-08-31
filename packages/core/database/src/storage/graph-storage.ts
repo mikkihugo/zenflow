@@ -21,8 +21,7 @@ const logger = getLogger('graph-storage');
 
 export class GraphStorageImpl implements GraphStorage {
   constructor(
-    private connection: DatabaseConnection,
-    private _config: DatabaseConfig
+    private connection: DatabaseConnection
   ) {}
 
   async addNode(
@@ -93,11 +92,8 @@ export class GraphStorageImpl implements GraphStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to get node:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        `Failed to get node: ${error instanceof Error ? error.message : String(error)}`,
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }
@@ -145,10 +141,7 @@ export class GraphStorageImpl implements GraphStorage {
       });
       throw new QueryError(
         `Failed to update node:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }
@@ -175,10 +168,7 @@ export class GraphStorageImpl implements GraphStorage {
       });
       throw new QueryError(
         `Failed to delete node:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }
@@ -216,10 +206,7 @@ export class GraphStorageImpl implements GraphStorage {
       });
       throw new QueryError(
         `Failed to create edge:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }
@@ -262,10 +249,7 @@ export class GraphStorageImpl implements GraphStorage {
       });
       throw new QueryError(
         `Failed to get edge:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }
@@ -323,10 +307,7 @@ export class GraphStorageImpl implements GraphStorage {
       });
       throw new QueryError(
         `Failed to update edge:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }
@@ -353,10 +334,7 @@ export class GraphStorageImpl implements GraphStorage {
       });
       throw new QueryError(
         `Failed to delete edge:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }
@@ -419,10 +397,7 @@ export class GraphStorageImpl implements GraphStorage {
       });
       throw new QueryError(
         `Failed to get connections:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }
@@ -486,10 +461,7 @@ export class GraphStorageImpl implements GraphStorage {
       });
       throw new QueryError(
         `Failed to find path:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }
@@ -554,10 +526,7 @@ export class GraphStorageImpl implements GraphStorage {
       });
       throw new QueryError(
         `Failed to execute query:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }
@@ -587,10 +556,7 @@ export class GraphStorageImpl implements GraphStorage {
       });
       throw new QueryError(
         `Failed to create node label:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }
@@ -620,10 +586,7 @@ export class GraphStorageImpl implements GraphStorage {
       });
       throw new QueryError(
         `Failed to create edge type:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }
@@ -678,10 +641,7 @@ export class GraphStorageImpl implements GraphStorage {
       });
       throw new QueryError(
         `Failed to get stats:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }
@@ -715,10 +675,7 @@ export class GraphStorageImpl implements GraphStorage {
       });
       throw new QueryError(
         `Failed to create nodes table:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }
@@ -743,10 +700,7 @@ export class GraphStorageImpl implements GraphStorage {
       });
       throw new QueryError(
         `Failed to create edges table:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }

@@ -117,10 +117,7 @@ export class VectorStorageImpl implements VectorStorage {
       });
       throw new QueryError(
         `Failed to search vectors:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }
@@ -161,10 +158,7 @@ export class VectorStorageImpl implements VectorStorage {
       });
       throw new QueryError(
         `Failed to get vector:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }
@@ -220,10 +214,7 @@ export class VectorStorageImpl implements VectorStorage {
       });
       throw new QueryError(
         `Failed to update vector:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }
@@ -250,10 +241,7 @@ export class VectorStorageImpl implements VectorStorage {
       });
       throw new QueryError(
         `Failed to delete vector:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }
@@ -283,10 +271,7 @@ export class VectorStorageImpl implements VectorStorage {
       });
       throw new QueryError(
         `Failed to create vector index:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }
@@ -332,10 +317,7 @@ export class VectorStorageImpl implements VectorStorage {
       });
       throw new QueryError(
         `Failed to count vectors:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }
@@ -382,10 +364,7 @@ export class VectorStorageImpl implements VectorStorage {
       });
       throw new QueryError(
         `Failed to get vector stats:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }

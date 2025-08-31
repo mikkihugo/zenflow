@@ -6,7 +6,7 @@
  */
 
 import { getLogger } from '../logger.js';
-import { createErrorOptions } from '../utils/error-helpers.js';
+import { createQueryErrorOptions } from '../utils/error-helpers.js';
 import {
   type DatabaseConfig,
   type DatabaseConnection,
@@ -34,15 +34,15 @@ export class KeyValueStorageImpl implements KeyValueStorage {
 
   constructor(
     connection: DatabaseConnection,
-    private config: DatabaseConfig
+    config: DatabaseConfig
   ) {
     this.connection = connection;
 
     // Configure caching
     const options = config.options || {};
-    this.cacheEnabled = (options.enableCache as boolean) !== false;
-    this.maxCacheSize = (options.maxCacheSize as number) || 10000;
-    this.defaultTtl = options.defaultTtl as number;
+    this.cacheEnabled = (options['enableCache'] as boolean) !== false;
+    this.maxCacheSize = (options['maxCacheSize'] as number) || 10000;
+    this.defaultTtl = options['defaultTtl'] as number;
 
     // Start cache cleanup interval
     if (this.cacheEnabled) {
@@ -82,7 +82,7 @@ export class KeyValueStorageImpl implements KeyValueStorage {
       const row = result.rows[0];
 
       // Check TTL expiration
-      if (row.ttl && Date.now() > row.stored_at + row.ttl) {
+      if (row && row.ttl && Date.now() > row.stored_at + row.ttl) {
         // Expired, delete asynchronously
         this.delete(key).catch((error) => {
           logger.error('Failed to delete expired key', { key, error });
@@ -91,6 +91,10 @@ export class KeyValueStorageImpl implements KeyValueStorage {
       }
 
       // Parse stored value
+      if (!row) {
+        return null;
+      }
+
       const { value: rawValue, ttl } = row;
       let value: unknown;
       try {
@@ -113,13 +117,13 @@ export class KeyValueStorageImpl implements KeyValueStorage {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new QueryError(
-        `Failed to get key "${key}":${error instanceof Error ? error.message : String(error)}`,
-        {
-          query: `SELECT value, ttl, stored_at FROM kv_store WHERE key = ?`,
-          params: [key],
+        `Failed to get key "${key}": ${error instanceof Error ? error.message : String(error)}`,
+        createQueryErrorOptions(
+          `SELECT value, ttl, stored_at FROM kv_store WHERE key = ?`,
+          [key],
           correlationId,
-          cause: error instanceof Error ? error : undefined,
-        }
+          error
+        )
       );
     }
   }
@@ -170,7 +174,7 @@ export class KeyValueStorageImpl implements KeyValueStorage {
           query: `INSERT OR REPLACE INTO kv_store (key, value, ttl, stored_at, updated_at) VALUES (?, ?, ?, ?, ?)`,
           params: [key],
           correlationId,
-          cause: error instanceof Error ? error : undefined,
+          ...(error instanceof Error ? { cause: error } : {}),
         }
       );
     }
@@ -215,7 +219,7 @@ export class KeyValueStorageImpl implements KeyValueStorage {
           query: `DELETE FROM kv_store WHERE key = ?`,
           params: [key],
           correlationId,
-          cause: error instanceof Error ? error : undefined,
+          ...(error instanceof Error ? { cause: error } : {}),
         }
       );
     }
@@ -263,7 +267,7 @@ export class KeyValueStorageImpl implements KeyValueStorage {
           query: `SELECT COUNT(*) as count FROM kv_store WHERE key = ? AND (ttl IS NULL OR ? < stored_at + ttl)`,
           params: [key, Date.now()],
           correlationId,
-          cause: error instanceof Error ? error : undefined,
+          ...(error instanceof Error ? { cause: error } : {}),
         }
       );
     }
@@ -314,7 +318,7 @@ export class KeyValueStorageImpl implements KeyValueStorage {
           query: `SELECT key FROM kv_store WHERE (ttl IS NULL OR ? < stored_at + ttl)`,
           params: [Date.now()],
           correlationId,
-          cause: error instanceof Error ? error : undefined,
+          ...(error instanceof Error ? { cause: error } : {}),
         }
       );
     }
@@ -348,7 +352,7 @@ export class KeyValueStorageImpl implements KeyValueStorage {
           query: `DELETE FROM kv_store`,
           params: [],
           correlationId,
-          cause: error instanceof Error ? error : undefined,
+          ...(error instanceof Error ? { cause: error } : {}),
         }
       );
     }
@@ -382,7 +386,7 @@ export class KeyValueStorageImpl implements KeyValueStorage {
           query: `SELECT COUNT(*) as count FROM kv_store WHERE (ttl IS NULL OR ? < stored_at + ttl)`,
           params: [Date.now()],
           correlationId,
-          cause: error instanceof Error ? error : undefined,
+          ...(error instanceof Error ? { cause: error } : {}),
         }
       );
     }
@@ -471,7 +475,7 @@ export class KeyValueStorageImpl implements KeyValueStorage {
             'SELECT key, value, ttl, stored_at FROM kv_store WHERE key IN (...) AND (ttl IS NULL OR ? < stored_at + ttl)',
           params: keys,
           correlationId,
-          cause: error instanceof Error ? error : undefined,
+          ...(error instanceof Error ? { cause: error } : {}),
         }
       );
     }
@@ -524,7 +528,7 @@ export class KeyValueStorageImpl implements KeyValueStorage {
             'INSERT OR REPLACE INTO kv_store (key, value, ttl, stored_at, updated_at) VALUES (?, ?, ?, ?, ?)',
           params: Array.from(entries.keys()),
           correlationId,
-          cause: error instanceof Error ? error : undefined,
+          ...(error instanceof Error ? { cause: error } : {}),
         }
       );
     }
@@ -575,7 +579,7 @@ export class KeyValueStorageImpl implements KeyValueStorage {
           query: 'DELETE FROM kv_store WHERE key IN (...)',
           params: keys,
           correlationId,
-          cause: error instanceof Error ? error : undefined,
+          ...(error instanceof Error ? { cause: error } : {}),
         }
       );
     }
@@ -637,7 +641,7 @@ export class KeyValueStorageImpl implements KeyValueStorage {
 
     this.memoryCache.set(key, {
       value,
-      ttl,
+      ...(ttl ? { ttl } : {}),
       storedAt: Date.now(),
     });
   }

@@ -235,11 +235,12 @@ export class ProcessorManager extends TypedEventBase {
 
         if (health.status === 'unhealthy') {
           overallStatus = 'unhealthy';
-} else if (
-          health.status === 'degraded'  && 
-          overallStatus === 'healthy')        ) {
+        } else if (
+          health.status === 'degraded' && 
+          overallStatus === 'healthy'
+        ) {
           overallStatus = 'degraded';
-}
+        }
 } catch (_error) {
         processorStatuses.push({ name, status: 'unhealthy'});
         overallStatus = 'unhealthy';

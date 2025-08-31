@@ -6,14 +6,13 @@
  * real-time communication via Socket.IO.
  */
 
-import { EventEmitter } from 'events';
 import type { Server as HTTPServer } from 'http';
 import type { Server as SocketIOServer } from 'socket.io';
 import {
   getTaskMasterService,
   type TaskMasterService,
 } from '../services/api/taskmaster';
-import { getLogger, createContainer } from '@claude-zen/foundation';
+import { getLogger, createContainer, EventEmitter, type EventMap } from '@claude-zen/foundation';
 
 const logger = getLogger('core-system');
 
@@ -102,13 +101,23 @@ export interface SystemStatus {
   lastUpdate: string;
 }
 
+// Core System event map  
+interface CoreSystemEventMap extends EventMap {
+  'error': [Error];
+  'shutdown': [];
+  'status-changed': [string];
+  'initialized': [{ timestamp: string; config: SystemConfig }];
+  'websocket:connected': [string];
+  'websocket:disconnected': [string];
+}
+
 /**
  * Core System - WebSocket-Enabled System Coordinator
  * 
  * Manages system lifecycle, WebSocket connections, and component coordination.
  * Integrates with Socket.IO for real-time dashboard features.
  */
-export class System extends EventEmitter {
+export class System extends EventEmitter<CoreSystemEventMap> {
   private status: SystemStatus['status'] = INITIALIZING_STATUS;
   private startTime: number;
   private initialized = false;

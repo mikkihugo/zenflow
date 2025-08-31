@@ -6,10 +6,9 @@
  * lifecycle and coordinates system components.
  */
 
-import { EventEmitter } from 'events';
 import type { Server as HTTPServer } from 'http';
 import type { Server as SocketIOServer } from 'socket.io';
-import { getLogger, createContainer } from '@claude-zen/foundation';
+import { getLogger, createContainer, EventEmitter, type EventMap } from '@claude-zen/foundation';
 
 const logger = getLogger('application-coordinator');
 
@@ -100,13 +99,24 @@ export interface SystemStatus {
   lastUpdate: string;
 }
 
+// Application Coordinator event map
+interface ApplicationCoordinatorEventMap extends EventMap {
+  'error': [Error];
+  'shutdown': [];
+  'status-changed': [string];
+  'initialized': [{ timestamp: string; config: ApplicationCoordinatorConfig; activeConnections: number }];
+  'component:initialized': [string];
+  'websocket:connected': [string];
+  'websocket:disconnected': [string];
+}
+
 /**
  * Application Coordinator - WebSocket-Enabled System Orchestration
  *
  * Coordinates all application components with real-time WebSocket integration.
  * Manages system lifecycle, component orchestration, and real-time communication.
  */
-export class ApplicationCoordinator extends EventEmitter {
+export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorEventMap> {
   private status: SystemStatus['status'] = 'initializing';
   private startTime: number;
   private initialized = false;

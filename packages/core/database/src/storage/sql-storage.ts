@@ -281,10 +281,7 @@ export class SQLStorageImpl implements SqlStorage {
       });
       throw new QueryError(
         `Failed to create table:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }
@@ -309,10 +306,7 @@ export class SQLStorageImpl implements SqlStorage {
       });
       throw new QueryError(
         `Failed to drop table:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }
@@ -331,10 +325,7 @@ export class SQLStorageImpl implements SqlStorage {
       });
       throw new QueryError(
         `Failed to truncate table:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }
@@ -370,10 +361,7 @@ export class SQLStorageImpl implements SqlStorage {
       });
       throw new QueryError(
         `Failed to get table schema:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error)
       );
     }
   }

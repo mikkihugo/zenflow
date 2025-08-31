@@ -21,8 +21,7 @@
  * @since 1.0.0
  * @version 1.0.0
  */
-import { EventEmitter } from 'node:events';
-import type { Logger } from '@claude-zen/foundation';
+import { EventEmitter, type EventMap, type Logger } from '@claude-zen/foundation';
 
 // =========================================================================== 
 // ARCHITECTURE HEALTH INTERFACES

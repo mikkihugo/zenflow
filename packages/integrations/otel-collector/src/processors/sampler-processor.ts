@@ -189,15 +189,15 @@ export class SamplerProcessor implements BaseProcessor {
 } {
     const actualRate =
       this.processedCount > 0
-        ? `${{}((this.sampledCount / this.processedCount) * 100).toFixed(1)}%`
-        : '0%;
-'
+        ? `${((this.sampledCount / this.processedCount) * 100).toFixed(1)}%`
+        : '0%';
+
     return {
-      processed:this.processedCount,
-      sampled:this.sampledCount,
-      sampleRate:actualRate,
-      targetRate:`${{}(this.targetRate * 100).toFixed(1)}%`,
-      currentAdaptiveRate:`${{}(this.currentRate * 100).toFixed(1)}%`,
+      processed: this.processedCount,
+      sampled: this.sampledCount,
+      sampleRate: actualRate,
+      targetRate: `${(this.targetRate * 100).toFixed(1)}%`,
+      currentAdaptiveRate: `${(this.currentRate * 100).toFixed(1)}%`,
 };
 }
 

@@ -34,14 +34,16 @@ export const createMockLLMProvider = (providerId: string = 'claude-code') => ({
   name: `Mock ${providerId}`,
   type: providerId.includes('api') ? 'api' : 'cli',
   available: true,
-  sendMessage:vi.fn().mockResolvedValue({
-    content:`Mock response from ${providerId}`,`
-    role: 'assistant',    metadata:{ provider: providerId},
-}),
-  executeTask:vi.fn().mockResolvedValue({
-    success:true,
-    result: 'Task completed successfully',    provider:providerId,
-}),
+  sendMessage: vi.fn().mockResolvedValue({
+    content: `Mock response from ${providerId}`,
+    role: 'assistant',
+    metadata: { provider: providerId },
+  }),
+  executeTask: vi.fn().mockResolvedValue({
+    success: true,
+    result: 'Task completed successfully',
+    provider: providerId,
+  }),
   getCapabilities: vi.fn().mockResolvedValue({
     fileOperations: providerId === 'claude-code',
     codeCompletion: providerId.includes('copilot'),

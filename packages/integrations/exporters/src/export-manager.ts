@@ -5,8 +5,7 @@
  * Supports JSON, YAML, CSV, XML, and custom formats.
  */
 
-import { getLogger } from '@claude-zen/foundation';
-import { EventEmitter } from 'node:events';
+import { getLogger, EventEmitter, type EventMap } from '@claude-zen/foundation';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 
