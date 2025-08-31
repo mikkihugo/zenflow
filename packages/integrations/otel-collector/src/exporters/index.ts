@@ -52,7 +52,7 @@ class ExporterFactory {
       case 'file':
         return new FileExporter(config);
       default:
-        throw new Error(`Unsupported exporter type:${config.type}`);
+        throw new Error('Unsupported exporter type: ' + config.type);
 }
 }
 }
@@ -76,12 +76,12 @@ export class ExporterManager {
           this.exporters.set(config.name, exporter);
           this.configs.set(config.name, config);
 } catch (error) {
-          this.logger.error(`Failed to create exporter ${config.name}`, error);
+          this.logger.error('Failed to create exporter ' + config.name, error);
 }
 }
 }
 
-    this.logger.info(`Initialized ${this.exporters.size} exporters`);
+    this.logger.info('Initialized ' + this.exporters.size + ' exporters');
 }
 
   /**
@@ -92,9 +92,9 @@ export class ExporterManager {
       async ([name, exporter]) => {
         try {
           await exporter.initialize();
-          this.logger.info(`Exporter ${name} initialized`);
+          this.logger.info('Exporter ' + name + ' initialized');
 } catch (error) {
-          this.logger.error(`Failed to initialize exporter ${name}`, error);
+          this.logger.error('Failed to initialize exporter ' + name, error);
           // Don't throw - allow other exporters to initialize
 }
 }
@@ -129,7 +129,7 @@ export class ExporterManager {
             duration:Date.now() - startTime,
 };
 } catch (error) {
-          this.logger.error(`Export failed for ${name}`, error);
+          this.logger.error('Export failed for ' + name, error);
           return {
             success:false,
             exported:0,
@@ -177,7 +177,7 @@ export class ExporterManager {
             duration:Date.now() - startTime,
 };
 } catch (error) {
-          this.logger.error(`Batch export failed for ${name}`, error);
+          this.logger.error('Batch export failed for ' + name, error);
           return {
             success:false,
             exported:0,
@@ -200,9 +200,9 @@ export class ExporterManager {
       async ([name, exporter]) => {
         try {
           await exporter.shutdown();
-          this.logger.info(`Exporter ${name} shut down`);
+          this.logger.info('Exporter ' + name + ' shut down');
 } catch (error) {
-          this.logger.error(`Failed to shutdown exporter ${name}`, error);`
+          this.logger.error('Failed to shutdown exporter ' + name, error);
 }
 }
     );
@@ -277,7 +277,7 @@ export class ExporterManager {
    */
   async addExporter(config:ExporterConfig): Promise<void> {
     if (this.exporters.has(config.name)) {
-      throw new Error(`Exporter ${config.name} already exists`);
+      throw new Error('Exporter ' + config.name + ' already exists');
 }
 
     try {
@@ -287,9 +287,9 @@ export class ExporterManager {
       this.exporters.set(config.name, exporter);
       this.configs.set(config.name, config);
 
-      this.logger.info(`Added exporter ${config.name}`);
+      this.logger.info('Added exporter ' + config.name);
 } catch (error) {
-      this.logger.error(`Failed to add exporter ${config.name}`, error);
+      this.logger.error('Failed to add exporter ' + config.name, error);
       throw error;
 }
 }
@@ -300,7 +300,7 @@ export class ExporterManager {
   async removeExporter(name:string): Promise<void> {
     const exporter = this.exporters.get(name);
     if (!exporter) {
-      this.logger.warn(`Exporter ${name} not found`);
+      this.logger.warn('Exporter ' + name + ' not found');
       return;
 }
 
@@ -309,9 +309,9 @@ export class ExporterManager {
       this.exporters.delete(name);
       this.configs.delete(name);
 
-      this.logger.info(`Removed exporter ${name}`);
+      this.logger.info('Removed exporter ' + name);
 } catch (error) {
-      this.logger.error(`Failed to remove exporter ${name}`, error);`
+      this.logger.error('Failed to remove exporter ' + name, error);
       throw error;
 }
 }
