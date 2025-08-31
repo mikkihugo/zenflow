@@ -67,6 +67,6 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    include: ['chart.js', 'date-fns', 'socket.io-client'],
+  include: ['date-fns', 'socket.io-client'],
   },
 });
