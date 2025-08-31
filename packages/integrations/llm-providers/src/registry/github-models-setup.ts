@@ -231,10 +231,10 @@ export async function setupGitHubModelsDefault():Promise<ModelRegistryService> {
     );
 
     return registryService;
-} catch (error) {
+  } catch (error) {
     logger.error('❌ Failed to setup GitHub Models: ', error);
-'    throw error;
-}
+    throw error;
+  }
 }
 
 /**

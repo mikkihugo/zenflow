@@ -164,30 +164,35 @@ export class PrometheusExporter implements BaseExporter {
 
     // Health endpoint
     app.get('/health', (req, res) => {
-    ')      res.status(200).json({ status: 'healthy'});')});
+      res.status(200).json({ status: 'healthy' });
+    });
 
     // Metrics endpoint
     app.get('/metrics', async (req, res) => {
-    ')      try {
-        res.set('Content-Type', this.metricsRegistry.contentType);')        const metrics = await this.metricsRegistry.metrics();
+      try {
+        res.set('Content-Type', this.metricsRegistry.contentType);
+        const metrics = await this.metricsRegistry.metrics();
         res.end(metrics);
-} catch (error) {
+      } catch (error) {
         this.logger.error('Failed to serve metrics', error);
-        res.status(500).send('Internal server error');')}
-});
+        res.status(500).send('Internal server error');
+      }
+    });
 
     // Custom metrics endpoint (if configured)
-    const customPath = this.config.config?.metricsPath || '/metrics;
+    const customPath = this.config.config?.metricsPath || '/metrics';
     if (customPath !== '/metrics') {
-    ')      app.get(customPath, async (req, res) => {
+      app.get(customPath, async (req, res) => {
         try {
-          res.set('Content-Type', this.metricsRegistry.contentType);')          const metrics = await this.metricsRegistry.metrics();
+          res.set('Content-Type', this.metricsRegistry.contentType);
+          const metrics = await this.metricsRegistry.metrics();
           res.end(metrics);
-} catch (error) {
+        } catch (error) {
           this.logger.error('Failed to serve custom metrics', error);
-          res.status(500).send('Internal server error');')}
-});
-}
+          res.status(500).send('Internal server error');
+        }
+      });
+    }
 
     // Start server
     this.httpServer = createServer(app);
