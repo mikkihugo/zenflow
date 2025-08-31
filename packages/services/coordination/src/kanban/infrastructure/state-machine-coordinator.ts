@@ -51,21 +51,33 @@ export class StateMachineCoordinatorService {
     initialContext: KanbanContext
   ): Promise<string> {
     if (!this.initialized) {
-    ')      throw new Error('StateMachineCoordinator not initialized');
-};)    if (this.activeMachines.size >= this.config.maxConcurrentMachines) {';
-    ')      throw new Error('Maximum concurrent state machines reached');
-}
+      throw new Error('StateMachineCoordinator not initialized');
+    }
+    
+    if (this.activeMachines.size >= this.config.maxConcurrentMachines) {
+      throw new Error('Maximum concurrent state machines reached');
+    }
+    
     try {
       // Create workflow state machine configuration
       const machineConfig = this.createWorkflowMachineConfig(initialContext);
       
       // For now, create a placeholder machine representation
       const machine = {
-    ')        id: 'idle,',
-'        context: this.activeMachines.size;')      this.metrics.machineStates[machineId] = 'idle')      // Emit machine creation event';
-      await this.eventCoordinator.emitEventSafe('workflow: 'idle,',
-'        context: this.activeMachines.get(machineId);')    if (!machine) {';
-    `)      throw new Error(`State machine ${machineId} not found``);`;
+        id: machineId,
+        state: 'idle',
+        context: initialContext,
+      };
+      
+      this.activeMachines.set(machineId, machine);
+      this.metrics.machineStates[machineId] = 'idle';
+      
+      // Emit machine creation event
+      await this.eventCoordinator.emitEventSafe('workflow:state_machine:created', {
+        machineId,
+        initialState: 'idle',
+        context: initialContext,
+      });
 }
     const startTime = Date.now();
     const fromState = machine.state;

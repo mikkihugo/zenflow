@@ -39,8 +39,8 @@ export interface SafeArtifact {
 export interface SafeWorkspace {
   workspaceId:string; // Database workspace identifier
   name:string;
-  safeConfiguration: 'essential|large-solution|portfolio;
-'  // NO file paths - everything stored in databases
+  safeConfiguration: 'essential' | 'large-solution' | 'portfolio';
+  // NO file paths - everything stored in databases
   databases:{
     artifacts:string; // Artifact database connection
     relationships:string; // Relationship graph database
@@ -66,9 +66,11 @@ export class SafeArtifactIntelligence extends TypedEventBase {
   /**
    * Initialize system - SAFe 6.0 Essential artifact intelligence.
    */
-  async initialize():Promise<void> {
-    logger.info('🚀 Initializing SAFe Artifact Intelligence System');')
-    logger.info('✅ SAFe Artifact Intelligence ready');')    this.emit('initialized', timestamp:new Date() );')}
+  async initialize(): Promise<void> {
+    logger.info('Initializing SAFe Artifact Intelligence System');
+    logger.info('SAFe Artifact Intelligence ready');
+    this.emit('initialized', { timestamp: new Date() });
+  }
 
   /**
    * Load existing workspace with documents.
@@ -97,8 +99,8 @@ export class SafeArtifactIntelligence extends TypedEventBase {
     // Load existing artifacts from database
     await this.loadArtifactsFromDatabase(workspaceId);
 
-    logger.info(`📊 Loaded SAFe workspace:$workspaceName`);`
-    this.emit('workspace:loaded', { workspaceId, name:workspaceName});
+    logger.info('Loaded SAFe workspace: ' + workspaceName);
+    this.emit('workspace:loaded', { workspaceId, name: workspaceName });
 
     return workspaceId;
 }
@@ -114,11 +116,11 @@ export class SafeArtifactIntelligence extends TypedEventBase {
     docPath:string
   ):Promise<void> {
     const context = this.workspaces.get(workspaceId);
-    if (!context) throw new Error(`Workspace ${workspaceId} not found`);`
+    if (!context) throw new Error('Workspace ' + workspaceId + ' not found');
 
     const docType = this.getDocumentType(docPath);
-    const content = await readFile(docPath, 'utf8');')
-    logger.info(`📄 Processing $docTypedocument:$docPath`);`
+    const content = await readFile(docPath, 'utf8');
+    logger.info('Processing ' + docType + ' document: ' + docPath);
 
     const doc:VisionaryDocument = {
       type:docType,
