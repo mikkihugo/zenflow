@@ -836,13 +836,13 @@ export class SQLiteAdapter implements DatabaseConnection {
   }
 
   private async createMigrationsTable(): Promise<void> {
-    await this.query('
-      CREATE TABLE IF NOT EXISTS _migrations (
-        version TEXT PRIMARY KEY,
-        name TEXT NOT NULL,
-        applied_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
-    ');
+    await this.query(
+      'CREATE TABLE IF NOT EXISTS _migrations (' +
+      '  version TEXT PRIMARY KEY,' +
+      '  name TEXT NOT NULL,' +
+      '  applied_at DATETIME DEFAULT CURRENT_TIMESTAMP' +
+      ')'
+    );
   }
 
   private async recordMigration(version: string, name: string): Promise<void> {

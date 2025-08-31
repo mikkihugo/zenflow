@@ -5,12 +5,12 @@
  * Orchestrates web server, API routes, WebSocket, sessions, and process management.
  */
 
-//  Node.js built-in modules
+// 📁 Node.js built-in modules
 import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-//  TIER 1 ONLY - 5-Tier Architecture Compliance
+// TIER 1 ONLY - 5-Tier Architecture Compliance
 import { getLogger, ProcessLifecycleManager } from '@claude-zen/foundation';
 
 // Strategic facades for accessing functionality
@@ -32,15 +32,15 @@ class WebConfig {
 
   constructor(config: unknown) {
     const cfg = config as Partial<WebConfig>;
-    this.port = cfg?.port || parseInt(process.env['PORT'] || '3000', 10);
-    this.host = cfg?.host || process.env['HOST'] || 'localhost';
+    this.port = cfg?.port || parseInt(process.env.PORT || '3000', 10);
+    this.host = cfg?.host || process.env.HOST || 'localhost';
     this.staticDir = cfg?.staticDir;
     this.daemon = cfg?.daemon || false;
     this.container = cfg?.container;
     
     // Validate port range
     if (this.port < 1024 || this.port > 65535) {
-      throw new Error('Invalid port ' + this.port + '. Port must be between 1024 and 65535.');
+      throw new Error(`Invalid port ${this.port}. Port must be between 1024 and 65535.`);
     }
   }
 }
@@ -67,7 +67,7 @@ class DIContainer {
       this.services.set(name, instance);
       return instance as T;
     }
-    throw new Error('Service ' + name + ' not found in container');
+    throw new Error(`Service ${name} not found in container`);
   }
 
   has(name: string): boolean {
@@ -103,7 +103,7 @@ class WebDashboardServer {
         this.logger.warn('Express not available, using basic HTTP server');
         this.setupBasicServer();
       }
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to initialize server:', error);
       throw error;
     }
@@ -116,7 +116,7 @@ class WebDashboardServer {
     };
 
     // Basic middleware
-    express.use((_req: unknown, _res: unknown, next: () => void) => {
+    express.use((req: unknown, res: unknown, next: () => void) => {
       this.logger.debug('Request received');
       next();
     });
@@ -133,7 +133,7 @@ class WebDashboardServer {
         listen: (port: number, host: string, callback: () => void) => unknown;
       };
       this.server = express.listen(this.config.port, this.config.host, () => {
-        this.logger.info('Server running on ${this.config.host}:' + this.config.port);
+        this.logger.info(`Server running on ${this.config.host}:${this.config.port}`);
       });
     }
   }
@@ -186,7 +186,7 @@ class WebSessionManager {
   }
 
   get middleware() {
-    return (_req: unknown, _res: unknown, next: () => void) => {
+    return (req: unknown, res: unknown, next: () => void) => {
       // Basic session middleware
       this.logger.debug('Processing session');
       next();
@@ -222,8 +222,8 @@ class WebApiRoutes {
     try {
       // Initialize API handler with production WebSocket coordinator
       const webSocketCoordinator = {
-        broadcast: (_event: string, _data: unknown) => {
-          this.logger.debug('Broadcasting ' + event + ':', data);
+        broadcast: (event: string, data: unknown) => {
+          this.logger.debug(`Broadcasting ${event}:`, data);
         }
       };
 
@@ -237,7 +237,7 @@ class WebApiRoutes {
       );
 
       this.logger.info('API routes configured successfully');
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to setup API routes:', error);
       throw error;
     }
@@ -264,14 +264,14 @@ class WebSocketManager {
         this.socketIO = socketIOGetter();
         this.setupEventHandlers();
       }
-    } catch (_error) {
+    } catch (error) {
       this.logger.warn('WebSocket initialization failed:', error);
     }
   }
 
   private setupEventHandlers(): void {
     if (this.socketIO && typeof (this.socketIO as { on: Function }).on === 'function') {
-      (this.socketIO as { on: (_event: string, handler: Function) => void }).on('connection', (socket: unknown) => {
+      (this.socketIO as { on: (event: string, handler: Function) => void }).on('connection', (socket: unknown) => {
         this.connections.add(socket);
         this.logger.debug('Client connected');
       });
@@ -314,7 +314,7 @@ class WebHtmlGenerator {
     const { getVersion } = (global as { foundation?: { getVersion: () => string } })
       .foundation || { getVersion: () => '1.0.0' };
 
-    return '
+    return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -377,10 +377,10 @@ class WebHtmlGenerator {
             </div>
         </div>
         
-        <div class="version">Claude Code Zen v' + getVersion() + '</div>
+        <div class="version">Claude Code Zen v${getVersion()}</div>
     </div>
 </body>
-</html>';
+</html>`;
   }
 }
 
@@ -423,8 +423,8 @@ class WebProcessManager {
     try {
       const fs = await import('fs/promises');
       await fs.writeFile(this.pidFile, process.pid.toString());
-      this.logger.info('Daemon mode started with PID ' + process.pid);
-    } catch (_error) {
+      this.logger.info(`Daemon mode started with PID ${process.pid}`);
+    } catch (error) {
       this.logger.error('Failed to start daemon mode:', error);
       throw error;
     }
@@ -572,14 +572,14 @@ export class WebInterface {
       if (this.container) {
         this.lifecycleManager = new ProcessLifecycleManager({
           onShutdown: async () => {
-            this.logger.info(' Graceful shutdown initiated...');
+            this.logger.info('🧹 Graceful shutdown initiated...');
             await this.stop();
           },
-          onError: (_error: Error) => {
-            this.logger.error(' Application error in web interface: ', error);
+          onError: (error: Error) => {
+            this.logger.error('💥 Application error in web interface: ', error);
           },
         });
-        this.logger.info(' Process lifecycle management enabled');
+        this.logger.info('✓ Process lifecycle management enabled');
       }
 
       // Check for existing instances if in daemon mode
@@ -587,7 +587,7 @@ export class WebInterface {
         const existing = await this.processManager?.isInstanceRunning();
         if (existing) {
           throw new Error(
-            'Web interface already running with PID ' + existing.pid
+            `Web interface already running with PID ${existing.pid}`
           );
         }
       }
@@ -604,7 +604,7 @@ export class WebInterface {
       await this.server?.start();
 
       this.logger.info('Web interface started successfully');
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to start web interface: ', error);
       throw error;
     }
@@ -619,22 +619,22 @@ export class WebInterface {
     try {
       // Setup Express middleware
       this.server?.setupMiddleware();
-      this.logger.debug(' Express middleware setup complete');
-    } catch (_error) {
+      this.logger.debug('✓ Express middleware setup complete');
+    } catch (error) {
       this.logger.warn(
-        ' Express middleware setup failed, continuing...',
-        (error as Error).message
+        '⚠️ Express middleware setup failed, continuing...',
+        error.message
       );
     }
 
     try {
       // Add session management middleware
       app.use(this.sessionManager?.middleware);
-      this.logger.debug(' Session middleware setup complete');
-    } catch (_error) {
+      this.logger.debug('✓ Session middleware setup complete');
+    } catch (error) {
       this.logger.warn(
-        ' Session middleware setup failed, continuing...',
-        (error as Error).message
+        '⚠️ Session middleware setup failed, continuing...',
+        error.message
       );
     }
 
@@ -642,49 +642,49 @@ export class WebInterface {
     try {
       // Setup API routes
       this.apiRoutes.setupRoutes(app);
-      this.logger.debug(' API routes setup complete');
-    } catch (_error) {
+      this.logger.debug('✓ API routes setup complete');
+    } catch (error) {
       this.logger.warn(
-        ' API routes setup failed, continuing...',
-        (error as Error).message
+        '⚠️ API routes setup failed, continuing...',
+        error.message
       );
     }
 
     try {
       // Setup WebSocket communication
       this.webSocketManager?.setupWebSocket(app);
-      this.logger.debug(' WebSocket setup complete');
-    } catch (_error) {
+      this.logger.debug('✓ WebSocket setup complete');
+    } catch (error) {
       this.logger.warn(
-        ' WebSocket setup failed, continuing...',
-        (error as Error).message
+        '⚠️ WebSocket setup failed, continuing...',
+        error.message
       );
     }
 
     try {
       // Setup Svelte proxy routes
       this.setupSvelteProxy(app);
-      this.logger.debug(' Svelte proxy setup complete');
-    } catch (_error) {
+      this.logger.debug('✓ Svelte proxy setup complete');
+    } catch (error) {
       this.logger.warn(
-        ' Svelte proxy setup failed, continuing...',
-        (error as Error).message
+        '⚠️ Svelte proxy setup failed, continuing...',
+        error.message
       );
     }
 
     try {
       // Setup fallback HTML serving
       this.setupFallbackRoutes(app);
-      this.logger.debug(' Fallback routes setup complete');
-    } catch (_error) {
+      this.logger.debug('✓ Fallback routes setup complete');
+    } catch (error) {
       this.logger.warn(
-        ' Fallback routes setup failed, continuing...',
-        (error as Error).message
+        '⚠️ Fallback routes setup failed, continuing...',
+        error.message
       );
     }
 
     this.logger.info(
-      ' Component setup completed (with error tolerance for tsx compatibility)'
+      '🎉 Component setup completed (with error tolerance for tsx compatibility)'
     );
   }
 
@@ -722,7 +722,7 @@ export class WebInterface {
     );
 
     this.logger.info(
-      ' Svelte proxy configured: /dashboard/* -> http://${this.svelteProxyConfig.svelteHost}:' + this.svelteProxyConfig.sveltePort
+      `✓ Svelte proxy configured: /dashboard/* -> http://${this.svelteProxyConfig.svelteHost}:${this.svelteProxyConfig.sveltePort}`
     );
   }
 
@@ -785,7 +785,7 @@ export class WebInterface {
     );
 
     // Catch all for SPA - temporarily disabled due to path-to-regexp error
-    // app.get('*', (_req:any, _res:any) => {
+    // app.get('*', (req:any, res:any) => {
     //   if (existsSync(join(this.config.staticDir!, 'index.html'))) {
     //     res.sendFile(join(this.config.staticDir!, 'index.html'));
     //} else {
@@ -817,7 +817,7 @@ export class WebInterface {
       }
 
       this.logger.info('Web interface stopped successfully');
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Error during shutdown: ', error);
       throw error;
     }

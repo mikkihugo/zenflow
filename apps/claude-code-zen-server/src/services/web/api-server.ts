@@ -767,7 +767,7 @@ export class ApiServer {
       );
     } else if (errorCode === 'ENOTFOUND') {
       this.logger.error(
-        ' Host '' + this.config.host + '' not found. Check network configuration.'
+        ' Host "' + this.config.host + '" not found. Check network configuration.'
       );
     }
   }

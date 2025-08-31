@@ -667,7 +667,7 @@ export class KuzuAdapter implements DatabaseConnection {
       for (const node of nodes) {
         const properties = Object.keys(node);
         const values = Object.values(node);
-        const cypher = 'CREATE (:${tableName} {' + properties.map((prop, i) => prop + ':$param${i + '').join(', ')}})';
+        const cypher = 'CREATE (:' + tableName + ' {' + properties.map((prop, i) => prop + ':$param' + i).join(', ') + '})';
 
         // Convert values array to params object
         const params: Record<string, unknown> = {};
@@ -985,14 +985,14 @@ export class KuzuAdapter implements DatabaseConnection {
 
   private async createMigrationsTable(): Promise<void> {
     try {
-      await this.query('
-        CREATE NODE TABLE IF NOT EXISTS _Migration (
-          version STRING, 
-          name STRING, 
-          applied_at TIMESTAMP,
-          PRIMARY KEY (version)
-        )
-      ');
+      await this.query(
+        'CREATE NODE TABLE IF NOT EXISTS _Migration (' +
+        '  version STRING, ' +
+        '  name STRING, ' +
+        '  applied_at TIMESTAMP,' +
+        '  PRIMARY KEY (version)' +
+        ')'
+      );
     } catch (error) {
       logger.warn('Could not create migrations table', { error });
     }

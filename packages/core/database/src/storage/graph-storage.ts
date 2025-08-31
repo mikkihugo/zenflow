@@ -37,7 +37,7 @@ export class GraphStorageImpl implements GraphStorage {
 
       await this.ensureNodesTable();
 
-      const sql = 'INSERT INTO graph_nodes (id, labels, properties, created_at) VALUES (?, ?, ?, datetime('now'))';
+      const sql = 'INSERT INTO graph_nodes (id, labels, properties, created_at) VALUES (?, ?, ?, datetime(\'now\'))';
       await this.connection.execute(sql, [
         nodeId,
         JSON.stringify(node.labels || []),
@@ -187,7 +187,7 @@ export class GraphStorageImpl implements GraphStorage {
 
       await this.ensureEdgesTable();
 
-      const sql = 'INSERT INTO graph_edges (id, from_id, to_id, type, properties, created_at) VALUES (?, ?, ?, ?, ?, datetime('now'))';
+      const sql = 'INSERT INTO graph_edges (id, from_id, to_id, type, properties, created_at) VALUES (?, ?, ?, ?, ?, datetime(\'now\'))';
       await this.connection.execute(sql, [
         edgeId,
         edge.fromId,
@@ -660,12 +660,12 @@ export class GraphStorageImpl implements GraphStorage {
 
   private async ensureNodesTable(): Promise<void> {
     try {
-      const sql = 'CREATE TABLE IF NOT EXISTS graph_nodes (
-        id TEXT PRIMARY KEY,
-        labels TEXT NOT NULL,
-        properties TEXT NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )';
+      const sql = 'CREATE TABLE IF NOT EXISTS graph_nodes (' +
+        'id TEXT PRIMARY KEY,' +
+        'labels TEXT NOT NULL,' +
+        'properties TEXT NOT NULL,' +
+        'created_at DATETIME DEFAULT CURRENT_TIMESTAMP' +
+        ')';
 
       await this.connection.execute(sql);
     } catch (error) {
@@ -681,16 +681,16 @@ export class GraphStorageImpl implements GraphStorage {
 
   private async ensureEdgesTable(): Promise<void> {
     try {
-      const sql = 'CREATE TABLE IF NOT EXISTS graph_edges (
-        id TEXT PRIMARY KEY,
-        from_id TEXT NOT NULL,
-        to_id TEXT NOT NULL,
-        type TEXT NOT NULL,
-        properties TEXT NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (from_id) REFERENCES graph_nodes(id),
-        FOREIGN KEY (to_id) REFERENCES graph_nodes(id)
-      )';
+      const sql = 'CREATE TABLE IF NOT EXISTS graph_edges (' +
+        'id TEXT PRIMARY KEY,' +
+        'from_id TEXT NOT NULL,' +
+        'to_id TEXT NOT NULL,' +
+        'type TEXT NOT NULL,' +
+        'properties TEXT NOT NULL,' +
+        'created_at DATETIME DEFAULT CURRENT_TIMESTAMP,' +
+        'FOREIGN KEY (from_id) REFERENCES graph_nodes(id),' +
+        'FOREIGN KEY (to_id) REFERENCES graph_nodes(id)' +
+        ')';
 
       await this.connection.execute(sql);
     } catch (error) {

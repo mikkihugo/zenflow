@@ -146,8 +146,8 @@ export class KeyValueStorageImpl implements KeyValueStorage {
 
       // Store in database
       await this.connection.execute(
-        'INSERT OR REPLACE INTO kv_store (key, value, ttl, stored_at, updated_at)
-         VALUES (?, ?, ?, ?, ?)',
+        'INSERT OR REPLACE INTO kv_store (key, value, ttl, stored_at, updated_at) ' +
+        'VALUES (?, ?, ?, ?, ?)',
         [key, serializedValue, ttl, storedAt, storedAt],
         { correlationId }
       );
@@ -430,9 +430,9 @@ export class KeyValueStorageImpl implements KeyValueStorage {
           ttl?: number;
           stored_at: number;
         }>(
-          'SELECT key, value, ttl, stored_at FROM kv_store 
-           WHERE key IN (' + placeholders + ') 
-           AND (ttl IS NULL OR ? < stored_at + ttl)',
+          'SELECT key, value, ttl, stored_at FROM kv_store ' +
+          'WHERE key IN (' + placeholders + ') ' +
+          'AND (ttl IS NULL OR ? < stored_at + ttl)',
           [...uncachedKeys, Date.now()],
           { correlationId }
         );
@@ -595,22 +595,22 @@ export class KeyValueStorageImpl implements KeyValueStorage {
     }
 
     // Create key-value table
-    await this.connection.execute('
-      CREATE TABLE IF NOT EXISTS kv_store (
-        key TEXT PRIMARY KEY,
-        value TEXT NOT NULL,
-        ttl INTEGER,
-        stored_at INTEGER NOT NULL,
-        updated_at INTEGER NOT NULL
-      )
-    ');
+    await this.connection.execute(
+      'CREATE TABLE IF NOT EXISTS kv_store (' +
+      '  key TEXT PRIMARY KEY,' +
+      '  value TEXT NOT NULL,' +
+      '  ttl INTEGER,' +
+      '  stored_at INTEGER NOT NULL,' +
+      '  updated_at INTEGER NOT NULL' +
+      ')'
+    );
 
     // Create indexes for performance
-    await this.connection.execute('
-      CREATE INDEX IF NOT EXISTS idx_kv_store_ttl_expiry 
-      ON kv_store(stored_at, ttl) 
-      WHERE ttl IS NOT NULL
-    ');
+    await this.connection.execute(
+      'CREATE INDEX IF NOT EXISTS idx_kv_store_ttl_expiry ' +
+      'ON kv_store(stored_at, ttl) ' +
+      'WHERE ttl IS NOT NULL'
+    );
 
     this.initialized = true;
     logger.debug('Key-value storage initialized');

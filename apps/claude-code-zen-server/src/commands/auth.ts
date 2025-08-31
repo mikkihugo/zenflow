@@ -398,7 +398,7 @@ export async function authStatus(): Promise<void> {
       logger.info('\n Authentication Status');
       logger.info('═'.repeat(30));
       logger.info(' Authenticated: No');
-      logger.info(' Run 'claude-zen auth login' to authenticate');
+      logger.info(' Run "claude-zen auth login" to authenticate');
     }
   } catch (_error) {
     logger.error('Failed to check authentication status: ', _error);
@@ -441,21 +441,18 @@ async function main() {
       await authLogout();
       break;
     default:
-      logger.info('
-Claude Code Zen Authentication
-
-Usage:claude-zen auth <command>
-
-Commands:
-  login   Authenticate with GitHub Copilot
-  status  Check authentication status
-  logout  Remove authentication token
-
-Examples:
-  claude-zen auth login   # Start authentication flow
-  claude-zen auth status  # Check if authenticated
-  claude-zen auth logout  # Remove token
-');
+      logger.info(
+        '\nClaude Code Zen Authentication\n\n' +
+        'Usage: claude-zen auth <command>\n\n' +
+        'Commands:\n' +
+        '  login   Authenticate with GitHub Copilot\n' +
+        '  status  Check authentication status\n' +
+        '  logout  Remove authentication token\n\n' +
+        'Examples:\n' +
+        '  claude-zen auth login   # Start authentication flow\n' +
+        '  claude-zen auth status  # Check if authenticated\n' +
+        '  claude-zen auth logout  # Remove token\n'
+      );
       break;
   }
 }

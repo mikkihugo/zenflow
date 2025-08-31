@@ -374,12 +374,12 @@ export class VectorStorageImpl implements VectorStorage {
   // Private helper methods
   private async ensureCollectionExists(): Promise<void> {
     try {
-      const sql = 'CREATE TABLE IF NOT EXISTS "' + this.collectionName + '" (
-        id TEXT PRIMARY KEY,
-        vector BLOB,
-        metadata TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )';
+      const sql = 'CREATE TABLE IF NOT EXISTS "' + this.collectionName + '" (' +
+        'id TEXT PRIMARY KEY,' +
+        'vector BLOB,' +
+        'metadata TEXT,' +
+        'created_at DATETIME DEFAULT CURRENT_TIMESTAMP' +
+        ')';
 
       await this.connection.execute(sql);
     } catch (error) {
