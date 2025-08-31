@@ -98,7 +98,7 @@ export interface CandidateResult {
  * random seeds.
  *
  * @example
- * '''typescript'
+ * ```typescript`
  * // Basic random search with default settings
  * const randomSearch = new BootstrapFewShotWithRandomSearch({
  *   metric:exactMatchMetric,
@@ -181,7 +181,7 @@ export interface CandidateResult {
  *   max_bootstrapped_demos:4,
  *   num_candidate_programs:12,
  *   teacher_settings:{
- *     strategy: 'diverse_sampling`,  // Custom teacher behavior
+ *     strategy: 'diverse_sampling',  // Custom teacher behavior
  *     exploration_factor:0.3
  *}
  *});
@@ -200,7 +200,7 @@ export interface CandidateResult {
  *   trainset:diverseTrainingSet,
  *   valset:representativeValidation
  *});
- * `
+ * ```
  */
 export class BootstrapFewShotWithRandomSearch extends Teleprompter {
   private metric: MetricFunction;
@@ -247,7 +247,7 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
     this.max_labeled_demos = config.max_labeled_demos ?? 16;
 
     logger.info(
-      'Going to sample between ` + (this.min_num_samples) + ` and ${this.max_num_samples} traces per predictor.`
+      `Going to sample between ${this.min_num_samples} and ${this.max_num_samples} traces per predictor.`
     );
     logger.info(
       `Will attempt to bootstrap ${this.num_candidate_sets} candidate sets.`
@@ -327,7 +327,7 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
         });
       } else {
         if (seed < 0) {
-          throw new Error('Invalid seed:' + seed);
+          throw new Error(`Invalid seed:${seed}`);
         }
 
         // Random shuffle and size exactly matching Stanford implementation
@@ -367,8 +367,8 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
       }
 
       scores.push(score);
-      logger.info('Scores so far:' + scores);
-      logger.info('Best score so far:' + Math.max(...scores));
+      logger.info(`Scores so far:${scores}`);
+      logger.info(`Best score so far:${Math.max(...scores)}`);
 
       score_data.push({
         score,
@@ -383,7 +383,7 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
         score >= this.stop_at_score
       ) {
         logger.info(
-          'Stopping early because score ' + (score) + ' is >= stop_at_score ' + this.stop_at_score
+          `Stopping early because score ${score} is >= stop_at_score ${this.stop_at_score}`
         );
         break;
       }
@@ -399,7 +399,7 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
       (a, b) => b.score - a.score
     );
 
-    logger.info(score_data.length + ' candidate programs found.');
+    logger.info(`${score_data.length} candidate programs found.`);
 
     (best_program as any)._compiled = true;
     return best_program;

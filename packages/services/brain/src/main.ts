@@ -506,7 +506,7 @@ export class FoundationBrainCoordinator {
         metadata:result.metadata
 }));
 
-      this.logger.debug(`🧠 Found ${patterns.length} similar brain neural patterns`);
+      this.logger.debug(`🧠🔍 Found ${patterns.length} similar brain neural patterns`);
       
       // Event-driven notification - pattern search completed
       await this.eventBus.emit('BrainPatternsSearched', {
@@ -545,7 +545,7 @@ export class FoundationBrainCoordinator {
         brainInstance: 'foundation-brain-coordinator',        savedAt:Date.now(),
         version:'1.0')});
       
-      this.logger.debug('🧠 Brain configuration saved', { 
+      this.logger.debug('🧠⚙️ Brain configuration saved', { 
         keys:Object.keys(config),
         brainSession:this.brainConfig.sessionId 
 });
@@ -576,14 +576,14 @@ export class FoundationBrainCoordinator {
       if (storedConfig) {
         // Remove brain metadata and return clean config
         const { brainInstance, savedAt, version, ...cleanConfig} = storedConfig;
-        this.logger.debug('🧠 Brain configuration loaded', { 
+        this.logger.debug('🧠⚙️ Brain configuration loaded', { 
           keys:Object.keys(cleanConfig),
           brainSession:this.brainConfig.sessionId,
           savedAt 
 });
         return ok(cleanConfig);
 } else {
-        this.logger.debug('🧠 No stored brain configuration found, using defaults');
+        this.logger.debug('🧠⚙️ No stored brain configuration found, using defaults');
         return ok({});
 }
 
@@ -613,7 +613,7 @@ export class FoundationBrainCoordinator {
         ...metadata
 });
 
-      this.logger.debug(`🧠 Added brain knowledge relationship:${from} --[${relationship}]--> ${to}`);
+      this.logger.debug(`🧠🔗 Added brain knowledge relationship:${from} --[${relationship}]--> ${to}`);
       return ok();
 
 } catch (error) {
@@ -646,7 +646,7 @@ export class FoundationBrainCoordinator {
       throw new Error('Brain coordinator not initialized');')}
 
     this.logger.info(
-      ' Coordinating neural intelligence with SAFe 6.0 flow systems',      {
+      '🔗 Coordinating neural intelligence with SAFe 6.0 flow systems',      {
         epicId:request.epicId,
         featureId:request.featureId,
         taskType:request.neuralTaskType,
@@ -874,7 +874,7 @@ export class FoundationBrainCoordinator {
   private async initializeSafe6Integration():Promise<void> {
     try {
       this.logger.debug(
-        ' Initializing SAFe 6.0 Development Manager integration...')      );
+        '🔗 Initializing SAFe 6.0 Development Manager integration...')      );
 
       // Get SAFe 6.0 Development Manager via development facade (optional)
       try {
@@ -1337,7 +1337,7 @@ export class NeuralBridge {
   async initialize():Promise<void> {
     if (this.initialized) return;
 
-    logger.info(' Initializing neural bridge...');')    this.initialized = true;
+    logger.info('🔗 Initializing neural bridge...');')    this.initialized = true;
     logger.info(' Neural bridge initialized');')}
 
   async predict(input:number[]): Promise<number[]> {

@@ -340,7 +340,7 @@ $enhancedStandards.contextualIntro
   ):string {
     switch (phase) {
       case 'specification': ')'        return ``
-###  Specification Phase Guidelines:
+### 📋 Specification Phase Guidelines:
 - **Clear requirements**:Each requirement should be testable and specific
 - **Domain modeling**:Use ${config.language === 'typescript' ? ' TypeScript interfaces' : ' clear data structures'} to model domain entities')- **API contracts**:Define clear input/output interfaces
 - **Validation rules**:Specify data validation requirements
@@ -435,7 +435,7 @@ $enhancedStandards.contextualIntro
     return ``
 #  $phase.charAt(0).toUpperCase() + phase.slice(1)Phase Development Prompt
 
-##  Project Context:
+## 📋 Project Context:
 - **Project**:$context.name
 - **Domain**:$context.domain
 - **Requirements**:$context.requirements?.length || 0defined
@@ -451,7 +451,7 @@ $phaseGuidelines
 4. **Write clean code** - Self-documenting, maintainable code
 5. **Plan for testing** - Design with testability in mind
 
-##  Quality Checklist:
+## 🔍 Quality Checklist:
 - [] Descriptive filenames that indicate purpose
 - [] Single responsibility per file/function
 - [] Appropriate _complexity levels
@@ -601,11 +601,11 @@ Generate a complete, ready-to-use development prompt.`,`
     return [
       {
         input:`Generate $phasephase prompt for e-commerce API project in rest-api domain using $config.language`,`
-        output:`# Development Prompt for ${phase} Phase\n\n##  Project Context\n##  Coding Standards\n##  CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Keep functions simple and focused\n3. Follow ${config.language} best practices`,`
+        output:`# Development Prompt for ${phase} Phase\n\n## 📋 Project Context\n##  Coding Standards\n##  CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Keep functions simple and focused\n3. Follow ${config.language} best practices`,`
 },
       {
         input:`Generate $phasephase prompt for mobile app project in mobile domain using $config.language`,`
-        output:`# Development Prompt for ${phase} Phase\n\n##  Project Context\n##  Coding Standards\n##  CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Optimize for mobile performance\n3. Follow ${config.language} best practices`,`
+        output:`# Development Prompt for ${phase} Phase\n\n## 📋 Project Context\n##  Coding Standards\n##  CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Optimize for mobile performance\n3. Follow ${config.language} best practices`,`
 },
 ];
 }
@@ -819,7 +819,7 @@ ${contextualInsights}
     return `#  ${phase.charAt(0).toUpperCase() + phase.slice(1)} Phase Development Prompt`
 ## META-LEARNING ENABLED ✨
 
-##  Project Context:
+## 📋 Project Context:
 - **Project**:$context.name
 - **Domain**:$context.domain
 - **Requirements**:$context.requirements?.length || 0defined
@@ -828,7 +828,7 @@ ${contextualInsights}
 ##  AI-Researched Standards:
 $principles.template
 
-##  Quality Metrics (Research-Based):
+## 🔍 Quality Metrics (Research-Based):
 - **Complexity**:$principles.qualityMetrics.complexity.metric< ${principles.qualityMetrics.complexity.threshold}
 - **Coverage**:$principles.qualityMetrics.coverage.metric> $principles.qualityMetrics.coverage.threshold%
 - **Maintainability**:$principles.qualityMetrics.maintainability.metric> $principles.qualityMetrics.maintainability.threshold
@@ -946,7 +946,7 @@ Remember:This prompt learns from your execution. The better you follow and provi
   ): Promise<string> {
     // Allow event loop processing for prompt generation
     await new Promise(resolve => setTimeout(resolve, 0));
-    return `#  SECOND OPINION VALIDATION
+    return `# 🔍 SECOND OPINION VALIDATION
 
 ## Original Task Prompt:
 \`\`\`
@@ -965,7 +965,7 @@ ${agentResponse}
 
 ## Validation Instructions:
 
-### 1.  Requirement Compliance Check
+### 1. 📋 Requirement Compliance Check
 - Did the agent address all requirements from the original prompt?
 - Are there any missing or misunderstood requirements?
 - Rate compliance: 0-100%
@@ -975,7 +975,7 @@ ${agentResponse}
 - Are naming conventions, complexity, and structure appropriate?
 - Rate quality adherence: 0-100%
 
-### 3.  Misunderstanding Detection
+### 3. 🔍 Misunderstanding Detection
 - Identify any apparent misunderstandings of the task
 - Note any implementations that don't match the intent
 - Highlight areas where clarification might have helped
