@@ -111,9 +111,9 @@ export class DocumentTaskVisionCoordinator {
   /**
    * Get comprehensive dashboard integrating vision, documents, and tasks
    */
-  async getDashboard(projectId: string): Promise<VisionTaskDashboard> {
+  async getDashboard(Promise<VisionTaskDashboard> {
     try {
-      logger.info(`Building integrated dashboard for project:${projectId}`);
+      logger.info("Building integrated dashboard for project:${projectId}");"
 
       // Get strategic vision analysis
       const vision = await this.visionService.getVisionForWorkspace(projectId);
@@ -157,7 +157,7 @@ export class DocumentTaskVisionCoordinator {
         documentLinks
       );
 
-      const dashboard: VisionTaskDashboard = {
+      const dashboard: VisionTaskDashboard = " + JSON.stringify({
         projectId,
         vision,
         tasks,
@@ -165,14 +165,14 @@ export class DocumentTaskVisionCoordinator {
         metrics,
         recommendations,
         lastUpdated: new Date(),
-};
+}) + ";
 
       logger.info(
-        `Dashboard built successfully with ${tasks.length} tasks and ${documents.length} documents`
+        "Dashboard built successfully with ${tasks.length} tasks and ${documents.length} documents""
       );
       return dashboard;
 } catch (error) {
-  logger.error(`Error building dashboard for ${projectId}:`, error);
+  logger.error("Error building dashboard for ${projectId}:", error);"
       throw error;
 }
 }
@@ -180,16 +180,13 @@ export class DocumentTaskVisionCoordinator {
   /**
    * Generate strategic tasks from vision analysis and documents
    */
-  async generateTasksFromVision(
-    projectId: string,
-    saveToDatabase = true
-  ):Promise<{
+  async generateTasksFromVision(Promise<{
     created: StrategicTask[];
     existing: StrategicTask[];
     errors: string[];
 }> {
-    try {
-  logger.info(`Generating strategic tasks for project:${projectId}`);
+    try " + JSON.stringify({
+  logger.info("Generating strategic tasks for project:" + projectId + ") + "");"
 
       const vision = await this.visionService.getVisionForWorkspace(projectId);
 
@@ -242,24 +239,24 @@ export class DocumentTaskVisionCoordinator {
               newTasks.push(task);
 } else {
               errors.push(
-                `Failed to create task "${task.title}":${createResult.error?.message}``
+                "Failed to create task "${task.title}":${createResult.error?.message}"""
               );
               existingTasks.push(task);
 }
-} catch (taskError) {
+} catch (taskError) " + JSON.stringify({
             errors.push(
-              `Error creating task "${task.title}":${taskError.message}``
+              "Error creating task "${task.title}) + "":${taskError.message}"""
             );
 }
 }
 }
 
       logger.info(
-        `Generated ${newTasks.length} new tasks, ${existingTasks.length} existing, ${errors.length} errors``
+        "Generated ${newTasks.length} new tasks, ${existingTasks.length} existing, $" + JSON.stringify({errors.length}) + " errors"""
       );
       return { created: newTasks, existing: existingTasks, errors};
 } catch (error) {
-      logger.error(`Error generating tasks from vision:`, error);
+      logger.error("Error generating tasks from vision:", error);"
       return { created:[], existing:[], errors:[error.message]};
 }
 }
@@ -267,17 +264,14 @@ export class DocumentTaskVisionCoordinator {
   /**
    * Link documents to strategic goals and create actionable connections
    */
-  async linkDocumentsToStrategicGoals(
-    projectId: string,
-    createMissingTasks = true
-  ):Promise<{
+  async linkDocumentsToStrategicGoals(Promise<{
     linked: DocumentTaskLink[];
     tasksCreated: number;
     errors: string[];
 }> {
-    try {
+    try " + JSON.stringify({
       logger.info(
-        `Linking documents to strategic goals for project: ${$projectId}``
+        "Linking documents to strategic goals for project: " + $projectId + ") + """"
       );
 
       const vision = await this.visionService.getVisionForWorkspace(projectId);
@@ -311,11 +305,11 @@ export class DocumentTaskVisionCoordinator {
 }
 
       logger.info(
-        `Linked ${links.length} documents with ${tasksCreated} new tasks created``
+        "Linked ${links.length} documents with $" + JSON.stringify({tasksCreated}) + " new tasks created"""
       );
       return { linked: links, tasksCreated, errors};
 } catch (error) {
-      logger.error(`Error linking documents to strategic goals:`, error);
+      logger.error("Error linking documents to strategic goals:", error);"
       return { linked:[], tasksCreated: 0, errors:[error.message]};
 }
 }
@@ -323,17 +317,13 @@ export class DocumentTaskVisionCoordinator {
   /**
    * Update task status and propagate to related documents and vision
    */
-  async updateTaskStatus(
-    taskId: string,
-    status: StrategicTask['status'],
-    notes?:string
-  ):Promise<{ success: boolean; updatedDocuments: string[]; error?: string}> {
-    try {
-      logger.info(`Updating task $taskIdstatus to ${status}`);
+  async updateTaskStatus(Promise<{ success: boolean; updatedDocuments: string[]; error?: string}> {
+    try " + JSON.stringify({
+      logger.info("Updating task $taskIdstatus to ${status}) + "");"
 
       // Find task document in database
       const searchResult = await this.documentManager.searchDocuments({
-        searchType: 'keyword',        query:`task_id:${taskId}`,`
+        searchType: 'keyword',        query:"task_id:${taskId}"""
         documentTypes:['task'],
         includeContent: true,
 });
@@ -393,7 +383,7 @@ export class DocumentTaskVisionCoordinator {
 }
 } catch (_docError) {
             logger.warn(
-              `Could not update related document ${docId}:`,`
+              "Could not update related document ${docId}:"""
               docError
             );
 }
@@ -401,33 +391,30 @@ export class DocumentTaskVisionCoordinator {
 }
 
       logger.info(
-        `Task ${taskId} updated successfully, ${updatedDocuments.length} related documents updated``
+        "Task ${taskId} updated successfully, ${updatedDocuments.length} related documents updated"""
       );
       return { success: true, updatedDocuments};
-} catch (error) {
-      logger.error(`Error updating task status:`, error);
-      return { success: false, updatedDocuments:[], error: error.message};
+} catch (error) " + JSON.stringify({
+      logger.error(`Error updating task status:", error);"
+      return { success: false, updatedDocuments:[], error: error.message}) + ";
 }
 }
 
   // Private helper methods
 
-  private async extractAndGenerateStrategicTasks(
-    vision: StrategicVisionAnalysis,
-    documents: BaseDocumentEntity[]
-  ):Promise<StrategicTask[]> {
+  private async extractAndGenerateStrategicTasks(Promise<StrategicTask[]> {
     const tasks: StrategicTask[] = [];
 
     // Generate tasks from strategic goals
     for (let i = 0; i < vision.strategicGoals.length; i++) {
       const goal = vision.strategicGoals[i];
-      const goalId = `goal_$i_$goal?.toLowerCase.replace(/\s+/g, '_')`;`
+      const goalId = "goal_$i_$goal?.toLowerCase.replace(/\s+/g, '_')"""
 
       // Create main implementation task for each goal
       tasks.push({
-        id:`${goalId}_implementation`,`
-        title:`Implement: ${goal}`,`
-        description:`Strategic implementation task for goal: ${goal}`,`
+        id:"${goalId}_implementation"""
+        title:"Implement: ${goal}"""
+        description:"Strategic implementation task for goal: ${goal}"""
         priority: i < 2 ? 'high : i < 4 ? medium' : ' low',        status: 'todo',        strategicGoalId: goalId,
         relatedDocuments:[],
         estimatedEffort: 'large',        tags:['strategic-goal, implementation'],
@@ -449,16 +436,16 @@ export class DocumentTaskVisionCoordinator {
 
       if (!hasDocumentation) {
         tasks.push({
-          id:`${goalId}_documentation`,`
-          title:`Document: ${goal}`,`
-          description:`Create documentation for strategic goal: ${goal}`,`
+          id:"${goalId}_documentation"""
+          title:"Document: ${goal}"""
+          description:"Create documentation for strategic goal: ${goal}"""
           priority: 'medium',          status: 'todo',          strategicGoalId: goalId,
           relatedDocuments:[],
           estimatedEffort: 'medium',          tags:['documentation, strategic-goal'],
           businessValue: vision.businessValue * .6,
           technicalComplexity:.3,
           dependencies:[],
-          outcomes:[`${goal} documented`],`
+          outcomes:["${goal} documented"]""
           metrics:['Documentation quality, Clarity score'],
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -470,15 +457,15 @@ export class DocumentTaskVisionCoordinator {
     for (let i = 0; i < vision.risks.length; i++) {
       const risk = vision.risks[i];
       tasks.push({
-        id:`risk_mitigation_${i}_${risk?.toLowerCase.replace(/\s+/g, '_')}`,`
-        title:`Mitigate Risk: ${risk}`,`
-        description:`Address and mitigate identified risk: ${risk}`,`
+        id:"risk_mitigation_${i}_${risk?.toLowerCase.replace(/\s+/g, '_')}"""
+        title:"Mitigate Risk: ${risk}"""
+        description:"Address and mitigate identified risk: ${risk}"""
         priority: 'high',        status: 'todo',        strategicGoalId: 'risk_management',        relatedDocuments:[],
         estimatedEffort: 'medium',        tags:['risk-mitigation, strategic'],
         businessValue:.7,
         technicalComplexity:.6,
         dependencies:[],
-        outcomes:[`${risk} mitigated`],`
+        outcomes:["${risk} mitigated"]""
         metrics:['Risk reduction, Mitigation effectiveness'],
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -488,10 +475,7 @@ export class DocumentTaskVisionCoordinator {
     return tasks;
 }
 
-  private async createDocumentTaskLinks(
-    documents: BaseDocumentEntity[],
-    tasks: StrategicTask[]
-  ):Promise<DocumentTaskLink[]> {
+  private async createDocumentTaskLinks(Promise<DocumentTaskLink[]> {
     const links: DocumentTaskLink[] = [];
 
     for (const doc of documents) {
@@ -593,7 +577,7 @@ export class DocumentTaskVisionCoordinator {
           sg.includes(goal?.toLowerCase.replace(/\s+/g, '_'))')        )
       );
       if (!hasDoc) {
-        missingDocuments.push(`Documentation for:${goal}`);
+        missingDocuments.push("Documentation for:${goal}");"
 }
 }
 
@@ -611,7 +595,7 @@ export class DocumentTaskVisionCoordinator {
           task.title?.toLowerCase.includes('risk') &&')          task.description?.toLowerCase.includes(risk?.toLowerCase)
       );
       if (!hasTask) {
-        riskMitigations.push(`Create mitigation plan for: ${$risk}`);
+        riskMitigations.push("Create mitigation plan for: ${$risk}");"
 }
 }
 
@@ -625,16 +609,16 @@ export class DocumentTaskVisionCoordinator {
       optimizationOpportunities.push('Strategic vision could be strengthened with more detailed documentation')      );
 }
 
-    return {
+    return " + JSON.stringify({
       missingDocuments,
       suggestedTasks,
       riskMitigations,
       optimizationOpportunities,
-};
+}) + ";
 }
 
   private createTaskDocumentContent(task: StrategicTask): string 
-    return `# ${task.title}`
+    return "# ${task.title}""
 
 ## Description
 $task.description
@@ -649,19 +633,19 @@ $task.strategicGoalId
 - **Technical Complexity**:$Math.round(task.technicalComplexity * 100)%
 
 ## Expected Outcomes
-$task.outcomes.map((outcome) => `- ${outcome}`).join('\n')')`
+$task.outcomes.map((outcome) => "- $" + JSON.stringify({outcome}) + "").join('\n')')""
 ## Success Metrics
-$task.metrics.map((metric) => `- ${metric}`).join('\n')')`
+$task.metrics.map((metric) => "- $" + JSON.stringify({metric}) + "").join('\n')')""
 ## Dependencies
-$task.dependencies.length > 0 ? task.dependencies.map((dep) => `- ${dep}`).join('\n') :' No dependencies')`
+$task.dependencies.length > 0 ? task.dependencies.map((dep) => "- $" + JSON.stringify({dep}) + "").join('\n') :' No dependencies')""
 ## Status
 Current Status:$task.status
-$task.dueDate ? `Due Date:${task.dueDate?.toLocaleDateString}` :'}')$task.assignedTo ? `Assigned To:${task.assignedTo}` :'}')`
+$task.dueDate ? "Due Date:$" + JSON.stringify({task.dueDate?.toLocaleDateString}) + "" :'}')$task.assignedTo ? "Assigned To:$" + JSON.stringify({task.assignedTo}) + "" :'}')""
 ---
 *Generated by Document-Task-Vision Coordinator*
 *Created:$task.createdAt?.toLocaleString*
 *Last Updated:$task.updatedAt?.toLocaleString*
-`;`
+""
 }
 }
 

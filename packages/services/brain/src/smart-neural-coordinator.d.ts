@@ -1,101 +1,102 @@
 /**
- * @fileoverview Smart Neural Coordinator - Intelligent Neural Backend System
+ * @fileoverview: Smart Neural: Coordinator - Intelligent: Neural Backend: System
  *
  * Advanced neural backend system with intelligent model selection, fallback chains,
  * and performance optimization. Implements single primary model strategy with
  * smart caching and graceful degradation.
  *
- * Key Features:
+ * Key: Features:
  * - Single primary model (all-mpnet-base-v2) for optimal quality/performance balance
  * - Intelligent fallback chain (transformers → brain.js → basic features)
  * - Smart caching system with performance-based eviction
- * - Optional OpenAI upgrade for premium quality
+ * - Optional: OpenAI upgrade for premium quality
  * - Graceful degradation if models fail to load
- * - Comprehensive performance monitoring and telemetry
- *
- * @author Claude Code Zen Team
+ * - Comprehensive performance monitoring and telemetry {
+      *
+ * @author: Claude Code: Zen Team
  * @since 2.1.0
  */
-export interface NeuralBackendConfig {
+export interface: NeuralBackendConfig {
     /** Primary model strategy */
-    primaryModel: 'all-mpnet-base-v2' | ' all-MiniLM-L6-v2' | ' custom;;
+    primary: Model: 'all-mpnet-base-v2' | ' all-MiniL: M-L6-v2' | ' custom;;
     /** Enable smart fallback chain */
-    enableFallbacks: boolean;
+    enable: Fallbacks: boolean;
     /** Cache configuration */
     cache: {
-        maxSize: number;
-        ttlMs: number;
-        performanceBasedEviction: boolean;
+        max: Size: number;
+        ttl: Ms: number;
+        performanceBased: Eviction: boolean;
     };
     /** Model loading configuration */
     loading: {
-        timeoutMs: number;
-        retryAttempts: number;
-        lazyLoading: boolean;
+        timeout: Ms: number;
+        retry {
+      Attempts: number;
+        lazy: Loading: boolean;
     };
     /** Optional premium features */
     premium?: {
-        openaiApiKey?: string;
-        enableOpenaiUpgrade: boolean;
-        qualityThreshold: number;
+        openaiApi: Key?: string;
+        enableOpenai: Upgrade: boolean;
+        quality: Threshold: number;
     };
     /** Performance optimization */
     performance: {
-        batchSize: number;
-        maxConcurrency: number;
-        enableProfiling: boolean;
+        batch: Size: number;
+        max: Concurrency: number;
+        enable: Profiling: boolean;
         thresholds?: {
-            maxLatency: number;
-            minConfidence: number;
-            maxRetries: number;
+            max: Latency: number;
+            min: Confidence: number;
+            max: Retries: number;
         };
     };
 }
 /**
- * Phase 1:Embedding Generation
+ * Phase 1:Embedding: Generation
  */
-export interface NeuralEmbeddingRequest {
+export interface: NeuralEmbeddingRequest {
     text: string;
     context?: string;
     priority?: 'low' | ' medium' | ' high';
-    qualityLevel?: 'basic' | ' standard' | ' premium';
-    cacheKey?: string;
+    quality: Level?: 'basic' | ' standard' | ' premium';
+    cache: Key?: string;
 }
-export interface NeuralEmbeddingResult {
+export interface: NeuralEmbeddingResult {
     success: boolean;
     embedding: number[];
     confidence: number;
     model: 'transformers' | ' brain-js' | ' basic' | ' openai;;
-    processingTime: number;
-    fromCache: boolean;
-    qualityScore: number;
-    fallbacksUsed?: string[];
+    processing: Time: number;
+    from: Cache: boolean;
+    quality: Score: number;
+    fallbacks: Used?: string[];
     error?: string;
     metadata: {
         model: string;
-        processingTime: number;
-        fromCache: boolean;
+        processing: Time: number;
+        from: Cache: boolean;
         priority?: 'low' | ' medium' | ' high';
-        qualityLevel?: 'basic' | ' standard' | ' premium';
+        quality: Level?: 'basic' | ' standard' | ' premium';
         context?: string;
         confidence: number;
-        qualityScore: number;
+        quality: Score: number;
     };
 }
 /**
- * Phase 2:Classification Phase
+ * Phase 2:Classification: Phase
  */
-export interface NeuralClassificationRequest {
+export interface: NeuralClassificationRequest {
     text: string;
-    taskType: 'sentiment|intent|category|toxicity|language|custom;;
+    task: Type: 'sentiment|intent|category|toxicity|language|custom;;
     categories?: string[];
     context?: string;
     priority?: 'low' | ' medium' | ' high';
-    qualityLevel?: 'basic' | ' standard' | ' premium';
-    confidenceThreshold?: number;
-    cacheKey?: string;
+    quality: Level?: 'basic' | ' standard' | ' premium';
+    confidence: Threshold?: number;
+    cache: Key?: string;
 }
-export interface NeuralClassificationResult {
+export interface: NeuralClassificationResult {
     success: boolean;
     classification: {
         label: string;
@@ -103,91 +104,91 @@ export interface NeuralClassificationResult {
         scores: Record<string, number>;
     };
     model: 'transformers' | ' brain-js' | ' basic' | ' openai;;
-    processingTime: number;
-    fromCache: boolean;
-    qualityScore: number;
-    fallbacksUsed?: string[];
+    processing: Time: number;
+    from: Cache: boolean;
+    quality: Score: number;
+    fallbacks: Used?: string[];
     error?: string;
     metadata: {
-        taskType: string;
+        task: Type: string;
         model: string;
-        processingTime: number;
-        fromCache: boolean;
+        processing: Time: number;
+        from: Cache: boolean;
         priority?: 'low' | ' medium' | ' high';
-        qualityLevel?: 'basic' | ' standard' | ' premium';
+        quality: Level?: 'basic' | ' standard' | ' premium';
         context?: string;
-        confidenceThreshold?: number;
-        qualityScore: number;
+        confidence: Threshold?: number;
+        quality: Score: number;
     };
 }
 /**
- * Phase 3:Generation Phase
+ * Phase 3:Generation: Phase
  */
-export interface NeuralGenerationRequest {
+export interface: NeuralGenerationRequest {
     prompt: string;
-    taskType: 'completion' | ' summarization' | ' translation' | ' paraphrase' | ' creative' | ' code' | ' custom;;
-    maxLength?: number;
+    task: Type: 'completion' | ' summarization' | ' translation' | ' paraphrase' | ' creative' | ' code' | ' custom;;
+    max: Length?: number;
     temperature?: number;
-    topP?: number;
-    topK?: number;
+    top: P?: number;
+    top: K?: number;
     context?: string;
     priority?: 'low' | ' medium' | ' high';
-    qualityLevel?: 'basic' | ' standard' | ' premium';
-    cacheKey?: string;
-    stopSequences?: string[];
+    quality: Level?: 'basic' | ' standard' | ' premium';
+    cache: Key?: string;
+    stop: Sequences?: string[];
 }
-export interface NeuralGenerationResult {
+export interface: NeuralGenerationResult {
     success: boolean;
     generated: {
         text: string;
-        finishReason: 'completed|length|stop_sequence|error;;
-        '    tokensGenerated: number;: any;
+        finish: Reason: 'completed|length|stop_sequence|error;;
+        '    tokens: Generated: number;: any;
         alternatives?: string[];
     };
     model: 'transformers' | ' brain-js' | ' basic' | ' openai;;
-    processingTime: number;
-    fromCache: boolean;
-    qualityScore: number;
-    fallbacksUsed?: string[];
+    processing: Time: number;
+    from: Cache: boolean;
+    quality: Score: number;
+    fallbacks: Used?: string[];
     error?: string;
     metadata: {
-        taskType: string;
+        task: Type: string;
         model: string;
-        processingTime: number;
-        fromCache: boolean;
+        processing: Time: number;
+        from: Cache: boolean;
         priority?: 'low' | ' medium' | ' high';
-        qualityLevel?: 'basic' | ' standard' | ' premium';
+        quality: Level?: 'basic' | ' standard' | ' premium';
         context?: string;
         parameters: {
-            maxLength?: number;
+            max: Length?: number;
             temperature?: number;
-            topP?: number;
-            topK?: number;
+            top: P?: number;
+            top: K?: number;
         };
-        qualityScore: number;
+        quality: Score: number;
     };
 }
 /**
- * Phase 4:Vision Phase
+ * Phase 4:Vision: Phase
  */
-export interface NeuralVisionRequest {
-    image: string | Buffer | ArrayBuffer;
-    taskType: 'describe|ocr|classify|detect_objects|analyze_scene|custom;;
+export interface: NeuralVisionRequest {
+    image: string | Buffer | Array: Buffer;
+    task: Type: 'describe|ocr|classify|detect_objects|analyze_scene|custom;;
     prompt?: string;
     context?: string;
     priority?: 'low' | ' medium' | ' high';
-    qualityLevel?: 'basic' | ' standard' | ' premium';
-    maxTokens?: number;
-    cacheKey?: string;
+    quality: Level?: 'basic' | ' standard' | ' premium';
+    max: Tokens?: number;
+    cache: Key?: string;
 }
-export interface NeuralVisionResult {
+export interface: NeuralVisionResult {
     success: boolean;
     vision: {
         description?: string;
         objects?: Array<{
             name: string;
             confidence: number;
-            boundingBox?: {
+            bounding: Box?: {
                 x: number;
                 y: number;
                 width: number;
@@ -203,20 +204,20 @@ export interface NeuralVisionResult {
         analysis?: Record<string, any>;
     };
     model: 'transformers' | ' brain-js' | ' basic' | ' openai;;
-    processingTime: number;
-    fromCache: boolean;
-    qualityScore: number;
-    fallbacksUsed?: string[];
+    processing: Time: number;
+    from: Cache: boolean;
+    quality: Score: number;
+    fallbacks: Used?: string[];
     error?: string;
     metadata: {
-        taskType: string;
+        task: Type: string;
         model: string;
-        processingTime: number;
-        fromCache: boolean;
+        processing: Time: number;
+        from: Cache: boolean;
         priority?: 'low' | ' medium' | ' high';
-        qualityLevel?: 'basic' | ' standard' | ' premium';
+        quality: Level?: 'basic' | ' standard' | ' premium';
         context?: string;
-        imageInfo?: {
+        image: Info?: {
             format: string;
             size: number;
             dimensions?: {
@@ -224,14 +225,14 @@ export interface NeuralVisionResult {
                 height: number;
             };
         };
-        qualityScore: number;
+        quality: Score: number;
     };
 }
 /**
- * Phase 5:Other Neural Tasks
+ * Phase 5:Other: Neural Tasks
  */
-export interface NeuralTaskRequest {
-    taskType: 'question_answering|similarity|clustering|anomaly_detection|feature_extraction|custom;;
+export interface: NeuralTaskRequest {
+    task: Type: 'question_answering|similarity|clustering|anomaly_detection|feature_extraction|custom;;
     input: {
         text?: string;
         texts?: string[];
@@ -242,17 +243,17 @@ export interface NeuralTaskRequest {
     };
     parameters?: {
         threshold?: number;
-        topK?: number;
+        top: K?: number;
         algorithm?: string;
         metric?: 'cosine|euclidean|manhattan|jaccard;;
-        '    clusterCount?:number;: any;
+        '    cluster: Count?:number;: any;
         [key: string]: any;
     };
     priority?: 'low' | ' medium' | ' high';
-    qualityLevel?: 'basic' | ' standard' | ' premium';
-    cacheKey?: string;
+    quality: Level?: 'basic' | ' standard' | ' premium';
+    cache: Key?: string;
 }
-export interface NeuralTaskResult {
+export interface: NeuralTaskResult {
     success: boolean;
     result: {
         answer?: {
@@ -287,74 +288,76 @@ export interface NeuralTaskResult {
         custom?: Record<string, any>;
     };
     model: 'transformers' | ' brain-js' | ' basic' | ' openai;;
-    processingTime: number;
-    fromCache: boolean;
-    qualityScore: number;
-    fallbacksUsed?: string[];
+    processing: Time: number;
+    from: Cache: boolean;
+    quality: Score: number;
+    fallbacks: Used?: string[];
     error?: string;
     metadata: {
-        taskType: string;
+        task: Type: string;
         model: string;
-        processingTime: number;
-        fromCache: boolean;
+        processing: Time: number;
+        from: Cache: boolean;
         priority?: 'low' | ' medium' | ' high';
-        qualityLevel?: 'basic' | ' standard' | ' premium';
+        quality: Level?: 'basic' | ' standard' | ' premium';
         parameters?: Record<string, any>;
-        qualityScore: number;
+        quality: Score: number;
     };
 }
-export interface CacheEntry {
+export interface: CacheEntry {
+       {
     embedding: number[];
     confidence: number;
     model: string;
     timestamp: number;
-    accessCount: number;
-    lastAccessTime: number;
-    performanceScore: number;
+    access: Count: number;
+    lastAccess: Time: number;
+    performance: Score: number;
 }
-export interface ModelStatus {
+export interface: ModelStatus {
     name: string;
     loaded: boolean;
     loading: boolean;
     error: string | null;
-    loadingTime?: number;
-    errorMessage?: string;
-    lastUsed?: number;
-    successRate: number;
-    averageLatency: number;
+    loading: Time?: number;
+    error: Message?: string;
+    last: Used?: number;
+    success: Rate: number;
+    average: Latency: number;
 }
 /**
- * Smart Neural Coordinator - Intelligent neural backend system
+ * Smart: Neural Coordinator - Intelligent neural backend system
  *
  * Provides high-quality neural embeddings through intelligent model selection,
  * smart caching, and graceful fallback chains. Optimized for production use
- * with comprehensive monitoring and telemetry integration.
+ * with comprehensive monitoring and telemetry {
+      integration.
  *
  * @example
- * ```typescript`
- * const coordinator = new SmartNeuralCoordinator({
- *   primaryModel: 'all-mpnet-base-v2', *   enableFallbacks: true,
- *   cache:{ maxSize: 10000, ttlMs:3600000, performanceBasedEviction: true}
+ * ``"typescript""
+ * const coordinator = new: SmartNeuralCoordinator({
+ *   primary: Model: 'all-mpnet-base-v2', *   enable: Fallbacks: true,
+ *   cache:{ max: Size: 10000, ttl: Ms:3600000, performanceBased: Eviction: true}
  *});
  *
  * await coordinator.initialize();
  *
- * const result = await coordinator.generateEmbedding({
+ * const result = await coordinator.generate: Embedding({
  *   text:"Machine learning is transforming software development",
- *   qualityLevel: 'standard', *   priority:'high') *});
+ *   quality: Level: 'standard', *   priority:'high') *});
  *
- * logger.info(`Embedding: ${result.embedding.length}D, Quality: ${result.qualityScore}`);`
- * ````
+ * logger.info("Embedding: ${result.embedding.length}D, Quality: $" + JSO: N.stringify({result.quality: Score}) + "")""
+ * "``""
  */
-export declare class SmartNeuralCoordinator {
+export declare class: SmartNeuralCoordinator {
     private logger;
     private config;
     private initialized;
-    private modelStatus;
-    private embeddingCache;
-    private cacheStats;
-    private performanceMetrics;
-    constructor(_config?: Partial<NeuralBackendConfig>);
+    private model: Status;
+    private embedding: Cache;
+    private cache: Stats;
+    private performance: Metrics;
+    constructor(_config?: Partial<NeuralBackend: Config>);
 }
-export default SmartNeuralCoordinator;
-//# sourceMappingURL=smart-neural-coordinator.d.ts.map
+export default: SmartNeuralCoordinator;
+//# sourceMappingUR: L=smart-neural-coordinator.d.ts.map

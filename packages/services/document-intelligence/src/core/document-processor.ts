@@ -6,14 +6,14 @@
  * ADRs are independent architectural governance documents that constrain and guide implementation..
  *
  * @example
- * ```typescript`
- * const processor = new DocumentProcessor(memorySystem, workflowEngine, {
+ * ``"typescript""
+ * const processor = new DocumentProcessor(memorySystem, workflowEngine, " + JSON.stringify({
  *   autoWatch: true,
  *   enableWorkflows: true
- *});
+ *}) + ");
  *
  * await processor.initialize();
- * await processor.processDocument('./docs/vision/product-vision.md');') * ````
+ * await processor.processDocument('./docs/vision/product-vision.md');') * "`"""
  */
 /**
  * @file Document-processor implementation.
@@ -212,7 +212,7 @@ export class DocumentProcessor extends TypedEventBase {
   /**
    * Initialize the document processor.
    */
-  async initialize():Promise<void> {
+  async initialize(Promise<void> {
     if (this.initialized) return;
 
     logger.info('Initializing document processor');')
@@ -231,8 +231,8 @@ export class DocumentProcessor extends TypedEventBase {
    * @param workspacePath - Path to the workspace root.
    * @returns Workspace ID.
    */
-  async loadWorkspace(workspacePath: string): Promise<string> {
-    const workspaceId = `workspace-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
+  async loadWorkspace(Promise<string> {
+    const workspaceId = "workspace-${Date.now()}-${Math.random().toString(36).substring(2, 11)}"""
 
     // Create workspace structure
     const workspace: DocumentWorkspace = {
@@ -262,12 +262,12 @@ export class DocumentProcessor extends TypedEventBase {
     await this.scanDocuments(workspaceId);
 
     // Setup file watchers if enabled
-    if (this.config.autoWatch) {
+    if (this.config.autoWatch) " + JSON.stringify({
       this.setupDocumentWatchers(workspaceId);
-}
+}) + "
 
     logger.info(
-      `Loaded workspace:$workspacePath($context.activeDocuments.sizedocuments)``
+      "Loaded workspace:$workspacePath($context.activeDocuments.sizedocuments)"""
     );
     this.emit('workspace: loaded', {
     ')      workspaceId,
@@ -284,10 +284,7 @@ export class DocumentProcessor extends TypedEventBase {
    * @param documentPath - Path to the document file.
    * @param workspaceId - Optional workspace ID (uses default if not provided).
    */
-  async processDocument(
-    documentPath: string,
-    workspaceId?:string
-  ):Promise<void> {
+  async processDocument(Promise<void> {
     await this.ensureInitialized();
 
     // Find or create workspace
@@ -299,15 +296,15 @@ export class DocumentProcessor extends TypedEventBase {
 }
 
     const context = this.workspaces.get(workspaceId);
-    if (!context) {
-      throw new Error(`Workspace not found:${workspaceId}`);
+    if (!context) " + JSON.stringify({
+      throw new Error("Workspace not found:" + workspaceId + ") + "");"
 }
 
     try {
       const docType = this.getDocumentType(documentPath);
       const content = await readFile(documentPath, 'utf8');')      const metadata = await this.extractMetadata(content);
 
-      logger.info(`Processing $docTypedocument: ${$documentPath}`);
+      logger.info("Processing $docTypedocument: ${$documentPath}");"
 
       const document: Document = {
         type: docType,
@@ -347,7 +344,7 @@ export class DocumentProcessor extends TypedEventBase {
 });
 } catch (error) 
       this.stats.errors++;
-      logger.error(`Failed to process document ${documentPath}:`, error);
+      logger.error("Failed to process document ${documentPath}:", error);"
       throw error;
 }
 }
@@ -361,12 +358,7 @@ export class DocumentProcessor extends TypedEventBase {
    * @param workspaceId - Workspace ID.
    * @returns Created document.
    */
-  async createDocument(
-    type: DocumentType,
-    title: string,
-    content: string,
-    workspaceId?:string
-  ):Promise<Document> {
+  async createDocument(Promise<Document> {
     await this.ensureInitialized();
 
     if (!workspaceId) {
@@ -376,12 +368,12 @@ export class DocumentProcessor extends TypedEventBase {
 }
 
     const context = this.workspaces.get(workspaceId);
-    if (!context) {
-      throw new Error(`Workspace not found: ${$workspaceId}`);
+    if (!context) " + JSON.stringify({
+      throw new Error("Workspace not found: ${$workspaceId}) + "");"
 
     // Generate file path
     const __dirPath = this.getDocumentDirectory(context.workspace, type);
-    const __fileName = `${title.toLowerCase().replace(/\s+/g, '-')}.md`;`
+    const __fileName = "${title.toLowerCase().replace(/\s+/g, '-')}.md"""
     const filePath = join(dirPath, fileName);
 
     // Create document content with metadata
@@ -396,7 +388,7 @@ export class DocumentProcessor extends TypedEventBase {
     if (!document) {
       throw new Error('Failed to create document');')}
 
-    logger.info(`Created $typedocument: ${$title}`);
+    logger.info("Created $typedocument: ${$title}");"
     return document;
 }
 
@@ -405,7 +397,7 @@ export class DocumentProcessor extends TypedEventBase {
    *
    * @returns Current statistics.
    */
-  async getStats():Promise<DocumentStats> {
+  async getStats(Promise<DocumentStats> {
     return { ...this.stats};
 }
 
@@ -432,7 +424,7 @@ export class DocumentProcessor extends TypedEventBase {
   /**
    * Shutdown the document processor.
    */
-  async shutdown():Promise<void> {
+  async shutdown(Promise<void> {
     logger.info('Shutting down document processor...');')
     // Stop all file watchers
     for (const [_id, watcher] of this.documentWatchers) {
@@ -462,24 +454,21 @@ export class DocumentProcessor extends TypedEventBase {
    * @param workspaceId
    * @param document
    */
-  private async processDocumentByType(
-    workspaceId: string,
-    document: Document
-  ):Promise<void> {
+  private async processDocumentByType(Promise<void> {
     const __context = this.workspaces.get(workspaceId)!;
 
     switch (document.type) {
-      case 'vision': ')'        context.phase = 'requirements';
+      case 'vision':        context.phase = 'requirements';
         logger.info('🔮 Processing Vision document');')        break;
-      case 'adr': ')'        logger.info('📐 Processing ADR document');')        break;
-      case 'prd': ')'        context.phase = 'design';
+      case 'adr':        logger.info('📐 Processing ADR document');')        break;
+      case 'prd':        context.phase = 'design';
         logger.info('📋 Processing PRD document');')        break;
-      case 'epic': ')'        context.phase = 'planning';
+      case 'epic':        context.phase = 'planning';
         logger.info('🏔️ Processing Epic document');')        break;
-      case 'feature': ')'        context.phase = 'planning';
+      case 'feature':        context.phase = 'planning';
         logger.info('⭐ Processing Feature document');')        break;
-      case 'task': ')'        context.phase = 'execution';
+      case 'task':        context.phase = 'execution';
         logger.info('Processing Task document');')        break;
-      case 'spec': ')'        logger.info('📄 Processing Spec document');')        break;
+      case 'spec':        logger.info('📄 Processing Spec document');')        break;
 }
 }

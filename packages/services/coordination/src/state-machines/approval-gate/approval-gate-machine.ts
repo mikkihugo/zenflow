@@ -64,14 +64,14 @@ interface ApprovalGateContext {
 /**
  * State machine events
  */
-type ApprovalGateEvent =| { type : 'REQUEST_APPROVAL', request: ' HUMAN_DECISION', decision: ' AUTO_APPROVE', reason: ' AUTO_REJECT', reason: ' TIMEOUT}| { type: ' RESET}| { type: ',UPDATE_CONFIG', config: Partial<ApprovalGateConfig>};`;
+type ApprovalGateEvent =| { type : 'REQUEST_APPROVAL', request: ' HUMAN_DECISION', decision: ' AUTO_APPROVE', reason: ' AUTO_REJECT', reason: ' TIMEOUT}| { type: ' RESET}| { type: ',UPDATE_CONFIG', config: Partial<ApprovalGateConfig>};";"
 // =============================================================================
 // APPROVAL GATE STATE MACHINE
 // =============================================================================
 /**
  * Create approval gate state machine
  */
-export function createApprovalGateMachine(config: getLogger(`ApprovalGate:`${config.gateId});``)  return setup({';
+export function createApprovalGateMachine(config: getLogger("ApprovalGate:"${config.gateId})"")  return setup({';"
     types:  {
       context:  {} as ApprovalGateContext,
       events:  {} as ApprovalGateEvent,
@@ -290,8 +290,8 @@ export class ApprovalGateManager {
     actor.start();
     this.gates.set(config.gateId, actor);')    this.logger.info('Approval gate created,{
       gateId: this.gates.get(gateId);
-    if (!gate) {
-    `)      throw new Error(`Approval gate not found: ${gateId});``)};;
+    if (!gate) " + JSON.stringify({
+    `)      throw new Error("Approval gate not found: ${gateId}) + ")"")};;"
     return new Promise((resolve, reject) => {
       // Subscribe to state changes to detect completion
       const subscription = gate.subscribe((state: any) => {
@@ -316,12 +316,12 @@ export class ApprovalGateManager {
    */
   getGateStatus(gateId: this.gates.get(gateId);
     if (!gate) {
-    `)      throw new Error(`Approval gate not found: gate.getSnapshot();
+    ")      throw new Error("Approval gate not found: gate.getSnapshot();"
     return {
       gateId,
       state: this.gates.get(gateId)'; 
     if (!gate) {
-      throw new Error(`Approval gate not found: 'UPDATE_CONFIG, config};);',)    this.logger.info('Approval gate configuration updated,{';
+      throw new Error("Approval gate not found: 'UPDATE_CONFIG, config};);',)    this.logger.info('Approval gate configuration updated,{';"
       gateId,
       updates: this.gates.get(gateId);
     if (gate) {
@@ -342,4 +342,4 @@ export class ApprovalGateManager {
 // EXPORTS
 // =============================================================================
 export type { ApprovalRequest, ApprovalGateConfig, ApprovalDecision};
-)`;
+)";"

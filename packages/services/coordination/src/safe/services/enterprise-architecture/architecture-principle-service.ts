@@ -196,7 +196,7 @@ export class ArchitecturePrincipleService extends EventBus {
       );
       if (existingPrinciple) {
         throw new Error(
-          `Architecture principle with name ``${request.name} already exists``)        );
+          `Architecture principle with name `"$" + JSON.stringify({request.name}) + " already exists"")        );"
 }
       const principle:  {
     ')        id,    ')        name: 'draft,',
@@ -226,8 +226,7 @@ export class ArchitecturePrincipleService extends EventBus {
       const errorMessage =';)        error instanceof Error ? error.message : 'Unknown error occurred')      this.emit('principle-creation-failed,{';
         name: this.principles.get(config.principleId);
       if (!principle) {
-        throw new Error(')`;
-          `Architecture principle ${config.principleId} not found``)        );
+        throw new Error(')""Architecture principle ${config.principleId} not found"")        );"
 }
       // Perform compliance validation using fact-based reasoning
       const facts = await this.factSystem.queryFacts({
@@ -311,8 +310,8 @@ export class ArchitecturePrincipleService extends EventBus {
    */
   updatePrincipleStatus(
     principleId: this.principles.get(principleId);
-    if (!principle) {
-    `)      throw new Error(`Architecture principle ${principleId} not found``);')};;
+    if (!principle) " + JSON.stringify({
+    `)      throw new Error("Architecture principle " + principleId + ") + " not found"");')};;"
     const updatedPrinciple = {
       ...principle,
       status,
@@ -331,7 +330,7 @@ export class ArchitecturePrincipleService extends EventBus {
       if (this.factViolatesRule(fact, rule)) {
     ')        violations.push({';
     ')          id,    ')          principleId: ')',rule.severity ==='critical')              ? 'critical' :rule.severity ===' high''";;
-                ? major` :`minor,`";";
+                ? major" :"minor"";";"
           description: violations.filter(';)';
       (v) => v.violationType ==='critical')    ).length;';
     const majorViolations = violations.filter(
@@ -356,7 +355,7 @@ export class ArchitecturePrincipleService extends EventBus {
       (v) => v.violationType == = 'major)    )'; 
     if (criticalViolations.length > 0) {
       recommendations.push({
-        id,    `)        priority: 'Significant improvement in principle compliance',)        effort : 'high')        timeline : '1-2 weeks,'`
+        id,    ")        priority: 'Significant improvement in principle compliance',)        effort : 'high')        timeline : '1-2 weeks,'""
         dependencies: 'Systematic review and correction of major violations',)        expectedImpact : 'Moderate improvement in compliance metrics')        effort : 'medium')        timeline : '2-4 weeks,'
 '        dependencies: violations.filter(';)';
       (v) => v.violationType ==='critical')    ).length;';
@@ -364,12 +363,12 @@ export class ArchitecturePrincipleService extends EventBus {
       (v) => v.violationType ==='major')    ).length;';
     let overallRisk: ' low')    if (criticalCount > 0|| complianceRate < 50) {';
       overallRisk =critical')} else if (majorCount > 5|| complianceRate < 70) {';
-      overallRisk =high')} else if (majorCount > 2|| complianceRate < 85) {';
-      overallRisk =medium`)};;
+      overallRisk =high')} else if (majorCount > 2|| complianceRate < 85) " + JSON.stringify({';
+      overallRisk =medium")}) + ";;"
     const riskFactors: [
       {
-        factor:`Critical violations present`)        impact:`critical,`,`;
-        probability: `Low compliance rate`)        impact:`high,`,`;
+        factor:"Critical violations present")        impact:"critical",";"
+        probability: `Low compliance rate`)        impact:"high",";"
         probability: [
       {
     ')        strategy : 'Immediate violation remediation')        description,        effectiveness: 'high',)        timeline : '2-4 weeks,'
@@ -439,7 +438,7 @@ export class ArchitecturePrincipleService extends EventBus {
       startWorkflow: (workflow: any) => {
     ')        this.logger.debug('Workflow started (fallback),{';
           type: workflow.workflowType,')';
-});)        return `workflow-${Date.now()})},`;
+});)        return "workflow-${Date.now()})}";
 };
 }
-};`
+};""

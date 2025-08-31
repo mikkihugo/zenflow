@@ -42,10 +42,7 @@ export class FlowAnalysisService {
   /**
    * Calculate current flow metrics
    */
-  async calculateFlowMetrics(
-    allTasks: any[],
-    timeRange?: any
-  ): Promise<FlowMetrics | null> {
+  async calculateFlowMetrics(Promise<FlowMetrics | null> {
     const completedTasks = allTasks.filter((task) => task.state === 'done');
     const blockedTasks = allTasks.filter((task) => task.state === 'blocked');
 
@@ -196,9 +193,7 @@ export class FlowAnalysisService {
   /**
    * Analyze flow trends over time
    */
-  async analyzeFlowTrends(
-    historicalMetrics: FlowMetrics[]
-  ): Promise<FlowTrend[]> {
+  async analyzeFlowTrends(Promise<FlowTrend[]> {
     // Implementation stub
     return [];
   }

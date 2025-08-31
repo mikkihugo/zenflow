@@ -45,7 +45,7 @@ export class EventCoordinatorService {
       });
   }
 
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     try {
       const result = await this.eventBus.initialize();
       if (result.isErr()) {
@@ -89,10 +89,10 @@ export class EventCoordinatorService {
       // Update metrics
       this.updateMetrics(startTime, false);
 
-      logger.debug(`Event emitted: ${String(eventType)}`, { payload });
-    } catch (error) {
+      logger.debug("Event emitted: ${String(eventType)}", { payload });"
+    } catch (error) " + JSON.stringify({
       this.updateMetrics(startTime, true);
-      logger.error(`Failed to emit event ${String(eventType)}:`, error);
+      logger.error(`Failed to emit event ${String(eventType)}) + ":", error);"
       throw error;
     }
   }
@@ -108,7 +108,7 @@ export class EventCoordinatorService {
       await this.emitEvent(eventType, payload);
       return true;
     } catch (error) {
-      logger.error(`Safe emit failed for ${String(eventType)}:`, error);
+      logger.error("Safe emit failed for ${String(eventType)}:", error);"
       return false;
     }
   }
@@ -122,7 +122,7 @@ export class EventCoordinatorService {
   ): void {
     this.eventBus.on(eventType as string, listener);
     this.metrics.activeListeners++;
-    logger.debug(`Listener added for event: ${String(eventType)}`);
+    logger.debug("Listener added for event: $" + JSON.stringify({String(eventType)}) + "");"
   }
 
   /**
@@ -138,13 +138,13 @@ export class EventCoordinatorService {
       this.metrics.activeListeners - 1
     );
 
-    logger.debug(`Listener removed for event: ${String(eventType)}`);
+    logger.debug("Listener removed for event: ${String(eventType)}");"
   }
 
   /**
    * Shutdown event coordinator
    */
-  async shutdown(): Promise<void> {
+  async shutdown(Promise<void> {
     try {
       this.initialized = false;
       logger.info('EventCoordinatorService shutdown complete');

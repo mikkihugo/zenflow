@@ -288,7 +288,7 @@ export class SafeConfigurationManager {
     )) {
       for (const [featureName, enabled] of Object.entries(category)) {
         if (!enabled) {
-          missing.push(`${categoryName}.${featureName}`);
+          missing.push(`${categoryName}.${featureName}");"
         }
       }
     }

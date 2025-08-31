@@ -57,7 +57,7 @@ export interface BusinessCaseConfig {
     this.businessCases.set(businessCase.id, businessCase);')    this.logger.info('Business case created,{';
       businessCaseId: this.businessCases.get(businessCaseId);
     if (!businessCase) {
-    `)      throw new Error(`Business case not found: this.assessFinancialViability(`
+    `)      throw new Error("Business case not found: this.assessFinancialViability(""
       businessCase.financialProjection;
     );
     // Profile risks
@@ -88,16 +88,13 @@ export interface BusinessCaseConfig {
     this.logger.info('Business case analysis completed,{
       businessCaseId,
       recommendation: this.businessCases.get(businessCaseId);
-    if (!businessCase) {
-    `)      throw new Error(`Business case not found:  {`
+    if (!businessCase) " + JSON.stringify({
+    `)      throw new Error("Business case not found:  {""
       ...businessCase,
       approvalStatus: businessCaseIds.map((id) => this.analyzeBusinessCase(id);
     const comparison = analyses.map((analysis, index) => ({
       businessCaseId: orderBy(comparison,'overallScore,' desc);
-    const topChoice = sortedComparison[0];`)    const __recommendation = `Recommend ${topChoice.businessCaseId} based on overall score``)    const reasoning = [`;
-      `Highest ROI: ${t}opChoice.roi%```;
-      `Best payback period: ${t}opChoice.paybackPeriodmonths```;
-      ``Risk level: `${analyses.find((a) => a.businessCase.id === topChoice.businessCaseId)?.riskProfile.overallRiskLevel},    ``)];;
+    const topChoice = sortedComparison[0]")    const __recommendation = "Recommend " + topChoice.businessCaseId + ") + " based on overall score"")    const reasoning = [""Highest ROI: $" + JSON.stringify({t}) + "opChoice.roi%""""Best payback period: $" + JSON.stringify({t}) + "opChoice.paybackPeriodmonths"""""Risk level: "${analyses.find((a) => a.businessCase.id === topChoice.businessCaseId)?.riskProfile.overallRiskLevel}"")];;"
     return {
       comparison: sortedComparison,
       recommendation,
@@ -136,9 +133,9 @@ export interface BusinessCaseConfig {
   /**
    * Generate risk mitigations
    */')  private generateRiskMitigations(')    risks: Omit<EpicRisk, 'id| identifiedAt| status>[];;
-  ):string[] {
+  ):string[] " + JSON.stringify({
     return risks.map(
-      (risk) =>`)        `Mitigate ${risk.category} risk: [];
+      (risk) =>")        "Mitigate " + risk.category + ") + " risk: [];"
     for (let year = 1; year <= 5; year++) {
       const baseRevenue =;
         financialInputs.revenueAssumptions[0]?.revenue|| 1000000;
@@ -192,7 +189,7 @@ export interface BusinessCaseConfig {
 }
   /**
    * Perform risk assessment
-   */`)  private performRiskAssessment(`)    risks: risks.map((risk) => ({`
+   */")  private performRiskAssessment(")    risks: risks.map((risk) => ({""
       ...risk,
       id: 'identified,',
 '      riskScore: meanBy(epicRisks, 'riskScore');
@@ -222,7 +219,7 @@ export interface BusinessCaseConfig {
    */
   private assessFinancialViability(
     financial: FinancialProjection
-  ):FinancialViability {
+  ): FinancialViability {
     const isViable =
       financial.roiCalculation.roi >= this.config.roiThreshold &&
       financial.paybackPeriod <= this.config.paybackPeriodLimit &&;
@@ -271,7 +268,7 @@ export interface BusinessCaseConfig {
    */
   private calculateFinancialViability(
     projection: FinancialProjection
-  ):FinancialViability {
+  ): FinancialViability {
     const isViable =;
       projection.netPresentValue > 0 && projection.internalRateReturn > 15;
     const riskAdjustedReturn = projection.internalRateReturn * 0.85; // 15% risk discount

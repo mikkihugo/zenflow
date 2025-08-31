@@ -51,7 +51,7 @@ function toSarif(results: MinimalResult[]) {
               ruleId: 'ai-lint-summary',
               level: r.fixedErrors < r.originalErrors ? 'warning' : 'note',
               message: {
-                text: `File ${r.filePath}: fixed ${r.fixedErrors}/${r.originalErrors} issues`,
+                text: `File ${r.filePath}: fixed ${r.fixedErrors}/${r.originalErrors} issues","
               },
               locations: [
                 {

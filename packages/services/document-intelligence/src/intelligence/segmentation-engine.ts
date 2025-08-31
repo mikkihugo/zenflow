@@ -169,14 +169,14 @@ export class SegmentationEngine extends TypedEventBase {
       /(o\(\w+\)|θ\(\w+\)|ω\(\w+\)|time\s+complexity|space\s+complexity|running\s+time)/gi,
       
       // Code blocks and implementation sections
-      /```[\w]*\n[\s\S]*?\n```|`[^`]+`/g`
+      /```[\w]*\n[\s\S]*?\n```|`[^`]+"/g""
 ];
 }
 
   /**
    * Initialize boundary detection patterns
    */
-  private initializeBoundaryPatterns():RegExp[] {
+  private initializeBoundaryPatterns():RegExp[] " + JSON.stringify({
     return [
       // Section headers
       /^#+\s+.*/gm,
@@ -189,24 +189,21 @@ export class SegmentationEngine extends TypedEventBase {
       /^\s*\d+\.\s+/gm,
       
       // Code block boundaries
-      /```[\s\S]*?```/g,`
-      /`[^`]+`/g,`
+      /```[\s\S]*?`""/g""
+      /`[^"]+"/g""
       
       // Formula boundaries
       /\$\$[\s\S]*?\$\$/g,
       /\$[^$]+\$/g
 ];
-}
+}) + "
 
   /**
    * Segment document using intelligent strategies
    */
-  async segmentDocument(
-    _content: string, 
-    classification: DocumentClassification
-  ):Promise<SegmentationResult> {
+  async segmentDocument(Promise<SegmentationResult> {
     const __startTime = performance.now();
-    logger.info(`Starting document segmentation with strategy:${classification.recommendedStrategy}`);
+    logger.info("Starting document segmentation with strategy:${classification.recommendedStrategy}");"
 
     try {
       // Adapt configuration based on classification
@@ -247,11 +244,11 @@ export class SegmentationEngine extends TypedEventBase {
 };
 
       this.emit('segmentation_complete', result);
-      logger.info(`Document segmented into $segments.lengthsegments (${processingTime.toFixed(2)}ms)`);
+      logger.info("Document segmented into $segments.lengthsegments (${processingTime.toFixed(2)}ms)");"
 
       return result;
-} catch (error) {
-      logger.error('Error during document segmentation:', error);')      throw new Error(`Document segmentation failed:${error}`);
+} catch (error) " + JSON.stringify({
+      logger.error('Error during document segmentation:', error);')      throw new Error("Document segmentation failed:" + error + ") + "");"
 }
 }
 
@@ -375,7 +372,7 @@ export class SegmentationEngine extends TypedEventBase {
 }
     
     // Check for code implementations
-    if (text.includes('```') || text.includes(' code') || text.includes(' implementation')) {`
+    if (text.includes('"""') || text.includes(' code') || text.includes(' implementation')) {""
     ')      return 'implementation;
 }
     
@@ -425,9 +422,9 @@ export class SegmentationEngine extends TypedEventBase {
     const mathBonus = Math.min(mathNotationCount * 0.1, 0.3);
     
     // Formula detection bonus
-    const formulaBonus = (text.includes('$$') || text.includes('\\begin{equation}')) ? 0.2: 0;')    
+    const formulaBonus = (text.includes('$$') || text.includes('\\begin" + JSON.stringify({equation}) + "')) ? 0.2: 0;')    
     // Code block detection bonus  
-    const codeBonus = text.includes('```') ? 0.15: 0;')    `
+    const codeBonus = text.includes('"`"') ? 0.15: 0;')    ""
     // Structural completeness bonus
     const hasInputOutput = text.includes('input') && text.includes(' output') ? 0.1: 0;')    const hasControlFlow = /\b(for|while|if|loop)\b/.test(text) ? 0.1: 0;
     const hasSteps = /\b(step|phase|\d+\.)\b/.test(text) ? 0.05: 0;
@@ -551,20 +548,15 @@ export class SegmentationEngine extends TypedEventBase {
   /**
    * Apply segmentation strategy based on document classification
    */
-  private async applySegmentationStrategy(
-    content: string,
-    strategy: DocumentClassification['recommendedStrategy'],
-    algorithmBlocks: AlgorithmBlock[],
-    config: SegmentationConfig
-  ):Promise<DocumentSegment[]> {
+  private async applySegmentationStrategy(Promise<DocumentSegment[]> {
     switch (strategy) {
-      case 'semantic_research_focused': ')'        return this.segmentResearchFocused(content, algorithmBlocks, config);
+      case 'semantic_research_focused':        return this.segmentResearchFocused(content, algorithmBlocks, config);
       
-      case 'algorithm_preserve_integrity': ')'        return this.segmentPreserveAlgorithms(content, algorithmBlocks, config);
+      case 'algorithm_preserve_integrity':        return this.segmentPreserveAlgorithms(content, algorithmBlocks, config);
       
-      case 'concept_implementation_hybrid': ')'        return this.segmentConceptImplementation(content, algorithmBlocks, config);
+      case 'concept_implementation_hybrid':        return this.segmentConceptImplementation(content, algorithmBlocks, config);
       
-      case 'strategic_vision_analysis': ')'        return this.segmentStrategicVision(content, config);
+      case 'strategic_vision_analysis':        return this.segmentStrategicVision(content, config);
       
       default:
         return this.segmentConceptImplementation(content, algorithmBlocks, config);
@@ -720,8 +712,8 @@ export class SegmentationEngine extends TypedEventBase {
     startPosition: number,
     segmentType: DocumentSegment['segmentType'],
     algorithmBlocks: AlgorithmBlock[]
-  ):DocumentSegment {
-    const __id = `segment_${startPosition}_${Date.now()}`;`
+  ): DocumentSegment {
+    const __id = "segment_${startPosition}_${Date.now()}"""
     const endPosition = startPosition + content.length;
     
     // Check if this segment overlaps with algorithm blocks
@@ -768,15 +760,15 @@ export class SegmentationEngine extends TypedEventBase {
   private findStrategicSections(content: string): Array<{ start: number; end: number; type: string}> {
     const strategicKeywords = ['vision',    'strategy',    'goal',    'objective',    'mission',    'roadmap'];')    const sections: Array<{ start: number; end: number; type: string}> = [];
     
-    for (const keyword of strategicKeywords) {
-      const regex = new RegExp(`\\b$keyword\\b[\\s\\S]0,500`, 'gi');')      let match;
+    for (const keyword of strategicKeywords) " + JSON.stringify({
+      const regex = new RegExp(`\\b$keyword\\b[\\s\\S]0,500", 'gi');')      let match;"
       
       while ((match = regex.exec(content)) !== null) {
         sections.push({
           start: match.index,
           end: match.index + match[0].length,
           type: keyword
-});
+}) + ");
 }
 }
     
@@ -977,7 +969,7 @@ export class SegmentationEngine extends TypedEventBase {
   /**
    * Get segmentation engine configuration
    */
-  public getConfig():SegmentationConfig {
+  public getConfig(): SegmentationConfig {
     return { ...this.config};
 }
 
@@ -1000,7 +992,7 @@ export class SegmentationEngine extends TypedEventBase {
     
     // Cyclomatic complexity (control flow analysis)
     const controlFlowKeywords = ['if',    'else',    'for',    'while',    'switch',    'case',    'try',    'catch'];')    const cyclomaticComplexity = controlFlowKeywords.reduce((count, keyword) => {
-      const matches = text.match(new RegExp(`\\b$keyword\\b`, 'g'));')      return count + (matches ? matches.length: 0);
+      const matches = text.match(new RegExp("\\b$keyword\\b", 'g'));')      return count + (matches ? matches.length: 0);"
 }, 1); // Base complexity is 1
 
     // Algorithmic complexity detection (Big O notation)

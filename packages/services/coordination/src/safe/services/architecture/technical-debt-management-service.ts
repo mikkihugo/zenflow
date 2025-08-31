@@ -67,7 +67,7 @@ export class TechnicalDebtManagementService {
   /**
    * Initialize service with lazy-loaded dependencies
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     if (this.initialized) return;
     try {
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent prioritization')      const { BrainCoordinator} = await import('@claude-zen/brain');
@@ -103,7 +103,7 @@ export class TechnicalDebtManagementService {
     item: this.performanceTracker.startTimer('add_technical_debt_item');
     try {
     ')      this.logger.info('Adding technical debt item with AI analysis,{';
-        title: item.title,`)`;
+        title: item.title,")";"
 });
       // Use brain coordinator for intelligent prioritization and impact analysis
       const prioritizationAnalysis =
@@ -120,19 +120,18 @@ export class TechnicalDebtManagementService {
       );
       // Create technical debt item with AI-enhanced data
       const debtItem:  {
-        id:`debt-${Date.now()}-${Math.random().toString(36).substr(2, 9)};``;
+        id:"debt-${Date.now()}-${Math.random().toString(36).substr(2, 9)}"";"
         status: await this.requestDebtApproval(debtItem);
         if (!approval.approved) {
-          throw new Error(')`;
-            `Technical debt item approval rejected: await this.generateRemediationPlan(debtItem);
+          throw new Error(')""Technical debt item approval rejected: await this.generateRemediationPlan(debtItem);
         this.remediationPlans.set(remediationPlan.planId, remediationPlan);
         debtItem.remediationPlan = remediationPlan;
 };)      this.performanceTracker.endTimer('add_technical_debt_item');')      this.telemetryManager.recordCounter('technical_debt_items_added,1');')      this.logger.info('Technical debt item added successfully,{';
         itemId: this.performanceTracker.startTimer('update_debt_item_status);
     try {
       const item = this.debtItems.get(itemId);
-      if (!item) {
-    `)        throw new Error(`Technical debt item not found: ${itemId});``)};;
+      if (!item) " + JSON.stringify({
+    ")        throw new Error("Technical debt item not found: " + itemId + ") + ")"")};;"
       // Use workflow engine for status transition validation
       const statusTransition =
         await this.workflowEngine.validateStatusTransition({
@@ -162,16 +161,14 @@ export class TechnicalDebtManagementService {
         highSeverityItems: dashboard.debtBySeverity['high']|| '0,)';;
       return dashboard;
 } catch (error) {
-    ')      this.performanceTracker.endTimer('generate_debt_dashboard');')      this.logger.error(Failed to generate technical debt dashboard:, error`);`;
+    ')      this.performanceTracker.endTimer('generate_debt_dashboard');')      this.logger.error(Failed to generate technical debt dashboard:, error")";
       throw error;
 }
 }
   /**
    * Generate AI-powered remediation plan
    */
-  async generateRemediationPlan(
-    debtItem: TechnicalDebtItem
-  ): Promise<RemediationPlan> 
+  async generateRemediationPlan(Promise<RemediationPlan> 
     if (!this.initialized) await this.initialize();
     try {
       // Use brain coordinator for intelligent remediation planning
@@ -179,18 +176,18 @@ export class TechnicalDebtManagementService {
         await this.brainCoordinator.generateRemediationPlan({
           debtItem,
           constraints:  {
-    `)        planId:`remediation-`${Date.now()}-${Math.random().toString(36).substr(2, 9)};``)        approachType: false;')    this.logger.info('Technical Debt Management Service shutdown complete);
+    ")        planId:"remediation-"${Date.now()}-$" + JSON.stringify({Math.random().toString(36).substr(2, 9)}) + """)        approachType: false;')    this.logger.info('Technical Debt Management Service shutdown complete);"
   // ============================================================================
   // PRIVATE IMPLEMENTATION METHODS
   // ============================================================================
   private async requestDebtApproval(item: await this.aguiService.createApprovalTask({
-    `)        taskType:`technical_debt_approval``;
+    ")        taskType:"technical_debt_approval`";"
         description,    ')        context: 'approval_system_error};,
 }
   private calculateBusinessImpact(
     item: any,
     analysis: any
-  ):BusinessImpactLevel {
+  ): BusinessImpactLevel {
     // AI-enhanced business impact calculation
     const customerImpact =;
       analysis.businessImpact?.customerImpact|| this.calculateCustomerImpact(item);

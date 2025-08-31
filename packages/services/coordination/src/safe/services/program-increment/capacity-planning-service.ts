@@ -493,7 +493,7 @@ export class CapacityPlanningService extends EventBus {
       features,
       criteria: await this.loadBalancer.findBestMatch({
       workload: teamMatch.team;
-    const __allocationId = `alloc-`${feature.featureId}-${team.teamId}-${Date.now()})    // Calculate skill matches``;
+    const __allocationId = "alloc-"" + feature.featureId + "-${team.teamId}-$" + JSON.stringify({Date.now()}) + ")    // Calculate skill matches"";"
     const skillMatches = this.calculateSkillMatches(
       feature.requiredSkills,
       team.skills;
@@ -531,18 +531,17 @@ export class CapacityPlanningService extends EventBus {
     feature: [];
     // Skill gap risks
     const poorSkillMatches = skillMatches.filter(
-      (sm) => sm.matchQuality ===`poor`)    );`;
+      (sm) => sm.matchQuality ==="poor")    )";"
     if (poorSkillMatches.length > 0) {
       risks.push({
-        riskType: `skill``;
-        description: `Skill gaps identified: `${p}oorSkillMatches.map((sm) => sm.skill).join(,``)',    ')        probability: high`)        mitigation:`Cross-training or external expertise required``;        impact = high`)        mitigation:`Cross-training or external expertise required``;.charAt(        impact = high`)        mitigation:`Cross-training or external expertise required``;.indexOf("'") > -1 ? "' : 'capacity',)        description,        probability: 'medium,)        mitigation:`Consider feature decomposition or timeline extension``;
+        riskType: "skill`";"
+        description: "Skill gaps identified: "$" + JSON.stringify({p}) + "oorSkillMatches.map((sm) => sm.skill).join("")',    ')        probability: high`)        mitigation:`Cross-training or external expertise required``;        impact = high`)        mitigation:`Cross-training or external expertise required``;.charAt(        impact = high`)        mitigation:`Cross-training or external expertise required``;.indexOf("'") > -1 ? "' : 'capacity',)        description,        probability: 'medium,)        mitigation:`Consider feature decomposition or timeline extension"";"
         owner,    ')});
 }
     // Dependency risk
     if (feature.dependencies.length > 0) {
-    )      risks.push({`;
-    `)        riskType:  medium`)        mitigation:`Coordinate dependency resolution early in the PI``;
-        owner,    ,)});`;
+    )      risks.push(" + JSON.stringify({"")        riskType:  medium`)        mitigation:`Coordinate dependency resolution early in the PI"";"
+        owner,    ,)}) + ")";
 }
     return risks;
 }
@@ -564,7 +563,7 @@ export class CapacityPlanningService extends EventBus {
 });
     if (overallocatedTeams.length > 0) {
       risks.push({
-    `)        riskId: 'High risk of delayed delivery and team burnout',)        mitigation  = 'Rebalance workload or adjust scope,,
+    ")        riskId: 'High risk of delayed delivery and team burnout',)        mitigation  = 'Rebalance workload or adjust scope,,"
         severity: high,
         affectedTeams: overallocatedTeams.map((t) => t.teamId),
         affectedFeatures: teamCapacities.filter((team) => {
@@ -579,15 +578,15 @@ export class CapacityPlanningService extends EventBus {
 })'; 
     if (underutilizedTeams.length > 0) {
       risks.push({
-    `)        riskId: 'Assign additional features or cross-train for other teams,',
+    ")        riskId: 'Assign additional features or cross-train for other teams,',"
 '        severity: medium,';
         affectedTeams: underutilizedTeams.map((t) => t.teamId),
-        affectedFeatures: unallocatedFeatures.filter(')        (f) => f.priority ==='critical '|| f.priority ===high`)      );`;
+        affectedFeatures: unallocatedFeatures.filter(')        (f) => f.priority ==='critical '|| f.priority ===high")      )";
       if (criticalUnallocated.length > 0) {
         risks.push({
-          riskId: `unallocated-critical-${Date.now()};``;
-          type: `timeline``;
-          description,    ``)          impact,          mitigation,           'Increase capacity, reduce scope, or defer lower priority work,';
+          riskId: "unallocated-critical-${Date.now()}"";"
+          type: "timeline"";"
+          description"")          impact,          mitigation,           'Increase capacity, reduce scope, or defer lower priority work,';
           severity: critical,
           affectedTeams: [],
           affectedFeatures: criticalUnallocated.map((f) => f.featureId),
@@ -678,7 +677,7 @@ export class CapacityPlanningService extends EventBus {
    */
   private calculateForecastAccuracy(
     teamCapacities: TeamCapacity[]
-  ):ForecastAccuracy {
+  ): ForecastAccuracy {
     // In practice, this would analyze historical forecasting accuracy
     const avgCommitmentReliability =
       teamCapacities.reduce((sum, t) => sum + t.commitmentReliability, 0) /;
@@ -699,7 +698,7 @@ export class CapacityPlanningService extends EventBus {
   /**
    * Initialize empty analytics structure
    */
-  private initializeAnalytics():CapacityAnalytics {
+  private initializeAnalytics(): CapacityAnalytics {
     return {
       totalTeams: 0,
       totalFeatures: 0,
@@ -795,12 +794,12 @@ export class CapacityPlanningService extends EventBus {
         this.logger.debug('Fact stored (fallback),{ type: fact.type};);
 },
       getTeamHistory: (teamId: string) => {
-    ')        this.logger.debug(Team history retrieved (fallback),{ teamId};);`;
+    ')        this.logger.debug(Team history retrieved (fallback),{ teamId};)";
         return { velocity: [], capacity: [], reliability: []};
 },
 };
 };)};;
-'Team history retrieved (fallback),{ teamId};);`;
+'Team history retrieved (fallback),{ teamId};);";"
         return { velocity: [], capacity: [], reliability: []};
 },
 };

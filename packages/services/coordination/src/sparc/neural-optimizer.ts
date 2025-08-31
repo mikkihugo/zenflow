@@ -35,25 +35,22 @@ export class SPARCNeuralOptimizer {
   /**
    * Initialize neural optimizer (now uses event-driven Brain automatically)
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     this.initialized = true;
     logger.info('SPARC Neural Optimizer ready with event-driven Brain system');
   }
   /**
    * Get ML-optimized configuration for SPARC phase (via event-driven Brain)
    */
-  async optimizePhaseConfig(
-    phase: SPARCPhase,
-    project: SparcProject
-  ): Promise<SparcPhaseConfig> {
+  async optimizePhaseConfig(Promise<SparcPhaseConfig> {
     try {
       const contextVector = this.createContextVector(phase, project);
       const prediction = await this.predictOptimalConfig(contextVector);
       
-      logger.info(`Neural prediction for ${phase}: tokens=${prediction.maxTokens}, temp=${prediction.temperature}, confidence=${prediction.confidence}`);
+      logger.info("Neural prediction for ${phase}: tokens=${prediction.maxTokens}, temp=${prediction.temperature}, confidence=${prediction.confidence}");"
       return prediction;
-    } catch (error) {
-      logger.error(`Neural prediction failed for ${phase}: ${error}`);
+    } catch (error) " + JSON.stringify({
+      logger.error("Neural prediction failed for " + phase + ") + ": ${error}");"
       return this.getDefaultConfig(phase);
     }
   }
@@ -68,15 +65,15 @@ export class SPARCNeuralOptimizer {
     const complexity = this.calculateComplexity(phase, project);
     
     return {
-      requestId: `sparc-${phase}-${Date.now()}`,
-      domain: `sparc-${phase}`,
-      context:  {
+      requestId: "sparc-${phase}-${Date.now()}","
+      domain: "sparc-${phase}","
+      context:  " + JSON.stringify({
         complexity,
         priority: project.priority || 'medium',
         timeLimit: 30000
-      },
+      }) + ",
       useAdvancedOptimization: complexity > 0.7,
-      prompt: `Optimize SPARC ${phase} phase for project: ${requirements}`,
+      prompt: "Optimize SPARC ${phase} phase for project: ${requirements}","
       data:  {
         phase,
         projectSize: project.requirements?.length || 1,
@@ -113,7 +110,7 @@ export class SPARCNeuralOptimizer {
   /**
    * Predict optimal configuration using Brain system
    */
-  private async predictOptimalConfig(request: BrainPredictionRequest): Promise<SparcPhaseConfig> {
+  private async predictOptimalConfig(Promise<SparcPhaseConfig> {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         reject(new Error('SPARC optimization timeout'));
@@ -214,12 +211,12 @@ export default sparcNeuralOptimizer;
         confidence: result.confidence|| 0.5
 };
 } catch (error) {
-    `)      logger.warn(``Event-driven Brain prediction failed: ${error});`)    logger.debug(```Performance data available for Brain learning: ${data.phase} - quality=${data.qualityScore});`)    // Could emit performance data event for system-wide learning``')    // this.emit(sparc: performance-data, data`);`)    logger.debug(`Tracked performance for ${data.phase}:success=${data.success}, quality=${data.qualityScore});`): SparcPhaseConfig {`
+    ")      logger.warn(""Event-driven Brain prediction failed: $" + JSON.stringify({error}) + ")")    logger.debug("""Performance data available for Brain learning: ${data.phase} - quality=$" + JSON.stringify({data.qualityScore}) + ")")    // Could emit performance data event for system-wide learning""')    // this.emit(sparc: performance-data, data")")    logger.debug("Tracked performance for ${data.phase}:success=${data.success}, quality=$" + JSON.stringify({data.qualityScore}) + ")"): SparcPhaseConfig {""
     return {
       maxTokens: this.getDefaultTokens(phase),
       temperature: this.getDefaultTemperature(phase), 
       timeoutMs: this.getDefaultTimeout(phase),
-      llmStrategy: ``auto,';
+      llmStrategy: ""auto,';"
 '      complexityScore: 0.5,';
       confidence: 0.3 // Low confidence for defaults',};;
 }

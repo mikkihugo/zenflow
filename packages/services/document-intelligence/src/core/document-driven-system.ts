@@ -66,7 +66,7 @@ export class SafeArtifactIntelligence extends TypedEventBase {
   /**
    * Initialize system - SAFe 6.0 Essential artifact intelligence.
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     logger.info('Initializing SAFe Artifact Intelligence System');
     logger.info('SAFe Artifact Intelligence ready');
     this.emit('initialized', { timestamp: new Date() });
@@ -77,8 +77,8 @@ export class SafeArtifactIntelligence extends TypedEventBase {
    *
    * @param workspacePath
    */
-  async loadWorkspace(workspaceName: string, _databaseConnections: any): Promise<string> {
-    const workspaceId = `safe-workspace-${Date.now()}`;`
+  async loadWorkspace(Promise<string> {
+    const workspaceId = "safe-workspace-${Date.now()}"""
 
     const workspace: SafeWorkspace = {
       workspaceId,
@@ -111,10 +111,7 @@ export class SafeArtifactIntelligence extends TypedEventBase {
    * @param workspaceId
    * @param docPath
    */
-  async processVisionaryDocument(
-    workspaceId: string,
-    docPath: string
-  ):Promise<void> {
+  async processVisionaryDocument(Promise<void> {
     const context = this.workspaces.get(workspaceId);
     if (!context) throw new Error('Workspace ' + workspaceId + ' not found');
 
@@ -133,17 +130,17 @@ export class SafeArtifactIntelligence extends TypedEventBase {
 
     // Route to appropriate processor based on document type
     switch (docType) {
-      case 'vision': ')'        await this.processVisionDocument(workspaceId, doc);
+      case 'vision':        await this.processVisionDocument(workspaceId, doc);
         break;
-      case 'adr': ')'        await this.processADR(workspaceId, doc);
+      case 'adr':        await this.processADR(workspaceId, doc);
         break;
-      case 'prd': ')'        await this.processPRD(workspaceId, doc);
+      case 'prd':        await this.processPRD(workspaceId, doc);
         break;
-      case 'epic': ')'        await this.processEpic(workspaceId, doc);
+      case 'epic':        await this.processEpic(workspaceId, doc);
         break;
-      case 'feature': ')'        await this.processFeature(workspaceId, doc);
+      case 'feature':        await this.processFeature(workspaceId, doc);
         break;
-      case 'task': ')'        await this.processTask(workspaceId, doc);
+      case 'task':        await this.processTask(workspaceId, doc);
         break;
 }
 

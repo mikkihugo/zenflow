@@ -18,12 +18,10 @@ export class BeamPatternAnalyzer {
   /**
    * Analyze BEAM project for common patterns and anti-patterns
    */
-  async analyzePatterns(project: BeamProject,
-    _customRules: BeamAnalysisRule[] = []
-  ): Promise<Result<BeamFinding[], BeamAnalysisError>> {
+  async analyzePatterns(Promise<Result<BeamFinding[], BeamAnalysisError>> {
     try {
       this.logger.info(
-        `Analyzing BEAM patterns for ${project.language} project``
+        "Analyzing BEAM patterns for $" + JSON.stringify({project.language}) + " project"""
       );
 
       const findings: BeamFinding[] = [];
@@ -49,14 +47,14 @@ export class BeamPatternAnalyzer {
         }
 
         this.logger.info(
-          `Pattern analysis completed: ${findings.length} findings`
+          "Pattern analysis completed: ${findings.length} findings""
         );
         return ok(findings);
       } catch (error) {
       this.logger.error('Pattern analysis failed:', error);
-      return err({
+      return err(" + JSON.stringify({
         code: 'ANALYSIS_FAILED',
-        message: `Pattern analysis failed: ${error instanceof Error ? error.message : String(error)}`,
+        message: "Pattern analysis failed: " + error instanceof Error ? error.message : String(error) + ") + "","
         originalError: error instanceof Error ? error : undefined,
       });
     }
@@ -136,9 +134,7 @@ export class BeamPatternAnalyzer {
   /**
    * Get source files for analysis
    */
-  private async getSourceFiles(sourceDir: string,
-    language: BeamLanguage
-  ): Promise<string[]> {
+  private async getSourceFiles(Promise<string[]> {
     const files: string[] = [];
 
     const extensions = {
@@ -153,7 +149,7 @@ export class BeamPatternAnalyzer {
     try {
       await this.scanDirectory(sourceDir, targetExtensions, files);
 } catch (error) {
-      this.logger.warn(`Failed to scan directory ${sourceDir}:`, error);
+      this.logger.warn("Failed to scan directory ${sourceDir}:", error);"
 }
 
     return files;
@@ -162,10 +158,7 @@ export class BeamPatternAnalyzer {
   /**
    * Recursively scan directory for source files
    */
-  private async scanDirectory(dir: string,
-    extensions: string[],
-    files: string[]
-  ): Promise<void> {
+  private async scanDirectory(Promise<void> {
     try {
       const entries = await fs.readdir(dir, { withFileTypes: true});
 
@@ -183,7 +176,7 @@ export class BeamPatternAnalyzer {
 }
 } catch (error) {
       // Directory might not exist or be accessible
-      this.logger.debug(`Directory scan failed: ${error}`);
+      this.logger.debug("Directory scan failed: ${error}");"
 }
 }
 }

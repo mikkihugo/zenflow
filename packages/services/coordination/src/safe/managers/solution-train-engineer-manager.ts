@@ -14,7 +14,7 @@
   /**
    * Initialize with service delegation
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     if (this.initialized) return;
     try {
       // Delegate to Multi-ART Coordination Service')      const { MultiARTCoordinationService} = await import('../services/solution-train/multi-art-coordination-service'));
@@ -83,7 +83,7 @@
   /**
    * Manage solution architecture - Delegates to Solution Architecture Management Service
    */
-  async manageSolutionArchitecture(architectureConfig: any): Promise<any> {
+  async manageSolutionArchitecture(Promise<any> {
     if (!this.initialized) await this.initialize();)    this.logger.info('Managing solution architecture');
     try {
       // Configure architecture management
@@ -114,7 +114,7 @@
   /**
    * Track cross-ART dependencies - Delegates to Multi-ART Coordination Service
    */
-  async trackDependency(dependency: any): Promise<any> {
+  async trackDependency(Promise<any> {
     if (!this.initialized) await this.initialize();)    this.logger.info('Tracking cross-ART dependency,{';
       fromART: dependency.fromART,
       toART: dependency.toART,
@@ -135,11 +135,7 @@
   /**
    * Update dependency status - Delegates to Multi-ART Coordination Service
    */
-  async updateDependencyStatus(
-    dependencyId: string,
-    status: string,
-    actualDeliveryDate?:Date
-  ): Promise<any> {
+  async updateDependencyStatus(Promise<any> {
     if (!this.initialized) await this.initialize();
     try {
       const updatedDependency =
@@ -160,7 +156,7 @@
   /**
    * Make architectural decision - Delegates to Solution Architecture Management Service
    */
-  async makeArchitecturalDecision(decision: any): Promise<any> {
+  async makeArchitecturalDecision(Promise<any> {
     if (!this.initialized) await this.initialize();
     try {
       const architecturalDecision =

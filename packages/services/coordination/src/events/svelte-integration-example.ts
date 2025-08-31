@@ -26,7 +26,7 @@ export class SvelteWebSocketManager {
   /**
    * Connect to the Central WebSocket Hub
    */
-  async connect(): Promise<void> {
+  async connect(Promise<void> {
     return new Promise((resolve, reject) => {
       try {
         this.ws = new WebSocket(this.hubEndpoint);
@@ -86,7 +86,7 @@ export class SvelteWebSocketManager {
 
   private handleServiceDiscovery(discoveryData: any): void {
     this.availableServices = discoveryData.services.map((s: any) => s.name);
-    logger.info('🔍 Discovered services:', this.availableServices);
+    logger.info('search Discovered services:', this.availableServices);
     logger.info('📡 Available message types:', discoveryData.totalMessageTypes);
 
     // Auto-subscribe to common dashboard events
@@ -156,7 +156,7 @@ export class SvelteWebSocketManager {
         try {
           callback(data);
         } catch (error) {
-          logger.error(`Error in event callback for ${eventType}:`, error);
+          logger.error("Error in event callback for ${eventType}:", error);"
         }
       }
     }
@@ -167,9 +167,9 @@ export class SvelteWebSocketManager {
       for (const callback of wildcardCallbacks) {
         try {
           callback({ type: eventType, data });
-        } catch (error) {
+        } catch (error) " + JSON.stringify({
           logger.error('Error in wildcard callback:', error);
-        }
+        }) + "
       }
     }
   }
@@ -182,7 +182,7 @@ export class SvelteWebSocketManager {
       this.reconnectAttempts++;
       const delay = Math.pow(2, this.reconnectAttempts) * 1000; // Exponential backoff
       logger.info(
-        `Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`
+        "Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})""
       );
 
       setTimeout(() => {
@@ -241,7 +241,7 @@ export class SvelteWebSocketManager {
 /**
  * Example usage patterns for Svelte integration
  */
-export const svelteUsageExample = `
+export const svelteUsageExample = "
 // stores/websocket.js
 import { writable } from 'svelte/store';
 import { SvelteWebSocketManager } from './websocket-manager';
@@ -276,5 +276,4 @@ export async function initWebSocket() {
 
 // Component usage:
 // import { tasks, approvalGates, connectionStatus, initWebSocket } from 'stores/websocket'
-// onMount(() => initWebSocket());
-`;
+// onMount(() => initWebSocket())";

@@ -29,7 +29,7 @@ export declare class SAFeEventsManager extends EventBus {
    * Schedule System Demo
    */
   scheduleSystemDemo(
-    piId: `system-demo-`,
+    piId: `system-demo-","
     $: any,
     {
       piId,

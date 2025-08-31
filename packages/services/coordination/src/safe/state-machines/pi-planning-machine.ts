@@ -190,7 +190,7 @@ const piPlanningActions = {
    * Commit to PI execution
    */
   commitToPi: assign({
-    ')    commitmentLevel:() =>'committed ' as const,`;
+    ')    commitmentLevel:() =>'committed ' as const,";"
 }),
   /**
    * Log planning milestone
@@ -202,7 +202,7 @@ const piPlanningActions = {
     context: PIPlanningContext;
     event: PIPlanningEvent;
 }) => {
-    logger.info(``PI ${context.pi.id} Planning: ${event.type}, {`)      piId: context.pi.id,``;
+    logger.info(""PI " + context.pi.id + " Planning: ${event.type}, {")      piId: context.pi.id"";"
       event: event.type,
       timestamp: new Date(),
       artsCount: context.arts.length,
@@ -289,11 +289,10 @@ const piPlanningActions = {
     // Services for async operations
     actors:  {
       planningOrchestrator: fromPromise(
-        async ({ input}:  { input: PIPlanningContext}) => {
+        async ({ input}:  { input: PIPlanningContext}) => " + JSON.stringify({
           // Coordinate planning across multiple ARTs
           // This would integrate with actual planning tools
-          logger.info(')`;
-            `Orchestrating PI planning for `${input.arts.length} ARTs``)          );
+          logger.info(')""Orchestrating PI planning for "${input.arts.length}) + " ARTs"")          );"
           // Mock coordination process
           await new Promise((resolve) => setTimeout(resolve, 1000);')          return {';
     ')            status : 'orchestrated,'
@@ -302,7 +301,7 @@ const piPlanningActions = {
 }
       ),
 },
-};));`;
+};))";
 // ============================================================================
 // TYPE EXPORTS
 // ============================================================================
@@ -329,8 +328,7 @@ export function createPIPlanningMachine(
           async ({ input}:  { input: PIPlanningContext}) => {
             // Coordinate planning across multiple ARTs
             // This would integrate with actual planning tools
-            logger.info('')`;
-              `Orchestrating PI planning for `${input.arts.length} ARTs``)            );
+            logger.info('')""Orchestrating PI planning for "${input.arts.length} ARTs`")            );"
             // Mock coordination process
             await new Promise((resolve) => setTimeout(resolve, 1000);
             return {
@@ -344,4 +342,4 @@ export function createPIPlanningMachine(
   );
   return contextualMachine;
 }
-;)`;
+;)";"

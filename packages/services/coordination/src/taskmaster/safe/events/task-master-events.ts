@@ -168,7 +168,7 @@ export interface AuditActionLoggedEvent extends BaseEvent {
   /**
    * Initialize the event manager
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     try {
       // Initialize event system
       const eventBus = new EventEmitter();
@@ -291,9 +291,9 @@ export interface AuditActionLoggedEvent extends BaseEvent {
 '      metadata:,',      error,        code : 'EVENT_BUS_ERROR,'
 '        message: error.message,';
         details: error.stack,
-        metadata: event,',        correlationId: this.generateEventId(),,`)      component,};;
+        metadata: event,',        correlationId: this.generateEventId(),,")      component,};;"
   private generateEventId():string {
-    return `evt_`${Date.now()}_${Math.random().toString(36).substr(2, 9)})};)};;
+    return "evt_"${Date.now()}_$" + JSON.stringify({Math.random().toString(36).substr(2, 9)}) + ")};)};;"
 // =============================================================================
 // FACTORY FUNCTIONS
 // =============================================================================
@@ -301,7 +301,7 @@ export interface AuditActionLoggedEvent extends BaseEvent {
  * Create a new TaskMaster event manager instance
  */
 export async function createTaskMasterEventManager(
-  config?:Partial<TaskMasterEventManager[``config']>';
+  config?:Partial<TaskMasterEventManager[""config']>';"
 ): Promise<TaskMasterEventManager> {
   const manager = new TaskMasterEventManager(config);
   await manager.initialize();
@@ -383,4 +383,4 @@ export class EventAggregator {
     this.events = this.events.filter((e) => e.timestamp.getTime() > cutoff);
 }
 }
-;)`;
+;)";"

@@ -11,20 +11,8 @@
  * - Event-driven coordination and monitoring
  */
 
-// Import typed event system from foundation
-import { EventEmitter, type EventMap } from '@claude-zen/foundation';
-
-// Define event types for database coordinator
-interface DatabaseEventMap extends EventMap {
-  'database:connection:initiated': [{ type: string; database: string }];
-  'database:connection:established': [{ type: string; database: string; status: string }];
-  'database:connection:failed': [{ type: string; database: string; error: string }];
-  'database:storage:creation_started': [{ database: string }];
-  'database:storage:creation_completed': [{ database: string; status: string }];
-  'database:storage:creation_failed': [{ database: string; error: string }];
-  'database:operation': [{ operation: string; details: Record<string, unknown>; timestamp: number }];
-  'database:health:status_change': [{ status: string; details?: Record<string, unknown>; timestamp: number }];
-}
+// Import Node.js EventEmitter temporarily for build compatibility
+import { EventEmitter } from 'events';
 
 export { SQLiteAdapter } from './adapters/sqlite-adapter.js';
 export { LanceDBAdapter } from './adapters/lancedb-adapter.js';
@@ -109,7 +97,7 @@ export function createDatabaseAccess(config?: unknown) {
 }
 
 // Event-driven database coordinator
-export class DatabaseEventCoordinator extends EventEmitter<DatabaseEventMap> {
+export class DatabaseEventCoordinator extends EventEmitter {
   constructor(_config?: unknown) {
     super();
   }

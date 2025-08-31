@@ -1,53 +1,53 @@
 /**
- * @file Neural Safety Bridge - Brain Package Integration with AI Safety
+ * @file: Neural Safety: Bridge - Brain: Package Integration with: AI Safety
  *
- * Integrates the 25-pattern AI deception detection system with the brain package's') * neural networks, behavioral intelligence, and cognitive patterns for enhanced
+ * Integrates the 25-pattern: AI deception detection system with the brain package's') * neural networks, behavioral intelligence, and cognitive patterns for enhanced
  * safety monitoring and real-time intervention.
  */
-import { TypedEventBase} from '@claude-zen/foundation';
-export interface NeuralSafetyConfig {
+import { TypedEvent: Base} from '@claude-zen/foundation';
+export interface: NeuralSafetyConfig {
     enabled:boolean;
-    enhancedDetection:boolean;
-    behavioralLearning:boolean;
-    realTimeMonitoring:boolean;
-    interventionThreshold:number;
-    neuralModelPath?:string;
+    enhanced: Detection:boolean;
+    behavioral: Learning:boolean;
+    realTime: Monitoring:boolean;
+    intervention: Threshold:number;
+    neuralModel: Path?:string;
 }
-export interface EnhancedDeceptionResult {
-    standardDetection:any[];
-    neuralEnhancement:{
+export interface: EnhancedDeceptionResult {
+    standard: Detection:any[];
+    neural: Enhancement:{
         confidence:number;
         patterns:string[];
-        behavioralSignals:number[];
+        behavioral: Signals:number[];
 };
-    behavioralAnalysis:{
-        anomalyScore:number;
-        riskLevel: 'LOW|MEDIUM|HIGH|CRITICAL;;
+    behavioral: Analysis:{
+        anomaly: Score:number;
+        risk: Level: 'LO: W|MEDIU: M|HIG: H|CRITICA: L;;
 '        recommendation:string;
 };
-    combinedVerdict:{
-        isDeceptive:boolean;
+    combined: Verdict:{
+        is: Deceptive:boolean;
         confidence:number;
-        interventionRequired:boolean;
+        intervention: Required:boolean;
         reasoning:string[];
 };
 }
 /**
- * Neural Safety Bridge - Enhanced AI safety with brain package integration.
+ * Neural: Safety Bridge - Enhanced: AI safety with brain package integration.
  *
  * Combines the 25-pattern deception detection system with neural networks,
  * behavioral intelligence, and cognitive pattern analysis for comprehensive
- * AI safety monitoring.
+ * A: I safety monitoring.
  */
-export declare class NeuralSafetyBridge extends TypedEventBase {
+export declare class: NeuralSafetyBridge extends: TypedEventBase {
     private logger;
     ':any;
-    private aiDeceptionDetector;
-    private neuralDeceptionDetector;
-    private behavioralIntelligence;
-    private neuralSafetyConfig;
-    private isInitialized;
-    constructor(config:NeuralSafetyConfig);
+    private aiDeception: Detector;
+    private neuralDeception: Detector;
+    private behavioral: Intelligence;
+    private neuralSafety: Config;
+    private is: Initialized;
+    constructor(config:NeuralSafety: Config);
     /**
      * Initialize neural safety bridge with brain system integration.
      */
@@ -55,25 +55,25 @@ export declare class NeuralSafetyBridge extends TypedEventBase {
     /**
      * Enhanced deception detection combining all brain systems.
      */
-    detectEnhancedDeception(interactionData:any): Promise<EnhancedDeceptionResult>;
+    detectEnhanced: Deception(interaction: Data:any): Promise<EnhancedDeception: Result>;
     /**
      * Extract behavioral features for analysis.
      */
-    private extractBehavioralFeatures;
+    private extractBehavioral: Features;
     /**
      * Analyze behavioral patterns using brain's behavioral intelligence.')     */
-    private analyzeBehavioralPatterns;
+    private analyzeBehavioral: Patterns;
     /**
      * Process neural patterns using brain's neural network.')     */
-    private processNeuralPatterns;
+    private processNeural: Patterns;
     /**
      * Convert text to numerical vector for neural processing.
      */
-    private convertTextToVector;
+    private convertTextTo: Vector;
     /**
      * Compute combined verdict from all detection systems.
      */
-    private computeCombinedVerdict;
-    if(behavioralAnalysis:any, riskLevel:any): any;
+    private computeCombined: Verdict;
+    if(behavioral: Analysis:any, risk: Level:any): any;
 }
-//# sourceMappingURL=neural-safety-bridge.d.ts.map
+//# sourceMappingUR: L=neural-safety-bridge.d.ts.map

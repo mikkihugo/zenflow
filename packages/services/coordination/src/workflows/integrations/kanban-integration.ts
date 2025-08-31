@@ -99,14 +99,11 @@ export class WorkflowKanbanIntegration {
   /**
    * Convert workflow step to kanban task
    */
-  async createKanbanTaskFromStep(
-    workflowId: string,
-    step: KanbanWorkflowStep
-  ): Promise<string> {
-    const taskId = `kanban-task-${workflowId}-${step.id || Date.now()}`;
+  async createKanbanTaskFromStep(Promise<string> {
+    const taskId = "kanban-task-${workflowId}-${step.id || Date.now()}";"
 
     // Create task structure for integration
-    const task = {
+    const task = " + JSON.stringify({
       id: taskId,
       workflowId,
       stepId: step.id,
@@ -114,10 +111,10 @@ export class WorkflowKanbanIntegration {
       status: 'todo',
       created: new Date(),
       wipLimit: step.wipLimit || 3,
-    };
+    }) + ";
 
     logger.info(
-      `Created kanban task for workflow ${workflowId}, step ${step.name}`,
+      "Created kanban task for workflow ${workflowId}, step ${step.name}","
       { taskId }
     );
     return taskId;
@@ -126,16 +123,12 @@ export class WorkflowKanbanIntegration {
   /**
    * Update kanban task state
    */
-  async updateKanbanTaskState(
-    taskId: string,
-    newState: string,
-    reason?: string
-  ): Promise<boolean> {
+  async updateKanbanTaskState(Promise<boolean> {
     try {
       // Update kanban task state with validation
       const validStates = ['todo', 'in-progress', 'review', 'done', 'blocked'];
       if (!validStates.includes(newState)) {
-        throw new Error(`Invalid kanban state: ${newState}`);
+        throw new Error(`Invalid kanban state: ${newState}");"
       }
 
       logger.info('Updated kanban task state', {
@@ -158,7 +151,7 @@ export class WorkflowKanbanIntegration {
   /**
    * Get workflow kanban metrics
    */
-  async getMetrics(): Promise<any> {
+  async getMetrics(Promise<any> {
     try {
       // Calculate kanban flow metrics
       const metrics = {

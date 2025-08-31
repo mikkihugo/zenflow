@@ -66,14 +66,7 @@ export interface EnterpriseArchConfig {
   /**
    * Create architecture principle - Delegates to Architecture Principle Service
    */
-  async createArchitecturePrinciple(
-    name: string,
-    statement: string,
-    rationale: string,
-    category: string,
-    priority: string =medium,
-    implications: []
-  ): Promise<ArchitecturePrinciple> {
+  async createArchitecturePrinciple(Promise<ArchitecturePrinciple> {
     if (!this.initialized) await this.initialize();
     this.logger.info('Creating architecture principle,{';
       name,
@@ -296,7 +289,7 @@ export interface EnterpriseArchConfig {
   /**
    * Calculate architecture health metrics - Delegates to Architecture Health Service
    */
-  async calculateArchitectureHealthMetrics(): Promise<ArchitectureHealthMetrics> {
+  async calculateArchitectureHealthMetrics(Promise<ArchitectureHealthMetrics> {
     if (!this.initialized) await this.initialize();')    this.logger.info('Calculating architecture health metrics');
     try {
       const metrics =;

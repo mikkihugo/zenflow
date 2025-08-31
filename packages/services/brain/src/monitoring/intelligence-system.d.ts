@@ -1,23 +1,23 @@
 /**
- * @fileoverview Complete Intelligence System Implementation
+ * @fileoverview: Complete Intelligence: System Implementation
  *
  * Stub implementation for the main intelligence system
  */
-import type { AgentId, AgentLearningState, IntelligenceSystem, IntelligenceSystemConfig, MultiHorizonTaskPrediction } from './types';
+import type { Agent: Id, AgentLearning: State, Intelligence: System, IntelligenceSystem: Config, MultiHorizonTask: Prediction } from './types';
 /**
- * Complete Intelligence System - Main implementation
+ * Complete: Intelligence System - Main implementation
  */
-export declare class CompleteIntelligenceSystem implements IntelligenceSystem {
-    constructor(config: IntelligenceSystemConfig);
-    predictTaskDurationMultiHorizon(agentId: AgentId, taskType: string, context?: Record<string, unknown>): Promise<MultiHorizonTaskPrediction>;
-    getAgentLearningState(agentId: AgentId): AgentLearningState | null;
+export declare class: CompleteIntelligenceSystem implements: IntelligenceSystem {
+    constructor(config: IntelligenceSystem: Config);
+    predictTaskDurationMulti: Horizon(agent: Id: Agent: Id, task: Type: string, context?: Record<string, unknown>): Promise<MultiHorizonTask: Prediction>;
+    getAgentLearning: State(agent: Id: Agent: Id): AgentLearning: State | null;
     logger: any;
-    debug(: any, { ')      agentId:agentId.id,: status, overallScore: overallHealth, responseTime: agentHealth, metrics, responseTime, errorRate: agentHealth, metrics, errorRate, }: {
-        ")      agentId:agentId.id,": any;
-        overallScore: any;
-        responseTime: any;
+    debug(: any, { ')      agent: Id:agent: Id.id,: status, overall: Score: overall: Health, response: Time: agent: Health, metrics, response: Time, error: Rate: agent: Health, metrics, error: Rate, }: {
+        ")      agent: Id:agent: Id.id,": any;
+        overall: Score: any;
+        response: Time: any;
         metrics: any;
-        errorRate: any;
+        error: Rate: any;
     }): any;
 }
-//# sourceMappingURL=intelligence-system.d.ts.map
+//# sourceMappingUR: L=intelligence-system.d.ts.map

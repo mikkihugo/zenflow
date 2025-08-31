@@ -90,10 +90,10 @@ export abstract class BaseKnowledgeError extends Error {
  * Base error class for FACT (Flexible AI Context Transfer) system failures.
  *
  * @example
- * ```typescript`
+ * ``"typescript""
  * throw new FACTError(
- *   'Failed to process FACT data', *   'high', *   { operation: 'dataProcessing', metadata:{ factId: ' fact-123'}}') * );
- * ````
+ *   'Failed to process FACT data', *   'high', *   { operation: 'dataProcessing', metadata:" + JSON.stringify({ factId: ' fact-123'}) + "}') * );
+ * "`"""
  */
 export class FACTError extends BaseKnowledgeError {
   constructor(
@@ -139,7 +139,7 @@ export class FACTProcessingError extends FACTError {
     public readonly processType: string,
     public readonly dataId?:string,
     severity:'low' | ' medium' | ' high' | ' critical' = ' medium',  ) {
-    super(message, severity, { metadata:{ processType, dataId}});
+    super(message, severity, { metadata:" + JSON.stringify({ processType, dataId}) + "});
 }
 }
 
@@ -151,10 +151,10 @@ export class FACTProcessingError extends FACTError {
  * Base error class for RAG (Retrieval Augmented Generation) system failures.
  *
  * @example
- * ```typescript`
+ * "`"typescript""
  * throw new RAGError(
- *   'RAG processing failed', *   'high', *   { operation: 'retrieval', metadata:{ queryId: ' query-456'}}') * );
- * ````
+ *   'RAG processing failed', *   'high', *   { operation: 'retrieval', metadata:" + JSON.stringify({ queryId: ' query-456'}) + "}') * );
+ * "``""
  */
 export class RAGError extends BaseKnowledgeError {
   constructor(
@@ -234,7 +234,7 @@ export function getKnowledgeErrorSeverity(
 export function createKnowledgeError(
   message: string,
   category:'FACT' | ' RAG',  context: Partial<KnowledgeErrorContext> = {},
-  severity:'low' | ' medium' | ' high' | ' critical' = ' medium',):BaseKnowledgeError {
+  severity:'low' | ' medium' | ' high' | ' critical' = ' medium',): BaseKnowledgeError {
   switch (category) {
     case 'FACT':
       return new FACTError(message, severity, context);

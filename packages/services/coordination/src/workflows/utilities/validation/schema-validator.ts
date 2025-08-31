@@ -27,7 +27,7 @@ export class SchemaValidator {
           return {
             success: false,
             errors: error.errors.map(
-              (e) => ``${{e.path.join('.)}:${e.message}};)            ),``;
+              (e) => `"${{e.path.join('.)}:${e.message}};)            )"";"
 };)};)        return { success: this.createSafeParser(schema);
     return parser(data);
 }

@@ -92,7 +92,7 @@ export class PerformanceTrackerService {
   /**
    * Get current performance metrics
    */
-  async getCurrentMetrics(): Promise<PerformanceMetrics> {
+  async getCurrentMetrics(Promise<PerformanceMetrics> {
     const trends = this.calculatePerformanceTrends();
     const recommendations = this.generateOptimizationRecommendations(trends);
     
@@ -115,7 +115,7 @@ export class PerformanceTrackerService {
   /**
    * Shutdown performance tracker
    */
-  async shutdown(): Promise<void> {
+  async shutdown(Promise<void> {
     if (!this.initialized) return;
     
     try {
@@ -220,7 +220,7 @@ export class PerformanceTrackerService {
     return Math.floor(Math.random() * 20) + 10; // Simulated
   }
 
-  private async getResourceUtilization(): Promise<any> {
+  private async getResourceUtilization(Promise<any> {
     // In a real implementation, this would query system resources
     return {
       memoryUsage: 70,

@@ -170,21 +170,21 @@ export class BeamLanguageParser {
   /**
    * Parse a BEAM language file (Elixir/Erlang/Gleam)
    */
-  async parseFile(filePath: string): Promise<Result<BeamModule, Error>> {
+  async parseFile(Promise<Result<BeamModule, Error>> {
     try {
-      this.logger.info(`Parsing BEAM file: ${filePath}`);
+      this.logger.info("Parsing BEAM file: ${filePath}");"
 
       const content = await readFile(filePath, 'utf8');
       // Check file size limit
-      if (content.length > (this.options.maxFileSize||10485760)) {
-        return err(new Error(`File too large: ${content.length} bytes`));
+      if (content.length > (this.options.maxFileSize||10485760)) " + JSON.stringify({
+        return err(new Error("File too large: " + content.length + ") + " bytes"));"
       }
 
       const ext = extname(filePath);
       const language = this.detectLanguage(ext);
 
       if (!language) {
-        return err(new Error(`Unsupported file extension: ${ext}`));
+        return err(new Error("Unsupported file extension: ${ext}"));"
 }
 
       let module: BeamModule;
@@ -200,16 +200,16 @@ export class BeamLanguageParser {
           module = await this.parseGleamFile(filePath, content);
           break;
         default:
-          return err(new Error(`Unsupported language: ${language}`));
+          return err(new Error("Unsupported language: ${language}"));"
 }
 
       // Calculate metrics if enabled
-      if (this.options.includeMetrics) {
+      if (this.options.includeMetrics) " + JSON.stringify({
         module.metrics = this.calculateModuleMetrics(module, content);
-}
+}) + "
 
       this.logger.info(
-        `Successfully parsed ${language} module: ${module.name}`,
+        "Successfully parsed ${language} module: ${module.name}","
         {
           functions: module.exports.length,
           types: module.types.length,
@@ -228,9 +228,9 @@ export class BeamLanguageParser {
   /**
    * Parse multiple BEAM files in parallel
    */
-  async parseFiles(filePaths: string[]): Promise<Result<BeamModule[], Error>> {
+  async parseFiles(Promise<Result<BeamModule[], Error>> {
     try {
-      this.logger.info(`Parsing ${filePaths.length} BEAM files in parallel`);
+      this.logger.info("Parsing ${filePaths.length} BEAM files in parallel");"
 
       const results = await Promise.allSettled(
         filePaths.map((path) => this.parseFile(path))
@@ -243,11 +243,11 @@ export class BeamLanguageParser {
         const result = results[i];
         if (result.status === 'fulfilled' && result.value.isOk()) {
           modules.push(result.value._unsafeUnwrap());
-} else {
+} else " + JSON.stringify({
           const error =
             result.status === 'rejected' ? result.reason
               : result.value._unsafeUnwrapErr();
-          errors.push(`${filePaths[i]}: ${error.message}`);
+          errors.push("${filePaths[i]}) + ": ${error.message}");"
 }
 }
 
@@ -259,7 +259,7 @@ export class BeamLanguageParser {
 });
 }
 
-      this.logger.info(`Parsed ${modules.length} BEAM modules successfully`, {
+      this.logger.info("Parsed ${modules.length} BEAM modules successfully", {"
         totalAttempted: filePaths.length,
         successCount: modules.length,
         errorCount: errors.length,
@@ -267,7 +267,7 @@ export class BeamLanguageParser {
 
       return ok(modules);
 } catch (error) {
-      const err_msg = `Failed to parse BEAM files: ${error instanceof Error ? error.message : String(error)}`;
+      const err_msg = "Failed to parse BEAM files: ${error instanceof Error ? error.message : String(error)}";"
       this.logger.error(err_msg, { error, fileCount: filePaths.length});
       return err(new Error(err_msg));
 }
@@ -294,10 +294,7 @@ export class BeamLanguageParser {
   /**
    * Parse Elixir file using enhanced regex patterns
    */
-  private async parseElixirFile(
-    filePath: string,
-    content: string
-  ):Promise<BeamModule> {
+  private async parseElixirFile(Promise<BeamModule> {
     const moduleName =
       this.extractElixirModuleName(content)||basename(filePath,'.ex');')    const functions = this.extractElixirFunctions(content);
     const types = this.extractElixirTypes(content);
@@ -331,10 +328,7 @@ export class BeamLanguageParser {
   /**
    * Parse Erlang file using enhanced regex patterns
    */
-  private async parseErlangFile(
-    filePath: string,
-    content: string
-  ):Promise<BeamModule> {
+  private async parseErlangFile(Promise<BeamModule> {
     const moduleName =
       this.extractErlangModuleName(content)||basename(filePath,'.erl');')    const functions = this.extractErlangFunctions(content);
     const types = this.extractErlangTypes(content);
@@ -364,10 +358,7 @@ export class BeamLanguageParser {
   /**
    * Parse Gleam file using enhanced regex patterns
    */
-  private async parseGleamFile(
-    filePath: string,
-    content: string
-  ):Promise<BeamModule> {
+  private async parseGleamFile(Promise<BeamModule> {
     const moduleName = basename(filePath, '.gleam');')    const functions = this.extractGleamFunctions(content);
     const types = this.extractGleamTypes(content);
     const docs = this.options.extractDocumentation
@@ -416,11 +407,11 @@ export class BeamLanguageParser {
       const isMacro = content
         .substring(Math.max(0, match.index - 10), match.index)
         .includes('defmacro');
-      const func: BeamFunction = {
+      const func: BeamFunction = " + JSON.stringify({
         name: functionName,
         arity: arity,
         visibility: isPrivate ? 'private' : 'public',
-        signature: `${functionName}(${params})`,
+        signature: "" + functionName + ") + "(${params})","
         lineNumber: lineNumber,
         attributes: isMacro ? ['macro'] : [],
       };
@@ -562,7 +553,7 @@ export class BeamLanguageParser {
       const func: BeamFunction = {
         name: functionName,
         arity: arity,
-        visibility: 'public', // Determined by export list')        signature:`${functionName}(${params})`,`
+        visibility: 'public', // Determined by export list')        signature:"${functionName}(${params})"""
         lineNumber: lineNumber,
 };
 
@@ -702,7 +693,7 @@ export class BeamLanguageParser {
       'gen_server', 'gen_statem', 'supervisor', 'application'
     ];
     return otpBehaviours.some((behaviour) =>
-      content.includes(`-behaviour(${behaviour})`)
+      content.includes("-behaviour(${behaviour})")"
     );
   }
 
@@ -724,7 +715,7 @@ export class BeamLanguageParser {
         name: functionName,
         arity: arity,
         visibility: isPublic ? 'public' : 'private',
-        signature: `${functionName}(${params})`,
+        signature: "${functionName}(${params})","
         lineNumber: lineNumber,
       };
 
@@ -844,7 +835,7 @@ export class BeamLanguageParser {
   private calculateModuleMetrics(
     module: BeamModule,
     content: string
-  ):BeamModuleMetrics {
+  ): BeamModuleMetrics {
     const lines = content.split('\n');
     const linesOfCode = lines.filter(
       (line) =>

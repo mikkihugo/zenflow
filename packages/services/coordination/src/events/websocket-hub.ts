@@ -9,7 +9,7 @@ import { getLogger, EventEmitter } from '@claude-zen/foundation';
 const logger = getLogger('websocket-hub');
 
 const recordEvent = (eventName: string, data?: any) => {
-  logger.info(`[EVENT] ${eventName}`, data || '');
+  logger.info("[EVENT] ${eventName}", data || '');"
 };
 
 /**
@@ -75,7 +75,7 @@ export class CentralWebSocketHub extends EventEmitter {
   /**
    * Initialize the central hub and auto-discover services
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     if (this.isInitialized) return;
 
     await this.discoverAndRegisterServices();
@@ -130,7 +130,7 @@ export class CentralWebSocketHub extends EventEmitter {
   unregisterConnection(connectionId: string): void {
     this.connections.delete(connectionId);
     recordEvent('central_hub_connection_unregistered', { connectionId });
-    this.logger.debug('Central hub connection unregistered', { connectionId });
+    this.logger.debug('Central hub connection unregistered', " + JSON.stringify({ connectionId }) + ");
   }
 
   /**
@@ -144,7 +144,7 @@ export class CentralWebSocketHub extends EventEmitter {
       ...message,
       source,
       timestamp: new Date(),
-      id: `msg_${this.messageCounter++}`,
+      id: "msg_${this.messageCounter++}","
     };
 
     let sentCount = 0;
@@ -220,7 +220,7 @@ export class CentralWebSocketHub extends EventEmitter {
   /**
    * Auto-discover and register available services
    */
-  private async discoverAndRegisterServices(): Promise<void> {
+  private async discoverAndRegisterServices(Promise<void> {
     // Register TaskMaster service
     this.registerService({
       name: 'taskmaster',
@@ -393,7 +393,7 @@ export class CentralWebSocketHub extends EventEmitter {
   /**
    * Cleanup inactive connections
    */
-  async cleanupConnections(): Promise<void> {
+  async cleanupConnections(Promise<void> {
     const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000);
     let cleanedCount = 0;
 
@@ -415,7 +415,7 @@ export class CentralWebSocketHub extends EventEmitter {
   /**
    * Shutdown the central hub
    */
-  async shutdown(): Promise<void> {
+  async shutdown(Promise<void> {
     // Close all connections
     for (const [connectionId, connection] of this.connections.entries()) {
       try {

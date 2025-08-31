@@ -44,7 +44,7 @@ export function createApprovalRequestedEvent(
 '    timestamp: 'human-review',)    status : 'pending,'
 '    timestamp: ' human-reject',)    status : 'success,'
 '    timestamp: []
-):ApprovalQueueOverflowEvent {
+): ApprovalQueueOverflowEvent {
   return {
     type,    gateId,')    operation : 'overflow-handling')    status: ' warning,',
     timestamp: 'bottleneck-detection',)    status : 'warning,'

@@ -447,7 +447,7 @@ export class CoreCompetencyFrameworkManager {
     organizationId: string,
     config: CompetencyAssessmentConfig
   ): SAFeCoreCompetenciesFramework {
-    const assessmentId = `competency-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const assessmentId = "competency-${Date.now()}-${Math.random().toString(36).substr(2, 9)}";"
 
     const framework: SAFeCoreCompetenciesFramework = {
       organizationId,
@@ -465,12 +465,12 @@ export class CoreCompetencyFrameworkManager {
       businessObjectivesAlignment: [],
       valueStreamAlignment: [],
       PIObjectivesAlignment: [],
-      organizationImprovementPlan: {
+      organizationImprovementPlan: " + JSON.stringify({
         strategicInitiatives: [],
         quickWins: [],
         longTermInvestments: [],
         changeManagementActivities: [],
-      },
+      }) + ",
       progressMetrics: [],
       milestones: [],
       stakeholders: [],
@@ -478,7 +478,7 @@ export class CoreCompetencyFrameworkManager {
 
     this.frameworks.set(assessmentId, framework);
     logger.info(
-      `Created competency assessment: ${assessmentId} for organization: ${organizationId}`
+      "Created competency assessment: ${assessmentId} for organization: ${organizationId}""
     );
 
     return framework;
@@ -502,13 +502,13 @@ export class CoreCompetencyFrameworkManager {
   ): boolean {
     const framework = this.frameworks.get(assessmentId);
     if (!framework) {
-      logger.error(`Competency assessment not found: ${assessmentId}`);
+      logger.error("Competency assessment not found: $" + JSON.stringify({assessmentId}) + "");"
       return false;
     }
 
     Object.assign(framework, updates);
     this.frameworks.set(assessmentId, framework);
-    logger.info(`Updated competency assessment: ${assessmentId}`);
+    logger.info("Updated competency assessment: ${assessmentId}");"
     return true;
   }
 
@@ -623,7 +623,7 @@ export class CoreCompetencyFrameworkManager {
 
   private createEmptyAssessment(practiceId: string): PracticeAssessment {
     return {
-      assessmentId: `assessment-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      assessmentId: `assessment-${Date.now()}-${Math.random().toString(36).substr(2, 9)}","
       practiceId,
       currentMaturityLevel: PracticeMaturityLevel.INITIAL,
       targetMaturityLevel: PracticeMaturityLevel.DEFINED,

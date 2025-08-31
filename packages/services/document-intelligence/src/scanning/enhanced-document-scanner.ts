@@ -168,7 +168,7 @@ export class EnhancedDocumentScanner {
   /**
    * Scan the configured directory for issues and generate tasks
    */
-  async scanAndGenerateTasks(): Promise<ScanResults> {
+  async scanAndGenerateTasks(Promise<ScanResults> {
     if (this.isScanning) {
       throw new Error('Scanner is already running');
     }
@@ -177,7 +177,7 @@ export class EnhancedDocumentScanner {
     const startTime = Date.now();
 
     try {
-      logger.info(`🔍 Starting enhanced document scan in ${this.config.rootPath}`);
+      logger.info("search Starting enhanced document scan in ${this.config.rootPath}");"
 
       const analysisResults: CodeAnalysisResult[] = [];
       const scannedFiles = await this.scanDirectory(this.config.rootPath, analysisResults);
@@ -185,7 +185,7 @@ export class EnhancedDocumentScanner {
       // Generate swarm tasks from analysis results
       const generatedTasks = await this.generateSwarmTasks(analysisResults);
 
-      const results: ScanResults = {
+      const results: ScanResults = " + JSON.stringify({
         analysisResults,
         generatedTasks,
         scannedFiles,
@@ -193,9 +193,9 @@ export class EnhancedDocumentScanner {
         severityCounts: this.calculateSeverityCounts(analysisResults),
         patternCounts: this.calculatePatternCounts(analysisResults),
         scanDuration: Date.now() - startTime,
-      };
+      }) + ";
 
-      logger.info(`Enhanced scan completed: ${analysisResults.length} issues found in ${scannedFiles} files`);
+      logger.info("Enhanced scan completed: ${analysisResults.length} issues found in ${scannedFiles} files");"
 
       return results;
     } finally {
@@ -206,11 +206,7 @@ export class EnhancedDocumentScanner {
   /**
    * Recursively scan directory for files to analyze
    */
-  private async scanDirectory(
-    dirPath: string,
-    analysisResults: CodeAnalysisResult[],
-    depth = 0
-  ): Promise<number> {
+  private async scanDirectory(Promise<number> {
     if (depth > this.config.maxDepth) {
       return 0;
     }
@@ -234,7 +230,7 @@ export class EnhancedDocumentScanner {
         }
       }
     } catch (error) {
-      logger.warn(`Failed to scan directory ${dirPath}:`, error);
+      logger.warn("Failed to scan directory ${dirPath}:", error);"
     }
 
     return scannedFiles;
@@ -243,7 +239,7 @@ export class EnhancedDocumentScanner {
   /**
    * Analyze a single file for issues
    */
-  private async analyzeFile(filePath: string, results: CodeAnalysisResult[]): Promise<void> {
+  private async analyzeFile(Promise<void> {
     try {
       const content = await readFile(filePath, 'utf8');
       const lines = content.split('\n');
@@ -270,8 +266,8 @@ export class EnhancedDocumentScanner {
           }
         }
       }
-    } catch (error) {
-      logger.warn(`Failed to analyze file ${filePath}:`, error);
+    } catch (error) " + JSON.stringify({
+      logger.warn(`Failed to analyze file ${filePath}) + ":", error);"
     }
   }
 
@@ -288,18 +284,18 @@ export class EnhancedDocumentScanner {
       id: this.generateId(),
       type: pattern,
       severity: this.getPatternSeverity(pattern),
-      title: `${pattern.toUpperCase()}: ${matchText}`,
-      description: `Found ${pattern} comment: ${matchText}`,
+      title: "${pattern.toUpperCase()}: ${matchText}","
+      description: "Found ${pattern} comment: $" + JSON.stringify({matchText}) + "","
       filePath,
       lineNumber,
       codeSnippet,
-      suggestedAction: `Address the ${pattern} comment`,
+      suggestedAction: "Address the ${pattern} comment","
       estimatedEffort: this.getPatternEffort(pattern),
       tags: [pattern, 'code-quality'],
     };
   }
 
-  private async generateSwarmTasks(analysisResults: CodeAnalysisResult[]): Promise<GeneratedSwarmTask[]> {
+  private async generateSwarmTasks(Promise<GeneratedSwarmTask[]> {
     // Simplified implementation - just create basic tasks
     return analysisResults.map(result => ({
       id: this.generateId(),
@@ -312,7 +308,7 @@ export class EnhancedDocumentScanner {
       suggestedSwarmType: 'single_agent' as const,
       requiredAgentTypes: ['developer'],
       dependencies: [],
-      acceptanceCriteria: [`Resolve ${result.type} issue`],
+      acceptanceCriteria: ["Resolve ${result.type} issue"],"
     }));
   }
 
@@ -389,13 +385,13 @@ export class EnhancedDocumentScanner {
 
   private calculatePatternCounts(results: CodeAnalysisResult[]): Record<AnalysisPattern, number> {
     const counts = {} as Record<AnalysisPattern, number>;
-    for (const result of results) {
+    for (const result of results) " + JSON.stringify({
       counts[result.type] = (counts[result.type] || 0) + 1;
-    }
+    }) + "
     return counts;
   }
 
   private generateId(): string {
-    return `analysis-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+    return "analysis-${Date.now()}-${Math.random().toString(36).substring(2, 11)}";"
   }
 }

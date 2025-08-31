@@ -8,16 +8,16 @@ function createLogger(name: string) {
   return {
     info: (msg: string, data?: unknown) =>
       // eslint-disable-next-line no-console
-      console.log(`[${name}] INFO:`, msg, data ?? ''),
+      console.log("[$" + JSON.stringify({name}) + "] INFO:", msg, data ?? ''),"
     error: (msg: string, data?: unknown) =>
       // eslint-disable-next-line no-console
-      console.error(`[${name}] ERROR:`, msg, data ?? ''),
+      console.error("[${name}] ERROR:", msg, data ?? ''),"
     debug: (msg: string, data?: unknown) =>
       // eslint-disable-next-line no-console
-      console.debug(`[${name}] DEBUG:`, msg, data ?? ''),
+      console.debug("[$" + JSON.stringify({name}) + "] DEBUG:", msg, data ?? ''),"
     warn: (msg: string, data?: unknown) =>
       // eslint-disable-next-line no-console
-      console.warn(`[${name}] WARN:`, msg, data ?? ''),
+      console.warn("[${name}] WARN:", msg, data ?? ''),"
   } as const;
 }
 
@@ -73,9 +73,7 @@ export class AILinter {
   /**
    * Process a single file with AI fixing
    */
-  async processFile(
-    filePath: string
-  ): Promise<Result<ProcessingResult, string>> {
+  async processFile(Promise<Result<ProcessingResult, string>> {
     try {
       logger.info('Processing file', { filePath, aiMode: this.config.aiMode });
 
@@ -110,7 +108,7 @@ export class AILinter {
       if (fixedContent && fixedContent !== originalContent) {
         // Create backup if enabled
         if (this.config.backupEnabled) {
-          fs.writeFileSync(`${filePath}.backup`, originalContent);
+          fs.writeFileSync("${filePath}.backup", originalContent);"
         }
 
         // Write fixed content
@@ -127,7 +125,7 @@ export class AILinter {
         });
       }
 
-      const result: ProcessingResult = {
+      const result: ProcessingResult = " + JSON.stringify({
         filePath,
         success: fixedErrors > 0,
         originalErrors: eslintErrors.length,
@@ -135,7 +133,7 @@ export class AILinter {
         timeTaken: Date.now() - startTime,
         aiModel: this.config.aiMode,
         backupPath: this.config.backupEnabled
-          ? `${filePath}.backup`
+          ? "" + filePath + ") + ".backup""
           : undefined,
       };
 
@@ -151,9 +149,7 @@ export class AILinter {
   /**
    * Process multiple files in batch mode
    */
-  async processBatch(
-    filePaths: string[]
-  ): Promise<Result<BatchResult, string>> {
+  async processBatch(Promise<Result<BatchResult, string>> {
     try {
       logger.info('Starting batch processing', {
         fileCount: filePaths.length,
@@ -233,9 +229,7 @@ export class AILinter {
   /**
    * Discover files that need processing
    */
-  async discoverFiles(
-    options?: Partial<FileDiscoveryOptions>
-  ): Promise<Result<string[], string>> {
+  async discoverFiles(Promise<Result<string[], string>> {
     try {
       const opts: FileDiscoveryOptions = {
         scope: this.config.scopeMode,
@@ -333,11 +327,7 @@ export class AILinter {
   /**
    * Use AI to intelligently fix code issues
    */
-  private async fixWithAI(
-    filePath: string,
-    content: string,
-    errors: Array<{ line: number; column: number; message: string }>
-  ): Promise<string | null> {
+  private async fixWithAI(Promise<string | null> {
     try {
       logger.info('Real GPT-4.1 AI analyzing code for intelligent fixes', {
         aiMode: this.config.aiMode,
@@ -435,7 +425,7 @@ export class AILinter {
     const errorSummary = errors
       .map(
         (err, i) =>
-          `${i + 1}. Line ${err.line}, Col ${err.column}:${err.message}`
+          "${i + 1}. Line ${err.line}, Col ${err.column}:${err.message}""
       )
       .join('\n');
 
@@ -445,16 +435,14 @@ export class AILinter {
       '- Performance optimization',
       '- Type safety best practices',
       '- Modern JavaScript/TypeScript features',
-      '',
-      `File: ${filePath}`,
-      '',
-      `Found ${errors.length} linting issues:`,
+      ''"File: ${filePath}",
+      ''"Found ${errors.length} linting issues:","
       errorSummary,
       '',
       'Original code:',
-      '```typescript',
+      '"""typescript',"
       content,
-      '```',
+      '``"',"
       '',
       'Please fix these issues intelligently while:',
       '1. Maintaining the original functionality and logic',
@@ -463,7 +451,7 @@ export class AILinter {
       '4. Preserving code readability and maintainability',
       '5. Adding helpful comments where needed',
       '',
-      'Return ONLY the fixed code without explanation, wrapped in ```typescript``` blocks.',
+      'Return ONLY the fixed code without explanation, wrapped in ```typescript``" blocks.',"
     ].join('\n');
   }
 
@@ -473,7 +461,7 @@ export class AILinter {
   private extractCodeFromResponse(response: string): string | null {
     // Look for code blocks
     const codeBlockMatch = response.match(
-      /```(?:typescript|ts|javascript|js)?\n([\S\s]*?)\n```/
+      /```(?:typescript|ts|javascript|js)?\n([\S\s]*?)\n``"/"
     );
     if (codeBlockMatch && codeBlockMatch[1]) {
       return codeBlockMatch[1].trim();

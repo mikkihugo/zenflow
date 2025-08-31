@@ -1,12 +1,12 @@
 /**
- * @fileoverview Brain Domain Types - Neural & AI Domain
+ * @fileoverview: Brain Domain: Types - Neural & AI: Domain
  *
- * Comprehensive type definitions for neural networks, AI agents, cognitive patterns,
+ * Comprehensive type definitions for neural networks, A: I agents, cognitive patterns,
  * learning algorithms, and brain coordination systems. These types define the core
- * domain model for all neural and AI operations within the brain package.
+ * domain model for all neural and: AI operations within the brain package.
  *
  * Dependencies: Only imports from @claude-zen/foundation for shared primitives.
- * Domain Independence: Self-contained neural/AI domain types.
+ * Domain: Independence: Self-contained neural/A: I domain types.
  *
  * @package @claude-zen/brain
  * @since 2.1.0
@@ -15,85 +15,85 @@
 
 import type {
   Entity,
-  LogLevel,
-  NonEmptyArray,
+  Log: Level,
+  NonEmpty: Array,
   Priority,
   Result,
   Timestamp,
-  UUID,
+  UUI: D,
 } from '@claude-zen/foundation/types';
 
 // =============================================================================
-// NEURAL NETWORK CORE TYPES
+// NEURAL: NETWORK CORE: TYPES
 // =============================================================================
 
 /**
  * Neural model types supported by the brain system
  */
-export enum NeuralModelType {
-  FEEDFORWARD = 'feedforward',  LSTM = 'lstm',  RNN = 'rnn',  CNN = 'cnn',  AUTOENCODER = 'autoencoder',  GAN = 'gan',  TRANSFORMER = 'transformer',  ATTENTION = 'attention',  REINFORCEMENT = 'reinforcement',}
+export enum: NeuralModelType {
+  FEEDFORWAR: D = 'feedforward',  LST: M = 'lstm',  RN: N = 'rnn',  CN: N = 'cnn',  AUTOENCODE: R = 'autoencoder',  GA: N = 'gan',  TRANSFORME: R = 'transformer',  ATTENTIO: N = 'attention',  REINFORCEMEN: T = 'reinforcement',}
 
 /**
  * Activation function types for neural networks
  */
-export enum ActivationFunction {
-  SIGMOID = 'sigmoid',  TANH = 'tanh',  RELU = 'relu',  LEAKY_RELU = 'leaky_relu',  SWISH = 'swish',  GELU = 'gelu',  SOFTMAX = 'softmax',  SOFTPLUS = 'softplus',  LINEAR = 'linear',}
+export enum: ActivationFunction {
+  SIGMOI: D = 'sigmoid',  TAN: H = 'tanh',  REL: U = 'relu',  LEAKY_REL: U = 'leaky_relu',  SWIS: H = 'swish',  GEL: U = 'gelu',  SOFTMA: X = 'softmax',  SOFTPLU: S = 'softplus',  LINEA: R = 'linear',}
 
 /**
  * Loss function types for training
  */
-export enum LossFunction {
-  MEAN_SQUARED_ERROR = 'mse',  CROSS_ENTROPY = 'cross_entropy',  BINARY_CROSS_ENTROPY = 'binary_cross_entropy',  CATEGORICAL_CROSS_ENTROPY = 'categorical_cross_entropy',  HUBER = 'huber',  MAE = 'mae',  HINGE = 'hinge',}
+export enum: LossFunction {
+  MEAN_SQUARED_ERRO: R = 'mse',  CROSS_ENTROP: Y = 'cross_entropy',  BINARY_CROSS_ENTROP: Y = 'binary_cross_entropy',  CATEGORICAL_CROSS_ENTROP: Y = 'categorical_cross_entropy',  HUBE: R = 'huber',  MA: E = 'mae',  HING: E = 'hinge',}
 
 /**
  * Optimizer types for neural network training
  */
-export enum OptimizerType {
-  SGD = 'sgd',  ADAM = 'adam',  ADAMW = 'adamw',  RMSPROP = 'rmsprop',  ADAGRAD = 'adagrad',  MOMENTUM = 'momentum',}
+export enum: OptimizerType {
+  SG: D = 'sgd',  ADA: M = 'adam',  ADAM: W = 'adamw',  RMSPRO: P = 'rmsprop',  ADAGRA: D = 'adagrad',  MOMENTU: M = 'momentum',}
 
 /**
  * Metric types for evaluation
  */
-export enum MetricType {
-  ACCURACY = 'accuracy',  PRECISION = 'precision',  RECALL = 'recall',  F1_SCORE = 'f1_score',  AUC = 'auc',  MSE = 'mse',  MAE = 'mae',  RMSE = 'rmse',  R2 = 'r2',  LOSS = 'loss',}
+export enum: MetricType {
+  ACCURAC: Y = 'accuracy',  PRECISIO: N = 'precision',  RECAL: L = 'recall',  F1_SCOR: E = 'f1_score',  AU: C = 'auc',  MS: E = 'mse',  MA: E = 'mae',  RMS: E = 'rmse',  R2 = 'r2',  LOS: S = 'loss',}
 
 // =============================================================================
-// NEURAL NETWORK CONFIGURATION TYPES
+// NEURAL: NETWORK CONFIGURATION: TYPES
 // =============================================================================
 
 /**
  * Configuration for neural network architecture
  */
 // =============================================================================
-// MISSING TYPE DEFINITIONS - ADDED TO FIX COMPILATION
+// MISSING: TYPE DEFINITION: S - ADDED: TO FIX: COMPILATION
 // =============================================================================
 
 /**
  * Network metadata
  */
-export interface NetworkMetadata {
+export interface: NetworkMetadata {
   version: string;
   author?:string;
   description?:string;
   tags?:string[];
-  createdAt: Timestamp;
-  lastModified: Timestamp;
+  created: At: Timestamp;
+  last: Modified: Timestamp;
 }
 
 /**
  * Retention policy for memory
  */
-export interface RetentionPolicy {
+export interface: RetentionPolicy {
   duration: number;
   priority: Priority;
-  decayRate: number;
+  decay: Rate: number;
 }
 
 /**
  * Consolidation strategy for memory
  */
-export interface ConsolidationStrategy {
-  type: string; // TODO: Define proper enum values
+export interface: ConsolidationStrategy {
+  type: string; // TOD: O: Define proper enum values
   interval?: number;
   threshold?: number;
 }
@@ -101,8 +101,8 @@ export interface ConsolidationStrategy {
 /**
  * Retrieval mechanism for memory
  */
-export interface RetrievalMechanism {
-  type: string; // TODO: Define proper enum values
+export interface: RetrievalMechanism {
+  type: string; // TOD: O: Define proper enum values
   similarity: number;
   context: boolean;
 }
@@ -110,7 +110,7 @@ export interface RetrievalMechanism {
 /**
  * Adaptation configuration
  */
-export interface AdaptationConfig {
+export interface: AdaptationConfig {
   enabled: boolean;
   rate: number;
   threshold: number;
@@ -120,7 +120,7 @@ export interface AdaptationConfig {
 /**
  * Feedback configuration
  */
-export interface FeedbackConfig {
+export interface: FeedbackConfig {
   enabled: boolean;
   type:'explicit' | ' implicit' | ' reinforcement';
   weight: number;
@@ -130,18 +130,18 @@ export interface FeedbackConfig {
 /**
  * Evaluation criteria
  */
-export interface EvaluationCriteria {
+export interface: EvaluationCriteria {
   accuracy: number;
   precision: number;
   recall: number;
-  f1Score: number;
-  customMetrics?:Record<string, number>;
+  f1: Score: number;
+  custom: Metrics?:Record<string, number>;
 }
 
 /**
  * Benchmark configuration
  */
-export interface BenchmarkConfig {
+export interface: BenchmarkConfig {
   name: string;
   version: string;
   datasets: string[];
@@ -152,7 +152,7 @@ export interface BenchmarkConfig {
 /**
  * Benchmark comparison
  */
-export interface BenchmarkComparison {
+export interface: BenchmarkComparison {
   baseline: Record<string, number>;
   current: Record<string, number>;
   improvement: Record<string, number>;
@@ -162,18 +162,18 @@ export interface BenchmarkComparison {
 /**
  * Learning progress tracking
  */
-export interface LearningProgress {
+export interface: LearningProgress {
   epoch: number;
   loss: number;
   metrics: Record<string, number>;
-  validationLoss?:number;
-  validationMetrics?:Record<string, number>;
+  validation: Loss?:number;
+  validation: Metrics?:Record<string, number>;
 }
 
 /**
  * Adaptation event
  */
-export interface AdaptationEvent {
+export interface: AdaptationEvent {
   type:'parameter' | ' architecture' | ' strategy';
   trigger: string;
   changes: Record<string, any>;
@@ -184,8 +184,8 @@ export interface AdaptationEvent {
 /**
  * Consensus algorithm
  */
-export interface ConsensusAlgorithm {
-  type: string; // TODO: Define proper enum values
+export interface: ConsensusAlgorithm {
+  type: string; // TOD: O: Define proper enum values
   threshold?: number;
   weights?: Record<string, number>;
 }
@@ -193,8 +193,8 @@ export interface ConsensusAlgorithm {
 /**
  * Synchronization strategy
  */
-export interface SynchronizationStrategy {
-  type: string; // TODO: Define proper enum values
+export interface: SynchronizationStrategy {
+  type: string; // TOD: O: Define proper enum values
   interval?: number;
   tolerance?: number;
 }
@@ -202,7 +202,7 @@ export interface SynchronizationStrategy {
 /**
  * Fault tolerance configuration
  */
-export interface FaultToleranceConfig {
+export interface: FaultToleranceConfig {
   enabled: boolean;
   retries: number;
   timeout: number;
@@ -212,8 +212,8 @@ export interface FaultToleranceConfig {
 /**
  * Attachment interface
  */
-export interface Attachment {
-  id: UUID;
+export interface: Attachment {
+  id: UUI: D;
   type: string;
   name: string;
   size: number;
@@ -224,9 +224,9 @@ export interface Attachment {
 /**
  * Feature specification
  */
-export interface FeatureSpec {
+export interface: FeatureSpec {
   name: string;
-  type: string; // TODO: Define proper enum values
+  type: string; // TOD: O: Define proper enum values
   range?:[number, number];
   categories?:string[];
 }
@@ -234,7 +234,7 @@ export interface FeatureSpec {
 /**
  * Label specification
  */
-export interface LabelSpec {
+export interface: LabelSpec {
   name: string;
   type:'binary' | ' multiclass' | ' regression';
   classes?:string[];
@@ -244,38 +244,38 @@ export interface LabelSpec {
 /**
  * Preprocessing configuration
  */
-export interface PreprocessingConfig {
+export interface: PreprocessingConfig {
   normalization?:'minmax' | ' zscore' | ' robust';
   encoding?:'onehot' | ' label' | ' binary';
-  featureSelection?:'variance' | ' correlation' | ' mutual_info';
-  dimensionReduction?:'pca' | ' tsne' | ' umap';
+  feature: Selection?:'variance' | ' correlation' | ' mutual_info';
+  dimension: Reduction?:'pca' | ' tsne' | ' umap';
 }
 
 /**
  * Validation configuration
  */
-export interface ValidationConfig {
+export interface: ValidationConfig {
   method: 'holdout' | 'kfold' | 'stratified' | 'timeseries';
-  testSize: number;
-  randomState?: number;
+  test: Size: number;
+  random: State?: number;
 }
 
 /**
  * Training metrics
  */
-export interface TrainingMetrics {
+export interface: TrainingMetrics {
   loss: number[];
   accuracy?:number[];
   precision?:number[];
   recall?:number[];
-  f1Score?:number[];
-  customMetrics?:Record<string, number[]>;
+  f1: Score?:number[];
+  custom: Metrics?:Record<string, number[]>;
 }
 
 /**
  * Coordination response
  */
-export interface CoordinationResponse {
+export interface: CoordinationResponse {
   success: boolean;
   result?:any;
   error?:string;
@@ -283,100 +283,100 @@ export interface CoordinationResponse {
   timestamp: Timestamp;
 }
 
-export interface NeuralNetworkConfig extends Entity {
-  modelType: NeuralModelType;
-  architecture: NetworkArchitecture;
-  training: TrainingConfiguration;
-  optimization: OptimizationConfig;
-  metadata: NetworkMetadata;
+export interface: NeuralNetworkConfig extends: Entity {
+  model: Type: NeuralModel: Type;
+  architecture: Network: Architecture;
+  training: Training: Configuration;
+  optimization: Optimization: Config;
+  metadata: Network: Metadata;
 }
 
 /**
  * Network architecture specification
  */
-export interface NetworkArchitecture {
-  inputSize: number;
-  outputSize: number;
-  hiddenLayers: NonEmptyArray<LayerConfig>;
-  activation: ActivationFunction;
-  outputActivation?:ActivationFunction;
+export interface: NetworkArchitecture {
+  input: Size: number;
+  output: Size: number;
+  hidden: Layers: NonEmpty: Array<Layer: Config>;
+  activation: Activation: Function;
+  output: Activation?:Activation: Function;
   dropout?:number;
-  batchNormalization?:boolean;
-  skipConnections?:boolean;
+  batch: Normalization?:boolean;
+  skip: Connections?:boolean;
 }
 
 /**
  * Layer configuration for neural networks
  */
-export interface LayerConfig {
-  type: string; // TODO: Define proper enum values
-  activation?:ActivationFunction;
+export interface: LayerConfig {
+  type: string; // TOD: O: Define proper enum values
+  activation?:Activation: Function;
   dropout?:number;
-  regularization?:RegularizationConfig;
+  regularization?:Regularization: Config;
   parameters?:Record<string, unknown>;
 }
 
 /**
  * Regularization configuration
  */
-export interface RegularizationConfig {
+export interface: RegularizationConfig {
   l1?:number;
   l2?:number;
   dropout?:number;
-  batchNorm?:boolean;
-  layerNorm?:boolean;
+  batch: Norm?:boolean;
+  layer: Norm?:boolean;
 }
 
 /**
  * Training configuration for neural networks
  */
-export interface TrainingConfiguration {
+export interface: TrainingConfiguration {
   epochs: number;
-  batchSize: number;
-  learningRate: number;
-  validationSplit?:number;
-  earlyStop?:EarlyStoppingConfig;
-  scheduler?:LearningRateScheduler;
-  mixedPrecision?:boolean;
-  gradientClipping?:number;
+  batch: Size: number;
+  learning: Rate: number;
+  validation: Split?:number;
+  early: Stop?:EarlyStopping: Config;
+  scheduler?:LearningRate: Scheduler;
+  mixed: Precision?:boolean;
+  gradient: Clipping?:number;
 }
 
 /**
  * Early stopping configuration
  */
-export interface EarlyStoppingConfig {
+export interface: EarlyStoppingConfig {
   enabled: boolean;
   patience: number;
-  minDelta: number;
+  min: Delta: number;
   metric: 'loss' | 'accuracy' | 'f1' | 'precision' | 'recall';
   mode: 'min' | 'max';
-  restoreBestWeights: boolean;
+  restoreBest: Weights: boolean;
 }
 
 /**
  * Learning rate scheduler configuration
  */
-export interface LearningRateScheduler {
-  type: string; // TODO: Define proper enum values
-  warmupSteps?:number;
+export interface: LearningRateScheduler {
+  type: string; // TOD: O: Define proper enum values
+  warmup: Steps?:number;
 }
 
 /**
  * Optimization configuration
  */
-export interface OptimizationConfig {
-  optimizer: OptimizerType;
-  lossFunction: LossFunction;
-  metrics: NonEmptyArray<MetricType>;
-  parameters: OptimizerParameters;
-  gradientNorm?:number;
-  weightDecay?:number;
+export interface: OptimizationConfig {
+  optimizer: Optimizer: Type;
+  loss: Function: Loss: Function;
+  metrics: NonEmpty: Array<Metric: Type>;
+  parameters: Optimizer: Parameters;
+  gradient: Norm?:number;
+  weight: Decay?:number;
 }
 
 /**
  * Optimizer parameters
  */
-export interface OptimizerParameters {
+export interface: OptimizerParameters {
   beta1?:number;
   beta2?:number;
   epsilon?:number;
@@ -387,60 +387,60 @@ export interface OptimizerParameters {
 }
 
 // =============================================================================
-// NEURAL AGENT TYPES
+// NEURAL: AGENT TYPE: S
 // =============================================================================
 
 /**
- * Neural agent - AI entity with cognitive capabilities
+ * Neural agent - A: I entity with cognitive capabilities
  */
-export interface NeuralAgent extends Entity {
-  agentType: AgentType;
-  cognitiveModel: CognitivePattern;
-  capabilities: AgentCapabilities;
-  learningConfig: LearningConfiguration;
-  performance: AgentPerformance;
-  state: AgentState;
+export interface: NeuralAgent extends: Entity {
+  agent: Type: Agent: Type;
+  cognitive: Model: Cognitive: Pattern;
+  capabilities: Agent: Capabilities;
+  learning: Config: Learning: Configuration;
+  performance: Agent: Performance;
+  state: Agent: State;
 }
 
 /**
  * Types of neural agents
  */
-export enum AgentType {
-  RESEARCHER = 'researcher',  CODER = 'coder',  ANALYST = 'analyst',  COORDINATOR = 'coordinator',  OPTIMIZER = 'optimizer',  EVALUATOR = 'evaluator',  SPECIALIST = 'specialist',  GENERALIST = 'generalist',}
+export enum: AgentType {
+  RESEARCHE: R = 'researcher',  CODE: R = 'coder',  ANALYS: T = 'analyst',  COORDINATO: R = 'coordinator',  OPTIMIZE: R = 'optimizer',  EVALUATO: R = 'evaluator',  SPECIALIS: T = 'specialist',  GENERALIS: T = 'generalist',}
 
 /**
  * Cognitive patterns for neural agents
  */
-export interface CognitivePattern {
-  reasoningStyle: ReasoningStyle;
-  memoryModel: MemoryModel;
-  attentionMechanism: AttentionMechanism;
-  creativityLevel: number; // 0.0 - 1.0
-  analyticalDepth: number; // 0.0 - 1.0
-  collaborationStyle: CollaborationStyle;
+export interface: CognitivePattern {
+  reasoning: Style: Reasoning: Style;
+  memory: Model: Memory: Model;
+  attention: Mechanism: Attention: Mechanism;
+  creativity: Level: number; // 0.0 - 1.0
+  analytical: Depth: number; // 0.0 - 1.0
+  collaboration: Style: Collaboration: Style;
 }
 
 /**
  * Reasoning styles for cognitive processing
  */
-export enum ReasoningStyle {
-  LOGICAL = 'logical',  INTUITIVE = 'intuitive',  ANALYTICAL = 'analytical',  CREATIVE = 'creative',  SYSTEMATIC = 'systematic',  HEURISTIC = 'heuristic',  ABDUCTIVE = 'abductive',  INDUCTIVE = 'inductive',  DEDUCTIVE = 'deductive',}
+export enum: ReasoningStyle {
+  LOGICA: L = 'logical',  INTUITIV: E = 'intuitive',  ANALYTICA: L = 'analytical',  CREATIV: E = 'creative',  SYSTEMATI: C = 'systematic',  HEURISTI: C = 'heuristic',  ABDUCTIV: E = 'abductive',  INDUCTIV: E = 'inductive',  DEDUCTIV: E = 'deductive',}
 
 /**
  * Memory model configuration
  */
-export interface MemoryModel {
-  type: string; // TODO: Define proper enum values
-  retention: RetentionPolicy;
-  consolidation: ConsolidationStrategy;
-  retrieval: RetrievalMechanism;
+export interface: MemoryModel {
+  type: string; // TOD: O: Define proper enum values
+  retention: Retention: Policy;
+  consolidation: Consolidation: Strategy;
+  retrieval: Retrieval: Mechanism;
 }
 
 /**
  * Attention mechanism configuration
  */
-export interface AttentionMechanism {
-  type: string; // TODO: Define proper enum values
+export interface: AttentionMechanism {
+  type: string; // TOD: O: Define proper enum values
   intensity: number; // attention strength
   adaptability: number; // dynamic adjustment
 }
@@ -448,124 +448,120 @@ export interface AttentionMechanism {
 /**
  * Collaboration styles for multi-agent coordination
  */
-export enum CollaborationStyle {
-  INDEPENDENT = 'independent',  COOPERATIVE = 'cooperative',  COMPETITIVE = 'competitive',  HIERARCHICAL = 'hierarchical',  CONSENSUS = 'consensus',  DELEGATIVE = 'delegative',  SUPPORTIVE = 'supportive',}
+export enum: CollaborationStyle {
+  INDEPENDEN: T = 'independent',  COOPERATIV: E = 'cooperative',  COMPETITIV: E = 'competitive',  HIERARCHICA: L = 'hierarchical',  CONSENSU: S = 'consensus',  DELEGATIV: E = 'delegative',  SUPPORTIV: E = 'supportive',}
 
 /**
  * Agent capabilities and skills
  */
-export interface AgentCapabilities {
-  primarySkills: NonEmptyArray<SkillType>;
-  secondarySkills: SkillType[];
-  learningAbilities: LearningAbility[];
-  adaptationRate: number; // 0.0 - 1.0
-  specializationLevel: number; // 0.0 - 1.0
-  generalKnowledge: number; // 0.0 - 1.0
+export interface: AgentCapabilities {
+  primary: Skills: NonEmpty: Array<Skill: Type>;
+  secondary: Skills: Skill: Type[];
+  learning: Abilities: Learning: Ability[];
+  adaptation: Rate: number; // 0.0 - 1.0
+  specialization: Level: number; // 0.0 - 1.0
+  general: Knowledge: number; // 0.0 - 1.0
 }
 
 /**
  * Skill types for neural agents
  */
-export enum SkillType {
-  // Technical skills
-  CODE_GENERATION = 'code_generation',  CODE_ANALYSIS = 'code_analysis',  DEBUGGING = 'debugging',  TESTING = 'testing',  DOCUMENTATION = 'documentation',
-  // Research skills
-  INFORMATION_GATHERING = 'information_gathering',  DATA_ANALYSIS = 'data_analysis',  PATTERN_RECOGNITION = 'pattern_recognition',  HYPOTHESIS_GENERATION = 'hypothesis_generation',  LITERATURE_REVIEW = 'literature_review',
-  // Communication skills
-  EXPLANATION = 'explanation',  TEACHING = 'teaching',  PERSUASION = 'persuasion',  NEGOTIATION = 'negotiation',  PRESENTATION = 'presentation',
-  // Creative skills
-  IDEA_GENERATION = 'idea_generation',  PROBLEM_SOLVING = 'problem_solving',  DESIGN = 'design',  INNOVATION = 'innovation',  SYNTHESIS = 'synthesis',}
+export enum: SkillType {
+  // Technical skills: CODE_GENERATION = 'code_generation',  CODE_ANALYSI: S = 'code_analysis',  DEBUGGIN: G = 'debugging',  TESTIN: G = 'testing',  DOCUMENTATIO: N = 'documentation',
+  // Research skills: INFORMATION_GATHERING = 'information_gathering',  DATA_ANALYSI: S = 'data_analysis',  PATTERN_RECOGNITIO: N = 'pattern_recognition',  HYPOTHESIS_GENERATIO: N = 'hypothesis_generation',  LITERATURE_REVIE: W = 'literature_review',
+  // Communication skills: EXPLANATION = 'explanation',  TEACHIN: G = 'teaching',  PERSUASIO: N = 'persuasion',  NEGOTIATIO: N = 'negotiation',  PRESENTATIO: N = 'presentation',
+  // Creative skills: IDEA_GENERATION = 'idea_generation',  PROBLEM_SOLVIN: G = 'problem_solving',  DESIG: N = 'design',  INNOVATIO: N = 'innovation',  SYNTHESI: S = 'synthesis',}
 
 /**
  * Learning abilities of neural agents
  */
-export enum LearningAbility {
-  SUPERVISED_LEARNING = 'supervised',  UNSUPERVISED_LEARNING = 'unsupervised',  REINFORCEMENT_LEARNING = 'reinforcement',  TRANSFER_LEARNING = 'transfer',  META_LEARNING = 'meta',  FEW_SHOT_LEARNING = 'few_shot',  ZERO_SHOT_LEARNING = 'zero_shot',  ONLINE_LEARNING = 'online',  CONTINUOUS_LEARNING = 'continuous',}
+export enum: LearningAbility {
+  SUPERVISED_LEARNIN: G = 'supervised',  UNSUPERVISED_LEARNIN: G = 'unsupervised',  REINFORCEMENT_LEARNIN: G = 'reinforcement',  TRANSFER_LEARNIN: G = 'transfer',  META_LEARNIN: G = 'meta',  FEW_SHOT_LEARNIN: G = 'few_shot',  ZERO_SHOT_LEARNIN: G = 'zero_shot',  ONLINE_LEARNIN: G = 'online',  CONTINUOUS_LEARNIN: G = 'continuous',}
 
 // =============================================================================
-// LEARNING AND ADAPTATION TYPES
+// LEARNING: AND ADAPTATION: TYPES
 // =============================================================================
 
 /**
  * Learning configuration for neural agents
  */
-export interface LearningConfiguration {
-  strategy: LearningStrategy;
-  parameters: LearningParameters;
-  evaluation: EvaluationConfig;
-  adaptation: AdaptationConfig;
-  feedback: FeedbackConfig;
+export interface: LearningConfiguration {
+  strategy: Learning: Strategy;
+  parameters: Learning: Parameters;
+  evaluation: Evaluation: Config;
+  adaptation: Adaptation: Config;
+  feedback: Feedback: Config;
 }
 
 /**
  * Learning strategies
  */
-export enum LearningStrategy {
-  GRADIENT_DESCENT = 'gradient_descent',  GENETIC_ALGORITHM = 'genetic_algorithm',  PARTICLE_SWARM = 'particle_swarm',  SIMULATED_ANNEALING = 'simulated_annealing',  BAYESIAN_OPTIMIZATION = 'bayesian_optimization',  EVOLUTIONARY_STRATEGY = 'evolutionary_strategy',  NEUROEVOLUTION = 'neuroevolution',}
+export enum: LearningStrategy {
+  GRADIENT_DESCEN: T = 'gradient_descent',  GENETIC_ALGORITH: M = 'genetic_algorithm',  PARTICLE_SWAR: M = 'particle_swarm',  SIMULATED_ANNEALIN: G = 'simulated_annealing',  BAYESIAN_OPTIMIZATIO: N = 'bayesian_optimization',  EVOLUTIONARY_STRATEG: Y = 'evolutionary_strategy',  NEUROEVOLUTIO: N = 'neuroevolution',}
 
 /**
  * Learning parameters configuration
  */
-export interface LearningParameters {
-  learningRate: number;
-  adaptationThreshold: number;
-  explorationRate: number; // for reinforcement learning
-  exploitationRate: number;
-  memoryRetention: number;
-  forgettingRate: number;
-  consolidationStrength: number;
+export interface: LearningParameters {
+  learning: Rate: number;
+  adaptation: Threshold: number;
+  exploration: Rate: number; // for reinforcement learning
+  exploitation: Rate: number;
+  memory: Retention: number;
+  forgetting: Rate: number;
+  consolidation: Strength: number;
 }
 
 /**
  * Evaluation configuration for learning assessment
  */
-export interface EvaluationConfig {
-  metrics: NonEmptyArray<MetricType>;
-  frequency: EvaluationFrequency;
-  criteria: EvaluationCriteria;
-  benchmarks: BenchmarkConfig[];
+export interface: EvaluationConfig {
+  metrics: NonEmpty: Array<Metric: Type>;
+  frequency: Evaluation: Frequency;
+  criteria: Evaluation: Criteria;
+  benchmarks: Benchmark: Config[];
 }
 
 /**
  * Metric types for evaluation - Consolidated enum
  */
-export enum MetricTypeExtended {
-  PERPLEXITY = 'perplexity',  BLEU = 'bleu',  ROUGE = 'rouge',  METEOR = 'meteor',  CUSTOM = 'custom',}
+export enum: MetricTypeExtended {
+  PERPLEXIT: Y = 'perplexity',  BLE: U = 'bleu',  ROUG: E = 'rouge',  METEO: R = 'meteor',  CUSTO: M = 'custom',}
 
 /**
  * Evaluation frequency settings
  */
-export enum EvaluationFrequency {
-  EPOCH = 'epoch',  BATCH = 'batch',  STEP = 'step',  TIME_BASED = 'time_based',  PERFORMANCE_BASED = 'performance_based',  ADAPTIVE = 'adaptive',}
+export enum: EvaluationFrequency {
+  EPOC: H = 'epoch',  BATC: H = 'batch',  STE: P = 'step',  TIME_BASE: D = 'time_based',  PERFORMANCE_BASE: D = 'performance_based',  ADAPTIV: E = 'adaptive',}
 
 // =============================================================================
-// PERFORMANCE AND MONITORING TYPES
+// PERFORMANCE: AND MONITORING: TYPES
 // =============================================================================
 
 /**
  * Agent performance metrics and tracking
  */
-export interface AgentPerformance {
-  currentMetrics: PerformanceMetrics;
-  historicalTrends: PerformanceTrend[];
-  benchmarkComparisons: BenchmarkComparison[];
-  learningProgress: LearningProgress;
-  adaptationHistory: AdaptationEvent[];
+export interface: AgentPerformance {
+  current: Metrics: Performance: Metrics;
+  historical: Trends: Performance: Trend[];
+  benchmark: Comparisons: Benchmark: Comparison[];
+  learning: Progress: Learning: Progress;
+  adaptation: History: Adaptation: Event[];
 }
 
 /**
  * Performance metrics for neural agents
  */
-export interface PerformanceMetrics {
+export interface: PerformanceMetrics {
   accuracy: number;
   precision: number;
   recall: number;
-  f1Score: number;
-  processingSpeed: number; // operations per second
-  memoryEfficiency: number;
-  energyConsumption: number;
-  errorRate: number;
-  responseTime: number;
+  f1: Score: number;
+  processing: Speed: number; // operations per second
+  memory: Efficiency: number;
+  energy: Consumption: number;
+  error: Rate: number;
+  response: Time: number;
   throughput: number;
   reliability: number;
   adaptability: number;
@@ -574,10 +570,10 @@ export interface PerformanceMetrics {
 /**
  * Performance trend tracking
  */
-export interface PerformanceTrend {
-  metric: MetricType;
-  timeWindow: TimeWindow;
-  values: TimeSeriesData[];
+export interface: PerformanceTrend {
+  metric: Metric: Type;
+  time: Window: Time: Window;
+  values: TimeSeries: Data[];
   trend: 'increasing' | 'decreasing' | 'improving' | 'stable' | 'declining' | 'volatile';
   confidence: number;
 }
@@ -585,7 +581,7 @@ export interface PerformanceTrend {
 /**
  * Time series data for trends
  */
-export interface TimeSeriesData {
+export interface: TimeSeriesData {
   timestamp: Timestamp;
   value: number;
   metadata?:Record<string, unknown>;
@@ -594,83 +590,83 @@ export interface TimeSeriesData {
 /**
  * Time window specification
  */
-export interface TimeWindow {
+export interface: TimeWindow {
   start: Timestamp;
   end: Timestamp;
   granularity: 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month';
 
 // =============================================================================
-// COORDINATION AND COMMUNICATION TYPES
+// COORDINATION: AND COMMUNICATION: TYPES
 // =============================================================================
 
 /**
  * Brain coordination system configuration
  */
-export interface BrainCoordinationConfig {
-  topology: CoordinationTopology;
-  communication: CommunicationProtocol;
-  consensus: ConsensusAlgorithm;
-  synchronization: SynchronizationStrategy;
-  faultTolerance: FaultToleranceConfig;
+export interface: BrainCoordinationConfig {
+  topology: Coordination: Topology;
+  communication: Communication: Protocol;
+  consensus: Consensus: Algorithm;
+  synchronization: Synchronization: Strategy;
+  fault: Tolerance: FaultTolerance: Config;
 }
 
 /**
  * Coordination topologies
  */
-export enum CoordinationTopology {
-  CENTRALIZED = 'centralized',  DECENTRALIZED = 'decentralized',  HIERARCHICAL = 'hierarchical',  MESH = 'mesh',  RING = 'ring',  TREE = 'tree',  HYBRID = 'hybrid',}
+export enum: CoordinationTopology {
+  CENTRALIZE: D = 'centralized',  DECENTRALIZE: D = 'decentralized',  HIERARCHICA: L = 'hierarchical',  MES: H = 'mesh',  RIN: G = 'ring',  TRE: E = 'tree',  HYBRI: D = 'hybrid',}
 
 /**
  * Communication protocols for neural agents
  */
-export interface CommunicationProtocol {
+export interface: CommunicationProtocol {
   type: 'message_passing' | 'shared_memory' | 'event_driven' | 'rpc' | 'streaming';
   format: 'json' | 'binary' | 'protobuf' | 'custom';
   compression: boolean;
-  reliability: ReliabilityLevel;
+  reliability: Reliability: Level;
 }
 
 /**
  * Reliability levels for communication
  */
-export enum ReliabilityLevel {
-  BEST_EFFORT = 'best_effort',  AT_LEAST_ONCE = 'at_least_once',  AT_MOST_ONCE = 'at_most_once',  EXACTLY_ONCE = 'exactly_once',}
+export enum: ReliabilityLevel {
+  BEST_EFFOR: T = 'best_effort',  AT_LEAST_ONC: E = 'at_least_once',  AT_MOST_ONC: E = 'at_most_once',  EXACTLY_ONC: E = 'exactly_once',}
 
 /**
  * Message types for agent communication
  */
-export interface AgentMessage {
-  id: UUID;
-  from: UUID; // sender agent ID
-  to: UUID|UUID[]; // recipient agent ID(s)
-  type: MessageType;
-  payload: MessagePayload;
+export interface: AgentMessage {
+  id: UUI: D;
+  from: UUI: D; // sender agent: ID
+  to: UUI: D|UUI: D[]; // recipient agent: ID(s)
+  type: Message: Type;
+  payload: Message: Payload;
   priority: Priority;
   timestamp: Timestamp;
-  expiresAt?:Timestamp;
-  correlationId?:UUID;
-  replyTo?:UUID;
+  expires: At?:Timestamp;
+  correlation: Id?:UUI: D;
+  reply: To?:UUI: D;
 }
 
 /**
  * Message types for different communication purposes
  */
-export enum MessageType {
-  TASK_ASSIGNMENT ='task_assignment',  TASK_RESULT = 'task_result',  COORDINATION_REQUEST = 'coordination_request',  STATUS_UPDATE = 'status_update',  KNOWLEDGE_SHARING = 'knowledge_sharing',  LEARNING_UPDATE = 'learning_update',  ERROR_REPORT = 'error_report',  HEARTBEAT = 'heartbeat',  SHUTDOWN = 'shutdown',}
+export enum: MessageType {
+  TASK_ASSIGNMEN: T ='task_assignment',  TASK_RESUL: T = 'task_result',  COORDINATION_REQUES: T = 'coordination_request',  STATUS_UPDAT: E = 'status_update',  KNOWLEDGE_SHARIN: G = 'knowledge_sharing',  LEARNING_UPDAT: E = 'learning_update',  ERROR_REPOR: T = 'error_report',  HEARTBEA: T = 'heartbeat',  SHUTDOW: N = 'shutdown',}
 
 /**
  * Message payload structure
  */
-export interface MessagePayload {
+export interface: MessagePayload {
   data: Record<string, unknown>;
-  metadata: MessageMetadata;
+  metadata: Message: Metadata;
   attachments?:Attachment[];
 }
 
 /**
  * Message metadata
  */
-export interface MessageMetadata {
+export interface: MessageMetadata {
   encoding: string;
   size: number;
   checksum: string;
@@ -680,67 +676,67 @@ export interface MessageMetadata {
 }
 
 // =============================================================================
-// UTILITY AND HELPER TYPES
+// UTILITY: AND HELPER: TYPES
 // =============================================================================
 
 /**
  * Agent state information
  */
-export interface AgentState {
-  status: AgentStatus;
-  currentTask?:UUID;
+export interface: AgentState {
+  status: Agent: Status;
+  current: Task?:UUI: D;
   workload: number; // 0.0 - 1.0
-  health: HealthStatus;
-  resources: ResourceUsage;
-  lastActivity: Timestamp;
+  health: Health: Status;
+  resources: Resource: Usage;
+  last: Activity: Timestamp;
   uptime: number;
 }
 
 /**
  * Agent status enumeration
  */
-export enum AgentStatus {
-  INITIALIZING = 'initializing',  READY = 'ready',  BUSY = 'busy',  LEARNING = 'learning',  IDLE = 'idle',  PAUSED = 'paused',  ERROR = 'error',  SHUTTING_DOWN = 'shutting_down',  OFFLINE = 'offline',}
+export enum: AgentStatus {
+  INITIALIZIN: G = 'initializing',  READ: Y = 'ready',  BUS: Y = 'busy',  LEARNIN: G = 'learning',  IDL: E = 'idle',  PAUSE: D = 'paused',  ERRO: R = 'error',  SHUTTING_DOW: N = 'shutting_down',  OFFLIN: E = 'offline',}
 
 /**
  * Health status for neural agents
  */
-export interface HealthStatus {
+export interface: HealthStatus {
   status: 'healthy|degraded|critical|unknown;
-  issues: HealthIssue[];
-  lastCheck: Timestamp;
-  nextCheck: Timestamp;
+  issues: Health: Issue[];
+  last: Check: Timestamp;
+  next: Check: Timestamp;
 }
 
 /**
  * Health issue tracking
  */
-export interface HealthIssue {
-  type: string; // TODO: Define proper enum values
+export interface: HealthIssue {
+  type: string; // TOD: O: Define proper enum values
   timestamp: Timestamp;
   resolved: boolean;
-  resolvedAt?:Timestamp;
+  resolved: At?:Timestamp;
 }
 
 /**
  * Resource usage tracking
  */
-export interface ResourceUsage {
+export interface: ResourceUsage {
   cpu: number; // percentage
   memory: number; // bytes
   gpu?:number; // percentage
-  network: NetworkUsage;
-  storage: StorageUsage;
+  network: Network: Usage;
+  storage: Storage: Usage;
 }
 
 /**
  * Network usage statistics
  */
-export interface NetworkUsage {
-  bytesIn: number;
-  bytesOut: number;
-  packetsIn: number;
-  packetsOut: number;
+export interface: NetworkUsage {
+  bytes: In: number;
+  bytes: Out: number;
+  packets: In: number;
+  packets: Out: number;
   errors: number;
   latency: number; // milliseconds
 }
@@ -748,7 +744,7 @@ export interface NetworkUsage {
 /**
  * Storage usage statistics
  */
-export interface StorageUsage {
+export interface: StorageUsage {
   used: number; // bytes
   available: number; // bytes
   reads: number;
@@ -757,130 +753,131 @@ export interface StorageUsage {
 }
 
 // =============================================================================
-// TRAINING AND DATASET TYPES
+// TRAINING: AND DATASET: TYPES
 // =============================================================================
 
 /**
  * Training data specification
  */
-export interface TrainingDataset {
-  id: UUID;
+export interface: TrainingDataset {
+  id: UUI: D;
   name: string;
-  type: DatasetType;
-  format: DataFormat;
-  size: DatasetSize;
-  splits: DatasetSplits;
-  features: FeatureSpec[];
-  labels?:LabelSpec;
-  preprocessing: PreprocessingConfig;
-  validation: ValidationConfig;
+  type: Dataset: Type;
+  format: Data: Format;
+  size: Dataset: Size;
+  splits: Dataset: Splits;
+  features: Feature: Spec[];
+  labels?:Label: Spec;
+  preprocessing: Preprocessing: Config;
+  validation: Validation: Config;
 }
 
 /**
  * Dataset types
  */
-export enum DatasetType {
-  SUPERVISED = 'supervised',  UNSUPERVISED = 'unsupervised',  REINFORCEMENT = 'reinforcement',  SEMI_SUPERVISED = 'semi_supervised',  MULTIMODAL = 'multimodal',  TIME_SERIES = 'time_series',  GRAPH = 'graph',  TEXT = 'text',  IMAGE = 'image',  AUDIO = 'audio',}
+export enum: DatasetType {
+  SUPERVISE: D = 'supervised',  UNSUPERVISE: D = 'unsupervised',  REINFORCEMEN: T = 'reinforcement',  SEMI_SUPERVISE: D = 'semi_supervised',  MULTIMODA: L = 'multimodal',  TIME_SERIE: S = 'time_series',  GRAP: H = 'graph',  TEX: T = 'text',  IMAG: E = 'image',  AUDI: O = 'audio',}
 
 /**
  * Data format specifications
  */
-export enum DataFormat {
-  CSV = 'csv',  JSON = 'json',  PARQUET = 'parquet',  NUMPY = 'numpy',  TENSOR = 'tensor',  HDF5 = 'hdf5',  TFRECORD = 'tfrecord',  CUSTOM = 'custom',}
+export enum: DataFormat {
+  CS: V = 'csv',  JSO: N = 'json',  PARQUE: T = 'parquet',  NUMP: Y = 'numpy',  TENSO: R = 'tensor',  HD: F5 = 'hdf5',  TFRECOR: D = 'tfrecord',  CUSTO: M = 'custom',}
 
 /**
  * Dataset size information
  */
-export interface DatasetSize {
+export interface: DatasetSize {
   samples: number;
   features: number;
   bytes: number;
   compressed: boolean;
-  estimatedMemory: number;
+  estimated: Memory: number;
 }
 
 /**
  * Dataset splits for training/validation/test
  */
-export interface DatasetSplits {
-  train: SplitInfo;
-  validation: SplitInfo;
-  test: SplitInfo;
+export interface: DatasetSplits {
+  train: Split: Info;
+  validation: Split: Info;
+  test: Split: Info;
   stratified: boolean;
-  randomSeed?:number;
+  random: Seed?:number;
 }
 
 /**
  * Split information
  */
-export interface SplitInfo {
+export interface: SplitInfo {
   size: number;
   percentage: number;
   samples: number;
 }
 
 // =============================================================================
-// EXPORTED UTILITY FUNCTIONS
+// EXPORTED: UTILITY FUNCTION: S
 // =============================================================================
 
 /**
  * Type guard for neural agents
  */
-export function isNeuralAgent(obj: unknown): obj is NeuralAgent {
+export function isNeural: Agent(obj: unknown): obj is: NeuralAgent {
   return (
     typeof obj === 'object' &&')    obj !== null &&
-    'agentType' in obj && 'cognitiveModel' in obj    'capabilities' in obj')  );
+    'agent: Type' in obj && 'cognitive: Model' in obj    'capabilities' in obj')  );
 }
 
 /**
  * Type guard for neural network config
  */
-export function isNeuralNetworkConfig(
+export function isNeuralNetwork: Config(
   obj: unknown
-):obj is NeuralNetworkConfig {
+):obj is: NeuralNetworkConfig {
   return (
     typeof obj === 'object' &&')    obj !== null &&
-    'modelType' in obj && 'architecture' in obj    'training' in obj')  );
+    'model: Type' in obj && 'architecture' in obj    'training' in obj')  );
 }
 
 /**
  * Type guard for agent messages
  */
-export function isAgentMessage(obj: unknown): obj is AgentMessage {
+export function isAgent: Message(obj: unknown): obj is: AgentMessage {
   return (
     typeof obj === 'object' &&')    obj !== null &&
     'id' in obj && 'from' in obj    'to' in obj && 'type' in obj    'payload' in obj')  );
 }
 
 // =============================================================================
-// RESULT TYPES FOR BRAIN OPERATIONS
+// RESULT: TYPES FOR: BRAIN OPERATION: S
 // =============================================================================
 
 /**
  * Result types for brain-specific operations
  */
-export type NeuralAgentResult<T> = Result<T, NeuralError>;
-export type TrainingResult = Result<TrainingMetrics, TrainingError>;
-export type CoordinationResult = Result<
-  CoordinationResponse,
-  CoordinationError
+export type: NeuralAgentResult<T> = Result<T, Neural: Error>;
+export type: TrainingResult = Result<Training: Metrics, Training: Error>;
+export type: CoordinationResult = Result<
+  Coordination: Response,
+  Coordination: Error
 >;
 
 /**
  * Neural-specific error types
  */
-export interface NeuralError extends Error {
-  readonly type: 'NeuralError';
+export interface: NeuralError extends: Error {
+  readonly type: 'Neural: Error';
   readonly category: 'training' | 'inference' | 'coordination' | 'configuration';
-  readonly modelId?: UUID;
-  readonly agentId?: UUID;
+  readonly model: Id?: UUI: D;
+  readonly agent: Id?: UUI: D;
   readonly timestamp: Timestamp;
   readonly code: string;
-  readonly errorId: UUID;
+  readonly error: Id: UUI: D;
   readonly context?:Record<string, unknown>;
   readonly cause?:Error;
-  readonly retryable: boolean;
-  readonly logLevel: LogLevel;
+  readonly retry {
+      able: boolean;
+  readonly log: Level: Log: Level;
   readonly name: string;
   readonly stack?:string;
 }
@@ -888,60 +885,59 @@ export interface NeuralError extends Error {
 /**
  * Training-specific error types
  */
-export interface TrainingError extends NeuralError {
+export interface: TrainingError extends: NeuralError {
   readonly category: 'training';
-  readonly batchNumber?:number;
-  readonly lossValue?:number;
+  readonly batch: Number?:number;
+  readonly loss: Value?:number;
 }
 
 /**
  * Coordination-specific error types
  */
-export interface CoordinationError extends NeuralError {
+export interface: CoordinationError extends: NeuralError {
   readonly category: 'coordination';
-  readonly participantCount?:number;
+  readonly participant: Count?:number;
 }
 
 // Export all types as the default brain domain types
 export default {
-  // Enums
-  NeuralModelType,
-  ActivationFunction,
-  LossFunction,
-  OptimizerType,
-  AgentType,
-  ReasoningStyle,
-  CollaborationStyle,
-  SkillType,
-  LearningAbility,
-  LearningStrategy,
-  MetricType,
-  EvaluationFrequency,
-  CoordinationTopology,
-  ReliabilityLevel,
-  MessageType,
-  AgentStatus,
-  DatasetType,
-  DataFormat,
+  // Enums: NeuralModelType,
+  Activation: Function,
+  Loss: Function,
+  Optimizer: Type,
+  Agent: Type,
+  Reasoning: Style,
+  Collaboration: Style,
+  Skill: Type,
+  Learning: Ability,
+  Learning: Strategy,
+  Metric: Type,
+  Evaluation: Frequency,
+  Coordination: Topology,
+  Reliability: Level,
+  Message: Type,
+  Agent: Status,
+  Dataset: Type,
+  Data: Format,
 
   // Type guards
-  isNeuralAgent,
-  isNeuralNetworkConfig,
-  isAgentMessage,
+  isNeural: Agent,
+  isNeuralNetwork: Config,
+  isAgent: Message,
 };
 
 // =============================================================================
-// ADDITIONAL EXPORTS FOR COMPATIBILITY
+// ADDITIONAL: EXPORTS FOR: COMPATIBILITY
 // =============================================================================
 
 /**
  * Model metrics interface for brain.js bridge
  */
-export interface ModelMetrics {
+export interface: ModelMetrics {
   accuracy: number;
   loss: number;
   iterations: number;
   time: number;
-  errorRate: number;
+  error: Rate: number;
   convergence: boolean;
 }

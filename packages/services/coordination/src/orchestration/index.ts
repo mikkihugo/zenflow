@@ -24,13 +24,13 @@ export type TaskState = ;
     const limit = this.wipLimits[newState as keyof TaskWIPLimits];
     
     if (limit && tasksInState.length >= limit) {
-      throw new Error(`WIP limit exceeded for state `${newState});``;
+      throw new Error(`WIP limit exceeded for state "${newState})"";"
 }
     task.state = newState;
     task.updatedAt = new Date();
     return true;
 }
-  getFlowMetrics():TaskFlowMetrics {
+  getFlowMetrics(): TaskFlowMetrics {
     // Calculate flow metrics
     return {
       throughput: new Map();
@@ -64,4 +64,4 @@ export function createOrchestrationSystem(wipLimits: TaskWIPLimits): Orchestrati
 }
 // Legacy compatibility exports
 export { TaskOrchestrator as TaskMaster};
-export { EnterpriseCoordinator as EnterpriseCoordination};)`;
+export { EnterpriseCoordinator as EnterpriseCoordination};)";"

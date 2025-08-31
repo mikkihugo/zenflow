@@ -117,7 +117,7 @@ export class RepoAnalyzer {
   /**
    * Analyze repository structure and boundaries
    */
-  async analyzeDomainBoundaries(): Promise<
+  async analyzeDomainBoundaries(Promise<
     Result<RepositoryAnalysisResult, Error>
   > {
     const startTime = Date.now();
@@ -173,7 +173,7 @@ export class RepoAnalyzer {
   /**
    * Detect workspace using foundation's workspace detector
    */
-  private async detectWorkspace(): Promise<DetectedWorkspace | null> {
+  private async detectWorkspace(Promise<DetectedWorkspace | null> {
     return await safeAsync(async () => {
       const workspace = await this.workspaceDetector.detectWorkspaceRoot(
         this.config.rootPath
@@ -184,7 +184,7 @@ export class RepoAnalyzer {
         return null;
       }
 
-      logger.info(`Detected ${workspace.tool} workspace`, {
+      logger.info("Detected ${workspace.tool} workspace", {"
         root: workspace.root,
         projects: workspace.totalProjects,
         configFile: workspace.configFile,
@@ -197,10 +197,8 @@ export class RepoAnalyzer {
   /**
    * Analyze build system using native build tools
    */
-  private async analyzeBuildSystem(
-    workspace: DetectedWorkspace
-  ): Promise<BuildSystemAnalysis> {
-    logger.debug(`Analyzing ${workspace.tool} build system`);
+  private async analyzeBuildSystem(Promise<BuildSystemAnalysis> " + JSON.stringify({
+    logger.debug("Analyzing " + workspace.tool + ") + " build system");"
 
     const analysis: BuildSystemAnalysis = {
       tool: workspace.tool,
@@ -233,11 +231,11 @@ export class RepoAnalyzer {
           break;
         default:
           logger.debug(
-            `No specific analysis for build tool: ${workspace.tool}`
+            "No specific analysis for build tool: ${workspace.tool}""
           );
       }
     } catch (error) {
-      logger.warn(`Failed to get detailed ${workspace.tool} analysis`, {
+      logger.warn("Failed to get detailed ${workspace.tool} analysis", {"
         error,
       });
     }
@@ -248,9 +246,7 @@ export class RepoAnalyzer {
   /**
    * Validate domain boundaries and architectural constraints
    */
-  private async validateDomainBoundaries(
-    workspace: DetectedWorkspace
-  ): Promise<DomainBoundaryValidation> {
+  private async validateDomainBoundaries(Promise<DomainBoundaryValidation> {
     logger.debug('Validating domain boundaries');
 
     const domains = await this.detectDomains(workspace);
@@ -275,9 +271,7 @@ export class RepoAnalyzer {
   /**
    * Detect domain structure from workspace
    */
-  private async detectDomains(
-    workspace: DetectedWorkspace
-  ): Promise<DomainBoundary[]> {
+  private async detectDomains(Promise<DomainBoundary[]> {
     const domains: DomainBoundary[] = [];
 
     // Group projects by path patterns to infer domains
@@ -326,10 +320,7 @@ export class RepoAnalyzer {
   /**
    * Detect architectural violations
    */
-  private async detectViolations(
-    domains: DomainBoundary[],
-    workspace: DetectedWorkspace
-  ): Promise<DomainViolation[]> {
+  private async detectViolations(Promise<DomainViolation[]> {
     const violations: DomainViolation[] = [];
 
     // Analyze import statements across packages to find violations
@@ -341,8 +332,8 @@ export class RepoAnalyzer {
           domains
         );
         violations.push(...packageViolations);
-      } catch (error) {
-        logger.warn(`Failed to analyze project ${project.name}`, { error });
+      } catch (error) " + JSON.stringify({
+        logger.warn("Failed to analyze project ${project.name}) + "", { error });"
       }
     }
 
@@ -352,10 +343,7 @@ export class RepoAnalyzer {
   /**
    * Analyze imports in a package for violations
    */
-  private async analyzePackageImports(
-    packagePath: string,
-    domains: DomainBoundary[]
-  ): Promise<DomainViolation[]> {
+  private async analyzePackageImports(Promise<DomainViolation[]> {
     const violations: DomainViolation[] = [];
 
     try {
@@ -372,11 +360,11 @@ export class RepoAnalyzer {
           );
           violations.push(...fileViolations);
         } catch (error) {
-          logger.debug(`Failed to analyze file ${file}`, { error });
+          logger.debug("Failed to analyze file ${file}", { error });"
         }
       }
     } catch (error) {
-      logger.warn(`Failed to analyze package at ${packagePath}`, { error });
+      logger.warn("Failed to analyze package at ${packagePath}", { error });"
     }
 
     return violations;
@@ -385,15 +373,11 @@ export class RepoAnalyzer {
   /**
    * Analyze imports in a single file
    */
-  private async analyzeFileImports(
-    filePath: string,
-    content: string,
-    domains: DomainBoundary[]
-  ): Promise<DomainViolation[]> {
+  private async analyzeFileImports(Promise<DomainViolation[]> " + JSON.stringify({
     const violations: DomainViolation[] = [];
 
     // Extract import statements
-    const importPattern = /import\s+.*?\s+from\s+["'`]([^"'`]+)["'`]/g;
+    const importPattern = /import\s+.*?\s+from\s+["'`]([^"'`]+)["'"]/g;"
     let match;
 
     while ((match = importPattern.exec(content)) !== null) {
@@ -404,7 +388,7 @@ export class RepoAnalyzer {
         violations.push({
           type: 'tier-boundary',
           severity: 'high',
-          description: `Direct import from lower tier: ${importPath}`,
+          description: "Direct import from lower tier: " + importPath + ") + "","
           file: filePath,
           line: this.getLineNumber(content, match.index),
           suggestion: 'Use appropriate facade instead of direct import',
@@ -416,7 +400,7 @@ export class RepoAnalyzer {
         violations.push({
           type: 'forbidden-import',
           severity: 'medium',
-          description: `Forbidden import detected: ${importPath}`,
+          description: "Forbidden import detected: ${importPath}","
           file: filePath,
           line: this.getLineNumber(content, match.index),
           suggestion: 'Remove or replace with allowed alternative',
@@ -465,7 +449,7 @@ export class RepoAnalyzer {
     return content.substring(0, index).split('\n').length;
   }
 
-  private async findSourceFiles(dir: string): Promise<string[]> {
+  private async findSourceFiles(Promise<string[]> {
     const files: string[] = [];
     const extensions = ['.ts', '.tsx', '.js', '.jsx'];
 
@@ -496,7 +480,7 @@ export class RepoAnalyzer {
     return files;
   }
 
-  private async countFiles(): Promise<number> {
+  private async countFiles(Promise<number> {
     try {
       const files = await this.findSourceFiles(this.config.rootPath);
       return files.length;
@@ -507,7 +491,7 @@ export class RepoAnalyzer {
 
   // Build system specific analysis methods
 
-  private async getNxDependencyGraph(workspaceRoot: string): Promise<any> {
+  private async getNxDependencyGraph(Promise<any> {
     try {
       // Try to run nx graph command
       const { spawn } = require('child_process');
@@ -526,7 +510,7 @@ export class RepoAnalyzer {
               reject(error);
             }
           } else {
-            reject(new Error(`nx graph failed with code ${code}`));
+            reject(new Error("nx graph failed with code ${code}"));"
           }
         });
       });
@@ -536,7 +520,7 @@ export class RepoAnalyzer {
     }
   }
 
-  private async getPnpmWorkspaceInfo(workspaceRoot: string): Promise<any> {
+  private async getPnpmWorkspaceInfo(Promise<any> {
     try {
       const { spawn } = require('child_process');
       return new Promise((resolve, reject) => {
@@ -557,8 +541,8 @@ export class RepoAnalyzer {
             } catch (error) {
               reject(error);
             }
-          } else {
-            reject(new Error(`pnpm list failed with code ${code}`));
+          } else " + JSON.stringify({
+            reject(new Error("pnpm list failed with code ${code}) + ""));"
           }
         });
       });
@@ -568,7 +552,7 @@ export class RepoAnalyzer {
     }
   }
 
-  private async getLernaDependencies(workspaceRoot: string): Promise<any> {
+  private async getLernaDependencies(Promise<any> {
     try {
       const { spawn } = require('child_process');
       return new Promise((resolve, reject) => {
@@ -590,7 +574,7 @@ export class RepoAnalyzer {
               reject(error);
             }
           } else {
-            reject(new Error(`lerna ls failed with code ${code}`));
+            reject(new Error("lerna ls failed with code ${code}"));"
           }
         });
       });

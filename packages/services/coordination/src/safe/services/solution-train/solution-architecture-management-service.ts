@@ -110,7 +110,7 @@ export interface ComponentLifecycle {
    * Configure solution architecture management
    */
   async configureArchitecture(
-    config: `decision-${generateNanoId(12)})    this.logger.info(`Making architectural decision,{`;
+    config: "decision-$" + JSON.stringify({generateNanoId(12)}) + ")    this.logger.info("Making architectural decision,{";"
       decisionId,
       title: await this.evaluateAlternatives(
       decision.alternatives,
@@ -122,7 +122,7 @@ export interface ComponentLifecycle {
       decisionId,
       title: this.configurations.get(configId);
     if (!config) {
-    `)      throw new Error(`Configuration not found: `compliance-${g}enerateNanoId(12)``)    // Assess technology standards compliance;
+    `)      throw new Error(`Configuration not found: "compliance-$" + JSON.stringify({g}) + "enerateNanoId(12)"")    // Assess technology standards compliance;"
     const standardsCompliance = await this.assessStandardsCompliance(
       config.technologyStandards;
     );
@@ -145,7 +145,7 @@ export interface ComponentLifecycle {
       configId,
       timestamp: this.runwayComponents.get(componentId);
     if (!component) {
-    `)      throw new Error(`Runway component not found:  {`
+    `)      throw new Error("Runway component not found:  {""
           ...component,
           status: this.getNextStatus(component.status),
           lifecycle:  {
@@ -158,9 +158,9 @@ export interface ComponentLifecycle {
         break;
       case ComponentOperation.DEPRECATE:  {
           ...component,
-          status:  {
+          status:  " + JSON.stringify({
           ...component,
-          status: )`,throw new Error(`Unknown component operation: `${o}peration``);')};;
+          status: )`,throw new Error(`Unknown component operation: `${o}) + "peration"");')};;"
     this.runwayComponents.set(componentId, updatedComponent);')    this.logger.info('Runway component updated,{';
       componentId,
       newStatus: updatedComponent.status,')';
@@ -176,10 +176,7 @@ export interface ComponentLifecycle {
 };)    if (!config.solutionId|| config.solutionId.trim() ===){';
     ')      throw new Error('Solution ID is required');
 }
-  private async evaluateAlternatives(
-    alternatives: Alternative[],
-    criteria: DecisionCriteria[]
-  ): Promise<AlternativeEvaluation[]> 
+  private async evaluateAlternatives(Promise<AlternativeEvaluation[]> 
     return alternatives.map((alternative) => ({
       alternative,
       scores: criteria.map((criterion) => ({
@@ -207,11 +204,11 @@ export interface ComponentLifecycle {
     evaluations: [];
     if (standards < 80) {
       violations.push({
-        violationId: Technology standards compliance below threshold`,)        recommendation,});`;
+        violationId: Technology standards compliance below threshold",)        recommendation,})";
 }
     if (principles < 75) {
       violations.push({
-    `)        violationId: 'Architectural principles adherence below threshold',)        recommendation,});
+    ")        violationId: 'Architectural principles adherence below threshold',)        recommendation,});
 }
     return violations;
 }
@@ -304,7 +301,7 @@ interface RunwayTimebox {
 interface RunwayRisk {
   readonly riskId: string;
   readonly description: string;
-  readonly probability : 'low' | ' medium'|' high';)  readonly impact : 'low' | ' medium'|' high)  readonly mitigation: string;`;
+  readonly probability : 'low' | ' medium'|' high';)  readonly impact : 'low' | ' medium'|' high)  readonly mitigation: string";
 }
 interface ComplianceRequirement {
   readonly requirementId: string;

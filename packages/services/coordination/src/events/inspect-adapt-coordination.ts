@@ -177,7 +177,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
     teams: IATeam[];
     facilitators: InspectAdaptWorkshop['facilitators'];
   }): InspectAdaptWorkshop {
-    const workshopId = `ia-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const workshopId = "ia-${Date.now()}-${Math.random().toString(36).substr(2, 9)}";"
 
     const workshop: InspectAdaptWorkshop = {
       id: workshopId,
@@ -193,17 +193,17 @@ export class InspectAdaptCoordinationManager extends EventBus {
         problemIdentification: [],
         problemSolvingWorkshops: [],
       },
-      outcomes: {
+      outcomes: " + JSON.stringify({
         actionItems: [],
         improvements: [],
         experimentsPlanned: [],
         nextPIFocus: [],
-      },
+      }) + ",
     };
 
     this.workshops.set(workshopId, workshop);
     logger.info(
-      `I&A Workshop created: ${config.artName} PI ${config.piNumber}`
+      "I&A Workshop created: ${config.artName} PI ${config.piNumber}""
     );
 
     this.emit('ia: workshop-created', { workshopId, workshop });
@@ -216,12 +216,12 @@ export class InspectAdaptCoordinationManager extends EventBus {
   private handleWorkshopStart(data: { workshopId: string }): void {
     const workshop = this.workshops.get(data.workshopId);
     if (!workshop) {
-      logger.error(`Workshop not found: ${data.workshopId}`);
+      logger.error("Workshop not found: $" + JSON.stringify({data.workshopId}) + "");"
       return;
     }
 
     logger.info(
-      `I&A Workshop started: ${workshop.artName} PI ${workshop.piNumber}`
+      "I&A Workshop started: ${workshop.artName} PI ${workshop.piNumber}""
     );
 
     // Initialize problem identification phase
@@ -239,7 +239,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
     workshopId: string;
     problem: Omit<ProblemItem, 'id' | 'votes' | 'priority'>;
   }): void {
-    const problemId = `problem-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const problemId = "problem-${Date.now()}-${Math.random().toString(36).substr(2, 9)}";"
 
     const problem: ProblemItem = {
       id: problemId,
@@ -251,12 +251,12 @@ export class InspectAdaptCoordinationManager extends EventBus {
     this.problems.set(problemId, problem);
 
     const workshop = this.workshops.get(data.workshopId);
-    if (workshop) {
+    if (workshop) " + JSON.stringify({
       workshop.agenda.problemIdentification.push(problem);
       this.workshops.set(data.workshopId, workshop);
-    }
+    }) + "
 
-    logger.info(`Problem identified: ${problem.title}`);
+    logger.info("Problem identified: ${problem.title}");"
     this.emit('ia: problem-added', { problemId, problem });
   }
 
@@ -269,7 +269,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
   }): void {
     const problem = this.problems.get(data.problemId);
     if (!problem) {
-      logger.error(`Problem not found: ${data.problemId}`);
+      logger.error("Problem not found: $" + JSON.stringify({data.problemId}) + "");"
       return;
     }
 
@@ -277,7 +277,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
     problem.priority = this.calculatePriority(problem);
 
     this.problems.set(data.problemId, problem);
-    logger.info(`Problem voted: ${problem.title} - ${data.votes} votes`);
+    logger.info("Problem voted: ${problem.title} - ${data.votes} votes");"
 
     this.emit('ia: problem-prioritized', { problemId: data.problemId, problem });
   }
@@ -293,11 +293,11 @@ export class InspectAdaptCoordinationManager extends EventBus {
   }): void {
     const problem = this.problems.get(data.problemId);
     if (!problem) {
-      logger.error(`Problem not found: ${data.problemId}`);
+      logger.error("Problem not found: $" + JSON.stringify({data.problemId}) + "");"
       return;
     }
 
-    const workshopId = `solving-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const workshopId = "solving-${Date.now()}-${Math.random().toString(36).substr(2, 9)}";"
 
     const solvingWorkshop: ProblemSolvingWorkshop = {
       id: workshopId,
@@ -315,7 +315,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
     };
 
     this.solvingWorkshops.set(workshopId, solvingWorkshop);
-    logger.info(`Problem-solving workshop started: ${problem.title}`);
+    logger.info("Problem-solving workshop started: ${problem.title}");"
 
     this.emit('ia: solving-workshop-started', { workshopId, solvingWorkshop });
   }
@@ -328,15 +328,15 @@ export class InspectAdaptCoordinationManager extends EventBus {
     outcomes: ProblemSolvingWorkshop['outcomes']
   ): void {
     const workshop = this.solvingWorkshops.get(workshopId);
-    if (!workshop) {
-      logger.error(`Solving workshop not found: ${workshopId}`);
+    if (!workshop) " + JSON.stringify({
+      logger.error(`Solving workshop not found: ${workshopId}) + "");"
       return;
     }
 
     workshop.outcomes = outcomes;
     this.solvingWorkshops.set(workshopId, workshop);
 
-    logger.info(`Problem-solving workshop completed: ${workshopId}`);
+    logger.info("Problem-solving workshop completed: ${workshopId}");"
     this.emit('ia: solving-workshop-completed', { workshopId, outcomes });
   }
 
@@ -350,17 +350,17 @@ export class InspectAdaptCoordinationManager extends EventBus {
   }): void {
     const demo = this.systemDemos.get(data.demoId);
     if (!demo) {
-      logger.error(`Demo not found: ${data.demoId}`);
+      logger.error("Demo not found: ${data.demoId}");"
       return;
     }
 
     const feature = demo.features.find((f) => f.id === data.featureId);
-    if (feature) {
+    if (feature) " + JSON.stringify({
       feature.stakeholderFeedback = data.feedback;
       this.systemDemos.set(data.demoId, demo);
-    }
+    }) + "
 
-    logger.info(`Demo feedback received for feature: ${data.featureId}`);
+    logger.info("Demo feedback received for feature: ${data.featureId}");"
     this.emit('ia: feedback-recorded', {
       demoId: data.demoId,
       featureId: data.featureId,
@@ -376,14 +376,14 @@ export class InspectAdaptCoordinationManager extends EventBus {
   }): void {
     const workshop = this.workshops.get(data.workshopId);
     if (!workshop) {
-      logger.error(`Workshop not found: ${data.workshopId}`);
+      logger.error("Workshop not found: $" + JSON.stringify({data.workshopId}) + "");"
       return;
     }
 
     workshop.agenda.quantitativeReview = data.metrics;
     this.workshops.set(data.workshopId, workshop);
 
-    logger.info(`Metrics reviewed for workshop: ${data.workshopId}`);
+    logger.info("Metrics reviewed for workshop: ${data.workshopId}");"
     this.emit('ia: metrics-updated', {
       workshopId: data.workshopId,
       metrics: data.metrics,
@@ -397,7 +397,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
     workshopId: string,
     teams: IATeam[]
   ): PISystemDemo {
-    const demoId = `demo-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const demoId = "demo-${Date.now()}-$" + JSON.stringify({Math.random().toString(36).substr(2, 9)}) + "";"
 
     const demo: PISystemDemo = {
       id: demoId,
@@ -405,7 +405,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
       demoDate: new Date(),
       features: teams.flatMap((team) =>
         team.actualDelivery.map((delivery) => ({
-          id: `feature-${Math.random().toString(36).substr(2, 9)}`,
+          id: "feature-${Math.random().toString(36).substr(2, 9)}","
           name: delivery,
           team: team.name,
           businessValue:

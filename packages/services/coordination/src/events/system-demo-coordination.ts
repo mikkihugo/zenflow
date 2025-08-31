@@ -310,7 +310,7 @@ export class SystemDemoCoordination {
   /**
    * Schedule a new system demo
    */
-  async scheduleDemo(config: SystemDemoConfig): Promise<{
+  async scheduleDemo(Promise<{
     demoId: string;
     scheduled: boolean;
     conflicts: string[];
@@ -340,7 +340,7 @@ export class SystemDemoCoordination {
   /**
    * Collect real-time feedback during demo
    */
-  async collectFeedback(feedback: DemoFeedback): Promise<{
+  async collectFeedback(Promise<{
     feedbackId: string;
     recorded: boolean;
     triggersAction: boolean;
@@ -375,10 +375,10 @@ export class SystemDemoCoordination {
   /**
    * Complete demo and generate outcomes
    */
-  async completeDemo(demoId: string): Promise<DemoOutcome> {
+  async completeDemo(Promise<DemoOutcome> {
     const demo = this.activeDemos.get(demoId);
     if (!demo) {
-      throw new Error(`Demo ${demoId} not found`);
+      throw new Error("Demo ${demoId} not found");"
     }
 
     const feedback = this.demoFeedback.get(demoId) || [];
@@ -411,8 +411,8 @@ export class SystemDemoCoordination {
     };
   } {
     const demo = this.activeDemos.get(demoId);
-    if (!demo) {
-      throw new Error(`Demo ${demoId} not found`);
+    if (!demo) " + JSON.stringify({
+      throw new Error("Demo " + demoId + ") + " not found");"
     }
 
     const feedback = this.demoFeedback.get(demoId) || [];
@@ -455,10 +455,10 @@ export class SystemDemoCoordination {
     // Check team preparation
     for (const team of config.teamDemonstrations) {
       if (!team.preparation.demoApproved) {
-        conflicts.push(`Team ${team.teamName} demo not approved`);
+        conflicts.push("Team ${team.teamName} demo not approved");"
       }
       if (!team.preparation.environmentReady) {
-        conflicts.push(`Team ${team.teamName} environment not ready`);
+        conflicts.push("Team ${team.teamName} environment not ready");"
       }
     }
 

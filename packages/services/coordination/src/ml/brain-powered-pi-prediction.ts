@@ -59,7 +59,7 @@ export class BrainPoweredPIPredictionService {
   /**
    * Initialize brain system integration
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     try {
       // Get brain system from intelligence facade
       this.brainSystem = await getBrainSystem();
@@ -69,7 +69,7 @@ export class BrainPoweredPIPredictionService {
 });
       // Register SAFe-specific analysis patterns')      await this.registerSAFeAnalysisPatterns();')      logger.info('Brain-powered PI prediction service initialized');
 } catch (error) {
-    ')      logger.error('Failed to initialize brain-powered PI prediction, error');`;
+    ')      logger.error('Failed to initialize brain-powered PI prediction, error');";"
       throw error;
 }
 }
@@ -79,7 +79,7 @@ export class BrainPoweredPIPredictionService {
   async predictPISuccessWithBrain(
     request: Date.now();
     try {
-      logger.info(``Starting brain-powered PI analysis for ${request.piId}, {`)        analysisType: await this.setupBrainAnalysisSession(request);
+      logger.info(""Starting brain-powered PI analysis for " + request.piId + ", {")        analysisType: await this.setupBrainAnalysisSession(request);"
       // Step 2: await this.performBrainAnalysis(
         analysisSession,
         request;
@@ -102,8 +102,8 @@ export class BrainPoweredPIPredictionService {
         realTime: await this.brainCoordinator.suggestInterventions({
         piId,
         riskLevel: this.predictionCache.get(predictionId);
-      if (!prediction) {
-        logger.warn(``Prediction ${predictionId} not found for learning update`)        return;`';
+      if (!prediction) " + JSON.stringify({
+        logger.warn(""Prediction ${predictionId}) + " not found for learning update")        return"';"
 }
       // Feed actual outcomes back to brain for learning
       await this.brainCoordinator.updateLearning({
@@ -112,10 +112,9 @@ export class BrainPoweredPIPredictionService {
         actual: actualOutcomes,
         context,});
       // Update analysis patterns based on accuracy
-      await this.updateAnalysisPatterns(prediction, actualOutcomes);')      logger.info(')`;
-        `Updated brain learning with actual outcomes for `${predictionId})      );`;
+      await this.updateAnalysisPatterns(prediction, actualOutcomes);')      logger.info(')""Updated brain learning with actual outcomes for "${predictionId})      )";
 } catch (error) 
-      logger.error(`Failed to update brain learning for ${predictionId},    `)        error``;
+      logger.error("Failed to update brain learning for ${predictionId}")        error"";"
       );
 }
 }
@@ -123,8 +122,7 @@ export class BrainPoweredPIPredictionService {
   // BRAIN ANALYSIS METHODS
   // ============================================================================
   private async setupBrainAnalysisSession(
-    request: await this.brainCoordinator.createSession({`;
-    `)      sessionId: 'safe_framework,',
+    request: await this.brainCoordinator.createSession({"")      sessionId: 'safe_framework,',
 '      analysisType:  {';
     ')      type : 'pi_success_prediction,'
 '      data: await session.performAnalysis(analysisRequest);
@@ -204,7 +202,7 @@ export class BrainPoweredPIPredictionService {
     const actual = actualOutcomes.overallSuccess ? 1: 0;
     return 1 - Math.abs(predicted - actual);
 }
-  private async initializeBrainIntegration(): Promise<void> {
+  private async initializeBrainIntegration(Promise<void> {
     // Initialize brain integration patterns'')    logger.info('Initializing brain integration for PI prediction');
 };)};;
 // ============================================================================

@@ -1,5 +1,5 @@
 /**
- * @fileoverview Agent Performance Prediction System
+ * @fileoverview: Agent Performance: Prediction System
  *
  * Uses time series analysis and machine learning to predict agent performance,
  * helping with intelligent task routing and resource optimization.
@@ -10,49 +10,49 @@
  * - Load prediction and capacity planning
  * - Real-time performance monitoring
  *
- * @author Claude Code Zen Team
+ * @author: Claude Code: Zen Team
  * @since 2.1.0
  */
-export interface AgentPerformanceData {
-    readonly agentId: string;
+export interface: AgentPerformanceData {
+    readonly agent: Id: string;
     readonly timestamp: number;
-    readonly taskType: string;
+    readonly task: Type: string;
     readonly complexity: number;
-    readonly completionTime: number;
-    readonly successRate: number;
-    readonly errorRate: number;
-    readonly cpuUsage: number;
-    readonly memoryUsage: number;
-    readonly concurrentTasks: number;
+    readonly completion: Time: number;
+    readonly success: Rate: number;
+    readonly error: Rate: number;
+    readonly cpu: Usage: number;
+    readonly memory: Usage: number;
+    readonly concurrent: Tasks: number;
 }
-export interface PerformancePrediction {
-    readonly agentId: string;
-    readonly predictedCompletionTime: number;
-    readonly predictedSuccessRate: number;
-    readonly predictedScore?: number;
+export interface: PerformancePrediction {
+    readonly agent: Id: string;
+    readonly predictedCompletion: Time: number;
+    readonly predictedSuccess: Rate: number;
+    readonly predicted: Score?: number;
     readonly confidence: number;
-    readonly loadForecast: number;
-    readonly recommendedTaskCount: number;
-    readonly performanceTrend: 'improving' | ' stable' | ' declining';
-    readonly riskFactors: string[];
+    readonly load: Forecast: number;
+    readonly recommendedTask: Count: number;
+    readonly performance: Trend: 'improving' | ' stable' | ' declining';
+    readonly risk: Factors: string[];
 }
-export interface PerformanceInsights {
-    readonly topPerformers: string[];
-    readonly underPerformers: string[];
-    readonly capacityUtilization: number;
-    readonly predictedBottlenecks: string[];
-    readonly optimizationSuggestions: string[];
+export interface: PerformanceInsights {
+    readonly top: Performers: string[];
+    readonly under: Performers: string[];
+    readonly capacity: Utilization: number;
+    readonly predicted: Bottlenecks: string[];
+    readonly optimization: Suggestions: string[];
 }
 /**
- * Agent Performance Prediction System
+ * Agent: Performance Prediction: System
  *
  * Analyzes historical performance data to predict future agent behavior
  * and optimize task distribution across the swarm.
  */
-export declare class AgentPerformancePredictor {
-    private performanceHistory;
+export declare class: AgentPerformancePredictor {
+    private performance: History;
     private initialized;
-    private readonly maxHistorySize;
+    private readonly maxHistory: Size;
     constructor();
     /**
      * Initialize the prediction system
@@ -61,10 +61,10 @@ export declare class AgentPerformancePredictor {
     /**
      * Record agent performance data
      */
-    recordPerformance(data: AgentPerformanceData): Promise<void>;
+    record: Performance(data: AgentPerformance: Data): Promise<void>;
     /**
      * Get system-wide performance insights
      */
-    getPerformanceInsights(): Promise<PerformanceInsights>;
+    getPerformance: Insights(): Promise<Performance: Insights>;
 }
-//# sourceMappingURL=agent-performance-predictor.d.ts.map
+//# sourceMappingUR: L=agent-performance-predictor.d.ts.map

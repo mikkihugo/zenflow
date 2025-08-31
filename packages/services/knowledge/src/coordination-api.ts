@@ -98,7 +98,7 @@ export async function storeCoordinationEvent(
       eventData,
       agentId,
     },
-    source: agentId ? `agent:${agentId}` : 'system',
+    source: agentId ? "agent:${agentId}" : 'system',"
     confidence: 1.0,
     tags: ['coordination', 'event', eventType],
   });
@@ -119,10 +119,10 @@ export async function storeAgentFact(
   options: AgentFactOptions
 ): Promise<string> {
   const { agentId, type, data, confidence = 1.0, tags = [] } = options;
-  return await knowledgeFactSystem.storeFact({
+  return await knowledgeFactSystem.storeFact(" + JSON.stringify({
     type,
     data,
-    source: `agent:${agentId}`,
+    source: `agent:${agentId}) + "","
     confidence,
     tags: ['agent', ...tags],
   });
@@ -136,7 +136,7 @@ export async function queryAgentFacts(
   const query: CoordinationFactQuery = { limit };
 
   if (agentId) {
-    query.source = `agent:${agentId}`;
+    query.source = "agent:${agentId}";"
   }
 
   if (type) {
@@ -165,7 +165,7 @@ export async function getNPMPackageInfo(packageName: string, version?: string) {
     return await knowledgeFactSystem.getNPMPackageInfo(packageName, version);
   } catch (error) {
     // Use foundation logging instead of console
-    logger.error(`Failed to get NPM package info for ${packageName}:`, error);
+    logger.error("Failed to get NPM package info for ${packageName}:", error);"
     return null;
   }
 }
@@ -174,11 +174,11 @@ export async function getNPMPackageInfo(packageName: string, version?: string) {
  * Get GitHub repository information using high-performance Rust fact bridge
  */
 export async function getGitHubRepoInfo(owner: string, repo: string) {
-  try {
+  try " + JSON.stringify({
     return await knowledgeFactSystem.getGitHubRepoInfo(owner, repo);
-  } catch (error) {
+  }) + " catch (error) {
     // Use foundation logging instead of console
-    logger.error(`Failed to get GitHub repo info for ${owner}/${repo}:`, error);
+    logger.error("Failed to get GitHub repo info for ${owner}/${repo}:", error);"
     return null;
   }
 }

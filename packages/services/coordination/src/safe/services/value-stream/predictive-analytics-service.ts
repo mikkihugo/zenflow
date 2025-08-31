@@ -151,7 +151,7 @@ export interface TrendForecast {
           features: config.dataConfig.features.map((f) => f.featureName),
           performance: this.predictions.get(predictionId);
     if (!prediction) {
-    `)      throw new Error(`Prediction not found: `${predictionId});``)};;
+    ")      throw new Error("Prediction not found: "" + predictionId + ")"")};;"
     // Update historical data
     const existingData =;
       this.historicalData.get(prediction.valueStreamId)|| [];
@@ -176,15 +176,15 @@ export interface TrendForecast {
       );
 }
     // Apply feature transformations
-    for (const feature of config.features) {
+    for (const feature of config.features) " + JSON.stringify({
       processedData = this.applyFeatureTransformations(processedData, feature);
-}
+}) + "
     return processedData;
 }
   private async trainPredictiveModel(
     config: this.models.get(config.algorithm);
     if (!modelTemplate) {
-    `)      throw new Error(`Unknown algorithm:  {`
+    ")      throw new Error("Unknown algorithm:  {""
       ...modelTemplate,
       trained: [];
     const today = new Date();
@@ -202,18 +202,18 @@ export interface TrendForecast {
     if (deliveryTimes.length > 10) {
       const trend = this.calculateTrend(deliveryTimes);
       trends.push({
-    `)        trendId: this.calculateThroughput(data);
+    ")        trendId: this.calculateThroughput(data);"
     if (throughputData.length > 5) {
       const throughputTrend = this.calculateTrend(throughputData);
       trends.push({
-    `)        trendId: Optimistic Scenario`)        description:`Best case with all factors favorable,`;
+    `)        trendId: Optimistic Scenario")        description:"Best case with all factors favorable";"
         probability: 'Team capacity increases by 20%',)            parameter : 'team_capacity,'
 '            value: 1.2,';
             confidence: 80,',},';
 ],
         predictions: basePredictions.map((p) => ({
           ...p,
-          predictedDeliveryTime: 'Pessimistic Scenario,)        description:`Worst case with challenges and delays,`;
+          predictedDeliveryTime: 'Pessimistic Scenario,)        description:"Worst case with challenges and delays";
         probability: 'Major technical issues arise',)            parameter : 'technical_issues,'
 '            value: true,';
             confidence: 60,',},';
@@ -268,4 +268,4 @@ export interface TrendForecast {
 }
     return Math.round(totalScore / fields.length);
 };)};;
-)`;
+)";"

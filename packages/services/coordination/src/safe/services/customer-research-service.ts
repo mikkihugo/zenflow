@@ -22,10 +22,10 @@ export interface CustomerResearchConfig {
    * Create detailed customer segment
    */
   createCustomerSegment(
-    _segmentData: Omit<CustomerSegment,'id'>`;
-  ):CustomerSegment {
+    _segmentData: Omit<CustomerSegment,'id'>";"
+  ): CustomerSegment {
     if (this.segments.size >= this.config.maxSegments) {
-      throw new Error(`Maximum segments reached:  {`
+      throw new Error("Maximum segments reached:  {""
       id,      ...segmentData,';
 };
     this.segments.set(segment.id, segment);')    this.logger.info('Customer segment created,{';
@@ -79,7 +79,7 @@ export interface CustomerResearchConfig {
    */
   analyzeCompetitivePosition(
     competitors: CompetitorAnalysis[]
-  ):CompetitivePositioning {
+  ): CompetitivePositioning {
     ')    this.logger.info('Analyzing competitive position,{';
       competitorCount: competitors.length,')';
 });
@@ -100,10 +100,10 @@ export interface CustomerResearchConfig {
       insights.push({
     ')        id,    ')        insight : ')''High-growth market opportunity with significant expansion potential,';
         category : 'opportunity')        impact,        confidence: 'threat',)        impact,        confidence: filter(
-      marketData.marketTrends,')      (t) => t.impact == = 'positive)    );`'; `
+      marketData.marketTrends,')      (t) => t.impact == = 'positive)    )"'; ""
     if (positiveImpactTrends.length >= 3) {
       insights.push({
-    `)        id: 'Multiple positive market trends support product opportunity',)        category : 'trend')        impact,        confidence: 75,')        sources: ['trend-analysis'],';
+    ")        id: 'Multiple positive market trends support product opportunity',)        category : 'trend')        impact,        confidence: 75,')        sources: ['trend-analysis'],';"
         discoveredAt: new Date(),
         actionItems: [
          'Align product roadmap with trends,')         'Accelerate go-to-market timing,';
@@ -219,4 +219,4 @@ export interface CustomerResearchConfig {
 }
 }
 };)};;
-)`;
+)";"

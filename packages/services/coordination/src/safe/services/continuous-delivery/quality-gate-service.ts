@@ -152,7 +152,7 @@ export class QualityGateService {
   /**
    * Initialize service with lazy-loaded dependencies
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     if (this.initialized) return'; 
     try {
       // Lazy load @claude-zen/ai-safety for safety protocols
@@ -178,7 +178,7 @@ export class QualityGateService {
   /**
    * Create automated quality gates with AI optimization
    */
-  async createAutomatedQualityGates(): Promise<Map<string, QualityGate>> {
+  async createAutomatedQualityGates(Promise<Map<string, QualityGate>> {
     if (!this.initialized) await this.initialize();')    const __timer = this.performanceTracker.startTimer('create_quality_gates');
     try {
     ')      this.logger.info('Creating automated quality gates with AI optimization');
@@ -213,11 +213,11 @@ export class QualityGateService {
       qualityGates.set(businessValidationGate.id, businessValidationGate);
       // Store in templates for reuse
       this.qualityGateTemplates = qualityGates;')      this.performanceTracker.endTimer('create_quality_gates');')      this.logger.info('Automated quality gates created with AI optimization,';
-        gateCount: this.performanceTracker.startTimer('execute_quality_gate');`;
+        gateCount: this.performanceTracker.startTimer('execute_quality_gate');";"
     try {
       const gate = this.qualityGateTemplates.get(config.gateId);
       if (!gate) {
-        throw new Error(`Quality gate not found: `${config.gateId});``)};)      this.logger.info('Executing quality gate with AI evaluation,{';
+        throw new Error("Quality gate not found: "${config.gateId})"")};)      this.logger.info('Executing quality gate with AI evaluation,{';"
         gateId: config.gateId,
         pipelineId: config.pipelineId,
         stageId: config.stageId,
@@ -273,8 +273,8 @@ export class QualityGateService {
         gateId: this.performanceTracker.startTimer('optimize_quality_gate);
     try {
       const gate = this.qualityGateTemplates.get(gateId);
-      if (!gate) {
-    `)        throw new Error(`Quality gate not found: this.executionHistory.get(gateId)|| [];)      this.logger.info('Optimizing quality gate with AI analysis,{';
+      if (!gate) " + JSON.stringify({
+    `)        throw new Error("Quality gate not found: this.executionHistory.get(gateId)|| [];)      this.logger.info('Optimizing quality gate with AI analysis,{';"
         gateId,
         historyCount: await this.brainCoordinator.optimizeQualityGate({
         gate,
@@ -286,7 +286,7 @@ export class QualityGateService {
         adjustedCriteria: optimization.optimizedCriteria|| gate.criteria,
         recommendedActions: optimization.actions|| [],
         confidence: optimization.confidence|| 0.8,
-};
+}) + ";
       // Cache the optimization result
       this.optimizationCache.set(gateId, result);
       this.performanceTracker.endTimer('optimize_quality_gate');')      this.logger.info('Quality gate optimization completed,{';
@@ -303,9 +303,7 @@ export class QualityGateService {
   /**
    * Get quality gate template with intelligent recommendations
    */
-  async getQualityGateTemplate(
-    gateType: QualityGateType
-  ): Promise<QualityGate| null> {
+  async getQualityGateTemplate(Promise<QualityGate| null> {
     if (!this.initialized) await this.initialize();
     // Find matching template
     for (const [id, gate] of this.qualityGateTemplates) {
@@ -325,7 +323,7 @@ export class QualityGateService {
 }
   /**
    * Get quality insights and analytics
-   */')  async getQualityInsights(timeframe: string ='30d'): this.performanceTracker.startTimer('quality_insights');
+   */')  async getQualityInsights(this.performanceTracker.startTimer('quality_insights');
     try {
       // Aggregate execution history
       const allResults = Array.from(this.executionHistory.values()).flat();
@@ -337,7 +335,7 @@ export class QualityGateService {
   // ============================================================================
   // PRIVATE IMPLEMENTATION METHODS
   // ============================================================================
-  private async initializeQualityGateTemplates(): Promise<void> {
+  private async initializeQualityGateTemplates(Promise<void> {
     // Initialize with basic templates - will be optimized by AI
     await this.createAutomatedQualityGates();
 }
@@ -399,15 +397,11 @@ export class QualityGateService {
       return'fail')};;
     if (finalScore < 70) {
       return'warning')};;
-    returnpass`)};;
+    returnpass")};;"
   private generateGateResultMessage(
     status: criterionResults.filter((r) => !r.passed).length;
-    return `Quality gate ${s}tatuswith score ${M}ath.round(score)% (${c}riticalFailuresfailed criteria)``)};;
-  private async generateIntelligentRecommendations(
-    criterionResults: CriterionResult[],
-    context: QualityGateContext,
-    scoreAdjustment: any
-  ): Promise<string[]> {
+    return "Quality gate ${s}tatuswith score ${M}ath.round(score)% (${c}riticalFailuresfailed criteria)`")};;"
+  private async generateIntelligentRecommendations(Promise<string[]> {
     // Use brain coordinator for intelligent recommendations
     const recommendations =
       await this.brainCoordinator.generateQualityRecommendations({
@@ -460,4 +454,4 @@ export class QualityGateService {
     return performance;
 };)};;
 export default QualityGateService;
-)`;
+)";"

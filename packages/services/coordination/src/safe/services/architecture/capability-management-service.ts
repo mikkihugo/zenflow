@@ -164,19 +164,18 @@ export class CapabilityManagementService {
       );
       // Create capability with AI-enhanced data
       const newCapability:  {
-        id,    `)        businessValue,`;
+        id,    ")        businessValue";
         technicalComplexity,
         investmentPlan,
         roadmap,
         metrics,
         createdAt: await this.requestInvestmentApproval(newCapability);
         if (!approval.approved) {
-          throw new Error(``)`;
-            `Capability investment approval rejected: this.performanceTracker.startTimer(')     'update_capability_status)    );`;
+          throw new Error(`")""Capability investment approval rejected: this.performanceTracker.startTimer(')     'update_capability_status)    );";"
     try {
       const capability = this.capabilities.get(capabilityId);
       if (!capability) {
-        throw new Error(`Architecture capability not found: ${capabilityId});``)};;
+        throw new Error("Architecture capability not found: $" + JSON.stringify({capabilityId}) + ")"")};;"
       // Use workflow engine for status transition validation
       const statusTransition =
         await this.workflowEngine.validateStatusTransition({
@@ -208,13 +207,13 @@ export class CapabilityManagementService {
   // ============================================================================
   private async requestInvestmentApproval(
     capability: await this.aguiService.createApprovalTask({
-    `)        taskType:`capability_investment_approval``;
+    ")        taskType:`capability_investment_approval`";"
         description,    ')        context: 'approval_system_error};,
 }
   private calculateBusinessValue(
     capability: any,
     analysis: any
-  ):BusinessValueAssessment {
+  ): BusinessValueAssessment {
     // AI-enhanced business value calculation
     const strategicAlignment =;
       analysis.businessValue?.strategicAlignment|| this.assessStrategicAlignment(capability);
@@ -251,7 +250,7 @@ export class CapabilityManagementService {
   private calculateTechnicalComplexity(
     capability: any,
     analysis: any
-  ):TechnicalComplexityAssessment {
+  ): TechnicalComplexityAssessment {
     // AI-enhanced technical complexity calculation
     const architecturalComplexity =;
       analysis.technicalComplexity?.architecturalComplexity|| this.assessArchitecturalComplexity(capability);

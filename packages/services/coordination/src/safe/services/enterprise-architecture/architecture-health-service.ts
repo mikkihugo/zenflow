@@ -531,7 +531,7 @@ export class ArchitectureHealthService extends EventBus {
   /**
    * Calculate comprehensive architecture health metrics
    */
-  async calculateArchitectureHealthMetrics(): Promise<ArchitectureHealthMetrics> {
+  async calculateArchitectureHealthMetrics(Promise<ArchitectureHealthMetrics> {
     if (!this.initialized) this.initialize();
     this.logger.info('Calculating architecture health metrics');
     try {
@@ -623,7 +623,7 @@ export class ArchitectureHealthService extends EventBus {
   /**
    * Gather compliance health data
    */
-  private gatherComplianceData():ComplianceHealth {
+  private gatherComplianceData(): ComplianceHealth {
     // Simulate compliance data gathering
     return {
       overallCompliance: 'requests/sec',)        trend,},';
@@ -675,23 +675,23 @@ export class ArchitectureHealthService extends EventBus {
       trends.push({
         dimension: '30 days,',
 '        direction: [];)    for (const dimension of dimensions) {';
-    ')      if (dimension.status ==='critical '|| dimension.status ===poor){`;
+    ')      if (dimension.status ==='critical '|| dimension.status ===poor){";"
         alerts.push({
-    `)          alertId: threshold_breach`,)          severity: dimension.status ===critical `?` critical: `high``;
-          title: `${{dimension.name} Health Critical};``;
-          message,    ``)          dimension: dimension.name,';
+    `)          alertId: threshold_breach`,)          severity: dimension.status ===critical `?` critical: `high"";"
+          title: "${" + JSON.stringify({dimension.name}) + " Health Critical}"";
+          message"")          dimension: dimension.name,';"
           currentValue: dimension.score,
           expectedValue: 80,
           threshold: 70,
           impact:  {
-            immediate: dimension.status ==='critical '?' high : 'medium')            shortTerm  = 'medium,)            longTerm:`high,`'; `
-            affectedSystems: '30 minutes',)            escalateToRoles:[Architecture Lead,` CTO`],`;
+            immediate: dimension.status ==='critical '?' high : 'medium')            shortTerm  = 'medium,)            longTerm:"high"'; "
+            affectedSystems: '30 minutes',)            escalateToRoles:[Architecture Lead" CTO"]";
             escalationMessage,    )            maxEscalations: [];
     // Generate recommendations based on low-scoring dimensions
     for (const dimension of dimensions) {
       if (dimension.score < 80) {
         recommendations.push({
-    `)          recommendationId: `high`)          category: 'neutral',)              cost : 'decrease')              risk : 'decrease')              agility : 'increase')              innovation,},';
+    ")          recommendationId: "high")          category: 'neutral',)              cost : 'decrease')              risk : 'decrease')              agility : 'increase')              innovation,},';"
             technical: 'improve',)              scalability : 'improve')              maintainability : 'improve')              security : 'improve')              reliability,},';
             operational: 'improve',)              monitoring : 'improve')              troubleshooting : 'improve')              automation : 'increase')              complexity,},';
 },
@@ -706,7 +706,7 @@ export class ArchitectureHealthService extends EventBus {
   /**
    * Process health alerts
    */
-  private async processHealthAlerts(alerts: HealthAlert[]): Promise<void>  {
+  private async processHealthAlerts(Promise<void>  {
     for (const alert of alerts) {
       await this.monitoringSystem.sendAlert(alert);
       if (alert.escalation.autoEscalate) {
@@ -766,12 +766,12 @@ export class ArchitectureHealthService extends EventBus {
   private createBrainSystemFallback() {
     return {
       analyze: (data: any) => {
-    ')        this.logger.debug(Brain analysis (fallback),{ type: data.type};);`;
+    ')        this.logger.debug(Brain analysis (fallback),{ type: data.type};)";
         return {};
 },
 };
 };)};;
-'Brain analysis (fallback),{ type: data.type};);`;
+'Brain analysis (fallback),{ type: data.type};);";"
         return {};
 },
 };

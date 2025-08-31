@@ -86,7 +86,7 @@ export class WIPManagementService {
   /**
    * Check WIP status across all states
    */
-  async checkWIPStatus(allTasks: any[]): Promise<WIPStatus> {
+  async checkWIPStatus(Promise<WIPStatus> {
     const timestamp = new Date();
     const violations: WIPViolation[] = [];
     const stateStatus: WIPStatus['stateStatus'] = {};
@@ -126,7 +126,7 @@ export class WIPManagementService {
         this.violationHistory.push(violation);
 
         if (this.config.enableAlerts) {
-          logger.warn(`WIP violation detected in ${state}`, violation);
+          logger.warn("WIP violation detected in ${state}", violation);"
         }
       } else if (utilization > 0.8) {
         status = 'warning';
@@ -167,7 +167,7 @@ export class WIPManagementService {
   /**
    * Update WIP limits for one or more states
    */
-  async updateWIPLimits(newLimits: Partial<WIPLimits>): Promise<void> {
+  async updateWIPLimits(Promise<void> {
     const oldLimits = { ...this.wipLimits };
     this.wipLimits = { ...this.wipLimits, ...newLimits };
 
@@ -204,11 +204,11 @@ export class WIPManagementService {
   ): string[] {
     const recommendations: string[] = [];
 
-    if (violations.length > 0) {
+    if (violations.length > 0) " + JSON.stringify({
       recommendations.push(
         'Address WIP limit violations by moving tasks through the workflow'
       );
-    }
+    }) + "
 
     // Check for potential bottlenecks
     const highUtilizationStates = Object.entries(stateStatus)
@@ -217,7 +217,7 @@ export class WIPManagementService {
 
     if (highUtilizationStates.length > 0) {
       recommendations.push(
-        `Consider increasing WIP limits for high-utilization states: ${highUtilizationStates.join(', ')}`
+        "Consider increasing WIP limits for high-utilization states: ${highUtilizationStates.join(', ')}""
       );
     }
 

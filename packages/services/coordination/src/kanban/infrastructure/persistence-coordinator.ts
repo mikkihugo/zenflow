@@ -37,7 +37,7 @@ export class PersistenceCoordinatorService {
     };
   }
 
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     try {
       this.initialized = true;
       this.healthMetrics.connectionStatus = 'connected';
@@ -52,7 +52,7 @@ export class PersistenceCoordinatorService {
   /**
    * Save workflow task
    */
-  async saveTask(task: any): Promise<void> {
+  async saveTask(Promise<void> {
     const startTime = performance.now();
     const operationId = 'save-task-' + task.id;
     
@@ -84,7 +84,7 @@ export class PersistenceCoordinatorService {
   /**
    * Load workflow task
    */
-  async loadTask(taskId: string): Promise<any> {
+  async loadTask(Promise<any> {
     const cacheKey = 'task-' + taskId;
     
     // Check cache first
@@ -140,7 +140,7 @@ export class PersistenceCoordinatorService {
   /**
    * Load all tasks
    */
-  async loadAllTasks(): Promise<any> {
+  async loadAllTasks(Promise<any> {
     const cacheKey = 'all-tasks';
     
     // Check cache first
@@ -196,7 +196,7 @@ export class PersistenceCoordinatorService {
   // PRIVATE INFRASTRUCTURE METHODS
   // =============================================================================
   
-  private async simulateDbOperation(durationMs: number): Promise<void> {
+  private async simulateDbOperation(Promise<void> {
     return new Promise(resolve => setTimeout(resolve, durationMs + Math.random() * durationMs * 0.2));
   }
 

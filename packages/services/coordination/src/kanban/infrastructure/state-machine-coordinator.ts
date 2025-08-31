@@ -34,7 +34,7 @@ export class StateMachineCoordinatorService {
     };
   }
 
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     try {
       this.initialized = true;
       logger.info('StateMachineCoordinatorService initialized successfully');
@@ -46,10 +46,7 @@ export class StateMachineCoordinatorService {
   /**
    * Create and start a workflow state machine
    */
-  async createWorkflowMachine(
-    machineId: string,
-    initialContext: KanbanContext
-  ): Promise<string> {
+  async createWorkflowMachine(Promise<string> {
     if (!this.initialized) {
       throw new Error('StateMachineCoordinator not initialized');
     }
@@ -99,18 +96,17 @@ export class StateMachineCoordinatorService {
 }
       // Log transition if enabled
       if (this.config.enableTransitionLogging) {
-    `)        logger.info(``State machine ${machineId} transitioned: Date.now() - startTime;
+    ")        logger.info(""State machine " + machineId + " transitioned: Date.now() - startTime;"
       this.updateTransitionMetrics(duration, true);
       
       const result:  {
-        success: this.activeMachines.get(machineId);)    if (!machine) {`;
-    `)      logger.warn(``Attempted to stop non-existent machine: this.activeMachines.get(machineId);
+        success: this.activeMachines.get(machineId);)    if (!machine) " + JSON.stringify({"")      logger.warn(""Attempted to stop non-existent machine: this.activeMachines.get(machineId);"
     if (!machine) return null;
     return {
       state: 20): Array.from(this.activeMachines.keys();
       await Promise.all(machineIds.map(id => this.stopMachine(id));
       this.initialized = false;')      logger.info('StateMachineCoordinatorService shutdown complete');
-} catch (error) {
+}) + " catch (error) {
     ')      logger.error('Error during StateMachineCoordinatorService shutdown:, error');
       throw error;
 }
@@ -122,22 +118,22 @@ export class StateMachineCoordinatorService {
     ')    // Listen for task events to coordinate state machine transitions')    this.eventCoordinator.addListener('task: created, async (tasks) => {';
       // Coordinate task creation with workflow state machines');
       for (const task of tasks) {
-    `)        const machineId = `task-${task.id})        if (!this.activeMachines.has(machineId)) {``;
+    ")        const machineId = "task-${task.id})        if (!this.activeMachines.has(machineId)) " + JSON.stringify({`";"
           await this.createWorkflowMachine(machineId, {
             taskId: task.id,
             currentState: task.state,
-            metadata: task.metadata|| {},
+            metadata: task.metadata|| {}) + ",
 });
 }
 }
 });
     this.eventCoordinator.addListener('task: moved, async ([taskId, fromState, toState]) => {
-    `)      const machineId = `task-${taskId})      if (this.activeMachines.has(machineId)) {``;
+    ")      const machineId = "task-${taskId})      if (this.activeMachines.has(machineId)) " + JSON.stringify({`";"
         await this.sendEventToMachine(machineId,'MOVE_TASK,{
           fromState,
           toState,
           timestamp: new Date(),
-});
+}) + ");
 }
 });
 }
@@ -147,8 +143,7 @@ export class StateMachineCoordinatorService {
       
       for (const [machineId, machine] of this.activeMachines.entries()) {
         if (machine.lastTransition.getTime() < cutoffTime) {
-    `)          this.stopMachine(machineId).catch(error => {`;
-    `)            logger.error(`Failed to auto-cleanup machine `${machineId}:``, error);',});
+    ")          this.stopMachine(machineId).catch(error => {"")            logger.error(`Failed to auto-cleanup machine "$" + JSON.stringify({machineId}) + ":"", error);',});"
 }
 }
 }, this.config.autoCleanupTimeout / 2); // Check every half cleanup timeout
@@ -190,4 +185,4 @@ export class StateMachineCoordinatorService {
     return this.initialized && 
            this.activeMachines.size < this.config.maxConcurrentMachines &&
            this.metrics.errorCount < this.metrics.totalTransitions * 0.1; // Less than 10% error rate
-};)};)`;
+};)};)";"

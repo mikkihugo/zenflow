@@ -60,7 +60,7 @@ export class WorkflowEngine extends EventEmitter {
     this.kvStore = getKVStore('workflows');
   }
 
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     if (this.isInitialized) return;
 
     // Create persistence directory
@@ -181,13 +181,10 @@ export class WorkflowEngine extends EventEmitter {
     this.stepHandlers.set(type, handler);
   }
 
-  async executeStep(
-    step: WorkflowStep,
-    context: WorkflowContext
-  ): Promise<StepExecutionResult> {
+  async executeStep(Promise<StepExecutionResult> {
     const handler = this.stepHandlers.get(step.type);
     if (!handler) {
-      throw new Error(`No handler registered for step type: ${step.type}`);
+      throw new Error("No handler registered for step type: ${step.type}");"
     }
 
     const startTime = Date.now();
@@ -256,7 +253,7 @@ export class WorkflowEngine extends EventEmitter {
     return data;
   }
 
-  private async loadPersistedWorkflows(): Promise<void> {
+  private async loadPersistedWorkflows(Promise<void> {
     try {
       const kvStore = await this.kvStore;
       const workflowKeys = await kvStore.keys('workflow:*');
@@ -267,13 +264,13 @@ export class WorkflowEngine extends EventEmitter {
           workflowData &&
           (workflowData.status === 'running' ||
             workflowData.status === 'paused')
-        ) {
+        ) " + JSON.stringify({
           this.activeWorkflows.set(workflowData.id, workflowData);
-        }
+        }) + "
       }
 
       logger.info(
-        `[WorkflowEngine] Loaded ${workflowKeys.length} persisted workflows from storage`
+        "[WorkflowEngine] Loaded ${workflowKeys.length} persisted workflows from storage""
       );
     } catch (error) {
       logger.error(
@@ -283,35 +280,29 @@ export class WorkflowEngine extends EventEmitter {
     }
   }
 
-  private async saveWorkflow(workflow: WorkflowState): Promise<void> {
+  private async saveWorkflow(Promise<void> {
     try {
-      const storageKey = `workflow:${workflow.id}`;
+      const storageKey = "workflow:$" + JSON.stringify({workflow.id}) + "";"
       const kvStore = await this.kvStore;
       await kvStore.set(storageKey, workflow);
-      logger.debug(`[WorkflowEngine] Saved workflow ${workflow.id} to storage`);
+      logger.debug("[WorkflowEngine] Saved workflow ${workflow.id} to storage");"
     } catch (error) {
       logger.error(
-        `[WorkflowEngine] Failed to save workflow ${workflow.id} to storage:`,
+        "[WorkflowEngine] Failed to save workflow ${workflow.id} to storage:","
         error
       );
     }
   }
 
-  async registerWorkflowDefinition(
-    name: string,
-    definition: WorkflowDefinition
-  ): Promise<void> {
+  async registerWorkflowDefinition(Promise<void> " + JSON.stringify({
     // Enhanced with schema validation for safety
     await new Promise((resolve) => setTimeout(resolve, 1));
 
-    logger.debug(`Registering workflow definition: ${name}`);
+    logger.debug("Registering workflow definition: " + name + ") + "");"
     this.workflowDefinitions.set(name, definition);
   }
 
-  async startWorkflow(
-    definition: WorkflowDefinition,
-    initialContext: WorkflowContext = {}
-  ): Promise<string> {
+  async startWorkflow(Promise<string> {
     await this.initialize(); // Ensure engine is ready
     const workflowId = generateUUID();
     const workflow: WorkflowState = {
@@ -334,18 +325,18 @@ export class WorkflowEngine extends EventEmitter {
       timestamp: new Date(),
     });
 
-    logger.info(`Workflow started: ${definition.name} (${workflowId})`);
+    logger.info("Workflow started: ${definition.name} (${workflowId})");"
 
     // Start execution asynchronously
     this.executeWorkflow(workflow).catch((error) => {
-      logger.error(`[WorkflowEngine] Workflow ${workflowId} failed:`, error);
+      logger.error("[WorkflowEngine] Workflow ${workflowId} failed:", error);"
     });
 
     this.emit('workflow-started', workflowId);
     return workflowId;
   }
 
-  async executeWorkflow(workflow: WorkflowState): Promise<void> {
+  async executeWorkflow(Promise<void> {
     workflow.status = 'running';
     await this.saveWorkflow(workflow);
 
@@ -381,7 +372,7 @@ export class WorkflowEngine extends EventEmitter {
     await this.saveWorkflow(workflow);
 
     // Enhanced event coordination
-    this.emit('workflow: completed', {
+    this.emit('workflow: completed', " + JSON.stringify({
       workflowId: workflow.id,
       definitionName: workflow.definition.name,
       status: workflow.status,
@@ -390,14 +381,14 @@ export class WorkflowEngine extends EventEmitter {
         new Date(workflow.startTime).getTime(),
       stepResults: workflow.stepResults,
       timestamp: new Date(),
-    });
+    }) + ");
 
     logger.info(
-      `Workflow completed: ${workflow.definition.name} (${workflow.id})`
+      "Workflow completed: ${workflow.definition.name} (${workflow.id})""
     );
   }
 
-  async pauseWorkflow(workflowId: string): Promise<boolean> {
+  async pauseWorkflow(Promise<boolean> {
     const workflow = this.activeWorkflows.get(workflowId);
     if (workflow && workflow.status === 'running') {
       workflow.status = 'paused';
@@ -412,32 +403,32 @@ export class WorkflowEngine extends EventEmitter {
       });
 
       logger.info(
-        `Workflow paused: ${workflow.definition.name} (${workflowId})`
+        "Workflow paused: ${workflow.definition.name} (${workflowId})""
       );
       return true;
     }
     return false;
   }
 
-  async resumeWorkflow(workflowId: string): Promise<boolean> {
+  async resumeWorkflow(Promise<boolean> {
     await this.initialize(); // Ensure engine is ready
     const workflow = this.activeWorkflows.get(workflowId);
     if (workflow && workflow.status === 'paused') {
       // Emit resume event for coordination
-      this.emit('workflow: resumed', {
+      this.emit('workflow: resumed', " + JSON.stringify({
         workflowId,
         definitionName: workflow.definition.name,
         currentStep: workflow.currentStep,
         timestamp: new Date(),
-      });
+      }) + ");
 
       logger.info(
-        `Workflow resumed: ${workflow.definition.name} (${workflowId})`
+        "Workflow resumed: ${workflow.definition.name} (${workflowId})""
       );
 
       this.executeWorkflow(workflow).catch((error) => {
         logger.error(
-          `[WorkflowEngine] Workflow ${workflowId} failed after resume:`,
+          "[WorkflowEngine] Workflow ${workflowId} failed after resume:","
           error
         );
       });
@@ -446,7 +437,7 @@ export class WorkflowEngine extends EventEmitter {
     return false;
   }
 
-  async stopWorkflow(workflowId: string): Promise<boolean> {
+  async stopWorkflow(Promise<boolean> {
     const workflow = this.activeWorkflows.get(workflowId);
     if (workflow && ['running', 'paused'].includes(workflow.status)) {
       workflow.status = 'cancelled';
@@ -454,16 +445,16 @@ export class WorkflowEngine extends EventEmitter {
       await this.saveWorkflow(workflow);
 
       // Emit cancellation event for coordination
-      this.emit('workflow: cancelled', {
+      this.emit('workflow: cancelled', " + JSON.stringify({
         workflowId,
         definitionName: workflow.definition.name,
         currentStep: workflow.currentStep,
         reason: 'Manual cancellation',
         timestamp: new Date(),
-      });
+      }) + ");
 
       logger.info(
-        `Workflow cancelled: ${workflow.definition.name} (${workflowId})`
+        "Workflow cancelled: ${workflow.definition.name} (${workflowId})""
       );
       return true;
     }
@@ -478,10 +469,10 @@ export class WorkflowEngine extends EventEmitter {
     return Array.from(this.activeWorkflows.values());
   }
 
-  async getWorkflowHistory(workflowId: string): Promise<WorkflowState[]> {
+  async getWorkflowHistory(Promise<WorkflowState[]> {
     try {
       const kvStore = await this.kvStore;
-      const workflow = await kvStore.get(`workflow:${workflowId}`);
+      const workflow = await kvStore.get("workflow:${workflowId}");"
       return workflow ? [workflow] : [];
     } catch (error) {
       logger.error(
@@ -496,32 +487,32 @@ export class WorkflowEngine extends EventEmitter {
     const scheduleId = generateNanoId();
 
     // Store schedule configuration for future implementation
-    this.scheduledTasks.set(scheduleId, {
+    this.scheduledTasks.set(scheduleId, " + JSON.stringify({
       cronExpression,
       workflowName,
       scheduleId,
       created: new Date(),
       active: false,
-    });
+    }) + ");
 
     logger.info(
-      `[WorkflowEngine] Scheduled workflow: ${workflowName} with ${cronExpression}`
+      "[WorkflowEngine] Scheduled workflow: ${workflowName} with ${cronExpression}""
     );
     return scheduleId;
   }
 
   startSchedule(scheduleId: string): boolean {
-    logger.info(`[WorkflowEngine] Started schedule: ${scheduleId}`);
+    logger.info("[WorkflowEngine] Started schedule: ${scheduleId}");"
     return true;
   }
 
-  stopSchedule(scheduleId: string): boolean {
-    logger.info(`[WorkflowEngine] Stopped schedule: ${scheduleId}`);
+  stopSchedule(scheduleId: string): boolean " + JSON.stringify({
+    logger.info("[WorkflowEngine] Stopped schedule: ${scheduleId}) + "");"
     return true;
   }
 
   removeSchedule(scheduleId: string): boolean {
-    logger.info(`[WorkflowEngine] Removed schedule: ${scheduleId}`);
+    logger.info("[WorkflowEngine] Removed schedule: ${scheduleId}");"
     return true;
   }
 
@@ -529,15 +520,15 @@ export class WorkflowEngine extends EventEmitter {
     // Simple Mermaid diagram generation
     let diagram = 'graph TD\n';
     for (const [index, step] of workflow.steps.entries()) {
-      diagram += `  ${index}[${step.name || step.type}]\n`;
-      if (index < workflow.steps.length - 1) {
-        diagram += `  ${index} --> ${index + 1}\n`;
+      diagram += "  ${index}[${step.name || step.type}]\n";"
+      if (index < workflow.steps.length - 1) " + JSON.stringify({
+        diagram += "  " + index + ") + " --> ${index + 1}\n";"
       }
     }
     return diagram;
   }
 
-  async shutdown(): Promise<void> {
+  async shutdown(Promise<void> {
     logger.info('Workflow engine shutting down...');
 
     // Emit shutdown started event
@@ -550,14 +541,14 @@ export class WorkflowEngine extends EventEmitter {
     // Clean up scheduled tasks
     for (const [id, task] of this.scheduledTasks) {
       if (task.destroy) task.destroy();
-      logger.info(`[WorkflowEngine] Destroyed scheduled task: ${id}`);
+      logger.info("[WorkflowEngine] Destroyed scheduled task: ${id}");"
     }
     this.scheduledTasks.clear();
 
     // Clean up state machines
     for (const [id, machine] of this.workflowStateMachines) {
       if (machine.stop) machine.stop();
-      logger.info(`[WorkflowEngine] Stopped state machine: ${id}`);
+      logger.info("[WorkflowEngine] Stopped state machine: ${id}");"
     }
     this.workflowStateMachines.clear();
 

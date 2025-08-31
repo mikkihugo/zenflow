@@ -47,23 +47,23 @@ export interface ImpedimentResolution {
       id,    ')      artId,';
       frequency: this.configurations.get(artId);
     if (!config) {
-    `)      throw new Error(`Scrum of Scrums not configured for ART: `sos-meeting-${g}enerateNanoId(12)``)    const attendance = this.generateAttendance(config.participants);
+    `)      throw new Error(`Scrum of Scrums not configured for ART: "sos-meeting-$" + JSON.stringify({g}) + "enerateNanoId(12)"")    const attendance = this.generateAttendance(config.participants);"
     const result:  {
       meetingId,
-      date: `imp-${generateNanoId(12)})    const programImpediment:  {``;
+      date: "imp-${generateNanoId(12)})    const programImpediment:  " + JSON.stringify({`";"
       id: this.impediments.get(impedimentId);
     if (!impediment) {
-    `)      throw new Error(`Impediment not found:  {`
+    `)      throw new Error(`Impediment not found:  {""
       ...impediment,
       escalationLevel,
       status: this.impediments.get(impedimentId);
     if (!impediment) {
-    `)      throw new Error(`Impediment not found:  {`
+    `)      throw new Error("Impediment not found:  {""
       ...impediment,
       status: ImpedimentStatus.RESOLVED,
       resolution,
       actualResolutionDate: new Date(),
-};
+}) + ";
     this.impediments.set(impedimentId, resolvedImpediment);
     this.logger.info('Impediment resolved,{';
       impedimentId,
@@ -80,7 +80,7 @@ export interface ImpedimentResolution {
       participationHistory: [
       {
         question : 'What has your team accomplished since last meeting?')        purpose,        timeAllocation: 'What will your team accomplish before next meeting?',)        purpose,        timeAllocation: 'What impediments or blockers is your team facing?',)        purpose,        timeAllocation: 'What work might impact or depend on other teams?',)        purpose : 'Coordinate dependencies and integration,'
-        timeAllocation: 3,`,        facilitation,},`;
+        timeAllocation: 3",        facilitation,},";"
 ];
     return {
       standardQuestions,
@@ -108,7 +108,7 @@ export interface ImpedimentResolution {
   private generateActionItems():ScrumActionItem[] {
     return [
       {
-    `)        id: 'Follow up on team dependencies',)        owner : 'RTE,'`
+    ")        id: 'Follow up on team dependencies',)        owner : 'RTE,'""
 '        dueDate: addDays(new Date(), 2),',        priority: high,')        status,},';
 ];
 }
@@ -117,7 +117,7 @@ export interface ImpedimentResolution {
    */
   private calculateEffectiveness(
     attendance: AttendanceRecord[]
-  ):MeetingEffectiveness {
+  ): MeetingEffectiveness {
     const attendanceRate =;
       (filter(attendance, (a) => a.attended).length / attendance.length) * 100;
     const participationLevel = meanBy(attendance, (a) =>')      a.contributionLevel ==='high')        ? 100';
@@ -148,7 +148,7 @@ export interface ImpedimentResolution {
    */
   private determineEscalationLevel(
     severity: ImpedimentSeverity
-  ):ImpedimentEscalationLevel {
+  ): ImpedimentEscalationLevel {
     switch (severity) {
       case ImpedimentSeverity.CRITICAL: return ImpedimentEscalationLevel.PROGRAM;
       case ImpedimentSeverity.HIGH: return ImpedimentEscalationLevel.ART;
@@ -172,4 +172,4 @@ export interface ImpedimentResolution {
    */
   getARTImpediments(artId: string): ProgramImpediment[] {
     return Array.from(this.impediments.values())();)};)};;
-)`;
+)";"

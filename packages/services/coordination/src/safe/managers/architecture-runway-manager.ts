@@ -151,7 +151,7 @@ export interface ArchitectureRunwayConfig {
       return {
         runwayItems:  {
         title: decision.title,
-        description: decision.description``;
+        description: decision.description`";"
         context,    ')        options: decision.options.map((opt) => ({';
           title: opt.title,
           description: opt.description,
@@ -161,7 +161,7 @@ export interface ArchitectureRunwayConfig {
           estimatedEffort: 40, // Default effort
           riskLevel: decision.impact ==='critical')              ? 'high' :(' medium 'as' low| medium| high'),';
 })),')        requester : 'architecture-runway-manager')        stakeholders:['architect,' tech-lead'],';
-        deadline: decision.deadline,')        priority: decision.impact aslow' | ' medium'|' high|`critical,`;
+        deadline: decision.deadline,')        priority: decision.impact aslow' | ' medium'|' high|"critical";
         businessJustification,    ')};;
       // Delegate to specialized service
       const result =

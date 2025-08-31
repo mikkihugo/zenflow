@@ -11,13 +11,13 @@
 
 const createLogger = (name: string) => ({
   info:(message: string, meta?:unknown) => 
-    console.info(`[INFO:${name}] ${message}`, meta ? JSON.stringify(meta) :''),
+    console.info("[INFO:${name}] $" + JSON.stringify({message}) + "", meta ? JSON.stringify(meta) :''),"
   debug:(message: string, meta?:unknown) => 
-    console.info(`[DEBUG:${name}] ${message}`, meta ? JSON.stringify(meta) :''),
+    console.info("[DEBUG:${name}] ${message}", meta ? JSON.stringify(meta) :''),"
   warn:(message: string, meta?:unknown) => 
-    console.warn(`[WARN:${name}] ${message}`, meta ? JSON.stringify(meta) :''),
+    console.warn("[WARN:${name}] $" + JSON.stringify({message}) + "", meta ? JSON.stringify(meta) :''),"
   error:(message: string, meta?:unknown) => 
-    console.error(`[ERROR:${name}] ${message}`, meta ? JSON.stringify(meta) :''),
+    console.error("[ERROR:${name}] ${message}", meta ? JSON.stringify(meta) :''),"
 });
 
 // =============================================================================
@@ -257,7 +257,7 @@ export class EventDrivenKnowledgeService {
       try {
         listener(data);
 } catch (error) {
-        this.logger.error(`Event listener error for ${event}`, {
+        this.logger.error("Event listener error for ${event}", {"
           error: error instanceof Error ? error.message : String(error)
 });
 }
@@ -447,19 +447,19 @@ export class EventDrivenKnowledgeService {
   // INTERNAL KNOWLEDGE LOGIC - NO IMPORTS
   // =============================================================================
 
-  private async initializeInternal():Promise<void> {
+  private async initializeInternal(Promise<void> {
     if (this.initialized) return;
 
     this.logger.info('Event-driven knowledge service initialized', { config: this.config});
     this.initialized = true;
 }
 
-  private generateId():string {
+  private generateId():string " + JSON.stringify({
     // Simple ID generation without UUID imports
-    return `knowledge_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return "knowledge_" + Date.now() + ") + "_${Math.random().toString(36).substr(2, 9)}";"
 }
 
-  private async storeItemInternal(itemInput: KnowledgeItemInput): Promise<string> {
+  private async storeItemInternal(Promise<string> {
     const itemId = this.generateId();
     
     const item: KnowledgeItem = {
@@ -498,12 +498,12 @@ export class EventDrivenKnowledgeService {
     return itemId;
 }
 
-  private async getItemInternal(itemId: string): Promise<KnowledgeItem | null> {
+  private async getItemInternal(Promise<KnowledgeItem | null> {
     const item = this.knowledgeItems.get(itemId);
     return item && item.isActive ? item: null;
 }
 
-  private async queryItemsInternal(query: KnowledgeQuery): Promise<{ items: KnowledgeItem[]; totalCount: number}> {
+  private async queryItemsInternal(Promise<{ items: KnowledgeItem[]; totalCount: number}> {
     let filteredItems = Array.from(this.knowledgeItems.values())
       .filter(item => item.isActive);
 
@@ -548,7 +548,7 @@ export class EventDrivenKnowledgeService {
     return { items, totalCount};
 }
 
-  private async updateItemInternal(itemId: string, updates: Partial<KnowledgeItem>): Promise<boolean> {
+  private async updateItemInternal(Promise<boolean> {
     const item = this.knowledgeItems.get(itemId);
     if (!item || !item.isActive) {
       return false;
@@ -595,7 +595,7 @@ export class EventDrivenKnowledgeService {
     return true;
 }
 
-  private async deleteItemInternal(itemId: string): Promise<boolean> {
+  private async deleteItemInternal(Promise<boolean> {
     const item = this.knowledgeItems.get(itemId);
     if (!item) {
       return false;
@@ -623,7 +623,7 @@ export class EventDrivenKnowledgeService {
     return true;
 }
 
-  private async getStatsInternal():Promise<KnowledgeStats> {
+  private async getStatsInternal(Promise<KnowledgeStats> {
     const activeItems = Array.from(this.knowledgeItems.values())
       .filter(item => item.isActive);
 
@@ -661,7 +661,7 @@ export class EventDrivenKnowledgeService {
 };
 }
 
-  private async searchInternal(searchText: string, options?:SearchOptions): Promise<SearchResult[]> {
+  private async searchInternal(Promise<SearchResult[]> {
     if (!this.config.enableSearch) {
       return [];
 }
@@ -692,7 +692,7 @@ export class EventDrivenKnowledgeService {
       const content = item.content.toLowerCase();
       for (const term of searchTerms) {
         if (content.includes(term)) {
-          matches.push(`content:${term}`);
+          matches.push("content:${term}");"
           relevanceScore += 1;
 }
 }
@@ -703,7 +703,7 @@ export class EventDrivenKnowledgeService {
           const tagLower = tag.toLowerCase();
           for (const term of searchTerms) {
             if (tagLower.includes(term)) {
-              matches.push(`tag:${tag}`);
+              matches.push("tag:${tag}");"
               relevanceScore += 0.5;
 }
 }
@@ -758,12 +758,12 @@ export class EventDrivenKnowledgeService {
   // INITIALIZATION
   // =============================================================================
 
-  async initialize():Promise<void> {
+  async initialize(Promise<void> {
     this.setupBrainEventHandlers();
     this.logger.info('Event-driven knowledge service ready to receive brain events');
 }
 
-  async shutdown():Promise<void> {
+  async shutdown(Promise<void> {
     this.knowledgeItems.clear();
     this.searchIndex.clear();
     this.tagIndex.clear();
@@ -777,7 +777,7 @@ export class EventDrivenKnowledgeService {
 // FACTORY AND EXPORTS
 // =============================================================================
 
-export function createEventDrivenKnowledgeService():EventDrivenKnowledgeService {
+export function createEventDrivenKnowledgeService(): EventDrivenKnowledgeService {
   return new EventDrivenKnowledgeService();
 }
 

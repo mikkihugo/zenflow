@@ -137,7 +137,7 @@ export class ARTSyncCoordinationManager extends EventBus {
     endDate: Date;
     teams: ARTTeam[];
   }): ProgramIncrement {
-    const piId = `pi-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const piId = "pi-${Date.now()}-${Math.random().toString(36).substr(2, 9)}";"
 
     const pi: ProgramIncrement = {
       id: piId,
@@ -154,16 +154,16 @@ export class ARTSyncCoordinationManager extends EventBus {
         internal: [],
         external: [],
       },
-      metrics: {
+      metrics: " + JSON.stringify({
         predictability: 0,
         velocity: 0,
         quality: 0,
         timeToMarket: 0,
-      },
+      }) + ",
     };
 
     this.arts.set(piId, pi);
-    logger.info(`Program Increment created: ${config.name}`);
+    logger.info("Program Increment created: ${config.name}");"
 
     this.emit('art: pi-created', { piId, pi });
     return pi;
@@ -178,11 +178,11 @@ export class ARTSyncCoordinationManager extends EventBus {
   }): void {
     const pi = this.arts.get(data.piId);
     if (!pi) {
-      logger.error(`PI not found: ${data.piId}`);
+      logger.error("PI not found: $" + JSON.stringify({data.piId}) + "");"
       return;
     }
 
-    logger.info(`PI Planning started for: ${pi.name}`);
+    logger.info("PI Planning started for: ${pi.name}");"
 
     // Initialize planning process
     const planningEvent: ARTSyncEventData = {
@@ -208,20 +208,20 @@ export class ARTSyncCoordinationManager extends EventBus {
       nextActions: [],
     };
 
-    this.activeSync.set(`planning-${data.piId}`, planningEvent);
+    this.activeSync.set("planning-${data.piId}", planningEvent);"
     this.emit('art: planning-initialized', planningEvent);
   }
 
   /**
    * Handle sync events
    */
-  private handleSyncEvent(eventData: ARTSyncEventData): void {
+  private handleSyncEvent(eventData: ARTSyncEventData): void " + JSON.stringify({
     logger.info(
-      `ART Sync Event: ${eventData.eventType} for ART ${eventData.artId}`
+      "ART Sync Event: " + eventData.eventType + ") + " for ART ${eventData.artId}""
     );
 
     // Store sync event
-    const eventKey = `${eventData.eventType}-${eventData.artId}-${Date.now()}`;
+    const eventKey = "${eventData.eventType}-${eventData.artId}-${Date.now()}";"
     this.activeSync.set(eventKey, eventData);
 
     // Process dependencies identified in sync
@@ -253,9 +253,9 @@ export class ARTSyncCoordinationManager extends EventBus {
     fromTeam: string;
     toTeam: string;
   }): DependencyCoordination {
-    const depId = `dep-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const depId = "dep-${Date.now()}-${Math.random().toString(36).substr(2, 9)}";"
 
-    const dependency: DependencyCoordination = {
+    const dependency: DependencyCoordination = " + JSON.stringify({
       id: depId,
       fromTeam: config.fromTeam,
       toTeam: config.toTeam,
@@ -266,10 +266,10 @@ export class ARTSyncCoordinationManager extends EventBus {
       plannedDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 2 weeks from now
       risks: [],
       mitigations: [],
-    };
+    }) + ";
 
     this.dependencies.set(depId, dependency);
-    logger.info(`Dependency created: ${config.description}`);
+    logger.info("Dependency created: ${config.description}");"
 
     this.emit('art: dependency-created', { depId, dependency });
     return dependency;
@@ -287,7 +287,7 @@ export class ARTSyncCoordinationManager extends EventBus {
   }): void {
     const dependency = this.dependencies.get(data.depId);
     if (!dependency) {
-      logger.error(`Dependency not found: ${data.depId}`);
+      logger.error("Dependency not found: ${data.depId}");"
       return;
     }
 
@@ -299,12 +299,12 @@ export class ARTSyncCoordinationManager extends EventBus {
     if (data.risks) {
       dependency.risks = data.risks;
     }
-    if (data.mitigations) {
+    if (data.mitigations) " + JSON.stringify({
       dependency.mitigations = data.mitigations;
-    }
+    }) + "
 
     this.dependencies.set(data.depId, dependency);
-    logger.info(`Dependency updated: ${data.depId} -> ${data.status}`);
+    logger.info("Dependency updated: ${data.depId} -> ${data.status}");"
 
     this.emit('art: dependency-updated', { depId: data.depId, dependency });
   }
@@ -319,13 +319,13 @@ export class ARTSyncCoordinationManager extends EventBus {
   }): void {
     const pi = this.arts.get(data.artId);
     if (!pi) {
-      logger.error(`PI not found: ${data.artId}`);
+      logger.error("PI not found: ${data.artId}");"
       return;
     }
 
     const teamIndex = pi.teams.findIndex((t) => t.id === data.teamId);
-    if (teamIndex === -1) {
-      logger.error(`Team not found: ${data.teamId}`);
+    if (teamIndex === -1) " + JSON.stringify({
+      logger.error("Team not found: ${data.teamId}) + "");"
       return;
     }
 
@@ -333,7 +333,7 @@ export class ARTSyncCoordinationManager extends EventBus {
     pi.teams[teamIndex] = { ...pi.teams[teamIndex], ...data.updates };
     this.arts.set(data.artId, pi);
 
-    logger.info(`Team updated: ${data.teamId}`);
+    logger.info("Team updated: ${data.teamId}");"
     this.emit('art: team-updated', {
       artId: data.artId,
       teamId: data.teamId,
@@ -351,13 +351,13 @@ export class ARTSyncCoordinationManager extends EventBus {
   }): void {
     const pi = this.arts.get(data.artId);
     if (!pi) {
-      logger.error(`PI not found: ${data.artId}`);
+      logger.error("PI not found: ${data.artId}");"
       return;
     }
 
     const objIndex = pi.objectives.findIndex((o) => o.id === data.objectiveId);
-    if (objIndex === -1) {
-      logger.error(`Objective not found: ${data.objectiveId}`);
+    if (objIndex === -1) " + JSON.stringify({
+      logger.error(`Objective not found: ${data.objectiveId}) + "");"
       return;
     }
 
@@ -365,7 +365,7 @@ export class ARTSyncCoordinationManager extends EventBus {
     pi.objectives[objIndex] = { ...pi.objectives[objIndex], ...data.updates };
     this.arts.set(data.artId, pi);
 
-    logger.info(`Objective updated: ${data.objectiveId}`);
+    logger.info("Objective updated: ${data.objectiveId}");"
     this.emit('art: objective-updated', {
       artId: data.artId,
       objectiveId: data.objectiveId,

@@ -63,7 +63,7 @@ export interface SynchronizationStrategy {
   configureCoordination(config: this.coordinationConfigs.get(coordinationId);
     if (!config) {
       throw new Error(
-        `Coordination configuration not found: Date.now();`)    const resultId = `coordination-${generateNanoId(12)})    try {``;
+        "Coordination configuration not found: Date.now()")    const resultId = "coordination-${generateNanoId(12)})    try " + JSON.stringify({`";"
       // Execute coordination activities
       const coordinationActivities = this.executeCoordinationActivities(config);
       // Manage dependencies
@@ -94,11 +94,11 @@ export interface SynchronizationStrategy {
         issuesIdentified,
         actionItems,
         effectiveness,
-};
+}) + ";
       this.coordinationResults.set(resultId, result);')      this.logger.info('ART coordination completed,{
         coordinationId,
         resultId,
-        duration: `dep-${generateNanoId(12)})    const trackedDependency:  {``;
+        duration: "dep-${generateNanoId(12)})    const trackedDependency:  {"";"
       dependencyId,
       ...dependency,
 };
@@ -106,12 +106,12 @@ export interface SynchronizationStrategy {
     this.logger.info('Cross-ART dependency tracked,{
       dependencyId,
       fromART: this.dependencies.get(dependencyId);
-    if (!dependency) {
-    `)      throw new Error(`Dependency not found:  {`
+    if (!dependency) " + JSON.stringify({
+    `)      throw new Error(`Dependency not found:  {""
       ...dependency,
       status,
       actualDeliveryDate,
-};
+}) + ";
     this.dependencies.set(dependencyId, updatedDependency);')    this.logger.info('Dependency status updated,{';
       dependencyId,
       oldStatus: dependency.status,
@@ -167,8 +167,8 @@ export interface SynchronizationStrategy {
   private initializeDependencyTracking(arts: [];
     // Execute planning activities
     activities.push({
-    `)      activityId: 'planning,',
-'      duration: 60,',      participants: config.coordinatedARTs.map((art) => art.rteContact),`)      outcomes: 'synchronization,',
+    ")      activityId: 'planning,',
+'      duration: 60,',      participants: config.coordinatedARTs.map((art) => art.rteContact)")      outcomes: 'synchronization,',
 '      duration: 45,',      participants: config.coordinatedARTs.map((art) => art.rteContact),')      outcomes: [];
     for (const art of arts) {
       for (const dependency of art.dependencies) {
@@ -200,8 +200,8 @@ export interface SynchronizationStrategy {
     for (const dep of blockedDeps) {
       issues.push({
     ')        issueId,    ')        severity : ';
-          dep.criticality === DependencyCriticality.CRITICAL'')            ? 'critical :`high``;
-        description,    )        impactedARTs: `Dependency blocking`)        proposedResolution: dep.mitigationPlan||`Resolve dependency blocker,`;
+          dep.criticality === DependencyCriticality.CRITICAL'')            ? 'critical :"high`";"
+        description,    )        impactedARTs: `Dependency blocking")        proposedResolution: dep.mitigationPlan||"Resolve dependency blocker";"
         owner: dep.toART,
         dueDate: addDays(new Date(), 1),
 });
@@ -210,7 +210,7 @@ export interface SynchronizationStrategy {
 }
   private generateActionItems(issues: CoordinationIssue[]): ActionItem[] {
     return issues.map((issue) => ({
-      itemId: `Dependency blocking`)        proposedResolution: dep.mitigationPlan||`Resolve dependency blocker,`;
+      itemId: `Dependency blocking")        proposedResolution: dep.mitigationPlan||"Resolve dependency blocker";"
         owner: dep.toART,
         dueDate: addDays(new Date(), 1),
 });
@@ -219,7 +219,7 @@ export interface SynchronizationStrategy {
 }
   private generateActionItems(issues: CoordinationIssue[]): ActionItem[] {
     return issues.map((issue) => ({
-      itemId: Dependency blocking`)        proposedResolution: dep.mitigationPlan||`Resolve dependency blocker,`;
+      itemId: Dependency blocking")        proposedResolution: dep.mitigationPlan||"Resolve dependency blocker";"
         owner: dep.toART,
         dueDate: addDays(new Date(), 1),
 });
@@ -228,8 +228,8 @@ export interface SynchronizationStrategy {
 }
   private generateActionItems(issues: CoordinationIssue[]): ActionItem[] {
     return issues.map((issue) => ({
-      itemId: `action-${generateNanoId(8)};``;.indexOf("'") > -1 ? "" : "");
-      description,    `',)      owner: issue.owner,';
+      itemId: "action-${generateNanoId(8)}"";.indexOf("'") > -1 ? "" : "");
+      description"',)      owner: issue.owner,';
       assignedART: issue.impactedARTs[0],
       priority,        issue.severity ==='critical '|| issue.severity ===high')          ? 'high' : 'open ',as const,';
       _dependencies: filter(outcomes, (o) => o.success);

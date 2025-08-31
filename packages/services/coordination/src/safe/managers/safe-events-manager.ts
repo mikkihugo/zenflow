@@ -48,13 +48,13 @@ export class SAFeEventsManager extends EventBus {
    * Schedule System Demo
    */
   async scheduleSystemDemo(
-    piId: `system-demo-`${piId}-${Date.now()})      const eventConfig:  {`;
-        id: `inspect-adapt-${piId}-${artId})      const eventConfig:  {`;
+    piId: "system-demo-"" + piId + "-${Date.now()})      const eventConfig:  " + JSON.stringify({";"
+        id: "inspect-adapt-${piId}) + "-${artId})      const eventConfig:  {";"
         id: 'safe-coach,',
         required: this.scheduledEvents.get(eventId);
       if (!event) {
     )        return { success:  {
-    `)        eventId``;
+    ")        eventId"";"
         status : 'completed,'
         duration: event.duration,
         attendance:  {
@@ -75,7 +75,7 @@ export class SAFeEventsManager extends EventBus {
 },
         artifacts: [],
 };
-      this.eventOutcomes.set(eventId, outcome);`)      await this.memory.store(`safe-events: outcome:`${eventId}, outcome);``)      this.emit('event: executed,{ eventId, outcome};);
+      this.eventOutcomes.set(eventId, outcome)")      await this.memory.store(`safe-events: outcome:"${eventId}, outcome)"")      this.emit('event: executed,{ eventId, outcome};);"
       this.eventBus.emit(';)';
        'safe-events: event: executed,';
         createEvent('safe-events: event: executed,{';
@@ -92,7 +92,7 @@ export class SAFeEventsManager extends EventBus {
   /**
    * Get event analytics and metrics
    */
-  async getEventAnalytics(): Promise<any> {
+  async getEventAnalytics(Promise<any> {
     if (!this.initialized) await this.initialize();
     return {
       events:  {
@@ -154,19 +154,18 @@ export class SAFeEventsManager extends EventBus {
           id : 'planning')          title,          duration: 'workshop',)          objectives:['Create improvement backlog,' Assign ownership'],
 },
 ],
-      required: new Set(features.map((f) => f.team).filter(Boolean);)    return Array.from(uniqueTeams).map((team) => ({`;
-    `)      id: 'Release Train Engineer',)        role : 'rte,'`
+      required: new Set(features.map((f) => f.team).filter(Boolean);)    return Array.from(uniqueTeams).map((team) => ({"")      id: 'Release Train Engineer',)        role : 'rte,'""
 '        team: 'intro',)        title,        duration: 'presentation',)        objectives:['Set context,' Review agenda'],
 },
       {
-    `)        id: 'demo',)        objectives:['Show completed features,' Gather stakeholder feedback'],,';
+    ")        id: 'demo',)        objectives:['Show completed features,' Gather stakeholder feedback'],,';"
         id : 'wrap-up')        title,        duration: 'discussion',)        objectives:['Collect feedback,' Plan next iteration'],,';
 ];
 }
   /**
    * Initialize event bus connections for production
    */
-  private async initializeEventBusConnections(): Promise<void> {
+  private async initializeEventBusConnections(Promise<void> {
     // In production, this would establish connections to: // - Message queues (Redis, RabbitMQ)
     // - Event streams (Kafka, EventBridge)
     // - Database event listeners

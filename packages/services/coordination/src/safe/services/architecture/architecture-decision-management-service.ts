@@ -339,7 +339,7 @@ export class ArchitectureDecisionManagementService {
       if (requiresApproval) {
         // Create approval task with stakeholder collaboration
         const approval = await this.aguiService.createApprovalTask({
-    ')          taskType: `architecture_decision_request``;
+    ')          taskType: `architecture_decision_request"";"
           description,    ')          context:  { request, optionAnalysis},';
           approvers: request.stakeholders,
           timeout: 2700000, // 45 minutes
@@ -368,8 +368,8 @@ export class ArchitectureDecisionManagementService {
           approved: this.performanceTracker.startTimer('update_adr_status);
     try {
       const adr = this.decisionRecords.get(adrId);
-      if (!adr) {
-    `)        throw new Error(`Architecture Decision Record not found: `${adrId});``)};;
+      if (!adr) " + JSON.stringify({
+    `)        throw new Error(`Architecture Decision Record not found: "${adrId}) + ")"")};;"
       // Use workflow engine for status transition validation
       const statusTransition =
         await this.workflowEngine.validateStatusTransition({
@@ -382,14 +382,14 @@ export class ArchitectureDecisionManagementService {
       const dashboardInsights =
         await this.brainCoordinator.generateADRDashboardInsights({
           decisions:  {
-        totalDecisions: false;')    this.logger.info(Architecture Decision Management Service shutdown complete`);`;
+        totalDecisions: false;')    this.logger.info(Architecture Decision Management Service shutdown complete")";
 }
   // ============================================================================
   // PRIVATE IMPLEMENTATION METHODS
   // ============================================================================
   private generateAlternatives(_decision: analysis.alternatives|| [];
     return alternatives.map((alt: any, index: number) => ({
-    `)      alternativeId:`alt-${index};``;
+    ")      alternativeId:"alt-${index}"";"
       name: 70; // Base confidence
     // Adjust based on analysis quality
     if (analysis.confidence) confidence += analysis.confidence * 0.3;
@@ -428,9 +428,7 @@ export class ArchitectureDecisionManagementService {
         lastMeasured: new Date(),);',};;
     return baseMetrics;
 }
-  private async initiateStakeholderReview(
-    adr: ArchitectureDecisionRecord
-  ): Promise<void> {
+  private async initiateStakeholderReview(Promise<void> {
     try {
     ')      await this.conversationOrchestrator.startConversation({';
     ')        conversationId,    ')        participants: adr.stakeholders,')        topic,    ')        context:  { adr},';
@@ -444,7 +442,7 @@ export class ArchitectureDecisionManagementService {
     request: DecisionRequest,
     analysis: any
   ):boolean {
-    // High-priority or high-impact decisions require approval')    if (request.priority === 'critical)return true';)    if (request.priority == = 'high)return true)    // Large effort decisions require approval`;
+    // High-priority or high-impact decisions require approval')    if (request.priority === 'critical)return true';)    if (request.priority == = 'high)return true)    // Large effort decisions require approval";
     const totalEffort = request.options.reduce(
       (sum, opt) => sum + opt.estimatedEffort,
       0;
@@ -465,7 +463,7 @@ export class ArchitectureDecisionManagementService {
     option: 'USD',)      timeframe : 'project,'
 '      confidence: 50,',};;
 }
-  private generateDefaultFeasibility():FeasibilityAssessment {
+  private generateDefaultFeasibility(): FeasibilityAssessment {
     return {
       technical: 7,
       operational: 7,
@@ -475,7 +473,7 @@ export class ArchitectureDecisionManagementService {
       resource: 6,
 };
 }
-  private generateDefaultRiskAssessment():RiskAssessment {
+  private generateDefaultRiskAssessment(): RiskAssessment {
     return {
       risks: [],
       overallRiskScore: 3,
@@ -507,7 +505,7 @@ export class ArchitectureDecisionManagementService {
   private calculateAverageDecisionTime(
     decisions: ArchitectureDecisionRecord[]
   ):number {
-    ')    if (decisions.length === 0) return 0;)    const acceptedDecisions = decisions.filter((d) => d.status ===accepted');`;
+    ')    if (decisions.length === 0) return 0;)    const acceptedDecisions = decisions.filter((d) => d.status ===accepted')";
     if (acceptedDecisions.length === 0) return 0;
     const totalTime = acceptedDecisions.reduce((sum, decision) => {
       const timeToDecision =

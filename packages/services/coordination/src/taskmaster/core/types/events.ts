@@ -188,7 +188,7 @@ export class WorkflowEventUtils {
    */
   static createErrorOccurred(
     error: string,
-    errorContext: string,')    severity: low' | ' medium'|' high' | ' critical ='medium')  ):ErrorOccurredEvent {';
+    errorContext: string,')    severity: low' | ' medium'|' high' | ' critical ='medium')  ): ErrorOccurredEvent {';
     return {
     ')      type : 'ERROR_OCCURRED,'
 '      error,';

@@ -58,7 +58,7 @@ export class KanbanEngine {
   /**
    * Setup event listeners for coordination
    */
-  private async setupEventCoordination(): Promise<void> {
+  private async setupEventCoordination(Promise<void> {
     // Setup event-based workflow coordination
     const readyPayload = {
       timestamp: new Date(),
@@ -93,7 +93,7 @@ export class KanbanEngine {
   /**
    * Setup event handlers for workflow coordination
    */
-  private async setupWorkflowEventHandlers(): Promise<void> {
+  private async setupWorkflowEventHandlers(Promise<void> {
     // These events drive real workflows, not just UI updates
 
     // WIP limit coordination events

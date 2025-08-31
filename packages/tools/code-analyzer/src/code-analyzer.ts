@@ -215,7 +215,7 @@ export class CodeAnalyzer {
   /**
    * Initialize all strategic facade systems
    */
-  private async initializeFacades():Promise<void> {
+  private async initializeFacades(Promise<void> {
     try {
       const [brain, performance, database, events] = await Promise.all([
         getBrainSystem(),
@@ -239,9 +239,7 @@ export class CodeAnalyzer {
   /**
    * Start live analysis session with real-time file watching
    */
-  async startLiveAnalysis(
-    options: Partial<EnhancedAnalysisOptions> = {},
-  ):Promise<Result<LiveAnalysisSession, Error>> {
+  async startLiveAnalysis(Promise<Result<LiveAnalysisSession, Error>> {
     return await withRetry(
       async () => {
         await this.initializeFacades();
@@ -303,7 +301,7 @@ export class CodeAnalyzer {
             await this.brainSystem.storeEmbedding(
               'session_analysis',              sessionId,
               {
-                content: `Repository: ${this.repositoryPath}`,
+                content: "Repository: ${this.repositoryPath}","
                 metadata:{
                   options: session.options,
                   timestamp: startTime.toISOString(),
@@ -331,10 +329,7 @@ export class CodeAnalyzer {
   /**
    * Analyze a single file with comprehensive analysis
    */
-  async analyzeFile(
-    filePath: string,
-    _options: Partial<EnhancedAnalysisOptions> = {},
-  ):Promise<Result<CodeAnalysisResult, Error>> {
+  async analyzeFile(Promise<Result<CodeAnalysisResult, Error>> {
     const __startTime = Date.now();
 
     return await safeAsync(async ():Promise<CodeAnalysisResult> => {
@@ -347,8 +342,8 @@ export class CodeAnalyzer {
 
       // Detect language
       const language = this.detectLanguage(absolutePath);
-      if (!language) {
-        throw new Error(`Unsupported file type:${filePath}`);
+      if (!language) " + JSON.stringify({
+        throw new Error("Unsupported file type:" + filePath + ") + "");"
 }
 
       // Read file content
@@ -456,18 +451,14 @@ export class CodeAnalyzer {
   /**
    * Generate AI insights for code analysis
    */
-  private async generateAIInsights(
-    content: string,
-    language: SupportedLanguage,
-    filePath: string,
-  ):Promise<Result<AICodeInsights, Error>> {
+  private async generateAIInsights(Promise<Result<AICodeInsights, Error>> {
     try {
       if (!this.brainSystem) {
         return err(new Error('Brain system not available'));')}
 
       const coordinator = this.brainSystem.createCoordinator();
 
-      const prompt = `Analyze this $languagecode for insights:`
+      const prompt = "Analyze this $languagecode for insights:""
 $content.substring(0, 2000)...
 
 Provide:
@@ -475,7 +466,7 @@ Provide:
 2. Potential improvements
 3. Security considerations
 4. Performance optimizations
-5. Maintainability recommendations`;`
+5. Maintainability recommendations""
 
       await coordinator.optimizePrompt({
         task: 'Code analysis and insights',        basePrompt: prompt,
@@ -542,10 +533,10 @@ Provide:
 
   // Helper methods
   private generateSessionId():string {
-    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;`
+    return "session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}"""
 }
 
-  private createInitialMetrics():SessionMetrics {
+  private createInitialMetrics(): SessionMetrics {
     return {
       analysisLatency:{ avg: 0, min: 0, max: 0, p95: 0, p99: 0},
       throughput:{
@@ -580,25 +571,21 @@ Provide:
   private detectLanguage(filePath: string): SupportedLanguage | null {
     const ext = path.extname(filePath).toLowerCase();
     switch (ext) {
-    case '.ts': ')'      return 'typescript;
-    case '.tsx': ')'      return 'tsx;
-    case '.js': ')'      return 'javascript;
-      case '.jsx': ')'        return 'jsx;
-      case '.py': ')'        return 'python;
-      case '.go': ')'        return 'go;
-      case '.rs': ')'        return 'rust;
-      case '.java': ')'        return 'java;
-      case '.cpp': ')'      case '.cc': ')'      case '.cxx': ')'        return 'cpp;
+    case '.ts':      return 'typescript;
+    case '.tsx':      return 'tsx;
+    case '.js':      return 'javascript;
+      case '.jsx':        return 'jsx;
+      case '.py':        return 'python;
+      case '.go':        return 'go;
+      case '.rs':        return 'rust;
+      case '.java':        return 'java;
+      case '.cpp':      case '.cc':      case '.cxx':        return 'cpp;
       default:
         return null;
 }
 }
 
-  private async performASTAnalysis(
-    content: string,
-    language: SupportedLanguage,
-    filePath: string
-  ):Promise<ASTAnalysis> {
+  private async performASTAnalysis(Promise<ASTAnalysis> {
     // Real AST analysis implementation
     const lines = content.split('\n');')    const basicMetrics = {
       nodeCount: lines.length,
@@ -614,11 +601,7 @@ Provide:
     logger.debug('AST analysis completed', { filePath, metrics: basicMetrics});')    return basicMetrics;
 }
 
-  private async performSemanticAnalysis(
-    content: string,
-    language: SupportedLanguage,
-    filePath: string
-  ):Promise<SemanticAnalysis> {
+  private async performSemanticAnalysis(Promise<SemanticAnalysis> {
     // Real semantic analysis implementation
     const analysis = {
       scopes: this.analyzeScopes(content, language),
@@ -636,11 +619,7 @@ Provide:
     return analysis;
 }
 
-  private async performQualityAnalysis(
-    content: string,
-    language: SupportedLanguage,
-    filePath: string
-  ):Promise<CodeQualityMetrics> {
+  private async performQualityAnalysis(Promise<CodeQualityMetrics> {
     // Real quality analysis implementation
     const lines = content.split('\n');')    const nonEmptyLines = lines.filter((line) => line.trim().length > 0);
 
@@ -681,7 +660,7 @@ Provide:
     return metrics;
 }
 
-  private createEmptyASTAnalysis():ASTAnalysis {
+  private createEmptyASTAnalysis(): ASTAnalysis {
     return {
       nodeCount: 0,
       depth: 0,
@@ -694,7 +673,7 @@ Provide:
 };
 }
 
-  private createEmptySemanticAnalysis():SemanticAnalysis {
+  private createEmptySemanticAnalysis(): SemanticAnalysis {
     return {
       scopes:[],
       bindings:[],
@@ -705,7 +684,7 @@ Provide:
 };
 }
 
-  private createEmptyQualityMetrics():CodeQualityMetrics {
+  private createEmptyQualityMetrics(): CodeQualityMetrics {
     return {
       linesOfCode: 0,
       cyclomaticComplexity: 0,
@@ -736,9 +715,7 @@ Provide:
 };
 }
 
-  private async generateSuggestions(
-    result: CodeAnalysisResult
-  ):Promise<CodeSuggestion[]> {
+  private async generateSuggestions(Promise<CodeSuggestion[]> {
     const suggestions: CodeSuggestion[] = [];
 
     // Generate suggestions based on analysis results
@@ -775,22 +752,20 @@ Provide:
 }
 }
 
-  private async performInitialAnalysis(
-    session: LiveAnalysisSession
-  ):Promise<void> {
+  private async performInitialAnalysis(Promise<void> {
     logger.info('Performing initial repository analysis');')    // Implement initial repository scan
     session.startTime = new Date();
     session.status = 'analyzing';
 }
 
-  private async setupFileWatching(session: LiveAnalysisSession): Promise<void> {
+  private async setupFileWatching(Promise<void> {
     logger.info('Setting up file watching');')    // Implement file watching setup
     session.isWatching = true;
 }
 
   private normalizeOptions(
     options: Partial<EnhancedAnalysisOptions>
-  ):CodeAnalysisOptions {
+  ): CodeAnalysisOptions {
     const defaults: CodeAnalysisOptions = {
       includeTests: false,
       includeNodeModules: false,
@@ -1188,31 +1163,26 @@ export class DependencyRelationshipMapper {
   /**
    * Build comprehensive dependency relationship map for the entire repository
    */
-  async buildDependencyMap(options:{
-    includeTests?:boolean;
-    includeNodeModules?:boolean;
-    maxDepth?:number;
-    analysisType?:'full' | ' incremental' | ' focused';
-} = {}):Promise<Result<DependencyRelationshipMap, Error>> {
+  async buildDependencyMap(Promise<Result<DependencyRelationshipMap, Error>> {
     const startTime = performance.now();
     
     return await safeAsync(async ():Promise<DependencyRelationshipMap> => {
       this.logger.info('Building comprehensive dependency relationship map', options);')
       // Phase 1: Discovery - Find all analyzable files
       const files = await this.discoverFiles(options);
-      this.logger.debug(`Discovered $files.lengthfiles for analysis`);
+      this.logger.debug("Discovered $files.lengthfiles for analysis");"
 
       // Phase 2: Node Extraction - Extract all dependency nodes
       const __nodes = await this.extractNodes(files);
-      this.logger.debug(`Extracted ${nodes.length} dependency nodes`);
+      this.logger.debug("Extracted $" + JSON.stringify({nodes.length}) + " dependency nodes");"
 
       // Phase 3: Edge Analysis - Analyze relationships between nodes
       const edges = await this.analyzeRelationships(nodes, files);
-      this.logger.debug(`Analyzed $edges.lengthdependency relationships`);
+      this.logger.debug("Analyzed $edges.lengthdependency relationships");"
 
       // Phase 4: Cluster Analysis - Group related nodes
       const clusters = await this.performClusterAnalysis(nodes, edges);
-      this.logger.debug(`Identified ${clusters.length} dependency clusters`);
+      this.logger.debug("Identified ${clusters.length} dependency clusters");"
 
       // Phase 5: Metrics Calculation - Calculate comprehensive metrics
       const metrics = await this.calculateDependencyMetrics(nodes, edges, clusters);
@@ -1229,15 +1199,15 @@ export class DependencyRelationshipMapper {
         clusters,
         metrics,
         analysis,
-        metadata:{
+        metadata:" + JSON.stringify({
           createdAt: new Date(),
           repositoryPath: this.repositoryPath,
           analysisVersion: '1.0.0',          totalFiles: files.length,
           analysisTime,
-},
+}) + ",
 };
 
-      this.logger.info(`Dependency relationship map completed in $analysisTime.toFixed(2)ms`, {`
+      this.logger.info("Dependency relationship map completed in $analysisTime.toFixed(2)ms", {""
         nodes: nodes.length,
         edges: edges.length,
         clusters: clusters.length,
@@ -1251,10 +1221,7 @@ export class DependencyRelationshipMapper {
   /**
    * Analyze circular dependencies in the codebase
    */
-  async detectCircularDependencies(
-    nodes: DependencyNode[],
-    edges: DependencyEdge[]
-  ):Promise<Array<{ cycle: string[]; severity: 'low|medium|high|critical'}>> {
+  async detectCircularDependencies(Promise<Array<{ cycle: string[]; severity: 'low|medium|high|critical'}>> {
     ')    const circles = [];
     const adjacencyList = this.buildAdjacencyList(edges);
     const visited = new Set<string>();
@@ -1295,11 +1262,7 @@ export class DependencyRelationshipMapper {
   /**
    * Identify architectural violations based on dependency patterns
    */
-  async identifyArchitecturalViolations(
-    nodes: DependencyNode[],
-    edges: DependencyEdge[],
-    clusters: DependencyCluster[]
-  ):Promise<ArchitecturalViolation[]> {
+  async identifyArchitecturalViolations(Promise<ArchitecturalViolation[]> {
     const violations: ArchitecturalViolation[] = [];
 
     // Detect layer violations (e.g., presentation layer calling data layer directly)
@@ -1317,7 +1280,7 @@ export class DependencyRelationshipMapper {
       if (circular.severity === 'high' || circular.severity === ' critical') {
     ')        violations.push(
           type: 'circular-dependency',          severity: circular.severity,
-          description:`Circular dependency detected: $circular.cycle.join(' -> ')`,`
+          description:"Circular dependency detected: $circular.cycle.join(' -> ')"""
           affectedNodes: circular.cycle,
           suggestedFix: 'Consider breaking the cycle by introducing an interface or moving shared code to a common module',          impact: circular.cycle.length * 10,);
 }
@@ -1328,7 +1291,7 @@ export class DependencyRelationshipMapper {
 
   // Private helper methods for the comprehensive dependency analysis
 
-  private async discoverFiles(options: any): Promise<string[]> {
+  private async discoverFiles(Promise<string[]> {
     const files: string[] = [];
     const extensions = ['.ts',    '.tsx',    '.js',    '.jsx'];')    
     const __walkDir = async (dir: string): Promise<void> => {
@@ -1350,8 +1313,8 @@ export class DependencyRelationshipMapper {
 }
 }
 }
-} catch (error) {
-        this.logger.warn(`Failed to read directory:${dir}`, { error});
+} catch (error) " + JSON.stringify({
+        this.logger.warn("Failed to read directory:" + dir + ") + "", { error});"
 }
 };
 
@@ -1359,7 +1322,7 @@ export class DependencyRelationshipMapper {
     return files;
 }
 
-  private async extractNodes(files: string[]): Promise<DependencyNode[]> {
+  private async extractNodes(Promise<DependencyNode[]> {
     const nodes: DependencyNode[] = [];
     
     for (const filePath of files) {
@@ -1367,14 +1330,14 @@ export class DependencyRelationshipMapper {
         const content = await fs.readFile(filePath, 'utf-8');')        const fileNodes = await this.extractNodesFromFile(filePath, content);
         nodes.push(...fileNodes);
 } catch (error) {
-        this.logger.warn(`Failed to extract nodes from file: ${$filePath}`, { error});
+        this.logger.warn("Failed to extract nodes from file: ${$filePath}", { error});"
 }
 }
     
     return nodes;
 }
 
-  private async extractNodesFromFile(filePath: string, content: string): Promise<DependencyNode[]> {
+  private async extractNodesFromFile(Promise<DependencyNode[]> {
     const nodes: DependencyNode[] = [];
     const lines = content.split('\n');')    
     // Extract different types of nodes using regex patterns
@@ -1405,8 +1368,8 @@ export class DependencyRelationshipMapper {
               endLine: lineIndex + 1,
               endColumn: column + name.length,,
             metadata:
-              isExported: content.includes(`export`) && (content.includes(`export ${name}`) || content.includes(`export { ${name}`)),`
-              isDefault: content.includes(`export default ${name}`),`
+              isExported: content.includes("export`) && (content.includes("export $" + JSON.stringify({name}) + "") || content.includes("export { ${name}"))""
+              isDefault: content.includes("export default ${name}")""
               visibility: 'public',              complexity: this.calculateNodeComplexity(content, name),
               size: name.length,
               lastModified: new Date(),,);
@@ -1417,7 +1380,7 @@ export class DependencyRelationshipMapper {
     return nodes;
 }
 
-  private async analyzeRelationships(nodes: DependencyNode[], files: string[]): Promise<DependencyEdge[]> {
+  private async analyzeRelationships(Promise<DependencyEdge[]> {
     const edges: DependencyEdge[] = [];
     const nodeMap = new Map(nodes.map(node => [node.name, node]));
     
@@ -1426,22 +1389,18 @@ export class DependencyRelationshipMapper {
         const content = await fs.readFile(filePath, 'utf-8');')        const fileEdges = await this.extractEdgesFromFile(filePath, content, nodeMap);
         edges.push(...fileEdges);
 } catch (error) {
-        this.logger.warn(`Failed to analyze relationships in file:${filePath}`, { error});
+        this.logger.warn("Failed to analyze relationships in file:${filePath}", { error});"
 }
 }
     
     return edges;
 }
 
-  private async extractEdgesFromFile(
-    filePath: string,
-    content: string,
-    nodeMap: Map<string, DependencyNode>
-  ):Promise<DependencyEdge[]> {
+  private async extractEdgesFromFile(Promise<DependencyEdge[]> {
     const edges: DependencyEdge[] = [];
     
     // Extract import relationships
-    const importPattern = /imports+(?:({[^}]+})|([A-Za-z_$][A-Za-z0-9_$]*)|(*s+ass+[A-Za-z_$][A-Za-z0-9_$]*))s+froms+['"`]([^'"`]+)['"`]/g;`
+    const importPattern = /imports+(?:(" + JSON.stringify({[^}) + "]+})|([A-Za-z_$][A-Za-z0-9_$]*)|(*s+ass+[A-Za-z_$][A-Za-z0-9_$]*))s+froms+['""]([^'""]+)['""]/g""
     let match;
     
     while ((match = importPattern.exec(content)) !== null) {
@@ -1475,7 +1434,7 @@ export class DependencyRelationshipMapper {
     return edges;
 }
 
-  private async performClusterAnalysis(nodes: DependencyNode[], edges: DependencyEdge[]): Promise<DependencyCluster[]> {
+  private async performClusterAnalysis(Promise<DependencyCluster[]> {
     const clusters: DependencyCluster[] = [];
     
     // Group nodes by file path for basic clustering
@@ -1495,7 +1454,7 @@ export class DependencyRelationshipMapper {
       const stability = this.calculateStability(dirNodes, edges);
       
       clusters.push({
-        id:`cluster_${clusterIndex++}`,`
+        id:"cluster_${clusterIndex++}"""
         name: path.basename(dirPath),
         nodes: dirNodes.map(n => n.id),
         cohesion,
@@ -1509,11 +1468,7 @@ export class DependencyRelationshipMapper {
     return clusters;
 }
 
-  private async calculateDependencyMetrics(
-    nodes: DependencyNode[],
-    edges: DependencyEdge[],
-    clusters: DependencyCluster[]
-  ):Promise<DependencyMetrics> {
+  private async calculateDependencyMetrics(Promise<DependencyMetrics> {
     const circularDeps = await this.detectCircularDependencies(nodes, edges);
     
     return {
@@ -1529,12 +1484,7 @@ export class DependencyRelationshipMapper {
 };
 }
 
-  private async performAdvancedAnalysis(
-    nodes: DependencyNode[],
-    edges: DependencyEdge[],
-    clusters: DependencyCluster[],
-    metrics: DependencyMetrics
-  ):Promise<DependencyAnalysis> 
+  private async performAdvancedAnalysis(Promise<DependencyAnalysis> 
     return {
       hotspots: this.identifyDependencyHotspots(nodes, edges),
       antipatterns: this.detectDependencyAntipatterns(nodes, edges, clusters),
@@ -1545,11 +1495,11 @@ export class DependencyRelationshipMapper {
 
   // Additional helper methods (simplified implementations for brevity)
   private generateNodeId():string 
-    return `node_${++this.nodeIdCounter}`;`
+    return "node_${++this.nodeIdCounter}"""
 }
 
   private generateEdgeId():string {
-    return `edge_$++this.edgeIdCounter`;`
+    return "edge_$++this.edgeIdCounter"""
 
   private createEdge(type: string, from: string, to: string, importType?:string): DependencyEdge 
     return {
@@ -1629,7 +1579,7 @@ export class DependencyRelationshipMapper {
 
   private calculateCouplingDistribution(clusters: DependencyCluster[]): [key: string]: number 
     return clusters.reduce((acc, cluster, index) => {
-      acc[`cluster_${index}`] = cluster.coupling;`
+      acc["cluster_${index}"] = cluster.coupling""
       return acc;
 }, {} as { [key: string]: number});
 }
@@ -1687,7 +1637,7 @@ export class DependencyRelationshipMapper {
     edges: DependencyEdge[],
     clusters: DependencyCluster[],
     metrics: DependencyMetrics
-  ):QualityAssessment {
+  ): QualityAssessment {
     const baseScore = 0.8;
     const complexityPenalty = Math.min(0.2, metrics.totalNodes * 0.001);
     const circularPenalty = Math.min(0.3, metrics.circularDependencies * 0.1);
@@ -1708,7 +1658,7 @@ export class DependencyRelationshipMapper {
   /**
    * Analyze repository structure and domain boundaries
    */
-  async analyzeRepository(): Promise<Result<any, Error>> {
+  async analyzeRepository(Promise<Result<any, Error>> {
     if (!this.repoAnalyzer) {
       return err(new Error('Repository analyzer not available'));
     }
@@ -1719,7 +1669,7 @@ export class DependencyRelationshipMapper {
   /**
    * Get workspace information using foundation's detector
    */
-  async getWorkspaceInfo(): Promise<Result<any, Error>> {
+  async getWorkspaceInfo(Promise<Result<any, Error>> {
     return await safeAsync(async () => {
       const { getWorkspaceDetector } = require('@claude-zen/foundation');
       const detector = getWorkspaceDetector();
@@ -1731,7 +1681,7 @@ export class DependencyRelationshipMapper {
   /**
    * Build comprehensive dependency relationship map
    */
-  async buildDependencyMap(): Promise<Result<any, Error>> {
+  async buildDependencyMap(Promise<Result<any, Error>> {
     const mapper = new DependencyRelationshipMapper(this.repositoryPath);
     return await mapper.buildDependencyMap();
   }
@@ -1739,7 +1689,7 @@ export class DependencyRelationshipMapper {
   /**
    * Unified analysis combining code analysis and repository analysis
    */
-  async analyzeAll(): Promise<Result<{
+  async analyzeAll(Promise<Result<{
     repository?: any;
     dependencies?: any;
     workspace?: any;

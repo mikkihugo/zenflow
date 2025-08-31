@@ -50,7 +50,7 @@ export class DocumentWorkflowSystem extends TypedEventBase {
     this.documentService = documentService;
 }
 
-  async initialize():Promise<void> {
+  async initialize(Promise<void> {
     logger.info('Initializing Document Workflow System');')
     await this.workflowEngine.initialize();
     await this.documentService.initialize();
@@ -64,11 +64,8 @@ export class DocumentWorkflowSystem extends TypedEventBase {
    * @param workspaceId
    * @param docPath
    */
-  async processVisionaryDocument(
-    _workspaceId: string,
-    docPath: string
-  ):Promise<void> {
-    logger.info(`Processing visionary document:${docPath}`);
+  async processVisionaryDocument(Promise<void> {
+    logger.info("Processing visionary document:${docPath}");"
 
     try {
       // Start complete Product Flow workflow
@@ -79,16 +76,16 @@ export class DocumentWorkflowSystem extends TypedEventBase {
 }
       );
 
-      if (result?.success && result?.workflowId) {
-        logger.info(`Product Flow workflow started:$result?.workflowId`);
+      if (result?.success && result?.workflowId) " + JSON.stringify({
+        logger.info(`Product Flow workflow started:$result?.workflowId");"
         this.emit('product-flow: started', {
     ')          workflowId: result?.workflowId,
           docPath,
-});
+}) + ");
 }
 } catch (error) {
       logger.error(
-        `Failed to process visionary document ${docPath}:`,`
+        "Failed to process visionary document ${docPath}:"""
         error
       );
       throw error;
@@ -100,12 +97,12 @@ export class DocumentWorkflowSystem extends TypedEventBase {
    *
    * @param workspacePath
    */
-  async loadWorkspace(workspacePath: string): Promise<string> {
+  async loadWorkspace(Promise<string> {
     const workspaceId = generateNanoId();
     this.activeWorkspaces.set(workspaceId, workspacePath);
 
     logger.info(
-      `📁 Loaded Product Flow workspace:${workspaceId} at ${workspacePath}``
+      "📁 Loaded Product Flow workspace:${workspaceId} at ${workspacePath}`""
     );
     return workspaceId;
 }
@@ -115,7 +112,7 @@ export class DocumentWorkflowSystem extends TypedEventBase {
    *
    * @param workspaceId
    */
-  async getWorkspaceStatus(workspaceId: string): Promise<{
+  async getWorkspaceStatus(Promise<{
     workspaceId: string;
     path?:string | undefined;
     activeWorkflows: number;

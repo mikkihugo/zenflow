@@ -145,7 +145,7 @@ export class PIPlanningCoordinationService {
   /**
    * Initialize PI Planning coordination service
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     try {
     ')      this.logger.info('Initializing PI Planning Coordination Service...');
       const dbSystem = await DatabaseProvider.create();')      this.database = dbSystem.createProvider('sql');
@@ -158,14 +158,14 @@ export class PIPlanningCoordinationService {
        'Failed to initialize PI Planning Coordination Service,';
         error
       );
-      throw error;')`;
+      throw error;')";"
 }
 }
   /**
    * Start PI Planning event with full coordination
    */
   async startPIPlanningEvent(
-    planningData: `pi-planning-`${planningData.artId}-${planningData.planningIntervalNumber})    this.logger.info(``Starting PI Planning event,{';
+    planningData: "pi-planning-"" + planningData.artId + "-$" + JSON.stringify({planningData.planningIntervalNumber}) + ")    this.logger.info(""Starting PI Planning event,{';"
       planningEventId,
       piNumber:  {
       id: 'as ApprovalGateId',)        teamPlanningApproval : 'as ApprovalGateId')        dependencyResolutionApproval : 'as ApprovalGateId')        finalCommitmentApproval,},
@@ -183,7 +183,7 @@ export class PIPlanningCoordinationService {
       planningEventId,
       approvalGates: this.activePlanningEvents.get(planningEventId);
     if (!planningEvent) {
-    `)      throw new Error(`PI Planning event not found:  {`
+    ")      throw new Error("PI Planning event not found:  {""
       ...planningEvent.businessContext,
       ...businessContext,
 };
@@ -202,8 +202,8 @@ export class PIPlanningCoordinationService {
     await this.persistPlanningEvent(planningEvent);
     return {
       success: this.activePlanningEvents.get(planningEventId);
-    if (!planningEvent) {
-    `)      throw new Error(`PI Planning event not found: PIPlanningPhase.DAY_ONE_AFTERNOON;
+    if (!planningEvent) " + JSON.stringify({
+    `)      throw new Error("PI Planning event not found: PIPlanningPhase.DAY_ONE_AFTERNOON;"
     // Process team breakout results
     const processedObjectives =;
       await this.processTeamObjectives(teamBreakoutData);
@@ -222,7 +222,7 @@ export class PIPlanningCoordinationService {
     return {
       success: this.activePlanningEvents.get(planningEventId);
     if (!planningEvent) {
-    `)      throw new Error(`PI Planning event not found: PIPlanningPhase.DAY_TWO_MORNING;
+    `)      throw new Error("PI Planning event not found: PIPlanningPhase.DAY_TWO_MORNING;"
     // Apply business owner feedback
     const adjustmentsMade = await this.applyBusinessOwnerFeedback(
       planningEvent,
@@ -242,7 +242,7 @@ export class PIPlanningCoordinationService {
     return {
       success: this.activePlanningEvents.get(planningEventId);
     if (!planningEvent) {
-    `)      throw new Error(`PI Planning event not found: PIPlanningPhase.DAY_TWO_AFTERNOON;
+    `)      throw new Error("PI Planning event not found: PIPlanningPhase.DAY_TWO_AFTERNOON;"
     // Process confidence votes
     const confidenceVote = await this.processConfidenceVotes(
       finalCommitment.teamConfidenceVotes;
@@ -267,12 +267,12 @@ export class PIPlanningCoordinationService {
       allTeamsCommitted: commitments.every((c) => c.committed),
       planningCompleted,
       piObjectives: planningEvent.teamPIObjectives,
-};
+}) + ";
 }
   // ============================================================================
   // PRIVATE IMPLEMENTATION METHODS
   // ============================================================================
-  private async createPIPlanningTables(): Promise<void> {
+  private async createPIPlanningTables(Promise<void> {
     await this.database.schema.createTableIfNotExists(';)';
      'pi_planning_events,';
       (table: any) => {
@@ -280,20 +280,14 @@ export class PIPlanningCoordinationService {
 }
     );
 }
-  private async createPIPlanningApprovalWorkflows(
-    planningEvent: PIPlanningEvent,
-    requestContext: any
-  ): Promise<any> {
-    const businessContextApproval =`)      await this.taskApprovalSystem.createApprovalTask({`;
-    `)        id: 'Review and approve business context for PI Planning,',
+  private async createPIPlanningApprovalWorkflows(Promise<any> {
+    const businessContextApproval =")      await this.taskApprovalSystem.createApprovalTask({"")        id: 'Review and approve business context for PI Planning,',"
 '        context : 'planningEvent: 'business_context,,',
         approvers: planningEvent.businessOwners,
         metadata: piNumber: planningEvent.planningIntervalNumber,
           artId: planningEvent.artId,,,});
     // Create other approval workflows...
-    const __teamPlanningApproval =`)      `team-planning-approval-${planningEvent.id} as ApprovalGateId;``)    const dependencyResolutionApproval =`;
-      `dependency-resolution-${p}lanningEvent.id`` as ApprovalGateId;)    const __finalCommitmentApproval =`;
-      `final-commitment-${planningEvent.id} as ApprovalGateId;``)    return {';
+    const __teamPlanningApproval =")      "team-planning-approval-${planningEvent.id} as ApprovalGateId"")    const dependencyResolutionApproval =""dependency-resolution-$" + JSON.stringify({p}) + "lanningEvent.id"" as ApprovalGateId;)    const __finalCommitmentApproval =""final-commitment-$" + JSON.stringify({planningEvent.id}) + " as ApprovalGateId;"")    return {';"
       businessContextApproval,
       teamPlanningApproval,
       dependencyResolutionApproval,
@@ -301,31 +295,24 @@ export class PIPlanningCoordinationService {
 };
 }
   // Placeholder implementations for complex processing methods
-  private async startPreparationPhase(
-    planningEvent: PIPlanningEvent
-  ): Promise<void> {
+  private async startPreparationPhase(Promise<void> {
     ')    this.logger.info('Starting PI Planning preparation phase,{';
       planningEventId: planningEvent.id,')';
 });
 }
-  private async generateTeamQuestions(
-    planningEvent: PIPlanningEvent,
-    businessContext: any
-  ): Promise<string[]> {
+  private async generateTeamQuestions(Promise<string[]> {
     return [')     'How does this roadmap change affect our current sprint plans?,';
      'What new dependencies do we need to consider?,')     'Are there capacity constraints for the proposed milestones?,';
 ];
 }
-  private async generateDayOneAfternoonPrep(
-    planningEvent: PIPlanningEvent
-  ): Promise<string[]> {
+  private async generateDayOneAfternoonPrep(Promise<string[]> {
     return [
      'Teams break into planning sessions,')     'Draft team PI objectives,';
      'Identify dependencies with other teams,';
      'Complete capacity planning,';
 ];
 }
-  private async processTeamObjectives(teamBreakoutData: any[]): Promise<any[]>  {
+  private async processTeamObjectives(Promise<any[]>  {
     return teamBreakoutData.map((team) => ({
       teamId: teamBreakoutData.flatMap(
       (team) => team.identifiedDependencies;
@@ -336,18 +323,13 @@ export class PIPlanningCoordinationService {
       description: dep.description,
       resolvedBy: dep.resolvedBy,')      status,});
 }
-  private async assessDayTwoReadiness(
-    planningEvent: PIPlanningEvent
-  ): Promise<{ ready: boolean, issues: string[]}> {
+  private async assessDayTwoReadiness(Promise<{ ready: boolean, issues: string[]}> {
     return {
       ready: planningEvent.teamPIObjectives.length > 0,
       issues: [],
 };
 }
-  private async applyBusinessOwnerFeedback(
-    planningEvent: PIPlanningEvent,
-    feedback: any[]
-  ): Promise<boolean> {
+  private async applyBusinessOwnerFeedback(Promise<boolean> {
     // Apply feedback and adjustments
     return true;
 }
@@ -356,7 +338,7 @@ export class PIPlanningCoordinationService {
     resolutions: any[];)  ): Promise<any[]> {';
     ')    return resolutions.filter((r) => r.resolution === 'resolved');
 }
-  private async processConfidenceVotes(votes: any[]): Promise<any>  {
+  private async processConfidenceVotes(Promise<any>  {
     const averageConfidence =;
       votes.reduce((sum, vote) => sum + vote.confidence, 0) / votes.length;
     return {
@@ -365,7 +347,7 @@ export class PIPlanningCoordinationService {
       adjustmentsNeeded: averageConfidence < 3,
 };
 }
-  private async processTeamCommitments(votes: any[]): Promise<any[]>  {
+  private async processTeamCommitments(Promise<any[]>  {
     return votes.map((vote) => ({
       teamId: vote.teamId,
       committed: vote.confidence >= 3,
@@ -376,9 +358,7 @@ export class PIPlanningCoordinationService {
     planningEvent.currentPhase = PIPlanningPhase.COMPLETION;
     return true;
 }
-  private async persistPlanningEvent(
-    planningEvent: PIPlanningEvent
-  ): Promise<void> {
+  private async persistPlanningEvent(Promise<void> {
     await this.database('pi_planning_events')';
       .insert(
         id: planningEvent.id,
@@ -400,33 +380,21 @@ export class PIPlanningCoordinationService {
         completed_at: planningEvent.completedAt,
         status: planningEvent.status,)')      .onConflict('id')';
       .merge();
-};)  private async loadActivePlanningEvents(): Promise<void> {';
+};)  private async loadActivePlanningEvents(Promise<void> {';
     ')    this.logger.info('Loading active PI Planning events...');
 }
   // Additional approval creation methods (simplified)
-  private async createBusinessContextApproval(
-    planningEvent: PIPlanningEvent,
-    context: any
-  ): Promise<ApprovalGateId> {
+  private async createBusinessContextApproval(Promise<ApprovalGateId> {
     return planningEvent.approvalGates.businessContextApproval;
 }
-  private async createTeamPlanningApproval(
-    planningEvent: PIPlanningEvent,
-    teamData: any[]
-  ): Promise<ApprovalGateId> {
+  private async createTeamPlanningApproval(Promise<ApprovalGateId> {
     return planningEvent.approvalGates.teamPlanningApproval;
 }
-  private async createDependencyResolutionApproval(
-    planningEvent: PIPlanningEvent,
-    review: any
-  ): Promise<ApprovalGateId> {
+  private async createDependencyResolutionApproval(Promise<ApprovalGateId> {
     return planningEvent.approvalGates.dependencyResolutionApproval;
 }
-  private async createFinalCommitmentApproval(
-    planningEvent: PIPlanningEvent,
-    commitment: any
-  ): Promise<ApprovalGateId> {
+  private async createFinalCommitmentApproval(Promise<ApprovalGateId> {
     return planningEvent.approvalGates.finalCommitmentApproval;
 };)};;
 export default PIPlanningCoordinationService;
-)`;
+)";"

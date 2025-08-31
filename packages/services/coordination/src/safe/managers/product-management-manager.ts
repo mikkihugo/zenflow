@@ -38,7 +38,7 @@ interface ProductManagerState {
   /**
    * Initialize the Product Management Manager with service delegation
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     if (this.initialized) {
       this.logger.warn('Product Management Manager already initialized');
       return;
@@ -133,7 +133,7 @@ interface ProductManagerState {
   /**
    * Initialize manager state
    */
-  private initializeState():ProductManagerState {
+  private initializeState(): ProductManagerState {
     return {
       isInitialized: false,
       activeProducts: new Map(),
@@ -155,7 +155,7 @@ interface ProductManagerState {
   /**
    * Restore state from memory system
    */
-  private async restoreState(): Promise<void> {
+  private async restoreState(Promise<void> {
     try {
       const savedState = await this.memorySystem.retrieve(';)';
        'product-manager-state'));
@@ -170,7 +170,7 @@ interface ProductManagerState {
   /**
    * Persist current state to memory system
    */
-  private async persistState(): Promise<void> {
+  private async persistState(Promise<void> {
     try {
     ')      await this.memorySystem.store('product-manager-state,{';
         visionCount: this.state.visionCount,

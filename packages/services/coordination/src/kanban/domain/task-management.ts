@@ -57,9 +57,9 @@ export class TaskManagementService {
   /**
    * Create a new task
    */
-  async createTask(taskData: Partial<Task>): Promise<Task> {
+  async createTask(Promise<Task> {
     const task: Task = {
-      id: taskData.id || `task-${Date.now()}`,
+      id: taskData.id || "task-${Date.now()}","
       title: taskData.title || 'Untitled Task',
       description: taskData.description,
       state: taskData.state || this.config.defaultState,
@@ -85,10 +85,10 @@ export class TaskManagementService {
   /**
    * Update an existing task
    */
-  async updateTask(taskId: string, updates: Partial<Task>): Promise<Task> {
+  async updateTask(Promise<Task> {
     const existingTask = this.tasks.get(taskId);
-    if (!existingTask) {
-      throw new Error(`Task not found: ${taskId}`);
+    if (!existingTask) " + JSON.stringify({
+      throw new Error("Task not found: " + taskId + ") + "");"
     }
 
     const updatedTask: Task = {
@@ -111,21 +111,21 @@ export class TaskManagementService {
   /**
    * Get task by ID
    */
-  async getTask(taskId: string): Promise<Task | null> {
+  async getTask(Promise<Task | null> {
     return this.tasks.get(taskId) || null;
   }
 
   /**
    * Get all tasks
    */
-  async getAllTasks(): Promise<Task[]> {
+  async getAllTasks(Promise<Task[]> {
     return Array.from(this.tasks.values());
   }
 
   /**
    * Get tasks by state
    */
-  async getTasksByState(state: string): Promise<Task[]> {
+  async getTasksByState(Promise<Task[]> {
     const allTasks = await this.getAllTasks();
     return allTasks.filter((task) => task.state === state);
   }
@@ -133,7 +133,7 @@ export class TaskManagementService {
   /**
    * Delete a task
    */
-  async deleteTask(taskId: string): Promise<boolean> {
+  async deleteTask(Promise<boolean> {
     const deleted = this.tasks.delete(taskId);
     if (deleted) {
       logger.info('Task deleted', { taskId });
@@ -148,7 +148,7 @@ export class TaskManagementService {
 
     if (!this.config.allowedStates.includes(task.state)) {
       throw new Error(
-        `Invalid task state: ${task.state}. Allowed states: ${this.config.allowedStates.join(', ')}`
+        "Invalid task state: ${task.state}. Allowed states: ${this.config.allowedStates.join(', ')}""
       );
     }
 
@@ -157,7 +157,7 @@ export class TaskManagementService {
         (t) => t.state === task.state
       );
       if (tasksInState.length >= this.config.maxTasksPerState) {
-        throw new Error(`Maximum tasks exceeded for state ${task.state}`);
+        throw new Error("Maximum tasks exceeded for state ${task.state}");"
       }
     }
   }

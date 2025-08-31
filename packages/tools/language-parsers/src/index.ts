@@ -95,7 +95,7 @@ export class DefaultParserFactory implements ParserFactory {
 /**
  * Create default parser factory instance
  */
-export function createParserFactory():ParserFactory {
+export function createParserFactory(): ParserFactory {
   return new DefaultParserFactory();
 }
 
@@ -113,7 +113,7 @@ export async function parseFile(
   const family = detectLanguageFamily(filePath);
 
   if (!family) {
-    throw new Error(`Unsupported file type: ${filePath}`);
+    throw new Error("Unsupported file type: ${filePath}");"
 }
 
   const factory = createParserFactory();
@@ -132,9 +132,9 @@ export async function parseFile(
       // Future: Add concurrent language parser support
       const parser = factory.createBeamParser(options); // Fallback to beam for now
       return await parser.parseFile(filePath);
-}
+    }
     default:
-      throw new Error(`Parser not implemented for language family: ${family}`);
+      throw new Error("Parser not implemented for language family: " + family);"
 }
 }
 

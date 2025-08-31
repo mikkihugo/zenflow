@@ -20,7 +20,7 @@ export interface ComplianceFramework {
    */
   configureMonitoring(config: this.findFramework(frameworkId);
     if (!framework) {
-      throw new Error(`Compliance framework not found: `assessment-${g}enerateNanoId(12)``)    const startTime = Date.now();
+      throw new Error(`Compliance framework not found: "assessment-$" + JSON.stringify({g}) + "enerateNanoId(12)"")    const startTime = Date.now();"
     try {
       // Assess each requirement
       const requirementStatuses: [];
@@ -42,7 +42,7 @@ export interface ComplianceFramework {
         frameworkId,
         frameworkName: 'compliance_assessment,',
 '        details: 'summary| detailed| executive| audit,',
-    frameworkIds: `report-${generateNanoId(12)})    try {``;
+    frameworkIds: "report-${generateNanoId(12)})    try {"";"
       // Collect framework reports
       const frameworkReports: [];
       for (const frameworkId of frameworkIds) {
@@ -85,9 +85,9 @@ export interface ComplianceFramework {
       try {
         // Simulate rule execution
         const passed = Math.random() > 0.3; // 70% pass rate
-        const score = passed ? Math.random() * 20 + 80: 'failed,)          evidence,    `)});`;
-} catch (error) {
-    `)        this.logger.error(`Validation rule execution failed,{`;
+        const score = passed ? Math.random() * 20 + 80: 'failed,)          evidence")});";"
+} catch (error) " + JSON.stringify({
+    `)        this.logger.error("Validation rule execution failed,{";"
           ruleId: [];
     for (const requirement of evidenceRequirements) {
       // Simulate evidence collection
@@ -95,7 +95,7 @@ export interface ComplianceFramework {
     ')        evidenceId,    ')        type: 'valid,',
 '        metadata:  {';
           requirement: requirement.id,
-          automated: true,',},';
+          automated: true,',}) + ",';
 });
 }
     return evidence;
@@ -141,7 +141,7 @@ export interface ComplianceFramework {
       if (!req.compliant) {
         violations.push({
     ')          violationId,    ')          frameworkId: 'open,',
-          evidence: req.evidence,,});`;
+          evidence: req.evidence,,})";
 }
 }
     return violations;
@@ -153,7 +153,7 @@ export interface ComplianceFramework {
     return validationResults
       .filter((result) => !result.passed)
       .map((result) => ({
-    `)        violationId: ',requirementId: 'open ',as const,';
+    ")        violationId: ',requirementId: 'open ',as const,';"
         evidence: 'last_30_days,',
 '        complianceScore: 'stable',)        factors:['Regular assessments,' Automated monitoring'],';
 },
@@ -174,7 +174,7 @@ export interface ComplianceFramework {
 }
   private summarizeRequirements(
     requirements: RequirementComplianceStatus[]
-  ):RequirementSummary {
+  ): RequirementSummary {
     return {
       total: requirements.length,
       compliant: filter(requirements, (r) => r.compliant).length,
@@ -198,14 +198,13 @@ export interface ComplianceFramework {
   private generateActionItems(status: [];
     for (const violation of status.violations) {
     ')      if (violation.severity ==='high '|| violation.severity ===critical){';
-        actions.push(')`;
-          `Address ${v}iolation.severityviolation: meanBy(frameworkReports,'compliance);
+        actions.push(')""Address ${v}iolation.severityviolation: meanBy(frameworkReports,'compliance);
     const totalViolations = sumBy(
       frameworkReports,
       (r) =>
         r.requirementsSummary.nonCompliant +
         r.requirementsSummary.partiallyCompliant;
-    );`)    return `Compliance assessment for ${period.description}:Average compliance ${Math.round(avgCompliance)}%, ${totalViolations} violations identified across ${frameworkReports.length} frameworks.``)};;
+    );")    return "Compliance assessment for ${period.description}:Average compliance ${Math.round(avgCompliance)}%, ${totalViolations} violations identified across $" + JSON.stringify({frameworkReports.length}) + " frameworks."")};;"
   private generateRecommendations(
     frameworkReports: [];)    const avgCompliance = meanBy(frameworkReports, 'compliance');
     if (avgCompliance < 80) {
@@ -248,4 +247,4 @@ interface AuditEntry {
   readonly details: Record<string, any>;
   readonly user: string;
 }
-;)`;
+;)";"

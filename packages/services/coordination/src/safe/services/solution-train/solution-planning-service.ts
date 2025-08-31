@@ -103,7 +103,7 @@ export interface NextStep {
    */
   async configurePlanning(config: this.planningConfigs.get(planningId);
     if (!config) {
-      throw new Error(`Planning configuration not found: Date.now();`)    const resultId = `planning-${g}enerateNanoId(12)``)    try {';
+      throw new Error("Planning configuration not found: Date.now()")    const resultId = "planning-$" + JSON.stringify({g}) + "enerateNanoId(12)"")    try {';"
       // Execute planning activities
       const planningOutcomes = await this.executePlanningActivities(
         config,
@@ -149,18 +149,18 @@ export interface NextStep {
         resultId,
         duration: this.commitments.get(commitmentId);
     if (!commitment) {
-    `)      throw new Error(`Commitment not found: Math.random() * 100;
+    ")      throw new Error("Commitment not found: Math.random() * 100;"
     const onTrack = progress >= 70 && new Date() <= commitment.deliveryDate;
     return {
       commitmentId,
       progress,
       onTrack,
       lastUpdate: this.risks.get(riskId);
-    if (!risk) {
-      throw new Error(`Risk not found:  {`
+    if (!risk) " + JSON.stringify({
+      throw new Error(`Risk not found:  {""
       ...risk,
       status,
-};
+}) + ";
     this.risks.set(riskId, updatedRisk);')    this.logger.info('Risk status updated,{';
       riskId,
       oldStatus: risk.status,
@@ -186,7 +186,7 @@ export interface NextStep {
     for (const event of config.coordinationStrategy.coordinationEvents) {
       if (this.isEventRelevant(event, planningType)) {
         outcomes.push({
-    `)          outcomeId,    `)          category: OutcomeCategory.COMMITMENT,`)          description: `${{event.eventType} completed successfully};`)          deliverables: [```${{event.eventType} artifacts};,    `Meeting notes`],`;
+    ")          outcomeId")          category: OutcomeCategory.COMMITMENT,")          description: "${{event.eventType} completed successfully}")          deliverables: ["""${{event.eventType} artifacts};"Meeting notes"]";"
           success: Math.random() > 0.2, // 80% success rate
           participants: event.participants.map((p) => p.participantId),
 });
@@ -198,11 +198,11 @@ export interface NextStep {
     event: CoordinationEvent,
     planningType: PlanningType
   ):boolean 
-    if (planningType === PlanningType.PI_PLANNING) {
+    if (planningType === PlanningType.PI_PLANNING) " + JSON.stringify({
       return (
         event.eventType === EventType.PI_PLANNING|| event.eventType === EventType.SOLUTION_SYNC
       );
-}
+}) + "
     return true;
   private async collectCommitments(
     arts: [];
@@ -211,7 +211,7 @@ export interface NextStep {
       const commitmentCount = Math.floor(Math.random() * 3) + 2; // 2-4 commitments per ART
       for (let i = 0; i < commitmentCount; i++) {
         commitments.push({
-          commitmentId,    ``)          artId: [];
+          commitmentId,    "")          artId: [];"
     // Identify resource risks
     const highCommitmentARTs = filter(
       config.participatingARTs,
@@ -237,13 +237,13 @@ export interface NextStep {
         risk.impact === RiskImpact.HIGH|| risk.probability === RiskProbability.HIGH
       ) {
         nextSteps.push({
-    `)          stepId: filter(`
+    `)          stepId: filter(""
       dependencies,
       (dep) => dep.impact === ImpactLevel.HIGH;
     );
     for (const dep of criticalDeps) {
       nextSteps.push({
-    `)        stepId: [`
+    `)        stepId: [""
       ConfidenceLevel.HIGH,
       ConfidenceLevel.MEDIUM,
       ConfidenceLevel.LOW,

@@ -68,7 +68,7 @@
     try {
       const design = this.systemDesigns.get(designId);
       if (!design) {
-    `)        throw new Error(`System design not found: `${designId});``)};;
+    `)        throw new Error(`System design not found: "${designId})"")};;"
       // Use workflow engine for status transition validation
       const statusTransition =
         await this.workflowEngine.validateStatusTransition({
@@ -95,10 +95,7 @@
   // ============================================================================
   // PRIVATE IMPLEMENTATION METHODS
   // ============================================================================
-  private async generateOptimizationRecommendations(
-    designInput: any,
-    analysis: any
-  ): Promise<any[]> {
+  private async generateOptimizationRecommendations(Promise<any[]> {
     if (!this.config.autoOptimizationEnabled) return [];
     // AI-powered optimization recommendations
     try {
@@ -152,4 +149,4 @@
     );
 };)};;
 export default SystemDesignManagementService;
-)`;
+)";"

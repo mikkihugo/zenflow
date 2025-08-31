@@ -264,7 +264,7 @@ export function createBaseEvent(
   metadata?: Record<string, any>
 ): Omit<BaseTaskMasterEvent, 'type'> {
   return {
-    eventId: `event_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    eventId: `event_${Date.now()}_${Math.random().toString(36).substr(2, 9)}","
     timestamp: new Date(),
     source,
     version: '1.0.0',

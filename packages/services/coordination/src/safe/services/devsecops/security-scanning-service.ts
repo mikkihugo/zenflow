@@ -74,7 +74,7 @@ export type SecuritySeverity =| low| medium| high| critical|'informational')expo
     ')      this.scheduleScan(config);')};)    this.logger.info('Security scan configured successfully,{';
       scanId: this.scanConfigurations.get(scanId);
     if (!config) {
-      throw new Error(`Scan configuration not found: Date.now();`)    const resultId = `result-${g}enerateNanoId(12)``)    try {';
+      throw new Error("Scan configuration not found: Date.now()")    const resultId = "result-$" + JSON.stringify({g}) + "enerateNanoId(12)"")    try {';"
       // Execute all configured tools in parallel
       const toolResults = await Promise.all(
         config.tools.map((tool) => this.executeTool(tool, config.targets));
@@ -99,10 +99,7 @@ export type SecuritySeverity =| low| medium| high| critical|'informational')expo
   /**
    * Simulate tool execution (replace with actual tool integration)
    */
-  private async simulateToolExecution(
-    tool: SecurityTool,
-    targets: ScanTarget[]
-  ): Promise<SecurityFinding[]> {
+  private async simulateToolExecution(Promise<SecurityFinding[]> {
     // Simulate processing delay
     await new Promise((resolve) =>
       setTimeout(resolve, Math.random() * 2000 + 500));
@@ -110,7 +107,7 @@ export type SecuritySeverity =| low| medium| high| critical|'informational')expo
     const findings: [];
     for (const target of targets) {
       // Simulate finding generation based on target priority
-      const findingCount =')        target.priority ==='critical '? 3: target.priority == = ' high ? 2: 0; i < findingCount; i++) {`'; `
+      const findingCount =')        target.priority ==='critical '? 3: target.priority == = ' high ? 2: 0; i < findingCount; i++) {"'"
         findings.push({
           id: 'medium',)            integrity : 'low')            availability : 'low')            businessImpact,},')          remediation: 'open,',
           falsePositive: [];
@@ -126,7 +123,7 @@ export type SecuritySeverity =| low| medium| high| critical|'informational')expo
   private deduplicateFindings(findings: new Set<string>();
     const uniqueFindings: [];
     for (const finding of findings) {
-    `)      const fingerprint = `${{finding.title}-${finding.location?.filePath|| unknown}-${finding.location?.lineNumber|| ``0}};)      if (!seen.has(fingerprint)) {';
+    `)      const fingerprint = "${{finding.title}-$" + JSON.stringify({finding.location?.filePath|| unknown}) + "-${finding.location?.lineNumber|| ""0}};)      if (!seen.has(fingerprint)) {';"
         seen.add(fingerprint);
         uniqueFindings.push(finding);
 }
@@ -238,4 +235,4 @@ export type SecuritySeverity =| low| medium| high| critical|'informational')expo
    */
   getAllScanResults():SecurityScanResult[] 
     return Array.from(this.scanResults.values())();')};;
-)`;
+)";"

@@ -158,14 +158,14 @@ class KnowledgeFactSystem {
   /**
    * Get access to the Fact EventBus for external coordination
    */
-  getEventBus():EventBus {
+  getEventBus(): EventBus {
     return this.eventBus;
 }
 
   /**
    * Initialize fact-specific dedicated databases - LAZY LOADING
    */
-  private async initializeFactDatabases():Promise<void> {
+  private async initializeFactDatabases(Promise<void> {
     try {
       // Get unified fact database following coordination guidelines
       const adapterResult = await createDatabaseAdapter();
@@ -202,12 +202,12 @@ class KnowledgeFactSystem {
   /**
    * Create unified fact schema with coordinated indexes
    */
-  private async createFactSchema():Promise<void> {
+  private async createFactSchema(Promise<void> {
     if (!this.factDatabase) return;
     
     try {
       // Main facts table with all data and coordinated indexes
-      await this.factDatabase.execute(`
+      await this.factDatabase.execute(""
         CREATE TABLE IF NOT EXISTS coordination_facts (
           id TEXT PRIMARY KEY,
           type TEXT NOT NULL,
@@ -225,7 +225,7 @@ class KnowledgeFactSystem {
           INDEX idx_fact_type_confidence (type, confidence),
           INDEX idx_fact_source_type (source, type)
         )
-      `);
+      ");"
       
       logger.info('Fact schema created with coordinated indexes');
     } catch (error) {
@@ -236,7 +236,7 @@ class KnowledgeFactSystem {
   /**
    * Initialize the fact system using Rust fact bridge
    */
-  async initialize():Promise<void> {
+  async initialize(Promise<void> {
     if (this.initialized) {
       return;
 }
@@ -248,7 +248,7 @@ class KnowledgeFactSystem {
       // Initialize EventBus
       const eventBusResult = await this.eventBus.initialize();
       if (eventBusResult.isErr()) {
-        throw new Error(`EventBus initialization failed:${eventBusResult.error?.message}`);
+        throw new Error("EventBus initialization failed:${eventBusResult.error?.message}");"
 }
 
       // Initialize the high-performance Rust fact bridge
@@ -270,9 +270,7 @@ class KnowledgeFactSystem {
   /**
    * Store a coordination-specific fact
    */
-  async storeFact(
-    fact: Omit<CoordinationFact, 'id' | ' timestamp'>
-  ):Promise<string> {
+  async storeFact(Promise<string> {
     await this.ensureInitialized();
 
     const factEntry: CoordinationFact = {
@@ -331,19 +329,19 @@ class KnowledgeFactSystem {
   /**
    * Persist fact to unified database with coordinated indexing
    */
-  private async persistToFactDatabases(fact: CoordinationFact): Promise<void> {
+  private async persistToFactDatabases(Promise<void> {
     if (!this.factDatabase) {
       logger.warn('No unified fact database available for persistence');
       return;
 }
     
-    try {
+    try " + JSON.stringify({
       // Single insert with all data - database handles coordinated indexing automatically
-      await this.factDatabase.execute(`
+      await this.factDatabase.execute(""
         INSERT OR REPLACE INTO coordination_facts (
           id, type, data, timestamp, source, confidence, tags
         ) VALUES (?, ?, ?, ?, ?, ?, ?)
-      `, [`
+      `, [""
         fact.id,
         fact.type,
         JSON.stringify(fact.data),
@@ -357,7 +355,7 @@ class KnowledgeFactSystem {
       logger.debug('Fact persisted with coordinated indexing', { 
         factId: fact.id, 
         type: fact.type 
-});
+}) + ");
       
 } catch (error) {
       logger.warn('Failed to persist to unified fact database', {
@@ -382,9 +380,7 @@ class KnowledgeFactSystem {
   /**
    * Retrieve facts based on query with unified database access
    */
-  async queryFacts(
-    query: CoordinationFactQuery = {}
-  ):Promise<CoordinationFact[]> {
+  async queryFacts(Promise<CoordinationFact[]> {
     await this.ensureInitialized();
 
     if (!this.factDatabase) {
@@ -444,7 +440,7 @@ class KnowledgeFactSystem {
   /**
    * Query facts from database (helper method)
    */
-  private async queryDatabaseFacts(query: CoordinationFactQuery): Promise<CoordinationFact[]> {
+  private async queryDatabaseFacts(Promise<CoordinationFact[]> {
     try {
       const { sql, params} = this.buildQuerySQL(query);
       
@@ -492,45 +488,45 @@ class KnowledgeFactSystem {
    * Build SQL query for database facts (helper method)
    */
   private buildQuerySQL(query: CoordinationFactQuery): { sql: string; params: unknown[]} {
-    let sql = `
+    let sql = ""
       SELECT id, type, data, timestamp, source, confidence, tags 
       FROM coordination_facts 
       WHERE 1=1
-    `;
+    ";"
     const params: unknown[] = [];
 
     if (query.type) {
-      sql += ` AND type = ?`;
+      sql += " AND type = ?";"
       params.push(query.type);
 }
 
     if (query.source) {
-      sql += ` AND source = ?`;
+      sql += " AND source = ?";"
       params.push(query.source);
 }
 
-    if (query.tags && query.tags.length > 0) {
-      sql += ` AND (`;
+    if (query.tags && query.tags.length > 0) " + JSON.stringify({
+      sql += ` AND (";"
       for (let index = 0; index < query.tags.length; index++) {
         const tag = query.tags[index];
-        if (index > 0) sql += ` OR `;
-        sql += `JSON_EXTRACT(tags, '$') LIKE ?`;
-        params.push(`%"${tag}"%`);
+        if (index > 0) sql += ` OR ";"
+        sql += `JSON_EXTRACT(tags, '$') LIKE ?";"
+        params.push("%"" + tag + ") + ""%");"
 }
-      sql += `)`;
+      sql += ")";"
 }
 
     if (query.minConfidence !== undefined) {
-      sql += ` AND confidence >= ?`;
+      sql += " AND confidence >= ?";"
       params.push(query.minConfidence);
 }
 
-    sql += ` ORDER BY confidence DESC, timestamp DESC`;
+    sql += " ORDER BY confidence DESC, timestamp DESC";"
 
-    if (query.limit) {
-      sql += ` LIMIT ?`;
+    if (query.limit) " + JSON.stringify({
+      sql += ` LIMIT ?";"
       params.push(query.limit);
-}
+}) + "
 
     return { sql, params};
 }
@@ -538,7 +534,7 @@ class KnowledgeFactSystem {
   /**
    * Get a specific fact by ID with unified database access
    */
-  async getFact(id: string): Promise<CoordinationFact|null> {
+  async getFact(Promise<CoordinationFact|null> {
     await this.ensureInitialized();
     
     if (!this.factDatabase) {
@@ -567,11 +563,11 @@ class KnowledgeFactSystem {
         source: string;
         confidence: number;
         tags: string;
-}>(`
+}>(""
         SELECT id, type, data, timestamp, source, confidence, tags 
         FROM coordination_facts 
         WHERE id = ?
-      `, [id]);
+      ", [id]);"
       
       if (rows.length === 0) {
         return null;
@@ -617,11 +613,7 @@ class KnowledgeFactSystem {
    * Search facts with text-based query (for compatibility with legacy code)
    * Can be called with object or direct parameters
    */
-  async searchFacts(
-    searchParamsOrQuery:{ query: string; type?: string; limit?: number;} | string,
-    type?:string,
-    limit?:number
-  ):Promise<CoordinationFact[]> {
+  async searchFacts(Promise<CoordinationFact[]> {
     await this.ensureInitialized();
 
     const searchParams = this.parseSearchParams(searchParamsOrQuery, type, limit);
@@ -659,35 +651,35 @@ class KnowledgeFactSystem {
   /**
    * Search facts in database (helper method)
    */
-  private async searchDatabaseFacts(query: string, searchType?:string, searchLimit = 10):Promise<CoordinationFact[]> {
+  private async searchDatabaseFacts(Promise<CoordinationFact[]> {
     if (!this.factDatabase) {
       return [];
 }
 
     try {
-      let sql = `
+      let sql = ""
         SELECT id, type, data, timestamp, source, confidence, tags 
         FROM coordination_facts 
         WHERE 1=1
-      `;
+      ";"
       const params: unknown[] = [];
 
       if (searchType) {
-        sql += ` AND type = ?`;
+        sql += " AND type = ?";"
         params.push(searchType);
 }
 
       if (query.trim()) {
-        sql += ` AND (`
+        sql += ` AND (""
           JSON_EXTRACT(data, '$') LIKE ? OR
           source LIKE ? OR
           JSON_EXTRACT(tags, '$') LIKE ?
-        )`;
-        const searchTerm = `%${query.toLowerCase()}%`;
+        )";"
+        const searchTerm = "%$" + JSON.stringify({query.toLowerCase()}) + "%";"
         params.push(searchTerm, searchTerm, searchTerm);
 }
 
-      sql += ` ORDER BY confidence DESC, timestamp DESC LIMIT ?`;
+      sql += " ORDER BY confidence DESC, timestamp DESC LIMIT ?";"
       params.push(searchLimit);
 
       const rows = await this.factDatabase.query<{
@@ -754,14 +746,14 @@ class KnowledgeFactSystem {
   /**
    * Search external facts via Rust bridge (helper method)
    */
-  private async searchExternalRustFacts(query: string, remainingLimit: number, searchType?:string): Promise<CoordinationFact[]> {
+  private async searchExternalRustFacts(Promise<CoordinationFact[]> {
     const results: CoordinationFact[] = [];
 
     try {
       const externalResults = await this.factBridge.searchFacts();
       for (const extResult of externalResults) {
         results.push({
-          id:`ext-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
+          id:"ext-${Date.now()}-${Math.random().toString(36).substring(2, 11)}","
           type: searchType || (extResult as { factType?: string}).factType || 'external-knowledge',          data:(extResult as { metadata?: unknown}).metadata || extResult,
           timestamp: new Date(),
           source: 'rust-fact-bridge',          confidence:(extResult as { score?: number}).score || 0.8,
@@ -774,8 +766,8 @@ class KnowledgeFactSystem {
       try {
         const fallbackResults = await this.searchExternalFacts(query, undefined, remainingLimit);
         for (const extResult of fallbackResults) {
-          results.push({
-            id:`ext-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
+          results.push(" + JSON.stringify({
+            id:"ext-" + Date.now() + ") + "-${Math.random().toString(36).substring(2, 11)}","
             type: searchType || 'external-knowledge',            data: extResult as unknown,
             timestamp: new Date(),
             source: 'foundation-fallback',            confidence: 0.7,
@@ -793,11 +785,7 @@ class KnowledgeFactSystem {
   /**
    * Search external facts using Rust fact bridge (with foundation fallback)
    */
-  async searchExternalFacts(
-    query: string,
-    sources?:string[],
-    limit = 10
-  ):Promise<FactSearchResult[]> {
+  async searchExternalFacts(Promise<FactSearchResult[]> {
     await this.ensureInitialized();
 
     if (!this.factClient) {
@@ -854,12 +842,12 @@ class KnowledgeFactSystem {
       // First try Rust fact bridge for maximum performance
       const npmResult = await this.factBridge.getNPMFacts();
       logger.info(
-        `NPM package info retrieved via Rust bridge:${packageName}`
+        "NPM package info retrieved via Rust bridge:${packageName}""
       );
       return npmResult;
 } catch (error) {
       logger.warn(
-        `Rust bridge NPM lookup failed for ${packageName}, trying foundation fallback:`,
+        "Rust bridge NPM lookup failed for ${packageName}, trying foundation fallback:","
         error
       );
 
@@ -867,9 +855,9 @@ class KnowledgeFactSystem {
       if (this.factClient) {
         try {
           return await this.factClient.getNPMPackage?.(packageName, version);
-} catch (fallbackError) {
+} catch (fallbackError) " + JSON.stringify({
           logger.error(
-            `Foundation NPM lookup also failed for ${packageName}:`,
+            "Foundation NPM lookup also failed for ${packageName}) + ":","
             fallbackError
           );
 }
@@ -891,22 +879,22 @@ class KnowledgeFactSystem {
       // First try Rust fact bridge for maximum performance
       const githubResult = await this.factBridge.getGitHubFacts();
       logger.info(
-        `GitHub repo info retrieved via Rust bridge:${owner}/${repo}`
+        "GitHub repo info retrieved via Rust bridge:${owner}/${repo}""
       );
       return githubResult;
 } catch (error) {
       logger.warn(
-        `Rust bridge GitHub lookup failed for ${owner}/${repo}, trying foundation fallback:`,
+        "Rust bridge GitHub lookup failed for ${owner}/${repo}, trying foundation fallback:","
         error
       );
 
       // Foundation fallback
       if (this.factClient) {
-        try {
+        try " + JSON.stringify({
           return await this.factClient.getGitHubRepository?.(owner, repo);
-} catch (fallbackError) {
+}) + " catch (fallbackError) {
           logger.error(
-            `Foundation GitHub lookup also failed for ${owner}/${repo}:`,
+            "Foundation GitHub lookup also failed for ${owner}/${repo}:","
             fallbackError
           );
 }
@@ -928,7 +916,7 @@ class KnowledgeFactSystem {
   /**
    * Get coordination system statistics with unified database support
    */
-  async getStats():Promise<{
+  async getStats(Promise<{
     totalFacts: number;
     factsByType: Record<string, number>;
     factsBySource: Record<string, number>;
@@ -937,25 +925,25 @@ class KnowledgeFactSystem {
     if (this.factDatabase) {
       try {
         // Get statistics from unified database with coordinated indexes
-        const totalResult = await this.factDatabase.query<{ count: number}>(`
+        const totalResult = await this.factDatabase.query<{ count: number}>(""
           SELECT COUNT(*) as count FROM coordination_facts
-        `);
+        ");"
         
-        const typeResult = await this.factDatabase.query<{ type: string; count: number}>(`
+        const typeResult = await this.factDatabase.query<{ type: string; count: number}>(""
           SELECT type, COUNT(*) as count 
           FROM coordination_facts 
           GROUP BY type
-        `);
+        ");"
         
-        const sourceResult = await this.factDatabase.query<{ source: string; count: number}>(`
+        const sourceResult = await this.factDatabase.query<{ source: string; count: number}>(""
           SELECT source, COUNT(*) as count 
           FROM coordination_facts 
           GROUP BY source
-        `);
+        ");"
         
-        const avgResult = await this.factDatabase.query<{ avg: number}>(`
+        const avgResult = await this.factDatabase.query<{ avg: number}>(""
           SELECT AVG(confidence) as avg FROM coordination_facts
-        `);
+        ");"
 
         const factsByType: Record<string, number> = {};
         const factsBySource: Record<string, number> = {};
@@ -1000,7 +988,7 @@ class KnowledgeFactSystem {
 };
 }
 
-  private async ensureInitialized():Promise<void> {
+  private async ensureInitialized(Promise<void> {
     if (!this.initialized) {
       await this.initialize();
 }

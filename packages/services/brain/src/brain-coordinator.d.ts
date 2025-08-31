@@ -1,40 +1,40 @@
 /**
- * @fileoverview Intelligence Orchestrator - Event-Driven AI Coordination
+ * @fileoverview: Intelligence Orchestrator - Event-Driven: AI Coordination
  *
- * Modern event-driven intelligence coordination system using foundation EventBus.
- * Orchestrates AI operations, prompt optimization, and performance monitoring
+ * Modern event-driven intelligence coordination system using foundation: EventBus.
+ * Orchestrates: AI operations, prompt optimization, and performance monitoring
  * through comprehensive event broadcasting and subscription patterns.
  *
- * ARCHITECTURAL PATTERN:Foundation EventBus with typed event coordination.
+ * ARCHITECTURAL: PATTERN:Foundation: EventBus with typed event coordination.
  */
 /**
  * Brain configuration interface
  */
-export interface BrainConfig {
-    sessionId?: string;
-    enableLearning?: boolean;
-    cacheOptimizations?: boolean;
-    logLevel?: string;
+export interface: BrainConfig {
+    session: Id?: string;
+    enable: Learning?: boolean;
+    cache: Optimizations?: boolean;
+    log: Level?: string;
     autonomous?: {
         enabled?: boolean;
-        learningRate?: number;
-        adaptationThreshold?: number;
+        learning: Rate?: number;
+        adaptation: Threshold?: number;
     };
     neural?: {
-        rustAcceleration?: boolean;
-        gpuAcceleration?: boolean;
-        parallelProcessing?: number;
+        rust: Acceleration?: boolean;
+        gpu: Acceleration?: boolean;
+        parallel: Processing?: number;
     };
 }
 /**
  * Prompt optimization interfaces
  */
-export interface PromptOptimizationRequest {
+export interface: PromptOptimizationRequest {
     task: string;
-    basePrompt: string;
+    base: Prompt: string;
     context?: Record<string, unknown>;
 }
-export interface PromptOptimizationResult {
+export interface: PromptOptimizationResult {
     strategy: string;
     prompt: string;
     confidence: number;
@@ -42,51 +42,51 @@ export interface PromptOptimizationResult {
 /**
  * Brain metrics interface
  */
-export interface BrainMetrics {
+export interface: BrainMetrics {
     initialized: boolean;
-    performanceTracker: boolean;
-    agentMonitor: boolean;
-    sessionId?: string;
+    performance: Tracker: boolean;
+    agent: Monitor: boolean;
+    session: Id?: string;
 }
 /**
  * Brain status interface
  */
-export interface BrainStatus {
+export interface: BrainStatus {
     initialized: boolean;
-    sessionId?: string;
-    enableLearning?: boolean;
-    performanceTracker: boolean;
-    agentMonitor: boolean;
+    session: Id?: string;
+    enable: Learning?: boolean;
+    performance: Tracker: boolean;
+    agent: Monitor: boolean;
 }
 /**
  * Optimization strategy interface
  */
-export interface OptimizationStrategy {
+export interface: OptimizationStrategy {
     strategy: string;
     confidence: number;
     parameters?: Record<string, unknown>;
 }
 /**
- * Intelligence event types for foundation EventBus with enhanced ML coordination
+ * Intelligence event types for foundation: EventBus with enhanced: ML coordination
  */
-export interface IntelligenceEvents {
+export interface: IntelligenceEvents {
     'intelligence:initialized': {
-        sessionId?: string;
-        config: BrainConfig;
+        session: Id?: string;
+        config: Brain: Config;
         timestamp: number;
     };
     'intelligence:shutdown': {
-        sessionId?: string;
+        session: Id?: string;
         timestamp: number;
     };
     'intelligence:prompt_optimized': {
-        request: PromptOptimizationRequest;
-        result: PromptOptimizationResult;
+        request: PromptOptimization: Request;
+        result: PromptOptimization: Result;
         duration: number;
         timestamp: number;
     };
     'intelligence:performance_tracked': {
-        metrics: BrainMetrics;
+        metrics: Brain: Metrics;
         timestamp: number;
     };
     'intelligence:error': {
@@ -95,14 +95,14 @@ export interface IntelligenceEvents {
         timestamp: number;
     };
     'brain:analyze_request': {
-        requestId: string;
+        request: Id: string;
         task: string;
         complexity: number;
         context: Record<string, unknown>;
         timestamp: number;
     };
     'brain:strategy_decided': {
-        requestId: string;
+        request: Id: string;
         strategy: 'dspy_optimization' | ' direct_training' | ' hybrid_workflow' | ' inference_only';
         reasoning: string;
         confidence: number;
@@ -110,116 +110,116 @@ export interface IntelligenceEvents {
     };
     'brain:mode_activated': {
         mode: 'dspy' | ' training' | ' inference' | ' validation' | ' coordination';
-        previousMode?: string;
-        requestId: string;
+        previous: Mode?: string;
+        request: Id: string;
         timestamp: number;
     };
     'brain:workflow_planned': {
-        requestId: string;
-        workflowSteps: string[];
-        estimatedDuration: number;
-        resourceRequirements: Record<string, unknown>;
+        request: Id: string;
+        workflow: Steps: string[];
+        estimated: Duration: number;
+        resource: Requirements: Record<string, unknown>;
         timestamp: number;
     };
     'brain:dspy_initiated': {
-        requestId: string;
-        optimizationType: string;
-        promptComplexity: number;
-        expectedIterations: number;
+        request: Id: string;
+        optimization: Type: string;
+        prompt: Complexity: number;
+        expected: Iterations: number;
         timestamp: number;
     };
     'brain:training_initiated': {
-        requestId: string;
-        modelType: string;
-        datasetSize: number;
+        request: Id: string;
+        model: Type: string;
+        dataset: Size: number;
         epochs: number;
         sparc_phase: string;
         timestamp: number;
     };
     'brain:validation_initiated': {
-        requestId: string;
-        validationType: string;
-        modelId: string;
-        testDataSize: number;
+        request: Id: string;
+        validation: Type: string;
+        model: Id: string;
+        testData: Size: number;
         timestamp: number;
     };
     'brain:hybrid_workflow_started': {
-        requestId: string;
-        workflowType: string;
+        request: Id: string;
+        workflow: Type: string;
         phases: string[];
         coordination: Record<string, unknown>;
         timestamp: number;
     };
     'brain:progress_update': {
-        requestId: string;
+        request: Id: string;
         phase: string;
         progress: number;
-        currentStep: string;
-        nextStep?: string;
+        current: Step: string;
+        next: Step?: string;
         timestamp: number;
     };
     'brain:decision_refined': {
-        requestId: string;
-        originalStrategy: string;
-        refinedStrategy: string;
-        refinementReason: string;
+        request: Id: string;
+        original: Strategy: string;
+        refined: Strategy: string;
+        refinement: Reason: string;
         timestamp: number;
     };
     'brain:insights_discovered': {
-        requestId: string;
+        request: Id: string;
         insights: string[];
         patterns: Record<string, unknown>;
-        learningValue: number;
+        learning: Value: number;
         timestamp: number;
     };
     'brain:workflow_completed': {
-        requestId: string;
-        finalStrategy: string;
+        request: Id: string;
+        final: Strategy: string;
         duration: number;
         success: boolean;
         results: Record<string, unknown>;
         timestamp: number;
     };
     'brain:bottleneck_detected': {
-        requestId?: string;
-        bottleneckType: string;
+        request: Id?: string;
+        bottleneck: Type: string;
         severity: 'low' | ' medium' | ' high' | ' critical';
         recommendations: string[];
         timestamp: number;
     };
     'brain:performance_analyzed': {
-        analysisId: string;
-        systemPerformance: Record<string, number>;
-        mlPerformance: Record<string, number>;
-        optimizationOpportunities: string[];
+        analysis: Id: string;
+        system: Performance: Record<string, number>;
+        ml: Performance: Record<string, number>;
+        optimization: Opportunities: string[];
         timestamp: number;
     };
     'brain:ml_request_analyzed': {
-        requestId: string;
-        mlType: 'training' | ' inference' | ' optimization' | ' validation';
+        request: Id: string;
+        ml: Type: 'training' | ' inference' | ' optimization' | ' validation';
         complexity: number;
-        resourceEstimate: Record<string, number>;
+        resource: Estimate: Record<string, number>;
         timestamp: number;
     };
     'brain:ml_coordination_active': {
-        requestId: string;
-        coordinationType: string;
-        activeSystems: string[];
-        eventFlow: string[];
+        request: Id: string;
+        coordination: Type: string;
+        active: Systems: string[];
+        event: Flow: string[];
         timestamp: number;
     };
 }
 /**
- * Intelligence Orchestrator - Event-driven AI coordination system
+ * Intelligence: Orchestrator - Event-driven: AI coordination system
  *
- * Extends foundation EventBus to provide comprehensive AI coordination
+ * Extends foundation: EventBus to provide comprehensive: AI coordination
  * with event broadcasting for all intelligence operations.
  */
-export declare class IntelligenceOrchestrator extends EventBus<IntelligenceEvents> {
+export declare class: IntelligenceOrchestrator extends: EventBus<Intelligence: Events> {
     private config;
     private initialized;
-    private performanceTracker;
-    private agentMonitor;
-    constructor(config?: BrainConfig);
+    private performance: Tracker;
+    private agent: Monitor;
+    constructor(config?: Brain: Config);
 }
-//# sourceMappingURL=brain-coordinator.d.ts.map
+//# sourceMappingUR: L=brain-coordinator.d.ts.map

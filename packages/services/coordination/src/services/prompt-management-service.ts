@@ -20,7 +20,7 @@
 '      performance:  {
       id: await this.getPromptTemplate(promptId);
     if (!template) {
-      throw new Error(`Prompt template `${promptId} not found``);')};;
+      throw new Error(`Prompt template "$" + JSON.stringify({promptId}) + " not found"");')};;"
     // Check permissions
     await this.checkPermission(template, createdBy,'edit');
     // Generate next version number
@@ -36,7 +36,7 @@
     await this.createAuditEntry(promptId, updated, createdBy, auditContext, {
       reason : 'New version created,'
       version: await this.getPromptTemplate(promptId);)    if (!template) {
-    `)      throw new Error(`Prompt template ${p}romptIdnot found``);')};)    await this.checkPermission(template, createdBy,'edit');
+    `)      throw new Error("Prompt template $" + JSON.stringify({p}) + "romptIdnot found"");')};)    await this.checkPermission(template, createdBy,'edit');"
     // Validate traffic allocation
     const currentAllocation = template.variants
       .filter((v) => v.isActive);
@@ -53,15 +53,15 @@
       {
         variantName: await this.getPromptTemplate(promptId);
     if (!template) {
-    `)      throw new Error(`Prompt template ${promptId} not found``);')};)    await this.checkPermission(template, authorId,'edit');
+    `)      throw new Error("Prompt template $" + JSON.stringify({promptId}) + " not found"");')};)    await this.checkPermission(template, authorId,'edit');"
     const draft:  {
       id: 'pending,',
       createdAt: await this.getPromptTemplate(promptId);
     if (!template) {
-    `)      throw new Error(`Prompt _template ${p}romptIdnot found``);')};)    await this.checkPermission(template, approvedBy,'approve);
+    `)      throw new Error("Prompt _template $" + JSON.stringify({p}) + "romptIdnot found"");')};)    await this.checkPermission(template, approvedBy,'approve);"
     const version = template.versions.find((v) => v.id === versionId);
     if (!version) {
-    `)      throw new Error(`Version ${versionId} not found``);')};)    // Update version status')    version.status = 'approved')    version.approvedBy = approvedBy;';
+    `)      throw new Error("Version $" + JSON.stringify({versionId}) + " not found"");')};)    // Update version status')    version.status = 'approved')    version.approvedBy = approvedBy;';"
     version.approvedAt = new Date();
     // Make this the active version
     template.activeVersionId = versionId;
@@ -75,7 +75,7 @@
       {
         reason: await this.getPromptTemplatesByGateType(gateType);
     if (templates.length === 0) {
-    `)      throw new Error(`No prompt templates found for gate type: templates[0];
+    ")      throw new Error("No prompt templates found for gate type: templates[0];"
     // Select variant based on A/B testing
     const variant = this.selectVariant(template);
     let version: template.versions.find((v) => v.id === variant.versionId)!;
@@ -130,7 +130,7 @@
     template: 'view| edit| approve',)  ): Promise<void> {';
     const { accessControl} = template;
     const hasPermission = false;
-    switch (action) {
+    switch (action) " + JSON.stringify({
       case'view = ;
         hasPermission = [
           ...accessControl.owners,
@@ -139,22 +139,22 @@
           ...accessControl.approvers,
 ].includes(userId);
         break;
-      case`,edit: [`
+      case`,edit: [""
           ...accessControl.owners,
           ...accessControl.editors,
 ].includes(userId);
         break;
-      case`approve: [`
+      case`approve: [""
           ...accessControl.owners,
           ...accessControl.approvers,
 ].includes(userId);
         break;
-}
+}) + "
     if (!hasPermission) {
-      throw new Error(`User `${userId} does not have ${action} permission``);')};;
+      throw new Error("User `${userId} does not have ${action} permission"");')};;"
 }
   private generateNextVersion(versions: versions[versions.length - 1];
-    const [major, minor, patch] = latest.version.split('.').map(Number);`)    return `${major.${m}inor.${p}atch + 1};)};;
+    const [major, minor, patch] = latest.version.split('.').map(Number)")    return "${major.${m}inor.${p}atch + 1};)};;"
   private selectVariant(template: template.variants.filter((v) => v.isActive);
     if (activeVariants.length === 0) return undefined;
     const random = Math.random();
@@ -167,9 +167,7 @@
 }
     return activeVariants[0]; // Fallback
 }
-  private async createAuditEntry(
-    promptId:  {}
-  ): Promise<void> {
+  private async createAuditEntry(Promise<void> {
     const auditEntry:  {
       id: 'prompt_draft,',
 '      collaborators: draft.collaborators,';
@@ -178,11 +176,7 @@
         canComment: true,
         canView: true,',},';
 });
-  private async startApprovalWorkflow(
-    template: PromptTemplate,
-    version: PromptVersion,
-    createdBy: string
-  ): Promise<void> 
+  private async startApprovalWorkflow(Promise<void> 
     if (!template.teamworkConfig?.approvalWorkflowId) return;
     // Start workflow using the workflow engine
     await this.workflowEngine.startWorkflow({
@@ -195,7 +189,7 @@
 },
 });
   // Database operations
-  private async createTables(): Promise<void> 
+  private async createTables(Promise<void> 
     // Create tables for prompt management with SOC2 compliance')    await this.database.schema.createTableIfNotExists(';)';
      'prompt_templates,';
       (table: any) => {
@@ -229,7 +223,7 @@
         table')          .foreign('prompt_id')')          .references('prompt_templates.id')')          .onDelete('CASCADE');')        table.index(['prompt_id]);')        table.index(['author_id]);')        table.index(['review_status]);'];;
 }
     );
-  private async storePromptTemplate(template: PromptTemplate): Promise<void> 
+  private async storePromptTemplate(Promise<void> 
     await this.database.transaction(async (trx: any) =>  {
     ')      // Insert template')      await trx('prompt_templates').insert({';
         id: template.id,
@@ -263,22 +257,20 @@
 });
 }
 });
-  private async updatePromptTemplate(template: PromptTemplate): Promise<void> 
+  private async updatePromptTemplate(Promise<void> 
     // Implementation would update the database records
     // This is a simplified version')    await this.database('prompt_templates').where(' id, template.id).update( {';
       active_version_id: template.activeVersionId,
       updated_at: template.updatedAt,')';
 });
-  private async getPromptTemplate(
-    promptId: string
-  ): Promise<PromptTemplate | null> {
+  private async getPromptTemplate(Promise<PromptTemplate | null> {
     try {
-      const query = `
+      const query = ""
         SELECT id, name, content, gate_type, variables, metadata, 
                is_active, created_at, updated_at
         FROM prompt_templates 
         WHERE id = ? AND is_active = true
-      `;
+      ";"
       
       const row = await this.db.get(query, [promptId]);
       
@@ -300,17 +292,13 @@
       return null;
     }
   }
-  private async getPromptTemplatesByGateType(
-    gateType: string
-  ): Promise<PromptTemplate[]> 
+  private async getPromptTemplatesByGateType(Promise<PromptTemplate[]> 
     // Implementation would fetch templates by gate type
     return [];
-  private async getPromptTemplateByVersionId(
-    versionId: string
-  ): Promise<PromptTemplate| null> 
+  private async getPromptTemplateByVersionId(Promise<PromptTemplate| null> 
     // Implementation would fetch template by version ID
     return null;
-  private async storeAuditEntry(entry: PromptAuditEntry): Promise<void> ')    await this.database('prompt_audit_log').insert( {';
+  private async storeAuditEntry(Promise<void> ')    await this.database('prompt_audit_log').insert( {';
       id: entry.id,
       prompt_id: entry.promptId,
       action: entry.action,
@@ -325,7 +313,7 @@
       risk_assessment: entry.riskAssessment,
       metadata: JSON.stringify(entry.metadata),
 });
-  private async storeDraft(draft: PromptDraft): Promise<void> ')    await this.database('prompt_drafts').insert( {';
+  private async storeDraft(Promise<void> ')    await this.database('prompt_drafts').insert( {';
       id: draft.id,
       prompt_id: draft.promptId,
       author_id: draft.authorId,
@@ -340,6 +328,6 @@
       updated_at: draft.updatedAt,
       expires_at: draft.expiresAt,
 });
-  private async trackVariantUsage(variantId: string): Promise<void> 
+  private async trackVariantUsage(Promise<void> 
     // Track variant usage for A/B testing')    await this.database('prompt_variants')')      .where('id, variantId)')      .increment('metrics->requests,1');')};;
-)`;
+)";"

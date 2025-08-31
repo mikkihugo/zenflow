@@ -214,7 +214,7 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
   /**
    * Initialize store with dedicated knowledge databases - LAZY LOADING
    */
-  async initialize():Promise<Result<void, KnowledgeError>> {
+  async initialize(Promise<Result<void, KnowledgeError>> {
     if (this.initialized) return ok();
 
     const __timer = this.performanceTracker.startTimer('knowledge_store_initialize');
@@ -226,7 +226,7 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
       // Initialize EventBus
       const eventBusResult = await this.eventBus.initialize();
       if (eventBusResult.isErr()) {
-        throw new Error(`EventBus initialization failed:${eventBusResult.error?.message}`);
+        throw new Error("EventBus initialization failed:${eventBusResult.error?.message}");"
 }
 
       // Initialize telemetry
@@ -278,10 +278,7 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
   /**
    * Add knowledge item with comprehensive foundation integration
    */
-  async add(
-    item: Omit<KnowledgeItem, 'id' | ' timestamp' | ' version' | ' isActive'>,
-    options?:KnowledgeItemOptions
-  ):Promise<Result<UUID, KnowledgeError>> {
+  async add(Promise<Result<UUID, KnowledgeError>> {
     if (!this.initialized) {
       const initResult = await this.initialize();
       if (!initResult.isOk()) return err(initResult.error);
@@ -381,7 +378,7 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
   /**
    * Get knowledge item by ID with comprehensive error handling
    */
-  async get(id: UUID): Promise<Result<KnowledgeItem|null, KnowledgeError>> {
+  async get(Promise<Result<KnowledgeItem|null, KnowledgeError>> {
     if (!this.initialized) {
       const initResult = await this.initialize();
       if (!initResult.isOk()) return err(initResult.error);
@@ -457,21 +454,16 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
 }
 
   // Additional methods would continue here following the same pattern...
-  async update(
-    id: UUID,
-    updates: Partial<KnowledgeItem>
-  ):Promise<Result<KnowledgeItem, KnowledgeError>> {
+  async update(Promise<Result<KnowledgeItem, KnowledgeError>> {
     // Implementation follows memory package pattern
     return err(new KnowledgeError('Not implemented yet'));
 }
 
-  async delete(id: UUID): Promise<Result<boolean, KnowledgeError>> {
+  async delete(Promise<Result<boolean, KnowledgeError>> {
     return err(new KnowledgeError('Not implemented yet'));
 }
 
-  async query(
-    query?:KnowledgeQuery
-  ):Promise<Result<KnowledgeItem[], KnowledgeError>> {
+  async query(Promise<Result<KnowledgeItem[], KnowledgeError>> {
     if (!this.initialized) {
       const initResult = await this.initialize();
       if (!initResult.isOk()) return err(initResult.error);
@@ -531,10 +523,7 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
 });
 }
 
-  async search(
-    text: string,
-    options?:{ limit?: number; type?: KnowledgeItem['type']}
-  ):Promise<Result<KnowledgeItem[], KnowledgeError>> {
+  async search(Promise<Result<KnowledgeItem[], KnowledgeError>> {
     return this.query({
       contentSearch: text,
       type: options?.type,
@@ -542,7 +531,7 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
 });
 }
 
-  async clear():Promise<Result<void, KnowledgeError>> {
+  async clear(Promise<Result<void, KnowledgeError>> {
     try {
       const itemCount = this.items.size;
       this.items.clear();
@@ -568,7 +557,7 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
 }
 }
 
-  async getStats():Promise<Result<KnowledgeStats, KnowledgeError>> {
+  async getStats(Promise<Result<KnowledgeStats, KnowledgeError>> {
     try {
       const activeItems = Array.from(this.items.values()).filter(
         (item) => item.isActive
@@ -611,7 +600,7 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
 }
 }
 
-  async shutdown():Promise<Result<void, KnowledgeError>> {
+  async shutdown(Promise<Result<void, KnowledgeError>> {
     try {
       if (this.storage) {
         await this.storage.close?.();
@@ -650,7 +639,7 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
   // PRIVATE HELPER METHODS
   // =============================================================================
 
-  private async initializeTelemetry():Promise<void> {
+  private async initializeTelemetry(Promise<void> {
     if (this.telemetryInitialized) return;
 
     try {
@@ -673,15 +662,12 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
 '}
 }
 
-  private async performStorageOperation(
-    operation: string,
-    ...args: any[]
-  ):Promise<any> {
+  private async performStorageOperation(Promise<any> {
     if (!this.storage) {
       throw new Error('Storage not initialized');
 }
 
-    switch (operation) {
+    switch (operation) " + JSON.stringify({
       case 'get':
         return this.storage.get(args[0]);
       case 'set':
@@ -689,20 +675,20 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
       case 'delete':
         return this.storage.delete(args[0]);
       default:
-        throw new Error(`Unknown storage operation:${operation}`);
+        throw new Error("Unknown storage operation:" + operation + ") + "");"
 }
 }
 
   /**
    * Initialize knowledge-specific dedicated databases - foundation redirects to database package
    */
-  private async initializeKnowledgeDatabases():Promise<void> {
+  private async initializeKnowledgeDatabases(Promise<void> {
     this.logger.debug('🧠 Initializing unified knowledge database with coordinated indexing...');
 
     try {
       // Mock database capability 
       const capability = 'basic';
-      this.logger.info(`Database capability level:${capability}`);
+      this.logger.info("Database capability level:${capability}");"
 
       // Mock unified database connection
       const dbAccess = {
@@ -769,7 +755,7 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
 }
 }
 
-  private async loadFromKnowledgeDatabases():Promise<{ success: boolean; error?: Error}> {
+  private async loadFromKnowledgeDatabases(Promise<{ success: boolean; error?: Error}> {
     try {
       // Load from knowledge metadata store if available
       if (this.knowledgeMetadataStore) {
@@ -796,19 +782,19 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
   /**
    * Get access to the Knowledge EventBus for external coordination
    */
-  getEventBus():EventBus {
+  getEventBus(): EventBus {
     return this.eventBus;
 }
 
   /**
    * Create unified knowledge schema with coordinated indexes
    */
-  private async createKnowledgeSchema():Promise<void> {
+  private async createKnowledgeSchema(Promise<void> {
     if (!this.knowledgeDatabase) return;
     
     try {
       // Main knowledge items table with all data and coordinated indexes
-      await this.knowledgeDatabase.execute(`
+      await this.knowledgeDatabase.execute(""
         CREATE TABLE IF NOT EXISTS knowledge_items (
           id TEXT PRIMARY KEY,
           content TEXT NOT NULL,
@@ -822,24 +808,24 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
           version INTEGER DEFAULT 1,
           is_active BOOLEAN DEFAULT 1
         )
-      `);
+      ");"
       
       // Create coordinated indexes for all access patterns
-      await this.knowledgeDatabase.execute(`
+      await this.knowledgeDatabase.execute(""
         CREATE INDEX IF NOT EXISTS idx_knowledge_type ON knowledge_items(type)
-      `);
+      ");"
       
-      await this.knowledgeDatabase.execute(`
+      await this.knowledgeDatabase.execute(""
         CREATE INDEX IF NOT EXISTS idx_knowledge_confidence ON knowledge_items(confidence)
-      `);
+      ");"
       
-      await this.knowledgeDatabase.execute(`
+      await this.knowledgeDatabase.execute(""
         CREATE INDEX IF NOT EXISTS idx_knowledge_timestamp ON knowledge_items(timestamp)
-      `);
+      ");"
       
-      await this.knowledgeDatabase.execute(`
+      await this.knowledgeDatabase.execute(""
         CREATE INDEX IF NOT EXISTS idx_knowledge_type_confidence ON knowledge_items(type, confidence)
-      `);
+      ");"
       
       this.logger.info('Knowledge schema created with coordinated indexes');
 } catch (error) {
@@ -854,7 +840,7 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
   /**
    * Persist knowledge item to unified database + specialized vector RAG
    */
-  private async persistToKnowledgeDatabases(item: KnowledgeItem): Promise<void> {
+  private async persistToKnowledgeDatabases(Promise<void> {
     const tasks = [];
     
     // 1. Persist to unified database with coordinated indexing
@@ -874,17 +860,17 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
   /**
    * Persist to unified database with coordinated indexes
    */
-  private async persistToUnifiedDatabase(item: KnowledgeItem): Promise<void> {
+  private async persistToUnifiedDatabase(Promise<void> {
     if (!this.knowledgeDatabase) return;
     
     try {
       // Single insert with all data - database handles coordinated indexing automatically
-      await this.knowledgeDatabase.execute(`
+      await this.knowledgeDatabase.execute(""
         INSERT OR REPLACE INTO knowledge_items (
           id, content, type, confidence, timestamp, source, tags, 
           metadata, related_items, version, is_active
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `, [`
+      ", [""
         item.id,
         item.content,
         item.type,
@@ -911,12 +897,12 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
   /**
    * Persist to vector RAG with organized namespaces for different RAG contexts
    */
-  private async persistToVectorRAG(item: KnowledgeItem): Promise<void> {
+  private async persistToVectorRAG(Promise<void> {
     if (!this.vectorRAG) return;
     
-    try {
+    try " + JSON.stringify({
       // Use namespaced ID to organize different RAG contexts
-      const ragId = `knowledge:${item.type}:${item.id}`;
+      const ragId = "knowledge:${item.type}) + ":${item.id}";"
       
       // Generate embedding vector (placeholder - would use actual embedding service)
       const embedding = await this.generateEmbedding(item.content);
@@ -927,15 +913,15 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
         type: item.type,
         confidence: item.confidence,
         source: item.source,
-        ragNamespace:`knowledge:${item.type}`, // Organize by knowledge type`
+        ragNamespace:"knowledge:${item.type}", // Organize by knowledge type""
         content: item.content.substring(0, 500), // Truncated for metadata
         tags: item.tags
 });
       
-      this.logger.debug('Knowledge item persisted to vector RAG', { 
+      this.logger.debug('Knowledge item persisted to vector RAG', " + JSON.stringify({ 
         itemId: item.id, 
         ragId,
-        namespace:`knowledge:${item.type}`
+        namespace:`knowledge:${item.type}) + """
 });
       
 } catch (error) {
@@ -949,7 +935,7 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
   /**
    * Generate embedding vector (placeholder implementation)
    */
-  private async generateEmbedding(content: string): Promise<number[]> {
+  private async generateEmbedding(Promise<number[]> {
     // Placeholder - would integrate with actual embedding service
     // For now, return a simple hash-based pseudo-embedding
     const hash = content.split(').reduce((a, b) => {
@@ -969,16 +955,16 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
   /**
    * Load knowledge item from unified database using coordinated indexes
    */
-  private async loadKnowledgeItemFromDatabases(id: UUID): Promise<KnowledgeItem | null> {
+  private async loadKnowledgeItemFromDatabases(Promise<KnowledgeItem | null> {
     if (!this.knowledgeDatabase) {
       return null;
 }
     
     try {
       // Single query using primary key index - optimal performance
-      const results = await (this.knowledgeDatabase as any).query(`
+      const results = await (this.knowledgeDatabase as any).query(""
         SELECT * FROM knowledge_items WHERE id = ? AND is_active = 1
-      `, [id]);
+      ", [id]);"
       
       if (results.length === 0) {
         return null;
@@ -1024,7 +1010,7 @@ export class FoundationKnowledgeStore implements KnowledgeStore {
   /**
    * Load existing items from knowledge databases (bulk load)
    */
-  private async loadAllFromKnowledgeDatabases():Promise<{ success: boolean; error?: string}> {
+  private async loadAllFromKnowledgeDatabases(Promise<{ success: boolean; error?: string}> {
     try {
       // This would implement bulk loading from databases
       // For now, return success as a placeholder
@@ -1070,11 +1056,7 @@ export class EnterpriseKnowledgeManager implements KnowledgeManager {
     this.logger = getLogger('knowledge-manager');
 }
 
-  async addKnowledge(
-    content: string,
-    type: KnowledgeItem['type'],
-    options:{ confidence?: number; source?: string; tags?: string[]} = {}
-  ):Promise<Result<UUID, KnowledgeError>> {
+  async addKnowledge(Promise<Result<UUID, KnowledgeError>> {
     const confidence = options.confidence ?? 0.8;
 
     return withContext({ operation: 'addKnowledge', type, confidence}, () =>
@@ -1085,36 +1067,29 @@ export class EnterpriseKnowledgeManager implements KnowledgeManager {
     );
 }
 
-  async getKnowledge(
-    id: UUID
-  ):Promise<Result<KnowledgeItem|null, KnowledgeError>> {
+  async getKnowledge(Promise<Result<KnowledgeItem|null, KnowledgeError>> {
     return withContext({ operation: 'getKnowledge', id}, () =>
       this.store.get(id)
     );
 }
 
-  async queryKnowledge(
-    query?:KnowledgeQuery
-  ):Promise<Result<KnowledgeItem[], KnowledgeError>> {
+  async queryKnowledge(Promise<Result<KnowledgeItem[], KnowledgeError>> {
     return withContext({ operation: 'queryKnowledge', query}, () =>
       this.store.query(query)
     );
 }
 
-  async searchKnowledge(
-    text: string,
-    options?:{ limit?: number; type?: KnowledgeItem['type']}
-  ):Promise<Result<KnowledgeItem[], KnowledgeError>> {
+  async searchKnowledge(Promise<Result<KnowledgeItem[], KnowledgeError>> {
     return withContext({ operation: 'searchKnowledge', text, options}, () =>
       this.store.search(text, options)
     );
 }
 
-  async getStats():Promise<Result<KnowledgeStats, KnowledgeError>> {
+  async getStats(Promise<Result<KnowledgeStats, KnowledgeError>> {
     return this.store.getStats();
 }
 
-  async shutdown():Promise<Result<void, KnowledgeError>> {
+  async shutdown(Promise<Result<void, KnowledgeError>> {
     return this.store.shutdown();
 }
 }
@@ -1260,7 +1235,7 @@ export async function getKnowledgeManagement(config?:any): Promise<any> {
         const knowledgePromises = topFacts.map((fact: any) =>
           system.addKnowledge(fact.content || fact.summary, 'insight', {
             confidence: fact.confidence || 0.7,
-            source:`fact-derived-${fact.source}`,
+            source:"fact-derived-${fact.source}","
             tags:['fact-derived', fact.source],
 })
         );

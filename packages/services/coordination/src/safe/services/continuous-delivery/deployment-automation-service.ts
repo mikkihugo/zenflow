@@ -313,7 +313,7 @@ export class DeploymentAutomationService {
   /**
    * Initialize service with lazy-loaded dependencies
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     if (this.initialized) return'; 
     try {
       // Lazy load @claude-zen/brain for LoadBalancer - deployment strategies
@@ -350,13 +350,13 @@ export class DeploymentAutomationService {
     pipelineId: this.performanceTracker.startTimer('deployment_execution');
     try {
       this.logger.info(';)';
-       'Executing deployment automation with intelligent optimization,`;
+       'Executing deployment automation with intelligent optimization,";"
         {
           pipelineId,
           environment,
           artifactCount: this.environments.get(environment);
       if (!deploymentEnv) {
-        throw new Error(`Deployment environment not found: `${environment});``)};;
+        throw new Error("Deployment environment not found: "${environment})"")};;"
       // Use brain coordinator for intelligent strategy selection
       const strategyRecommendation =
         await this.brainCoordinator.recommendDeploymentStrategy({
@@ -391,10 +391,10 @@ export class DeploymentAutomationService {
         strategy,
         duration: this.performanceTracker.startTimer('deployment_validation');
     try {
-      this.logger.info('Validating deployment readiness with AI analysis,{';
+      this.logger.info('Validating deployment readiness with AI analysis," + JSON.stringify({';
         planId: plan.id,
-        environment: plan.environment.name,)`;
-});
+        environment: plan.environment.name,)";"
+}) + ");
       // Artifact validation
       this.validateArtifacts(plan.artifacts);
       // Environment health check
@@ -411,7 +411,7 @@ export class DeploymentAutomationService {
     try {
       const execution = this.activeDeployments.get(executionId);
       if (!execution) {
-    `)        throw new Error(`Deployment execution not found: await this.brainCoordinator.planRollbackStrategy(`
+    ")        throw new Error(`Deployment execution not found: await this.brainCoordinator.planRollbackStrategy(""
         {
           execution,
           reason,
@@ -547,7 +547,7 @@ export class DeploymentAutomationService {
     // Verify rollback success')    this.logger.info('Verifying rollback success,{';
       planId: execution.planId,')';
 });
-  private calculateRiskTolerance(environment: DeploymentEnvironment): string ')    return environment.type ==='production '?' low: medium`)  private getDeploymentHistory(environment: this.deploymentHistory.get(environment)|| [];
+  private calculateRiskTolerance(environment: DeploymentEnvironment): string ')    return environment.type ==='production '?' low: medium")  private getDeploymentHistory(environment: this.deploymentHistory.get(environment)|| [];"
     history.push(execution);
     this.deploymentHistory.set(environment, history.slice(-100)); // Keep last 100 deployments
 }

@@ -68,7 +68,7 @@ export type {
   // --------------------------------------------------------------------------
   // LIFECYCLE METHODS
   // --------------------------------------------------------------------------')  @tracedAsync('workflow-engine-initialize')')  @metered('workflow_engine_initialization')';
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     if (this.isInitialized) {
     ')      recordEvent('workflow_engine_already_initialized,{';
         timestamp: Date.now(),')';
@@ -79,7 +79,7 @@ export type {
       setTraceAttributes(';)';
        'workflow.engine.config: Date.now();
       try {
-        // 🔧 Register default step handlers with telemetry')        recordEvent('workflow_step_handlers_registration_started,{';
+        // tool Register default step handlers with telemetry')        recordEvent('workflow_step_handlers_registration_started,{';
           timestamp: true;
         const initDuration = Date.now() - initStartTime;
         // Record initialization metrics
@@ -108,7 +108,7 @@ export type {
 });
 }
   @tracedAsync('workflow-engine-shutdown')')  @metered('workflow_engine_shutdown')';
-  async shutdown(): Promise<void> {
+  async shutdown(Promise<void> {
     ')    return withAsyncTrace('workflow-engine-shutdown, async (_span) => {';
       const __shutdownStartTime = Date.now();')';
       logger.info(';)';
@@ -179,13 +179,13 @@ export type {
           // Start execution in background with enhanced error handling
           this.executeWorkflowAsync(workflow).catch((error) => {
             recordMetric('workflow_execution_background_error,1, {';
-              workflowId,')`;
-});`)            logger.error(`Workflow ${w}orkflowIdexecution failed: Date.now() - startTime;')        recordMetric('workflow_start_circuit_breaker_failure,1');')        recordHistogram('workflow_start_error_duration, duration');')        logger.error('Workflow start failed with circuit breaker protection,';
+              workflowId,')";
+})")            logger.error("Workflow ${w}orkflowIdexecution failed: Date.now() - startTime;')        recordMetric('workflow_start_circuit_breaker_failure,1');')        recordHistogram('workflow_start_error_duration, duration');')        logger.error('Workflow start failed with circuit breaker protection,';"
           error: this.activeWorkflows.get(workflowId);
     if (!workflow) return false;')    workflow.status = 'cancelled')    workflow.endTime = new Date().toISOString();
     this.activeWorkflows.delete(workflowId);')    this.emit(workflow: [
       {
-    ``)        name : 'vision-to-prds')        description : 'Process vision documents into PRDs')        version,        steps: 'extract-requirements, name},',
+    "")        name : 'vision-to-prds')        description : 'Process vision documents into PRDs')        version,        steps: 'extract-requirements, name},',"
           { type : 'generate-prds, name},'
           { type : 'save-documents, name},'
 ],
@@ -193,15 +193,12 @@ export type {
       {
         name : 'prd-to-epics')        description : 'Break down PRDs into epics')        version,        steps: 'analyze-prd, name},',
           { type : 'create-epics, name},'
-          { type = estimate-effort, name: documentWorkflows.map((workflow) =>
+          " + JSON.stringify({ type = estimate-effort, name: documentWorkflows.map((workflow) =>
       this.registerWorkflowDefinition(workflow.name, workflow);
     );
     await Promise.all(registrationPromises);
-    logger.info(``Registered ${documentWorkflows.length} document workflows`)};)  @tracedAsync(``document-event-processing')')  @metered('document_event_processing')';
-  async processDocumentEvent(
-    eventType: string,
-    documentData: unknown
-  ): Promise<void> {
+    logger.info(`"Registered " + documentWorkflows.length + ") + " document workflows")};)  @tracedAsync(""document-event-processing')')  @metered('document_event_processing')';"
+  async processDocumentEvent(Promise<void> {
     ')    return withAsyncTrace('document-event-processing, async (span) => {';
       const processingStartTime = Date.now();')';
       const docData = documentData as { type?:string; id?: string};
@@ -260,8 +257,8 @@ export type {
               successfulWorkflows.length / results.length,
 });
           // Log detailed results
-          results.forEach(({ workflowName, result, duration}) => {
-    ',)            const logLevel = result.success ?'info : ' warn';)            const status = result.success ?'SUCCESS =  FAILED`,)            logger[logLevel](`Document workflow `${workflowName}:${status}, {``;
+          results.forEach(({ workflowName, result, duration}) => " + JSON.stringify({
+    ',)            const logLevel = result.success ?'info : ' warn';)            const status = result.success ?'SUCCESS =  FAILED",)            logger[logLevel](`Document workflow "" + workflowName + ") + ":${status}, {"";"
     ')              workflowName,';
               status,
               duration,
@@ -280,9 +277,9 @@ export type {
       id:  {
       name: await this.startWorkflow(definition, data.data);
     if (!(result.success && result.workflowId)) {
-    `)      throw new Error(`Failed to create workflow: this.activeWorkflows.get(workflowId);
-    if (!workflow) {
-      throw new Error(`Workflow ${w}orkflowIdnot found`');')};;
+    ")      throw new Error("Failed to create workflow: this.activeWorkflows.get(workflowId);"
+    if (!workflow) " + JSON.stringify({
+      throw new Error("Workflow ${w}) + "orkflowIdnot found"');')};;"
     if (updates.data) {
       Object.assign(workflow.context as Record<string, unknown>, updates.data);
 };)    this.emit('workflow: updated,{ workflowId, updates};);
@@ -290,7 +287,7 @@ export type {
   // --------------------------------------------------------------------------
   // PRIVATE METHODS
   // --------------------------------------------------------------------------')  @tracedAsync('workflow-execution')')  @metered('workflow_execution_operation')';
-  private async executeWorkflowAsync(workflow: WorkflowState): Promise<void>  {
+  private async executeWorkflowAsync(Promise<void>  {
     ')    return withAsyncTrace('workflow-execution, async (_span) => {';
       const executionStartTime = Date.now();')';
       setTraceAttributes({
@@ -342,7 +339,7 @@ export type {
       const gateResult = await this.executeGateForStep(step, workflow);
       if (!gateResult.success) {
         return {
-          success: 'paused)        workflow.pausedForGate = {`;
+          success: 'paused)        workflow.pausedForGate = {";"
           stepIndex: this.stepHandlers.get(step.type);
     if (!handler) {
       return {
@@ -378,30 +375,30 @@ export type {
 });
 }
   private resolveDefinition(
-    definitionOrName: string| WorkflowDefinition')  ):WorkflowDefinition|'null {`;
+    definitionOrName: string| WorkflowDefinition')  ):WorkflowDefinition|'null {";"
     if (typeof definitionOrName ===string){
       return this.workflowDefinitions.get(definitionOrName)|| null;
 }
     return definitionOrName;
 }
   private generateWorkflowId():string {
-    return `workflow-`${Date.now()}-${Math.random().toString(36).substring(2, 11)})};;
+    return "workflow-"${Date.now()}-${Math.random().toString(36).substring(2, 11)})};;"
   private getWorkflowsForDocumentType(documentType?:string):  {
-    ``)      vision: ['vision-to-prds'],';
+    "")      vision: ['vision-to-prds'],';"
       prd: ['prd-to-epics'],';
-      epic: [epic-to-features`],`;
+      epic: [epic-to-features"]";
 };
-    return typeWorkflowMap[documentType || `] || [];`;
+    return typeWorkflowMap[documentType || "] || []";
 }
-  private async ensureInitialized(): Promise<void> {
+  private async ensureInitialized(Promise<void> {
     if (!this.isInitialized) {
       await this.initialize();
 }
 }
-  private createTimeoutPromise(timeout: number): Promise<never> {
+  private createTimeoutPromise(timeout: number): Promise<never> " + JSON.stringify({
     return new Promise((_, reject) =>
       setTimeout(
-        () => reject(new Error(`Step timeout after `${t}imeoutms``)),')        timeout';
+        () => reject(new Error(`Step timeout after "" + t + ") + "imeoutms"")),')        timeout';"
       ));
 }
   private getNestedValue(obj: unknown, path: string): unknown {
@@ -423,12 +420,9 @@ export type {
   /**
    * Execute gate for workflow step
    */
-  private async executeGateForStep(
-    step: WorkflowStep,
-    workflow: WorkflowState
-  ): Promise<{ success: boolean; message?: string }> {
+  private async executeGateForStep(Promise<{ success: boolean; message?: string }> {
     // Create gate request from step configuration
-    const gateId = `workflow-${workflow.id}-step-${workflow.currentStep}`;
+    const gateId = "workflow-${workflow.id}-step-${workflow.currentStep}";"
     const gateRequest = {
       // ValidationQuestion base properties
       id: gateId,
@@ -464,10 +458,7 @@ export type {
   /**
    * Simulate gate decision based on step configuration
    */
-  private async simulateGateDecision(
-    step: WorkflowStep,
-    workflow: WorkflowState
-  ): Promise<boolean> {
+  private async simulateGateDecision(Promise<boolean> {
     // Auto-approve if configured
     if (step.gateConfig?.autoApproval) {
       return true;
@@ -520,15 +511,15 @@ export type {
     ')      return { success: new Map();
 }
     // Record gate result
-    const gateResult:  {
-      success: failed`)      workflow.error = `Gate rejected: new Date().toISOString();``;
+    const gateResult:  " + JSON.stringify({
+      success: failed")      workflow.error = "Gate rejected: new Date().toISOString()"";"
       this.activeWorkflows.delete(workflowId);
       this.emit('workflow: 'gate_rejected,',
-'        gateId,',});
-      return { success: running`)    workflow.pausedForGate = undefined;`;
+'        gateId,',}) + ");
+      return { success: running")    workflow.pausedForGate = undefined";
     // Resume execution from the paused step
     this.executeWorkflowAsync(workflow).catch((error) => {
-      logger.error(``Workflow ${w}orkflowIdfailed after gate resume: this.activeWorkflows.get(workflowId);
+      logger.error(""Workflow ${w}orkflowIdfailed after gate resume: this.activeWorkflows.get(workflowId);"
     if (!workflow) {
       return {
         hasPendingGates: false,

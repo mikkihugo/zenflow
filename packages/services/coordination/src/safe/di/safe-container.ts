@@ -70,9 +70,7 @@ export class SafeContainer {
   /**
    * Register optional AI enhancements (only if available)
    */
-  private async registerAIEnhancements(
-    aiConfig?:AIEnhancementConfig
-  ): Promise<void> {
+  private async registerAIEnhancements(Promise<void> {
     if (!aiConfig) {
     ')      logger.debug('No AI enhancements configured');
       return;
@@ -195,7 +193,7 @@ let globalSAFeContainer: null;
 /**
  * Get the global SAFe container
  */
-export function getGlobalSAFeContainer():SafeContainer {
+export function getGlobalSAFeContainer(): SafeContainer {
   if (!globalSAFeContainer) {
     ')    globalSAFeContainer = new SafeContainer('global-safe');
 }
@@ -216,4 +214,4 @@ export function clearGlobalSAFeContainer(): void {
     globalSAFeContainer = null;
 }
 }
-;)`;
+;)";"

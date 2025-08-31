@@ -129,7 +129,7 @@ const epicKanbanActions = {
     blockers:({
       event,
 };
-      event: Extract<EpicKanbanEvent, { type}>';) => event.blockers,`;
+      event: Extract<EpicKanbanEvent, { type}>';) => event.blockers,";"
 }),
   /**
    * Clear implementation blockers
@@ -156,7 +156,7 @@ const epicKanbanActions = {
     event: EpicKanbanEvent;
 }) => {
     // Log epic state transition for audit trail
-    logger.info(``Epic ${context.epic.id}:${event.type}, {`)      epicId: context.epic.id,``;
+    logger.info(``Epic ${context.epic.id}:${event.type}, {")      epicId: context.epic.id"";"
       event: event.type,
       timestamp: new Date(),
       wsjfScore: context.wsjfPriority?.wsjfScore,

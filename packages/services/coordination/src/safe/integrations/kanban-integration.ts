@@ -73,7 +73,7 @@ export type SafeSolutionKanbanState =|'vision'// Solution vision and architectur
  */
 export function createSafePortfolioKanbanConfig(
   eventBus?:EventEmitter
-):WorkflowKanbanConfig {
+): WorkflowKanbanConfig {
   return {
     // Portfolio-specific workflow states (maps to Epic lifecycle)
     workflowStates: [
@@ -137,7 +137,7 @@ export function createSafePortfolioKanbanConfig(
  */
 export function createSafeProgramKanbanConfig(
   eventBus?:EventEmitter
-):WorkflowKanbanConfig {
+): WorkflowKanbanConfig {
   return {
     workflowStates: DEFAULT_WORKFLOW_STATES, // Standard workflow suitable for features
     defaultWIPLimits:  {
@@ -184,7 +184,7 @@ export function createSafeProgramKanbanConfig(
  */
 export function createSafeTeamKanbanConfig(
   eventBus?:EventEmitter
-):WorkflowKanbanConfig {
+): WorkflowKanbanConfig {
   return {
     workflowStates: DEFAULT_WORKFLOW_STATES, // Standard workflow for stories
     defaultWIPLimits:  {
@@ -330,7 +330,7 @@ function configureSafeTeamEvents(kanban: KanbanEngine, logger: Logger): void {
 export function portfolioEpicToKanbanTask(
   epic: PortfolioEpic,
   wsjf?:WSJFPriority
-):WorkflowTask {
+): WorkflowTask {
   return {
     id: epic.id,
     title: epic.title,

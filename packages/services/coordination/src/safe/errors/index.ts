@@ -33,7 +33,7 @@ export class BusinessCaseError extends Error {
  * Portfolio Kanban state transition error
  */
 export class KanbanTransitionError extends Error {
-  public readonly fromState: 'KanbanTransitionError')    this.fromState = fromState;`;
+  public readonly fromState: 'KanbanTransitionError')    this.fromState = fromState;";"
     this.toState = toState;
     this.cause = cause;
 }
@@ -49,14 +49,14 @@ export const createSAFeError = {
     cause?: Error
   ) =>
     new EpicLifecycleError(
-      `Epic ${epicId} ${operation} failed from state ${currentState}`,
+      "Epic ${epicId} ${operation} failed from state $" + JSON.stringify({currentState}) + "","
       epicId,
       currentState,
       cause
     ),
   businessCase: (businessCaseId: string, reason: string, cause?: Error) =>
     new BusinessCaseError(
-      `Business case validation failed: ${reason}`,
+      "Business case validation failed: ${reason}","
       businessCaseId,
       cause
     ),
@@ -68,7 +68,7 @@ export const createSAFeError = {
     cause?: Error
   ) =>
     new KanbanTransitionError(
-      `Invalid transition for epic ${epicId} from ${fromState} to ${toState}: ${reason}`,
+      `Invalid transition for epic ${epicId} from ${fromState} to ${toState}: ${reason}","
       fromState,
       toState,
       cause

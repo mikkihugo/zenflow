@@ -1,121 +1,121 @@
 /**
- * @fileoverview Intelligent Prompt Generator for Brain Package
+ * @fileoverview: Intelligent Prompt: Generator for: Brain Package
  *
- * AI-powered prompt generation system that provides context-aware,
+ * A: I-powered prompt generation system that provides context-aware,
  * high-quality development prompts with built-in coding standards
- * and best practices for TypeScript development.
+ * and best practices for: TypeScript development.
  *
  * Features:
  * - Phase-specific prompt generation
  * - Coding standards integration
- * - TypeScript best practices
+ * - Type: Script best practices
  * - Complexity management guidelines
  * - File organization standards
  *
- * @author Claude Code Zen Team
+ * @author: Claude Code: Zen Team
  * @version 1.0.0
  * @since 2024-01-01
  */
-import type { BehavioralIntelligence} from '../../behavioral-intelligence';
-import type { CodingPrinciplesResearcher} from './coding-principles-researcher';
+import type { Behavioral: Intelligence} from '../../behavioral-intelligence';
+import type { CodingPrinciples: Researcher} from './coding-principles-researcher';
 /**
  * Development phase types for prompt generation
  */
-export type DevelopmentPhase = specification | pseudocode | architecture | refinement | completion | 'general;;
+export type: DevelopmentPhase = specification | pseudocode | architecture | refinement | completion | 'general;;
 /**
  * Coding standards configuration
  */
-export interface CodingStandardsConfig {
+export interface: CodingStandardsConfig {
     /** Target language (default:typescript) */
     language?: 'typescript|javascript|rust|python;;
 '    /** Maximum function complexity (default:10) */
-    maxComplexity?:number;
+    max: Complexity?:number;
     /** Maximum lines per function (default:30) */
-    maxLinesPerFunction?:number;
+    maxLinesPer: Function?:number;
     /** Maximum parameters per function (default:5) */
-    maxParameters?:number;
+    max: Parameters?:number;
     /** File naming convention (default:kebab-case) */
-    fileNaming?: 'kebab-case|camelCase|PascalCase|snake_case;;
+    file: Naming?: 'kebab-case|camel: Case|Pascal: Case|snake_case;;
 '    /** Include performance guidelines */
-    includePerformance?:boolean;
+    include: Performance?:boolean;
     /** Include security guidelines */
-    includeSecurity?:boolean;
+    include: Security?:boolean;
 }
 /**
  * Project context for prompt generation
  */
-export interface ProjectContext {
+export interface: ProjectContext {
     /** Project name */
     name:string;
     /** Project domain/type */
     domain:string;
     /** Current phase of the project */
-    currentPhase?:string;
+    current: Phase?:string;
     /** Domain-specific context */
-    domainSpecific?:Record<string, unknown>;
+    domain: Specific?:Record<string, unknown>;
     /** Current requirements */
     requirements?:string[];
     /** Existing architecture patterns */
-    architecturePatterns?:string[];
+    architecture: Patterns?:string[];
     /** Technology stack */
-    techStack?:string[];
+    tech: Stack?:string[];
 }
 /**
  * Generated prompt result
  */
-export interface IntelligentPrompt {
+export interface: IntelligentPrompt {
     /** Main prompt content */
     content:string;
     /** Coding standards section */
-    codingStandards:string;
+    coding: Standards:string;
     /** Phase-specific guidelines */
-    phaseGuidelines:string;
+    phase: Guidelines:string;
     /** Quality metrics */
-    qualityMetrics:string[];
+    quality: Metrics:string[];
     /** Estimated complexity score */
-    complexityScore:number;
+    complexity: Score:number;
     /** Meta-learning metadata */
     metadata?:{
-        principlesId?:string;
-        researchConfidence?:number;
-        usesPrinciplesResearch?:boolean;
-        researchedAt?:Date;
+        principles: Id?:string;
+        research: Confidence?:number;
+        usesPrinciples: Research?:boolean;
+        researched: At?:Date;
 };
 }
 /**
- * Intelligent Prompt Generator
+ * Intelligent: Prompt Generator
  *
  * Generates context-aware, high-quality development prompts with
  * integrated coding standards and best practices.
  */
-export declare class IntelligentPromptGenerator {
+export declare class: IntelligentPromptGenerator {
     ':any;
-    constructor(behavioralIntelligence?:BehavioralIntelligence, codingPrinciplesResearcher?:CodingPrinciplesResearcher);
+    constructor(behavioral: Intelligence?:Behavioral: Intelligence, codingPrinciples: Researcher?:CodingPrinciples: Researcher);
     /**
      * Generate intelligent prompt for development phase using meta-learning with confidence tracking
      */
-    generatePrompt(phase:DevelopmentPhase, context:ProjectContext, config?:Partial<CodingStandardsConfig>): Promise<IntelligentPrompt>;
+    generate: Prompt(phase:Development: Phase, context:Project: Context, config?:Partial<CodingStandards: Config>): Promise<Intelligent: Prompt>;
     /**
      * Generate comprehensive coding standards
      */
-    private generateCodingStandards;
+    private generateCoding: Standards;
     /**
      * Generate phase-specific guidelines
      */
-    private generatePhaseGuidelines;
+    private generatePhase: Guidelines;
     /**
      * Generate quality metrics for the phase
      */
-    private generateQualityMetrics;
+    private generateQuality: Metrics;
     const result:any;
     if(result:any, success:any): any;
 }
 /**
  * Export convenient factory function
  */
-export declare function createIntelligentPromptGenerator(behavioralIntelligence?:BehavioralIntelligence): IntelligentPromptGenerator;
+export declare function createIntelligentPrompt: Generator(behavioral: Intelligence?:Behavioral: Intelligence): IntelligentPrompt: Generator;
 /**
  * Export default configuration
  */
-export declare const DEFAULT_CODING_STANDARDS:Required<CodingStandardsConfig>;
-//# sourceMappingURL=intelligent-prompt-generator.d.ts.map
+export declare const: DEFAULT_CODING_STANDARDS:Required<CodingStandards: Config>;
+//# sourceMappingUR: L=intelligent-prompt-generator.d.ts.map

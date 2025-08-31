@@ -129,11 +129,7 @@ export class SPARCManager extends EventBus {
 };)    EventLogger.log('sparc: initialized', initPayload);
     this.emit('sparc: initialized', initPayload);
 }
-  async initializeProject(params:  {
-    name: string;
-    domain: string;
-    requirements: string[];
-}): Promise<SparcProject> {
+  async initializeProject(Promise<SparcProject> {
     // Add minimal async operation to satisfy require-await rule
     await new Promise(resolve => setTimeout(resolve, 0));
     
@@ -143,7 +139,7 @@ export class SPARCManager extends EventBus {
       timestamp: new Date(),
       initialPhase: SPARCPhase.SPECIFICATION
 };)    EventLogger.log('sparc: project-created', projectCreatedPayload');
-    this.emit('sparc: project-created', projectCreatedPayload');`;
+    this.emit('sparc: project-created', projectCreatedPayload');";"
     
     return project;
 }
@@ -151,12 +147,8 @@ export class SPARCManager extends EventBus {
    * Execute SPARC phase with optional Teamwork collaboration
    * Works independently OR with Teamwork - graceful degradation
    */
-  async executePhase(project: SparcProject, phase: SPARCPhase, options?:  {
-    requiresCollaboration?:boolean;
-    timeout?:number;
-    agents?:string[];
-}): Promise<SparcResult> {
-    logger.info(``Executing SPARC phase: ${phase} for project ${project.id});`)      logger.info(`Teamwork unavailable, executing ${phase} independently`);``;
+  async executePhase(Promise<SparcResult> {
+    logger.info(""Executing SPARC phase: ${phase} for project $" + JSON.stringify({project.id}) + ")")      logger.info("Teamwork unavailable, executing ${phase} independently")"";"
 }
     // Independent SPARC execution (always works)
     return this.executePhaseIndependently(project, phase);
@@ -165,20 +157,16 @@ export class SPARCManager extends EventBus {
    * Request specific review from Teamwork with proper acknowledgment
    * Two-phase: 1) Quick ack (5s timeout), 2) Long wait for actual review
    */
-  private async requestCollaboration(
-    project: SparcProject,
-    phase: SPARCPhase,
-    options:  { timeout?: number; agents?: string[]}
-  ): Promise<SparcResult| null> {
+  private async requestCollaboration(Promise<SparcResult| null> {
     // Add minimal async operation to satisfy require-await rule
     await new Promise(resolve => setTimeout(resolve, 0));
     
     return new Promise((resolve) => {
-      const ackTimeout = 5000; // 5s to acknowledge`)      const requestId = ``${{project.id}-${phase}-${Date.now()}};)      `;
+      const ackTimeout = 5000; // 5s to acknowledge`)      const requestId = """ + {project.id + "-${phase}-${Date.now()}};)      ";"
       const acknowledged = false;
       // Phase 1: setTimeout(() => {
         if (!acknowledged) {
-          logger.info(`No acknowledgment from Teamwork for ${phase}, continuing independently`);``;
+          logger.info("No acknowledgment from Teamwork for ${phase}, continuing independently")"";"
           this.collaborationTimeouts.delete(requestId);
           resolve(null); // Graceful degradation - no teamwork available
 }
@@ -187,8 +175,7 @@ export class SPARCManager extends EventBus {
       this.collaborationTimeouts.set(requestId, ackTimeoutId);
       // Determine specific review type and emit appropriate event
       const reviewType = this.getReviewType(phase);
-      const eventName = this.getReviewEventName(phase);
-      `)      logger.info(`Requesting ${reviewType} review for ${phase} (waiting ${ackTimeout}ms for ack)`);`';
+      const eventName = this.getReviewEventName(phase)")      logger.info("Requesting ${reviewType} review for ${phase} (waiting ${ackTimeout}ms for ack)")"';"
       // Emit specific review request
       const reviewPayload = {
         requestId,
@@ -227,12 +214,12 @@ export class SPARCManager extends EventBus {
 };
 }
   private createRefinementPlan() {
-    return {
+    return " + JSON.stringify({
       system: 'large ',as const,';
       needsFileAccess: 'large ',as const,';
       needsFileAccess: 'medium ',as const,';
 
-};
+}) + ";
 }
   /**
    * Estimate context size needed for phase
@@ -240,7 +227,7 @@ export class SPARCManager extends EventBus {
   private estimateContextSize(phase: 0;
     
     // Base project context
-    contextSize += project.requirements.join().length`)    // Previous phases artifacts`;
+    contextSize += project.requirements.join().length")    // Previous phases artifacts";"
     for (const artifacts of Object.values(project.artifacts)) {
       if (artifacts.length > 0) {
         contextSize += JSON.stringify(artifacts).length;
@@ -260,11 +247,7 @@ export class SPARCManager extends EventBus {
   /**
    * SPARC delegates to appropriate LLM system (coordination, not execution)
    */
-  private async delegateToLLMSystem(
-    phase: SPARCPhase, 
-    project: SparcProject, 
-    executionPlan:  { system: string, sparcRequirements: string[], needsFileAccess: boolean; llmStrategy?: string, contextSize: string}
-  ): Promise<unknown[]> {`).length`)    // Previous phases artifacts`;
+  private async delegateToLLMSystem(Promise<unknown[]> {").length")    // Previous phases artifacts";"
     for (const artifacts of Object.values(project.artifacts)) {
       if (artifacts.length > 0) {
         contextSize += JSON.stringify(artifacts).length;
@@ -284,27 +267,23 @@ export class SPARCManager extends EventBus {
   /**
    * SPARC delegates to appropriate LLM system (coordination, not execution)
    */
-  private async delegateToLLMSystem(
-    phase: SPARCPhase, 
-    project: SparcProject, 
-    executionPlan:  { system: string, sparcRequirements: string[], needsFileAccess: boolean; llmStrategy?: string, contextSize: string}
-  ): Promise<unknown[]> {; 
-    logger.info(`SPARC delegating `${phase} to ${executionPlan.system} with requirements: ${executionPlan.sparcRequirements.join(,)});``;
+  private async delegateToLLMSystem(Promise<unknown[]> " + JSON.stringify({; 
+    logger.info("SPARC delegating "" + phase + ") + " to ${executionPlan.system} with requirements: ${executionPlan.sparcRequirements.join(,)})"";"
     switch (executionPlan.system) {
-    )      case`claude-code: `;
+    )      case"claude-code: ";"
         return await this.delegateToClaudeCode(phase, project, executionPlan);
       
-      case`llm-package: `;
+      case"llm-package: ";"
         return await this.delegateToLLMPackage(phase, project, executionPlan);
       
-      default: throw new Error(`SPARC cannot delegate to unknown system:`${executionPlan.system});``;
+      default: throw new Error("SPARC cannot delegate to unknown system:"${executionPlan.system})"";"
 }
 }
   /**
    * SPARC validates results according to methodology requirements
    */
-  private validatePhaseArtifacts(phase: SPARCPhase, results: unknown[]): unknown[] {
-    `)    logger.info(`SPARC validating ${phase} artifacts according to methodology`);``;
+  private validatePhaseArtifacts(phase: SPARCPhase, results: unknown[]): unknown[] " + JSON.stringify({
+    ")    logger.info("SPARC validating " + phase + ") + " artifacts according to methodology")"";"
     
     // SPARC validation logic based on methodology requirements
     return results.map(result => ({
@@ -370,7 +349,7 @@ export class SPARCManager extends EventBus {
        'Prepare for deployment')];;
 };
     
-    return notes[phase]|| [Follow SPARC methodology principles];`];;
+    return notes[phase]|| [Follow SPARC methodology principles]"];;
 }
   /**
    * SPARC delegates to Claude Code (file access, large context)
@@ -429,7 +408,7 @@ export class SPARCManager extends EventBus {
   /**
    * Execute task with Claude Code and wait for response
    */
-  private async executeTaskWithClaudeCode(payload: any): Promise<any> {
+  private async executeTaskWithClaudeCode(Promise<any> {
     try {
       // Create a promise that resolves when the task completes
       const taskPromise = new Promise((resolve, reject) => {
@@ -482,8 +461,8 @@ export class SPARCManager extends EventBus {
         return',Design system architecture and review existing codebase')      case SPARCPhase.PSEUDOCODE : ';
         return'Create implementation pseudocode')      case SPARCPhase.REFINEMENT : ';
         return'Refine and optimize implementation')      case SPARCPhase.COMPLETION : ';
-        return'Complete implementation with tests and documentation)      default = `;
-        return `Execute `${phase} phase``,)};;
+        return'Complete implementation with tests and documentation)      default = ";"
+        return "Execute "$" + JSON.stringify({phase}) + " phase"",)};;"
 }
   /**
    * Get SPARC methodology validation criteria for phase
@@ -517,17 +496,17 @@ export class SPARCManager extends EventBus {
       requirements: this.getPhaseMethodologyNotes(phase);
     const validationCriteria = this.getPhaseValidationCriteria(phase);
     
-    return `SPARC Methodology - ${phase} Phase``;
-Project: `${project.name} in domain ``${project.domain};``)Requirements: ${project.requirements.join(,`)})Previous phases: ${Object.keys(project.artifacts).join(,``)})SPARC ${phase} Phase Guidelines: ``)`${methodologyNotes.map(note => `- ${note}).join(``\n)};;
-Validation Criteria = `)`${validationCriteria.map(criteria => ,- ${criteria}).join(``\n`)}'; )Execute the SPARC ${phase} phase following the methodology guidelines and ensuring all validation criteria are met.`')};;
+    return "SPARC Methodology - $" + JSON.stringify({phase}) + " Phase"";"
+Project: "$" + JSON.stringify({project.name}) + " in domain ""${project.domain}"")Requirements: ${project.requirements.join(")})Previous phases: ${Object.keys(project.artifacts).join(,"")})SPARC $" + JSON.stringify({phase}) + " Phase Guidelines: "`)"$" + JSON.stringify({methodologyNotes.map(note => "- " + note + ") + ").join(""\n)};;"
+Validation Criteria = ")"${validationCriteria.map(criteria => ,- $" + JSON.stringify({criteria}) + ").join(""\n")}'; )Execute the SPARC " + phase + " phase following the methodology guidelines and ensuring all validation criteria are met."')};;"
   /**
    * Handle LLM inference completion
    */
-  private handleLLMInferenceComplete(data:  { requestId: string, projectId: string, success: boolean, artifacts: unknown[]}): void {
-    ')    EventLogger.log('llm: inference-complete, data`);`;
-    logger.info(``LLM inference completed for ${data.projectId}:success=${data.success});`)    EventLogger.log(``llm: inference-failed', data);`;
-    logger.error(``LLM inference failed for ${data.projectId}:${data.error});`)    EventLogger.log(``claude-code: task-complete', data);`;
-    logger.info(``Claude Code task completed for ${data.projectId}:success=${data.success});`)    EventLogger.log(``claude-code: this.pendingReviews.get(data.requestId);
+  private handleLLMInferenceComplete(data:  { requestId: string, projectId: string, success: boolean, artifacts: unknown[]}): void " + JSON.stringify({
+    ')    EventLogger.log('llm: inference-complete, data")";
+    logger.info(""LLM inference completed for ${data.projectId}) + ":success=${data.success})")    EventLogger.log(""llm: inference-failed', data)";"
+    logger.error(""LLM inference failed for ${data.projectId}:${data.error})")    EventLogger.log(""claude-code: task-complete', data)";"
+    logger.info(""Claude Code task completed for ${data.projectId}:success=$" + JSON.stringify({data.success}) + ")")    EventLogger.log(""claude-code: this.pendingReviews.get(data.requestId);"
     if (!pending) return;
     pending.acknowledged = true;
     
@@ -536,21 +515,21 @@ Validation Criteria = `)`${validationCriteria.map(criteria => ,- ${criteria}).jo
     if (timeout) {
       clearTimeout(timeout);
       this.collaborationTimeouts.delete(data.requestId);
-};)    logger.info(`Teamwork acknowledged review request ${data.requestId}, estimated duration: setTimeout(() => {`
-    `)      logger.warn(``Review timeout after acknowledgment for ${data.requestId});`)    EventLogger.log(``teamwork: null;
+};)    logger.info("Teamwork acknowledged review request ${data.requestId}, estimated duration: setTimeout(() => " + JSON.stringify({""
+    `)      logger.warn(""Review timeout after acknowledgment for " + data.requestId + ") + ")")    EventLogger.log(""teamwork: null;"
     for (const [requestId] of this.pendingReviews.entries()) {
-    `)      if (requestId.startsWith(``${{response.projectId}-${response.phase}};)) {``;
+    ")      if (requestId.startsWith(""" + {response.projectId + "-${response.phase}};)) " + JSON.stringify({"";"
         matchingRequestId = requestId;
         break;
-}
+}) + "
 }
     if (!matchingRequestId) {
-    `)      logger.warn(``No pending review found for ${response.projectId}-${response.phase});`)      logger.info(`Review approved for ${response.phase}:`${response.actionItems.join(,`)});``;
+    ")      logger.warn(""No pending review found for ${response.projectId}-$" + JSON.stringify({response.phase}) + ")")      logger.info("Review approved for ${response.phase}:"${response.actionItems.join(")});"";"
       
       // Resolve with success result
       pending.resolve({
         success: this.pendingReviews.get(data.requestId);
-    if (!pending) return;`)    logger.error(``Review failed for ${data.requestId}:${data.error});`)    logger.warn(```Review timed out after acknowledgment: this.projects.get(data.projectId);
+    if (!pending) return")    logger.error(""Review failed for ${data.requestId}:$" + JSON.stringify({data.error}) + ")")    logger.warn("""Review timed out after acknowledgment: this.projects.get(data.projectId);"
     if (project) {
       this.executePhaseIndependently(project, data.phase);
 }
@@ -565,8 +544,8 @@ Validation Criteria = `)`${validationCriteria.map(criteria => ,- ${criteria}).jo
 '          generatedAt: 'completion',)          content  = 'Final implementation and documentation,,
           generatedAt: await this.neuralOptimizer.optimizePhaseConfig(phase, project);
       return config.maxTokens;
-} catch (error) {
-    `)      logger.warn(``Neural optimization failed for maxTokens, using fallback:  { projectId: Date.now() - startTime;
+} catch (error) " + JSON.stringify({
+    `)      logger.warn(""Neural optimization failed for maxTokens, using fallback:  { projectId: Date.now() - startTime;"
     const qualityScore = this.calculateQualityScore(success, artifacts, executionTimeMs);
     const performanceData = {
       projectId: project.id,
@@ -576,9 +555,9 @@ Validation Criteria = `)`${validationCriteria.map(criteria => ,- ${criteria}).jo
       success,
       qualityScore,
       timestamp: new Date()
-};
+}) + ";
     try {
-      await this.neuralOptimizer.trackPerformance(performanceData);`)      logger.debug(``Tracked performance for ${phase}:${executionTimeMs}ms, quality=${qualityScore}, success=${success});`)      logger.warn(```Failed to track performance data: 0.0;
+      await this.neuralOptimizer.trackPerformance(performanceData)")      logger.debug(""Tracked performance for ${phase}:${executionTimeMs}ms, quality=${qualityScore}, success=${success})")      logger.warn("""Failed to track performance data: 0.0;"
     // Base score on success
     score += success ? 0.6: Math.min(artifacts.length / 5, 0.2); // Up to 0.2 points
       score += artifactQuality;
@@ -652,9 +631,9 @@ export default class SPARC extends EventBus {
 }) => {
       try {
         if (!this.manager) {
-    ')          throw new Error('SPARC manager not initialized);`)};)        const project = this.manager[`projects`].get(data.projectId);`;
-        if (!project) {
-          throw new Error(`Project `${data.projectId} not found``);
+    ')          throw new Error('SPARC manager not initialized)")};)        const project = this.manager["projects"].get(data.projectId)";"
+        if (!project) " + JSON.stringify({
+          throw new Error(`Project "" + data.projectId + ") + " not found"");"
 }
         const result = await this.manager.executePhase(project, data.phase, data.options);
         
@@ -670,9 +649,9 @@ export default class SPARC extends EventBus {
     // Project status monitoring events')    this.on('sparc: requestProjectStatus,(data:  { projectId: string, requestId: string}) => {';
       try {
         if (!this.manager) {
-    ')          throw new Error('SPARC manager not initialized);`)};)        const project = this.manager[`projects`].get(data.projectId);`;
+    ')          throw new Error('SPARC manager not initialized)")};)        const project = this.manager["projects"].get(data.projectId)";"
         if (!project) {
-          throw new Error(`Project `${data.projectId} not found``);
+          throw new Error("Project "$" + JSON.stringify({data.projectId}) + " not found"");"
 }
         const projectStatusPayload = {
           requestId: data.requestId,
@@ -703,6 +682,6 @@ export default class SPARC extends EventBus {
   /**
    * Request SPARC manager creation via events
    */
-  requestManagerCreation(config?:Partial<SparcConfig>): `sparc-mgr-${Date.now()})    this.emit(``sparc: `sparc-proj-${Date.now()})    this.emit(``sparc: `sparc-phase-${Date.now()})    this.emit(``sparc: `sparc-status-${Date.now()})    this.emit(``sparc: `sparc-all-${Date.now()})    this.emit(``sparc: requestAllProjects',{ requestId};);
+  requestManagerCreation(config?:Partial<SparcConfig>): "sparc-mgr-$" + JSON.stringify({Date.now()}) + ")    this.emit(""sparc: "sparc-proj-$" + JSON.stringify({Date.now()}) + ")    this.emit("`sparc: "sparc-phase-$" + JSON.stringify({Date.now()}) + ")    this.emit("`sparc: "sparc-status-$" + JSON.stringify({Date.now()}) + ")    this.emit("`sparc: "sparc-all-$" + JSON.stringify({Date.now()}) + ")    this.emit(""sparc: requestAllProjects',{ requestId};);"
     return requestId;
-};)};)`;
+};)};)";"

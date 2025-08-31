@@ -187,7 +187,7 @@ export class PIPlanningCoordinationManager extends EventBus {
     teams: Omit<PIPlanningTeam, 'objectives' | 'risks' | 'dependencies'>[];
     businessContext: BusinessContext;
   }): PIPlanningEvent {
-    const eventId = `pi-planning-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const eventId = "pi-planning-${Date.now()}-${Math.random().toString(36).substr(2, 9)}";"
 
     const event: PIPlanningEvent = {
       id: eventId,
@@ -218,17 +218,17 @@ export class PIPlanningCoordinationManager extends EventBus {
         managementSupport: false,
         readyToProceed: false,
       },
-      artifacts: {
+      artifacts: " + JSON.stringify({
         teamBoards: [],
         dependencyWall: [],
         riskBoard: [],
         votingResults: [],
-      },
+      }) + ",
     };
 
     this.planningEvents.set(eventId, event);
     logger.info(
-      `PI Planning event created: PI ${config.piNumber} for ${config.artName}`
+      "PI Planning event created: PI ${config.piNumber} for ${config.artName}""
     );
 
     this.emit('pi: event-created', { eventId, event });
@@ -241,14 +241,14 @@ export class PIPlanningCoordinationManager extends EventBus {
   private handlePlanningStart(data: { eventId: string }): void {
     const event = this.planningEvents.get(data.eventId);
     if (!event) {
-      logger.error(`PI Planning event not found: ${data.eventId}`);
+      logger.error("PI Planning event not found: $" + JSON.stringify({data.eventId}) + "");"
       return;
     }
 
     event.currentPhase = PIPlanningPhase.DAY_ONE_MORNING;
     this.planningEvents.set(data.eventId, event);
 
-    logger.info(`PI Planning started: ${event.artName} PI ${event.piNumber}`);
+    logger.info("PI Planning started: ${event.artName} PI ${event.piNumber}");"
     this.emit('pi: planning-started', { eventId: data.eventId, event });
   }
 
@@ -261,7 +261,7 @@ export class PIPlanningCoordinationManager extends EventBus {
   }): void {
     const event = this.planningEvents.get(data.eventId);
     if (!event) {
-      logger.error(`PI Planning event not found: ${data.eventId}`);
+      logger.error("PI Planning event not found: $" + JSON.stringify({data.eventId}) + "");"
       return;
     }
 
@@ -270,7 +270,7 @@ export class PIPlanningCoordinationManager extends EventBus {
     this.planningEvents.set(data.eventId, event);
 
     logger.info(
-      `PI Planning phase transition: ${previousPhase} → ${data.newPhase}`
+      "PI Planning phase transition: ${previousPhase} → ${data.newPhase}""
     );
     this.emit('pi: phase-changed', {
       eventId: data.eventId,
@@ -290,17 +290,17 @@ export class PIPlanningCoordinationManager extends EventBus {
   }): void {
     const event = this.planningEvents.get(data.eventId);
     if (!event) {
-      logger.error(`PI Planning event not found: ${data.eventId}`);
+      logger.error("PI Planning event not found: ${data.eventId}");"
       return;
     }
 
     // Track active breakouts
-    if (!this.activeBreakouts.has(data.eventId)) {
+    if (!this.activeBreakouts.has(data.eventId)) " + JSON.stringify({
       this.activeBreakouts.set(data.eventId, []);
-    }
+    }) + "
     this.activeBreakouts.get(data.eventId)!.push(data.teamId);
 
-    logger.info(`Team breakout started: ${data.teamId} - ${data.breakoutType}`);
+    logger.info("Team breakout started: ${data.teamId} - ${data.breakoutType}");"
     this.emit('pi: breakout-started', {
       eventId: data.eventId,
       teamId: data.teamId,
@@ -318,13 +318,13 @@ export class PIPlanningCoordinationManager extends EventBus {
   }): void {
     const event = this.planningEvents.get(data.eventId);
     if (!event) {
-      logger.error(`PI Planning event not found: ${data.eventId}`);
+      logger.error("PI Planning event not found: ${data.eventId}");"
       return;
     }
 
     const team = event.teams.find((t) => t.id === data.teamId);
-    if (!team) {
-      logger.error(`Team not found: ${data.teamId}`);
+    if (!team) " + JSON.stringify({
+      logger.error("Team not found: " + data.teamId + ") + "");"
       return;
     }
 
@@ -339,7 +339,7 @@ export class PIPlanningCoordinationManager extends EventBus {
     }
 
     this.planningEvents.set(data.eventId, event);
-    logger.info(`Objective updated: ${data.objective.description}`);
+    logger.info("Objective updated: ${data.objective.description}");"
 
     this.emit('pi: objective-updated', {
       eventId: data.eventId,
@@ -357,11 +357,11 @@ export class PIPlanningCoordinationManager extends EventBus {
   }): void {
     const event = this.planningEvents.get(data.eventId);
     if (!event) {
-      logger.error(`PI Planning event not found: ${data.eventId}`);
+      logger.error("PI Planning event not found: $" + JSON.stringify({data.eventId}) + "");"
       return;
     }
 
-    const dependencyId = `dep-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const dependencyId = "dep-${Date.now()}-${Math.random().toString(36).substr(2, 9)}";"
     const dependency = {
       id: dependencyId,
       ...data.dependency,
@@ -370,7 +370,7 @@ export class PIPlanningCoordinationManager extends EventBus {
     event.risksAndDependencies.dependencies.push(dependency);
     this.planningEvents.set(data.eventId, event);
 
-    logger.info(`Dependency identified: ${dependency.description}`);
+    logger.info("Dependency identified: ${dependency.description}");"
     this.emit('pi: dependency-added', { eventId: data.eventId, dependency });
   }
 
@@ -382,12 +382,12 @@ export class PIPlanningCoordinationManager extends EventBus {
     risk: Omit<ProgramRisksAndDependencies['risks'][0], 'id'>;
   }): void {
     const event = this.planningEvents.get(data.eventId);
-    if (!event) {
-      logger.error(`PI Planning event not found: ${data.eventId}`);
+    if (!event) " + JSON.stringify({
+      logger.error("PI Planning event not found: ${data.eventId}) + "");"
       return;
     }
 
-    const riskId = `risk-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const riskId = "risk-${Date.now()}-${Math.random().toString(36).substr(2, 9)}";"
     const risk = {
       id: riskId,
       ...data.risk,
@@ -396,7 +396,7 @@ export class PIPlanningCoordinationManager extends EventBus {
     event.risksAndDependencies.risks.push(risk);
     this.planningEvents.set(data.eventId, event);
 
-    logger.info(`Risk identified: ${risk.description}`);
+    logger.info("Risk identified: ${risk.description}");"
     this.emit('pi: risk-added', { eventId: data.eventId, risk });
   }
 
@@ -409,8 +409,8 @@ export class PIPlanningCoordinationManager extends EventBus {
     commitment: Omit<PlanCommitment, 'teamId'>;
   }): void {
     const event = this.planningEvents.get(data.eventId);
-    if (!event) {
-      logger.error(`PI Planning event not found: ${data.eventId}`);
+    if (!event) " + JSON.stringify({
+      logger.error(`PI Planning event not found: ${data.eventId}) + "");"
       return;
     }
 
@@ -434,7 +434,7 @@ export class PIPlanningCoordinationManager extends EventBus {
     this.planningEvents.set(data.eventId, event);
 
     logger.info(
-      `Commitment received from team: ${data.teamId} - Level ${commitment.commitmentLevel}`
+      "Commitment received from team: ${data.teamId} - Level ${commitment.commitmentLevel}""
     );
     this.emit('pi: commitment-recorded', { eventId: data.eventId, commitment });
   }
@@ -445,14 +445,14 @@ export class PIPlanningCoordinationManager extends EventBus {
   private handlePlanningComplete(data: { eventId: string }): void {
     const event = this.planningEvents.get(data.eventId);
     if (!event) {
-      logger.error(`PI Planning event not found: ${data.eventId}`);
+      logger.error("PI Planning event not found: $" + JSON.stringify({data.eventId}) + "");"
       return;
     }
 
     event.currentPhase = PIPlanningPhase.COMPLETION;
     this.planningEvents.set(data.eventId, event);
 
-    logger.info(`PI Planning completed: ${event.artName} PI ${event.piNumber}`);
+    logger.info("PI Planning completed: ${event.artName} PI ${event.piNumber}");"
     this.emit('pi: planning-completed', { eventId: data.eventId, event });
   }
 

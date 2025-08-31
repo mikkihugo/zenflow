@@ -46,10 +46,7 @@ export class TeamworkWorkflowIntegration {
   /**
    * Initialize workflow integration
    */
-  async initialize(params: {
-    workflowEngine: any;
-    safeCoordination: any;
-  }): Promise<void> {
+  async initialize(Promise<void> {
     try {
       logger.info('TeamworkWorkflowIntegration initialized with SAFe patterns');
     } catch (error) {
@@ -61,9 +58,7 @@ export class TeamworkWorkflowIntegration {
   /**
    * Register conversation workflow
    */
-  async registerConversationWorkflow(
-    conversationWorkflow: ConversationWorkflow
-  ): Promise<void> {
+  async registerConversationWorkflow(Promise<void> {
     try {
       this.workflows.set(conversationWorkflow.id, conversationWorkflow);
       logger.info('Registered conversation workflow', {
@@ -79,7 +74,7 @@ export class TeamworkWorkflowIntegration {
   /**
    * Process workflow outcome
    */
-  async processWorkflowOutcome(outcome: WorkflowOutcome): Promise<void> {
+  async processWorkflowOutcome(Promise<void> {
     try {
       // Find applicable workflows
       const applicableWorkflows = Array.from(this.workflows.values()).filter(
@@ -105,13 +100,10 @@ export class TeamworkWorkflowIntegration {
   /**
    * Start workflow execution
    */
-  private async startWorkflow(
-    workflow: ConversationWorkflow,
-    context: any
-  ): Promise<void> {
+  private async startWorkflow(Promise<void> {
     try {
       const workflowInstance = {
-        id: `${workflow.id}-${Date.now()}`,
+        id: "${workflow.id}-${Date.now()}","
         workflowId: workflow.id,
         context,
         status: 'running',
@@ -120,12 +112,12 @@ export class TeamworkWorkflowIntegration {
 
       this.activeWorkflows.set(workflowInstance.id, workflowInstance);
 
-      logger.info('Started workflow', {
+      logger.info('Started workflow', " + JSON.stringify({
         workflowId: workflow.id,
         instanceId: workflowInstance.id,
-      });
+      }) + ");
     } catch (error) {
-      logger.error(`Failed to start workflow ${workflow.name}:`, error);
+      logger.error("Failed to start workflow ${workflow.name}:", error);"
     }
   }
 

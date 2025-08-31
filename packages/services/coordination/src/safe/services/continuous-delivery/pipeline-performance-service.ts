@@ -248,7 +248,7 @@ export class PipelinePerformanceService {
   /**
    * Initialize service with lazy-loaded dependencies
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     if (this.initialized) return'; 
     try {
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent analysis
@@ -271,7 +271,7 @@ export class PipelinePerformanceService {
   /**
    * Monitor pipeline performance with intelligent analysis
    */
-  async monitorPipelinePerformance(): Promise<void> {
+  async monitorPipelinePerformance(Promise<void> {
     if (!this.initialized) await this.initialize();
     const __timer = this.performanceTracker.startTimer(
      'pipeline_performance_monitoring'));
@@ -329,12 +329,12 @@ export class PipelinePerformanceService {
      'improve_reliability,')     'increase_throughput,';
 ]
   ): Promise<{
-    optimizedConfiguration: this.performanceTracker.startTimer('pipeline_optimization');`;
+    optimizedConfiguration: this.performanceTracker.startTimer('pipeline_optimization');";"
     try {
       const analysis = this.performanceMetrics.get(pipelineId);
       if (!analysis) {
         throw new Error(
-          `Performance analysis not found for pipeline: `${pipelineId})        );``;
+          "Performance analysis not found for pipeline: "${pipelineId})        )"";"
 }
       this.logger.info(';)';
        'Optimizing pipeline performance with AI recommendations,';
@@ -370,7 +370,7 @@ export class PipelinePerformanceService {
   /**
    * Shutdown service gracefully
    */
-  async shutdown(): Promise<void> {
+  async shutdown(Promise<void> {
     this.stopContinuousMonitoring();
     if (this.brainCoordinator?.shutdown) {
       await this.brainCoordinator.shutdown();
@@ -378,7 +378,7 @@ export class PipelinePerformanceService {
     if (this.loadBalancer?.shutdown) {
       await this.loadBalancer.shutdown();
 }
-    this.initialized = false;')    this.logger.info('Pipeline Performance Service shutdown complete);`;
+    this.initialized = false;')    this.logger.info('Pipeline Performance Service shutdown complete)";
 }
   // ============================================================================
   // PRIVATE IMPLEMENTATION METHODS
@@ -400,11 +400,7 @@ export class PipelinePerformanceService {
 });
     return trendAnalysis.trends|| [];
 }
-  private async generatePerformanceRecommendations(
-    execution: PipelineExecution,
-    metrics: DetailedPerformanceMetrics,
-    bottlenecks: BottleneckAnalysis[]
-  ): Promise<PerformanceRecommendation[]> {
+  private async generatePerformanceRecommendations(Promise<PerformanceRecommendation[]> {
     // Use brain coordinator for intelligent recommendations
     const recommendations =
       await this.brainCoordinator.generatePerformanceRecommendations({
@@ -422,7 +418,7 @@ export class PipelinePerformanceService {
     if (analysis.performanceMetrics.executionTime.total > 7200000) {
       // 2 hours
       alerts.push({
-    `)        id: 'duration,',
+    ")        id: 'duration,',
 '        severity: 'execution_time,',
 '        actualValue: 'error_rate,',
 '        severity: 'success_rate,',
@@ -472,7 +468,7 @@ export class PipelinePerformanceService {
   private getCriticalAlerts():PerformanceAlert[] {
     return Array.from(this.activeAlerts.values())
       .flat()
-      .filter(')        (alert) => alert.severity ==='critical '|| alert.severity ===high)      );`;
+      .filter(')        (alert) => alert.severity ==='critical '|| alert.severity ===high)      )";
 }
 }
 export default PipelinePerformanceService;

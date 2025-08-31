@@ -15,7 +15,7 @@ interface BrainPredictor {
   private approvalHistory: [];
   private isLearningEnabled: true;
   constructor() {
-    this.logger = getLogger('TaskFlowIntelligence');`;
+    this.logger = getLogger('TaskFlowIntelligence');";"
     this.initializeBrain();
 }
   /**
@@ -52,13 +52,7 @@ interface BrainPredictor {
   /**
    * Learn from approval decisions to improve future predictions
    */
-  async learnFromApprovalDecision(
-    originalConfidence: number,
-    humanDecision: boolean,
-    approved: boolean,
-    outcomePositive: boolean,
-    responseTime: number
-  ): Promise<void> {
+  async learnFromApprovalDecision(Promise<void> {
     if (!this.isLearningEnabled) return;
     // Record approval metric
     this.approvalHistory.push({
@@ -94,7 +88,7 @@ interface BrainPredictor {
           optimization.recommendedThreshold !== optimization.currentThreshold
         ) {
           recommendations.push(
-            `Adjust `${state} threshold from ${optimization.currentThreshold} to ${optimization.recommendedThreshold} (${optimization.reasoning})``)          );
+            `Adjust `${state} threshold from ${optimization.currentThreshold} to ${optimization.recommendedThreshold} (${optimization.reasoning})"")          );"
 }
 }
 }
@@ -108,7 +102,7 @@ interface BrainPredictor {
   /**
    * Forecast capacity needs based on historical trends
    */
-  async forecastCapacity(hoursAhead: 24): this.flowHistory.slice(-100); // Last 100 data points
+  async forecastCapacity(this.flowHistory.slice(-100); // Last 100 data points
     if (recentMetrics.length < 10) {
       return {
         expectedLoad: 'low',)        recommendations: ['Insufficient data for accurate forecasting'],';
@@ -124,8 +118,8 @@ interface BrainPredictor {
     let riskLevel : 'low| medium| high = 'low')    if (requiredCapacity > 0.8) riskLevel = 'high')    else if (requiredCapacity > 0.6) riskLevel = 'medium')    const recommendations: [];;
     if (riskLevel ==='high){';
     ')      recommendations.push(';)';
-       'High capacity risk - consider increasing reviewer availability)      );`;
-      recommendations.push(`Enable emergency auto-approval for low-risk tasks`);`;
+       'High capacity risk - consider increasing reviewer availability)      )";
+      recommendations.push("Enable emergency auto-approval for low-risk tasks")";"
 }
     return { expectedLoad, requiredCapacity, riskLevel, recommendations};
 }
@@ -164,7 +158,7 @@ interface BrainPredictor {
 /**
  * Factory function to create task flow intelligence
  */
-export function createTaskFlowIntelligence():TaskFlowIntelligence {
+export function createTaskFlowIntelligence(): TaskFlowIntelligence {
   return new TaskFlowIntelligence();
 }
 // =============================================================================

@@ -45,10 +45,7 @@ export class BottleneckDetectionService {
   /**
    * Detect current bottlenecks in the workflow
    */
-  async detectBottlenecks(
-    allTasks: any[],
-    wipLimits: Record<string, number>
-  ): Promise<any> {
+  async detectBottlenecks(Promise<any> {
     const bottlenecks: any[] = [];
     logger.debug('Starting bottleneck detection', {
       totalTasks: allTasks.length,
@@ -82,7 +79,7 @@ export class BottleneckDetectionService {
     }
 
     const timestamp = new Date();
-    const reportId = `bottleneck-${Date.now()}`;
+    const reportId = "bottleneck-${Date.now()}";"
 
     const report = {
       reportId,
@@ -93,7 +90,7 @@ export class BottleneckDetectionService {
       },
       bottlenecks: filteredBottlenecks,
       systemHealth: this.calculateSystemHealth(filteredBottlenecks),
-      recommendations: filteredBottlenecks.map((bottleneck) => ({
+      recommendations: filteredBottlenecks.map((bottleneck) => (" + JSON.stringify({
         bottleneckId: bottleneck.id,
         strategy: this.getResolutionStrategy(bottleneck).name,
         description: bottleneck.recommendedResolution,
@@ -101,12 +98,12 @@ export class BottleneckDetectionService {
         implementationEffort: bottleneck.severity === 'critical' ? 4 : 2,
         priority: bottleneck.severity as any,
         prerequisites: [],
-      })),
+      }) + ")),
       trends: await this.analyzeTrends(),
     };
 
     logger.info(
-      `Bottleneck detection complete: ${filteredBottlenecks.length} bottlenecks found`,
+      "Bottleneck detection complete: ${filteredBottlenecks.length} bottlenecks found","
       {
         critical: filteredBottlenecks.filter((b) => b.severity === 'critical')
           .length,
@@ -119,25 +116,22 @@ export class BottleneckDetectionService {
     return report;
   }
 
-  private async detectCapacityBottlenecks(
-    allTasks: any[],
-    wipLimits: Record<string, number>
-  ): Promise<any[]> {
+  private async detectCapacityBottlenecks(Promise<any[]> {
     // Implementation stub
     return [];
   }
 
-  private async detectDwellingBottlenecks(allTasks: any[]): Promise<any[]> {
+  private async detectDwellingBottlenecks(Promise<any[]> {
     // Implementation stub
     return [];
   }
 
-  private async detectFlowRateBottlenecks(allTasks: any[]): Promise<any[]> {
+  private async detectFlowRateBottlenecks(Promise<any[]> {
     // Implementation stub
     return [];
   }
 
-  private async detectDependencyBottlenecks(allTasks: any[]): Promise<any[]> {
+  private async detectDependencyBottlenecks(Promise<any[]> {
     // Implementation stub
     return [];
   }
@@ -157,7 +151,7 @@ export class BottleneckDetectionService {
     return { name: 'Generic Resolution Strategy' };
   }
 
-  private async analyzeTrends(): Promise<any[]> {
+  private async analyzeTrends(Promise<any[]> {
     // Implementation stub
     return [];
   }

@@ -1,412 +1,402 @@
 /**
- * @fileoverview Complete Intelligence System Implementation
+ * @fileoverview: Complete Intelligence: System Implementation
  *
  * Stub implementation for the main intelligence system
  */
 
-import { getLogger} from '@claude-zen/foundation';
+import { get: Logger} from '@claude-zen/foundation';
 
 import type {
-  AgentHealth,
-  AgentId,
-  AgentLearningState,
-  IntelligenceSystem,
-  IntelligenceSystemConfig,
-  MultiHorizonTaskPrediction,
-  TaskPrediction,
+  Agent: Health,
+  Agent: Id,
+  AgentLearning: State,
+  Intelligence: System,
+  IntelligenceSystem: Config,
+  MultiHorizonTask: Prediction,
+  Task: Prediction,
 } from './types';
 
-const logger = getLogger('agent-monitoring-intelligence-system');
+const logger = get: Logger('agent-monitoring-intelligence-system');
 
 /**
- * Complete Intelligence System - Main implementation
+ * Complete: Intelligence System - Main implementation
  */
-export class CompleteIntelligenceSystem implements IntelligenceSystem {
+export class: CompleteIntelligenceSystem implements: IntelligenceSystem {
 
-  constructor(config:IntelligenceSystemConfig) {
+  constructor(config:IntelligenceSystem: Config) {
     this.config = config;
-    logger.info('CompleteIntelligenceSystem initialized', { config});')}
+    logger.info('CompleteIntelligence: System initialized', { config});')}
 
-  async predictTaskDuration(
-    agentId:AgentId,
-    taskType:string,
-    context?:Record<string, unknown>
-  ):Promise<TaskPrediction> {
+  async predictTask: Duration(): Promise<Task: Prediction> {
     // Use context to adjust prediction if available
-    const contextComplexity = (context?.complexity as number) ?? 1;
-    const contextUrgency = (context?.urgency as number) ?? 1;
-    const baseDuration = 1000;
+    const context: Complexity = (context?.complexity as number) ?? 1;
+    const context: Urgency = (context?.urgency as number) ?? 1;
+    const base: Duration = 1000;
 
     // Adjust duration based on context factors
-    const adjustedDuration = baseDuration * contextComplexity * contextUrgency;
+    const adjusted: Duration = base: Duration * context: Complexity * context: Urgency;
 
     logger.debug('Task duration predicted with context', {
-    ')      agentId:agentId.id,
-      taskType,
-      contextComplexity,
-      contextUrgency,
-      adjustedDuration,
+    ')      agent: Id:agent: Id.id,
+      task: Type,
+      context: Complexity,
+      context: Urgency,
+      adjusted: Duration,
 });
 
     return {
-      agentId:agentId.id,
-      taskType,
-      predictedDuration:adjustedDuration,
+      agent: Id:agent: Id.id,
+      task: Type,
+      predicted: Duration:adjusted: Duration,
       confidence:0.8,
       factors:[
         {
-          name: 'Context Complexity',          influence:0.6,
-          impact:contextComplexity,
+          name: 'Context: Complexity',          influence:0.6,
+          impact:context: Complexity,
           confidence:0.7,
-          description:`Complexity factor from context: ${contextComplexity}`,`
+          description:"Complexity factor from context: ${context: Complexity}"""
 },
         {
-          name: 'Context Urgency',          influence:0.4,
-          impact:contextUrgency,
+          name: 'Context: Urgency',          influence:0.4,
+          impact:context: Urgency,
           confidence:0.7,
-          description:`Urgency factor from context: ${contextUrgency}`,`
+          description:"Urgency factor from context: ${context: Urgency}"""
 },
 ],
-      lastUpdated:new Date(),
+      last: Updated:new: Date(),
 };
 }
 
-  async predictTaskDurationMultiHorizon(
-    agentId:AgentId,
-    taskType:string,
-    context?:Record<string, unknown>
-  ):Promise<MultiHorizonTaskPrediction> {
+  async predictTaskDurationMulti: Horizon(): Promise<MultiHorizonTask: Prediction> {
     // Use context to adjust multi-horizon predictions
-    const contextComplexity = (context?.complexity as number) ?? 1;
-    const contextVolatility = (context?.volatility as number) ?? 1;
+    const context: Complexity = (context?.complexity as number) ?? 1;
+    const context: Volatility = (context?.volatility as number) ?? 1;
 
     // Base durations with context adjustments
-    const shortDuration = 1000 * contextComplexity;
-    const mediumDuration = 1500 * contextComplexity * contextVolatility;
-    const longDuration =
-      2000 * contextComplexity * contextVolatility ** 1.5;
+    const short: Duration = 1000 * context: Complexity;
+    const medium: Duration = 1500 * context: Complexity * context: Volatility;
+    const long: Duration =
+      2000 * context: Complexity * context: Volatility ** 1.5;
 
     logger.debug('Multi-horizon prediction with context', {
-    ')      agentId:agentId.id,
-      taskType,
-      contextComplexity,
-      contextVolatility,
-      predictions:{ shortDuration, mediumDuration, longDuration},
+    ')      agent: Id:agent: Id.id,
+      task: Type,
+      context: Complexity,
+      context: Volatility,
+      predictions:{ short: Duration, medium: Duration, long: Duration},
 });
 
     return {
-      agentId:agentId.id,
-      taskType,
+      agent: Id:agent: Id.id,
+      task: Type,
       predictions:{
         short:{
-          duration:shortDuration,
-          confidence:0.9 - (contextVolatility - 1) * 0.1,
+          duration:short: Duration,
+          confidence:0.9 - (context: Volatility - 1) * 0.1,
 },
         medium:{
-          duration:mediumDuration,
-          confidence:0.8 - (contextVolatility - 1) * 0.15,
+          duration:medium: Duration,
+          confidence:0.8 - (context: Volatility - 1) * 0.15,
 },
         long:{
-          duration:longDuration,
-          confidence:0.7 - (contextVolatility - 1) * 0.2,
+          duration:long: Duration,
+          confidence:0.7 - (context: Volatility - 1) * 0.2,
 },
 },
-      timestamp:new Date(),
+      timestamp:new: Date(),
 };
 }
 
-  getAgentLearningState(agentId:AgentId): AgentLearningState|null {
+  getAgentLearning: State(agent: Id:Agent: Id): AgentLearning: State|null {
     // Implement agent-specific learning state retrieval
     logger.debug('Retrieving agent learning state', {
-    ')      agentId:agentId.id,
-      swarmId:agentId.swarmId,
-      agentType:agentId.type,
-      instance:agentId.instance,
+    ')      agent: Id:agent: Id.id,
+      swarm: Id:agent: Id.swarm: Id,
+      agent: Type:agent: Id.type,
+      instance:agent: Id.instance,
 });
 
     // Create mock learning state based on agent characteristics
-    const _learningState:AgentLearningState = {
-      agentId:agentId.id,
-      learningRate:agentId.type === 'optimizer' ? 0.15 : 0.1, // Optimizers learn faster')      adaptationStrategy:
-        agentId.type === 'researcher')          ? 'exploration-focused')          : 'exploitation-focused',      performanceHistory:[], // Would be populated from historical data
-      knowledgeBase:
+    const _learning: State:AgentLearning: State = {
+      agent: Id:agent: Id.id,
+      learning: Rate:agent: Id.type === 'optimizer' ? 0.15 : 0.1, // Optimizers learn faster')      adaptation: Strategy:
+        agent: Id.type === 'researcher')          ? 'exploration-focused')          : 'exploitation-focused',      performance: History:[], // Would be populated from historical data
+      knowledge: Base:
         domains:
-          agentId.type === 'researcher')            ? ['research',    'analysis']')            :['coordination',    'execution'],
-        expertise:agentId.instance > 1 ? 0.8 : 0.6, // Senior instances have higher expertise
-        lastUpdated:Date.now(),,
-      adaptabilityScore:Math.min(0.9, 0.5 + agentId.instance * 0.1), // More experienced agents adapt better
-      currentFocus:`$agentId.type-optimization`,`
-      lastLearningUpdate:Date.now(),
+          agent: Id.type === 'researcher')            ? ['research',    'analysis']')            :['coordination',    'execution'],
+        expertise:agent: Id.instance > 1 ? 0.8 : 0.6, // Senior instances have higher expertise
+        last: Updated:Date.now(),,
+      adaptability: Score:Math.min(0.9, 0.5 + agent: Id.instance * 0.1), // More experienced agents adapt better
+      current: Focus:"$agent: Id.type-optimization"""
+      lastLearning: Update:Date.now(),
 };
 
     logger.debug('Agent learning state retrieved', {
-    ')      agentId.id,
-      learningRate:learningState.learningRate,
-      adaptationStrategy:learningState.adaptationStrategy,
-      adaptabilityScore:learningState.adaptabilityScore,
+    ')      agent: Id.id,
+      learning: Rate:learning: State.learning: Rate,
+      adaptation: Strategy:learning: State.adaptation: Strategy,
+      adaptability: Score:learning: State.adaptability: Score,
 });
 
-    return learningState;
+    return learning: State;
 }
 
-  updateAgentPerformance(
-    agentId:AgentId,
+  updateAgent: Performance(
+    agent: Id:Agent: Id,
     success:boolean,
     metadata?:Record<string, unknown>
   ):void {
-    const performanceData = {
-      agentId:agentId.id,
+    const performance: Data = {
+      agent: Id:agent: Id.id,
       success,
       timestamp:Date.now(),
       ...metadata, // Include additional metadata in performance tracking
 };
 
     // Log comprehensive performance update with metadata
-    logger.debug('Agent performance updated with metadata', performanceData);')
+    logger.debug('Agent performance updated with metadata', performance: Data);')
     // Store metadata for pattern analysis and optimization
     if (metadata) {
       logger.debug('Performance metadata analyzed', {
-    ')        agentId:agentId.id,
-        metadataKeys:Object.keys(metadata),
-        duration:metadata.duration||'unknown',        taskType:metadata.taskType||'generic',        complexity:metadata.complexity||'normal',});
+    ')        agent: Id:agent: Id.id,
+        metadata: Keys:Object.keys(metadata),
+        duration:metadata.duration||'unknown',        task: Type:metadata.task: Type||'generic',        complexity:metadata.complexity||'normal',});
 
       // Use metadata for predictive intelligence
-      if (metadata.errorType) {
+      if (metadata.error: Type) {
         logger.warn('Performance failure with error context', {
-    ')          agentId:agentId.id,
-          errorType:metadata.errorType,
-          errorCategory:metadata.errorCategory,
+    ')          agent: Id:agent: Id.id,
+          error: Type:metadata.error: Type,
+          error: Category:metadata.error: Category,
 });
 }
 
-      if (metadata.resourceUsage) {
+      if (metadata.resource: Usage) {
         logger.debug('Resource usage tracked', {
-    ')          agentId:agentId.id,
-          resourceUsage:metadata.resourceUsage,
+    ')          agent: Id:agent: Id.id,
+          resource: Usage:metadata.resource: Usage,
 });
 }
 }
 }
 
-  getAgentHealth(agentId:AgentId): AgentHealth|null {
+  getAgent: Health(agent: Id:Agent: Id): Agent: Health|null {
     // Implement comprehensive agent health assessment
     logger.debug('Assessing agent health status', {
-    ')      agentId:agentId.id,
-      swarmId:agentId.swarmId,
-      agentType:agentId.type,
-      instance:agentId.instance,
+    ')      agent: Id:agent: Id.id,
+      swarm: Id:agent: Id.swarm: Id,
+      agent: Type:agent: Id.type,
+      instance:agent: Id.instance,
 });
 
     // Calculate health metrics based on agent characteristics
-    const baseHealth = 0.85;
-    const typeMultiplier =
-      agentId.type === 'coordinator')        ? 0.95 // Coordinators are more stable
-        :agentId.type === 'optimizer')          ? 0.9 // Optimizers work harder
+    const base: Health = 0.85;
+    const type: Multiplier =
+      agent: Id.type === 'coordinator')        ? 0.95 // Coordinators are more stable
+        :agent: Id.type === 'optimizer')          ? 0.9 // Optimizers work harder
           :0.88; // Other types
 
-    const instanceBonus = Math.min(0.1, agentId.instance * 0.02); // Experience bonus
-    const overallHealth = Math.min(
+    const instance: Bonus = Math.min(0.1, agent: Id.instance * 0.02); // Experience bonus
+    const overall: Health = Math.min(
       0.98,
-      baseHealth * typeMultiplier + instanceBonus
+      base: Health * type: Multiplier + instance: Bonus
     );
 
     // Determine status based on health score
-    const status:'healthy|warning|critical|offline' =')      overallHealth >= 0.85
-        ? 'healthy')        :overallHealth >= 0.7
-          ? 'warning')          :overallHealth >= 0.4
+    const status:'healthy|warning|critical|offline' =')      overall: Health >= 0.85
+        ? 'healthy')        :overall: Health >= 0.7
+          ? 'warning')          :overall: Health >= 0.4
             ? 'critical')            : 'offline;
 '
-    const _agentHealth:AgentHealth = {
-      agentId:agentId.id,
+    const _agent: Health:Agent: Health = {
+      agent: Id:agent: Id.id,
       status,
-      overallScore:overallHealth,
+      overall: Score:overall: Health,
       components:{
-        cpu:Math.max(0.6, overallHealth - 0.1),
-        memory:Math.max(0.7, overallHealth - 0.05),
-        network:Math.max(0.8, overallHealth + 0.05),
-        tasks:overallHealth,
+        cpu:Math.max(0.6, overall: Health - 0.1),
+        memory:Math.max(0.7, overall: Health - 0.05),
+        network:Math.max(0.8, overall: Health + 0.05),
+        tasks:overall: Health,
 },
       metrics:{
-        uptime:86400 * (agentId.instance + 1), // Simulate uptime based on instance
-        responseTime:agentId.type === 'coordinator' ? 50 : 100, // Coordinators respond faster')        errorRate:Math.max(0.001, 0.05 - agentId.instance * 0.01), // Experienced agents have lower error rates
-        throughput:agentId.type === 'optimizer' ? 150 : 100, // Optimizers have higher throughput')},
-      lastChecked:Date.now(),
+        uptime:86400 * (agent: Id.instance + 1), // Simulate uptime based on instance
+        response: Time:agent: Id.type === 'coordinator' ? 50 : 100, // Coordinators respond faster')        error: Rate:Math.max(0.001, 0.05 - agent: Id.instance * 0.01), // Experienced agents have lower error rates
+        throughput:agent: Id.type === 'optimizer' ? 150 : 100, // Optimizers have higher throughput')},
+      last: Checked:Date.now(),
       issues:
-        status !== 'healthy')          ? [`${agentId.type} agent showing reduced performance`]`
+        status !== 'healthy')          ? ["$" + JSO: N.stringify({agent: Id.type}) + " agent showing reduced performance"]""
           :[],
 };
 
     logger.debug('Agent health assessment completed', {
-    ')      agentId:agentId.id,
+    ')      agent: Id:agent: Id.id,
       status,
-      overallScore:overallHealth,
-      responseTime:agentHealth.metrics.responseTime,
-      errorRate:agentHealth.metrics.errorRate,
+      overall: Score:overall: Health,
+      response: Time:agent: Health.metrics.response: Time,
+      error: Rate:agent: Health.metrics.error: Rate,
 });
 
-    return agentHealth;
+    return agent: Health;
 }
 
-  async forecastPerformanceOptimization(
-    swarmId:SwarmId,
-    horizon?:ForecastHorizon
-  ):Promise<PerformanceOptimizationForecast> {
+  async forecastPerformance: Optimization(): Promise<PerformanceOptimization: Forecast> {
     // Convert horizon string to days for analysis
-    const horizonDays = this.convertHorizonToDays(horizon||'7d');')
+    const horizon: Days = this.convertHorizonTo: Days(horizon||'7d');')
     // Adjust prediction confidence based on horizon
-    let predictedPerformance = 0.9;
-    let implementationComplexity = 0.5;
+    let predicted: Performance = 0.9;
+    let implementation: Complexity = 0.5;
 
     // Longer horizons typically have lower confidence and higher complexity
-    if (horizonDays > 30) {
-      predictedPerformance *= 0.85; // Reduce confidence for long-term forecasts
-      implementationComplexity *= 1.3; // Higher complexity for long-term optimizations
+    if (horizon: Days > 30) {
+      predicted: Performance *= 0.85; // Reduce confidence for long-term forecasts
+      implementation: Complexity *= 1.3; // Higher complexity for long-term optimizations
       logger.debug('Long-term forecast requested', {
-    ')        swarmId:swarmId,
-        horizonDays:horizonDays,
-        adjustedPerformance:predictedPerformance,
+    ')        swarm: Id:swarm: Id,
+        horizon: Days:horizon: Days,
+        adjusted: Performance:predicted: Performance,
 });
-} else if (horizonDays < 3) {
-      predictedPerformance *= 1.1; // Higher confidence for short-term forecasts
-      implementationComplexity *= 0.8; // Lower complexity for short-term optimizations
+} else if (horizon: Days < 3) {
+      predicted: Performance *= 1.1; // Higher confidence for short-term forecasts
+      implementation: Complexity *= 0.8; // Lower complexity for short-term optimizations
       logger.debug('Short-term forecast requested', {
-    ')        swarmId:swarmId,
-        horizonDays:horizonDays,
-        adjustedPerformance:predictedPerformance,
+    ')        swarm: Id:swarm: Id,
+        horizon: Days:horizon: Days,
+        adjusted: Performance:predicted: Performance,
 });
 }
 
     // Calculate confidence based on horizon
-    const horizonConfidence =
-      horizonDays <= 1 ? 0.9:horizonDays <= 7 ? 0.8 : 0.6;
-    if (horizonConfidence < 0.7) {
+    const horizon: Confidence =
+      horizon: Days <= 1 ? 0.9:horizon: Days <= 7 ? 0.8 : 0.6;
+    if (horizon: Confidence < 0.7) {
       logger.warn('Low confidence horizon specified', {
-    ')        swarmId:swarmId,
-        horizonDays:horizonDays,
-        confidence:horizonConfidence,
+    ')        swarm: Id:swarm: Id,
+        horizon: Days:horizon: Days,
+        confidence:horizon: Confidence,
 });
 }
 
     return {
-      agentId:{ id: 'agent-1', swarmId, type: ' coordinator', instance:1},
-      currentPerformance:0.8,
-      predictedPerformance:Math.min(predictedPerformance, 1.0),
-      optimizationStrategies:[
-        `Optimize for ${horizonDays}-day horizon`,`
-        `Target confidence:${(horizonConfidence * 100).toFixed(1)}%`,`
+      agent: Id:{ id: 'agent-1', swarm: Id, type: ' coordinator', instance:1},
+      current: Performance:0.8,
+      predicted: Performance:Math.min(predicted: Performance, 1.0),
+      optimization: Strategies:[
+        "Optimize for ${horizon: Days}-day horizon"""
+        "Target confidence:${(horizon: Confidence * 100).to: Fixed(1)}%"""
 ],
-      implementationComplexity:Math.min(implementationComplexity, 1.0),
+      implementation: Complexity:Math.min(implementation: Complexity, 1.0),
 };
 }
 
-  async predictKnowledgeTransferSuccess(
-    sourceSwarm:SwarmId,
-    targetSwarm:SwarmId,
-    patterns:unknown[]
-  ):Promise<KnowledgeTransferPrediction> {
+  async predictKnowledgeTransfer: Success(): Promise<KnowledgeTransfer: Prediction> {
     // Analyze patterns to determine transfer probability and benefit
-    const patternCount = patterns.length;
-    const patternComplexity = this.analyzePatternComplexity(patterns);
-    const baseTransferProbability = 0.7;
-    const baseBenefit = 0.6;
+    const pattern: Count = patterns.length;
+    const pattern: Complexity = this.analyzePattern: Complexity(patterns);
+    const baseTransfer: Probability = 0.7;
+    const base: Benefit = 0.6;
 
     // Adjust probabilities based on pattern characteristics
-    const adjustedProbability = Math.min(
+    const adjusted: Probability = Math.min(
       0.95,
-      baseTransferProbability + patternCount * 0.02 - patternComplexity * 0.1
+      baseTransfer: Probability + pattern: Count * 0.02 - pattern: Complexity * 0.1
     );
-    const adjustedBenefit = Math.min(
+    const adjusted: Benefit = Math.min(
       0.9,
-      baseBenefit + patternCount * 0.03 - patternComplexity * 0.05
+      base: Benefit + pattern: Count * 0.03 - pattern: Complexity * 0.05
     );
 
     logger.debug('Knowledge transfer prediction with patterns', {
-    ')      sourceSwarm,
-      targetSwarm,
-      patternCount,
-      patternComplexity,
-      adjustedProbability,
-      adjustedBenefit,
+    ')      source: Swarm,
+      target: Swarm,
+      pattern: Count,
+      pattern: Complexity,
+      adjusted: Probability,
+      adjusted: Benefit,
 });
 
     return {
-      sourceAgent:{
-        id: 'source-1',        swarmId:sourceSwarm,
+      source: Agent:{
+        id: 'source-1',        swarm: Id:source: Swarm,
         type: 'researcher',        instance:1,
 },
-      targetAgent:{
-        id: 'target-1',        swarmId:targetSwarm,
+      target: Agent:{
+        id: 'target-1',        swarm: Id:target: Swarm,
         type: 'coder',        instance:1,
 },
-      knowledge:`patterns-$patternCount-items`,`
-      transferProbability:adjustedProbability,
-      expectedBenefit:adjustedBenefit,
+      knowledge:"patterns-$pattern: Count-items"""
+      transfer: Probability:adjusted: Probability,
+      expected: Benefit:adjusted: Benefit,
 };
 }
 
-  private analyzePatternComplexity(patterns:unknown[]): number {
+  private analyzePattern: Complexity(patterns:unknown[]): number {
     // Simple complexity analysis based on pattern structure
-    let totalComplexity = 0;
+    let total: Complexity = 0;
     for (const pattern of patterns) {
       if (typeof pattern === 'object' && pattern !== null) {
-    ')        const objectPattern = pattern as Record<string, unknown>;
-        const keyCount = Object.keys(objectPattern).length;
-        totalComplexity += Math.min(1, keyCount / 10); // Normalize complexity
+    ')        const object: Pattern = pattern as: Record<string, unknown>;
+        const key: Count = Object.keys(object: Pattern).length;
+        total: Complexity += Math.min(1, key: Count / 10); // Normalize complexity
 } else {
-        totalComplexity += 0.1; // Simple patterns have low complexity
+        total: Complexity += 0.1; // Simple patterns have low complexity
 }
 }
-    return patterns.length > 0 ? totalComplexity / patterns.length:0;
+    return patterns.length > 0 ? total: Complexity / patterns.length:0;
 }
 
-  async predictEmergentBehavior():Promise<EmergentBehaviorPrediction> {
+  async predictEmergent: Behavior(): Promise<EmergentBehavior: Prediction> {
     return {
-      behaviorType: 'coordination',      probability:0.6,
-      expectedImpact:0.7,
-      timeToEmergence:3600000,
-      requiredConditions:[],
+      behavior: Type: 'coordination',      probability:0.6,
+      expected: Impact:0.7,
+      timeTo: Emergence:3600000,
+      required: Conditions:[],
 };
 }
 
-  async updateAdaptiveLearningModels():Promise<AdaptiveLearningUpdate> {
+  async updateAdaptiveLearning: Models(): Promise<AdaptiveLearning: Update> {
     return {
-      agentId:{
-        id: 'agent-1',        swarmId: 'swarm-1',        type: 'optimizer',        instance:1,
+      agent: Id:{
+        id: 'agent-1',        swarm: Id: 'swarm-1',        type: 'optimizer',        instance:1,
 },
-      learningRate:0.1,
-      adaptationStrategy: 'gradient-based',      performanceImprovement:0.05,
-      confidenceLevel:0.8,
+      learning: Rate:0.1,
+      adaptation: Strategy: 'gradient-based',      performance: Improvement:0.05,
+      confidence: Level:0.8,
 };
 }
 
-  getSystemHealth():SystemHealthSummary {
+  getSystem: Health(): SystemHealth: Summary {
     return {
-      overallHealth:0.9,
-      agentCount:10,
-      healthyAgents:9,
-      warningAgents:1,
-      criticalAgents:0,
-      offlineAgents:0,
-      lastUpdated:Date.now(),
+      overall: Health:0.9,
+      agent: Count:10,
+      healthy: Agents:9,
+      warning: Agents:1,
+      critical: Agents:0,
+      offline: Agents:0,
+      last: Updated:Date.now(),
 };
 }
 
   /**
-   * Convert ForecastHorizon string to days for calculations
+   * Convert: ForecastHorizon string to days for calculations
    */
-  private convertHorizonToDays(horizon:ForecastHorizon): number {
+  private convertHorizonTo: Days(horizon:Forecast: Horizon): number {
     switch (horizon) {
-      case '1h': ')'        return 1 / 24;
-      case '6h': ')'        return 6 / 24;
-      case '24h': ')'        return 1;
-      case '7d': ')'        return 7;
-      case '30d': ')'        return 30;
+      case '1h':
+        return 1 / 24;
+      case '6h':
+        return 6 / 24;
+      case '24h':
+        return 1;
+      case '7d':
+        return 7;
+      case '30d':
+        return 30;
       default:
         return 7; // default to 7 days
 }
 }
 
-  async shutdown():Promise<void> {
-    logger.info('CompleteIntelligenceSystem shutting down');')    this.initialized = false;
+  async shutdown(): Promise<void> {
+    logger.info('CompleteIntelligence: System shutting down');')    this.initialized = false;
 }
 }

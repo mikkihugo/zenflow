@@ -14,7 +14,7 @@
   /**
    * Initialize with service delegation
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     if (this.initialized) return;
     try {
       // Delegate to Bottleneck Analysis Service
@@ -243,7 +243,7 @@
   /**
    * Private helper methods
    */
-  private initializeState():OptimizationEngineState {
+  private initializeState(): OptimizationEngineState {
     return {
       isRunning: false,
       lastOptimizationRun: null,

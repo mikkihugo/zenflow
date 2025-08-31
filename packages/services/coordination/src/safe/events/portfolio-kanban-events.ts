@@ -147,7 +147,7 @@ export interface EpicStateTransitionEvent {
 }
     // Check gates (would integrate with external gate validation)
     for (const gate of requirements.gates) {
-      // Simplified gate validation - in real implementation would check external systems`)      if (!evidence|| !evidence[`gate-${gate}]) {``;
+      // Simplified gate validation - in real implementation would check external systems`)      if (!evidence|| !evidence[`gate-${gate}]) {"";"
     )        pendingGates.push(gate);
 }
 }
@@ -155,4 +155,4 @@ export interface EpicStateTransitionEvent {
       isValid: missingRequirements.length === 0 && pendingGates.length === 0,
       missingRequirements,
       pendingGates,
-};`)};)};;
+}")};)};;

@@ -62,7 +62,7 @@ export class CodeQLBridge {
   /**
    * Check if CodeQL CLI is available and get version
    */
-  async checkAvailability():Promise<Result<string, CodeQLError>> {
+  async checkAvailability(Promise<Result<string, CodeQLError>> {
     return await safeAsync(async () => {
       const result = await this.executeCommand(['version', '--format=json']);
       const versionData = JSON.parse(result.stdout);
@@ -73,10 +73,7 @@ export class CodeQLBridge {
   /**
    * Create CodeQL database for a repository
    */
-  async createDatabase(
-    repositoryPath: string,
-    options: DatabaseCreationOptions
-  ):Promise<DatabaseCreationResult> {
+  async createDatabase(Promise<DatabaseCreationResult> {
     return await withRetry(
       async () => {
         this.logger.info('Creating CodeQL database', {
@@ -88,7 +85,7 @@ export class CodeQLBridge {
         const repoStats = await fs.stat(repositoryPath);
         if (!repoStats.isDirectory()) {
           throw this.createError(
-            'config',            `Repository path is not a directory:${repositoryPath}``
+            'config',            "Repository path is not a directory:$" + JSON.stringify({repositoryPath}) + """"
           );
 }
 
@@ -113,11 +110,7 @@ export class CodeQLBridge {
   /**
    * Analyze repository with CodeQL queries
    */
-  async analyzeRepository(
-    repositoryPath: string,
-    queryPacks: QueryPack[],
-    options: Partial<DatabaseCreationOptions & QueryExecutionOptions> = {}
-  ):Promise<QueryExecutionResult> {
+  async analyzeRepository(Promise<QueryExecutionResult> {
     return await safeAsync(async ():Promise<CodeQLAnalysisResult> => {
       this.logger.info('Starting CodeQL repository analysis', {
     ')        repositoryPath,
@@ -164,7 +157,7 @@ export class CodeQLBridge {
 
       // Step 4: Process and parse results
       const analysisResult: CodeQLAnalysisResult = {
-        id:`analysis_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,`
+        id:"analysis_${Date.now()}_${Math.random().toString(36).substr(2, 9)}"""
         database,
         queryPacks,
         sarifResults: queryResults.sarifResults,
@@ -202,11 +195,7 @@ export class CodeQLBridge {
   /**
    * Analyze single file with CodeQL
    */
-  async analyzeFile(
-    filePath: string,
-    queryPacks: QueryPack[],
-    options: Partial<QueryExecutionOptions> = {}
-  ):Promise<QueryExecutionResult> {
+  async analyzeFile(Promise<QueryExecutionResult> {
     const repositoryPath = path.dirname(filePath);
     const analysisOptions = {
       ...options,
@@ -219,14 +208,14 @@ export class CodeQLBridge {
   /**
    * List available databases
    */
-  async listDatabases():Promise<Result<CodeQLDatabase[], CodeQLError>> {
+  async listDatabases(Promise<Result<CodeQLDatabase[], CodeQLError>> {
     return this.databaseManager.listDatabases();
 }
 
   /**
    * Delete a database
    */
-  async deleteDatabase(databaseId: string): Promise<Result<void, CodeQLError>> {
+  async deleteDatabase(Promise<Result<void, CodeQLError>> {
     return this.databaseManager.deleteDatabase(databaseId);
 }
 
@@ -239,17 +228,17 @@ export class CodeQLBridge {
     for (const language of languages) {
       // Standard security queries
       queryPacks.push({
-        name:`${language}-security-extended`,`
+        name:"${language}-security-extended"""
         version: 'latest',        metadata:{
-          description:`Extended security queries for ${language}`,`
+          description:"Extended security queries for ${language}"""
           category: 'security',},
 });
 
       // Code quality queries
       queryPacks.push({
-        name:`${language}-code-scanning`,`
+        name:"${language}-code-scanning"""
         version: 'latest',        metadata:{
-          description:`Code scanning queries for ${language}`,`
+          description:"Code scanning queries for ${language}"""
           category: 'quality',},
 });
 }
@@ -260,7 +249,7 @@ export class CodeQLBridge {
   /**
    * Get custom query packs from local directories
    */
-  async getCustomQueryPacks():Promise<QueryPack[]> {
+  async getCustomQueryPacks(Promise<QueryPack[]> {
     const queryPacks: QueryPack[] = [];
     const queriesDir = path.join(__dirname, '..',    'queries');')
     try {
@@ -272,10 +261,10 @@ export class CodeQLBridge {
 
         if (stats.isDirectory()) {
           queryPacks.push({
-            name: `claude-zen-${languageDir}`,
+            name: "claude-zen-$" + JSON.stringify({languageDir}) + "","
             path: languagePath,
             metadata: {
-              description: `Claude Zen custom queries for ${languageDir}`,
+              description: "Claude Zen custom queries for ${languageDir}","
               category: 'custom',              source: 'claude-zen',},
 });
 }
@@ -288,10 +277,7 @@ export class CodeQLBridge {
 
   // Private helper methods
 
-  private async executeCommand(
-    args: string[],
-    options:{ cwd?: string; timeout?: number} = {}
-  ):Promise<{ stdout: string; stderr: string; exitCode: number}> {
+  private async executeCommand(Promise<{ stdout: string; stderr: string; exitCode: number}> {
     return new Promise((resolve, reject) => {
       const timeout = options.timeout||this.config.timeout||300000;
       const cwd = options.cwd||process.cwd();
@@ -355,9 +341,7 @@ export class CodeQLBridge {
 });
 }
 
-  private async detectLanguages(
-    repositoryPath: string
-  ):Promise<CodeQLLanguage[]> {
+  private async detectLanguages(Promise<CodeQLLanguage[]> {
     const languages: Set<CodeQLLanguage> = new Set();
 
     try {
@@ -387,7 +371,7 @@ export class CodeQLBridge {
     return Array.from(languages);
 }
 
-  private async getCodeQLVersion():Promise<string> {
+  private async getCodeQLVersion(Promise<string> {
     try {
       const versionResult = await this.checkAvailability();
       return versionResult.isOk() ? versionResult.value: 'unknown;
@@ -408,7 +392,7 @@ export class CodeQLBridge {
     return versions;
 }
 
-  private async countAnalyzedFiles(database: CodeQLDatabase): Promise<number> {
+  private async countAnalyzedFiles(Promise<number> {
     try {
       // This would query the database for file count
       // For now, return estimated count based on source directory
@@ -428,7 +412,7 @@ export class CodeQLBridge {
     type: CodeQLError['type'],
     message: string,
     details: Record<string, unknown> = {}
-  ):CodeQLError {
+  ): CodeQLError {
     const error = new Error(message) as CodeQLError;
     error.type = type;
     Object.assign(error, details);
@@ -438,7 +422,7 @@ export class CodeQLBridge {
   /**
    * Clean up resources
    */
-  async cleanup():Promise<void> {
+  async cleanup(Promise<void> {
     this.logger.info('Cleaning up CodeQL resources');')    await this.databaseManager.cleanup();
     await this.queryRunner.cleanup();
 }
@@ -449,7 +433,7 @@ export class CodeQLBridge {
  */
 export function createCodeQLBridge(
   config?:Partial<CodeQLConfig>
-):CodeQLBridge {
+): CodeQLBridge {
   return new CodeQLBridge(config);
 }
 

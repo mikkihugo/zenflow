@@ -179,7 +179,7 @@ export interface CVSSScore {
   /**
    * Initialize with service delegation - LAZY LOADING
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     if (this.initialized) return;
     try {
     ')      this.logger.info('Initializing DevSecOps Manager...');
@@ -249,14 +249,7 @@ export interface CVSSScore {
   /**
    * Create security incident - Delegates to Security Incident Response Service
    */
-  async createSecurityIncident(incidentData:  {
-    title: string;
-    description: string;
-    severity: IncidentSeverity;
-    category: IncidentCategory;
-    reportedBy: string;
-    initialEvidence?:any[];
-}): Promise<any> {
+  async createSecurityIncident(Promise<any> {
     if (!this.initialized) await this.initialize();')    this.logger.info('Creating security incident,{';
       title: incidentData.title,
       severity: incidentData.severity,

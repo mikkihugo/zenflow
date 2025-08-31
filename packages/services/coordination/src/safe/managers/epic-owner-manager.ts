@@ -32,7 +32,7 @@
   /**
    * Initialize Epic Owner Manager with service delegation
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     if (this.initialized) {
     ')      this.logger.warn('Epic Owner Manager already initialized');
       return;
@@ -119,7 +119,7 @@
       estimatedMonths;
     );
     const enhancedPhases = timeline.phases.map((phase) => ({
-      ...phase,`)      milestones:  {`
+      ...phase,")      milestones:  {""
     ')      timelineId,    ')      phases: enhancedPhases,')      criticalPath: ['Epic Hypothesis,' Development,'Validation'],';
 };
     this.emit('timeline-generated,{';
@@ -133,7 +133,7 @@
   /**
    * Get Portfolio Kanban metrics - delegates to EpicLifecycleService
    */
-  async getPortfolioMetrics(): Promise<EpicPerformanceMetrics> {
+  async getPortfolioMetrics(Promise<EpicPerformanceMetrics> {
     if (!this.initialized) await this.initialize();')    this.logger.info('Retrieving portfolio metrics');
     if (!this.lifecycleService) {
     ')      throw new Error('Lifecycle service not initialized');
@@ -180,14 +180,14 @@
         approvalContext;
       );
       if (shouldAutoApprove) {
-    ')        this.logger.info('Epic auto-approved,{';
+    ')        this.logger.info('Epic auto-approved," + JSON.stringify({';
           epicId,
           wsjfScore: 'system,',
-            timestamp: auto-approved`,)          message,};`;
+            timestamp: auto-approved",)          message,}) + "";
 }
       // Create approval request for human review (event-driven)
       const approvalRequest = createApprovalRequest({
-    `)        type: 'medium',)        requestedBy : 'epic-owner-manager,'`
+    ")        type: 'medium',)        requestedBy : 'epic-owner-manager,'""
 '        approvers: approvalContext.stakeholders,';
         deadline: approvalContext.deadline,
         context:  {
@@ -259,7 +259,7 @@
   /**
    * Initialize manager state
    */
-  private initializeState():EpicOwnerState {
+  private initializeState(): EpicOwnerState {
     return {
       isInitialized: false,
       activeEpicsCount: 0,
@@ -283,7 +283,7 @@
   /**
    * Restore state from memory system
    */
-  private async restoreState(): Promise<void> {
+  private async restoreState(Promise<void> {
     try {
       const savedState = (await this.memorySystem.retrieve(';)';
        'epic-owner-state')) as Partial<EpicOwnerState>' | ' null')      if (savedState && typeof savedState ===object){';
@@ -297,7 +297,7 @@
   /**
    * Persist current state to memory system
    */
-  private async persistState(): Promise<void> {
+  private async persistState(Promise<void> {
     try {
     ')      await this.memorySystem.store('epic-owner-state,{';
         activeEpicsCount: this.state.activeEpicsCount,
@@ -310,4 +310,4 @@
 };)};;
 // Default export for backwards compatibility
 export default EpicOwnerManager;
-)`;
+)";"

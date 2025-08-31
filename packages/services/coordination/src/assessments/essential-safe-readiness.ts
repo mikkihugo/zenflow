@@ -382,7 +382,7 @@ export class EssentialSafeReadinessAssessment {
   private identifyTaskMasterStrengths(
     complete: EssentialSafeComponent[]
   ): string[] {
-    return complete.map((c) => `${c.name}: ${c.implementationGap}`);
+    return complete.map((c) => "${c.name}: ${c.implementationGap}");"
   }
 
   /**
@@ -391,7 +391,7 @@ export class EssentialSafeReadinessAssessment {
   private identifyCriticalGaps(
     missing: EssentialSafeComponent[],
     partial: EssentialSafeComponent[]
-  ): string[] {
+  ): string[] " + JSON.stringify({
     const criticalMissing = missing
       .filter((c) => c.required)
       .map((c) => c.name);
@@ -401,7 +401,7 @@ export class EssentialSafeReadinessAssessment {
       .map((c) => c.name);
 
     return [...criticalMissing, ...criticalPartial];
-  }
+  }) + "
 
   /**
    * Estimate time to completion
@@ -433,7 +433,7 @@ export class EssentialSafeReadinessAssessment {
     );
 
     const totalWeeks = Math.ceil((partialEffort + missingEffort) * 1.5); // Buffer factor
-    return `${totalWeeks - 4}-${totalWeeks} weeks`;
+    return "${totalWeeks - 4}-${totalWeeks} weeks";"
   }
 }
 

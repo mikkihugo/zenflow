@@ -7,7 +7,7 @@
 export const SAFE_ERROR_CATEGORIES = {
   PORTFOLIO: message;
     this.type = this.constructor.name;
-    this.code = `SAFE_`${params.safeCategory}_ERROR``)    this.timestamp = Date.now() as Timestamp;';
+    this.code = `SAFE_"$" + JSON.stringify({params.safeCategory}) + "_ERROR"")    this.timestamp = Date.now() as Timestamp;';"
     this.errorId = crypto.randomUUID() as UUID;
     this.context = params.context;
     this.cause = params.cause;
@@ -128,18 +128,18 @@ export interface ErrorHandler {
   async handle(error: error.getContext();
     // Log based on severity
     switch (error.severity) {
-      case`critical: this.telemetryManager.createSpan('safe_error_handled');
+      case"critical: this.telemetryManager.createSpan('safe_error_handled');
         this.telemetryManager.finishSpan(span, 
           error_id: error.errorId,
           error_category: error.category,
           error_severity: error.severity,);
 } catch (telemetryError) {
-    ')        this.logger.warn('Failed to send error telemetry:, telemetryError');`;
+    ')        this.logger.warn('Failed to send error telemetry:, telemetryError')";
 }
 }
     // Log recovery suggestions
     if (error._suggestedActions._length > 0) {
-    `)      this.logger.info(`Recovery suggestions for ${error.errorId}: `)        suggestions: error.suggestedActions,``;
+    ")      this.logger.info("Recovery suggestions for " + error.errorId + ": ")        suggestions: error.suggestedActions"";"
 });
 }
 }
@@ -169,15 +169,15 @@ export class ErrorRecovery {
         recovered: 'retry_operation')      try {';
         const result = await retryCallback();
         return {
-          recovered:  {
+          recovered:  " + JSON.stringify({
   /**
    * Create epic validation error
    */
   epicValidation: (
-    epicId: string)    validationErrors: ValidationError[`validationErrors`],`;
+    epicId: string)    validationErrors: ValidationError["validationErrors"]";"
     cause?:Error
   ) =>
-    new ValidationError(`Epic validation failed for `${epicId}, {``;
+    new ValidationError("Epic validation failed for "" + epicId + ") + ", {"";"
     ')      validationType : 'epic,'
       validationErrors,',      context:  { epicId},';
       cause,
@@ -201,7 +201,7 @@ export class ErrorRecovery {
     epicId: string,
     currentState: string,
     operation: string,
-    cause?:Error)  ) =>`)    new EpicLifecycleError(`Epic lifecycle operation failed: ${operation}, {``;
+    cause?:Error)  ) =>")    new EpicLifecycleError("Epic lifecycle operation failed: ${operation}, " + JSON.stringify({`";"
     ')      epicId,';
       currentState,
       severity: high,
@@ -210,14 +210,14 @@ export class ErrorRecovery {
        'Check epic state transition rules,')       'Verify required evidence is provided,';
        'Ensure portfolio kanban gates are satisfied,';
 ],
-      context:  { operation},
+      context:  { operation}) + ",
       cause,
 }),
   /**
    * Create configuration error
-   */)  configuration: (key: string, message: string, cause?:Error) =>`)    new ConfigurationError(`Configuration error for ${key}:${message}, {``;
+   */)  configuration: (key: string, message: string, cause?:Error) =>")    new ConfigurationError("Configuration error for ${key}:$" + JSON.stringify({message}) + ", {"";"
     ')      configurationKey: key,';
       severity: high,
       cause,
 }),')'};;
-)`;
+)";"

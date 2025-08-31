@@ -3,7 +3,7 @@
  * 
  * **COMPLETE VISIBILITY INTO ALL SAFe 6.0 FRAMEWORK FLOWS: **
  * 
- * 🔍 **REAL-TIME FLOW MONITORING:**
+ * search **REAL-TIME FLOW MONITORING:**
  * - Every gate decision across all SAFe 6.0 levels
  * - AI vs Human decision patterns
  * - Live approval status and bottlenecks
@@ -67,7 +67,7 @@ export interface LiveGateStatus {
   /**
    * Initialize dashboard with real-time monitoring
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     try {
     ')      this.logger.info('Initializing Complete SAFE Dashboard...');
       
@@ -150,30 +150,30 @@ export interface LiveGateStatus {
                'approved,')                reason||'Batch approval';
               );
 } else {
-    ')              throw new Error('Batch approval not allowed for this gate`);`;
+    ')              throw new Error('Batch approval not allowed for this gate")";
 }
             break;
             
           default: this.liveGates.get(gateId);
           if (gate) {
             results.push({
-              gateId``;
+              gateId"";"
               status: 'error',)            message: 'error',)          message: results.every(r => r.status === 'success');
     ')    this.logger.info('Dashboard action execution completed,{';
       actionId: action.id,
       success,')';
       successCount: results.filter(r => r.status ==='success').length,';
       totalCount: 'completion,',
-      severity: success,`,      title: `Action Completed``;
+      severity: success",      title: `Action Completed`";"
       message,      actionRequired: false,';
       suggestedActions: [],
       timestamp: new Date()
 };
 }
-  private async trackActionForLearning(action: DashboardAction, gate: LiveGateStatus, userId: string, reason?:string): Promise<void>  {}
+  private async trackActionForLearning(Promise<void>  {}
   private updateAnalyticsFromActions(results: any[], actionType: string): void {}
   
-  private initializeAnalytics():DashboardAnalytics {
+  private initializeAnalytics(): DashboardAnalytics {
     return {
       realTime:  {
         activeFlows: 0,

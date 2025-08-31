@@ -90,7 +90,7 @@ export class RunwayItemManagementService {
   /**
    * Initialize service with lazy-loaded dependencies
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     if (this.initialized) return;
     try {
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent prioritization')      const { BrainCoordinator} = await import('@claude-zen/brain');
@@ -128,13 +128,12 @@ export class RunwayItemManagementService {
         ...item,
         id: await this.requestGovernanceApproval(runwayItem);
         if (!approval.approved) {
-          throw new Error('')`;
-            `Runway item governance approval rejected: this.performanceTracker.startTimer(')';
-     'update_runway_item_status)    );`;
+          throw new Error('')""Runway item governance approval rejected: this.performanceTracker.startTimer(')';
+     'update_runway_item_status)    );";"
     try {
       const item = this.runwayItems.get(itemId);
       if (!item) {
-        throw new Error(`Runway item not found: ${itemId});``)};;
+        throw new Error("Runway item not found: ${itemId})"")};;"
       // Use workflow engine for status transition validation
       const statusTransition =
         await this.workflowEngine.validateStatusTransition({
@@ -157,7 +156,7 @@ export class RunwayItemManagementService {
   // ============================================================================
   private async requestGovernanceApproval(
     item: await this.aguiService.createApprovalTask({
-    `)        taskType:`runway_item_governance``;
+    `)        taskType:`runway_item_governance`";"
         description,    ')        context:  { item},')        approvers: ['enterprise-architect,' solution-architect'],';
         timeout: 1800000,
 });

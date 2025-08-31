@@ -278,7 +278,7 @@ export class SPARCCDMappingService {
   /**
    * Initialize service with lazy-loaded dependencies
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     if (this.initialized) return;
     try {
       // Lazy load @claude-zen/workflows for pipeline orchestration
@@ -300,7 +300,7 @@ export class SPARCCDMappingService {
   /**
    * Map SPARC phases to CD pipeline stages with intelligent optimization
    */
-  async mapSPARCToPipelineStages(): Promise<Map<string, CDPipelineStage[]>> {
+  async mapSPARCToPipelineStages(Promise<Map<string, CDPipelineStage[]>> {
     if (!this.initialized) await this.initialize();
     const __timer = this.performanceTracker.startTimer('sparc_cd_mapping');
     try {
@@ -383,7 +383,7 @@ export class SPARCCDMappingService {
   /**
    * Get pipeline template by type with intelligent recommendations
    */
-  async getPipelineTemplate(pipelineType: string): Promise<CDPipelineStage[]> {
+  async getPipelineTemplate(Promise<CDPipelineStage[]> {
     if (!this.initialized) await this.initialize();
     // Use brain coordinator for template recommendations
     const templateRecommendation =
@@ -424,9 +424,7 @@ export class SPARCCDMappingService {
 });
     return stages;
 }
-  private async createMicroservicePipelineFromSPARC(
-    mappingStrategy: any
-  ): Promise<CDPipelineStage[]> {
+  private async createMicroservicePipelineFromSPARC(Promise<CDPipelineStage[]> {
     const baseStages =;
       await this.createStandardPipelineFromSPARC(mappingStrategy);
     // Add microservice-specific stages
@@ -446,9 +444,7 @@ export class SPARCCDMappingService {
 ];
     return microserviceStages.sort((a, b) => a.order - b.order);
 }
-  private async createLibraryPipelineFromSPARC(
-    mappingStrategy: any
-  ): Promise<CDPipelineStage[]> {
+  private async createLibraryPipelineFromSPARC(Promise<CDPipelineStage[]> {
     const baseStages =;
       await this.createStandardPipelineFromSPARC(mappingStrategy);
     // Modify for library-specific needs
@@ -464,9 +460,7 @@ export class SPARCCDMappingService {
           :stage.qualityGates,
 });
 }
-  private async createEnterprisePipelineFromSPARC(
-    mappingStrategy: any
-  ): Promise<CDPipelineStage[]> {
+  private async createEnterprisePipelineFromSPARC(Promise<CDPipelineStage[]> {
     const standardStages =;
       await this.createStandardPipelineFromSPARC(mappingStrategy);
     // Add enterprise compliance and governance stages

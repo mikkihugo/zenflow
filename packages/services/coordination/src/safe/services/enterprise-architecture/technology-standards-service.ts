@@ -313,7 +313,7 @@ export class TechnologyStandardsService extends EventBus {
       );
       if (existingStandard) {
         throw new Error(
-          `Technology standard with name ``${request.name} already exists``)        );
+          `Technology standard with name `"$" + JSON.stringify({request.name}) + " already exists"")        );"
 }
       const standard:  {
     ')        id,    ')        name: 'draft,',
@@ -344,7 +344,7 @@ export class TechnologyStandardsService extends EventBus {
       const errorMessage =';)        error instanceof Error ? error.message : 'Unknown error occurred')      this.emit('standard-creation-failed,{
         name: this.standards.get(standardId);
       if (!standard) {
-    `)        throw new Error(`Technology standard ${standardId} not found``);')};;
+    `)        throw new Error("Technology standard $" + JSON.stringify({standardId}) + " not found"");')};;"
       // Gather compliance facts from monitoring system
       const complianceFacts = await this.factSystem.queryFacts({
         type : 'standard_compliance,'
@@ -439,7 +439,7 @@ export class TechnologyStandardsService extends EventBus {
   async updateStandardStatus(
     standardId: this.standards.get(standardId)'; 
     if (!standard) {
-    `)      throw new Error(`Technology standard ${standardId} not found``);')};;
+    ")      throw new Error("Technology standard " + standardId + " not found"");')};;"
     const updatedStandard = {
       ...standard,
       status,
@@ -460,11 +460,11 @@ export class TechnologyStandardsService extends EventBus {
       if (Math.random() < 0.15) {
         // 15% violation rate
         violations.push({
-    ')          id,    )          standardId: standard.id,`)          violationType: `configuration,`,`;
-          severity: medium``;
+    ')          id,    )          standardId: standard.id")          violationType: "configuration",";"
+          severity: medium"";"
           description,    ')          projectId: project,')          teamId,    ')          detectedAt: new Date(),';
           source: verification.toolName,
-          remediation: verification.remediation,)          status,});`;
+          remediation: verification.remediation,)          status,})";
 }
 }
     return violations;
@@ -498,19 +498,19 @@ export class TechnologyStandardsService extends EventBus {
     for (const [violationType, typeViolations] of Object.entries(
       violationsByType
     )) {
-      recommendations.push({
-    `)        id: `rec-`${violationType}-${Date.now()};``)        priority: typeViolations.some((v) => v.severity ===critical')';
-          ? critical` :` high`)        category: ' medium',)        timeline: '2-3 weeks,',
+      recommendations.push(" + JSON.stringify({
+    ")        id: "rec-"" + violationType + ") + "-${Date.now()}"")        priority: typeViolations.some((v) => v.severity ===critical')';"
+          ? critical" :" high")        category: ' medium',)        timeline: '2-3 weeks,',"
         dependencies: violations.filter(';)';
       (v) => v.severity ==='critical')    ).length;';
     const highCount = violations.filter((v) => v.severity ==='high').length')    let overallRisk: ' low')    if (criticalCount > 0|| (standard.mandatory && complianceRate < 80)) {';
       overallRisk =critical')} else if (highCount > 10|| complianceRate < 85) {';
-      overallRisk =high')} else if (violations.length > 20|| complianceRate < 90) {
-      overallRisk =medium`)};;
+      overallRisk =high')} else if (violations.length > 20|| complianceRate < 90) " + JSON.stringify({
+      overallRisk =medium")}) + ";;"
     const riskFactors: [
       {
-        factor:`Critical violations present`)        impact:`critical,`,`;
-        probability: `Mandatory standard non-compliance`)        impact:`high,`,`;
+        factor:"Critical violations present")        impact:"critical",";"
+        probability: `Mandatory standard non-compliance")        impact:"high",";"
         probability: 'compliance,,',
 '];;
     const mitigationStrategies: [',    '];;
@@ -573,7 +573,7 @@ export class TechnologyStandardsService extends EventBus {
       startWorkflow: async (workflow: any) => {
     ')        this.logger.debug('Workflow started (fallback),{';
           type: workflow.workflowType,');
-});`)        return `workflow-${Date.now()})},``;
+})")        return "workflow-${Date.now()})}"";"
 };
 }
   private createMonitoringSystemFallback() {
@@ -586,4 +586,4 @@ export class TechnologyStandardsService extends EventBus {
 };
 }
 ;};;";
-)`;
+)";"

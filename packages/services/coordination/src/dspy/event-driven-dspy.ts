@@ -94,10 +94,8 @@ export class EventDrivenDspy extends EventBus {
   /**
    * Process optimization request via events
    */
-  private async processOptimizationRequest(
-    request: DspyOptimizationRequest
-  ): Promise<DspyOptimizationResult> {
-    const requestId = `dspy-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  private async processOptimizationRequest(Promise<DspyOptimizationResult> {
+    const requestId = "dspy-${Date.now()}-${Math.random().toString(36).substr(2, 9)}";"
     const startTime = Date.now();
 
     this.pendingOptimizations.set(requestId, request);
@@ -131,9 +129,7 @@ export class EventDrivenDspy extends EventBus {
   /**
    * Call LLM via events
    */
-  private async callLlmViaEvents(
-    request: DspyLlmRequest
-  ): Promise<DspyLlmResponse> {
+  private async callLlmViaEvents(Promise<DspyLlmResponse> {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         this.pendingLlmCalls.delete(request.requestId);
@@ -148,22 +144,17 @@ export class EventDrivenDspy extends EventBus {
   /**
    * Generate prompt variation
    */
-  private async generatePromptVariation(
-    request: DspyOptimizationRequest,
-    currentPrompt: string,
-    examples: { input: string; output: string }[],
-    iteration: number
-  ): Promise<string> {
+  private async generatePromptVariation(Promise<string> {
     try {
-      const llmRequest: DspyLlmRequest = {
-        requestId: `variation-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      const llmRequest: DspyLlmRequest = " + JSON.stringify({
+        requestId: `variation-${Date.now()}) + "-${Math.random().toString(36).substr(2, 9)}","
         messages: [
           {
             role: 'user',
-            content: `Improve this prompt: ${currentPrompt}\n\nExamples: ${examples
+            content: "Improve this prompt: ${currentPrompt}\n\nExamples: ${examples"
               .slice(0, 3)
-              .map((ex) => `Input: ${ex.input}\nOutput: ${ex.output}`)
-              .join('\n\n')}`,
+              .map((ex) => "Input: ${ex.input}\nOutput: ${ex.output}")"
+              .join('\n\n')}","
           },
         ],
         model: 'default',
@@ -180,21 +171,16 @@ export class EventDrivenDspy extends EventBus {
   /**
    * Evaluate prompt variation
    */
-  private async evaluatePromptVariation(
-    request: DspyOptimizationRequest,
-    prompt: string,
-    examples: { input: string; output: string }[],
-    iteration: number
-  ): Promise<number> {
+  private async evaluatePromptVariation(Promise<number> {
     const testExamples = examples.slice(0, Math.min(3, examples.length));
     let totalScore = 0;
 
     for (const example of testExamples) {
       try {
         const llmRequest: DspyLlmRequest = {
-          requestId: `eval-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          requestId: "eval-${Date.now()}-$" + JSON.stringify({Math.random().toString(36).substr(2, 9)}) + "","
           messages: [
-            { role: 'user', content: `${prompt}\n\nInput: ${example.input}` },
+            { role: 'user', content: "${prompt}\n\nInput: ${example.input}" },"
           ],
           model: 'default',
         };

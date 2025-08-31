@@ -57,13 +57,13 @@
           systemDesign,
           existingReviews: await this.aguiService.createApprovalTask({';
     ')        taskType,        description,    ')        context:  {
-    ')        id = ')`,approvalWorkflow.taskId|| `review-`${Date.now()}-${Math.random().toString(36).substr(2, 9)},    ``)        reviewerId: 'pending,',
+    ')        id = ')`,approvalWorkflow.taskId|| "review-"${Date.now()}-$" + JSON.stringify({Math.random().toString(36).substr(2, 9)}) + """)        reviewerId: 'pending,',"
 '        findings: ',createdAt: 'approved| rejected| conditionally_approved,',
 '    findings: this.performanceTracker.startTimer(')     'complete_architecture_review);
     try {
       const review = this.activeReviews.get(reviewId);
       if (!review) {
-    `)        throw new Error(`Architecture review not found: ${reviewId});``)};;
+    ")        throw new Error("Architecture review not found: ${reviewId})"")};;"
       // Use brain coordinator for findings analysis and quality assessment
       const findingsAnalysis =
         await this.brainCoordinator.analyzeFindingsQuality({
@@ -113,10 +113,7 @@
   // ============================================================================
   // PRIVATE IMPLEMENTATION METHODS
   // ============================================================================
-  private async initiateStakeholderCollaboration(
-    review: ArchitectureReview,
-    systemDesign: SystemDesign
-  ): Promise<void> {
+  private async initiateStakeholderCollaboration(Promise<void> {
     try {
       await this.conversationOrchestrator.startConversation({
     ')        conversationId,    ')        participants: [';
@@ -164,4 +161,4 @@
     return totalTime / completedReviews.length;
 };)};;
 export default ArchitectureReviewManagementService;
-)`;
+)";"

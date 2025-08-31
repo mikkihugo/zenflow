@@ -179,7 +179,7 @@ export class SafeFrameworkIntegration {
   /**
    * Initialize SAFE framework integration
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     try {
       this.logger.info('Initializing SAFE Framework Integration...');
 
@@ -200,19 +200,10 @@ export class SafeFrameworkIntegration {
   /**
    * Create approval gate for Epic Portfolio Kanban transition
    */
-  async createEpicPortfolioGate(
-    epicId: string,
-    fromState: string,
-    toState: string,
-    context: {
-      businessCase?: any;
-      stakeholders: string[];
-      complianceRequired: boolean;
-    }
-  ): Promise<{ gateId: ApprovalGateId; traceabilityId: string }> {
+  async createEpicPortfolioGate(Promise<{ gateId: ApprovalGateId; traceabilityId: string }> {
     const gateId =
-      `epic-${epicId}-${fromState}-to-${toState}` as ApprovalGateId;
-    const traceabilityId = `trace-${gateId}-${Date.now()}`;
+      "epic-${epicId}-${fromState}-to-$" + JSON.stringify({toState}) + "" as ApprovalGateId;"
+    const traceabilityId = "trace-${gateId}-${Date.now()}";"
 
     this.logger.info('Creating Epic Portfolio Gate', {
       epicId,
@@ -257,13 +248,9 @@ export class SafeFrameworkIntegration {
   /**
    * Create quality assurance gate for continuous delivery
    */
-  async createQualityGate(
-    componentId: string,
-    gateType: string,
-    config: any
-  ): Promise<{ gateId: ApprovalGateId; traceabilityId: string }> {
-    const gateId = `quality-${componentId}-${gateType}` as ApprovalGateId;
-    const traceabilityId = `trace-${gateId}-${Date.now()}`;
+  async createQualityGate(Promise<{ gateId: ApprovalGateId; traceabilityId: string }> {
+    const gateId = "quality-${componentId}-$" + JSON.stringify({gateType}) + "" as ApprovalGateId;"
+    const traceabilityId = "trace-${gateId}-${Date.now()}";"
 
     this.logger.info('Creating Quality Gate', {
       componentId,
@@ -304,29 +291,22 @@ export class SafeFrameworkIntegration {
   /**
    * Get traceability record for a gate
    */
-  async getTraceabilityRecord(
-    gateId: ApprovalGateId
-  ): Promise<SafeGateTraceabilityRecord | null> {
+  async getTraceabilityRecord(Promise<SafeGateTraceabilityRecord | null> {
     return this.traceabilityRecords.get(gateId) || null;
   }
 
   /**
    * Update gate with decision
    */
-  async recordGateDecision(
-    gateId: ApprovalGateId,
-    decision: 'approved' | 'rejected' | 'escalated',
-    approver: string,
-    reasoning: string
-  ): Promise<void> {
+  async recordGateDecision(Promise<void> {
     const context = this.activeGates.get(gateId);
     if (!context) {
-      throw new Error(`Gate ${gateId} not found`);
+      throw new Error("Gate ${gateId} not found");"
     }
 
     // Create traceability record
-    const record: SafeGateTraceabilityRecord = {
-      id: `record-${gateId}-${Date.now()}`,
+    const record: SafeGateTraceabilityRecord = " + JSON.stringify({
+      id: "record-" + gateId + ") + "-${Date.now()}","
       gateId,
       category: context.category,
       context,
@@ -343,10 +323,10 @@ export class SafeFrameworkIntegration {
         confidence: 0.8,
       },
       auditTrail: {
-        sessionId: `session-${Date.now()}`,
+        sessionId: "session-${Date.now()}","
         ipAddress: '127.0.0.1',
         userAgent: 'TaskMaster-SafeIntegration',
-        correlationId: `correlation-${gateId}`,
+        correlationId: "correlation-${gateId}","
         complianceLevel: context.compliance.auditLevel,
       },
       metrics: {
@@ -364,7 +344,7 @@ export class SafeFrameworkIntegration {
   /**
    * Get learning insights from processed gates
    */
-  async getLearningInsights(): Promise<{
+  async getLearningInsights(Promise<{
     totalGatesProcessed: number;
     averageProcessingTime: number;
     approvalRate: number;
@@ -395,7 +375,7 @@ export class SafeFrameworkIntegration {
   /**
    * Add private helper methods
    */
-  private async createTables(): Promise<void> {
+  private async createTables(Promise<void> {
     // Create database tables for traceability
     this.logger.debug('Creating traceability tables');
   }

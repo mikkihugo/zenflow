@@ -210,7 +210,7 @@ export class PICompletionService extends EventBus {
   /**
    * Initialize the service with dependencies
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     if (this.initialized) return;
     try {
       // Initialize with fallback implementations
@@ -396,10 +396,7 @@ export class PICompletionService extends EventBus {
   /**
    * Calculate success metrics with AI analysis
    */
-  private async calculateSuccessMetrics(
-    finalMetrics: PIExecutionMetrics,
-    aiAnalysis: any
-  ): Promise<any> {
+  private async calculateSuccessMetrics(Promise<any> {
     // Use AI analysis to calculate sophisticated success metrics
     return await this.brainCoordinator.calculateSuccessMetrics({
       finalMetrics,
@@ -410,10 +407,7 @@ export class PICompletionService extends EventBus {
   /**
    * Identify achievements with AI insights
    */
-  private async identifyAchievementsWithAI(
-    finalMetrics: PIExecutionMetrics,
-    aiAnalysis: any
-  ): Promise<Achievement[]> {
+  private async identifyAchievementsWithAI(Promise<Achievement[]> {
     return await this.brainCoordinator.identifyAchievements({
       finalMetrics,
       aiAnalysis,
@@ -423,10 +417,7 @@ export class PICompletionService extends EventBus {
   /**
    * Identify challenges with AI analysis
    */
-  private async identifyChallengesWithAI(
-    finalMetrics: PIExecutionMetrics,
-    aiAnalysis: any
-  ): Promise<Challenge[]> {
+  private async identifyChallengesWithAI(Promise<Challenge[]> {
     return await this.brainCoordinator.identifyChallenges({
       finalMetrics,
       aiAnalysis,
@@ -436,12 +427,7 @@ export class PICompletionService extends EventBus {
   /**
    * Generate lessons learned with AI insights
    */
-  private async generateLessonsLearnedWithAI(
-    finalMetrics: PIExecutionMetrics,
-    achievements: Achievement[],
-    challenges: Challenge[],
-    aiAnalysis: any
-  ): Promise<LessonLearned[]> {
+  private async generateLessonsLearnedWithAI(Promise<LessonLearned[]> {
     return await this.brainCoordinator.generateLessonsLearned({
       finalMetrics,
       achievements,
@@ -453,12 +439,7 @@ export class PICompletionService extends EventBus {
   /**
    * Generate improvement recommendations
    */
-  private async generateImprovementRecommendations(
-    finalMetrics: PIExecutionMetrics,
-    challenges: Challenge[],
-    lessonsLearned: LessonLearned[],
-    aiAnalysis: any
-  ): Promise<ImprovementRecommendation[]> {
+  private async generateImprovementRecommendations(Promise<ImprovementRecommendation[]> {
     return await this.brainCoordinator.generateImprovementRecommendations({
       finalMetrics,
       challenges,
@@ -470,11 +451,7 @@ export class PICompletionService extends EventBus {
   /**
    * Generate next PI recommendations
    */
-  private async generateNextPIRecommendations(
-    finalMetrics: PIExecutionMetrics,
-    improvements: ImprovementRecommendation[],
-    aiAnalysis: any
-  ): Promise<string[]> {
+  private async generateNextPIRecommendations(Promise<string[]> {
     const recommendations =
       await this.brainCoordinator.generateNextPIRecommendations({
         finalMetrics,
@@ -509,7 +486,7 @@ export class PICompletionService extends EventBus {
     ')        return {';
     ')          ...item,')          materials: [';];;
             ...item.materials,')           'achievement-highlights,';
-           `challenge-analysis,`)           `lessons-learned-summary,`;
+           "challenge-analysis")           "lessons-learned-summary";
 ],
 };
 }
@@ -520,8 +497,7 @@ export class PICompletionService extends EventBus {
       agenda: enhancedAgenda,
       objectives: [
         ...workshop.objectives,
-        `Address ${completionReport.challenges.length} key challenges identified```;
-        ``Implement `${completionReport.improvements.length} improvement recommendations``,    ')],';
+        "Address $" + JSON.stringify({completionReport.challenges.length}) + " key challenges identified"`""`Implement `${completionReport.improvements.length} improvement recommendations"",    ')],';"
 };
 }
   /**
@@ -584,7 +560,7 @@ export class PICompletionService extends EventBus {
       startWorkflow: async (workflow: any) => {
     ')        this.logger.debug('Workflow started (fallback),{';
           type: workflow.workflowType,');
-});`)        return `workflow-${Date.now()})},``;
+})")        return "workflow-${Date.now()})}"";
       scheduleWorkshop: async (workshop: any) => {
     ')        this.logger.debug('Workshop scheduled (fallback),{';
           id: workshop.workshop.id,')';
@@ -631,5 +607,5 @@ export interface CompletionTrendAnalysis {
   readonly trends: string[];
   readonly insights: string[];
   readonly periodAnalyzed: string;
-  readonly successRateTrend : 'improving' | ' stable'|' declining' | ' improving'|' stable' | ' declining'|' declining)  readonly recommendations: string[];`;
+  readonly successRateTrend : 'improving' | ' stable'|' declining' | ' improving'|' stable' | ' declining'|' declining)  readonly recommendations: string[]";
 };

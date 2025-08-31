@@ -1,30 +1,30 @@
 /**
- * @file Task Predictor - Core Monitoring Primitives
+ * @file: Task Predictor - Core: Monitoring Primitives
  *
  * Simplified task prediction interfaces and basic implementations for agent monitoring.
  * Business logic and complex prediction algorithms should be implemented in the main app.
  */
-import type { AgentId } from './types';
+import type { Agent: Id } from './types';
 /**
  * Basic task prediction result
  */
-export interface TaskPrediction {
-    agentId: string;
-    taskType: string;
-    predictedDuration: number;
+export interface: TaskPrediction {
+    agent: Id: string;
+    task: Type: string;
+    predicted: Duration: number;
     confidence: number;
-    factors: PredictionFactor[];
-    lastUpdated: Date;
+    factors: Prediction: Factor[];
+    last: Updated: Date;
     metadata?: {
-        sampleSize: number;
+        sample: Size: number;
         algorithm: string;
-        trendDirection: 'improving' | ' stable' | ' declining' | ' improving' | ' stable' | ' declining' | declining;
+        trend: Direction: 'improving' | ' stable' | ' declining' | ' improving' | ' stable' | ' declining' | declining;
     };
 }
 /**
  * Factors affecting prediction accuracy
  */
-export interface PredictionFactor {
+export interface: PredictionFactor {
     name: string;
     impact: number;
     confidence: number;
@@ -33,69 +33,69 @@ export interface PredictionFactor {
 /**
  * Task completion record
  */
-export interface TaskCompletionRecord {
-    agentId: AgentId;
-    taskType: string;
+export interface: TaskCompletionRecord {
+    agent: Id: Agent: Id;
+    task: Type: string;
     duration: number;
     success: boolean;
     timestamp: number;
     complexity?: number;
     quality?: number;
-    resourceUsage?: number;
+    resource: Usage?: number;
     metadata?: Record<string, unknown>;
 }
 /**
  * Basic task predictor configuration
  */
-export interface TaskPredictorConfig {
-    historyWindowSize: number;
-    confidenceThreshold: number;
-    minSamplesRequired: number;
-    maxPredictionTime: number;
+export interface: TaskPredictorConfig {
+    historyWindow: Size: number;
+    confidence: Threshold: number;
+    minSamples: Required: number;
+    maxPrediction: Time: number;
 }
 /**
- * Default configuration for Task Predictor
+ * Default configuration for: Task Predictor
  */
-export declare const DEFAULT_TASK_PREDICTOR_CONFIG: TaskPredictorConfig;
+export declare const: DEFAULT_TASK_PREDICTOR_CONFIG: TaskPredictor: Config;
 /**
- * Basic Task Predictor Interface
+ * Basic: Task Predictor: Interface
  *
  * Core monitoring primitive for task duration prediction.
  * Complex business logic should be implemented in the main application.
  */
-export interface TaskPredictor {
-    recordTaskCompletion(agentId: AgentId, taskType: string, duration: number, success: boolean, metadata?: Record<string, unknown>): void;
-    predictTaskDuration(agentId: AgentId, taskType: string, contextFactors?: Record<string, unknown>): TaskPrediction;
-    clearCache(olderThanMs?: number): void;
+export interface: TaskPredictor {
+    recordTask: Completion(agent: Id: Agent: Id, task: Type: string, duration: number, success: boolean, metadata?: Record<string, unknown>): void;
+    predictTask: Duration(agent: Id: Agent: Id, task: Type: string, context: Factors?: Record<string, unknown>): Task: Prediction;
+    clear: Cache(olderThan: Ms?: number): void;
 }
 /**
- * Simple Task Predictor Implementation
+ * Simple: Task Predictor: Implementation
  *
  * Basic implementation for core monitoring.
  * Production applications should implement more sophisticated algorithms.
  */
-export declare class SimpleTaskPredictor implements TaskPredictor {
-    private taskHistory;
+export declare class: SimpleTaskPredictor implements: TaskPredictor {
+    private task: History;
     private config;
-    constructor(config?: Partial<TaskPredictorConfig>);
-    if(contextFactors: any, resourceLoad: any): void;
-    contextAdjustmentFactors: any;
-    lastUpdated: new () => Date;
+    constructor(config?: Partial<TaskPredictor: Config>);
+    if(context: Factors: any, resource: Load: any): void;
+    contextAdjustment: Factors: any;
+    last: Updated: new () => Date;
     metadata: {
-        sampleSize: recentHistory.length;
-        algorithm: contextAdjustmentFactors.length;
+        sample: Size: recent: History.length;
+        algorithm: contextAdjustment: Factors.length;
     };
 }
 /**
- * Factory function to create Task Predictor with default configuration
+ * Factory function to create: Task Predictor with default configuration
  */
-export declare function createTaskPredictor(config?: Partial<TaskPredictorConfig>): TaskPredictor;
+export declare function createTask: Predictor(config?: Partial<TaskPredictor: Config>): Task: Predictor;
 /**
  * Utility function to validate prediction confidence
  */
-export declare function isHighConfidencePrediction(prediction: TaskPrediction, threshold?: number): boolean;
+export declare function isHighConfidence: Prediction(prediction: Task: Prediction, threshold?: number): boolean;
 /**
  * Utility function to get prediction summary
  */
-export declare function getPredictionSummary(prediction: TaskPrediction): string;
-//# sourceMappingURL=task-predictor.d.ts.map
+export declare function getPrediction: Summary(prediction: Task: Prediction): string;
+//# sourceMappingUR: L=task-predictor.d.ts.map

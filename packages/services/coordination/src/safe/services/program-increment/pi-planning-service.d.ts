@@ -176,7 +176,7 @@ export declare class PIPlanningService extends EventBus {
     /**
      * Create comprehensive PI planning event configuration
      */
-    createPIPlanningEvent(artId: `pi-planning-`, $: any, { Date, now }:  {
+    createPIPlanningEvent(artId: `pi-planning-", $: any, { Date, now }:  {"
         Date: any;
         now: any;
     }): any;

@@ -97,7 +97,7 @@ export class ValueStreamMapper extends EventBus {
   /**
    * Initialize with service delegation - LAZY LOADING
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     if (this.initialized) return;
     try {
       // Delegate to specialized Value Stream Mapping Service
@@ -121,7 +121,7 @@ export class ValueStreamMapper extends EventBus {
   /**
    * Shutdown the Value Stream Mapper
    */
-  async shutdown(): Promise<void> {
+  async shutdown(Promise<void> {
     ')    this.logger.info('Shutting down Value Stream Mapper');
     // Stop background processes
     if (this.bottleneckDetectionTimer)
@@ -146,7 +146,7 @@ export class ValueStreamMapper extends EventBus {
   /**
    * Map product workflow to SAFe value streams - Delegates to specialized service
    */
-  async mapWorkflowsToValueStreams(): Promise<Map<string, ValueStream>> {
+  async mapWorkflowsToValueStreams(Promise<Map<string, ValueStream>> {
     if (!this.initialized) await this.initialize();
     const __timer = this.performanceTracker.startTimer(';)';
      'map_workflows_to_value_streams'));
@@ -199,7 +199,7 @@ export class ValueStreamMapper extends EventBus {
       this.emit('bottlenecks-identified, allBottlenecks');
       return allBottlenecks;
 } catch (error) {
-    ')      this.performanceTracker.endTimer('identify_bottlenecks');')      this.logger.error('Bottleneck identification failed:, error');`;
+    ')      this.performanceTracker.endTimer('identify_bottlenecks');')      this.logger.error('Bottleneck identification failed:, error');";"
       throw error;
 }
 }
@@ -209,7 +209,7 @@ export class ValueStreamMapper extends EventBus {
   async calculateValueStreamMetrics(
     valueStreamId: this.state.valueStreams.get(valueStreamId);
     if (!valueStream) {
-      throw new Error(`Value stream not found: await this.analyzeValueStreamFlow(valueStreamId);
+      throw new Error("Value stream not found: await this.analyzeValueStreamFlow(valueStreamId);"
     const metrics:  {
       flowEfficiency: analysis.overallFlowEfficiency|| 0.8,
       leadTime: analysis.totalLeadTime|| 72,
@@ -238,7 +238,7 @@ export class ValueStreamMapper extends EventBus {
     };
   }
 
-  private async restoreState(): Promise<void> {
+  private async restoreState(Promise<void> {
     try {
       const persistedState = await this.memory.retrieve(
         'value-stream-mapper: state'
@@ -260,7 +260,7 @@ export class ValueStreamMapper extends EventBus {
     }
   }
 
-  private async persistState(): Promise<void> {
+  private async persistState(Promise<void> {
     try {
       const stateToStore = {
         ...this.state,
@@ -391,10 +391,10 @@ export class ValueStreamMapper extends EventBus {
   }
 
   // Production-ready analysis methods replacing placeholders
-  private async analyzeValueStreamFlow(streamId: string): Promise<any> {
+  private async analyzeValueStreamFlow(Promise<any> {
     const valueStream = this.state.valueStreams.get(streamId);
     if (!valueStream) {
-      throw new Error(`Value stream not found: ${streamId}`);
+      throw new Error("Value stream not found: ${streamId}");"
     }
 
     // Get workflow data for analysis
@@ -425,11 +425,11 @@ export class ValueStreamMapper extends EventBus {
     
     // Analyze cycle time bottlenecks
     if (analysis.averageCycleTime > 5) { // 5 days threshold
-      bottlenecks.push({
-        id: `cycle_time_${Date.now()}`,
+      bottlenecks.push(" + JSON.stringify({
+        id: "cycle_time_" + Date.now() + ") + "","
         type: 'cycle_time',
         severity: analysis.averageCycleTime > 10 ? 'high' : 'medium',
-        description: `High cycle time: ${analysis.averageCycleTime} days`,
+        description: "High cycle time: ${analysis.averageCycleTime} days","
         impact: 'Delayed value delivery',
         suggestions: ['Reduce WIP limits', 'Eliminate handoffs', 'Automate manual processes']
       });
@@ -438,10 +438,10 @@ export class ValueStreamMapper extends EventBus {
     // Analyze throughput bottlenecks
     if (analysis.throughput < 5) { // 5 items per week threshold
       bottlenecks.push({
-        id: `throughput_${Date.now()}`,
+        id: "throughput_$" + JSON.stringify({Date.now()}) + "","
         type: 'throughput',
         severity: analysis.throughput < 2 ? 'high' : 'medium',
-        description: `Low throughput: ${analysis.throughput} items/week`,
+        description: "Low throughput: ${analysis.throughput} items/week","
         impact: 'Reduced delivery capacity',
         suggestions: ['Increase team capacity', 'Improve automation', 'Remove blockers']
       });
@@ -450,10 +450,10 @@ export class ValueStreamMapper extends EventBus {
     // Analyze flow efficiency bottlenecks
     if (analysis.overallFlowEfficiency < 0.5) {
       bottlenecks.push({
-        id: `flow_efficiency_${Date.now()}`,
+        id: "flow_efficiency_$" + JSON.stringify({Date.now()}) + "","
         type: 'flow_efficiency',
         severity: analysis.overallFlowEfficiency < 0.3 ? 'high' : 'medium',
-        description: `Low flow efficiency: ${Math.round(analysis.overallFlowEfficiency * 100)}%`,
+        description: "Low flow efficiency: ${Math.round(analysis.overallFlowEfficiency * 100)}%","
         impact: 'Excessive wait time in value stream',
         suggestions: ['Reduce handoffs', 'Improve collaboration', 'Eliminate approval delays']
       });
@@ -490,7 +490,7 @@ export class ValueStreamMapper extends EventBus {
   }
 
   // Additional production methods
-  private async getWorkflowDataForValueStream(streamId: string): Promise<any> {
+  private async getWorkflowDataForValueStream(Promise<any> {
     // Integrate with workflow engine to get actual data
     return {
       completedWorkflows: [],
@@ -544,13 +544,13 @@ export class ValueStreamMapper extends EventBus {
     return 'critical';
   }
 
-  private async generateOptimizationRecommendations(streamId: string, analysis: any): Promise<any[]> {
+  private async generateOptimizationRecommendations(Promise<any[]> {
     const recommendations = [];
     
     // Based on flow analysis, generate specific recommendations
     if (analysis.overallFlowEfficiency < 0.6) {
       recommendations.push({
-        id: `optimize_flow_${Date.now()}`,
+        id: "optimize_flow_${Date.now()}","
         type: 'flow_optimization',
         priority: 'high',
         title: 'Improve Flow Efficiency',
@@ -573,7 +573,7 @@ export class ValueStreamMapper extends EventBus {
     };
   }
 
-  private async updateValueStreamFromWorkflowCompletion(streamId: string, workflowId: string, results: any): Promise<void> {
+  private async updateValueStreamFromWorkflowCompletion(Promise<void> {
     // Update value stream metrics based on workflow completion
     this.logger.debug('Updating value stream from workflow completion', { streamId, workflowId });
     
@@ -592,4 +592,4 @@ export interface DateRange {
 // EXPORTS
 // ============================================================================
 export default ValueStreamMapper;
-)`;
+)";"

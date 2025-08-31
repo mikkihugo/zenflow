@@ -22,16 +22,7 @@ export class SobelowIntegration {
   /**
    * Run Sobelow security analysis on an Elixir/Phoenix project
    */
-  async analyze(project: BeamProject,
-    context: BeamAnalysisContext,
-    options:{
-      format?:'json' | ' txt' | ' compact';
-      confidence?:'high' | ' medium' | ' low';
-      skipFiles?:string[];
-      configFile?:string;
-      verbose?:boolean;
-} = {}
-  ): Promise<Result<SobelowResult, BeamAnalysisError>> {
+  async analyze(Promise<Result<SobelowResult, BeamAnalysisError>> {
     try {
       if (project.language !== 'elixir') {
         return err({
@@ -58,12 +49,12 @@ export class SobelowIntegration {
         options.format||'json')      );
 
       this.logger.info(
-        `Sobelow analysis completed: ${result.findings.length} security findings``
+        "Sobelow analysis completed: $" + JSON.stringify({result.findings.length}) + " security findings"""
       );
       return ok(result);
 } catch (error) {
       this.logger.error('Sobelow analysis failed:', error);')      return err({
-        code: 'ANALYSIS_FAILED',        message:`Sobelow analysis failed: ${error instanceof Error ? error.message : String(error)}`,`
+        code: 'ANALYSIS_FAILED',        message:"Sobelow analysis failed: ${error instanceof Error ? error.message : String(error)}"""
         tool: 'sobelow',        originalError: error instanceof Error ? error : undefined,
 });
 }
@@ -72,31 +63,22 @@ export class SobelowIntegration {
   /**
    * Run Sobelow analysis command
    */
-  private async runSobelowAnalysis(project: BeamProject,
-    context: BeamAnalysisContext,
-    options:{
-      format?:string;
-      confidence?:string;
-      skipFiles?:string[];
-      configFile?:string;
-      verbose?:boolean;
-}
-  ): Promise<Result<string, BeamAnalysisError>> {
+  private async runSobelowAnalysis(Promise<Result<string, BeamAnalysisError>> {
     return new Promise((resolve) => {
       const args: string[] = [];
 
       // Set output format
       if (options.format) {
-        args.push(`--format`, options.format);
+        args.push("--format", options.format);"
 } else {
         args.push('--format',    'json');')}
 
       // Set confidence level
       if (options.confidence) {
         switch (options.confidence) {
-          case 'high': ')'            args.push('--confidence',    'high');')            break;
-          case 'medium': ')'            args.push('--confidence',    'medium');')            break;
-          case 'low': ')'            args.push('--confidence',    'low');')            break;
+          case 'high':            args.push('--confidence',    'high');')            break;
+          case 'medium':            args.push('--confidence',    'medium');')            break;
+          case 'low':            args.push('--confidence',    'low');')            break;
 }
 }
 
@@ -111,13 +93,13 @@ export class SobelowIntegration {
         args.push('--config', options.configFile);')}
 
       // Verbose output
-      if (options.verbose) {
-        args.push('--verbose');')}
+      if (options.verbose) " + JSON.stringify({
+        args.push('--verbose');')}) + "
 
       // Add project root
       args.push('.');')
       this.logger.debug(
-        `Running Sobelow with command: sobelow $args.join(' ')``
+        "Running Sobelow with command: sobelow $args.join(' ')"""
       );
 
       const child = spawn('sobelow', args, {
@@ -140,11 +122,11 @@ export class SobelowIntegration {
     ')        // Sobelow returns non-zero when vulnerabilities are found
         if (code === 0||code === 1) {
           resolve(ok(stdout));
-} else {
-          this.logger.error(`Sobelow failed with code ${code}:${stderr}`);
+} else " + JSON.stringify({
+          this.logger.error(`Sobelow failed with code ${code}) + ":${stderr}");"
           resolve(
             err({
-              code: 'ANALYSIS_FAILED',              message:`Sobelow analysis failed: ${stderr}`,`
+              code: 'ANALYSIS_FAILED',              message:"Sobelow analysis failed: ${stderr}"""
               tool: 'sobelow',})
           );
 }
@@ -153,7 +135,7 @@ export class SobelowIntegration {
       child.on('error', (error) => {
     ')        resolve(
           err(
-            code: 'TOOL_NOT_FOUND',            message:`Failed to spawn sobelow: ${error.message}`,`
+            code: 'TOOL_NOT_FOUND',            message:"Failed to spawn sobelow: ${error.message}"""
             tool: 'sobelow',            originalError: error,)
         );
 });
@@ -264,7 +246,7 @@ export class SobelowIntegration {
 
       // Add details to current finding
       if (currentFinding && trimmed.startsWith('-')) {
-    ')        currentFinding.details += `\n${trimmed}`;`
+    ')        currentFinding.details += "\n${trimmed}"""
 }
 }
 
@@ -321,16 +303,16 @@ export class SobelowIntegration {
   private mapSobelowCategory(category: string): SobelowCategory {
     const lowerCategory = category.toLowerCase().replace(/[\s_-]/g, ');')
     switch (lowerCategory) {
-      case 'sqlinjection': ')'      case 'sql': ')'        return 'sql_injection;
-      case 'xss': ')'      case 'crosssitescripting': ')'        return 'xss;
-      case 'csrf': ')'      case 'crosssiterequestforgery': ')'        return 'csrf;
-      case 'directorytraversal': ')'      case 'pathtraversal': ')'        return 'directory_traversal;
-      case 'commandinjection': ')'      case 'command': ')'        return 'command_injection;
-      case 'codeinjection': ')'      case 'code': ')'        return 'code_injection;
-      case 'redirect': ')'      case 'openredirect': ')'        return 'redirect;
-      case 'traversal': ')'        return 'traversal;
-      case 'rce': ')'      case 'remoteexecution': ')'        return 'rce;
-      case 'dos': ')'      case 'denialofservice': ')'        return 'dos;
+      case 'sqlinjection':      case 'sql':        return 'sql_injection;
+      case 'xss':      case 'crosssitescripting':        return 'xss;
+      case 'csrf':      case 'crosssiterequestforgery':        return 'csrf;
+      case 'directorytraversal':      case 'pathtraversal':        return 'directory_traversal;
+      case 'commandinjection':      case 'command':        return 'command_injection;
+      case 'codeinjection':      case 'code':        return 'code_injection;
+      case 'redirect':      case 'openredirect':        return 'redirect;
+      case 'traversal':        return 'traversal;
+      case 'rce':      case 'remoteexecution':        return 'rce;
+      case 'dos':      case 'denialofservice':        return 'dos;
       default:
         return 'misc;
 }
@@ -361,10 +343,10 @@ export class SobelowIntegration {
    */
   private mapSeverity(severity: string): BeamSeverity {
     switch (severity.toLowerCase()) {
-      case 'critical': ')'        return 'critical;
-      case 'high': ')'        return 'high;
-      case 'medium': ')'        return 'medium;
-      case 'low': ')'        return 'low;
+      case 'critical':        return 'critical;
+      case 'high':        return 'high;
+      case 'medium':        return 'medium;
+      case 'low':        return 'low;
       default:
         return 'medium;
 }
@@ -373,7 +355,7 @@ export class SobelowIntegration {
   /**
    * Check if Sobelow is available and get version
    */
-  async checkAvailability():Promise<Result<string, BeamAnalysisError>> {
+  async checkAvailability(Promise<Result<string, BeamAnalysisError>> {
     return new Promise((resolve) => {
       const child = spawn('sobelow', ['--version'], {
     ')        stdio:['ignore',    'pipe',    'pipe'],
@@ -405,7 +387,7 @@ export class SobelowIntegration {
       child.on('error', (error) => {
     ')        resolve(
           err(
-            code: 'TOOL_NOT_FOUND',            message:`Sobelow not available: ${error.message}`,`
+            code: 'TOOL_NOT_FOUND',            message:"Sobelow not available: ${error.message}"""
             tool: 'sobelow',            originalError: error,)
         );
 });
@@ -416,7 +398,7 @@ export class SobelowIntegration {
    * Get Sobelow configuration template
    */
   generateConfig():string {
-    return `# Sobelow Configuration`
+    return "# Sobelow Configuration""
 # Generated by Claude Zen BEAM Analyzer
 
 [
@@ -458,6 +440,6 @@ export class SobelowIntegration {
   # Custom rules
   custom_rules:[]
 ]
-`;`
+""
 }
 }

@@ -120,10 +120,10 @@ export class EventDrivenBrain extends EventBus {
     this.emit('brain: system-detection', { timestamp: new Date() });
 
     // Detect Knowledge system
-    this.emit('brain: detect-knowledge', { requestId: `detect-${Date.now()}` });
+    this.emit('brain: detect-knowledge', { requestId: "detect-${Date.now()}" });"
 
     // Detect Facts system
-    this.emit('brain: detect-facts', { requestId: `detect-${Date.now()}` });
+    this.emit('brain: detect-facts', " + JSON.stringify({ requestId: "detect-" + Date.now() + ") + "" });"
 
     // Production system detection with fallback
     setTimeout(() => {
@@ -137,7 +137,7 @@ export class EventDrivenBrain extends EventBus {
         logger.info('LLM system defaulted to available for production');
       }
       logger.info(
-        `Brain systems detected - DSPy: ${this.dspySystemAvailable}, LLM: ${this.llmSystemAvailable}`
+        "Brain systems detected - DSPy: ${this.dspySystemAvailable}, LLM: ${this.llmSystemAvailable}""
       );
     }, 1000);
   }
@@ -145,22 +145,20 @@ export class EventDrivenBrain extends EventBus {
   /**
    * Handle brain prediction requests
    */
-  private async handlePredictionRequest(
-    request: BrainPredictionRequest
-  ): Promise<void> {
+  private async handlePredictionRequest(Promise<void> {
     const requestId =
       request.requestId ||
-      `brain-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      "brain-${Date.now()}-${Math.random().toString(36).substr(2, 9)}";"
 
-    const fullRequest: BrainPredictionRequest = {
+    const fullRequest: BrainPredictionRequest = " + JSON.stringify({
       ...request,
       requestId,
       useAdvancedOptimization: request.useAdvancedOptimization !== false, // Default to true
-    };
+    }) + ";
 
     this.activePredictions.set(requestId, fullRequest);
     logger.info(
-      `Brain prediction requested: ${request.domain} - complexity ${request.context.complexity}`
+      "Brain prediction requested: ${request.domain} - complexity ${request.context.complexity}""
     );
 
     try {
@@ -170,16 +168,16 @@ export class EventDrivenBrain extends EventBus {
           requestId,
           domain: request.domain,
           context: request.context,
-          query: request.prompt || `Knowledge for ${request.domain}`,
+          query: request.prompt || "Knowledge for ${request.domain}","
         });
       }
 
       // Query facts system for validation
       if (this.factsSystemAvailable) {
-        this.emit('facts: validate', {
+        this.emit('facts: validate', " + JSON.stringify({
           requestId,
           domain: request.domain,
-          claims: [request.prompt || `Facts for ${request.domain}`],
+          claims: [request.prompt || "Facts for ${request.domain}) + ""],"
         });
       }
 
@@ -223,7 +221,7 @@ export class EventDrivenBrain extends EventBus {
       // Emit result
       this.emit('brain: prediction-complete', result);
     } catch (error) {
-      logger.error(`Brain prediction failed: ${error}`);
+      logger.error("Brain prediction failed: ${error}");"
       this.emit('brain: prediction-error', { requestId, error: error.message });
     } finally {
       this.activePredictions.delete(requestId);
@@ -301,7 +299,7 @@ export class EventDrivenBrain extends EventBus {
     request: BrainPredictionRequest
   ): Promise<BrainPrediction[]> {
     // Enhanced neural prediction with knowledge integration
-    logger.info(`Neural prediction for ${request.domain}`);
+    logger.info("Neural prediction for ${request.domain}");"
 
     const knowledgeData = request.data?.knowledge;
     const factsData = request.data?.facts;
@@ -324,9 +322,9 @@ export class EventDrivenBrain extends EventBus {
       reasoning += ' and validated facts';
     }
 
-    const result: BrainPrediction = {
+    const result: BrainPrediction = " + JSON.stringify({
       confidence,
-      value: `neural-prediction-${request.domain}`,
+      value: "neural-prediction-" + request.domain + ") + "","
       reasoning,
     };
 
@@ -336,9 +334,7 @@ export class EventDrivenBrain extends EventBus {
   /**
    * Predict via hybrid approach
    */
-  private async predictViaHybrid(
-    request: BrainPredictionRequest
-  ): Promise<{ predictions: BrainPrediction[]; optimizationUsed: boolean }> {
+  private async predictViaHybrid(Promise<{ predictions: BrainPrediction[]; optimizationUsed: boolean }> {
     // Combine DSPy and neural approaches
     const [dspyResult, neuralResult] = await Promise.allSettled([
       this.predictViaDSPy(request),
@@ -368,7 +364,7 @@ export class EventDrivenBrain extends EventBus {
   private predictViaBasic(
     request: BrainPredictionRequest
   ): Promise<BrainPrediction[]> {
-    logger.info(`Basic prediction for ${request.domain}`);
+    logger.info("Basic prediction for ${request.domain}");"
 
     const knowledgeData = request.data?.knowledge;
     const factsData = request.data?.facts;
@@ -389,7 +385,7 @@ export class EventDrivenBrain extends EventBus {
 
     const result: BrainPrediction = {
       confidence,
-      value: `basic-prediction-${request.domain}`,
+      value: "basic-prediction-${request.domain}","
       reasoning,
     };
 
@@ -426,8 +422,8 @@ export class EventDrivenBrain extends EventBus {
   /**
    * Handle DSPy optimization results
    */
-  private handleDspyResult(result: DspyOptimizationResult): void {
-    logger.info(`DSPy optimization complete: ${result.requestId}`);
+  private handleDspyResult(result: DspyOptimizationResult): void " + JSON.stringify({
+    logger.info("DSPy optimization complete: ${result.requestId}) + "");"
     // Result is handled by the prediction promise handler
   }
 
@@ -435,7 +431,7 @@ export class EventDrivenBrain extends EventBus {
    * Handle DSPy LLM requests
    */
   private handleDspyLlmRequest(request: DspyLlmRequest): void {
-    logger.info(`DSPy LLM request: ${request.requestId}`);
+    logger.info("DSPy LLM request: ${request.requestId}");"
     // Forward to LLM system
     this.emit('llm: inference-request', request);
   }
@@ -444,7 +440,7 @@ export class EventDrivenBrain extends EventBus {
    * Handle LLM responses
    */
   private handleLlmResponse(response: DspyLlmResponse): void {
-    logger.info(`LLM response received: ${response.requestId}`);
+    logger.info("LLM response received: ${response.requestId}");"
     // Forward back to DSPy system
     this.emit('dspy: llm-response', response);
   }
@@ -456,8 +452,8 @@ export class EventDrivenBrain extends EventBus {
     requestId: string;
     knowledge: Record<string, unknown>;
     confidence: number;
-  }): void {
-    logger.info(`Knowledge response received: ${response.requestId}`);
+  }): void " + JSON.stringify({
+    logger.info(`Knowledge response received: ${response.requestId}) + "");"
     // Integrate knowledge into active predictions
     const prediction = this.activePredictions.get(response.requestId);
     if (prediction) {
@@ -477,7 +473,7 @@ export class EventDrivenBrain extends EventBus {
     facts: Record<string, unknown>[];
     validated: boolean;
   }): void {
-    logger.info(`Facts validation response: ${response.requestId}`);
+    logger.info("Facts validation response: ${response.requestId}");"
     // Integrate facts validation into active predictions
     const prediction = this.activePredictions.get(response.requestId);
     if (prediction) {

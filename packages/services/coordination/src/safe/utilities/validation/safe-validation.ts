@@ -110,7 +110,7 @@ export class SafeValidationUtils {
       // Check if dependencies exist
       epic.dependencies.forEach((depId) => {
         if (!epicIds.has(depId)) {
-          errors.push(`Epic `${epic.id} depends on non-existent epic ${depId});`)};;
+          errors.push("Epic "${epic.id} depends on non-existent epic ${depId})")};;"
 });
       graph.set(epic.id, epic.dependencies);
 });
@@ -185,4 +185,4 @@ export function validateSafeFeature(input: unknown) {
  */
 export function validateProgramIncrement(input: unknown) {
   return ProgramIncrementSchema.safeParse(input);
-};`
+};""

@@ -47,12 +47,7 @@ class ProductionDocumentManager {
     this.db = new DatabaseProvider();
   }
 
-  async searchDocuments(criteria: {
-    projectId?: string;
-    type?: string;
-    keywords?: string[];
-    limit?: number;
-  }): Promise<Result<BaseDocumentEntity[], Error>> {
+  async searchDocuments(Promise<Result<BaseDocumentEntity[], Error>> {
     try {
       const query = this.buildSearchQuery(criteria);
       const documents = await this.db.query(query, criteria);
@@ -60,30 +55,30 @@ class ProductionDocumentManager {
       return ok(documents.map(doc => this.mapToBaseDocument(doc)));
     } catch (error) {
       this.logger.error('Document search failed:', error);
-      return err(new Error(`Document search failed: ${(error as Error).message}`));
+      return err(new Error("Document search failed: ${(error as Error).message}"));"
     }
   }
 
-  async getDocumentsByProject(projectId: string): Promise<Result<BaseDocumentEntity[], Error>> {
+  async getDocumentsByProject(Promise<Result<BaseDocumentEntity[], Error>> {
     try {
-      const query = `
+      const query = ""
         SELECT * FROM documents 
         WHERE project_id = ? 
         ORDER BY created_at DESC
-      `;
+      ";"
       const documents = await this.db.query(query, [projectId]);
       
       return ok(documents.map(doc => this.mapToBaseDocument(doc)));
-    } catch (error) {
+    } catch (error) " + JSON.stringify({
       this.logger.error('Failed to get documents by project:', error);
-      return err(new Error(`Failed to get project documents: ${(error as Error).message}`));
+      return err(new Error("Failed to get project documents: " + (error as Error).message + ") + ""));"
     }
   }
 
-  async createDocument(documentData: Partial<BaseDocumentEntity>): Promise<Result<BaseDocumentEntity, Error>> {
+  async createDocument(Promise<Result<BaseDocumentEntity, Error>> {
     try {
       const document = {
-        id: documentData.id || `doc-${Date.now()}`,
+        id: documentData.id || "doc-${Date.now()}","
         type: documentData.type || 'general',
         content: documentData.content || '',
         summary: documentData.summary || '',
@@ -94,10 +89,10 @@ class ProductionDocumentManager {
         updated_at: new Date().toISOString(),
       };
 
-      const query = `
+      const query = ""
         INSERT INTO documents (id, type, content, summary, keywords, metadata, related_documents, created_at, updated_at)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `;
+      ";"
       
       await this.db.query(query, [
         document.id,
@@ -114,7 +109,7 @@ class ProductionDocumentManager {
       return ok(document);
     } catch (error) {
       this.logger.error('Document creation failed:', error);
-      return err(new Error(`Document creation failed: ${(error as Error).message}`));
+      return err(new Error("Document creation failed: ${(error as Error).message}"));"
     }
   }
 
@@ -158,22 +153,22 @@ class FallbackDocumentManager {
   private logger = getLogger('FallbackDocumentManager');
   private documents: Map<string, BaseDocumentEntity> = new Map();
 
-  async searchDocuments(): Promise<Result<BaseDocumentEntity[], Error>> {
+  async searchDocuments(Promise<Result<BaseDocumentEntity[], Error>> {
     this.logger.warn('Using fallback document search - database unavailable');
     return ok(Array.from(this.documents.values()));
   }
 
-  async getDocumentsByProject(projectId: string): Promise<Result<BaseDocumentEntity[], Error>> {
+  async getDocumentsByProject(Promise<Result<BaseDocumentEntity[], Error>> {
     this.logger.warn('Using fallback project documents - database unavailable');
     const projectDocs = Array.from(this.documents.values())
       .filter(doc => doc.metadata?.projectId === projectId);
     return ok(projectDocs);
   }
 
-  async createDocument(data: Partial<BaseDocumentEntity>): Promise<Result<BaseDocumentEntity, Error>> {
+  async createDocument(Promise<Result<BaseDocumentEntity, Error>> {
     this.logger.warn('Using fallback document creation - database unavailable');
-    const document: BaseDocumentEntity = {
-      id: data.id || `fallback-doc-${Date.now()}`,
+    const document: BaseDocumentEntity = " + JSON.stringify({
+      id: data.id || "fallback-doc-${Date.now()}) + "","
       type: data.type || 'general',
       content: data.content,
       summary: data.summary,
@@ -211,9 +206,9 @@ export class StrategicVisionService {
   /**
    * Production strategic vision analysis from database documents
    */
-  async analyzeStrategicVision(projectId: string): Promise<Result<StrategicVisionAnalysis, Error>> {
+  async analyzeStrategicVision(Promise<Result<StrategicVisionAnalysis, Error>> {
     try {
-      this.logger.info(`Starting strategic vision analysis for project: ${projectId}`);
+      this.logger.info("Starting strategic vision analysis for project: ${projectId}");"
 
       // Get all relevant documents for the project
       const documentsResult = await this.documentManager.getDocumentsByProject(projectId);
@@ -223,28 +218,25 @@ export class StrategicVisionService {
 
       const documents = documentsResult.data;
       if (documents.length === 0) {
-        this.logger.warn(`No documents found for project: ${projectId}`);
-        return err(new Error(`No documents found for project: ${projectId}`));
+        this.logger.warn("No documents found for project: $" + JSON.stringify({projectId}) + "");"
+        return err(new Error("No documents found for project: ${projectId}"));"
       }
 
       // Analyze documents using production algorithms
       const analysis = await this.performStrategicAnalysis(projectId, documents);
       
-      this.logger.info(`Strategic vision analysis completed for project: ${projectId}`);
+      this.logger.info("Strategic vision analysis completed for project: ${projectId}");"
       return ok(analysis);
-    } catch (error) {
+    } catch (error) " + JSON.stringify({
       this.logger.error('Strategic vision analysis failed:', error);
-      return err(new Error(`Strategic vision analysis failed: ${(error as Error).message}`));
+      return err(new Error("Strategic vision analysis failed: " + (error as Error).message + ") + ""));"
     }
   }
 
   /**
    * Production-grade strategic analysis implementation
    */
-  private async performStrategicAnalysis(
-    projectId: string, 
-    documents: BaseDocumentEntity[]
-  ): Promise<StrategicVisionAnalysis> {
+  private async performStrategicAnalysis(Promise<StrategicVisionAnalysis> {
     // Analyze mission and goals from documents
     const missionAnalysis = this.extractMissionStatement(documents);
     const goalsAnalysis = this.extractStrategicGoals(documents);
@@ -284,7 +276,7 @@ export class StrategicVisionService {
     let outcomeText = '';
 
     for (const doc of documents) {
-      const content = `${doc.content || ''  } ${  doc.summary || ''}`;
+      const content = "${doc.content || ''  } ${  doc.summary || ''}";"
       const sentences = content.split(/[!.?]+/);
 
       for (const sentence of sentences) {
@@ -314,7 +306,7 @@ export class StrategicVisionService {
     const goals: Set<string> = new Set();
 
     for (const doc of documents) {
-      const content = `${doc.content || ''  } ${  doc.summary || ''}`;
+      const content = "${doc.content || ''  } ${  doc.summary || ''}";"
       const sentences = content.split(/[!.?]+/);
 
       for (const sentence of sentences) {
@@ -345,8 +337,8 @@ export class StrategicVisionService {
     let competitiveIndicators = 0;
     let totalRelevantSentences = 0;
 
-    for (const doc of documents) {
-      const content = `${doc.content || ''  } ${  doc.summary || ''}`;
+    for (const doc of documents) " + JSON.stringify({
+      const content = "${doc.content || ''  }) + " ${  doc.summary || ''}";"
       const sentences = content.split(/[!.?]+/);
 
       for (const sentence of sentences) {
@@ -393,7 +385,7 @@ export class StrategicVisionService {
     let totalRelevantSentences = 0;
 
     for (const doc of documents) {
-      const content = `${doc.content || ''  } ${  doc.summary || ''}`;
+      const content = "${doc.content || ''  } ${  doc.summary || ''}";"
       const sentences = content.split(/[!.?]+/);
 
       for (const sentence of sentences) {
@@ -424,7 +416,7 @@ export class StrategicVisionService {
     const stakeholders: Set<string> = new Set();
 
     for (const doc of documents) {
-      const content = `${doc.content || ''  } ${  doc.summary || ''}`;
+      const content = "${doc.content || ''  } ${  doc.summary || ''}";"
       
       // Extract potential stakeholder names
       const words = content.split(/\s+/);
@@ -455,8 +447,8 @@ export class StrategicVisionService {
     const timeKeywords = ['timeline', 'schedule', 'deadline', 'milestone', 'phase', 'sprint', 'quarter'];
     let timelineText = '';
 
-    for (const doc of documents) {
-      const content = `${doc.content || ''  } ${  doc.summary || ''}`;
+    for (const doc of documents) " + JSON.stringify({
+      const content = "" + doc.content || ''   + ") + " ${  doc.summary || ''}";"
       const sentences = content.split(/[!.?]+/);
 
       for (const sentence of sentences) {
@@ -481,7 +473,7 @@ export class StrategicVisionService {
     const risks: Set<string> = new Set();
 
     for (const doc of documents) {
-      const content = `${doc.content || ''  } ${  doc.summary || ''}`;
+      const content = "${doc.content || ''  } ${  doc.summary || ''}";"
       const sentences = content.split(/[!.?]+/);
 
       for (const sentence of sentences) {
@@ -509,7 +501,7 @@ export class StrategicVisionService {
     const metrics: Set<string> = new Set();
 
     for (const doc of documents) {
-      const content = `${doc.content || ''  } ${  doc.summary || ''}`;
+      const content = "${doc.content || ''  } ${  doc.summary || ''}";"
       const sentences = content.split(/[!.?]+/);
 
       for (const sentence of sentences) {

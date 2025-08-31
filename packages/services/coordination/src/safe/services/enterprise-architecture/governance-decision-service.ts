@@ -457,12 +457,12 @@ export class GovernanceDecisionService extends EventBus {
 })),
         criteria: request.criteria.map((c) => ({
           ...c,')          id,    ')          evaluation: 'qualitative ',as const,';
-            scale: 'categorical ',as const, range:  { min: 1, max: 5}},`;
-            evidence: [],`)            evaluator: `,`,`;
+            scale: 'categorical ',as const, range:  { min: 1, max: 5}},";
+            evidence: []")            evaluator: "",";"
 },
 })),
         risks: request.risks.map((r) => ({
-          ...r``;
+          ...r"";"
           id: 'identified ',as const,';
 '})),';
         implications: request.implications.map((i) => ({
@@ -543,8 +543,8 @@ export class GovernanceDecisionService extends EventBus {
    */
   async updateDecisionStatus(
     decisionId: this.decisions.get(decisionId);
-    if (!decision) {
-    `)      throw new Error(`Governance decision `${decisionId} not found``);')};;
+    if (!decision) " + JSON.stringify({
+    `)      throw new Error(`Governance decision `${decisionId}) + " not found"");')};;"
     const updatedDecision = {
       ...decision,
       status,
@@ -595,8 +595,8 @@ export class GovernanceDecisionService extends EventBus {
    */
   private setupDecisionReviewInterface(decision: GovernanceDecision): void {
     this.aguiSystem.createInterface({
-    )      type:`decision_review,`,`;
-      entityId: decision.id``;
+    )      type:"decision_review",";"
+      entityId: decision.id"";"
       title,    ')      participants: decision.decisionMakers.map((dm) => dm.userId),';
       sections: 'overview',)          title,          content: 'criteria',)          title,          content: 'risks',)          title,          content: 'vote',)          title : 'Your Decision')          type : 'vote')          options:['Approve,' Reject,'Request Changes'],';
 },
@@ -611,7 +611,7 @@ export class GovernanceDecisionService extends EventBus {
     ')      startWorkflow: (workflow: any) => {';
     ')        this.logger.debug('Workflow started (fallback),{';
           type: workflow.workflowType,');
-});`)        return `workflow-`${Date.now()})},``;
+})")        return "workflow-"${Date.now()})}"";"
 };
 }
   private createAGUISystemFallback() {
@@ -636,11 +636,11 @@ export class GovernanceDecisionService extends EventBus {
   private createKnowledgeManagerFallback() {
     return {
       store: (data: any) => {
-        this.logger.debug(Knowledge stored (fallback),{ type: data.type};);`;
+        this.logger.debug(Knowledge stored (fallback),{ type: data.type};)";
 },
 };
 };)};;
-'Knowledge stored (fallback),{ type: data.type};);`;
+'Knowledge stored (fallback),{ type: data.type};);";"
 },
 };
 };)};;

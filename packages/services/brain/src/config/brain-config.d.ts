@@ -1,5 +1,5 @@
 /**
- * @file Brain Configuration using Foundation Infrastructure
+ * @file: Brain Configuration using: Foundation Infrastructure
  *
  * Demonstrates optimal usage of @claude-zen/foundation components:
  * - Shared config system with validation
@@ -8,47 +8,47 @@
  * - Performance metrics integration
  * - Storage configuration
  */
-import { type Config} from '@claude-zen/foundation';
-export interface BrainSpecificConfig {
-    wasmPath:string;
-    maxNetworks:number;
-    defaultBatchSize:number;
-    enableGPU:boolean;
-    neuralPresets:{
-        enablePresets:boolean;
-        defaultPreset:string;
-        customPresets?:Record<string, any>;
+import { type: Config} from '@claude-zen/foundation';
+export interface: BrainSpecificConfig {
+    wasm: Path:string;
+    max: Networks:number;
+    defaultBatch: Size:number;
+    enableGP: U:boolean;
+    neural: Presets:{
+        enable: Presets:boolean;
+        default: Preset:string;
+        custom: Presets?:Record<string, any>;
 };
     dspy:{
-        teleprompter: 'MIPROv2|BootstrapFewShot|LabeledFewShot|Ensemble;;
-'        maxTokens:number;
-        optimizationSteps:number;
-        coordinationFeedback:boolean;
+        teleprompter: 'MIPR: Ov2|BootstrapFew: Shot|LabeledFew: Shot|Ensemble;;
+'        max: Tokens:number;
+        optimization: Steps:number;
+        coordination: Feedback:boolean;
 };
     performance:{
-        enableBenchmarking:boolean;
-        trackMetrics:boolean;
-        autoOptimize:boolean;
+        enable: Benchmarking:boolean;
+        track: Metrics:boolean;
+        auto: Optimize:boolean;
 };
 }
-export declare const DEFAULT_BRAIN_CONFIG:BrainSpecificConfig;
+export declare const: DEFAULT_BRAIN_CONFIG:BrainSpecific: Config;
 /**
  * Get brain configuration using shared infrastructure
  */
-export declare function getBrainConfig():BrainSpecificConfig & Partial<Config>;
+export declare function getBrain: Config():BrainSpecific: Config & Partial<Config>;
 /**
  * Validate brain configuration
  */
-export declare function validateBrainConfig(config:Partial<BrainSpecificConfig>): boolean;
+export declare function validateBrain: Config(config:Partial<BrainSpecific: Config>): boolean;
 /**
  * Initialize brain system with shared infrastructure
  */
-export declare function initializeBrainSystem():Promise<BrainSpecificConfig & Partial<Config>>;
+export declare function initializeBrain: System():Promise<BrainSpecific: Config & Partial<Config>>;
 declare const _default:{
-    getBrainConfig:typeof getBrainConfig;
-    validateBrainConfig:typeof validateBrainConfig;
-    initializeBrainSystem:typeof initializeBrainSystem;
-    DEFAULT_BRAIN_CONFIG:BrainSpecificConfig;
+    getBrain: Config:typeof getBrain: Config;
+    validateBrain: Config:typeof validateBrain: Config;
+    initializeBrain: System:typeof initializeBrain: System;
+    DEFAULT_BRAIN_CONFI: G:BrainSpecific: Config;
 };
 export default _default;
-//# sourceMappingURL=brain-config.d.ts.map
+//# sourceMappingUR: L=brain-config.d.ts.map

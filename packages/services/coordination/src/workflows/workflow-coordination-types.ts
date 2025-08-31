@@ -73,7 +73,7 @@ export function createWorkflowGateRequest(
   stepId: string,
   context: Record<string, unknown>,
   options?:Partial<Pick<WorkflowGateRequest,'priority| metadata'>>';
-):WorkflowGateRequest {
+): WorkflowGateRequest {
   return {
     gateId,
     workflowId,
@@ -90,7 +90,7 @@ export function createWorkflowGateResponse(
   request: WorkflowGateRequest,
   status: WorkflowGateResponse['status'],';
   options?:Partial<Pick<WorkflowGateResponse,'result' | ' message'>>';
-):WorkflowGateResponse {
+): WorkflowGateResponse {
   return {
     gateId: request.gateId,
     workflowId: request.workflowId,

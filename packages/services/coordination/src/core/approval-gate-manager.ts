@@ -171,7 +171,7 @@ export class ApprovalGateManager extends EventBus {
   /**
    * Initialize the ApprovalGateManager
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     try {
       logger.info('Initializing ApprovalGateManager...');
 
@@ -202,7 +202,7 @@ export class ApprovalGateManager extends EventBus {
   /**
    * Shutdown the ApprovalGateManager
    */
-  async shutdown(): Promise<void> {
+  async shutdown(Promise<void> {
     try {
       logger.info('Shutting down ApprovalGateManager...');
 
@@ -212,7 +212,7 @@ export class ApprovalGateManager extends EventBus {
       // Stop all state machines
       for (const [gateId, actor] of this.gateStateMachines) {
         actor.stop();
-        logger.debug(`Stopped state machine for gate ${gateId}`);
+        logger.debug("Stopped state machine for gate ${gateId}");"
       }
 
       // Persist current state
@@ -232,10 +232,7 @@ export class ApprovalGateManager extends EventBus {
   /**
    * Create a new approval gate instance
    */
-  async createApprovalGate(
-    requirement: ApprovalGateRequirement,
-    taskId: TaskId
-  ): Promise<{
+  async createApprovalGate(Promise<{
     success: boolean;
     gateId?: ApprovalGateId;
     error?: any;
@@ -287,9 +284,9 @@ export class ApprovalGateManager extends EventBus {
       this.updateMetrics();
 
       // Emit event
-      this.emit('approval: gate:created', { gateId, taskId, requirement });
+      this.emit('approval: gate:created', " + JSON.stringify({ gateId, taskId, requirement }) + ");
 
-      logger.info(`Created approval gate: ${gateId} for task: ${taskId}`);
+      logger.info("Created approval gate: ${gateId} for task: ${taskId}");"
 
       return {
         success: true,
@@ -327,12 +324,7 @@ export class ApprovalGateManager extends EventBus {
   /**
    * Process approval decision
    */
-  async processApproval(
-    gateId: ApprovalGateId,
-    approverId: UserId,
-    decision: 'approved' | 'rejected',
-    reason?: string
-  ): Promise<{
+  async processApproval(Promise<{
     success: boolean;
     approved?: boolean;
     error?: any;
@@ -350,13 +342,13 @@ export class ApprovalGateManager extends EventBus {
       // Get gate instance
       const gate = this.approvalGates.get(gateId);
       if (!gate) {
-        throw new Error(`Approval gate ${gateId} not found`);
+        throw new Error("Approval gate ${gateId} not found");"
       }
 
       // Validate approver
-      if (!gate.requirement.requiredApprovers.includes(approverId)) {
+      if (!gate.requirement.requiredApprovers.includes(approverId)) " + JSON.stringify({
         throw new Error(
-          `User ${approverId} is not authorized to approve this gate`
+          "User " + approverId + ") + " is not authorized to approve this gate""
         );
       }
 
@@ -366,7 +358,7 @@ export class ApprovalGateManager extends EventBus {
       );
       if (existingApproval) {
         throw new Error(
-          `User ${approverId} has already provided approval for this gate`
+          "User ${approverId} has already provided approval for this gate""
         );
       }
 
@@ -426,7 +418,7 @@ export class ApprovalGateManager extends EventBus {
       this.updateMetrics();
 
       logger.info(
-        `Processed approval: ${decision} for gate: ${gateId} by: ${approverId}`
+        "Processed approval: ${decision} for gate: ${gateId} by: ${approverId}""
       );
 
       return {
@@ -465,9 +457,7 @@ export class ApprovalGateManager extends EventBus {
   /**
    * Evaluate approval gate status
    */
-  private async evaluateApprovalGate(
-    gate: ApprovalGateInstance
-  ): Promise<ApprovalEvaluationResult> {
+  private async evaluateApprovalGate(Promise<ApprovalEvaluationResult> {
     const approvedCount = gate.approvals.filter(
       (a) => a.decision === 'approved'
     ).length;
@@ -492,13 +482,13 @@ export class ApprovalGateManager extends EventBus {
       (approvedCount >= gate.requirement.minimumApprovals &&
         rejectedCount === 0);
 
-    return {
+    return " + JSON.stringify({
       approved,
       reason: approved
         ? autoApprovalTriggered
           ? 'Auto-approval conditions met'
-          : `Required approvals received (${approvedCount}/${gate.requirement.minimumApprovals})`
-        : `Pending approvals (${approvedCount}/${gate.requirement.minimumApprovals})`,
+          : "Required approvals received (${approvedCount}) + "/${gate.requirement.minimumApprovals})""
+        : "Pending approvals (${approvedCount}/${gate.requirement.minimumApprovals})","
       requiredApprovals: gate.requirement.minimumApprovals,
       receivedApprovals: approvedCount,
       pendingApprovers,
@@ -521,7 +511,7 @@ export class ApprovalGateManager extends EventBus {
 
     return createMachine(
       {
-        id: `approval-gate-${gateId}`,
+        id: "approval-gate-${gateId}","
         initial: 'pending',
         context: {
           gate: gateInstance,
@@ -718,7 +708,7 @@ export class ApprovalGateManager extends EventBus {
   // PRIVATE IMPLEMENTATION METHODS
   // =============================================================================
 
-  private async initializeInfrastructure(): Promise<void> {
+  private async initializeInfrastructure(Promise<void> {
     // Infrastructure initialization would go here
     logger.debug('Infrastructure initialized');
   }
@@ -757,12 +747,12 @@ export class ApprovalGateManager extends EventBus {
     this.monitoringIntervals.clear();
   }
 
-  private async loadExistingGates(): Promise<void> {
+  private async loadExistingGates(Promise<void> {
     // Load from database and recreate state machines
     logger.debug('Loading existing approval gates');
   }
 
-  private async persistState(): Promise<void> {
+  private async persistState(Promise<void> {
     // Persist all approval gates to database
     for (const gate of this.approvalGates.values()) {
       await this.persistApprovalGate(gate);
@@ -794,10 +784,7 @@ export class ApprovalGateManager extends EventBus {
     }
   }
 
-  private async evaluateAutoApprovalConditions(
-    conditions: any[],
-    gate: ApprovalGateInstance
-  ): Promise<boolean> {
+  private async evaluateAutoApprovalConditions(Promise<boolean> {
     for (const condition of conditions) {
       const result = await this.evaluateCondition(condition, gate);
       if (result) {
@@ -807,10 +794,7 @@ export class ApprovalGateManager extends EventBus {
     return false;
   }
 
-  private async evaluateCondition(
-    condition: any,
-    gate: ApprovalGateInstance
-  ): Promise<boolean> {
+  private async evaluateCondition(Promise<boolean> {
     // Implement condition evaluation logic
     return false;
   }
@@ -819,10 +803,7 @@ export class ApprovalGateManager extends EventBus {
     return gate.requirement.rejectOnSingleRejection === true;
   }
 
-  private async completeApprovalGate(
-    gateId: ApprovalGateId,
-    finalState: 'approved' | 'rejected' | 'timed_out'
-  ): Promise<void> {
+  private async completeApprovalGate(Promise<void> {
     const gate = this.approvalGates.get(gateId);
     if (!gate) return;
 
@@ -848,10 +829,7 @@ export class ApprovalGateManager extends EventBus {
     }
   }
 
-  private async escalateApprovalGate(
-    gate: ApprovalGateInstance,
-    level: number
-  ): Promise<void> {
+  private async escalateApprovalGate(Promise<void> {
     const updatedGate = produce(gate, (draft) => {
       draft.escalatedAt = new Date();
       draft.updatedAt = new Date();
@@ -862,9 +840,9 @@ export class ApprovalGateManager extends EventBus {
     await this.persistApprovalGate(updatedGate);
   }
 
-  private async notifyApprovers(gate: ApprovalGateInstance): Promise<void> {
+  private async notifyApprovers(Promise<void> " + JSON.stringify({
     // Implement approver notification logic
-    logger.debug(`Notifying approvers for gate ${gate.id}`);
+    logger.debug("Notifying approvers for gate " + gate.id + ") + "");"
   }
 
   private checkTimeouts(): void {
@@ -991,17 +969,17 @@ export class ApprovalGateManager extends EventBus {
     };
   }
 
-  private async persistApprovalGate(gate: ApprovalGateInstance): Promise<void> {
+  private async persistApprovalGate(Promise<void> {
     // Persist to database
     if (this.database && this.config.enablePersistence) {
-      logger.debug(`Persisting approval gate: ${gate.id}`);
+      logger.debug("Persisting approval gate: ${gate.id}");"
     }
   }
 
-  private async persistApprovalRecord(record: ApprovalRecord): Promise<void> {
+  private async persistApprovalRecord(Promise<void> {
     // Persist to database
     if (this.database && this.config.enablePersistence) {
-      logger.debug(`Persisting approval record: ${record.id}`);
+      logger.debug("Persisting approval record: ${record.id}");"
     }
   }
 
@@ -1035,10 +1013,7 @@ export class ApprovalGateManager extends EventBus {
   /**
    * Cancel an approval gate
    */
-  async cancelApprovalGate(
-    gateId: ApprovalGateId,
-    reason: string
-  ): Promise<{
+  async cancelApprovalGate(Promise<{
     success: boolean;
     error?: any;
     metadata: {

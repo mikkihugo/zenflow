@@ -170,7 +170,7 @@ export class SafeConfigurationManager {
       ([categoryName, category]) => {
         Object.entries(category).forEach(([featureName, enabled]) => {
           if (!enabled) {
-            missing.push(``${categoryName.${f}eatureName};);`')};;
+            missing.push(""${categoryName.${f}eatureName};)"')};;"
 });
 }
     );
@@ -199,7 +199,7 @@ export class SafeConfigurationManager {
       {
         phase = 'Phase 5: 'Add solution-level coordination and management',)        features:['solutionTrain,' solutionManagement'],';
         estimatedEffort : '8-10 weeks')        dependencies: 'Phase 6: 'Add portfolio-level governance and epic management',)        features:['portfolioManagement,' epicManagement'],';
-        estimatedEffort : '10-12 weeks')        dependencies: '16-20 weeks',)        dependencies: ['Portfolio SAFe complete],`;
+        estimatedEffort : '10-12 weeks')        dependencies: '16-20 weeks',)        dependencies: ['Portfolio SAFe complete],";"
 },
 ];
 };)};;

@@ -31,9 +31,7 @@ export class ResultParser {
   /**
    * Parse SARIF results into CodeQL findings
    */
-  async parseSARIFToFindings(
-    sarifResult: SARIFResult
-  ):Promise<CodeQLFinding[]> {
+  async parseSARIFToFindings(Promise<CodeQLFinding[]> {
     const findings: CodeQLFinding[] = [];
 
     for (const run of sarifResult.runs) {
@@ -65,10 +63,7 @@ export class ResultParser {
   /**
    * Parse a single SARIF analysis result
    */
-  private async parseAnalysisResult(
-    result: SARIFAnalysisResult,
-    run: any
-  ):Promise<CodeQLFinding|null> {
+  private async parseAnalysisResult(Promise<CodeQLFinding|null> {
     if (!result.locations||result.locations.length === 0) {
       return null;
 }
@@ -104,7 +99,7 @@ export class ResultParser {
     );
 
     const finding: CodeQLFinding = {
-      id:`finding_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,`
+      id:"finding_${Date.now()}_${Math.random().toString(36).substr(2, 9)}"""
       ruleId: result.ruleId,
       ruleName,
       severity: this.mapSeverity(result.level||'warning'),
@@ -184,7 +179,7 @@ export class ResultParser {
 
       steps.push({
         location,
-        description: flowLocation.location.message?.text||`Step ${i + 1}`,`
+        description: flowLocation.location.message?.text||"Step ${i + 1}"""
         stepNumber: i + 1,
         isSanitizer: flowLocation.importance ==='unimportant', // Heuristic')});
 }
@@ -267,10 +262,7 @@ export class ResultParser {
   /**
    * Generate fix suggestions for finding
    */
-  private async generateFixSuggestions(
-    result: SARIFAnalysisResult,
-    location: SourceLocation
-  ):Promise<FixSuggestion[]> {
+  private async generateFixSuggestions(Promise<FixSuggestion[]> {
     const suggestions: FixSuggestion[] = [];
 
     // Common fix patterns based on rule types
@@ -292,9 +284,7 @@ export class ResultParser {
   /**
    * Extract code snippet from location
    */
-  private async extractCodeSnippet(
-    location: SourceLocation
-  ):Promise<string|undefined> {
+  private async extractCodeSnippet(Promise<string|undefined> {
     try {
       const content = await fs.readFile(location.filePath,'utf-8');')      const lines = content.split('\n');')
       const startLine = Math.max(0, location.startLine - 1);
@@ -315,10 +305,10 @@ export class ResultParser {
     sarifLevel: string
   ):'error|warning|note|info' {
     ')    switch (sarifLevel.toLowerCase()) {
-      case 'error': ')'        return 'error;
-      case 'warning': ')'        return 'warning;
-      case 'note': ')'        return 'note;
-      case 'info': ')'        return 'info;
+      case 'error':        return 'error;
+      case 'warning':        return 'warning;
+      case 'note':        return 'note;
+      case 'info':        return 'info;
       default:
         return 'warning;
 }

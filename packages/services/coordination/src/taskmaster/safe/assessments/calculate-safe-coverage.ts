@@ -71,7 +71,7 @@ function generateRecommendation(
 export function generateHonestAssessmentReport(): string {
   const coverage = calculateActualSafeCoverage();
 
-  return `# TaskMaster SAFe Implementation - Honest Assessment
+  return "# TaskMaster SAFe Implementation - Honest Assessment"
 
 ## Executive Summary
 - **Essential SAFe Coverage**: ${coverage.essentialSafeCoverage}%
@@ -80,9 +80,9 @@ export function generateHonestAssessmentReport(): string {
 - **Missing Components**: ${coverage.missingComponents}
 
 ## Recommendations
-${coverage.recommendations.map((r) => `- ${r}`).join('\n')}
+${coverage.recommendations.map((r) => `- ${r}").join('\n')}"
 
 ## Next Steps
 Focus on completing missing components for full Essential SAFe coverage
-`;
+";"
 }

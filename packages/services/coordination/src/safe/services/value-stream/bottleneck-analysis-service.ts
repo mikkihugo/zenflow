@@ -117,11 +117,7 @@ export interface ImpactAssessment {
 }
 };)    return orderBy(bottlenecks,'severity,' desc');
 }
-  private async performRootCauseAnalysis(
-    bottlenecks: DetectedBottleneck[],
-    config: BottleneckAnalysisConfig,
-    flowData: any
-  ): Promise<RootCauseAnalysis> {
+  private async performRootCauseAnalysis(Promise<RootCauseAnalysis> {
     if (bottlenecks.length === 0) {
       return this.createEmptyRootCauseAnalysis();
 }
@@ -167,7 +163,7 @@ export interface ImpactAssessment {
       // Resource constraint factors
       if (bottleneck.utilizationMetrics.utilization > 90) {
         factors.push({
-    `)          factorId: [];
+    ")          factorId: [];
     for (const bottleneck of bottlenecks) {
       switch (bottleneck.type) {
         case BottleneckType.CAPACITY: ')'Add additional resources or optimize resource allocation,';
@@ -213,7 +209,7 @@ export interface ImpactAssessment {
     cycle: CycleTimeMetrics,
     queue: QueueMetrics,
     util: UtilizationMetrics
-  ):BottleneckType {
+  ): BottleneckType {
     if (util.utilization > 95) return BottleneckType.CAPACITY;
     if (cycle.variance > cycle.average) return BottleneckType.PROCESS;
     if (queue.averageWaitTime > cycle.average) return BottleneckType.DEPENDENCY;
@@ -223,7 +219,7 @@ export interface ImpactAssessment {
     cycle: CycleTimeMetrics,
     queue: QueueMetrics,
     util: UtilizationMetrics
-  ):BottleneckSeverity {
+  ): BottleneckSeverity {
     const severityScore =;
       cycle.average / 24 + queue.averageLength / 10 + util.utilization / 100;
     if (severityScore > 2.5) return BottleneckSeverity.CRITICAL;
@@ -272,7 +268,7 @@ export interface ImpactAssessment {
     cycle: CycleTimeMetrics,
     queue: QueueMetrics,
     util: UtilizationMetrics
-  ):BottleneckType {
+  ): BottleneckType {
     if (util.utilization > 95) return BottleneckType.CAPACITY;
     if (cycle.variance > cycle.average) return BottleneckType.PROCESS;
     if (queue.averageWaitTime > cycle.average) return BottleneckType.DEPENDENCY;
@@ -282,7 +278,7 @@ export interface ImpactAssessment {
     cycle: CycleTimeMetrics,
     queue: QueueMetrics,
     util: UtilizationMetrics
-  ):BottleneckSeverity {
+  ): BottleneckSeverity {
     const severityScore =;
       cycle.average / 24 + queue.averageLength / 10 + util.utilization / 100;
     if (severityScore > 2.5) return BottleneckSeverity.CRITICAL;
@@ -323,9 +319,9 @@ export interface ImpactAssessment {
     );
 }
   // Stub implementations for remaining private methods
-  private createEmptyRootCauseAnalysis():RootCauseAnalysis {
+  private createEmptyRootCauseAnalysis(): RootCauseAnalysis {
     return {
-    )      analysisId,    `)      primaryCause: 'No significant root cause identified,',
+    )      analysisId")      primaryCause: 'No significant root cause identified,',
 '        category: 'limited, timeframe},',
         addressability: 'easy, cost: filter(
       bottlenecks,
@@ -342,7 +338,7 @@ export interface ImpactAssessment {
 }
   private calculateFactorFrequency(
     bottleneck: DetectedBottleneck
-  ):FactorFrequency {
+  ): FactorFrequency {
     // Simple classification based on bottleneck severity')    if (bottleneck.severity ==='critical){';
     ')      return FactorFrequency.CONSTANT;')} else if (bottleneck.severity ==='high){';
     ')      return FactorFrequency.FREQUENT;')} else if (bottleneck.severity ==='medium){';
@@ -369,5 +365,5 @@ interface BottleneckRecommendation {
   readonly recommendationId: string;
   readonly title: string;
   readonly description: string;
-  readonly priority: low| medium| high' | ' critical')  readonly estimatedEffort : 'low' | ' medium'|' high';)  readonly estimatedImpact : 'low' | ' medium'|' high')  readonly implementation: string[];`;
+  readonly priority: low| medium| high' | ' critical')  readonly estimatedEffort : 'low' | ' medium'|' high';)  readonly estimatedImpact : 'low' | ' medium'|' high')  readonly implementation: string[];";"
 };

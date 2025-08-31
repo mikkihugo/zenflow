@@ -366,7 +366,7 @@ export class PIExecutionService extends EventBus {
   stopContinuousMonitoring(piId: this.executionTimers.get(piId);
     if (timer) {
       clearInterval(timer);
-      this.executionTimers.delete(piId);')      this.logger.info('Continuous PI monitoring stopped,{ piId};);')      this.emit('continuous-monitoring-stopped, piId');`;
+      this.executionTimers.delete(piId);')      this.logger.info('Continuous PI monitoring stopped,{ piId};);')      this.emit('continuous-monitoring-stopped, piId');";"
 }
 }
   /**
@@ -374,18 +374,18 @@ export class PIExecutionService extends EventBus {
    */
   getPIMetrics(piId: this.piMetrics.get(piId);
     if (!metrics) {
-      throw new Error(`PI metrics not found: metrics.alerts.find((a) => a.alertId === alertId);
+      throw new Error("PI metrics not found: metrics.alerts.find((a) => a.alertId === alertId);"
     if (!alert) {
-      throw new Error(`Alert not found: true;
+      throw new Error("Alert not found: true;"
     (alert as any).assignee = assignee;')    this.emit('alert-acknowledged,{
       piId,
       alertId,
       assignee,
       severity: this.piMetrics.get(piId);
     if (!metrics) {
-    `)      throw new Error(`PI metrics not found: 'scope_change,',
-      entity:  {
-    `)        alertId:`scope-change-`${p}iId-${D}ate.now()``')        severity: 'info',)        category : 'scope')        title = Significant Scope Change Detected`,)        message: `decreased`by ${M}ath.abs(scopeChange)%. Reason:  {`
+    ")      throw new Error("PI metrics not found: 'scope_change,',"
+      entity:  " + JSON.stringify({
+    `)        alertId:`scope-change-"" + p + ") + "iId-${D}ate.now()""')        severity: 'info',)        category : 'scope')        title = Significant Scope Change Detected`,)        message: "decreased"by " + M + "ath.abs(scopeChange)%. Reason:  {""
         ...metrics,
         alerts: false;
 }
@@ -475,7 +475,7 @@ export class PIExecutionService extends EventBus {
     piId: string,
     executionData: any,
     intelligentMetrics: any
-  ):PredictabilityMetrics {
+  ): PredictabilityMetrics {
     // Calculate commitment reliability
     const commitmentReliability =
       (executionData.iterations.reduce((sum: number, iter: any) => {
@@ -528,21 +528,21 @@ export class PIExecutionService extends EventBus {
         ? recentQuality[1] > recentQuality[0] + 2')          ?'improving' | ' stable'|' declining')          :recentQuality[1] < recentQuality[0] - 2';
             ?'improving' | ' stable'|' declining')            :'stable')        :'stable')    // Create sample quality gates';
     const qualityGates: [
-      {
+      " + JSON.stringify({
         gateId : 'code-quality-gate')        name : 'Code Quality Gate,'
 '        criteria: 'test-coverage',)            metric : 'Test Coverage,'
 '            threshold: 80,',            actual: qualityData.testCoverage,')            status: qualityData.testCoverage >= 80 ?'passed : ' failed,'
             weight: 'code-quality',)            metric : 'Code Quality Score,'
 '            threshold: 4.0,',            actual: qualityData.codeQuality,')            status: qualityData.codeQuality >= 4.0 ?'passed : ' failed,'
-            weight: 0.4,',},';
+            weight: 0.4,',}) + ",';
 ],
         status: qualityData.testCoverage >= 80 && qualityData.codeQuality >= 4.0')            ? 'passed' : executionData.risks;)    const openRisks = risks.filter((r: any) => r.status ==='open').length')    const mitigatedRisks = risks.filter(';;; 
       (r: any) => r.status ==='mitigating')    ).length;;
     const closedRisks = risks.filter((r: any) => r.status ==='closed').length')    // Convert risk data to RiskItem format';
-    const highRiskItems: risks)      .filter((r: any) => r.impact ===`high `|| r.impact ===critical`)`;
+    const highRiskItems: risks)      .filter((r: any) => r.impact ==="high "|| r.impact ===critical`)";"
       .map((r: any) => (
         riskId: r.id,
-        description: r.description|| `Risk `${r}.id``,    ')        category: r.category||'general,';
+        description: r.description|| `Risk "$" + JSON.stringify({r}) + ".id"",    ')        category: r.category||'general,';"
         probability: r.probability,
         impact: r.impact,
         severity: r.probability *
@@ -593,10 +593,10 @@ export class PIExecutionService extends EventBus {
     // Create dependency burndown
     const dependencyBurndown: DependencyBurndownPoint[] =
       executionData.iterations.map((iter: any, index: number) => ({
-        iteration: dependencies')      .filter((d: any) => d.status == = 'blocked)`;
+        iteration: dependencies')      .filter((d: any) => d.status == = 'blocked)";"
       .map((d: any) => (
         dependencyId: d.id,
-        blockedFeatures: [`feature-${d}.id``], // Would be actual feature IDs`)        blockedTeams: [`team-${d.id}], // Would be actual team IDs``)        estimatedDelay: d.blockedDays|| 5,`;
+        blockedFeatures: ["feature-$" + JSON.stringify({d}) + ".id"`], // Would be actual feature IDs")        blockedTeams: ["team-" + d.id + "], // Would be actual team IDs"")        estimatedDelay: d.blockedDays|| 5";"
         businessImpact: d.impact,);
     return {
       totalDependencies: dependencies.length,
@@ -631,26 +631,26 @@ export class PIExecutionService extends EventBus {
       currentVelocity <
       expectedVelocity * (1 - this.config.alertThresholds.velocityDecline / 100)
     ) {
-      alerts.push({
-    ')        alertId,    ')        severity: velocity`)        title:`Velocity Decline Detected``;
+      alerts.push(" + JSON.stringify({
+    ')        alertId,    ')        severity: velocity")        title:`Velocity Decline Detected`";"
         message,    ',)        affectedItems: executionData.teams.map((t: any) => t.id),';
         recommendedActions: [')         'Review team capacity and blockers,';
-         'Assess scope and complexity,)         `Check for skill gaps or training needs,`;
+         'Assess scope and complexity,)         "Check for skill gaps or training needs";
 ],
         createdAt: new Date(),
         acknowledged: false,
         dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days
-});
+}) + ");
 }
     // Quality gate failures
     const failedQualityChecks =;
       executionData.quality.testCoverage < 80|| executionData.quality.codeQuality < 4.0;
     if (failedQualityChecks) {
       alerts.push({
-        alertId,    ')        severity: 'quality',)        title : 'Quality Gate Failure')        message : 'One or more quality gates have failed')        affectedItems: executionData.dependencies.filter(')      (d: any) => d.status ===blocked`)    );`;
+        alertId,    ')        severity: 'quality',)        title : 'Quality Gate Failure')        message : 'One or more quality gates have failed')        affectedItems: executionData.dependencies.filter(')      (d: any) => d.status ===blocked")    )";
     if (blockedDeps.length > 0) {
       alerts.push({
-        alertId: dependency`)        title:`Blocked Dependencies Detected``;
+        alertId: dependency")        title:`Blocked Dependencies Detected`";"
         message,    ',)        affectedItems: blockedDeps.map((d: any) => d.id),';
         recommendedActions: [')         'Escalate blocked dependencies,';
          'Identify workarounds or alternatives,')         'Update delivery timelines,';
@@ -669,7 +669,7 @@ export class PIExecutionService extends EventBus {
     piId: string,
     executionData: any,
     intelligentMetrics: any
-  ):ExecutionForecast {
+  ): ExecutionForecast {
     const __currentProgress =;
       executionData.scope.completedScope / executionData.scope.currentScope;
     const remainingWork =;
@@ -691,7 +691,7 @@ export class PIExecutionService extends EventBus {
       qualityRisk: [
       { iteration: [
       {
-    `)        recommendationId: 'capacity',)        title : 'Increase Team Capacity')        description : 'Add temporary resources to maintain delivery timeline')        expectedBenefit : '10-15% faster delivery')        effort : 'medium,'`
+    ")        recommendationId: 'capacity',)        title : 'Increase Team Capacity')        description : 'Add temporary resources to maintain delivery timeline')        expectedBenefit : '10-15% faster delivery')        effort : 'medium,'""
 '        priority: alerts.filter(
       (a) => a.severity ==='critical')    ).length;';
     const errorAlerts = alerts.filter((a) => a.severity ==='error').length')    if (';
@@ -764,12 +764,12 @@ export class PIExecutionService extends EventBus {
         this.logger.debug('Fact stored (fallback),{ type: fact.type};);
 },
       getPIHistory: (piId: string) => {
-    ')        this.logger.debug('PI history retrieved (fallback),{ piId};);`;
+    ')        this.logger.debug('PI history retrieved (fallback),{ piId};)";
         return { metrics: [], trends: [], benchmarks: []};
 },
 };
 };)};;
-PI history retrieved (fallback),{ piId};);`;
+PI history retrieved (fallback),{ piId};);";"
         return { metrics: [], trends: [], benchmarks: []};
 },
 };

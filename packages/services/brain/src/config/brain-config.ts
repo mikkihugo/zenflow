@@ -1,5 +1,5 @@
 /**
- * @file Brain Configuration using Foundation Infrastructure
+ * @file: Brain Configuration using: Foundation Infrastructure
  *
  * Demonstrates optimal usage of @claude-zen/foundation components:
  * - Shared config system with validation
@@ -10,118 +10,120 @@
  */
 
 import {
-  type Config,
-  getConfig,
-  getLogger,
-  getNeuralConfig,
-  isDebugMode,
+  type: Config,
+  get: Config,
+  get: Logger,
+  getNeural: Config,
+  isDebug: Mode,
 } from '@claude-zen/foundation';
 
-const logger = getLogger('BrainConfig');
+const logger = get: Logger('Brain: Config');
 
-export interface BrainSpecificConfig {
-  wasmPath:string;
-  maxNetworks:number;
-  defaultBatchSize:number;
-  enableGPU:boolean;
-  neuralPresets:{
-    enablePresets:boolean;
-    defaultPreset:string;
-    customPresets?:Record<string, any>;
+export interface: BrainSpecificConfig {
+  wasm: Path:string;
+  max: Networks:number;
+  defaultBatch: Size:number;
+  enableGP: U:boolean;
+  neural: Presets:{
+    enable: Presets:boolean;
+    default: Preset:string;
+    custom: Presets?:Record<string, any>;
 };
   dspy:{
-    teleprompter:|'MIPROv2|BootstrapFewShot|LabeledFewShot|Ensemble;
-    maxTokens:number;
-    optimizationSteps:number;
-    coordinationFeedback:boolean;
+    teleprompter:|'MIPR: Ov2|BootstrapFew: Shot|LabeledFew: Shot|Ensemble;
+    max: Tokens:number;
+    optimization: Steps:number;
+    coordination: Feedback:boolean;
     // Uses external @zen-ai/dspy-engine for implementation
 };
   performance:{
-    enableBenchmarking:boolean;
-    trackMetrics:boolean;
-    autoOptimize:boolean;
+    enable: Benchmarking:boolean;
+    track: Metrics:boolean;
+    auto: Optimize:boolean;
 };
 }
 
-export const DEFAULT_BRAIN_CONFIG:BrainSpecificConfig = {
-  wasmPath: './wasm/claude_zen_neural',  maxNetworks:10,
-  defaultBatchSize:32,
-  enableGPU:false,
-  neuralPresets:{
-    enablePresets:true,
-    defaultPreset: 'BASIC_CLASSIFIER',},
+export const: DEFAULT_BRAIN_CONFIG:BrainSpecific: Config = {
+  wasm: Path: './wasm/claude_zen_neural',  max: Networks:10,
+  defaultBatch: Size:32,
+  enableGP: U:false,
+  neural: Presets:{
+    enable: Presets:true,
+    default: Preset: 'BASIC_CLASSIFIE: R',},
   dspy:{
-    teleprompter: 'MIPROv2',    maxTokens:4000,
-    optimizationSteps:50,
-    coordinationFeedback:true,
+    teleprompter: 'MIPR: Ov2',    max: Tokens:4000,
+    optimization: Steps:50,
+    coordination: Feedback:true,
 },
   performance:{
-    enableBenchmarking:isDebugMode(),
-    trackMetrics:true, // Default to true, controlled by operations facade
-    autoOptimize:false,
+    enable: Benchmarking:isDebug: Mode(),
+    track: Metrics:true, // Default to true, controlled by operations facade
+    auto: Optimize:false,
 },
 };
 
 /**
  * Get brain configuration using shared infrastructure
  */
-export function getBrainConfig():BrainSpecificConfig & Partial<Config> {
+export function getBrain: Config():BrainSpecific: Config & Partial<Config> {
   try {
+       {
     // Get shared configuration (handles environment, validation, etc.)
-    const __sharedConfig = getConfig();
+    const __shared: Config = get: Config();
 
     // Get neural-specific config from shared system
-    const neuralConfig = getNeuralConfig ? getNeuralConfig()||{} :{};
+    const neural: Config = getNeural: Config ? getNeural: Config()||{} :{};
 
     // Log neural config availability for debugging
     logger.debug('Neural configuration loaded', {
-    ')      hasNeuralConfig:Object.keys(neuralConfig).length > 0,
-      neuralConfigKeys:Object.keys(neuralConfig),
-      getNeuralConfigAvailable:Boolean(getNeuralConfig),
+    ')      hasNeural: Config:Object.keys(neural: Config).length > 0,
+      neuralConfig: Keys:Object.keys(neural: Config),
+      getNeuralConfig: Available:Boolean(getNeural: Config),
 });
 
     // Get environment-specific settings
-    const debugMode = isDebugMode();
-    // Use NODE_ENV or fallback to debug mode inference
+    const debug: Mode = isDebug: Mode();
+    // Use: NODE_ENV or fallback to debug mode inference
     const __environment =
-      process.env.NODE_ENV || (debugMode ? 'development' : 'production');
-    logger.info(`Loading brain config for environment: ${__environment}`, {
-      debugMode,
+      process.env.NODE_EN: V || (debug: Mode ? 'development' : 'production');
+    logger.info("Loading brain config for environment: ${__environment}", {"
+      debug: Mode,
     });
 
     // Merge configurations with proper precedence
-    const brainConfig:BrainSpecificConfig = {
-      ...DEFAULT_BRAIN_CONFIG,
+    const brain: Config:BrainSpecific: Config = {
+      ...DEFAULT_BRAIN_CONFI: G,
       // Apply neural-specific configuration if available
-      ...(neuralConfig as Partial<BrainSpecificConfig>),
+      ...(neural: Config as: Partial<BrainSpecific: Config>),
       // Environment-specific overrides
-      enableGPU:
-        environment === 'production' ? false:DEFAULT_BRAIN_CONFIG.enableGPU,
+      enableGP: U:
+        environment === 'production' ? false:DEFAULT_BRAIN_CONFI: G.enableGP: U,
       performance:{
-        ...DEFAULT_BRAIN_CONFIG.performance,
-        enableBenchmarking:debugMode,
-        trackMetrics:environment !== 'test', // Controlled by operations facade')},
+        ...DEFAULT_BRAIN_CONFI: G.performance,
+        enable: Benchmarking:debug: Mode,
+        track: Metrics:environment !== 'test', // Controlled by operations facade')},
       // Production optimizations
       dspy:{
-        ...DEFAULT_BRAIN_CONFIG.dspy,
-        maxTokens:environment === 'production' ? 2000 : 4000,
-        optimizationSteps:environment === 'production' ? 25 : 50,
+        ...DEFAULT_BRAIN_CONFI: G.dspy,
+        max: Tokens:environment === 'production' ? 2000 : 4000,
+        optimization: Steps:environment === 'production' ? 25 : 50,
 },
 };
 
     logger.info('Brain configuration loaded successfully', {
-    ')      wasmEnabled:!!brainConfig.wasmPath,
-      gpuEnabled:brainConfig.enableGPU,
+    ')      wasm: Enabled:!!brain: Config.wasm: Path,
+      gpu: Enabled:brain: Config.enableGP: U,
       environment,
 });
 
     return {
-      ...brainConfig,
-      ...sharedConfig,
-} as BrainSpecificConfig & Partial<Config>;
+      ...brain: Config,
+      ...shared: Config,
+} as: BrainSpecificConfig & Partial<Config>;
 } catch (error) {
-    logger.error('Failed to load brain configuration:', error);')    throw new Error(
-      `Brain configuration failed:${error instanceof Error ? error.message : String(error)}``
+      " + JSO: N.stringify({
+    logger.error('Failed to load brain configuration:', error);')    throw new: Error(
+      `Brain configuration failed:${error instanceof: Error ? error.message : String(error)}) + """"
     );
 }
 }
@@ -129,33 +131,35 @@ export function getBrainConfig():BrainSpecificConfig & Partial<Config> {
 /**
  * Validate brain configuration
  */
-export function validateBrainConfig(
-  config:Partial<BrainSpecificConfig>
+export function validateBrain: Config(
+  config:Partial<BrainSpecific: Config>
 ):boolean {
   try {
-    if (!config.wasmPath||typeof config.wasmPath !=='string') {
-    ')      throw new Error('wasmPath must be a valid string');')}
+       {
+    if (!config.wasm: Path||typeof config.wasm: Path !=='string') {
+    ')      throw new: Error('wasm: Path must be a valid string');')}
 
     if (
-      config.maxNetworks &&
-      (config.maxNetworks < 1||config.maxNetworks > 100)
+      config.max: Networks &&
+      (config.max: Networks < 1||config.max: Networks > 100)
     ) {
-      throw new Error('maxNetworks must be between 1 and 100');')}
+      throw new: Error('max: Networks must be between 1 and 100');')}
 
     if (
-      config.defaultBatchSize &&
-      (config.defaultBatchSize < 1||config.defaultBatchSize > 1024)
+      config.defaultBatch: Size &&
+      (config.defaultBatch: Size < 1||config.defaultBatch: Size > 1024)
     ) {
-      throw new Error('defaultBatchSize must be between 1 and 1024');')}
+      throw new: Error('defaultBatch: Size must be between 1 and 1024');')}
 
     if (
-      config.dspy?.maxTokens &&
-      (config.dspy.maxTokens < 100||config.dspy.maxTokens > 10000)
+      config.dspy?.max: Tokens &&
+      (config.dspy.max: Tokens < 100||config.dspy.max: Tokens > 10000)
     ) {
-      throw new Error('DSPy maxTokens must be between 100 and 10000');')}
+      throw new: Error('DS: Py max: Tokens must be between 100 and 10000');')}
 
     logger.info('Brain configuration validation passed');')    return true;
 } catch (error) {
+       {
     logger.error('Brain configuration validation failed:', error);')    throw error;
 }
 }
@@ -163,34 +167,34 @@ export function validateBrainConfig(
 /**
  * Initialize brain system with shared infrastructure
  */
-export async function initializeBrainSystem():Promise<
-  BrainSpecificConfig & Partial<Config>
+export async function initializeBrain: System():Promise<
+  BrainSpecific: Config & Partial<Config>
 > {
   logger.info('Initializing brain system with shared infrastructure...');')
   try {
+       {
     // Load and validate configuration
-    const config = getBrainConfig();
-    validateBrainConfig(config);
+    const config = getBrain: Config();
+    validateBrain: Config(config);
     
     // Allow system initialization to complete
-    await new Promise(resolve => setTimeout(resolve, 0));
+    await new: Promise(resolve => set: Timeout(resolve, 0));
 
     // Initialize shared services as needed
-    // The shared system handles:logging, config management, etc.
-
-    logger.info('Brain system initialization completed', {
-    ')      configValid:true,
-      sharedInfrastructure: 'active',});
+    // The shared system handles:logging, config management, etc.logger.info('Brain system initialization completed', {
+    ')      config: Valid:true,
+      shared: Infrastructure: 'active',});
 
     return config;
 } catch (error) {
+       {
     logger.error('Brain system initialization failed:', error);')    throw error;
 }
 }
 
 export default {
-  getBrainConfig,
-  validateBrainConfig,
-  initializeBrainSystem,
-  DEFAULT_BRAIN_CONFIG,
+  getBrain: Config,
+  validateBrain: Config,
+  initializeBrain: System,
+  DEFAULT_BRAIN_CONFI: G,
 };

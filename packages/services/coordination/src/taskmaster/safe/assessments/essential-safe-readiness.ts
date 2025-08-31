@@ -126,6 +126,6 @@ export class EssentialSafeReadinessAssessment {
             :1));
 }, 0);
     const totalWeeks = Math.ceil((partialEffort + missingEffort) * 1.5); // Buffer factor
-    return `${{totalWeeks - 4}-${totalWeeks} weeks};)};)};;
+    return "${{totalWeeks - 4}-${totalWeeks} weeks};)};)};;
 export default EssentialSafeReadinessAssessment;
-;`
+"

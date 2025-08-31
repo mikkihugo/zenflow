@@ -73,7 +73,7 @@ export interface IncidentResolution {
   /**
    * Create new security incident
    */
-  createIncident(incidentData: `incident-`${generateNanoId(12)})    this.logger.info(``Creating security incident,{`
+  createIncident(incidentData: `incident-"$" + JSON.stringify({generateNanoId(12)}) + ")    this.logger.info(""Creating security incident,{""
       incidentId,
       severity: this.determinePriority(
       incidentData.severity,
@@ -90,23 +90,23 @@ export interface IncidentResolution {
     const incident:  {
       incidentId,
       title: this.incidents.get(incidentId);
-    if (!incident) {
-    `)      throw new Error(`Incident not found:  {`
-    `)      entryId,    `)      timestamp:  {`
+    if (!incident) " + JSON.stringify({
+    `)      throw new Error(`Incident not found:  {""
+    ")      entryId")      timestamp:  {""
       ...incident,
       status,
       timeline: this.incidents.get(incidentId);
     if (!incident) {
-    `)      throw new Error(`Incident not found:  {`
+    `)      throw new Error(`Incident not found:  {""
       evidenceId,    ')      collectedDate: 'Digital collection',)          notes : 'Evidence collected for incident investigation,,'
 ],
-      ...evidence,',};;
+      ...evidence,',}) + ";;
     const updatedIncident:  {
       ...incident,
       evidence: 'analysis,',
           evidence: this.incidents.get(incidentId);
     if (!incident) {
-    `)      throw new Error(`Incident not found: actions.map((action) => ({`
+    ")      throw new Error("Incident not found: actions.map((action) => ({""
     ')      actionId,    ')      status:  {
       ...incident,
       status: 'system',)          category,},
@@ -122,7 +122,7 @@ export interface IncidentResolution {
   resolveIncident(
     incidentId: this.incidents.get(incidentId);
     if (!incident) {
-    `)      throw new Error(`Incident not found: new Date();
+    ")      throw new Error("Incident not found: new Date();"
     const totalResponseTime = Math.floor(
       (resolutionDate.getTime() - incident.detectedDate.getTime()) / (1000 * 60);
     );
@@ -136,9 +136,9 @@ export interface IncidentResolution {
 },
       timeline: [
         ...incident.timeline,
-        {
-    ')          entryId,    )          timestamp: resolutionDate,`)          action: `incident_resolved``;
-          description,    ')          performer: resolvedBy,')          category,},';
+        " + JSON.stringify({
+    ')          entryId,    )          timestamp: resolutionDate")          action: `incident_resolved"";"
+          description,    ')          performer: resolvedBy,')          category,}) + ",';
 ],
 };
     this.incidents.set(incidentId, updatedIncident);
@@ -156,7 +156,7 @@ export interface IncidentResolution {
   private determinePriority(
     severity: IncidentSeverity,
     category: IncidentCategory
-  ):IncidentPriority {
+  ): IncidentPriority {
     if (severity === IncidentSeverity.CRITICAL) return IncidentPriority.P1;
     if (severity === IncidentSeverity.HIGH) return IncidentPriority.P2;
     if (severity === IncidentSeverity.MEDIUM) return IncidentPriority.P3;
@@ -198,7 +198,7 @@ export interface IncidentResolution {
 }
   private mapSeverityToBusinessImpact(
     severity: IncidentSeverity
-  ):BusinessImpactLevel {
+  ): BusinessImpactLevel {
     switch (severity) {
       case IncidentSeverity.CRITICAL: return BusinessImpactLevel.SEVERE;
       case IncidentSeverity.HIGH: return BusinessImpactLevel.SIGNIFICANT;
@@ -246,18 +246,15 @@ export interface IncidentResolution {
 });
     // Implementation would send notifications
 }
-  private async executeContainmentActions(
-    incidentId: string,
-    actions: ContainmentAction[]
-  ): Promise<void> {
+  private async executeContainmentActions(Promise<void> {
     for (const action of actions) {
       try {
         // Simulate action execution
         await new Promise((resolve) => setTimeout(resolve, 1000);
         // Note: ActionStatus.COMPLETED;
-        // action.endTime = new Date();`)        // action.result = `Action `${action.description} completed successfully``)        this.logger.info('Containment action completed,{`
+        // action.endTime = new Date()")        // action.result = "Action "$" + JSON.stringify({action.description}) + " completed successfully"`)        this.logger.info('Containment action completed,{""
           incidentId,
-          actionId: ActionStatus.FAILED;)        // action.result = `Action failed: ${error})        this.logger.error(``Containment action failed,{';
+          actionId: ActionStatus.FAILED;)        // action.result = `Action failed: ${error})        this.logger.error(""Containment action failed,{';"
           incidentId,
           actionId: action.actionId,
           error,')';
@@ -275,7 +272,7 @@ export interface IncidentResolution {
       this.responseTeams.set(team.teamId, team);
 }
 }
-  private getDefaultConfig():IncidentResponseConfig {
+  private getDefaultConfig(): IncidentResponseConfig {
     return {
       responseTeams: [],
       escalationMatrix: [
@@ -283,7 +280,7 @@ export interface IncidentResolution {
           severity: IncidentSeverity.CRITICAL,
           priority: IncidentPriority.P1,
           timeThreshold: 15, // 15 minutes')          escalateTo: ['ciso@example.com'],';
-          notificationChannels: ['email,' sms],`;
+          notificationChannels: ['email,' sms]";
 },
 ],
       communicationPlan:  {

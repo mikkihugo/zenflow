@@ -27,7 +27,7 @@ interface ConversationSummary {
         id: 'release-train-engineer',)        status : 'active 'as const,';
         capabilities: 'solution-train-engineer',)      status : 'active 'as const,';
       capabilities:  {
-      title:`Solution Train Sync - ${params.solutionId};``;
+      title:"Solution Train Sync - ${params.solutionId}"";"
       pattern: 'Coordinate dependencies and align on solution objectives,',
 '        constraints: 'safe-framework',)        expertise:['solution-architecture,' art-coordination'],';
         solutionId: params.solutionId,
@@ -40,7 +40,7 @@ interface ConversationSummary {
     const conversationId = conversation.id;
     // Emit coordination started event
     this.eventBus.emit(cross-art:  {
-    `)      name:`PI Planning Sync - `${params.piId};``)      description : 'Multi-ART PI Planning coordination workflow,'`
+    `)      name:"PI Planning Sync - "$" + JSON.stringify({params.piId}) + """)      description : 'Multi-ART PI Planning coordination workflow,'""
 '      steps: 'pre-planning-sync',)          name : 'Pre-Planning ART Sync')          type : 'parallel,'
 '          params: 'dependency-identification',)          name : 'Cross-ART Dependency Identification')          type : 'sequence,'
 '          params: 'capacity-balancing',)          name : 'Cross-ART Capacity Balancing')          type : 'condition,'
@@ -49,7 +49,7 @@ interface ConversationSummary {
       piId: [
       {
         id: 'impediment-owner',)        status : 'active 'as const,
-        capabilities: [`facilitate,` provide-context,`track-resolution`],`;
+        capabilities: ["facilitate" provide-context,"track-resolution"]";"
 },
       ...params.affectedARTs.map((artId) => ({
         id: 'release-train-engineer',)        status : 'active 'as const,';
@@ -57,7 +57,7 @@ interface ConversationSummary {
       participants.push({
         id : 'ste-escalation')        name : 'Solution Train Engineer')        role : 'solution-train-engineer')        status : 'active 'as const,
         capabilities:  {
-      title:`Cross-ART Impediment Resolution: `${p}arams.impedimentId``')      pattern,      initialParticipants: [], // Convert participants to AgentId later'')      timeout: (params.severity ==='critical '? 120: 'Identify resolution path and assign ownership,',
+      title:`Cross-ART Impediment Resolution: "$" + JSON.stringify({p}) + "arams.impedimentId""')      pattern,      initialParticipants: [], // Convert participants to AgentId later'')      timeout: (params.severity ==='critical '? 120: 'Identify resolution path and assign ownership,',"
 '        constraints: 'safe-framework',)        expertise:['impediment-resolution,' cross-art-coordination'],';
         impedimentId: params.impedimentId,
 },
@@ -78,7 +78,7 @@ export function createCrossARTCoordinator(
   workflowEngine: WorkflowEngine,
   eventBus: EventEmitter,
   logger: Logger
-):CrossARTCoordinator {
+): CrossARTCoordinator {
   return new CrossARTCoordinator(
     conversationOrchestrator,
     workflowEngine,
@@ -86,4 +86,4 @@ export function createCrossARTCoordinator(
     logger
   );
 }
-;)`;
+;)";"

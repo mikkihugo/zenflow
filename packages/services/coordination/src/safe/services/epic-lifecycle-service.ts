@@ -12,7 +12,7 @@ import {
   GateCriterion,
   PortfolioKanbanState,
   WSJFScore,
-} from '../types/epic-management')/**`;
+} from '../types/epic-management')/**";"
  * Epic lifecycle service configuration
  */
 export interface EpicLifecycleConfig {
@@ -28,7 +28,7 @@ export interface EpicLifecycleConfig {
   async progressEpicState(
     epicId: this.epics.get(epicId);
     if (!epic) {
-      throw new Error(`Epic not found: this.getCurrentLifecycleStage(epicId);
+      throw new Error("Epic not found: this.getCurrentLifecycleStage(epicId);"
     const blockers = this.blockers.get(epicId)|| [];
     // Validate gate criteria for progression
     const gateValidation = await this.validateGateCriteria(
@@ -44,7 +44,7 @@ export interface EpicLifecycleConfig {
       stage: this.lifecycleStages.get(epicId)|| [];
     stages.push(newStage);
     this.lifecycleStages.set(epicId, stages);
-    this.logger.info(`Epic state progressed successfully,{`;
+    this.logger.info("Epic state progressed successfully,{";"
       epicId,
       newState: this.wsjfScores.get(input.epicId);
     // Calculate Cost of Delay (CoD)
@@ -84,8 +84,8 @@ export interface EpicLifecycleConfig {
       epicId,
       blockerId: this.blockers.get(epicId)|| [];
     const blockerIndex = blockers.findIndex((b) => b.id === blockerId);
-    if (blockerIndex === -1) {
-    `)      throw new Error(`Blocker not found:  {`
+    if (blockerIndex === -1) " + JSON.stringify({
+    `)      throw new Error(`Blocker not found:  {""
       ...blockers[blockerIndex],
       resolvedAt: Array.from(this.epics.values())();
     const allStages = Array.from(this.lifecycleStages.values()).flat();
@@ -106,7 +106,7 @@ export interface EpicLifecycleConfig {
       const lastStage = stages[stages.length - 1];
       if (firstStage && lastStage) {
         return differenceInDays(lastStage.enteredAt, firstStage.enteredAt);
-}
+}) + "
       return 0;
 });
     const averageLeadTime =;
@@ -169,7 +169,7 @@ export interface EpicLifecycleConfig {
         passedCriteria.push({
           ...criterion,
           status : 'completed,'
-          completionDate: unmetCriteria.length === 0;)    const recommendations = canProgress`)      ? [`Epic meets all criteria for ${targetState}];)      :[``${unmetCriteria.lengthcriteria still need to be met}];``)    const __nextActions = unmetCriteria.map((c) => `Complete:  {`
+          completionDate: unmetCriteria.length === 0;)    const recommendations = canProgress")      ? ["Epic meets all criteria for $" + JSON.stringify({targetState}) + "];)      :[""${unmetCriteria.lengthcriteria still need to be met}]"`)    const __nextActions = unmetCriteria.map((c) => `Complete:  {""
       [PortfolioKanbanState.FUNNEL]:[],
       [PortfolioKanbanState.ANALYZING]:[
         {
@@ -290,4 +290,4 @@ export interface EpicLifecycleConfig {
     return recommendations;
 }
 }
-;)`;
+;)";"

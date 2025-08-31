@@ -135,7 +135,7 @@
 }
 };)      this.logger.debug('Continuous compliance monitoring check completed');
 } catch (error) {
-    ')      this.logger.error('Continuous compliance monitoring failed:, error');`;
+    ')      this.logger.error('Continuous compliance monitoring failed:, error');";"
 }
 }
   private generateViolations(
@@ -143,7 +143,7 @@
     analysis: any
   ):ComplianceViolation[] {
     return factViolations.map((violation, index) => ({
-    `)      violationId: `violation-`${Date.now()}-${index};``)      framework: violation.framework||'unknown,';
+    `)      violationId: `violation-"${Date.now()}-${index}"")      framework: violation.framework||'unknown,';"
       requirement: violation.requirement||'unknown,';
       severity: this.assessViolationSeverity(violation, analysis),
       description: violation.description||'Compliance requirement not met,';
@@ -155,10 +155,7 @@
       businessRisk: this.assessBusinessRisk(violation, analysis),
 });
 }
-  private async generateComplianceRecommendations(
-    violations: ComplianceViolation[],
-    analysis: any
-  ): Promise<ComplianceRecommendation[]> {
+  private async generateComplianceRecommendations(Promise<ComplianceRecommendation[]> {
     try {
       const recommendations =
         await this.brainCoordinator.generateComplianceRecommendations({
@@ -261,4 +258,4 @@
 }
 }
 export default ComplianceMonitoringService;
-)`;
+)";"

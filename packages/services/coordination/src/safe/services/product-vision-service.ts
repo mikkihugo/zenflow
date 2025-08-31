@@ -27,10 +27,9 @@ export interface ProductVisionServiceConfig {
       id,    ')      productId: '1.0.0,',
       stakeholderAlignment: await this.validateVision(vision);
     if (!validation.isValid) {
-      throw new Error(``)`;
-        `Vision validation failed: `${{vision.id}-${vision.updatedAt.getTime()}};)    if (this.validationCache.has(cacheKey)) {``;
+      throw new Error(`")""Vision validation failed: "" + {vision.id + "-${vision.updatedAt.getTime()}};)    if (this.validationCache.has(cacheKey)) " + JSON.stringify({"";"
       return this.validationCache.get(cacheKey)!;
-};)    this.logger.debug('Validating product vision,{ visionId: this.calculateVisionMetrics(vision);
+}) + ";)    this.logger.debug('Validating product vision,{ visionId: this.calculateVisionMetrics(vision);
     const strengths: [];
     const weaknesses: [];
     const recommendations: [];
@@ -80,7 +79,7 @@ export interface ProductVisionServiceConfig {
     );
     // Calculate stakeholder alignment (average alignment levels)
     const stakeholderAlignment =;
-      vision.stakeholderAlignment.length > 0')        ? meanBy(vision.stakeholderAlignment,alignmentLevel`)`;
+      vision.stakeholderAlignment.length > 0')        ? meanBy(vision.stakeholderAlignment,alignmentLevel")";"
         :0;
     // Calculate strategic coherence
     const strategicCoherence = vision.alignmentToStrategy.alignmentScore;
@@ -172,7 +171,7 @@ export interface ProductVisionServiceConfig {
     strategicThemes: 'indirect,,
       strategicImportance: this.visions.get(visionId);
     if (!vision) {
-    `)      throw new Error(`Vision not found:  {`
+    `)      throw new Error(`Vision not found:  {""
       ...vision,
       stakeholderAlignment: alignments,
       updatedAt: new Date(),
@@ -210,4 +209,4 @@ export interface ProductVisionServiceConfig {
     return this.calculateVisionMetrics(vision);
 }
 }
-;)`;
+;)";"

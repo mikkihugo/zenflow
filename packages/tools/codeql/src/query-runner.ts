@@ -34,11 +34,7 @@ export class QueryRunner {
   /**
    * Execute queries against a database
    */
-  async executeQueries(
-    database: CodeQLDatabase,
-    queryPacks: QueryPack[],
-    options: QueryExecutionOptions
-  ):Promise<{ sarifResults: SARIFResult; findings: CodeQLFinding[]}> {
+  async executeQueries(Promise<{ sarifResults: SARIFResult; findings: CodeQLFinding[]}> {
     this.logger.info('Executing CodeQL queries', {
       databaseId: database.id,
       queryPackCount: queryPacks.length,
@@ -88,11 +84,7 @@ export class QueryRunner {
   /**
    * Execute a single query pack
    */
-  private async executeQueryPack(
-    database: CodeQLDatabase,
-    queryPack: QueryPack,
-    options: QueryExecutionOptions
-  ):Promise<{ sarifResults: SARIFResult; findings: CodeQLFinding[]}> {
+  private async executeQueryPack(Promise<{ sarifResults: SARIFResult; findings: CodeQLFinding[]}> {
     this.logger.debug('Executing query pack', {
     ')      queryPack: queryPack.name,
       databaseId: database.id,
@@ -102,7 +94,7 @@ export class QueryRunner {
     const __outputFile =
       options.outputPath||path.join(
         this.config.tempDir!,
-        `results_${database.id}_${queryPack.name}_${Date.now()}.sarif``
+        "results_${database.id}_${queryPack.name}_$" + JSON.stringify({Date.now()}) + ".sarif"""
       );
 
     // Build command arguments
@@ -167,11 +159,7 @@ export class QueryRunner {
   /**
    * Execute a single query file
    */
-  async executeQuery(
-    database: CodeQLDatabase,
-    queryPath: string,
-    options: Partial<QueryExecutionOptions> = {}
-  ):Promise<QueryExecutionResult> {
+  async executeQuery(Promise<QueryExecutionResult> {
     return await safeAsync(async ():Promise<CodeQLAnalysisResult> => {
       const queryName = path.basename(queryPath, '.ql');')
       this.logger.info('Executing single query', {
@@ -202,7 +190,7 @@ export class QueryRunner {
 
       // Create analysis result
       const analysisResult: CodeQLAnalysisResult = {
-        id:`single_query_${Date.now()}`,`
+        id:"single_query_${Date.now()}"""
         database,
         queryPacks:[queryPack],
         sarifResults: results.sarifResults,
@@ -247,7 +235,7 @@ export class QueryRunner {
     return queryPack.name;
 }
 
-  private createEmptySARIF():SARIFResult {
+  private createEmptySARIF(): SARIFResult {
     return {
       version: '2.1.0',      $schema: 'https://json.schemastore.org/sarif-2.1.0.json',      runs:[],
 };
@@ -256,17 +244,14 @@ export class QueryRunner {
   private mergeSARIFResults(
     result1: SARIFResult,
     result2: SARIFResult
-  ):SARIFResult {
+  ): SARIFResult {
     return {
       ...result1,
       runs:[...result1.runs, ...result2.runs],
 };
 }
 
-  private async executeCommand(
-    args: string[],
-    options:{ cwd?: string; env?: NodeJS.ProcessEnv; timeout?: number} = {}
-  ):Promise<{ stdout: string; stderr: string; exitCode: number}> {
+  private async executeCommand(Promise<{ stdout: string; stderr: string; exitCode: number}> {
     return new Promise((resolve, reject) => {
       const timeout = options.timeout||this.config.timeout||60000;
 
@@ -333,7 +318,7 @@ export class QueryRunner {
     type: CodeQLError['type'],
     message: string,
     details: Record<string, unknown> = {}
-  ):CodeQLError {
+  ): CodeQLError {
     const error = new Error(message) as CodeQLError;
     error.type = type;
     Object.assign(error, details);
@@ -343,7 +328,7 @@ export class QueryRunner {
   /**
    * Clean up resources
    */
-  async cleanup():Promise<void> {
+  async cleanup(Promise<void> {
     this.logger.info('Cleaning up query runner resources');')    // No specific cleanup needed for query runner
 }
 }

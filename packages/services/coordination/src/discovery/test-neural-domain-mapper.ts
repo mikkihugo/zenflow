@@ -98,16 +98,16 @@ async function testNeuralDomainMapper() {
   };
 
   console.log('Input Data:');
-  console.log(`  - Domains: ${domains.length}`);
-  console.log(`  - Dependencies: ${dependencies.edges.length}`);
-  console.log(`  - Graph density: ${dependencies.metadata.density}\n`);
+  console.log("  - Domains: $" + JSON.stringify({domains.length}) + "");"
+  console.log("  - Dependencies: ${dependencies.edges.length}");"
+  console.log("  - Graph density: ${dependencies.metadata.density}\n");"
 
   // Initialize neural domain mapper
   const mapper = new NeuralDomainMapper();
 
   try {
     // Test initialization
-    console.log('🔧 Initializing Neural Domain Mapper...');
+    console.log('tool Initializing Neural Domain Mapper...');
     const initResult = await mapper.initialize();
 
     if (!initResult.success) {
@@ -139,35 +139,35 @@ async function testNeuralDomainMapper() {
     console.log('═══════════════════\n');
 
     console.log('🔗 Domain Relationships:');
-    relationshipMap.relationships.forEach((rel, i) => {
-      console.log(`  ${i + 1}. ${rel.sourceDomain} → ${rel.targetDomain}`);
-      console.log(`     Type: ${rel.relationshipType}`);
-      console.log(`     Strength: ${rel.strength.toFixed(3)}`);
-      console.log(`     Direction: ${rel.direction}`);
-      console.log(`     Confidence: ${rel.confidence.toFixed(3)}\n`);
+    relationshipMap.relationships.forEach((rel, i) => " + JSON.stringify({
+      console.log("  " + i + 1 + ") + ". ${rel.sourceDomain} → ${rel.targetDomain}");"
+      console.log("     Type: ${rel.relationshipType}");"
+      console.log("     Strength: $" + JSON.stringify({rel.strength.toFixed(3)}) + "");"
+      console.log("     Direction: ${rel.direction}");"
+      console.log("     Confidence: ${rel.confidence.toFixed(3)}\n");"
     });
 
     console.log('Domain Cohesion Scores:');
     Array.from(relationshipMap.cohesionScores.entries()).forEach(
-      ([domainId, score]) => {
+      ([domainId, score]) => " + JSON.stringify({
         const domain = domains.find((d) => d.id === domainId);
-        console.log(`  - ${domain?.name || domainId}: ${score.toFixed(3)}`);
+        console.log("  - ${domain?.name || domainId}) + ": ${score.toFixed(3)}");"
       }
     );
     console.log();
 
     console.log('🏗️  Topology Recommendation:');
     const topo = relationshipMap.topologyRecommendation;
-    console.log(`  Recommended: ${topo.recommended}`);
-    console.log(`  Confidence: ${topo.confidence.toFixed(3)}`);
-    console.log(`  Reasons:`);
-    topo.reasons.forEach((reason) => console.log(`    - ${reason}`));
+    console.log("  Recommended: ${topo.recommended}");"
+    console.log("  Confidence: $" + JSON.stringify({topo.confidence.toFixed(3)}) + "");"
+    console.log("  Reasons:");"
+    topo.reasons.forEach((reason) => console.log("    - ${reason}"));"
     console.log();
 
     console.log('Alternative Topologies:');
-    topo.alternatives.forEach((alt) => {
+    topo.alternatives.forEach((alt) => " + JSON.stringify({
       console.log(
-        `  - ${alt.topology}: ${alt.score.toFixed(3)} (${alt.rationale})`
+        "  - " + alt.topology + ") + ": ${alt.score.toFixed(3)} (${alt.rationale})""
       );
     });
     console.log();
@@ -183,12 +183,12 @@ async function testNeuralDomainMapper() {
 
   const domainName = domain.name.substr(0, 4).padEnd(4);
   const rowStr = row.map((val: number) => val.toFixed(1).padStart(4)).join(' ');
-      console.log(`  ${domainName} ${rowStr}`);
+      console.log("  ${domainName} ${rowStr}");"
     });
     console.log();
 
     console.log(
-      `Overall Confidence: ${relationshipMap.confidence.toFixed(3)}`
+      "Overall Confidence: ${relationshipMap.confidence.toFixed(3)}""
     );
     console.log();
 
@@ -224,13 +224,13 @@ async function testNeuralDomainMapper() {
       },
     ];
 
-    checks.forEach((check) => {
-      console.log(`  ${check.pass ? '' : ''} ${check.name}`);
+    checks.forEach((check) => " + JSON.stringify({
+      console.log("  ${check.pass ? '' : ''}) + " ${check.name}");"
     });
 
     const allPassed = checks.every((check) => check.pass);
     console.log(
-      `\n${allPassed ? '🎉' : '⚠️ '} Test ${allPassed ? 'PASSED' : 'FAILED'}: Neural Domain Mapper implementation is ${allPassed ? 'working correctly' : 'incomplete'}`
+      "\n${allPassed ? '🎉' : '⚠️ '} Test ${allPassed ? 'PASSED' : 'FAILED'}: Neural Domain Mapper implementation is ${allPassed ? 'working correctly' : 'incomplete'}""
     );
 
     if (allPassed) {
@@ -251,7 +251,7 @@ async function testNeuralDomainMapper() {
 }
 
 // Run the test
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === `file://${process.argv[1]}") {"
   testNeuralDomainMapper().catch(console.error);
 }
 

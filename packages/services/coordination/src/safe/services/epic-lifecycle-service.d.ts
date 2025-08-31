@@ -12,7 +12,7 @@ import {
   GateCriterion,
   PortfolioKanbanState,
   WSJFScore,
-} from '../types/epic-management')/**`;
+} from '../types/epic-management')/**";"
  * Epic lifecycle service configuration
  */
 export interface EpicLifecycleConfig {

@@ -81,11 +81,7 @@ export class HealthMonitoringService {
   /**
    * Perform comprehensive health check
    */
-  async performHealthCheck(
-    allTasks: any[],
-    bottleneckReport: any,
-    flowMetrics: any
-  ): Promise<HealthStatus> {
+  async performHealthCheck(Promise<HealthStatus> {
     logger.debug('Performing health check', {
       totalTasks: allTasks.length,
     });

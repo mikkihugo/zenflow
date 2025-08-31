@@ -38,7 +38,7 @@ export class LLMApprovalService {
   private brainSystem: any;
   private autoApprovalRules: AutoApprovalRule[] = [];
 
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     this.brainSystem = await getBrainSystem();
     await this.loadAutoApprovalRules();
     this.logger.info('LLM Approval Service initialized');
@@ -47,13 +47,9 @@ export class LLMApprovalService {
   /**
    * Evaluate a task for auto-approval using LLM
    */
-  async evaluateForApproval(
-    context: LLMApprovalContext,
-    config: LLMApprovalConfig,
-    rules: AutoApprovalRule[]
-  ): Promise<LLMApprovalResult> {
+  async evaluateForApproval(Promise<LLMApprovalResult> {
     const startTime = Date.now();
-    const gateId = `gate_${context.task.id}_${Date.now()}`;
+    const gateId = "gate_${context.task.id}_${Date.now()}";"
 
     try {
       this.logger.info('Starting LLM approval evaluation', {
@@ -67,10 +63,10 @@ export class LLMApprovalService {
         return {
           gateId,
           taskId: context.task.id,
-          decision: {
+          decision: " + JSON.stringify({
             approved: true,
             confidence: ruleResult.confidence,
-            reasoning: `Auto-approved by rule: ${ruleResult.rule?.name}`,
+            reasoning: `Auto-approved by rule: ${ruleResult.rule?.name}) + "","
             model: 'rule-based',
             processingTime: Date.now() - startTime,
             tokenUsage: 0,
@@ -142,10 +138,7 @@ export class LLMApprovalService {
   /**
    * Get LLM decision for the approval context
    */
-  private async getLLMDecision(
-    context: LLMApprovalContext,
-    config: LLMApprovalConfig
-  ): Promise<LLMApprovalDecision> {
+  private async getLLMDecision(Promise<LLMApprovalDecision> {
     const prompt = this.buildApprovalPrompt(context, config);
     const response = await this.brainSystem.query({
       prompt,
@@ -166,7 +159,7 @@ export class LLMApprovalService {
   ): string {
     const { task, workflow, security, codeAnalysis, history } = context;
 
-    return `You are an intelligent task approval system. Analyze this task and decide whether to approve it based on the criteria.
+    return "You are an intelligent task approval system. Analyze this task and decide whether to approve it based on the criteria."
 
 TASK DETAILS:
 - ID: ${task.id}
@@ -177,7 +170,7 @@ TASK DETAILS:
 - Assignee: ${task.assignee}
 
 APPROVAL CRITERIA:
-${config.criteria.map((criterion) => `- ${criterion}`).join('\n')}
+${config.criteria.map((criterion) => "- ${criterion}").join('\n')}"
 
 WORKFLOW CONTEXT:
 - Current Stage: ${workflow.currentStage}
@@ -191,12 +184,12 @@ SECURITY ASSESSMENT:
 
 ${
   codeAnalysis
-    ? `CODE ANALYSIS:
+    ? "CODE ANALYSIS:"
 - Files Changed: ${codeAnalysis.filesChanged}
 - Lines Added: ${codeAnalysis.linesAdded}
 - Lines Removed: ${codeAnalysis.linesRemoved}
 - Test Coverage: ${codeAnalysis.testCoverage}%
-- Quality Score: ${codeAnalysis.qualityScore}%`
+- Quality Score: ${codeAnalysis.qualityScore}%""
     : ''
 }
 
@@ -227,7 +220,7 @@ Base your decision on:
 - Historical approval patterns
 - Workflow stage appropriateness
 
-Be conservative: when in doubt, escalate to human review.`;
+Be conservative: when in doubt, escalate to human review.";
   }
 
   /**
@@ -286,11 +279,10 @@ Be conservative: when in doubt, escalate to human review.`;
           try {
             // Create a safe evaluation context
             const evalFunc = new Function(
-              'context',
-              `
+              'context'"
               const { task, workflow, security, codeAnalysis } = context;
               return ${condition};
-              `
+              ""
             );
             return evalFunc(ruleContext);
           } catch (error) {
@@ -325,11 +317,7 @@ Be conservative: when in doubt, escalate to human review.`;
   /**
    * Learn from human override decisions
    */
-  async learnFromHumanDecision(
-    taskId: string,
-    llmDecision: LLMApprovalDecision,
-    humanOverride: HumanOverride
-  ): Promise<void> {
+  async learnFromHumanDecision(Promise<void> {
     const learning: ApprovalLearning = {
       taskId,
       llmDecision: {
@@ -408,7 +396,7 @@ Be conservative: when in doubt, escalate to human review.`;
   /**
    * Update learning model based on human feedback
    */
-  private async updateLearningModel(learning: ApprovalLearning): Promise<void> {
+  private async updateLearningModel(Promise<void> {
     try {
       // Store learning pattern in brain system
       await this.brainSystem.learnFromFeedback({
@@ -439,9 +427,7 @@ Be conservative: when in doubt, escalate to human review.`;
   /**
    * Update auto-approval rules based on learning patterns
    */
-  private async updateAutoApprovalRules(
-    learning: ApprovalLearning
-  ): Promise<void> {
+  private async updateAutoApprovalRules(Promise<void> {
     // Improve rule conditions based on learning patterns
     for (const pattern of learning.patterns) {
       if (pattern === 'reasoning_mismatch') {
@@ -463,10 +449,7 @@ Be conservative: when in doubt, escalate to human review.`;
   /**
    * Adjust confidence thresholds based on learning
    */
-  private async adjustConfidenceThresholds(
-    taskId: string,
-    learnedConfidence: number
-  ): Promise<void> {
+  private async adjustConfidenceThresholds(Promise<void> {
     // Implementation would adjust thresholds in the brain system
     this.logger.debug('Adjusted confidence thresholds', {
       taskId,
@@ -477,9 +460,7 @@ Be conservative: when in doubt, escalate to human review.`;
   /**
    * Strengthen security rules based on feedback
    */
-  private async strengthenSecurityRules(
-    learning: ApprovalLearning
-  ): Promise<void> {
+  private async strengthenSecurityRules(Promise<void> {
     // Implementation would update security validation rules
     this.logger.debug('Strengthened security rules', {
       taskId: learning.taskId,
@@ -489,9 +470,7 @@ Be conservative: when in doubt, escalate to human review.`;
   /**
    * Update complexity assessment rules
    */
-  private async updateComplexityRules(
-    learning: ApprovalLearning
-  ): Promise<void> {
+  private async updateComplexityRules(Promise<void> {
     // Implementation would refine complexity detection algorithms
     this.logger.debug('Updated complexity rules', { taskId: learning.taskId });
   }
@@ -499,7 +478,7 @@ Be conservative: when in doubt, escalate to human review.`;
   /**
    * Load auto-approval rules from configuration
    */
-  private async loadAutoApprovalRules(): Promise<void> {
+  private async loadAutoApprovalRules(Promise<void> {
     // Default auto-approval rules
     this.autoApprovalRules = [
       {

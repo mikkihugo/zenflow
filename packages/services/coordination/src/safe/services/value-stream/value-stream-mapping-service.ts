@@ -157,7 +157,7 @@ export class ValueStreamMappingService {
   /**
    * Initialize service with lazy-loaded dependencies
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     if (this.initialized) return;
     try {
       // Lazy load @claude-zen/brain for LoadBalancer - intelligent mapping optimization
@@ -229,12 +229,12 @@ export class ValueStreamMappingService {
         workflowId,
         context,
         designPrinciples:  {
-        id:`vs-${workflowId}-${Date.now()};``;
+        id:"vs-${workflowId}-${Date.now()}"";"
         name: this.validateValueStreamDesign(valueStream, context);
       if (!validation.isValid && validation.approvalRequired) {
         // Create AGUI task for manual review
         const approval = await this.aguiService.createApprovalTask({
-    `)          taskType:  {`
+    `)          taskType:  {""
         workflowId,')        valueStreamId: this.performanceTracker.startTimer('mapping_insights');
     try {
       let mappings: this.valueStreamMappings.get(workflowId);
@@ -320,7 +320,7 @@ export class ValueStreamMappingService {
   private validateValueStreamDesign(
     valueStream: ValueStream,
     context: ValueStreamCreationContext
-  ):MappingValidationResult {
+  ): MappingValidationResult {
     // Validate the value stream design
     return {
       isValid: true,
@@ -346,4 +346,4 @@ export class ValueStreamMappingService {
     return sum / mappings.length;
 };)};;
 export default ValueStreamMappingService;
-)`;
+)";"

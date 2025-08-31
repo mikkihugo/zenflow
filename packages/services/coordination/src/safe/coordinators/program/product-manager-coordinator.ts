@@ -34,7 +34,7 @@ interface CustomerNeed {
     const reorderedFeatures = this.reorderBacklogByPriority(updatedBacklog);
     
     this.programBacklog.set(programId, reorderedFeatures);
-    await this.emitSafe(``backlog:  {`
+    await this.emitSafe(`"backlog:  {""
       id,      description,';
       priority,
       businessValue,
@@ -63,20 +63,16 @@ interface CustomerNeed {
       quarters,
       milestones,
       keyFeatures,
-      timestamp: Date.now()`);
+      timestamp: Date.now()");
 
-});`)    logger.info(`Product roadmap updated: ${programId} - ${quarters.length} quarters planned`);`;
+})")    logger.info("Product roadmap updated: ${programId} - $" + JSON.stringify({quarters.length}) + " quarters planned")";"
 }
   /**
    * Request feature approval via TaskMaster workflow
    */
-  async requestFeatureApproval(
-    feature: Feature,
-    businessJustification: string``';
-    requiredApprover: string =product-owner`;
-  ): Promise<FeatureApprovalRequest> {
+  async requestFeatureApproval(Promise<FeatureApprovalRequest> {
     const approvalRequest:  {
-    `)      id:`approval-${feature.id}-${Date.now()},`;
+    ")      id:"approval-${feature.id}-${Date.now()}";"
       featureId: true
   ): Promise<void> {
     const feedback: requestFeedback ? 
@@ -86,7 +82,7 @@ interface CustomerNeed {
       features,
       feedback,
       timestamp: Date.now()');
-});`)    logger.info(``Stakeholder communication sent to ${stakeholderGroup}:${message});`)    return `WSJF Score: `${wsjfScore.toFixed(2)} - Business Value: ${businessValue}, `` +`)           `Urgency: ${urgency}, Market Validation: ${marketValidation}, Job Size: ${jobSize})};;
+});")    logger.info(""Stakeholder communication sent to " + stakeholderGroup + ":$" + JSON.stringify({message}) + ")")    return "WSJF Score: "${wsjfScore.toFixed(2)} - Business Value: ${businessValue}"" +")           "Urgency: ${urgency}, Market Validation: ${marketValidation}, Job Size: ${jobSize})};;"
   private reorderBacklogByPriority(features: Feature[]): Feature[] {
     return features.sort((a, b) => {
       const priorityA = this.featurePriorities.get(a.id)|| 0;
@@ -119,30 +115,27 @@ interface CustomerNeed {
 }
   private identifyKeyMilestones(quarters: any[]): any[] {
     return quarters.map((quarter, index) => ({
-      id: `milestone-q${quarter.quarter},`;
-      title,      date: new Date(new Date().getFullYear(), quarter.endMonth - 1, 1),`';
+      id: "milestone-q${quarter.quarter}";
+      title,      date: new Date(new Date().getFullYear(), quarter.endMonth - 1, 1),"';"
       features: quarter.features.length,
       businessValue: quarter.features.reduce((sum: number, f: Feature) => sum + (f.businessValue|| 0), 0)
 });
 }
-  private selectKeyFeaturesForRoadmap(features: Feature[]): Feature[] {
+  private selectKeyFeaturesForRoadmap(features: Feature[]): Feature[] " + JSON.stringify({
     return features
       .sort((a, b) => (this.featurePriorities.get(b.id)|| 0) - (this.featurePriorities.get(a.id)|| 0))
       .slice(0, 10); // Top 10 features
-};)  private determineFeatureUrgency(feature: this.featurePriorities.get(feature.id)|| 0;
-    if (priority > 8) return'high')    if (priority > 5) return'medium';)    return`low`)};;
-  private async collectStakeholderFeedback(
-    stakeholderGroup: string,
-    features: Feature[]
-  ): Promise<string[]> {
+}) + ";)  private determineFeatureUrgency(feature: this.featurePriorities.get(feature.id)|| 0;
+    if (priority > 8) return'high')    if (priority > 5) return'medium';)    return"low")};;"
+  private async collectStakeholderFeedback(Promise<string[]> {
     // Simulated feedback collection - would integrate with actual feedback systems
     return [
-      `${{stakeholderGroup} feedback on feature priorities};,`;
-      ``Suggestions for `${features.length} features``,     'Market validation requested';
+      "${{stakeholderGroup} feedback on feature priorities};";
+      ``Suggestions for `${features.length} features"",     'Market validation requested';"
 ];
 };)  private priorityToNumber(priority: low' | ' medium'|' high' | ' critical'): number {';
     switch (priority) {
-    ')      case'critical: return 10')      case'high: return 7')      case'medium: return 4')      case'low: return 1)      default: return 0;`;
+    ')      case'critical: return 10')      case'high: return 7')      case'medium: return 4')      case'low: return 1)      default: return 0";
 }
 }
 }

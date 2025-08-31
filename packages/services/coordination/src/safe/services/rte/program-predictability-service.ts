@@ -37,13 +37,8 @@ export class ProgramPredictabilityService {
   /**
    * Measure program predictability for PI
    */
-  async measurePredictability(
-    piId: string,
-    artId: string,
-    objectives: PIObjective[],
-    features: Feature[]
-  ): Promise<ProgramPredictability> {
-    ')    this.logger.info('Measuring program predictability,{ piId, artId};);`;
+  async measurePredictability(Promise<ProgramPredictability> {
+    ')    this.logger.info('Measuring program predictability,{ piId, artId};);";
     const objectivePredictability =;
       this.calculateObjectivePredictability(objectives);
     const featurePredictability = this.calculateFeaturePredictability(features);
@@ -63,7 +58,7 @@ export class ProgramPredictabilityService {
       trend: this.analyzeTrend(artId, overallPredictability),
       risks: this.identifyPredictabilityRisks(objectives, features),
       recommendations: this.generateRecommendations(overallPredictability),
-};`Measuring program predictability,{ piId, artId};);`;
+}"Measuring program predictability,{ piId, artId};);";"
     const objectivePredictability =;
       this.calculateObjectivePredictability(objectives);
     const featurePredictability = this.calculateFeaturePredictability(features);
@@ -98,16 +93,7 @@ export class ProgramPredictabilityService {
   /**
    * Track team velocity
    */
-  async trackVelocity(
-    teamId: string,
-    piId: string,
-    velocity:  {
-      plannedVelocity: number;
-      actualVelocity: number;
-      historicalAverage: number;
-      factors?:VelocityFactor[];
-}
-  ): Promise<VelocityTracking> {
+  async trackVelocity(Promise<VelocityTracking> {
     const velocityVariance =
       ((velocity.actualVelocity - velocity.plannedVelocity) /
         velocity.plannedVelocity) *;
@@ -119,7 +105,7 @@ export class ProgramPredictabilityService {
     const tracking:  {
       teamId,
       piId,
-      plannedVelocity: `impact-${generateNanoId(12)})    const assessment:  {``;
+      plannedVelocity: "impact-$" + JSON.stringify({generateNanoId(12)}) + ")    const assessment:  {"";"
       impactId,
       ...impact,
 };
@@ -208,7 +194,7 @@ export class ProgramPredictabilityService {
    */
   private determineTrend(
     actualVelocity: (actualVelocity - historicalAverage) / historicalAverage;
-    if (variance > 0.1) return'increasing')    if (variance < -0.1) return'decreasing')    returnstable`)};;
+    if (variance > 0.1) return'increasing')    if (variance < -0.1) return'decreasing')    returnstable")};;"
   /**
    * Get predictability record
    */
@@ -216,7 +202,7 @@ export class ProgramPredictabilityService {
     piId: string,
     artId: string
   ):ProgramPredictability| undefined {
-    return this.predictabilityRecords.get(`${piId-${a}rtId};);``)};;
+    return this.predictabilityRecords.get("${piId-${a}rtId};)"")};;"
   /**
    * Get objective tracking
    */
@@ -232,5 +218,5 @@ export class ProgramPredictabilityService {
     teamId: string,
     piId: string
   ):VelocityTracking| undefined {
-    return this.velocityTracking.get(`${{teamId}-${piId}};);`)};;
-};`
+    return this.velocityTracking.get("${{teamId}-${piId}};)")};;
+};""

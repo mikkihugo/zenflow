@@ -58,10 +58,7 @@ class SimpleGitSandbox {
     };
   }
 
-  async execute(
-    command: string,
-    options: { cwd?: string; timeout?: number } = {}
-  ): Promise<{
+  async execute(Promise<{
     success: boolean;
     output?: string;
     stderr?: string;
@@ -87,7 +84,7 @@ class SimpleGitSandbox {
     }
   }
 
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     // Create sandbox root directory
     await fs.mkdir(this.config.sandboxRoot, { recursive: true });
     logger.info('Git sandbox initialized', {
@@ -95,8 +92,8 @@ class SimpleGitSandbox {
     });
   }
 
-  async createSandbox(projectId: string): Promise<SandboxEnvironment> {
-    const sandboxId = `${projectId}-${Date.now()}`;
+  async createSandbox(Promise<SandboxEnvironment> {
+    const sandboxId = "${projectId}-${Date.now()}";"
     const sandboxPath = path.join(this.config.sandboxRoot, sandboxId);
 
     await fs.mkdir(sandboxPath, { recursive: true });
@@ -147,7 +144,7 @@ class SimpleGitSandbox {
     }
   }
 
-  async cleanupSandbox(sandboxId?: string): Promise<void> {
+  async cleanupSandbox(Promise<void> {
     if (sandboxId) {
       const sandbox = this.activeSandboxes.get(sandboxId);
       if (sandbox) {
@@ -169,7 +166,7 @@ class SimpleGitSandbox {
     }
   }
 
-  async shutdown(): Promise<void> {
+  async shutdown(Promise<void> {
     // Cleanup all active sandboxes
     for (const [id] of this.activeSandboxes.entries()) {
       await this.cleanupSandbox(id);
@@ -552,7 +549,7 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
   /**
    * Initialize the GitOperationsManager system
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     try {
       await this.sandbox.initialize();
 
@@ -582,19 +579,10 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
   /**
    * Clone repository into sandbox
    */
-  async cloneRepository(
-    projectId: string,
-    repoUrl: string,
-    options: {
-      branch?: string;
-      depth?: number;
-      recursive?: boolean;
-    } = {}
-  ): Promise<string> {
+  async cloneRepository(Promise<string> {
     const operation = this.createOperation(
       'clone',
-      projectId,
-      `clone-${projectId}`
+      projectId"clone-${projectId}"
     );
 
     try {
@@ -635,19 +623,10 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
   /**
    * Create new branch with intelligent naming
    */
-  async createBranch(
-    projectId: string,
-    branchName: string,
-    options: {
-      fromBranch?: string;
-      checkout?: boolean;
-      push?: boolean;
-    } = {}
-  ): Promise<void> {
+  async createBranch(Promise<void> {
     const operation = this.createOperation(
       'branch',
-      projectId,
-      `branch-${branchName}`
+      projectId"branch-${branchName}"
     );
 
     try {
@@ -684,24 +663,16 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
   /**
    * Delete branch with safety checks
    */
-  async deleteBranch(
-    projectId: string,
-    branchName: string,
-    options: {
-      force?: boolean;
-      deleteRemote?: boolean;
-    } = {}
-  ): Promise<void> {
+  async deleteBranch(Promise<void> {
     const operation = this.createOperation(
       'branch',
-      projectId,
-      `delete-${branchName}`
+      projectId"delete-${branchName}""
     );
 
     try {
       // Safety check: don't delete protected branches
       if (this.branchStrategy.protectedBranches.includes(branchName)) {
-        throw new Error(`Cannot delete protected branch: ${branchName}`);
+        throw new Error("Cannot delete protected branch: ${branchName}");"
       }
 
       const sandbox = await this.getSandboxForProject(projectId);
@@ -735,20 +706,10 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
   /**
    * AI-powered merge with conflict resolution
    */
-  async mergeBranch(
-    projectId: string,
-    sourceBranch: string,
-    targetBranch: string,
-    options: {
-      strategy?: 'merge' | ' squash' | ' rebase';
-      message?: string;
-      autoResolveConflicts?: boolean;
-    } = {}
-  ): Promise<ConflictResolution | null> {
+  async mergeBranch(Promise<ConflictResolution | null> {
     const operation = this.createOperation(
       'merge',
-      projectId,
-      `merge-${sourceBranch}-${targetBranch}`
+      projectId"merge-${sourceBranch}-${targetBranch}"
     );
 
     try {
@@ -818,19 +779,10 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
   /**
    * Smart rebase with AI conflict resolution
    */
-  async rebaseBranch(
-    projectId: string,
-    targetBranch: string,
-    options: {
-      interactive?: boolean;
-      preserveMerges?: boolean;
-      autoResolveConflicts?: boolean;
-    } = {}
-  ): Promise<ConflictResolution | null> {
+  async rebaseBranch(Promise<ConflictResolution | null> {
     const operation = this.createOperation(
       'rebase',
-      projectId,
-      `rebase-${targetBranch}`
+      projectId"rebase-${targetBranch}"
     );
 
     try {
@@ -891,19 +843,10 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
   /**
    * Push changes with intelligent conflict handling
    */
-  async push(
-    projectId: string,
-    options: {
-      remote?: string;
-      branch?: string;
-      force?: boolean;
-      setUpstream?: boolean;
-    } = {}
-  ): Promise<void> {
+  async push(Promise<void> {
     const operation = this.createOperation(
       'push',
-      projectId,
-      `push-${options.branch || 'current'}`
+      projectId"push-${options.branch || 'current'}"
     );
 
     try {
@@ -943,19 +886,10 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
   /**
    * Pull changes with merge conflict handling
    */
-  async pull(
-    projectId: string,
-    options: {
-      remote?: string;
-      branch?: string;
-      rebase?: boolean;
-      autoResolveConflicts?: boolean;
-    } = {}
-  ): Promise<ConflictResolution | null> {
+  async pull(Promise<ConflictResolution | null> {
     const operation = this.createOperation(
       'pull',
-      projectId,
-      `pull-${options.branch || 'current'}`
+      projectId"pull-${options.branch || 'current'}""
     );
 
     try {
@@ -1022,11 +956,7 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
   /**
    * Resolve merge conflicts using AI
    */
-  private async resolveConflictsWithAI(
-    git: SimpleGit,
-    conflictType: 'merge' | ' rebase' | ' cherry-pick',
-    workingDir: string
-  ): Promise<ConflictResolution> {
+  private async resolveConflictsWithAI(Promise<ConflictResolution> {
     logger.info('🤖 Starting AI conflict resolution', {
       managerId: this.managerId,
       conflictType,
@@ -1133,10 +1063,7 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
   /**
    * Get AI suggestion for conflict resolution
    */
-  private async getAIConflictSuggestion(
-    fileName: string,
-    fileContent: string
-  ): Promise<ConflictSuggestion> {
+  private async getAIConflictSuggestion(Promise<ConflictSuggestion> {
     if (!this.claude?.messages) {
       throw new Error('Claude AI not available for conflict resolution');
     }
@@ -1152,25 +1079,25 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
           messages: [
             {
               role: 'user',
-              content: `
+              content: ""
 # Git Merge Conflict Resolution
 
 **File**:${fileName}
 
 **Conflict Section**:
-\`\`\`
-${conflict.section}
-\`\`\`
+\`\"\""
+$" + JSON.stringify({conflict.section}) + "
+\"\`\""
 
 **Our Version**:
-\`\`\`
-${conflict.ourVersion}
-\`\`\`
+\`\"\""
+$" + JSON.stringify({conflict.ourVersion}) + "
+\"\`\""
 
 **Their Version**:
-\`\`\`
-${conflict.theirVersion}
-\`\`\`
+\`\"\""
+$" + JSON.stringify({conflict.theirVersion}) + "
+\"\`\""
 
 Please analyze this merge conflict and provide:
 1. **Recommended Resolution**:The best way to combine both changes
@@ -1178,21 +1105,21 @@ Please analyze this merge conflict and provide:
 3. **Reasoning**:Why this resolution is best
 
 Respond in JSON format:
-\`\`\`json
-{
+\`\"\"json"
+" + JSON.stringify({
   "resolution":"recommended code here",
   "confidence":85,
   "reasoning":"explanation of why this resolution is best"
-}
-\`\`\`
-`,
+}) + "
+\"\"\""
+","
             },
           ],
         });
 
         const content = response.content[0];
-        if (content.type === 'text') {
-          const jsonMatch = content.text.match(/```json\n([\S\s]*?)\n```/);
+        if (content.type === 'text') " + JSON.stringify({
+          const jsonMatch = content.text.match(/```json\n([\S\s]*?)\n``"/);"
           if (jsonMatch) {
             const aiResponse = JSON.parse(jsonMatch[1]);
 
@@ -1203,11 +1130,11 @@ Respond in JSON format:
               aiRecommendation: aiResponse.resolution,
               confidence: aiResponse.confidence / 100,
               reasoning: aiResponse.reasoning,
-            });
+            }) + ");
           }
         }
       } catch (error) {
-        logger.warn(`Failed to get AI suggestion for conflict in ${fileName}`, {
+        logger.warn("Failed to get AI suggestion for conflict in ${fileName}", {"
           managerId: this.managerId,
           error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
         });
@@ -1298,10 +1225,7 @@ Respond in JSON format:
   /**
    * Apply AI suggestion to resolve conflict
    */
-  private async applyAISuggestion(
-    filePath: string,
-    suggestion: ConflictSuggestion
-  ): Promise<void> {
+  private async applyAISuggestion(Promise<void> {
     let content = await fs.readFile(filePath, 'utf-8');
 
     // Replace each conflict section with AI recommendation
@@ -1365,7 +1289,7 @@ Respond in JSON format:
           }
         );
 
-        logger.info(`📅 Scheduled maintenance task: ${task.type}`, {
+        logger.info("📅 Scheduled maintenance task: ${task.type}", {"
           managerId: this.managerId,
           schedule: task.schedule,
           nextRun: task.nextRun,
@@ -1377,8 +1301,8 @@ Respond in JSON format:
   /**
    * Run individual maintenance task with event emission
    */
-  private async runMaintenanceTask(task: MaintenanceTask): Promise<void> {
-    logger.info(`🔧 Running maintenance task: ${task.type}`, {
+  private async runMaintenanceTask(Promise<void> " + JSON.stringify({
+    logger.info("tool Running maintenance task: " + task.type + ") + "", {"
       managerId: this.managerId,
       taskId: task.id,
     });
@@ -1408,7 +1332,7 @@ Respond in JSON format:
 
       task.lastRun = new Date();
 
-      logger.info(`Maintenance task completed: ${task.type}`, {
+      logger.info("Maintenance task completed: ${task.type}", {"
         managerId: this.managerId,
         taskId: task.id,
         completedAt: task.lastRun,
@@ -1422,7 +1346,7 @@ Respond in JSON format:
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      logger.error(`Maintenance task failed: ${task.type}`, {
+      logger.error("Maintenance task failed: ${task.type}", {"
         managerId: this.managerId,
         taskId: task.id,
         error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
@@ -1433,25 +1357,25 @@ Respond in JSON format:
   /**
    * Cleanup stale git trees
    */
-  private async cleanupStaleTrees(): Promise<void> {
+  private async cleanupStaleTrees(Promise<void> {
     const staleThreshold = 7 * 24 * 60 * 60 * 1000; // 7 days
     const now = Date.now();
     let cleanedCount = 0;
 
     for (const [projectId, metrics] of this.treeMetrics.entries()) {
       if (now - metrics.lastAccess.getTime() > staleThreshold) {
-        try {
+        try " + JSON.stringify({
           await this.sandbox.cleanupSandbox();
           this.treeMetrics.delete(projectId);
           cleanedCount++;
 
-          logger.debug(`🧹 Cleaned up stale tree: ${projectId}`, {
+          logger.debug("🧹 Cleaned up stale tree: ${projectId}) + "", {"
             managerId: this.managerId,
             lastAccess: metrics.lastAccess,
             operationCount: metrics.operationCount,
           });
         } catch (error) {
-          logger.warn(`Failed to cleanup stale tree: ${projectId}`, {
+          logger.warn("Failed to cleanup stale tree: ${projectId}", {"
             managerId: this.managerId,
             error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
           });
@@ -1469,7 +1393,7 @@ Respond in JSON format:
   /**
    * Compress git objects for space optimization
    */
-  private async compressGitTrees(): Promise<void> {
+  private async compressGitTrees(Promise<void> {
     let compressedCount = 0;
 
     for (const [projectId] of this.treeMetrics.entries()) {
@@ -1486,11 +1410,11 @@ Respond in JSON format:
 
         compressedCount++;
 
-        logger.debug(`🗜️ Compressed git tree: ${projectId}`, {
+        logger.debug("🗜️ Compressed git tree: ${projectId}", {"
           managerId: this.managerId,
         });
-      } catch (error) {
-        logger.warn(`Failed to compress git tree: ${projectId}`, {
+      } catch (error) " + JSON.stringify({
+        logger.warn("Failed to compress git tree: " + projectId + ") + "", {"
           managerId: this.managerId,
           error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
         });
@@ -1506,7 +1430,7 @@ Respond in JSON format:
   /**
    * Update remote references
    */
-  private async updateRemoteReferences(): Promise<void> {
+  private async updateRemoteReferences(Promise<void> {
     let updatedCount = 0;
 
     for (const [projectId] of this.treeMetrics.entries()) {
@@ -1523,11 +1447,11 @@ Respond in JSON format:
 
         updatedCount++;
 
-        logger.debug(`Updated remote refs: ${projectId}`, {
+        logger.debug("Updated remote refs: ${projectId}", {"
           managerId: this.managerId,
         });
       } catch (error) {
-        logger.warn(`Failed to update remote refs: ${projectId}`, {
+        logger.warn("Failed to update remote refs: ${projectId}", {"
           managerId: this.managerId,
           error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
         });
@@ -1543,7 +1467,7 @@ Respond in JSON format:
   /**
    * Verify repository integrity
    */
-  private async verifyRepositoryIntegrity(): Promise<void> {
+  private async verifyRepositoryIntegrity(Promise<void> {
     let verifiedCount = 0;
     const issues: string[] = [];
 
@@ -1551,31 +1475,31 @@ Respond in JSON format:
       try {
         const sandbox = await this.getSandboxForProject(projectId);
 
-        await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
+        await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => " + JSON.stringify({
           // Verify repository integrity
           await git.raw(['fsck', '--full']);
 
           // Check for corrupted objects
           await git.raw(['cat-file', '--batch-check', '--batch-all-objects']);
-        });
+        }) + ");
 
         verifiedCount++;
 
-        logger.debug(`Verified repository integrity: ${projectId}`, {
+        logger.debug("Verified repository integrity: ${projectId}", {"
           managerId: this.managerId,
         });
       } catch (error) {
-        const issue = `Repository integrity issue in ${projectId}:${error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE}`;
+        const issue = "Repository integrity issue in ${projectId}:$" + JSON.stringify({error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE}) + "";"
         issues.push(issue);
 
-        logger.warn(`Repository integrity issue: ${projectId}`, {
+        logger.warn("Repository integrity issue: ${projectId}", {"
           managerId: this.managerId,
           error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
         });
       }
     }
 
-    logger.info('🔍 Repository integrity verification completed', {
+    logger.info('search Repository integrity verification completed', {
       managerId: this.managerId,
       treesVerified: verifiedCount,
       issuesFound: issues.length,
@@ -1590,7 +1514,7 @@ Respond in JSON format:
   /**
    * Get current branch name
    */
-  private async getCurrentBranch(git: SimpleGit): Promise<string> {
+  private async getCurrentBranch(Promise<string> {
     const status = await git.status();
     return status.current || 'main';
   }
@@ -1598,18 +1522,18 @@ Respond in JSON format:
   /**
    * Get sandbox for project
    */
-  private async getSandboxForProject(projectId: string): Promise<string> {
+  private async getSandboxForProject(Promise<string> {
     // Try to get existing sandbox or create new one
     try {
       const sandbox = await this.sandbox.createSandbox(projectId);
       return sandbox.id;
     } catch (error) {
-      logger.warn(`Creating new sandbox for project: ${projectId}`, {
+      logger.warn("Creating new sandbox for project: ${projectId}", {"
         managerId: this.managerId,
         error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
       });
       const sandbox = await this.sandbox.createSandbox(
-        `${projectId}-${Date.now()}`
+        "${projectId}-${Date.now()}""
       );
       return sandbox.id;
     }
@@ -1828,7 +1752,7 @@ Respond in JSON format:
   /**
    * Shutdown the GitCommander system
    */
-  async shutdown(): Promise<void> {
+  async shutdown(Promise<void> {
     try {
       // Complete any pending operations
       for (const operation of this.activeOperations.values()) {
@@ -1864,26 +1788,17 @@ Respond in JSON format:
   /**
    * Create git worktree for parallel development
    */
-  async createWorktree(
-    projectId: string,
-    worktreeName: string,
-    options: {
-      branch?: string;
-      baseBranch?: string;
-      path?: string;
-    } = {}
-  ): Promise<string> {
+  async createWorktree(Promise<string> {
     const operation = this.createOperation(
       'branch',
-      projectId,
-      `worktree-${worktreeName}`
+      projectId"worktree-${worktreeName}""
     );
 
-    try {
+    try " + JSON.stringify({
       const sandbox = await this.getSandboxForProject(projectId);
-      const branch = options.branch || `worktree/${worktreeName}`;
+      const branch = options.branch || "worktree/${worktreeName}) + "";"
       const baseBranch = options.baseBranch || 'main';
-      const worktreePath = options.path || `../worktrees/${worktreeName}`;
+      const worktreePath = options.path || "../worktrees/${worktreeName}";"
 
       await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
         // Create new branch from base branch
@@ -1928,23 +1843,15 @@ Respond in JSON format:
   /**
    * Remove git worktree and cleanup
    */
-  async removeWorktree(
-    projectId: string,
-    worktreeName: string,
-    options: {
-      deleteBranch?: boolean;
-      force?: boolean;
-    } = {}
-  ): Promise<void> {
+  async removeWorktree(Promise<void> {
     const operation = this.createOperation(
       'branch',
-      projectId,
-      `remove-worktree-${worktreeName}`
+      projectId"remove-worktree-${worktreeName}""
     );
 
     try {
       const sandbox = await this.getSandboxForProject(projectId);
-      const worktreePath = `../worktrees/${worktreeName}`;
+      const worktreePath = "../worktrees/${worktreeName}";"
 
       await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
         const removeFlags = options.force ? ['--force'] : [];
@@ -1954,7 +1861,7 @@ Respond in JSON format:
 
         // Delete branch if requested
         if (options.deleteBranch) {
-          const branch = `worktree/${worktreeName}`;
+          const branch = "worktree/${worktreeName}";"
           const deleteFlag = options.force ? '-D' : '-d';
           await git.raw(['branch', deleteFlag, branch]);
         }
@@ -1973,12 +1880,12 @@ Respond in JSON format:
       });
 
       // Emit worktree removed event
-      this.emit('git: worktree: removed', {
+      this.emit('git: worktree: removed', " + JSON.stringify({
         type: 'git: worktree: removed',
         projectId,
         worktreeName,
-        worktreePath: `../worktrees/${worktreeName}`,
-        branch: `worktree/${worktreeName}`,
+        worktreePath: "../worktrees/" + worktreeName + ") + "","
+        branch: "worktree/${worktreeName}","
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
@@ -1990,7 +1897,7 @@ Respond in JSON format:
   /**
    * List all git worktrees
    */
-  async listWorktrees(projectId: string): Promise<
+  async listWorktrees(Promise<
     Array<{
       path: string;
       branch: string;
@@ -2059,7 +1966,7 @@ Respond in JSON format:
         | GitOperationFailedEvent
     ) => void
   ): void {
-    const type = `git: operation: ${eventType}` as const;
+    const type = "git: operation: ${eventType}" as const;"
     this.on(type, handler as any);
   }
 
@@ -2076,8 +1983,8 @@ Respond in JSON format:
   onWorktree(
     eventType: 'created' | ' removed',
     handler: (event: GitWorktreeEvent) => void
-  ): void {
-    const type = `git: worktree: ${eventType}` as const;
+  ): void " + JSON.stringify({
+    const type = "git: worktree: ${eventType}) + "" as const;"
     this.on(type, handler as any);
   }
 
@@ -2088,7 +1995,7 @@ Respond in JSON format:
     eventType: 'started' | ' completed',
     handler: (event: GitMaintenanceEvent) => void
   ): void {
-    const type = `git: maintenance: ${eventType}` as const;
+    const type = "git: maintenance: ${eventType}" as const;"
     this.on(type, handler as any);
   }
 

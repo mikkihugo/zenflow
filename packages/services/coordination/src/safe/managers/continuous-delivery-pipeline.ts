@@ -140,7 +140,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
   /**
    * Initialize with lazy-loaded service delegation
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     if (this.initialized) return;
     try {
       this.logger.info(';)';
@@ -193,7 +193,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
   /**
    * Shutdown with graceful service cleanup
    */
-  async shutdown(): Promise<void> {
+  async shutdown(Promise<void> {
     ')    this.logger.info('Shutting down CD Pipeline Manager');
     // Stop timers
     if (this.monitoringTimer) clearInterval(this.monitoringTimer);
@@ -223,7 +223,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
   /**
    * Map SPARC phases to CD pipeline stages - Delegated to SPARCCDMappingService
    */
-  async mapSPARCToPipelineStages(): Promise<Map<string, any[]>> {
+  async mapSPARCToPipelineStages(Promise<Map<string, any[]>> {
     if (!this.initialized) await this.initialize();
     this.logger.info(';)';
      'Delegating SPARC to CD pipeline mapping to specialized service'));
@@ -266,7 +266,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
   /**
    * Create automated quality gates - Delegated to QualityGateService
    */
-  async createAutomatedQualityGates(): Promise<Map<string, any>> {
+  async createAutomatedQualityGates(Promise<Map<string, any>> {
     if (!this.initialized) await this.initialize();')    this.logger.info('Delegating quality gate creation to specialized service');
     const result = await this.qualityGateService.createAutomatedQualityGates();
     // Update local state for compatibility
@@ -294,11 +294,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
   /**
    * Execute deployment automation - Delegated to DeploymentAutomationService
    */
-  async executeDeploymentAutomation(
-    pipelineId: string,
-    environment: string,
-    artifacts: any[]
-  ): Promise<void> {
+  async executeDeploymentAutomation(Promise<void> {
     if (!this.initialized) await this.initialize();
     this.logger.info(';)';
      'Delegating deployment automation to specialized service,';
@@ -322,7 +318,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
   /**
    * Monitor pipeline performance - Delegated to PipelinePerformanceService
    */
-  async monitorPipelinePerformance(): Promise<void> {
+  async monitorPipelinePerformance(Promise<void> {
     if (!this.config.enablePerformanceMonitoring) return;
     if (!this.initialized) await this.initialize();
     this.logger.debug(';)';
@@ -336,7 +332,7 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
   // ============================================================================
   // PRIVATE IMPLEMENTATION METHODS
   // ============================================================================
-  private async loadPersistedState(): Promise<void> {
+  private async loadPersistedState(Promise<void> {
     try {
       const persistedState = (await this.memory.retrieve(
        'cd-pipeline:  {
@@ -372,13 +368,13 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
 }
     );
 }
-  private async cancelActivePipelines(): Promise<void> {
+  private async cancelActivePipelines(Promise<void> {
     // Implementation would cancel active pipelines
     this.logger.info('Cancelling active pipelines');
     // In production: await pipeline cancellation
     await Promise.resolve(); // Placeholder for actual pipeline cancellation
 }
-  private async cleanupCompletedPipelines(): Promise<void> {
+  private async cleanupCompletedPipelines(Promise<void> {
     // Implementation would cleanup completed pipelines')    this.logger.debug('Cleaning up completed pipelines');
     // In production: await cleanup operations
     await Promise.resolve(); // Placeholder for actual cleanup

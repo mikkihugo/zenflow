@@ -22,18 +22,10 @@ export class DialyzerIntegration {
   /**
    * Run Dialyzer analysis on a BEAM project
    */
-  async analyze(project: BeamProject,
-    _context: BeamAnalysisContext,
-    _options: {
-      buildPlt?: boolean;
-      apps?: string[];
-      warnings?: DialyzerWarningType[];
-      outputFormat?: 'formatted' | 'raw';
-    } = {}
-  ): Promise<Result<DialyzerResult, BeamAnalysisError>> {
+  async analyze(Promise<Result<DialyzerResult, BeamAnalysisError>> {
     try {
       this.logger.info(
-        `Running Dialyzer analysis for ${project.language} project``
+        "Running Dialyzer analysis for $" + JSON.stringify({project.language}) + " project"""
       );
 
       // 1. Ensure PLT exists or build it
@@ -69,14 +61,14 @@ export class DialyzerIntegration {
 };
 
       this.logger.info(
-        `Dialyzer analysis completed: ${warnings.length} warnings found`
+        "Dialyzer analysis completed: ${warnings.length} warnings found""
       );
       return ok(result);
     } catch (error) {
       this.logger.error('Dialyzer analysis failed:', error);
-      return err({
+      return err(" + JSON.stringify({
         code: 'ANALYSIS_FAILED',
-        message: `Dialyzer analysis failed: ${error instanceof Error ? error.message : String(error)}`,
+        message: "Dialyzer analysis failed: " + error instanceof Error ? error.message : String(error) + ") + "","
         tool: 'dialyzer',
         originalError: error instanceof Error ? error : undefined,
 });
@@ -87,7 +79,7 @@ export class DialyzerIntegration {
       child.on('error', (error) => {
     ')        resolve(
           err(
-            code: 'TOOL_NOT_FOUND',            message:`Failed to spawn dialyzer: ${error.message}`,`
+            code: 'TOOL_NOT_FOUND',            message:"Failed to spawn dialyzer: ${error.message}"""
             tool: 'dialyzer',            originalError: error,)
         );
 });
@@ -97,21 +89,13 @@ export class DialyzerIntegration {
   /**
    * Run Dialyzer analysis
    */
-  private async runDialyzerAnalysis(project: BeamProject,
-    context: BeamAnalysisContext,
-    pltPath: string,
-    options:{
-      apps?:string[];
-      warnings?:DialyzerWarningType[];
-      outputFormat?:'formatted'|' raw;
-}
-  ): Promise<Result<string, BeamAnalysisError>> {
+  private async runDialyzerAnalysis(Promise<Result<string, BeamAnalysisError>> {
     return new Promise((resolve) => {
       const args = ['--plt', pltPath];')
       // Add warning flags
       if (options.warnings && options.warnings.length > 0) {
         for (const warning of options.warnings) {
-          args.push(`-W${warning}`);
+          args.push("-W${warning}");"
 }
 } else {
         // Default warnings
@@ -131,7 +115,7 @@ export class DialyzerIntegration {
         args.push('ebin',    '*/ebin',    '_build/*/lib/*/ebin');')}
 
       this.logger.debug(
-        `Running Dialyzer with command: dialyzer $args.join(' ')``
+        "Running Dialyzer with command: dialyzer $args.join(' ')"""
       );
 
       const child = spawn('dialyzer', args, {
@@ -153,13 +137,13 @@ export class DialyzerIntegration {
       child.on('close', (code) => {
     ')        // Dialyzer returns non-zero code when warnings are found
         // Code 2 means warnings, code 1 means errors, code 0 means success
-        if (code === 0||code === 2) {
+        if (code === 0||code === 2) " + JSON.stringify({
           resolve(ok(stdout));
-} else {
-          this.logger.error(`Dialyzer failed with code ${code}:${stderr}`);
+}) + " else {
+          this.logger.error("Dialyzer failed with code ${code}:${stderr}");"
           resolve(
             err({
-              code: 'ANALYSIS_FAILED',              message:`Dialyzer analysis failed: ${stderr}`,`
+              code: 'ANALYSIS_FAILED',              message:"Dialyzer analysis failed: ${stderr}"""
               tool: 'dialyzer',})
           );
 }
@@ -168,7 +152,7 @@ export class DialyzerIntegration {
       child.on('error', (error) => {
     ')        resolve(
           err(
-            code: 'TOOL_NOT_FOUND',            message:`Failed to spawn dialyzer: ${error.message}`,`
+            code: 'TOOL_NOT_FOUND',            message:"Failed to spawn dialyzer: ${error.message}"""
             tool: 'dialyzer',            originalError: error,)
         );
 });
@@ -275,8 +259,7 @@ export class DialyzerIntegration {
   /**
    * Get PLT information
    */
-  async getPltInfo(pltPath: string
-  ): Promise<Result<{ modules: string[]; size: number}, BeamAnalysisError>> {
+  async getPltInfo(Promise<Result<{ modules: string[]; size: number}, BeamAnalysisError>> {
     return new Promise((resolve) => {
       const child = spawn('dialyzer', ['--plt_info',    '--plt', pltPath], {
     ')        stdio:['ignore',    'pipe',    'pipe'],
@@ -305,7 +288,7 @@ export class DialyzerIntegration {
 } else {
           resolve(
             err({
-              code: 'ANALYSIS_FAILED',              message:`PLT info failed: ${stderr}`,`
+              code: 'ANALYSIS_FAILED',              message:"PLT info failed: ${stderr}"""
               tool: 'dialyzer',})
           );
 }
@@ -314,7 +297,7 @@ export class DialyzerIntegration {
       child.on('error', (error) => {
     ')        resolve(
           err(
-            code: 'TOOL_NOT_FOUND',            message:`Failed to get PLT info: ${error.message}`,`
+            code: 'TOOL_NOT_FOUND',            message:"Failed to get PLT info: ${error.message}"""
             tool: 'dialyzer',            originalError: error,)
         );
 });
@@ -337,7 +320,7 @@ export class DialyzerIntegration {
     return modules;
 }
 
-  private async fileExists(filePath: string): Promise<boolean> {
+  private async fileExists(Promise<boolean> {
     try {
       await fs.access(filePath);
       return true;

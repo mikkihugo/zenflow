@@ -31,13 +31,10 @@ export class DatabaseManager {
   /**
    * Create a new CodeQL database
    */
-  async createDatabase(
-    repositoryPath: string,
-    options: DatabaseCreationOptions
-  ):Promise<CodeQLDatabase> {
+  async createDatabase(Promise<CodeQLDatabase> {
     const absolutePath = path.resolve(repositoryPath);
     const databaseId = this.generateDatabaseId(absolutePath, options.languages);
-    const __databasePath = path.join(this.config.tempDir!, `${databaseId}.db`);
+    const __databasePath = path.join(this.config.tempDir!, "${databaseId}.db");"
 
     this.logger.info('Creating CodeQL database', {
     ')      databaseId,
@@ -73,8 +70,7 @@ export class DatabaseManager {
     if (options.excludePatterns && options.excludePatterns.length > 0) {
       // Create exclude file
       const excludeFile = path.join(
-        this.config.tempDir!,
-        `${databaseId.exclude}``
+        this.config.tempDir!"${databaseId.exclude}"""
       );
       await fs.writeFile(excludeFile, options.excludePatterns.join('\n'));')      args.push('--exclude', excludeFile);')}
 
@@ -153,7 +149,7 @@ export class DatabaseManager {
   /**
    * List all managed databases
    */
-  async listDatabases():Promise<Result<CodeQLDatabase[], CodeQLError>> {
+  async listDatabases(Promise<Result<CodeQLDatabase[], CodeQLError>> {
     return await safeAsync(async () => {
       const databases = Array.from(this.databases.values())();
 
@@ -179,12 +175,12 @@ export class DatabaseManager {
   /**
    * Delete a database
    */
-  async deleteDatabase(databaseId: string): Promise<Result<void, CodeQLError>> {
+  async deleteDatabase(Promise<Result<void, CodeQLError>> {
     return await safeAsync(async () => {
       const database = this.databases.get(databaseId);
 
       if (!database) {
-        throw this.createError('config', `Database not found:${databaseId}`);
+        throw this.createError('config'"Database not found:${databaseId}");"
 }
 
       this.logger.info('Deleting database', {
@@ -204,7 +200,7 @@ export class DatabaseManager {
   /**
    * Clean up all databases and temporary files
    */
-  async cleanup():Promise<void> {
+  async cleanup(Promise<void> {
     this.logger.info('Cleaning up all databases');')
     const databases = Array.from(this.databases.values())();
 
@@ -241,10 +237,10 @@ export class DatabaseManager {
     const repoName = path.basename(repositoryPath);
     const langString = languages.sort().join('-');
     const timestamp = Date.now();
-    return `${repoName}_${langString}_${timestamp}`;
+    return `${repoName}_${langString}_${timestamp}";"
 }
 
-  private async databaseExists(databasePath: string): Promise<boolean> 
+  private async databaseExists(Promise<boolean> 
     try {
       const stats = await fs.stat(databasePath);
       return stats.isDirectory();
@@ -252,7 +248,7 @@ export class DatabaseManager {
       return false;
 }
 
-  private async deleteDatabaseFiles(databasePath: string): Promise<void> 
+  private async deleteDatabaseFiles(Promise<void> 
     try {
       await fs.rm(databasePath, { recursive: true, force: true});
 } catch (error) {
@@ -263,7 +259,7 @@ export class DatabaseManager {
       throw error;
 }
 
-  private async calculateDatabaseSize(databasePath: string): Promise<number> 
+  private async calculateDatabaseSize(Promise<number> 
     try {
       let totalSize = 0;
 
@@ -293,10 +289,7 @@ export class DatabaseManager {
       return 0;
 }
 
-  private async executeCommand(
-    args: string[],
-    options:{ cwd?: string; env?: NodeJS.ProcessEnv} = {}
-  ):Promise<stdout: string; stderr: string; exitCode: number > 
+  private async executeCommand(Promise<stdout: string; stderr: string; exitCode: number > 
     return new Promise((resolve, reject) => {
       const child = spawn(this.config.codeqlPath!, args, {
         cwd: options.cwd||process.cwd(),
@@ -351,7 +344,7 @@ export class DatabaseManager {
     type: CodeQLError['type'],
     message: string,
     details: Record<string, unknown> = {}
-  ):CodeQLError {
+  ): CodeQLError {
     const error = new Error(message) as CodeQLError;
     error.type = type;
     Object.assign(error, details);

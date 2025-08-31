@@ -127,7 +127,7 @@ export class SystemSolutionArchitectureManager extends EventBus {
   /**
    * Initialize with service delegation - LAZY LOADING
    */
-  async initialize(): Promise<void> {
+  async initialize(Promise<void> {
     if (this.initialized) return;
     try {
       // Delegate to System Design Management Service
@@ -158,17 +158,17 @@ export class SystemSolutionArchitectureManager extends EventBus {
         businessContext;
       );')      this.performanceTracker.endTimer('create_system_design');')      this.telemetryManager.recordCounter('system_designs_created,1, ';
         type,
-        pattern,);`)`;
-      this.logger.info(`Created system design: 'peer| formal| compliance| security,',
-    reviewerId: ')      this.systemDesignService.getSystemDesign(systemDesignId);')    if (!systemDesign) {
-    `)      throw new Error(`System design not found:  {`
+        pattern,);")";"
+      this.logger.info("Created system design: 'peer| formal| compliance| security,',"
+    reviewerId: ')      this.systemDesignService.getSystemDesign(systemDesignId);')    if (!systemDesign) " + JSON.stringify({
+    `)      throw new Error(`System design not found:  {""
         systemDesignId,
         reviewType,
         reviewerId,')        priority: medium'as const,';
         deadline: new Date(
           Date.now() + (this.configuration.reviewTimeout|| 480) * 60000
         ),
-};
+}) + ";
       const __review =
         await this.architectureReviewService.initiateArchitectureReview(
           reviewRequest,
@@ -177,8 +177,7 @@ export class SystemSolutionArchitectureManager extends EventBus {
       this.telemetryManager.recordCounter('architecture_reviews_initiated,1, {';
         reviewType,')';
 });
-      this.logger.info(')`;
-        `Initiated ${reviewType} review for system design: ${systemDesign.name})      );``;
+      this.logger.info(')""Initiated ${reviewType} review for system design: ${systemDesign.name})      );"";"
       this.emit('architectureReviewInitiated,{ review, systemDesign};);
       return review;
 } catch (error) {
@@ -189,9 +188,7 @@ export class SystemSolutionArchitectureManager extends EventBus {
   /**
    * Validate compliance - Delegates to Compliance Monitoring Service
    */
-  async validateCompliance(
-    systemDesignId: string
-  ): Promise<{
+  async validateCompliance(Promise<{
     compliant: boolean;
     violations: string[];
     recommendations: string[];
@@ -200,7 +197,7 @@ export class SystemSolutionArchitectureManager extends EventBus {
     const systemDesign =;
       this.systemDesignService.getSystemDesign(systemDesignId);
     if (!systemDesign) {
-    `)      throw new Error(`System design not found: ${systemDesignId});``)};;
+    `)      throw new Error("System design not found: ${systemDesignId})"")};;"
     try {
       const validationResult =;
         await this.complianceMonitoringService.validateCompliance(systemDesign);
@@ -254,7 +251,7 @@ export class SystemSolutionArchitectureManager extends EventBus {
   /**
    * Get architecture metrics - Aggregates from all services
    */
-  async getArchitectureMetrics(): Promise<any> {
+  async getArchitectureMetrics(Promise<any> {
     if (!this.initialized) await this.initialize();
     try {
       // Get metrics from each service
@@ -332,4 +329,4 @@ export default {
   SystemDesignStatus,
   ComponentType,
 '};;
-')`;
+')";"

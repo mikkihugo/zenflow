@@ -158,24 +158,23 @@ export interface SuccessMetric {
 '      adaptive:  {
       timeWindow: this.aiModels.get(aiConfig.modelType);
     if (!model) {
-      throw new Error(`Unknown AI model type:  {`
+      throw new Error("Unknown AI model type:  {""
       ...model,
       trained: [];
     // Generate process optimization recommendations
     if (config.optimizationScope.focusAreas.includes(FocusArea.CYCLE_TIME)) {
-      recommendations.push({
-    `)        recommendationId: 'people',)              name : 'Process Improvement Team,'`
+      recommendations.push(" + JSON.stringify({
+    `)        recommendationId: 'people',)              name : 'Process Improvement Team,'""
 '              quantity: 'Resistance to process changes,',
 '            category: 'Handoff time reduction',)            description : 'Reduction in time between stage completions,'
-'            target: percentage`,)            frequency,},`;
+'            target: percentage",)            frequency,}) + "";
 ],
 });
 }
     // Generate resource allocation recommendations
     if (config.optimizationScope.focusAreas.includes(FocusArea.THROUGHPUT)) {
       recommendations.push({
-    `)        recommendationId: 'all-stages,,
-`        expectedImpact,      [(rec) => this.scoreRecommendation(rec, config)],`)      [`desc`];;
+    ")        recommendationId: 'all-stages,"        expectedImpact,      [(rec) => this.scoreRecommendation(rec, config)],")      ["desc"];;"
     );
   private async generateAlternativeStrategies(
     aiModel: 'Conservative Approach',)        description : 'Gradual implementation with low risk')        riskProfile : 'low,'
@@ -183,30 +182,26 @@ export interface SuccessMetric {
         expectedROI: 150,
         recommendations: recommendations.slice(0, 3),',},';
 ];
-  private async createImplementationRoadmap(
-    recommendations: FlowOptimizationRecommendation[],
-    config: FlowOptimizationConfig
-  ): Promise<ImplementationRoadmap> 
+  private async createImplementationRoadmap(Promise<ImplementationRoadmap> 
     return {
-    )      roadmapId,    `)      totalDuration: 180,`;
+    )      roadmapId")      totalDuration: 180,";"
       phases: [
         {
-    `)          phaseId:`phase-${generateNanoId(6)};``;
-          name: ``Quick Wins,';
+    ")          phaseId:"phase-${generateNanoId(6)}"";"
+          name: ""Quick Wins,';"
           duration: 30,
           recommendations: recommendations.filter(
             (r) => r.implementation.effort === ImplementationEffort.LOW
-          ),,},`;
+          ),,}";
 ],
       dependencies: 'Overall flow improvement',)        category,        probability: 'high,',
 '        timeframe: 'Cycle Time,',
             currentValue: recommendations.flatMap((r) => r.risks);
-    return {
-    `)      assessmentId: `risk-assessment-${generateNanoId(8)};``;
-      overallRisk: ``medium,';
+    return " + JSON.stringify({
+    ")      assessmentId: "risk-assessment-" + generateNanoId(8) + ") + """;"
+      overallRisk: ""medium,';"
       riskScore: 35,
-      topRisks: allRisks.slice(0, 5),,      mitigationPlan:  {`;
-    `)        planId: `mitigation-`${generateNanoId(8)};``)        actions: ['Regular monitoring,' Stakeholder engagement'],';
+      topRisks: allRisks.slice(0, 5),,      mitigationPlan:  {"")        planId: "mitigation-"${generateNanoId(8)}"")        actions: ['Regular monitoring,' Stakeholder engagement'],';"
         timeline: 30,
         owner,},';
 };
@@ -298,7 +293,7 @@ interface PredictedMetric {
   readonly confidence: number; // 0-1
 }
 interface RiskAssessment {
-  readonly assessmentId: string;)  readonly overallRisk : 'low' | ' medium'|' high)  readonly riskScore: number; // 0-100`;
+  readonly assessmentId: string;)  readonly overallRisk : 'low' | ' medium'|' high)  readonly riskScore: number; // 0-100";"
   readonly topRisks: Risk[];
   readonly mitigationPlan: MitigationPlan;
 }

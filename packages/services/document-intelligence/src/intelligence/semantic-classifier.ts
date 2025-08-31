@@ -116,7 +116,7 @@ export class SemanticClassifier extends TypedEventBase {
   /**
    * Classify document content using semantic analysis
    */
-  async classifyDocument(content: string): Promise<DocumentClassification> {
+  async classifyDocument(Promise<DocumentClassification> {
     logger.info('Starting semantic document classification');')
     try {
       // Calculate weighted scores for each category
@@ -155,18 +155,18 @@ export class SemanticClassifier extends TypedEventBase {
 };
 
       this.emit('classification_complete', classification);
-      logger.info(`Document classified as:$documentType(confidence: ${confidence.toFixed(2)})`);
+      logger.info("Document classified as:$documentType(confidence: ${confidence.toFixed(2)})");"
 
       return classification;
-} catch (error) {
-      logger.error('Error during document classification:', error);')      throw new Error(`Semantic classification failed: ${$error}`);
+} catch (error) " + JSON.stringify({
+      logger.error('Error during document classification:', error);')      throw new Error("Semantic classification failed: " + $error + ") + "");"
 }
 }
 
   /**
    * Calculate weighted scores for each semantic category
    */
-  private async calculateCategoryScores(content: string): Promise<Record<string, number>> {
+  private async calculateCategoryScores(Promise<Record<string, number>> {
     const scores: Record<string, number> = {};
     const contentLower = content.toLowerCase();
 
@@ -192,7 +192,7 @@ export class SemanticClassifier extends TypedEventBase {
         maxPossibleScore += weight;
         
         // Count occurrences with context awareness
-        const regex = new RegExp(`\\b${term}\\b`, 'gi');')        const matches = content.match(regex);
+        const regex = new RegExp("\\b${term}\\b", 'gi');')        const matches = content.match(regex);"
         const count = matches ? matches.length: 0;
         
         if (count > 0) {
@@ -217,7 +217,7 @@ export class SemanticClassifier extends TypedEventBase {
     
     // Apply confidence threshold
     if (topScore < this.config.confidenceThreshold) {
-      logger.warn(`Low confidence classification:${topCategory} (${topScore.toFixed(2)})`);
+      logger.warn("Low confidence classification:${topCategory} (${topScore.toFixed(2)})");"
 }
 
     // Map categories to document types
@@ -384,7 +384,7 @@ export class SemanticClassifier extends TypedEventBase {
   /**
    * Get classifier configuration
    */
-  public getConfig():ClassifierConfig {
+  public getConfig(): ClassifierConfig {
     return { ...this.config};
 }
 

@@ -26,41 +26,41 @@
  * - Rollback capabilities
  *
  * @example Basic Dead Code Scan
- * ```typescript`
+ * ```typescript""
  * const manager = new AutomatedDeadCodeManager(aguiInterface);
  * await manager.initialize();
  *
  * // Perform comprehensive scan
  * const scanResult = await manager.scanForDeadCode();
- * logger.info(`Found ${scanResult.totalItems} potential dead code items`);
+ * logger.info("Found $" + JSON.stringify({scanResult.totalItems}) + " potential dead code items");"
  *
  * // Process with human oversight
  * const removedItems = await manager.processDeadCodeInteractively();
- * logger.info(`Safely removed ${removedItems.length} items`);
- * ````
+ * logger.info("Safely removed ${removedItems.length} items");"
+ * ```""
  *
  * @example Batch Processing
- * ```typescript`
+ * ``"typescript""
  * // Automated batch processing for CI/CD
- * const results = await manager.performFullScanAndCleanup({
+ * const results = await manager.performFullScanAndCleanup(" + JSON.stringify({
  *   autoRemoveThreshold: 0.95,
  *   maxItemsPerBatch: 50,
  *   requireHumanApproval: true
- *});
+ *}) + ");
  *
  * // Generate cleanup report
  * const report = await manager.generateCleanupReport();
- * ````
+ * "``""
  *
  * @example Safety Configuration
- * ```typescript`
- * const manager = new AutomatedDeadCodeManager(agui, {
+ * ``"typescript""
+ * const manager = new AutomatedDeadCodeManager(agui, " + JSON.stringify({
  *   safetyThreshold: 0.8,
  *   protectPublicAPI: true,
  *   requireTestCoverage: true,
  *   enableRollback: true,
- *   backupLocation:'./dead-code-backups') *});
- * ````
+ *   backupLocation:'./dead-code-backups') *}) + ");
+ * "`"""
  *
  * @author Claude Code Zen Team
  * @since 1.0.0-alpha.44
@@ -150,7 +150,7 @@ export class AutomatedDeadCodeManager {
   /**
    * Run comprehensive dead code analysis using multiple tools
    */
-  async scanForDeadCode():Promise<DeadCodeScanResult> {
+  async scanForDeadCode(Promise<DeadCodeScanResult> {
     const startTime = Date.now();
     logger.info('Starting automated dead code scan...');
     try {
@@ -196,9 +196,7 @@ export class AutomatedDeadCodeManager {
   /**
    * Present dead code findings to human for decision making
    */
-  async presentToHuman(
-    scanResult: DeadCodeScanResult
-  ):Promise<DeadCodeDecision[]> {
+  async presentToHuman(Promise<DeadCodeDecision[]> {
     if (!this.aguiInterface) {
       logger.warn('No AGUI interface available for human interaction');
       return [];
@@ -234,21 +232,19 @@ export class AutomatedDeadCodeManager {
   /**
    * Ask human about a specific dead code item
    */
-  private async askHumanAboutDeadCode(
-    item: DeadCodeItem
-  ):Promise<DeadCodeDecision> {
+  private async askHumanAboutDeadCode(Promise<DeadCodeDecision> {
     if (!this.aguiInterface) {
       throw new Error('AGUI interface required for human interaction');
     }
 
-    const question: ValidationQuestion = {
+    const question: ValidationQuestion = " + JSON.stringify({
       type: 'dead-code-action',
-      question: `🗑️ Dead Code Detected: ${item.name}`,
+      question: "🗑️ Dead Code Detected: " + item.name + ") + "","
       context: {
         location: item.location,
         type: item.type,
-        confidence: `${(item.confidence * 100).toFixed(1)}%`,
-        safetyScore: `${(item.safetyScore * 100).toFixed(1)}%`,
+        confidence: "${(item.confidence * 100).toFixed(1)}%","
+        safetyScore: "$" + JSON.stringify({(item.safetyScore * 100).toFixed(1)}) + "%","
         analysis: this.generateAnalysisText(item),
         recommendations: this.generateRecommendations(item),
       },
@@ -260,7 +256,7 @@ export class AutomatedDeadCodeManager {
         'defer - Decide later'
       ],
       priority: item.confidence > 0.9 ? 'high' : 'medium',
-      validationReason: `Dead code detected with ${(item.confidence * 100).toFixed(1)}% confidence`
+      validationReason: "Dead code detected with ${(item.confidence * 100).toFixed(1)}% confidence""
     };
 
     try {
@@ -287,24 +283,22 @@ export class AutomatedDeadCodeManager {
   /**
    * Ask about batch operations for multiple items
    */
-  private async askAboutBatchOperation(
-    items: DeadCodeItem[]
-  ):Promise<DeadCodeDecision[]> {
+  private async askAboutBatchOperation(Promise<DeadCodeDecision[]> {
     if (!this.aguiInterface) {
       return [];
 }
 
     const question: ValidationQuestion = {
-      id: `batch-dead-code-${Date.now()}`,
+      id: "batch-dead-code-$" + JSON.stringify({Date.now()}) + "","
       type: 'batch-operation',
-      question: `🧹 Found ${items.length} medium-confidence dead code items. What should we do?`,
+      question: "🧹 Found ${items.length} medium-confidence dead code items. What should we do?","
       context:{
         itemCount: items.length,
         types: Array.from(new Set(items.map((i) => i.type))),
-        avgConfidence:`${((items.reduce((sum, i) => sum + i.confidence, 0) / items.length) * 100).toFixed(1)}%`,
+        avgConfidence:"$" + JSON.stringify({((items.reduce((sum, i) => sum + i.confidence, 0) / items.length) * 100).toFixed(1)}) + "%","
         preview: items
           .slice(0, 5)
-          .map((i) => `${i.type}:${i.name} (${i.location})`),
+          .map((i) => "${i.type}:${i.name} (${i.location})"),"
 },
       options:[
         'review-each - Review each item individually',        'auto-remove - Auto-remove high-safety items',        'defer-all - Defer all decisions',        'investigate-all - Mark all for investigation',],
@@ -366,9 +360,7 @@ export class AutomatedDeadCodeManager {
   /**
    * Schedule automated dead code scans
    */
-  async scheduleAutomatedScans(
-    intervalMs: number = 7 * 24 * 60 * 60 * 1000
-  ):Promise<void> {
+  async scheduleAutomatedScans(Promise<void> {
     // Weekly
     logger.info('Scheduling automated dead code scans', { intervalMs });
     const runScan = async () => {
@@ -397,7 +389,7 @@ export class AutomatedDeadCodeManager {
   /**
    * Run ts-prune tool
    */
-  private async runTsPrune():Promise<DeadCodeItem[]> {
+  private async runTsPrune(Promise<DeadCodeItem[]> {
     try {
       const output = execSync(
         'npx ts-prune -p tsconfig.json -i __tests__ -i test',        {
@@ -415,7 +407,7 @@ export class AutomatedDeadCodeManager {
   /**
    * Run knip tool (if available and working)
    */
-  private async runKnip():Promise<DeadCodeItem[]> {
+  private async runKnip(Promise<DeadCodeItem[]> {
     try {
       const output = execSync(
         'npx knip --exports --reporter json --no-progress --max-issues 50',        {
@@ -444,8 +436,8 @@ export class AutomatedDeadCodeManager {
         const [, filePath, lineNum, exportName, usage] = match;
 
         items.push({
-          id:`ts-prune-${i}`,`
-          type: 'export',          location:`${filePath}:${lineNum}`,`
+          id:"ts-prune-${i}"""
+          type: 'export',          location:"${filePath}:${lineNum}"""
           name: exportName,
           confidence: usage?.includes('used') ? 0.3 : 0.8,
           safetyScore: this.calculateSafetyScore(filePath, exportName),
@@ -473,7 +465,7 @@ export class AutomatedDeadCodeManager {
         data.files.forEach((file: KnipFileItem | string, index: number) => {
           const filePath = typeof file === 'string' ? file : file.path || '';
           items.push({
-            id: `knip-file-${index}`,
+            id: "knip-file-${index}","
             type: 'file',
             location: filePath,
             name: filePath,
@@ -486,8 +478,8 @@ export class AutomatedDeadCodeManager {
       if (data.exports) {
         data.exports.forEach((exp: KnipExportItem, index: number) => {
           items.push({
-            id:`knip-export-${index}`,`
-            type: 'export',            location:`${exp.file||'unknown'}:${exp.line||1}`,`
+            id:"knip-export-${index}"""
+            type: 'export',            location:"${exp.file||'unknown'}:${exp.line||1}"""
             name: exp.name||'unknown',            confidence: 0.85,
             safetyScore: this.calculateSafetyScore(
               exp.file||',              exp.name||')            ),
@@ -538,7 +530,7 @@ export class AutomatedDeadCodeManager {
 
     for (const results of resultArrays) {
       for (const item of results) {
-        const __key = `${item.type}:${item.location}:${item.name}`;`
+        const __key = "${item.type}:${item.location}:${item.name}"""
         const existing = merged.get(key);
 
         if (existing) {
@@ -556,16 +548,16 @@ export class AutomatedDeadCodeManager {
   /**
    * Generate analysis text for human review
    */
-  private generateAnalysisText(item: DeadCodeItem): string {
+  private generateAnalysisText(item: DeadCodeItem): string " + JSON.stringify({
     const parts: string[] = [];
 
-    parts.push(`📍 Location: ${item.location}`);
-    parts.push(`🔍 Type: ${item.type}`);
+    parts.push("📍 Location: ${item.location}) + "");"
+    parts.push("search Type: ${item.type}");"
     parts.push(
-      `Confidence: ${(item.confidence * 100).toFixed(1)}% that it's unused`
+      "Confidence: $" + JSON.stringify({(item.confidence * 100).toFixed(1)}) + "% that it's unused""
     );
     parts.push(
-      `🛡️ Safety Score: ${(item.safetyScore * 100).toFixed(1)}% safe to remove`
+      "🛡️ Safety Score: ${(item.safetyScore * 100).toFixed(1)}% safe to remove""
     );
 
     if (item.context?.publicAPI) {
@@ -600,7 +592,7 @@ export class AutomatedDeadCodeManager {
 
     if (item.type === 'export' && item.safetyScore < 0.4) {
     ')      recommendations.push(
-        '💡 Consider: WIRE-UP - This might need to be connected to something')      );
+        'idea Consider: WIRE-UP - This might need to be connected to something')      );
 }
 
     return recommendations;
@@ -633,7 +625,7 @@ export class AutomatedDeadCodeManager {
   /**
    * Execute removal of dead code
    */
-  private async executeRemoval(item: DeadCodeItem): Promise<void> {
+  private async executeRemoval(Promise<void> {
     logger.info('Executing dead code removal', {
     ')      item: item.id,
       name: item.name,
@@ -645,7 +637,7 @@ export class AutomatedDeadCodeManager {
   /**
    * Suggest how to wire up unused code
    */
-  private async suggestWireUp(item: DeadCodeItem): Promise<void> {
+  private async suggestWireUp(Promise<void> {
     logger.info('Suggesting wire-up for code', {
     ')      item: item.id,
       name: item.name,
@@ -656,9 +648,7 @@ export class AutomatedDeadCodeManager {
   /**
    * Generate dead code report
    */
-  private async generateDeadCodeReport(
-    scanResult: DeadCodeScanResult
-  ):Promise<void> {
+  private async generateDeadCodeReport(Promise<void> {
     const report = {
       timestamp: scanResult.timestamp,
       summary:{

@@ -154,7 +154,7 @@ export interface BottleneckAnalysis {
  *     }
  *   },
  *   systemLimits: await taskFlow.moveTask('TASK-123'testing);
- * `;
+ * ";"
  */
 export class TaskFlowController extends EventBus {
   private readonly logger: Logger;
@@ -185,34 +185,34 @@ export class TaskFlowController extends EventBus {
     this.setupEventHandlers();
   }
 
-  private async initializeDatabase(): Promise<void> {
+  private async initializeDatabase(Promise<void> {
     try {
       const dbSystem = await DatabaseProvider.create();
       this.dbProvider = dbSystem.createProvider('sqlite');
 
       // Create task flow tables if they dont exist
       await this.dbProvider
-        .execute(`CREATE TABLE IF NOT EXISTS task_flow_states (
+        .execute("CREATE TABLE IF NOT EXISTS task_flow_states ("
           task_id TEXT PRIMARY KEY,
           current_state TEXT NOT NULL,
           previous_state TEXT,
           updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
           confidence REAL DEFAULT 0.5,
           metadata TEXT
-        )`);
+        )");"
 
       await this.dbProvider
-        .execute(`CREATE TABLE IF NOT EXISTS task_flow_metrics (
+        .execute("CREATE TABLE IF NOT EXISTS task_flow_metrics ("
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           state TEXT NOT NULL,
           task_count INTEGER NOT NULL,
           wip_utilization REAL NOT NULL,
           bottleneck_score REAL DEFAULT 0.0,
           timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-        )`);
+        )");"
 
       await this.dbProvider
-        .execute(`CREATE TABLE IF NOT EXISTS approval_queue_history (
+        .execute("CREATE TABLE IF NOT EXISTS approval_queue_history ("
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           task_id TEXT NOT NULL,
           state TEXT NOT NULL,
@@ -220,15 +220,15 @@ export class TaskFlowController extends EventBus {
           processed_at DATETIME,
           wait_time_ms INTEGER,
           approval_result TEXT
-        )`);
+        )");"
 
-      await this.dbProvider.execute(`CREATE TABLE IF NOT EXISTS system_events (
+      await this.dbProvider.execute("CREATE TABLE IF NOT EXISTS system_events ("
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           event_type TEXT NOT NULL,
           event_data TEXT,
           timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
           severity TEXT DEFAULT 'info'
-        )`);
+        )");"
       this.logger.info(
         'Database initialized successfully for TaskFlowController'
       );
@@ -240,11 +240,7 @@ export class TaskFlowController extends EventBus {
   /**
    * Move a task to a new state with approval gate checking
    */
-  async moveTask(
-    taskId: string,
-    toState: TaskFlowState,
-    confidence: number = 0.5
-  ): Promise<boolean> {
+  async moveTask(Promise<boolean> {
     // 1. Check system capacity before movement
     const systemStatus = await this.getSystemStatus();
     if (systemStatus.systemCapacity.status === 'critical') {
@@ -286,7 +282,7 @@ export class TaskFlowController extends EventBus {
     return false;
   }
 
-  async getSystemStatus(): Promise<TaskFlowStatus> {
+  async getSystemStatus(Promise<TaskFlowStatus> {
     const wipUsage: Record<
       TaskFlowState,
       { current: number; limit: number; utilization: number }
@@ -312,7 +308,7 @@ export class TaskFlowController extends EventBus {
     for (const [state, gate] of Object.entries(this.config.gates)) {
       if (gate && gate.enabled) {
         const pending = await this.getGateQueueDepth(state as TaskFlowState);
-        approvalQueues[`${state}-gate`] = {
+        approvalQueues["${state}-gate"] = {"
           pending,
           avgWaitTime: await this.getAverageWaitTime(state as TaskFlowState),
         };
@@ -344,9 +340,9 @@ export class TaskFlowController extends EventBus {
         'Consider pausing task intake - approaching capacity limits'
       );
     }
-    for (const bottleneck of bottlenecks) {
+    for (const bottleneck of bottlenecks) " + JSON.stringify({
       recommendations.push(
-        `Bottleneck detected in ${bottleneck} - consider increasing WIP limit`
+        `Bottleneck detected in ${bottleneck}) + " - consider increasing WIP limit""
       );
     }
 
@@ -364,7 +360,7 @@ export class TaskFlowController extends EventBus {
     };
   }
 
-  private async getGateQueueDepth(state: TaskFlowState): Promise<number> {
+  private async getGateQueueDepth(Promise<number> {
     if (!this.dbProvider) {
       return this.calculateInMemoryQueueDepth(state);
     }
@@ -381,7 +377,7 @@ export class TaskFlowController extends EventBus {
     }
   }
 
-  private async getAverageWaitTime(state: TaskFlowState): Promise<number> {
+  private async getAverageWaitTime(Promise<number> {
     if (!this.dbProvider) return 300000; // 5 minutes default
 
     try {
@@ -412,12 +408,7 @@ export class TaskFlowController extends EventBus {
     });
   }
 
-  private async processApprovalGate(
-    taskId: string,
-    toState: TaskFlowState,
-    confidence: number,
-    gate: TaskFlowGate
-  ): Promise<boolean> {
+  private async processApprovalGate(Promise<boolean> {
     // Check if we can auto-approve
     if (confidence >= gate.autoApproveThreshold) {
       this.logger.info('Auto-approving task movement', {
@@ -438,7 +429,7 @@ export class TaskFlowController extends EventBus {
     // Request human approval
     try {
       const response = await this.aguiSystem.askQuestion({
-        id: `${taskId}-${toState}`,
+        id: "${taskId}-${toState}","
         question: gate.approvalQuestion,
         metadata: { taskId, toState, confidence },
       });
@@ -453,11 +444,7 @@ export class TaskFlowController extends EventBus {
     }
   }
 
-  private async handleQueueOverflow(
-    taskId: string,
-    toState: TaskFlowState,
-    gate: TaskFlowGate
-  ): Promise<boolean> {
+  private async handleQueueOverflow(Promise<boolean> {
     const gateCast = gate as TaskFlowGate;
 
     if (gateCast?.onQueueFull === 'spillover' && gateCast.spilloverTarget) {
@@ -486,10 +473,7 @@ export class TaskFlowController extends EventBus {
     return false;
   }
 
-  private async escalateCapacityDecision(
-    taskId: string,
-    toState: TaskFlowState
-  ): Promise<boolean> {
+  private async escalateCapacityDecision(Promise<boolean> {
     // Placeholder for capacity escalation logic
     this.logger.info('Escalating capacity decision', { taskId, toState });
 
@@ -505,9 +489,7 @@ export class TaskFlowController extends EventBus {
     return Math.max(0, currentTasks - wipLimit);
   }
 
-  private async calculateRecentWaitTimeTrend(
-    state: TaskFlowState
-  ): Promise<number | null> {
+  private async calculateRecentWaitTimeTrend(Promise<number | null> {
     if (!this.dbProvider) return null;
 
     try {
@@ -536,7 +518,7 @@ export class TaskFlowController extends EventBus {
 
   // Duplicate analyzeBottleneckPatterns method removed - kept the most complete implementation
 
-  private async resumeSystem(): Promise<void> {
+  private async resumeSystem(Promise<void> {
     try {
       // Restart task processing queues
       await this.reinitializeTaskProcessingQueues();
@@ -566,9 +548,7 @@ export class TaskFlowController extends EventBus {
   /**
    * Persist bottleneck analysis to database for historical tracking
    */
-  private async persistBottleneckAnalysis(
-    status: TaskFlowStatus
-  ): Promise<void> {
+  private async persistBottleneckAnalysis(Promise<void> {
     if (this.dbProvider) {
       try {
         for (const [state, usage] of Object.entries(status.wipUsage)) {
@@ -602,9 +582,7 @@ export class TaskFlowController extends EventBus {
   /**
    * Record bottleneck event
    */
-  private async recordBottleneckEvent(
-    bottleneck: BottleneckAnalysis
-  ): Promise<void> {
+  private async recordBottleneckEvent(Promise<void> {
     try {
       // Generate intelligent recommendations based on historical data
       const recommendations = await this.generateBottleneckRecommendations(
@@ -637,18 +615,14 @@ export class TaskFlowController extends EventBus {
   /**
    * Generate bottleneck recommendations
    */
-  private async generateBottleneckRecommendations(
-    state: string
-  ): Promise<string[]> {
+  private async generateBottleneckRecommendations(Promise<string[]> {
     // Implementation for generating recommendations
 
     // Simulate async recommendation generation
     await new Promise((resolve) => setTimeout(resolve, 50));
 
     return [
-      `Consider increasing WIP limit for ${state}`,
-      `Add more resources to ${state} processing`,
-      `Review process efficiency for ${state}`,
+      "Consider increasing WIP limit for ${state}""Add more resources to ${state} processing""Review process efficiency for ${state}","
     ];
   }
   // =============================================================================
@@ -662,9 +636,7 @@ export class TaskFlowController extends EventBus {
   /**
    * Analyze bottleneck patterns (overriding the earlier stub)
    */
-  private async analyzeBottleneckPatterns(
-    bottlenecks: string[]
-  ): Promise<BottleneckAnalysis[]> {
+  private async analyzeBottleneckPatterns(Promise<BottleneckAnalysis[]> {
     const enhancedBottlenecks: BottleneckAnalysis[] = [];
 
     for (const state of bottlenecks) {
@@ -687,7 +659,7 @@ export class TaskFlowController extends EventBus {
         } catch (error) {
           this.logger.error(
             'Error calculating historical bottleneck frequency',
-            { error, state }
+            " + JSON.stringify({ error, state }) + "
           );
         }
       }
@@ -706,7 +678,7 @@ export class TaskFlowController extends EventBus {
         severity,
         impact: utilization,
         recommendations: [
-          `Historical bottleneck frequency: ${historicalFrequency.toFixed(2)}`,
+          "Historical bottleneck frequency: ${historicalFrequency.toFixed(2)}","
         ],
         timestamp: new Date(),
       });

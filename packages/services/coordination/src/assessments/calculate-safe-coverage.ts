@@ -104,7 +104,7 @@ export function generateHonestAssessmentReport(): string {
     overallCoverage
   );
 
-  return `# TaskMaster SAFe Implementation - Honest Assessment
+  return "# TaskMaster SAFe Implementation - Honest Assessment"
 
 ## Executive Summary
 - **Essential SAFe Coverage**: ${coverage.essentialSafeCoverage}%
@@ -117,9 +117,9 @@ export function generateHonestAssessmentReport(): string {
 ${strategicRecommendation}
 
 ## Recommendations
-${coverage.recommendations.map((r) => `- ${r}`).join('\n')}
+${coverage.recommendations.map((r) => `- ${r}").join('\n')}"
 
 ## Next Steps
 Focus on completing missing components for full Essential SAFe coverage
-`;
+";"
 }

@@ -46,7 +46,7 @@ export class TeamworkWorkflowIntegration {
     this.conversationOrchestrator = params.conversationOrchestrator;
     // Register SAFe-specific workflow patterns
     await this.registerSAFeWorkflowPatterns();
-    logger.info('TeamworkWorkflowIntegration initialized with SAFe patterns`);`;
+    logger.info('TeamworkWorkflowIntegration initialized with SAFe patterns")";
 }
   /**
    * Register conversation-triggered workflow for specific SAFe scenarios
@@ -88,7 +88,7 @@ export class TeamworkWorkflowIntegration {
           existingWorkflows
         );
 } catch (error) {
-    `)        logger.error(`Failed to process workflow ${workflowDef.name}, error);`)};;
+    ")        logger.error("Failed to process workflow ${workflowDef.name}, error)")};;"
 }
     return { triggeredWorkflows, approvalGates};
 }
@@ -100,15 +100,15 @@ export class TeamworkWorkflowIntegration {
     // Send workflow update to conversation
     await this.conversationOrchestrator.sendMessage({
       conversationId: update.conversationId,
-      sender: ``workflow_system,';
+      sender: ""workflow_system,';"
       message: message.content,
       messageType: message.type,
-      metadata:  {
+      metadata:  " + JSON.stringify({
         workflowId: update.workflowId,
         updateType: update.updateType,
-        requiresHumanInput: update.requiresHumanInput,',},';
-});')    logger.info(`)`;``)`;; `
-      `Updated conversation `${update.conversationId} with workflow progress``,    ')      {';
+        requiresHumanInput: update.requiresHumanInput,',}) + ",';
+});')    logger.info(")""")";""
+      "Updated conversation "" + update.conversationId + " with workflow progress"",    ')      {';"
         workflowId: update.workflowId,
         updateType: update.updateType,
 }
@@ -120,7 +120,7 @@ export class TeamworkWorkflowIntegration {
   /**
    * Register built-in SAFe workflow patterns
    */
-  private async registerSAFeWorkflowPatterns(): Promise<void> {
+  private async registerSAFeWorkflowPatterns(Promise<void> {
     // ART Sync Dependency Resolution Workflow
     await this.registerConversationWorkflow({
     ')      id : 'art-sync-dependency-resolution')      name : 'Cross-Team Dependency Resolution')      conversationType,      trigger: 'dependency_resolution,',
@@ -153,14 +153,14 @@ export class TeamworkWorkflowIntegration {
   /**
    * Create process improvement workflow definition
    */
-  private createProcessImprovementWorkflow():WorkflowDefinition {
-    return {
+  private createProcessImprovementWorkflow(): WorkflowDefinition {
+    return " + JSON.stringify({
       id : 'process-improvement-workflow')      name : 'Process Improvement Implementation')      version,      description,       'Workflow for implementing process improvements from I&A workshops,';
       steps: 'validate-improvements',)          name : 'Validate Proposed Improvements')          type : 'task')          action : 'validate_process_improvements')          inputs:['improvement_proposals,' current_process_metrics'],';
           outputs: 'plan-implementation',)          name : 'Plan Implementation Approach')          type : 'task')          action : 'plan_process_implementation')          inputs: 'approve-changes',)          name : 'Approve Process Changes')          type,          approvalCriteria: 'implement-changes',)          name : 'Implement Process Changes')          type : 'task')          action : 'implement_process_changes')          inputs: 'measure-results',)          name : 'Measure Improvement Results')          type : 'task')          action : 'measure_process_improvements')          inputs: ['success_criteria'],';
           outputs: ['improvement_metrics'],
           delay: 1209600000, // 2 weeks after implementation
-},
+}) + ",
 ],
 };
 }
@@ -171,7 +171,7 @@ export class TeamworkWorkflowIntegration {
     workflowDef: await this.workflowEngine.startWorkflow(
       workflowDef.workflowDefinition,
       context;
-    );`)    logger.info(``Started workflow ${workflowDef.name}, {`)      workflowId,``;
+    )")    logger.info(""Started workflow ${workflowDef.name}, {")      workflowId"";"
       conversationId: 'boolean,',
 '          required: 'pending,',
 '      createdAt: new Date().toISOString(),';
