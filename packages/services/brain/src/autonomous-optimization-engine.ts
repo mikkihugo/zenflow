@@ -136,7 +136,7 @@ export class AutonomousOptimizationEngine {
             await this.complexityEstimator.estimateComplexity(
               context.task,
               context.basePrompt,
-              context.context  || {},
+              context.context   || {},
               context.agentRole
             );
 
@@ -177,7 +177,7 @@ export class AutonomousOptimizationEngine {
           await this.complexityEstimator.learnFromOutcome(
             context.task,
             context.basePrompt,
-            context.context  || {},
+            context.context   || {},
             actualComplexity,
             result.processingTime,
             result.confidence > 0.7, // Success indicator
@@ -581,7 +581,7 @@ export class AutonomousOptimizationEngine {
 
     // Step 2:If ML confidence is low and we have time, enhance with DSPy
     if (
-      mlResult.confidence < 0.7   && (!context.timeConstraint||Date.now() - startTime < context.timeConstraint * 0.5) &&
+      mlResult.confidence < 0.7    && (!context.timeConstraint||Date.now() - startTime < context.timeConstraint * 0.5) &&
       this.dspyBridge
     ) {
       try {

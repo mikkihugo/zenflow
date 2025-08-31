@@ -897,7 +897,7 @@ export class EventDrivenBrain {
       priority,
       timeLimit,
       qualityRequirement,
-      historicalData:this.performanceHistory.get(`${request.task}-optimization`)   || {}`
+      historicalData:this.performanceHistory.get(`${request.task}-optimization`)    || {}`
 });
 
     // Apply strategy-specific optimization
@@ -1640,7 +1640,7 @@ export class EventDrivenBrain {
   private async learnFromOptimization(request: PromptOptimizationRequest, result: PromptOptimizationResult): Promise<void> {
     // Store optimization history for future learning
     const historyKey = `${request.task}-optimization`;
-    const currentHistory = this.performanceHistory.get(historyKey)   || { attempts: [], performance:[]};
+    const currentHistory = this.performanceHistory.get(historyKey)    || { attempts: [], performance:[]};
     
     currentHistory.attempts.push({
       strategy:result.strategy,

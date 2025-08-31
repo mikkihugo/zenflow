@@ -1630,7 +1630,7 @@ export class SmartNeuralCoordinator {
 
     // Try Brain.js fallback
     if (
-      this.config.enableFallbacks  && (this.brainJsNetwork||this.config.loading.lazyLoading)
+      this.config.enableFallbacks   && (this.brainJsNetwork||this.config.loading.lazyLoading)
     ) {
       try {
         if (!this.brainJsNetwork && this.config.loading.lazyLoading) {
@@ -2046,7 +2046,7 @@ export class SmartNeuralCoordinator {
 
     // Try Brain.js fallback
     if (
-      this.config.enableFallbacks  && (this.brainJsNetwork||this.config.loading.lazyLoading)
+      this.config.enableFallbacks   && (this.brainJsNetwork||this.config.loading.lazyLoading)
     ) {
       try {
         if (!this.brainJsNetwork && this.config.loading.lazyLoading) {
@@ -2397,7 +2397,7 @@ export class SmartNeuralCoordinator {
 
   private generateNeuralTaskCacheKey(request: NeuralTaskRequest): string {
     const inputStr = JSON.stringify(request.input).substring(0, 1000); // Limit size
-    const paramsStr = JSON.stringify(request.parameters || {});
+    const paramsStr = JSON.stringify(request.parameters  || {});
     const content = `${request.taskType}${inputStr}${paramsStr}`;`
     return `task: $this.hashString(content)`;`
 }
@@ -2519,7 +2519,7 @@ export class SmartNeuralCoordinator {
 
     return {
       success: true,
-      classification: cachedResult.classificationData || {
+      classification: cachedResult.classificationData  || {
         label: 'cached',        confidence: cachedResult.confidence,
         scores:{},
 },

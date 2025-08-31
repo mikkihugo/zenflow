@@ -753,14 +753,14 @@ export class BrainJsBridge {
         id,
         type,
         network,
-        config:config   || {},
-        trainingState:trainingState   || {
+        config:config    || {},
+        trainingState:trainingState    || {
           isTrained: true,
           isTraining: false,
           iterations: 0,
           error: 0,
 },
-        metadata:metadata   || {
+        metadata:metadata    || {
           created:new Date().toISOString(),
           updated:new Date().toISOString(),
 },
