@@ -209,9 +209,9 @@ export class ModelRegistry {
         this.models.set(model.id, model);
 }
       logger.info(`Loaded ${stored.length} models from database`);
-} catch (error) {
+    } catch (error) {
       logger.warn('Could not load from database: ', error);
-'}
+    }
 }
 
   /**
@@ -220,7 +220,11 @@ export class ModelRegistry {
   private async syncFromProviders():Promise<void> {
     // List models from each provider
     const providers = [
-      'github-copilot',      'github-models',      'anthropic',      'openai',];
+      'github-copilot',
+      'github-models',
+      'anthropic',
+      'openai',
+    ];
 
     for (const providerId of providers) {
       try {
@@ -257,9 +261,9 @@ export class ModelRegistry {
       const models = Array.from(this.models.values());
       await this.databaseSystem.upsert('models', models);
       logger.info(`Saved ${models.length} models to database`);
-} catch (error) {
+    } catch (error) {
       logger.warn('Could not save to database: ', error);
-'}
+    }
 }
 }
 

@@ -424,22 +424,25 @@ export class AutonomousOptimizationEngine {
     // If we don't have enough data, use complexity estimate guidance')    if (this.optimizationHistory.length < this.minDataPoints) {
       if (complexityEstimate?.suggestedMethod) {
         logger.debug(
-          `🎯 Using complexity-based method suggestion:$complexityEstimate.suggestedMethod``
+          `🎯 Using complexity-based method suggestion: ${complexityEstimate.suggestedMethod}`
         );
         return complexityEstimate.suggestedMethod;
-}
+      }
       logger.debug(
-        '🎯 Insufficient data for autonomous decision, using hybrid approach')      );
-      return 'hybrid;
-}
+        '🎯 Insufficient data for autonomous decision, using hybrid approach'
+      );
+      return 'hybrid';
+    }
 
     // Async ML-enhanced method scoring
     const enhancedScores = await this.calculateEnhancedMethodScores(context, methodPerformanceHistory);
 
     // Calculate method scores based on context
-    const dspyScore = this.calculateMethodScore('dspy', context) + enhancedScores.dspyBoost;')    const mlScore = this.calculateMethodScore('ml', context) + enhancedScores.mlBoost;')    const hybridScore = this.calculateMethodScore('hybrid', context) + enhancedScores.hybridBoost;')
+    const dspyScore = this.calculateMethodScore('dspy', context) + enhancedScores.dspyBoost;
+    const mlScore = this.calculateMethodScore('ml', context) + enhancedScores.mlBoost;
+    const hybridScore = this.calculateMethodScore('hybrid', context) + enhancedScores.hybridBoost;
     logger.debug(
-      `📊 Enhanced method scores - DSPy:${dspyScore.toFixed(2)}, ML:${mlScore.toFixed(2)}, Hybrid:${hybridScore.toFixed(2)}``
+      `📊 Enhanced method scores - DSPy: ${dspyScore.toFixed(2)}, ML: ${mlScore.toFixed(2)}, Hybrid: ${hybridScore.toFixed(2)}`
     );
 
     // Apply selection strategy insights

@@ -18,6 +18,14 @@
  * @version 2.1.0
  */
 
+import type {
+  FACTKnowledgeEntry,
+  FACTSearchQuery,
+  FACTStorageBackend,
+  FACTStorageConfig,
+  FACTStorageStats,
+} from '../types/fact-types';
+
 // Minimal implementation for SQLite backend
 interface Logger {
   info(message: string, data?: any): void;
@@ -60,15 +68,6 @@ class EnhancedError extends Error {
     this.name = 'EnhancedError';
   }
 }
-
-import type {
-  FACTBackendStats,
-  FACTKnowledgeEntry,
-  FACTSearchQuery,
-  FACTStorageBackend,
-  FACTStorageConfig,
-  FACTStorageStats,
-} from '../types/fact-types';
 
 // SQLite Database interface - in a real implementation this would be better-sqlite3
 interface SQLiteDatabase {

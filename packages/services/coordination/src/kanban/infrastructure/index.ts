@@ -93,24 +93,24 @@ export class InfrastructureServiceFactory {
 
 // Export default factory instance
 export const infrastructureServiceFactory = new InfrastructureServiceFactory();
-  /**
-   * Get health status of all infrastructure services
-   */
-  getHealthStatus():  {
-    eventCoordinator: this.eventCoordinator?.isHealthy() ?? false;
-    const stateMachineHealthy = this.stateMachineCoordinator?.isHealthy() ?? false;
-    const performanceHealthy = this.performanceTracker?.isHealthy() ?? false;
-    const persistenceHealthy = this.persistenceCoordinator?.isHealthy() ?? false;
-    const overall = eventCoordinatorHealthy && 
-                   stateMachineHealthy && 
-                   performanceHealthy && ;
-                   persistenceHealthy;
-    return {
-      eventCoordinator: eventCoordinatorHealthy,
-      stateMachineCoordinator: stateMachineHealthy,
-      performanceTracker: performanceHealthy,
-      persistenceCoordinator: persistenceHealthy,
-      overall,
-};
-}
+
+/**
+ * Get health status of all infrastructure services
+ */
+export function getHealthStatus() {
+  const eventCoordinatorHealthy = infrastructureServiceFactory.eventCoordinator?.isHealthy() ?? false;
+  const stateMachineHealthy = infrastructureServiceFactory.stateMachineCoordinator?.isHealthy() ?? false;
+  const performanceHealthy = infrastructureServiceFactory.performanceTracker?.isHealthy() ?? false;
+  const persistenceHealthy = infrastructureServiceFactory.persistenceCoordinator?.isHealthy() ?? false;
+  const overall = eventCoordinatorHealthy && 
+                 stateMachineHealthy && 
+                 performanceHealthy && 
+                 persistenceHealthy;
+  return {
+    eventCoordinator: eventCoordinatorHealthy,
+    stateMachineCoordinator: stateMachineHealthy,
+    performanceTracker: performanceHealthy,
+    persistenceCoordinator: persistenceHealthy,
+    overall,
+  };
 }

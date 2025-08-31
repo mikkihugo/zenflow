@@ -352,7 +352,12 @@ export class AIDeceptionDetector {
    */
   private getIntervention(type: DeceptionAlert['type'], severity: DeceptionAlert['severity']): string {
     const interventions: Record<string, string> = {
-      'CAPABILITY_OVERREACH': ' Require tool verification before capability claims',      'DOCUMENTATION_FABRICATION': ' Request evidence or tool-based verification',      'ANALYSIS_CLAIMS': ' Require actual tool usage for verification',      'CERTAINTY_OVERREACH': ' Request qualification of confidence levels',      'PROJECT_CONFLATION':' Clarify project context and boundaries')};
+      'CAPABILITY_OVERREACH': 'Require tool verification before capability claims',
+      'DOCUMENTATION_FABRICATION': 'Request evidence or tool-based verification',
+      'ANALYSIS_CLAIMS': 'Require actual tool usage for verification',
+      'CERTAINTY_OVERREACH': 'Request qualification of confidence levels',
+      'PROJECT_CONFLATION': 'Clarify project context and boundaries',
+    };
     
     const baseIntervention = interventions[type] || 'General deception intervention';
     

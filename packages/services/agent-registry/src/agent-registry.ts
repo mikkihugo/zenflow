@@ -58,7 +58,7 @@ export class AgentRegistry extends TypedEventBase {
   private serviceAccessHandler?:(name: string) => void;
 
   constructor(
-    _memoryCoordinator?:JsonObject,
+    memoryCoordinator?:JsonObject,
     sessionPrefix = 'enhanced-agents'
   ) {
     super();
@@ -145,8 +145,8 @@ export class AgentRegistry extends TypedEventBase {
     try {
       // Track service access for performance monitoring
       if (this.serviceAccessHandler) {
-        this.serviceAccessHandler(`agent-${agent.id}`);`
-}
+        this.serviceAccessHandler(`agent-${agent.id}`);
+      }
       
       // Perform async validation
       await this.validateAgentRegistration(agent);
@@ -168,7 +168,7 @@ export class AgentRegistry extends TypedEventBase {
 
       // Register with advanced DI features
       const registrationResult = this.container.registerInstance(
-        `agent-$agent.id`,
+        `agent-${agent.id}`,
         enhancedAgent,
         {
           lifetime:Lifetime.SCOPED, // Scoped for better performance
@@ -193,19 +193,21 @@ export class AgentRegistry extends TypedEventBase {
               healthMetrics.isResponding;
 
             if (!isHealthy) {
-              this.logger.warn(`⚠️ Agent ${agent.id} health check failed`, {`
+              this.logger.warn(`WARNING: Agent ${agent.id} health check failed`, {
                 timeSinceLastSeen,
                 health:enhancedAgent.health,
                 metrics:healthMetrics,
-});
-}
+              });
+            }
 
             return isHealthy;
 },
           priority:
-            agent.type === 'coordinator')              ? 100
-              :agent.type === 'specialist')                ? 80
-                :50,
+            agent.type === 'coordinator'
+              ? 100
+              : agent.type === 'specialist'
+                ? 80
+                : 50,
 }
       );
 
@@ -229,23 +231,23 @@ export class AgentRegistry extends TypedEventBase {
 });
 
       this.emit('agentRegistered', {
-    ')        agentId:agent.id,
+        agentId:agent.id,
         registrationTime,
         capabilities:agent.capabilities,
-});
+      });
 
       this.logger.debug(
-        `📝 Agent registered with advanced features:${agent.id}`,
+        `Agent registered with advanced features: ${agent.id}`,
         {
           type:agent.type,
           capabilities:Object.keys(agent.capabilities),
           registrationTime: `${registrationTime.toFixed(2)}ms`,
-}
+        }
       );
-} catch (error) {
-      this.logger.error(`❌ Failed to register agent ${agent.id}:`, error);`
+    } catch (error) {
+      this.logger.error(`ERROR: Failed to register agent ${agent.id}:`, error);
       throw error;
-}
+    }
 }
 
   /**
@@ -271,7 +273,7 @@ export class AgentRegistry extends TypedEventBase {
 }
 
       // Resolve from container if not cached
-      const resolveResult = this.container.resolve(`agent-$agentId`);`
+      const resolveResult = this.container.resolve(`agent-${agentId}`);
       if (resolveResult.isOk()) {
         const agent = resolveResult.value;
 
@@ -293,10 +295,10 @@ export class AgentRegistry extends TypedEventBase {
 }
 
       return undefined;
-} catch (error) {
-      this.logger.error(`❌ Failed to get agent ${agentId}:`, error);`
+    } catch (error) {
+      this.logger.error(`ERROR: Failed to get agent ${agentId}:`, error);
       return undefined;
-}
+    }
 }
 
   /**
@@ -321,24 +323,25 @@ export class AgentRegistry extends TypedEventBase {
         const selectionTime = Number(endTime - startTime) / 1_000_000;
 
         this.emit('agentsSelected', {
-    ')          criteria,
+          criteria,
           resultCount:results.length,
           selectionTime,
-});
+        });
 
-        this.logger.debug(`🎯 Agents selected:$results.lengthmatches`, {`
+        this.logger.debug(`Agents selected: ${results.length} matches`, {
           criteria,
           selectionTime: `${selectionTime.toFixed(2)}ms`,
-});
+        });
 
         return results;
 }
 
       // Fallback to basic selection
       return this.basicAgentSelection(criteria);
-} catch (error) {
-      this.logger.error('❌ Advanced agent selection failed:', error);')      return this.basicAgentSelection(criteria);
-}
+    } catch (error) {
+      this.logger.error('ERROR: Advanced agent selection failed:', error);
+      return this.basicAgentSelection(criteria);
+    }
 }
 
   /**
@@ -349,7 +352,8 @@ export class AgentRegistry extends TypedEventBase {
       this.container.getServicesByCapability(capability);
 
     return discoveredServices
-      .filter((service) => service.name.startsWith('agent-'))')      .map((service) => service.service)
+      .filter((service) => service.name.startsWith('agent-'))
+      .map((service) => service.service)
       .sort(
         (a, b) =>
           (b.performance?.successRate||0) - (a.performance?.successRate||0)
@@ -384,7 +388,8 @@ export class AgentRegistry extends TypedEventBase {
       for (const tag of query.tags) {
         const taggedServices = this.container.getServicesByTag(tag);
         const tagAgents = taggedServices
-          .filter((service) => service.name.startsWith('agent-'))')          .map((service) => service.service);
+          .filter((service) => service.name.startsWith('agent-'))
+          .map((service) => service.service);
         agents.push(...tagAgents);
 }
 }
@@ -438,9 +443,9 @@ export class AgentRegistry extends TypedEventBase {
 });
 
     this.emit('agentsQueried', {
-    ')      query,
+      query,
       resultCount:filteredAgents.length,
-});
+    });
 
     return filteredAgents;
 }
@@ -526,9 +531,9 @@ export class AgentRegistry extends TypedEventBase {
       // Use config for factory customization
       const factoryConfig = config||{};
       return {
-        createAgent:(spec: JsonObject) => {
+        createAgent:(spec: JsonObject) => 
           // Professional agent creation with performance optimization
-          return {
+           ({
             ...spec,
             created:Date.now(),
             optimized:true,
@@ -536,8 +541,8 @@ export class AgentRegistry extends TypedEventBase {
             factorySettings:factoryConfig,
             priority:factoryConfig.priority || 50,
             maxConcurrency:factoryConfig.maxConcurrency || 10,
-};
-},
+})
+,
 };
 };
 }
@@ -626,7 +631,7 @@ export class AgentRegistry extends TypedEventBase {
   /**
    * Helper:Basic agent selection fallback
    */
-  private basicAgentSelection(criteria:any): any[] {
+  private basicAgentSelection(criteria:JsonObject): JsonValue[] {
     const agents = Array.from(this.agentCache.values())();
 
     return agents
@@ -647,8 +652,8 @@ export class AgentRegistry extends TypedEventBase {
  * Factory function to create professional agent registry
  */
 export function createEnhancedAgentRegistry(
-  memoryCoordinator?:any,
-  sessionPrefix ='enhanced-agents')):EnhancedAgentRegistry {
+  memoryCoordinator?:JsonObject,
+  sessionPrefix ='enhanced-agents'):EnhancedAgentRegistry {
   return new EnhancedAgentRegistry(memoryCoordinator, sessionPrefix);
 }
 

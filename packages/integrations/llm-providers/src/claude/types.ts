@@ -19,7 +19,10 @@ export type CanUseTool = (
 ) => Promise<PermissionResult>;
 
 export type PermissionMode =
-  | 'allow-all')  | 'deny-all')  | 'interactive')  | 'custom';
+  | 'allow-all'
+  | 'deny-all'
+  | 'interactive'
+  | 'custom';
 
 // =============================================================================
 // MCP Server Configuration
@@ -145,23 +148,30 @@ export const DEFAULT_TIMEOUTS = {
 },
 } as const;
 
-export const DEFAULT_SDK_OPTIONS:Omit<
+export const DEFAULT_SDK_OPTIONS: Omit<
   Required<ClaudeSDKOptions>,
-  'customPermissionHandler')> & { customPermissionHandler?:CanUseTool} = {
-  model: 'claude-3-sonnet',  maxTokens:4096,
-  temperature:0.7,
-  topP:0.9,
-  stream:false,
-  timeout:DEFAULT_TIMEOUTS.task,
-  workingDirectory:process.cwd(),
-  cachePrompts:true,
-  systemPrompt: ','  contextWindow:200000,
-  debug:false,
-  permissionMode: 'interactive',  retries:DEFAULT_TIMEOUTS.retry.maxRetries,
-  retryDelay:DEFAULT_TIMEOUTS.retry.baseDelay,
-  enableCancellation:true,
-  mcpServers:[],
-  logLevel: 'info',  outputFormat: 'text',  includeMetadata:false,
-  preserveHistory:true,
-  sessionId: ','  dangerouslySkipPermissions:false,
+  'customPermissionHandler'
+> & { customPermissionHandler?: CanUseTool } = {
+  model: 'claude-3-sonnet',
+  maxTokens: 4096,
+  temperature: 0.7,
+  topP: 0.9,
+  stream: false,
+  timeout: DEFAULT_TIMEOUTS.task,
+  workingDirectory: process.cwd(),
+  cachePrompts: true,
+  systemPrompt: '',
+  contextWindow: 200000,
+  debug: false,
+  permissionMode: 'interactive',
+  retries: DEFAULT_TIMEOUTS.retry.maxRetries,
+  retryDelay: DEFAULT_TIMEOUTS.retry.baseDelay,
+  enableCancellation: true,
+  mcpServers: [],
+  logLevel: 'info',
+  outputFormat: 'text',
+  includeMetadata: false,
+  preserveHistory: true,
+  sessionId: '',
+  dangerouslySkipPermissions: false,
 } as const;

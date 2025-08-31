@@ -5,18 +5,19 @@
  * Business logic and complex prediction algorithms should be implemented in the main app.
  */
 
+import type { AgentId, PredictionRequest} from './types';
+
 // Simple logger placeholder
 const getLogger = (name: string) => ({
   info:(msg: string, meta?:unknown) =>
-    logger.info(`[INFO: ${name}] ${msg}`, meta || '),
+    console.info(`[INFO: ${name}] ${msg}`, meta || {}),
   debug:(msg: string, meta?:unknown) =>
-    logger.info(`[DEBUG: ${name}] ${msg}`, meta || '),
+    console.info(`[DEBUG: ${name}] ${msg}`, meta || {}),
   warn:(msg: string, meta?:unknown) =>
-    logger.warn(`[WARN: ${name}] ${msg}`, meta || '),
+    console.warn(`[WARN: ${name}] ${msg}`, meta || {}),
   error:(msg: string, meta?:unknown) =>
-    logger.error(`[ERROR: ${name}] ${msg}`, meta || '),
+    console.error(`[ERROR: ${name}] ${msg}`, meta || {}),
 });
-import type { AgentId, PredictionRequest} from './types';
 
 const logger = getLogger('agent-monitoring-task-predictor');
 
@@ -33,7 +34,7 @@ export interface TaskPrediction {
   metadata?:{
     sampleSize: number;
     algorithm: string;
-    trendDirection:'improving' | ' stable' | ' declining';
+    trendDirection:'improving' | 'stable' | 'declining';
 };
 }
 

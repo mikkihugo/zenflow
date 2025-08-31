@@ -11,18 +11,26 @@
 
 const createLogger = (name: string) => ({
   info:(message: string, meta?:unknown) => 
-    logger.info(`[INFO: ${name}] ${message}`, meta ? JSON.stringify(meta) :''),
+    console.info(`[INFO: ${name}] ${message}`, meta ? JSON.stringify(meta) :''),
   debug:(message: string, meta?:unknown) => 
-    logger.info(`[DEBUG: ${name}] ${message}`, meta ? JSON.stringify(meta) :''),
+    console.info(`[DEBUG: ${name}] ${message}`, meta ? JSON.stringify(meta) : '{}'),
   warn:(message: string, meta?:unknown) => 
-    logger.warn(`[WARN: ${name}] ${message}`, meta ? JSON.stringify(meta) :''),
+    console.warn(`[WARN: ${name}] ${message}`, meta ? JSON.stringify(meta) : '{}'),
   error:(message: string, meta?:unknown) => 
-    logger.error(`[ERROR: ${name}] ${message}`, meta ? JSON.stringify(meta) :'),
+    console.error(`[ERROR: ${name}] ${message}`, meta ? JSON.stringify(meta) : '{}'),
 });
 
 // =============================================================================
 // EVENT INTERFACES - NO IMPORTS
 // =============================================================================
+
+// Type definitions first
+interface AgentId {
+  id: string;
+  swarmId: string;
+  type: string;
+  instance: number;
+}
 
 interface AgentMonitoringEvents {
   // Brain requests
@@ -104,16 +112,9 @@ interface AgentMonitoringEvents {
 // TYPE DEFINITIONS - NO IMPORTS
 // =============================================================================
 
-interface AgentId {
-  id: string;
-  swarmId: string;
-  type: string;
-  instance: number;
-}
-
 interface AgentHealth {
   agentId: string;
-  status:'healthy' | ' degraded' | ' unhealthy';
+  status:'healthy' | 'degraded' | 'unhealthy';
   lastSeen: number;
   responseTime: number;
   errorRate: number;

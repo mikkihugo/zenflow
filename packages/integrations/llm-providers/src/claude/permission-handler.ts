@@ -166,7 +166,8 @@ export async function createPermissionHandler(
     case 'custom':
       if (!_customHandler) {
         throw new Error(
-          'Custom permission handler is required when using "custom" mode')        );
+          'Custom permission handler is required when using "custom" mode'
+        );
 }
       return createCustomHandlerWrapper(_customHandler);
 
@@ -203,7 +204,9 @@ function createAllowAllHandler():CanUseTool {
       toolName,
       params,
       result,
-      'system',      'allow-all-handler')    );
+      'system',
+      'allow-all-handler'
+    );
     return result;
 };
 }
@@ -231,7 +234,9 @@ function createDenyAllHandler():CanUseTool {
       toolName,
       params,
       result,
-      'system',      'deny-all-handler')    );
+      'system',
+      'deny-all-handler'
+    );
 
     return result;
 };
@@ -278,7 +283,7 @@ function createInteractiveHandler():CanUseTool {
         toolName,
         params,
         result,
-        'system',        'interactive-handler')      );
+        'system',        'interactive-handler');
 
       return result;
 }
@@ -301,8 +306,7 @@ function createInteractiveHandler():CanUseTool {
         toolName,
         params,
         result,
-        'system',        'interactive-handler')      );
-
+        'system',        'interactive-handler');
       return result;
 }
 
@@ -323,7 +327,9 @@ function createInteractiveHandler():CanUseTool {
       toolName,
       params,
       result,
-      'system',      'interactive-handler')    );
+      'system',
+      'interactive-handler'
+    );
 
     return result;
 };
@@ -371,12 +377,14 @@ function createCustomHandlerWrapper(customHandler:CanUseTool): CanUseTool {
       if (
         !result ||
         typeof result !== 'object' ||
-        typeof result['allowed'] !== ' boolean')      ) {
+        typeof result['allowed'] !== 'boolean'
+      ) {
         logger.error('Custom permission handler returned invalid result');
         return {
-          allowed:false,
-          reason: 'Invalid handler response',};
-}
+          allowed: false,
+          reason: 'Invalid handler response',
+        };
+      }
 
       if (!result['allowed'] && !result.reason) {
         logger.warn('Permission denied but no reason provided');
@@ -393,22 +401,22 @@ function createCustomHandlerWrapper(customHandler:CanUseTool): CanUseTool {
         toolName,
         params,
         result,
-        'custom',        'custom-handler')      );
+        'custom',        'custom-handler');
 
       return result;
-} catch (error) {
+    } catch (error) {
       logger.error('Error in custom permission handler: ', error);
-'
+      
       const result = {
-        allowed:false,
-        reason:`Permission handler error: ${error instanceof Error ? error['message'] : ' Unknown error'}`,
-};
+        allowed: false,
+        reason: `Permission handler error: ${error instanceof Error ? error['message'] : 'Unknown error'}`,
+      };
 
       globalAuditor.logPermissionCheck(
         toolName,
         params,
         result,
-        'custom',        'custom-handler-error')      );
+        'custom',        'custom-handler-error');
 
       return result;
 }

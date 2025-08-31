@@ -5,14 +5,14 @@
  * Supports rate-based, probabilistic, and attribute-based sampling.
  */
 
-import { getLogger} from '@claude-zen/foundation/logging';
-import type { ProcessorConfig} from '../types.js';
-import type { BaseProcessor} from './index.js';
+import { getLogger, JsonObject, JsonValue } from '@claude-zen/foundation';
+import type { ProcessorConfig, TelemetryData } from '../types.js';
+import type { BaseProcessor } from './index.js';
 
 /**
  * Sampling strategy types
  */
-type SamplingStrategy = | 'rate | probabilistic | attribute | priority | adaptive;
+type SamplingStrategy = 'rate' | 'probabilistic' | 'attribute' | 'priority' | 'adaptive';
 
 /**
  * Sampling rule interface
@@ -23,7 +23,7 @@ interface SamplingRule {
   probability?:number;
   attribute?:string;
   value?:any;
-  priority?:'high''  |  ' medium''  |  ' low';
+  priority?: 'high' | 'medium' | 'low';
   condition?:string;
 }
 
@@ -31,14 +31,25 @@ interface SamplingRule {
  * Sampler processor implementation
  */
 export class SamplerProcessor implements BaseProcessor {
+  private config: ProcessorConfig;
+  private logger: any;
+  private samplingRules: SamplingRule[];
+  private targetRate: number;
+  private currentRate: number;
+  private processedCount: number = 0;
+  private sampledCount: number = 0;
+  private rateCounter: number = 0;
+  private rateResetTime: number = Date.now();
+  private lastProcessedTime: number = Date.now();
+  private lastError: Error | null = null;
 
-  constructor(config:ProcessorConfig) {
+  constructor(config: ProcessorConfig) {
     this.config = config;
-    this.logger = getLogger(`SamplerProcessor:${config.name}`);`
+    this.logger = getLogger(`SamplerProcessor:${config.name}`);
 
     // Parse sampling rules
-    this.samplingRules = this.parseSamplingRules(config.config?.rules  |  |  []);
-    this.targetRate = config.config?.targetRate  |  |  0.1;
+    this.samplingRules = this.parseSamplingRules(config.config?.rules || []);
+    this.targetRate = config.config?.targetRate || 0.1;
     this.currentRate = this.targetRate;
 }
 
@@ -114,7 +125,7 @@ export class SamplerProcessor implements BaseProcessor {
 
       if (sampledItems.length < dataItems.length) {
         this.logger.debug(
-          `Sampled ${\1}.lengthout of ${\1}.lengthitems``
+          `Sampled ${sampledItems.length} out of ${dataItems.length} items`
         );
 }
 
@@ -135,17 +146,18 @@ export class SamplerProcessor implements BaseProcessor {
       totalSampled:this.sampledCount,
       sampleRate:
         this.processedCount > 0
-          ? `${{}((this.sampledCount / this.processedCount) * 100).toFixed(1)}%`
-          : '0%',      finalAdaptiveRate:this.currentRate,
+          ? `${((this.sampledCount / this.processedCount) * 100).toFixed(1)}%`
+          : '0%',
+      finalAdaptiveRate: this.currentRate,
 });
 }
 
-  async getHealthStatus():Promise<{
-    status:'healthy''  |  ' degraded''  |  ' unhealthy';
-    lastProcessed?:number;
-    lastError?:string;
+  async getHealthStatus(): Promise<{
+    status: 'healthy' | 'degraded' | 'unhealthy';
+    lastProcessed?: number;
+    lastError?: string;
 }> {
-    let status:'healthy | degraded | unhealthy'' = ' healthy';
+    let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
 
     if (this.lastError) {
       status = 'unhealthy';
@@ -160,8 +172,8 @@ export class SamplerProcessor implements BaseProcessor {
 
     return {
       status,
-      lastProcessed:this.lastProcessedTime  |  |  undefined,
-      lastError:this.lastError  |  |  undefined,
+      lastProcessed: this.lastProcessedTime || undefined,
+      lastError: this.lastError || undefined,
 };
 }
 
@@ -196,7 +208,7 @@ export class SamplerProcessor implements BaseProcessor {
     // Apply sampling rules in order
     for (const rule of this.samplingRules) {
       // Check condition if present
-      if (rule.condition  &&&&  !this.evaluateCondition(data, rule.condition)) {
+      if (rule.condition && !this.evaluateCondition(data, rule.condition)) {
         continue;
 }
 
@@ -218,15 +230,20 @@ export class SamplerProcessor implements BaseProcessor {
     rule:SamplingRule
   ):boolean | null {
     switch (rule.strategy) {
-      case'rate': ')'        return this.applyRateSampling(rule.rate  |  |  1);
+      case 'rate':
+        return this.applyRateSampling(rule.rate || 1);
 
-      case'probabilistic': ')'        return Math.random() < (rule.probability  |  |  0.1);
+      case 'probabilistic':
+        return Math.random() < (rule.probability || 0.1);
 
-      case'attribute': ')'        return this.applyAttributeSampling(data, rule);
+      case 'attribute':
+        return this.applyAttributeSampling(data, rule);
 
-      case 'priority': ')'        return this.applyPrioritySampling(data, rule);
+      case 'priority':
+        return this.applyPrioritySampling(data, rule);
 
-      case 'adaptive': ')'        return Math.random() < this.currentRate;
+      case 'adaptive':
+        return Math.random() < this.currentRate;
 
       default:
         return null;
@@ -263,7 +280,7 @@ export class SamplerProcessor implements BaseProcessor {
 
     if (rule.value !== undefined) {
       // Sample only if attribute matches value
-      return attributeValue ===  rule.value;
+      return attributeValue === rule.value;
 } else {
       // Sample if attribute exists
       return attributeValue !== undefined;
@@ -288,7 +305,7 @@ export class SamplerProcessor implements BaseProcessor {
       low:0.1, // 10% for low priority
 };
 
-    const samplingRate = rates[rule.priority]  |  |  0.1;
+    const samplingRate = rates[rule.priority] || 0.1;
     return Math.random() < samplingRate;
 }
 
@@ -298,15 +315,15 @@ export class SamplerProcessor implements BaseProcessor {
   private getCurrentSampleRate(data:TelemetryData): number {
     // Find the most specific applicable rate
     for (const rule of this.samplingRules) {
-      if (rule.condition  &&&&  !this.evaluateCondition(data, rule.condition)) {
+      if (rule.condition && !this.evaluateCondition(data, rule.condition)) {
         continue;
 }
 
-      if (rule.strategy === 'probabilistic'  &&&&  rule.probability) {
-    ')        return rule.probability;
-} else if (rule.strategy ===  'rate'  &&&&  rule.rate) {
-    ')        return 1 / rule.rate;
-}
+      if (rule.strategy === 'probabilistic' && rule.probability) {
+        return rule.probability;
+      } else if (rule.strategy === 'rate' && rule.rate) {
+        return 1 / rule.rate;
+      }
 }
 
     return this.currentRate;
@@ -315,35 +332,38 @@ export class SamplerProcessor implements BaseProcessor {
   /**
    * Infer priority from telemetry data
    */
-  private inferPriority(data:TelemetryData): 'high | medium | low'' {
-    ')    // Check for error indicators
-    if (data.type ===  'logs'  &&&&  data.data  &&&&  typeof data.data ===  ' object') {
-    ')      const level = (data.data as any).level;
-      if (level ===  'error''  |  |  level === ' critical''  |  |  level === ' fatal') {
-    ')        return 'high;
-}
-      if (level ===  'warn') {
-    ')        return 'medium;
-}
-}
+  private inferPriority(data: TelemetryData): 'high' | 'medium' | 'low' {
+    // Check for error indicators
+    if (data.type === 'logs' && data.data && typeof data.data === 'object') {
+      const level = (data.data as any).level;
+      if (level === 'error' || level === 'critical' || level === 'fatal') {
+        return 'high';
+      }
+      if (level === 'warn') {
+        return 'medium';
+      }
+    }
 
     // Check for trace errors
     if (
-      data.type ===  'traces'  &&&& ')      data.data  &&&& 
-      (data.data as any).status ===  'ERROR')    ) 
-      return 'high;
+      data.type === 'traces' &&
+      data.data &&
+      (data.data as any).status === 'ERROR'
+    ) {
+      return 'high';
+    }
 
     // Check attributes for priority hints
-    const priority = data.attributes?.priority  |  |  data.attributes?.level;
-    if (priority === 'high''  |  |  priority === ' error') {
-    ')      return 'high;
-}
-    if (priority ===  'medium''  |  |  priority === ' warn') {
-    ')      return 'medium;
-}
+    const priority = data.attributes?.priority || data.attributes?.level;
+    if (priority === 'high' || priority === 'error') {
+      return 'high';
+    }
+    if (priority === 'medium' || priority === 'warn') {
+      return 'medium';
+    }
 
-    return 'low;
-}
+    return 'low';
+  }
 
   /**
    * Start adaptive sampling adjustment
@@ -398,39 +418,45 @@ export class SamplerProcessor implements BaseProcessor {
   /**
    * Get field value using dot notation
    */
-  private getFieldValue(data:any, fieldPath:string): any {
-    const parts = fieldPath.split('.');')    let value = data;
+  private getFieldValue(data: JsonObject, fieldPath: string): JsonValue {
+    const parts = fieldPath.split('.');
+    let value = data;
 
     for (const part of parts) {
-      if (value ===  null  |  |  value ===  undefined) {
+      if (value === null || value === undefined) {
         return undefined;
-}
+      }
       value = value[part];
-}
+    }
 
     return value;
-}
+  }
 
   /**
    * Evaluate simple conditions
    */
-  private evaluateCondition(data:TelemetryData, condition:string): boolean {
+  private evaluateCondition(data: TelemetryData, condition: string): boolean {
     try {
       // Simple condition evaluation
-      const parts = condition.split(' ');')      if (parts.length ===  3) {
+      const parts = condition.split(' ');
+      if (parts.length === 3) {
         const [field, operator, expectedValue] = parts;
         const actualValue = this.getFieldValue(data, field);
 
         switch (operator) {
-          case '==': ')'            return actualValue ===  expectedValue;
-          case '!=': ')'            return actualValue !== expectedValue;
-          case 'contains': ')'            return String(actualValue).includes(expectedValue);
-          case 'exists': ')'            return actualValue !== undefined;
-}
-}
-} catch (error) {
-      this.logger.warn(`Failed to evaluate condition:${condition}`, error);`
-}
+          case '==':
+            return actualValue === expectedValue;
+          case '!=':
+            return actualValue !== expectedValue;
+          case 'contains':
+            return String(actualValue).includes(expectedValue);
+          case 'exists':
+            return actualValue !== undefined;
+        }
+      }
+    } catch (error) {
+      this.logger.warn(`Failed to evaluate condition: ${condition}`, error);
+    }
 
     return true;
 }
@@ -440,7 +466,8 @@ export class SamplerProcessor implements BaseProcessor {
    */
   private parseSamplingRules(rules:any[]): SamplingRule[] {
     return rules.map((rule) => ({
-      strategy:rule.strategy  |  |  'probabilistic',      rate:rule.rate,
+      strategy: rule.strategy || 'probabilistic',
+      rate: rule.rate,
       probability:rule.probability,
       attribute:rule.attribute,
       value:rule.value,

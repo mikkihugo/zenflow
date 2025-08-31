@@ -155,12 +155,12 @@ export abstract class BaseRegistryAdapter extends TypedEventBase {
   /**
    * Emit migration events
    */
-  protected emitMigrationEvent(event:string, data:JsonValue): void {
+  protected emitMigrationEvent(event: string, data: JsonValue): void {
     if (this.options.enableMigrationLogging) {
-      this.logger.debug(`Migration event:$event`, data);
-}
+      this.logger.debug(`Migration event: ${event}`, data);
+    }
     this.emit(event, data);
-}
+  }
 
   /**
    * Get the underlying service container
@@ -230,24 +230,26 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
 
     if (result.isErr()) {
       throw new Error(
-        `Failed to register agent $agent.id:$result.error.message``
+        `Failed to register agent ${agent.id}: ${result.error.message}`
       );
-}
+    }
 
     // Store for legacy compatibility
     this.agents.set(agent.id, agent);
 
-    this.emitMigrationEvent('agentRegistered', { agent});')}
+    this.emitMigrationEvent('agentRegistered', { agent });
+  }
 
   /**
    * Unregister an agent
    */
-  async unregisterAgent(agentId:string): Promise<void> {
+  async unregisterAgent(agentId: string): Promise<void> {
     // Perform async cleanup before unregistration
     await this.cleanupAgentResources(agentId);
     
     this.agents.delete(agentId);
-    // ServiceContainer doesn't expose unregister, but we can disable the service')    this.container.setServiceEnabled(agentId, false);
+    // ServiceContainer doesn't expose unregister, but we can disable the service
+    this.container.setServiceEnabled(agentId, false);
 
     this.emitMigrationEvent('agentUnregistered', { agentId});')}
 

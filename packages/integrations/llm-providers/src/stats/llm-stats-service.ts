@@ -47,12 +47,13 @@ export class LLMStatsService {
   ):void {
     const record:LLMCallRecord = {
       id:this.generateCallId(),
-      timestamp:new Date(),
-      requestType:metadata?.requestType || 'analyze',      provider:result.provider,
-      model:this.getProviderModel(result.provider),
-      task:request.task,
-      contextLength:(request.prompt || ').length,
-      executionTime:result.executionTime,
+      timestamp: new Date(),
+      requestType: metadata?.requestType || 'analyze',
+      provider: result.provider,
+      model: this.getProviderModel(result.provider),
+      task: request.task,
+      contextLength: (request.prompt || '').length,
+      executionTime: result.executionTime,
       success:result.success,
       error:result.error,
       tokenUsage:metadata?.tokenUsage
@@ -185,13 +186,15 @@ export class LLMStatsService {
 
     if (routingStats['fallbackRate'] > 0.3) {
       recommendations.push(
-        'High fallback rate detected - consider adjusting provider priorities')      );
-}
+        'High fallback rate detected - consider adjusting provider priorities'
+      );
+    }
 
     if (routingStats['optimalRoutingRate'] < 0.7) {
       recommendations.push(
-        'Suboptimal routing detected - review provider selection logic')      );
-}
+        'Suboptimal routing detected - review provider selection logic'
+      );
+    }
 
     const topRoutes = routingStats.commonRoutingPatterns
       .sort((a, b) => b['frequency'] - a.frequency)

@@ -49,28 +49,28 @@ export interface CollectorConfig {
 export interface ExporterConfig {
   /** Exporter type */
   type:
-    | 'jaeger')    | 'otlp-http')    | 'otlp-grpc')    | 'prometheus')    | 'console')    | 'file';
+    | 'jaeger' | 'otlp-http' | 'otlp-grpc' | 'prometheus' | 'console' | 'file';
 
   /** Exporter name/identifier */
-  name:string;
+  name: string;
 
   /** Whether this exporter is enabled */
-  enabled?:boolean;
+  enabled?: boolean;
 
   /** Backend endpoint URL */
-  endpoint?:string;
+  endpoint?: string;
 
   /** Authentication headers */
-  headers?:Record<string, string>;
+  headers?: Record<string, string>;
 
   /** Timeout in milliseconds */
-  timeout?:number;
+  timeout?: number;
 
   /** Which signals to export */
-  signals?:('traces' | ' metrics' | ' logs')[];
+  signals?: ('traces' | 'metrics' | 'logs')[];
 
   /** Exporter-specific configuration */
-  config?:Record<string, any>;
+  config?: Record<string, any>;
 }
 
 /**
@@ -79,16 +79,16 @@ export interface ExporterConfig {
 export interface ProcessorConfig {
   /** Processor type */
   type:
-    | 'batch')    | 'filter')    | 'transform')    | 'sampler')    | 'memory_limiter')    | 'resource')    | 'attribute';
+    | 'batch' | 'filter' | 'transform' | 'sampler' | 'memory_limiter' | 'resource' | 'attribute';
 
   /** Processor name */
-  name:string;
+  name: string;
 
   /** Whether processor is enabled */
-  enabled?:boolean;
+  enabled?: boolean;
 
   /** Processor-specific configuration */
-  config?:Record<string, any>;
+  config?: Record<string, any>;
 }
 
 /**
@@ -194,13 +194,13 @@ export type SignalType = 'traces' | ' metrics' | ' logs';
  * Backend types supported
  */
 export type BackendType =
-  | 'jaeger')  | 'otlp-http')  | 'otlp-grpc')  | 'prometheus')  | 'console')  | 'file';
+  | 'jaeger' | 'otlp-http' | 'otlp-grpc' | 'prometheus' | 'console' | 'file';
 
 /**
  * Processor types available
  */
 export type ProcessorType =
-  | 'batch')  | 'filter')  | 'transform')  | 'sampler')  | 'memory_limiter')  | 'resource')  | 'attribute';
+  | 'batch' | 'filter' | 'transform' | 'sampler' | 'memory_limiter' | 'resource' | 'attribute';
 
 /**
  * Internal telemetry data structure

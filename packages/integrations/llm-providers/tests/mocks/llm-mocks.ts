@@ -38,13 +38,14 @@ export const createMockLLMProvider = (providerId:string = 'claude-code') => ({
     success:true,
     result: 'Task completed successfully',    provider:providerId,
 }),
-  getCapabilities:vi.fn().mockResolvedValue({
-    fileOperations:providerId === 'claude-code',    codeCompletion:providerId.includes('copilot'),
-    chat:true,
-    streaming:true,
-}),
-  isAvailable:vi.fn().mockResolvedValue(true),
-  health:vi.fn().mockResolvedValue({ status: 'healthy', latency:100}),
+  getCapabilities: vi.fn().mockResolvedValue({
+    fileOperations: providerId === 'claude-code',
+    codeCompletion: providerId.includes('copilot'),
+    chat: true,
+    streaming: true,
+  }),
+  isAvailable: vi.fn().mockResolvedValue(true),
+  health: vi.fn().mockResolvedValue({ status: 'healthy', latency: 100 }),
 });
 
 // Mock GitHub Models API
@@ -109,18 +110,20 @@ export const mockMessageProcessor = {
     if (!Array.isArray(messages)) return [];
     return messages.filter((msg) => msg?.role && msg.content);
 }),
-  validateMessage:vi.fn().mockImplementation((message: any) => {
-    if (!message||!message.role||!message.content) {
-      return { valid:false, reason: 'Missing required fields'};')}
-    return { valid:true};
-}),
-  sanitizeMessage:vi.fn().mockImplementation((message: any) => {
+  validateMessage: vi.fn().mockImplementation((message: any) => {
+    if (!message || !message.role || !message.content) {
+      return { valid: false, reason: 'Missing required fields' };
+    }
+    return { valid: true };
+  }),
+  sanitizeMessage: vi.fn().mockImplementation((message: any) => {
     if (!message) return message;
     return {
       ...message,
-      content:message.content||',      sanitized:true,
-};
-}),
+      content: message.content || '',
+      sanitized: true,
+    };
+  }),
 };
 
 // Mock permission handler

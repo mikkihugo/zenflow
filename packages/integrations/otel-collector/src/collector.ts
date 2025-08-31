@@ -210,16 +210,18 @@ export class InternalOTELCollector {
 
     // Determine overall status
     const hasUnhealthyExporter = Object.values(exporterHealth).some(
-      (h) => h.status === 'unhealthy')    );
+      (h) => h.status === 'unhealthy'
+    );
     const hasDegradedExporter = Object.values(exporterHealth).some(
-      (h) => h.status === 'degraded')    );
+      (h) => h.status === 'degraded'
+    );
 
-    let overallStatus:'healthy' | ' degraded' | ' unhealthy' = ' healthy';
+    let overallStatus: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
     if (hasUnhealthyExporter) {
       overallStatus = 'unhealthy';
-} else if (hasDegradedExporter) {
+    } else if (hasDegradedExporter) {
       overallStatus = 'degraded';
-}
+    }
 
     // Check resource usage
     const memUsedMB = stats.memoryUsage.heapUsed / (1024 * 1024);
@@ -227,17 +229,20 @@ export class InternalOTELCollector {
     const memUsagePercent = (memUsedMB / memTotalMB) * 100;
 
     return {
-      status:overallStatus,
-      exporters:exporterHealth,
-      resources:{
+      status: overallStatus,
+      exporters: exporterHealth,
+      resources: {
         memory:
           memUsagePercent > 90
-            ? 'critical')            :memUsagePercent > 75
-              ? 'warning')              : 'ok',        disk: 'ok', // TODO:Implement disk usage check
-        cpu: 'ok', // TODO:Implement CPU usage check
-},
-      timestamp:Date.now(),
-};
+            ? 'critical'
+            : memUsagePercent > 75
+              ? 'warning'
+              : 'ok',
+        disk: 'ok', // TODO: Implement disk usage check
+        cpu: 'ok', // TODO: Implement CPU usage check
+      },
+      timestamp: Date.now(),
+    };
 }
 
   /**

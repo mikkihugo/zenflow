@@ -256,14 +256,16 @@ export class EventDrivenAgentRegistry extends TypedEventBase {
 } else {
           this.emit('agent-registry:agent-registered', {
             requestId:data.requestId,
-            agentId: ','            agent:{} as AgentInstance,
+            agentId: '',
+            agent:{} as AgentInstance,
             success:false,
             timestamp:Date.now(),
-});
+          });
           this.emit('agent-registry:error', {
             requestId:data.requestId,
-            error:result.error?.message || 'Registration failed',            timestamp:Date.now(),
-});
+            error:result.error?.message || 'Registration failed',
+            timestamp:Date.now(),
+          });
 }
 } catch (error) {
         this.emit('agent-registry:error', {

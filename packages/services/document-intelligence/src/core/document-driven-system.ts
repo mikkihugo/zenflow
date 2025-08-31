@@ -16,23 +16,23 @@ const logger = getLogger('SafeArtifactIntelligence');
 
 // SAFe 6.0 Essential artifacts - ALL STORED IN DATABASE
 export interface SafeArtifact {
-  id:string; // Database ID
-  type: 'portfolio-epic|business-case|pi-objective|feature|user-story|enabler|architecture-runway;
-'  safeLevel:'portfolio' | ' program' | ' team';
-  artifactState:string; // Portfolio Kanban states, PI states, etc.
-  title:string;
-  description:string;
-  content:string; // Stored in database, NOT files
-  databaseId?:string; // Reference to specific database record
-  metadata?:{
-    author?:string;
-    created?:Date;
-    updated?:Date;
-    wsjfScore?:number;
-    epicId?:string;
-    piId?:string;
-    businessValue?:number;
-    relatedArtifacts?:string[];
+  id: string; // Database ID
+  type: 'portfolio-epic' | 'business-case' | 'pi-objective' | 'feature' | 'user-story' | 'enabler' | 'architecture-runway';
+  safeLevel: 'portfolio' | 'program' | 'team';
+  artifactState: string; // Portfolio Kanban states, PI states, etc.
+  title: string;
+  description: string;
+  content: string; // Stored in database, NOT files
+  databaseId?: string; // Reference to specific database record
+  metadata?: {
+    author?: string;
+    created?: Date;
+    updated?: Date;
+    wsjfScore?: number;
+    epicId?: string;
+    piId?: string;
+    businessValue?: number;
+    relatedArtifacts?: string[];
 };
 }
 

@@ -284,7 +284,12 @@ export function listLLMProviders():Array<{
  */
 export function getLLMProviderByCapability(
   capability:
-    | 'file-operations')    | 'agentic-development')    | 'code-completion')    | 'chat')    | 'inference')):LLMProvider {
+    | 'file-operations'
+    | 'agentic-development'
+    | 'code-completion'
+    | 'chat'
+    | 'inference'
+): LLMProvider {
   switch (capability) {
     case 'file-operations':
       return new LLMProvider('claude-code'); // Best for file ops

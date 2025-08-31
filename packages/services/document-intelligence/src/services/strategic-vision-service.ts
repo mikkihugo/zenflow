@@ -284,23 +284,19 @@ export class StrategicVisionService {
     let outcomeText = '';
 
     for (const doc of documents) {
-      const content = (doc.content || '') + ' ' + (doc.summary || '');
-      const sentences = content.split(/[.!?]+/);
+      const content = `${doc.content || ''  } ${  doc.summary || ''}`;
+      const sentences = content.split(/[!.?]+/);
 
       for (const sentence of sentences) {
         const lowerSentence = sentence.toLowerCase();
         
-        if (missionKeywords.some(keyword => lowerSentence.includes(keyword))) {
-          if (sentence.length > missionText.length) {
+        if (missionKeywords.some(keyword => lowerSentence.includes(keyword)) && sentence.length > missionText.length) {
             missionText = sentence.trim();
           }
-        }
         
-        if (outcomeKeywords.some(keyword => lowerSentence.includes(keyword))) {
-          if (sentence.length > outcomeText.length) {
+        if (outcomeKeywords.some(keyword => lowerSentence.includes(keyword)) && sentence.length > outcomeText.length) {
             outcomeText = sentence.trim();
           }
-        }
       }
     }
 
@@ -318,8 +314,8 @@ export class StrategicVisionService {
     const goals: Set<string> = new Set();
 
     for (const doc of documents) {
-      const content = (doc.content || '') + ' ' + (doc.summary || '');
-      const sentences = content.split(/[.!?]+/);
+      const content = `${doc.content || ''  } ${  doc.summary || ''}`;
+      const sentences = content.split(/[!.?]+/);
 
       for (const sentence of sentences) {
         const lowerSentence = sentence.toLowerCase();
@@ -350,8 +346,8 @@ export class StrategicVisionService {
     let totalRelevantSentences = 0;
 
     for (const doc of documents) {
-      const content = (doc.content || '') + ' ' + (doc.summary || '');
-      const sentences = content.split(/[.!?]+/);
+      const content = `${doc.content || ''  } ${  doc.summary || ''}`;
+      const sentences = content.split(/[!.?]+/);
 
       for (const sentence of sentences) {
         const lowerSentence = sentence.toLowerCase();
@@ -397,8 +393,8 @@ export class StrategicVisionService {
     let totalRelevantSentences = 0;
 
     for (const doc of documents) {
-      const content = (doc.content || '') + ' ' + (doc.summary || '');
-      const sentences = content.split(/[.!?]+/);
+      const content = `${doc.content || ''  } ${  doc.summary || ''}`;
+      const sentences = content.split(/[!.?]+/);
 
       for (const sentence of sentences) {
         const lowerSentence = sentence.toLowerCase();
@@ -428,7 +424,7 @@ export class StrategicVisionService {
     const stakeholders: Set<string> = new Set();
 
     for (const doc of documents) {
-      const content = (doc.content || '') + ' ' + (doc.summary || '');
+      const content = `${doc.content || ''  } ${  doc.summary || ''}`;
       
       // Extract potential stakeholder names
       const words = content.split(/\s+/);
@@ -460,17 +456,15 @@ export class StrategicVisionService {
     let timelineText = '';
 
     for (const doc of documents) {
-      const content = (doc.content || '') + ' ' + (doc.summary || '');
-      const sentences = content.split(/[.!?]+/);
+      const content = `${doc.content || ''  } ${  doc.summary || ''}`;
+      const sentences = content.split(/[!.?]+/);
 
       for (const sentence of sentences) {
         const lowerSentence = sentence.toLowerCase();
         
-        if (timeKeywords.some(keyword => lowerSentence.includes(keyword))) {
-          if (sentence.length > timelineText.length && sentence.length < 300) {
+        if (timeKeywords.some(keyword => lowerSentence.includes(keyword)) && sentence.length > timelineText.length && sentence.length < 300) {
             timelineText = sentence.trim();
           }
-        }
       }
     }
 
@@ -487,8 +481,8 @@ export class StrategicVisionService {
     const risks: Set<string> = new Set();
 
     for (const doc of documents) {
-      const content = (doc.content || '') + ' ' + (doc.summary || '');
-      const sentences = content.split(/[.!?]+/);
+      const content = `${doc.content || ''  } ${  doc.summary || ''}`;
+      const sentences = content.split(/[!.?]+/);
 
       for (const sentence of sentences) {
         const lowerSentence = sentence.toLowerCase();
@@ -515,8 +509,8 @@ export class StrategicVisionService {
     const metrics: Set<string> = new Set();
 
     for (const doc of documents) {
-      const content = (doc.content || '') + ' ' + (doc.summary || '');
-      const sentences = content.split(/[.!?]+/);
+      const content = `${doc.content || ''  } ${  doc.summary || ''}`;
+      const sentences = content.split(/[!.?]+/);
 
       for (const sentence of sentences) {
         const lowerSentence = sentence.toLowerCase();

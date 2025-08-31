@@ -599,7 +599,7 @@ export class GRPO extends FinetuneTeleprompter {
 
 		if (trainset.length < this.num_dspy_examples_per_grpo_step) {
 			logger.warning(
-				`Number of training examples ${trainset.length} is less than the number of examples per GRPO step ${this.num_dspy_examples_per_grpo_step}. ` +`
+				`Number of training examples ${trainset.length} is less than the number of examples per GRPO step ${this.num_dspy_examples_per_grpo_step}. ` +
 					"Repeating the training set to fill the GRPO step. This could lead to overfitting and training instability.",
 			);
 			const multiplier = Math.ceil(
@@ -624,11 +624,11 @@ export class GRPO extends FinetuneTeleprompter {
 		const student_lms = new Set(student.predictors().map((pred) => pred.lm));
 		if (student_lms.size !== 1) {
 			throw new Error(
-				`Student program has multiple LMs:${Array.from(student_lms)}. ` +`
+				`Student program has multiple LMs:${Array.from(student_lms)}. ` +
 					"GRPO only supports student programs with a single LM. " +
 					"You can set the LM for a program with `program.set_lm(...)`",
 			);
-}
+		}
 
 		// Regular input validation starts here
 		if (this.use_train_as_val && valset !== null) {
@@ -661,14 +661,14 @@ export class GRPO extends FinetuneTeleprompter {
 		// Ensure that the teachers list contains the student program
 		if (!teachers.includes(student)) {
 			throw new Error(
-				`Student program ${student} is not in the list of teachers ${teachers}. Please provide the student program as one of the teachers. ` +`
+				`Student program ${student} is not in the list of teachers ${teachers}. Please provide the student program as one of the teachers. ` +
 					"Alternatively, you can leave the teacher argument as None, and the student program will be used as the teacher program.",
 			);
-}
+		}
 
 		if (this.num_rollouts_per_grpo_step % teachers.length !== 0) {
 			throw new Error(
-				`The GRPO group size (num_rollouts_per_grpo_step) ${this.num_rollouts_per_grpo_step} is not divisible by the number of teachers ${teachers.length}. ` +`
+				`The GRPO group size (num_rollouts_per_grpo_step) ${this.num_rollouts_per_grpo_step} is not divisible by the number of teachers ${teachers.length}. ` +
 					"This is required to ensure that each teacher gets the same number of examples. " +
 					"Please provide a number of examples that is divisible by the number of teachers.",
 			);
@@ -696,7 +696,7 @@ export class GRPO extends FinetuneTeleprompter {
 		logger.info("Preparing the GRPO training job(s)...");
 		const grpo_training_jobs = new Map<string, any>();
 		for (const [pred_ind, pred] of student.predictors().entries()) {
-			const data_key = this.multitask ? null:pred_ind;
+			const data_key = this.multitask ? null : pred_ind;
 			const job_key = `${pred.lm}_${data_key}`;
 			if (!grpo_training_jobs.has(job_key)) {
 				const train_kwargs = this.trainKwargs?.get(pred.lm);
@@ -1014,23 +1014,23 @@ export class GRPO extends FinetuneTeleprompter {
 				logger,
 				train_step_idx,
 			);
-}
+		}
 
 		logger.info("Done with the iterations! Retrieving the final model(s)...");
 		for (const [, job] of grpo_training_jobs.entries()) {
 			job.terminate();
-}
+		}
 
 		// Revert cache states to their initial values
 		recover_lm_cache(student, lm_cache_dict);
 		for (const t of teachers) {
 			recover_lm_cache(t, lm_cache_dict);
-}
+		}
 
 		logger.info("GRPO compiler has finished compiling the student program");
 		(student as any)._compiled = true;
 		return student;
-}
+	}
 
 	/**
 	 * Check if prediction is a failed prediction
@@ -1041,7 +1041,7 @@ export class GRPO extends FinetuneTeleprompter {
 			typeof prediction === "object" &&
 			"completion_text" in prediction
 		);
-}
+	}
 }
 
 /**

@@ -6,7 +6,7 @@
  */
 
 import { readdir, readFile, stat } from 'node:fs/promises';
-import { extname, join, relative } from 'node:path';
+import { join, relative } from 'node:path';
 import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('EnhancedDocumentScanner');

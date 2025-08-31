@@ -105,7 +105,7 @@ export class ProcessorManager extends TypedEventBase {
    * Process telemetry data through all processors
    */
   async process(data:TelemetryData): Promise<TelemetryData  |  null> {
-    if (!this.initialized   |  |   this.isShuttingDown) {
+    if (!this.initialized  ||  this.isShuttingDown) {
       return data;
 }
 
@@ -114,11 +114,11 @@ export class ProcessorManager extends TypedEventBase {
     try {
       // Process through each processor in order
       for (const [name, processor] of this.processors) {
-        if (processedData ===  null) break;
+        if (processedData === null) break;
 
         processedData = await processor.process(processedData);
 
-        if (processedData ===  null) {
+        if (processedData === null) {
           this.logger.debug(`Data filtered out by processor:${name}`);
           break;
 }
@@ -143,7 +143,7 @@ export class ProcessorManager extends TypedEventBase {
    * Process batch of telemetry data
    */
   async processBatch(dataItems:TelemetryData[]): Promise<TelemetryData[]> {
-    if (!this.initialized   |  |   this.isShuttingDown) {
+    if (!this.initialized  ||  this.isShuttingDown) {
       return dataItems;
 }
 
@@ -152,11 +152,11 @@ export class ProcessorManager extends TypedEventBase {
     try {
       // Process through each processor in order
       for (const [name, processor] of this.processors) {
-        if (processedItems.length ===  0) break;
+        if (processedItems.length === 0) break;
 
         processedItems = await processor.processBatch(processedItems);
 
-        if (processedItems.length ===  0) {
+        if (processedItems.length === 0) {
           this.logger.debug(`All data filtered out by processor:${name}`);
           break;
 }
@@ -233,10 +233,10 @@ export class ProcessorManager extends TypedEventBase {
         const health = await processor.getHealthStatus();
         processorStatuses.push({ name, status:health.status});
 
-        if (health.status ===  'unhealthy') {
+        if (health.status === 'unhealthy') {
           overallStatus = 'unhealthy';
 } else if (
-          health.status ===  'degraded'  &&&& 
+          health.status === 'degraded'  && 
           overallStatus === 'healthy')        ) {
           overallStatus = 'degraded';
 }
@@ -254,8 +254,8 @@ export class ProcessorManager extends TypedEventBase {
     return {
       status:overallStatus,
       processorCount:this.processors.size,
-      lastProcessed:this.lastProcessedTime   |  |   undefined,
-      lastError:this.lastError   |  |   undefined,
+      lastProcessed:this.lastProcessedTime  ||  undefined,
+      lastError:this.lastError  ||  undefined,
       processors:processorStatuses,
 };
 }
