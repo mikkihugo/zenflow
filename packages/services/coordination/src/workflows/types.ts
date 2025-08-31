@@ -1,25 +1,56 @@
 /**
- * @fileoverview types.ts - Minimal Implementation
+ * @file Comprehensive Workflow Types - Single Source of Truth
+ * Unified types for all workflow operations across the system
  */
-
-export interface DefaultConfig {
-  enabled: boolean;
-  [key: string]: unknown;
+// Re-export all workflow-related types from the base types (avoids circular dependency)
+export type {
+  DocumentContent,
+  StepExecutionResult,
+  WorkflowContext,
+  WorkflowData,
+  WorkflowDefinition,
+  WorkflowEngineConfig,
+  WorkflowState,
+  WorkflowStep,
+} from './workflow-base-types'; // Import WorkflowDefinition for proper typing
+// Additional workflow types for advanced functionality
+export interface WorkflowTemplate {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  definition: WorkflowDefinition;
+  metadata:  {
+    version: string;
+    author?:string;
+    tags?:string[];
+    complexity?: 'simple' | 'medium' | 'complex';
 }
-
-export class DefaultImplementation {
-  private config: DefaultConfig;
-
-  constructor(config: Partial<DefaultConfig> = {}) {
-    this.config = {
-      enabled: true,
-      ...config,
-    };
-  }
-
-  isEnabled(): boolean {
-    return this.config.enabled;
-  }
+export interface WorkflowExecution {
+  id: string;
+  workflowId: string;
+  status: 'queued' | 'running' | 'paused' | 'completed' | 'failed' | 'cancelled';
+  startTime: string;
+  endTime?:string;
+  currentStep: number;
+  totalSteps: number;
+  results: Record<string, unknown>;
+  metrics:  {
+    duration?:number;
+    stepsCompleted: number;
+    stepsFailed: number;
+    resourcesUsed: Record<string, unknown>;
+};
 }
-
-export default new DefaultImplementation();
+export interface WorkflowRegistry {
+  templates: Map<string, WorkflowTemplate>;
+  definitions: Map<string, WorkflowDefinition>;
+  executions: Map<string, WorkflowExecution>;
+}
+// Event types for workflow orchestration
+export interface WorkflowEvent {
+  type : 'workflow.started' | ' workflow.completed'|' workflow.failed' | ' step.started'|' step.completed' | ' step.failed')  workflowId: string;;
+  stepIndex?:number;
+  data?:Record<string, unknown>;
+  timestamp: string;
+};

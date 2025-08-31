@@ -4,7 +4,7 @@
  * **SAFe 6.0 CONFIGURATION LEVELS
  */
 
-import { getLogger as _getLogger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
 const logger = getLogger('SafeConfiguration');
 // ============================================================================
 // SAFe CONFIGURATION TYPES
@@ -288,4 +288,107 @@ export class SafeConfigurationManager {
     )) {
       for (const [featureName, enabled] of Object.entries(category)) {
         if (!enabled) {
-          missing.push(`${categoryName}.${featureName}"Fixed unterminated template"
+          missing.push(`${categoryName}.${featureName}`);
+        }
+      }
+    }
+
+    return missing;
+  }
+  private generateEssentialImplementationPlan(): any[] {
+    return [
+      {
+        phase: 'Phase 1',
+        description: 'Establish basic ART coordination and core roles',
+        features: ['artCoordination', 'coreRoles'],
+        estimatedEffort: '4-6 weeks',
+        dependencies: ['Approval gate system', 'Event coordination'],
+      },
+      {
+        phase: 'Phase 2',
+        description: 'Implement ART Sync, PI Planning, and iteration events',
+        features: ['coreEvents', 'coreArtifacts'],
+        estimatedEffort: '6-8 weeks',
+        dependencies: ['Phase 1', 'Event scheduling system'],
+      },
+      {
+        phase: 'Phase 3',
+        description: 'Build feature management and ART backlog workflows',
+        features: ['coreArtifacts'],
+        estimatedEffort: '4-6 weeks',
+        dependencies: ['Phase 2', 'Artifact lifecycle management'],
+      },
+      {
+        phase: 'Phase 4',
+        description:
+          'Enable Team and Technical Agility and Agile Product Delivery',
+        features: [
+          'teamTechnicalAgility',
+          'agileProductDelivery',
+          'continuousLearningCulture',
+        ],
+        estimatedEffort: '6-8 weeks',
+        dependencies: ['Phase 3', 'Learning and measurement systems'],
+      },
+    ];
+  }
+
+  private generateLargeSolutionImplementationPlan(): any[] {
+    return [
+      {
+        phase: 'Phase 5',
+        description: 'Add solution-level coordination and management',
+        features: ['solutionTrain', 'solutionManagement'],
+        estimatedEffort: '8-10 weeks',
+        dependencies: ['Essential SAFe complete'],
+      },
+      {
+        phase: 'Phase 6',
+        description: 'Implement solution events and artifacts',
+        features: ['solutionEvents', 'solutionArtifacts', 'supplierManagement'],
+        estimatedEffort: '6-8 weeks',
+        dependencies: ['Phase 5'],
+      },
+    ];
+  }
+
+  private generatePortfolioImplementationPlan(): any[] {
+    return [
+      {
+        phase: 'Phase 7',
+        description: 'Add portfolio-level governance and epic management',
+        features: ['portfolioManagement', 'epicManagement'],
+        estimatedEffort: '10-12 weeks',
+        dependencies: ['Large Solution SAFe complete'],
+      },
+      {
+        phase: 'Phase 8',
+        description: 'Implement lean budgets and strategic themes',
+        features: ['leanBudgets', 'strategicThemes', 'portfolioEvents'],
+        estimatedEffort: '8-10 weeks',
+        dependencies: ['Phase 7'],
+      },
+    ];
+  }
+
+  private generateFullImplementationPlan(): any[] {
+    return [
+      {
+        phase: 'Phase 9',
+        description: 'Complete organizational agility transformation',
+        features: ['organizationalAgility', 'leanAgileLeadership'],
+        estimatedEffort: '16-20 weeks',
+        dependencies: ['Portfolio SAFe complete'],
+      },
+      {
+        phase: 'Phase 10',
+        description: 'Implement spanning palette and advanced practices',
+        features: ['spanningPalette', 'advancedPractices', 'allCompetencies'],
+        estimatedEffort: '12-16 weeks',
+        dependencies: ['Phase 9'],
+      },
+    ];
+  }
+}
+
+export default SafeConfigurationManager;

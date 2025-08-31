@@ -13,7 +13,7 @@
  */
 
 // Import the class for type reference in factory functions
-import { GitOperationsManager as _GitOperationsManager } from './git-operations-manager';
+import { GitOperationsManager } from './git-operations-manager';
 
 // Export all types
 export type {
@@ -56,4 +56,28 @@ export function createEnterpriseGitManager(
   };
 
   return new GitOperationsManager(
-    `enterprise-git-${Date.now()}"Fixed unterminated template"(`safe-git-${artId}"Fixed unterminated template"
+    `enterprise-git-${Date.now()}`,
+    config,
+    branchStrategy
+  );
+}
+
+export function createSAFEGitManager(artId: string): GitOperationsManager {
+  const config = {
+    aiConflictResolution: true,
+    intelligentBranching: true,
+    automatedMaintenance: true,
+    maxConcurrentOps: 15,
+    operationTimeout: 900000, // 15 minutes for SAFE coordination
+    remotes: [], // Initialize empty remotes array
+  };
+
+  const branchStrategy = {
+    namingPattern: 'feature/{name}' as const,
+    autoCleanup: true,
+    protectedBranches: ['main', 'develop', 'release/*', 'hotfix/*'],
+    defaultMergeStrategy: 'rebase' as const,
+  };
+
+  return new GitOperationsManager(`safe-git-${artId}`, config, branchStrategy);
+}

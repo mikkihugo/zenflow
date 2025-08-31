@@ -9,12 +9,16 @@ export interface RegisteredService {
 /**
  * Get the WebSocket hub instance
  */
-export declare function getWebSocketHub(): void {
+export declare function getWebSocketHub(): WebSocketHub;
+/**
+ * Helper functions for broadcasting to the WebSocket hub
+ */
+export declare const hubBroadcast:  {
     taskUpdated: (taskData: any) => any;
-    '): any;
+    ')': any;
     type: string;
     data: any;
-    '): any;
+    ')}),': any;
     approvalGateChanged: (gateData: any) => any;
     piPlanningProgress: (progressData: any) => any;
     flowMetricsUpdated: (metricsData: any) => any;

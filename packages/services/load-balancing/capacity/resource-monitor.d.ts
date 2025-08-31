@@ -11,7 +11,10 @@ export declare class ResourceMonitor implements ResourceMonitor {
     private metricsCache;
     private thresholds;
     private monitoringIntervals;
-    startMonitoring(): void {
+    startMonitoring(agentId: string): void;
+    stopMonitoring(agentId: string): void;
+    getCurrentMetrics(agentId: string): LoadMetrics | null;
+    getHistoricalMetrics(agentId: string, _timeRange: {
         start: Date;
         end: Date;
     }): LoadMetrics[];

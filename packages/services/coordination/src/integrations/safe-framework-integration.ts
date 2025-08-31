@@ -5,7 +5,7 @@
  * the core SAFe framework integration structure.
  */
 
-import { getLogger as _getLogger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
 
 // Core coordination components
 import type { ApprovalGateId } from '../types/index.js';
@@ -108,7 +108,7 @@ export interface SafeGateTraceabilityRecord {
   id: string;
   gateId: ApprovalGateId;
   category: SafeGateCategory;
-  _context: SafeGateContext;
+  context: SafeGateContext;
 
   // Decision chain
   aiDecision?: {
@@ -204,11 +204,206 @@ export class SafeFrameworkIntegration {
     epicId: string,
     fromState: string,
     toState: string,
-    _context: {
+    context: {
       businessCase?: any;
       stakeholders: string[];
       complianceRequired: boolean;
     }
   ): Promise<{ gateId: ApprovalGateId; traceabilityId: string }> {
     const gateId =
-      `epic-${epicId}-${fromState}-to-${toState}"Fixed unterminated template" `trace-${gateId}-${Date.now()}"Fixed unterminated template" `quality-${componentId}-${gateType}"Fixed unterminated template" `trace-${gateId}-${Date.now()}"Fixed unterminated template"(`Gate ${gateId} not found"Fixed unterminated template" `record-${gateId}-${Date.now()}"Fixed unterminated template" `session-${Date.now()}"Fixed unterminated template" `correlation-${gateId}"Fixed unterminated template"
+      `epic-${epicId}-${fromState}-to-${toState}` as ApprovalGateId;
+    const traceabilityId = `trace-${gateId}-${Date.now()}`;
+
+    this.logger.info('Creating Epic Portfolio Gate', {
+      epicId,
+      fromState,
+      toState,
+    });
+
+    // Create gate context
+    const gateContext: SafeGateContext = {
+      category: SafeGateCategory.EPIC_PORTFOLIO,
+      safeEntity: {
+        type: 'epic',
+        id: epicId,
+        metadata: {
+          businessCase: context.businessCase,
+          compliance: context.complianceRequired,
+        },
+      },
+      workflow: {
+        currentState: fromState,
+        targetState: toState,
+        previousStates: [],
+      },
+      stakeholders: {
+        owners: context.stakeholders.filter((s) => s.includes('owner')),
+        approvers: context.stakeholders.filter((s) => s.includes('approver')),
+        reviewers: context.stakeholders.filter((s) => s.includes('reviewer')),
+      },
+      compliance: {
+        required: context.complianceRequired,
+        frameworks: ['SAFe6.0'],
+        auditLevel: 'comprehensive',
+      },
+    };
+
+    // Store context
+    this.activeGates.set(gateId, gateContext);
+
+    return { gateId, traceabilityId };
+  }
+
+  /**
+   * Create quality assurance gate for continuous delivery
+   */
+  async createQualityGate(
+    componentId: string,
+    gateType: string,
+    config: any
+  ): Promise<{ gateId: ApprovalGateId; traceabilityId: string }> {
+    const gateId = `quality-${componentId}-${gateType}` as ApprovalGateId;
+    const traceabilityId = `trace-${gateId}-${Date.now()}`;
+
+    this.logger.info('Creating Quality Gate', {
+      componentId,
+      gateType,
+    });
+
+    // Create gate context
+    const gateContext: SafeGateContext = {
+      category: SafeGateCategory.QUALITY_ASSURANCE,
+      safeEntity: {
+        type: 'story',
+        id: componentId,
+        metadata: { gateType, config },
+      },
+      workflow: {
+        currentState: 'development',
+        targetState: 'testing',
+        previousStates: [],
+      },
+      stakeholders: {
+        owners: ['development-team'],
+        approvers: ['qa-team'],
+        reviewers: ['tech-lead'],
+      },
+      compliance: {
+        required: true,
+        frameworks: ['SAFe6.0', 'DevSecOps'],
+        auditLevel: 'enhanced',
+      },
+    };
+
+    // Store context
+    this.activeGates.set(gateId, gateContext);
+
+    return { gateId, traceabilityId };
+  }
+
+  /**
+   * Get traceability record for a gate
+   */
+  async getTraceabilityRecord(
+    gateId: ApprovalGateId
+  ): Promise<SafeGateTraceabilityRecord | null> {
+    return this.traceabilityRecords.get(gateId) || null;
+  }
+
+  /**
+   * Update gate with decision
+   */
+  async recordGateDecision(
+    gateId: ApprovalGateId,
+    decision: 'approved' | 'rejected' | 'escalated',
+    approver: string,
+    reasoning: string
+  ): Promise<void> {
+    const context = this.activeGates.get(gateId);
+    if (!context) {
+      throw new Error(`Gate ${gateId} not found`);
+    }
+
+    // Create traceability record
+    const record: SafeGateTraceabilityRecord = {
+      id: `record-${gateId}-${Date.now()}`,
+      gateId,
+      category: context.category,
+      context,
+      humanDecision: {
+        approver,
+        decision,
+        reasoning,
+        timestamp: new Date(),
+        reviewTime: 0, // Would calculate actual review time
+      },
+      learningExtracted: {
+        patterns: [],
+        improvements: [],
+        confidence: 0.8,
+      },
+      auditTrail: {
+        sessionId: `session-${Date.now()}`,
+        ipAddress: '127.0.0.1',
+        userAgent: 'TaskMaster-SafeIntegration',
+        correlationId: `correlation-${gateId}`,
+        complianceLevel: context.compliance.auditLevel,
+      },
+      metrics: {
+        totalProcessingTime: 0,
+        aiProcessingTime: 0,
+        humanProcessingTime: 0,
+        queueTime: 0,
+      },
+    };
+
+    this.traceabilityRecords.set(gateId, record);
+    this.logger.info('Gate decision recorded', { gateId, decision, approver });
+  }
+
+  /**
+   * Get learning insights from processed gates
+   */
+  async getLearningInsights(): Promise<{
+    totalGatesProcessed: number;
+    averageProcessingTime: number;
+    approvalRate: number;
+    commonPatterns: string[];
+  }> {
+    const records = Array.from(this.traceabilityRecords.values());
+
+    return {
+      totalGatesProcessed: records.length,
+      averageProcessingTime:
+        records.length > 0
+          ? records.reduce((sum, r) => sum + r.metrics.totalProcessingTime, 0) /
+            records.length
+          : 0,
+      approvalRate:
+        records.length > 0
+          ? records.filter((r) => r.humanDecision?.decision === 'approved')
+              .length / records.length
+          : 0,
+      commonPatterns: [
+        'High-confidence AI approvals for routine changes',
+        'Human escalation for business-critical decisions',
+        'Compliance validation for regulated features',
+      ],
+    };
+  }
+
+  /**
+   * Add private helper methods
+   */
+  private async createTables(): Promise<void> {
+    // Create database tables for traceability
+    this.logger.debug('Creating traceability tables');
+  }
+
+  private registerEventHandlers(): void {
+    // Register event handlers for gate lifecycle
+    this.logger.debug('Registering event handlers');
+  }
+}
+
+export default SafeFrameworkIntegration;

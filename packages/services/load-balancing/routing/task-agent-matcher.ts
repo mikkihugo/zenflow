@@ -72,4 +72,32 @@ export class TaskAgentMatcher {
     return {
       agent,
       score,
-      reasoning: `Capability: ${(capabilityMatch * 100).toFixed(1)}%, Performance:${(performanceMatch * 100).toFixed(1)}%, Availability:${(availabilityMatch * 100).toFixed(1)}%"Fixed unterminated template"
+      reasoning: `Capability: ${(capabilityMatch * 100).toFixed(1)}%, Performance:${(performanceMatch * 100).toFixed(1)}%, Availability:${(availabilityMatch * 100).toFixed(1)}%`,
+      capabilityMatch,
+      performanceMatch,
+      availabilityMatch,
+    };
+  }
+
+  private calculateCapabilityMatch(task: Task, agent: Agent): number {
+    if (task.requiredCapabilities.length === 0) return 1.0;
+
+    const matchingCapabilities = task.requiredCapabilities.filter(
+      (capability) => agent.capabilities.includes(capability)
+    );
+
+    return matchingCapabilities.length / task.requiredCapabilities.length;
+  }
+
+  private calculatePerformanceMatch(_task: Task, agent: Agent): number {
+    // In practice, this would use historical performance data
+    // For now, return a score based on agent metadata
+    const reliability = (agent.metadata?.reliability as number) || 0.8;
+    const avgLatency = (agent.metadata?.averageLatency as number) || 1000;
+
+    // Lower latency is better
+    const latencyScore = Math.max(0, 1 - avgLatency / 5000);
+
+    return (reliability + latencyScore) / 2;
+  }
+}

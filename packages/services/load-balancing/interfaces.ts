@@ -38,7 +38,7 @@ export interface LoadBalancingAlgorithm {
     agents: Agent[],
     agentMetrics: Map<string, LoadMetrics>
   ): Promise<void>;
-  onAgentFailure?(agentId: string, _error: Error): Promise<void>;
+  onAgentFailure?(agentId: string, error: Error): Promise<void>;
 }
 
 export interface CapacityManager {
@@ -74,7 +74,7 @@ export interface RoutingEngine {
 
 export interface PredictionEngine {
   predict(features: Record<string, number>): Promise<number>;
-  train(_data: unknown[]): Promise<void>;
+  train(data: unknown[]): Promise<void>;
   getModel(): Promise<PredictionModel>;
   updateModel(model: PredictionModel): Promise<void>;
   getAccuracy(): Promise<number>;
@@ -92,7 +92,7 @@ export interface HealthChecker extends EventEmitter {
 export interface CircuitBreaker {
   isOpen(agentId: string): boolean;
   recordSuccess(agentId: string): void;
-  recordFailure(agentId: string, _error: Error): void;
+  recordFailure(agentId: string, error: Error): void;
   reset(agentId: string): void;
   getState(agentId: string): 'closed' | 'open' | 'half-open';
 }
@@ -107,7 +107,7 @@ export interface ConnectionPool {
 }
 
 export interface BatchProcessor {
-  addRequest(_request: unknown): Promise<void>;
+  addRequest(request: unknown): Promise<void>;
   processBatch(): Promise<any[]>;
   setBatchSize(size: number): void;
   setBatchTimeout(timeout: number): void;
@@ -176,7 +176,7 @@ export interface LoadBalancingObserver {
     duration: number,
     success: boolean
   ): Promise<void>;
-  onAgentFailure(agentId: string, _error: Error): Promise<void>;
+  onAgentFailure(agentId: string, error: Error): Promise<void>;
   onCapacityChanged(
     agentId: string,
     oldCapacity: number,

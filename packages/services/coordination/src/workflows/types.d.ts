@@ -15,11 +15,32 @@ export type {
 import type { WorkflowDefinition } from './workflow-base-types';
 export interface WorkflowTemplate {
   id: string;
-};
+  name: string;
+  description: string;
+  category: string;
+  definition: WorkflowDefinition;
+  metadata: {
+    version: string;
+    author?: string;
+    tags?: string[];
+    complexity?: 'simple' | ' medium' | ' complex';
+  };
 }
 export interface WorkflowExecution {
   id: string;
-};
+  workflowId: string;
+  status: 'queued| running| paused| completed| failed' | ' cancelled';
+  startTime: string;
+  endTime?: string;
+  currentStep: number;
+  totalSteps: number;
+  results: Record<string, unknown>;
+  metrics: {
+    duration?: number;
+    stepsCompleted: number;
+    stepsFailed: number;
+    resourcesUsed: Record<string, unknown>;
+  };
 }
 export interface WorkflowRegistry {
   templates: Map<string, WorkflowTemplate>;

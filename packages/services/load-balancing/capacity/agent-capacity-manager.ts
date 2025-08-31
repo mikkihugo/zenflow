@@ -13,8 +13,8 @@ import type {
   ResourceConstraint,
 } from '../types';
 
-import { CapacityPredictor as _CapacityPredictor } from './capacity-predictor';
-import { ResourceMonitor as _ResourceMonitor } from './resource-monitor';
+import { CapacityPredictor } from './capacity-predictor';
+import { ResourceMonitor } from './resource-monitor';
 
 interface AgentCapacityProfile {
   agentId: string;

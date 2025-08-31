@@ -4,7 +4,23 @@ export interface TaskMasterSystem {
     kanban: KanbanEngine;
     approvalGates: ApprovalGateManager;
     database: any;
-    initialize(): void {
+    initialize(): Promise<void>;
+    getSafeIntegration?(): Promise<any>;
+    ')};;: any;
+    /**
+     * Get TaskMaster system for SAFe 6.0 Essentials workflow management
+     *
+     * @example
+     * 'typescript') * import { getTaskMaster} from '@claude-zen/taskmaster') * ';
+     * const taskMaster = await getTaskMaster();
+     * await taskMaster.initialize();
+     * ') */ ';: any;
+}
+export declare function getTaskMaster(): Promise<TaskMasterSystem>;
+/**
+ * Create TaskMaster system with custom configuration
+ */
+export declare function createTaskMaster(config?:  {
     enableIntelligentWIP?: boolean;
     enableBottleneckDetection?: boolean;
     enableFlowOptimization?: boolean;

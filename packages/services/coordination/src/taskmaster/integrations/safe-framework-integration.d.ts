@@ -53,8 +53,12 @@ export interface SafeIntegrationConfig {
  * SAFE gate execution context
  */
 export interface SafeGateContext {
-  id: string;
-};
+  category: SafeGateCategory;
+  safeEntity: {
+    type: 'epic| feature| story| capability' | ' solution';
+    id: string;
+    metadata: Record<string, unknown>;
+  };
   workflow: {
     currentState: string;
     targetState: string;
@@ -76,7 +80,16 @@ export interface SafeGateContext {
  */
 export interface SafeGateTraceabilityRecord {
   id: string;
-};
+  gateId: ApprovalGateId;
+  category: SafeGateCategory;
+  context: SafeGateContext;
+  aiDecision?: {
+    confidence: number;
+    reasoning: string;
+    model: string;
+    promptVersion: string;
+    timestamp: Date;
+  };
   humanDecision?: {
     approver: string;
     decision: 'approved' | ' rejected' | ' escalated';

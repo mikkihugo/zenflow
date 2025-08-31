@@ -13,5 +13,10 @@ interface AgentCapacityProfile {
 }
 export declare class CapacityPredictor {
     private logger;
-    predict(): void {};
+    predict(profile: AgentCapacityProfile, timeHorizon: number): Promise<number>;
+    predictDemand(profile: AgentCapacityProfile, _timeHorizon: number): Promise<number>;
+    private calculateTrend;
+    private calculateVariance;
+}
+export {};
 //# sourceMappingURL=capacity-predictor.d.ts.map

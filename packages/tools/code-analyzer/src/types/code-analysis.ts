@@ -131,7 +131,7 @@ export interface CodeSuggestion {
 
   // Location information
   range: SourceRange;
-  _context: string;
+  context: string;
 
   // Fix information
   autoFixable: boolean;
@@ -676,8 +676,8 @@ export interface LearningRecommendation {
 
 // Event and notification interfaces
 export interface EventHandler {
-  _event: AnalysisEvent;
-  handler: (_data: any) => void;
+  event: AnalysisEvent;
+  handler: (data: any) => void;
 }
 
 export type AnalysisEvent =

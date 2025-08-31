@@ -1,25 +1,33 @@
 /**
- * @fileoverview date-calculator.ts - Minimal Implementation
+ * @fileoverview Date Calculation Utilities
+ *
+ * Professional date arithmetic using date-fns library.
+ * Focused on duration and time manipulation.
+ *
+ * @author Claude Code Zen Team
+ * @since 1.0.0
  */
-
-export interface DefaultConfig {
-  enabled: boolean;
-  [key: string]: unknown;
+import {
+  addMinutes,
+  differenceInMilliseconds,
+  formatDuration,
+  intervalToDuration,
+  subMinutes,
+} from 'date-fns';
+/**
+ * Professional date calculation utilities
+ */
+export class DateCalculator {
+  /**
+   * Calculate duration in milliseconds
+   */
+  static getDurationMs(startDate: new Date()): new Date()): intervalToDuration({ start: startDate, end: endDate});
+    return formatDuration(duration);
 }
-
-export class DefaultImplementation {
-  private config: DefaultConfig;
-
-  constructor(config: Partial<DefaultConfig> = {}) {
-    this.config = {
-      enabled: true,
-      ...config,
-    };
-  }
-
-  isEnabled(): boolean {
-    return this.config.enabled;
-  }
+  /**
+   * Check if date is within range
+   */
+  static isWithinRange(date: Date, startRange: Date, endRange: Date): boolean {
+    return date >= startRange && date <= endRange;
 }
-
-export default new DefaultImplementation();
+};

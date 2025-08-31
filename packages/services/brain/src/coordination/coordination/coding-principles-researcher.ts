@@ -89,7 +89,7 @@ export class CodingPrinciplesResearcher {
     this.logger = { 
       info: (...args: any[]) => console.log('[INFO]', ...args),
       warn: (...args: any[]) => console.warn('[WARN]', ...args),
-      _error: (...args: any[]) => console.error('[ERROR]', ...args)
+      error: (...args: any[]) => console.error('[ERROR]', ...args)
     };
   }
 
@@ -132,6 +132,164 @@ export class CodingPrinciplesResearcher {
   }
 
   private generateCacheKey(config: PrinciplesResearchConfig): string {
-    return "Fixed template literal"# ${principles.language.toUpperCase()} Coding Principles
+    return `${config.language}-${config.domain || 'general'}-${config.role || 'general'}-${config.depth || 'intermediate'}`;
+  }
 
-${principles.domain ? `## Domain: ${principles.domain}"Fixed unterminated template" `## Role: ${principles.role}"Fixed unterminated template" `- ${item}"Fixed unterminated template" `- ${item}"Fixed unterminated template" `- ${item}"Fixed unterminated template" "Fixed unterminated template"
+  private getFallbackPrinciples(config: PrinciplesResearchConfig): CodingPrinciples {
+    return {
+      language: config.language,
+      domain: config.domain,
+      role: config.role,
+      coreStandards: {
+        fileNaming: [
+          'Use clear, descriptive names',
+          'Follow language conventions',
+          'Use consistent casing'
+        ],
+        functionComplexity: [
+          'Keep functions small and focused',
+          'Use descriptive function names',
+          'Limit parameters to 3-4 maximum'
+        ]
+      },
+      languageSpecific: {
+        typeSystem: [
+          'Use strong typing where available',
+          'Define clear interfaces',
+          'Avoid any types when possible'
+        ],
+        packageManagement: [
+          'Use package manager effectively',
+          'Keep dependencies up to date',
+          'Document dependency choices'
+        ]
+      },
+      qualityMetrics: {
+        complexity: { metric: 'cyclomatic', threshold: 10 },
+        coverage: { metric: 'line', threshold: 80 },
+        maintainability: { metric: 'index', threshold: 70 }
+      },
+      researchMetadata: {
+        researchedAt: new Date(),
+        confidence: 0.7,
+        humanReviewed: false,
+        lastUpdated: new Date()
+      }
+    };
+  }
+
+  private formatTemplate(principles: CodingPrinciples): string {
+    return `# ${principles.language.toUpperCase()} Coding Principles
+
+${principles.domain ? `## Domain: ${principles.domain}` : ''}
+${principles.role ? `## Role: ${principles.role}` : ''}
+
+## 📁 File Naming & Organization
+${principles.coreStandards.fileNaming.map(item => `- ${item}`).join('\n')}
+
+## ⚡ Function Guidelines
+${principles.coreStandards.functionComplexity.map(item => `- ${item}`).join('\n')}
+
+## 🔧 ${principles.language.charAt(0).toUpperCase() + principles.language.slice(1)}-Specific
+### Type System
+${principles.languageSpecific.typeSystem.map(item => `- ${item}`).join('\n')}
+
+### Package Management
+${principles.languageSpecific.packageManagement.map(item => `- ${item}`).join('\n')}
+
+## 📊 Quality Metrics
+- **Complexity**: ${principles.qualityMetrics.complexity.metric} < ${principles.qualityMetrics.complexity.threshold}
+- **Coverage**: ${principles.qualityMetrics.coverage.metric} > ${principles.qualityMetrics.coverage.threshold}%
+- **Maintainability**: ${principles.qualityMetrics.maintainability.metric} > ${principles.qualityMetrics.maintainability.threshold}
+
+---
+**Research Date**: ${principles.researchMetadata.researchedAt.toISOString()}
+**Confidence**: ${(principles.researchMetadata.confidence * 100).toFixed(1)}%
+**Human Reviewed**: ${principles.researchMetadata.humanReviewed ? 'Yes' : 'No'}
+
+> This template is AI-generated and should be reviewed by human experts.
+> Please provide feedback to improve future research.`;
+  }
+}
+
+/**
+ * Export factory function
+ */
+export function createCodingPrinciplesResearcher(
+  dspyBridge: any,
+  behavioralIntelligence?: any
+): CodingPrinciplesResearcher {
+  return new CodingPrinciplesResearcher(dspyBridge, behavioralIntelligence);
+}
+
+/**
+ * Export default configuration for common languages
+ */
+export const DEFAULT_LANGUAGE_CONFIGS: Record<
+  ProgrammingLanguage,
+  PrinciplesResearchConfig
+> = {
+  typescript: {
+    language: 'typescript',
+    includePerformance: true,
+    includeSecurity: true,
+    includeTesting: true,
+    depth: 'intermediate',
+  },
+  javascript: {
+    language: 'javascript',
+    includePerformance: true,
+    includeSecurity: true,
+    includeTesting: true,
+    depth: 'intermediate',
+  },
+  python: {
+    language: 'python',
+    includePerformance: true,
+    includeSecurity: true,
+    includeTesting: true,
+    depth: 'intermediate',
+  },
+  rust: {
+    language: 'rust',
+    includePerformance: true,
+    includeSecurity: false,
+    includeTesting: true,
+    depth: 'advanced',
+  },
+  go: {
+    language: 'go',
+    includePerformance: true,
+    includeSecurity: true,
+    includeTesting: true,
+    depth: 'intermediate',
+  },
+  java: {
+    language: 'java',
+    includePerformance: true,
+    includeSecurity: true,
+    includeTesting: true,
+    depth: 'intermediate',
+  },
+  csharp: {
+    language: 'csharp',
+    includePerformance: true,
+    includeSecurity: true,
+    includeTesting: true,
+    depth: 'intermediate',
+  },
+  swift: {
+    language: 'swift',
+    includePerformance: true,
+    includeSecurity: false,
+    includeTesting: true,
+    depth: 'intermediate',
+  },
+  kotlin: {
+    language: 'kotlin',
+    includePerformance: true,
+    includeSecurity: true,
+    includeTesting: true,
+    depth: 'intermediate',
+  },
+};

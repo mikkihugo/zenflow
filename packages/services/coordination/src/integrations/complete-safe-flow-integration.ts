@@ -5,7 +5,7 @@
  * the core SAFe 6.0 Essential framework implementation structure.
  */
 
-import { getLogger as _getLogger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('CompleteSafeFlowIntegration');
 
@@ -271,4 +271,223 @@ export class CompleteSafeFlowIntegration {
     gates: any[];
     flowTraceabilityId: string;
   }> {
-    const flowId = `strategic-flow-${strategicTheme.id}-${Date.now()}"Fixed unterminated template" `flow-trace-${flowId}"Fixed unterminated template" `pi-trace-${programIncrement.id}-${Date.now()}"Fixed unterminated template" `Planning Interval ${programIncrement.number}"Fixed unterminated template" `sprint-trace-${sprint.id}-${Date.now()}"Fixed unterminated template" `cd-trace-${deployment.id}-${Date.now()}"Fixed unterminated template" `Build for ${deployment.environment}"Fixed unterminated template"(`Flow ${flowId} not found"Fixed unterminated template" `${category}-${entity.id}"Fixed unterminated template" `${category} Gate for ${entity.title}"Fixed unterminated template"
+    const flowId = `strategic-flow-${strategicTheme.id}-${Date.now()}`;
+    const flowTraceabilityId = `flow-trace-${flowId}`;
+
+    this.logger.info('Starting Strategic Theme Flow', {
+      flowId,
+      strategicTheme: strategicTheme.title,
+    });
+
+    // Create strategic theme entity
+    const strategicThemeEntity: SafeEntity = {
+      type: 'strategic_theme',
+      id: strategicTheme.id,
+      title: strategicTheme.title,
+      description: strategicTheme.description,
+      currentStage: SafeFlowStage.STRATEGIC_PLANNING,
+      targetStage: SafeFlowStage.PORTFOLIO_BACKLOG,
+      businessValue: strategicTheme.businessValue || 80,
+      priority: strategicTheme.businessValue > 80 ? 'critical' : 'high',
+      complexity: 'very_complex', // Strategic themes are inherently complex
+      owner: strategicTheme.owner,
+      stakeholders: strategicTheme.stakeholders || [],
+      approvers: strategicTheme.approvers || [],
+      metadata: {},
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const gates: any[] = [];
+
+    // Create gates for strategic theme
+    const strategicGate = this.createBasicGate(
+      CompleteSafeGateCategory.STRATEGIC_THEME,
+      strategicThemeEntity
+    );
+    gates.push(strategicGate);
+
+    return {
+      flowId,
+      gates,
+      flowTraceabilityId,
+    };
+  }
+
+  /**
+   * Continue to ART Flow (Agile Release Train Program Increment level)
+   */
+  async continueToARTFlow(
+    flowId: string,
+    programIncrement: any
+  ): Promise<{
+    gates: any[];
+    piTraceabilityId: string;
+  }> {
+    const piTraceabilityId = `pi-trace-${programIncrement.id}-${Date.now()}`;
+
+    this.logger.info('Continuing to ART Flow', {
+      flowId,
+      piNumber: programIncrement.number,
+    });
+
+    const gates: any[] = [];
+
+    // Create Planning Interval gates (SAFe 6.0)
+    const planningGate = this.createBasicGate(
+      CompleteSafeGateCategory.PLANNING_INTERVAL_PLANNING,
+      {
+        type: 'epic',
+        id: programIncrement.id,
+        title: `Planning Interval ${programIncrement.number}`,
+        currentStage: SafeFlowStage.PLANNING_INTERVAL_PLANNING_STAGE,
+        targetStage: SafeFlowStage.PLANNING_INTERVAL_EXECUTION,
+      } as SafeEntity
+    );
+    gates.push(planningGate);
+
+    return {
+      gates,
+      piTraceabilityId,
+    };
+  }
+
+  /**
+   * Continue to Team Flow
+   */
+  async continueToTeamFlow(
+    flowId: string,
+    sprint: any
+  ): Promise<{
+    gates: any[];
+    sprintTraceabilityId: string;
+  }> {
+    const sprintTraceabilityId = `sprint-trace-${sprint.id}-${Date.now()}`;
+
+    this.logger.info('Continuing to Team Flow', {
+      flowId,
+      sprintNumber: sprint.number,
+    });
+
+    const gates: any[] = [];
+
+    // Create story approval gates
+    for (const story of sprint.stories || []) {
+      const storyGate = this.createBasicGate(
+        CompleteSafeGateCategory.STORY_APPROVAL,
+        {
+          type: 'story',
+          id: story.id,
+          title: story.title,
+          currentStage: SafeFlowStage.SPRINT_PLANNING,
+          targetStage: SafeFlowStage.SPRINT_EXECUTION,
+        } as SafeEntity
+      );
+      gates.push(storyGate);
+    }
+
+    return {
+      gates,
+      sprintTraceabilityId,
+    };
+  }
+
+  /**
+   * Continue to Continuous Delivery Flow
+   */
+  async continueToContinuousDeliveryFlow(
+    flowId: string,
+    deployment: any
+  ): Promise<{
+    gates: any[];
+    cdTraceabilityId: string;
+  }> {
+    const cdTraceabilityId = `cd-trace-${deployment.id}-${Date.now()}`;
+
+    this.logger.info('Continuing to Continuous Delivery Flow', {
+      flowId,
+      environment: deployment.environment,
+    });
+
+    const gates: any[] = [];
+
+    // Create CD gates
+    const buildGate = this.createBasicGate(
+      CompleteSafeGateCategory.BUILD_GATE,
+      {
+        type: 'release',
+        id: deployment.id,
+        title: `Build for ${deployment.environment}`,
+        currentStage: SafeFlowStage.CONTINUOUS_INTEGRATION,
+        targetStage: SafeFlowStage.CONTINUOUS_DEPLOYMENT,
+      } as SafeEntity
+    );
+    gates.push(buildGate);
+
+    return {
+      gates,
+      cdTraceabilityId,
+    };
+  }
+
+  /**
+   * Get complete flow traceability across all SAFE levels
+   */
+  async getCompleteFlowTraceability(flowId: string): Promise<{
+    flowSummary: any;
+    traceabilityChain: any[];
+    learningInsights: any;
+    recommendations: string[];
+  }> {
+    const flow = this.flowData.get(flowId);
+    if (!flow) {
+      throw new Error(`Flow ${flowId} not found`);
+    }
+
+    return {
+      flowSummary: {
+        id: flowId,
+        startedAt: new Date(),
+        currentStage: SafeFlowStage.STRATEGIC_PLANNING,
+        entitiesInFlow: flow.length,
+      },
+      traceabilityChain: [],
+      learningInsights: {},
+      recommendations: [
+        'Consider parallel gate execution for non-dependent items',
+        'Implement automated quality gates for faster feedback',
+        'Set up proactive escalation for critical path items',
+      ],
+    };
+  }
+
+  /**
+   * Convert config to base config format
+   */
+  private convertToBaseConfig(config: any): any {
+    return {
+      // Convert to base configuration format
+      ...config,
+      baseMode: true,
+    };
+  }
+
+  /**
+   * Create a basic gate for the flow
+   */
+  private createBasicGate(
+    category: CompleteSafeGateCategory,
+    entity: SafeEntity
+  ): any {
+    return {
+      gateId: `${category}-${entity.id}`,
+      category,
+      entityId: entity.id,
+      entityType: entity.type,
+      title: `${category} Gate for ${entity.title}`,
+      createdAt: new Date(),
+    };
+  }
+}
+
+export default CompleteSafeFlowIntegration;

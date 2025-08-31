@@ -1,25 +1,39 @@
 /**
- * @fileoverview schema-validator.ts - Minimal Implementation
+ * @fileoverview Schema Validation Utilities
+ *
+ * Professional runtime validation using Zod library.
+ * Focused on type-safe validation and error handling.
+ *
+ * @author Claude Code Zen Team
+ * @since 1.0.0
  */
-
-export interface DefaultConfig {
-  enabled: boolean;
-  [key: string]: unknown;
+import { z } from '@claude-zen/foundation';
+/**
+ * Professional schema validation utilities
+ */
+export class SchemaValidator {
+  /**
+   * Create safe parser with custom schema
+   */
+  static createSafeParser<T>(schema: z.ZodSchema<T>) {
+    return (
+      data: unknown;
+    ):  { success: boolean; data?: T; errors?: string[]} => {
+      try {
+        const result = schema.parse(data);
+        return { success: true, data: result};
+} catch (error) {
+        if (error instanceof z.ZodError) {
+          return {
+            success: false,
+            errors: error.errors.map(
+              (e) => ``${{e.path.join('.)}:${e.message}};)            ),``;
+};)};)        return { success: this.createSafeParser(schema);
+    return parser(data);
 }
-
-export class DefaultImplementation {
-  private config: DefaultConfig;
-
-  constructor(config: Partial<DefaultConfig> = {}) {
-    this.config = {
-      enabled: true,
-      ...config,
-    };
-  }
-
-  isEnabled(): boolean {
-    return this.config.enabled;
-  }
-}
-
-export default new DefaultImplementation();
+  /**
+   * Check if data matches schema
+   */
+  static isValid<T>(schema: this.validate(schema, data);
+    return result.success;
+};)};;

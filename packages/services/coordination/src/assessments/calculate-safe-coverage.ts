@@ -104,5 +104,22 @@ export function generateHonestAssessmentReport(): string {
     overallCoverage
   );
 
-  return "Fixed unterminated template" `- ${r}"Fixed unterminated template"
-"Fixed unterminated template"
+  return `# TaskMaster SAFe Implementation - Honest Assessment
+
+## Executive Summary
+- **Essential SAFe Coverage**: ${coverage.essentialSafeCoverage}%
+- **Overall SAFe Coverage**: ${overallCoverage}%
+- **Implemented Components**: ${coverage.implementedComponents}
+- **Partial Components**: ${coverage.partialComponents}  
+- **Missing Components**: ${coverage.missingComponents}
+
+## Strategic Assessment
+${strategicRecommendation}
+
+## Recommendations
+${coverage.recommendations.map((r) => `- ${r}`).join('\n')}
+
+## Next Steps
+Focus on completing missing components for full Essential SAFe coverage
+`;
+}

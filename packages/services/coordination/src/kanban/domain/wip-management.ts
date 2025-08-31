@@ -5,7 +5,7 @@
  * Enforces WIP limits, tracks violations, and provides optimization suggestions.
  */
 
-import { getLogger as _getLogger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('WIPManagement');
 
@@ -126,4 +126,101 @@ export class WIPManagementService {
         this.violationHistory.push(violation);
 
         if (this.config.enableAlerts) {
-          logger.warn(`WIP violation detected in ${state}"Fixed unterminated template" `Consider increasing WIP limits for high-utilization states: ${highUtilizationStates.join(', ')}"Fixed unterminated template"
+          logger.warn(`WIP violation detected in ${state}`, violation);
+        }
+      } else if (utilization > 0.8) {
+        status = 'warning';
+      }
+
+      stateStatus[state] = {
+        current: currentCount,
+        limit,
+        utilization,
+        status,
+      };
+    }
+
+    // Calculate overall utilization
+    const totalTasks = allTasks.length;
+    const totalLimits = Object.values(this.wipLimits)
+      .filter((limit) => limit !== Infinity)
+      .reduce((sum, limit) => sum + limit, 0);
+
+    const overallUtilization = totalLimits > 0 ? totalTasks / totalLimits : 0;
+
+    const wipStatus: WIPStatus = {
+      timestamp,
+      overallUtilization,
+      violations,
+      stateStatus,
+      recommendations: this.generateRecommendations(violations, stateStatus),
+    };
+
+    logger.debug('WIP status checked', {
+      violationCount: violations.length,
+      overallUtilization,
+    });
+
+    return wipStatus;
+  }
+
+  /**
+   * Update WIP limits for one or more states
+   */
+  async updateWIPLimits(newLimits: Partial<WIPLimits>): Promise<void> {
+    const oldLimits = { ...this.wipLimits };
+    this.wipLimits = { ...this.wipLimits, ...newLimits };
+
+    logger.info('WIP limits updated', {
+      oldLimits,
+      newLimits: this.wipLimits,
+    });
+  }
+
+  /**
+   * Get current WIP limits
+   */
+  getWIPLimits(): WIPLimits {
+    return { ...this.wipLimits };
+  }
+
+  private groupTasksByState(allTasks: any[]): Record<string, any[]> {
+    const grouped: Record<string, any[]> = {};
+
+    for (const task of allTasks) {
+      const state = task.state || 'unknown';
+      if (!grouped[state]) {
+        grouped[state] = [];
+      }
+      grouped[state].push(task);
+    }
+
+    return grouped;
+  }
+
+  private generateRecommendations(
+    violations: WIPViolation[],
+    stateStatus: WIPStatus['stateStatus']
+  ): string[] {
+    const recommendations: string[] = [];
+
+    if (violations.length > 0) {
+      recommendations.push(
+        'Address WIP limit violations by moving tasks through the workflow'
+      );
+    }
+
+    // Check for potential bottlenecks
+    const highUtilizationStates = Object.entries(stateStatus)
+      .filter(([_, status]) => status.utilization > 0.8)
+      .map(([state]) => state);
+
+    if (highUtilizationStates.length > 0) {
+      recommendations.push(
+        `Consider increasing WIP limits for high-utilization states: ${highUtilizationStates.join(', ')}`
+      );
+    }
+
+    return recommendations;
+  }
+}

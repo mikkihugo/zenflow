@@ -24,7 +24,7 @@ export {
   DependencyRelationshipMapper,
 } from './code-analyzer';
 
-import { CodeAnalyzer as _CodeAnalyzer } from './code-analyzer';
+import { CodeAnalyzer } from './code-analyzer';
 
 // Export all types
 export type * from './types/code-analysis';

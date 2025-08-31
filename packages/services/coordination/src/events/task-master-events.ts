@@ -10,7 +10,7 @@
  * @version 1.0.0
  */
 
-import { getLogger as _getLogger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('TaskMasterEvents');
 
@@ -115,7 +115,7 @@ export interface WorkflowCompletedEvent extends BaseTaskMasterEvent {
 export interface WorkflowFailedEvent extends BaseTaskMasterEvent {
   readonly type: 'workflow:failed';
   readonly workflowId: string;
-  readonly _error: string;
+  readonly error: string;
   readonly failureStage: string;
   readonly retryable: boolean;
 }
@@ -142,7 +142,7 @@ export interface ApprovalRequestedEvent extends BaseTaskMasterEvent {
   readonly requestedBy: string;
   readonly approvers: string[];
   readonly dueDate?: Date;
-  readonly _context: Record<string, any>;
+  readonly context: Record<string, any>;
 }
 
 export interface ApprovalGrantedEvent extends BaseTaskMasterEvent {
@@ -197,34 +197,34 @@ export interface WIPViolationEvent extends BaseTaskMasterEvent {
  */
 export interface TaskMasterEventMap {
   // Task lifecycle events
-  'task:created': (_event: TaskCreatedEvent) => void;
-  'task:updated': (_event: TaskUpdatedEvent) => void;
-  'task:deleted': (_event: TaskDeletedEvent) => void;
-  'task:state_changed': (_event: TaskStateChangedEvent) => void;
-  'task:assigned': (_event: TaskAssignedEvent) => void;
-  'task:completed': (_event: TaskCompletedEvent) => void;
-  'task:blocked': (_event: TaskBlockedEvent) => void;
-  'task:unblocked': (_event: TaskUnblockedEvent) => void;
+  'task:created': (event: TaskCreatedEvent) => void;
+  'task:updated': (event: TaskUpdatedEvent) => void;
+  'task:deleted': (event: TaskDeletedEvent) => void;
+  'task:state_changed': (event: TaskStateChangedEvent) => void;
+  'task:assigned': (event: TaskAssignedEvent) => void;
+  'task:completed': (event: TaskCompletedEvent) => void;
+  'task:blocked': (event: TaskBlockedEvent) => void;
+  'task:unblocked': (event: TaskUnblockedEvent) => void;
 
   // Workflow events
-  'workflow:started': (_event: WorkflowStartedEvent) => void;
-  'workflow:completed': (_event: WorkflowCompletedEvent) => void;
-  'workflow:failed': (_event: WorkflowFailedEvent) => void;
-  'workflow:paused': (_event: WorkflowPausedEvent) => void;
-  'workflow:resumed': (_event: WorkflowResumedEvent) => void;
+  'workflow:started': (event: WorkflowStartedEvent) => void;
+  'workflow:completed': (event: WorkflowCompletedEvent) => void;
+  'workflow:failed': (event: WorkflowFailedEvent) => void;
+  'workflow:paused': (event: WorkflowPausedEvent) => void;
+  'workflow:resumed': (event: WorkflowResumedEvent) => void;
 
   // Approval gate events
-  'approval:requested': (_event: ApprovalRequestedEvent) => void;
-  'approval:granted': (_event: ApprovalGrantedEvent) => void;
-  'approval:rejected': (_event: ApprovalRejectedEvent) => void;
-  'approval:timeout': (_event: ApprovalTimeoutEvent) => void;
-  'approval:escalated': (_event: ApprovalEscalatedEvent) => void;
+  'approval:requested': (event: ApprovalRequestedEvent) => void;
+  'approval:granted': (event: ApprovalGrantedEvent) => void;
+  'approval:rejected': (event: ApprovalRejectedEvent) => void;
+  'approval:timeout': (event: ApprovalTimeoutEvent) => void;
+  'approval:escalated': (event: ApprovalEscalatedEvent) => void;
 
   // Performance and monitoring events
   'performance:threshold_exceeded': (
-    _event: PerformanceThresholdExceededEvent
+    event: PerformanceThresholdExceededEvent
   ) => void;
-  'wip:violation': (_event: WIPViolationEvent) => void;
+  'wip:violation': (event: WIPViolationEvent) => void;
 }
 
 /**
@@ -264,4 +264,105 @@ export function createBaseEvent(
   metadata?: Record<string, any>
 ): Omit<BaseTaskMasterEvent, 'type'> {
   return {
-    eventId: `event_${Date.now()}_${Math.random().toString(36).substr(2, 9)}"Fixed unterminated template"
+    eventId: `event_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    timestamp: new Date(),
+    source,
+    version: '1.0.0',
+    metadata,
+  };
+}
+
+/**
+ * Type guards for event types
+ */
+export function isTaskEvent(
+  event: TaskMasterEvent
+): event is
+  | TaskCreatedEvent
+  | TaskUpdatedEvent
+  | TaskDeletedEvent
+  | TaskStateChangedEvent
+  | TaskAssignedEvent
+  | TaskCompletedEvent
+  | TaskBlockedEvent
+  | TaskUnblockedEvent {
+  return event.type.startsWith('task:');
+}
+
+export function isWorkflowEvent(
+  event: TaskMasterEvent
+): event is
+  | WorkflowStartedEvent
+  | WorkflowCompletedEvent
+  | WorkflowFailedEvent
+  | WorkflowPausedEvent
+  | WorkflowResumedEvent {
+  return event.type.startsWith('workflow:');
+}
+
+export function isApprovalEvent(
+  event: TaskMasterEvent
+): event is
+  | ApprovalRequestedEvent
+  | ApprovalGrantedEvent
+  | ApprovalRejectedEvent
+  | ApprovalTimeoutEvent
+  | ApprovalEscalatedEvent {
+  return event.type.startsWith('approval:');
+}
+
+export function isPerformanceEvent(
+  event: TaskMasterEvent
+): event is PerformanceThresholdExceededEvent | WIPViolationEvent {
+  return event.type.startsWith('performance:') || event.type.startsWith('wip:');
+}
+
+/**
+ * Event severity levels
+ */
+export enum EventSeverity {
+  INFO = 'info',
+  WARNING = 'warning',
+  ERROR = 'error',
+  CRITICAL = 'critical',
+}
+
+/**
+ * Get event severity for monitoring and alerting
+ */
+export function getEventSeverity(event: TaskMasterEvent): EventSeverity {
+  switch (event.type) {
+    case 'task:blocked':
+    case 'workflow:failed':
+    case 'approval:rejected':
+    case 'approval:timeout':
+      return EventSeverity.WARNING;
+
+    case 'performance:threshold_exceeded':
+      return (event as PerformanceThresholdExceededEvent).severity ===
+        'critical'
+        ? EventSeverity.CRITICAL
+        : EventSeverity.WARNING;
+
+    case 'wip:violation':
+      return (event as WIPViolationEvent).severity === 'critical'
+        ? EventSeverity.CRITICAL
+        : EventSeverity.WARNING;
+
+    case 'approval:escalated':
+      return EventSeverity.ERROR;
+
+    default:
+      return EventSeverity.INFO;
+  }
+}
+
+export default {
+  createBaseEvent,
+  isTaskEvent,
+  isWorkflowEvent,
+  isApprovalEvent,
+  isPerformanceEvent,
+  getEventSeverity,
+  EventSeverity,
+};

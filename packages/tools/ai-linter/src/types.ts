@@ -67,7 +67,8 @@ export interface BatchResult {
  * Validation result for code content
  */
 export interface ValidationResult {
-  id: string;
+  isValid: boolean;
+  reason?: string;
 }
 
 /**

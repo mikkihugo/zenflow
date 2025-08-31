@@ -5,7 +5,7 @@
  * unified Central WebSocket Hub for real-time coordination updates.
  */
 
-import { getLogger as _getLogger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('svelte-websocket-manager');
 
@@ -47,7 +47,7 @@ export class SvelteWebSocketManager {
         };
 
         this.ws.onerror = (error) => {
-          logger.error('🚨 WebSocket _error:', error);
+          logger.error('🚨 WebSocket error:', error);
           reject(error);
         };
       } catch (error) {
@@ -149,12 +149,132 @@ export class SvelteWebSocketManager {
   /**
    * Emit event to all subscribers
    */
-  private emit(eventType: string, _data: any): void {
+  private emit(eventType: string, data: any): void {
     const callbacks = this.subscribers.get(eventType);
     if (callbacks) {
       for (const callback of callbacks) {
         try {
           callback(data);
         } catch (error) {
-          logger.error(`Error in event callback for ${eventType}:"Fixed unterminated template" `🔄 Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})"Fixed unterminated template" "Fixed unterminated template"
-"Fixed unterminated template"
+          logger.error(`Error in event callback for ${eventType}:`, error);
+        }
+      }
+    }
+
+    // Also emit to wildcard listeners
+    const wildcardCallbacks = this.subscribers.get('*');
+    if (wildcardCallbacks) {
+      for (const callback of wildcardCallbacks) {
+        try {
+          callback({ type: eventType, data });
+        } catch (error) {
+          logger.error('Error in wildcard callback:', error);
+        }
+      }
+    }
+  }
+
+  /**
+   * Handle reconnection logic
+   */
+  private handleReconnect(): void {
+    if (this.reconnectAttempts < this.maxReconnectAttempts) {
+      this.reconnectAttempts++;
+      const delay = Math.pow(2, this.reconnectAttempts) * 1000; // Exponential backoff
+      logger.info(
+        `🔄 Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`
+      );
+
+      setTimeout(() => {
+        this.connect().catch((error) => {
+          logger.error('Reconnection failed:', error);
+        });
+      }, delay);
+    } else {
+      logger.error('🚫 Max reconnection attempts reached');
+    }
+  }
+
+  /**
+   * Request service discovery
+   */
+  discoverServices(): void {
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
+
+    this.ws.send(
+      JSON.stringify({
+        type: 'discover_services',
+      })
+    );
+  }
+
+  /**
+   * Get connection statistics
+   */
+  getStats(): {
+    connected: boolean;
+    availableServices: string[];
+    activeSubscriptions: number;
+    reconnectAttempts: number;
+  } {
+    return {
+      connected: this.ws?.readyState === WebSocket.OPEN,
+      availableServices: this.availableServices,
+      activeSubscriptions: this.subscribers.size,
+      reconnectAttempts: this.reconnectAttempts,
+    };
+  }
+
+  /**
+   * Disconnect from the WebSocket hub
+   */
+  disconnect(): void {
+    if (this.ws) {
+      this.ws.close();
+      this.ws = null;
+    }
+    this.subscribers.clear();
+    logger.info('🔌 Disconnected from Central WebSocket Hub');
+  }
+}
+
+/**
+ * Example usage patterns for Svelte integration
+ */
+export const svelteUsageExample = `
+// stores/websocket.js
+import { writable } from 'svelte/store';
+import { SvelteWebSocketManager } from './websocket-manager';
+
+const wsManager = new SvelteWebSocketManager();
+
+// Reactive stores for different data types
+export const tasks = writable([]);
+export const approvalGates = writable([]);
+export const piProgress = writable(null);
+export const flowMetrics = writable(null);
+export const systemHealth = writable(null);
+export const connectionStatus = writable(false);
+
+// Initialize WebSocket connection
+export async function initWebSocket() {
+  try {
+    await wsManager.connect();
+    connectionStatus.set(true);
+    
+    // Update stores based on WebSocket events
+    wsManager.on('task_updated', (data) => tasks.set(data.tasks || []));
+    wsManager.on('approval_gate_changed', (data) => approvalGates.set(data.gates || []));
+    wsManager.on('pi_planning_progress', (data) => piProgress.set(data));
+    wsManager.on('flow_metrics_updated', (data) => flowMetrics.set(data));
+    wsManager.on('system_health_update', (data) => systemHealth.set(data));
+  } catch (error) {
+    logger.error('WebSocket connection failed:', error);
+    connectionStatus.set(false);
+  }
+}
+
+// Component usage:
+// import { tasks, approvalGates, connectionStatus, initWebSocket } from 'stores/websocket'
+// onMount(() => initWebSocket());
+`;

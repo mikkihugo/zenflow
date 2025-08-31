@@ -29,13 +29,30 @@ export interface WIPLimits {
  * Core workflow task
  */
 export interface WorkflowTask {
-  id: string;
+    readonly id: string;
+    readonly title: string;
+    readonly description?: string;
+    readonly state: TaskState;
+    readonly priority: TaskPriority;
+    readonly createdAt: Date;
+    readonly updatedAt: Date;
+    readonly startedAt?: Date;
+    readonly completedAt?: Date;
+    readonly assignedTo?: string;
+    readonly estimatedEffort?: number;
+    readonly actualEffort?: number;
+    readonly dependencies?: string[];
+    readonly tags?: string[];
+    readonly metadata?: Record<string, any>;
 }
 /**
  * Workflow bottleneck information
  */
 export interface WorkflowBottleneck {
-  id: string;
+    readonly id: string;
+    readonly state: TaskState;
+    readonly type: 'capacity' | ' process' | ' dependency';
+    readonly severity: low;
 }
 /**
  * Flow metrics for performance analysis

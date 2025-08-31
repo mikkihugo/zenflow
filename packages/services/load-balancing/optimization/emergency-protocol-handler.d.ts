@@ -10,7 +10,18 @@ import type { EmergencyHandler } from '../interfaces';
 export declare class EmergencyProtocolHandler extends EventEmitter implements EmergencyHandler {
     private activeProtocols;
     private emergencyHistory;
-    constructor(): void {
+    constructor();
+    handleEmergency(type: string, severity: 'low' | 'medium' | 'high' | 'critical'): Promise<void>;
+    shedLoad(percentage: number): Promise<void>;
+    activateFailover(): Promise<void>;
+    throttleRequests(rate: number): Promise<void>;
+    sendAlert(_message: string, recipients: string[]): Promise<void>;
+    private initializeProtocols;
+    private executeProtocol;
+    private executeAction;
+    private executeDefaultEmergencyResponse;
+    private recordEmergency;
+    getEmergencyHistory(): Array<{
         timestamp: Date;
         type: string;
         severity: string;
