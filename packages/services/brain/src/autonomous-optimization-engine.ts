@@ -143,7 +143,7 @@ export class AutonomousOptimizationEngine {
 
  // Update context with complexity estimate
  context = {
- ...context,
+...context,
  expectedComplexity: complexityEstimate.estimatedComplexity,
  };
 
@@ -355,7 +355,7 @@ export class AutonomousOptimizationEngine {
 
  // Calculate overall score for each method
  const methodScores = methods
- .map(([method, perf]) => {
+.map(([method, perf]) => {
  const score =
  perf.successRate * 0.4 +
  perf.improvementFactor * 0.3 +
@@ -364,12 +364,12 @@ export class AutonomousOptimizationEngine {
 
  const trend =
  perf.recentTrend > 0.05
- ? 'improving' | ' stable' | ' declining') :perf.recentTrend < -0.05
- ? 'improving' | ' stable' | ' declining') : 'stable';
+ ? 'improving' | ' stable' | ' declining'):perf.recentTrend < -0.05
+ ? 'improving' | ' stable' | ' declining'): 'stable';
 
  return { method, score, trend};
 })
- .sort((a, b) => b.score - a.score);
+.sort((a, b) => b.score - a.score);
 
  const bestMethod =
  methodScores.length > 0 ? methodScores[0].method: 'hybrid;
@@ -391,7 +391,7 @@ export class AutonomousOptimizationEngine {
  const adaptationRate =
  recentOptimizations.length > 1
  ? methodSwitches / (recentOptimizations.length - 1)
- :0;
+:0;
 
  // Calculate learning effectiveness
  const withFeedback = this.optimizationHistory.filter(
@@ -400,7 +400,7 @@ export class AutonomousOptimizationEngine {
  const learningEffectiveness =
  this.optimizationHistory.length > 0
  ? withFeedback / this.optimizationHistory.length
- :0;
+:0;
 
  return {
  bestMethod,
@@ -517,7 +517,7 @@ export class AutonomousOptimizationEngine {
  const coordinationTask:CoordinationTask = {
  id:`auto-dspy-$Date.now()`,`
  type: 'generation', input:`Optimize this prompt: $context.basePrompt`,`
- ...context.context,
+...context.context,
  originalPrompt:context.basePrompt,
  taskType:context.task,
  agentRole:context.agentRole,,
@@ -527,7 +527,7 @@ export class AutonomousOptimizationEngine {
  coordinationTask,
  {
  teleprompter: 'MIPROv2', hybridMode:false, // Pure DSPy
- optimizationSteps:context.priority === 'high'? 3 : 2,
+ optimizationSteps:context.priority === 'high'? 3: 2,
 }
  );
 
@@ -568,7 +568,7 @@ export class AutonomousOptimizationEngine {
  improvementScore:result.improvementFactor,
  reasoning:[
  `ML optimization applied ${result.appliedPatterns.length} patterns`,`
- ...result.reasoning,
+...result.reasoning,
 ],
 };
 }
@@ -591,7 +591,7 @@ export class AutonomousOptimizationEngine {
  try {
  // Use ML-optimized prompt as input to DSPy
  const enhancedContext = {
- ...context,
+...context,
  basePrompt:mlResult.optimizedPrompt,
 };
  const dspyResult = await this.executeDSPyOptimization(
@@ -607,8 +607,8 @@ export class AutonomousOptimizationEngine {
  improvementScore:
  mlResult.improvementScore * dspyResult.improvementScore,
  reasoning:[
- 'Hybrid optimization:ML + DSPy', ...mlResult.reasoning,
- ...dspyResult.reasoning,
+ 'Hybrid optimization:ML + DSPy',...mlResult.reasoning,
+...dspyResult.reasoning,
 ],
 };
 } catch (error) {
@@ -616,9 +616,9 @@ export class AutonomousOptimizationEngine {
 }
 
  // Return ML result if DSPy enhancement wasn't needed or failed') return {
- ...mlResult,
+...mlResult,
  method: 'hybrid', reasoning:[
- 'Hybrid optimization:ML-only (DSPy not needed)', ...mlResult.reasoning,
+ 'Hybrid optimization:ML-only (DSPy not needed)',...mlResult.reasoning,
 ],
 };
 }
@@ -720,9 +720,9 @@ export class AutonomousOptimizationEngine {
 
  // Update recent trend
  const recentSuccessRates = this.optimizationHistory
- .filter((opt) => opt.result.method === method && opt.feedback)
- .slice(-10)
- .map((opt) => opt.feedback!.actualSuccessRate);
+.filter((opt) => opt.result.method === method && opt.feedback)
+.slice(-10)
+.map((opt) => opt.feedback!.actualSuccessRate);
 
  if (recentSuccessRates.length >= 3) {
  const trend = ema(recentSuccessRates, 3);
@@ -770,10 +770,10 @@ export class AutonomousOptimizationEngine {
  // Check if we should adjust our adaptation threshold
  const performanceSpread =
  Math.max(
- ...Array.from(methodAverages.values()).map((scores) => ss.mean(scores))
+...Array.from(methodAverages.values()).map((scores) => ss.mean(scores))
  ) -
  Math.min(
- ...Array.from(methodAverages.values()).map((scores) => ss.mean(scores))
+...Array.from(methodAverages.values()).map((scores) => ss.mean(scores))
  );
 
  if (performanceSpread > this.adaptationThreshold * 2) {
@@ -806,7 +806,7 @@ export class AutonomousOptimizationEngine {
 
  // Method used indicates complexity
  const methodComplexity =
- result.method === 'dspy' ? 0.2:result.method === ' hybrid' ? 0.15 : 0.1;') complexity += methodComplexity;
+ result.method === 'dspy' ? 0.2:result.method === ' hybrid' ? 0.15: 0.1;') complexity += methodComplexity;
 
  // Improvement score (low improvement suggests high baseline complexity)
  const improvementComplexity = Math.max(
