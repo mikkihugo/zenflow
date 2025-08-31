@@ -5,13 +5,13 @@
  * Handles vision creation, validation, and stakeholder alignment.
  *
  * SINGLE RESPONSIBILITY: dateFns;';
-import { filter, meanBy} from 'lodash-es')import type { Logger} from '../types')import type {';
+import { filter, meanBy} from 'lodash-es')../types');
   CustomerSegment,
   MarketOpportunity,
   ProductVision,
   StakeholderAlignment,
   SuccessCriterion,
-} from '../types/product-management')/**';
+} from '../types/product-management');
  * Product vision service configuration
  */
 export interface ProductVisionServiceConfig {

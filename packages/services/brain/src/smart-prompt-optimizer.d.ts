@@ -32,7 +32,7 @@ export interface: PromptAnalysisData {
     readonly metrics?: Record<string, number>;
 }
 export interface: OptimizationPattern {
-    readonly pattern: Type: 'length_optimization|structure_enhancement|context_addition|clarity_improvement;;
+    readonly pattern: Type: 'length_optimization|structure_enhancement|context_addition|clarity_improvement;
     readonly confidence: number;
     readonly improvement: number;
     readonly applicable: Contexts: string[];
@@ -54,17 +54,12 @@ export interface: SmartOptimizationResult {
  */
 export declare class: SmartPromptOptimizer {
     private initialized;
-    constructor();
-    /**
-     * Learn from prompt performance feedback
-     */
-    learnFrom: Performance(analysis: Data: PromptAnalysis: Data): Promise<void>;
-    catch (error: any) {
+    constructor(): void {
       : void;
     /**
      * Get optimization statistics
      */
-    getOptimization: Stats(): {
+    getOptimization: Stats(): void {
         total: Optimizations: number;
         average: Improvement: number;
         pattern: Count: number;

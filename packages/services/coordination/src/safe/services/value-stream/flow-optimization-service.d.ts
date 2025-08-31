@@ -9,7 +9,7 @@ import {
   meanBy,
   orderBy,
   sumBy,
-} from 'lodash-es')import type { Logger} from '../../types')/**';
+} from 'lodash-es')../../types');
  * Flow optimization configuration
  */
 export interface FlowOptimizationConfig {
@@ -54,35 +54,15 @@ export interface MonitoringRequirement {
  * Recommendation priority
  */
 export declare enum RecommendationPriority {
-    ')  CRITICAL = ' = 0,
+    ') = 0,
     critical = 1,
-    ')  HIGH = ' = 2,
+    ') = 2,
     high = 3,
-    ')  MEDIUM = ' = 4,
+    ') = 4,
     medium = 5,
-    ')  LOW = ' = 6,
+    ') = 6,
     low = 7,
-    ')};; 
-    /**
-     * Expected impact
-     */
-    = 8
-    /**
-     * Expected impact
-     */
-    ,
-    /**
-     * Expected impact
-     */
-    export = 9,
-    interface = 10,
-    ExpectedImpact = 11
-}
-/**
- * Implementation timeline
- */
-export interface ImplementationTimeline {
-    readonly estimatedDuration: 'available';
+    ')available';
 }
 /**
  * Implementation step
@@ -94,17 +74,17 @@ export interface ImplementationStep {
  * Risk probability
  */
 export declare enum RiskProbability {
-    ')  VERY_LOW = ' = 0,
+    ') = 0,
     very_low = 1,
-    ')  LOW = ' = 2,
+    ') = 2,
     low = 3,
-    ')  MEDIUM = ' = 4,
+    ') = 4,
     medium = 5,
-    ')  HIGH = ' = 6,
+    ') = 6,
     high = 7,
-    ')  VERY_HIGH = ' = 8,
+    ') = 8,
     very_high = 9,
-    ')};; 
+    ')}; 
     /**
      * Risk impact
      */

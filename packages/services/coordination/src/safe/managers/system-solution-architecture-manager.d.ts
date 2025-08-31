@@ -25,53 +25,25 @@ export interface SystemSolutionArchConfig {
  * Solution architecture patterns
  */
 export declare enum SolutionArchitecturePattern {
-    ')  TRADITIONAL_3_TIER = ' = 0,
+    ') = 0,
     traditional_3_tier = 1,
-    ')  MICRO_FRONTEND = ' = 2,
+    ') = 2,
     micro_frontend = 3,
-    ')  SERVERLESS = ' = 4,
+    ') = 4,
     serverless = 5,
-    ')  CLOUD_NATIVE = ' = 6,
+    ') = 6,
     cloud_native = 7,
-    ')  HYBRID_CLOUD = ' = 8,
+    ') = 8,
     hybrid_cloud = 9,
-    ')  EDGE_COMPUTING = ' = 10,
+    ') = 10,
     edge_computing = 11,
-    ')};; 
-    /**
-     * System design interface
-     */
-    = 12
-    /**
-     * System design interface
-     */
-    ,
-    /**
-     * System design interface
-     */
-    export = 13,
-    interface = 14,
-    SystemDesign = 15
-}
-/**
- * Business context for system design
- */
-export interface BusinessContext {
-    readonly domain: 'service';
+    ')service';
 }
 /**
  * Component interface
  */
 export interface ComponentInterface {
-    readonly id: string;
-    readonly name: string;
-    readonly type: 'synchronous' | ' asynchronous' | ' batch';
-    readonly protocol: string;
-    readonly producer: string;
-    readonly consumer: string;
-    readonly dataFormat: string;
-    readonly securityRequirements: string[];
-    readonly performanceRequirements: PerformanceExpectation[];
+  id: string;
 }
 /**
  * Performance expectation
@@ -86,47 +58,25 @@ export interface PerformanceExpectation {
  * Compliance requirement
  */
 export interface ComplianceRequirement {
-    readonly id: string;
-    readonly framework: string;
-    readonly requirement: string;
-    readonly description: string;
-    readonly controls: ControlRequirement[];
-    readonly evidence: string[];
-    readonly status: 'compliant| non_compliant| partial' | ' not_assessed';
+  id: string;
 }
 /**
  * Control requirement
  */
 export interface ControlRequirement {
-    readonly id: string;
-    readonly name: string;
-    readonly description: string;
-    readonly category: string;
-    readonly mandatory: boolean;
-    readonly implementation: string;
-    readonly verification: string;
+  id: string;
 }
 /**
  * Architecture review
  */
 export interface ArchitectureReview {
-    readonly id: string;
-    readonly reviewerId: string;
-    readonly reviewType: 'peer| formal| compliance' | ' security';
-    readonly status: 'pending| in_progress| approved| rejected' | ' conditionally_approved';
-    readonly findings: ReviewFinding[];
-    readonly recommendations: string[];
-    readonly decision: string;
-    readonly createdAt: Date;
-    readonly completedAt?: Date;
+  id: string;
 }
 /**
  * Review finding
  */
 export interface ReviewFinding {
-    readonly id: string;
-    readonly category: 'compliance| design| quality' | ' risk';
-    readonly severity: critical | high | medium | low;
+  id: string;
 }
 /**
  * System and Solution Architecture Manager - Facade delegating to @claude-zen packages

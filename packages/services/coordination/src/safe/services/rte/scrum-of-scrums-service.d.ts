@@ -9,25 +9,25 @@ import {
   filter,
   map,
   meanBy,
-} from 'lodash-es')import type { ARTTeam, Dependency, Logger, Risk} from '../../types')/**';
+} from 'lodash-es')../../types');
  * Scrum of Scrums meeting configuration
  */
 export interface ScrumOfScrumsConfig {
-    readonly id: 'technical';
+  id: string;
 }
 /**
  * Impediment severity levels
  */
 export declare enum ImpedimentSeverity {
-    ')  LOW = ' = 0,
+    ') = 0,
     low = 1,
-    ')  MEDIUM = ' = 2,
+    ') = 2,
     medium = 3,
-    ')  HIGH = ' = 4,
+    ') = 4,
     high = 5,
-    ')  CRITICAL = ' = 6,
+    ') = 6,
     critical = 7,
-    ')};; 
+    ')}; 
     /**
      * Impediment status tracking
      */

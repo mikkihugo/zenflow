@@ -108,12 +108,7 @@ export interface StakeholderContext {
  * Mapping validation result
  */
 export interface MappingValidationResult {
-  readonly isValid: boolean;
-  readonly validationScore: number;
-  readonly issues: MappingValidationIssue[];
-  readonly recommendations: string[];
-  readonly approvalRequired: boolean;
-  readonly validatedAt: Date;
+  id: string;
 }
 /**
  * Mapping validation issue

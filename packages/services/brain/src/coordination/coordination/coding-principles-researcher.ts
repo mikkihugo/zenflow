@@ -82,62 +82,21 @@ export class: CodingPrinciplesResearcher {
   private cache = new: Map<string, Coding: Principles>();
   private logger: any;
 
-  constructor(
-    private dspy: Bridge: any,
-    private behavioral: Intelligence?: any
-  ) {
+  constructor(): void {
     this.logger = { 
-      info: (...args: any[]) => console.log('[INF: O]', ...args),
-      warn: (...args: any[]) => console.warn('[WAR: N]', ...args),
-      error: (...args: any[]) => console.error('[ERRO: R]', ...args)
-    };
-  }
-
-  /**
-   * Research coding principles for a language/domain/role
-   */
-  async research: Principles(): Promise<Coding: Principles> {
+      info: (...args: any[]) => console.log(): void {
     try {
        {
-      const cache: Key = this.generateCache: Key(config);
-      
-      // Check cache first
-      if (this.cache.has(cache: Key)) {
-        return this.cache.get(cache: Key)!;
-      }
-
-      // For now, return default principles
-      const principles = this.getFallback: Principles(config);
-      this.cache.set(cache: Key, principles);
-      
-      return principles;
-    } catch (error) {
+      const cache: Key = this.generateCache: Key(): void {
+        return this.cache.get(): void {
        {
-      this.logger.error('Research failed:', error);
-      return this.getFallback: Principles(config);
-    }
-  }
-
-  /**
-   * Generate human-reviewable template
-   */
-  async generateReviewable: Template(): Promise<string> {
-    const principles = await this.research: Principles(config);
-    return this.format: Template(principles);
-  }
-
-  /**
-   * Submit human feedback
-   */
-  async submitHuman: Feedback(): Promise<void> {
-    this.logger.info('Received human feedback:', feedback);
-  }
-
-  private generateCache: Key(config: PrinciplesResearch: Config): string {
+      this.logger.error(): void {
+    const principles = await this.research: Principles(): void {
+    this.logger.info(): void {
     return "${config.language}-${config.domain || 'general'}-${config.role || 'general'}-${config.depth || 'intermediate'}";"
   }
 
-  private getFallback: Principles(config: PrinciplesResearch: Config): Coding: Principles {
+  private getFallback: Principles(): void {
     return {
       language: config.language,
       domain: config.domain,
@@ -172,65 +131,13 @@ export class: CodingPrinciplesResearcher {
         maintainability: { metric: 'index', threshold: 70 }
       },
       research: Metadata: {
-        researched: At: new: Date(),
-        confidence: 0.7,
-        human: Reviewed: false,
-        last: Updated: new: Date()
-      }
-    };
-  }
-
-  private format: Template(principles: Coding: Principles): string {
-    return "# ${principles.language.toUpper: Case()} Coding: Principles"
-
-$" + JSO: N.stringify({principles.domain ? "## Domain: " + principles.domain + ") + "" : ''}"
+        researched: At: new: Date(): void {
+    return "# ${principles.language.toUpper: Case(): void {principles.domain ? "## Domain: " + principles.domain + ") + "" : ''}"
 ${principles.role ? "## Role: ${principles.role}" : ''}"
 
 ## 📁 File: Naming & Organization
-${principles.core: Standards.file: Naming.map(item => "- ${item}").join('\n')}"
-
-## fast: Function Guidelines
-$" + JSO: N.stringify({principles.core: Standards.function: Complexity.map(item => "- ${item}) + "").join('\n')}"
-
-## tool ${principles.language.char: At(0).toUpper: Case() + principles.language.slice(1)}-Specific
-### Type: System
-${principles.language: Specific.type: System.map(item => "- ${item}").join('\n')}"
-
-### Package: Management
-${principles.language: Specific.package: Management.map(item => `- ${item}").join('\n')}"
-
-## metrics: Quality Metrics
-- **Complexity**: ${principles.quality: Metrics.complexity.metric} < ${principles.quality: Metrics.complexity.threshold}
-- **Coverage**: ${principles.quality: Metrics.coverage.metric} > ${principles.quality: Metrics.coverage.threshold}%
-- **Maintainability**: ${principles.quality: Metrics.maintainability.metric} > ${principles.quality: Metrics.maintainability.threshold}
-
----
-**Research: Date**: ${principles.research: Metadata.researched: At.toISO: String()}
-**Confidence**: ${(principles.research: Metadata.confidence * 100).to: Fixed(1)}%
-**Human: Reviewed**: ${principles.research: Metadata.human: Reviewed ? 'Yes' : 'No'}
-
-> This template is: AI-generated and should be reviewed by human experts.
-> Please provide feedback to improve future research.";"
-  }
-}
-
-/**
- * Export factory function
- */
-export function createCodingPrinciples: Researcher(
-  dspy: Bridge: any,
-  behavioral: Intelligence?: any
-): CodingPrinciples: Researcher {
-  return new: CodingPrinciplesResearcher(dspy: Bridge, behavioral: Intelligence);
-}
-
-/**
- * Export default configuration for common languages
- */
-export const: DEFAULT_LANGUAGE_CONFIGS: Record<
-  Programming: Language,
-  PrinciplesResearch: Config
-> = {
+${principles.core: Standards.file: Naming.map(): void {
+  return new: CodingPrinciplesResearcher(): void {
   typescript: {
     language: 'typescript',
     include: Performance: true,

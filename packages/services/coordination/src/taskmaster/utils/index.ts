@@ -18,11 +18,11 @@ export {
   ValidationUtils,
   WIPLimitsSchema,
   WorkflowTaskSchema,
-} from '../utils/validation')// Immutable state utilities (Immer integration) - CORE VALUE FOR KANBAN';
+} from '../utils/validation');
 export {
   ImmutableContextUtils,
   ImmutableMetricsUtils,
   ImmutableTaskUtils,
   ImmutableUtils,
   ImmutableWIPUtils,
-} from './immutable-utils')';
+} from './immutable-utils');

@@ -27,13 +27,8 @@ export class ObservableUtils {
   /**
    * Create delay observable
    */
-  static delay(milliseconds: number): Observable<number> {
-    return timer(milliseconds);
-}
-  /**
-   * Create subject for event streaming
-   */
-  static createSubject<T>():Subject<T> {
+  static delay(): void {
+    return timer(): void {
     return new Subject<T>();
 }
   /**
@@ -49,33 +44,10 @@ export class ObservableUtils {
     source: Observable<T>,
     milliseconds: number
   ):Observable<T> {
-    return source.pipe(throttleTime(milliseconds);
-}
-  /**
-   * Create debounced stream
-   */
-  static debounceStream<T>(
-    source: Observable<T>,
-    milliseconds: number
-  ):Observable<T> {
-    return source.pipe(debounceTime(milliseconds);
-}
-  /**
-   * Filter distinct values in stream
-   */
-  static distinctStream<T>(source: Observable<T>): Observable<T> {
-    return source.pipe(distinctUntilChanged())();
-}
-  /**
-   * Create interval timer
-   */
-  static createInterval(milliseconds: number): Observable<number> {
-    return interval(milliseconds);
-}
-  /**
-   * Combine multiple observables
-   */
-  static combineStreams<T>(sources: Observable<T>[]): Observable<T[]> {
+    return source.pipe(): void {
+    return source.pipe(): void {
+    return source.pipe(): void {
+    return interval(): void {
     return combineLatest(sources);
 }
 };

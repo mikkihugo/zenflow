@@ -1,17 +1,5 @@
 export interface GovernanceDecision {
-    readonly id: string;
-    readonly type: DecisionType;
-    readonly title: string;
-    readonly description: string;
-    readonly requesterId: string;
-    readonly requesterRole: string;
-    readonly decisionMakers: DecisionMaker[];
-    readonly artifacts: DecisionArtifact[];
-    readonly criteria: DecisionCriteria[];
-    readonly risks: RiskFactor[];
-    readonly implications: Implication[];
-    '; : any;
-    readonly priority: critical | high | medium;
+  id: string;
 }
 export type DecisionType = architecture_standard | technology_selection | design_pattern | security_policy | integration_approach | data_governance | performance_requirement | compliance_exception | investment_decision | 'strategic_direction';
 export type DecisionStatus = submitted | under_review | pending_approval | approved | rejected | escalated | withdrawn | implemented | 'closed';
@@ -34,28 +22,10 @@ export interface AvailabilityWindow {
     readonly type: 'available' | ' limited' | ' unavailable';
 }
 export interface DecisionArtifact {
-    readonly id: string;
-    readonly name: string;
-    readonly type: document | diagram | specification | analysis | proposal | 'evidence';
-    readonly url: string;
-    readonly description: string;
-    readonly version: string;
-    readonly uploadedBy: string;
-    readonly uploadedAt: Date;
-    readonly size: number;
-    readonly checksum: string;
-    readonly confidentiality: public | internal | confidential | 'restricted';
+  id: string;
 }
 export interface DecisionCriteria {
-    readonly id: string;
-    readonly name: string;
-    readonly description: string;
-    readonly category: technical | business | compliance | financial | operational | 'strategic';
-    readonly weight: number;
-    readonly mandatory: boolean;
-    readonly measurable: boolean;
-    readonly evaluation: CriteriaEvaluation;
-    readonly threshold?: EvaluationThreshold;
+  id: string;
 }
 export interface CriteriaEvaluation {
     readonly method: 'quantitative| qualitative| binary' | ' scoring';
@@ -83,16 +53,7 @@ export interface EvaluationThreshold {
     readonly action: 'accept| reject| escalate' | ' review';
 }
 export interface RiskFactor {
-    readonly id: string;
-    readonly name: string;
-    readonly description: string;
-    readonly category: technical | business | operational | security | compliance | 'financial';
-    readonly probability: number;
-    readonly impact: 'low| medium| high' | ' critical';
-    readonly timeframe: string;
-    readonly owner: string;
-    readonly mitigation: RiskMitigation;
-    readonly status: identified | assessed | mitigated | accepted | 'transferred';
+  id: string;
 }
 export interface RiskMitigation {
     readonly strategy: 'avoid| mitigate| transfer' | ' accept';
@@ -113,16 +74,7 @@ export interface MitigationAction {
     readonly dependencies: string[];
 }
 export interface Implication {
-    readonly id: string;
-    readonly type: 'immediate| short_term| medium_term' | ' long_term';
-    readonly category: technical | business | operational | financial | 'organizational';
-    readonly description: string;
-    readonly impact: 'positive' | ' negative' | ' neutral';
-    readonly magnitude: 'low| medium| high' | ' critical';
-    readonly stakeholders: string[];
-    readonly timeframe: string;
-    readonly reversibility: reversible | partially_reversible | 'irreversible';
-    readonly dependencies: string[];
+  id: string;
 }
 export interface DecisionContext {
     readonly businessContext: BusinessContext;
@@ -178,14 +130,7 @@ export interface OrganizationalContext {
     readonly governancePolicies: string[];
 }
 export interface OrganizationalStakeholder {
-    readonly id: string;
-    readonly name: string;
-    readonly role: string;
-    readonly department: string;
-    readonly influence: 'high' | ' medium' | ' low';
-    readonly interest: 'high' | ' medium' | ' low';
-    readonly sentiment: 'supportive' | ' neutral' | ' opposed';
-    readonly requirements: string[];
+  id: string;
 }
 export interface ExternalContext {
     readonly regulatoryRequirements: RegulatoryRequirement[];
@@ -396,16 +341,7 @@ export interface FeedbackMechanism {
     readonly analysis: string;
 }
 export interface AuditRecord {
-    readonly id: string;
-    readonly timestamp: Date;
-    readonly actor: string;
-    readonly action: string;
-    readonly target: string;
-    readonly previousState?: any;
-    readonly newState?: any;
-    readonly reason?: string;
-    readonly ipAddress?: string;
-    readonly sessionId?: string;
+  id: string;
 }
 export interface GovernanceDecisionRequest {
     readonly type: DecisionType;

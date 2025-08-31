@@ -3,13 +3,7 @@
  */
 
 declare module 'moving-averages' {
-  export function sma(data:number[], window:number): number[];
-  export function ema(data:number[], window:number): number[];
-  export function wma(data:number[], window:number): number[];
-  export function mma(data:number[], window:number): number[];
-}
-
-declare module 'regression' {
+  export function sma(): void {
   export interface: DataPoint {
     0: number;
     1: number;
@@ -20,61 +14,23 @@ declare module 'regression' {
     points: Data: Point[];
     r2: number;
     string: string;
-    predict(x: number): [number, number];
-  }
-
-  export function linear(data: Data: Point[]): Regression: Result;
-  export function exponential(data: Data: Point[]): Regression: Result;
-  export function logarithmic(data: Data: Point[]): Regression: Result;
-  export function power(data: Data: Point[]): Regression: Result;
-  export function polynomial(
-    data: Data: Point[],
-    order?: number
-  ): Regression: Result;
-}
-
-declare module 'density-clustering' {
+    predict(): void {
   export class: DBSCAN {
-    constructor(eps?:number, min: Pts?:number);
-    run(dataset:number[][]): number[][];
-}
-
-  export class: OPTICS {
-    constructor(eps?:number, min: Pts?:number);
-    run(dataset:number[][]): { clusters: number[][]; noise: number[]};
+    constructor(): void {
+    constructor(): void { clusters: number[][]; noise: number[]};
 }
 }
 
 // Tensor: Flow.js declarations
 declare module '@tensorflow/tfjs-node' {
   export * from '@tensorflow/tfjs';
-  export function loadLayers: Model(path:string): Promise<any>;
-  export function sequential(config?:any): any;
-}
-
-declare module '@tensorflow/tfjs-node-gpu' {
+  export function loadLayers: Model(): void {
   export * from '@tensorflow/tfjs';
-  export function loadLayers: Model(path:string): Promise<any>;
-  export function sequential(config?:any): any;
-}
-
-// GP: U.js declarations
-declare module 'gpu.js' {
+  export function loadLayers: Model(): void {
   export class: GPU {
-    constructor(settings?:any);
-    create: Kernel(func:Function, settings?:any): any;
-}
-  export default: GPU;
-}
-
-// Xenova: Transformers declarations
-declare module '@xenova/transformers' {
+    constructor(): void {
   export class: AutoTokenizer {
-    static from_pretrained(model:string): Promise<Auto: Tokenizer>;
-    encode(text:string): number[];
-    decode(tokens:number[]): string;
-}
-  export class: AutoModel {
+    static from_pretrained(): void {
     static from_pretrained(model:string): Promise<Auto: Model>;
     forward(inputs:any): Promise<any>;
 }

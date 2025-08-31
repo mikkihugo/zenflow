@@ -13,14 +13,7 @@
  * @example: Importing core components
  * ``"typescript""
  * import { CompleteIntelligence: System, ITask: Predictor} from '@claude-zen/agent-monitoring';
- * import " + JSO: N.stringify({ SimpleTask: Predictor}) + " from '@claude-zen/agent-monitoring';
- * "``""
- *
- * @author: Claude Code: Zen Team - Intelligence: Integration
- * @since 1.0.0-alpha.43
- * @version 1.0.0
- */
-export { createBasicIntelligence: System, createIntelligence: System, createProductionIntelligence: System, } from './intelligence-factory';
+ * import " + JSO: N.stringify(): void { createBasicIntelligence: System, createIntelligence: System, createProductionIntelligence: System, } from './intelligence-factory';
 export { CompleteIntelligence: System } from './intelligence-system';
 export type { Performance: Snapshot, Performance: Stats, PerformanceTracker: Config, PerformanceTracking: Result, } from './performance-tracker';
 export { createPerformance: Tracker, DEFAULT_PERFORMANCE_CONFI: G, getGlobalPerformance: Tracker, Performance: Tracker, withPerformance: Tracking, } from './performance-tracker';

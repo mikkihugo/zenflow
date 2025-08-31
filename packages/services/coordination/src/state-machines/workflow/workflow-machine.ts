@@ -11,98 +11,62 @@
  * @since 1.0.0
  * @version 1.0.0
  */
-import { assign, setup} from 'xstate')import type { WorkflowEvent} from '../../types/events')import type { WorkflowKanbanConfig} from '../../kanban/types/index')import type { WorkflowMachineContext} from './workflow-context')import { createInitialContext} from './workflow-context')// ============================================================================ = ''; 
+import { assign, setup} from 'xstate')../../types/events')../../kanban/types/index')./workflow-context')./workflow-context')'; 
 // SIMPLIFIED WORKFLOW MACHINE FOR XSTATE 5.20.2
 // =============================================================================
 /**
  * Essential workflow coordination state machine
  *
  * Simplified design focused on core workflow functionality: (config: WorkflowKanbanConfig) => {
-  return setup({
-    types:  {
-      context:  {} as WorkflowMachineContext,
-      events:  {} as WorkflowEvent,
-},
-    actions:  {
-      // Essential actions using assign from XState 5.20.2
-      addTask: assign({
-        tasks:({ context, event}:any) => {
-          if (event.type !== 'TASK_CREATED)return context.tasks')          return {';
+  return setup(): void {
+          if (event.type !== 'TASK_CREATED)return context.tasks');
             ...context.tasks,
             [event.task.id]:event.task,
 };
 },
 }),
-      moveTask: assign({
-        tasks:({ context, event}:any) => {
-          if (event.type !== 'TASK_MOVED)return context.tasks')          const task = context.tasks[event.taskId];;
-          if (!task) return context.tasks;
-          return {
-            ...context.tasks,
-            [event.taskId]:  {
-              ...task,
-              state: event.toState,
-              updatedAt: new Date(),
-},
-};
-},
-}),
-      recordError: assign({
-        errors:({ context, event}:any) => {
-          if (event.type !== 'ERROR_OCCURRED)return context.errors')          const errorEntry = {';
-            timestamp: new Date(),
-            error: event.error,
-            context: event.errorContext,
-};
-          return [...context.errors.slice(-19), errorEntry];
-},
-}),
-},
-    guards:  {
+      moveTask: assign(): void {
+          if (event.type !== 'TASK_MOVED)return context.tasks')ERROR_OCCURRED)return context.errors');
+            timestamp: new Date(): void {
       // Essential guards
       canMoveTask:({ context, event}:any) => {
-        if (event.type !== 'TASK_MOVED)return false')        return context.tasks[event.taskId] !== undefined;';
+        if (event.type !== 'TASK_MOVED)return false');
 },
       isValidTransition: ({ context, event}:any) => {
-        if (event.type !== 'TASK_MOVED)return false')        // Simplified validation - allow all moves for now';
+        if (event.type !== 'TASK_MOVED)return false');
         return true;
 },
 },
-}).createMachine({
-    id : 'workflowMachine')    initial : 'active,'
-'    context: 'monitoring,',
-'        states: 'canMoveTask',)                  actions,},';
-],
-              ERROR_OCCURRED:  {
-    ')                actions,},';
+}).createMachine(): void {
+    ');
 },
 },
           optimizing:  {
             on:  {
               OPTIMIZATION_COMPLETE:  {
-    ')                target,},';
+    ');
 },
 },
 },
         on:  {
           PAUSE_OPERATION:  {
-    ')            target,},';
+    ');
 },
 },
       paused:  {
         on:  {
           RESUME_OPERATION:  {
-    ')            target,},';
+    ');
 },
 },
       error:  {
         on:  {
           RETRY_OPERATION:  {
-    ')            target,},';
+    ');
 },
 },
 },
-});')'};;
+});')};
 // =============================================================================
 // MACHINE FACTORY & UTILITIES
 // =============================================================================
@@ -112,12 +76,7 @@ import { assign, setup} from 'xstate')import type { WorkflowEvent} from '../../t
 export const createConfiguredWorkflowMachine = (
   config: WorkflowKanbanConfig
 ) => {
-  return createWorkflowMachine(config);
-'};;
-/**
- * Default workflow configuration for development/testing
- */
-export const createDefaultWorkflowConfig = ():WorkflowKanbanConfig => ({
+  return createWorkflowMachine(): void {
   enableIntelligentWIP: 'cycleTime',)      operator : 'gt,'
 '      value: 'Cycle time exceeds 1 week threshold,',
 '      enabled: 'cycleTime',)      operator : 'gt,'
@@ -127,5 +86,5 @@ export const createDefaultWorkflowConfig = ():WorkflowKanbanConfig => ({
 '      enabled: 'throughput',)      operator : 'lt,'
 '      value: 'Throughput below minimum threshold,',
 '      enabled: true,',},';
-],')'});
-')';
+],')});
+');

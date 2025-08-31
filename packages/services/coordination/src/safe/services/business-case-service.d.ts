@@ -10,7 +10,7 @@ import {
   meanBy,
   orderBy,
   sumBy,
-} from 'lodash-es')import type { Logger} from '../types')import type {';
+} from 'lodash-es')../types');
   BusinessHypothesis,
   EpicBusinessCase,
   EpicRisk,
@@ -18,7 +18,7 @@ import {
   MarketAnalysis,
   RevenueProjection,
   ROICalculation,
-} from '../types/epic-management')/**';
+} from '../types/epic-management');
  * Business case service configuration
  */
 export interface BusinessCaseConfig {

@@ -9,11 +9,11 @@
  * @version 1.0.0
  */
 // Actions for external use (testing, extensions)
-export { workflowActions} from './workflow-actions')// Context utilities and types';
-export type { WorkflowMachineContext} from './workflow-context')export { WorkflowContextUtils} from './workflow-context')// Guards for external use (testing, extensions)';
-export { workflowGuards} from './workflow-guards')// Machine definition and factory';
+export { workflowActions} from './workflow-actions');
+export type { WorkflowMachineContext} from './workflow-context')./workflow-context');
+export { workflowGuards} from './workflow-guards');
 export {
   createConfiguredWorkflowMachine,
   createDefaultWorkflowConfig,
   createWorkflowMachine,
-} from './workflow-machine')';
+} from './workflow-machine');

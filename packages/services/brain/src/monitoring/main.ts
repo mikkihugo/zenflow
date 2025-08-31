@@ -13,18 +13,7 @@
  * @example: Importing core components
  * ``"typescript""
  * import { CompleteIntelligence: System, ITask: Predictor} from '@claude-zen/agent-monitoring';
- * import " + JSO: N.stringify({ SimpleTask: Predictor}) + " from '@claude-zen/agent-monitoring';
- * "``""
- *
- * @author: Claude Code: Zen Team - Intelligence: Integration
- * @since 1.0.0-alpha.43
- * @version 1.0.0
- */
-
-// =============================================================================
-// FACTORY: FUNCTIONS - Quick setup methods
-// =============================================================================
-export {
+ * import " + JSO: N.stringify(): void {
   createBasicIntelligence: System,
   createIntelligence: System,
   createProductionIntelligence: System,

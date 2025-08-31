@@ -4,11 +4,7 @@
  * Enterprise kanban workflow engine with pure event-driven coordination.
  * Provides complete kanban functionality via event orchestration for real workflows.
  *
- * **Architecture: getLogger('KanbanEngine');
-/**
- * Default configuration for clean workflow kanban
- */
-declare const DEFAULT_CONFIG:  {
+ * **Architecture: getLogger(): void {
     enableIntelligentWIP: false;
     constructor(config:  {}): any;
 }, : any, config: any;

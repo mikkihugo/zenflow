@@ -18,20 +18,7 @@ export interface FACTStorageConfig {
 
 export interface FACTKnowledgeEntry {
   id: string;
-  query: string;
-  result: unknown;
-  source: string;
-  timestamp: number;
-  ttl: number;
-  accessCount: number;
-  lastAccessed: number;
-  metadata: {
-    type: string;
-    domains: string[];
-    confidence?: number;
-    version?: string;
-    [key: string]: unknown;
-  };
+};
 }
 
 export interface VectorFACTKnowledgeEntry extends FACTKnowledgeEntry {
@@ -70,18 +57,7 @@ export interface FACTStorageStats {
 }
 
 export interface FACTStorageBackend {
-  initialize(): Promise<void>;
-  store(entry: FACTKnowledgeEntry): Promise<void>;
-  get(id: string): Promise<FACTKnowledgeEntry | null>;
-  search(query: FACTSearchQuery): Promise<FACTKnowledgeEntry[]>;
-  delete(id: string): Promise<boolean>;
-  cleanup(maxAge: number): Promise<number>;
-  clear(): Promise<void>;
-  getStats(): Promise<Partial<FACTStorageStats>>;
-  shutdown(): Promise<void>;
-}
-
-export interface FACTBackendStats {
+  initialize(): void {
   persistentEntries?: number;
   oldestEntry?: number;
   newestEntry?: number;

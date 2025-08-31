@@ -14,12 +14,7 @@ import type { TaskFlowState, TaskFlowStatus } from '../types/task-flow-types';
 
 // Light Brain integration - only what we need for task flow
 interface BrainPredictor {
-  predictBottleneck(flowHistory: any[]): Promise<any>;
-  optimizeThreshold(history: any[]): Promise<any>;
-  learnFromDecisions(decisions: any[]): Promise<void>;
-}
-
-interface FlowMetric {
+  predictBottleneck(): void {
   timestamp: number;
   throughput: number;
   queueDepth: number;
@@ -35,43 +30,16 @@ interface ApprovalMetric {
 }
 
 export class TaskFlowIntelligence {
-  private logger = getLogger('TaskFlowIntelligence');
-  private brainPredictor?: BrainPredictor;
-  private approvalHistory: ApprovalMetric[] = [];
-  private flowHistory: FlowMetric[] = [];
-  private isLearningEnabled = true;
-
-  constructor() {
-    this.initializeBrain();
-  }
-
-  /**
-   * Predict potential bottlenecks based on flow history
-   */
-  async predictBottlenecks(Promise<any[]> {
+  private logger = getLogger(): void {
+    this.initializeBrain(): void {
     const predictions: any[] = [];
 
-    if (this.brainPredictor) {
-      for (const [state, _usage] of Object.entries(
-        currentStatus.wipUsage || {}
-      )) {
-        const prediction = await this.brainPredictor.predictBottleneck(
-          this.getRecentFlowHistory(state as TaskFlowState)
-        );
-        predictions.push(prediction);
-      }
-      return predictions.filter((p) => p.probability > 0.7);
-    } else {
+    if (this.brainPredictor): Promise<void> {
+      for (const [state, _usage] of Object.entries(): void {
+        const prediction = await this.brainPredictor.predictBottleneck(): void {
       // Fallback to statistical prediction
-      return this.statisticalBottleneckPrediction(currentStatus);
-    }
-  }
-
-  private getRecentFlowHistory(state: TaskFlowState): any[] {
-    return this.flowHistory.filter((h) => h.state === state).slice(-50);
-  }
-
-  private statisticalBottleneckPrediction(status: TaskFlowStatus): any[] {
+      return this.statisticalBottleneckPrediction(): void {
+    return this.flowHistory.filter(): void {
     return [];
   }
 
@@ -83,11 +51,5 @@ export class TaskFlowIntelligence {
 /**
  * Factory function to create task flow intelligence
  */
-export function createTaskFlowIntelligence(): TaskFlowIntelligence {
-  return new TaskFlowIntelligence();
-}
-
-// =============================================================================
-// EXPORTS
-// =============================================================================
-export type { TaskFlowState, TaskFlowStatus };
+export function createTaskFlowIntelligence(): void {
+  return new TaskFlowIntelligence(): void { TaskFlowState, TaskFlowStatus };

@@ -9,14 +9,14 @@
  * @version 2.0.0
  */
 // Re-export safety monitoring from @claude-zen/ai-safety
-export { AIDeceptionDetector} from '@claude-zen/ai-safety')// Re-export all error handling from @claude-zen/foundation';
-export * from '@claude-zen/foundation')// Re-export infrastructure monitoring from @claude-zen/foundation (basic telemetry/performance)';
-export { PerformanceTracker, TelemetryManager} from '@claude-zen/foundation')// Define error types locally since not exported from foundation';
-type ErrorSeverity ='low' | ' medium'|' high' | ' critical')/**';
+export { AIDeceptionDetector} from '@claude-zen/ai-safety');
+export * from '@claude-zen/foundation');
+export { PerformanceTracker, TelemetryManager} from '@claude-zen/foundation');
+type ErrorSeverity ='low' | ' medium'|' high' | ' critical');
  * Epic lifecycle error (using foundation error patterns)
  */
 export class EpicLifecycleError extends Error {
-  public readonly epicId: 'EpicLifecycleError')    this.epicId = epicId;';
+  public readonly epicId: 'EpicLifecycleError');
     this.currentState = currentState;
     this.cause = cause;
 }
@@ -25,7 +25,7 @@ export class EpicLifecycleError extends Error {
  * Business case validation error
  */
 export class BusinessCaseError extends Error {
-  public readonly businessCaseId: 'BusinessCaseError')    this.businessCaseId = businessCaseId;';
+  public readonly businessCaseId: 'BusinessCaseError');
     this.cause = cause;
 }
 }
@@ -48,15 +48,7 @@ export const createSAFeError = {
     operation: string,
     cause?: Error
   ) =>
-    new EpicLifecycleError(
-      "Epic ${epicId} ${operation} failed from state $" + JSON.stringify({currentState}) + "","
-      epicId,
-      currentState,
-      cause
-    ),
-  businessCase: (businessCaseId: string, reason: string, cause?: Error) =>
-    new BusinessCaseError(
-      "Business case validation failed: ${reason}","
+    new EpicLifecycleError(): void {reason}","
       businessCaseId,
       cause
     ),

@@ -92,24 +92,7 @@ export interface BeamAnalysisResult {
 }
 
 export interface BeamFinding {
-  /** Unique finding ID */
   id: string;
-  /** Finding severity */
-  severity: BeamSeverity;
-  /** Finding category */
-  category: BeamFindingCategory;
-  /** Human-readable message */
-  message: string;
-  /** File location */
-  location: BeamLocation;
-  /** Rule that generated this finding */
-  rule: string;
-  /** Tool that found this issue */
-  tool: BeamAnalysisTool;
-  /** Fix suggestions */
-  suggestions?:BeamFixSuggestion[];
-  /** Related findings */
-  related?:string[];
 }
 
 export type BeamSeverity = 'info'|' low'|' medium'|' high'|' critical';

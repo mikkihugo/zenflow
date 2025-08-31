@@ -8,15 +8,7 @@
  * Workflow Gates Manager Interface.
  */
 export interface WorkflowGatesManager {
-  validateGate(gateId: string, context: unknown): Promise<boolean>;
-  executeGate(gateId: string, context: unknown): Promise<unknown>;
-  getGateStatus(gateId: string): Promise<string>;
-  listGates(): Promise<string[]>;
-}
-/**
- * Workflow Gate Request Interface.
- */
-export interface WorkflowGateRequest {
+  validateGate(): void {
   gateId: string;
   workflowId: string;
   stepId: string;
@@ -32,7 +24,7 @@ export interface WorkflowGateResponse {
   gateId: string;
   workflowId: string;
   stepId: string;
-  status : 'approved| rejected| pending' | ' error')  result?:unknown;';
+  status : 'approved| rejected| pending' | ' error');
   message?:string;
   timestamp: number;
 }
@@ -41,11 +33,6 @@ export interface WorkflowGateResponse {
  */
 export interface WorkflowGateConfig {
   id: string;
-  name: string;
-  description?:string;
-  type : 'validation| approval| condition' | ' transform')  rules: Array<{';
-    condition: string;
-    action : 'allow' | ' deny'|' require_approval')    message?:string;';
 }>;
   timeout?:number;
   retryPolicy?:  {
@@ -67,30 +54,14 @@ export interface WorkflowCoordinationContext {
 /**
  * Factory function for creating workflow gate requests.
  */
-export function createWorkflowGateRequest(
-  gateId: string,
-  workflowId: string,
-  stepId: string,
-  context: Record<string, unknown>,
-  options?:Partial<Pick<WorkflowGateRequest,'priority| metadata'>>';
-): WorkflowGateRequest {
+export function createWorkflowGateRequest(): void {
   return {
     gateId,
     workflowId,
     stepId,
     context,
     priority: options?.priority||medium,
-    timestamp: Date.now(),
-    metadata: options?.metadata,
-};)};;
-/**
- * Factory function for creating workflow gate responses.
- */
-export function createWorkflowGateResponse(
-  request: WorkflowGateRequest,
-  status: WorkflowGateResponse['status'],';
-  options?:Partial<Pick<WorkflowGateResponse,'result' | ' message'>>';
-): WorkflowGateResponse {
+    timestamp: Date.now(): void {
   return {
     gateId: request.gateId,
     workflowId: request.workflowId,
@@ -99,4 +70,4 @@ export function createWorkflowGateResponse(
     result: options?.result,
     message: options?.message,
     timestamp: Date.now(),
-};)};;
+};)};

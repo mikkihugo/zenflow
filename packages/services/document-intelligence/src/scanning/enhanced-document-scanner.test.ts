@@ -7,20 +7,17 @@ import { EnhancedDocumentScanner } from './enhanced-document-scanner';
 import { writeFile, mkdir, rm } from 'node: fs/promises';
 import { join } from 'node: path';
 
-describe('EnhancedDocumentScanner', () => {
+describe(): void {
   let scanner: EnhancedDocumentScanner;
   const testDir = './test-fixtures';
 
-  beforeEach(async () => {
+  beforeEach(): void {
     // Clean up and create test directory
     try {
-      await rm(testDir, { recursive: true });
-    } catch {
+      await rm(): void {
       // Directory might not exist
     }
-    await mkdir(testDir, { recursive: true });
-
-    scanner = new EnhancedDocumentScanner({
+    await mkdir(): void {
       rootPath: testDir,
       includePatterns: ['**/*.ts', '**/*.js'],
       excludePatterns: ['**/node_modules/**'],
@@ -30,55 +27,36 @@ describe('EnhancedDocumentScanner', () => {
     });
   });
 
-  afterEach(async () => {
+  afterEach(): void {
     // Clean up test directory
     try {
-      await rm(testDir, { recursive: true });
-    } catch {
+      await rm(): void {
       // Ignore cleanup errors
     }
   });
 
-  describe('Pattern Detection', () => {
-    it('should detect TODO comments in code', async () => {
+  describe(): void {
+    it(): void {
       const testCode = ""
         // TODO: Implement this function
-        function myFunction() {
+        function myFunction(): void {
           /* TODO: Add proper implementation */
           return null;
         }
       ";"
       
       // Create test file
-      await writeFile(join(testDir, 'test.ts'), testCode);
-      
-      const results = await scanner.scanAndGenerateTasks();
-      
-      expect(results.analysisResults).toHaveLength(2);
-      expect(results.analysisResults[0].type).toBe('todo');
-      expect(results.analysisResults[1].type).toBe('todo');
-    });
-
-    it('should detect FIXME comments in code', async () => {
+      await writeFile(): void {
       const testCode = ""
         // FIXME: This has a bug
-        function buggyFunction() {
+        function buggyFunction(): void {
           /* FIXME: Handle edge cases */
           return undefined;
         }
       ";"
       
       // Create test file
-      await writeFile(join(testDir, 'test.ts'), testCode);
-      
-      const results = await scanner.scanAndGenerateTasks();
-      
-      expect(results.analysisResults).toHaveLength(2);
-      expect(results.analysisResults[0].type).toBe('fixme');
-      expect(results.analysisResults[1].type).toBe('fixme');
-    });
-
-    it('should handle various comment formats', async () => {
+      await writeFile(): void {
       const testCode = ""
         // TODO: Line comment todo
         /* TODO: Block comment todo */
@@ -87,31 +65,15 @@ describe('EnhancedDocumentScanner', () => {
       ";"
       
       // Create test file
-      await writeFile(join(testDir, 'test.ts'), testCode);
-      
-      const results = await scanner.scanAndGenerateTasks();
-      
-      expect(results.analysisResults).toHaveLength(4);
-      const todoCount = results.analysisResults.filter(r => r.type === 'todo').length;
-      const fixmeCount = results.analysisResults.filter(r => r.type === 'fixme').length;
-      expect(todoCount).toBe(2);
-      expect(fixmeCount).toBe(2);
-    });
-  });
-
-  describe('Configuration', () => {
-    it('should accept configuration options', () => {
+      await writeFile(): void {
+    it(): void {
       const config = {
         rootPath: './custom-path',
         enabledPatterns: ['todo', 'fixme'] as const,
         deepAnalysis: true,
       };
       
-      const customScanner = new EnhancedDocumentScanner(config);
-      expect(customScanner).toBeDefined();
-    });
-
-    it('should use default configuration when none provided', () => {
+      const customScanner = new EnhancedDocumentScanner(): void {
       const defaultScanner = new EnhancedDocumentScanner();
       expect(defaultScanner).toBeDefined();
     });

@@ -27,13 +27,13 @@ export type {
   WorkflowBottleneck,
   WorkflowKanbanConfig,
   WorkflowTask,
-} from './events')/**';
+} from './events');
  * Task priority levels for workflow coordination
  */
-export type TaskPriority = 'critical| high| medium| low')/**';
+export type TaskPriority = 'critical| high| medium| low');
  * Flow direction for task movement
  */
-export type FlowDirection = 'forward| backward| lateral')// OptimizationStrategy imported from events.ts';
+export type FlowDirection = 'forward| backward| lateral');
 // =============================================================================
 // TASK DOMAIN TYPES
 // =============================================================================
@@ -98,19 +98,7 @@ export interface WIPViolation {
   readonly state: TaskState;
   readonly currentCount: number;
   readonly limit: number;
-  readonly violationType : 'soft' | ' hard')  readonly detectedAt: Date;;
-  readonly severity: low' | ' medium'|' high' | ' critical')  readonly recommendedAction: string;;
-}
-// =============================================================================
-// BOTTLENECK DETECTION & ANALYSIS
-// =============================================================================
-/**
- * Bottleneck detection in workflow
- */
-export interface WorkflowBottleneck {
-  readonly id: string;
-  readonly state: TaskState;
-  readonly type : 'capacity| dependency| resource| skill' | ' process')  readonly severity: low'|' medium' | ' high'|' critical')  readonly impactScore: number; // 0-1';
+  readonly violationType : 'soft' | ' hard') | ' medium'|' high' | ' critical')capacity| dependency| resource| skill' | ' process')|' medium' | ' high'|' critical');
   readonly detectedAt: Date;
   readonly affectedTasks: string[];
   readonly estimatedDelay: number; // hours
@@ -149,7 +137,7 @@ export interface BottleneckResolution {
  */
 export interface BottleneckTrend {
   readonly state: TaskState;
-  readonly trend : 'improving' | ' stable'|' declining' | ' improving'|' stable' | ' declining'|' degrading')  readonly trendScore: number; // -1 to 1';
+  readonly trend : 'improving' | ' stable'|' declining' | ' improving'|' stable' | ' declining'|' degrading');
   readonly dataPoints: number;
   readonly timeRange:  {
     readonly start: Date;
@@ -183,74 +171,7 @@ export interface FlowState {
   readonly systemLoad: number; // 0-1
   readonly flowHealth: number; // 0-1
   readonly trends:  {
-    readonly throughput : 'up' | ' down'|' stable')    readonly cycleTime : 'up' | ' down'|' stable')    readonly blockageRate : 'up' | ' down'|' stable')};;
-}
-/**
- * Performance threshold for alerts
- */
-export interface PerformanceThreshold {
-  readonly metric: keyof FlowMetrics;
-  readonly operator : 'gt| lt| eq| gte' | ' lte')  readonly value: number;;
-  readonly severity: low' | ' medium'|' high' | ' critical')  readonly alertMessage: string;;
-  readonly enabled: boolean;
-}
-// =============================================================================
-// WORKFLOW COORDINATION CONFIGURATION
-// =============================================================================
-/**
- * Workflow kanban configuration
- */
-export interface WorkflowKanbanConfig {
-  readonly enableIntelligentWIP: boolean;
-  readonly enableBottleneckDetection: boolean;
-  readonly enableFlowOptimization: boolean;
-  readonly enablePredictiveAnalytics: boolean;
-  readonly enableRealTimeMonitoring: boolean;
-  readonly wipCalculationInterval: number; // milliseconds
-  readonly bottleneckDetectionInterval: number; // milliseconds
-  readonly optimizationAnalysisInterval: number; // milliseconds
-  readonly maxConcurrentTasks: number;
-  readonly defaultWIPLimits: WIPLimits;
-  readonly performanceThresholds: PerformanceThreshold[];
-  readonly adaptationRate: number; // 0-1
-}
-/**
- * Workflow coordination context
- */
-export interface WorkflowContext {
-  readonly sessionId: string;
-  readonly orchestratorType : 'queen| commander| cube' | ' matron')  readonly orchestratorId: string;;
-  readonly timestamp: Date;
-  readonly metadata: Record<string, unknown>;
-}
-// =============================================================================
-// EVENT TYPES FOR XSTATE INTEGRATION
-// =============================================================================
-/**
- * Workflow events for XState machine coordination (re-exported from events module)
- */
-export type {
-  BottleneckDetectedEvent,
-  BottleneckResolvedEvent,
-  ConfigurationUpdatedEvent,
-  EnterMaintenanceEvent,
-  ErrorOccurredEvent,
-  FlowAnalysisCompleteEvent,
-  OptimizationTriggeredEvent,
-  RestartSystemEvent,
-  ResumeOperationEvent,
-  SystemHealthCheckEvent,
-  SystemHealthUpdatedEvent,
-  TaskBlockedEvent,
-  TaskCompletedEvent,
-  TaskCreatedEvent,
-  TaskMovedEvent,
-  TaskUpdatedEvent,
-  WIPLimitExceededEvent,
-  WIPLimitsUpdatedEvent,
-  WorkflowEvent,
-  WorkflowEventUtils,
-} from './events')// ============================================================================ = ';
+    readonly throughput : 'up' | ' down'|' stable')up' | ' down'|' stable')up' | ' down'|' stable')gt| lt| eq| gte' | ' lte') | ' medium'|' high' | ' critical')queen| commander| cube' | ' matron')./events');
 // RESULT & RESPONSE TYPES
 // =============================================================================
 /**

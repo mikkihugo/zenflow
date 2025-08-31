@@ -9,29 +9,7 @@ import { readdir, readFile, stat } from 'node: fs/promises';
 import { join, relative } from 'node: path';
 import { getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger('EnhancedDocumentScanner');
-
-/**
- * Types of analysis patterns we can detect in code and documents
- */
-export type AnalysisPattern = 
-  | 'todo'
-  | 'fixme'
-  | 'hack'
-  | 'deprecated'
-  | 'missing_implementation'
-  | 'empty_function'
-  | 'code_quality'
-  | 'documentation_gap'
-  | 'test_missing'
-  | 'performance_issue'
-  | 'security_concern'
-  | 'refactor_needed';
-
-/**
- * Detected code issue or improvement opportunity
- */
-export interface CodeAnalysisResult {
+const logger = getLogger(): void {
   id: string;
   type: AnalysisPattern;
   severity: 'low' | 'medium' | 'high' | 'critical';
@@ -51,16 +29,6 @@ export interface CodeAnalysisResult {
  */
 export interface GeneratedSwarmTask {
   id: string;
-  title: string;
-  description: string;
-  type: 'task' | 'feature' | 'epic';
-  priority: 'low' | 'medium' | 'high' | 'critical';
-  estimatedHours: number;
-  sourceAnalysis: CodeAnalysisResult;
-  suggestedSwarmType: 'single_agent' | 'collaborative' | 'research' | 'implementation';
-  requiredAgentTypes: string[];
-  dependencies: string[];
-  acceptanceCriteria: string[];
 }
 
 /**
@@ -102,7 +70,7 @@ export class EnhancedDocumentScanner {
   private isScanning = false;
   private analysisPatterns: Map<AnalysisPattern, RegExp[]>;
 
-  constructor(config: Partial<ScannerConfig> = {}) {
+  constructor(): void {
     this.config = {
       rootPath: config.rootPath || './src',
       includePatterns: config.includePatterns || [
@@ -132,191 +100,23 @@ export class EnhancedDocumentScanner {
       deepAnalysis: config.deepAnalysis !== false,
     };
 
-    this.analysisPatterns = this.initializeAnalysisPatterns();
-  }
-
-  /**
-   * Initialize regex patterns for different analysis types
-   */
-  private initializeAnalysisPatterns(): Map<AnalysisPattern, RegExp[]> {
+    this.analysisPatterns = this.initializeAnalysisPatterns(): void {
     const patterns = new Map<AnalysisPattern, RegExp[]>();
 
     // TODO pattern detection
-    patterns.set('todo', [
-      /(?:\/\/|#|<!--)\s*todo[\s:](.*?)(?:-->|$)/gi,
-      /(?:\/\*|\*)\s*todo[\s:](.*?)(?:\*\/|$)/gi,
-      /\b(?:todo|to-do|@todo)[\s:](.*?)(?:\n|$)/gi,
-    ]);
-
-    // FIXME pattern detection
-    patterns.set('fixme', [
-      /(?:\/\/|#|<!--)\s*fixme[\s:](.*?)(?:-->|$)/gi,
-      /(?:\/\*|\*)\s*fixme[\s:](.*?)(?:\*\/|$)/gi,
-      /\b(?:fixme|fix|@fixme)[\s:](.*?)(?:\n|$)/gi,
-    ]);
-
-    // HACK pattern detection
-    patterns.set('hack', [
-      /(?:\/\/|#|<!--)\s*hack[\s:](.*?)(?:-->|$)/gi,
-      /(?:\/\*|\*)\s*hack[\s:](.*?)(?:\*\/|$)/gi,
-      /\b(?:hack|hacky|@hack)[\s:](.*?)(?:\n|$)/gi,
-    ]);
-
-    return patterns;
-  }
-
-  /**
-   * Scan the configured directory for issues and generate tasks
-   */
-  async scanAndGenerateTasks(Promise<ScanResults> {
-    if (this.isScanning) {
-      throw new Error('Scanner is already running');
-    }
-
-    this.isScanning = true;
-    const startTime = Date.now();
-
-    try {
-      logger.info("search Starting enhanced document scan in ${this.config.rootPath}");"
-
-      const analysisResults: CodeAnalysisResult[] = [];
-      const scannedFiles = await this.scanDirectory(this.config.rootPath, analysisResults);
-
-      // Generate swarm tasks from analysis results
-      const generatedTasks = await this.generateSwarmTasks(analysisResults);
-
-      const results: ScanResults = " + JSON.stringify({
-        analysisResults,
-        generatedTasks,
-        scannedFiles,
-        totalIssues: analysisResults.length,
-        severityCounts: this.calculateSeverityCounts(analysisResults),
-        patternCounts: this.calculatePatternCounts(analysisResults),
-        scanDuration: Date.now() - startTime,
-      }) + ";
-
-      logger.info("Enhanced scan completed: ${analysisResults.length} issues found in ${scannedFiles} files");"
-
-      return results;
-    } finally {
-      this.isScanning = false;
-    }
-  }
-
-  /**
-   * Recursively scan directory for files to analyze
-   */
-  private async scanDirectory(Promise<number> {
-    if (depth > this.config.maxDepth) {
-      return 0;
-    }
-
-    let scannedFiles = 0;
-
-    try {
-      const entries = await readdir(dirPath);
-
-      for (const entry of entries) {
-        const fullPath = join(dirPath, entry);
-        const stats = await stat(fullPath);
-
-        if (stats.isDirectory()) {
-          if (!this.shouldExcludePath(fullPath)) {
-            scannedFiles += await this.scanDirectory(fullPath, analysisResults, depth + 1);
-          }
-        } else if (stats.isFile() && this.shouldIncludeFile(fullPath)) {
-          await this.analyzeFile(fullPath, analysisResults);
-          scannedFiles++;
-        }
-      }
-    } catch (error) {
-      logger.warn("Failed to scan directory ${dirPath}:", error);"
-    }
-
-    return scannedFiles;
-  }
-
-  /**
-   * Analyze a single file for issues
-   */
-  private async analyzeFile(Promise<void> {
-    try {
-      const content = await readFile(filePath, 'utf8');
-      const lines = content.split('\n');
-
-      // Analyze each enabled pattern
-      for (const pattern of this.config.enabledPatterns) {
-        const patterns = this.analysisPatterns.get(pattern);
-        if (!patterns) continue;
-
-        for (const regex of patterns) {
-          let match;
-          while ((match = regex.exec(content)) !== null) {
-            const lineNumber = this.getLineNumber(content, match.index);
-            const result = this.createAnalysisResult(
-              pattern,
-              match,
-              filePath,
-              lineNumber,
-              lines[lineNumber - 1]
-            );
-            if (result) {
-              results.push(result);
-            }
-          }
-        }
-      }
-    } catch (error) " + JSON.stringify({
-      logger.warn(`Failed to analyze file ${filePath}) + ":", error);"
-    }
-  }
-
-  private createAnalysisResult(
-    pattern: AnalysisPattern,
-    match: RegExpExecArray,
-    filePath: string,
-    lineNumber: number,
-    codeSnippet: string
-  ): CodeAnalysisResult | null {
-    const matchText = match[1] || '';
-    
-    return {
-      id: this.generateId(),
-      type: pattern,
-      severity: this.getPatternSeverity(pattern),
-      title: "${pattern.toUpperCase()}: ${matchText}","
-      description: "Found ${pattern} comment: $" + JSON.stringify({matchText}) + "","
-      filePath,
-      lineNumber,
-      codeSnippet,
-      suggestedAction: "Address the ${pattern} comment","
-      estimatedEffort: this.getPatternEffort(pattern),
-      tags: [pattern, 'code-quality'],
-    };
-  }
-
-  private async generateSwarmTasks(Promise<GeneratedSwarmTask[]> {
+    patterns.set(): void {
+    if (this.isScanning): Promise<void> {
+      throw new Error(): void {
+      id: this.generateId(): void {pattern.toUpperCase(): void {matchText}","
+      description: "Found ${pattern} comment: $" + JSON.stringify(): void {pattern} comment","
+      estimatedEffort: this.getPatternEffort(): void {
     // Simplified implementation - just create basic tasks
-    return analysisResults.map(result => ({
-      id: this.generateId(),
-      title: result.title,
-      description: result.description,
-      type: 'task' as const,
-      priority: result.severity,
-      estimatedHours: result.estimatedEffort === 'small' ? 1 : result.estimatedEffort === 'medium' ? 4 : 8,
-      sourceAnalysis: result,
-      suggestedSwarmType: 'single_agent' as const,
-      requiredAgentTypes: ['developer'],
-      dependencies: [],
-      acceptanceCriteria: ["Resolve ${result.type} issue"],"
+    return analysisResults.map(): void {result.type} issue"],"
     }));
   }
 
-  private getLineNumber(content: string, index: number): number {
-    return content.substring(0, index).split('\n').length;
-  }
-
-  private getPatternSeverity(pattern: AnalysisPattern): CodeAnalysisResult['severity'] {
+  private getLineNumber(): void {
+    return content.substring(): void {
     const severityMap: Record<AnalysisPattern, CodeAnalysisResult['severity']> = {
       todo: 'low',
       fixme: 'medium',
@@ -334,7 +134,7 @@ export class EnhancedDocumentScanner {
     return severityMap[pattern] || 'medium';
   }
 
-  private getPatternEffort(pattern: AnalysisPattern): CodeAnalysisResult['estimatedEffort'] {
+  private getPatternEffort(): void {
     const effortMap: Record<AnalysisPattern, CodeAnalysisResult['estimatedEffort']> = {
       todo: 'small',
       fixme: 'medium',
@@ -352,30 +152,12 @@ export class EnhancedDocumentScanner {
     return effortMap[pattern] || 'medium';
   }
 
-  private shouldIncludeFile(filePath: string): boolean {
-    const relativePath = relative(this.config.rootPath, filePath);
-    return this.config.includePatterns.some(pattern => 
-      this.matchPattern(relativePath, pattern)
-    );
-  }
-
-  private shouldExcludePath(dirPath: string): boolean {
-    const relativePath = relative(this.config.rootPath, dirPath);
-    return this.config.excludePatterns.some(pattern => 
-      this.matchPattern(relativePath, pattern)
-    );
-  }
-
-  private matchPattern(path: string, pattern: string): boolean {
+  private shouldIncludeFile(): void {
+    const relativePath = relative(): void {
+    const relativePath = relative(): void {
     // Simple glob pattern matching - basic implementation
     const regexPattern = pattern
-      .replace(/\*\*/g, '.*')
-      .replace(/\*/g, '[^/]*')
-      .replace(/\?/g, '.');
-    return new RegExp(regexPattern).test(path);
-  }
-
-  private calculateSeverityCounts(results: CodeAnalysisResult[]): Record<string, number> {
+      .replace(): void {
     const counts: Record<string, number> = {};
     for (const result of results) {
       counts[result.severity] = (counts[result.severity] || 0) + 1;
@@ -383,15 +165,9 @@ export class EnhancedDocumentScanner {
     return counts;
   }
 
-  private calculatePatternCounts(results: CodeAnalysisResult[]): Record<AnalysisPattern, number> {
+  private calculatePatternCounts(): void {
     const counts = {} as Record<AnalysisPattern, number>;
-    for (const result of results) " + JSON.stringify({
-      counts[result.type] = (counts[result.type] || 0) + 1;
-    }) + "
-    return counts;
-  }
-
-  private generateId(): string {
-    return "analysis-${Date.now()}-${Math.random().toString(36).substring(2, 11)}";"
+    for (const result of results) " + JSON.stringify(): void {
+    return "analysis-${Date.now(): void {Math.random().toString(36).substring(2, 11)}";"
   }
 }

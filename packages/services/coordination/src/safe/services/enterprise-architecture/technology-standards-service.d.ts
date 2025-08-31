@@ -1,26 +1,5 @@
 export interface TechnologyStandard {
-    readonly id: string;
-    readonly name: string;
-    readonly description: string;
-    '; : any;
-    readonly category: platform | framework | tool | protocol | security | data | 'integration';
-    readonly type: mandatory | recommended | approved | deprecated | 'prohibited';
-    readonly status: active | draft | under_review | deprecated | 'retired';
-    readonly mandatory: boolean;
-    readonly applicability: ApplicabilityScope;
-    readonly implementation: ImplementationGuidance;
-    readonly verification: VerificationCriteria;
-    readonly exceptions: ExceptionRule[];
-    readonly owner: string;
-    readonly approvers: string[];
-    readonly createdAt: Date;
-    readonly lastUpdated: Date;
-    readonly effectiveDate: Date;
-    readonly reviewDate: Date;
-    readonly version: string;
-    readonly complianceMetrics?: StandardComplianceMetrics;
-    readonly dependencies?: StandardDependency[];
-    readonly alternatives?: AlternativeStandard[];
+  id: string;
 }
 export interface ApplicabilityScope {
     readonly domains: string[];
@@ -50,17 +29,10 @@ export interface ImplementationGuidance {
     readonly support: SupportChannel[];
 }
 export interface Requirement {
-    readonly id: string;
-    readonly description: string;
-    readonly priority: mandatory;
+  id: string;
 }
 export interface BestPractice {
-    readonly id: string;
-    readonly title: string;
-    readonly description: string;
-    readonly rationale: string;
-    readonly examples: string[];
-    readonly category: string;
+  id: string;
 }
 export interface Resource {
     readonly type: 'documentation| tool| template| training' | ' support';
@@ -121,11 +93,7 @@ export interface ManualVerification {
     readonly checklist: ChecklistItem[];
 }
 export interface ChecklistItem {
-    readonly id: string;
-    readonly description: string;
-    readonly evidence: string;
-    readonly mandatory: boolean;
-    readonly weight: number;
+  id: string;
 }
 export interface VerificationThreshold {
     readonly metric: string;
@@ -147,15 +115,7 @@ export interface EscalationRule {
     readonly severity: low | medium | high;
 }
 export interface ExceptionRule {
-    readonly id: string;
-    readonly description: string;
-    readonly justification: string;
-    readonly scope: ExceptionScope;
-    readonly conditions: string[];
-    readonly approver: string;
-    readonly expiryDate?: Date;
-    readonly compensatingControls: string[];
-    readonly riskAssessment: ExceptionRiskAssessment;
+  id: string;
 }
 export interface ExceptionScope {
     readonly projectId?: string;
@@ -181,10 +141,7 @@ export interface StandardComplianceMetrics {
     readonly exceptionCount: number;
 }
 export interface ComplianceViolation {
-    readonly id: string;
-    readonly standardId: string;
-    readonly violationType: configuration | usage | version | security | 'process';
-    readonly severity: critical | high | medium;
+  id: string;
 }
 export interface StandardDependency {
     readonly dependentStandardId: string;
@@ -225,8 +182,7 @@ export interface ComplianceScope {
     };
 }
 export interface ComplianceRecommendation {
-    readonly id: string;
-    readonly priority: critical | high | medium;
+  id: string;
 }
 export interface ComplianceRiskAssessment {
     readonly overallRisk: 'low| medium| high' | ' critical';

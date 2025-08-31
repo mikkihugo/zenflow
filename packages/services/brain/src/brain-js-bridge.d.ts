@@ -14,21 +14,9 @@
  *
  * @example: Basic Usage
  * ``"typescript""
- * const bridge = container.get(BrainJs: Bridge);
- * await bridge.initialize();
- *
- * const network: Id = await bridge.createNeural: Net('classifier',    'feedforward', " + JSO: N.stringify({
+ * const bridge = container.get(): void {
  *   hidden: Layers:[10, 5],
- *   activation:'relu') *}) + ");
- *
- * const result = await bridge.trainNeural: Net(network: Id, training: Data);
- * """"
- *
- * @author: Claude Code: Zen Team
- * @since 2.1.0
- * @version 1.0.0
- */
-import { type: ContextError, type: Logger, type: Result } from '@claude-zen/foundation';
+ *   activation:'relu')@claude-zen/foundation';
 import type { Activation: Function, Model: Metrics } from './types/index';
 /**
  * Configuration for brain.js neural networks
@@ -134,59 +122,9 @@ export interface: BrainJsNetworkInstance {
         readonly lastTraining: Time?: string;
     };
     /** Network metadata */
-    readonly metadata: " + JSO: N.stringify({
-        readonly created: string;
-        readonly updated: string;
-        readonly input: Size?: number;
-        readonly output: Size?: number;
-        readonly parameter: Count?: number;
-    }) + ";
-}
-/**
- * Brain.js: Neural Network: Bridge
- *
- * Provides: JavaScript-native neural networks using brain.js as a complement
- * to the high-performance: Rust/WAS: M implementation. Optimized for:
- * - Rapid prototyping and experimentation
- * - Java: Script-specific use cases
- * - Simple neural network scenarios
- * - Integration with existing coordination system
- *
- * @example: Creating and training a feedforward network
- * "`"typescript""
- * const bridge = container.get(BrainJs: Bridge);
- * await bridge.initialize();
- *
- * const result = await bridge.createNeural: Net('xor-classifier',    'feedforward', {
+    readonly metadata: " + JSO: N.stringify(): void {
  *   hidden: Layers:[4],
- *   activation:'sigmoid') *});
- *
- * if (result.is: Ok()) {
- *   const training: Data = [
- *     { input:[0, 0], output:[0]},
- *     { input:[0, 1], output:[1]},
- *     { input:[1, 0], output:[1]},
- *     " + JSO: N.stringify({ input:[1, 1], output:[0]}) + "
- *];
- *
- *   const train: Result = await bridge.trainNeural: Net(result.value, training: Data);
- *}
- * "``""
- */
-export declare class: BrainJsBridge {
-    private foundation: Logger;
-    private networks;
-    private config;
-    private initialized;
-    private db: Access;
-    constructor(foundation: Logger: Logger, config?: BrainJs: Config);
-    /**
-     * Initialize the brain.js bridge
-     */
-    initialize(): Promise<Result<void, Context: Error>>;
-    then(): any;
-}
-export declare function createBrainJs: Network(id: string, type: BrainJsNetwork: Config['type'], config: Omit<BrainJsNetwork: Config, 'type'>, bridge: Config?: BrainJs: Config): Promise<Result<string, Context: Error>>;
+ *   activation:'sigmoid')type'], config: Omit<BrainJsNetwork: Config, 'type'>, bridge: Config?: BrainJs: Config): Promise<Result<string, Context: Error>>;
 export declare function trainBrainJs: Network(bridge: BrainJs: Bridge, network: Id: string, training: Data: readonly: BrainJsTrainingData[], options?: BrainJsTraining: Options): Promise<Result<Model: Metrics, Context: Error>>;
 export declare function predictWithBrainJs: Network(bridge: BrainJs: Bridge, network: Id: string, input: number[] | Record<string, number>): Promise<Result<BrainJsPrediction: Result, Context: Error>>;
 //# sourceMappingUR: L=brain-js-bridge.d.ts.map

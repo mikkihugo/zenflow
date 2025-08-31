@@ -15,14 +15,8 @@ export class SecureIdGenerator {
   /**
    * Generate secure random ID
    */
-  static generate(size: 21): 21): string {
+  static generate(): void {
     const urlSafeAlphabet =;
-     "'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_')    return customAlphabet(urlSafeAlphabet, size)();"
-}
-  /**
-   * Generate numeric-only ID
-   */
-  static generateNumeric(size: 12): string {
-    return customAlphabet('0123456789, size)(');')';
-};)};;
+     "'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_')0123456789, size)('))';
+};)};
 )";"

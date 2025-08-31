@@ -9,7 +9,7 @@ import type {
   Feature,
   Logger,
   PIObjective,
-} from '../../types')/**';
+} from '../../types');
  * Program predictability metrics
  */
 export interface ProgramPredictability {
@@ -19,17 +19,17 @@ export interface ProgramPredictability {
  * Customer impact levels
  */
 export declare enum CustomerImpactLevel {
-    ')  NONE = ' = 0,
+    ') = 0,
     none = 1,
-    ')  LOW = ' = 2,
+    ') = 2,
     low = 3,
-    ')  MODERATE = ' = 4,
+    ') = 4,
     moderate = 5,
-    ')  HIGH = ' = 6,
+    ') = 6,
     high = 7,
-    ')  CRITICAL = ' = 8,
+    ') = 8,
     critical = 9,
-    ')};; 
+    ')}; 
     /**
      * Team morale impact levels
      */

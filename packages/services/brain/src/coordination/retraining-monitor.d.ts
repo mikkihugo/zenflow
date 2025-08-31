@@ -37,7 +37,7 @@ export interface: MonitoringMetrics {
     currentCoordinationSuccess: Rate: number;
     lastRetraining: Timestamp?: number;
     retraining: Frequency: number;
-    cooldown: Status: 'active|inactive;;
+    cooldown: Status: 'active|inactive;
     '  dailyLimit: Status:{: any;
     used: number;
     limit: number;

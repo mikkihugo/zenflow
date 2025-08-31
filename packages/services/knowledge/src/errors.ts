@@ -10,51 +10,14 @@
 
 import { getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger('KnowledgeErrors');
-
-/**
- * Base error context interface for knowledge operations
- */
-export interface KnowledgeErrorContext {
-  timestamp: number;
-  operation?:string;
-  correlationId?:string;
-  metadata?:Record<string, unknown>;
-}
-
-/**
- * Base error class for knowledge domain operations
- */
-export interface BaseKnowledgeErrorOptions {
-  category: string;
-  severity?:'low' | ' medium' | ' high' | ' critical';
-  context?:Partial<KnowledgeErrorContext>;
-  recoverable?:boolean;
-}
-
-export abstract class BaseKnowledgeError extends Error {
+const logger = getLogger(): void {
   public readonly severity:'low' | ' medium' | ' high' | ' critical';
   public readonly category: string;
   public readonly recoverable: boolean;
   public readonly context: Partial<KnowledgeErrorContext>;
 
-  constructor(
-    message: string,
-    options: BaseKnowledgeErrorOptions
-  ) {
-    super(message);
-    this.name = this.constructor.name;
-
-    this.category = options.category;
-    this.severity = options.severity || 'medium';
-    this.recoverable = options.recoverable ?? true;
-    this.context = { timestamp: Date.now(), ...options.context};
-
-    // Log error immediately using foundation logging
-    this.logError();
-}
-
-  private logError():void {
+  constructor(): void {
+    super(): void { timestamp: Date.now(): void {
     const logLevel =
       this.severity === 'critical'
         ? 'error'
@@ -69,7 +32,7 @@ export abstract class BaseKnowledgeError extends Error {
     });
 }
 
-  public toObject():Record<string, any> {
+  public toObject(): void {
     return {
       name: this.name,
       message: this.message,
@@ -91,126 +54,23 @@ export abstract class BaseKnowledgeError extends Error {
  *
  * @example
  * ``"typescript""
- * throw new FACTError(
- *   'Failed to process FACT data', *   'high', *   { operation: 'dataProcessing', metadata:" + JSON.stringify({ factId: ' fact-123'}) + "}') * );
- * "`"""
- */
-export class FACTError extends BaseKnowledgeError {
-  constructor(
-    message: string,
-    severity:'low' | ' medium' | ' high' | ' critical' = ' medium',    context: Partial<KnowledgeErrorContext> = {}
+ * throw new FACTError(): void {}
   ) {
-    super(message, { category: 'FACT', severity, context});
-}
-}
-
-/**
- * Error for FACT storage backend operations.
- */
-export class FACTStorageError extends FACTError {
-  constructor(
-    message: string,
-    public readonly backend: string,
-    public readonly operation: string,
-    severity:'low' | ' medium' | ' high' | ' critical' = ' high',  ) {
-    super(message, severity, { operation, metadata:{ backend}});
-}
-}
-
-/**
- * Error for FACT data gathering operations.
- */
-export class FACTGatheringError extends FACTError {
-  constructor(
-    message: string,
-    public readonly query: string,
-    public readonly sources: string[],
-    severity:'low' | ' medium' | ' high' | ' critical' = ' medium',  ) {
-    super(message, severity, { metadata:{ query, sources}});
-}
-}
-
-/**
- * Error for FACT data processing operations.
- */
-export class FACTProcessingError extends FACTError {
-  constructor(
-    message: string,
-    public readonly processType: string,
-    public readonly dataId?:string,
-    severity:'low' | ' medium' | ' high' | ' critical' = ' medium',  ) {
-    super(message, severity, { metadata:" + JSON.stringify({ processType, dataId}) + "});
-}
-}
-
-// ===============================
-// RAG System Errors
-// ===============================
-
-/**
- * Base error class for RAG (Retrieval Augmented Generation) system failures.
- *
- * @example
- * "`"typescript""
- * throw new RAGError(
- *   'RAG processing failed', *   'high', *   { operation: 'retrieval', metadata:" + JSON.stringify({ queryId: ' query-456'}) + "}') * );
- * "``""
- */
-export class RAGError extends BaseKnowledgeError {
-  constructor(
-    message: string,
-    severity:'low' | ' medium' | ' high' | ' critical' = ' medium',    context: Partial<KnowledgeErrorContext> = {}
+    super(): void {
+  constructor(): void {
+    super(): void {
+  constructor(): void {
+    super(): void {
+  constructor(): void {
+    super(): void { operation: 'retrieval', metadata:" + JSON.stringify(): void {}
   ) {
-    super(message, { category: 'RAG', severity, context});
-}
-}
-
-/**
- * Error for RAG vector operations.
- */
-export class RAGVectorError extends RAGError {
-  constructor(
-    message: string,
-    public readonly operation: 'embed|search|index|delete',    public readonly vectorDimension?:number,
-    severity:'low' | ' medium' | ' high' | ' critical' = ' high',  ) {
-    super(message, severity, { operation, metadata:{ vectorDimension}});
-}
-}
-
-/**
- * Error for RAG embedding operations.
- */
-export class RAGEmbeddingError extends RAGError {
-  constructor(
-    message: string,
-    public readonly modelName: string,
-    public readonly textLength?:number,
-    severity:'low' | ' medium' | ' high' | ' critical' = ' high',  ) {
-    super(message, severity, { metadata:{ modelName, textLength}});
-}
-}
-
-/**
- * Error for RAG retrieval operations.
- */
-export class RAGRetrievalError extends RAGError {
-  constructor(
-    message: string,
-    public readonly query: string,
-    public readonly similarityThreshold?:number,
-    severity:'low' | ' medium' | ' high' | ' critical' = ' medium',  ) {
-    super(message, severity, { metadata:{ query, similarityThreshold}});
-}
-}
-
-// ===============================
-// Error Utilities
-// ===============================
-
-/**
- * Determines if a knowledge error is recoverable.
- */
-export function isRecoverableKnowledgeError(error: Error): boolean {
+    super(): void {
+  constructor(): void {
+    super(): void {
+  constructor(): void {
+    super(): void {
+  constructor(): void {
+    super(): void {
   if (error instanceof BaseKnowledgeError) {
     return error.recoverable;
 }
@@ -220,20 +80,11 @@ export function isRecoverableKnowledgeError(error: Error): boolean {
 /**
  * Gets the severity level of a knowledge error.
  */
-export function getKnowledgeErrorSeverity(
-  error: Error
-):'low' | ' medium' | ' high' | ' critical' {
+export function getKnowledgeErrorSeverity(): void {
   if (error instanceof BaseKnowledgeError) {
     return error.severity;
 }
-  return 'medium'; // Default severity')}
-
-/**
- * Creates a knowledge error with proper context wrapping.
- */
-export function createKnowledgeError(
-  message: string,
-  category:'FACT' | ' RAG',  context: Partial<KnowledgeErrorContext> = {},
+  return 'medium'; // Default severity')FACT' | ' RAG',  context: Partial<KnowledgeErrorContext> = {},
   severity:'low' | ' medium' | ' high' | ' critical' = ' medium',): BaseKnowledgeError {
   switch (category) {
     case 'FACT':

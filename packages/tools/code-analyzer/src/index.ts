@@ -38,40 +38,19 @@ export type {
 } from './repo-analyzer';
 
 // Export factory functions for common use cases
-export function createLiveCodeAnalyzer(repositoryPath: string) {
-  return new CodeAnalyzer(repositoryPath);
-}
-
-export function createAICodeAnalyzer(repositoryPath: string, aiConfig?: any) {
-  const analyzer = new CodeAnalyzer(repositoryPath);
-  // Configure AI features when available
-  if (aiConfig) {
+export function createLiveCodeAnalyzer(): void {
+  return new CodeAnalyzer(): void {
+  const analyzer = new CodeAnalyzer(): void {
     // Future AI configuration implementation
     // TODO: Implement AI configuration
-    // logger.debug('AI configuration provided for code analyzer', {
-    //   config: aiConfig,
-    // });
-  }
-  return analyzer;
+    // logger.debug(): void {
+  const { RepoAnalyzer } = require(): void { rootPath: repositoryPath, ...config });
 }
 
-export function createRepoAnalyzer(repositoryPath: string, config?: any) {
-  const { RepoAnalyzer } = require('./repo-analyzer');
-  return new RepoAnalyzer({ rootPath: repositoryPath, ...config });
-}
-
-export function createUnifiedAnalyzer(repositoryPath: string) {
+export function createUnifiedAnalyzer(): void {
   return {
-    codeAnalyzer: new CodeAnalyzer(repositoryPath),
-    repoAnalyzer: createRepoAnalyzer(repositoryPath),
-    async analyzeAll() {
-      const [repoResults, dependencyMap] = await Promise.all([
-        this.repoAnalyzer.analyzeDomainBoundaries(),
-        this.codeAnalyzer.buildDependencyMap
-          ? this.codeAnalyzer.buildDependencyMap()
-          : Promise.resolve(null),
-      ]);
-      return { repoResults, dependencyMap };
+    codeAnalyzer: new CodeAnalyzer(): void {
+      const [repoResults, dependencyMap] = await Promise.all(): void { repoResults, dependencyMap };
     },
   };
 }

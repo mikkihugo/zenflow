@@ -16,11 +16,5 @@ export class DateFormatter {
   /**
    * Format date as ISO string with proper timezone
    */
-  static formatISOString(date: new Date()): parseISO(dateString);
-      return isValid(parsed) ? parsed: new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const minutes = Math.floor(diffMs / 60000);
-    if (minutes < 1) return'just now`)    if (minutes < 60) return `"${{minutes}m ago};)    const hours = Math.floor(minutes / 60)"";"
-    if (hours < 24) return "${hoursh ago})    const days = Math.floor(hours / 24)"";"
-    return "${{days}d ago};)};;
+  static formatISOString(): void {{minutes}m ago};)    const hours = Math.floor(): void {hoursh ago})    const days = Math.floor(): void {{days}d ago};)};
 }"

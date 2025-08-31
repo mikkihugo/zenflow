@@ -31,7 +31,7 @@ export interface: ComplexityEstimate {
     readonly reasoning: string[];
     readonly suggested: Method: 'dspy' | ' ml' | ' hybrid';
     readonly estimated: Duration: number;
-    readonly difficulty: Level: 'trivial|easy|medium|hard|expert;;
+    readonly difficulty: Level: 'trivial|easy|medium|hard|expert;
     '  readonly key: Factors:string[];: any;
 }
 export interface: ComplexityPattern {

@@ -28,13 +28,7 @@ export interface QualityGateContext {
  * Quality artifact for evaluation
  */
 export interface QualityArtifact {
-    readonly id: string;
-    readonly type: code | binary | test_results | security_scan | 'documentation';
-    readonly location: string;
-    readonly size: number;
-    readonly checksum: string;
-    readonly metadata: Record<string, unknown>;
-    readonly createdAt: Date;
+  id: string;
 }
 /**
  * Historical quality data
@@ -90,13 +84,7 @@ export interface GateRetryPolicy {
  * Quality gate templates for different scenarios
  */
 export interface QualityGateTemplate {
-    readonly id: string;
-    readonly name: string;
-    readonly description: string;
-    readonly applicableStages: string[];
-    readonly defaultCriteria: QualityGateCriterion[];
-    readonly recommendedTimeout: number;
-    readonly category: security | performance | quality | compliance | 'architecture';
+  id: string;
 }
 /**
  * Quality gate optimization result

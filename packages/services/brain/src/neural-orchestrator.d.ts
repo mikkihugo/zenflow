@@ -120,71 +120,7 @@ export declare class: NeuralOrchestrator {
     private task: Statistics;
     private activeTask: Count;
     private maxConcurrent: Tasks;
-    constructor();
-    /**
-     * Initialize processing capabilities
-     */
-    private initialize: Capabilities;
-    /**
-     * Process neural task with intelligent orchestration
-     */
-    process: Task(task: Neural: Task): Promise<Result<Neural: Result, Error>>;
-    /**
-     * Analyze task complexity using advanced heuristics
-     */
-    private analyzeTask: Complexity;
-    /**
-     * Select optimal processing engine based on task requirements
-     */
-    private selectOptimal: Engine;
-    /**
-     * Determine optimal storage strategy
-     */
-    private determineStorage: Strategy;
-    /**
-     * Execute task with selected engine
-     */
-    private execute: Task;
-    /**
-     * Process with: Brain.js
-     */
-    private procesWithBrain: Js;
-    /**
-     * Process with: Neural ML: Light
-     */
-    private processWithNeuralMl: Light;
-    /**
-     * Process with: Neural ML: Heavy
-     */
-    private processWithNeuralMl: Heavy;
-    private estimateBrainJs: Latency;
-    private estimateBrainJs: Memory;
-    private estimateNeuralMlLight: Latency;
-    private estimateNeuralMlLight: Memory;
-    private estimateNeuralMlHeavy: Latency;
-    private estimateNeuralMlHeavy: Memory;
-    private checkNeuralMl: Availability;
-    private preprocess: Input;
-    private postprocess: Output;
-    private simulateBrainJs: Network;
-    private simulateNeuralMl: Light;
-    private simulateNeuralMl: Heavy;
-    private calculate: Accuracy;
-    private calculate: Confidence;
-    private estimateMemory: Usage;
-    private getApplied: Optimizations;
-    private check: Cache;
-    private cache: Result;
-    private generateCache: Key;
-    private loadTask: Statistics;
-    private getTask: Statistics;
-    private updateTask: Statistics;
-    private store: Result;
-    private processNextQueued: Task;
-    /**
-     * Get system status and metrics
-     */
-    getSystem: Status(): {
+    constructor(): void {
         activeTask: Count: number;
         queuedTask: Count: number;
         available: Engines: Processing: Engine[];
@@ -202,7 +138,7 @@ export interface: NeuralData {
     characteristics: {
         size: number;
         dimensions?: number;
-        access: Frequency: 'rare|occasional|frequent|realtime;;
+        access: Frequency: 'rare|occasional|frequent|realtime;
     };
 }
 /**
@@ -220,11 +156,9 @@ export interface: OrchestrationMetrics {
  * Neural: Orchestrator - Brain as intelligent coordinator
  */
 export declare class: NeuralOrchestrator {
-    constructor();
-    catch (error: any) {
+    constructor(): void {
       : void;
-    if(needsLow: Latency: any): void;
-    const taskType: Complexity: {
+    if(): void {
         prediction: Task: Complexity;
         classification: Task: Complexity;
         clustering: Task: Complexity;

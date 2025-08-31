@@ -2,25 +2,7 @@
  * Architecture Capability with enhanced tracking
  */
 export interface ArchitectureCapability {
-    id: string;
-    name: string;
-    description: string;
-    category: CapabilityCategory;
-    maturityLevel: number;
-    status: CapabilityStatus;
-    enablers: string[];
-    dependencies: string[];
-    kpis: CapabilityKPI[];
-    createdAt: Date;
-    updatedAt: Date;
-    owner: string;
-    stakeholders: string[];
-    businessValue: BusinessValueAssessment;
-    technicalComplexity: TechnicalComplexityAssessment;
-    investmentPlan: InvestmentPlan;
-    roadmap: CapabilityRoadmap;
-    metrics: CapabilityMetric[];
-    '; : any;
+  id: string;
 }
 /**
  * Capability categories for organization
@@ -28,19 +10,7 @@ export interface ArchitectureCapability {
 export type CapabilityCategory = business_capability | technology_capability | process_capability | data_capability | security_capability | integration_capability | platform_capability | infrastructure_capability | governance_capability | 'innovation_capability';
 export type CapabilityStatus = planning | developing | active | optimizing | retiring | deprecated | 'suspended';
 export interface CapabilityKPI {
-    id: string;
-    name: string;
-    description: string;
-    metric: string;
-    target: number;
-    current: number;
-    unit: string;
-    trend: KPITrend;
-    frequency: MeasurementFrequency;
-    threshold: PerformanceThreshold;
-    historicalData: HistoricalDataPoint[];
-    lastMeasured: Date;
-    dataSource: DataSource;
+  id: string;
 }
 /**
  * KPI trend analysis

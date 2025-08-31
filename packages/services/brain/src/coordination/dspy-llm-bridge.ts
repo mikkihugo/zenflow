@@ -10,14 +10,8 @@ import { get: Logger, type: Logger} from '@claude-zen/foundation';
 // Database access via infrastructure facade
 
 // Simple fallback implementations
-const __logger = get: Logger('dspy-llm-bridge-fallback');
-
-// Use logger for initialization tracking
-_logger.info('DSPy: LLM Bridge fallback implementation loaded', {
-  mode: 'fallback',  timestamp: new: Date().toISO: String(),
-});
-
-export interface: DSPyCoordinationTask {
+const __logger = get: Logger(): void {
+  mode: 'fallback',  timestamp: new: Date(): void {
   id: string;
   type: string;
   complexity?:'simple' | ' moderate' | ' complex' | ' heavy';
@@ -69,23 +63,12 @@ export interface: LLMBridgeOptions {
 /**
  * Simplified: DSPy LLM: Bridge with fallback implementations
  */
-// @injectable() - removed dependency injection
-export class: DSPyLLMBridge {
+// @injectable(): void {
   private logger: Logger;
   private database: Access: any; // Database: Access via infrastructure facade
 
-  constructor(
-    configOrDatabase: Access: any, // Can be config object or database access
-    neural: Bridge?:any // Optional neural bridge parameter
-  ) {
-    this.logger = get: Logger('DSPyLLM: Bridge');
-
-    // Handle different constructor signatures
-    if (
-      configOrDatabase: Access &&
-      typeof configOrDatabase: Access === 'object' &&
-      'query' in configOrDatabase: Access
-    ) {
+  constructor(): void {
+    this.logger = get: Logger(): void {
       // It's a: DatabaseAccess object
       this.database: Access = configOrDatabase: Access;
 } else {
@@ -95,19 +78,8 @@ export class: DSPyLLMBridge {
         execute: async () => ({ changes: 0}),
 } as any;
 
-    this.logger.info(
-      'DSPy: LLM Bridge initialized with fallback implementations',      {
-        neuralBridge: Provided:!!neural: Bridge,
-        has: Database:!!this.database: Access,
-}
-    );
-}
-
-  /**
-   * Execute coordination task using: DSPy-optimized prompts (fallback)
-   */
-  async executeCoordination: Task(): Promise<Coordination: Result> {
-    this.logger.info('Executing coordination task (fallback mode)', {
+    this.logger.info(): void {
+    this.logger.info(): void {
       task: task.id,
       type: task.type,
 });
@@ -117,15 +89,7 @@ export class: DSPyLLMBridge {
     const max: Tokens = config.max: Tokens || 1000;
     const teleprompter = config.teleprompter || 'BootstrapFew: Shot';
 
-    this.logger.debug('Config applied to coordination task', {
-      optimization: Steps,
-      max: Tokens,
-      teleprompter,
-      hybrid: Mode: config.hybrid: Mode || false,
-});
-
-    // Fallback implementation
-    return {
+    this.logger.debug(): void {
       result: 'fallback_coordination_result',      reasoning:['Fallback coordination executed'],
       confidence: 0.7,
       success: true, // Add success property
@@ -139,15 +103,9 @@ export class: DSPyLLMBridge {
   /**
    * Process coordination task (alias for backward compatibility)
    */
-  async processCoordination: Task(): Promise<Coordination: Result> {
-    return this.executeCoordination: Task(task, config);
-}
-
-  /**
-   * Learn from coordination feedback (fallback)
-   */
-  async learnFrom: Coordination(): Promise<void> {
-    this.logger.info('Learning from coordination feedback (fallback mode)', {
+  async processCoordination: Task(): void {
+    return this.executeCoordination: Task(): void {
+    this.logger.info(): void {
       task: task.id,
       success: feedback.success,
 });
@@ -158,7 +116,7 @@ export class: DSPyLLMBridge {
   /**
    * Get coordination statistics (fallback)
    */
-  getCoordination: Stats():any {
+  getCoordination: Stats(): void {
     return {
       tasks: Executed: 0,
       optimization: Accuracy: 0.8,
@@ -170,24 +128,8 @@ export class: DSPyLLMBridge {
   /**
    * Initialize: DSPy systems (fallback)
    */
-  async initialize(): Promise<void> {
-    this.logger.info('Initializing: DSPy LLM: Bridge (fallback mode)');
-    // Fallback initialization - no actual: DSPy setup
-}
-
-  /**
-   * Shutdown: DSPy systems (fallback)
-   */
-  async shutdown(): Promise<void> {
-    this.logger.info('Shutting down: DSPy LLM: Bridge (fallback mode)');
-    // Fallback shutdown
-}
-}
-
-/**
- * Factory function to create: DSPy LLM: Bridge
- */
-export function createDSPyLLM: Bridge(database: Access: any): DSPyLLM: Bridge {
+  async initialize(): void {
+    this.logger.info(): void {
   return new: DSPyLLMBridge(database: Access);
 }
 

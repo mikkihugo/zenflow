@@ -13,7 +13,7 @@ export declare enum DeploymentStrategy {
  * Deployment environment configuration
  */
 export interface DeploymentEnvironment {
-    readonly id: 'pending';
+  id: string;
 }
 /**
  * Phase execution
@@ -26,26 +26,7 @@ export interface PhaseExecution {
     readonly startTime?: Date;
     readonly endTime?: Date;
     readonly duration?: number;
-    ')};;: any;
-}
-/**
- * Action execution
- */
-export interface ActionExecution {
-    readonly actionId: string;
-    readonly status: DeploymentStatus;
-    readonly output: string;
-    readonly exitCode?: number;
-    readonly startTime: Date;
-    readonly endTime?: Date;
-    readonly duration?: number;
-}
-/**
- * Condition execution
- */
-export interface ConditionExecution {
-    readonly conditionId: string;
-    readonly status: 'met' | ' not_met' | ' timeout';
+    ')met' | ' not_met' | ' timeout';
     readonly result: unknown;
     readonly message: string;
     readonly evaluatedAt: Date;
@@ -98,11 +79,7 @@ export interface RollbackPlan {
  * Rollback trigger
  */
 export interface RollbackTrigger {
-    readonly id: string;
-    readonly type: health_check_failure | metric_threshold | error_rate | 'manual';
-    readonly description: string;
-    readonly conditions: Record<string, unknown>;
-    readonly delay: number;
+  id: string;
 }
 /**
  * Validation plan
@@ -118,26 +95,13 @@ export interface ValidationPlan {
  * Health check
  */
 export interface HealthCheck {
-    readonly id: string;
-    readonly name: string;
-    readonly type: 'http| tcp| database' | ' custom';
-    readonly endpoint: string;
-    readonly expectedResponse: unknown;
-    readonly timeout: number;
-    readonly interval: number;
-    readonly retries: number;
+  id: string;
 }
 /**
  * Performance test
  */
 export interface PerformanceTest {
-    readonly id: string;
-    readonly name: string;
-    readonly type: 'load| stress| spike' | ' volume';
-    readonly configuration: Record<string, unknown>;
-    ';: any;
-    readonly thresholds: PerformanceThreshold[];
-    readonly duration: number;
+  id: string;
 }
 /**
  * Performance threshold
@@ -152,22 +116,13 @@ export interface PerformanceThreshold {
  * Security test
  */
 export interface SecurityTest {
-    readonly id: string;
-    readonly name: string;
-    readonly type: 'vulnerability_scan' | ' penetration_test' | ' compliance_check';
-    readonly configuration: Record<string, unknown>;
-    ';: any;
-    readonly severity: low | medium | high;
+  id: string;
 }
 /**
  * Business validation
  */
 export interface BusinessValidation {
-    readonly id: string;
-    readonly name: string;
-    readonly type: feature_toggle | a_b_test | canary_metrics | 'user_acceptance';
-    readonly criteria: BusinessCriteria[];
-    readonly timeout: number;
+  id: string;
 }
 /**
  * Business criteria
@@ -209,12 +164,7 @@ export interface RolloutCriteria {
  * Approval gate
  */
 export interface ApprovalGate {
-    readonly id: string;
-    readonly name: string;
-    readonly approvers: string[];
-    readonly timeout: number;
-    readonly required: boolean;
-    readonly criteria: string[];
+  id: string;
 }
 /**
  * Supporting interfaces
@@ -277,11 +227,7 @@ export interface NotificationTrigger {
     readonly conditions?: Record<string, unknown>;
 }
 export interface NotificationTemplate {
-    readonly id: string;
-    readonly name: string;
-    readonly subject: string;
-    readonly body: string;
-    readonly format: 'text' | ' html' | ' markdown';
+  id: string;
 }
 export interface DeploymentLog {
     readonly timestamp: Date;

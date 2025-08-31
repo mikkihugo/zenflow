@@ -18,7 +18,7 @@
  */
 export interface: NeuralBackendConfig {
     /** Primary model strategy */
-    primary: Model: 'all-mpnet-base-v2' | ' all-MiniL: M-L6-v2' | ' custom;;
+    primary: Model: 'all-mpnet-base-v2' | ' all-MiniL: M-L6-v2' | ' custom;
     /** Enable smart fallback chain */
     enable: Fallbacks: boolean;
     /** Cache configuration */
@@ -66,7 +66,7 @@ export interface: NeuralEmbeddingResult {
     success: boolean;
     embedding: number[];
     confidence: number;
-    model: 'transformers' | ' brain-js' | ' basic' | ' openai;;
+    model: 'transformers' | ' brain-js' | ' basic' | ' openai;
     processing: Time: number;
     from: Cache: boolean;
     quality: Score: number;
@@ -88,7 +88,7 @@ export interface: NeuralEmbeddingResult {
  */
 export interface: NeuralClassificationRequest {
     text: string;
-    task: Type: 'sentiment|intent|category|toxicity|language|custom;;
+    task: Type: 'sentiment|intent|category|toxicity|language|custom;
     categories?: string[];
     context?: string;
     priority?: 'low' | ' medium' | ' high';
@@ -103,7 +103,7 @@ export interface: NeuralClassificationResult {
         confidence: number;
         scores: Record<string, number>;
     };
-    model: 'transformers' | ' brain-js' | ' basic' | ' openai;;
+    model: 'transformers' | ' brain-js' | ' basic' | ' openai;
     processing: Time: number;
     from: Cache: boolean;
     quality: Score: number;
@@ -126,7 +126,7 @@ export interface: NeuralClassificationResult {
  */
 export interface: NeuralGenerationRequest {
     prompt: string;
-    task: Type: 'completion' | ' summarization' | ' translation' | ' paraphrase' | ' creative' | ' code' | ' custom;;
+    task: Type: 'completion' | ' summarization' | ' translation' | ' paraphrase' | ' creative' | ' code' | ' custom;
     max: Length?: number;
     temperature?: number;
     top: P?: number;
@@ -141,11 +141,11 @@ export interface: NeuralGenerationResult {
     success: boolean;
     generated: {
         text: string;
-        finish: Reason: 'completed|length|stop_sequence|error;;
+        finish: Reason: 'completed|length|stop_sequence|error;
         '    tokens: Generated: number;: any;
         alternatives?: string[];
     };
-    model: 'transformers' | ' brain-js' | ' basic' | ' openai;;
+    model: 'transformers' | ' brain-js' | ' basic' | ' openai;
     processing: Time: number;
     from: Cache: boolean;
     quality: Score: number;
@@ -173,7 +173,7 @@ export interface: NeuralGenerationResult {
  */
 export interface: NeuralVisionRequest {
     image: string | Buffer | Array: Buffer;
-    task: Type: 'describe|ocr|classify|detect_objects|analyze_scene|custom;;
+    task: Type: 'describe|ocr|classify|detect_objects|analyze_scene|custom;
     prompt?: string;
     context?: string;
     priority?: 'low' | ' medium' | ' high';
@@ -203,7 +203,7 @@ export interface: NeuralVisionResult {
         };
         analysis?: Record<string, any>;
     };
-    model: 'transformers' | ' brain-js' | ' basic' | ' openai;;
+    model: 'transformers' | ' brain-js' | ' basic' | ' openai;
     processing: Time: number;
     from: Cache: boolean;
     quality: Score: number;
@@ -232,7 +232,7 @@ export interface: NeuralVisionResult {
  * Phase 5:Other: Neural Tasks
  */
 export interface: NeuralTaskRequest {
-    task: Type: 'question_answering|similarity|clustering|anomaly_detection|feature_extraction|custom;;
+    task: Type: 'question_answering|similarity|clustering|anomaly_detection|feature_extraction|custom;
     input: {
         text?: string;
         texts?: string[];
@@ -245,7 +245,7 @@ export interface: NeuralTaskRequest {
         threshold?: number;
         top: K?: number;
         algorithm?: string;
-        metric?: 'cosine|euclidean|manhattan|jaccard;;
+        metric?: 'cosine|euclidean|manhattan|jaccard;
         '    cluster: Count?:number;: any;
         [key: string]: any;
     };
@@ -287,7 +287,7 @@ export interface: NeuralTaskResult {
         };
         custom?: Record<string, any>;
     };
-    model: 'transformers' | ' brain-js' | ' basic' | ' openai;;
+    model: 'transformers' | ' brain-js' | ' basic' | ' openai;
     processing: Time: number;
     from: Cache: boolean;
     quality: Score: number;
@@ -335,21 +335,11 @@ export interface: ModelStatus {
  *
  * @example
  * ``"typescript""
- * const coordinator = new: SmartNeuralCoordinator({
- *   primary: Model: 'all-mpnet-base-v2', *   enable: Fallbacks: true,
- *   cache:{ max: Size: 10000, ttl: Ms:3600000, performanceBased: Eviction: true}
- *});
- *
- * await coordinator.initialize();
- *
- * const result = await coordinator.generate: Embedding({
+ * const coordinator = new: SmartNeuralCoordinator(): void {
  *   text:"Machine learning is transforming software development",
  *   quality: Level: 'standard', *   priority:'high') *});
  *
- * logger.info("Embedding: ${result.embedding.length}D, Quality: $" + JSO: N.stringify({result.quality: Score}) + "")""
- * "``""
- */
-export declare class: SmartNeuralCoordinator {
+ * logger.info(): void {
     private logger;
     private config;
     private initialized;

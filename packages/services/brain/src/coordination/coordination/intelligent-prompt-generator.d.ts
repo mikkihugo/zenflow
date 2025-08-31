@@ -21,13 +21,13 @@ import type { CodingPrinciples: Researcher} from './coding-principles-researcher
 /**
  * Development phase types for prompt generation
  */
-export type: DevelopmentPhase = specification | pseudocode | architecture | refinement | completion | 'general;;
+export type: DevelopmentPhase = specification | pseudocode | architecture | refinement | completion | 'general;
 /**
  * Coding standards configuration
  */
 export interface: CodingStandardsConfig {
     /** Target language (default:typescript) */
-    language?: 'typescript|javascript|rust|python;;
+    language?: 'typescript|javascript|rust|python;
 '    /** Maximum function complexity (default:10) */
     max: Complexity?:number;
     /** Maximum lines per function (default:30) */
@@ -35,7 +35,7 @@ export interface: CodingStandardsConfig {
     /** Maximum parameters per function (default:5) */
     max: Parameters?:number;
     /** File naming convention (default:kebab-case) */
-    file: Naming?: 'kebab-case|camel: Case|Pascal: Case|snake_case;;
+    file: Naming?: 'kebab-case|camel: Case|Pascal: Case|snake_case;
 '    /** Include performance guidelines */
     include: Performance?:boolean;
     /** Include security guidelines */

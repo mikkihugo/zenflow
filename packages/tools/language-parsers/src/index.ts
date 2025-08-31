@@ -17,7 +17,6 @@
  * @version 1.0.0
  */
 
-
 export type {
   BeamFunction,
   BeamModule,
@@ -50,100 +49,13 @@ export const SUPPORTED_EXTENSIONS = {
 /**
  * Language detection utility
  */
-export function detectLanguageFamily(filePath: string): string|null {
-  const ext = filePath.toLowerCase().substring(filePath.lastIndexOf('.'));
-  return SUPPORTED_EXTENSIONS[ext as keyof typeof SUPPORTED_EXTENSIONS] || null;
-}
-
-/**
- * Get all supported file extensions
- */
-export function getSupportedExtensions():string[] {
-  return Object.keys(SUPPORTED_EXTENSIONS);
-}
-
-/**
- * Check if a file extension is supported
- */
-export function isSupported(filePath: string): boolean {
-  return detectLanguageFamily(filePath) !== null;
-}
-
-/**
- * Create parser factory for different language families
- */
-export interface ParserFactory {
-  createBeamParser(
-    options?: import('./beam-parser').BeamParserOptions
-  ): import('./beam-parser').BeamLanguageParser;
-}
-
-/**
- * Default parser factory implementation
- */
-export class DefaultParserFactory implements ParserFactory {
-  createBeamParser(
-    options?: import('./beam-parser').BeamParserOptions
-  ): import('./beam-parser').BeamLanguageParser {
-    // Temporarily disabled due to syntax issues in beam-parser.ts
-    throw new Error('BeamLanguageParser is temporarily disabled due to syntax issues');
-    // const { BeamLanguageParser } = require('./beam-parser');
-    // return new BeamLanguageParser(options);
-  }
-}
-
-/**
- * Create default parser factory instance
- */
-export function createParserFactory(): ParserFactory {
-  return new DefaultParserFactory();
-}
-
-/**
- * Quick parse utility for single files
- */
-export async function parseFile(
-  filePath: string,
-  options?:{
-    includeMetrics?:boolean;
-    analyzeFunctionComplexity?:boolean;
-    extractDocumentation?:boolean;
-}
-) {
-  const family = detectLanguageFamily(filePath);
-
-  if (!family) {
-    throw new Error("Unsupported file type: ${filePath}");"
-}
-
-  const factory = createParserFactory();
-
-  switch (family) {
-    case 'beam': {
-      const parser = factory.createBeamParser(options);
-      return await parser.parseFile(filePath);
-}
-    case 'functional': {
+export function detectLanguageFamily(): void {
+  const ext = filePath.toLowerCase(): void {
+      const parser = factory.createBeamParser(): void {
       // Future: Add functional language parser support
-      const parser = factory.createBeamParser(options); // Fallback to beam for now
-      return await parser.parseFile(filePath);
-}
-    case 'concurrent': {
+      const parser = factory.createBeamParser(): void {
       // Future: Add concurrent language parser support
-      const parser = factory.createBeamParser(options); // Fallback to beam for now
-      return await parser.parseFile(filePath);
-    }
-    default:
-      throw new Error("Parser not implemented for language family: " + family);"
-}
-}
-
-/**
- * Quick parse utility for multiple files
- */
-export async function parseFiles(
-  filePaths: string[],
-  options?:{
+      const parser = factory.createBeamParser(): void {
     includeMetrics?:boolean;
     analyzeFunctionComplexity?:boolean;
     extractDocumentation?:boolean;
@@ -153,64 +65,17 @@ export async function parseFiles(
   const filesByFamily = new Map<string, string[]>();
 
   for (const filePath of filePaths) {
-    const family = detectLanguageFamily(filePath);
-    if (family) {
-      if (!filesByFamily.has(family)) {
-        filesByFamily.set(family, []);
-}
-      filesByFamily.get(family)?.push(filePath);
-}
-}
-
-  const factory = createParserFactory();
-  const allResults: unknown[] = [];
-
-  // Parse each family in parallel
-  const familyPromises = Array.from(filesByFamily.entries()).map(
-    async ([family, paths]) => {
+    const family = detectLanguageFamily(): void {
+      if (!filesByFamily.has(): void {
+        filesByFamily.set(): void {
       switch (family) {
         case 'beam': {
-          const parser = factory.createBeamParser(options);
-          const result = await parser.parseFiles(paths);
-          return result.isOk() ? result._unsafeUnwrap() :[];
-}
-        case 'functional': {
+          const parser = factory.createBeamParser(): void {
           // Future: Add functional language parser support
-          const parser = factory.createBeamParser(options); // Fallback to beam for now
-          const result = await parser.parseFiles(paths);
-          return result.isOk() ? result._unsafeUnwrap() :[];
-}
-        case 'concurrent': {
+          const parser = factory.createBeamParser(): void {
           // Future: Add concurrent language parser support
-          const parser = factory.createBeamParser(options); // Fallback to beam for now
-          const result = await parser.parseFiles(paths);
-          return result.isOk() ? result._unsafeUnwrap() :[];
-}
-        default:
-          return [];
-}
-}
-  );
-
-  const familyResults = await Promise.all(familyPromises);
-
-  for (const results of familyResults) {
-    allResults.push(...results);
-}
-
-  return allResults;
-}
-
-/**
- * Version information
- */
-export const VERSION = '1.0.0';
-export const PACKAGE_NAME = '@claude-zen/language-parsers';
-
-/**
- * Package metadata
- */
-export const PACKAGE_INFO = {
+          const parser = factory.createBeamParser(): void {
+    allResults.push(): void {
   name: PACKAGE_NAME,
   version: VERSION,
   description:

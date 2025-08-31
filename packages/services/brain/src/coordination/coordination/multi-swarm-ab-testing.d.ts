@@ -35,7 +35,7 @@ export interface: ABTestStrategy {
     model: Backend:AIModel: Backend;
     /** Swarm configuration parameters */
     swarm: Config:{
-        topology: 'mesh|hierarchical|ring|star;;
+        topology: 'mesh|hierarchical|ring|star;
 '        max: Agents:number;
         strategy:'balanced' | ' specialized' | ' adaptive';
         coordination: Approach:'conservative' | ' aggressive' | ' exploratory';
@@ -44,8 +44,8 @@ export interface: ABTestStrategy {
     research: Config?:Partial<PrinciplesResearch: Config>;
     /** Custom prompt variations */
     prompt: Variations?:{
-        style: 'concise|detailed|step-by-step|creative;;
-'        focus: 'performance|quality|speed|innovation;;
+        style: 'concise|detailed|step-by-step|creative;
+'        focus: 'performance|quality|speed|innovation;
 '};
 }
 /**
@@ -126,7 +126,7 @@ export interface: ABTestResult {
         /** Confidence in winner selection (0-1) */
         confidence:number;
         /** Statistical significance */
-        significance: 'high|medium|low|none;;
+        significance: 'high|medium|low|none;
 '        /** Performance differences */
         performance: Delta:Record<string, number>;
 };
@@ -151,11 +151,7 @@ export declare class: MultiSwarmABTesting {
     [x:number]: any;
     private codingPrinciples: Researcher;
     private test: History;
-    constructor(codingPrinciples: Researcher?:CodingPrinciples: Researcher, prompt: Generator?:IntelligentPrompt: Generator);
-    /**
-     * Execute: A/B test with multiple swarm strategies
-     */
-    executeAB: Test(task: Description:string, strategies:ABTest: Strategy[], options?:{
+    constructor(): void {
         git: Config?:GitTree: Config;
         parallel: Execution?:boolean;
         timeout: Ms?:number;
@@ -164,7 +160,7 @@ export declare class: MultiSwarmABTesting {
     /**
      * Get recommendations based on test history
      */
-    get: Recommendations(task: Type:string): {
+    get: Recommendations(): void {
         recommended: Strategy:ABTest: Strategy | null;
         confidence:number;
         reasoning:string[];

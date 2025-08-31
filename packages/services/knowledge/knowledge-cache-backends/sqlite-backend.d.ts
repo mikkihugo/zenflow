@@ -26,55 +26,7 @@ export declare class SQLiteBackend implements FACTStorageBackend {
   private stats;
   private isInitialized;
   private config;
-  constructor(config: FACTStorageConfig);
-  /**
-   * Initialize SQLite database and create required tables.
-   */
-  initialize(): Promise<void>;
-  /**
-   * Store a knowledge entry in SQLite database.
-   *
-   * @param entry
-   */
-  store(entry: FACTKnowledgeEntry): Promise<void>;
-  /**
-   * Retrieve a knowledge entry by ID.
-   *
-   * @param id
-   */
-  get(id: string): Promise<FACTKnowledgeEntry | null>;
-  /**
-   * Search knowledge entries with various criteria.
-   *
-   * @param _query
-   */
-  search(_query: FACTSearchQuery): Promise<FACTKnowledgeEntry[]>;
-  /**
-   * Delete a knowledge entry by ID.
-   *
-   * @param id
-   */
-  delete(id: string): Promise<boolean>;
-  /**
-   * Get storage statistics.
-   */
-  getStats(): Promise<Partial<FACTStorageStats>>;
-  /**
-   * Clean up old entries beyond maxAge.
-   */
-  cleanup(maxAge: number): Promise<number>;
-  /**
-   * Clear all knowledge entries.
-   */
-  clear(): Promise<void>;
-  /**
-   * Close database connection.
-   */
-  shutdown(): Promise<void>;
-  /**
-   * Get backend capabilities.
-   */
-  getCapabilities(): {
+  constructor(): void {
     supportsFullTextSearch: boolean;
     supportsVectorSearch: boolean;
     supportsMetadataSearch: boolean;

@@ -50,43 +50,7 @@ export type SafeSolutionKanbanState = 'vision';
 /**
  * Create Portfolio Kanban configuration optimized for Epic lifecycle
  */
-export declare function createSafePortfolioKanbanConfig(
-  eventBus?: EventEmitter
-): WorkflowKanbanConfig;
-/**
- * Create Program Kanban configuration optimized for Feature flow
- */
-export declare function createSafeProgramKanbanConfig(
-  eventBus?: EventEmitter
-): WorkflowKanbanConfig;
-/**
- * Create Team Kanban configuration optimized for Story/Task flow
- */
-export declare function createSafeTeamKanbanConfig(
-  eventBus?: EventEmitter
-): WorkflowKanbanConfig;
-/**
- * Create Portfolio Kanban for Epic lifecycle management
- */
-export declare function createSafePortfolioKanban(
-  logger: createSafePortfolioKanbanConfig
-): any;
-/**
- * Convert PortfolioEpic to WorkflowTask for kanban processing
- */
-export declare function portfolioEpicToKanbanTask(
-  epic: PortfolioEpic,
-  wsjf?: WSJFPriority
-): WorkflowTask;
-/**
- * Convert Feature to WorkflowTask for program kanban
- */
-export declare function featureToKanbanTask(feature: Feature): WorkflowTask;
-/**
- * Convert Story to WorkflowTask for team kanban
- */
-export declare function storyToKanbanTask(story: Story): WorkflowTask;
-export {};
+export declare function createSafePortfolioKanbanConfig(): void {};
 /**
  * SAFe Kanban Integration Summary
  *

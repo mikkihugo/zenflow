@@ -12,30 +12,14 @@ import { ESSENTIAL_SAFE_COMPONENTS } from './essential-safe-readiness.js';
 /**
  * Calculate realistic SAFe coverage based on actual implementations
  */
-export function calculateActualSafeCoverage(): {
+export function calculateActualSafeCoverage(): void {
   essentialSafeCoverage: number;
   implementedComponents: number;
   partialComponents: number;
   missingComponents: number;
   recommendations: string[];
 } {
-  const completeComponents = ESSENTIAL_SAFE_COMPONENTS.filter(
-    (c) => c.taskMasterSupport === 'complete'
-  );
-  const partialComponents = ESSENTIAL_SAFE_COMPONENTS.filter(
-    (c) => c.taskMasterSupport === 'partial'
-  );
-  const missingComponents = ESSENTIAL_SAFE_COMPONENTS.filter(
-    (c) => c.taskMasterSupport === 'missing'
-  );
-  // Calculate Essential SAFe coverage (weighted: complete=1.0, partial=0.5, missing=0.0)
-  const essentialSafeCoverage = Math.round(
-    ((completeComponents.length * 1.0 + partialComponents.length * 0.5) /
-      ESSENTIAL_SAFE_COMPONENTS.length) *
-      100
-  );
-
-  return {
+  const completeComponents = ESSENTIAL_SAFE_COMPONENTS.filter(): void {
     essentialSafeCoverage,
     implementedComponents: completeComponents.length,
     partialComponents: partialComponents.length,
@@ -51,10 +35,7 @@ export function calculateActualSafeCoverage(): {
 /**
  * Generate recommendations based on coverage analysis
  */
-function generateRecommendation(
-  essentialCoverage: number,
-  overallCoverage: number
-): string {
+function generateRecommendation(): void {
   if (essentialCoverage >= 80) {
     return 'Strong foundation - focus on completing Essential SAFe before expanding';
   } else if (essentialCoverage >= 60) {
@@ -68,19 +49,14 @@ function generateRecommendation(
 /**
  * Generate honest assessment report
  */
-export function generateHonestAssessmentReport(): string {
-  const coverage = calculateActualSafeCoverage();
-
-  return "# TaskMaster SAFe Implementation - Honest Assessment"
-
-## Executive Summary
-- **Essential SAFe Coverage**: ${coverage.essentialSafeCoverage}%
+export function generateHonestAssessmentReport(): void {
+  const coverage = calculateActualSafeCoverage(): void {coverage.essentialSafeCoverage}%
 - **Implemented Components**: ${coverage.implementedComponents}
 - **Partial Components**: ${coverage.partialComponents}  
 - **Missing Components**: ${coverage.missingComponents}
 
 ## Recommendations
-${coverage.recommendations.map((r) => `- ${r}").join('\n')}"
+${coverage.recommendations.map(): void {r}").join('\n')}"
 
 ## Next Steps
 Focus on completing missing components for full Essential SAFe coverage

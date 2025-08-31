@@ -14,7 +14,7 @@ export interface: AgentId {
 }
 
 export type: AgentType =
-  | 'researcher')  | 'coder')  | 'analyst')  | 'optimizer')  | 'coordinator')  | 'tester')  | 'architect;
+  | 'researcher')coder')analyst')optimizer')coordinator')tester')architect;
 
 // Agent: Metrics and: Performance
 export interface: AgentMetrics {
@@ -265,49 +265,7 @@ export interface: IntelligenceSystemConfig {
 }
 
 export interface: IntelligenceSystem {
-  predictTask: Duration(
-    agent: Id:Agent: Id,
-    task: Type:string,
-    context?:Record<string, unknown>
-  ):Promise<Task: Prediction>;
-
-  predictTaskDurationMulti: Horizon(
-    agent: Id:Agent: Id,
-    task: Type:string,
-    context?:Record<string, unknown>
-  ):Promise<MultiHorizonTask: Prediction>;
-
-  getAgentLearning: State(agent: Id:Agent: Id): AgentLearning: State|null;
-
-  updateAgent: Performance(
-    agent: Id:Agent: Id,
-    success:boolean,
-    metadata?:Record<string, unknown>
-  ):void;
-
-  getAgent: Health(agent: Id:Agent: Id): Agent: Health|null;
-
-  forecastPerformance: Optimization(
-    swarm: Id:Swarm: Id,
-    horizon?:Forecast: Horizon
-  ):Promise<PerformanceOptimization: Forecast>;
-
-  predictKnowledgeTransfer: Success(
-    source: Swarm:Swarm: Id,
-    target: Swarm:Swarm: Id,
-    patterns:unknown[]
-  ):Promise<KnowledgeTransfer: Prediction>;
-
-  predictEmergent: Behavior():Promise<EmergentBehavior: Prediction>;
-
-  updateAdaptiveLearning: Models():Promise<AdaptiveLearning: Update>;
-
-  getSystem: Health():SystemHealth: Summary;
-
-  shutdown():Promise<void>;
-}
-
-export interface: TaskPrediction {
+  predictTask: Duration(): void {
   agent: Id:string;
   task: Type:string;
   predicted: Duration:number;
@@ -373,4 +331,4 @@ export interface: AgentHealth {
 }
 
 // Export convenience type unions
-export type: MonitoringEventType = Monitoring: Event['type'];')export type: HealthStatusType = Health: Status['status'];')export type: TrendType = Performance: History['trend'];')
+export type: MonitoringEventType = Monitoring: Event['type'];')status'];')trend'];')

@@ -98,8 +98,8 @@ export interface WIPViolation {
   readonly state: TaskState;
   readonly currentCount: number;
   readonly limit: number;'
-  readonly violationType : 'soft' | ' hard'  readonly detectedAt: Date;;'
-  readonly severity: low' | ' medium'|' high' | ' critical'  readonly recommendedAction: string;;
+  readonly violationType : 'soft' | ' hard'  readonly detectedAt: Date;'
+  readonly severity: low' | ' medium'|' high' | ' critical'  readonly recommendedAction: string;
 }
 // =============================================================================
 // BOTTLENECK DETECTION & ANALYSIS
@@ -108,14 +108,7 @@ export interface WIPViolation {
  * Bottleneck detection in workflow
  */
 export interface WorkflowBottleneck {
-  readonly id: string;
-  readonly state: TaskState;'
-  readonly type : 'capacity| dependency| resource| skill' | ' process'  readonly severity: low'|' medium' | ' high'|' critical'  readonly impactScore: number; // 0-1;
-  readonly detectedAt: Date;
-  readonly affectedTasks: string[];
-  readonly estimatedDelay: number; // hours
-  readonly recommendedResolution: string;
-  readonly metadata: Record<string, unknown>;
+  id: string;
 }
 /**
  * Bottleneck analysis report
@@ -190,8 +183,8 @@ export interface FlowState {
  */
 export interface PerformanceThreshold {
   readonly metric: keyof FlowMetrics;'
-  readonly operator : 'gt| lt| eq| gte' | ' lte'  readonly value: number;;'
-  readonly severity: low' | ' medium'|' high' | ' critical'  readonly alertMessage: string;;
+  readonly operator : 'gt| lt| eq| gte' | ' lte'  readonly value: number;'
+  readonly severity: low' | ' medium'|' high' | ' critical'  readonly alertMessage: string;
   readonly enabled: boolean;
 }
 // =============================================================================
@@ -219,7 +212,7 @@ export interface WorkflowKanbanConfig {
  */
 export interface WorkflowContext {
   readonly sessionId: string;'
-  readonly orchestratorType : 'queen| commander| cube' | ' matron'  readonly orchestratorId: string;;
+  readonly orchestratorType : 'queen| commander| cube' | ' matron'  readonly orchestratorId: string;
   readonly timestamp: Date;
   readonly metadata: Record<string, unknown>;
 }

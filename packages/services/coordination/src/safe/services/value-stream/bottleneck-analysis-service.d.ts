@@ -13,7 +13,7 @@ import {
   meanBy,
   orderBy,
   sumBy,
-} from 'lodash-es')import type { Logger} from '../../types')/**';
+} from 'lodash-es')../../types');
  * Advanced bottleneck analysis configuration
  */
 export interface BottleneckAnalysisConfig {
@@ -23,35 +23,15 @@ export interface BottleneckAnalysisConfig {
  * Bottleneck severity levels
  */
 export declare enum BottleneckSeverity {
-    ')  CRITICAL = ' = 0,
+    ') = 0,
     critical = 1,
-    ')  HIGH = ' = 2,
+    ') = 2,
     high = 3,
-    ')  MEDIUM = ' = 4,
+    ') = 4,
     medium = 5,
-    ')  LOW = ' = 6,
+    ') = 6,
     low = 7,
-    ')};; 
-    /**
-     * Root cause analysis result
-     */
-    = 8
-    /**
-     * Root cause analysis result
-     */
-    ,
-    /**
-     * Root cause analysis result
-     */
-    export = 9,
-    interface = 10,
-    RootCauseAnalysis = 11
-}
-/**
- * Contributing factor
- */
-export interface ContributingFactor {
-    readonly factorId: 'resource_constraint';
+    ')resource_constraint';
 }
 /**
  * Impact assessment

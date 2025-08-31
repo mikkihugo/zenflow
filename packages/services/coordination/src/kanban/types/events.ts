@@ -46,34 +46,13 @@ export interface WIPLimits {
  * Core workflow task
  */
 export interface WorkflowTask {
-  readonly id: string;
-  readonly title: string;
-  readonly description?:string;
-  readonly state: TaskState;
-  readonly priority: TaskPriority;
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
-  readonly startedAt?:Date;
-  readonly completedAt?:Date;
-  readonly assignedTo?:string;
-  readonly estimatedEffort?:number;
-  readonly actualEffort?:number;
-  readonly dependencies?:string[];
-  readonly tags?:string[];
-  readonly metadata?:Record<string, any>;
+  id: string;
 }
 /**
  * Workflow bottleneck information
  */
 export interface WorkflowBottleneck {
-  readonly id: string;
-  readonly state: TaskState;
-  readonly type : 'capacity' | ' process'|' dependency'  readonly severity: low' | ' medium'|' high' | ' critical'  readonly impactScore: number; // 0-1';
-  readonly detectedAt: Date;
-  readonly affectedTasks: string[];
-  readonly estimatedDelay: number; // hours
-  readonly recommendedResolution: string;
-  readonly metadata?:Record<string, any>;
+  id: string;
 }
 /**
  * Flow metrics for performance analysis
@@ -124,7 +103,7 @@ export interface WorkflowKanbanEvents {
     changes: Partial<WorkflowTask>;
     timestamp: Date;
 };
- 'task: moved: [string, TaskState, TaskState];; // taskId, fromState, toState';
+ 'task: moved: [string, TaskState, TaskState]; // taskId, fromState, toState';
  'task: deleted:  {';
     taskId: string;
     timestamp: Date;
@@ -186,7 +165,7 @@ export interface WorkflowKanbanEvents {
   // Persistence events
  'persistence: task_saved:  {';
     taskId: string;
-    operation : 'save' | ' update'|' delete'    timestamp: Date;;
+    operation : 'save' | ' update'|' delete'    timestamp: Date;
 };
  'persistence: wip_limits_saved:  {';
     limits: WIPLimits;

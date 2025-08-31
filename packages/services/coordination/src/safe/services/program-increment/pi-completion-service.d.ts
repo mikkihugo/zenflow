@@ -14,35 +14,13 @@ export interface CompletionStakeholder {
     readonly role: product;
 }
 export interface CompletionDeliverable {
-    readonly id: string;
-    readonly name: string;
-    readonly description: string;
-    readonly type: 'report| metrics| documentation' | ' presentation';
-    readonly status: 'pending| in-progress| completed' | ' approved';
-    readonly owner: string;
-    readonly dueDate: Date;
-    readonly dependencies: string[];
+  id: string;
 }
 export interface InspectAndAdaptWorkshop {
-    readonly id: string;
-    readonly title: string;
-    readonly description: string;
-    readonly duration: number;
-    readonly facilitators: string[];
-    readonly participants: string[];
-    readonly agenda: WorkshopAgendaItem[];
-    readonly objectives: string[];
-    readonly expectedOutcomes: string[];
+  id: string;
 }
 export interface WorkshopAgendaItem {
-    readonly id: string;
-    readonly activity: string;
-    readonly description: string;
-    readonly duration: number;
-    readonly facilitator: string;
-    readonly participants: string[];
-    readonly materials: string[];
-    readonly deliverables: string[];
+  id: string;
 }
 export interface ArchivalRequirement {
     readonly category: metrics | decisions | lessons | artifacts | 'communications';
@@ -135,13 +113,7 @@ export interface CompletionRiskAnalysis {
     readonly riskTrends: RiskTrend[];
 }
 export interface PIRisk {
-    readonly id: string;
-    readonly description: string;
-    readonly category: string;
-    readonly probability: number;
-    readonly impact: string;
-    readonly mitigation: string;
-    readonly status: string;
+  id: string;
 }
 export interface RiskTrend {
     readonly period: string;

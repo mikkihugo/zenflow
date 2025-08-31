@@ -17,7 +17,7 @@ import type {
   Logger,
   MultiLevelOrchestrationManager,
   ValueStream,
-} from '../../types')// Define types locally as they don't exist in the manager';
+} from '../../types')t exist in the manager';
 export interface ValueStreamMapperConfig {
   readonly enableIntelligentMapping: boolean;
   readonly enableWorkflowIntegration: boolean;
@@ -36,291 +36,29 @@ export interface FlowStepAnalysis {
   readonly stepId: string;
   readonly name: string;
   readonly duration: number;
-  readonly type: | value-added| non-value-added|'necessary-non-value-added')};;
-export interface DetailedFlowMetrics {
-  readonly totalLeadTime: number;
-  readonly totalProcessTime: number;
-  readonly flowEfficiency: number;
-  readonly valueAddedRatio: number;
-}
-export interface ValueStreamMapperState {
-  readonly status : 'idle| mapping| optimizing' | ' completed')  readonly progress: number;;
-  readonly currentStep?:string;
-}
-// ============================================================================
-// VALUE STREAM MAPPING SERVICE INTERFACES
-// ============================================================================
-/**
- * Value stream mapping configuration
- */
-export interface ValueStreamMappingConfig {
-  readonly enableIntelligentMapping: boolean;
-  readonly enableWorkflowIntegration: boolean;
-  readonly enableMultiLevelIntegration: boolean;
-  readonly maxMappingComplexity: number;
-  readonly optimizationThreshold: number;
-  readonly mappingValidationEnabled: boolean;
-}
-/**
- * Workflow to value stream mapping
- */
-export interface WorkflowValueStreamMapping {
-  readonly workflowId: string;
-  readonly valueStreamId: string;
-  readonly mappingType : 'direct' | ' composite'|' distributed')  readonly confidence: number;;
-  readonly mappingReason: string;
-  readonly steps: WorkflowStepMapping[];
-  readonly validatedAt: Date;
-  readonly validatedBy?:string;
-}
-/**
- * Workflow step mapping
- */
-export interface WorkflowStepMapping {
-  readonly stepId: string;
-  readonly valueStreamStep: string;
-  readonly mappingReason: string;
-  readonly confidence: number;
-  readonly flowEfficiencyImpact: number;
-}
-/**
- * Value stream creation context
- */
-export interface ValueStreamCreationContext {
-  readonly workflowType: string;
-  readonly complexity : 'simple| moderate| complex' | ' enterprise')  readonly organizationalLevel : 'team| program| portfolio' | ' enterprise')  readonly businessContext: BusinessContext;;
-  readonly technicalContext: TechnicalContext;
-  readonly stakeholderContext: StakeholderContext;
-}
-/**
- * Business context for mapping
- */
-export interface BusinessContext {
-  readonly domain: string;
-  readonly customerSegments: string[];
-  readonly valuePropositions: string[];
-  readonly revenueModel: string;
-  readonly competitiveFactors: string[];
-}
-/**
- * Technical context for mapping
- */
-export interface TechnicalContext {
-  readonly architecture: string;
-  readonly technologies: string[];
-  readonly integrations: string[];
-  readonly constraints: string[];
-  readonly scalingRequirements: string[];
-}
-/**
- * Stakeholder context for mapping
- */
-export interface StakeholderContext {
-  readonly primaryStakeholders: string[];
-  readonly secondaryStakeholders: string[];
-  readonly decisionMakers: string[];
-  readonly influencers: string[];
-  readonly communicationPreferences: Record<string, string>;
-}
-/**
- * Mapping validation result
- */
-export interface MappingValidationResult {
-  readonly isValid: boolean;
-  readonly validationScore: number;
-  readonly issues: MappingValidationIssue[];
-  readonly recommendations: string[];
-  readonly approvalRequired: boolean;
-  readonly validatedAt: Date;
-}
-/**
- * Mapping validation issue
- */
-export interface MappingValidationIssue {
-  readonly type : 'conflict| gap| redundancy' | ' misalignment')  readonly severity: low| medium| high'|' critical')  readonly description: string;;
-  readonly affectedElements: string[];
-  readonly suggestedResolution: string;
-}
-// ============================================================================
-// VALUE STREAM MAPPING SERVICE IMPLEMENTATION
-// ============================================================================
-/**
- * Value Stream Mapping Service - SAFe value stream mapping and workflow integration
- *
- * Provides comprehensive value stream mapping with intelligent workflow-to-value-stream conversion,
- * multi-level orchestration integration, and AI-powered mapping optimization.
- */
-export class ValueStreamMappingService {
-  private readonly logger: false;
-  constructor(logger: logger;
-}
-  /**
-   * Initialize service with lazy-loaded dependencies
-   */
-  async initialize(Promise<void> {
-    if (this.initialized) return;
-    try {
-      // Lazy load @claude-zen/brain for LoadBalancer - intelligent mapping optimization
-      const { BrainCoordinator} = await import('@claude-zen/brain');
-      this.brainCoordinator = new BrainCoordinator(
-          enabled: await import('@claude-zen/foundation');
-      this.performanceTracker = new PerformanceTracker();
-      // Lazy load @claude-zen/workflows for workflow integration')      const { WorkflowEngine} = await import('@claude-zen/workflows');
-      this.workflowEngine = new WorkflowEngine(
-        maxConcurrentWorkflows: await import('@claude-zen/agui');
-      const aguiResult = await AGUISystem({
-    ')        aguiType : 'terminal,'
-'        taskApprovalConfig: aguiResult.agui;
-      this.initialized = true;')      this.logger.info('Value Stream Mapping Service initialized successfully');
-} catch (error) {
-      this.logger.error(';)';
-       'Failed to initialize Value Stream Mapping Service:,';
-        error
-      );
-      throw error;
-}
-}
-  /**
-   * Map product workflows to SAFe value streams with intelligent optimization
-   */
-  async mapWorkflowsToValueStreams(
-    orchestrationManager: this.performanceTracker.startTimer(
-     'map_workflows_to_value_streams'));
-    try {
-    ')      this.logger.info('Starting intelligent workflow to value stream mapping');
-      const valueStreams = new Map<string, ValueStream>();
-      // Get workflow data from orchestration manager
-      const workflows =;
-        this.getWorkflowsFromOrchestration(orchestrationManager);
-      // Use brain coordinator for intelligent mapping strategy
-      const mappingStrategy =
-        await this.brainCoordinator.optimizeMappingStrategy({
-          workflows,')          organizationLevel,          optimizationGoals: this.mapProgramToValueStreams(
-        workflows.program|| [],
-        mappingStrategy;
-      );
-      for (const [id, stream] of programValueStreams) {
-        valueStreams.set(id, stream);
-}
-      // Map swarm-level workflows to value streams
-      const swarmValueStreams = this.mapSwarmToValueStreams(
-        workflows.swarm|| [],
-        mappingStrategy;
-      );
-      for (const [id, stream] of swarmValueStreams) {
-        valueStreams.set(id, stream);
-}
-      // Map portfolio-level workflows to value streams
-      const portfolioValueStreams = this.mapPortfolioToValueStreams(
-        workflows.portfolio|| [],
-        mappingStrategy;
-      );
-      for (const [id, stream] of portfolioValueStreams) {
-        valueStreams.set(id, stream);
-}
-      // Validate mappings with AI analysis
-      this.validateMappingsWithAI(valueStreams, mappingStrategy);
-      this.performanceTracker.endTimer('map_workflows_to_value_streams');')      this.logger.info('Workflow to value stream mapping completed,';
-        valueStreamCount: this.performanceTracker.startTimer('create_value_stream');
-    try {
-    ')      this.logger.info('Creating optimized value stream from workflow,{';
+  readonly type: | value-added| non-value-added|'necessary-non-value-added')idle| mapping| optimizing' | ' completed')direct' | ' composite'|' distributed')simple| moderate| complex' | ' enterprise')team| program| portfolio' | ' enterprise')conflict| gap| redundancy' | ' misalignment')|' critical')@claude-zen/brain')@claude-zen/foundation'))      const { WorkflowEngine} = await import(): void {
+        valueStreams.set(): void {
+        valueStreams.set(): void {
+        valueStreams.set(): void {';
         workflowId,
-        complexity: await this.brainCoordinator.designValueStream({
-        workflowId,
-        context,
-        designPrinciples:  {
-        id:"vs-${workflowId}-${Date.now()}"";"
-        name: this.validateValueStreamDesign(valueStream, context);
-      if (!validation.isValid && validation.approvalRequired) {
+        complexity: await this.brainCoordinator.designValueStream(): void {
         // Create AGUI task for manual review
-        const approval = await this.aguiService.createApprovalTask({
-    `)          taskType:  {""
-        workflowId,')        valueStreamId: this.performanceTracker.startTimer('mapping_insights');
-    try {
-      let mappings: this.valueStreamMappings.get(workflowId);
-        mappings = mapping ? [mapping] :[];
-        const validation = this.validatedMappings.get(';)';
-          mapping?.valueStreamId||'));
-        validations = validation ? [validation] :[];
-} else {
-        mappings = Array.from(this.valueStreamMappings.values())();
-        validations = Array.from(this.validatedMappings.values())();
-}
-      // Use brain coordinator for intelligent analysis
-      const insights = await this.brainCoordinator.analyzeMappingInsights({
-        mappings,
-        validations,
-        analysisDepth,});
-      const result = {
-        totalMappings: mappings.length,
-        validMappings: validations.filter((v) => v.isValid).length,
-        averageConfidence: insights.averageConfidence|| this.calculateAverageConfidence(mappings),
-        commonMappingPatterns: insights.patterns|| [],
-        improvementRecommendations: insights.recommendations|| [],
-        validationIssues: validations.flatMap((v) => v.issues),')};)      this.performanceTracker.endTimer('mapping_insights');')      this.logger.info('Mapping insights generated,{';
-        totalMappings: false;')    this.logger.info('Value Stream Mapping Service shutdown complete');
-}
-  // ============================================================================
-  // PRIVATE IMPLEMENTATION METHODS
-  // ============================================================================
-  private getWorkflowsFromOrchestration(
-    orchestrationManager: MultiLevelOrchestrationManager
-  ): any {
-    // Extract workflows from orchestration manager
-    return {
-      program:[], // Would be populated from orchestrationManager
-      swarm: [],
-      portfolio: [],
-};
-}
-  private mapProgramToValueStreams(
-    workflows: any[],
-    strategy: any
-  ):Map<string, ValueStream> {
-    // Create program-level value streams
-    return new Map();
-}
-  private mapSwarmToValueStreams(
-    workflows: any[],
-    strategy: any
-  ):Map<string, ValueStream> {
-    // Create swarm-level value streams
-    return new Map();
-}
-  private mapPortfolioToValueStreams(
-    workflows: any[],
-    strategy: any
-  ):Map<string, ValueStream> {
-    // Create portfolio-level value streams
-    return new Map();
-}
-  private validateMappingsWithAI(
-    valueStreams: Map<string, ValueStream>,
-    strategy: any
-  ): void {
-    // Validate mappings using AI analysis
-    this.logger.debug('Validating value stream mappings with AI,{';
-      streamCount: valueStreams.size,')';
+        const approval = await this.aguiService.createApprovalTask(): void {""
+        workflowId,')mapping_insights');)';
+          mapping?.valueStreamId||'))};)      this.performanceTracker.endTimer(): void {';
+        totalMappings: false;')Value Stream Mapping Service shutdown complete')Validating value stream mappings with AI,{';
+      streamCount: valueStreams.size,');
 });
 }
-  private createOptimizedFlowSteps(
-    design: any,
-    context: ValueStreamCreationContext
-  ): any[] {
+  private createOptimizedFlowSteps(): void {
     // Create optimized flow steps based on design and context
     return [];
 }
-  private createFlowMetrics(
-    design: any,
-    context: ValueStreamCreationContext
-  ): any {
+  private createFlowMetrics(): void {
     // Create appropriate flow metrics for the value stream
     return {};
 }
-  private validateValueStreamDesign(
-    valueStream: ValueStream,
-    context: ValueStreamCreationContext
-  ): MappingValidationResult {
+  private validateValueStreamDesign(): void {
     // Validate the value stream design
     return {
       isValid: true,
@@ -328,22 +66,14 @@ export class ValueStreamMappingService {
       issues: [],
       recommendations: [],
       approvalRequired: false,
-      validatedAt: new Date(),
-};
-}
-  private createWorkflowStepMappings(
-    workflowId: string,
-    valueStream: ValueStream
-  ):WorkflowStepMapping[] {
+      validatedAt: new Date(): void {
     // Create mappings between workflow steps and value stream steps
     return [];
 }
-  private calculateAverageConfidence(
-    mappings: WorkflowValueStreamMapping[]
-  ):number {
+  private calculateAverageConfidence(): void {
     if (mappings.length === 0) return 0;
     const sum = mappings.reduce((acc, mapping) => acc + mapping.confidence, 0);
     return sum / mappings.length;
-};)};;
+};)};
 export default ValueStreamMappingService;
 )";"

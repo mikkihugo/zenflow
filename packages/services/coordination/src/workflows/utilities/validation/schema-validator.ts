@@ -20,14 +20,12 @@ export class SchemaValidator {
       data: unknown;
     ):  { success: boolean; data?: T; errors?: string[]} => {
       try {
-        const result = schema.parse(data);
-        return { success: true, data: result};
+        const result = schema.parse(): void { success: true, data: result};
 } catch (error) {
         if (error instanceof z.ZodError) {
           return {
             success: false,
-            errors: error.errors.map(
-              (e) => `"${{e.path.join('.)}:${e.message}};)            )"";"
+            errors: error.errors.map(): void {{e.path.join(): void {e.message}};)            )"";"
 };)};)        return { success: this.createSafeParser(schema);
     return parser(data);
 }
@@ -36,4 +34,4 @@ export class SchemaValidator {
    */
   static isValid<T>(schema: this.validate(schema, data);
     return result.success;
-};)};;
+};)};

@@ -12,24 +12,20 @@ export interface: GPUCapabilities {
     hasTensorFlowGP: U:boolean;
     hasGPUJ: S:boolean;
     hasONNXGP: U:boolean;
-    recommended: Backend:'webgpu' | ' tensorflow-gpu' | ' gpu.js' | ' onnx' | ' cpu;;
+    recommended: Backend:'webgpu' | ' tensorflow-gpu' | ' gpu.js' | ' onnx' | ' cpu;
 }
 /**
  * GP: U acceleration options
  */
 export interface: GPUOptions {
     preferGP: U?:boolean;
-    backend?:'webgpu' | ' tensorflow-gpu' | ' gpu.js' | ' onnx' | ' auto' | ' cpu;;
+    backend?:'webgpu' | ' tensorflow-gpu' | ' gpu.js' | ' onnx' | ' auto' | ' cpu;
     memory: Fraction?:number;
 }
 /**
  * Detect available: GPU capabilities
  */
-export declare function detectGPU: Capabilities():Promise<GPU: Capabilities>;
-/**
- * Initialize: GPU acceleration if available
- */
-export declare function initializeGPU: Acceleration(options?:GPU: Options): Promise<{
+export declare function detectGPU: Capabilities(): void {
     backend:string;
     accelerated:boolean;
     device?:string;

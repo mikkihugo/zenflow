@@ -17,7 +17,7 @@ export interface: NeuralNetwork {
     type: '...[proper format needed];
     '  layers:number[];: any;
     weights?: Float32: Array;
-    status: 'idle|training|predicting|error;;
+    status: 'idle|training|predicting|error;
     '  handle?:number; // WAS: M network handle: any;
 }
 export interface: TrainingData {
@@ -39,7 +39,7 @@ export interface: NetworkArchitecture {
     epochs?: number;
     metadata?: Record<string, unknown>;
 }
-export type: ActivationFunction = 'sigmoid|tanh|relu|leaky_relu|softmax|linear|swish|gelu;;
+export type: ActivationFunction = 'sigmoid|tanh|relu|leaky_relu|softmax|linear|swish|gelu;
 export declare class: NeuralBridge {
     private foundation: Logger;
     private static instance;

@@ -6,23 +6,8 @@
 
 import { getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger('EssentialSafeReadiness');
-
-// Constants for SAFe categories
-const CORE_ROLES = 'Core Roles';
-const CORE_ARTIFACTS = 'Core Artifacts';
-const CORE_EVENTS = 'Core Events';
-const CORE_COMPETENCIES = 'Core Competencies';
-const KEY_PRACTICES = 'Key Practices';
-
-// Configuration manager interface
-interface ConfigManager {
-  get(key: string): unknown;
-  set(key: string, value: unknown): void;
-}
-
-// Implementation plan item interface
-interface ImplementationPlanItem {
+const logger = getLogger(): void {
+  get(): void {
   component: string;
   priority: 'high' | 'medium' | 'low';
   estimatedEffort: string;
@@ -129,7 +114,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
     category: CORE_ARTIFACTS,
     description: 'Business and team objectives for PI',
     required: true,
-    taskMasterSupport: 'partial', // ⚠️ Could be represented as approval gate outcomes
+    taskMasterSupport: 'partial', //  Could be represented as approval gate outcomes
     implementationGap:
       'Need PI Objective template and tracking within approval system',
     effortEstimate: 'medium',
@@ -139,7 +124,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
     category: CORE_ARTIFACTS,
     description: 'Team-level objectives and commitments',
     required: true,
-    taskMasterSupport: 'partial', // ⚠️ Team-level approval gate outcomes
+    taskMasterSupport: 'partial', //  Team-level approval gate outcomes
     implementationGap:
       'Need iteration goal templates within team approval workflows',
     effortEstimate: 'medium',
@@ -162,7 +147,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
     category: CORE_EVENTS,
     description: 'Quarterly planning event',
     required: true,
-    taskMasterSupport: 'partial', // ⚠️ Could use approval gates for PI planning workflow
+    taskMasterSupport: 'partial', //  Could use approval gates for PI planning workflow
     implementationGap:
       'Need PI planning event coordination and team breakout support',
     effortEstimate: 'high',
@@ -172,7 +157,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
     category: CORE_EVENTS,
     description: 'ART sync coordination',
     required: true,
-    taskMasterSupport: 'partial', // ⚠️ Cross-team approval coordination
+    taskMasterSupport: 'partial', //  Cross-team approval coordination
     implementationGap:
       'Need cross-team impediment tracking and dependency coordination',
     effortEstimate: 'medium',
@@ -182,7 +167,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
     category: CORE_EVENTS,
     description: 'End-of-iteration demo',
     required: true,
-    taskMasterSupport: 'partial', // ⚠️ Demo approval gates
+    taskMasterSupport: 'partial', //  Demo approval gates
     implementationGap:
       'Need demo scheduling and stakeholder feedback collection',
     effortEstimate: 'medium',
@@ -192,7 +177,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
     category: CORE_EVENTS,
     description: 'PI retrospective and improvement',
     required: true,
-    taskMasterSupport: 'partial', // ⚠️ Learning system integration
+    taskMasterSupport: 'partial', //  Learning system integration
     implementationGap: 'Need structured retrospective and improvement tracking',
     effortEstimate: 'medium',
   },
@@ -225,7 +210,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
     category: CORE_COMPETENCIES,
     description: 'High-performing agile teams',
     required: true,
-    taskMasterSupport: 'partial', // ⚠️ Technical approval gates exist
+    taskMasterSupport: 'partial', //  Technical approval gates exist
     implementationGap:
       'Need technical practice guidance and team performance metrics',
     effortEstimate: 'high',
@@ -235,7 +220,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
     category: CORE_COMPETENCIES,
     description: 'Customer-centric product development',
     required: true,
-    taskMasterSupport: 'partial', // ⚠️ Product approval workflows exist
+    taskMasterSupport: 'partial', //  Product approval workflows exist
     implementationGap:
       'Need customer feedback integration and product analytics',
     effortEstimate: 'high',
@@ -269,7 +254,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
     category: KEY_PRACTICES,
     description: 'Weighted Shortest Job First',
     required: true,
-    taskMasterSupport: 'partial', // ⚠️ Could implement via approval thresholds
+    taskMasterSupport: 'partial', //  Could implement via approval thresholds
     implementationGap:
       'Need WSJF scoring integration with approval prioritization',
     effortEstimate: 'medium',
@@ -295,75 +280,18 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
 export class EssentialSafeReadinessAssessment {
   private configManager: ConfigManager;
 
-  constructor(configManager: ConfigManager) {
+  constructor(): void {
     this.configManager = configManager;
-    logger.info('EssentialSafeReadinessAssessment initialized');
-  }
-
-  /**
-   * Generate comprehensive readiness assessment
-   */
-  generateAssessment(): {
-    overallReadiness: number;
-    componentBreakdown: {
-      complete: EssentialSafeComponent[];
-      partial: EssentialSafeComponent[];
-      missing: EssentialSafeComponent[];
-    };
-    implementationPlan: ImplementationPlanItem[];
-    taskMasterStrengths: string[];
-    criticalGaps: string[];
-    timeToEssentialSafe: string;
-  } {
-    const complete = ESSENTIAL_SAFE_COMPONENTS.filter(
-      (c) => c.taskMasterSupport === 'complete'
-    );
-    const partial = ESSENTIAL_SAFE_COMPONENTS.filter(
-      (c) => c.taskMasterSupport === 'partial'
-    );
-    const missing = ESSENTIAL_SAFE_COMPONENTS.filter(
-      (c) => c.taskMasterSupport === 'missing'
-    );
-
-    const overallReadiness = Math.round(
-      ((complete.length * 1.0 + partial.length * 0.5 + missing.length * 0.0) /
-        ESSENTIAL_SAFE_COMPONENTS.length) *
-        100
-    );
-
-    return {
+    logger.info(): void {
       overallReadiness,
       componentBreakdown: { complete, partial, missing },
-      implementationPlan: this.generateImplementationPlan(partial, missing),
-      taskMasterStrengths: this.identifyTaskMasterStrengths(complete),
-      criticalGaps: this.identifyCriticalGaps(missing, partial),
-      timeToEssentialSafe: this.estimateTimeToCompletion(partial, missing),
-    };
-  }
-
-  /**
-   * Generate realistic implementation plan
-   */
-  private generateImplementationPlan(
-    partial: EssentialSafeComponent[],
-    missing: EssentialSafeComponent[]
-  ) {
+      implementationPlan: this.generateImplementationPlan(): void {
     return [
       {
         phase: 'Phase 1: Enhancement',
-        components: partial.map((c) => c.name),
-        effort: '4-6 weeks',
-        description:
-          'Enhance existing TaskMaster capabilities to fully support Essential SAFe',
-      },
-      {
+        components: partial.map(): void {
         phase: 'Phase 2: Development',
-        components: missing.map((c) => c.name),
-        effort: '8-12 weeks',
-        description:
-          'Develop new capabilities for complete Essential SAFe support',
-      },
-      {
+        components: missing.map(): void {
         phase: 'Phase 3: Integration',
         components: [
           'End-to-end workflow validation',
@@ -379,61 +307,16 @@ export class EssentialSafeReadinessAssessment {
   /**
    * Identify TaskMaster strengths
    */
-  private identifyTaskMasterStrengths(
-    complete: EssentialSafeComponent[]
-  ): string[] {
-    return complete.map((c) => "${c.name}: ${c.implementationGap}");"
+  private identifyTaskMasterStrengths(): void {
+    return complete.map(): void {c.name}: ${c.implementationGap}");"
   }
 
   /**
    * Identify critical gaps
    */
-  private identifyCriticalGaps(
-    missing: EssentialSafeComponent[],
-    partial: EssentialSafeComponent[]
-  ): string[] " + JSON.stringify({
+  private identifyCriticalGaps(): void {
     const criticalMissing = missing
-      .filter((c) => c.required)
-      .map((c) => c.name);
-
-    const criticalPartial = partial
-      .filter((c) => c.effortEstimate === 'high')
-      .map((c) => c.name);
-
-    return [...criticalMissing, ...criticalPartial];
-  }) + "
-
-  /**
-   * Estimate time to completion
-   */
-  private estimateTimeToCompletion(
-    partial: EssentialSafeComponent[],
-    missing: EssentialSafeComponent[]
-  ): string {
-    const partialEffort = partial.reduce(
-      (total, c) =>
-        total +
-        (c.effortEstimate === 'high'
-          ? 3
-          : c.effortEstimate === 'medium'
-            ? 2
-            : 1),
-      0
-    );
-
-    const missingEffort = missing.reduce(
-      (total, c) =>
-        total +
-        (c.effortEstimate === 'high'
-          ? 3
-          : c.effortEstimate === 'medium'
-            ? 2
-            : 1),
-      0
-    );
-
-    const totalWeeks = Math.ceil((partialEffort + missingEffort) * 1.5); // Buffer factor
-    return "${totalWeeks - 4}-${totalWeeks} weeks";"
+      .filter(): void {totalWeeks - 4}-${totalWeeks} weeks";"
   }
 }
 

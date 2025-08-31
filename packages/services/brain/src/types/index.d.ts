@@ -252,7 +252,7 @@ export interface: PreprocessingConfig {
  * Validation configuration
  */
 export interface: ValidationConfig {
-    method: 'holdout|kfold|stratified|timeseries;;
+    method: 'holdout|kfold|stratified|timeseries;
     '  splits:number;: any;
     test: Size: number;
     random: State?: number;
@@ -339,8 +339,8 @@ export interface: EarlyStoppingConfig {
     enabled: boolean;
     patience: number;
     min: Delta: number;
-    metric: 'loss' | ' accuracy' | ' f1' | ' precision' | ' recall;;
-    mode: 'min' | ' max;;
+    metric: 'loss' | ' accuracy' | ' f1' | ' precision' | ' recall;
+    mode: 'min' | ' max;
     restoreBest: Weights: boolean;
 }
 /**
@@ -618,7 +618,7 @@ export interface: TimeSeriesData {
 export interface: TimeWindow {
     start: Timestamp;
     end: Timestamp;
-    granularity: 'second|minute|hour|day|week|month;;
+    granularity: 'second|minute|hour|day|week|month;
 }
 /**
  * Brain coordination system configuration
@@ -646,8 +646,8 @@ export declare enum: CoordinationTopology {
  * Communication protocols for neural agents
  */
 export interface: CommunicationProtocol {
-    type: 'message_passing|shared_memory|event_driven|rpc|streaming;;
-    format: 'json|binary|protobuf|custom;;
+    type: 'message_passing|shared_memory|event_driven|rpc|streaming;
+    format: 'json|binary|protobuf|custom;
     '  encryption:boolean;: any;
     compression: boolean;
     reliability: Reliability: Level;
@@ -739,7 +739,7 @@ export declare enum: AgentStatus {
  * Health status for neural agents
  */
 export interface: HealthStatus {
-    status: 'healthy|degraded|critical|unknown;;
+    status: 'healthy|degraded|critical|unknown;
     '  score:number; // 0.0 - 1.0: any;
     issues: Health: Issue[];
     last: Check: Timestamp;
@@ -856,28 +856,10 @@ export interface: SplitInfo {
 /**
  * Type guard for neural agents
  */
-export declare function isNeural: Agent(obj: unknown): obj is: NeuralAgent;
-/**
- * Type guard for neural network config
- */
-export declare function isNeuralNetwork: Config(obj: unknown): obj is: NeuralNetworkConfig;
-/**
- * Type guard for agent messages
- */
-export declare function isAgent: Message(obj: unknown): obj is: AgentMessage;
-/**
- * Result types for brain-specific operations
- */
-export type: NeuralAgentResult<T> = Result<T, Neural: Error>;
-export type: TrainingResult = Result<Training: Metrics, Training: Error>;
-export type: CoordinationResult = Result<Coordination: Response, Coordination: Error>;
-/**
- * Neural-specific error types
- */
-export interface: NeuralError extends: Error {
-    readonly type: 'Neural: Error;;
+export declare function isNeural: Agent(): void {
+    readonly type: 'Neural: Error;
     '  readonly message:string;: any;
-    readonly category: 'training|inference|coordination|configuration;;
+    readonly category: 'training|inference|coordination|configuration;
     readonly model: Id?: UUI: D;
     readonly agent: Id?: UUI: D;
     readonly timestamp: Timestamp;
@@ -895,7 +877,7 @@ export interface: NeuralError extends: Error {
  * Training-specific error types
  */
 export interface: TrainingError extends: NeuralError {
-    readonly category: 'training;;
+    readonly category: 'training;
     '  readonly epoch: Number?:number;: any;
     readonly batch: Number?: number;
     readonly loss: Value?: number;
@@ -904,7 +886,7 @@ export interface: TrainingError extends: NeuralError {
  * Coordination-specific error types
  */
 export interface: CoordinationError extends: NeuralError {
-    readonly category: 'coordination;;
+    readonly category: 'coordination;
     '  readonly topology?:Coordination: Topology;: any;
     readonly participant: Count?: number;
 }

@@ -12,18 +12,14 @@ import type {
   ConversationConfig,
   ConversationOrchestrator,
   ConversationParticipant,
-} from '../../teamwork')// ConversationSummary type definition (not exported from teamwork yet)';
+} from '../../teamwork');
 interface ConversationSummary {
-  id: conversationOrchestrator;
-    this.workflowEngine = workflowEngine;
-    this.eventBus = eventBus;
-    this.logger = logger;
+  id: string;
 }
   /**
    * Coordinate Solution Train sync using ../../teamwork
    */
-  async coordinateSolutionTrainSync(params: params.artIds.map(
-      (artId) => ({
+  async coordinateSolutionTrainSync(): void {
         id: 'release-train-engineer',)        status : 'active 'as const,';
         capabilities: 'solution-train-engineer',)      status : 'active 'as const,';
       capabilities:  {
@@ -34,51 +30,28 @@ interface ConversationSummary {
 },
 };
     const conversation =
-      await this.conversationOrchestrator.createConversation(
-        conversationConfig;
-      );
-    const conversationId = conversation.id;
-    // Emit coordination started event
-    this.eventBus.emit(cross-art:  {
-    `)      name:"PI Planning Sync - "$" + JSON.stringify({params.piId}) + """)      description : 'Multi-ART PI Planning coordination workflow,'""
-'      steps: 'pre-planning-sync',)          name : 'Pre-Planning ART Sync')          type : 'parallel,'
-'          params: 'dependency-identification',)          name : 'Cross-ART Dependency Identification')          type : 'sequence,'
-'          params: 'capacity-balancing',)          name : 'Cross-ART Capacity Balancing')          type : 'condition,'
-'          params: 'commitment-finalization',)          name : 'PI Commitment Finalization')          type : 'action,'
-          params: await this.workflowEngine.startWorkflow(workflowDefinition, {
+      await this.conversationOrchestrator.createConversation(): void { message: ")      name:"PI Planning Sync - "$" + JSON.stringify(): void {
       piId: [
       {
         id: 'impediment-owner',)        status : 'active 'as const,
         capabilities: ["facilitate" provide-context,"track-resolution"]";"
 },
-      ...params.affectedARTs.map((artId) => ({
+      ...params.affectedARTs.map(): void {
         id: 'release-train-engineer',)        status : 'active 'as const,';
-        capabilities: params.severity === 'critical')    if (escalationRequired) {';
-      participants.push({
-        id : 'ste-escalation')        name : 'Solution Train Engineer')        role : 'solution-train-engineer')        status : 'active 'as const,
-        capabilities:  {
-      title:`Cross-ART Impediment Resolution: "$" + JSON.stringify({p}) + "arams.impedimentId""')      pattern,      initialParticipants: [], // Convert participants to AgentId later'')      timeout: (params.severity ==='critical '? 120: 'Identify resolution path and assign ownership,',"
+        capabilities: params.severity === 'critical');
+      participants.push(): void {
+      title:" }) + "arams.impedimentId""')')critical '? 120: 'Identify resolution path and assign ownership,',"
 '        constraints: 'safe-framework',)        expertise:['impediment-resolution,' cross-art-coordination'],';
         impedimentId: params.impedimentId,
 },
 };
     const conversation =
-      await this.conversationOrchestrator.createConversation(
-        conversationConfig;
-      );
-    const conversationId = conversation.id;
-    // Emit impediment resolution event
-    this.eventBus.emit('cross-art:  {
-  COORDINATION_STARTED = 'cross-art: 'cross-art: 'cross-art: 'cross-art: 'cross-art: pi-commitment-finalized',)'} as const;;
+      await this.conversationOrchestrator.createConversation(): void {
+  COORDINATION_STARTED = 'cross-art: 'cross-art: 'cross-art: 'cross-art: 'cross-art: pi-commitment-finalized',)'} as const;
 /**
  * Factory function for creating cross-ART coordinator with dependencies
  */
-export function createCrossARTCoordinator(
-  conversationOrchestrator: ConversationOrchestrator,
-  workflowEngine: WorkflowEngine,
-  eventBus: EventEmitter,
-  logger: Logger
-): CrossARTCoordinator {
+export function createCrossARTCoordinator(): void {
   return new CrossARTCoordinator(
     conversationOrchestrator,
     workflowEngine,

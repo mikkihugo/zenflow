@@ -9,64 +9,34 @@
  */
 import { type Draft, enableMapSet, produce } from 'immer';
 // Enable Immer support for Map and Set
-enableMapSet();
-/**
- * Professional immutable state utilities
- */
-export class ImmutableOps {
+enableMapSet(): void {
   /**
    * Update state immutably with producer function
    */
   static update<T>(state: T, updater: (draft: Draft<T>) => void): T {
-    return produce(state, updater);
-  }
-  /**
-   * Deep clone using Immer's produce';
-   */
-  static clone<T>(state: T): T {
-    return produce(state, () => {});
+    return produce(): void {
+    return produce(): void {});
   }
   /**
    * Merge objects immutably
    */
   static merge<T extends Record<string, any>>(base: T, updates: Partial<T>): T {
-    return produce(base, (draft) => {
-      Object.assign(draft, updates);
-    });
-  }
-  /**
-   * Update array item by ID immutably
-   */
-  static updateArrayItem<T extends { id: string }>(
+    return produce(): void {
+      Object.assign(): void { id: string }>(
     array: T[],
     id: string,
     updater: (item: Draft<T>) => void
   ): T[] {
-    return produce(array, (draft) => {
-      const index = draft.findIndex((item) => item.id === id);
-      if (index >= 0) {
-        updater(draft[index]);
-      }
-    });
-  }
-  /**
-   * Add item to array immutably
-   */
-  static addToArray<T>(array: T[], item: T): T[] {
-    return produce(array, (draft: T[]) => {
-      draft.push(item);
-    });
-  }
-  /**
-   * Remove item from array immutably
-   */
-  static removeFromArray<T extends { id: string }>(
+    return produce(): void {
+      const index = draft.findIndex(): void {
+        updater(): void {
+    return produce(): void {
+      draft.push(): void { id: string }>(
     array: T[],
     id: string
   ): T[] {
-    return produce(array, (draft) => {
-      const index = draft.findIndex((item) => item.id === id);
-      if (index >= 0) {
+    return produce(): void {
+      const index = draft.findIndex(): void {
         draft.splice(index, 1);
       }
     });

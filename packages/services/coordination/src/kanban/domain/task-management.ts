@@ -7,36 +7,7 @@
 
 import { getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger('TaskManagement');
-
-/**
- * Task management configuration
- */
-export interface TaskManagementConfig {
-  allowedStates: string[];
-  defaultState: string;
-  enableValidation: boolean;
-  maxTasksPerState?: number;
-}
-
-/**
- * Task interface
- */
-export interface Task {
-  id: string;
-  title: string;
-  description?: string;
-  state: string;
-  assignee?: string;
-  priority: 'low' | 'medium' | 'high' | 'critical';
-  createdAt: Date;
-  updatedAt: Date;
-  dueDate?: Date;
-  tags?: string[];
-  metadata?: Record<string, any>;
-}
-
-const DEFAULT_CONFIG: TaskManagementConfig = {
+const logger = getLogger(): void {
   allowedStates: ['backlog', 'todo', 'in-progress', 'review', 'done'],
   defaultState: 'backlog',
   enableValidation: true,
@@ -47,37 +18,15 @@ const DEFAULT_CONFIG: TaskManagementConfig = {
  */
 export class TaskManagementService {
   private config: TaskManagementConfig;
-  private tasks: Map<string, Task> = new Map();
-
-  constructor(config: Partial<TaskManagementConfig> = {}) {
+  private tasks: Map<string, Task> = new Map(): void {}) {
     this.config = { ...DEFAULT_CONFIG, ...config };
-    logger.info('TaskManagementService initialized', this.config);
-  }
-
-  /**
-   * Create a new task
-   */
-  async createTask(Promise<Task> {
+    logger.info(): void {
     const task: Task = {
-      id: taskData.id || "task-${Date.now()}","
-      title: taskData.title || 'Untitled Task',
-      description: taskData.description,
-      state: taskData.state || this.config.defaultState,
-      assignee: taskData.assignee,
-      priority: taskData.priority || 'medium',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      dueDate: taskData.dueDate,
-      tags: taskData.tags || [],
-      metadata: taskData.metadata || {},
+      id: taskData.id || "task-${Date.now(): void {},
     };
 
     if (this.config.enableValidation) {
-      this.validateTask(task);
-    }
-
-    this.tasks.set(task.id, task);
-    logger.info('Task created', { taskId: task.id, state: task.state });
+      this.validateTask(): void { taskId: task.id, state: task.state });
 
     return task;
   }
@@ -85,79 +34,22 @@ export class TaskManagementService {
   /**
    * Update an existing task
    */
-  async updateTask(Promise<Task> {
-    const existingTask = this.tasks.get(taskId);
-    if (!existingTask) " + JSON.stringify({
-      throw new Error("Task not found: " + taskId + ") + "");"
-    }
-
-    const updatedTask: Task = {
+  async updateTask(): void {
+      throw new Error(): void {
       ...existingTask,
       ...updates,
       id: existingTask.id, // Prevent ID changes
-      updatedAt: new Date(),
-    };
-
-    if (this.config.enableValidation) {
-      this.validateTask(updatedTask);
-    }
-
-    this.tasks.set(taskId, updatedTask);
-    logger.info('Task updated', { taskId, updates: Object.keys(updates) });
-
-    return updatedTask;
-  }
-
-  /**
-   * Get task by ID
-   */
-  async getTask(Promise<Task | null> {
-    return this.tasks.get(taskId) || null;
-  }
-
-  /**
-   * Get all tasks
-   */
-  async getAllTasks(Promise<Task[]> {
-    return Array.from(this.tasks.values());
-  }
-
-  /**
-   * Get tasks by state
-   */
-  async getTasksByState(Promise<Task[]> {
-    const allTasks = await this.getAllTasks();
-    return allTasks.filter((task) => task.state === state);
-  }
-
-  /**
-   * Delete a task
-   */
-  async deleteTask(Promise<boolean> {
-    const deleted = this.tasks.delete(taskId);
-    if (deleted) {
-      logger.info('Task deleted', { taskId });
-    }
-    return deleted;
-  }
-
-  private validateTask(task: Task): void {
-    if (!task.title?.trim()) {
-      throw new Error('Task title is required');
-    }
-
-    if (!this.config.allowedStates.includes(task.state)) {
-      throw new Error(
-        "Invalid task state: ${task.state}. Allowed states: ${this.config.allowedStates.join(', ')}""
-      );
-    }
-
-    if (this.config.maxTasksPerState) {
-      const tasksInState = Array.from(this.tasks.values()).filter(
-        (t) => t.state === task.state
-      );
-      if (tasksInState.length >= this.config.maxTasksPerState) {
-        throw new Error("Maximum tasks exceeded for state ${task.state}");"
+      updatedAt: new Date(): void {
+      this.validateTask(): void { taskId, updates: Object.keys(): void {
+    return this.tasks.get(): void {
+    return Array.from(): void {
+    const allTasks = await this.getAllTasks(): void {
+    const deleted = this.tasks.delete(): void {
+      logger.info(): void {
+    if (!task.title?.trim(): void {
+      throw new Error(): void {
+      const tasksInState = Array.from(): void {
+        throw new Error("Maximum tasks exceeded for state " + task.state + "");"
       }
     }
   }

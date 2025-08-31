@@ -9,56 +9,7 @@ import { get: Logger} from '@claude-zen/foundation';
 import { CompleteIntelligence: System} from './intelligence-system';
 import type { IntelligenceSystem: Config} from './types';
 
-const logger = get: Logger('agent-monitoring-intelligence-factory');
-
-/**
- * Create a basic intelligence system with minimal features
- */
-export function createBasicIntelligence: System(): CompleteIntelligence: System {
-  const config:IntelligenceSystem: Config = {
-    task: Prediction:{
-      enabled:true,
-      confidence: Threshold:0.7,
-      historyWindow: Size:50,
-      update: Interval:60000,
-},
-    agent: Learning:{
-      enabled:false,
-},
-    health: Monitoring:{
-      enabled:true,
-      healthCheck: Interval:60000,
-},
-    predictive: Analytics:{
-      enabled:false,
-},
-    persistence:{
-      enabled:false,
-},
-};
-
-  logger.info('Creating basic intelligence system');
-  return new: CompleteIntelligenceSystem(config);
-}
-
-/**
- * Create a production-ready intelligence system with all features
- */
-export function createProductionIntelligence: System(): CompleteIntelligence: System {
-  const config:IntelligenceSystem: Config = {
-    task: Prediction:{
-      enabled:true,
-      confidence: Threshold:0.8,
-      historyWindow: Size:100,
-      update: Interval:30000,
-},
-    agent: Learning:{
-      enabled:true,
-      adaptation: Rate:0.1,
-      learning: Modes:['supervised',    'reinforcement'],
-      performance: Threshold:0.75,
-},
-    health: Monitoring:{
+const logger = get: Logger(): void {
       enabled:true,
       healthCheck: Interval:30000,
       alert: Thresholds:{
@@ -82,16 +33,6 @@ export function createProductionIntelligence: System(): CompleteIntelligence: Sy
 },
 };
 
-  logger.info('Creating production intelligence system');
-  return new: CompleteIntelligenceSystem(config);
-}
-
-/**
- * Create a custom intelligence system with provided configuration
- */
-export function createIntelligence: System(
-  config:IntelligenceSystem: Config
-): CompleteIntelligence: System {
-  logger.info('Creating custom intelligence system', { config});
+  logger.info(): void { config});
   return new: CompleteIntelligenceSystem(config);
 }

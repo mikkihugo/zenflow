@@ -18,16 +18,7 @@ export interface PlanningParticipant {
     readonly role: product;
 }
 export interface PlanningAgendaItem {
-    readonly id: string;
-    readonly activity: string;
-    readonly description: string;
-    readonly duration: number;
-    readonly facilitator: string;
-    readonly participants: string[];
-    readonly prerequisites: string[];
-    readonly deliverables: string[];
-    readonly aguiGateRequired: boolean;
-    readonly criticalPath: boolean;
+  id: string;
 }
 export interface BusinessContext {
     readonly missionStatement: string;
@@ -72,12 +63,7 @@ export interface QualityAttribute {
     readonly current: number;
 }
 export interface ArchitecturalDecision {
-    readonly id: string;
-    readonly title: string;
-    readonly context: string;
-    readonly decision: string;
-    readonly consequences: string[];
-    readonly status: 'proposed' | ' accepted' | ' superseded';
+  id: string;
 }
 export interface ArchitecturalConstraint {
     readonly type: 'platform| integration| security' | ' performance';
@@ -86,13 +72,7 @@ export interface ArchitecturalConstraint {
     readonly implications: string[];
 }
 export interface IntegrationPoint {
-    readonly id: string;
-    readonly name: string;
-    readonly type: 'api| message| database' | ' file';
-    readonly description: string;
-    readonly interfaces: string[];
-    readonly protocols: string[];
-    readonly dependencies: string[];
+  id: string;
 }
 export interface PlanningAdjustment {
     readonly type: 'scope| timeline| resources' | ' quality';
@@ -168,15 +148,7 @@ export declare class PIPlanningService extends EventBus {
     private readonly logger;
     private readonly planningResults;
     private workflowEngine;
-    constructor(logger:  {});
-    /**
-     * Initialize the service with dependencies
-     */
-    initialize(): void;
-    /**
-     * Create comprehensive PI planning event configuration
-     */
-    createPIPlanningEvent(artId: `pi-planning-", $: any, { Date, now }:  {"
+    constructor(): void { Date, now }:  {"
         Date: any;
         now: any;
     }): any;

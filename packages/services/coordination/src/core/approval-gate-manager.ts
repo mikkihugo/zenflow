@@ -14,29 +14,7 @@ import type {
   UserId,
 } from '../types/advanced-approval.js';
 
-const logger = getLogger('ApprovalGateManager');
-
-// =============================================================================
-// APPROVAL GATE TYPES
-// =============================================================================
-
-/**
- * Approval gate states for XState machine
- */
-export enum ApprovalGateState {
-  PENDING = 'pending',
-  EVALUATING = 'evaluating',
-  APPROVED = 'approved',
-  REJECTED = 'rejected',
-  ESCALATED = 'escalated',
-  TIMED_OUT = 'timed_out',
-  CANCELLED = 'cancelled',
-}
-
-/**
- * Individual approval record
- */
-export interface ApprovalRecord {
+const logger = getLogger(): void {
   readonly id: string;
   gateId: ApprovalGateId;
   taskId: TaskId;
@@ -51,17 +29,7 @@ export interface ApprovalRecord {
  * Complete approval gate instance
  */
 export interface ApprovalGateInstance {
-  readonly id: ApprovalGateId;
-  requirement: ApprovalGateRequirement;
-  taskId: TaskId;
-  state: ApprovalGateState;
-  approvals: ApprovalRecord[];
-  createdAt: Date;
-  updatedAt: Date;
-  timeoutAt?: Date;
-  escalatedAt?: Date;
-  completedAt?: Date;
-  metadata: Record<string, unknown>;
+  id: string;
 }
 
 /**
@@ -137,29 +105,7 @@ export interface ApprovalGateManagerConfig {
  * Enterprise ApprovalGateManager with complete XState integration
  */
 export class ApprovalGateManager extends EventBus {
-  private readonly logger = getLogger('ApprovalGateManager');
-
-  // Core components
-  private readonly config: ApprovalGateManagerConfig;
-  private approvalGates = new Map<ApprovalGateId, ApprovalGateInstance>();
-  private gateStateMachines = new Map<ApprovalGateId, any>();
-  private escalationConfig: EscalationConfig;
-  private monitoringIntervals = new Map<string, NodeJS.Timeout>();
-  private metrics: ApprovalGateMetrics;
-
-  // External integrations
-  private database?: any;
-  private redis?: any;
-  private telemetryManager?: any;
-  private xstateInspector?: any;
-
-  constructor(config: ApprovalGateManagerConfig) {
-    super();
-    this.config = config;
-    this.escalationConfig = this.initializeEscalationConfig();
-    this.metrics = this.initializeMetrics();
-
-    logger.info('ApprovalGateManager initialized', {
+  private readonly logger = getLogger(): void {
       escalationEnabled: this.escalationConfig.enabled,
     });
   }
@@ -171,68 +117,9 @@ export class ApprovalGateManager extends EventBus {
   /**
    * Initialize the ApprovalGateManager
    */
-  async initialize(Promise<void> {
+  async initialize(): void {
     try {
-      logger.info('Initializing ApprovalGateManager...');
-
-      // Initialize infrastructure
-      await this.initializeInfrastructure();
-
-      // Initialize XState visual debugging
-      if (
-        this.config.enableXStateInspector &&
-        process.env.NODE_ENV === 'development'
-      ) {
-        this.initializeXStateInspector();
-      }
-
-      // Load existing approval gates
-      await this.loadExistingGates();
-
-      // Start monitoring
-      this.startMonitoring();
-
-      logger.info('ApprovalGateManager initialization complete');
-    } catch (error) {
-      logger.error('Failed to initialize ApprovalGateManager', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Shutdown the ApprovalGateManager
-   */
-  async shutdown(Promise<void> {
-    try {
-      logger.info('Shutting down ApprovalGateManager...');
-
-      // Stop monitoring
-      this.stopMonitoring();
-
-      // Stop all state machines
-      for (const [gateId, actor] of this.gateStateMachines) {
-        actor.stop();
-        logger.debug("Stopped state machine for gate ${gateId}");"
-      }
-
-      // Persist current state
-      await this.persistState();
-
-      logger.info('ApprovalGateManager shutdown complete');
-    } catch (error) {
-      logger.error('Error during ApprovalGateManager shutdown', error);
-      throw error;
-    }
-  }
-
-  // =============================================================================
-  // CORE APPROVAL GATE OPERATIONS
-  // =============================================================================
-
-  /**
-   * Create a new approval gate instance
-   */
-  async createApprovalGate(Promise<{
+      logger.info(): void {
     success: boolean;
     gateId?: ApprovalGateId;
     error?: any;
@@ -243,65 +130,27 @@ export class ApprovalGateManager extends EventBus {
       processingTimeMs: number;
     };
   }> {
-    const startTime = Date.now();
-    const requestId = generateUUID();
-
-    try {
+    const startTime = Date.now(): void {
       // Validate requirement
-      this.validateApprovalRequirement(requirement);
-
-      // Create gate instance
-      const gateId = generateUUID() as ApprovalGateId;
-      const gateInstance: ApprovalGateInstance = {
+      this.validateApprovalRequirement(): void {
         id: gateId,
         requirement,
         taskId,
         state: ApprovalGateState.PENDING,
         approvals: [],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        timeoutAt: requirement.timeoutHours
-          ? addHours(new Date(), requirement.timeoutHours)
-          : undefined,
-        metadata: { requestId },
+        createdAt: new Date(): void { requestId },
       };
 
       // Store gate instance
-      this.approvalGates.set(gateId, gateInstance);
+      this.approvalGates.set(): void {
+        await this.persistApprovalGate(): void { gateId, taskId, requirement }) + ");
 
-      // Create and start state machine
-      const stateMachine = this.createApprovalGateStateMachine(gateInstance);
-      const actor = createActor(stateMachine);
-      actor.start();
-      this.gateStateMachines.set(gateId, actor);
-
-      // Persist gate
-      if (this.config.enablePersistence) {
-        await this.persistApprovalGate(gateInstance);
-      }
-
-      // Update metrics
-      this.updateMetrics();
-
-      // Emit event
-      this.emit('approval: gate:created', " + JSON.stringify({ gateId, taskId, requirement }) + ");
-
-      logger.info("Created approval gate: ${gateId} for task: ${taskId}");"
-
-      return {
+      logger.info(): void {
         success: true,
         gateId,
         metadata: {
-          timestamp: new Date(),
-          requestId,
-          version: '2.0.0',
-          processingTimeMs: Date.now() - startTime,
-        },
-      };
-    } catch (error) {
-      logger.error('Failed to create approval gate', error);
-
-      const apiError = {
+          timestamp: new Date(): void {
+      logger.error(): void {
         code: 'APPROVAL_GATE_CREATION_FAILED',
         message: error.message || 'Unknown error',
         correlationId: requestId,
@@ -312,19 +161,7 @@ export class ApprovalGateManager extends EventBus {
         success: false,
         error: apiError,
         metadata: {
-          timestamp: new Date(),
-          requestId,
-          version: '2.0.0',
-          processingTimeMs: Date.now() - startTime,
-        },
-      };
-    }
-  }
-
-  /**
-   * Process approval decision
-   */
-  async processApproval(Promise<{
+          timestamp: new Date(): void {
     success: boolean;
     approved?: boolean;
     error?: any;
@@ -335,106 +172,32 @@ export class ApprovalGateManager extends EventBus {
       processingTimeMs: number;
     };
   }> {
-    const startTime = Date.now();
-    const requestId = generateUUID();
-
-    try {
+    const startTime = Date.now(): void {
       // Get gate instance
-      const gate = this.approvalGates.get(gateId);
-      if (!gate) {
-        throw new Error("Approval gate ${gateId} not found");"
-      }
-
-      // Validate approver
-      if (!gate.requirement.requiredApprovers.includes(approverId)) " + JSON.stringify({
-        throw new Error(
-          "User " + approverId + ") + " is not authorized to approve this gate""
-        );
-      }
-
-      // Check if already approved by this user
-      const existingApproval = gate.approvals.find(
-        (a) => a.approverId === approverId
-      );
-      if (existingApproval) {
-        throw new Error(
-          "User ${approverId} has already provided approval for this gate""
-        );
-      }
-
-      // Create approval record
-      const approvalRecord: ApprovalRecord = {
-        id: generateUUID(),
-        gateId,
-        taskId: gate.taskId,
-        approverId,
-        decision,
-        reason,
-        timestamp: new Date(),
-        metadata: { requestId },
+      const gate = this.approvalGates.get(): void {
+        throw new Error(): void {
+        throw new Error(): void {
+        throw new Error(): void {
+        id: generateUUID(): void { requestId },
       };
 
       // Update gate with approval
-      const updatedGate = produce(gate, (draft) => {
-        draft.approvals.push(approvalRecord);
-        draft.updatedAt = new Date();
-      });
-
-      this.approvalGates.set(gateId, updatedGate);
-
-      // Send event to state machine
-      const actor = this.gateStateMachines.get(gateId);
-      if (actor) {
-        actor.send({
-          type: decision === 'approved' ? 'APPROVE' : 'REJECT',
-          approver: approverId,
-          reason,
-        });
-      }
-
-      // Evaluate gate status
-      const evaluation = await this.evaluateApprovalGate(updatedGate);
-
-      if (evaluation.approved) {
+      const updatedGate = produce(): void {
+        draft.approvals.push(): void {
+        actor.send(): void {
         // Gate is approved
-        await this.completeApprovalGate(gateId, 'approved');
-        this.emit('approval: granted', gateId, gate.taskId, approverId);
-      } else if (
-        decision === 'rejected' &&
-        this.shouldRejectOnSingleRejection(updatedGate)
-      ) {
+        await this.completeApprovalGate(): void {
         // Gate is rejected
-        await this.completeApprovalGate(gateId, 'rejected');
-        this.emit('approval: rejected', gateId, gate.taskId, approverId);
-      }
-
-      // Persist approval record
-      if (this.config.enablePersistence) {
-        await this.persistApprovalRecord(approvalRecord);
-        await this.persistApprovalGate(updatedGate);
-      }
-
-      // Update metrics
-      this.updateMetrics();
-
-      logger.info(
-        "Processed approval: ${decision} for gate: ${gateId} by: ${approverId}""
+        await this.completeApprovalGate(): void {
+        await this.persistApprovalRecord(): void {decision} for gate: ${gateId} by: ${approverId}""
       );
 
       return {
         success: true,
         approved: evaluation.approved,
         metadata: {
-          timestamp: new Date(),
-          requestId,
-          version: '2.0.0',
-          processingTimeMs: Date.now() - startTime,
-        },
-      };
-    } catch (error) {
-      logger.error('Failed to process approval', error);
-
-      const apiError = {
+          timestamp: new Date(): void {
+      logger.error(): void {
         code: 'APPROVAL_PROCESSING_FAILED',
         message: error.message || 'Unknown error',
         correlationId: requestId,
@@ -445,44 +208,9 @@ export class ApprovalGateManager extends EventBus {
         success: false,
         error: apiError,
         metadata: {
-          timestamp: new Date(),
-          requestId,
-          version: '2.0.0',
-          processingTimeMs: Date.now() - startTime,
-        },
-      };
-    }
-  }
-
-  /**
-   * Evaluate approval gate status
-   */
-  private async evaluateApprovalGate(Promise<ApprovalEvaluationResult> {
-    const approvedCount = gate.approvals.filter(
-      (a) => a.decision === 'approved'
-    ).length;
-    const rejectedCount = gate.approvals.filter(
-      (a) => a.decision === 'rejected'
-    ).length;
-    const pendingApprovers = gate.requirement.requiredApprovers.filter(
-      (approverId) => !gate.approvals.some((a) => a.approverId === approverId)
-    );
-
-    // Check auto-approval conditions
-    let autoApprovalTriggered = false;
-    if (gate.requirement.autoApprovalConditions) {
-      autoApprovalTriggered = await this.evaluateAutoApprovalConditions(
-        gate.requirement.autoApprovalConditions,
-        gate
-      );
-    }
-
-    const approved =
-      autoApprovalTriggered ||
-      (approvedCount >= gate.requirement.minimumApprovals &&
-        rejectedCount === 0);
-
-    return " + JSON.stringify({
+          timestamp: new Date(): void {
+    const approvedCount = gate.approvals.filter(): void {
+      autoApprovalTriggered = await this.evaluateAutoApprovalConditions(): void {
       approved,
       reason: approved
         ? autoApprovalTriggered
@@ -497,53 +225,10 @@ export class ApprovalGateManager extends EventBus {
         approvedCount,
         rejectedCount,
         totalApprovers: gate.requirement.requiredApprovers.length,
-        evaluatedAt: new Date(),
-      },
-    };
-  }
-
-  // =============================================================================
-  // XSTATE MACHINE IMPLEMENTATION
-  // =============================================================================
-
-  private createApprovalGateStateMachine(gateInstance: ApprovalGateInstance) {
+        evaluatedAt: new Date(): void {
     const gateId = gateInstance.id;
 
-    return createMachine(
-      {
-        id: "approval-gate-${gateId}","
-        initial: 'pending',
-        context: {
-          gate: gateInstance,
-          evaluationResult: undefined,
-          escalationLevel: 0,
-        },
-        states: {
-          pending: {
-            entry: ['logStateChange', 'notifyApprovers'],
-            on: {
-              APPROVE: 'evaluating',
-              REJECT: 'evaluating',
-              TIMEOUT: 'timed_out',
-              CANCEL: 'cancelled',
-            },
-            after: {
-              timeoutDelay: {
-                target: 'timed_out',
-                guard: 'hasTimeout',
-              },
-              escalationDelay: {
-                target: 'escalating',
-                guard: 'shouldEscalate',
-              },
-            },
-          },
-
-          evaluating: {
-            entry: 'logStateChange',
-            invoke: {
-              src: 'evaluateGate',
-              input: ({ context }) => ({ gate: context.gate }),
+    return createMachine(): void { gate: context.gate }),
               onDone: {
                 target: 'checking_result',
                 actions: 'setEvaluationResult',
@@ -566,17 +251,7 @@ export class ApprovalGateManager extends EventBus {
                 target: 'rejected',
                 guard: ({ context }) => {
                   const { gate } = context;
-                  const rejections = gate.approvals.filter(
-                    (a) => a.decision === 'rejected'
-                  );
-                  return (
-                    rejections.length > 0 &&
-                    this.shouldRejectOnSingleRejection(gate)
-                  );
-                },
-                actions: 'completeGate',
-              },
-              {
+                  const rejections = gate.approvals.filter(): void {
                 target: 'pending',
                 actions: 'logStateChange',
               },
@@ -625,46 +300,14 @@ export class ApprovalGateManager extends EventBus {
       },
       {
         actors: {
-          evaluateGate: fromPromise(
-            async ({ input }: { input: { gate: ApprovalGateInstance } }) =>
-              await this.evaluateApprovalGate(input.gate)
-          ),
-          escalateGate: fromPromise(
-            async ({
+          evaluateGate: fromPromise(): void {
               input,
             }: {
               input: { gate: ApprovalGateInstance; level: number };
-            }) => await this.escalateApprovalGate(input.gate, input.level)
-          ),
-          notifyApprovers: fromPromise(
-            async ({ input }: { input: { gate: ApprovalGateInstance } }) =>
-              await this.notifyApprovers(input.gate)
-          ),
-        },
-        actions: {
-          updateGateState: assign({
-            gate: ({ context, event }) => {
-              if (event.type === 'APPROVE' || event.type === 'REJECT') {
-                return produce(context.gate, (draft) => {
-                  draft.updatedAt = new Date();
-                });
-              }
-              return context.gate;
-            },
-          }),
-          setEvaluationResult: assign({
-            evaluationResult: ({ event }) => {
-              if (event.type === 'xstate.done.actor.evaluateGate') {
-                return event.output;
-              }
-              return;
-            },
-          }),
-          incrementEscalationLevel: assign({
-            escalationLevel: ({ context }) => context.escalationLevel + 1,
-          }),
-          logStateChange: ({ context, event }) => {
-            logger.info('Approval gate state change', {
+            }) => await this.escalateApprovalGate(): void { input }: { input: { gate: ApprovalGateInstance } }) =>
+              await this.notifyApprovers(): void {
+          updateGateState: assign(): void {
+              if (event.type === 'APPROVE' || event.type === 'REJECT')xstate.done.actor.evaluateGate')Approval gate state change', {
               gateId: context.gate.id,
               taskId: context.gate.taskId,
               event: event.type,
@@ -672,15 +315,10 @@ export class ApprovalGateManager extends EventBus {
             });
           },
           notifyTimeout: ({ context }) => {
-            this.emit('approval: timeout', context.gate.id, context.gate.taskId);
-          },
-          completeGate: ({ context, event }) => {
+            this.emit(): void { context, event }) => {
             const finalState =
               event.type === 'APPROVE' ? 'approved' : 'rejected';
-            this.completeApprovalGate(context.gate.id, finalState);
-          },
-        },
-        guards: {
+            this.completeApprovalGate(): void {
           isApproved: ({ context }) =>
             context.evaluationResult?.approved === true,
           shouldEscalate: ({ context }) =>
@@ -689,262 +327,56 @@ export class ApprovalGateManager extends EventBus {
           hasTimeout: ({ context }) => context.gate.timeoutAt !== undefined,
           isTimedOut: ({ context }) =>
             context.gate.timeoutAt
-              ? isAfter(new Date(), context.gate.timeoutAt)
-              : false,
-        },
-        delays: {
+              ? isAfter(): void {
           timeoutDelay: ({ context }) => {
             if (!context.gate.timeoutAt) return 999999999;
-            return Math.max(0, context.gate.timeoutAt.getTime() - Date.now());
-          },
-          escalationDelay: () =>
-            this.escalationConfig.escalateAfterHours * 60 * 60 * 1000,
-        },
-      }
-    );
-  }
-
-  // =============================================================================
-  // PRIVATE IMPLEMENTATION METHODS
-  // =============================================================================
-
-  private async initializeInfrastructure(Promise<void> {
+            return Math.max(): void {
     // Infrastructure initialization would go here
-    logger.debug('Infrastructure initialized');
-  }
-
-  private initializeXStateInspector(): void {
-    try {
-      logger.info('XState visual debugging enabled for approval gates');
-    } catch (error) {
-      logger.warn(
-        'Failed to initialize XState inspector for approval gates',
-        error
-      );
-    }
-  }
-
-  private startMonitoring(): void {
+    logger.debug(): void {
     // Monitor for timeouts
-    this.monitoringIntervals.set(
-      'timeoutCheck',
-      setInterval(() => this.checkTimeouts(), 60000) // Every minute
-    );
-
-    // Update metrics
-    this.monitoringIntervals.set(
-      'metricsUpdate',
-      setInterval(() => this.updateMetrics(), 300000) // Every 5 minutes
-    );
-
-    logger.info('Approval gate monitoring started');
-  }
-
-  private stopMonitoring(): void {
-    for (const [name, interval] of this.monitoringIntervals) {
-      clearInterval(interval);
-    }
-    this.monitoringIntervals.clear();
-  }
-
-  private async loadExistingGates(Promise<void> {
-    // Load from database and recreate state machines
-    logger.debug('Loading existing approval gates');
-  }
-
-  private async persistState(Promise<void> {
-    // Persist all approval gates to database
-    for (const gate of this.approvalGates.values()) {
-      await this.persistApprovalGate(gate);
-    }
-  }
-
-  private validateApprovalRequirement(
-    requirement: ApprovalGateRequirement
-  ): void {
-    if (!requirement.name || requirement.name.trim().length === 0) {
-      throw new Error('Approval gate name is required');
-    }
-
-    if (
-      !requirement.requiredApprovers ||
-      requirement.requiredApprovers.length === 0
-    ) {
-      throw new Error('At least one required approver must be specified');
-    }
-
-    if (requirement.minimumApprovals < 1) {
-      throw new Error('Minimum approvals must be at least 1');
-    }
-
-    if (requirement.minimumApprovals > requirement.requiredApprovers.length) {
-      throw new Error(
-        'Minimum approvals cannot exceed number of required approvers'
-      );
-    }
-  }
-
-  private async evaluateAutoApprovalConditions(Promise<boolean> {
-    for (const condition of conditions) {
-      const result = await this.evaluateCondition(condition, gate);
-      if (result) {
+    this.monitoringIntervals.set(): void {
+    for (const condition of conditions): Promise<void> {
+      const result = await this.evaluateCondition(): void {
         return true; // Any condition can trigger auto-approval
       }
     }
     return false;
   }
 
-  private async evaluateCondition(Promise<boolean> {
-    // Implement condition evaluation logic
-    return false;
-  }
-
-  private shouldRejectOnSingleRejection(gate: ApprovalGateInstance): boolean {
+  private async evaluateCondition(): void {
     return gate.requirement.rejectOnSingleRejection === true;
   }
 
-  private async completeApprovalGate(Promise<void> {
-    const gate = this.approvalGates.get(gateId);
-    if (!gate) return;
-
-    const updatedGate = produce(gate, (draft) => {
+  private async completeApprovalGate(): void {
       draft.state =
         finalState === 'approved'
           ? ApprovalGateState.APPROVED
           : finalState === 'rejected'
             ? ApprovalGateState.REJECTED
             : ApprovalGateState.TIMED_OUT;
-      draft.completedAt = new Date();
-      draft.updatedAt = new Date();
-    });
-
-    this.approvalGates.set(gateId, updatedGate);
-    await this.persistApprovalGate(updatedGate);
-
-    // Stop state machine
-    const actor = this.gateStateMachines.get(gateId);
-    if (actor) {
-      actor.stop();
-      this.gateStateMachines.delete(gateId);
-    }
-  }
-
-  private async escalateApprovalGate(Promise<void> {
-    const updatedGate = produce(gate, (draft) => {
-      draft.escalatedAt = new Date();
-      draft.updatedAt = new Date();
-      draft.metadata.escalationLevel = level;
-    });
-
-    this.approvalGates.set(gate.id, updatedGate);
-    await this.persistApprovalGate(updatedGate);
-  }
-
-  private async notifyApprovers(Promise<void> " + JSON.stringify({
+      draft.completedAt = new Date(): void {
+      actor.stop(): void {
+    const updatedGate = produce(): void {
+      draft.escalatedAt = new Date(): void {
     // Implement approver notification logic
-    logger.debug("Notifying approvers for gate " + gate.id + ") + "");"
-  }
-
-  private checkTimeouts(): void {
+    logger.debug(): void {
     // Check for timed out gates
-    const now = new Date();
-    for (const [gateId, gate] of this.approvalGates) {
+    const now = new Date(): void {
       if (
         gate.timeoutAt &&
-        isAfter(now, gate.timeoutAt) &&
-        gate.state === ApprovalGateState.PENDING
-      ) {
-        const actor = this.gateStateMachines.get(gateId);
-        if (actor) {
-          actor.send({ type: 'TIMEOUT' });
-        }
-      }
-    }
-  }
-
-  private updateMetrics(): void {
-    const gates = Array.from(this.approvalGates.values());
-
-    this.metrics = {
+        isAfter(): void {
+        const actor = this.gateStateMachines.get(): void {
+          actor.send(): void {
+    const gates = Array.from(): void {
       totalGates: gates.length,
-      pendingGates: gates.filter((g) => g.state === ApprovalGateState.PENDING)
-        .length,
-      approvedGates: gates.filter((g) => g.state === ApprovalGateState.APPROVED)
-        .length,
-      rejectedGates: gates.filter((g) => g.state === ApprovalGateState.REJECTED)
-        .length,
-      escalatedGates: gates.filter(
-        (g) => g.state === ApprovalGateState.ESCALATED
-      ).length,
-      timedOutGates: gates.filter(
-        (g) => g.state === ApprovalGateState.TIMED_OUT
-      ).length,
-      averageApprovalTime: this.calculateAverageApprovalTime(gates),
-      averageEscalationTime: this.calculateAverageEscalationTime(gates),
-      autoApprovalRate: this.calculateAutoApprovalRate(gates),
-      rejectionRate: this.calculateRejectionRate(gates),
-    };
-  }
-
-  private calculateAverageApprovalTime(gates: ApprovalGateInstance[]): number {
-    const completedGates = gates.filter(
-      (g) =>
-        g.completedAt &&
-        (g.state === ApprovalGateState.APPROVED ||
-          g.state === ApprovalGateState.REJECTED)
-    );
-
-    if (completedGates.length === 0) return 0;
-
-    const totalTime = completedGates.reduce(
-      (sum, gate) =>
-        sum + (gate.completedAt!.getTime() - gate.createdAt.getTime()),
-      0
-    );
-
-    return totalTime / completedGates.length / (1000 * 60 * 60); // Convert to hours
-  }
-
-  private calculateAverageEscalationTime(
-    gates: ApprovalGateInstance[]
-  ): number {
-    const escalatedGates = gates.filter((g) => g.escalatedAt);
-
-    if (escalatedGates.length === 0) return 0;
-
-    const totalTime = escalatedGates.reduce(
-      (sum, gate) =>
-        sum + (gate.escalatedAt!.getTime() - gate.createdAt.getTime()),
-      0
-    );
-
-    return totalTime / escalatedGates.length / (1000 * 60 * 60); // Convert to hours
-  }
-
-  private calculateAutoApprovalRate(gates: ApprovalGateInstance[]): number {
-    const completedGates = gates.filter(
-      (g) => g.state === ApprovalGateState.APPROVED
-    );
-    if (completedGates.length === 0) return 0;
-
-    const autoApprovedGates = completedGates.filter(
-      (g) => g.metadata.autoApprovalTriggered === true
-    );
-
-    return autoApprovedGates.length / completedGates.length;
-  }
-
-  private calculateRejectionRate(gates: ApprovalGateInstance[]): number {
+      pendingGates: gates.filter(): void {
+    const completedGates = gates.filter(): void {
+    const escalatedGates = gates.filter(): void {
+    const completedGates = gates.filter(): void {
     const totalGates = gates.length;
     if (totalGates === 0) return 0;
 
-    const rejectedGates = gates.filter(
-      (g) => g.state === ApprovalGateState.REJECTED
-    );
-    return rejectedGates.length / totalGates;
-  }
-
-  private initializeEscalationConfig(): EscalationConfig {
+    const rejectedGates = gates.filter(): void {
     return {
       enabled: true,
       escalateAfterHours: 24,
@@ -954,7 +386,7 @@ export class ApprovalGateManager extends EventBus {
     };
   }
 
-  private initializeMetrics(): ApprovalGateMetrics {
+  private initializeMetrics(): void {
     return {
       totalGates: 0,
       pendingGates: 0,
@@ -969,51 +401,20 @@ export class ApprovalGateManager extends EventBus {
     };
   }
 
-  private async persistApprovalGate(Promise<void> {
+  private async persistApprovalGate(): void {
+      logger.debug(): void {
     // Persist to database
-    if (this.database && this.config.enablePersistence) {
-      logger.debug("Persisting approval gate: ${gate.id}");"
-    }
-  }
-
-  private async persistApprovalRecord(Promise<void> {
-    // Persist to database
-    if (this.database && this.config.enablePersistence) {
-      logger.debug("Persisting approval record: ${record.id}");"
-    }
-  }
-
-  // =============================================================================
-  // PUBLIC API METHODS
-  // =============================================================================
-
-  /**
-   * Get approval gate metrics
-   */
-  getMetrics(): ApprovalGateMetrics {
+    if (this.database && this.config.enablePersistence): Promise<void> {
+      logger.debug(): void {
     return { ...this.metrics };
   }
 
   /**
    * Get approval gate by ID
    */
-  getApprovalGate(gateId: ApprovalGateId): ApprovalGateInstance | undefined {
-    return this.approvalGates.get(gateId);
-  }
-
-  /**
-   * Get all approval gates for a task
-   */
-  getApprovalGatesForTask(taskId: TaskId): ApprovalGateInstance[] {
-    return Array.from(this.approvalGates.values()).filter(
-      (gate) => gate.taskId === taskId
-    );
-  }
-
-  /**
-   * Cancel an approval gate
-   */
-  async cancelApprovalGate(Promise<{
+  getApprovalGate(): void {
+    return this.approvalGates.get(): void {
+    return Array.from(): void {
     success: boolean;
     error?: any;
     metadata: {
@@ -1023,25 +424,12 @@ export class ApprovalGateManager extends EventBus {
       processingTimeMs: number;
     };
   }> {
-    const startTime = Date.now();
-    const requestId = generateUUID();
-
-    try {
-      const actor = this.gateStateMachines.get(gateId);
-      if (actor) {
-        actor.send({ type: 'CANCEL', reason });
-      }
-
-      return {
+    const startTime = Date.now(): void {
+      const actor = this.gateStateMachines.get(): void {
+        actor.send(): void {
         success: true,
         metadata: {
-          timestamp: new Date(),
-          requestId,
-          version: '2.0.0',
-          processingTimeMs: Date.now() - startTime,
-        },
-      };
-    } catch (error) {
+          timestamp: new Date(): void {
       const apiError = {
         code: 'APPROVAL_GATE_CANCELLATION_FAILED',
         message: error.message || 'Unknown error',

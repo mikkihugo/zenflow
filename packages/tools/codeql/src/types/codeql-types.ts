@@ -36,26 +36,7 @@ export type CodeQLLanguage =
 
 // Database Management
 export interface CodeQLDatabase {
-  /** Unique database identifier */
   id: string;
-  /** File system path to database */
-  path: string;
-  /** Primary language of the database */
-  language: CodeQLLanguage;
-  /** Additional languages included */
-  additionalLanguages?: CodeQLLanguage[];
-  /** Source root that was analyzed */
-  sourceRoot: string;
-  /** Database creation timestamp */
-  createdAt: Date;
-  /** Database size in bytes */
-  sizeBytes: number;
-  /** Whether database is ready for queries */
-  isReady: boolean;
-  /** Build command used for compilation */
-  buildCommand?: string;
-  /** Database metadata */
-  metadata: Record<string, unknown>;
 }
 
 export interface DatabaseCreationOptions {
@@ -146,19 +127,8 @@ export interface SARIFDriver {
 }
 
 export interface SARIFRule {
-  /** Unique rule identifier */
   id: string;
-  /** Rule name */
-  name?: string;
-  /** Short description */
-  shortDescription?: SARIFMessage;
-  /** Full description */
-  fullDescription?: SARIFMessage;
-  /** Default severity level */
-  defaultConfiguration?: {
-    level: 'error' | ' warning' | ' note' | ' info';
-    rank?: number;
-  };
+};
   /** Help information */
   help?: SARIFMessage;
   /** Rule properties */
@@ -369,53 +339,11 @@ export interface SARIFStackFrame {
 
 // CodeQL Analysis Results (Processed)
 export interface CodeQLAnalysisResult {
-  /** Unique analysis ID */
   id: string;
-  /** Database that was analyzed */
-  database: CodeQLDatabase;
-  /** Query packs that were executed */
-  queryPacks: QueryPack[];
-  /** Raw SARIF results */
-  sarifResults: SARIFResult;
-  /** Processed findings */
-  findings: CodeQLFinding[];
-  /** Analysis metadata */
-  metadata: AnalysisMetadata;
-  /** Performance metrics */
-  metrics: AnalysisMetrics;
 }
 
 export interface CodeQLFinding {
-  /** Unique finding ID */
   id: string;
-  /** CodeQL rule that triggered */
-  ruleId: string;
-  /** Rule name */
-  ruleName?: string;
-  /** Severity level */
-  severity: 'error' | ' warning' | ' note' | ' info';
-  /** Primary file path */
-  filePath: string;
-  /** Primary location */
-  location: SourceLocation;
-  /** Additional locations */
-  relatedLocations?: SourceLocation[];
-  /** Finding message */
-  message: string;
-  /** Detailed description */
-  description?: string;
-  /** Code snippet */
-  snippet?: string;
-  /** Data flow path (for taint tracking) */
-  dataFlow?: DataFlowPath;
-  /** Security classification */
-  security?: SecurityClassification;
-  /** Fix suggestions */
-  fixSuggestions?: FixSuggestion[];
-  /** Finding confidence score */
-  confidence: number;
-  /** Custom properties */
-  properties: Record<string, unknown>;
 }
 
 export interface SourceLocation {

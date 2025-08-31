@@ -15,11 +15,11 @@
  * @since 1.0.0
  * @version 1.0.0
  */
-import { EventBus} from '@claude-zen/foundation')import type {';
+import { EventBus} from '@claude-zen/foundation');
   Logger,
   MemorySystem,
   EventBus,
-} from '../types')import { getLogger} from '../types')export type {';
+} from '../types')../types');
   DeploymentAction,
   DeploymentArtifact,
   DeploymentCondition,
@@ -37,7 +37,7 @@ import { EventBus} from '@claude-zen/foundation')import type {';
   ScalingConfig,
   SecurityConfig,
   UserImpactMetrics,
-} from '../services/continuous-delivery/deployment-automation-service')export type {';
+} from '../services/continuous-delivery/deployment-automation-service');
   BottleneckAnalysis,
   DetailedPerformanceMetrics,
   EfficiencyMetrics,
@@ -52,7 +52,7 @@ import { EventBus} from '@claude-zen/foundation')import type {';
   ResourceUtilizationMetrics,
   ThroughputMetrics,
   TrendAnalysis,
-} from '../services/continuous-delivery/pipeline-performance-service')export type {';
+} from '../services/continuous-delivery/pipeline-performance-service');
   GateRetryPolicy,
   QualityArtifact,
   QualityBenchmark,
@@ -63,7 +63,7 @@ import { EventBus} from '@claude-zen/foundation')import type {';
   QualityHistoricalData,
   QualityImprovement,
   QualityTrend,
-} from '../services/continuous-delivery/quality-gate-service')// Re-export all types for API compatibility';
+} from '../services/continuous-delivery/quality-gate-service');
 export type {
   AutomationAction,
   AutomationCondition,
@@ -96,8 +96,8 @@ export type {
   StageStatus,
   StageType,
   SwarmExecutionOrchestrator,
-} from '../services/continuous-delivery/sparc-cd-mapping-service')// Import service types';
-import type { ValueStreamMapper} from './value-stream-mapper')// =========================================================================== = ';
+} from '../services/continuous-delivery/sparc-cd-mapping-service');
+import type { ValueStreamMapper} from './value-stream-mapper');
 // CD PIPELINE MANAGER FACADE IMPLEMENTATION
 // ============================================================================
 /**
@@ -112,152 +112,21 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
   private state:  {
     pipelineTemplates:  {}
   ) {
-    super()'; 
-    this.logger = getLogger('cd-pipeline-manager');
-    this.eventBus = eventBus;
-    this.memory = memory;
-    this.swarmOrchestrator = swarmOrchestrator;
-    this.valueStreamMapper = valueStreamMapper;
-    this.config = {
-      enableSPARCIntegration: true,
-      enableAutomatedGates: true,
-      enableDeploymentAutomation: true,
-      enablePerformanceMonitoring: true,
-      enableValueStreamIntegration: true,
-      pipelineTimeout: 7200000, // 2 hours
-      stageTimeout: 1800000, // 30 minutes
-      qualityGateTimeout: 600000, // 10 minutes
-      deploymentTimeout: 1200000, // 20 minutes
-      monitoringInterval: 60000, // 1 minute
-      maxConcurrentPipelines: 20,
-      retryAttempts: 3,
-      ...config,
-};
-}
-  // ============================================================================
-  // LIFECYCLE MANAGEMENT
-  // ============================================================================
-  /**
-   * Initialize with lazy-loaded service delegation
-   */
-  async initialize(Promise<void> {
-    if (this.initialized) return;
-    try {
-      this.logger.info(';)';
-       'Initializing Continuous Delivery Pipeline Manager with service delegation'));
-      // Lazy load specialized services
-      const [
-        { SPARCCDMappingService},
-        { QualityGateService},
-        { DeploymentAutomationService},
-        { PipelinePerformanceService},
-] = await Promise.all([
-        import('../services/continuous-delivery/sparc-cd-mapping-service'),')        import('../services/continuous-delivery/quality-gate-service'),')        import('../services/continuous-delivery/deployment-automation-service'),')        import('../services/continuous-delivery/pipeline-performance-service'),';
-]);
-      // Initialize services with proper logger
-      this.sparcCDMappingService = new SPARCCDMappingService(this.logger);
-      await this.sparcCDMappingService.initialize();
-      this.qualityGateService = new QualityGateService(this.logger);
-      await this.qualityGateService.initialize();
-      this.deploymentAutomationService = new DeploymentAutomationService(
-        this.logger
-      );
-      await this.deploymentAutomationService.initialize();
-      this.pipelinePerformanceService = new PipelinePerformanceService(
-        this.logger
-      );
-      await this.pipelinePerformanceService.initialize();
-      // Load persisted state
-      await this.loadPersistedState();
-      // Initialize pipeline templates
-      await this.initializePipelineTemplates();
-      // Initialize quality gate templates
-      await this.initializeQualityGateTemplates();
-      // Start monitoring if enabled
-      if (this.config.enablePerformanceMonitoring) {
-        this.startPerformanceMonitoring();
-}
-      // Start periodic cleanup
-      this.startPeriodicCleanup();
-      // Register event handlers
-      this.registerEventHandlers();
-      this.initialized = true;
-      this.logger.info(';)';
-       'CD Pipeline Manager initialized successfully with service delegation'));
-      this.emit('initialized,{};);
+    super(): void {
+        this.startPerformanceMonitoring(): void {};);
 } catch (error) {
-    ')      this.logger.error('Failed to initialize CD Pipeline Manager:, error');
-      throw error;
-}
-}
-  /**
-   * Shutdown with graceful service cleanup
-   */
-  async shutdown(Promise<void> {
-    ')    this.logger.info('Shutting down CD Pipeline Manager');
-    // Stop timers
-    if (this.monitoringTimer) clearInterval(this.monitoringTimer);
-    if (this.cleanupTimer) clearInterval(this.cleanupTimer);
-    // Cancel active pipelines
-    await this.cancelActivePipelines();
-    // Shutdown services
-    if (this.sparcCDMappingService?.shutdown) {
-      await this.sparcCDMappingService.shutdown();
-}
-    if (this.qualityGateService?.shutdown) {
-      await this.qualityGateService.shutdown();
-}
-    if (this.deploymentAutomationService?.shutdown) {
-      await this.deploymentAutomationService.shutdown();
-}
-    if (this.pipelinePerformanceService?.shutdown) {
-      await this.pipelinePerformanceService.shutdown();
-}
-    await this.persistState();
-    this.removeAllListeners();
-    this.initialized = false;')    this.logger.info('CD Pipeline Manager shutdown complete');
-}
-  // ============================================================================
-  // SPARC TO CD PIPELINE MAPPING - Service Delegation
-  // ============================================================================
-  /**
-   * Map SPARC phases to CD pipeline stages - Delegated to SPARCCDMappingService
-   */
-  async mapSPARCToPipelineStages(Promise<Map<string, any[]>> {
-    if (!this.initialized) await this.initialize();
-    this.logger.info(';)';
-     'Delegating SPARC to CD pipeline mapping to specialized service'));
-    const result = await this.sparcCDMappingService.mapSPARCToPipelineStages();
-    // Update local state for compatibility
-    this.state.pipelineTemplates = result;
-    return result;
-}
-  /**
-   * Execute pipeline for SPARC project - Delegated to SPARCCDMappingService
-   */
-  async executePipelineForSPARCProject(
-    sparcProjectId: string,
-    featureId: string,
-    valueStreamId: string,
-    pipelineType: string ='standard')  ): Promise<string> {';
-    if (!this.initialized) await this.initialize();
-    this.logger.info(';)';
-     'Delegating SPARC project pipeline execution to specialized service,';
-      {
+    ')Failed to initialize CD Pipeline Manager:, error')): Promise<void> {
+      await this.sparcCDMappingService.shutdown(): void {
+      await this.qualityGateService.shutdown(): void {
+      await this.deploymentAutomationService.shutdown(): void {
+      await this.pipelinePerformanceService.shutdown(): void {
         sparcProjectId,
         featureId,
         pipelineType,
 }
     );
     const pipelineId =
-      await this.sparcCDMappingService.executePipelineForSPARCProject(
-        sparcProjectId,
-        featureId,
-        valueStreamId,
-        pipelineType;
-      );
-    // Emit compatibility event
-    this.emit('pipeline-started,{ pipelineId, sparcProjectId, featureId};);
+      await this.sparcCDMappingService.executePipelineForSPARCProject(): void { pipelineId, sparcProjectId, featureId};);
     return pipelineId;
 }
   // ============================================================================
@@ -266,26 +135,13 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
   /**
    * Create automated quality gates - Delegated to QualityGateService
    */
-  async createAutomatedQualityGates(Promise<Map<string, any>> {
-    if (!this.initialized) await this.initialize();')    this.logger.info('Delegating quality gate creation to specialized service');
-    const result = await this.qualityGateService.createAutomatedQualityGates();
-    // Update local state for compatibility
-    this.state.qualityGateTemplates = result;
-    return result;
-}
-  /**
-   * Execute quality gate - Delegated to QualityGateService
-   */
-  async executeQualityGate(
-    gateId:  {
+  async createAutomatedQualityGates(): void {
       gateId,
       pipelineId,
       stageId,
       context: 'development ',as const,';
         artifacts: 'exponential ',as const,';
-        baseDelay: await this.qualityGateService.executeQualityGate(config);
-    // Emit compatibility event
-    this.emit('quality-gate-executed,{ pipelineId, stageId, result};);
+        baseDelay: await this.qualityGateService.executeQualityGate(): void { pipelineId, stageId, result};);
     return result;
 }
   // ============================================================================
@@ -294,23 +150,13 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
   /**
    * Execute deployment automation - Delegated to DeploymentAutomationService
    */
-  async executeDeploymentAutomation(Promise<void> {
-    if (!this.initialized) await this.initialize();
-    this.logger.info(';)';
-     'Delegating deployment automation to specialized service,';
-      {
+  async executeDeploymentAutomation(): void {
         pipelineId,
         environment,
         artifactCount: artifacts.length,
 }
     );
-    await this.deploymentAutomationService.executeDeploymentAutomation(
-      pipelineId,
-      environment,
-      artifacts
-    );
-    // Emit compatibility event
-    this.emit('deployment-completed,{ pipelineId, environment};);
+    await this.deploymentAutomationService.executeDeploymentAutomation(): void { pipelineId, environment};);
 }
   // ============================================================================
   // PIPELINE PERFORMANCE MONITORING - Service Delegation
@@ -318,76 +164,34 @@ export class ContinuousDeliveryPipelineManager extends EventBus {
   /**
    * Monitor pipeline performance - Delegated to PipelinePerformanceService
    */
-  async monitorPipelinePerformance(Promise<void> {
-    if (!this.config.enablePerformanceMonitoring) return;
-    if (!this.initialized) await this.initialize();
-    this.logger.debug(';)';
-     'Delegating pipeline performance monitoring to specialized service'));
-    await this.pipelinePerformanceService.monitorPipelinePerformance();
-    // Update local performance metrics for compatibility
-    const __insights =;
-      await this.pipelinePerformanceService.getPerformanceInsights();
-    // Store insights in local state if needed for compatibility
-}
-  // ============================================================================
-  // PRIVATE IMPLEMENTATION METHODS
-  // ============================================================================
-  private async loadPersistedState(Promise<void> {
+  async monitorPipelinePerformance(): void {
     try {
-      const persistedState = (await this.memory.retrieve(
-       'cd-pipeline:  {
-          ...this.state,
-          ...persistedState,
-          pipelineTemplates:  {
-        ...this.state,
-        pipelineTemplates: setInterval(async () => {
+      const persistedState = (await this.memory.retrieve(): void {
       try {
-        await this.monitorPipelinePerformance();
-} catch (error) {
-    ')        this.logger.error('Pipeline performance monitoring failed,{ error};);
+        await this.monitorPipelinePerformance(): void {
+    ')Pipeline performance monitoring failed,{ error};);
 }
 }, this.config.monitoringInterval);
 }
   private startPeriodicCleanup(): void {
-    this.cleanupTimer = setInterval(async () => {
+    this.cleanupTimer = setInterval(): void {
       try {
-        await this.cleanupCompletedPipelines();
-} catch (error) {
-    ')        this.logger.error('Pipeline cleanup failed,{ error};);
+        await this.cleanupCompletedPipelines(): void {
+    ')Pipeline cleanup failed,{ error};);
 }
 }, 3600000); // 1 hour
 }
   private registerEventHandlers(): void {
-    ')    this.eventBus.registerHandler('sparc-project-completed, async (_event) => {';
-      await this.handleSPARCProjectCompletion(event.payload);')';
-});
-    this.eventBus.registerHandler(';)';
-     'feature-ready-for-deployment,';
-      async (event) => {
-        await this.handleFeatureDeploymentRequest(event.payload);
-}
-    );
-}
-  private async cancelActivePipelines(Promise<void> {
+    ')sparc-project-completed, async (_event) => {';
+      await this.handleSPARCProjectCompletion(): void {
+        await this.handleFeatureDeploymentRequest(): void {
     // Implementation would cancel active pipelines
-    this.logger.info('Cancelling active pipelines');
-    // In production: await pipeline cancellation
-    await Promise.resolve(); // Placeholder for actual pipeline cancellation
-}
-  private async cleanupCompletedPipelines(Promise<void> {
-    // Implementation would cleanup completed pipelines')    this.logger.debug('Cleaning up completed pipelines');
-    // In production: await cleanup operations
-    await Promise.resolve(); // Placeholder for actual cleanup
-}
-  private handleFeatureDeploymentRequest(payload: unknown): void {
-    // Implementation would handle feature deployment request
-    this.logger.info('Handling feature deployment request', {
+    this.logger.info(): void {
       payloadType: typeof payload,
       timestamp: new Date().toISOString()
     });
-  })};;
+  })};
 // ============================================================================
 // EXPORTS
 // ============================================================================
 export default ContinuousDeliveryPipelineManager;
-;

@@ -21,7 +21,7 @@ export interface ProductManagerConfig {
  * Product vision framework
  */
 export interface ProductVision {
-    readonly id: 'critical';
+  id: string;
 }
 /**
  * Competitor satisfaction analysis
@@ -33,43 +33,23 @@ export interface CompetitorSatisfaction {
  * Frequency pattern for customer behavior
  */
 export declare enum FrequencyPattern {
-    ')  CONTINUOUS = ' = 0,
+    ') = 0,
     continuous = 1,
-    ')  DAILY = ' = 2,
+    ') = 2,
     daily = 3,
-    ')  WEEKLY = ' = 4,
+    ') = 4,
     weekly = 5,
-    ')  MONTHLY = ' = 6,
+    ') = 6,
     monthly = 7,
-    ')  QUARTERLY = ' = 8,
+    ') = 8,
     quarterly = 9,
-    ')  ANNUALLY = ' = 10,
+    ') = 10,
     annually = 11,
-    ')  SPORADIC = ' = 12,
+    ') = 12,
     sporadic = 13,
-    ')  ONE_TIME = ' = 14,
+    ') = 14,
     one_time = 15,
-    ')};; 
-    /**
-     * Buying behavior analysis
-     */
-    = 16
-    /**
-     * Buying behavior analysis
-     */
-    ,
-    /**
-     * Buying behavior analysis
-     */
-    export = 17,
-    interface = 18,
-    BuyingBehavior = 19
-}
-/**
- * Common objection handling
- */
-export interface CommonObjection {
-    readonly objection: 'deal_breaker';
+    ')deal_breaker';
 }
 /**
  * Buying process stage definition

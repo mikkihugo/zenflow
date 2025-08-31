@@ -1,29 +1,7 @@
 /**
  * @fileoverview Epic Portfolio Kanban State Machine using XState
  *
- * Implements SAFe Portfolio Kanban flow as formal state machine with: getLogger('EpicKanbanMachine');
-// ============================================================================
-// STATE MACHINE CONTEXT
-// ============================================================================
-/**
- * Epic Kanban state machine context
- */
-export interface EpicKanbanContext {
-  readonly epic: PortfolioEpic;
-  readonly businessCase?:BusinessCase;
-  readonly wsjfPriority?:WSJFPriority;
-  readonly config: EpicOwnerManagerConfig;
-  readonly analysisStartTime?:Date;
-  readonly implementationStartTime?:Date;
-  readonly estimatedCompletionTime?:Date;
-  readonly currentCapacityUsage: number;
-  readonly blockers: string[];
-  readonly stakeholderApprovals: string[];
-  readonly errorMessage?:string;')};;
-/**
- * Epic Kanban state machine events
- */
-export type EpicKanbanEvent =| { type : 'SUBMIT_FOR_ANALYSIS', businessCase: ' ANALYSIS_COMPLETE', wsjfPriority: ' ANALYSIS_REJECTED', reason: ' APPROVE_FOR_IMPLEMENTATION}| { type: ' CAPACITY_FULL}| { type: ' IMPLEMENTATION_BLOCKED', blockers: ' UNBLOCK_IMPLEMENTATION}| { type: ' SPLIT_EPIC', splitEpics: ' CANCEL_EPIC', reason: string}| { type};;
+ * Implements SAFe Portfolio Kanban flow as formal state machine with: getLogger(): void { type : 'SUBMIT_FOR_ANALYSIS', businessCase: ' ANALYSIS_COMPLETE', wsjfPriority: ' ANALYSIS_REJECTED', reason: ' APPROVE_FOR_IMPLEMENTATION}| { type: ' CAPACITY_FULL}| { type: ' IMPLEMENTATION_BLOCKED', blockers: ' UNBLOCK_IMPLEMENTATION}| { type: ' SPLIT_EPIC', splitEpics: ' CANCEL_EPIC', reason: string}| { type};
 // ============================================================================
 // GUARDS (BUSINESS RULES)
 // ============================================================================
@@ -59,16 +37,7 @@ const epicKanbanGuards = {
    */
   withinTimebox: ({ context}:  { context: EpicKanbanContext}) => {
     if (!context.implementationStartTime) return true;
-    const weeksSinceStart = Math.floor(
-      (Date.now() - context.implementationStartTime.getTime()) /
-        (7 * 24 * 60 * 60 * 1000);
-    );
-    return weeksSinceStart <= context.config.epicTimeboxWeeks;
-},
-  /**
-   * Check if epic has no blockers
-   */
-  noBlockers: ({ context}:  { context: EpicKanbanContext}) => {
+    const weeksSinceStart = Math.floor(): void { context}:  { context: EpicKanbanContext}) => {
     return context.blockers.length === 0;
 },
   /**
@@ -77,7 +46,7 @@ const epicKanbanGuards = {
   stakeholderApproved: ({ context}:  { context: EpicKanbanContext}) => {
     return context.stakeholderApprovals.length >= 2; // Minimum required approvals
 },
-'};;
+'};
 // ============================================================================
 // ACTIONS (STATE SIDE EFFECTS)
 // ============================================================================
@@ -88,67 +57,30 @@ const epicKanbanActions = {
   /**
    * Store business case and trigger analysis
    */
-  startAnalysis: assign({
-    businessCase:({
-      event,
-}:  {
-    ')      event: Extract<EpicKanbanEvent, { type}>')}) => event.businessCase,';
-    analysisStartTime: () => new Date(),
-    errorMessage: () => undefined,
-}),
-  /**
-   * Store WSJF priority calculation results
-   */
-  storeWSJFPriority: assign({
+  startAnalysis: assign(): void {
     wsjfPriority:({
       event,
-}: ')'      event: Extract<EpicKanbanEvent, { type}>';) => event.wsjfPriority,';
+}: ')      event: Extract<EpicKanbanEvent, { type}>';) => event.wsjfPriority,';
 }),
   /**
    * Handle analysis rejection
    */
-  handleAnalysisRejection: assign({
-    errorMessage:({
-      event,
-};
-      event: Extract<EpicKanbanEvent, { type}>';) => event.reason,';
-}),
-  /**
-   * Start implementation tracking
-   */
-  startImplementation: assign({
+  handleAnalysisRejection: assign(): void {
     implementationStartTime:({
       event,
-}: ')'      event: Extract<EpicKanbanEvent, { type}>';) => event.startTime,';
+}: ')      event: Extract<EpicKanbanEvent, { type}>';) => event.startTime,';
     currentCapacityUsage: (context ) => context.currentCapacityUsage + 1,
 }),
   /**
    * Handle implementation blockers
    */
-  addBlockers: assign({
-    blockers:({
-      event,
-};
-      event: Extract<EpicKanbanEvent, { type}>';) => event.blockers,";"
-}),
-  /**
-   * Clear implementation blockers
-   */
-  clearBlockers: assign({
+  addBlockers: assign(): void {
     blockers:() => [],
 }),
   /**
    * Complete epic and free capacity
    */
-  completeEpic: assign({
-    currentCapacityUsage:({ context}) =>
-      Math.max(0, context.currentCapacityUsage - 1),
-    estimatedCompletionTime: () => new Date(),
-}),
-  /**
-   * Log state transitions for audit trail
-   */
-  logTransition: ({
+  completeEpic: assign(): void {
     context,
     event,
 }:  {
@@ -156,22 +88,9 @@ const epicKanbanActions = {
     event: EpicKanbanEvent;
 }) => {
     // Log epic state transition for audit trail
-    logger.info(``Epic ${context.epic.id}:${event.type}, {")      epicId: context.epic.id"";"
-      event: event.type,
-      timestamp: new Date(),
-      wsjfScore: context.wsjfPriority?.wsjfScore,
-});
-},')'};;
-// ============================================================================
-// STATE MACHINE DEFINITION
-// ============================================================================
-/**
- * Epic Portfolio Kanban state machine
- *
- * Implements formal SAFe portfolio kanban flow with: createMachine(
-  {
-    id : 'epicKanban')    initial,    context: 'logTransition,',
-'        on: 'analyzing',)            guard : 'businessCaseValid')            actions,},';
+    logger.info(): void {
+    id : 'epicKanban')logTransition,',
+'        on: 'analyzing',)            guard : 'businessCaseValid');
 },
 },
       /**
@@ -180,7 +99,7 @@ const epicKanbanActions = {
       analyzing: 'businessCaseAnalysis',)          src,          onDone: 'portfolio_backlog',)            actions,},';
           onError: 'funnel',)            actions,},';
 },
-        on: 'portfolio_backlog',)            guard : 'wsjfScoreAcceptable')            actions,},';
+        on: 'portfolio_backlog',)            guard : 'wsjfScoreAcceptable');
           ANALYSIS_REJECTED: 'funnel',)            actions,},';
 },
 },
@@ -188,17 +107,17 @@ const epicKanbanActions = {
        * PORTFOLIO BACKLOG STATE - Prioritized and ready for implementation
        */
       portfolio_backlog: 'logTransition,',
-'        on: 'implementing',)            guard : 'capacityAvailable')            actions,},')          CAPACITY_FULL : 'portfolio_backlog,// Stay in backlog')          SPLIT_EPIC,},';
+'        on: 'implementing',)            guard : 'capacityAvailable'))          CAPACITY_FULL : 'portfolio_backlog,// Stay in backlog');
 },
       /**
        * IMPLEMENTING STATE - Active development
        */
       implementing: 'logTransition',)        initial : 'active,'
 '        states: 'blocked',)                actions,},';
-              IMPLEMENTATION_COMPLETE: '#epicKanban.done',)                guard : 'withinTimebox')                actions,},';
+              IMPLEMENTATION_COMPLETE: '#epicKanban.done',)                guard : 'withinTimebox');
 },
 },
-          blocked: 'active',)                guard : 'noBlockers')                actions,},';
+          blocked: 'active',)                guard : 'noBlockers');
 },
 },
 },
@@ -214,32 +133,12 @@ const epicKanbanActions = {
     actions: epicKanbanActions as any,
     // Services for async operations
     actors:  {
-      analyzeBusinessCase: fromPromise(
-        async ({ input}:  { input: EpicKanbanContext}) => {
+      analyzeBusinessCase: fromPromise(): void {
           // Mock business case analysis - replace with actual implementation
-          await new Promise((resolve) => setTimeout(resolve, 2000);
-          const wsjfPriority:  {
+          await new Promise(): void {
             epicId: (Business Value + Time Criticality + RROE) / Job Size
             ranking: 1,
-            calculatedAt: new Date(),
-};
-          return wsjfPriority;
-}
-      ),
-},')};)');
-// ============================================================================
-// TYPE EXPORTS
-// ============================================================================
-/**
- * Epic Kanban state machine actor type
- */
-export type EpicKanbanMachineActor = ActorRefFrom<typeof epicKanbanMachine>;
-/**
- * Factory function to create epic kanban state machine
- */
-export function createEpicKanbanMachine(
-  epic: createMachine(
-    {
+            calculatedAt: new Date(): void {
       ...epicKanbanMachine.config,
       context:  {
         epic,
@@ -253,11 +152,9 @@ export function createEpicKanbanMachine(
       guards: epicKanbanGuards as any,
       actions: epicKanbanActions as any,
       actors:  {
-        analyzeBusinessCase: fromPromise(
-          async ({ input}:  { input: EpicKanbanContext}) => {
+        analyzeBusinessCase: fromPromise(): void {
             // Mock business case analysis - replace with actual implementation;
-            await new Promise((resolve) => setTimeout(resolve, 2000);
-            const wsjfPriority:  {
+            await new Promise(): void {
               epicId: (Business Value + Time Criticality + RROE) / Job Size
               ranking: 1,
               calculatedAt: new Date(),

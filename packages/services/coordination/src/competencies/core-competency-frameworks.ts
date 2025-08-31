@@ -7,25 +7,7 @@
 
 import { getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger('CoreCompetencyFrameworks');
-
-// ============================================================================
-// CORE COMPETENCY TYPES AND INTERFACES
-// ============================================================================
-
-/**
- * Core competency types in Essential SAFe 6.0
- */
-export enum CoreCompetencyType {
-  TEAM_AND_TECHNICAL_AGILITY = 'team_and_technical_agility',
-  AGILE_PRODUCT_DELIVERY = 'agile_product_delivery',
-  CONTINUOUS_LEARNING_CULTURE = 'continuous_learning_culture', // Foundation competency
-}
-
-/**
- * Practice maturity levels
- */
-export enum PracticeMaturityLevel {
+const logger = getLogger(): void {
   INITIAL = 'initial', // Ad-hoc, inconsistent
   DEVELOPING = 'developing', // Some practices in place
   DEFINED = 'defined', // Standardized practices
@@ -38,17 +20,7 @@ export enum PracticeMaturityLevel {
  */
 export interface CompetencyAssessmentConfig {
   id: string;
-  competencyType: CoreCompetencyType;
-  assessmentName: string;
-  description: string;
-
-  // Assessment scope
-  scope: {
-    teamLevel: boolean;
-    programLevel: boolean;
-    portfolioLevel: boolean;
-    organizationLevel: boolean;
-  };
+};
 
   // Assessment methodology
   methodology: {
@@ -110,35 +82,6 @@ export interface PracticeMetric {
  */
 export interface PracticeImprovementAction {
   id: string;
-  title: string;
-  description: string;
-
-  // Action details
-  practiceArea: string;
-  improvementType:
-    | 'process'
-    | 'training'
-    | 'tooling'
-    | 'culture'
-    | 'measurement';
-  priority: 'low' | 'medium' | 'high' | 'critical';
-
-  // Implementation planning
-  assignedTo: string;
-  assignedTeam: string;
-  targetDate: Date;
-  estimatedEffort: string;
-  dependencies: string[];
-
-  // Business impact
-  businessJustification: string;
-  expectedBenefit: string;
-  successCriteria: string[];
-
-  // Progress tracking
-  status: 'planned' | 'in_progress' | 'completed' | 'blocked';
-  completionPercentage: number;
-  lastUpdated: Date;
 }
 
 // ============================================================================
@@ -434,196 +377,22 @@ export interface SAFeCoreCompetenciesFramework {
  * Core Competency Framework Manager
  */
 export class CoreCompetencyFrameworkManager {
-  private frameworks: Map<string, SAFeCoreCompetenciesFramework> = new Map();
-
-  constructor() {
-    logger.info('Core Competency Framework Manager initialized');
-  }
-
-  /**
-   * Create new competency assessment
-   */
-  createCompetencyAssessment(
-    organizationId: string,
-    config: CompetencyAssessmentConfig
-  ): SAFeCoreCompetenciesFramework {
-    const assessmentId = "competency-${Date.now()}-${Math.random().toString(36).substr(2, 9)}";"
-
-    const framework: SAFeCoreCompetenciesFramework = {
-      organizationId,
-      assessmentId,
-      assessmentDate: new Date(),
-      assessmentPeriod: {
-        startDate: new Date(),
-        endDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000), // 90 days
-      },
-      teamTechnicalAgility: this.createTTAFramework(),
-      agileProductDelivery: this.createAPDFramework(),
-      continuousLearningCulture: this.createCLCFramework(),
-      overallMaturityLevel: PracticeMaturityLevel.INITIAL,
-      competencyReadiness: 0,
-      businessObjectivesAlignment: [],
-      valueStreamAlignment: [],
-      PIObjectivesAlignment: [],
-      organizationImprovementPlan: " + JSON.stringify({
-        strategicInitiatives: [],
-        quickWins: [],
-        longTermInvestments: [],
-        changeManagementActivities: [],
-      }) + ",
-      progressMetrics: [],
-      milestones: [],
-      stakeholders: [],
-    };
-
-    this.frameworks.set(assessmentId, framework);
-    logger.info(
-      "Created competency assessment: ${assessmentId} for organization: ${organizationId}""
-    );
-
-    return framework;
-  }
-
-  /**
-   * Get competency assessment by ID
-   */
-  getCompetencyAssessment(
-    assessmentId: string
-  ): SAFeCoreCompetenciesFramework | undefined {
-    return this.frameworks.get(assessmentId);
-  }
-
-  /**
-   * Update competency assessment
-   */
-  updateCompetencyAssessment(
-    assessmentId: string,
-    updates: Partial<SAFeCoreCompetenciesFramework>
-  ): boolean {
-    const framework = this.frameworks.get(assessmentId);
-    if (!framework) {
-      logger.error("Competency assessment not found: $" + JSON.stringify({assessmentId}) + "");"
-      return false;
-    }
-
-    Object.assign(framework, updates);
-    this.frameworks.set(assessmentId, framework);
-    logger.info("Updated competency assessment: ${assessmentId}");"
-    return true;
-  }
-
-  /**
-   * Calculate overall maturity score
-   */
-  calculateOverallMaturity(framework: SAFeCoreCompetenciesFramework): number {
-    const maturityScores = {
-      [PracticeMaturityLevel.INITIAL]: 1,
-      [PracticeMaturityLevel.DEVELOPING]: 2,
-      [PracticeMaturityLevel.DEFINED]: 3,
-      [PracticeMaturityLevel.MANAGED]: 4,
-      [PracticeMaturityLevel.OPTIMIZING]: 5,
-    };
-
-    const ttaScore =
-      maturityScores[framework.teamTechnicalAgility.overallMaturity];
-    const apdScore =
-      maturityScores[framework.agileProductDelivery.overallMaturity];
-    const clcScore =
-      maturityScores[framework.continuousLearningCulture.overallMaturity];
-
-    const averageScore = (ttaScore + apdScore + clcScore) / 3;
-    return Math.round((averageScore / 5) * 100); // Convert to percentage
-  }
-
-  private createTTAFramework(): TeamTechnicalAgilityFramework {
-    return {
-      competencyType: CoreCompetencyType.TEAM_AND_TECHNICAL_AGILITY,
-      agileTeams: {
-        teamFormation: {
-          practices: [],
-          maturityLevel: PracticeMaturityLevel.INITIAL,
-          assessment: this.createEmptyAssessment('tta_team_formation'),
-          metrics: [],
-        },
-        teamPerformance: {
-          practices: [],
-          maturityLevel: PracticeMaturityLevel.INITIAL,
-          assessment: this.createEmptyAssessment('tta_team_performance'),
-          metrics: [],
-        },
-      },
-      builtInQuality: {
-        practices: [],
-        maturityLevel: PracticeMaturityLevel.INITIAL,
-        assessment: this.createEmptyAssessment('tta_built_in_quality'),
-        metrics: [],
-      },
-      improvementActions: [],
-      overallMaturity: PracticeMaturityLevel.INITIAL,
-      assessmentSummary: '',
-      nextSteps: [],
-    };
-  }
-
-  private createAPDFramework(): AgileProductDeliveryFramework {
+  private frameworks: Map<string, SAFeCoreCompetenciesFramework> = new Map(): void {
+    logger.info(): void {
     return {
       competencyType: CoreCompetencyType.AGILE_PRODUCT_DELIVERY,
       customerCentricity: {
         practices: [],
         maturityLevel: PracticeMaturityLevel.INITIAL,
-        assessment: this.createEmptyAssessment('apd_customer_centricity'),
-        metrics: [],
-      },
-      devOps: {
-        practices: [],
-        maturityLevel: PracticeMaturityLevel.INITIAL,
-        assessment: this.createEmptyAssessment('apd_devops'),
-        metrics: [],
-      },
-      businessSolutions: {
-        practices: [],
-        maturityLevel: PracticeMaturityLevel.INITIAL,
-        assessment: this.createEmptyAssessment('apd_business_solutions'),
-        metrics: [],
-      },
-      improvementActions: [],
-      overallMaturity: PracticeMaturityLevel.INITIAL,
-      assessmentSummary: '',
-      nextSteps: [],
-    };
-  }
-
-  private createCLCFramework(): ContinuousLearningCultureFramework {
+        assessment: this.createEmptyAssessment(): void {
     return {
       competencyType: CoreCompetencyType.CONTINUOUS_LEARNING_CULTURE,
       learningOrganization: {
         practices: [],
         maturityLevel: PracticeMaturityLevel.INITIAL,
-        assessment: this.createEmptyAssessment('clc_learning_organization'),
-        metrics: [],
-      },
-      innovationCulture: {
-        practices: [],
-        maturityLevel: PracticeMaturityLevel.INITIAL,
-        assessment: this.createEmptyAssessment('clc_innovation_culture'),
-        metrics: [],
-      },
-      organizationalAgility: {
-        practices: [],
-        maturityLevel: PracticeMaturityLevel.INITIAL,
-        assessment: this.createEmptyAssessment('clc_organizational_agility'),
-        metrics: [],
-      },
-      improvementActions: [],
-      overallMaturity: PracticeMaturityLevel.INITIAL,
-      assessmentSummary: '',
-      nextSteps: [],
-    };
-  }
-
-  private createEmptyAssessment(practiceId: string): PracticeAssessment {
+        assessment: this.createEmptyAssessment(): void {
     return {
-      assessmentId: `assessment-${Date.now()}-${Math.random().toString(36).substr(2, 9)}","
+      assessmentId: `assessment-${Date.now(): void {Math.random().toString(36).substr(2, 9)}","
       practiceId,
       currentMaturityLevel: PracticeMaturityLevel.INITIAL,
       targetMaturityLevel: PracticeMaturityLevel.DEFINED,

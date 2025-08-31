@@ -39,7 +39,7 @@ export interface: PrinciplesResearchConfig {
     /** Include testing guidelines */
     include: Testing?:boolean;
     /** Research depth level */
-    depth?: 'basic|intermediate|advanced|expert;;
+    depth?: 'basic|intermediate|advanced|expert;
 '}
 /**
  * Researched coding principles result

@@ -7,7 +7,7 @@
  * SINGLE RESPONSIBILITY: dateFns;';
 import {
   groupBy,
-  meanBy,')} from 'lodash-es')import type { Logger} from '../../types')/**';
+  meanBy,')lodash-es')../../types');
  * Predictive analytics configuration
  */
 export interface PredictiveAnalyticsConfig {
@@ -17,54 +17,22 @@ export interface PredictiveAnalyticsConfig {
  * Prediction algorithm
  */
 export declare enum PredictionAlgorithm {
-    ')  ARIMA = ' = 0,
+    ') = 0,
     arima = 1,
-    ')  LINEAR_REGRESSION = ' = 2,
+    ') = 2,
     linear_regression = 3,
-    ')  POLYNOMIAL_REGRESSION = ' = 4,
+    ') = 4,
     polynomial_regression = 5,
-    ')  LSTM = ' = 6,
+    ') = 6,
     lstm = 7,
-    ')  RANDOM_FOREST = ' = 8,
+    ') = 8,
     random_forest = 9,
-    ')  GRADIENT_BOOSTING = ' = 10,
+    ') = 10,
     gradient_boosting = 11,
-    ')  EXPONENTIAL_SMOOTHING = ' = 12,
+    ') = 12,
     exponential_smoothing = 13,
-    ')};; 
-    /**
-     * Model parameters
-     */
-    = 14
-    /**
-     * Model parameters
-     */
-    ,
-    /**
-     * Model parameters
-     */
-    export = 15,
-    interface = 16,
-    ModelParameters = 17
-}
-/**
- * Validation metric
- */
-export declare enum ValidationMetric {
-    ')  MAE =' = 0,
-    mae = 1,// Mean Absolute Error')  MAPE ='mape,// Mean Absolute Percentage Error')  RMSE ='rmse,// Root Mean Squared Error')  R_SQUARED = 'r_squared')  AIC ='aic,// Akaike Information Criterion')  BIC ='bic,// Bayesian Information Criterion')};;
-    /**
-     * Validation threshold
-     */
-    export = 2,
-    interface = 3,
-    ValidationThreshold = 4
-}
-/**
- * Data configuration
- */
-export interface DataConfiguration {
-    readonly historicalWindow: 'numeric';
+    '))  MAE =' = 0,
+    mae = 1,// Mean Absolute Error')mape,// Mean Absolute Percentage Error')rmse,// Root Mean Squared Error')r_squared')aic,// Akaike Information Criterion')bic,// Bayesian Information Criterion')numeric';
 }
 /**
  * Data source
@@ -94,35 +62,15 @@ export interface PreprocessingConfig {
  * Outlier treatment
  */
 export declare enum OutlierTreatment {
-    ')  REMOVE = ' = 0,
+    ') = 0,
     remove = 1,
-    ')  CAP = ' = 2,
+    ') = 2,
     cap = 3,
-    ')  TRANSFORM = ' = 4,
+    ') = 4,
     transform = 5,
-    ')  IGNORE = ' = 6,
+    ') = 6,
     ignore = 7,
-    ')};; 
-    /**
-     * Outlier threshold
-     */
-    = 8
-    /**
-     * Outlier threshold
-     */
-    ,
-    /**
-     * Outlier threshold
-     */
-    export = 9,
-    interface = 10,
-    OutlierThreshold = 11
-}
-/**
- * Encoding method
- */
-export interface EncodingMethod {
-    readonly feature: 'join';
+    ')join';
 }
 /**
  * Accuracy requirements

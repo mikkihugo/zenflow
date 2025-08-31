@@ -10,28 +10,18 @@
  * Portfolio epic representing strategic initiatives
  */
 export interface PortfolioEpic {
-  readonly id: string;
-  readonly name?: string;
-  readonly horizon?: 'near' | 'mid' | 'long';
+  id: string;
 }
  * Value stream in the SAFe framework
  */
 export interface ValueStream {
-  readonly id: string;
-  readonly type?: 'internal' | 'external';
-  readonly needs: string[];
-  readonly satisfaction: number; // 0-10
+  id: string;
 }
 /**
  * Value flow step in a value stream
  */
 export interface ValueFlowStep {
-  readonly id: string;
-  readonly name: string;
-  readonly description: string;
-  readonly leadTime: number; // hours
-  readonly processTime: number; // hours
-  readonly waitTime: number; // hours
+  id: string;
 }
 /**
  * Value stream metrics
@@ -72,24 +62,13 @@ export interface SAFeIntegrationConfig {
  * Program Increment (PI) planning and execution
  */
 export interface ProgramIncrement {
-  readonly id: string;
-  readonly name: string;
-  readonly startDate: Date;
-  readonly endDate: Date;
-  readonly status: PIStatus;
-  readonly objectives?:PIObjective[];
-  readonly features?:Feature[];
-  readonly dependencies?:Dependency[];
-  readonly risks?:Risk[];
+  id: string;
 }
 /**
  * PI Objective with business value
  */
 export interface PIObjective {
-  readonly id: string;
-  readonly description: string;
-  readonly businessValue: number;
-  readonly confidence: number;
+  id: string;
 }
 // ============================================================================
 // MEMORY SYSTEM INTERFACE
@@ -98,36 +77,7 @@ export interface PIObjective {
  * Memory system interface for persisting data
  */
 export interface MemorySystem {
-  store(key: 'low')  NORMAL = 'normal')  HIGH = 'high')  CRITICAL = 'critical')};;
-/**
- * Type-safe event bus interface
- */
-export interface EventBus {
-  emit(event: string, data: unknown): void;
-  on(event: string, handler: (data: unknown) => void): void;
-  off(event: string, handler: (data: unknown) => void): void;
-  registerHandler(event: string, handler: (data: any) => Promise<void>): void;)};;
-/**
- * Event creation function
- */
-export function createEvent(
-  type: string,
-  data: unknown,
-  priority?:EventPriority
-) {
-  return {
-    type,
-    data,
-    priority: priority|| EventPriority.NORMAL,
-    timestamp: Date.now(),
-};
-}
-/**
- * Re-export Logger interface and getLogger function from foundation
- * This provides structured logging via LogTape with proper production configuration
- */
-export type { Logger } from '@claude-zen/foundation';
-export { getLogger } from '@claude-zen/foundation';
+  store(): void { getLogger } from '@claude-zen/foundation';
  * Multi-level orchestration manager interface - Production Ready
  */
 export interface MultiLevelOrchestrationManager {
@@ -196,35 +146,25 @@ export enum ObjectiveStatus {
  * Agile Release Train
  */
 export interface AgileReleaseTrain {
-  readonly id: string;
-  readonly name?: string;
+  id: string;
 }
 /**
  * Task
  */
 export interface Task {
-  readonly id: string;
-  readonly title: string;
-  readonly status?: 'backlog' | 'in_progress' | 'done';
+  id: string;
 }
 /**
  * Risk
  */
 export interface Risk {
-  readonly id: string;
-  readonly description: string;
-  readonly status?: 'open' | 'resolved';
+  id: string;
 }
 /**
  * System Demo
  */
 export interface SystemDemo {
-  readonly id: string;
-  readonly piId: string;
-  readonly date: Date;
-  readonly features: string[];
-  readonly feedback: DemoFeedback[];
-  readonly stakeholders: string[];
+  id: string;
 }
 /**
  * Demo Feedback
@@ -233,279 +173,7 @@ export interface DemoFeedback {
   readonly source: string;
   readonly feedback: string;
   readonly actionItem?:string;
-  readonly priority: low' | ' medium'|' high')};;
-/**
- * Inspect and Adapt
- */
-export interface InspectAndAdapt {
-  readonly id: string;
-  readonly piId: string;
-  readonly date: Date;
-  readonly improvements: Improvement[];
-  readonly problemSolving: ProblemSolvingItems[];
-}
-/**
- * Improvement
- */
-export interface Improvement {
-  readonly id: string;
-  readonly description: string;
-  readonly category : 'process' | ' technical'|' organizational')  readonly effort : 'small' | ' medium'|' large')  readonly impact : 'low' | ' medium'|' high')  readonly owner: string;;
-  readonly status : 'proposed| approved| in_progress' | ' done')};;
-/**
- * Problem Solving Items
- */
-export interface ProblemSolvingItems {
-  readonly problem: string;
-  readonly rootCause: string;
-  readonly solution: string;
-  readonly actions: string[];
-  readonly owner: string;
-  readonly targetDate: Date;
-}
-/**
- * Shared Service
- */
-export interface SharedService {
-  readonly id: string;
-  readonly name: string;
-  readonly description: string;
-  readonly capabilities: string[];
-  readonly consumers: string[];
-}
-// ============================================================================
-// ENTERPRISE ARCHITECTURE TYPES
-// ============================================================================
-/**
- * Enterprise Architecture Manager configuration
- */
-export interface EnterpriseArchConfig {
-  readonly enablePrincipleValidation: 'approval_required')  REVIEW_REQUIRED = 'review_required')  SIGN_OFF_REQUIRED = 'sign_off_required')};;
-// ============================================================================
-// SOLUTION ARCHITECTURE TYPES
-// ============================================================================
-/**
- * System and Solution Architecture Manager configuration
- */
-export interface SystemSolutionArchConfig {
-  readonly enableSystemDesignCoordination: 'monolithic')  MICROSERVICES = 'microservices')  SERVICE_ORIENTED = 'service_oriented')  EVENT_DRIVEN = 'event_driven')  LAYERED = 'layered')  HEXAGONAL = 'hexagonal')  CLEAN_ARCHITECTURE = 'clean_architecture')};;
-/**
- * Solution architecture patterns
- */
-export enum SolutionArchitecturePattern {
-    ')  TRADITIONAL_3_TIER = 'traditional_3_tier')  MICRO_FRONTEND = 'micro_frontend')  SERVERLESS = 'serverless')  CLOUD_NATIVE = 'cloud_native')  HYBRID_CLOUD = 'hybrid_cloud')  EDGE_COMPUTING = 'edge_computing')};;
-/**
- * System design status
- */
-export enum SystemDesignStatus {
-    ')  DRAFT = 'draft')  IN_REVIEW = 'in_review')  APPROVED = 'approved')  REJECTED = 'rejected')  DEPRECATED = 'deprecated')  IMPLEMENTATION_READY = 'implementation_ready')};;
-/**
- * Component type
- */
-export enum ComponentType {
-    ')  SERVICE = 'service')  DATABASE = 'database')  GATEWAY = 'gateway')  QUEUE = 'queue')  CACHE = 'cache')  EXTERNAL_SYSTEM = 'external_system')  UI_COMPONENT = 'ui_component')};;
-/**
- * System design interface
- */
-export interface SystemDesign {
-  readonly id: string;
-  readonly name: string;
-  readonly version: string;
-  readonly type: SystemArchitectureType;
-  readonly pattern: SolutionArchitecturePattern;
-  readonly status: SystemDesignStatus;
-  readonly businessContext: BusinessContext;
-  readonly stakeholders: Stakeholder[];
-  readonly architecturalDrivers: ArchitecturalDriver[];
-  readonly components: SystemComponent[];
-  readonly interfaces: ComponentInterface[];
-  readonly constraints: ArchitecturalConstraint[];
-  readonly qualityAttributes: QualityAttributeSpec[];
-  readonly complianceRequirements: ComplianceRequirement[];
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
-  readonly reviewHistory: ArchitectureReview[];)};;
-/**
- * Business context for system design
- */
-export interface BusinessContext {
-  readonly domain: string;
-  readonly businessGoals: string[];
-  readonly constraints: string[];
-  readonly assumptions: string[];
-  readonly risks: string[];
-  readonly successCriteria: string[];
-}
-/**
- * Stakeholder information
- */
-export interface Stakeholder {
-  readonly id: string;
-  readonly name: string;
-  readonly role: string;
-  readonly concerns: string[];
-  readonly influence : 'high' | ' medium'|' low')  readonly involvement : 'active' | ' consulted'|' informed')};;
-/**
- * Architectural driver
- */
-export interface ArchitecturalDriver {
-  readonly id: string;
-  readonly type : 'functional' | ' quality'|' constraint')  readonly description: string;;
-  readonly rationale: string;
-  readonly priority: critical| high| medium' | ' low')  readonly source: string;;
-  readonly impactedComponents: string[];
-}
-/**
- * Quality attribute specification
- */
-export interface QualityAttributeSpec {
-  readonly id: string;
-  readonly attribute: string;
-  readonly scenarios: QualityAttributeScenario[];
-  readonly measures: QualityMeasure[];
-  readonly tactics: ArchitecturalTactic[];
-}
-/**
- * Quality attribute scenario
- */
-export interface QualityAttributeScenario {
-  readonly id: string;
-  readonly source: string;
-  readonly stimulus: string;
-  readonly artifact: string;
-  readonly environment: string;
-  readonly response: string;
-  readonly measure: string;
-}
-/**
- * Quality measure
- */
-export interface QualityMeasure {
-  readonly id: string;
-  readonly name: string;
-  readonly description: string;
-  readonly unit: string;
-  readonly target: number;
-  readonly threshold: number;
-  readonly measurementMethod: string;
-}
-/**
- * Architectural tactic
- */
-export interface ArchitecturalTactic {
-  readonly id: string;
-  readonly name: string;
-  readonly description: string;
-  readonly category: string;
-  readonly applicableScenarios: string[];
-  readonly tradeoffs: string[];
-}
-/**
- * Architectural constraint
- */
-export interface ArchitecturalConstraint {
-  readonly id: string;
-  readonly type : 'technical| business| regulatory' | ' organizational')  readonly description: string;;
-  readonly rationale: string;
-  readonly implications: string[];
-  readonly compliance: ComplianceRequirement[];
-}
-/**
- * System component
- */
-export interface SystemComponent {
-  readonly id: string;
-  readonly name: string;
-  readonly type: ComponentType;
-  readonly description: string;
-  readonly responsibilities: string[];
-  readonly interfaces: string[];
-  readonly dependencies: string[];
-  readonly qualityAttributes: string[];
-  readonly constraints: string[];
-  readonly deploymentUnit: string;
-}
-/**
- * Component interface
- */
-export interface ComponentInterface {
-  readonly id: string;
-  readonly name: string;
-  readonly type : 'synchronous' | ' asynchronous'|' batch')  readonly protocol: string;;
-  readonly producer: string;
-  readonly consumer: string;
-  readonly dataFormat: string;
-  readonly securityRequirements: string[];
-  readonly performanceRequirements: PerformanceExpectation[];
-}
-/**
- * Performance expectation
- */
-export interface PerformanceExpectation {
-  readonly metric: string;
-  readonly target: number;
-  readonly threshold: number;
-  readonly unit: string;
-}
-/**
- * Compliance requirement
- */
-export interface ComplianceRequirement {
-  readonly id: string;
-  readonly framework: string;
-  readonly requirement: string;
-  readonly description: string;
-  readonly controls: ControlRequirement[];
-  readonly evidence: string[];
-  readonly status : 'compliant| non_compliant| partial' | ' not_assessed')};;
-/**
- * Control requirement
- */
-export interface ControlRequirement {
-  readonly id: string;
-  readonly name: string;
-  readonly description: string;
-  readonly category: string;
-  readonly mandatory: boolean;
-  readonly implementation: string;
-  readonly verification: string;
-}
-/**
- * Architecture review
- */
-export interface ArchitectureReview {
-  readonly id: string;
-  readonly reviewerId: string;
-  readonly reviewType : 'peer| formal| compliance' | ' security')  readonly status: |'pending| in_progress| approved| rejected' | ' conditionally_approved')  readonly findings: ReviewFinding[];;
-  readonly recommendations: string[];
-  readonly decision: string;
-  readonly createdAt: Date;
-  readonly completedAt?:Date;
-}
-/**
- * Review finding
- */
-export interface ReviewFinding {
-  readonly id: string;
-  readonly category : 'compliance| design| quality' | ' risk')  readonly severity: critical| high| medium| low'|' info')  readonly description: string;;
-  readonly recommendation: string;
-  readonly impactedComponents: string[];
-  readonly mustFix: boolean;
-}
-// ============================================================================
-// SAFE EVENTS TYPES (Re-export from managers)
-// ============================================================================
-/**
- * Architecture Runway types - re-exported for convenience
- */
-export type {
-  ArchitectureCapability,
-  ArchitectureDecisionRecord,
-  ArchitectureRunwayConfig,
-  ArchitectureRunwayItem,
-  CapabilityKPI,
-  TechnicalDebtItem,
-} from './managers/architecture-runway-manager')/**';
+  readonly priority: low' | ' medium'|' high')process' | ' technical'|' organizational')small' | ' medium'|' large')low' | ' medium'|' high')proposed| approved| in_progress' | ' done')approval_required')review_required')sign_off_required')monolithic')microservices')service_oriented')event_driven')layered')hexagonal')clean_architecture'))  TRADITIONAL_3_TIER = 'traditional_3_tier')micro_frontend')serverless')cloud_native')hybrid_cloud')edge_computing'))  DRAFT = 'draft')in_review')approved')rejected')deprecated')implementation_ready'))  SERVICE = 'service')database')gateway')queue')cache')external_system')ui_component')high' | ' medium'|' low')active' | ' consulted'|' informed')functional' | ' quality'|' constraint') | ' low')technical| business| regulatory' | ' organizational')synchronous' | ' asynchronous'|' batch')compliant| non_compliant| partial' | ' not_assessed')peer| formal| compliance' | ' security')pending| in_progress| approved| rejected' | ' conditionally_approved')compliance| design| quality' | ' risk')|' info')./managers/architecture-runway-manager');
  * SAFe Events and Architecture Runway types - re-exported for convenience
  * Full type definitions are in respective manager files
  */
@@ -521,4 +189,4 @@ export type {
   ParticipantFeedback,
   SAFeEventConfig,
   SAFeEventsManagerConfig,
-} from './managers/safe-events-manager')';
+} from './managers/safe-events-manager');

@@ -12,44 +12,21 @@ export declare enum SPARCPhase {
  * CD Pipeline stage types
  */
 export declare enum StageType {
-    ')  BUILD = ' = 0,
+    ') = 0,
     build = 1,
-    ')  TEST = ' = 2,
+    ') = 2,
     test = 3,
-    ')  SECURITY = ' = 4,
+    ') = 4,
     security = 5,
-    ')  QUALITY = ' = 6,
+    ') = 6,
     quality = 7,
-    ')  DEPLOY = ' = 8,
+    ') = 8,
     deploy = 9,
-    ')  MONITOR = ' = 10,
+    ') = 10,
     monitor = 11,
-    ')  APPROVAL = ' = 12,
+    ') = 12,
     approval = 13,
-    ')};; 
-    /**
-     * Quality gate types
-     */
-    = 14
-    /**
-     * Quality gate types
-     */
-    ,
-    /**
-     * Quality gate types
-     */
-    export = 15,
-    enum = 16,
-    QualityGateType = 17
-}
-/**
- * CD Pipeline Configuration
- */
-export interface CDPipelineConfig {
-    readonly pipelineId: string;
-    readonly name: string;
-    readonly description: string;
-    readonly type: 'standard| microservice| library' | ' enterprise';
+    ')standard| microservice| library' | ' enterprise';
     readonly stages: CDPipelineStage[];
     readonly triggers: PipelineTrigger[];
     readonly variables: Record<string, string>;
@@ -65,11 +42,7 @@ export interface CDPipelineConfig {
  * Pipeline trigger configuration
  */
 export interface PipelineTrigger {
-    readonly id: string;
-    readonly type: 'webhook| schedule| manual' | ' dependency';
-    readonly enabled: boolean;
-    readonly configuration: Record<string, unknown>;
-    readonly conditions: TriggerCondition[];
+  id: string;
 }
 /**
  * Trigger condition
@@ -84,26 +57,14 @@ export interface TriggerCondition {
  * Notification configuration
  */
 export interface NotificationConfig {
-    readonly id: string;
-    readonly channel: 'email| slack| teams' | ' webhook';
-    readonly recipients: string[];
-    readonly events: NotificationEvent[];
-    readonly template: string;
-    readonly enabled: boolean;
+  id: string;
 }
 /**
  * Notification event
  */
 export type NotificationEvent = pipeline_started | pipeline_completed | pipeline_failed | stage_completed | stage_failed | quality_gate_failed | 'security_check_failed';
 export interface SecurityCheck {
-    readonly id: string;
-    readonly name: string;
-    readonly type: vulnerability_scan | dependency_check | secrets_scan | 'compliance_check';
-    readonly tool: string;
-    readonly configuration: Record<string, unknown>;
-    readonly enabled: boolean;
-    readonly blocking: boolean;
-    readonly threshold: SecurityThreshold;
+  id: string;
 }
 /**
  * Security threshold
@@ -120,14 +81,7 @@ export interface SecurityThreshold {
  * Compliance check configuration
  */
 export interface ComplianceCheck {
-    readonly id: string;
-    readonly name: string;
-    readonly framework: string;
-    readonly controls: string[];
-    readonly automated: boolean;
-    readonly enabled: boolean;
-    readonly blocking: boolean;
-    readonly evidenceRequired: boolean;
+  id: string;
 }
 /**
  * CD Pipeline State
@@ -144,12 +98,7 @@ export interface CDPipelineState {
  * Swarm Execution Orchestrator
  */
 export interface SwarmExecutionOrchestrator {
-    readonly id: string;
-    readonly name: string;
-    readonly pipelines: string[];
-    readonly coordination: 'sequential' | ' parallel' | ' adaptive';
-    readonly loadBalancing: boolean;
-    readonly monitoring: boolean;
+  id: string;
 }
 export default SPARCCDMappingService;
 //# sourceMappingURL=sparc-cd-mapping-service.d.ts.map

@@ -39,11 +39,11 @@ export interface: AutonomousDecision {
     readonly parameters: Record<string, any>;
 }
 export interface: ScalingDecision {
-    readonly action: 'scale_up|scale_down|maintain|optimize;;
+    readonly action: 'scale_up|scale_down|maintain|optimize;
     '  readonly target: Agents:number;: any;
     readonly confidence: number;
     readonly reasoning: string;
-    readonly urgency: 'low|medium|high|critical;;
+    readonly urgency: 'low|medium|high|critical;
     '}: any;
 }
 /**

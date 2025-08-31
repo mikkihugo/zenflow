@@ -14,15 +14,7 @@
 export type TaskState = ;
 export type OptimizationStrategy = 'wip_reduction' | ' bottleneck_removal' | ' parallel_processing' | ' load_balancing' | ' priority_queue' | ' resource_allocation';
 export interface WorkflowTask {
-    ';: any;
-    id: string;
-    title: string;
-    description?: string;
-    state: TaskState;
-    priority: number;
-    assignee?: string;
-    createdAt: number;
-    updatedAt: number;
+  id: string;
 }
 export interface FlowMetrics {
     throughput: number;

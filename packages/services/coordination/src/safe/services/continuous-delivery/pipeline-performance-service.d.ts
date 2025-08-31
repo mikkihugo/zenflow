@@ -25,10 +25,7 @@ export interface PerformanceThresholds {
  * Performance alert
  */
 export interface PerformanceAlert {
-    readonly id: string;
-    '; : any;
-    readonly type: duration | error_rate | throughput | bottleneck | 'trend';
-    readonly severity: low | medium | high;
+  id: string;
 }
 /**
  * Performance analysis result

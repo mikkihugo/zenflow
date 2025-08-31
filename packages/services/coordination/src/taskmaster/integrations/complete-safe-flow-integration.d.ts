@@ -1,18 +1,13 @@
 import { SafeFrameworkIntegration } from './safe-framework-integration.js';
 /**
  * ALL SAFe 6.0 framework gate categories that TaskMaster orchestrates
- * Official terminology from framework.scaledagile.com: 'strategic_theme')  INVESTMENT_FUNDING = 'investment_funding')  VALUE_STREAM = 'value_stream')  PORTFOLIO_KANBAN = 'portfolio_kanban')  EPIC_APPROVAL ='epic_approval,';
-  // ART Level Gates (Agile Release Train) - SAFe 6.0')  PLANNING_INTERVAL_PLANNING ='planning_interval_planning,// Was PI_PLANNING')  FEATURE_APPROVAL = 'feature_approval')  CAPABILITY_APPROVAL = 'capability_approval')  ENABLER_APPROVAL = 'enabler_approval')  SYSTEM_DEMO = 'system_demo')  INSPECT_ADAPT ='inspect_adapt,';
-  // Team Level Gates')  STORY_APPROVAL = 'story_approval')  TASK_APPROVAL = 'task_approval')  CODE_REVIEW = 'code_review')  DEFINITION_OF_DONE = 'definition_of_done')  SPRINT_REVIEW ='sprint_review,';
-  // Solution Level Gates')  SOLUTION_INTENT = 'solution_intent')  ARCHITECTURE_REVIEW = 'architecture_review')  COMPLIANCE_REVIEW = 'compliance_review')  INTEGRATION_APPROVAL = 'integration_approval')  DEPLOYMENT_APPROVAL ='deployment_approval,';
-  // Continuous Delivery Gates')  BUILD_GATE = 'build_gate')  TEST_GATE = 'test_gate')  SECURITY_GATE = 'security_gate')  PERFORMANCE_GATE = 'performance_gate')  RELEASE_GATE ='release_gate,';
-  // Cross-Cutting Gates')  RISK_ASSESSMENT = 'risk_assessment')  DEPENDENCY_RESOLUTION = 'dependency_resolution')  RESOURCE_ALLOCATION = 'resource_allocation')  STAKEHOLDER_SIGNOFF ='stakeholder_signoff,';
-  // NEW SAFe Competencies Gates (July 2025)')  INVESTMENT_VALIDATION ='investment_validation,// Validating Investment Opportunities')  VALUE_STREAM_ORGANIZATION ='value_stream_organization,// Organizing Around Value for Large Solutions')  BUSINESS_TEAM_LAUNCH ='business_team_launch,// Launching Agile Business Teams and Trains')  CONTINUOUS_VALUE_DELIVERY ='continuous_value_delivery,// Continuously Delivering Value')};;
-/**
- * SAFE flow stage definitions
- */
-export declare enum SafeFlowStage {
-  STRATEGIC_PLANNING = 'strategic_planning',
+ * Official terminology from framework.scaledagile.com: 'strategic_theme')investment_funding')value_stream')portfolio_kanban')epic_approval,';
+  // ART Level Gates (Agile Release Train) - SAFe 6.0')planning_interval_planning,// Was PI_PLANNING')feature_approval')capability_approval')enabler_approval')system_demo')inspect_adapt,';
+  // Team Level Gates')story_approval')task_approval')code_review')definition_of_done')sprint_review,';
+  // Solution Level Gates')solution_intent')architecture_review')compliance_review')integration_approval')deployment_approval,';
+  // Continuous Delivery Gates')build_gate')test_gate')security_gate')performance_gate')release_gate,';
+  // Cross-Cutting Gates')risk_assessment')dependency_resolution')resource_allocation')stakeholder_signoff,';
+  // NEW SAFe Competencies Gates (July 2025)')investment_validation,// Validating Investment Opportunities')value_stream_organization,// Organizing Around Value for Large Solutions')business_team_launch,// Launching Agile Business Teams and Trains')continuous_value_delivery,// Continuously Delivering Value')strategic_planning',
   PORTFOLIO_BACKLOG = 'portfolio_backlog',
   EPIC_DEVELOPMENT = 'epic_development,',
   /**

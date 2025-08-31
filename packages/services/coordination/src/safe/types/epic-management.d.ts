@@ -84,30 +84,13 @@ export interface GateCriterion {
  * Epic blocker tracking
  */
 export interface EpicBlocker {
-  readonly id: string;
-  readonly description: string;
-  readonly category: 'technical| business| resource| external' | ' regulatory';
-  readonly severity: low | medium | high;
+  id: string;
 }
 /**
  * Epic business case structure
  */
 export interface EpicBusinessCase {
-  readonly id: string;
-  readonly epicId: string;
-  readonly businessHypothesis: BusinessHypothesis;
-  readonly marketAnalysis: MarketAnalysis;
-  readonly financialProjection: FinancialProjection;
-  readonly financialViability: FinancialViability;
-  readonly riskAssessment: RiskAssessment;
-  readonly implementationPlan: ImplementationPlan;
-  readonly successMetrics: SuccessMetric[];
-  readonly alternativeSolutions: AlternativeSolution[];
-  readonly recommendedAction: 'proceed| defer| pivot' | ' stop';
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
-  readonly version: string;
-  readonly approvalStatus: ApprovalStatus;
+  id: string;
 }
 /**
  * Financial viability assessment
@@ -265,17 +248,7 @@ export interface RiskAssessment {
  * Epic risk definition
  */
 export interface EpicRisk {
-  readonly id: string;
-  readonly description: string;
-  readonly category:
-    | 'technical| market| financial| regulatory'
-    | ' operational';
-  readonly probability: number;
-  readonly impact: number;
-  readonly riskScore: number;
-  readonly owner: string;
-  readonly identifiedAt: Date;
-  readonly status: 'identified| assessing| mitigating| monitoring' | ' closed';
+  id: string;
 }
 /**
  * Risk mitigation strategy
@@ -339,28 +312,13 @@ export interface ResourceRequirement {
  * Epic dependency tracking
  */
 export interface EpicDependency {
-  readonly id: string;
-  readonly type: 'epic| feature| capability| enabler' | ' external';
-  readonly dependsOn: string;
-  readonly relationship: 'blocks| enables| influences' | ' related';
-  readonly criticality: 'critical| high| medium' | ' low';
-  readonly status: 'pending| in_progress| resolved' | ' blocked';
-  readonly owner: string;
-  readonly targetDate: Date;
+  id: string;
 }
 /**
  * Epic milestone tracking
  */
 export interface EpicMilestone {
-  readonly id: string;
-  readonly title: string;
-  readonly description: string;
-  readonly targetDate: Date;
-  readonly actualDate?: Date;
-  readonly status: 'upcoming| in_progress| completed| missed' | ' cancelled';
-  readonly deliverables: string[];
-  readonly owner: string;
-  readonly stakeholders: string[];
+  id: string;
 }
 /**
  * Quality gate definition

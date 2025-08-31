@@ -12,27 +12,7 @@
 
 import { getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger('TaskMasterEvents');
-
-// ============================================================================
-// CORE EVENT TYPES
-// ============================================================================
-
-/**
- * Base event structure for all TaskMaster events
- */
-export interface BaseTaskMasterEvent {
-  readonly eventId: string;
-  readonly timestamp: Date;
-  readonly source: 'taskmaster' | 'coordination' | 'approval' | 'workflow';
-  readonly version: string;
-  readonly metadata?: Record<string, any>;
-}
-
-/**
- * Task lifecycle event types
- */
-export interface TaskCreatedEvent extends BaseTaskMasterEvent {
+const logger = getLogger(): void {
   readonly type: 'task: created';
   readonly taskId: string;
   readonly title: string;
@@ -259,78 +239,10 @@ export type TaskMasterEvent =
 /**
  * Create a base event with common fields
  */
-export function createBaseEvent(
-  source: BaseTaskMasterEvent['source'],
-  metadata?: Record<string, any>
-): Omit<BaseTaskMasterEvent, 'type'> {
+export function createBaseEvent(): void {
   return {
-    eventId: `event_${Date.now()}_${Math.random().toString(36).substr(2, 9)}","
-    timestamp: new Date(),
-    source,
-    version: '1.0.0',
-    metadata,
-  };
-}
-
-/**
- * Type guards for event types
- */
-export function isTaskEvent(
-  event: TaskMasterEvent
-): event is
-  | TaskCreatedEvent
-  | TaskUpdatedEvent
-  | TaskDeletedEvent
-  | TaskStateChangedEvent
-  | TaskAssignedEvent
-  | TaskCompletedEvent
-  | TaskBlockedEvent
-  | TaskUnblockedEvent {
-  return event.type.startsWith('task:');
-}
-
-export function isWorkflowEvent(
-  event: TaskMasterEvent
-): event is
-  | WorkflowStartedEvent
-  | WorkflowCompletedEvent
-  | WorkflowFailedEvent
-  | WorkflowPausedEvent
-  | WorkflowResumedEvent {
-  return event.type.startsWith('workflow:');
-}
-
-export function isApprovalEvent(
-  event: TaskMasterEvent
-): event is
-  | ApprovalRequestedEvent
-  | ApprovalGrantedEvent
-  | ApprovalRejectedEvent
-  | ApprovalTimeoutEvent
-  | ApprovalEscalatedEvent {
-  return event.type.startsWith('approval:');
-}
-
-export function isPerformanceEvent(
-  event: TaskMasterEvent
-): event is PerformanceThresholdExceededEvent | WIPViolationEvent {
-  return event.type.startsWith('performance:') || event.type.startsWith('wip:');
-}
-
-/**
- * Event severity levels
- */
-export enum EventSeverity {
-  INFO = 'info',
-  WARNING = 'warning',
-  ERROR = 'error',
-  CRITICAL = 'critical',
-}
-
-/**
- * Get event severity for monitoring and alerting
- */
-export function getEventSeverity(event: TaskMasterEvent): EventSeverity {
+    eventId: `event_${Date.now(): void {Math.random(): void {
+  return event.type.startsWith(): void {
   switch (event.type) {
     case 'task: blocked':
     case 'workflow: failed':

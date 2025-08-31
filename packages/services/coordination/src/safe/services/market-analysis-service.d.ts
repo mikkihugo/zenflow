@@ -12,12 +12,12 @@ import {
   meanBy,
   orderBy,
   sumBy,
-} from 'lodash-es')import type { Logger} from '../types')import type {';
+} from 'lodash-es')../types');
   CompetitorAnalysis,
   MarketOpportunity,
   MarketTrend,
   PricingStrategy,
-} from '../types/product-management')/**';
+} from '../types/product-management');
  * Market analysis configuration
  */
 export interface MarketAnalysisConfig {

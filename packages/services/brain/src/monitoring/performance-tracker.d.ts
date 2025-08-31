@@ -2,51 +2,7 @@
  * @file: Performance Tracker - Replaces: Hook System: Performance Tracking
  *
  * Monitors agent performance, resource usage, and coordination metrics.
- * This replaces the removed hook system's performance tracking functionality.') */
-/**
- * Performance metrics snapshot
- */
-export interface: PerformanceSnapshot {
-  timestamp:number;
-  agent: Id:string;
-  operation:string;
-  duration:number;
-  memory: Usage:{
-    rss:number;
-    heap: Used:number;
-    heap: Total:number;
-    external:number;
-};
-  cpu: Usage:{
-    user:number;
-    system:number;
-};
-  success:boolean;
-  error?:string;
-  metadata?:Record<string, unknown>;
-}
-/**
- * Performance tracking result (replaces hook performance tracking)
- */
-export interface: PerformanceTrackingResult {
-  tracked:boolean;
-  start: Time:number;
-  metrics:{
-    memory: Usage:NodeJ: S.Memory: Usage;
-    cpu: Usage:NodeJ: S.Cpu: Usage;
-};
-  operation?:string;
-  agent: Id?:string;
-  error?:string;
-}
-/**
- * Performance statistics
- */
-export interface: PerformanceStats {
-  total: Operations:number;
-  avg: Duration:number;
-  success: Rate:number;
-  memory: Trend: 'increasing | stable|decreasing;
+ * This replaces the removed hook system's performance tracking functionality.')increasing | stable|decreasing;
 '  cpu: Efficiency:number;
   recent: Failures:number;
 }
@@ -77,11 +33,7 @@ export declare class: PerformanceTracker {
   private active: Operations;
   private baseline: Memory;
   private baseline: Cpu;
-  constructor(config?:Partial<PerformanceTracker: Config>);
-  /**
-   * Start tracking a performance operation (replaces hook system)
-   */
-  track: Performance(context:{
+  constructor(): void {
     operation?:string;
     agent: Id?:string;
     metadata?:Record<string, unknown>;
@@ -89,22 +41,7 @@ export declare class: PerformanceTracker {
   /**
    * Complete performance tracking for an operation
    */
-  complete: Tracking(
-    agent: Id:string,
-    operation:string,
-    start: Time:number,
-    success?:boolean,
-    error?:string,
-    metadata?:Record<string, unknown>
-  ):Performance: Snapshot;
-  /**
-   * Get performance statistics for an agent
-   */
-  getAgentPerformance: Stats(agent: Id:string): Performance: Stats | null;
-  /**
-   * Get all active operations (for monitoring)
-   */
-  getActive: Operations():Array<{
+  complete: Tracking(): void {
     operation: Id:string;
     agent: Id:string;
     operation:string;

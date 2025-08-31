@@ -5,7 +5,6 @@
  * strategic vision, document processing, and swarm integration types.
  */
 
-
 // Re-export types from core processing
 export type * from '../core/document-driven-system';
 export type * from '../core/document-processor';
@@ -115,13 +114,13 @@ export interface ProcessingMetrics {
  * Document intelligence capability
  */
 export type DocumentIntelligenceCapability =
-  || 'semantic-analysis')  || 'strategic-vision')  || 'workflow-processing')  || 'swarm-integration')  || 'pattern-recognition')  || 'intelligent-segmentation;
+  || 'semantic-analysis')strategic-vision')workflow-processing')swarm-integration')pattern-recognition')intelligent-segmentation;
 
 /**
  * Analysis result confidence levels
  */
 export type ConfidenceLevel =
-  || 'low')  || 'medium')  || 'high')  || 'very-high;
+  || 'low')medium')high')very-high;
 
 /**
  * Document complexity metrics
@@ -152,7 +151,7 @@ export interface ContentAnalysisResult {
  * Document intelligence event types
  */
 export type DocumentIntelligenceEvent =
-  || 'initialized')  || 'analysis_started')  || 'analysis_complete')  || 'classification_complete')  || 'segmentation_complete')  || 'scanning_complete')  || 'processing_complete')  || 'error')  || 'shutdown;
+  || 'initialized')analysis_started')analysis_complete')classification_complete')segmentation_complete')scanning_complete')processing_complete')error')shutdown;
 
 /**
  * Event payload types
@@ -173,26 +172,8 @@ export interface EventPayloads {
  * Document intelligence error types
  */
 export class DocumentIntelligenceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly context?:any
-  ) {
-    super(message);
-    this.name = 'DocumentIntelligenceError';
-}
-}
-
-/**
- * Service component types
- */
-export type ServiceComponent =
-  || 'semanticClassifier')  || 'segmentationEngine')  || 'visionService')  || 'documentScanner')  || 'documentProcessor;
-
-/**
- * Configuration validation result
- */
-export interface ConfigValidationResult {
+  constructor(): void {
+    super(): void {
   isValid: boolean;
   errors: string[];
   warnings: string[];

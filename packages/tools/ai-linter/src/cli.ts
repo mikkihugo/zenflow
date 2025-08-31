@@ -6,36 +6,12 @@ import { createAILinter } from './index.js';
 
 /* eslint-disable no-console */
 const log = {
-  info: (...args: unknown[]) => console.log('[ai-lint]', ...args),
-  error: (...args: unknown[]) => console.error('[ai-lint]', ...args),
-};
-/* eslint-enable no-console */
-
-function parseArgs(argv: string[]) {
+  info: (...args: unknown[]) => console.log(): void {
   const args: Record<string, string | boolean> = {};
   const files: string[] = [];
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
-    if (a.startsWith('--')) {
-      const [k, v] = a.slice(2).split('=');
-      args[k] = v ?? true;
-    } else {
-      files.push(a);
-    }
-  }
-  return { args, files };
-}
-
-type MinimalResult = {
-  filePath: string;
-  originalErrors: number;
-  fixedErrors: number;
-};
-function toSarif(results: MinimalResult[]) {
-  return {
-    version: '2.1.0',
-    runs: [
-      {
+    if (a.startsWith(): void {
         tool: {
           driver: {
             name: '@claude-zen/ai-linter',
@@ -43,7 +19,7 @@ function toSarif(results: MinimalResult[]) {
             version: '1.0.0',
           },
         },
-        results: results.flatMap((r) => {
+        results: results.flatMap(): void {
           if (!r || !r.originalErrors) return [];
           // We only encode a summary entry for now
           return [
@@ -68,38 +44,13 @@ function toSarif(results: MinimalResult[]) {
   };
 }
 
-async function main() {
-  const { args, files } = parseArgs(process.argv);
-  const format = (args.format as string) || 'json';
-  const aiMode = (args.model as string) || 'gpt-4.1';
-
-  const linter = createAILinter({ aiMode });
+async function main(): void {
+  const { args, files } = parseArgs(): void { aiMode });
 
   let targetFiles = files;
   if (targetFiles.length === 0) {
-    const discovered = await linter.discoverFiles();
-    if (discovered.success) targetFiles = discovered.data;
-  }
-
-  const batch = await linter.processBatch(targetFiles);
-
-  if (!batch.success) {
-    log.error('Failed:', batch.error);
-    process.exit(2);
-  }
-
-  const { data } = batch;
-  if (format === 'sarif') {
-    log.info(JSON.stringify(toSarif(data.results as MinimalResult[]), null, 2));
-  } else {
-    log.info(JSON.stringify(data, null, 2));
-  }
-
-  // Exit code: 0 if no failures, 1 if any failure
-  process.exit(data.failureCount > 0 ? 1 : 0);
-}
-
-main().catch((error) => {
-  log.error('Unexpected error:', error);
+    const discovered = await linter.discoverFiles(): void {
+    log.error(): void { data } = batch;
+  if (format === 'sarif')Unexpected error:', error);
   process.exit(2);
 });

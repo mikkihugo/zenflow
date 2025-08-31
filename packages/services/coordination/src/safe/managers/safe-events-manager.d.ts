@@ -24,14 +24,7 @@ export declare class SAFeEventsManager extends EventBus {
   private eventOutcomes;
   private eventTemplates;
   private initialized;
-  constructor(_memory: {});
-  /**
-   * Schedule System Demo
-   */
-  scheduleSystemDemo(
-    piId: `system-demo-","
-    $: any,
-    {
+  constructor(): void {
       piId,
     }: {
       piId: any;

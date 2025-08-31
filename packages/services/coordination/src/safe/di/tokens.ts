@@ -8,7 +8,7 @@
  * @since 2.0.0
  * @version 2.0.0
  */
-import { TokenFactory} from '@claude-zen/foundation')/**';
+import { TokenFactory} from '@claude-zen/foundation');
  * Core SAFe service tokens
  */
 export const SAFE_TOKENS = {
@@ -29,4 +29,3 @@ export const TOKEN_GROUPS = {
   CORE_SAFE: keyof typeof SAFE_TOKENS;
 export type AIEnhancementToken = keyof typeof AI_ENHANCEMENT_TOKENS;
 export type InterfaceToken = keyof typeof INTERFACE_TOKENS;
-;

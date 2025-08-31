@@ -22,67 +22,21 @@ export class InfrastructureServiceFactory {
   /**
    * Create event coordinator service
    */
-  createEventCoordinator(config?: any): EventCoordinator {
+  createEventCoordinator(): void {
     if (!this.eventCoordinator) {
-      this.eventCoordinator = new EventCoordinator(config);
-    }
-    return this.eventCoordinator;
-  }
-
-  /**
-   * Create state machine coordinator service
-   */
-  createStateMachineCoordinator(
-    eventCoordinator: EventCoordinator,
-    config?: any
-  ): StateMachineCoordinatorService {
+      this.eventCoordinator = new EventCoordinator(): void {
     if (!this.stateMachineCoordinator) {
-      this.stateMachineCoordinator = new StateMachineCoordinatorService(eventCoordinator, config);
-    }
-    return this.stateMachineCoordinator;
-  }
-
-  /**
-   * Create performance tracker service
-   */
-  createPerformanceTracker(
-    eventCoordinator: EventCoordinator,
-    config?: any
-  ): PerformanceTrackerService {
+      this.stateMachineCoordinator = new StateMachineCoordinatorService(): void {
     if (!this.performanceTracker) {
-      this.performanceTracker = new PerformanceTrackerService(eventCoordinator, config);
-    }
-    return this.performanceTracker;
-  }
-
-  /**
-   * Create persistence coordinator service
-   */
-  createPersistenceCoordinator(
-    eventCoordinator: EventCoordinator,
-    config?: any
-  ): PersistenceCoordinatorService {
+      this.performanceTracker = new PerformanceTrackerService(): void {
     if (!this.persistenceCoordinator) {
-      this.persistenceCoordinator = new PersistenceCoordinatorService(eventCoordinator, config);
-    }
-    return this.persistenceCoordinator;
-  }
-
-  /**
-   * Create all infrastructure services with proper dependencies
-   */
-  createAllServices(config?: any): {
+      this.persistenceCoordinator = new PersistenceCoordinatorService(): void {
     eventCoordinator: EventCoordinator;
     stateMachineCoordinator: StateMachineCoordinatorService;
     performanceTracker: PerformanceTrackerService;
     persistenceCoordinator: PersistenceCoordinatorService;
   } {
-    const eventCoordinator = this.createEventCoordinator(config);
-    const stateMachineCoordinator = this.createStateMachineCoordinator(eventCoordinator, config);
-    const performanceTracker = this.createPerformanceTracker(eventCoordinator, config);
-    const persistenceCoordinator = this.createPersistenceCoordinator(eventCoordinator, config);
-
-    return {
+    const eventCoordinator = this.createEventCoordinator(): void {
       eventCoordinator,
       stateMachineCoordinator,
       performanceTracker,
@@ -92,21 +46,8 @@ export class InfrastructureServiceFactory {
 }
 
 // Export default factory instance
-export const infrastructureServiceFactory = new InfrastructureServiceFactory();
-
-/**
- * Get health status of all infrastructure services
- */
-export function getHealthStatus() {
-  const eventCoordinatorHealthy = infrastructureServiceFactory.eventCoordinator?.isHealthy() ?? false;
-  const stateMachineHealthy = infrastructureServiceFactory.stateMachineCoordinator?.isHealthy() ?? false;
-  const performanceHealthy = infrastructureServiceFactory.performanceTracker?.isHealthy() ?? false;
-  const persistenceHealthy = infrastructureServiceFactory.persistenceCoordinator?.isHealthy() ?? false;
-  const overall = eventCoordinatorHealthy && 
-                 stateMachineHealthy && 
-                 performanceHealthy && 
-                 persistenceHealthy;
-  return {
+export const infrastructureServiceFactory = new InfrastructureServiceFactory(): void {
+  const eventCoordinatorHealthy = infrastructureServiceFactory.eventCoordinator?.isHealthy(): void {
     eventCoordinator: eventCoordinatorHealthy,
     stateMachineCoordinator: stateMachineHealthy,
     performanceTracker: performanceHealthy,

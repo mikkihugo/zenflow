@@ -63,35 +63,7 @@ export * as teamwork from './teamwork';
 // UNIFIED COORDINATION API - High-level coordination interface
 // =============================================================================
 export interface CoordinationSystem {
-  // sparc: typeof import('./sparc');
-  // safe: typeof import('./safe');
-  // workflows: typeof import('./workflows');
-  // orchestration: typeof import('./orchestration');
-  teamwork: typeof import('./teamwork');
-  dspy: typeof import('./dspy/event-driven-dspy');
-  // taskmaster: typeof import('./taskmaster/index');
-  // events: typeof import('./events/websocket-hub');
-}
-
-/**
- * Create a unified coordination system by loading all domains
- */
-export async function createCoordinationSystem(): Promise<CoordinationSystem> {
-  const [teamwork, dspy] = await Promise.all([
-    import('./teamwork'),
-    import('./dspy/event-driven-dspy'),
-  ]);
-
-  return {
-    teamwork,
-    dspy,
-  };
-}
-// =============================================================================
-// PACKAGE METADATA
-// =============================================================================
-export const COORDINATION_PACKAGE_INFO = {
-  name: '@claude-zen/coordination',
+  // sparc: typeof import('./sparc')./safe')./workflows')./orchestration')./teamwork')./dspy/event-driven-dspy')./taskmaster/index')./events/websocket-hub')./teamwork')./dspy/event-driven-dspy')@claude-zen/coordination',
   version: '1.0.0',
   description:
     'Unified coordination package consolidating multiple coordination domains',

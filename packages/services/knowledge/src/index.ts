@@ -10,7 +10,7 @@
  * - 🧠 **Brain Integration**:Responds to brain knowledge requests via events
  * - **Knowledge Storage**:Stores and retrieves knowledge items via events
  * - search **Smart Search**:Provides content and semantic search via events
- * - 📈 **Query Processing**:Advanced filtering and pagination via events
+ * -  **Query Processing**:Advanced filtering and pagination via events
  * - **Zero Dependencies**:No foundation or database imports
  * - **Real-time Stats**:Knowledge analytics via event responses
  *

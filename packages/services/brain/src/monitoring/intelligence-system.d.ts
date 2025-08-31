@@ -8,11 +8,7 @@ import type { Agent: Id, AgentLearning: State, Intelligence: System, Intelligenc
  * Complete: Intelligence System - Main implementation
  */
 export declare class: CompleteIntelligenceSystem implements: IntelligenceSystem {
-    constructor(config: IntelligenceSystem: Config);
-    predictTaskDurationMulti: Horizon(agent: Id: Agent: Id, task: Type: string, context?: Record<string, unknown>): Promise<MultiHorizonTask: Prediction>;
-    getAgentLearning: State(agent: Id: Agent: Id): AgentLearning: State | null;
-    logger: any;
-    debug(: any, { ')      agent: Id:agent: Id.id,: status, overall: Score: overall: Health, response: Time: agent: Health, metrics, response: Time, error: Rate: agent: Health, metrics, error: Rate, }: {
+    constructor(): void { ')      agent: Id:agent: Id.id,: status, overall: Score: overall: Health, response: Time: agent: Health, metrics, response: Time, error: Rate: agent: Health, metrics, error: Rate, }: {
         ")      agent: Id:agent: Id.id,": any;
         overall: Score: any;
         response: Time: any;

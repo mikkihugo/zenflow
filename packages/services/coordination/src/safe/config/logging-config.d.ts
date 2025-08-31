@@ -24,6 +24,6 @@ export declare const defaultLoggerConfig:  {
     true: any;
     colorize: boolean;
     component: any;
-    '};;': string;
+    '};': string;
 };
 //# sourceMappingURL=logging-config.d.ts.map

@@ -27,7 +27,7 @@ import {
   type WIPLimits,
   type WorkflowKanbanConfig,
   type WorkflowTask,
-} from '../../kanban')// Import workflow constants from shared kanban';
+} from '../../kanban');
 // Use foundation's typed EventEmitter for better type safety
 import type { EventEmitter, Logger } from '@claude-zen/foundation';
 
@@ -46,7 +46,7 @@ import type {
   Feature,
   PortfolioEpic,
   Story,
-} from '../types')// =========================================================================== = ''; 
+} from '../types')'; 
 // SAFE-SPECIFIC KANBAN CONFIGURATIONS
 // ============================================================================
 /**
@@ -71,14 +71,12 @@ export type SafeSolutionKanbanState =|'vision'// Solution vision and architectur
 /**
  * Create Portfolio Kanban configuration optimized for Epic lifecycle
  */
-export function createSafePortfolioKanbanConfig(
-  eventBus?:EventEmitter
-): WorkflowKanbanConfig {
+export function createSafePortfolioKanbanConfig(): void {
   return {
     // Portfolio-specific workflow states (maps to Epic lifecycle)
     workflowStates: [
-     'funnel,// → analyzing → portfolio_backlog → implementing → done')     'analyzing,';
-     'portfolio_backlog,')     'implementing,';
+     'funnel,// → analyzing → portfolio_backlog → implementing → done')analyzing,';
+     'portfolio_backlog,')implementing,';
      'done,';
 ] as TaskState[],
     // WIP limits optimized for portfolio management
@@ -115,8 +113,8 @@ export function createSafePortfolioKanbanConfig(
     // Flow optimization for value delivery
     flowOptimizationConfig:  {
       enabled: true,
-      strategies: [';];;
-       'wip_reduction,// Reduce WIP to improve flow')       'bottleneck_removal,// Remove portfolio bottlenecks';
+      strategies: [';];
+       'wip_reduction,// Reduce WIP to improve flow')bottleneck_removal,// Remove portfolio bottlenecks';
        'parallel_processing,// Parallelize epic analysis';
 ],
       optimizationInterval: 7 * 24 * 60 * 60 * 1000, // Weekly optimization
@@ -135,9 +133,7 @@ export function createSafePortfolioKanbanConfig(
 /**
  * Create Program Kanban configuration optimized for Feature flow
  */
-export function createSafeProgramKanbanConfig(
-  eventBus?:EventEmitter
-): WorkflowKanbanConfig {
+export function createSafeProgramKanbanConfig(): void {
   return {
     workflowStates: DEFAULT_WORKFLOW_STATES, // Standard workflow suitable for features
     defaultWIPLimits:  {
@@ -182,9 +178,7 @@ export function createSafeProgramKanbanConfig(
 /**
  * Create Team Kanban configuration optimized for Story/Task flow
  */
-export function createSafeTeamKanbanConfig(
-  eventBus?:EventEmitter
-): WorkflowKanbanConfig {
+export function createSafeTeamKanbanConfig(): void {
   return {
     workflowStates: DEFAULT_WORKFLOW_STATES, // Standard workflow for stories
     defaultWIPLimits:  {
@@ -232,120 +226,61 @@ export function createSafeTeamKanbanConfig(
 /**
  * Create Portfolio Kanban for Epic lifecycle management
  */
-export async function createSafePortfolioKanban(
-  logger: createSafePortfolioKanbanConfig(eventBus);
-  const kanban = new KanbanEngine(config);
-  // Initialize with logging
-  logger.info('Creating SAFe Portfolio Kanban,{';
-    wipLimits: createSafeProgramKanbanConfig(eventBus);
-  const kanban = new KanbanEngine(config);
-  logger.info('Creating SAFe Program Kanban,{';
-    wipLimits: createSafeTeamKanbanConfig(eventBus);
-  const kanban = new FlowVisualizationService(config);
-  logger.info('Creating SAFe Team Kanban,{';
+export async function createSafePortfolioKanban(): void {';
+    wipLimits: createSafeProgramKanbanConfig(): void {';
+    wipLimits: createSafeTeamKanbanConfig(): void {';
     wipLimits: config.defaultWIPLimits,
-    states: config.workflowStates,')';
+    states: config.workflowStates,');
 });
-  await kanban.initialize();
-  configureSafeTeamEvents(kanban, logger);
-  return kanban;')};;
-// ============================================================================
-// SAFE-SPECIFIC EVENT CONFIGURATION
-// ============================================================================
-/**
- * Configure Portfolio Kanban events for Epic lifecycle
- */
-function configureSafePortfolioEvents(
-  kanban: KanbanEngine,
-  logger: Logger
-): void {
-  // Epic business case validation events
-  kanban.on('task: created,(_task) => {';
-    ')    logger.info('Portfolio Epic created,';
+  await kanban.initialize(): void {';
+    ')Portfolio Epic created,';
       epicId: task.id,
       title: task.title,
-      priority: task.priority,);')';
+      priority: task.priority,);');
 });
-  // WSJF calculation events')  kanban.on('task: moved,(_task, _fromState, toState) => {';
-    ')    if (toState ==='analyzing){';
-    ')      logger.info('Epic entered analysis,';
-        epicId: task.id,')';
-        wsjfCalculationNeeded: true,);')} else if (toState ==='portfolio_backlog){';
-    ')      logger.info('Epic approved for portfolio backlog,';
+  // WSJF calculation events')task: moved,(_task, _fromState, toState) => {';
+    ')analyzing){';
+    ')Epic entered analysis,';
+        epicId: task.id,');
+        wsjfCalculationNeeded: true,);')portfolio_backlog){';
+    ')Epic approved for portfolio backlog,';
         epicId: task.id,
-        wsjfScore: task.metadata?.wsjfScore,);')';
+        wsjfScore: task.metadata?.wsjfScore,);');
 }
 });
-  // Portfolio bottleneck alerts')  kanban.on('bottleneck: detected,(_bottleneck) => {';
-    ')    logger.warn('Portfolio bottleneck detected,';
+  // Portfolio bottleneck alerts')bottleneck: detected,(_bottleneck) => {';
+    ')Portfolio bottleneck detected,';
       state: bottleneck.state,
       severity: bottleneck.severity,
-      recommendedAction: bottleneck.recommendations[0],);')';
+      recommendedAction: bottleneck.recommendations[0],);');
 });
-  // WIP limit enforcement at portfolio level')  kanban.on('wip: exceeded,(_state, _count, _limit) => {';
-    ')    logger.warn('Portfolio WIP limit exceeded,';
+  // WIP limit enforcement at portfolio level')wip: exceeded,(_state, _count, _limit) => {';
+    ')Portfolio WIP limit exceeded,';
       state,
-      currentCount: 'Block new epics until capacity available,);',)});')};;
-/**
- * Configure Program Kanban events for Feature flow
- */
-function configureSafeProgramEvents(
-  kanban: KanbanEngine,
-  logger: Logger
-): void {
-  kanban.on('task: created,(_task) => {';
-    ')    logger.info('Program Feature created,';
+      currentCount: 'Block new epics until capacity available,);',)});')task: created,(_task) => {';
+    ')Program Feature created,';
       featureId: task.id,
       title: task.title,
-      pi: task.metadata?.programIncrement,);')';
-});')  kanban.on('bottleneck: detected,(_bottleneck) => {';
-    ')    logger.warn('Program bottleneck detected,';
-      state: bottleneck.state,')';
-      impact,      severity: bottleneck.severity,);')});')  kanban.on('wip: exceeded,(_state, _count, _limit) => {';
-    ')    logger.warn('Program WIP limit exceeded,';
+      pi: task.metadata?.programIncrement,);');
+});')bottleneck: detected,(_bottleneck) => {';
+    ')Program bottleneck detected,';
+      state: bottleneck.state,');
+      impact,      severity: bottleneck.severity,);'))  kanban.on(): void {';
+    ')Program WIP limit exceeded,';
       state,
-      currentCount: 'Feature delivery may be delayed,);',)});')};;
-/**
- * Configure Team Kanban events for Story/Task flow
- */
-function configureSafeTeamEvents(kanban: KanbanEngine, logger: Logger): void {
-  kanban.on('task: created,(_task) => {';
-    ')    logger.info('Team Story created,';
+      currentCount: 'Feature delivery may be delayed,);',)});')task: created,(_task) => {';
+    ')Team Story created,';
       storyId: task.id,
       title: task.title,
-      storyPoints: task.metadata?.storyPoints,);')';
-});')  kanban.on('bottleneck: detected,(_bottleneck) => {';
-    ')    logger.warn('Team bottleneck detected,';
-      state: bottleneck.state,')';
-      impact,      severity: bottleneck.severity,);')});')  kanban.on('wip: exceeded,(_state, _count, _limit) => {';
-    ')    logger.warn('Team WIP limit exceeded,';
+      storyPoints: task.metadata?.storyPoints,);');
+});')bottleneck: detected,(_bottleneck) => {';
+    ')Team bottleneck detected,';
+      state: bottleneck.state,');
+      impact,      severity: bottleneck.severity,);'))  kanban.on(): void {';
+    ')Team WIP limit exceeded,';
       state,
-      currentCount: 'Sprint velocity may decrease,);',)});')};;
-// ============================================================================
-// SAFE WORKFLOW ADAPTERS
-// ============================================================================
-/**
- * Convert PortfolioEpic to WorkflowTask for kanban processing
- */
-export function portfolioEpicToKanbanTask(
-  epic: PortfolioEpic,
-  wsjf?:WSJFPriority
-): WorkflowTask {
-  return {
-    id: epic.id,
-    title: epic.title,
-    description: epic.description,
-    state: mapPortfolioStateToKanbanState((epic as any).state|| epic.status),
-    priority: mapEpicPriorityToKanbanPriority((wsjf as any)?.ranking|| 5),
-    estimatedEffort: (epic as any).estimatedValue|| epic.businessValue|| 1,
-    assignedTo: (epic as any).epicOwner||'unassigned,';
-    createdAt: (epic as any).createdAt|| new Date(),
-    updatedAt: (epic as any).lastModified|| new Date(),
-    completedAt: ((epic as any).state|| epic.status) ===done'? (epic as any).lastModified';
-        :undefined,
-    dependencies: (epic as any).dependencies?.map((d: any) => d.id)|| [],
-    tags: [(epic as any).category||'epic,...((epic as any).themes|| [])],';
-    metadata:  {
+      currentCount: 'Sprint velocity may decrease,);',)});')unassigned,';
+    createdAt: (epic as any).createdAt|| new Date(): void {
       wsjfScore: wsjf?.wsjfScore,
       businessValue: epic.businessValue,
       timeCriticality: (epic as any).timeCriticality|| 0,
@@ -357,7 +292,7 @@ export function portfolioEpicToKanbanTask(
 /**
  * Convert Feature to WorkflowTask for program kanban
  */
-export function featureToKanbanTask(feature: Feature): WorkflowTask {
+export function featureToKanbanTask(): void {
   return {
     id: feature.id,
     title: (feature as any).title|| feature.id,
@@ -366,17 +301,9 @@ export function featureToKanbanTask(feature: Feature): WorkflowTask {
     priority: ((feature as any).priority as TaskPriority)||medium,
     estimatedEffort: (feature as any).storyPoints|| 1,
     assignedTo: (feature as any).owner|| (feature as any).assignee||'unassigned,';
-    createdAt: new Date(
-      (feature as any).createdAt|| (feature as any).createdDate|| Date.now()
-    ),
-    updatedAt: new Date(
-      (feature as any).updatedAt|| (feature as any).lastModified|| Date.now()
-    ),
-    dependencies: (feature as any).dependencies?.map((d: any) => d.toString())|| [],
-    tags: ['feature,...((feature as any).labels|| [])],';
-    metadata:  {
-    '];;
-      epicId: (feature as any).epicId|| feature.piId,')      programIncrement: (feature as any).programIncrementId||'current,';
+    createdAt: new Date(): void {
+    '];
+      epicId: (feature as any).epicId|| feature.piId,')current,';
       acceptanceCriteria: (feature as any).acceptanceCriteria|| [],
 },
 };
@@ -384,7 +311,7 @@ export function featureToKanbanTask(feature: Feature): WorkflowTask {
 /**
  * Convert Story to WorkflowTask for team kanban
  */
-export function storyToKanbanTask(story: Story): WorkflowTask {
+export function storyToKanbanTask(): void {
   return {
     id: story.id,
     title: (story as any).title|| story.id,
@@ -393,16 +320,12 @@ export function storyToKanbanTask(story: Story): WorkflowTask {
     priority: (story.priority as TaskPriority)||medium,
     estimatedEffort: story.storyPoints|| 1,
     assignedTo: (story as any).assignee||'unassigned,';
-    createdAt: new Date((story as any).createdDate|| Date.now()),
-    updatedAt: new Date((story as any).lastModified|| Date.now()),
-    dependencies: (story as any).dependencies?.map((d: any) => d.toString())|| [],
-    tags: ['story,...((story as any).labels|| [])],';
-    metadata:  {
+    createdAt: new Date(): void {
       featureId: story.featureId,
       acceptanceCriteria: story.acceptanceCriteria,
-      testCases: (story as any).testCases|| [],'];;
+      testCases: (story as any).testCases|| [],'];
 },
-};)};;
+};)};
 // ============================================================================
 // STATE MAPPING UTILITIES
 // ============================================================================
@@ -410,12 +333,7 @@ export function storyToKanbanTask(story: Story): WorkflowTask {
  * Map portfolio epic states to kanban workflow states
  */
 function mapPortfolioStateToKanbanState(portfolioState:  {
-    funnel : 'backlog')    analyzing : 'analysis')    portfolio_backlog : 'backlog')    implementing : 'development')    done,};)  return stateMap[portfolioState]||'backlog')};;
-/**
- * Map epic priority ranking to kanban task priority
- */
-function mapEpicPriorityToKanbanPriority(ranking: number): TaskPriority {
-  if (ranking === 1) return'critical')  if (ranking <= 3) return'high')  if (ranking <= 7) return'medium')  return'low')};;
+    funnel : 'backlog')analysis')backlog')development')backlog')critical')high')medium')low')};
 // ============================================================================
 // EXPORT SUMMARY
 // ============================================================================

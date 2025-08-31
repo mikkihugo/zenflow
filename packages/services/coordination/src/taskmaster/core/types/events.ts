@@ -13,7 +13,7 @@
  */
 // Local type definitions to avoid circular dependency
 export type TaskState =;
- 'backlog' | ' analysis'|' development' | ' testing'|' review' | ' done'|' blocked')export type OptimizationStrategy ='wip_reduction' | ' bottleneck_removal'|' parallel_processing' | ' load_balancing'|' priority_queue' | ' resource_allocation')export interface WorkflowTask {';
+ 'backlog' | ' analysis'|' development' | ' testing'|' review' | ' done'|' blocked')wip_reduction' | ' bottleneck_removal'|' parallel_processing' | ' load_balancing'|' priority_queue' | ' resource_allocation');
   id: string;
   title: string;
   description?:string;
@@ -38,20 +38,7 @@ export interface WIPLimits {
 export interface WorkflowBottleneck {
   state: TaskState;
   count: number;
-  severity: low' | ' medium'|' high')};;
-export interface WorkflowKanbanConfig {
-  wipLimits: WIPLimits;
-  enableMetrics: boolean;
-  enableBottleneckDetection: boolean;
-}
-// =============================================================================
-// TASK MANAGEMENT EVENTS
-// =============================================================================
-/**
- * Task created event - new task added to workflow
- */
-export interface TaskCreatedEvent {
-  type : 'TASK_CREATED')  task: 'TASK_MOVED',)  taskId: 'TASK_UPDATED',)  taskId: 'TASK_COMPLETED',)  taskId: 'TASK_BLOCKED',)  taskId: string;;
+  severity: low' | ' medium'|' high')TASK_CREATED')TASK_MOVED',)  taskId: 'TASK_UPDATED',)  taskId: 'TASK_COMPLETED',)  taskId: 'TASK_BLOCKED',)  taskId: string;
   reason: string;
   blockedAt: Date;
 }
@@ -62,7 +49,7 @@ export interface TaskCreatedEvent {
  * WIP limit exceeded event
  */
 export interface WIPLimitExceededEvent {
-  type : 'WIP_LIMIT_EXCEEDED')  state: 'WIP_LIMITS_UPDATED',)  wipLimits: Partial<WIPLimits>;;
+  type : 'WIP_LIMIT_EXCEEDED')WIP_LIMITS_UPDATED',)  wipLimits: Partial<WIPLimits>;
 }
 // =============================================================================
 // BOTTLENECK MANAGEMENT EVENTS
@@ -71,7 +58,7 @@ export interface WIPLimitExceededEvent {
  * Bottleneck detected event
  */
 export interface BottleneckDetectedEvent {
-  type : 'BOTTLENECK_DETECTED')  bottleneck: 'BOTTLENECK_RESOLVED',)  bottleneckId: string;;
+  type : 'BOTTLENECK_DETECTED')BOTTLENECK_RESOLVED',)  bottleneckId: string;
   resolvedAt: Date;
 }
 // =============================================================================
@@ -81,17 +68,8 @@ export interface BottleneckDetectedEvent {
  * Flow analysis completed event
  */
 export interface FlowAnalysisCompleteEvent {
-  type : 'FLOW_ANALYSIS_COMPLETE')  metrics: 'OPTIMIZATION_TRIGGERED',)  strategy: OptimizationStrategy;;
-  triggeredBy : 'manual' | ' automatic'|' emergency')  timestamp: Date;;
-}
-// =============================================================================
-// SYSTEM HEALTH EVENTS
-// =============================================================================
-/**
- * System health updated event
- */
-export interface SystemHealthUpdatedEvent {
-  type : 'SYSTEM_HEALTH_UPDATED')  health: 'SYSTEM_HEALTH_CHECK',)  timestamp: Date;;
+  type : 'FLOW_ANALYSIS_COMPLETE')OPTIMIZATION_TRIGGERED',)  strategy: OptimizationStrategy;
+  triggeredBy : 'manual' | ' automatic'|' emergency')SYSTEM_HEALTH_UPDATED')SYSTEM_HEALTH_CHECK',)  timestamp: Date;
 }
 // =============================================================================
 // CONFIGURATION EVENTS
@@ -100,29 +78,7 @@ export interface SystemHealthUpdatedEvent {
  * Configuration updated event
  */
 export interface ConfigurationUpdatedEvent {
-  type : 'CONFIGURATION_UPDATED')  config: Partial<WorkflowKanbanConfig>;;
-  updatedBy: string;
-  timestamp: Date;
-}
-// =============================================================================
-// ERROR HANDLING EVENTS
-// =============================================================================
-/**
- * Error occurred event
- */
-export interface ErrorOccurredEvent {
-  type : 'ERROR_OCCURRED')  error: string;;
-  errorContext: string;
-  timestamp: Date;
-  severity?:'low| medium| high' | ' critical')};;
-// =============================================================================
-// SYSTEM LIFECYCLE EVENTS
-// =============================================================================
-/**
- * System restart event
- */
-export interface RestartSystemEvent {
-  type : 'RESTART_SYSTEM')  reason: 'ENTER_MAINTENANCE',)  reason: 'RESUME_OPERATION',)  timestamp: 'PAUSE_OPERATION',)  reason?:string;';
+  type : 'CONFIGURATION_UPDATED')ERROR_OCCURRED')low| medium| high' | ' critical')RESTART_SYSTEM')ENTER_MAINTENANCE',)  reason: 'RESUME_OPERATION',)  timestamp: 'PAUSE_OPERATION',)  reason?:string;';
   timestamp: 'OPTIMIZATION_COMPLETE',)  strategy: 'RETRY_OPERATION',)  reason?:string;';
   timestamp: Date;
 }
@@ -154,48 +110,13 @@ export class WorkflowEventUtils {
   /**
    * Create task created event
    */
-  static createTaskCreated(task: 'TASK_CREATED,',
-'      task,',};;
-}
-  /**
-   * Create task moved event
-   */
-  static createTaskMoved(
-    taskId: 'TASK_MOVED,',
-'      taskId,';
-      fromState,
-      toState,
-      reason,',};;
-}
-  /**
-   * Create bottleneck detected event
-   */
-  static createBottleneckDetected(
-    bottleneck: 'BOTTLENECK_DETECTED,',
-'      bottleneck,',};;
-}
-  /**
-   * Create system health updated event
-   */
-  static createSystemHealthUpdated(
-    health: 'SYSTEM_HEALTH_UPDATED,',
-'      health,';
-      previousHealth,
-      timestamp: new Date(),',};;
-}
-  /**
-   * Create error occurred event
-   */
-  static createErrorOccurred(
-    error: string,
-    errorContext: string,')    severity: low' | ' medium'|' high' | ' critical ='medium')  ): ErrorOccurredEvent {';
-    return {
-    ')      type : 'ERROR_OCCURRED,'
+  static createTaskCreated(): void {
+    ')ERROR_OCCURRED,'
 '      error,';
       errorContext,
       severity,
       timestamp: 'CONFIGURATION_UPDATED,',
 '      config,';
       updatedBy,
-      timestamp: new Date(),',};;
-};)};;
+      timestamp: new Date(),',};
+};)};

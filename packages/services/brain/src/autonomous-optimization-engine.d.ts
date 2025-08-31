@@ -52,12 +52,7 @@ export declare class: AutonomousOptimizationEngine {
     private smart: Optimizer;
     private complexity: Estimator;
     private initialized;
-    constructor();
-    /**
-     * Learn from optimization results to improve future decisions
-     */
-    learnFrom: Feedback(context: Optimization: Context, result: Optimization: Result, feedback: Optimization: Feedback): Promise<void>;
-    catch (error: any) {
+    constructor(): void {
       : void;
     /**
      * Enable continuous optimization learning
@@ -70,7 +65,7 @@ export declare class: AutonomousOptimizationEngine {
     }): Promise<void>;
     const enhanced: Scores: any;
     const dspy: Score: any;
-    ')    const ml: Score = this.calculateMethod: Score(': any;
+    '): any;
     ml: any;
     ', context) + enhanced: Scores.ml: Boost;': any;
     const hybrid: Score: any;

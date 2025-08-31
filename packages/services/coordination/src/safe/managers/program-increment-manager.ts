@@ -15,7 +15,7 @@
  * @since 1.0.0
  * @version 1.0.0
  */
-import { EventBus} from '@claude-zen/foundation')import type { CapacityPlanningService, TeamCapacity} from '../services/program-increment/capacity-planning-service')import type { PICompletionService} from '../services/program-increment/pi-completion-service')import type { PIExecutionService} from '../services/program-increment/pi-execution-service')import type { PIPlanningService} from '../services/program-increment/pi-planning-service')import type {';
+import { EventBus} from '@claude-zen/foundation')../services/program-increment/capacity-planning-service')../services/program-increment/pi-completion-service')../services/program-increment/pi-execution-service')../services/program-increment/pi-planning-service');
   AgileReleaseTrain,
   Dependency,
   Feature,
@@ -25,24 +25,24 @@ import { EventBus} from '@claude-zen/foundation')import type { CapacityPlanningS
   ProgramIncrement,
   Risk,
   EventBus,
-} from '../types')import { PIStatus} from '../types')export type {';
+} from '../types')../types');
   CapacityPlanningResult,
   CapacityRisk,
   TeamAllocation,
-} from '../services/program-increment/capacity-planning-service')export type {';
+} from '../services/program-increment/capacity-planning-service');
   Achievement,
   Challenge,
   ImprovementRecommendation,
   LessonLearned,
   PICompletionReport,
-} from '../services/program-increment/pi-completion-service')export type {';
+} from '../services/program-increment/pi-completion-service');
   DependencyHealth,
   PIExecutionMetrics,
   PredictabilityMetrics,
   QualityMetrics,
   RiskBurndown,
   VelocityTrend,
-} from '../services/program-increment/pi-execution-service')// Re-export service interfaces for API compatibility';
+} from '../services/program-increment/pi-execution-service');
 export type {
   ArchitecturalVision,
   BusinessContext,
@@ -50,7 +50,7 @@ export type {
   PlanningAdjustment,
   PlanningAgendaItem,
   PlanningParticipant,
-} from '../services/program-increment/pi-planning-service')// =========================================================================== = ';
+} from '../services/program-increment/pi-planning-service');
 // PROGRAM INCREMENT MANAGER CONFIGURATION
 // ============================================================================
 export interface PIManagerConfig {
@@ -87,191 +87,58 @@ export interface PIManagerState {
  */
 export class ProgramIncrementManager extends EventBus {
   private readonly logger: false;
-  constructor(
-    eventBus:  {}
-  ) {
-    super();
-    this.logger = logger;
-    this.eventBus = eventBus;
-    this.memory = memory;
-    this.config = {
-      enableAGUIIntegration: this.initializeState();
-}
-  // ============================================================================
-  // LIFECYCLE MANAGEMENT
-  // ============================================================================
-  /**
-   * Initialize the PI Manager with service delegation
-   */
-  async initialize(Promise<void> {
-    if (this.initialized) return'; 
-    this.logger.info('Initializing Program Increment Manager,{';
-      config: true;')      this.logger.info('Program Increment Manager initialized successfully');')      this.emit('initialized,');')} catch (error) {';
-    ')      this.logger.error('Failed to initialize PI Manager,{ error};);
+  constructor(): void {
+    super(): void {
+      enableAGUIIntegration: this.initializeState(): void {
+    if (this.initialized): Promise<void> {';
+      config: true;')Program Increment Manager initialized successfully'))      this.emit(): void {';
+    ')Failed to initialize PI Manager,{ error};);
       throw error;
 }
 }
   /**
    * Shutdown the PI Manager and all services
    */
-  async shutdown(Promise<void> {
-    ')    this.logger.info('Shutting down Program Increment Manager');
-    if (this.trackingTimer) {
-      clearInterval(this.trackingTimer);
-}
-    // Shutdown all services
-    await Promise.all([
-      this.piPlanningService?.shutdown(),
-      this.capacityPlanningService?.shutdown(),
-      this.piExecutionService?.shutdown(),
-      this.piCompletionService?.shutdown(),
-]);
-    await this.persistState();
-    this.removeAllListeners();
-    this.initialized = false;')    this.logger.info('Program Increment Manager shutdown complete');
-}
-  // ============================================================================
-  // PI PLANNING WORKFLOW - Delegated to PIPlanningService
-  // ============================================================================
-  /**
-   * Plan Program Increment - Orchestrates complete PI planning workflow
-   */
-  async planProgramIncrement(
-    artId: this.startTimer('pi_planning');
-    try {
-      // Delegate to PI Planning Service for event orchestration
-      const planningEvent =
-        await this.getPIPlanningService().createPIPlanningEvent(
-          artId,
-          businessContext,
-          architecturalVision,
-          teamCapacities.map((tc) => ({
-            userId: 'team-lead ',as const,';
-            required: true,
-})));
-      // Execute planning workflow with AGUI integration
-      const planningResult =
-        await this.getPIPlanningService().executePIPlanningWorkflow(
-          planningEvent;
-        );
-      // Create Program Increment structure
-      const programIncrement = await this.createProgramIncrement(
-        artId,
-        planningResult,
-        teamCapacities;
-      );
-      // Generate PI objectives from business context
-      const piObjectives = await this.generatePIObjectives(
-        programIncrement.id,
-        businessContext,
-        teamCapacities;
-      );
-      // Delegate to Capacity Planning Service for feature allocation
-      const __capacityResult =
-        await this.getCapacityPlanningService().implementCapacityPlanning(
-          teamCapacities,
-          [] // Features will be generated from objectives;
-        );
-      // Plan feature allocation across teams
-      const features = await this.planFeatureAllocation(
-        programIncrement.id,
-        piObjectives,
-        architecturalVision,
-        teamCapacities;
-      );
-      // Identify dependencies and risks
-      const dependencies = await this.identifyPIDependencies(
-        features,
-        piObjectives;
-      );
-      const risks = await this.assessPIRisks(
-        programIncrement,
-        features,
-        dependencies;
-      );
-      // Create complete PI plan
-      const completePIPlan = {
+  async shutdown(): void {
         ...programIncrement,
-        objectives: features.map((feature) => ({
+        objectives: features.map(): void {
       featureId: feature.id,
       featureName: feature.name,
       description: feature.description,
       businessValue: feature.businessValue,
-      complexity: feature.stories?.length|| 5, // Use story count as complexity')      requiredSkills: ['general'],';
+      complexity: feature.stories?.length|| 5, // Use story count as complexity')general'],';
       priority: medium 'as const,";"
       dependencies: [],
       acceptanceCriteria: feature.acceptanceCriteria,
       estimatedDuration: 1,
 });
-    return await this.getCapacityPlanningService().implementCapacityPlanning(
-      teamCapacities,
-      allocationRequests
-    );
-}
-  // ============================================================================
-  // PI EXECUTION AND TRACKING - Delegated to PIExecutionService
-  // ============================================================================
-  /**
-   * Start PI execution - Delegates to PIExecutionService
-   */
-  async startPIExecution(piId: this.state.activePIs.get(piId);
-    if (!pi) {
-      throw new Error("PI not found: PIStatus.ACTIVE;"
-    // Initialize PI execution tracking')    this.logger.info('PI execution initialized,{ piId, status: pi.status};);
+    return await this.getCapacityPlanningService(): void {
+      throw new Error(): void { piId, status: pi.status};);
     // Initialize metrics tracking
     const initialMetrics =;
-      await this.getPIExecutionService().trackPIProgress(piId);
-    this.state.piMetrics.set(piId, initialMetrics);')    this.logger.info('PI execution started successfully,{ piId};);')    this.emit('pi-execution-started, pi);
+      await this.getPIExecutionService(): void { piId};);')pi-execution-started, pi);
 }
   /**
    * Track PI progress - Delegates to PIExecutionService
    */
-  async trackPIProgress(piId: this.state.activePIs.get(piId);
-    if (!pi) {
-    `)      throw new Error("PI not found: $" + JSON.stringify({p}) + "iId"");')};;"
-    // Delegate to Execution Service for comprehensive tracking
-    const currentMetrics =;
-      await this.getPIExecutionService().trackPIProgress(piId);
-    // Store updated metrics
-    this.state.piMetrics.set(piId, currentMetrics);')    this.logger.debug('PI progress updated,{';
+  async trackPIProgress(): void {
+    `)      throw new Error(): void {';
       piId,
       progress: currentMetrics.progressPercentage,
-      predictability: currentMetrics.predictabilityMetrics?.overallPredictability|| 0,')';
-});')    this.emit(pi-progress-updated,{ piId, metrics: currentMetrics};);
-    return currentMetrics;
-}
-  // ============================================================================
-  // PI COMPLETION - Delegated to PICompletionService
-  // ============================================================================
-  /**
-   * Complete Program Increment - Delegates to PICompletionService
-   */
-  async completeProgramIncrement(piId: this.state.activePIs.get(piId);
-    if (!pi) {
-    ")      throw new Error("PI not found: await this.trackPIProgress(piId);"
-    // Create stakeholders list
-    const stakeholders = [
-      {
-    ')        userId : 'rte-1')        name : 'Release Train Engineer')        role : 'rte 'as const,';
-        responsibilities: 'po-1',)        name : 'Product Owner')        role : 'product-owner 'as const,';
+      predictability: currentMetrics.predictabilityMetrics?.overallPredictability|| 0,');
+});'))        userId : 'rte-1')Release Train Engineer')rte 'as const,';
+        responsibilities: 'po-1',)        name : 'Product Owner')product-owner 'as const,';
         responsibilities: ['Product delivery,' Stakeholder communication'],';
         signOffRequired: true,
 },
 ];
     // Delegate to Completion Service
     const completionReport =
-      await this.getPICompletionService().completeProgramIncrement(
-        piId,
-        finalMetrics,
-        stakeholders;
-      );
-    // Update PI status
-    (pi as any).status = PIStatus.COMPLETED;
-    this.logger.info('Program Increment completed successfully,{';
+      await this.getPICompletionService(): void {';
       piId,
       objectivesAchieved: completionReport.objectivesAchieved,
-      overallSuccess: completionReport.overallSuccessRate,')';
-});')    this.emit('pi-completed,{ pi, completionReport};);
+      overallSuccess: completionReport.overallSuccessRate,');
+});')pi-completed,{ pi, completionReport};);
     return completionReport;
 }
   // ============================================================================
@@ -280,92 +147,36 @@ export class ProgramIncrementManager extends EventBus {
   /**
    * Get PI Planning Service instance with lazy loading
    */
-  private getPIPlanningService(): PIPlanningService {
+  private getPIPlanningService(): void {
     if (!this.piPlanningService) {
-      this.piPlanningService = new PIPlanningService(this.logger);
-}
-    return this.piPlanningService;
-}
-  /**
-   * Get Capacity Planning Service instance with lazy loading
-   */
-  private getCapacityPlanningService(): CapacityPlanningService {
+      this.piPlanningService = new PIPlanningService(): void {
     if (!this.capacityPlanningService) {
-      this.capacityPlanningService = new CapacityPlanningService(this.logger);
-}
-    return this.capacityPlanningService;
-}
-  /**
-   * Get PI Execution Service instance with lazy loading
-   */
-  private getPIExecutionService(): PIExecutionService {
+      this.capacityPlanningService = new CapacityPlanningService(): void {
     if (!this.piExecutionService) {
-      this.piExecutionService = new PIExecutionService(this.logger);
-}
-    return this.piExecutionService;
-}
-  /**
-   * Get PI Completion Service instance with lazy loading
-   */
-  private getPICompletionService(): PICompletionService {
+      this.piExecutionService = new PIExecutionService(): void {
     if (!this.piCompletionService) {
-      this.piCompletionService = new PICompletionService(this.logger);
-}
-    return this.piCompletionService;
-}
-  // ============================================================================
-  // STATE MANAGEMENT
-  // ============================================================================
-  private initializeState(): PIManagerState {
+      this.piCompletionService = new PICompletionService(): void {
     return {
-      activeARTs: await this.memory.retrieve('pi-manager: persistedState as any;
-        this.state = {
-          ...this.state,
-          ...state,
-          activeARTs:  {
-        ...this.state,
-        activeARTs: setInterval(async () => {
+      activeARTs: await this.memory.retrieve(): void {
       try {
-        await this.updateAllPIMetrics();
-} catch (error) {
-    ')        this.logger.error('PI tracking update failed,{ error};);
+        await this.updateAllPIMetrics(): void {
+    ')PI tracking update failed,{ error};);
 }
 }, this.configuration.trackingUpdateInterval);
 }
   private registerEventHandlers(): void {
-    ')    this.eventBus.registerHandler('feature-completed, async (event) => {';
-      await this.handleFeatureCompletion(event.payload.featureId);')';
-});
-    this.eventBus.registerHandler('risk-identified, async (event) => {';
-      await this.handleRiskIdentification(event.payload.risk);)";"
-});
-}
-  // ============================================================================
-  // HELPER METHODS
-  // ============================================================================
-  private startTimer(name: 'Core Feature',)        description : 'Main feature for this PI,'
-'        piId,';
-        businessValue: 'planned ',as any,';
-        owner  = 'product-owner")        team: Array.from(this.state.activePIs.keys())();"
-    for (const piId of activePIs) {
+    ')feature-completed, async (event) => {';
+      await this.handleFeatureCompletion(): void {';
+      await this.handleRiskIdentification(): void {
       try {
-        await this.trackPIProgress(piId);
-} catch (error) {        owner = product-owner")        team: Array.from(this.state.activePIs.keys())();"
-    for (const piId of activePIs) {
+        await this.trackPIProgress(): void {        owner = product-owner")        team: Array.from(): void {
       try {
-        await this.trackPIProgress(piId)'; 
-} catch (error) {.charAt(        owner  = 'product-owner")        team: Array.from(this.state.activePIs.keys())();"
-    for (const piId of activePIs) {
-      try " + JSON.stringify({
-        await this.trackPIProgress(piId)'; 
-}) + " catch (error) {.indexOf("'") > -1 ? "" : "");
-        this.logger.error(""Failed to update metrics for PI ${piId}, { error})")    this.logger.info("',Feature completed,{ featureId};);"
-}
-  private handleRiskIdentification(risk: Risk): void {
-    ')    this.logger.info('Risk identified,{ riskId: risk.id};);
-};)};;
+        await this.trackPIProgress(): void {.charAt(): void {
+      try " + JSON.stringify(): void {.indexOf(): void {piId}, { error})")    this.logger.info(): void {
+    ')Risk identified,{ riskId: risk.id};);
+};)};
 // ============================================================================
 // EXPORTS
 // ============================================================================
 export default ProgramIncrementManager;
-')';
+');

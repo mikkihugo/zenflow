@@ -20,7 +20,7 @@ export interface: BrainSpecificConfig {
         custom: Presets?:Record<string, any>;
 };
     dspy:{
-        teleprompter: 'MIPR: Ov2|BootstrapFew: Shot|LabeledFew: Shot|Ensemble;;
+        teleprompter: 'MIPR: Ov2|BootstrapFew: Shot|LabeledFew: Shot|Ensemble;
 '        max: Tokens:number;
         optimization: Steps:number;
         coordination: Feedback:boolean;
@@ -35,16 +35,7 @@ export declare const: DEFAULT_BRAIN_CONFIG:BrainSpecific: Config;
 /**
  * Get brain configuration using shared infrastructure
  */
-export declare function getBrain: Config():BrainSpecific: Config & Partial<Config>;
-/**
- * Validate brain configuration
- */
-export declare function validateBrain: Config(config:Partial<BrainSpecific: Config>): boolean;
-/**
- * Initialize brain system with shared infrastructure
- */
-export declare function initializeBrain: System():Promise<BrainSpecific: Config & Partial<Config>>;
-declare const _default:{
+export declare function getBrain: Config(): void {
     getBrain: Config:typeof getBrain: Config;
     validateBrain: Config:typeof validateBrain: Config;
     initializeBrain: System:typeof initializeBrain: System;

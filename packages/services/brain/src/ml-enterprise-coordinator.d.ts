@@ -123,53 +123,14 @@ export declare class: MLEnterpriseCoordinator extends: TypedEventBase {
   private performance: Metrics;
   private validation: Results;
   private performanceMonitoring: Interval?;
-  constructor(config?: Partial<MLEnterprise: Config>);
-  /**
-   * Initialize the: ML Enterprise: Coordinator
-   */
-  initialize(): Promise<{
+  constructor(): void {
     success: boolean;
     error?: string;
   }>;
   /**
    * Shutdown the coordinator and cleanup resources
    */
-  shutdown(): Promise<void>;
-  /**
-   * Start: ML training job with: SPARC methodology integration
-   */
-  startTraining: Job(
-    model: Id: string,
-    config: any,
-    sparc_phase?:
-      | 'specification'
-      | ' pseudocode'
-      | ' architecture'
-      | ' refinement'
-      | ' completion'
-  ): Promise<string>;
-  /**
-   * Update training progress with enterprise event emission
-   */
-  updateTraining: Progress(
-    training: Id: string,
-    epoch: number,
-    loss: number,
-    accuracy: number,
-    validation: Loss?: number,
-    validation: Accuracy?: number
-  ): void;
-  /**
-   * Complete training job
-   */
-  private completeTraining: Job;
-  /**
-   * Execute: ML inference with comprehensive event tracking
-   */
-  execute: Inference(
-    model: Id: string,
-    input: any,
-    options?: {
+  shutdown(): void {
       timeout?: number;
       confidence_threshold?: number;
     }
@@ -177,33 +138,7 @@ export declare class: MLEnterpriseCoordinator extends: TypedEventBase {
   /**
    * Run model validation with: SPARC quality gates
    */
-  validate: Model(
-    model: Id: string,
-    validation: Type:
-      | 'unit_test'
-      | ' integration_test'
-      | ' performance_test'
-      | ' a_b_test',
-    sparc_phase:
-      | ' specification'
-      | ' pseudocode'
-      | ' architecture'
-      | ' refinement'
-      | ' completion',
-    test: Data: any[]
-  ): Promise<MLModelValidation: Event>;
-  /**
-   * Request: TaskMaster approval for: ML operations
-   */
-  requestTaskMaster: Approval(
-    workflow: Id: string,
-    operation: string,
-    metadata: any
-  ): Promise<boolean>;
-  /**
-   * Get enterprise coordination metrics
-   */
-  getEnterprise: Metrics(): {
+  validate: Model(): void {
     active_training_jobs: number;
     active_inferences: number;
     workflow_states: number;
@@ -225,10 +160,7 @@ export declare class: MLEnterpriseCoordinator extends: TypedEventBase {
 /**
  * Factory function to create: ML Enterprise: Coordinator with sensible defaults
  */
-export declare function createMLEnterprise: Coordinator(
-  overrides?: Partial<MLEnterprise: Config>
-): MLEnterprise: Coordinator;
-export {
+export declare function createMLEnterprise: Coordinator(): void {
   type: MLTrainingProgressEvent,
   type: MLInferenceResultEvent,
   type: MLWorkflowStateEvent,

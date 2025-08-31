@@ -6,11 +6,11 @@
  *
  * SINGLE RESPONSIBILITY: dateFns;';
 const { groupBy, map, filter, orderBy, sumBy, meanBy, maxBy, countBy} = _;
-import type { Logger} from '../types')import type {';
+import type { Logger} from '../types');
   CompetitorAnalysis,
   CustomerNeed,
   CustomerSegment,
-} from '../types/product-management')import { CustomerNeedPriority} from '../types/product-management')/**';
+} from '../types/product-management')../types/product-management');
  * Customer research service configuration
  */
 export interface CustomerResearchConfig {

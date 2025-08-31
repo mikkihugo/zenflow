@@ -21,7 +21,7 @@ export interface IBrainCoordinator {
   workflowEngine?:IWorkflowEngine;
   loadBalancer?:ILoadBalancer;
   conversationOrchestrator?:IConversationOrchestrator;
-'};;
+'};
 /**
  * Configuration for AI enhancements
  */

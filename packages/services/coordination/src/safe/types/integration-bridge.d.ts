@@ -13,12 +13,7 @@ export declare enum SPARCPhase {
  * SPARC project structure - defined locally for event payloads
  */
 export interface SPARCProject {
-    id: string;
-    name: string;
-    description: string;
-    currentPhase: SPARCPhase;
-    progress: number;
-    metadata: Record<string, unknown>;
+  id: string;
 }
 export type AgentType = 'researcher' | ' coder' | ' analyst' | ' coordinator' | ' specialist';
 /**
@@ -55,7 +50,7 @@ export interface ArchitecturalImpact {
  * Correlates SAFe progress with SPARC execution
  */
 export interface ProgressCorrelation {
-    readonly safeStatus: Feature['status];;];
+    readonly safeStatus: Feature['status];];
     readonly sparcPhases: SPARCPhaseMapping[];
     readonly overallProgress: number;
     readonly blockers: IntegrationBlocker[];
@@ -74,12 +69,7 @@ export interface SPARCPhaseMapping {
  * Quality gates that bridge SAFe acceptance criteria with SPARC deliverables
  */
 export interface QualityGate {
-    readonly id: string;
-    readonly name: string;
-    readonly safeAcceptanceCriteria: string[];
-    readonly sparcValidation: SPARCValidation;
-    readonly approvalRequired: boolean;
-    readonly automatedCheck: boolean;
+  id: string;
 }
 /**
  * SPARC-specific validation requirements
@@ -103,15 +93,7 @@ export interface ValidationCriteria {
  * Integration blockers and resolution strategies
  */
 export interface IntegrationBlocker {
-    readonly id: string;
-    readonly type: 'dependency' | ' resource' | ' technical' | ' business';
-    readonly description: string;
-    readonly impact: 'low' | ' medium' | ' high' | ' critical';
-    readonly affectedFeatures: string[];
-    readonly affectedSPARCProjects: string[];
-    readonly resolutionStrategy: string;
-    readonly owner: string;
-    readonly targetResolutionDate: Date;
+  id: string;
 }
 /**
  * Agent roles that understand both SAFe and SPARC contexts
@@ -168,14 +150,7 @@ export interface SPARCWorkflowPhase {
  * Synchronization points between frameworks
  */
 export interface SynchronizationPoint {
-    readonly id: string;
-    readonly name: string;
-    readonly safeContext: string;
-    readonly sparcContext: string;
-    readonly syncType: 'milestone' | ' review' | ' approval' | ' handoff';
-    readonly requiredArtifacts: string[];
-    readonly successCriteria: string[];
-    readonly timeout: number;
+  id: string;
 }
 /**
  * Escalation paths for integration issues

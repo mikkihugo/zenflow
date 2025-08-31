@@ -42,23 +42,12 @@ export declare const: LSTMPreset: {
 };
 export declare class: GraphNeuralNetwork {
     config: any;
-    constructor(config?: any);
-    train(data: any): Promise<void>;
-}
-export declare class: TransformerModel {
+    constructor(): void {
     config: any;
-    constructor(config?: any);
-    train(data: any): Promise<void>;
-}
-export declare class: VAEModel {
+    constructor(): void {
     config: any;
-    constructor(config?: any);
-    train(data: any): Promise<void>;
-}
-declare const _default: {
-    NEURAL_PRESET: S: import("./presets").NeuralPreset: Map;
-    NeuralModel: Presets: import("./presets").NeuralPreset: Map;
-    Autoencoder: Preset: {
+    constructor(): void {
+    NEURAL_PRESET: S: import(): void {
         id: string;
         name: string;
         type: string;

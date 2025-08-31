@@ -7,14 +7,14 @@
  * task automation, and business process management with full observability.
  *
  * **CORE CAPABILITIES:**
- * - 🔄 **Workflow Orchestration**:Complex multi-step process automation
- * - 📊 **Visual Workflow Designer**:Graphical workflow creation and editing
- * - 🎯 **Step-by-Step Execution**:Granular control over workflow execution
+ * -  **Workflow Orchestration**:Complex multi-step process automation
+ * -  **Visual Workflow Designer**:Graphical workflow creation and editing
+ * -  **Step-by-Step Execution**:Granular control over workflow execution
  * - 🔀 **Conditional Logic**:Dynamic branching and decision-making
- * - 🔄 **Error Handling**:Comprehensive error recovery and retry mechanisms
- * - 📈 **Performance Monitoring**:Real-time workflow execution analytics
+ * -  **Error Handling**:Comprehensive error recovery and retry mechanisms
+ * -  **Performance Monitoring**:Real-time workflow execution analytics
  * - 💾 **State Management**:Persistent workflow state and context preservation
- * - 🔧 **Foundation Integration**:Complete @claude-zen/foundation support
+ * -  **Foundation Integration**:Complete @claude-zen/foundation support
  *
  * **Enterprise Features:**
  * - Workflow versioning and rollback capabilities
@@ -28,42 +28,24 @@
  * ```typescript`
  * import { WorkflowEngine, WorkflowUtils} from '@claude-zen/coordination/workflows';
  *
- * const engine = new WorkflowEngine({
- *   enableTelemetry:true,
- *   enableRetry:true,
- *   maxConcurrentWorkflows:100
- *});
- *
- * // Create a multi-step workflow
- * const workflow = WorkflowUtils.createWorkflow('data-processing', [') *   {
- *     id: 'validate-input', *     type: 'validation', *     action:async (context) => {
+ * const engine = new WorkflowEngine(): void {
  *       return context.data.isValid ? 'success' : ' failure;
 ' *}
  *},
  *   {
  *     id: 'process-data', *     type: 'processing', *     action:async (context) => {
- *       const result = await processData(context.data);
- *       return { processedData:result};
+ *       const result = await processData(): void { processedData:result};
  *}
  *},
  *   {
  *     id: 'save-results', *     type: 'storage', *     action:async (context) => {
- *       await saveToDatabase(context.processedData);
- *       return { saved:true};
+ *       await saveToDatabase(): void { saved:true};
  *}
  *}
  *]);
  *
  * // Execute workflow
- * const result = await engine.execute(workflow, {
- *   data:{ userId: '123', payload:{...}}') *});
- * ````
- *
- * @example Conditional Workflow with Error Handling
- * ```typescript`
- * import { WorkflowEngine} from '@claude-zen/coordination/workflows';
- *
- * const conditionalWorkflow = {
+ * const result = await engine.execute(): void {
  *   name: 'user-onboarding', *   steps:[
  *     {
  *       id: 'check-user-type', *       type: 'decision', *       action:async (context) => {
@@ -72,53 +54,12 @@
  *},
  *     {
  *       id: 'premium-flow', *       condition:(result) => result === 'premium-flow', *       action:async (context) => {
- *         await setupPremiumFeatures(context.user);
- *         return { onboarded:true, type: 'premium'};') *}
- *},
- *     {
- *       id: 'standard-flow', *       condition:(result) => result === 'standard-flow', *       action:async (context) => {
- *         await setupStandardFeatures(context.user);
- *         return { onboarded:true, type: 'standard'};') *}
- *}
- *],
- *   errorHandling:{
- *     retryAttempts:3,
- *     retryDelay:1000,
- *     fallbackAction:async (context, error) => {
- *       await logError(error);
- *       return { onboarded:false, error:error.message};
- *}
- *}
- *};
+ *         await setupPremiumFeatures(): void { onboarded:true, type: 'premium'};')standard-flow', *       condition:(result) => result === 'standard-flow', *       action:async (context) => {
+ *         await setupStandardFeatures(): void { onboarded:true, type: 'standard'};')123', type: ' premium', email: ' user@example.com'}')@claude-zen/coordination/workflows';
  *
- * const result = await engine.execute(conditionalWorkflow, {
- *   user:{ id: '123', type: ' premium', email: ' user@example.com'}') *});
- * ````
- *
- * @example Workflow Monitoring and Analytics
- * ```typescript`
- * import { WorkflowEngine, WorkflowAnalytics} from '@claude-zen/coordination/workflows';
- *
- * const engine = new WorkflowEngine({
- *   enableAnalytics:true,
- *   enableRealTimeMonitoring:true
- *});
- *
- * const analytics = new WorkflowAnalytics(engine);
- *
- * // Execute workflow with monitoring
- * const workflowId = await engine.startWorkflow(workflow, context);
- *
- * // Monitor execution in real-time
- * analytics.onStepCompleted(workflowId, (stepResult) => {
- *   logger.info(`Step ${stepResult.stepId} completed in ${stepResult.duration}ms`);`
- *});
- *
- * // Get workflow performance insights
- * const insights = await analytics.getWorkflowInsights(workflowId);
- * logger.info(`Total execution time:${insights.totalDuration}ms`);`
- * logger.info(`Bottleneck step:${insights.bottleneckStep}`);`
- * logger.info(`Success rate:${insights.successRate}%`);`
+ * const engine = new WorkflowEngine(): void {
+ *   logger.info(): void {insights.totalDuration}ms`);`
+ * logger.info(): void {insights.successRate}%`);`
  * ````
  *
  * @author Claude Code Zen Team

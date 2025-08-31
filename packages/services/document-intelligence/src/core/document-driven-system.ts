@@ -12,19 +12,7 @@
  */
 import { getLogger, TypedEventBase} from '@claude-zen/foundation';
 
-const logger = getLogger('SafeArtifactIntelligence');
-
-// SAFe 6.0 Essential artifacts - ALL STORED IN DATABASE
-export interface SafeArtifact {
-  id: string; // Database ID
-  type: 'portfolio-epic' | 'business-case' | 'pi-objective' | 'feature' | 'user-story' | 'enabler' | 'architecture-runway';
-  safeLevel: 'portfolio' | 'program' | 'team';
-  artifactState: string; // Portfolio Kanban states, PI states, etc.
-  title: string;
-  description: string;
-  content: string; // Stored in database, NOT files
-  databaseId?: string; // Reference to specific database record
-  metadata?: {
+const logger = getLogger(): void {
     author?: string;
     created?: Date;
     updated?: Date;
@@ -52,55 +40,12 @@ export interface SafeWorkflowContext {
   workspace: SafeWorkspace;
   activeArtifacts: Map<string, SafeArtifact>;
   currentPI?:string; // Current Program Increment
-  safeLevel: 'essential|large-solution|portfolio'; // SAFe configuration')  sparcIntegration: boolean; // SPARC development execution
-}
-
-export class SafeArtifactIntelligence extends TypedEventBase {
-  private workspaces: Map<string, SafeWorkflowContext> = new Map();
-
-  constructor() {
-    super();
-    this.setupDocumentHandlers();
-}
-
-  /**
-   * Initialize system - SAFe 6.0 Essential artifact intelligence.
-   */
-  async initialize(Promise<void> {
-    logger.info('Initializing SAFe Artifact Intelligence System');
-    logger.info('SAFe Artifact Intelligence ready');
-    this.emit('initialized', { timestamp: new Date() });
-  }
-
-  /**
-   * Load existing workspace with documents.
-   *
-   * @param workspacePath
-   */
-  async loadWorkspace(Promise<string> {
-    const workspaceId = "safe-workspace-${Date.now()}"""
-
-    const workspace: SafeWorkspace = {
-      workspaceId,
-      name: workspaceName,
-      safeConfiguration: 'essential', // SAFe 6.0 Essential by default')      databases:{
-        artifacts: databaseConnections.artifacts || 'safe_artifacts.db',        relationships: databaseConnections.relationships || 'safe_relationships.db',    ')        analytics: databaseConnections.analytics || 'safe_analytics.db',}
+  safeLevel: 'essential|large-solution|portfolio'; // SAFe configuration')Initializing SAFe Artifact Intelligence System')essential', // SAFe 6.0 Essential by default')safe_artifacts.db',        relationships: databaseConnections.relationships || 'safe_relationships.db',    ')safe_analytics.db',}
 };
 
     const context: SafeWorkflowContext = {
       workspace,
-      activeArtifacts: new Map(),
-      currentPI: undefined, 
-      safeLevel: 'essential',      sparcIntegration: true,
-};
-
-    this.workspaces.set(workspaceId, context);
-
-    // Load existing artifacts from database
-    await this.loadArtifactsFromDatabase(workspaceId);
-
-    logger.info('Loaded SAFe workspace: ' + workspaceName);
-    this.emit('workspace: loaded', { workspaceId, name: workspaceName });
+      private activeArtifacts = new Map(): void { workspaceId, name: workspaceName });
 
     return workspaceId;
 }
@@ -111,40 +56,12 @@ export class SafeArtifactIntelligence extends TypedEventBase {
    * @param workspaceId
    * @param docPath
    */
-  async processVisionaryDocument(Promise<void> {
-    const context = this.workspaces.get(workspaceId);
-    if (!context) throw new Error('Workspace ' + workspaceId + ' not found');
-
-    const docType = this.getDocumentType(docPath);
-    const content = await readFile(docPath, 'utf8');
-    logger.info('Processing ' + docType + ' document: ' + docPath);
-
-    const doc: VisionaryDocument = {
+  async processVisionaryDocument(): void {
       type: docType,
       path: docPath,
       content,
-      metadata: await this.extractMetadata(content),
-};
-
-    context.activeDocuments.set(docPath, doc);
-
-    // Route to appropriate processor based on document type
-    switch (docType) {
-      case 'vision':        await this.processVisionDocument(workspaceId, doc);
-        break;
-      case 'adr':        await this.processADR(workspaceId, doc);
-        break;
-      case 'prd':        await this.processPRD(workspaceId, doc);
-        break;
-      case 'epic':        await this.processEpic(workspaceId, doc);
-        break;
-      case 'feature':        await this.processFeature(workspaceId, doc);
-        break;
-      case 'task':        await this.processTask(workspaceId, doc);
-        break;
-}
-
-    this.emit('document: created', {
+      metadata: await this.extractMetadata(): void {
+      case 'vision':        await this.processVisionDocument(): void {
     ')      workspaceId,
       path: docPath,
       type: docType,

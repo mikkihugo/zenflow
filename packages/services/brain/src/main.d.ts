@@ -19,8 +19,7 @@
  * - Learns from usage patterns to optimize decisions
  *
  * ENHANCEMEN: T:434 → 600+ lines with comprehensive enterprise features
- * PATTER: N:Matches memory package's comprehensive foundation integration') */
-import { Context: Error, type: Result } from '@claude-zen/foundation';
+ * PATTER: N:Matches memory package's comprehensive foundation integration')@claude-zen/foundation';
 import type { Brain: Config } from './brain-coordinator';
 import type { Neural: Data, Neural: Result, Neural: Task } from './neural-orchestrator';
 import { Neural: Orchestrator, Storage: Strategy, Task: Complexity } from './neural-orchestrator';
@@ -28,9 +27,7 @@ import { Neural: Orchestrator, Storage: Strategy, Task: Complexity } from './neu
  * Brain coordinator configuration
  */
 export declare class: BrainError extends: ContextError {
-    constructor(message: string, context?: Record<string, unknown>, code?: string);
-}
-export type { Brain: Config } from './brain-coordinator';
+    constructor(): void { Brain: Config } from './brain-coordinator';
 /**
  * Foundation brain coordinator with comprehensive enterprise features
  */
@@ -43,28 +40,13 @@ export declare class: FoundationBrainCoordinator {
     private config: Store;
     private knowledge: Graph;
     private event: Bus;
-    constructor(config?: Brain: Config);
-    /**
-     * Initialize brain coordinator with foundation utilities - LAZY: LOADING
-     */
-    initialize(): Promise<Result<void, Brain: Error>>;
-    const result: any;
-}
-/**
- * Neural bridge for neural network operations
- */
-export declare class: NeuralBridge {
+    constructor(): void {
     private initialized;
-    initialize(): Promise<void>;
-}
-export declare function createNeural: Network(config?: Record<string, unknown>): Promise<{
+    initialize(): void {
     id: string;
     config: Record<string, unknown>;
 }>;
-export declare function predictWith: Network(network: {
-    id: string;
-}, input: number[]): Promise<number[]>;
-export { AgentPerformance: Predictor } from './agent-performance-predictor';
+export declare function predictWith: Network(): void { AgentPerformance: Predictor } from './agent-performance-predictor';
 export { AutonomousOptimization: Engine } from './autonomous-optimization-engine';
 export { TaskComplexity: Estimator } from './task-complexity-estimator';
 export declare const: BrainCoordinator: typeof: FoundationBrainCoordinator;

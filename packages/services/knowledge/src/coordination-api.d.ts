@@ -2,23 +2,14 @@
  * @file Coordination API - Public Interface for Coordination Layer
  *
  * This file provides the public API for coordination layer to interact with
- * the knowledge package's fact system. The actual implementation remains') * private within the knowledge package.
- *
- * This maintains the same interface as the old shared-fact-system to ensure
- * compatibility with existing coordination code.
- */
-import type {
-  CoordinationFact,
-  CoordinationFactQuery,
-  FactSearchResult,
-} from './fact-system';
+ * the knowledge package's fact system. The actual implementation remains')./fact-system';
 export type { CoordinationFact, CoordinationFactQuery, FactSearchResult};
 export type FactEntry = CoordinationFact;
 export type FactQuery = CoordinationFactQuery;
 /**
  * Get the coordination fact system instance (read-only access to initialized state)
  */
-export declare function getCoordinationFactSystem():{
+export declare function getCoordinationFactSystem(): void {
   isInitialized:() => boolean;
   getStats:() => {
     totalFacts: number;
@@ -30,22 +21,7 @@ export declare function getCoordinationFactSystem():{
 /**
  * Initialize the coordination fact system
  */
-export declare function initializeCoordinationFactSystem():Promise<void>;
-/**
- * Store a coordination-specific fact
- */
-export declare function storeCoordinationFact(
-  fact: Omit<CoordinationFact, 'id|timestamp''>')):Promise<string>;
-/**
- * Query coordination facts based on criteria
- */
-export declare function queryCoordinationFacts(
-  query?:CoordinationFactQuery
-):Promise<CoordinationFact[]>;
-/**
- * Search coordination facts with text-based query
- */
-export declare function searchCoordinationFacts(searchParams:{
+export declare function initializeCoordinationFactSystem(): void {
   query: string;
   type?:string;
   limit?:number;

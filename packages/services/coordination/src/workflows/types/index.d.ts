@@ -31,43 +31,23 @@ export declare enum WorkflowStatus {
  * Step execution states
  */
 export declare enum StepStatus {
-    ')  PENDING = ' = 0,
+    ') = 0,
     pending = 1,
-    ')  RUNNING = ' = 2,
+    ') = 2,
     running = 3,
-    ')  COMPLETED = ' = 4,
+    ') = 4,
     completed = 5,
-    ')  FAILED = ' = 6,
+    ') = 6,
     failed = 7,
-    ')  SKIPPED = ' = 8,
+    ') = 8,
     skipped = 9,
-    ')  CANCELLED = ' = 10,
+    ') = 10,
     cancelled = 11,
-    ')  TIMEOUT = ' = 12,
+    ') = 12,
     timeout = 13,
-    ')  RETRYING = ' = 14,
+    ') = 14,
     retrying = 15,
-    ')};; 
-    /**
-     * Workflow execution strategies
-     */
-    = 16
-    /**
-     * Workflow execution strategies
-     */
-    ,
-    /**
-     * Workflow execution strategies
-     */
-    export = 17,
-    enum = 18,
-    ExecutionStrategy = 19
-}
-/**
- * Timeout configuration
- */
-export interface TimeoutConfig {
-    workflow: 'fail_fast';
+    ')fail_fast';
 }
 /**
  * Resource requirements and limits
@@ -201,7 +181,7 @@ export interface StepMetrics {
  * Workflow execution log entry
  */
 export interface ExecutionLog {
-    id: 'debug';
+  id: string;
 }
 /**
  * Workflow artifacts (files, data, etc.)
@@ -217,21 +197,7 @@ export interface RetentionPolicy {
     deleteAfterExpiration: boolean;
     archiveBeforeDelete: boolean;
     archiveLocation?: string;
-    ')};;: any;
-}
-/**
- * Access control policy for artifacts
- */
-export interface AccessPolicy {
-    public: boolean;
-    users: string[];
-    roles: string[];
-    permissions: Permission[];
-}
-/**
- * Workflow template for reusable workflows
- */
-export interface WorkflowTemplate extends Omit<Entity, 'version'> {
+    ')version'> {
     ';: any;
     name: 'string';
 }
@@ -243,43 +209,7 @@ export interface TemplateExample {
     description: string;
     parameters: Record<string, unknown>;
     expectedOutput: Record<string, unknown>;
-    ')};;: any;
-}
-/**
- * Template documentation
- */
-export interface TemplateDocumentation {
-    overview: string;
-    prerequisites: string[];
-    steps: StepDocumentation[];
-    troubleshooting: TroubleshootingGuide[];
-    changelog: ChangelogEntry[];
-}
-/**
- * Workflow validation rules
- */
-export interface WorkflowValidation {
-    schema: ValidationSchema;
-    rules: ValidationRule[];
-    dependencies: DependencyValidation[];
-    resources: ResourceValidation;
-    security: SecurityValidation;
-}
-/**
- * Workflow permissions
- */
-export interface WorkflowPermissions {
-    execute: Permission[];
-    modify: Permission[];
-    view: Permission[];
-    delete: Permission[];
-    admin: Permission[];
-}
-/**
- * Permission specification
- */
-export interface Permission {
-    type: 'user| role| group' | ' service';
+    ')user| role| group' | ' service';
     principal: string;
     conditions?: PermissionCondition[];
     expiry?: Timestamp;
@@ -591,7 +521,7 @@ declare const _default:  {
     ParameterType: any;
     RollbackStrategy: any;
     LockType: any;
-    '};;': string;
+    '};': string;
 };
 export default _default;
 //# sourceMappingURL=index.d.ts.map

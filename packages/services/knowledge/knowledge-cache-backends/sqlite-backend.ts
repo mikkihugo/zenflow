@@ -28,70 +28,14 @@ import type {
 
 // Minimal implementation for SQLite backend
 interface Logger {
-  info(message: string, data?: any): void;
-  debug(message: string, data?: any): void;
-  error(message: string, data?: any): void;
-  warn(message: string, data?: any): void;
-}
-
-class SimpleLogger implements Logger {
-  constructor(private name: string) {}
+  info(): void {
+  constructor(): void {}
   
-  info(message: string, data?: any): void {
-    console.log(`[${this.name}] INFO:`, message, data ? JSON.stringify(data) : '');
-  }
-  
-  debug(message: string, data?: any): void {
-    console.log(`[${this.name}] DEBUG:`, message, data ? JSON.stringify(data) : '');
-  }
-  
-  error(message: string, data?: any): void {
-    console.error(`[${this.name}] ERROR:`, message, data ? JSON.stringify(data) : '');
-  }
-  
-  warn(message: string, data?: any): void {
-    console.warn(`[${this.name}] WARN:`, message, data ? JSON.stringify(data) : '');
-  }
-}
-
-function getLogger(name: string): Logger {
-  return new SimpleLogger(name);
-}
-
-class EnhancedError extends Error {
-  constructor(
-    public code: string,
-    message: string,
-    public context?: { context?: any; cause?: any }
-  ) {
-    super(message);
-    this.name = 'EnhancedError';
-  }
-}
-
-// SQLite Database interface - in a real implementation this would be better-sqlite3
-interface SQLiteDatabase {
-  prepare(sql: string): SQLiteStatement;
-  exec(sql: string): void;
-  transaction<T>(fn: () => T): T;
-  close(): void;
-  pragma(pragma: string, value?: any): any;
-}
-
-interface SQLiteStatement {
-  run(...params: any[]): { changes: number; lastInsertRowid: number };
-  get(...params: any[]): any;
-  all(...params: any[]): any[];
-  iterate(...params: any[]): IterableIterator<any>;
-}
-
-/**
- * Production-grade SQLite-based FACT storage backend.
- *
- * Provides persistent storage with full-text search, metadata querying,
- * vector similarity search, connection pooling, and comprehensive monitoring.
- */
-export class SQLiteBackend implements FACTStorageBackend {
+  info(): void {
+    console.log(): void {
+  prepare(): void {
+  run(): void { changes: number; lastInsertRowid: number };
+  get(): void {
   private readonly logger: Logger;
   private readonly config: FACTStorageConfig;
   private db: SQLiteDatabase | null = null;
@@ -123,23 +67,10 @@ export class SQLiteBackend implements FACTStorageBackend {
     cacheHitRate: 0,
   };
 
-  constructor(config: FACTStorageConfig) {
+  constructor(): void {
     this.config = config;
     
-    this.logger = getLogger('sqlite-backend');
-    
-    this.stats = {
-      memoryEntries: 0,
-      persistentEntries: 0,
-      totalMemorySize: 0,
-      cacheHitRate: 0,
-      oldestEntry: 0,
-      newestEntry: 0,
-      topDomains: [],
-      storageHealth: 'excellent',
-    };
-
-    this.logger.info('SQLite backend initialized', {
+    this.logger = getLogger(): void {
       backend: this.config.backend,
       maxMemoryCacheSize: this.config.maxMemoryCacheSize,
       defaultTTL: this.config.defaultTTL,
@@ -149,58 +80,15 @@ export class SQLiteBackend implements FACTStorageBackend {
   /**
    * Initialize SQLite database and create required tables.
    */
-  async initialize(): Promise<void> {
+  async initialize(): void {
     if (this.isInitialized) {
-      this.logger.debug('SQLite backend already initialized');
-      return;
-    }
-
-    try {
-      this.logger.info('Initializing SQLite database and connection pool');
-      
-      // In a real implementation, this would use better-sqlite3
-      // For now, we'll create a mock implementation that demonstrates the structure
-      await this.initializeDatabase();
-      await this.createTables();
-      await this.createIndexes();
-      await this.prepareStatements();
-      await this.initializeConnectionPool();
-
-      // Enable WAL mode for better concurrency
-      this.db?.pragma('journal_mode', 'WAL');
-      this.db?.pragma('synchronous', 'NORMAL');
-      this.db?.pragma('cache_size', -64000); // 64MB cache
-      this.db?.pragma('temp_store', 'MEMORY');
-      
-      this.isInitialized = true;
-      
-      this.logger.info('SQLite backend initialized successfully', {
+      this.logger.debug(): void {
         tables: ['knowledge_entries', 'knowledge_fts'],
         indexes: ['idx_timestamp', 'idx_source', 'idx_type'],
         connectionPool: this.maxConnections,
       });
     } catch (error) {
-      const enhancedError = new EnhancedError(
-        'InitializationError',
-        'Failed to initialize SQLite backend',
-        {
-          context: {
-            config: this.config,
-            error: error instanceof Error ? error.message : String(error),
-          },
-          cause: error instanceof Error ? error : undefined,
-        }
-      );
-      
-      this.logger.error('SQLite backend initialization failed', enhancedError);
-      throw enhancedError;
-    }
-  }
-
-  /**
-   * Create required database tables.
-   */
-  private async createTables(): Promise<void> {
+      const enhancedError = new EnhancedError(): void {
     const createKnowledgeEntriesTable = `
       CREATE TABLE IF NOT EXISTS knowledge_entries (
         id TEXT PRIMARY KEY,
@@ -211,31 +99,7 @@ export class SQLiteBackend implements FACTStorageBackend {
         source TEXT,
         type TEXT,
         tags TEXT, -- JSON array
-        created_at INTEGER DEFAULT (unixepoch()),
-        updated_at INTEGER DEFAULT (unixepoch()),
-        access_count INTEGER DEFAULT 0,
-        size_bytes INTEGER
-      )
-    `;
-
-    const createFTSTable = `
-      CREATE VIRTUAL TABLE IF NOT EXISTS knowledge_fts USING fts5(
-        content,
-        content='knowledge_entries',
-        content_rowid='rowid'
-      )
-    `;
-
-    const createMetricsTable = `
-      CREATE TABLE IF NOT EXISTS storage_metrics (
-        metric_name TEXT PRIMARY KEY,
-        metric_value TEXT,
-        updated_at INTEGER DEFAULT (unixepoch())
-      )
-    `;
-
-    // In a real implementation, these would execute
-    this.logger.debug('Creating database tables', {
+        created_at INTEGER DEFAULT (unixepoch(): void {
       tables: ['knowledge_entries', 'knowledge_fts', 'storage_metrics']
     });
   }
@@ -243,189 +107,62 @@ export class SQLiteBackend implements FACTStorageBackend {
   /**
    * Create database indexes for performance.
    */
-  private async createIndexes(): Promise<void> {
+  private async createIndexes(): void {
     const indexes = [
-      'CREATE INDEX IF NOT EXISTS idx_timestamp ON knowledge_entries(timestamp)',
-      'CREATE INDEX IF NOT EXISTS idx_source ON knowledge_entries(source)',
-      'CREATE INDEX IF NOT EXISTS idx_type ON knowledge_entries(type)',
-      'CREATE INDEX IF NOT EXISTS idx_created_at ON knowledge_entries(created_at)',
-      'CREATE INDEX IF NOT EXISTS idx_access_count ON knowledge_entries(access_count)'
-    ];
-
-    this.logger.debug('Creating database indexes', { count: indexes.length });
+      'CREATE INDEX IF NOT EXISTS idx_timestamp ON knowledge_entries(): void { count: indexes.length });
   }
 
   /**
    * Prepare commonly used SQL statements.
    */
-  private async prepareStatements(): Promise<void> {
+  private async prepareStatements(): void {
     // In a real implementation, these would be prepared statements
-    this.logger.debug('Preparing SQL statements');
-  }
-
-  /**
-   * Initialize connection pool.
-   */
-  private async initializeConnectionPool(): Promise<void> {
-    this.logger.debug('Initializing connection pool', { maxConnections: this.maxConnections });
+    this.logger.debug(): void { maxConnections: this.maxConnections });
   }
 
   /**
    * Initialize database connection.
    */
-  private async initializeDatabase(): Promise<void> {
+  private async initializeDatabase(): void {
     // Mock database initialization
     this.db = {
       prepare: (sql: string) => ({
-        run: () => ({ changes: 1, lastInsertRowid: Date.now() }),
-        get: () => ({}),
+        run: () => ({ changes: 1, lastInsertRowid: Date.now(): void {}),
         all: () => [],
         iterate: () => [][Symbol.iterator](),
       }),
       exec: () => {},
-      transaction: <T>(fn: () => T) => fn(),
-      close: () => {},
+      transaction: <T>(fn: () => T) => fn(): void {},
       pragma: () => {},
     } as SQLiteDatabase;
   }
 
-  async store(entry: FACTKnowledgeEntry): Promise<void> {
-    await this.ensureInitialized();
-    
-    try {
-      const startTime = performance.now();
-      
-      // In a real implementation, this would execute the insert
-      this.updateStats('write', JSON.stringify(entry).length);
-      this.performanceMetrics.totalInserts++;
-      
-      const duration = performance.now() - startTime;
-      this.updatePerformanceMetrics('insert', duration);
-      
-      
-      
-      this.logger.debug('Entry stored successfully', { id: entry.id, size: JSON.stringify(entry).length });
-    } catch (error) {
+  async store(): void {
+    await this.ensureInitialized(): void {
+      const startTime = performance.now(): void { id: entry.id, size: JSON.stringify(): void {
       this.performanceMetrics.errorCount++;
-      const enhancedError = new EnhancedError(
-        'StorageError',
-        'Failed to store entry',
-        {
-          context: { id: entry.id, entryType: entry.metadata.type },
-          cause: error instanceof Error ? error : undefined,
-        }
-      );
-      
-      this.logger.error('Failed to store entry', enhancedError);
-      throw enhancedError;
-    }
-  }
-
-  async get(id: string): Promise<FACTKnowledgeEntry | null> {
-    await this.ensureInitialized();
-    
-    try {
-      const startTime = performance.now();
-      
-      // Mock implementation - in reality would query database
-      const entry = null; // Mock empty result
-      
-      const duration = performance.now() - startTime;
-      this.updatePerformanceMetrics('select', duration);
-      
-      if (entry) {
+      const enhancedError = new EnhancedError(): void {
+    await this.ensureInitialized(): void {
+      const startTime = performance.now(): void {
         this.stats.cacheHitRate++;
-        this.updateStats('read', 0);
-      } else {
+        this.updateStats(): void {
         // Update miss count if we tracked it
       }
       
       return entry;
     } catch (error) {
       this.performanceMetrics.errorCount++;
-      const enhancedError = new EnhancedError(
-        'RetrievalError',
-        'Failed to retrieve entry',
-        {
-          context: { id },
-          cause: error instanceof Error ? error : undefined,
-        }
-      );
-      
-      this.logger.error('Failed to retrieve entry', enhancedError);
-      throw enhancedError;
-    }
-  }
-
-  async delete(id: string): Promise<boolean> {
-    await this.ensureInitialized();
-    
-    try {
-      const startTime = performance.now();
-      
-      // Mock implementation
-      const deleted = true;
-      
-      const duration = performance.now() - startTime;
-      this.updatePerformanceMetrics('delete', duration);
-      
-      if (deleted) {
-        this.updateStats('delete', 0);
-        this.performanceMetrics.totalDeletes++;
-        
-      }
-      
-      return deleted;
-    } catch (error) {
+      const enhancedError = new EnhancedError(): void {
+    await this.ensureInitialized(): void {
+      const startTime = performance.now(): void {
+        this.updateStats(): void {
       this.performanceMetrics.errorCount++;
-      const enhancedError = new EnhancedError(
-        'DeletionError',
-        'Failed to delete entry',
-        {
-          context: { id },
-          cause: error instanceof Error ? error : undefined,
-        }
-      );
-      
-      this.logger.error('Failed to delete entry', enhancedError);
-      throw enhancedError;
-    }
-  }
-
-  async search(query: FACTSearchQuery): Promise<FACTKnowledgeEntry[]> {
-    await this.ensureInitialized();
-    
-    try {
-      const startTime = performance.now();
-      
-      // Mock implementation - returns empty results
-      const results: FACTKnowledgeEntry[] = [];
-      
-      const duration = performance.now() - startTime;
-      this.updatePerformanceMetrics('search', duration);
-      this.performanceMetrics.totalQueries++;
-      
-      return results;
-    } catch (error) {
+      const enhancedError = new EnhancedError(): void {
+    await this.ensureInitialized(): void {
+      const startTime = performance.now(): void {
       this.performanceMetrics.errorCount++;
-      const enhancedError = new EnhancedError(
-        'SearchError',
-        'Failed to search entries',
-        {
-          context: { query: query.query },
-          cause: error instanceof Error ? error : undefined,
-        }
-      );
-      
-      this.logger.error('Failed to search entries', enhancedError);
-      throw enhancedError;
-    }
-  }
-
-  async clear(): Promise<void> {
-    await this.ensureInitialized();
-    
-    try {
+      const enhancedError = new EnhancedError(): void {
+    await this.ensureInitialized(): void {
       // Mock implementation
       this.stats.persistentEntries = 0;
       this.stats.totalMemorySize = 0;
@@ -441,63 +178,24 @@ export class SQLiteBackend implements FACTStorageBackend {
         cacheHitRate: 0,
       };
 
-      
-      
-      this.logger.info('All entries cleared successfully');
-    } catch (error) {
-      const enhancedError = new EnhancedError(
-        'ClearError',
-        'Failed to clear database',
-        {
+      this.logger.info(): void {
           context: { backend: 'sqlite' },
           cause: error instanceof Error ? error : undefined,
         }
       );
       
-      this.logger.error('Failed to clear database', enhancedError);
-      throw enhancedError;
-    }
-  }
-
-  /**
-   * Close database connections and cleanup resources.
-   */
-  async shutdown(): Promise<void> {
+      this.logger.error(): void {
     try {
       if (this.db && this.isInitialized) {
         // Close all connections in pool
         for (const connection of this.connectionPool) {
-          connection.close();
-        }
-        
-        this.db.close();
-        this.connectionPool = [];
-        this.activeConnections = 0;
-        this.isInitialized = false;
-        
-        
-        
-        this.logger.info('SQLite backend shutdown successfully');
-      }
-    } catch (error) {
-      const enhancedError = new EnhancedError(
-        'ShutdownError',
-        'Failed to shutdown SQLite backend',
-        {
+          connection.close(): void {
           context: { backend: 'sqlite' },
           cause: error instanceof Error ? error : undefined,
         }
       );
       
-      this.logger.error('Failed to shutdown database', enhancedError);
-      throw enhancedError;
-    }
-  }
-
-  /**
-   * Get backend capabilities.
-   */
-  getCapabilities(): {
+      this.logger.error(): void {
     supportsFullTextSearch: boolean;
     supportsVectorSearch: boolean;
     supportsMetadataSearch: boolean;
@@ -513,50 +211,19 @@ export class SQLiteBackend implements FACTStorageBackend {
     };
   }
 
-  async getStats(): Promise<Partial<FACTStorageStats>> {
+  async getStats(): void {
     return {
       ...this.stats,
-      cacheHitRate: this.calculateHitRate(),
-    };
-  }
-
-  async cleanup(maxAge: number): Promise<number> {
-    await this.ensureInitialized();
-    
-    try {
+      cacheHitRate: this.calculateHitRate(): void {
+    await this.ensureInitialized(): void {
       // Mock implementation - in reality would remove entries older than maxAge
       const removedCount = 0;
       
-      this.logger.debug('Cleanup completed', { removedCount, maxAge });
-      
-      return removedCount;
-    } catch (error) {
-      const enhancedError = new EnhancedError(
-        'CleanupError',
-        'Failed to cleanup entries',
-        {
-          context: { maxAge },
-          cause: error instanceof Error ? error : undefined,
-        }
-      );
-      
-      this.logger.error('Failed to cleanup entries', enhancedError);
-      throw enhancedError;
-    }
-  }
-
-  // Private helper methods
-
-  private async ensureInitialized(): Promise<void> {
+      this.logger.debug(): void {
+      const enhancedError = new EnhancedError(): void {
     if (!this.isInitialized) {
-      await this.initialize();
-    }
-  }
-
-  private updateStats(operation: 'read' | 'write' | 'delete', size: number): void {
-    const now = Date.now();
-    
-    if (!this.stats.oldestEntry || now < this.stats.oldestEntry) {
+      await this.initialize(): void {
+    const now = Date.now(): void {
       this.stats.oldestEntry = now;
     }
     
@@ -564,22 +231,15 @@ export class SQLiteBackend implements FACTStorageBackend {
       this.stats.newestEntry = now;
     }
 
-    if (operation === 'write') {
-      this.stats.persistentEntries = (this.stats.persistentEntries || 0) + 1;
-      this.stats.totalMemorySize = (this.stats.totalMemorySize || 0) + size;
-    } else if (operation === 'delete') {
-      this.stats.persistentEntries = Math.max(0, (this.stats.persistentEntries || 0) - 1);
-    }
-  }
-
-  private updatePerformanceMetrics(operation: string, duration: number): void {
+    if (operation === 'write')delete') {
+      this.stats.persistentEntries = Math.max(): void {
     // Update average query time using exponential moving average
     const alpha = 0.1; // Smoothing factor
     this.performanceMetrics.averageQueryTime = 
       this.performanceMetrics.averageQueryTime * (1 - alpha) + duration * alpha;
   }
 
-  private calculateHitRate(): number {
+  private calculateHitRate(): void {
     // Mock implementation - in reality would calculate from actual cache metrics
     return this.stats.cacheHitRate || 0;
   }

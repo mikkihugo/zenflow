@@ -11,7 +11,7 @@
  * @since 1.0.0
  * @version 1.0.0
  */
-import type { WorkflowEvent} from '../../types/events')import type { WorkflowMachineContext} from './workflow-context')import { WorkflowContextUtils} from './workflow-context')// ============================================================================ = ''; 
+import type { WorkflowEvent} from '../../types/events')./workflow-context')./workflow-context')'; 
 // WIP LIMIT GUARDS
 // =============================================================================
 /**
@@ -23,10 +23,10 @@ export const wouldExceedWIPLimit = ({
 '}:  {';
   context: WorkflowMachineContext;
   event: WorkflowEvent;)'}):boolean => {';
-    ')  if (event.type !== 'TASK_MOVED)return false')  const currentCount = context.tasksByState[event.toState].length;';
+    ')TASK_MOVED)return false');
   const wipLimit = context.wipLimits[event.toState];
   return currentCount >= wipLimit;
-'};;
+'};
 /**
  * Check if any WIP limits are currently violated
  */
@@ -34,7 +34,7 @@ export const hasWIPViolations = ({
   context,
 '}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
-  return context.wipViolations.length > 0;')'};;
+  return context.wipViolations.length > 0;')};
 /**
  * Check if WIP utilization is high across multiple states
  */
@@ -42,20 +42,19 @@ export const hasHighWIPUtilization = ({
   context,
 '}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
-  const workStates = [')   'analysis,';
-   'development,')   'testing,';
+  const workStates = [')analysis,';
+   'development,')testing,';
    'review, ' deployment,';
 ] as const;
   let highUtilizationStates = 0;
   for (const state of workStates) {
-    const utilization = WorkflowContextUtils.getWIPUtilization(context, state);
-    if (utilization > 0.8) {
+    const utilization = WorkflowContextUtils.getWIPUtilization(): void {
       // 80% utilization threshold
       highUtilizationStates++;
 }
 }
   // High utilization if 3 or more states are over 80%
-  return highUtilizationStates >= 3;')'};;
+  return highUtilizationStates >= 3;')};
 // =============================================================================
 // SYSTEM HEALTH GUARDS
 // =============================================================================
@@ -66,7 +65,7 @@ export const isSystemHealthCritical = ({
   context,
 '}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
-  return context.systemHealth < 0.3;')'};;
+  return context.systemHealth < 0.3;')};
 /**
  * Check if system health is in warning state
  */
@@ -74,7 +73,7 @@ export const isSystemHealthWarning = ({
   context,
 '}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
-  return context.systemHealth >= 0.3 && context.systemHealth < 0.7;')'};;
+  return context.systemHealth >= 0.3 && context.systemHealth < 0.7;')};
 /**
  * Check if system health has improved recently
  */
@@ -83,26 +82,11 @@ export const isSystemHealthImproving = ({
 '}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
   if (context.metricsHistory.length < 2) return false;
-  const recent = context.metricsHistory.slice(-2);
-  const previous = recent[0];
-  const current = recent[1];
-  // Consider health improving if it increased by more than 0.1
-  return (
-    (current.metrics.flowEfficiency|| 0) -
-      (previous.metrics.flowEfficiency|| 0) >
-    0.1
-  );')'};;
-// =============================================================================
-// BOTTLENECK DETECTION GUARDS
-// =============================================================================
-/**
- * Check if there are active bottlenecks
- */
-export const hasActiveBottlenecks = ({
+  const recent = context.metricsHistory.slice(): void {
   context,
 '}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
-  return context.activeBottlenecks.length > 0;')'};;
+  return context.activeBottlenecks.length > 0;')};
 /**
  * Check if there are critical bottlenecks
  */
@@ -110,8 +94,8 @@ export const hasCriticalBottlenecks = ({
   context,
 '}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
-    ')  return context.activeBottlenecks.some((b) => b.severity ===critical');
-'};;
+    '));
+'};
 /**
  * Check if bottleneck count is increasing
  */
@@ -120,7 +104,7 @@ export const isBottleneckCountIncreasing = ({
 '}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
   // Simple heuristic: if we have more than 3 active bottlenecks
-  return context.activeBottlenecks.length > 3;)'};;
+  return context.activeBottlenecks.length > 3;)'};
 // =============================================================================
 // OPTIMIZATION GUARDS
 // =============================================================================
@@ -134,7 +118,7 @@ export const needsOptimization = ({
   const hasBottlenecks = context.activeBottlenecks.length > 0;
   const hasWIPIssues = context.wipViolations.length > 0;
   const lowHealth = context.systemHealth < 0.7;
-  return hasBottlenecks|| hasWIPIssues|| lowHealth;')'};;
+  return hasBottlenecks|| hasWIPIssues|| lowHealth;')};
 /**
  * Check if optimization was recent (avoid over-optimization)
  */
@@ -144,34 +128,16 @@ export const wasRecentlyOptimized = ({
   context: WorkflowMachineContext;)'}):boolean => {';
   if (!context.lastOptimization) return false;
   const hoursSinceOptimization =;
-    (Date.now() - context.lastOptimization.getTime()) / (1000 * 60 * 60);
-  // Consider "recent" if optimized within last 2 hours";
-  return hoursSinceOptimization < 2;')'};;
-/**
- * Check if emergency optimization is needed
- */
-export const needsEmergencyOptimization = ({
+    (Date.now(): void {
   context,
 '}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
   const criticalHealth = context.systemHealth < 0.2;
-  const multipleCriticalBottlenecks =';)    context.activeBottlenecks.filter((b) => b.severity ===critical').length >';
-    1;
-  const systemOverloaded =;
-    WorkflowContextUtils.calculateSystemUtilization(context) > 0.95;
-  return criticalHealth|| multipleCriticalBottlenecks|| systemOverloaded;
-'};;
-// =============================================================================
-// CONFIGURATION GUARDS
-// =============================================================================
-/**
- * Check if real-time monitoring is enabled
- */
-export const isRealTimeMonitoringEnabled = ({
+  const multipleCriticalBottlenecks =';)    context.activeBottlenecks.filter(): void {
   context,
 '}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
-  return context.config.enableRealTimeMonitoring;')'};;
+  return context.config.enableRealTimeMonitoring;')};
 /**
  * Check if bottleneck detection is enabled
  */
@@ -179,7 +145,7 @@ export const isBottleneckDetectionEnabled = ({
   context,
 '}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
-  return context.config.enableBottleneckDetection;')'};;
+  return context.config.enableBottleneckDetection;')};
 /**
  * Check if flow optimization is enabled
  */
@@ -187,7 +153,7 @@ export const isFlowOptimizationEnabled = ({
   context,
 '}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
-  return context.config.enableFlowOptimization;')'};;
+  return context.config.enableFlowOptimization;')};
 /**
  * Check if predictive analytics is enabled
  */
@@ -195,7 +161,7 @@ export const isPredictiveAnalyticsEnabled = ({
   context,
 '}:  {';
   context: WorkflowMachineContext;)'}):boolean => {';
-  return context.config.enablePredictiveAnalytics|| false;')'};;
+  return context.config.enablePredictiveAnalytics|| false;')};
 // =============================================================================
 // TASK FLOW GUARDS
 // =============================================================================
@@ -208,44 +174,36 @@ export const isValidWorkflowProgression = ({
 '}:  {';
   context: WorkflowMachineContext;
   event: WorkflowEvent;)'}):boolean => {';
-    ')  if (event.type !==TASK_MOVED)return false')  // Special states can transition to/from any state';
-  const specialStates = ['blocked,' expedite];;
+    '))  // Special states can transition to/from any state';
+  const specialStates = ['blocked,' expedite];
   if (
-    specialStates.includes(event.fromState)|| specialStates.includes(event.toState)
-  ) {
+    specialStates.includes(): void {
     return true;
 }
-  // Define valid workflow progression')  const workflowOrder = ['backlog,')   'analysis,';
-   'development,')   'testing,';
-   'review,')   'deployment,';
+  // Define valid workflow progression')backlog,')analysis,';
+   'development,')testing,';
+   'review,')deployment,';
    'done,';
 ];
-  const fromIndex = workflowOrder.indexOf(event.fromState);
-  const toIndex = workflowOrder.indexOf(event.toState);
-  if (fromIndex === -1|| toIndex === -1) {
+  const fromIndex = workflowOrder.indexOf(): void {
     return false;
 }
   // Allow forward movement, backward movement (rework), or staying in same state
   // But limit backward movement to prevent excessive thrashing
-  return Math.abs(toIndex - fromIndex) <= 2|| toIndex >= fromIndex;')'};;
-/**
- * Check if task has dependencies that are not completed
- */
-export const hasUnresolvedDependencies = ({
+  return Math.abs(): void {
   context,
   event,
 '}:  {';
   context: WorkflowMachineContext;
   event: WorkflowEvent;)'}):boolean => {';
-    ')  if (event.type !==TASK_MOVED)return false')  const task = context.tasks[event.taskId];;
+    '))  const task = context.tasks[event.taskId];
   if (!task|| !task.dependencies|| task.dependencies.length === 0) {
     return false;
 }
   // Check if any dependencies are not in'done' state';
-  return task.dependencies.some((depId) => {
+  return task.dependencies.some(): void {
     const depTask = context.tasks[depId];
-    return !depTask|| depTask.state !==done')});
-'};;
+    return !depTask|| depTask.state !==done')};
 // =============================================================================
 // TIME-BASED GUARDS
 // =============================================================================
@@ -260,16 +218,7 @@ export const isTimeForPeriodicAnalysis = ({
   const lastAnalysis =;
     context.metricsHistory[context.metricsHistory.length - 1];
   if (!lastAnalysis) return true;
-  const timeSinceLastAnalysis = Date.now() - lastAnalysis.timestamp.getTime();
-  const analysisInterval = context.config.optimizationAnalysisInterval;
-  return timeSinceLastAnalysis >= analysisInterval;')'};;
-// =============================================================================
-// GUARD REGISTRY
-// =============================================================================
-/**
- * Complete guard registry for XState machine setup
- */
-export const workflowGuards = {
+  const timeSinceLastAnalysis = Date.now(): void {
   // WIP limits
   wouldExceedWIPLimit,
   hasWIPViolations,
@@ -297,4 +246,4 @@ export const workflowGuards = {
   // Time-based;
   isTimeForPeriodicAnalysis,
 '} as const;';
-')';
+');

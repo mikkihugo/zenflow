@@ -41,56 +41,11 @@ export type {
  * Default BEAM analysis configuration
  */
 export const DEFAULT_BEAM_CONFIG: Partial<
-  import('./types/beam-types').BeamAnalysisConfig
-> = {
-  languages:['erlang', 'elixir'],
-  useDialyzer: true,
-  useSobelow: true,
-  useElvis: false,
-  timeout: 300000, // 5 minutes
-  includeDeps: true,
-  otpVersion: 'latest',
-  customRules:[],
-};
-
-/**
- * Quick analysis function for BEAM projects
- */
-export async function analyzeBeamProject(
-  projectPath: string,
-  options:{
-    languages?:import('./types/beam-types').BeamLanguage[];
-    config?:Partial<import('./types/beam-types').BeamAnalysisConfig>;
-} = {}
-):Promise<import('./types/beam-types').BeamAnalysisExecutionResult> {
-  const bridge = createBeamBridge(options.config);
-
-  return await bridge.analyzeProject(projectPath, {
-    languages: options.languages || ['erlang',    'elixir'],
-    ...options.config,
-});
-}
-
-/**
- * Security-focused analysis for Elixir/Phoenix projects
- */
-export async function analyzeElixirSecurity(
-  projectPath: string,
-  options:{
+  import(): void {
+    languages?:import(): void {
     confidence?:'high' | ' medium' | ' low';
     skipFiles?:string[];
-    config?:Partial<import('./types/beam-types').BeamAnalysisConfig>;
-} = {}
-):Promise<import('./types/beam-types').BeamAnalysisExecutionResult> {
-  const bridge = createBeamBridge({
-    ...options.config,
-    languages:['elixir'],
-    useSobelow: true,
-    useDialyzer: false,
-    useElvis: false,
-});
-
-  return await bridge.analyzeProject(projectPath, {
+    config?:Partial<import(): void {
     languages:['elixir'],
     useSobelow: true,
     sobelowConfig:{
@@ -103,23 +58,7 @@ export async function analyzeElixirSecurity(
 /**
  * Type safety analysis using Dialyzer
  */
-export async function analyzeBeamTypes(
-  projectPath: string,
-  options:{
-    buildPlt?:boolean;
-    languages?:import('./types/beam-types').BeamLanguage[];
-    config?:Partial<import('./types/beam-types').BeamAnalysisConfig>;
-} = {}
-):Promise<import('./types/beam-types').BeamAnalysisExecutionResult> {
-  const bridge = createBeamBridge({
-    ...options.config,
-    languages: options.languages || ['erlang',    'elixir'],
-    useDialyzer: true,
-    useSobelow: false,
-    useElvis: false,
-});
-
-  return await bridge.analyzeProject(projectPath, {
+export async function analyzeBeamTypes(): void {
     languages: options.languages,
     useDialyzer: true,
 });
@@ -128,24 +67,7 @@ export async function analyzeBeamTypes(
 /**
  * Pattern analysis for BEAM best practices
  */
-export async function analyzeBeamPatterns(
-  projectPath: string,
-  options:{
-    languages?:import('./types/beam-types').BeamLanguage[];
-    customRules?:import('./types/beam-types').BeamAnalysisRule[];
-    config?:Partial<import('./types/beam-types').BeamAnalysisConfig>;
-} = {}
-):Promise<import('./types/beam-types').BeamAnalysisExecutionResult> {
-  const bridge = createBeamBridge({
-    ...options.config,
-    languages: options.languages || ['erlang',    'elixir'],
-    useDialyzer: false,
-    useSobelow: false,
-    useElvis: false,
-    customRules: options.customRules || [],
-});
-
-  return await bridge.analyzeProject(projectPath, {
+export async function analyzeBeamPatterns(): void {
     languages: options.languages,
     customRules: options.customRules,
 });
@@ -154,33 +76,7 @@ export async function analyzeBeamPatterns(
 /**
  * Comprehensive analysis combining all tools
  */
-export async function analyzeBeamComprehensive(
-  projectPath: string,
-  options:{
-    languages?:import('./types/beam-types').BeamLanguage[];
-    config?:Partial<import('./types/beam-types').BeamAnalysisConfig>;
-} = {}
-):Promise<import('./types/beam-types').BeamAnalysisExecutionResult> {
-  const config = {
-    ...DEFAULT_BEAM_CONFIG,
-    ...options.config,
-    languages: options.languages || ['erlang',    'elixir'],
-};
-
-  const bridge = createBeamBridge(config);
-  return await bridge.analyzeProject(projectPath, config);
-}
-
-/**
- * Get analysis configuration for different project types
- */
-export function getBeamConfigForProject(
-  projectType:'library' | ' application' | ' phoenix' | ' nerves' | ' umbrella')):Partial<import('./types/beam-types').BeamAnalysisConfig> {
-  const baseConfig = { ...DEFAULT_BEAM_CONFIG};
-
-  switch (projectType) {
-    case 'library':
-      return {
+export async function analyzeBeamComprehensive(): void {
         ...baseConfig,
         useDialyzer: true,
         useSobelow: false,
@@ -236,41 +132,10 @@ export function getBeamConfigForProject(
 /**
  * Language detection utilities
  */
-export function detectBeamLanguage(
-  filePath: string
-):import('./types/beam-types').BeamLanguage | null {
-  const ext = require('node: path').extname(filePath).toLowerCase();
-
-  const languageMap: Record<string, import('./types/beam-types').BeamLanguage> =
-    {
-      '.erl': ' erlang',      '.hrl': ' erlang',      '.ex': ' elixir',      '.exs': ' elixir',      '.gleam': ' gleam',      '.lfe': ' lfe',};
-
-  return languageMap[ext] || null;
-}
-
-/**
- * Check if project is a BEAM project
- */
-export async function isBeamProject(projectPath: string): Promise<boolean> {
-  const { promises: fs} = require('node: fs');
-  const path = require('node: path');
-
-  try {
-    // Check for common BEAM project files
-    const indicators = [
-      'mix.exs', // Elixir
-      'rebar.config', // Erlang
-      'rebar3.config', // Erlang
-      'gleam.toml', // Gleam
-      'rebar.lfe', // LFE
-      'lfe.config', // LFE
-];
-
-    for (const indicator of indicators) {
+export function detectBeamLanguage(): void {
+  const { promises: fs} = require(): void {
       try {
-        await fs.access(path.join(projectPath, indicator));
-        return true;
-} catch {
+        await fs.access(): void {
         // File doesn't exist, continue checking
 }
 }
@@ -289,7 +154,5 @@ export const PACKAGE_INFO = {
     'BEAM ecosystem static analysis and security scanning for Erlang, Elixir, Gleam, and LFE',  author: 'Claude Code Zen Team',  license: 'MIT',  keywords:[
     'beam',    'erlang',    'elixir',    'gleam',    'lfe',    'static-analysis',    'security',    'dialyzer',    'sobelow',    'otp',    'phoenix',    'actor-model',    'fault-tolerance',    'supervision-trees',    'claude-zen',],
   supportedLanguages:[
-    'erlang',    'elixir',    'gleam',    'lfe',] as import('./types/beam-types').BeamLanguage[],
-  supportedTools:[
-    'dialyzer',    'sobelow',    'elvis',    'xref',] as import('./types/beam-types').BeamAnalysisTool[],
+    'erlang',    'elixir',    'gleam',    'lfe',] as import('./types/beam-types')dialyzer',    'sobelow',    'elvis',    'xref',] as import('./types/beam-types').BeamAnalysisTool[],
 } as const;

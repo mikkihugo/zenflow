@@ -21,13 +21,8 @@ export class DateCalculator {
   /**
    * Calculate duration in milliseconds
    */
-  static getDurationMs(startDate: new Date()): new Date()): intervalToDuration({ start: startDate, end: endDate});
-    return formatDuration(duration);
-}
-  /**
-   * Check if date is within range
-   */
-  static isWithinRange(date: Date, startRange: Date, endRange: Date): boolean {
+  static getDurationMs(): void { start: startDate, end: endDate});
+    return formatDuration(): void {
     return date >= startRange && date <= endRange;
 }
 };

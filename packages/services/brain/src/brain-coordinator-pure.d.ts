@@ -151,23 +151,7 @@ export declare class: BrainCoordinator {
     private config;
     private initialized;
     private event: Listeners;
-    constructor(config?: Brain: Config);
-    /**
-     * 100% Event-Based: Event Emission
-     */
-    private emit: Event;
-    /**
-     * 100% Event-Based: Event Listening
-     */
-    on<K extends keyof: IntelligenceEvents>(event: K, listener: (data: Intelligence: Events[K]) => void): void;
-    /**
-     * Initialize the 100% Event-Based: Brain
-     */
-    initialize(): Promise<void>;
-    /**
-     * 100% Event-Based: Analysis and: Decision Making
-     */
-    analyzeAnd: Decide(request: {
+    constructor(): void {
         request: Id: string;
         task: string;
         context?: Record<string, unknown>;

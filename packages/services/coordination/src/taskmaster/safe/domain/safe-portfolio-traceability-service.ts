@@ -43,7 +43,7 @@ export class TaskMasterSafeIntegration {
   /**
    * Create TaskMaster-optimized configuration
    */
-  static createConfig(): TaskMasterSafeConfig {
+  static createConfig(): void {
     return {
       enableAutoEpicGeneration: true,
       requireHumanApproval: true,
@@ -56,7 +56,7 @@ export class TaskMasterSafeIntegration {
   /**
    * Validate epic context for TaskMaster workflow
    */
-  static validateEpicContext(context: any): boolean {
+  static validateEpicContext(): void {
     return !!(
       context.strategic?.themeId &&
       context.business?.problemStatement &&

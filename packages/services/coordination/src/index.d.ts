@@ -14,14 +14,7 @@ export * as eventDrivenDSPy from './dspy/event-driven-dspy';
 export * from './teamwork';
 export * as teamwork from './teamwork';
 export interface CoordinationSystem {
-    teamwork: typeof import('./teamwork');
-    dspy: typeof import('./dspy/event-driven-dspy');
-}
-/**
- * Create a unified coordination system by loading all domains
- */
-export declare function createCoordinationSystem(): Promise<CoordinationSystem>;
-export declare const COORDINATION_PACKAGE_INFO: {
+    teamwork: typeof import(): void {
     name: string;
     version: string;
     description: string;

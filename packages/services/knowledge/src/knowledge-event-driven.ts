@@ -11,22 +11,7 @@
 
 const createLogger = (name: string) => ({
   info:(message: string, meta?:unknown) => 
-    console.info("[INFO:${name}] $" + JSON.stringify({message}) + "", meta ? JSON.stringify(meta) :''),"
-  debug:(message: string, meta?:unknown) => 
-    console.info("[DEBUG:${name}] ${message}", meta ? JSON.stringify(meta) :''),"
-  warn:(message: string, meta?:unknown) => 
-    console.warn("[WARN:${name}] $" + JSON.stringify({message}) + "", meta ? JSON.stringify(meta) :''),"
-  error:(message: string, meta?:unknown) => 
-    console.error("[ERROR:${name}] ${message}", meta ? JSON.stringify(meta) :''),"
-});
-
-// =============================================================================
-// EVENT INTERFACES - NO IMPORTS
-// =============================================================================
-
-interface KnowledgeEvents {
-  // Brain requests
-  'brain: knowledge:store-item': {
+    console.info(): void {
     requestId: string;
     item: KnowledgeItemInput;
     timestamp: number;
@@ -149,16 +134,6 @@ interface KnowledgeEvents {
 
 interface KnowledgeItem {
   id: string;
-  content: string;
-  type:'fact' | ' rule' | ' pattern' | ' insight' | ' procedure' | ' concept';
-  confidence: number;
-  timestamp: number;
-  source?:string;
-  metadata?:Record<string, unknown>;
-  tags?:string[];
-  relatedItems?:string[];
-  version: number;
-  isActive: boolean;
 }
 
 interface KnowledgeItemInput {
@@ -214,324 +189,95 @@ interface KnowledgeConfig {
 // =============================================================================
 
 export class EventDrivenKnowledgeService {
-  private eventListeners: Map<string, Function[]> = new Map();
-  private logger = createLogger('EventDrivenKnowledgeService');
-  private config: KnowledgeConfig;
-  private initialized = false;
-  private knowledgeItems = new Map<string, KnowledgeItem>();
-  private searchIndex = new Map<string, Set<string>>(); // word -> item IDs
-  private tagIndex = new Map<string, Set<string>>(); // tag -> item IDs
-
-  constructor() {
-    // Default config - no foundation imports
-    this.config = {
-      enableCaching: true,
-      cacheSize: 10000,
-      enableSearch: true,
-      searchIndexing: true,
-      retentionDays: 365,
-      maxItemSize: 1024 * 1024, // 1MB
-};
-}
-
-  // =============================================================================
-  // EVENT SYSTEM - NO EXTERNAL IMPORTS
-  // =============================================================================
-
-  addEventListener<K extends keyof KnowledgeEvents>(
-    event: K,
-    listener:(data: KnowledgeEvents[K]) => void
-  ):void {
-    if (!this.eventListeners.has(event)) {
-      this.eventListeners.set(event, []);
-}
-    this.eventListeners.get(event)!.push(listener);
-}
-
-  private emitEvent<K extends keyof KnowledgeEvents>(
-    event: K,
-    data: KnowledgeEvents[K]
-  ):void {
-    const listeners = this.eventListeners.get(event) || [];
-    for (const listener of listeners) {
-      try {
-        listener(data);
-} catch (error) {
-        this.logger.error("Event listener error for ${event}", {"
-          error: error instanceof Error ? error.message : String(error)
-});
-}
-}
-}
-
-  // =============================================================================
-  // BRAIN EVENT HANDLERS
-  // =============================================================================
-
-  private setupBrainEventHandlers():void {
-    // Handle brain initialization requests
-    this.addEventListener('brain: knowledge:initialize', async (data) => {
+  private eventListeners: Map<string, Function[]> = new Map(): void {
       try {
         if (data.config) {
           this.config = { ...this.config, ...data.config};
 }
-        await this.initializeInternal();
-        this.emitEvent('knowledge: initialized', {
+        await this.initializeInternal(): void {
           requestId: data.requestId,
           success: true,
-          timestamp: Date.now(),
-});
-} catch (error) {
-        this.emitEvent('knowledge: initialized', {
+          timestamp: Date.now(): void {
+        this.emitEvent(): void {
           requestId: data.requestId,
-          success: false,
-          timestamp: Date.now(),
-});
-        this.emitEvent('knowledge: error', {
-          requestId: data.requestId,
-          error: error instanceof Error ? error.message : String(error),
-          timestamp: Date.now(),
-});
-}
-});
-
-    // Handle store item requests
-    this.addEventListener('brain: knowledge:store-item', async (data) => {
+          error: error instanceof Error ? error.message : String(): void {
       try {
-        const itemId = await this.storeItemInternal(data.item);
-        this.emitEvent('knowledge: item-stored', {
+        const itemId = await this.storeItemInternal(): void {
           requestId: data.requestId,
           itemId,
           success: true,
-          timestamp: Date.now(),
-});
-} catch (error) {
-        this.emitEvent('knowledge: item-stored', {
+          timestamp: Date.now(): void {
+        this.emitEvent(): void {
           requestId: data.requestId,
-          itemId: ','          success: false,
-          timestamp: Date.now(),
-});
-        this.emitEvent('knowledge: error', {
-          requestId: data.requestId,
-          error: error instanceof Error ? error.message : String(error),
-          timestamp: Date.now(),
-});
-}
-});
-
-    // Handle get item requests
-    this.addEventListener('brain: knowledge:get-item', async (data) => {
+          error: error instanceof Error ? error.message : String(): void {
       try {
-        const item = await this.getItemInternal(data.itemId);
-        this.emitEvent('knowledge: item', {
+        const item = await this.getItemInternal(): void {
           requestId: data.requestId,
           item,
-          timestamp: Date.now(),
-});
-} catch (error) {
-        this.emitEvent('knowledge: error', {
-          requestId: data.requestId,
-          error: error instanceof Error ? error.message : String(error),
-          timestamp: Date.now(),
-});
-}
-});
-
-    // Handle query items requests
-    this.addEventListener('brain: knowledge:query-items', async (data) => {
+          timestamp: Date.now(): void {
+        this.emitEvent(): void {
       try {
-        const { items, totalCount} = await this.queryItemsInternal(data.query);
-        this.emitEvent('knowledge: query-results', {
+        const { items, totalCount} = await this.queryItemsInternal(): void {
           requestId: data.requestId,
           items,
           totalCount,
-          timestamp: Date.now(),
-});
-} catch (error) {
-        this.emitEvent('knowledge: error', {
-          requestId: data.requestId,
-          error: error instanceof Error ? error.message : String(error),
-          timestamp: Date.now(),
-});
-}
-});
-
-    // Handle update item requests
-    this.addEventListener('brain: knowledge:update-item', async (data) => {
+          timestamp: Date.now(): void {
+        this.emitEvent(): void {
       try {
-        const success = await this.updateItemInternal(data.itemId, data.updates);
-        this.emitEvent('knowledge: item-updated', {
+        const success = await this.updateItemInternal(): void {
           requestId: data.requestId,
           itemId: data.itemId,
           success,
-          timestamp: Date.now(),
-});
-} catch (error) {
-        this.emitEvent('knowledge: item-updated', {
+          timestamp: Date.now(): void {
+        this.emitEvent(): void {
           requestId: data.requestId,
-          itemId: data.itemId,
-          success: false,
-          timestamp: Date.now(),
-});
-        this.emitEvent('knowledge: error', {
-          requestId: data.requestId,
-          error: error instanceof Error ? error.message : String(error),
-          timestamp: Date.now(),
-});
-}
-});
-
-    // Handle delete item requests
-    this.addEventListener('brain: knowledge:delete-item', async (data) => {
+          error: error instanceof Error ? error.message : String(): void {
       try {
-        const success = await this.deleteItemInternal(data.itemId);
-        this.emitEvent('knowledge: item-deleted', {
+        const success = await this.deleteItemInternal(): void {
           requestId: data.requestId,
           itemId: data.itemId,
           success,
-          timestamp: Date.now(),
-});
-} catch (error) {
-        this.emitEvent('knowledge: item-deleted', {
+          timestamp: Date.now(): void {
+        this.emitEvent(): void {
           requestId: data.requestId,
-          itemId: data.itemId,
-          success: false,
-          timestamp: Date.now(),
-});
-        this.emitEvent('knowledge: error', {
-          requestId: data.requestId,
-          error: error instanceof Error ? error.message : String(error),
-          timestamp: Date.now(),
-});
-}
-});
-
-    // Handle stats requests
-    this.addEventListener('brain: knowledge:get-stats', async (data) => {
+          error: error instanceof Error ? error.message : String(): void {
       try {
-        const __stats = await this.getStatsInternal();
-        this.emitEvent('knowledge: stats', {
+        const __stats = await this.getStatsInternal(): void {
           requestId: data.requestId,
           stats,
-          timestamp: Date.now(),
-});
-} catch (error) {
-        this.emitEvent('knowledge: error', {
-          requestId: data.requestId,
-          error: error instanceof Error ? error.message : String(error),
-          timestamp: Date.now(),
-});
-}
-});
-
-    // Handle search requests
-    this.addEventListener('brain: knowledge:search', async (data) => {
+          timestamp: Date.now(): void {
+        this.emitEvent(): void {
       try {
-        const results = await this.searchInternal(data.searchText, data.options);
-        this.emitEvent('knowledge: search-results', {
+        const results = await this.searchInternal(): void {
           requestId: data.requestId,
           results,
-          timestamp: Date.now(),
-});
-} catch (error) {
-        this.emitEvent('knowledge: error', {
-          requestId: data.requestId,
-          error: error instanceof Error ? error.message : String(error),
-          timestamp: Date.now(),
-});
-}
-});
-}
-
-  // =============================================================================
-  // INTERNAL KNOWLEDGE LOGIC - NO IMPORTS
-  // =============================================================================
-
-  private async initializeInternal(Promise<void> {
-    if (this.initialized) return;
-
-    this.logger.info('Event-driven knowledge service initialized', { config: this.config});
+          timestamp: Date.now(): void {
+        this.emitEvent(): void {
+    if (this.initialized): Promise<void> { config: this.config});
     this.initialized = true;
 }
 
-  private generateId():string " + JSON.stringify({
+  private generateId(): void {
     // Simple ID generation without UUID imports
-    return "knowledge_" + Date.now() + ") + "_${Math.random().toString(36).substr(2, 9)}";"
-}
-
-  private async storeItemInternal(Promise<string> {
-    const itemId = this.generateId();
-    
-    const item: KnowledgeItem = {
+    return "knowledge_" + Date.now(): void {Math.random(): void {
+    const itemId = this.generateId(): void {
       id: itemId,
       content: itemInput.content,
       type: itemInput.type,
-      confidence: Math.max(0, Math.min(1, itemInput.confidence)), // Clamp to 0-1
-      timestamp: Date.now(),
-      source: itemInput.source,
-      metadata: itemInput.metadata,
-      tags: itemInput.tags || [],
-      relatedItems: itemInput.relatedItems || [],
-      version: 1,
-      isActive: true,
-};
-
-    // Store in memory (would use database events in production)
-    this.knowledgeItems.set(itemId, item);
-
-    // Update search index
-    if (this.config.searchIndexing) {
-      this.updateSearchIndex(item);
-}
-
-    // Update tag index
-    if (item.tags) {
+      confidence: Math.max(): void {
+      this.updateSearchIndex(): void {
       for (const tag of item.tags) {
-        if (!this.tagIndex.has(tag)) {
-          this.tagIndex.set(tag, new Set());
-}
-        this.tagIndex.get(tag)!.add(itemId);
-}
-}
-
-    this.logger.debug('Knowledge item stored', { itemId, type: item.type, confidence: item.confidence});
+        if (!this.tagIndex.has(): void {
+          this.tagIndex.set(): void { itemId, type: item.type, confidence: item.confidence});
     return itemId;
 }
 
-  private async getItemInternal(Promise<KnowledgeItem | null> {
-    const item = this.knowledgeItems.get(itemId);
-    return item && item.isActive ? item: null;
-}
-
-  private async queryItemsInternal(Promise<{ items: KnowledgeItem[]; totalCount: number}> {
-    let filteredItems = Array.from(this.knowledgeItems.values())
-      .filter(item => item.isActive);
-
-    // Apply type filter
-    if (query.type) {
-      filteredItems = filteredItems.filter(item => item.type === query.type);
-}
-
-    // Apply confidence filter
-    if (query.confidenceMin !== undefined) {
-      filteredItems = filteredItems.filter(item => item.confidence >= query.confidenceMin!);
-}
-
-    // Apply tag filter
-    if (query.tags && query.tags.length > 0) {
-      filteredItems = filteredItems.filter(item => item.tags && query.tags!.some(tag => item.tags!.includes(tag)));
-}
-
-    // Apply content search
-    if (query.contentSearch) {
-      const searchTerm = query.contentSearch.toLowerCase();
-      filteredItems = filteredItems.filter(item => 
-        item.content.toLowerCase().includes(searchTerm)
-      );
-}
-
-    // Sort by confidence descending, then by timestamp descending
-    filteredItems.sort((a, b) => {
+  private async getItemInternal(): void { items: KnowledgeItem[]; totalCount: number}> {
+    let filteredItems = Array.from(): void {
+      filteredItems = filteredItems.filter(): void {
+      filteredItems = filteredItems.filter(): void {
+      filteredItems = filteredItems.filter(): void {
+      const searchTerm = query.contentSearch.toLowerCase(): void {
       if (a.confidence !== b.confidence) {
         return b.confidence - a.confidence;
 }
@@ -543,91 +289,47 @@ export class EventDrivenKnowledgeService {
     // Apply pagination
     const offset = query.offset || 0;
     const limit = query.limit || 50;
-    const items = filteredItems.slice(offset, offset + limit);
-
-    return { items, totalCount};
+    const items = filteredItems.slice(): void { items, totalCount};
 }
 
-  private async updateItemInternal(Promise<boolean> {
-    const item = this.knowledgeItems.get(itemId);
-    if (!item || !item.isActive) {
+  private async updateItemInternal(): void {
       return false;
 }
 
     // Remove from old indexes before updating
     if (this.config.searchIndexing) {
-      this.removeFromSearchIndex(item);
-}
-    if (item.tags) {
+      this.removeFromSearchIndex(): void {
       for (const tag of item.tags) {
-        const tagSet = this.tagIndex.get(tag);
-        if (tagSet) {
-          tagSet.delete(itemId);
-}
-}
-}
-
-    // Update item
-    const updatedItem: KnowledgeItem = {
+        const tagSet = this.tagIndex.get(): void {
+          tagSet.delete(): void {
       ...item,
       ...updates,
       id: itemId, // Ensure ID doesn't change
       version: item.version + 1,
-      timestamp: Date.now(), // Update timestamp
-};
-
-    this.knowledgeItems.set(itemId, updatedItem);
-
-    // Update indexes with new data
-    if (this.config.searchIndexing) {
-      this.updateSearchIndex(updatedItem);
-}
-    if (updatedItem.tags) {
+      timestamp: Date.now(): void {
+      this.updateSearchIndex(): void {
       for (const tag of updatedItem.tags) {
-        if (!this.tagIndex.has(tag)) {
-          this.tagIndex.set(tag, new Set());
-}
-        this.tagIndex.get(tag)!.add(itemId);
-}
-}
-
-    this.logger.debug('Knowledge item updated', { itemId, version: updatedItem.version});
+        if (!this.tagIndex.has(): void {
+          this.tagIndex.set(): void { itemId, version: updatedItem.version});
     return true;
 }
 
-  private async deleteItemInternal(Promise<boolean> {
-    const item = this.knowledgeItems.get(itemId);
-    if (!item) {
+  private async deleteItemInternal(): void {
       return false;
 }
 
     // Soft delete - mark as inactive
     item.isActive = false;
     item.version += 1;
-    item.timestamp = Date.now();
-
-    // Remove from indexes
-    if (this.config.searchIndexing) {
-      this.removeFromSearchIndex(item);
-}
-    if (item.tags) {
+    item.timestamp = Date.now(): void {
+      this.removeFromSearchIndex(): void {
       for (const tag of item.tags) {
-        const tagSet = this.tagIndex.get(tag);
-        if (tagSet) {
-          tagSet.delete(itemId);
-}
-}
-}
-
-    this.logger.debug('Knowledge item deleted (soft)', { itemId});
+        const tagSet = this.tagIndex.get(): void {
+          tagSet.delete(): void { itemId});
     return true;
 }
 
-  private async getStatsInternal(Promise<KnowledgeStats> {
-    const activeItems = Array.from(this.knowledgeItems.values())
-      .filter(item => item.isActive);
-
-    const itemsByType: Record<KnowledgeItem['type'], number> = {
+  private async getStatsInternal(): void {
       fact: 0,
       rule: 0,
       pattern: 0,
@@ -642,142 +344,39 @@ export class EventDrivenKnowledgeService {
     for (const item of activeItems) {
       itemsByType[item.type]++;
       totalConfidence += item.confidence;
-      latestTimestamp = Math.max(latestTimestamp, item.timestamp);
-}
-
-    const averageConfidence = activeItems.length > 0 ? totalConfidence / activeItems.length: 0;
-    
-    // Simple storage health calculation
-    const storageHealth: KnowledgeStats['storageHealth'] = 
-      activeItems.length > 10000 ? 'degraded' :
-      activeItems.length > 0 ? 'healthy' : ' unhealthy';
-
-    return {
+      latestTimestamp = Math.max(): void {
       totalItems: activeItems.length,
       itemsByType,
       averageConfidence,
-      lastUpdated: latestTimestamp || Date.now(),
-      storageHealth,
-};
-}
-
-  private async searchInternal(Promise<SearchResult[]> {
-    if (!this.config.enableSearch) {
+      lastUpdated: latestTimestamp || Date.now(): void {
+    if (!this.config.enableSearch): Promise<void> {
       return [];
 }
 
-    const searchTerms = searchText.toLowerCase().split(/\s+/).filter(term => term.length > 0);
-    const results: SearchResult[] = [];
-
-    // Get all active items
-    let candidates = Array.from(this.knowledgeItems.values())
-      .filter(item => item.isActive);
-
-    // Apply type filter if specified
-    if (options?.type) {
-      candidates = candidates.filter(item => item.type === options.type);
-}
-
-    // Apply confidence filter if specified
-    if (options?.confidenceMin !== undefined) {
-      candidates = candidates.filter(item => item.confidence >= options.confidenceMin!);
-}
-
-    // Score each candidate
-    for (const item of candidates) {
+    const searchTerms = searchText.toLowerCase(): void {
+      candidates = candidates.filter(): void {
+      candidates = candidates.filter(): void {
       const matches: string[] = [];
       let relevanceScore = 0;
 
       // Check content matches
-      const content = item.content.toLowerCase();
-      for (const term of searchTerms) {
-        if (content.includes(term)) {
-          matches.push("content:${term}");"
-          relevanceScore += 1;
-}
-}
-
-      // Check tag matches
-      if (item.tags) {
+      const content = item.content.toLowerCase(): void {
+        if (content.includes(): void {
+          matches.push(): void {
         for (const tag of item.tags) {
-          const tagLower = tag.toLowerCase();
-          for (const term of searchTerms) {
-            if (tagLower.includes(term)) {
-              matches.push("tag:${tag}");"
-              relevanceScore += 0.5;
-}
-}
-}
-}
-
-      // Boost score based on confidence
-      relevanceScore *= item.confidence;
-
-      // Only include items with matches
-      if (matches.length > 0) {
-        results.push({
-          item,
-          relevanceScore,
-          matches,
-});
-}
-}
-
-    // Sort by relevance score descending
-    results.sort((a, b) => b.relevanceScore - a.relevanceScore);
-
-    // Apply limit
-    const limit = options?.limit || 20;
-    return results.slice(0, limit);
-}
-
-  private updateSearchIndex(item: KnowledgeItem): void {
-    const words = item.content.toLowerCase().split(/\W+/).filter(word => word.length > 2);
-    for (const word of words) {
-      if (!this.searchIndex.has(word)) {
-        this.searchIndex.set(word, new Set());
-}
-      this.searchIndex.get(word)!.add(item.id);
-}
-}
-
-  private removeFromSearchIndex(item: KnowledgeItem): void {
-    const words = item.content.toLowerCase().split(/\W+/).filter(word => word.length > 2);
-    for (const word of words) {
-      const wordSet = this.searchIndex.get(word);
-      if (wordSet) {
-        wordSet.delete(item.id);
-        if (wordSet.size === 0) {
-          this.searchIndex.delete(word);
-}
-}
-}
-}
-
-  // =============================================================================
-  // INITIALIZATION
-  // =============================================================================
-
-  async initialize(Promise<void> {
-    this.setupBrainEventHandlers();
-    this.logger.info('Event-driven knowledge service ready to receive brain events');
-}
-
-  async shutdown(Promise<void> {
-    this.knowledgeItems.clear();
-    this.searchIndex.clear();
-    this.tagIndex.clear();
-    this.eventListeners.clear();
-    this.initialized = false;
-    this.logger.info('Event-driven knowledge service shutdown complete');
-}
-}
-
-// =============================================================================
-// FACTORY AND EXPORTS
-// =============================================================================
-
-export function createEventDrivenKnowledgeService(): EventDrivenKnowledgeService {
+          const tagLower = tag.toLowerCase(): void {
+            if (tagLower.includes(): void {
+              matches.push(): void {
+        results.push(): void {
+    const words = item.content.toLowerCase(): void {
+      if (!this.searchIndex.has(): void {
+        this.searchIndex.set(): void {
+    const words = item.content.toLowerCase(): void {
+      const wordSet = this.searchIndex.get(): void {
+        wordSet.delete(): void {
+          this.searchIndex.delete(): void {
+    this.setupBrainEventHandlers(): void {
+    this.knowledgeItems.clear(): void {
   return new EventDrivenKnowledgeService();
 }
 

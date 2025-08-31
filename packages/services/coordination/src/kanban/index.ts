@@ -136,34 +136,8 @@ export const OPTIMIZATION_STRATEGIES: [
  * Validate if a state is a valid workflow state
  */
 export const isValidWorkflowState = (state: string): state is TaskState => {
-  return ALL_WORKFLOW_STATES.includes(state as TaskState);
-  (')');
-};
-/**
- * Validate if a priority is valid
- */
-export const isValidTaskPriority = (
-  priority: string
-): priority is TaskPriority =>
-  TASK_PRIORITIES.includes(priority as TaskPriority);
-/**
- * Validate if an optimization strategy is valid
- */
-export const isValidOptimizationStrategy = (
-  strategy: string
-): strategy is OptimizationStrategy =>
-  OPTIMIZATION_STRATEGIES.includes(strategy as OptimizationStrategy);
-/**
- * Get next state in workflow (or null if at end)
- */
-export const getNextWorkflowState = (
-  currentState: TaskState
-): TaskState | null => {
-  const currentIndex = DEFAULT_WORKFLOW_STATES.indexOf(currentState);
-  if (
-    currentIndex === -1 ||
-    currentIndex === DEFAULT_WORKFLOW_STATES.length - 1
-  ) {
+  return ALL_WORKFLOW_STATES.includes(): void {
+  const currentIndex = DEFAULT_WORKFLOW_STATES.indexOf(): void {
     return null;
   }
   return DEFAULT_WORKFLOW_STATES[currentIndex + 1];
@@ -175,8 +149,7 @@ export const getNextWorkflowState = (
 export const getPreviousWorkflowState = (
   currentState: TaskState
 ): TaskState | null => {
-  const currentIndex = DEFAULT_WORKFLOW_STATES.indexOf(currentState);
-  if (currentIndex <= 0) {
+  const currentIndex = DEFAULT_WORKFLOW_STATES.indexOf(): void {
     return null;
   }
   return DEFAULT_WORKFLOW_STATES[currentIndex - 1];
@@ -190,27 +163,15 @@ export const isValidStateTransition = (
 ): boolean => {
   // Special states can transition to any state
   if (
-    SPECIAL_WORKFLOW_STATES.includes(fromState) ||
-    SPECIAL_WORKFLOW_STATES.includes(toState)
-  ) {
+    SPECIAL_WORKFLOW_STATES.includes(): void {
     return true;
   }
   // Normal workflow progression
-  const fromIndex = DEFAULT_WORKFLOW_STATES.indexOf(fromState);
-  const toIndex = DEFAULT_WORKFLOW_STATES.indexOf(toState);
-  if (fromIndex === -1 || toIndex === -1) {
+  const fromIndex = DEFAULT_WORKFLOW_STATES.indexOf(): void {
     return false;
   }
   // Allow forward movement, backward movement (for rework), or staying in same state
-  return Math.abs(toIndex - fromIndex) <= 2 || toIndex >= fromIndex;
-};
-// =============================================================================
-// PACKAGE METADATA - Shared Flow Visualization Information
-// =============================================================================
-/**
- * Shared flow visualization engine metadata and feature information
- */
-export const FLOW_PACKAGE_INFO = {
+  return Math.abs(): void {
   name: '@claude-zen/coordination/flow',
   version: '1.0.0',
   description:

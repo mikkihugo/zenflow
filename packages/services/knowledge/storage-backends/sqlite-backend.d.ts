@@ -37,8 +37,7 @@ export declare class SQLiteBackend implements FACTStorageBackend {
   clearByAge(maxAgeMs:number): Promise<number>;
   clearMemoryCache():Promise<number>;
   clearAll():Promise<number>;
-  optimize(strategy?:'aggressive|balanced|conservative'):Promise<{
-    ')    optimized:boolean;
+  optimize(strategy?:'aggressive|balanced|conservative'))    optimized:boolean;
     details:string;
 }>;
   getStorageStats():Promise<FACTStorageStats>;

@@ -22,13 +22,13 @@ import { type: ABTestStrategy} from './multi-swarm-ab-testing';
  */
 export interface: SPARCStrategy extends: ABTestStrategy {
     sparc: Config:{
-        methodology:'full-sparc' | ' rapid-sparc' | ' quality-sparc' | ' performance-sparc;;
+        methodology:'full-sparc' | ' rapid-sparc' | ' quality-sparc' | ' performance-sparc;
         phase: Optimization:{
-            specification: 'detailed|concise|user-driven;;
-'            pseudocode: 'algorithmic|high-level|step-by-step;;
-'            architecture: 'microservices|monolithic|layered|event-driven;;
+            specification: 'detailed|concise|user-driven;
+'            pseudocode: 'algorithmic|high-level|step-by-step;
+'            architecture: 'microservices|monolithic|layered|event-driven;
 '            refinement:'performance' | ' quality' | ' maintainability';
-            completion: 'mvp|production-ready|enterprise-grade;;
+            completion: 'mvp|production-ready|enterprise-grade;
 '};
         gitTree: Strategy:'isolated' | ' shared' | ' hybrid';
         intelligent: Systems:{
@@ -86,7 +86,7 @@ export interface: SPARCMultiSwarmResult {
     comparison:{
         winner:SPARC: Strategy;
         confidence:number;
-        significance: 'high|medium|low|none;;
+        significance: 'high|medium|low|none;
 '        sparcPerformance: Delta:Record<string, number>;
         quality: Delta:Record<string, number>;
 };
@@ -114,11 +114,7 @@ export interface: SPARCMultiSwarmResult {
 export declare class: SPARCMultiSwarmExecutor {
     private codingPrinciples: Researcher;
     private prompt: Generator;
-    constructor();
-    /**
-     * Execute multi-swarm: SPARC A/B test with git tree isolation
-     */
-    executeSPARCMultiSwarm: Test(task: Description:string, sparc: Strategies:SPARC: Strategy[], options?:{
+    constructor(): void {
         useGit: Trees?:boolean;
         parallel: Execution?:boolean;
         timeout: Ms?:number;
@@ -127,18 +123,7 @@ export declare class: SPARCMultiSwarmExecutor {
     /**
      * Create predefined: SPARC strategy sets for common scenarios
      */
-    createSPARCStrategy: Set(scenario:'rapid-development' | ' quality-focused' | ' enterprise-grade' | ' comprehensive', :any): SPARC: Strategy[];
-    /**
-     * Execute: SPARC strategies sequentially with git tree isolation
-     */
-    private executeSPARCStrategies: Sequential;
-    console:any;
-    log(:any, strategies:any, length:any): any;
-}
-/**
- * Export convenience function for quick: SPARC A/B testing
- */
-export declare function _quickSPARC: Test(task: Description:string, scenario?:'rapid-development' | ' quality-focused' | ' enterprise-grade' | ' comprehensive', options?:{
+    createSPARCStrategy: Set(): void {
     useGit: Trees?:boolean;
     timeout: Ms?:number;
     cleanup: Worktrees?:boolean;

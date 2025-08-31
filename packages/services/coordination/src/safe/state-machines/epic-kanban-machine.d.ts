@@ -1,31 +1,7 @@
 /**
  * @fileoverview Epic Portfolio Kanban State Machine using XState
  *
- * Implements SAFe Portfolio Kanban flow as formal state machine with: getLogger('EpicKanbanMachine');
-// ============================================================================
-// STATE MACHINE CONTEXT
-// ============================================================================
-/**
- * Epic Kanban state machine context
- */
-export interface EpicKanbanContext {
-    readonly epic: PortfolioEpic;
-    readonly businessCase?: BusinessCase;
-    readonly wsjfPriority?: WSJFPriority;
-    readonly config: EpicOwnerManagerConfig;
-    readonly analysisStartTime?: Date;
-    readonly implementationStartTime?: Date;
-    readonly estimatedCompletionTime?: Date;
-    readonly currentCapacityUsage: number;
-    readonly blockers: string[];
-    readonly stakeholderApprovals: string[];
-    readonly errorMessage?: string;
-    ')};;: any;
-}
-/**
- * Epic Kanban state machine events
- */
-export type EpicKanbanEvent = {
+ * Implements SAFe Portfolio Kanban flow as formal state machine with: getLogger(): void {
     type: 'SUBMIT_FOR_ANALYSIS';
     businessCase: ' ANALYSIS_COMPLETE';
     wsjfPriority: ' ANALYSIS_REJECTED';

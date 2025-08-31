@@ -1,12 +1,5 @@
 export interface ArchitecturePrinciple {
-    readonly id: string;
-    readonly name: string;
-    readonly statement: string;
-    readonly rationale: string;
-    readonly implications: string[];
-    readonly category: string;
-    '; : any;
-    readonly priority: critical | high | medium;
+  id: string;
 }
 export interface PrincipleComplianceMetrics {
     readonly complianceRate: number;
@@ -17,17 +10,7 @@ export interface PrincipleComplianceMetrics {
     readonly riskLevel: 'low| medium| high' | ' critical';
 }
 export interface ComplianceViolation {
-    readonly id: string;
-    readonly principleId: string;
-    readonly violationType: 'major' | ' minor' | ' critical';
-    readonly description: string;
-    readonly impact: string;
-    readonly detectedAt: Date;
-    readonly source: string;
-    readonly recommendation: string;
-    readonly assignee?: string;
-    readonly dueDate?: Date;
-    readonly status: 'open| in_progress| resolved' | ' accepted_risk';
+  id: string;
 }
 export interface ApprovalRecord {
     readonly approver: string;
@@ -101,8 +84,7 @@ export interface PrincipleValidationResult {
     readonly nextReviewDate: Date;
 }
 export interface ValidationRecommendation {
-    readonly id: string;
-    readonly priority: critical | high | medium;
+  id: string;
 }
 export interface RiskAssessment {
     readonly overallRisk: 'low| medium| high' | ' critical';

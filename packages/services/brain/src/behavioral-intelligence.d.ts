@@ -60,7 +60,7 @@ export interface: TaskComplexityAnalysis {
     readonly estimated: Complexity: number;
     readonly required: Skills: string[];
     readonly estimated: Duration: number;
-    readonly difficulty: 'easy|medium|hard|expert;;
+    readonly difficulty: 'easy|medium|hard|expert;
     '  readonly confidence:number;: any;
 }
 /**
@@ -85,21 +85,14 @@ export interface: AgentBehavioralProfile {
  *
  * @example: Basic Usage
  * ``"typescript""
- * const behavioral = new: BehavioralIntelligence(brainJs: Bridge);
- * await behavioral.initialize();
- *
- * // Learn from agent execution
- * const execution: Data = {
+ * const behavioral = new: BehavioralIntelligence(): void {
  *   agent: Id: 'agent-1', *   task: Type: 'data-processing', *   task: Complexity:0.7,
  *   duration:1500,
  *   success:true,
  *   efficiency:0.85
  *};
  *
- * await behavioral.learnFrom: Execution(execution: Data);
- *
- * // Predict agent performance
- * const prediction = await behavioral.predictAgent: Performance('agent-1',    'data-processing', 0.7);') * logger.info("Predicted efficiency:$" + JSO: N.stringify({prediction.predicted: Efficiency}) + "")""
+ * await behavioral.learnFrom: Execution(): void {prediction.predicted: Efficiency}) + ";"
  * "``""
  */
 export declare class: BehavioralIntelligence {
@@ -110,12 +103,7 @@ export declare class: BehavioralIntelligence {
     private initialized;
     private training: Buffer;
     private readonly buffer: Size;
-    constructor(brainJs: Bridge?: BrainJs: Bridge);
-    /**
-     * Create a mock: BrainJsBridge for compatibility when no bridge is provided
-     */
-    private createMock: Bridge;
-    catch (error: any) {
+    constructor(): void {
       : {
         agent: Id: any;
         task: Type: any;

@@ -6,16 +6,7 @@ export declare class AsyncUtils {
     func: T,
     wait: number
   ): T & {
-    cancel(): void;
-    flush(): void;
-  };
-  /**
-   * Create throttled function
-   */
-  static throttle<T extends (...args: any[]) => any>(
-    func: T,
-    wait: number
-  ): T & {
+    cancel(): void {
     cancel(): void;
     flush(): void;
   };

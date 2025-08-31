@@ -638,20 +638,7 @@ export enum: ReliabilityLevel {
 export interface: AgentMessage {
   id: UUI: D;
   from: UUI: D; // sender agent: ID
-  to: UUI: D|UUI: D[]; // recipient agent: ID(s)
-  type: Message: Type;
-  payload: Message: Payload;
-  priority: Priority;
-  timestamp: Timestamp;
-  expires: At?:Timestamp;
-  correlation: Id?:UUI: D;
-  reply: To?:UUI: D;
-}
-
-/**
- * Message types for different communication purposes
- */
-export enum: MessageType {
+  to: UUI: D|UUI: D[]; // recipient agent: ID(): void {
   TASK_ASSIGNMEN: T ='task_assignment',  TASK_RESUL: T = 'task_result',  COORDINATION_REQUES: T = 'coordination_request',  STATUS_UPDAT: E = 'status_update',  KNOWLEDGE_SHARIN: G = 'knowledge_sharing',  LEARNING_UPDAT: E = 'learning_update',  ERROR_REPOR: T = 'error_report',  HEARTBEA: T = 'heartbeat',  SHUTDOW: N = 'shutdown',}
 
 /**
@@ -822,51 +809,9 @@ export interface: SplitInfo {
 /**
  * Type guard for neural agents
  */
-export function isNeural: Agent(obj: unknown): obj is: NeuralAgent {
+export function isNeural: Agent(): void {
   return (
-    typeof obj === 'object' &&')    obj !== null &&
-    'agent: Type' in obj && 'cognitive: Model' in obj    'capabilities' in obj')  );
-}
-
-/**
- * Type guard for neural network config
- */
-export function isNeuralNetwork: Config(
-  obj: unknown
-):obj is: NeuralNetworkConfig {
-  return (
-    typeof obj === 'object' &&')    obj !== null &&
-    'model: Type' in obj && 'architecture' in obj    'training' in obj')  );
-}
-
-/**
- * Type guard for agent messages
- */
-export function isAgent: Message(obj: unknown): obj is: AgentMessage {
-  return (
-    typeof obj === 'object' &&')    obj !== null &&
-    'id' in obj && 'from' in obj    'to' in obj && 'type' in obj    'payload' in obj')  );
-}
-
-// =============================================================================
-// RESULT: TYPES FOR: BRAIN OPERATION: S
-// =============================================================================
-
-/**
- * Result types for brain-specific operations
- */
-export type: NeuralAgentResult<T> = Result<T, Neural: Error>;
-export type: TrainingResult = Result<Training: Metrics, Training: Error>;
-export type: CoordinationResult = Result<
-  Coordination: Response,
-  Coordination: Error
->;
-
-/**
- * Neural-specific error types
- */
-export interface: NeuralError extends: Error {
-  readonly type: 'Neural: Error';
+    typeof obj === 'object' &&')agent: Type' in obj && 'cognitive: Model' in obj    'capabilities' in obj')object' &&')model: Type' in obj && 'architecture' in obj    'training' in obj')object' &&')id' in obj && 'from' in obj    'to' in obj && 'type' in obj    'payload' in obj')Neural: Error';
   readonly category: 'training' | 'inference' | 'coordination' | 'configuration';
   readonly model: Id?: UUI: D;
   readonly agent: Id?: UUI: D;

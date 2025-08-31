@@ -2,11 +2,7 @@
  * Technical Debt Item with enhanced tracking
  */
 export interface TechnicalDebtItem {
-    id: string;
-    title: string;
-    description: string;
-    '; : any;
-    severity: critical | high | medium;
+  id: string;
 }
 /**
  * Technical debt categories

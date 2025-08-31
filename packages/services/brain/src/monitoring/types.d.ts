@@ -29,7 +29,7 @@ export interface: ResourceUsage {
 }
 export interface: HealthStatus {
     agent: Id: string;
-    status: 'healthy|warning|critical|offline;;
+    status: 'healthy|warning|critical|offline;
     '  last: Seen:number;: any;
     issues: string[];
     recommendations: string[];
@@ -223,19 +223,7 @@ export interface: IntelligenceSystemConfig {
     };
 }
 export interface: IntelligenceSystem {
-    predictTask: Duration(agent: Id: Agent: Id, task: Type: string, context?: Record<string, unknown>): Promise<Task: Prediction>;
-    predictTaskDurationMulti: Horizon(agent: Id: Agent: Id, task: Type: string, context?: Record<string, unknown>): Promise<MultiHorizonTask: Prediction>;
-    getAgentLearning: State(agent: Id: Agent: Id): AgentLearning: State | null;
-    updateAgent: Performance(agent: Id: Agent: Id, success: boolean, metadata?: Record<string, unknown>): void;
-    getAgent: Health(agent: Id: Agent: Id): Agent: Health | null;
-    forecastPerformance: Optimization(swarm: Id: Swarm: Id, horizon?: Forecast: Horizon): Promise<PerformanceOptimization: Forecast>;
-    predictKnowledgeTransfer: Success(source: Swarm: Swarm: Id, target: Swarm: Swarm: Id, patterns: unknown[]): Promise<KnowledgeTransfer: Prediction>;
-    predictEmergent: Behavior(): Promise<EmergentBehavior: Prediction>;
-    updateAdaptiveLearning: Models(): Promise<AdaptiveLearning: Update>;
-    getSystem: Health(): SystemHealth: Summary;
-    shutdown(): Promise<void>;
-}
-export interface: TaskPrediction {
+    predictTask: Duration(): void {
     agent: Id: string;
     task: Type: string;
     predicted: Duration: number;
@@ -280,7 +268,7 @@ export interface: AgentLearningState {
 }
 export interface: AgentHealth {
     agent: Id: string;
-    status: 'healthy|warning|critical|offline;;
+    status: 'healthy|warning|critical|offline;
     '  overall: Health?:number;: any;
     overall: Score: number;
     subsystem: Health?: {

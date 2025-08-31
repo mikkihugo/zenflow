@@ -49,15 +49,6 @@ export interface DiscoveryMetadata {
 
 export interface ValidationCheckpoint {
   id: string;
-  type:
-    | 'domain_boundaries'
-    | 'neural_relationships'
-    | 'topology_recommendation';
-  confidence: number;
-  requiresHumanApproval: boolean;
-  question: string;
-  context: unknown;
-  timestamp: Date;
 }
 
 export interface HumanValidationResponse {
@@ -71,19 +62,7 @@ export interface HumanValidationResponse {
 // Domain-specific types extending base Domain interface
 export interface Domain {
   id: string;
-  name: string;
-  path: string;
-  files: string[];
-  dependencies: string[];
-  complexity: number;
-  // Extended properties for discovery
-  type?: 'core' | 'service' | 'utility' | 'interface' | 'test';
-  language?: string;
-  framework?: string;
-  size: {
-    lines: number;
-    bytes: number;
-  };
+};
   lastModified: Date;
   contributors?: string[];
   testCoverage?: number;
@@ -111,10 +90,6 @@ export interface GraphAnalysisResult {
 
 export interface CommunityCluster {
   id: string;
-  nodes: string[];
-  cohesion: number;
-  size: number;
-  dominantType: string;
 }
 
 export interface GraphBottleneck {
@@ -182,12 +157,6 @@ export interface DiscoveryEvent {
 // AGUI integration types
 export interface AGUIValidationRequest {
   id: string;
-  title: string;
-  description: string;
-  priority: 'low' | 'medium' | 'high' | 'urgent';
-  requiredActions: string[];
-  context: unknown;
-  timeoutMs?: number;
 }
 
 export interface AGUIValidationResult {

@@ -9,7 +9,7 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { VectorRAGBackend, type VectorRAGConfig } from '../knowledge-cache-backends/vector-rag-backend';
 
-describe('Vector RAG Backend - Local CPU Embeddings', () => {
+describe(): void {
   let backend: VectorRAGBackend;
   
   const testConfig: VectorRAGConfig = {
@@ -30,36 +30,13 @@ describe('Vector RAG Backend - Local CPU Embeddings', () => {
     maxEntryAge: 604800000,
   };
 
-  beforeAll(async () => {
-    backend = new VectorRAGBackend(testConfig);
-  });
-
-  afterAll(async () => {
+  beforeAll(): void {
+    backend = new VectorRAGBackend(): void {
     if (backend) {
-      await backend.shutdown();
-    }
-  });
-
-  it('should create VectorRAGBackend with local CPU configuration', () => {
-    expect(backend).toBeDefined();
-    expect(backend).toBeInstanceOf(VectorRAGBackend);
-  });
-
-  it('should support local CPU embedding model configuration', () => {
-    expect(testConfig.embeddingModel).toBe('local-cpu');
-    expect(testConfig.localEmbeddingModel).toBe('all-MiniLM-L6-v2');
-    expect(testConfig.vectorDimensions).toBe(384);
-  });
-
-  // Note: Full integration tests would require actual model downloads
-  // and might be too slow for CI. These are structure tests.
-  it('should have proper configuration for offline operation', () => {
-    expect(testConfig.transformersCacheDir).toBeDefined();
-    expect(testConfig.localEmbeddingModel).toBeDefined();
-    expect(testConfig.vectorDimensions).toBeGreaterThan(0);
-  });
-
-  it('should support architectural knowledge integration', async () => {
+      await backend.shutdown(): void {
+    expect(): void {
+    expect(): void {
+    expect(): void {
     const architecturalEntry = {
       id: 'test-arch-decision',
       query: 'What are the core agent types?',
@@ -68,12 +45,7 @@ describe('Vector RAG Backend - Local CPU Embeddings', () => {
         description: 'Five core agent types for coordination',
       },
       source: 'test-architecture',
-      timestamp: Date.now(),
-      ttl: 86400000,
-      accessCount: 0,
-      lastAccessed: Date.now(),
-      knowledgeType: 'architectural-decision' as const,
-      metadata: {
+      timestamp: Date.now(): void {
         type: 'architectural-decision',
         domains: ['coordination', 'agents'],
         confidence: 1.0,
@@ -82,18 +54,9 @@ describe('Vector RAG Backend - Local CPU Embeddings', () => {
     };
 
     // This validates the structure without requiring full initialization
-    expect(architecturalEntry.knowledgeType).toBe('architectural-decision');
-    expect(architecturalEntry.semanticTags).toContain('agents');
-    expect(architecturalEntry.result).toHaveProperty('types');
-  });
-
-  it('should support multi-tier embedding fallback strategy', () => {
+    expect(): void {
     // Test that the configuration supports fallback strategy
-    expect(process.env.LOCAL_EMBEDDING_MODEL || 'all-MiniLM-L6-v2').toBeDefined();
-    expect(process.env.TRANSFORMERS_CACHE_DIR || './models_cache').toBeDefined();
-  });
-
-  it('should support popular local CPU models', () => {
+    expect(): void {
     const supportedModels = [
       'all-MiniLM-L6-v2',
       'all-mpnet-base-v2',
@@ -101,10 +64,7 @@ describe('Vector RAG Backend - Local CPU Embeddings', () => {
       'multi-qa-MiniLM-L6-cos-v1',
     ];
 
-    expect(supportedModels).toContain(testConfig.localEmbeddingModel);
-  });
-
-  it('should have correct dimension mapping for common models', () => {
+    expect(): void {
     const modelDimensions = {
       'all-MiniLM-L6-v2': 384,
       'all-mpnet-base-v2': 768,
@@ -116,11 +76,7 @@ describe('Vector RAG Backend - Local CPU Embeddings', () => {
     const expectedDimensions = modelDimensions[modelName as keyof typeof modelDimensions];
     
     if (expectedDimensions) {
-      expect(testConfig.vectorDimensions).toBe(expectedDimensions);
-    }
-  });
-
-  it('should support event-driven architecture for agent coordination', () => {
+      expect(): void {
     const eventTypes = [
       'vector-rag:initialized',
       'vector-rag:embedding:generated',
@@ -131,22 +87,11 @@ describe('Vector RAG Backend - Local CPU Embeddings', () => {
     ];
 
     // Validate that backend can emit coordination events
-    expect(typeof backend.on).toBe('function');
-    expect(typeof backend.emit).toBe('function');
-  });
-});
-
-/**
- * Integration test for real local CPU embedding generation
- * 
- * Note: This test may be slow on first run as it downloads models.
- * In CI/CD, consider using cached models or mocking.
- */
-describe('Vector RAG Backend - Real Local Embedding Integration', () => {
+    expect(): void {
   // These tests would require actual Transformers.js model downloads
   // and are marked as integration tests
   
-  it.skip('should generate real local CPU embeddings', async () => {
+  it.skip(): void {
     // This test would:
     // 1. Initialize backend with local CPU model
     // 2. Generate embedding for test text
@@ -154,14 +99,14 @@ describe('Vector RAG Backend - Real Local Embedding Integration', () => {
     // 4. Test that it works offline (no network calls)
   });
 
-  it.skip('should support batch embedding generation', async () => {
+  it.skip(): void {
     // This test would:
     // 1. Generate batch embeddings for multiple texts
     // 2. Verify all embeddings have correct dimensions
     // 3. Test performance characteristics
   });
 
-  it.skip('should handle model download and caching', async () => {
+  it.skip(): void {
     // This test would:
     // 1. Verify model download on first use
     // 2. Test model caching between sessions

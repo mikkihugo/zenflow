@@ -55,29 +55,6 @@ export type SupportedLanguage =
 
 export interface CodeAnalysisResult {
   id: string;
-  filePath: string;
-  language: SupportedLanguage;
-  timestamp: Date;
-
-  // Syntax analysis
-  ast: ASTAnalysis;
-  syntaxErrors: SyntaxError[];
-  parseSuccess: boolean;
-
-  // Semantic analysis
-  semantics: SemanticAnalysis;
-  typeErrors: TypeError[];
-
-  // Quality metrics
-  quality: CodeQualityMetrics;
-  suggestions: CodeSuggestion[];
-
-  // AI insights
-  aiInsights?: AICodeInsights;
-
-  // Performance metrics
-  analysisTime: number;
-  memoryUsage: number;
 }
 
 export interface ASTAnalysis {
@@ -124,25 +101,6 @@ export interface CodeQualityMetrics {
 
 export interface CodeSuggestion {
   id: string;
-  type: SuggestionType;
-  severity: 'info' | 'warning' | 'error' | 'critical';
-  title: string;
-  description: string;
-
-  // Location information
-  range: SourceRange;
-  context: string;
-
-  // Fix information
-  autoFixable: boolean;
-  suggestedFix?: CodeFix;
-  alternatives: CodeFix[];
-
-  // Metadata
-  confidence: number;
-  impact: ImpactAssessment;
-  rationale: string;
-  learnMoreUrl?: string;
 }
 
 export type SuggestionType =
@@ -180,40 +138,10 @@ export interface AICodeInsights {
 
 export interface LiveAnalysisSession {
   id: string;
-  startTime: Date;
-  endTime?: Date;
-
-  // Session configuration
-  options: CodeAnalysisOptions;
-  watchedFiles: string[];
-  watchedDirectories: string[];
-
-  // Session state
-  status: 'active' | 'paused' | 'stopped' | 'error';
-  filesAnalyzed: number;
-  errorsFound: number;
-  suggestionsGenerated: number;
-
-  // Real-time metrics
-  analysisQueue: AnalysisQueueItem[];
-  currentAnalysis?: AnalysisQueueItem;
-  metrics: SessionMetrics;
-
-  // Event handling
-  eventHandlers: EventHandler[];
-  notifications: Notification[];
 }
 
 export interface AnalysisQueueItem {
   id: string;
-  filePath: string;
-  priority: 'low' | 'normal' | 'high' | 'urgent';
-  queuedAt: Date;
-  startedAt?: Date;
-  completedAt?: Date;
-  status: 'queued' | 'processing' | 'completed' | 'failed';
-  error?: Error;
-  result?: CodeAnalysisResult;
 }
 
 export interface SessionMetrics {
@@ -270,11 +198,6 @@ export interface Reference {
 
 export interface Scope {
   id: string;
-  kind: 'global' | 'module' | 'function' | 'block' | 'class';
-  parent?: string;
-  bindings: string[];
-  references: string[];
-  location: SourceRange;
 }
 
 export interface Binding {
@@ -312,9 +235,6 @@ export interface TypeMethod {
 
 export interface ControlFlowNode {
   id: string;
-  type: 'entry' | 'exit' | 'statement' | 'condition' | 'loop';
-  statement?: string;
-  location: SourceRange;
 }
 
 export interface ControlFlowEdge {
@@ -333,9 +253,6 @@ export interface ControlFlowGraph {
 
 export interface DataFlowNode {
   id: string;
-  variable: string;
-  type: 'definition' | 'use' | 'kill';
-  location: SourceRange;
 }
 
 export interface DataFlowEdge {
@@ -367,10 +284,6 @@ export interface DataFlowGraph {
 
 export interface CallGraphNode {
   id: string;
-  name: string;
-  type: 'function' | 'method' | 'constructor' | 'external';
-  location?: SourceRange;
-  signature?: string;
 }
 
 export interface CallGraphEdge {
@@ -495,13 +408,6 @@ export type SecurityIssueType =
 
 export interface Vulnerability {
   id: string;
-  type: 'dependency' | 'code' | 'configuration';
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  package?: string;
-  version?: string;
-  fixedVersion?: string;
-  description: string;
-  references: string[];
 }
 
 export interface SourceRange {
@@ -691,11 +597,6 @@ export type AnalysisEvent =
 
 export interface Notification {
   id: string;
-  type: 'info' | 'warning' | 'error' | 'success';
-  title: string;
-  message: string;
-  timestamp: Date;
-  actions?: NotificationAction[];
 }
 
 export interface NotificationAction {
@@ -763,14 +664,10 @@ export interface RefactoringStep {
 
 export interface BusinessRule {
   id: string;
-  description: string;
-  type: string;
 }
 
 export interface Workflow {
   id: string;
-  name: string;
-  steps: string[];
 }
 
 export interface BusinessEntity {
