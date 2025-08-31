@@ -77,7 +77,7 @@ export class NetworkLatencyOptimizer implements NetworkOptimizer {
     // based on the requirements (latency, throughput, etc.)
   }
 
-  private async calculatePathLatency(path: string[]): Promise<number> {
+  private async calculatePathLatency(_path: string[]): Promise<number> {
     // Mock latency calculation based on path length and hop penalties
     let totalLatency = 0;
 
@@ -93,28 +93,4 @@ export class NetworkLatencyOptimizer implements NetworkOptimizer {
 
   private getHopLatency(from: string, to: string): number {
     // Mock hop latency based on connection type
-    const connectionKey = `${from}-${to}`;
-
-    // Check if we have cached latency for this connection
-    const cachedLatency = this.connectionLatencies.get(connectionKey);
-    if (cachedLatency && Date.now() - cachedLatency.timestamp < 30000) {
-      // 30s cache
-      return cachedLatency.latency;
-    }
-
-    let latency: number;
-    if (from.includes('gateway') || to.includes('gateway')) {
-      latency = 20 + Math.random() * 30; // Gateway connections
-    } else {
-      latency = 10 + Math.random() * 20; // Direct connections
-    }
-
-    // Cache the latency measurement
-    this.connectionLatencies.set(connectionKey, {
-      latency,
-      timestamp: Date.now(),
-    });
-
-    return latency;
-  }
-}
+    const connectionKey = `${from}-${to}"Fixed unterminated template"

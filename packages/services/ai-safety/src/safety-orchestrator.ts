@@ -5,7 +5,7 @@
  * deception detection, and intervention capabilities.
  */
 
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger as _getLogger } from '@claude-zen/foundation';
 
 import { AIDeceptionDetector, type AIInteractionData,  } from './ai-deception-detector';
 
@@ -113,7 +113,7 @@ export class AISafetyOrchestrator {
         knowledge:0.6,
         verification:0.8,
         confidence:0.5,
-        context:0.6
+        _context:0.6
 },
       interventions:{
         immediate: true,
@@ -152,7 +152,7 @@ export class AISafetyOrchestrator {
   public async startSafetyMonitoring():Promise<{ success: boolean; error?: SafetyError}> {
     try {
       if (this.isMonitoring) {
-        return { success: false, error: new SafetyError('Safety monitoring is already active')};
+        return { success: false, _error: new SafetyError('Safety monitoring is already active')};
 }
 
       this.isMonitoring = true;
@@ -167,7 +167,7 @@ export class AISafetyOrchestrator {
 } catch (error) {
       return { 
         success: false, 
-        error: new SafetyError(
+        _error: new SafetyError(
           'Failed to start safety monitoring',          { sessionId: this.sessionId}
         )
 };
@@ -180,7 +180,7 @@ export class AISafetyOrchestrator {
   public async stopSafetyMonitoring():Promise<{ success: boolean; error?: SafetyError}> {
     try {
       if (!this.isMonitoring) {
-        return { success: false, error: new SafetyError('Safety monitoring is not active')};
+        return { success: false, _error: new SafetyError('Safety monitoring is not active')};
 }
 
       this.isMonitoring = false;
@@ -195,7 +195,7 @@ export class AISafetyOrchestrator {
 } catch (error) {
       return { 
         success: false, 
-        error: new SafetyError(
+        _error: new SafetyError(
           'Failed to stop safety monitoring',          { sessionId: this.sessionId}
         )
 };
@@ -276,7 +276,7 @@ export class AISafetyOrchestrator {
 } catch (error) {
       return {
         success: false,
-        error: error instanceof SafetyError ? error : new SafetyError(error instanceof Error ? error.message : 'Unknown error')
+        _error: error instanceof SafetyError ? _error: new SafetyError(error instanceof Error ? error.message : 'Unknown error')
 };
 }
 }
@@ -311,7 +311,7 @@ export class AISafetyOrchestrator {
 } catch (error) {
       return {
         success: false,
-        error: new SafetyError('Automated detection failed')
+        _error: new SafetyError('Automated detection failed')
 };
 }
 }
@@ -347,7 +347,7 @@ export class AISafetyOrchestrator {
 } catch (error) {
       return {
         success: false,
-        error: new SafetyError('Behavioral analysis failed')
+        _error: new SafetyError('Behavioral analysis failed')
 };
 }
 }
@@ -355,7 +355,7 @@ export class AISafetyOrchestrator {
   /**
    * Analyze behavioral patterns in interaction data.
    */
-  private analyzeBehavioralPatterns(data: AIInteractionData): number {
+  private analyzeBehavioralPatterns(_data: AIInteractionData): number {
     let patterns = 0;
     
     // Check for tool usage patterns
@@ -379,7 +379,7 @@ export class AISafetyOrchestrator {
   /**
    * Detect behavioral deviations from normal patterns.
    */
-  private detectBehavioralDeviations(data: AIInteractionData): number {
+  private detectBehavioralDeviations(_data: AIInteractionData): number {
     let deviations = 0;
 
     // Check for unusual confidence levels
@@ -437,7 +437,7 @@ export class AISafetyOrchestrator {
 } catch (error) {
       return {
         success: false,
-        error: new SafetyError('Human escalation failed')
+        _error: new SafetyError('Human escalation failed')
 };
 }
 }
@@ -505,7 +505,7 @@ export class AISafetyOrchestrator {
 } catch (error) {
       return {
         success: false,
-        error: new SafetyError(
+        _error: new SafetyError(
           'Emergency shutdown failed',          { sessionId: this.sessionId}
         )
 };
@@ -529,14 +529,14 @@ export async function createInitializedAISafetyOrchestrator():Promise<{ success:
     const startResult = await orchestrator.startSafetyMonitoring();
     
     if (!startResult.success) {
-      return { success: false, error: startResult.error};
+      return { success: false, _error: startResult.error};
 }
 
     return { success: true, value: orchestrator};
 } catch (error) {
     return {
       success: false,
-      error: new SafetyError(
+      _error: new SafetyError(
         'Failed to create and initialize AI safety orchestrator'
       )
     };

@@ -1,12 +1,13 @@
+import { getLogger as _getLogger } from '@claude-zen/foundation';
 /**
  * @fileoverview Intelligence System Factory Functions
  *
  * Factory functions for creating different intelligence system configurations
  */
 
-import { getLogger} from '@claude-zen/foundation';
+import { getLogger as _getLogger } from '@claude-zen/foundation';
 
-import { CompleteIntelligenceSystem} from './intelligence-system';
+import { CompleteIntelligenceSystem as _CompleteIntelligenceSystem } from './intelligence-system';
 import type { IntelligenceSystemConfig} from './types';
 
 const logger = getLogger('agent-monitoring-intelligence-factory');

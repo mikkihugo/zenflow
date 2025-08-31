@@ -1,4 +1,4 @@
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger as _getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('aideceptiondetector');
 

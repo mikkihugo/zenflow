@@ -1,3 +1,4 @@
+import { getLogger as _getLogger } from '@claude-zen/foundation';
 /**
  * @fileoverview Brain Coordinator Integration Tests (Jest Version)
  *
@@ -18,7 +19,7 @@
  * @version 2.1.0
  */
 
-import { jest} from '@jest/globals';
+import { jest as _jest } from '@jest/globals';
 
 // Mock external dependencies to avoid real neural network calls
 jest.unstable_mockModule('@xenova/transformers', () => ({
@@ -74,12 +75,12 @@ jest.unstable_mockModule('@claude-zen/foundation/logging', () => ({
     debug:jest.fn(),
     info:jest.fn(),
     warn:jest.fn(),
-    error:jest.fn(),
+    _error:jest.fn(),
 }),
 }));
 
 import type { BrainConfig} from '../main';
-import { BrainCoordinator} from '../main';
+import { BrainCoordinator as _BrainCoordinator } from '../main';
 
 describe('Brain Coordinator Integration Tests (Jest)', () => {
     ')  let brainCoordinator:BrainCoordinator;
@@ -195,7 +196,7 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
 
       const task = {
         id: 'test-task',        type:'prediction' as const,
-        data:{ input: [1, 2, 3]},
+        _data:{ input: [1, 2, 3]},
 };
 
       const result = await brainCoordinator.processNeuralTask(task);
@@ -294,7 +295,7 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
     it('should process neural tasks with various types', async () => {
     ')      const task = {
         id: 'neural-task-1',        type:'prediction' as const,
-        data:{ input: [1, 2, 3, 4, 5]},
+        _data:{ input: [1, 2, 3, 4, 5]},
 };
 
       const result = await brainCoordinator.processNeuralTask(task);
@@ -307,12 +308,12 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
     it('should predict task complexity', async () => {
     ')      const simpleTask = {
         type:'prediction' as const,
-        data:{ input: [1, 2]},
+        _data:{ input: [1, 2]},
 };
 
       const complexTask = {
         type:'classification' as const,
-        data:{
+        _data:{
           input:Array.from({ length: 100}, (_, i) => i),
           metadata:{ complexity: 'high'},
 },
@@ -335,7 +336,7 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
     it('should store neural data', async () => {
     ')      const neuralData = {
         id: 'test-data-1',        type:'training' as const,
-        data:[1, 2, 3, 4, 5],
+        _data:[1, 2, 3, 4, 5],
         characteristics:{
           size:40, // 5 numbers * 8 bytes each
           accessFrequency:'occasional' as const,
@@ -365,7 +366,7 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
 
     it('should optimize prompts for different tasks', async () => {
     ')      const request = {
-        task: 'code-optimization',        basePrompt: 'Optimize this code for better performance',        context:{
+        task: 'code-optimization',        basePrompt: 'Optimize this code for better performance',        _context:{
           language: 'javascript',          complexity: 'medium',},
 };
 
@@ -381,13 +382,13 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
     it('should optimize prompts with different strategies', async () => {
     ')      const requests = [
         {
-          task: 'code-generation',          basePrompt: 'Generate a function',          context:{ type: 'utility'},
+          task: 'code-generation',          basePrompt: 'Generate a function',          _context:{ type: 'utility'},
 },
         {
-          task: 'debugging',          basePrompt: 'Find the bug',          context:{ severity: 'high'},
+          task: 'debugging',          basePrompt: 'Find the bug',          _context:{ severity: 'high'},
 },
         {
-          task: 'refactoring',          basePrompt: 'Improve code structure',          context:{ maintainability: 'important'},
+          task: 'refactoring',          basePrompt: 'Improve code structure',          _context:{ maintainability: 'important'},
 },
 ];
 
@@ -404,7 +405,7 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
 
     it('should handle complex prompt optimization requests', async () => {
     ')      const complexRequest = {
-        task: 'multi-step-analysis',        basePrompt: 'Analyze the system and provide recommendations',        context:{
+        task: 'multi-step-analysis',        basePrompt: 'Analyze the system and provide recommendations',        _context:{
           domain: 'software-architecture',          constraints:['time',    'budget'],
           requirements:['scalability',    'maintainability'],
           stakeholders:['developers',    'managers'],
@@ -424,7 +425,7 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
 
     it('should maintain optimization consistency', async () => {
     ')      const request = {
-        task: 'consistency-test',        basePrompt: 'Test prompt optimization',        context:{ test: 'consistency'},
+        task: 'consistency-test',        basePrompt: 'Test prompt optimization',        _context:{ test: 'consistency'},
 };
 
       const result1 = await brainCoordinator.optimizePrompt(request);
@@ -479,11 +480,11 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
       const tasks = [
         {
           id: 'task-1',          type:'prediction' as const,
-          data:{ input: [1, 2, 3]},
+          _data:{ input: [1, 2, 3]},
 },
         {
           id: 'task-2',          type:'classification' as const,
-          data:{ input: [0.5, -0.5, 1.0]},
+          _data:{ input: [0.5, -0.5, 1.0]},
 },
 ];
 
@@ -509,7 +510,7 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
 
       const task = {
         id: 'state-test',        type:'prediction' as const,
-        data:{ input: [0.5]},
+        _data:{ input: [0.5]},
 };
       await brainCoordinator.processNeuralTask(task);
       expect(brainCoordinator.isInitialized()).toBe(true);
@@ -611,7 +612,7 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
     ')      // Test integration between task complexity prediction and processing
       const simpleTask = {
         type:'prediction' as const,
-        data:{ input: [1, 2]},
+        _data:{ input: [1, 2]},
 };
 
       const complexity = brainCoordinator.predictTaskComplexity(simpleTask);
@@ -628,7 +629,7 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
     ')      // Test neural data storage integration
       const neuralData = {
         id: 'integration-test-data',        type:'predictions' as const,
-        data:[0.1, 0.2, 0.3, 0.4, 0.5],
+        _data:[0.1, 0.2, 0.3, 0.4, 0.5],
         characteristics:{
           size:40, // 5 numbers * 8 bytes each
           accessFrequency:'frequent' as const,
@@ -675,7 +676,7 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
       // 4. Neural task processing
       const task = {
         id: 'integration-task',        type:'prediction' as const,
-        data:{ input: [0.5, 1.0, 1.5]},
+        _data:{ input: [0.5, 1.0, 1.5]},
 };
       const taskResult = await brainCoordinator.processNeuralTask(task);
       expect(taskResult).toBeDefined();
@@ -741,7 +742,7 @@ describe('Brain Coordinator Integration Tests (Jest)', () => {
       expect(typeof metrics).toBe('object');')
       // Verify all core functions work
       const complexityPrediction = brainCoordinator.predictTaskComplexity({
-        type: 'prediction',        data:{ input: [1, 2, 3]},
+        type: 'prediction',        _data:{ input: [1, 2, 3]},
 });
       expect(
         ['simple',    'moderate',    'complex',    'heavy'].includes(')          complexityPrediction

@@ -207,13 +207,13 @@ export class ImmutableContextUtils {
   /**
    * Update workflow context safely
    */
-  static updateContext<T>(context: T, updater: (draft: Draft<T>) => void): T {
+  static updateContext<T>(_context: T, updater: (draft: Draft<T>) => void): T {
     return produce(context, updater);
   }
   /**
    * Add error to context errors array
    */
-  static addError<T extends { errors: any[] }>(context: T, error: any): T {
+  static addError<T extends { errors: any[] }>(_context: T, _error: any): T {
     return produce(context, (draft) => {
       draft.errors.push({
         ...error,

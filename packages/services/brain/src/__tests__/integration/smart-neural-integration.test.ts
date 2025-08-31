@@ -14,9 +14,9 @@ import {
   vi,
 } from 'vitest';
 import type { BrainConfig} from '../../brain-coordinator';
-import { BrainCoordinator} from '../../brain-coordinator';
-import { NeuralBridge} from '../../neural-bridge';
-import { SmartNeuralCoordinator} from '../../smart-neural-coordinator';
+import { BrainCoordinator as _BrainCoordinator } from '../../brain-coordinator';
+import { NeuralBridge as _NeuralBridge } from '../../neural-bridge';
+import { SmartNeuralCoordinator as _SmartNeuralCoordinator } from '../../smart-neural-coordinator';
 
 // Mock external dependencies for testing
 vi.mock('@xenova/transformers', () => ({
@@ -33,7 +33,7 @@ vi.mock('onnxruntime-node', () => ({
     ')  InferenceSession:{
     create:vi.fn().mockResolvedValue({
       run:vi.fn().mockResolvedValue({
-        output:{ data: new Float32Array([0.1, 0.2, 0.3, 0.4, 0.5])},
+        output:{ _data: new Float32Array([0.1, 0.2, 0.3, 0.4, 0.5])},
 }),
 }),
 },
@@ -122,7 +122,7 @@ describe('Smart Neural Integration Tests', () => {
     ')      const text = 'This is a test sentence for neural embedding generation';
 
       const result = await brainCoordinator.generateEmbedding(text, {
-        context: 'integration-test',        priority: 'medium',        qualityLevel: 'standard',});
+        _context: 'integration-test',        priority: 'medium',        qualityLevel: 'standard',});
 
       expect(result).toBeDefined();
       expect(result.success).toBe(true);
@@ -138,7 +138,7 @@ describe('Smart Neural Integration Tests', () => {
     ')      const text = 'Neural bridge integration test sentence';
 
       const result = await neuralBridge.generateEmbedding(text, {
-        context: 'neural-bridge-test',        priority: 'high',        qualityLevel: 'premium',});
+        _context: 'neural-bridge-test',        priority: 'high',        qualityLevel: 'premium',});
 
       expect(result).toBeDefined();
       expect(result.success).toBe(true);

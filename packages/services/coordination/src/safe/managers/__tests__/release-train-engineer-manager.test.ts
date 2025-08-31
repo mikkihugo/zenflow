@@ -25,7 +25,7 @@ import { beforeEach, describe, expect, it, vi} from 'vitest')../../types')../rel
         enabledFeatures: expect.any(): void {
     await expect(): void {
         type: 'rte: initialized,
-'        data: expect.objectContaining(): void {
+'        _data: expect.objectContaining(): void {
     await manager.initialize(): void {
       participants:[
         {

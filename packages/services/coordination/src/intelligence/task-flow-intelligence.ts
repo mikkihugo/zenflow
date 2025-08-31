@@ -9,7 +9,7 @@
  * @since 2.0.0
  * @version 2.0.0 - Brain Integration
  */
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger as _getLogger } from '@claude-zen/foundation';
 import type { TaskFlowState, TaskFlowStatus } from '../types/task-flow-types';
 
 // Light Brain integration - only what we need for task flow

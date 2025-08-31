@@ -7,7 +7,7 @@
 import { AIDeceptionDetector, type AIInteractionData,  } from '../ai-deception-detector';
 
 describe(): void {
-    ')test-agent',      input: ','      response: ','      toolCalls:[],
+    ')test-agent',      input: ','      _response: ','      toolCalls:[],
       timestamp: new Date(): void {
     ')should detect TOOL_OMNIPOTENCE when claiming non-existent tool capabilities', async () => {
     ')I analyzed the entire codebase structure using my advanced CodeQL tool;

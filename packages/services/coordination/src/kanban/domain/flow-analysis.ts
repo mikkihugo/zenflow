@@ -5,7 +5,7 @@
  * Analyzes throughput, cycle time, and flow efficiency patterns.
  */
 
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger as _getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('FlowAnalysis');
 

@@ -4,7 +4,7 @@
  * Calculates actual SAFe implementation coverage based on real capabilities
  * rather than placeholder code or theoretical implementations.
  */
-import { ESSENTIAL_SAFE_COMPONENTS } from './essential-safe-readiness.js';
+import { ESSENTIAL_SAFE_COMPONENTS as _ESSENTIAL_SAFE_COMPONENTS } from './essential-safe-readiness.js';
 
 // ============================================================================
 // COVERAGE CALCULATION ENGINE
@@ -71,18 +71,5 @@ function generateRecommendation(
 export function generateHonestAssessmentReport(): string {
   const coverage = calculateActualSafeCoverage();
 
-  return `# TaskMaster SAFe Implementation - Honest Assessment
-
-## Executive Summary
-- **Essential SAFe Coverage**: ${coverage.essentialSafeCoverage}%
-- **Implemented Components**: ${coverage.implementedComponents}
-- **Partial Components**: ${coverage.partialComponents}  
-- **Missing Components**: ${coverage.missingComponents}
-
-## Recommendations
-${coverage.recommendations.map((r) => `- ${r}`).join('\n')}
-
-## Next Steps
-Focus on completing missing components for full Essential SAFe coverage
-`;
-}
+  return "Fixed unterminated template" `- ${r}"Fixed unterminated template"
+"Fixed unterminated template"

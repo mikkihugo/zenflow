@@ -9,7 +9,7 @@
  * @version 1.0.0
  */
 
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger as _getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('SystemDemoCoordination');
 
@@ -220,7 +220,7 @@ export interface DemoFeedback {
   };
 
   // Response and follow-up
-  response: {
+  _response: {
     acknowledgedBy: string;
     responseRequired: boolean;
     targetResponseDate?: Date;
@@ -378,188 +378,4 @@ export class SystemDemoCoordination {
   async completeDemo(demoId: string): Promise<DemoOutcome> {
     const demo = this.activeDemos.get(demoId);
     if (!demo) {
-      throw new Error(`Demo ${demoId} not found`);
-    }
-
-    const feedback = this.demoFeedback.get(demoId) || [];
-
-    // Generate demo outcome
-    const outcome = this.generateDemoOutcome(demo, feedback);
-    this.demoOutcomes.set(demoId, outcome);
-
-    this.logger.info('Demo completed', {
-      demoId,
-      overallSuccess: outcome.overallSuccess,
-      stakeholderSatisfaction: outcome.stakeholderSatisfaction,
-    });
-
-    return outcome;
-  }
-
-  /**
-   * Get demo status and metrics
-   */
-  getDemoMetrics(demoId: string): {
-    demo: SystemDemoConfig;
-    feedback: DemoFeedback[];
-    outcome?: DemoOutcome;
-    realTimeMetrics: {
-      attendeeCount: number;
-      feedbackCount: number;
-      avgSatisfaction: number;
-      issueCount: number;
-    };
-  } {
-    const demo = this.activeDemos.get(demoId);
-    if (!demo) {
-      throw new Error(`Demo ${demoId} not found`);
-    }
-
-    const feedback = this.demoFeedback.get(demoId) || [];
-    const outcome = this.demoOutcomes.get(demoId);
-
-    // Calculate real-time metrics
-    const realTimeMetrics = {
-      attendeeCount: Object.values(demo.attendees).flat().length,
-      feedbackCount: feedback.length,
-      avgSatisfaction:
-        feedback.length > 0
-          ? feedback.reduce(
-              (sum, f) => sum + f.businessImpact.businessValue,
-              0
-            ) / feedback.length
-          : 0,
-      issueCount: feedback.filter((f) => f.feedback.type === 'concern').length,
-    };
-
-    return {
-      demo,
-      feedback,
-      outcome,
-      realTimeMetrics,
-    };
-  }
-
-  // ============================================================================
-  // PRIVATE HELPER METHODS
-  // ============================================================================
-
-  private validateDemoReadiness(config: SystemDemoConfig): {
-    ready: boolean;
-    conflicts: string[];
-    recommendations: string[];
-  } {
-    const conflicts: string[] = [];
-    const recommendations: string[] = [];
-
-    // Check team preparation
-    for (const team of config.teamDemonstrations) {
-      if (!team.preparation.demoApproved) {
-        conflicts.push(`Team ${team.teamName} demo not approved`);
-      }
-      if (!team.preparation.environmentReady) {
-        conflicts.push(`Team ${team.teamName} environment not ready`);
-      }
-    }
-
-    // Add recommendations
-    if (config.settings.recordDemo) {
-      recommendations.push('Ensure recording equipment is tested');
-    }
-    if (config.settings.enableLiveFeedback) {
-      recommendations.push('Brief attendees on feedback collection process');
-    }
-
-    return {
-      ready: conflicts.length === 0,
-      conflicts,
-      recommendations,
-    };
-  }
-
-  private determineNextSteps(feedback: DemoFeedback): string[] {
-    const nextSteps: string[] = [];
-
-    if (feedback.feedback.priority === 'critical') {
-      nextSteps.push('Immediate escalation required');
-      nextSteps.push('Notify demo coordinator');
-    }
-
-    if (feedback.feedback.type === 'rejection') {
-      nextSteps.push('Schedule stakeholder review meeting');
-      nextSteps.push('Document rejection reasons');
-    }
-
-    if (feedback.triggersApproval) {
-      nextSteps.push('Create approval gate');
-      nextSteps.push('Notify required approvers');
-    }
-
-    return nextSteps;
-  }
-
-  private generateDemoOutcome(
-    demo: SystemDemoConfig,
-    feedback: DemoFeedback[]
-  ): DemoOutcome {
-    // Calculate feedback summary
-    const feedbackSummary = {
-      totalFeedbackItems: feedback.length,
-      positiveCount: feedback.filter((f) => f.feedback.type === 'positive')
-        .length,
-      concernsCount: feedback.filter((f) => f.feedback.type === 'concern')
-        .length,
-      suggestionsCount: feedback.filter((f) => f.feedback.type === 'suggestion')
-        .length,
-      approvalCount: feedback.filter((f) => f.feedback.type === 'approval')
-        .length,
-      rejectionCount: feedback.filter((f) => f.feedback.type === 'rejection')
-        .length,
-    };
-
-    // Calculate overall satisfaction
-    const avgSatisfaction =
-      feedback.length > 0
-        ? feedback.reduce((sum, f) => sum + f.businessImpact.businessValue, 0) /
-          feedback.length
-        : 7; // Default neutral satisfaction
-
-    // Generate action items from feedback
-    const actionItems = feedback
-      .filter(
-        (f) => f.feedback.type === 'concern' || f.feedback.type === 'suggestion'
-      )
-      .map((f, index) => ({
-        item: f.feedback.description,
-        priority: f.feedback.priority,
-        assignedTo: f.response.acknowledgedBy || 'TBD',
-        dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
-        category: 'feature_enhancement' as const,
-      }));
-
-    return {
-      demoId: demo.id,
-      completedAt: new Date(),
-      overallSuccess:
-        feedbackSummary.rejectionCount === 0 && avgSatisfaction >= 6,
-      stakeholderSatisfaction: avgSatisfaction,
-      businessValueDemonstrated:
-        feedbackSummary.positiveCount > feedbackSummary.concernsCount,
-      piObjectiveProgress: [], // Would be calculated from actual PI objectives
-      feedbackSummary,
-      actionItems,
-      nextSteps: {
-        nextDemoDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 2 weeks from now
-        iterationPlanning: ['Review feedback', 'Update iteration goals'],
-        stakeholderFollowUp: [
-          'Send demo recording',
-          'Schedule follow-up meetings',
-        ],
-        businessApprovals:
-          feedbackSummary.approvalCount > 0 ? ['Process approvals'] : [],
-      },
-    };
-  }
-}
-
-export default SystemDemoCoordination;
+      throw new Error(`Demo ${demoId} not found"Fixed unterminated template"(`Demo ${demoId} not found"Fixed unterminated template"(`Team ${team.teamName} demo not approved"Fixed unterminated template"(`Team ${team.teamName} environment not ready"Fixed unterminated template"

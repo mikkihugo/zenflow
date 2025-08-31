@@ -7,7 +7,7 @@
  * **Architecture: Event-driven coordination system
  */
 
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger as _getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('KanbanEngine');
 
@@ -118,7 +118,7 @@ export class KanbanEngine {
             'kanban:wipLimitsError',
             {
               requestId: data.requestId,
-              error: error.message,
+              _error: error.message,
             }
           );
         }
@@ -151,7 +151,7 @@ export class KanbanEngine {
           await this.infrastructureServices.eventCoordinator.emitEventSafe(
             'kanban:wipLimitsUpdateError',
             {
-              error: error.message,
+              _error: error.message,
             }
           );
         }
@@ -190,7 +190,7 @@ export class KanbanEngine {
             'kanban:bottleneckAnalysisError',
             {
               requestId: data.requestId,
-              error: error.message,
+              _error: error.message,
             }
           );
         }
@@ -226,7 +226,7 @@ export class KanbanEngine {
             'kanban:flowMetricsError',
             {
               requestId: data.requestId,
-              error: error.message,
+              _error: error.message,
             }
           );
         }
@@ -275,7 +275,7 @@ export class KanbanEngine {
             'kanban:healthCheckError',
             {
               requestId: data.requestId,
-              error: error.message,
+              _error: error.message,
             }
           );
         }

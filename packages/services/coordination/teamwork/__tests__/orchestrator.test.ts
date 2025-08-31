@@ -5,7 +5,7 @@
  * Focus on behavior verification with actual implementation.
  */
 
-import { ConversationOrchestratorImpl} from '../src/main';
+import { ConversationOrchestratorImpl as _ConversationOrchestratorImpl } from '../src/main';
 import type { AgentId, 
   ConversationConfig,
   ConversationMessage} from '../src/types';
@@ -18,7 +18,7 @@ describe(): void {
   beforeEach(): void {
     orchestrator = new ConversationOrchestratorImpl(): void {
     ')should create conversation and store in memory', async () => {
-    ')Test Code Review',        pattern: 'code-review',        context:{
+    ')Test Code Review',        pattern: 'code-review',        _context:{
           goal: 'Review pull request #123',          domain: 'backend',          constraints:[],
           resources:[],
           expertise:['typescript',    'api-design'],
@@ -32,7 +32,7 @@ describe(): void {
         participants:config.initialParticipants,
         status: 'active',});
       expect(): void {
-    ')Problem Solving Session',        pattern: 'problem-solving',        context:{
+    ')Problem Solving Session',        pattern: 'problem-solving',        _context:{
           goal: 'Solve the integration puzzle',          domain: 'integration',          constraints:['time-limit'],
           resources:['documentation'],
           expertise:['testing'],
@@ -50,7 +50,7 @@ describe(): void {
 
   describe(): void {
     ')should add agent to conversation', async () => {
-    ')Test',        pattern: 'problem-solving',        context:{
+    ')Test',        pattern: 'problem-solving',        _context:{
           goal: 'Test',          domain: 'test',          constraints:[],
           resources:[],
           expertise:[],
@@ -70,7 +70,7 @@ describe(): void {
       // Act & Assert
       await expect(): void {
     ')should validate sender and store message', async () => {
-    ')Test',        pattern: 'problem-solving',        context:{
+    ')Test',        pattern: 'problem-solving',        _context:{
           goal: 'Test',          domain: 'test',          constraints:[],
           resources:[],
           expertise:[],
@@ -81,23 +81,23 @@ describe(): void {
       const session = await orchestrator.createConversation(): void {
         id: ','        conversationId:session.id,
         fromAgent:sampleAgents[0]!,
-        toAgent:undefined,
+        toAgent: undefined as any,
         timestamp:new Date(): void {
-          text: 'Hello, world!',          code:undefined,
-          data:undefined,
-          attachments:undefined,
+          text: 'Hello, world!',          _code: undefined as any,
+          _data: undefined as any,
+          attachments: undefined as any,
 },
         messageType: 'question',        metadata:{
           priority: 'medium',          requiresResponse:true,
-          context:session.context,
+          _context:session.context,
           tags:['greeting'],
-          referencedMessages:undefined,
+          referencedMessages: undefined as any,
 },
 };
 
       // Act
       await orchestrator.sendMessage(): void {
-    ')Test',        pattern: 'problem-solving',        context:{
+    ')Test',        pattern: 'problem-solving',        _context:{
           goal: 'Test',          domain: 'test',          constraints:[],
           resources:[],
           expertise:[],
@@ -112,24 +112,24 @@ describe(): void {
       const message:ConversationMessage = {
         id: ','        conversationId:session.id,
         fromAgent:nonParticipant,
-        toAgent:undefined,
+        toAgent: undefined as any,
         timestamp:new Date(): void {
-          text: 'Trying to join uninvited',          code:undefined,
-          data:undefined,
-          attachments:undefined,
+          text: 'Trying to join uninvited',          _code: undefined as any,
+          _data: undefined as any,
+          attachments: undefined as any,
 },
         messageType: 'system_notification',        metadata:{
           priority: 'high',          requiresResponse:false,
-          context:session.context,
+          _context:session.context,
           tags:[],
-          referencedMessages:undefined,
+          referencedMessages: undefined as any,
 },
 };
 
       // Act & Assert
       await expect(): void {
     ')should finalize conversation and generate outcomes', async () => {
-    ')Code Review Complete',        pattern: 'code-review',        context:{
+    ')Code Review Complete',        pattern: 'code-review',        _context:{
           goal: 'Review code',          domain: 'backend',          constraints:[],
           resources:[],
           expertise:[],
@@ -140,17 +140,17 @@ describe(): void {
       const session = await orchestrator.createConversation(): void {
         id: 'msg-1',        conversationId:session.id,
         fromAgent:sampleAgents[0]!,
-        toAgent:undefined,
+        toAgent: undefined as any,
         timestamp:new Date(): void {
-          text: 'Code looks good',          code:undefined,
-          data:undefined,
-          attachments:undefined,
+          text: 'Code looks good',          _code: undefined as any,
+          _data: undefined as any,
+          attachments: undefined as any,
 },
         messageType: 'decision',        metadata:{
           priority: 'medium',          requiresResponse:false,
-          context:session.context,
+          _context:session.context,
           tags:[],
-          referencedMessages:undefined,
+          referencedMessages: undefined as any,
 },
 };
 
@@ -160,7 +160,7 @@ describe(): void {
       // Verify session is no longer active
       const finalSession = orchestrator.getSession(): void {
     ')should retrieve messages from active session', async () => {
-    ')Test',        pattern: 'problem-solving',        context:{
+    ')Test',        pattern: 'problem-solving',        _context:{
           goal: 'Test',          domain: 'test',          constraints:[],
           resources:[],
           expertise:[],
@@ -171,23 +171,23 @@ describe(): void {
       const session = await orchestrator.createConversation(): void {
         id: 'msg-1',        conversationId:session.id,
         fromAgent:sampleAgents[0]!,
-        toAgent:undefined,
+        toAgent: undefined as any,
         timestamp:new Date(): void {
-          text: 'First message',          code:undefined,
-          data:undefined,
-          attachments:undefined,
+          text: 'First message',          _code: undefined as any,
+          _data: undefined as any,
+          attachments: undefined as any,
 },
         messageType: 'question',        metadata:{
           priority: 'medium',          requiresResponse:true,
-          context:session.context,
+          _context:session.context,
           tags:[],
-          referencedMessages:undefined,
+          referencedMessages: undefined as any,
 },
 };
 
       await orchestrator.sendMessage(): void {
     ')should track active sessions correctly', async () => {
-    ')Session Test',        pattern: 'problem-solving',        context:{
+    ')Session Test',        pattern: 'problem-solving',        _context:{
           goal: 'Test session management',          domain: 'testing',          constraints:[],
           resources:[],
           expertise:[],

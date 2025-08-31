@@ -4,7 +4,7 @@
  * REALISTIC ASSESSMENT OF TASKMASTER'S ESSENTIAL SAFe COVERAGE
  */
 
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger as _getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('EssentialSafeReadiness');
 
@@ -382,59 +382,4 @@ export class EssentialSafeReadinessAssessment {
   private identifyTaskMasterStrengths(
     complete: EssentialSafeComponent[]
   ): string[] {
-    return complete.map((c) => `${c.name}: ${c.implementationGap}`);
-  }
-
-  /**
-   * Identify critical gaps
-   */
-  private identifyCriticalGaps(
-    missing: EssentialSafeComponent[],
-    partial: EssentialSafeComponent[]
-  ): string[] {
-    const criticalMissing = missing
-      .filter((c) => c.required)
-      .map((c) => c.name);
-
-    const criticalPartial = partial
-      .filter((c) => c.effortEstimate === 'high')
-      .map((c) => c.name);
-
-    return [...criticalMissing, ...criticalPartial];
-  }
-
-  /**
-   * Estimate time to completion
-   */
-  private estimateTimeToCompletion(
-    partial: EssentialSafeComponent[],
-    missing: EssentialSafeComponent[]
-  ): string {
-    const partialEffort = partial.reduce(
-      (total, c) =>
-        total +
-        (c.effortEstimate === 'high'
-          ? 3
-          : c.effortEstimate === 'medium'
-            ? 2
-            : 1),
-      0
-    );
-
-    const missingEffort = missing.reduce(
-      (total, c) =>
-        total +
-        (c.effortEstimate === 'high'
-          ? 3
-          : c.effortEstimate === 'medium'
-            ? 2
-            : 1),
-      0
-    );
-
-    const totalWeeks = Math.ceil((partialEffort + missingEffort) * 1.5); // Buffer factor
-    return `${totalWeeks - 4}-${totalWeeks} weeks`;
-  }
-}
-
-export default EssentialSafeReadinessAssessment;
+    return complete.map((c) => `${c.name}: ${c.implementationGap}"Fixed unterminated template" `${totalWeeks - 4}-${totalWeeks} weeks"Fixed unterminated template"

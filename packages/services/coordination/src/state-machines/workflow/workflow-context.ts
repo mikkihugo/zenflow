@@ -27,7 +27,7 @@ import type {
 /**
  * XState machine context for workflow coordination
  *
- * Complete state structure containing all coordination data: * - Task management and indexing
+ * Complete state structure containing all coordination _data: * - Task management and indexing
  * - WIP limit tracking and violations
  * - Bottleneck detection and history
  * - Flow metrics and analytics
@@ -61,8 +61,8 @@ export interface WorkflowMachineContext {
   // Error handling
   errors: Array<{
     timestamp: Date;
-    error: string;
-    context: string;
+    _error: string;
+    _context: string;
   }>;
 }
 // =============================================================================
@@ -117,7 +117,7 @@ export class WorkflowContextUtils {
    * Get task count for specific state
    */
   static getTaskCountForState(
-    context: WorkflowMachineContext,
+    _context: WorkflowMachineContext,
     state: TaskState
   ): number {
     return context.tasksByState[state]?.length || 0;
@@ -127,7 +127,7 @@ export class WorkflowContextUtils {
    * Get WIP utilization for state (current/limit)
    */
   static getWIPUtilization(
-    context: WorkflowMachineContext,
+    _context: WorkflowMachineContext,
     state: TaskState
   ): number {
     const currentCount = WorkflowContextUtils.getTaskCountForState(
@@ -142,7 +142,7 @@ export class WorkflowContextUtils {
    * Check if adding tasks would violate WIP limits
    */
   static wouldViolateWIP(
-    context: WorkflowMachineContext,
+    _context: WorkflowMachineContext,
     state: TaskState,
     additionalTasks: number = 1
   ): boolean {
@@ -170,9 +170,9 @@ export class WorkflowContextUtils {
    * Get recent errors (last N errors)
    */
   static getRecentErrors(
-    context: WorkflowMachineContext,
+    _context: WorkflowMachineContext,
     count: number = 5
-  ): Array<{ timestamp: Date; error: string; context: string }> {
+  ): Array<{ timestamp: Date; _error: string; _context: string }> {
     return context.errors
       .slice(-count)
       .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
@@ -181,7 +181,7 @@ export class WorkflowContextUtils {
   /**
    * Calculate overall WIP utilization across work states
    */
-  static getOverallWIPUtilization(context: WorkflowMachineContext): number {
+  static getOverallWIPUtilization(_context: WorkflowMachineContext): number {
     const workStates: TaskState[] = [
       'analysis',
       'development',

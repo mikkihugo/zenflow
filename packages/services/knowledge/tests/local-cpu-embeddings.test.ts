@@ -40,7 +40,7 @@ describe(): void {
     const architecturalEntry = {
       id: 'test-arch-decision',
       query: 'What are the core agent types?',
-      result: {
+      _result: {
         types: ['coordinator', 'worker', 'specialist', 'monitor', 'proxy'],
         description: 'Five core agent types for coordination',
       },

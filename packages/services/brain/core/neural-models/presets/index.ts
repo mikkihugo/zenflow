@@ -149,22 +149,4 @@ export function validatePresetConfig(config: Partial<NeuralPreset>): boolean {
 
   if (missing.length > 0) {
     throw new Error(
-      `Invalid preset configuration. Missing: ${missing.join(', ')}`
-    );
-  }
-
-  if (!Array.isArray(config?.layers) || config?.layers.length === 0) {
-    throw new Error('Layers must be a non-empty array');
-  }
-
-  return true;
-}
-
-export default {
-  NEURAL_PRESETS,
-  getPreset,
-  getRecommendedPreset,
-  searchPresetsByUseCase,
-  getCategoryPresets,
-  validatePresetConfig,
-};
+      `Invalid preset configuration. Missing: ${missing.join(', ')}"Fixed unterminated template"

@@ -1,3 +1,4 @@
+import { getLogger as _getLogger } from '@claude-zen/foundation';
 /**
  * @fileoverview Logging Configuration for SAFe Framework
  *

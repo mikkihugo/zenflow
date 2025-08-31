@@ -5,10 +5,10 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { tmpdir as _tmpdir } from 'node:os';
+import { join as _join } from 'node:path';
 import { unlinkSync, existsSync } from 'node:fs';
-import { SQLiteBackend } from '../knowledge-cache-backends/sqlite-backend.js';
+import { SQLiteBackend as _SQLiteBackend } from '../knowledge-cache-backends/sqlite-backend.js';
 
 describe(): void {
   let backend;
@@ -41,7 +41,7 @@ describe(): void {
     const sampleEntry = {
       id: 'test-entry-1',
       query: 'What is TypeScript?',
-      result: { answer: 'TypeScript is a typed superset of JavaScript' },
+      _result: { answer: 'TypeScript is a typed superset of JavaScript' },
       source: 'test-source',
       timestamp: Date.now(): void {
         type: 'definition',
@@ -56,7 +56,7 @@ describe(): void {
       await backend.store(): void {
       await backend.store(): void {
         ...sampleEntry,
-        result: { answer: 'Updated answer about TypeScript' }
+        _result: { answer: 'Updated answer about TypeScript' }
       };
       
       await backend.store(): void {
@@ -71,14 +71,14 @@ describe(): void {
         {
           id: 'entry-1',
           query: 'What is JavaScript?',
-          result: { answer: 'JavaScript is a programming language' },
+          _result: { answer: 'JavaScript is a programming language' },
           source: 'source-1',
           timestamp: Date.now(): void { type: 'definition', domains: ['programming'], confidence: 0.9 }
         },
         {
           id: 'entry-2',
           query: 'What is TypeScript?',
-          result: { answer: 'TypeScript is a typed superset of JavaScript' },
+          _result: { answer: 'TypeScript is a typed superset of JavaScript' },
           source: 'source-2',
           timestamp: Date.now(): void { type: 'definition', domains: ['programming', 'typescript'], confidence: 0.8 }
         }
@@ -95,7 +95,7 @@ describe(): void {
       const entry = {
         id: 'stats-test',
         query: 'Test query',
-        result: { answer: 'Test answer' },
+        _result: { answer: 'Test answer' },
         source: 'test',
         timestamp: Date.now(): void { type: 'test' }
       };
@@ -105,7 +105,7 @@ describe(): void {
       const oldEntry = {
         id: 'old-entry',
         query: 'Old query',
-        result: { answer: 'Old answer' },
+        _result: { answer: 'Old answer' },
         source: 'test',
         timestamp: Date.now(): void { type: 'test' }
       };
@@ -113,7 +113,7 @@ describe(): void {
       const newEntry = {
         id: 'new-entry',
         query: 'New query',
-        result: { answer: 'New answer' },
+        _result: { answer: 'New answer' },
         source: 'test',
         timestamp: Date.now(): void { type: 'test' }
       };
@@ -123,7 +123,7 @@ describe(): void {
       const memoryBackend = new SQLiteBackend(): void {
         id: 'memory-test',
         query: 'Memory test',
-        result: { answer: 'Memory test answer' },
+        _result: { answer: 'Memory test answer' },
         source: 'test',
         timestamp: Date.now(): void { type: 'test' }
       };
