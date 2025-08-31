@@ -263,8 +263,8 @@ export class AgentPerformancePredictor {
 
  // Sort agents by performance
  const sortedAgents = Array.from(agentScores.entries())
- .sort(([, a], [, b]) => b - a)
- .map(([agentId]) => agentId);
+.sort(([, a], [, b]) => b - a)
+.map(([agentId]) => agentId);
 
  const topPerformers = sortedAgents.slice(
  0,
@@ -326,8 +326,8 @@ export class AgentPerformancePredictor {
  taskType:data.taskType,
  complexity:data.complexity||0.5,
  completionTime:data.duration,
- successRate:data.success ? 1.0 : 0.0,
- errorRate:data.success ? 0.0 : 1.0,
+ successRate:data.success ? 1.0: 0.0,
+ errorRate:data.success ? 0.0: 1.0,
  cpuUsage:data.resourceUsage||0.5,
  memoryUsage:data.resourceUsage||0.5,
  concurrentTasks:1, // Default to 1 if not provided
@@ -468,7 +468,7 @@ export class AgentPerformancePredictor {
  (Date.now() - allData[allData.length - 1].timestamp) /
  (24 * 60 * 60 * 1000)
  )
- :0; // Recent data = higher confidence
+:0; // Recent data = higher confidence
 
  return (dataQuality + dataRecency) / 2;
 }
@@ -620,7 +620,7 @@ export class AgentPerformancePredictor {
  
  // Factor in system-wide capacity constraints from monitoring data
  const systemFactor = capacityData ? 
- Math.min(1, capacityData.currentLoad / capacityData.maxLoad) :1;
+ Math.min(1, capacityData.currentLoad / capacityData.maxLoad):1;
  
  return Math.min(1, baseUtilization * systemFactor);
 } catch (error) {
@@ -706,7 +706,7 @@ export class AgentPerformancePredictor {
  // In real implementation, this would save to Redis, PostgreSQL, etc.
  logger.debug(`Persisted performance trends for agent ${agentId}:`, {
  dataPoints:successRates.length,
- trend:trendData.trendMetrics.slope > 0 ? 'improving' : trendData.trendMetrics.slope < -0.1 ? ' declining' : ' stable', volatility:trendData.trendMetrics.volatility
+ trend:trendData.trendMetrics.slope > 0 ? 'improving': trendData.trendMetrics.slope < -0.1 ? ' declining': ' stable', volatility:trendData.trendMetrics.volatility
 });
  
 } catch (error) {
@@ -802,7 +802,7 @@ export class AgentPerformancePredictor {
  // Perform advanced bottleneck analysis
  const issues = await this.identifyAdvancedPerformanceIssues(enhancedMetrics, systemLoad, agentId);
 
- return issues.length > 0 ? [`Agent ${agentId}: ${issues.join(', ')}`] : [];
+ return issues.length > 0 ? [`Agent ${agentId}: ${issues.join(', ')}`]: [];
 }
 
  private async loadPersistedMetrics(agentId:string): Promise<any> {
@@ -822,7 +822,7 @@ export class AgentPerformancePredictor {
  
  if (!persistedMetrics) {
  return {
- ...currentMetrics,
+...currentMetrics,
  trends:{ cpu: 'stable', memory: ' stable', errors:' improving' | ' stable' | ' declining'},
  volatility:{ cpu: 0, memory:0, errors:0}
 };
@@ -834,11 +834,11 @@ export class AgentPerformancePredictor {
  const errorTrend = this.calculateTrend(persistedMetrics.map((d:any) => d.errorRate));
 
  return {
- ...currentMetrics,
+...currentMetrics,
  trends:{
- cpu: cpuTrend > 0.1 ? 'increasing' : cpuTrend < -0.1 ? 'decreasing' : 'stable',
- memory: memoryTrend > 0.1 ? 'increasing' : memoryTrend < -0.1 ? 'decreasing' : 'stable',
- errors: errorTrend > 0.05 ? 'increasing' : errorTrend < -0.05 ? 'decreasing' : 'stable'
+ cpu: cpuTrend > 0.1 ? 'increasing': cpuTrend < -0.1 ? 'decreasing': 'stable',
+ memory: memoryTrend > 0.1 ? 'increasing': memoryTrend < -0.1 ? 'decreasing': 'stable',
+ errors: errorTrend > 0.05 ? 'increasing': errorTrend < -0.05 ? 'decreasing': 'stable'
  },
  volatility:{
  cpu:this.calculateVolatility(persistedMetrics.map((d: any) => d.cpuUsage)),
@@ -866,7 +866,7 @@ export class AgentPerformancePredictor {
 
  // Current performance thresholds with agent-specific analysis
  if (metrics.avgCpuUsage > cpuThreshold) {
- const severity = metrics.trends?.cpu === 'increasing' ? ' critical' : ' high';
+ const severity = metrics.trends?.cpu === 'increasing' ? ' critical': ' high';
  const deviationFromBaseline = ((metrics.avgCpuUsage - agentBaseline.cpu) * 100).toFixed(1);
  issues.push(`CPU usage (${(metrics.avgCpuUsage * 100).toFixed(1)}%, +${deviationFromBaseline}% vs baseline)`);
  
@@ -880,12 +880,12 @@ export class AgentPerformancePredictor {
 }
  
  if (metrics.avgMemoryUsage > 0.80) {
- const trend = metrics.trends?.memory === 'increasing' ? ' trending up' : '';
+ const trend = metrics.trends?.memory === 'increasing' ? ' trending up': '';
  issues.push(`high memory usage (${(metrics.avgMemoryUsage * 100).toFixed(1)}%${trend})`);
 }
  
  if (metrics.avgErrorRate > 0.15) {
- const volatility = metrics.volatility?.errors > 0.1 ? ' with high volatility' : '';
+ const volatility = metrics.volatility?.errors > 0.1 ? ' with high volatility': '';
  issues.push(`elevated error rate (${(metrics.avgErrorRate * 100).toFixed(1)}%${volatility})`);
 }
  
@@ -1191,7 +1191,7 @@ export class AgentPerformancePredictor {
  dataRange:last30Days.length > 0 ? {
  oldest:Math.min(...last30Days.map(d => d.timestamp.getTime())),
  newest:Math.max(...last30Days.map(d => d.timestamp.getTime()))
-} :null
+}:null
 };
 
  logger.debug(`Agent profile calculated for ${agentId}`, {
@@ -1350,7 +1350,7 @@ export class AgentPerformancePredictor {
  timestamp:new Date(),
  agentId,
  eventType,
- severity:eventData.riskScore > 0.8 ? 'critical' : eventData.riskScore > 0.5 ? ' high' : ' medium', data:eventData,
+ severity:eventData.riskScore > 0.8 ? 'critical': eventData.riskScore > 0.5 ? ' high': ' medium', data:eventData,
  context:{
  systemLoad:process.cpuUsage(),
  memoryUsage:process.memoryUsage(),

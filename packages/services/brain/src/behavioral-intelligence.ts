@@ -32,7 +32,7 @@ import { sma} from 'moving-averages';
 import type { BrainJsBridge} from './brain-js-bridge';
 import { ActivationFunction} from './types/index';
 
-// Enhanced ML Imports - Using validated API patterns
+// 🧠 Enhanced ML Imports - Using validated API patterns
 
 const brain = require('brain.js');
 // Validate brain.js availability and capabilities
@@ -167,8 +167,8 @@ export class BehavioralIntelligence {
  const preprocessedData = await this.preprocessTrainingData(data);
  
  logger.debug('Mock: Training neural network ' + id, {
- dataPoints: Array.isArray(data) ? data.length : 'unknown',
- options: options ? Object.keys(options) : 'none',
+ dataPoints: Array.isArray(data) ? data.length: 'unknown',
+ options: options ? Object.keys(options): 'none',
  strategy: trainingStrategy
  });
  
@@ -247,8 +247,8 @@ export class BehavioralIntelligence {
 }
  );
 
- // Initialize Enhanced ML Models
- logger.info(' Initializing advanced ML algorithms...');')
+ // 🧠 Initialize Enhanced ML Models
+ logger.info('🔬 Initializing advanced ML algorithms...');')
  // DBSCAN for behavioral clustering
  this.behaviorClusterer = new clustering.DBSCAN();
 
@@ -278,7 +278,7 @@ export class BehavioralIntelligence {
  // Add to training buffer
  this.trainingBuffer.push(executionData);
 
- // Enhanced ML Learning:Update time series and feature vectors
+ // 🧠 Enhanced ML Learning:Update time series and feature vectors
  await this.updateAgentPerformanceTimeSeries(executionData);
  await this.updateAgentFeatureVector(executionData);
 
@@ -288,7 +288,7 @@ export class BehavioralIntelligence {
  // Train networks when buffer is full
  if (this.trainingBuffer.length >= this.bufferSize) {
  await this.trainNetworksFromBuffer();
- await this.trainAdvancedMLModels(); // Train Random Forest and DBSCAN
+ await this.trainAdvancedMLModels(); // 🧠 Train Random Forest and DBSCAN
  this.trainingBuffer = []; // Clear buffer
 }
 
@@ -506,12 +506,12 @@ export class BehavioralIntelligence {
  profiles.length > 0
  ? profiles.reduce((sum, p) => sum + p.averagePerformance, 0) /
  profiles.length
- :0;
+:0;
 
  const mostActive = profiles
- .sort((a, b) => b.averagePerformance - a.averagePerformance)
- .slice(0, 5)
- .map((p) => p.agentId);
+.sort((a, b) => b.averagePerformance - a.averagePerformance)
+.slice(0, 5)
+.map((p) => p.agentId);
 
  return {
  totalAgents:this.agentProfiles.size,
@@ -522,7 +522,7 @@ export class BehavioralIntelligence {
 };
 }
 
- // Enhanced ML Methods
+ // 🧠 Enhanced ML Methods
 
  /**
  * Update agent performance time series using moving averages
@@ -588,7 +588,7 @@ export class BehavioralIntelligence {
 ];
 
  // Combine base features with ML-enhanced features
- const combinedFeatures = [...baseFeatures, ...enhancedFeatures];
+ const combinedFeatures = [...baseFeatures,...enhancedFeatures];
  
  // Async feature optimization
  const optimizedFeatures = await this.optimizeFeatureVector(combinedFeatures, featureInsights);
@@ -601,7 +601,7 @@ export class BehavioralIntelligence {
  */
  private async trainAdvancedMLModels():Promise<void> {
  try {
- logger.info(' Training advanced ML models...');')
+ logger.info('🔬 Training advanced ML models...');')
  // Async model preparation and optimization
  const modelStrategy = await this.analyzeOptimalModelStrategy();
  const trainingConfiguration = await this.optimizeTrainingConfiguration();
@@ -609,8 +609,8 @@ export class BehavioralIntelligence {
  // Prepare training data for Random Forest
  const agentIds = Array.from(this.agentFeatureVectors.keys())();
  const features = agentIds
- .map((id) => this.agentFeatureVectors.get(id)!)
- .filter((f) => f.length > 0);
+.map((id) => this.agentFeatureVectors.get(id)!)
+.filter((f) => f.length > 0);
  const labels = agentIds.map((id) =>
  this.getAgentTypeLabel(this.classifyAgentType(id))
  );
@@ -685,8 +685,8 @@ export class BehavioralIntelligence {
 
  const agentIds = Array.from(this.agentFeatureVectors.keys())();
  const features = agentIds
- .map((id) => this.agentFeatureVectors.get(id)!)
- .filter((f) => f.length > 0);
+.map((id) => this.agentFeatureVectors.get(id)!)
+.filter((f) => f.length > 0);
 
  if (features.length < 3) {
  return new Map();
@@ -743,7 +743,7 @@ export class BehavioralIntelligence {
 
  const slope = result.equation[0];
  const baseTrend =
- slope > 0.01 ? 'improving' | ' stable' | ' declining'' :slope < -0.01 ? ' improving' | ' stable' | ' declining' : ' stable';
+ slope > 0.01 ? 'improving' | ' stable' | ' declining'':slope < -0.01 ? ' improving' | ' stable' | ' declining': ' stable';
 
  // Apply ML insights to trend determination
  const enhancedTrend = await this.enhanceTrendWithMLInsights(baseTrend, advancedTrendAnalysis);
@@ -850,13 +850,13 @@ export class BehavioralIntelligence {
  taskComplexity:this.inferComplexityFromContext(data.context),
  duration:
  typeof data.metadata?.duration === 'number') ? data.metadata.duration
- :1000,
+:1000,
  success:data.success,
- efficiency:data.success ? 0.8 : 0.2, // Simple efficiency mapping
+ efficiency:data.success ? 0.8: 0.2, // Simple efficiency mapping
  resourceUsage:
  typeof data.metadata?.resourceUsage === 'number') ? data.metadata.resourceUsage
- :0.5,
- errorCount:data.success ? 0 : 1,
+:0.5,
+ errorCount:data.success ? 0: 1,
  timestamp:data.timestamp,
  context:data.context,
 };
@@ -918,14 +918,14 @@ export class BehavioralIntelligence {
  const recent = history.slice(-3);
  const trend =
  recent[2] > recent[0]
- ? 'improving' | ' stable' | ' declining') :recent[2] < recent[0]
- ? 'improving' | ' stable' | ' declining') : 'stable';
+ ? 'improving' | ' stable' | ' declining'):recent[2] < recent[0]
+ ? 'improving' | ' stable' | ' declining'): 'stable';
  performanceTrends[agentId] = trend;
 }
 }
 
  return {
- ...basicStats,
+...basicStats,
  behavioralClusters:
  Math.max(...Array.from(this.agentFeatureVectors.keys()).map(() => 0)) +
  1,
@@ -955,7 +955,7 @@ export class BehavioralIntelligence {
 
  // Update existing profile with ML-enhanced data
  const updatedProfile:AgentBehavioralProfile = {
- ...existing,
+...existing,
  averagePerformance:optimizedPerformance,
  adaptabilityScore:await this.updateAdaptabilityScore(existing, behavioralMetrics),
  lastUpdated:Date.now(),
@@ -1066,10 +1066,10 @@ export class BehavioralIntelligence {
  // Simple heuristic for context complexity
  const complexity =
  Object.keys(context).length * 0.1 +
- (context.dataSize ? Math.min(Number(context.dataSize) / 1000000, 1) :0) +
+ (context.dataSize ? Math.min(Number(context.dataSize) / 1000000, 1):0) +
  (context.dependencies
  ? Math.min(Number(context.dependencies) / 10, 1)
- :0);
+:0);
  return Math.min(complexity, 1);
 }
 
@@ -1112,7 +1112,7 @@ export class BehavioralIntelligence {
  // Higher confidence for agents with more history and consistent performance
  const baseConfidence = profile
  ? (profile.consistencyScore + profile.averagePerformance) / 2
- :0.3;
+:0.3;
 
  // Adjust based on prediction certainty (how close outputs are to 0 or 1)
  const outputCertainty =
@@ -1157,7 +1157,7 @@ export class BehavioralIntelligence {
 }
 
  reasoning += profile?.specializations.includes(taskType)
- ? ' - specialized agent') : ' - general capability;
+ ? ' - specialized agent'): ' - general capability;
 '
  return reasoning;
 }
@@ -1284,7 +1284,7 @@ export class BehavioralIntelligence {
  */
  private async preprocessTrainingData(data:any): Promise<any> 
  await new Promise(resolve => setTimeout(resolve, 100));
- return Array.isArray(data) ? data.map(d => ({ ...d, normalized:true})) :data;
+ return Array.isArray(data) ? data.map(d => ({...d, normalized:true})):data;
 
  /**
  * Execute training pipeline
@@ -1328,7 +1328,7 @@ export class BehavioralIntelligence {
  private async analyzeAgentPerformanceInsights(data:AgentExecutionData): Promise<any> {
  await new Promise(resolve => setTimeout(resolve, 100));
  return {
- performanceCategory:data.efficiency > 0.8 ? 'high' : data.efficiency > 0.5 ? ' medium' : ' low', improvementAreas:['speed', 'accuracy'],
+ performanceCategory:data.efficiency > 0.8 ? 'high': data.efficiency > 0.5 ? ' medium': ' low', improvementAreas:['speed', 'accuracy'],
  strengths:['consistency']')};
 }
 
@@ -1510,7 +1510,7 @@ export class BehavioralIntelligence {
  private async enhanceTrendWithMLInsights(trend:string, analysis:any): Promise<string> {
  await new Promise(resolve => setTimeout(resolve, 50));
  if (analysis.volatility > 0.2) {
- return trend ==='improving' | ' stable' | ' declining'? ' improving' | ' stable' | ' declining' :trend;')}
+ return trend ==='improving' | ' stable' | ' declining'? ' improving' | ' stable' | ' declining':trend;')}
  return trend;
 }
 
@@ -1540,7 +1540,7 @@ export class BehavioralIntelligence {
  await new Promise(resolve => setTimeout(resolve, 75));
  return {
  adaptability:0.7,
- consistency:data.success ? 0.8 : 0.4,
+ consistency:data.success ? 0.8: 0.4,
  efficiency:data.efficiency
 };
 }
@@ -1590,7 +1590,7 @@ export class BehavioralIntelligence {
 export async function demoBehavioralIntelligence(
  brainJsBridge:BrainJsBridge
 ):Promise<void> {
- logger.info(' Behavioral Intelligence Demo Starting...\n');')
+ logger.info('🧠 Behavioral Intelligence Demo Starting...\n');')
  const behavioral = new BehavioralIntelligence(brainJsBridge);
  await behavioral.initialize();
 
@@ -1630,12 +1630,12 @@ export async function demoBehavioralIntelligence(
 
  try {
  // 1. Learn from execution data
- logger.info(' Learning from agent executions...');') for (const data of executionData) {
+ logger.info('📚 Learning from agent executions...');') for (const data of executionData) {
  await behavioral.learnFromExecution(data);
 }
  logger.info(' Learning completed\n');')
  // 2. Predict agent performance
- logger.info(' Predicting agent performance...');') const prediction = await behavioral.predictAgentPerformance(
+ logger.info('🔮 Predicting agent performance...');') const prediction = await behavioral.predictAgentPerformance(
  'agent-1', 'data-processing', 0.7
  );
  logger.info(` Prediction for agent-1:`);`

@@ -179,7 +179,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
  memoryCritical: 0.95,
  responseTimeCritical: 5000,
  errorRateCritical: 0.2,
- ...config.emergencyThresholds,
+...config.emergencyThresholds,
  },
  scalingPolicy: {
  scaleUpThreshold: 0.75,
@@ -187,12 +187,12 @@ export class TrafficController extends EventBus<TrafficEvents> {
  cooldownMinutes: 5,
  maxAgents: 50,
  minAgents: 2,
- ...config.scalingPolicy,
+...config.scalingPolicy,
  },
  };
 
  this.logger = getLogger('traffic-controller');
- this.logger.info(' Traffic Controller created - initialization pending');
+ this.logger.info('🚦 Traffic Controller created - initialization pending');
  }
 
  /**
@@ -208,7 +208,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
 
  try {
  this.logger.info(
- ' Initializing Traffic Controller with foundation EventBus...'
+ '🚦 Initializing Traffic Controller with foundation EventBus...'
  );
 
  // Initialize EventBus first
@@ -247,13 +247,13 @@ export class TrafficController extends EventBus<TrafficEvents> {
  } catch (error) {
  const duration = Date.now() - initStartTime;
  this.logger.error(' Traffic Controller initialization failed', {
- error: error instanceof Error ? error.message : String(error),
+ error: error instanceof Error ? error.message: String(error),
  duration: `${duration}ms`,
  });
 
  // Emit error event
  await this.emitSafe('traffic:error', {
- error: error instanceof Error ? error.message : String(error),
+ error: error instanceof Error ? error.message: String(error),
  context: { phase: 'initialization', duration },
  timestamp: Date.now(),
  });
@@ -268,7 +268,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
  async shutdown(): Promise<void> {
  if (!this.initialized) return;
 
- this.logger.info(' Shutting down Traffic Controller...');
+ this.logger.info('🚦 Shutting down Traffic Controller...');
 
  // Emit shutdown event before cleanup
  await this.emitSafe('traffic:shutdown', {
@@ -362,13 +362,13 @@ export class TrafficController extends EventBus<TrafficEvents> {
 
  const duration = Date.now() - startTime;
  this.logger.debug(
- ` Traffic control complete:${decisions.length} decisions made in ${duration}ms`
+ `🚦 Traffic control complete:${decisions.length} decisions made in ${duration}ms`
  );
 
  return decisions;
  } catch (error) {
  await this.emitSafe('traffic:error', {
- error: error instanceof Error ? error.message : String(error),
+ error: error instanceof Error ? error.message: String(error),
  context: { operation: 'traffic_control', metrics },
  timestamp: Date.now(),
  });
@@ -419,7 +419,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
  return null;
  } catch (error) {
  await this.emitSafe('traffic:error', {
- error: error instanceof Error ? error.message : String(error),
+ error: error instanceof Error ? error.message: String(error),
  context: { operation: 'route_task', taskId, taskRequirements },
  timestamp: Date.now(),
  });
@@ -450,7 +450,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
  averageDecisionConfidence:
  this.decisionHistory.length > 0
  ? ss.mean(this.decisionHistory.map((d) => d.confidence))
- : 0,
+: 0,
  },
  };
  }
@@ -548,7 +548,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
  `Urgency:${scalingDecision.urgency}`,
  ],
  confidence: scalingDecision.confidence,
- expectedImpact: scalingDecision.urgency === 'critical' ? 0.9 : 0.7,
+ expectedImpact: scalingDecision.urgency === 'critical' ? 0.9: 0.7,
  timestamp: Date.now(),
  parameters: {
  currentAgents: metrics.activeAgents,
@@ -607,12 +607,12 @@ export class TrafficController extends EventBus<TrafficEvents> {
 
  if (metrics.taskQueueLength > 100) {
  bottlenecks.push('high_queue_length');
- severity = metrics.taskQueueLength > 500 ? 'critical' : ' high';
+ severity = metrics.taskQueueLength > 500 ? 'critical': ' high';
  }
 
  if (metrics.errorRate > 0.1) {
  bottlenecks.push('high_error_rate');
- severity = metrics.errorRate > 0.2 ? 'critical' : ' high';
+ severity = metrics.errorRate > 0.2 ? 'critical': ' high';
  }
 
  if (bottlenecks.length > 0) {
@@ -667,7 +667,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
  targetAgents,
  confidence: 0.8,
  reasoning: `High system pressure: ${(overallPressure * 100).toFixed(1)}%`,
- urgency: overallPressure > 0.9 ? 'critical' : ' high',
+ urgency: overallPressure > 0.9 ? 'critical': ' high',
  };
  }
 

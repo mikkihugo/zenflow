@@ -66,7 +66,7 @@ export class SemanticClassifier extends TypedEventBase {
  this.config = {
  confidenceThreshold:config.confidenceThreshold||0.7,
  enableDeepAnalysis:config.enableDeepAnalysis !== false,
- weightingStrategy:config.weightingStrategy||'balanced', ...config
+ weightingStrategy:config.weightingStrategy||'balanced',...config
 };
 
  this.semanticPatterns = this.initializeSemanticPatterns(config.customPatterns);
@@ -102,11 +102,11 @@ export class SemanticClassifier extends TypedEventBase {
  // Merge with custom patterns if provided
  if (customPatterns) {
  return {
- algorithm:{ ...defaultPatterns.algorithm, ...customPatterns.algorithm},
- technical:{ ...defaultPatterns.technical, ...customPatterns.technical},
- implementation:{ ...defaultPatterns.implementation, ...customPatterns.implementation},
- research:{ ...defaultPatterns.research, ...customPatterns.research},
- strategic:{ ...defaultPatterns.strategic, ...customPatterns.strategic}
+ algorithm:{...defaultPatterns.algorithm,...customPatterns.algorithm},
+ technical:{...defaultPatterns.technical,...customPatterns.technical},
+ implementation:{...defaultPatterns.implementation,...customPatterns.implementation},
+ research:{...defaultPatterns.research,...customPatterns.research},
+ strategic:{...defaultPatterns.strategic,...customPatterns.strategic}
 };
 }
 
@@ -211,7 +211,7 @@ export class SemanticClassifier extends TypedEventBase {
  */
  private determineDocumentType(categoryScores:Record<string, number>):DocumentClassification['documentType'] {
  ') const sortedCategories = Object.entries(categoryScores)
- .sort(([, a], [, b]) => b - a);
+.sort(([, a], [, b]) => b - a);
 
  const [topCategory, topScore] = sortedCategories[0];
  
@@ -346,7 +346,7 @@ export class SemanticClassifier extends TypedEventBase {
  const maxCategoryScore = Math.max(...Object.values(categoryScores));
  const patternConfidence = patterns.detected.length > 0 
  ? Object.values(patterns.confidence).reduce((sum, conf) => sum + conf, 0) / patterns.detected.length
- :0;
+:0;
 
  // Weighted combination of category score and pattern confidence
  return Math.min((maxCategoryScore * 0.7) + (patternConfidence * 0.3), 1.0);
@@ -385,13 +385,13 @@ export class SemanticClassifier extends TypedEventBase {
  * Get classifier configuration
  */
  public getConfig():ClassifierConfig {
- return { ...this.config};
+ return {...this.config};
 }
 
  /**
  * Update classifier configuration
  */
  public updateConfig(newConfig:Partial<ClassifierConfig>): void {
- this.config = { ...this.config, ...newConfig};
+ this.config = {...this.config,...newConfig};
  logger.info('Semantic classifier configuration updated');')}
 }

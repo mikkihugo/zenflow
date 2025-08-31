@@ -171,7 +171,7 @@ export class DocumentWorkflowService {
  
 } catch (error) {
  logger.error(`Failed to trigger workflow ${workflowName}:`, error);
- results[workflowName] = { error:error instanceof Error ? error.message : String(error)};
+ results[workflowName] = { error:error instanceof Error ? error.message: String(error)};
 }
 }
 
@@ -185,7 +185,7 @@ export class DocumentWorkflowService {
  logger.error('Error processing document event: ', error);
 ' return {
  success:false,
- workflowId: 'error', error:error instanceof Error ? error.message : String(error)
+ workflowId: 'error', error:error instanceof Error ? error.message: String(error)
 };
 }
 }
@@ -404,7 +404,7 @@ ${(features as string[])?.map(feature => `- ${feature}`).join('\n') || '}`
 } catch (error) {
  this.eventBus.emit('document:import-failed', {
  requestId:data.requestId,
- error:error instanceof Error ? error.message : String(error)
+ error:error instanceof Error ? error.message: String(error)
 });
 }
 });
@@ -423,7 +423,7 @@ ${(features as string[])?.map(feature => `- ${feature}`).join('\n') || '}`
  this.eventBus.emit('document-workflow:failed', {
  requestId:data.requestId,
  workflowName:data.workflowName,
- error:error instanceof Error ? error.message : String(error)
+ error:error instanceof Error ? error.message: String(error)
 });
 }
 });

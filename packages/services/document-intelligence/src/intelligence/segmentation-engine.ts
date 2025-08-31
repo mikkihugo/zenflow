@@ -129,7 +129,7 @@ export class SegmentationEngine extends TypedEventBase {
  enableContextExpansion:config.enableContextExpansion !== false,
  preserveAlgorithmBlocks:config.preserveAlgorithmBlocks !== false,
  adaptiveCharacterLimits:config.adaptiveCharacterLimits !== false,
- ...config
+...config
 };
 
  this.algorithmPatterns = this.initializeAlgorithmPatterns();
@@ -259,7 +259,7 @@ export class SegmentationEngine extends TypedEventBase {
  * Adapt configuration based on document classification
  */
  private adaptConfigForClassification(classification:DocumentClassification): SegmentationConfig {
- const adapted = { ...this.config};
+ const adapted = {...this.config};
 
  // Adjust segment sizes based on document type
  if (classification.documentType === 'algorithm' || classification.algorithmDensity > 0.5) {
@@ -433,7 +433,7 @@ export class SegmentationEngine extends TypedEventBase {
  const hasSteps = /\b(step|phase|\d+\.)\b/.test(text) ? 0.05:0;
  
  // Calculate final confidence
- const baseConfidence = keywordCount > 0 ? keywordScore / Math.max(words.length * 0.05, 1) :0;
+ const baseConfidence = keywordCount > 0 ? keywordScore / Math.max(words.length * 0.05, 1):0;
  const bonuses = mathBonus + formulaBonus + codeBonus + hasInputOutput + hasControlFlow + hasSteps;
  
  return Math.min(baseConfidence + bonuses, 1.0);
@@ -732,7 +732,7 @@ export class SegmentationEngine extends TypedEventBase {
  content:content.trim(),
  startPosition,
  endPosition,
- segmentType:hasAlgorithm ? 'algorithm' : segmentType,
+ segmentType:hasAlgorithm ? 'algorithm': segmentType,
  importance:this.calculateSegmentImportance(content, segmentType),
  preserveIntegrity:hasAlgorithm || segmentType === 'algorithm', relatedSegments:[], // Will be populated by post-processing
  confidenceScore:this.calculateSegmentConfidence(content, segmentType),
@@ -923,8 +923,8 @@ export class SegmentationEngine extends TypedEventBase {
  private extractKeywords(content:string): string[] {
  // Simple keyword extraction - in production, could use NLP libraries
  const words = content.toLowerCase()
- .replace(/[^ws]/g, ')') .split(/s+/)
- .filter(word => word.length > 3);
+.replace(/[^ws]/g, ')').split(/s+/)
+.filter(word => word.length > 3);
  
  // Count word frequency
  const wordCount = new Map<string, number>();
@@ -934,9 +934,9 @@ export class SegmentationEngine extends TypedEventBase {
  
  // Return top keywords
  return Array.from(wordCount.entries())
- .sort((a, b) => b[1] - a[1])
- .slice(0, 10)
- .map(([word]) => word);
+.sort((a, b) => b[1] - a[1])
+.slice(0, 10)
+.map(([word]) => word);
 }
 
  private calculateAverageSegmentSize(segments:DocumentSegment[]): number {
@@ -975,14 +975,14 @@ export class SegmentationEngine extends TypedEventBase {
  * Get segmentation engine configuration
  */
  public getConfig():SegmentationConfig {
- return { ...this.config};
+ return {...this.config};
 }
 
  /**
  * Update segmentation engine configuration
  */
  public updateConfig(newConfig:Partial<SegmentationConfig>): void {
- this.config = { ...this.config, ...newConfig};
+ this.config = {...this.config,...newConfig};
  logger.info('Segmentation engine configuration updated');')}
 
  // ========================================================================

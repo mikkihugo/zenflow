@@ -303,7 +303,7 @@ export class ChatAdapter extends BaseAdapter {
 	 * Get adapter configuration
 	 */
 	override getConfig():ChatAdapterConfig {
-		return { ...this.chatConfig};
+		return {...this.chatConfig};
 }
 
 	/**

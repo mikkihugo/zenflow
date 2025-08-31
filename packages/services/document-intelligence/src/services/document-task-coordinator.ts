@@ -119,7 +119,7 @@ export class DocumentTaskVisionCoordinator {
 
  const documents = documentsResult.success
  ? documentsResult.data?.documents||[]
- :[];
+:[];
 
  // Extract and generate strategic tasks
  const tasks = await this.extractAndGenerateStrategicTasks(
@@ -187,7 +187,7 @@ export class DocumentTaskVisionCoordinator {
  await this.documentManager.getDocumentsByProject(projectId);
  const documents = documentsResult.success
  ? documentsResult.data?.documents||[]
- :[];
+:[];
 
  const tasks = await this.extractAndGenerateStrategicTasks(
  vision,
@@ -281,7 +281,7 @@ export class DocumentTaskVisionCoordinator {
 
  const documents = documentsResult.success
  ? documentsResult.data?.documents||[]
- :[];
+:[];
  const tasks = await this.extractAndGenerateStrategicTasks(
  vision,
  documents
@@ -337,7 +337,7 @@ export class DocumentTaskVisionCoordinator {
 
  const taskDoc = searchResult.data.documents[0] as any;
  const updatedMetadata = {
- ...taskDoc.metadata,
+...taskDoc.metadata,
  status,
  updated_at:new Date()?.toISOString,
  status_notes:notes,
@@ -347,7 +347,7 @@ export class DocumentTaskVisionCoordinator {
  const updateResult = await this.documentManager.updateDocument(
  taskDoc.id,
  {
- status:status === 'completed' ? ' approved' : ' draft', metadata:updatedMetadata,
+ status:status === 'completed' ? ' approved': ' draft', metadata:updatedMetadata,
 }
  );
 
@@ -372,7 +372,7 @@ export class DocumentTaskVisionCoordinator {
  docId,
  {
  metadata:{
- ...docResult.data.metadata,
+...docResult.data.metadata,
  task_completion_updated:new Date()?.toISOString,
 },
 }
@@ -418,11 +418,11 @@ export class DocumentTaskVisionCoordinator {
  id:`${goalId}_implementation`,`
  title:`Implement: ${goal}`,`
  description:`Strategic implementation task for goal: ${goal}`,`
- priority:i < 2 ? 'high : i < 4 ? medium' : ' low', status: 'todo', strategicGoalId:goalId,
+ priority:i < 2 ? 'high: i < 4 ? medium': ' low', status: 'todo', strategicGoalId:goalId,
  relatedDocuments:[],
  estimatedEffort: 'large', tags:['strategic-goal, implementation'],
- businessValue:vision.businessValue * .8,
- technicalComplexity:vision.technicalImpact * .7,
+ businessValue:vision.businessValue *.8,
+ technicalComplexity:vision.technicalImpact *.7,
  dependencies:[],
  outcomes:[goal],
  metrics:vision.keyMetrics,
@@ -445,7 +445,7 @@ export class DocumentTaskVisionCoordinator {
  priority: 'medium', status: 'todo', strategicGoalId:goalId,
  relatedDocuments:[],
  estimatedEffort: 'medium', tags:['documentation, strategic-goal'],
- businessValue:vision.businessValue * .6,
+ businessValue:vision.businessValue *.6,
  technicalComplexity:.3,
  dependencies:[],
  outcomes:[`${goal} documented`],`
@@ -531,7 +531,7 @@ export class DocumentTaskVisionCoordinator {
  tasks.length > 0
  ? tasks.reduce((sum, task) => sum + task.businessValue, 0) /
  tasks.length
- :0;
+:0;
 
  const goalsWithDocuments = vision.strategicGoals.filter((goal) =>
  documentLinks.some((link) =>
@@ -543,7 +543,7 @@ export class DocumentTaskVisionCoordinator {
  const documentCoverage =
  vision.strategicGoals.length > 0
  ? goalsWithDocuments / vision.strategicGoals.length
- :0;
+:0;
 
  const goalsWithTasks = vision.strategicGoals.filter((goal) =>
  tasks.some((task) =>
@@ -553,7 +553,7 @@ export class DocumentTaskVisionCoordinator {
  const taskCoverage =
  vision.strategicGoals.length > 0
  ? goalsWithTasks / vision.strategicGoals.length
- :0;
+:0;
 
  return {
  totalTasks,
@@ -588,7 +588,7 @@ export class DocumentTaskVisionCoordinator {
 }
 
  // Suggest tasks for low-coverage areas
- if (documentLinks.some((link) => link.completionStatus < .5)) {
+ if (documentLinks.some((link) => link.completionStatus <.5)) {
  suggestedTasks.push({
  title: 'Review and update incomplete document implementations', priority: 'medium', estimatedEffort: 'medium', tags:['review, completion'],
 });
@@ -607,11 +607,11 @@ export class DocumentTaskVisionCoordinator {
 
  // Optimization opportunities
  if (
- tasks.filter((task) => task.status === 'blocked').length >') tasks.length * .2
+ tasks.filter((task) => task.status === 'blocked').length >') tasks.length *.2
  ) 
  optimizationOpportunities.push(
  'High number of blocked tasks - review dependencies and bottlenecks');')
- if (vision.businessValue < .6||vision.technicalImpact < .6) {
+ if (vision.businessValue <.6||vision.technicalImpact <.6) {
  optimizationOpportunities.push('Strategic vision could be strengthened with more detailed documentation') );
 }
 
@@ -643,10 +643,10 @@ $task.outcomes.map((outcome) => `- ${outcome}`).join('\n')')`
 ## Success Metrics
 $task.metrics.map((metric) => `- ${metric}`).join('\n')')`
 ## Dependencies
-$task.dependencies.length > 0 ? task.dependencies.map((dep) => `- ${dep}`).join('\n') :' No dependencies')`
+$task.dependencies.length > 0 ? task.dependencies.map((dep) => `- ${dep}`).join('\n'):' No dependencies')`
 ## Status
 Current Status:$task.status
-$task.dueDate ? `Due Date:${task.dueDate?.toLocaleDateString}` :'}')$task.assignedTo ? `Assigned To:${task.assignedTo}` :'}')`
+$task.dueDate ? `Due Date:${task.dueDate?.toLocaleDateString}`:'}')$task.assignedTo ? `Assigned To:${task.assignedTo}`:'}')`
 ---
 *Generated by Document-Task-Vision Coordinator*
 *Created:$task.createdAt?.toLocaleString*
