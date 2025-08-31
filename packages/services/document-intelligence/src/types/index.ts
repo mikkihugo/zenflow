@@ -99,7 +99,7 @@ export interface PatternScanningOptions {
 export interface ServiceStatus {
   initialized:boolean;
   enabledCapabilities:string[];
-  componentStatus: Record<string, boolean>;
+  componentStatus:Record<string, boolean>;
 }
 
 /**
@@ -139,11 +139,11 @@ export interface DocumentComplexityMetrics {
 export interface ContentAnalysisResult {
   documentType:string;
   confidence:number;
-  complexity: DocumentComplexityMetrics;
+  complexity:DocumentComplexityMetrics;
   patterns:{
     detected:string[];
-    confidence: Record<string, number>;
-    weights: Record<string, number>;
+    confidence:Record<string, number>;
+    weights:Record<string, number>;
 };
   recommendedActions:string[];
 }
@@ -174,8 +174,8 @@ export interface EventPayloads {
  */
 export class DocumentIntelligenceError extends Error {
   constructor(
-    message: string,
-    public readonly code: string,
+    message:string,
+    public readonly code:string,
     public readonly context?:any
   ) {
     super(message);

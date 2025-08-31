@@ -11,7 +11,7 @@
  * ** RECOMMENDED USAGE:Access via @claude-zen/foundation Package**
  *
  * While this package can be used directly, it is recommended to access knowledge
- * functionality through '@claude-zen/foundation' which provides integrated knowledge'
+ * functionality through `@claude-zen/foundation` which provides integrated knowledge`
  * management with telemetry, logging, and configuration management.
  *
  * **CORE COLLECTIVE INTELLIGENCE CAPABILITIES:**
@@ -47,7 +47,7 @@
  * - Knowledge backup, recovery, and disaster recovery capabilities
  *
  * @example Basic Collective Intelligence Setup
- * 'typescript'
+ * ```typescript`
  * import { IntelligenceHub} from '@claude-zen/knowledge';
  *
  * const coordinator = new IntelligenceHub({
@@ -74,10 +74,10 @@
  *   problem: 'Design scalable microservices architecture', *   context:{ requirements, constraints},
  *   timeoutMs:300000
  *});
- * '
+ * ````
  *
  * @example Cross-Domain Knowledge Transfer
- * '''typescript'
+ * ```typescript`
  * import { CrossAgentKnowledgeIntegration} from '@claude-zen/knowledge';
  *
  * const integration = new CrossAgentKnowledgeIntegration({
@@ -93,12 +93,12 @@
  *}
  *});
  *
- * logger.info(`Transfer efficiency:${transferResult.efficiency}%`);'
- * logger.info('Applicable patterns:' + transferResult.applicablePatterns.length);'
- * '
+ * logger.info(`Transfer efficiency:${transferResult.efficiency}%`);`
+ * logger.info(`Applicable patterns:${transferResult.applicablePatterns.length}`);`
+ * ````
  *
  * @example Distributed Learning Network
- * '''typescript'
+ * ```typescript`
  * import { DistributedLearningSystem} from '@claude-zen/knowledge';
  *
  * const learningSystem = new DistributedLearningSystem({
@@ -117,12 +117,12 @@
  *
  * // Execute federated learning
  * const result = await session.execute();
- * logger.info('Final accuracy:' + result.accuracy);'
- * logger.info('Convergence iterations:' + result.iterations);'
- * '
+ * logger.info(`Final accuracy:${result.accuracy}`);`
+ * logger.info(`Convergence iterations:${result.iterations}`);`
+ * ````
  *
  * @example Knowledge Quality Management
- * '''typescript'
+ * ```typescript`
  * import { KnowledgeValidator} from '@claude-zen/knowledge';
  *
  * const qualityManager = new KnowledgeValidator({
@@ -143,10 +143,10 @@
  *} else {
  *   await qualityManager.flagForReview(incomingKnowledge, assessment.issues);
  *}
- * '
+ * ````
  *
  * @example Enterprise Knowledge Management System
- * '''typescript'
+ * ```typescript`
  * import {
  *   IntelligenceHub,
  *   KnowledgeValidator,
@@ -214,10 +214,10 @@
  *     latencyTarget: '100ms', *     throughputTarget: '10000/min', *     availabilityTarget:'99.99%');
  *}
  *});
- * '
+ * ````
  *
  * @example Real-Time Knowledge Synchronization
- * '''typescript'
+ * ```typescript`
  * import {
  *   DistributedLearningSystem,
  *   KnowledgeSwarm,
@@ -294,10 +294,10 @@
  *   knowledgeTransferred:result.transferredBytes,
  *   participantContributions:result.contributions
  *});
- * '
+ * ````
  *
  * @example Advanced Knowledge Analytics and Insights
- * '''typescript'
+ * ```typescript`
  * import {
  *   KnowledgeValidator,
  *   PerformanceOptimizer,
@@ -394,10 +394,10 @@
  *   recommendations:insights.recommendations,
  *   emergingTrends:insights.trends.emerging
  *});
- * '
+ * ````
  *
  * @example Knowledge Graph Construction and Reasoning
- * '''typescript'
+ * ```typescript`
  * import {
  *   KnowledgeSwarm,
  *   ProjectContextAnalyzer,
@@ -482,7 +482,7 @@
  *});
  *
  * logger.info('Knowledge Graph Reasoning Results: ', {
-'    `) *   graphStatistics:{
+'    ') *   graphStatistics:{
  *     nodes:knowledgeGraph.nodeCount,
  *     edges:knowledgeGraph.edgeCount,
  *     domains:knowledgeGraph.domainCoverage
@@ -498,7 +498,7 @@
  *     recommendations:reasoningResult.recommendations
  *}
  *});
- * `
+ * ````
  *
  * @author Claude Code Zen Team
  * @since 1.0.0

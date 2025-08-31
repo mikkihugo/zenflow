@@ -7,7 +7,13 @@
  * @author Claude Code Zen Team
  * @since 1.0.0
  */
-import {} from  from 'date-fns';
+import {
+  addMinutes,
+  differenceInMilliseconds,
+  formatDuration,
+  intervalToDuration,
+  subMinutes,
+} from 'date-fns';
 /**
  * Professional date calculation utilities
  */

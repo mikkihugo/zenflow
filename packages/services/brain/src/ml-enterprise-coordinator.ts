@@ -179,7 +179,7 @@ export class MLEnterpriseCoordinator {
 				this.mlModelStore = mlModelStoreResult.data;
 				this.logger.info(' ML model store initialized - dedicated vector store for ML');
 } else {
-				this.logger.warn('⚠️ ML model store using fallback implementation', {
+				this.logger.warn(' ML model store using fallback implementation', {
 					error:mlModelStoreResult.error?.message
 });
 }
@@ -196,7 +196,7 @@ export class MLEnterpriseCoordinator {
 				this.mlTrainingDataStore = mlTrainingDataStoreResult.data;
 				this.logger.info(' ML training data store initialized - dedicated KV store for ML');
 } else {
-				this.logger.warn('⚠️ ML training data store using fallback implementation', {
+				this.logger.warn(' ML training data store using fallback implementation', {
 					error:mlTrainingDataStoreResult.error?.message
 });
 }
@@ -214,7 +214,7 @@ export class MLEnterpriseCoordinator {
 				this.mlWorkflowGraph = mlWorkflowGraphResult.data;
 				this.logger.info(' ML workflow graph initialized - dedicated graph store for ML');
 } else {
-				this.logger.warn('⚠️ ML workflow graph using fallback implementation', {
+				this.logger.warn(' ML workflow graph using fallback implementation', {
 					error:mlWorkflowGraphResult.error?.message
 });
 }
@@ -231,7 +231,7 @@ export class MLEnterpriseCoordinator {
 				this.mlMetricsStore = mlMetricsStoreResult.data;
 				this.logger.info(' ML metrics store initialized - dedicated KV store for ML');
 } else {
-				this.logger.warn('⚠️ ML metrics store using fallback implementation', {
+				this.logger.warn(' ML metrics store using fallback implementation', {
 					error:mlMetricsStoreResult.error?.message
 });
 }
@@ -239,7 +239,7 @@ export class MLEnterpriseCoordinator {
 			this.logger.info(' ML-specific database storage initialization complete');
 
 } catch (error) {
-			this.logger.warn('⚠️ ML database storage initialization failed, using fallbacks', {
+			this.logger.warn(' ML database storage initialization failed, using fallbacks', {
 				error:error instanceof Error ? error.message : String(error)
 });
 			// Continue with fallbacks - ML coordinator can still function

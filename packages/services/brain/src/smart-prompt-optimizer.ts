@@ -67,7 +67,7 @@ export class SmartPromptOptimizer {
   private initialized = false;
 
   constructor() {
-    logger.info('🧠 Smart Prompt Optimizer created');
+    logger.info(' Smart Prompt Optimizer created');
   }
 
   /**
@@ -84,7 +84,7 @@ export class SmartPromptOptimizer {
       this.initialized = true;
       logger.info(' Smart Prompt Optimizer initialized successfully');
     } catch (error) {
-      logger.error(` Failed to initialize Smart Prompt Optimizer:`, error);
+      logger.error(' Failed to initialize Smart Prompt Optimizer:', error);
       throw error;
     }
   }
@@ -107,7 +107,7 @@ export class SmartPromptOptimizer {
 
     try {
       logger.info(
-        `🔍 Analyzing prompt for optimization: "${originalPrompt.substring(0, 50)}..."`
+        ` Analyzing prompt for optimization: "${originalPrompt.substring(0, 50)}..."`
       );
 
       // Analyze prompt characteristics
@@ -167,7 +167,7 @@ export class SmartPromptOptimizer {
 
       return result;
     } catch (error) {
-      logger.error(` Prompt optimization failed:`, error);
+      logger.error(' Prompt optimization failed:', error);
       throw error;
     }
   }
@@ -199,7 +199,7 @@ export class SmartPromptOptimizer {
         const trend = sma(successRates, 3);
 
         logger.debug(
-          ` Performance trend:${trend[trend.length - 1]?.toFixed(2)||'N/A`}``
+          ` Performance trend:${trend[trend.length - 1]?.toFixed(2)||'N/A'}``
         );
 }
 } catch (error) {
@@ -264,7 +264,7 @@ export class SmartPromptOptimizer {
         improvement:1.1,
         applicableContexts:['domain_specific',    'technical'],
         examples:[
-          'Add relevant background',          'Include constraints',          `Specify output format`,],
+          'Add relevant background',          'Include constraints',          'Specify output format',],
 },
 ];
 
@@ -273,7 +273,7 @@ export class SmartPromptOptimizer {
 });
 
     logger.debug(
-      `📋 Initialized $patterns.lengthbaseline optimization patterns``
+      ` Initialized $patterns.lengthbaseline optimization patterns``
     );
 }
 
@@ -426,14 +426,14 @@ export class SmartPromptOptimizer {
         case 'clarity_improvement': ')'          optimizedPrompt +=
             '\n\nPlease be specific and provide detailed explanations.;
           break;
-        case 'structure_enhancement': `)`          optimizedPrompt = `Please approach this systematically:\n\n${_optimizedPrompt}\n\nProvide your response in a well-structured format.`;`
+        case 'structure_enhancement': ')'          optimizedPrompt = `Please approach this systematically:\n\n${_optimizedPrompt}\n\nProvide your response in a well-structured format.`;`
           break;
         case 'context_addition': ')'          optimizedPrompt +=
             '\n\nConsider the specific context and requirements when responding.;
           break;
-        case 'length_optimization': ')'          // For length optimization, we'd typically compress the prompt`)          // For now, just add a note about conciseness
+        case 'length_optimization': ')'          // For length optimization, we'd typically compress the prompt')          // For now, just add a note about conciseness
           optimizedPrompt +=
-            `\n\nPlease provide a concise but complete response.;
+            '\n\nPlease provide a concise but complete response.;
           break;
 }
 }
@@ -479,7 +479,7 @@ export class SmartPromptOptimizer {
 
     patterns.forEach((pattern) => {
       reasoning.push(
-        `${pattern.patternType.replace('_',    ' `)} applied with ${(pattern.confidence * 100).toFixed(0)}% confidence``
+        `${pattern.patternType.replace('_',    ' ')} applied with ${(pattern.confidence * 100).toFixed(0)}% confidence``
       );
 });
 
@@ -549,10 +549,10 @@ export class SmartPromptOptimizer {
 }
 }
 
-    logger.debug('Updated optimization patterns based on performance feedback`);
+    logger.debug('Updated optimization patterns based on performance feedback');
     // For now, just log the learning event
     logger.debug(
-      ` Pattern learning: ${analysisData.successRate > 0.7 ? 'positive' : 'negative`} feedback received`
+      ` Pattern learning: ${analysisData.successRate > 0.7 ? 'positive' : 'negative'} feedback received`
     );
 }
 
