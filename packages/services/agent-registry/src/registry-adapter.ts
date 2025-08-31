@@ -493,14 +493,14 @@ export class ServiceRegistryAdapter extends BaseRegistryAdapter {
  ...options,
 });
 
- if (result.isErr()) {
- throw new Error(
- `Failed to register service ${name}:${result.error.message}``
- );
-}
+    if (result.isErr()) {
+      throw new Error(
+        `Failed to register service ${name}: ${result.error.message}`
+      );
+    }
 
- this.services.set(name, implementation);
- this.emitMigrationEvent('serviceRegistered', { name});')}
+    this.services.set(name, implementation);
+    this.emitMigrationEvent('serviceRegistered', { name });
 
  /**
  * Register an instance
