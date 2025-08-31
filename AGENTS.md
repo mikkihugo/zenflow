@@ -20,7 +20,7 @@ src/
 
 ### Package Organization
 
-**25+ packages** organized for project structure across strategic domains:
+**31 packages** organized for project structure across strategic domains:
 
 - **apps/**: Primary applications (server + web dashboard)
 - **packages/core/**: Foundation systems and core libraries 
@@ -37,6 +37,7 @@ src/
 - `@claude-zen/neural-ml` - High-performance neural ML library (private, used by brain)
 - `@claude-zen/dspy` - DSPy Stanford integration engine (private, used by brain)
 - `@claude-zen/fact-system` - FACT system with Rust engine (private, used by knowledge)
+- `@claude-zen/interfaces` - Interface abstractions and adapters
 
 **🔧 Services Packages (packages/services/):**
 - `@claude-zen/coordination` - Unified coordination: SPARC, SAFe, workflows, orchestration, teamwork
@@ -57,7 +58,7 @@ src/
 - `@claude-zen/beam-analyzer` - BEAM ecosystem analysis for Erlang, Elixir, Gleam, LFE
 - `@claude-zen/codeql` - CodeQL integration for semantic analysis and vulnerability detection
 - `@claude-zen/ai-linter` - AI-powered TypeScript/JavaScript linter with GPT integration
-- `@claude-zen/singularity-coder` - Advanced file-aware AI engine with CodeMesh analysis
+- `@claude-zen/coder` - Rust-based code analysis engine (library only, no CLI)
 
 **🔌 Integration Packages (packages/integrations/):**
 - `@claude-zen/llm-providers` - LLM provider integrations: CLI tools, Direct APIs, AI services

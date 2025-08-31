@@ -1,9 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
-	"apps/coder",
 	"crates/code-mesh-core",
-	"crates/code-mesh-cli",
 	# Optional UI/TUI and WASM crates (leave out for Rust-only minimal set)
 	# "crates/code-mesh-tui",
 	# "crates/code-mesh-wasm",

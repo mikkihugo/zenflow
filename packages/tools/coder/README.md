@@ -1,7 +1,7 @@
 # Coder (Rust-only workspace)
 
 This is a minimal Rust workspace that builds only the Rust components of Zenflow:
-- Singularity Coder core + CLI
+- Code Mesh core library
 - Neural core crates (pure Rust ML)
 - Fact system (Rust)
 
@@ -10,8 +10,12 @@ This is a minimal Rust workspace that builds only the Rust components of Zenflow
 ```bash
 # From repo root
 cd packages/tools/coder
-cargo metadata --no-deps --format-version 1
-cargo build -p code-mesh-cli --release
+cargo build -p code-mesh-core --release
 ```
+
+## Usage
+
+This package provides the `code-mesh-core` Rust library for high-performance code analysis.
+It can be used as a dependency in other Rust projects or compiled to WASM for use in TypeScript.
 
 You can enable optional crates (TUI/WASM) by uncommenting them in `Cargo.toml`.
