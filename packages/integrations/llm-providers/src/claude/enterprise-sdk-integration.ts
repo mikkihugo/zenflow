@@ -352,7 +352,7 @@ Use these tools to gather the information needed to complete your task effective
 }
 } catch (error) {
     logger.error('Enterprise Claude task execution failed: ', error);
-'    throw new Error(`Enterprise task failed:${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(`Enterprise task failed: ${error instanceof Error ? error.message : 'Unknown error'}`);;
 }
   
   logger.info(`Enterprise task completed:${messages.length} messages`);

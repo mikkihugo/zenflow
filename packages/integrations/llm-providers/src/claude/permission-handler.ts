@@ -166,7 +166,8 @@ export async function createPermissionHandler(
     case 'custom':
       if (!_customHandler) {
         throw new Error(
-          'Custom permission handler is required when using "custom" mode')        );
+          'Custom permission handler is required when using "custom" mode'
+        );
 }
       return createCustomHandlerWrapper(_customHandler);
 
@@ -203,7 +204,9 @@ function createAllowAllHandler():CanUseTool {
       toolName,
       params,
       result,
-      'system',      'allow-all-handler')    );
+      'system',
+      'allow-all-handler'
+    );
     return result;
 };
 }
@@ -231,7 +234,9 @@ function createDenyAllHandler():CanUseTool {
       toolName,
       params,
       result,
-      'system',      'deny-all-handler')    );
+      'system',
+      'deny-all-handler'
+    );
 
     return result;
 };
@@ -278,7 +283,8 @@ function createInteractiveHandler():CanUseTool {
         toolName,
         params,
         result,
-        'system',        'interactive-handler')      );
+        'system',        'interactive-handler');
+      );
 
       return result;
 }
@@ -301,7 +307,8 @@ function createInteractiveHandler():CanUseTool {
         toolName,
         params,
         result,
-        'system',        'interactive-handler')      );
+        'system',        'interactive-handler');
+      );
 
       return result;
 }
@@ -393,7 +400,7 @@ function createCustomHandlerWrapper(customHandler:CanUseTool): CanUseTool {
         toolName,
         params,
         result,
-        'custom',        'custom-handler')      );
+        'custom',        'custom-handler');
 
       return result;
 } catch (error) {
@@ -408,7 +415,7 @@ function createCustomHandlerWrapper(customHandler:CanUseTool): CanUseTool {
         toolName,
         params,
         result,
-        'custom',        'custom-handler-error')      );
+        'custom',        'custom-handler-error');
 
       return result;
 }
