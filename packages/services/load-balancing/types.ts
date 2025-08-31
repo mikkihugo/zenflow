@@ -7,12 +7,6 @@
 
 export interface Agent {
   id: string;
-  name: string;
-  capabilities: string[];
-  status: AgentStatus;
-  endpoint: string;
-  lastHealthCheck: Date;
-  metadata: Record<string, unknown>;
 }
 
 export enum AgentStatus {
@@ -25,15 +19,6 @@ export enum AgentStatus {
 
 export interface Task {
   id: string;
-  type: string;
-  priority: TaskPriority;
-  requiredCapabilities: string[];
-  estimatedDuration: number;
-  maxRetries: number;
-  timeout: number;
-  metadata: Record<string, unknown>;
-  createdAt: Date;
-  sessionId?: string; // For stateful tasks
 }
 
 export enum TaskPriority {
@@ -45,7 +30,7 @@ export enum TaskPriority {
 }
 
 // Helper function to convert TaskPriority to numeric value for comparisons
-export function taskPriorityToNumber(priority: TaskPriority): number {
+export function taskPriorityToNumber(): void {
   switch (priority) {
     case TaskPriority.LOW:
       return 1;
@@ -181,25 +166,7 @@ export interface QoSRequirement {
 
 export interface LoadBalancingStrategy {
   name: string;
-  selectAgent(
-    task: Task,
-    availableAgents: Agent[],
-    metrics: Map<string, LoadMetrics>
-  ): Promise<RoutingResult>;
-  updateWeights?(
-    agents: Agent[],
-    metrics: Map<string, LoadMetrics>
-  ): Promise<void>;
-  onAgentFailure?(agentId: string, error: Error): Promise<void>;
-  onTaskComplete?(
-    agentId: string,
-    task: Task,
-    duration: number,
-    success: boolean
-  ): Promise<void>;
-}
-
-export interface GeographicLocation {
+  selectAgent(): void {
   region: string;
   zone: string;
   latitude: number;
@@ -283,11 +250,6 @@ export interface HealthStatus {
 
 export interface LearningPattern {
   id: string;
-  pattern: string;
-  confidence: number;
-  frequency: number;
-  context: Record<string, unknown>;
-  timestamp: Date;
 }
 
 export interface RoutingTable {

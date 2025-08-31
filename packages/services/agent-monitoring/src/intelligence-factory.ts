@@ -1,3 +1,5 @@
+import { getLogger } from '@claude-zen/foundation';
+
 /**
  * @fileoverview Intelligence System Factory Functions
  *
@@ -10,68 +12,12 @@ import type { IntelligenceSystemConfig} from './types';
 // Simple logger placeholder
 const getLogger = (name: string) => ({
   info:(msg: string, meta?:unknown) =>
-    console.info(`[INFO: ${name}] ${msg}`, meta || {}),
-  debug:(msg: string, meta?:unknown) =>
-    console.info(`[DEBUG: ${name}] ${msg}`, meta || {}),
+    console.info(): Promise<void> {name}] ${msg}`, meta || {}),
   warn:(msg: string, meta?:unknown) =>
-    console.warn(`[WARN: ${name}] ${msg}`, meta || {}),
-  error:(msg: string, meta?:unknown) =>
-    console.error(`[ERROR: ${name}] ${msg}`, meta || {}),
+    console.warn(): Promise<void> {name}] ${msg}`, meta || {}),
 });
 
-const logger = getLogger('agent-monitoring-intelligence-factory');
-
-/**
- * Create a basic intelligence system with minimal features
- */
-export function createBasicIntelligenceSystem(inputConfig?:IntelligenceSystemConfig
-): CompleteIntelligenceSystem {
-  const config: IntelligenceSystemConfig = {
-    taskPrediction:{
-      enabled: true,
-      confidenceThreshold:0.7,
-      historyWindowSize:50,
-      updateInterval:60000,
-},
-    agentLearning:{
-      enabled: false,
-},
-    healthMonitoring:{
-      enabled: true,
-      healthCheckInterval:60000,
-},
-    predictiveAnalytics:{
-      enabled: false,
-},
-    persistence:{
-      enabled: false,
-},
-};
-
-  logger.info('Creating basic intelligence system');
-  const finalConfig = { ...config, ...inputConfig};
-  return new CompleteIntelligenceSystem(finalConfig);
-}
-
-/**
- * Create a production-ready intelligence system with all features
- */
-export function createProductionIntelligenceSystem(inputConfig?:IntelligenceSystemConfig
-): CompleteIntelligenceSystem {
-  const config: IntelligenceSystemConfig = {
-    taskPrediction:{
-      enabled: true,
-      confidenceThreshold:0.8,
-      historyWindowSize:100,
-      updateInterval:30000,
-},
-    agentLearning:{
-      enabled: true,
-      adaptationRate:0.1,
-      learningModes:['supervised',    'reinforcement'],
-      performanceThreshold:0.75,
-},
-    healthMonitoring:{
+const logger = getLogger(): Promise<void> {
       enabled: true,
       healthCheckInterval:30000,
       alertThresholds:{
@@ -95,16 +41,6 @@ export function createProductionIntelligenceSystem(inputConfig?:IntelligenceSyst
 },
 };
 
-  logger.info('Creating production intelligence system');
-  const finalConfig = { ...config, ...inputConfig};
-  return new CompleteIntelligenceSystem(finalConfig);
-}
-
-/**
- * Create a custom intelligence system with provided configuration
- */
-export function createIntelligenceSystem(config: IntelligenceSystemConfig
-): CompleteIntelligenceSystem {
-  logger.info('Creating custom intelligence system', { config});
-  return new CompleteIntelligenceSystem(config);
+  logger.info(): Promise<void> { config});
+  return;
 }

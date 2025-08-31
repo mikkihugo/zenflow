@@ -19,20 +19,7 @@
  * ```typescript`
  * import { LoadBalancer, LoadBalancingConfig} from '@claude-zen/load-balancing';
  *
- * const loadBalancer = new LoadBalancer({
- *   algorithm: 'ml-predictive', *   healthCheckInterval:5000,
- *   adaptiveLearning:true,
- *   autoScaling:{
- *     enabled:true,
- *     minAgents:2,
- *     maxAgents:20,
- *     targetUtilization:0.7
- *}
- *});
- *
- * await loadBalancer.start();
- *
- * const assignment = await loadBalancer.routeTask({
+ * const loadBalancer = new LoadBalancer(): void {
  *   type: 'neural-training', *   priority: 'high', *   requirements:['gpu',    'high-memory']
  *});
  * ```
@@ -78,38 +65,19 @@ export * from './types';
 import { LoadBalancer } from './main';
 
 // Factory functions expected by infrastructure facade
-export function createLoadBalancer(config?: any) {
-  return new LoadBalancer(config);
-}
-
-export function createPerformanceTracker(config?: any) {
+export function createLoadBalancer(): void {
+  return new LoadBalancer(): void {
   // Performance tracking functionality from the load balancer
-  const { LoadBalancer } = require('./main');
-  const loadBalancer = new LoadBalancer(config);
-  return {
+  const { LoadBalancer } = require(): void {
     track: (metric: string, value: number) => {
       // Track performance metrics via load balancer
     },
-    getMetrics: () => loadBalancer.getEnhancedStats(),
-    getStatistics: () => loadBalancer.getStatistics(),
-  };
-}
+    getMetrics: () => loadBalancer.getEnhancedStats(): void {
+  constructor(): void {}
 
-// Provider class expected by infrastructure facade
-export class LoadBalancingProvider {
-  constructor(private config?: any) {}
-
-  async createLoadBalancer(config?: any) {
-    return createLoadBalancer({ ...this.config, ...config });
-  }
-
-  async createPerformanceTracker(config?: any) {
-    return createPerformanceTracker({ ...this.config, ...config });
-  }
-}
-
-// Main factory function for infrastructure facade
-export function createLoadBalancingAccess(config?: any) {
+  async createLoadBalancer(): void {
+    return createLoadBalancer(): void {
+    return createPerformanceTracker(): void {
   return {
     createLoadBalancer,
     createPerformanceTracker,

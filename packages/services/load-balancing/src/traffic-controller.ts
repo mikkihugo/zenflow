@@ -163,15 +163,8 @@ export class TrafficController extends EventBus<TrafficEvents> {
   private trafficHistory: SystemMetrics[] = [];
   private decisionHistory: TrafficDecision[] = [];
 
-  constructor(config: TrafficConfig = {}) {
-    super({
-      enableMiddleware: true,
-      enableMetrics: true,
-      enableLogging: true,
-      maxListeners: 100,
-    });
-
-    this.config = {
+  constructor(): void {
+    super(): void {
       enablePredictiveScaling: config.enablePredictiveScaling ?? true,
       enableMLRouting: config.enableMLRouting ?? true,
       emergencyThresholds: {
@@ -191,48 +184,9 @@ export class TrafficController extends EventBus<TrafficEvents> {
       },
     };
 
-    this.logger = getLogger('traffic-controller');
-    this.logger.info('🚦 Traffic Controller created - initialization pending');
-  }
-
-  /**
-   * Initialize the Traffic Controller with EventBus
-   */
-  async initialize(): Promise<void> {
-    if (this.initialized) {
-      this.logger.debug('Traffic Controller already initialized');
-      return;
-    }
-
-    const initStartTime = Date.now();
-
-    try {
-      this.logger.info(
-        '🚦 Initializing Traffic Controller with foundation EventBus...'
-      );
-
-      // Initialize EventBus first
-      const eventBusResult = await super.initialize();
-      if (eventBusResult.isErr()) {
-        throw new Error(
-          `EventBus initialization failed:${eventBusResult.error?.message}`
-        );
-      }
-
-      // Initialize load balancing components
-      this.routingEngine = new IntelligentRoutingEngine();
-      this.capacityManager = new AgentCapacityManager();
-      this.capacityPredictor = new CapacityPredictor();
-      this.resourceMonitor = new ResourceMonitor();
-      this.autoScaler = new AutoScalingStrategy({});
-      this.emergencyHandler = new EmergencyProtocolHandler();
-      this.latencyOptimizer = new NetworkLatencyOptimizer();
-
-      // Mark as initialized
-      this.initialized = true;
-      const duration = Date.now() - initStartTime;
-
-      this.logger.info('✅ Traffic Controller initialized successfully', {
+    this.logger = getLogger(): void {
+        throw new Error(): void {});
+      this.emergencyHandler = new EmergencyProtocolHandler(): void {
         duration: `${duration}ms`,
         components: 'all-load-balancing-components',
         predictiveScaling: this.config.enablePredictiveScaling,
@@ -240,198 +194,25 @@ export class TrafficController extends EventBus<TrafficEvents> {
       });
 
       // Emit initialization event
-      await this.emitSafe('traffic:initialized', {
-        config: this.config,
-        timestamp: Date.now(),
-      });
-    } catch (error) {
-      const duration = Date.now() - initStartTime;
-      this.logger.error('❌ Traffic Controller initialization failed', {
-        error: error instanceof Error ? error.message : String(error),
-        duration: `${duration}ms`,
+      await this.emitSafe(): void {
+      const duration = Date.now(): void {
+        error: error instanceof Error ? error.message : String(): void {duration}ms`,
       });
 
       // Emit error event
-      await this.emitSafe('traffic:error', {
-        error: error instanceof Error ? error.message : String(error),
-        context: { phase: 'initialization', duration },
-        timestamp: Date.now(),
-      });
-
-      throw error;
-    }
-  }
-
-  /**
-   * Shutdown the Traffic Controller with event broadcasting
-   */
-  async shutdown(): Promise<void> {
+      await this.emitSafe(): void {
     if (!this.initialized) return;
 
-    this.logger.info('🚦 Shutting down Traffic Controller...');
-
-    // Emit shutdown event before cleanup
-    await this.emitSafe('traffic:shutdown', {
-      timestamp: Date.now(),
-    });
-
-    this.initialized = false;
-    this.routingEngine = null;
-    this.capacityManager = null;
-    this.capacityPredictor = null;
-    this.resourceMonitor = null;
-    this.autoScaler = null;
-    this.emergencyHandler = null;
-    this.latencyOptimizer = null;
-
-    // Allow event loop to process cleanup
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    this.logger.info('✅ Traffic Controller shutdown complete');
-  }
-
-  /**
-   * Main traffic control decision making with event broadcasting
-   */
-  async controlTraffic(metrics: SystemMetrics): Promise<TrafficDecision[]> {
-    if (!this.initialized) {
-      await this.initialize();
-    }
-
-    const startTime = Date.now();
-    const decisions: TrafficDecision[] = [];
-
-    try {
-      // Record metrics for ML analysis
-      this.trafficHistory.push(metrics);
-      if (this.trafficHistory.length > 1000) {
-        this.trafficHistory = this.trafficHistory.slice(-1000);
-      }
-
-      // 1. Check for emergency conditions
-      const emergencyDecision = await this.handleEmergencyProtocols(metrics);
-      if (emergencyDecision) {
-        decisions.push(emergencyDecision);
-
-        await this.emitSafe('traffic:emergency_activated', {
-          trigger: emergencyDecision.action,
-          metrics,
-          protocolsActivated: emergencyDecision.reasoning,
-          timestamp: Date.now(),
-        });
-      }
-
-      // 2. ML-powered traffic routing decisions
-      if (this.config.enableMLRouting) {
-        const routingDecision = await this.mlRoutingDecision(metrics);
-        if (routingDecision) {
-          decisions.push(routingDecision);
-        }
-      }
-
-      // 3. Predictive capacity scaling
-      if (this.config.enablePredictiveScaling) {
-        const scalingDecision = await this.predictiveScaling(metrics);
-        if (scalingDecision) {
-          decisions.push(scalingDecision);
-        }
-      }
-
-      // 4. Performance optimization
-      const optimizationDecision = await this.performanceOptimization(metrics);
-      if (optimizationDecision) {
-        decisions.push(optimizationDecision);
-
-        await this.emitSafe('traffic:performance_optimized', {
-          optimizationType: optimizationDecision.action,
-          improvementMetrics: optimizationDecision.parameters,
-          timestamp: Date.now(),
-        });
-      }
-
-      // 5. Bottleneck detection
-      await this.detectBottlenecks(metrics);
-
-      // Record decisions for ML learning
-      for (const decision of decisions) {
-        this.decisionHistory.push(decision);
-        if (this.decisionHistory.length > 500) {
-          this.decisionHistory = this.decisionHistory.slice(-500);
-        }
-      }
-
-      const duration = Date.now() - startTime;
-      this.logger.debug(
-        `🚦 Traffic control complete:${decisions.length} decisions made in ${duration}ms`
-      );
-
-      return decisions;
-    } catch (error) {
-      await this.emitSafe('traffic:error', {
-        error: error instanceof Error ? error.message : String(error),
-        context: { operation: 'traffic_control', metrics },
-        timestamp: Date.now(),
-      });
-
-      this.logger.error('❌ Traffic control failed: ', error);
-      return [];
-    }
-  }
-
-  /**
-   * Route specific task with event broadcasting
-   */
-  async routeTask(
-    taskId: string,
-    taskRequirements: any
-  ): Promise<string | null> {
+    this.logger.info(): void {
     if (!this.initialized || !this.routingEngine) {
-      throw new Error('Traffic Controller not initialized');
-    }
-
-    const startTime = Date.now();
-
-    try {
-      const agentId = await this.routingEngine.selectAgent(taskRequirements);
-      const duration = Date.now() - startTime;
-
-      if (agentId) {
-        const routing: AgentRouting = {
-          agentId,
-          taskId,
-          routingReason: 'ml-optimized',
-          confidence: 0.85,
-          expectedLatency: duration,
-        };
-
-        await this.emitSafe('traffic:agent_routed', {
-          routing,
-          metrics:
-            this.trafficHistory[this.trafficHistory.length - 1] ||
-            ({} as SystemMetrics),
-          duration,
-          timestamp: Date.now(),
-        });
+      throw new Error(): void {});
 
         return agentId;
       }
 
       return null;
     } catch (error) {
-      await this.emitSafe('traffic:error', {
-        error: error instanceof Error ? error.message : String(error),
-        context: { operation: 'route_task', taskId, taskRequirements },
-        timestamp: Date.now(),
-      });
-
-      throw error;
-    }
-  }
-
-  /**
-   * Get traffic controller status and metrics
-   */
-  async getTrafficStatus() {
+      await this.emitSafe(): void {
     return {
       initialized: this.initialized,
       componentsLoaded: {
@@ -449,17 +230,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
         trafficHistoryLength: this.trafficHistory.length,
         averageDecisionConfidence:
           this.decisionHistory.length > 0
-            ? ss.mean(this.decisionHistory.map((d) => d.confidence))
-            : 0,
-      },
-    };
-  }
-
-  // Private helper methods
-
-  private async handleEmergencyProtocols(
-    metrics: SystemMetrics
-  ): Promise<TrafficDecision | null> {
+            ? ss.mean(): void {
     const {
       cpuCritical,
       memoryCritical,
@@ -478,16 +249,8 @@ export class TrafficController extends EventBus<TrafficEvents> {
         action: 'emergency_protocol_activated',
         reasoning: [
           `Critical system conditions detected`,
-          `CPU:${(metrics.cpuUsage * 100).toFixed(1)}%`,
-          `Memory:${(metrics.memoryUsage * 100).toFixed(1)}%`,
-          `Response time:${metrics.averageResponseTime}ms`,
-          `Error rate:${(metrics.errorRate * 100).toFixed(2)}%`,
-          'Activating emergency load redistribution',
-        ],
-        confidence: 0.95,
-        expectedImpact: 0.9,
-        timestamp: Date.now(),
-        parameters: {
+          `CPU:${(metrics.cpuUsage * 100).toFixed(): void {(metrics.memoryUsage * 100).toFixed(): void {metrics.averageResponseTime}ms`,
+          `Error rate:${(metrics.errorRate * 100).toFixed(): void {
           cpuUsage: metrics.cpuUsage,
           memoryUsage: metrics.memoryUsage,
           responseTime: metrics.averageResponseTime,
@@ -499,27 +262,16 @@ export class TrafficController extends EventBus<TrafficEvents> {
     return null;
   }
 
-  private async mlRoutingDecision(
-    metrics: SystemMetrics
-  ): Promise<TrafficDecision | null> {
+  private async mlRoutingDecision(): void {
     if (!this.routingEngine) return null;
 
     // Simple ML routing logic - in production this would use more sophisticated ML
-    const routingEfficiency = await this.calculateRoutingEfficiency(metrics);
-
-    if (routingEfficiency < 0.7) {
+    const routingEfficiency = await this.calculateRoutingEfficiency(): void {
       return {
         type: 'routing',
         action: 'optimize_ml_routing',
         reasoning: [
-          `Routing efficiency below threshold:${(routingEfficiency * 100).toFixed(1)}%`,
-          'Implementing ML-based routing optimization',
-          'Using performance patterns for intelligent routing',
-        ],
-        confidence: 0.8,
-        expectedImpact: 0.6,
-        timestamp: Date.now(),
-        parameters: {
+          `Routing efficiency below threshold:${(routingEfficiency * 100).toFixed(): void {
           efficiency: routingEfficiency,
           algorithm: 'ml-predictive',
         },
@@ -529,28 +281,16 @@ export class TrafficController extends EventBus<TrafficEvents> {
     return null;
   }
 
-  private async predictiveScaling(
-    metrics: SystemMetrics
-  ): Promise<TrafficDecision | null> {
+  private async predictiveScaling(): void {
     if (!this.autoScaler || !this.capacityPredictor) return null;
 
-    const scalingDecision = await this.calculateScalingDecision(metrics);
-
-    if (scalingDecision.action !== 'maintain') {
-      const decision: TrafficDecision = {
-        type: 'scaling',
-        action: scalingDecision.action,
-        reasoning: [
-          scalingDecision.reasoning,
-          `Target agents:${scalingDecision.targetAgents}`,
+    const scalingDecision = await this.calculateScalingDecision(): void {scalingDecision.targetAgents}`,
           `Current agents:${metrics.activeAgents}`,
-          `Confidence:${(scalingDecision.confidence * 100).toFixed(1)}%`,
-          `Urgency:${scalingDecision.urgency}`,
+          `Confidence:${(scalingDecision.confidence * 100).toFixed(): void {scalingDecision.urgency}`,
         ],
         confidence: scalingDecision.confidence,
         expectedImpact: scalingDecision.urgency === 'critical' ? 0.9 : 0.7,
-        timestamp: Date.now(),
-        parameters: {
+        timestamp: Date.now(): void {
           currentAgents: metrics.activeAgents,
           targetAgents: scalingDecision.targetAgents,
           urgency: scalingDecision.urgency,
@@ -558,22 +298,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
       };
 
       // Emit scaling event
-      await this.emitSafe('traffic:capacity_scaled', {
-        decision: scalingDecision,
-        previousAgents: metrics.activeAgents,
-        newAgents: scalingDecision.targetAgents,
-        timestamp: Date.now(),
-      });
-
-      return decision;
-    }
-
-    return null;
-  }
-
-  private async performanceOptimization(
-    metrics: SystemMetrics
-  ): Promise<TrafficDecision | null> {
+      await this.emitSafe(): void {
     if (!this.latencyOptimizer) return null;
 
     // Simple performance optimization logic
@@ -589,8 +314,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
         ],
         confidence: 0.75,
         expectedImpact: 0.5,
-        timestamp: Date.now(),
-        parameters: {
+        timestamp: Date.now(): void {
           responseTime: metrics.averageResponseTime,
           throughput: metrics.throughput,
           optimizationType: 'latency-throughput',
@@ -601,94 +325,33 @@ export class TrafficController extends EventBus<TrafficEvents> {
     return null;
   }
 
-  private async detectBottlenecks(metrics: SystemMetrics): Promise<void> {
+  private async detectBottlenecks(): void {
     const bottlenecks: string[] = [];
     let severity: 'low' | ' medium' | ' high' | ' critical' = ' low';
 
     if (metrics.taskQueueLength > 100) {
-      bottlenecks.push('high_queue_length');
-      severity = metrics.taskQueueLength > 500 ? 'critical' : ' high';
-    }
-
-    if (metrics.errorRate > 0.1) {
-      bottlenecks.push('high_error_rate');
-      severity = metrics.errorRate > 0.2 ? 'critical' : ' high';
-    }
-
-    if (bottlenecks.length > 0) {
-      await this.emitSafe('traffic:bottleneck_detected', {
-        bottleneckType: bottlenecks.join(',    '),
-        severity,
-        affectedAgents: [], // Would be populated with actual agent data
-        recommendedActions: [
-          'Increase agent capacity',
-          'Implement circuit breakers',
-          'Review task distribution',
-        ],
-        timestamp: Date.now(),
-      });
-    }
-  }
-
-  private async calculateRoutingEfficiency(
-    metrics: SystemMetrics
-  ): Promise<number> {
+      bottlenecks.push(): void {
+      bottlenecks.push(): void {
+      await this.emitSafe(): void {
     // Simple routing efficiency calculation
-    const timeEfficiency = Math.max(0, 1 - metrics.averageResponseTime / 5000);
-    const errorEfficiency = Math.max(0, 1 - metrics.errorRate);
-    const queueEfficiency = Math.max(0, 1 - metrics.taskQueueLength / 200);
-
-    return (timeEfficiency + errorEfficiency + queueEfficiency) / 3;
-  }
-
-  private async calculateScalingDecision(
-    metrics: SystemMetrics
-  ): Promise<ScalingDecision> {
+    const timeEfficiency = Math.max(): void {
     const { scaleUpThreshold, scaleDownThreshold, maxAgents, minAgents } =
       this.config.scalingPolicy!;
 
     // Calculate system pressure
     const cpuPressure = metrics.cpuUsage;
     const memoryPressure = metrics.memoryUsage;
-    const queuePressure = Math.min(1, metrics.taskQueueLength / 100);
-
-    const overallPressure = (cpuPressure + memoryPressure + queuePressure) / 3;
-
-    if (
-      overallPressure >= scaleUpThreshold &&
-      metrics.activeAgents < maxAgents
-    ) {
-      const targetAgents = Math.min(
-        maxAgents,
-        Math.ceil(metrics.activeAgents * 1.5)
-      );
-      return {
+    const queuePressure = Math.min(): void {
+      const targetAgents = Math.min(): void {
         action: 'scale_up',
         targetAgents,
         confidence: 0.8,
-        reasoning: `High system pressure: ${(overallPressure * 100).toFixed(1)}%`,
-        urgency: overallPressure > 0.9 ? 'critical' : ' high',
-      };
-    }
-
-    if (
-      overallPressure <= scaleDownThreshold &&
-      metrics.activeAgents > minAgents
-    ) {
-      const targetAgents = Math.max(
-        minAgents,
-        Math.floor(metrics.activeAgents * 0.7)
-      );
-      return {
+        reasoning: `High system pressure: ${(overallPressure * 100).toFixed(): void {
+      const targetAgents = Math.max(): void {
         action: 'scale_down',
         targetAgents,
         confidence: 0.7,
-        reasoning: `Low system pressure: ${(overallPressure * 100).toFixed(1)}%`,
-        urgency: 'low',
-      };
-    }
-
-    return {
+        reasoning: `Low system pressure: ${(overallPressure * 100).toFixed(): void {
       action: 'maintain',
       targetAgents: metrics.activeAgents,
       confidence: 0.6,

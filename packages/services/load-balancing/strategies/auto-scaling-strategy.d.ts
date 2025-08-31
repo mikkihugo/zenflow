@@ -20,16 +20,5 @@ export declare class AutoScalingStrategy extends EventEmitter implements AutoSca
     private scalingHistory;
     private lastScalingAction;
     private currentAgentCount;
-    constructor(config: AutoScalingConfig);
-    shouldScaleUp(metrics: Map<string, LoadMetrics>): Promise<boolean>;
-    shouldScaleDown(metrics: Map<string, LoadMetrics>): Promise<boolean>;
-    scaleUp(count: number): Promise<Agent[]>;
-    scaleDown(count: number): Promise<string[]>;
-    getScalingHistory(): Promise<ScalingHistory[]>;
-    private makeScalingDecision;
-    private calculateSystemLoad;
-    private calculateScalingConfidence;
-    private recordScalingAction;
-}
-export {};
+    constructor(): void {};
 //# sourceMappingURL=auto-scaling-strategy.d.ts.map

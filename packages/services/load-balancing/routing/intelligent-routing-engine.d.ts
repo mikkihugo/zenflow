@@ -25,39 +25,7 @@ export declare class IntelligentRoutingEngine extends EventEmitter implements Ro
     private routingMetrics;
     private networkTopology;
     private routingConfig;
-    constructor(capacityManager: CapacityManager);
-    /**
-     * Route a task to the optimal agent.
-     *
-     * @param task
-     */
-    route(task: Task): Promise<RoutingResult>;
-    /**
-     * Update routing table with current agents.
-     *
-     * @param agents
-     */
-    updateRoutingTable(agents: Agent[]): Promise<void>;
-    /**
-     * Handle failover when an agent fails.
-     *
-     * @param failedAgentId
-     */
-    handleFailover(failedAgentId: string): Promise<void>;
-    /**
-     * Optimize routing paths and decisions.
-     */
-    optimizeRoutes(): Promise<void>;
-    /**
-     * Set network topology for geographic-aware routing.
-     *
-     * @param topology
-     */
-    setNetworkTopology(topology: NetworkTopology): void;
-    /**
-     * Get routing statistics.
-     */
-    getRoutingStatistics(): RoutingMetrics & {
+    constructor(): void {
         routingTableSize: number;
         avgRouteReliability: number;
     };

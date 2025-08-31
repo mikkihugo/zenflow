@@ -120,18 +120,7 @@ export interface AgentRegistryEvents {
 // =============================================================================
 
 interface AgentInstance {
-  id:UUID;
-  templateId:string;
-  name:string;
-  type:string;
-  capabilities:string[];
-  status:'active' | ' inactive' | ' busy' | ' error';
-  health:AgentHealthStatus;
-  config:Record<string, unknown>;
-  metadata:Record<string, unknown>;
-  registeredAt:Timestamp;
-  lastSeen:Timestamp;
-  version:number;
+  id: string;
 }
 
 interface AgentRegistrationConfig {
@@ -193,231 +182,79 @@ export class EventDrivenAgentRegistry extends EventEmitter<AgentRegistryEvents> 
   private agentsByCapability = new Map<string, Set<UUID>>();
   private healthMonitorInterval:NodeJS.Timeout | null = null;
 
-  constructor(options:AgentRegistryOptions = {}) {
-    super();
-    this.logger = getLogger('EventDrivenAgentRegistry');
-    this.serviceContainer = createServiceContainer();
-    
-    // Default options with foundation-powered features
-    this.options = {
-      enableHealthMonitoring:true,
-      healthCheckInterval:30000, // 30 seconds
-      maxAgents:1000,
-      enableMetrics:true,
-      persistentStorage:false,
-      ...options,
-};
-}
-
-  // =============================================================================
-  // BRAIN EVENT HANDLERS
-  // =============================================================================
-
-  private setupBrainEventHandlers():void {
-    // Handle brain initialization requests
-    this.on('brain:agent-registry:initialize', async (data) => {
+  constructor(): void {
+    super(): void {
       try {
         if (data.options) {
           this.options = { ...this.options, ...data.options};
 }
-        await this.initializeInternal();
-        this.emit('agent-registry:initialized', {
+        await this.initializeInternal(): void {
           requestId:data.requestId,
           success:true,
-          timestamp:Date.now(),
-});
-} catch (error) {
-        this.emit('agent-registry:initialized', {
+          timestamp:Date.now(): void {
+        this.emit(): void {
           requestId:data.requestId,
-          success:false,
-          timestamp:Date.now(),
-});
-        this.emit('agent-registry:error', {
-          requestId:data.requestId,
-          error:error instanceof Error ? error.message : String(error),
-          timestamp:Date.now(),
-});
-}
-});
-
-    // Handle agent registration requests
-    this.on('brain:agent-registry:register-agent', async (data) => {
+          error:error instanceof Error ? error.message : String(): void {
       try {
-        const result = await this.registerAgentInternal(data.registration);
-        if (result.success) {
-          this.emit('agent-registry:agent-registered', {
-            requestId:data.requestId,
-            agentId:result.data!.id,
-            agent:result.data!,
-            success:true,
-            timestamp:Date.now(),
-});
-} else {
-          this.emit('agent-registry:agent-registered', {
-            requestId:data.requestId,
-            agentId: '',
-            agent:{} as AgentInstance,
-            success:false,
-            timestamp:Date.now(),
-          });
-          this.emit('agent-registry:error', {
+        const result = await this.registerAgentInternal(): void {
+          this.emit(): void {
+          this.emit(): void {
             requestId:data.requestId,
             error:result.error?.message || 'Registration failed',
-            timestamp:Date.now(),
-          });
-}
-} catch (error) {
-        this.emit('agent-registry:error', {
-          requestId:data.requestId,
-          error:error instanceof Error ? error.message : String(error),
-          timestamp:Date.now(),
-});
-}
-});
-
-    // Handle agent unregistration requests
-    this.on('brain:agent-registry:unregister-agent', async (data) => {
+            timestamp:Date.now(): void {
+        this.emit(): void {
       try {
-        const success = await this.unregisterAgentInternal(data.agentId);
-        this.emit('agent-registry:agent-unregistered', {
+        const success = await this.unregisterAgentInternal(): void {
           requestId:data.requestId,
           agentId:data.agentId,
           success,
-          timestamp:Date.now(),
-});
-} catch (error) {
-        this.emit('agent-registry:agent-unregistered', {
+          timestamp:Date.now(): void {
+        this.emit(): void {
           requestId:data.requestId,
-          agentId:data.agentId,
-          success:false,
-          timestamp:Date.now(),
-});
-        this.emit('agent-registry:error', {
-          requestId:data.requestId,
-          error:error instanceof Error ? error.message : String(error),
-          timestamp:Date.now(),
-});
-}
-});
-
-    // Handle get agent requests
-    this.on('brain:agent-registry:get-agent', async (data) => {
+          error:error instanceof Error ? error.message : String(): void {
       try {
-        const agent = await this.getAgentInternal(data.agentId);
-        this.emit('agent-registry:agent-info', {
+        const agent = await this.getAgentInternal(): void {
           requestId:data.requestId,
           agent,
-          timestamp:Date.now(),
-});
-} catch (error) {
-        this.emit('agent-registry:error', {
-          requestId:data.requestId,
-          error:error instanceof Error ? error.message : String(error),
-          timestamp:Date.now(),
-});
-}
-});
-
-    // Handle find agents requests
-    this.on('brain:agent-registry:find-agents', async (data) => {
+          timestamp:Date.now(): void {
+        this.emit(): void {
       try {
-        const { agents, totalCount} = await this.findAgentsInternal(data.criteria);
-        this.emit('agent-registry:agents-found', {
+        const { agents, totalCount} = await this.findAgentsInternal(): void {
           requestId:data.requestId,
           agents,
           totalCount,
-          timestamp:Date.now(),
-});
-} catch (error) {
-        this.emit('agent-registry:error', {
-          requestId:data.requestId,
-          error:error instanceof Error ? error.message : String(error),
-          timestamp:Date.now(),
-});
-}
-});
-
-    // Handle health update requests
-    this.on('brain:agent-registry:update-agent-health', async (data) => {
+          timestamp:Date.now(): void {
+        this.emit(): void {
       try {
-        const success = await this.updateAgentHealthInternal(data.agentId, data.health);
-        this.emit('agent-registry:health-updated', {
+        const success = await this.updateAgentHealthInternal(): void {
           requestId:data.requestId,
           agentId:data.agentId,
           success,
-          timestamp:Date.now(),
-});
-} catch (error) {
-        this.emit('agent-registry:error', {
-          requestId:data.requestId,
-          error:error instanceof Error ? error.message : String(error),
-          timestamp:Date.now(),
-});
-}
-});
-
-    // Handle stats requests
-    this.on('brain:agent-registry:get-registry-stats', async (data) => {
+          timestamp:Date.now(): void {
+        this.emit(): void {
       try {
-        const __stats = await this.getRegistryStatsInternal();
-        this.emit('agent-registry:stats', {
+        const __stats = await this.getRegistryStatsInternal(): void {
           requestId:data.requestId,
           stats,
-          timestamp:Date.now(),
-});
-} catch (error) {
-        this.emit('agent-registry:error', {
-          requestId:data.requestId,
-          error:error instanceof Error ? error.message : String(error),
-          timestamp:Date.now(),
-});
-}
-});
-}
-
-  // =============================================================================
-  // INTERNAL AGENT REGISTRY LOGIC - FOUNDATION POWERED
-  // =============================================================================
-
-  private async initializeInternal():Promise<void> {
+          timestamp:Date.now(): void {
+        this.emit(): void {
     if (this.initialized) return;
 
-    await withTrace('agent-registry-initialize', async () => {
+    await withTrace(): void {
       if (this.options.enableHealthMonitoring) {
-        this.startHealthMonitoring();
-}
-
-      if (this.options.enableMetrics) {
-        recordMetric('agent_registry_initialized', 1);
-}
-
-      this.initialized = true;
-      this.logger.info('Event-driven agent registry initialized with foundation support', {
+        this.startHealthMonitoring(): void {
+        recordMetric(): void {
         options:this.options,
 });
 });
 }
 
-  private async registerAgentInternal(
-    registration:AgentRegistrationConfig
-  ):Promise<Result<AgentInstance, Error>> {
-    return withTrace('agent-registry-register', async () => {
+  private async registerAgentInternal(): void {
+    return withTrace(): void {
       try {
         // Check agent limit
         if (this.agents.size >= this.options.maxAgents!) {
-          return err(new Error('Maximum agent limit reached'));
-}
-
-        const agentId = generateUUID();
-        const timestamp = createTimestamp();
-
-        const agent:AgentInstance = {
-          id:agentId,
-          templateId:registration.templateId,
-          name:registration.name,
-          type:registration.type,
-          capabilities:registration.capabilities || [],
-          status: 'active',          health:{
+          return err(): void {
             status: 'healthy',            responseTime:0,
             errorRate:0,
             memoryUsage:0,
@@ -432,99 +269,38 @@ export class EventDrivenAgentRegistry extends EventEmitter<AgentRegistryEvents> 
 };
 
         // Store agent
-        this.agents.set(agentId, agent);
-
-        // Update indexes
-        this.updateIndexes(agent, 'add');
-
-        // Record metrics
-        if (this.options.enableMetrics) {
-          recordMetric('agents_registered', 1);
-          recordHistogram('agent_registration_duration', Date.now() - timestamp);
-}
-
-        this.logger.info('Agent registered successfully', {
+        this.agents.set(): void {
           agentId,
           type:agent.type,
           capabilities:agent.capabilities,
 });
 
-        return ok(agent);
-} catch (error) {
-        this.logger.error('Agent registration failed', error);
-        return err(error instanceof Error ? error:new Error(String(error)));
-}
-});
-}
-
-  private async unregisterAgentInternal(agentId:string): Promise<boolean> {
-    return withTrace('agent-registry-unregister', async () => {
-      const agent = this.agents.get(agentId);
-      if (!agent) {
+        return ok(): void {
+        this.logger.error(): void {
+    return withTrace(): void {
+      const agent = this.agents.get(): void {
         return false;
 }
 
       // Remove from indexes
-      this.updateIndexes(agent, 'remove');
-
-      // Remove from main store
-      this.agents.delete(agentId);
-
-      // Record metrics
-      if (this.options.enableMetrics) {
-        recordMetric('agents_unregistered', 1);
-}
-
-      this.logger.info('Agent unregistered successfully', { agentId});
+      this.updateIndexes(): void { agentId});
       return true;
 });
 }
 
-  private async getAgentInternal(agentId:string): Promise<AgentInstance | null> {
-    return withTrace('agent-registry-get', async () => {
-      const agent = this.agents.get(agentId);
-      if (agent) {
+  private async getAgentInternal(): void {
+    return withTrace(): void {
+      const agent = this.agents.get(): void {
         // Update last seen
-        agent.lastSeen = createTimestamp();
-        
-        // Record metrics
-        if (this.options.enableMetrics) {
-          recordMetric('agent_lookups', 1);
-}
-}
-      return agent || null;
-});
-}
-
-  private async findAgentsInternal(
-    criteria:AgentSearchCriteria
-  ):Promise<{ agents: AgentInstance[]; totalCount: number}> {
-    return withTrace('agent-registry-find', async () => {
-      let candidateIds:Set<UUID> = new Set(this.agents.keys());
-
-      // Apply type filter
-      if (criteria.type) {
-        const typeAgents = this.agentsByType.get(criteria.type);
-        candidateIds = typeAgents ? new Set([...candidateIds].filter(id => typeAgents.has(id))) :new Set();
-}
-
-      // Apply capability filter
-      if (criteria.capabilities && criteria.capabilities.length > 0) {
+        agent.lastSeen = createTimestamp(): void {
+          recordMetric(): void { agents: AgentInstance[]; totalCount: number}> {
+    return withTrace(): void {
+      let candidateIds:Set<UUID> = new Set(): void {
+        const typeAgents = this.agentsByType.get(): void {
         for (const capability of criteria.capabilities) {
-          const capabilityAgents = this.agentsByCapability.get(capability);
-          if (capabilityAgents) {
-            candidateIds = new Set([...candidateIds].filter(id => capabilityAgents.has(id)));
-} else {
-            candidateIds = new Set();
-            break;
-}
-}
-}
-
-      // Get matching agents and apply additional filters
-      let matchingAgents = Array.from(candidateIds)
-        .map(id => this.agents.get(id)!)
-        .filter(agent => {
+          const capabilityAgents = this.agentsByCapability.get(): void {
+            candidateIds = new Set(): void {
+            candidateIds = new Set(): void {
           if (criteria.status && agent.status !== criteria.status) {
             return false;
 }
@@ -535,61 +311,27 @@ export class EventDrivenAgentRegistry extends EventEmitter<AgentRegistryEvents> 
 });
 
       // Sort by last seen (most recent first)
-      matchingAgents.sort((a, b) => b.lastSeen - a.lastSeen);
-
-      const totalCount = matchingAgents.length;
-
-      // Apply pagination
-      const offset = criteria.offset || 0;
-      const limit = criteria.limit || matchingAgents.length;
-      matchingAgents = matchingAgents.slice(offset, offset + limit);
-
-      // Record metrics
-      if (this.options.enableMetrics) {
-        recordMetric('agent_searches', 1);
-        recordHistogram('search_results_count', matchingAgents.length);
-}
-
-      return { agents:matchingAgents, totalCount};
+      matchingAgents.sort(): void {
+        recordMetric(): void { agents:matchingAgents, totalCount};
 });
 }
 
-  private async updateAgentHealthInternal(
-    agentId:string,
-    health:AgentHealthStatus
-  ):Promise<boolean> {
-    return withTrace('agent-registry-update-health', async () => {
-      const agent = this.agents.get(agentId);
-      if (!agent) {
+  private async updateAgentHealthInternal(): void {
+    return withTrace(): void {
+      const agent = this.agents.get(): void {
         return false;
 }
 
       // Update health
-      agent.health = { ...health, lastCheck:createTimestamp()};
-      agent.lastSeen = createTimestamp();
-      agent.version += 1;
-
-      // Update status based on health
-      agent.status = health.status === 'healthy' ? ' active' :
-                     health.status === 'degraded' ? ' busy' : ' error';
-
-      // Record metrics
-      if (this.options.enableMetrics) {
-        recordMetric('agent_health_updates', 1);
-        recordHistogram('agent_response_time', health.responseTime);
-        recordHistogram('agent_error_rate', health.errorRate);
-}
-
-      this.logger.debug('Agent health updated', { agentId, health:health.status});
+      agent.health = { ...health, lastCheck:createTimestamp(): void {
+        recordMetric(): void { agentId, health:health.status});
       return true;
 });
 }
 
-  private async getRegistryStatsInternal():Promise<RegistryStats> {
-    return withTrace('agent-registry-stats', async () => {
-      const agents = Array.from(this.agents.values());
-      
-      const agentsByType:Record<string, number> = {};
+  private async getRegistryStatsInternal(): void {
+    return withTrace(): void {
+      const agents = Array.from(): void {};
       const agentsByStatus:Record<string, number> = {};
       let totalResponseTime = 0;
       let totalHealth = 0;
@@ -613,132 +355,23 @@ export class EventDrivenAgentRegistry extends EventEmitter<AgentRegistryEvents> 
         agentsByStatus,
         averageResponseTime:agents.length > 0 ? totalResponseTime / agents.length : 0,
         averageHealth:agents.length > 0 ? totalHealth / agents.length : 0,
-        lastUpdated:createTimestamp(),
-};
-
-      // Record metrics
-      if (this.options.enableMetrics) {
-        recordMetric('registry_stats_requests', 1);
-        recordHistogram('total_agents_count', stats.totalAgents);
-}
-
-      return stats;
-});
-}
-
-  // =============================================================================
-  // HELPER METHODS - FOUNDATION POWERED
-  // =============================================================================
-
-  private updateIndexes(agent:AgentInstance, operation:'add' | ' remove'): void {
-    if (operation === 'add') {
-      // Update type index
-      if (!this.agentsByType.has(agent.type)) {
-        this.agentsByType.set(agent.type, new Set());
-}
-      this.agentsByType.get(agent.type)!.add(agent.id);
-
-      // Update capability indexes
-      for (const capability of agent.capabilities) {
-        if (!this.agentsByCapability.has(capability)) {
-          this.agentsByCapability.set(capability, new Set());
-}
-        this.agentsByCapability.get(capability)!.add(agent.id);
-}
-} else {
-      // Remove from type index
-      const typeSet = this.agentsByType.get(agent.type);
-      if (typeSet) {
-        typeSet.delete(agent.id);
-        if (typeSet.size === 0) {
-          this.agentsByType.delete(agent.type);
-}
-}
-
-      // Remove from capability indexes
-      for (const capability of agent.capabilities) {
-        const capabilitySet = this.agentsByCapability.get(capability);
-        if (capabilitySet) {
-          capabilitySet.delete(agent.id);
-          if (capabilitySet.size === 0) {
-            this.agentsByCapability.delete(capability);
-}
-}
-}
-}
-}
-
-  private startHealthMonitoring():void {
-    if (!this.options.enableHealthMonitoring || this.healthMonitorInterval) {
-      return;
-}
-
-    this.healthMonitorInterval = setInterval(() => {
-      this.performHealthChecks();
-}, this.options.healthCheckInterval!);
-
-    this.logger.info('Health monitoring started', {
+        lastUpdated:createTimestamp(): void {
+        recordMetric(): void {
       interval:this.options.healthCheckInterval,
 });
 }
 
-  private performHealthChecks():void {
-    const now = createTimestamp();
-    const staleThreshold = now - (this.options.healthCheckInterval! * 2); // 2x interval
-
-    for (const [agentId, agent] of this.agents.entries()) {
+  private performHealthChecks(): void {
+    const now = createTimestamp(): void {
       if (agent.lastSeen < staleThreshold) {
         // Mark as offline if not seen recently
         agent.status = 'inactive';
         agent.health.status = 'unhealthy';
         agent.health.lastCheck = now;
         
-        this.logger.warn('Agent marked as stale', { agentId, lastSeen:agent.lastSeen});
-        
-        // Record metric
-        if (this.options.enableMetrics) {
-          recordMetric('stale_agents_detected', 1);
-}
-}
-}
-}
-
-  // =============================================================================
-  // INITIALIZATION
-  // =============================================================================
-
-  async initialize():Promise<void> {
-    this.setupBrainEventHandlers();
-    this.logger.info('Event-driven agent registry ready to receive brain events');
-}
-
-  async shutdown():Promise<void> {
-    if (this.healthMonitorInterval) {
-      clearInterval(this.healthMonitorInterval);
-      this.healthMonitorInterval = null;
-}
-
-    this.agents.clear();
-    this.agentsByType.clear();
-    this.agentsByCapability.clear();
-    this.removeAllListeners();
-    this.initialized = false;
-
-    if (this.options.enableMetrics) {
-      recordMetric('agent_registry_shutdowns', 1);
-}
-
-    this.logger.info('Event-driven agent registry shutdown complete');
-}
-}
-
-// =============================================================================
-// FACTORY AND EXPORTS
-// =============================================================================
-
-export function createEventDrivenAgentRegistry(
-  options?:AgentRegistryOptions
-):EventDrivenAgentRegistry {
+        this.logger.warn(): void {
+          recordMetric(): void {
+    this.setupBrainEventHandlers(): void {
   return new EventDrivenAgentRegistry(options);
 }
 

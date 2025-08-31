@@ -8,9 +8,6 @@
 // Basic Agent Types
 export interface AgentId {
   id: string;
-  swarmId: string;
-  type: AgentType;
-  instance: number;
 }
 
 export type AgentType =
@@ -135,12 +132,6 @@ export interface IntelligenceMetrics {
 
 export interface EmergentBehavior {
   id: string;
-  type: 'coordination' | 'optimization' | 'adaptation' | 'learning';
-  description: string;
-  strength: number;
-  participants: AgentId[];
-  emergenceTime: number;
-  stability: number;
 }
 
 // Swarm Types
@@ -267,45 +258,7 @@ export interface IntelligenceSystemConfig {
 }
 
 export interface IntelligenceSystem {
-  predictTaskDuration(agentId: AgentId,
-    taskType: string,
-    context?:Record<string, unknown>
-  ): Promise<TaskPrediction>;
-
-  predictTaskDurationMultiHorizon(agentId: AgentId,
-    taskType: string,
-    context?:Record<string, unknown>
-  ): Promise<MultiHorizonTaskPrediction>;
-
-  getAgentLearningState(agentId: AgentId): AgentLearningState | null;
-
-  updateAgentPerformance(
-    agentId: AgentId,
-    success: boolean,
-    metadata?:Record<string, unknown>
-  ):void;
-
-  getAgentHealth(agentId: AgentId): AgentHealth | null;
-
-  forecastPerformanceOptimization(swarmId: SwarmId,
-    horizon?:ForecastHorizon
-  ): Promise<PerformanceOptimizationForecast>;
-
-  predictKnowledgeTransferSuccess(sourceSwarm: SwarmId,
-    targetSwarm: SwarmId,
-    patterns: unknown[]
-  ): Promise<KnowledgeTransferPrediction>;
-
-  predictEmergentBehavior(): Promise<EmergentBehaviorPrediction>;
-
-  updateAdaptiveLearningModels(): Promise<AdaptiveLearningUpdate>;
-
-  getSystemHealth():SystemHealthSummary;
-
-  shutdown(): Promise<void>;
-}
-
-export interface TaskPrediction {
+  predictTaskDuration(): Promise<void> {
   agentId: string;
   taskType: string;
   predictedDuration: number;

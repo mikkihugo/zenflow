@@ -19,16 +19,6 @@ export interface AgentRegistrationConfig {
 
 export interface AgentInstance {
   id: string;
-  templateId: string;
-  name: string;
-  type: string;
-  status: 'active' | ' inactive' | ' error' | ' disposed';
-  config: Record<string, unknown>;
-  capabilities: string[];
-  metadata: Record<string, unknown>;
-  createdAt: Date;
-  lastActivity: Date;
-  health: AgentHealthStatus;
 }
 
 export interface AgentHealthStatus {
@@ -54,13 +44,6 @@ export interface AgentRegistryOptions {
 
 export interface AgentTemplate {
   id: string;
-  name: string;
-  type: string;
-  description?: string;
-  defaultConfig: Record<string, unknown>;
-  requiredCapabilities: string[];
-  optionalCapabilities: string[];
-  metadata: Record<string, unknown>;
 }
 
 export interface RegistryStats {

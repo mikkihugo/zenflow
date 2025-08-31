@@ -5,13 +5,7 @@
  * @file TypeScript type definitions for coordination
  */
 export interface Agent {
-    id: string;
-    name: string;
-    capabilities: string[];
-    status: AgentStatus;
-    endpoint: string;
-    lastHealthCheck: Date;
-    metadata: Record<string, unknown>;
+  id: string;
 }
 export declare enum AgentStatus {
     HEALTHY = "healthy",
@@ -21,16 +15,7 @@ export declare enum AgentStatus {
     MAINTENANCE = "maintenance"
 }
 export interface Task {
-    id: string;
-    type: string;
-    priority: TaskPriority;
-    requiredCapabilities: string[];
-    estimatedDuration: number;
-    maxRetries: number;
-    timeout: number;
-    metadata: Record<string, unknown>;
-    createdAt: Date;
-    sessionId?: string;
+  id: string;
 }
 export declare enum TaskPriority {
     LOW = "low",
@@ -39,8 +24,7 @@ export declare enum TaskPriority {
     CRITICAL = "critical",
     EMERGENCY = "emergency"
 }
-export declare function taskPriorityToNumber(priority: TaskPriority): number;
-export interface LoadMetrics {
+export declare function taskPriorityToNumber(): void {
     timestamp: Date;
     cpuUsage: number;
     memoryUsage: number;
@@ -146,12 +130,7 @@ export interface QoSRequirement {
 }
 export interface LoadBalancingStrategy {
     name: string;
-    selectAgent(task: Task, availableAgents: Agent[], metrics: Map<string, LoadMetrics>): Promise<RoutingResult>;
-    updateWeights?(agents: Agent[], metrics: Map<string, LoadMetrics>): Promise<void>;
-    onAgentFailure?(agentId: string, error: Error): Promise<void>;
-    onTaskComplete?(agentId: string, task: Task, duration: number, success: boolean): Promise<void>;
-}
-export interface GeographicLocation {
+    selectAgent(): void {
     region: string;
     zone: string;
     latitude: number;
@@ -217,12 +196,7 @@ export interface HealthStatus {
     issues: string[];
 }
 export interface LearningPattern {
-    id: string;
-    pattern: string;
-    confidence: number;
-    frequency: number;
-    context: Record<string, unknown>;
-    timestamp: Date;
+  id: string;
 }
 export interface RoutingTable {
     agentId: string;

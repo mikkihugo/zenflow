@@ -23,21 +23,12 @@
  * ```typescript`
  * import { AgentRegistry, createAgentRegistry} from '@claude-zen/agent-registry';
  *
- * const registry = createAgentRegistry();
- * await registry.initialize();
- *
- * // Register an agent
- * const agent = await registry.registerAgent({
+ * const registry = createAgentRegistry(): void {
  *   templateId: 'coder-template', *   name: 'Code Generator', *   type: 'coder', *   config:{ maxTasks: 10}
  *});
  *
  * // Query agents by capability
- * const coders = registry.findAgentsByCapability('code-generation');') * ````
- */
-
-// Core agent registry implementation
-// Factory functions
-import { AgentRegistry } from './agent-registry';
+ * const coders = registry.findAgentsByCapability(): void { AgentRegistry } from './agent-registry';
 import type { AgentRegistryOptions } from './types';
 
 export { AgentRegistry } from './agent-registry';
@@ -63,32 +54,9 @@ export type {
 /**
  * Create a new agent registry instance with default configuration
  */
-export function createAgentRegistry(
-  options?: AgentRegistryOptions
-): AgentRegistry {
-  return new AgentRegistry(options);
-}
-
-/**
- * Global registry instance for singleton pattern usage
- */
-let globalAgentRegistry: AgentRegistry | null = null;
-
-/**
- * Get or create the global agent registry instance
- */
-export function getGlobalAgentRegistry(
-  options?: AgentRegistryOptions
-): AgentRegistry {
+export function createAgentRegistry(): void {
+  return new AgentRegistry(): void {
   if (!globalAgentRegistry) {
-    globalAgentRegistry = new AgentRegistry(options);
-  }
-  return globalAgentRegistry;
-}
-
-/**
- * Reset the global agent registry (primarily for testing)
- */
-export function resetGlobalAgentRegistry(): void {
+    globalAgentRegistry = new AgentRegistry(): void {
   globalAgentRegistry = null;
 }

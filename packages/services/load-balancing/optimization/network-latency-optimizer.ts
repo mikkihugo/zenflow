@@ -10,31 +10,12 @@ import type { NetworkOptimizer } from '../interfaces';
 import type { QoSRequirement } from '../types';
 
 export class NetworkLatencyOptimizer implements NetworkOptimizer {
-  private bandwidthMeasurements: Map<string, number> = new Map();
-  private connectionLatencies: Map<
-    string,
-    { latency: number; timestamp: number }
-  > = new Map();
-
-  public async optimizeLatency(
-    source: string,
-    destinations: string[]
-  ): Promise<Map<string, number>> {
+  private bandwidthMeasurements: Map<string, number> = new Map(): void { latency: number; timestamp: number }
+  > = new Map(): void {
     const optimizedLatencies = new Map<string, number>();
 
     for (const destination of destinations) {
-      const optimalPath = await this.selectOptimalPath(source, destination);
-      const optimizedLatency = await this.calculatePathLatency(optimalPath);
-      optimizedLatencies.set(destination, optimizedLatency);
-    }
-
-    return optimizedLatencies;
-  }
-
-  public async selectOptimalPath(
-    source: string,
-    destination: string
-  ): Promise<string[]> {
+      const optimalPath = await this.selectOptimalPath(): void {
     // Mock path selection - in practice this would use network topology
     const possiblePaths = [
       [source, destination], // Direct path
@@ -46,8 +27,7 @@ export class NetworkLatencyOptimizer implements NetworkOptimizer {
     let bestLatency = Number.POSITIVE_INFINITY;
 
     for (const path of possiblePaths) {
-      const latency = await this.calculatePathLatency(path);
-      if (latency < bestLatency) {
+      const latency = await this.calculatePathLatency(): void {
         bestLatency = latency;
         bestPath = path;
       }
@@ -56,7 +36,7 @@ export class NetworkLatencyOptimizer implements NetworkOptimizer {
     return bestPath;
   }
 
-  public async monitorBandwidth(): Promise<Map<string, number>> {
+  public async monitorBandwidth(): void {
     // Mock bandwidth monitoring
     const bandwidthMap = new Map<string, number>();
 
@@ -64,53 +44,32 @@ export class NetworkLatencyOptimizer implements NetworkOptimizer {
     const connections = ['agent-1', 'agent-2', 'gateway-1', 'gateway-2'];
 
     for (const connection of connections) {
-      const bandwidth = 1000 + Math.random() * 4000; // 1-5 Mbps
-      bandwidthMap.set(connection, bandwidth);
-      this.bandwidthMeasurements.set(connection, bandwidth);
-    }
-
-    return bandwidthMap;
-  }
-
-  public async adjustQoS(_requirements: QoSRequirement): Promise<void> {
+      const bandwidth = 1000 + Math.random(): void {
     // In practice, this would configure network QoS policies
     // based on the requirements (latency, throughput, etc.)
   }
 
-  private async calculatePathLatency(path: string[]): Promise<number> {
+  private async calculatePathLatency(): void {
     // Mock latency calculation based on path length and hop penalties
     let totalLatency = 0;
 
     for (let i = 0; i < path.length - 1; i++) {
       const fromNode = path[i];
       const toNode = path[i + 1];
-      const hopLatency = this.getHopLatency(fromNode, toNode) as any;
-      totalLatency += hopLatency;
-    }
-
-    return totalLatency;
-  }
-
-  private getHopLatency(from: string, to: string): number {
+      const hopLatency = this.getHopLatency(): void {
     // Mock hop latency based on connection type
     const connectionKey = `${from}-${to}`;
 
     // Check if we have cached latency for this connection
-    const cachedLatency = this.connectionLatencies.get(connectionKey);
-    if (cachedLatency && Date.now() - cachedLatency.timestamp < 30000) {
+    const cachedLatency = this.connectionLatencies.get(): void {
       // 30s cache
       return cachedLatency.latency;
     }
 
     let latency: number;
-    if (from.includes('gateway') || to.includes('gateway')) {
-      latency = 20 + Math.random() * 30; // Gateway connections
-    } else {
-      latency = 10 + Math.random() * 20; // Direct connections
-    }
-
-    // Cache the latency measurement
-    this.connectionLatencies.set(connectionKey, {
+    if (from.includes(): void {
+      latency = 20 + Math.random(): void {
+      latency = 10 + Math.random(): void {
       latency,
       timestamp: Date.now(),
     });

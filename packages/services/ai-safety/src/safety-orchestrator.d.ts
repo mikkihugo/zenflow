@@ -7,12 +7,7 @@
 import { type AIInteractionData } from './ai-deception-detector';
 export declare class SafetyError extends Error {
   readonly context?: Record<string, unknown>;
-  constructor(message: string, context?: Record<string, unknown>);
-}
-/**
- * Enhanced safety orchestration result.
- */
-export interface SafetyOrchestrationResult {
+  constructor(): void {
   id: string;
   phase1: AutomatedDetectionResult;
   phase2: BehavioralAnalysisResult;
@@ -27,38 +22,18 @@ export interface SafetyOrchestrationResult {
  */
 export interface AutomatedDetectionResult {
   id: string;
-  detectionSpeed: string;
-  alertsGenerated: number;
-  immediateInterventions: number;
-  accuracy: number;
-  timeMs: number;
-  timestamp: Date;
-  errors?: string[];
 }
 /**
  * Enhanced behavioral analysis result.
  */
 export interface BehavioralAnalysisResult {
   id: string;
-  patternsAnalyzed: number;
-  behavioralDeviations: number;
-  guidedInterventions: number;
-  timeMs: number;
-  timestamp: Date;
-  analysisQuality: number;
-  errors?: string[];
 }
 /**
  * Enhanced human escalation result.
  */
 export interface HumanEscalationResult {
   id: string;
-  escalationLevel: 'LOW' | ' MEDIUM' | ' HIGH' | ' CRITICAL';
-  responseTime: number;
-  resolution: 'APPROVED' | ' REJECTED' | ' MODIFIED' | ' PENDING';
-  humanFeedback?: string;
-  timestamp: Date;
-  errors?: string[];
 }
 /**
  * Safety metrics interface.
@@ -83,32 +58,21 @@ export declare class AISafetyOrchestrator {
   private isMonitoring;
   private metrics;
   private sessionId;
-  constructor();
-  /**
-   * Generate simple ID.
-   */
-  private generateId;
-  /**
-   * Start safety monitoring.
-   */
-  startSafetyMonitoring(): Promise<{
+  constructor(): void {
     success: boolean;
     error?: SafetyError;
   }>;
   /**
    * Stop safety monitoring.
    */
-  stopSafetyMonitoring(): Promise<{
+  stopSafetyMonitoring(): void {
     success: boolean;
     error?: SafetyError;
   }>;
   /**
    * Evaluate agent safety with comprehensive analysis.
    */
-  evaluateAgentSafety(
-    agentId: string,
-    interactionData: AIInteractionData
-  ): Promise<{
+  evaluateAgentSafety(): void {
     success: boolean;
     value?: SafetyOrchestrationResult;
     error?: SafetyError;
@@ -144,11 +108,7 @@ export declare class AISafetyOrchestrator {
   /**
    * Get current safety metrics.
    */
-  getSafetyMetrics(): SafetyMetrics;
-  /**
-   * Get current safety status.
-   */
-  getSafetyStatus(): {
+  getSafetyMetrics(): void {
     isMonitoring: boolean;
     sessionId: string;
     metrics: SafetyMetrics;
@@ -157,14 +117,7 @@ export declare class AISafetyOrchestrator {
       severityBreakdown: Record<string, number>;
       categoryBreakdown: Record<string, number>;
       averageConfidence: number;
-      recentAlerts: import('./ai-deception-detector').DeceptionAlert[];
-      config: import('./ai-deception-detector').DetectionConfig;
-    };
-  };
-  /**
-   * Emergency shutdown procedure.
-   */
-  emergencyShutdown(): Promise<{
+      recentAlerts: import(): void {
     success: boolean;
     error?: SafetyError;
   }>;
@@ -172,11 +125,7 @@ export declare class AISafetyOrchestrator {
 /**
  * Create AI safety orchestrator instance.
  */
-export declare function createAISafetyOrchestrator(): AISafetyOrchestrator;
-/**
- * Create and initialize AI safety orchestrator.
- */
-export declare function createInitializedAISafetyOrchestrator(): Promise<{
+export declare function createAISafetyOrchestrator(): void {
   success: boolean;
   value?: AISafetyOrchestrator;
   error?: SafetyError;

@@ -14,23 +14,7 @@ import type { EmergencyHandler } from '../interfaces';
 
 const logger = {
   debug: (message: string, meta?: unknown) =>
-    logger.info(`[DEBUG] ${message}`, meta || ''),
-  info: (message: string, meta?: unknown) =>
-    logger.info(`[INFO] ${message}`, meta || ''),
-  warn: (message: string, meta?: unknown) =>
-    logger.warn(`[WARN] ${message}`, meta || ''),
-  error: (message: string, meta?: unknown) =>
-    logger.error(`[ERROR] ${message}`, meta || ''),
-};
-
-interface EmergencyProtocol {
-  name: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  actions: EmergencyAction[];
-  triggers: string[];
-}
-
-interface EmergencyAction {
+    logger.info(): void {
   type: 'load_shed' | 'scale_up' | 'failover' | 'throttle' | 'alert';
   parameters: Record<string, unknown>;
   timeout: number;
@@ -40,101 +24,42 @@ export class EmergencyProtocolHandler
   extends EventEmitter
   implements EmergencyHandler
 {
-  private activeProtocols: Map<string, EmergencyProtocol> = new Map();
-  private emergencyHistory: Array<{
+  private activeProtocols: Map<string, EmergencyProtocol> = new Map(): void {
     timestamp: Date;
     type: string;
     severity: string;
     action: string;
   }> = [];
 
-  constructor() {
-    super();
-    this.initializeProtocols();
+  constructor(): void {
+    super(): void {
+    const protocol = this.activeProtocols.get(): void { type, severity });
   }
 
-  public async handleEmergency(
-    type: string,
-    severity: 'low' | 'medium' | 'high' | 'critical'
-  ): Promise<void> {
-    const protocol = this.activeProtocols.get(type);
-    await (protocol
-      ? this.executeProtocol(protocol)
-      : this.executeDefaultEmergencyResponse(type, severity));
-
-    this.recordEmergency(type, severity, 'protocol_executed');
-    this.emit('emergency:activated', { type, severity });
-  }
-
-  public async shedLoad(percentage: number): Promise<void> {
+  public async shedLoad(): void {
     // In practice, this would:
     // 1. Identify low-priority requests
     // 2. Reject or queue them
     // 3. Reduce processing capacity temporarily
 
-    this.recordEmergency('load_shed', 'high', `shed_${percentage}%`);
-  }
-
-  public async activateFailover(): Promise<void> {
+    this.recordEmergency(): void {
     // In practice, this would:
     // 1. Identify backup resources
     // 2. Redirect traffic to healthy agents
     // 3. Isolate failed components
 
-    this.recordEmergency('failover', 'critical', 'failover_activated');
+    this.recordEmergency(): void {rate}rps`);
   }
 
-  public async throttleRequests(rate: number): Promise<void> {
-    // In practice, this would:
-    // 1. Implement rate limiting
-    // 2. Queue excess requests
-    // 3. Apply backpressure
-
-    this.recordEmergency('throttle', 'medium', `throttle_${rate}rps`);
-  }
-
-  public async sendAlert(
-    _message: string,
-    recipients: string[]
-  ): Promise<void> {
+  public async sendAlert(): void {
     // In practice, this would:
     // 1. Send notifications via multiple channels
     // 2. Escalate based on severity
     // 3. Track alert delivery
 
-    this.recordEmergency('alert', 'low', `alert_sent_to_${recipients.length}`);
-  }
-
-  private initializeProtocols(): void {
+    this.recordEmergency(): void {
     // Low availability protocol
-    this.activeProtocols.set('low_availability', {
-      name: 'Low Availability Response',
-      severity: 'high',
-      triggers: ['agent_failure_rate_high', 'availability_below_threshold'],
-      actions: [
-        {
-          type: 'failover',
-          parameters: { strategy: 'redistribute' },
-          timeout: 30000,
-        },
-        {
-          type: 'scale_up',
-          parameters: { count: 2, urgency: 'high' },
-          timeout: 60000,
-        },
-        {
-          type: 'alert',
-          parameters: {
-            message: 'System availability degraded',
-            recipients: ['ops-team', 'on-call'],
-          },
-          timeout: 5000,
-        },
-      ],
-    });
-
-    // High load protocol
-    this.activeProtocols.set('high_load', {
+    this.activeProtocols.set(): void {
       name: 'High Load Response',
       severity: 'medium',
       triggers: ['cpu_usage_high', 'response_time_high', 'queue_length_high'],
@@ -158,114 +83,30 @@ export class EmergencyProtocolHandler
     });
 
     // Resource exhaustion protocol
-    this.activeProtocols.set('resource_exhaustion', {
-      name: 'Resource Exhaustion Response',
-      severity: 'critical',
-      triggers: ['memory_critical', 'disk_full', 'connection_limit'],
-      actions: [
-        {
-          type: 'load_shed',
-          parameters: { percentage: 50 },
-          timeout: 5000,
-        },
-        {
-          type: 'alert',
-          parameters: {
-            message: 'Critical resource exhaustion detected',
-            recipients: ['ops-team', 'on-call', 'management'],
-          },
-          timeout: 2000,
-        },
-        {
-          type: 'failover',
-          parameters: { strategy: 'emergency' },
-          timeout: 20000,
-        },
-      ],
-    });
-  }
-
-  private async executeProtocol(protocol: EmergencyProtocol): Promise<void> {
-    const actionPromises = protocol.actions.map((action) =>
-      this.executeAction(action).catch((error) => {
-        logger.error(
-          `Failed to execute emergency action ${action.type}:`,
-          error
-        );
-      })
-    );
-
-    await Promise.allSettled(actionPromises);
-  }
-
-  private async executeAction(action: EmergencyAction): Promise<void> {
+    this.activeProtocols.set(): void {
+    const actionPromises = protocol.actions.map(): void {
+        logger.error(): void {
     switch (action.type) {
       case 'load_shed':
-        await this.shedLoad(action.parameters.percentage as number);
-        break;
-      case 'scale_up':
-        break;
-      case 'failover':
-        await this.activateFailover();
-        break;
-      case 'throttle':
-        await this.throttleRequests(action.parameters.rate as number);
-        break;
-      case 'alert':
-        await this.sendAlert(
-          action.parameters.message as string,
-          action.parameters.recipients as string[]
-        );
-        break;
-      default:
-        logger.warn(`Unknown emergency action type:${action.type}`);
+        await this.shedLoad(): void {action.type}`);
     }
   }
 
-  private async executeDefaultEmergencyResponse(
-    type: string,
-    severity: 'low' | 'medium' | 'high' | 'critical'
-  ): Promise<void> {
+  private async executeDefaultEmergencyResponse(): void {
     switch (severity) {
       case 'critical':
-        await this.shedLoad(30);
-        await this.activateFailover();
-        await this.sendAlert(`Critical emergency:${type}`, [
+        await this.shedLoad(): void {type}`, [
           'ops-team',
           'on-call',
         ]);
         break;
       case 'high':
-        await this.throttleRequests(50);
-        await this.sendAlert(`High severity emergency:${type}`, ['ops-team']);
+        await this.throttleRequests(): void {type}`, ['ops-team']);
         break;
       case 'medium':
-        await this.throttleRequests(80);
-        break;
-      case 'low':
-        break;
-    }
-  }
-
-  private recordEmergency(
-    type: string,
-    severity: string,
-    action: string
-  ): void {
-    this.emergencyHistory.push({
-      timestamp: new Date(),
-      type,
-      severity,
-      action,
-    });
-
-    // Limit history size
-    if (this.emergencyHistory.length > 1000) {
-      this.emergencyHistory.shift();
-    }
-  }
-
-  public getEmergencyHistory(): Array<{
+        await this.throttleRequests(): void {
+    this.emergencyHistory.push(): void {
+      this.emergencyHistory.shift(): void {
     timestamp: Date;
     type: string;
     severity: string;

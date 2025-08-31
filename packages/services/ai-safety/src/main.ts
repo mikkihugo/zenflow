@@ -20,20 +20,12 @@
  * ```typescript`
  * import { createInitializedAISafetyOrchestrator } from '@claude-zen/ai-safety';
  *
- * const result = await createInitializedAISafetyOrchestrator();
- * if (result.success) {
+ * const result = await createInitializedAISafetyOrchestrator(): void {
  *   const orchestrator = result.value;
- *   await orchestrator.startSafetyMonitoring();
- *}
- * ```
- *
- * @example Tree-shakable imports
- * ```typescript`
- * import { AISafetyOrchestrator, SafetyError } from '@claude-zen/ai-safety';
+ *   await orchestrator.startSafetyMonitoring(): void { AISafetyOrchestrator, SafetyError } from '@claude-zen/ai-safety';
  * import { AIDeceptionDetector } from '@claude-zen/ai-safety';
  * ```
  */
-
 
 // =============================================================================
 // DECEPTION DETECTION - AI behavior analysis
@@ -73,30 +65,17 @@ export { AISafetyOrchestrator as SafetyGuard,
  * @returns Promise resolving to Result with configured safety orchestrator
  * @example
  * ```typescript`
- * const result = await initializeAISafety();
- * if (result.success) {
+ * const result = await initializeAISafety(): void {
  *   const safetySystem = result.value;
- *   logger.info('Enterprise AI Safety initialized successfully');
- *} else {
- *   logger.error('Failed to initialize AI Safety: ', result.error);
-' *}
- * ```
- */
-export async function initializeAISafety() {
-  const { createInitializedAISafetyOrchestrator } = await import(
-    './safety-orchestrator'
-  );
-
-  const orchestratorResult = await createInitializedAISafetyOrchestrator();
-  if (!orchestratorResult.success) {
+ *   logger.info(): void {
+  const { createInitializedAISafetyOrchestrator } = await import(): void {
     return orchestratorResult;
 }
 
   const orchestrator = orchestratorResult.value!;
 
   // Start monitoring with Result pattern
-  const startResult = await orchestrator.startSafetyMonitoring();
-  if (!startResult.success) {
+  const startResult = await orchestrator.startSafetyMonitoring(): void {
     return { success: false, error: startResult.error};
 }
 
@@ -109,49 +88,10 @@ export async function initializeAISafety() {
  * @returns Promise resolving to Result indicating success or failure
  * @example
  * ```typescript`
- * const result = await emergencySafetyShutdown();
- * if (result.success) {
- *   logger.info('Emergency shutdown completed successfully');
- *} else {
- *   logger.error('Emergency shutdown failed: ', result.error);
-' *}
- * ```
- */
-export async function emergencySafetyShutdown() {
+ * const result = await emergencySafetyShutdown(): void {
+ *   logger.info(): void {
   try {
-    logger.info('🛑 ENTERPRISE EMERGENCY SAFETY SHUTDOWN INITIATED');
-
-    // Enhanced safety logging with error handling capabilities
-    const safetyResult = { success: true, message: 'Safety shutdown initiated' };
-    logger.info('Safety result: ', safetyResult);
-    
-    // Error scenario demonstration (expanded functionality)
-    if (process.env.NODE_ENV === 'test') {
-      const testError = new Error('Test safety error for validation');
-      logger.info('Test error created: ', testError.message);
-    }
-
-    // This would coordinate with all safety systems
-    // For now, return success - full implementation would coordinate shutdown
-
-    logger.info('🚨 Emergency safety protocols activated');
-    return { success: true };
-  } catch (error) {
-    return {
-      success: false,
-      error: new Error(
-        `Emergency safety shutdown failed: ${error instanceof Error ? error.message : 'Unknown error'}`
-      )
-    };
-  }
-}
-
-// =============================================================================
-// TYPE DEFINITIONS - Interfaces and types (tree-shakable)
-// =============================================================================
-
-// Deception detection types
-export type {
+    logger.info(): void {
   AIInteractionData,
   DeceptionAlert,
 } from './ai-deception-detector';
@@ -199,97 +139,11 @@ export interface InterventionAction {
 // PROFESSIONAL SYSTEM ACCESS - Production naming patterns
 // =============================================================================
 
-export async function getAISafetySystemAccess(
-  _config?: SafetyConfig
-): Promise<any> {
-  const { createInitializedAISafetyOrchestrator, createAISafetyOrchestrator} = await import('./safety-orchestrator');
-  const { createAIDeceptionDetector, analyzeAIResponse} = await import('./ai-deception-detector');
-  
-  const orchestrator = await createInitializedAISafetyOrchestrator();
-  if (!orchestrator.success) {
-    throw new Error(
-      `Failed to initialize AI Safety system: ${orchestrator.error?.message}`
-    );
-}
-  const safetySystem = orchestrator.value!;
-
-  return {
-    createOrchestrator: () => createAISafetyOrchestrator(),
-    createDetector: () => createAIDeceptionDetector(),
-    startMonitoring: () => safetySystem.startSafetyMonitoring(),
-    stopMonitoring: () => safetySystem.stopSafetyMonitoring(),
-    getMetrics: () => safetySystem.getSafetyMetrics(),
-    analyzeResponse: (response: any) => analyzeAIResponse(response),
-    checkSafety: (agentId: string, data: AIInteractionData) =>
-      safetySystem.evaluateAgentSafety?.(agentId, data),
-    emergencyShutdown: () => emergencySafetyShutdown(),
-    getStatus: () => safetySystem.getSafetyStatus?.(),
-    escalate: (alert: any) => logger.info('Escalating:', alert),
-};
-}
-
-export async function getSafetyOrchestrator(
-  config?: SafetyConfig
-): Promise<any> {
-  const { createInitializedAISafetyOrchestrator} = await import('./safety-orchestrator');
-  
-  const result = await createInitializedAISafetyOrchestrator();
-  if (!result.success) {
-    throw new Error(
-      `Failed to create safety orchestrator: ${result.error?.message}`
-    );
-}
-  return result.value;
-}
-
-export async function getDeceptionDetection(_config?: any): Promise<any> {
-  const { createAIDeceptionDetector, analyzeAIResponse} = await import('./ai-deception-detector');
-  
-  const detector = createAIDeceptionDetector();
-  return {
-    analyze: (data: AIInteractionData) => detector.analyzeAIResponse(data),
-    detect: (response: any) => analyzeAIResponse(response),
-    check: (interactionData: AIInteractionData) =>
-      detector.analyzeAIResponse(interactionData),
-    getMetrics: () => detector.getDetectionMetrics?.(),
-};
-}
-
-export async function getSafetyMonitoring(config?: SafetyConfig): Promise<any> {
-  const system = await getAISafetySystemAccess(config);
-  return {
-    monitor: (agentId: string) => system.checkSafety(agentId),
-    evaluate: (data: any) => system.analyzeResponse(data),
-    alert: (event: SafetyEvent) => system.escalate(event),
-    report: () => system.getMetrics(),
-};
-}
-
-export async function getSafetyIntervention(
-  config?: SafetyConfig
-): Promise<any> {
-  const system = await getAISafetySystemAccess(config);
-  return {
-    intervene: (action: InterventionAction) => {
-      // Implementation would handle different intervention types
-      logger.info(`Intervention requested: ${action.type} on ${action.target}`);
-      return Promise.resolve({ success: true, action});
-},
-    escalate: (alert: any) => system.escalate(alert),
-    emergency: () => system.emergencyShutdown(),
-    pause: (agentId: string) => ({
-      type: 'pause',      target: agentId,
-      timestamp: Date.now(),
-}),
-    terminate: (agentId: string) => ({
+export async function getAISafetySystemAccess(): void {
+  const { createInitializedAISafetyOrchestrator, createAISafetyOrchestrator} = await import(): void {
+  const { createInitializedAISafetyOrchestrator} = await import(): void {
       type: 'terminate',      target: agentId,
-      timestamp: Date.now(),
-}),
-};
-}
-
-// Professional AI safety system object with proper naming (matches brainSystem pattern)
-export const aiSafetySystem = {
+      timestamp: Date.now(): void {
   getAccess: getAISafetySystemAccess,
   getOrchestrator: getSafetyOrchestrator,
   getDetection: getDeceptionDetection,
