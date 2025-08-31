@@ -14,12 +14,12 @@ const __logger = getLogger('dspy-llm-bridge-fallback');
 
 // Use logger for initialization tracking
 _logger.info('DSPy LLM Bridge fallback implementation loaded', {
-  mode: 'fallback',  timestamp:new Date().toISOString(),
+  mode: 'fallback',  timestamp: new Date().toISOString(),
 });
 
 export interface DSPyCoordinationTask {
-  id:string;
-  type:string;
+  id: string;
+  type: string;
   complexity?:'simple' | ' moderate' | ' complex' | ' heavy';
   data?:any;
   requirements?:any;
@@ -27,7 +27,7 @@ export interface DSPyCoordinationTask {
   input?:string;
   context?:any;
   priority?:string;
-  [key:string]: any; // Allow additional properties
+  [key: string]: any; // Allow additional properties
 }
 
 export interface DSPyOptimizationConfig {
@@ -36,28 +36,28 @@ export interface DSPyOptimizationConfig {
   maxTokens?:number;
   temperature?:number;
   hybridMode?:boolean;
-  [key:string]: any; // Allow additional properties
+  [key: string]: any; // Allow additional properties
 }
 
 // Aliases for backward compatibility
 export type CoordinationTask = DSPyCoordinationTask;
 
 export interface CoordinationResult {
-  result:any;
-  reasoning:string[];
-  confidence:number;
+  result: any;
+  reasoning: string[];
+  confidence: number;
   success?:boolean; // Add success property
   metrics:{
-    executionTime:number;
-    tokensUsed:number;
+    executionTime: number;
+    tokensUsed: number;
 };
 }
 
 export interface DSPyLLMConfig {
-  enabled:boolean;
-  teleprompter:string;
-  optimizationSteps:number;
-  temperature:number;
+  enabled: boolean;
+  teleprompter: string;
+  optimizationSteps: number;
+  temperature: number;
 }
 
 export interface LLMBridgeOptions {
@@ -71,11 +71,11 @@ export interface LLMBridgeOptions {
  */
 // @injectable() - removed dependency injection
 export class DSPyLLMBridge {
-  private logger:Logger;
-  private databaseAccess:any; // DatabaseAccess via infrastructure facade
+  private logger: Logger;
+  private databaseAccess: any; // DatabaseAccess via infrastructure facade
 
   constructor(
-    configOrDatabaseAccess:any, // Can be config object or database access
+    configOrDatabaseAccess: any, // Can be config object or database access
     neuralBridge?:any // Optional neural bridge parameter
   ) {
     this.logger = getLogger('DSPyLLMBridge');
@@ -91,8 +91,8 @@ export class DSPyLLMBridge {
 } else {
       // It's a config object, create a fallback database access
       this.databaseAccess = {
-        query:async () => ({ rows: []}),
-        execute:async () => ({ changes: 0}),
+        query: async () => ({ rows: []}),
+        execute: async () => ({ changes: 0}),
 } as any;
 
     this.logger.info(
@@ -107,12 +107,12 @@ export class DSPyLLMBridge {
    * Execute coordination task using DSPy-optimized prompts (fallback)
    */
   async executeCoordinationTask(
-    task:DSPyCoordinationTask,
-    config:DSPyOptimizationConfig = {}
+    task: DSPyCoordinationTask,
+    config: DSPyOptimizationConfig = {}
   ):Promise<CoordinationResult> {
     this.logger.info('Executing coordination task (fallback mode)', {
-      task:task.id,
-      type:task.type,
+      task: task.id,
+      type: task.type,
 });
 
     // Use config to enhance fallback behavior
@@ -124,17 +124,17 @@ export class DSPyLLMBridge {
       optimizationSteps,
       maxTokens,
       teleprompter,
-      hybridMode:config.hybridMode || false,
+      hybridMode: config.hybridMode || false,
 });
 
     // Fallback implementation
     return {
       result: 'fallback_coordination_result',      reasoning:['Fallback coordination executed'],
-      confidence:0.7,
-      success:true, // Add success property
+      confidence: 0.7,
+      success: true, // Add success property
       metrics:{
-        executionTime:100,
-        tokensUsed:50,
+        executionTime: 100,
+        tokensUsed: 50,
 },
 };
 }
@@ -143,7 +143,7 @@ export class DSPyLLMBridge {
    * Process coordination task (alias for backward compatibility)
    */
   async processCoordinationTask(
-    task:DSPyCoordinationTask,
+    task: DSPyCoordinationTask,
     config?:DSPyOptimizationConfig
   ):Promise<CoordinationResult> {
     return this.executeCoordinationTask(task, config);
@@ -153,13 +153,13 @@ export class DSPyLLMBridge {
    * Learn from coordination feedback (fallback)
    */
   async learnFromCoordination(
-    task:DSPyCoordinationTask,
-    _result:any,
+    task: DSPyCoordinationTask,
+    _result: any,
     feedback:{ success: boolean; improvements?: string[]}
   ):Promise<void> {
     this.logger.info('Learning from coordination feedback (fallback mode)', {
-      task:task.id,
-      success:feedback.success,
+      task: task.id,
+      success: feedback.success,
 });
 
     // Fallback - would normally update DSPy optimization
@@ -170,10 +170,10 @@ export class DSPyLLMBridge {
    */
   getCoordinationStats():any {
     return {
-      tasksExecuted:0,
-      optimizationAccuracy:0.8,
-      averageLatency:100,
-      fallbackMode:true,
+      tasksExecuted: 0,
+      optimizationAccuracy: 0.8,
+      averageLatency: 100,
+      fallbackMode: true,
 };
 }
 
@@ -197,7 +197,7 @@ export class DSPyLLMBridge {
 /**
  * Factory function to create DSPy LLM Bridge
  */
-export function createDSPyLLMBridge(databaseAccess:any): DSPyLLMBridge {
+export function createDSPyLLMBridge(databaseAccess: any): DSPyLLMBridge {
   return new DSPyLLMBridge(databaseAccess);
 }
 

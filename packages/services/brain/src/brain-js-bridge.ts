@@ -98,9 +98,9 @@ export interface BrainJsNetworkConfig {
  */
 export interface BrainJsTrainingData {
   /** Input data */
-  readonly input:number[] | Record<string, number>;
+  readonly input: number[] | Record<string, number>;
   /** Expected output */
-  readonly output:number[] | Record<string, number>;
+  readonly output: number[] | Record<string, number>;
 }
 
 /**
@@ -130,11 +130,11 @@ export interface BrainJsTrainingOptions {
  */
 export interface BrainJsPredictionResult {
   /** Network output */
-  readonly output:number[] | Record<string, number>;
+  readonly output: number[] | Record<string, number>;
   /** Confidence score (if available) */
   readonly confidence?:number;
   /** Processing time in milliseconds */
-  readonly processingTime:number;
+  readonly processingTime: number;
   /** Additional metadata */
   readonly metadata?:Record<string, unknown>;
 }
@@ -144,25 +144,25 @@ export interface BrainJsPredictionResult {
  */
 export interface BrainJsNetworkInstance {
   /** Unique network identifier */
-  readonly id:string;
+  readonly id: string;
   /** Network type */
-  readonly type:BrainJsNetworkConfig['type'];
+  readonly type: BrainJsNetworkConfig['type'];
   /** The actual brain.js network instance */
-  readonly network:any;
+  readonly network: any;
   /** Network configuration */
-  readonly config:BrainJsNetworkConfig;
+  readonly config: BrainJsNetworkConfig;
   /** Current training state */
   readonly trainingState:{
-    readonly isTrained:boolean;
-    readonly isTraining:boolean;
-    readonly iterations:number;
-    readonly error:number;
+    readonly isTrained: boolean;
+    readonly isTraining: boolean;
+    readonly iterations: number;
+    readonly error: number;
     readonly lastTrainingTime?:string;
 };
   /** Network metadata */
   readonly metadata:{
-    readonly created:string;
-    readonly updated:string;
+    readonly created: string;
+    readonly updated: string;
     readonly inputSize?:number;
     readonly outputSize?:number;
     readonly parameterCount?:number;
@@ -202,32 +202,32 @@ export interface BrainJsNetworkInstance {
  */
 // @injectable() - removed dependency injection
 export class BrainJsBridge {
-  private networks:Map<string, BrainJsNetworkInstance> = new Map();
-  private config:BrainJsConfig;
+  private networks: Map<string, BrainJsNetworkInstance> = new Map();
+  private config: BrainJsConfig;
   private initialized = false;
-  private dbAccess:any = null; // DatabaseAccess via infrastructure facade
+  private dbAccess: any = null; // DatabaseAccess via infrastructure facade
 
   constructor(
-    private foundationLogger:Logger,
-    config:BrainJsConfig = {}
+    private foundationLogger: Logger,
+    config: BrainJsConfig = {}
   ) {
     this.config = {
-      learningRate:0.3,
-      iterations:20000,
-      errorThreshold:0.005,
-      gpu:false,
-      logPeriod:100,
-      timeout:300000, // 5 minutes
-      memoryOptimization:true,
+      learningRate: 0.3,
+      iterations: 20000,
+      errorThreshold: 0.005,
+      gpu: false,
+      logPeriod: 100,
+      timeout: 300000, // 5 minutes
+      memoryOptimization: true,
       ...config,
 };
 
     // Use foundationLogger for consistent logging throughout the bridge
     this.foundationLogger.debug('BrainJsBridge initialized with config', {
-      learningRate:this.config.learningRate,
-      iterations:this.config.iterations,
-      errorThreshold:this.config.errorThreshold,
-      gpuEnabled:this.config.gpu,
+      learningRate: this.config.learningRate,
+      iterations: this.config.iterations,
+      errorThreshold: this.config.errorThreshold,
+      gpuEnabled: this.config.gpu,
 });
 }
 
@@ -251,7 +251,7 @@ export class BrainJsBridge {
       // Verify brain.js library availability
       if (!brain) {
         throw new ConfigurationError('brain.js library not available', {
-          config:JSON.parse(JSON.stringify(this.config)),
+          config: JSON.parse(JSON.stringify(this.config)),
 });
 }
 
@@ -260,7 +260,7 @@ export class BrainJsBridge {
 }).then((result) =>
       result.mapErr((error) =>
         withContext(error, {
-          component: 'BrainJsBridge',          operation: 'initialize',          config:JSON.parse(JSON.stringify(this.config)),
+          component: 'BrainJsBridge',          operation: 'initialize',          config: JSON.parse(JSON.stringify(this.config)),
 })
       )
     );
@@ -275,9 +275,9 @@ export class BrainJsBridge {
    * @returns Result containing the network ID or error
    */
   async createNeuralNet(
-    id:string,
-    type:BrainJsNetworkConfig['type'],
-    config:Omit<BrainJsNetworkConfig, 'type'>')  ):Promise<Result<string, ContextError>> {
+    id: string,
+    type: BrainJsNetworkConfig['type'],
+    config: Omit<BrainJsNetworkConfig, 'type'>')  ):Promise<Result<string, ContextError>> {
     if (!this.initialized) {
       const initResult = await this.initialize();
       if (initResult.isErr()) return err(initResult.error);
@@ -298,13 +298,13 @@ export class BrainJsBridge {
 }
 
       // Create network configuration
-      const networkConfig:BrainJsNetworkConfig = {
+      const networkConfig: BrainJsNetworkConfig = {
         type,
         ...config,
 };
 
       // Create the appropriate brain.js network
-      let network:any;
+      let network: any;
 
       switch (type) {
         case 'feedforward':
@@ -312,16 +312,16 @@ export class BrainJsBridge {
             hiddenLayers:(networkConfig.hiddenLayers as number[]) || [3],
             learningRate:
               networkConfig.learningRate || this.config.learningRate,
-            binaryThresh:networkConfig.binaryThresh || 0.5,
-            bias:networkConfig.bias !== false,
+            binaryThresh: networkConfig.binaryThresh || 0.5,
+            bias: networkConfig.bias !== false,
 });
           break;
 
         case 'rnn':
           network = new brain.Recurrent({
-            inputSize:networkConfig.inputSize || 1,
+            inputSize: networkConfig.inputSize || 1,
             hiddenLayers:(networkConfig.hiddenLayers as number[]) || [20],
-            outputSize:networkConfig.outputSize || 1,
+            outputSize: networkConfig.outputSize || 1,
             learningRate:
               networkConfig.learningRate || this.config.learningRate,
 });
@@ -329,9 +329,9 @@ export class BrainJsBridge {
 
         case 'lstm':
           network = new brain.LSTMTimeStep({
-            inputSize:networkConfig.inputSize || 1,
+            inputSize: networkConfig.inputSize || 1,
             hiddenLayers:(networkConfig.hiddenLayers as number[]) || [20],
-            outputSize:networkConfig.outputSize || 1,
+            outputSize: networkConfig.outputSize || 1,
             learningRate:
               networkConfig.learningRate || this.config.learningRate,
 });
@@ -339,9 +339,9 @@ export class BrainJsBridge {
 
         case 'gru':
           network = new brain.GRUTimeStep({
-            inputSize:networkConfig.inputSize || 1,
+            inputSize: networkConfig.inputSize || 1,
             hiddenLayers:(networkConfig.hiddenLayers as number[]) || [20],
-            outputSize:networkConfig.outputSize || 1,
+            outputSize: networkConfig.outputSize || 1,
             learningRate:
               networkConfig.learningRate || this.config.learningRate,
 });
@@ -352,20 +352,20 @@ export class BrainJsBridge {
 }
 
       // Create network instance
-      const networkInstance:BrainJsNetworkInstance = {
+      const networkInstance: BrainJsNetworkInstance = {
         id,
         type,
         network,
-        config:networkConfig,
+        config: networkConfig,
         trainingState:{
-          isTrained:false,
-          isTraining:false,
-          iterations:0,
-          error:1.0,
+          isTrained: false,
+          isTraining: false,
+          iterations: 0,
+          error: 1.0,
 },
         metadata:{
-          created:new Date().toISOString(),
-          updated:new Date().toISOString(),
+          created: new Date().toISOString(),
+          updated: new Date().toISOString(),
 },
 };
 
@@ -376,12 +376,12 @@ export class BrainJsBridge {
       if (this.dbAccess) {
         const kv = await this.dbAccess.getKV('neural');
         await kv.set(
-          `brainjs:metadata:${id}`,
+          `brainjs: metadata:${id}`,
           JSON.stringify({
             id,
             type,
-            config:networkConfig,
-            created:networkInstance.metadata.created,
+            config: networkConfig,
+            created: networkInstance.metadata.created,
 })
         );
 }
@@ -389,9 +389,9 @@ export class BrainJsBridge {
       this.foundationLogger.info(
         `Created brain.js neural network:${id} (${type})`,
         {
-          networkId:id,
+          networkId: id,
           type,
-          config:networkConfig,
+          config: networkConfig,
 }
       );
 
@@ -399,7 +399,7 @@ export class BrainJsBridge {
 }).then((result) =>
       result.mapErr((error) =>
         withContext(error, {
-          component: 'BrainJsBridge',          operation: 'createNeuralNet',          networkId:id,
+          component: 'BrainJsBridge',          operation: 'createNeuralNet',          networkId: id,
           type,
           config,
 })
@@ -416,9 +416,9 @@ export class BrainJsBridge {
    * @returns Result containing training success status or error
    */
   async trainNeuralNet(
-    networkId:string,
-    trainingData:readonly BrainJsTrainingData[],
-    options:BrainJsTrainingOptions = {}
+    networkId: string,
+    trainingData: readonly BrainJsTrainingData[],
+    options: BrainJsTrainingOptions = {}
   ):Promise<Result<ModelMetrics, ContextError>> {
     const networkInstance = this.networks.get(networkId);
     if (!networkInstance) {
@@ -434,11 +434,11 @@ export class BrainJsBridge {
 }
 
       // Update training state
-      const updatedInstance:BrainJsNetworkInstance = {
+      const updatedInstance: BrainJsNetworkInstance = {
         ...networkInstance,
         trainingState:{
           ...networkInstance.trainingState,
-          isTraining:true,
+          isTraining: true,
 },
 };
       this.networks.set(networkId, updatedInstance);
@@ -450,15 +450,15 @@ export class BrainJsBridge {
       const startTime = Date.now();
 
       // Prepare training options
-      const trainingOptions:any = {
-        iterations:options.iterations || this.config.iterations,
-        errorThreshold:options.errorThreshold || this.config.errorThreshold,
-        logPeriod:options.logPeriod || this.config.logPeriod,
-        learningRate:options.learningRate || this.config.learningRate,
-        momentum:options.momentum || 0.1,
-        callback:options.callback,
-        callbackPeriod:options.callbackPeriod || 10,
-        timeout:options.timeout || this.config.timeout,
+      const trainingOptions: any = {
+        iterations: options.iterations || this.config.iterations,
+        errorThreshold: options.errorThreshold || this.config.errorThreshold,
+        logPeriod: options.logPeriod || this.config.logPeriod,
+        learningRate: options.learningRate || this.config.learningRate,
+        momentum: options.momentum || 0.1,
+        callback: options.callback,
+        callbackPeriod: options.callbackPeriod || 10,
+        timeout: options.timeout || this.config.timeout,
 };
 
       // Train the network
@@ -470,18 +470,18 @@ export class BrainJsBridge {
       const trainingTime = Date.now() - startTime;
 
       // Update network instance with training results
-      const finalInstance:BrainJsNetworkInstance = {
+      const finalInstance: BrainJsNetworkInstance = {
         ...updatedInstance,
         trainingState:{
-          isTrained:true,
-          isTraining:false,
-          iterations:stats.iterations,
-          error:stats.error,
-          lastTrainingTime:new Date().toISOString(),
+          isTrained: true,
+          isTraining: false,
+          iterations: stats.iterations,
+          error: stats.error,
+          lastTrainingTime: new Date().toISOString(),
 },
         metadata:{
           ...updatedInstance.metadata,
-          updated:new Date().toISOString(),
+          updated: new Date().toISOString(),
 },
 };
       this.networks.set(networkId, finalInstance);
@@ -490,32 +490,32 @@ export class BrainJsBridge {
       if (this.dbAccess) {
         const kv = await this.dbAccess.getKV('neural');
         await kv.set(
-          `brainjs:training:${networkId}:${Date.now()}`,
+          `brainjs: training:${networkId}:${Date.now()}`,
           JSON.stringify({
-            iterations:stats.iterations,
-            error:stats.error,
+            iterations: stats.iterations,
+            error: stats.error,
             trainingTime,
-            timestamp:new Date().toISOString(),
-            dataSize:trainingData.length,
+            timestamp: new Date().toISOString(),
+            dataSize: trainingData.length,
 })
         );
 }
 
-      const metrics:ModelMetrics = {
-        accuracy:1 - stats.error, // Convert error to accuracy
-        loss:stats.error,
-        time:trainingTime,
-        iterations:stats.iterations,
-        errorRate:stats.error,
-        convergence:stats.error < trainingOptions.errorThreshold,
+      const metrics: ModelMetrics = {
+        accuracy: 1 - stats.error, // Convert error to accuracy
+        loss: stats.error,
+        time: trainingTime,
+        iterations: stats.iterations,
+        errorRate: stats.error,
+        convergence: stats.error < trainingOptions.errorThreshold,
 };
 
       this.foundationLogger.info(
         `Brain.js training completed for ${networkId} in ${trainingTime}ms`,
         {
           networkId,
-          iterations:stats.iterations,
-          finalError:stats.error,
+          iterations: stats.iterations,
+          finalError: stats.error,
           trainingTime,
 }
       );
@@ -526,11 +526,11 @@ export class BrainJsBridge {
         // Update training state to reflect error
         const networkInstance = this.networks.get(networkId);
         if (networkInstance) {
-          const updatedInstance:BrainJsNetworkInstance = {
+          const updatedInstance: BrainJsNetworkInstance = {
             ...networkInstance,
             trainingState:{
               ...networkInstance.trainingState,
-              isTraining:false,
+              isTraining: false,
 },
 };
           this.networks.set(networkId, updatedInstance);
@@ -538,7 +538,7 @@ export class BrainJsBridge {
 
         return withContext(error, {
           component: 'BrainJsBridge',          operation: 'trainNeuralNet',          networkId,
-          dataSize:trainingData.length,
+          dataSize: trainingData.length,
 });
 })
     );
@@ -552,8 +552,8 @@ export class BrainJsBridge {
    * @returns Result containing prediction result or error
    */
   async predictWithNeuralNet(
-    networkId:string,
-    input:number[] | Record<string, number>
+    networkId: string,
+    input: number[] | Record<string, number>
   ):Promise<Result<BrainJsPredictionResult, ContextError>> {
     const networkInstance = this.networks.get(networkId);
     if (!networkInstance) {
@@ -577,13 +577,13 @@ export class BrainJsBridge {
 
       const processingTime = Date.now() - startTime;
 
-      const result:BrainJsPredictionResult = {
+      const result: BrainJsPredictionResult = {
         output,
         processingTime,
         metadata:{
           networkId,
-          networkType:networkInstance.type,
-          inputSize:Array.isArray(input)
+          networkType: networkInstance.type,
+          inputSize: Array.isArray(input)
             ? input.length
             :Object.keys(input).length,
 },
@@ -606,7 +606,7 @@ export class BrainJsBridge {
    * @returns Result containing network instance or error
    */
   getNetworkInfo(
-    networkId:string
+    networkId: string
   ):Result<BrainJsNetworkInstance, ContextError> {
     const networkInstance = this.networks.get(networkId);
     if (!networkInstance) {
@@ -631,7 +631,7 @@ export class BrainJsBridge {
    * @returns Success status
    */
   async removeNetwork(
-    networkId:string
+    networkId: string
   ):Promise<Result<boolean, ContextError>> {
     const networkInstance = this.networks.get(networkId);
     if (!networkInstance) {
@@ -645,7 +645,7 @@ export class BrainJsBridge {
       // Remove from database
       if (this.dbAccess) {
         const kv = await this.dbAccess.getKV('neural');
-        await kv.delete(`brainjs:metadata:${networkId}`);
+        await kv.delete(`brainjs: metadata:${networkId}`);
 }
 
       this.foundationLogger.info(`Removed brain.js network:${networkId}`);
@@ -665,7 +665,7 @@ export class BrainJsBridge {
    * @param networkId - ID of the network to export
    * @returns Result containing JSON representation or error
    */
-  exportNetwork(networkId:string): Result<object, ContextError> {
+  exportNetwork(networkId: string): Result<object, ContextError> {
     const networkInstance = this.networks.get(networkId);
     if (!networkInstance) {
       return err(new ValidationError(NETWORK_NOT_FOUND_ERROR, { networkId}));
@@ -682,12 +682,12 @@ export class BrainJsBridge {
     try {
       const networkJson = networkInstance.network.toJSON();
       return ok({
-        id:networkId,
-        type:networkInstance.type,
-        config:networkInstance.config,
-        network:networkJson,
-        metadata:networkInstance.metadata,
-        trainingState:networkInstance.trainingState,
+        id: networkId,
+        type: networkInstance.type,
+        config: networkInstance.config,
+        network: networkJson,
+        metadata: networkInstance.metadata,
+        trainingState: networkInstance.trainingState,
 });
 } catch (error) {
       return err(
@@ -704,7 +704,7 @@ export class BrainJsBridge {
    * @param networkData - JSON representation of the network
    * @returns Result containing the network ID or error
    */
-  async importNetwork(networkData:any): Promise<Result<string, ContextError>> {
+  async importNetwork(networkData: any): Promise<Result<string, ContextError>> {
     return await safeAsync(async () => {
       // Validate input
       if (
@@ -717,7 +717,7 @@ export class BrainJsBridge {
         id,
         type,
         config,
-        network:networkJson,
+        network: networkJson,
         metadata,
         trainingState,
 } = networkData;
@@ -729,7 +729,7 @@ export class BrainJsBridge {
 }
 
       // Create network based on type
-      let network:any;
+      let network: any;
 
       switch (type) {
         case 'feedforward':
@@ -752,20 +752,20 @@ export class BrainJsBridge {
       network.fromJSON(networkJson);
 
       // Create network instance
-      const networkInstance:BrainJsNetworkInstance = {
+      const networkInstance: BrainJsNetworkInstance = {
         id,
         type,
         network,
-        config:config || {},
-        trainingState:trainingState || {
-          isTrained:true,
-          isTraining:false,
-          iterations:0,
-          error:0,
+        config: config || {},
+        trainingState: trainingState || {
+          isTrained: true,
+          isTraining: false,
+          iterations: 0,
+          error: 0,
 },
-        metadata:metadata || {
-          created:new Date().toISOString(),
-          updated:new Date().toISOString(),
+        metadata: metadata || {
+          created: new Date().toISOString(),
+          updated: new Date().toISOString(),
 },
 };
 
@@ -776,12 +776,12 @@ export class BrainJsBridge {
       if (this.dbAccess) {
         const kv = await this.dbAccess.getKV('neural');
         await kv.set(
-          `brainjs:metadata:${id}`,
+          `brainjs: metadata:${id}`,
           JSON.stringify({
             id,
             type,
             config,
-            imported:new Date().toISOString(),
+            imported: new Date().toISOString(),
 })
         );
 }
@@ -804,26 +804,26 @@ export class BrainJsBridge {
    * @returns Statistics about the bridge and networks
    */
   getStats():{
-    totalNetworks:number;
-    trainedNetworks:number;
-    trainingNetworks:number;
-    networkTypes:Record<string, number>;
-    memoryUsage:number;
+    totalNetworks: number;
+    trainedNetworks: number;
+    trainingNetworks: number;
+    networkTypes: Record<string, number>;
+    memoryUsage: number;
 } {
     const networks = Array.from(this.networks.values());
-    const networkTypes:Record<string, number> = {};
+    const networkTypes: Record<string, number> = {};
 
     for (const network of networks) {
       networkTypes[network.type] = (networkTypes[network.type] || 0) + 1;
 }
 
     return {
-      totalNetworks:networks.length,
-      trainedNetworks:networks.filter((n) => n.trainingState.isTrained).length,
-      trainingNetworks:networks.filter((n) => n.trainingState.isTraining)
+      totalNetworks: networks.length,
+      trainedNetworks: networks.filter((n) => n.trainingState.isTrained).length,
+      trainingNetworks: networks.filter((n) => n.trainingState.isTraining)
         .length,
       networkTypes,
-      memoryUsage:this.estimateMemoryUsage(),
+      memoryUsage: this.estimateMemoryUsage(),
 };
 }
 
@@ -881,7 +881,7 @@ export class BrainJsBridge {
    * Estimate parameter count for a network
    */
   private estimateParameterCount(
-    networkInstance:BrainJsNetworkInstance
+    networkInstance: BrainJsNetworkInstance
   ):number {
     // This is a rough estimation based on network type and configuration
     const config = networkInstance.config;
@@ -889,7 +889,7 @@ export class BrainJsBridge {
     switch (networkInstance.type) {
       case 'feedforward':
         if (config.hiddenLayers && Array.isArray(config.hiddenLayers)) {
-          // Rough calculation:sum of (layer_size * next_layer_size) for weights + biases
+          // Rough calculation: sum of (layer_size * next_layer_size) for weights + biases
           let params = 0;
           const layers = [1, ...config.hiddenLayers, 1]; // Input size 1, output size 1 (rough estimate)
           for (let i = 0; i < layers.length - 1; i++) {
@@ -931,16 +931,16 @@ export class BrainJsBridge {
     for (const network of this.networks.values()) {
       totalParams += this.estimateParameterCount(network);
 }
-    // Rough estimate:4 bytes per parameter (float32)
+    // Rough estimate: 4 bytes per parameter (float32)
     return totalParams * 4;
 }
 }
 
 // Export convenience functions for easy usage
 export async function createBrainJsNetwork(
-  id:string,
-  type:BrainJsNetworkConfig['type'],
-  config:Omit<BrainJsNetworkConfig, 'type'>,
+  id: string,
+  type: BrainJsNetworkConfig['type'],
+  config: Omit<BrainJsNetworkConfig, 'type'>,
   bridgeConfig?:BrainJsConfig
 ):Promise<Result<string, ContextError>> {
   const logger = getLogger('BrainJsBridge');
@@ -950,18 +950,18 @@ export async function createBrainJsNetwork(
 }
 
 export async function trainBrainJsNetwork(
-  bridge:BrainJsBridge,
-  networkId:string,
-  trainingData:readonly BrainJsTrainingData[],
+  bridge: BrainJsBridge,
+  networkId: string,
+  trainingData: readonly BrainJsTrainingData[],
   options?:BrainJsTrainingOptions
 ):Promise<Result<ModelMetrics, ContextError>> {
   return await bridge.trainNeuralNet(networkId, trainingData, options);
 }
 
 export async function predictWithBrainJsNetwork(
-  bridge:BrainJsBridge,
-  networkId:string,
-  input:number[] | Record<string, number>
+  bridge: BrainJsBridge,
+  networkId: string,
+  input: number[] | Record<string, number>
 ):Promise<Result<BrainJsPredictionResult, ContextError>> {
   return await bridge.predictWithNeuralNet(networkId, input);
 }

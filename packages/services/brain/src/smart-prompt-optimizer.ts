@@ -22,15 +22,15 @@ import * as ss from 'simple-statistics';
 const logger = getLogger('SmartPromptOptimizer');
 
 export interface PromptAnalysisData {
-  readonly originalPrompt:string;
-  readonly optimizedPrompt:string;
-  readonly contextSize:number;
-  readonly taskComplexity:number; // 0-1 scale
-  readonly agentType:string;
-  readonly successRate:number; // 0-1 scale
-  readonly responseTime:number; // milliseconds
-  readonly userSatisfaction:number; // 0-1 scale
-  readonly timestamp:number;
+  readonly originalPrompt: string;
+  readonly optimizedPrompt: string;
+  readonly contextSize: number;
+  readonly taskComplexity: number; // 0-1 scale
+  readonly agentType: string;
+  readonly successRate: number; // 0-1 scale
+  readonly responseTime: number; // milliseconds
+  readonly userSatisfaction: number; // 0-1 scale
+  readonly timestamp: number;
   readonly metadata?:{
     domain?:string;
     complexity?:number;
@@ -42,19 +42,19 @@ export interface PromptAnalysisData {
 
 export interface OptimizationPattern {
   readonly patternType: 'length_optimization' | 'structure_enhancement' | 'context_addition' | 'clarity_improvement';
-  readonly confidence:number;
-  readonly improvement:number;
-  readonly applicableContexts:string[];
-  readonly examples:string[];
+  readonly confidence: number;
+  readonly improvement: number;
+  readonly applicableContexts: string[];
+  readonly examples: string[];
 }
 
 export interface SmartOptimizationResult {
-  readonly optimizedPrompt:string;
-  readonly confidence:number;
-  readonly improvementFactor:number;
-  readonly appliedPatterns:OptimizationPattern[];
-  readonly reasoning:string[];
-  readonly statisticalSignificance:number;
+  readonly optimizedPrompt: string;
+  readonly confidence: number;
+  readonly improvementFactor: number;
+  readonly appliedPatterns: OptimizationPattern[];
+  readonly reasoning: string[];
+  readonly statisticalSignificance: number;
 }
 
 /**
@@ -77,14 +77,14 @@ export class SmartPromptOptimizer {
     if (this.initialized) return;
 
     try {
-      logger.info('🚀 Initializing Smart Prompt Optimization System...');
+      logger.info('Initializing Smart Prompt Optimization System...');
       // Initialize with some baseline optimization patterns
       await this.initializeBaselinePatterns();
 
       this.initialized = true;
-      logger.info('✅ Smart Prompt Optimizer initialized successfully');
+      logger.info('Smart Prompt Optimizer initialized successfully');
     } catch (error) {
-      logger.error('❌ Failed to initialize Smart Prompt Optimizer:', error);
+      logger.error('Failed to initialize Smart Prompt Optimizer:', error);
       throw error;
     }
   }
@@ -162,12 +162,12 @@ export class SmartPromptOptimizer {
       };
 
       logger.info(
-        `✅ Prompt optimization complete - confidence: ${confidence.toFixed(2)}, improvement: ${improvementFactor.toFixed(2)}x`
+        `Prompt optimization complete - confidence: ${confidence.toFixed(2)}, improvement: ${improvementFactor.toFixed(2)}x`
       );
 
       return result;
     } catch (error) {
-      logger.error('❌ Prompt optimization failed:', error);
+      logger.error('Prompt optimization failed:', error);
       throw error;
     }
   }
@@ -178,7 +178,7 @@ export class SmartPromptOptimizer {
   async learnFromPerformance(analysisData: PromptAnalysisData): Promise<void> {
     try {
       logger.debug(
-        `📊 Learning from prompt performance:success rate ${analysisData.successRate.toFixed(2)}``
+        `Learning from prompt performance: success rate ${analysisData.successRate.toFixed(2)}``
       );
 
       // Add to performance history
@@ -203,18 +203,18 @@ export class SmartPromptOptimizer {
         );
 }
 } catch (error) {
-      logger.error('❌ Failed to learn from performance:', error);')}
+      logger.error('Failed to learn from performance:', error);')}
 }
 
   /**
    * Get optimization statistics
    */
   getOptimizationStats(): {
-    totalOptimizations:number;
-    averageImprovement:number;
-    patternCount:number;
-    successRate:number;
-    recentTrend:number;
+    totalOptimizations: number;
+    averageImprovement: number;
+    patternCount: number;
+    successRate: number;
+    recentTrend: number;
 } {
     const recentData = this.performanceHistory.slice(-50);
     const averageImprovement =
@@ -232,9 +232,9 @@ export class SmartPromptOptimizer {
     const recentTrend = trendData[trendData.length - 1]||0;
 
     return {
-      totalOptimizations:this.performanceHistory.length,
+      totalOptimizations: this.performanceHistory.length,
       averageImprovement,
-      patternCount:this.optimizationPatterns.size,
+      patternCount: this.optimizationPatterns.size,
       successRate,
       recentTrend,
 };
@@ -244,24 +244,24 @@ export class SmartPromptOptimizer {
 
   private initializeBaselinePatterns(): void {
     // Add baseline optimization patterns
-    const patterns:OptimizationPattern[] = [
+    const patterns: OptimizationPattern[] = [
       {
-        patternType: 'clarity_improvement',        confidence:0.8,
-        improvement:1.2,
+        patternType: 'clarity_improvement',        confidence: 0.8,
+        improvement: 1.2,
         applicableContexts:['general',    'analysis',    'coding'],
         examples:[
           'Be specific and clear',          'Use concrete examples',          'Define technical terms',],
 },
       {
-        patternType: 'structure_enhancement',        confidence:0.75,
-        improvement:1.15,
+        patternType: 'structure_enhancement',        confidence: 0.75,
+        improvement: 1.15,
         applicableContexts:['complex_tasks',    'multi_step'],
         examples:[
           'Break into numbered steps',          'Use clear sections',          'Add summary',],
 },
       {
-        patternType: 'context_addition',        confidence:0.7,
-        improvement:1.1,
+        patternType: 'context_addition',        confidence: 0.7,
+        improvement: 1.1,
         applicableContexts:['domain_specific',    'technical'],
         examples:[
           'Add relevant background',          'Include constraints',          'Specify output format',],
@@ -269,7 +269,7 @@ export class SmartPromptOptimizer {
 ];
 
     patterns.forEach((pattern, index) => {
-      this.optimizationPatterns.set(`baseline_${index}`, pattern);`
+      this.optimizationPatterns.set(`baseline_${index}`, pattern);
 });
 
     logger.debug(
@@ -279,8 +279,8 @@ export class SmartPromptOptimizer {
 
   private extractPromptFeatures(prompt: string): Record<string, number> {
     return {
-      length:prompt.length,
-      wordCount:prompt.split(/\s+/).length,
+      length: prompt.length,
+      wordCount: prompt.split(/\s+/).length,
       questionCount:(prompt.match(/\?/g)||[]).length,
       exclamationCount:(prompt.match(/!/g)||[]).length,
       technicalTerms:(
@@ -288,8 +288,8 @@ export class SmartPromptOptimizer {
           /\b(function|class|method|algorithm|data|system|process)\b/gi
         )||[]
       ).length,
-      complexity:Math.min(1, prompt.length / 500), // 0-1 scale
-      specificity:Math.min(
+      complexity: Math.min(1, prompt.length / 500), // 0-1 scale
+      specificity: Math.min(
         1,
         (prompt.match(/\b(specific|exactly|precisely|detailed)\b/gi)||[])
           .length / 10
@@ -298,8 +298,8 @@ export class SmartPromptOptimizer {
 }
 
   private findSimilarPrompts(
-    features:Record<string, number>,
-    context:any
+    features: Record<string, number>,
+    context: any
   ):PromptAnalysisData[] {
     return this.performanceHistory
       .filter((data) => {
@@ -331,8 +331,8 @@ export class SmartPromptOptimizer {
 }
 
   private calculateFeatureSimilarity(
-    features1:Record<string, number>,
-    features2:Record<string, number>
+    features1: Record<string, number>,
+    features2: Record<string, number>
   ): number {
     const keys = Object.keys(features1);
     let similarity = 0;
@@ -347,11 +347,11 @@ export class SmartPromptOptimizer {
 }
 
   private performRegressionAnalysis(
-    features:Record<string, number>,
-    similarPrompts:PromptAnalysisData[]
+    features: Record<string, number>,
+    similarPrompts: PromptAnalysisData[]
   ): any {
     if (similarPrompts.length < 3) {
-      return { slope:0, intercept:0.5, r2:0};
+      return { slope: 0, intercept: 0.5, r2: 0};
 }
 
     // Prepare data for regression analysis
@@ -364,27 +364,27 @@ export class SmartPromptOptimizer {
     try {
       const result = regression.linear(dataPoints);
       return {
-        slope:result.equation[0],
-        intercept:result.equation[1],
-        r2:result.r2,
-        equation:result.equation,
+        slope: result.equation[0],
+        intercept: result.equation[1],
+        r2: result.r2,
+        equation: result.equation,
 };
 } catch (error) {
-      logger.debug('Regression analysis failed, using defaults:', error);')      return { slope:0, intercept:0.5, r2:0};
+      logger.debug('Regression analysis failed, using defaults:', error);')      return { slope: 0, intercept: 0.5, r2: 0};
 }
 }
 
   private generateOptimizationPatterns(
-    features:Record<string, number>,
-    regressionInsights:any
+    features: Record<string, number>,
+    regressionInsights: any
   ):OptimizationPattern[] {
-    const patterns:OptimizationPattern[] = [];
+    const patterns: OptimizationPattern[] = [];
 
     // Length optimization based on regression
     if (features.length > 200 && regressionInsights.slope > 0) {
       patterns.push({
-        patternType: 'length_optimization',        confidence:0.7,
-        improvement:1.1,
+        patternType: 'length_optimization',        confidence: 0.7,
+        improvement: 1.1,
         applicableContexts:['general'],
         examples:[
           'Reduce redundancy',          'Combine similar points',          'Use concise language',],
@@ -394,8 +394,8 @@ export class SmartPromptOptimizer {
     // Structure enhancement for complex prompts
     if (features.complexity > 0.6) {
       patterns.push({
-        patternType: 'structure_enhancement',        confidence:0.8,
-        improvement:1.15,
+        patternType: 'structure_enhancement',        confidence: 0.8,
+        improvement: 1.15,
         applicableContexts:['complex_tasks'],
         examples:['Add clear sections',    'Use bullet points',    'Number steps'],
 });
@@ -404,8 +404,8 @@ export class SmartPromptOptimizer {
     // Clarity improvement for low specificity
     if (features.specificity < 0.3) {
       patterns.push({
-        patternType: 'clarity_improvement',        confidence:0.75,
-        improvement:1.2,
+        patternType: 'clarity_improvement',        confidence: 0.75,
+        improvement: 1.2,
         applicableContexts:['general'],
         examples:[
           'Add specific examples',          'Define requirements',          'Clarify expectations',],
@@ -416,8 +416,8 @@ export class SmartPromptOptimizer {
 }
 
   private applyOptimizations(
-    originalPrompt:string,
-    patterns:OptimizationPattern[]
+    originalPrompt: string,
+    patterns: OptimizationPattern[]
   ): string {
     const __optimizedPrompt = originalPrompt;
 
@@ -442,8 +442,8 @@ export class SmartPromptOptimizer {
 }
 
   private calculateOptimizationConfidence(
-    patterns:OptimizationPattern[],
-    similarPrompts:PromptAnalysisData[]
+    patterns: OptimizationPattern[],
+    similarPrompts: PromptAnalysisData[]
   ): number {
     if (patterns.length === 0) return 0.5;
 
@@ -453,7 +453,7 @@ export class SmartPromptOptimizer {
     return (patternConfidence + dataConfidence) / 2;
 }
 
-  private predictImprovementFactor(regressionInsights:any): number {
+  private predictImprovementFactor(regressionInsights: any): number {
     // Use regression insights to predict improvement
     const baseImprovement = 1.0;
     const regressionBonus = Math.max(0, regressionInsights.r2 * 0.3); // Up to 30% bonus for good correlation
@@ -462,10 +462,10 @@ export class SmartPromptOptimizer {
 }
 
   private generateOptimizationReasoning(
-    patterns:OptimizationPattern[],
-    regressionInsights:any
+    patterns: OptimizationPattern[],
+    regressionInsights: any
   ): string[] {
-    const reasoning:string[] = [];
+    const reasoning: string[] = [];
 
     reasoning.push(
       `Applied ${patterns.length} optimization pattern(s) based on historical analysis``
@@ -487,7 +487,7 @@ export class SmartPromptOptimizer {
 }
 
   private calculateStatisticalSignificance(
-    similarPrompts:PromptAnalysisData[]
+    similarPrompts: PromptAnalysisData[]
   ): number {
     if (similarPrompts.length < 5) return 0.1;
 
@@ -510,7 +510,7 @@ export class SmartPromptOptimizer {
     // Update pattern scores based on performance
     for (const pattern of this.optimizationPatterns.values()) {
       if (
-        pattern.applicableContexts.some((ctx:string) =>
+        pattern.applicableContexts.some((ctx: string) =>
           analysisData.context?.includes(ctx)
         )
       ) {
@@ -519,7 +519,7 @@ export class SmartPromptOptimizer {
         const complexityAdjustment = 1 - featureComplexity * 0.1; // High complexity reduces confidence gain
 
         // Create updated pattern with new confidence (immutable update)
-        const updatedPattern:OptimizationPattern = {
+        const updatedPattern: OptimizationPattern = {
           ...pattern,
           confidence:
             pattern.confidence * 0.9 +
@@ -552,14 +552,14 @@ export class SmartPromptOptimizer {
     logger.debug('Updated optimization patterns based on performance feedback');
     // For now, just log the learning event
     logger.debug(
-      `🎯 Pattern learning: ${analysisData.successRate > 0.7 ? 'positive' : 'negative'} feedback received`
+      `Pattern learning: ${analysisData.successRate > 0.7 ? 'positive' : 'negative'} feedback received`
     );
 }
 
   /**
    * Calculate complexity score based on prompt features
    */
-  private calculateFeatureComplexity(features:Map<string, number>): number {
+  private calculateFeatureComplexity(features: Map<string, number>): number {
     let complexity = 1;
 
     // Feature count contributes to complexity

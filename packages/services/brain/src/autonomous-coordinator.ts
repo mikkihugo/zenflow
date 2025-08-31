@@ -27,24 +27,24 @@ import type { BehavioralIntelligence} from './behavioral-intelligence';
 const logger = getLogger('AutonomousCoordinator');
 
 export interface SystemMetrics {
-  readonly cpuUsage:number;
-  readonly memoryUsage:number;
-  readonly taskQueueLength:number;
-  readonly activeAgents:number;
-  readonly averageResponseTime:number;
-  readonly errorRate:number;
-  readonly throughput:number;
-  readonly timestamp:number;
+  readonly cpuUsage: number;
+  readonly memoryUsage: number;
+  readonly taskQueueLength: number;
+  readonly activeAgents: number;
+  readonly averageResponseTime: number;
+  readonly errorRate: number;
+  readonly throughput: number;
+  readonly timestamp: number;
 }
 
 export interface AutonomousDecision {
   readonly type: 'resource_allocation' | 'agent_routing' | 'performance_tuning' | 'scaling' | 'optimization';
-  readonly action:string;
-  readonly reasoning:string[];
-  readonly confidence:number;
-  readonly expectedImpact:number;
-  readonly timestamp:number;
-  readonly parameters:Record<string, any>;
+  readonly action: string;
+  readonly reasoning: string[];
+  readonly confidence: number;
+  readonly expectedImpact: number;
+  readonly timestamp: number;
+  readonly parameters: Record<string, any>;
 }
 
 export interface ScalingDecision {
@@ -62,37 +62,37 @@ export interface ScalingDecision {
  * without requiring human intervention. Continuously learns and adapts.
  */
 export class AutonomousCoordinator {
-  private optimizationEngine:AutonomousOptimizationEngine|null = null;
+  private optimizationEngine: AutonomousOptimizationEngine|null = null;
   private initialized = false;
 
   // System monitoring and learning
-  private systemMetricsHistory:SystemMetrics[] = [];
-  private decisionHistory:AutonomousDecision[] = [];
+  private systemMetricsHistory: SystemMetrics[] = [];
+  private decisionHistory: AutonomousDecision[] = [];
 
   // Autonomous decision parameters (self-tuning)
   private autonomousConfig = {
     resourceThresholds:{
-      cpu:{ low: 0.3, medium:0.6, high:0.8, critical:0.95},
-      memory:{ low: 0.4, medium:0.7, high:0.85, critical:0.95},
+      cpu:{ low: 0.3, medium: 0.6, high: 0.8, critical: 0.95},
+      memory:{ low: 0.4, medium: 0.7, high: 0.85, critical: 0.95},
       responseTime:{
-        excellent:500,
-        good:1000,
-        acceptable:2000,
-        poor:5000,
+        excellent: 500,
+        good: 1000,
+        acceptable: 2000,
+        poor: 5000,
 },
-      errorRate:{ excellent: 0.01, good:0.05, acceptable:0.1, poor:0.2},
+      errorRate:{ excellent: 0.01, good: 0.05, acceptable: 0.1, poor: 0.2},
 },
     scalingPolicy:{
-      scaleUpThreshold:0.75,
-      scaleDownThreshold:0.3,
-      cooldownMinutes:5,
-      maxAgents:50,
-      minAgents:2,
+      scaleUpThreshold: 0.75,
+      scaleDownThreshold: 0.3,
+      cooldownMinutes: 5,
+      maxAgents: 50,
+      minAgents: 2,
 },
     learningRates:{
-      fast:0.3, // For rapid adaptation
-      medium:0.1, // For balanced learning
-      slow:0.03, // For stable baselines
+      fast: 0.3, // For rapid adaptation
+      medium: 0.1, // For balanced learning
+      slow: 0.03, // For stable baselines
 },
 };
 
@@ -110,7 +110,7 @@ export class AutonomousCoordinator {
     if (this.initialized) return;
 
     try {
-      logger.info('🚀 Initializing Autonomous Coordinator...');
+      logger.info('Initializing Autonomous Coordinator...');
       this.behavioralIntelligence = behavioralIntelligence||null;
       this.optimizationEngine = optimizationEngine||null;
 
@@ -121,9 +121,9 @@ export class AutonomousCoordinator {
       await this.startAutonomousMonitoring();
 
       this.initialized = true;
-      logger.info('✅ Autonomous Coordinator initialized - brain is now self-governing');
+      logger.info('Autonomous Coordinator initialized - brain is now self-governing');
 } catch (error) {
-      logger.error('❌ Failed to initialize Autonomous Coordinator:', error);
+      logger.error('Failed to initialize Autonomous Coordinator:', error);
       throw error;
 }
 }
@@ -132,14 +132,14 @@ export class AutonomousCoordinator {
    * Autonomous system monitoring and decision making
    */
   async autonomousSystemMonitoring(
-    currentMetrics:SystemMetrics
+    currentMetrics: SystemMetrics
   ):Promise<AutonomousDecision[]> {
     if (!this.initialized) {
       await this.initialize();
 }
 
     try {
-      const decisions:AutonomousDecision[] = [];
+      const decisions: AutonomousDecision[] = [];
 
       // Record metrics
       this.systemMetricsHistory.push(currentMetrics);
@@ -186,7 +186,7 @@ export class AutonomousCoordinator {
       );
       return decisions;
     } catch (error) {
-      logger.error('❌ Autonomous system monitoring failed:', error);
+      logger.error('Autonomous system monitoring failed:', error);
       return [];
     }
 }
@@ -195,7 +195,7 @@ export class AutonomousCoordinator {
    * Autonomous resource allocation and management
    */
   private async autonomousResourceManagement(
-    metrics:SystemMetrics
+    metrics: SystemMetrics
   ):Promise<AutonomousDecision|null> {
     const { cpu, memory, responseTime} =
       this.autonomousConfig.resourceThresholds;
@@ -274,7 +274,7 @@ export class AutonomousCoordinator {
    * Autonomous agent routing and selection
    */
   private async autonomousAgentRouting(
-    metrics:SystemMetrics
+    metrics: SystemMetrics
   ):Promise<AutonomousDecision|null> {
     if (!this.behavioralIntelligence) return null;
 
@@ -361,7 +361,7 @@ export class AutonomousCoordinator {
    * Autonomous performance tuning
    */
   private async autonomousPerformanceTuning(
-    metrics:SystemMetrics
+    metrics: SystemMetrics
   ):Promise<AutonomousDecision|null> {
     // Add current metrics to history for analysis
     this.systemMetricsHistory.push(metrics);
@@ -454,7 +454,7 @@ export class AutonomousCoordinator {
    * Autonomous scaling decisions
    */
   private async autonomousScaling(
-    metrics:SystemMetrics
+    metrics: SystemMetrics
   ):Promise<AutonomousDecision|null> {
     const scalingDecision = await this.calculateScalingDecision(metrics);
 
@@ -487,7 +487,7 @@ export class AutonomousCoordinator {
    * Autonomous system optimization
    */
   private async autonomousSystemOptimization(
-    metrics:SystemMetrics
+    metrics: SystemMetrics
   ):Promise<AutonomousDecision|null> {
     if (!this.optimizationEngine) return null;
 
@@ -585,7 +585,7 @@ export class AutonomousCoordinator {
         }
       });
 
-      logger.debug('🎯 Autonomous parameter tuning complete');
+      logger.debug('Autonomous parameter tuning complete');
     } catch (error) {
       logger.error('Error in autonomous parameter tuning:', error);
     }
@@ -625,10 +625,10 @@ export class AutonomousCoordinator {
       Math.min(1, this.decisionHistory.length / 100) * averageConfidence;
 
     return {
-      totalDecisions:this.decisionHistory.length,
+      totalDecisions: this.decisionHistory.length,
       decisionsByType,
       averageConfidence,
-      recentTrends:this.generateRecentTrends(),
+      recentTrends: this.generateRecentTrends(),
       systemHealth,
       autonomyLevel,
 };
@@ -685,7 +685,7 @@ export class AutonomousCoordinator {
 }
 
   private async calculateScalingDecision(
-    metrics:SystemMetrics
+    metrics: SystemMetrics
   ):Promise<ScalingDecision> {
     const { scaleUpThreshold, scaleDownThreshold, maxAgents, minAgents} =
       this.autonomousConfig.scalingPolicy;
@@ -744,6 +744,7 @@ export class AutonomousCoordinator {
         reasoning: "Low system pressure: " + (overallPressure * 100).toFixed(1) + "%",
         urgency: 'low',
       };
+    }
 
     return {
       action: 'maintain',
@@ -806,7 +807,7 @@ export class AutonomousCoordinator {
   }
 
   private generateRecentTrends():string[] {
-    const trends:string[] = [];
+    const trends: string[] = [];
 
     if (this.systemMetricsHistory.length >= 5) {
       const recent = this.systemMetricsHistory.slice(-5);
@@ -851,24 +852,24 @@ export class AutonomousCoordinator {
     // Simulate async database/storage fetch
     await new Promise(resolve => setTimeout(resolve, 50));
     return [
-      { timestamp:Date.now() - 300000, cpu:metrics.cpuUsage * 0.9, memory:metrics.memoryUsage * 0.8},
-      { timestamp:Date.now() - 600000, cpu:metrics.cpuUsage * 1.1, memory:metrics.memoryUsage * 1.2},
-      { timestamp:Date.now() - 900000, cpu:metrics.cpuUsage * 0.95, memory:metrics.memoryUsage * 1.05}
+      { timestamp: Date.now() - 300000, cpu: metrics.cpuUsage * 0.9, memory: metrics.memoryUsage * 0.8},
+      { timestamp: Date.now() - 600000, cpu: metrics.cpuUsage * 1.1, memory: metrics.memoryUsage * 1.2},
+      { timestamp: Date.now() - 900000, cpu: metrics.cpuUsage * 0.95, memory: metrics.memoryUsage * 1.05}
 ];
 }
 
   /**
    * Perform predictive analysis on resource trends
    */
-  private async performPredictiveResourceAnalysis(history:any[]): Promise<{ trend: string; prediction: number}> {
+  private async performPredictiveResourceAnalysis(history: any[]): Promise<{ trend: string; prediction: number}> {
     // Simulate async ML prediction processing
     await new Promise(resolve => setTimeout(resolve, 100));
     
     const cpuTrend = history.reduce((sum, h) => sum + h.cpu, 0) / history.length;
-    const prediction = cpuTrend > 80 ? cpuTrend * 1.1:cpuTrend * 0.95;
+    const prediction = cpuTrend > 80 ? cpuTrend * 1.1: cpuTrend * 0.95;
     
     return {
-      trend:cpuTrend > 80 ? 'increasing' : ' stable',      prediction
+      trend: cpuTrend > 80 ? 'increasing' : ' stable',      prediction
 };
 }
 
@@ -882,7 +883,7 @@ export class AutonomousCoordinator {
     this.performanceBaselines.set('error_rate', 0.05); // 5%
     this.performanceBaselines.set('cpu_usage', 0.6); // 60%
     this.performanceBaselines.set('memory_usage', 0.7); // 70%
-    logger.debug('📊 Performance baselines initialized with enhanced analysis');
+    logger.debug('Performance baselines initialized with enhanced analysis');
   }
 
   private async startAutonomousMonitoring(): Promise<void> {
@@ -897,7 +898,7 @@ export class AutonomousCoordinator {
 ];
     
     await Promise.all(monitoringTasks);
-    logger.debug('🔄 Autonomous monitoring started with comprehensive setup');
+    logger.debug('Autonomous monitoring started with comprehensive setup');
   }
 
   /**
@@ -905,7 +906,7 @@ export class AutonomousCoordinator {
    */
   private async initializeMetricsCollection(): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 50));
-    logger.debug('📊 Metrics collection initialized');
+    logger.debug('Metrics collection initialized');
   }
 
   /**
@@ -971,27 +972,27 @@ export class AutonomousCoordinator {
   /**
    * Establish performance baseline through ML analysis
    */
-  private async establishPerformanceBaseline(_metrics:SystemMetrics): Promise<any> {
+  private async establishPerformanceBaseline(_metrics: SystemMetrics): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 75));
     return {
-      baselineResponseTime:250,
-      baselineThroughput:100,
-      baselineErrorRate:0.01,
-      confidenceInterval:0.95
+      baselineResponseTime: 250,
+      baselineThroughput: 100,
+      baselineErrorRate: 0.01,
+      confidenceInterval: 0.95
 };
 }
 
   /**
    * Detect performance anomalies using statistical analysis
    */
-  private async detectPerformanceAnomalies(metrics:SystemMetrics, baseline:any): Promise<any[]> {
+  private async detectPerformanceAnomalies(metrics: SystemMetrics, baseline: any): Promise<any[]> {
     await new Promise(resolve => setTimeout(resolve, 100));
     const anomalies = [];
     
     if (metrics.averageResponseTime > baseline.baselineResponseTime * 2) {
       anomalies.push({
-        type: 'response_time_spike',        severity: 'high',        currentValue:metrics.averageResponseTime,
-        expectedValue:baseline.baselineResponseTime
+        type: 'response_time_spike',        severity: 'high',        currentValue: metrics.averageResponseTime,
+        expectedValue: baseline.baselineResponseTime
 });
 }
     
@@ -1001,13 +1002,13 @@ export class AutonomousCoordinator {
   /**
    * Predict performance trends using ML models
    */
-  private async predictPerformanceTrends(responseTimes:number[], throughputs:number[]): Promise<any> {
+  private async predictPerformanceTrends(responseTimes: number[], throughputs: number[]): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 150));
     return {
-      predictedResponseTime:responseTimes[responseTimes.length - 1] * 1.1,
-      predictedThroughput:throughputs[throughputs.length - 1] * 0.95,
-      trendConfidence:0.85,
-      forecastHorizon:300000 // 5 minutes
+      predictedResponseTime: responseTimes[responseTimes.length - 1] * 1.1,
+      predictedThroughput: throughputs[throughputs.length - 1] * 0.95,
+      trendConfidence: 0.85,
+      forecastHorizon: 300000 // 5 minutes
 };
 }
 
@@ -1034,19 +1035,19 @@ export class AutonomousCoordinator {
   /**
    * Identify system bottlenecks through comprehensive analysis
    */
-  private async identifySystemBottlenecks(metrics:SystemMetrics): Promise<any[]> {
+  private async identifySystemBottlenecks(metrics: SystemMetrics): Promise<any[]> {
     await new Promise(resolve => setTimeout(resolve, 175));
     const bottlenecks = [];
     
     if (metrics.cpuUsage > 0.85) {
       bottlenecks.push({
-        type: 'cpu_bottleneck',        severity: 'high',        utilization:metrics.cpuUsage
+        type: 'cpu_bottleneck',        severity: 'high',        utilization: metrics.cpuUsage
 });
 }
     
     if (metrics.memoryUsage > 0.90) {
       bottlenecks.push({
-        type: 'memory_bottleneck',        severity: 'critical',        utilization:metrics.memoryUsage
+        type: 'memory_bottleneck',        severity: 'critical',        utilization: metrics.memoryUsage
 });
 }
     
@@ -1056,12 +1057,12 @@ export class AutonomousCoordinator {
   /**
    * Perform deep system analysis using ML techniques
    */
-  private async performDeepSystemAnalysis(_metrics:SystemMetrics, _insights:any): Promise<any> {
+  private async performDeepSystemAnalysis(_metrics: SystemMetrics, _insights: any): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 200));
     return {
-      systemEfficiency:0.78,
+      systemEfficiency: 0.78,
       resourceUtilizationProfile: 'cpu_bound',      optimizationOpportunities:['caching',    'parallelization',    'algorithm_optimization'],
-      confidence:0.82
+      confidence: 0.82
 };
 }
 
@@ -1089,14 +1090,14 @@ export class AutonomousCoordinator {
   /**
    * Calculate optimal parameters using ML optimization
    */
-  private async calculateOptimalParameters(_effectiveness:any): Promise<any> {
+  private async calculateOptimalParameters(_effectiveness: any): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 175));
     return {
-      aggressiveThreshold:0.82,
-      scalingFactor:1.3,
-      conservativeBackoff:0.7,
-      confidenceThreshold:0.85,
-      optimizationConfidence:0.91
+      aggressiveThreshold: 0.82,
+      scalingFactor: 1.3,
+      conservativeBackoff: 0.7,
+      confidenceThreshold: 0.85,
+      optimizationConfidence: 0.91
 };
 }
 
@@ -1127,9 +1128,9 @@ export class AutonomousCoordinator {
   private async analyzeRoutingPatterns(metrics: SystemMetrics, agentProfiles: Map<string, any>): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 100));
     return {
-      routingEfficiency:0.81,
-      loadDistribution: 'uneven',      bottleneckAgents:Array.from(agentProfiles.keys()).slice(0, 2),
-      recommendedRebalancing:true
+      routingEfficiency: 0.81,
+      loadDistribution: 'uneven',      bottleneckAgents: Array.from(agentProfiles.keys()).slice(0, 2),
+      recommendedRebalancing: true
 };
 }
 
@@ -1137,7 +1138,7 @@ export class AutonomousCoordinator {
    * Calculate event coordination efficiency (replaces load balancing)
    * Uses brain event coordination instead of traditional load balancing
    */
-  private async calculateEventCoordinationEfficiency(agentProfiles:Map<string, any>):Promise<number> {
+  private async calculateEventCoordinationEfficiency(agentProfiles: Map<string, any>):Promise<number> {
     await new Promise(resolve => setTimeout(resolve, 75));
     const loads = Array.from(agentProfiles.values()).map(p => p.currentLoad || 0.5);
     const variance = loads.reduce((sum, load) => sum + (load - 0.5) ** 2, 0) / loads.length;
@@ -1148,33 +1149,33 @@ export class AutonomousCoordinator {
   /**
    * Enhance routing with ML insights
    */
-  private async enhanceRoutingWithML(patterns:any, efficiency:number, baseEfficiency:number): Promise<number> {
+  private async enhanceRoutingWithML(patterns: any, efficiency: number, baseEfficiency: number): Promise<number> {
     await new Promise(resolve => setTimeout(resolve, 125));
-    const mlBoost = patterns.routingEfficiency > 0.8 ? 0.1:0.05;
+    const mlBoost = patterns.routingEfficiency > 0.8 ? 0.1: 0.05;
     return Math.min(1, baseEfficiency + mlBoost);
 }
 
   /**
    * Predict scaling needs using ML forecasting
    */
-  private async predictScalingNeeds(metrics:SystemMetrics): Promise<any> {
+  private async predictScalingNeeds(metrics: SystemMetrics): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 150));
     return {
-      predictedLoad:metrics.cpuUsage * 1.2,
-      scalingRecommendation: 'scale_up',      confidence:0.87,
-      timeHorizon:600000 // 10 minutes
+      predictedLoad: metrics.cpuUsage * 1.2,
+      scalingRecommendation: 'scale_up',      confidence: 0.87,
+      timeHorizon: 600000 // 10 minutes
 };
 }
 
   /**
    * Forecast workload using historical data and ML
    */
-  private async forecastWorkload(metrics:SystemMetrics): Promise<any> {
+  private async forecastWorkload(metrics: SystemMetrics): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 125));
     return {
-      expectedTaskVolume:metrics.taskQueueLength * 1.15,
-      peakPrediction:Date.now() + 1800000, // 30 minutes from now
-      workloadTrend: 'increasing',      confidence:0.79
+      expectedTaskVolume: metrics.taskQueueLength * 1.15,
+      peakPrediction: Date.now() + 1800000, // 30 minutes from now
+      workloadTrend: 'increasing',      confidence: 0.79
 };
 }
 
@@ -1182,15 +1183,15 @@ export class AutonomousCoordinator {
    * Enhance pressure calculation with ML insights
    */
   private async enhancePressureWithML(
-    avgUtil:number,
-    queuePressure:number,
-    responseTimePressure:number,
-    prediction:any,
-    _forecast:any
+    avgUtil: number,
+    queuePressure: number,
+    responseTimePressure: number,
+    prediction: any,
+    _forecast: any
   ):Promise<number> {
     await new Promise(resolve => setTimeout(resolve, 100));
     const basePressure = (avgUtil + queuePressure + responseTimePressure) / 3;
-    const mlAdjustment = prediction.confidence > 0.8 ? 0.1:0.05;
+    const mlAdjustment = prediction.confidence > 0.8 ? 0.1: 0.05;
     return Math.min(1, basePressure + mlAdjustment);
 }
 }
