@@ -116,7 +116,7 @@ export class TransformProcessor implements BaseProcessor {
         this.processedCount > 0
           ? ((this.transformedCount / this.processedCount) * 100).toFixed(1) + '%'
           : '0%',
-    };
+    });
   }
 
   async getHealthStatus(): Promise<{
@@ -143,7 +143,7 @@ export class TransformProcessor implements BaseProcessor {
       this.processedCount > 0
         ? `${((this.transformedCount / this.processedCount) * 100).toFixed(1)}%`
         : '0%';
-'
+
     return {
       processed:this.processedCount,
       transformed:this.transformedCount,
@@ -160,9 +160,10 @@ export class TransformProcessor implements BaseProcessor {
 
     try {
       transformedData = JSON.parse(JSON.stringify(data));
-} catch (error) {
-      this.logger.warn('Failed to clone data for transformation', error);')      return data;
-}
+    } catch (error) {
+      this.logger.warn('Failed to clone data for transformation', error);
+      return data;
+    }
 
     let wasTransformed = false;
 
@@ -234,20 +235,20 @@ export class TransformProcessor implements BaseProcessor {
 }
 
     switch (operation.type) {
-      case 'add':{
-    ')        if (!data.attributes) {
+      case 'add': {
+        if (!data.attributes) {
           data.attributes = {};
-}
+        }
         const resolvedValue = this.resolveValue(operation.value, data);
         if (resolvedValue !== undefined) {
           this.setFieldValue(data, operation.field, resolvedValue);
           return true;
-}
+        }
         break;
-}
+      }
 
-      case 'modify':{
-    ')        const currentValue = this.getFieldValue(data, operation.field);
+      case 'modify': {
+        const currentValue = this.getFieldValue(data, operation.field);
         if (currentValue !== undefined) {
           const newValue = this.resolveValue(
             operation.value,
@@ -256,23 +257,27 @@ export class TransformProcessor implements BaseProcessor {
           );
           this.setFieldValue(data, operation.field, newValue);
           return true;
-}
+        }
         break;
-}
+      }
 
-      case 'remove': ')'        return this.removeFieldValue(data, operation.field);
+      case 'remove':
+        return this.removeFieldValue(data, operation.field);
 
-      case 'rename': ')'        if (operation.newField) {
+      case 'rename': {
+        if (operation.newField) {
           const value = this.getFieldValue(data, operation.field);
           if (value !== undefined) {
             this.setFieldValue(data, operation.newField, value);
             this.removeFieldValue(data, operation.field);
             return true;
-}
-}
+          }
+        }
         break;
+      }
 
-      case 'map': ')'        if (operation.mapping) {
+      case 'map': {
+        if (operation.mapping) {
           const currentValue = this.getFieldValue(data, operation.field);
           if (
             currentValue !== undefined  && 
