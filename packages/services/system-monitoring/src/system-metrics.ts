@@ -63,10 +63,10 @@ export interface SystemPerformanceTracker {
 }
 
 export interface SystemHealth {
-  status:'healthy' | ' warning' | ' critical';
-  cpu_health:'good' | ' high' | ' critical';
-  memory_health:'good' | ' high' | ' critical';
-  load_health:'good' | ' high' | ' critical';
+  status: 'healthy' | 'warning' | 'critical';
+  cpu_health: 'good' | 'high' | 'critical';
+  memory_health: 'good' | 'high' | 'critical';
+  load_health: 'good' | 'high' | 'critical';
   recommendations:string[];
 }
 
@@ -167,7 +167,7 @@ export class SystemMetricsCollector {
       start_time:Date.now(),
       memory_start:memoryUsage(),
 });
-    this.logger.debug(`Started performance tracking for:${operationId}`);`
+    this.logger.debug('Started performance tracking for:' + operationId);
 }
 
   /**
@@ -178,7 +178,7 @@ export class SystemMetricsCollector {
   ):SystemPerformanceTracker|null {
     const tracker = this.performanceTrackers.get(operationId);
     if (!tracker) {
-      this.logger.warn(`No performance tracker found for: ${operationId}`);
+      this.logger.warn('No performance tracker found for: ' + operationId);
       return null;
 }
 
@@ -198,10 +198,10 @@ export class SystemMetricsCollector {
     // Clean up tracker
     this.performanceTrackers.delete(operationId);
 
-    this.logger.debug(`Completed performance tracking for:${operationId}`, {`
-      duration_ms:tracker.duration_ms,
-      memory_delta_mb:tracker.memory_delta_mb,
-});
+    this.logger.debug('Completed performance tracking for:' + operationId, {
+      duration_ms: tracker.duration_ms,
+      memory_delta_mb: tracker.memory_delta_mb,
+    });
 
     return tracker;
 }
@@ -233,34 +233,46 @@ export class SystemMetricsCollector {
     // Health thresholds
     const cpuHealth =
       cpu.usage_percent > 90
-        ?'critical')        :cpu.usage_percent > 70
-          ? 'high')          : 'good;
-'    const memoryPressure = memory.used_mb / memory.total_mb;
+        ? 'critical'
+        : cpu.usage_percent > 70
+          ? 'high'
+          : 'good';
+    
+    const memoryPressure = memory.used_mb / memory.total_mb;
     const memoryHealth =
       memoryPressure > 0.95
-        ? 'critical')        :memoryPressure > 0.8
-          ? 'high')          : 'good;
-'
+        ? 'critical'
+        : memoryPressure > 0.8
+          ? 'high'
+          : 'good';
+
     const loadAvg1Min = (cpu.load_average[0] ?? 0) / cpu.cores;
     const loadHealth =
-      loadAvg1Min > 2 ? 'critical' :loadAvg1Min > 1 ? ' high' : ' good;
+      loadAvg1Min > 2 ? 'critical' : loadAvg1Min > 1 ? 'high' : 'good';
 
     // Overall status
     const healths = [cpuHealth, memoryHealth, loadHealth];
-    const status = healths.includes('critical')')      ? 'critical')      :healths.includes('high')')        ? 'warning')        : 'healthy;
-'
+    const status = healths.includes('critical')
+      ? 'critical'
+      : healths.includes('high')
+        ? 'warning'
+        : 'healthy';
+
     // Recommendations
-    const recommendations:string[] = [];
+    const recommendations: string[] = [];
     if (cpuHealth !== 'good') {
-    ')      recommendations.push(
-        'High CPU usage detected - consider reducing agent count')      );
-}
+      recommendations.push(
+        'High CPU usage detected - consider reducing agent count'
+      );
+    }
     if (memoryHealth !== 'good') {
-    ')      recommendations.push(
-        'High memory usage detected - implement cleanup policies')      );
-}
+      recommendations.push(
+        'High memory usage detected - implement cleanup policies'
+      );
+    }
     if (loadHealth !== 'good') {
-    ')      recommendations.push('High system load - consider distributing work');')}
+      recommendations.push('High system load - consider distributing work');
+    }
 
     return {
       status,
@@ -279,7 +291,7 @@ export class SystemMetricsCollector {
 /**
  * DI token for SystemMetricsCollector
  */
-export const SYSTEM_METRICS_COLLECTOR_TOKEN = Symbol('SystemMetricsCollector');')
+export const SYSTEM_METRICS_COLLECTOR_TOKEN = Symbol('SystemMetricsCollector');
 /**
  * Create SystemMetricsCollector with DI
  */

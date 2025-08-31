@@ -137,9 +137,9 @@ interface SystemMetrics {
 }
 
 interface HealthStatus {
-  status:'healthy' | ' degraded' | ' unhealthy';
-  checks:Record<string, {
-    status:'ok' | ' warning' | ' error';
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  checks: Record<string, {
+    status: 'ok' | 'warning' | 'error';
     value:number;
     threshold:number;
     message:string;
@@ -397,27 +397,36 @@ export class EventDrivenSystemMonitor {
     const metrics = await this.getMetricsInternal();
 
     const checks:HealthStatus['checks'] = {
-      cpu:{
+      cpu: {
         status:
           metrics.cpu.usage > this.config.cpuErrorThreshold
-            ? 'error')            :metrics.cpu.usage > this.config.cpuWarningThreshold
-              ? 'warning')              : 'ok',        value:metrics.cpu.usage,
-        threshold:this.config.cpuWarningThreshold,
-        message:`System CPU usage: ${metrics.cpu.usage}%`,
-},
-      memory:{
+            ? 'error'
+            : metrics.cpu.usage > this.config.cpuWarningThreshold
+              ? 'warning'
+              : 'ok',
+        value: metrics.cpu.usage,
+        threshold: this.config.cpuWarningThreshold,
+        message: `System CPU usage: ${metrics.cpu.usage}%`,
+      },
+      memory: {
         status:
           metrics.memory.usage > this.config.memoryErrorThreshold
-            ? 'error')            :metrics.memory.usage > this.config.memoryWarningThreshold
-              ? 'warning')              : 'ok',        value:metrics.memory.usage,
-        threshold:this.config.memoryWarningThreshold,
-        message:`System memory usage: ${metrics.memory.usage}%`,
-},
-      disk:{
+            ? 'error'
+            : metrics.memory.usage > this.config.memoryWarningThreshold
+              ? 'warning'
+              : 'ok',
+        value: metrics.memory.usage,
+        threshold: this.config.memoryWarningThreshold,
+        message: `System memory usage: ${metrics.memory.usage}%`,
+      },
+      disk: {
         status:
           metrics.disk.usage > this.config.diskErrorThreshold
-            ? 'error')            :metrics.disk.usage > this.config.diskWarningThreshold
-              ? 'warning')              : 'ok',        value:metrics.disk.usage,
+            ? 'error'
+            : metrics.disk.usage > this.config.diskWarningThreshold
+              ? 'warning'
+              : 'ok',
+        value: metrics.disk.usage,
         threshold:this.config.diskWarningThreshold,
         message:`Disk usage: ${metrics.disk.usage}%`,
 },
@@ -432,7 +441,7 @@ export class EventDrivenSystemMonitor {
     const hasWarning = Object.values(checks).some(check => check.status === 'warning');
 
     const status:HealthStatus = {
-      status:hasError ? 'unhealthy' : hasWarning ? ' degraded' : ' healthy',      checks,
+      status: hasError ? 'unhealthy' : hasWarning ? 'degraded' : 'healthy',      checks,
       timestamp:Date.now(),
       details:{
         systemLoad:metrics.cpu.load,
