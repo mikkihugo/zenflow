@@ -41,6 +41,13 @@
  * @version 2.0.0-event-driven
  */
 
+import {
+  createEventDrivenTelemetryManager,
+  getEventDrivenTelemetry,
+  initializeEventDrivenTelemetry,
+  shutdownEventDrivenTelemetry,
+} from './telemetry-event-driven.js';
+
 // PRIMARY EVENT-DRIVEN EXPORTS (ZERO IMPORTS)
 export {
   createEventDrivenTelemetryManager,
@@ -52,8 +59,8 @@ export {
 } from './telemetry-event-driven.js';
 
 // Direct telemetry creation functions (no facade pattern)
-export function createTelemetryManager(config?:unknown) {
-  return new EventDrivenTelemetryManager(config);
+export function createTelemetryManager(_config?: unknown) {
+  return createEventDrivenTelemetryManager();
 }
 
 export function createTelemetryAccess(config?:unknown) {

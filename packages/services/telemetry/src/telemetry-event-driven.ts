@@ -156,7 +156,7 @@ interface MetricData {
   value:number;
   attributes?:Record<string, unknown>;
   timestamp:number;
-  type:'metric' | ' histogram' | ' gauge';
+  type: 'metric' | 'histogram' | 'gauge';
 }
 
 interface TraceData {
@@ -166,7 +166,7 @@ interface TraceData {
   endTime:number;
   duration:number;
   attributes:Record<string, any>;
-  status:'active' | ' completed' | ' error';
+  status: 'active' | 'completed' | 'error';
 }
 
 // =============================================================================
@@ -339,22 +339,22 @@ export class EventDrivenTelemetryManager {
     this.addEventListener('telemetry:record-histogram', (data) => {
       this.recordMetricInternal(data.name, data.value, data.attributes, 'histogram');
       this.emitEvent('telemetry:metric-recorded', {
-        name:`${data.name}.histogram`,
-        value:data.value,
-        attributes:data.attributes,
-        timestamp:data.timestamp,
-});
+        name: `${data.name}.histogram`,
+        value: data.value,
+        attributes: data.attributes || {},
+        timestamp: data.timestamp,
+      });
 });
 
     // Handle gauge recording events
     this.addEventListener('telemetry:record-gauge', (data) => {
       this.recordMetricInternal(data.name, data.value, data.attributes, 'gauge');
       this.emitEvent('telemetry:metric-recorded', {
-        name:`${data.name}.gauge`,
-        value:data.value,
-        attributes:data.attributes,
-        timestamp:data.timestamp,
-});
+        name: `${data.name}.gauge`,
+        value: data.value,
+        attributes: data.attributes || {},
+        timestamp: data.timestamp,
+      });
 });
 
     // Handle event recording
@@ -411,13 +411,13 @@ export class EventDrivenTelemetryManager {
     type:'metric' | 'histogram' | 'gauge' = 'metric'):void {
     if (!this.config.enableMetrics) return;
 
-    const metric:MetricData = {
+    const metric: MetricData = {
       name,
       value,
-      attributes,
-      timestamp:Date.now(),
+      ...(attributes !== undefined && { attributes }),
+      timestamp: Date.now(),
       type,
-};
+    };
 
     const key = `${name}-${metric.timestamp}`;
     this.metrics.set(key, metric);
