@@ -188,7 +188,8 @@ export class GitHubModelsAPI implements APIProvider {
             tags: (m as any).tags || [],
             version: (m as any).version,
             htmlUrl: (m as any).html_url,
-        }));
+          };
+        });
       }
     } catch (error) {
       logger.error('Failed to get model details from catalog: ', error);

@@ -133,8 +133,9 @@ export class GitHubModelsContainer {
 
     if (this.providers['length'] === 0) {
       throw new Error(
-        'No GitHub providers could be initialized. Check your configuration and tokens.')      );
-}
+        'No GitHub providers could be initialized. Check your configuration and tokens.'
+      );
+    }
 
     // Create registry service
     this['registryService'] = createModelRegistryService(
@@ -220,14 +221,14 @@ export async function setupGitHubModelsDefault():Promise<ModelRegistryService> {
     const container = new GitHubModelsContainer();
     const summary = container.getModelsSummary();
 
-    logger.info(' GitHub Models setup complete: ');
-'    logger.info(`   Total Models:${summary.totalModels}`);
+    logger.info('GitHub Models setup complete: ');
+    logger.info(`   Total Models: ${summary.totalModels}`);
     logger.info(
-      `   Providers:${Object.keys(summary.providerCounts).join(',    ')}`
+      `   Providers: ${Object.keys(summary.providerCounts).join(', ')}`
     );
     logger.info(
-      `   Capabilities:${summary.capabilities.slice(0, 5).join(',    ')}${summary.capabilities[' length'] > 5 ? '...' : ''}`
-'    );
+      `   Capabilities: ${summary.capabilities.slice(0, 5).join(', ')}${summary.capabilities['length'] > 5 ? '...' : ''}`
+    );
 
     return registryService;
 } catch (error) {

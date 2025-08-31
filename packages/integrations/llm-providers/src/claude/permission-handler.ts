@@ -327,7 +327,9 @@ function createInteractiveHandler():CanUseTool {
       toolName,
       params,
       result,
-      'system',      'interactive-handler')    );
+      'system',
+      'interactive-handler'
+    );
 
     return result;
 };
@@ -375,12 +377,14 @@ function createCustomHandlerWrapper(customHandler:CanUseTool): CanUseTool {
       if (
         !result ||
         typeof result !== 'object' ||
-        typeof result['allowed'] !== ' boolean')      ) {
+        typeof result['allowed'] !== 'boolean'
+      ) {
         logger.error('Custom permission handler returned invalid result');
         return {
-          allowed:false,
-          reason: 'Invalid handler response',};
-}
+          allowed: false,
+          reason: 'Invalid handler response',
+        };
+      }
 
       if (!result['allowed'] && !result.reason) {
         logger.warn('Permission denied but no reason provided');
@@ -400,13 +404,13 @@ function createCustomHandlerWrapper(customHandler:CanUseTool): CanUseTool {
         'custom',        'custom-handler');
 
       return result;
-} catch (error) {
+    } catch (error) {
       logger.error('Error in custom permission handler: ', error);
-'
+      
       const result = {
-        allowed:false,
-        reason:`Permission handler error: ${error instanceof Error ? error['message'] : ' Unknown error'}`,
-};
+        allowed: false,
+        reason: `Permission handler error: ${error instanceof Error ? error['message'] : 'Unknown error'}`,
+      };
 
       globalAuditor.logPermissionCheck(
         toolName,

@@ -413,36 +413,38 @@ export class LLMProvider extends TypedEventBase {
     if (
       currentRole &&
       this['cliProvider'] &&
-      'setRole' in this[' cliProvider'] &&
-      typeof this.cliProvider['setRole'] === ' function')    )
+      'setRole' in this['cliProvider'] &&
+      typeof this.cliProvider['setRole'] === 'function'
+    ) {
       this.cliProvider.setRole(currentRole.role);
-}
+    }
 
   // Get current provider info
-  getProviderInfo():{
-    id:string;
-    name:string;
-    capabilities:CLIProviderCapabilities;
-} {
+  getProviderInfo(): {
+    id: string;
+    name: string;
+    capabilities: CLIProviderCapabilities;
+  } {
     if (!this.cliProvider) {
       throw new Error(
-        'Provider not initialized. Call initializeProvider() first.')      );
-}
+        'Provider not initialized. Call initializeProvider() first.'
+      );
+    }
     return {
-      id:this.cliProvider.id,
-      name:this.cliProvider.name,
-      capabilities:this.cliProvider.getCapabilities(),
-};
-}
+      id: this.cliProvider.id,
+      name: this.cliProvider.name,
+      capabilities: this.cliProvider.getCapabilities(),
+    };
+  }
 
   // Delegate to CLI provider for tool permissions (backward compatibility)
 
-  async chat(request:CLIRequest): Promise<CLIResult> {
+  async chat(request: CLIRequest): Promise<CLIResult> {
     // Validate and prepare the request
     const validationResult = this.validateRequest(request);
     if (validationResult.isErr()) {
       return validationResult;
-}
+    }
 
     if (!this.cliProvider) {
       return err({

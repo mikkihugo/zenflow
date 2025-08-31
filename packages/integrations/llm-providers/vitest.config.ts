@@ -23,13 +23,18 @@ export default defineConfig({
 },
 },
 },
-    include:['tests/**/*.{test,spec}.{js,ts}',    'src/**/*.{test,spec}.{js,ts}'],
-    exclude:[
-      'node_modules/**',      'dist/**',      'tests/integration/**', // Skip integration tests by default')],
-    testTimeout:5000,
-    hookTimeout:5000,
-    env:{
-      NODE_ENV: 'test',      LOG_LEVEL: 'silent',},
+    include: ['tests/**/*.{test,spec}.{js,ts}', 'src/**/*.{test,spec}.{js,ts}'],
+    exclude: [
+      'node_modules/**',
+      'dist/**',
+      'tests/integration/**', // Skip integration tests by default
+    ],
+    testTimeout: 5000,
+    hookTimeout: 5000,
+    env: {
+      NODE_ENV: 'test',
+      LOG_LEVEL: 'silent',
+    },
 },
   resolve:{
     alias:{

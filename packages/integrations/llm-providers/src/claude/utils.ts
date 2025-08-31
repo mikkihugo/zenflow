@@ -245,12 +245,12 @@ export function sanitizeFilePath(filePath:string): string {
 
   for (const dangerousPath of dangerousPaths) {
     if (
-      resolvedPath.startsWith(`${dangerousPath}/`) ||`
+      resolvedPath.startsWith(`${dangerousPath}/`) ||
       resolvedPath === dangerousPath
     ) {
       throw new Error(`Access to ${dangerousPath} is not allowed`);
-}
-}
+    }
+  }
 
   return normalized;
 }
@@ -269,15 +269,15 @@ export function validateCommand(command:string): boolean {
 
   const firstWord = command.trim().split(/\s+/)[0];
   if (!firstWord || !allowedCommands.includes(firstWord)) {
-    logger.warn(`Command '${firstWord || ' empty'}' is not in allowlist`);
+    logger.warn(`Command '${firstWord || 'empty'}' is not in allowlist`);
     return false;
-}
+  }
 
   // Check for dangerous patterns
-  if (/[$&;<>`|]/.test(command)) {`
+  if (/[$&;<>`|]/.test(command)) {
     logger.warn('Command contains dangerous characters');
     return false;
-}
+  }
 
   return true;
 }

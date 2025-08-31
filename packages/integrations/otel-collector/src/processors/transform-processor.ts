@@ -13,22 +13,28 @@ import type { BaseProcessor} from './index.js';
  * Transform operation interface
  */
 interface TransformOperation {
-  type: 'add | modify | remove | rename | map;
-'  field:string;
-  value?:any;
-  newField?:string;
-  mapping?:Record<string, any>;
-  condition?:string;
+  type: 'add' | 'modify' | 'remove' | 'rename' | 'map';
+  field: string;
+  value?: any;
+  newField?: string;
+  mapping?: Record<string, any>;
+  condition?: string;
 }
 
 /**
  * Transform processor implementation
  */
 export class TransformProcessor implements BaseProcessor {
+  private readonly config: ProcessorConfig;
+  private readonly logger: any;
+  private readonly addAttributes: Record<string, any>;
+  private readonly removeFields: string[];
+  private readonly fieldMappings: Record<string, string>;
+  private readonly operations: TransformOperation[];
 
-  constructor(config:ProcessorConfig) {
+  constructor(config: ProcessorConfig) {
     this.config = config;
-    this.logger = getLogger(`TransformProcessor:${config.name}`);`
+    this.logger = getLogger(`TransformProcessor:${config.name}`);
 
     // Parse configuration
     this.addAttributes = config.config?.addAttributes || {};
@@ -37,14 +43,14 @@ export class TransformProcessor implements BaseProcessor {
     this.operations = this.parseOperations(config.config?.operations || []);
 }
 
-  async initialize():Promise<void> {
-    this.logger.info('Transform processor initialized',{
-      addAttributes:Object.keys(this.addAttributes).length,
-      removeFields:this.removeFields.length,
-      fieldMappings:Object.keys(this.fieldMappings).length,
-      operations:this.operations.length,
-});
-}
+  async initialize(): Promise<void> {
+    this.logger.info('Transform processor initialized', {
+      addAttributes: Object.keys(this.addAttributes).length,
+      removeFields: this.removeFields.length,
+      fieldMappings: Object.keys(this.fieldMappings).length,
+      operations: this.operations.length,
+    });
+  }
 
   async process(data:TelemetryData): Promise<TelemetryData | null> {
     try {

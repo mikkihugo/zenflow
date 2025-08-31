@@ -23,7 +23,8 @@ export class PrometheusExporter implements BaseExporter {
     try {
       // Clear default metrics and create a new registry if needed
       if (this.config.config?.useCustomRegistry) {
-        const { Registry} = await import('prom-client');')        this.metricsRegistry = new Registry();
+        const { Registry } = await import('prom-client');
+        this.metricsRegistry = new Registry();
 } else {
         // Use default registry but clear it first
         this.metricsRegistry.clear();
@@ -43,10 +44,10 @@ export class PrometheusExporter implements BaseExporter {
 }
 }
 
-  async export(data:TelemetryData): Promise<ExportResult> {
+  async export(data: TelemetryData): Promise<ExportResult> {
     try {
       if (data.type === 'metrics') {
-    ')        await this.processMetricData(data);
+        await this.processMetricData(data);
         this.exportCount++;
         this.lastExportTime = Date.now();
         this.lastError = null;
@@ -87,7 +88,7 @@ export class PrometheusExporter implements BaseExporter {
       let processedCount = 0;
 
       // Filter and process metric data
-      const metricItems = dataItems.filter((item) => item.type === 'metrics');')
+      const metricItems = dataItems.filter((item) => item.type === 'metrics');
       for (const data of metricItems) {
         await this.processMetricData(data);
         processedCount++;
@@ -138,16 +139,18 @@ export class PrometheusExporter implements BaseExporter {
 });
 }
 
-  getQueueSize():number {
-    return 0; // Prometheus exporter doesn't queue, it updates metrics in real-time')}
+  getQueueSize(): number {
+    return 0; // Prometheus exporter doesn't queue, it updates metrics in real-time
+  }
 
-  async getHealthStatus():Promise<{
-    status:'healthy' | ' degraded' | ' unhealthy';
-    lastSuccess?:number;
-    lastError?:string;
-}> {
+  async getHealthStatus(): Promise<{
+    status: 'healthy' | 'degraded' | 'unhealthy';
+    lastSuccess?: number;
+    lastError?: string;
+  }> {
     return {
-      status:this.lastError ? 'unhealthy' : ' healthy',      lastSuccess:this.lastExportTime || undefined,
+      status: this.lastError ? 'unhealthy' : 'healthy',
+      lastSuccess: this.lastExportTime || undefined,
       lastError:this.lastError || undefined,
 };
 }
