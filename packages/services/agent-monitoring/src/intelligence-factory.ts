@@ -1,5 +1,3 @@
-import { getLogger } from '@claude-zen/foundation';
-
 /**
  * @fileoverview Intelligence System Factory Functions
  *
@@ -9,42 +7,104 @@ import { getLogger } from '@claude-zen/foundation';
 import { CompleteIntelligenceSystem } from './intelligence-system';
 import type { IntelligenceSystemConfig} from './types';
 
-const logger = getLogger('intelligence-factory');
+// Simple logger placeholder
+const getLogger = (name: string) => ({
+  info:(msg: string, meta?:unknown) =>
+    console.info(`[INFO: ${name}] ${msg}`, meta || {}),
+  debug:(msg: string, meta?:unknown) =>
+    console.info(`[DEBUG: ${name}] ${msg}`, meta || {}),
+  warn:(msg: string, meta?:unknown) =>
+    console.warn(`[WARN: ${name}] ${msg}`, meta || {}),
+  error:(msg: string, meta?:unknown) =>
+    console.error(`[ERROR: ${name}] ${msg}`, meta || {}),
+});
+
+const logger = getLogger('agent-monitoring-intelligence-factory');
 
 /**
- * Default configuration for intelligence systems
+ * Create a basic intelligence system with minimal features
  */
-const DEFAULT_CONFIG: IntelligenceSystemConfig = {
-  monitoring: {
-    enabled: true,
-    healthCheckInterval: 30000,
-    alertThresholds: {
-      cpu: 0.8,
-      memory: 0.9,
-      taskFailureRate: 0.2,
-    },
-  },
-  predictiveAnalytics: {
-    enabled: true,
-    forecastHorizons: ['1h', '6h', '24h'],
-    ensemblePrediction: true,
-    confidenceThreshold: 0.75,
-    enableEmergentBehavior: true,
-  },
-  persistence: {
-    enabled: true,
-    cacheSize: 1000,
-    cacheTTL: 600000,
-    historicalDataRetention: 2592000000, // 30 days
-  },
+export function createBasicIntelligenceSystem(inputConfig?:IntelligenceSystemConfig
+): CompleteIntelligenceSystem {
+  const config: IntelligenceSystemConfig = {
+    taskPrediction:{
+      enabled: true,
+      confidenceThreshold:0.7,
+      historyWindowSize:50,
+      updateInterval:60000,
+},
+    agentLearning:{
+      enabled: false,
+},
+    healthMonitoring:{
+      enabled: true,
+      healthCheckInterval:60000,
+},
+    predictiveAnalytics:{
+      enabled: false,
+},
+    persistence:{
+      enabled: false,
+},
 };
 
+  logger.info('Creating basic intelligence system');
+  const finalConfig = { ...config, ...inputConfig};
+  return new CompleteIntelligenceSystem(finalConfig);
+}
+
 /**
- * Creates a complete intelligence system with default configuration
+ * Create a production-ready intelligence system with all features
  */
-export function createIntelligenceSystem(config?: Partial<IntelligenceSystemConfig>): CompleteIntelligenceSystem {
-  const mergedConfig = { ...DEFAULT_CONFIG, ...config };
-  
-  logger.info('Creating intelligence system with config');
-  return new CompleteIntelligenceSystem(mergedConfig);
+export function createProductionIntelligenceSystem(inputConfig?:IntelligenceSystemConfig
+): CompleteIntelligenceSystem {
+  const config: IntelligenceSystemConfig = {
+    taskPrediction:{
+      enabled: true,
+      confidenceThreshold:0.8,
+      historyWindowSize:100,
+      updateInterval:30000,
+},
+    agentLearning:{
+      enabled: true,
+      adaptationRate:0.1,
+      learningModes:['supervised',    'reinforcement'],
+      performanceThreshold:0.75,
+},
+    healthMonitoring:{
+      enabled: true,
+      healthCheckInterval:30000,
+      alertThresholds:{
+        cpu:0.8,
+        memory:0.9,
+        taskFailureRate:0.2,
+},
+},
+    predictiveAnalytics:{
+      enabled: true,
+      forecastHorizons:['1h',    '6h',    '24h'],
+      ensemblePrediction: true,
+      confidenceThreshold:0.75,
+      enableEmergentBehavior: true,
+},
+    persistence:{
+      enabled: true,
+      cacheSize:1000,
+      cacheTTL:600000,
+      historicalDataRetention:2592000000, // 30 days
+},
+};
+
+  logger.info('Creating production intelligence system');
+  const finalConfig = { ...config, ...inputConfig};
+  return new CompleteIntelligenceSystem(finalConfig);
+}
+
+/**
+ * Create a custom intelligence system with provided configuration
+ */
+export function createIntelligenceSystem(config: IntelligenceSystemConfig
+): CompleteIntelligenceSystem {
+  logger.info('Creating custom intelligence system', { config});
+  return new CompleteIntelligenceSystem(config);
 }

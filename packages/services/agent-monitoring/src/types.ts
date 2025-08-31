@@ -8,6 +8,9 @@
 // Basic Agent Types
 export interface AgentId {
   id: string;
+  swarmId: string;
+  type: AgentType;
+  instance: number;
 }
 
 export type AgentType =
@@ -79,8 +82,8 @@ export interface PerformanceEntry {
 
 // Predictive Analytics Types
 export interface PredictionRequest {
-  agentId?: string;
-  swarmId?: string;
+  agentId?:string;
+  swarmId?:string;
   timeHorizon: number;
   metrics: string[];
   context?:Record<string, unknown>;
@@ -115,9 +118,9 @@ export interface TaskCompletionRecord {
   duration: number;
   success: boolean;
   timestamp: number;
-  complexity?: number;
-  quality?: number;
-  resourceUsage?: number;
+  complexity?:number;
+  quality?:number;
+  resourceUsage?:number;
   metadata?:Record<string, unknown>;
 }
 
@@ -132,6 +135,12 @@ export interface IntelligenceMetrics {
 
 export interface EmergentBehavior {
   id: string;
+  type: 'coordination' | 'optimization' | 'adaptation' | 'learning';
+  description: string;
+  strength: number;
+  participants: AgentId[];
+  emergenceTime: number;
+  stability: number;
 }
 
 // Swarm Types
@@ -205,7 +214,7 @@ export interface MonitoringConfig {
 // Event Types
 export interface MonitoringEvent {
   type: 'health' | 'performance' | 'learning' | 'prediction' | 'emergency';
-  agentId?: string;
+  agentId?:string;
   timestamp: number;
   data: Record<string, unknown>;
   severity: 'info' | 'warning' | 'critical';
@@ -229,9 +238,9 @@ export interface IntelligenceSystemConfig {
 };
   agentLearning:{
     enabled: boolean;
-    adaptationRate?: number;
-    learningModes?: string[];
-    performanceThreshold?: number;
+    adaptationRate?:number;
+    learningModes?:string[];
+    performanceThreshold?:number;
 };
   healthMonitoring:{
     enabled: boolean;
@@ -244,29 +253,65 @@ export interface IntelligenceSystemConfig {
 };
   predictiveAnalytics:{
     enabled: boolean;
-    forecastHorizons?: string[];
-    ensemblePrediction?: boolean;
-    confidenceThreshold?: number;
-    enableEmergentBehavior?: boolean;
+    forecastHorizons?:string[];
+    ensemblePrediction?:boolean;
+    confidenceThreshold?:number;
+    enableEmergentBehavior?:boolean;
 };
   persistence:{
     enabled: boolean;
-    cacheSize?: number;
-    cacheTTL?: number;
-    historicalDataRetention?: number;
+    cacheSize?:number;
+    cacheTTL?:number;
+    historicalDataRetention?:number;
 };
 }
 
 export interface IntelligenceSystem {
-  async predictTaskDuration(): Promise<void> {
+  predictTaskDuration(agentId: AgentId,
+    taskType: string,
+    context?:Record<string, unknown>
+  ): Promise<TaskPrediction>;
 
+  predictTaskDurationMultiHorizon(agentId: AgentId,
+    taskType: string,
+    context?:Record<string, unknown>
+  ): Promise<MultiHorizonTaskPrediction>;
+
+  getAgentLearningState(agentId: AgentId): AgentLearningState | null;
+
+  updateAgentPerformance(
+    agentId: AgentId,
+    success: boolean,
+    metadata?:Record<string, unknown>
+  ):void;
+
+  getAgentHealth(agentId: AgentId): AgentHealth | null;
+
+  forecastPerformanceOptimization(swarmId: SwarmId,
+    horizon?:ForecastHorizon
+  ): Promise<PerformanceOptimizationForecast>;
+
+  predictKnowledgeTransferSuccess(sourceSwarm: SwarmId,
+    targetSwarm: SwarmId,
+    patterns: unknown[]
+  ): Promise<KnowledgeTransferPrediction>;
+
+  predictEmergentBehavior():Promise<EmergentBehaviorPrediction>;
+
+  updateAdaptiveLearningModels():Promise<AdaptiveLearningUpdate>;
+
+  getSystemHealth():SystemHealthSummary;
+
+  shutdown():Promise<void>;
+}
+
+export interface TaskPrediction {
   agentId: string;
   taskType: string;
   predictedDuration: number;
   confidence: number;
   factors: PredictionFactor[];
   lastUpdated: Date;
-
 }
 
 export interface MultiHorizonTaskPrediction {
