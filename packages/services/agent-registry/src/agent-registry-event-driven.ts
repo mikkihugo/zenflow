@@ -16,7 +16,6 @@ import {
   type Logger,
   ok,
   type Result,
-  TypedEventBase,
   generateUUID,
   type UUID,
   createTimestamp,
@@ -184,7 +183,7 @@ interface AgentRegistryOptions {
 // EVENT-DRIVEN AGENT REGISTRY - FOUNDATION POWERED
 // =============================================================================
 
-export class EventDrivenAgentRegistry extends TypedEventBase {
+export class EventDrivenAgentRegistry extends EventEmitter<AgentRegistryEvents> {
   private logger:Logger;
   private serviceContainer:any;
   private initialized = false;

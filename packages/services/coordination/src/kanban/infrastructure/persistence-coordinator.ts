@@ -10,24 +10,44 @@
  */
 export interface PersistenceConfig {
   /** Database connection string */
-  connectionString?:string;
+  connectionString?: string;
   /** Connection pool size */
-  poolSize: any> {
-  success: new Map();
-  private queryCache: new Map();
+  poolSize?: number;
+  /** Cache TTL in milliseconds */
+  cacheTtl?: number;
+}
+
+export class PersistenceCoordinatorService {
+  private eventCoordinator: any;
+  private config: PersistenceConfig;
+  private connectionPool: Map<string, any> = new Map();
+  private queryCache: Map<string, any> = new Map();
   private initialized = false;
-  constructor(
-    eventCoordinator:  {}
-  ) {
+  private healthMetrics = {
+    connectionStatus: 'disconnected',
+    activeConnections: 0,
+  };
+
+  constructor(eventCoordinator: any, config: PersistenceConfig = {}) {
     this.eventCoordinator = eventCoordinator;
     this.config = {
-      poolSize:  {
-      connectionStatus : 'disconnected,'
-'      activeConnections: true;')      this.healthMetrics.connectionStatus = 'connected')      logger.info('PersistenceCoordinatorService initialized successfully');
-} catch (error) {
-    ')      this.healthMetrics.connectionStatus = 'error')      logger.error('Failed to initialize PersistenceCoordinatorService:, error');
+      poolSize: 10,
+      cacheTtl: 60000,
+      ...config,
+    };
+  }
+
+  async initialize(): Promise<void> {
+    try {
+      this.initialized = true;
+      this.healthMetrics.connectionStatus = 'connected';
+      logger.info('PersistenceCoordinatorService initialized successfully');
+    } catch (error) {
+      this.healthMetrics.connectionStatus = 'error';
+      logger.error('Failed to initialize PersistenceCoordinatorService:', error);
       throw error;
-}
+    }
+  }
 }
   /**
    * Save workflow task

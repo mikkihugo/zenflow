@@ -58,9 +58,12 @@
 import {
   createServiceContainer,
   getLogger,
-  type Logger,TypedEventBase 
+  type Logger,
+  type TypedEventBase,
+  type UnknownRecord,
+  type JsonObject,
+  type JsonValue,
 } from '@claude-zen/foundation';
-import type { JsonValue} from '@claude-zen/foundation/types';
 
 /**
  * Generic registry adapter options
@@ -75,7 +78,35 @@ export interface RegistryAdapterOptions {
   /** Migration logging */
   enableMigrationLogging?:boolean;
   /** Compatibility mode */
-  strictCompatibility?:boolean;
+  strictCompatibility?: boolean;
+}
+
+/**
+ * Service registration options
+ */
+export interface ServiceRegistrationOptions {
+  capabilities?: string[];
+  lifetime?: Lifetime;
+  [key: string]: unknown;
+}
+
+/**
+ * Service lifetime enumeration
+ */
+export enum Lifetime {
+  SINGLETON = 'singleton',
+  TRANSIENT = 'transient',
+  SCOPED = 'scoped',
+}
+
+/**
+ * Service information interface
+ */
+export interface ServiceInfo {
+  name: string;
+  capabilities: string[];
+  status: string;
+  [key: string]: unknown;
 }
 
 /**
@@ -128,8 +159,8 @@ export abstract class BaseRegistryAdapter extends TypedEventBase {
 
     if (this.options.enableMigrationLogging) {
       this.logger.info(
-        'Registry adapter initialized with ServiceContainer backend')      );
-}
+        'Registry adapter initialized with ServiceContainer backend');
+    }
 }
 
   /**
@@ -260,7 +291,8 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
     // ServiceContainer doesn't expose unregister, but we can disable the service
     this.container.setServiceEnabled(agentId, false);
 
-    this.emitMigrationEvent('agentUnregistered', { agentId});')}
+    this.emitMigrationEvent('agentUnregistered', { agentId });
+  }
 
   /**
    * Update agent status and metrics
@@ -287,7 +319,8 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
         this.container.setServiceEnabled(agentId, enabled);
 }
 
-      this.emitMigrationEvent('agentUpdated', { agentId, agent, updates});')}
+      this.emitMigrationEvent('agentUpdated', { agentId, agent, updates });
+    }
 }
 
   /**
@@ -314,10 +347,11 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
         return false;
 }
       if (query.namePattern) {
-        const pattern = new RegExp(query.namePattern, 'i');')        if (!pattern.test(agent.name)) {
+        const pattern = new RegExp(query.namePattern, 'i');
+        if (!pattern.test(agent.name)) {
           return false;
-}
-}
+        }
+      }
       if (query.capabilities) {
         const hasCapabilities = query.capabilities.every((cap) =>
           this.agentHasCapability(agent, cap)
@@ -376,9 +410,9 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
   /**
    * Get all registered agents
    */
-  getAllAgents():JsonValue[] {
-    return Array.from(this.agents.values())();
-}
+  getAllAgents(): JsonValue[] {
+    return Array.from(this.agents.values());
+  }
 
   /**
    * Get agents by type
@@ -392,8 +426,8 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
   /**
    * Get registry statistics (enhanced with ServiceContainer benefits)
    */
-  getStats():JsonObject {
-    const agents = Array.from(this.agents.values())();
+  getStats(): JsonObject {
+    const agents = Array.from(this.agents.values());
     const serviceStats = this.container.getStats();
 
     const byType = agents.reduce(
@@ -435,18 +469,27 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
     // Perform async initialization tasks
     await this.setupAdapterConfiguration();
     
-    this.logger.info('AgentRegistryAdapter initialized with ServiceContainer backend')    );
+    this.logger.info('AgentRegistryAdapter initialized with ServiceContainer backend');
     this.emitMigrationEvent('initialized', {
-    ')      containerName:this.container.getName(),
-});
-}
+      containerName: this.container.getName(),
+    });
+  }
 
-  async shutdown():Promise<void> {
+  async shutdown(): Promise<void> {
     await this.dispose();
-    this.emitMigrationEvent('shutdown', {});')}
+    this.emitMigrationEvent('shutdown', {});
+  }
 
   // Private helper methods
-  private extractCapabilities(capabilities:UnknownRecord): string[] {
+  private async setupAdapterConfiguration(): Promise<void> {
+    // Setup adapter configuration
+    if (this.options.enableHealthMonitoring) {
+      // Initialize health monitoring
+    }
+    // Additional configuration setup can be added here
+  }
+
+  private extractCapabilities(capabilities: UnknownRecord): string[] {
     if (!capabilities) {
       return [];
 }
@@ -506,10 +549,11 @@ export class ServiceRegistryAdapter extends BaseRegistryAdapter {
       throw new Error(
         'Failed to register service ' + name + ': ' + result.error.message
       );
-}
+    }
 
     this.services.set(name, implementation);
     this.emitMigrationEvent('serviceRegistered', { name });
+  }
 
   /**
    * Register an instance
@@ -565,9 +609,9 @@ export class ServiceRegistryAdapter extends BaseRegistryAdapter {
   /**
    * Get service names
    */
-  getServiceNames():string[] {
-    return Array.from(this.services.keys())();
-}
+  getServiceNames(): string[] {
+    return Array.from(this.services.keys());
+  }
 
   /**
    * Get statistics
@@ -677,6 +721,7 @@ export class RegistryMigrationUtil {
       improvement,
     };
   }
+}
 
 /**
  * Factory functions for quick adapter creation
