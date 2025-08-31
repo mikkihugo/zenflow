@@ -195,7 +195,7 @@ class KnowledgeFactSystem {
 }
 } catch (error) {
       logger.warn('Fact database initialization failed, continuing with fallbacks: ', error);
-'      // Graceful degradation - system continues with in-memory storage
+      // Graceful degradation - system continues with in-memory storage
 }
 }
 
@@ -228,10 +228,10 @@ class KnowledgeFactSystem {
       `);
       
       logger.info('✅ Fact schema created with coordinated indexes');
-} catch (error) {
+    } catch (error) {
       logger.warn('Failed to create fact schema: ', error);
-'}
-}
+    }
+  }
 
   /**
    * Initialize the fact system using Rust fact bridge

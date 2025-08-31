@@ -56,13 +56,17 @@ export abstract class BaseKnowledgeError extends Error {
 
   private logError():void {
     const logLevel =
-      this.severity === 'critical')        ? 'error')        :this.severity === 'high')          ? 'warn')          : 'info';
+      this.severity === 'critical'
+        ? 'error'
+        : this.severity === 'high'
+          ? 'warn'
+          : 'info';
 
-    logger[logLevel](`[${this.category}] ${this.message}`, {
-      severity:this.severity,
-      context:this.context,
-      recoverable:this.recoverable,
-});
+    logger[logLevel]('[' + this.category + '] ' + this.message, {
+      severity: this.severity,
+      context: this.context,
+      recoverable: this.recoverable,
+    });
 }
 
   public toObject():Record<string, any> {
@@ -237,6 +241,6 @@ export function createKnowledgeError(
     case 'RAG':
       return new RAGError(message, severity, context);
     default:
-      throw new Error(`Unknown knowledge error category:${category}`);
+      throw new Error('Unknown knowledge error category: ' + category);
 }
 }

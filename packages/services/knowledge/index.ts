@@ -721,16 +721,18 @@ export function validateKnowledgeConfig(config:unknown): {
       !config?.integration?.factIntegration?.knowledgeSwarmIntegration
     ) {
       warnings.push(
-        'FACT integration enabled but knowledge swarm integration disabled')      );
-}
+        'FACT integration enabled but knowledge swarm integration disabled'
+      );
+    }
 
     if (
       config?.integration?.ragIntegration?.enabled &&
       !config?.integration?.ragIntegration?.vectorStoreIntegration
     ) {
       warnings.push(
-        'RAG integration enabled but vector store integration disabled')      );
-}
+        'RAG integration enabled but vector store integration disabled'
+      );
+    }
 } else {
     errors.push('Missing integration configuration');
 }
