@@ -7,7 +7,7 @@
  *
  * Key Features:
  * - Single primary model (all-mpnet-base-v2) for optimal quality/performance balance
- * - Intelligent fallback chain (transformers  brain.js  basic features)
+ * - Intelligent fallback chain (transformers → brain.js → basic features)
  * - Smart caching system with performance-based eviction
  * - Optional OpenAI upgrade for premium quality
  * - Graceful degradation if models fail to load
@@ -130,7 +130,7 @@ Promise < void  > {
 return withAsyncTrace('smart-neural-coordinator-initialize', async (span) => {
     const initTimer = Date.now();
     try {
-        this.logger.info(' Initializing SmartNeuralCoordinator with intelligent backend loading...');
+        this.logger.info('🧠 Initializing SmartNeuralCoordinator with intelligent backend loading...');
     }
     finally { }
 });
@@ -173,7 +173,7 @@ span.setAttributes({
     'neural.initialization.models_loaded': this.getLoadedModelsCount(),
     'neural.initialization.primary_model_ready': ')', this: .isPrimaryModelReady(),
 });
-this.logger.info(` SmartNeuralCoordinator initialized successfully in ${initTime}ms` `
+this.logger.info(`✅ SmartNeuralCoordinator initialized successfully in ${initTime}ms` `
           );
 
           recordEvent('smart-neural-coordinator-initialized', {
@@ -194,7 +194,7 @@ this.logger.info(` SmartNeuralCoordinator initialized successfully in ${initTime
 });
 
           this.logger.error(
-            ' Failed to initialize SmartNeuralCoordinator: ','            error
+            '❌ Failed to initialize SmartNeuralCoordinator: ','            error
           );
           throw new ContextError(
             `, SmartNeuralCoordinator, initialization, failed, $, { error } `,`, {
@@ -273,7 +273,7 @@ return withAsyncTrace('smart-neural-generate-embedding', async (span) => {
         const cachedResult = this.getCachedEmbedding(cacheKey);
         if (cachedResult) {
             const processingTime = Date.now() - startTime;
-            this.logger.debug(` Using cached embedding for request (${processingTime}ms)` `
+            this.logger.debug(`📦 Using cached embedding for request (${processingTime}ms)` `
             );
 
             recordMetric('smart_neural_embedding_generated', 1, {
@@ -876,7 +876,7 @@ Promise < void  > {
             'neural.cache.previous_size': cacheSize,
             'neural.cache.cleared': true,
         });
-        this.logger.info('️ SmartNeuralCoordinator cache cleared', {
+        this.logger.info('🗑️ SmartNeuralCoordinator cache cleared', {
             ')        previousSize: cacheSize,: 
         });
         recordEvent('smart-neural-cache-cleared', {
@@ -892,7 +892,7 @@ shutdown();
 Promise < void  > {
     return: withAsyncTrace('smart-neural-coordinator-shutdown', async (span) => {
         try {
-            this.logger.info(' Shutting down SmartNeuralCoordinator...');
+            this.logger.info('🛑 Shutting down SmartNeuralCoordinator...');
             ');
             // Clear caches
             await this.clearCache();
@@ -943,7 +943,7 @@ void {
 async;
 initializeLazyLoading();
 Promise < void  > {
-    this: .logger.info(' Initialized lazy loading mode - models will load on demand'),
+    this: .logger.info('🔄 Initialized lazy loading mode - models will load on demand'),
     // Mark basic fallback as always available
     const: basicStatus = this.modelStatus.get('basic'), ')    if (basicStatus) {: basicStatus.loaded = true,
     basicStatus, : .loadingTime = 0
@@ -983,7 +983,7 @@ try {
         openaiStatus.loaded = true;
         openaiStatus.loadingTime = loadingTime;
     }
-    this.logger.info(` OpenAI client initialized for premium features (${loadingTime}ms)` `
+    this.logger.info(`✨ OpenAI client initialized for premium features (${loadingTime}ms)` `
       );
 } catch (error) {
       const openaiStatus = this.modelStatus.get('openai');')      if (openaiStatus) {
@@ -1045,7 +1045,7 @@ Promise < void  > {
             brainJsStatus.loaded = true;
             brainJsStatus.loadingTime = loadingTime;
         },
-        this: .logger.info(` Brain.js model loaded (${loadingTime}ms)`)
+        this: .logger.info(`✅ Brain.js model loaded (${loadingTime}ms)`)
     } `
 } catch (error) {
       const brainJsStatus = this.modelStatus.get('brain-js');')      if (brainJsStatus) {

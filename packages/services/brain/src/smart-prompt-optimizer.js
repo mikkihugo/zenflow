@@ -27,7 +27,7 @@ const logger = getLogger('SmartPromptOptimizer');
 export class SmartPromptOptimizer {
     initialized = false;
     constructor() {
-        logger.info(' Smart Prompt Optimizer created');
+        logger.info('🧠 Smart Prompt Optimizer created');
         ')};
         /**
          * Initialize the optimization system
@@ -37,7 +37,7 @@ export class SmartPromptOptimizer {
         Promise < void  > {
             : .initialized, return: ,
             try: {
-                logger, : .info(' Initializing Smart Prompt Optimization System...'), '): 
+                logger, : .info('🚀 Initializing Smart Prompt Optimization System...'), '): 
                 // Initialize with some baseline optimization patterns
                 await this.initializeBaselinePatterns(),
                 this: .initialized = true,
@@ -61,7 +61,7 @@ export class SmartPromptOptimizer {
             await this.initialize();
         }
         try {
-            logger.info(` Analyzing prompt for optimization:"${originalPrompt.substring(0, 50)}..."` `
+            logger.info(`🔍 Analyzing prompt for optimization:"${originalPrompt.substring(0, 50)}..."` `
       );
 
       // Analyze prompt characteristics

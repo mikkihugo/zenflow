@@ -41,7 +41,7 @@ export class TaskComplexityEstimator {
         Promise < void  > {
             : .initialized, return: ,
             try: {
-                logger, : .info(' Initializing Task Complexity Estimation System...'), '): 
+                logger, : .info('🚀 Initializing Task Complexity Estimation System...'), '): 
                 // Initialize complexity patterns based on domain knowledge
                 await this.initializeComplexityPatterns(),
                 // Initialize keyword weight analysis

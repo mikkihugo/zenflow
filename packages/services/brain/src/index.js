@@ -8,7 +8,7 @@
  * learning and adaptation capabilities. Built with Rust/WASM acceleration for maximum
  * performance and enterprise-scale neural coordination.
  *
- * ** RECOMMENDED USAGE:Access via @claude-zen/foundation Package**
+ * **⚠️ RECOMMENDED USAGE:Access via @claude-zen/foundation Package**
  *
  * While this package can be used directly, it is recommended to access brain
  * functionality through `@claude-zen/foundation` which provides integrated neural`
@@ -18,9 +18,9 @@
  * -  **Autonomous Decision-Making**:Intelligent choice between DSPy, ML, and hybrid strategies
  * -  **Task Complexity Estimation**:ML-powered complexity analysis and optimization selection
  * -  **Self-Governing Resource Allocation**:Automatic scaling and resource optimization
- * -  **Behavioral Intelligence**:Performance prediction and pattern recognition
+ * - 🧠 **Behavioral Intelligence**:Performance prediction and pattern recognition
  * -  **Real-Time Adaptation**:Continuous learning and strategy refinement
- * -  **Method Selection**:Automatic optimization based on performance history
+ * - 🔄 **Method Selection**:Automatic optimization based on performance history
  * -  **Rust/WASM Integration**:High-performance neural computation with FANN
  * -  **Foundation Integration**:Complete @claude-zen/foundation support
  *
@@ -659,7 +659,7 @@ export { SmartNeuralCoordinator } from './smart-neural-coordinator';
  */
 export { AgentPerformancePredictor } from './agent-performance-predictor';
 /**
- * ️ AutonomousCoordinator - Self-governing system management
+ * 🏛️ AutonomousCoordinator - Self-governing system management
  *
  * Comprehensive autonomous system coordination and resource management:
  * - Automatic resource allocation
@@ -702,7 +702,7 @@ export { AutoencoderPreset, CNNPreset, GraphNeuralNetwork, LSTMPreset, NeuralMod
 // =============================================================================
 export { NeuralBridge as IntelligenceBridge } from './neural-bridge';
 /**
- *  SmartPromptOptimizer - ML-powered prompt enhancement
+ * 🧠 SmartPromptOptimizer - ML-powered prompt enhancement
  *
  * Advanced prompt optimization using machine learning algorithms:
  * - Pattern recognition and template matching
@@ -939,10 +939,10 @@ export { CompleteIntelligenceSystem, createBasicIntelligenceSystem, createIntell
 //   SystemHealth
 //} from './monitoring/types';
 // =============================================================================
-// LOAD BALANCING SYSTEM -  DEPRECATED (formerly @claude-zen/load-balancing)
+// LOAD BALANCING SYSTEM - ⚠️ DEPRECATED (formerly @claude-zen/load-balancing)
 // =============================================================================
 // 
-//  DEPRECATED - DO NOT USE
+// 🚫 DEPRECATED - DO NOT USE
 // Load balancing is unnecessary for 1-2 user systems.
 // Use brain event coordination instead for intelligent task distribution.
 //

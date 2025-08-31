@@ -7,7 +7,7 @@
  *
  * Key Features:
  * - Single primary model (all-mpnet-base-v2) for optimal quality/performance balance
- * - Intelligent fallback chain (transformers  brain.js  basic features)
+ * - Intelligent fallback chain (transformers → brain.js → basic features)
  * - Smart caching system with performance-based eviction
  * - Optional OpenAI upgrade for premium quality
  * - Graceful degradation if models fail to load
@@ -331,7 +331,7 @@ export interface ModelStatus {
  * with comprehensive monitoring and telemetry integration.
  *
  * @example
- * '''typescript'
+ * ```typescript`
  * const coordinator = new SmartNeuralCoordinator({
  *   primaryModel: 'all-mpnet-base-v2', *   enableFallbacks: true,
  *   cache:{ maxSize: 10000, ttlMs:3600000, performanceBasedEviction: true}
@@ -343,8 +343,8 @@ export interface ModelStatus {
  *   text:"Machine learning is transforming software development",
  *   qualityLevel: 'standard', *   priority:'high') *});
  *
- * logger.info('Embedding: ' + (result.embedding.length) + 'D, Quality: ' + result.qualityScore);'
- * '
+ * logger.info(`Embedding: ${result.embedding.length}D, Quality: ${result.qualityScore}`);`
+ * ````
  */
 export declare class SmartNeuralCoordinator {
     private logger;

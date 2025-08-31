@@ -13,7 +13,7 @@
  * - Professional Google TypeScript naming conventions
  *
  * @example Basic Usage
- * '''typescript'
+ * ```typescript`
  * const bridge = container.get(BrainJsBridge);
  * await bridge.initialize();
  *
@@ -22,7 +22,7 @@
  *   activation:'relu') *});
  *
  * const result = await bridge.trainNeuralNet(networkId, trainingData);
- * '
+ * ```
  *
  * @author Claude Code Zen Team
  * @since 2.1.0
@@ -153,7 +153,7 @@ export interface BrainJsNetworkInstance {
  * - Integration with existing coordination system
  *
  * @example Creating and training a feedforward network
- * '''typescript'
+ * ```typescript`
  * const bridge = container.get(BrainJsBridge);
  * await bridge.initialize();
  *
@@ -171,7 +171,7 @@ export interface BrainJsNetworkInstance {
  *
  *   const trainResult = await bridge.trainNeuralNet(result.value, trainingData);
  *}
- * '
+ * ````
  */
 export declare class BrainJsBridge {
     private foundationLogger;

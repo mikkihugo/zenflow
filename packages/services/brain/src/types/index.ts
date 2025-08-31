@@ -5,8 +5,8 @@
  * learning algorithms, and brain coordination systems. These types define the core
  * domain model for all neural and AI operations within the brain package.
  *
- * Dependencies: Only imports from @claude-zen/foundation for shared primitives.
- * Domain Independence: Self-contained neural/AI domain types.
+ * Dependencies:Only imports from @claude-zen/foundation for shared primitives.
+ * Domain Independence:Self-contained neural/AI domain types.
  *
  * @package @claude-zen/brain
  * @since 2.1.0
@@ -76,8 +76,8 @@ export interface NetworkMetadata {
   author?:string;
   description?:string;
   tags?:string[];
-  createdAt: Timestamp;
-  lastModified: Timestamp;
+  createdAt:Timestamp;
+  lastModified:Timestamp;
 }
 
 /**
@@ -85,7 +85,7 @@ export interface NetworkMetadata {
  */
 export interface RetentionPolicy {
   duration:number;
-  priority: Priority;
+  priority:Priority;
   decayRate:number;
 }
 
@@ -146,16 +146,16 @@ export interface BenchmarkConfig {
   version:string;
   datasets:string[];
   metrics:string[];
-  baseline: Record<string, number>;
+  baseline:Record<string, number>;
 }
 
 /**
  * Benchmark comparison
  */
 export interface BenchmarkComparison {
-  baseline: Record<string, number>;
-  current: Record<string, number>;
-  improvement: Record<string, number>;
+  baseline:Record<string, number>;
+  current:Record<string, number>;
+  improvement:Record<string, number>;
   significance:number;
 }
 
@@ -165,7 +165,7 @@ export interface BenchmarkComparison {
 export interface LearningProgress {
   epoch:number;
   loss:number;
-  metrics: Record<string, number>;
+  metrics:Record<string, number>;
   validationLoss?:number;
   validationMetrics?:Record<string, number>;
 }
@@ -176,8 +176,8 @@ export interface LearningProgress {
 export interface AdaptationEvent {
   type:'parameter' | ' architecture' | ' strategy';
   trigger:string;
-  changes: Record<string, any>;
-  timestamp: Timestamp;
+  changes:Record<string, any>;
+  timestamp:Timestamp;
   impact:number;
 }
 
@@ -213,7 +213,7 @@ export interface FaultToleranceConfig {
  * Attachment interface
  */
 export interface Attachment {
-  id: UUID;
+  id:UUID;
   type:string;
   name:string;
   size:number;
@@ -280,15 +280,15 @@ export interface CoordinationResponse {
   result?:any;
   error?:string;
   metrics?:Record<string, number>;
-  timestamp: Timestamp;
+  timestamp:Timestamp;
 }
 
 export interface NeuralNetworkConfig extends Entity {
-  modelType: NeuralModelType;
-  architecture: NetworkArchitecture;
-  training: TrainingConfiguration;
-  optimization: OptimizationConfig;
-  metadata: NetworkMetadata;
+  modelType:NeuralModelType;
+  architecture:NetworkArchitecture;
+  training:TrainingConfiguration;
+  optimization:OptimizationConfig;
+  metadata:NetworkMetadata;
 }
 
 /**
@@ -297,8 +297,8 @@ export interface NeuralNetworkConfig extends Entity {
 export interface NetworkArchitecture {
   inputSize:number;
   outputSize:number;
-  hiddenLayers: NonEmptyArray<LayerConfig>;
-  activation: ActivationFunction;
+  hiddenLayers:NonEmptyArray<LayerConfig>;
+  activation:ActivationFunction;
   outputActivation?:ActivationFunction;
   dropout?:number;
   batchNormalization?:boolean;
@@ -365,10 +365,10 @@ export interface LearningRateScheduler {
  * Optimization configuration
  */
 export interface OptimizationConfig {
-  optimizer: OptimizerType;
-  lossFunction: LossFunction;
-  metrics: NonEmptyArray<MetricType>;
-  parameters: OptimizerParameters;
+  optimizer:OptimizerType;
+  lossFunction:LossFunction;
+  metrics:NonEmptyArray<MetricType>;
+  parameters:OptimizerParameters;
   gradientNorm?:number;
   weightDecay?:number;
 }
@@ -394,12 +394,12 @@ export interface OptimizerParameters {
  * Neural agent - AI entity with cognitive capabilities
  */
 export interface NeuralAgent extends Entity {
-  agentType: AgentType;
-  cognitiveModel: CognitivePattern;
-  capabilities: AgentCapabilities;
-  learningConfig: LearningConfiguration;
-  performance: AgentPerformance;
-  state: AgentState;
+  agentType:AgentType;
+  cognitiveModel:CognitivePattern;
+  capabilities:AgentCapabilities;
+  learningConfig:LearningConfiguration;
+  performance:AgentPerformance;
+  state:AgentState;
 }
 
 /**
@@ -412,12 +412,12 @@ export enum AgentType {
  * Cognitive patterns for neural agents
  */
 export interface CognitivePattern {
-  reasoningStyle: ReasoningStyle;
-  memoryModel: MemoryModel;
-  attentionMechanism: AttentionMechanism;
+  reasoningStyle:ReasoningStyle;
+  memoryModel:MemoryModel;
+  attentionMechanism:AttentionMechanism;
   creativityLevel:number; // 0.0 - 1.0
   analyticalDepth:number; // 0.0 - 1.0
-  collaborationStyle: CollaborationStyle;
+  collaborationStyle:CollaborationStyle;
 }
 
 /**
@@ -431,9 +431,9 @@ export enum ReasoningStyle {
  */
 export interface MemoryModel {
   type: string; // TODO: Define proper enum values
-  retention: RetentionPolicy;
-  consolidation: ConsolidationStrategy;
-  retrieval: RetrievalMechanism;
+  retention:RetentionPolicy;
+  consolidation:ConsolidationStrategy;
+  retrieval:RetrievalMechanism;
 }
 
 /**
@@ -455,9 +455,9 @@ export enum CollaborationStyle {
  * Agent capabilities and skills
  */
 export interface AgentCapabilities {
-  primarySkills: NonEmptyArray<SkillType>;
-  secondarySkills: SkillType[];
-  learningAbilities: LearningAbility[];
+  primarySkills:NonEmptyArray<SkillType>;
+  secondarySkills:SkillType[];
+  learningAbilities:LearningAbility[];
   adaptationRate:number; // 0.0 - 1.0
   specializationLevel:number; // 0.0 - 1.0
   generalKnowledge:number; // 0.0 - 1.0
@@ -490,11 +490,11 @@ export enum LearningAbility {
  * Learning configuration for neural agents
  */
 export interface LearningConfiguration {
-  strategy: LearningStrategy;
-  parameters: LearningParameters;
-  evaluation: EvaluationConfig;
-  adaptation: AdaptationConfig;
-  feedback: FeedbackConfig;
+  strategy:LearningStrategy;
+  parameters:LearningParameters;
+  evaluation:EvaluationConfig;
+  adaptation:AdaptationConfig;
+  feedback:FeedbackConfig;
 }
 
 /**
@@ -520,10 +520,10 @@ export interface LearningParameters {
  * Evaluation configuration for learning assessment
  */
 export interface EvaluationConfig {
-  metrics: NonEmptyArray<MetricType>;
-  frequency: EvaluationFrequency;
-  criteria: EvaluationCriteria;
-  benchmarks: BenchmarkConfig[];
+  metrics:NonEmptyArray<MetricType>;
+  frequency:EvaluationFrequency;
+  criteria:EvaluationCriteria;
+  benchmarks:BenchmarkConfig[];
 }
 
 /**
@@ -546,11 +546,11 @@ export enum EvaluationFrequency {
  * Agent performance metrics and tracking
  */
 export interface AgentPerformance {
-  currentMetrics: PerformanceMetrics;
-  historicalTrends: PerformanceTrend[];
-  benchmarkComparisons: BenchmarkComparison[];
-  learningProgress: LearningProgress;
-  adaptationHistory: AdaptationEvent[];
+  currentMetrics:PerformanceMetrics;
+  historicalTrends:PerformanceTrend[];
+  benchmarkComparisons:BenchmarkComparison[];
+  learningProgress:LearningProgress;
+  adaptationHistory:AdaptationEvent[];
 }
 
 /**
@@ -575,9 +575,9 @@ export interface PerformanceMetrics {
  * Performance trend tracking
  */
 export interface PerformanceTrend {
-  metric: MetricType;
-  timeWindow: TimeWindow;
-  values: TimeSeriesData[];
+  metric:MetricType;
+  timeWindow:TimeWindow;
+  values:TimeSeriesData[];
   trend: 'increasing' | 'decreasing' | 'improving' | 'stable' | 'declining' | 'volatile';
   confidence:number;
 }
@@ -586,7 +586,7 @@ export interface PerformanceTrend {
  * Time series data for trends
  */
 export interface TimeSeriesData {
-  timestamp: Timestamp;
+  timestamp:Timestamp;
   value:number;
   metadata?:Record<string, unknown>;
 }
@@ -595,8 +595,8 @@ export interface TimeSeriesData {
  * Time window specification
  */
 export interface TimeWindow {
-  start: Timestamp;
-  end: Timestamp;
+  start:Timestamp;
+  end:Timestamp;
   granularity: 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month';
 
 // =============================================================================
@@ -607,11 +607,11 @@ export interface TimeWindow {
  * Brain coordination system configuration
  */
 export interface BrainCoordinationConfig {
-  topology: CoordinationTopology;
-  communication: CommunicationProtocol;
-  consensus: ConsensusAlgorithm;
-  synchronization: SynchronizationStrategy;
-  faultTolerance: FaultToleranceConfig;
+  topology:CoordinationTopology;
+  communication:CommunicationProtocol;
+  consensus:ConsensusAlgorithm;
+  synchronization:SynchronizationStrategy;
+  faultTolerance:FaultToleranceConfig;
 }
 
 /**
@@ -640,13 +640,13 @@ export enum ReliabilityLevel {
  * Message types for agent communication
  */
 export interface AgentMessage {
-  id: UUID;
-  from: UUID; // sender agent ID
-  to: UUID | UUID[]; // recipient agent ID(s)
-  type: MessageType;
-  payload: MessagePayload;
-  priority: Priority;
-  timestamp: Timestamp;
+  id:UUID;
+  from:UUID; // sender agent ID
+  to:UUID|UUID[]; // recipient agent ID(s)
+  type:MessageType;
+  payload:MessagePayload;
+  priority:Priority;
+  timestamp:Timestamp;
   expiresAt?:Timestamp;
   correlationId?:UUID;
   replyTo?:UUID;
@@ -662,8 +662,8 @@ export enum MessageType {
  * Message payload structure
  */
 export interface MessagePayload {
-  data: Record<string, unknown>;
-  metadata: MessageMetadata;
+  data:Record<string, unknown>;
+  metadata:MessageMetadata;
   attachments?:Attachment[];
 }
 
@@ -687,12 +687,12 @@ export interface MessageMetadata {
  * Agent state information
  */
 export interface AgentState {
-  status: AgentStatus;
+  status:AgentStatus;
   currentTask?:UUID;
   workload:number; // 0.0 - 1.0
-  health: HealthStatus;
-  resources: ResourceUsage;
-  lastActivity: Timestamp;
+  health:HealthStatus;
+  resources:ResourceUsage;
+  lastActivity:Timestamp;
   uptime:number;
 }
 
@@ -707,9 +707,9 @@ export enum AgentStatus {
  */
 export interface HealthStatus {
   status: 'healthy|degraded|critical|unknown;
-  issues: HealthIssue[];
-  lastCheck: Timestamp;
-  nextCheck: Timestamp;
+  issues:HealthIssue[];
+  lastCheck:Timestamp;
+  nextCheck:Timestamp;
 }
 
 /**
@@ -717,7 +717,7 @@ export interface HealthStatus {
  */
 export interface HealthIssue {
   type: string; // TODO: Define proper enum values
-  timestamp: Timestamp;
+  timestamp:Timestamp;
   resolved:boolean;
   resolvedAt?:Timestamp;
 }
@@ -729,8 +729,8 @@ export interface ResourceUsage {
   cpu:number; // percentage
   memory:number; // bytes
   gpu?:number; // percentage
-  network: NetworkUsage;
-  storage: StorageUsage;
+  network:NetworkUsage;
+  storage:StorageUsage;
 }
 
 /**
@@ -764,16 +764,16 @@ export interface StorageUsage {
  * Training data specification
  */
 export interface TrainingDataset {
-  id: UUID;
+  id:UUID;
   name:string;
-  type: DatasetType;
-  format: DataFormat;
-  size: DatasetSize;
-  splits: DatasetSplits;
-  features: FeatureSpec[];
+  type:DatasetType;
+  format:DataFormat;
+  size:DatasetSize;
+  splits:DatasetSplits;
+  features:FeatureSpec[];
   labels?:LabelSpec;
-  preprocessing: PreprocessingConfig;
-  validation: ValidationConfig;
+  preprocessing:PreprocessingConfig;
+  validation:ValidationConfig;
 }
 
 /**
@@ -803,9 +803,9 @@ export interface DatasetSize {
  * Dataset splits for training/validation/test
  */
 export interface DatasetSplits {
-  train: SplitInfo;
-  validation: SplitInfo;
-  test: SplitInfo;
+  train:SplitInfo;
+  validation:SplitInfo;
+  test:SplitInfo;
   stratified:boolean;
   randomSeed?:number;
 }
@@ -828,8 +828,8 @@ export interface SplitInfo {
  */
 export function isNeuralAgent(obj:unknown): obj is NeuralAgent {
   return (
-    typeof obj === 'object' &&'obj !== null &&
-    'agentType' in obj &&''cognitiveModel' in obj &&''capabilities' in obj';
+    typeof obj === 'object' &&')    obj !== null &&
+    'agentType' in obj &&')    'cognitiveModel' in obj &&')    'capabilities' in obj')  );
 }
 
 /**
@@ -839,8 +839,8 @@ export function isNeuralNetworkConfig(
   obj:unknown
 ):obj is NeuralNetworkConfig {
   return (
-    typeof obj === 'object' &&'obj !== null &&
-    'modelType' in obj &&''architecture' in obj &&''training' in obj';
+    typeof obj === 'object' &&')    obj !== null &&
+    'modelType' in obj &&')    'architecture' in obj &&')    'training' in obj')  );
 }
 
 /**
@@ -848,8 +848,8 @@ export function isNeuralNetworkConfig(
  */
 export function isAgentMessage(obj:unknown): obj is AgentMessage {
   return (
-    typeof obj === 'object' &&'obj !== null &&
-    'id' in obj &&''from' in obj &&''to' in obj &&''type' in obj &&''payload' in obj';
+    typeof obj === 'object' &&')    obj !== null &&
+    'id' in obj &&')    'from' in obj &&')    'to' in obj &&')    'type' in obj &&')    'payload' in obj')  );
 }
 
 // =============================================================================
@@ -874,13 +874,13 @@ export interface NeuralError extends Error {
   readonly category: 'training' | 'inference' | 'coordination' | 'configuration';
   readonly modelId?: UUID;
   readonly agentId?: UUID;
-  readonly timestamp: Timestamp;
+  readonly timestamp:Timestamp;
   readonly code:string;
-  readonly errorId: UUID;
+  readonly errorId:UUID;
   readonly context?:Record<string, unknown>;
   readonly cause?:Error;
   readonly retryable:boolean;
-  readonly logLevel: LogLevel;
+  readonly logLevel:LogLevel;
   readonly name:string;
   readonly stack?:string;
 }

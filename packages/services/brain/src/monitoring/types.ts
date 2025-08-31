@@ -9,7 +9,7 @@
 export interface AgentId {
   id:string;
   swarmId:string;
-  type: AgentType;
+  type:AgentType;
   instance:number;
 }
 
@@ -23,7 +23,7 @@ export interface AgentMetrics {
   successRate:number;
   taskCompletionTime:number;
   errorCount:number;
-  resourceUsage: ResourceUsage;
+  resourceUsage:ResourceUsage;
   healthScore:number;
   learningProgress:number;
 }
@@ -48,7 +48,7 @@ export interface HealthThresholds {
   successRateMin:number;
   errorRateMax:number;
   responseTimeMax:number;
-  resourceUsageMax: ResourceUsage;
+  resourceUsageMax:ResourceUsage;
 }
 
 // Learning System Types
@@ -61,7 +61,7 @@ export interface LearningConfiguration {
 
 export interface PerformanceHistory {
   agentId:string;
-  entries: PerformanceEntry[];
+  entries:PerformanceEntry[];
   averageSuccessRate:number;
   trend:'improving' | ' stable' | ' declining';
 }
@@ -71,7 +71,7 @@ export interface PerformanceEntry {
   successRate:number;
   completionTime:number;
   taskType:string;
-  context: Record<string, unknown>;
+  context:Record<string, unknown>;
 }
 
 // Predictive Analytics Types
@@ -89,7 +89,7 @@ export interface PredictionResult {
   predictedValue:number;
   confidence:number;
   timeHorizon:number;
-  factors: PredictionFactor[];
+  factors:PredictionFactor[];
 }
 
 export interface PredictionFactor {
@@ -109,7 +109,7 @@ export interface TaskPredictorConfig {
 }
 
 export interface TaskCompletionRecord {
-  agentId: AgentId;
+  agentId:AgentId;
   taskType:string;
   duration:number;
   success:boolean;
@@ -134,7 +134,7 @@ export interface EmergentBehavior {
   type: '...[proper format needed]
 '  description:string;
   strength:number;
-  participants: AgentId[];
+  participants:AgentId[];
   emergenceTime:number;
   stability:number;
 }
@@ -156,15 +156,15 @@ export interface SystemHealthSummary {
 
 // Advanced Types
 export interface KnowledgeTransferPrediction {
-  sourceAgent: AgentId;
-  targetAgent: AgentId;
+  sourceAgent:AgentId;
+  targetAgent:AgentId;
   knowledge:string;
   transferProbability:number;
   expectedBenefit:number;
 }
 
 export interface PerformanceOptimizationForecast {
-  agentId: AgentId;
+  agentId:AgentId;
   currentPerformance:number;
   predictedPerformance:number;
   optimizationStrategies:string[];
@@ -180,7 +180,7 @@ export interface EmergentBehaviorPrediction {
 }
 
 export interface AdaptiveLearningUpdate {
-  agentId: AgentId;
+  agentId:AgentId;
   learningRate:number;
   adaptationStrategy:string;
   performanceImprovement:number;
@@ -191,15 +191,15 @@ export interface AdaptiveLearningUpdate {
 export interface MonitoringConfig {
   healthCheck:{
     intervalMs:number;
-    thresholds: HealthThresholds;
+    thresholds:HealthThresholds;
 };
   learning:{
-    configuration: LearningConfiguration;
+    configuration:LearningConfiguration;
     trackingEnabled:boolean;
 };
   analytics:{
     predictionEnabled:boolean;
-    forecastHorizons: ForecastHorizon[];
+    forecastHorizons:ForecastHorizon[];
 };
   intelligence:{
     emergentBehaviorDetection:boolean;
@@ -212,7 +212,7 @@ export interface MonitoringEvent {
   type: '...[proper format needed]
 '  agentId?:string;
   timestamp:number;
-  data: Record<string, unknown>;
+  data:Record<string, unknown>;
   severity:'info' | ' warning' | ' critical';
 }
 
@@ -264,35 +264,35 @@ export interface IntelligenceSystemConfig {
 
 export interface IntelligenceSystem {
   predictTaskDuration(
-    agentId: AgentId,
-    taskType: string,
+    agentId:AgentId,
+    taskType:string,
     context?:Record<string, unknown>
   ):Promise<TaskPrediction>;
 
   predictTaskDurationMultiHorizon(
-    agentId: AgentId,
-    taskType: string,
+    agentId:AgentId,
+    taskType:string,
     context?:Record<string, unknown>
   ):Promise<MultiHorizonTaskPrediction>;
 
-  getAgentLearningState(agentId: AgentId): AgentLearningState|null;
+  getAgentLearningState(agentId:AgentId): AgentLearningState|null;
 
   updateAgentPerformance(
-    agentId: AgentId,
-    success: boolean,
+    agentId:AgentId,
+    success:boolean,
     metadata?:Record<string, unknown>
   ):void;
 
-  getAgentHealth(agentId: AgentId): AgentHealth|null;
+  getAgentHealth(agentId:AgentId): AgentHealth|null;
 
   forecastPerformanceOptimization(
-    swarmId: SwarmId,
+    swarmId:SwarmId,
     horizon?:ForecastHorizon
   ):Promise<PerformanceOptimizationForecast>;
 
   predictKnowledgeTransferSuccess(
-    sourceSwarm: SwarmId,
-    targetSwarm: SwarmId,
+    sourceSwarm:SwarmId,
+    targetSwarm:SwarmId,
     patterns:unknown[]
   ):Promise<KnowledgeTransferPrediction>;
 
@@ -310,8 +310,8 @@ export interface TaskPrediction {
   taskType:string;
   predictedDuration:number;
   confidence:number;
-  factors: PredictionFactor[];
-  lastUpdated: Date;
+  factors:PredictionFactor[];
+  lastUpdated:Date;
 }
 
 export interface MultiHorizonTaskPrediction {
@@ -322,7 +322,7 @@ export interface MultiHorizonTaskPrediction {
     medium:{ duration: number; confidence: number};
     long:{ duration: number; confidence: number};
 };
-  timestamp: Date;
+  timestamp:Date;
 }
 
 export interface AgentLearningState {
@@ -371,4 +371,4 @@ export interface AgentHealth {
 }
 
 // Export convenience type unions
-export type MonitoringEventType = MonitoringEvent['type'];')export type HealthStatusType = HealthStatus['status'];')export type TrendType = PerformanceHistory['trend'];'
+export type MonitoringEventType = MonitoringEvent['type'];')export type HealthStatusType = HealthStatus['status'];')export type TrendType = PerformanceHistory['trend'];')

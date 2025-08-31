@@ -10,7 +10,7 @@ import { getLogger, type Logger} from '@claude-zen/foundation';
 // Database access via infrastructure facade
 
 // Simple fallback implementations
-const logger = getLogger('dspy-llm-bridge-fallback');
+const __logger = getLogger('dspy-llm-bridge-fallback');
 
 // Use logger for initialization tracking
 _logger.info('DSPy LLM Bridge fallback implementation loaded', {
@@ -71,11 +71,11 @@ export interface LLMBridgeOptions {
  */
 // @injectable() - removed dependency injection
 export class DSPyLLMBridge {
-  private logger: Logger;
+  private logger:Logger;
   private databaseAccess:any; // DatabaseAccess via infrastructure facade
 
   constructor(
-    configOrDatabaseAccess: any, // Can be config object or database access
+    configOrDatabaseAccess:any, // Can be config object or database access
     neuralBridge?:any // Optional neural bridge parameter
   ) {
     this.logger = getLogger('DSPyLLMBridge');
@@ -106,9 +106,10 @@ export class DSPyLLMBridge {
   /**
    * Execute coordination task using DSPy-optimized prompts (fallback)
    */
-  async executeCoordinationTask(task: DSPyCoordinationTask,
-    config: DSPyOptimizationConfig = {}
-  ): Promise<CoordinationResult> {
+  async executeCoordinationTask(
+    task:DSPyCoordinationTask,
+    config:DSPyOptimizationConfig = {}
+  ):Promise<CoordinationResult> {
     this.logger.info('Executing coordination task (fallback mode)', {
       task:task.id,
       type:task.type,
@@ -130,10 +131,10 @@ export class DSPyLLMBridge {
     return {
       result: 'fallback_coordination_result',      reasoning:['Fallback coordination executed'],
       confidence:0.7,
-      success: true, // Add success property
+      success:true, // Add success property
       metrics:{
-        executionTime: 100,
-        tokensUsed: 50,
+        executionTime:100,
+        tokensUsed:50,
 },
 };
 }
@@ -141,19 +142,21 @@ export class DSPyLLMBridge {
   /**
    * Process coordination task (alias for backward compatibility)
    */
-  async processCoordinationTask(task: DSPyCoordinationTask,
+  async processCoordinationTask(
+    task:DSPyCoordinationTask,
     config?:DSPyOptimizationConfig
-  ): Promise<CoordinationResult> {
+  ):Promise<CoordinationResult> {
     return this.executeCoordinationTask(task, config);
 }
 
   /**
    * Learn from coordination feedback (fallback)
    */
-  async learnFromCoordination(task: DSPyCoordinationTask,
-    _result: any,
+  async learnFromCoordination(
+    task:DSPyCoordinationTask,
+    _result:any,
     feedback:{ success: boolean; improvements?: string[]}
-  ): Promise<void> {
+  ):Promise<void> {
     this.logger.info('Learning from coordination feedback (fallback mode)', {
       task:task.id,
       success:feedback.success,
@@ -167,17 +170,17 @@ export class DSPyLLMBridge {
    */
   getCoordinationStats():any {
     return {
-      tasksExecuted: 0,
+      tasksExecuted:0,
       optimizationAccuracy:0.8,
-      averageLatency: 100,
-      fallbackMode: true,
+      averageLatency:100,
+      fallbackMode:true,
 };
 }
 
   /**
    * Initialize DSPy systems (fallback)
    */
-  async initialize(): Promise<void> {
+  async initialize():Promise<void> {
     this.logger.info('Initializing DSPy LLM Bridge (fallback mode)');
     // Fallback initialization - no actual DSPy setup
 }
@@ -185,7 +188,7 @@ export class DSPyLLMBridge {
   /**
    * Shutdown DSPy systems (fallback)
    */
-  async shutdown(): Promise<void> {
+  async shutdown():Promise<void> {
     this.logger.info('Shutting down DSPy LLM Bridge (fallback mode)');
     // Fallback shutdown
 }

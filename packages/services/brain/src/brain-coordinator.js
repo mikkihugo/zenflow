@@ -16,7 +16,7 @@
 export class IntelligenceOrchestrator extends EventBus {
     config;
     initialized = false;
-    //  100% EVENT-BASED:No logger property, use event-based logging only
+    // 🧠 100% EVENT-BASED:No logger property, use event-based logging only
     performanceTracker = null;
     agentMonitor = null;
     constructor(config = {}) {
@@ -43,9 +43,9 @@ export class IntelligenceOrchestrator extends EventBus {
                 ...config.neural,
             },
         };
-        //  100% EVENT-BASED:No logger import, use event-based logging only')    //  100% EVENT-BASED:Emit log events instead of direct logging
+        // 🧠 100% EVENT-BASED:No logger import, use event-based logging only')    // 🧠 100% EVENT-BASED:Emit log events instead of direct logging
         this.emitSafe('brain:log', {
-            level: 'info', message: ' Intelligence Orchestrator created - initialization pending', timestamp: Date.now(),
+            level: 'info', message: '🧠 Intelligence Orchestrator created - initialization pending', timestamp: Date.now(),
         });
         ')};
         /**
@@ -64,7 +64,7 @@ export class IntelligenceOrchestrator extends EventBus {
         }
         const initStartTime = Date.now();
         try {
-            this.logger.info(' Initializing Intelligence Orchestrator with foundation EventBus...');
+            this.logger.info('🧠 Initializing Intelligence Orchestrator with foundation EventBus...');
             ;
             // Initialize EventBus first
             const eventBusResult = await super.initialize();
@@ -72,7 +72,7 @@ export class IntelligenceOrchestrator extends EventBus {
                 throw new Error(`EventBus initialization failed:${eventBusResult.error?.message}`);
             }
             // Initialize monitoring components through operations facade
-            //  100% EVENT-BASED:Request external systems via events only
+            // 🧠 100% EVENT-BASED:Request external systems via events only
             // No direct imports or function calls - pure event coordination
             await this.emitSafe('brain:request_performance_tracker', {
                 config: {
@@ -132,7 +132,7 @@ export class IntelligenceOrchestrator extends EventBus {
   async shutdown():Promise<void> {
     if (!this.initialized) return;
 
-    this.logger.info(' Shutting down Intelligence Orchestrator...');
+    this.logger.info('🧠 Shutting down Intelligence Orchestrator...');
     
     // Emit shutdown event before cleanup
     await this.emitSafe('intelligence:shutdown', {

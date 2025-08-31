@@ -8,19 +8,19 @@
  * learning and adaptation capabilities. Built with Rust/WASM acceleration for maximum
  * performance and enterprise-scale neural coordination.
  *
- * ** RECOMMENDED USAGE: Access via @claude-zen/foundation Package**
+ * **⚠️ RECOMMENDED USAGE:Access via @claude-zen/foundation Package**
  *
  * While this package can be used directly, it is recommended to access brain
- * functionality through '@claude-zen/foundation' which provides integrated neural'
+ * functionality through `@claude-zen/foundation` which provides integrated neural`
  * coordination with telemetry, logging, and configuration management.
  *
  * **CORE AUTONOMOUS CAPABILITIES:**
  * -  **Autonomous Decision-Making**:Intelligent choice between DSPy, ML, and hybrid strategies
  * -  **Task Complexity Estimation**:ML-powered complexity analysis and optimization selection
  * -  **Self-Governing Resource Allocation**:Automatic scaling and resource optimization
- * -  **Behavioral Intelligence**:Performance prediction and pattern recognition
+ * - 🧠 **Behavioral Intelligence**:Performance prediction and pattern recognition
  * -  **Real-Time Adaptation**:Continuous learning and strategy refinement
- * -  **Method Selection**:Automatic optimization based on performance history
+ * - 🔄 **Method Selection**:Automatic optimization based on performance history
  * -  **Rust/WASM Integration**:High-performance neural computation with FANN
  * -  **Foundation Integration**:Complete @claude-zen/foundation support
  *
@@ -47,7 +47,7 @@
  * - Audit trails for AI decision-making and compliance
  *
  * @example Recommended Usage via Foundation
- * 'typescript'
+ * ```typescript`
  * import { getNeuralAccess, AI} from '@claude-zen/foundation';
  *
  * // Get integrated neural access with telemetry
@@ -66,10 +66,10 @@
  *   reasoning:decision.reasoning,
  *   expectedOutcome:decision.prediction
  *});
- * '
+ * ````
  *
  * @example Direct Advanced Neural Coordination
- * '''typescript'
+ * ```typescript`
  * import {
  *   BrainCoordinator,
  *   AutonomousOptimizationEngine,
@@ -79,24 +79,24 @@
  * // Create enterprise-grade autonomous brain coordinator
  * const brain = new BrainCoordinator({
  *   autonomous:{
- *     enabled: true,
+ *     enabled:true,
  *     learningRate:0.01,
  *     adaptationThreshold:0.85,
  *     decisionConfidenceMinimum:0.7
  *},
  *   neural:{
- *     rustAcceleration: true,
- *     gpuAcceleration: true,
- *     parallelProcessing: 8,
+ *     rustAcceleration:true,
+ *     gpuAcceleration:true,
+ *     parallelProcessing:8,
  *     memoryPoolSize:'2GB') *},
  *   optimization:{
  *     strategies:['dspy',    'ml',    'hybrid',    'ensemble'],
- *     autoSelection: true,
+ *     autoSelection:true,
  *     performanceTracking:true
  *},
  *   enterprise:{
- *     auditTrail: true,
- *     securityLevel: 'high', *     multiTenant: true,
+ *     auditTrail:true,
+ *     securityLevel: 'high', *     multiTenant:true,
  *     governanceCompliance:'soc2') *}
  *});
  *
@@ -105,7 +105,7 @@
  * // Autonomous optimization with full enterprise features
  * const result = await brain.optimizePrompt({
  *   task: 'complex neural network design', *   basePrompt: 'Design a CNN for image classification with 99%+ accuracy', *   context:{
- *     domain: 'computer-vision', *     datasetSize: 1000000,
+ *     domain: 'computer-vision', *     datasetSize:1000000,
  *     computeConstraints:{ maxGPUMemory: '16GB', maxTrainingTime: '4h'},
  *     qualityRequirements:{ accuracy: 0.99, inference: '<10ms'}') *},
  *   priority: 'high', *   enableLearning:true
@@ -125,10 +125,10 @@
  *   actualPerformance:0.995,
  *   actualTime:3.2 * 3600000, // 3.2 hours
  *   feedback:'Exceeded expectations, excellent architecture selection') *});
- * '
+ * ````
  *
  * @example Enterprise Neural Network Training
- * '''typescript'
+ * ```typescript`
  * import {
  *   NeuralBridge,
  *   createNeuralNetwork,
@@ -139,18 +139,18 @@
  * // Create high-performance neural bridge with enterprise features
  * const neuralBridge = new NeuralBridge({
  *   backend: 'rust-fann', *   acceleration:{
- *     gpu: true,
- *     multiThreading: true,
+ *     gpu:true,
+ *     multiThreading:true,
  *     vectorization: 'avx512', *     memoryOptimization:true
  *},
  *   monitoring:{
- *     realTimeMetrics: true,
- *     performanceProfiler: true,
+ *     realTimeMetrics:true,
+ *     performanceProfiler:true,
  *     memoryTracker:true
  *},
  *   enterprise:{
- *     modelEncryption: true,
- *     auditLogging: true,
+ *     modelEncryption:true,
+ *     auditLogging:true,
  *     accessControl:'rbac') *}
  *});
  *
@@ -158,12 +158,12 @@
  * const network = await createNeuralNetwork({
  *   architecture:{
  *     type: 'transformer', *     layers:[
- *       { type: 'embedding', dimensions: 512, vocabulary:50000},
- *       { type: 'multihead-attention', heads: 8, dimensions:512},
- *       { type: 'feedforward', dimensions: 2048, activation: ' gelu'},
+ *       { type: 'embedding', dimensions:512, vocabulary:50000},
+ *       { type: 'multihead-attention', heads:8, dimensions:512},
+ *       { type: 'feedforward', dimensions:2048, activation: ' gelu'},
  *       { type: 'layer-norm', dimensions:512},
  *       { type: 'dropout', rate:0.1},
- *       { type: 'output', dimensions: 1024, activation: ' softmax'}') *],
+ *       { type: 'output', dimensions:1024, activation: ' softmax'}') *],
  *     optimization:{
  *       algorithm: 'adamw', *       learningRate:0.0001,
  *       weightDecay:0.01,
@@ -171,8 +171,8 @@
  *}
  *},
  *   hardware:{
- *     useGPU: true,
- *     precision: 'mixed', // FP16 + FP32') *     batchSize: 32,
+ *     useGPU:true,
+ *     precision: 'mixed', // FP16 + FP32') *     batchSize:32,
  *     gradientAccumulation:4
  *}
  *});
@@ -181,21 +181,21 @@
  * const trainingResult = await trainNeuralNetwork(network, {
  *   trainingData:await loadLargeDataset('training.parquet'),
  *   validationData:await loadLargeDataset('validation.parquet'),
- *   epochs: 100,
+ *   epochs:100,
  *   monitoring:{
- *     checkpointInterval: 10,
- *     validationInterval: 5,
- *     earlyStoppingPatience: 15,
+ *     checkpointInterval:10,
+ *     validationInterval:5,
+ *     earlyStoppingPatience:15,
  *     lossThreshold:0.001
  *},
  *   optimization:{
- *     learningRateScheduler: 'cosine-annealing', *     warmupSteps: 1000,
- *     autoMixedPrecision: true,
+ *     learningRateScheduler: 'cosine-annealing', *     warmupSteps:1000,
+ *     autoMixedPrecision:true,
  *     gradientCheckpointing:true
  *},
  *   enterprise:{
- *     saveCheckpoints: true,
- *     modelVersioning: true,
+ *     saveCheckpoints:true,
+ *     modelVersioning:true,
  *     experimentTracking: 'mlflow', *     distributedTraining:{ nodes: 4, gpusPerNode:8}
  *}
  *});
@@ -207,10 +207,10 @@
  *   modelSize:trainingResult.modelSizeBytes,
  *   checkpoints:trainingResult.savedCheckpoints.length
  *});
- * '
+ * ````
  *
  * @example Autonomous Task Complexity Analysis
- * '''typescript'
+ * ```typescript`
  * import {
  *   TaskComplexityEstimator,
  *   AutonomousOptimizationEngine,
@@ -222,23 +222,23 @@
  *   models:{
  *     textAnalysis: 'transformer-large', *     contextAnalysis: 'bert-large', *     domainClassification:'custom-classifier') *},
  *   features:{
- *     linguisticComplexity: true,
- *     semanticDepth: true,
- *     domainSpecificity: true,
- *     contextualDependencies: true,
+ *     linguisticComplexity:true,
+ *     semanticDepth:true,
+ *     domainSpecificity:true,
+ *     contextualDependencies:true,
  *     temporalRequirements:true
  *},
  *   learning:{
- *     enabled: true,
+ *     enabled:true,
  *     updateFrequency: 'daily', *     feedbackIntegration:true
  *}
  *});
  *
  * // Analyze complex enterprise task
  * const complexityAnalysis = await complexityEstimator.estimateComplexity({
- *   task: 'microservices-architecture-design', *   prompt:'Design a fault-tolerant microservices architecture for a global'
+ *   task: 'microservices-architecture-design', *   prompt:`Design a fault-tolerant microservices architecture for a global`
  *            e-commerce platform handling 100M+ users with real-time inventory,
- *            payment processing, recommendation engine, and fraud detection','
+ *            payment processing, recommendation engine, and fraud detection`,`
  *   context:{
  *     domain: 'enterprise-architecture', *     scale: 'global', *     constraints:{
  *       availability: '99.99%', *       latency: '<100ms', *       security: 'enterprise-grade', *       compliance:['pci-dss',    'gdpr',    'sox']') *},
@@ -276,7 +276,7 @@
  *     learning:0.1
  *},
  *   autonomous:{
- *     enableSelfImprovement: true,
+ *     enableSelfImprovement:true,
  *     adaptationRate:0.05,
  *     confidenceThreshold:0.8
  *}
@@ -286,7 +286,7 @@
  *   complexityAnalysis,
  *   historicalPerformance:await optimizer.getHistoricalData(),
  *   constraints:{
- *     timeLimit: 7200000, // 2 hours
+ *     timeLimit:7200000, // 2 hours
  *     qualityRequirement:0.95,
  *     resourceBudget:'high') *}
  *});
@@ -298,10 +298,10 @@
  *   expectedOutcome:optimizationDecision.prediction,
  *   alternativeStrategies:optimizationDecision.alternatives
  *});
- * '
+ * ````
  *
  * @example Behavioral Intelligence and Agent Performance Prediction
- * '''typescript'
+ * ```typescript`
  * import {
  *   BehavioralIntelligence,
  *   AgentPerformancePredictor,
@@ -313,27 +313,27 @@
  *   models:{
  *     performancePrediction: 'time-series-transformer', *     behaviorClassification: 'ensemble-classifier', *     anomalyDetection: 'isolation-forest', *     patternRecognition:'conv-lstm') *},
  *   features:{
- *     timeSeriesAnalysis: true,
- *     behavioralClustering: true,
- *     performanceTrends: true,
+ *     timeSeriesAnalysis:true,
+ *     behavioralClustering:true,
+ *     performanceTrends:true,
  *     contextualFactors:true
  *},
  *   learning:{
- *     realTimeAdaptation: true,
- *     crossAgentLearning: true,
- *     feedbackIntegration: true,
+ *     realTimeAdaptation:true,
+ *     crossAgentLearning:true,
+ *     feedbackIntegration:true,
  *     modelUpdates:'continuous') *},
  *   enterprise:{
- *     privacyPreservation: true,
- *     auditability: true,
+ *     privacyPreservation:true,
+ *     auditability:true,
  *     fairnessMonitoring:true
  *}
  *});
  *
  * // Track comprehensive agent execution data
  * const executionData = {
- *   agentId: 'senior-architect-001', *   taskType: 'system-design', *   startTime: Date.now() - 3600000, // 1 hour ago
- *   endTime: Date.now(),
+ *   agentId: 'senior-architect-001', *   taskType: 'system-design', *   startTime:Date.now() - 3600000, // 1 hour ago
+ *   endTime:Date.now(),
  *   performance:{
  *     qualityScore:0.92,
  *     efficiency:0.87,
@@ -342,11 +342,11 @@
  *},
  *   context:{
  *     complexity:0.8,
- *     timeOfDay: 'morning', *     workload: 'moderate', *     collaboration: true,
+ *     timeOfDay: 'morning', *     workload: 'moderate', *     collaboration:true,
  *     interruptions:2
  *},
  *   outcomes:{
- *     success: true,
+ *     success:true,
  *     stakeholderSatisfaction:0.91,
  *     implementationFeasibility:0.88,
  *     maintainabilityScore:0.93
@@ -360,7 +360,7 @@
  * const performancePrediction = await behavioral.predictAgentPerformance({
  *   agentId: 'senior-architect-001', *   taskType: 'system-design', *   complexity:0.85,
  *   context:{
- *     timeOfDay: 'afternoon', *     workload: 'high', *     collaboration: false,
+ *     timeOfDay: 'afternoon', *     workload: 'high', *     collaboration:false,
  *     urgency:'high') *},
  *   horizons:['1h',    '4h',    '1d']') *});
  *
@@ -385,7 +385,7 @@
  *
  * // Demo behavioral intelligence capabilities
  * const demoResults = await demoBehavioralIntelligence({
- *   agentCount: 50,
+ *   agentCount:50,
  *   taskTypes:['coding',    'design',    'analysis',    'optimization'],
  *   simulationDuration: '30d', *   learningEnabled:true
  *});
@@ -396,10 +396,10 @@
  *   improvementRate:demoResults.learningRate,
  *   insights:demoResults.keyInsights
  *});
- * '
+ * ````
  *
  * @example GPU-Accelerated Neural Computation
- * '''typescript'
+ * ```typescript`
  * import {
  *   GPUSupport,
  *   detectGPUCapabilities,
@@ -421,8 +421,8 @@
  *   const gpuSupport = await initializeGPUAcceleration({
  *     device:gpuCapabilities.bestDevice,
  *     memoryPoolSize: '8GB', *     precision: 'mixed', // FP16 + FP32') *     optimization:{
- *       tensorCores: true,
- *       cudnn: true,
+ *       tensorCores:true,
+ *       cudnn:true,
  *       tensorrt:true
  *}
  *});
@@ -431,23 +431,23 @@
  *   const gpuOptimizedBrain = new BrainCoordinator({
  *     neural:{
  *       backend: 'gpu-accelerated', *       gpuSupport,
- *       batchSize: 256,
+ *       batchSize:256,
  *       parallelStreams:4
  *},
  *     optimization:{
- *       kernelFusion: true,
- *       memoryOptimization: true,
+ *       kernelFusion:true,
+ *       memoryOptimization:true,
  *       pipelineParallelism:true
  *}
  *});
  *
  *   // Optimize neural networks for GPU execution
  *   const optimizedNetwork = await optimizeForGPU({
- *     network: neuralNetwork,
+ *     network:neuralNetwork,
  *     targetGPU:gpuCapabilities.bestDevice,
  *     optimizations:{
  *       quantization: 'int8', *       pruning:0.1, // Remove 10% of weights
- *       tensorDecomposition: true,
+ *       tensorDecomposition:true,
  *       kernelFusion:true
  *}
  *});
@@ -460,10 +460,10 @@
  *     accuracyRetention:optimizedNetwork.accuracyRetention
  *});
  *}
- * '
+ * ````
  *
  * @example Enterprise Multi-Tenant Neural System
- * '''typescript'
+ * ```typescript`
  * import {
  *   BrainCoordinator,
  *   AutonomousCoordinator,
@@ -473,7 +473,7 @@
  * // Create enterprise multi-tenant neural system
  * const enterpriseNeuralSystem = await createEnterpriseNeuralSystem({
  *   multiTenant:{
- *     enabled: true,
+ *     enabled:true,
  *     isolation: 'strict', *     resourceQuotas:{
  *       'tenant-a':{ cpuCores: 16, gpuMemory: '8GB', networkBandwidth: '1Gbps'},
  *       'tenant-b':{ cpuCores: 32, gpuMemory: '16GB', networkBandwidth: '10Gbps'},
@@ -484,15 +484,15 @@
  *   security:{
  *     encryption: 'AES-256-GCM', *     keyManagement: 'enterprise-kms', *     auditLogging: 'comprehensive', *     accessControl: 'rbac-with-abac', *     networkSecurity:'zero-trust') *},
  *   governance:{
- *     modelGovernance: true,
- *     dataGovernance: true,
+ *     modelGovernance:true,
+ *     dataGovernance:true,
  *     complianceFrameworks:['soc2',    'iso27001',    'gdpr'],
- *     ethicsMonitoring: true,
+ *     ethicsMonitoring:true,
  *     biasDetection:true
  *},
  *   monitoring:{
- *     realTimeMetrics: true,
- *     performanceDashboards: true,
+ *     realTimeMetrics:true,
+ *     performanceDashboards:true,
  *     alerting: 'enterprise-integration', *     logging: 'structured-json', *     tracing:'distributed') *}
  *});
  *
@@ -506,8 +506,8 @@
  *     auditAll:true
  *},
  *   learning:{
- *     enabled: true,
- *     crossTenantLearning: false, // Privacy preservation
+ *     enabled:true,
+ *     crossTenantLearning:false, // Privacy preservation
  *     modelSharing: 'federated', *     privacyPreservation:'differential-privacy') *}
  *});
  *
@@ -515,7 +515,7 @@
  * await enterpriseNeuralSystem.registerTenant('acme-corp', {
     ') *   brainConfig:{
  *     autonomous:{
- *       enabled: true,
+ *       enabled:true,
  *       aggressiveness: 'conservative', *       domains:['optimization',    'resource-allocation']') *},
  *     neural:{
  *       models:['transformer-large',    'cnn-optimized',    'lstm-financial'],
@@ -546,17 +546,17 @@
  *   implementationPlan:systemOptimization.plan,
  *   rollbackStrategy:systemOptimization.rollback
  *});
- * '
+ * ````
  *
  * @example Using separate entry points (optimal tree-shaking)
- * '''typescript'
+ * ```typescript`
  * // Optimal imports for tree-shaking
  * import { BrainCoordinator} from '@claude-zen/brain/coordinator';
  * import { NeuralBridge} from '@claude-zen/brain/neural';
  * import { AutonomousOptimizationEngine} from '@claude-zen/brain/autonomous';
  * import { BehavioralIntelligence} from '@claude-zen/brain/behavioral';
  * import { GPUSupport} from '@claude-zen/brain/gpu';
- * '
+ * ````
  *
  * **Performance Characteristics:**
  * - **Decision Latency**:<5ms for cached decisions, <50ms for complex analysis
@@ -663,7 +663,7 @@ export {
 // =============================================================================
 // ADDITIONAL BRAIN SYSTEMS - Extended functionality
 // =============================================================================
-// Note: BrainJs functionality moved to neural-ml package
+// Note:BrainJs functionality moved to neural-ml package
 export { 
   BehavioralIntelligence,
   BrainCoordinator as BrainSystem, 
@@ -685,7 +685,7 @@ export type {
 // =============================================================================
 export { SmartNeuralCoordinator} from './smart-neural-coordinator';
 
-// Note: BrainJs functionality moved to neural-ml package
+// Note:BrainJs functionality moved to neural-ml package
 // export {
 //   BrainJsBridge,
 //   createBrainJsNetwork,
@@ -710,7 +710,7 @@ export { SmartNeuralCoordinator} from './smart-neural-coordinator';
  */
 export { AgentPerformancePredictor} from './agent-performance-predictor';
 /**
- * ️ AutonomousCoordinator - Self-governing system management
+ * 🏛️ AutonomousCoordinator - Self-governing system management
  *
  * Comprehensive autonomous system coordination and resource management:
  * - Automatic resource allocation
@@ -718,7 +718,7 @@ export { AgentPerformancePredictor} from './agent-performance-predictor';
  * - Performance optimization
  * - System health monitoring
  *
- * Note: Advanced system coordination - use with caution in production
+ * Note:Advanced system coordination - use with caution in production
  */
 export { AutonomousCoordinator} from './autonomous-coordinator';
 /**
@@ -798,7 +798,7 @@ export type {
 // =============================================================================
 export { NeuralBridge as IntelligenceBridge} from './neural-bridge';
 /**
- *  SmartPromptOptimizer - ML-powered prompt enhancement
+ * 🧠 SmartPromptOptimizer - ML-powered prompt enhancement
  *
  * Advanced prompt optimization using machine learning algorithms:
  * - Pattern recognition and template matching
@@ -831,22 +831,22 @@ export { TaskComplexityEstimator} from './task-complexity-estimator';
  * The Brain Package implements a comprehensive autonomous decision-making pipeline:
  *
  * 1.  TASK ANALYSIS
- *    TaskComplexityEstimator  Automatic complexity analysis using ML
- *    
+ *    TaskComplexityEstimator → Automatic complexity analysis using ML
+ *    ↓
  * 2.  METHOD SELECTION
- *    AutonomousOptimizationEngine  Intelligent DSPy/ML/hybrid selection
- *    
- * 3.  OPTIMIZATION EXECUTION
- *    SmartPromptOptimizer + DSPy  Advanced prompt optimization
- *    
+ *    AutonomousOptimizationEngine → Intelligent DSPy/ML/hybrid selection
+ *    ↓
+ * 3. 🧠 OPTIMIZATION EXECUTION
+ *    SmartPromptOptimizer + DSPy → Advanced prompt optimization
+ *    ↓
  * 4.  PERFORMANCE MONITORING
- *    AgentPerformancePredictor  Behavioral analysis and prediction
- *    
- * 5. ️ SYSTEM COORDINATION
- *    AutonomousCoordinator  Resource allocation and scaling
- *    
- * 6.  CONTINUOUS LEARNING
- *    BehavioralIntelligence  Learning from outcomes and adaptation
+ *    AgentPerformancePredictor → Behavioral analysis and prediction
+ *    ↓
+ * 5. 🏛️ SYSTEM COORDINATION
+ *    AutonomousCoordinator → Resource allocation and scaling
+ *    ↓
+ * 6. 🔄 CONTINUOUS LEARNING
+ *    BehavioralIntelligence → Learning from outcomes and adaptation
  *
  * This creates a fully autonomous system that "auto makes the best decisions
  * over time" through continuous learning and intelligent adaptation.
@@ -1010,7 +1010,7 @@ export const BRAIN_INFO = {
  *
  * ## Architecture
  *
- * '''
+ * ````
  * ┌─────────────────────────────────────────────────────┐
  * │              Application Layer                      │
  * │           (@claude-zen/foundation)                 │
@@ -1038,11 +1038,11 @@ export const BRAIN_INFO = {
  * │  ├─ GPU Acceleration Support                       │
  * │  └─ Brain.js Integration                           │
  * └─────────────────────────────────────────────────────┘
- * '
+ * ````
  *
  * ## Autonomous Decision Pipeline
  *
- *|Stage | Component | Function|*|-------|-----------|----------|*|1. Analysis | TaskComplexityEstimator | ML-powered complexity analysis|*|2. Strategy | AutonomousOptimizationEngine | Intelligent method selection|*|3. Execution | SmartPromptOptimizer + DSPy | Advanced optimization|*|4. Monitoring | AgentPerformancePredictor | Behavioral analysis|*|5. Coordination | AutonomousCoordinator | Resource allocation|*|6. Learning | BehavioralIntelligence | Continuous improvement|*
+ *|Stage|Component|Function|*|-------|-----------|----------|*|1. Analysis|TaskComplexityEstimator|ML-powered complexity analysis|*|2. Strategy|AutonomousOptimizationEngine|Intelligent method selection|*|3. Execution|SmartPromptOptimizer + DSPy|Advanced optimization|*|4. Monitoring|AgentPerformancePredictor|Behavioral analysis|*|5. Coordination|AutonomousCoordinator|Resource allocation|*|6. Learning|BehavioralIntelligence|Continuous improvement|*
  * ## Neural Network Features
  *
  * - **FANN Integration**:Fast Artificial Neural Network library with Rust/WASM
@@ -1101,16 +1101,16 @@ export const BRAIN_INFO = {
  *
  * ## Getting Started
  *
- * '''bash'
+ * ```bash`
  * # Install core brain package
  * npm install @claude-zen/brain @claude-zen/foundation @claude-zen/dspy
  *
  * # Install neural network dependencies
  * npm install fann-wasm brain.js
  *
- * # Optional: Install GPU acceleration support
+ * # Optional:Install GPU acceleration support
  * npm install @tensorflow/tfjs-node-gpu
- * '
+ * ````
  *
  * See the comprehensive examples above for detailed usage patterns and enterprise features.
  */
@@ -1143,8 +1143,8 @@ const brainSystemInstance:any = null;
 
 export async function getBrainSystemAccess():Promise<any> {
   if (!brainSystemInstance) {
-    const { BrainCoordinator} = await import('./main');'brainSystemInstance = new BrainCoordinator(
-        enabled: true,
+    const { BrainCoordinator} = await import('./main');')    brainSystemInstance = new BrainCoordinator(
+        enabled:true,
         learningRate:0.1,
         adaptationThreshold:0.7,,);
     await brainSystemInstance.initialize();
@@ -1172,7 +1172,7 @@ export async function getTaskComplexityEstimator(config?:any): Promise<any> {
 
 export async function getAutonomousOptimizer(_config?:any): Promise<any> {
   const { AutonomousOptimizationEngine} = await import(
-    './autonomous-optimization-engine';
+    './autonomous-optimization-engine')  );
   return new AutonomousOptimizationEngine();
 }
 
@@ -1186,14 +1186,14 @@ export async function getNeuralBridge(_config?:any): Promise<any> {
 
 // Professional brain system object with proper naming (matches Storage/Telemetry patterns)
 export const brainSystem = {
-  getAccess: getBrainSystemAccess,
-  getCoordinator: getBrainCoordinator,
-  getSmartCoordinator: getSmartNeuralCoordinator,
-  getOrchestrator: getNeuralOrchestrator,
-  getComplexityEstimator: getTaskComplexityEstimator,
-  getAutonomousOptimizer: getAutonomousOptimizer,
-  getBehavioralIntelligence: getBehavioralIntelligence,
-  getNeuralBridge: getNeuralBridge,
+  getAccess:getBrainSystemAccess,
+  getCoordinator:getBrainCoordinator,
+  getSmartCoordinator:getSmartNeuralCoordinator,
+  getOrchestrator:getNeuralOrchestrator,
+  getComplexityEstimator:getTaskComplexityEstimator,
+  getAutonomousOptimizer:getAutonomousOptimizer,
+  getBehavioralIntelligence:getBehavioralIntelligence,
+  getNeuralBridge:getNeuralBridge,
 };
 
 // Type definitions for external consumers
@@ -1233,14 +1233,14 @@ export type { TaskPredictor} from './monitoring/task-predictor';
 //} from './monitoring/types';
 
 // =============================================================================
-// LOAD BALANCING SYSTEM -  DEPRECATED (formerly @claude-zen/load-balancing)
+// LOAD BALANCING SYSTEM - ⚠️ DEPRECATED (formerly @claude-zen/load-balancing)
 // =============================================================================
 // 
-//  DEPRECATED - DO NOT USE
+// 🚫 DEPRECATED - DO NOT USE
 // Load balancing is unnecessary for 1-2 user systems.
 // Use brain event coordination instead for intelligent task distribution.
 //
-// Replaced by: Brain event-driven coordination with modal behavior
+// Replaced by:Brain event-driven coordination with modal behavior
 //
 // export {
 //   LoadBalancer,

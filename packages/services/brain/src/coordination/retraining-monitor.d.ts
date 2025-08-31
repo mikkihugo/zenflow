@@ -46,7 +46,7 @@ export interface MonitoringMetrics {
 /**
  * Automated retraining monitor using foundation metrics and LLM coordination.
  *
- * Implements Option 4:Build coordination feedback loops (coordinationSuccessRate  retraining)
+ * Implements Option 4:Build coordination feedback loops (coordinationSuccessRate → retraining)
  */
 export declare class RetrainingMonitor {
     private isMonitoring;

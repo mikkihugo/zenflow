@@ -42,7 +42,7 @@ export interface ABTestStrategy {
   /** Human-readable name */
   name:string;
   /** AI model backend to use */
-  modelBackend: AIModelBackend;
+  modelBackend:AIModelBackend;
   /** Swarm configuration parameters */
   swarmConfig:{
     topology: 'mesh|hierarchical|ring|star;
@@ -80,7 +80,7 @@ export interface GitTreeConfig {
  */
 export interface SwarmTestResult {
   /** Strategy that was tested */
-  strategy: ABTestStrategy;
+  strategy:ABTestStrategy;
   /** Execution success status */
   success:boolean;
   /** Execution duration in milliseconds */
@@ -110,7 +110,7 @@ export interface SwarmTestResult {
   worktreePath?:string;
   /** Model-specific metadata */
   modelMetadata:{
-    backend: AIModelBackend;
+    backend:AIModelBackend;
     tokenUsage?:number;
     requestCount:number;
     avgResponseTime:number;
@@ -129,24 +129,24 @@ export interface ABTestResult {
   /** Test description */
   description:string;
   /** All strategies tested */
-  strategies: ABTestStrategy[];
+  strategies:ABTestStrategy[];
   /** Results for each strategy */
-  results: SwarmTestResult[];
+  results:SwarmTestResult[];
   /** Statistical comparison */
   comparison:{
     /** Best performing strategy */
-    winner: ABTestStrategy;
+    winner:ABTestStrategy;
     /** Confidence in winner selection (0-1) */
     confidence:number;
     /** Statistical significance */
     significance: 'high|medium|low|none;
 '    /** Performance differences */
-    performanceDelta: Record<string, number>;
+    performanceDelta:Record<string, number>;
 };
   /** Execution metadata */
   metadata:{
-    startTime: Date;
-    endTime: Date;
+    startTime:Date;
+    endTime:Date;
     totalDuration:number;
     parallelExecution:boolean;
     gitTreesUsed:boolean;
@@ -162,8 +162,8 @@ export interface ABTestResult {
  * optimal approaches through statistical comparison and analysis.
  */
 export class MultiSwarmABTesting {
-  private codingPrinciplesResearcher: CodingPrinciplesResearcher;
-  private testHistory: ABTestResult[] = [];
+  private codingPrinciplesResearcher:CodingPrinciplesResearcher;
+  private testHistory:ABTestResult[] = [];
 
   constructor(
     codingPrinciplesResearcher?:CodingPrinciplesResearcher,
@@ -191,21 +191,22 @@ export class MultiSwarmABTesting {
   /**
    * Execute A/B test with multiple swarm strategies
    */
-  async executeABTest(taskDescription: string,
-    strategies: ABTestStrategy[],
+  async executeABTest(
+    taskDescription:string,
+    strategies:ABTestStrategy[],
     options:{
       gitConfig?:GitTreeConfig;
       parallelExecution?:boolean;
       timeoutMs?:number;
       collectDetailedMetrics?:boolean;
 } = {}
-  ): Promise<ABTestResult> {
-    const testId = 'ab-test-' + generateNanoId();'
+  ):Promise<ABTestResult> {
+    const testId = `ab-test-${generateNanoId()}`;`
     const startTime = new Date();
 
-    logger.info(' Starting A/B test:$testId');'
-    logger.info(' Task:' + taskDescription);'
-    logger.info(' Testing $strategies.lengthstrategies:$strategies.map((s) => s.name).join(',    ')');'
+    logger.info(`🧪 Starting A/B test:$testId`);`
+    logger.info(`📋 Task:${taskDescription}`);`
+    logger.info(`🔬 Testing $strategies.lengthstrategies:$strategies.map((s) => s.name).join(',    ')`);`
 
     try {
       // Prepare git worktrees if configured
@@ -237,9 +238,9 @@ export class MultiSwarmABTesting {
       const insights = this.generateInsights(results, comparison);
 
       const endTime = new Date();
-      const testResult: ABTestResult = {
+      const testResult:ABTestResult = {
         testId,
-        description: taskDescription,
+        description:taskDescription,
         strategies,
         results,
         comparison,
@@ -262,13 +263,14 @@ export class MultiSwarmABTesting {
         await this.cleanupGitWorktrees(worktreePaths);
 }
 
-      logger.info(' A/B test completed:' + testId);'
+      logger.info(` A/B test completed:${testId}`);`
       logger.info(
-        ' Winner:$comparison.winner.name($comparison.confidence.toFixed(2)confidence)');
+        `🏆 Winner:$comparison.winner.name($comparison.confidence.toFixed(2)confidence)``
+      );
 
       return testResult;
 } catch (error) {
-      logger.error(' A/B test failed:' + testId, error);'
+      logger.error(` A/B test failed:${testId}`, error);`
       throw error;
 }
 }
@@ -277,13 +279,12 @@ export class MultiSwarmABTesting {
    * Create predefined strategy sets for common scenarios
    */
   createStrategySet(
-    scenario:'performance|quality|innovation|comprehensive':ABTestStrategy[] {
+    scenario:'performance|quality|innovation|comprehensive')  ):ABTestStrategy[] {
     switch (scenario) {
-      case 'performance':
-        return [
+      case 'performance': ')'        return [
           {
             id: 'speed-claude',            name: 'Speed-Optimized Claude',            modelBackend: 'claude-haiku',            swarmConfig:{
-              topology: 'star',              maxAgents: 3,
+              topology: 'star',              maxAgents:3,
               strategy: 'specialized',              coordinationApproach: 'aggressive',},
             promptVariations:{
               style: 'concise',              focus: 'speed',},
@@ -291,29 +292,27 @@ export class MultiSwarmABTesting {
 
 ];
 
-      case 'quality':
-        return [
+      case 'quality': ')'        return [
           {
             id: 'quality-claude-opus',            name: 'Quality-Focused Claude Opus',            modelBackend: 'claude-opus',            swarmConfig:{
-              topology: 'mesh',              maxAgents: 6,
+              topology: 'mesh',              maxAgents:6,
               strategy: 'specialized',              coordinationApproach: 'conservative',},
             promptVariations:{
               style: 'detailed',              focus: 'quality',},
 },
           {
             id: 'quality-gpt4',            name: 'Quality GPT-4 Turbo',            modelBackend: 'gpt-4-turbo',            swarmConfig:{
-              topology: 'hierarchical',              maxAgents: 5,
+              topology: 'hierarchical',              maxAgents:5,
               strategy: 'adaptive',              coordinationApproach: 'exploratory',},
             promptVariations:{
               style: 'detailed',              focus: 'quality',},
 },
 ];
 
-      case 'innovation':
-        return [
+      case 'innovation': ')'        return [
           {
             id: 'creative-claude',            name: 'Creative Claude Sonnet',            modelBackend: 'claude-sonnet',            swarmConfig:{
-              topology: 'ring',              maxAgents: 8,
+              topology: 'ring',              maxAgents:8,
               strategy: 'adaptive',              coordinationApproach: 'exploratory',},
             promptVariations:{
               style: 'creative',              focus: 'innovation',},
@@ -321,22 +320,21 @@ export class MultiSwarmABTesting {
 
           {
             id: 'aider-experimental',            name: 'Aider Experimental',            modelBackend: 'aider',            swarmConfig:{
-              topology: 'hierarchical',              maxAgents: 4,
+              topology: 'hierarchical',              maxAgents:4,
               strategy: 'specialized',              coordinationApproach: 'exploratory',},
             promptVariations:{
               style: 'step-by-step',              focus: 'innovation',},
 },
 ];
 
-      case 'comprehensive':
-        return [
+      case 'comprehensive': ')'        return [
           ...this.createStrategySet('performance'),
           ...this.createStrategySet('quality'),
           ...this.createStrategySet('innovation'),
 ];
 
       default:
-        throw new Error('Unknown strategy scenario:$scenario');'
+        throw new Error(`Unknown strategy scenario:$scenario`);`
 }
 }
 
@@ -344,14 +342,14 @@ export class MultiSwarmABTesting {
    * Get recommendations based on test history
    */
   getRecommendations(taskType:string): {
-    recommendedStrategy: ABTestStrategy | null;
+    recommendedStrategy:ABTestStrategy | null;
     confidence:number;
     reasoning:string[];
 } {
     if (this.testHistory.length === 0) {
       return {
-        recommendedStrategy: null,
-        confidence: 0,
+        recommendedStrategy:null,
+        confidence:0,
         reasoning:['No historical data available for recommendations'],
 };
 }
@@ -366,10 +364,10 @@ export class MultiSwarmABTesting {
       const mostSuccessful = this.findMostSuccessfulStrategy(allWinners);
 
       return {
-        recommendedStrategy: mostSuccessful,
+        recommendedStrategy:mostSuccessful,
         confidence:0.3,
         reasoning:[
-          'No specific data for "' + taskType + '" tasks','
+          `No specific data for "${taskType}" tasks`,`
           'Recommendation based on general performance across all task types',          'Consider running A/B test for this specific task type',],
 };
 }
@@ -380,13 +378,13 @@ export class MultiSwarmABTesting {
       winners.filter((w) => w.id === recommended?.id).length / winners.length;
 
     return {
-      recommendedStrategy: recommended,
-      confidence: successRate,
+      recommendedStrategy:recommended,
+      confidence:successRate,
       reasoning:[
-        'Based on ' + (relevantTests.length) + ' historical tests for "' + taskType + '"','
-        'Success rate:' + (successRate * 100).toFixed(1) + '%','
-        'Model:' + recommended?.modelBackend,'
-        'Topology:' + recommended?.swarmConfig.topology,'
+        `Based on ${relevantTests.length} historical tests for "${taskType}"`,`
+        `Success rate:${(successRate * 100).toFixed(1)}%`,`
+        `Model:${recommended?.modelBackend}`,`
+        `Topology:${recommended?.swarmConfig.topology}`,`
 ],
 };
 }
@@ -395,13 +393,14 @@ export class MultiSwarmABTesting {
    * Private helper methods
    */
 
-  private async prepareGitWorktrees(strategies: ABTestStrategy[],
+  private async prepareGitWorktrees(
+    strategies:ABTestStrategy[],
     gitConfig?:GitTreeConfig
-  ): Promise<Record<string, string>> {
-    const worktreePaths: Record<string, string> = {};
+  ):Promise<Record<string, string>> {
+    const worktreePaths:Record<string, string> = {};
 
     if (!gitConfig?.useGitWorktrees) {
-      logger.debug('Git worktrees disabled, using current working directory');'  return worktreePaths;
+      logger.debug('Git worktrees disabled, using current working directory');')      return worktreePaths;
 }
 
     // Use gitConfig parameters for comprehensive worktree setup
@@ -413,17 +412,17 @@ export class MultiSwarmABTesting {
     // Validate git configuration
     if (strategies.length > maxWorktrees) {
       logger.warn(
-        'Strategy count ' + (strategies.length) + ' exceeds max worktrees ' + maxWorktrees,'
+        `Strategy count ${strategies.length} exceeds max worktrees ${maxWorktrees}`,`
         {
           strategies:strategies.length,
           maxWorktrees,
-          willLimitTo: maxWorktrees,
+          willLimitTo:maxWorktrees,
 }
       );
 }
 
     const strategiesToProcess = strategies.slice(0, maxWorktrees);
-    logger.info(' Creating ' + strategiesToProcess.length + ' git worktrees...', {'
+    logger.info(`🌳 Creating ${strategiesToProcess.length} git worktrees...`, {`
       baseBranch,
       branchPrefix,
       cleanupAfterTest,
@@ -431,11 +430,11 @@ export class MultiSwarmABTesting {
 });
 
     for (const strategy of strategiesToProcess) {
-      const branchName = (branchPrefix) + '-' + (strategy.id) + '-' + generateNanoId(6);'
-      const worktreePath = joinPath(getHomeDirectory(), '.claude-zen',    'tmp',    'ab-test-worktrees', branchName);'
+      const branchName = `${branchPrefix}-${strategy.id}-${generateNanoId(6)}`;`
+      const worktreePath = joinPath(getHomeDirectory(), '.claude-zen',    'tmp',    'ab-test-worktrees', branchName);`
 
       // Log worktree creation with gitConfig details
-      logger.debug(' Creating worktree for ' + strategy.name, {'
+      logger.debug(`📁 Creating worktree for ${strategy.name}`, {`
         strategyId:strategy.id,
         branchName,
         worktreePath,
@@ -444,28 +443,29 @@ export class MultiSwarmABTesting {
 });
 
       // In a real implementation, this would execute:
-      // await exec('git worktree add ' + worktreePath + ' -b ' + branchName + ' ' + baseBranch)'
+      // await exec(`git worktree add ${worktreePath} -b ${branchName} ${baseBranch}`)`
 
       worktreePaths[strategy.id] = worktreePath;
-      logger.info(' Created worktree for ' + (strategy.name) + ':' + worktreePath);'
+      logger.info(` Created worktree for ${strategy.name}:${worktreePath}`);`
 }
 
     // Log final worktree configuration summary
     logger.info('Git worktree preparation completed', {
-    '  totalWorktrees: Object.keys(worktreePaths).length,
+    ')      totalWorktrees:Object.keys(worktreePaths).length,
       cleanupAfterTest,
-      worktreeIds: Object.keys(worktreePaths),
+      worktreeIds:Object.keys(worktreePaths),
 });
 
     return worktreePaths;
 }
 
-  private async executeStrategiesParallel(taskDescription: string,
-    strategies: ABTestStrategy[],
-    worktreePaths: Record<string, string>,
+  private async executeStrategiesParallel(
+    taskDescription:string,
+    strategies:ABTestStrategy[],
+    worktreePaths:Record<string, string>,
     options:any
-  ): Promise<SwarmTestResult[]> {
-    logger.info(' Executing $strategies.lengthstrategies in parallel...');'
+  ):Promise<SwarmTestResult[]> {
+    logger.info(` Executing $strategies.lengthstrategies in parallel...`);`
 
     const promises = strategies.map((strategy) =>
       this.executeStrategy(
@@ -479,11 +479,12 @@ export class MultiSwarmABTesting {
     return Promise.all(promises);
 }
 
-  private async executeStrategiesSequential(taskDescription: string,
-    strategies: ABTestStrategy[],
-    worktreePaths: Record<string, string>,
+  private async executeStrategiesSequential(
+    taskDescription:string,
+    strategies:ABTestStrategy[],
+    worktreePaths:Record<string, string>,
     options:any
-  ): Promise<SwarmTestResult[]> {
+  ):Promise<SwarmTestResult[]> {
     // Apply execution options for sequential processing
     const enableProgressLogging = options.verbose || false;
     const delayBetweenStrategies = options.sequentialDelay || 1000;
@@ -491,15 +492,18 @@ export class MultiSwarmABTesting {
 
     if (enableProgressLogging) {
       logger.info(
-        '⏭️ Executing $strategies.lengthstrategies sequentially...');
+        `⏭️ Executing $strategies.lengthstrategies sequentially...``
+      );
       logger.info(
-        ' Sequential options:delay=' + (delayBetweenStrategies) + 'ms, continueOnFailure=' + enableContinueOnFailure);
+        `📊 Sequential options:delay=${delayBetweenStrategies}ms, continueOnFailure=${enableContinueOnFailure}``
+      );
 } else {
       logger.info(
-        '⏭️ Executing ' + strategies.length + ' strategies sequentially...');
+        `⏭️ Executing ${strategies.length} strategies sequentially...``
+      );
 }
 
-    const _results: SwarmTestResult[] = [];
+    const _results:SwarmTestResult[] = [];
 
     for (let i = 0; i < strategies.length; i++) {
       const strategy = strategies[i];
@@ -507,7 +511,8 @@ export class MultiSwarmABTesting {
       try {
         if (enableProgressLogging) {
           logger.info(
-            ' Executing strategy ' + (i + 1) + '/' + (strategies.length) + ':' + strategy.name);
+            `📋 Executing strategy ${i + 1}/${strategies.length}:${strategy.name}``
+          );
 }
 
         const result = await this.executeStrategy(
@@ -520,40 +525,41 @@ export class MultiSwarmABTesting {
 
         if (enableProgressLogging) {
           logger.info(
-            ' Strategy ' + (i + 1) + ' completed:' + (strategy.name) + ' (' + result.success ?'SUCCESS' : ' FAILED' + ')');
+            `✅ Strategy ${i + 1} completed:${strategy.name} (${result.success ?'SUCCESS' : ' FAILED'})``
+          );
 }
 } catch (error) {
-        logger.error(' Strategy ' + (i + 1) + ' failed:' + strategy.name, error);'
+        logger.error(` Strategy ${i + 1} failed:${strategy.name}`, error);`
 
         if (!enableContinueOnFailure) {
           throw error;
 }
 
         // Create failure result and continue with next strategy
-        const failureResult: SwarmTestResult = {
+        const failureResult:SwarmTestResult = {
           strategy,
-          success: false,
-          duration: 0,
+          success:false,
+          duration:0,
           qualityMetrics:{
-            codeQuality: 0,
-            requirementsCoverage: 0,
-            implementationCorrectness: 0,
-            maintainability: 0,
-            performance: 0,
-            overallScore: 0,
+            codeQuality:0,
+            requirementsCoverage:0,
+            implementationCorrectness:0,
+            maintainability:0,
+            performance:0,
+            overallScore:0,
 },
           artifacts:{
-            filesCreated: [],
-            linesOfCode: 0,
-            functionsCreated: 0,
-            testsGenerated: 0,
+            filesCreated:[],
+            linesOfCode:0,
+            functionsCreated:0,
+            testsGenerated:0,
 },
           error:error instanceof Error ? error.message : String(error),
           modelMetadata:{
             backend:strategy.modelBackend,
-            tokenUsage: 0,
-            requestCount: 0,
-            avgResponseTime: 0,
+            tokenUsage:0,
+            requestCount:0,
+            avgResponseTime:0,
 },
 };
         results.push(failureResult);
@@ -563,7 +569,8 @@ export class MultiSwarmABTesting {
       if (i < strategies.length - 1 && delayBetweenStrategies > 0) {
         if (enableProgressLogging) {
           logger.info(
-            '⏸️ Pausing $delayBetweenStrategiesms before next strategy...');
+            `⏸️ Pausing $delayBetweenStrategiesms before next strategy...``
+          );
 }
         await new Promise((resolve) =>
           setTimeout(resolve, delayBetweenStrategies)
@@ -575,18 +582,18 @@ export class MultiSwarmABTesting {
 }
 }
 
-  private recordCleanupMetrics(strategyId: string, path:string): void {
+  private recordCleanupMetrics(strategyId:string, path:string): void {
     // Record cleanup metrics for monitoring and analytics
     logger.debug('Recording cleanup metrics', {
-    '  strategyId,
+    ')      strategyId,
       pathLength:path.length,
-      timestamp: Date.now(),
+      timestamp:Date.now(),
       cleanupType: 'git_worktree',});
 }
 
-  private async persistTestResult(testResult: ABTestResult): Promise<void> {
+  private async persistTestResult(testResult:ABTestResult): Promise<void> {
     // In a real implementation, this would save to database
-    logger.info(' Persisted A/B test result:' + testResult.testId);'
+    logger.info(`💾 Persisted A/B test result:${testResult.testId}`);`
 }
 }
 
@@ -594,7 +601,7 @@ export class MultiSwarmABTesting {
  * Export convenience function for quick A/B testing
  */
 export async function quickABTest(
-  taskDescription: string,
+  taskDescription:string,
   scenario:|performance|quality|innovation|'comprehensive' = ' comprehensive',  options:{
     useGitTrees?:boolean;
     timeoutMs?:number;
@@ -603,19 +610,19 @@ export async function quickABTest(
   const abTesting = new MultiSwarmABTesting();
   const strategies = abTesting.createStrategySet(scenario);
 
-  const gitConfig: GitTreeConfig | undefined = options.useGitTrees
+  const gitConfig:GitTreeConfig | undefined = options.useGitTrees
     ? {
-        useGitWorktrees: true,
-        baseBranch: 'main',        branchPrefix: 'ab-test',        cleanupAfterTest: true,
-        maxWorktrees: 10,
+        useGitWorktrees:true,
+        baseBranch: 'main',        branchPrefix: 'ab-test',        cleanupAfterTest:true,
+        maxWorktrees:10,
 }
     :undefined;
 
   return abTesting.executeABTest(taskDescription, strategies, {
     gitConfig,
     timeoutMs:options.timeoutMs || 300000, // 5 minute default timeout
-    parallelExecution: true,
-    collectDetailedMetrics: true,
+    parallelExecution:true,
+    collectDetailedMetrics:true,
 });
 }
 

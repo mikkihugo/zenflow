@@ -53,7 +53,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
         this.neuralSafetyConfig = config;
         this.aiDeceptionDetector = new AIDeceptionDetector();
         this.neuralDeceptionDetector = new NeuralDeceptionDetector();
-        this.logger.info('️ Neural Safety Bridge initialized', { ': enhancedDetection, config, : .enhancedDetection,
+        this.logger.info('🧠🛡️ Neural Safety Bridge initialized', { ': enhancedDetection, config, : .enhancedDetection,
             behavioralLearning: config.behavioralLearning,
             realTimeMonitoring: config.realTimeMonitoring,
         });
@@ -372,11 +372,11 @@ return {
 };
 setupRealTimeMonitoring();
 void {
-    this: .logger.info(' Setting up real-time safety monitoring...'), ': 
+    this: .logger.info('🔄 Setting up real-time safety monitoring...'), ': 
     // Set up event handlers for immediate response
     this.on('deception:detected', (result) => {
         ';
-        this.logger.warn(' Deception detected by enhanced neural safety system', {
+        this.logger.warn('🚨 Deception detected by enhanced neural safety system', {
             confidence: result.combinedVerdict.confidence,
             standardAlerts: result.standardDetection.length,
             behavioralRisk: result.behavioralAnalysis.riskLevel,
@@ -387,7 +387,7 @@ void {
     }),
     this: .on('intervention:required', (result) => {
         ';
-        this.logger.error(' INTERVENTION REQUIRED - Critical deception detected', {
+        this.logger.error('🛑 INTERVENTION REQUIRED - Critical deception detected', {
             reasoning: result.combinedVerdict.reasoning,
             behavioralRisk: result.behavioralAnalysis.riskLevel,
         });
@@ -403,7 +403,7 @@ void {
 async;
 learnFromFeedback(interactionData, any, actualDeception, boolean, feedback, string);
 Promise < void  > {
-    this: .logger.info(' Learning from safety feedback...', { ': agentId, interactionData, : .agentId,
+    this: .logger.info('📚 Learning from safety feedback...', { ': agentId, interactionData, : .agentId,
         actualDeception,
         feedback,
     }),
@@ -523,7 +523,7 @@ Promise < void  > {
    * Shutdown neural safety bridge.
    */
   async shutdown(): Promise<void> {
-    this.logger.info(' Shutting down Neural Safety Bridge...');'
+    this.logger.info('🛑 Shutting down Neural Safety Bridge...');'
 
     // Async shutdown procedures
     await this.saveSystemState();

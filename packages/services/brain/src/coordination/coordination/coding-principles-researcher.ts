@@ -132,7 +132,7 @@ export class CodingPrinciplesResearcher {
   }
 
   private generateCacheKey(config: PrinciplesResearchConfig): string {
-    return (config.language) + '-${config.domain || ' + config.depth || 'intermediate';
+    return `${config.language}-${config.domain || 'general'}-${config.role || 'general'}-${config.depth || 'intermediate'}`;
   }
 
   private getFallbackPrinciples(config: PrinciplesResearchConfig): CodingPrinciples {
@@ -179,36 +179,36 @@ export class CodingPrinciplesResearcher {
   }
 
   private formatTemplate(principles: CodingPrinciples): string {
-    return '# ' + (principles.language.toUpperCase()) + ' Coding Principles
+    return `# ${principles.language.toUpperCase()} Coding Principles
 
-' + principles.domain ? '## Domain: ' + principles.domain : '' + '
-' + principles.role ? '## Role: ' + principles.role : '' + '
+${principles.domain ? `## Domain: ${principles.domain}` : ''}
+${principles.role ? `## Role: ${principles.role}` : ''}
 
-##  File Naming & Organization
-' + principles.coreStandards.fileNaming.map(item => '- ' + item).join('\n') + '
+## 📁 File Naming & Organization
+${principles.coreStandards.fileNaming.map(item => `- ${item}`).join('\n')}
 
-##  Function Guidelines
-' + principles.coreStandards.functionComplexity.map(item => '- ' + item).join('\n') + '
+## ⚡ Function Guidelines
+${principles.coreStandards.functionComplexity.map(item => `- ${item}`).join('\n')}
 
-##  ' + principles.language.charAt(0).toUpperCase() + principles.language.slice(1) + '-Specific
+## 🔧 ${principles.language.charAt(0).toUpperCase() + principles.language.slice(1)}-Specific
 ### Type System
-' + principles.languageSpecific.typeSystem.map(item => '- ' + item).join('\n') + '
+${principles.languageSpecific.typeSystem.map(item => `- ${item}`).join('\n')}
 
 ### Package Management
-' + principles.languageSpecific.packageManagement.map(item => '- ' + item).join('\n') + '
+${principles.languageSpecific.packageManagement.map(item => `- ${item}`).join('\n')}
 
-##  Quality Metrics
-- **Complexity**: ' + principles.qualityMetrics.complexity.metric + ' < ' + principles.qualityMetrics.complexity.threshold + '
-- **Coverage**: ' + principles.qualityMetrics.coverage.metric + ' > ' + principles.qualityMetrics.coverage.threshold + '%
-- **Maintainability**: ' + principles.qualityMetrics.maintainability.metric + ' > ' + principles.qualityMetrics.maintainability.threshold + '
+## 📊 Quality Metrics
+- **Complexity**: ${principles.qualityMetrics.complexity.metric} < ${principles.qualityMetrics.complexity.threshold}
+- **Coverage**: ${principles.qualityMetrics.coverage.metric} > ${principles.qualityMetrics.coverage.threshold}%
+- **Maintainability**: ${principles.qualityMetrics.maintainability.metric} > ${principles.qualityMetrics.maintainability.threshold}
 
 ---
-**Research Date**: ' + principles.researchMetadata.researchedAt.toISOString() + '
-**Confidence**: ' + (principles.researchMetadata.confidence * 100).toFixed(1) + '%
-**Human Reviewed**: ' + principles.researchMetadata.humanReviewed ? 'Yes' : 'No' + '
+**Research Date**: ${principles.researchMetadata.researchedAt.toISOString()}
+**Confidence**: ${(principles.researchMetadata.confidence * 100).toFixed(1)}%
+**Human Reviewed**: ${principles.researchMetadata.humanReviewed ? 'Yes' : 'No'}
 
 > This template is AI-generated and should be reviewed by human experts.
-> Please provide feedback to improve future research.';
+> Please provide feedback to improve future research.`;
   }
 }
 

@@ -170,7 +170,7 @@ export class AutonomousOptimizationEngine {
      */
     async learnFromFeedback(context, result, feedback) {
         try {
-            logger.debug(` Learning from feedback:${result.method} method, success rate ${feedback.actualSuccessRate.toFixed(2)}` `
+            logger.debug(`📚 Learning from feedback:${result.method} method, success rate ${feedback.actualSuccessRate.toFixed(2)}` `
       );
 
       // Find the optimization record
@@ -212,7 +212,7 @@ export class AutonomousOptimizationEngine {
         });
         Promise < void  > {
             try: {
-                logger, : .debug(` Recording optimization result for continuous learning`)
+                logger, : .debug(`📊 Recording optimization result for continuous learning`)
             } `
 
       // Convert to feedback format and learn from it
@@ -251,7 +251,7 @@ export class AutonomousOptimizationEngine {
      */
     async enableContinuousOptimization(config) {
         try {
-            logger.info(` Enabling continuous optimization with config:`, config);
+            logger.info(`🔄 Enabling continuous optimization with config:`, config);
             `
 
       // Async initialization of optimization subsystems
@@ -283,9 +283,9 @@ export class AutonomousOptimizationEngine {
         setInterval(async () => {
           try {
             await this.adaptSelectionStrategy();
-            logger.debug(' Continuous optimization evaluation completed');')} catch (error) {
+            logger.debug('🔄 Continuous optimization evaluation completed');')} catch (error) {
             logger.error(
-              ' Continuous optimization evaluation failed: ','              error
+              '❌ Continuous optimization evaluation failed: ','              error
             );
 }
 }, config.evaluationInterval);
@@ -614,7 +614,7 @@ void {
             recentTrend: 0,
         });
     }),
-    logger, : .debug(' Initialized baseline performance for 3 optimization methods')
+    logger, : .debug('📊 Initialized baseline performance for 3 optimization methods')
 };
 async;
 recordOptimization(context, OptimizationContext, result, OptimizationResult);
@@ -723,7 +723,7 @@ Promise < void  > {
     logger.info(' High performance spread detected - increasing adaptation sensitivity');
     ;
 }
-logger.debug(' Adaptation strategy analysis complete');
+logger.debug('🧠 Adaptation strategy analysis complete');
 ')};
 inferActualComplexity(result, OptimizationResult, context, OptimizationContext);
 number;
@@ -783,7 +783,7 @@ async;
 initializeOptimizationInfrastructure(_config, any);
 Promise < void  > {
     await, new: Promise(resolve => setTimeout(resolve, 100)),
-    logger, : .debug('️ Optimization infrastructure initialized'), ')}: 
+    logger, : .debug('🏗️ Optimization infrastructure initialized'), ')}: 
     /**
      * Create optimization profile based on configuration
      */

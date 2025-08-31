@@ -53,7 +53,7 @@ export class SPARCMultiSwarmExecutor {
         Multi - Swarm;
         A / B;
         test: $testId `);`;
-        logger.info(` Task: ${taskDescription}`);
+        logger.info(`📋 Task: ${taskDescription}`);
         `
     logger.info(
       `;
@@ -105,7 +105,7 @@ export class SPARCMultiSwarmExecutor {
         `;
             Winner: $comparison.winner.name($comparison.confidence.toFixed(2), confidence) ``;
             ;
-            logger.info(` Git trees created: ${totalWorktreesCreated}`);
+            logger.info(`🌳 Git trees created: ${totalWorktreesCreated}`);
             `
 
       return multiSwarmResult;
@@ -355,7 +355,7 @@ async;
 executeSingleSPARCStrategy(taskDescription, string, strategy, SPARCStrategy, gitConfig, GitTreeConfig, options, any);
 Promise < SPARCExecutionResult > {
     const: startTime = Date.now(),
-    console, : .log(` Executing SPARC strategy: ${strategy.name} (${strategy.modelBackend})` `
+    console, : .log(`🚀 Executing SPARC strategy: ${strategy.name} (${strategy.modelBackend})` `
     );
 
     try {

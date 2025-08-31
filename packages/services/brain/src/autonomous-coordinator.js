@@ -799,7 +799,7 @@ if (overallPressure <= scaleDownThreshold &&
 ];
     
     await Promise.all(monitoringTasks);
-    logger.debug(' Autonomous monitoring started with comprehensive setup');')}
+    logger.debug('🔄 Autonomous monitoring started with comprehensive setup');')}
 
   /**
    * Initialize metrics collection subsystem
@@ -813,14 +813,14 @@ if (overallPressure <= scaleDownThreshold &&
    */
   private async setupAlertingSystem():Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 75));
-    logger.debug(' Alerting system configured');')}
+    logger.debug('🚨 Alerting system configured');')}
 
   /**
    * Enable comprehensive performance tracking
    */
   private async enablePerformanceTracking():Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 100));
-    logger.debug(' Performance tracking enabled');')}
+    logger.debug('📈 Performance tracking enabled');')}
 
   /**
    * Analyze response time metrics against thresholds for resource decisions

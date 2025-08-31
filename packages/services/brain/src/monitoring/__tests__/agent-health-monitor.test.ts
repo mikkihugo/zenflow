@@ -1,4 +1,3 @@
-import { getLogger as _getLogger } from '@claude-zen/foundation';
 /**
  * @fileoverview Comprehensive Test Suite for Agent Health Monitor
  *
@@ -41,7 +40,7 @@ vi.mock('../../../config/logging-config', () => ({
     info:vi.fn(),
     debug:vi.fn(),
     warn:vi.fn(),
-    _error:vi.fn(),
+    error:vi.fn(),
 }),
 }));
 

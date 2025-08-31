@@ -5,7 +5,7 @@
  * Provides real-time agent behavior learning, performance prediction,
  * and behavioral optimization for the claude-code-zen swarm system.
  *
- * SCOPE: Agent behavior ONLY - not general ML or generic learning
+ * SCOPE:Agent behavior ONLY - not general ML or generic learning
  *
  * Key Features:
  * - Agent performance prediction using neural networks
@@ -15,10 +15,10 @@
  * - Behavioral anomaly detection
  *
  * Integration with claude-code-zen:
- * - Event coordination: Agent performance predictions (replaces load balancing)
- * - Task orchestration: Complexity estimation and routing
- * - Agent monitoring: Behavioral health and adaptation
- * - Swarm coordination: Intelligent agent selection
+ * - Event coordination:Agent performance predictions (replaces load balancing)
+ * - Task orchestration:Complexity estimation and routing
+ * - Agent monitoring:Behavioral health and adaptation
+ * - Swarm coordination:Intelligent agent selection
  *
  * @author Claude Code Zen Team
  * @since 2.1.0
@@ -32,7 +32,7 @@ import { sma} from 'moving-averages';
 import type { BrainJsBridge} from './brain-js-bridge';
 import { ActivationFunction} from './types/index';
 
-//  Enhanced ML Imports - Using validated API patterns
+// 🧠 Enhanced ML Imports - Using validated API patterns
 
 const brain = require('brain.js');
 // Validate brain.js availability and capabilities
@@ -63,7 +63,7 @@ export interface AgentExecutionData {
   readonly resourceUsage:number; // 0-1 scale
   readonly errorCount:number;
   readonly timestamp:number;
-  readonly context: Record<string, unknown>;
+  readonly context:Record<string, unknown>;
 }
 
 /**
@@ -113,35 +113,35 @@ export interface AgentBehavioralProfile {
  * task assignment and swarm coordination.
  *
  * @example Basic Usage
- * '''typescript'
+ * ```typescript`
  * const behavioral = new BehavioralIntelligence(brainJsBridge);
  * await behavioral.initialize();
  *
  * // Learn from agent execution
  * const executionData = {
  *   agentId: 'agent-1', *   taskType: 'data-processing', *   taskComplexity:0.7,
- *   duration: 1500,
- *   success: true,
+ *   duration:1500,
+ *   success:true,
  *   efficiency:0.85
  *};
  *
  * await behavioral.learnFromExecution(executionData);
  *
  * // Predict agent performance
- * const prediction = await behavioral.predictAgentPerformance('agent-1',    'data-processing', 0.7);') * logger.info('Predicted efficiency:' + prediction.predictedEfficiency);'
- * '
+ * const prediction = await behavioral.predictAgentPerformance('agent-1',    'data-processing', 0.7);') * logger.info(`Predicted efficiency:${prediction.predictedEfficiency}`);`
+ * ````
  */
 export class BehavioralIntelligence {
-  private brainJsBridge: BrainJsBridge;
+  private brainJsBridge:BrainJsBridge;
   private performanceNetworkId = 'agent-performance-predictor';
   private complexityNetworkId = 'task-complexity-estimator';
   private matchingNetworkId = 'agent-task-matcher';
   private initialized = false;
-  private trainingBuffer: AgentExecutionData[] = [];
+  private trainingBuffer:AgentExecutionData[] = [];
   private readonly bufferSize = 100;
 
   constructor(brainJsBridge?:BrainJsBridge) {
-    // If no bridge provided, we'll use a mock implementation for compatibility'this.brainJsBridge = brainJsBridge||this.createMockBridge();
+    // If no bridge provided, we'll use a mock implementation for compatibility')    this.brainJsBridge = brainJsBridge||this.createMockBridge();
 }
 
   /**
@@ -149,19 +149,19 @@ export class BehavioralIntelligence {
    */
   private createMockBridge():BrainJsBridge {
     return {
-      async createNeuralNet(id: string, type: string, config:any) {
+      async createNeuralNet(id:string, type:string, config:any) {
         // Async neural network initialization
         await this.initializeNeuralNetworkInfrastructure(id, type, config);
         const networkArchitecture = await this.designNetworkArchitecture(type, config);
         
-        logger.debug('Mock: Creating neural network ' + (id) + ' of type ' + type, {'
+        logger.debug(`Mock:Creating neural network ${id} of type ${type}`, {`
           hiddenLayers:config?.hiddenLayers||'default',          learningRate:config?.learningRate||'default',          activation:config?.activation||'default',          architecture:networkArchitecture
 });
         
         await this.validateNetworkConfiguration(config);
         return Promise.resolve();
 },
-      async trainNeuralNet(id: string, data: any, options?:any) {
+      async trainNeuralNet(id:string, data:any, options?:any) {
         // Async training with ML optimization
         const trainingStrategy = await this.optimizeTrainingStrategy(id, data, options);
         const preprocessedData = await this.preprocessTrainingData(data);
@@ -175,12 +175,12 @@ export class BehavioralIntelligence {
         await this.executeTrainingPipeline(id, preprocessedData, trainingStrategy);
         return Promise.resolve();
 },
-      async predictWithNeuralNet(id: string, input:number[]) {
+      async predictWithNeuralNet(id:string, input:number[]) {
         // Async prediction with ML enhancement
         const predictionContext = await this.analyzePredictionContext(id, input);
         const optimizedInput = await this.optimizeInputFeatures(input, predictionContext);
         
-        logger.debug('Mock: Predicting with neural network ' + id, {'
+        logger.debug(`Mock:Predicting with neural network ${id}`, {`
           inputSize:input.length,
           contextualFactors:predictionContext.factors
 });
@@ -193,7 +193,7 @@ export class BehavioralIntelligence {
         return {
           isErr:() => false,
           value:{
-            output: enhancedOutput,
+            output:enhancedOutput,
             confidence:predictionContext.confidence
 },
 };
@@ -204,26 +204,26 @@ export class BehavioralIntelligence {
   /**
    * Initialize behavioral intelligence networks with enhanced ML algorithms
    */
-  async initialize(): Promise<void> {
+  async initialize():Promise<void> {
     if (this.initialized) return;
 
     try {
       logger.info(
-        'Initializing Enhanced Behavioral Intelligence with ML algorithms...');
+        'Initializing Enhanced Behavioral Intelligence with ML algorithms...')      );
 
       // Log brain.js capabilities for initialization validation
-      logger.debug('Brain.js capabilities:', brainCapabilities);'  if (!brainCapabilities.neuralNetworks) {
+      logger.debug('Brain.js capabilities:', brainCapabilities);')      if (!brainCapabilities.neuralNetworks) {
         logger.warn(
-          'Brain.js neural networks not available - using fallback mode');
+          'Brain.js neural networks not available - using fallback mode')        );
 }
 
       // Performance prediction network - predicts agent efficiency and duration
       await this.brainJsBridge.createNeuralNet(
         this.performanceNetworkId,
         'feedforward',        {
-          hiddenLayers: [16, 8], // Dual hidden layers for complex patterns
+          hiddenLayers:[16, 8], // Dual hidden layers for complex patterns
           learningRate:0.1,
-          activation: ActivationFunction.SIGMOID,
+          activation:ActivationFunction.SIGMOID,
 }
       );
 
@@ -231,9 +231,9 @@ export class BehavioralIntelligence {
       await this.brainJsBridge.createNeuralNet(
         this.complexityNetworkId,
         'feedforward',        {
-          hiddenLayers: [12, 6], // Smaller network for complexity estimation
+          hiddenLayers:[12, 6], // Smaller network for complexity estimation
           learningRate:0.15,
-          activation: ActivationFunction.RELU,
+          activation:ActivationFunction.RELU,
 }
       );
 
@@ -241,14 +241,14 @@ export class BehavioralIntelligence {
       await this.brainJsBridge.createNeuralNet(
         this.matchingNetworkId,
         'feedforward',        {
-          hiddenLayers: [20, 10, 5], // Deeper network for complex matching
+          hiddenLayers:[20, 10, 5], // Deeper network for complex matching
           learningRate:0.05,
-          activation: ActivationFunction.TANH,
+          activation:ActivationFunction.TANH,
 }
       );
 
-      //  Initialize Enhanced ML Models
-      logger.info(' Initializing advanced ML algorithms...');'
+      // 🧠 Initialize Enhanced ML Models
+      logger.info('🔬 Initializing advanced ML algorithms...');')
       // DBSCAN for behavioral clustering
       this.behaviorClusterer = new clustering.DBSCAN();
 
@@ -256,13 +256,13 @@ export class BehavioralIntelligence {
       this.kmeansClusterer = kmeans;
 
       logger.info(
-        ' Enhanced ML algorithms initialized (DBSCAN + KMeans + Regression + Statistics + Time Series)');
+        '✅ Enhanced ML algorithms initialized (DBSCAN + KMeans + Regression + Statistics + Time Series)')      );
 
       this.initialized = true;
       logger.info(
-        'Behavioral Intelligence initialized successfully with advanced ML capabilities');
+        'Behavioral Intelligence initialized successfully with advanced ML capabilities')      );
 } catch (error) {
-      logger.error('Failed to initialize Behavioral Intelligence:', error);'  throw error;
+      logger.error('Failed to initialize Behavioral Intelligence:', error);')      throw error;
 }
 }
 
@@ -271,14 +271,14 @@ export class BehavioralIntelligence {
    *
    * @param executionData - Data from agent task execution
    */
-  async learnFromExecution(executionData: AgentExecutionData): Promise<void> {
+  async learnFromExecution(executionData:AgentExecutionData): Promise<void> {
     if (!this.initialized) await this.initialize();
 
     try {
       // Add to training buffer
       this.trainingBuffer.push(executionData);
 
-      //  Enhanced ML Learning: Update time series and feature vectors
+      // 🧠 Enhanced ML Learning:Update time series and feature vectors
       await this.updateAgentPerformanceTimeSeries(executionData);
       await this.updateAgentFeatureVector(executionData);
 
@@ -288,14 +288,15 @@ export class BehavioralIntelligence {
       // Train networks when buffer is full
       if (this.trainingBuffer.length >= this.bufferSize) {
         await this.trainNetworksFromBuffer();
-        await this.trainAdvancedMLModels(); //  Train Random Forest and DBSCAN
+        await this.trainAdvancedMLModels(); // 🧠 Train Random Forest and DBSCAN
         this.trainingBuffer = []; // Clear buffer
 }
 
       logger.debug(
-        'Enhanced learning from execution:' + (executionData.agentId) + ' - ' + executionData.taskType + ' (with ML algorithms)');
+        `Enhanced learning from execution:${executionData.agentId} - ${executionData.taskType} (with ML algorithms)``
+      );
 } catch (error) {
-      logger.error('Error learning from execution:', error);'
+      logger.error('Error learning from execution:', error);')}
 }
 
   /**
@@ -306,10 +307,11 @@ export class BehavioralIntelligence {
    * @param taskComplexity - Complexity of the task (0-1)
    * @returns Behavioral prediction
    */
-  async predictAgentPerformance(agentId: string,
-    taskType: string,
+  async predictAgentPerformance(
+    agentId:string,
+    taskType:string,
     taskComplexity:number
-  ): Promise<BehavioralPrediction> {
+  ):Promise<BehavioralPrediction> {
     if (!this.initialized) await this.initialize();
 
     try {
@@ -339,8 +341,8 @@ export class BehavioralIntelligence {
         agentId,
         taskType,
         predictedDuration:this.denormalizeDuration(output[0]),
-        predictedSuccess: output[1],
-        predictedEfficiency: output[2],
+        predictedSuccess:output[1],
+        predictedEfficiency:output[2],
         confidence:this.calculatePredictionConfidence(output, profile),
         reasoning:this.generatePredictionReasoning(
           agentId,
@@ -350,12 +352,12 @@ export class BehavioralIntelligence {
         ),
 };
 } catch (error) {
-      logger.error('Error predicting agent performance:', error);'
+      logger.error('Error predicting agent performance:', error);')
       // Return default prediction on error
       return {
         agentId,
         taskType,
-        predictedDuration: 5000, // 5 seconds default
+        predictedDuration:5000, // 5 seconds default
         predictedSuccess:0.5,
         predictedEfficiency:0.5,
         confidence:0.1,
@@ -370,9 +372,10 @@ export class BehavioralIntelligence {
    * @param context - Additional context about the task
    * @returns Task complexity analysis
    */
-  async analyzeTaskComplexity(taskType: string,
-    context: Record<string, unknown> = {}
-  ): Promise<TaskComplexityAnalysis> {
+  async analyzeTaskComplexity(
+    taskType:string,
+    context:Record<string, unknown> = {}
+  ):Promise<TaskComplexityAnalysis> {
     if (!this.initialized) await this.initialize();
 
     try {
@@ -392,20 +395,20 @@ export class BehavioralIntelligence {
 
       return {
         taskType,
-        estimatedComplexity: output[0],
+        estimatedComplexity:output[0],
         requiredSkills:this.inferRequiredSkills(taskType, output[0]),
         estimatedDuration:this.estimateDurationFromComplexity(output[0]),
         difficulty:this.mapComplexityToDifficulty(output[0]),
         confidence:output[1]||0.7,
 };
 } catch (error) {
-      logger.error('Error analyzing task complexity:', error);'
+      logger.error('Error analyzing task complexity:', error);')
       // Return default analysis on error
       return {
         taskType,
         estimatedComplexity:0.5,
         requiredSkills:['general'],
-        estimatedDuration: 3000,
+        estimatedDuration:3000,
         difficulty: 'medium',        confidence:0.1,
 };
 }
@@ -419,10 +422,11 @@ export class BehavioralIntelligence {
    * @param availableAgents - List of available agent IDs
    * @returns Best agent ID and confidence score
    */
-  async findBestAgentForTask(taskType: string,
-    taskComplexity: number,
+  async findBestAgentForTask(
+    taskType:string,
+    taskComplexity:number,
     availableAgents:string[]
-  ): Promise<{ agentId: string; confidence: number; reasoning: string}> {
+  ):Promise<{ agentId: string; confidence: number; reasoning: string}> {
     if (!this.initialized) await this.initialize();
 
     try {
@@ -447,20 +451,21 @@ export class BehavioralIntelligence {
         if (score > bestScore) {
           bestScore = score;
           bestAgent = agentId;
-          bestReasoning = 'High predicted efficiency (' + ((_prediction._predictedEfficiency * 100).toFixed(1)) + '%) and success rate (' + (_prediction._predictedSuccess * 100).toFixed(1) + '%)';'
+          bestReasoning = `High predicted efficiency (${(_prediction._predictedEfficiency * 100).toFixed(1)}%) and success rate (${(_prediction._predictedSuccess * 100).toFixed(1)}%)`;`
 }
 }
 
       logger.info(
-        'Selected best agent:' + bestAgent + ' for ' + taskType + ' (score:' + bestScore.toFixed(3) + ')');
+        `Selected best agent:${bestAgent} for ${taskType} (score:${bestScore.toFixed(3)})``
+      );
 
       return {
-        agentId: bestAgent,
-        confidence: bestScore,
-        reasoning: bestReasoning,
+        agentId:bestAgent,
+        confidence:bestScore,
+        reasoning:bestReasoning,
 };
 } catch (error) {
-      logger.error('Error finding best agent for task:', error);'
+      logger.error('Error finding best agent for task:', error);')
       return {
         agentId:availableAgents[0]||'default',        confidence:0.1,
         reasoning: 'Error in selection, using first available agent',};
@@ -512,18 +517,19 @@ export class BehavioralIntelligence {
       totalAgents:this.agentProfiles.size,
       trainingDataPoints:this.trainingBuffer.length,
       networksInitialized:this.initialized,
-      averagePerformance: avgPerformance,
-      mostActiveAgents: mostActive,
+      averagePerformance:avgPerformance,
+      mostActiveAgents:mostActive,
 };
 }
 
-  //  Enhanced ML Methods
+  // 🧠 Enhanced ML Methods
 
   /**
    * Update agent performance time series using moving averages
    */
-  private async updateAgentPerformanceTimeSeries(executionData: AgentExecutionData
-  ): Promise<void> {
+  private async updateAgentPerformanceTimeSeries(
+    executionData:AgentExecutionData
+  ):Promise<void> {
     // Async performance analysis and ML enhancement
     const performanceInsights = await this.analyzeAgentPerformanceInsights(executionData);
     const trendPrediction = await this.predictPerformanceTrend(executionData.agentId);
@@ -563,8 +569,9 @@ export class BehavioralIntelligence {
   /**
    * Update agent feature vector for Random Forest classification
    */
-  private async updateAgentFeatureVector(executionData: AgentExecutionData
-  ): Promise<void> {
+  private async updateAgentFeatureVector(
+    executionData:AgentExecutionData
+  ):Promise<void> {
     // Async feature engineering and ML enhancement
     const featureInsights = await this.analyzeFeatureImportance(executionData);
     const enhancedFeatures = await this.generateEnhancedFeatures(executionData, featureInsights);
@@ -592,9 +599,9 @@ export class BehavioralIntelligence {
   /**
    * Train advanced ML models (Random Forest and DBSCAN)
    */
-  private async trainAdvancedMLModels(): Promise<void> {
+  private async trainAdvancedMLModels():Promise<void> {
     try {
-      logger.info(' Training advanced ML models...');'
+      logger.info('🔬 Training advanced ML models...');')
       // Async model preparation and optimization
       const modelStrategy = await this.analyzeOptimalModelStrategy();
       const trainingConfiguration = await this.optimizeTrainingConfiguration();
@@ -610,7 +617,7 @@ export class BehavioralIntelligence {
 
       // Async data preprocessing and enhancement
       const enhancedFeatures = await this.preprocessTrainingFeatures(features, modelStrategy);
-      const optimizedLabels = await this.optimizeTrainingLabels(labels, trainingConfiguration);
+      const __optimizedLabels = await this.optimizeTrainingLabels(labels, trainingConfiguration);
 
       if (
         enhancedFeatures.length >= 5 && // Perform DBSCAN clustering for behavioral groups
@@ -625,20 +632,21 @@ export class BehavioralIntelligence {
           clusteringParams.minPts
         );
         logger.info(
-          ' DBSCAN clustering identified ' + clusters.length + ' behavioral groups');
+          `✅ DBSCAN clustering identified ${clusters.length} behavioral groups``
+        );
 
         // Analyze label distribution across clusters for behavioral insights
         const labelStats = this.analyzeLabelDistribution(labels, clusters);
-        logger.debug('Agent type distribution across clusters:', labelStats);'
+        logger.debug('Agent type distribution across clusters:', labelStats);')}
 } catch (error) {
-      logger.error('Error training advanced ML models:', error);'
+      logger.error('Error training advanced ML models:', error);')}
 }
 
   /**
    * Convert numeric agent type to string label
    */
   private getAgentTypeLabel(agentTypeNum:number): string {
-    const typeLabels = ['unknown',    'generalist',    'adaptive',    'specialist'];'return typeLabels[agentTypeNum]||'unknown;
+    const typeLabels = ['unknown',    'generalist',    'adaptive',    'specialist'];')    return typeLabels[agentTypeNum]||'unknown;
 }
 
   /**
@@ -666,7 +674,7 @@ export class BehavioralIntelligence {
   /**
    * Get agent behavioral clusters using DBSCAN
    */
-  async getAgentBehavioralClusters(): Promise<Map<number, string[]>> {
+  async getAgentBehavioralClusters():Promise<Map<number, string[]>> {
     if (!this.behaviorClusterer) {
       return new Map();
 }
@@ -699,7 +707,7 @@ export class BehavioralIntelligence {
     const validatedClusters = await this.validateClusterQuality(clusters, clusteringStrategy);
 
     // DBSCAN returns array of clusters, each cluster is an array of point indices
-    validatedClusters.forEach((cluster: number[], clusterId:number) => {
+    validatedClusters.forEach((cluster:number[], clusterId:number) => {
       if (cluster.length > 0) {
         clusterMap.set(
           clusterId,
@@ -721,14 +729,14 @@ export class BehavioralIntelligence {
 }> {
     const history = this.agentPerformanceHistory.get(agentId);
     if (!history||history.length < 5) {
-      return { trend: 'stable', confidence:0.1, forecast:[]};'
+      return { trend: 'stable', confidence:0.1, forecast:[]};')}
 
     // Async ML-enhanced trend analysis
     const advancedTrendAnalysis = await this.performAdvancedTrendAnalysis(agentId, history);
     const seasonalityPatterns = await this.analyzeSeasonalityPatterns(history);
 
     // Use linear regression for trend analysis
-    const regressionData: Array<[number, number]> = history.map(
+    const regressionData:Array<[number, number]> = history.map(
       (value, idx) => [idx, value]
     );
     const result = regression.linear(regressionData);
@@ -764,9 +772,9 @@ export class BehavioralIntelligence {
 });
 
     return {
-      trend: enhancedTrend,
+      trend:enhancedTrend,
       confidence:(result.r2||0.5) * advancedTrendAnalysis.confidenceMultiplier,
-      forecast: smoothedForecast,
+      forecast:smoothedForecast,
 };
 }
 
@@ -778,24 +786,24 @@ export class BehavioralIntelligence {
     adaptationThreshold?:number;
     evaluationInterval?:number;
     maxMemorySize?:number;
-}): Promise<void> {
+}):Promise<void> {
     if (!this.initialized) await this.initialize();
 
     try {
-      logger.info(' Enabling continuous learning for behavioral intelligence...',        config
+      logger.info('🔄 Enabling continuous learning for behavioral intelligence...',        config
       );
 
       // Update learning parameters if provided
       if (config.learningRate) {
         // Apply learning rate to neural networks
-        logger.debug('Setting learning rate to ' + config.learningRate);'
+        logger.debug(`Setting learning rate to ${config.learningRate}`);`
 }
 
       if (config.maxMemorySize) {
         // Adjust buffer size
         Object.defineProperty(this, 'bufferSize', {
-    '      value:config.maxMemorySize,
-          writable: true,
+    ')          value:config.maxMemorySize,
+          writable:true,
 });
 }
 
@@ -806,14 +814,14 @@ export class BehavioralIntelligence {
             // Trigger model retraining with accumulated data
             if (this.trainingBuffer.length >= 10) {
               await this.trainAdvancedMLModels();
-              logger.debug(' Continuous learning evaluation completed');'
+              logger.debug('🔄 Continuous learning evaluation completed');')}
 } catch (error) {
-            logger.error(' Continuous learning evaluation failed:', error);'
+            logger.error(' Continuous learning evaluation failed:', error);')}
 }, config.evaluationInterval);
 }
 
-      logger.info(' Continuous learning enabled successfully');' catch (error) {
-      logger.error(' Failed to enable continuous learning:', error);'  throw error;
+      logger.info(' Continuous learning enabled successfully');')} catch (error) {
+      logger.error(' Failed to enable continuous learning:', error);')      throw error;
 }
 }
 
@@ -823,29 +831,30 @@ export class BehavioralIntelligence {
   async recordBehavior(data:{
     agentId:string;
     behaviorType:string;
-    context: Record<string, unknown>;
+    context:Record<string, unknown>;
     timestamp:number;
     success:boolean;
     metadata?:Record<string, unknown>;
-}): Promise<void> {
+}):Promise<void> {
     if (!this.initialized) await this.initialize();
 
     try {
       logger.debug(
-        ' Recording behavior:' + (data.agentId) + ' - ' + data.behaviorType);
+        `📝 Recording behavior:${data.agentId} - ${data.behaviorType}``
+      );
 
       // Convert behavior data to execution data format for learning
-      const executionData: AgentExecutionData = {
+      const executionData:AgentExecutionData = {
         agentId:data.agentId,
         taskType:data.behaviorType,
         taskComplexity:this.inferComplexityFromContext(data.context),
         duration:
-          typeof data.metadata?.duration === 'number'        ? data.metadata.duration
+          typeof data.metadata?.duration === 'number')            ? data.metadata.duration
             :1000,
         success:data.success,
         efficiency:data.success ? 0.8 : 0.2, // Simple efficiency mapping
         resourceUsage:
-          typeof data.metadata?.resourceUsage === 'number'        ? data.metadata.resourceUsage
+          typeof data.metadata?.resourceUsage === 'number')            ? data.metadata.resourceUsage
             :0.5,
         errorCount:data.success ? 0 : 1,
         timestamp:data.timestamp,
@@ -855,15 +864,15 @@ export class BehavioralIntelligence {
       // Learn from the behavior data
       await this.learnFromExecution(executionData);
 
-      logger.debug(' Behavior recorded and learned from:' + data.agentId);'
+      logger.debug(` Behavior recorded and learned from:${data.agentId}`);`
 } catch (error) {
-      logger.error(' Failed to record behavior:', error);'
+      logger.error(' Failed to record behavior:', error);')}
 }
 
   /**
    * Infer complexity from context data
    */
-  private inferComplexityFromContext(context: Record<string, unknown>):number {
+  private inferComplexityFromContext(context:Record<string, unknown>):number {
     let complexity = 0.5; // Default
 
     // Increase complexity based on context size
@@ -892,14 +901,14 @@ export class BehavioralIntelligence {
     mostActiveAgents:string[];
     behavioralClusters:number;
     mlModelsActive:string[];
-    performanceTrends: Record<string, string>;
+    performanceTrends:Record<string, string>;
 } {
     const basicStats = this.getStats();
 
     // Enhanced statistics with ML insights
     const mlModelsActive:string[] = [];
-    if (this.behaviorClusterer) mlModelsActive.push('DBSCAN');'if (this.kmeansClusterer) mlModelsActive.push('K-Means');'if (this.performanceTimeSeries.size > 0) mlModelsActive.push('Time Series');'mlModelsActive.push('Simple Statistics');'
-    const performanceTrends: Record<string, string> = {};
+    if (this.behaviorClusterer) mlModelsActive.push('DBSCAN');')    if (this.kmeansClusterer) mlModelsActive.push('K-Means');')    if (this.performanceTimeSeries.size > 0) mlModelsActive.push('Time Series');')    mlModelsActive.push('Simple Statistics');')
+    const performanceTrends:Record<string, string> = {};
     for (const agentId of Array.from(this.agentPerformanceHistory.keys()).slice(
       0,
       5
@@ -909,8 +918,8 @@ export class BehavioralIntelligence {
         const recent = history.slice(-3);
         const trend =
           recent[2] > recent[0]
-            ? 'improving' | ' stable' | ' declining'        :recent[2] < recent[0]
-              ? 'improving' | ' stable' | ' declining'          : 'stable';
+            ? 'improving' | ' stable' | ' declining')            :recent[2] < recent[0]
+              ? 'improving' | ' stable' | ' declining')              : 'stable';
         performanceTrends[agentId] = trend;
 }
 }
@@ -927,8 +936,9 @@ export class BehavioralIntelligence {
 
   // Private helper methods
 
-  private async updateAgentProfile(executionData: AgentExecutionData
-  ): Promise<void> {
+  private async updateAgentProfile(
+    executionData:AgentExecutionData
+  ):Promise<void> {
     // Async profile analysis and ML enhancement
     const profileInsights = await this.analyzeProfileInsights(executionData);
     const behavioralMetrics = await this.calculateBehavioralMetrics(executionData);
@@ -944,11 +954,11 @@ export class BehavioralIntelligence {
       );
 
       // Update existing profile with ML-enhanced data
-      const updatedProfile: AgentBehavioralProfile = {
+      const updatedProfile:AgentBehavioralProfile = {
         ...existing,
-        averagePerformance: optimizedPerformance,
+        averagePerformance:optimizedPerformance,
         adaptabilityScore:await this.updateAdaptabilityScore(existing, behavioralMetrics),
-        lastUpdated: Date.now(),
+        lastUpdated:Date.now(),
 };
       
       // Apply behavioral insights
@@ -960,7 +970,7 @@ export class BehavioralIntelligence {
       const initialProfile = await this.createEnhancedProfile(executionData, behavioralMetrics);
 
       // Create new profile with ML insights
-      const newProfile: AgentBehavioralProfile = {
+      const newProfile:AgentBehavioralProfile = {
         agentId:executionData.agentId,
         specializations:[executionData.taskType],
         averagePerformance:initialProfile.optimizedEfficiency,
@@ -968,18 +978,19 @@ export class BehavioralIntelligence {
         learningRate:initialProfile.adaptiveLearningRate,
         adaptabilityScore:initialProfile.estimatedAdaptability,
         preferredTaskTypes:[executionData.taskType],
-        lastUpdated: Date.now(),
+        lastUpdated:Date.now(),
 };
       this.agentProfiles.set(executionData.agentId, newProfile);
 }
 }
 
-  private async trainNetworksFromBuffer(): Promise<void> {
+  private async trainNetworksFromBuffer():Promise<void> {
     if (this.trainingBuffer.length === 0) return;
 
     try {
       logger.info(
-        'Training networks with ' + this.trainingBuffer.length + ' data points');
+        `Training networks with ${this.trainingBuffer.length} data points``
+      );
 
       // Prepare training data for performance network
       const performanceTrainingData = this.trainingBuffer.map((data) => ({
@@ -1000,17 +1011,17 @@ export class BehavioralIntelligence {
       await this.brainJsBridge.trainNeuralNet(
         this.performanceNetworkId,
         performanceTrainingData,
-        { iterations: 100, errorThreshold:0.01}
+        { iterations:100, errorThreshold:0.01}
       );
 
-      logger.info('Networks training completed');' catch (error) {
-      logger.error('Error training networks:', error);'
+      logger.info('Networks training completed');')} catch (error) {
+      logger.error('Error training networks:', error);')}
 }
 
   private preparePerformanceInput(
-    agentId: string,
-    taskType: string,
-    taskComplexity: number,
+    agentId:string,
+    taskType:string,
+    taskComplexity:number,
     profile?:AgentBehavioralProfile
   ):number[] {
     return [
@@ -1026,8 +1037,8 @@ export class BehavioralIntelligence {
 }
 
   private prepareComplexityInput(
-    taskType: string,
-    context: Record<string, unknown>
+    taskType:string,
+    context:Record<string, unknown>
   ):number[] {
     return [
       this.encodeTaskType(taskType),
@@ -1051,7 +1062,7 @@ export class BehavioralIntelligence {
     return (types as Record<string, number>)[taskType]||0.5;
 }
 
-  private encodeContextComplexity(context: Record<string, unknown>):number {
+  private encodeContextComplexity(context:Record<string, unknown>):number {
     // Simple heuristic for context complexity
     const complexity =
       Object.keys(context).length * 0.1 +
@@ -1062,8 +1073,8 @@ export class BehavioralIntelligence {
     return Math.min(complexity, 1);
 }
 
-  private hasComplexOperations(context: Record<string, unknown>):boolean {
-    const complexKeywords = ['neural',    'ml',    'ai',    'optimization',    'algorithm'];'return complexKeywords.some((keyword) =>
+  private hasComplexOperations(context:Record<string, unknown>):boolean {
+    const complexKeywords = ['neural',    'ml',    'ai',    'optimization',    'algorithm'];')    return complexKeywords.some((keyword) =>
       JSON.stringify(context).toLowerCase().includes(keyword)
     );
 }
@@ -1095,7 +1106,7 @@ export class BehavioralIntelligence {
 }
 
   private calculatePredictionConfidence(
-    output: number[],
+    output:number[],
     profile?:AgentBehavioralProfile
   ):number {
     // Higher confidence for agents with more history and consistent performance
@@ -1113,14 +1124,14 @@ export class BehavioralIntelligence {
 }
 
   private generatePredictionReasoning(
-    agentId: string,
-    taskType: string,
-    output: number[],
+    agentId:string,
+    taskType:string,
+    output:number[],
     profile?:AgentBehavioralProfile
   ):string {
     const [duration, success, _efficiency] = output;
 
-    let reasoning = 'Agent ' + agentId + ' for ' + taskType + ':';'
+    let __reasoning = `Agent ${agentId} for ${taskType}:`;`
 
     // Analyze efficiency prediction
     if (efficiency > 0.7) {
@@ -1133,28 +1144,28 @@ export class BehavioralIntelligence {
 
     // Analyze success probability
     const successProbability = success * 100;
-    reasoning += '(' + successProbability.toFixed(0) + '% success probability, ';'
+    reasoning += `(${successProbability.toFixed(0)}% success probability, `;`
 
     // Analyze duration estimate
     const durationSeconds = duration / 1000;
     if (durationSeconds < 2) {
       _reasoning += 'quick completion)';
 } else if (durationSeconds < 10) {
-      _reasoning += durationSeconds.toFixed(1) + 's expected)';'
+      _reasoning += `${durationSeconds.toFixed(1)}s expected)`;`
 } else {
-      reasoning += '$durationSeconds.toFixed(0)s duration)';'
+      reasoning += `$durationSeconds.toFixed(0)s duration)`;`
 }
 
     reasoning += profile?.specializations.includes(taskType)
-      ? ' - specialized agent'  : ' - general capability;
+      ? ' - specialized agent')      : ' - general capability;
 '
     return reasoning;
 }
 
-  private inferRequiredSkills(taskType: string, complexity:number): string[] {
+  private inferRequiredSkills(taskType:string, complexity:number): string[] {
     const baseSkills = {
       'data-processing':[' data-analysis',    'algorithms'],
-      'neural-training':['    'machine-learning',        'neural-networks',        'optimization',],
+      'neural-training':[')        'machine-learning',        'neural-networks',        'optimization',],
       coordination:['communication',    'planning',    'leadership'],
       analysis:['critical-thinking',    'pattern-recognition'],
       optimization:['algorithms',    'mathematics',    'performance-tuning'],
@@ -1165,7 +1176,7 @@ export class BehavioralIntelligence {
     const skills = (baseSkills as Record<string, string[]>)[taskType]||['general',];
 
     if (complexity > 0.7) {
-      skills.push('expert-level',    'complex-problem-solving');'
+      skills.push('expert-level',    'complex-problem-solving');')}
 
     return skills;
 }
@@ -1178,7 +1189,7 @@ export class BehavioralIntelligence {
   private mapComplexityToDifficulty(
     complexity:number
   ):'easy|medium|hard|expert' {
-    'if (complexity < 0.25) return 'easy;
+    ')    if (complexity < 0.25) return 'easy;
     if (complexity < 0.5) return 'medium;
     if (complexity < 0.75) return 'hard;
     return 'expert;
@@ -1188,14 +1199,14 @@ export class BehavioralIntelligence {
    * Analyze label distribution across clusters for behavioral insights
    */
   private analyzeLabelDistribution(
-    labels: string[],
+    labels:string[],
     clusters:number[][]
   ):{
     totalClusters:number;
-    labelsByCluster: Record<number, Record<string, number>>;
+    labelsByCluster:Record<number, Record<string, number>>;
     dominantTypes:string[];
 } {
-    const labelsByCluster: Record<number, Record<string, number>> = {};
+    const labelsByCluster:Record<number, Record<string, number>> = {};
     const dominantTypes:string[] = [];
 
     // Initialize cluster label counts
@@ -1236,15 +1247,15 @@ export class BehavioralIntelligence {
   /**
    * Initialize neural network infrastructure
    */
-  private async initializeNeuralNetworkInfrastructure(id: string, _type: string, _config:any): Promise<void> {
+  private async initializeNeuralNetworkInfrastructure(id:string, _type:string, _config:any): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 100));
-    logger.debug('Neural network infrastructure initialized for ' + id);'
+    logger.debug(`Neural network infrastructure initialized for ${id}`);`
 }
 
   /**
    * Design network architecture
    */
-  private async designNetworkArchitecture(type: string, config:any): Promise<any> 
+  private async designNetworkArchitecture(type:string, config:any): Promise<any> 
     await new Promise(resolve => setTimeout(resolve, 75));
     return {
       architecture: 'feedforward',      layers:config?.hiddenLayers || [8, 4],
@@ -1257,16 +1268,16 @@ export class BehavioralIntelligence {
   private async validateNetworkConfiguration(config:any): Promise<void> 
     await new Promise(resolve => setTimeout(resolve, 50));
     if (!config?.hiddenLayers) {
-      logger.warn('Using default hidden layers configuration');'
+      logger.warn('Using default hidden layers configuration');')}
 
   /**
    * Optimize training strategy
    */
-  private async optimizeTrainingStrategy(_id: string, _data: any, _options:any): Promise<any> 
+  private async optimizeTrainingStrategy(_id:string, _data:any, _options:any): Promise<any> 
     await new Promise(resolve => setTimeout(resolve, 125));
     return {
-      strategy: 'adaptive',      batchSize: 32,
-      learningSchedule:'exponential_decay';
+      strategy: 'adaptive',      batchSize:32,
+      learningSchedule:'exponential_decay')};
 
   /**
    * Preprocess training data
@@ -1278,15 +1289,15 @@ export class BehavioralIntelligence {
   /**
    * Execute training pipeline
    */
-  private async executeTrainingPipeline(id: string, data: any, strategy:any): Promise<void> 
+  private async executeTrainingPipeline(id:string, data:any, strategy:any): Promise<void> 
     await new Promise(resolve => setTimeout(resolve, 150));
-    logger.debug('Training pipeline executed for ' + (id) + ' with ' + strategy.strategy + ' strategy');'
+    logger.debug(`Training pipeline executed for ${id} with ${strategy.strategy} strategy`);`
 }
 
   /**
    * Analyze prediction context
    */
-  private async analyzePredictionContext(id: string, input:number[]): Promise<any> {
+  private async analyzePredictionContext(id:string, input:number[]): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 75));
     return {
       factors:['input_complexity',    'historical_performance'],
@@ -1298,7 +1309,7 @@ export class BehavioralIntelligence {
   /**
    * Optimize input features
    */
-  private async optimizeInputFeatures(input: number[], context:any): Promise<number[]> {
+  private async optimizeInputFeatures(input:number[], context:any): Promise<number[]> {
     await new Promise(resolve => setTimeout(resolve, 50));
     return input.map(x => x * context.confidence);
 }
@@ -1306,7 +1317,7 @@ export class BehavioralIntelligence {
   /**
    * Enhance prediction output
    */
-  private async enhancePredictionOutput(output: number[], context:any): Promise<number[]> {
+  private async enhancePredictionOutput(output:number[], context:any): Promise<number[]> {
     await new Promise(resolve => setTimeout(resolve, 75));
     return output.map(x => Math.min(1, x + context.confidence * 0.1));
 }
@@ -1314,25 +1325,25 @@ export class BehavioralIntelligence {
   /**
    * Analyze agent performance insights
    */
-  private async analyzeAgentPerformanceInsights(data: AgentExecutionData): Promise<any> {
+  private async analyzeAgentPerformanceInsights(data:AgentExecutionData): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 100));
     return {
       performanceCategory:data.efficiency > 0.8 ? 'high' : data.efficiency > 0.5 ? ' medium' : ' low',      improvementAreas:['speed',    'accuracy'],
-      strengths:['consistency']';
+      strengths:['consistency']')};
 }
 
   /**
    * Optimize efficiency score
    */
-  private async optimizeEfficiencyScore(efficiency: number, insights: any, prediction:any): Promise<number> {
+  private async optimizeEfficiencyScore(efficiency:number, insights:any, prediction:any): Promise<number> {
     await new Promise(resolve => setTimeout(resolve, 50));
-    const boost = prediction.trend === 'improving' | ' stable' | ' declining'' ? 0.05:0;'return Math.min(1, efficiency + boost);
+    const boost = prediction.trend === 'improving' | ' stable' | ' declining'' ? 0.05:0;')    return Math.min(1, efficiency + boost);
 }
 
   /**
    * Optimize performance history
    */
-  private async optimizePerformanceHistory(_history: number[], _insights:any): Promise<void> {
+  private async optimizePerformanceHistory(_history:number[], _insights:any): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 25));
     // History optimization happens automatically
 }
@@ -1340,18 +1351,18 @@ export class BehavioralIntelligence {
   /**
    * Analyze feature importance
    */
-  private async analyzeFeatureImportance(_data: AgentExecutionData): Promise<any> {
+  private async analyzeFeatureImportance(_data:AgentExecutionData): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 100));
     return {
       topFeatures:['efficiency',    'task_complexity',    'duration'],
       importance:[0.4, 0.3, 0.2],
-      recommendations:['focus_on_efficiency']';
+      recommendations:['focus_on_efficiency']')};
 }
 
   /**
    * Generate enhanced features
    */
-  private async generateEnhancedFeatures(data: AgentExecutionData, insights:any): Promise<number[]> {
+  private async generateEnhancedFeatures(data:AgentExecutionData, insights:any): Promise<number[]> {
     await new Promise(resolve => setTimeout(resolve, 75));
     return [
       data.efficiency * insights.importance[0],
@@ -1363,7 +1374,7 @@ export class BehavioralIntelligence {
   /**
    * Optimize feature vector
    */
-  private async optimizeFeatureVector(features: number[], insights:any): Promise<number[]> {
+  private async optimizeFeatureVector(features:number[], insights:any): Promise<number[]> {
     await new Promise(resolve => setTimeout(resolve, 50));
     return features.map((f, i) => f * (insights.importance[i] || 1));
 }
@@ -1371,7 +1382,7 @@ export class BehavioralIntelligence {
   /**
    * Analyze optimal model strategy
    */
-  private async analyzeOptimalModelStrategy(): Promise<any> {
+  private async analyzeOptimalModelStrategy():Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 125));
     return {
       recommendedModels:['random_forest',    'gradient_boosting'],
@@ -1382,11 +1393,11 @@ export class BehavioralIntelligence {
   /**
    * Optimize training configuration
    */
-  private async optimizeTrainingConfiguration(): Promise<any> {
+  private async optimizeTrainingConfiguration():Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 100));
     return {
-      batchSize: 64,
-      epochs: 100,
+      batchSize:64,
+      epochs:100,
       validationSplit:0.2,
       earlyStoppingPatience:10
 };
@@ -1395,7 +1406,7 @@ export class BehavioralIntelligence {
   /**
    * Preprocess training features
    */
-  private async preprocessTrainingFeatures(features: number[][], strategy:any): Promise<number[][]> {
+  private async preprocessTrainingFeatures(features:number[][], strategy:any): Promise<number[][]> {
     await new Promise(resolve => setTimeout(resolve, 125));
     return features.map(f => f.map(val => val * strategy.confidence));
 }
@@ -1403,7 +1414,7 @@ export class BehavioralIntelligence {
   /**
    * Optimize training labels
    */
-  private async optimizeTrainingLabels(labels: string[], _config:any): Promise<string[]> {
+  private async optimizeTrainingLabels(labels:string[], _config:any): Promise<string[]> {
     await new Promise(resolve => setTimeout(resolve, 75));
     return labels; // Labels remain unchanged but validated
 }
@@ -1415,24 +1426,24 @@ export class BehavioralIntelligence {
     await new Promise(resolve => setTimeout(resolve, 100));
     return {
       eps:0.35,
-      minPts: Math.max(3, Math.floor(features.length * 0.05))
+      minPts:Math.max(3, Math.floor(features.length * 0.05))
 };
 }
 
   /**
    * Analyze clustering strategy
    */
-  private async analyzeClusteringStrategy(): Promise<any> {
+  private async analyzeClusteringStrategy():Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 100));
     return {
-      strategy: 'density_based',      expectedClusters: 3,
-      qualityMetric:'silhouette_score';
+      strategy: 'density_based',      expectedClusters:3,
+      qualityMetric:'silhouette_score')};
 }
 
   /**
    * Identify behavioral patterns
    */
-  private async identifyBehavioralPatterns(): Promise<any> {
+  private async identifyBehavioralPatterns():Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 125));
     return {
       dominantPatterns:['efficiency_focused',    'speed_oriented'],
@@ -1444,7 +1455,7 @@ export class BehavioralIntelligence {
   /**
    * Optimize features for clustering
    */
-  private async optimizeFeaturesForClustering(features: number[][], patterns:any): Promise<number[][]> {
+  private async optimizeFeaturesForClustering(features:number[][], patterns:any): Promise<number[][]> {
     await new Promise(resolve => setTimeout(resolve, 100));
     return features.map(f => f.map(val => val * patterns.patternStrength));
 }
@@ -1456,14 +1467,14 @@ export class BehavioralIntelligence {
     await new Promise(resolve => setTimeout(resolve, 75));
     return {
       eps:0.3,
-      minPts: Math.max(3, Math.floor(features.length * 0.04))
+      minPts:Math.max(3, Math.floor(features.length * 0.04))
 };
 }
 
   /**
    * Validate cluster quality
    */
-  private async validateClusterQuality(clusters: any[], strategy:any): Promise<any[]> {
+  private async validateClusterQuality(clusters:any[], strategy:any): Promise<any[]> {
     await new Promise(resolve => setTimeout(resolve, 75));
     return clusters.filter(cluster => cluster.length >= strategy.expectedClusters);
 }
@@ -1471,7 +1482,7 @@ export class BehavioralIntelligence {
   /**
    * Perform advanced trend analysis
    */
-  private async performAdvancedTrendAnalysis(_agentId: string, _history:number[]): Promise<any> {
+  private async performAdvancedTrendAnalysis(_agentId:string, _history:number[]): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 150));
     return {
       trendStrength:0.84,
@@ -1487,8 +1498,8 @@ export class BehavioralIntelligence {
   private async analyzeSeasonalityPatterns(_history:number[]): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 100));
     return {
-      hasSeasonality: false,
-      period: null,
+      hasSeasonality:false,
+      period:null,
       amplitude:0
 };
 }
@@ -1496,17 +1507,17 @@ export class BehavioralIntelligence {
   /**
    * Enhance trend with ML insights
    */
-  private async enhanceTrendWithMLInsights(trend: string, analysis:any): Promise<string> {
+  private async enhanceTrendWithMLInsights(trend:string, analysis:any): Promise<string> {
     await new Promise(resolve => setTimeout(resolve, 50));
     if (analysis.volatility > 0.2) {
-      return trend ==='improving' | ' stable' | ' declining'? ' improving' | ' stable' | ' declining' :trend;'
+      return trend ==='improving' | ' stable' | ' declining'? ' improving' | ' stable' | ' declining' :trend;')}
     return trend;
 }
 
   /**
    * Generate enhanced forecast
    */
-  private async generateEnhancedForecast(_history: number[], _result: any, _patterns:any): Promise<number[]> {
+  private async generateEnhancedForecast(_history:number[], _result:any, _patterns:any): Promise<number[]> {
     await new Promise(resolve => setTimeout(resolve, 125));
     return [0.02, 0.03, 0.01, 0.04, 0.02]; // ML adjustments
 }
@@ -1514,7 +1525,7 @@ export class BehavioralIntelligence {
   /**
    * Analyze profile insights
    */
-  private async analyzeProfileInsights(_data: AgentExecutionData): Promise<any> {
+  private async analyzeProfileInsights(_data:AgentExecutionData): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 100));
     return {
       profileType: 'adaptive',      growthPotential:0.75,
@@ -1525,7 +1536,7 @@ export class BehavioralIntelligence {
   /**
    * Calculate behavioral metrics
    */
-  private async calculateBehavioralMetrics(data: AgentExecutionData): Promise<any> {
+  private async calculateBehavioralMetrics(data:AgentExecutionData): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 75));
     return {
       adaptability:0.7,
@@ -1537,7 +1548,7 @@ export class BehavioralIntelligence {
   /**
    * Optimize performance score
    */
-  private async optimizePerformanceScore(current: number, latest: number, insights:any): Promise<number> {
+  private async optimizePerformanceScore(current:number, latest:number, insights:any): Promise<number> {
     await new Promise(resolve => setTimeout(resolve, 50));
     const weight = insights.growthPotential;
     return (current * (1 - weight) + latest * weight);
@@ -1546,7 +1557,7 @@ export class BehavioralIntelligence {
   /**
    * Update adaptability score
    */
-  private async updateAdaptabilityScore(profile: AgentBehavioralProfile, metrics:any): Promise<number> {
+  private async updateAdaptabilityScore(profile:AgentBehavioralProfile, metrics:any): Promise<number> {
     await new Promise(resolve => setTimeout(resolve, 50));
     return (profile.adaptabilityScore + metrics.adaptability) / 2;
 }
@@ -1554,7 +1565,7 @@ export class BehavioralIntelligence {
   /**
    * Apply behavioral insights
    */
-  private async applyBehavioralInsights(_profile: AgentBehavioralProfile, _insights:any): Promise<void> {
+  private async applyBehavioralInsights(_profile:AgentBehavioralProfile, _insights:any): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 25));
     // Insights applied to profile automatically
 }
@@ -1562,7 +1573,7 @@ export class BehavioralIntelligence {
   /**
    * Create enhanced profile
    */
-  private async createEnhancedProfile(data: AgentExecutionData, metrics:any): Promise<any> {
+  private async createEnhancedProfile(data:AgentExecutionData, metrics:any): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 100));
     return {
       optimizedEfficiency:data.efficiency * 1.1,
@@ -1577,100 +1588,117 @@ export class BehavioralIntelligence {
  * Demo function showing behavioral intelligence benefits
  */
 export async function demoBehavioralIntelligence(
-  brainJsBridge: BrainJsBridge
+  brainJsBridge:BrainJsBridge
 ):Promise<void> {
-  logger.info(' Behavioral Intelligence Demo Starting...\n');'
+  logger.info('🧠 Behavioral Intelligence Demo Starting...\n');')
   const behavioral = new BehavioralIntelligence(brainJsBridge);
   await behavioral.initialize();
 
   // Sample agent execution data
-  const executionData: AgentExecutionData[] = [
+  const executionData:AgentExecutionData[] = [
     {
       agentId: 'agent-1',      taskType: 'data-processing',      taskComplexity:0.6,
-      duration: 2500,
-      success: true,
+      duration:2500,
+      success:true,
       efficiency:0.85,
       resourceUsage:0.4,
-      errorCount: 0,
-      timestamp: Date.now(),
+      errorCount:0,
+      timestamp:Date.now(),
       context:{ dataSize: 1000},
 },
     {
       agentId: 'agent-1',      taskType: 'neural-training',      taskComplexity:0.9,
-      duration: 8000,
-      success: true,
+      duration:8000,
+      success:true,
       efficiency:0.75,
       resourceUsage:0.8,
-      errorCount: 1,
-      timestamp: Date.now(),
+      errorCount:1,
+      timestamp:Date.now(),
       context:{ modelSize: 'large'},
 },
     {
       agentId: 'agent-2',      taskType: 'data-processing',      taskComplexity:0.4,
-      duration: 1800,
-      success: true,
+      duration:1800,
+      success:true,
       efficiency:0.9,
       resourceUsage:0.3,
-      errorCount: 0,
-      timestamp: Date.now(),
+      errorCount:0,
+      timestamp:Date.now(),
       context:{ dataSize: 500},
 },
 ];
 
   try {
     // 1. Learn from execution data
-    logger.info(' Learning from agent executions...');'for (const data of executionData) {
+    logger.info('📚 Learning from agent executions...');')    for (const data of executionData) {
       await behavioral.learnFromExecution(data);
 }
-    logger.info(' Learning completed\n');'
+    logger.info(' Learning completed\n');')
     // 2. Predict agent performance
-    logger.info(' Predicting agent performance...');'const prediction = await behavioral.predictAgentPerformance(
+    logger.info('🔮 Predicting agent performance...');')    const prediction = await behavioral.predictAgentPerformance(
       'agent-1',      'data-processing',      0.7
     );
-    logger.info(' Prediction for agent-1:');'
-    logger.info('   • Duration:$prediction.predictedDuration.toFixed(0)ms');'
+    logger.info(` Prediction for agent-1:`);`
+    logger.info(`   • Duration:$prediction.predictedDuration.toFixed(0)ms`);`
     logger.info(
-      '   • Success rate:' + (prediction.predictedSuccess * 100).toFixed(1) + '%');
+      `   • Success rate:${(prediction.predictedSuccess * 100).toFixed(1)}%``
+    );
     logger.info(
-      '   • Efficiency:' + (prediction.predictedEfficiency * 100).toFixed(1) + '%');
+      `   • Efficiency:${(prediction.predictedEfficiency * 100).toFixed(1)}%``
+    );
     logger.info(
-      '   • Confidence:' + (prediction.confidence * 100).toFixed(1) + '%');
-    logger.info('   • Reasoning:' + prediction.reasoning + '\n');'
+      `   • Confidence:${(prediction.confidence * 100).toFixed(1)}%``
+    );
+    logger.info(`   • Reasoning:${prediction.reasoning}\n`);`
 
     // 3. Analyze task complexity
-    logger.info(' Analyzing task complexity...');'const complexityAnalysis = await behavioral.analyzeTaskComplexity(
+    logger.info(' Analyzing task complexity...');')    const complexityAnalysis = await behavioral.analyzeTaskComplexity(
       'neural-training',      {
-        modelSize: 'large',        dataSize: 100000,
+        modelSize: 'large',        dataSize:100000,
 }
     );
-    logger.info(' Task complexity analysis:');'
+    logger.info(` Task complexity analysis:`);`
     logger.info(
-      '   • Complexity:$(complexityAnalysis.estimatedComplexity * 100).toFixed(1)%');
-    logger.info('   • Difficulty:' + complexityAnalysis.difficulty);'
+      `   • Complexity:$(complexityAnalysis.estimatedComplexity * 100).toFixed(1)%``
+    );
+    logger.info(`   • Difficulty:${complexityAnalysis.difficulty}`);`
     logger.info(
-      '   • Required skills:$complexityAnalysis.requiredSkills.join(',    ')');
-    logger.info(
-      '   • Estimated duration:' + complexityAnalysis.estimatedDuration.toFixed(0) + 'ms\n');
-
-    // 4. Find best agent for task
-    logger.info(' Finding best agent for task...');'const bestAgent = await behavioral.findBestAgentForTask(
-      'data-processing',      0.5,
-      ['agent-1',    'agent-2']';
-    logger.info(' Best agent selection:');'
-    logger.info('   • Selected:$bestAgent.agentId');'
-    logger.info('   • Confidence:' + (bestAgent.confidence * 100).toFixed(1) + '%');'
-    logger.info('   • Reasoning:$bestAgent.reasoning\n');'
-
-    // 5. Show behavioral intelligence stats
-    logger.info(' Behavioral Intelligence Statistics:');
-    const stats = behavioral.getStats();
-    logger.info('   • Total agents: ' + stats.totalAgents);
-    logger.info('   • Training data points: ' + stats.trainingDataPoints);
-    logger.info('   • Networks initialized: ' + stats.networksInitialized);
-    logger.info(
-      '   • Average performance: ' + (stats.averagePerformance * 100).toFixed(1) + '%'
+      `   • Required skills:$complexityAnalysis.requiredSkills.join(',    ')``
     );
     logger.info(
-      '   • Most active agents: ${stats.mostActiveAgents.join(' Demo failed:', error);
+      `   • Estimated duration:${complexityAnalysis.estimatedDuration.toFixed(0)}ms\n``
+    );
+
+    // 4. Find best agent for task
+    logger.info(' Finding best agent for task...');')    const bestAgent = await behavioral.findBestAgentForTask(
+      'data-processing',      0.5,
+      ['agent-1',    'agent-2']')    );
+    logger.info(`🏆 Best agent selection:`);`
+    logger.info(`   • Selected:$bestAgent.agentId`);`
+    logger.info(`   • Confidence:${(bestAgent.confidence * 100).toFixed(1)}%`);`
+    logger.info(`   • Reasoning:$bestAgent.reasoning\n`);`
+
+    // 5. Show behavioral intelligence stats
+    logger.info('📈 Behavioral Intelligence Statistics:');
+    const stats = behavioral.getStats();
+    logger.info(`   • Total agents: ${stats.totalAgents}`);
+    logger.info(`   • Training data points: ${stats.trainingDataPoints}`);
+    logger.info(`   • Networks initialized: ${stats.networksInitialized}`);
+    logger.info(
+      `   • Average performance: ${(stats.averagePerformance * 100).toFixed(1)}%`
+    );
+    logger.info(
+      `   • Most active agents: ${stats.mostActiveAgents.join(', ')}`
+    );
+
+    logger.info('\n🎉 Behavioral Intelligence Demo Complete!');
+    logger.info('\n Key Benefits for claude-code-zen:');
+    logger.info('   • Real-time agent performance prediction');
+    logger.info('   • Intelligent task-agent matching');
+    logger.info('   • Behavioral pattern learning and adaptation');
+    logger.info('   • Task complexity estimation for better routing');
+    logger.info('   • Data-driven swarm optimization');
+  } catch (error) {
+    logger.error(' Demo failed:', error);
   }
 }
