@@ -23,12 +23,12 @@ import { FailoverManager } from './failover-manager';
 import { TaskAgentMatcher } from './task-agent-matcher';
 
 interface RoutingTable {
+
   agentId: string;
   routes: RouteEntry[];
   lastUpdate: Date;
   reliability: number;
-  averageLatency: number;
-}
+  averageLatency: number;};
 
 interface RouteEntry {
   destination: string;
@@ -36,17 +36,16 @@ interface RouteEntry {
   bandwidth: number;
   reliability: number;
   qosLevel: number;
-  path: string[];
-}
+  path: string[];};
 
 interface RoutingDecision {
+
   selectedAgent: Agent;
   routingPath: string[];
   estimatedLatency: number;
   confidence: number;
   qosGuarantees: QoSRequirement;
-  fallbackOptions: Agent[];
-}
+  fallbackOptions: Agent[];};
 
 interface RoutingMetrics {
   totalRoutingDecisions: number;
@@ -54,8 +53,7 @@ interface RoutingMetrics {
   averageRoutingLatency: number;
   failoverActivations: number;
   routeOptimizations: number;
-  qosViolations: number;
-}
+  qosViolations: number;};
 
 export class IntelligentRoutingEngine
   extends EventEmitter
@@ -74,8 +72,7 @@ export class IntelligentRoutingEngine
     failoverThreshold: 0.8,
     adaptiveRoutingEnabled: true,
     geographicAwareRouting: true,
-    loadBalancingStrategy:
-      'intelligent' as ' round_robin|least_connections|intelligent',
+    loadBalancingStrategy: 'intelligent' as ' round_robin|least_connections|intelligent',
   };
 
   constructor(): void {
@@ -87,7 +84,7 @@ export class IntelligentRoutingEngine
       routeOptimizations: 0,
       qosViolations: 0,
     };
-  }
+  };
 
   /**
    * Route a task to the optimal agent.
@@ -111,7 +108,7 @@ export class IntelligentRoutingEngine
       const newReliability = await this.calculateAgentReliability(): void {
     // Implement load balancing across routes
     // This would adjust route preferences based on current load
-  }
+  };
 
   // Helper methods for measurements and calculations
   private async measureLatency(): void {
@@ -138,7 +135,7 @@ export class IntelligentRoutingEngine
       decision.confidence * 0.8 +
       (decision.qosGuarantees.availability || 0.9) * 0.2
     );
-  }
+  };
 
   private calculateQoSGuarantees(): void {
     return {
@@ -147,12 +144,12 @@ export class IntelligentRoutingEngine
       maxErrorRate: 1 - route.reliability,
       availability: route.reliability,
     };
-  }
+  };
 
   private async calculatePathLatency(): void {
     // Calculate total latency for a path
     return 100 + path.length * 20;
-  }
+  };
 
   private async calculatePathBandwidth(): void {
     // Calculate minimum bandwidth along path
@@ -160,7 +157,7 @@ export class IntelligentRoutingEngine
     // Calculate overall path reliability
     const baseReliability = 0.95;
     return baseReliability ** path.length;
-  }
+  };
 
   private calculateQoSLevel(): void {
     // Calculate QoS level from 1-5
@@ -170,5 +167,6 @@ export class IntelligentRoutingEngine
 
     const avgScore = (latencyScore + bandwidthScore + reliabilityScore) / 3;
     return Math.ceil(avgScore * 5);
-  }
-}
+  };
+
+};

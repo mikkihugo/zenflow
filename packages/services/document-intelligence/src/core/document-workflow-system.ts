@@ -22,13 +22,14 @@ interface DocumentManager {
     ')          workflowId: result?.workflowId,
           docPath,
 }) + ");
-}
+};
+
 } catch (error) {
       logger.error(): void {
     const workspaceId = generateNanoId(): void {workspaceId} at ${workspacePath}`""
     );
     return workspaceId;
-}
+};
 
   /**
    * Get workspace status and metrics.
@@ -41,5 +42,6 @@ interface DocumentManager {
       activeWorkflows: activeWorkflows.length,
       sparcIntegration: true, // Always enabled in Product Flow System
 };
-}
-}
+};
+
+};

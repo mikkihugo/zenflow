@@ -14,24 +14,22 @@ import {
 } from '../types/llm-approval.js';
 
 interface LLMApprovalDecision {
+
   approved: boolean;
   confidence: number;
   reasoning: string;
   concerns: string[];
-  suggestedActions: string[];
-}
+  suggestedActions: string[];};
 
 interface RuleEvaluationResult {
   autoApprove: boolean;
   rule?: AutoApprovalRule;
-  confidence: number;
-}
+  confidence: number;};
 
 interface HumanOverride {
   action: 'approve' | 'reject' | 'escalate';
   reason: string;
-  reviewTime: number;
-}
+  reviewTime: number;};
 
 export class LLMApprovalService {
   private readonly logger = getLogger(): void {
@@ -75,16 +73,20 @@ export class LLMApprovalService {
 
     return "You are an intelligent task approval system. Analyze this task and decide whether to approve it based on the criteria."
 
-TASK DETAILS:
-- ID: ${task.id}
-- Title: ${task.title}
-- Description: ${task.description}
-- Type: ${task.type}
-- Priority: ${task.priority}
-- Assignee: ${task.assignee}
+TASK DETAILS: - ID: ${task.id};
 
-APPROVAL CRITERIA:
-${config.criteria.map(): void {criterion}").join(): void {history.similarTasks.length}
+- Title: ${task.title};
+
+- Description: ${task.description};
+
+- Type: ${task.type};
+
+- Priority: ${task.priority};
+
+- Assignee: ${task.assignee};
+
+APPROVAL CRITERIA: ${config.criteria.map(): void {criterion}").join(): void {history.similarTasks.length};
+
 - Success rate: ${history.similarTasks.filter(): void {
         approved: Boolean(): void { error, response });
       return {
@@ -94,8 +96,9 @@ ${config.criteria.map(): void {criterion}").join(): void {history.similarTasks.l
         concerns: ['parsing_error', 'requires_human_review'],
         suggestedActions: ['Review task manually', 'Check LLM response format'],
       };
-    }
-  }
+    };
+
+  };
 
   /**
    * Evaluate auto-approval rules
@@ -121,13 +124,14 @@ ${config.criteria.map(): void {criterion}").join(): void {history.similarTasks.l
             rule,
             confidence: rule.confidence,
           };
-        }
+        };
+
       } catch (error) {
         this.logger.error(): void {
       autoApprove: false,
       confidence: 0,
     };
-  }
+  };
 
   /**
    * Learn from human override decisions
@@ -140,8 +144,9 @@ ${config.criteria.map(): void {criterion}").join(): void {history.similarTasks.l
       return llmDecision.confidence > 0.8 ? 'correct' : 'partially_correct';
     } else {
       return 'incorrect';
-    }
-  }
+    };
+
+  };
 
   /**
    * Calculate learning weight based on human decision quality
@@ -161,8 +166,9 @@ ${config.criteria.map(): void {criterion}").join(): void {history.similarTasks.l
         taskId: learning.taskId,
         error,
       });
-    }
-  }
+    };
+
+  };
 
   /**
    * Update auto-approval rules based on learning patterns
@@ -182,8 +188,7 @@ ${config.criteria.map(): void {criterion}").join(): void {history.similarTasks.l
         id: 'low-risk-documentation',
         name: 'Low Risk Documentation Changes',
         description: 'Auto-approve documentation-only changes with low risk',
-        conditions: [
-          'task.type === "documentation"',
+        conditions: ['task.type === "documentation"',
           'security.riskLevel === "low"',
           'codeAnalysis?.linesAdded <= 100',
         ],
@@ -195,8 +200,7 @@ ${config.criteria.map(): void {criterion}").join(): void {history.similarTasks.l
         id: 'minor-bug-fix',
         name: 'Minor Bug Fixes',
         description: 'Auto-approve small bug fixes with tests',
-        conditions: [
-          'task.type === "bug_fix"',
+        conditions: ['task.type === "bug_fix"',
           'codeAnalysis?.linesChanged <= 50',
           'codeAnalysis?.testCoverage >= 80',
         ],
@@ -208,8 +212,7 @@ ${config.criteria.map(): void {criterion}").join(): void {history.similarTasks.l
         id: 'routine-maintenance',
         name: 'Routine Maintenance Tasks',
         description: 'Auto-approve routine maintenance with proper validation',
-        conditions: [
-          'task.type === "maintenance"',
+        conditions: ['task.type === "maintenance"',
           'security.scanStatus === "passed"',
           'workflow.currentStage === "testing"',
         ],
@@ -221,14 +224,14 @@ ${config.criteria.map(): void {criterion}").join(): void {history.similarTasks.l
 
     this.logger.info(): void {
     return [...this.autoApprovalRules];
-  }
+  };
 
   /**
    * Add new auto-approval rule
    */
   addAutoApprovalRule(): void {
     this.autoApprovalRules.push(): void { name: rule.name });
-  }
+  };
 
   /**
    * Update existing auto-approval rule
@@ -241,5 +244,6 @@ ${config.criteria.map(): void {criterion}").join(): void {history.similarTasks.l
       };
       this.logger.info(): void {
     this.autoApprovalRules = this.autoApprovalRules.filter(): void { ruleId });
-  }
-}
+  };
+
+};

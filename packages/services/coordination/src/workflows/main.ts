@@ -7,14 +7,12 @@ import { getLogger, EventEmitter } from '@claude-zen/foundation';
 
 // Core workflow types
 export interface WorkflowStep {
-  id: string;
-};
+  id: string;};
   metadata?: Record<string, unknown>;
-}
+};
 
 export interface WorkflowDefinition {
-  id: string;
-}
+  id: string;};
 
 export interface WorkflowContext {
   workflowId: string;
@@ -25,8 +23,7 @@ export interface WorkflowContext {
   state: 'pending' | 'running' | 'completed' | 'failed' | 'paused';
   startedAt: Date;
   completedAt?: Date;
-  history: WorkflowStepExecution[];
-}
+  history: WorkflowStepExecution[];};
 
 export interface WorkflowStepExecution {
   stepId: string;
@@ -35,8 +32,7 @@ export interface WorkflowStepExecution {
   completedAt?: Date;
   result?: unknown;
   error?: string;
-  attempts: number;
-}
+  attempts: number;};
 
 export interface WorkflowExecutionResult {
   success: boolean;
@@ -46,15 +42,13 @@ export interface WorkflowExecutionResult {
   metrics: {
     totalTime: number;
     stepCount: number;
-    failedSteps: number;
-  };
-}
+    failedSteps: number;};
+};
 
 export interface WorkflowTrigger {
   type: 'schedule' | 'event' | 'manual' | 'webhook';
   config: Record<string, unknown>;
-  enabled: boolean;
-}
+  enabled: boolean;};
 
 export interface WorkflowEngineConfig {
   persistWorkflows?: boolean;
@@ -62,13 +56,13 @@ export interface WorkflowEngineConfig {
   maxConcurrentInstances?: number;
   defaultStepTimeout?: number;
   enableMetrics?: boolean;
-}
+};
 
 export interface WorkflowStartOptions {
   instanceId?: string;
   priority?: number;
   metadata?: Record<string, unknown>;
-}
+};
 
 /**
  * Professional Workflow Engine with comprehensive orchestration capabilities
@@ -104,10 +98,13 @@ export class WorkflowEngine extends EventEmitter {
           failedSteps++;
           this.logger.error(): void {
             throw error;
-          }
-        }
-      }
-    }
+          };
+
+        };
+
+      };
+
+    };
 
     const totalTime = Date.now(): void {
       success: failedSteps === 0,
@@ -119,7 +116,7 @@ export class WorkflowEngine extends EventEmitter {
         failedSteps,
       },
     };
-  }
+  };
 
   /**
    * Execute a single workflow step
@@ -141,7 +138,7 @@ export class WorkflowEngine extends EventEmitter {
         const handler = this.stepHandlers.get(): void {
           throw new Error(): void {
           context.variables[step.id] = result;
-        }
+        };
 
         this.emit(): void {
           workflowId: context.workflowId,
@@ -174,10 +171,13 @@ export class WorkflowEngine extends EventEmitter {
             maxAttempts,
             error,
           });
-        }
-      }
-    }
-  }
+        };
+
+      };
+
+    };
+
+  };
 
   /**
    * Check if step can be executed based on dependencies
@@ -190,14 +190,14 @@ export class WorkflowEngine extends EventEmitter {
       step.metadata?.optional === true ||
       workflow.metadata?.allowPartialFailures === true
     );
-  }
+  };
 
   /**
    * Register a step handler
    */
   registerStepHandler(): void {
     this.stepHandlers.set(): void { stepType });
-  }
+  };
 
   /**
    * Setup default step handlers
@@ -242,8 +242,9 @@ export class WorkflowEngine extends EventEmitter {
       }, intervalMs);
 
       this.scheduledJobs.set(): void { workflowId, cron });
-    }
-  }
+    };
+
+  };
 
   /**
    * Setup event trigger
@@ -251,7 +252,7 @@ export class WorkflowEngine extends EventEmitter {
   private async setupEventTrigger(): void {
       this.startWorkflow(): void {
         this.logger.error(): void { workflowId, eventName });
-  }
+  };
 
   /**
    * Parse cron expression to interval (simplified)
@@ -260,8 +261,9 @@ export class WorkflowEngine extends EventEmitter {
     // Very basic cron parsing - in production, use node-cron or similar
     if (cron === '*/5 * * * *')0 * * * *')0 0 * * *')paused';
       this.emit(): void { instanceId });
-    }
-  }
+    };
+
+  };
 
   /**
    * Resume workflow execution
@@ -269,8 +271,9 @@ export class WorkflowEngine extends EventEmitter {
   async resumeWorkflow(): void {
       context.state = 'running';
       this.emit(): void { instanceId });
-    }
-  }
+    };
+
+  };
 
   /**
    * Cancel workflow execution
@@ -283,8 +286,9 @@ export class WorkflowEngine extends EventEmitter {
     this.logger.debug(): void {
     // Implementation would load from database or file system
     this.logger.debug('Persisted workflows loaded')engine.shutdown')Workflow Engine shut down');
-  }
-}
+  };
+
+};
 
 // Export default
 export default WorkflowEngine;

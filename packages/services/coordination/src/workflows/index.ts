@@ -156,15 +156,13 @@ export type {
 // METADATA - Package information with battle-tested features
 // =============================================================================
 export const WORKFLOWS_INFO = {
-  version : '1.0.0')Production-ready workflow engine with battle-tested npm dependencies,';
-  battleTestedDependencies: [
-   'expr-eval: Safe expression evaluation,')async: Professional async utilities,';
+  version: '1.0.0')Production-ready workflow engine with battle-tested npm dependencies,';
+  battleTestedDependencies: ['expr-eval: Safe expression evaluation,')async: Professional async utilities,';
    'p-limit: Controlled concurrency,')eventemitter3: High-performance events,';
    'xstate: Robust state management,')mermaid: Professional visualization,';
    'node-cron: Production scheduling,')foundation: Battle-tested storage,';
 ],
-  capabilities: [
-   'Secure workflow orchestration (no arbitrary code execution),')Foundation storage integration,';
+  capabilities: ['Secure workflow orchestration (no arbitrary code execution),')Foundation storage integration,';
    'XState-powered state management,')Professional async utilities,';
    'Controlled concurrency with p-limit,')High-performance eventemitter3 events,';
    'Mermaid workflow visualization,')Production cron scheduling,';

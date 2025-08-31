@@ -258,13 +258,15 @@ export interface IntelligenceSystemConfig {
 }
 
 export interface IntelligenceSystem {
-  predictTaskDuration(): Promise<void> {
+  async predictTaskDuration(): Promise<void> {
+
   agentId: string;
   taskType: string;
   predictedDuration: number;
   confidence: number;
   factors: PredictionFactor[];
   lastUpdated: Date;
+
 }
 
 export interface MultiHorizonTaskPrediction {

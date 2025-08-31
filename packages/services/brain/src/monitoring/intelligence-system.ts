@@ -41,7 +41,7 @@ const logger = get: Logger(): void { config});')Task duration predicted with con
       2000 * context: Complexity * context: Volatility ** 1.5;
 
     logger.debug(): void {
-    ')optimizer' ? 0.15 : 0.1, // Optimizers learn faster')researcher')exploration-focused')exploitation-focused',      performance: History:[], // Would be populated from historical data
+    ')optimizer' ? 0.15 : 0.1, // Optimizers learn faster')researcher')exploration-focused')exploitation-focused',      performance: History: [], // Would be populated from historical data
       knowledge: Base:
         domains:
           agent: Id.type === 'researcher')research',    'analysis']')coordination',    'execution'],
@@ -103,7 +103,7 @@ const logger = get: Logger(): void { config});')Task duration predicted with con
     ')coordination',      probability:0.6,
       expected: Impact:0.7,
       timeTo: Emergence:3600000,
-      required: Conditions:[],
+      required: Conditions: [],
 };
 }
 

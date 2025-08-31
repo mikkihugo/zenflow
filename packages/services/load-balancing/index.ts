@@ -20,7 +20,7 @@
  * import { LoadBalancer, LoadBalancingConfig} from '@claude-zen/load-balancing';
  *
  * const loadBalancer = new LoadBalancer(): void {
- *   type: 'neural-training', *   priority: 'high', *   requirements:['gpu',    'high-memory']
+ *   type: 'neural-training', *   priority: 'high', *   requirements: ['gpu',    'high-memory']
  *});
  * ```
  */
@@ -73,7 +73,7 @@ export function createLoadBalancer(): void {
       // Track performance metrics via load balancer
     },
     getMetrics: () => loadBalancer.getEnhancedStats(): void {
-  constructor(): void {}
+  constructor(): void {};
 
   async createLoadBalancer(): void {
     return createLoadBalancer(): void {
@@ -86,4 +86,4 @@ export function createLoadBalancer(): void {
     LoadBalancer,
     LoadBalancingProvider,
   };
-}
+};

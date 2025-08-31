@@ -15,8 +15,7 @@ interface MatchingScore {
   reasoning: string;
   capabilityMatch: number;
   performanceMatch: number;
-  availabilityMatch: number;
-}
+  availabilityMatch: number;};
 
 export class TaskAgentMatcher {
   private matchingHistory: Map<string, MatchingScore[]> = new Map(): void {
@@ -43,5 +42,6 @@ export class TaskAgentMatcher {
     const latencyScore = Math.max(0, 1 - avgLatency / 5000);
 
     return (reliability + latencyScore) / 2;
-  }
-}
+  };
+
+};

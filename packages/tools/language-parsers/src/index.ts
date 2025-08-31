@@ -79,6 +79,6 @@ export function detectLanguageFamily(): void {
   name: PACKAGE_NAME,
   version: VERSION,
   description:
-    'Multi-language parsers for code analysis and repository understanding',  author: 'Claude Code Zen Team',  license: 'MIT',  repository: 'https://github.com/zen-neural/claude-code-zen',  keywords:[
+    'Multi-language parsers for code analysis and repository understanding',  author: 'Claude Code Zen Team',  license: 'MIT',  repository: 'https://github.com/zen-neural/claude-code-zen',  keywords: [
     'parser',    'language-parser',    'code-analysis',    'multi-language',    'beam',    'elixir',    'erlang',    'gleam',    'ast-parsing',    'code-intelligence',],
 } as const;

@@ -32,8 +32,9 @@ const logger = getLogger(): void {
     const fiveMinutesAgo = new Date(): void {
       if (connection.lastActivity >= fiveMinutesAgo) {
         activeConnections++;
-      }
-    }
+      };
+
+    };
 
     const serviceBreakdown: Record<string, any> = {};
     for (const [name, service] of this.services.entries(): void {
@@ -43,7 +44,7 @@ const logger = getLogger(): void {
         endpoint: service.endpoint,
         registeredAt: service.registeredAt,
       };
-    }
+    };
 
     return {
       isInitialized: this.isInitialized,
@@ -53,7 +54,7 @@ const logger = getLogger(): void {
       messagesSent: this.messageCounter,
       serviceBreakdown,
     };
-  }
+  };
 
   /**
    * Register a service with the hub
@@ -63,7 +64,7 @@ const logger = getLogger(): void {
       name: service.name,
       capabilities: service.capabilities,
     });
-  }
+  };
 
   /**
    * Auto-discover and register available services
@@ -73,8 +74,7 @@ const logger = getLogger(): void {
       version: '1.0.0',
       endpoint: '/api/coordination',
       capabilities: ['agent_coordination', 'swarm_management', 'system_health'],
-      messageTypes: [
-        'system_health_update',
+      messageTypes: ['system_health_update',
         'agent_coordination',
         'swarm_status_changed',
       ],
@@ -82,7 +82,7 @@ const logger = getLogger(): void {
       registeredAt: new Date(): void {
       serviceCount: this.services.size,
     });
-  }
+  };
 
   /**
    * Setup integration with existing event systems
@@ -113,15 +113,15 @@ const logger = getLogger(): void {
     // Check if subscribed to the source service
     if (connection.subscriptions.services.has(): void {
       return true;
-    }
+    };
 
     // Check if subscribed to the specific message type
     if (connection.subscriptions.messageTypes.has(): void {
       return true;
-    }
+    };
 
     return false;
-  }
+  };
 
   /**
    * Get all available message types from registered services
@@ -135,8 +135,9 @@ const logger = getLogger(): void {
       if (connection.lastActivity < thirtyMinutesAgo) {
         this.unregisterConnection(): void {
       this.logger.info(): void { cleanedCount });
-    }
-  }
+    };
+
+  };
 
   /**
    * Shutdown the central hub

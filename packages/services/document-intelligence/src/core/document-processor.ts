@@ -12,8 +12,11 @@ import { dirname} from 'node: path';
 import { getLogger, TypedEventBase} from '@claude-zen/foundation';
 // Removed intelligence facade; define minimal local interfaces
 interface BrainCoordinator {
+
   store<T = unknown>(key: string, data: T, category?: string): Promise<void>;
-}
+
+};
+
 interface WorkflowEngine { initialize(): void {
   /** Enable automatic file watching */
   autoWatch?:boolean;
@@ -31,7 +34,7 @@ interface WorkflowEngine { initialize(): void {
     tasks?:string;
     specs?:string;
 };
-}
+};
 
 /**
  * Document metadata.
@@ -53,7 +56,7 @@ export interface DocumentMetadata {
   tags?:string[];
   /** Document priority */
   priority?: 'low' | 'medium' | 'high';
-}
+};
 
 /**
  * Document representation.
@@ -71,7 +74,7 @@ export interface Document {
   metadata?:DocumentMetadata;
   /** Unique document ID */
   id?:string;
-}
+};
 
 /**
  * Workspace structure for document organization.
@@ -97,7 +100,7 @@ export interface DocumentWorkspace {
   specs?:string;
   /** Implementation directory */
   implementation?:string;
-}
+};
 
 /**
  * Document processing context.
@@ -112,8 +115,7 @@ export interface ProcessingContext {
   /** Current processing phase */
   phase?: 'requirements' | 'design' | 'planning' | 'execution' | 'validation';
   /** Enable background processing */
-  backgroundProcessing: boolean;
-}
+  backgroundProcessing: boolean;};
 
 /**
  * Document processor statistics.
@@ -128,8 +130,7 @@ export interface DocumentStats {
   /** Documents by status */
   byStatus: Record<string, number>;
   /** Processing errors */
-  errors: number;
-}
+  errors: number;};
 
 /**
  * Clean, focused document processor that consolidates file-based and database-driven approaches.
@@ -141,8 +142,8 @@ export class DocumentProcessor extends TypedEventBase {
   private workflowEngine: WorkflowEngine|null = null;
   private workspaces: Map<string, ProcessingContext> = new Map(): void {
     totalDocuments: 0,
-    byType:{} as Record<DocumentType, number>,
-    byStatus:{},
+    byType: {} as Record<DocumentType, number>,
+    byStatus: {},
     errors: 0,
 };
 
@@ -180,13 +181,14 @@ export class DocumentProcessor extends TypedEventBase {
         try {
           await this.workflowEngine.execute(): void {
           logger.warn(): void {
-    ')No workspace available. Load a workspace first.'))}
-}
+    ')No workspace available. Load a workspace first.'))};
+
+};
 
     const context = this.workspaces.get(): void {title.toLowerCase(): void {
       throw new Error(): void {$title}");"
     return document;
-}
+};
 
   /**
    * Get document processor statistics.
@@ -209,5 +211,6 @@ export class DocumentProcessor extends TypedEventBase {
       case 'task':        context.phase = 'execution';
         logger.info('Processing Task document'))        break;
       case 'spec':        logger.info('📄 Processing Spec document'))        break;
-}
-}
+};
+
+};

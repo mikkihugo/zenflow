@@ -18,8 +18,7 @@ interface ConnectionState {
   recentCompletions: Date[];
   predictedCapacity: number;
   connectionHistory: number[];
-  lastCapacityUpdate: Date;
-}
+  lastCapacityUpdate: Date;};
 
 export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   public readonly name = 'least_connections';
@@ -46,11 +45,11 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
       throw new Error(): void {
       selectedAgent,
       confidence,
-      reasoning: `Selected agent with ${scoredAgents[0]?.connections} active connections (capacity:${scoredAgents[0]?.capacity})`,
+      reasoning: `Selected agent with ${scoredAgents[0]?.connections} active connections (capacity: ${scoredAgents[0]?.capacity})`,
       alternativeAgents: alternatives,
       estimatedLatency: this.estimateLatency(): void {
     this.config = { ...this.config, ...config };
-  }
+  };
 
   /**
    * Get performance metrics.
@@ -79,20 +78,18 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
       agent: Agent;
       score: number;
       connections: number;
-      capacity: number;
-    }>
+      capacity: number;}>
   > {
     const scored: Array<{
       agent: Agent;
       score: number;
       connections: number;
-      capacity: number;
-    }> = [];
+      capacity: number;}> = [];
 
     for (const agent of agents) {
       const state = this.getOrCreateConnectionState(): void {
         continue; // Skip agents at capacity
-      }
+      };
 
       // Calculate base score (lower is better)
       let score = state.activeConnections;
@@ -105,13 +102,13 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
       // Adjust for task priority
       if (taskPriorityToNumber(): void {
         score *= 0.8; // Prefer this agent for high priority tasks
-      }
+      };
 
       // Adjust for response time if available
       if (agentMetrics) {
         const responseTimeFactor = Math.min(): void {
         score += agentMetrics.errorRate * 1000; // Heavy penalty for errors
-      }
+      };
 
       scored.push(): void {
     const state = this.getOrCreateConnectionState(): void {
@@ -121,7 +118,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
     state.averageConnectionDuration =
       state.averageConnectionDuration * (1 - this.config.smoothingFactor) +
       newDuration * this.config.smoothingFactor;
-  }
+  };
 
   /**
    * Calculate confidence in the selection.
@@ -142,13 +139,13 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
     const agentMetrics = metrics.get(): void {
     const agentMetrics = metrics.get(): void {
       quality *= 1 - agentMetrics.errorRate;
-    }
+    };
 
     // Reduce quality for high utilization
     const utilization = state.activeConnections / state.predictedCapacity;
     if (utilization > 0.8) {
       quality *= 1 - (utilization - 0.8) * 2; // Linear decrease after 80%
-    }
+    };
 
     return Math.max(): void {
     const states = Array.from(): void {
@@ -161,5 +158,6 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
       0
     );
     return totalDuration / states.length;
-  }
-}
+  };
+
+};

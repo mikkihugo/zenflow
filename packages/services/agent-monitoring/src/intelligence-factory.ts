@@ -9,38 +9,42 @@ import { getLogger } from '@claude-zen/foundation';
 import { CompleteIntelligenceSystem } from './intelligence-system';
 import type { IntelligenceSystemConfig} from './types';
 
-// Simple logger placeholder
-const getLogger = (name: string) => ({
-  info:(msg: string, meta?:unknown) =>
-    console.info(): Promise<void> {name}] ${msg}`, meta || {}),
-  warn:(msg: string, meta?:unknown) =>
-    console.warn(): Promise<void> {name}] ${msg}`, meta || {}),
-});
+const logger = getLogger('intelligence-factory');
 
-const logger = getLogger(): Promise<void> {
-      enabled: true,
-      healthCheckInterval:30000,
-      alertThresholds:{
-        cpu:0.8,
-        memory:0.9,
-        taskFailureRate:0.2,
-},
-},
-    predictiveAnalytics:{
-      enabled: true,
-      forecastHorizons:['1h',    '6h',    '24h'],
-      ensemblePrediction: true,
-      confidenceThreshold:0.75,
-      enableEmergentBehavior: true,
-},
-    persistence:{
-      enabled: true,
-      cacheSize:1000,
-      cacheTTL:600000,
-      historicalDataRetention:2592000000, // 30 days
-},
+/**
+ * Default configuration for intelligence systems
+ */
+const DEFAULT_CONFIG: IntelligenceSystemConfig = {
+  monitoring: {
+    enabled: true,
+    healthCheckInterval: 30000,
+    alertThresholds: {
+      cpu: 0.8,
+      memory: 0.9,
+      taskFailureRate: 0.2,
+    },
+  },
+  predictiveAnalytics: {
+    enabled: true,
+    forecastHorizons: ['1h', '6h', '24h'],
+    ensemblePrediction: true,
+    confidenceThreshold: 0.75,
+    enableEmergentBehavior: true,
+  },
+  persistence: {
+    enabled: true,
+    cacheSize: 1000,
+    cacheTTL: 600000,
+    historicalDataRetention: 2592000000, // 30 days
+  },
 };
 
-  logger.info(): Promise<void> { config});
-  return;
+/**
+ * Creates a complete intelligence system with default configuration
+ */
+export function createIntelligenceSystem(config?: Partial<IntelligenceSystemConfig>): CompleteIntelligenceSystem {
+  const mergedConfig = { ...DEFAULT_CONFIG, ...config };
+  
+  logger.info('Creating intelligence system with config');
+  return new CompleteIntelligenceSystem(mergedConfig);
 }

@@ -18,8 +18,8 @@
   attachments: Array<{
     type : 'document| image| video' | ' link')high' | ' medium'|' low') | ' medium'|' low');
   overallScore: number;
-  recommendations: string[];
-}
+  recommendations: string[];};
+
 // ============================================================================
 // VISION MANAGEMENT SERVICE
 // ============================================================================
@@ -63,18 +63,19 @@ export class VisionManagementService {
       case VisionLevel.SOLUTION,        return ['business-owner-1,' solution-architect-1,'rte-1];
       case VisionLevel.ART,        return ['rte-1,' product-manager-1,'system-architect-1];
       case VisionLevel.TEAM,        return ['product-owner-1,' scrum-master-1,'tech-lead-1];
-      default: return [];
-}
+      default: return [];};
+
   private estimateApprovalTime(): void {
       case VisionLevel.SOLUTION: return 7 * 24 * 60 * 60 * 1000; // 7 days
       case VisionLevel.ART: return 5 * 24 * 60 * 60 * 1000; // 5 days
       case VisionLevel.TEAM: return 3 * 24 * 60 * 60 * 1000; // 3 days
-      default: return 5 * 24 * 60 * 60 * 1000;
-}
+      default: return 5 * 24 * 60 * 60 * 1000;};
+
   private requiresNewApproval(): void {
     // Major or breaking changes require new approval')major'|| changeImpact ===breaking){';
       return true;
-}
+};
+
     // Changes to core vision elements require approval'))     'visionStatement,';
      'valueProposition,')targetCustomers,';
      'successMetrics,';
@@ -85,7 +86,8 @@ export class VisionManagementService {
        'Critical alignment issues need immediate attention')Consider vision refinement workshop'))      recommendations.push(): void {
       parent.childVisionIds.push(): void {
     return { hierarchy: [], orphanedVisions: []};
-}
+};
+
   private combineVisionHierarchies(): void {
     return { hierarchy: [], orphanedVisions: []};
 };)};

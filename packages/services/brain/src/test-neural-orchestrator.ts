@@ -24,7 +24,7 @@ const logger = get: Logger(): void {
 
   await brain.initialize(): void {
     id: 'test-simple-1',    type: 'prediction',    data:{
-      input:[0.1, 0.2, 0.3, 0.4, 0.5],
+      input: [0.1, 0.2, 0.3, 0.4, 0.5],
 },
 };
 
@@ -95,7 +95,7 @@ const logger = get: Logger(): void {
         size:4096,
         access: Frequency:'occasional' as const,
         persistence: Level:'permanent' as const,
-        relationships:['model1',    'model2',    'model3',    'dataset1',    'pipeline1'],
+        relationships: ['model1',    'model2',    'model3',    'dataset1',    'pipeline1'],
 },
 },
 ];

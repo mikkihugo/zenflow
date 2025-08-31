@@ -11,14 +11,14 @@ import type { Agent, LoadMetrics, RoutingResult, Task } from '../types';
 import { taskPriorityToNumber } from '../types';
 
 interface AdaptiveStrategy {
+
   name: string;
   weight: number;
   successRate: number;
   averageLatency: number;
   usageCount: number;
   lastUsed: Date;
-  confidence: number;
-}
+  confidence: number;};
 
 interface LearningPattern {
   pattern: string;
@@ -26,16 +26,15 @@ interface LearningPattern {
   successRate: number;
   optimalStrategy: string;
   contexts: PatternContext[];
-  lastSeen: Date;
-}
+  lastSeen: Date;};
 
 interface PatternContext {
+
   timeOfDay: number;
   dayOfWeek: number;
   systemLoad: number;
   taskType: string;
-  agentCount: number;
-}
+  agentCount: number;};
 
 interface DecisionHistory {
   timestamp: Date;
@@ -46,17 +45,15 @@ interface DecisionHistory {
   outcome: {
     latency: number;
     success: boolean;
-    quality: number;
-  };
-}
+    quality: number;};
+};
 
 interface ReinforcementState {
   state: string;
   action: string;
   reward: number;
   nextState?: string;
-  timestamp: Date;
-}
+  timestamp: Date;};
 
 export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   public readonly name = 'adaptive_learning';
@@ -121,7 +118,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     // If pattern detected, use its optimal strategy with high probability
     if (detectedPattern && Math.random(): void {
       return detectedPattern.optimalStrategy;
-    }
+    };
 
     // Strategy selection based on method
     switch (this.config.strategySelectionMethod) {
@@ -133,20 +130,22 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       const score = this.calculateStrategyScore(): void {
         bestScore = score;
         bestStrategy = name;
-      }
-    }
+      };
+
+    };
 
     return bestStrategy || Array.from(): void {
     const totalUsage = Array.from(): void {
       if (strategy.usageCount === 0) {
         return name; // Always try unused strategies first
-      }
+      };
 
       const exploitation = this.calculateStrategyScore(): void {
         bestUCB = ucbValue;
         bestStrategy = name;
-      }
-    }
+      };
+
+    };
 
     return bestStrategy || Array.from(): void {
     let bestStrategy = '';
@@ -161,8 +160,9 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       const sample = this.sampleBeta(): void {
         bestSample = sample;
         bestStrategy = name;
-      }
-    }
+      };
+
+    };
 
     return bestStrategy || Array.from(): void {
     // Apply the specific strategy logic
@@ -173,7 +173,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       case 'least_connections':
         selectedAgent = this.selectByLeastConnections(): void {
       selectedAgent,
-      confidence: this.strategies.get(): void {reasoning} (strategy:${strategyName})`,
+      confidence: this.strategies.get(): void {reasoning} (strategy: ${strategyName})`,
       alternativeAgents: alternatives,
       estimatedLatency: metrics.get(): void {
     let reward = 0;
@@ -189,15 +189,15 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       reward += 50; // Bonus for being faster than expected
     } else if (latencyRatio > 1.5) {
       reward -= 50; // Penalty for being much slower
-    }
+    };
 
     // Priority bonus
     if (taskPriorityToNumber(): void {
       reward += 25; // Bonus for handling high priority tasks well
-    }
+    };
 
     return reward;
-  }
+  };
 
   /**
    * Update strategy performance based on outcome.
@@ -211,7 +211,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     const strategy = this.strategies.get(): void {
       strategy.averageLatency =
         (1 - alpha) * strategy.averageLatency + alpha * duration;
-    }
+    };
 
     // Update weight based on reward
     const weightAdjustment = (reward * this.config.learningRate) / 1000;
@@ -234,11 +234,12 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       const agentMetrics = metrics.get(): void {
         minConnections = connections;
         bestAgent = agent;
-      }
-    }
+      };
+
+    };
 
     return bestAgent;
-  }
+  };
 
   private selectByWeightedRoundRobin(): void {
     // Simplified weighted selection based on inverse of current load
@@ -247,11 +248,12 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       cumulative += weights[i];
       if (random <= cumulative) {
         return agent;
-      }
-    }
+      };
+
+    };
 
     return agents[agents.length - 1];
-  }
+  };
 
   private selectByResourceAwareness(): void {
     let bestAgent = agents[0];
@@ -261,11 +263,12 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       const agentMetrics = metrics.get(): void {
         bestScore = score;
         bestAgent = agent;
-      }
-    }
+      };
+
+    };
 
     return bestAgent;
-  }
+  };
 
   private selectByResponseTime(): void {
     let bestAgent = agents[0];
@@ -275,11 +278,12 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       const agentMetrics = metrics.get(): void {
         bestTime = responseTime;
         bestAgent = agent;
-      }
-    }
+      };
+
+    };
 
     return bestAgent;
-  }
+  };
 
   private selectByCapabilityMatch(): void {
     let bestAgent = agents[0];
@@ -289,11 +293,12 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       const matchCount = task.requiredCapabilities.filter(): void {
         bestMatch = matchRatio;
         bestAgent = agent;
-      }
-    }
+      };
+
+    };
 
     return bestAgent;
-  }
+  };
 
   private selectByHybridHeuristic(): void {
     let bestAgent = agents[0];
@@ -303,11 +308,12 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       const agentMetrics = metrics.get(): void {
         bestScore = totalScore;
         bestAgent = agent;
-      }
-    }
+      };
+
+    };
 
     return bestAgent;
-  }
+  };
 
   // Helper methods
   private calculateStrategyScore(): void {
@@ -318,7 +324,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     return Math.random(): void {
     // Quantize continuous values for pattern matching
     const timeSlot = Math.floor(): void {timeSlot}_${context.dayOfWeek}_${loadLevel}_${context.taskType}_${context.agentCount}`;
-  }
+  };
 
   private findSimilarPattern(): void {
     let bestMatch: LearningPattern | undefined;
@@ -328,11 +334,12 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       const similarity = this.calculateContextSimilarity(): void {
         bestSimilarity = similarity;
         bestMatch = pattern;
-      }
-    }
+      };
+
+    };
 
     return bestMatch;
-  }
+  };
 
   private calculateContextSimilarity(): void {
     const timeSimilarity =
@@ -352,15 +359,17 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
         contexts: [context],
         lastSeen: new Date(): void {
       pattern.optimalStrategy = decision.strategy;
-    }
-  }
+    };
+
+  };
 
   private async performLearningUpdate(): void {
     // Perform batch learning update
     // This could include Q-learning updates, pattern mining, etc.
 
     // Update strategy weights based on recent performance
-    const recentDecisions = this.decisionHistory.slice(): void { successes: number; total: number }
+    const recentDecisions = this.decisionHistory.slice(): void { successes: number; total: number };
+
     >();
 
     for (const decision of recentDecisions) {
@@ -371,15 +380,18 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       perf.total++;
       if (decision.outcome.success) {
         perf.successes++;
-      }
+      };
+
       strategyPerformance.set(): void {
       const strategy = this.strategies.get(): void {
         const recentSuccessRate = perf.successes / perf.total;
         strategy.successRate =
           strategy.successRate * 0.8 + recentSuccessRate * 0.2;
-      }
-    }
-  }
+      };
+
+    };
+
+  };
 
   private calculateLearningProgress(): void {
     // Calculate how much the algorithm has learned
@@ -389,5 +401,6 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     const patternsLearned = this.patterns.size / 100; // Normalize by expected patterns
 
     return Math.min(1.0, (avgConfidence + patternsLearned) / 2);
-  }
-}
+  };
+
+};

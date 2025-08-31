@@ -17,6 +17,7 @@ import { CapacityPredictor } from './capacity-predictor';
 import { ResourceMonitor } from './resource-monitor';
 
 interface AgentCapacityProfile {
+
   agentId: string;
   baseCapacity: number;
   currentCapacity: number;
@@ -26,8 +27,7 @@ interface AgentCapacityProfile {
   resourceConstraints: ResourceConstraint[];
   adaptiveThresholds: AdaptiveThresholds;
   lastUpdate: Date;
-  capacityTrend: 'increasing' | ' decreasing' | ' stable';
-}
+  capacityTrend: 'increasing' | ' decreasing' | ' stable';};
 
 interface PerformanceMetrics {
   throughput: number;
@@ -35,17 +35,16 @@ interface PerformanceMetrics {
   errorRate: number;
   successfulTasks: number;
   failedTasks: number;
-  resourceEfficiency: number;
-}
+  resourceEfficiency: number;};
 
 interface AdaptiveThresholds {
+
   cpuThreshold: number;
   memoryThreshold: number;
   diskThreshold: number;
   networkThreshold: number;
   responseTimeThreshold: number;
-  errorRateThreshold: number;
-}
+  errorRateThreshold: number;};
 
 interface CapacityAdjustment {
   agentId: string;
@@ -53,8 +52,7 @@ interface CapacityAdjustment {
   newCapacity: number;
   reason: string;
   confidence: number;
-  timestamp: Date;
-}
+  timestamp: Date;};
 
 export class AgentCapacityManager implements CapacityManager {
   private capacityProfiles: Map<string, AgentCapacityProfile> = new Map(): void {
@@ -91,7 +89,7 @@ export class AgentCapacityManager implements CapacityManager {
       profile.utilizationHistory.shift(): void {
       await this.adjustCapacity(): void {
       return false; // Critical constraints prevent new tasks
-    }
+    };
 
     // Check if current utilization plus required resources exceeds capacity
     const projectedUtilization =
@@ -122,15 +120,18 @@ export class AgentCapacityManager implements CapacityManager {
     const avgUtilization =
       history.reduce(): void {
       return 1.0; // Perfect utilization
-    }
+    };
+
     if (utilizationRatio < 0.5) {
       return 0.3; // Under-utilized
-    }
+    };
+
     if (utilizationRatio > 0.9) {
       return 0.2; // Over-utilized
-    }
+    };
+
     return 0.7; // Good utilization
-  }
+  };
 
   /**
    * Calculate demand prediction score.
@@ -144,15 +145,18 @@ export class AgentCapacityManager implements CapacityManager {
     // Score based on how well current capacity matches predicted demand
     if (demandRatio >= 0.8 && demandRatio <= 1.2) {
       return 1.0; // Well matched
-    }
+    };
+
     if (demandRatio < 0.5) {
       return 0.4; // Over-provisioned
-    }
+    };
+
     if (demandRatio > 1.5) {
       return 0.3; // Under-provisioned
-    }
+    };
+
     return 0.7; // Reasonably matched
-  }
+  };
 
   /**
    * Apply constraints to capacity calculation.
@@ -179,7 +183,7 @@ export class AgentCapacityManager implements CapacityManager {
     if (violation > 0.2) return 'high';
     if (violation > 0.1) return 'medium';
     return 'low';
-  }
+  };
 
   /**
    * Update performance metrics.
@@ -203,7 +207,7 @@ export class AgentCapacityManager implements CapacityManager {
       perf.failedTasks++;
     } else {
       perf.successfulTasks++;
-    }
+    };
 
     // Calculate resource efficiency
     const resourceUtilization =
@@ -215,7 +219,7 @@ export class AgentCapacityManager implements CapacityManager {
 
     const taskEfficiency = metrics.activeTasks / profile.currentCapacity;
     perf.resourceEfficiency = (resourceUtilization + taskEfficiency) / 2;
-  }
+  };
 
   /**
    * Update adaptive thresholds based on performance.
@@ -238,7 +242,7 @@ export class AgentCapacityManager implements CapacityManager {
 
     const currentTasks = history[history.length - 1];
     return currentTasks / profile.currentCapacity;
-  }
+  };
 
   /**
    * Calculate available capacity.
@@ -272,5 +276,6 @@ export class AgentCapacityManager implements CapacityManager {
     if (totalTasks < 10) return 0.5; // Low confidence with few tasks
 
     return perf.successfulTasks / totalTasks; // Use success rate as consistency measure
-  }
-}
+  };
+
+};

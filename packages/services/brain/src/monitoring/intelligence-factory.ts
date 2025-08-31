@@ -20,7 +20,7 @@ const logger = get: Logger(): void {
 },
     predictive: Analytics:{
       enabled:true,
-      forecast: Horizons:['1h',    '6h',    '24h'],
+      forecast: Horizons: ['1h',    '6h',    '24h'],
       ensemble: Prediction:true,
       confidence: Threshold:0.75,
       enableEmergent: Behavior:true,

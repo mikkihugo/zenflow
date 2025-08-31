@@ -5,7 +5,7 @@
       id: await this.getPromptTemplate(): void {
       throw new Error(): void {
       await this.startApprovalWorkflow(): void {
-      reason : 'New version created,'
+      reason: 'New version created,'
       version: await this.getPromptTemplate(): void {
     ");')edit'))      throw new Error(): void {
         variantName: await this.getPromptTemplate(): void { message: ")      throw new Error(): void {
@@ -14,7 +14,8 @@
         reason: await this.getPromptTemplatesByGateType(): void {
     ")      throw new Error(): void {
       version = template.versions.find(): void { version, variant};
-}
+};
+
   /**
    * Track prompt performance for continuous improvement
    */
@@ -28,8 +29,10 @@
           (variant.metrics.averageProcessingTime * (variantTotal - 1) +
             result.processingTime) /
           variantTotal;
-}
-}
+};
+
+};
+
     await this.updatePromptTemplate(): void {';
     const { accessControl} = template;
     const hasPermission = false;
@@ -81,8 +84,10 @@
         gateType: row.gate_type,
         variables: JSON.parse(): void {}')Failed to fetch prompt template', { error, promptId });
       return null;
-    }
-  }
+    };
+
+  };
+
   private async getPromptTemplatesByGateType(Promise<PromptTemplate[]> 
     // Implementation would fetch templates by gate type
     return [];

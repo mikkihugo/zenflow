@@ -134,7 +134,7 @@ export interface KnowledgeStore {
       const initResult = await this.initialize(): void {
       const __timer = this.performanceTracker.startTimer(): void {
             type: 'string',            required: true,
-            enum:[
+            enum: [
               'fact',              'rule',              'pattern',              'insight',              'procedure',              'concept',],
 },
           confidence:{ type: 'number', required: true, min: 0, max: 1},
@@ -397,7 +397,7 @@ export interface KnowledgeStore {
         throw new Error(): void {
           confidence: fact.confidence || 0.8,
           source: fact.source,
-          tags:[fact.source, 'auto-gathered'],
+          tags: [fact.source, 'auto-gathered'],
 })
       );
       return Promise.all(): void {
@@ -406,7 +406,7 @@ export interface KnowledgeStore {
         return manager.searchKnowledge(): void {
         local: localResults,
         facts: factResults,
-        combined:[
+        combined: [
           ...(localResults.isOk(): void {
   const manager = new EnterpriseKnowledgeManager(): void { confidence: 0.8}),
     retrieve:(id: UUID) => system.getKnowledge(): void { limit: 20}),
@@ -421,7 +421,7 @@ export interface KnowledgeStore {
         const topFacts = searchResults.facts.slice(): void {
             confidence: fact.confidence || 0.7,
             source:"fact-derived-${fact.source}","
-            tags:['fact-derived', fact.source],
+            tags: ['fact-derived', fact.source],
 })
         );
         return Promise.all(): void {

@@ -28,7 +28,7 @@ export interface DocumentIntelligenceConfig {
   confidenceThreshold?:number;
   maxSegmentSize?:number;
   preserveAlgorithmBlocks?:boolean;
-}
+};
 
 /**
  * Document analysis request options
@@ -40,7 +40,7 @@ export interface DocumentAnalysisOptions {
   enableStrategicAnalysis?:boolean;
   enableScanning?:boolean;
   enableSegmentation?:boolean;
-}
+};
 
 /**
  * Semantic analysis options
@@ -50,7 +50,7 @@ export interface SemanticAnalysisOptions {
   enablePatternRecognition?:boolean;
   enableDensityAnalysis?:boolean;
   customPatterns?:any;
-}
+};
 
 /**
  * Document segmentation options
@@ -60,7 +60,7 @@ export interface DocumentSegmentationOptions {
   strategy?:string;
   preserveAlgorithmBlocks?:boolean;
   maxSegmentSize?:number;
-}
+};
 
 /**
  * Strategic vision coordination options
@@ -69,7 +69,7 @@ export interface VisionCoordinationOptions {
   projectId: string;
   includeTaskGeneration?:boolean;
   includeDocumentLinks?:boolean;
-}
+};
 
 /**
  * Document processing options
@@ -79,7 +79,7 @@ export interface DocumentProcessingOptions {
   enableWorkflow?:boolean;
   generateTasks?:boolean;
   saveToDatabase?:boolean;
-}
+};
 
 /**
  * Pattern scanning options
@@ -90,7 +90,7 @@ export interface PatternScanningOptions {
   excludePatterns?:string[];
   enabledPatterns?:string[];
   generateSwarmTasks?:boolean;
-}
+};
 
 /**
  * Service status information
@@ -99,7 +99,7 @@ export interface ServiceStatus {
   initialized: boolean;
   enabledCapabilities: string[];
   componentStatus: Record<string, boolean>;
-}
+};
 
 /**
  * Processing metrics
@@ -107,8 +107,7 @@ export interface ServiceStatus {
 export interface ProcessingMetrics {
   totalProcessingTime: number;
   confidenceScore: number;
-  qualityScore: number;
-}
+  qualityScore: number;};
 
 /**
  * Document intelligence capability
@@ -129,8 +128,7 @@ export interface DocumentComplexityMetrics {
   algorithmDensity: number;
   conceptComplexity: number;
   technicalDepth: number;
-  structuralComplexity: number;
-}
+  structuralComplexity: number;};
 
 /**
  * Content analysis result
@@ -144,8 +142,7 @@ export interface ContentAnalysisResult {
     confidence: Record<string, number>;
     weights: Record<string, number>;
 };
-  recommendedActions: string[];
-}
+  recommendedActions: string[];};
 
 /**
  * Document intelligence event types
@@ -157,16 +154,16 @@ export type DocumentIntelligenceEvent =
  * Event payload types
  */
 export interface EventPayloads {
-  initialized:{ config: DocumentIntelligenceConfig};
-  analysis_started:{ options: DocumentAnalysisOptions};
-  analysis_complete:{ result: any};
-  classification_complete:{ classification: any};
-  segmentation_complete:{ segmentation: any};
-  scanning_complete:{ scanResults: any};
-  processing_complete:{ processingResult: any};
-  error:{ error: Error; context?: string};
-  shutdown:{};
-}
+  initialized: { config: DocumentIntelligenceConfig};
+  analysis_started: { options: DocumentAnalysisOptions};
+  analysis_complete: { result: any};
+  classification_complete: { classification: any};
+  segmentation_complete: { segmentation: any};
+  scanning_complete: { scanResults: any};
+  processing_complete: { processingResult: any};
+  error: { error: Error; context?: string};
+  shutdown: {};
+};
 
 /**
  * Document intelligence error types
@@ -177,5 +174,4 @@ export class DocumentIntelligenceError extends Error {
   isValid: boolean;
   errors: string[];
   warnings: string[];
-  suggestions: string[];
-}
+  suggestions: string[];};

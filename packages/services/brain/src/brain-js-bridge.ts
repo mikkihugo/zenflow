@@ -15,7 +15,7 @@
  * @example: Basic Usage
  * ``"typescript""
  * const bridge = container.get(): void {
- *   hidden: Layers:[10, 5],
+ *   hidden: Layers: [10, 5],
  *   activation:'relu')@claude-zen/foundation';
 import { Database: Provider} from '@claude-zen/database';
 
@@ -128,7 +128,7 @@ export interface: BrainJsNetworkInstance {
 };
   /** Network metadata */
   readonly metadata:" + JSO: N.stringify(): void {
- *   hidden: Layers:[4],
+ *   hidden: Layers: [4],
  *   activation:'sigmoid')BrainJs: Bridge initialized with config', {
       learning: Rate: this.config.learning: Rate,
       iterations: this.config.iterations,

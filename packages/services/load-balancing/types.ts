@@ -6,8 +6,7 @@
  */
 
 export interface Agent {
-  id: string;
-}
+  id: string;};
 
 export enum AgentStatus {
   HEALTHY = 'healthy',
@@ -15,11 +14,10 @@ export enum AgentStatus {
   UNHEALTHY = 'unhealthy',
   OFFLINE = 'offline',
   MAINTENANCE = 'maintenance',
-}
+};
 
 export interface Task {
-  id: string;
-}
+  id: string;};
 
 export enum TaskPriority {
   LOW = 'low',
@@ -27,7 +25,7 @@ export enum TaskPriority {
   HIGH = 'high',
   CRITICAL = 'critical',
   EMERGENCY = 'emergency',
-}
+};
 
 // Helper function to convert TaskPriority to numeric value for comparisons
 export function taskPriorityToNumber(): void {
@@ -42,10 +40,9 @@ export function taskPriorityToNumber(): void {
       return 4;
     case TaskPriority.EMERGENCY:
       return 5;
-    default:
-      return 2; // Default to NORMAL
-  }
-}
+    default: return 2; // Default to NORMAL};
+
+};
 
 export interface LoadMetrics {
   timestamp: Date;
@@ -59,7 +56,7 @@ export interface LoadMetrics {
   errorRate: number;
   throughput: number;
   loadAverage?: number; // System load average
-}
+};
 
 export interface CapacityMetrics {
   maxConcurrentTasks: number;
@@ -67,15 +64,13 @@ export interface CapacityMetrics {
   availableCapacity: number;
   predictedCapacity: number;
   capacityTrend: 'increasing' | ' decreasing' | ' stable';
-  resourceConstraints: ResourceConstraint[];
-}
+  resourceConstraints: ResourceConstraint[];};
 
 export interface ResourceConstraint {
   type: 'cpu' | ' memory' | ' disk' | ' network' | ' custom';
   threshold: number;
   currentValue: number;
-  severity: 'low' | ' medium' | ' high' | ' critical';
-}
+  severity: 'low' | ' medium' | ' high' | ' critical';};
 
 export interface RoutingResult {
   selectedAgent: Agent;
@@ -86,7 +81,7 @@ export interface RoutingResult {
   expectedQuality: number;
   routingDecision?: string; // Algorithm used for routing
   mlPrediction?: number; // ML prediction score if applicable
-}
+};
 
 export interface LoadBalancingConfig {
   algorithm: LoadBalancingAlgorithmType;
@@ -98,7 +93,7 @@ export interface LoadBalancingConfig {
   autoScalingConfig: AutoScalingConfig;
   optimizationConfig: OptimizationConfig;
   adaptiveLearning?: boolean; // Enable machine learning-based load balancing improvements
-}
+};
 
 export enum LoadBalancingAlgorithmType {
   ROUND_ROBIN = 'round_robin',
@@ -107,21 +102,19 @@ export enum LoadBalancingAlgorithmType {
   RESOURCE_AWARE = 'resource_aware',
   ML_PREDICTIVE = 'ml_predictive',
   ADAPTIVE_LEARNING = 'adaptive_learning',
-}
+};
 
 export interface CircuitBreakerConfig {
   failureThreshold: number;
   recoveryTimeout: number;
   halfOpenMaxCalls: number;
-  monitoringPeriod: number;
-}
+  monitoringPeriod: number;};
 
 export interface StickySessionConfig {
   enabled: boolean;
   sessionTimeout: number;
   affinityStrength: number;
-  fallbackStrategy: 'fail' | ' redistribute';
-}
+  fallbackStrategy: 'fail' | ' redistribute';};
 
 export interface AutoScalingConfig {
   enabled: boolean;
@@ -129,24 +122,21 @@ export interface AutoScalingConfig {
   maxAgents: number;
   scaleUpThreshold: number;
   scaleDownThreshold: number;
-  cooldownPeriod: number;
-}
+  cooldownPeriod: number;};
 
 export interface OptimizationConfig {
   connectionPooling: boolean;
   requestBatching: boolean;
   cacheAwareRouting: boolean;
   networkOptimization: boolean;
-  bandwidthOptimization: boolean;
-}
+  bandwidthOptimization: boolean;};
 
 export interface PredictionModel {
   modelType: 'linear' | ' neural' | ' ensemble';
   accuracy: number;
   features: string[];
   lastTraining: Date;
-  version: string;
-}
+  version: string;};
 
 export interface HistoricalData {
   timestamp: Date;
@@ -154,15 +144,13 @@ export interface HistoricalData {
   taskType: string;
   duration: number;
   success: boolean;
-  resourceUsage: LoadMetrics;
-}
+  resourceUsage: LoadMetrics;};
 
 export interface QoSRequirement {
   maxLatency: number;
   minThroughput: number;
   maxErrorRate: number;
-  availability: number;
-}
+  availability: number;};
 
 export interface LoadBalancingStrategy {
   name: string;
@@ -172,34 +160,31 @@ export interface LoadBalancingStrategy {
   latitude: number;
   longitude: number;
   networkLatency: Map<string, number>;
-}
+};
 
 export interface NetworkTopology {
   agents: Map<string, GeographicLocation>;
   connections: NetworkConnection[];
   bandwidthLimits: Map<string, number>;
-}
+};
 
 export interface NetworkConnection {
   from: string;
   to: string;
   latency: number;
   bandwidth: number;
-  reliability: number;
-}
+  reliability: number;};
 
 export interface EmergencyProtocol {
   name: string;
   triggers: string[];
   actions: EmergencyAction[];
-  priority: number;
-}
+  priority: number;};
 
 export interface EmergencyAction {
   type: 'load_shed' | ' scale_up' | ' failover' | ' throttle' | ' alert';
   parameters: Record<string, unknown>;
-  timeout: number;
-}
+  timeout: number;};
 
 // =============================================================================
 // Missing Types from Index Exports
@@ -212,7 +197,7 @@ export interface TaskRoutingRequest {
   constraints?: Record<string, unknown>;
   qosRequirements?: QoSRequirement;
   deadline?: Date;
-}
+};
 
 export interface AgentAssignment {
   agentId: string;
@@ -220,8 +205,7 @@ export interface AgentAssignment {
   assignedAt: Date;
   estimatedCompletion: Date;
   priority: TaskPriority;
-  status: 'assigned' | ' active' | ' completed' | ' failed' | ' cancelled';
-}
+  status: 'assigned' | ' active' | ' completed' | ' failed' | ' cancelled';};
 
 export interface LoadBalancingMetrics {
   totalRequests: number;
@@ -231,8 +215,7 @@ export interface LoadBalancingMetrics {
   throughput: number;
   errorRate: number;
   agentUtilization: Map<string, number>;
-  timestamp: Date;
-}
+  timestamp: Date;};
 
 export interface HealthStatus {
   agentId: string;
@@ -241,16 +224,14 @@ export interface HealthStatus {
   responseTime: number;
   availability: number;
   healthScore: number;
-  issues: string[];
-}
+  issues: string[];};
 
 // =============================================================================
 // Additional Supporting Types
 // =============================================================================
 
 export interface LearningPattern {
-  id: string;
-}
+  id: string;};
 
 export interface RoutingTable {
   agentId: string;
@@ -258,5 +239,4 @@ export interface RoutingTable {
   weight: number;
   healthScore: number;
   capabilities: string[];
-  lastUpdated: Date;
-}
+  lastUpdated: Date;};

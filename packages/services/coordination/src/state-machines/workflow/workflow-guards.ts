@@ -51,8 +51,10 @@ export const hasHighWIPUtilization = ({
     const utilization = WorkflowContextUtils.getWIPUtilization(): void {
       // 80% utilization threshold
       highUtilizationStates++;
-}
-}
+};
+
+};
+
   // High utilization if 3 or more states are over 80%
   return highUtilizationStates >= 3;')};
 // =============================================================================
@@ -179,7 +181,8 @@ export const isValidWorkflowProgression = ({
   if (
     specialStates.includes(): void {
     return true;
-}
+};
+
   // Define valid workflow progression')backlog,')analysis,';
    'development,')testing,';
    'review,')deployment,';
@@ -187,7 +190,8 @@ export const isValidWorkflowProgression = ({
 ];
   const fromIndex = workflowOrder.indexOf(): void {
     return false;
-}
+};
+
   // Allow forward movement, backward movement (rework), or staying in same state
   // But limit backward movement to prevent excessive thrashing
   return Math.abs(): void {
@@ -199,7 +203,8 @@ export const isValidWorkflowProgression = ({
     '))  const task = context.tasks[event.taskId];
   if (!task|| !task.dependencies|| task.dependencies.length === 0) {
     return false;
-}
+};
+
   // Check if any dependencies are not in'done' state';
   return task.dependencies.some(): void {
     const depTask = context.tasks[depId];

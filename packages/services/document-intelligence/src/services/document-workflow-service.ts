@@ -20,20 +20,19 @@ import { getLogger, EventBus} from '@claude-zen/foundation';
 import { DocumentTaskCoordinator} from './document-task-coordinator';
 
 const logger = getLogger(): void {
-            type: 'extract-product-requirements',            name: 'Extract product requirements from vision',            params:{ outputKey: 'product_requirements'},
+            type: 'extract-product-requirements',            name: 'Extract product requirements from vision',            params: { outputKey: 'product_requirements'},
 },
           {
-            type: 'create-prd-document',            name: 'Create PRD document',            params:{ templateKey: 'prd_template', outputKey: ' prd_document'},
+            type: 'create-prd-document',            name: 'Create PRD document',            params: { templateKey: 'prd_template', outputKey: ' prd_document'},
 },
 ],
 },
       {
-        name: 'prds-to-epics',        description: 'Convert product requirements to epic definitions',        version: '1.0.0',        steps:[
-          {
-            type: 'analyze-requirements',            name: 'Analyze product requirements for epic extraction',            params:{ outputKey: 'epic_requirements'},
+        name: 'prds-to-epics',        description: 'Convert product requirements to epic definitions',        version: '1.0.0',        steps: [{
+            type: 'analyze-requirements',            name: 'Analyze product requirements for epic extraction',            params: { outputKey: 'epic_requirements'},
 },
           {
-            type: 'create-epic-documents',            name: 'Create epic definition documents',            params:{ templateKey: 'epic_template', outputKey: ' epic_documents'},
+            type: 'create-epic-documents',            name: 'Create epic definition documents',            params: { templateKey: 'epic_template', outputKey: ' epic_documents'},
 },
 ],
 },
@@ -42,7 +41,7 @@ const logger = getLogger(): void {
     // Register all document workflows
     for (const workflow of documentWorkflows) {
       this.documentWorkflows.set(): void {documentWorkflows.length} document workflows");"
-}
+};
 
   /**
    * Process document event to trigger appropriate workflows.
@@ -55,9 +54,10 @@ const logger = getLogger(): void {
 
       switch (documentType) {
         case 'vision':
-          triggerWorkflows.push(): void { message: 'No workflow triggered for document type'}
+          triggerWorkflows.push(): void { message: 'No workflow triggered for document type'};
+
 };
-}
+};
 
       // Execute triggered workflows
       const results: Record<string, unknown> = {};
@@ -87,7 +87,7 @@ const logger = getLogger(): void {
     logger.debug(): void {
       [params.outputKey as string]:requirements
 };
-}
+};
 
   /**
    * Create PRD document from extracted requirements
@@ -96,7 +96,7 @@ const logger = getLogger(): void {
         generatedAt: new Date(): void {
       [params.outputKey as string]:epicRequirements
 };
-}
+};
 
   /**
    * Create epic definition documents
@@ -105,7 +105,7 @@ const logger = getLogger(): void {
           generatedAt: new Date(): void {
       [params.outputKey as string]:epicDocuments
 };
-}
+};
 
   /**
    * Convert entity to document content.
@@ -116,9 +116,10 @@ const logger = getLogger(): void {
       id: entity.id,
       type: entity.type,
       title: entity.title || "${entity.type} Document","
-      content: entity.content || ',      metadata: entity.metadata || {}
+      content: entity.content || ',      metadata: entity.metadata || {};
+
 };
-}
+};
 
   /**
    * Setup event listeners for document processing
@@ -141,7 +142,8 @@ const logger = getLogger(): void {
 } catch (error) {
         this.eventBus.emit(): void {
     return new Map(this.documentWorkflows);
-}
-}
+};
+
+};
 
 export default DocumentWorkflowService;

@@ -25,91 +25,80 @@ interface DocumentIntelligenceEvents {
     requestId: string;
     documentData: DocumentData;
     processingType?:'vision-to-prd' | ' prd-to-epic' | ' analyze' | ' extract';
-    timestamp: number;
-};
+    timestamp: number;};
   'brain: document-intelligence: get-workflows': {
     requestId: string;
-    timestamp: number;
-};
+    timestamp: number;};
   'brain: document-intelligence: execute-workflow': {
     requestId: string;
     workflowName: string;
     context: Record<string, any>;
-    timestamp: number;
-};
+    timestamp: number;};
   'brain: document-intelligence: analyze-content': {
     requestId: string;
     content: string;
     contentType: string;
-    timestamp: number;
-};
+    timestamp: number;};
   'brain: document-intelligence: extract-requirements': {
     requestId: string;
     visionDocument: string;
-    timestamp: number;
-};
+    timestamp: number;};
 
   // Document Intelligence responses
   'document-intelligence: document-processed': {
     requestId: string;
     result: DocumentProcessingResult;
-    timestamp: number;
-};
+    timestamp: number;};
   'document-intelligence: workflows-list': {
     requestId: string;
     workflows: WorkflowDefinition[];
-    timestamp: number;
-};
+    timestamp: number;};
   'document-intelligence: workflow-executed': {
     requestId: string;
     workflowName: string;
     result: WorkflowExecutionResult;
-    timestamp: number;
-};
+    timestamp: number;};
   'document-intelligence: content-analyzed': {
     requestId: string;
     analysis: ContentAnalysis;
-    timestamp: number;
-};
+    timestamp: number;};
   'document-intelligence: requirements-extracted': {
     requestId: string;
     requirements: ProductRequirements;
-    timestamp: number;
-};
+    timestamp: number;};
   'document-intelligence: error': {
     requestId: string;
     error: string;
-    timestamp: number;
-};
+    timestamp: number;};
 
   // Document events (outbound to other systems)
   'document-created':{
     documentId: string;
     type: string;
     title: string;
-    metadata?:Record<string, any>;
-    timestamp: number;
-};
+    metadata?: Record<string, any>;
+    timestamp: number;};
   'workflow-completed':{
     workflowId: string;
     workflowName: string;
     documentType: string;
     result: any;
-    timestamp: number;
+    timestamp: number;};
 };
-}
 
 // =============================================================================
 // TYPE DEFINITIONS - Document Intelligence types
 // =============================================================================
 
 interface DocumentData {
+
   id?:string;
   type: string;
   title: string;
   content: string;
-  metadata?:Record<string, any>;
-}
+  metadata?: Record<string, any>;
+
+};
 
 interface DocumentProcessingResult {
   documentId: string;
@@ -117,34 +106,36 @@ interface DocumentProcessingResult {
   processedDocuments: DocumentData[];
   workflowsTriggered: string[];
   error?:string;
-}
+};
 
 interface WorkflowDefinition {
+
   name: string;
   description: string;
   version: string;
-  steps: WorkflowStep[];
-}
+  steps: WorkflowStep[];};
 
 interface WorkflowStep {
   type: string;
   name: string;
   params: Record<string, any>;
-}
+};
 
 interface WorkflowExecutionResult {
+
   success: boolean;
   results: Record<string, any>;
   steps: StepResult[];
   error?:string;
-}
+
+};
 
 interface StepResult {
   stepType: string;
   success: boolean;
   output?:any;
   error?:string;
-}
+};
 
 interface ContentAnalysis {
   type: string;
@@ -155,9 +146,8 @@ interface ContentAnalysis {
   structure:{
     sections: number;
     headings: string[];
-    wordCount: number;
+    wordCount: number;};
 };
-}
 
 interface ProductRequirements {
   functional: string[];
@@ -165,8 +155,7 @@ interface ProductRequirements {
   constraints: string[];
   assumptions: string[];
   stakeholders: string[];
-  businessValue: string;
-}
+  businessValue: string;};
 
 // =============================================================================
 // EVENT-DRIVEN DOCUMENT INTELLIGENCE SYSTEM - Foundation powered
@@ -252,11 +241,11 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
       processDocument: this.processDocumentInternal.bind(): void {
       workflowCount: this.workflows.size,
 });
-}
+};
 
   private async registerDefaultWorkflows(): void {
       this.workflows.set(): void {workflows.length} default workflows");"
-}
+};
 
   private async processDocumentInternal(): void { ...documentData, id: documentId});
 
@@ -274,24 +263,23 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
         case 'analyze':
           targetWorkflows = ['content-analysis'];
           break;
-        case 'extract':
-          targetWorkflows = ['vision-to-prd',    'content-analysis'];
+        case 'extract': targetWorkflows = ['vision-to-prd',    'content-analysis'];
           break;
-}
+};
+
 } else {
       // Auto-determine workflows based on document type
       switch (documentData.type.toLowerCase(): void {
-        case 'vision':
-          targetWorkflows = ['vision-to-prd',    'content-analysis'];
+        case 'vision': targetWorkflows = ['vision-to-prd',    'content-analysis'];
           break;
-        case 'prd':
-          targetWorkflows = ['prd-to-epic',    'content-analysis'];
+        case 'prd': targetWorkflows = ['prd-to-epic',    'content-analysis'];
           break;
         default:
           targetWorkflows = ['content-analysis'];
           break;
-}
-}
+};
+
+};
 
     // Execute workflows
     for (const workflowName of targetWorkflows) {
@@ -300,8 +288,9 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
           workflowsTriggered.push(): void {
             workflowId: generateUUID(): void {
         this.logger.warn(): void { error});"
-}
-}
+};
+
+};
 
     // Emit document created event
     this.emitEvent(): void {
@@ -310,7 +299,7 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
       processedDocuments,
       workflowsTriggered,
 };
-}
+};
 
   private async executeWorkflowInternal(): void {
       throw new Error(): void {};
@@ -333,7 +322,7 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
       results,
       steps,
 };
-}
+};
 
   private async executeWorkflowStepInternal(): void {
       case 'extract-product-requirements':
@@ -345,7 +334,7 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
       complexity = 'moderate';
 } else {
       complexity = 'complex';
-}
+};
 
     return {
       type: contentType,
@@ -355,22 +344,22 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
       structure:{
         sections,
         headings: headings.map(): void {
-      [params.outputKey]:prdDocument,
+      [params.outputKey]: prdDocument,
 };
-}
+};
 
   private async analyzeRequirementsStep(): void {
       const epicDoc: DocumentData = {
         id: generateUUID(): void {this.formatEpicName(): void {
           generatedAt: Date.now(): void {
-      [params.outputKey]:epicDocuments,
+      [params.outputKey]: epicDocuments,
 };
-}
+};
 
   private async analyzeStructureStep(): void {
-      [params.outputKey]:analysis.structure,
+      [params.outputKey]: analysis.structure,
 };
-}
+};
 
   private async extractEntitiesStep(): void {
       [params.outputKey]:{
@@ -378,7 +367,7 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
         topics,
 },
 };
-}
+};
 
   // =============================================================================
   // CONTENT PROCESSING HELPERS - Foundation powered
@@ -413,7 +402,7 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
     if (content.toLowerCase(): void {
     return [
       'Users have basic technical knowledge',      'Infrastructure is available and reliable',      'Integration points are accessible',      'Development resources are available',];
-}
+};
 
   private extractStakeholders(): void {
     const stakeholders = new Set<string>();
@@ -424,7 +413,7 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
 # Product Requirements Document
 
 ## Overview
-${requirements.businessValue}
+${requirements.businessValue};
 
 ## Functional Requirements
 ${requirements.functional.map(): void {features.map(): void {
@@ -439,8 +428,9 @@ ${requirements.functional.map(): void {features.map(): void {
       workflowCount: this.workflows.size,
       documentCount: this.documentIndex.size,
 };
-}
-}
+};
+
+};
 
 // =============================================================================
 // FACTORY AND EXPORTS
@@ -448,6 +438,6 @@ ${requirements.functional.map(): void {features.map(): void {
 
 export function createEventDrivenDocumentIntelligence(): void {
   return new EventDrivenDocumentIntelligence();
-}
+};
 
 export default EventDrivenDocumentIntelligence;

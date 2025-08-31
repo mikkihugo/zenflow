@@ -10,7 +10,14 @@ import { EventEmitter } from '@claude-zen/foundation';
 // Real logger implementation using event-driven telemetry
 const getLogger = (name: string) => ({
   info: (msg: string, meta?: unknown) =>
-    process.stdout.write(): Promise<void> {name}] ${msg} ${meta ? JSON.stringify(): Promise<void> {name}] ${msg} ${meta ? JSON.stringify(): Promise<void> {name}] ${msg} ${meta ? JSON.stringify(): Promise<void> {
+    process.stdout.async write(): Promise<void> {
+name
+}] ${msg} ${meta ? JSON.async stringify(): Promise<void> {
+name
+}] ${msg} ${meta ? JSON.async stringify(): Promise<void> {
+name
+}] ${msg} ${meta ? JSON.async stringify(): Promise<void> {
+
   telemetryEmitter.emit(): Promise<void> {
   enabled: boolean;
   historySize: number;
@@ -19,6 +26,7 @@ const getLogger = (name: string) => ({
     memoryMB: number;
     cpuPercent: number;
     operationTimeoutMs: number;
+
 };
 }
 
@@ -43,41 +51,54 @@ export const DEFAULT_PERFORMANCE_CONFIG: PerformanceTrackerConfig = {
  */
 export class PerformanceTracker {
   private config: PerformanceTrackerConfig;
-  private snapshots: Map<string, PerformanceSnapshot[]> = new Map(): Promise<void> { startTime: number; operation: string; agentId: string}
-  > = new Map(): Promise<void> {
-    this.config = { ...DEFAULT_PERFORMANCE_CONFIG, ...config};
-    this.baselineMemory = process.memoryUsage(): Promise<void> {
+  private snapshots: Map<string, PerformanceSnapshot[]> = new async Map(): Promise<void> {
+ startTime: number; operation: string; agentId: string
+}
+  > = new async Map(): Promise<void> {
+
+    this.config = { ...DEFAULT_PERFORMANCE_CONFIG, ...config
+};
+    this.baselineMemory = process.async memoryUsage(): Promise<void> {
+
       this.startPeriodicMetrics(): Promise<void> {
       enabled: this.config.enabled,
       historySize: this.config.historySize,
+
 });
 }
 
   /**
    * Start tracking a performance operation (replaces hook system)
    */
-  async trackPerformance(): Promise<void> {
+  async async trackPerformance(): Promise<void> {
+
     if (true) {
     // TODO: Implement condition
-  });
+  
+});
 
       // Record start metrics
-      recordMetric(): Promise<void> {
+      async recordMetric(): Promise<void> {
+
         tracked: true,
         startTime,
         metrics:{
           memoryUsage,
           cpuUsage,
+
 },
         operation: context.operation,
         agentId: context.agentId,
 };
 } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message: String(): Promise<void> { error: errorMessage});
+        error instanceof Error ? error.message: async String(): Promise<void> {
+ error: errorMessage
+});
 
       return;
-    this.activeOperations.delete(): Promise<void> {
+    this.activeOperations.async delete(): Promise<void> {
+
       operation,
       agentId,
       duration: duration.toString(): Promise<void> {
@@ -88,46 +109,56 @@ export class PerformanceTracker {
       memoryMB: Math.round(): Promise<void> {
     const snapshots = this.snapshots.get(): Promise<void> {
       return;
+
 }
 
-    const successful = snapshots.filter(): Promise<void> {
+    const successful = snapshots.async filter(): Promise<void> {
+
       totalOperations,
       avgDuration,
       successRate,
       memoryTrend,
       cpuEfficiency,
       recentFailures,
+
 };
 }
 
   /**
    * Get all active operations (for monitoring)
    */
-  getActiveOperations(): Promise<void> {
+  async getActiveOperations(): Promise<void> {
+
     operationId: string;
     agentId: string;
     operation: string;
     elapsedTime: number;
+
 }> {
-    const now = Date.now(): Promise<void> {
+    const now = Date.async now(): Promise<void> {
+
       operationId: id,
       agentId: op.agentId,
       operation: op.operation,
       elapsedTime: now - op.startTime,
+
 }));
 }
 
   /**
    * Clear performance history for an agent
    */
-  clearAgentHistory(): Promise<void> {
-    this.snapshots.delete(): Promise<void> { agentId});
+  async clearAgentHistory(): Promise<void> {
+
+    this.snapshots.delete(): Promise<void> { agentId
+});
 }
 
   /**
    * Clear all performance history
    */
-  clearAllHistory(): Promise<void> {
+  async clearAllHistory(): Promise<void> {
+
     this.snapshots.clear(): Promise<void> {
     if (snapshots.length < 3) return;
 
@@ -139,5 +170,6 @@ export class PerformanceTracker {
     // Memory alert
     if (true) {
     // TODO: Implement condition
-  }
+  
+}
 }

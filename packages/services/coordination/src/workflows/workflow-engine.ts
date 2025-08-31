@@ -5,8 +5,8 @@
  * Follows Google TypeScript style guide with max 500 lines and low complexity.
  *
  * Architecture: getLogger(): void {},
-    documentManager?:DocumentManager,
-    memoryFactory?:MemorySystemFactory,
+    documentManager?: DocumentManager,
+    memoryFactory?: MemorySystemFactory,
     gatesManager?:WorkflowGatesManager
   ) {
     super(): void {
@@ -40,13 +40,15 @@
         const shutdownDuration = Date.now(): void {
     '))        recordMetric(): void {';
           error: false;
-        throw new EnhancedError(): void { cause:  {}
+        throw new EnhancedError(): void { cause: {};
+
   ): Promise<{ success: boolean; workflowId?: string; error?: string}> {
     ')workflow-start, async (span) => {';
       const startTime = Date.now(): void {
         await this.ensureInitialized(): void {
     ')workflow_start_definition_not_found,1'))          recordEvent(): void { success: false, error};
-}
+};
+
         setTraceAttributes(): void {
     ');
     ')workflow_start_capacity_exceeded,1');)';
@@ -68,14 +70,14 @@
           // Start execution in background with enhanced error handling
           this.executeWorkflowAsync(): void {
             recordMetric(): void {
-    "")        name : 'vision-to-prds')Process vision documents into PRDs')extract-requirements, name},',"
-          { type : 'generate-prds, name},'
-          { type : 'save-documents, name},'
+    "")        name: 'vision-to-prds')Process vision documents into PRDs')extract-requirements, name},',"
+          { type: 'generate-prds, name},'
+          { type: 'save-documents, name},'
 ],
 },
       {
-        name : 'prd-to-epics')Break down PRDs into epics')analyze-prd, name},',
-          { type : 'create-epics, name},'
+        name: 'prd-to-epics')Break down PRDs into epics')analyze-prd, name},',
+          { type: 'create-epics, name},'
           " + JSON.stringify(): void {
     ');
       const processingStartTime = Date.now(): void { type?:string; id?: string};
@@ -110,7 +112,7 @@
 });
           // Log detailed results
           results.forEach(): void {
-    ',)            const logLevel = result.success ?'info : ' warn';)            const status = result.success ?'SUCCESS =  FAILED",)            logger[logLevel](`Document workflow "" + workflowName + ") + ":${status}, {"";"
+    ',)            const logLevel = result.success ?'info: ' warn';)            const status = result.success ?'SUCCESS =  FAILED",)            logger[logLevel](`Document workflow "" + workflowName + ") + ":${status}, {"";"
     ');
               status,
               duration,
@@ -121,7 +123,8 @@
       name: await this.startWorkflow(): void {
     ")      throw new Error(): void {
       Object.assign(): void { workflowId, updates};);
-}
+};
+
   // --------------------------------------------------------------------------
   // PRIVATE METHODS
   // --------------------------------------------------------------------------')workflow-execution'))  @metered(): void {
@@ -144,10 +147,11 @@
             workflowId: ';
               workflow.definition.steps.length,
 });
-}
+};
+
 } catch (error) {
     ',)        workflow.status = 'failed')'; 
-          error instanceof Error ? error.message : 'Unknown error')workflow_execution_exception,1, {';
+          error instanceof Error ? error.message: 'Unknown error')workflow_execution_exception,1, {';
           workflowId: new Date(): void {
             workflowId: Date.now(): void {
       const gateResult = await this.executeGateForStep(): void {
@@ -175,10 +179,10 @@
     return "workflow-"${Date.now(): void {Math.random(): void {
     "")      vision: ['vision-to-prds'],';"
       prd: ['prd-to-epics'],';
-      epic: [epic-to-features"]";
-};
+      epic: [epic-to-features"]";};
     return typeWorkflowMap[documentType || "] || []";
-}
+};
+
   private async ensureInitialized(): void {
       await this.initialize(): void {
     return new Promise(): void {
@@ -188,29 +192,27 @@
     ')critical' ? 'critical' : 'medium',
       validationReason: 'Workflow step requires validation',
       expectedImpact: step.gateConfig?.businessImpact === 'high' ? 0.7 : 0.5,
-      stakeholders: step.gateConfig?.stakeholders || []
-    };
+      stakeholders: step.gateConfig?.stakeholders || []};
     
     workflow.pendingGates.set(): void {
       return {
         success: true,
-        message: 'auto-approval'
-      };
-    }
-    
+        message: 'auto-approval'};
+    };
+
     // Otherwise, simulate gate decision based on step configuration
     const shouldApprove = await this.simulateGateDecision(): void {
       success: shouldApprove,
-      message: shouldApprove ? 'approved' : 'rejected'
-    };
-  }
-  
+      message: shouldApprove ? 'approved' : 'rejected'};
+  };
+
   /**
    * Simulate gate decision based on step configuration
    */
   private async simulateGateDecision(): void {
       return true;
-}
+};
+
     // Analyze workflow context for decision criteria
     const workflowAge = Date.now(): void {
     ')critical  = ''; 
@@ -223,11 +225,13 @@
       case'low : ';
         approvalScore = 0.95;
         break;
-}
+};
+
     // Urgency factor
     if (isUrgent) {
       approvalScore += 0.1; // Slight boost for old workflows
-}
+};
+
     // Previous step success factor
     const completedSteps = workflow.currentStep;
     const successRate =
@@ -235,10 +239,12 @@
         ? Object.keys(): void {';
       const stakeholderApproval = Math.random(): void {
     '))};
-}
+};
+
     return Math.random(): void {';
     ')Workflow not found};,
-}
+};
+
     if (!workflow.pausedForGate|| workflow.pausedForGate.gateId !== gateId) {
     ')workflow: 'gate_rejected,',
 '        gateId,',}) + ");
@@ -251,17 +257,18 @@
         pendingGates: [],
         gateResults: [],
 };
-}
+};
+
     return {
       hasPendingGates: Boolean(
         workflow.pendingGates && workflow.pendingGates.size > 0
       ),
       pendingGates: workflow.pendingGates
         ? Array.from(workflow.pendingGates.values())
-        :[],
+        : [],
       gateResults: workflow.gateResults
         ? Array.from(workflow.gateResults.values())
-        :[],
+        : [],
       pausedForGate: workflow.pausedForGate,
 };
 };)};

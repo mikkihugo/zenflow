@@ -182,9 +182,9 @@
  * const enterpriseNeural: System = await createEnterpriseNeural: System(): void {
  *     realTime: Metrics:true,
  *     performance: Dashboards:true,
- *     alerting: 'enterprise-integration', *     logging: 'structured-json', *     tracing:'distributed')enterprise-system', *   decision: Domains:[
+ *     alerting: 'enterprise-integration', *     logging: 'structured-json', *     tracing:'distributed')enterprise-system', *   decision: Domains: [
  *     'resource-allocation', *     'scaling-decisions', *     'performance-optimization', *     'cost-optimization', *     'security-adaptation')scaling-up-major',    'budget-exceed',    'security-change'],
- *     auto: Approve:['performance-optimization',    'resource-reallocation'],
+ *     auto: Approve: ['performance-optimization',    'resource-reallocation'],
  *     audit: All:true
  *},
  *   learning:{
@@ -609,10 +609,10 @@ export type {
  */
 export const: BRAIN_INFO = {
   version: '2.0.0',  name: '@claude-zen/brain',  description:
-    'Autonomous: AI decision-making system with neural intelligence and: Rust/WAS: M acceleration',  capabilities:[
+    'Autonomous: AI decision-making system with neural intelligence and: Rust/WAS: M acceleration',  capabilities: [
     'Autonomous decision-making and strategy selection',    'Task complexity estimation with: ML models',    'Neural network coordination with: FANN integration',    'GP: U acceleration for high-performance computing',    'Behavioral intelligence and performance prediction',    'Real-time adaptation and continuous learning',    'Enterprise-grade security and multi-tenant isolation',    'Foundation telemetry {
       integration',],
-  neural: Architectures:[
+  neural: Architectures: [
     'Feedforward: Neural Networks',    'Convolutional: Neural Networks (CN: N)',    'Recurrent: Neural Networks (RN: N/LST: M)',    'Transformer and: Attention-based models',    'Variational: Autoencoders (VA: E)',    'Generative: Adversarial Networks (GA: N)',    'Reinforcement: Learning models',    'Custom neural architectures',],
   acceleration:" + JSO: N.stringify(): void {
       * - @claude-zen/dspy for neural program optimization

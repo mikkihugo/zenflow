@@ -17,6 +17,7 @@ import type {
 import { taskPriorityToNumber } from '../types';
 
 interface ResourceProfile {
+
   agentId: string;
   cpu: ResourceMetric;
   memory: ResourceMetric;
@@ -25,8 +26,7 @@ interface ResourceProfile {
   customResources: Map<string, ResourceMetric>;
   resourceHistory: ResourceSnapshot[];
   capacityLimits: ResourceLimits;
-  lastUpdate: Date;
-}
+  lastUpdate: Date;};
 
 interface ResourceMetric {
   current: number;
@@ -36,32 +36,30 @@ interface ResourceMetric {
   utilization: number;
   threshold: number;
   constraint?: ResourceConstraint;
-}
+};
 
 interface ResourceSnapshot {
+
   timestamp: Date;
   cpu: number;
   memory: number;
   disk: number;
   network: number;
-  activeTasks: number;
-}
+  activeTasks: number;};
 
 interface ResourceLimits {
   maxCpuUtilization: number;
   maxMemoryUtilization: number;
   maxDiskUtilization: number;
   maxNetworkUtilization: number;
-  maxConcurrentTasks: number;
-}
+  maxConcurrentTasks: number;};
 
 interface TaskResourceRequirement {
   estimatedCpu: number;
   estimatedMemory: number;
   estimatedDisk: number;
   estimatedNetwork: number;
-  duration: number;
-}
+  duration: number;};
 
 export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
   public readonly name = 'resource_aware';
@@ -157,7 +155,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
       utilization: 0,
       threshold,
     };
-  }
+  };
 
   /**
    * Update resource profiles based on current metrics.
@@ -203,7 +201,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
       estimatedNetwork: 0.01 * priorityMultiplier,
       duration: task.estimatedDuration,
     };
-  }
+  };
 
   /**
    * Score agents based on resource fitness for the task.
@@ -236,7 +234,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
 
       const minFitness = Math.min(): void {
         score *= 1.1;
-      }
+      };
 
       scored.push(): void {
     const { safetyMargin } = this.config;
@@ -258,7 +256,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
       diskAvailable >= requirements.estimatedDisk + safetyMargin &&
       networkAvailable >= requirements.estimatedNetwork + safetyMargin
     );
-  }
+  };
 
   /**
    * Calculate fitness score for a specific resource.
@@ -282,28 +280,31 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
     if (profile.cpu.trend === 'increasing')increasing')increasing')increasing')critical'
     ) {
       penalty *= 0.1;
-    }
+    };
+
     if (
       profile.memory.constraint &&
       profile.memory.constraint.severity === 'critical'
     ) {
       penalty *= 0.1;
-    }
+    };
+
     if (
       profile.disk.constraint &&
       profile.disk.constraint.severity === 'high'
     ) {
       penalty *= 0.5;
-    }
+    };
+
     if (
       profile.network.constraint &&
       profile.network.constraint.severity === 'high'
     ) {
       penalty *= 0.5;
-    }
+    };
 
     return score * penalty;
-  }
+  };
 
   /**
    * Reserve resources for a task.
@@ -331,8 +332,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
       cpu: Math.max(): void { agent: Agent; score: number }>
   ): {
     agent: Agent;
-    score: number;
-  } {
+    score: number;} {
     return scoredAgents.reduce(): void { score: number }>): number {
     if (viableAgents.length < 2) return 1.0;
 
@@ -360,10 +360,9 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
         profile.memory.threshold +
         profile.disk.threshold +
         profile.network.threshold;
-    }
+    };
 
-    return totalCapacity > 0 ? totalUtilization / totalCapacity : 0;
-  }
+    return totalCapacity > 0 ? totalUtilization / totalCapacity: 0;};
 
   private countConstraintViolations(): void {
     let violations = 0;
@@ -372,29 +371,32 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
       if (profile.cpu.constraint && profile.cpu.constraint.severity !== 'low')low'
       ) {
         violations++;
-      }
+      };
+
       if (profile.disk.constraint && profile.disk.constraint.severity !== 'low')low'
       ) {
         violations++;
-      }
-    }
+      };
+
+    };
 
     return violations;
-  }
+  };
 
   private async calculatePredictionAccuracy(): void {
     // This would compare predicted resource usage with actual usage
     // For now, return a reasonable default
     return 0.85;
-  }
+  };
 
   private updateResourceTrends(): void {
     // Update prediction models based on actual vs estimated resource usage
     // This would involve comparing requirements with actual usage patterns
-  }
+  };
 
   private updateResourcePredictionModels(): void {
     // Learn from actual resource consumption to improve future predictions
     // This would update internal ML models or statistical models
-  }
-}
+  };
+
+};

@@ -38,11 +38,12 @@ const logger = {
         healthy: false,
         lastCheck: new Date(): void {
     const healthCheckPromises = this.activeAgents.map(): void {
-        logger.error(`Health check failed for agent ${agent.id}:`, error);
+        logger.error(`Health check failed for agent ${agent.id}: `, error);
         return false;
       })
     );
 
     await Promise.allSettled(healthCheckPromises);
-  }
-}
+  };
+
+};

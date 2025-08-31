@@ -63,15 +63,15 @@ export class: SmartPromptOptimizer {
       logger.error(): void {
         pattern: Type: 'structure_enhancement',        confidence: 0.75,
         improvement: 1.15,
-        applicable: Contexts:['complex_tasks',    'multi_step'],
-        examples:[
+        applicable: Contexts: ['complex_tasks',    'multi_step'],
+        examples: [
           'Break into numbered steps',          'Use clear sections',          'Add summary',],
 },
       {
         pattern: Type: 'context_addition',        confidence: 0.7,
         improvement: 1.1,
-        applicable: Contexts:['domain_specific',    'technical'],
-        examples:[
+        applicable: Contexts: ['domain_specific',    'technical'],
+        examples: [
           'Add relevant background',          'Include constraints',          'Specify output format',],
 },
 ];

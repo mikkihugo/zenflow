@@ -37,15 +37,14 @@ const logger = getLogger(): void {
     connected: boolean;
     availableServices: string[];
     activeSubscriptions: number;
-    reconnectAttempts: number;
-  } {
+    reconnectAttempts: number;} {
     return {
       connected: this.ws?.readyState === WebSocket.OPEN,
       availableServices: this.availableServices,
       activeSubscriptions: this.subscribers.size,
       reconnectAttempts: this.reconnectAttempts,
     };
-  }
+  };
 
   /**
    * Disconnect from the WebSocket hub

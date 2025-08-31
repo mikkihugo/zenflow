@@ -44,8 +44,7 @@ export interface SystemMetrics {
   readonly averageResponseTime: number;
   readonly errorRate: number;
   readonly throughput: number;
-  readonly timestamp: number;
-}
+  readonly timestamp: number;};
 
 export interface TrafficDecision {
   readonly type: 'routing' | ' scaling' | ' optimization' | ' emergency';
@@ -55,23 +54,21 @@ export interface TrafficDecision {
   readonly expectedImpact: number;
   readonly timestamp: number;
   readonly parameters: Record<string, unknown>;
-}
+};
 
 export interface ScalingDecision {
   readonly action: 'scale_up' | ' scale_down' | ' maintain' | ' optimize';
   readonly targetAgents: number;
   readonly confidence: number;
   readonly reasoning: string;
-  readonly urgency: 'low' | ' medium' | ' high' | ' critical';
-}
+  readonly urgency: 'low' | ' medium' | ' high' | ' critical';};
 
 export interface AgentRouting {
   readonly agentId: string;
   readonly taskId: string;
   readonly routingReason: string;
   readonly confidence: number;
-  readonly expectedLatency: number;
-}
+  readonly expectedLatency: number;};
 
 export interface TrafficConfig {
   enablePredictiveScaling?: boolean;
@@ -80,16 +77,14 @@ export interface TrafficConfig {
     cpuCritical: number;
     memoryCritical: number;
     responseTimeCritical: number;
-    errorRateCritical: number;
-  };
+    errorRateCritical: number;};
   scalingPolicy?: {
     scaleUpThreshold: number;
     scaleDownThreshold: number;
     cooldownMinutes: number;
     maxAgents: number;
-    minAgents: number;
-  };
-}
+    minAgents: number;};
+};
 
 /**
  * Traffic event types for foundation EventBus
@@ -97,47 +92,39 @@ export interface TrafficConfig {
 export interface TrafficEvents {
   'traffic:initialized': {
     config: TrafficConfig;
-    timestamp: number;
-  };
+    timestamp: number;};
   'traffic:shutdown': {
-    timestamp: number;
-  };
+    timestamp: number;};
   'traffic:agent_routed': {
     routing: AgentRouting;
     metrics: SystemMetrics;
     duration: number;
-    timestamp: number;
-  };
+    timestamp: number;};
   'traffic:capacity_scaled': {
     decision: ScalingDecision;
     previousAgents: number;
     newAgents: number;
-    timestamp: number;
-  };
+    timestamp: number;};
   'traffic:emergency_activated': {
     trigger: string;
     metrics: SystemMetrics;
     protocolsActivated: string[];
-    timestamp: number;
-  };
+    timestamp: number;};
   'traffic:performance_optimized': {
     optimizationType: string;
     improvementMetrics: Record<string, number>;
-    timestamp: number;
-  };
+    timestamp: number;};
   'traffic:bottleneck_detected': {
     bottleneckType: string;
     severity: 'low' | ' medium' | ' high' | ' critical';
     affectedAgents: string[];
     recommendedActions: string[];
-    timestamp: number;
-  };
+    timestamp: number;};
   'traffic:error': {
     error: string;
     context: Record<string, unknown>;
-    timestamp: number;
-  };
-}
+    timestamp: number;};
+};
 
 /**
  * Traffic Controller - Event-driven ML traffic management system
@@ -208,7 +195,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
       throw new Error(): void {});
 
         return agentId;
-      }
+      };
 
       return null;
     } catch (error) {
@@ -247,9 +234,8 @@ export class TrafficController extends EventBus<TrafficEvents> {
       return {
         type: 'emergency',
         action: 'emergency_protocol_activated',
-        reasoning: [
-          `Critical system conditions detected`,
-          `CPU:${(metrics.cpuUsage * 100).toFixed(): void {(metrics.memoryUsage * 100).toFixed(): void {metrics.averageResponseTime}ms`,
+        reasoning: [`Critical system conditions detected`,
+          `CPU: ${(metrics.cpuUsage * 100).toFixed(): void {(metrics.memoryUsage * 100).toFixed(): void {metrics.averageResponseTime}ms`,
           `Error rate:${(metrics.errorRate * 100).toFixed(): void {
           cpuUsage: metrics.cpuUsage,
           memoryUsage: metrics.memoryUsage,
@@ -257,10 +243,10 @@ export class TrafficController extends EventBus<TrafficEvents> {
           errorRate: metrics.errorRate,
         },
       };
-    }
+    };
 
     return null;
-  }
+  };
 
   private async mlRoutingDecision(): void {
     if (!this.routingEngine) return null;
@@ -276,17 +262,17 @@ export class TrafficController extends EventBus<TrafficEvents> {
           algorithm: 'ml-predictive',
         },
       };
-    }
+    };
 
     return null;
-  }
+  };
 
   private async predictiveScaling(): void {
     if (!this.autoScaler || !this.capacityPredictor) return null;
 
     const scalingDecision = await this.calculateScalingDecision(): void {scalingDecision.targetAgents}`,
-          `Current agents:${metrics.activeAgents}`,
-          `Confidence:${(scalingDecision.confidence * 100).toFixed(): void {scalingDecision.urgency}`,
+          `Current agents: ${metrics.activeAgents}`,
+          `Confidence: ${(scalingDecision.confidence * 100).toFixed(): void {scalingDecision.urgency}`,
         ],
         confidence: scalingDecision.confidence,
         expectedImpact: scalingDecision.urgency === 'critical' ? 0.9 : 0.7,
@@ -306,10 +292,9 @@ export class TrafficController extends EventBus<TrafficEvents> {
       return {
         type: 'optimization',
         action: 'performance_optimization',
-        reasoning: [
-          `Performance degradation detected`,
-          `Response time:${metrics.averageResponseTime}ms`,
-          `Throughput:${metrics.throughput} tasks/min`,
+        reasoning: [`Performance degradation detected`,
+          `Response time: ${metrics.averageResponseTime}ms`,
+          `Throughput: ${metrics.throughput} tasks/min`,
           'Implementing latency and throughput optimization',
         ],
         confidence: 0.75,
@@ -320,10 +305,10 @@ export class TrafficController extends EventBus<TrafficEvents> {
           optimizationType: 'latency-throughput',
         },
       };
-    }
+    };
 
     return null;
-  }
+  };
 
   private async detectBottlenecks(): void {
     const bottlenecks: string[] = [];
@@ -358,8 +343,9 @@ export class TrafficController extends EventBus<TrafficEvents> {
       reasoning: 'System pressure within acceptable range',
       urgency: 'low',
     };
-  }
-}
+  };
+
+};
 
 // Export for backward compatibility with existing code
 export const AutonomousCoordinator = TrafficController;

@@ -21,18 +21,19 @@ export interface LoadBalancingAlgorithm {
   name: string;
   selectAgent(): void {
   getCapacity(): void {
-  startMonitoring(): void { start: Date; end: Date }
+  startMonitoring(): void { start: Date; end: Date };
+
   ): Promise<LoadMetrics[]>;
   setThresholds(): void {
   route(): void {
   predict(): void {
   checkHealth(): void { healthy: boolean; lastCheck: Date; details?: string }>;
-}
+};
 
 export interface CircuitBreaker {
   isOpen(): void {
   getConnection(): void { active: number; idle: number; total: number }>;
-}
+};
 
 export interface BatchProcessor {
   addRequest(): void {
@@ -40,7 +41,7 @@ export interface BatchProcessor {
   optimizeLatency(): void {
   shouldScaleUp(): void { timestamp: Date; action: string; reason: string }>
   >;
-}
+};
 
 export interface EmergencyHandler extends EventEmitter {
   handleEmergency(): void {
@@ -52,5 +53,4 @@ export interface EmergencyHandler extends EventEmitter {
   checkCompliance(agentId: string): Promise<boolean>;
   enforceQoS(agentId: string): Promise<void>;
   getQoSReport(): Promise<Record<string, unknown>>;
-  adjustPriorities(tasks: Task[]): Promise<Task[]>;
-}
+  adjustPriorities(tasks: Task[]): Promise<Task[]>;};

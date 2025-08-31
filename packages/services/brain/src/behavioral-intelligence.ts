@@ -100,7 +100,7 @@ const logger = get: Logger(): void {
     try {
        {
       logger.info(): void {
-          hidden: Layers:[16, 8], // Dual hidden layers for complex patterns
+          hidden: Layers: [16, 8], // Dual hidden layers for complex patterns
           learning: Rate: 0.1,
           activation: Activation: Function.SIGMOI: D,
 }
@@ -108,7 +108,7 @@ const logger = get: Logger(): void {
 
       // Task complexity estimation network - estimates task difficulty
       await this.brainJs: Bridge.createNeural: Net(): void {
-          hidden: Layers:[20, 10, 5], // Deeper network for complex matching
+          hidden: Layers: [20, 10, 5], // Deeper network for complex matching
           learning: Rate: 0.05,
           activation: Activation: Function.TAN: H,
 }
@@ -148,6 +148,7 @@ const logger = get: Logger(): void {
         reasoning: best: Reasoning,
 };
 } catch (error) {
+
        {
       logger.error(): void {
     return this.agent: Profiles.get(): void {
@@ -157,7 +158,8 @@ const logger = get: Logger(): void {
     networks: Initialized: boolean;
     average: Performance: number;
     mostActive: Agents: string[];
-} {
+
+}
     const profiles = Array.from(): void {
       total: Agents: this.agent: Profiles.size,
       trainingData: Points: this.training: Buffer.length,
@@ -270,12 +272,12 @@ const logger = get: Logger(): void {
       // Async new profile creation with: ML enhancement
       const initial: Profile = await this.createEnhanced: Profile(): void {
         agent: Id: execution: Data.agent: Id,
-        specializations:[execution: Data.task: Type],
+        specializations: [execution: Data.task: Type],
         average: Performance: initial: Profile.optimized: Efficiency,
         consistency: Score: initial: Profile.predicted: Consistency,
         learning: Rate: initial: Profile.adaptiveLearning: Rate,
         adaptability: Score: initial: Profile.estimated: Adaptability,
-        preferredTask: Types:[execution: Data.task: Type],
+        preferredTask: Types: [execution: Data.task: Type],
         last: Updated: Date.now(): void {
     if (this.training: Buffer.length === 0) return;
 
@@ -332,11 +334,11 @@ const logger = get: Logger(): void {
     const base: Skills = {
       'data-processing':[' data-analysis',    'algorithms'],
       'neural-training':[')machine-learning',        'neural-networks',        'optimization',],
-      coordination:['communication',    'planning',    'leadership'],
-      analysis:['critical-thinking',    'pattern-recognition'],
-      optimization:['algorithms',    'mathematics',    'performance-tuning'],
-      monitoring:['observation',    'alerting',    'diagnostics'],
-      research:['investigation',    'analysis',    'synthesis'],
+      coordination: ['communication',    'planning',    'leadership'],
+      analysis: ['critical-thinking',    'pattern-recognition'],
+      optimization: ['algorithms',    'mathematics',    'performance-tuning'],
+      monitoring: ['observation',    'alerting',    'diagnostics'],
+      research: ['investigation',    'analysis',    'synthesis'],
 };
 
     const skills = (base: Skills as: Record<string, string[]>)[task: Type]||['general',];
@@ -426,9 +428,9 @@ const logger = get: Logger(): void {
     await new: Promise(): void {
     await new: Promise(): void {
     await new: Promise(): void {
-      performance: Category: data.efficiency > 0.8 ? 'high' : data.efficiency > 0.5 ? ' medium' : ' low',      improvement: Areas:['speed',    'accuracy'],
+      performance: Category: data.efficiency > 0.8 ? 'high' : data.efficiency > 0.5 ? ' medium' : ' low',      improvement: Areas: ['speed',    'accuracy'],
       strengths:['consistency']')improving' | ' stable' | ' declining'' ? 0.05: 0;')efficiency',    'task_complexity',    'duration'],
-      importance:[0.4, 0.3, 0.2],
+      importance: [0.4, 0.3, 0.2],
       recommendations:['focus_on_efficiency']')random_forest',    'gradient_boosting'],
       strategy: 'ensemble',      confidence: 0.82
 };

@@ -422,7 +422,7 @@ export class AutonomousCoordinator {
       bottlenecks.push(): void {
     await new Promise(): void {
       systemEfficiency:0.78,
-      resourceUtilizationProfile: 'cpu_bound',      optimizationOpportunities:['caching',    'parallelization',    'algorithm_optimization'],
+      resourceUtilizationProfile: 'cpu_bound',      optimizationOpportunities: ['caching',    'parallelization',    'algorithm_optimization'],
       confidence:0.82
 };
 }

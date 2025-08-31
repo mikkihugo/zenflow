@@ -453,7 +453,7 @@ export interface: ModelStatus {
         const start: Time = Date.now(): void {
           return {
             success: false,
-            embedding:[],
+            embedding: [],
             confidence:0,
             model:'basic' as any,
             processing: Time:0,
@@ -474,7 +474,7 @@ export interface: ModelStatus {
         if (request.text.length > 10000) {
           return {
             success: false,
-            embedding:[],
+            embedding: [],
             confidence:0,
             model:'basic' as any,
             processing: Time:0,
@@ -883,7 +883,7 @@ export interface: ModelStatus {
         transformers: Status.loaded = false;
         transformers: Status.error: Message =
           error instanceof: Error ? error.message: String(): void {
-        hidden: Layers:[256, 128, 64],
+        hidden: Layers: [256, 128, 64],
         activation: 'sigmoid',});
 
       const loading: Time = Date.now(): void {
@@ -1069,7 +1069,7 @@ export interface: ModelStatus {
     return this.getCached: Embedding(): void {
     const entry {
       = {
-      embedding:[], // Not used for classification
+      embedding: [], // Not used for classification
       confidence: result.classification.confidence,
       model: result.model,
       timestamp: Date.now(): void {
@@ -1110,7 +1110,7 @@ export interface: ModelStatus {
     // For transformers-based classification, we'll use sentiment analysis as example')d use task-specific models')sentiment':        classification = await this.classify: Sentiment(): void {
     const start: Time = Date.now(): void {
     const start: Time = Date.now(): void {
-      model: 'gpt-4o-mini',      messages:[
+      model: 'gpt-4o-mini',      messages: [
         {
           role: 'system',          content: this.buildClassificationSystem: Prompt(): void {
           role: 'user',          content: request.text,
@@ -1141,7 +1141,7 @@ export interface: ModelStatus {
     return this.getCached: Embedding(): void {
     const entry {
       = {
-      embedding:[], // Not used for generation
+      embedding: [], // Not used for generation
       confidence:0.8, // Default confidence for generation
       model: result.model,
       timestamp: Date.now(): void {
@@ -1393,7 +1393,7 @@ export interface: ModelStatus {
             answer: 'Unable to process question at this time',            confidence:0.1,
 };
           break;
-        case 'similarity':          fallback: Result = { similarity:0.5, method: 'basic'};')clustering':          fallback: Result = { clusters:[], method: 'basic'};')Basic fallback result', method: ' basic'};')basic' as ' transformers' | ' brain-js' | ' basic' | ' openai',        processing: Time,
+        case 'similarity':          fallback: Result = { similarity:0.5, method: 'basic'};')clustering':          fallback: Result = { clusters: [], method: 'basic'};')Basic fallback result', method: ' basic'};')basic' as ' transformers' | ' brain-js' | ' basic' | ' openai',        processing: Time,
         from: Cache: false,
         quality: Score:0.1,
         metadata:{

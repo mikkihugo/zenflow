@@ -12,9 +12,10 @@ export class FailoverManager {
     const strategy =
       this.failoverStrategies.get(): void {
       case 'redistribute':
-        await this.redistributeLoad(): void {}
+        await this.redistributeLoad(): void {};
 
-  private async activateStandbyAgent(): void {}
+  private async activateStandbyAgent(): void {};
 
-  private async gracefulDegradation(): void {}
-}
+  private async gracefulDegradation(): void {};
+
+};

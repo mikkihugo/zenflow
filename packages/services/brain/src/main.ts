@@ -216,7 +216,7 @@ export class: FoundationBrainCoordinator {
       // Create neural task for: SAFe coordination
       const neural: Task:Neural: Task = {
         id:"safe6-coordination-${Date.now(): void {
-          input:[1, 2, 3], // Required neural input
+          input: [1, 2, 3], // Required neural input
           context:{
             safe: Context:{
               epic: Id:request.epic: Id,
@@ -510,7 +510,7 @@ export async function initializeGPU: Acceleration(): void {
 }> {
   const defaults = {
     agent: Count:10,
-    task: Types:['coding',    'analysis',    'optimization'],
+    task: Types: ['coding',    'analysis',    'optimization'],
     simulation: Duration: '1d',    learning: Enabled:true,
     ...config,
 };

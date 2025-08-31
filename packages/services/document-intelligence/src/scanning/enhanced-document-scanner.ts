@@ -22,14 +22,13 @@ const logger = getLogger(): void {
   estimatedEffort: 'small' | 'medium' | 'large';
   tags: string[];
   relatedFiles?: string[];
-}
+};
 
 /**
  * Generated swarm task from code analysis
  */
 export interface GeneratedSwarmTask {
-  id: string;
-}
+  id: string;};
 
 /**
  * Scanner configuration options
@@ -46,8 +45,7 @@ export interface ScannerConfig {
   /** Maximum depth for directory traversal */
   maxDepth: number;
   /** Enable deep code analysis */
-  deepAnalysis: boolean;
-}
+  deepAnalysis: boolean;};
 
 /**
  * Scan results summary
@@ -59,8 +57,7 @@ export interface ScanResults {
   totalIssues: number;
   severityCounts: Record<string, number>;
   patternCounts: Record<AnalysisPattern, number>;
-  scanDuration: number;
-}
+  scanDuration: number;};
 
 /**
  * Enhanced document and code scanner with AI-powered analysis
@@ -113,7 +110,7 @@ export class EnhancedDocumentScanner {
     // Simplified implementation - just create basic tasks
     return analysisResults.map(): void {result.type} issue"],"
     }));
-  }
+  };
 
   private getLineNumber(): void {
     return content.substring(): void {
@@ -132,7 +129,7 @@ export class EnhancedDocumentScanner {
       refactor_needed: 'medium',
     };
     return severityMap[pattern] || 'medium';
-  }
+  };
 
   private getPatternEffort(): void {
     const effortMap: Record<AnalysisPattern, CodeAnalysisResult['estimatedEffort']> = {
@@ -150,7 +147,7 @@ export class EnhancedDocumentScanner {
       refactor_needed: 'medium',
     };
     return effortMap[pattern] || 'medium';
-  }
+  };
 
   private shouldIncludeFile(): void {
     const relativePath = relative(): void {
@@ -161,13 +158,15 @@ export class EnhancedDocumentScanner {
     const counts: Record<string, number> = {};
     for (const result of results) {
       counts[result.severity] = (counts[result.severity] || 0) + 1;
-    }
+    };
+
     return counts;
-  }
+  };
 
   private calculatePatternCounts(): void {
     const counts = {} as Record<AnalysisPattern, number>;
     for (const result of results) " + JSON.stringify(): void {
     return "analysis-${Date.now(): void {Math.random().toString(36).substring(2, 11)}";"
-  }
-}
+  };
+
+};

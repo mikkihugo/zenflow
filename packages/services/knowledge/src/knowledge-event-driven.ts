@@ -5,39 +5,73 @@
  * Listens to brain events and responds with knowledge data via events only
  */
 
+import { getLogger } from '@claude-zen/foundation';
+
 // =============================================================================
-// INTERNAL LOGGER (NO FOUNDATION IMPORTS)
+// INTERNAL LOGGER 
 // =============================================================================
 
-const createLogger = (name: string) => ({
-  info:(message: string, meta?:unknown) => 
-    console.info(): void {
-    requestId: string;
-    item: KnowledgeItemInput;
-    timestamp: number;
-};
-  'brain: knowledge:get-item': {
-    requestId: string;
-    itemId: string;
-    timestamp: number;
-};
-  'brain: knowledge:query-items': {
-    requestId: string;
-    query: KnowledgeQuery;
-    timestamp: number;
-};
-  'brain: knowledge:update-item': {
-    requestId: string;
-    itemId: string;
-    updates: Partial<KnowledgeItem>;
-    timestamp: number;
-};
-  'brain: knowledge:delete-item': {
-    requestId: string;
-    itemId: string;
-    timestamp: number;
-};
-  'brain: knowledge:get-stats': {
+const logger = getLogger('knowledge-event-driven');
+
+// =============================================================================
+// TYPE DEFINITIONS
+// =============================================================================
+
+interface KnowledgeItemInput {
+  title: string;
+  content: string;
+  tags?: string[];
+  metadata?: Record<string, unknown>;
+}
+
+interface KnowledgeItem extends KnowledgeItemInput {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface KnowledgeQuery {
+  query: string;
+  tags?: string[];
+  limit?: number;
+}
+
+// =============================================================================
+// EVENT TYPE DEFINITIONS
+// =============================================================================
+
+interface StoreItemEvent {
+  requestId: string;
+  item: KnowledgeItemInput;
+  timestamp: number;
+}
+
+interface GetItemEvent {
+  requestId: string;
+  itemId: string;
+  timestamp: number;
+}
+
+interface QueryItemsEvent {
+  requestId: string;
+  query: KnowledgeQuery;
+  timestamp: number;
+}
+
+interface UpdateItemEvent {
+  requestId: string;
+  itemId: string;
+  updates: Partial<KnowledgeItem>;
+  timestamp: number;
+}
+
+interface DeleteItemEvent {
+  requestId: string;
+  itemId: string;
+  timestamp: number;
+}
+
+interface GetStatsEvent {
     requestId: string;
     timestamp: number;
 };

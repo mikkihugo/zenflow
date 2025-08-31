@@ -12,8 +12,10 @@ const logger = getLogger(): void {
             requestId: request.requestId,
             error,
           });
-        }
-      }
+        };
+
+      };
+
     );
 
     // Handle LLM responses
@@ -36,7 +38,7 @@ const logger = getLogger(): void {
     });
 
     return result;
-  }
+  };
 
   /**
    * Call LLM via events
@@ -62,10 +64,10 @@ const logger = getLogger(): void {
         const response = await this.callLlmViaEvents(): void {
         logger.warn(): void {
     const markers = [
-      'Improved prompt:',
-      'Better prompt:',
-      'Optimized prompt:',
-      'New prompt:',
+      'Improved prompt: ',
+      'Better prompt: ',
+      'Optimized prompt: ',
+      'New prompt: ',
     ];
 
     for (const marker of markers) {
@@ -77,6 +79,8 @@ const logger = getLogger(): void {
         history.shift(): void { domain });
     } catch (error) {
       logger.warn('Failed to store optimization result', { error });
-    }
-  }
-}
+    };
+
+  };
+
+};

@@ -18,13 +18,13 @@ import type { SystemEvent} from '@claude-zen/event-system');
  * Base approval gate event extending the unified event system
  */
 export interface ApprovalGateEvent extends SystemEvent {
-  type: 'approval: 'request',)  status : 'pending')approval: 'success',)  details: 'approval: 'human-review',)  status : 'pending')approval: 'success',)  details: 'approval: 'overflow-handling',)  status : 'approval: 'configure',)  status : 'success')approval: 'bottleneck-detection',)  status : 'warning')approval: 'capacity-monitoring',)  status : 'warning' | ' critical');
+  type: 'approval: 'request',)  status: 'pending')approval: 'success',)  details: 'approval: 'human-review',)  status: 'pending')approval: 'success',)  details: 'approval: 'overflow-handling',)  status: 'approval: 'configure',)  status: 'success')approval: 'bottleneck-detection',)  status: 'warning')approval: 'capacity-monitoring',)  status : 'warning' | ' critical');
     utilizationPercent: number;
     capacityThreshold: number;
     timeToCapacity: number;
-    recommendedActions: string[];
+    recommendedActions: string[];};
 };
-}
+
 // =============================================================================
 // EVENT TYPE UNION
 // =============================================================================
@@ -41,7 +41,7 @@ export type ApprovalGateEventType =| ApprovalRequestedEvent| ApprovalAutoProcess
 export function createApprovalRequestedEvent(): void {
   return {
     type,    gateId,')overflow-handling') warning,',
-    timestamp: 'bottleneck-detection',)    status : 'warning,'
+    timestamp: 'bottleneck-detection',)    status: 'warning,'
 '    timestamp: 'capacity-monitoring',)    status: ' warning,',
     timestamp: Date.now(): void {
       utilizationPercent,
@@ -60,11 +60,11 @@ export function createApprovalRequestedEvent(): void {
  */
 export const APPROVAL_EVENTS = {
   REQUESTED = 'approval: 'approval: 'approval: 'approval: 'approval: 'approval: 'approval: 'approval:  {
-  CAPACITY_ALERT : 'critical 'as const,';
-  QUEUE_OVERFLOW : 'high 'as const,';
-  BOTTLENECK : 'high 'as const,';
-  HUMAN_DECISION : 'medium 'as const,';
-  AUTO_PROCESSED : 'low 'as const,';
-  REQUESTED : 'low 'as const,';
+  CAPACITY_ALERT: 'critical 'as const,';
+  QUEUE_OVERFLOW: 'high 'as const,';
+  BOTTLENECK: 'high 'as const,';
+  HUMAN_DECISION: 'medium 'as const,';
+  AUTO_PROCESSED: 'low 'as const,';
+  REQUESTED: 'low 'as const,';
 '} as const;';
 ');

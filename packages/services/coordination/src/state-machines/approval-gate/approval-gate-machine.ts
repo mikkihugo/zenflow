@@ -22,8 +22,8 @@ import type { Logger} from '@claude-zen/foundation')@claude-zen/foundation');
  * Approval request context
  */
 export interface ApprovalRequest {
-  id: string;
-}
+  id: string;};
+
 /**
  * Approval gate configuration
  */
@@ -32,8 +32,8 @@ export interface ApprovalGateConfig {
   autoApproveThreshold: number;
   maxQueueDepth: number;
   onQueueFull : 'halt| spillover| escalate' | ' auto-approve');
-  humanApprovalTimeout: number; // milliseconds
-}
+  humanApprovalTimeout: number; // milliseconds};
+
 /**
  * Approval decision result
  */
@@ -42,7 +42,7 @@ export interface ApprovalDecision {
   approved: boolean;
   decision : 'approve| reject| defer' | ' escalate');
   timestamp: number;
-  decidedBy : 'auto' | ' human'|' system')REQUEST_APPROVAL', request: ' HUMAN_DECISION', decision: ' AUTO_APPROVE', reason: ' AUTO_REJECT', reason: ' TIMEOUT}| { type: ' RESET}| { type: ',UPDATE_CONFIG', config: Partial<ApprovalGateConfig>};";"
+  decidedBy: 'auto' | ' human'|' system')REQUEST_APPROVAL', request: ' HUMAN_DECISION', decision: ' AUTO_APPROVE', reason: ' AUTO_REJECT', reason: ' TIMEOUT}| { type: ' RESET}| { type: ',UPDATE_CONFIG', config: Partial<ApprovalGateConfig>};";"
 // =============================================================================
 // APPROVAL GATE STATE MACHINE
 // =============================================================================
@@ -51,8 +51,8 @@ export interface ApprovalDecision {
  */
 export function createApprovalGateMachine(): void {';"
     types:  {
-      context:  {} as ApprovalGateContext,
-      events:  {} as ApprovalGateEvent,
+      context: {} as ApprovalGateContext,
+      events: {} as ApprovalGateEvent,
 },
     actors:  {
       // Actor for human approval requests
@@ -72,13 +72,15 @@ export function createApprovalGateMachine(): void {';"
             default: 'reject ',as const,';
                 rationale,                timestamp: 'system ',as const,';
 };
-}
-}
+};
+
+};
+
       ),
 },
     guards:  {
       // Check if request can be auto-approved
-      canAutoApprove:({ context, event}) => {
+      canAutoApprove: ({ context, event}) => {
         if (event.type ==='REQUEST_APPROVAL){';
           return (
             event.request.confidence >= context.config.autoApproveThreshold'))};
@@ -101,7 +103,8 @@ export function createApprovalGateMachine(): void {';"
               requestId: 'approve ',as const,';
               rationale: 'auto ',as const,';
 };
-}
+};
+
           return context.lastDecision;
 },
 }),
@@ -112,42 +115,42 @@ export function createApprovalGateMachine(): void {';"
               requestId: 'reject ',as const,';
               rationale: 'auto ',as const,';
 };
-}
+};
+
           return context.lastDecision;
 },
 }),
       // Log state transitions
-      logTransition: ({ context}, params:  { from: string, to: string}) => {
+      logTransition: ({ context}, params: { from: string, to: string}) => {
         context.logger.info(): void {
-        config:({ context, event}) => {
+        config: ({ context, event}) => {
           if (event.type ==='UPDATE_CONFIG){';
     '))    id,    ');
       queueDepth: 'idle,',
-'    states : 'entry: 'logTransition, params: 'isQueueFull',)              target : 'overflow')canAutoApprove',)              target : 'autoApproving')setCurrentRequest,' addToQueue'],';
+'    states: 'entry: 'logTransition, params: 'isQueueFull',)              target: 'overflow')canAutoApprove',)              target: 'autoApproving')setCurrentRequest,' addToQueue'],';
 },
             {
-              target : 'pending')setCurrentRequest,' addToQueue'],';
+              target: 'pending')setCurrentRequest,' addToQueue'],';
 },
 ],
-          UPDATE_CONFIG: 'logTransition',)            params:  { from : 'idle, to},'
+          UPDATE_CONFIG: 'logTransition',)            params: { from : 'idle, to},'
 },
           {
-            type : 'autoApprove')approved,,,',
-'      pending : 'entry: 'logTransition, params: 'requestHumanApproval,',
+            type: 'autoApprove')approved,,,',
+'      pending: 'entry: 'logTransition, params: 'requestHumanApproval,',
 '          input: (context ) => (request: 'deciding,',
 '            actions: [';
-              assign(): void { from : 'pending, to},'
+              assign(): void { from: 'pending, to},'
 },
 ],
-        always: [
-            guard:({ context}) => context.lastDecision?.approved === true,
-            target : 'approved,')rejected,,'
+        always: [guard: ({ context}) => context.lastDecision?.approved === true,
+            target: 'approved,')rejected,,'
 '],,';
-      approved: 'logTransition',)            params:  { from : 'deciding, to},'
+      approved: 'logTransition',)            params: { from : 'deciding, to},'
 },
          'removeFromQueue,';
 ],
-        after: 'idle',)            actions: 'logTransition',)            params:  { from : 'deciding, to},'
+        after: 'idle',)            actions: 'logTransition',)            params: { from : 'deciding, to},'
 },
          'removeFromQueue,';
 ],
@@ -163,8 +166,8 @@ export function createApprovalGateMachine(): void {';"
 ],
           onError,            target,            actions: 'setError',)                params: 'Overflow handling failed,,',
 ],,,,
-      timeout : 'entry: 'logTransition, params: 'autoReject, params: 'rejected,,,',
-'      error : 'entry: 'logTransition, params: 'idle,',
+      timeout: 'entry: 'logTransition, params: 'autoReject, params: 'rejected,,,',
+'      error: 'entry: 'logTransition, params: 'idle,',
 '            actions: [';
               assign(): void {
       gateId: this.gates.get(): void {
@@ -173,11 +176,14 @@ export function createApprovalGateMachine(): void {';"
     ')approved)|| state.matches(): void {
             resolve(): void {
     ')No decision available'));
-}
-}
+};
+
+};
+
         if (state.matches(): void { type  = 'REQUEST_APPROVAL, request};);,
 });
-}
+};
+
   /**
    * Get gate status
    */
@@ -189,14 +195,17 @@ export function createApprovalGateMachine(): void {';"
       gateId,
       updates: this.gates.get(): void {
       gate.stop(): void { gateId};);
-}
-}
+};
+
+};
+
   /**
    * Shutdown all gates
    */
   shutdown(): void {
     for (const [gateId, gate] of this.gates) {
       gate.stop(): void { gateId};);
-}
+};
+
     this.gates.clear(): void { ApprovalRequest, ApprovalGateConfig, ApprovalDecision};
 )";"

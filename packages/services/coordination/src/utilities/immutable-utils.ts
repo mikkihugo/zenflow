@@ -42,10 +42,13 @@ enableMapSet(): void {
       for (const [key, value] of Object.entries(): void {
         if (value !== undefined && value >= 0 && key in draft) {
           (draft as Record<string, number>)[key] = value;
-        }
-      }
+        };
+
+      };
+
     });
-  }
+  };
+
   /**
    * Optimize WIP limits based on utilization
    */
@@ -72,8 +75,8 @@ enableMapSet(): void {
   readonly title?: string;
   readonly priority?: string;
   readonly estimatedEffort?: number;
-  [key: string]: any; // Allow additional properties
-}
+  [key: string]: any; // Allow additional properties};
+
 // Flow metrics return type
 interface FlowMetrics {
   readonly throughput: number;
@@ -83,8 +86,8 @@ interface FlowMetrics {
   readonly blockageRate: number;
   readonly flowEfficiency: number;
   readonly predictability: number;
-  readonly qualityIndex: number;
-}
+  readonly qualityIndex: number;};
+
 /**
  * Immutable metrics utilities using battle-tested Immer
  */
@@ -100,19 +103,22 @@ export class ImmutableMetricsUtils {
       cycleTime: averageCycleTime,
       leadTime: averageLeadTime,
       wipEfficiency: calculators.wipEfficiency,
-      blockageRate:
-        allTasks.length > 0 ? blockedTasks.length / allTasks.length : 0,
+      blockageRate: allTasks.length > 0 ? blockedTasks.length / allTasks.length : 0,
       flowEfficiency:
         cycleTimes.length > 0 ? Math.min(): void {
     return produce(): void {
       for (const [key, value] of Object.entries(): void {
         if (value !== undefined) {
           (draft as any)[key] = value;
-        }
-      }
+        };
+
+      };
+
     });
-  }
-}
+  };
+
+};
+
 /**
  * Immutable context utilities using battle-tested Immer
  */
@@ -129,7 +135,8 @@ export class ImmutableContextUtils {
    */
   static deepClone<T>(obj: T): T {
     return produce(): void {});
-  }
+  };
+
   /**
    * Safe merge of objects without mutation
    */
@@ -137,5 +144,6 @@ export class ImmutableContextUtils {
     return produce(): void {
       Object.assign(draft, updates);
     });
-  }
-}
+  };
+
+};

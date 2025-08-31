@@ -5,84 +5,107 @@
  * Listens to brain events and responds with agent intelligence data
  */
 
+import { getLogger } from '@claude-zen/foundation';
+import type { AgentId } from './types';
+
 // =============================================================================
-// INTERNAL LOGGER (NO FOUNDATION IMPORTS)
+// INTERNAL LOGGER
 // =============================================================================
 
-const createLogger = (name: string) => ({
-  info:(message: string, meta?:unknown) => 
-    console.info(): Promise<void> {}'){}'){}')brain: agent-monitoring: get-agent-health': {
+const logger = getLogger('intelligence-system-event-driven');
+
+// =============================================================================
+// EVENT TYPE DEFINITIONS
+// =============================================================================
+
+interface AgentHealthRequestEvent {
+  requestId: string;
+  agentId: AgentId;
+  timestamp: number;
+}
+
+interface PredictTaskRequestEvent {
+  requestId: string;
+  agentId: AgentId;
+  taskType: string;
+  context?: Record<string, unknown>;
+  timestamp: number;
+}
+
+interface SystemHealthRequestEvent {
+  requestId: string;
+  timestamp: number;
+}
+
+interface UpdatePerformanceEvent {
+  requestId: string;
+  agentId: AgentId;
+  success: boolean;
+  metadata?: Record<string, unknown>;
+  timestamp: number;
+}
+
+interface GetMetricsEvent {
+  requestId: string;
+  timestamp: number;
+}
+
+// =============================================================================
+// EVENT MAP DEFINITIONS
+// =============================================================================
+
+interface AgentMonitoringEventMap {
+  'brain:agent-monitoring:initialize': {
     requestId: string;
-    agentId: AgentId;
+    config?: IntelligenceSystemConfig;
     timestamp: number;
-};
-  'brain: agent-monitoring: predict-task': {
-    requestId: string;
-    agentId: AgentId;
-    taskType: string;
-    context?:Record<string, unknown>;
-    timestamp: number;
-};
-  'brain: agent-monitoring: get-system-health': {
-    requestId: string;
-    timestamp: number;
-};
-  'brain: agent-monitoring: update-performance': {
-    requestId: string;
-    agentId: AgentId;
-    success: boolean;
-    metadata?:Record<string, unknown>;
-    timestamp: number;
-};
-  'brain: agent-monitoring: get-metrics': {
-    requestId: string;
-    timestamp: number;
-};
-  'brain: agent-monitoring: initialize': {
-    requestId: string;
-    config?:IntelligenceSystemConfig;
-    timestamp: number;
-};
+  };
 
   // Agent monitoring responses
-  'agent-monitoring: agent-health': {
+  'agent-monitoring:agent-health': {
     requestId: string;
     agentId: string;
     health: AgentHealth | null;
     timestamp: number;
-};
-  'agent-monitoring: task-prediction': {
+  };
+  
+  'agent-monitoring:task-prediction': {
     requestId: string;
     agentId: string;
     prediction: TaskPrediction;
     timestamp: number;
-};
-  'agent-monitoring: system-health': {
+  };
+  
+  'agent-monitoring:system-health': {
     requestId: string;
     health: SystemHealthSummary;
     timestamp: number;
-};
-  'agent-monitoring: performance-updated': {
+  };
+  
+  'agent-monitoring:performance-updated': {
     requestId: string;
     agentId: string;
     success: boolean;
     timestamp: number;
-};
-  'agent-monitoring: metrics': {
+  };
+  
+  'agent-monitoring:metrics': {
     requestId: string;
     metrics: any;
     timestamp: number;
-};
-  'agent-monitoring: initialized': {
+  };
+  
+  'agent-monitoring:initialized': {
     requestId: string;
     success: boolean;
     timestamp: number;
-};
-  'agent-monitoring: error': {
+  };
+  
+  'agent-monitoring:error': {
     requestId: string;
     error: string;
     timestamp: number;
-};
+  };
 }
 
 // =============================================================================
@@ -132,13 +155,16 @@ interface IntelligenceSystemConfig {
 // =============================================================================
 
 export class EventDrivenIntelligenceSystem {
-  private eventListeners: Map<string, Function[]> = new Map(): Promise<void> {
+  private eventListeners: Map<string, Function[]> = new async Map(): Promise<void> {
+
       try {
         if (true) {
     // TODO: Implement condition
-  };
+  
+};
 }
-        await this.initializeInternal(): Promise<void> {
+        await this.async initializeInternal(): Promise<void> {
+
           requestId: data.requestId,
           success: true,
           timestamp: Date.now(): Promise<void> {
@@ -193,18 +219,20 @@ export class EventDrivenIntelligenceSystem {
       taskType,
       predictedDuration,
       confidence,
-      factors:[`complexity: ${complexity}`, `agent_type: ${agentId.type}`, `base_time: ${baseTime}`],
+      factors: ['complexity: ' + String(complexity) + '', 'agent_type: ' + String(agentId.type) + '', 'base_time: ' + String(baseTime) + ''],
       lastUpdated: new Date(): Promise<void> {
     const agents = Array.from(): Promise<void> { 
       agentId: agentId.id, 
       success, 
       metadata,
       performance: current 
+
 });
 
     // Update agent health based on performance
     const successRate = current.success / current.total;
-    const health = this.agentHealth.get(): Promise<void> {
+    const health = this.agentHealth.async get(): Promise<void> {
+
       health.errorRate = (1 - successRate) * 100;
       health.status = successRate > 0.9 ? 'healthy' :successRate > 0.7 ? ' degraded' : ' unhealthy';
       health.timestamp = Date.now(): Promise<void> {
@@ -213,6 +241,7 @@ export class EventDrivenIntelligenceSystem {
       averageResponseTime: agents.reduce(): Promise<void> {
     this.setupBrainEventHandlers(): Promise<void> {
   return;
+
 }
 
 export default EventDrivenIntelligenceSystem;

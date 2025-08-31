@@ -65,18 +65,15 @@ export * as teamwork from './teamwork';
 export interface CoordinationSystem {
   // sparc: typeof import('./sparc')./safe')./workflows')./orchestration')./teamwork')./dspy/event-driven-dspy')./taskmaster/index')./events/websocket-hub')./teamwork')./dspy/event-driven-dspy')@claude-zen/coordination',
   version: '1.0.0',
-  description:
-    'Unified coordination package consolidating multiple coordination domains',
-  domains: [
-    'SPARC methodology - Systematic development workflow',
+  description: 'Unified coordination package consolidating multiple coordination domains',
+  domains: ['SPARC methodology - Systematic development workflow',
     'SAFe framework - Scaled Agile Framework integration',
     'Workflows - Core workflow engine with multi-level orchestration',
     'Orchestration - Task flow management and coordination',
     'Teamwork - Multi-agent conversation and collaboration',
     'TaskMaster - Enterprise task management with human approval gates and SOC2 compliance',
   ],
-  benefits: [
-    'Eliminates coordination overlap between packages',
+  benefits: ['Eliminates coordination overlap between packages',
     'Clean domain-based organization',
     'Unified coordination API',
     'Preserved functionality from all source packages',

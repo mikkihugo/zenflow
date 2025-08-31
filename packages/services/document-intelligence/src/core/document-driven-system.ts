@@ -22,7 +22,7 @@ const logger = getLogger(): void {
     businessValue?: number;
     relatedArtifacts?: string[];
 };
-}
+};
 
 export interface SafeWorkspace {
   workspaceId: string; // Database workspace identifier
@@ -32,15 +32,15 @@ export interface SafeWorkspace {
   databases:{
     artifacts: string; // Artifact database connection
     relationships: string; // Relationship graph database
-    analytics: string; // Performance analytics database
+    analytics: string; // Performance analytics database};
 };
-}
 
 export interface SafeWorkflowContext {
   workspace: SafeWorkspace;
   activeArtifacts: Map<string, SafeArtifact>;
   currentPI?:string; // Current Program Increment
-  safeLevel: 'essential|large-solution|portfolio'; // SAFe configuration')Initializing SAFe Artifact Intelligence System')essential', // SAFe 6.0 Essential by default')safe_artifacts.db',        relationships: databaseConnections.relationships || 'safe_relationships.db',    ')safe_analytics.db',}
+  safeLevel: 'essential|large-solution|portfolio'; // SAFe configuration')Initializing SAFe Artifact Intelligence System')essential', // SAFe 6.0 Essential by default')safe_artifacts.db',        relationships: databaseConnections.relationships || 'safe_relationships.db',    ')safe_analytics.db',};
+
 };
 
     const context: SafeWorkflowContext = {
@@ -48,7 +48,7 @@ export interface SafeWorkflowContext {
       private activeArtifacts = new Map(): void { workspaceId, name: workspaceName });
 
     return workspaceId;
-}
+};
 
   /**
    * Process Visionary document with optional structured approach.
@@ -67,4 +67,4 @@ export interface SafeWorkflowContext {
       type: docType,
       document: doc,
 });
-}
+};

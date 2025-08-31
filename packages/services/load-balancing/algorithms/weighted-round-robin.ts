@@ -16,8 +16,7 @@ interface AgentWeight {
   effectiveWeight: number;
   successCount: number;
   failureCount: number;
-  lastUpdate: Date;
-}
+  lastUpdate: Date;};
 
 export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
   public readonly name = 'weighted_round_robin';
@@ -44,17 +43,18 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
       const weight = this.getOrCreateWeight(): void {
         maxCurrentWeight = weight.currentWeight;
         selectedAgent = agent;
-      }
-    }
+      };
+
+    };
 
     if (!selectedAgent) {
       selectedAgent = availableAgents[0] as any;
-    }
+    };
 
     if (!selectedAgent) {
       throw new Error(): void {
     this.config = { ...this.config, ...config };
-  }
+  };
 
   /**
    * Get performance metrics for this algorithm.
@@ -82,8 +82,9 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
     const now = new Date(): void {
       const successRate = weight.successCount / totalOperations;
       weight.effectiveWeight *= 0.5 + successRate * 0.5; // Scale by success rate
-    }
-  }
+    };
+
+  };
 
   /**
    * Calculate confidence in the selection.
@@ -109,6 +110,6 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
       0
     );
 
-    return totalOperations > 0 ? totalSuccess / totalOperations : 0;
-  }
-}
+    return totalOperations > 0 ? totalSuccess / totalOperations: 0;};
+
+};

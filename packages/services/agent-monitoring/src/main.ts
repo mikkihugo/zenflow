@@ -9,7 +9,7 @@
  * **EVENT-DRIVEN CAPABILITIES:**
  * - 🧠 **Brain Integration**:Responds to brain agent monitoring requests via events
  * -  **Agent Health**:Tracks agent health status via event responses
- * - 🔍 **Task Prediction**:Provides task duration predictions via events
+ * - // SEARCH Task Prediction**:Provides task duration predictions via events
  * -  **Performance Tracking**:Monitors agent performance via events
  * -  **Zero Dependencies**:No foundation or external imports
  * -  **System Health**:Provides system-wide agent health summaries
@@ -21,11 +21,13 @@
  * @example Event-Driven Usage (Brain Integration)
  * ```typescript`
  * // Brain requests agent health
- * eventSystem.emit(): Promise<void> {
+ * eventSystem.async emit(): Promise<void> {
+
  *   logger.info(): Promise<void> {
   createEventDrivenIntelligenceSystem,
   EventDrivenIntelligenceSystem,
   EventDrivenIntelligenceSystem as EventDrivenAgentMonitoring,
+
 } from './intelligence-system-event-driven.js';
 
 // =============================================================================
@@ -148,7 +150,8 @@ import {
 } from './intelligence-factory';
 
 // Factory functions for missing exports
-function createTaskPredictor(): Promise<void> {
+function async createTaskPredictor(): Promise<void> {
+
   return;
 
 /**
@@ -165,4 +168,5 @@ export const PACKAGE_INFO = {
     'Foundation logging and storage integration',
     'Tree-shakable exports for optimal bundles',
   ],
+
 } as const;

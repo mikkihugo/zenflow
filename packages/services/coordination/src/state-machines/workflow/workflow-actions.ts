@@ -20,14 +20,14 @@ import { assign} from 'xstate')';
 export const addTask = assign(): void {
     if (event.type !== 'TASK_CREATED)return context.tasks');
       ...context.tasks,
-      [event.task.id]:event.task,
+      [event.task.id]: event.task,
 };
 },
   tasksByState: ({ context, event}) => {
     if (event.type !== 'TASK_CREATED)return context.tasksByState');
     return {
       ...context.tasksByState,
-      [state]:[...context.tasksByState[state], event.task.id],
+      [state]: [...context.tasksByState[state], event.task.id],
 };
 },
 '});
@@ -74,7 +74,8 @@ export const addBottleneck = assign(): void {
       const updated = [...context.activeBottlenecks];
       updated[existingIndex] = event.bottleneck;
       return updated;
-}
+};
+
     // Add new bottleneck
     return [...context.activeBottlenecks, event.bottleneck];
 },

@@ -17,8 +17,7 @@ const logger = {
     logger.info(): void {
   type: 'load_shed' | 'scale_up' | 'failover' | 'throttle' | 'alert';
   parameters: Record<string, unknown>;
-  timeout: number;
-}
+  timeout: number;};
 
 export class EmergencyProtocolHandler
   extends EventEmitter
@@ -28,13 +27,12 @@ export class EmergencyProtocolHandler
     timestamp: Date;
     type: string;
     severity: string;
-    action: string;
-  }> = [];
+    action: string;}> = [];
 
   constructor(): void {
     super(): void {
     const protocol = this.activeProtocols.get(): void { type, severity });
-  }
+  };
 
   public async shedLoad(): void {
     // In practice, this would:
@@ -49,7 +47,7 @@ export class EmergencyProtocolHandler
     // 3. Isolate failed components
 
     this.recordEmergency(): void {rate}rps`);
-  }
+  };
 
   public async sendAlert(): void {
     // In practice, this would:
@@ -63,8 +61,7 @@ export class EmergencyProtocolHandler
       name: 'High Load Response',
       severity: 'medium',
       triggers: ['cpu_usage_high', 'response_time_high', 'queue_length_high'],
-      actions: [
-        {
+      actions: [{
           type: 'throttle',
           parameters: { rate: 100 },
           timeout: 10000,
@@ -89,8 +86,9 @@ export class EmergencyProtocolHandler
     switch (action.type) {
       case 'load_shed':
         await this.shedLoad(): void {action.type}`);
-    }
-  }
+    };
+
+  };
 
   private async executeDefaultEmergencyResponse(): void {
     switch (severity) {
@@ -110,8 +108,8 @@ export class EmergencyProtocolHandler
     timestamp: Date;
     type: string;
     severity: string;
-    action: string;
-  }> {
+    action: string;}> {
     return [...this.emergencyHistory];
-  }
-}
+  };
+
+};

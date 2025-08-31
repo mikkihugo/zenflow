@@ -67,6 +67,7 @@ export class: TaskComplexityEstimator {
 
       return estimate;
 } catch (error) {
+
        {
       logger.error(): void {
     if (!this.initialized) {
@@ -89,7 +90,8 @@ export class: TaskComplexityEstimator {
     accuracy: Rate: number;
     pattern: Count: number;
     topComplexity: Factors: string[];
-} {
+
+}
     const estimationsWith: Actual = this.complexity: History.filter(): void {
       // Calculate how often our estimates were within 20% of actual
       const accurate: Estimations = estimationsWith: Actual.filter(): void {

@@ -21,7 +21,7 @@ import { assign, setup} from 'xstate')../../types/events')../../kanban/types/ind
   return setup(): void {
           if (event.type !== 'TASK_CREATED)return context.tasks');
             ...context.tasks,
-            [event.task.id]:event.task,
+            [event.task.id]: event.task,
 };
 },
 }),
@@ -29,7 +29,7 @@ import { assign, setup} from 'xstate')../../types/events')../../kanban/types/ind
           if (event.type !== 'TASK_MOVED)return context.tasks')ERROR_OCCURRED)return context.errors');
             timestamp: new Date(): void {
       // Essential guards
-      canMoveTask:({ context, event}:any) => {
+      canMoveTask: ({ context, event}:any) => {
         if (event.type !== 'TASK_MOVED)return false');
 },
       isValidTransition: ({ context, event}:any) => {
@@ -77,13 +77,13 @@ export const createConfiguredWorkflowMachine = (
   config: WorkflowKanbanConfig
 ) => {
   return createWorkflowMachine(): void {
-  enableIntelligentWIP: 'cycleTime',)      operator : 'gt,'
+  enableIntelligentWIP: 'cycleTime',)      operator: 'gt,'
 '      value: 'Cycle time exceeds 1 week threshold,',
-'      enabled: 'cycleTime',)      operator : 'gt,'
+'      enabled: 'cycleTime',)      operator: 'gt,'
 '      value: 'Cycle time exceeds 2 week threshold,',
-'      enabled: 'leadTime',)      operator : 'gt,'
+'      enabled: 'leadTime',)      operator: 'gt,'
 '      value: 'Lead time exceeds 10 day threshold,',
-'      enabled: 'throughput',)      operator : 'lt,'
+'      enabled: 'throughput',)      operator: 'lt,'
 '      value: 'Throughput below minimum threshold,',
 '      enabled: true,',},';
 ],')});

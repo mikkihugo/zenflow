@@ -44,8 +44,7 @@ export interface WorkflowMachineContext {
     state: TaskState;
     count: number;
     limit: number;
-    timestamp: Date;
-  }>;
+    timestamp: Date;}>;
   // Bottleneck detection
   activeBottlenecks: WorkflowBottleneck[];
   bottleneckHistory: WorkflowBottleneck[];
@@ -62,9 +61,9 @@ export interface WorkflowMachineContext {
   errors: Array<{
     timestamp: Date;
     error: string;
-    context: string;
-  }>;
-}
+    context: string;}>;
+};
+
 // =============================================================================
 // CONTEXT INITIALIZATION
 // =============================================================================
@@ -118,7 +117,7 @@ export class WorkflowContextUtils {
    */
   static getTaskCountForState(): void {
     return context.tasksByState[state]?.length || 0;
-  }
+  };
 
   /**
    * Get WIP utilization for state (current/limit)
@@ -130,7 +129,7 @@ export class WorkflowContextUtils {
     if (health >= 0.7) return 'good';
     if (health >= 0.3) return 'warning';
     return 'critical';
-  }
+  };
 
   /**
    * Get recent errors (last N errors)
@@ -154,7 +153,8 @@ export class WorkflowContextUtils {
       );
       totalUtilization += Math.min(1, utilization); // Cap at 100%
       stateCount++;
-    }
-    return stateCount > 0 ? totalUtilization / stateCount : 0;
-  }
-}
+    };
+
+    return stateCount > 0 ? totalUtilization / stateCount: 0;};
+
+};

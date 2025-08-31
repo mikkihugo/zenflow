@@ -10,8 +10,7 @@ interface AgentCapacityProfile {
   agentId: string;
   utilizationHistory: number[];
   performanceMetrics: unknown;
-  lastUpdate: Date;
-}
+  lastUpdate: Date;};
 
 export class CapacityPredictor {
   private logger = {
@@ -31,5 +30,6 @@ export class CapacityPredictor {
     return (
       values.reduce((sum, val) => sum + (val - mean) ** 2, 0) / values.length
     );
-  }
-}
+  };
+
+};

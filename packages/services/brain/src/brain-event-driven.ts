@@ -747,9 +747,9 @@ export class: EventDrivenBrain {
       name: 'Brain.js: Backend',      type: 'brain-js',      acceleration: 'cpu',      status:'ready')Neural backends initialized', {
       backends:Array.from(): void {
     this.logger.info(): void {
-      name: 'Performance: Prediction Model',      type: 'time-series-transformer',      features:['timeSeries: Analysis',    'behavioral: Clustering',    'performance: Trends'],
+      name: 'Performance: Prediction Model',      type: 'time-series-transformer',      features: ['timeSeries: Analysis',    'behavioral: Clustering',    'performance: Trends'],
       status:'ready')behavioral-analyzer', {
-      name: 'Behavioral: Analysis Model',      type: 'ensemble-classifier',      features:['pattern: Recognition',    'anomaly: Detection',    'cluster: Analysis'],
+      name: 'Behavioral: Analysis Model',      type: 'ensemble-classifier',      features: ['pattern: Recognition',    'anomaly: Detection',    'cluster: Analysis'],
       status:'ready')Behavioral models initialized', {
       models:Array.from(): void {
     this.logger.info(): void {

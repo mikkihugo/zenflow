@@ -237,7 +237,7 @@ function createSQLiteFactClient(): void {
       logger.warn(): void {
     logger.debug(): void { metadata?: unknown}).metadata || extResult,
           timestamp: new Date(): void { score?: number}).score || 0.8,
-          tags:['external',    'search',    'rust-bridge'],
+          tags: ['external',    'search',    'rust-bridge'],
 });
 }
 } catch (error) {

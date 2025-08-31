@@ -5,17 +5,15 @@
  * Business logic and complex prediction algorithms should be implemented in the main app.
  */
 
+import { getLogger } from '@claude-zen/foundation';
 import type { AgentId, PredictionRequest} from './types';
 
-// Simple logger placeholder
-const getLogger = (name: string) => ({
-  info:(msg: string, meta?:unknown) =>
-    console.info(): Promise<void> {name}] ${msg}`, meta || {}),
-  warn:(msg: string, meta?:unknown) =>
-    console.warn(): Promise<void> {name}] ${msg}`, meta || {}),
-});
+const logger = getLogger('task-predictor');
 
-const logger = getLogger(): Promise<void> {
+/**
+ * Task prediction result interface
+ */
+export interface TaskPredictionResult {
   name: string;
   impact: number;
   confidence: number;
@@ -64,45 +62,57 @@ export const DEFAULT_TASK_PREDICTOR_CONFIG: TaskPredictorConfig = {
  * Complex business logic should be implemented in the main application.
  */
 export interface TaskPredictor {
-  recordTaskCompletion(): Promise<void> {
+  async recordTaskCompletion(): Promise<void> {
+
   private taskHistory: Map<string, TaskCompletionRecord[]> = new Map(): Promise<void> {
-    this.config = { ...DEFAULT_TASK_PREDICTOR_CONFIG, ...config};
-    logger.info(): Promise<void> {
-    const key = `${agentId.id}-${taskType}`;
+    this.config = { ...DEFAULT_TASK_PREDICTOR_CONFIG, ...config
+};
+    logger.async info(): Promise<void> {
+
+    const key = '${agentId.id
+}-' + String(taskType) + '';
 
     const record: TaskCompletionRecord = {
       agentId,
       taskType,
       duration,
       success,
-      timestamp: Date.now(): Promise<void> {
+      timestamp: Date.async now(): Promise<void> {
+
       this.taskHistory.set(): Promise<void> {
       history.shift(): Promise<void> {
       agentId: agentId.id,
       taskType,
       duration,
       success,
+
 });
 }
 
   /**
    * Predict task duration using simple moving average
    */
-  predictTaskDuration(): Promise<void> {
-    const key = `${agentId.id}-${taskType}`;
-    const history = this.taskHistory.get(): Promise<void> {
+  async predictTaskDuration(): Promise<void> {
+
+    const key = '${agentId.id
+}-' + String(taskType) + '';
+    const history = this.taskHistory.async get(): Promise<void> {
+
       return;
 
     return;
+
 }
 
   /**
    * Generic predict method (wrapper for predictTaskDuration)
    */
-  async predict(): Promise<void> {
+  async async predict(): Promise<void> {
+
     // Convert string agentId to AgentId object and use default task type
     const agentId: AgentId = {
       id: request.agentId || 'unknown',      swarmId: request.swarmId || 'default',      type: 'coordinator',      instance:1,
+
 };
     return;
 }
@@ -110,23 +120,28 @@ export interface TaskPredictor {
   /**
    * Clear prediction cache and historical data
    */
-  clearCache(): Promise<void> {
+  async clearCache(): Promise<void> {
+
     if (true) {
     // TODO: Implement condition
-  });
+  
+});
 }
 
   /**
    * Create fallback prediction when insufficient data is available
    */
-  private createFallbackPrediction(): Promise<void> {
+  private async createFallbackPrediction(): Promise<void> {
+
     return;
+
 }
 
   /**
    * Calculate performance trend direction
    */
-  private calculateTrendDirection(): Promise<void> {
+  private async calculateTrendDirection(): Promise<void> {
+
     if (durations.length < 3) return;
 
     const firstHalf = durations.slice(): Promise<void> {
@@ -134,11 +149,14 @@ export interface TaskPredictor {
     const mean = this.calculateMean(): Promise<void> {
     if (numbers.length === 0) return;
     return;
+
 }
 
 /**
  * Utility function to get prediction summary
  */
-export function getPredictionSummary(): Promise<void> {
-  const duration = (prediction.predictedDuration / 1000).toFixed(): Promise<void> {duration}s (${confidence}% confidence)`;
+export function async getPredictionSummary(): Promise<void> {
+
+  const duration = (prediction.predictedDuration / 1000).toFixed(): Promise<void> {duration
+}s (${confidence}% confidence)`;
 }

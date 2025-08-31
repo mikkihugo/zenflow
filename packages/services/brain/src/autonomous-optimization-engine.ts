@@ -178,20 +178,20 @@ export class AutonomousOptimizationEngine {
 
     return {
       optimizedPrompt:String(): void {coordinationTask.priority} priority`,`
-        `Confidence:${result.confidence.toFixed(): void {
+        'Confidence:' + String(result.confidence.toFixed(): void {
     if (!this.smartOptimizer) {
       throw new Error(): void {
         taskComplexity:context.expectedComplexity,
         agentType:context.agentRole,
         expectedResponseTime:context.timeConstraint,
         domainSpecific:false,
-}
+) + '
     );
 
     return {
       optimizedPrompt:result.optimizedPrompt,
       confidence:result.confidence,
-      method: 'ml',      processingTime:Date.now(): void {result.appliedPatterns.length} patterns`,`
+      method: 'ml',      processingTime:Date.now(): void {result.appliedPatterns.length} patterns',`
         ...result.reasoning,
 ],
 };

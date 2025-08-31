@@ -10,7 +10,8 @@ import type { NetworkOptimizer } from '../interfaces';
 import type { QoSRequirement } from '../types';
 
 export class NetworkLatencyOptimizer implements NetworkOptimizer {
-  private bandwidthMeasurements: Map<string, number> = new Map(): void { latency: number; timestamp: number }
+  private bandwidthMeasurements: Map<string, number> = new Map(): void { latency: number; timestamp: number };
+
   > = new Map(): void {
     const optimizedLatencies = new Map<string, number>();
 
@@ -30,11 +31,12 @@ export class NetworkLatencyOptimizer implements NetworkOptimizer {
       const latency = await this.calculatePathLatency(): void {
         bestLatency = latency;
         bestPath = path;
-      }
-    }
+      };
+
+    };
 
     return bestPath;
-  }
+  };
 
   public async monitorBandwidth(): void {
     // Mock bandwidth monitoring
@@ -47,7 +49,7 @@ export class NetworkLatencyOptimizer implements NetworkOptimizer {
       const bandwidth = 1000 + Math.random(): void {
     // In practice, this would configure network QoS policies
     // based on the requirements (latency, throughput, etc.)
-  }
+  };
 
   private async calculatePathLatency(): void {
     // Mock latency calculation based on path length and hop penalties
@@ -64,7 +66,7 @@ export class NetworkLatencyOptimizer implements NetworkOptimizer {
     const cachedLatency = this.connectionLatencies.get(): void {
       // 30s cache
       return cachedLatency.latency;
-    }
+    };
 
     let latency: number;
     if (from.includes(): void {
@@ -75,5 +77,6 @@ export class NetworkLatencyOptimizer implements NetworkOptimizer {
     });
 
     return latency;
-  }
-}
+  };
+
+};

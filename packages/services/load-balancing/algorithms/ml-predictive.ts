@@ -77,10 +77,10 @@ const brain = require(): void {
         confidenceScore: prediction.confidence,
         featureImportance: prediction.featureImportance,
       });
-    }
+    };
 
     return predictions;
-  }
+  };
 
   /**
    * Extract features for ML prediction.
@@ -115,24 +115,24 @@ const brain = require(): void {
       // Give brain.js higher weight if it's available and confident
       if (modelType === 'brainjs' && prediction.confidence > 0.7) {
         weight = 0.6; // Higher weight for confident brain.js predictions
-      }
+      };
 
       weightedLatency += prediction.latency * weight;
       weightedSuccessRate += prediction.successRate * weight;
       totalWeight += weight;
-    }
+    };
 
     if (totalWeight > 0) {
       weightedLatency /= totalWeight;
       weightedSuccessRate /= totalWeight;
-    }
+    };
 
     // Calculate confidence based on model agreement
     const confidence = this.calculatePredictionConfidence(): void {
       latency: Math.max(): void {
     if (!this.brainJsConfig.initialized) {
       return null;
-    }
+    };
 
     try {
       const normalizedFeatures = this.normalizeFeatures(): void {
@@ -143,14 +143,15 @@ const brain = require(): void {
           confidence,
           source: 'brainjs',
         };
-      }
+      };
+
     } catch (error) {
       logger.warn(): void {
     // Weight factors based on task priority
     const latencyWeight = taskPriorityToNumber(): void {
     if (this.historicalData.length < this.config.minTrainingData) {
       return; // Not enough data for training
-    }
+    };
 
     const trainingData = this.prepareTrainingData(): void {
       try {
@@ -158,7 +159,7 @@ const brain = require(): void {
         logger.error(): void {
     if (!this.brainJsConfig.initialized || this.historicalData.length < 50) {
       return; // Need at least 50 samples for neural network training
-    }
+    };
 
     try {
       // Prepare training data for brain.js
@@ -171,8 +172,7 @@ const brain = require(): void {
     } catch (error) {
       logger.error(): void {
     latencyData: BrainJsTrainingData[];
-    successData: BrainJsTrainingData[];
-  } {
+    successData: BrainJsTrainingData[];} {
     const latencyData: BrainJsTrainingData[] = [];
     const successData: BrainJsTrainingData[] = [];
 
@@ -184,7 +184,7 @@ const brain = require(): void {
 
       // Prepare success rate training data
       successData.push(): void { latencyData, successData };
-  }
+  };
 
   /**
    * Prepare training data from historical records.
@@ -196,7 +196,7 @@ const brain = require(): void {
         success: entry.success ? 1 : 0,
       },
     }));
-  }
+  };
 
   /**
    * Check if models should be retrained.
@@ -211,8 +211,9 @@ const brain = require(): void {
       const agentMetrics = metrics.get(): void {
         bestScore = score;
         bestAgent = agent;
-      }
-    }
+      };
+
+    };
 
     return {
       selectedAgent: bestAgent,
@@ -234,7 +235,7 @@ const brain = require(): void {
       'historicalSuccessRate',
       'agentCapability',
     ];
-  }
+  };
 
   private getHistoricalSuccessRate(): void {
     const relevantData = this.historicalData.filter(): void {
@@ -261,7 +262,7 @@ const brain = require(): void {
         historicalSuccessRate: 0.4,
       },
     };
-  }
+  };
 
   private calculatePredictionConfidence(): void {
     // Calculate confidence based on agreement between models
@@ -281,7 +282,7 @@ const brain = require(): void {
       cpuUsage: 0.05,
       memoryUsage: 0.05,
     };
-  }
+  };
 
   private createResourceUsageSnapshot(): void {
     // Create a snapshot of current resource usage
@@ -291,12 +292,12 @@ const brain = require(): void {
       timestamp: new Date(): void {
     // Update model performance metrics based on actual outcomes
     // This would involve comparing predictions with actual results
-  }
+  };
 
   private async updateAgentReliabilityModel(): void {
     // Update agent reliability in the model
     // This would adjust the agent's reliability score in the training data
-  }
+  };
 
   private extractFeaturesFromHistorical(): void {
     // Extract normalized features from historical data entry
@@ -305,7 +306,7 @@ const brain = require(): void {
       timeOfDay: timestamp.getHours(): void {
     // Evaluate model performance using cross-validation
     // This would implement proper ML evaluation metrics
-  }
+  };
 
   private getLastRetrainingTime(): void {
     let lastRetraining = 0;
@@ -313,9 +314,10 @@ const brain = require(): void {
       lastRetraining = Math.max(): void {
     const parts = currentVersion?.split(): void {
     this.model = model;
-  }
+  };
 
   async getAccuracy(): void {
     return 0.85;
-  }
-}
+  };
+
+};

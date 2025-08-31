@@ -14,7 +14,8 @@ export class ResourceMonitor implements ResourceMonitor {
       this.collectMetrics(): void {
     this.monitoringAgents.delete(): void {
       clearInterval(): void {
-    return this.metricsCache.get(): void { start: Date; end: Date }
+    return this.metricsCache.get(): void { start: Date; end: Date };
+
   ): LoadMetrics[] {
     // In a real implementation, this would query a time-series database
     const current = this.metricsCache.get(): void {
@@ -34,5 +35,6 @@ export class ResourceMonitor implements ResourceMonitor {
     };
 
     this.metricsCache.set(agentId, metrics);
-  }
-}
+  };
+
+};

@@ -19,29 +19,27 @@ const logger = getLogger(): void {
   readonly assignee?: string;
   readonly priority: 'low' | 'medium' | 'high' | 'critical';
   readonly dueDate?: Date;
-}
+};
 
 export interface TaskUpdatedEvent extends BaseTaskMasterEvent {
   readonly type: 'task: updated';
   readonly taskId: string;
   readonly changes: Record<string, any>;
-  readonly updatedBy: string;
-}
+  readonly updatedBy: string;};
 
 export interface TaskDeletedEvent extends BaseTaskMasterEvent {
   readonly type: 'task: deleted';
   readonly taskId: string;
   readonly deletedBy: string;
   readonly reason?: string;
-}
+};
 
 export interface TaskStateChangedEvent extends BaseTaskMasterEvent {
   readonly type: 'task: state_changed';
   readonly taskId: string;
   readonly fromState: string;
   readonly toState: string;
-  readonly triggeredBy: string;
-}
+  readonly triggeredBy: string;};
 
 export interface TaskAssignedEvent extends BaseTaskMasterEvent {
   readonly type: 'task: assigned';
@@ -49,15 +47,14 @@ export interface TaskAssignedEvent extends BaseTaskMasterEvent {
   readonly assignee: string;
   readonly assignedBy: string;
   readonly previousAssignee?: string;
-}
+};
 
 export interface TaskCompletedEvent extends BaseTaskMasterEvent {
   readonly type: 'task: completed';
   readonly taskId: string;
   readonly completedBy: string;
   readonly completionNotes?: string;
-  readonly duration: number; // milliseconds
-}
+  readonly duration: number; // milliseconds};
 
 export interface TaskBlockedEvent extends BaseTaskMasterEvent {
   readonly type: 'task: blocked';
@@ -65,14 +62,14 @@ export interface TaskBlockedEvent extends BaseTaskMasterEvent {
   readonly blockerReason: string;
   readonly blockedBy: string;
   readonly estimatedResolutionTime?: number;
-}
+};
 
 export interface TaskUnblockedEvent extends BaseTaskMasterEvent {
   readonly type: 'task: unblocked';
   readonly taskId: string;
   readonly unblockedBy: string;
   readonly resolutionNotes?: string;
-}
+};
 
 /**
  * Workflow event types
@@ -83,35 +80,32 @@ export interface WorkflowStartedEvent extends BaseTaskMasterEvent {
   readonly workflowType: string;
   readonly initiatedBy: string;
   readonly parameters: Record<string, any>;
-}
+};
 
 export interface WorkflowCompletedEvent extends BaseTaskMasterEvent {
   readonly type: 'workflow: completed';
   readonly workflowId: string;
   readonly duration: number; // milliseconds
   readonly results: Record<string, any>;
-}
+};
 
 export interface WorkflowFailedEvent extends BaseTaskMasterEvent {
   readonly type: 'workflow: failed';
   readonly workflowId: string;
   readonly error: string;
   readonly failureStage: string;
-  readonly retryable: boolean;
-}
+  readonly retryable: boolean;};
 
 export interface WorkflowPausedEvent extends BaseTaskMasterEvent {
   readonly type: 'workflow: paused';
   readonly workflowId: string;
   readonly pausedBy: string;
-  readonly reason: string;
-}
+  readonly reason: string;};
 
 export interface WorkflowResumedEvent extends BaseTaskMasterEvent {
   readonly type: 'workflow: resumed';
   readonly workflowId: string;
-  readonly resumedBy: string;
-}
+  readonly resumedBy: string;};
 
 /**
  * Approval event types
@@ -123,35 +117,32 @@ export interface ApprovalRequestedEvent extends BaseTaskMasterEvent {
   readonly approvers: string[];
   readonly dueDate?: Date;
   readonly context: Record<string, any>;
-}
+};
 
 export interface ApprovalGrantedEvent extends BaseTaskMasterEvent {
   readonly type: 'approval: granted';
   readonly approvalId: string;
   readonly approvedBy: string;
   readonly comments?: string;
-}
+};
 
 export interface ApprovalRejectedEvent extends BaseTaskMasterEvent {
   readonly type: 'approval: rejected';
   readonly approvalId: string;
   readonly rejectedBy: string;
-  readonly reason: string;
-}
+  readonly reason: string;};
 
 export interface ApprovalTimeoutEvent extends BaseTaskMasterEvent {
   readonly type: 'approval: timeout';
   readonly approvalId: string;
   readonly timeoutDuration: number; // milliseconds
-  readonly nextAction: 'escalate' | 'auto_approve' | 'auto_reject';
-}
+  readonly nextAction: 'escalate' | 'auto_approve' | 'auto_reject';};
 
 export interface ApprovalEscalatedEvent extends BaseTaskMasterEvent {
   readonly type: 'approval: escalated';
   readonly approvalId: string;
   readonly escalatedTo: string[];
-  readonly escalationReason: string;
-}
+  readonly escalationReason: string;};
 
 /**
  * Performance monitoring event types
@@ -161,16 +152,14 @@ export interface PerformanceThresholdExceededEvent extends BaseTaskMasterEvent {
   readonly metric: string;
   readonly threshold: number;
   readonly actualValue: number;
-  readonly severity: 'warning' | 'critical';
-}
+  readonly severity: 'warning' | 'critical';};
 
 export interface WIPViolationEvent extends BaseTaskMasterEvent {
   readonly type: 'wip: violation';
   readonly teamId: string;
   readonly currentWIP: number;
   readonly maxWIP: number;
-  readonly severity: 'minor' | 'major' | 'critical';
-}
+  readonly severity: 'minor' | 'major' | 'critical';};
 
 /**
  * Comprehensive TaskMaster event map for type-safe event handling
@@ -204,8 +193,7 @@ export interface TaskMasterEventMap {
   'performance: threshold_exceeded': (
     event: PerformanceThresholdExceededEvent
   ) => void;
-  'wip: violation': (event: WIPViolationEvent) => void;
-}
+  'wip: violation': (event: WIPViolationEvent) => void;};
 
 /**
  * Union type of all TaskMaster events
@@ -264,10 +252,9 @@ export function createBaseEvent(): void {
     case 'approval: escalated':
       return EventSeverity.ERROR;
 
-    default:
-      return EventSeverity.INFO;
-  }
-}
+    default: return EventSeverity.INFO;};
+
+};
 
 export default {
   createBaseEvent,

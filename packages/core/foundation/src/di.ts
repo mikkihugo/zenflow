@@ -73,8 +73,8 @@ export type LifecycleCompat = 'singleton' | 'transient' | 'scoped';
  * @example
  * ```typescript`
  * const options:ServiceRegistrationOptions = {
- *   lifetime: 'singleton', *   capabilities:['database',    'auth'],
- *   tags:['critical',    'external'],
+ *   lifetime: 'singleton', *   capabilities: ['database',    'auth'],
+ *   tags: ['critical',    'external'],
  *   healthCheck:() => database.isConnected()
  *};
  * ```

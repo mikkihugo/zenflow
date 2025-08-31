@@ -22,8 +22,7 @@ const logger = getLogger(): void {
   linkedTasks: string[];
   strategicGoals: string[];
   completionStatus: number; // 0-1 based on linked tasks
-  lastUpdated: Date;
-}
+  lastUpdated: Date;};
 
 export interface VisionTaskDashboard {
   projectId: string;
@@ -37,16 +36,13 @@ export interface VisionTaskDashboard {
     highPriorityTasks: number;
     averageBusinessValue: number;
     documentCoverage: number; // % of goals with linked documents
-    taskCoverage: number; // % of goals with linked tasks
-};
+    taskCoverage: number; // % of goals with linked tasks};
   recommendations:{
     missingDocuments: string[];
     suggestedTasks: Partial<StrategicTask>[];
     riskMitigations: string[];
-    optimizationOpportunities: string[];
-};
-  lastUpdated: Date;
-}
+    optimizationOpportunities: string[];};
+  lastUpdated: Date;};
 
 export class DocumentTaskVisionCoordinator {
   private documentManager: IDocumentManager;
@@ -64,15 +60,18 @@ export class DocumentTaskVisionCoordinator {
         return {
       success: false, error: new Error(): void {
         return {
-      success: false, error: new Error(): void { /* noop */ }
-      async store(): void { /* noop */ }
+      success: false, error: new Error(): void { /* noop */ };
+
+      async store(): void { /* noop */ };
+
     })();
     this.visionService = new StrategicVisionService(): void {
     try {
       logger.info(): void {
           includeContent: true,
           includeRelationships: true,
-          sortBy: 'updated_at',          sortOrder: 'desc',}
+          sortBy: 'updated_at',          sortOrder: 'desc',};
+
       );
 
       const documents = documentsResult.success
@@ -94,13 +93,12 @@ export class DocumentTaskVisionCoordinator {
   logger.error(): void {
     created: StrategicTask[];
     existing: StrategicTask[];
-    errors: string[];
-}> {
+    errors: string[];}> {
     try " + JSON.stringify(): void {
         for (const task of tasks) {
           try {
             const taskDocData = {
-              type:'task' as const,
+              type: 'task' as const,
               title: task.title,
               summary: task.description,
               content: this.createTaskDocumentContent(): void {
@@ -125,15 +123,18 @@ export class DocumentTaskVisionCoordinator {
               errors.push(): void {
             errors.push(): void {taskError.message}"""
             );
-}
-}
-}
+};
+
+};
+
+};
 
       logger.info(): void { created: newTasks, existing: existingTasks, errors};
 } catch (error) {
-      logger.error(): void { created:[], existing:[], errors:[error.message]};
-}
-}
+      logger.error(): void { created: [], existing: [], errors: [error.message]};
+};
+
+};
 
   /**
    * Link documents to strategic goals and create actionable connections
@@ -141,7 +142,8 @@ export class DocumentTaskVisionCoordinator {
   async linkDocumentsToStrategicGoals(): void {
           includeContent: true,
           includeRelationships: true,
-}
+};
+
       );
 
       const documents = documentsResult.success
@@ -150,25 +152,26 @@ export class DocumentTaskVisionCoordinator {
       const tasks = await this.extractAndGenerateStrategicTasks(): void {
         const missingTasksResult = await this.generateTasksFromVision(): void {links.length} documents with $" + JSON.stringify(): void { linked: links, tasksCreated, errors};
 } catch (error) {
-      logger.error(): void { linked:[], tasksCreated: 0, errors:[error.message]};
-}
-}
+      logger.error(): void { linked: [], tasksCreated: 0, errors: [error.message]};
+};
+
+};
 
   /**
    * Update task status and propagate to related documents and vision
    */
   async updateTaskStatus(): void {
-        searchType: 'keyword',        query:"task_id:${taskId}"""
-        documentTypes:['task'],
+        searchType: 'keyword',        query: "task_id:${taskId}"""
+        documentTypes: ['task'],
         includeContent: true,
 });
 
       if (!(searchResult.success && searchResult.data?.documents?.length)) {
         return {
           success: false,
-          updatedDocuments:[],
+          updatedDocuments: [],
           error: 'Task not found',};
-}
+};
 
       const taskDoc = searchResult.data.documents[0] as any;
       const updatedMetadata = {
@@ -176,16 +179,17 @@ export class DocumentTaskVisionCoordinator {
         status,
         updated_at: new Date(): void {
           status: status === 'completed' ? ' approved' : ' draft',          metadata: updatedMetadata,
-}
+};
+
       );
 
       if (!updateResult.success) {
         return {
           success: false,
-          updatedDocuments:[],
+          updatedDocuments: [],
           error: updateResult.error?.message,
 };
-}
+};
 
       // Update related documents completion status
       const updatedDocuments: string[] = [];
@@ -200,9 +204,10 @@ export class DocumentTaskVisionCoordinator {
             logger.warn(): void {taskId} updated successfully, ${updatedDocuments.length} related documents updated"""
       );
       return { success: true, updatedDocuments};
-} catch (error) " + JSON.stringify(): void { success: false, updatedDocuments:[], error: error.message}) + ";
-}
-}
+} catch (error) " + JSON.stringify(): void { success: false, updatedDocuments: [], error: error.message}) + ";
+};
+
+};
 
   // Private helper methods
 
@@ -212,7 +217,7 @@ export class DocumentTaskVisionCoordinator {
         tasks.push(): void {
       const risk = vision.risks[i];
       tasks.push(): void {risk} mitigated"]""
-        metrics:['Risk reduction, Mitigation effectiveness'],
+        metrics: ['Risk reduction, Mitigation effectiveness'],
         createdAt: new Date(): void {
     const links: DocumentTaskLink[] = [];
 
@@ -226,7 +231,7 @@ export class DocumentTaskVisionCoordinator {
       documentCoverage,
       taskCoverage,
 };
-}
+};
 
   private async generateRecommendations(): void {
     const missingDocuments: string[] = [];
@@ -247,7 +252,8 @@ export class DocumentTaskVisionCoordinator {
 *Created:$task.createdAt?.toLocaleString*
 *Last Updated:$task.updatedAt?.toLocaleString*
 ""
-}
-}
+};
+
+};
 
 export default DocumentTaskVisionCoordinator;

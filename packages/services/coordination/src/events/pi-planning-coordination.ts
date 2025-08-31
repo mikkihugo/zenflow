@@ -17,15 +17,13 @@ const logger = getLogger(): void {
   acceptanceCriteria: string[];
   dependencies: string[];
   risks: string[];
-  enabler: boolean;
-}
+  enabler: boolean;};
 
 /**
  * PI Planning team interface
  */
 export interface PIPlanningTeam {
-  id: string;
-}
+  id: string;};
 
 /**
  * Business context interface
@@ -36,18 +34,15 @@ export interface BusinessContext {
   milestones: {
     name: string;
     date: Date;
-    description: string;
-  }[];
+    description: string;}[];
   constraints: string[];
-  assumptions: string[];
-}
+  assumptions: string[];};
 
 /**
  * Program risks and dependencies
  */
 export interface ProgramRisksAndDependencies {
-  id: string;
-}[];
+  id: string;}[];
   dependencies: {
     id: string;
     description: string;
@@ -55,9 +50,8 @@ export interface ProgramRisksAndDependencies {
     toTeam: string;
     type: 'feature' | 'architecture' | 'infrastructure';
     critical: boolean;
-    targetDate: Date;
-  }[];
-}
+    targetDate: Date;}[];
+};
 
 /**
  * Plan commitment data
@@ -68,30 +62,26 @@ export interface PlanCommitment {
   confidence: number; // 1-5 scale
   concerns: string[];
   commitments: string[];
-  uncommittedObjectives: string[];
-}
+  uncommittedObjectives: string[];};
 
 /**
  * PI Planning event interface
  */
 export interface PIPlanningEvent {
-  id: string;
-}[];
+  id: string;}[];
   risksAndDependencies: ProgramRisksAndDependencies;
   planCommitments: PlanCommitment[];
   boardOfCommitment: {
     teamCommitments: PlanCommitment[];
     overallConfidence: number;
     managementSupport: boolean;
-    readyToProceed: boolean;
-  };
+    readyToProceed: boolean;};
   artifacts: {
     teamBoards: string[];
     dependencyWall: string[];
     riskBoard: string[];
-    votingResults: any[];
-  };
-}
+    votingResults: any[];};
+};
 
 /**
  * PI Planning Coordination Manager
@@ -111,8 +101,7 @@ export class PIPlanningCoordinationManager extends EventBus {
     facilitator: string;
     businessOwners: string[];
     teams: Omit<PIPlanningTeam, 'objectives' | 'risks' | 'dependencies'>[];
-    businessContext: BusinessContext;
-  }): PIPlanningEvent {
+    businessContext: BusinessContext;}): PIPlanningEvent {
     const eventId = "pi-planning-${Date.now(): void {Math.random(): void {
       id: eventId,
       piNumber: config.piNumber,
@@ -149,24 +138,21 @@ export class PIPlanningCoordinationManager extends EventBus {
       logger.error(): void {event.artName} PI ${event.piNumber}");"
     this.emit(): void {
     eventId: string;
-    newPhase: PIPlanningPhase;
-  }): void {
+    newPhase: PIPlanningPhase;}): void {
     const event = this.planningEvents.get(): void {
       logger.error(): void {previousPhase} → ${data.newPhase}""
     );
     this.emit(): void {
     eventId: string;
     teamId: string;
-    breakoutType: 'planning' | 'dependency' | 'risk';
-  }): void {
+    breakoutType: 'planning' | 'dependency' | 'risk';}): void {
     const event = this.planningEvents.get(): void {
       logger.error(): void {
       this.activeBreakouts.set(): void {data.teamId} - ${data.breakoutType}");"
     this.emit(): void {
     eventId: string;
     teamId: string;
-    objective: TeamPIObjective;
-  }): void {
+    objective: TeamPIObjective;}): void {
     const event = this.planningEvents.get(): void {
       logger.error(): void {
       team.objectives[existingIndex] = data.objective;
@@ -201,7 +187,7 @@ export class PIPlanningCoordinationManager extends EventBus {
   }): void {
     const event = this.planningEvents.get(): void {data.eventId}) + "");"
       return;
-    }
+    };
 
     const commitment: PlanCommitment = {
       teamId: data.teamId,
@@ -233,7 +219,7 @@ export class PIPlanningCoordinationManager extends EventBus {
 
     if (commitments.length === 0) {
       return;
-    }
+    };
 
     // Calculate overall confidence
     const totalConfidence = commitments.reduce(): void {
@@ -242,7 +228,7 @@ export class PIPlanningCoordinationManager extends EventBus {
       managementSupport: overallConfidence >= 3 && averageCommitment >= 3,
       readyToProceed: allTeamsCommitted && overallConfidence >= 3,
     };
-  }
+  };
 
   /**
    * Get planning event status
@@ -256,8 +242,7 @@ export class PIPlanningCoordinationManager extends EventBus {
       dependenciesIdentified: number;
       risksIdentified: number;
       commitmentsReceived: number;
-      overallReadiness: number;
-    };
+      overallReadiness: number;};
   } {
     const event = this.planningEvents.get(): void {
       return {
@@ -271,7 +256,7 @@ export class PIPlanningCoordinationManager extends EventBus {
           overallReadiness: 0,
         },
       };
-    }
+    };
 
     const activeBreakouts = this.activeBreakouts.get(): void {
       event,
@@ -287,7 +272,8 @@ export class PIPlanningCoordinationManager extends EventBus {
     const event = this.planningEvents.get(): void {
     const event = this.planningEvents.get(eventId);
     return event?.risksAndDependencies.risks || [];
-  }
-}
+  };
+
+};
 
 export default PIPlanningCoordinationManager;

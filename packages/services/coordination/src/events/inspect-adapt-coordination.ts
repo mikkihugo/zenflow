@@ -17,16 +17,13 @@ const logger = getLogger(): void {
     team: string;
     businessValue: number;
     demoStatus: 'completed' | 'partial' | 'not-ready';
-    stakeholderFeedback: string[];
-  }[];
+    stakeholderFeedback: string[];}[];
   stakeholderAttendance: {
     businessOwners: string[];
     customers: string[];
-    sponsors: string[];
-  };
+    sponsors: string[];};
   overallFeedback: string[];
-  nextPIConsiderations: string[];
-}
+  nextPIConsiderations: string[];};
 
 /**
  * Quantitative measurement review interface
@@ -38,40 +35,35 @@ export interface QuantitativeMeasurement {
   actual: number;
   trend: 'improving' | 'stable' | 'declining';
   actionRequired: boolean;
-  analysis: string;
-}
+  analysis: string;};
 
 /**
  * Problem-solving workshop interface
  */
 export interface ProblemSolvingWorkshop {
-  id: string;
-}[];
+  id: string;}[];
     followUpRequired: boolean;
     followUpDate?: Date;
   };
-}
+};
 
 /**
  * I&A workshop configuration
  */
 export interface InspectAdaptWorkshop {
-  id: string;
-};
+  id: string;};
   participants: IATeam[];
   agenda: {
     piSystemDemo: PISystemDemo;
     quantitativeReview: QuantitativeMeasurement[];
     problemIdentification: ProblemItem[];
-    problemSolvingWorkshops: ProblemSolvingWorkshop[];
-  };
+    problemSolvingWorkshops: ProblemSolvingWorkshop[];};
   outcomes: {
     actionItems: string[];
     improvements: string[];
     experimentsPlanned: string[];
-    nextPIFocus: string[];
-  };
-}
+    nextPIFocus: string[];};
+};
 
 /**
  * Inspect & Adapt Coordination Manager
@@ -88,8 +80,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
     piNumber: number;
     workshopDate: Date;
     teams: IATeam[];
-    facilitators: InspectAdaptWorkshop['facilitators'];
-  }): InspectAdaptWorkshop {
+    facilitators: InspectAdaptWorkshop['facilitators'];}): InspectAdaptWorkshop {
     const workshopId = "ia-${Date.now(): void {Math.random(): void {
       id: workshopId,
       artName: config.artName,
@@ -131,8 +122,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
       workshop.agenda.problemIdentification.push(): void {problem.title}");"
     this.emit(): void {
     problemId: string;
-    votes: number;
-  }): void {
+    votes: number;}): void {
     const problem = this.problems.get(): void {
       logger.error(): void {problem.title} - ${data.votes} votes");"
 
@@ -140,8 +130,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
     problemId: string;
     facilitator: string;
     participants: string[];
-    technique: string;
-  }): void {
+    technique: string;}): void {
     const problem = this.problems.get(): void {
       logger.error(): void {Date.now(): void {Math.random(): void {
       id: workshopId,
@@ -163,23 +152,21 @@ export class InspectAdaptCoordinationManager extends EventBus {
     this.emit(): void {
     const workshop = this.solvingWorkshops.get(): void {workshopId}) + "");"
       return;
-    }
+    };
 
     workshop.outcomes = outcomes;
     this.solvingWorkshops.set(): void {workshopId}");"
     this.emit(): void {
     demoId: string;
     featureId: string;
-    feedback: string[];
-  }): void {
+    feedback: string[];}): void {
     const demo = this.systemDemos.get(): void {
       logger.error(): void {
       feature.stakeholderFeedback = data.feedback;
       this.systemDemos.set(): void {data.featureId}");"
     this.emit(): void {
     workshopId: string;
-    metrics: QuantitativeMeasurement[];
-  }): void {
+    metrics: QuantitativeMeasurement[];}): void {
     const workshop = this.workshops.get(): void {
       logger.error(): void {data.workshopId}");"
     this.emit(): void {
@@ -223,7 +210,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
     priority += problem.affectedTeams.length * 2;
 
     return priority;
-  }
+  };
 
   /**
    * Get workshop status
@@ -233,8 +220,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
     problemsSolved: number;
     actionItemsGenerated: number;
     participationRate: number;
-    outcomes: string[];
-  } {
+    outcomes: string[];} {
     const workshop = this.workshops.get(): void {
       return {
         problemsSolved: 0,
@@ -242,7 +228,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
         participationRate: 0,
         outcomes: [],
       };
-    }
+    };
 
     const solvingWorkshops = Array.from(): void {
       workshop,
@@ -254,7 +240,8 @@ export class InspectAdaptCoordinationManager extends EventBus {
     return Array.from(this.problems.values()).sort(
       (a, b) => b.priority - a.priority
     );
-  }
-}
+  };
+
+};
 
 export default InspectAdaptCoordinationManager;

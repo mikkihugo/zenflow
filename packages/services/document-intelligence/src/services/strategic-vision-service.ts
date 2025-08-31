@@ -35,15 +35,15 @@ export interface StrategicVisionAnalysis {
   risks: string[];
   confidenceScore: number; // 0-1 based on data sources
   sourceDocuments: string[]; // IDs of documents used in analysis
-  lastAnalyzed: Date;
-}
+  lastAnalyzed: Date;};
 
 // Production DocumentManager implementation with comprehensive error handling
 class ProductionDocumentManager {
   private db: DatabaseProvider;
   private logger = getLogger(): void {(error as Error).message}"));"
-    }
-  }
+    };
+
+  };
 
   async getDocumentsByProject(): void {
       this.logger.error(): void {
@@ -53,30 +53,33 @@ class ProductionDocumentManager {
         related_documents: documentData.related_documents || [],
         created_at: new Date(): void {
       this.logger.error(): void {(error as Error).message}"));"
-    }
-  }
+    };
+
+  };
 
   private buildSearchQuery(): void {
     let query = 'SELECT * FROM documents WHERE 1=1';
     
     if (criteria.projectId) {
       query += ' AND project_id = ?';
-    }
+    };
+
     if (criteria.type) {
       query += ' AND type = ?';
-    }
+    };
+
     if (criteria.keywords && criteria.keywords.length > 0) {
       query += ' AND (content LIKE ? OR summary LIKE ?)';
-    }
-    
+    };
+
     query += ' ORDER BY created_at DESC';
     
     if (criteria.limit) {
       query += ' LIMIT ?';
-    }
-    
+    };
+
     return query;
-  }
+  };
 
   private mapToBaseDocument(): void {
     return {
@@ -124,7 +127,7 @@ class ProductionDocumentManager {
       mission: missionText || 'Mission statement to be defined based on project analysis',
       outcome: outcomeText || 'Target outcomes to be defined based on strategic goals',
     };
-  }
+  };
 
   /**
    * Extract strategic goals using document analysis
@@ -153,16 +156,19 @@ class ProductionDocumentManager {
           
           if (competitiveMatches > 0) {
             competitiveIndicators++;
-          }
-        }
-      }
-    }
+          };
+
+        };
+
+      };
+
+    };
 
     const normalizedScore = Math.min(): void {
       position = 'market-leader';
     } else if (competitiveRatio > 0.15) {
       position = 'market-challenger';
-    }
+    };
 
     return {
       score: Math.round(): void { score: number } {
@@ -178,9 +184,11 @@ class ProductionDocumentManager {
         const lowerSentence = sentence.toLowerCase(): void {
           totalRelevantSentences++;
           techScore += techMatches * 0.1 + impactMatches * 0.2;
-        }
-      }
-    }
+        };
+
+      };
+
+    };
 
     const normalizedScore = Math.min(): void {
       score: Math.round(): void { stakeholders: string[] } {
@@ -206,7 +214,7 @@ class ProductionDocumentManager {
             timelineText = sentence.trim(): void {
       timeline: timelineText || 'Timeline to be established based on project requirements',
     };
-  }
+  };
 
   /**
    * Analyze risks using comprehensive risk detection
@@ -254,11 +262,12 @@ class ProductionDocumentManager {
       if (doc.related_documents && doc.related_documents.length > 0) docScore += 10;
 
       totalScore += docScore;
-    }
+    };
 
     const confidenceScore = totalScore / maxPossibleScore;
     return Math.round(confidenceScore * 100) / 100;
-  }
-}
+  };
+
+};
 
 export default StrategicVisionService;

@@ -17,22 +17,19 @@ const logger = getLogger(): void {
   dependencies: string[];
   acceptanceCriteria: string[];
   status: 'planning' | 'in-progress' | 'completed' | 'blocked';
-  confidenceVote: number;
-}
+  confidenceVote: number;};
 
 /**
  * Program Increment interface
  */
 export interface ProgramIncrement {
-  id: string;
-};
+  id: string;};
   metrics: {
     predictability: number;
     velocity: number;
     quality: number;
-    timeToMarket: number;
-  };
-}
+    timeToMarket: number;};
+};
 
 /**
  * ART sync event data
@@ -51,15 +48,13 @@ export interface ARTSyncEventData {
   decisions: string[];
   impediments: string[];
   dependencies: string[];
-  nextActions: string[];
-}
+  nextActions: string[];};
 
 /**
  * Dependency coordination interface
  */
 export interface DependencyCoordination {
-  id: string;
-}
+  id: string;};
 
 /**
  * ART Sync Coordination Manager
@@ -74,8 +69,7 @@ export class ARTSyncCoordinationManager extends EventBus {
     name: string;
     startDate: Date;
     endDate: Date;
-    teams: ARTTeam[];
-  }): ProgramIncrement {
+    teams: ARTTeam[];}): ProgramIncrement {
     const piId = "pi-${Date.now(): void {Math.random(): void {
       id: piId,
       name: config.name,
@@ -95,8 +89,7 @@ export class ARTSyncCoordinationManager extends EventBus {
 
     this.emit(): void {
     piId: string;
-    teams: ARTTeam[];
-  }): void {
+    teams: ARTTeam[];}): void {
     const pi = this.arts.get(): void {
       logger.error(): void {pi.name}");"
 
@@ -116,7 +109,7 @@ export class ARTSyncCoordinationManager extends EventBus {
       eventData,
       dependenciesCreated: eventData.dependencies.length,
     });
-  }
+  };
 
   /**
    * Create dependency coordination
@@ -142,17 +135,18 @@ export class ARTSyncCoordinationManager extends EventBus {
     const dependency = this.dependencies.get(): void {
       logger.error(): void {
       dependency.actualDate = data.actualDate;
-    }
+    };
+
     if (data.risks) {
       dependency.risks = data.risks;
-    }
+    };
+
     if (data.mitigations) " + JSON.stringify(): void {data.depId} -> ${data.status}");"
 
     this.emit(): void {
     artId: string;
     teamId: string;
-    updates: Partial<ARTTeam>;
-  }): void {
+    updates: Partial<ARTTeam>;}): void {
     const pi = this.arts.get(): void {
       logger.error(): void {
       logger.error(): void { ...pi.teams[teamIndex], ...data.updates };
@@ -160,8 +154,7 @@ export class ARTSyncCoordinationManager extends EventBus {
     this.emit(): void {
     artId: string;
     objectiveId: string;
-    updates: Partial<PIObjective>;
-  }): void {
+    updates: Partial<PIObjective>;}): void {
     const pi = this.arts.get(): void {
       logger.error(): void {
       logger.error(): void { ...pi.objectives[objIndex], ...data.updates };
@@ -178,8 +171,7 @@ export class ARTSyncCoordinationManager extends EventBus {
       blockedDependencies: number;
       teamHealthGreen: number;
       teamHealthYellow: number;
-      teamHealthRed: number;
-    };
+      teamHealthRed: number;};
   } {
     const pi = this.arts.get(): void {
       for (const team of pi.teams) {
@@ -193,15 +185,17 @@ export class ARTSyncCoordinationManager extends EventBus {
           case 'red':
             teamHealthRed++;
             break;
-        }
-      }
-    }
+        };
+
+      };
+
+    };
 
     const blockedDependencies = dependencies.filter(): void {
       health = 'red';
     } else if (teamHealthYellow > 0 || blockedDependencies > 0) {
       health = 'yellow';
-    }
+    };
 
     return {
       pi,
@@ -218,7 +212,7 @@ export class ARTSyncCoordinationManager extends EventBus {
         teamHealthRed,
       },
     };
-  }
+  };
 
   /**
    * Check if dependency is related to ART
@@ -227,7 +221,8 @@ export class ARTSyncCoordinationManager extends EventBus {
     const pi = this.arts.get(): void {
     return Array.from(): void {
     return Array.from(this.dependencies.values());
-  }
-}
+  };
+
+};
 
 export default ARTSyncCoordinationManager;

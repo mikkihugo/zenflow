@@ -17,8 +17,7 @@ const logger = getLogger(): void {
     customers: string[];
     keyStakeholders: string[];
     systemArchitects: string[];
-    allTeamMembers: string[];
-  };
+    allTeamMembers: string[];};
 
   // Demo configuration
   settings: {
@@ -26,17 +25,15 @@ const logger = getLogger(): void {
     enableLiveFeedback: boolean;
     requireFormalApproval: boolean;
     feedbackCollectionMethod: 'real_time' | 'post_demo' | 'hybrid';
-    businessValueValidation: boolean;
-  };
+    businessValueValidation: boolean;};
 
   // Success criteria
   successCriteria: {
     piObjectiveProgress: string[];
     businessValueTargets: string[];
     stakeholderSatisfaction: number; // 1-10 scale
-    technicalQualityGates: string[];
-  };
-}
+    technicalQualityGates: string[];};
+};
 
 /**
  * Individual team demonstration
@@ -51,8 +48,7 @@ export interface TeamDemonstration {
     overview: string;
     keyMessages: string[];
     demoFlow: DemoStep[];
-    timeAllocation: number; // minutes
-  };
+    timeAllocation: number; // minutes};
 
   // Preparation status
   preparation: {
@@ -68,17 +64,15 @@ export interface TeamDemonstration {
   presenters: {
     primary: string; // usually Product Owner
     technical: string; // usually tech lead or developer
-    backup: string;
-  };
+    backup: string;};
 
   // Demo artifacts
   artifacts: {
     screenshots: string[];
     demoVideos: string[];
     setupScripts: string[];
-    documentationLinks: string[];
-  };
-}
+    documentationLinks: string[];};
+};
 
 /**
  * Feature demonstration details
@@ -105,7 +99,7 @@ export interface FeatureDemo {
     costSavings?: number;
     revenueImpact?: number;
   };
-}
+};
 
 /**
  * Demo scenario details
@@ -124,8 +118,7 @@ export interface DemoScenario {
 
   // Technical details
   technicalHighlights: string[];
-  integrationPoints: string[];
-}
+  integrationPoints: string[];};
 
 /**
  * Individual demo step
@@ -141,22 +134,20 @@ export interface DemoStep {
   prerequisiteSteps?: string[];
   dataRequirements?: string[];
   environmentSettings?: Record<string, any>;
-}
+};
 
 /**
  * Real-time feedback during demo
  */
 export interface DemoFeedback {
-  id: string;
-};
+  id: string;};
 
   // Business context
   businessImpact: {
     affectedProcesses: string[];
     customerImpact: string;
     businessValue: number; // 1-10 rating
-    adoptionConcerns: string[];
-  };
+    adoptionConcerns: string[];};
 
   // Response and follow-up
   response: {
@@ -165,14 +156,13 @@ export interface DemoFeedback {
     targetResponseDate?: Date;
     actualResponse?: string;
     responseDate?: Date;
-    followUpActions: string[];
-  };
+    followUpActions: string[];};
 
   // Approval workflow integration
   triggersApproval: boolean;
   approvalGateId?: string;
   approvalRequired?: string[]; // roles/people who must respond
-}
+};
 
 /**
  * Demo outcomes and results
@@ -191,8 +181,7 @@ export interface DemoOutcome {
     objectiveId: string;
     progressPercentage: number;
     demonstratedCapabilities: string[];
-    remainingWork: string[];
-  }>;
+    remainingWork: string[];}>;
 
   // Feedback summary
   feedbackSummary: {
@@ -201,8 +190,7 @@ export interface DemoOutcome {
     concernsCount: number;
     suggestionsCount: number;
     approvalCount: number;
-    rejectionCount: number;
-  };
+    rejectionCount: number;};
 
   // Action items
   actionItems: Array<{
@@ -222,9 +210,8 @@ export interface DemoOutcome {
     nextDemoDate?: Date;
     iterationPlanning: string[];
     stakeholderFollowUp: string[];
-    businessApprovals: string[];
-  };
-}
+    businessApprovals: string[];};
+};
 
 // ============================================================================
 // SYSTEM DEMO COORDINATION SERVICE
@@ -247,7 +234,7 @@ export class SystemDemoCoordination {
       conflicts: readinessCheck.conflicts,
       recommendations: readinessCheck.recommendations,
     };
-  }
+  };
 
   /**
    * Collect real-time feedback during demo
@@ -258,7 +245,7 @@ export class SystemDemoCoordination {
       triggersAction,
       nextSteps,
     };
-  }
+  };
 
   /**
    * Complete demo and generate outcomes
@@ -271,7 +258,7 @@ export class SystemDemoCoordination {
     });
 
     return outcome;
-  }
+  };
 
   /**
    * Get demo status and metrics
@@ -284,8 +271,7 @@ export class SystemDemoCoordination {
       attendeeCount: number;
       feedbackCount: number;
       avgSatisfaction: number;
-      issueCount: number;
-    };
+      issueCount: number;};
   } {
     const demo = this.activeDemos.get(): void {
       attendeeCount: Object.values(): void {
@@ -297,15 +283,14 @@ export class SystemDemoCoordination {
       completedAt: new Date(): void {
         nextDemoDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 2 weeks from now
         iterationPlanning: ['Review feedback', 'Update iteration goals'],
-        stakeholderFollowUp: [
-          'Send demo recording',
+        stakeholderFollowUp: ['Send demo recording',
           'Schedule follow-up meetings',
         ],
-        businessApprovals:
-          feedbackSummary.approvalCount > 0 ? ['Process approvals'] : [],
+        businessApprovals: feedbackSummary.approvalCount > 0 ? ['Process approvals'] : [],
       },
     };
-  }
-}
+  };
+
+};
 
 export default SystemDemoCoordination;
