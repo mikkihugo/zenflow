@@ -10,22 +10,29 @@
  */
 export interface PerformanceTrackerConfig {
   /** Enable detailed performance tracking */
-  enableDetailedTracking: [];
-  private activeOperations: new Map();
-  private responseTimes: [];
-  private currentAlerts: [];
+  enableDetailedTracking: boolean;
+}
+
+export class PerformanceTrackerService {
+  private activeOperations: Map<string, number> = new Map();
+  private responseTimes: number[] = [];
+  private currentAlerts: string[] = [];
   private initialized = false;
-  constructor(
-    eventCoordinator:  {}
-  ) {
+  private eventCoordinator: any;
+  private config: PerformanceTrackerConfig;
+
+  constructor(eventCoordinator: any) {
     this.eventCoordinator = eventCoordinator;
     this.config = {
-      enableDetailedTracking: true;')      logger.info('PerformanceTrackerService initialized successfully');
-} catch (error) {
-    ')      logger.error('Failed to initialize PerformanceTrackerService:, error');`;
+      enableDetailedTracking: true,
+    };
+    try {
+      logger.info('PerformanceTrackerService initialized successfully');
+    } catch (error) {
+      logger.error('Failed to initialize PerformanceTrackerService:', error);
       throw error;
-}
-}
+    }
+  }
   /**
    * Start timing an operation
    */
