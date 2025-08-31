@@ -9,6 +9,7 @@ import { existsSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import Database from 'better-sqlite3';
 import { getLogger } from '../logger.js';
+import { createQueryErrorOptions } from '../utils/error-helpers.js';
 import {
   type ColumnSchema,
   ConnectionError,
@@ -210,12 +211,7 @@ export class SQLiteAdapter implements DatabaseConnection {
 
       throw new QueryError(
         `Query execution failed:${error instanceof Error ? error.message : String(error)}`,
-        {
-          query: sql,
-          params,
-          correlationId,
-          cause: error instanceof Error ? error : undefined,
-        }
+        createQueryErrorOptions(sql, params, correlationId, error) as any
       );
     } finally {
       this.releaseConnection(connection);
@@ -416,10 +412,13 @@ export class SQLiteAdapter implements DatabaseConnection {
       }
     }
 
+    const version = await this.getDatabaseVersion();
+    const lastMigration = await this.getLastMigrationVersion();
+
     return {
       tables: tableSchemas,
-      version: await this.getDatabaseVersion(),
-      lastMigration: await this.getLastMigrationVersion(),
+      version,
+      ...(lastMigration && { lastMigration }),
     };
   }
 
@@ -533,15 +532,18 @@ export class SQLiteAdapter implements DatabaseConnection {
         } else {
           const runResult = stmt.run(...paramArray);
           rows = [];
+          const insertId = runResult.lastInsertRowid 
+            ? (typeof runResult.lastInsertRowid === 'bigint'
+                ? Number(runResult.lastInsertRowid)
+                : runResult.lastInsertRowid as number)
+            : undefined;
+            
           resolve({
             rows: rows as T[],
             rowCount: 0,
             executionTimeMs: Date.now() - startTime,
             affectedRows: runResult.changes,
-            insertId:
-              typeof runResult.lastInsertRowid === 'bigint'
-                ? Number(runResult.lastInsertRowid)
-                : (runResult.lastInsertRowid as number | undefined),
+            ...(insertId !== undefined && { insertId }),
             fields: [],
           });
           return;
@@ -552,8 +554,6 @@ export class SQLiteAdapter implements DatabaseConnection {
           rowCount: rows ? rows.length : 0,
           executionTimeMs: Date.now() - startTime,
           fields: rows.length > 0 ? Object.keys(rows[0] || {}) : [],
-          affectedRows: undefined,
-          insertId: undefined,
         });
       } catch (error) {
         reject(error);
@@ -713,12 +713,7 @@ export class SQLiteAdapter implements DatabaseConnection {
 
     throw new QueryError(
       `Operation failed after ${retryPolicy.maxRetries} retries:${lastError?.message}`,
-      {
-        query: sql,
-        params,
-        correlationId,
-        cause: lastError,
-      }
+      createQueryErrorOptions(sql || '', params, correlationId, lastError) as any
     );
   }
 
@@ -957,15 +952,18 @@ class SQLiteTransactionConnection implements TransactionConnection {
             rows = stmt.all(...paramArray);
           } else {
             const runResult = stmt.run(...paramArray);
+            const insertId = runResult.lastInsertRowid 
+              ? (typeof runResult.lastInsertRowid === 'bigint'
+                  ? Number(runResult.lastInsertRowid)
+                  : runResult.lastInsertRowid as number)
+              : undefined;
+              
             resolve({
               rows: [] as T[],
               rowCount: 0,
               executionTimeMs: Date.now() - startTime,
               affectedRows: runResult.changes,
-              insertId:
-                typeof runResult.lastInsertRowid === 'bigint'
-                  ? Number(runResult.lastInsertRowid)
-                  : (runResult.lastInsertRowid as number | undefined),
+              ...(insertId !== undefined && { insertId }),
             });
             return;
           }
@@ -980,12 +978,7 @@ class SQLiteTransactionConnection implements TransactionConnection {
           reject(
             new QueryError(
               `Transaction query failed:${error instanceof Error ? error.message : String(error)}`,
-              {
-                query: sql,
-                params,
-                correlationId: this.correlationId,
-                cause: error instanceof Error ? error : undefined,
-              }
+              createQueryErrorOptions(sql, params, this.correlationId, error) as any
             )
           );
         }
@@ -1060,12 +1053,5 @@ class SQLiteTransactionConnection implements TransactionConnection {
         }
       });
     });
-  }
-
-  private normalizeParams(params?: QueryParams): unknown[] {
-    if (!params) return [];
-    if (Array.isArray(params)) return [...params];
-    if (params instanceof Map) return [...params.values()];
-    return Object.values(params);
   }
 }

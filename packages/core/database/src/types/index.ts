@@ -6,13 +6,13 @@
  */
 
 // Core Database Types
-export type DatabaseType = 'sqlite' | ' lancedb' | ' kuzu' | ' memory';
+export type DatabaseType = 'sqlite' | 'lancedb' | 'kuzu' | 'memory';
 export type StorageType =
   | 'keyValue'
-  | ' sql'
-  | ' vector'
-  | ' graph'
-  | ' hybrid';
+  | 'sql'
+  | 'vector'
+  | 'graph'
+  | 'hybrid';
 
 // Generic Query Parameters with strict typing
 export type QueryParams =
@@ -438,7 +438,7 @@ export interface VectorStorage {
     name: string,
     options?: {
       dimensions?: number;
-      metric?: 'l2' | ' cosine' | ' dot';
+      metric?: 'l2' | 'cosine' | 'dot';
       nprobes?: number;
     }
   ): Promise<void>;
@@ -476,7 +476,7 @@ export interface GraphStorage {
   // Traversal Operations
   getConnections(
     nodeId: string,
-    direction?: 'in' | ' out' | ' both',
+    direction?: 'in' | 'out' | 'both',
     edgeType?: string
   ): Promise<readonly GraphEdge[]>;
 
@@ -486,7 +486,7 @@ export interface GraphStorage {
     options?: {
       maxDepth?: number;
       edgeTypes?: readonly string[];
-      algorithm?: 'bfs' | ' dfs' | ' dijkstra' | ' astar';
+      algorithm?: 'bfs' | 'dfs' | 'dijkstra' | 'astar';
     }
   ): Promise<readonly GraphNode[]>;
 

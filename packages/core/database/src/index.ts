@@ -11,8 +11,8 @@
  * - Event-driven coordination and monitoring
  */
 
-// Import event system from foundation
-import { EventEmitter } from '@claude-zen/foundation';
+// Import event system 
+import { EventEmitter } from 'events';
 
 export { SQLiteAdapter } from './adapters/sqlite-adapter.js';
 export { LanceDBAdapter } from './adapters/lancedb-adapter.js';
@@ -98,7 +98,7 @@ export function createDatabaseAccess(config?: unknown) {
 
 // Event-driven database coordinator
 export class DatabaseEventCoordinator extends EventEmitter {
-  constructor(private config?: unknown) {
+  constructor(_config?: unknown) {
     super();
   }
   async connect(type: 'sqlite' | 'memory', database: string) {
@@ -137,8 +137,8 @@ export class DatabaseEventCoordinator extends EventEmitter {
 }
 // Provider class expected by infrastructure facade  
 export class DatabaseProvider extends DatabaseEventCoordinator {
-  constructor(config?: unknown) {
-    super(config);
+  constructor(_config?: unknown) {
+    super(_config);
   }
 
   createConnection(type: 'sqlite' | 'memory', database: string) {

@@ -103,8 +103,9 @@ export class KuzuAdapter implements DatabaseConnection {
       // Ensure database directory exists
       this.ensureDatabaseDirectory();
 
-      // Try to load Kuzu package
+      // Try to load Kuzu package (optional dependency)
       try {
+        // @ts-ignore - kuzu is optional
         const kuzuImport = await import('kuzu');
         this.kuzuModule = {
           Database: kuzuImport.Database as unknown as KuzuModule['Database'],
@@ -132,6 +133,10 @@ export class KuzuAdapter implements DatabaseConnection {
 
       // Create Kuzu database and connection
       try {
+        if (!this.kuzuModule) {
+          throw new Error('Kuzu module not available');
+        }
+        
         // Create Kuzu database with proper parameters
         // (databasePath, bufferManagerSize, enableCompression, readOnly, maxDBSize, autoCheckpoint, checkpointThreshold)
         this.database = new this.kuzuModule.Database(

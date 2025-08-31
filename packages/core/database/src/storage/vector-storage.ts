@@ -6,6 +6,7 @@
  */
 
 import { getLogger } from '../logger.js';
+import { createErrorOptions } from '../utils/error-helpers.js';
 import {
   type DatabaseConfig,
   type DatabaseConnection,
@@ -52,10 +53,7 @@ export class VectorStorageImpl implements VectorStorage {
       });
       throw new QueryError(
         `Failed to insert vector:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error) as any
       );
     }
   }
@@ -307,12 +305,16 @@ export class VectorStorageImpl implements VectorStorage {
         name,
         error: error instanceof Error ? error.message : String(error),
       });
+      const errorOptions: Record<string, unknown> = {
+        correlationId: this.generateCorrelationId(),
+      };
+      if (error instanceof Error) {
+        errorOptions['cause'] = error;
+      }
+      
       throw new QueryError(
         `Failed to drop vector index:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        errorOptions as any
       );
     }
   }
@@ -358,7 +360,7 @@ export class VectorStorageImpl implements VectorStorage {
         const sampleResult = await this.connection.query<{ vector: Buffer }>(
           `SELECT vector FROM "${this.collectionName}" LIMIT 1`
         );
-        if (sampleResult.rows.length > 0) {
+        if (sampleResult.rows.length > 0 && sampleResult.rows[0]?.vector) {
           const sampleVector = new Float32Array(
             sampleResult.rows[0].vector.buffer
           );
@@ -426,9 +428,12 @@ export class VectorStorageImpl implements VectorStorage {
     let normB = 0;
 
     for (const [i, element] of vectorA.entries()) {
-      dotProduct += element * vectorB[i];
-      normA += element * element;
-      normB += vectorB[i] * vectorB[i];
+      const valueB = vectorB[i];
+      if (valueB !== undefined) {
+        dotProduct += element * valueB;
+        normA += element * element;
+        normB += valueB * valueB;
+      }
     }
 
     const magnitude = Math.sqrt(normA) * Math.sqrt(normB);

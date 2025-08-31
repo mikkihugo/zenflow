@@ -6,6 +6,7 @@
  */
 
 import { getLogger } from '../logger.js';
+import { createErrorOptions } from '../utils/error-helpers.js';
 import {
   type DatabaseConfig,
   type DatabaseConnection,
@@ -21,7 +22,7 @@ const logger = getLogger('graph-storage');
 export class GraphStorageImpl implements GraphStorage {
   constructor(
     private connection: DatabaseConnection,
-    private config: DatabaseConfig
+    private _config: DatabaseConfig
   ) {}
 
   async addNode(
@@ -54,10 +55,7 @@ export class GraphStorageImpl implements GraphStorage {
       });
       throw new QueryError(
         `Failed to create node:${error instanceof Error ? error.message : String(error)}`,
-        {
-          correlationId: this.generateCorrelationId(),
-          cause: error instanceof Error ? error : undefined,
-        }
+        createErrorOptions(this.generateCorrelationId(), error) as any
       );
     }
   }
@@ -80,6 +78,10 @@ export class GraphStorageImpl implements GraphStorage {
       }
 
       const row = result.rows[0];
+      if (!row) {
+        return null;
+      }
+      
       return {
         id: row.id,
         labels: JSON.parse(row.labels),
@@ -242,6 +244,10 @@ export class GraphStorageImpl implements GraphStorage {
       }
 
       const row = result.rows[0];
+      if (!row) {
+        return null;
+      }
+      
       return {
         id: row.id,
         fromId: row.from_id,

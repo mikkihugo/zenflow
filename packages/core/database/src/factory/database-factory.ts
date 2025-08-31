@@ -339,14 +339,14 @@ export class DatabaseFactoryImpl implements DatabaseFactory {
 
       case 'lancedb':
         // Validate vector database configuration
-        if (config.options?.storageOptions) {
-          const storageOptions = config.options.storageOptions as Record<
+        if (config.options?.['storageOptions']) {
+          const storageOptions = config.options['storageOptions'] as Record<
             string,
             unknown
           >;
           if (
-            storageOptions.objectStoreUrl &&
-            !this.isValidUrl(String(storageOptions.objectStoreUrl))
+            storageOptions['objectStoreUrl'] &&
+            !this.isValidUrl(String(storageOptions['objectStoreUrl']))
           ) {
             throw new Error('Invalid object store URL for LanceDB');
           }
@@ -567,13 +567,13 @@ export function createStorage<T extends StorageType>(
 
   switch (type) {
     case 'keyValue':
-      return factory.createKeyValueStorage(config);
+      return factory.createKeyValueStorage(config) as any;
     case 'sql':
-      return factory.createSqlStorage(config);
+      return factory.createSqlStorage(config) as any;
     case 'vector':
-      return factory.createVectorStorage(config);
+      return factory.createVectorStorage(config) as any;
     case 'graph':
-      return factory.createGraphStorage(config);
+      return factory.createGraphStorage(config) as any;
     default:
       throw new Error(`Unsupported storage type:${type}`);
   }

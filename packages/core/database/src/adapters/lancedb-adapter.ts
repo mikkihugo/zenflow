@@ -95,7 +95,7 @@ interface CreateTableOptions<T> {
 }
 
 interface WriteOptions {
-  mode?: 'create' | ' overwrite';
+  mode?: 'create' | 'overwrite';
   existOk?: boolean;
 }
 
@@ -176,7 +176,7 @@ export class LanceDBAdapter implements DatabaseConnection {
       try {
         const lancedbImport = await import('@lancedb/lancedb');
         this.lancedbModule = {
-          connect: lancedbImport.connect as LanceDBModule['connect'],
+          connect: lancedbImport.connect as unknown as LanceDBModule['connect'],
         };
         logger.debug('Successfully imported LanceDB module', { correlationId });
       } catch (importError) {
@@ -460,7 +460,7 @@ export class LanceDBAdapter implements DatabaseConnection {
       return {
         healthy: score >= 70,
         status:
-          score >= 70 ? 'healthy' : score >= 40 ? ' degraded' : ' unhealthy',
+          score >= 70 ? 'healthy' : score >= 40 ? 'degraded' : 'unhealthy',
         score,
         timestamp: new Date(),
         responseTimeMs: responseTime,
@@ -515,17 +515,19 @@ export class LanceDBAdapter implements DatabaseConnection {
     try {
       await this.database?.tableNames();
 
+      const version = await this.getDatabaseVersion();
+      const lastMigration = await this.getLastMigrationVersion();
+      
       return {
         tables: [], // Vector databases don't have traditional table schemas
-        version: await this.getDatabaseVersion(),
-        lastMigration: await this.getLastMigrationVersion(),
+        version,
+        ...(lastMigration && { lastMigration }),
       };
     } catch (error) {
       logger.error('Failed to get LanceDB schema', { error });
       return {
         tables: [],
         version: 'unknown',
-        lastMigration: undefined,
       };
     }
   }
@@ -678,7 +680,7 @@ export class LanceDBAdapter implements DatabaseConnection {
         tableName,
         sampleData,
         {
-          mode: 'overwrite',
+          mode: 'overwrite' as const,
         }
       );
 
@@ -883,8 +885,8 @@ export class LanceDBAdapter implements DatabaseConnection {
       };
 
       if (options.indexType === 'IVF_PQ') {
-        indexConfig.num_partitions = options.numPartitions || 256;
-        indexConfig.num_sub_vectors = options.numSubVectors || 96;
+        indexConfig['num_partitions'] = options.numPartitions || 256;
+        indexConfig['num_sub_vectors'] = options.numSubVectors || 96;
       }
 
       // For HNSW or default
@@ -984,12 +986,12 @@ export class LanceDBAdapter implements DatabaseConnection {
           };
 
           if (table && 'search' in table) {
-            const searchableTable = table as {
+            const searchableTable = table as unknown as {
               search: (text: string) => typeof textQuery;
             };
             textQuery = searchableTable.search(query.text);
           } else {
-            const queryableTable = table as { query: () => typeof textQuery };
+            const queryableTable = table as unknown as { query: () => typeof textQuery };
             textQuery = queryableTable.query();
           }
 
@@ -1336,7 +1338,7 @@ export class LanceDBAdapter implements DatabaseConnection {
     if (sqlUpper.startsWith('SELECT') && sqlUpper.includes(' FROM')) {
       // Extract table name from SELECT * FROM tableName
       const tableMatch = sql.match(/from\s+(\w+)/i);
-      if (tableMatch) {
+      if (tableMatch?.[1]) {
         const tableName = tableMatch[1];
         try {
           const table = await this.database?.openTable(tableName);

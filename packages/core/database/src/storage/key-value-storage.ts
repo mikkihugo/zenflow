@@ -6,6 +6,7 @@
  */
 
 import { getLogger } from '../logger.js';
+import { createErrorOptions } from '../utils/error-helpers.js';
 import {
   type DatabaseConfig,
   type DatabaseConnection,
