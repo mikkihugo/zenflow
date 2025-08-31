@@ -531,7 +531,7 @@ export class SmartNeuralCoordinator {
 });
 
           this.logger.info(
-            `✅ SmartNeuralCoordinator initialized successfully in ${initTime}ms``
+            ` SmartNeuralCoordinator initialized successfully in ${initTime}ms``
           );
 
           recordEvent('smart-neural-coordinator-initialized', {
@@ -552,7 +552,7 @@ export class SmartNeuralCoordinator {
 });
 
           this.logger.error(
-            '❌ Failed to initialize SmartNeuralCoordinator: ','            error
+            ' Failed to initialize SmartNeuralCoordinator: ','            error
           );
           throw new ContextError(
             `SmartNeuralCoordinator initialization failed: ${error}`,`
@@ -1410,7 +1410,7 @@ export class SmartNeuralCoordinator {
 });
 
           this.logger.error(
-            '❌ Failed to shutdown SmartNeuralCoordinator: ','            error
+            ' Failed to shutdown SmartNeuralCoordinator: ','            error
           );
           throw error;
 }
@@ -1446,7 +1446,7 @@ export class SmartNeuralCoordinator {
 
   private async initializeEagerLoading():Promise<void> {
     this.logger.info(
-      '⚡ Eager loading mode - attempting to load all models...')    );
+      ' Eager loading mode - attempting to load all models...')    );
 
     // Load primary model first
     await this.loadTransformersModel();
@@ -1513,7 +1513,7 @@ export class SmartNeuralCoordinator {
 }
 
       this.logger.info(
-        `✅ Transformers model loaded: ${this.config.primaryModel} (${loadingTime}ms)``
+        ` Transformers model loaded: ${this.config.primaryModel} (${loadingTime}ms)``
       );
 } catch (error) {
       const transformersStatus = this.modelStatus.get('transformers');')      if (transformersStatus) {
@@ -1543,7 +1543,7 @@ export class SmartNeuralCoordinator {
         brainJsStatus.loadingTime = loadingTime;
 }
 
-      this.logger.info(`✅ Brain.js model loaded (${loadingTime}ms)`);`
+      this.logger.info(` Brain.js model loaded (${loadingTime}ms)`);`
 } catch (error) {
       const brainJsStatus = this.modelStatus.get('brain-js');')      if (brainJsStatus) {
         brainJsStatus.loaded = false;
@@ -1570,7 +1570,7 @@ export class SmartNeuralCoordinator {
         onnxStatus.loadingTime = loadingTime;
 }
 
-      this.logger.info(`✅ ONNX runtime loaded ($loadingTimems)`);`
+      this.logger.info(` ONNX runtime loaded ($loadingTimems)`);`
 } catch (error) {
       const onnxStatus = this.modelStatus.get('onnx');')      if (onnxStatus) {
         onnxStatus.loaded = false;

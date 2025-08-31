@@ -345,7 +345,7 @@ export class DocumentProcessor extends TypedEventBase {
 });
 } catch (error) 
       this.stats.errors++;
-      logger.error('Failed to process document ' + documentPath + ':', error);'
+      logger.error(`Failed to process document ${documentPath}:`, error);'
       throw error;
 }
 }

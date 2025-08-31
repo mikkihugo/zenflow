@@ -451,7 +451,7 @@ export class COPROML extends Teleprompter {
 
 		this.explorationBudget -= this.config.initialExplorationBudget;
 		this.logger.info(
-			'Initial exploration completed. Explored ' + this.config.initialExplorationBudget + ' prefix configurations',
+			`Initial exploration completed. Explored ${this.config.initialExplorationBudget} prefix configurations`,
 		);
 }
 
@@ -536,7 +536,7 @@ export class COPROML extends Teleprompter {
 }
 
 		this.logger.info(
-			'Online learning completed after ' + (this.currentIteration) + ' iterations with ' + this.driftDetections.length + ' drift detections',
+			'Online learning completed after ' + (this.currentIteration) + ` iterations with ${this.driftDetections.length} drift detections`,
 		);
 }
 
@@ -579,7 +579,7 @@ export class COPROML extends Teleprompter {
 			? patternResult
 			:patternResult.patterns || [];
 
-		this.logger.info('Detected ' + patterns.length + ' feedback patterns');
+		this.logger.info(`Detected ${patterns.length} feedback patterns`);
 
 		return patterns;
 }
@@ -635,7 +635,7 @@ export class COPROML extends Teleprompter {
 			confidenceInterval:[correlation - 0.1, correlation + 0.1],
 });
 
-		this.logger.info('Completed ' + tests.length + ' statistical validation tests');
+		this.logger.info(`Completed ${tests.length} statistical validation tests`);
 
 		return tests;
 }
@@ -962,7 +962,7 @@ export class COPROML extends Teleprompter {
 
 		if (this.driftDetections.length > 3) {
 			recommendations.push(
-				'High concept drift detected (' + this.driftDetections.length + ' events) - consider more robust prefix strategies',
+				`High concept drift detected (${this.driftDetections.length} events) - consider more robust prefix strategies`,
 			);
 }
 
@@ -978,7 +978,7 @@ export class COPROML extends Teleprompter {
 			);
 			if (highQualityPatterns.length > 0) {
 				recommendations.push(
-					'Detected ' + highQualityPatterns.length + ' high-quality feedback patterns - consider pattern-based prefix generation',
+					`Detected ${highQualityPatterns.length} high-quality feedback patterns - consider pattern-based prefix generation`,
 				);
 }
 }

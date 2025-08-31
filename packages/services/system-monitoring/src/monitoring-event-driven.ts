@@ -406,7 +406,7 @@ export class EventDrivenSystemMonitor {
               : 'ok',
         value: metrics.cpu.usage,
         threshold: this.config.cpuWarningThreshold,
-        message: 'System CPU usage: ' + metrics.cpu.usage + '%',
+        message: `System CPU usage: ${metrics.cpu.usage}%`,
       },
       memory: {
         status:
@@ -417,7 +417,7 @@ export class EventDrivenSystemMonitor {
               : 'ok',
         value: metrics.memory.usage,
         threshold: this.config.memoryWarningThreshold,
-        message: 'System memory usage: ' + metrics.memory.usage + '%',
+        message: `System memory usage: ${metrics.memory.usage}%`,
       },
       disk: {
         status:
@@ -428,7 +428,7 @@ export class EventDrivenSystemMonitor {
               : 'ok',
         value: metrics.disk.usage,
         threshold:this.config.diskWarningThreshold,
-        message:'Disk usage: ' + metrics.disk.usage + '%',
+        message:`Disk usage: ${metrics.disk.usage}%`,
 },
       uptime:{
         status: 'ok',        value:metrics.uptime,

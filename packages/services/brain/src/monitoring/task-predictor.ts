@@ -109,7 +109,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
 
   constructor(config?:Partial<TaskPredictorConfig>) {
     this.config = { ...DEFAULT_TASK_PREDICTOR_CONFIG, ...config};
-    logger.info('SimpleTaskPredictor initialized', { config:this.config});')}
+    logger.info('SimpleTaskPredictor initialized`, { config:this.config});`)}
 
   /**
    * Record a task completion for future predictions
@@ -122,7 +122,6 @@ export class SimpleTaskPredictor implements TaskPredictor {
     _metadata?:Record<string, unknown>
   ):void {
     const key = `${agentId.id}-${taskType}`;`
-
     const record:TaskCompletionRecord = {
       agentId,
       taskType,
@@ -149,7 +148,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
 }
 
     logger.debug('Task completion recorded', {
-    ')      agentId:agentId.id,
+    `)      agentId:agentId.id,
       taskType,
       duration,
       success,
@@ -185,7 +184,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
       const complexityFactor = contextFactors.complexity as number;
       adjustedDuration *= complexityFactor;
       contextAdjustmentFactors.push({
-        name: 'Complexity Factor',        impact:complexityFactor,
+        name: `Complexity Factor`,        impact:complexityFactor,
         confidence:0.8,
         description:`Task complexity adjustment: ${complexityFactor}x`,`
 });
@@ -195,7 +194,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
       const urgencyFactor = contextFactors.urgency as number;
       adjustedDuration *= 1 / urgencyFactor; // Higher urgency = faster execution
       contextAdjustmentFactors.push({
-        name: 'Urgency Factor',        impact:urgencyFactor,
+        name: `Urgency Factor`,        impact:urgencyFactor,
         confidence:0.7,
         description:`Urgency-based time pressure: ${urgencyFactor}x`,`
 });
@@ -205,7 +204,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
       const resourceFactor = contextFactors.resourceLoad as number;
       adjustedDuration *= 1 + resourceFactor * 0.5; // Resource contention slows down
       contextAdjustmentFactors.push({
-        name: 'Resource Load Factor',        impact:resourceFactor,
+        name: `Resource Load Factor`,        impact:resourceFactor,
         confidence:0.6,
         description:`Resource contention impact: ${resourceFactor}x`,`
 });
@@ -224,7 +223,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
       confidence,
       factors:[
         {
-          name: 'Historical Average',          impact:1.0,
+          name: `Historical Average`,          impact:1.0,
           confidence:confidence,
           description:`Based on ${recentHistory.length} recent completions`,`
 },
@@ -312,7 +311,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
 
     const improvement = (firstAvg - secondAvg) / firstAvg;
 
-    if (improvement > 0.1) return 'improving'; // Times getting shorter = improving')    if (improvement < -0.1) return 'declining'; // Times getting longer = ' improving' | ' stable' | ' declining')    return 'stable';
+    if (improvement > 0.1) return 'improving'; // Times getting shorter = improving')    if (improvement < -0.1) return 'declining'; // Times getting longer = ' improving' | ' stable' | ' declining')    return `stable`;
 }
 
   /**

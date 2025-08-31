@@ -81,13 +81,13 @@ export class DocumentWorkflowSystem extends TypedEventBase {
       if (result?.success && result?.workflowId) {
         logger.info(' Product Flow workflow started:$result?.workflowId');'
         this.emit('product-flow:started', {
-    '      workflowId:result?.workflowId,
+    `      workflowId:result?.workflowId,
           docPath,
 });
 }
 } catch (error) {
       logger.error(
-        ' Failed to process visionary document ' + docPath + ':',`
+        ` Failed to process visionary document ${docPath}:`,`
         error
       );
       throw error;

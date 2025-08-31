@@ -413,14 +413,14 @@ export class FoundationConfig {
         ) {
           value = (value as Record<string, unknown>)[k];
         } else {
-          throw new Error('Key '' + key + '' not found');
+          throw new Error(`Key '${key}' not found`);
         }
       }
 
       return value;
     } catch (error) {
-      logger.error('Failed to get config key '' + key + '':', error);
-      throw new Error('Configuration key '' + key + '' not found or invalid');
+      logger.error(`Failed to get config key '${key}':`, error);
+      throw new Error(`Configuration key '${key}' not found or invalid`);
     }
   }
 
@@ -533,7 +533,7 @@ export const getEnv = (key: string, defaultValue?: string): string =>
 export const requireEnv = (key: string): string => {
   const value = process.env[key];
   if (!value) {
-    throw new Error('Required environment variable ' + key + ' is not set');
+    throw new Error(`Required environment variable ${key} is not set`);
   }
   return value;
 };

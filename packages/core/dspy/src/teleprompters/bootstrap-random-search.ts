@@ -181,7 +181,7 @@ export interface CandidateResult {
  *   max_bootstrapped_demos:4,
  *   num_candidate_programs:12,
  *   teacher_settings:{
- *     strategy: 'diverse_sampling',  // Custom teacher behavior
+ *     strategy: 'diverse_sampling`,  // Custom teacher behavior
  *     exploration_factor:0.3
  *}
  *});
@@ -247,10 +247,10 @@ export class BootstrapFewShotWithRandomSearch extends Teleprompter {
     this.max_labeled_demos = config.max_labeled_demos ?? 16;
 
     logger.info(
-      'Going to sample between ' + (this.min_num_samples) + ' and ' + this.max_num_samples + ' traces per predictor.'
+      'Going to sample between ` + (this.min_num_samples) + ` and ${this.max_num_samples} traces per predictor.`
     );
     logger.info(
-      'Will attempt to bootstrap ' + this.num_candidate_sets + ' candidate sets.'
+      `Will attempt to bootstrap ${this.num_candidate_sets} candidate sets.`
     );
   }
 

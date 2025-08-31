@@ -298,7 +298,7 @@ export class DaemonProcessManager {
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
 
-    throw new Error('Process ' + (pid) + ' did not stop within ' + timeout + 'ms');
+    throw new Error('Process ' + (pid) + ` did not stop within ${timeout}ms`);
   }
 
   /**

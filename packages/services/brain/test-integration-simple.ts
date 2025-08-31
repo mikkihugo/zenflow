@@ -58,7 +58,7 @@ async function runIntegrationTest() {
     logger.info(' Coordinator initialized successfully\n');')
     // Test 2:Get statistics
     logger.info('Test 2:Get Statistics');')    const __stats = coordinator.getCoordinatorStats();
-    logger.info(' Configuration:', stats.configuration);')    logger.info(' Models Status:', stats.models);')    logger.info('📈 Performance:', stats.performance);')    logger.info('💾 Cache:', stats.cache);')    logger.info('🔗 Fallback Chain:', stats.fallbackChain);')    logger.info(' Statistics retrieved successfully\n');')
+    logger.info(' Configuration:', stats.configuration);')    logger.info(' Models Status:', stats.models);')    logger.info(' Performance:', stats.performance);')    logger.info('💾 Cache:', stats.cache);')    logger.info('🔗 Fallback Chain:', stats.fallbackChain);')    logger.info(' Statistics retrieved successfully\n');')
     // Test 3:Generate embedding
     logger.info('Test 3:Generate Embedding');')    const request:NeuralEmbeddingRequest = {
       text: 'This is a test sentence for neural embedding generation',      context: 'integration-test',      priority: 'medium',      qualityLevel: 'standard',};

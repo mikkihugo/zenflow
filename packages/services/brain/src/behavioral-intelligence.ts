@@ -256,7 +256,7 @@ export class BehavioralIntelligence {
       this.kmeansClusterer = kmeans;
 
       logger.info(
-        '✅ Enhanced ML algorithms initialized (DBSCAN + KMeans + Regression + Statistics + Time Series)')      );
+        ' Enhanced ML algorithms initialized (DBSCAN + KMeans + Regression + Statistics + Time Series)')      );
 
       this.initialized = true;
       logger.info(
@@ -632,7 +632,7 @@ export class BehavioralIntelligence {
           clusteringParams.minPts
         );
         logger.info(
-          `✅ DBSCAN clustering identified ${clusters.length} behavioral groups``
+          ` DBSCAN clustering identified ${clusters.length} behavioral groups``
         );
 
         // Analyze label distribution across clusters for behavioral insights
@@ -840,7 +840,7 @@ export class BehavioralIntelligence {
 
     try {
       logger.debug(
-        `📝 Recording behavior:${data.agentId} - ${data.behaviorType}``
+        ` Recording behavior:${data.agentId} - ${data.behaviorType}``
       );
 
       // Convert behavior data to execution data format for learning
@@ -1679,7 +1679,7 @@ export async function demoBehavioralIntelligence(
     logger.info(`   • Reasoning:$bestAgent.reasoning\n`);`
 
     // 5. Show behavioral intelligence stats
-    logger.info('📈 Behavioral Intelligence Statistics:');
+    logger.info(' Behavioral Intelligence Statistics:');
     const stats = behavioral.getStats();
     logger.info(`   • Total agents: ${stats.totalAgents}`);
     logger.info(`   • Training data points: ${stats.trainingDataPoints}`);

@@ -94,7 +94,7 @@ export class WebProcessManager {
 
     for (const signal of signals) {
       process.on(signal, () => {
-        this.logger.info('Received ' + signal + ', initiating graceful shutdown');
+        this.logger.info(`Received ${signal}, initiating graceful shutdown`);
         this.gracefulShutdown(signal);
       });
     }
@@ -128,7 +128,7 @@ export class WebProcessManager {
 
     this.isShuttingDown = true;
     this.logger.info(
-      'Starting graceful shutdown' + signal ? ' (' + signal + ')' : ''
+      'Starting graceful shutdown' + signal ? ` (${signal})` : ''
     );
 
     try {
@@ -229,14 +229,14 @@ export class WebProcessManager {
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       if (this.isProcessRunning(targetPid)) {
-        this.logger.warn('Process ' + targetPid + ' still running, sending SIGKILL');
+        this.logger.warn(`Process ${targetPid} still running, sending SIGKILL`);
         process.kill(targetPid, 'SIGKILL');
       }
 
       // Clean up PID file
       await this.removePidFile();
 
-      this.logger.info('Instance ' + targetPid + ' stopped successfully');
+      this.logger.info(`Instance ${targetPid} stopped successfully`);
       return true;
     } catch (_error) {
       this.logger.error('Error stopping instance: ', error);

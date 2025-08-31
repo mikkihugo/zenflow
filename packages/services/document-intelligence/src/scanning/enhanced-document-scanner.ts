@@ -195,7 +195,7 @@ export class EnhancedDocumentScanner {
         scanDuration: Date.now() - startTime,
       };
 
-      logger.info(' Enhanced scan completed: ' + (analysisResults.length) + ' issues found in ' + scannedFiles + ' files');
+      logger.info(' Enhanced scan completed: ' + (analysisResults.length) + ` issues found in ${scannedFiles} files`);
 
       return results;
     } finally {
@@ -234,7 +234,7 @@ export class EnhancedDocumentScanner {
         }
       }
     } catch (error) {
-      logger.warn('Failed to scan directory ' + dirPath + ':', error);
+      logger.warn(`Failed to scan directory ${dirPath}:`, error);
     }
 
     return scannedFiles;
@@ -271,7 +271,7 @@ export class EnhancedDocumentScanner {
         }
       }
     } catch (error) {
-      logger.warn('Failed to analyze file ' + filePath + ':', error);
+      logger.warn(`Failed to analyze file ${filePath}:`, error);
     }
   }
 
@@ -293,7 +293,7 @@ export class EnhancedDocumentScanner {
       filePath,
       lineNumber,
       codeSnippet,
-      suggestedAction: 'Address the ' + pattern + ' comment',
+      suggestedAction: `Address the ${pattern} comment`,
       estimatedEffort: this.getPatternEffort(pattern),
       tags: [pattern, 'code-quality'],
     };
@@ -312,7 +312,7 @@ export class EnhancedDocumentScanner {
       suggestedSwarmType: 'single_agent' as const,
       requiredAgentTypes: ['developer'],
       dependencies: [],
-      acceptanceCriteria: ['Resolve ' + result.type + ' issue'],
+      acceptanceCriteria: [`Resolve ${result.type} issue`],
     }));
   }
 

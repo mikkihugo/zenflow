@@ -104,7 +104,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
 
     try {
       this.logger.info(
-        '🔧 Initializing Neural Safety Bridge with brain integration...'
+        ' Initializing Neural Safety Bridge with brain integration...'
       );
       
       // Async initialization of safety monitoring systems
@@ -134,7 +134,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
 });
 
       this.logger.info(
-        '✅ Neural Safety Bridge initialized with brain system integration')      );
+        ' Neural Safety Bridge initialized with brain system integration')      );
 } catch (error) {
       this.logger.error('Failed to initialize Neural Safety Bridge:', error);')      throw error;
 }

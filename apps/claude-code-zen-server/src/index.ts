@@ -21,8 +21,8 @@ import type { Server as SocketIOServer, Socket } from 'socket.io';
 const logger = getLogger('claude-zen-server');
 
 class ClaudeZenServer {
-  private port: number = process.env['PORT'] ? parseInt(process.env['PORT']) : 3000;
-  private host: string = process.env['HOST'] || '0.0.0.0';
+  private port: number = process.env.PORT ? parseInt(process.env.PORT) : 3000;
+  private host: string = process.env.HOST || '0.0.0.0';
 
   async start(): Promise<Result<void, Error>> {
     try {
@@ -46,7 +46,7 @@ class ClaudeZenServer {
       });
 
       return ok();
-    } catch (_error) {
+    } catch (error) {
       logger.error(' Failed to start server: ', error);
       return err(error instanceof Error ? error : new Error(String(error)));
     }
@@ -81,7 +81,7 @@ class ClaudeZenServer {
     app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
     // Request logging middleware
-    if (process.env['NODE_ENV'] !== 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       const morgan = (await import('morgan')).default;
       app.use(morgan('combined'));
     }
@@ -96,7 +96,7 @@ class ClaudeZenServer {
     logger.debug('Setting up routes...');
 
     // Health check endpoint
-    app.get('/health', (_req: Request, _res: Response) => {
+    app.get('/health', (req: Request, res: Response) => {
       res.json({
         status: 'ok',
         timestamp: new Date().toISOString(),
@@ -106,7 +106,7 @@ class ClaudeZenServer {
     });
 
     // API routes
-    app.get('/api/v1/health', (_req: Request, _res: Response) => {
+    app.get('/api/v1/health', (req: Request, res: Response) => {
       res.json({
         status: 'healthy',
         service: 'claude-code-zen-server',
@@ -116,7 +116,7 @@ class ClaudeZenServer {
     });
 
     // Basic dashboard route (if no static serving is set up)
-    app.get('/', (_req: Request, _res: Response) => {
+    app.get('/', (req: Request, res: Response) => {
       res.json({
         message: 'Claude Code Zen Server',
         status: 'running',
@@ -130,7 +130,7 @@ class ClaudeZenServer {
     });
 
     // Catch all for API routes
-    app.use('/api', (_req: Request, _res: Response) => {
+    app.use('/api', (req: Request, res: Response) => {
       res.status(404).json({
         error: 'API endpoint not found',
         path: req.path,
@@ -157,7 +157,7 @@ class ClaudeZenServer {
 
     // Set up broadcast callback to connect event registry with WebSocket service
     eventRegistryInitializer.setBroadcastCallback(
-      (type: string, _data: unknown) => {
+      (type: string, data: unknown) => {
         eventRegistryWebSocketService.broadcast(
           type as
             | 'module-status'
@@ -193,9 +193,9 @@ class ClaudeZenServer {
 
       this.setupSocketHandlers(io);
       logger.info(
-        ' Socket.IO server initialized for dashboard real-time updates'
+        `🔌 Socket.IO server initialized for dashboard real-time updates`
       );
-    } catch (_error) {
+    } catch (error) {
       logger.warn(
         'Failed to initialize Socket.IO, dashboard real-time features may not work:',
         error
@@ -208,7 +208,7 @@ class ClaudeZenServer {
    */
   private setupSocketHandlers(io: SocketIOServer): void {
     io.on('connection', (socket: Socket) => {
-      logger.debug('Dashboard client connected: ' + socket.id);
+      logger.debug(`Dashboard client connected: ${socket.id}`);
 
       // Send initial connection data
       socket.emit('connected', {
@@ -228,7 +228,7 @@ class ClaudeZenServer {
   private setupSocketSubscriptions(socket: Socket): void {
     socket.on('subscribe', (channel: string) => {
       socket.join(channel);
-      logger.debug('Client ' + (socket.id) + ' subscribed to ' + channel);
+      logger.debug(`Client ${socket.id} subscribed to ${channel}`);
 
       // Send initial data based on channel
       switch (channel) {
@@ -255,7 +255,7 @@ class ClaudeZenServer {
 
     socket.on('unsubscribe', (channel: string) => {
       socket.leave(channel);
-      logger.debug('Client ' + (socket.id) + ' unsubscribed from ' + channel);
+      logger.debug(`Client ${socket.id} unsubscribed from ${channel}`);
     });
   }
 
@@ -270,7 +270,7 @@ class ClaudeZenServer {
 
     socket.on('disconnect', (reason: string) => {
       logger.debug(
-        'Dashboard client disconnected: ' + (socket.id) + ', reason: ' + reason
+        `Dashboard client disconnected: ${socket.id}, reason: ${reason}`
       );
     });
   }
@@ -280,11 +280,11 @@ class ClaudeZenServer {
    */
   private logServerStartup(): void {
     logger.info(
-      ' Claude Code Zen Server running on http://' + (this.host) + ':' + this.port
+      ` Claude Code Zen Server running on http://${this.host}:${this.port}`
     );
-    logger.info(' Dashboard available at http://' + (this.host) + ':' + this.port);
+    logger.info(` Dashboard available at http://${this.host}:${this.port}`);
     logger.info(
-      ' Event Registry WebSocket available at ws://' + (this.host) + ':' + this.port + '/api/events/ws'
+      `🔌 Event Registry WebSocket available at ws://${this.host}:${this.port}/api/events/ws`
     );
   }
 }
@@ -293,13 +293,13 @@ class ClaudeZenServer {
 const server = new ClaudeZenServer();
 server
   .start()
-  .then((_result) => {
+  .then((result) => {
     if (result.isErr()) {
       logger.error('Failed to start server: ', result.error);
       process.exit(1);
     }
   })
-  .catch((_error) => {
+  .catch((error) => {
     logger.error('Unexpected error: ', error);
     process.exit(1);
   });

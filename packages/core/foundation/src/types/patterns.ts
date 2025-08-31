@@ -216,7 +216,7 @@ export interface VersionedWithRevision extends Versioned {
  *     prerelease: 'beta.1', *     build:'build.123') *}
  *};
  *
- * const versionString = '' + pkg.version.major + '.' + pkg.version.minor + '.' + pkg.version.patch;
+ * const versionString = `${pkg.version.major}.` + pkg.version.minor + '.' + pkg.version.patch;
  * '
  */
 export interface SemanticVersioned {

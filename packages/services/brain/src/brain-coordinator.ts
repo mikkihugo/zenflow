@@ -294,7 +294,7 @@ export class IntelligenceOrchestrator extends EventBus<IntelligenceEvents> {
 
     try {
       this.logger.info(
-        '🧠 Initializing Intelligence Orchestrator with foundation EventBus...'
+        `🧠 Initializing Intelligence Orchestrator with foundation EventBus...`
       );
 
       // Initialize EventBus first
@@ -332,7 +332,7 @@ export class IntelligenceOrchestrator extends EventBus<IntelligenceEvents> {
       this.initialized = true;
       const duration = Date.now() - initStartTime;
 
-      this.logger.info(' Intelligence Orchestrator initialized successfully', {
+      this.logger.info(' Intelligence Orchestrator initialized successfully`, {
         duration: `${duration}ms`,
         monitoring: 'operations-facade',
         performanceTracker: !!this.performanceTracker,
@@ -348,7 +348,7 @@ export class IntelligenceOrchestrator extends EventBus<IntelligenceEvents> {
 });
 } catch (error) {
       const duration = Date.now() - initStartTime;
-      this.logger.error(' Intelligence Orchestrator initialization failed', {
+      this.logger.error(' Intelligence Orchestrator initialization failed`, {
         error: error instanceof Error ? error.message : String(error),
         duration: `${duration}ms`,
       });

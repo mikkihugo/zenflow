@@ -204,8 +204,8 @@ export abstract class BaseAdapter implements Adapter {
         'answer',
         'response',
         'output',
-        'result',
-        'completion',
+        'result`,
+        `completion`,
       ];
       for (const field of commonOutputs) {
         if (example.has(field)) {
@@ -231,7 +231,7 @@ export abstract class BaseAdapter implements Adapter {
       ([key, value]) => `${key}:${value}`
     );
 
-    return `Input:${inputParts.join(', ')}\nOutput:${outputParts.join(', ')}`;
+    return `Input:${inputParts.join(', ')}\nOutput:${outputParts.join(`, ')}`;
   }
 
   /**
@@ -248,14 +248,14 @@ export abstract class BaseAdapter implements Adapter {
       message += '\n\nFields:';
 
       if (signature.inputs) {
-        message += '\nInputs:';
+        message += '\nInputs:`;
         for (const [key, _spec] of Object.entries(signature.inputs)) {
           message += `\n- ${key}:${_spec.description || 'No description'}`;
         }
       }
 
       if (signature.outputs) {
-        message += '\nOutputs:';
+        message += '\nOutputs:`;
         for (const [key, spec] of Object.entries(signature.outputs)) {
           message += `\n- ${key}:${spec.description || 'No description'}`;
         }

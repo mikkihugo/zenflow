@@ -38,19 +38,19 @@ class SimpleLogger implements Logger {
   constructor(private name: string) {}
   
   info(message: string, data?: any): void {
-    console.log('[' + this.name + '] INFO:', message, data ? JSON.stringify(data) : '');
+    console.log(`[${this.name}] INFO:`, message, data ? JSON.stringify(data) : '');
   }
   
   debug(message: string, data?: any): void {
-    console.log('[' + this.name + '] DEBUG:', message, data ? JSON.stringify(data) : '');
+    console.log(`[${this.name}] DEBUG:`, message, data ? JSON.stringify(data) : '');
   }
   
   error(message: string, data?: any): void {
-    console.error('[' + this.name + '] ERROR:', message, data ? JSON.stringify(data) : '');
+    console.error(`[${this.name}] ERROR:`, message, data ? JSON.stringify(data) : '');
   }
   
   warn(message: string, data?: any): void {
-    console.warn('[' + this.name + '] WARN:', message, data ? JSON.stringify(data) : '');
+    console.warn(`[${this.name}] WARN:`, message, data ? JSON.stringify(data) : '');
   }
 }
 

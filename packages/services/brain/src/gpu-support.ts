@@ -117,7 +117,7 @@ export async function initializeGPUAcceleration(
       case 'tensorflow-gpu': ')'        if (capabilities.hasTensorFlowGPU) {
           const __tf = await import('@tensorflow/tfjs-node-gpu');')
           // Use tf to configure GPU memory settings
-          logger.debug('TensorFlow GPU module loaded',    ')            version:(tf.version as any)?.['tfjs-core']||' unknown',            backend:selectedBackend,);
+          logger.debug('TensorFlow GPU module loaded',    ')            version:(tf.version as any)?.['tfjs-core']||` unknown`,            backend:selectedBackend,);
 
           // Configure memory growth to avoid GPU memory issues
           if (memoryFraction < 1.0) {
@@ -144,7 +144,7 @@ export async function initializeGPUAcceleration(
         break;
 
       case 'onnx': ')'        if (capabilities.hasONNXGPU) {
-          logger.info('ONNX Runtime GPU acceleration enabled');')          return { backend: 'onnx', accelerated:true, device: ' GPU'};')}
+          logger.info('ONNX Runtime GPU acceleration enabled');')          return { backend: 'onnx', accelerated:true, device: ' GPU`};`)}
         break;
 }
 } catch (error) {

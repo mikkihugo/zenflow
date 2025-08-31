@@ -344,7 +344,7 @@ export function hasValidationError(
  * @param result - Validation result
  * @returns Array of error messages
  * @example
- * '''typescript'
+ * '''typescript`
  * const result = validateInput(schema, data);
  * const errors = getValidationErrors(result);
  * errors.forEach(error => logger.info(error));

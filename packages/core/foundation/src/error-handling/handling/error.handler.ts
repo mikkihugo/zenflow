@@ -377,7 +377,7 @@ export async function withRetry<T>(
     }) => {
       const { delay, attempt, error: dataError, reason } = data;
       const error = dataError || new Error(String(reason || data));
-      logger.warn('Attempt ' + (attempt) + ' failed (retrying in ' + delay + 'ms):', error);
+      logger.warn('Attempt ' + (attempt) + ` failed (retrying in ${delay}ms):`, error);
 
       // Custom abort logic - called via onFailedAttempt if provided
       if (onFailedAttempt) {
@@ -465,24 +465,24 @@ export class CircuitBreakerWithMonitoring<T extends unknown[], R> {
   private setupEventListeners(): void {
     // Cockatiel uses event listeners on the policy itself
     this.policy.onBreak(() => {
-      logger.warn('Circuit breaker ' + this.name + ' opened');
+      logger.warn(`Circuit breaker ${this.name} opened`);
     });
 
     this.policy.onReset(() => {
-      logger.info('Circuit breaker ' + this.name + ' closed');
+      logger.info(`Circuit breaker ${this.name} closed`);
     });
 
     this.policy.onHalfOpen(() => {
-      logger.info('Circuit breaker ' + this.name + ' half-opened');
+      logger.info(`Circuit breaker ${this.name} half-opened`);
     });
 
     this.policy.onFailure((data: { reason?: unknown }) => {
       const reason = data.reason || data;
-      logger.debug('Circuit breaker ' + this.name + ' recorded failure:', reason);
+      logger.debug(`Circuit breaker ${this.name} recorded failure:`, reason);
     });
 
     this.policy.onSuccess(() => {
-      logger.debug('Circuit breaker ' + this.name + ' recorded success');
+      logger.debug(`Circuit breaker ${this.name} recorded success`);
     });
   }
 
@@ -533,7 +533,7 @@ export class CircuitBreakerWithMonitoring<T extends unknown[], R> {
    */
   clear(): void {
     logger.info(
-      'Circuit breaker ' + this.name + ' metrics cleared (note:cockatiel doesn't support reset)'
+      `Circuit breaker ${this.name} metrics cleared (note:cockatiel doesn`t support reset)'
     );
   }
 }
@@ -568,7 +568,7 @@ export async function withTimeout<T>(
 
   // Add event listeners for monitoring
   const timeoutListener = timeoutPolicy.onTimeout(() => {
-    logger.warn('Operation timed out after ' + timeoutMs + 'ms');
+    logger.warn(`Operation timed out after ${timeoutMs}ms`);
   });
 
   const failureListener = timeoutPolicy.onFailure(
@@ -588,7 +588,7 @@ export async function withTimeout<T>(
   } catch (error) {
     if (error instanceof TaskCancelledError) {
       const timeoutError = new TimeoutError(
-        timeoutMessage || 'Operation timed out after ' + timeoutMs + 'ms',
+        timeoutMessage || `Operation timed out after ${timeoutMs}ms`,
         { timeoutMs, strategy }
       );
       return err(timeoutError);

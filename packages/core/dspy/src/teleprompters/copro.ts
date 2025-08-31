@@ -129,7 +129,7 @@ export interface CoproStats {
  *
  * // Access optimization statistics
  * const __stats = advancedCopro.getStats();
- * logger.info('Total LM calls:' + stats.total_calls);
+ * logger.info('Total LM calls:` + stats.total_calls);
  * `
  */
 export class COPRO extends Teleprompter {
@@ -243,7 +243,7 @@ export class COPRO extends Teleprompter {
 
 		// For each iteration in depth...
 		for (let d = 0; d < this.depth; d++) {
-			logger.info('Iteration Depth:' + (d + 1) + '/' + this.depth + '.');
+			logger.info('Iteration Depth:' + (d + 1) + `/${this.depth}.`);
 
 			const latest_scores:number[] = [];
 
@@ -279,8 +279,8 @@ export class COPRO extends Teleprompter {
 					this._updateSignature(p_new, instruction, prefix);
 
 					logger.info(
-						'At Depth ' + (d + 1) + '/' + (this.depth) + ', Evaluating Prompt Candidate #' + (c_i + 1) + '/' + candidates_.proposed_instruction.length + ' for ' +
-							'Predictor ' + (p_i + 1) + ' of ' + modulePredictors.length + '.',
+						'At Depth ' + (d + 1) + '/' + (this.depth) + ', Evaluating Prompt Candidate #' + (c_i + 1) + `/${candidates_.proposed_instruction.length} for ` +
+							'Predictor ' + (p_i + 1) + ` of ${modulePredictors.length}.`,
 					);
 
 					// Score the instruction / prefix

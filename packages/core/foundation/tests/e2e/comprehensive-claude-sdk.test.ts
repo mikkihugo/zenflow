@@ -173,7 +173,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 					expect(resultMessage).toBeTruthy();
 					expect((resultMessage as any).is_error).toBeFalsy();
 
-					logger.info(' Model ' + model + ' working correctly');
+					logger.info(` Model ${model} working correctly`);
 }
 },
 			TEST_CONFIG.STANDARD_TIMEOUT,
@@ -200,10 +200,10 @@ describe("Comprehensive Claude SDK Tests", () => {
 					// All modes should work (or fail safely)
 					if (result.success) {
 						expect(result.data).toBeTruthy();
-						logger.info(' Permission mode ' + permissionMode + ' working');
+						logger.info(` Permission mode ${permissionMode} working`);
 } else {
 						logger.info(
-							' Permission mode ' + permissionMode + ' failed safely:' + result.error.message,
+							` Permission mode ${permissionMode} failed safely:` + result.error.message,
 						);
 }
 }
@@ -269,7 +269,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 				expect(messages.length).toBeGreaterThan(0);
 
 				logger.info(
-					' Additional directories working:' + additionalDirs.length + ' dirs',
+					` Additional directories working:${additionalDirs.length} dirs`,
 				);
 },
 			TEST_CONFIG.STANDARD_TIMEOUT,
@@ -359,7 +359,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 					expect(message).toBeTruthy();
 					expect(message.type).toBeTruthy();
 
-					logger.debug('Streamed message ' + messageCount + ':' + message.type);
+					logger.debug(`Streamed message ${messageCount}:` + message.type);
 
 					// Limit iterations to prevent infinite loops
 					if (messageCount > 10) break;
@@ -368,7 +368,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 				expect(hasData).toBe(true);
 				expect(messageCount).toBeGreaterThan(0);
 
-				logger.info(' Streaming working:' + messageCount + ' messages received');
+				logger.info(` Streaming working:${messageCount} messages received`);
 },
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
@@ -399,15 +399,15 @@ describe("Comprehensive Claude SDK Tests", () => {
 				try {
 					for await (const message of streamGenerator) {
 						messageCount++;
-						logger.debug('Streamed message ' + messageCount + ':' + message.type);
+						logger.debug(`Streamed message ${messageCount}:` + message.type);
 
 						if (messageCount > 10) break; // Safety limit
 }
-					logger.info(' Stream completed normally:' + messageCount + ' messages');
+					logger.info(` Stream completed normally:${messageCount} messages`);
 } catch (error) {
 					if (error instanceof Error && error.message.includes("abort")) {
 						logger.info(
-							' Stream cancelled successfully:' + messageCount + ' messages received',
+							` Stream cancelled successfully:${messageCount} messages received`,
 						);
 } else {
 						throw error; // Unexpected error
@@ -460,7 +460,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 
 				const successful = results.filter((r) => r.success).length;
 				logger.info(
-					' Parallel execution:' + successful + '/' + tasks.length + ' succeeded in ' + duration + 'ms',
+					` Parallel execution:${successful}/` + tasks.length + ` succeeded in ${duration}ms`,
 				);
 
 				// At least most tasks should succeed
@@ -506,7 +506,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 }
 
 				logger.info(
-					' Parallel failure handling:' + successes + ' succeeded, ' + failures + ' failed',
+					` Parallel failure handling:${successes} succeeded, ` + failures + ' failed',
 				);
 
 				// Should have both successes and failures
@@ -540,7 +540,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 				expect(resultMessage).toBeTruthy();
 
 				logger.info(
-					' Swarm coordination:' + messages.length + ' messages, ' + agents.length + ' agents',
+					` Swarm coordination:${messages.length} messages, ` + agents.length + ' agents',
 				);
 },
 			TEST_CONFIG.STANDARD_TIMEOUT,
@@ -573,7 +573,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 				expect(messages.length).toBeGreaterThan(0);
 
 				logger.info(
-					' Complex swarm:' + messages.length + ' messages, ' + agents.length + ' agents',
+					` Complex swarm:${messages.length} messages, ` + agents.length + ' agents',
 				);
 },
 			TEST_CONFIG.LONG_TIMEOUT,
@@ -622,10 +622,10 @@ describe("Comprehensive Claude SDK Tests", () => {
 					if (scenario.expectError) {
 						expect(result.success).toBe(false);
 						expect(result.error).toBeInstanceOf(Error);
-						logger.info(' ' + scenario.name + ':Failed as expected');
+						logger.info(` ${scenario.name}:Failed as expected`);
 } else {
 						expect(result.success).toBe(true);
-						logger.info(' ' + scenario.name + ':Succeeded as expected');
+						logger.info(` ${scenario.name}:Succeeded as expected`);
 }
 }
 },
@@ -665,7 +665,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 				expect(result.data).toBeTruthy();
 
 				logger.info(
-					' Retry mechanism:succeeded after ' + attemptCount + ' attempts',
+					` Retry mechanism:succeeded after ${attemptCount} attempts`,
 				);
 },
 			TEST_CONFIG.STANDARD_TIMEOUT,
@@ -706,7 +706,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 					expect(task.sessionId).toBeTruthy();
 });
 
-				logger.info(' Performance tracking:' + newTasks + ' tasks monitored');
+				logger.info(` Performance tracking:${newTasks} tasks monitored`);
 },
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
@@ -736,7 +736,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 				const failures = results.filter((r) => r.status === "rejected").length;
 
 				logger.info(
-					' High-load test:' + successes + '/' + taskCount + ' succeeded in ' + duration + 'ms',
+					` High-load test:${successes}/` + taskCount + ` succeeded in ${duration}ms`,
 				);
 				logger.info(
 					'   Average:' + Math.round(duration / taskCount) + 'ms per task',
@@ -896,7 +896,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 			expect(enabledTests).toBeGreaterThan(0);
 
 			logger.info(
-				' Test suite completed:' + enabledTests + ' test suites passed',
+				` Test suite completed:${enabledTests} test suites passed`,
 			);
 });
 });

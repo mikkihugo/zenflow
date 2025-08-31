@@ -46,8 +46,8 @@ export interface DocumentSegment {
  * Segmentation result with strategy information
  */
 export interface SegmentationResult {
-  segments: DocumentSegment[];
-  strategy: DocumentClassification['recommendedStrategy'];')  totalSegments:number;
+  segments:DocumentSegment[];
+  strategy:DocumentClassification['recommendedStrategy'];')  totalSegments:number;
   averageSegmentSize:number;
   preservedBlocks:number;
   qualityScore:number; // 0-1 overall segmentation quality
@@ -117,7 +117,7 @@ interface AlgorithmBlock {
  */
 export class SegmentationEngine extends TypedEventBase {
 
-  constructor(config: Partial<SegmentationConfig> = {}) {
+  constructor(config:Partial<SegmentationConfig> = {}) {
     super();
     
     this.config = {
@@ -169,7 +169,7 @@ export class SegmentationEngine extends TypedEventBase {
       /(o\(\w+\)|θ\(\w+\)|ω\(\w+\)|time\s+complexity|space\s+complexity|running\s+time)/gi,
       
       // Code blocks and implementation sections
-      /'''[\w]*\n[\s\S]*?\n'|'[^']+'/g'
+      /```[\w]*\n[\s\S]*?\n```|`[^`]+`/g`
 ];
 }
 
@@ -189,8 +189,8 @@ export class SegmentationEngine extends TypedEventBase {
       /^\s*\d+\.\s+/gm,
       
       // Code block boundaries
-      /'[\s\S]*?'''/g,'
-      /'[^']+'/g,'
+      /```[\s\S]*?```/g,`
+      /`[^`]+`/g,`
       
       // Formula boundaries
       /\$\$[\s\S]*?\$\$/g,
@@ -201,11 +201,12 @@ export class SegmentationEngine extends TypedEventBase {
   /**
    * Segment document using intelligent strategies
    */
-  async segmentDocument(_content: string, 
-    classification: DocumentClassification
-  ): Promise<SegmentationResult> {
-    const startTime = performance.now();
-    logger.info('Starting document segmentation with strategy:' + classification.recommendedStrategy);'
+  async segmentDocument(
+    _content:string, 
+    classification:DocumentClassification
+  ):Promise<SegmentationResult> {
+    const __startTime = performance.now();
+    logger.info(`Starting document segmentation with strategy:${classification.recommendedStrategy}`);`
 
     try {
       // Adapt configuration based on classification
@@ -228,7 +229,7 @@ export class SegmentationEngine extends TypedEventBase {
       const endTime = performance.now();
       const processingTime = endTime - startTime;
 
-      const result: SegmentationResult = {
+      const result:SegmentationResult = {
         segments,
         strategy:classification.recommendedStrategy,
         totalSegments:segments.length,
@@ -246,28 +247,28 @@ export class SegmentationEngine extends TypedEventBase {
 };
 
       this.emit('segmentation_complete', result);
-      logger.info('Document segmented into $segments.lengthsegments (' + processingTime.toFixed(2) + 'ms)');'
+      logger.info(`Document segmented into $segments.lengthsegments (${processingTime.toFixed(2)}ms)`);`
 
       return result;
 } catch (error) {
-      logger.error('Error during document segmentation:', error);'  throw new Error('Document segmentation failed:' + error);'
+      logger.error('Error during document segmentation:', error);')      throw new Error(`Document segmentation failed:${error}`);`
 }
 }
 
   /**
    * Adapt configuration based on document classification
    */
-  private adaptConfigForClassification(classification: DocumentClassification): SegmentationConfig {
+  private adaptConfigForClassification(classification:DocumentClassification): SegmentationConfig {
     const adapted = { ...this.config};
 
     // Adjust segment sizes based on document type
     if (classification.documentType === 'algorithm' || classification.algorithmDensity > 0.5) {
-    '  adapted.maxSegmentSize = Math.max(adapted.maxSegmentSize, 15000);
+    ')      adapted.maxSegmentSize = Math.max(adapted.maxSegmentSize, 15000);
       adapted.algorithmPreservationThreshold = 0.2; // More sensitive
 }
     
     if (classification.documentType === 'research') {
-    '  adapted.maxSegmentSize = Math.min(adapted.maxSegmentSize, 8000);
+    ')      adapted.maxSegmentSize = Math.min(adapted.maxSegmentSize, 8000);
       adapted.conceptClusteringThreshold = 0.3; // More clustering
 }
 
@@ -283,7 +284,7 @@ export class SegmentationEngine extends TypedEventBase {
    * Identify algorithm blocks in content
    */
   private identifyAlgorithmBlocks(content:string): AlgorithmBlock[] {
-    const blocks: AlgorithmBlock[] = [];
+    const blocks:AlgorithmBlock[] = [];
     
     for (const pattern of this.algorithmPatterns) {
       let match;
@@ -294,7 +295,7 @@ export class SegmentationEngine extends TypedEventBase {
         const expandedBoundary = this.findAlgorithmBoundaries(content, startIndex);
         
         const blockContent = content.substring(expandedBoundary.start, expandedBoundary.end);
-        const block: AlgorithmBlock = {
+        const block:AlgorithmBlock = {
           startIndex:expandedBoundary.start,
           endIndex:expandedBoundary.end,
           type:this.classifyAlgorithmType(match[0]),
@@ -323,7 +324,7 @@ export class SegmentationEngine extends TypedEventBase {
   /**
    * Find algorithm boundaries using natural content breaks
    */
-  private findAlgorithmBoundaries(content: string, startIndex:number): { start: number; end: number} {
+  private findAlgorithmBoundaries(content:string, startIndex:number): { start: number; end: number} {
     // Find natural boundaries - expand to include context
     let start = Math.max(0, startIndex - 300);
     let end = Math.min(content.length, startIndex + 500);
@@ -345,37 +346,37 @@ export class SegmentationEngine extends TypedEventBase {
    * Check if character represents a natural content boundary
    */
   private isNaturalBoundary(char:string): boolean {
-    return ['\n',    '.',    '!',    '?',;].includes(char);'
+    return ['\n',    '.',    '!',    '?',;].includes(char);')}
 
   /**
    * Enhanced algorithm classification with complexity analysis (DeepCode style)
    */
   private classifyAlgorithmType(algorithmText:string): AlgorithmBlock['type'] {
-    'const text = algorithmText.toLowerCase();
+    ')    const text = algorithmText.toLowerCase();
     
     // Check for mathematical formulas and complexity analysis
-    if (text.includes('o(') || text.includes('θ(') || text.includes(' complexity' {
-    '  return 'complexity-analysis;
+    if (text.includes('o(') || text.includes('θ(') || text.includes(' complexity')) {
+    ')      return 'complexity-analysis;
 }
     
     // Check for LaTeX formulas or mathematical notation
     if (text.includes('$$') || text.includes('\\begin{equation}') || /[∀∃∈∉⊆⊇∪∩∑∏∫∂∇]/.test(text)) {
-    '  return 'formula;
+    ')      return 'formula;
 }
     
     // Check for traditional mathematical expressions
-    if (text.includes('formula') || text.includes(' equation') || text.includes(' theorem' {
-    '  return 'mathematical;
+    if (text.includes('formula') || text.includes(' equation') || text.includes(' theorem')) {
+    ')      return 'mathematical;
 }
     
     // Check for procedure/function definitions
-    if (text.includes('procedure') || text.includes(' function') || text.includes(' def ' {
-    '  return 'procedure;
+    if (text.includes('procedure') || text.includes(' function') || text.includes(' def ')) {
+    ')      return 'procedure;
 }
     
     // Check for code implementations
-    if (text.includes(''|| text.includes(' code') || text.includes(' implementation' {'
-    '  return 'implementation;
+    if (text.includes('```') || text.includes(' code') || text.includes(' implementation')) {`
+    ')      return 'implementation;
 }
     
     // Default to pseudocode
@@ -404,7 +405,7 @@ export class SegmentationEngine extends TypedEventBase {
       'compute':0.9, ' calculate':0.9, ' sum':0.7, ' maximum':0.7, ' minimum':0.7,
       
       // Complexity indicators (very high weight)
-      'complexity':1.2, ' optimization':1.0, ' efficiency':0.9';
+      'complexity':1.2, ' optimization':1.0, ' efficiency':0.9')};
     
     // Calculate weighted keyword score
     let keywordScore = 0;
@@ -415,7 +416,7 @@ export class SegmentationEngine extends TypedEventBase {
         if (word.includes(keyword)) {
           keywordScore += weight;
           keywordCount++;
-          break; // Don't double-count words'
+          break; // Don't double-count words')}
 }
 }
     
@@ -424,11 +425,11 @@ export class SegmentationEngine extends TypedEventBase {
     const mathBonus = Math.min(mathNotationCount * 0.1, 0.3);
     
     // Formula detection bonus
-    const formulaBonus = (text.includes('$$') || text.includes('\\begin{equation}' ? 0.2:0;'
+    const formulaBonus = (text.includes('$$') || text.includes('\\begin{equation}')) ? 0.2:0;')    
     // Code block detection bonus  
-    const codeBonus = text.includes(''? 0.15:0;''
+    const codeBonus = text.includes('```') ? 0.15:0;')    `
     // Structural completeness bonus
-    const hasInputOutput = text.includes('input') && text.includes(' output') ? 0.1:0;'const hasControlFlow = /\b(for|while|if|loop)\b/.test(text) ? 0.1:0;
+    const hasInputOutput = text.includes('input') && text.includes(' output') ? 0.1:0;')    const hasControlFlow = /\b(for|while|if|loop)\b/.test(text) ? 0.1:0;
     const hasSteps = /\b(step|phase|\d+\.)\b/.test(text) ? 0.05:0;
     
     // Calculate final confidence
@@ -441,8 +442,8 @@ export class SegmentationEngine extends TypedEventBase {
   /**
    * Enhanced related description detection with relation typing (DeepCode style)
    */
-  private findRelatedDescription(content: string, algorithmBoundary:{ start: number; end: number}):AlgorithmBlock['relatedDescription'] | null {
-    'const searchRadius = 800; // Expanded search radius
+  private findRelatedDescription(content:string, algorithmBoundary:{ start: number; end: number}):AlgorithmBlock['relatedDescription'] | null {
+    ')    const searchRadius = 800; // Expanded search radius
     const beforeText = content.substring(Math.max(0, algorithmBoundary.start - searchRadius), algorithmBoundary.start).toLowerCase();
     const afterText = content.substring(algorithmBoundary.end, Math.min(content.length, algorithmBoundary.end + searchRadius)).toLowerCase();
     
@@ -451,9 +452,9 @@ export class SegmentationEngine extends TypedEventBase {
       explanation:[
         'explains',    'describes',    'details',    'clarifies',    'elaborates',    'outlines',        'this algorithm',    'the procedure',    'the method',    'works as follows',    'operates by')],
       example:[
-        'example',    'instance',    'demonstrates',    'illustrates',    'shows how',    '    'for example',    'consider the case',    'sample',    'typical usage')],
+        'example',    'instance',    'demonstrates',    'illustrates',    'shows how',    ')        'for example',    'consider the case',    'sample',    'typical usage')],
       proof:[
-        'proof',    'proves',    'verification',    'correctness',    'justification',    '    'theorem',    'lemma',    'invariant',    'mathematical proof')],
+        'proof',    'proves',    'verification',    'correctness',    'justification',    ')        'theorem',    'lemma',    'invariant',    'mathematical proof')],
       context:[
         'background',    'motivation',    'problem',    'application',    'used for',        'solves',    'addresses',    'handles',    'context',    'scenario')]
 };
@@ -465,11 +466,11 @@ export class SegmentationEngine extends TypedEventBase {
         const endIndex = algorithmBoundary.start;
         
         // Ensure we capture complete sentences
-        const adjustedStart = this.findSentenceBoundary(content, startIndex, 'backward');'
+        const adjustedStart = this.findSentenceBoundary(content, startIndex, 'backward');')        
         return {
-          startIndex: adjustedStart,
+          startIndex:adjustedStart,
           endIndex,
-          relationType:relationType as 'explanation | example|proof | context';
+          relationType:relationType as 'explanation | example|proof | context')};
 }
 }
     
@@ -480,11 +481,11 @@ export class SegmentationEngine extends TypedEventBase {
         const endIndex = Math.min(content.length, algorithmBoundary.end + 400);
         
         // Ensure we capture complete sentences
-        const adjustedEnd = this.findSentenceBoundary(content, endIndex, 'forward');'
+        const adjustedEnd = this.findSentenceBoundary(content, endIndex, 'forward');')        
         return {
           startIndex,
-          endIndex: adjustedEnd,
-          relationType:relationType as 'explanation | example|proof | context';
+          endIndex:adjustedEnd,
+          relationType:relationType as 'explanation | example|proof | context')};
 }
 }
     
@@ -494,10 +495,10 @@ export class SegmentationEngine extends TypedEventBase {
   /**
    * Find sentence boundary for clean text extraction
    */
-  private findSentenceBoundary(content: string, startPosition: number, direction:'forward | backward'): number {
-    'const sentenceEnders = ['.',    '!',    '?',    '\n\n'];'
+  private findSentenceBoundary(content:string, startPosition:number, direction:'forward | backward'): number {
+    ')    const sentenceEnders = ['.',    '!',    '?',    '\n\n'];')    
     if (direction === 'forward') {
-    '  for (let i = startPosition; i < content.length; i++) {
+    ')      for (let i = startPosition; i < content.length; i++) {
         if (sentenceEnders.includes(content[i])) {
           return i + 1;
 }
@@ -516,18 +517,18 @@ export class SegmentationEngine extends TypedEventBase {
   /**
    * Check if two algorithm blocks overlap
    */
-  private blocksOverlap(block1: AlgorithmBlock, block2: AlgorithmBlock): boolean {
+  private blocksOverlap(block1:AlgorithmBlock, block2:AlgorithmBlock): boolean {
     return !(block1.endIndex <= block2.startIndex || block2.endIndex <= block1.startIndex);
 }
 
   /**
    * Merge overlapping algorithm blocks
    */
-  private mergeOverlappingBlocks(blocks: AlgorithmBlock[]): AlgorithmBlock[] {
+  private mergeOverlappingBlocks(blocks:AlgorithmBlock[]): AlgorithmBlock[] {
     if (blocks.length <= 1) return blocks;
 
     const sorted = blocks.sort((a, b) => a.startIndex - b.startIndex);
-    const merged: AlgorithmBlock[] = [sorted[0]];
+    const merged:AlgorithmBlock[] = [sorted[0]];
 
     for (let i = 1; i < sorted.length; i++) {
       const current = sorted[i];
@@ -548,23 +549,20 @@ export class SegmentationEngine extends TypedEventBase {
   /**
    * Apply segmentation strategy based on document classification
    */
-  private async applySegmentationStrategy(content: string,
-    strategy: DocumentClassification['recommendedStrategy'],
-    algorithmBlocks: AlgorithmBlock[],
-    config: SegmentationConfig
-  ): Promise<DocumentSegment[]> {
+  private async applySegmentationStrategy(
+    content:string,
+    strategy:DocumentClassification['recommendedStrategy'],
+    algorithmBlocks:AlgorithmBlock[],
+    config:SegmentationConfig
+  ):Promise<DocumentSegment[]> {
     switch (strategy) {
-      case 'semantic_research_focused':
-        return this.segmentResearchFocused(content, algorithmBlocks, config);
+      case 'semantic_research_focused': ')'        return this.segmentResearchFocused(content, algorithmBlocks, config);
       
-      case 'algorithm_preserve_integrity':
-        return this.segmentPreserveAlgorithms(content, algorithmBlocks, config);
+      case 'algorithm_preserve_integrity': ')'        return this.segmentPreserveAlgorithms(content, algorithmBlocks, config);
       
-      case 'concept_implementation_hybrid':
-        return this.segmentConceptImplementation(content, algorithmBlocks, config);
+      case 'concept_implementation_hybrid': ')'        return this.segmentConceptImplementation(content, algorithmBlocks, config);
       
-      case 'strategic_vision_analysis':
-        return this.segmentStrategicVision(content, config);
+      case 'strategic_vision_analysis': ')'        return this.segmentStrategicVision(content, config);
       
       default:
         return this.segmentConceptImplementation(content, algorithmBlocks, config);
@@ -575,11 +573,11 @@ export class SegmentationEngine extends TypedEventBase {
    * Segment with research-focused approach
    */
   private segmentResearchFocused(
-    content: string,
-    algorithmBlocks: AlgorithmBlock[],
-    config: SegmentationConfig
+    content:string,
+    algorithmBlocks:AlgorithmBlock[],
+    config:SegmentationConfig
   ):DocumentSegment[] {
-    const segments: DocumentSegment[] = [];
+    const segments:DocumentSegment[] = [];
     const sectionHeaders = this.findSectionHeaders(content);
     
     // Segment by research sections while preserving algorithms
@@ -590,7 +588,7 @@ export class SegmentationEngine extends TypedEventBase {
         // Create segment up to header
         const segmentContent = content.substring(currentPosition, header.index);
         if (segmentContent.trim().length > config.minSegmentSize) {
-          segments.push(this.createSegment(segmentContent, currentPosition, 'concept', algorithmBlocks));'
+          segments.push(this.createSegment(segmentContent, currentPosition, 'concept', algorithmBlocks));')}
 }
       currentPosition = header.index;
 }
@@ -599,7 +597,7 @@ export class SegmentationEngine extends TypedEventBase {
     if (currentPosition < content.length) {
       const remainingContent = content.substring(currentPosition);
       if (remainingContent.trim().length > config.minSegmentSize) {
-        segments.push(this.createSegment(remainingContent, currentPosition, 'concept', algorithmBlocks));'
+        segments.push(this.createSegment(remainingContent, currentPosition, 'concept', algorithmBlocks));')}
 }
 
     return segments;
@@ -609,11 +607,11 @@ export class SegmentationEngine extends TypedEventBase {
    * Segment while preserving algorithm integrity
    */
   private segmentPreserveAlgorithms(
-    content: string,
-    algorithmBlocks: AlgorithmBlock[],
-    config: SegmentationConfig
+    content:string,
+    algorithmBlocks:AlgorithmBlock[],
+    config:SegmentationConfig
   ):DocumentSegment[] {
-    const segments: DocumentSegment[] = [];
+    const segments:DocumentSegment[] = [];
     let currentPosition = 0;
 
     // Sort algorithm blocks by position
@@ -624,12 +622,12 @@ export class SegmentationEngine extends TypedEventBase {
       if (block.startIndex > currentPosition) {
         const preContent = content.substring(currentPosition, block.startIndex);
         if (preContent.trim().length > config.minSegmentSize) {
-          segments.push(this.createSegment(preContent, currentPosition, 'context', algorithmBlocks));'
+          segments.push(this.createSegment(preContent, currentPosition, 'context', algorithmBlocks));')}
 }
 
       // Create algorithm segment (preserve integrity)
       const algorithmContent = content.substring(block.startIndex, block.endIndex);
-      const algorithmSegment = this.createSegment(algorithmContent, block.startIndex, 'algorithm', algorithmBlocks);'  algorithmSegment.preserveIntegrity = true;
+      const algorithmSegment = this.createSegment(algorithmContent, block.startIndex, 'algorithm', algorithmBlocks);')      algorithmSegment.preserveIntegrity = true;
       algorithmSegment.importance = 0.9; // High importance
       segments.push(algorithmSegment);
 
@@ -640,7 +638,7 @@ export class SegmentationEngine extends TypedEventBase {
     if (currentPosition < content.length) {
       const remainingContent = content.substring(currentPosition);
       if (remainingContent.trim().length > config.minSegmentSize) {
-        segments.push(this.createSegment(remainingContent, currentPosition, 'context', algorithmBlocks));'
+        segments.push(this.createSegment(remainingContent, currentPosition, 'context', algorithmBlocks));')}
 }
 
     return segments;
@@ -650,11 +648,11 @@ export class SegmentationEngine extends TypedEventBase {
    * Segment with concept-implementation hybrid approach
    */
   private segmentConceptImplementation(
-    content: string,
-    algorithmBlocks: AlgorithmBlock[],
-    config: SegmentationConfig
+    content:string,
+    algorithmBlocks:AlgorithmBlock[],
+    config:SegmentationConfig
   ):DocumentSegment[] {
-    const segments: DocumentSegment[] = [];
+    const segments:DocumentSegment[] = [];
     
     // Use adaptive character limits
     const adaptiveLimit = this.calculateAdaptiveCharacterLimit(content, config);
@@ -680,8 +678,8 @@ export class SegmentationEngine extends TypedEventBase {
   /**
    * Segment with strategic vision focus
    */
-  private segmentStrategicVision(content: string, config: SegmentationConfig): DocumentSegment[] {
-    const segments: DocumentSegment[] = [];
+  private segmentStrategicVision(content:string, config:SegmentationConfig): DocumentSegment[] {
+    const segments:DocumentSegment[] = [];
     const strategicSections = this.findStrategicSections(content);
     
     let currentPosition = 0;
@@ -691,12 +689,12 @@ export class SegmentationEngine extends TypedEventBase {
         // Non-strategic content
         const contextContent = content.substring(currentPosition, section.start);
         if (contextContent.trim().length > config.minSegmentSize) {
-          segments.push(this.createSegment(contextContent, currentPosition, 'context', []));'
+          segments.push(this.createSegment(contextContent, currentPosition, 'context', []));')}
 }
       
       // Strategic content
       const strategicContent = content.substring(section.start, section.end);
-      const strategicSegment = this.createSegment(strategicContent, section.start, 'concept', []);'  strategicSegment.importance = 0.95; // Very high importance for strategic content
+      const strategicSegment = this.createSegment(strategicContent, section.start, 'concept', []);')      strategicSegment.importance = 0.95; // Very high importance for strategic content
       segments.push(strategicSegment);
       
       currentPosition = section.end;
@@ -706,7 +704,7 @@ export class SegmentationEngine extends TypedEventBase {
     if (currentPosition < content.length) {
       const remainingContent = content.substring(currentPosition);
       if (remainingContent.trim().length > config.minSegmentSize) {
-        segments.push(this.createSegment(remainingContent, currentPosition, 'context', []));'
+        segments.push(this.createSegment(remainingContent, currentPosition, 'context', []));')}
 }
 
     return segments;
@@ -716,12 +714,12 @@ export class SegmentationEngine extends TypedEventBase {
    * Create a document segment with metadata
    */
   private createSegment(
-    content: string,
-    startPosition: number,
-    segmentType: DocumentSegment['segmentType'],
-    algorithmBlocks: AlgorithmBlock[]
+    content:string,
+    startPosition:number,
+    segmentType:DocumentSegment['segmentType'],
+    algorithmBlocks:AlgorithmBlock[]
   ):DocumentSegment {
-    const id = 'segment_' + (startPosition) + '_' + Date.now();'
+    const __id = `segment_${startPosition}_${Date.now()}`;`
     const endPosition = startPosition + content.length;
     
     // Check if this segment overlaps with algorithm blocks
@@ -736,20 +734,20 @@ export class SegmentationEngine extends TypedEventBase {
       endPosition,
       segmentType:hasAlgorithm ? 'algorithm' : segmentType,
       importance:this.calculateSegmentImportance(content, segmentType),
-      preserveIntegrity:hasAlgorithm || segmentType === 'algorithm',      relatedSegments: [], // Will be populated by post-processing
+      preserveIntegrity:hasAlgorithm || segmentType === 'algorithm',      relatedSegments:[], // Will be populated by post-processing
       confidenceScore:this.calculateSegmentConfidence(content, segmentType),
       metadata:{
         keywords:this.extractKeywords(content),
         algorithmDensity:this.calculateLocalAlgorithmDensity(content),
         conceptComplexity:this.calculateLocalConceptComplexity(content),
         characterCount:content.length,
-        lineCount:content.split('\n').length'
+        lineCount:content.split('\n').length')}
 };
 }
 
   // Helper methods for segment creation and analysis
   private findSectionHeaders(content:string): Array<{ index: number; level: number; text: string}> {
-    const headers: Array<{ index: number; level: number; text: string}> = [];
+    const headers:Array<{ index: number; level: number; text: string}> = [];
     const headerPattern = /^(#{1,6})s+(.+)$/gm;
     
     let match;
@@ -765,10 +763,10 @@ export class SegmentationEngine extends TypedEventBase {
 }
 
   private findStrategicSections(content:string): Array<{ start: number; end: number; type: string}> {
-    const strategicKeywords = ['vision',    'strategy',    'goal',    'objective',    'mission',    'roadmap'];'const sections: Array<{ start: number; end: number; type: string}> = [];
+    const strategicKeywords = ['vision',    'strategy',    'goal',    'objective',    'mission',    'roadmap'];')    const sections:Array<{ start: number; end: number; type: string}> = [];
     
     for (const keyword of strategicKeywords) {
-      const regex = new RegExp('\\b$keyword\\b[\\s\\S]0,500', 'gi');'  let match;
+      const regex = new RegExp(`\\b$keyword\\b[\\s\\S]0,500`, 'gi');')      let match;
       
       while ((match = regex.exec(content)) !== null) {
         sections.push({
@@ -782,7 +780,7 @@ export class SegmentationEngine extends TypedEventBase {
     return sections.sort((a, b) => a.start - b.start);
 }
 
-  private calculateAdaptiveCharacterLimit(content: string, config: SegmentationConfig): number {
+  private calculateAdaptiveCharacterLimit(content:string, config:SegmentationConfig): number {
     if (!config.adaptiveCharacterLimits) {
       return config.maxSegmentSize;
 }
@@ -804,21 +802,21 @@ export class SegmentationEngine extends TypedEventBase {
     return Math.min(adaptiveLimit, config.maxSegmentSize * 2);
 }
 
-  private findNaturalBoundaryNear(content: string, position: number, searchRadius:number): number {
+  private findNaturalBoundaryNear(content:string, position:number, searchRadius:number): number {
     const searchStart = Math.max(0, position - searchRadius);
     const searchEnd = Math.min(content.length, position + searchRadius);
     
     // Look for paragraph breaks first
     for (let i = position; i < searchEnd; i++) {
       if (content.substring(i, i + 2) === '\n\n') {
-    '    return i;
+    ')        return i;
 }
 }
     
     // Look for sentence endings
     for (let i = position; i < searchEnd; i++) {
       if (['.',    '!',    '?'].includes(content[i]) && content[i + 1] === ' ') {
-    '    return i + 1;
+    ')        return i + 1;
 }
 }
     
@@ -827,11 +825,11 @@ export class SegmentationEngine extends TypedEventBase {
 }
 
   private determineSegmentType(
-    content: string,
-    algorithmBlocks: AlgorithmBlock[],
+    content:string,
+    algorithmBlocks:AlgorithmBlock[],
     startPosition:number
   ):DocumentSegment['segmentType'] {
-    '// Check if segment overlaps with algorithm blocks
+    ')    // Check if segment overlaps with algorithm blocks
     const overlapsAlgorithm = algorithmBlocks.some(block =>
       !(block.endIndex <= startPosition || block.startIndex >= startPosition + content.length)
     );
@@ -841,7 +839,7 @@ export class SegmentationEngine extends TypedEventBase {
 }
     
     // Analyze content for type determination
-    const implementationKeywords = ['code',    'implementation',    'function',    'method',    'class'];'const conceptKeywords = ['concept',    'theory',    'principle',    'approach',    'methodology'];'
+    const implementationKeywords = ['code',    'implementation',    'function',    'method',    'class'];')    const conceptKeywords = ['concept',    'theory',    'principle',    'approach',    'methodology'];')    
     const hasImplementation = implementationKeywords.some(keyword =>
       content.toLowerCase().includes(keyword)
     );
@@ -861,8 +859,8 @@ export class SegmentationEngine extends TypedEventBase {
     return 'context;
 }
 
-  private calculateSegmentImportance(content: string, segmentType: DocumentSegment['segmentType']): number {
-    'const typeWeights = {
+  private calculateSegmentImportance(content:string, segmentType:DocumentSegment['segmentType']): number {
+    ')    const typeWeights = {
       algorithm:0.9,
       concept:0.8,
       implementation:0.75,
@@ -877,8 +875,8 @@ export class SegmentationEngine extends TypedEventBase {
     return Math.min(baseImportance + (algorithmDensity * 0.1) + (conceptComplexity * 0.1), 1.0);
 }
 
-  private calculateSegmentConfidence(content: string, segmentType: DocumentSegment['segmentType']): number {
-    '// Simple confidence calculation based on content characteristics
+  private calculateSegmentConfidence(content:string, segmentType:DocumentSegment['segmentType']): number {
+    ')    // Simple confidence calculation based on content characteristics
     const wordCount = content.split(/s+/).length;
     const sentenceCount = content.split(/[.!?]+/).length;
     
@@ -894,14 +892,14 @@ export class SegmentationEngine extends TypedEventBase {
 }
     
     if (segmentType === 'algorithm' && this.calculateLocalAlgorithmDensity(content) > 0.3) {
-    '  confidence += 0.2; // High algorithm density matches type
+    ')      confidence += 0.2; // High algorithm density matches type
 }
     
     return Math.min(confidence, 1.0);
 }
 
   private calculateLocalAlgorithmDensity(content:string): number {
-    const algorithmKeywords = ['algorithm',    'procedure',    'method',    'function',    'compute',    'calculate'];'const words = content.toLowerCase().split(/s+/);
+    const algorithmKeywords = ['algorithm',    'procedure',    'method',    'function',    'compute',    'calculate'];')    const words = content.toLowerCase().split(/s+/);
     const keywordCount = words.filter(word => 
       algorithmKeywords.some(keyword => word.includes(keyword))
     ).length;
@@ -910,7 +908,7 @@ export class SegmentationEngine extends TypedEventBase {
 }
 
   private calculateLocalConceptComplexity(content:string): number {
-    const complexityKeywords = ['complex',    'advanced',    'sophisticated',    'intricate',    'detailed'];'const technicalKeywords = ['technical',    'specification',    'architecture',    'framework',    'system'];'
+    const complexityKeywords = ['complex',    'advanced',    'sophisticated',    'intricate',    'detailed'];')    const technicalKeywords = ['technical',    'specification',    'architecture',    'framework',    'system'];')    
     const words = content.toLowerCase().split(/s+/);
     const complexityCount = words.filter(word =>
       complexityKeywords.some(keyword => word.includes(keyword))
@@ -925,7 +923,7 @@ export class SegmentationEngine extends TypedEventBase {
   private extractKeywords(content:string): string[] {
     // Simple keyword extraction - in production, could use NLP libraries
     const words = content.toLowerCase()
-      .replace(/[^ws]/g, ')'  .split(/s+/)
+      .replace(/[^ws]/g, ')')      .split(/s+/)
       .filter(word => word.length > 3);
     
     // Count word frequency
@@ -941,16 +939,16 @@ export class SegmentationEngine extends TypedEventBase {
       .map(([word]) => word);
 }
 
-  private calculateAverageSegmentSize(segments: DocumentSegment[]): number {
+  private calculateAverageSegmentSize(segments:DocumentSegment[]): number {
     if (segments.length === 0) return 0;
     const totalSize = segments.reduce((sum, segment) => sum + segment.content.length, 0);
     return totalSize / segments.length;
 }
 
-  private countConceptClusters(segments: DocumentSegment[]): number {
-    return segments.filter(segment => segment.segmentType === 'concept').length;'
+  private countConceptClusters(segments:DocumentSegment[]): number {
+    return segments.filter(segment => segment.segmentType === 'concept').length;')}
 
-  private calculateSegmentationQuality(segments: DocumentSegment[], originalContent:string): number {
+  private calculateSegmentationQuality(segments:DocumentSegment[], originalContent:string): number {
     if (segments.length === 0) return 0;
     
     // Quality based on multiple factors
@@ -962,7 +960,7 @@ export class SegmentationEngine extends TypedEventBase {
     return (averageConfidence * 0.4) + ((1 - sizeVariation) * 0.3) + (preservationRatio * 0.3);
 }
 
-  private calculateSizeVariation(segments: DocumentSegment[]): number {
+  private calculateSizeVariation(segments:DocumentSegment[]): number {
     if (segments.length <= 1) return 0;
     
     const sizes = segments.map(seg => seg.content.length);
@@ -983,9 +981,9 @@ export class SegmentationEngine extends TypedEventBase {
   /**
    * Update segmentation engine configuration
    */
-  public updateConfig(newConfig: Partial<SegmentationConfig>): void {
+  public updateConfig(newConfig:Partial<SegmentationConfig>): void {
     this.config = { ...this.config, ...newConfig};
-    logger.info('Segmentation engine configuration updated');'
+    logger.info('Segmentation engine configuration updated');')}
 
   // ========================================================================
   // Enhanced Algorithm Analysis Methods (DeepCode Integration)
@@ -995,24 +993,24 @@ export class SegmentationEngine extends TypedEventBase {
    * Analyze algorithm complexity with multiple metrics
    */
   private analyzeComplexity(blockContent:string): AlgorithmBlock['complexity'] {
-    'const text = blockContent.toLowerCase();
+    ')    const text = blockContent.toLowerCase();
     
     // Cyclomatic complexity (control flow analysis)
-    const controlFlowKeywords = ['if',    'else',    'for',    'while',    'switch',    'case',    'try',    'catch'];'const cyclomaticComplexity = controlFlowKeywords.reduce((count, keyword) => {
-      const matches = text.match(new RegExp('\\b$keyword\\b`, 'g';'  return count + (matches ? matches.length:0);
+    const controlFlowKeywords = ['if',    'else',    'for',    'while',    'switch',    'case',    'try',    'catch'];')    const cyclomaticComplexity = controlFlowKeywords.reduce((count, keyword) => {
+      const matches = text.match(new RegExp(`\\b$keyword\\b`, 'g'));')      return count + (matches ? matches.length:0);
 }, 1); // Base complexity is 1
 
     // Algorithmic complexity detection (Big O notation)
-    const algorithmicComplexity = 'O(1)'; // Default'if (text.includes('o(n²)') || text.includes(' o(n^2)') || text.includes(' nested loop' {
-    '  algorithmicComplexity = 'O(n²)';
-} else if (text.includes('o(n log n)') || text.includes(' divide and conquer' {
-    '  algorithmicComplexity = 'O(n log n)';
-} else if (text.includes('o(n)') || text.includes(' linear' {
-    '  algorithmicComplexity = 'O(n)';
-} else if (text.includes('o(log n)') || text.includes(' logarithmic') || text.includes(' binary search' {
-    '  algorithmicComplexity = 'O(log n)';
-} else if (text.includes('o(2^n)') || text.includes(' exponential' {
-    '  algorithmicComplexity = 'O(2^n)';
+    const algorithmicComplexity = 'O(1)'; // Default')    if (text.includes('o(n²)') || text.includes(' o(n^2)') || text.includes(' nested loop')) {
+    ')      algorithmicComplexity = 'O(n²)';
+} else if (text.includes('o(n log n)') || text.includes(' divide and conquer')) {
+    ')      algorithmicComplexity = 'O(n log n)';
+} else if (text.includes('o(n)') || text.includes(' linear')) {
+    ')      algorithmicComplexity = 'O(n)';
+} else if (text.includes('o(log n)') || text.includes(' logarithmic') || text.includes(' binary search')) {
+    ')      algorithmicComplexity = 'O(log n)';
+} else if (text.includes('o(2^n)') || text.includes(' exponential')) {
+    ')      algorithmicComplexity = 'O(2^n)';
 }
 
     // Mathematical complexity (formula density)
@@ -1022,7 +1020,7 @@ export class SegmentationEngine extends TypedEventBase {
     const mathematicalComplexity = Math.min((mathSymbols + mathOperators + mathFunctions) / 10, 1.0);
 
     // Structural depth (nesting level estimation)
-    const lines = blockContent.split('\n');'let maxIndentation = 0;
+    const lines = blockContent.split('\n');')    let maxIndentation = 0;
     let currentIndentation = 0;
     
     for (const line of lines) {
@@ -1036,7 +1034,7 @@ export class SegmentationEngine extends TypedEventBase {
       cyclomaticComplexity,
       algorithmicComplexity,
       mathematicalComplexity,
-      structuralDepth: Math.min(maxIndentation, 10) // Cap at reasonable level
+      structuralDepth:Math.min(maxIndentation, 10) // Cap at reasonable level
 };
 }
 
@@ -1044,7 +1042,7 @@ export class SegmentationEngine extends TypedEventBase {
    * Analyze algorithm structural characteristics
    */
   private analyzeStructure(blockContent:string): AlgorithmBlock['structure'] {
-    'const text = blockContent.toLowerCase();
+    ')    const text = blockContent.toLowerCase();
 
     return {
       hasInputOutput:/\b(input|output|parameter|return)\s*:/i.test(text),
@@ -1060,7 +1058,7 @@ export class SegmentationEngine extends TypedEventBase {
    * Extract algorithm elements for analysis
    */
   private extractAlgorithmElements(blockContent:string): AlgorithmBlock['extractedElements'] {
-    'const text = blockContent;
+    ')    const text = blockContent;
 
     // Extract variables (simple heuristic)
     const variableMatches = text.match(/\b[a-z][a-zA-Z0-9_]*\b/g) || [];
@@ -1068,7 +1066,7 @@ export class SegmentationEngine extends TypedEventBase {
 
     // Extract function names
     const functionMatches = text.match(/\b[a-zA-Z][a-zA-Z0-9_]*\s*\(/g) || [];
-    const functions = [...new Set(functionMatches.map(f => f.replace(/\s*\($/, ')].slice(0, 10);'
+    const functions = [...new Set(functionMatches.map(f => f.replace(/\s*\($/, ')))].slice(0, 10);')
     // Extract constants (numbers and UPPERCASE words)
     const constantMatches = text.match(/\b(\d+\.?\d*|[A-Z][A-Z_0-9]+)\b/g) || [];
     const constants = [...new Set(constantMatches)].slice(0, 10);
@@ -1078,15 +1076,15 @@ export class SegmentationEngine extends TypedEventBase {
     const operators = [...new Set(operatorMatches)].slice(0, 15);
 
     // Extract keywords
-    const algorithmKeywords = ['algorithm',    'procedure',    'function',    'method',    'input',    'output',    '                          'begin',    'end',    'if',    'then',    'else',    'for',    'while',    'do',    'return'];'const keywords = algorithmKeywords.filter(keyword => 
+    const algorithmKeywords = ['algorithm',    'procedure',    'function',    'method',    'input',    'output',    ')                              'begin',    'end',    'if',    'then',    'else',    'for',    'while',    'do',    'return'];')    const keywords = algorithmKeywords.filter(keyword => 
       text.toLowerCase().includes(keyword)
     );
 
     return {
-      variables: variables,
-      functions: functions,
-      constants: constants,
-      operators: operators,
+      variables:variables,
+      functions:functions,
+      constants:constants,
+      operators:operators,
       keywords:keywords
 };
 }
@@ -1104,7 +1102,7 @@ export class SegmentationEngine extends TypedEventBase {
     const hasDescription = text.length > 200 ? 0.1:0;
 
     // Clarity factors
-    const hasComments = text.includes('//') || text.includes('#') ? 0.05:0;'const hasExamples = /\b(example|instance|case)\b/.test(text) ? 0.1:0;
+    const hasComments = text.includes('//') || text.includes('#') ? 0.05:0;')    const hasExamples = /\b(example|instance|case)\b/.test(text) ? 0.1:0;
 
     // Technical completeness
     const hasComplexity = /\b(complexity|time|space)\b/.test(text) ? 0.1:0;

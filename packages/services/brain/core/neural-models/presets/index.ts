@@ -142,14 +142,14 @@ export function getCategoryPresets(category: string): NeuralPreset[] {
  * @example
  */
 export function validatePresetConfig(config: Partial<NeuralPreset>): boolean {
-  const required: Array<keyof NeuralPreset> = ['id', 'architecture', 'layers'];
+  const required: Array<keyof NeuralPreset> = ['id', 'architecture', 'layers`];
   const missing = required.filter(
     (field) => !(field in config) || (config as any)[field] == null
   );
 
   if (missing.length > 0) {
     throw new Error(
-      `Invalid preset configuration. Missing: ${missing.join(', ')}`
+      `Invalid preset configuration. Missing: ${missing.join(', `)}`
     );
   }
 

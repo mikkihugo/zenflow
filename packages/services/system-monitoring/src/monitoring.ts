@@ -304,7 +304,7 @@ export class SystemMonitor {
                 : 'ok',
           value: metrics.cpu.usage,
           threshold: this.config.cpuWarningThreshold,
-          message: 'System CPU usage: ' + metrics.cpu.usage + '%',
+          message: `System CPU usage: ${metrics.cpu.usage}%`,
         },
         memory: {
           status:
@@ -315,7 +315,7 @@ export class SystemMonitor {
                 : 'ok',
           value: metrics.memory.usage,
           threshold: this.config.memoryWarningThreshold,
-          message: 'System memory usage: ' + metrics.memory.usage + '%',
+          message: `System memory usage: ${metrics.memory.usage}%`,
         },
         disk: {
           status:
@@ -326,7 +326,7 @@ export class SystemMonitor {
                 : 'ok',
           value: metrics.disk.usage,
           threshold: this.config.diskWarningThreshold,
-          message: 'Disk usage: ' + metrics.disk.usage + '%',
+          message: `Disk usage: ${metrics.disk.usage}%`,
         },
         process: {
           status: (processMetrics.cpu ?? 0) > 80 ? 'warning' : 'ok',
@@ -438,11 +438,11 @@ export class PerformanceTracker {
     try {
       const result = await operation();
       timer();
-      recordMetric('operation.' + name + '.success', 1);
+      recordMetric(`operation.${name}.success`, 1);
       return result;
     } catch (error) {
       timer();
-      recordMetric('operation.' + name + '.error', 1);
+      recordMetric(`operation.${name}.error`, 1);
       throw error;
     }
   }
@@ -455,11 +455,11 @@ export class PerformanceTracker {
     try {
       const result = operation();
       timer();
-      recordMetric('operation.' + name + '.success', 1);
+      recordMetric(`operation.${name}.success`, 1);
       return result;
     } catch (error) {
       timer();
-      recordMetric('operation.' + name + '.error', 1);
+      recordMetric(`operation.${name}.error`, 1);
       throw error;
     }
   }
@@ -481,8 +481,8 @@ export class PerformanceTracker {
     }
 
     // Record to telemetry
-  recordHistogram('operation.' + name + '.duration', duration);
-  recordMetric('operation.' + name + '.count', 1);
+  recordHistogram(`operation.${name}.duration`, duration);
+  recordMetric(`operation.${name}.count`, 1);
 }
 
   /**
@@ -626,8 +626,8 @@ export class InfrastructureMetrics {
     duration: number,
     _success: boolean
   ): void {
-  recordHistogram('infrastructure.' + operation + '.duration', duration);
-  recordMetric('infrastructure.' + operation + '.calls', 1);
+  recordHistogram(`infrastructure.${operation}.duration`, duration);
+  recordMetric(`infrastructure.${operation}.calls`, 1);
 }
 
   /**

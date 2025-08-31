@@ -205,7 +205,7 @@
  *});
  *
  * // Brain tracks performance and improves over time
- * logger.info('Optimized program achieved ' + result.performance.f1_score + ' F1 score');
+ * logger.info(`Optimized program achieved ${result.performance.f1_score} F1 score`);
  * logger.info('Brain recommendation:' + result.brainInsights.recommendedStrategy);
  * '
  *
@@ -248,7 +248,7 @@
  *
  * // Production-ready classifier with ensemble power
  * const production_result = await ensemble.forward("This product is amazing!");
- * logger.info('Category:' + production_result.category + ', Confidence:' + production_result.confidence);
+ * logger.info(`Category:${production_result.category}, Confidence:` + production_result.confidence);
  * '
  *
  * @example Real-World Foundation LLM Integration
@@ -279,7 +279,7 @@
  *});
  *
  * const evaluation_results = await evaluator.evaluate(optimized_program, test_set);
- * logger.info('Program performance:' + evaluation_results.score);
+ * logger.info('Program performance:` + evaluation_results.score);
  * `
  *
  * **OPTIMIZATION STRATEGIES:**

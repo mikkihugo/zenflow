@@ -398,7 +398,7 @@ export class MIPROv2ML extends Teleprompter {
     const result = await this.multiObjectiveOptimizer?.optimize(objectives);
 
     if (!result || result.solutions.length === 0) {
-      throw new Error('Multi-objective optimization failed to find solutions');
+      throw new Error('Multi-objective optimization failed to find solutions`);
     }
 
     // Select best solution from Pareto front based on weighted objectives
@@ -406,7 +406,7 @@ export class MIPROv2ML extends Teleprompter {
     const bestSolution = this.selectBestSolution(result, weights);
 
     this.logger.info(
-      'Multi-objective optimization completed. Found ' + result.solutions.length + ' Pareto solutions'
+      `Multi-objective optimization completed. Found ${result.solutions.length} Pareto solutions`
     );
 
     return {
@@ -423,7 +423,7 @@ export class MIPROv2ML extends Teleprompter {
     initialSolution: any
   ): Promise<OptimizationResult> {
     this.logger.info(
-      'Performing Bayesian optimization with Gaussian Process...'
+      'Performing Bayesian optimization with Gaussian Process...`
     );
 
     const _bounds: OptimizationBounds = {
@@ -451,7 +451,7 @@ export class MIPROv2ML extends Teleprompter {
     const result = await this.bayesianOptimizer?.optimize(objectiveFunction);
 
     this.logger.info(
-      'Bayesian optimization completed after ' + result.iterations + ' iterations'
+      `Bayesian optimization completed after ${result.iterations} iterations`
     );
 
     return result;
@@ -499,7 +499,7 @@ export class MIPROv2ML extends Teleprompter {
       ? patternResult
       : patternResult.patterns || [];
 
-    this.logger.info('Detected ' + patterns.length + ' optimization patterns');
+    this.logger.info(`Detected ${patterns.length} optimization patterns`);
 
     return patterns;
   }
@@ -563,7 +563,7 @@ export class MIPROv2ML extends Teleprompter {
       });
     }
 
-    this.logger.info('Completed ' + tests.length + ' statistical tests');
+    this.logger.info(`Completed ${tests.length} statistical tests`);
 
     return tests;
   }
@@ -573,7 +573,7 @@ export class MIPROv2ML extends Teleprompter {
   private selectBestSolution(paretoFront: ParetoFront, weights: number[]): any {
     const { solutions } = paretoFront;
     if (solutions.length === 0) {
-      throw new Error('Empty Pareto front');
+      throw new Error('Empty Pareto front`);
     }
 
     // Weighted sum approach to select best solution
@@ -691,7 +691,7 @@ export class MIPROv2ML extends Teleprompter {
       );
       if (highQualityPatterns.length > 0) {
         recommendations.push(
-          'Found ' + highQualityPatterns.length + ' high-quality optimization patterns - consider pattern-based initialization for future runs'
+          `Found ${highQualityPatterns.length} high-quality optimization patterns - consider pattern-based initialization for future runs`
         );
       }
     }

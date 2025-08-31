@@ -412,7 +412,7 @@ export class WebSocketHubManager {
     }));
 
     logger.info(
-      'Reconnecting in ' + (delay) + 'ms (attempt ' + (this.reconnectAttempts) + '/' + this.maxReconnectAttempts + ')'
+      'Reconnecting in ' + (delay) + 'ms (attempt ` + (this.reconnectAttempts) + `/${this.maxReconnectAttempts})`
     );
 
     setTimeout(() => {

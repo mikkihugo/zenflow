@@ -205,7 +205,7 @@ export class MultiSwarmABTesting {
     const startTime = new Date();
 
     logger.info(`🧪 Starting A/B test:$testId`);`
-    logger.info(`📋 Task:${taskDescription}`);`
+    logger.info(` Task:${taskDescription}`);`
     logger.info(`🔬 Testing $strategies.lengthstrategies:$strategies.map((s) => s.name).join(',    ')`);`
 
     try {
@@ -495,7 +495,7 @@ export class MultiSwarmABTesting {
         `⏭️ Executing $strategies.lengthstrategies sequentially...``
       );
       logger.info(
-        `📊 Sequential options:delay=${delayBetweenStrategies}ms, continueOnFailure=${enableContinueOnFailure}``
+        ` Sequential options:delay=${delayBetweenStrategies}ms, continueOnFailure=${enableContinueOnFailure}``
       );
 } else {
       logger.info(
@@ -511,7 +511,7 @@ export class MultiSwarmABTesting {
       try {
         if (enableProgressLogging) {
           logger.info(
-            `📋 Executing strategy ${i + 1}/${strategies.length}:${strategy.name}``
+            ` Executing strategy ${i + 1}/${strategies.length}:${strategy.name}``
           );
 }
 
@@ -525,7 +525,7 @@ export class MultiSwarmABTesting {
 
         if (enableProgressLogging) {
           logger.info(
-            `✅ Strategy ${i + 1} completed:${strategy.name} (${result.success ?'SUCCESS' : ' FAILED'})``
+            ` Strategy ${i + 1} completed:${strategy.name} (${result.success ?'SUCCESS' : ' FAILED'})``
           );
 }
 } catch (error) {

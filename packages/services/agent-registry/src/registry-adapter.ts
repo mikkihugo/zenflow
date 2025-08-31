@@ -16,7 +16,7 @@
  * @version 2.1.0
  *
  * @example Agent Registry Migration
- * '''typescript'
+ * ```typescript`
  * import { AgentRegistryAdapter} from '@claude-zen/agent-registry';
  * import { AgentRegistry} from './old-agent-registry';
  *
@@ -30,10 +30,10 @@
  * await agentRegistry.registerAgent({
  *   id: 'agent-1', *   name: 'Test Agent', *   type: 'coder', *   status: 'idle', *   capabilities:{ languages: ['typescript']}') *});
  *
- * const agents = await agentRegistry.queryAgents({ type: 'coder'});') * '
+ * const agents = await agentRegistry.queryAgents({ type: 'coder'});') * ````
  *
  * @example Service Registry Migration
- * 'typescript'
+ * ```typescript`
  * import { ServiceRegistryAdapter} from '@claude-zen/foundation';
  *
  * // Migrate existing service registry
@@ -43,7 +43,7 @@
  * serviceRegistry.register('userService', UserService);') * const userService = serviceRegistry.get('userService');') *
  * // New capabilities available
  * const healthReport = await serviceRegistry.getHealthStatus();
- * const authServices = serviceRegistry.getServicesByCapability('authentication');') * '
+ * const authServices = serviceRegistry.getServicesByCapability('authentication');') * ````
  */
 
 import {
@@ -111,7 +111,7 @@ export abstract class BaseRegistryAdapter extends TypedEventBase {
       autoCleanup:true,
       persistentStorage:true,
 });
-    this.logger = getLogger('registry-adapter:' + this.options.containerName);'
+    this.logger = getLogger(`registry-adapter:${this.options.containerName}`);`
 
     if (this.options.enableHealthMonitoring) {
       this.container.startHealthMonitoring();
@@ -157,7 +157,7 @@ export abstract class BaseRegistryAdapter extends TypedEventBase {
    */
   protected emitMigrationEvent(event: string, data: JsonValue): void {
     if (this.options.enableMigrationLogging) {
-      this.logger.debug('Migration event: ' + event, data);
+      this.logger.debug(`Migration event: ${event}`, data);
     }
     this.emit(event, data);
   }
@@ -230,7 +230,7 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
 
     if (result.isErr()) {
       throw new Error(
-        'Failed to register agent ' + agent.id + ': ' + result.error.message
+        `Failed to register agent ${agent.id}: ${result.error.message}`
       );
     }
 
@@ -495,12 +495,12 @@ export class ServiceRegistryAdapter extends BaseRegistryAdapter {
 
     if (result.isErr()) {
       throw new Error(
-        'Failed to register service ' + name + ': ' + result.error.message
+        `Failed to register service ${name}:${result.error.message}``
       );
-    }
+}
 
     this.services.set(name, implementation);
-    this.emitMigrationEvent('serviceRegistered', { name });
+    this.emitMigrationEvent('serviceRegistered', { name});')}
 
   /**
    * Register an instance
@@ -510,7 +510,8 @@ export class ServiceRegistryAdapter extends BaseRegistryAdapter {
 
     if (result.isErr()) {
       throw new Error(
-        'Failed to register instance ' + name + ':' + result.error.message);
+        `Failed to register instance ${name}:${result.error.message}``
+      );
 }
 
     this.services.set(name, instance);
@@ -524,7 +525,8 @@ export class ServiceRegistryAdapter extends BaseRegistryAdapter {
 
     if (result.isErr()) {
       throw new Error(
-        'Failed to resolve service ' + name + ':' + result.error.message);
+        `Failed to resolve service ${name}:${result.error.message}``
+      );
 }
 
     return result.value;
@@ -655,9 +657,9 @@ export class RegistryMigrationUtil {
       ((oldPerformance - newPerformance) / oldPerformance) * 100;
 
     this.logger.info('Performance comparison completed', {
-    ')      oldPerformance:oldPerformance + 'ms','
-      newPerformance:newPerformance + 'ms','
-      improvement:improvement.toFixed(2) + '%','
+    ')      oldPerformance:`${oldPerformance}ms`,`
+      newPerformance:`${newPerformance}ms`,`
+      improvement:`${improvement.toFixed(2)}%`,`
 });
 
     return {

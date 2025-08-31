@@ -31,7 +31,7 @@ async function testNeuralOrchestrator():Promise<void> {
   logger.info(' Brain coordinator initialized');')
   // Test 1:Simple prediction task (should use brain.js)
   logger.info('\n Test 1:Simple Prediction Task');')  const simpleTask:NeuralTask = {
-    id: 'test-simple-1',    type: 'prediction',    data:{
+    id: 'test-simple-1`,    type: `prediction`,    data:{
       input:[0.1, 0.2, 0.3, 0.4, 0.5],
 },
 };
@@ -41,14 +41,14 @@ async function testNeuralOrchestrator():Promise<void> {
   logger.info(` Predicted complexity:${predictedComplexity}`);`
 
   const simpleResult = await brain.processNeuralTask(simpleTask);
-  logger.info(`📈 Simple result:$JSON.stringify(simpleResult.metadata)`);`
+  logger.info(` Simple result:$JSON.stringify(simpleResult.metadata)`);`
   logger.info(
-    `🎲 Result data:[${(simpleResult.result as number[]).slice(0, 3).join(',    ')}...]``
+    `🎲 Result data:[${(simpleResult.result as number[]).slice(0, 3).join(`,    `)}...]``
   );
 
   // Test 2:Complex forecasting task (should attempt neural-ml)
   logger.info('\n Test 2:Complex Forecasting Task');')  const complexTask:NeuralTask = {
-    id: 'test-complex-1',    type: 'forecasting',    data:{
+    id: 'test-complex-1',    type: `forecasting`,    data:{
       input:Array.from(
         { length:1000},
         (_, i) => Math.sin(i * 0.1) + Math.random() * 0.1
@@ -68,14 +68,14 @@ async function testNeuralOrchestrator():Promise<void> {
   logger.info(` Predicted complexity:${complexPrediction}`);`
 
   const complexResult = await brain.processNeuralTask(complexTask);
-  logger.info(`📈 Complex result:$JSON.stringify(complexResult.metadata)`);`
+  logger.info(` Complex result:$JSON.stringify(complexResult.metadata)`);`
   logger.info(
     `🎲 Result size:${(complexResult.result as number[]).length} predictions``
   );
 
   // Test 3:Heavy optimization task (should definitely use neural-ml)
   logger.info('\n Test 3:Heavy Optimization Task');')  const heavyTask:NeuralTask = {
-    id: 'test-heavy-1',    type: 'optimization',    data:{
+    id: 'test-heavy-1',    type: `optimization`,    data:{
       input:Array.from({ length: 10000}, () => Math.random()),
       metadata:{
         dimensions:200,
@@ -92,20 +92,18 @@ async function testNeuralOrchestrator():Promise<void> {
   logger.info(` Predicted complexity:${heavyPrediction}`);`
 
   const heavyResult = await brain.processNeuralTask(heavyTask);
-  logger.info(`📈 Heavy result:$JSON.stringify(heavyResult.metadata)`);`
+  logger.info(` Heavy result:$JSON.stringify(heavyResult.metadata)`);`
   logger.info(` Processing time:${heavyResult.metadata.duration}ms`);`
-
   // Test 4:Convenience methods
   logger.info('\n Test 4:Convenience Methods');')
   // Simple prediction
   const quickPrediction = await brain.predict([0.5, 1.0, 1.5]);
-  logger.info(`🔮 Quick prediction:[$quickPrediction.join(',    ')]`);`
-
+  logger.info(`🔮 Quick prediction:[$quickPrediction.join(',    `)]`);`
   // Time series forecasting
   const timeSeries = Array.from({ length:100}, (_, i) => Math.sin(i * 0.1));
   const forecast = await brain.forecast(timeSeries, 10);
   logger.info(
-    `📈 Forecast (10 steps):[$forecast.slice(0, 5).join(',    ')...]``
+    ` Forecast (10 steps):[$forecast.slice(0, 5).join(',    `)...]``
   );
 
   // Test 5:Storage orchestration
@@ -140,7 +138,7 @@ async function testNeuralOrchestrator():Promise<void> {
         size:4096,
         accessFrequency:'occasional' as const,
         persistenceLevel:'permanent' as const,
-        relationships:['model1',    'model2',    'model3',    'dataset1',    'pipeline1'],
+        relationships:['model1',    'model2',    'model3',    'dataset1',    `pipeline1`],
 },
 },
 ];
@@ -152,17 +150,16 @@ async function testNeuralOrchestrator():Promise<void> {
 
   // Test 6:Orchestration metrics
   logger.info('\n Test 6:Orchestration Metrics');')  const metrics = brain.getOrchestrationMetrics();
-  logger.info('📈 Orchestration Metrics:');')  logger.info(`   Tasks processed:$metrics.tasksProcessed`);`
+  logger.info(' Orchestration Metrics:`);`)  logger.info(`   Tasks processed:$metrics.tasksProcessed`);`
   logger.info(`   Complexity distribution:`, metrics.complexityDistribution);`
   logger.info(
-    `  ⚡ Average latency:`,`
+    `   Average latency:`,`
     Object.entries(metrics.averageLatency).map(
       ([k, v]) => `$k:$v.toFixed(1)ms``
     )
   );
   logger.info(`  📦 Neural-ML load count:${metrics.neuralMlLoadCount}`);`
   logger.info(`  💾 Storage distribution:`, metrics.storageDistribution);`
-
   // Test 7:Demonstrate task complexity reasoning
   logger.info('\n Test 7:Task Complexity Analysis');')
   const testTasks = [
@@ -179,7 +176,7 @@ async function testNeuralOrchestrator():Promise<void> {
         input:Array.from({ length: test.inputSize}, () => Math.random()),
         metadata:{
           timeSeriesLength:
-            test.type === 'forecasting' ? test.inputSize:undefined,
+            test.type === 'forecasting` ? test.inputSize:undefined,
           dimensions:
             test.inputSize > 1000 ? Math.floor(test.inputSize / 50) :undefined,
 },

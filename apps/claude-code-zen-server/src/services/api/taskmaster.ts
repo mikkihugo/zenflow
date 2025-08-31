@@ -519,7 +519,7 @@ async function handleGetTask(
       timestamp: new Date().toISOString(),
     });
   } catch (_error) {
-    logger.error('Failed to get task ' + req.params.taskId + ':', error);
+    logger.error(`Failed to get task ${req.params.taskId}:`, error);
     log(LogLevel.ERROR, TASK_ERROR_MESSAGES.getTaskFailed, req, {
       error: (error as Error).message,
       taskId: req.params.taskId,
@@ -609,7 +609,7 @@ async function handleGetTasksByState(
       timestamp: new Date().toISOString(),
     });
   } catch (_error) {
-    logger.error('Failed to get tasks by state ' + req.params.state + ':', error);
+    logger.error(`Failed to get tasks by state ${req.params.state}:`, error);
     log(LogLevel.ERROR, TASK_ERROR_MESSAGES.getTasksByStateFailed, req, {
       error: (error as Error).message,
       state: req.params.state,
@@ -737,7 +737,7 @@ async function validateWIPLimits(
         success: false,
         error: 'WIP limit exceeded',
         wipStatus: wipLimits,
-        message: 'Cannot move task to ' + (toState) + '. WIP limit reached (' + (wipLimits.current) + '/' + wipLimits.limit + ')',
+        message: 'Cannot move task to ' + (toState) + '. WIP limit reached (' + (wipLimits.current) + `/${wipLimits.limit})`,
         timestamp: new Date().toISOString(),
       },
       wipStatus: wipLimits,
@@ -777,7 +777,7 @@ function handleMoveTaskError(
   res: Response,
   error: unknown
 ): void {
-  logger.error('Failed to move task ' + req.params.taskId + ':', error);
+  logger.error(`Failed to move task ${req.params.taskId}:`, error);
   log(LogLevel.ERROR, TASK_ERROR_MESSAGES.moveTaskFailed, req, {
     error: (error as Error).message,
     taskId: req.params.taskId,

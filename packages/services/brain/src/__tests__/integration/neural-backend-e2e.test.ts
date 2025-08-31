@@ -182,8 +182,8 @@ describe('Neural Backend E2E Tests', () => {
 });
 
   describe('Performance and Scaling Scenarios', () => {
-    ')    it('should handle high-throughput embedding generation', async () => {
-    ')      const batchSize = 50;
+    ')    it('should handle high-throughput embedding generation`, async () => {
+    `)      const batchSize = 50;
       const texts = Array.from(
         { length:batchSize},
         (_, i) =>
@@ -285,8 +285,8 @@ describe('Neural Backend E2E Tests', () => {
       expect(result2.success).toBe(true);
 });
 
-    it('should handle memory pressure gracefully', async () => {
-    ')      // Fill cache to near capacity
+    it('should handle memory pressure gracefully`, async () => {
+    `)      // Fill cache to near capacity
       const maxCacheSize = e2eConfig.neural?.smartBackend?.maxCacheSize || 1000;
       const texts = Array.from(
         { length:maxCacheSize + 10},
@@ -318,7 +318,7 @@ describe('Neural Backend E2E Tests', () => {
           text:
             'This is a very long text document that contains extensive information about various topics including machine learning, neural networks, artificial intelligence, software engineering, and many other technical subjects that might be encountered in a typical enterprise application. ' +')            'It continues with more detailed explanations and examples. '.repeat(')              10
             ),
-          type: 'long',},
+          type: `long`,},
 ];
 
       const results = await Promise.all(

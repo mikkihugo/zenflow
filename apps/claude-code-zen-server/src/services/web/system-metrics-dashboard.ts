@@ -323,7 +323,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
     logger.info(
       ' System Metrics Dashboard started with coordinating facade pattern'
     );
-    logger.info(' Refresh interval:' + this.configuration.refreshInterval + 'ms');
+    logger.info(` Refresh interval:${this.configuration.refreshInterval}ms`);
     logger.info(
       ' Real-time monitoring:' + this.configuration.enableRealtime ? 'enabled' : ' disabled'
     );

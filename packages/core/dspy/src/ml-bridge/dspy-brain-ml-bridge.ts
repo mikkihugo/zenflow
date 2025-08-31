@@ -302,7 +302,7 @@ export class DSPyBrainMLBridge extends EventEmitter {
     }
 
     const startTime = Date.now();
-    this.logger.info(' Starting DSPy ' + task.teleprompterType + ' optimization');
+    this.logger.info(` Starting DSPy ${task.teleprompterType} optimization`);
 
     try {
       // Convert DSPy task to Brain optimization format
@@ -319,7 +319,7 @@ export class DSPyBrainMLBridge extends EventEmitter {
       this.optimizationHistory.set(task.teleprompterType, dspyResult);
 
       const duration = Date.now() - startTime;
-      this.logger.info(' DSPy optimization completed in ' + duration + 'ms');
+      this.logger.info(` DSPy optimization completed in ${duration}ms`);
 
       this.emit('optimization:completed', {
         teleprompterType: task.teleprompterType,
@@ -330,7 +330,7 @@ export class DSPyBrainMLBridge extends EventEmitter {
       return dspyResult;
     } catch (error) {
       this.logger.error(
-        'Failed to optimize DSPy ' + task.teleprompterType + ':',
+        `Failed to optimize DSPy ${task.teleprompterType}:`,
         error
       );
       throw error;

@@ -413,7 +413,7 @@ export class AIInsightsEngine {
         type: 'anomaly',
         severity: 'high',
         title: 'System Health Issue',
-        description: 'System status is "' + health.status + '", indicating potential problems.',
+        description: `System status is "${health.status}", indicating potential problems.`,
         recommendation:
           'Investigate system logs, check service dependencies, and review recent changes.',
         confidence: 92,
@@ -444,7 +444,7 @@ export class AIInsightsEngine {
           type: 'optimization',
           severity: 'low',
           title: 'Low System Usage',
-          description: 'Only ' + usage.requestsPerMin + ' requests/min, indicating underutilization.',
+          description: `Only ${usage.requestsPerMin} requests/min, indicating underutilization.`,
           recommendation:
             'Consider cost optimization by downsizing resources or finding ways to increase system utilization.',
           confidence: 70,
@@ -605,15 +605,15 @@ export class AIInsightsEngine {
     const highCount = insights.filter((i) => i.severity === 'high').length;
 
     if (criticalCount > 0) {
-      return 'System requires immediate attention with ' + criticalCount + ' critical issue' + (criticalCount > 1 ? 's' : '') + ' detected. Overall health score: ' + healthScore + '/100.';
+      return `System requires immediate attention with ${criticalCount} critical issue` + (criticalCount > 1 ? 's' : '') + ` detected. Overall health score: ${healthScore}/100.`;
     } else if (highCount > 0) {
-      return 'System has ' + highCount + ' high-priority issue' + (highCount > 1 ? 's' : '') + ' that should be addressed soon. Health score: ' + healthScore + '/100.';
+      return `System has ${highCount} high-priority issue` + (highCount > 1 ? 's' : '') + ` that should be addressed soon. Health score: ${healthScore}/100.`;
     } else if (healthScore > 90) {
-      return 'System is performing excellently with minimal issues detected. Health score:' + healthScore + '/100.';
+      return `System is performing excellently with minimal issues detected. Health score:${healthScore}/100.`;
     } else if (healthScore > 70) {
-      return 'System is performing well with some optimization opportunities. Health score:' + healthScore + '/100.';
+      return `System is performing well with some optimization opportunities. Health score:${healthScore}/100.`;
     } else {
-      return 'System has multiple areas for improvement. Health score:' + healthScore + '/100.';
+      return `System has multiple areas for improvement. Health score:${healthScore}/100.`;
     }
   }
 

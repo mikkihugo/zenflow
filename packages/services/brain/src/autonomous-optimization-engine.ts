@@ -107,7 +107,7 @@ export class AutonomousOptimizationEngine {
       logger.info(' Autonomous Optimization Engine initialized successfully');
     } catch (error) {
       logger.error(
-        '❌ Failed to initialize Autonomous Optimization Engine: ',
+        ' Failed to initialize Autonomous Optimization Engine: ',
         error
       );
       throw error;
@@ -330,7 +330,7 @@ export class AutonomousOptimizationEngine {
             await this.adaptSelectionStrategy();
             logger.debug('🔄 Continuous optimization evaluation completed');')} catch (error) {
             logger.error(
-              '❌ Continuous optimization evaluation failed: ','              error
+              ' Continuous optimization evaluation failed: ','              error
             );
 }
 }, config.evaluationInterval);
@@ -424,12 +424,12 @@ export class AutonomousOptimizationEngine {
     // If we don't have enough data, use complexity estimate guidance')    if (this.optimizationHistory.length < this.minDataPoints) {
       if (complexityEstimate?.suggestedMethod) {
         logger.debug(
-          `🎯 Using complexity-based method suggestion: ${complexityEstimate.suggestedMethod}`
+          ` Using complexity-based method suggestion: ${complexityEstimate.suggestedMethod}`
         );
         return complexityEstimate.suggestedMethod;
       }
       logger.debug(
-        '🎯 Insufficient data for autonomous decision, using hybrid approach'
+        ' Insufficient data for autonomous decision, using hybrid approach'
       );
       return 'hybrid';
     }
@@ -442,7 +442,7 @@ export class AutonomousOptimizationEngine {
     const mlScore = this.calculateMethodScore('ml', context) + enhancedScores.mlBoost;
     const hybridScore = this.calculateMethodScore('hybrid', context) + enhancedScores.hybridBoost;
     logger.debug(
-      `📊 Enhanced method scores - DSPy: ${dspyScore.toFixed(2)}, ML: ${mlScore.toFixed(2)}, Hybrid: ${hybridScore.toFixed(2)}`
+      ` Enhanced method scores - DSPy: ${dspyScore.toFixed(2)}, ML: ${mlScore.toFixed(2)}, Hybrid: ${hybridScore.toFixed(2)}`
     );
 
     // Apply selection strategy insights
@@ -638,7 +638,7 @@ export class AutonomousOptimizationEngine {
 });
 
     logger.debug(
-      '📊 Initialized baseline performance for 3 optimization methods')    );
+      ' Initialized baseline performance for 3 optimization methods')    );
 }
 
   private async recordOptimization(
@@ -778,7 +778,7 @@ export class AutonomousOptimizationEngine {
 
     if (performanceSpread > this.adaptationThreshold * 2) {
       logger.info(
-        '🎯 High performance spread detected - increasing adaptation sensitivity')      );
+        ' High performance spread detected - increasing adaptation sensitivity')      );
 }
 
     logger.debug('🧠 Adaptation strategy analysis complete');')}

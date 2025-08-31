@@ -532,7 +532,7 @@ export class GRPO extends FinetuneTeleprompter {
 				:Math.floor(base_idx / this.shuffled_trainset_ids.length);
 
 		if (curr_epoch > this.epoch) {
-			logger.info('Updating shuffled trainset for epoch ' + curr_epoch + '...');
+			logger.info(`Updating shuffled trainset for epoch ${curr_epoch}...`);
 			this.epoch = curr_epoch;
 			this.update_shuffled_trainset(original_trainset);
 }
@@ -599,7 +599,7 @@ export class GRPO extends FinetuneTeleprompter {
 
 		if (trainset.length < this.num_dspy_examples_per_grpo_step) {
 			logger.warning(
-				'Number of training examples ' + (trainset.length) + ' is less than the number of examples per GRPO step ' + this.num_dspy_examples_per_grpo_step + '. ' +
+				'Number of training examples ' + (trainset.length) + ` is less than the number of examples per GRPO step ${this.num_dspy_examples_per_grpo_step}. ` +
 					"Repeating the training set to fill the GRPO step. This could lead to overfitting and training instability.",
 			);
 			const multiplier = Math.ceil(
@@ -607,7 +607,7 @@ export class GRPO extends FinetuneTeleprompter {
 			);
 			if (multiplier > 1) {
 				logger.warning(
-					'Repeating the training set ' + multiplier + ' times to fill the GRPO step. This could lead to overfitting and training instability.',
+					`Repeating the training set ${multiplier} times to fill the GRPO step. This could lead to overfitting and training instability.`,
 				);
 				trainset = Array(multiplier).fill(trainset).flat();
 }
@@ -624,9 +624,9 @@ export class GRPO extends FinetuneTeleprompter {
 		const student_lms = new Set(student.predictors().map((pred) => pred.lm));
 		if (student_lms.size !== 1) {
 			throw new Error(
-				'Student program has multiple LMs:' + Array.from(student_lms) + '. ' +
+				`Student program has multiple LMs: ${Array.from(student_lms).join(`, ')}. ` +
 					"GRPO only supports student programs with a single LM. " +
-					"You can set the LM for a program with 'program.set_lm(...)',
+					"You can set the LM for a program with 'program.set_lm(...)'",
 			);
 		}
 
@@ -661,14 +661,14 @@ export class GRPO extends FinetuneTeleprompter {
 		// Ensure that the teachers list contains the student program
 		if (!teachers.includes(student)) {
 			throw new Error(
-				'Student program ' + (student) + ' is not in the list of teachers ' + teachers + '. Please provide the student program as one of the teachers. ' +
+				'Student program ' + (student) + ` is not in the list of teachers ${teachers}. Please provide the student program as one of the teachers. ` +
 					"Alternatively, you can leave the teacher argument as None, and the student program will be used as the teacher program.",
 			);
 		}
 
 		if (this.num_rollouts_per_grpo_step % teachers.length !== 0) {
 			throw new Error(
-				'The GRPO group size (num_rollouts_per_grpo_step) ' + (this.num_rollouts_per_grpo_step) + ' is not divisible by the number of teachers ' + teachers.length + '. ' +
+				'The GRPO group size (num_rollouts_per_grpo_step) ' + (this.num_rollouts_per_grpo_step) + ` is not divisible by the number of teachers ${teachers.length}. ` +
 					"This is required to ensure that each teacher gets the same number of examples. " +
 					"Please provide a number of examples that is divisible by the number of teachers.",
 			);
@@ -714,7 +714,7 @@ export class GRPO extends FinetuneTeleprompter {
 			train_step_idx++
 		) {
 			logger.info(
-				'GRPO training step ' + (train_step_idx + 1) + '/' + this.num_train_steps + '...',
+				'GRPO training step ' + (train_step_idx + 1) + `/${this.num_train_steps}...`,
 			);
 
 			const subsample_training_dataset =
@@ -805,7 +805,7 @@ export class GRPO extends FinetuneTeleprompter {
 
 					if (predictor_example_invocations.length === 0) {
 						logger.warning(
-							'Skipping example ' + (example_ind) + ' for predictor ' + pred_id + ' as it has no invocations. This is likely due to all examples in the training set input, resulting in the model generating output not following the dspy response format.',
+							'Skipping example ' + (example_ind) + ` for predictor ${pred_id} as it has no invocations. This is likely due to all examples in the training set input, resulting in the model generating output not following the dspy response format.`,
 						);
 						continue;
 } else if (
@@ -813,7 +813,7 @@ export class GRPO extends FinetuneTeleprompter {
 						this.num_rollouts_per_grpo_step
 					) {
 						logger.warning(
-							'Number of predictor example invocations ' + (predictor_example_invocations.length) + ' does not match the expected batch size ' + this.num_rollouts_per_grpo_step + '. This is likely due to all examples in the training set input, resulting in the model generating output not following the dspy response format.',
+							'Number of predictor example invocations ' + (predictor_example_invocations.length) + ` does not match the expected batch size ${this.num_rollouts_per_grpo_step}. This is likely due to all examples in the training set input, resulting in the model generating output not following the dspy response format.`,
 						);
 }
 
@@ -825,7 +825,7 @@ export class GRPO extends FinetuneTeleprompter {
 
 					if (min_len === 0) {
 						logger.warning(
-							'Skipping example ' + (example_ind) + ' for predictor ' + pred_id + ' as it has no invocations.',
+							'Skipping example ' + (example_ind) + ` for predictor ${pred_id} as it has no invocations.`,
 						);
 						continue;
 }
@@ -880,7 +880,7 @@ export class GRPO extends FinetuneTeleprompter {
 								const adapter = this.adapter.get(pred_lm) || new ChatAdapter();
 								if (!(adapter instanceof ChatAdapter)) {
 									throw new Error(
-										'Adapter ' + adapter + ' is not a ChatAdapter. GRPO training is not supported for this adapter.',
+										`Adapter ${adapter} is not a ChatAdapter. GRPO training is not supported for this adapter.`,
 									);
 }
 
@@ -904,7 +904,7 @@ export class GRPO extends FinetuneTeleprompter {
 										reward:failure_score,
 });
 									logger.warning(
-										'Adding a format failure example to the training data for predictor ' + (pred_id) + ' and example ' + example_ind + '.',
+										'Adding a format failure example to the training data for predictor ' + (pred_id) + ` and example ${example_ind}.`,
 									);
 } else {
 									const all_messages = adapter.formatFinetuneData({
@@ -1004,7 +1004,7 @@ export class GRPO extends FinetuneTeleprompter {
 }
 
 			logger.info(
-				'GRPO training step ' + (train_step_idx + 1) + '/' + this.num_train_steps + ' completed.',
+				'GRPO training step ' + (train_step_idx + 1) + `/${this.num_train_steps} completed.`,
 			);
 
 			await this.report_validation_metrics(
@@ -1054,7 +1054,7 @@ function disable_lm_cache(
 	for (const pred of program.predictors()) {
 		if (!pred.lm) {
 			throw new Error(
-				'Cannot disable cache:predictor ' + pred + ' does not have an LM set.',
+				`Cannot disable cache:predictor ${pred} does not have an LM set.`,
 			);
 }
 		if (!lm_cache_dict.has(pred.lm)) {

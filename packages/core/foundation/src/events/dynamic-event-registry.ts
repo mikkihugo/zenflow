@@ -344,7 +344,7 @@ export class DynamicEventRegistry extends EventBus {
         module.status = 'idle';
         EventLogger.logError(
           'registry:module-idle',
-          'Module ' + moduleId + ' is idle',
+          `Module ${moduleId} is idle`,
           { component: ' DynamicEventRegistry' }
         );
       }
@@ -353,7 +353,7 @@ export class DynamicEventRegistry extends EventBus {
         module.status = 'disconnected';
         EventLogger.logError(
           'registry:module-disconnected',
-          'Module ' + moduleId + ' disconnected',
+          `Module ${moduleId} disconnected`,
           { component: ' DynamicEventRegistry' }
         );
       }

@@ -61,7 +61,7 @@
  *});
  *
  * logger.info('AI Decision: ', {
-'    ') *   strategy:decision.selectedStrategy,
+'    `) *   strategy:decision.selectedStrategy,
  *   confidence:decision.confidence,
  *   reasoning:decision.reasoning,
  *   expectedOutcome:decision.prediction
@@ -124,7 +124,7 @@
  * await brain.learnFromResult(result, true, {
  *   actualPerformance:0.995,
  *   actualTime:3.2 * 3600000, // 3.2 hours
- *   feedback:'Exceeded expectations, excellent architecture selection') *});
+ *   feedback:'Exceeded expectations, excellent architecture selection`) *});
  * ````
  *
  * @example Enterprise Neural Network Training
@@ -201,7 +201,7 @@
  *});
  *
  * logger.info('Training Results: ', {
-'    ') *   finalLoss:trainingResult.finalLoss,
+'    `) *   finalLoss:trainingResult.finalLoss,
  *   bestValidationAccuracy:trainingResult.bestValidationAccuracy,
  *   trainingTime:trainingResult.totalTrainingTime,
  *   modelSize:trainingResult.modelSizeBytes,
@@ -236,7 +236,7 @@
  *
  * // Analyze complex enterprise task
  * const complexityAnalysis = await complexityEstimator.estimateComplexity({
- *   task: 'microservices-architecture-design', *   prompt:`Design a fault-tolerant microservices architecture for a global`
+ *   task: 'microservices-architecture-design`, *   prompt:`Design a fault-tolerant microservices architecture for a global`
  *            e-commerce platform handling 100M+ users with real-time inventory,
  *            payment processing, recommendation engine, and fraud detection`,`
  *   context:{
@@ -292,7 +292,7 @@
  *});
  *
  * logger.info('Autonomous Strategy Selection: ', {
-'    ') *   selectedStrategy:optimizationDecision.strategy,
+'    `) *   selectedStrategy:optimizationDecision.strategy,
  *   confidence:optimizationDecision.confidence,
  *   reasoning:optimizationDecision.reasoning,
  *   expectedOutcome:optimizationDecision.prediction,
@@ -391,7 +391,7 @@
  *});
  *
  * logger.info('Behavioral Intelligence Demo: ', {
-'    ') *   totalAgents:demoResults.agents.length,
+'    `) *   totalAgents:demoResults.agents.length,
  *   averageAccuracy:demoResults.predictionAccuracy,
  *   improvementRate:demoResults.learningRate,
  *   insights:demoResults.keyInsights
@@ -453,7 +453,7 @@
  *});
  *
  *   logger.info('GPU Optimization Results: ', {
-'    ') *     originalSize:optimizedNetwork.originalSize,
+'    `) *     originalSize:optimizedNetwork.originalSize,
  *     optimizedSize:optimizedNetwork.optimizedSize,
  *     speedupFactor:optimizedNetwork.speedupFactor,
  *     memoryReduction:optimizedNetwork.memoryReduction,
@@ -540,7 +540,7 @@
  *});
  *
  * logger.info('System Optimization Results: ', {
-'    ') *   decisions:systemOptimization.decisions,
+'    `) *   decisions:systemOptimization.decisions,
  *   expectedImpact:systemOptimization.impact,
  *   confidence:systemOptimization.confidence,
  *   implementationPlan:systemOptimization.plan,
@@ -555,7 +555,7 @@
  * import { NeuralBridge} from '@claude-zen/brain/neural';
  * import { AutonomousOptimizationEngine} from '@claude-zen/brain/autonomous';
  * import { BehavioralIntelligence} from '@claude-zen/brain/behavioral';
- * import { GPUSupport} from '@claude-zen/brain/gpu';
+ * import { GPUSupport} from '@claude-zen/brain/gpu`;
  * ````
  *
  * **Performance Characteristics:**
@@ -996,7 +996,7 @@ export const BRAIN_INFO = {
   neuralArchitectures:[
     'Feedforward Neural Networks',    'Convolutional Neural Networks (CNN)',    'Recurrent Neural Networks (RNN/LSTM)',    'Transformer and Attention-based models',    'Variational Autoencoders (VAE)',    'Generative Adversarial Networks (GAN)',    'Reinforcement Learning models',    'Custom neural architectures',],
   acceleration:{
-    rust: 'High-performance Rust backend with WASM bindings',    gpu: 'CUDA, OpenCL, Metal, and WebGL support',    cpu: 'Multi-threaded processing with SIMD optimization',    distributed: 'Horizontal scaling across multiple nodes',},
+    rust: 'High-performance Rust backend with WASM bindings',    gpu: 'CUDA, OpenCL, Metal, and WebGL support',    cpu: 'Multi-threaded processing with SIMD optimization',    distributed: 'Horizontal scaling across multiple nodes`,},
 } as const;
 
 /**

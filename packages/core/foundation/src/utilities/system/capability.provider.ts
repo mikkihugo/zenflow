@@ -165,13 +165,13 @@ export async function displaySystemStatus(): Promise<void> {
         ? ''
         : '';
   logger.info(
-    (statusEmoji) + ' Overall:' + (dashboard.overall.toUpperCase()) + ' (' + dashboard.systemHealthScore + '% health)'
+    (statusEmoji) + ' Overall:` + (dashboard.overall.toUpperCase()) + ` (${dashboard.systemHealthScore}% health)`
   );
   logger.info(
-    ' Packages:' + (dashboard.availablePackages) + '/' + dashboard.totalPackages + ' available'
+    ' Packages:` + (dashboard.availablePackages) + `/${dashboard.totalPackages} available`
   );
   logger.info(
-    ' Services:' + dashboard.registeredServices + ' registered in Awilix'
+    ` Services:${dashboard.registeredServices} registered in Awilix`
   );
 
   // Facade breakdown
@@ -184,7 +184,7 @@ export async function displaySystemStatus(): Promise<void> {
           ? ''
           : '';
     logger.info(
-      '  ' + (facadeEmoji) + ' ' + (facade.name) + ':' + (facade.capability) + ' (' + facade.healthScore + '%)'
+      '  ' + (facadeEmoji) + ' ' + (facade.name) + ':` + (facade.capability) + ` (${facade.healthScore}%)`
     );
 
     if (facade.missingPackages.length > 0) {
@@ -275,7 +275,7 @@ export function startSystemMonitoring(): void {
       version?: string;
       timestamp: Date;
     };
-    logger.info(' Package ' + data.packageName + ' loaded successfully', {
+    logger.info(` Package ${data.packageName} loaded successfully`, {
       version: data.version || 'unknown',
       timestamp: data.timestamp.toISOString(),
     });
@@ -283,7 +283,7 @@ export function startSystemMonitoring(): void {
 
   facadeStatusManager.on('facade-registered', (...args: unknown[]) => {
     const data = args[0] as { facadeName: string; timestamp: Date };
-    logger.info('️ Facade ' + data.facadeName + ' registered', {
+    logger.info(`️ Facade ${data.facadeName} registered`, {
       timestamp: data.timestamp.toISOString(),
     });
   });

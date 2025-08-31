@@ -93,7 +93,7 @@ export class WebSocketManager {
       });
 
       socket.on('error', (_error) => {
-        this.logger.error('Socket error for client ' + socket.id + ':', error);
+        this.logger.error(`Socket error for client ${socket.id}:`, error);
       });
     });
 
@@ -190,7 +190,7 @@ export class WebSocketManager {
       }
     } catch (_error) {
       this.logger.error(
-        'Failed to send initial data for channel ' + channel + ':',
+        `Failed to send initial data for channel ${channel}:`,
         error
       );
     }

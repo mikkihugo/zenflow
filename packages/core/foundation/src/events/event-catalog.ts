@@ -589,7 +589,7 @@ export class CatalogEventLogger {
     }
 
     const eventType = getEventType(eventName);
-    logger.info(' Event:' + (eventName) + ' (' + eventType + ')');
+    logger.info(' Event:' + (eventName) + ` (${eventType})`);
 
     if (payload) {
       logger.info(' Payload:', payload);

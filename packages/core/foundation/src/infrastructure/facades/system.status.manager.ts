@@ -9,7 +9,7 @@
  * import { getSystemStatus, getHealthSummary} from '@claude-zen/foundation/status-manager';
  *
  * const systemStatus = getSystemStatus();
- * logger.info('Overall:' + (systemStatus.overall) + ', Health:' + systemStatus.healthScore + '%');
+ * logger.info('Overall:' + (systemStatus.overall) + `, Health:${systemStatus.healthScore}%`);
  *
  * const health = getHealthSummary();
  * // Returns:{ status: 'healthy|degraded|unhealthy', details:{...}}
@@ -399,7 +399,7 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
     packageInfo.capabilities = Object.keys(module);
 
     this.registerModuleInAwilix(packageInfo, module, packageName);
-    logger.debug('Package ' + packageName + ' is available', packageInfo);
+    logger.debug(`Package ${packageName} is available`, packageInfo);
   }
 
   /**
@@ -414,7 +414,7 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
     packageInfo.error =
       error instanceof Error ? error['message'] : 'Unknown error';
 
-    logger.debug('Package ' + packageName + ' is unavailable', {
+    logger.debug(`Package ${packageName} is unavailable`, {
       error: packageInfo.error,
     });
   }
@@ -435,13 +435,13 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
         packageInfo.awilixRegistered = true;
         packageInfo.status = PackageStatus.REGISTERED;
 
-        logger.info('Package ' + packageName + ' registered in Awilix', {
+        logger.info(`Package ${packageName} registered in Awilix`, {
           services: Object.keys(registrations),
           serviceName: packageInfo.serviceName,
         });
       }
     } catch (regError) {
-      logger.warn('Failed to register ' + packageName + ' in Awilix', regError);
+      logger.warn(`Failed to register ${packageName} in Awilix`, regError);
       packageInfo.awilixRegistered = false;
     }
   }
@@ -585,7 +585,7 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
     // Emit service registration event
     this.emit('service-registered', { serviceName, timestamp: new Date() });
 
-    logger.info('Service ' + serviceName + ' registered', {
+    logger.info(`Service ${serviceName} registered`, {
       capability,
       healthScore,
       availablePackages: availableCount,
@@ -602,7 +602,7 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
    * // Try to get real monitoring service, fall back to stub
    * const monitoring = await statusManager.getService('systemmonitoring', () => ({
    *   PerformanceTracker:class FallbackTracker {
-   *     startTimer() { return () => logger.info('Fallback timer');}
+   *     startTimer() { return () => logger.info('Fallback timer`);}
    *}
    *}));
    * `
@@ -613,7 +613,7 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
       return this.container.resolve<T>(serviceName);
     } catch (error) {
       logger.debug(
-        'Service ' + serviceName + ' not registered or failed to resolve',
+        `Service ${serviceName} not registered or failed to resolve`,
         error
       );
     }
@@ -712,7 +712,7 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
     } else if (systemStatus.healthScore >= 40) {
       status = 'degraded';
     } else {
-      status = 'unhealthy';
+      status = 'unhealthy`;
     }
 
     return {
@@ -740,7 +740,7 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
 
       if (stalePackages.length > 0) {
         logger.debug(
-          'Refreshing ' + stalePackages.length + ' stale package statuses'
+          `Refreshing ${stalePackages.length} stale package statuses`
         );
         await Promise.all(
           stalePackages.map((pkg) => this.checkAndRegisterPackage(pkg))
@@ -798,7 +798,7 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
     }
 
     if (cleanedCount > 0) {
-      logger.debug('Cleaned up ' + cleanedCount + ' expired cache entries');
+      logger.debug(`Cleaned up ${cleanedCount} expired cache entries`);
     }
   }
 

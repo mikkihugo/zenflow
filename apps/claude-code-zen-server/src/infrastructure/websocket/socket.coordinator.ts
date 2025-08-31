@@ -193,7 +193,7 @@ export class WebSocketCoordinator {
     }
 
     if (cleaned > 0) {
-      this.logger.info('Cleaned up ' + cleaned + ' expired sessions');
+      this.logger.info(`Cleaned up ${cleaned} expired sessions`);
     }
 
     return cleaned;

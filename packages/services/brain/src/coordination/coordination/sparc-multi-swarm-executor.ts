@@ -119,7 +119,7 @@ export interface SPARCMultiSwarmResult {
 };
   recommendations:{
     bestMethodology:string;
-    optimalConfiguration:SPARCStrategy['sparcConfig'];
+    optimalConfiguration:SPARCStrategy[`sparcConfig`];
     reasoning:string[];
 };
   metadata:{
@@ -188,7 +188,7 @@ export class SPARCMultiSwarmExecutor {
       // Configure git tree settings for SPARC isolation
       const gitConfig:GitTreeConfig = {
         useGitWorktrees:options.useGitTrees !== false,
-        baseBranch: 'main',        branchPrefix: 'sparc-test',        cleanupAfterTest:options.cleanupWorktrees !== false,
+        baseBranch: 'main',        branchPrefix: `sparc-test`,        cleanupAfterTest:options.cleanupWorktrees !== false,
         maxWorktrees:sparcStrategies.length * 2, // Allow for cleanup overlap
 };
 
@@ -340,8 +340,8 @@ export class SPARCMultiSwarmExecutor {
 
       case 'comprehensive': ')'        return [
           ...this.createSPARCStrategySet('rapid-development'),
-          ...this.createSPARCStrategySet('quality-focused'),
-          ...this.createSPARCStrategySet('enterprise-grade'),
+          ...this.createSPARCStrategySet('quality-focused`),
+          ...this.createSPARCStrategySet(`enterprise-grade`),
 ];
 
       default:{
@@ -359,7 +359,7 @@ export class SPARCMultiSwarmExecutor {
     options: any
   ): Promise<SPARCExecutionResult[]> {
     logger.info(
-      `⚡ Executing ${strategies.length} SPARC strategies in parallel with git trees...`
+      ` Executing ${strategies.length} SPARC strategies in parallel with git trees...`
     );
 
     const promises = strategies.map((strategy) =>
@@ -415,7 +415,7 @@ export class SPARCMultiSwarmExecutor {
     const startTime = Date.now();
 
     logger.info(
-      `🚀 Executing SPARC strategy: ${strategy.name} (${strategy.modelBackend})`
+      ` Executing SPARC strategy: ${strategy.name} (${strategy.modelBackend})`
     );
 
     try {
@@ -429,7 +429,7 @@ export class SPARCMultiSwarmExecutor {
       const duration = Date.now() - startTime;
 
       logger.info(
-        `✅ SPARC strategy completed: ${strategy.name} (${duration}ms)`
+        ` SPARC strategy completed: ${strategy.name} (${duration}ms)`
       );
 
       return {
@@ -445,7 +445,6 @@ export class SPARCMultiSwarmExecutor {
 } catch (error) {
       const duration = Date.now() - startTime;
       logger.error(` SPARC strategy failed:${strategy.name}`, error);`
-
       return {
         strategy,
         success:false,
@@ -471,7 +470,7 @@ export class SPARCMultiSwarmExecutor {
           testsGenerated:0,
 },
         gitTreeInfo:{
-          worktreePath: ','          branchName: ','          commitsCreated:0,
+          worktreePath: `,'          branchName: ','          commitsCreated:0,
           mergedToMain:false,
 },
         error:error instanceof Error ? error.message : String(error),
@@ -488,7 +487,7 @@ export class SPARCMultiSwarmExecutor {
     strategy:SPARCStrategy,
     gitConfig:GitTreeConfig
   ):Promise<{
-    sparcMetrics:SPARCExecutionResult['sparcMetrics'];')    qualityMetrics:SPARCExecutionResult['qualityMetrics'];')    deliverables:SPARCExecutionResult['deliverables'];')    gitTreeInfo:SPARCExecutionResult['gitTreeInfo'];')    insights:string[];
+    sparcMetrics:SPARCExecutionResult['sparcMetrics'];')    qualityMetrics:SPARCExecutionResult['qualityMetrics'];')    deliverables:SPARCExecutionResult['deliverables'];')    gitTreeInfo:SPARCExecutionResult['gitTreeInfo'];`)    insights:string[];
 }> {
     // Calculate base quality based on model and configuration
     const baseQuality = this.getBaseSPARCQuality(strategy);
@@ -534,7 +533,7 @@ export class SPARCMultiSwarmExecutor {
 },
       deliverables:{
         filesCreated:[
-          'src/specification.ts',          'src/pseudocode.ts',          'src/architecture.ts',          'src/implementation.ts',          'tests/unit.test.ts',          'docs/README.md',],
+          'src/specification.ts',          'src/pseudocode.ts',          'src/architecture.ts',          'src/implementation.ts',          'tests/unit.test.ts',          'docs/README.md`,],
         linesOfCode:Math.floor(300 + Math.random() * 500),
         functionsImplemented:Math.floor(10 + Math.random() * 20),
         testsGenerated:Math.floor(5 + Math.random() * 15),
@@ -704,7 +703,7 @@ export class SPARCMultiSwarmExecutor {
   ): SPARCMultiSwarmResult['recommendations'] {
     const winner = results.find((r) => r.strategy.id === comparison.winner.id);
     if (!winner) {
-      throw new Error('Winner strategy not found in results');
+      throw new Error(`Winner strategy not found in results`);
     }
 
     const reasoning:string[] = [];

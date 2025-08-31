@@ -214,9 +214,9 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
       // Check if table exists and create if needed
       // This would be implemented using LanceDB's table creation API
       const createTableSQL = '
-        CREATE TABLE IF NOT EXISTS ' + (tableName) + ' (
+        CREATE TABLE IF NOT EXISTS ' + (tableName) + ` (
           id TEXT PRIMARY KEY,
-          vector VECTOR(' + this.config.vectorDimensions + '),
+          vector VECTOR(${this.config.vectorDimensions}),
           query TEXT,
           source TEXT,
           knowledge_type TEXT,
@@ -224,7 +224,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
           timestamp TEXT,
           metadata TEXT
         )
-      ';
+      `;
       
       await this.vectorStorage.execute(createTableSQL);
       logger.debug('Vector table ensured', { tableName });
@@ -336,13 +336,13 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
   private async storeVectorEmbedding(entry: VectorKnowledgeEntry): Promise<void> {
     if (!this.vectorStorage || !entry.embedding) return;
 
-    const tableName = this.config.vectorTableName || 'knowledge_vectors';
+    const tableName = this.config.vectorTableName || 'knowledge_vectors`;
     
     try {
-      const insertSQL = '
-        INSERT INTO ' + tableName + ' (id, vector, query, source, knowledge_type, semantic_tags, timestamp, metadata)
+      const insertSQL = `
+        INSERT INTO ${tableName} (id, vector, query, source, knowledge_type, semantic_tags, timestamp, metadata)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-      ';
+      `;
       
       await this.vectorStorage.execute(insertSQL, [
         entry.id,
@@ -400,15 +400,15 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
         const queryEmbedding = await this.embeddingService.generateEmbedding(query.query);
         
         // Use LanceDB vector search via SQL-like syntax
-        const tableName = this.config.vectorTableName || 'knowledge_vectors';
-        const searchSQL = '
+        const tableName = this.config.vectorTableName || 'knowledge_vectors`;
+        const searchSQL = `
           SELECT id, vector, query, source, knowledge_type, semantic_tags, timestamp, metadata,
                  vector_similarity(vector, ?) as similarity
-          FROM ' + tableName + '
+          FROM ${tableName}
           WHERE vector_similarity(vector, ?) >= ?
           ORDER BY similarity DESC
           LIMIT ?
-        ';
+        `;
 
         const vectorResults = await this.vectorStorage.query<any>(searchSQL, [
           queryEmbedding,
@@ -579,7 +579,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
       await this.store(knowledge);
     }
 
-    logger.info('Ingested ' + architecturalKnowledge.length + ' architectural knowledge entries');
+    logger.info(`Ingested ${architecturalKnowledge.length} architectural knowledge entries`);
   }
 
   /**

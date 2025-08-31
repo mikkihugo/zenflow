@@ -254,11 +254,11 @@ export class DSPyEngine {
 		try {
 			const optimizationPrompt = 
 				'Improve this prompt for better results:\n\n' +
-				'Current prompt: "' + program.prompt + '"\n\n' +
+				`Current prompt: "${program.prompt}"\n\n` +
 				'Few-shot examples:\n' +
 				examples
 					.slice(0, this.config.fewShotExamples)
-					.map((ex) => 'Input: ' + ex.input + '\nExpected: ' + ex.output)
+					.map((ex) => `Input: ${ex.input}\nExpected: ` + ex.output)
 					.join("\n\n") +
 				'\n\nGenerate an improved version that:\n' +
 				'1. Is more specific and clear\n' +
@@ -299,7 +299,7 @@ export class DSPyEngine {
 			const testExamples = examples.slice(0, Math.min(3, examples.length));
 
 			for (const example of testExamples) {
-				const testPrompt = '' + variation.prompt + '\n\nInput:' + example.input;
+				const testPrompt = `${variation.prompt}\n\nInput:` + example.input;
 				const response = await llm.analyze(testPrompt);
 
 				// Simple similarity scoring (in real implementation, would be more sophisticated)
@@ -336,10 +336,10 @@ export class DSPyEngine {
 	// private createFewShotPrompt(program:DSPyProgram, examples:DSPyExample[]): string {
 	//   const fewShot = examples
 	//     .slice(0, this.config.fewShotExamples)
-	//     .map(ex => 'Input:' + ex.input + '\nOutput:' + ex.output)'
+	//     .map(ex => `Input:${ex.input}\nOutput:` + ex.output)'
 	//     .join('\n\n');
 	//
-	//   return (program.prompt) + '\n\nExamples:\n' + fewShot + '\n\nNow complete:';
+	//   return (program.prompt) + `\n\nExamples:\n${fewShot}\n\nNow complete:`;
 	//}
 
 	/**
@@ -412,7 +412,7 @@ export class DSPyEngine {
 			const kv = await this.getKV();
 			const keys = await kv.keys();
 			const taskKeys = keys.filter((key) =>
-				key.startsWith('dspy-optimization:' + task + ':'),
+				key.startsWith(`dspy-optimization:${task}:`),
 			);
 
 			const results:DSPyOptimizationResult[] = [];

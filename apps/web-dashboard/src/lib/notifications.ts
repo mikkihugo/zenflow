@@ -204,8 +204,8 @@ export const systemNotifications = {
    */
   agents: {
     created: (name: string) =>
-      notifySuccess('Agent "' + name + '" created successfully'),
-    removed: (name: string) => notifyWarning('Agent "' + name + '" removed'),
+      notifySuccess(`Agent "${name}" created successfully`),
+    removed: (name: string) => notifyWarning(`Agent "${name}" removed`),
     error: (name: string, error: string) =>
       notifyError('Agent "' + (name) + '" error:' + error),
     statusChange: (name: string, status: string) =>
@@ -216,8 +216,8 @@ export const systemNotifications = {
    * Task events
    */
   tasks: {
-    created: (title: string) => notifySuccess('Task "' + title + '" created'),
-    completed: (title: string) => notifySuccess('Task "' + title + '" completed'),
+    created: (title: string) => notifySuccess(`Task "${title}" created`),
+    completed: (title: string) => notifySuccess(`Task "${title}" completed`),
     failed: (title: string, error?: string) =>
       notifyError('Task "' + (title) + '" failed' + error ? ':' + error : ''),
     assigned: (title: string, agent: string) =>

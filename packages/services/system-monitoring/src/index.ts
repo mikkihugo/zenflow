@@ -28,7 +28,7 @@
  * // System monitor responds with event
  * eventSystem.on('system-monitoring:metrics', (data) => {
  *   logger.info('System metrics: ', data.metrics);
-' *});
+` *});
  * `
  *
  * @author Claude Code Zen Team

@@ -278,7 +278,7 @@ export class IntelligentPromptGenerator {
     );
 
     let __standards = ``
-## 🎯 Coding Standards & Best Practices ($language.toUpperCase())
+##  Coding Standards & Best Practices ($language.toUpperCase())
 $enhancedStandards.contextualIntro
 
 ### 📁 File Organization & Naming:
@@ -287,7 +287,7 @@ $enhancedStandards.contextualIntro
 - **Naming convention**:Use $fileNamingfor files
 - **Max functions per file**:5-7 focused functions maximum
 
-### ⚡ Function Quality Guidelines:
+###  Function Quality Guidelines:
 - **Single responsibility**:Each function _does ONE thing well
 - **Max $maxLinesPerFunctionlines**:Keep functions focused and readable
 - **Max $maxParametersparameters**:Use objects for complex parameter sets
@@ -309,7 +309,7 @@ $enhancedStandards.contextualIntro
     if (config.includePerformance) {
       _standards += ``
 
-### ⚡ Performance Guidelines:
+###  Performance Guidelines:
 - **Big O awareness**:Consider algorithmic complexity
 - **Memory management**:Avoid memory leaks and excessive allocations
 - **Lazy loading**:Load resources only when needed
@@ -340,7 +340,7 @@ $enhancedStandards.contextualIntro
   ):string {
     switch (phase) {
       case 'specification': ')'        return ``
-### 📋 Specification Phase Guidelines:
+###  Specification Phase Guidelines:
 - **Clear requirements**:Each requirement should be testable and specific
 - **Domain modeling**:Use ${config.language === 'typescript' ? ' TypeScript interfaces' : ' clear data structures'} to model domain entities')- **API contracts**:Define clear input/output interfaces
 - **Validation rules**:Specify data validation requirements
@@ -366,7 +366,7 @@ $enhancedStandards.contextualIntro
 - **Scalability patterns**:Design for future growth and changes`;`
 
       case 'refinement': ')'        return ``
-### ⚡ Refinement Phase Guidelines:
+###  Refinement Phase Guidelines:
 - **Performance optimization**:Profile and optimize critical paths
 - **Code review practices**:Focus on readability and maintainability
 - **Testing coverage**:Aim for 80%+ test coverage
@@ -375,7 +375,7 @@ $enhancedStandards.contextualIntro
 - **Error handling**:Robust error handling and logging`;`
 
       case 'completion': ')'        return ``
-### ✅ Completion Phase Guidelines:
+###  Completion Phase Guidelines:
 - **Production readiness**:Ensure error handling, logging, monitoring
 - **Security validation**:Check for common security vulnerabilities
 - **Performance benchmarks**:Meet defined performance criteria
@@ -385,7 +385,7 @@ $enhancedStandards.contextualIntro
 
       default:
         return ``
-### 🎯 General Development Guidelines:
+###  General Development Guidelines:
 - **Code quality**:Follow established coding standards
 - **Documentation**:Write clear, comprehensive documentation
 - **Testing**:Implement thorough testing strategies
@@ -433,9 +433,9 @@ $enhancedStandards.contextualIntro
     phaseGuidelines:string
   ):string {
     return ``
-# 🚀 $phase.charAt(0).toUpperCase() + phase.slice(1)Phase Development Prompt
+#  $phase.charAt(0).toUpperCase() + phase.slice(1)Phase Development Prompt
 
-## 📋 Project Context:
+##  Project Context:
 - **Project**:$context.name
 - **Domain**:$context.domain
 - **Requirements**:$context.requirements?.length || 0defined
@@ -444,14 +444,14 @@ $codingStandards
 
 $phaseGuidelines
 
-## 🎯 Implementation Focus:
+##  Implementation Focus:
 1. **Follow naming conventions** - Use descriptive, purpose-driven filenames
 2. **Maintain function _complexity** - Keep functions simple and focused
 3. **Ensure type safety** - Use explicit typing throughout
 4. **Write clean code** - Self-documenting, maintainable code
 5. **Plan for testing** - Design with testability in mind
 
-## 🔍 Quality Checklist:
+##  Quality Checklist:
 - [] Descriptive filenames that indicate purpose
 - [] Single responsibility per file/function
 - [] Appropriate _complexity levels
@@ -601,11 +601,11 @@ Generate a complete, ready-to-use development prompt.`,`
     return [
       {
         input:`Generate $phasephase prompt for e-commerce API project in rest-api domain using $config.language`,`
-        output:`# Development Prompt for ${phase} Phase\n\n## 📋 Project Context\n## 🎯 Coding Standards\n## 📝 CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Keep functions simple and focused\n3. Follow ${config.language} best practices`,`
+        output:`# Development Prompt for ${phase} Phase\n\n##  Project Context\n##  Coding Standards\n##  CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Keep functions simple and focused\n3. Follow ${config.language} best practices`,`
 },
       {
         input:`Generate $phasephase prompt for mobile app project in mobile domain using $config.language`,`
-        output:`# Development Prompt for ${phase} Phase\n\n## 📋 Project Context\n## 🎯 Coding Standards\n## 📝 CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Optimize for mobile performance\n3. Follow ${config.language} best practices`,`
+        output:`# Development Prompt for ${phase} Phase\n\n##  Project Context\n##  Coding Standards\n##  CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Optimize for mobile performance\n3. Follow ${config.language} best practices`,`
 },
 ];
 }
@@ -816,19 +816,19 @@ ${contextualInsights}
     context:ProjectContext,
     principles:any
   ):string {
-    return `# 🚀 ${phase.charAt(0).toUpperCase() + phase.slice(1)} Phase Development Prompt`
+    return `#  ${phase.charAt(0).toUpperCase() + phase.slice(1)} Phase Development Prompt`
 ## META-LEARNING ENABLED ✨
 
-## 📋 Project Context:
+##  Project Context:
 - **Project**:$context.name
 - **Domain**:$context.domain
 - **Requirements**:$context.requirements?.length || 0defined
 - **Tech Stack**:$context.techStack?.join(',    ') || ' To be determined')- **Research Confidence**:$(principles.researchMetadata.confidence * 100).toFixed(1)%
 
-## 🎯 AI-Researched Standards:
+##  AI-Researched Standards:
 $principles.template
 
-## 🔍 Quality Metrics (Research-Based):
+##  Quality Metrics (Research-Based):
 - **Complexity**:$principles.qualityMetrics.complexity.metric< ${principles.qualityMetrics.complexity.threshold}
 - **Coverage**:$principles.qualityMetrics.coverage.metric> $principles.qualityMetrics.coverage.threshold%
 - **Maintainability**:$principles.qualityMetrics.maintainability.metric> $principles.qualityMetrics.maintainability.threshold
@@ -839,7 +839,7 @@ $principles.template
 3. **Continuous improvement**:This prompt adapts based on your feedback
 4. **Second opinion validation**:Your work may be reviewed by another AI for accuracy
 
-## 📝 CRITICAL INSTRUCTIONS:
+##  CRITICAL INSTRUCTIONS:
 1. **Follow research-based guidelines** above - these improve over time
 2. **Use descriptive, purpose-driven filenames** 
 3. **Maintain function _complexity** within researched thresholds
@@ -946,7 +946,7 @@ Remember:This prompt learns from your execution. The better you follow and provi
   ): Promise<string> {
     // Allow event loop processing for prompt generation
     await new Promise(resolve => setTimeout(resolve, 0));
-    return `# 🔍 SECOND OPINION VALIDATION
+    return `#  SECOND OPINION VALIDATION
 
 ## Original Task Prompt:
 \`\`\`
@@ -965,27 +965,27 @@ ${agentResponse}
 
 ## Validation Instructions:
 
-### 1. 📋 Requirement Compliance Check
+### 1.  Requirement Compliance Check
 - Did the agent address all requirements from the original prompt?
 - Are there any missing or misunderstood requirements?
 - Rate compliance: 0-100%
 
-### 2. 🎯 Quality Standards Validation  
+### 2.  Quality Standards Validation  
 - Does the implementation follow the coding standards specified?
 - Are naming conventions, complexity, and structure appropriate?
 - Rate quality adherence: 0-100%
 
-### 3. 🔍 Misunderstanding Detection
+### 3.  Misunderstanding Detection
 - Identify any apparent misunderstandings of the task
 - Note any implementations that don't match the intent
 - Highlight areas where clarification might have helped
 
-### 4. ✅ Correctness Assessment
+### 4.  Correctness Assessment
 - Is the implementation functionally correct?
 - Are there logical errors or potential bugs?
 - Does it solve the intended problem?
 
-### 5. 🚀 Improvement Opportunities
+### 5.  Improvement Opportunities
 - What could be improved in the implementation?
 - Are there better approaches or patterns?
 - What additional considerations were missed?
@@ -1061,7 +1061,7 @@ Be thorough but constructive. Focus on helping improve both the implementation a
     await new Promise(resolve => setTimeout(resolve, 5));
     
     const recommendations = [
-      '⚡ **Performance Optimization Guidelines**',
+      ' **Performance Optimization Guidelines**',
       `- Big O complexity: Keep algorithms under O(n log n) when possible`,
       `- Memory management: ${this.getMemoryTips(language)}`,
       `- Lazy loading: Implement for ${this.getLazyLoadingOpportunities(language)}`,
@@ -1145,7 +1145,7 @@ Be thorough but constructive. Focus on helping improve both the implementation a
     const activeFeatures = [];
     if (flags.includePerformance) activeFeatures.push('Performance');')    if (flags.includeSecurity) activeFeatures.push('Security');  ')    if (flags.includeTesting) activeFeatures.push('Testing');')
     const contextualIntro = activeFeatures.length > 0 ? 
-      `\n### 🎯 **Enhanced Features**:${activeFeatures.join(',    ')} optimization enabled` :`;
+      `\n###  **Enhanced Features**:${activeFeatures.join(',    ')} optimization enabled` :`;
 
     return {
       contextualIntro,

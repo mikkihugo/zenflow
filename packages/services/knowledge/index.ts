@@ -93,7 +93,7 @@
  *}
  *});
  *
- * logger.info('Transfer efficiency:' + transferResult.efficiency + '%');'
+ * logger.info(`Transfer efficiency:${transferResult.efficiency}%`);'
  * logger.info('Applicable patterns:' + transferResult.applicablePatterns.length);'
  * '
  *
@@ -482,7 +482,7 @@
  *});
  *
  * logger.info('Knowledge Graph Reasoning Results: ', {
-'    ') *   graphStatistics:{
+'    `) *   graphStatistics:{
  *     nodes:knowledgeGraph.nodeCount,
  *     edges:knowledgeGraph.edgeCount,
  *     domains:knowledgeGraph.domainCoverage

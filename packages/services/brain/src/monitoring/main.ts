@@ -13,7 +13,7 @@
  * @example Importing core components
  * ```typescript`
  * import { CompleteIntelligenceSystem, ITaskPredictor} from '@claude-zen/agent-monitoring';
- * import { SimpleTaskPredictor} from '@claude-zen/agent-monitoring';
+ * import { SimpleTaskPredictor} from '@claude-zen/agent-monitoring`;
  * ````
  *
  * @author Claude Code Zen Team - Intelligence Integration

@@ -344,7 +344,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       this.on('websocket:connected', (...args: unknown[]) => { 
         const socketId = args[0] as string;
         this.activeConnections++;
-        logger.debug('WebSocket client connected: ' + (socketId) + ' (total: ' + this.activeConnections + ')');
+        logger.debug('WebSocket client connected: ' + (socketId) + ` (total: ${this.activeConnections})`);
         this.broadcastEvent('websocket:client:connected', { 
           socketId, 
           totalConnections: this.activeConnections 
@@ -354,7 +354,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       this.on('websocket:disconnected', (...args: unknown[]) => { 
         const socketId = args[0] as string;
         this.activeConnections = Math.max(0, this.activeConnections - 1);
-        logger.debug('WebSocket client disconnected: ' + (socketId) + ' (total: ' + this.activeConnections + ')');
+        logger.debug('WebSocket client disconnected: ' + (socketId) + ` (total: ${this.activeConnections})`);
         this.broadcastEvent('websocket:client:disconnected', { 
           socketId, 
           totalConnections: this.activeConnections 
@@ -551,7 +551,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       };
     } catch (_error) {
       const errorMessage = (_error as Error).message;
-      logger.error('Failed to process document ' + documentPath + ':', _error);
+      logger.error(`Failed to process document ${documentPath}:`, _error);
       
       this.broadcastEvent('document:processing:_error', {
         path: documentPath,
@@ -605,7 +605,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       };
     } catch (_error) {
       const errorMessage = (_error as Error).message;
-      logger.error('Failed to export system data to ' + format + ':', _error);
+      logger.error(`Failed to export system data to ${format}:`, _error);
       
       this.broadcastEvent('export:_error', {
         format,
@@ -645,13 +645,12 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
 
     return '# Claude Code Zen - System Report (WebSocket Enabled)\n' +
       'Generated: ' + new Date().toISOString() + '\n' +
-      'Version: ' + status.version + '\n' +
-      'Status: ' + status.status + '\n' +
+      `Version: ${status.version}\n` +
+      `Status: ${status.status}\n` +
       'Uptime: ' + Math.round(status.uptime / 1000) + 's\n' +
-      'Active WebSocket Connections: ' + this.activeConnections + '\n' +
+      `Active WebSocket Connections: ${this.activeConnections}\n` +
       '\n' +
-      '## Components\n' +
-      componentDetails + '\n' +
+      `## Components\n${componentDetails}\n` +
       '\n' +
       '## Configuration\n' +
       '- Memory Cache: ' + (this.configuration.memory?.enableCache !== false ? 'enabled' : 'disabled') + '\n' +
@@ -665,7 +664,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       (this.activeWorkspaceId ? 'ID: ' + this.activeWorkspaceId : 'No workspace detected') + '\n' +
       '\n' +
       '## WebSocket Status\n' +
-      '- Connections: ' + this.activeConnections + '\n' +
+      `- Connections: ${this.activeConnections}\n` +
       '- Broadcasting: ' + (this.broadcastingEnabled ? 'active' : 'inactive') + '\n' +
       '- Event Streaming: ' + (this.configuration.websocket?.enableEventStreaming ? 'active' : 'inactive') + '\n' +
       '\n' +

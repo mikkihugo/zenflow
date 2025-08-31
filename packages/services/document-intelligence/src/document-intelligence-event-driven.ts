@@ -23,7 +23,7 @@ interface DocumentIntelligenceEvents {
   // Brain requests
   'brain:document-intelligence:process-document': {
     requestId:string;
-    documentData: DocumentData;
+    documentData:DocumentData;
     processingType?:'vision-to-prd' | ' prd-to-epic' | ' analyze' | ' extract';
     timestamp:number;
 };
@@ -34,7 +34,7 @@ interface DocumentIntelligenceEvents {
   'brain:document-intelligence:execute-workflow': {
     requestId:string;
     workflowName:string;
-    context: Record<string, any>;
+    context:Record<string, any>;
     timestamp:number;
 };
   'brain:document-intelligence:analyze-content': {
@@ -52,28 +52,28 @@ interface DocumentIntelligenceEvents {
   // Document Intelligence responses
   'document-intelligence:document-processed': {
     requestId:string;
-    result: DocumentProcessingResult;
+    result:DocumentProcessingResult;
     timestamp:number;
 };
   'document-intelligence:workflows-list': {
     requestId:string;
-    workflows: WorkflowDefinition[];
+    workflows:WorkflowDefinition[];
     timestamp:number;
 };
   'document-intelligence:workflow-executed': {
     requestId:string;
     workflowName:string;
-    result: WorkflowExecutionResult;
+    result:WorkflowExecutionResult;
     timestamp:number;
 };
   'document-intelligence:content-analyzed': {
     requestId:string;
-    analysis: ContentAnalysis;
+    analysis:ContentAnalysis;
     timestamp:number;
 };
   'document-intelligence:requirements-extracted': {
     requestId:string;
-    requirements: ProductRequirements;
+    requirements:ProductRequirements;
     timestamp:number;
 };
   'document-intelligence:error': {
@@ -114,7 +114,7 @@ interface DocumentData {
 interface DocumentProcessingResult {
   documentId:string;
   success:boolean;
-  processedDocuments: DocumentData[];
+  processedDocuments:DocumentData[];
   workflowsTriggered:string[];
   error?:string;
 }
@@ -123,19 +123,19 @@ interface WorkflowDefinition {
   name:string;
   description:string;
   version:string;
-  steps: WorkflowStep[];
+  steps:WorkflowStep[];
 }
 
 interface WorkflowStep {
   type:string;
   name:string;
-  params: Record<string, any>;
+  params:Record<string, any>;
 }
 
 interface WorkflowExecutionResult {
   success:boolean;
-  results: Record<string, any>;
-  steps: StepResult[];
+  results:Record<string, any>;
+  steps:StepResult[];
   error?:string;
 }
 
@@ -173,7 +173,7 @@ interface ProductRequirements {
 // =============================================================================
 
 export class EventDrivenDocumentIntelligence extends TypedEventBase {
-  private logger: Logger;
+  private logger:Logger;
   private serviceContainer:any;
   private initialized = false;
 
@@ -210,7 +210,7 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
           this.emitEvent('document-intelligence:document-processed', {
             requestId:data.requestId,
             result,
-            timestamp: Date.now(),
+            timestamp:Date.now(),
 });
 
           this.logger.info('Document processed successfully', {
@@ -222,7 +222,7 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
           this.emitEvent('document-intelligence:error', {
             requestId:data.requestId,
             error:error instanceof Error ? error.message : String(error),
-            timestamp: Date.now(),
+            timestamp:Date.now(),
 });
 }
 });
@@ -237,7 +237,7 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
         this.emitEvent('document-intelligence:workflows-list', {
           requestId:data.requestId,
           workflows,
-          timestamp: Date.now(),
+          timestamp:Date.now(),
 });
 
         this.logger.debug('Workflows list retrieved', {
@@ -248,7 +248,7 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
         this.emitEvent('document-intelligence:error', {
           requestId:data.requestId,
           error:error instanceof Error ? error.message : String(error),
-          timestamp: Date.now(),
+          timestamp:Date.now(),
 });
 }
 });
@@ -265,7 +265,7 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
             requestId:data.requestId,
             workflowName:data.workflowName,
             result,
-            timestamp: Date.now(),
+            timestamp:Date.now(),
 });
 
           this.logger.info('Workflow executed successfully', {
@@ -277,7 +277,7 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
           this.emitEvent('document-intelligence:error', {
             requestId:data.requestId,
             error:error instanceof Error ? error.message : String(error),
-            timestamp: Date.now(),
+            timestamp:Date.now(),
 });
 }
 });
@@ -292,7 +292,7 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
           this.emitEvent('document-intelligence:content-analyzed', {
             requestId:data.requestId,
             analysis,
-            timestamp: Date.now(),
+            timestamp:Date.now(),
 });
 
           this.logger.debug('Content analyzed successfully', {
@@ -304,7 +304,7 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
           this.emitEvent('document-intelligence:error', {
             requestId:data.requestId,
             error:error instanceof Error ? error.message : String(error),
-            timestamp: Date.now(),
+            timestamp:Date.now(),
 });
 }
 });
@@ -319,7 +319,7 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
           this.emitEvent('document-intelligence:requirements-extracted', {
             requestId:data.requestId,
             requirements,
-            timestamp: Date.now(),
+            timestamp:Date.now(),
 });
 
           this.logger.info('Requirements extracted successfully', {
@@ -331,7 +331,7 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
           this.emitEvent('document-intelligence:error', {
             requestId:data.requestId,
             error:error instanceof Error ? error.message : String(error),
-            timestamp: Date.now(),
+            timestamp:Date.now(),
 });
 }
 });
@@ -342,12 +342,12 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
   // INTERNAL DOCUMENT INTELLIGENCE LOGIC - Foundation powered
   // =============================================================================
 
-  private async ensureInitialized(): Promise<void> {
+  private async ensureInitialized():Promise<void> {
     if (this.initialized) return;
     await this.initializeInternal();
 }
 
-  private async initializeInternal(): Promise<void> {
+  private async initializeInternal():Promise<void> {
     this.logger.info('Initializing event-driven document intelligence system');
 
     // Initialize foundation-powered components
@@ -367,8 +367,8 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
 });
 }
 
-  private async registerDefaultWorkflows(): Promise<void> {
-    const workflows: WorkflowDefinition[] = [
+  private async registerDefaultWorkflows():Promise<void> {
+    const workflows:WorkflowDefinition[] = [
       {
         name: 'vision-to-prd',        description: 'Convert vision document to Product Requirements Document',        version: '1.0.0',        steps:[
           {
@@ -405,14 +405,15 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
       this.workflows.set(workflow.name, workflow);
 }
 
-    this.logger.info('Registered ' + workflows.length + ' default workflows');
+    this.logger.info(`Registered ${workflows.length} default workflows`);
 }
 
-  private async processDocumentInternal(documentData: DocumentData,
+  private async processDocumentInternal(
+    documentData:DocumentData,
     processingType?:string
-  ): Promise<DocumentProcessingResult> {
+  ):Promise<DocumentProcessingResult> {
     const documentId = documentData.id || generateUUID();
-    const processedDocuments: DocumentData[] = [];
+    const processedDocuments:DocumentData[] = [];
     const workflowsTriggered:string[] = [];
 
     this.documentsProcessed++;
@@ -474,11 +475,11 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
             workflowName,
             documentType:documentData.type,
             result:result.results,
-            timestamp: Date.now(),
+            timestamp:Date.now(),
 });
 }
 } catch (error) {
-        this.logger.warn('Workflow ' + workflowName + ' failed', { error});
+        this.logger.warn(`Workflow ${workflowName} failed`, { error});
 }
 }
 
@@ -488,31 +489,32 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
       type:documentData.type,
       title:documentData.title,
       metadata:documentData.metadata,
-      timestamp: Date.now(),
+      timestamp:Date.now(),
 });
 
     return {
       documentId,
-      success: true,
+      success:true,
       processedDocuments,
       workflowsTriggered,
 };
 }
 
-  private async executeWorkflowInternal(workflowName: string,
-    context: Record<string, any>
-  ): Promise<WorkflowExecutionResult> {
+  private async executeWorkflowInternal(
+    workflowName:string,
+    context:Record<string, any>
+  ):Promise<WorkflowExecutionResult> {
     const workflow = this.workflows.get(workflowName);
     if (!workflow) {
-      throw new Error('Workflow not found:' + workflowName);
+      throw new Error(`Workflow not found:${workflowName}`);
 }
 
     this.workflowsExecuted++;
 
-    const results: Record<string, any> = {};
-    const steps: StepResult[] = [];
+    const results:Record<string, any> = {};
+    const steps:StepResult[] = [];
 
-    this.logger.debug('Executing workflow:' + workflowName);
+    this.logger.debug(`Executing workflow:${workflowName}`);
 
     for (const step of workflow.steps) {
       try {
@@ -523,17 +525,17 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
 
         steps.push({
           stepType:step.type,
-          success: true,
-          output: stepResult,
+          success:true,
+          output:stepResult,
 });
 
-        recordMetric('document_intelligence_step_' + step.type, 1);
+        recordMetric(`document_intelligence_step_${step.type}`, 1);
 } catch (error) {
-        this.logger.error('Workflow step ' + step.type + ' failed', { error});
+        this.logger.error(`Workflow step ${step.type} failed`, { error});
         
         steps.push({
           stepType:step.type,
-          success: false,
+          success:false,
           error:error instanceof Error ? error.message : String(error),
 });
 
@@ -542,15 +544,16 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
 }
 
     return {
-      success: true,
+      success:true,
       results,
       steps,
 };
 }
 
-  private async executeWorkflowStepInternal(step: WorkflowStep,
-    context: Record<string, any>
-  ): Promise<any> {
+  private async executeWorkflowStepInternal(
+    step:WorkflowStep,
+    context:Record<string, any>
+  ):Promise<any> {
     switch (step.type) {
       case 'extract-product-requirements':
         return await this.extractProductRequirementsStep(context, step.params);
@@ -571,11 +574,11 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
         return await this.extractEntitiesStep(context, step.params);
       
       default:
-        throw new Error('Unknown workflow step type:' + step.type);
+        throw new Error(`Unknown workflow step type:${step.type}`);
 }
 }
 
-  private async analyzeContentInternal(content: string, contentType:string): Promise<ContentAnalysis> {
+  private async analyzeContentInternal(content:string, contentType:string): Promise<ContentAnalysis> {
     // Foundation-powered content analysis
     const words = content.split(/\s+/);
     const wordCount = words.length;
@@ -601,13 +604,13 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
 }
 
     return {
-      type: contentType,
+      type:contentType,
       complexity,
       topics,
       entities,
       structure:{
         sections,
-        headings:headings.map(h => h.replace(/^#+\s+/, ',
+        headings:headings.map(h => h.replace(/^#+\s+/, ')),
         wordCount,
 },
 };
@@ -638,9 +641,10 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
   // WORKFLOW STEP IMPLEMENTATIONS - Foundation powered
   // =============================================================================
 
-  private async extractProductRequirementsStep(context: Record<string, any>,
-    params: Record<string, any>
-  ): Promise<any> {
+  private async extractProductRequirementsStep(
+    context:Record<string, any>,
+    params:Record<string, any>
+  ):Promise<any> {
     const {documentData} = context;
     const requirements = await this.extractRequirementsInternal(documentData.content);
 
@@ -649,16 +653,17 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
 };
 }
 
-  private async createPRDDocumentStep(context: Record<string, any>,
-    params: Record<string, any>
-  ): Promise<any> {
+  private async createPRDDocumentStep(
+    context:Record<string, any>,
+    params:Record<string, any>
+  ):Promise<any> {
     const requirements = context.product_requirements;
     
-    const prdDocument: DocumentData = {
+    const prdDocument:DocumentData = {
       id:generateUUID(),
       type: 'prd',      title: 'Product Requirements Document',      content:this.generatePRDContent(requirements),
       metadata:{
-        generatedAt: Date.now(),
+        generatedAt:Date.now(),
         sourceWorkflow: 'vision-to-prd',},
 };
 
@@ -667,9 +672,10 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
 };
 }
 
-  private async analyzeRequirementsStep(context: Record<string, any>,
-    params: Record<string, any>
-  ): Promise<any> {
+  private async analyzeRequirementsStep(
+    context:Record<string, any>,
+    params:Record<string, any>
+  ):Promise<any> {
     const {documentData} = context;
     
     // Analyze PRD for epic opportunities
@@ -685,20 +691,21 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
 };
 }
 
-  private async createEpicDocumentsStep(context: Record<string, any>,
-    params: Record<string, any>
-  ): Promise<any> {
+  private async createEpicDocumentsStep(
+    context:Record<string, any>,
+    params:Record<string, any>
+  ):Promise<any> {
     const epicRequirements = context.epic_requirements;
-    const epicDocuments: DocumentData[] = [];
+    const epicDocuments:DocumentData[] = [];
 
     for (const [epicName, features] of Object.entries(epicRequirements)) {
-      const epicDoc: DocumentData = {
+      const epicDoc:DocumentData = {
         id:generateUUID(),
-        type: 'epic',        title:'Epic: ' + this.formatEpicName(epicName),
+        type: 'epic',        title:`Epic: ${this.formatEpicName(epicName)}`,
         content:this.generateEpicContent(epicName, features as string[]),
         metadata:{
-          generatedAt: Date.now(),
-          sourceWorkflow: 'prd-to-epic',          epicType: epicName,
+          generatedAt:Date.now(),
+          sourceWorkflow: 'prd-to-epic',          epicType:epicName,
 },
 };
       
@@ -710,9 +717,10 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
 };
 }
 
-  private async analyzeStructureStep(context: Record<string, any>,
-    params: Record<string, any>
-  ): Promise<any> {
+  private async analyzeStructureStep(
+    context:Record<string, any>,
+    params:Record<string, any>
+  ):Promise<any> {
     const {documentData} = context;
     const analysis = await this.analyzeContentInternal(documentData.content, documentData.type);
 
@@ -721,9 +729,10 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
 };
 }
 
-  private async extractEntitiesStep(context: Record<string, any>,
-    params: Record<string, any>
-  ): Promise<any> {
+  private async extractEntitiesStep(
+    context:Record<string, any>,
+    params:Record<string, any>
+  ):Promise<any> {
     const {documentData} = context;
     const entities = this.extractEntities(documentData.content);
     const topics = this.extractTopics(documentData.content);
@@ -776,19 +785,19 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
     const requirements = [];
     
     // Look for requirement patterns
-    if (content.toLowerCase().includes('user') && content.toLowerCase().includes(' login' {
+    if (content.toLowerCase().includes('user') && content.toLowerCase().includes(' login')) {
       requirements.push('User authentication and login');
 }
-    if (content.toLowerCase().includes('data') && content.toLowerCase().includes(' store' {
+    if (content.toLowerCase().includes('data') && content.toLowerCase().includes(' store')) {
       requirements.push('Data storage and retrieval');
 }
-    if (content.toLowerCase().includes('report') || content.toLowerCase().includes(' dashboard' {
+    if (content.toLowerCase().includes('report') || content.toLowerCase().includes(' dashboard')) {
       requirements.push('Reporting and dashboard functionality');
 }
-    if (content.toLowerCase().includes('search' {
+    if (content.toLowerCase().includes('search')) {
       requirements.push('Search functionality');
 }
-    if (content.toLowerCase().includes('notification' {
+    if (content.toLowerCase().includes('notification')) {
       requirements.push('Notification system');
 }
 
@@ -799,16 +808,16 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
   private extractNonFunctionalRequirements(content:string): string[] {
     const requirements = [];
     
-    if (content.toLowerCase().includes('performance') || content.toLowerCase().includes(' fast' {
+    if (content.toLowerCase().includes('performance') || content.toLowerCase().includes(' fast')) {
       requirements.push('System performance and response times');
 }
-    if (content.toLowerCase().includes('security') || content.toLowerCase().includes(' secure' {
+    if (content.toLowerCase().includes('security') || content.toLowerCase().includes(' secure')) {
       requirements.push('Security and data protection');
 }
-    if (content.toLowerCase().includes('scalable') || content.toLowerCase().includes(' scale' {
+    if (content.toLowerCase().includes('scalable') || content.toLowerCase().includes(' scale')) {
       requirements.push('Scalability and capacity');
 }
-    if (content.toLowerCase().includes('reliable') || content.toLowerCase().includes(' availability' {
+    if (content.toLowerCase().includes('reliable') || content.toLowerCase().includes(' availability')) {
       requirements.push('Reliability and availability');
 }
 
@@ -819,13 +828,13 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
   private extractConstraints(content:string): string[] {
     const constraints = [];
     
-    if (content.toLowerCase().includes('budget' {
+    if (content.toLowerCase().includes('budget')) {
       constraints.push('Budget limitations');
 }
-    if (content.toLowerCase().includes('timeline') || content.toLowerCase().includes(' deadline' {
+    if (content.toLowerCase().includes('timeline') || content.toLowerCase().includes(' deadline')) {
       constraints.push('Timeline constraints');
 }
-    if (content.toLowerCase().includes('technology') || content.toLowerCase().includes(' tech stack' {
+    if (content.toLowerCase().includes('technology') || content.toLowerCase().includes(' tech stack')) {
       constraints.push('Technology stack limitations');
 }
 
@@ -841,16 +850,16 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
   private extractStakeholders(content:string): string[] {
     const stakeholders = new Set<string>();
     
-    if (content.toLowerCase().includes('user') || content.toLowerCase().includes(' customer' {
+    if (content.toLowerCase().includes('user') || content.toLowerCase().includes(' customer')) {
       stakeholders.add('End Users');
 }
-    if (content.toLowerCase().includes('admin') || content.toLowerCase().includes(' administrator' {
+    if (content.toLowerCase().includes('admin') || content.toLowerCase().includes(' administrator')) {
       stakeholders.add('System Administrators');
 }
-    if (content.toLowerCase().includes('manager') || content.toLowerCase().includes(' business' {
+    if (content.toLowerCase().includes('manager') || content.toLowerCase().includes(' business')) {
       stakeholders.add('Business Stakeholders');
 }
-    if (content.toLowerCase().includes('developer') || content.toLowerCase().includes(' technical' {
+    if (content.toLowerCase().includes('developer') || content.toLowerCase().includes(' technical')) {
       stakeholders.add('Development Team');
 }
 
@@ -859,28 +868,89 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
 }
 
   private extractBusinessValue(content:string): string {
-    if (content.toLowerCase().includes('efficiency' {
+    if (content.toLowerCase().includes('efficiency')) {
       return 'Improves operational efficiency and reduces manual work';
 }
-    if (content.toLowerCase().includes('revenue') || content.toLowerCase().includes(' profit' {
+    if (content.toLowerCase().includes('revenue') || content.toLowerCase().includes(' profit')) {
       return 'Drives revenue growth and business profitability';
 }
-    if (content.toLowerCase().includes('customer') || content.toLowerCase().includes(' user experience' {
+    if (content.toLowerCase().includes('customer') || content.toLowerCase().includes(' user experience')) {
       return 'Enhances customer experience and satisfaction';
 }
     
     return 'Provides strategic business value through improved processes and capabilities';
 }
 
-  private generatePRDContent(requirements: ProductRequirements): string {
-    return '
+  private generatePRDContent(requirements:ProductRequirements): string {
+    return `
 # Product Requirements Document
 
 ## Overview
-' + (requirements.businessValue) + '
+${requirements.businessValue}
 
 ## Functional Requirements
-' + requirements.functional.map(req => '- ${req).join('document' {
+${requirements.functional.map(req => `- ${req}`).join('\n')}`
+
+## Non-Functional Requirements
+${requirements.nonFunctional.map(req => `- ${req}`).join('\n')}`
+
+## Stakeholders
+${requirements.stakeholders.map(stakeholder => `- ${stakeholder}`).join('\n')}`
+
+## Constraints
+${requirements.constraints.map(constraint => `- ${constraint}`).join('\n')}`
+
+## Assumptions
+${requirements.assumptions.map(assumption => `- ${assumption}`).join('\n')}`
+
+## Success Criteria
+- All functional requirements implemented and tested
+- Non-functional requirements validated
+- Stakeholder acceptance achieved
+- System deployed and operational
+    `.trim();
+}
+
+  private generateEpicContent(epicName:string, features:string[]): string {
+    return `
+# Epic:${this.formatEpicName(epicName)}
+
+## Description
+This epic covers the ${epicName.toLowerCase().replace(/epic$/, ')} functionality of the system.
+
+## Features
+${features.map(feature => `- ${feature}`).join('\n')}`
+
+## Acceptance Criteria
+- [] All features implemented and tested
+- [] Integration testing completed
+- [] Performance requirements met
+- [] Security review passed
+- [] Documentation updated
+- [] User acceptance testing completed
+
+## Definition of Done
+- Code reviewed and merged
+- Unit tests written and passing
+- Integration tests passing
+- Documentation complete
+- Production deployment successful
+    `.trim();
+}
+
+  private formatEpicName(epicName:string): string {
+    return epicName
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^./, str => str.toUpperCase())
+      .trim()
+      .replace(/Epic$/, ');
+}
+
+  private extractDocumentsFromResult(results:Record<string, any>):DocumentData[] {
+    const documents:DocumentData[] = [];
+    
+    for (const [key, value] of Object.entries(results)) {
+      if (key.includes('document')) {
         if (Array.isArray(value)) {
           documents.push(...value.filter(item => item && item.id));
 } else if (value && value.id) {
@@ -896,12 +966,12 @@ export class EventDrivenDocumentIntelligence extends TypedEventBase {
   // PUBLIC API - Event system integration
   // =============================================================================
 
-  async initialize(): Promise<void> {
+  async initialize():Promise<void> {
     await this.initializeInternal();
     this.logger.info('Event-driven document intelligence system ready to receive brain events');
 }
 
-  async shutdown(): Promise<void> {
+  async shutdown():Promise<void> {
     this.workflows.clear();
     this.documentIndex.clear();
     this.initialized = false;

@@ -115,7 +115,7 @@ export class SchemaValidationError extends Error {
  * const result = manager.validateWithErrors('user-schema', userData);
  * if (!result.valid) {
  *   logger.info('Errors: ', result.errors);
-' *}
+` *}
  * `
  */
 export class JsonSchemaManager {
@@ -167,7 +167,7 @@ export class JsonSchemaManager {
         this.registerSchema(schemaName, schemaContent);
         this.logger.info('Loaded JSON Schema:' + schemaName);
       } catch (error) {
-        this.logger.error('Failed to load schema ' + file + ':', error);
+        this.logger.error(`Failed to load schema ${file}:`, error);
       }
     }
   }
@@ -196,7 +196,7 @@ export class JsonSchemaManager {
         'Registered schema ' + (name) + ' for modes:' + modes.join(', ')
       );
     } catch (error) {
-      this.logger.error('Failed to register schema ' + name + ':', error);
+      this.logger.error(`Failed to register schema ${name}:`, error);
       throw error;
     }
   }
@@ -244,7 +244,7 @@ export class JsonSchemaManager {
     if (!schemaEntry.modes.includes(mode)) {
       return {
         isValid: false,
-        errors: ['Document type ' + (documentType) + ' not available in ' + mode + ' mode'],
+        errors: ['Document type ' + (documentType) + ` not available in ${mode} mode`],
       };
     }
 
@@ -306,7 +306,7 @@ export class JsonSchemaManager {
 
     if (!schemaEntry.modes.includes(mode)) {
       throw new SchemaValidationError(
-        'Document type ' + (documentType) + ' not available in ' + mode + ' mode'
+        'Document type ` + (documentType) + ` not available in ${mode} mode`
       );
     }
 
@@ -420,7 +420,7 @@ export class JsonSchemaManager {
         throw new Error('Unsupported URI scheme:' + uri);
       }
     } catch (error) {
-      this.logger.error('Failed to load schema from ' + uri + ':', error);
+      this.logger.error(`Failed to load schema from ${uri}:`, error);
       throw new Error(
         'Schema loading failed:' + error instanceof Error ? error['message'] : 'Unknown error'
       );

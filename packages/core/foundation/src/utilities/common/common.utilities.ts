@@ -31,7 +31,7 @@
  *   DATABASE_URL:str()
  * });
  *
- * logger.info('Server starting on port ' + config.PORT + ' in ' + config.NODE_ENV + ' mode');
+ * logger.info(`Server starting on port ${config.PORT} in ` + config.NODE_ENV + ' mode');
  * '
  *
  * @example Process Lifecycle Management
@@ -203,7 +203,7 @@ export function createValidator<T>(schema: z.ZodSchema<T>) {
  * });
  *
  * // Type-safe access with intellisense
- * logger.info('Server running on port ' + env.PORT + ' in ' + env.NODE_ENV + ' mode');
+ * logger.info(`Server running on port ${env.PORT} in ` + env.NODE_ENV + ' mode');
  * '
  */
 export function createEnvValidator<T extends Record<string, Spec<unknown>>>(
@@ -266,7 +266,7 @@ export async function withTimeout<T>(
   const timeoutPromise = new Promise<never>((_resolve, reject) => {
     timeoutHandle = setTimeout(() => {
       reject(
-        new Error(timeoutMessage || 'Operation timed out after ' + timeoutMs + 'ms')
+        new Error(timeoutMessage || `Operation timed out after ${timeoutMs}ms`)
       );
     }, timeoutMs);
   });
@@ -451,7 +451,7 @@ export function safeGet<T>(
       if (current && typeof current === 'object' && key in current) {
         current = (current as Record<string, unknown>)[key];
       } else {
-        return err(new Error('Property '' + path + '' not found'));
+        return err(new Error('Property `${path}` not found'));
       }
     }
 

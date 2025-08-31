@@ -76,7 +76,7 @@ export class LabeledFewShot extends Teleprompter {
  * Matches Stanford DSPy BootstrapFewShot implementation exactly.
  *
  * @example
- * '''typescript'
+ * '''typescript`
  * // Basic bootstrapping with default settings
  * const bootstrap = new BootstrapFewShot();
  * const optimizedProgram = await bootstrap.compile(studentProgram, {
@@ -110,7 +110,7 @@ export class LabeledFewShot extends Teleprompter {
  *   trainset:examples
  *   // No teacher specified - program teaches itself
  *});
- * '
+ * `
  */
 export class BootstrapFewShot extends Teleprompter {
 	private metric?:MetricFunction | null;
@@ -242,8 +242,7 @@ export class BootstrapFewShot extends Teleprompter {
 				JSON.stringify(predictor2.signature)
 			) {
 				throw new Error(
-					'Student and teacher must have the same signatures. ` +
-						(JSON.stringify(predictor1.signature)) + ' != ' + JSON.stringify(predictor2.signature),
+					`Student and teacher must have the same signatures. ${JSON.stringify(predictor1.signature)} != ${JSON.stringify(predictor2.signature)}`,
 				);
 }
 
@@ -297,8 +296,8 @@ export class BootstrapFewShot extends Teleprompter {
 }
 
 		logger.info(
-			'Bootstrapped ' + (Object.keys(bootstrapped).length) + ' full traces after ' + this.trainset.length + ' examples ' +
-				'for up to ' + (this.max_rounds) + ' rounds, amounting to ' + bootstrap_attempts + ' attempts.',
+			'Bootstrapped ' + (Object.keys(bootstrapped).length) + ` full traces after ${this.trainset.length} examples ` +
+				'for up to ' + (this.max_rounds) + ` rounds, amounting to ${bootstrap_attempts} attempts.`,
 		);
 
 		// Unbootstrapped training examples
@@ -410,7 +409,7 @@ export class BootstrapFewShot extends Teleprompter {
 }
 
 			logger.error(
-				'Failed to run or to evaluate example ' + (JSON.stringify(example)) + ' with ' + (this.metric) + ' due to ' + error + '.',
+				'Failed to run or to evaluate example ' + (JSON.stringify(example)) + ' with ' + (this.metric) + ` due to ${error}.`,
 			);
 			return false;
 }

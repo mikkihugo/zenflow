@@ -193,7 +193,7 @@ export class AgentRegistry extends TypedEventBase {
               healthMetrics.isResponding;
 
             if (!isHealthy) {
-              this.logger.warn('WARNING: Agent ' + agent.id + ' health check failed', {
+              this.logger.warn(`WARNING: Agent ${agent.id} health check failed`, {
                 timeSinceLastSeen,
                 health:enhancedAgent.health,
                 metrics:healthMetrics,
@@ -245,7 +245,7 @@ export class AgentRegistry extends TypedEventBase {
         }
       );
     } catch (error) {
-      this.logger.error('ERROR: Failed to register agent ' + agent.id + ':', error);
+      this.logger.error(`ERROR: Failed to register agent ${agent.id}:`, error);
       throw error;
     }
 }
@@ -296,7 +296,7 @@ export class AgentRegistry extends TypedEventBase {
 
       return undefined;
     } catch (error) {
-      this.logger.error('ERROR: Failed to get agent ' + agentId + ':', error);
+      this.logger.error(`ERROR: Failed to get agent ${agentId}:`, error);
       return undefined;
     }
 }
@@ -328,7 +328,7 @@ export class AgentRegistry extends TypedEventBase {
           selectionTime,
         });
 
-        this.logger.debug('Agents selected: ' + results.length + ' matches', {
+        this.logger.debug(`Agents selected: ${results.length} matches`, {
           criteria,
           selectionTime: selectionTime.toFixed(2) + 'ms',
         });

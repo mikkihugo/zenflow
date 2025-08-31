@@ -221,13 +221,13 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       this.on('websocket:connected', (...args: unknown[]) => { 
         const socketId = args[0] as string;
         this.activeConnections++;
-        logger.debug('WebSocket client connected: ' + (socketId) + ' (total: ' + this.activeConnections + ')');
+        logger.debug('WebSocket client connected: ' + (socketId) + ` (total: ${this.activeConnections})`);
       });
 
       this.on('websocket:disconnected', (...args: unknown[]) => { 
         const socketId = args[0] as string;
         this.activeConnections = Math.max(0, this.activeConnections - 1);
-        logger.debug('WebSocket client disconnected: ' + (socketId) + ' (total: ' + this.activeConnections + ')');
+        logger.debug('WebSocket client disconnected: ' + (socketId) + ` (total: ${this.activeConnections})`);
       });
 
       logger.info(' Event handlers configured');
@@ -369,7 +369,7 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       return { success: true, workflowIds };
     } catch (_error) {
       const errorMessage = (_error as Error).message;
-      logger.error('Failed to process document ' + documentPath + ':', _error);
+      logger.error(`Failed to process document ${documentPath}:`, _error);
       
       this.broadcastEvent('document:_error', {
         path: documentPath,
@@ -416,7 +416,7 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       return { success: true, filename };
     } catch (_error) {
       const errorMessage = (_error as Error).message;
-      logger.error('Failed to export system data to ' + format + ':', _error);
+      logger.error(`Failed to export system data to ${format}:`, _error);
       
       this.broadcastEvent('export:_error', {
         format,

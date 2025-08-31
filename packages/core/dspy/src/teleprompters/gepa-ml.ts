@@ -493,7 +493,7 @@ export class GEPAML extends Teleprompter {
     }
 
     this.logger.info(
-      'Initialized ' + (numPopulations) + ' populations with ' + this.config.populationSize + ' individuals each'
+      'Initialized ` + (numPopulations) + ` populations with ${this.config.populationSize} individuals each`
     );
   }
 
@@ -564,12 +564,12 @@ export class GEPAML extends Teleprompter {
 
       const generationTime = performance.now() - generationStart;
       this.logger.debug(
-        'Generation ' + (this.currentGeneration) + ':best=' + (currentBest.toFixed(4)) + ', time=' + generationTime.toFixed(0) + 'ms'
+        'Generation ' + (this.currentGeneration) + ':best=' + (currentBest.toFixed(4)) + ', time=' + generationTime.toFixed(0) + 'ms`
       );
     }
 
     this.logger.info(
-      'Evolution completed after ' + this.currentGeneration + ' generations'
+      `Evolution completed after ${this.currentGeneration} generations`
     );
   }
 

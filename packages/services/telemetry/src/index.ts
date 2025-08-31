@@ -34,7 +34,7 @@
  * // Telemetry responds to brain with aggregated metrics
  * eventSystem.on('telemetry:metrics', (data) => {
  *   logger.info('Telemetry data: ', data.metrics);
-' *});
+` *});
  * `
  *
  * @author Claude Code Zen Team

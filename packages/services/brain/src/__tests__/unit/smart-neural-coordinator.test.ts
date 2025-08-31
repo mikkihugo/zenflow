@@ -211,7 +211,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
 });
 
     it('should handle different priority levels', async () => {
-    ')      const priorities:Array<'low|medium|high'> = [')        'low',        'medium',        'high',];
+    ')      const priorities:Array<'low|medium|high'> = [')        'low',        'medium',        `high`,];
 
       const results = await Promise.all(
         priorities.map(async (priority) => {
@@ -230,7 +230,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
 });
 
     it('should handle different quality levels', async () => {
-    ')      const qualityLevels:Array<'basic|standard|premium'> = [')        'basic',        'standard',        'premium',];
+    ')      const qualityLevels:Array<'basic|standard|premium'> = [')        'basic',        'standard',        `premium`,];
 
       const results = await Promise.all(
         qualityLevels.map(async (qualityLevel) => {
@@ -363,8 +363,8 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
     ')    beforeEach(async () => 
       await coordinator.initialize(););
 
-    it('should track performance metrics', async () => {
-    ')      const requests = Array.from({ length:5}, (_, i) => ({
+    it('should track performance metrics`, async () => {
+    `)      const requests = Array.from({ length:5}, (_, i) => ({
         text:`Performance test ${i}`,`
         priority:'medium' as const,
 }));
@@ -532,7 +532,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
       expect(invalidResult.error).toContain('Invalid');')});
 
     it('should handle different quality levels for classification', async () => {
-    ')      const qualityLevels:Array<'basic|standard|premium'> = [')        'basic',        'standard',        'premium',];
+    ')      const qualityLevels:Array<'basic|standard|premium'> = [')        'basic',        'standard',        `premium`,];
 
       const results = await Promise.all(
         qualityLevels.map(async (qualityLevel) => {
@@ -572,7 +572,7 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
 });
 
     it('should handle summarization task', async () => {
-    ')      const longText = ``
+    `)      const longText = ``
         Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to
         the natural intelligence displayed by humans and animals. Leading AI textbooks define
         the field as the study of "intelligent agents":any device that perceives its environment
@@ -581,7 +581,6 @@ describe('SmartNeuralCoordinator Unit Tests', () => {
         "cognitive" functions that humans associate with the human mind, such as "learning"
         and "problem solving".
       `;`
-
       const request:NeuralGenerationRequest = {
         prompt:longText,
         taskType: 'summarization',        maxTokens:50,

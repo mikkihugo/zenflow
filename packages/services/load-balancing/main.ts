@@ -1155,7 +1155,7 @@ export class LoadBalancer extends EventEmitter {
   ): Promise<void> {
     const newAlgorithm = this.algorithms.get(algorithm);
     if (!newAlgorithm) {
-      throw new Error('Algorithm ' + algorithm + ' not available');
+      throw new Error(`Algorithm ${algorithm} not available`);
     }
 
     this.currentAlgorithm = newAlgorithm;

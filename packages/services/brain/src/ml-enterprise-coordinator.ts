@@ -164,7 +164,7 @@ export class MLEnterpriseCoordinator {
 		try {
 			// Check database capability through foundation
 			const capability = getDatabaseCapability();
-			this.logger.info(`📊 Database capability level:${capability}`);
+			this.logger.info(` Database capability level:${capability}`);
 
 			// Initialize ML model storage (dedicated vector store for ML model embeddings)
 			const mlModelStoreResult = await createVectorStore({

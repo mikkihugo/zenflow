@@ -2,7 +2,7 @@
  * SAFe Artifact Intelligence System - Database-Driven SAFe 6.0 Essential
  *
  * The SAFe-based artifact intelligence system:
- * - Portfolio Epics  Features  User Stories  SPARC Development
+ * - Portfolio Epics → Features → User Stories → SPARC Development
  * - ALL artifacts stored in databases (SQLite, LanceDB, Kuzu)
  * - Can IMPORT documents from files, but stores in database
  * - SAFe 6.0 Essential workflow with SPARC execution
@@ -49,14 +49,14 @@ export interface SafeWorkspace {
 }
 
 export interface SafeWorkflowContext {
-  workspace: SafeWorkspace;
-  activeArtifacts: Map<string, SafeArtifact>;
+  workspace:SafeWorkspace;
+  activeArtifacts:Map<string, SafeArtifact>;
   currentPI?:string; // Current Program Increment
   safeLevel: 'essential|large-solution|portfolio'; // SAFe configuration')  sparcIntegration:boolean; // SPARC development execution
 }
 
 export class SafeArtifactIntelligence extends TypedEventBase {
-  private workspaces: Map<string, SafeWorkflowContext> = new Map();
+  private workspaces:Map<string, SafeWorkflowContext> = new Map();
 
   constructor() {
     super();
@@ -66,30 +66,30 @@ export class SafeArtifactIntelligence extends TypedEventBase {
   /**
    * Initialize system - SAFe 6.0 Essential artifact intelligence.
    */
-  async initialize(): Promise<void> {
-    logger.info(' Initializing SAFe Artifact Intelligence System');'
-    logger.info(' SAFe Artifact Intelligence ready');'this.emit('initialized', timestamp:new Date() );'
+  async initialize():Promise<void> {
+    logger.info(' Initializing SAFe Artifact Intelligence System');')
+    logger.info(' SAFe Artifact Intelligence ready');')    this.emit('initialized', timestamp:new Date() );')}
 
   /**
    * Load existing workspace with documents.
    *
    * @param workspacePath
    */
-  async loadWorkspace(workspaceName: string, _databaseConnections:any): Promise<string> {
-    const workspaceId = 'safe-workspace-' + Date.now();'
+  async loadWorkspace(workspaceName:string, _databaseConnections:any): Promise<string> {
+    const workspaceId = `safe-workspace-${Date.now()}`;`
 
-    const workspace: SafeWorkspace = {
+    const workspace:SafeWorkspace = {
       workspaceId,
-      name: workspaceName,
-      safeConfiguration: 'essential', // SAFe 6.0 Essential by default'  databases:{
-        artifacts:databaseConnections.artifacts || 'safe_artifacts.db',        relationships:databaseConnections.relationships || 'safe_relationships.db',    '    analytics:databaseConnections.analytics || 'safe_analytics.db',}
+      name:workspaceName,
+      safeConfiguration: 'essential', // SAFe 6.0 Essential by default')      databases:{
+        artifacts:databaseConnections.artifacts || 'safe_artifacts.db',        relationships:databaseConnections.relationships || 'safe_relationships.db',    ')        analytics:databaseConnections.analytics || 'safe_analytics.db',}
 };
 
-    const context: SafeWorkflowContext = {
+    const context:SafeWorkflowContext = {
       workspace,
       activeArtifacts:new Map(),
-      currentPI: undefined, 
-      safeLevel: 'essential',      sparcIntegration: true,
+      currentPI:undefined, 
+      safeLevel: 'essential',      sparcIntegration:true,
 };
 
     this.workspaces.set(workspaceId, context);
@@ -97,7 +97,7 @@ export class SafeArtifactIntelligence extends TypedEventBase {
     // Load existing artifacts from database
     await this.loadArtifactsFromDatabase(workspaceId);
 
-    logger.info(' Loaded SAFe workspace:$workspaceName');'
+    logger.info(` Loaded SAFe workspace:$workspaceName`);`
     this.emit('workspace:loaded', { workspaceId, name:workspaceName});
 
     return workspaceId;
@@ -109,19 +109,20 @@ export class SafeArtifactIntelligence extends TypedEventBase {
    * @param workspaceId
    * @param docPath
    */
-  async processVisionaryDocument(workspaceId: string,
+  async processVisionaryDocument(
+    workspaceId:string,
     docPath:string
-  ): Promise<void> {
+  ):Promise<void> {
     const context = this.workspaces.get(workspaceId);
-    if (!context) throw new Error('Workspace ' + workspaceId + ' not found');'
+    if (!context) throw new Error(`Workspace ${workspaceId} not found`);`
 
     const docType = this.getDocumentType(docPath);
-    const content = await readFile(docPath, 'utf8');'
-    logger.info(' Processing $docTypedocument:$docPath');'
+    const content = await readFile(docPath, 'utf8');')
+    logger.info(` Processing $docTypedocument:$docPath`);`
 
-    const doc: VisionaryDocument = {
-      type: docType,
-      path: docPath,
+    const doc:VisionaryDocument = {
+      type:docType,
+      path:docPath,
       content,
       metadata:await this.extractMetadata(content),
 };
@@ -145,9 +146,9 @@ export class SafeArtifactIntelligence extends TypedEventBase {
 }
 
     this.emit('document:created', {
-    '  workspaceId,
-      path: docPath,
-      type: docType,
-      document: doc,
+    ')      workspaceId,
+      path:docPath,
+      type:docType,
+      document:doc,
 });
 }

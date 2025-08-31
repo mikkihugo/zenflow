@@ -172,7 +172,7 @@ export interface TrialLog {
  *   logger.info('Optimization successful!');
  *} catch (error) {
  *   logger.error('Optimization failed: ', error.message);
-' *}
+` *}
  * `
  */
 export class MIPROv2 extends Teleprompter {
@@ -200,7 +200,7 @@ export class MIPROv2 extends Teleprompter {
       teacher_settings: config.teacher_settings || {},
       max_bootstrapped_demos: config.max_bootstrapped_demos ?? 4,
       max_labeled_demos: config.max_labeled_demos ?? 4,
-      auto: 'auto' in config ? config.auto : 'light', // Respect explicit null, default to 'light' only if not specified
+      auto: 'auto' in config ? config.auto : 'light', // Respect explicit null, default to 'light` only if not specified
       num_candidates: config.num_candidates || null,
       num_threads: config.num_threads || null,
       max_errors: config.max_errors || null,
@@ -292,7 +292,7 @@ export class MIPROv2 extends Teleprompter {
       num_trials === null
     ) {
       throw new Error(
-        'If auto is None, num_trials must also be provided. Given num_candidates=' + (this.config.num_candidates) + ', we'd recommend setting num_trials to ~' + this.setNumTrialsFromNumCandidates(student, zeroshot_opt, this.config.num_candidates) + '.'
+        `If auto is None, num_trials must also be provided. Given num_candidates=${this.config.num_candidates}, we`d recommend setting num_trials to ~${this.setNumTrialsFromNumCandidates(student, zeroshot_opt, this.config.num_candidates)}.`
       );
     }
 
@@ -317,7 +317,7 @@ export class MIPROv2 extends Teleprompter {
     if (minibatch && minibatch_size > finalValset.length) {
       if (strict_minibatch_validation) {
         throw new Error(
-          'Minibatch size cannot exceed the size of the valset. Got minibatch_size=' + (minibatch_size) + ', valset size=' + finalValset.length + '.'
+          'Minibatch size cannot exceed the size of the valset. Got minibatch_size=` + (minibatch_size) + `, valset size=${finalValset.length}.`
         );
       } else {
         adjustedMinibatchSize = Math.max(1, finalValset.length);
@@ -332,7 +332,7 @@ export class MIPROv2 extends Teleprompter {
     // For now, return the optimized program (implementation would continue with full Stanford DSPy logic)
     logger.info('\n==> MIPROv2 OPTIMIZATION COMPLETE <==');
     logger.info(
-      'Optimized program with ' + (finalTrainset.length) + ' training examples and ' + finalValset.length + ' validation examples'
+      'Optimized program with ` + (finalTrainset.length) + ` training examples and ${finalValset.length} validation examples`
     );
 
     return program;

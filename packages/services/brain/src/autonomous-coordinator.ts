@@ -182,7 +182,7 @@ export class AutonomousCoordinator {
       await this.autonomousParameterTuning();
 
       logger.debug(
-        "🤖 Autonomous monitoring complete: " + decisions.length + " decisions made"
+        " Autonomous monitoring complete: " + decisions.length + " decisions made"
       );
       return decisions;
     } catch (error) {
@@ -921,7 +921,7 @@ export class AutonomousCoordinator {
    */
   private async enablePerformanceTracking(): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 100));
-    logger.debug('📈 Performance tracking enabled');
+    logger.debug(' Performance tracking enabled');
   }
 
   /**

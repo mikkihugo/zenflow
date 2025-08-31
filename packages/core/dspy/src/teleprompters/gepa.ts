@@ -378,9 +378,9 @@ export class GEPA extends Teleprompter {
 		if (budgetOptions !== 1) {
 			throw new Error(
 				'Exactly one of max_metric_calls, max_full_evals, auto must be set. ' +
-					'You set max_metric_calls=' + config.max_metric_calls + ', ' +
-					'max_full_evals=' + config.max_full_evals + ', ' +
-					'auto=' + config.auto + '.',
+					`You set max_metric_calls=${config.max_metric_calls}, ` +
+					`max_full_evals=${config.max_full_evals}, ` +
+					`auto=${config.auto}.`,
 			);
 }
 
@@ -534,7 +534,7 @@ export class GEPA extends Teleprompter {
 }
 
 		logger.info(
-			'Running GEPA for approx ' + this.max_metric_calls + ' metric calls of the program. ' +
+			`Running GEPA for approx ${this.max_metric_calls} metric calls of the program. ` +
 				'This amounts to ' + (
 					this.max_metric_calls /
 						(valset === null
@@ -542,14 +542,14 @@ export class GEPA extends Teleprompter {
 							: trainset.length + valset.length)
 				).toFixed(
 					2,
-				) + ' full evals on the ' + valset === null ? "train" : "train+val" + ' set.',
+				) + ' full evals on the ' + valset === null ? "train" : "train+val" + ' set.`,
 		);
 
 		const actualValset = valset || trainset;
 		logger.info(
-			'Using ' + actualValset.length + ' examples for tracking Pareto scores. ' +
+			`Using ${actualValset.length} examples for tracking Pareto scores. ` +
 				'You can consider using a smaller sample of the valset to allow GEPA to explore ' +
-				'more diverse solutions within the same budget.`,
+				'more diverse solutions within the same budget.',
 		);
 
 		// Initialize random number generator
@@ -649,13 +649,13 @@ export class GEPA extends Teleprompter {
 
 			if (typeof result === "object" && "feedback" in result) {
 				if (!result.feedback) {
-					result.feedback = 'This trajectory got a score of ' + result.score + '.';
+					result.feedback = `This trajectory got a score of ${result.score}.`;
 }
 				return result;
 } else {
 				return {
 					score:result,
-					feedback:'This trajectory got a score of ' + result + '.',
+					feedback:`This trajectory got a score of ${result}.`,
 };
 }
 };
@@ -771,7 +771,7 @@ export class GEPA extends Teleprompter {
 			config.max_metric_calls / config.valset.length,
 		);
 
-		logger.info(' Running for up to ' + max_generations + ' generations');
+		logger.info(` Running for up to ${max_generations} generations`);
 
 		// Evolution loop
 		while (

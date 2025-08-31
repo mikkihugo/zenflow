@@ -10,7 +10,7 @@ import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-// TIER 1 ONLY - 5-Tier Architecture Compliance
+//  TIER 1 ONLY - 5-Tier Architecture Compliance
 import { getLogger, ProcessLifecycleManager } from '@claude-zen/foundation';
 
 // Strategic facades for accessing functionality
@@ -40,7 +40,7 @@ class WebConfig {
     
     // Validate port range
     if (this.port < 1024 || this.port > 65535) {
-      throw new Error(`Invalid port ' + (this.port) + '. Port must be between 1024 and 65535.`);
+      throw new Error(`Invalid port ${this.port}. Port must be between 1024 and 65535.`);
     }
   }
 }
@@ -67,7 +67,7 @@ class DIContainer {
       this.services.set(name, instance);
       return instance as T;
     }
-    throw new Error(`Service ' + (name) + ' not found in container`);
+    throw new Error(`Service ${name} not found in container`);
   }
 
   has(name: string): boolean {
@@ -133,7 +133,7 @@ class WebDashboardServer {
         listen: (port: number, host: string, callback: () => void) => unknown;
       };
       this.server = express.listen(this.config.port, this.config.host, () => {
-        this.logger.info(`Server running on ' + (this.config.host) + ':' + (this.config.port) + '`);
+        this.logger.info(`Server running on ${this.config.host}:${this.config.port}`);
       });
     }
   }
@@ -223,7 +223,7 @@ class WebApiRoutes {
       // Initialize API handler with production WebSocket coordinator
       const webSocketCoordinator = {
         broadcast: (event: string, data: unknown) => {
-          this.logger.debug(`Broadcasting ' + (event) + ':`, data);
+          this.logger.debug(`Broadcasting ${event}:`, data);
         }
       };
 
@@ -356,7 +356,7 @@ class WebHtmlGenerator {
                 <h3>Web Interface</h3>
                 <div class="status">
                     <div class="status-dot"></div>
-                    <span>Active on port ' + (this.config.port) + '</span>
+                    <span>Active on port ${this.config.port}</span>
                 </div>
                 <p>Web dashboard is running and accessible.</p>
             </div>
@@ -377,7 +377,7 @@ class WebHtmlGenerator {
             </div>
         </div>
         
-        <div class="version">Claude Code Zen v' + (getVersion()) + '</div>
+        <div class="version">Claude Code Zen v${getVersion()}</div>
     </div>
 </body>
 </html>`;
@@ -423,7 +423,7 @@ class WebProcessManager {
     try {
       const fs = await import('fs/promises');
       await fs.writeFile(this.pidFile, process.pid.toString());
-      this.logger.info(`Daemon mode started with PID ' + (process.pid) + '`);
+      this.logger.info(`Daemon mode started with PID ${process.pid}`);
     } catch (error) {
       this.logger.error('Failed to start daemon mode:', error);
       throw error;
@@ -579,7 +579,7 @@ export class WebInterface {
             this.logger.error('💥 Application error in web interface: ', error);
           },
         });
-        this.logger.info('✓ Process lifecycle management enabled');
+        this.logger.info(' Process lifecycle management enabled');
       }
 
       // Check for existing instances if in daemon mode
@@ -587,7 +587,7 @@ export class WebInterface {
         const existing = await this.processManager?.isInstanceRunning();
         if (existing) {
           throw new Error(
-            `Web interface already running with PID ' + (existing.pid) + '`
+            `Web interface already running with PID ${existing.pid}`
           );
         }
       }
@@ -619,7 +619,7 @@ export class WebInterface {
     try {
       // Setup Express middleware
       this.server?.setupMiddleware();
-      this.logger.debug('✓ Express middleware setup complete');
+      this.logger.debug(' Express middleware setup complete');
     } catch (error) {
       this.logger.warn(
         '⚠️ Express middleware setup failed, continuing...',
@@ -630,7 +630,7 @@ export class WebInterface {
     try {
       // Add session management middleware
       app.use(this.sessionManager?.middleware);
-      this.logger.debug('✓ Session middleware setup complete');
+      this.logger.debug(' Session middleware setup complete');
     } catch (error) {
       this.logger.warn(
         '⚠️ Session middleware setup failed, continuing...',
@@ -642,7 +642,7 @@ export class WebInterface {
     try {
       // Setup API routes
       this.apiRoutes.setupRoutes(app);
-      this.logger.debug('✓ API routes setup complete');
+      this.logger.debug(' API routes setup complete');
     } catch (error) {
       this.logger.warn(
         '⚠️ API routes setup failed, continuing...',
@@ -653,7 +653,7 @@ export class WebInterface {
     try {
       // Setup WebSocket communication
       this.webSocketManager?.setupWebSocket(app);
-      this.logger.debug('✓ WebSocket setup complete');
+      this.logger.debug(' WebSocket setup complete');
     } catch (error) {
       this.logger.warn(
         '⚠️ WebSocket setup failed, continuing...',
@@ -664,7 +664,7 @@ export class WebInterface {
     try {
       // Setup Svelte proxy routes
       this.setupSvelteProxy(app);
-      this.logger.debug('✓ Svelte proxy setup complete');
+      this.logger.debug(' Svelte proxy setup complete');
     } catch (error) {
       this.logger.warn(
         '⚠️ Svelte proxy setup failed, continuing...',
@@ -675,7 +675,7 @@ export class WebInterface {
     try {
       // Setup fallback HTML serving
       this.setupFallbackRoutes(app);
-      this.logger.debug('✓ Fallback routes setup complete');
+      this.logger.debug(' Fallback routes setup complete');
     } catch (error) {
       this.logger.warn(
         '⚠️ Fallback routes setup failed, continuing...',
@@ -722,7 +722,7 @@ export class WebInterface {
     );
 
     this.logger.info(
-      `✓ Svelte proxy configured: /dashboard/* -> http://' + (this.svelteProxyConfig.svelteHost) + ':' + (this.svelteProxyConfig.sveltePort) + '`
+      ` Svelte proxy configured: /dashboard/* -> http://${this.svelteProxyConfig.svelteHost}:${this.svelteProxyConfig.sveltePort}`
     );
   }
 

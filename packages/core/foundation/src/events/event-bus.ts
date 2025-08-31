@@ -138,7 +138,7 @@ export interface Event<T = unknown> {
  *});
  *
  * // Fully typed emission
- * eventBus.emit('userAction', { action: ' click', target: ' button'});
+ * eventBus.emit('userAction', { action: ' click', target: ' button`});
  * `
  */
 export class EventBus<
@@ -480,7 +480,7 @@ export class EventBus<
     } catch (error) {
       if (this.busConfig.enableMetrics) this.busMetrics.errorCount++;
       if (this.busConfig.enableLogging) {
-        logger.error('Middleware error for event '' + event + '':', error);
+        logger.error('Middleware error for event `${event}`:', error);
       }
       throw error;
     }

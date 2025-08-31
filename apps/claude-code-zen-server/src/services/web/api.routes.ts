@@ -24,7 +24,7 @@
  *
  * **DELEGATION HIERARCHY:**
  * ''') * Express.js App  web-api-routes-optimized.ts  @claude-zen packages  API Logic'
- * (External) (This File) (Specialized) (Business Logic)' * ') *`
+ * (External) (This File) (Specialized) (Business Logic)' * `) *`
  * **Delegates to:**
  * - @claude-zen/enterprise:Advanced GUI and human-in-the-loop API endpoints
  * - @claude-zen/intelligence:Task and workflow management endpoints

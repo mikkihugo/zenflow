@@ -29,7 +29,7 @@
  * // Agent monitoring responds with health data
  * eventSystem.on('agent-monitoring: agent-health', (data) => {
  *   logger.info('Agent health: ', data.health);
-' *});
+` *});
  * `
  *
  * @author Claude Code Zen Team - Intelligence Integration

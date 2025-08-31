@@ -132,11 +132,11 @@ export class ProcessLifecycleManager {
    */
   private async handleShutdownSignal(signal: string): Promise<void> {
     if (this.isShuttingDown) {
-      logger.warn('Received ' + signal + ' during shutdown, forcing exit...');
+      logger.warn(`Received ${signal} during shutdown, forcing exit...`);
       process.exit(1);
     }
 
-    logger.info(' Received ' + signal + ', initiating graceful shutdown...');
+    logger.info(` Received ${signal}, initiating graceful shutdown...`);
     this.isShuttingDown = true;
 
     // Set timeout for forced shutdown
@@ -264,7 +264,7 @@ export class ProcessLifecycleManager {
  * 'typescript'
  * const lifecycle = setupProcessLifecycle(async () => {
  *   await cleanup();
- *   logger.info('Shutdown complete');
+ *   logger.info('Shutdown complete`);
  *});
  * `
  */

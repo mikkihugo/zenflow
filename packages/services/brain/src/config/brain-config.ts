@@ -84,7 +84,7 @@ export function getBrainConfig():BrainSpecificConfig & Partial<Config> {
     const debugMode = isDebugMode();
     // Use NODE_ENV or fallback to debug mode inference
     const __environment =
-      process.env.NODE_ENV || (debugMode ? 'development' : 'production');
+      process.env.NODE_ENV || (debugMode ? 'development' : 'production`);
     logger.info(`Loading brain config for environment: ${__environment}`, {
       debugMode,
     });
@@ -120,7 +120,7 @@ export function getBrainConfig():BrainSpecificConfig & Partial<Config> {
       ...sharedConfig,
 } as BrainSpecificConfig & Partial<Config>;
 } catch (error) {
-    logger.error('Failed to load brain configuration:', error);')    throw new Error(
+    logger.error('Failed to load brain configuration:`, error);`)    throw new Error(
       `Brain configuration failed:${error instanceof Error ? error.message : String(error)}``
     );
 }

@@ -29,7 +29,7 @@ const getCurrentProject = (): {
   name: string;
 } | null => {
   // Stub implementation - would get current project from memory
-  const projectPath = process.env['CLAUDE_ZEN_PROJECT'] || process.cwd();
+  const projectPath = process.env.CLAUDE_ZEN_PROJECT || process.cwd();
   const projectName = path.basename(projectPath);
   return {
     id: projectName,
@@ -152,13 +152,13 @@ export class ProjectSwitcher extends EventEmitter {
 
       logger.info('Project switch completed successfully', {
         projectId: result.projectId,
-        duration: Date.now() - startTime + 'ms',
+        duration: `${Date.now() - startTime}ms`,
         previousProject: result.previousProject,
       });
 
       this.emit('switchCompleted', result);
       return result;
-    } catch (_error) {
+    } catch (error) {
       this.handleSwitchError(error as Error, request, startTime);
       throw error;
     } finally {
@@ -231,13 +231,13 @@ export class ProjectSwitcher extends EventEmitter {
 
       if (!project) {
         throw new Error(
-          'Project with ID ' + request.projectId + ' not found in registry'
+          `Project with ID ${request.projectId} not found in registry`
         );
       }
 
       // Verify project path still exists
-      if (!fs.existsSync(project._path)) {
-        throw new Error('Project path ' + project.path + ' no longer exists');
+      if (!fs.existsSync(project.path)) {
+        throw new Error(`Project path ${project.path} no longer exists`);
       }
 
       return {
@@ -250,7 +250,7 @@ export class ProjectSwitcher extends EventEmitter {
       const absolutePath = path.resolve(request.projectPath);
 
       if (!fs.existsSync(absolutePath)) {
-        throw new Error('Project path ' + absolutePath + ' does not exist');
+        throw new Error(`Project path ${absolutePath} does not exist`);
       }
 
       // Generate project info for new path
@@ -272,7 +272,7 @@ export class ProjectSwitcher extends EventEmitter {
     currentProject: { id: string; path: string },
     projectInfo: { id: string; name: string; path: string }
   ): ProjectSwitchResult | null {
-    if (currentProject.path !== projectInfo._path) {
+    if (currentProject.path !== projectInfo.path) {
       return null;
     }
 
@@ -385,7 +385,7 @@ export class ProjectSwitcher extends EventEmitter {
     request: ProjectSwitchRequest,
     startTime: number
   ): void {
-    const errorMessage = (error as Error).message;
+    const errorMessage = error.message;
     this.lastError = errorMessage;
 
     logger.error('Project switch failed', {
@@ -419,7 +419,7 @@ export class ProjectSwitcher extends EventEmitter {
     // Create timeout promise
     const timeoutPromise = new Promise<never>((resolve, reject) => {
       setTimeout(() => {
-        reject(new Error('Shutdown timeout after ' + timeout + 'ms'));
+        reject(new Error(`Shutdown timeout after ${timeout}ms`));
       }, timeout);
     });
 
@@ -427,7 +427,7 @@ export class ProjectSwitcher extends EventEmitter {
       // Race between shutdown and timeout
       await Promise.race([shutdownPromise, timeoutPromise]);
       logger.info('Graceful shutdown completed');
-    } catch (_error) {
+    } catch (error) {
       if ((error as Error).message.includes('timeout')) {
         logger.warn('Graceful shutdown timed out, forcing shutdown');
 
@@ -452,9 +452,9 @@ export class ProjectSwitcher extends EventEmitter {
         newPath: absolutePath,
         cwd: process.cwd(),
       });
-    } catch (_error) {
+    } catch (error) {
       throw new Error(
-        'Failed to switch to project directory ' + (absolutePath) + ':' + (error as Error).message
+        `Failed to switch to project directory ${absolutePath}:${(error as Error).message}`
       );
     }
   }

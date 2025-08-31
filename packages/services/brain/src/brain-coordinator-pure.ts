@@ -166,7 +166,7 @@ export interface IntelligenceEvents {
 
   // Logging Events (Zero Import Logging)
   'brain:log': {
-    level: 'debug' | ' info' | ' warn' | ' error';
+    level: 'debug' | ' info' | ' warn' | ' error`;
     message: string;
     data?: Record<string, unknown>;
     timestamp: number;
@@ -225,7 +225,7 @@ export class BrainCoordinator {
       } catch (error) {
         // Even error handling is event-based
         this.emitEvent('brain:log', {
-          level: 'error',
+          level: 'error`,
           message: `Event listener error for ${event}`,
           data: {
             error: error instanceof Error ? error.message : String(error),
@@ -296,7 +296,7 @@ export class BrainCoordinator {
 
       this.emitEvent('brain:log', {
         level: 'info',
-        message: '✅ Brain Coordinator initialized successfully',
+        message: ' Brain Coordinator initialized successfully`,
         data: {
           duration: `${duration}ms`,
           coordination: 'pure-event-based',
@@ -316,7 +316,7 @@ export class BrainCoordinator {
       const duration = Date.now() - initStartTime;
       this.emitEvent('brain:log', {
         level: 'error',
-        message: '❌ Brain Coordinator initialization failed',
+        message: ' Brain Coordinator initialization failed`,
         data: {
           error: error instanceof Error ? error.message : String(error),
           duration: `${duration}ms`,
@@ -346,7 +346,7 @@ export class BrainCoordinator {
     const { requestId, task, context = {}, priority = 'medium' } = request;
 
     this.emitEvent('brain:log', {
-      level: 'debug',
+      level: 'debug`,
       message: `Analyzing request: ${task}`,
       data: { requestId, priority },
       timestamp: Date.now(),
@@ -411,7 +411,7 @@ export class BrainCoordinator {
 
     this.emitEvent('brain:log', {
       level: 'info',
-      message: '✅ Brain Coordinator shutdown complete',
+      message: ' Brain Coordinator shutdown complete',
       timestamp: Date.now(),
     });
   }
@@ -445,7 +445,7 @@ export class BrainCoordinator {
       return ' dspy_optimization';
     if (complexity > 0.6) return 'hybrid_workflow';
     if (priority === 'high') return ' direct_training';
-    return 'simple_coordination';
+    return 'simple_coordination`;
   }
 
   private getStrategyReasoning(strategy: string, complexity: number): string {

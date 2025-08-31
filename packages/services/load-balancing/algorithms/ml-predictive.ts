@@ -428,7 +428,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
         );
         predictions.set(modelType, prediction);
       } catch (error) {
-        logger.warn('Model ' + modelType + ' prediction failed:', error);
+        logger.warn(`Model ${modelType} prediction failed:`, error);
       }
     }
 
@@ -586,7 +586,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
         // Evaluate model performance
         await this.evaluateModel(modelType, trainingData);
       } catch (error) {
-        logger.error('Failed to retrain model ' + modelType + ':', error);
+        logger.error(`Failed to retrain model ${modelType}:`, error);
       }
     }
 

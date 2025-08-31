@@ -168,7 +168,7 @@ export class AvatarOptimizer extends Teleprompter {
 			logger.info('Positive examples:' + pos_inputs.length);
 			logger.info('Negative examples:' + neg_inputs.length);
 			logger.info(
-				'Sampling ' + (this.max_positive_inputs) + ' positive examples and ' + this.max_negative_inputs + ' negative examples',
+				'Sampling ' + (this.max_positive_inputs) + ` positive examples and ${this.max_negative_inputs} negative examples`,
 			);
 
 			// Sample examples exactly matching Stanford implementation
@@ -357,7 +357,7 @@ export class AvatarOptimizer extends Teleprompter {
 		return async (inputs: FeedbackBasedInstructionSignature) => {
 			// Simulate instruction improvement
 			const new_instruction =
-				(inputs.previous_instruction) + '\n\nBased on feedback: ' + inputs.feedback + '\n' +
+				(inputs.previous_instruction) + `\n\nBased on feedback: ${inputs.feedback}\n` +
 				'Please pay special attention to tool selection and action planning to improve performance on challenging cases.';
 
 			return { new_instruction };

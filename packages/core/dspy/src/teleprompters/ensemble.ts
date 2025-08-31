@@ -77,7 +77,7 @@ class EnsembledProgram extends DSPyModule {
     // Return outputs as-is (note:this matches Python behavior)
     return {
       data: { outputs },
-      reasoning: 'Ensemble of ' + outputs.length + ' programs',
+      reasoning: `Ensemble of ${outputs.length} programs`,
       confidence:
         outputs.reduce((sum, output) => sum + (output.confidence || 0), 0) /
         outputs.length,
@@ -206,7 +206,7 @@ class EnsembledProgram extends DSPyModule {
  *       return {
  *         data:consensus.data,
  *         confidence:consensus.normalizedWeight,
- *         reasoning:'Ensemble consensus from ' + (validOutputs.length) + '/' + outputs.length + ' members'
+ *         reasoning:'Ensemble consensus from ` + (validOutputs.length) + `/${outputs.length} members`
  *};
  *} catch (error) {
  *       return {
@@ -255,7 +255,7 @@ class EnsembledProgram extends DSPyModule {
  * // Access ensemble configuration
  * const config = ensemble.getConfig();
  * logger.info('Ensemble settings: ', config);
-' * `
+` * `
  */
 export class Ensemble {
   private config: Required<EnsembleConfig>;

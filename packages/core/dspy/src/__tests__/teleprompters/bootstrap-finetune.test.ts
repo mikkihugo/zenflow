@@ -737,7 +737,7 @@ describe('BootstrapFinetune Teleprompter', () => {
       const largeTrainset = Array.from(
         { length: 100 },
         (_, i) =>
-          new Example({ question: 'What is ' + (i) + '+' + i + '?', answer: i * 2 })
+          new Example({ question: 'What is ' + (i) + `+${i}?`, answer: i * 2 })
       );
 
       const result = await bootstrapFinetune.compile(

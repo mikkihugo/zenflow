@@ -573,7 +573,7 @@ export class GRPOML extends Teleprompter {
       };
 
       this.logger.info(
-        ' GRPOML optimization completed in ' + (totalTime) + 'ms with ' + this.currentEpisode + ' episodes'
+        ' GRPOML optimization completed in ` + (totalTime) + `ms with ${this.currentEpisode} episodes`
       );
 
       return result;
@@ -734,12 +734,12 @@ export class GRPOML extends Teleprompter {
 
       const episodeTime = Date.now() - episodeStart;
       this.logger.debug(
-        'Episode ' + (this.currentEpisode) + ':reward=' + (episodeReward.toFixed(3)) + ', experiences=' + (episodeExperiences.length) + ', time=' + episodeTime + 'ms'
+        'Episode ' + (this.currentEpisode) + ':reward=' + (episodeReward.toFixed(3)) + ', experiences=` + (episodeExperiences.length) + `, time=${episodeTime}ms`
       );
     }
 
     this.logger.info(
-      'Policy gradient training completed after ' + this.currentEpisode + ' episodes'
+      `Policy gradient training completed after ${this.currentEpisode} episodes`
     );
   }
 
@@ -852,7 +852,7 @@ export class GRPOML extends Teleprompter {
     }
 
     // Mann-Whitney U test (non-parametric alternative)
-    if (this.config.statisticalTests.includes('mann_whitney_u')) {
+    if (this.config.statisticalTests.includes('mann_whitney_u`)) {
       const mannWhitneyTest = await this.statisticalAnalyzer?.mannWhitneyU(
         earlyRewards,
         lateRewards
@@ -861,7 +861,7 @@ export class GRPOML extends Teleprompter {
     }
 
     this.logger.info(
-      'Completed ' + tests.length + ' statistical tests for policy improvement'
+      `Completed ${tests.length} statistical tests for policy improvement`
     );
 
     return tests;

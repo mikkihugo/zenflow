@@ -780,7 +780,7 @@ export class NeuralOrchestrator {
   async processNeuralTask(task:NeuralTask): Promise<NeuralResult> {
     const __startTime = Date.now();
     logger.debug(
-      `🎯 Orchestrating neural task:${task.id} (type:${task.type})``
+      ` Orchestrating neural task:${task.id} (type:${task.type})``
     );
 
     // Analyze task complexity
@@ -816,7 +816,7 @@ export class NeuralOrchestrator {
       result.metadata.complexity = complexity;
 
       logger.info(
-        `✅ Neural task completed:${task.id} (${complexity}, ${duration}ms)``
+        ` Neural task completed:${task.id} (${complexity}, ${duration}ms)``
       );
       return result;
 } catch (error) {

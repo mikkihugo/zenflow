@@ -26,7 +26,7 @@ export function pTimeout<T>(
         'name' in error &&
         (error.name === 'TaskCancelledError' || error.name === 'TimeoutError')
       ) {
-        throw new Error(message ?? 'Operation timed out after ' + timeoutMs + 'ms');
+        throw new Error(message ?? `Operation timed out after ${timeoutMs}ms`);
       }
       throw error;
     }
@@ -257,8 +257,8 @@ export async function withTimeout<T>(
         setTimeout(() => {
           reject(
             new Error(
-              config['message'] ||
-                'Operation timed out after ' + config.timeout + 'ms'
+              config['message`] ||
+                `Operation timed out after ${config.timeout}ms`
             )
           );
         }, config.timeout);
@@ -417,9 +417,9 @@ export async function concurrent<T>(
  *
  * results.forEach((result, index) => {
  *   if (result.isOk()) {
- *     logger.info('Request ' + index + ' succeeded:', result.value);
+ *     logger.info(`Request ${index} succeeded:`, result.value);
  *} else {
- *     logger.info('Request ' + index + ' failed:', result.error);
+ *     logger.info(`Request ${index} failed:`, result.error);
  *}
  *});
  * '
@@ -513,7 +513,7 @@ export function debounce<T extends unknown[], R>(
  * '''typescript'
  * const throttledAPI = throttle(
  *   async (query:string) => {
- *     return fetch('/api/search?q=' + query);
+ *     return fetch('/api/search?q=` + query);
  *},
  *   1000
  * );

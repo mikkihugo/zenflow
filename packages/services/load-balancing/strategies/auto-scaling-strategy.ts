@@ -67,7 +67,7 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
         name: 'Auto-scaled Agent ' + agentId,
         capabilities: ['general', 'auto-scaled'],
         status: AgentStatus.HEALTHY,
-        endpoint: 'http://auto-agent-' + agentId + ':8080',
+        endpoint: `http://auto-agent-${agentId}:8080`,
         lastHealthCheck: new Date(),
         metadata: {
           autoScaled: true,
@@ -78,7 +78,7 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
 
     this.recordScalingAction(
       'scale_up',
-      'Added ' + count + ' agents due to high load',
+      `Added ${count} agents due to high load`,
       count
     );
     this.emit('scale:up', count);
@@ -96,7 +96,7 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
 
     this.recordScalingAction(
       'scale_down',
-      'Removed ' + count + ' agents due to low load',
+      `Removed ${count} agents due to low load`,
       -count
     );
     this.emit('scale:down', agentsToRemove);

@@ -9,8 +9,8 @@ export class MeetingIntelligence {
     // Analyze meeting data to extract insights
     const insights = [];
 
-    if (data && typeof data === 'object') {
-    ')      // Extract basic meeting information
+    if (data && typeof data === `object`) {
+    `)      // Extract basic meeting information
       if (data.duration) {
         insights.push(`Meeting duration:${data.duration} minutes`);`
 }
@@ -37,7 +37,7 @@ export class MeetingIntelligence {
           .slice(0, 3)
           .map((topic:any) => topic.title||topic.name||topic);
         if (keyTopics.length > 0) {
-          insights.push(`Key themes:$keyTopics.join(',    ')`);`
+          insights.push(`Key themes:$keyTopics.join(`,    `)`);`
 }
 }
 
@@ -48,7 +48,7 @@ export class MeetingIntelligence {
 
         // Analyze urgency
         const urgentItems = data.actionItems.filter(
-          (item:any) => item.priority === 'high'||item.urgent')        );
+          (item:any) => item.priority === 'high`||item.urgent`)        );
         if (urgentItems.length > 0) {
           insights.push(
             `Urgent actions:${urgentItems.length} high-priority items``
@@ -64,14 +64,14 @@ export class MeetingIntelligence {
           sentimentScore > 0.6
             ?'positive')            :sentimentScore < 0.4
               ? 'negative')              : 'neutral;
-'        insights.push(
+`        insights.push(
           `Meeting sentiment:$_sentimentLabel($(sentimentScore * 100).toFixed(1)%)``
         );
 }
 }
 
     return {
-      analysis: 'meeting_analysis_complete',      insights,
+      analysis: `meeting_analysis_complete`,      insights,
       summary:
         insights.length > 0
           ? `Analyzed meeting with ${insights.length} key insights``

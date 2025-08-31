@@ -247,7 +247,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 
 			this.initialized = true;
 			this.logger.info(
-				' Autonomous Selector initialized with ' + this.availableVariants.size + ' teleprompter variants',
+				` Autonomous Selector initialized with ${this.availableVariants.size} teleprompter variants`,
 			);
 			this.emit("selector:initialized", { timestamp:new Date()});
 } catch (error) {
@@ -355,7 +355,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 	):Promise<void> {
 		const task = this.findTaskById(taskId);
 		if (!task) {
-			this.logger.warn('Task ' + taskId + ' not found for performance recording');
+			this.logger.warn(`Task ${taskId} not found for performance recording`);
 			return;
 }
 
@@ -478,7 +478,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 		this.registerAdditionalVariants();
 
 		this.logger.info(
-			' Registered ' + this.availableVariants.size + ' teleprompter variants',
+			` Registered ${this.availableVariants.size} teleprompter variants`,
 		);
 }
 
@@ -1041,7 +1041,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 		mlRecommendation:any,
 		score:number,
 	): string {
-		return 'Selected ' + (variant.name) + ' based on optimal fit (score: ' + (score.toFixed(3)) + '). ML analysis recommends ' + (mlRecommendation.recommendedTeleprompter) + ' with ' + ((mlRecommendation.confidence * 100).toFixed(1)) + '% confidence. Variant offers ' + (variant.capabilities.join(", ")) + ' capabilities with ' + variant.type + ' implementation approach.';
+		return 'Selected ' + (variant.name) + ' based on optimal fit (score: ' + (score.toFixed(3)) + '). ML analysis recommends ' + (mlRecommendation.recommendedTeleprompter) + ' with ' + ((mlRecommendation.confidence * 100).toFixed(1)) + '% confidence. Variant offers ' + (variant.capabilities.join(", ")) + ` capabilities with ${variant.type} implementation approach.`;
 	}
 
 	private generateDecisionFactors(

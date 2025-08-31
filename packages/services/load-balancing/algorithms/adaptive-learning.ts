@@ -515,7 +515,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     return {
       selectedAgent,
       confidence: this.strategies.get(strategyName)?.confidence || 0.5,
-      reasoning: (reasoning) + ' (strategy:' + strategyName + ')',
+      reasoning: (reasoning) + ` (strategy:${strategyName})`,
       alternativeAgents: alternatives,
       estimatedLatency: metrics.get(selectedAgent?.id)?.responseTime || 1000,
       expectedQuality: this.strategies.get(strategyName)?.successRate || 0.8,

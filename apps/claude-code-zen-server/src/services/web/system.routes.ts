@@ -16,7 +16,7 @@
  * import { SystemCapabilityRoutes} from './system-capability-routes';
  *
  * const routes = new SystemCapabilityRoutes();
- * app.use('/api/v1/system/capability', routes.getRouter());
+ * app.use('/api/v1/system/capability`, routes.getRouter());
  * `
  */
 

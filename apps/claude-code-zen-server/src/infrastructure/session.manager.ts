@@ -115,7 +115,7 @@ export class WebSessionManager {
     }
 
     if (cleanedCount > 0) {
-      this.logger.info('Cleaned up ' + cleanedCount + ' expired sessions');
+      this.logger.info(`Cleaned up ${cleanedCount} expired sessions`);
     }
     return cleanedCount;
   }

@@ -309,7 +309,7 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
       const start = performance.now();
 
       const testData = Array.from({ length: 1000 }, (_, i) => ({
-        email: 'user' + i + '@example.com',
+        email: `user${i}@example.com`,
         timestamp: Date.now() + i,
         uuid: generateUUID(),
         array: [i],

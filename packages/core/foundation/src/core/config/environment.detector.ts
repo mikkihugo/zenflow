@@ -225,7 +225,7 @@ export class EnvironmentDetector extends EventEmitter {
       captureRejections: true,
     });
 
-    this.logger = logger || getLogger('EnvironmentDetector');
+    this.logger = logger || getLogger('EnvironmentDetector`);
     // Initialize workspace detector for comprehensive environment analysis
     this.workspaceDetector = null;
 
@@ -252,7 +252,7 @@ export class EnvironmentDetector extends EventEmitter {
     }, this.refreshInterval);
 
     this.logger.info(
-      'Started auto-detection with ' + this.refreshInterval + 'ms interval'
+      `Started auto-detection with ${this.refreshInterval}ms interval`
     );
   }
 
@@ -753,7 +753,7 @@ export class EnvironmentDetector extends EventEmitter {
           installed,
         });
       } catch (error) {
-        this.logger.warn('Failed to check Nix package ' + pkg.name + ':', error);
+        this.logger.warn(`Failed to check Nix package ${pkg.name}:`, error);
         packages.push({
           name: pkg.name,
           description: pkg.description,
@@ -773,7 +773,7 @@ export class EnvironmentDetector extends EventEmitter {
   private async isNixPackageAvailable(packageName: string): Promise<boolean> {
     try {
       const { stdout } = await execAsync(
-        'nix-env -qaP ' + packageName + '|head -1',
+        `nix-env -qaP ${packageName}|head -1`,
         { timeout: 5000 }
       );
       return stdout.trim().length > 0;
@@ -1066,7 +1066,7 @@ export class EnvironmentDetector extends EventEmitter {
  * const result = await nix.autoSetup();
  * if (result.success) {
  *   logger.info('Nix setup completed: ', result.steps);
-' *}
+` *}
  * `
  */
 export class NixIntegration {
@@ -1182,21 +1182,21 @@ export class NixIntegration {
    * Create a flake.nix file for the project
    */
   private async createFlakeNix(): Promise<void> {
-    const flakeContent = '{
+    const flakeContent = `{
   description = "Claude Code Zen - Development Environment";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-};
+  };
 
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        pkgs = nixpkgs.legacyPackages.\' + system + ';
+        pkgs = nixpkgs.legacyPackages.\${system};
       in
       {
-        devShells['default'] = pkgs.mkShell {
+        devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             # Node.js ecosystem
             nodejs_20
@@ -1210,16 +1210,16 @@ export class NixIntegration {
             tree
             jq
             curl
-];
+          ];
           
           shellHook = ''
-            echo " Claude Code Zen Development Environment"
-            echo " TypeScript/Node.js development ready"
-            echo "  Ready for development!"
-          ';
-};
-});
-}';
+            echo "Claude Code Zen Development Environment"
+            echo "TypeScript/Node.js development ready"
+            echo "Ready for development!"
+          '';
+        };
+      });
+}`;
 
     await writeFile(join(this.projectRoot, 'flake.nix'), flakeContent);
   }
@@ -1327,7 +1327,7 @@ export class NixIntegration {
     if (env.currentShell) {
       status += ', in ' + env.currentShell;
     }
-    status += ' • ' + (installedCount) + '/' + totalCount + ' packages';
+    status += ' • ' + (installedCount) + `/${totalCount} packages`;
 
     return status;
   }

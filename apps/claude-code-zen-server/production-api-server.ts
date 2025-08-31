@@ -51,7 +51,7 @@ async function initializeServices(): Promise<void> {
     // Note: Temporarily commented out to avoid type mismatch
     // const webSocketCoordinator = {
     //   broadcast: (_event: string, _data: unknown) => {
-    //     logger.debug('Broadcasting ' + event + ':', data);
+    //     logger.debug(`Broadcasting ${event}:`, data);
     //     // In production, this would broadcast to actual WebSocket clients
     //   }
     // };

@@ -362,7 +362,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
 
       const duration = Date.now() - startTime;
       this.logger.debug(
-        ' Traffic control complete:' + (decisions.length) + ' decisions made in ' + duration + 'ms'
+        ' Traffic control complete:` + (decisions.length) + ` decisions made in ${duration}ms`
       );
 
       return decisions;
@@ -480,7 +480,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
           'Critical system conditions detected',
           'CPU:' + (metrics.cpuUsage * 100).toFixed(1) + '%',
           'Memory:' + (metrics.memoryUsage * 100).toFixed(1) + '%',
-          'Response time:' + metrics.averageResponseTime + 'ms',
+          `Response time:${metrics.averageResponseTime}ms`,
           'Error rate:' + (metrics.errorRate * 100).toFixed(2) + '%',
           'Activating emergency load redistribution',
         ],
@@ -583,8 +583,8 @@ export class TrafficController extends EventBus<TrafficEvents> {
         action: 'performance_optimization',
         reasoning: [
           'Performance degradation detected',
-          'Response time:' + metrics.averageResponseTime + 'ms',
-          'Throughput:' + metrics.throughput + ' tasks/min',
+          `Response time:${metrics.averageResponseTime}ms`,
+          `Throughput:${metrics.throughput} tasks/min`,
           'Implementing latency and throughput optimization',
         ],
         confidence: 0.75,

@@ -33,7 +33,7 @@
  * await loadBalancer.start();
  *
  * const assignment = await loadBalancer.routeTask({
- *   type: 'neural-training', *   priority: 'high', *   requirements:['gpu',    'high-memory']
+ *   type: 'neural-training', *   priority: 'high', *   requirements:['gpu',    'high-memory`]
  *});
  * `
  */

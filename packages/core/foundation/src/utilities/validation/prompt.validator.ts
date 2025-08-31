@@ -166,7 +166,7 @@ function validatePromptLength(
     issues.push({
       type: 'performance',
       severity: 'error',
-      message: 'Prompt exceeds maximum length of ' + PROMPT_VALIDATION_CONFIG.maxPromptLength + ' characters',
+      message: `Prompt exceeds maximum length of ${PROMPT_VALIDATION_CONFIG.maxPromptLength} characters`,
       suggestion: 'Break down the prompt into smaller, focused requests',
     });
     risk = 'high';
@@ -176,7 +176,7 @@ function validatePromptLength(
     issues.push({
       type: 'quality',
       severity: 'warning',
-      message: 'Prompt is very short (' + prompt.length + ' characters)',
+      message: `Prompt is very short (${prompt.length} characters)`,
       suggestion: 'Provide more specific details about what you need',
     });
   }
@@ -186,7 +186,7 @@ function validatePromptLength(
     issues.push({
       type: 'performance',
       severity: 'error',
-      message: 'Prompt has too many lines (' + lines.length + ')',
+      message: `Prompt has too many lines (${lines.length})`,
       suggestion: 'Reduce prompt complexity or split into multiple requests',
     });
     risk = 'high';

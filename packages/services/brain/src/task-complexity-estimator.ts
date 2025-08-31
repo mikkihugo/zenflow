@@ -84,7 +84,7 @@ export class TaskComplexityEstimator {
       this.initialized = true;
       logger.info(' Task Complexity Estimator initialized successfully');
     } catch (error) {
-      logger.error(' Failed to initialize Task Complexity Estimator:', error);
+      logger.error(` Failed to initialize Task Complexity Estimator:`, error);
       throw error;
     }
   }
@@ -172,7 +172,7 @@ export class TaskComplexityEstimator {
 };
 
       logger.info(
-        `🎯 Complexity estimated:${(finalComplexity * 100).toFixed(1)}% (${difficultyLevel}) - ${suggestedMethod} suggested``
+        ` Complexity estimated:${(finalComplexity * 100).toFixed(1)}% (${difficultyLevel}) - ${suggestedMethod} suggested``
       );
 
       return estimate;
@@ -308,7 +308,7 @@ export class TaskComplexityEstimator {
 
     // Technical complexity keywords
     const technicalKeywords = [
-      'algorithm',      'optimize',      'analyze',      'implement',      'design',      'architecture',      'machine learning',      'neural network',      'database',      'performance',      'security',      'distributed',      'concurrent',      'async',      'parallel',      'complex',      'advanced',];
+      'algorithm',      'optimize',      'analyze',      'implement',      'design',      'architecture',      'machine learning',      'neural network',      'database',      'performance',      'security',      'distributed',      'concurrent',      'async',      'parallel',      'complex',      `advanced`,];
 
     const technicalMatches = technicalKeywords.filter((keyword) =>
       prompt.toLowerCase().includes(keyword)
@@ -327,7 +327,7 @@ export class TaskComplexityEstimator {
 
     // Code-related complexity
     if (
-      prompt.includes('```')||prompt.includes(' function')||prompt.includes(' class')')    ) {`
+      prompt.includes('```')||prompt.includes(' function')||prompt.includes(' class')`)    ) {`
       complexity += 0.2;
       factors.push('code involved');')}
 
@@ -344,7 +344,7 @@ export class TaskComplexityEstimator {
 
     return {
       score:Math.min(complexity, 1),
-      reasoning:factors.length > 0 ? factors.join(',    ') : ' simple prompt',};
+      reasoning:factors.length > 0 ? factors.join(',    ') : ` simple prompt`,};
 }
 
   private analyzeContextComplexity(context:Record<string, any>):
@@ -364,7 +364,7 @@ export class TaskComplexityEstimator {
     if (context.dataSize && typeof context.dataSize === 'number') {
     ')      const dataComplexity = Math.min(context.dataSize / 1000000, 0.3);
       complexity += dataComplexity;
-      factors.push('large data');')}
+      factors.push('large data');`)}
 
     // Dependencies
     if (context.dependencies && Array.isArray(context.dependencies)) {
@@ -441,7 +441,7 @@ export class TaskComplexityEstimator {
     const patternComplexity =
       bestMatch > 0.5
         ? this.complexityPatterns.find(
-            (p) => p.keywords.join(',    ') === bestPattern')          )?.complexity||0.5
+            (p) => p.keywords.join(',    `) === bestPattern`)          )?.complexity||0.5
         :0.5;
 
     return {
@@ -457,7 +457,7 @@ export class TaskComplexityEstimator {
     reasoning:string;
 } {
     if (!agentRole) {
-      return { score:0, reasoning: 'no role specified'};')}
+      return { score:0, reasoning: 'no role specified`};`)}
 
     const roleComplexities = {
       architect:0.8,
