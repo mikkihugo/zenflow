@@ -45,6 +45,6 @@ export default defineConfig({
 
   // Optimization
   optimizeDeps: {
-    include: ['socket.io-client', 'chart.js'],
+  include: ['socket.io-client'],
   },
 });
