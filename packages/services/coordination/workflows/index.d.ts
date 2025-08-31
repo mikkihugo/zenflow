@@ -179,31 +179,31 @@ export declare const WORKFLOWS_INFO:{
  * ## Architecture
  *
  * ````
- * ┌─────────────────────────────────────────────────────┐
- * │                Workflow Designer                    │
- * │           (Visual workflow creation)                │
- * └─────────────────┬───────────────────────────────────┘
- *                   │
- * ┌─────────────────▼───────────────────────────────────┐
- * │              Workflow Engine                        │
- * │  • Step execution                                  │
- * │  • State management                                │
- * │  • Error handling                                  │
- * └─────────────────┬───────────────────────────────────┘
- *                   │
- * ┌─────────────────▼───────────────────────────────────┐
- * │           Execution Context                         │
- * │  • Data persistence                                │
- * │  • Performance monitoring                          │
- * │  • Audit trails                                   │
- * └─────────────────┬───────────────────────────────────┘
- *                   │
- * ┌─────────────────▼───────────────────────────────────┐
- * │             Foundation Layer                        │
- * │  • Telemetry and logging                           │
- * │  • Circuit breaker protection                      │
- * │  • Configuration management                        │
- * └─────────────────────────────────────────────────────┘
+ * 
+ *                 Workflow Designer                    
+ *            (Visual workflow creation)                
+ * 
+ *                   
+ * 
+ *               Workflow Engine                        
+ *   • Step execution                                  
+ *   • State management                                
+ *   • Error handling                                  
+ * 
+ *                   
+ * 
+ *            Execution Context                         
+ *   • Data persistence                                
+ *   • Performance monitoring                          
+ *   • Audit trails                                   
+ * 
+ *                   
+ * 
+ *              Foundation Layer                        
+ *   • Telemetry and logging                           
+ *   • Circuit breaker protection                      
+ *   • Configuration management                        
+ * 
  * ````
  *
  * ## Workflow Types and Patterns

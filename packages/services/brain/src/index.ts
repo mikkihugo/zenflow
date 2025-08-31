@@ -710,7 +710,7 @@ export { SmartNeuralCoordinator} from './smart-neural-coordinator';
  */
 export { AgentPerformancePredictor} from './agent-performance-predictor';
 /**
- * ️ AutonomousCoordinator - Self-governing system management
+ *  AutonomousCoordinator - Self-governing system management
  *
  * Comprehensive autonomous system coordination and resource management:
  * - Automatic resource allocation
@@ -842,7 +842,7 @@ export { TaskComplexityEstimator} from './task-complexity-estimator';
  * 4.  PERFORMANCE MONITORING
  *    AgentPerformancePredictor → Behavioral analysis and prediction
  *    ↓
- * 5. ️ SYSTEM COORDINATION
+ * 5.  SYSTEM COORDINATION
  *    AutonomousCoordinator → Resource allocation and scaling
  *    ↓
  * 6.  CONTINUOUS LEARNING
@@ -1011,33 +1011,33 @@ export const BRAIN_INFO = {
  * ## Architecture
  *
  * ````
- * ┌─────────────────────────────────────────────────────┐
- * │              Application Layer                      │
- * │           (@claude-zen/foundation)                 │
- * └─────────────────┬───────────────────────────────────┘
- *                   │
- * ┌─────────────────▼───────────────────────────────────┐
- * │             Brain Coordinator                       │
- * │  • Autonomous decision-making                      │
- * │  • Strategy selection and optimization             │
- * │  • Performance monitoring and learning             │
- * └─────────────────┬───────────────────────────────────┘
- *                   │
- * ┌─────────────────▼───────────────────────────────────┐
- * │           Intelligence Layer                        │
- * │  ├─ Task Complexity Estimator                      │
- * │  ├─ Autonomous Optimization Engine                 │
- * │  ├─ Behavioral Intelligence System                 │
- * │  └─ Agent Performance Predictor                    │
- * └─────────────────┬───────────────────────────────────┘
- *                   │
- * ┌─────────────────▼───────────────────────────────────┐
- * │            Neural Computation                       │
- * │  ├─ Neural Bridge (Rust/WASM)                      │
- * │  ├─ FANN Neural Networks                           │
- * │  ├─ GPU Acceleration Support                       │
- * │  └─ Brain.js Integration                           │
- * └─────────────────────────────────────────────────────┘
+ * 
+ *               Application Layer                      
+ *            (@claude-zen/foundation)                 
+ * 
+ *                   
+ * 
+ *              Brain Coordinator                       
+ *   • Autonomous decision-making                      
+ *   • Strategy selection and optimization             
+ *   • Performance monitoring and learning             
+ * 
+ *                   
+ * 
+ *            Intelligence Layer                        
+ *    Task Complexity Estimator                      
+ *    Autonomous Optimization Engine                 
+ *    Behavioral Intelligence System                 
+ *    Agent Performance Predictor                    
+ * 
+ *                   
+ * 
+ *             Neural Computation                       
+ *    Neural Bridge (Rust/WASM)                      
+ *    FANN Neural Networks                           
+ *    GPU Acceleration Support                       
+ *    Brain.js Integration                           
+ * 
  * ````
  *
  * ## Autonomous Decision Pipeline
