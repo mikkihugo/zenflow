@@ -5,7 +5,7 @@
  * Can filter by service name, data type, attributes, or custom logic.
  */
 
-import { getLogger} from '@claude-zen/foundation/logging';
+import { getLogger} from '@claude-zen/foundation';
 import type { ProcessorConfig, TelemetryData} from '../types.js';
 import type { BaseProcessor} from './index.js';
 

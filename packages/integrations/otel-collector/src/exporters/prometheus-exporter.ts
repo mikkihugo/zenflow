@@ -5,7 +5,7 @@
  * Converts telemetry metrics to Prometheus metrics and serves them.
  */
 
-import { getLogger} from '@claude-zen/foundation/logging';
+import { getLogger} from '@claude-zen/foundation';
 import type { ExporterConfig} from '../types.js';
 import type { BaseExporter} from './index.js';
 

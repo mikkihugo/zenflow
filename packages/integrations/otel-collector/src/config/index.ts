@@ -9,7 +9,7 @@ import { existsSync, readFileSync} from 'node:fs';
 import { resolve} from 'node:path';
 
 import type { Logger} from '@claude-zen/foundation';
-import { getLogger} from '@claude-zen/foundation/logging';
+import { getLogger} from '@claude-zen/foundation';
 
 import type {
   CollectorConfig,

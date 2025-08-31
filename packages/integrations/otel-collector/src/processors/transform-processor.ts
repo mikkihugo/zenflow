@@ -5,7 +5,7 @@
  * Supports field mapping, data enrichment, and format conversion.
  */
 
-import { getLogger} from '@claude-zen/foundation/logging';
+import { getLogger} from '@claude-zen/foundation';
 import type { ProcessorConfig, TelemetryData} from '../types.js';
 import type { BaseProcessor} from './index.js';
 
@@ -31,6 +31,8 @@ export class TransformProcessor implements BaseProcessor {
   private readonly removeFields: string[];
   private readonly fieldMappings: Record<string, string>;
   private readonly operations: TransformOperation[];
+  private processedCount: number = 0;
+  private transformedCount: number = 0;
 
   constructor(config: ProcessorConfig) {
     this.config = config;
@@ -210,11 +212,11 @@ export class TransformProcessor implements BaseProcessor {
     if (wasTransformed) {
       if (!transformedData.attributes) {
         transformedData.attributes = {};
-}
-      transformedData.attributes._transformed = true;
-      transformedData.attributes._transformedAt = Date.now();
-      transformedData.attributes._transformedBy = this.config.name;
-}
+      }
+      transformedData.attributes['_transformed'] = true;
+      transformedData.attributes['_transformedAt'] = Date.now();
+      transformedData.attributes['_transformedBy'] = this.config.name;
+    }
 
     return transformedData;
 }
@@ -324,13 +326,17 @@ export class TransformProcessor implements BaseProcessor {
 
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
+      if (!part) continue; // Skip empty parts
       if (!current[part] || typeof current[part] !== 'object') {
         current[part] = {};
       }
       current = current[part];
     }
 
-    current[parts[parts.length - 1]] = value;
+    const lastPart = parts[parts.length - 1];
+    if (lastPart) {
+      current[lastPart] = value;
+    }
   }
 
   /**
@@ -342,14 +348,14 @@ export class TransformProcessor implements BaseProcessor {
 
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
-      if (!current[part]) {
+      if (!part || !current[part]) {
         return false;
       }
       current = current[part];
     }
 
     const lastPart = parts[parts.length - 1];
-    if (lastPart in current) {
+    if (lastPart && lastPart in current) {
       delete current[lastPart];
       return true;
     }
@@ -395,6 +401,7 @@ export class TransformProcessor implements BaseProcessor {
       const parts = condition.split(' ');
       if (parts.length === 3) {
         const [field, operator, expectedValue] = parts;
+        if (!field || !operator) return false;
         const actualValue = this.getFieldValue(data, field);
 
         switch (operator) {
@@ -403,7 +410,7 @@ export class TransformProcessor implements BaseProcessor {
           case '!=':
             return actualValue !== expectedValue;
           case 'contains':
-            return String(actualValue).includes(expectedValue);
+            return expectedValue ? String(actualValue).includes(expectedValue) : false;
           case 'exists':
             return actualValue !== undefined;
         }

@@ -5,7 +5,7 @@
  * Collects data over time or until batch size is reached.
  */
 
-import { getLogger} from '@claude-zen/foundation/logging';
+import { getLogger} from '@claude-zen/foundation';
 import type { ProcessorConfig, TelemetryData} from '../types.js';
 import type { BaseProcessor} from './index.js';
 
