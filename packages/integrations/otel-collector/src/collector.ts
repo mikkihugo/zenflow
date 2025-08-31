@@ -134,10 +134,10 @@ export class InternalOTELCollector {
   /**
    * Ingest telemetry data
    */
-  async ingest(data:TelemetryData): Promise<void> {
+  async ingest(data: TelemetryData): Promise<void> {
     if (!this.isRunning) {
       throw new Error('Collector is not running');
-}
+    }
 
     try {
       // Update received stats
@@ -154,27 +154,25 @@ export class InternalOTELCollector {
         for (const result of exportResults) {
           if (result.success) {
             this.stats.exported[data.type]++;
+          } else {
+            this.stats.errors[result.backend] =
+              (this.stats.errors[result.backend] || 0) + 1;
           }
         }
       }
-} else {
-          this.stats.errors[result.backend] =
-            (this.stats.errors[result.backend] || 0) + 1;
-}
-}
-} catch (error) {
+    } catch (error) {
       this.logger.error('Failed to ingest telemetry data', {
         error,
-        dataType:data.type,
-});
+        dataType: data.type,
+      });
       throw error;
-}
-}
+    }
+  }
 
   /**
    * Ingest multiple telemetry data items (batch)
    */
-  async ingestBatch(dataItems:TelemetryData[]): Promise<void> {
+  async ingestBatch(dataItems: TelemetryData[]): Promise<void> {
     const results = await Promise.allSettled(
       dataItems.map((data) => this.ingest(data))
     );
@@ -182,33 +180,33 @@ export class InternalOTELCollector {
     const failed = results.filter((r) => r.status === 'rejected').length;
     if (failed > 0) {
       this.logger.warn('Some batch items failed to ingest', {
-        total:dataItems.length,
+        total: dataItems.length,
         failed,
-});
-}
-}
+      });
+    }
+  }
 
   /**
    * Get collector statistics
    */
-  getStats():CollectorStats {
+  getStats(): CollectorStats {
     const memUsage = process.memoryUsage();
     return {
       ...this.stats,
-      memoryUsage:{
-        heapUsed:memUsage.heapUsed,
-        heapTotal:memUsage.heapTotal,
-        external:memUsage.external,
-},
-      uptime:Date.now() - this.startTime,
-      queueSizes:this.exporterManager.getQueueSizes(),
-};
-}
+      memoryUsage: {
+        heapUsed: memUsage.heapUsed,
+        heapTotal: memUsage.heapTotal,
+        external: memUsage.external,
+      },
+      uptime: Date.now() - this.startTime,
+      queueSizes: this.exporterManager.getQueueSizes(),
+    };
+  }
 
   /**
    * Get health status
    */
-  async getHealthStatus():Promise<HealthStatus> {
+  async getHealthStatus(): Promise<HealthStatus> {
     const exporterHealth = await this.exporterManager.getHealthStatus();
     const __stats = this.getStats();
 

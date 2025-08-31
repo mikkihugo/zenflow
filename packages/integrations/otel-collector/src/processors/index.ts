@@ -38,7 +38,7 @@ export interface BaseProcessor {
    * Get processor health status
    */
   getHealthStatus():Promise<{
-    status:'healthy' | ' degraded' | ' unhealthy';
+    status:'healthy' | 'degraded' | 'unhealthy';
     lastProcessed?:number;
     lastError?:string;
 }>;

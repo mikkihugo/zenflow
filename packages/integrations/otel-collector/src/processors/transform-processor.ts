@@ -33,6 +33,8 @@ export class TransformProcessor implements BaseProcessor {
   private readonly operations: TransformOperation[];
   private processedCount: number = 0;
   private transformedCount: number = 0;
+  private lastProcessedTime?: number;
+  private lastError?: string | null;
 
   constructor(config: ProcessorConfig) {
     this.config = config;
@@ -126,11 +128,23 @@ export class TransformProcessor implements BaseProcessor {
     lastProcessed?: number;
     lastError?: string;
   }> {
-    return {
+    const result: {
+      status: 'healthy' | 'degraded' | 'unhealthy';
+      lastProcessed?: number;
+      lastError?: string;
+    } = {
       status: this.lastError ? 'unhealthy' : 'healthy',
-      lastProcessed: this.lastProcessedTime || undefined,
-      lastError: this.lastError || undefined,
     };
+
+    if (this.lastProcessedTime !== undefined) {
+      result.lastProcessed = this.lastProcessedTime;
+    }
+
+    if (this.lastError !== undefined && this.lastError !== null) {
+      result.lastError = this.lastError;
+    }
+
+    return result;
   }
 
   /**
