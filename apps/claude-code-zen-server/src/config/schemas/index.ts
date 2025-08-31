@@ -13,7 +13,7 @@ export * from './common';
 
 // Simple fallback for MCP server URL
 function getMCPServerURL(): string {
-  return process.env.MCP_SERVER_URL || 'http://localhost:3000';
+  return process.env['MCP_SERVER_URL'] || 'http://localhost:3000';
 }
 
 /**

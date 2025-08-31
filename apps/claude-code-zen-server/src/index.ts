@@ -21,8 +21,8 @@ import type { Server as SocketIOServer, Socket } from 'socket.io';
 const logger = getLogger('claude-zen-server');
 
 class ClaudeZenServer {
-  private port: number = process.env.PORT ? parseInt(process.env.PORT) : 3000;
-  private host: string = process.env.HOST || '0.0.0.0';
+  private port: number = process.env['PORT'] ? parseInt(process.env['PORT']) : 3000;
+  private host: string = process.env['HOST'] || '0.0.0.0';
 
   async start(): Promise<Result<void, Error>> {
     try {
@@ -46,7 +46,7 @@ class ClaudeZenServer {
       });
 
       return ok();
-    } catch (error) {
+    } catch (_error) {
       logger.error('❌ Failed to start server: ', error);
       return err(error instanceof Error ? error : new Error(String(error)));
     }
@@ -81,7 +81,7 @@ class ClaudeZenServer {
     app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
     // Request logging middleware
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env['NODE_ENV'] !== 'production') {
       const morgan = (await import('morgan')).default;
       app.use(morgan('combined'));
     }
@@ -96,7 +96,7 @@ class ClaudeZenServer {
     logger.debug('Setting up routes...');
 
     // Health check endpoint
-    app.get('/health', (req: Request, res: Response) => {
+    app.get('/health', (_req: Request, _res: Response) => {
       res.json({
         status: 'ok',
         timestamp: new Date().toISOString(),
@@ -106,7 +106,7 @@ class ClaudeZenServer {
     });
 
     // API routes
-    app.get('/api/v1/health', (req: Request, res: Response) => {
+    app.get('/api/v1/health', (_req: Request, _res: Response) => {
       res.json({
         status: 'healthy',
         service: 'claude-code-zen-server',
@@ -116,7 +116,7 @@ class ClaudeZenServer {
     });
 
     // Basic dashboard route (if no static serving is set up)
-    app.get('/', (req: Request, res: Response) => {
+    app.get('/', (_req: Request, _res: Response) => {
       res.json({
         message: 'Claude Code Zen Server',
         status: 'running',
@@ -130,7 +130,7 @@ class ClaudeZenServer {
     });
 
     // Catch all for API routes
-    app.use('/api', (req: Request, res: Response) => {
+    app.use('/api', (_req: Request, _res: Response) => {
       res.status(404).json({
         error: 'API endpoint not found',
         path: req.path,
@@ -157,7 +157,7 @@ class ClaudeZenServer {
 
     // Set up broadcast callback to connect event registry with WebSocket service
     eventRegistryInitializer.setBroadcastCallback(
-      (type: string, data: unknown) => {
+      (type: string, _data: unknown) => {
         eventRegistryWebSocketService.broadcast(
           type as
             | 'module-status'
@@ -195,7 +195,7 @@ class ClaudeZenServer {
       logger.info(
         `🔌 Socket.IO server initialized for dashboard real-time updates`
       );
-    } catch (error) {
+    } catch (_error) {
       logger.warn(
         'Failed to initialize Socket.IO, dashboard real-time features may not work:',
         error
@@ -293,13 +293,13 @@ class ClaudeZenServer {
 const server = new ClaudeZenServer();
 server
   .start()
-  .then((result) => {
+  .then((_result) => {
     if (result.isErr()) {
       logger.error('Failed to start server: ', result.error);
       process.exit(1);
     }
   })
-  .catch((error) => {
+  .catch((_error) => {
     logger.error('Unexpected error: ', error);
     process.exit(1);
   });

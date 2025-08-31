@@ -115,7 +115,7 @@ export class RealApiRoutes {
    */
   private setupSwarmRoutes(app: Express, api: string): void {
     // Initialize swarm
-    app.post(`${api}/v1/swarm/init`, (req: Request, res: Response) => {
+    app.post(`${api}/v1/swarm/init`, (_req: Request, _res: Response) => {
       try {
         const { topology, maxAgents, strategy } = req.body;
         const swarmId = `swarm-${Date.now()}`;
@@ -141,18 +141,18 @@ export class RealApiRoutes {
           success: true,
           data: { swarmId, ...swarm }
         });
-      } catch (error) {
+      } catch (_error) {
         logger.error('Failed to initialize swarm:', error);
         res.status(500).json({
           success: false,
           error: 'Failed to initialize swarm',
-          message: error instanceof Error ? error.message : 'Unknown error'
+          message: error instanceof Error ? (error as Error).message : 'Unknown error'
         });
       }
     });
 
     // Get swarm status
-    app.get(`${api}/v1/swarm/status`, (req: Request, res: Response) => {
+    app.get(`${api}/v1/swarm/status`, (_req: Request, _res: Response) => {
       try {
         const swarmsArray = Array.from(this.swarms.values());
         
@@ -167,7 +167,7 @@ export class RealApiRoutes {
           success: true,
           data: swarmsArray.length > 0 ? swarmsArray[0] : null
         });
-      } catch (error) {
+      } catch (_error) {
         logger.error('Failed to get swarm status:', error);
         res.status(500).json({
           success: false,
@@ -177,7 +177,7 @@ export class RealApiRoutes {
     });
 
     // Get swarm stats
-    app.get(`${api}/v1/swarm/stats`, (req: Request, res: Response) => {
+    app.get(`${api}/v1/swarm/stats`, (_req: Request, _res: Response) => {
       try {
         const swarms = Array.from(this.swarms.values());
         const tasks = Array.from(this.tasks.values());
@@ -200,7 +200,7 @@ export class RealApiRoutes {
           success: true,
           data: stats
         });
-      } catch (error) {
+      } catch (_error) {
         logger.error('Failed to get swarm stats:', error);
         res.status(500).json({
           success: false,
@@ -210,7 +210,7 @@ export class RealApiRoutes {
     });
 
     // Spawn agent in swarm
-    app.post(`${api}/v1/swarm/:swarmId/agents`, (req: Request, res: Response) => {
+    app.post(`${api}/v1/swarm/:swarmId/agents`, (_req: Request, _res: Response) => {
       try {
         const { swarmId } = req.params;
         const { type, name, capabilities } = req.body;
@@ -241,7 +241,7 @@ export class RealApiRoutes {
           success: true,
           data: { agentId, ...agent }
         });
-      } catch (error) {
+      } catch (_error) {
         logger.error('Failed to spawn agent:', error);
         res.status(500).json({
           success: false,
@@ -251,7 +251,7 @@ export class RealApiRoutes {
     });
 
     // Orchestrate task
-    app.post(`${api}/v1/swarm/tasks`, (req: Request, res: Response) => {
+    app.post(`${api}/v1/swarm/tasks`, (_req: Request, _res: Response) => {
       try {
         const { task, strategy, priority, maxAgents } = req.body;
         
@@ -281,7 +281,7 @@ export class RealApiRoutes {
           success: true,
           data: { taskId, ...newTask }
         });
-      } catch (error) {
+      } catch (_error) {
         logger.error('Failed to orchestrate task:', error);
         res.status(500).json({
           success: false,
@@ -291,14 +291,14 @@ export class RealApiRoutes {
     });
 
     // Get tasks
-    app.get(`${api}/v1/swarm/tasks`, (req: Request, res: Response) => {
+    app.get(`${api}/v1/swarm/tasks`, (_req: Request, _res: Response) => {
       try {
         const tasksArray = Array.from(this.tasks.values());
         res.json({
           success: true,
           data: tasksArray
         });
-      } catch (error) {
+      } catch (_error) {
         logger.error('Failed to get tasks:', error);
         res.status(500).json({
           success: false,
@@ -308,7 +308,7 @@ export class RealApiRoutes {
     });
 
     // Get specific task
-    app.get(`${api}/v1/swarm/tasks/:taskId`, (req: Request, res: Response) => {
+    app.get(`${api}/v1/swarm/tasks/:taskId`, (_req: Request, _res: Response) => {
       try {
         const { taskId } = req.params;
         const task = this.tasks.get(taskId);
@@ -324,7 +324,7 @@ export class RealApiRoutes {
           success: true,
           data: task
         });
-      } catch (error) {
+      } catch (_error) {
         logger.error('Failed to get task:', error);
         res.status(500).json({
           success: false,
@@ -334,7 +334,7 @@ export class RealApiRoutes {
     });
 
     // Shutdown swarm
-    app.post(`${api}/v1/swarm/shutdown`, (req: Request, res: Response) => {
+    app.post(`${api}/v1/swarm/shutdown`, (_req: Request, _res: Response) => {
       try {
         // Set all swarms to inactive
         for (const swarm of this.swarms) {
@@ -361,7 +361,7 @@ export class RealApiRoutes {
           success: true,
           data: { message: 'Swarm shutdown completed' }
         });
-      } catch (error) {
+      } catch (_error) {
         logger.error('Failed to shutdown swarm:', error);
         res.status(500).json({
           success: false,
@@ -376,14 +376,14 @@ export class RealApiRoutes {
    */
   private setupAgentRoutes(app: Express, api: string): void {
     // Get all agents
-    app.get(`${api}/v1/coordination/agents`, (req: Request, res: Response) => {
+    app.get(`${api}/v1/coordination/agents`, (_req: Request, _res: Response) => {
       try {
         const agentsArray = Array.from(this.agents.values());
         res.json({
           agents: agentsArray,
           total: agentsArray.length
         });
-      } catch (error) {
+      } catch (_error) {
         logger.error('Failed to get agents:', error);
         res.status(500).json({
           success: false,
@@ -393,7 +393,7 @@ export class RealApiRoutes {
     });
 
     // Create agent
-    app.post(`${api}/v1/coordination/agents`, (req: Request, res: Response) => {
+    app.post(`${api}/v1/coordination/agents`, (_req: Request, _res: Response) => {
       try {
         const { type, name, capabilities } = req.body;
         
@@ -411,7 +411,7 @@ export class RealApiRoutes {
         this.agents.set(agentId, agent);
         
         res.status(201).json(agent);
-      } catch (error) {
+      } catch (_error) {
         logger.error('Failed to create agent:', error);
         res.status(500).json({
           success: false,
@@ -426,14 +426,14 @@ export class RealApiRoutes {
    */
   private setupTaskRoutes(app: Express, api: string): void {
     // Get all tasks
-    app.get(`${api}/v1/coordination/tasks`, (req: Request, res: Response) => {
+    app.get(`${api}/v1/coordination/tasks`, (_req: Request, _res: Response) => {
       try {
         const tasksArray = Array.from(this.tasks.values());
         res.json({
           tasks: tasksArray,
           total: tasksArray.length
         });
-      } catch (error) {
+      } catch (_error) {
         logger.error('Failed to get tasks:', error);
         res.status(500).json({
           success: false,
@@ -448,7 +448,7 @@ export class RealApiRoutes {
    */
   private setupSystemRoutes(app: Express, api: string): void {
     // System health
-    app.get(`${api}/v1/coordination/health`, (req: Request, res: Response) => {
+    app.get(`${api}/v1/coordination/health`, (_req: Request, _res: Response) => {
       try {
         const uptime = Math.floor((Date.now() - this.started) / 1000);
         const memoryUsage = process.memoryUsage();
@@ -469,7 +469,7 @@ export class RealApiRoutes {
             utilizationRate: memoryUsage.heapUsed / memoryUsage.heapTotal
           }
         });
-      } catch (error) {
+      } catch (_error) {
         logger.error('Failed to get health:', error);
         res.status(500).json({
           success: false,
@@ -479,7 +479,7 @@ export class RealApiRoutes {
     });
 
     // System metrics
-    app.get(`${api}/v1/coordination/metrics`, (req: Request, res: Response) => {
+    app.get(`${api}/v1/coordination/metrics`, (_req: Request, _res: Response) => {
       try {
         const memoryUsage = process.memoryUsage();
         
@@ -490,7 +490,7 @@ export class RealApiRoutes {
           avgResponse: 150 + Math.random() * 100,
           timestamp: new Date().toISOString()
         });
-      } catch (error) {
+      } catch (_error) {
         logger.error('Failed to get metrics:', error);
         res.status(500).json({
           success: false,
@@ -505,7 +505,7 @@ export class RealApiRoutes {
    */
   private setupDatabaseRoutes(app: Express, api: string): void {
     // Database status
-    app.get(`${api}/v1/database/status`, (req: Request, res: Response) => {
+    app.get(`${api}/v1/database/status`, (_req: Request, _res: Response) => {
       try {
         res.json({
           status: 'healthy',
@@ -524,7 +524,7 @@ export class RealApiRoutes {
           },
           timestamp: new Date().toISOString()
         });
-      } catch (error) {
+      } catch (_error) {
         res.status(500).json({
           success: false,
           error: 'Failed to get database status'
@@ -533,7 +533,7 @@ export class RealApiRoutes {
     });
 
     // Database health
-    app.get(`${api}/v1/database/health`, (req: Request, res: Response) => {
+    app.get(`${api}/v1/database/health`, (_req: Request, _res: Response) => {
       try {
         res.json({
           status: 'healthy',
@@ -542,7 +542,7 @@ export class RealApiRoutes {
           latency: '12ms',
           timestamp: new Date().toISOString()
         });
-      } catch (error) {
+      } catch (_error) {
         res.status(500).json({
           success: false,
           error: 'Failed to get database health'
@@ -551,7 +551,7 @@ export class RealApiRoutes {
     });
 
     // Database analytics
-    app.get(`${api}/v1/database/analytics`, (req: Request, res: Response) => {
+    app.get(`${api}/v1/database/analytics`, (_req: Request, _res: Response) => {
       try {
         res.json({
           totalQueries: 1247,
@@ -564,7 +564,7 @@ export class RealApiRoutes {
           ],
           timestamp: new Date().toISOString()
         });
-      } catch (error) {
+      } catch (_error) {
         res.status(500).json({
           success: false,
           error: 'Failed to get database analytics'
@@ -573,7 +573,7 @@ export class RealApiRoutes {
     });
 
     // Execute query
-    app.post(`${api}/v1/database/query`, (req: Request, res: Response) => {
+    app.post(`${api}/v1/database/query`, (_req: Request, _res: Response) => {
       try {
         const { sql } = req.body;
         
@@ -593,7 +593,7 @@ export class RealApiRoutes {
             executionTime: 15 + Math.random() * 10
           }
         });
-      } catch (error) {
+      } catch (_error) {
         res.status(500).json({
           success: false,
           error: 'Failed to execute query'
@@ -602,7 +602,7 @@ export class RealApiRoutes {
     });
 
     // Execute command
-    app.post(`${api}/v1/database/execute`, (req: Request, res: Response) => {
+    app.post(`${api}/v1/database/execute`, (_req: Request, _res: Response) => {
       try {
         res.json({
           success: true,
@@ -611,7 +611,7 @@ export class RealApiRoutes {
             executionTime: 8 + Math.random() * 5
           }
         });
-      } catch (error) {
+      } catch (_error) {
         res.status(500).json({
           success: false,
           error: 'Failed to execute command'
@@ -625,7 +625,7 @@ export class RealApiRoutes {
    */
   private setupMemoryRoutes(app: Express, api: string): void {
     // Memory health
-    app.get(`${api}/v1/memory/health`, (req: Request, res: Response) => {
+    app.get(`${api}/v1/memory/health`, (_req: Request, _res: Response) => {
       try {
         const memoryUsage = process.memoryUsage();
         
@@ -637,7 +637,7 @@ export class RealApiRoutes {
           utilization: (memoryUsage.heapUsed / memoryUsage.heapTotal) * 100,
           timestamp: new Date().toISOString()
         });
-      } catch (error) {
+      } catch (_error) {
         res.status(500).json({
           success: false,
           error: 'Failed to get memory health'
@@ -646,7 +646,7 @@ export class RealApiRoutes {
     });
 
     // Memory stores
-    app.get(`${api}/v1/memory/stores`, (req: Request, res: Response) => {
+    app.get(`${api}/v1/memory/stores`, (_req: Request, _res: Response) => {
       try {
         res.json({
           stores: [
@@ -667,7 +667,7 @@ export class RealApiRoutes {
           ],
           total: 2
         });
-      } catch (error) {
+      } catch (_error) {
         res.status(500).json({
           success: false,
           error: 'Failed to get memory stores'
@@ -681,7 +681,7 @@ export class RealApiRoutes {
    */
   private setupFacadeRoutes(app: Express, api: string): void {
     // Facade status
-    app.get(`${api}/v1/facades/status`, (req: Request, res: Response) => {
+    app.get(`${api}/v1/facades/status`, (_req: Request, _res: Response) => {
       try {
         res.json({
           overall: 'healthy',
@@ -721,7 +721,7 @@ export class RealApiRoutes {
           registeredServices: 3,
           timestamp: new Date().toISOString()
         });
-      } catch (error) {
+      } catch (_error) {
         res.status(500).json({
           success: false,
           error: 'Failed to get facade status'

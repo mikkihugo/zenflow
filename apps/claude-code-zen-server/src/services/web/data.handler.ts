@@ -210,7 +210,7 @@ export class WebDataService {
         },
         { retries: 3, minTimeout: 1000 }
       );
-    } catch (error) {
+    } catch (_error) {
       logger.error('Failed to initialize strategic systems: ', error);
     }
   }
@@ -235,7 +235,7 @@ export class WebDataService {
           failed: 0,
           blocked: metrics.blockedTasks || 0,
         };
-      } catch (error) {
+      } catch (_error) {
         logger.warn('Failed to get task statistics from TaskMaster: ', error);
       }
     }
@@ -278,7 +278,7 @@ export class WebDataService {
         const brainMetrics = await this.brainSystem.getCoordinationMetrics();
         swarmStats.active = brainMetrics.activeAgents || 1;
         swarmStats.total = brainMetrics.totalAgents || 4;
-      } catch (error) {
+      } catch (_error) {
         logger.warn(
           'Brain system metrics unavailable, using estimates: ',
           error
@@ -484,7 +484,7 @@ export class WebDataService {
       ).entries()) {
         swarms.push(this.createSwarmDataFromAgent(agent, index));
       }
-    } catch (error) {
+    } catch (_error) {
       logger.warn(
         'Brain coordination data unavailable, using mock data: ',
         error
@@ -538,7 +538,7 @@ export class WebDataService {
       }
 
       return [];
-    } catch (error) {
+    } catch (_error) {
       logger.warn('Failed to retrieve persisted swarm data:', error);
       return [];
     }
@@ -597,7 +597,7 @@ export class WebDataService {
       const health = await this.taskMasterSystem.getSystemHealth();
 
       return this.calculateTaskMetrics(flowMetrics, health);
-    } catch (error) {
+    } catch (_error) {
       logger.warn('TaskMaster metrics unavailable, using estimates: ', error);
       return null;
     }

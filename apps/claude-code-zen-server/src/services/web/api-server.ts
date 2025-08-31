@@ -76,7 +76,7 @@ export class ApiServer {
     // - /healthz (Kubernetes-style health check)
     // - /readyz (Kubernetes-style readiness probe)
     // Custom status endpoint with enhanced metrics
-    this.app.get('/status', (req, res) => {
+    this.app.get('/status', (req, _res) => {
       // req parameter available but not used in this simple status endpoint
       const memUsage = process.memoryUsage();
       const cpuUsage = process.cpuUsage();
@@ -102,7 +102,7 @@ export class ApiServer {
         },
         application: {
           version: process.env.npm_package_version || '1.0.0',
-          environment: process.env.NODE_ENV || 'development',
+          environment: process.env['NODE_ENV'] || 'development',
         },
       });
     });
@@ -297,7 +297,7 @@ export class ApiServer {
       timestamp: new Date().toISOString(),
       version: getVersion(),
       memory: process.memoryUsage(),
-      environment: process.env.NODE_ENV || 'development',
+      environment: process.env['NODE_ENV'] || 'development',
       checks: {
         filesystem: 'healthy',
         memory: 'healthy',
@@ -324,7 +324,7 @@ export class ApiServer {
       await stat(process.cwd());
       health.checks.filesystem = 'healthy';
       return true;
-    } catch (error) {
+    } catch (_error) {
       health.checks.filesystem = 'unhealthy';
       this.logger.error('Filesystem check failed: ', error as Error);
       return false;
@@ -359,7 +359,7 @@ export class ApiServer {
    */
   private setupSystemRoutes(): void {
     // System status endpoint
-    this.app.get(STATUS_ENDPOINT, (req: Request, res: Response) => {
+    this.app.get(STATUS_ENDPOINT, (_req: Request, _res: Response) => {
       res.json({
         status: 'operational',
         server: 'Claude Code Zen API',
@@ -371,7 +371,7 @@ export class ApiServer {
     });
 
     // API info endpoint
-    this.app.get('/api/info', (req: Request, res: Response) => {
+    this.app.get('/api/info', (_req: Request, _res: Response) => {
       res.json({
         name: 'Claude Code Zen',
         version: getVersion(),
@@ -460,7 +460,7 @@ export class ApiServer {
         parentPath,
         timestamp: new Date().toISOString(),
       });
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Workspace API error: ', error as Error);
       res.status(500).json({
         error: 'Internal server error',
@@ -618,7 +618,7 @@ export class ApiServer {
         maxAge: '1d', // Cache for 1 day in production
         etag: true,
         lastModified: true,
-        setHeaders: (res, path) => {
+        setHeaders: (res, _path) => {
           // Set proper cache headers for different file types
           if (path.endsWith('.js') || path.endsWith('.css')) {
             res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache JS/CSS for 1 year
@@ -628,7 +628,7 @@ export class ApiServer {
     );
 
     // Import and use the SvelteKit handler for all non-API routes
-    this.app.use(async (req: Request, res: Response, next) => {
+    this.app.use(async (_req: Request, _res: Response, next) => {
       // Skip API routes - let them be handled by our API endpoints
       if (req.path.startsWith('/api/')) {
         return next();
@@ -643,7 +643,7 @@ export class ApiServer {
         // Use SvelteKit handler for non-API routes
         // @ts-expect-error - handler signature from SvelteKit
         handler(req, res);
-      } catch (error) {
+      } catch (_error) {
         this.logger.error('Error loading Svelte handler: ', error as Error);
         res.status(500).json({
           error: 'Failed to load web dashboard',
@@ -662,7 +662,7 @@ export class ApiServer {
    */
   private setupDefaultRoutes(): void {
     // 404 handler for API routes only - let Svelte handle non-API routes
-    this.app.use('/api/*', (req: Request, res: Response) => {
+    this.app.use('/api/*', (_req: Request, _res: Response) => {
       res.status(404).json({
         error: 'API endpoint not found',
         path: req.originalUrl,
@@ -721,7 +721,7 @@ export class ApiServer {
     connectionMonitor: ReturnType<typeof this.createConnectionMonitor>,
     rejectServerStart: (error: Error) => void
   ): void {
-    this.server.on('error', (error: NodeJS.ErrnoException) => {
+    this.server.on('error', (_error: NodeJS.ErrnoException) => {
       connectionMonitor.errorCount++;
       connectionMonitor.lastError = error;
       connectionMonitor.connectionState = 'error';
@@ -740,7 +740,7 @@ export class ApiServer {
     connectionMonitor: ReturnType<typeof this.createConnectionMonitor>
   ): void {
     this.logger.error('❌ Server error detected: ', {
-      error: error.message,
+      error: (error as Error).message,
       errorCount: connectionMonitor.errorCount,
       connectionState: connectionMonitor.connectionState,
       errorCode: (error as { code?: string }).code,
@@ -1003,7 +1003,7 @@ export class ApiServer {
     this.logger.info('🛡️ Setting up terminus for graceful shutdown...');
     createTerminus(this.server, {
       signals: ['SIGTERM', 'SIGINT', 'SIGUSR2'],
-      timeout: process.env.NODE_ENV === 'development' ? 5000 : 30000, // Fast restarts in dev
+      timeout: process.env['NODE_ENV'] === 'development' ? 5000 : 30000, // Fast restarts in dev
       healthChecks: {
         // Kubernetes-style health checks
         health: this.createHealthCheck('health'),
@@ -1016,7 +1016,7 @@ export class ApiServer {
       },
       beforeShutdown: () => {
         // Keep connections alive briefly for zero-downtime restarts
-        const delay = process.env.NODE_ENV === 'development' ? 100 : 1000;
+        const delay = process.env['NODE_ENV'] === 'development' ? 100 : 1000;
         this.logger.info(
           `🔄 Pre-shutdown delay:${delay}ms for connection draining...`
         );
@@ -1060,7 +1060,7 @@ export class ApiServer {
    * Get allowed CORS origins based on environment
    */
   private getCorsOrigins(): string[] | boolean {
-    const nodeEnv = process.env.NODE_ENV || 'development';
+    const nodeEnv = process.env['NODE_ENV'] || 'development';
 
     if (nodeEnv === 'development') {
       // Allow localhost and common dev ports
@@ -1082,7 +1082,7 @@ export class ApiServer {
 
     if (nodeEnv === 'production') {
       // Production origins from environment variable
-      const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS;
+      const allowedOrigins = process.env['CORS_ALLOWED_ORIGINS'];
       if (allowedOrigins) {
         return allowedOrigins.split(',    ').map((origin) => origin.trim());
       }
@@ -1113,7 +1113,7 @@ export class ApiServer {
       this.logger.info(
         '✅ Event registry initialized and broadcasting started'
       );
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('❌ Failed to initialize WebSocket service: ', error);
     }
   }

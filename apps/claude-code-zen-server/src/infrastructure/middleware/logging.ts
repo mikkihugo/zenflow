@@ -117,7 +117,7 @@ const getClientIp = (req: Request): string =>
  *
  * @param req Express request object
  */
-const getRequestSize = (req: Request): number => {
+const getRequestSize = (_req: Request): number => {
   const contentLength = req.headers[CONTENT_LENGTH_HEADER];
   if (contentLength) {
     return Number.parseInt(contentLength as string, 10);
@@ -141,7 +141,7 @@ const getRequestSize = (req: Request): number => {
  *
  * @param res Express response object
  */
-const getResponseSize = (res: Response): number => {
+const getResponseSize = (_res: Response): number => {
   const contentLength = res.get(CONTENT_LENGTH_HEADER);
   if (contentLength) {
     return Number.parseInt(contentLength, 10);
@@ -182,9 +182,9 @@ const getLogLevelFromStatus = (statusCode: number): LogLevel => {
  * @param path Request path
  * @param _method HTTP method (unused but available for extension)
  */
-const shouldLog = (path: string, method: string): boolean => {
+const shouldLog = (_path: string, method: string): boolean => {
   // Skip logging for health checks in production
-  if (process.env.NODE_ENV === 'production' && path === '/health') {
+  if (process.env['NODE_ENV'] === 'production' && path === '/health') {
     return false;
   }
 
@@ -203,7 +203,7 @@ const shouldLog = (path: string, method: string): boolean => {
  *
  * @param data Data object to sanitize
  */
-const sanitizeData = (data: unknown): Record<string, unknown> => {
+const sanitizeData = (_data: unknown): Record<string, unknown> => {
   if (!data || typeof data !== 'object') {
     return { value: data };
   }
@@ -306,7 +306,7 @@ const createLogEntry = ({
  * @param logEntry Structured log entry to output
  */
 const outputLog = (logEntry: LogEntry): void => {
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env['NODE_ENV'] === 'development') {
     // Pretty print for development
     const { httpRequest, level, message, metadata } = logEntry;
     const duration = httpRequest?.latency || '';
@@ -430,12 +430,12 @@ export const logError = (
 ): void => {
   const logEntry = createLogEntry({
     level: LogLevel.ERROR,
-    message: `Error: ${error.message}`,
+    message: `Error: ${(error as Error).message}`,
     req,
     metadata: {
       error: {
         name: error.name,
-        message: error.message,
+        message: (error as Error).message,
         stack: error.stack,
       },
       context: additionalContext,
@@ -488,7 +488,7 @@ export const log = (
   req?: Request,
   metadata?: Record<string, unknown>
 ): void => {
-  if (req) {
+  if (_req) {
     const logEntry = createLogEntry({ level, message, req, metadata });
     outputLog(logEntry);
   } else {

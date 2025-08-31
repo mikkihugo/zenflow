@@ -167,7 +167,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
       this.verifyFixResults();
 
       this.logger.info('✅ ESLint Swarm Coordination completed successfully');
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('❌ ESLint Swarm Coordination failed: ', error);
       throw error;
     }
@@ -198,7 +198,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
       });
 
       return JSON.parse(output) as ESLintViolation[];
-    } catch (error: unknown) {
+    } catch (_error: unknown) {
       return this.handleEslintError(error);
     }
   }
@@ -208,7 +208,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
    */
   private handleEslintError(error: unknown): ESLintViolation[] {
     // ESLint returns non-zero exit code when violations are found
-    if (!this.isEslintOutputError(error)) {
+    if (!this.isEslintOutputError(_error)) {
       this.logger.error('ESLint command failed: ', error);
       return [];
     }
@@ -370,7 +370,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
           process
         );
 
-        process.on('close', (code) => {
+        process.on('close', (_code) => {
           this.activeProcesses.delete(`${agent.name}-${violation.filePath}`);
           if (code === 0) {
             if (this.options.verboseLogging) {
@@ -386,12 +386,12 @@ export class ESLintSwarmCoordinator extends EventEmitter {
           }
         });
 
-        process.on('error', (error) => {
+        process.on('error', (_error) => {
           this.activeProcesses.delete(`${agent.name}-${violation.filePath}`);
           reject(error);
         });
       });
-    } catch (error) {
+    } catch (_error) {
       this.logger.warn(
         `⚠️ ${agent.name} failed to fix ${violation.filePath}:`,
         error
@@ -422,7 +422,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
         // Log details about remaining violations
         this.logRemainingViolations(remainingViolations);
       }
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Failed to verify results: ', error);
     }
   }
@@ -512,7 +512,7 @@ async function main(): Promise<void> {
   try {
     await coordinator.startCoordination();
     process.exit(0);
-  } catch (error) {
+  } catch (_error) {
     getLogger('eslint-swarm-main').error(
       'ESLint Swarm Coordination failed: ',
       error
@@ -523,7 +523,7 @@ async function main(): Promise<void> {
 
 // Run if called directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch((error) => {
+  main().catch((_error) => {
     getLogger('eslint-swarm-main').error(' Fatal error: ', error);
     process.exit(1);
   });

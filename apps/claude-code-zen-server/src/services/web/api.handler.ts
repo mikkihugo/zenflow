@@ -127,7 +127,7 @@ export class ApiRouteHandler {
     try {
       const status = this.getSystemStatus();
       res.json(status);
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Failed to get system status: ', error);
       res.status(500).json({ error: 'Failed to get system status' });
     }
@@ -140,7 +140,7 @@ export class ApiRouteHandler {
     try {
       const swarms = await this.getSwarms();
       res.json(swarms);
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Failed to get swarms: ', error);
       res.status(500).json({ error: 'Failed to get swarms' });
     }
@@ -154,7 +154,7 @@ export class ApiRouteHandler {
       const swarm = await this.createSwarm(req.body);
       this.webSocket.broadcast('swarm:created', swarm);
       res.json(swarm);
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Failed to create swarm: ', error);
       res.status(500).json({ error: 'Failed to create swarm' });
     }
@@ -167,7 +167,7 @@ export class ApiRouteHandler {
     try {
       const tasks = await this.getTasks();
       res.json(tasks);
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Failed to get tasks: ', error);
       res.status(500).json({ error: 'Failed to get tasks' });
     }
@@ -181,7 +181,7 @@ export class ApiRouteHandler {
       const task = await this.createTask(req.body);
       this.webSocket.broadcast('task:created', task);
       res.json(task);
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Failed to create task: ', error);
       res.status(500).json({ error: 'Failed to create task' });
     }
@@ -194,7 +194,7 @@ export class ApiRouteHandler {
     try {
       const documents = await this.getDocuments();
       res.json(documents);
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Failed to get documents: ', error);
       res.status(500).json({ error: 'Failed to get documents' });
     }
@@ -210,7 +210,7 @@ export class ApiRouteHandler {
     try {
       const result = await this.executeCommand(req.body);
       res.json(result);
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Failed to execute command: ', error);
       res.status(500).json({ error: 'Failed to execute command' });
     }
@@ -223,7 +223,7 @@ export class ApiRouteHandler {
     try {
       const settings = await this.getSettings();
       res.json(settings);
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Failed to get settings: ', error);
       res.status(500).json({ error: 'Failed to get settings' });
     }
@@ -240,7 +240,7 @@ export class ApiRouteHandler {
       const settings = await this.updateSettings(req.body);
       this.webSocket.broadcast('settings:updated', settings);
       res.json(settings);
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Failed to update settings: ', error);
       res.status(500).json({ error: 'Failed to update settings' });
     }
@@ -254,7 +254,7 @@ export class ApiRouteHandler {
       const { limit = 100, offset = 0 } = req.query;
       const logs = await this.getLogs(Number(limit), Number(offset));
       res.json(logs);
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Failed to get logs: ', error);
       res.status(500).json({ error: 'Failed to get logs' });
     }
@@ -301,7 +301,7 @@ export class ApiRouteHandler {
         rss: Math.round(memUsage.rss / 1024 / 1024),
         usagePercent: Math.round(memoryUsagePercent),
       },
-      environment: process.env.NODE_ENV || 'development',
+      environment: process.env['NODE_ENV'] || 'development',
       metrics: systemMetrics,
     };
   }
@@ -344,7 +344,7 @@ export class ApiRouteHandler {
       // If no foundation services available, return empty array instead of mock data
       this.logger.warn('No foundation services available for swarm data');
       return [];
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Failed to get swarms from foundation services:', error);
       return [];
     }
@@ -401,7 +401,7 @@ export class ApiRouteHandler {
       }
 
       throw new Error('No foundation services available for swarm creation');
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Failed to create swarm:', error);
       throw error;
     }
@@ -445,7 +445,7 @@ export class ApiRouteHandler {
       // If no foundation services available, return empty array instead of mock data
       this.logger.warn('No foundation services available for task data');
       return [];
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Failed to get tasks from foundation services:', error);
       return [];
     }
@@ -513,7 +513,7 @@ export class ApiRouteHandler {
       }
 
       throw new Error('No foundation services available for task creation');
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Failed to create task:', error);
       throw error;
     }
@@ -535,7 +535,7 @@ export class ApiRouteHandler {
 
     try {
       return (await storage.listDocuments()) || [];
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Failed to list documents from storage: ', error);
       // Use foundation error handling to log and recover
       const { safeAsync } = (global as { foundation?: { safeAsync: Function } })
@@ -594,7 +594,7 @@ export class ApiRouteHandler {
         timestamp: new Date().toISOString(),
         status: 'success',
       };
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Command execution failed: ', error);
 
       // Use foundation error handling for command failures
@@ -631,7 +631,7 @@ export class ApiRouteHandler {
         apiEndpoint: config.apiEndpoint || '/api',
         version: config.version || '1.0.0',
       };
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Failed to load settings from config service: ', error);
 
       // Use foundation error patterns for config failures with recovery
@@ -640,10 +640,10 @@ export class ApiRouteHandler {
 
       // Attempt config recovery before using defaults
       const recoveredSettings = safeAsync(() => ({
-        theme: process.env.DEFAULT_THEME || 'dark',
-        notifications: process.env.ENABLE_NOTIFICATIONS !== 'false',
-        apiEndpoint: process.env.API_ENDPOINT || '/api',
-        version: process.env.APP_VERSION || '1.0.0',
+        theme: process.env['DEFAULT_THEME'] || 'dark',
+        notifications: process.env['ENABLE_NOTIFICATIONS'] !== 'false',
+        apiEndpoint: process.env['API_ENDPOINT'] || '/api',
+        version: process.env['APP_VERSION'] || '1.0.0',
       }));
 
       return (
@@ -700,7 +700,7 @@ export class ApiRouteHandler {
         ...updatedConfig,
         updated: new Date().toISOString(),
       };
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Failed to update settings in storage: ', error);
 
       // Use foundation error handling for storage failures with retry
@@ -710,8 +710,8 @@ export class ApiRouteHandler {
         apiEndpoint?: string;
       };
       // Try alternative persistence method
-      process.env.USER_THEME = fallbackSettings.theme || 'dark';
-      process.env.USER_NOTIFICATIONS = String(
+      process.env['USER_THEME'] = fallbackSettings.theme || 'dark';
+      process.env['USER_NOTIFICATIONS'] = String(
         fallbackSettings.notifications !== false
       );
 
@@ -830,7 +830,7 @@ export class ApiRouteHandler {
     }
 
     // Clear module cache for development
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       const moduleKeys = Object.keys(require.cache);
       for (const key of moduleKeys) {
         if (!key.includes('node_modules')) {

@@ -29,7 +29,7 @@ const getCurrentProject = (): {
   name: string;
 } | null => {
   // Stub implementation - would get current project from memory
-  const projectPath = process.env.CLAUDE_ZEN_PROJECT || process.cwd();
+  const projectPath = process.env['CLAUDE_ZEN_PROJECT'] || process.cwd();
   const projectName = path.basename(projectPath);
   return {
     id: projectName,
@@ -158,7 +158,7 @@ export class ProjectSwitcher extends EventEmitter {
 
       this.emit('switchCompleted', result);
       return result;
-    } catch (error) {
+    } catch (_error) {
       this.handleSwitchError(error as Error, request, startTime);
       throw error;
     } finally {
@@ -236,7 +236,7 @@ export class ProjectSwitcher extends EventEmitter {
       }
 
       // Verify project path still exists
-      if (!fs.existsSync(project.path)) {
+      if (!fs.existsSync(project._path)) {
         throw new Error(`Project path ${project.path} no longer exists`);
       }
 
@@ -272,7 +272,7 @@ export class ProjectSwitcher extends EventEmitter {
     currentProject: { id: string; path: string },
     projectInfo: { id: string; name: string; path: string }
   ): ProjectSwitchResult | null {
-    if (currentProject.path !== projectInfo.path) {
+    if (currentProject.path !== projectInfo._path) {
       return null;
     }
 
@@ -385,7 +385,7 @@ export class ProjectSwitcher extends EventEmitter {
     request: ProjectSwitchRequest,
     startTime: number
   ): void {
-    const errorMessage = error.message;
+    const errorMessage = (error as Error).message;
     this.lastError = errorMessage;
 
     logger.error('Project switch failed', {
@@ -427,7 +427,7 @@ export class ProjectSwitcher extends EventEmitter {
       // Race between shutdown and timeout
       await Promise.race([shutdownPromise, timeoutPromise]);
       logger.info('Graceful shutdown completed');
-    } catch (error) {
+    } catch (_error) {
       if ((error as Error).message.includes('timeout')) {
         logger.warn('Graceful shutdown timed out, forcing shutdown');
 
@@ -452,7 +452,7 @@ export class ProjectSwitcher extends EventEmitter {
         newPath: absolutePath,
         cwd: process.cwd(),
       });
-    } catch (error) {
+    } catch (_error) {
       throw new Error(
         `Failed to switch to project directory ${absolutePath}:${(error as Error).message}`
       );

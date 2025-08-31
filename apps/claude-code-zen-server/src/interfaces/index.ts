@@ -32,9 +32,9 @@ export interface InterfaceConfig {
 export const interfaceUtils = {
   detectMode(): 'terminal' | ' web' | ' mcp' | ' api' | ' advanced-cli' {
     // Auto-detect interface mode based on environment and commands
-    if (process.env.CLAUDE_CODE_MCP) return 'mcp';
-    if (process.env.CLAUDE_FLOW_WEB) return 'web';
-    if (process.env.CLAUDE_FLOW_API) return 'api';
+    if (process.env['CLAUDE_CODE_MCP']) return 'mcp';
+    if (process.env['CLAUDE_FLOW_WEB']) return 'web';
+    if (process.env['CLAUDE_FLOW_API']) return 'api';
 
     // Check for advanced CLI indicators
     const args = process.argv.slice(2);

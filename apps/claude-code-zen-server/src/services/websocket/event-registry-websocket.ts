@@ -100,11 +100,11 @@ export class EventRegistryWebSocketService {
     );
 
     // Handle client messages
-    ws.on('message', (data) => {
+    ws.on('message', (_data) => {
       try {
         const message = JSON.parse(data.toString());
         this.handleClientMessage(client, message);
-      } catch (error) {
+      } catch (_error) {
         logger.error('Failed to parse WebSocket message: ', error);
       }
     });
@@ -118,7 +118,7 @@ export class EventRegistryWebSocketService {
     });
 
     // Handle client errors
-    ws.on('error', (error) => {
+    ws.on('error', (_error) => {
       logger.error(`WebSocket client error (${clientId}):`, error);
       this.clients.delete(clientId);
     });

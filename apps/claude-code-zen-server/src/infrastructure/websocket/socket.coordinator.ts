@@ -69,7 +69,7 @@ export class WebSocketCoordinator {
       this.sessions.set(socket.id, session);
 
       // Handle session updates
-      socket.on('updateSession', (data) => {
+      socket.on('updateSession', (_data) => {
         const session = this.sessions.get(socket.id);
         if (session) {
           session.preferences = {
