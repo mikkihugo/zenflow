@@ -103,75 +103,42 @@ export class KuzuAdapter implements DatabaseConnection {
       // Ensure database directory exists
       this.ensureDatabaseDirectory();
 
-      // Try to load Kuzu package (optional dependency)
-      try {
-        // @ts-ignore - kuzu is optional
-        const kuzuImport = await import('kuzu');
-        this.kuzuModule = {
-          Database: kuzuImport.Database as unknown as KuzuModule['Database'],
-          Connection:
-            kuzuImport.Connection as unknown as KuzuModule['Connection'],
-        };
-        logger.debug('Successfully imported Kuzu module', { correlationId });
-      } catch (importError) {
-        logger.error(
-          'Failed to import Kuzu package - package may not be installed',
-          {
-            correlationId,
-            error:
-              importError instanceof Error
-                ? importError.message
-                : String(importError),
-          }
-        );
-        throw new ConnectionError(
-          'Kuzu package not found. Please install with:npm install kuzu',
-          correlationId,
-          importError instanceof Error ? importError : undefined
-        );
-      }
+      // Load Kuzu package  
+      const kuzuImport = await import('kuzu' as any);
+      this.kuzuModule = {
+        Database: kuzuImport.Database as unknown as KuzuModule['Database'],
+        Connection:
+          kuzuImport.Connection as unknown as KuzuModule['Connection'],
+      };
+      logger.debug('Successfully imported Kuzu module', { correlationId });
 
       // Create Kuzu database and connection
-      try {
-        if (!this.kuzuModule) {
-          throw new Error('Kuzu module not available');
-        }
-        
-        // Create Kuzu database with proper parameters
-        // (databasePath, bufferManagerSize, enableCompression, readOnly, maxDBSize, autoCheckpoint, checkpointThreshold)
-        this.database = new this.kuzuModule.Database(
-          this.config.database, // databasePath
-          undefined, // bufferManagerSize (use default)
-          true, // enableCompression
-          false, // readOnly
-          undefined, // maxDBSize (use default)
-          true, // autoCheckpoint
-          undefined // checkpointThreshold (use default)
-        );
-        this.connection = new this.kuzuModule.Connection(this.database!);
-        this.isConnectedState = true;
-        this.stats.connectionCreated++;
-
-        logger.info('Connected to Kuzu database successfully', {
-          correlationId,
-          database: this.config.database,
-        });
-
-        // Test connection with a simple query
-        await this.testConnection(correlationId);
-      } catch (kuzuError) {
-        logger.error('Failed to create Kuzu database or connection', {
-          correlationId,
-          database: this.config.database,
-          error:
-            kuzuError instanceof Error ? kuzuError.message : String(kuzuError),
-        });
-        throw new ConnectionError(
-          `Failed to create Kuzu database:${kuzuError instanceof Error ? kuzuError.message : String(kuzuError)}`,
-          correlationId,
-          kuzuError instanceof Error ? kuzuError : undefined
-        );
+      if (!this.kuzuModule) {
+        throw new Error('Kuzu module not available');
       }
+      
+      // Create Kuzu database with proper parameters
+      // (databasePath, bufferManagerSize, enableCompression, readOnly, maxDBSize, autoCheckpoint, checkpointThreshold)
+      this.database = new this.kuzuModule.Database(
+        this.config.database, // databasePath
+        undefined, // bufferManagerSize (use default)
+        true, // enableCompression
+        false, // readOnly
+        undefined, // maxDBSize (use default)
+        true, // autoCheckpoint
+        undefined // checkpointThreshold (use default)
+      );
+      this.connection = new this.kuzuModule.Connection(this.database!);
+      this.isConnectedState = true;
+      this.stats.connectionCreated++;
+
+      logger.info('Connected to Kuzu database successfully', {
+        correlationId,
+        database: this.config.database,
+      });
+
+      // Test connection with a simple query
+      await this.testConnection(correlationId);
     } catch (error) {
       if (error instanceof DatabaseError) {
         throw error;
