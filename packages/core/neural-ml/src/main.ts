@@ -36,7 +36,7 @@ const logger = getLogger('NeuralMLEngine');
 
 // Constants to avoid duplicate string literals
 const OPTIMIZER_NOT_FOUND_ERROR = 'Optimizer not found';
-};
+
 function ok<T>(value: T): Result<T, never> {
   return {
     isOk: () => true,

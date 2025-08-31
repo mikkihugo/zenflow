@@ -220,7 +220,11 @@ export class ModelRegistry {
   private async syncFromProviders():Promise<void> {
     // List models from each provider
     const providers = [
-      'github-copilot',      'github-models',      'anthropic',      'openai',];
+      'github-copilot',
+      'github-models',
+      'anthropic',
+      'openai',
+    ];
 
     for (const providerId of providers) {
       try {

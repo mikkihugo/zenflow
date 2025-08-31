@@ -541,8 +541,9 @@ export class LLMProvider extends TypedEventBase {
         typeof result === 'object' &&
         'isOk' in result &&
         result.isOk() &&
-        typeof result['value'] === ' string')          ? result.value.length
-          :0,
+        typeof result['value'] === 'string'
+          ? result.value.length
+          : 0,
 });
 }
 

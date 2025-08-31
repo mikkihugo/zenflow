@@ -284,7 +284,6 @@ function createInteractiveHandler():CanUseTool {
         params,
         result,
         'system',        'interactive-handler');
-      );
 
       return result;
 }
@@ -308,8 +307,6 @@ function createInteractiveHandler():CanUseTool {
         params,
         result,
         'system',        'interactive-handler');
-      );
-
       return result;
 }
 
