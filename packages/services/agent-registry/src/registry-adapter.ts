@@ -16,34 +16,43 @@
  * @version 2.1.0
  *
  * @example Agent Registry Migration
- * ```typescript`
- * import { AgentRegistryAdapter} from '@claude-zen/agent-registry';
- * import { AgentRegistry} from './old-agent-registry';
+ * ```typescript
+ * import { AgentRegistryAdapter } from '@claude-zen/agent-registry';
+ * import { AgentRegistry } from './old-agent-registry';
  *
  * // Create adapter that bridges old interface to new ServiceContainer
  * const adapter = new AgentRegistryAdapter();
  *
  * // Drop-in replacement - same interface, battle-tested implementation
- * const agentRegistry:AgentRegistry = adapter;
+ * const agentRegistry: AgentRegistry = adapter;
  *
  * // Use existing code unchanged
  * await agentRegistry.registerAgent({
- *   id: 'agent-1', *   name: 'Test Agent', *   type: 'coder', *   status: 'idle', *   capabilities:{ languages: ['typescript']}') *});
+ *   id: 'agent-1',
+ *   name: 'Test Agent',
+ *   type: 'coder',
+ *   status: 'idle',
+ *   capabilities: { languages: ['typescript'] }
+ * });
  *
- * const agents = await agentRegistry.queryAgents({ type: 'coder'});') * ````
+ * const agents = await agentRegistry.queryAgents({ type: 'coder' });
+ * ```
  *
  * @example Service Registry Migration
- * ```typescript`
- * import { ServiceRegistryAdapter} from '@claude-zen/foundation';
+ * ```typescript
+ * import { ServiceRegistryAdapter } from '@claude-zen/foundation';
  *
  * // Migrate existing service registry
  * const serviceRegistry = new ServiceRegistryAdapter();
  *
  * // Existing API works unchanged
- * serviceRegistry.register('userService', UserService);') * const userService = serviceRegistry.get('userService');') *
+ * serviceRegistry.register('userService', UserService);
+ * const userService = serviceRegistry.get('userService');
+ *
  * // New capabilities available
  * const healthReport = await serviceRegistry.getHealthStatus();
- * const authServices = serviceRegistry.getServicesByCapability('authentication');') * ````
+ * const authServices = serviceRegistry.getServicesByCapability('authentication');
+ * ```
  */
 
 import {
@@ -111,7 +120,7 @@ export abstract class BaseRegistryAdapter extends TypedEventBase {
       autoCleanup:true,
       persistentStorage:true,
 });
-    this.logger = getLogger(`registry-adapter:${this.options.containerName}`);`
+    this.logger = getLogger(`registry-adapter:${this.options.containerName}`);
 
     if (this.options.enableHealthMonitoring) {
       this.container.startHealthMonitoring();
@@ -157,7 +166,7 @@ export abstract class BaseRegistryAdapter extends TypedEventBase {
    */
   protected emitMigrationEvent(event: string, data: JsonValue): void {
     if (this.options.enableMigrationLogging) {
-      this.logger.debug(`Migration event: ${event}`, data);
+      this.logger.debug('Migration event: ' + event, data);
     }
     this.emit(event, data);
   }
@@ -230,7 +239,7 @@ export class AgentRegistryAdapter extends BaseRegistryAdapter {
 
     if (result.isErr()) {
       throw new Error(
-        `Failed to register agent ${agent.id}: ${result.error.message}`
+        'Failed to register agent ' + agent.id + ': ' + result.error.message
       );
     }
 
@@ -495,7 +504,7 @@ export class ServiceRegistryAdapter extends BaseRegistryAdapter {
 
     if (result.isErr()) {
       throw new Error(
-        `Failed to register service ${name}: ${result.error.message}`
+        'Failed to register service ' + name + ': ' + result.error.message
       );
 }
 
@@ -505,29 +514,29 @@ export class ServiceRegistryAdapter extends BaseRegistryAdapter {
   /**
    * Register an instance
    */
-  registerInstance<T>(name:string, instance:T): void {
+  registerInstance<T>(name: string, instance: T): void {
     const result = this.container.registerInstance(name, instance);
 
     if (result.isErr()) {
       throw new Error(
-        `Failed to register instance ${name}:${result.error.message}``
+        'Failed to register instance ' + name + ': ' + result.error.message
       );
-}
+    }
 
     this.services.set(name, instance);
-}
+  }
 
   /**
    * Get a service
    */
-  get<T>(name:string): T {
+  get<T>(name: string): T {
     const result = this.container.resolve<T>(name);
 
     if (result.isErr()) {
       throw new Error(
-        `Failed to resolve service ${name}:${result.error.message}``
+        'Failed to resolve service ' + name + ': ' + result.error.message
       );
-}
+    }
 
     return result.value;
 }
@@ -592,25 +601,25 @@ export class RegistryMigrationUtil {
 
     // Migrate existing services from old registry
     if (oldRegistry && typeof oldRegistry.getAll === 'function') {
-    ')      const existingServices = await oldRegistry.getAll();
+      const existingServices = await oldRegistry.getAll();
       for (const service of existingServices) {
         // Use type-safe method call based on adapter type
-        if ('register' in adapter && typeof adapter.register === ' function') {
-    ')          (adapter as UnknownRecord)['register'](service.id, service, {
-    ')            lifetime:service.lifetime||Lifetime.SINGLETON,
-            capabilities:service.capabilities||[],
-            metadata:service.metadata||{},
-});
-} else if ('registerAgent' in adapter &&')          typeof adapter.registerAgent === 'function')        ) {
+        if ('register' in adapter && typeof adapter.register === 'function') {
+          (adapter as UnknownRecord)['register'](service.id, service, {
+            lifetime: service.lifetime || 'SINGLETON',
+            capabilities: service.capabilities || [],
+            metadata: service.metadata || {},
+          });
+        } else if ('registerAgent' in adapter && typeof adapter.registerAgent === 'function') {
           await adapter.registerAgent(service);
-}
-}
-}
+        }
+      }
+    }
 
     this.logger.info('Starting registry migration', {
-    ')      adapterType:AdapterClass.name,
+      adapterType: AdapterClass.name,
       options,
-});
+    });
 
     // Migration would depend on the specific registry interface
     // This is a template for how migration would work
@@ -618,9 +627,9 @@ export class RegistryMigrationUtil {
     const migrationDuration = Date.now() - startTime;
 
     this.logger.info('Registry migration completed', {
-    ')      duration:migrationDuration,
-      stats:adapter.getMigrationStats(),
-});
+      duration: migrationDuration,
+      stats: adapter.getMigrationStats(),
+    });
 
     return adapter;
 }
@@ -657,18 +666,17 @@ export class RegistryMigrationUtil {
       ((oldPerformance - newPerformance) / oldPerformance) * 100;
 
     this.logger.info('Performance comparison completed', {
-    ')      oldPerformance:`${oldPerformance}ms`,`
-      newPerformance:`${newPerformance}ms`,`
-      improvement:`${improvement.toFixed(2)}%`,`
-});
+      oldPerformance: oldPerformance + 'ms',
+      newPerformance: newPerformance + 'ms',
+      improvement: improvement.toFixed(2) + '%',
+    });
 
     return {
       oldPerformance,
       newPerformance,
       improvement,
-};
-}
-}
+    };
+  }
 
 /**
  * Factory functions for quick adapter creation
@@ -698,7 +706,10 @@ export function replaceRegistry<T>(
   // Copy any existing data if possible
   if (
     existingRegistry &&
-    typeof existingRegistry.getAllServices === 'function')  ) 
+    typeof existingRegistry.getAllServices === 'function'
+  ) {
+    // Add migration logic here if needed
+  }
 
   return adapter;
 }
