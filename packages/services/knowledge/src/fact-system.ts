@@ -9,7 +9,7 @@
  * through the knowledge package's public API.') */
 
 // Import the high-performance Rust fact bridge from the fact-system package
-// Note:FactBridge is placeholder for future Rust integration
+// Note: FactBridge is placeholder for future Rust integration
 // import { FactBridge} from '@claude-zen/fact-system/bridge';
 
 // Placeholder FactBridge for testing
@@ -35,25 +35,25 @@ import {
   EventBus,
   generateUUID
 } from '@claude-zen/foundation';
-// Note:Database imports commented out until foundation exports are properly configured
+// Note: Database imports commented out until foundation exports are properly configured
 // import { createDatabaseAdapter, DatabaseConnection} from '@claude-zen/foundation';
 
 // Temporary type definitions for testing
 interface DatabaseConnection {
-  query<T = unknown>(sql:string, params?:unknown[]): Promise<T[]>;
-  execute(sql:string, params?:unknown[]): Promise<{ affectedRows: number; insertId?: number}>;
+  query<T = unknown>(sql: string, params?:unknown[]): Promise<T[]>;
+  execute(sql: string, params?:unknown[]): Promise<{ affectedRows: number; insertId?: number}>;
   close():Promise<void>;
 }
 
 interface DatabaseAdapter {
-  connect(config:unknown): Promise<{ isOk(): boolean; value?: DatabaseConnection}>;
+  connect(config: unknown): Promise<{ isOk(): boolean; value?: DatabaseConnection}>;
 }
 
 // Placeholder database function for testing
 function createDatabaseAdapter():Promise<{ isOk(): boolean; value?: DatabaseAdapter}> {
   return Promise.resolve({
     isOk:() => false, // Always return fallback for now
-    value:undefined
+    value: undefined
 });
 }
 
@@ -61,22 +61,22 @@ function createDatabaseAdapter():Promise<{ isOk(): boolean; value?: DatabaseAdap
 interface FactClient {
   initialize():Promise<void>;
   store(
-    id:string,
+    id: string,
     data:{ content: unknown; metadata: Record<string, unknown>}
   ):Promise<void>;
   search(query:{
-    query:string;
+    query: string;
     sources?:string[];
     limit?:number;
 }):Promise<FactSearchResult[]>;
-  getNPMPackage?(packageName:string, version?:string): Promise<unknown>;
-  getGitHubRepository?(owner:string, repo:string): Promise<unknown>;
+  getNPMPackage?(packageName: string, version?:string): Promise<unknown>;
+  getGitHubRepository?(owner: string, repo: string): Promise<unknown>;
 }
 
 export interface FactSearchResult {
-  id:string;
-  content:unknown;
-  metadata:Record<string, unknown>;
+  id: string;
+  content: unknown;
+  metadata: Record<string, unknown>;
   score?:number;
 }
 
@@ -112,13 +112,13 @@ const logger = getLogger('KnowledgeFactSystem');
  * Coordination-specific fact entry structure (simplified for coordination layer)
  */
 export interface CoordinationFact {
-  id:string;
-  type:string;
-  data:unknown;
-  timestamp:Date;
-  source:string;
-  confidence:number;
-  tags:string[];
+  id: string;
+  type: string;
+  data: unknown;
+  timestamp: Date;
+  source: string;
+  confidence: number;
+  tags: string[];
 }
 
 /**
@@ -137,21 +137,21 @@ export interface CoordinationFactQuery {
  * This class should NOT be exported from the knowledge package's main API.
  */
 class KnowledgeFactSystem {
-  private factClient:FactClient|null = null;
-  private factBridge:FactBridge;
+  private factClient: FactClient|null = null;
+  private factBridge: FactBridge;
   private coordinationFacts = new Map<string, CoordinationFact>();
   private initialized = false;
-  private listeners = new Set<(fact:CoordinationFact) => void>();
+  private listeners = new Set<(fact: CoordinationFact) => void>();
 
   // Event-driven architecture with EventBus
   private eventBus = new EventBus();
 
   // Unified fact database - single source with coordinated indexing
-  private factDatabase:DatabaseConnection | null = null; // Primary database with unified indexes
+  private factDatabase: DatabaseConnection | null = null; // Primary database with unified indexes
 
   constructor() {
     // Initialize high-performance Rust FactBridge with production configuration
-    // Note:FactBridge is a placeholder for future Rust integration
+    // Note: FactBridge is a placeholder for future Rust integration
     this.factBridge = new FactBridge();
 }
 
@@ -186,7 +186,7 @@ class KnowledgeFactSystem {
           // Create unified fact schema with coordinated indexes
           await this.createFactSchema();
           
-          logger.info('✅ Fact database initialized with unified indexing');
+          logger.info('Fact database initialized with unified indexing');
 } else {
           logger.warn('⚠️ Fact database connection failed, using in-memory fallback');
 }
@@ -227,7 +227,7 @@ class KnowledgeFactSystem {
         )
       `);
       
-      logger.info('✅ Fact schema created with coordinated indexes');
+      logger.info('Fact schema created with coordinated indexes');
     } catch (error) {
       logger.warn('Failed to create fact schema: ', error);
     }
@@ -253,14 +253,14 @@ class KnowledgeFactSystem {
 
       // Initialize the high-performance Rust fact bridge
       await this.factBridge.initialize();
-      logger.info('✅ Rust fact bridge initialized successfully');
+      logger.info('Rust fact bridge initialized successfully');
 
       // Initialize TypeScript fallback client for when Rust bridge fails
       this.factClient = await createSQLiteFactClient();
       await this.factClient.initialize();
 
       this.initialized = true;
-      logger.info('✅ Knowledge fact system initialized with EventBus + Rust engine + fallback');
+      logger.info('Knowledge fact system initialized with EventBus + Rust engine + fallback');
 } catch (error) {
       logger.error('Failed to initialize knowledge fact system: ', error);
 '      throw error;
@@ -271,13 +271,13 @@ class KnowledgeFactSystem {
    * Store a coordination-specific fact
    */
   async storeFact(
-    fact:Omit<CoordinationFact, 'id' | ' timestamp'>
+    fact: Omit<CoordinationFact, 'id' | ' timestamp'>
   ):Promise<string> {
     await this.ensureInitialized();
 
-    const factEntry:CoordinationFact = {
-      id:generateUUID(),
-      timestamp:new Date(),
+    const factEntry: CoordinationFact = {
+      id: generateUUID(),
+      timestamp: new Date(),
       ...fact,
 };
 
@@ -291,13 +291,13 @@ class KnowledgeFactSystem {
     if (this.factClient) {
       try {
         await this.factClient.store(factEntry.id, {
-          content:factEntry.data,
+          content: factEntry.data,
           metadata:{
-            type:factEntry.type,
-            source:factEntry.source,
-            confidence:factEntry.confidence,
-            tags:factEntry.tags,
-            timestamp:factEntry.timestamp.toISOString(),
+            type: factEntry.type,
+            source: factEntry.source,
+            confidence: factEntry.confidence,
+            tags: factEntry.tags,
+            timestamp: factEntry.timestamp.toISOString(),
 },
 });
 } catch (error) {
@@ -306,19 +306,19 @@ class KnowledgeFactSystem {
 }
 
     // Professional event-driven notifications
-    this.eventBus.emit('fact:stored', {
-      factId:factEntry.id,
-      type:factEntry.type,
-      confidence:factEntry.confidence,
-      source:factEntry.source,
-      tags:factEntry.tags,
-      timestamp:new Date()
+    this.eventBus.emit('fact: stored', {
+      factId: factEntry.id,
+      type: factEntry.type,
+      confidence: factEntry.confidence,
+      source: factEntry.source,
+      tags: factEntry.tags,
+      timestamp: new Date()
 });
 
-    this.eventBus.emit('fact:stats', {
-      operation: 'store',      totalFacts:this.coordinationFacts.size,
-      factsByType:this.getFactsByType(),
-      timestamp:new Date()
+    this.eventBus.emit('fact: stats', {
+      operation: 'store',      totalFacts: this.coordinationFacts.size,
+      factsByType: this.getFactsByType(),
+      timestamp: new Date()
 });
 
     return factEntry.id;
@@ -331,7 +331,7 @@ class KnowledgeFactSystem {
   /**
    * Persist fact to unified database with coordinated indexing
    */
-  private async persistToFactDatabases(fact:CoordinationFact): Promise<void> {
+  private async persistToFactDatabases(fact: CoordinationFact): Promise<void> {
     if (!this.factDatabase) {
       logger.warn('No unified fact database available for persistence');
       return;
@@ -355,14 +355,14 @@ class KnowledgeFactSystem {
       
       // All indexes are automatically maintained by SQLite
       logger.debug('Fact persisted with coordinated indexing', { 
-        factId:fact.id, 
-        type:fact.type 
+        factId: fact.id, 
+        type: fact.type 
 });
       
 } catch (error) {
       logger.warn('Failed to persist to unified fact database', {
-        factId:fact.id,
-        error:error instanceof Error ? error.message : String(error)
+        factId: fact.id,
+        error: error instanceof Error ? error.message : String(error)
 });
 }
 }
@@ -371,7 +371,7 @@ class KnowledgeFactSystem {
    * Get facts by type for statistics
    */
   private getFactsByType():Record<string, number> {
-    const factsByType:Record<string, number> = {};
+    const factsByType: Record<string, number> = {};
     const facts = Array.from(this.coordinationFacts.values());
     for (const fact of facts) {
       factsByType[fact.type] = (factsByType[fact.type] || 0) + 1;
@@ -383,7 +383,7 @@ class KnowledgeFactSystem {
    * Retrieve facts based on query with unified database access
    */
   async queryFacts(
-    query:CoordinationFactQuery = {}
+    query: CoordinationFactQuery = {}
   ):Promise<CoordinationFact[]> {
     await this.ensureInitialized();
 
@@ -397,7 +397,7 @@ class KnowledgeFactSystem {
   /**
    * Query facts from in-memory storage (helper method)
    */
-  private queryInMemoryFacts(query:CoordinationFactQuery): CoordinationFact[] {
+  private queryInMemoryFacts(query: CoordinationFactQuery): CoordinationFact[] {
     logger.warn('No unified fact database available for query');
     let results = Array.from(this.coordinationFacts.values());
 
@@ -432,10 +432,10 @@ class KnowledgeFactSystem {
 }
 
     // Event notification for query
-    this.eventBus.emit('fact:queried', {
+    this.eventBus.emit('fact: queried', {
       query,
-      resultCount:results.length,
-      timestamp:new Date()
+      resultCount: results.length,
+      timestamp: new Date()
 });
 
     return results;
@@ -444,44 +444,44 @@ class KnowledgeFactSystem {
   /**
    * Query facts from database (helper method)
    */
-  private async queryDatabaseFacts(query:CoordinationFactQuery): Promise<CoordinationFact[]> {
+  private async queryDatabaseFacts(query: CoordinationFactQuery): Promise<CoordinationFact[]> {
     try {
       const { sql, params} = this.buildQuerySQL(query);
       
       const rows = await this.factDatabase!.query<{
-        id:string;
-        type:string;
-        data:string;
-        timestamp:number;
-        source:string;
-        confidence:number;
-        tags:string;
+        id: string;
+        type: string;
+        data: string;
+        timestamp: number;
+        source: string;
+        confidence: number;
+        tags: string;
 }>(sql, params);
 
       const results = rows.map(row => ({
-        id:row.id,
-        type:row.type,
-        data:JSON.parse(row.data),
-        timestamp:new Date(row.timestamp),
-        source:row.source,
-        confidence:row.confidence,
-        tags:JSON.parse(row.tags)
+        id: row.id,
+        type: row.type,
+        data: JSON.parse(row.data),
+        timestamp: new Date(row.timestamp),
+        source: row.source,
+        confidence: row.confidence,
+        tags: JSON.parse(row.tags)
 }));
 
-      this.eventBus.emit('fact:queried', {
+      this.eventBus.emit('fact: queried', {
         query,
-        resultCount:results.length,
-        timestamp:new Date()
+        resultCount: results.length,
+        timestamp: new Date()
 });
 
       return results;
 } catch (error) {
       logger.error('Failed to query facts from unified database', { query, error});
       
-      this.eventBus.emit('fact:error', {
-        operation: 'query',        error:error instanceof Error ? error.message : String(error),
+      this.eventBus.emit('fact: error', {
+        operation: 'query',        error: error instanceof Error ? error.message : String(error),
         context:{ query},
-        timestamp:new Date()
+        timestamp: new Date()
 });
 
       throw error;
@@ -491,13 +491,13 @@ class KnowledgeFactSystem {
   /**
    * Build SQL query for database facts (helper method)
    */
-  private buildQuerySQL(query:CoordinationFactQuery): { sql: string; params: unknown[]} {
+  private buildQuerySQL(query: CoordinationFactQuery): { sql: string; params: unknown[]} {
     let sql = `
       SELECT id, type, data, timestamp, source, confidence, tags 
       FROM coordination_facts 
       WHERE 1=1
     `;
-    const params:unknown[] = [];
+    const params: unknown[] = [];
 
     if (query.type) {
       sql += ` AND type = ?`;
@@ -538,7 +538,7 @@ class KnowledgeFactSystem {
   /**
    * Get a specific fact by ID with unified database access
    */
-  async getFact(id:string): Promise<CoordinationFact|null> {
+  async getFact(id: string): Promise<CoordinationFact|null> {
     await this.ensureInitialized();
     
     if (!this.factDatabase) {
@@ -548,10 +548,10 @@ class KnowledgeFactSystem {
       
       if (fact) {
         // Event notification for fact access
-        this.eventBus.emit('fact:accessed', {
-          factId:id,
-          type:fact.type,
-          timestamp:new Date()
+        this.eventBus.emit('fact: accessed', {
+          factId: id,
+          type: fact.type,
+          timestamp: new Date()
 });
 }
       
@@ -560,13 +560,13 @@ class KnowledgeFactSystem {
     
     try {
       const rows = await this.factDatabase.query<{
-        id:string;
-        type:string;
-        data:string;
-        timestamp:number;
-        source:string;
-        confidence:number;
-        tags:string;
+        id: string;
+        type: string;
+        data: string;
+        timestamp: number;
+        source: string;
+        confidence: number;
+        tags: string;
 }>(`
         SELECT id, type, data, timestamp, source, confidence, tags 
         FROM coordination_facts 
@@ -581,21 +581,21 @@ class KnowledgeFactSystem {
       if (!row) {
         return null;
 }
-      const fact:CoordinationFact = {
-        id:row.id,
-        type:row.type,
-        data:JSON.parse(row.data),
-        timestamp:new Date(row.timestamp),
-        source:row.source,
-        confidence:row.confidence,
-        tags:JSON.parse(row.tags)
+      const fact: CoordinationFact = {
+        id: row.id,
+        type: row.type,
+        data: JSON.parse(row.data),
+        timestamp: new Date(row.timestamp),
+        source: row.source,
+        confidence: row.confidence,
+        tags: JSON.parse(row.tags)
 };
       
       // Event notification for fact access
-      this.eventBus.emit('fact:accessed', {
-        factId:id,
-        type:fact.type,
-        timestamp:new Date()
+      this.eventBus.emit('fact: accessed', {
+        factId: id,
+        type: fact.type,
+        timestamp: new Date()
 });
       
       return fact;
@@ -603,10 +603,10 @@ class KnowledgeFactSystem {
       logger.error('Failed to get fact from unified database', { id, error});
       
       // Emit error event
-      this.eventBus.emit('fact:error', {
-        operation: 'get',        error:error instanceof Error ? error.message : String(error),
+      this.eventBus.emit('fact: error', {
+        operation: 'get',        error: error instanceof Error ? error.message : String(error),
         context:{ factId: id},
-        timestamp:new Date()
+        timestamp: new Date()
 });
       
       throw error;
@@ -625,7 +625,7 @@ class KnowledgeFactSystem {
     await this.ensureInitialized();
 
     const searchParams = this.parseSearchParams(searchParamsOrQuery, type, limit);
-    const { query, type:searchType, limit:searchLimit = 10} = searchParams;
+    const { query, type: searchType, limit: searchLimit = 10} = searchParams;
 
     let results = await this.searchDatabaseFacts(query, searchType, searchLimit);
     
@@ -650,16 +650,16 @@ class KnowledgeFactSystem {
     limit?:number
   ) {
     return typeof searchParamsOrQuery === 'string' ? {
-      query:searchParamsOrQuery,
+      query: searchParamsOrQuery,
       type,
-      limit:limit || 10
+      limit: limit || 10
 } :searchParamsOrQuery;
 }
 
   /**
    * Search facts in database (helper method)
    */
-  private async searchDatabaseFacts(query:string, searchType?:string, searchLimit = 10):Promise<CoordinationFact[]> {
+  private async searchDatabaseFacts(query: string, searchType?:string, searchLimit = 10):Promise<CoordinationFact[]> {
     if (!this.factDatabase) {
       return [];
 }
@@ -670,7 +670,7 @@ class KnowledgeFactSystem {
         FROM coordination_facts 
         WHERE 1=1
       `;
-      const params:unknown[] = [];
+      const params: unknown[] = [];
 
       if (searchType) {
         sql += ` AND type = ?`;
@@ -691,26 +691,26 @@ class KnowledgeFactSystem {
       params.push(searchLimit);
 
       const rows = await this.factDatabase.query<{
-        id:string;
-        type:string;
-        data:string;
-        timestamp:number;
-        source:string;
-        confidence:number;
-        tags:string;
+        id: string;
+        type: string;
+        data: string;
+        timestamp: number;
+        source: string;
+        confidence: number;
+        tags: string;
 }>(sql, params);
 
       const results = rows.map(row => ({
-        id:row.id,
-        type:row.type,
-        data:JSON.parse(row.data),
-        timestamp:new Date(row.timestamp),
-        source:row.source,
-        confidence:row.confidence,
-        tags:JSON.parse(row.tags)
+        id: row.id,
+        type: row.type,
+        data: JSON.parse(row.data),
+        timestamp: new Date(row.timestamp),
+        source: row.source,
+        confidence: row.confidence,
+        tags: JSON.parse(row.tags)
 }));
 
-      logger.debug('Database search completed', { resultCount:results.length, query, searchType});
+      logger.debug('Database search completed', { resultCount: results.length, query, searchType});
       return results;
 } catch (error) {
       logger.warn('Database search failed, falling back to in-memory search', { error});
@@ -721,7 +721,7 @@ class KnowledgeFactSystem {
   /**
    * Search facts in memory (helper method)
    */
-  private searchInMemoryFacts(query:string, searchType?:string, searchLimit = 10):CoordinationFact[] {
+  private searchInMemoryFacts(query: string, searchType?:string, searchLimit = 10):CoordinationFact[] {
     logger.debug('Using in-memory search fallback');
     
     let results = Array.from(this.coordinationFacts.values());
@@ -754,16 +754,16 @@ class KnowledgeFactSystem {
   /**
    * Search external facts via Rust bridge (helper method)
    */
-  private async searchExternalRustFacts(query:string, remainingLimit:number, searchType?:string): Promise<CoordinationFact[]> {
-    const results:CoordinationFact[] = [];
+  private async searchExternalRustFacts(query: string, remainingLimit: number, searchType?:string): Promise<CoordinationFact[]> {
+    const results: CoordinationFact[] = [];
 
     try {
       const externalResults = await this.factBridge.searchFacts();
       for (const extResult of externalResults) {
         results.push({
           id:`ext-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
-          type:searchType || (extResult as { factType?: string}).factType || 'external-knowledge',          data:(extResult as { metadata?: unknown}).metadata || extResult,
-          timestamp:new Date(),
+          type: searchType || (extResult as { factType?: string}).factType || 'external-knowledge',          data:(extResult as { metadata?: unknown}).metadata || extResult,
+          timestamp: new Date(),
           source: 'rust-fact-bridge',          confidence:(extResult as { score?: number}).score || 0.8,
           tags:['external',    'search',    'rust-bridge'],
 });
@@ -776,9 +776,9 @@ class KnowledgeFactSystem {
         for (const extResult of fallbackResults) {
           results.push({
             id:`ext-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
-            type:searchType || 'external-knowledge',            data:extResult as unknown,
-            timestamp:new Date(),
-            source: 'foundation-fallback',            confidence:0.7,
+            type: searchType || 'external-knowledge',            data: extResult as unknown,
+            timestamp: new Date(),
+            source: 'foundation-fallback',            confidence: 0.7,
             tags:['external',    'search',    'fallback'],
 });
 }
@@ -794,7 +794,7 @@ class KnowledgeFactSystem {
    * Search external facts using Rust fact bridge (with foundation fallback)
    */
   async searchExternalFacts(
-    query:string,
+    query: string,
     sources?:string[],
     limit = 10
   ):Promise<FactSearchResult[]> {
@@ -847,14 +847,14 @@ class KnowledgeFactSystem {
   /**
    * Get NPM package information via high-performance Rust fact bridge
    */
-  async getNPMPackageInfo(packageName:string, version?:string) {
+  async getNPMPackageInfo(packageName: string, version?:string) {
     await this.ensureInitialized();
 
     try {
       // First try Rust fact bridge for maximum performance
       const npmResult = await this.factBridge.getNPMFacts();
       logger.info(
-        `✅ NPM package info retrieved via Rust bridge:${packageName}`
+        `NPM package info retrieved via Rust bridge:${packageName}`
       );
       return npmResult;
 } catch (error) {
@@ -884,14 +884,14 @@ class KnowledgeFactSystem {
   /**
    * Get GitHub repository information via high-performance Rust fact bridge
    */
-  async getGitHubRepoInfo(owner:string, repo:string) {
+  async getGitHubRepoInfo(owner: string, repo: string) {
     await this.ensureInitialized();
 
     try {
       // First try Rust fact bridge for maximum performance
       const githubResult = await this.factBridge.getGitHubFacts();
       logger.info(
-        `✅ GitHub repo info retrieved via Rust bridge:${owner}/${repo}`
+        `GitHub repo info retrieved via Rust bridge:${owner}/${repo}`
       );
       return githubResult;
 } catch (error) {
@@ -929,36 +929,36 @@ class KnowledgeFactSystem {
    * Get coordination system statistics with unified database support
    */
   async getStats():Promise<{
-    totalFacts:number;
-    factsByType:Record<string, number>;
-    factsBySource:Record<string, number>;
-    averageConfidence:number;
+    totalFacts: number;
+    factsByType: Record<string, number>;
+    factsBySource: Record<string, number>;
+    averageConfidence: number;
 }> {
     if (this.factDatabase) {
       try {
         // Get statistics from unified database with coordinated indexes
-        const totalResult = await this.factDatabase.query<{ count:number}>(`
+        const totalResult = await this.factDatabase.query<{ count: number}>(`
           SELECT COUNT(*) as count FROM coordination_facts
         `);
         
-        const typeResult = await this.factDatabase.query<{ type:string; count: number}>(`
+        const typeResult = await this.factDatabase.query<{ type: string; count: number}>(`
           SELECT type, COUNT(*) as count 
           FROM coordination_facts 
           GROUP BY type
         `);
         
-        const sourceResult = await this.factDatabase.query<{ source:string; count: number}>(`
+        const sourceResult = await this.factDatabase.query<{ source: string; count: number}>(`
           SELECT source, COUNT(*) as count 
           FROM coordination_facts 
           GROUP BY source
         `);
         
-        const avgResult = await this.factDatabase.query<{ avg:number}>(`
+        const avgResult = await this.factDatabase.query<{ avg: number}>(`
           SELECT AVG(confidence) as avg FROM coordination_facts
         `);
 
-        const factsByType:Record<string, number> = {};
-        const factsBySource:Record<string, number> = {};
+        const factsByType: Record<string, number> = {};
+        const factsBySource: Record<string, number> = {};
         
         for (const row of typeResult) {
           factsByType[row.type] = row.count;
@@ -969,10 +969,10 @@ class KnowledgeFactSystem {
 }
 
         return {
-          totalFacts:totalResult[0]?.count || 0,
+          totalFacts: totalResult[0]?.count || 0,
           factsByType,
           factsBySource,
-          averageConfidence:avgResult[0]?.avg || 0,
+          averageConfidence: avgResult[0]?.avg || 0,
 };
 } catch (error) {
         logger.warn('Failed to get stats from unified database, using in-memory fallback', { error});
@@ -982,8 +982,8 @@ class KnowledgeFactSystem {
 
     // Fallback to in-memory statistics
     const facts = Array.from(this.coordinationFacts.values());
-    const factsByType:Record<string, number> = {};
-    const factsBySource:Record<string, number> = {};
+    const factsByType: Record<string, number> = {};
+    const factsBySource: Record<string, number> = {};
     let totalConfidence = 0;
 
     for (const fact of facts) {
@@ -993,10 +993,10 @@ class KnowledgeFactSystem {
 }
 
     return {
-      totalFacts:facts.length,
+      totalFacts: facts.length,
       factsByType,
       factsBySource,
-      averageConfidence:facts.length > 0 ? totalConfidence / facts.length : 0,
+      averageConfidence: facts.length > 0 ? totalConfidence / facts.length : 0,
 };
 }
 
@@ -1009,7 +1009,7 @@ class KnowledgeFactSystem {
   /**
    * Notify listeners of new facts
    */
-  // Note:notifyListeners method removed as it was never called
+  // Note: notifyListeners method removed as it was never called
   // Can be added back when event system is fully implemented
 }
 

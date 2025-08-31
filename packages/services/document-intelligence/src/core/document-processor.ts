@@ -8,8 +8,8 @@
  * @example
  * ```typescript`
  * const processor = new DocumentProcessor(memorySystem, workflowEngine, {
- *   autoWatch:true,
- *   enableWorkflows:true
+ *   autoWatch: true,
+ *   enableWorkflows: true
  *});
  *
  * await processor.initialize();
@@ -19,8 +19,8 @@
  * @file Document-processor implementation.
  */
 
-import { existsSync} from 'node:fs';
-import { dirname} from 'node:path';
+import { existsSync} from 'node: fs';
+import { dirname} from 'node: path';
 import { getLogger, TypedEventBase} from '@claude-zen/foundation';
 // Removed intelligence facade; define minimal local interfaces
 interface BrainCoordinator {
@@ -96,9 +96,9 @@ export interface DocumentMetadata {
  */
 export interface Document {
   /** Document type */
-  type:DocumentType;
+  type: DocumentType;
   /** File path */
-  path:string;
+  path: string;
   /** Document content */
   content?:string;
   /** Document metadata */
@@ -114,7 +114,7 @@ export interface Document {
  */
 export interface DocumentWorkspace {
   /** Workspace root directory */
-  root:string;
+  root: string;
   /** Vision documents directory */
   vision?:string;
   /** ADR documents directory */
@@ -140,13 +140,13 @@ export interface DocumentWorkspace {
  */
 export interface ProcessingContext {
   /** Workspace configuration */
-  workspace:DocumentWorkspace;
+  workspace: DocumentWorkspace;
   /** Active documents */
-  activeDocuments:Map<string, Document>;
+  activeDocuments: Map<string, Document>;
   /** Current processing phase */
   phase?: 'requirements' | 'design' | 'planning' | 'execution' | 'validation';
   /** Enable background processing */
-  backgroundProcessing:boolean;
+  backgroundProcessing: boolean;
 }
 
 /**
@@ -156,13 +156,13 @@ export interface ProcessingContext {
  */
 export interface DocumentStats {
   /** Total documents processed */
-  totalDocuments:number;
+  totalDocuments: number;
   /** Documents by type */
-  byType:Record<DocumentType, number>;
+  byType: Record<DocumentType, number>;
   /** Documents by status */
-  byStatus:Record<string, number>;
+  byStatus: Record<string, number>;
   /** Processing errors */
-  errors:number;
+  errors: number;
 }
 
 /**
@@ -171,16 +171,16 @@ export interface DocumentStats {
  * @example
  */
 export class DocumentProcessor extends TypedEventBase {
-  private memory:BrainCoordinator;
-  private workflowEngine:WorkflowEngine|null = null;
-  private workspaces:Map<string, ProcessingContext> = new Map();
-  private documentWatchers:Map<string, any> = new Map();
+  private memory: BrainCoordinator;
+  private workflowEngine: WorkflowEngine|null = null;
+  private workspaces: Map<string, ProcessingContext> = new Map();
+  private documentWatchers: Map<string, any> = new Map();
   private initialized = false;
-  private stats:DocumentStats = {
-    totalDocuments:0,
+  private stats: DocumentStats = {
+    totalDocuments: 0,
     byType:{} as Record<DocumentType, number>,
     byStatus:{},
-    errors:0,
+    errors: 0,
 };
 
   /**
@@ -191,18 +191,18 @@ export class DocumentProcessor extends TypedEventBase {
    * @param config - Configuration options.
    */
   constructor(
-    memory:BrainCoordinator,
+    memory: BrainCoordinator,
     workflowEngine?:WorkflowEngine,
-    config:DocumentProcessorConfig = {}
+    config: DocumentProcessorConfig = {}
   ) {
     super();
     this.memory = memory;
     this.workflowEngine = workflowEngine||null;
     this.config = {
-      autoWatch:config?.autoWatch !== false,
-      enableWorkflows:config?.enableWorkflows !== false,
-      workspaceRoot:config?.workspaceRoot||'./docs',      documentDirs:{
-        vision:config?.documentDirs?.vision||'01-vision',        adrs:config?.documentDirs?.adrs||'02-adrs',        prds:config?.documentDirs?.prds||'03-prds',        epics:config?.documentDirs?.epics||'04-epics',        features:config?.documentDirs?.features||'05-features',        tasks:config?.documentDirs?.tasks||'06-tasks',        specs:config?.documentDirs?.specs||'07-specs',        ...config?.documentDirs,
+      autoWatch: config?.autoWatch !== false,
+      enableWorkflows: config?.enableWorkflows !== false,
+      workspaceRoot: config?.workspaceRoot||'./docs',      documentDirs:{
+        vision: config?.documentDirs?.vision||'01-vision',        adrs: config?.documentDirs?.adrs||'02-adrs',        prds: config?.documentDirs?.prds||'03-prds',        epics: config?.documentDirs?.epics||'04-epics',        features: config?.documentDirs?.features||'05-features',        tasks: config?.documentDirs?.tasks||'06-tasks',        specs: config?.documentDirs?.specs||'07-specs',        ...config?.documentDirs,
 },
 };
 
@@ -231,27 +231,27 @@ export class DocumentProcessor extends TypedEventBase {
    * @param workspacePath - Path to the workspace root.
    * @returns Workspace ID.
    */
-  async loadWorkspace(workspacePath:string): Promise<string> {
+  async loadWorkspace(workspacePath: string): Promise<string> {
     const workspaceId = `workspace-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
 
     // Create workspace structure
-    const workspace:DocumentWorkspace = {
-      root:workspacePath,
-      vision:join(workspacePath, this.config.documentDirs.vision!),
-      adrs:join(workspacePath, this.config.documentDirs.adrs!),
-      prds:join(workspacePath, this.config.documentDirs.prds!),
-      epics:join(workspacePath, this.config.documentDirs.epics!),
-      features:join(workspacePath, this.config.documentDirs.features!),
-      tasks:join(workspacePath, this.config.documentDirs.tasks!),
-      specs:join(workspacePath, this.config.documentDirs.specs!),
-      implementation:join(workspacePath, 'src'),
+    const workspace: DocumentWorkspace = {
+      root: workspacePath,
+      vision: join(workspacePath, this.config.documentDirs.vision!),
+      adrs: join(workspacePath, this.config.documentDirs.adrs!),
+      prds: join(workspacePath, this.config.documentDirs.prds!),
+      epics: join(workspacePath, this.config.documentDirs.epics!),
+      features: join(workspacePath, this.config.documentDirs.features!),
+      tasks: join(workspacePath, this.config.documentDirs.tasks!),
+      specs: join(workspacePath, this.config.documentDirs.specs!),
+      implementation: join(workspacePath, 'src'),
 };
 
     // Create processing context
-    const context:ProcessingContext = {
+    const context: ProcessingContext = {
       workspace,
-      activeDocuments:new Map(),
-      backgroundProcessing:this.config.enableWorkflows,
+      activeDocuments: new Map(),
+      backgroundProcessing: this.config.enableWorkflows,
 };
 
     this.workspaces.set(workspaceId, context);
@@ -269,10 +269,10 @@ export class DocumentProcessor extends TypedEventBase {
     logger.info(
       `Loaded workspace:$workspacePath($context.activeDocuments.sizedocuments)``
     );
-    this.emit('workspace:loaded', {
+    this.emit('workspace: loaded', {
     ')      workspaceId,
-      path:workspacePath,
-      documentCount:context.activeDocuments.size,
+      path: workspacePath,
+      documentCount: context.activeDocuments.size,
 });
 
     return workspaceId;
@@ -285,7 +285,7 @@ export class DocumentProcessor extends TypedEventBase {
    * @param workspaceId - Optional workspace ID (uses default if not provided).
    */
   async processDocument(
-    documentPath:string,
+    documentPath: string,
     workspaceId?:string
   ):Promise<void> {
     await this.ensureInitialized();
@@ -300,21 +300,21 @@ export class DocumentProcessor extends TypedEventBase {
 
     const context = this.workspaces.get(workspaceId);
     if (!context) {
-      throw new Error(`Workspace not found:${workspaceId}`);`
+      throw new Error(`Workspace not found:${workspaceId}`);
 }
 
     try {
       const docType = this.getDocumentType(documentPath);
       const content = await readFile(documentPath, 'utf8');')      const metadata = await this.extractMetadata(content);
 
-      logger.info(`Processing $docTypedocument:$documentPath`);`
+      logger.info(`Processing $docTypedocument: ${$documentPath}`);
 
-      const document:Document = {
-        type:docType,
-        path:documentPath,
+      const document: Document = {
+        type: docType,
+        path: documentPath,
         content,
         metadata,
-        id:this.generateDocumentId(docType, documentPath),
+        id: this.generateDocumentId(docType, documentPath),
 };
 
       // Store in context
@@ -333,21 +333,21 @@ export class DocumentProcessor extends TypedEventBase {
       if (this.config.enableWorkflows && this.workflowEngine) {
         try {
           await this.workflowEngine.execute({
-            type: 'document_created',            data:document,
+            type: 'document_created',            data: document,
             context:{ workspaceId},
 });
 } catch (error) {
           logger.warn('Workflow processing failed:', error);')}
 }
 
-      this.emit('document:processed', {
+      this.emit('document: processed', {
     ')        workspaceId,
         document,
-        suggestedNextSteps:this.getSuggestedNextSteps(docType),
+        suggestedNextSteps: this.getSuggestedNextSteps(docType),
 });
 } catch (error) 
       this.stats.errors++;
-      logger.error(`Failed to process document ${documentPath}:`, error);`
+      logger.error(`Failed to process document ${documentPath}:`, error);
       throw error;
 }
 }
@@ -362,9 +362,9 @@ export class DocumentProcessor extends TypedEventBase {
    * @returns Created document.
    */
   async createDocument(
-    type:DocumentType,
-    title:string,
-    content:string,
+    type: DocumentType,
+    title: string,
+    content: string,
     workspaceId?:string
   ):Promise<Document> {
     await this.ensureInitialized();
@@ -377,7 +377,7 @@ export class DocumentProcessor extends TypedEventBase {
 
     const context = this.workspaces.get(workspaceId);
     if (!context) {
-      throw new Error(`Workspace not found:$workspaceId`);`
+      throw new Error(`Workspace not found: ${$workspaceId}`);
 
     // Generate file path
     const __dirPath = this.getDocumentDirectory(context.workspace, type);
@@ -396,7 +396,7 @@ export class DocumentProcessor extends TypedEventBase {
     if (!document) {
       throw new Error('Failed to create document');')}
 
-    logger.info(`Created $typedocument:$title`);`
+    logger.info(`Created $typedocument: ${$title}`);
     return document;
 }
 
@@ -415,9 +415,9 @@ export class DocumentProcessor extends TypedEventBase {
    * @param workspaceId - Workspace ID.
    * @returns Map of documents.
    */
-  getWorkspaceDocuments(workspaceId:string): Map<string, Document> {
+  getWorkspaceDocuments(workspaceId: string): Map<string, Document> {
     const context = this.workspaces.get(workspaceId);
-    return context ? context.activeDocuments:new Map();
+    return context ? context.activeDocuments: new Map();
 }
 
   /**
@@ -454,7 +454,7 @@ export class DocumentProcessor extends TypedEventBase {
    * Setup event handlers.
    */
   private setupEventHandlers():void {
-    this.on('document:created', this.handleDocumentCreated.bind(this));')    this.on('document:updated', this.handleDocumentUpdated.bind(this));')    this.on('document:deleted', this.handleDocumentDeleted.bind(this));')}
+    this.on('document: created', this.handleDocumentCreated.bind(this));')    this.on('document: updated', this.handleDocumentUpdated.bind(this));')    this.on('document: deleted', this.handleDocumentDeleted.bind(this));')}
 
   /**
    * Process document based on its type.
@@ -463,8 +463,8 @@ export class DocumentProcessor extends TypedEventBase {
    * @param document
    */
   private async processDocumentByType(
-    workspaceId:string,
-    document:Document
+    workspaceId: string,
+    document: Document
   ):Promise<void> {
     const __context = this.workspaces.get(workspaceId)!;
 
@@ -479,7 +479,7 @@ export class DocumentProcessor extends TypedEventBase {
       case 'feature': ')'        context.phase = 'planning';
         logger.info('⭐ Processing Feature document');')        break;
       case 'task': ')'        context.phase = 'execution';
-        logger.info('✅ Processing Task document');')        break;
+        logger.info('Processing Task document');')        break;
       case 'spec': ')'        logger.info('📄 Processing Spec document');')        break;
 }
 }

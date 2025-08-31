@@ -11,8 +11,8 @@
  * @version 1.0.0
  */
 
-import { extname, basename } from 'node:path';
-import { readFile } from 'node:fs/promises';
+import { extname, basename } from 'node: path';
+import { readFile } from 'node: fs/promises';
 import {
   err,
   getLogger,
@@ -26,7 +26,7 @@ import {
  */
 export interface BeamModule {
   /** Module name */
-  name:string;
+  name: string;
 
   /** File path */
   path: string;
@@ -35,19 +35,19 @@ export interface BeamModule {
   language: 'elixir' | 'erlang' | 'gleam';
 
   /** Exported functions */
-  exports:BeamFunction[];
+  exports: BeamFunction[];
 
   /** Type definitions */
-  types:BeamType[];
+  types: BeamType[];
 
   /** Documentation strings */
-  documentation:string[];
+  documentation: string[];
 
   /** Module dependencies */
-  dependencies:string[];
+  dependencies: string[];
 
   /** Language-specific metadata */
-  metadata:Record<string, unknown>;
+  metadata: Record<string, unknown>;
 
   /** Module complexity metrics */
   metrics?:BeamModuleMetrics;
@@ -58,22 +58,22 @@ export interface BeamModule {
  */
 export interface BeamFunction {
   /** Function name */
-  name:string;
+  name: string;
 
   /** Function arity (number of parameters) */
-  arity:number;
+  arity: number;
 
   /** Visibility scope */
   visibility:'public' | 'private';
 
   /** Function signature */
-  signature:string;
+  signature: string;
 
   /** Function documentation */
   documentation?:string;
 
   /** Line number in source */
-  lineNumber:number;
+  lineNumber: number;
 
   /** Function complexity score */
   complexity?:number;
@@ -87,16 +87,16 @@ export interface BeamFunction {
  */
 export interface BeamType {
   /** Type name */
-  name:string;
+  name: string;
 
   /** Type definition */
-  definition:string;
+  definition: string;
 
   /** Type documentation */
   documentation?:string;
 
   /** Line number in source */
-  lineNumber:number;
+  lineNumber: number;
 
   /** Type category */
   category?: 'custom' | 'alias' | 'opaque' | 'spec';
@@ -107,25 +107,25 @@ export interface BeamType {
  */
 export interface BeamModuleMetrics {
   /** Lines of code */
-  linesOfCode:number;
+  linesOfCode: number;
 
   /** Number of functions */
-  functionCount:number;
+  functionCount: number;
 
   /** Number of public functions */
-  publicFunctionCount:number;
+  publicFunctionCount: number;
 
   /** Number of type definitions */
-  typeCount:number;
+  typeCount: number;
 
   /** Average function complexity */
-  averageComplexity:number;
+  averageComplexity: number;
 
   /** Cyclomatic complexity */
-  cyclomaticComplexity:number;
+  cyclomaticComplexity: number;
 
   /** Documentation coverage ratio */
-  documentationCoverage:number;
+  documentationCoverage: number;
 }
 
 /**
@@ -149,16 +149,16 @@ export interface BeamParserOptions {
  * Enhanced BEAM Language Parser with foundation integration
  */
 export class BeamLanguageParser {
-  private readonly logger:Logger;
-  private readonly options:BeamParserOptions;
+  private readonly logger: Logger;
+  private readonly options: BeamParserOptions;
 
-  constructor(_options:BeamParserOptions = {}) {
+  constructor(_options: BeamParserOptions = {}) {
     this.logger = getLogger('BeamLanguageParser');
     this.options = {
       includeMetrics: true,
-      analyzeFunctionComplexity:true,
-      extractDocumentation:true,
-      maxFileSize:10 * 1024 * 1024, // 10MB default
+      analyzeFunctionComplexity: true,
+      extractDocumentation: true,
+      maxFileSize: 10 * 1024 * 1024, // 10MB default
       ..._options,
     };
 
@@ -170,7 +170,7 @@ export class BeamLanguageParser {
   /**
    * Parse a BEAM language file (Elixir/Erlang/Gleam)
    */
-  async parseFile(filePath:string): Promise<Result<BeamModule, Error>> {
+  async parseFile(filePath: string): Promise<Result<BeamModule, Error>> {
     try {
       this.logger.info(`Parsing BEAM file: ${filePath}`);
 
@@ -187,7 +187,7 @@ export class BeamLanguageParser {
         return err(new Error(`Unsupported file extension: ${ext}`));
 }
 
-      let module:BeamModule;
+      let module: BeamModule;
 
       switch (language) {
         case 'elixir':
@@ -211,9 +211,9 @@ export class BeamLanguageParser {
       this.logger.info(
         `Successfully parsed ${language} module: ${module.name}`,
         {
-          functions:module.exports.length,
-          types:module.types.length,
-          dependencies:module.dependencies.length,
+          functions: module.exports.length,
+          types: module.types.length,
+          dependencies: module.dependencies.length,
         }
       );
 
@@ -228,7 +228,7 @@ export class BeamLanguageParser {
   /**
    * Parse multiple BEAM files in parallel
    */
-  async parseFiles(filePaths:string[]): Promise<Result<BeamModule[], Error>> {
+  async parseFiles(filePaths: string[]): Promise<Result<BeamModule[], Error>> {
     try {
       this.logger.info(`Parsing ${filePaths.length} BEAM files in parallel`);
 
@@ -236,8 +236,8 @@ export class BeamLanguageParser {
         filePaths.map((path) => this.parseFile(path))
       );
 
-      const modules:BeamModule[] = [];
-      const errors:string[] = [];
+      const modules: BeamModule[] = [];
+      const errors: string[] = [];
 
       for (let i = 0; i < results.length; i++) {
         const result = results[i];
@@ -253,22 +253,22 @@ export class BeamLanguageParser {
 
       if (errors.length > 0) {
         this.logger.warn('Some files failed to parse', {
-          errorCount:errors.length,
-          successCount:modules.length,
-          errors:errors.slice(0, 5), // Log first 5 errors
+          errorCount: errors.length,
+          successCount: modules.length,
+          errors: errors.slice(0, 5), // Log first 5 errors
 });
 }
 
       this.logger.info(`Parsed ${modules.length} BEAM modules successfully`, {
-        totalAttempted:filePaths.length,
-        successCount:modules.length,
-        errorCount:errors.length,
+        totalAttempted: filePaths.length,
+        successCount: modules.length,
+        errorCount: errors.length,
       });
 
       return ok(modules);
 } catch (error) {
       const err_msg = `Failed to parse BEAM files: ${error instanceof Error ? error.message : String(error)}`;
-      this.logger.error(err_msg, { error, fileCount:filePaths.length});
+      this.logger.error(err_msg, { error, fileCount: filePaths.length});
       return err(new Error(err_msg));
 }
 }
@@ -276,7 +276,7 @@ export class BeamLanguageParser {
   /**
    * Detect language from file extension
    */
-  private detectLanguage(ext:string): 'elixir' | 'erlang' | 'gleam' | null {
+  private detectLanguage(ext: string): 'elixir' | 'erlang' | 'gleam' | null {
     switch (ext.toLowerCase()) {
       case '.ex':
       case '.exs':
@@ -295,8 +295,8 @@ export class BeamLanguageParser {
    * Parse Elixir file using enhanced regex patterns
    */
   private async parseElixirFile(
-    filePath:string,
-    content:string
+    filePath: string,
+    content: string
   ):Promise<BeamModule> {
     const moduleName =
       this.extractElixirModuleName(content)||basename(filePath,'.ex');')    const functions = this.extractElixirFunctions(content);
@@ -307,23 +307,23 @@ export class BeamLanguageParser {
     const deps = this.extractElixirDependencies(content);
 
     return {
-      name:moduleName,
-      path:filePath,
+      name: moduleName,
+      path: filePath,
       language: 'elixir',
-      exports:functions,
-      types:types,
-      documentation:docs,
-      dependencies:deps,
+      exports: functions,
+      types: types,
+      documentation: docs,
+      dependencies: deps,
       metadata:{
-        hasGenServer:content.includes('use GenServer'),
-        hasSupervisor:content.includes('use Supervisor'),
-        hasApplication:content.includes('use Application'),
-        hasPlug:content.includes('use Plug'),
-        hasPhoenix:content.includes('use Phoenix'),
-        hasEcto:content.includes('use Ecto'),
-        hasLiveView:content.includes('use Phoenix.LiveView'),
+        hasGenServer: content.includes('use GenServer'),
+        hasSupervisor: content.includes('use Supervisor'),
+        hasApplication: content.includes('use Application'),
+        hasPlug: content.includes('use Plug'),
+        hasPhoenix: content.includes('use Phoenix'),
+        hasEcto: content.includes('use Ecto'),
+        hasLiveView: content.includes('use Phoenix.LiveView'),
         hasOTP:/uses+(GenServer|GenStateMachine|Agent|Task)/.test(content),
-        protocolImplementations:this.extractElixirProtocols(content),
+        protocolImplementations: this.extractElixirProtocols(content),
 },
 };
 }
@@ -332,8 +332,8 @@ export class BeamLanguageParser {
    * Parse Erlang file using enhanced regex patterns
    */
   private async parseErlangFile(
-    filePath:string,
-    content:string
+    filePath: string,
+    content: string
   ):Promise<BeamModule> {
     const moduleName =
       this.extractErlangModuleName(content)||basename(filePath,'.erl');')    const functions = this.extractErlangFunctions(content);
@@ -344,19 +344,19 @@ export class BeamLanguageParser {
     const deps = this.extractErlangDependencies(content);
 
     return {
-      name:moduleName,
-      path:filePath,
+      name: moduleName,
+      path: filePath,
       language: 'erlang',
-      exports:functions,
-      types:types,
-      documentation:docs,
-      dependencies:deps,
+      exports: functions,
+      types: types,
+      documentation: docs,
+      dependencies: deps,
       metadata:{
-        behaviours:this.extractErlangBehaviours(content),
-        exports:this.extractErlangExports(content),
-        includes:this.extractErlangIncludes(content),
-        attributes:this.extractErlangAttributes(content),
-        isOTPBehaviour:this.isOTPBehaviour(content),
+        behaviours: this.extractErlangBehaviours(content),
+        exports: this.extractErlangExports(content),
+        includes: this.extractErlangIncludes(content),
+        attributes: this.extractErlangAttributes(content),
+        isOTPBehaviour: this.isOTPBehaviour(content),
 },
 };
 }
@@ -365,8 +365,8 @@ export class BeamLanguageParser {
    * Parse Gleam file using enhanced regex patterns
    */
   private async parseGleamFile(
-    filePath:string,
-    content:string
+    filePath: string,
+    content: string
   ):Promise<BeamModule> {
     const moduleName = basename(filePath, '.gleam');')    const functions = this.extractGleamFunctions(content);
     const types = this.extractGleamTypes(content);
@@ -376,31 +376,31 @@ export class BeamLanguageParser {
     const deps = this.extractGleamDependencies(content);
 
     return {
-      name:moduleName,
-      path:filePath,
+      name: moduleName,
+      path: filePath,
       language: 'gleam',
-      exports:functions,
-      types:types,
-      documentation:docs,
-      dependencies:deps,
+      exports: functions,
+      types: types,
+      documentation: docs,
+      dependencies: deps,
       metadata:{
-        hasExternal:content.includes('@external'),
-        hasFFI:content.includes('external'),
-        hasTargetJS:content.includes('@target(javascript)'),
-        hasTargetErlang:content.includes('@target(erlang)'),
-        customTypes:this.extractGleamCustomTypes(content),
+        hasExternal: content.includes('@external'),
+        hasFFI: content.includes('external'),
+        hasTargetJS: content.includes('@target(javascript)'),
+        hasTargetErlang: content.includes('@target(erlang)'),
+        customTypes: this.extractGleamCustomTypes(content),
 },
 };
 }
 
   // Enhanced Elixir parsing methods
-  private extractElixirModuleName(content:string): string|null {
+  private extractElixirModuleName(content: string): string|null {
     const match = content.match(/defmodules+([A-Z][w.]*)/);
     return match ? match[1] :null;
 }
 
-  private extractElixirFunctions(content:string): BeamFunction[] {
-    const functions:BeamFunction[] = [];
+  private extractElixirFunctions(content: string): BeamFunction[] {
+    const functions: BeamFunction[] = [];
     const defRegex =
       /(?:def|defp|defmacro|defmacrop)\s+([_a-z]\w*[!?]?)\s*(?:\(([^)]*)\))?/g;
 
@@ -438,8 +438,8 @@ export class BeamLanguageParser {
     return functions;
 }
 
-  private extractElixirTypes(content:string): BeamType[] {
-    const types:BeamType[] = [];
+  private extractElixirTypes(content: string): BeamType[] {
+    const types: BeamType[] = [];
 
     // @type definitions
     const typeRegex = /@type\s+([_a-z]\w*(?:\([^)]*\))?)\s*::\s*([^\n]+)/g;
@@ -447,9 +447,9 @@ export class BeamLanguageParser {
     while ((match = typeRegex.exec(content)) !== null) {
       const lineNumber = content.substring(0, match.index).split('\n').length;
       types.push({
-        name:match[1],
-        definition:match[2].trim(),
-        lineNumber:lineNumber,
+        name: match[1],
+        definition: match[2].trim(),
+        lineNumber: lineNumber,
         category: 'custom',
       });
     }
@@ -460,9 +460,9 @@ export class BeamLanguageParser {
     while ((match = privateTypeRegex.exec(content)) !== null) {
       const lineNumber = content.substring(0, match.index).split('\n').length;
       types.push({
-        name:match[1],
-        definition:match[2].trim(),
-        lineNumber:lineNumber,
+        name: match[1],
+        definition: match[2].trim(),
+        lineNumber: lineNumber,
         category: 'custom',
       });
     }
@@ -473,9 +473,9 @@ export class BeamLanguageParser {
     while ((match = specRegex.exec(content)) !== null) {
       const lineNumber = content.substring(0, match.index).split('\n').length;
       types.push({
-        name:match[1],
-        definition:match[2].trim(),
-        lineNumber:lineNumber,
+        name: match[1],
+        definition: match[2].trim(),
+        lineNumber: lineNumber,
         category: 'spec',
       });
     }
@@ -483,8 +483,8 @@ export class BeamLanguageParser {
     return types;
 }
 
-  private extractElixirDocs(content:string): string[] {
-    const docs:string[] = [];
+  private extractElixirDocs(content: string): string[] {
+    const docs: string[] = [];
 
     // @moduledoc
     const moduleDocRegex = /@moduledoc\s+"""(.*?)"""/gs;
@@ -502,8 +502,8 @@ export class BeamLanguageParser {
     return docs;
 }
 
-  private extractElixirDependencies(content:string): string[] {
-    const deps:string[] = [];
+  private extractElixirDependencies(content: string): string[] {
+    const deps: string[] = [];
 
     // Extract use statements
     const useMatches = content.matchAll(/use\s+([A-Z][\w.]*)/g);
@@ -532,8 +532,8 @@ export class BeamLanguageParser {
     return [...new Set(deps)]; // Remove duplicates
 }
 
-  private extractElixirProtocols(content:string): string[] {
-    const protocols:string[] = [];
+  private extractElixirProtocols(content: string): string[] {
+    const protocols: string[] = [];
     const protocolRegex = /defimpl\s+([A-Z][\w.]*)/g;
 
     let match;
@@ -545,25 +545,25 @@ export class BeamLanguageParser {
 }
 
   // Enhanced Erlang parsing methods
-  private extractErlangModuleName(content:string): string|null {
+  private extractErlangModuleName(content: string): string|null {
     const match = content.match(/-module\s*\(\s*([a-z]\w*)\s*\)/);
     return match ? match[1] :null;
 }
 
-  private extractErlangFunctions(content:string): BeamFunction[] {
-    const functions:BeamFunction[] = [];
+  private extractErlangFunctions(content: string): BeamFunction[] {
+    const functions: BeamFunction[] = [];
     const funcRegex = /^([a-z]\w*)\s*\(([^)]*)\)\s*->/gm;
 
     let match;
     while ((match = funcRegex.exec(content)) !== null) {
       const functionName = match[1];
       const params = match[2]||';
-      const arity = params ? params.split(',    ').length:0;')      const lineNumber = content.substring(0, match.index).split('\n').length;')
-      const func:BeamFunction = {
-        name:functionName,
-        arity:arity,
+      const arity = params ? params.split(',    ').length: 0;')      const lineNumber = content.substring(0, match.index).split('\n').length;')
+      const func: BeamFunction = {
+        name: functionName,
+        arity: arity,
         visibility: 'public', // Determined by export list')        signature:`${functionName}(${params})`,`
-        lineNumber:lineNumber,
+        lineNumber: lineNumber,
 };
 
       if (this.options.analyzeFunctionComplexity) {
@@ -579,17 +579,17 @@ export class BeamLanguageParser {
     return functions;
 }
 
-  private extractErlangTypes(content:string): BeamType[] {
-    const types:BeamType[] = [];
+  private extractErlangTypes(content: string): BeamType[] {
+    const types: BeamType[] = [];
 
     // -type definitions
     const typeRegex = /-type\s+([_a-z]\w*(?:\([^)]*\))?)\s*::\s*([^.]+)\./g;
     let match;
     while ((match = typeRegex.exec(content)) !== null) {
       const lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
-        name:match[1],
-        definition:match[2].trim(),
-        lineNumber:lineNumber,
+        name: match[1],
+        definition: match[2].trim(),
+        lineNumber: lineNumber,
         category: 'custom'});
 }
 
@@ -598,9 +598,9 @@ export class BeamLanguageParser {
       /-opaque\s+([_a-z]\w*(?:\([^)]{0,100}\))?)\s*::\s*([^.]{1,200})\./g;
     while ((match = opaqueRegex.exec(content)) !== null) {
       const lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
-        name:match[1],
-        definition:match[2].trim(),
-        lineNumber:lineNumber,
+        name: match[1],
+        definition: match[2].trim(),
+        lineNumber: lineNumber,
         category: 'opaque'});
 }
 
@@ -608,18 +608,18 @@ export class BeamLanguageParser {
     const specRegex = /-spec\s+([_a-z]\w*(?:\([^)]*\))?)\s*->\s*([^.]+)\./g;
     while ((match = specRegex.exec(content)) !== null) {
       const lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
-        name:match[1],
-        definition:match[2].trim(),
-        lineNumber:lineNumber,
+        name: match[1],
+        definition: match[2].trim(),
+        lineNumber: lineNumber,
         category: 'spec'});
 }
 
     return types;
 }
 
-  private extractErlangDocs(content:string): string[] {
+  private extractErlangDocs(content: string): string[] {
     // Erlang typically uses %% comments for documentation
-    const docs:string[] = [];
+    const docs: string[] = [];
     const lines = content.split('\n');')
     for (const line of lines) {
       const trimmed = line.trim();
@@ -631,8 +631,8 @@ export class BeamLanguageParser {
     return docs;
 }
 
-  private extractErlangDependencies(content:string): string[] {
-    const deps:string[] = [];
+  private extractErlangDependencies(content: string): string[] {
+    const deps: string[] = [];
     const includeRegex = /-include\s*\(\s*"([^"]+)"\s*\)/g;
 
     let match;
@@ -643,8 +643,8 @@ export class BeamLanguageParser {
     return deps;
 }
 
-  private extractErlangBehaviours(content:string): string[] {
-    const behaviours:string[] = [];
+  private extractErlangBehaviours(content: string): string[] {
+    const behaviours: string[] = [];
     const behaviourRegex = /-behaviour\s*\(\s*([a-z]\w*)\s*\)/g;
 
     let match;
@@ -655,8 +655,8 @@ export class BeamLanguageParser {
     return behaviours;
 }
 
-  private extractErlangExports(content:string): string[] {
-    const exports:string[] = [];
+  private extractErlangExports(content: string): string[] {
+    const exports: string[] = [];
     const exportRegex = /-export\s*\(\s*\[([^\]]+)]\s*\)/g;
 
     let match;
@@ -667,8 +667,8 @@ export class BeamLanguageParser {
     return exports;
 }
 
-  private extractErlangIncludes(content:string): string[] {
-    const includes:string[] = [];
+  private extractErlangIncludes(content: string): string[] {
+    const includes: string[] = [];
     const includeRegex = /-include_lib\s*\(\s*"([^"]+)"\s*\)/g;
 
     let match;
@@ -679,8 +679,8 @@ export class BeamLanguageParser {
     return includes;
 }
 
-  private extractErlangAttributes(content:string): Record<string, string[]> {
-    const attributes:Record<string, string[]> = {};
+  private extractErlangAttributes(content: string): Record<string, string[]> {
+    const attributes: Record<string, string[]> = {};
     const attrRegex = /-([a-z]\w*)\s*\(\s*([^)]+)\s*\)/g;
 
     let match;
@@ -708,7 +708,7 @@ export class BeamLanguageParser {
 
   // Enhanced Gleam parsing methods
   private extractGleamFunctions(content: string): BeamFunction[] {
-    const functions:BeamFunction[] = [];
+    const functions: BeamFunction[] = [];
     const funcRegex = /(?:pub\s+)?fn\s+([_a-z]\w*)\s*\(([^)]*)\)/g;
 
     let match;
@@ -741,8 +741,8 @@ export class BeamLanguageParser {
     return functions;
 }
 
-  private extractGleamTypes(content:string): BeamType[] {
-    const types:BeamType[] = [];
+  private extractGleamTypes(content: string): BeamType[] {
+    const types: BeamType[] = [];
 
     // Custom types
     const typeRegex =
@@ -750,9 +750,9 @@ export class BeamLanguageParser {
     let match;
     while ((match = typeRegex.exec(content)) !== null) {
       const lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
-        name:match[1],
-        definition:match[2].trim(),
-        lineNumber:lineNumber,
+        name: match[1],
+        definition: match[2].trim(),
+        lineNumber: lineNumber,
         category: 'custom'});
 }
 
@@ -760,17 +760,17 @@ export class BeamLanguageParser {
     const aliasRegex = /(?:pub\s+)?type\s+([A-Z]\w*)\s*=\s*([A-Z]\w*)/g;
     while ((match = aliasRegex.exec(content)) !== null) {
       const lineNumber = content.substring(0, match.index).split('\n').length;')      types.push(
-        name:match[1],
-        definition:match[2].trim(),
-        lineNumber:lineNumber,
+        name: match[1],
+        definition: match[2].trim(),
+        lineNumber: lineNumber,
         category: 'alias'});
 }
 
     return types;
 }
 
-  private extractGleamDocs(content:string): string[] {
-    const docs:string[] = [];
+  private extractGleamDocs(content: string): string[] {
+    const docs: string[] = [];
     const docRegex = /\/{3}\s*(.*)/g;
 
     let match;
@@ -781,8 +781,8 @@ export class BeamLanguageParser {
     return docs;
 }
 
-  private extractGleamDependencies(content:string): string[] {
-    const deps:string[] = [];
+  private extractGleamDependencies(content: string): string[] {
+    const deps: string[] = [];
     const importRegex = /import\s+([a-z][\w/]*)/g;
 
     let match;
@@ -793,8 +793,8 @@ export class BeamLanguageParser {
     return deps;
 }
 
-  private extractGleamCustomTypes(content:string): string[] {
-    const customTypes:string[] = [];
+  private extractGleamCustomTypes(content: string): string[] {
+    const customTypes: string[] = [];
     const customTypeRegex = /(?:pub\s+)?type\s+([A-Z]\w*)/g;
 
     let match;
@@ -807,8 +807,8 @@ export class BeamLanguageParser {
 
   // Utility methods
   private calculateFunctionComplexity(
-    content:string,
-    functionStart:number
+    content: string,
+    functionStart: number
   ):number {
     // Simple complexity calculation based on control structures
     const functionEnd = this.findFunctionEnd(content, functionStart);
@@ -836,14 +836,14 @@ export class BeamLanguageParser {
     return complexity;
 }
 
-  private findFunctionEnd(content:string, start:number): number {
+  private findFunctionEnd(content: string, start: number): number {
     // Simple heuristic to find function end - look for next 'def' or ' end'const fromStart = content.substring(start);')    const nextDef = fromStart.search(/\n\s*(?:def|end)/);
-    return nextDef > 0 ? start + nextDef:content.length;
+    return nextDef > 0 ? start + nextDef: content.length;
 }
 
   private calculateModuleMetrics(
-    module:BeamModule,
-    content:string
+    module: BeamModule,
+    content: string
   ):BeamModuleMetrics {
     const lines = content.split('\n');
     const linesOfCode = lines.filter(
@@ -877,9 +877,9 @@ export class BeamLanguageParser {
 
     return {
       linesOfCode,
-      functionCount:module.exports.length,
-      publicFunctionCount:publicFunctions.length,
-      typeCount:module.types.length,
+      functionCount: module.exports.length,
+      publicFunctionCount: publicFunctions.length,
+      typeCount: module.types.length,
       averageComplexity,
       cyclomaticComplexity,
       documentationCoverage,

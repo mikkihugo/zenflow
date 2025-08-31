@@ -10,37 +10,37 @@
 interface FactClient {
   initialize():Promise<void>;
   store(
-    id:string,
+    id: string,
     data:{
-      content:unknown;
-      metadata:Record<string, unknown>;
+      content: unknown;
+      metadata: Record<string, unknown>;
 }
   ):Promise<void>;
   search(query:{
-    query:string;
+    query: string;
     sources?:string[];
     limit?:number;
 }):Promise<FactSearchResult[]>;
-  getNPMPackage?(packageName:string, version?:string): Promise<unknown>;
-  getGitHubRepository?(owner:string, repo:string): Promise<unknown>;
+  getNPMPackage?(packageName: string, version?:string): Promise<unknown>;
+  getGitHubRepository?(owner: string, repo: string): Promise<unknown>;
 }
 export interface FactSearchResult {
-  id:string;
-  content:unknown;
-  metadata:Record<string, unknown>;
+  id: string;
+  content: unknown;
+  metadata: Record<string, unknown>;
   score?:number;
 }
 /**
  * Coordination-specific fact entry structure (simplified for coordination layer)
  */
 export interface CoordinationFact {
-  id:string;
-  type:string;
-  data:unknown;
-  timestamp:Date;
-  source:string;
-  confidence:number;
-  tags:string[];
+  id: string;
+  type: string;
+  data: unknown;
+  timestamp: Date;
+  source: string;
+  confidence: number;
+  tags: string[];
 }
 /**
  * Coordination fact query interface (simplified for coordination layer)
@@ -69,19 +69,19 @@ declare class KnowledgeFactSystem {
   /**
    * Store a coordination-specific fact
    */
-  storeFact(fact:Omit<CoordinationFact, 'id|timestamp''>):Promise<string>;')  /**
+  storeFact(fact: Omit<CoordinationFact, 'id|timestamp''>):Promise<string>;')  /**
    * Retrieve facts based on query
    */
   queryFacts(query?:CoordinationFactQuery): Promise<CoordinationFact[]>;
   /**
    * Get a specific fact by ID
    */
-  getFact(id:string): Promise<CoordinationFact | null>;
+  getFact(id: string): Promise<CoordinationFact | null>;
   /**
    * Search facts with text-based query (for compatibility with legacy code)
    */
   searchFacts(searchParams:{
-    query:string;
+    query: string;
     type?:string;
     limit?:number;
 }):Promise<CoordinationFact[]>;
@@ -89,7 +89,7 @@ declare class KnowledgeFactSystem {
    * Search external facts using Rust fact bridge (with foundation fallback)
    */
   searchExternalFacts(
-    query:string,
+    query: string,
     sources?:string[],
     limit?:number
   ):Promise<FactSearchResult[]>;
@@ -108,11 +108,11 @@ declare class KnowledgeFactSystem {
   /**
    * Get NPM package information via high-performance Rust fact bridge
    */
-  getNPMPackageInfo(packageName:string, version?:string): Promise<unknown>;
+  getNPMPackageInfo(packageName: string, version?:string): Promise<unknown>;
   /**
    * Get GitHub repository information via high-performance Rust fact bridge
    */
-  getGitHubRepoInfo(owner:string, repo:string): Promise<unknown>;
+  getGitHubRepoInfo(owner: string, repo: string): Promise<unknown>;
   /**
    * Get foundation fact client for advanced operations (internal use only)
    */
@@ -121,10 +121,10 @@ declare class KnowledgeFactSystem {
    * Get coordination system statistics
    */
   getStats():{
-    totalFacts:number;
-    factsByType:Record<string, number>;
-    factsBySource:Record<string, number>;
-    averageConfidence:number;
+    totalFacts: number;
+    factsByType: Record<string, number>;
+    factsBySource: Record<string, number>;
+    averageConfidence: number;
 };
   private ensureInitialized;
   /**
@@ -132,6 +132,6 @@ declare class KnowledgeFactSystem {
    */
   private notifyListeners;
 }
-declare const knowledgeFactSystem:KnowledgeFactSystem;
+declare const knowledgeFactSystem: KnowledgeFactSystem;
 export { knowledgeFactSystem};
 //# sourceMappingURL=fact-system.d.ts.map

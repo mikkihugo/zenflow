@@ -21,10 +21,10 @@ export type FactQuery = CoordinationFactQuery;
 export declare function getCoordinationFactSystem():{
   isInitialized:() => boolean;
   getStats:() => {
-    totalFacts:number;
-    factsByType:Record<string, number>;
-    factsBySource:Record<string, number>;
-    averageConfidence:number;
+    totalFacts: number;
+    factsByType: Record<string, number>;
+    factsBySource: Record<string, number>;
+    averageConfidence: number;
 };
 };
 /**
@@ -35,7 +35,7 @@ export declare function initializeCoordinationFactSystem():Promise<void>;
  * Store a coordination-specific fact
  */
 export declare function storeCoordinationFact(
-  fact:Omit<CoordinationFact, 'id|timestamp''>')):Promise<string>;
+  fact: Omit<CoordinationFact, 'id|timestamp''>')):Promise<string>;
 /**
  * Query coordination facts based on criteria
  */
@@ -46,7 +46,7 @@ export declare function queryCoordinationFacts(
  * Search coordination facts with text-based query
  */
 export declare function searchCoordinationFacts(searchParams:{
-  query:string;
+  query: string;
   type?:string;
   limit?:number;
 }):Promise<CoordinationFact[]>;
@@ -60,17 +60,17 @@ export declare function getCoordinationFacts(
  * Store a coordination event as a fact
  */
 export declare function storeCoordinationEvent(
-  eventType:string,
-  eventData:unknown,
+  eventType: string,
+  eventData: unknown,
   agentId?:string
 ):Promise<string>;
 /**
  * Convenience functions for agent integration
  */
 export declare function storeAgentFact(
-  agentId:string,
-  type:string,
-  data:unknown,
+  agentId: string,
+  type: string,
+  data: unknown,
   confidence?:number,
   tags?:string[]
 ):Promise<string>;
@@ -83,7 +83,7 @@ export declare function queryAgentFacts(
  * Search external facts (NPM, GitHub, security, etc.) using foundation fact system
  */
 export declare function searchExternalFacts(
-  query:string,
+  query: string,
   sources?:string[],
   limit?:number
 ):Promise<FactSearchResult[]>;
@@ -91,14 +91,14 @@ export declare function searchExternalFacts(
  * Get NPM package information using high-performance Rust fact bridge
  */
 export declare function getNPMPackageInfo(
-  packageName:string,
+  packageName: string,
   version?:string
 ):Promise<unknown>;
 /**
  * Get GitHub repository information using high-performance Rust fact bridge
  */
 export declare function getGitHubRepoInfo(
-  owner:string,
-  repo:string
+  owner: string,
+  repo: string
 ):Promise<unknown>;
 //# sourceMappingURL=coordination-api.d.ts.map

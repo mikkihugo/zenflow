@@ -23,18 +23,18 @@ import type {
  * Parses CodeQL SARIF results into structured findings
  */
 export class ResultParser {
-  private readonly logger:Logger;
+  private readonly logger: Logger;
 
-  constructor(logger:Logger) {
+  constructor(logger: Logger) {
     this.logger = logger.child({ component: 'ResultParser'});
 
   /**
    * Parse SARIF results into CodeQL findings
    */
   async parseSARIFToFindings(
-    sarifResult:SARIFResult
+    sarifResult: SARIFResult
   ):Promise<CodeQLFinding[]> {
-    const findings:CodeQLFinding[] = [];
+    const findings: CodeQLFinding[] = [];
 
     for (const run of sarifResult.runs) {
       if (!run.results) continue;
@@ -47,7 +47,7 @@ export class ResultParser {
 }
 } catch (error) {
           this.logger.warn('Failed to parse analysis result', {
-    ')            ruleId:result.ruleId,
+    ')            ruleId: result.ruleId,
             error,
 });
 }
@@ -55,8 +55,8 @@ export class ResultParser {
 }
 
     this.logger.debug('Parsed SARIF results', {
-    ')      totalRuns:sarifResult.runs.length,
-      totalFindings:findings.length,
+    ')      totalRuns: sarifResult.runs.length,
+      totalFindings: findings.length,
 });
 
     return findings;
@@ -66,8 +66,8 @@ export class ResultParser {
    * Parse a single SARIF analysis result
    */
   private async parseAnalysisResult(
-    result:SARIFAnalysisResult,
-    run:any
+    result: SARIFAnalysisResult,
+    run: any
   ):Promise<CodeQLFinding|null> {
     if (!result.locations||result.locations.length === 0) {
       return null;
@@ -103,24 +103,24 @@ export class ResultParser {
       primaryLocation
     );
 
-    const finding:CodeQLFinding = {
+    const finding: CodeQLFinding = {
       id:`finding_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,`
-      ruleId:result.ruleId,
+      ruleId: result.ruleId,
       ruleName,
-      severity:this.mapSeverity(result.level||'warning'),
-      filePath:primaryLocation.filePath,
-      location:primaryLocation,
+      severity: this.mapSeverity(result.level||'warning'),
+      filePath: primaryLocation.filePath,
+      location: primaryLocation,
       relatedLocations,
-      message:result.message.text,
-      description:rule?.fullDescription?.text,
-      snippet:await this.extractCodeSnippet(primaryLocation),
+      message: result.message.text,
+      description: rule?.fullDescription?.text,
+      snippet: await this.extractCodeSnippet(primaryLocation),
       dataFlow,
       security,
       fixSuggestions,
-      confidence:this.calculateConfidence(result, rule),
+      confidence: this.calculateConfidence(result, rule),
       properties:{
-        ruleIndex:result.ruleIndex,
-        analysisTarget:result.analysisTarget,
+        ruleIndex: result.ruleIndex,
+        analysisTarget: result.analysisTarget,
         ...result.properties,
 },
 };
@@ -131,7 +131,7 @@ export class ResultParser {
   /**
    * Parse SARIF location to source location
    */
-  private parseLocation(sarifLocation:SARIFLocation): SourceLocation|null {
+  private parseLocation(sarifLocation: SARIFLocation): SourceLocation|null {
     const physicalLocation = sarifLocation.physicalLocation;
     if (!physicalLocation) {
       return null;
@@ -143,19 +143,19 @@ export class ResultParser {
 }
 
     return {
-      filePath:physicalLocation.artifactLocation.uri,
-      startLine:region.startLine,
-      startColumn:region.startColumn,
-      endLine:region.endLine,
-      endColumn:region.endColumn,
-      message:sarifLocation.message?.text,
+      filePath: physicalLocation.artifactLocation.uri,
+      startLine: region.startLine,
+      startColumn: region.startColumn,
+      endLine: region.endLine,
+      endColumn: region.endColumn,
+      message: sarifLocation.message?.text,
 };
 }
 
   /**
    * Parse CodeQL data flow from SARIF code flows
    */
-  private parseDataFlow(codeFlow:any): DataFlowPath|undefined {
+  private parseDataFlow(codeFlow: any): DataFlowPath|undefined {
     if (!codeFlow.threadFlows||codeFlow.threadFlows.length === 0) {
       return undefined;
 }
@@ -165,9 +165,9 @@ export class ResultParser {
       return undefined;
 }
 
-    const steps:DataFlowStep[] = [];
-    let source:SourceLocation|null = null;
-    let sink:SourceLocation|null = null;
+    const steps: DataFlowStep[] = [];
+    let source: SourceLocation|null = null;
+    let sink: SourceLocation|null = null;
 
     for (let i = 0; i < threadFlow.locations.length; i++) {
       const flowLocation = threadFlow.locations[i];
@@ -184,9 +184,9 @@ export class ResultParser {
 
       steps.push({
         location,
-        description:flowLocation.location.message?.text||`Step ${i + 1}`,`
-        stepNumber:i + 1,
-        isSanitizer:flowLocation.importance ==='unimportant', // Heuristic')});
+        description: flowLocation.location.message?.text||`Step ${i + 1}`,`
+        stepNumber: i + 1,
+        isSanitizer: flowLocation.importance ==='unimportant', // Heuristic')});
 }
 
     if (!source||!sink) {
@@ -197,48 +197,49 @@ export class ResultParser {
       steps,
       source,
       sink,
-      type: 'taint', // Default to taint flow')};
+      type: 'taint', // Default to taint flow
+    };
 }
 
   /**
    * Find rule definition in run data
    */
-  private findRule(ruleId:string, run:any): any {
+  private findRule(ruleId: string, run: any): any {
     if (!run.tool?.driver?.rules) {
       return null;
 }
 
-    return run.tool.driver.rules.find((rule:any) => rule.id === ruleId);
+    return run.tool.driver.rules.find((rule: any) => rule.id === ruleId);
 }
 
   /**
    * Generate security classification for finding
    */
   private generateSecurityClassification(
-    ruleId:string,
-    _rule:any
+    ruleId: string,
+    _rule: any
   ):SecurityClassification|undefined {
     // Map common CodeQL security rules to classifications
-    const securityMappings:Record<string, Partial<SecurityClassification>> = {
+    const securityMappings: Record<string, Partial<SecurityClassification>> = {
     'js/sql-injection':{
-    ')        cweId:89,
-        owaspCategory: 'A03:2021 – Injection',        securitySeverity: 'high',        attackVector: 'network',        exploitability:0.8,
+    ')        cweId: 89,
+        owaspCategory: 'A03: 2021 – Injection',        securitySeverity: 'high',        attackVector: 'network',        exploitability: 0.8,
 },
       'js/xss':{
-    ')        cweId:79,
-        owaspCategory: 'A03:2021 – Injection',        securitySeverity: 'high',        attackVector: 'network',        exploitability:0.9,
+    ')        cweId: 79,
+        owaspCategory: 'A03: 2021 – Injection',        securitySeverity: 'high',        attackVector: 'network',        exploitability: 0.9,
 },
       'js/path-injection':{
-    ')        cweId:22,
-        owaspCategory: 'A01:2021 – Broken Access Control',        securitySeverity: 'high',        attackVector: 'network',        exploitability:0.7,
+    ')        cweId: 22,
+        owaspCategory: 'A01: 2021 – Broken Access Control',        securitySeverity: 'high',        attackVector: 'network',        exploitability: 0.7,
 },
       'js/unsafe-deserialization':{
-    ')        cweId:502,
-        owaspCategory: 'A08:2021 – Software and Data Integrity Failures',        securitySeverity: 'critical',        attackVector: 'network',        exploitability:0.6,
+    ')        cweId: 502,
+        owaspCategory: 'A08: 2021 – Software and Data Integrity Failures',        securitySeverity: 'critical',        attackVector: 'network',        exploitability: 0.6,
 },
       'js/code-injection':{
-    ')        cweId:94,
-        owaspCategory: 'A03:2021 – Injection',        securitySeverity: 'critical',        attackVector: 'network',        exploitability:0.8,
+    ')        cweId: 94,
+        owaspCategory: 'A03: 2021 – Injection',        securitySeverity: 'critical',        attackVector: 'network',        exploitability: 0.8,
 },
 };
 
@@ -253,12 +254,12 @@ export class ResultParser {
 
       // Default security classification for unrecognized security rules
       return {
-        securitySeverity: 'medium',        attackVector: 'network',        exploitability:0.5,
+        securitySeverity: 'medium',        attackVector: 'network',        exploitability: 0.5,
 };
 }
 
     return {
-      securitySeverity: 'medium',      attackVector: 'network',      exploitability:0.5,
+      securitySeverity: 'medium',      attackVector: 'network',      exploitability: 0.5,
       ...mapping,
 } as SecurityClassification;
 }
@@ -267,21 +268,21 @@ export class ResultParser {
    * Generate fix suggestions for finding
    */
   private async generateFixSuggestions(
-    result:SARIFAnalysisResult,
-    location:SourceLocation
+    result: SARIFAnalysisResult,
+    location: SourceLocation
   ):Promise<FixSuggestion[]> {
-    const suggestions:FixSuggestion[] = [];
+    const suggestions: FixSuggestion[] = [];
 
     // Common fix patterns based on rule types
-    const fixPatterns:Record<string, string> = {
+    const fixPatterns: Record<string, string> = {
       'js/sql-injection': ')'        'Use parameterized queries instead of string concatenation',      'js/xss': ' Sanitize user input before rendering in HTML',      'js/path-injection': ' Validate and sanitize file paths',      'js/unsafe-deserialization': ')'        'Use safe deserialization methods or validate input',      'js/hardcoded-credentials': ')'        'Move credentials to environment variables or secure storage',};
 
     const fixDescription = fixPatterns[result.ruleId];
     if (fixDescription) {
       suggestions.push({
-        description:fixDescription,
-        filePath:location.filePath,
-        confidence:0.7,
+        description: fixDescription,
+        filePath: location.filePath,
+        confidence: 0.7,
         type: 'rewrite',});
 }
 
@@ -292,7 +293,7 @@ export class ResultParser {
    * Extract code snippet from location
    */
   private async extractCodeSnippet(
-    location:SourceLocation
+    location: SourceLocation
   ):Promise<string|undefined> {
     try {
       const content = await fs.readFile(location.filePath,'utf-8');')      const lines = content.split('\n');')
@@ -311,7 +312,7 @@ export class ResultParser {
    * Map SARIF severity to standard severity levels
    */
   private mapSeverity(
-    sarifLevel:string
+    sarifLevel: string
   ):'error|warning|note|info' {
     ')    switch (sarifLevel.toLowerCase()) {
       case 'error': ')'        return 'error;
@@ -326,7 +327,7 @@ export class ResultParser {
   /**
    * Calculate confidence score for finding
    */
-  private calculateConfidence(result:SARIFAnalysisResult, rule:any): number {
+  private calculateConfidence(result: SARIFAnalysisResult, rule: any): number {
     let confidence = 0.8; // Base confidence
 
     // Adjust based on rule quality

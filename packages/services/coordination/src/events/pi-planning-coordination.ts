@@ -160,17 +160,17 @@ export class PIPlanningCoordinationManager extends EventBus {
    * Setup event handlers
    */
   private setupEventHandlers(): void {
-    this.on('pi:planning-start', this.handlePlanningStart.bind(this));
-    this.on('pi:phase-transition', this.handlePhaseTransition.bind(this));
-    this.on('pi:team-breakout', this.handleTeamBreakout.bind(this));
-    this.on('pi:objective-update', this.handleObjectiveUpdate.bind(this));
+    this.on('pi: planning-start', this.handlePlanningStart.bind(this));
+    this.on('pi: phase-transition', this.handlePhaseTransition.bind(this));
+    this.on('pi: team-breakout', this.handleTeamBreakout.bind(this));
+    this.on('pi: objective-update', this.handleObjectiveUpdate.bind(this));
     this.on(
-      'pi:dependency-identified',
+      'pi: dependency-identified',
       this.handleDependencyIdentified.bind(this)
     );
-    this.on('pi:risk-identified', this.handleRiskIdentified.bind(this));
-    this.on('pi:commitment-vote', this.handleCommitmentVote.bind(this));
-    this.on('pi:planning-complete', this.handlePlanningComplete.bind(this));
+    this.on('pi: risk-identified', this.handleRiskIdentified.bind(this));
+    this.on('pi: commitment-vote', this.handleCommitmentVote.bind(this));
+    this.on('pi: planning-complete', this.handlePlanningComplete.bind(this));
   }
 
   /**
@@ -231,7 +231,7 @@ export class PIPlanningCoordinationManager extends EventBus {
       `PI Planning event created: PI ${config.piNumber} for ${config.artName}`
     );
 
-    this.emit('pi:event-created', { eventId, event });
+    this.emit('pi: event-created', { eventId, event });
     return event;
   }
 
@@ -249,7 +249,7 @@ export class PIPlanningCoordinationManager extends EventBus {
     this.planningEvents.set(data.eventId, event);
 
     logger.info(`PI Planning started: ${event.artName} PI ${event.piNumber}`);
-    this.emit('pi:planning-started', { eventId: data.eventId, event });
+    this.emit('pi: planning-started', { eventId: data.eventId, event });
   }
 
   /**
@@ -272,7 +272,7 @@ export class PIPlanningCoordinationManager extends EventBus {
     logger.info(
       `PI Planning phase transition: ${previousPhase} → ${data.newPhase}`
     );
-    this.emit('pi:phase-changed', {
+    this.emit('pi: phase-changed', {
       eventId: data.eventId,
       previousPhase,
       newPhase: data.newPhase,
@@ -301,7 +301,7 @@ export class PIPlanningCoordinationManager extends EventBus {
     this.activeBreakouts.get(data.eventId)!.push(data.teamId);
 
     logger.info(`Team breakout started: ${data.teamId} - ${data.breakoutType}`);
-    this.emit('pi:breakout-started', {
+    this.emit('pi: breakout-started', {
       eventId: data.eventId,
       teamId: data.teamId,
       breakoutType: data.breakoutType,
@@ -341,7 +341,7 @@ export class PIPlanningCoordinationManager extends EventBus {
     this.planningEvents.set(data.eventId, event);
     logger.info(`Objective updated: ${data.objective.description}`);
 
-    this.emit('pi:objective-updated', {
+    this.emit('pi: objective-updated', {
       eventId: data.eventId,
       teamId: data.teamId,
       objective: data.objective,
@@ -371,7 +371,7 @@ export class PIPlanningCoordinationManager extends EventBus {
     this.planningEvents.set(data.eventId, event);
 
     logger.info(`Dependency identified: ${dependency.description}`);
-    this.emit('pi:dependency-added', { eventId: data.eventId, dependency });
+    this.emit('pi: dependency-added', { eventId: data.eventId, dependency });
   }
 
   /**
@@ -397,7 +397,7 @@ export class PIPlanningCoordinationManager extends EventBus {
     this.planningEvents.set(data.eventId, event);
 
     logger.info(`Risk identified: ${risk.description}`);
-    this.emit('pi:risk-added', { eventId: data.eventId, risk });
+    this.emit('pi: risk-added', { eventId: data.eventId, risk });
   }
 
   /**
@@ -436,7 +436,7 @@ export class PIPlanningCoordinationManager extends EventBus {
     logger.info(
       `Commitment received from team: ${data.teamId} - Level ${commitment.commitmentLevel}`
     );
-    this.emit('pi:commitment-recorded', { eventId: data.eventId, commitment });
+    this.emit('pi: commitment-recorded', { eventId: data.eventId, commitment });
   }
 
   /**
@@ -453,7 +453,7 @@ export class PIPlanningCoordinationManager extends EventBus {
     this.planningEvents.set(data.eventId, event);
 
     logger.info(`PI Planning completed: ${event.artName} PI ${event.piNumber}`);
-    this.emit('pi:planning-completed', { eventId: data.eventId, event });
+    this.emit('pi: planning-completed', { eventId: data.eventId, event });
   }
 
   /**

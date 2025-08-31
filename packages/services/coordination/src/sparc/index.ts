@@ -393,8 +393,8 @@ export class SPARCManager extends EventBus {
 };
     
     
-    EventLogger.log('claude-code:execute-task', claudeCodePayload);
-    this.emit('claude-code:execute-task', claudeCodePayload);
+    EventLogger.log('claude-code: execute-task', claudeCodePayload);
+    this.emit('claude-code: execute-task', claudeCodePayload);
     
     // Execute task and wait for completion with proper async handling
     const taskResult = await this.executeTaskWithClaudeCode(claudeCodePayload);
@@ -441,12 +441,12 @@ export class SPARCManager extends EventBus {
         const handleTaskComplete = (result: any) => {
           if (result.requestId === payload.requestId) {
             clearTimeout(timeout);
-            this.off('claude-code:task-complete', handleTaskComplete);
+            this.off('claude-code: task-complete', handleTaskComplete);
             resolve(result);
           }
         };
 
-        this.on('claude-code:task-complete', handleTaskComplete);
+        this.on('claude-code: task-complete', handleTaskComplete);
       });
 
       // Wait for task completion

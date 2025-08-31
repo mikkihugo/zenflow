@@ -4,8 +4,8 @@
  */
 
 
-import { spawn } from 'node:child_process';
-import { promises as fs } from 'node:fs';
+import { spawn } from 'node: child_process';
+import { promises as fs } from 'node: fs';
 import { err, getLogger, ok, type Result } from '@claude-zen/foundation';
 
 import type {
@@ -87,7 +87,7 @@ export class DialyzerIntegration {
       child.on('error', (error) => {
     ')        resolve(
           err(
-            code: 'TOOL_NOT_FOUND',            message:`Failed to spawn dialyzer: $error.message`,`
+            code: 'TOOL_NOT_FOUND',            message:`Failed to spawn dialyzer: ${error.message}`,`
             tool: 'dialyzer',            originalError: error,)
         );
 });
@@ -111,7 +111,7 @@ export class DialyzerIntegration {
       // Add warning flags
       if (options.warnings && options.warnings.length > 0) {
         for (const warning of options.warnings) {
-          args.push(`-W${warning}`);`
+          args.push(`-W${warning}`);
 }
 } else {
         // Default warnings
@@ -156,10 +156,10 @@ export class DialyzerIntegration {
         if (code === 0||code === 2) {
           resolve(ok(stdout));
 } else {
-          this.logger.error(`Dialyzer failed with code ${code}:${stderr}`);`
+          this.logger.error(`Dialyzer failed with code ${code}:${stderr}`);
           resolve(
             err({
-              code: 'ANALYSIS_FAILED',              message:`Dialyzer analysis failed: $stderr`,`
+              code: 'ANALYSIS_FAILED',              message:`Dialyzer analysis failed: ${stderr}`,`
               tool: 'dialyzer',})
           );
 }
@@ -168,7 +168,7 @@ export class DialyzerIntegration {
       child.on('error', (error) => {
     ')        resolve(
           err(
-            code: 'TOOL_NOT_FOUND',            message:`Failed to spawn dialyzer: $error.message`,`
+            code: 'TOOL_NOT_FOUND',            message:`Failed to spawn dialyzer: ${error.message}`,`
             tool: 'dialyzer',            originalError: error,)
         );
 });
@@ -314,7 +314,7 @@ export class DialyzerIntegration {
       child.on('error', (error) => {
     ')        resolve(
           err(
-            code: 'TOOL_NOT_FOUND',            message:`Failed to get PLT info: $error.message`,`
+            code: 'TOOL_NOT_FOUND',            message:`Failed to get PLT info: ${error.message}`,`
             tool: 'dialyzer',            originalError: error,)
         );
 });

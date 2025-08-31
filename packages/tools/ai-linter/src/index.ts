@@ -36,8 +36,8 @@ import type {
 } from './types.js';
 // Direct import from relative path while workspace dependency is resolving
 import { GitHubCopilotAPI } from '@claude-zen/llm-providers';
-import * as fs from 'node:fs';
-import { spawn } from 'node:child_process';
+import * as fs from 'node: fs';
+import { spawn } from 'node: child_process';
 import { glob } from 'glob';
 
 const logger = createLogger('ai-linter');
@@ -81,7 +81,7 @@ export class AILinter {
 
       const startTime = Date.now();
 
-      // Step 1:Run ESLint to detect errors
+      // Step 1: Run ESLint to detect errors
       const eslintErrors = await this.runESLint(filePath);
       logger.info('ESLint found errors', { count: eslintErrors.length });
 
@@ -96,10 +96,10 @@ export class AILinter {
         });
       }
 
-      // Step 2:Read file content
+      // Step 2: Read file content
       const originalContent = fs.readFileSync(filePath, 'utf8');
 
-      // Step 3:Use GPT-4.1 to fix errors intelligently
+      // Step 3: Use GPT-4.1 to fix errors intelligently
       const fixedContent = await this.fixWithAI(
         filePath,
         originalContent,
@@ -383,7 +383,7 @@ export class AILinter {
 
       // Fix 1: Skipped complex regex optimization in fallback to reduce risk
 
-      // Fix 2:Replace 'any' with proper types
+      // Fix 2: Replace 'any' with proper types
       if (
         errors.some((e) => e.message.includes('no-explicit-any')) &&
         content.includes(' updateStats(')
@@ -395,13 +395,13 @@ export class AILinter {
         logger.info('Applied fallback type inference fix');
       }
 
-      // Fix 3:Fix unused parameter naming
+      // Fix 3: Fix unused parameter naming
       if (errors.some((e) => e.message.includes('leading underscore'))) {
         fixedCode = fixedCode.replace(/\b_namespace\b/g, 'namespace');
         logger.info('Applied fallback parameter naming fix');
       }
 
-      // Fix 4:Remove unused parameters
+      // Fix 4: Remove unused parameters
       if (errors.some((e) => e.message.includes('defined but never used'))) {
         fixedCode = fixedCode.replace(
           /(\w+\s*\([^)]*),\s*_?namespace[^)]*([^)]*\))/g,

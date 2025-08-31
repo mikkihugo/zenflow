@@ -9,7 +9,7 @@
 // INTERNAL LOGGER (NO FOUNDATION IMPORTS)
 // =============================================================================
 
-const createLogger = (name:string) => ({
+const createLogger = (name: string) => ({
   info:(message: string, meta?:unknown) => 
     console.info(`[INFO:${name}] ${message}`, meta ? JSON.stringify(meta) :''),
   debug:(message: string, meta?:unknown) => 
@@ -26,120 +26,120 @@ const createLogger = (name:string) => ({
 
 interface KnowledgeEvents {
   // Brain requests
-  'brain:knowledge:store-item': {
-    requestId:string;
-    item:KnowledgeItemInput;
-    timestamp:number;
+  'brain: knowledge:store-item': {
+    requestId: string;
+    item: KnowledgeItemInput;
+    timestamp: number;
 };
-  'brain:knowledge:get-item': {
-    requestId:string;
-    itemId:string;
-    timestamp:number;
+  'brain: knowledge:get-item': {
+    requestId: string;
+    itemId: string;
+    timestamp: number;
 };
-  'brain:knowledge:query-items': {
-    requestId:string;
-    query:KnowledgeQuery;
-    timestamp:number;
+  'brain: knowledge:query-items': {
+    requestId: string;
+    query: KnowledgeQuery;
+    timestamp: number;
 };
-  'brain:knowledge:update-item': {
-    requestId:string;
-    itemId:string;
-    updates:Partial<KnowledgeItem>;
-    timestamp:number;
+  'brain: knowledge:update-item': {
+    requestId: string;
+    itemId: string;
+    updates: Partial<KnowledgeItem>;
+    timestamp: number;
 };
-  'brain:knowledge:delete-item': {
-    requestId:string;
-    itemId:string;
-    timestamp:number;
+  'brain: knowledge:delete-item': {
+    requestId: string;
+    itemId: string;
+    timestamp: number;
 };
-  'brain:knowledge:get-stats': {
-    requestId:string;
-    timestamp:number;
+  'brain: knowledge:get-stats': {
+    requestId: string;
+    timestamp: number;
 };
-  'brain:knowledge:search': {
-    requestId:string;
-    searchText:string;
+  'brain: knowledge:search': {
+    requestId: string;
+    searchText: string;
     options?:SearchOptions;
-    timestamp:number;
+    timestamp: number;
 };
-  'brain:knowledge:initialize': {
-    requestId:string;
+  'brain: knowledge:initialize': {
+    requestId: string;
     config?:KnowledgeConfig;
-    timestamp:number;
+    timestamp: number;
 };
 
   // Knowledge responses
-  'knowledge:item-stored': {
-    requestId:string;
-    itemId:string;
-    success:boolean;
-    timestamp:number;
+  'knowledge: item-stored': {
+    requestId: string;
+    itemId: string;
+    success: boolean;
+    timestamp: number;
 };
-  'knowledge:item': {
-    requestId:string;
-    item:KnowledgeItem | null;
-    timestamp:number;
+  'knowledge: item': {
+    requestId: string;
+    item: KnowledgeItem | null;
+    timestamp: number;
 };
-  'knowledge:query-results': {
-    requestId:string;
-    items:KnowledgeItem[];
-    totalCount:number;
-    timestamp:number;
+  'knowledge: query-results': {
+    requestId: string;
+    items: KnowledgeItem[];
+    totalCount: number;
+    timestamp: number;
 };
-  'knowledge:item-updated': {
-    requestId:string;
-    itemId:string;
-    success:boolean;
-    timestamp:number;
+  'knowledge: item-updated': {
+    requestId: string;
+    itemId: string;
+    success: boolean;
+    timestamp: number;
 };
-  'knowledge:item-deleted': {
-    requestId:string;
-    itemId:string;
-    success:boolean;
-    timestamp:number;
+  'knowledge: item-deleted': {
+    requestId: string;
+    itemId: string;
+    success: boolean;
+    timestamp: number;
 };
-  'knowledge:stats': {
-    requestId:string;
-    stats:KnowledgeStats;
-    timestamp:number;
+  'knowledge: stats': {
+    requestId: string;
+    stats: KnowledgeStats;
+    timestamp: number;
 };
-  'knowledge:search-results': {
-    requestId:string;
-    results:SearchResult[];
-    timestamp:number;
+  'knowledge: search-results': {
+    requestId: string;
+    results: SearchResult[];
+    timestamp: number;
 };
-  'knowledge:initialized': {
-    requestId:string;
-    success:boolean;
-    timestamp:number;
+  'knowledge: initialized': {
+    requestId: string;
+    success: boolean;
+    timestamp: number;
 };
-  'knowledge:error': {
-    requestId:string;
-    error:string;
-    timestamp:number;
+  'knowledge: error': {
+    requestId: string;
+    error: string;
+    timestamp: number;
 };
 
   // Database events (replace database imports)
-  'database:store-knowledge': {
-    collection:string;
-    key:string;
-    data:any;
-    timestamp:number;
+  'database: store-knowledge': {
+    collection: string;
+    key: string;
+    data: any;
+    timestamp: number;
 };
-  'database:get-knowledge': {
-    collection:string;
-    key:string;
-    timestamp:number;
+  'database: get-knowledge': {
+    collection: string;
+    key: string;
+    timestamp: number;
 };
-  'database:query-knowledge': {
-    collection:string;
-    query:any;
-    timestamp:number;
+  'database: query-knowledge': {
+    collection: string;
+    query: any;
+    timestamp: number;
 };
-  'database:delete-knowledge': {
-    collection:string;
-    key:string;
-    timestamp:number;
+  'database: delete-knowledge': {
+    collection: string;
+    key: string;
+    timestamp: number;
 };
 }
 
@@ -148,23 +148,23 @@ interface KnowledgeEvents {
 // =============================================================================
 
 interface KnowledgeItem {
-  id:string;
-  content:string;
+  id: string;
+  content: string;
   type:'fact' | ' rule' | ' pattern' | ' insight' | ' procedure' | ' concept';
-  confidence:number;
-  timestamp:number;
+  confidence: number;
+  timestamp: number;
   source?:string;
   metadata?:Record<string, unknown>;
   tags?:string[];
   relatedItems?:string[];
-  version:number;
-  isActive:boolean;
+  version: number;
+  isActive: boolean;
 }
 
 interface KnowledgeItemInput {
-  content:string;
-  type:KnowledgeItem['type'];
-  confidence:number;
+  content: string;
+  type: KnowledgeItem['type'];
+  confidence: number;
   source?:string;
   metadata?:Record<string, unknown>;
   tags?:string[];
@@ -187,16 +187,16 @@ interface SearchOptions {
 }
 
 interface SearchResult {
-  item:KnowledgeItem;
-  relevanceScore:number;
-  matches:string[];
+  item: KnowledgeItem;
+  relevanceScore: number;
+  matches: string[];
 }
 
 interface KnowledgeStats {
-  totalItems:number;
-  itemsByType:Record<KnowledgeItem['type'], number>;
-  averageConfidence:number;
-  lastUpdated:number;
+  totalItems: number;
+  itemsByType: Record<KnowledgeItem['type'], number>;
+  averageConfidence: number;
+  lastUpdated: number;
   storageHealth:'healthy' | ' degraded' | ' unhealthy';
 }
 
@@ -214,9 +214,9 @@ interface KnowledgeConfig {
 // =============================================================================
 
 export class EventDrivenKnowledgeService {
-  private eventListeners:Map<string, Function[]> = new Map();
+  private eventListeners: Map<string, Function[]> = new Map();
   private logger = createLogger('EventDrivenKnowledgeService');
-  private config:KnowledgeConfig;
+  private config: KnowledgeConfig;
   private initialized = false;
   private knowledgeItems = new Map<string, KnowledgeItem>();
   private searchIndex = new Map<string, Set<string>>(); // word -> item IDs
@@ -225,12 +225,12 @@ export class EventDrivenKnowledgeService {
   constructor() {
     // Default config - no foundation imports
     this.config = {
-      enableCaching:true,
-      cacheSize:10000,
-      enableSearch:true,
-      searchIndexing:true,
-      retentionDays:365,
-      maxItemSize:1024 * 1024, // 1MB
+      enableCaching: true,
+      cacheSize: 10000,
+      enableSearch: true,
+      searchIndexing: true,
+      retentionDays: 365,
+      maxItemSize: 1024 * 1024, // 1MB
 };
 }
 
@@ -239,7 +239,7 @@ export class EventDrivenKnowledgeService {
   // =============================================================================
 
   addEventListener<K extends keyof KnowledgeEvents>(
-    event:K,
+    event: K,
     listener:(data: KnowledgeEvents[K]) => void
   ):void {
     if (!this.eventListeners.has(event)) {
@@ -249,8 +249,8 @@ export class EventDrivenKnowledgeService {
 }
 
   private emitEvent<K extends keyof KnowledgeEvents>(
-    event:K,
-    data:KnowledgeEvents[K]
+    event: K,
+    data: KnowledgeEvents[K]
   ):void {
     const listeners = this.eventListeners.get(event) || [];
     for (const listener of listeners) {
@@ -258,7 +258,7 @@ export class EventDrivenKnowledgeService {
         listener(data);
 } catch (error) {
         this.logger.error(`Event listener error for ${event}`, {
-          error:error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message : String(error)
 });
 }
 }
@@ -270,174 +270,174 @@ export class EventDrivenKnowledgeService {
 
   private setupBrainEventHandlers():void {
     // Handle brain initialization requests
-    this.addEventListener('brain:knowledge:initialize', async (data) => {
+    this.addEventListener('brain: knowledge:initialize', async (data) => {
       try {
         if (data.config) {
           this.config = { ...this.config, ...data.config};
 }
         await this.initializeInternal();
-        this.emitEvent('knowledge:initialized', {
-          requestId:data.requestId,
-          success:true,
-          timestamp:Date.now(),
+        this.emitEvent('knowledge: initialized', {
+          requestId: data.requestId,
+          success: true,
+          timestamp: Date.now(),
 });
 } catch (error) {
-        this.emitEvent('knowledge:initialized', {
-          requestId:data.requestId,
-          success:false,
-          timestamp:Date.now(),
+        this.emitEvent('knowledge: initialized', {
+          requestId: data.requestId,
+          success: false,
+          timestamp: Date.now(),
 });
-        this.emitEvent('knowledge:error', {
-          requestId:data.requestId,
-          error:error instanceof Error ? error.message : String(error),
-          timestamp:Date.now(),
+        this.emitEvent('knowledge: error', {
+          requestId: data.requestId,
+          error: error instanceof Error ? error.message : String(error),
+          timestamp: Date.now(),
 });
 }
 });
 
     // Handle store item requests
-    this.addEventListener('brain:knowledge:store-item', async (data) => {
+    this.addEventListener('brain: knowledge:store-item', async (data) => {
       try {
         const itemId = await this.storeItemInternal(data.item);
-        this.emitEvent('knowledge:item-stored', {
-          requestId:data.requestId,
+        this.emitEvent('knowledge: item-stored', {
+          requestId: data.requestId,
           itemId,
-          success:true,
-          timestamp:Date.now(),
+          success: true,
+          timestamp: Date.now(),
 });
 } catch (error) {
-        this.emitEvent('knowledge:item-stored', {
-          requestId:data.requestId,
-          itemId: ','          success:false,
-          timestamp:Date.now(),
+        this.emitEvent('knowledge: item-stored', {
+          requestId: data.requestId,
+          itemId: ','          success: false,
+          timestamp: Date.now(),
 });
-        this.emitEvent('knowledge:error', {
-          requestId:data.requestId,
-          error:error instanceof Error ? error.message : String(error),
-          timestamp:Date.now(),
+        this.emitEvent('knowledge: error', {
+          requestId: data.requestId,
+          error: error instanceof Error ? error.message : String(error),
+          timestamp: Date.now(),
 });
 }
 });
 
     // Handle get item requests
-    this.addEventListener('brain:knowledge:get-item', async (data) => {
+    this.addEventListener('brain: knowledge:get-item', async (data) => {
       try {
         const item = await this.getItemInternal(data.itemId);
-        this.emitEvent('knowledge:item', {
-          requestId:data.requestId,
+        this.emitEvent('knowledge: item', {
+          requestId: data.requestId,
           item,
-          timestamp:Date.now(),
+          timestamp: Date.now(),
 });
 } catch (error) {
-        this.emitEvent('knowledge:error', {
-          requestId:data.requestId,
-          error:error instanceof Error ? error.message : String(error),
-          timestamp:Date.now(),
+        this.emitEvent('knowledge: error', {
+          requestId: data.requestId,
+          error: error instanceof Error ? error.message : String(error),
+          timestamp: Date.now(),
 });
 }
 });
 
     // Handle query items requests
-    this.addEventListener('brain:knowledge:query-items', async (data) => {
+    this.addEventListener('brain: knowledge:query-items', async (data) => {
       try {
         const { items, totalCount} = await this.queryItemsInternal(data.query);
-        this.emitEvent('knowledge:query-results', {
-          requestId:data.requestId,
+        this.emitEvent('knowledge: query-results', {
+          requestId: data.requestId,
           items,
           totalCount,
-          timestamp:Date.now(),
+          timestamp: Date.now(),
 });
 } catch (error) {
-        this.emitEvent('knowledge:error', {
-          requestId:data.requestId,
-          error:error instanceof Error ? error.message : String(error),
-          timestamp:Date.now(),
+        this.emitEvent('knowledge: error', {
+          requestId: data.requestId,
+          error: error instanceof Error ? error.message : String(error),
+          timestamp: Date.now(),
 });
 }
 });
 
     // Handle update item requests
-    this.addEventListener('brain:knowledge:update-item', async (data) => {
+    this.addEventListener('brain: knowledge:update-item', async (data) => {
       try {
         const success = await this.updateItemInternal(data.itemId, data.updates);
-        this.emitEvent('knowledge:item-updated', {
-          requestId:data.requestId,
-          itemId:data.itemId,
+        this.emitEvent('knowledge: item-updated', {
+          requestId: data.requestId,
+          itemId: data.itemId,
           success,
-          timestamp:Date.now(),
+          timestamp: Date.now(),
 });
 } catch (error) {
-        this.emitEvent('knowledge:item-updated', {
-          requestId:data.requestId,
-          itemId:data.itemId,
-          success:false,
-          timestamp:Date.now(),
+        this.emitEvent('knowledge: item-updated', {
+          requestId: data.requestId,
+          itemId: data.itemId,
+          success: false,
+          timestamp: Date.now(),
 });
-        this.emitEvent('knowledge:error', {
-          requestId:data.requestId,
-          error:error instanceof Error ? error.message : String(error),
-          timestamp:Date.now(),
+        this.emitEvent('knowledge: error', {
+          requestId: data.requestId,
+          error: error instanceof Error ? error.message : String(error),
+          timestamp: Date.now(),
 });
 }
 });
 
     // Handle delete item requests
-    this.addEventListener('brain:knowledge:delete-item', async (data) => {
+    this.addEventListener('brain: knowledge:delete-item', async (data) => {
       try {
         const success = await this.deleteItemInternal(data.itemId);
-        this.emitEvent('knowledge:item-deleted', {
-          requestId:data.requestId,
-          itemId:data.itemId,
+        this.emitEvent('knowledge: item-deleted', {
+          requestId: data.requestId,
+          itemId: data.itemId,
           success,
-          timestamp:Date.now(),
+          timestamp: Date.now(),
 });
 } catch (error) {
-        this.emitEvent('knowledge:item-deleted', {
-          requestId:data.requestId,
-          itemId:data.itemId,
-          success:false,
-          timestamp:Date.now(),
+        this.emitEvent('knowledge: item-deleted', {
+          requestId: data.requestId,
+          itemId: data.itemId,
+          success: false,
+          timestamp: Date.now(),
 });
-        this.emitEvent('knowledge:error', {
-          requestId:data.requestId,
-          error:error instanceof Error ? error.message : String(error),
-          timestamp:Date.now(),
+        this.emitEvent('knowledge: error', {
+          requestId: data.requestId,
+          error: error instanceof Error ? error.message : String(error),
+          timestamp: Date.now(),
 });
 }
 });
 
     // Handle stats requests
-    this.addEventListener('brain:knowledge:get-stats', async (data) => {
+    this.addEventListener('brain: knowledge:get-stats', async (data) => {
       try {
         const __stats = await this.getStatsInternal();
-        this.emitEvent('knowledge:stats', {
-          requestId:data.requestId,
+        this.emitEvent('knowledge: stats', {
+          requestId: data.requestId,
           stats,
-          timestamp:Date.now(),
+          timestamp: Date.now(),
 });
 } catch (error) {
-        this.emitEvent('knowledge:error', {
-          requestId:data.requestId,
-          error:error instanceof Error ? error.message : String(error),
-          timestamp:Date.now(),
+        this.emitEvent('knowledge: error', {
+          requestId: data.requestId,
+          error: error instanceof Error ? error.message : String(error),
+          timestamp: Date.now(),
 });
 }
 });
 
     // Handle search requests
-    this.addEventListener('brain:knowledge:search', async (data) => {
+    this.addEventListener('brain: knowledge:search', async (data) => {
       try {
         const results = await this.searchInternal(data.searchText, data.options);
-        this.emitEvent('knowledge:search-results', {
-          requestId:data.requestId,
+        this.emitEvent('knowledge: search-results', {
+          requestId: data.requestId,
           results,
-          timestamp:Date.now(),
+          timestamp: Date.now(),
 });
 } catch (error) {
-        this.emitEvent('knowledge:error', {
-          requestId:data.requestId,
-          error:error instanceof Error ? error.message : String(error),
-          timestamp:Date.now(),
+        this.emitEvent('knowledge: error', {
+          requestId: data.requestId,
+          error: error instanceof Error ? error.message : String(error),
+          timestamp: Date.now(),
 });
 }
 });
@@ -450,7 +450,7 @@ export class EventDrivenKnowledgeService {
   private async initializeInternal():Promise<void> {
     if (this.initialized) return;
 
-    this.logger.info('Event-driven knowledge service initialized', { config:this.config});
+    this.logger.info('Event-driven knowledge service initialized', { config: this.config});
     this.initialized = true;
 }
 
@@ -459,21 +459,21 @@ export class EventDrivenKnowledgeService {
     return `knowledge_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
 
-  private async storeItemInternal(itemInput:KnowledgeItemInput): Promise<string> {
+  private async storeItemInternal(itemInput: KnowledgeItemInput): Promise<string> {
     const itemId = this.generateId();
     
-    const item:KnowledgeItem = {
-      id:itemId,
-      content:itemInput.content,
-      type:itemInput.type,
-      confidence:Math.max(0, Math.min(1, itemInput.confidence)), // Clamp to 0-1
-      timestamp:Date.now(),
-      source:itemInput.source,
-      metadata:itemInput.metadata,
-      tags:itemInput.tags || [],
-      relatedItems:itemInput.relatedItems || [],
-      version:1,
-      isActive:true,
+    const item: KnowledgeItem = {
+      id: itemId,
+      content: itemInput.content,
+      type: itemInput.type,
+      confidence: Math.max(0, Math.min(1, itemInput.confidence)), // Clamp to 0-1
+      timestamp: Date.now(),
+      source: itemInput.source,
+      metadata: itemInput.metadata,
+      tags: itemInput.tags || [],
+      relatedItems: itemInput.relatedItems || [],
+      version: 1,
+      isActive: true,
 };
 
     // Store in memory (would use database events in production)
@@ -494,16 +494,16 @@ export class EventDrivenKnowledgeService {
 }
 }
 
-    this.logger.debug('Knowledge item stored', { itemId, type:item.type, confidence:item.confidence});
+    this.logger.debug('Knowledge item stored', { itemId, type: item.type, confidence: item.confidence});
     return itemId;
 }
 
-  private async getItemInternal(itemId:string): Promise<KnowledgeItem | null> {
+  private async getItemInternal(itemId: string): Promise<KnowledgeItem | null> {
     const item = this.knowledgeItems.get(itemId);
-    return item && item.isActive ? item:null;
+    return item && item.isActive ? item: null;
 }
 
-  private async queryItemsInternal(query:KnowledgeQuery): Promise<{ items: KnowledgeItem[]; totalCount: number}> {
+  private async queryItemsInternal(query: KnowledgeQuery): Promise<{ items: KnowledgeItem[]; totalCount: number}> {
     let filteredItems = Array.from(this.knowledgeItems.values())
       .filter(item => item.isActive);
 
@@ -548,7 +548,7 @@ export class EventDrivenKnowledgeService {
     return { items, totalCount};
 }
 
-  private async updateItemInternal(itemId:string, updates:Partial<KnowledgeItem>): Promise<boolean> {
+  private async updateItemInternal(itemId: string, updates: Partial<KnowledgeItem>): Promise<boolean> {
     const item = this.knowledgeItems.get(itemId);
     if (!item || !item.isActive) {
       return false;
@@ -568,12 +568,12 @@ export class EventDrivenKnowledgeService {
 }
 
     // Update item
-    const updatedItem:KnowledgeItem = {
+    const updatedItem: KnowledgeItem = {
       ...item,
       ...updates,
-      id:itemId, // Ensure ID doesn't change
-      version:item.version + 1,
-      timestamp:Date.now(), // Update timestamp
+      id: itemId, // Ensure ID doesn't change
+      version: item.version + 1,
+      timestamp: Date.now(), // Update timestamp
 };
 
     this.knowledgeItems.set(itemId, updatedItem);
@@ -591,11 +591,11 @@ export class EventDrivenKnowledgeService {
 }
 }
 
-    this.logger.debug('Knowledge item updated', { itemId, version:updatedItem.version});
+    this.logger.debug('Knowledge item updated', { itemId, version: updatedItem.version});
     return true;
 }
 
-  private async deleteItemInternal(itemId:string): Promise<boolean> {
+  private async deleteItemInternal(itemId: string): Promise<boolean> {
     const item = this.knowledgeItems.get(itemId);
     if (!item) {
       return false;
@@ -627,13 +627,13 @@ export class EventDrivenKnowledgeService {
     const activeItems = Array.from(this.knowledgeItems.values())
       .filter(item => item.isActive);
 
-    const itemsByType:Record<KnowledgeItem['type'], number> = {
-      fact:0,
-      rule:0,
-      pattern:0,
-      insight:0,
-      procedure:0,
-      concept:0,
+    const itemsByType: Record<KnowledgeItem['type'], number> = {
+      fact: 0,
+      rule: 0,
+      pattern: 0,
+      insight: 0,
+      procedure: 0,
+      concept: 0,
 };
 
     let totalConfidence = 0;
@@ -645,29 +645,29 @@ export class EventDrivenKnowledgeService {
       latestTimestamp = Math.max(latestTimestamp, item.timestamp);
 }
 
-    const averageConfidence = activeItems.length > 0 ? totalConfidence / activeItems.length:0;
+    const averageConfidence = activeItems.length > 0 ? totalConfidence / activeItems.length: 0;
     
     // Simple storage health calculation
-    const storageHealth:KnowledgeStats['storageHealth'] = 
+    const storageHealth: KnowledgeStats['storageHealth'] = 
       activeItems.length > 10000 ? 'degraded' :
       activeItems.length > 0 ? 'healthy' : ' unhealthy';
 
     return {
-      totalItems:activeItems.length,
+      totalItems: activeItems.length,
       itemsByType,
       averageConfidence,
-      lastUpdated:latestTimestamp || Date.now(),
+      lastUpdated: latestTimestamp || Date.now(),
       storageHealth,
 };
 }
 
-  private async searchInternal(searchText:string, options?:SearchOptions): Promise<SearchResult[]> {
+  private async searchInternal(searchText: string, options?:SearchOptions): Promise<SearchResult[]> {
     if (!this.config.enableSearch) {
       return [];
 }
 
     const searchTerms = searchText.toLowerCase().split(/\s+/).filter(term => term.length > 0);
-    const results:SearchResult[] = [];
+    const results: SearchResult[] = [];
 
     // Get all active items
     let candidates = Array.from(this.knowledgeItems.values())
@@ -685,7 +685,7 @@ export class EventDrivenKnowledgeService {
 
     // Score each candidate
     for (const item of candidates) {
-      const matches:string[] = [];
+      const matches: string[] = [];
       let relevanceScore = 0;
 
       // Check content matches
@@ -731,7 +731,7 @@ export class EventDrivenKnowledgeService {
     return results.slice(0, limit);
 }
 
-  private updateSearchIndex(item:KnowledgeItem): void {
+  private updateSearchIndex(item: KnowledgeItem): void {
     const words = item.content.toLowerCase().split(/\W+/).filter(word => word.length > 2);
     for (const word of words) {
       if (!this.searchIndex.has(word)) {
@@ -741,7 +741,7 @@ export class EventDrivenKnowledgeService {
 }
 }
 
-  private removeFromSearchIndex(item:KnowledgeItem): void {
+  private removeFromSearchIndex(item: KnowledgeItem): void {
     const words = item.content.toLowerCase().split(/\W+/).filter(word => word.length > 2);
     for (const word of words) {
       const wordSet = this.searchIndex.get(word);

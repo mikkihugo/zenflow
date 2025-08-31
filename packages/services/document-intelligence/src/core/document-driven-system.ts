@@ -37,26 +37,26 @@ export interface SafeArtifact {
 }
 
 export interface SafeWorkspace {
-  workspaceId:string; // Database workspace identifier
-  name:string;
+  workspaceId: string; // Database workspace identifier
+  name: string;
   safeConfiguration: 'essential' | 'large-solution' | 'portfolio';
   // NO file paths - everything stored in databases
   databases:{
-    artifacts:string; // Artifact database connection
-    relationships:string; // Relationship graph database
-    analytics:string; // Performance analytics database
+    artifacts: string; // Artifact database connection
+    relationships: string; // Relationship graph database
+    analytics: string; // Performance analytics database
 };
 }
 
 export interface SafeWorkflowContext {
-  workspace:SafeWorkspace;
-  activeArtifacts:Map<string, SafeArtifact>;
+  workspace: SafeWorkspace;
+  activeArtifacts: Map<string, SafeArtifact>;
   currentPI?:string; // Current Program Increment
-  safeLevel: 'essential|large-solution|portfolio'; // SAFe configuration')  sparcIntegration:boolean; // SPARC development execution
+  safeLevel: 'essential|large-solution|portfolio'; // SAFe configuration')  sparcIntegration: boolean; // SPARC development execution
 }
 
 export class SafeArtifactIntelligence extends TypedEventBase {
-  private workspaces:Map<string, SafeWorkflowContext> = new Map();
+  private workspaces: Map<string, SafeWorkflowContext> = new Map();
 
   constructor() {
     super();
@@ -77,21 +77,21 @@ export class SafeArtifactIntelligence extends TypedEventBase {
    *
    * @param workspacePath
    */
-  async loadWorkspace(workspaceName:string, _databaseConnections:any): Promise<string> {
+  async loadWorkspace(workspaceName: string, _databaseConnections: any): Promise<string> {
     const workspaceId = `safe-workspace-${Date.now()}`;`
 
-    const workspace:SafeWorkspace = {
+    const workspace: SafeWorkspace = {
       workspaceId,
-      name:workspaceName,
+      name: workspaceName,
       safeConfiguration: 'essential', // SAFe 6.0 Essential by default')      databases:{
-        artifacts:databaseConnections.artifacts || 'safe_artifacts.db',        relationships:databaseConnections.relationships || 'safe_relationships.db',    ')        analytics:databaseConnections.analytics || 'safe_analytics.db',}
+        artifacts: databaseConnections.artifacts || 'safe_artifacts.db',        relationships: databaseConnections.relationships || 'safe_relationships.db',    ')        analytics: databaseConnections.analytics || 'safe_analytics.db',}
 };
 
-    const context:SafeWorkflowContext = {
+    const context: SafeWorkflowContext = {
       workspace,
-      activeArtifacts:new Map(),
-      currentPI:undefined, 
-      safeLevel: 'essential',      sparcIntegration:true,
+      activeArtifacts: new Map(),
+      currentPI: undefined, 
+      safeLevel: 'essential',      sparcIntegration: true,
 };
 
     this.workspaces.set(workspaceId, context);
@@ -100,7 +100,7 @@ export class SafeArtifactIntelligence extends TypedEventBase {
     await this.loadArtifactsFromDatabase(workspaceId);
 
     logger.info('Loaded SAFe workspace: ' + workspaceName);
-    this.emit('workspace:loaded', { workspaceId, name: workspaceName });
+    this.emit('workspace: loaded', { workspaceId, name: workspaceName });
 
     return workspaceId;
 }
@@ -112,8 +112,8 @@ export class SafeArtifactIntelligence extends TypedEventBase {
    * @param docPath
    */
   async processVisionaryDocument(
-    workspaceId:string,
-    docPath:string
+    workspaceId: string,
+    docPath: string
   ):Promise<void> {
     const context = this.workspaces.get(workspaceId);
     if (!context) throw new Error('Workspace ' + workspaceId + ' not found');
@@ -122,11 +122,11 @@ export class SafeArtifactIntelligence extends TypedEventBase {
     const content = await readFile(docPath, 'utf8');
     logger.info('Processing ' + docType + ' document: ' + docPath);
 
-    const doc:VisionaryDocument = {
-      type:docType,
-      path:docPath,
+    const doc: VisionaryDocument = {
+      type: docType,
+      path: docPath,
       content,
-      metadata:await this.extractMetadata(content),
+      metadata: await this.extractMetadata(content),
 };
 
     context.activeDocuments.set(docPath, doc);
@@ -147,10 +147,10 @@ export class SafeArtifactIntelligence extends TypedEventBase {
         break;
 }
 
-    this.emit('document:created', {
+    this.emit('document: created', {
     ')      workspaceId,
-      path:docPath,
-      type:docType,
-      document:doc,
+      path: docPath,
+      type: docType,
+      document: doc,
 });
 }

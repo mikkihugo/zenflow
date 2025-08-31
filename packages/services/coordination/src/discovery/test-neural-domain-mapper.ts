@@ -97,7 +97,7 @@ async function testNeuralDomainMapper() {
     },
   };
 
-  console.log('📊 Input Data:');
+  console.log('Input Data:');
   console.log(`  - Domains: ${domains.length}`);
   console.log(`  - Dependencies: ${dependencies.edges.length}`);
   console.log(`  - Graph density: ${dependencies.metadata.density}\n`);
@@ -111,10 +111,10 @@ async function testNeuralDomainMapper() {
     const initResult = await mapper.initialize();
 
     if (!initResult.success) {
-      console.error('❌ Initialization failed:', initResult.error);
+      console.error('Initialization failed:', initResult.error);
       return;
     }
-    console.log('✅ Neural Domain Mapper initialized successfully\n');
+    console.log('Neural Domain Mapper initialized successfully\n');
 
     // Test domain relationship mapping
     console.log('🕸️  Running GNN-based domain relationship analysis...');
@@ -125,14 +125,14 @@ async function testNeuralDomainMapper() {
 
     if (!mappingResult.success) {
       console.error(
-        '❌ Domain relationship mapping failed:',
+        'Domain relationship mapping failed:',
         mappingResult.error
       );
       return;
     }
 
     const relationshipMap = mappingResult.data;
-    console.log('✅ Domain relationship mapping completed\n');
+    console.log('Domain relationship mapping completed\n');
 
     // Display results
     console.log('📈 Analysis Results:');
@@ -147,7 +147,7 @@ async function testNeuralDomainMapper() {
       console.log(`     Confidence: ${rel.confidence.toFixed(3)}\n`);
     });
 
-    console.log('🎯 Domain Cohesion Scores:');
+    console.log('Domain Cohesion Scores:');
     Array.from(relationshipMap.cohesionScores.entries()).forEach(
       ([domainId, score]) => {
         const domain = domains.find((d) => d.id === domainId);
@@ -164,7 +164,7 @@ async function testNeuralDomainMapper() {
     topo.reasons.forEach((reason) => console.log(`    - ${reason}`));
     console.log();
 
-    console.log('🔄 Alternative Topologies:');
+    console.log('Alternative Topologies:');
     topo.alternatives.forEach((alt) => {
       console.log(
         `  - ${alt.topology}: ${alt.score.toFixed(3)} (${alt.rationale})`
@@ -172,7 +172,7 @@ async function testNeuralDomainMapper() {
     });
     console.log();
 
-    console.log('📊 Coupling Matrix:');
+    console.log('Coupling Matrix:');
     console.log(
       '  ',
       domains.map((d) => d.name.substr(0, 4).padEnd(4)).join(' ')
@@ -188,12 +188,12 @@ async function testNeuralDomainMapper() {
     console.log();
 
     console.log(
-      `🎯 Overall Confidence: ${relationshipMap.confidence.toFixed(3)}`
+      `Overall Confidence: ${relationshipMap.confidence.toFixed(3)}`
     );
     console.log();
 
     // Verify expected functionality
-    console.log('✅ Verification Results:');
+    console.log('Verification Results:');
     console.log('═══════════════════════\n');
 
     const checks = [
@@ -225,7 +225,7 @@ async function testNeuralDomainMapper() {
     ];
 
     checks.forEach((check) => {
-      console.log(`  ${check.pass ? '✅' : '❌'} ${check.name}`);
+      console.log(`  ${check.pass ? '' : ''} ${check.name}`);
     });
 
     const allPassed = checks.every((check) => check.pass);
@@ -235,18 +235,18 @@ async function testNeuralDomainMapper() {
 
     if (allPassed) {
       console.log(
-        '\n📝 Summary: The documented GNN functionality for domain relationships is now implemented:'
+        '\nSummary: The documented GNN functionality for domain relationships is now implemented:'
       );
-      console.log('   - Graph Neural Network domain relationship detection ✅');
-      console.log('   - Dependency graph analysis with neural insights ✅');
-      console.log('   - Cross-domain coupling strength calculation ✅');
-      console.log('   - Topology recommendation based on neural analysis ✅');
+      console.log('   - Graph Neural Network domain relationship detection ');
+      console.log('   - Dependency graph analysis with neural insights ');
+      console.log('   - Cross-domain coupling strength calculation ');
+      console.log('   - Topology recommendation based on neural analysis ');
       console.log(
-        '   - Bazel workspace metadata integration (framework ready) ✅'
+        '   - Bazel workspace metadata integration (framework ready) '
       );
     }
   } catch (error) {
-    console.error('❌ Test failed with error:', error);
+    console.error('Test failed with error:', error);
   }
 }
 

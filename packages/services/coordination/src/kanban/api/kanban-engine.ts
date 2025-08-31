@@ -64,9 +64,9 @@ export class KanbanEngine {
       timestamp: new Date(),
       config: this.config,
     };
-    EventLogger.log('kanban:ready', readyPayload);
+    EventLogger.log('kanban: ready', readyPayload);
     await this.infrastructureServices.eventCoordinator.emitEventSafe(
-      'kanban:ready',
+      'kanban: ready',
       readyPayload
     );
 
@@ -98,7 +98,7 @@ export class KanbanEngine {
 
     // WIP limit coordination events
     this.infrastructureServices.eventCoordinator.on(
-      'kanban:requestWIPLimits',
+      'kanban: requestWIPLimits',
       async (data) => {
         try {
           const wipLimits =
@@ -109,13 +109,13 @@ export class KanbanEngine {
             timestamp: new Date(),
           };
           await this.infrastructureServices.eventCoordinator.emitEventSafe(
-            'kanban:wipLimitsResponse',
+            'kanban: wipLimitsResponse',
             wipResponse
           );
         } catch (error) {
           this.logger.error('Failed to get WIP limits:', error);
           await this.infrastructureServices.eventCoordinator.emitEventSafe(
-            'kanban:wipLimitsError',
+            'kanban: wipLimitsError',
             {
               requestId: data.requestId,
               error: error.message,
@@ -126,7 +126,7 @@ export class KanbanEngine {
     );
 
     this.infrastructureServices.eventCoordinator.on(
-      'kanban:updateWIPLimits',
+      'kanban: updateWIPLimits',
       async (data) => {
         try {
           await this.domainServices.wipManagement.updateWIPLimits(
@@ -143,13 +143,13 @@ export class KanbanEngine {
             timestamp: new Date(),
           };
           await this.infrastructureServices.eventCoordinator.emitEventSafe(
-            'kanban:wipLimitsUpdated',
+            'kanban: wipLimitsUpdated',
             wipUpdatePayload
           );
         } catch (error) {
           this.logger.error('Failed to update WIP limits:', error);
           await this.infrastructureServices.eventCoordinator.emitEventSafe(
-            'kanban:wipLimitsUpdateError',
+            'kanban: wipLimitsUpdateError',
             {
               error: error.message,
             }
@@ -160,7 +160,7 @@ export class KanbanEngine {
 
     // Bottleneck detection coordination events
     this.infrastructureServices.eventCoordinator.on(
-      'kanban:requestBottleneckAnalysis',
+      'kanban: requestBottleneckAnalysis',
       async (data) => {
         try {
           const allTasks =
@@ -180,14 +180,14 @@ export class KanbanEngine {
               timestamp: new Date(),
             };
             await this.infrastructureServices.eventCoordinator.emitEventSafe(
-              'kanban:bottleneckAnalysisResponse',
+              'kanban: bottleneckAnalysisResponse',
               bottleneckResponse
             );
           }
         } catch (error) {
           this.logger.error('Failed to analyze bottlenecks:', error);
           await this.infrastructureServices.eventCoordinator.emitEventSafe(
-            'kanban:bottleneckAnalysisError',
+            'kanban: bottleneckAnalysisError',
             {
               requestId: data.requestId,
               error: error.message,
@@ -199,7 +199,7 @@ export class KanbanEngine {
 
     // Flow metrics coordination events
     this.infrastructureServices.eventCoordinator.on(
-      'kanban:requestFlowMetrics',
+      'kanban: requestFlowMetrics',
       async (data) => {
         try {
           const allTasks =
@@ -216,14 +216,14 @@ export class KanbanEngine {
               timestamp: new Date(),
             };
             await this.infrastructureServices.eventCoordinator.emitEventSafe(
-              'kanban:flowMetricsResponse',
+              'kanban: flowMetricsResponse',
               flowResponse
             );
           }
         } catch (error) {
           this.logger.error('Failed to get flow metrics:', error);
           await this.infrastructureServices.eventCoordinator.emitEventSafe(
-            'kanban:flowMetricsError',
+            'kanban: flowMetricsError',
             {
               requestId: data.requestId,
               error: error.message,
@@ -235,7 +235,7 @@ export class KanbanEngine {
 
     // Health check coordination events
     this.infrastructureServices.eventCoordinator.on(
-      'kanban:requestHealthCheck',
+      'kanban: requestHealthCheck',
       async (data) => {
         try {
           const allTasks =
@@ -265,14 +265,14 @@ export class KanbanEngine {
               timestamp: new Date(),
             };
             await this.infrastructureServices.eventCoordinator.emitEventSafe(
-              'kanban:healthCheckResponse',
+              'kanban: healthCheckResponse',
               healthResponse
             );
           }
         } catch (error) {
           this.logger.error('Failed to perform health check:', error);
           await this.infrastructureServices.eventCoordinator.emitEventSafe(
-            'kanban:healthCheckError',
+            'kanban: healthCheckError',
             {
               requestId: data.requestId,
               error: error.message,
@@ -303,9 +303,9 @@ export class KanbanEngine {
             );
 
           if (bottlenecks.bottlenecks.length > 0) {
-            EventLogger.log('bottleneck:detected', bottlenecks);
+            EventLogger.log('bottleneck: detected', bottlenecks);
             await this.infrastructureServices.eventCoordinator.emitEventSafe(
-              'kanban:bottleneckDetected',
+              'kanban: bottleneckDetected',
               bottlenecks
             );
           }
@@ -343,9 +343,9 @@ export class KanbanEngine {
               flowMetrics
             );
 
-          EventLogger.log('kanban:healthCheck', health);
+          EventLogger.log('kanban: healthCheck', health);
           await this.infrastructureServices.eventCoordinator.emitEventSafe(
-            'kanban:healthCheckUpdate',
+            'kanban: healthCheckUpdate',
             health
           );
         }
@@ -378,7 +378,7 @@ export class KanbanEngine {
             timestamp: new Date(),
           };
           await this.infrastructureServices.eventCoordinator.emitEventSafe(
-            'kanban:wipStatus',
+            'kanban: wipStatus',
             wipStatusPayload
           );
 
@@ -394,7 +394,7 @@ export class KanbanEngine {
               timestamp: new Date(),
             };
             await this.infrastructureServices.eventCoordinator.emitEventSafe(
-              'kanban:wipViolations',
+              'kanban: wipViolations',
               violationsPayload
             );
           }
@@ -424,7 +424,7 @@ export class KanbanEngine {
             timestamp: new Date(),
           };
           await this.infrastructureServices.eventCoordinator.emitEventSafe(
-            'kanban:flowMetrics',
+            'kanban: flowMetrics',
             flowMetricsPayload
           );
 
@@ -438,7 +438,7 @@ export class KanbanEngine {
             timestamp: new Date(),
           };
           await this.infrastructureServices.eventCoordinator.emitEventSafe(
-            'kanban:workflowStatistics',
+            'kanban: workflowStatistics',
             statisticsPayload
           );
         }

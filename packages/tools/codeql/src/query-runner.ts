@@ -3,8 +3,8 @@
  * Executes CodeQL queries against databases and manages query packs
  */
 
-import { spawn} from 'node:child_process';
-import * as path from 'node:path';
+import { spawn} from 'node: child_process';
+import * as path from 'node: path';
 import type {
   Logger,
 } from '@claude-zen/foundation';
@@ -22,10 +22,10 @@ import type {
  * Handles CodeQL query execution and result processing
  */
 export class QueryRunner {
-  private readonly logger:Logger;
-  private readonly config:CodeQLConfig;
+  private readonly logger: Logger;
+  private readonly config: CodeQLConfig;
 
-  constructor(config:CodeQLConfig, logger:Logger) {
+  constructor(config: CodeQLConfig, logger: Logger) {
     this.config = config;
     this.logger = logger.child({ component: 'QueryRunner'});
     this.resultParser = new ResultParser(this.logger);
@@ -35,21 +35,21 @@ export class QueryRunner {
    * Execute queries against a database
    */
   async executeQueries(
-    database:CodeQLDatabase,
-    queryPacks:QueryPack[],
-    options:QueryExecutionOptions
+    database: CodeQLDatabase,
+    queryPacks: QueryPack[],
+    options: QueryExecutionOptions
   ):Promise<{ sarifResults: SARIFResult; findings: CodeQLFinding[]}> {
     this.logger.info('Executing CodeQL queries', {
-      databaseId:database.id,
-      queryPackCount:queryPacks.length,
-      format:options.format,
+      databaseId: database.id,
+      queryPackCount: queryPacks.length,
+      format: options.format,
 });
 
     if (!database.isReady) {
       throw this.createError('database',    'Database is not ready for analysis');')}
 
     const results:{ sarifResults: SARIFResult; findings: CodeQLFinding[]} = {
-      sarifResults:this.createEmptySARIF(),
+      sarifResults: this.createEmptySARIF(),
       findings:[],
 };
 
@@ -70,16 +70,16 @@ export class QueryRunner {
         results.findings.push(...packResult.findings);
 } catch (error) {
         this.logger.error('Query pack execution failed', {
-    ')          queryPack:queryPack.name,
-          databaseId:database.id,
+    ')          queryPack: queryPack.name,
+          databaseId: database.id,
           error,
 });
 }
 }
 
     this.logger.info('Query execution completed', {
-    ')      databaseId:database.id,
-      totalFindings:results.findings.length,
+    ')      databaseId: database.id,
+      totalFindings: results.findings.length,
 });
 
     return results;
@@ -89,13 +89,13 @@ export class QueryRunner {
    * Execute a single query pack
    */
   private async executeQueryPack(
-    database:CodeQLDatabase,
-    queryPack:QueryPack,
-    options:QueryExecutionOptions
+    database: CodeQLDatabase,
+    queryPack: QueryPack,
+    options: QueryExecutionOptions
   ):Promise<{ sarifResults: SARIFResult; findings: CodeQLFinding[]}> {
     this.logger.debug('Executing query pack', {
-    ')      queryPack:queryPack.name,
-      databaseId:database.id,
+    ')      queryPack: queryPack.name,
+      databaseId: database.id,
 });
 
     // Prepare output file
@@ -129,7 +129,7 @@ export class QueryRunner {
     try {
       // Execute query
       const commandResult = await this.executeCommand(args, {
-        timeout:options.queryTimeout||60000,
+        timeout: options.queryTimeout||60000,
 });
 
       // Read and parse results
@@ -147,8 +147,8 @@ export class QueryRunner {
 }
 
       this.logger.debug('Query pack executed successfully', {
-    ')        queryPack:queryPack.name,
-        findingCount:findings.length,
+    ')        queryPack: queryPack.name,
+        findingCount: findings.length,
 });
 
       return { sarifResults, findings};
@@ -168,29 +168,29 @@ export class QueryRunner {
    * Execute a single query file
    */
   async executeQuery(
-    database:CodeQLDatabase,
-    queryPath:string,
-    options:Partial<QueryExecutionOptions> = {}
+    database: CodeQLDatabase,
+    queryPath: string,
+    options: Partial<QueryExecutionOptions> = {}
   ):Promise<QueryExecutionResult> {
     return await safeAsync(async ():Promise<CodeQLAnalysisResult> => {
       const queryName = path.basename(queryPath, '.ql');')
       this.logger.info('Executing single query', {
     ')        queryName,
         queryPath,
-        databaseId:database.id,
+        databaseId: database.id,
 });
 
-      const queryPack:QueryPack = {
-        name:queryName,
+      const queryPack: QueryPack = {
+        name: queryName,
         queries:[queryPath],
         metadata:{
           type: 'single-query',          queryPath,
 },
 };
 
-      const executionOptions:QueryExecutionOptions = {
-        format: 'sarif-latest',        maxResults:1000,
-        queryTimeout:30000,
+      const executionOptions: QueryExecutionOptions = {
+        format: 'sarif-latest',        maxResults: 1000,
+        queryTimeout: 30000,
         ...options,
 };
 
@@ -201,25 +201,25 @@ export class QueryRunner {
       );
 
       // Create analysis result
-      const analysisResult:CodeQLAnalysisResult = {
+      const analysisResult: CodeQLAnalysisResult = {
         id:`single_query_${Date.now()}`,`
         database,
         queryPacks:[queryPack],
-        sarifResults:results.sarifResults,
-        findings:results.findings,
+        sarifResults: results.sarifResults,
+        findings: results.findings,
         metadata:{
-          startTime:new Date(),
-          endTime:new Date(),
+          startTime: new Date(),
+          endTime: new Date(),
           codeqlVersion: 'unknown', // Would need to query')          queryPackVersions:{ [queryName]: 'local'},
-          configuration:executionOptions,
+          configuration: executionOptions,
 },
         metrics:{
-          durationMs:0, // Would need precise timing
-          databaseSizeBytes:database.sizeBytes,
-          filesAnalyzed:0, // Would need to calculate
-          linesAnalyzed:0, // Would need to calculate
-          peakMemoryMb:this.config.maxMemory||0,
-          cpuTimeMs:0, // Would need OS-level tracking
+          durationMs: 0, // Would need precise timing
+          databaseSizeBytes: database.sizeBytes,
+          filesAnalyzed: 0, // Would need to calculate
+          linesAnalyzed: 0, // Would need to calculate
+          peakMemoryMb: this.config.maxMemory||0,
+          cpuTimeMs: 0, // Would need OS-level tracking
 },
 };
 
@@ -230,7 +230,7 @@ export class QueryRunner {
   /**
    * Resolve query pack to usable format
    */
-  private resolveQueryPack(queryPack:QueryPack): string {
+  private resolveQueryPack(queryPack: QueryPack): string {
     // If path is specified, use it directly
     if (queryPack.path) {
       return queryPack.path;
@@ -254,8 +254,8 @@ export class QueryRunner {
 }
 
   private mergeSARIFResults(
-    result1:SARIFResult,
-    result2:SARIFResult
+    result1: SARIFResult,
+    result2: SARIFResult
   ):SARIFResult {
     return {
       ...result1,
@@ -264,22 +264,22 @@ export class QueryRunner {
 }
 
   private async executeCommand(
-    args:string[],
+    args: string[],
     options:{ cwd?: string; env?: NodeJS.ProcessEnv; timeout?: number} = {}
   ):Promise<{ stdout: string; stderr: string; exitCode: number}> {
     return new Promise((resolve, reject) => {
       const timeout = options.timeout||this.config.timeout||60000;
 
       this.logger.debug('Executing CodeQL command', {
-    ')        command:this.config.codeqlPath,
+    ')        command: this.config.codeqlPath,
         args,
         timeout,
 });
 
       const child = spawn(this.config.codeqlPath!, args, {
-        cwd:options.cwd||process.cwd(),
+        cwd: options.cwd||process.cwd(),
         stdio:['pipe',    'pipe',    'pipe'],
-        env:options.env||process.env,
+        env: options.env||process.env,
 });
 
       const stdout = ';
@@ -296,7 +296,7 @@ export class QueryRunner {
       const __timeoutId = setTimeout(() => {
         child.kill('SIGTERM');')        reject(
           this.createError('system',    'Query execution timeout',    ')            timeout,
-            command:args.join(' '),)
+            command: args.join(' '),)
         );
 }, timeout);
 
@@ -311,7 +311,7 @@ export class QueryRunner {
     ')              exitCode,
               stderr,
               stdout,
-              command:args.join(' '),
+              command: args.join(' '),
 })
           );
 }
@@ -321,8 +321,8 @@ export class QueryRunner {
     ')        clearTimeout(timeoutId);
         reject(
           this.createError('system',    'Failed to execute query', {
-    ')            originalError:error.message,
-            command:args.join(' '),
+    ')            originalError: error.message,
+            command: args.join(' '),
 })
         );
 });
@@ -330,9 +330,9 @@ export class QueryRunner {
 }
 
   private createError(
-    type:CodeQLError['type'],
-    message:string,
-    details:Record<string, unknown> = {}
+    type: CodeQLError['type'],
+    message: string,
+    details: Record<string, unknown> = {}
   ):CodeQLError {
     const error = new Error(message) as CodeQLError;
     error.type = type;

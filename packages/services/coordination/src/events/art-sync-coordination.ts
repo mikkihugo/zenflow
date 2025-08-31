@@ -121,11 +121,11 @@ export class ARTSyncCoordinationManager extends EventBus {
    * Setup event handlers
    */
   private setupEventHandlers(): void {
-    this.on('art:pi-planning-start', this.handlePIPlanningStart.bind(this));
-    this.on('art:sync-event', this.handleSyncEvent.bind(this));
-    this.on('art:dependency-update', this.handleDependencyUpdate.bind(this));
-    this.on('art:team-update', this.handleTeamUpdate.bind(this));
-    this.on('art:objective-update', this.handleObjectiveUpdate.bind(this));
+    this.on('art: pi-planning-start', this.handlePIPlanningStart.bind(this));
+    this.on('art: sync-event', this.handleSyncEvent.bind(this));
+    this.on('art: dependency-update', this.handleDependencyUpdate.bind(this));
+    this.on('art: team-update', this.handleTeamUpdate.bind(this));
+    this.on('art: objective-update', this.handleObjectiveUpdate.bind(this));
   }
 
   /**
@@ -165,7 +165,7 @@ export class ARTSyncCoordinationManager extends EventBus {
     this.arts.set(piId, pi);
     logger.info(`Program Increment created: ${config.name}`);
 
-    this.emit('art:pi-created', { piId, pi });
+    this.emit('art: pi-created', { piId, pi });
     return pi;
   }
 
@@ -209,7 +209,7 @@ export class ARTSyncCoordinationManager extends EventBus {
     };
 
     this.activeSync.set(`planning-${data.piId}`, planningEvent);
-    this.emit('art:planning-initialized', planningEvent);
+    this.emit('art: planning-initialized', planningEvent);
   }
 
   /**
@@ -236,7 +236,7 @@ export class ARTSyncCoordinationManager extends EventBus {
     }
 
     // Emit coordination update
-    this.emit('art:sync-processed', {
+    this.emit('art: sync-processed', {
       eventKey,
       eventData,
       dependenciesCreated: eventData.dependencies.length,
@@ -271,7 +271,7 @@ export class ARTSyncCoordinationManager extends EventBus {
     this.dependencies.set(depId, dependency);
     logger.info(`Dependency created: ${config.description}`);
 
-    this.emit('art:dependency-created', { depId, dependency });
+    this.emit('art: dependency-created', { depId, dependency });
     return dependency;
   }
 
@@ -306,7 +306,7 @@ export class ARTSyncCoordinationManager extends EventBus {
     this.dependencies.set(data.depId, dependency);
     logger.info(`Dependency updated: ${data.depId} -> ${data.status}`);
 
-    this.emit('art:dependency-updated', { depId: data.depId, dependency });
+    this.emit('art: dependency-updated', { depId: data.depId, dependency });
   }
 
   /**
@@ -334,7 +334,7 @@ export class ARTSyncCoordinationManager extends EventBus {
     this.arts.set(data.artId, pi);
 
     logger.info(`Team updated: ${data.teamId}`);
-    this.emit('art:team-updated', {
+    this.emit('art: team-updated', {
       artId: data.artId,
       teamId: data.teamId,
       team: pi.teams[teamIndex],
@@ -366,7 +366,7 @@ export class ARTSyncCoordinationManager extends EventBus {
     this.arts.set(data.artId, pi);
 
     logger.info(`Objective updated: ${data.objectiveId}`);
-    this.emit('art:objective-updated', {
+    this.emit('art: objective-updated', {
       artId: data.artId,
       objectiveId: data.objectiveId,
       objective: pi.objectives[objIndex],

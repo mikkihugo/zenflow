@@ -9,13 +9,13 @@
  * - Live approval status and bottlenecks
  * - Escalation tracking and resolution
  * 
- * 📊 **COMPREHENSIVE TRACEABILITY:**
+ * **COMPREHENSIVE TRACEABILITY:**
  * - End-to-end decision chains
  * - SOC2-compliant audit trails
  * - Learning pattern visualization
  * - Performance analytics
  * 
- * 🎯 **HUMAN-IN-THE-LOOP INTERFACE:**
+ * **HUMAN-IN-THE-LOOP INTERFACE:**
  * - Review AI decisions before they execute
  * - Override any automated approval
  * - Batch approve similar items

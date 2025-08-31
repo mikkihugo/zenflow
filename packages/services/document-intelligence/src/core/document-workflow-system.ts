@@ -4,7 +4,7 @@
  * Provides systematic document workflow coordination:
  * - Document Workflow System orchestrates Vision → ADRs → PRDs → Epics → Features → Tasks → Code
  * - SPARC methodology applied as implementation tool WITHIN Features/Tasks.
- * - Clear naming:Document Workflow = WHAT, SPARC = HOW.
+ * - Clear naming: Document Workflow = WHAT, SPARC = HOW.
  */
 /**
  * @file Document-workflow-system implementation.
@@ -15,7 +15,7 @@ import { getLogger, TypedEventBase} from '@claude-zen/foundation';
 // DocumentManager interface - using fallback type if intelligence facade not available
 interface DocumentManager {
   initialize():Promise<void>;
-  store(key:string, data:any, category?:string): Promise<void>;
+  store(key: string, data: any, category?:string): Promise<void>;
 }
 
 const logger = getLogger('DocumentWorkflowSystem');
@@ -24,8 +24,8 @@ const logger = getLogger('DocumentWorkflowSystem');
 interface ProductWorkflowEngine {
   initialize():Promise<void>;
   startProductWorkflow(
-    type:string,
-    config:any
+    type: string,
+    config: any
   ):Promise<{ success: boolean; workflowId?: string}>;
   getActiveProductWorkflows():Promise<any[]>;
 }
@@ -39,11 +39,11 @@ interface ProductWorkflowEngine {
  * @example
  */
 export class DocumentWorkflowSystem extends TypedEventBase {
-  private documentService:DocumentManager;
+  private documentService: DocumentManager;
 
   constructor(
-    workflowEngine:ProductWorkflowEngine,
-    documentService:DocumentManager
+    workflowEngine: ProductWorkflowEngine,
+    documentService: DocumentManager
   ) {
     super();
     this.workflowEngine = workflowEngine;
@@ -65,10 +65,10 @@ export class DocumentWorkflowSystem extends TypedEventBase {
    * @param docPath
    */
   async processVisionaryDocument(
-    _workspaceId:string,
-    docPath:string
+    _workspaceId: string,
+    docPath: string
   ):Promise<void> {
-    logger.info(`🚀 Processing visionary document:${docPath}`);`
+    logger.info(`Processing visionary document:${docPath}`);
 
     try {
       // Start complete Product Flow workflow
@@ -80,15 +80,15 @@ export class DocumentWorkflowSystem extends TypedEventBase {
       );
 
       if (result?.success && result?.workflowId) {
-        logger.info(`✅ Product Flow workflow started:$result?.workflowId`);`
-        this.emit('product-flow:started', {
-    ')          workflowId:result?.workflowId,
+        logger.info(`Product Flow workflow started:$result?.workflowId`);
+        this.emit('product-flow: started', {
+    ')          workflowId: result?.workflowId,
           docPath,
 });
 }
 } catch (error) {
       logger.error(
-        `❌ Failed to process visionary document ${docPath}:`,`
+        `Failed to process visionary document ${docPath}:`,`
         error
       );
       throw error;
@@ -100,7 +100,7 @@ export class DocumentWorkflowSystem extends TypedEventBase {
    *
    * @param workspacePath
    */
-  async loadWorkspace(workspacePath:string): Promise<string> {
+  async loadWorkspace(workspacePath: string): Promise<string> {
     const workspaceId = generateNanoId();
     this.activeWorkspaces.set(workspaceId, workspacePath);
 
@@ -115,11 +115,11 @@ export class DocumentWorkflowSystem extends TypedEventBase {
    *
    * @param workspaceId
    */
-  async getWorkspaceStatus(workspaceId:string): Promise<{
-    workspaceId:string;
+  async getWorkspaceStatus(workspaceId: string): Promise<{
+    workspaceId: string;
     path?:string | undefined;
-    activeWorkflows:number;
-    sparcIntegration:boolean;
+    activeWorkflows: number;
+    sparcIntegration: boolean;
 }> {
     const path = this.activeWorkspaces.get(workspaceId);
     const activeWorkflows =
@@ -128,8 +128,8 @@ export class DocumentWorkflowSystem extends TypedEventBase {
     return {
       workspaceId,
       path,
-      activeWorkflows:activeWorkflows.length,
-      sparcIntegration:true, // Always enabled in Product Flow System
+      activeWorkflows: activeWorkflows.length,
+      sparcIntegration: true, // Always enabled in Product Flow System
 };
 }
 }

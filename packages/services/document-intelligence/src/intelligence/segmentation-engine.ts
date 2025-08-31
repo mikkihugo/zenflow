@@ -22,23 +22,23 @@ const logger = getLogger('SegmentationEngine');
  * Document segment with metadata
  */
 export interface DocumentSegment {
-  id:string;
-  content:string;
-  startPosition:number;
-  endPosition:number;
+  id: string;
+  content: string;
+  startPosition: number;
+  endPosition: number;
   segmentType: 'algorithm | concept|implementation | context|metadata;
-'  importance:number; // 0-1 importance score
-  preserveIntegrity:boolean; // Whether to keep segment intact
-  relatedSegments:string[]; // IDs of related segments
-  confidenceScore:number; // 0-1 confidence in segmentation
+'  importance: number; // 0-1 importance score
+  preserveIntegrity: boolean; // Whether to keep segment intact
+  relatedSegments: string[]; // IDs of related segments
+  confidenceScore: number; // 0-1 confidence in segmentation
   metadata:{
     title?:string;
     summary?:string;
-    keywords:string[];
-    algorithmDensity:number;
-    conceptComplexity:number;
-    characterCount:number;
-    lineCount:number;
+    keywords: string[];
+    algorithmDensity: number;
+    conceptComplexity: number;
+    characterCount: number;
+    lineCount: number;
 };
 }
 
@@ -46,18 +46,18 @@ export interface DocumentSegment {
  * Segmentation result with strategy information
  */
 export interface SegmentationResult {
-  segments:DocumentSegment[];
-  strategy:DocumentClassification['recommendedStrategy'];')  totalSegments:number;
-  averageSegmentSize:number;
-  preservedBlocks:number;
-  qualityScore:number; // 0-1 overall segmentation quality
-  processingTime:number;
+  segments: DocumentSegment[];
+  strategy: DocumentClassification['recommendedStrategy'];')  totalSegments: number;
+  averageSegmentSize: number;
+  preservedBlocks: number;
+  qualityScore: number; // 0-1 overall segmentation quality
+  processingTime: number;
   metadata:{
-    documentType:string;
-    originalLength:number;
-    segmentationRatio:number; // segments per 1000 characters
-    algorithmBlocksFound:number;
-    conceptClustersFound:number;
+    documentType: string;
+    originalLength: number;
+    segmentationRatio: number; // segments per 1000 characters
+    algorithmBlocksFound: number;
+    conceptClustersFound: number;
 };
 }
 
@@ -65,51 +65,51 @@ export interface SegmentationResult {
  * Segmentation configuration
  */
 export interface SegmentationConfig {
-  strategy?:DocumentClassification['recommendedStrategy'];')  maxSegmentSize:number;
-  minSegmentSize:number;
-  algorithmPreservationThreshold:number;
-  conceptClusteringThreshold:number;
-  enableBoundaryDetection:boolean;
-  enableContextExpansion:boolean;
-  preserveAlgorithmBlocks:boolean;
-  adaptiveCharacterLimits:boolean;
+  strategy?:DocumentClassification['recommendedStrategy'];')  maxSegmentSize: number;
+  minSegmentSize: number;
+  algorithmPreservationThreshold: number;
+  conceptClusteringThreshold: number;
+  enableBoundaryDetection: boolean;
+  enableContextExpansion: boolean;
+  preserveAlgorithmBlocks: boolean;
+  adaptiveCharacterLimits: boolean;
 }
 
 /**
  * Enhanced Algorithm block identification (DeepCode style)
  */
 interface AlgorithmBlock {
-  startIndex:number;
-  endIndex:number;
+  startIndex: number;
+  endIndex: number;
   type: 'pseudocode | procedure|mathematical | implementation|formula | complexity-analysis;
-'  confidence:number;
+'  confidence: number;
   complexity:{
-    cyclomaticComplexity:number; // Control flow complexity
-    algorithmicComplexity:string; // Big O notation if detected
-    mathematicalComplexity:number; // Mathematical formula complexity
-    structuralDepth:number; // Nesting level
+    cyclomaticComplexity: number; // Control flow complexity
+    algorithmicComplexity: string; // Big O notation if detected
+    mathematicalComplexity: number; // Mathematical formula complexity
+    structuralDepth: number; // Nesting level
 };
   structure:{
-    hasInputOutput:boolean;
-    hasControlFlow:boolean;
-    hasIterations:boolean;
-    hasRecursion:boolean;
-    hasPreconditions:boolean;
-    hasPostconditions:boolean;
+    hasInputOutput: boolean;
+    hasControlFlow: boolean;
+    hasIterations: boolean;
+    hasRecursion: boolean;
+    hasPreconditions: boolean;
+    hasPostconditions: boolean;
 };
   relatedDescription:{
-    startIndex:number;
-    endIndex:number;
+    startIndex: number;
+    endIndex: number;
     relationType: 'explanation | example|proof | context;
 '} | null;
   extractedElements:{
-    variables:string[];
-    functions:string[];
-    constants:string[];
-    operators:string[];
-    keywords:string[];
+    variables: string[];
+    functions: string[];
+    constants: string[];
+    operators: string[];
+    keywords: string[];
 };
-  qualityScore:number; // 0-1 based on completeness and clarity
+  qualityScore: number; // 0-1 based on completeness and clarity
 }
 
 /**
@@ -117,18 +117,18 @@ interface AlgorithmBlock {
  */
 export class SegmentationEngine extends TypedEventBase {
 
-  constructor(config:Partial<SegmentationConfig> = {}) {
+  constructor(config: Partial<SegmentationConfig> = {}) {
     super();
     
     this.config = {
-      maxSegmentSize:config.maxSegmentSize || 12000,
-      minSegmentSize:config.minSegmentSize || 500,
-      algorithmPreservationThreshold:config.algorithmPreservationThreshold || 0.3,
-      conceptClusteringThreshold:config.conceptClusteringThreshold || 0.4,
-      enableBoundaryDetection:config.enableBoundaryDetection !== false,
-      enableContextExpansion:config.enableContextExpansion !== false,
-      preserveAlgorithmBlocks:config.preserveAlgorithmBlocks !== false,
-      adaptiveCharacterLimits:config.adaptiveCharacterLimits !== false,
+      maxSegmentSize: config.maxSegmentSize || 12000,
+      minSegmentSize: config.minSegmentSize || 500,
+      algorithmPreservationThreshold: config.algorithmPreservationThreshold || 0.3,
+      conceptClusteringThreshold: config.conceptClusteringThreshold || 0.4,
+      enableBoundaryDetection: config.enableBoundaryDetection !== false,
+      enableContextExpansion: config.enableContextExpansion !== false,
+      preserveAlgorithmBlocks: config.preserveAlgorithmBlocks !== false,
+      adaptiveCharacterLimits: config.adaptiveCharacterLimits !== false,
       ...config
 };
 
@@ -202,11 +202,11 @@ export class SegmentationEngine extends TypedEventBase {
    * Segment document using intelligent strategies
    */
   async segmentDocument(
-    _content:string, 
-    classification:DocumentClassification
+    _content: string, 
+    classification: DocumentClassification
   ):Promise<SegmentationResult> {
     const __startTime = performance.now();
-    logger.info(`Starting document segmentation with strategy:${classification.recommendedStrategy}`);`
+    logger.info(`Starting document segmentation with strategy:${classification.recommendedStrategy}`);
 
     try {
       // Adapt configuration based on classification
@@ -229,36 +229,36 @@ export class SegmentationEngine extends TypedEventBase {
       const endTime = performance.now();
       const processingTime = endTime - startTime;
 
-      const result:SegmentationResult = {
+      const result: SegmentationResult = {
         segments,
-        strategy:classification.recommendedStrategy,
-        totalSegments:segments.length,
-        averageSegmentSize:this.calculateAverageSegmentSize(segments),
-        preservedBlocks:algorithmBlocks.length,
+        strategy: classification.recommendedStrategy,
+        totalSegments: segments.length,
+        averageSegmentSize: this.calculateAverageSegmentSize(segments),
+        preservedBlocks: algorithmBlocks.length,
         qualityScore,
         processingTime,
         metadata:{
-          documentType:classification.documentType,
-          originalLength:content.length,
+          documentType: classification.documentType,
+          originalLength: content.length,
           segmentationRatio:(segments.length / content.length) * 1000,
-          algorithmBlocksFound:algorithmBlocks.length,
-          conceptClustersFound:this.countConceptClusters(segments)
+          algorithmBlocksFound: algorithmBlocks.length,
+          conceptClustersFound: this.countConceptClusters(segments)
 }
 };
 
       this.emit('segmentation_complete', result);
-      logger.info(`Document segmented into $segments.lengthsegments (${processingTime.toFixed(2)}ms)`);`
+      logger.info(`Document segmented into $segments.lengthsegments (${processingTime.toFixed(2)}ms)`);
 
       return result;
 } catch (error) {
-      logger.error('Error during document segmentation:', error);')      throw new Error(`Document segmentation failed:${error}`);`
+      logger.error('Error during document segmentation:', error);')      throw new Error(`Document segmentation failed:${error}`);
 }
 }
 
   /**
    * Adapt configuration based on document classification
    */
-  private adaptConfigForClassification(classification:DocumentClassification): SegmentationConfig {
+  private adaptConfigForClassification(classification: DocumentClassification): SegmentationConfig {
     const adapted = { ...this.config};
 
     // Adjust segment sizes based on document type
@@ -283,8 +283,8 @@ export class SegmentationEngine extends TypedEventBase {
   /**
    * Identify algorithm blocks in content
    */
-  private identifyAlgorithmBlocks(content:string): AlgorithmBlock[] {
-    const blocks:AlgorithmBlock[] = [];
+  private identifyAlgorithmBlocks(content: string): AlgorithmBlock[] {
+    const blocks: AlgorithmBlock[] = [];
     
     for (const pattern of this.algorithmPatterns) {
       let match;
@@ -295,16 +295,16 @@ export class SegmentationEngine extends TypedEventBase {
         const expandedBoundary = this.findAlgorithmBoundaries(content, startIndex);
         
         const blockContent = content.substring(expandedBoundary.start, expandedBoundary.end);
-        const block:AlgorithmBlock = {
-          startIndex:expandedBoundary.start,
-          endIndex:expandedBoundary.end,
-          type:this.classifyAlgorithmType(match[0]),
-          confidence:this.calculateAlgorithmConfidence(blockContent),
-          complexity:this.analyzeComplexity(blockContent),
-          structure:this.analyzeStructure(blockContent),
-          relatedDescription:this.findRelatedDescription(content, expandedBoundary),
-          extractedElements:this.extractAlgorithmElements(blockContent),
-          qualityScore:this.calculateAlgorithmQuality(blockContent)
+        const block: AlgorithmBlock = {
+          startIndex: expandedBoundary.start,
+          endIndex: expandedBoundary.end,
+          type: this.classifyAlgorithmType(match[0]),
+          confidence: this.calculateAlgorithmConfidence(blockContent),
+          complexity: this.analyzeComplexity(blockContent),
+          structure: this.analyzeStructure(blockContent),
+          relatedDescription: this.findRelatedDescription(content, expandedBoundary),
+          extractedElements: this.extractAlgorithmElements(blockContent),
+          qualityScore: this.calculateAlgorithmQuality(blockContent)
 };
 
         // Avoid duplicate blocks
@@ -324,7 +324,7 @@ export class SegmentationEngine extends TypedEventBase {
   /**
    * Find algorithm boundaries using natural content breaks
    */
-  private findAlgorithmBoundaries(content:string, startIndex:number): { start: number; end: number} {
+  private findAlgorithmBoundaries(content: string, startIndex: number): { start: number; end: number} {
     // Find natural boundaries - expand to include context
     let start = Math.max(0, startIndex - 300);
     let end = Math.min(content.length, startIndex + 500);
@@ -345,13 +345,13 @@ export class SegmentationEngine extends TypedEventBase {
   /**
    * Check if character represents a natural content boundary
    */
-  private isNaturalBoundary(char:string): boolean {
+  private isNaturalBoundary(char: string): boolean {
     return ['\n',    '.',    '!',    '?',;].includes(char);')}
 
   /**
    * Enhanced algorithm classification with complexity analysis (DeepCode style)
    */
-  private classifyAlgorithmType(algorithmText:string): AlgorithmBlock['type'] {
+  private classifyAlgorithmType(algorithmText: string): AlgorithmBlock['type'] {
     ')    const text = algorithmText.toLowerCase();
     
     // Check for mathematical formulas and complexity analysis
@@ -386,7 +386,7 @@ export class SegmentationEngine extends TypedEventBase {
   /**
    * Enhanced algorithm confidence calculation with complexity analysis (DeepCode style)
    */
-  private calculateAlgorithmConfidence(blockContent:string): number {
+  private calculateAlgorithmConfidence(blockContent: string): number {
     const text = blockContent.toLowerCase();
     const words = text.split(/\s+/);
     
@@ -425,12 +425,12 @@ export class SegmentationEngine extends TypedEventBase {
     const mathBonus = Math.min(mathNotationCount * 0.1, 0.3);
     
     // Formula detection bonus
-    const formulaBonus = (text.includes('$$') || text.includes('\\begin{equation}')) ? 0.2:0;')    
+    const formulaBonus = (text.includes('$$') || text.includes('\\begin{equation}')) ? 0.2: 0;')    
     // Code block detection bonus  
-    const codeBonus = text.includes('```') ? 0.15:0;')    `
+    const codeBonus = text.includes('```') ? 0.15: 0;')    `
     // Structural completeness bonus
-    const hasInputOutput = text.includes('input') && text.includes(' output') ? 0.1:0;')    const hasControlFlow = /\b(for|while|if|loop)\b/.test(text) ? 0.1:0;
-    const hasSteps = /\b(step|phase|\d+\.)\b/.test(text) ? 0.05:0;
+    const hasInputOutput = text.includes('input') && text.includes(' output') ? 0.1: 0;')    const hasControlFlow = /\b(for|while|if|loop)\b/.test(text) ? 0.1: 0;
+    const hasSteps = /\b(step|phase|\d+\.)\b/.test(text) ? 0.05: 0;
     
     // Calculate final confidence
     const baseConfidence = keywordCount > 0 ? keywordScore / Math.max(words.length * 0.05, 1) :0;
@@ -442,7 +442,7 @@ export class SegmentationEngine extends TypedEventBase {
   /**
    * Enhanced related description detection with relation typing (DeepCode style)
    */
-  private findRelatedDescription(content:string, algorithmBoundary:{ start: number; end: number}):AlgorithmBlock['relatedDescription'] | null {
+  private findRelatedDescription(content: string, algorithmBoundary:{ start: number; end: number}):AlgorithmBlock['relatedDescription'] | null {
     ')    const searchRadius = 800; // Expanded search radius
     const beforeText = content.substring(Math.max(0, algorithmBoundary.start - searchRadius), algorithmBoundary.start).toLowerCase();
     const afterText = content.substring(algorithmBoundary.end, Math.min(content.length, algorithmBoundary.end + searchRadius)).toLowerCase();
@@ -468,9 +468,10 @@ export class SegmentationEngine extends TypedEventBase {
         // Ensure we capture complete sentences
         const adjustedStart = this.findSentenceBoundary(content, startIndex, 'backward');')        
         return {
-          startIndex:adjustedStart,
+      startIndex: adjustedStart,
           endIndex,
-          relationType:relationType as 'explanation | example|proof | context')};
+          relationType: relationType as 'explanation | example|proof | context
+    };
 }
 }
     
@@ -483,9 +484,10 @@ export class SegmentationEngine extends TypedEventBase {
         // Ensure we capture complete sentences
         const adjustedEnd = this.findSentenceBoundary(content, endIndex, 'forward');')        
         return {
-          startIndex,
-          endIndex:adjustedEnd,
-          relationType:relationType as 'explanation | example|proof | context')};
+      startIndex,
+          endIndex: adjustedEnd,
+          relationType: relationType as 'explanation | example|proof | context
+    };
 }
 }
     
@@ -495,7 +497,7 @@ export class SegmentationEngine extends TypedEventBase {
   /**
    * Find sentence boundary for clean text extraction
    */
-  private findSentenceBoundary(content:string, startPosition:number, direction:'forward | backward'): number {
+  private findSentenceBoundary(content: string, startPosition: number, direction:'forward | backward'): number {
     ')    const sentenceEnders = ['.',    '!',    '?',    '\n\n'];')    
     if (direction === 'forward') {
     ')      for (let i = startPosition; i < content.length; i++) {
@@ -517,18 +519,18 @@ export class SegmentationEngine extends TypedEventBase {
   /**
    * Check if two algorithm blocks overlap
    */
-  private blocksOverlap(block1:AlgorithmBlock, block2:AlgorithmBlock): boolean {
+  private blocksOverlap(block1: AlgorithmBlock, block2: AlgorithmBlock): boolean {
     return !(block1.endIndex <= block2.startIndex || block2.endIndex <= block1.startIndex);
 }
 
   /**
    * Merge overlapping algorithm blocks
    */
-  private mergeOverlappingBlocks(blocks:AlgorithmBlock[]): AlgorithmBlock[] {
+  private mergeOverlappingBlocks(blocks: AlgorithmBlock[]): AlgorithmBlock[] {
     if (blocks.length <= 1) return blocks;
 
     const sorted = blocks.sort((a, b) => a.startIndex - b.startIndex);
-    const merged:AlgorithmBlock[] = [sorted[0]];
+    const merged: AlgorithmBlock[] = [sorted[0]];
 
     for (let i = 1; i < sorted.length; i++) {
       const current = sorted[i];
@@ -550,10 +552,10 @@ export class SegmentationEngine extends TypedEventBase {
    * Apply segmentation strategy based on document classification
    */
   private async applySegmentationStrategy(
-    content:string,
-    strategy:DocumentClassification['recommendedStrategy'],
-    algorithmBlocks:AlgorithmBlock[],
-    config:SegmentationConfig
+    content: string,
+    strategy: DocumentClassification['recommendedStrategy'],
+    algorithmBlocks: AlgorithmBlock[],
+    config: SegmentationConfig
   ):Promise<DocumentSegment[]> {
     switch (strategy) {
       case 'semantic_research_focused': ')'        return this.segmentResearchFocused(content, algorithmBlocks, config);
@@ -573,11 +575,11 @@ export class SegmentationEngine extends TypedEventBase {
    * Segment with research-focused approach
    */
   private segmentResearchFocused(
-    content:string,
-    algorithmBlocks:AlgorithmBlock[],
-    config:SegmentationConfig
+    content: string,
+    algorithmBlocks: AlgorithmBlock[],
+    config: SegmentationConfig
   ):DocumentSegment[] {
-    const segments:DocumentSegment[] = [];
+    const segments: DocumentSegment[] = [];
     const sectionHeaders = this.findSectionHeaders(content);
     
     // Segment by research sections while preserving algorithms
@@ -607,11 +609,11 @@ export class SegmentationEngine extends TypedEventBase {
    * Segment while preserving algorithm integrity
    */
   private segmentPreserveAlgorithms(
-    content:string,
-    algorithmBlocks:AlgorithmBlock[],
-    config:SegmentationConfig
+    content: string,
+    algorithmBlocks: AlgorithmBlock[],
+    config: SegmentationConfig
   ):DocumentSegment[] {
-    const segments:DocumentSegment[] = [];
+    const segments: DocumentSegment[] = [];
     let currentPosition = 0;
 
     // Sort algorithm blocks by position
@@ -648,11 +650,11 @@ export class SegmentationEngine extends TypedEventBase {
    * Segment with concept-implementation hybrid approach
    */
   private segmentConceptImplementation(
-    content:string,
-    algorithmBlocks:AlgorithmBlock[],
-    config:SegmentationConfig
+    content: string,
+    algorithmBlocks: AlgorithmBlock[],
+    config: SegmentationConfig
   ):DocumentSegment[] {
-    const segments:DocumentSegment[] = [];
+    const segments: DocumentSegment[] = [];
     
     // Use adaptive character limits
     const adaptiveLimit = this.calculateAdaptiveCharacterLimit(content, config);
@@ -678,8 +680,8 @@ export class SegmentationEngine extends TypedEventBase {
   /**
    * Segment with strategic vision focus
    */
-  private segmentStrategicVision(content:string, config:SegmentationConfig): DocumentSegment[] {
-    const segments:DocumentSegment[] = [];
+  private segmentStrategicVision(content: string, config: SegmentationConfig): DocumentSegment[] {
+    const segments: DocumentSegment[] = [];
     const strategicSections = this.findStrategicSections(content);
     
     let currentPosition = 0;
@@ -714,10 +716,10 @@ export class SegmentationEngine extends TypedEventBase {
    * Create a document segment with metadata
    */
   private createSegment(
-    content:string,
-    startPosition:number,
-    segmentType:DocumentSegment['segmentType'],
-    algorithmBlocks:AlgorithmBlock[]
+    content: string,
+    startPosition: number,
+    segmentType: DocumentSegment['segmentType'],
+    algorithmBlocks: AlgorithmBlock[]
   ):DocumentSegment {
     const __id = `segment_${startPosition}_${Date.now()}`;`
     const endPosition = startPosition + content.length;
@@ -729,50 +731,51 @@ export class SegmentationEngine extends TypedEventBase {
 
     return {
       id,
-      content:content.trim(),
+      content: content.trim(),
       startPosition,
       endPosition,
-      segmentType:hasAlgorithm ? 'algorithm' : segmentType,
-      importance:this.calculateSegmentImportance(content, segmentType),
-      preserveIntegrity:hasAlgorithm || segmentType === 'algorithm',      relatedSegments:[], // Will be populated by post-processing
-      confidenceScore:this.calculateSegmentConfidence(content, segmentType),
+      segmentType: hasAlgorithm ? 'algorithm' : segmentType,
+      importance: this.calculateSegmentImportance(content, segmentType),
+      preserveIntegrity: hasAlgorithm || segmentType === 'algorithm',      relatedSegments:[], // Will be populated by post-processing
+      confidenceScore: this.calculateSegmentConfidence(content, segmentType),
       metadata:{
-        keywords:this.extractKeywords(content),
-        algorithmDensity:this.calculateLocalAlgorithmDensity(content),
-        conceptComplexity:this.calculateLocalConceptComplexity(content),
-        characterCount:content.length,
-        lineCount:content.split('\n').length')}
+        keywords: this.extractKeywords(content),
+        algorithmDensity: this.calculateLocalAlgorithmDensity(content),
+        conceptComplexity: this.calculateLocalConceptComplexity(content),
+        characterCount: content.length,
+        lineCount: content.split('\n').length
+    }
 };
 }
 
   // Helper methods for segment creation and analysis
-  private findSectionHeaders(content:string): Array<{ index: number; level: number; text: string}> {
-    const headers:Array<{ index: number; level: number; text: string}> = [];
+  private findSectionHeaders(content: string): Array<{ index: number; level: number; text: string}> {
+    const headers: Array<{ index: number; level: number; text: string}> = [];
     const headerPattern = /^(#{1,6})s+(.+)$/gm;
     
     let match;
     while ((match = headerPattern.exec(content)) !== null) {
       headers.push({
-        index:match.index,
-        level:match[1].length,
-        text:match[2].trim()
+        index: match.index,
+        level: match[1].length,
+        text: match[2].trim()
 });
 }
     
     return headers;
 }
 
-  private findStrategicSections(content:string): Array<{ start: number; end: number; type: string}> {
-    const strategicKeywords = ['vision',    'strategy',    'goal',    'objective',    'mission',    'roadmap'];')    const sections:Array<{ start: number; end: number; type: string}> = [];
+  private findStrategicSections(content: string): Array<{ start: number; end: number; type: string}> {
+    const strategicKeywords = ['vision',    'strategy',    'goal',    'objective',    'mission',    'roadmap'];')    const sections: Array<{ start: number; end: number; type: string}> = [];
     
     for (const keyword of strategicKeywords) {
       const regex = new RegExp(`\\b$keyword\\b[\\s\\S]0,500`, 'gi');')      let match;
       
       while ((match = regex.exec(content)) !== null) {
         sections.push({
-          start:match.index,
-          end:match.index + match[0].length,
-          type:keyword
+          start: match.index,
+          end: match.index + match[0].length,
+          type: keyword
 });
 }
 }
@@ -780,7 +783,7 @@ export class SegmentationEngine extends TypedEventBase {
     return sections.sort((a, b) => a.start - b.start);
 }
 
-  private calculateAdaptiveCharacterLimit(content:string, config:SegmentationConfig): number {
+  private calculateAdaptiveCharacterLimit(content: string, config: SegmentationConfig): number {
     if (!config.adaptiveCharacterLimits) {
       return config.maxSegmentSize;
 }
@@ -802,7 +805,7 @@ export class SegmentationEngine extends TypedEventBase {
     return Math.min(adaptiveLimit, config.maxSegmentSize * 2);
 }
 
-  private findNaturalBoundaryNear(content:string, position:number, searchRadius:number): number {
+  private findNaturalBoundaryNear(content: string, position: number, searchRadius: number): number {
     const searchStart = Math.max(0, position - searchRadius);
     const searchEnd = Math.min(content.length, position + searchRadius);
     
@@ -825,9 +828,9 @@ export class SegmentationEngine extends TypedEventBase {
 }
 
   private determineSegmentType(
-    content:string,
-    algorithmBlocks:AlgorithmBlock[],
-    startPosition:number
+    content: string,
+    algorithmBlocks: AlgorithmBlock[],
+    startPosition: number
   ):DocumentSegment['segmentType'] {
     ')    // Check if segment overlaps with algorithm blocks
     const overlapsAlgorithm = algorithmBlocks.some(block =>
@@ -859,13 +862,13 @@ export class SegmentationEngine extends TypedEventBase {
     return 'context;
 }
 
-  private calculateSegmentImportance(content:string, segmentType:DocumentSegment['segmentType']): number {
+  private calculateSegmentImportance(content: string, segmentType: DocumentSegment['segmentType']): number {
     ')    const typeWeights = {
-      algorithm:0.9,
-      concept:0.8,
-      implementation:0.75,
-      context:0.6,
-      metadata:0.4
+      algorithm: 0.9,
+      concept: 0.8,
+      implementation: 0.75,
+      context: 0.6,
+      metadata: 0.4
 };
     
     const baseImportance = typeWeights[segmentType];
@@ -875,7 +878,7 @@ export class SegmentationEngine extends TypedEventBase {
     return Math.min(baseImportance + (algorithmDensity * 0.1) + (conceptComplexity * 0.1), 1.0);
 }
 
-  private calculateSegmentConfidence(content:string, segmentType:DocumentSegment['segmentType']): number {
+  private calculateSegmentConfidence(content: string, segmentType: DocumentSegment['segmentType']): number {
     ')    // Simple confidence calculation based on content characteristics
     const wordCount = content.split(/s+/).length;
     const sentenceCount = content.split(/[.!?]+/).length;
@@ -898,7 +901,7 @@ export class SegmentationEngine extends TypedEventBase {
     return Math.min(confidence, 1.0);
 }
 
-  private calculateLocalAlgorithmDensity(content:string): number {
+  private calculateLocalAlgorithmDensity(content: string): number {
     const algorithmKeywords = ['algorithm',    'procedure',    'method',    'function',    'compute',    'calculate'];')    const words = content.toLowerCase().split(/s+/);
     const keywordCount = words.filter(word => 
       algorithmKeywords.some(keyword => word.includes(keyword))
@@ -907,7 +910,7 @@ export class SegmentationEngine extends TypedEventBase {
     return Math.min(keywordCount / Math.max(words.length * 0.1, 1), 1.0);
 }
 
-  private calculateLocalConceptComplexity(content:string): number {
+  private calculateLocalConceptComplexity(content: string): number {
     const complexityKeywords = ['complex',    'advanced',    'sophisticated',    'intricate',    'detailed'];')    const technicalKeywords = ['technical',    'specification',    'architecture',    'framework',    'system'];')    
     const words = content.toLowerCase().split(/s+/);
     const complexityCount = words.filter(word =>
@@ -920,7 +923,7 @@ export class SegmentationEngine extends TypedEventBase {
     return Math.min((complexityCount + technicalCount) / Math.max(words.length * 0.05, 1), 1.0);
 }
 
-  private extractKeywords(content:string): string[] {
+  private extractKeywords(content: string): string[] {
     // Simple keyword extraction - in production, could use NLP libraries
     const words = content.toLowerCase()
       .replace(/[^ws]/g, ')')      .split(/s+/)
@@ -939,16 +942,16 @@ export class SegmentationEngine extends TypedEventBase {
       .map(([word]) => word);
 }
 
-  private calculateAverageSegmentSize(segments:DocumentSegment[]): number {
+  private calculateAverageSegmentSize(segments: DocumentSegment[]): number {
     if (segments.length === 0) return 0;
     const totalSize = segments.reduce((sum, segment) => sum + segment.content.length, 0);
     return totalSize / segments.length;
 }
 
-  private countConceptClusters(segments:DocumentSegment[]): number {
+  private countConceptClusters(segments: DocumentSegment[]): number {
     return segments.filter(segment => segment.segmentType === 'concept').length;')}
 
-  private calculateSegmentationQuality(segments:DocumentSegment[], originalContent:string): number {
+  private calculateSegmentationQuality(segments: DocumentSegment[], originalContent: string): number {
     if (segments.length === 0) return 0;
     
     // Quality based on multiple factors
@@ -960,7 +963,7 @@ export class SegmentationEngine extends TypedEventBase {
     return (averageConfidence * 0.4) + ((1 - sizeVariation) * 0.3) + (preservationRatio * 0.3);
 }
 
-  private calculateSizeVariation(segments:DocumentSegment[]): number {
+  private calculateSizeVariation(segments: DocumentSegment[]): number {
     if (segments.length <= 1) return 0;
     
     const sizes = segments.map(seg => seg.content.length);
@@ -981,7 +984,7 @@ export class SegmentationEngine extends TypedEventBase {
   /**
    * Update segmentation engine configuration
    */
-  public updateConfig(newConfig:Partial<SegmentationConfig>): void {
+  public updateConfig(newConfig: Partial<SegmentationConfig>): void {
     this.config = { ...this.config, ...newConfig};
     logger.info('Segmentation engine configuration updated');')}
 
@@ -992,12 +995,12 @@ export class SegmentationEngine extends TypedEventBase {
   /**
    * Analyze algorithm complexity with multiple metrics
    */
-  private analyzeComplexity(blockContent:string): AlgorithmBlock['complexity'] {
+  private analyzeComplexity(blockContent: string): AlgorithmBlock['complexity'] {
     ')    const text = blockContent.toLowerCase();
     
     // Cyclomatic complexity (control flow analysis)
     const controlFlowKeywords = ['if',    'else',    'for',    'while',    'switch',    'case',    'try',    'catch'];')    const cyclomaticComplexity = controlFlowKeywords.reduce((count, keyword) => {
-      const matches = text.match(new RegExp(`\\b$keyword\\b`, 'g'));')      return count + (matches ? matches.length:0);
+      const matches = text.match(new RegExp(`\\b$keyword\\b`, 'g'));')      return count + (matches ? matches.length: 0);
 }, 1); // Base complexity is 1
 
     // Algorithmic complexity detection (Big O notation)
@@ -1034,14 +1037,14 @@ export class SegmentationEngine extends TypedEventBase {
       cyclomaticComplexity,
       algorithmicComplexity,
       mathematicalComplexity,
-      structuralDepth:Math.min(maxIndentation, 10) // Cap at reasonable level
+      structuralDepth: Math.min(maxIndentation, 10) // Cap at reasonable level
 };
 }
 
   /**
    * Analyze algorithm structural characteristics
    */
-  private analyzeStructure(blockContent:string): AlgorithmBlock['structure'] {
+  private analyzeStructure(blockContent: string): AlgorithmBlock['structure'] {
     ')    const text = blockContent.toLowerCase();
 
     return {
@@ -1057,7 +1060,7 @@ export class SegmentationEngine extends TypedEventBase {
   /**
    * Extract algorithm elements for analysis
    */
-  private extractAlgorithmElements(blockContent:string): AlgorithmBlock['extractedElements'] {
+  private extractAlgorithmElements(blockContent: string): AlgorithmBlock['extractedElements'] {
     ')    const text = blockContent;
 
     // Extract variables (simple heuristic)
@@ -1081,36 +1084,36 @@ export class SegmentationEngine extends TypedEventBase {
     );
 
     return {
-      variables:variables,
-      functions:functions,
-      constants:constants,
-      operators:operators,
-      keywords:keywords
+      variables: variables,
+      functions: functions,
+      constants: constants,
+      operators: operators,
+      keywords: keywords
 };
 }
 
   /**
    * Calculate algorithm quality score
    */
-  private calculateAlgorithmQuality(blockContent:string): number {
+  private calculateAlgorithmQuality(blockContent: string): number {
     const text = blockContent.toLowerCase();
     let quality = 0.5; // Base quality
 
     // Completeness factors
-    const hasInputOutput = /\b(input|output)\s*:/i.test(text) ? 0.15:0;
-    const hasSteps = /\b(step|\d+\.)\s/.test(text) ? 0.1:0;
-    const hasDescription = text.length > 200 ? 0.1:0;
+    const hasInputOutput = /\b(input|output)\s*:/i.test(text) ? 0.15: 0;
+    const hasSteps = /\b(step|\d+\.)\s/.test(text) ? 0.1: 0;
+    const hasDescription = text.length > 200 ? 0.1: 0;
 
     // Clarity factors
-    const hasComments = text.includes('//') || text.includes('#') ? 0.05:0;')    const hasExamples = /\b(example|instance|case)\b/.test(text) ? 0.1:0;
+    const hasComments = text.includes('//') || text.includes('#') ? 0.05: 0;')    const hasExamples = /\b(example|instance|case)\b/.test(text) ? 0.1: 0;
 
     // Technical completeness
-    const hasComplexity = /\b(complexity|time|space)\b/.test(text) ? 0.1:0;
-    const hasProof = /\b(proof|correctness|verify)\b/.test(text) ? 0.05:0;
+    const hasComplexity = /\b(complexity|time|space)\b/.test(text) ? 0.1: 0;
+    const hasProof = /\b(proof|correctness|verify)\b/.test(text) ? 0.05: 0;
 
     // Readability (penalize if too terse or too verbose)
     const wordCount = text.split(/\s+/).length;
-    const readabilityScore = wordCount > 50 && wordCount < 500 ? 0.05:0;
+    const readabilityScore = wordCount > 50 && wordCount < 500 ? 0.05: 0;
 
     quality += hasInputOutput + hasSteps + hasDescription + hasComments + 
                hasExamples + hasComplexity + hasProof + readabilityScore;

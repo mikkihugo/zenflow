@@ -4,8 +4,8 @@
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { EnhancedDocumentScanner } from './enhanced-document-scanner';
-import { writeFile, mkdir, rm } from 'node:fs/promises';
-import { join } from 'node:path';
+import { writeFile, mkdir, rm } from 'node: fs/promises';
+import { join } from 'node: path';
 
 describe('EnhancedDocumentScanner', () => {
   let scanner: EnhancedDocumentScanner;

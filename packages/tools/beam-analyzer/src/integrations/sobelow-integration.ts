@@ -4,7 +4,7 @@
  */
 
 
-import { spawn } from 'node:child_process';
+import { spawn } from 'node: child_process';
 import { err, getLogger, ok, type Result } from '@claude-zen/foundation';
 
 import type {
@@ -87,7 +87,7 @@ export class SobelowIntegration {
 
       // Set output format
       if (options.format) {
-        args.push(`--format`, options.format);`
+        args.push(`--format`, options.format);
 } else {
         args.push('--format',    'json');')}
 
@@ -141,10 +141,10 @@ export class SobelowIntegration {
         if (code === 0||code === 1) {
           resolve(ok(stdout));
 } else {
-          this.logger.error(`Sobelow failed with code ${code}:${stderr}`);`
+          this.logger.error(`Sobelow failed with code ${code}:${stderr}`);
           resolve(
             err({
-              code: 'ANALYSIS_FAILED',              message:`Sobelow analysis failed: $stderr`,`
+              code: 'ANALYSIS_FAILED',              message:`Sobelow analysis failed: ${stderr}`,`
               tool: 'sobelow',})
           );
 }
@@ -153,7 +153,7 @@ export class SobelowIntegration {
       child.on('error', (error) => {
     ')        resolve(
           err(
-            code: 'TOOL_NOT_FOUND',            message:`Failed to spawn sobelow: $error.message`,`
+            code: 'TOOL_NOT_FOUND',            message:`Failed to spawn sobelow: ${error.message}`,`
             tool: 'sobelow',            originalError: error,)
         );
 });
@@ -246,13 +246,13 @@ export class SobelowIntegration {
           category: this.mapSobelowCategoryFromText(headerMatch[1]),
           confidence: headerMatch[2].toLowerCase() as 'high'|' medium'|' low',          details: headerMatch[1],
           location:{
-            file: ','            line:1,
+            file: ','            line: 1,
 },
 };
         continue;
 }
 
-      // Match file location like "File: lib/my_app_web/controllers/user_controller.ex:42"
+      // Match file location like "File: lib/my_app_web/controllers/user_controller.ex: 42"
       const fileMatch = trimmed.match(/^File:\s+(.+):(\d+)/);
       if (fileMatch && currentFinding) {
         currentFinding.location = {
@@ -264,7 +264,7 @@ export class SobelowIntegration {
 
       // Add details to current finding
       if (currentFinding && trimmed.startsWith('-')) {
-    ')        currentFinding.details += `\n$trimmed`;`
+    ')        currentFinding.details += `\n${trimmed}`;`
 }
 }
 
@@ -405,7 +405,7 @@ export class SobelowIntegration {
       child.on('error', (error) => {
     ')        resolve(
           err(
-            code: 'TOOL_NOT_FOUND',            message:`Sobelow not available: $error.message`,`
+            code: 'TOOL_NOT_FOUND',            message:`Sobelow not available: ${error.message}`,`
             tool: 'sobelow',            originalError: error,)
         );
 });

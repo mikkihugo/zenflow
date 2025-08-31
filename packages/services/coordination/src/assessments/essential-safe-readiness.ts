@@ -59,7 +59,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
     category: CORE_ROLES,
     description: 'Facilitates PI planning and execution',
     required: true,
-    taskMasterSupport: 'complete', // ✅ Role-based approval routing
+    taskMasterSupport: 'complete', // Role-based approval routing
     implementationGap:
       'None - TaskMaster handles RTE workflows via approval orchestration',
     effortEstimate: 'low',
@@ -69,7 +69,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
     category: CORE_ROLES,
     description: 'Defines and prioritizes features',
     required: true,
-    taskMasterSupport: 'complete', // ✅ Stakeholder approval workflows
+    taskMasterSupport: 'complete', // Stakeholder approval workflows
     implementationGap: 'None - Product Owner approval workflows integrated',
     effortEstimate: 'low',
   },
@@ -78,7 +78,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
     category: CORE_ROLES,
     description: 'Facilitates team processes',
     required: true,
-    taskMasterSupport: 'complete', // ✅ Product Owner approval workflows
+    taskMasterSupport: 'complete', // Product Owner approval workflows
     implementationGap: 'None - Team lead approval workflows available',
     effortEstimate: 'low',
   },
@@ -87,7 +87,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
     category: CORE_ROLES,
     description: 'Delivers working software',
     required: true,
-    taskMasterSupport: 'complete', // ✅ Team lead approval workflows
+    taskMasterSupport: 'complete', // Team lead approval workflows
     implementationGap: 'None - Team-based approval routing implemented',
     effortEstimate: 'low',
   },
@@ -96,7 +96,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
     category: CORE_ROLES,
     description: 'Provides business context',
     required: true,
-    taskMasterSupport: 'complete', // ✅ Team-based approval routing
+    taskMasterSupport: 'complete', // Team-based approval routing
     implementationGap:
       'None - Business stakeholder approval workflows available',
     effortEstimate: 'low',
@@ -110,7 +110,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
     category: CORE_ARTIFACTS,
     description: 'Prioritized list of features',
     required: true,
-    taskMasterSupport: 'complete', // ✅ Via approval gate kanban flow
+    taskMasterSupport: 'complete', // Via approval gate kanban flow
     implementationGap: 'None - Backlog managed through approval gates',
     effortEstimate: 'low',
   },
@@ -119,7 +119,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
     category: CORE_ARTIFACTS,
     description: 'Services requirements for PI planning',
     required: true,
-    taskMasterSupport: 'complete', // ✅ Feature approval gates with state flow
+    taskMasterSupport: 'complete', // Feature approval gates with state flow
     implementationGap:
       'None - Features flow through approval gates (WIP→In Progress→Done)',
     effortEstimate: 'low',
@@ -149,7 +149,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
     category: CORE_ARTIFACTS,
     description: 'Future state description',
     required: true,
-    taskMasterSupport: 'missing', // ❌ No vision management
+    taskMasterSupport: 'missing', // No vision management
     implementationGap: 'Need vision management and stakeholder alignment tools',
     effortEstimate: 'high',
   },
@@ -201,7 +201,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
     category: CORE_EVENTS,
     description: 'Sprint planning within PI',
     required: true,
-    taskMasterSupport: 'complete', // ✅ Via team approval workflows
+    taskMasterSupport: 'complete', // Via team approval workflows
     implementationGap:
       'None - Sprint planning supported through approval workflows',
     effortEstimate: 'low',
@@ -211,7 +211,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
     category: CORE_EVENTS,
     description: 'Sprint review and demo',
     required: true,
-    taskMasterSupport: 'complete', // ✅ Via completed approval gate review
+    taskMasterSupport: 'complete', // Via completed approval gate review
     implementationGap:
       'None - Review supported through approval gate completion',
     effortEstimate: 'low',
@@ -245,7 +245,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
     category: CORE_COMPETENCIES,
     description: 'Leadership mindset and approach',
     required: true,
-    taskMasterSupport: 'complete', // ✅ Learning system implemented
+    taskMasterSupport: 'complete', // Learning system implemented
     implementationGap:
       'None - Leadership workflows supported through approval system',
     effortEstimate: 'low',
@@ -259,7 +259,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
     category: KEY_PRACTICES,
     description: 'Visual workflow management',
     required: true,
-    taskMasterSupport: 'complete', // ✅ Approval gate state visualization
+    taskMasterSupport: 'complete', // Approval gate state visualization
     implementationGap:
       'None - Kanban via approval gate states and AGUI dashboard',
     effortEstimate: 'low',
@@ -279,7 +279,7 @@ export const ESSENTIAL_SAFE_COMPONENTS: EssentialSafeComponent[] = [
     category: KEY_PRACTICES,
     description: 'Quality standards and acceptance criteria',
     required: true,
-    taskMasterSupport: 'complete', // ✅ DoD approval gates
+    taskMasterSupport: 'complete', // DoD approval gates
     implementationGap: 'None - DoD enforced through approval gate criteria',
     effortEstimate: 'low',
   },

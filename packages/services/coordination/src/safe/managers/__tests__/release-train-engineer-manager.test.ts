@@ -7,55 +7,55 @@ import { beforeEach, describe, expect, it, vi} from 'vitest')import type {
   MemorySystem,
   EventBus,
 } from '../../types')import type { RTEManagerConfig} from '../release-train-engineer-manager')import ReleaseTrainEngineerManager from '../release-train-engineer-manager')describe('ReleaseTrainEngineerManager,() => {
-  let manager:ReleaseTrainEngineerManager;
-  let mockLogger:Logger;
-  let _mockMemory:MemorySystem;
-  let mockEventBus:EventBus;
-  let config:RTEManagerConfig;
+  let manager: ReleaseTrainEngineerManager;
+  let mockLogger: Logger;
+  let _mockMemory: MemorySystem;
+  let mockEventBus: EventBus;
+  let config: RTEManagerConfig;
   beforeEach(() => {
     mockLogger = {
-      info:vi.fn(),
-      warn:vi.fn(),
-      error:vi.fn(),
-      debug:vi.fn(),
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
 };
     __mockMemory = {
-      store:vi.fn().mockResolvedValue(undefined),
-      retrieve:vi.fn().mockResolvedValue(null),
+      store: vi.fn().mockResolvedValue(undefined),
+      retrieve: vi.fn().mockResolvedValue(null),
 };
     mockEventBus = {
-      emit:vi.fn(),
-      on:vi.fn(),
-      off:vi.fn(),
-      registerHandler:vi.fn(),
+      emit: vi.fn(),
+      on: vi.fn(),
+      off: vi.fn(),
+      registerHandler: vi.fn(),
 };
     config = {
-      enablePIPlanningFacilitation:true,
-      enableScrumOfScrums:true,
-      enableSystemDemoCoordination:true,
-      enableInspectAndAdaptFacilitation:true,
-      enableProgramSynchronization:true,
-      enablePredictabilityMeasurement:true,
-      enableRiskAndDependencyManagement:true,
-      enableMultiARTCoordination:true,
-      enableImpedimentTracking:true,')      scrumOfScrumsFrequency:'daily')      systemDemoFrequency: new ReleaseTrainEngineerManager(config);
+      enablePIPlanningFacilitation: true,
+      enableScrumOfScrums: true,
+      enableSystemDemoCoordination: true,
+      enableInspectAndAdaptFacilitation: true,
+      enableProgramSynchronization: true,
+      enablePredictabilityMeasurement: true,
+      enableRiskAndDependencyManagement: true,
+      enableMultiARTCoordination: true,
+      enableImpedimentTracking: true,')      scrumOfScrumsFrequency:'daily')      systemDemoFrequency: new ReleaseTrainEngineerManager(config);
 });
   it('should initialize with default configuration,() => {
     expect(manager).toBeDefined();
     expect(mockLogger.info).toHaveBeenCalledWith(')     'RTE Manager initialized with configuration,
       expect.objectContaining({
-        enabledFeatures:expect.any(Array),
-        maxARTs:3,
+        enabledFeatures: expect.any(Array),
+        maxARTs: 3,
 }));
 });
   it('should initialize successfully, async () => {
     await expect(manager.initialize()).resolves.not.toThrow();
-    expect(mockEventBus.emit).toHaveBeenCalledWith(')     'rte:initialized,
+    expect(mockEventBus.emit).toHaveBeenCalledWith(')     'rte: initialized,
       expect.objectContaining({
-        type: 'rte:initialized,
-'        data:expect.objectContaining({
+        type: 'rte: initialized,
+'        data: expect.objectContaining({
     ')          managerId: 'rte-manager,
-'          capabilities:expect.any(Array),
+'          capabilities: expect.any(Array),
 }),
 })
     );')});')  it('should facilitate PI Planning, async () => {
@@ -64,17 +64,17 @@ import { beforeEach, describe, expect, it, vi} from 'vitest')import type {
       participants:[
         {
     ')          userId:'user1')          name:'Test User')          role:'product-owner ' as const,
-          required:true,
+          required: true,
 },
 ],
-      durationHours:16,
+      durationHours: 16,
       objectives:['Objective 1,' Objective 2'],
       businessContext:'Test business context')      constraints:['Constraint 1'],
 };
     const result = await manager.facilitatePIPlanning({
       piId:'PI-1')      artId: 'ART-1,
-'      duration:2,')      venue:'Main Conference Room')      facilitators:['facilitator-1'],
-      objectives:planningConfig.objectives,
+'      duration: 2,')      venue:'Main Conference Room')      facilitators:['facilitator-1'],
+      objectives: planningConfig.objectives,
       features:[],
 });
     expect(result).toBeDefined();')    expect(result.piId).toBe('PI-1');')    expect(result.artId).toBe('ART-1');
@@ -103,7 +103,7 @@ import { beforeEach, describe, expect, it, vi} from 'vitest')import type {
     await manager.initialize();
     const iaConfig = {
     ')      participants:['user1,' user2'],
-      durationHours:8,
+      durationHours: 8,
       objectives:['Improve process,' Identify bottlenecks'],
       focusAreas:['Quality,' Velocity'],
       facilitationStyle: await manager.facilitateInspectAndAdapt(')     'PI-1,
@@ -117,15 +117,15 @@ import { beforeEach, describe, expect, it, vi} from 'vitest')import type {
       {
     ')        id:'F-1')        name:'Test Feature')        description:'Test feature description')        piId: await manager.manageSystemDemo({
     ')      piId:'PI-1')      artId: 'ART-1,
-'      features:features,
+'      features: features,
 });')    expect(result).toBeDefined();')    expect(result.piId).toBe('PI-1');')    expect(result.artId).toBe('ART-1');
     expect(result.featuresPresented).toHaveLength(1);
     expect(result.stakeholderSatisfaction).toBe(85);
 });')  it('should handle configuration with disabled features,() => {
     const disabledConfig = {
-      enablePIPlanningFacilitation:false,
-      enableScrumOfScrums:false,
-      enableSystemDemoCoordination:false,
+      enablePIPlanningFacilitation: false,
+      enableScrumOfScrums: false,
+      enableSystemDemoCoordination: false,
 };
     const disabledManager = new ReleaseTrainEngineerManager({
       ...config,
@@ -133,21 +133,21 @@ import { beforeEach, describe, expect, it, vi} from 'vitest')import type {
 });
     expect(disabledManager).toBeDefined();
 });')  it('should throw error when trying disabled features, async () => {
-    const __disabledConfig = { enablePIPlanningFacilitation:false};
+    const __disabledConfig = { enablePIPlanningFacilitation: false};
     const disabledManager = new ReleaseTrainEngineerManager({
       ...config,
-      enablePIPlanningFacilitation:false,
+      enablePIPlanningFacilitation: false,
 });
     await disabledManager.initialize();
     const __planningConfig = {
       participants:[],
-      durationHours:16,
+      durationHours: 16,
       objectives:[],')      businessContext: '      constraints:[],
 };
     await expect(
       disabledManager.facilitatePIPlanning({
     ')        piId:'PI-1')        artId: 'ART-1,
-'        duration:480,')        venue:'Main Conference Room')        facilitators:['facilitator1'],
+'        duration: 480,')        venue:'Main Conference Room')        facilitators:['facilitator1'],
         objectives:[],
         features:[],
 })')    ).rejects.toThrow('PI Planning facilitation is not enabled');

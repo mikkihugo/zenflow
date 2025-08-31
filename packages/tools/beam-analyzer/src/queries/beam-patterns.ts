@@ -153,7 +153,7 @@ export class BeamPatternAnalyzer {
     try {
       await this.scanDirectory(sourceDir, targetExtensions, files);
 } catch (error) {
-      this.logger.warn(`Failed to scan directory ${sourceDir}:`, error);`
+      this.logger.warn(`Failed to scan directory ${sourceDir}:`, error);
 }
 
     return files;
@@ -183,7 +183,7 @@ export class BeamPatternAnalyzer {
 }
 } catch (error) {
       // Directory might not exist or be accessible
-      this.logger.debug(`Directory scan failed: $error`);`
+      this.logger.debug(`Directory scan failed: ${error}`);
 }
 }
 }

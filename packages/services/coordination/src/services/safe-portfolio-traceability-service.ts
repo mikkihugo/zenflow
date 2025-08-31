@@ -770,7 +770,7 @@ export default SafePortfolioTraceabilityService;
  * - Team allocation and capacity planning
  * - Implementation roadmap integration
  * 
- * 📊 **LEARNING & CONTINUOUS IMPROVEMENT:**
+ * **LEARNING & CONTINUOUS IMPROVEMENT:**
  * - Decision pattern analysis across portfolio
  * - Success rate tracking and prediction
  * - Model performance optimization

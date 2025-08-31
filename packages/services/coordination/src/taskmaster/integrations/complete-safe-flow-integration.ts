@@ -33,7 +33,7 @@
  * - Integration Gates
  * - Deployment Gates
  *
- * 🔄 **CONTINUOUS DELIVERY:**
+ * **CONTINUOUS DELIVERY:**
  * - Build Gates
  * - Test Gates
  * - Security Gates
@@ -506,10 +506,12 @@ export class CompleteSafeFlowIntegration {
       gateId,
       category: `performance-${entity.id} as ApprovalGateId;``)    return {`
       gateId,
-      category: `release-${entity.id} as ApprovalGateId;``)    return {';
+      category: `release-${entity.id} as ApprovalGateId;``)    return {
+      ';
       gateId,
       category: CompleteSafeGateCategory.RELEASE_GATE,
-      traceabilityId,    ')};;
+      traceabilityId,    
+    };;
 }
   // ============================================================================
   // PRIVATE IMPLEMENTATION METHODS

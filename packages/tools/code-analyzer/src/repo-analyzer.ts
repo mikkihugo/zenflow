@@ -5,8 +5,8 @@
  * and build system native analysis capabilities.
  */
 
-import * as fs from 'node:fs/promises';
-import * as path from 'node:path';
+import * as fs from 'node: fs/promises';
+import * as path from 'node: path';
 import {
   getLogger,
   Result,

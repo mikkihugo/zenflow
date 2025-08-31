@@ -287,7 +287,7 @@ export class ApprovalGateManager extends EventBus {
       this.updateMetrics();
 
       // Emit event
-      this.emit('approval:gate:created', { gateId, taskId, requirement });
+      this.emit('approval: gate:created', { gateId, taskId, requirement });
 
       logger.info(`Created approval gate: ${gateId} for task: ${taskId}`);
 
@@ -406,14 +406,14 @@ export class ApprovalGateManager extends EventBus {
       if (evaluation.approved) {
         // Gate is approved
         await this.completeApprovalGate(gateId, 'approved');
-        this.emit('approval:granted', gateId, gate.taskId, approverId);
+        this.emit('approval: granted', gateId, gate.taskId, approverId);
       } else if (
         decision === 'rejected' &&
         this.shouldRejectOnSingleRejection(updatedGate)
       ) {
         // Gate is rejected
         await this.completeApprovalGate(gateId, 'rejected');
-        this.emit('approval:rejected', gateId, gate.taskId, approverId);
+        this.emit('approval: rejected', gateId, gate.taskId, approverId);
       }
 
       // Persist approval record
@@ -682,7 +682,7 @@ export class ApprovalGateManager extends EventBus {
             });
           },
           notifyTimeout: ({ context }) => {
-            this.emit('approval:timeout', context.gate.id, context.gate.taskId);
+            this.emit('approval: timeout', context.gate.id, context.gate.taskId);
           },
           completeGate: ({ context, event }) => {
             const finalState =

@@ -159,7 +159,7 @@ export class EventCoordinatorService {
   // =============================================================================
   private setupEventMonitoring(): void {
     // Monitor event bus for high-level metrics
-    this.eventBus.on('eventbus:initialized', () => {
+    this.eventBus.on('eventbus: initialized', () => {
       logger.info('Event bus monitoring active');
     });
     // Could add more monitoring events as needed

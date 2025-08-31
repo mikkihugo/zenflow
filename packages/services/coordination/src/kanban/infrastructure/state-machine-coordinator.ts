@@ -73,7 +73,7 @@ export class StateMachineCoordinatorService {
       this.metrics.machineStates[machineId] = 'idle';
       
       // Emit machine creation event
-      await this.eventCoordinator.emitEventSafe('workflow:state_machine:created', {
+      await this.eventCoordinator.emitEventSafe('workflow: state_machine: created', {
         machineId,
         initialState: 'idle',
         context: initialContext,

@@ -136,7 +136,7 @@ export class PerformanceTrackerService {
   
   private setupPerformanceListeners(): void {
     // Track task creation performance
-    this.eventCoordinator.addListener('task:created', async (tasks) => {
+    this.eventCoordinator.addListener('task: created', async (tasks) => {
       const operationId = 'batch-create-' + Date.now();
       this.startOperation(operationId, 'task_creation', { taskCount: tasks.length });
       
@@ -147,7 +147,7 @@ export class PerformanceTrackerService {
     });
 
     // Track task movement performance
-    this.eventCoordinator.addListener('task:moved', async ([taskId, fromState, toState]) => {
+    this.eventCoordinator.addListener('task: moved', async ([taskId, fromState, toState]) => {
       const operationId = 'move-' + taskId + '-' + Date.now();
       this.startOperation(operationId, 'task_movement', { fromState, toState });
       
@@ -157,7 +157,7 @@ export class PerformanceTrackerService {
     });
 
     // Track workflow state changes
-    this.eventCoordinator.addListener('workflow:state_changed', async (data) => {
+    this.eventCoordinator.addListener('workflow: state_changed', async (data) => {
       const operationId = 'workflow-' + data.machineId + '-' + Date.now();
       this.startOperation(operationId, 'workflow_transition', {
         machineId: data.machineId,

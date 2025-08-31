@@ -18,79 +18,89 @@ import {
 const logger = getLogger('coordination-services-document-task-vision');
 
 export interface StrategicTask {
-  id:string;
-  title:string;
-  description:string;
+  id: string;
+  title: string;
+  description: string;
   priority: 'low' | 'medium' | 'high' | 'critical';
   status: 'todo' | 'in_progress' | 'blocked' | 'completed';
-  strategicGoalId:string;
-  relatedDocuments:string[];
+  strategicGoalId: string;
+  relatedDocuments: string[];
   estimatedEffort: 'small' | 'medium' | 'large' | 'xl';
   dueDate?:Date;
   assignedTo?:string;
-  tags:string[];
-  businessValue:number; // 0-1 score
-  technicalComplexity:number; // 0-1 score
-  dependencies:string[];
-  outcomes:string[];
-  metrics:string[];
-  createdAt:Date;
-  updatedAt:Date;
+  tags: string[];
+  businessValue: number; // 0-1 score
+  technicalComplexity: number; // 0-1 score
+  dependencies: string[];
+  outcomes: string[];
+  metrics: string[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface DocumentTaskLink {
-  documentId:string;
-  documentType:DocumentType;
-  documentTitle:string;
-  linkedTasks:string[];
-  strategicGoals:string[];
-  completionStatus:number; // 0-1 based on linked tasks
-  lastUpdated:Date;
+  documentId: string;
+  documentType: DocumentType;
+  documentTitle: string;
+  linkedTasks: string[];
+  strategicGoals: string[];
+  completionStatus: number; // 0-1 based on linked tasks
+  lastUpdated: Date;
 }
 
 export interface VisionTaskDashboard {
-  projectId:string;
-  vision:StrategicVisionAnalysis;
-  tasks:StrategicTask[];
-  documents:DocumentTaskLink[];
+  projectId: string;
+  vision: StrategicVisionAnalysis;
+  tasks: StrategicTask[];
+  documents: DocumentTaskLink[];
   metrics:{
-    totalTasks:number;
-    completedTasks:number;
-    blockedTasks:number;
-    highPriorityTasks:number;
-    averageBusinessValue:number;
-    documentCoverage:number; // % of goals with linked documents
-    taskCoverage:number; // % of goals with linked tasks
+    totalTasks: number;
+    completedTasks: number;
+    blockedTasks: number;
+    highPriorityTasks: number;
+    averageBusinessValue: number;
+    documentCoverage: number; // % of goals with linked documents
+    taskCoverage: number; // % of goals with linked tasks
 };
   recommendations:{
-    missingDocuments:string[];
-    suggestedTasks:Partial<StrategicTask>[];
-    riskMitigations:string[];
-    optimizationOpportunities:string[];
+    missingDocuments: string[];
+    suggestedTasks: Partial<StrategicTask>[];
+    riskMitigations: string[];
+    optimizationOpportunities: string[];
 };
-  lastUpdated:Date;
+  lastUpdated: Date;
 }
 
 export class DocumentTaskVisionCoordinator {
   private documentManager: IDocumentManager;
-  private visionService:StrategicVisionService;
+  private visionService: StrategicVisionService;
 
   constructor(documentManager?: IDocumentManager) {
     this.documentManager = documentManager ?? new (class DocumentManagerStub {
       async getDocumentsByProject() {
-        return { success: false, error: new Error('DocumentManager not available') } as const;
+        return {
+      success: false, error: new Error('DocumentManager not available
+    } as const;
       }
       async createDocument() {
-        return { success: false, error: new Error('DocumentManager not available') } as const;
+        return {
+      success: false, error: new Error('DocumentManager not available
+    } as const;
       }
       async updateDocument() {
-        return { success: false, error: new Error('DocumentManager not available') } as const;
+        return {
+      success: false, error: new Error('DocumentManager not available
+    } as const;
       }
       async getDocument() {
-        return { success: false, error: new Error('DocumentManager not available') } as const;
+        return {
+      success: false, error: new Error('DocumentManager not available
+    } as const;
       }
       async searchDocuments() {
-        return { success: false, error: new Error('DocumentManager not available') } as const;
+        return {
+      success: false, error: new Error('DocumentManager not available
+    } as const;
       }
       async initialize() { /* noop */ }
       async store() { /* noop */ }
@@ -101,9 +111,9 @@ export class DocumentTaskVisionCoordinator {
   /**
    * Get comprehensive dashboard integrating vision, documents, and tasks
    */
-  async getDashboard(projectId:string): Promise<VisionTaskDashboard> {
+  async getDashboard(projectId: string): Promise<VisionTaskDashboard> {
     try {
-      logger.info(`Building integrated dashboard for project:${projectId}`);`
+      logger.info(`Building integrated dashboard for project:${projectId}`);
 
       // Get strategic vision analysis
       const vision = await this.visionService.getVisionForWorkspace(projectId);
@@ -112,8 +122,8 @@ export class DocumentTaskVisionCoordinator {
       const documentsResult = await this.documentManager.getDocumentsByProject(
         projectId,
         {
-          includeContent:true,
-          includeRelationships:true,
+          includeContent: true,
+          includeRelationships: true,
           sortBy: 'updated_at',          sortOrder: 'desc',}
       );
 
@@ -147,14 +157,14 @@ export class DocumentTaskVisionCoordinator {
         documentLinks
       );
 
-      const dashboard:VisionTaskDashboard = {
+      const dashboard: VisionTaskDashboard = {
         projectId,
         vision,
         tasks,
-        documents:documentLinks,
+        documents: documentLinks,
         metrics,
         recommendations,
-        lastUpdated:new Date(),
+        lastUpdated: new Date(),
 };
 
       logger.info(
@@ -171,12 +181,12 @@ export class DocumentTaskVisionCoordinator {
    * Generate strategic tasks from vision analysis and documents
    */
   async generateTasksFromVision(
-    projectId:string,
+    projectId: string,
     saveToDatabase = true
   ):Promise<{
-    created:StrategicTask[];
-    existing:StrategicTask[];
-    errors:string[];
+    created: StrategicTask[];
+    existing: StrategicTask[];
+    errors: string[];
 }> {
     try {
   logger.info(`Generating strategic tasks for project:${projectId}`);
@@ -193,37 +203,37 @@ export class DocumentTaskVisionCoordinator {
         vision,
         documents
       );
-      const newTasks:StrategicTask[] = [];
-      const existingTasks:StrategicTask[] = [];
-      const errors:string[] = [];
+      const newTasks: StrategicTask[] = [];
+      const existingTasks: StrategicTask[] = [];
+      const errors: string[] = [];
 
       if (saveToDatabase) {
         for (const task of tasks) {
           try {
             const taskDocData = {
               type:'task' as const,
-              title:task.title,
-              summary:task.description,
-              content:this.createTaskDocumentContent(task),
-              author: 'vision-task-coordinator',              project_id:projectId,
+              title: task.title,
+              summary: task.description,
+              content: this.createTaskDocumentContent(task),
+              author: 'vision-task-coordinator',              project_id: projectId,
               status:'draft' as const,
-              priority:task.priority,
-              keywords:task.tags,
+              priority: task.priority,
+              keywords: task.tags,
               tags:['strategic-task, vision-generated', task.priority],
               metadata:{
-                strategic_goal_id:task.strategicGoalId,
-                business_value:task.businessValue,
-                technical_complexity:task.technicalComplexity,
-                estimated_effort:task.estimatedEffort,
-                task_id:task.id,
-                due_date:task.dueDate?.toISOString,
-                assigned_to:task.assignedTo,
-                dependencies:task.dependencies,
-                outcomes:task.outcomes,
-                metrics:task.metrics,
+                strategic_goal_id: task.strategicGoalId,
+                business_value: task.businessValue,
+                technical_complexity: task.technicalComplexity,
+                estimated_effort: task.estimatedEffort,
+                task_id: task.id,
+                due_date: task.dueDate?.toISOString,
+                assigned_to: task.assignedTo,
+                dependencies: task.dependencies,
+                outcomes: task.outcomes,
+                metrics: task.metrics,
                 document_source: 'vision_analysis',},
-              version: '1.0',              dependencies:task.dependencies,
-              related_documents:task.relatedDocuments,
+              version: '1.0',              dependencies: task.dependencies,
+              related_documents: task.relatedDocuments,
 };
 
             const createResult =
@@ -247,9 +257,9 @@ export class DocumentTaskVisionCoordinator {
       logger.info(
         `Generated ${newTasks.length} new tasks, ${existingTasks.length} existing, ${errors.length} errors``
       );
-      return { created:newTasks, existing:existingTasks, errors};
+      return { created: newTasks, existing: existingTasks, errors};
 } catch (error) {
-      logger.error(`Error generating tasks from vision:`, error);`
+      logger.error(`Error generating tasks from vision:`, error);
       return { created:[], existing:[], errors:[error.message]};
 }
 }
@@ -258,24 +268,24 @@ export class DocumentTaskVisionCoordinator {
    * Link documents to strategic goals and create actionable connections
    */
   async linkDocumentsToStrategicGoals(
-    projectId:string,
+    projectId: string,
     createMissingTasks = true
   ):Promise<{
-    linked:DocumentTaskLink[];
-    tasksCreated:number;
-    errors:string[];
+    linked: DocumentTaskLink[];
+    tasksCreated: number;
+    errors: string[];
 }> {
     try {
       logger.info(
-        `Linking documents to strategic goals for project:$projectId``
+        `Linking documents to strategic goals for project: ${$projectId}``
       );
 
       const vision = await this.visionService.getVisionForWorkspace(projectId);
       const documentsResult = await this.documentManager.getDocumentsByProject(
         projectId,
         {
-          includeContent:true,
-          includeRelationships:true,
+          includeContent: true,
+          includeRelationships: true,
 }
       );
 
@@ -289,7 +299,7 @@ export class DocumentTaskVisionCoordinator {
 
       const links = await this.createDocumentTaskLinks(documents, tasks);
       let tasksCreated = 0;
-      const errors:string[] = [];
+      const errors: string[] = [];
 
       if (createMissingTasks) {
         const missingTasksResult = await this.generateTasksFromVision(
@@ -303,10 +313,10 @@ export class DocumentTaskVisionCoordinator {
       logger.info(
         `Linked ${links.length} documents with ${tasksCreated} new tasks created``
       );
-      return { linked:links, tasksCreated, errors};
+      return { linked: links, tasksCreated, errors};
 } catch (error) {
-      logger.error(`Error linking documents to strategic goals:`, error);`
-      return { linked:[], tasksCreated:0, errors:[error.message]};
+      logger.error(`Error linking documents to strategic goals:`, error);
+      return { linked:[], tasksCreated: 0, errors:[error.message]};
 }
 }
 
@@ -314,23 +324,23 @@ export class DocumentTaskVisionCoordinator {
    * Update task status and propagate to related documents and vision
    */
   async updateTaskStatus(
-    taskId:string,
-    status:StrategicTask['status'],
+    taskId: string,
+    status: StrategicTask['status'],
     notes?:string
   ):Promise<{ success: boolean; updatedDocuments: string[]; error?: string}> {
     try {
-      logger.info(`Updating task $taskIdstatus to $status`);`
+      logger.info(`Updating task $taskIdstatus to ${status}`);
 
       // Find task document in database
       const searchResult = await this.documentManager.searchDocuments({
         searchType: 'keyword',        query:`task_id:${taskId}`,`
         documentTypes:['task'],
-        includeContent:true,
+        includeContent: true,
 });
 
       if (!(searchResult.success && searchResult.data?.documents?.length)) {
         return {
-          success:false,
+          success: false,
           updatedDocuments:[],
           error: 'Task not found',};
 }
@@ -339,28 +349,28 @@ export class DocumentTaskVisionCoordinator {
       const updatedMetadata = {
         ...taskDoc.metadata,
         status,
-        updated_at:new Date()?.toISOString,
-        status_notes:notes,
+        updated_at: new Date()?.toISOString,
+        status_notes: notes,
 };
 
       // Update task document
       const updateResult = await this.documentManager.updateDocument(
         taskDoc.id,
         {
-          status:status === 'completed' ? ' approved' : ' draft',          metadata:updatedMetadata,
+          status: status === 'completed' ? ' approved' : ' draft',          metadata: updatedMetadata,
 }
       );
 
       if (!updateResult.success) {
         return {
-          success:false,
+          success: false,
           updatedDocuments:[],
-          error:updateResult.error?.message,
+          error: updateResult.error?.message,
 };
 }
 
       // Update related documents completion status
-      const updatedDocuments:string[] = [];
+      const updatedDocuments: string[] = [];
       if (taskDoc.related_documents?.length > 0) {
         for (const docId of taskDoc.related_documents) {
           try {
@@ -373,7 +383,7 @@ export class DocumentTaskVisionCoordinator {
                 {
                   metadata:{
                     ...docResult.data.metadata,
-                    task_completion_updated:new Date()?.toISOString,
+                    task_completion_updated: new Date()?.toISOString,
 },
 }
               );
@@ -393,20 +403,20 @@ export class DocumentTaskVisionCoordinator {
       logger.info(
         `Task ${taskId} updated successfully, ${updatedDocuments.length} related documents updated``
       );
-      return { success:true, updatedDocuments};
+      return { success: true, updatedDocuments};
 } catch (error) {
-      logger.error(`Error updating task status:`, error);`
-      return { success:false, updatedDocuments:[], error:error.message};
+      logger.error(`Error updating task status:`, error);
+      return { success: false, updatedDocuments:[], error: error.message};
 }
 }
 
   // Private helper methods
 
   private async extractAndGenerateStrategicTasks(
-    vision:StrategicVisionAnalysis,
-    documents:BaseDocumentEntity[]
+    vision: StrategicVisionAnalysis,
+    documents: BaseDocumentEntity[]
   ):Promise<StrategicTask[]> {
-    const tasks:StrategicTask[] = [];
+    const tasks: StrategicTask[] = [];
 
     // Generate tasks from strategic goals
     for (let i = 0; i < vision.strategicGoals.length; i++) {
@@ -418,16 +428,16 @@ export class DocumentTaskVisionCoordinator {
         id:`${goalId}_implementation`,`
         title:`Implement: ${goal}`,`
         description:`Strategic implementation task for goal: ${goal}`,`
-        priority:i < 2 ? 'high : i < 4 ? medium' : ' low',        status: 'todo',        strategicGoalId:goalId,
+        priority: i < 2 ? 'high : i < 4 ? medium' : ' low',        status: 'todo',        strategicGoalId: goalId,
         relatedDocuments:[],
         estimatedEffort: 'large',        tags:['strategic-goal, implementation'],
-        businessValue:vision.businessValue * .8,
-        technicalComplexity:vision.technicalImpact * .7,
+        businessValue: vision.businessValue * .8,
+        technicalComplexity: vision.technicalImpact * .7,
         dependencies:[],
         outcomes:[goal],
-        metrics:vision.keyMetrics,
-        createdAt:new Date(),
-        updatedAt:new Date(),
+        metrics: vision.keyMetrics,
+        createdAt: new Date(),
+        updatedAt: new Date(),
 });
 
       // Create documentation task if no related documents exist
@@ -442,16 +452,16 @@ export class DocumentTaskVisionCoordinator {
           id:`${goalId}_documentation`,`
           title:`Document: ${goal}`,`
           description:`Create documentation for strategic goal: ${goal}`,`
-          priority: 'medium',          status: 'todo',          strategicGoalId:goalId,
+          priority: 'medium',          status: 'todo',          strategicGoalId: goalId,
           relatedDocuments:[],
           estimatedEffort: 'medium',          tags:['documentation, strategic-goal'],
-          businessValue:vision.businessValue * .6,
+          businessValue: vision.businessValue * .6,
           technicalComplexity:.3,
           dependencies:[],
           outcomes:[`${goal} documented`],`
           metrics:['Documentation quality, Clarity score'],
-          createdAt:new Date(),
-          updatedAt:new Date(),
+          createdAt: new Date(),
+          updatedAt: new Date(),
 });
 }
 }
@@ -470,8 +480,8 @@ export class DocumentTaskVisionCoordinator {
         dependencies:[],
         outcomes:[`${risk} mitigated`],`
         metrics:['Risk reduction, Mitigation effectiveness'],
-        createdAt:new Date(),
-        updatedAt:new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
 });
 }
 
@@ -479,10 +489,10 @@ export class DocumentTaskVisionCoordinator {
 }
 
   private async createDocumentTaskLinks(
-    documents:BaseDocumentEntity[],
-    tasks:StrategicTask[]
+    documents: BaseDocumentEntity[],
+    tasks: StrategicTask[]
   ):Promise<DocumentTaskLink[]> {
-    const links:DocumentTaskLink[] = [];
+    const links: DocumentTaskLink[] = [];
 
     for (const doc of documents) {
       const linkedTasks = tasks.filter(
@@ -496,18 +506,18 @@ export class DocumentTaskVisionCoordinator {
       const completedTasks = linkedTasks.filter(
         (task) => task.status ==='completed')      );
       const completionStatus =
-        linkedTasks.length > 0 ? completedTasks.length / linkedTasks.length:0;
+        linkedTasks.length > 0 ? completedTasks.length / linkedTasks.length: 0;
 
       links.push({
-        documentId:doc.id,
-        documentType:doc.type as DocumentType,
-        documentTitle:doc.title,
-        linkedTasks:linkedTasks.map((task) => task.id),
-        strategicGoals:Array.from(
+        documentId: doc.id,
+        documentType: doc.type as DocumentType,
+        documentTitle: doc.title,
+        linkedTasks: linkedTasks.map((task) => task.id),
+        strategicGoals: Array.from(
           new Set(linkedTasks.map((task) => task.strategicGoalId))
         ),
         completionStatus,
-        lastUpdated:new Date(),
+        lastUpdated: new Date(),
 });
 }
 
@@ -515,9 +525,9 @@ export class DocumentTaskVisionCoordinator {
 }
 
   private calculateDashboardMetrics(
-    vision:StrategicVisionAnalysis,
-    tasks:StrategicTask[],
-    documentLinks:DocumentTaskLink[]
+    vision: StrategicVisionAnalysis,
+    tasks: StrategicTask[],
+    documentLinks: DocumentTaskLink[]
   ) {
     const totalTasks = tasks.length;
     const completedTasks = tasks.filter(
@@ -567,14 +577,14 @@ export class DocumentTaskVisionCoordinator {
 }
 
   private async generateRecommendations(
-    vision:StrategicVisionAnalysis,
-    tasks:StrategicTask[],
-    documentLinks:DocumentTaskLink[]
+    vision: StrategicVisionAnalysis,
+    tasks: StrategicTask[],
+    documentLinks: DocumentTaskLink[]
   ) {
-    const missingDocuments:string[] = [];
-    const suggestedTasks:Partial<StrategicTask>[] = [];
-    const riskMitigations:string[] = [];
-    const optimizationOpportunities:string[] = [];
+    const missingDocuments: string[] = [];
+    const suggestedTasks: Partial<StrategicTask>[] = [];
+    const riskMitigations: string[] = [];
+    const optimizationOpportunities: string[] = [];
 
     // Identify missing documentation
     for (const goal of vision.strategicGoals) {
@@ -583,7 +593,7 @@ export class DocumentTaskVisionCoordinator {
           sg.includes(goal?.toLowerCase.replace(/\s+/g, '_'))')        )
       );
       if (!hasDoc) {
-        missingDocuments.push(`Documentation for:${goal}`);`
+        missingDocuments.push(`Documentation for:${goal}`);
 }
 }
 
@@ -601,7 +611,7 @@ export class DocumentTaskVisionCoordinator {
           task.title?.toLowerCase.includes('risk') &&')          task.description?.toLowerCase.includes(risk?.toLowerCase)
       );
       if (!hasTask) {
-        riskMitigations.push(`Create mitigation plan for:$risk`);`
+        riskMitigations.push(`Create mitigation plan for: ${$risk}`);
 }
 }
 
@@ -623,7 +633,7 @@ export class DocumentTaskVisionCoordinator {
 };
 }
 
-  private createTaskDocumentContent(task:StrategicTask): string 
+  private createTaskDocumentContent(task: StrategicTask): string 
     return `# ${task.title}`
 
 ## Description

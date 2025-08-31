@@ -4,9 +4,9 @@
  */
 
 
-import { spawn } from 'node:child_process';
-import { promises as fs } from 'node:fs';
-import * as path from 'node:path';
+import { spawn } from 'node: child_process';
+import { promises as fs } from 'node: fs';
+import * as path from 'node: path';
 import { err, getLogger, ok } from '@claude-zen/foundation';
 import which from 'which';
 
@@ -47,7 +47,7 @@ export class BeamBridge {
     const __analysisConfig = { ...this.config, ...config};
 
     try {
-      this.logger.info(`Starting BEAM analysis of project: ${projectPath}`);`
+      this.logger.info(`Starting BEAM analysis of project: ${projectPath}`);
 
       // 1. Detect project structure
       const projectResult = await this.detectProject(projectPath);
@@ -380,7 +380,7 @@ export class BeamBridge {
       const _results: any[] = [];
       
       for (const rule of rules) {
-        this.logger.debug(`Applying custom rule: ${rule.name}`);`
+        this.logger.debug(`Applying custom rule: ${rule.name}`);
         const ruleResult = await this.applyCustomRule(project, rule);
         if (ruleResult.isOk()) {
           results.push(ruleResult.value);
@@ -396,7 +396,7 @@ export class BeamBridge {
 }
 
   private async analyzeMixProject(project: BeamProject): Promise<void> {
-    this.logger.debug(`Analyzing Mix project: ${project.name}`);`
+    this.logger.debug(`Analyzing Mix project: ${project.name}`);
     
     try {
       const mixFile = path.join(project.rootPath, 'mix.exs');')      const mixExists = await fs.access(mixFile).then(() => true).catch(() => false);
@@ -407,12 +407,12 @@ export class BeamBridge {
         project.applications = this.parseMixApplications(mixContent);
 }
 } catch (error) {
-      this.logger.warn(`Failed to analyze Mix project: $error`);`
+      this.logger.warn(`Failed to analyze Mix project: ${error}`);
 }
 }
 
   private async analyzeRebarProject(project: BeamProject): Promise<void> {
-    this.logger.debug(`Analyzing Rebar project: ${project.name}`);`
+    this.logger.debug(`Analyzing Rebar project: ${project.name}`);
     
     try {
       const rebarFile = path.join(project.rootPath, 'rebar.config');')      const rebarExists = await fs.access(rebarFile).then(() => true).catch(() => false);
@@ -423,12 +423,12 @@ export class BeamBridge {
         project.applications = this.parseRebarApplications(rebarContent);
 }
 } catch (error) {
-      this.logger.warn(`Failed to analyze Rebar project: $error`);`
+      this.logger.warn(`Failed to analyze Rebar project: ${error}`);
 }
 }
 
   private async analyzeGleamProject(project: BeamProject): Promise<void> {
-    this.logger.debug(`Analyzing Gleam project: ${project.name}`);`
+    this.logger.debug(`Analyzing Gleam project: ${project.name}`);
     
     try {
       const gleamFile = path.join(project.rootPath, 'gleam.toml');')      const gleamExists = await fs.access(gleamFile).then(() => true).catch(() => false);
@@ -439,7 +439,7 @@ export class BeamBridge {
         project.applications = this.parseGleamApplications(gleamContent);
 }
 } catch (error) {
-      this.logger.warn(`Failed to analyze Gleam project: $error`);`
+      this.logger.warn(`Failed to analyze Gleam project: ${error}`);
 }
 }
 
@@ -456,7 +456,7 @@ export class BeamBridge {
       lfe:['.lfe'],
 };
 
-    this.logger.debug(`Detecting additional languages in ${projectPath}`);`
+    this.logger.debug(`Detecting additional languages in ${projectPath}`);
     
     try {
       for (const [lang, exts] of Object.entries(extensions)) {
@@ -466,13 +466,13 @@ export class BeamBridge {
             const hasFiles = await this.hasFilesWithExtension(projectPath, _ext);
             if (hasFiles && !additional.includes(lang as BeamLanguage)) {
               additional.push(lang as BeamLanguage);
-              this.logger.debug(`Detected _additional language: $lang`);`
+              this.logger.debug(`Detected _additional language: ${lang}`);
 }
 }
 }
 }
 } catch (error) {
-      this.logger.warn(`Error detecting additional languages: ${error}`);`
+      this.logger.warn(`Error detecting additional languages: ${error}`);
 }
 
     return additional;
@@ -481,7 +481,7 @@ export class BeamBridge {
   private async calculateMetrics(project: BeamProject,
     startTime: number
   ): Promise<BeamAnalysisMetrics> {
-    this.logger.debug(`Calculating metrics for project: $project.name`);`
+    this.logger.debug(`Calculating metrics for project: ${project.name}`);
     
     try {
       const metrics = await this.analyzeProjectMetrics(project.rootPath);
@@ -504,22 +504,22 @@ export class BeamBridge {
 },
 };
 } catch (error) {
-      this.logger.warn(`Error calculating metrics: ${error}`);`
+      this.logger.warn(`Error calculating metrics: ${error}`);
       return {
         totalTime: Date.now() - startTime,
-        filesAnalyzed:0,
-        linesOfCode:0,
-        functions:0,
-        modules:0,
-        processes:0,
-        genServers:0,
-        supervisors:0,
+        filesAnalyzed: 0,
+        linesOfCode: 0,
+        functions: 0,
+        modules: 0,
+        processes: 0,
+        genServers: 0,
+        supervisors: 0,
         breakdown:{
-          parsing:0,
-          dialyzer:0,
-          sobelow:0,
-          elvis:0,
-          custom:0,
+          parsing: 0,
+          dialyzer: 0,
+          sobelow: 0,
+          elvis: 0,
+          custom: 0,
 },
 };
 }
@@ -534,7 +534,7 @@ export class BeamBridge {
         id:`dialyzer-$warning.type || 'warning'`,`
         message: warning.message || 'Dialyzer warning',        severity:'medium' as const,
         _category:'type-safety' as const,
-        _location: warning.location || file: ', line:1,
+        _location: warning.location || file: ', line: 1,
         tool: 'dialyzer',});
 }
     
@@ -567,7 +567,7 @@ export class BeamBridge {
         id:`elvis-${violation.rule || 'violation'}`,`
         message: violation.message || 'Elvis style violation',        severity:'low' as const,
         category:'maintainability' as const,
-        location: violation.location || { file: ', line:1},
+        location: violation.location || { file: ', line: 1},
         tool: 'elvis',});
 }
     
@@ -594,7 +594,7 @@ export class BeamBridge {
       child.on('close', (code) => {
     ')        if (code === 0) {
           resolve(output.trim().split('\n')[0]||' unknown');')} else {
-          reject(new Error(`Failed to get version for ${tool}`));`
+          reject(new Error(`Failed to get version for ${tool}`));
 }
 });
 

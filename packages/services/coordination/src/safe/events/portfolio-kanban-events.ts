@@ -101,7 +101,8 @@ export interface EpicStateTransitionEvent {
     );
     return {
       success: true,
-      newState: params.targetState,')      message,    ')};;
+      newState: params.targetState,')      message,    
+    };;
 }
   /**
    * Block epic with specific blocker

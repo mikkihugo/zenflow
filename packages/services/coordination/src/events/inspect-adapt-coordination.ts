@@ -156,15 +156,15 @@ export class InspectAdaptCoordinationManager extends EventBus {
    * Setup event handlers
    */
   private setupEventHandlers(): void {
-    this.on('ia:workshop-start', this.handleWorkshopStart.bind(this));
-    this.on('ia:problem-identified', this.handleProblemIdentified.bind(this));
-    this.on('ia:problem-voting', this.handleProblemVoting.bind(this));
+    this.on('ia: workshop-start', this.handleWorkshopStart.bind(this));
+    this.on('ia: problem-identified', this.handleProblemIdentified.bind(this));
+    this.on('ia: problem-voting', this.handleProblemVoting.bind(this));
     this.on(
-      'ia:workshop-facilitation',
+      'ia: workshop-facilitation',
       this.handleWorkshopFacilitation.bind(this)
     );
-    this.on('ia:demo-feedback', this.handleDemoFeedback.bind(this));
-    this.on('ia:metrics-review', this.handleMetricsReview.bind(this));
+    this.on('ia: demo-feedback', this.handleDemoFeedback.bind(this));
+    this.on('ia: metrics-review', this.handleMetricsReview.bind(this));
   }
 
   /**
@@ -206,7 +206,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
       `I&A Workshop created: ${config.artName} PI ${config.piNumber}`
     );
 
-    this.emit('ia:workshop-created', { workshopId, workshop });
+    this.emit('ia: workshop-created', { workshopId, workshop });
     return workshop;
   }
 
@@ -225,7 +225,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
     );
 
     // Initialize problem identification phase
-    this.emit('ia:phase-start', {
+    this.emit('ia: phase-start', {
       workshopId: data.workshopId,
       phase: 'problem-identification',
       duration: 90, // minutes
@@ -257,7 +257,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
     }
 
     logger.info(`Problem identified: ${problem.title}`);
-    this.emit('ia:problem-added', { problemId, problem });
+    this.emit('ia: problem-added', { problemId, problem });
   }
 
   /**
@@ -279,7 +279,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
     this.problems.set(data.problemId, problem);
     logger.info(`Problem voted: ${problem.title} - ${data.votes} votes`);
 
-    this.emit('ia:problem-prioritized', { problemId: data.problemId, problem });
+    this.emit('ia: problem-prioritized', { problemId: data.problemId, problem });
   }
 
   /**
@@ -317,7 +317,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
     this.solvingWorkshops.set(workshopId, solvingWorkshop);
     logger.info(`Problem-solving workshop started: ${problem.title}`);
 
-    this.emit('ia:solving-workshop-started', { workshopId, solvingWorkshop });
+    this.emit('ia: solving-workshop-started', { workshopId, solvingWorkshop });
   }
 
   /**
@@ -337,7 +337,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
     this.solvingWorkshops.set(workshopId, workshop);
 
     logger.info(`Problem-solving workshop completed: ${workshopId}`);
-    this.emit('ia:solving-workshop-completed', { workshopId, outcomes });
+    this.emit('ia: solving-workshop-completed', { workshopId, outcomes });
   }
 
   /**
@@ -361,7 +361,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
     }
 
     logger.info(`Demo feedback received for feature: ${data.featureId}`);
-    this.emit('ia:feedback-recorded', {
+    this.emit('ia: feedback-recorded', {
       demoId: data.demoId,
       featureId: data.featureId,
     });
@@ -384,7 +384,7 @@ export class InspectAdaptCoordinationManager extends EventBus {
     this.workshops.set(data.workshopId, workshop);
 
     logger.info(`Metrics reviewed for workshop: ${data.workshopId}`);
-    this.emit('ia:metrics-updated', {
+    this.emit('ia: metrics-updated', {
       workshopId: data.workshopId,
       metrics: data.metrics,
     });

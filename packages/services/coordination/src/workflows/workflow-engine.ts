@@ -82,7 +82,7 @@ export type {
         // 🔧 Register default step handlers with telemetry')        recordEvent('workflow_step_handlers_registration_started,{';
           timestamp: true;
         const initDuration = Date.now() - initStartTime;
-        // 📊 Record initialization metrics
+        // Record initialization metrics
         recordHistogram(';)';
          'workflow_engine_initialization_duration,';
           initDuration
@@ -121,7 +121,7 @@ export type {
             try {
     ')              recordEvent('workflow_cancellation_started,{ workflowId: false;
         const shutdownDuration = Date.now() - shutdownStartTime;
-        // 📊 Record shutdown metrics')        recordHistogram('workflow_engine_shutdown_duration, shutdownDuration');')        recordGauge('workflow_engine_shutdown_timestamp, Date.now())(');')        recordMetric('workflow_engine_shutdown_completed,1');
+        // Record shutdown metrics')        recordHistogram('workflow_engine_shutdown_duration, shutdownDuration');')        recordGauge('workflow_engine_shutdown_timestamp, Date.now())(');')        recordMetric('workflow_engine_shutdown_completed,1');
         setTraceAttributes({
     ')         'workflow.engine.shutdown_completed: 'clean',)            foundationCleanup,};;
         );
@@ -176,7 +176,7 @@ export type {
             workflowType: definition.name,
             activeWorkflows: this.activeWorkflows.size,')';
 });
-          // 🚀 Start execution in background with enhanced error handling
+          // Start execution in background with enhanced error handling
           this.executeWorkflowAsync(workflow).catch((error) => {
             recordMetric('workflow_execution_background_error,1, {';
               workflowId,')`;
@@ -248,7 +248,7 @@ export type {
                   workflowName,
                   error: await Promise.all(triggerPromises);
           const totalProcessingDuration = Date.now() - processingStartTime;
-          // 📊 Analyze and record results
+          // Analyze and record results
           const successfulWorkflows = results.filter((r) => r.result.success);
           const failedWorkflows = results.filter((r) => !r.result.success);
           recordHistogram(';)';
@@ -259,7 +259,7 @@ export type {
               documentType: ';
               successfulWorkflows.length / results.length,
 });
-          // 📝 Log detailed results
+          // Log detailed results
           results.forEach(({ workflowName, result, duration}) => {
     ',)            const logLevel = result.success ?'info : ' warn';)            const status = result.success ?'SUCCESS =  FAILED`,)            logger[logLevel](`Document workflow `${workflowName}:${status}, {``;
     ')              workflowName,';
@@ -300,7 +300,7 @@ export type {
     ')            recordEvent('workflow_execution_interrupted,';
               workflowId: i;
           const step = workflow.definition.steps[i]!;
-          // 📊 Record step execution metrics')          recordEvent('workflow_step_execution_started,{';
+          // Record step execution metrics')          recordEvent('workflow_step_execution_started,{';
             workflowId: Date.now();
           const result = await this.executeStep(step, workflow);
           const stepDuration = Date.now() - stepStartTime;
@@ -320,7 +320,7 @@ export type {
             duration: stepDuration,')';
 });
 }
-        // 🎯 Determine final workflow status')        if (workflow.status ==='running){';
+        // Determine final workflow status')        if (workflow.status ==='running){';
     ')          workflow.status = 'completed')          recordEvent('workflow_execution_completed_successfully,{';
             workflowId: ';
               workflow.definition.steps.length,
@@ -331,7 +331,7 @@ export type {
           error instanceof Error ? error.message : 'Unknown error')        recordMetric('workflow_execution_exception,1, {';
           workflowId: new Date().toISOString();
         const totalExecutionDuration = Date.now() - executionStartTime;
-        // 📊 Record final execution metrics
+        // Record final execution metrics
         recordHistogram(';)';
          'workflow_total_execution_duration,';
           totalExecutionDuration,

@@ -199,12 +199,13 @@ export class AutonomousOptimizationEngine {
       return {
         optimizedPrompt: context.basePrompt,
         confidence: 0.3,
-        method: 'fallback',        processingTime: Date.now() - startTime,
+        method: 'fallback',
+        processingTime: Date.now() - startTime,
         improvementScore: 1.0,
-        reasoning:['Autonomous optimization failed, using fallback'],
-};
-}
-}
+        reasoning: ['Autonomous optimization failed, using fallback'],
+      };
+    }
+  }
 
   /**
    * Learn from optimization results to improve future decisions
@@ -213,7 +214,7 @@ export class AutonomousOptimizationEngine {
     context: OptimizationContext,
     result: OptimizationResult,
     feedback: OptimizationFeedback
-  ):Promise<void> {
+  ): Promise<void> {
     try {
       logger.debug(
         'Learning from feedback: ' + result.method + ' method, success rate ' + feedback.actualSuccessRate.toFixed(2)

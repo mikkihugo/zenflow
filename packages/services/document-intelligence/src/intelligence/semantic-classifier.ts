@@ -12,20 +12,20 @@ const logger = getLogger('SemanticClassifier');
  * Semantic indicators with weighted importance levels
  */
 export interface SemanticIndicators {
-  high:string[];
-  medium:string[];
-  low:string[];
+  high: string[];
+  medium: string[];
+  low: string[];
 }
 
 /**
  * Document semantic patterns for classification
  */
 export interface SemanticPatterns {
-  algorithm:SemanticIndicators;
-  technical:SemanticIndicators;
-  implementation:SemanticIndicators;
-  research:SemanticIndicators;
-  strategic:SemanticIndicators;
+  algorithm: SemanticIndicators;
+  technical: SemanticIndicators;
+  implementation: SemanticIndicators;
+  research: SemanticIndicators;
+  strategic: SemanticIndicators;
 }
 
 /**
@@ -33,14 +33,14 @@ export interface SemanticPatterns {
  */
 export interface DocumentClassification {
   documentType: 'research|technical|algorithm|implementation|strategic;
-'  confidence:number; // 0-1 confidence score
-  algorithmDensity:number; // 0-1 algorithm content density
-  conceptComplexity:number; // 0-1 concept complexity score
-  technicalDepth:number; // 0-1 technical depth measure
+'  confidence: number; // 0-1 confidence score
+  algorithmDensity: number; // 0-1 algorithm content density
+  conceptComplexity: number; // 0-1 concept complexity score
+  technicalDepth: number; // 0-1 technical depth measure
   patterns:{
-    detected:string[];
-    confidence:Record<string, number>;
-    weights:Record<string, number>;
+    detected: string[];
+    confidence: Record<string, number>;
+    weights: Record<string, number>;
 };
   recommendedStrategy: 'semantic_research_focused|algorithm_preserve_integrity|concept_implementation_hybrid|strategic_vision_analysis;
 '}
@@ -49,8 +49,8 @@ export interface DocumentClassification {
  * Semantic classification configuration
  */
 export interface ClassifierConfig {
-  confidenceThreshold:number;
-  enableDeepAnalysis:boolean;
+  confidenceThreshold: number;
+  enableDeepAnalysis: boolean;
   customPatterns?:Partial<SemanticPatterns>;
   weightingStrategy:'balanced' | ' algorithm_focused' | ' concept_focused';
 }
@@ -60,13 +60,13 @@ export interface ClassifierConfig {
  */
 export class SemanticClassifier extends TypedEventBase {
 
-  constructor(config:Partial<ClassifierConfig> = {}) {
+  constructor(config: Partial<ClassifierConfig> = {}) {
     super();
     
     this.config = {
-      confidenceThreshold:config.confidenceThreshold||0.7,
-      enableDeepAnalysis:config.enableDeepAnalysis !== false,
-      weightingStrategy:config.weightingStrategy||'balanced',      ...config
+      confidenceThreshold: config.confidenceThreshold||0.7,
+      enableDeepAnalysis: config.enableDeepAnalysis !== false,
+      weightingStrategy: config.weightingStrategy||'balanced',      ...config
 };
 
     this.semanticPatterns = this.initializeSemanticPatterns(config.customPatterns);
@@ -76,7 +76,7 @@ export class SemanticClassifier extends TypedEventBase {
    * Initialize semantic patterns for document classification
    */
   private initializeSemanticPatterns(customPatterns?:Partial<SemanticPatterns>): SemanticPatterns {
-    const defaultPatterns:SemanticPatterns = {
+    const defaultPatterns: SemanticPatterns = {
       algorithm:{
         high:['algorithm',    'procedure',    'method',    'approach',    'solution',    'implementation'],
         medium:['step',    'process',    'workflow',    'sequence',    'iteration',    'recursive'],
@@ -116,7 +116,7 @@ export class SemanticClassifier extends TypedEventBase {
   /**
    * Classify document content using semantic analysis
    */
-  async classifyDocument(content:string): Promise<DocumentClassification> {
+  async classifyDocument(content: string): Promise<DocumentClassification> {
     logger.info('Starting semantic document classification');')
     try {
       // Calculate weighted scores for each category
@@ -144,7 +144,7 @@ export class SemanticClassifier extends TypedEventBase {
         technicalDepth
       );
 
-      const classification:DocumentClassification = {
+      const classification: DocumentClassification = {
         documentType,
         confidence,
         algorithmDensity,
@@ -155,19 +155,19 @@ export class SemanticClassifier extends TypedEventBase {
 };
 
       this.emit('classification_complete', classification);
-      logger.info(`Document classified as:$documentType(confidence: ${confidence.toFixed(2)})`);`
+      logger.info(`Document classified as:$documentType(confidence: ${confidence.toFixed(2)})`);
 
       return classification;
 } catch (error) {
-      logger.error('Error during document classification:', error);')      throw new Error(`Semantic classification failed:$error`);`
+      logger.error('Error during document classification:', error);')      throw new Error(`Semantic classification failed: ${$error}`);
 }
 }
 
   /**
    * Calculate weighted scores for each semantic category
    */
-  private async calculateCategoryScores(content:string): Promise<Record<string, number>> {
-    const scores:Record<string, number> = {};
+  private async calculateCategoryScores(content: string): Promise<Record<string, number>> {
+    const scores: Record<string, number> = {};
     const contentLower = content.toLowerCase();
 
     for (const [category, indicators] of Object.entries(this.semanticPatterns)) {
@@ -180,8 +180,8 @@ export class SemanticClassifier extends TypedEventBase {
   /**
    * Calculate weighted score for semantic indicators
    */
-  private calculateWeightedScore(content:string, indicators:SemanticIndicators): number {
-    const weights = { high:3.0, medium:2.0, low:1.0};
+  private calculateWeightedScore(content: string, indicators: SemanticIndicators): number {
+    const weights = { high: 3.0, medium: 2.0, low: 1.0};
     let totalScore = 0;
     let maxPossibleScore = 0;
 
@@ -193,23 +193,23 @@ export class SemanticClassifier extends TypedEventBase {
         
         // Count occurrences with context awareness
         const regex = new RegExp(`\\b${term}\\b`, 'gi');')        const matches = content.match(regex);
-        const count = matches ? matches.length:0;
+        const count = matches ? matches.length: 0;
         
         if (count > 0) {
           // Apply diminishing returns for multiple occurrences
-          const scoreContribution = weight * Math.min(count, 3) * (count > 1 ? 0.8:1.0);
+          const scoreContribution = weight * Math.min(count, 3) * (count > 1 ? 0.8: 1.0);
           totalScore += scoreContribution;
 }
 }
 }
 
-    return maxPossibleScore > 0 ? totalScore / maxPossibleScore:0;
+    return maxPossibleScore > 0 ? totalScore / maxPossibleScore: 0;
 }
 
   /**
    * Determine document type based on category scores
    */
-  private determineDocumentType(categoryScores:Record<string, number>):DocumentClassification['documentType'] {
+  private determineDocumentType(categoryScores: Record<string, number>):DocumentClassification['documentType'] {
     ')    const sortedCategories = Object.entries(categoryScores)
       .sort(([, a], [, b]) => b - a);
 
@@ -217,11 +217,11 @@ export class SemanticClassifier extends TypedEventBase {
     
     // Apply confidence threshold
     if (topScore < this.config.confidenceThreshold) {
-      logger.warn(`Low confidence classification:${topCategory} (${topScore.toFixed(2)})`);`
+      logger.warn(`Low confidence classification:${topCategory} (${topScore.toFixed(2)})`);
 }
 
     // Map categories to document types
-    const categoryMap:Record<string, DocumentClassification['documentType']> = {
+    const categoryMap: Record<string, DocumentClassification['documentType']> = {
     ')      algorithm: 'algorithm',      technical: 'technical',    ')      implementation: 'implementation',      research: 'research',      strategic: 'strategic'};')
     return categoryMap[topCategory]||'technical;
 }
@@ -229,7 +229,7 @@ export class SemanticClassifier extends TypedEventBase {
   /**
    * Calculate algorithm density in content
    */
-  private calculateAlgorithmDensity(content:string): number {
+  private calculateAlgorithmDensity(content: string): number {
     const algorithmPatterns = [
       /algorithms+d+/gi,
       /procedures+d+/gi,
@@ -254,7 +254,7 @@ export class SemanticClassifier extends TypedEventBase {
   /**
    * Calculate concept complexity score
    */
-  private calculateConceptComplexity(content:string): number {
+  private calculateConceptComplexity(content: string): number {
     const complexityIndicators = [
       /\b(theorem|lemma|proof|corollary|proposition)\b/gi,
       /\b(optimization|complexity|efficiency|performance)\b/gi,
@@ -279,7 +279,7 @@ export class SemanticClassifier extends TypedEventBase {
   /**
    * Calculate technical depth measure
    */
-  private calculateTechnicalDepth(content:string): number {
+  private calculateTechnicalDepth(content: string): number {
     const technicalPatterns = [
       /\b(API|SDK|framework|library|module|component)\b/gi,
       /\b(database|SQL|NoSQL|schema|migration)\b/gi,
@@ -304,10 +304,10 @@ export class SemanticClassifier extends TypedEventBase {
   /**
    * Detect patterns and generate confidence scores
    */
-  private detectPatterns(content:string): DocumentClassification['patterns'] {
-    ')    const detected:string[] = [];
-    const confidence:Record<string, number> = {};
-    const weights:Record<string, number> = {};
+  private detectPatterns(content: string): DocumentClassification['patterns'] {
+    ')    const detected: string[] = [];
+    const confidence: Record<string, number> = {};
+    const weights: Record<string, number> = {};
 
     for (const [category, indicators] of Object.entries(this.semanticPatterns)) {
       const categoryScore = this.calculateWeightedScore(content.toLowerCase(), indicators);
@@ -325,13 +325,13 @@ export class SemanticClassifier extends TypedEventBase {
   /**
    * Get pattern weight based on category
    */
-  private getPatternWeight(category:string): number {
-    const weightMap:Record<string, number> = {
-      algorithm:1.0,
-      technical:0.9,
-      implementation:0.8,
-      research:0.7,
-      strategic:0.85
+  private getPatternWeight(category: string): number {
+    const weightMap: Record<string, number> = {
+      algorithm: 1.0,
+      technical: 0.9,
+      implementation: 0.8,
+      research: 0.7,
+      strategic: 0.85
 };
 
     return weightMap[category]||0.5;
@@ -341,8 +341,8 @@ export class SemanticClassifier extends TypedEventBase {
    * Calculate overall confidence score
    */
   private calculateOverallConfidence(
-    categoryScores:Record<string, number>,
-    patterns:DocumentClassification['patterns']')  ):number {
+    categoryScores: Record<string, number>,
+    patterns: DocumentClassification['patterns']')  ):number {
     const maxCategoryScore = Math.max(...Object.values(categoryScores));
     const patternConfidence = patterns.detected.length > 0 
       ? Object.values(patterns.confidence).reduce((sum, conf) => sum + conf, 0) / patterns.detected.length
@@ -356,10 +356,10 @@ export class SemanticClassifier extends TypedEventBase {
    * Recommend segmentation strategy based on analysis
    */
   private recommendSegmentationStrategy(
-    documentType:DocumentClassification['documentType'],
-    algorithmDensity:number,
-    conceptComplexity:number,
-    technicalDepth:number
+    documentType: DocumentClassification['documentType'],
+    algorithmDensity: number,
+    conceptComplexity: number,
+    technicalDepth: number
   ):DocumentClassification['recommendedStrategy'] {
     ')    // DeepCode-style strategy selection logic
     if (documentType === 'research' && algorithmDensity > 0.3) {
@@ -391,7 +391,7 @@ export class SemanticClassifier extends TypedEventBase {
   /**
    * Update classifier configuration
    */
-  public updateConfig(newConfig:Partial<ClassifierConfig>): void {
+  public updateConfig(newConfig: Partial<ClassifierConfig>): void {
     this.config = { ...this.config, ...newConfig};
     logger.info('Semantic classifier configuration updated');')}
 }

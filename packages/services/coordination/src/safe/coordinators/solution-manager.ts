@@ -127,14 +127,14 @@ export interface ValueDeliveryDashboard {
  * Solution Manager Events
  */
 export interface SolutionManagerEvents {
-  'solution:strategic-theme-analyzed': { themeId: string; decomposition: any };
-  'solution:portfolio-epic-created': { epicId: string; epic: PortfolioEpic };
-  'solution:program-increment-planned': { piId: string; pi: ProgramIncrement };
-  'solution:coordination-established': {
+  'solution: strategic-theme-analyzed': { themeId: string; decomposition: any };
+  'solution: portfolio-epic-created': { epicId: string; epic: PortfolioEpic };
+  'solution: program-increment-planned': { piId: string; pi: ProgramIncrement };
+  'solution: coordination-established': {
     solutionId: string;
     coordination: SolutionCoordination;
   };
-  'solution:value-delivered': {
+  'solution: value-delivered': {
     solutionId: string;
     metrics: ValueDeliveryDashboard;
   };
@@ -189,7 +189,7 @@ export class SolutionManager extends EventBus {
       `Strategic theme analyzed: ${theme.title} - ${portfolioEpics.length} epics, value: ${estimatedValue}`
     );
 
-    this.emit('solution:strategic-theme-analyzed', {
+    this.emit('solution: strategic-theme-analyzed', {
       themeId: theme.id,
       decomposition: { portfolioEpics, estimatedValue, complexity },
     });
@@ -236,7 +236,7 @@ export class SolutionManager extends EventBus {
       `Program Increment planned: ${programIncrement.title} with ${piFeatures.length} features`
     );
 
-    this.emit('solution:program-increment-planned', {
+    this.emit('solution: program-increment-planned', {
       piId: programIncrement.id,
       pi: programIncrement,
     });
@@ -269,7 +269,7 @@ export class SolutionManager extends EventBus {
       `Solution coordination established for ${involvedARTs.length} ARTs`
     );
 
-    this.emit('solution:coordination-established', {
+    this.emit('solution: coordination-established', {
       solutionId,
       coordination,
     });
@@ -313,7 +313,7 @@ export class SolutionManager extends EventBus {
       },
     };
 
-    this.emit('solution:value-delivered', { solutionId, metrics: dashboard });
+    this.emit('solution: value-delivered', { solutionId, metrics: dashboard });
     return dashboard;
   }
 

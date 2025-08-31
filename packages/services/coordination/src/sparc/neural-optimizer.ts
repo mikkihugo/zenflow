@@ -122,7 +122,7 @@ export class SPARCNeuralOptimizer {
       const handler = (result: BrainPredictionResult) => {
         if (result.requestId === request.requestId) {
           clearTimeout(timeout);
-          eventDrivenBrain.off('brain:prediction-complete', handler);
+          eventDrivenBrain.off('brain: prediction-complete', handler);
           
           // Convert Brain prediction to SPARC config
           const config = this.convertPredictionToConfig(result, request);
@@ -130,8 +130,8 @@ export class SPARCNeuralOptimizer {
         }
       };
 
-      eventDrivenBrain.on('brain:prediction-complete', handler);
-      eventDrivenBrain.emit('brain:predict-request', request);
+      eventDrivenBrain.on('brain: prediction-complete', handler);
+      eventDrivenBrain.emit('brain: predict-request', request);
     });
   }
 

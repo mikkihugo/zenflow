@@ -4,7 +4,7 @@
  * Professional workflow engine using battle-tested libraries for reliability.
  */
 
-import { mkdir } from 'node:fs/promises';
+import { mkdir } from 'node: fs/promises';
 import {
   getLogger,
   generateUUID,
@@ -327,7 +327,7 @@ export class WorkflowEngine extends EventEmitter {
     this.activeWorkflows.set(workflowId, workflow);
 
     // Emit workflow started event for coordination
-    this.emit('workflow:started', {
+    this.emit('workflow: started', {
       workflowId,
       definitionName: definition.name,
       context: initialContext,
@@ -381,7 +381,7 @@ export class WorkflowEngine extends EventEmitter {
     await this.saveWorkflow(workflow);
 
     // Enhanced event coordination
-    this.emit('workflow:completed', {
+    this.emit('workflow: completed', {
       workflowId: workflow.id,
       definitionName: workflow.definition.name,
       status: workflow.status,
@@ -404,7 +404,7 @@ export class WorkflowEngine extends EventEmitter {
       await this.saveWorkflow(workflow);
 
       // Emit pause event for coordination
-      this.emit('workflow:paused', {
+      this.emit('workflow: paused', {
         workflowId,
         definitionName: workflow.definition.name,
         currentStep: workflow.currentStep,
@@ -424,7 +424,7 @@ export class WorkflowEngine extends EventEmitter {
     const workflow = this.activeWorkflows.get(workflowId);
     if (workflow && workflow.status === 'paused') {
       // Emit resume event for coordination
-      this.emit('workflow:resumed', {
+      this.emit('workflow: resumed', {
         workflowId,
         definitionName: workflow.definition.name,
         currentStep: workflow.currentStep,
@@ -454,7 +454,7 @@ export class WorkflowEngine extends EventEmitter {
       await this.saveWorkflow(workflow);
 
       // Emit cancellation event for coordination
-      this.emit('workflow:cancelled', {
+      this.emit('workflow: cancelled', {
         workflowId,
         definitionName: workflow.definition.name,
         currentStep: workflow.currentStep,
@@ -541,7 +541,7 @@ export class WorkflowEngine extends EventEmitter {
     logger.info('Workflow engine shutting down...');
 
     // Emit shutdown started event
-    this.emit('workflow-engine:shutdown-started', {
+    this.emit('workflow-engine: shutdown-started', {
       activeWorkflows: this.activeWorkflows.size,
       scheduledTasks: this.scheduledTasks.size,
       timestamp: new Date(),
@@ -571,7 +571,7 @@ export class WorkflowEngine extends EventEmitter {
     this.activeWorkflows.clear();
 
     // Emit shutdown complete event
-    this.emit('workflow-engine:shutdown-complete', {
+    this.emit('workflow-engine: shutdown-complete', {
       timestamp: new Date(),
     });
 

@@ -585,7 +585,8 @@ export class ARTSyncCoordination {
       canResolveAtARTLevel,
       targetLevel,
       resolutionPlan: 'session_initialization,',
-'      coordination_data: 'in_progress')};;
+'      coordination_data: 'in_progress
+    };;
   private async escalateDependency(
     dependency: true;
 }

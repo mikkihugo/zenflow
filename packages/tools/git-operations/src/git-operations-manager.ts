@@ -7,11 +7,11 @@
  *
  * Core Features:
  * - 🌳 Git worktree operations (primary workflow)
- * - 🔄 Branch management and merge operations
+ * - Branch management and merge operations
  * - 🤖 AI-powered merge conflict resolution
  * - 📦 Safe sandbox operations for all git commands
  * - 🧹 Automated tree maintenance and cleanup
- * - ⚡ Push/pull coordination with remote repositories
+ * - Push/pull coordination with remote repositories
  * - 🛡️ Environment-controlled secure operations
  *
  * @author Claude Code Zen Team
@@ -19,8 +19,8 @@
  * @since 2024-01-01
  */
 
-import * as fs from 'node:fs/promises';
-import * as path from 'node:path';
+import * as fs from 'node: fs/promises';
+import * as path from 'node: path';
 import * as cron from 'node-cron';
 import type { SimpleGit, BranchSummary } from 'simple-git';
 import { getLogger, EventEmitter, type EventMap } from '@claude-zen/foundation';
@@ -28,11 +28,11 @@ import { getLogger, EventEmitter, type EventMap } from '@claude-zen/foundation';
 // Constants for commonly used strings to avoid duplication
 const UNKNOWN_ERROR_MESSAGE = 'Unknown error';
 const SUCCESS_MESSAGES = {
-  REPOSITORY_CLONED: '✅ Repository cloned successfully',
-  BRANCH_CREATED: '✅ Branch created successfully', 
-  BRANCH_DELETED: '✅ Branch deleted successfully',
-  BRANCH_MERGED: '✅ Branch merged successfully',
-  BRANCH_REBASED: '✅ Branch rebased successfully',
+  REPOSITORY_CLONED: 'Repository cloned successfully',
+  BRANCH_CREATED: 'Branch created successfully', 
+  BRANCH_DELETED: 'Branch deleted successfully',
+  BRANCH_MERGED: 'Branch merged successfully',
+  BRANCH_REBASED: 'Branch rebased successfully',
 } as const;
 
 // Real implementation of Git sandbox for secure operations
@@ -68,8 +68,8 @@ class SimpleGitSandbox {
     error?: string;
   }> {
     // Execute git command safely in sandbox
-    const { exec } = await import('node:child_process');
-    const { promisify } = await import('node:util');
+    const { exec } = await import('node: child_process');
+    const { promisify } = await import('node: util');
     const execAsync = promisify(exec);
 
     try {
@@ -525,7 +525,7 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
 
     this.initializeMaintenanceTasks();
 
-    logger.info('🚀 GitOperationsManager initialized', {
+    logger.info('GitOperationsManager initialized', {
       managerId: this.managerId,
       aiConflictResolution: this.config.aiConflictResolution,
       intelligentBranching: this.config.intelligentBranching,
@@ -560,14 +560,14 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
         this.startMaintenanceScheduler();
       }
 
-      logger.info('✅ GitOperationsManager ready', {
+      logger.info('GitOperationsManager ready', {
         managerId: this.managerId,
         maxConcurrentOps: this.config.maxConcurrentOps,
         maintenanceTasks: this.maintenanceTasks.length,
         aiEnabled: !!this.claude,
       });
     } catch (error) {
-      logger.error('❌ Failed to initialize GitOperationsManager', {
+      logger.error('Failed to initialize GitOperationsManager', {
         managerId: this.managerId,
         error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
       });
@@ -927,7 +927,7 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
 
       this.completeOperation(operation, { pushed: true });
 
-      logger.info('✅ Changes pushed successfully', {
+      logger.info('Changes pushed successfully', {
         managerId: this.managerId,
         projectId,
         remote: options.remote || 'origin',
@@ -999,7 +999,7 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
         conflictResolution,
       });
 
-      logger.info('✅ Changes pulled successfully', {
+      logger.info('Changes pulled successfully', {
         managerId: this.managerId,
         projectId,
         remote: options.remote || 'origin',
@@ -1114,7 +1114,7 @@ export class GitOperationsManager extends EventEmitter<GitEventMap> {
 
       return result;
     } catch (error) {
-      logger.error('❌ AI conflict resolution failed', {
+      logger.error('AI conflict resolution failed', {
         managerId: this.managerId,
         conflictType,
         error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
@@ -1408,7 +1408,7 @@ Respond in JSON format:
 
       task.lastRun = new Date();
 
-      logger.info(`✅ Maintenance task completed: ${task.type}`, {
+      logger.info(`Maintenance task completed: ${task.type}`, {
         managerId: this.managerId,
         taskId: task.id,
         completedAt: task.lastRun,
@@ -1422,7 +1422,7 @@ Respond in JSON format:
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      logger.error(`❌ Maintenance task failed: ${task.type}`, {
+      logger.error(`Maintenance task failed: ${task.type}`, {
         managerId: this.managerId,
         taskId: task.id,
         error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
@@ -1523,7 +1523,7 @@ Respond in JSON format:
 
         updatedCount++;
 
-        logger.debug(`🔄 Updated remote refs: ${projectId}`, {
+        logger.debug(`Updated remote refs: ${projectId}`, {
           managerId: this.managerId,
         });
       } catch (error) {
@@ -1534,7 +1534,7 @@ Respond in JSON format:
       }
     }
 
-    logger.info('🔄 Remote reference update completed', {
+    logger.info('Remote reference update completed', {
       managerId: this.managerId,
       treesUpdated: updatedCount,
     });
@@ -1561,7 +1561,7 @@ Respond in JSON format:
 
         verifiedCount++;
 
-        logger.debug(`✅ Verified repository integrity: ${projectId}`, {
+        logger.debug(`Verified repository integrity: ${projectId}`, {
           managerId: this.managerId,
         });
       } catch (error) {
@@ -1843,13 +1843,13 @@ Respond in JSON format:
       // Clean up event listeners
       this.removeAllListeners();
 
-      logger.info('🚀 GitOperationsManager shutdown complete', {
+      logger.info('GitOperationsManager shutdown complete', {
         managerId: this.managerId,
         operationsCompleted: this.operationHistory.length,
         treesManaged: this.treeMetrics.size,
       });
     } catch (error) {
-      logger.error('❌ Error during GitOperationsManager shutdown', {
+      logger.error('Error during GitOperationsManager shutdown', {
         managerId: this.managerId,
         error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
       });
@@ -1900,7 +1900,7 @@ Respond in JSON format:
         path: worktreePath,
       });
 
-      logger.info('✅ Git worktree created successfully', {
+      logger.info('Git worktree created successfully', {
         managerId: this.managerId,
         projectId,
         worktreeName,
@@ -1965,7 +1965,7 @@ Respond in JSON format:
         deletedBranch: options.deleteBranch,
       });
 
-      logger.info('✅ Git worktree removed successfully', {
+      logger.info('Git worktree removed successfully', {
         managerId: this.managerId,
         projectId,
         worktreeName,

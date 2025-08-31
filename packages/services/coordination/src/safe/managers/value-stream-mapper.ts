@@ -241,7 +241,7 @@ export class ValueStreamMapper extends EventBus {
   private async restoreState(): Promise<void> {
     try {
       const persistedState = await this.memory.retrieve(
-        'value-stream-mapper:state'
+        'value-stream-mapper: state'
       );
       if (persistedState && typeof persistedState === 'object') {
         const state = persistedState as any;
@@ -270,7 +270,7 @@ export class ValueStreamMapper extends EventBus {
         optimizationRecommendations: Array.from(this.state.optimizationRecommendations.entries()),
         valueDeliveryTracking: Array.from(this.state.valueDeliveryTracking.entries())
       };
-      await this.memory.store('value-stream-mapper:state', stateToStore);
+      await this.memory.store('value-stream-mapper: state', stateToStore);
     } catch (error) {
       this.logger.error('Failed to persist state', { error });
     }

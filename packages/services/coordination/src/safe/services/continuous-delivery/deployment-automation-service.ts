@@ -547,7 +547,7 @@ export class DeploymentAutomationService {
     // Verify rollback success')    this.logger.info('Verifying rollback success,{';
       planId: execution.planId,')';
 });
-  private calculateRiskTolerance(environment: DeploymentEnvironment): string ')    return environment.type ==='production '?' low:medium`)  private getDeploymentHistory(environment: this.deploymentHistory.get(environment)|| [];
+  private calculateRiskTolerance(environment: DeploymentEnvironment): string ')    return environment.type ==='production '?' low: medium`)  private getDeploymentHistory(environment: this.deploymentHistory.get(environment)|| [];
     history.push(execution);
     this.deploymentHistory.set(environment, history.slice(-100)); // Keep last 100 deployments
 }

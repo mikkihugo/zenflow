@@ -811,7 +811,7 @@ export class PIPlanningService extends EventBus {
     }
 
     // Emit integration complete event
-    this.emit('safe:sparc-integration-complete', {
+    this.emit('safe: sparc-integration-complete', {
       piId: piPlanningConfig.piId,
       projectCount: sparcProjects.length,
       totalComplexity,

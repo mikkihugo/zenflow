@@ -197,10 +197,10 @@ export class WorkflowKanbanIntegration {
   private setupEventCoordination(): void {
     // Set up bidirectional event handling between workflow and kanban
     const events = {
-      'kanban:task:created': 'workflow:step:started',
-      'kanban:task:moved': 'workflow:step:transitioned',
-      'kanban:task:completed': 'workflow:step:completed',
-      'workflow:step:failed': 'kanban:task:blocked',
+      'kanban: task:created': 'workflow: step:started',
+      'kanban: task:moved': 'workflow: step:transitioned',
+      'kanban: task:completed': 'workflow: step:completed',
+      'workflow: step:failed': 'kanban: task:blocked',
     };
 
     logger.info('Setting up workflow-kanban event coordination', {

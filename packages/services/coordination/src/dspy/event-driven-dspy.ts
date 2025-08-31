@@ -57,17 +57,17 @@ export class EventDrivenDspy extends EventBus {
   private setupEventHandlers(): void {
     // Handle optimization requests
     this.on(
-      'dspy:optimization:request',
+      'dspy: optimization:request',
       async (request: DspyOptimizationRequest) => {
         try {
           const result = await this.processOptimizationRequest(request);
-          this.emit('dspy:optimization:result', result);
+          this.emit('dspy: optimization:result', result);
         } catch (error) {
           logger.error('Failed to process optimization request', {
             requestId: request.requestId,
             error,
           });
-          this.emit('dspy:optimization:error', {
+          this.emit('dspy: optimization:error', {
             requestId: request.requestId,
             error,
           });
@@ -76,7 +76,7 @@ export class EventDrivenDspy extends EventBus {
     );
 
     // Handle LLM responses
-    this.on('dspy:llm:response', (response: DspyLlmResponse) => {
+    this.on('dspy: llm:response', (response: DspyLlmResponse) => {
       const pendingCall = this.pendingLlmCalls.get(response.requestId);
       if (!pendingCall) {
         logger.warn('Received LLM response for unknown request', {
@@ -141,7 +141,7 @@ export class EventDrivenDspy extends EventBus {
       }, 30000); // 30 second timeout
 
       this.pendingLlmCalls.set(request.requestId, { resolve, reject, timeout });
-      this.emit('dspy:llm:request', request);
+      this.emit('dspy: llm:request', request);
     });
   }
 

@@ -177,7 +177,7 @@ export class ConversationManager extends EventBus {
 
     // Listen for SPARC collaboration requests (optional - only if SPARC active)
     this.on(
-      'sparc:collaboration:request',
+      'sparc: collaboration:request',
       async (request: SPARCCollaborationRequest) => {
         const conversationName = `SPARC ${request.phase} Review - ${request.projectId}`;
         const conversation = await this.createConversation(
@@ -210,7 +210,7 @@ export class ConversationManager extends EventBus {
     );
 
     // Listen for SAFe meeting requests
-    this.on('safe:meeting:scheduled', async (meeting: SAFeMeeting) => {
+    this.on('safe: meeting:scheduled', async (meeting: SAFeMeeting) => {
       const conversationName = `${meeting.type.toUpperCase()} - ${meeting.teamId || meeting.artId}`;
       const conversation = await this.createConversation(
         conversationName,
@@ -241,7 +241,7 @@ export class ConversationManager extends EventBus {
 
     // Listen for teamwork coordination requests
     this.on(
-      'teamwork:coordination:request',
+      'teamwork: coordination:request',
       async (request: TeamworkCoordinationRequest) => {
         const conversationName = `Team Coordination: ${request.type} - ${request.teamId}`;
         const conversation = await this.createConversation(
@@ -267,7 +267,7 @@ export class ConversationManager extends EventBus {
 
     // Listen for team member availability updates
     this.on(
-      'team:member:availability',
+      'team: member:availability',
       async (update: { agentId: string; availability: AgentAvailability }) => {
         const agent = this.agents.get(update.agentId);
         if (agent) {
@@ -421,7 +421,7 @@ export class ConversationManager extends EventBus {
       conversationId,
     };
 
-    this.emit('sparc:review:completed', result);
+    this.emit('sparc: review:completed', result);
     this.sparcReviews.delete(conversationId);
   }
 
@@ -443,7 +443,7 @@ export class ConversationManager extends EventBus {
       this.agents.set(member.id, agent);
     }
 
-    this.emit('safe:team:registered', team);
+    this.emit('safe: team:registered', team);
     logger.info(
       `Registered SAFe team: ${team.name} with ${team.members.length} members`
     );
@@ -473,7 +473,7 @@ export class ConversationManager extends EventBus {
 
     // Store meeting and emit event to trigger conversation creation
     this.safeMeetings.set(meeting.id, meeting);
-    this.emit('safe:meeting:scheduled', meeting);
+    this.emit('safe: meeting:scheduled', meeting);
 
     return meeting.conversationId || '';
   }
@@ -509,7 +509,7 @@ export class ConversationManager extends EventBus {
       });
     }
 
-    this.emit('safe:meeting:completed', { meeting, outcomes });
+    this.emit('safe: meeting:completed', { meeting, outcomes });
     logger.info(
       `Completed SAFe meeting: ${meeting.type} with ${outcomes.length} outcomes`
     );
@@ -529,7 +529,7 @@ export class ConversationManager extends EventBus {
 
     // Store request and emit event to trigger conversation creation
     this.teamworkRequests.set(request.requestId, request);
-    this.emit('teamwork:coordination:request', request);
+    this.emit('teamwork: coordination:request', request);
 
     return request.requestId;
   }
@@ -579,7 +579,7 @@ export class ConversationManager extends EventBus {
     agentId: string,
     availability: AgentAvailability
   ): Promise<void> {
-    this.emit('team:member:availability', { agentId, availability });
+    this.emit('team: member:availability', { agentId, availability });
   }
 
   /**

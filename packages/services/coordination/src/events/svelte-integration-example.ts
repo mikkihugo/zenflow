@@ -21,7 +21,7 @@ export class SvelteWebSocketManager {
   private maxReconnectAttempts = 5;
   private availableServices: string[] = [];
 
-  constructor(private hubEndpoint: string = 'ws://localhost:3000') {}
+  constructor(private hubEndpoint: string = 'ws://localhost: 3000') {}
 
   /**
    * Connect to the Central WebSocket Hub
@@ -42,7 +42,7 @@ export class SvelteWebSocketManager {
         };
 
         this.ws.onclose = () => {
-          logger.info('❌ Disconnected from Central WebSocket Hub');
+          logger.info('Disconnected from Central WebSocket Hub');
           this.handleReconnect();
         };
 
@@ -182,7 +182,7 @@ export class SvelteWebSocketManager {
       this.reconnectAttempts++;
       const delay = Math.pow(2, this.reconnectAttempts) * 1000; // Exponential backoff
       logger.info(
-        `🔄 Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`
+        `Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`
       );
 
       setTimeout(() => {

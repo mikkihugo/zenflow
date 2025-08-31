@@ -68,7 +68,7 @@ export class PersistenceCoordinatorService {
       this.updateQueryMetrics(executionTime, true);
       
       // Emit persistence event
-      await this.eventCoordinator.emitEventSafe('persistence:save', {
+      await this.eventCoordinator.emitEventSafe('persistence: save', {
         entityType: 'task',
         entityId: task.id,
         timestamp: new Date(),

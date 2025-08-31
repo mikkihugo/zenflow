@@ -79,37 +79,37 @@ export class EventDrivenBrain extends EventBus {
    */
   private setupEventHandlers(): void {
     // Handle prediction requests
-    this.on('brain:predict-request', this.handlePredictionRequest.bind(this));
+    this.on('brain: predict-request', this.handlePredictionRequest.bind(this));
 
     // Handle DSPy optimization results
     this.on(DSPY_OPTIMIZATION_COMPLETE, this.handleDspyResult.bind(this));
 
     // Handle DSPy LLM requests (Brain coordinates LLM calls)
-    this.on('dspy:llm-request', this.handleDspyLlmRequest.bind(this));
+    this.on('dspy: llm-request', this.handleDspyLlmRequest.bind(this));
 
     // Handle LLM responses for DSPy
-    this.on('llm:inference-response', this.handleLlmResponse.bind(this));
+    this.on('llm: inference-response', this.handleLlmResponse.bind(this));
 
     // System availability detection
-    this.on('system:dspy-available', () => {
+    this.on('system: dspy-available', () => {
       this.dspySystemAvailable = true;
     });
-    this.on('system:llm-available', () => {
+    this.on('system: llm-available', () => {
       this.llmSystemAvailable = true;
     });
-    this.on('system:knowledge-available', () => {
+    this.on('system: knowledge-available', () => {
       this.knowledgeSystemAvailable = true;
     });
-    this.on('system:facts-available', () => {
+    this.on('system: facts-available', () => {
       this.factsSystemAvailable = true;
     });
 
     // Handle knowledge integration
     this.on(
-      'knowledge:query-response',
+      'knowledge: query-response',
       this.handleKnowledgeResponse.bind(this)
     );
-    this.on('facts:validation-response', this.handleFactsResponse.bind(this));
+    this.on('facts: validation-response', this.handleFactsResponse.bind(this));
   }
 
   /**
@@ -117,13 +117,13 @@ export class EventDrivenBrain extends EventBus {
    */
   private detectAvailableSystems(): void {
     // Emit detection events
-    this.emit('brain:system-detection', { timestamp: new Date() });
+    this.emit('brain: system-detection', { timestamp: new Date() });
 
     // Detect Knowledge system
-    this.emit('brain:detect-knowledge', { requestId: `detect-${Date.now()}` });
+    this.emit('brain: detect-knowledge', { requestId: `detect-${Date.now()}` });
 
     // Detect Facts system
-    this.emit('brain:detect-facts', { requestId: `detect-${Date.now()}` });
+    this.emit('brain: detect-facts', { requestId: `detect-${Date.now()}` });
 
     // Production system detection with fallback
     setTimeout(() => {
@@ -166,7 +166,7 @@ export class EventDrivenBrain extends EventBus {
     try {
       // Query knowledge system for context
       if (this.knowledgeSystemAvailable) {
-        this.emit('knowledge:query', {
+        this.emit('knowledge: query', {
           requestId,
           domain: request.domain,
           context: request.context,
@@ -176,7 +176,7 @@ export class EventDrivenBrain extends EventBus {
 
       // Query facts system for validation
       if (this.factsSystemAvailable) {
-        this.emit('facts:validate', {
+        this.emit('facts: validate', {
           requestId,
           domain: request.domain,
           claims: [request.prompt || `Facts for ${request.domain}`],
@@ -221,10 +221,10 @@ export class EventDrivenBrain extends EventBus {
       this.predictionHistory.get(request.domain)!.push(result);
 
       // Emit result
-      this.emit('brain:prediction-complete', result);
+      this.emit('brain: prediction-complete', result);
     } catch (error) {
       logger.error(`Brain prediction failed: ${error}`);
-      this.emit('brain:prediction-error', { requestId, error: error.message });
+      this.emit('brain: prediction-error', { requestId, error: error.message });
     } finally {
       this.activePredictions.delete(requestId);
     }
@@ -290,7 +290,7 @@ export class EventDrivenBrain extends EventBus {
       };
 
       this.on(DSPY_OPTIMIZATION_COMPLETE, handler);
-      this.emit('dspy:optimization-request', dspyRequest);
+      this.emit('dspy: optimization-request', dspyRequest);
     });
   }
 
@@ -437,7 +437,7 @@ export class EventDrivenBrain extends EventBus {
   private handleDspyLlmRequest(request: DspyLlmRequest): void {
     logger.info(`DSPy LLM request: ${request.requestId}`);
     // Forward to LLM system
-    this.emit('llm:inference-request', request);
+    this.emit('llm: inference-request', request);
   }
 
   /**
@@ -446,7 +446,7 @@ export class EventDrivenBrain extends EventBus {
   private handleLlmResponse(response: DspyLlmResponse): void {
     logger.info(`LLM response received: ${response.requestId}`);
     // Forward back to DSPy system
-    this.emit('dspy:llm-response', response);
+    this.emit('dspy: llm-response', response);
   }
 
   /**

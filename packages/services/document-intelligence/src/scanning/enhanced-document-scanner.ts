@@ -5,8 +5,8 @@
  * with proper TypeScript typing and syntax.
  */
 
-import { readdir, readFile, stat } from 'node:fs/promises';
-import { join, relative } from 'node:path';
+import { readdir, readFile, stat } from 'node: fs/promises';
+import { join, relative } from 'node: path';
 import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('EnhancedDocumentScanner');
@@ -195,7 +195,7 @@ export class EnhancedDocumentScanner {
         scanDuration: Date.now() - startTime,
       };
 
-      logger.info(`✅ Enhanced scan completed: ${analysisResults.length} issues found in ${scannedFiles} files`);
+      logger.info(`Enhanced scan completed: ${analysisResults.length} issues found in ${scannedFiles} files`);
 
       return results;
     } finally {

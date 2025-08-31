@@ -47,7 +47,7 @@ export const DEFAULT_BEAM_CONFIG: Partial<
   useDialyzer: true,
   useSobelow: true,
   useElvis: false,
-  timeout:300000, // 5 minutes
+  timeout: 300000, // 5 minutes
   includeDeps: true,
   otpVersion: 'latest',
   customRules:[],
@@ -185,7 +185,7 @@ export function getBeamConfigForProject(
         useDialyzer: true,
         useSobelow: false,
         useElvis: true,
-        timeout:180000, // 3 minutes for libraries
+        timeout: 180000, // 3 minutes for libraries
 };
 
     case 'application':
@@ -194,7 +194,7 @@ export function getBeamConfigForProject(
         useDialyzer: true,
         useSobelow: false,
         useElvis: false,
-        timeout:300000, // 5 minutes for applications
+        timeout: 300000, // 5 minutes for applications
 };
 
     case 'phoenix':
@@ -204,7 +204,7 @@ export function getBeamConfigForProject(
         useDialyzer: true,
         useSobelow: true,
         useElvis: false,
-        timeout:600000, // 10 minutes for Phoenix apps
+        timeout: 600000, // 10 minutes for Phoenix apps
 };
 
     case 'nerves':
@@ -214,7 +214,7 @@ export function getBeamConfigForProject(
         useDialyzer: true,
         useSobelow: false,
         useElvis: false,
-        timeout:900000, // 15 minutes for Nerves
+        timeout: 900000, // 15 minutes for Nerves
         includeDeps: false, // Skip deps for embedded
 };
 
@@ -224,7 +224,7 @@ export function getBeamConfigForProject(
         useDialyzer: true,
         useSobelow: true,
         useElvis: false,
-        timeout:1200000, // 20 minutes for umbrella apps
+        timeout: 1200000, // 20 minutes for umbrella apps
         includeDeps: true,
 };
 
@@ -239,7 +239,7 @@ export function getBeamConfigForProject(
 export function detectBeamLanguage(
   filePath: string
 ):import('./types/beam-types').BeamLanguage | null {
-  const ext = require('node:path').extname(filePath).toLowerCase();
+  const ext = require('node: path').extname(filePath).toLowerCase();
 
   const languageMap: Record<string, import('./types/beam-types').BeamLanguage> =
     {
@@ -252,8 +252,8 @@ export function detectBeamLanguage(
  * Check if project is a BEAM project
  */
 export async function isBeamProject(projectPath: string): Promise<boolean> {
-  const { promises: fs} = require('node:fs');
-  const path = require('node:path');
+  const { promises: fs} = require('node: fs');
+  const path = require('node: path');
 
   try {
     // Check for common BEAM project files

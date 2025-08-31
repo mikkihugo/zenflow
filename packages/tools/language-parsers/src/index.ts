@@ -50,7 +50,7 @@ export const SUPPORTED_EXTENSIONS = {
 /**
  * Language detection utility
  */
-export function detectLanguageFamily(filePath:string): string|null {
+export function detectLanguageFamily(filePath: string): string|null {
   const ext = filePath.toLowerCase().substring(filePath.lastIndexOf('.'));
   return SUPPORTED_EXTENSIONS[ext as keyof typeof SUPPORTED_EXTENSIONS] || null;
 }
@@ -65,7 +65,7 @@ export function getSupportedExtensions():string[] {
 /**
  * Check if a file extension is supported
  */
-export function isSupported(filePath:string): boolean {
+export function isSupported(filePath: string): boolean {
   return detectLanguageFamily(filePath) !== null;
 }
 
@@ -103,7 +103,7 @@ export function createParserFactory():ParserFactory {
  * Quick parse utility for single files
  */
 export async function parseFile(
-  filePath:string,
+  filePath: string,
   options?:{
     includeMetrics?:boolean;
     analyzeFunctionComplexity?:boolean;
@@ -124,12 +124,12 @@ export async function parseFile(
       return await parser.parseFile(filePath);
 }
     case 'functional': {
-      // Future:Add functional language parser support
+      // Future: Add functional language parser support
       const parser = factory.createBeamParser(options); // Fallback to beam for now
       return await parser.parseFile(filePath);
 }
     case 'concurrent': {
-      // Future:Add concurrent language parser support
+      // Future: Add concurrent language parser support
       const parser = factory.createBeamParser(options); // Fallback to beam for now
       return await parser.parseFile(filePath);
 }
@@ -142,7 +142,7 @@ export async function parseFile(
  * Quick parse utility for multiple files
  */
 export async function parseFiles(
-  filePaths:string[],
+  filePaths: string[],
   options?:{
     includeMetrics?:boolean;
     analyzeFunctionComplexity?:boolean;
@@ -175,13 +175,13 @@ export async function parseFiles(
           return result.isOk() ? result._unsafeUnwrap() :[];
 }
         case 'functional': {
-          // Future:Add functional language parser support
+          // Future: Add functional language parser support
           const parser = factory.createBeamParser(options); // Fallback to beam for now
           const result = await parser.parseFiles(paths);
           return result.isOk() ? result._unsafeUnwrap() :[];
 }
         case 'concurrent': {
-          // Future:Add concurrent language parser support
+          // Future: Add concurrent language parser support
           const parser = factory.createBeamParser(options); // Fallback to beam for now
           const result = await parser.parseFiles(paths);
           return result.isOk() ? result._unsafeUnwrap() :[];
@@ -211,8 +211,8 @@ export const PACKAGE_NAME = '@claude-zen/language-parsers';
  * Package metadata
  */
 export const PACKAGE_INFO = {
-  name:PACKAGE_NAME,
-  version:VERSION,
+  name: PACKAGE_NAME,
+  version: VERSION,
   description:
     'Multi-language parsers for code analysis and repository understanding',  author: 'Claude Code Zen Team',  license: 'MIT',  repository: 'https://github.com/zen-neural/claude-code-zen',  keywords:[
     'parser',    'language-parser',    'code-analysis',    'multi-language',    'beam',    'elixir',    'erlang',    'gleam',    'ast-parsing',    'code-intelligence',],
