@@ -10,21 +10,39 @@
  */
 export interface StateMachineConfig {
   /** Enable state machine persistence */
-  enablePersistence: new Map();
-  private transitionHistory: [];
+  enablePersistence?: boolean;
+  /** Transition timeout in milliseconds */
+  transitionTimeout?: number;
+  /** Maximum concurrent machines */
+  maxConcurrentMachines?: number;
+}
+
+export class StateMachineCoordinatorService {
+  private eventCoordinator: any;
+  private config: StateMachineConfig;
+  private activeMachines: Map<string, any> = new Map();
+  private transitionHistory: any[] = [];
   private initialized = false;
-  constructor(
-    eventCoordinator:  {}
-  ) {
+
+  constructor(eventCoordinator: any, config: StateMachineConfig = {}) {
     this.eventCoordinator = eventCoordinator;
     this.config = {
-      enablePersistence:  {
-      activeMachines: true;')      logger.info('StateMachineCoordinatorService initialized successfully');
-} catch (error) {
-    ')      logger.error('Failed to initialize StateMachineCoordinatorService:, error');
+      enablePersistence: true,
+      transitionTimeout: 30000,
+      maxConcurrentMachines: 100,
+      ...config,
+    };
+  }
+
+  async initialize(): Promise<void> {
+    try {
+      this.initialized = true;
+      logger.info('StateMachineCoordinatorService initialized successfully');
+    } catch (error) {
+      logger.error('Failed to initialize StateMachineCoordinatorService:', error);
       throw error;
-}
-}
+    }
+  }
   /**
    * Create and start a workflow state machine
    */
