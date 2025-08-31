@@ -40,7 +40,7 @@ export class LLMStatsService {
       routingReason:string;
 },
     metadata?:{
-      requestType?:'analyze' | ' analyzeSmart' | ' analyzeArchitectureAB';
+      requestType?: 'analyze' | 'analyzeSmart' | 'analyzeArchitectureAB';
       tokenUsage?:{ inputTokens?: number; outputTokens?: number};
       sessionId?:string;
 }
@@ -215,7 +215,7 @@ export class LLMStatsService {
   /**
    * Exports statistics data for external analysis
    */
-  exportStats(format:'json' | ' csv'): string {
+  exportStats(format: 'json' | 'csv'): string {
     if (format === 'csv') {
       return this.exportToCsv();
 }
@@ -269,20 +269,20 @@ export class LLMStatsService {
 
   private assessTaskComplexity(
     request:AnalysisRequest
-  ):'low' | ' medium' | ' high' {
-    const contextLength = (request.prompt || ').length;
+  ): 'low' | 'medium' | 'high' {
+    const contextLength = (request.prompt || '').length;
 
-    if (request['task'] === ' domain-analysis' || contextLength > 10000) {
+    if (request['task'] === 'domain-analysis' || contextLength > 10000) {
       return 'high';
-}
+    }
     if (
-      request['task'] === ' typescript-error-analysis' ||
+      request['task'] === 'typescript-error-analysis' ||
       contextLength > 5000
     ) {
       return 'medium';
-}
+    }
     return 'low';
-}
+  }
 
   private calculateThroughputScore(providerId:string): number {
     const config = LLM_PROVIDER_CONFIG[providerId];
@@ -563,7 +563,7 @@ export class LLMStatsService {
       string,
       Array<{ timestamp:Date; usage: number}>
     > = {};
-    const providers = [...new Set(calls.map((call) => call.provider))];
+    const providers = Array.from(new Set(calls.map((call) => call.provider)));
 
     for (const provider of providers) {
       providerUsage[provider] = this.calculateProviderUsageTrend(
@@ -650,8 +650,8 @@ export class LLMStatsService {
 }
 
   private calculatePerformanceTrend(
-    calls:LLMCallRecord[]
-  ):'improving' | ' stable' | ' declining' {
+    calls: LLMCallRecord[]
+  ): 'improving' | 'stable' | 'declining' {
     if (calls['length'] < 10) {
       return 'stable';
 }
@@ -694,7 +694,7 @@ export class LLMStatsService {
       successRate:number;
 }
   > {
-    const taskTypes = new Set(calls.map((c) => c.task));
+    const taskTypes = Array.from(new Set(calls.map((c) => c.task)));
     const result:Record<
       string,
       {
@@ -754,18 +754,21 @@ export class LLMStatsService {
 
     if (successRate < 0.9) {
       recommendations.push(
-        'Consider adjusting provider priorities to improve success rate')      );
-}
+        'Consider adjusting provider priorities to improve success rate'
+      );
+    }
 
     if (latency > 3000) {
       recommendations.push(
-        'High latency detected - consider optimizing prompts or switching providers')      );
-}
+        'High latency detected - consider optimizing prompts or switching providers'
+      );
+    }
 
     if (activeProviders < 2) {
       recommendations.push(
-        'Low provider diversity - configure additional backup providers')      );
-}
+        'Low provider diversity - configure additional backup providers'
+      );
+    }
 
     return recommendations;
 }
@@ -793,11 +796,12 @@ export class LLMStatsService {
 
     if (routingStats['fallbackRate'] > 0.2) {
       optimizations.push(
-        'Optimize provider selection to reduce fallback usage')      );
-}
+        'Optimize provider selection to reduce fallback usage'
+      );
+    }
 
     const underutilized = providerStats.filter(
-      (p) => p['totalCalls'] < 10 && p[' successRate'] > 0.9
+      (p) => p['totalCalls'] < 10 && p['successRate'] > 0.9
     );
     if (underutilized['length'] > 0) {
       optimizations.push(

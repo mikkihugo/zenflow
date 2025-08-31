@@ -44,7 +44,8 @@ export type CLIResult = Result<CLIResponse, CLIError>;
 // Specialized CLI roles for swarm agents
 export interface SwarmAgentRole {
   role:LiteralUnion<
-    | 'assistant')    | 'coder')    | 'analyst')    | 'researcher')    | 'coordinator')    | 'tester')    | 'architect',    string
+    | 'assistant' | 'coder' | 'analyst' | 'researcher' | 'coordinator' | 'tester' | 'architect',
+    string
   >;
   systemPrompt:string;
   capabilities:string[];
