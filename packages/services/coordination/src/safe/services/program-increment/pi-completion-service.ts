@@ -1,25 +1,19 @@
-/**
- * @fileoverview pi-completion-service.ts - Minimal Implementation
- */
+import { EventEmitter } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
 
-export interface DefaultConfig {
-  enabled: boolean;
-  [key: string]: unknown;
-}
+const logger = getLogger('pi-completion-service');
 
-export class DefaultImplementation {
-  private config: DefaultConfig;
-
-  constructor(config: Partial<DefaultConfig> = {}) {
-    this.config = {
-      enabled: true,
-      ...config,
-    };
+export class Picompletionservice extends EventEmitter {
+  constructor() {
+    super();
+    logger.info('Picompletionservice initialized');
   }
 
-  isEnabled(): boolean {
-    return this.config.enabled;
+  async process(): Promise<void> {
+    // TODO: Implement service processing
+  }
+
+  async execute(): Promise<void> {
+    // TODO: Implement service execution
   }
 }
-
-export default new DefaultImplementation();

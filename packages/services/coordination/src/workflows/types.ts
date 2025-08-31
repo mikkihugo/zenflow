@@ -14,43 +14,9 @@ export type {
   WorkflowStep,
 } from './workflow-base-types'; // Import WorkflowDefinition for proper typing
 // Additional workflow types for advanced functionality
-export interface WorkflowTemplate {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  definition: WorkflowDefinition;
-  metadata:  {
-    version: string;
-    author?:string;
-    tags?:string[];
-    complexity?: 'simple' | 'medium' | 'complex';
+export interface WorkflowTemplate {}
+export interface WorkflowExecution {};
 }
-export interface WorkflowExecution {
-  id: string;
-  workflowId: string;
-  status: 'queued' | 'running' | 'paused' | 'completed' | 'failed' | 'cancelled';
-  startTime: string;
-  endTime?:string;
-  currentStep: number;
-  totalSteps: number;
-  results: Record<string, unknown>;
-  metrics:  {
-    duration?:number;
-    stepsCompleted: number;
-    stepsFailed: number;
-    resourcesUsed: Record<string, unknown>;
-};
-}
-export interface WorkflowRegistry {
-  templates: Map<string, WorkflowTemplate>;
-  definitions: Map<string, WorkflowDefinition>;
-  executions: Map<string, WorkflowExecution>;
-}
+export interface WorkflowRegistry {}
 // Event types for workflow orchestration
-export interface WorkflowEvent {
-  type : 'workflow.started' | ' workflow.completed'|' workflow.failed' | ' step.started'|' step.completed' | ' step.failed')  workflowId: string;;
-  stepIndex?:number;
-  data?:Record<string, unknown>;
-  timestamp: string;
-};
+export interface WorkflowEvent {};

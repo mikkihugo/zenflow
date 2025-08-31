@@ -1,25 +1,13 @@
-/**
- * @fileoverview tokens.ts - Minimal Implementation
- */
+import { getLogger } from '@claude-zen/foundation';
 
-export interface DefaultConfig {
-  enabled: boolean;
-  [key: string]: unknown;
-}
+const logger = getLogger('tokens');
 
-export class DefaultImplementation {
-  private config: DefaultConfig;
-
-  constructor(config: Partial<DefaultConfig> = {}) {
-    this.config = {
-      enabled: true,
-      ...config,
-    };
+export class Tokens {
+  constructor() {
+    logger.info('Tokens initialized');
   }
 
-  isEnabled(): boolean {
-    return this.config.enabled;
+  async execute(): Promise<void> {
+    // TODO: Implement functionality
   }
 }
-
-export default new DefaultImplementation();
