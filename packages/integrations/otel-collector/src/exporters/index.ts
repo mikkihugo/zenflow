@@ -27,11 +27,11 @@ export interface BaseExporter {
   exportBatch(data:TelemetryData[]): Promise<ExportResult>;
   shutdown():Promise<void>;
   getQueueSize():number;
-  getHealthStatus():Promise<{
-    status:'healthy' | ' degraded' | ' unhealthy';
-    lastSuccess?:number;
-    lastError?:string;
-}>;
+  getHealthStatus(): Promise<{
+    status: 'healthy' | 'degraded' | 'unhealthy';
+    lastSuccess?: number;
+    lastError?: string;
+  }>;
 }
 
 /**

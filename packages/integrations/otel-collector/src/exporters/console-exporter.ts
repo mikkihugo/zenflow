@@ -106,16 +106,17 @@ export class ConsoleExporter implements BaseExporter {
     return 0; // Console exporter has no queue
 }
 
-  async getHealthStatus():Promise<{
-    status:'healthy' | ' degraded' | ' unhealthy';
-    lastSuccess?:number;
-    lastError?:string;
-}> {
+  async getHealthStatus(): Promise<{
+    status: 'healthy' | 'degraded' | 'unhealthy';
+    lastSuccess?: number;
+    lastError?: string;
+  }> {
     return {
-      status:this.lastError ? 'degraded' : ' healthy',      lastSuccess:this.lastExportTime || undefined,
-      lastError:this.lastError || undefined,
-};
-}
+      status: this.lastError ? 'degraded' : 'healthy',
+      lastSuccess: this.lastExportTime || undefined,
+      lastError: this.lastError || undefined,
+    };
+  }
 
   /**
    * Format and log telemetry data to console
@@ -144,7 +145,7 @@ export class ConsoleExporter implements BaseExporter {
 
     const reset = '\x1b[0m';
 
-    logger.info(
+    this.logger.info(
       `${color}${emoji}[${timestamp}] ${data.type.toUpperCase()} ${service}${reset}`
     );
 
@@ -159,13 +160,13 @@ export class ConsoleExporter implements BaseExporter {
 
     // Log attributes if present
     if (data.attributes && Object.keys(data.attributes).length > 0) {
-      logger.info(
+      this.logger.info(
         `   ${color}Attributes:${reset}`,
         JSON.stringify(data.attributes, null, 2)
       );
     }
 
-    logger.info(''); // Empty line for readability
+    this.logger.info(''); // Empty line for readability
   }
 
   /**
@@ -174,21 +175,21 @@ export class ConsoleExporter implements BaseExporter {
   private logTraceData(data:TelemetryData): void {
     try {
       if (data.data && data.data.spans) {
-        logger.info(`   🔗 Spans:${data.data.spans.length}`);
+        this.logger.info(`   🔗 Spans:${data.data.spans.length}`);
         for (const span of data.data.spans.slice(0, 3)) {
           // Show first 3 spans
-          logger.info(
+          this.logger.info(
             `     ├─ ${span.name || 'unnamed'} (${span.duration || ' unknown'}ms)`
           );
 }
         if (data.data.spans.length > 3) {
-          logger.info(`     └─ ... and ${data.data.spans.length - 3} more`);
+          this.logger.info(`     └─ ... and ${data.data.spans.length - 3} more`);
 }
 } else {
-        logger.info(`   DATA Data:`, JSON.stringify(data.data, null, 2));
+        this.logger.info(`   DATA Data:`, JSON.stringify(data.data, null, 2));
 }
 } catch (error) {
-      logger.info(`   ERROR Invalid trace data:`, data.data);
+      this.logger.info(`   ERROR Invalid trace data:`, data.data);
 }
 }
 
@@ -198,20 +199,20 @@ export class ConsoleExporter implements BaseExporter {
   private logMetricData(data:TelemetryData): void {
     try {
       if (data.data && data.data.metrics) {
-        logger.info(`   📈 Metrics:${data.data.metrics.length}`);
+        this.logger.info(`   📈 Metrics:${data.data.metrics.length}`);
         for (const metric of data.data.metrics.slice(0, 5)) {
           // Show first 5 metrics
           const value = metric.value || metric.count || metric.sum || 'N/A';
-          logger.info(`     ├─ ${metric.name}: ${value} ${metric.unit || ''}`);
+          this.logger.info(`     ├─ ${metric.name}: ${value} ${metric.unit || ''}`);
         }
         if (data.data.metrics.length > 5) {
-          logger.info(`     └─ ... and ${data.data.metrics.length - 5} more`);
+          this.logger.info(`     └─ ... and ${data.data.metrics.length - 5} more`);
         }
       } else {
-        logger.info(`   Data:`, JSON.stringify(data.data, null, 2));
+        this.logger.info(`   Data:`, JSON.stringify(data.data, null, 2));
       }
     } catch (error) {
-      logger.info(`   Invalid metric data:`, data.data);
+      this.logger.info(`   Invalid metric data:`, data.data);
     }
 }
 
@@ -221,7 +222,7 @@ export class ConsoleExporter implements BaseExporter {
   private logLogData(data:TelemetryData): void {
     try {
       if (data.data && data.data.logs) {
-        logger.info(`   📄 Logs:${data.data.logs.length}`);
+        this.logger.info(`   📄 Logs:${data.data.logs.length}`);
         for (const log of data.data.logs.slice(0, 3)) {
           // Show first 3 logs
           const level = log.level || 'INFO';
@@ -229,22 +230,22 @@ export class ConsoleExporter implements BaseExporter {
             0,
             100
           );
-          logger.info(
+          this.logger.info(
             `     ├─ [${level}] ${message}${message.length === 100 ? '...' : ''}`
           );
         }
         if (data.data.logs.length > 3) {
-          logger.info(`     └─ ... and ${data.data.logs.length - 3} more`);
+          this.logger.info(`     └─ ... and ${data.data.logs.length - 3} more`);
         }
       } else if (typeof data.data === 'string') {
-        logger.info(
+        this.logger.info(
           `   LOGS Message: ${data.data.substring(0, 200)}${data.data.length > 200 ? '...' : ''}`
         );
       } else {
-        logger.info(`   DATA:`, JSON.stringify(data.data, null, 2));
+        this.logger.info(`   DATA:`, JSON.stringify(data.data, null, 2));
       }
     } catch (error) {
-      logger.info(`   ERROR Invalid log data:`, data.data);
+      this.logger.info(`   ERROR Invalid log data:`, data.data);
     }
 }
 }
