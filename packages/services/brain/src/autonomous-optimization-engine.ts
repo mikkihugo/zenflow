@@ -572,15 +572,16 @@ export class AutonomousOptimizationEngine {
 
     return {
       optimizedPrompt:result.optimizedPrompt,
-      confidence:result.confidence,
-      method: 'ml',      processingTime:Date.now() - startTime,
-      improvementScore:result.improvementFactor,
-      reasoning:[
-        `ML optimization applied ${result.appliedPatterns.length} patterns`,`
+      confidence: result.confidence,
+      method: 'ml',
+      processingTime: Date.now() - startTime,
+      improvementScore: result.improvementFactor,
+      reasoning: [
+        'ML optimization applied ' + result.appliedPatterns.length + ' patterns',
         ...result.reasoning,
-],
-};
-}
+      ],
+    };
+  }
 
   private async executeHybridOptimization(
     context: OptimizationContext,

@@ -82,8 +82,8 @@ export interface PerformanceEntry {
 
 // Predictive Analytics Types
 export interface PredictionRequest {
-  agentId?:string;
-  swarmId?:string;
+  agentId?: string;
+  swarmId?: string;
   timeHorizon: number;
   metrics: string[];
   context?:Record<string, unknown>;
@@ -118,9 +118,9 @@ export interface TaskCompletionRecord {
   duration: number;
   success: boolean;
   timestamp: number;
-  complexity?:number;
-  quality?:number;
-  resourceUsage?:number;
+  complexity?: number;
+  quality?: number;
+  resourceUsage?: number;
   metadata?:Record<string, unknown>;
 }
 
@@ -214,7 +214,7 @@ export interface MonitoringConfig {
 // Event Types
 export interface MonitoringEvent {
   type: 'health' | 'performance' | 'learning' | 'prediction' | 'emergency';
-  agentId?:string;
+  agentId?: string;
   timestamp: number;
   data: Record<string, unknown>;
   severity: 'info' | 'warning' | 'critical';
@@ -238,9 +238,9 @@ export interface IntelligenceSystemConfig {
 };
   agentLearning:{
     enabled: boolean;
-    adaptationRate?:number;
-    learningModes?:string[];
-    performanceThreshold?:number;
+    adaptationRate?: number;
+    learningModes?: string[];
+    performanceThreshold?: number;
 };
   healthMonitoring:{
     enabled: boolean;
@@ -253,16 +253,16 @@ export interface IntelligenceSystemConfig {
 };
   predictiveAnalytics:{
     enabled: boolean;
-    forecastHorizons?:string[];
-    ensemblePrediction?:boolean;
-    confidenceThreshold?:number;
-    enableEmergentBehavior?:boolean;
+    forecastHorizons?: string[];
+    ensemblePrediction?: boolean;
+    confidenceThreshold?: number;
+    enableEmergentBehavior?: boolean;
 };
   persistence:{
     enabled: boolean;
-    cacheSize?:number;
-    cacheTTL?:number;
-    historicalDataRetention?:number;
+    cacheSize?: number;
+    cacheTTL?: number;
+    historicalDataRetention?: number;
 };
 }
 
@@ -296,13 +296,13 @@ export interface IntelligenceSystem {
     patterns: unknown[]
   ): Promise<KnowledgeTransferPrediction>;
 
-  predictEmergentBehavior():Promise<EmergentBehaviorPrediction>;
+  predictEmergentBehavior(): Promise<EmergentBehaviorPrediction>;
 
-  updateAdaptiveLearningModels():Promise<AdaptiveLearningUpdate>;
+  updateAdaptiveLearningModels(): Promise<AdaptiveLearningUpdate>;
 
   getSystemHealth():SystemHealthSummary;
 
-  shutdown():Promise<void>;
+  shutdown(): Promise<void>;
 }
 
 export interface TaskPrediction {

@@ -143,11 +143,11 @@ interface SystemHealthSummary {
 }
 
 interface IntelligenceSystemConfig {
-  enableLearning?:boolean;
-  learningRate?:number;
-  predictionHorizon?:number;
-  healthCheckInterval?:number;
-  performanceTrackingWindow?:number;
+  enableLearning?: boolean;
+  learningRate?: number;
+  predictionHorizon?: number;
+  healthCheckInterval?: number;
+  performanceTrackingWindow?: number;
 }
 
 // =============================================================================

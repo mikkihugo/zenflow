@@ -57,9 +57,9 @@ export interface TaskCompletionRecord {
   duration: number;
   success: boolean;
   timestamp: number;
-  complexity?:number;
-  quality?:number;
-  resourceUsage?:number;
+  complexity?: number;
+  quality?: number;
+  resourceUsage?: number;
   metadata?:Record<string, unknown>;
 }
 
@@ -103,7 +103,7 @@ export interface TaskPredictor {
     contextFactors?:Record<string, unknown>
   ): TaskPrediction;
 
-  clearCache(olderThanMs?:number): void;
+  clearCache(olderThanMs?: number): void;
 }
 
 /**
@@ -254,7 +254,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
   /**
    * Clear prediction cache and historical data
    */
-  clearCache(olderThanMs?:number): void {
+  clearCache(olderThanMs?: number): void {
     if (olderThanMs) {
       const cutoff = Date.now() - olderThanMs;
 

@@ -55,7 +55,7 @@ export interface PerformanceSnapshot {
     system: number;
 };
   success: boolean;
-  error?:string;
+  error?: string;
   metadata?:Record<string, unknown>;
 }
 
@@ -69,9 +69,9 @@ export interface PerformanceTrackingResult {
     memoryUsage: NodeJS.MemoryUsage;
     cpuUsage: NodeJS.CpuUsage;
 };
-  operation?:string;
-  agentId?:string;
-  error?:string;
+  operation?: string;
+  agentId?: string;
+  error?: string;
 }
 
 /**
@@ -161,8 +161,8 @@ export class PerformanceTracker {
    * Start tracking a performance operation (replaces hook system)
    */
   async trackPerformance(context:{
-    operation?:string;
-    agentId?:string;
+    operation?: string;
+    agentId?: string;
     metadata?:Record<string, unknown>;
 }): Promise<PerformanceTrackingResult> {
     if (!this.config.enabled) {
@@ -226,7 +226,7 @@ export class PerformanceTracker {
     operation: string,
     startTime: number,
     success: boolean = true,
-    error?:string,
+    error?: string,
     metadata?:Record<string, unknown>
   ): PerformanceSnapshot {
     const endTime = Date.now();
