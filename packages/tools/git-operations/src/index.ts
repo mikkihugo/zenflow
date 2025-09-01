@@ -16,17 +16,25 @@
 import { GitOperationsManager } from './git-operations-manager';
 
 // Export all types
+export type { GitOperationsResult } from './git-operations-manager';
 export type {
-BranchStrategy,
-ConflictResolution,
-ConflictSuggestion,
-GitOperationsResult,
-GitOperation,
-GitOperationConfig,
-GitTreeStatus,
-MaintenanceTask,
-RemoteConfig,
-} from './git-operations-manager';
+	BranchStrategy,
+	ConflictResolution,
+	ConflictSuggestion,
+	GitOperation,
+	GitOperationConfig,
+	GitTreeStatus,
+	MaintenanceTask,
+	RemoteConfig,
+	GitEvent,
+	GitEventMap,
+	GitOperationStartedEvent,
+	GitOperationCompletedEvent,
+	GitOperationFailedEvent,
+	GitConflictResolvedEvent,
+	GitWorktreeEvent,
+	GitMaintenanceEvent,
+} from './types';
 // Export main GitOperationsManager class and utilities
 export { GitOperationsManager } from './git-operations-manager';
 

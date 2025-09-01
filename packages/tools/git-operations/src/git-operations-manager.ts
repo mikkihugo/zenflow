@@ -1,3 +1,4 @@
+
 /**
 * @fileoverview Git Operations Manager - Core Git Library
 *
@@ -18,395 +19,43 @@
 * @version 3.0.0 - Pure Git Library
 * @since 2024-01-01
 */
-
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import * as cron from 'node-cron';
+import { EventEmitter } from 'node:events';
 import type { SimpleGit, BranchSummary } from 'simple-git';
-import { getLogger, EventEmitter, type EventMap } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
+import {
+	EVENT_CONFLICT_RESOLVED,
+	EVENT_MAINTENANCE_COMPLETED,
+	EVENT_MAINTENANCE_STARTED,
+	EVENT_OPERATION_COMPLETED,
+	EVENT_OPERATION_FAILED,
+	EVENT_OPERATION_STARTED,
+	EVENT_WORKTREE_CREATED,
+	EVENT_WORKTREE_REMOVED,
+	SUCCESS_MESSAGES,
+	UNKNOWN_ERROR_MESSAGE,
+	type GitEvent,
+	type GitEventMap,
+	type GitOperation,
+	type GitOperationConfig,
+	type GitTreeStatus,
+	type MaintenanceTask,
+	type BranchStrategy,
+	type ConflictResolution,
+	type ConflictSuggestion,
+	type Claude,
+	type GitOperationStartedEvent,
+	type GitOperationCompletedEvent,
+	type GitOperationFailedEvent,
+	type GitConflictResolvedEvent,
+	type GitWorktreeEvent,
+	type GitMaintenanceEvent,
+} from './types';
+import { SimpleGitSandbox } from './sandbox';
 
-// Constants for commonly used strings to avoid duplication
-const UNKNOWN_ERROR_MESSAGE = 'Unknown error';
-const SUCCESS_MESSAGES = {
-REPOSITORY_CLONED: ' Repository cloned successfully',
-BRANCH_CREATED: ' Branch created successfully',
-BRANCH_DELETED: ' Branch deleted successfully',
-BRANCH_MERGED: ' Branch merged successfully',
-BRANCH_REBASED: ' Branch rebased successfully',
-} as const;
-
-// Real implementation of Git sandbox for secure operations
-class SimpleGitSandbox {
-private config: {
-sandboxRoot: string;
-maxAgeHours: number;
-restrictedEnvVars: string[];
-};
-
-private activeSandboxes = new Map<string, SandboxEnvironment>();
-
-constructor(config: {
-sandboxRoot?: string;
-maxAgeHours?: number;
-restrictedEnvVars?: string[];
-} = {}) {
-this.config = {
-sandboxRoot:
-config.sandboxRoot || path.join(process.cwd(), '.git-sandbox'),
-maxAgeHours: config.maxAgeHours || 24,
-restrictedEnvVars: config.restrictedEnvVars || [],
-};
-}
-
-async execute(
-command: string,
-options: { cwd?: string; timeout?: number } = {}
-): Promise<{
-success: boolean;
-output?: string;
-stderr?: string;
-error?: string;
-}> {
-// Execute git command safely in sandbox
-const { exec } = await import('node:child_process');
-const { promisify } = await import('node:util');
-const execAsync = promisify(exec);
-
-try {
-const result = await execAsync(command, {
-cwd: options.cwd || this.config.sandboxRoot,
-timeout: options.timeout || 30000,
-env: this.getSafeEnvironment(),
-});
-return { success: true, output: result.stdout, stderr: result.stderr };
-} catch (error) {
-return {
-success: false,
-error: this.getErrorMessage(error),
-};
-}
-}
-
-async initialize(): Promise<void> {
-// Create sandbox root directory
-await fs.mkdir(this.config.sandboxRoot, { recursive: true });
-logger.info(`Git sandbox initialized`, {
-sandboxRoot: this.config.sandboxRoot,
-});
-}
-
-async createSandbox(projectId: string): Promise<SandboxEnvironment> {
-const sandboxId = `${projectId}-${Date.now()}`
-const sandboxPath = path.join(this.config.sandboxRoot, sandboxId);
-
-await fs.mkdir(sandboxPath, { recursive: true });
-
-const sandbox: SandboxEnvironment = {
-id: sandboxId,
-path: sandboxPath,
-projectId,
-created: new Date(),
-lastAccess: new Date(),
-};
-
-this.activeSandboxes.set(sandboxId, sandbox);
-logger.debug(`Created git sandbox`, { sandboxId, sandboxPath, projectId });
-
-return sandbox;
-}
-
-async executeSafeGitOp(
-sandbox: SandboxEnvironment | string,
-gitOp: (git: SimpleGit) => Promise<void>
-): Promise<unknown> {
-const sandboxEnv =
-typeof sandbox === 'string'
-? this.activeSandboxes.get(sandbox) ||
-(await this.createSandbox(sandbox))
-: sandbox;
-
-if (!sandboxEnv) {
-throw new Error('Invalid sandbox environment');
-}
-
-// Update last access
-sandboxEnv.lastAccess = new Date();
-
-try {
-const { simpleGit } = await import('simple-git');
-const git = simpleGit(sandboxEnv.path);
-await gitOp(git);
-
-return { success: true, sandboxId: sandboxEnv.id, path: sandboxEnv.path };
-} catch (error) {
-logger.error('Git operation failed in sandbox', {
-sandboxId: sandboxEnv.id,
-error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
-});
-throw error;
-}
-}
-
-async cleanupSandbox(sandboxId?: string): Promise<void> {
-if (sandboxId) {
-const sandbox = this.activeSandboxes.get(sandboxId);
-if (sandbox) {
-await fs.rm(sandbox.path, { recursive: true, force: true });
-this.activeSandboxes.delete(sandboxId);
-logger.debug('Cleaned up sandbox', { sandboxId });
-}
-} else {
-// Cleanup stale sandboxes
-const staleThreshold =
-Date.now() - this.config.maxAgeHours * 60 * 60 * 1000;
-for (const [id, sandbox] of this.activeSandboxes.entries()) {
-if (sandbox.lastAccess.getTime() < staleThreshold) {
-await fs.rm(sandbox.path, { recursive: true, force: true });
-this.activeSandboxes.delete(id);
-logger.debug('Cleaned up stale sandbox', { sandboxId: id });
-}
-}
-}
-}
-
-async shutdown(): Promise<void> {
-// Cleanup all active sandboxes
-for (const [id] of this.activeSandboxes.entries()) {
-await this.cleanupSandbox(id);
-}
-logger.info('Git sandbox shutdown complete');
-}
-
-private getSafeEnvironment(): Record<string, string> {
-const env: Record<string, string> = {};
-
-// Include only safe environment variables
-const safeVars = ['PATH', 'HOME', 'USER', 'SHELL'];
-for (const varName of safeVars) {
-if (
-process.env[varName] &&
-!this.config.restrictedEnvVars.includes(varName)
-) {
-env[varName] = process.env[varName]!;
-}
-}
-
-return env;
-}
-}
-
-// Enhanced sandbox interface with proper typing
-interface SandboxEnvironment {
-id: string;
-path: string;
-projectId: string;
-created: Date;
-lastAccess: Date;
-}
-
-// AI Integration for conflict resolution - TODO: Add when @anthropic/sdk is installed
-// import type { Claude} from '@anthropic/sdk';
-interface Claude {
-messages?: unknown;
-}
-
-
-
-export interface GitOperationConfig {
-/** Enable AI-powered conflict resolution */
-aiConflictResolution: boolean;
-/** Enable intelligent branch management */
-intelligentBranching: boolean;
-/** Enable automated maintenance */
-automatedMaintenance: boolean;
-/** Always use git worktrees for isolation */
-alwaysUseWorktrees: boolean;
-/** Maximum concurrent git operations */
-maxConcurrentOps: number;
-/** Git operation timeout (ms) */
-operationTimeout: number;
-/** Remote repository configurations */
-remotes: RemoteConfig[];
-}
-
-export interface RemoteConfig {
-name: string;
-url: string;
-credentials?: {
-type: 'token' | 'ssh' | 'basic';
-token?: string;
-username?: string;
-password?: string;
-sshKey?: string;
-};
-}
-
-export interface BranchStrategy {
-/** Branch naming convention */
-namingPattern:
-| 'feature/{name}'
-| 'hotfix/{name}'
-| 'release/{name}'
-| ' custom';
-/** Custom naming pattern */
-customPattern?: string;
-/** Auto-cleanup old branches */
-autoCleanup: boolean;
-/** Branch protection rules */
-protectedBranches: string[];
-/** Merge strategy preference */
-defaultMergeStrategy: 'merge' | 'rebase' | 'squash';
-}
-
-export interface ConflictResolution {
-/** Conflict type */
-type: 'merge' | 'rebase' | ' cherry-pick';
-/** Files with conflicts */
-conflictFiles: string[];
-/** AI resolution suggestions */
-aiSuggestions: ConflictSuggestion[];
-/** Resolution strategy */
-strategy: 'auto' | ' manual' | ' ai-assisted';
-/** Resolution result */
-result?: 'resolved' | ' requires-manual' | ' failed';
-}
-
-export interface ConflictSuggestion {
-file: string;
-conflicts: Array<{
-section: string;
-ourVersion: string;
-theirVersion: string;
-aiRecommendation: string;
-confidence: number;
-reasoning: string;
-}>;
-}
-
-export interface GitTreeStatus {
-/** Total active trees */
-activeTrees: number;
-/** Trees requiring maintenance */
-maintenanceRequired: number;
-/** Total disk usage */
-diskUsage: number;
-/** Last maintenance run */
-lastMaintenance: Date;
-/** Trees by age */
-treesByAge: {
-fresh: number; // < 1 hour
-recent: number; // 1-24 hours
-old: number; // 1-7 days
-stale: number; // > 7 days
-};
-}
-
-export interface GitOperation {
-id: string;
-type:
-| 'clone'
-| 'pull'
-| 'push'
-| 'merge'
-| 'rebase'
-| ' branch'
-| ' commit'
-| ' fetch';
-projectId: string;
-sandboxId: string;
-status:
-| 'pending'
-| ' running'
-| ' completed'
-| ' failed'
-| ' requires-resolution';
-startedAt: Date;
-completedAt?: Date;
-result?: unknown;
-error?: string;
-conflictResolution?: ConflictResolution;
-}
-
-export interface MaintenanceTask {
-id: string;
-type:
-| 'cleanup-stale'
-| ' compress-trees'
-| ' update-remotes'
-| ' verify-integrity';
-schedule: string; // cron expression
-lastRun?: Date;
-nextRun: Date;
-enabled: boolean;
-}
-
-// Event types for git operations
-export interface GitOperationStartedEvent {
-type: 'gitOperationStarted';
-operationId: string;
-operationType: GitOperation['type'];
-projectId: string;
-timestamp: string;
-metadata?: Record<string, unknown>;
-}
-
-export interface GitOperationCompletedEvent {
-type: 'gitOperationCompleted';
-operationId: string;
-operationType: GitOperation['type'];
-projectId: string;
-success: boolean;
-result?: unknown;
-duration: number;
-timestamp: string;
-}
-
-export interface GitOperationFailedEvent {
-type: 'gitOperationFailed';
-operationId: string;
-operationType: GitOperation['type'];
-projectId: string;
-error: string;
-timestamp: string;
-}
-
-export interface GitConflictResolvedEvent {
-type: 'gitConflictResolved';
-projectId: string;
-conflictType: 'merge' | 'rebase' | ' cherry-pick';
-filesResolved: string[];
-aiAssisted: boolean;
-timestamp: string;
-}
-
-export interface GitWorktreeEvent {
-type: 'git: worktree: created' | ' git: worktree: removed';
-projectId: string;
-worktreeName: string;
-worktreePath: string;
-branch: string;
-timestamp: string;
-}
-
-export interface GitMaintenanceEvent {
-type: 'git: maintenance: started' | ' git: maintenance: completed';
-taskType:
-| 'cleanup-stale'
-| ' compress-trees'
-| ' update-remotes'
-| ' verify-integrity';
-projectsAffected?: number;
-timestamp: string;
-}
-
-// Union type for all git events
-export type GitEvent =
-| GitOperationStartedEvent
-| GitOperationCompletedEvent
-| GitOperationFailedEvent
-| GitConflictResolvedEvent
-| GitWorktreeEvent
-| GitMaintenanceEvent;
+const logger = getLogger('git-operations-manager');
 
 export interface GitOperationsResult {
 success: boolean;
@@ -422,17 +71,7 @@ duration?: number;
 };
 }
 
-// Define event map for GitOperationsManager
-interface GitEventMap extends EventMap {
-gitOperationStarted: [GitOperationStartedEvent];
-gitOperationCompleted: [GitOperationCompletedEvent];
-gitOperationFailed: [GitOperationFailedEvent];
-gitConflictResolved: [GitConflictResolvedEvent];
-gitWorktreeCreated: [GitWorktreeEvent];
-gitWorktreeRemoved: [GitWorktreeEvent];
-gitMaintenanceStarted: [GitMaintenanceEvent];
-gitMaintenanceCompleted: [GitMaintenanceEvent];
-}
+// Define event map for GitOperationsManager - now imported from './types'
 
 /**
 * GitOperationsManager - Event-Driven Git Operations Library
@@ -519,28 +158,20 @@ restrictedEnvVars: [
 'NPM_TOKEN',
 'CI_*',
 'BUILD_*',
+
 'DEPLOY_*',
 ],
 });
-
 this.initializeMaintenanceTasks();
-
 logger.info(' GitOperationsManager initialized', {
-managerId: this.managerId,
-aiConflictResolution: this.config.aiConflictResolution,
-intelligentBranching: this.config.intelligentBranching,
-automatedMaintenance: this.config.automatedMaintenance,
+	managerId: this.managerId,
+	aiConflictResolution: this.config.aiConflictResolution,
+	intelligentBranching: this.config.intelligentBranching,
+	automatedMaintenance: this.config.automatedMaintenance,
 });
-
 // Foundation integration test placeholder
 }
 
-/**
-* Helper to get error message from unknown error
-*/
-private getErrorMessage(error: unknown): string {
-return error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE;
-}
 
 /**
 * Get manager ID
@@ -618,7 +249,7 @@ await git.clone(repoUrl, '.', cloneOptions);
 
 this.completeOperation(operation, { sandbox: sandbox.id });
 
-logger.info(SUCCESS_MESSAGES.REPOSITORY_CLONED, {
+logger.info(SUCCESS_MESSAGES.repositoryCloned, {
 managerId: this.managerId,
 projectId,
 repoUrl,
@@ -645,7 +276,7 @@ push?: boolean;
 } = {}
 ): Promise<void> {
 const operation = this.createOperation(
-`branch`,
+'branch',
 projectId,
 `branch-${branchName}`
 );
@@ -668,7 +299,7 @@ await git.push(`origin`, formattedName, ['--set-upstream']);
 
 this.completeOperation(operation, { branchName: formattedName });
 
-logger.info(SUCCESS_MESSAGES.BRANCH_CREATED, {
+logger.info(SUCCESS_MESSAGES.branchCreated, {
 managerId: this.managerId,
 projectId,
 branchName: formattedName,
@@ -693,7 +324,7 @@ deleteRemote?: boolean;
 } = {}
 ): Promise<void> {
 const operation = this.createOperation(
-`branch`,
+'branch',
 projectId,
 `delete-${branchName}`
 );
@@ -701,14 +332,14 @@ projectId,
 try {
 // Safety check: don`t delete protected branches
 if (this.branchStrategy.protectedBranches.includes(branchName)) {
-throw new Error(`Cannot delete protected branch: ${branchName}`
+throw new Error(`Cannot delete protected branch: ${branchName}`);
 }
 
 const sandbox = await this.getSandboxForProject(projectId);
 
 await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
 // Delete local branch
-const deleteFlag = options.force ? `-D' : '-d';
+const deleteFlag = options.force ? '-D' : '-d';
 await git.raw(['branch', deleteFlag, branchName]);
 
 // Delete remote branch if requested
@@ -719,7 +350,7 @@ await git.push(['origin', '--delete', branchName]);
 
 this.completeOperation(operation, { deleted: true });
 
-logger.info(SUCCESS_MESSAGES.BRANCH_DELETED, {
+logger.info(SUCCESS_MESSAGES.branchDeleted, {
 managerId: this.managerId,
 projectId,
 branchName,
@@ -736,83 +367,77 @@ throw error;
 * AI-powered merge with conflict resolution
 */
 async mergeBranch(
-projectId: string,
-sourceBranch: string,
-targetBranch: string,
-options: {
-strategy?: 'merge' | 'squash' | 'rebase';
-message?: string;
-autoResolveConflicts?: boolean;
-} = {}
+	projectId: string,
+	sourceBranch: string,
+	targetBranch: string,
+	options: {
+		strategy?: 'merge' | 'squash' | 'rebase';
+		message?: string;
+		autoResolveConflicts?: boolean;
+	} = {}
 ): Promise<ConflictResolution | null> {
-const operation = this.createOperation(
-`merge`,
-projectId,
-`merge-${sourceBranch}-${targetBranch}`
-);
+	const operation = this.createOperation(
+		`merge`,
+		projectId,
+		`merge-${sourceBranch}-into-${targetBranch}`
+	);
 
-try {
-const sandbox = await this.getSandboxForProject(projectId);
-let conflictResolution: ConflictResolution | null = null;
+	try {
+		const sandbox = await this.getSandboxForProject(projectId);
+		let conflictResolution: ConflictResolution | null = null;
 
-await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
-// Checkout target branch
-await git.checkout(targetBranch);
+		await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
+			try {
+				// Ensure we are on the target branch
+				await git.checkout(targetBranch);
 
-try {
-// Attempt merge
-const strategy =
-options.strategy || this.branchStrategy.defaultMergeStrategy;
+				// Attempt merge
+				const strategy = options.strategy || this.branchStrategy.defaultMergeStrategy;
+				switch (strategy) {
+					case 'merge':
+						await git.merge([sourceBranch]);
+						break;
+					case 'squash':
+						await git.merge([sourceBranch, '--squash']);
+						break;
+					case 'rebase':
+						await git.rebase([sourceBranch]);
+						break;
+				}
+			} catch (mergeError) {
+				// Handle merge conflicts with AI
+				if (this.config.aiConflictResolution && options.autoResolveConflicts !== false) {
+					const repoRoot = await git.revparse(['--show-toplevel']);
+					conflictResolution = await this.resolveConflictsWithAI(
+						git,
+						'merge',
+						repoRoot
+					);
+				} else {
+					throw mergeError;
+				}
+			}
+		});
 
-switch (strategy) {
-case 'merge':
-await git.merge([sourceBranch]);
-break;
-case 'squash':
-await git.merge([sourceBranch, '--squash']);
-break;
-case 'rebase':
-await git.rebase([sourceBranch]);
-break;
-}
-} catch (mergeError) {
-// Handle merge conflicts with AI
-if (
-this.config.aiConflictResolution &&
-options.autoResolveConflicts !== false
-) {
-const sandboxEnv =
-typeof sandbox === 'string' ? { path: sandbox } : sandbox;
-conflictResolution = await this.resolveConflictsWithAI(
-git,
-'merge',
-sandboxEnv.path
-);
-} else {
-throw mergeError;
-}
-}
-});
+		this.completeOperation(operation, {
+			merged: true,
+			conflictResolution,
+		});
 
-this.completeOperation(operation, {
-merged: true,
-conflictResolution,
-});
+		logger.info(SUCCESS_MESSAGES.branchMerged, {
+			managerId: this.managerId,
+			projectId,
+			sourceBranch,
+			targetBranch,
+			strategy: options.strategy,
+			hadConflicts: !!conflictResolution,
+		});
 
-logger.info(SUCCESS_MESSAGES.BRANCH_MERGED, {
-managerId: this.managerId,
-projectId,
-sourceBranch,
-targetBranch,
-strategy: options.strategy,
-hadConflicts: !!conflictResolution,
-});
-
-return conflictResolution;
-} catch (error) {
-this.failOperation(operation, error);
-throw error;
-}
+		return conflictResolution;
+	} catch (error) {
+		this.failOperation(operation, error);
+		throw error;
+	}
 }
 
 /**
@@ -842,7 +467,7 @@ try {
 const rebaseOptions: string[] = [targetBranch];
 
 if (options.interactive) {
-rebaseOptions.push(`--interactive`
+rebaseOptions.push(`--interactive`);
 }
 if (options.preserveMerges) {
 rebaseOptions.push('--preserve-merges');
@@ -873,7 +498,7 @@ rebased: true,
 conflictResolution,
 });
 
-logger.info(SUCCESS_MESSAGES.BRANCH_REBASED, {
+logger.info(SUCCESS_MESSAGES.branchRebased, {
 managerId: this.managerId,
 projectId,
 targetBranch,
@@ -913,7 +538,7 @@ await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
 const pushOptions: string[] = [];
 
 if (options.force) {
-pushOptions.push(`--force`
+pushOptions.push(`--force`);
 }
 if (options.setUpstream) {
 pushOptions.push('--set-upstream');
@@ -967,7 +592,7 @@ try {
 const pullOptions: string[] = [];
 
 if (options.rebase) {
-pullOptions.push(`--rebase`
+pullOptions.push(`--rebase`);
 }
 
 const remote = options.remote || 'origin';
@@ -1024,138 +649,182 @@ throw error;
 */
 private async resolveConflictsWithAI(
 git: SimpleGit,
-conflictType: 'merge' | 'rebase' | ' cherry-pick',
+conflictType: 'merge' | 'rebase' | 'cherry-pick',
 workingDir: string
 ): Promise<ConflictResolution> {
 logger.info(' Starting AI conflict resolution', {
-managerId: this.managerId,
-conflictType,
-workingDir,
+	managerId: this.managerId,
+	conflictType,
+	workingDir,
 });
 
 try {
-// Get status to identify conflicted files
-const status = await git.status();
-const conflictFiles = status.conflicted;
-
-if (conflictFiles.length === 0) {
-return {
-type: conflictType,
-conflictFiles: [],
-aiSuggestions: [],
-strategy: 'auto',
-result: 'resolved',
-};
-}
-
-const aiSuggestions: ConflictSuggestion[] = [];
-
-// Process each conflicted file
-for (const file of conflictFiles) {
-const filePath = path.join(workingDir, file);
-const fileContent = await fs.readFile(filePath, 'utf-8');
-
-if (this.claude && this.config.aiConflictResolution) {
-const suggestion = await this.getAIConflictSuggestion(
-file,
-fileContent
-);
-aiSuggestions.push(suggestion);
-
-// Apply AI suggestion if confidence is high
-if (suggestion.conflicts.every((c) => c.confidence > 0.8)) {
-await this.applyAISuggestion(filePath, suggestion);
-await git.add(file);
-}
-}
-}
-
-// Check if all conflicts were resolved
-const newStatus = await git.status();
-const remainingConflicts = newStatus.conflicted;
-
-const result: ConflictResolution = {
-type: conflictType,
-conflictFiles,
-aiSuggestions,
-strategy: 'ai-assisted',
-result:
-remainingConflicts.length === 0 ? 'resolved' : ' requires-manual',
-};
-
-// Complete the merge/rebase if all conflicts resolved
-if (remainingConflicts.length === 0) {
-if (conflictType === 'merge{
-await git.commit('AI-resolved merge conflicts');
-} else if (conflictType === 'rebase{
-await git.raw(['rebase', '--continue']);
-}
-}
-
-logger.info(' AI conflict resolution completed', {
-managerId: this.managerId,
-conflictType,
-originalConflicts: conflictFiles.length,
-remainingConflicts: remainingConflicts.length,
-result: result.result,
-});
-
-// Emit conflict resolved event
-if (result.result === 'resolved{
-this.emit('git: conflict: resolved', {
-type: 'git: conflict: resolved',
-projectId: 'unknown', // Would need to pass projectId to this method
-conflictType,
-filesResolved: conflictFiles,
-aiAssisted: true,
-timestamp: new Date().toISOString(),
-});
-}
-
-return result;
+	const conflictFiles = await this.getConflictedFiles(git);
+	if (conflictFiles.length === 0) {
+		return this.createAutoResolvedResult(conflictType);
+	}
+	const aiSuggestions = await this.getAISuggestionsForFiles(conflictFiles, workingDir, git);
+	const remainingConflicts = await this.getRemainingConflicts(git);
+	const result = this.createAIResolutionResult(conflictType, conflictFiles, aiSuggestions, remainingConflicts);
+	await this.completeMergeOrRebaseIfResolved(git, conflictType, remainingConflicts);
+	logger.info(' AI conflict resolution completed', {
+		managerId: this.managerId,
+		conflictType,
+		originalConflicts: conflictFiles.length,
+		remainingConflicts: remainingConflicts.length,
+		result: result.result,
+	});
+	if (result.result === 'resolved') {
+		this.emit(EVENT_CONFLICT_RESOLVED, {
+			type: EVENT_CONFLICT_RESOLVED,
+			projectId: 'unknown',
+			conflictType,
+			filesResolved: conflictFiles,
+			aiAssisted: true,
+			timestamp: new Date().toISOString(),
+		});
+	}
+	return result;
 } catch (error) {
-logger.error(' AI conflict resolution failed', {
-managerId: this.managerId,
-conflictType,
-error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
-});
-
-return {
-type: conflictType,
-conflictFiles: [],
-aiSuggestions: [],
-strategy: 'manual',
-result: 'failed',
-};
+	logger.error(' AI conflict resolution failed', {
+		managerId: this.managerId,
+		conflictType,
+		error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
+	});
+	throw error;
 }
+}
+// Helper methods for resolveConflictsWithAI
+private async getConflictedFiles(git: SimpleGit): Promise<string[]> {
+	const status = await git.status();
+	return status.conflicted;
+}
+
+private createAutoResolvedResult(conflictType: 'merge' | 'rebase' | 'cherry-pick'): ConflictResolution {
+	return {
+		type: conflictType,
+		conflictFiles: [],
+		aiSuggestions: [],
+		strategy: 'auto',
+		result: 'resolved',
+	};
+}
+
+private async getAISuggestionsForFiles(conflictFiles: string[], workingDir: string, git: SimpleGit): Promise<ConflictSuggestion[]> {
+	const aiSuggestions: ConflictSuggestion[] = [];
+	for (const file of conflictFiles) {
+		const filePath = path.join(workingDir, file);
+		const fileContent = await fs.readFile(filePath, 'utf-8');
+		if (this.claude && this.config.aiConflictResolution) {
+			const suggestion = await this.getAIConflictSuggestion(file, fileContent);
+			aiSuggestions.push(suggestion);
+			if (suggestion.conflicts.every((c) => c.confidence > 0.8)) {
+				await this.applyAISuggestion(filePath, suggestion);
+				await git.add(file);
+			}
+		}
+	}
+	return aiSuggestions;
+}
+
+private async getRemainingConflicts(git: SimpleGit): Promise<string[]> {
+	const newStatus = await git.status();
+	return newStatus.conflicted;
+}
+
+private createAIResolutionResult(conflictType: 'merge' | 'rebase' | 'cherry-pick', conflictFiles: string[], aiSuggestions: ConflictSuggestion[], remainingConflicts: string[]): ConflictResolution {
+	return {
+		type: conflictType,
+		conflictFiles,
+		aiSuggestions,
+		strategy: 'ai-assisted',
+		result: remainingConflicts.length === 0 ? 'resolved' : ' requires-manual',
+	};
+}
+
+private async completeMergeOrRebaseIfResolved(git: SimpleGit, conflictType: string, remainingConflicts: string[]): Promise<void> {
+	if (remainingConflicts.length === 0) {
+		if (conflictType === 'merge') {
+			await git.commit('AI-resolved merge conflicts');
+		} else if (conflictType === 'rebase') {
+			await git.raw(['rebase', '--continue']);
+		}
+	}
 }
 
 /**
 * Get AI suggestion for conflict resolution
 */
 private async getAIConflictSuggestion(
-fileName: string,
-fileContent: string
+	fileName: string,
+	fileContent: string
 ): Promise<ConflictSuggestion> {
-if (!this.claude?.messages) {
-throw new Error('Claude AI not available for conflict resolution');
+	if (!this.claude?.messages) {
+		throw new Error('Claude AI not available for conflict resolution');
+	}
+
+	const conflictMarkers = this.parseConflictMarkers(fileContent);
+	const suggestions: ConflictSuggestion['conflicts'] = [];
+
+	for (const conflict of conflictMarkers) {
+		try {
+			const response = await this.claude.messages.create({
+				model: 'claude-3-5-sonnet-20241022',
+				max_tokens: 4000,
+				messages: [
+					{
+						role: `user`,
+						content: this.buildAIConflictPrompt(fileName, conflict),
+					},
+				],
+			});
+
+			const content = response.content?.[0];
+			if (content && content.type === `text`) {
+				const aiResponse = this.parseClaudeJsonBlock(content.text);
+				if (aiResponse) {
+					suggestions.push({
+						section: conflict.section,
+						ourVersion: conflict.ourVersion,
+						theirVersion: conflict.theirVersion,
+						aiRecommendation: aiResponse.resolution,
+						confidence: aiResponse.confidence / 100,
+						reasoning: aiResponse.reasoning,
+					});
+				}
+			}
+		} catch (error) {
+			logger.warn(`Failed to get AI suggestion for conflict in ${fileName}`, {
+				managerId: this.managerId,
+				error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
+			});
+
+			// Fallback suggestion
+			suggestions.push({
+				section: conflict.section,
+				ourVersion: conflict.ourVersion,
+				theirVersion: conflict.theirVersion,
+				aiRecommendation: conflict.ourVersion, // Default to our version
+				confidence: 0.3,
+				reasoning: `AI analysis failed, defaulting to our version`,
+			});
+		}
+	}
+
+	return {
+		file: fileName,
+		conflicts: suggestions,
+	};
 }
 
-const conflictMarkers = this.parseConflictMarkers(fileContent);
-const suggestions: ConflictSuggestion['conflicts'] = [];
-
-for (const conflict of conflictMarkers) {
-try {
-const response = await this.claude.messages.create({
-model: 'claude-3-5-sonnet-20241022',
-max_tokens: 4000,
-messages: [
-{
-role: `user`,
-content: `
+private buildAIConflictPrompt(
+	fileName: string,
+	conflict: { section: string; ourVersion: string; theirVersion: string }
+): string {
+	return `
 # Git Merge Conflict Resolution
 
-**File**:${fileName}
+**File**: ${fileName}
 
 **Conflict Section**:
 \`\`\`
@@ -1173,61 +842,29 @@ ${conflict.theirVersion}
 \`\`\`
 
 Please analyze this merge conflict and provide:
-1. **Recommended Resolution**:The best way to combine both changes
-2. **Confidence Level**:0-100% how confident you are in this resolution
-3. **Reasoning**:Why this resolution is best
+1. Recommended Resolution: The best way to combine both changes
+2. Confidence Level: 0-100% how confident you are in this resolution
+3. Reasoning: Why this resolution is best
 
 Respond in JSON format:
 \`\`\`json
 {
-"resolution":"recommended code here",
-"confidence":85,
-"reasoning":"explanation of why this resolution is best"
+	"resolution": "recommended code here",
+	"confidence": 85,
+	"reasoning": "explanation of why this resolution is best"
 }
 \`\`\`
-`,
-},
-],
-});
-
-const content = response.content[0];
-if (content.type === `text`) {
-const jsonMatch = content.text.match(/```json\n([\S\s]*?)\n```/);
-if (jsonMatch) {
-const aiResponse = JSON.parse(jsonMatch[1]);
-
-suggestions.push({
-section: conflict.section,
-ourVersion: conflict.ourVersion,
-theirVersion: conflict.theirVersion,
-aiRecommendation: aiResponse.resolution,
-confidence: aiResponse.confidence / 100,
-reasoning: aiResponse.reasoning,
-});
-}
-}
-} catch (error) {
-logger.warn(`Failed to get AI suggestion for conflict in ${fileName}`, {
-managerId: this.managerId,
-error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
-});
-
-// Fallback suggestion
-suggestions.push({
-section: conflict.section,
-ourVersion: conflict.ourVersion,
-theirVersion: conflict.theirVersion,
-aiRecommendation: conflict.ourVersion, // Default to our version
-confidence: 0.3,
-reasoning: `AI analysis failed, defaulting to our version`,
-});
-}
+`;
 }
 
-return {
-file: fileName,
-conflicts: suggestions,
-};
+private parseClaudeJsonBlock(text: string): { resolution: string; confidence: number; reasoning: string } | null {
+		const jsonMatch = text.match(/```json\n([\S\s]*?)\n```/);
+		if (!jsonMatch || typeof jsonMatch[1] !== 'string') return null;
+	try {
+		return JSON.parse(jsonMatch[1]);
+	} catch {
+		return null;
+	}
 }
 
 /**
@@ -1320,32 +957,36 @@ await fs.writeFile(filePath, content, 'utf-8');
 * Initialize maintenance tasks
 */
 private initializeMaintenanceTasks(): void {
-this.maintenanceTasks = [
-{
-id: 'cleanup-stale-trees',
-type: 'cleanup-stale',
-schedule: '0 2 * * *', // Daily at 2 AM') nextRun: new Date(),
-enabled: true,
-},
-{
-id: 'compress-git-objects',
-type: 'compress-trees',
-schedule: '0 3 * * 0', // Weekly on Sunday at 3 AM') nextRun: new Date(),
-enabled: true,
-},
-{
-id: 'update-remote-refs',
-type: 'update-remotes',
-schedule: '0 1 * * *', // Daily at 1 AM') nextRun: new Date(),
-enabled: true,
-},
-{
-id: 'verify-repository-integrity',
-type: 'verify-integrity',
-schedule: '0 4 * * 1', // Weekly on Monday at 4 AM') nextRun: new Date(),
-enabled: true,
-},
-];
+	this.maintenanceTasks = [
+		{
+			id: 'cleanup-stale-trees',
+			type: 'cleanup-stale',
+			schedule: '0 2 * * *', // Daily at 2 AM
+			nextRun: new Date(),
+			enabled: true,
+		},
+		{
+			id: 'compress-git-trees',
+	type: ' compress-trees',
+			schedule: '0 3 * * 0', // Weekly on Sunday at 3 AM
+			nextRun: new Date(),
+			enabled: true,
+		},
+		{
+			id: 'update-remote-refs',
+	type: ' update-remotes',
+			schedule: '0 1 * * *', // Daily at 1 AM
+			nextRun: new Date(),
+			enabled: true,
+		},
+		{
+			id: 'verify-repository-integrity',
+	type: ' verify-integrity',
+			schedule: '0 4 * * 1', // Weekly on Monday at 4 AM
+			nextRun: new Date(),
+			enabled: true,
+		},
+	];
 }
 
 /**
@@ -1384,8 +1025,8 @@ taskId: task.id,
 });
 
 // Emit maintenance started event
-this.emit(`git: maintenance: started`, {
-type: 'git: maintenance: started',
+this.emit(EVENT_MAINTENANCE_STARTED, {
+type: EVENT_MAINTENANCE_STARTED,
 taskType: task.type,
 timestamp: new Date().toISOString(),
 });
@@ -1395,13 +1036,13 @@ switch (task.type) {
 case 'cleanup-stale':
 await this.cleanupStaleTrees();
 break;
-case 'compress-trees':
+case ' compress-trees':
 await this.compressGitTrees();
 break;
-case 'update-remotes':
+case ' update-remotes':
 await this.updateRemoteReferences();
 break;
-case `verify-integrity`:
+case ' verify-integrity':
 await this.verifyRepositoryIntegrity();
 break;
 }
@@ -1415,8 +1056,8 @@ completedAt: task.lastRun,
 });
 
 // Emit maintenance completed event
-this.emit(`git: maintenance: completed`, {
-type: `git: maintenance: completed`,
+this.emit(EVENT_MAINTENANCE_COMPLETED, {
+type: EVENT_MAINTENANCE_COMPLETED,
 taskType: task.type,
 projectsAffected: this.treeMetrics.size,
 timestamp: new Date().toISOString(),
@@ -1650,8 +1291,8 @@ this.activeOperations.set(operationId, operation);
 operation.status = 'running';
 
 // Emit operation started event
-this.emit('git: operation: started', {
-type: 'git: operation: started',
+this.emit(EVENT_OPERATION_STARTED, {
+ type: EVENT_OPERATION_STARTED,
 operationId,
 operationType: type,
 projectId,
@@ -1677,8 +1318,8 @@ this.activeOperations.delete(operation.id);
 this.operationHistory.push(operation);
 
 // Emit operation completed event
-this.emit('git: operation: completed', {
-type: 'git: operation: completed',
+this.emit(EVENT_OPERATION_COMPLETED, {
+ type: EVENT_OPERATION_COMPLETED,
 operationId: operation.id,
 operationType: operation.type,
 projectId: operation.projectId,
@@ -1705,8 +1346,8 @@ this.activeOperations.delete(operation.id);
 this.operationHistory.push(operation);
 
 // Emit operation failed event
-this.emit('git: operation: failed', {
-type: 'git: operation: failed',
+this.emit(EVENT_OPERATION_FAILED, {
+ type: EVENT_OPERATION_FAILED,
 operationId: operation.id,
 operationType: operation.type,
 projectId: operation.projectId,
@@ -1744,7 +1385,7 @@ branchCount: 0, // Would calculate actual branch count
 getGitSystemStatus(): {
 activeOperations: number;
 totalTrees: number;
-systemHealth: 'healthy' | ' warning' | ' critical';
+systemHealth: 'healthy' | 'warning' | 'critical';
 treeStatus: GitTreeStatus;
 recentOperations: GitOperation[];
 maintenance: {
@@ -1782,12 +1423,12 @@ maintenanceRequired++;
 }
 }
 
-const systemHealth =
-maintenanceRequired > 10
-? 'critical'
-: maintenanceRequired > 5
-? 'warning'
-: 'healthy';
+const systemHealth: 'healthy' | 'warning' | 'critical' =
+ maintenanceRequired > 10
+ ? 'critical'
+ : maintenanceRequired > 5
+ ? 'warning'
+ : 'healthy';
 
 return {
 activeOperations: this.activeOperations.size,
@@ -1874,7 +1515,7 @@ path?: string;
 } = {}
 ): Promise<string> {
 const operation = this.createOperation(
-`branch`,
+'branch',
 projectId,
 `worktree-${worktreeName}`
 );
@@ -1909,8 +1550,8 @@ path: worktreePath,
 });
 
 // Emit worktree created event
-this.emit('git: worktree: created', {
-type: 'git: worktree: created',
+this.emit(EVENT_WORKTREE_CREATED, {
+type: EVENT_WORKTREE_CREATED,
 projectId,
 worktreeName,
 worktreePath,
@@ -1937,7 +1578,7 @@ force?: boolean;
 } = {}
 ): Promise<void> {
 const operation = this.createOperation(
-`branch`,
+'branch',
 projectId,
 `remove-worktree-${worktreeName}`
 );
@@ -1973,8 +1614,8 @@ deletedBranch: options.deleteBranch,
 });
 
 // Emit worktree removed event
-this.emit('git: worktree: removed', {
-type: `git: worktree: removed`,
+this.emit(EVENT_WORKTREE_REMOVED, {
+type: EVENT_WORKTREE_REMOVED,
 projectId,
 worktreeName,
 worktreePath: `../worktrees/${worktreeName}`,
@@ -2011,25 +1652,25 @@ await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
 const result = await git.raw([`worktree`, 'list', '--porcelain']);
 const lines = result.split('\n');
 
-let currentWorktree: Record<string, unknown> = {};
+let currentWorktree: Partial<{ path: string; branch: string; commit: string; isMain: boolean; }> = {};
 
 for (const line of lines) {
-if (line.startsWith('worktree ')) {
-if (currentWorktree.path) {
-worktrees.push(currentWorktree);
-}
-currentWorktree = { path: line.substring(9), isMain: false };
-} else if (line.startsWith('branch ')) {
-currentWorktree.branch = line.substring(7);
-} else if (line.startsWith('HEAD ')) {
-currentWorktree.commit = line.substring(5);
-} else if (line === 'bare'
-currentWorktree.isMain = true;
-}
+	if (line.startsWith('worktree ')) {
+			if (currentWorktree.path) {
+				worktrees.push(currentWorktree as { path: string; branch: string; commit: string; isMain: boolean });
+		}
+			currentWorktree = { path: line.substring(9), isMain: false };
+	} else if (line.startsWith('branch ')) {
+			currentWorktree.branch = line.substring(7);
+	} else if (line.startsWith('HEAD ')) {
+			currentWorktree.commit = line.substring(5);
+	} else if (line === 'bare') {
+			currentWorktree.isMain = true;
+	}
 }
 
-if (currentWorktree.path) {
-worktrees.push(currentWorktree);
+	if (currentWorktree.path) {
+		worktrees.push(currentWorktree as { path: string; branch: string; commit: string; isMain: boolean });
 }
 });
 
@@ -2059,15 +1700,21 @@ event:
 | GitOperationFailedEvent
 ) => void
 ): void {
-const type = `git: operation: ${eventType}` as const;
-this.on(type, handler as any);
+	const kind = eventType.trim();
+		if (kind === 'started') {
+			super.on(EVENT_OPERATION_STARTED, (e: unknown) => handler(e as GitOperationStartedEvent));
+		} else if (kind === 'completed') {
+			super.on(EVENT_OPERATION_COMPLETED, (e: unknown) => handler(e as GitOperationCompletedEvent));
+		} else if (kind === 'failed') {
+			super.on(EVENT_OPERATION_FAILED, (e: unknown) => handler(e as GitOperationFailedEvent));
+		}
 }
 
 /**
 * Subscribe to git conflict events
 */
 onConflict(handler: (event: GitConflictResolvedEvent) => void): void {
-this.on(`git: conflict: resolved`, handler as any);
+		super.on(EVENT_CONFLICT_RESOLVED, (e: unknown) => handler(e as GitConflictResolvedEvent));
 }
 
 /**
@@ -2077,8 +1724,12 @@ onWorktree(
 eventType: 'created' | ` removed`,
 handler: (event: GitWorktreeEvent) => void
 ): void {
-const type = `git: worktree: ${eventType}` as const;
-this.on(type, handler as any);
+	const kind = eventType.trim();
+		if (kind === 'created') {
+			super.on(EVENT_WORKTREE_CREATED, (e: unknown) => handler(e as GitWorktreeEvent));
+		} else if (kind === 'removed') {
+			super.on(EVENT_WORKTREE_REMOVED, (e: unknown) => handler(e as GitWorktreeEvent));
+		}
 }
 
 /**
@@ -2088,8 +1739,12 @@ onMaintenance(
 eventType: `started` | ` completed`,
 handler: (event: GitMaintenanceEvent) => void
 ): void {
-const type = `git: maintenance: ${eventType}` as const;
-this.on(type, handler as any);
+	const kind = eventType.trim();
+		if (kind === 'started') {
+			super.on(EVENT_MAINTENANCE_STARTED, (e: unknown) => handler(e as GitMaintenanceEvent));
+		} else if (kind === 'completed') {
+			super.on(EVENT_MAINTENANCE_COMPLETED, (e: unknown) => handler(e as GitMaintenanceEvent));
+		}
 }
 
 /**
@@ -2097,13 +1752,13 @@ this.on(type, handler as any);
 */
 onAnyGitEvent(handler: (event: GitEvent) => void): void {
 // Subscribe to all event types
-this.on(`git: operation: started`, handler as any);
-this.on('git: operation: completed', handler as any);
-this.on('git: operation: failed', handler as any);
-this.on('git: conflict: resolved', handler as any);
-this.on('git: worktree: created', handler as any);
-this.on('git: worktree: removed', handler as any);
-this.on('git: maintenance: started', handler as any);
-this.on('git: maintenance: completed', handler as any);
+super.on(EVENT_OPERATION_STARTED, (e: unknown) => handler(e as GitOperationStartedEvent));
+super.on(EVENT_OPERATION_COMPLETED, (e: unknown) => handler(e as GitOperationCompletedEvent));
+super.on(EVENT_OPERATION_FAILED, (e: unknown) => handler(e as GitOperationFailedEvent));
+super.on(EVENT_CONFLICT_RESOLVED, (e: unknown) => handler(e as GitConflictResolvedEvent));
+super.on(EVENT_WORKTREE_CREATED, (e: unknown) => handler(e as GitWorktreeEvent));
+super.on(EVENT_WORKTREE_REMOVED, (e: unknown) => handler(e as GitWorktreeEvent));
+super.on(EVENT_MAINTENANCE_STARTED, (e: unknown) => handler(e as GitMaintenanceEvent));
+super.on(EVENT_MAINTENANCE_COMPLETED, (e: unknown) => handler(e as GitMaintenanceEvent));
 }
 }

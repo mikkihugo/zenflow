@@ -9,7 +9,7 @@ import { getLogger} from '@claude-zen/foundation';
 
 import type { AgentId} from './types';
 
-const logger = getLogger('agent-monitoring-task-predictor');
+const logger = getLogger('agent-monitoring-task-predictor').
 
 /**
 * Basic task prediction result
@@ -149,7 +149,7 @@ history.shift();
 }
 
 logger.debug(`Task completion recorded`, {
-') agentId:agentId.id,
+; agentId:agentId.id,
 taskType,
 duration,
 success,
@@ -240,7 +240,7 @@ contextAdjustmentFactors.length > 0
 };
 
 logger.debug('Task duration predicted', {
-') agentId:agentId.id,
+; agentId:agentId.id,
 taskType,
 predictedDuration:prediction.predictedDuration,
 confidence:prediction.confidence,
@@ -269,7 +269,7 @@ this.taskHistory.set(key, filtered);
 this.taskHistory.clear();
 }
 
-logger.info('Prediction cache cleared', { olderThanMs});')}
+logger.info('Prediction cache cleared', { olderThanMs});').
 
 /**
 * Create fallback prediction when insufficient data is available
@@ -312,7 +312,7 @@ const secondAvg = this.calculateMean(secondHalf);
 
 const improvement = (firstAvg - secondAvg) / firstAvg;
 
-if (improvement > 0.1) return 'improving'; // Times getting shorter = improvingif (improvement < -0.1) return 'declining'; // Times getting longer = ' improving' | ' stable' | ' declining') return 'stable';
+if (improvement > 0.1) return 'improving'; // Times getting shorter = improvingif (improvement < -0.1) return 'declining'; // Times getting longer = ' improving' | ' stable' | ' declining; return 'stable';
 }
 
 /**

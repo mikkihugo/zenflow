@@ -19,7 +19,7 @@
 *
 * const networkId = await bridge.createNeuralNet('classifier', 'feedforward', {
 * hiddenLayers:[10, 5],
-* activation:'relu') *});
+* activation:'relu; *});
 *
 * const result = await bridge.trainNeuralNet(networkId, trainingData);
 * ```
@@ -159,7 +159,7 @@ readonly parameterCount?: number;
 *
 * const result = await bridge.createNeuralNet('xor-classifier', 'feedforward', {
 * hiddenLayers:[4],
-* activation:'sigmoid') *});
+* activation:'sigmoid; *});
 *
 * if (result.isOk()) {
 * const trainingData = [

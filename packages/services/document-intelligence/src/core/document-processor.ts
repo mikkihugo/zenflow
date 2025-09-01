@@ -13,7 +13,7 @@
 *});
 *
 * await processor.initialize();
-* await processor.processDocument('./docs/vision/product-vision.md');') * ````
+* await processor.processDocument('./docs/vision/product-vision.md').; * ````
 */
 /**
 * @file Document-processor implementation.
@@ -28,7 +28,7 @@ store<T = unknown>(key: string, data: T, category?: string): Promise<void>;
 }
 interface WorkflowEngine { initialize(): Promise<void>; }
 
-const logger = getLogger('DocumentProcessor');
+const logger = getLogger('DocumentProcessor').
 
 /**
 * Document types in the processing workflow.
@@ -215,7 +215,7 @@ this.setupEventHandlers();
 async initialize():Promise<void> {
 if (this.initialized) return;
 
-logger.info('Initializing document processor');// Initialize default workspace if workspace root exists
+logger.info('Initializing document processor').// Initialize default workspace if workspace root exists
 if (existsSync(this.config.workspaceRoot)) {
 await this.loadWorkspace(this.config.workspaceRoot);
 }
@@ -255,7 +255,7 @@ backgroundProcessing:this.config.enableWorkflows,
 
 this.workspaces.set(workspaceId, context);
 
-// Create directories if they don't exist') await this.ensureDirectories(workspace);
+// Create directories if they don't exist; await this.ensureDirectories(workspace);
 
 // Load existing documents
 await this.scanDocuments(workspaceId);
@@ -304,7 +304,7 @@ throw new Error(`Workspace not found:${workspaceId}``
 
 try {
 const docType = this.getDocumentType(documentPath);
-const content = await readFile(documentPath, `utf8`') const metadata = await this.extractMetadata(content);
+const content = await readFile(documentPath, `utf8`; const metadata = await this.extractMetadata(content);
 
 logger.info(`Processing ${docTypedocument}:${documentPath}``
 
@@ -336,7 +336,7 @@ type: 'document_created', data:document,
 context:{ workspaceId},
 });
 } catch (error) {
-logger.warn('Workflow processing failed:', error);')}
+logger.warn('Workflow processing failed:', error);').
 }
 
 this.emit('document:processed`, {
@@ -380,19 +380,19 @@ throw new Error(`Workspace not found:${workspaceId}``
 
 // Generate file path
 const __dirPath = this.getDocumentDirectory(context.workspace, type);
-const __fileName = `${title.toLowerCase().replace(/\s+/g, '-')}.md``
+const __fileName = `${title.toLowerCase().replace(/\s+/g, '-')..md``
 const filePath = join(dirPath, fileName);
 
 // Create document content with metadata
 const documentContent = this.generateDocumentContent(title, content, type);
 
 // Write file
-await writeFile(filePath, documentContent, `utf8');// Process the created document
+await writeFile(filePath, documentContent, `utf8').// Process the created document
 await this.processDocument(filePath, workspaceId);
 
 const document = context.activeDocuments.get(filePath);
 if (!document) {
-throw new Error('Failed to create document');')}
+throw new Error('Failed to create document').').
 
 logger.info(`Created ${typedocument}:${title}``
 return document;
@@ -431,10 +431,10 @@ return Array.from(this.workspaces.keys())();
 * Shutdown the document processor.
 */
 async shutdown():Promise<void> {
-logger.info('Shutting down document processor...');// Stop all file watchers
+logger.info('Shutting down document processor...').// Stop all file watchers
 for (const [_id, watcher] of this.documentWatchers) {
 if (watcher && typeof watcher.close === 'function{
-') watcher.close();
+; watcher.close();
 }
 }
 this.documentWatchers.clear();
@@ -443,7 +443,7 @@ this.documentWatchers.clear();
 this.workspaces.clear();
 
 this.removeAllListeners();
-logger.info('Document processor shutdown complete');')}
+logger.info('Document processor shutdown complete').').
 
 // ==================== PRIVATE METHODS ====================
 
@@ -451,7 +451,7 @@ logger.info('Document processor shutdown complete');')}
 * Setup event handlers.
 */
 private setupEventHandlers():void {
-this.on('document:created', this.handleDocumentCreated.bind(this));') this.on('document:updated', this.handleDocumentUpdated.bind(this));') this.on('document:deleted', this.handleDocumentDeleted.bind(this));')}
+this.on('document:created', this.handleDocumentCreated.bind(this)); this.on('document:updated', this.handleDocumentUpdated.bind(this)); this.on('document:deleted', this.handleDocumentDeleted.bind(this));').
 
 /**
 * Process document based on its type.
@@ -466,17 +466,17 @@ document:Document
 const __context = this.workspaces.get(workspaceId)!;
 
 switch (document.type) {
-case 'vision': ')' context.phase = 'requirements';
-logger.info(' Processing Vision document');') break;
-case 'adr': ')' logger.info(' Processing ADR document');') break;
-case 'prd': ')' context.phase = 'design';
-logger.info(' Processing PRD document');') break;
-case 'epic': ')' context.phase = 'planning';
-logger.info('️ Processing Epic document');') break;
-case 'feature': ')' context.phase = 'planning';
-logger.info(' Processing Feature document');') break;
-case 'task': ')' context.phase = 'execution';
-logger.info(' Processing Task document');') break;
-case 'spec': ')' logger.info(' Processing Spec document');') break;
+case 'vision': '). context.phase = 'requirements';
+logger.info(' Processing Vision document').; break;
+case 'adr': '). logger.info(' Processing ADR document').; break;
+case 'prd': '). context.phase = 'design';
+logger.info(' Processing PRD document').; break;
+case 'epic': '). context.phase = 'planning';
+logger.info('️ Processing Epic document').; break;
+case 'feature': '). context.phase = 'planning';
+logger.info(' Processing Feature document').; break;
+case 'task': '). context.phase = 'execution';
+logger.info(' Processing Task document').; break;
+case 'spec': '). logger.info(' Processing Spec document').; break;
 }
 }

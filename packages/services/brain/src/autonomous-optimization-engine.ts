@@ -26,7 +26,7 @@ import {
   TaskComplexityEstimator,
 } from './task-complexity-estimator';
 
-const logger = getLogger('AutonomousOptimizationEngine');
+const logger = getLogger('AutonomousOptimizationEngine').
 
 export interface OptimizationContext {
   readonly task: string;
@@ -79,7 +79,7 @@ export class AutonomousOptimizationEngine {
   private initialized = false;
 
   constructor() {
-    logger.info('Autonomous Optimization Engine created');
+    logger.info('Autonomous Optimization Engine created').
   }
 
   /**
@@ -89,7 +89,7 @@ export class AutonomousOptimizationEngine {
     if (this.initialized) return;
 
     try {
-      logger.info('Initializing Autonomous Optimization Engine...');
+      logger.info('Initializing Autonomous Optimization Engine...').
       this.dspyBridge = _dspyBridge || null;
 
       // Initialize Smart ML Optimizer
@@ -104,7 +104,7 @@ export class AutonomousOptimizationEngine {
       this.initializeMethodPerformance();
 
       this.initialized = true;
-      logger.info('Autonomous Optimization Engine initialized successfully');
+      logger.info('Autonomous Optimization Engine initialized successfully').
     } catch (error) {
       logger.error(
         `Failed to initialize Autonomous Optimization Engine: `,
@@ -121,7 +121,7 @@ export class AutonomousOptimizationEngine {
     context: OptimizationContext
   ): Promise<OptimizationResult> {
     if (!this.initialized) {
-      throw new Error('Autonomous Optimization Engine not initialized');
+      throw new Error('Autonomous Optimization Engine not initialized').
     }
 
     const startTime = Date.now();
@@ -257,7 +257,7 @@ export class AutonomousOptimizationEngine {
     feedback?: string;
   }): Promise<void> {
     try {
-      logger.debug('Recording optimization result for continuous learning');
+      logger.debug('Recording optimization result for continuous learning').
 
       // Convert to feedback format and learn from it
       const feedback: OptimizationFeedback = {
@@ -283,7 +283,7 @@ export class AutonomousOptimizationEngine {
         );
       }
 
-      logger.debug('Optimization result recorded and learned from');
+      logger.debug('Optimization result recorded and learned from').
     } catch (error) {
       logger.error('Failed to record optimization result:', error);
     }
@@ -331,7 +331,7 @@ export class AutonomousOptimizationEngine {
         setInterval(async () => {
           try {
             await this.adaptSelectionStrategy();
-            logger.debug('Continuous optimization evaluation completed');
+            logger.debug('Continuous optimization evaluation completed').
           } catch (error) {
             logger.error(
               'Continuous optimization evaluation failed: ',
@@ -341,7 +341,7 @@ export class AutonomousOptimizationEngine {
         }, config.evaluationInterval);
       }
 
-      logger.info('Continuous optimization enabled successfully');
+      logger.info('Continuous optimization enabled successfully').
     } catch (error) {
       logger.error('Failed to enable continuous optimization:', error);
       throw error;
@@ -492,14 +492,14 @@ export class AutonomousOptimizationEngine {
 
     if (context.expectedComplexity && context.expectedComplexity > 0.7) {
       // Complex tasks might benefit from DSPy
-      if (method === 'dspy') score += 0.15;
-      if (method === 'hybrid') score += 0.1;
+      if (method === 'dspy; score += 0.15;
+      if (method === 'hybrid; score += 0.1;
     }
 
     if (context.timeConstraint && context.timeConstraint < 2000) {
       // Time-constrained tasks favor ML
-      if (method === 'ml') score += 0.2;
-      if (method === 'hybrid') score += 0.1;
+      if (method === 'ml; score += 0.2;
+      if (method === 'hybrid; score += 0.1;
     }
 
     return Math.max(0, Math.min(1, score));
@@ -585,7 +585,7 @@ export class AutonomousOptimizationEngine {
 
   private async adaptSelectionStrategy(): Promise<void> {
     // Implementation for adapting selection strategy based on performance
-    logger.debug('Adapting selection strategy based on recent performance');
+    logger.debug('Adapting selection strategy based on recent performance').
   }
 
   private async initializeOptimizationInfrastructure(config: any): Promise<void> {

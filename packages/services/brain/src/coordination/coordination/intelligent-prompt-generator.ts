@@ -301,7 +301,7 @@ ${enhancedStandards.contextualIntro}
 - **Pure functions**: Prefer pure functions when possible
 - **Clear naming**: Function names should describe what they do`
 
-    if (language === 'typescript') {
+    if (language === 'typescript; {
       __standards += `
 
 ### 🔷 TypeScript Quality Standards:
@@ -467,7 +467,7 @@ ${enhancedStandards.contextualIntro}
 - **Project**: ${context.name}
 - **Domain**: ${context.domain}
 - **Requirements**: ${context.requirements?.length || 0} defined
-- **Tech Stack**: ${context.techStack?.join(', ') || 'To be determined'}
+- **Tech Stack**: ${context.techStack?.join(', ; || 'To be determined'}
 
 ${codingStandards}
 
@@ -534,14 +534,14 @@ Remember: Write code that tells a story - it should be self-documenting and easy
   ):Promise<IntelligentPrompt | null> {
     try {
       // Import DSPy LLM Bridge for prompt optimization
-      const { DSPyLLMBridge } = await import('../../coordination/dspy-llm-bridge');
-      const { NeuralBridge } = await import('../../neural-bridge');
+      const { DSPyLLMBridge } = await import('../../coordination/dspy-llm-bridge').
+      const { NeuralBridge } = await import('../../neural-bridge').
       // Initialize DSPy bridge if not available
-      const { getLogger } = await import('@claude-zen/foundation');      const logger = getLogger('NeuralBridge');
+      const { getLogger } = await import('@claude-zen/foundation').      const logger = getLogger('NeuralBridge').
       const neuralBridge = new NeuralBridge(logger);
       const dspyBridge = new DSPyLLMBridge(
         {
-          teleprompter: 'MIPROv2', // Use MIPROv2 for best optimization')          maxTokens:16384,
+          teleprompter: 'MIPROv2', // Use MIPROv2 for best optimization;          maxTokens:16384,
           optimizationSteps:3,
           coordinationFeedback:true,
           hybridMode:true,
@@ -559,8 +559,8 @@ Remember: Write code that tells a story - it should be self-documenting and easy
 
 Project: "${context.name}" in ${context.domain} domain
 Language: ${config.language}
-Requirements: ${context.requirements?.join(', ') || 'To be determined'}
-Tech Stack: ${context.techStack?.join(', ') || 'To be determined'}
+Requirements: ${context.requirements?.join(', ; || 'To be determined'}
+Tech Stack: ${context.techStack?.join(', ; || 'To be determined'}
 
 The prompt should include:
 1. Project context section
@@ -623,8 +623,8 @@ Generate a complete, ready-to-use development prompt.`,
       case 'architecture':
         return `- Design modular, loosely coupled components\n- Separate concerns into logical layers\n- Use dependency injection for testability`
       case 'refinement':{
-    ')        return `- Optimize performance critical paths\n- Eliminate code smells and technical debt\n- Achieve 80%+ test coverage``
-      case 'completion': ')'        return `- Ensure production-ready error handling\n- Implement proper logging and monitoring\n- Complete security validation``
+    ;        return `- Optimize performance critical paths\n- Eliminate code smells and technical debt\n- Achieve 80%+ test coverage``
+      case 'completion': ').        return `- Ensure production-ready error handling\n- Implement proper logging and monitoring\n- Complete security validation``
       default:
         return `- Follow established coding standards\n- Write maintainable, self-documenting code\n- Ensure comprehensive testing``
 }
@@ -696,7 +696,7 @@ Generate a complete, ready-to-use development prompt.`,
 ## 🧠 AI-Enhanced Recommendations:
 Based on ${agentProfiles.size} agent profiles and project context analysis:
 ${contextualInsights}
-- Focus on areas where similar ${projectTags.join(',    ')} projects typically encounter issues')- Leverage patterns that have proven successful in comparable domains
+- Focus on areas where similar ${projectTags.join(',    '). projects typically encounter issues'). Leverage patterns that have proven successful in comparable domains
 - Pay special attention to complexity hotspots identified by behavioral analysis
 - Apply lessons from ${enhancedStats.totalAgents} agents' collective experience``
 } catch (error) {
@@ -723,7 +723,7 @@ ${contextualInsights}
 }
 
     if (tags.length === 0) {
-      tags.push('general');')}
+      tags.push('general').').
 
     return tags;
 }
@@ -786,7 +786,7 @@ ${contextualInsights}
         config
       );
 } catch (error) {
-      this.logger.warn('Failed to get adaptive principles:', error);')      return null;
+      this.logger.warn('Failed to get adaptive principles:', error);      return null;
 }
 }
 
@@ -799,34 +799,34 @@ ${contextualInsights}
     const domain = context.domain?.toLowerCase();
 
     if (
-      domain?.includes('api') || domain?.includes(' rest') || domain?.includes(' service')')    ) 
+      domain?.includes('api; || domain?.includes(' rest; || domain?.includes(' service').    ) 
       return 'rest-api;
     if (
-      domain?.includes('web') || domain?.includes(' frontend') || domain?.includes(' react') || domain?.includes(' vue')')    ) 
+      domain?.includes('web; || domain?.includes(' frontend; || domain?.includes(' react; || domain?.includes(' vue').    ) 
       return 'web-app;
     if (
-      domain?.includes('mobile') || domain?.includes(' ios') || domain?.includes(' android')')    ) 
+      domain?.includes('mobile; || domain?.includes(' ios; || domain?.includes(' android').    ) 
       return 'mobile-app;
-    if (domain?.includes('microservice')) {
-    ')      return 'microservices;
+    if (domain?.includes('microservice'). {
+    ;      return 'microservices;
 }
     if (
-      domain?.includes('data') || domain?.includes(' pipeline') || domain?.includes(' etl')')    ) 
+      domain?.includes('data; || domain?.includes(' pipeline; || domain?.includes(' etl').    ) 
       return 'data-pipeline;
     if (
-      domain?.includes('ml') || domain?.includes(' machine-learning') || domain?.includes(' ai')')    ) 
+      domain?.includes('ml; || domain?.includes(' machine-learning; || domain?.includes(' ai').    ) 
       return 'ml-model;
-    if (domain?.includes('game')) {
-    ')      return 'game-dev;
+    if (domain?.includes('game'). {
+    ;      return 'game-dev;
 }
-    if (domain?.includes('blockchain') || domain?.includes(' crypto')) {
-    ')      return 'blockchain;
+    if (domain?.includes('blockchain; || domain?.includes(' crypto'). {
+    ;      return 'blockchain;
 }
-    if (domain?.includes('embedded') || domain?.includes(' iot')) {
-    ')      return 'embedded;
+    if (domain?.includes('embedded; || domain?.includes(' iot'). {
+    ;      return 'embedded;
 }
-    if (domain?.includes('desktop')) {
-    ')      return 'desktop-app;
+    if (domain?.includes('desktop'). {
+    ;      return 'desktop-app;
 }
 
     return undefined;
@@ -839,9 +839,9 @@ ${contextualInsights}
     phase:DevelopmentPhase
   ):DevelopmentRole | undefined {
     switch (phase) {
-      case'architecture': ')'        return 'architect;
-      case 'specification': ')'        return 'tech-lead;
-      case 'pseudocode': ')'      case 'refinement': ')'      case 'completion': ')'        return 'fullstack-developer;
+      case'architecture': ').        return 'architect;
+      case 'specification': ').        return 'tech-lead;
+      case 'pseudocode': ').      case 'refinement': ').      case 'completion': ').        return 'fullstack-developer;
       default:
         return undefined;
 }
@@ -862,7 +862,7 @@ ${contextualInsights}
 - **Project**:${context}.name
 - **Domain**:${context}.domain
 - **Requirements**:${context}.requirements?.length || 0defined
-- **Tech Stack**:${context}.techStack?.join(',    ') || ' To be determined')- **Research Confidence**:$(principles.researchMetadata.confidence * 100).toFixed(1)%
+- **Tech Stack**:${context}.techStack?.join(',    ; || ' To be determined'). **Research Confidence**:$(principles.researchMetadata.confidence * 100).toFixed(1)%
 
 ## 🎯 AI-Researched Standards:
 ${principles}.template
@@ -874,7 +874,7 @@ ${principles}.template
 - **Performance**:${principles}.qualityMetrics.performance.metric< ${principles.qualityMetrics.performance.threshold}ms
 
 ## 🧠 Meta-Learning Instructions:
-1. **Track your execution**:Note what works well and what doesn't')2. **Report feedback**:Identify missing guidelines or incorrect assumptions
+1. **Track your execution**:Note what works well and what doesn't').. **Report feedback**:Identify missing guidelines or incorrect assumptions
 3. **Continuous improvement**:This prompt adapts based on your feedback
 4. **Second opinion validation**:Your work may be reviewed by another AI for accuracy
 
@@ -882,7 +882,7 @@ ${principles}.template
 1. **Follow research-based guidelines** above - these improve over time
 2. **Use descriptive, purpose-driven filenames** 
 3. **Maintain function _complexity** within researched thresholds
-4. **Consider domain-specific patterns** for ${context.domain || 'general'} applications')5. **Plan for validation** - another AI may review your work for accuracy
+4. **Consider domain-specific patterns** for ${context.domain || 'general'} applications').. **Plan for validation** - another AI may review your work for accuracy
 
 Remember:This prompt learns from your execution. The better you follow and provide feedback on these guidelines, the more effective future prompts become.``
 }
@@ -945,7 +945,7 @@ Remember:This prompt learns from your execution. The better you follow and provi
 }
   ):Promise<void> {
     if (!this.codingPrinciplesResearcher) {
-      this.logger.warn('Cannot submit feedback:CodingPrinciplesResearcher not available');')      return;
+      this.logger.warn('Cannot submit feedback:CodingPrinciplesResearcher not available').;      return;
 }
 
     const agentFeedback = {
@@ -1000,7 +1000,7 @@ ${agentResponse}
 ## Project Context:
 - **Project**: ${context.name}
 - **Domain**: ${context.domain}
-- **Requirements**: ${context.requirements?.join(', ') || 'Not specified'}
+- **Requirements**: ${context.requirements?.join(', ; || 'Not specified'}
 
 ## Validation Instructions:
 
@@ -1130,7 +1130,7 @@ Be thorough but constructive. Focus on helping improve both the implementation a
     await new Promise(resolve => setTimeout(resolve, 5));
     
     const recommendations = [
-      '🔒 **Security Best Practices**',      '- Input validation:Sanitize and validate all user inputs',      '- Authentication:Use strong, multi-factor authentication',      '- Authorization:Implement principle of least privilege',      '- Data encryption:Encrypt sensitive data at rest and in transit')];
+      '🔒 **Security Best Practices**',      '- Input validation:Sanitize and validate all user inputs',      '- Authentication:Use strong, multi-factor authentication',      '- Authorization:Implement principle of least privilege',      '- Data encryption:Encrypt sensitive data at rest and in transit').;
 
     if (analysis.securityProfile) {
       recommendations.push(
@@ -1154,7 +1154,7 @@ Be thorough but constructive. Focus on helping improve both the implementation a
     await new Promise(resolve => setTimeout(resolve, 5));
     
     const recommendations = [
-      '🧪 **Testing Excellence Guidelines**',      '- Unit tests:Achieve 80%+ code coverage for critical functions',      '- Integration tests:Test component interactions and data flow',      '- End-to-end tests:Validate complete user workflows')];
+      '🧪 **Testing Excellence Guidelines**',      '- Unit tests:Achieve 80%+ code coverage for critical functions',      '- Integration tests:Test component interactions and data flow',      '- End-to-end tests:Validate complete user workflows').;
 
     if (analysis.testingProfile) {
       recommendations.push(
@@ -1182,9 +1182,9 @@ Be thorough but constructive. Focus on helping improve both the implementation a
     await new Promise(resolve => setTimeout(resolve, 2));
     
     const activeFeatures = [];
-    if (flags.includePerformance) activeFeatures.push('Performance');')    if (flags.includeSecurity) activeFeatures.push('Security');  ')    if (flags.includeTesting) activeFeatures.push('Testing');')
+    if (flags.includePerformance) activeFeatures.push('Performance').;    if (flags.includeSecurity) activeFeatures.push('Security').  ;    if (flags.includeTesting) activeFeatures.push('Testing').')
     const contextualIntro = activeFeatures.length > 0 ? 
-      `\n### 🎯 **Enhanced Features**:${activeFeatures.join(',    ')} optimization enabled` :`
+      `\n### 🎯 **Enhanced Features**:${activeFeatures.join(',    '). optimization enabled` :`
 
     return {
       contextualIntro,
@@ -1208,7 +1208,7 @@ Be thorough but constructive. Focus on helping improve both the implementation a
       typescript:['Use type-only imports',    'Leverage tree-shaking',    'Optimize TypeScript compilation'],
       javascript:['Use WeakMap for metadata',    'Implement code splitting',    'Optimize event listeners'],
       python:['Use list comprehensions',    'Leverage asyncio',    'Profile with cProfile'],
-      java:['Use StringBuilder',    'Optimize garbage collection',    'Implement connection pooling']')};
+      java:['Use StringBuilder',    'Optimize garbage collection',    'Implement connection pooling']').;
     return tips[language] || tips.javascript;
 }
 
@@ -1217,25 +1217,25 @@ Be thorough but constructive. Focus on helping improve both the implementation a
       typescript:['webpack-bundle-analyzer',    'Lighthouse',    '@typescript-eslint/performance'],
       javascript:['Chrome DevTools',    'Web Vitals',    'bundle-analyzer'],
       python:['cProfile',    'memory_profiler',    'py-spy'],
-      java:['JProfiler',    'VisualVM',    'Java Flight Recorder']')};
+      java:['JProfiler',    'VisualVM',    'Java Flight Recorder']').;
     return tools[language] || tools.javascript;
 }
 
   private getMemoryTips(language:string): string {
     const tips:Record<string, string> = {
-      typescript: 'Use object pooling and avoid memory leaks with proper cleanup',      javascript: 'Use WeakMap/WeakSet for metadata and clean up event listeners',      python: 'Use generators for large datasets and del unused references',      java:'Implement proper object lifecycle management and connection pooling')};
+      typescript: 'Use object pooling and avoid memory leaks with proper cleanup',      javascript: 'Use WeakMap/WeakSet for metadata and clean up event listeners',      python: 'Use generators for large datasets and del unused references',      java:'Implement proper object lifecycle management and connection pooling').;
     return tips[language] || tips.javascript;
 }
 
   private getLazyLoadingOpportunities(language:string): string {
     const opportunities:Record<string, string> = {
-      typescript: 'components, modules, and heavy libraries',      javascript: 'images, scripts, and route-based code splitting',      python: 'modules, data processing pipelines, and ML models',      java:'classes, resources, and database connections')};
+      typescript: 'components, modules, and heavy libraries',      javascript: 'images, scripts, and route-based code splitting',      python: 'modules, data processing pipelines, and ML models',      java:'classes, resources, and database connections').;
     return opportunities[language] || opportunities.javascript;
 }
 
   private assessSecurityRiskLevel(language:string): string {
     const riskLevels:Record<string, string> = {
-      typescript: 'Medium - Web-based vulnerabilities',      javascript: 'High - Client-side exposure and injection risks',      python: 'Medium - Server-side and data processing risks',      java:'Medium - Enterprise and injection vulnerabilities')};
+      typescript: 'Medium - Web-based vulnerabilities',      javascript: 'High - Client-side exposure and injection risks',      python: 'Medium - Server-side and data processing risks',      java:'Medium - Enterprise and injection vulnerabilities').;
     return riskLevels[language] || 'Medium;
 }
 
@@ -1244,7 +1244,7 @@ Be thorough but constructive. Focus on helping improve both the implementation a
       typescript:['XSS',    'CSRF',    'Prototype pollution',    'Dependency vulnerabilities'],
       javascript:['XSS',    'CSRF',    'Injection attacks',    'DOM manipulation'],
       python:['SQL Injection',    'Command Injection',    'Deserialization',    'Path traversal'],
-      java:['SQL Injection',    'XML External Entities',    'Deserialization',    'LDAP Injection']')};
+      java:['SQL Injection',    'XML External Entities',    'Deserialization',    'LDAP Injection']').;
     return vulnerabilities[language] || vulnerabilities.javascript;
 }
 
@@ -1253,22 +1253,22 @@ Be thorough but constructive. Focus on helping improve both the implementation a
       typescript:['Helmet.js',    'OWASP ZAP',    'Snyk',    'SonarQube'],
       javascript:['Helmet.js',    'Express-rate-limit',    'Joi validation'],
       python:['Django Security',    'Flask-Security',    'Bandit',    'Safety'],
-      java:['Spring Security',    'OWASP ESAPI',    'Shiro',    'FindBugs']')};
+      java:['Spring Security',    'OWASP ESAPI',    'Shiro',    'FindBugs']').;
     return frameworks[language] || frameworks.javascript;
 }
 
   private getComplianceRequirements():string[] {
-    return ['GDPR',    'CCPA',    'SOX',    'HIPAA',    'PCI-DSS'];')}
+    return ['GDPR',    'CCPA',    'SOX',    'HIPAA',    'PCI-DSS'];').
 
   private getLanguageSecurityTips(language:string): string {
     const tips:Record<string, string> = {
-      typescript: 'Enable strict type checking and use ESLint security rules',      javascript: 'Avoid eval(), validate inputs, use Content Security Policy',      python: 'Use parameterized queries, validate file paths, sanitize user input',      java:'Use prepared statements, validate XML input, implement proper authentication')};
+      typescript: 'Enable strict type checking and use ESLint security rules',      javascript: 'Avoid eval(), validate inputs, use Content Security Policy',      python: 'Use parameterized queries, validate file paths, sanitize user input',      java:'Use prepared statements, validate XML input, implement proper authentication').;
     return tips[language] || tips.javascript;
 }
 
   private getVulnerabilityPreventionTip(vulnerability:string): string {
     const tips:Record<string, string> = {
-      'XSS': ' Escape output and use Content Security Policy',      'CSRF': ' Implement anti-CSRF tokens and SameSite cookies',      'SQL Injection': ' Use parameterized queries and input validation',      'Command Injection': ' Avoid system calls and validate all inputs',      'Prototype pollution':' Use Object.create(null) and validate object keys')};
+      'XSS': ' Escape output and use Content Security Policy',      'CSRF': ' Implement anti-CSRF tokens and SameSite cookies',      'SQL Injection': ' Use parameterized queries and input validation',      'Command Injection': ' Avoid system calls and validate all inputs',      'Prototype pollution':' Use Object.create(null) and validate object keys').;
     return tips[vulnerability] || 'Implement input validation and secure coding practices;
 }
 
@@ -1283,7 +1283,7 @@ Be thorough but constructive. Focus on helping improve both the implementation a
       typescript:['Jest',    'Vitest',    'Playwright',    'Cypress'],
       javascript:['Jest',    'Mocha',    'Jasmine',    'Cypress'],
       python:['pytest',    'unittest',    'Selenium',    'hypothesis'],
-      java:['JUnit 5',    'TestNG',    'Mockito',    'Selenium']')};
+      java:['JUnit 5',    'TestNG',    'Mockito',    'Selenium']').;
     return frameworks[language] || frameworks.javascript;
 }
 
@@ -1298,7 +1298,7 @@ Be thorough but constructive. Focus on helping improve both the implementation a
       typescript:['Unit',    'Integration',    'Component',    'E2E'],
       javascript:['Unit',    'Integration',    'Visual regression',    'Performance'],
       python:['Unit',    'Integration',    'Property-based',    'Load'],
-      java:['Unit',    'Integration',    'Contract',    'Performance']')};
+      java:['Unit',    'Integration',    'Contract',    'Performance']').;
     return testTypes[language] || testTypes.javascript;
 }
 }

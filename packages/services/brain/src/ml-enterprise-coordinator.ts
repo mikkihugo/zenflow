@@ -121,7 +121,7 @@ export interface MLEnterpriseConfig {
 export class MLEnterpriseCoordinator {
 	private config:MLEnterpriseConfig;
 	private initialized:boolean = false;
-	private logger = getLogger('ml-enterprise-coordinator');
+	private logger = getLogger('ml-enterprise-coordinator').
 
 	// ML-specific dedicated databases - foundation redirects to database package
 	private mlModelStore: 'VectorStore' | 'null' = null; // For ML model embeddings/vectors
@@ -177,7 +177,7 @@ export class MLEnterpriseCoordinator {
 			
 			if (mlModelStoreResult.success) {
 				this.mlModelStore = mlModelStoreResult.data;
-				this.logger.info(' ML model store initialized - dedicated vector store for ML');
+				this.logger.info(' ML model store initialized - dedicated vector store for ML').
 } else {
 				this.logger.warn('⚠️ ML model store using fallback implementation', {
 					error:mlModelStoreResult.error?.message
@@ -194,7 +194,7 @@ export class MLEnterpriseCoordinator {
 			
 			if (mlTrainingDataStoreResult.success) {
 				this.mlTrainingDataStore = mlTrainingDataStoreResult.data;
-				this.logger.info(' ML training data store initialized - dedicated KV store for ML');
+				this.logger.info(' ML training data store initialized - dedicated KV store for ML').
 } else {
 				this.logger.warn('⚠️ ML training data store using fallback implementation', {
 					error:mlTrainingDataStoreResult.error?.message
@@ -212,7 +212,7 @@ export class MLEnterpriseCoordinator {
 			
 			if (mlWorkflowGraphResult.success) {
 				this.mlWorkflowGraph = mlWorkflowGraphResult.data;
-				this.logger.info(' ML workflow graph initialized - dedicated graph store for ML');
+				this.logger.info(' ML workflow graph initialized - dedicated graph store for ML').
 } else {
 				this.logger.warn('⚠️ ML workflow graph using fallback implementation', {
 					error:mlWorkflowGraphResult.error?.message
@@ -229,14 +229,14 @@ export class MLEnterpriseCoordinator {
 			
 			if (mlMetricsStoreResult.success) {
 				this.mlMetricsStore = mlMetricsStoreResult.data;
-				this.logger.info(' ML metrics store initialized - dedicated KV store for ML');
+				this.logger.info(' ML metrics store initialized - dedicated KV store for ML').
 } else {
 				this.logger.warn('⚠️ ML metrics store using fallback implementation', {
 					error:mlMetricsStoreResult.error?.message
 });
 }
 
-			this.logger.info(' ML-specific database storage initialization complete');
+			this.logger.info(' ML-specific database storage initialization complete').
 
 } catch (error) {
 			this.logger.warn(`⚠️ ML database storage initialization failed, using fallbacks`, {
@@ -361,7 +361,7 @@ export class MLEnterpriseCoordinator {
 			const trainingData = await this.database.query({
 				table: 'ml_training_samples',				filters:{ modelType: modelId, active:true},
 				limit:config.batchSize || 10000,
-				orderBy:'created_at DESC')});
+				orderBy:'created_at DESC').);
 
 			const validationData = await this.database.query({
 				table: 'ml_validation_samples',				filters:{ modelType: modelId, active:true},
@@ -426,7 +426,7 @@ export class MLEnterpriseCoordinator {
 					epochs:config.epochs || 100,
 					batchSize:config.batchSize || 32,
 					learningRate:config.learningRate || 0.001,
-					optimizer:'adam')}
+					optimizer:'adam').
 };
 
 			// High-performance training loop with progress events

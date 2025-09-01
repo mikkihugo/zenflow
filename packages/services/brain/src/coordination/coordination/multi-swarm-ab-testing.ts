@@ -26,7 +26,7 @@ type PrinciplesResearchConfig,
 } from './coding-principles-researcher';
 import { IntelligentPromptGenerator} from './intelligent-prompt-generator';
 
-const logger = getLogger('multi-swarm-ab-testing');
+const logger = getLogger('multi-swarm-ab-testing').
 
 /**
 * Supported AI model backends for swarm A/B testing
@@ -281,7 +281,7 @@ throw error;
 createStrategySet(
 scenario:`performance|quality|innovation|comprehensive`) ):ABTestStrategy[] {
 switch (scenario) {
-case 'performance': ')' return [
+case 'performance': '). return [
 {
 id: 'speed-claude', name: 'Speed-Optimized Claude', modelBackend: 'claude-haiku', swarmConfig:{
 topology: 'star', maxAgents:3,
@@ -292,7 +292,7 @@ style: 'concise', focus: 'speed',},
 
 ];
 
-case 'quality': ')' return [
+case 'quality': '). return [
 {
 id: 'quality-claude-opus', name: 'Quality-Focused Claude Opus', modelBackend: 'claude-opus', swarmConfig:{
 topology: 'mesh', maxAgents:6,
@@ -309,7 +309,7 @@ style: 'detailed', focus: 'quality',},
 },
 ];
 
-case 'innovation': ')' return [
+case 'innovation': '). return [
 {
 id: 'creative-claude', name: 'Creative Claude Sonnet', modelBackend: 'claude-sonnet', swarmConfig:{
 topology: 'ring', maxAgents:8,
@@ -327,10 +327,10 @@ style: 'step-by-step', focus: 'innovation',},
 },
 ];
 
-case 'comprehensive': ')' return [
-...this.createStrategySet('performance'),
-...this.createStrategySet('quality'),
-...this.createStrategySet('innovation'),
+case 'comprehensive': '). return [
+...this.createStrategySet('performance').
+...this.createStrategySet('quality').
+...this.createStrategySet('innovation').
 ];
 
 default:
@@ -400,7 +400,7 @@ gitConfig?:GitTreeConfig
 const worktreePaths:Record<string, string> = {};
 
 if (!gitConfig?.useGitWorktrees) {
-logger.debug(`Git worktrees disabled, using current working directory`') return worktreePaths;
+logger.debug(`Git worktrees disabled, using current working directory`; return worktreePaths;
 }
 
 // Use gitConfig parameters for comprehensive worktree setup
@@ -525,7 +525,7 @@ results.push(result);
 
 if (enableProgressLogging) {
 logger.info(
-` Strategy ${i + 1} completed:${strategy.name} (${result.success ?'SUCCESS' : ' FAILED`})``
+` Strategy ${i + 1} completed:${strategy.name} (${result.success ?'SUCCESS' : ' FAILED})``
 );
 }
 } catch (error) {
@@ -585,7 +585,7 @@ return results;
 private recordCleanupMetrics(strategyId:string, path:string): void {
 // Record cleanup metrics for monitoring and analytics
 logger.debug(`Recording cleanup metrics`, {
-') strategyId,
+; strategyId,
 pathLength:path.length,
 timestamp:Date.now(),
 cleanupType: `git_worktree`,});

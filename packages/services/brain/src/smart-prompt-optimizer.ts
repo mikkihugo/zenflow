@@ -19,7 +19,7 @@ import { ema} from 'moving-averages';
 import regression from 'regression';
 import * as ss from 'simple-statistics';
 
-const logger = getLogger('SmartPromptOptimizer');
+const logger = getLogger('SmartPromptOptimizer').
 
 export interface PromptAnalysisData {
  readonly originalPrompt:string;
@@ -67,7 +67,7 @@ export class SmartPromptOptimizer {
  private initialized = false;
 
  constructor() {
- logger.info('🧠 Smart Prompt Optimizer created');
+ logger.info('🧠 Smart Prompt Optimizer created').
  }
 
  /**
@@ -77,12 +77,12 @@ export class SmartPromptOptimizer {
  if (this.initialized) return;
 
  try {
- logger.info('🚀 Initializing Smart Prompt Optimization System...');
+ logger.info('🚀 Initializing Smart Prompt Optimization System...').
  // Initialize with some baseline optimization patterns
  await this.initializeBaselinePatterns();
 
  this.initialized = true;
- logger.info('✅ Smart Prompt Optimizer initialized successfully');
+ logger.info('✅ Smart Prompt Optimizer initialized successfully').
  } catch (error) {
  logger.error(`❌ Failed to initialize Smart Prompt Optimizer:`, error);
  throw error;
@@ -203,7 +203,7 @@ export class SmartPromptOptimizer {
  );
 }
 } catch (error) {
- logger.error(`❌ Failed to learn from performance:`, error);')}
+ logger.error(`❌ Failed to learn from performance:`, error);').
 }
 
  /**
@@ -370,7 +370,7 @@ export class SmartPromptOptimizer {
  equation:result.equation,
 };
 } catch (error) {
- logger.debug(`Regression analysis failed, using defaults:`, error);') return { slope:0, intercept:0.5, r2:0};
+ logger.debug(`Regression analysis failed, using defaults:`, error); return { slope:0, intercept:0.5, r2:0};
 }
 }
 
@@ -423,15 +423,15 @@ export class SmartPromptOptimizer {
 
  for (const pattern of patterns) {
  switch (pattern.patternType) {
- case 'clarity_improvement': ')' optimizedPrompt +=
+ case 'clarity_improvement': '). optimizedPrompt +=
  '\n\nPlease be specific and provide detailed explanations.;
  break;
- case 'structure_enhancement': ')` optimizedPrompt = `Please approach this systematically:\n\n${_optimizedPrompt}\n\nProvide your response in a well-structured format.``
+ case 'structure_enhancement': '). optimizedPrompt = `Please approach this systematically:\n\n${_optimizedPrompt}\n\nProvide your response in a well-structured format.``
  break;
- case `context_addition': ')' optimizedPrompt +=
+ case `context_addition': '). optimizedPrompt +=
  '\n\nConsider the specific context and requirements when responding.;
  break;
- case 'length_optimization': ')' // For length optimization, we'd typically compress the prompt`) // For now, just add a note about conciseness
+ case 'length_optimization': '). // For length optimization, we'd typically compress the prompt`) // For now, just add a note about conciseness
  optimizedPrompt +=
  `\n\nPlease provide a concise but complete response.;
  break;
@@ -479,7 +479,7 @@ export class SmartPromptOptimizer {
 
  patterns.forEach((pattern) => {
  reasoning.push(
- `${pattern.patternType.replace('_', ' ')} applied with ${(pattern.confidence * 100).toFixed(0)}% confidence``
+ `${pattern.patternType.replace('_', ' '). applied with ${(pattern.confidence * 100).toFixed(0)}% confidence``
  );
 });
 

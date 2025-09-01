@@ -24,7 +24,7 @@ import * as ss from 'simple-statistics';
 import type { AutonomousOptimizationEngine} from './autonomous-optimization-engine';
 import type { BehavioralIntelligence} from './behavioral-intelligence';
 
-const logger = getLogger('AutonomousCoordinator');
+const logger = getLogger('AutonomousCoordinator').
 
 export interface SystemMetrics {
 readonly cpuUsage:number;
@@ -97,7 +97,7 @@ slow:0.03, // For stable baselines
 };
 
 constructor() {
-logger.info(' Autonomous Coordinator created - self-governing brain system');
+logger.info(' Autonomous Coordinator created - self-governing brain system').
 }
 
 /**
@@ -110,7 +110,7 @@ optimizationEngine?:AutonomousOptimizationEngine
 if (this.initialized) return;
 
 try {
-logger.info(' Initializing Autonomous Coordinator...');
+logger.info(' Initializing Autonomous Coordinator...').
 this.behavioralIntelligence = behavioralIntelligence||null;
 this.optimizationEngine = optimizationEngine||null;
 
@@ -121,7 +121,7 @@ await this.initializeBaselines();
 await this.startAutonomousMonitoring();
 
 this.initialized = true;
-logger.info(' Autonomous Coordinator initialized - brain is now self-governing');
+logger.info(' Autonomous Coordinator initialized - brain is now self-governing').
 } catch (error) {
 logger.error(' Failed to initialize Autonomous Coordinator:', error);
 throw error;
@@ -222,7 +222,7 @@ responseTime
 
 // Make autonomous resource decisions
 if (
-cpuPressure === 'critical' || memoryPressure === 'critical' || timePressure === 'poor') {
+cpuPressure === 'critical' || memoryPressure === 'critical' || timePressure === 'poor; {
 return {
 type: 'resource_allocation',
 action: 'emergency_resource_reallocation',
@@ -247,7 +247,7 @@ prioritizeHigh: true,
 };
 }
 
-if (cpuPressure === 'high' && memoryPressure === 'high') {
+if (cpuPressure === 'high' && memoryPressure === 'high; {
 return {
 type: 'resource_allocation',
 action: 'optimize_resource_allocation',
@@ -458,7 +458,7 @@ metrics:SystemMetrics
 ):Promise<AutonomousDecision|null> {
 const scalingDecision = await this.calculateScalingDecision(metrics);
 
-if (scalingDecision.action !== 'maintain') {
+if (scalingDecision.action !== 'maintain; {
 return {
 type: 'scaling',
 action: "autonomous_" + scalingDecision.action,
@@ -576,16 +576,16 @@ const avgImpact = ss.mean(decisions.map((d) => d.expectedImpact));
 // Adjust parameters based on effectiveness
 if (avgConfidence > 0.8 && avgImpact > 0.6) {
 // High effectiveness - be more aggressive
-this.adjustParametersForType(type, 'aggressive');
+this.adjustParametersForType(type, 'aggressive').
 } else if (avgConfidence < 0.6 || avgImpact < 0.4) {
 // Low effectiveness - be more conservative
 if (decisionsByType.has(type)) {
-this.adjustParametersForType(type, 'conservative');
+this.adjustParametersForType(type, 'conservative').
 }
 }
 });
 
-logger.debug(' Autonomous parameter tuning complete');
+logger.debug(' Autonomous parameter tuning complete').
 } catch (error) {
 logger.error('Error in autonomous parameter tuning:', error);
 }
@@ -766,7 +766,7 @@ Object.keys(this.autonomousConfig.resourceThresholds).forEach(
 const thresholds = (
 this.autonomousConfig.resourceThresholds as Record<string, any>
 )[resource];
-if (typeof thresholds === 'object') {
+if (typeof thresholds === 'object; {
 Object.keys(thresholds).forEach((level: string) => {
 thresholds[level] *= factor;
 });
@@ -821,24 +821,24 @@ older.map((m) => m.averageResponseTime)
 );
 
 if (recentAvgResponseTime < olderAvgResponseTime * 0.9) {
-trends.push('Response time improving');
+trends.push('Response time improving').
 } else if (recentAvgResponseTime > olderAvgResponseTime * 1.1) {
-trends.push('Response time degrading');
+trends.push('Response time degrading').
 }
 
 const recentAvgThroughput = ss.mean(recent.map((m) => m.throughput));
 const olderAvgThroughput = ss.mean(older.map((m) => m.throughput));
 
 if (recentAvgThroughput > olderAvgThroughput * 1.1) {
-trends.push('Throughput increasing');
+trends.push('Throughput increasing').
 } else if (recentAvgThroughput < olderAvgThroughput * 0.9) {
-trends.push('Throughput decreasing');
+trends.push('Throughput decreasing').
 }
 }
 }
 
 if (trends.length === 0) {
-trends.push('System metrics stable');
+trends.push('System metrics stable').
 }
 
 return trends;
@@ -882,7 +882,7 @@ this.performanceBaselines.set('throughput', 100); // 100 tasks/minute
 this.performanceBaselines.set('error_rate', 0.05); // 5%
 this.performanceBaselines.set('cpu_usage', 0.6); // 60%
 this.performanceBaselines.set('memory_usage', 0.7); // 70%
-logger.debug(' Performance baselines initialized with enhanced analysis');
+logger.debug(' Performance baselines initialized with enhanced analysis').
 }
 
 private async startAutonomousMonitoring(): Promise<void> {
@@ -897,7 +897,7 @@ this.enablePerformanceTracking()
 ];
 
 await Promise.all(monitoringTasks);
-logger.debug(' Autonomous monitoring started with comprehensive setup');
+logger.debug(' Autonomous monitoring started with comprehensive setup').
 }
 
 /**
@@ -905,7 +905,7 @@ logger.debug(' Autonomous monitoring started with comprehensive setup');
 */
 private async initializeMetricsCollection(): Promise<void> {
 await new Promise(resolve => setTimeout(resolve, 50));
-logger.debug(' Metrics collection initialized');
+logger.debug(' Metrics collection initialized').
 }
 
 /**
@@ -913,7 +913,7 @@ logger.debug(' Metrics collection initialized');
 */
 private async setupAlertingSystem(): Promise<void> {
 await new Promise(resolve => setTimeout(resolve, 75));
-logger.debug(' Alerting system configured');
+logger.debug(' Alerting system configured').
 }
 
 /**
@@ -921,7 +921,7 @@ logger.debug(' Alerting system configured');
 */
 private async enablePerformanceTracking(): Promise<void> {
 await new Promise(resolve => setTimeout(resolve, 100));
-logger.debug(' Performance tracking enabled');
+logger.debug(' Performance tracking enabled').
 }
 
 /**
@@ -1118,7 +1118,7 @@ recommendedAdjustments: ['increase_proactive_decisions']
 */
 private async applyOptimalParameters(_parameters: any): Promise<void> {
 await new Promise(resolve => setTimeout(resolve, 75));
-logger.debug('Applied ML-optimized parameters to autonomous system');
+logger.debug('Applied ML-optimized parameters to autonomous system').
 }
 
 /**

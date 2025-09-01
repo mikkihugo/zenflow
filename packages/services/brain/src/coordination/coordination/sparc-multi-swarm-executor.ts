@@ -258,9 +258,9 @@ throw error;
 * Create predefined SPARC strategy sets for common scenarios
 */
 createSPARCStrategySet(
-scenario:`rapid-development` | ' quality-focused' | ' enterprise-grade' | ' comprehensive') ):SPARCStrategy[] {
+scenario:`rapid-development` | ' quality-focused' | ' enterprise-grade' | ' comprehensive; ):SPARCStrategy[] {
 switch (scenario) {
-case 'rapid-development': ')' return [
+case 'rapid-development': '). return [
 {
 id: 'rapid-sparc-claude', name: 'Rapid SPARC with Claude Haiku', modelBackend: 'claude-haiku', swarmConfig:{
 topology: 'star', maxAgents:3,
@@ -281,7 +281,7 @@ style: 'concise', focus: 'speed',},
 
 ];
 
-case 'quality-focused': ')' return [
+case 'quality-focused': '). return [
 {
 id: 'quality-sparc-opus', name: 'Quality SPARC with Claude Opus', modelBackend: 'claude-opus', swarmConfig:{
 topology: 'mesh', maxAgents:6,
@@ -318,7 +318,7 @@ style: 'detailed', focus: 'quality',},
 },
 ];
 
-case 'enterprise-grade': ')' return [
+case 'enterprise-grade': '). return [
 {
 id: 'enterprise-sparc-opus', name: 'Enterprise SPARC with Claude Opus', modelBackend: 'claude-opus', swarmConfig:{
 topology: 'mesh', maxAgents:8,
@@ -338,9 +338,9 @@ style: 'detailed', focus: 'quality',},
 },
 ];
 
-case 'comprehensive': ')' return [
-...this.createSPARCStrategySet('rapid-development'),
-...this.createSPARCStrategySet('quality-focused'),
+case 'comprehensive': '). return [
+...this.createSPARCStrategySet('rapid-development').
+...this.createSPARCStrategySet('quality-focused').
 ...this.createSPARCStrategySet(`enterprise-grade`),
 ];
 
@@ -488,7 +488,7 @@ taskDescription:string,
 strategy:SPARCStrategy,
 gitConfig:GitTreeConfig
 ):Promise<{
-sparcMetrics:SPARCExecutionResult['sparcMetrics'];') qualityMetrics:SPARCExecutionResult['qualityMetrics'];') deliverables:SPARCExecutionResult['deliverables'];') gitTreeInfo:SPARCExecutionResult['gitTreeInfo`];`) insights:string[];
+sparcMetrics:SPARCExecutionResult['sparcMetrics']; qualityMetrics:SPARCExecutionResult['qualityMetrics']; deliverables:SPARCExecutionResult['deliverables']; gitTreeInfo:SPARCExecutionResult['gitTreeInfo`];`) insights:string[];
 }> {
 // Calculate base quality based on model and configuration
 const baseQuality = this.getBaseSPARCQuality(strategy);
@@ -561,15 +561,15 @@ private getBaseSPARCQuality(strategy:SPARCStrategy): number {
 // Base quality from model
 let quality = 0;
 switch (strategy.modelBackend) {
-case `claude-opus`: ')' quality = 92;
+case `claude-opus`: '). quality = 92;
 break;
-case 'claude-sonnet': ')' quality = 88;
+case 'claude-sonnet': '). quality = 88;
 break;
-case 'claude-haiku': ')' quality = 82;
+case 'claude-haiku': '). quality = 82;
 break;
-case 'gpt-4': ')' quality = 90;
+case 'gpt-4': '). quality = 90;
 break;
-case 'gpt-4-turbo': ')' quality = 89;
+case 'gpt-4-turbo': '). quality = 89;
 break;
 case 'gemini-pro':
 quality = 86;
@@ -584,8 +584,8 @@ break;
 
 // Adjust for swarm configuration
 const topologyBonus =
-strategy.swarmConfig.topology === 'mesh') ? 5
-:strategy.swarmConfig.topology === 'hierarchical') ? 3
+strategy.swarmConfig.topology === 'mesh; ? 5
+:strategy.swarmConfig.topology === 'hierarchical; ? 3
 :0;
 
 return quality + topologyBonus;
@@ -598,10 +598,10 @@ private getMethodologyMultiplier(
 methodology: SPARCStrategy['sparcConfig']['methodology']
 ): number {
 switch (methodology) {
-case 'full-sparc': ')' return 1.1;
-case 'quality-sparc': ')' return 1.05;
-case 'performance-sparc': ')' return 1.0;
-case 'rapid-sparc': ')' return 0.95;
+case 'full-sparc': '). return 1.1;
+case 'quality-sparc': '). return 1.05;
+case 'performance-sparc': '). return 1.0;
+case 'rapid-sparc': '). return 0.95;
 default:
 return 1.0;
 }
@@ -628,10 +628,10 @@ private getExecutionDelay(
 methodology: SPARCStrategy['sparcConfig']['methodology']
 ): number {
 switch (methodology) {
-case 'rapid-sparc': ')' return 1000 + Math.random() * 1000; // 1-2 seconds
-case 'performance-sparc': ')' return 2000 + Math.random() * 2000; // 2-4 seconds
-case 'quality-sparc': ')' return 3000 + Math.random() * 3000; // 3-6 seconds
-case 'full-sparc': ')' return 4000 + Math.random() * 4000; // 4-8 seconds
+case 'rapid-sparc': '). return 1000 + Math.random() * 1000; // 1-2 seconds
+case 'performance-sparc': '). return 2000 + Math.random() * 2000; // 2-4 seconds
+case 'quality-sparc': '). return 3000 + Math.random() * 3000; // 3-6 seconds
+case 'full-sparc': '). return 4000 + Math.random() * 4000; // 4-8 seconds
 default:
 return 2000 + Math.random() * 2000;
 }
@@ -643,10 +643,10 @@ return 2000 + Math.random() * 2000;
 private analyzeSPARCResults(
 results:SPARCExecutionResult[]
 ):SPARCMultiSwarmResult['comparison'] {
-') const successfulResults = results.filter((r) => r.success);
+; const successfulResults = results.filter((r) => r.success);
 
 if (successfulResults.length === 0) {
-throw new Error('No successful SPARC strategy executions to compare');')}
+throw new Error('No successful SPARC strategy executions to compare').').
 
 // Find winner based on overall SPARC score
 const winner = successfulResults.reduce((best, current) =>

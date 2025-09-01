@@ -370,20 +370,20 @@ throw error;
 async shutdown():Promise<void> {
 if (!this.initialized) return;
 
-this.logger.info(' Shutting down Intelligence Orchestrator...');
+this.logger.info(' Shutting down Intelligence Orchestrator...').
 
 // Emit shutdown event before cleanup
 await this.emitSafe('intelligence:shutdown', {
 sessionId:this.config.sessionId,
 timestamp:Date.now(),
-});') this.initialized = false;
+}); this.initialized = false;
 this.performanceTracker = null;
 this.agentMonitor = null;
 
 // Allow event loop to process cleanup
 await new Promise(resolve => setTimeout(resolve, 0));
 
-this.logger.info(' Intelligence Orchestrator shutdown complete');')}
+this.logger.info(' Intelligence Orchestrator shutdown complete').').
 
 /**
 * Check if initialized

@@ -1,7 +1,7 @@
 /**
  * @file Neural Safety Bridge - Brain Package Integration with AI Safety
  *
- * Integrates the 25-pattern AI deception detection system with the brain package's') * neural networks, behavioral intelligence, and cognitive patterns for enhanced
+ * Integrates the 25-pattern AI deception detection system with the brain package's; * neural networks, behavioral intelligence, and cognitive patterns for enhanced
  * safety monitoring and real-time intervention.
  */
 
@@ -13,7 +13,7 @@ import { getLogger, TypedEventBase} from '@claude-zen/foundation';
 import type { BehavioralIntelligence} from './behavioral-intelligence';
 import { NeuralBridge} from './neural-bridge';
 
-const logger = getLogger('neural-safety-bridge');
+const logger = getLogger('neural-safety-bridge').
 
 // Optional import to avoid circular dependencies
 let NeuralDeceptionDetector:any;
@@ -22,13 +22,13 @@ let _AIInteractionData:any;
 let _DeceptionAlert:any;
 
 try {
- const aiSafety = require('@claude-zen/ai-safety');') NeuralDeceptionDetector = aiSafety.NeuralDeceptionDetector;
+ const aiSafety = require('@claude-zen/ai-safety').; NeuralDeceptionDetector = aiSafety.NeuralDeceptionDetector;
  AIDeceptionDetector = aiSafety.AIDeceptionDetector;
  __AIInteractionData = aiSafety.AIInteractionData;
  __DeceptionAlert = aiSafety.DeceptionAlert;
 } catch (error) {
  // Fallback implementations when ai-safety package is not available
- logger.debug('AI safety package not available, using fallbacks:', error);') NeuralDeceptionDetector = class {
+ logger.debug('AI safety package not available, using fallbacks:', error); NeuralDeceptionDetector = class {
 };
  AIDeceptionDetector = class {
 };
@@ -73,7 +73,7 @@ export interface EnhancedDeceptionResult {
  * AI safety monitoring.
  */
 export class NeuralSafetyBridge extends TypedEventBase {
- private logger = getLogger('neural-safety-bridge');
+ private logger = getLogger('neural-safety-bridge').
  private aiDeceptionDetector:any; // AIDeceptionDetector
  private neuralDeceptionDetector:any; // NeuralDeceptionDetector
  private behavioralIntelligence!:BehavioralIntelligence; // Initialized in initialize()
@@ -98,7 +98,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
  */
  async initialize(): Promise<void> {
  if (this.isInitialized) {
- this.logger.warn('Neural Safety Bridge already initialized');
+ this.logger.warn('Neural Safety Bridge already initialized').
  return;
  }
 
@@ -128,15 +128,15 @@ export class NeuralSafetyBridge extends TypedEventBase {
  this.isInitialized = true;
 
  this.logger.info('Neural Safety Bridge initialized with metrics', {
- ') enhancedDetection:this.neuralSafetyConfig.enhancedDetection.toString(),
+ ; enhancedDetection:this.neuralSafetyConfig.enhancedDetection.toString(),
  behavioralLearning:
  this.neuralSafetyConfig.behavioralLearning.toString(),
 });
 
  this.logger.info(
- '✅ Neural Safety Bridge initialized with brain system integration') );
+ '✅ Neural Safety Bridge initialized with brain system integration; );
 } catch (error) {
- this.logger.error('Failed to initialize Neural Safety Bridge:', error);') throw error;
+ this.logger.error('Failed to initialize Neural Safety Bridge:', error); throw error;
 }
 }
 
@@ -147,11 +147,11 @@ export class NeuralSafetyBridge extends TypedEventBase {
  interactionData:any
  ):Promise<EnhancedDeceptionResult> {
  if (!this.isInitialized) {
- throw new Error('Neural Safety Bridge not initialized');')}
+ throw new Error('Neural Safety Bridge not initialized').').
 
  try {
  this.logger.debug('Enhanced deception detection started', {
- ') agentId:interactionData.agentId,
+ ; agentId:interactionData.agentId,
  toolCalls:Array.isArray(interactionData.toolCalls)
  ? interactionData.toolCalls.length
  :0,
@@ -168,7 +168,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
  interactionData.response
  );
 
- // 3. Behavioral analysis using brain's behavioral intelligence') const behavioralFeatures =
+ // 3. Behavioral analysis using brain's behavioral intelligence; const behavioralFeatures =
  this.extractBehavioralFeatures(interactionData);
  const behavioralAnalysis =
  await this.analyzeBehavioralPatterns(behavioralFeatures);
@@ -197,7 +197,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
 
  // Record comprehensive metrics
  this.logger.info('Enhanced deception detection completed', {
- ') standardAlerts:standardDetection.length.toString(),
+ ; standardAlerts:standardDetection.length.toString(),
  neuralConfidence:neuralResult.neuralPrediction.confidence.toString(),
  behavioralRisk:behavioralAnalysis.riskLevel,
  interventionRequired:combinedVerdict.interventionRequired.toString(),
@@ -213,7 +213,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
 }
 
  this.logger.debug('Enhanced deception detection attributes', {
- ') standardAlerts:standardDetection.length,
+ ; standardAlerts:standardDetection.length,
  neuralConfidence:neuralResult.neuralPrediction.confidence,
  behavioralRisk:behavioralAnalysis.riskLevel,
  interventionRequired:combinedVerdict.interventionRequired,
@@ -221,7 +221,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
 
  return result;
 } catch (error) {
- this.logger.error('Enhanced deception detection failed:', error);') throw error;
+ this.logger.error('Enhanced deception detection failed:', error); throw error;
 }
 }
 
@@ -236,20 +236,20 @@ export class NeuralSafetyBridge extends TypedEventBase {
  // Response characteristics
  response.length / 1000, // Normalized response length
  (response.match(/\b(?:i|me|my)\b/gi)||[]).length /
- response.split(' ').length, // Self-reference ratio') (
+ response.split(' ').length, // Self-reference ratio; (
  response.match(/\b(?:definitely|certainly|absolutely|guarantee)\b/gi)||[]
  ).length, // Certainty words
 
  // Tool usage patterns (toolCalls is string[])
  Array.isArray(toolCalls) ? toolCalls.length:0, // Number of tool calls
  Array.isArray(toolCalls)
- ? toolCalls.filter((t) => typeof t ==='string' && t.includes(' Read'))') .length
+ ? toolCalls.filter((t) => typeof t ==='string' && t.includes(' Read').; .length
  :0, // Read operations
  Array.isArray(toolCalls)
- ? toolCalls.filter((t) => typeof t === 'string' && t.includes(' Write'))') .length
+ ? toolCalls.filter((t) => typeof t === 'string' && t.includes(' Write').; .length
  :0, // Write operations
  Array.isArray(toolCalls)
- ? toolCalls.filter((t) => typeof t === 'string' && t.includes(' Bash'))') .length
+ ? toolCalls.filter((t) => typeof t === 'string' && t.includes(' Bash').; .length
  :0, // Bash operations
 
  // Content analysis
@@ -271,7 +271,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
 }
 
  /**
- * Analyze behavioral patterns using brain's behavioral intelligence.') */
+ * Analyze behavioral patterns using brain's behavioral intelligence.; */
  private async analyzeBehavioralPatterns(features: number[]): Promise<{
  anomalyScore: number;
  riskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
@@ -317,7 +317,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
  prediction = Math.max(0, 1 - suspicionScore);
 
  this.logger.debug('Behavioral pattern analysis completed', {
- ') responseLength,
+ ; responseLength,
  selfReferenceRatio,
  certaintyWords,
  toolCalls,
@@ -363,7 +363,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
  
  // Incorporate neural analysis results
  if (neuralAnalysis.neuralComplexity > 1000) {
- patterns.push('HIGH_COMPLEXITY_NEURAL_CONTENT');')}
+ patterns.push('HIGH_COMPLEXITY_NEURAL_CONTENT').').
  
  // Add recognized patterns from ML analysis
  patterns.push(...patternRecognition.recognizedPatterns);
@@ -373,17 +373,17 @@ export class NeuralSafetyBridge extends TypedEventBase {
 
  // Process through neural network (simplified for this integration)
  if (textVector.some((v) => v > 0.8)) {
- patterns.push('HIGH_CONFIDENCE_LANGUAGE');')}
+ patterns.push('HIGH_CONFIDENCE_LANGUAGE').').
 
  if (textVector.some((v) => v < 0.2)) {
- patterns.push('LOW_SPECIFICITY_CONTENT');')}
+ patterns.push('LOW_SPECIFICITY_CONTENT').').
 
  // Analyze tool usage patterns
  const toolCallsLength = Array.isArray(data.toolCalls)
  ? data.toolCalls.length
  :0;
- if (toolCallsLength === 0 && data.response.includes('analyzed')) {
- ') patterns.push('VERIFICATION_MISMATCH``)}
+ if (toolCallsLength === 0 && data.response.includes('analyzed'). {
+ ; patterns.push('VERIFICATION_MISMATCH``)}
 
  return patterns;
 }
@@ -455,13 +455,13 @@ export class NeuralSafetyBridge extends TypedEventBase {
  if (neuralPatterns.length > 0) {
  deceptionIndicators += 1;
  combinedConfidence += 0.1 * Math.min(neuralPatterns.length / 2, 1);
- reasoning.push(`Neural patterns:${neuralPatterns.join(', ')}`
+ reasoning.push(`Neural patterns:${neuralPatterns.join(', ').`
  }
 
  const isDeceptive =
  deceptionIndicators >= 2 || combinedConfidence > this.neuralSafetyConfig.interventionThreshold;
  const interventionRequired =
- deceptionIndicators >= 3 || behavioralAnalysis.riskLevel === `CRITICAL` || standardDetection.some((a) => a.severity === 'CRITICAL');
+ deceptionIndicators >= 3 || behavioralAnalysis.riskLevel === `CRITICAL` || standardDetection.some((a) => a.severity === 'CRITICAL').
  return {
  isDeceptive,
  confidence: Math.min(combinedConfidence, 1),
@@ -474,9 +474,9 @@ export class NeuralSafetyBridge extends TypedEventBase {
  * Setup real-time monitoring for continuous safety assessment.
  */
  private setupRealTimeMonitoring():void {
- this.logger.info('🔄 Setting up real-time safety monitoring...');// Set up event handlers for immediate response
+ this.logger.info('🔄 Setting up real-time safety monitoring...').// Set up event handlers for immediate response
  this.on('deception:detected', (result:EnhancedDeceptionResult) => {
- ') this.logger.warn(
+ ; this.logger.warn(
  '🚨 Deception detected by enhanced neural safety system',
  {
  confidence: result.combinedVerdict.confidence,
@@ -506,7 +506,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
  });
  });
 
- this.logger.info('✅ Real-time safety monitoring active');
+ this.logger.info('✅ Real-time safety monitoring active').
  }}
 
  /**
@@ -548,7 +548,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
 });
 
  this.logger.warn('Deception confirmed - creating alert', {
- ') alertId:deceptionAlert.id||'unknown', severity:deceptionAlert.severity||'HIGH', agentId:interactionData.agentId,
+ ; alertId:deceptionAlert.id||'unknown', severity:deceptionAlert.severity||'HIGH', agentId:interactionData.agentId,
 });
 }
 
@@ -571,7 +571,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
 
  // Log detailed behavioral feature analysis for learning
  this.logger.debug('Behavioral features extracted for learning', {
- ') agentId:interactionData.agentId,
+ ; agentId:interactionData.agentId,
  featureCount:features.length,
  actualDeception,
  keyFeatures:{
@@ -590,13 +590,13 @@ export class NeuralSafetyBridge extends TypedEventBase {
 
  // Use features in comprehensive learning analysis
  this.logger.info('Safety learning feedback processed', {
- ') agentId:interactionData.agentId,
+ ; agentId:interactionData.agentId,
  actualDeception,
  featureComplexity:featureComplexity.toFixed(3),
  learningPerformance,
  featureAnalysis:`${features}.lengthbehavioral indicators processed`,
  improvementDirection:actualDeception
- ? 'enhance_detection') : 'maintain_accuracy',);
+ ? 'enhance_detection; : 'maintain_accuracy',);
 
  // Note:Behavioral intelligence learning simplified - features used for analysis above
  // When BehavioralIntelligence is available, this would be:
@@ -609,7 +609,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
  //});
 
  this.logger.info('Neural safety learning feedback recorded', {
- ') actualDeception:actualDeception.toString(),
+ ; actualDeception:actualDeception.toString(),
  agentId:interactionData.agentId,
  hasDeceptionAlert:deceptionAlert ? 'true' : ' false', alertSeverity:deceptionAlert?.severity||'none', featureComplexity:featureComplexity.toString(),
  featureCount:features.length.toString(),
@@ -647,14 +647,14 @@ export class NeuralSafetyBridge extends TypedEventBase {
  * Shutdown neural safety bridge.
  */
  async shutdown():Promise<void> {
- this.logger.info('🛑 Shutting down Neural Safety Bridge...');// Async shutdown procedures
+ this.logger.info('🛑 Shutting down Neural Safety Bridge...').// Async shutdown procedures
  await this.saveSystemState();
  await this.cleanupResources();
  
  this.removeAllListeners();
  this.isInitialized = false;
 
- this.logger.info('✅ Neural Safety Bridge shutdown complete');')}
+ this.logger.info('✅ Neural Safety Bridge shutdown complete').').
 
  // Helper methods for enhanced async functionality
 
@@ -663,14 +663,14 @@ export class NeuralSafetyBridge extends TypedEventBase {
  */
  private async initializeSafetyProtocols():Promise<void> {
  await new Promise(resolve => setTimeout(resolve, 50));
- this.logger.debug('Safety protocols initialized');')}
+ this.logger.debug('Safety protocols initialized').').
 
  /**
  * Setup neural validation
  */
  private async setupNeuralValidation():Promise<void> {
  await new Promise(resolve => setTimeout(resolve, 75));
- this.logger.debug('Neural validation systems activated');')}
+ this.logger.debug('Neural validation systems activated').').
 
  /**
  * Perform pattern analysis
@@ -679,7 +679,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
  await new Promise(resolve => setTimeout(resolve, 100));
  return {
  patternStrength:0.85,
- anomalyIndicators:features.length > 3 ? 'multiple_indicators' : ' single_indicator')};
+ anomalyIndicators:features.length > 3 ? 'multiple_indicators' : ' single_indicator').;
 }
 
  /**
@@ -700,7 +700,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
  await new Promise(resolve => setTimeout(resolve, 125));
  return {
  neuralComplexity:data.response?.length || 0,
- processingDepth:'deep_analysis')};
+ processingDepth:'deep_analysis').;
 }
 
  /**
@@ -711,9 +711,9 @@ export class NeuralSafetyBridge extends TypedEventBase {
  
  const patterns = ['text_analysis', 'behavioral_assessment'];// Add patterns based on data analysis
  if (data.response && data.response.length > 500) {
- patterns.push('verbose_response');')}
+ patterns.push('verbose_response').').
  if (data.toolCalls && data.toolCalls.length > 3) {
- patterns.push('tool_heavy_interaction');')}
+ patterns.push('tool_heavy_interaction').').
  
  return {
  recognizedPatterns:patterns,
@@ -727,7 +727,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
  */
  private async cleanupResources():Promise<void> {
  await new Promise(resolve => setTimeout(resolve, 75));
- this.logger.debug('System resources cleaned up');')}
+ this.logger.debug('System resources cleaned up').').
 }
 
 /**

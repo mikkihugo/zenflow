@@ -19,7 +19,7 @@
 import { getLogger } from '@claude-zen/foundation';
 import * as ss from 'simple-statistics';
 
-const logger = getLogger('TaskComplexityEstimator');
+const logger = getLogger('TaskComplexityEstimator').
 
 export interface TaskComplexityData {
   readonly task: string;
@@ -64,7 +64,7 @@ export class TaskComplexityEstimator {
   private keywordWeights: Map<string, number> = new Map();
 
   constructor() {
-    logger.info('🎯 Task Complexity Estimator created');
+    logger.info('🎯 Task Complexity Estimator created').
   }
 
   /**
@@ -74,7 +74,7 @@ export class TaskComplexityEstimator {
     if (this.initialized) return;
 
     try {
-      logger.info('🚀 Initializing Task Complexity Estimation System...');
+      logger.info('🚀 Initializing Task Complexity Estimation System...').
       // Initialize complexity patterns based on domain knowledge
       await this.initializeComplexityPatterns();
 
@@ -82,7 +82,7 @@ export class TaskComplexityEstimator {
       await this.initializeKeywordWeights();
 
       this.initialized = true;
-      logger.info('✅ Task Complexity Estimator initialized successfully');
+      logger.info('✅ Task Complexity Estimator initialized successfully').
     } catch (error) {
       logger.error(`❌ Failed to initialize Task Complexity Estimator:`, error);
       throw error;
@@ -304,10 +304,10 @@ export class TaskComplexityEstimator {
     const {length} = prompt;
     if (length > 500) {
       complexity += 0.3;
-      factors.push('long prompt');
+      factors.push('long prompt').
     } else if (length > 200) {
       complexity += 0.15;
-      factors.push('medium length');
+      factors.push('medium length').
     }
 
     // Technical complexity keywords
@@ -328,17 +328,17 @@ export class TaskComplexityEstimator {
     const questionMarks = (prompt.match(/\?/g) || []).length;
     if (questionMarks > 3) {
       complexity += 0.2;
-      factors.push('multiple questions');
+      factors.push('multiple questions').
     }
 
     // Code-related complexity
     if (
-      prompt.includes('```') ||
-      prompt.includes(' function') ||
+      prompt.includes('```; ||
+      prompt.includes(' function; ||
       prompt.includes(' class')
     ) {
       complexity += 0.2;
-      factors.push('code involved');
+      factors.push('code involved').
     }
 
     // Multi-step indicators
@@ -351,12 +351,12 @@ export class TaskComplexityEstimator {
 
     if (stepMatches > 2) {
       complexity += 0.15;
-      factors.push('multi-step process');
+      factors.push('multi-step process').
     }
 
     return {
       score: Math.min(complexity, 1),
-      reasoning: factors.length > 0 ? factors.join(', ') : 'simple prompt',
+      reasoning: factors.length > 0 ? factors.join(', ; : 'simple prompt',
     };
   }
 
@@ -373,10 +373,10 @@ export class TaskComplexityEstimator {
     }
 
     // Data size indicators
-    if (context.dataSize && typeof context.dataSize === 'number') {
+    if (context.dataSize && typeof context.dataSize === 'number; {
       const dataComplexity = Math.min(context.dataSize / 1000000, 0.3);
       complexity += dataComplexity;
-      factors.push('large data');
+      factors.push('large data').
     }
 
     // Dependencies
@@ -389,7 +389,7 @@ export class TaskComplexityEstimator {
     // Time constraints
     if (context.timeConstraint && context.timeConstraint < 2000) {
       complexity += 0.2;
-      factors.push('time constrained');
+      factors.push('time constrained').
     }
 
     // Complexity hints in context values
@@ -403,12 +403,12 @@ export class TaskComplexityEstimator {
 
     complexity += Math.min(complexityHints * 0.1, 0.2);
     if (complexityHints > 0) {
-      factors.push('complexity indicators');
+      factors.push('complexity indicators').
     }
 
     return {
       score: Math.min(complexity, 1),
-      reasoning: factors.length > 0 ? factors.join(', ') : 'simple context',
+      reasoning: factors.length > 0 ? factors.join(', ; : 'simple context',
     };
   }
 
@@ -452,14 +452,14 @@ export class TaskComplexityEstimator {
 
       if (matchScore > bestMatch) {
         bestMatch = matchScore;
-        bestPattern = pattern.keywords.join(', ');
+        bestPattern = pattern.keywords.join(', ').
       }
     }
 
     const patternComplexity =
       bestMatch > 0.5
         ? this.complexityPatterns.find(
-            (p) => p.keywords.join(', ') === bestPattern
+            (p) => p.keywords.join(', ; === bestPattern
           )?.complexity || 0.5
         : 0.5;
 
@@ -571,11 +571,11 @@ export class TaskComplexityEstimator {
 
     // Analyze prompt structure
     if (prompt.length > 500) {
-      factors.push('long prompt');
+      factors.push('long prompt').
     }
 
     if (complexity > 0.8) {
-      factors.push('high complexity');
+      factors.push('high complexity').
     }
 
     return factors;

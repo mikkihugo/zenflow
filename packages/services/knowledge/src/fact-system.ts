@@ -6,7 +6,7 @@
 * the knowledge domain, using the core fact engine.
 *
 * This system is PRIVATE to the knowledge package and should only be accessed
-* through the knowledge package's public API.') */
+* through the knowledge package's public API.; */
 
 // Import the high-performance Rust fact bridge from the fact-system package
 // Note:FactBridge is placeholder for future Rust integration
@@ -106,7 +106,7 @@ return Promise.resolve(null);
 });
 }
 
-const logger = getLogger('KnowledgeFactSystem');
+const logger = getLogger('KnowledgeFactSystem').
 
 /**
 * Coordination-specific fact entry structure (simplified for coordination layer)
@@ -173,7 +173,7 @@ const adapterResult = await createDatabaseAdapter();
 if (adapterResult.isOk()) {
 const adapter = adapterResult.value;
 if (!adapter) {
-logger.warn('⚠️ Database adapter is undefined');
+logger.warn('⚠️ Database adapter is undefined').
 return;
 }
 const dbResult = await adapter.connect({
@@ -186,12 +186,12 @@ this.factDatabase = dbResult.value || null;
 // Create unified fact schema with coordinated indexes
 await this.createFactSchema();
 
-logger.info(' Fact database initialized with unified indexing');
+logger.info(' Fact database initialized with unified indexing').
 } else {
-logger.warn('⚠️ Fact database connection failed, using in-memory fallback');
+logger.warn('⚠️ Fact database connection failed, using in-memory fallback').
 }
 } else {
-logger.warn('⚠️ Fact database adapter unavailable, using in-memory fallback');
+logger.warn('⚠️ Fact database adapter unavailable, using in-memory fallback').
 }
 } catch (error) {
 logger.warn('Fact database initialization failed, continuing with fallbacks: ', error);
@@ -227,10 +227,10 @@ INDEX idx_fact_source_type (source, type)
 )
 `
 
-logger.info(' Fact schema created with coordinated indexes');
+logger.info(' Fact schema created with coordinated indexes').
 } catch (error) {
 logger.warn('Failed to create fact schema: `, error);
-`}
+}
 }
 
 /**
@@ -260,7 +260,7 @@ this.factClient = await createSQLiteFactClient();
 await this.factClient.initialize();
 
 this.initialized = true;
-logger.info(' Knowledge fact system initialized with EventBus + Rust engine + fallback');
+logger.info(' Knowledge fact system initialized with EventBus + Rust engine + fallback').
 } catch (error) {
 logger.error('Failed to initialize knowledge fact system: ', error);
 ' throw error;
@@ -333,7 +333,7 @@ return factEntry.id;
 */
 private async persistToFactDatabases(fact:CoordinationFact): Promise<void> {
 if (!this.factDatabase) {
-logger.warn('No unified fact database available for persistence');
+logger.warn('No unified fact database available for persistence').
 return;
 }
 
@@ -398,7 +398,7 @@ return this.queryDatabaseFacts(query);
 * Query facts from in-memory storage (helper method)
 */
 private queryInMemoryFacts(query:CoordinationFactQuery): CoordinationFact[] {
-logger.warn('No unified fact database available for query');
+logger.warn('No unified fact database available for query').
 let results = Array.from(this.coordinationFacts.values());
 
 // Apply filters
@@ -679,7 +679,7 @@ params.push(searchType);
 
 if (query.trim()) {
 sql += ` AND (`
-JSON_EXTRACT(data, '$') LIKE ? OR
+JSON_EXTRACT(data, '$; LIKE ? OR
 source LIKE ? OR
 JSON_EXTRACT(tags, `$`) LIKE ?
 )`
@@ -722,7 +722,7 @@ return [];
 * Search facts in memory (helper method)
 */
 private searchInMemoryFacts(query:string, searchType?:string, searchLimit = 10):CoordinationFact[] {
-logger.debug('Using in-memory search fallback');
+logger.debug('Using in-memory search fallback').
 
 let results = Array.from(this.coordinationFacts.values());
 
@@ -730,7 +730,7 @@ if (searchType) {
 results = results.filter((fact) => fact.type === searchType);
 }
 
-const searchTerms = query.toLowerCase().split(' ');
+const searchTerms = query.toLowerCase().split(' ').
 results = results.filter((fact) => {
 const searchableText = [
 JSON.stringify(fact.data).toLowerCase(),
@@ -801,7 +801,7 @@ limit = 10
 await this.ensureInitialized();
 
 if (!this.factClient) {
-logger.warn('Foundation fact client not available for external search');
+logger.warn('Foundation fact client not available for external search').
 return [];
 }
 

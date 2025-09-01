@@ -2,7 +2,7 @@
 * @file Coordination API - Public Interface for Coordination Layer
 *
 * This file provides the public API for coordination layer to interact with
-* the knowledge package's fact system. The actual implementation remains') * private within the knowledge package.
+* the knowledge package's fact system. The actual implementation remains; * private within the knowledge package.
 *
 * This maintains the same interface as the old shared-fact-system to ensure
 * compatibility with existing coordination code.
@@ -16,7 +16,7 @@ type FactSearchResult,
 } from './fact-system';
 import { getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger('coordination-api');
+const logger = getLogger('coordination-api').
 
 // Re-export types for coordination layer
 export type { CoordinationFact, CoordinationFactQuery, FactSearchResult };

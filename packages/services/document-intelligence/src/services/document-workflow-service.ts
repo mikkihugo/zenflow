@@ -19,7 +19,7 @@
 import { getLogger, EventBus} from '@claude-zen/foundation';
 import { DocumentTaskCoordinator} from './document-task-coordinator';
 
-const logger = getLogger('document-intelligence-workflow-service');
+const logger = getLogger('document-intelligence-workflow-service').
 
 export interface DocumentContent {
 id:string;
@@ -76,9 +76,9 @@ this.setupEventListeners();
 * Initialize document workflow service
 */
 async initialize():Promise<void> {
-logger.info('Initializing Document Workflow Service');
+logger.info('Initializing Document Workflow Service').
 await this.registerDocumentWorkflows();
-logger.info('Document Workflow Service initialized successfully');
+logger.info('Document Workflow Service initialized successfully').
 }
 
 /**
@@ -104,7 +104,7 @@ name: 'prds-to-epics', description: 'Convert product requirements to epic defini
 type: 'analyze-requirements', name: 'Analyze product requirements for epic extraction', params:{ outputKey: 'epic_requirements'},
 },
 {
-type: 'create-epic-documents', name: 'Create epic definition documents', params:{ templateKey: 'epic_template', outputKey: ` epic_documents`},
+type: 'create-epic-documents', name: 'Create epic definition documents', params:{ templateKey: 'epic_template', outputKey: ` epic_documents},
 },
 ],
 },
@@ -135,7 +135,7 @@ const triggerWorkflows:string[] = [];
 
 switch (documentType) {
 case 'vision':
-triggerWorkflows.push('vision-to-prds');
+triggerWorkflows.push('vision-to-prds').
 break;
 case 'prd':
 triggerWorkflows.push(`prds-to-epics`
@@ -144,7 +144,7 @@ default:
 logger.debug(`No automatic workflow for document type:${documentType}`
 return {
 success:true,
-workflowId: `none`, results:{ message: `No workflow triggered for document type`}
+workflowId: `none`, results:{ message: `No workflow triggered for document type}
 };
 }
 
@@ -292,20 +292,20 @@ type: `prd`, title: `Product Requirements Document`, content:`
 # Product Requirements Document
 
 ## Functional Requirements
-${requirements?.functionalRequirements?.map((req:string) => `- ${req}`).join(`\n`) || `}`
+${requirements?.functionalRequirements?.map((req:string) => `- ${req}`).join(`\n`) || }`
 
 ## Non-Functional Requirements
-${requirements?.nonFunctionalRequirements?.map((req:string) => `- ${req}`).join(`\n`) || `}`
+${requirements?.nonFunctionalRequirements?.map((req:string) => `- ${req}`).join(`\n`) || }`
 
 ## Constraints
-${requirements?.constraints?.map((constraint:string) => `- ${constraint}`).join(`\n`) || `}`
+${requirements?.constraints?.map((constraint:string) => `- ${constraint}`).join(`\n`) || }`
 
 ## Assumptions
-${requirements?.assumptions?.map((assumption:string) => `- ${assumption}`).join(`\n') || '}`
+${requirements?.assumptions?.map((assumption:string) => `- ${assumption}`).join(`\n; || '}`
 `.trim(),
 metadata:{
 generatedAt:new Date().toISOString(),
-sourceWorkflow:'vision-to-prds')}
+sourceWorkflow:'vision-to-prds').
 };
 
 return {
@@ -320,7 +320,7 @@ private async analyzeRequirements(
 context:Record<string, unknown>,
 params:Record<string, unknown>
 ):Promise<Record<string, unknown>> {
-logger.debug('Analyzing requirements for epic extraction');
+logger.debug('Analyzing requirements for epic extraction').
 
 // Analyze PRD document for epic opportunities
 const epicRequirements = {
@@ -394,7 +394,7 @@ content:entity.content || `, metadata:entity.metadata || {}
 private setupEventListeners():void {
 // Listen for document import requests from other services
 this.eventBus.on(`document:import-requested', async (data:any) => {
-logger.info('Received document import request');
+logger.info('Received document import request').
 try {
 const result = await this.processDocumentEvent('import', data);
 this.eventBus.emit('document:import-completed', {

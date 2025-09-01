@@ -26,6 +26,9 @@ import type { DSPyModule } from '../primitives/module';
 import { BootstrapFinetune } from './bootstrap-finetune';
 import { BootstrapFewShotWithRandomSearch } from './bootstrap-random-search';
 import { Teleprompter } from './teleprompter';
+import { getLogger } from '@claude-zen/foundation';
+
+const logger = getLogger('BetterTogether');
 
 /**
 * Strategy separator exactly matching Stanford implementation
@@ -141,7 +144,7 @@ const parsed_strategy = strategy.toLowerCase().split(STRAT_SEP);
 
 if (!parsed_strategy.every((s) => s === 'p' || s === 'w')) {
 throw new Error(
-`The strategy should be a sequence of 'p' and ' w' separated by `${STRAT_SEP}`, but found:${strategy}`
+`The strategy should be a sequence of 'p' and 'w' separated by ${STRAT_SEP}, but found: ${strategy}`
 );
 }
 
@@ -190,7 +193,7 @@ const current_strategy = parsed_strategy
 .join(STRAT_SEP);
 
 logger.info(
-`\n########## Step ${ind + 1} of ${parsed_strategy.length} - Strategy `${current_strategy}` ##########`
+`\n########## Step ${ind + 1} of ${parsed_strategy.length} - Strategy ${current_strategy} ##########`
 );
 
 logger.info('Shuffling the trainset...');

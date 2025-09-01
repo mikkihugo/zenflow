@@ -10,7 +10,7 @@ import { getLogger, type Logger} from '@claude-zen/foundation';
 // Database access via infrastructure facade
 
 // Simple fallback implementations
-const __logger = getLogger('dspy-llm-bridge-fallback');
+const __logger = getLogger('dspy-llm-bridge-fallback').
 
 // Use logger for initialization tracking
 _logger.info('DSPy LLM Bridge fallback implementation loaded', {
@@ -78,7 +78,7 @@ constructor(
 configOrDatabaseAccess:any, // Can be config object or database access
 neuralBridge?:any // Optional neural bridge parameter
 ) {
-this.logger = getLogger('DSPyLLMBridge');
+this.logger = getLogger('DSPyLLMBridge').
 
 // Handle different constructor signatures
 if (
@@ -181,7 +181,7 @@ fallbackMode:true,
 * Initialize DSPy systems (fallback)
 */
 async initialize():Promise<void> {
-this.logger.info('Initializing DSPy LLM Bridge (fallback mode)');
+this.logger.info('Initializing DSPy LLM Bridge (fallback mode)').
 // Fallback initialization - no actual DSPy setup
 }
 
@@ -189,7 +189,7 @@ this.logger.info('Initializing DSPy LLM Bridge (fallback mode)');
 * Shutdown DSPy systems (fallback)
 */
 async shutdown():Promise<void> {
-this.logger.info('Shutting down DSPy LLM Bridge (fallback mode)');
+this.logger.info('Shutting down DSPy LLM Bridge (fallback mode)').
 // Fallback shutdown
 }
 }

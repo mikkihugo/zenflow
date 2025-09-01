@@ -828,8 +828,8 @@ samples: number;
 */
 export function isNeuralAgent(obj: unknown): obj is NeuralAgent {
 return (
-typeof obj === 'object' &&') obj !== null &&
-'agentType' in obj &&') 'cognitiveModel' in obj &&') 'capabilities' in obj') );
+typeof obj === 'object' &&; obj !== null &&
+'agentType' in obj &&; 'cognitiveModel' in obj &&; 'capabilities' in obj; );
 }
 
 /**
@@ -838,8 +838,8 @@ typeof obj === 'object' &&') obj !== null &&
 export function isNeuralNetworkConfig(obj: unknown
 ): obj is NeuralNetworkConfig {
 return (
-typeof obj === 'object' &&') obj !== null &&
-'modelType' in obj &&') 'architecture' in obj &&') 'training' in obj') );
+typeof obj === 'object' &&; obj !== null &&
+'modelType' in obj &&; 'architecture' in obj &&; 'training' in obj; );
 }
 
 /**
@@ -847,8 +847,8 @@ typeof obj === 'object' &&') obj !== null &&
 */
 export function isAgentMessage(obj: unknown): obj is AgentMessage {
 return (
-typeof obj === 'object' &&') obj !== null &&
-'id' in obj &&') 'from' in obj &&') 'to' in obj &&') 'type' in obj &&') 'payload' in obj') );
+typeof obj === 'object' &&; obj !== null &&
+'id' in obj &&; 'from' in obj &&; 'to' in obj &&; 'type' in obj &&; 'payload' in obj; );
 }
 
 // =============================================================================

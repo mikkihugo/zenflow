@@ -32,7 +32,7 @@ let getEventSystem:any;
 
 // Try to import strategic facades, with enhanced fallbacks if not available
 try {
-const intelligence = require('@claude-zen/intelligence');
+const intelligence = require('@claude-zen/intelligence').
 getBrainSystem = intelligence.getBrainSystem;
 } catch {
 getBrainSystem = async () => ({
@@ -52,7 +52,7 @@ data,
 }
 
 try {
-const operations = require('@claude-zen/operations');
+const operations = require('@claude-zen/operations').
 getPerformanceTracker = operations.getPerformanceTracker;
 } catch {
 getPerformanceTracker = async () => ({
@@ -65,7 +65,7 @@ endSession:async (id: string) => ({ sessionId: id, endTime:Date.now()}),
 }
 
 try {
-const infrastructure = require('@claude-zen/infrastructure');
+const infrastructure = require('@claude-zen/infrastructure').
 getDatabaseSystem = infrastructure.getDatabaseSystem;
 getEventSystem = infrastructure.getEventSystem;
 } catch {
@@ -128,7 +128,7 @@ Partial<BaseAnalysisConfig>,
 Partial<CodeAnalysisOptions>
 >;
 
-const logger = getLogger('CodeAnalyzer');
+const logger = getLogger('CodeAnalyzer').
 // Initialize foundation systems using refactored DI
 const diContainer = getGlobalContainer();
 
@@ -197,7 +197,7 @@ useInMemoryFileSystem:false,
 
 // Initialize repository analyzer
 try {
-const { RepoAnalyzer } = require('./repo-analyzer');
+const { RepoAnalyzer } = require('./repo-analyzer').
 this.repoAnalyzer = new RepoAnalyzer({ rootPath: this.repositoryPath });
 } catch (error) {
 logger.warn('Failed to initialize repository analyzer', { error });
@@ -210,7 +210,7 @@ hasRepoAnalyzer: !!this.repoAnalyzer
 });
 
 // Code analyzer initialized successfully
-logger.debug('Code analyzer registered successfully');}
+logger.debug('Code analyzer registered successfully').}
 
 /**
 * Initialize all strategic facade systems
@@ -229,7 +229,7 @@ this.performanceTracker = performance;
 this.databaseSystem = database;
 this.eventSystem = events;
 
-logger.info('All strategic facades initialized successfully');
+logger.info('All strategic facades initialized successfully').
 } catch (error) {
 logger.error('Failed to initialize strategic facades', { error });
 throw error;
@@ -352,7 +352,7 @@ throw new Error(`Unsupported file type: ${filePath}`);
 }
 
 // Read file content
-const content = await fs.readFile(absolutePath, 'utf-8');
+const content = await fs.readFile(absolutePath, 'utf-8').
 // Create analysis ID
 const analysisId = this.generateSessionId();
 
@@ -383,15 +383,15 @@ filePath:absolutePath,
 language,
 timestamp:new Date(),
 ast:
-ast.status ==='fulfilled') ? ast.value
+ast.status ==='fulfilled; ? ast.value
 :this.createEmptyASTAnalysis(),
 syntaxErrors:[],
 parseSuccess:ast.status === 'fulfilled', semantics:
-semantics.status === 'fulfilled') ? semantics.value
+semantics.status === 'fulfilled; ? semantics.value
 :this.createEmptySemanticAnalysis(),
 typeErrors:[],
 quality:
-quality.status === 'fulfilled') ? quality.value
+quality.status === 'fulfilled; ? quality.value
 :this.createEmptyQualityMetrics(),
 suggestions:[],
 ...(aiInsights && { aiInsights}),
@@ -410,7 +410,7 @@ this.updateSessionMetrics(result);
 // Store analysis result via infrastructure database system
 if (this.databaseSystem) {
 await this.databaseSystem.store('code_analysis_results', analysisId, {
-') filePath:absolutePath,
+; filePath:absolutePath,
 language:language,
 timestamp:result.timestamp.toISOString(),
 complexity:result.ast.complexity,
@@ -422,7 +422,7 @@ sessionId:this.currentSession?.id,
 
 // Store file relationships in graph database
 await this.databaseSystem.storeGraph('CodeFile', analysisId, {
-') filePath:absolutePath,
+; filePath:absolutePath,
 language:language,
 complexity:result.ast.complexity,
 imports:result.ast.imports,
@@ -432,7 +432,7 @@ exports:result.ast.exports,
 // Brain system handles embeddings automatically
 if (this.brainSystem) {
 await this.brainSystem.storeEmbedding('code_analysis', analysisId, {
-') content:content,
+; content:content,
 metadata:{
 filePath:absolutePath,
 language:language,
@@ -444,7 +444,7 @@ suggestions:result.suggestions,
 }
 
 logger.debug('File analysis completed', {
-') filePath:absolutePath,
+; filePath:absolutePath,
 language,
 analysisTime:result.analysisTime,
 });
@@ -463,7 +463,7 @@ filePath:string,
 ):Promise<Result<AICodeInsights, Error>> {
 try {
 if (!this.brainSystem) {
-return err(new Error('Brain system not available'));')}
+return err(new Error('Brain system not available').;').
 
 const coordinator = this.brainSystem.createCoordinator();
 
@@ -563,13 +563,13 @@ cacheMetrics:{ hitRate: 0, missRate:0, size:0, evictions:0},
 private findTsConfig():string | undefined {
 const possiblePaths = [
 path.join(this.repositoryPath,`tsconfig.json`),
-path.join(this.repositoryPath, 'tsconfig.build.json'),
+path.join(this.repositoryPath, 'tsconfig.build.json').
 ];
 
 for (const configPath of possiblePaths) {
 try {
 if (require('fs').existsSync(configPath)) {
-') return configPath;
+; return configPath;
 }
 } catch {
 // Ignore errors
@@ -581,15 +581,15 @@ return undefined;
 private detectLanguage(filePath:string): SupportedLanguage | null {
 const ext = path.extname(filePath).toLowerCase();
 switch (ext) {
-case '.ts': ')' return 'typescript;
-case '.tsx': ')' return 'tsx;
-case '.js': ')' return 'javascript;
-case '.jsx': ')' return 'jsx;
-case '.py': ')' return 'python;
-case '.go': ')' return 'go;
-case '.rs': ')' return 'rust;
-case '.java': ')' return 'java;
-case '.cpp': ')' case '.cc': ')' case '.cxx': ')' return 'cpp;
+case '.ts': '). return 'typescript;
+case '.tsx': '). return 'tsx;
+case '.js': '). return 'javascript;
+case '.jsx': '). return 'jsx;
+case '.py': '). return 'python;
+case '.go': '). return 'go;
+case '.rs': '). return 'rust;
+case '.java': '). return 'java;
+case '.cpp': '). case '.cc': '). case '.cxx': '). return 'cpp;
 default:
 return null;
 }
@@ -601,7 +601,7 @@ language:SupportedLanguage,
 filePath:string
 ):Promise<ASTAnalysis> {
 // Real AST analysis implementation
-const lines = content.split('\n');') const basicMetrics = {
+const lines = content.split('\n').; const basicMetrics = {
 nodeCount:lines.length,
 depth:Math.max(1, Math.ceil(Math.log2(lines.length))),
 complexity:this.calculateBasicComplexity(content),
@@ -612,7 +612,7 @@ declarations:this.extractDeclarations(content, language),
 references:this.extractReferences(content, filePath),
 };
 
-logger.debug('AST analysis completed', { filePath, metrics:basicMetrics});') return basicMetrics;
+logger.debug('AST analysis completed', { filePath, metrics:basicMetrics}); return basicMetrics;
 }
 
 private async performSemanticAnalysis(
@@ -631,7 +631,7 @@ callGraph:this.buildCallGraph(content, language),
 };
 
 logger.debug('Semantic analysis completed', {
-') filePath,
+; filePath,
 scopeCount:analysis.scopes.length,
 });
 return analysis;
@@ -643,7 +643,7 @@ language:SupportedLanguage,
 filePath:string
 ):Promise<CodeQualityMetrics> {
 // Real quality analysis implementation
-const lines = content.split('\n');') const nonEmptyLines = lines.filter((line) => line.trim().length > 0);
+const lines = content.split('\n').; const nonEmptyLines = lines.filter((line) => line.trim().length > 0);
 
 const metrics = {
 linesOfCode:lines.length,
@@ -676,7 +676,7 @@ vulnerabilities:[],
 };
 
 logger.debug('Quality analysis completed', {
-') filePath,
+; filePath,
 linesOfCode:metrics.linesOfCode,
 });
 return metrics;
@@ -779,13 +779,13 @@ this.currentSession.lastAnalysisTime = result.timestamp;
 private async performInitialAnalysis(
 session:LiveAnalysisSession
 ):Promise<void> {
-logger.info('Performing initial repository analysis');// Implement initial repository scan
+logger.info('Performing initial repository analysis').// Implement initial repository scan
 session.startTime = new Date();
 session.status = 'analyzing';
 }
 
 private async setupFileWatching(session:LiveAnalysisSession): Promise<void> {
-logger.info('Setting up file watching');// Implement file watching setup
+logger.info('Setting up file watching').// Implement file watching setup
 session.isWatching = true;
 }
 
@@ -835,12 +835,12 @@ language:SupportedLanguage
 ):any[] {
 const patterns = [];
 if (language === 'typescript' || language === ' javascript{
-if (content.includes('class ')) {
-') patterns.push({ name: 'class-definition', line:0});')}
-if (content.includes('function ')) {
-') patterns.push({ name: 'function-definition', line:0});')}
-if (content.includes('interface ')) {
-') patterns.push({ name: 'interface-definition', line:0});')}
+if (content.includes('class '). {
+; patterns.push({ name: 'class-definition', line:0});').
+if (content.includes('function '). {
+; patterns.push({ name: 'function-definition', line:0});').
+if (content.includes('interface '). {
+; patterns.push({ name: 'interface-definition', line:0});').
 }
 return patterns;
 }
@@ -848,8 +848,8 @@ return patterns;
 private extractImports(content:string, language:SupportedLanguage): any[] {
 const imports = [];
 if (language === 'typescript'||language ===' javascript{
-') const importMatches =
-content.match(/import.*from.*['"]([^'"]*)['"]/g)|| [];') imports.push(
+; const importMatches =
+content.match(/import.*from.*['"]([^'"]*)['"]/g)|| []; imports.push(
 ...importMatches.map((imp) => ({ statement:imp, module:imp}))
 );
 }
@@ -859,7 +859,7 @@ return imports;
 private extractExports(content:string, language:SupportedLanguage): any[] {
 const exports = [];
 if (language === 'typescript' || language === ' javascript{
-') const exportMatches = content.match(/export.*[{};]/g)|| [];
+; const exportMatches = content.match(/export.*[{};]/g)|| [];
 exports.push(
 ...exportMatches.map((exp) => ({ statement:exp, name:exp}))
 );
@@ -873,12 +873,12 @@ language:SupportedLanguage
 ):any[] {
 const declarations = [];
 if (language === 'typescript' || language === ' javascript{
-') const funcMatches = content.match(/functions+(w+)/g)|| [];
+; const funcMatches = content.match(/functions+(w+)/g)|| [];
 const classMatches = content.match(/classs+(w+)/g)|| [];
 declarations.push(
-...funcMatches.map((f) => ({ type: 'function', name:f}))') );
+...funcMatches.map((f) => ({ type: 'function', name:f})); );
 declarations.push(
-...classMatches.map((c) => ({ type: 'class', name:c}))') );
+...classMatches.map((c) => ({ type: 'class', name:c})); );
 }
 return declarations;
 }
@@ -899,13 +899,13 @@ private analyzeScopes(content:string, language:SupportedLanguage): any[] {
 // Basic scope analysis - could be enhanced with proper parsing
 const scopes = [];
 if (language === 'typescript' || language === ' javascript{
-') const functionScopes = (content.match(/functions+w+s*(/g)|| [])
+; const functionScopes = (content.match(/functions+w+s*(/g)|| [])
 .length;
 const blockScopes = (content.match(/{/g)|| []).length;
-scopes.push({ type: 'global', depth:0});') for (let i = 0; i < functionScopes; i++) {
-scopes.push({ type: 'function', depth:1});')}
+scopes.push({ type: 'global', depth:0}); for (let i = 0; i < functionScopes; i++) {
+scopes.push({ type: 'function', depth:1});').
 for (let i = 0; i < blockScopes; i++) {
-scopes.push({ type: 'block', depth:2});')}
+scopes.push({ type: 'block', depth:2});').
 }
 return scopes;
 }
@@ -914,11 +914,11 @@ private analyzeBindings(content:string, language:SupportedLanguage): any[] {
 // Basic binding analysis
 const bindings = [];
 if (language === 'typescript'||language ===' javascript{
-') const letBindings = (content.match(/\blets+(w+)/g)|| []).map((m) => ({
+; const letBindings = (content.match(/\blets+(w+)/g)|| []).map((m) => ({
 type: 'let', name:m,
 }));
 const constBindings = (content.match(/\bconsts+(w+)/g)|| []).map(
-(m) => ({ type: 'const', name:m})') );
+(m) => ({ type: 'const', name:m}); );
 const varBindings = (content.match(/\bvars+(w+)/g)|| []).map((m) => ({
 type: 'var', name:m,
 }));
@@ -931,8 +931,8 @@ private extractTypeInfo(content:string, language:SupportedLanguage): any[] {
 // Basic type information extraction
 const typeInfo = [];
 if (language === 'typescript{
-') const interfaces = (content.match(/interfaces+(w+)/g)|| []).map(
-(m) => ({ type: 'interface', name:m})') );
+; const interfaces = (content.match(/interfaces+(w+)/g)|| []).map(
+(m) => ({ type: 'interface', name:m}); );
 const types = (content.match(/types+(w+)/g)|| []).map((m) => ({
 type: 'type', name:m,
 }));
@@ -946,7 +946,7 @@ private buildControlFlow(content:string, language:SupportedLanguage): any {
 const nodes = [];
 const edges = [];
 if (language === 'typescript'||language ===' javascript{
-') const controlStatements =
+; const controlStatements =
 content.match(/\b(if|for|while|switch|return)\b/g)|| [];
 controlStatements.forEach((stmt, index) => {
 nodes.push({ id:index, type:stmt});
@@ -966,10 +966,10 @@ const definitions = [];
 const uses = [];
 
 if (language === 'typescript' || language === ' javascript{
-') const assignments = content.match(/(w+)s*=/g)|| [];
+; const assignments = content.match(/(w+)s*=/g)|| [];
 assignments.forEach((assign, index) => {
 definitions.push({ variable:assign, location:index});
-nodes.push({ id:index, type: 'definition'});')});
+nodes.push({ id:index, type: 'definition'});').);
 }
 
 return { nodes, edges, definitions, uses};
@@ -983,7 +983,7 @@ const entryPoints = [];
 const recursiveCalls = [];
 
 if (language === 'typescript'||language ===' javascript{
-') const functionCalls = content.match(/(w+)s*(/g)|| [];
+; const functionCalls = content.match(/(w+)s*(/g)|| [];
 functionCalls.forEach((call, index) => {
 nodes.push({ id:index, name:call});
 if (index === 0) {
@@ -1004,20 +1004,20 @@ const smells = [];
 
 if (language === 'typescript' || language === ' javascript{
 // Long method detection
-const lines = content.split('\n');if (lines.length > 50) {
-smells.push({ type: 'long-method', severity: ' medium', line:1});')}
+const lines = content.split('\n').if (lines.length > 50) {
+smells.push({ type: 'long-method', severity: ' medium', line:1});').
 
 // Magic number detection
 const magicNumbers = content.match(/\bd{2}\b/g)|| [];
 if (magicNumbers.length > 5) {
-smells.push({ type: 'magic-numbers', severity: ' low', line:0});')}
+smells.push({ type: 'magic-numbers', severity: ' low', line:0});').
 
 // Deep nesting detection
 const nestingLevel =
 (content.match(/{/g)|| []).length -
 (content.match(/}/g)|| []).length;
 if (Math.abs(nestingLevel) > 4) {
-smells.push({ type: 'deep-nesting', severity: ' high', line:0});')}
+smells.push({ type: 'deep-nesting', severity: ' high', line:0});').
 }
 
 return smells;
@@ -1173,16 +1173,16 @@ analysisTime:number;
 
 /**
 * Advanced Dependency Relationship Mapper
-* Inspired by DeepCode's comprehensive dependency analysis capabilities') */
+* Inspired by DeepCode's comprehensive dependency analysis capabilities; */
 export class DependencyRelationshipMapper {
-private readonly logger = getLogger('DependencyRelationshipMapper');') private readonly repositoryPath:string;
+private readonly logger = getLogger('DependencyRelationshipMapper').; private readonly repositoryPath:string;
 private nodeIdCounter = 0;
 private edgeIdCounter = 0;
 
 constructor(repositoryPath:string) {
 this.repositoryPath = path.resolve(repositoryPath);
 this.logger.info('DependencyRelationshipMapper initialized', {
-') repositoryPath:this.repositoryPath,
+; repositoryPath:this.repositoryPath,
 });
 }
 
@@ -1219,7 +1219,7 @@ this.logger.debug(`Identified ${clusters.length} dependency clusters``
 const metrics = await this.calculateDependencyMetrics(nodes, edges, clusters);
 this.logger.debug(`Calculated dependency metrics`, metrics);// Phase 6:Advanced Analysis - Architectural insights and recommendations
 const analysis = await this.performAdvancedAnalysis(nodes, edges, clusters, metrics);
-this.logger.debug('Completed advanced dependency analysis');')
+this.logger.debug('Completed advanced dependency analysis').')
 const endTime = performance.now();
 const analysisTime = endTime - startTime;
 
@@ -1255,7 +1255,7 @@ async detectCircularDependencies(
 nodes:DependencyNode[],
 edges:DependencyEdge[]
 ):Promise<Array<{ cycle: string[]; severity: 'low|medium|high|critical'}>> {
-') const circles = [];
+; const circles = [];
 const adjacencyList = this.buildAdjacencyList(edges);
 const visited = new Set<string>();
 const recursionStack = new Set<string>();
@@ -1315,9 +1315,9 @@ violations.push(...this.detectCohesionViolations(clusters, nodes, edges));
 const circularDeps = await this.detectCircularDependencies(nodes, edges);
 for (const circular of circularDeps) {
 if (circular.severity === 'high' || circular.severity === ' critical{
-') violations.push(
+; violations.push(
 type: 'circular-dependency', severity:circular.severity,
-description:`Circular dependency detected: ${circular}.cycle.join(' -> ')`,
+description:`Circular dependency detected: ${circular}.cycle.join(' -> ').,
 affectedNodes:circular.cycle,
 suggestedFix: 'Consider breaking the cycle by introducing an interface or moving shared code to a common module', impact:circular.cycle.length * 10,);
 }
@@ -1364,7 +1364,7 @@ const nodes:DependencyNode[] = [];
 
 for (const filePath of files) {
 try {
-const content = await fs.readFile(filePath, `utf-8`') const fileNodes = await this.extractNodesFromFile(filePath, content);
+const content = await fs.readFile(filePath, `utf-8`; const fileNodes = await this.extractNodesFromFile(filePath, content);
 nodes.push(...fileNodes);
 } catch (error) {
 this.logger.warn(`Failed to extract nodes from file:${filePath}`, { error});`
@@ -1376,7 +1376,7 @@ return nodes;
 
 private async extractNodesFromFile(filePath:string, content:string): Promise<DependencyNode[]> {
 const nodes:DependencyNode[] = [];
-const lines = content.split('\n');// Extract different types of nodes using regex patterns
+const lines = content.split('\n').// Extract different types of nodes using regex patterns
 const patterns = {
 class:/class\s+([A-Za-z_$][A-Za-z0-9_$]*)/g,
 function:/(?:function\s+([A-Za-z_$][A-Za-z0-9_$]*)|const\s+([A-Za-z_$][A-Za-z0-9_$]*)\s*=\s*(?:async\s+)?(?:\([^)]*\)\s*=>|function))/g,
@@ -1391,7 +1391,7 @@ let match;
 while ((match = pattern.exec(content)) !== null) {
 const name = match[1] || match[2];
 if (name) {
-const lineIndex = content.substring(0, match.index).split('\n').length - 1;') const __line = lines[lineIndex];
+const lineIndex = content.substring(0, match.index).split('\n').length - 1; const __line = lines[lineIndex];
 const __column = match.index - content.lastIndexOf('\n`, match.index) - 1;`)
 nodes.push(
 id:this.generateNodeId(),
@@ -1448,17 +1448,17 @@ const [, namedImports, defaultImport, _namespaceImport, _modulePath] = match;
 
 // Handle different import types
 if (namedImports) {
-const imports = namedImports.replace(/[{}]/g, ').split(', ').map(i => i.trim());') for (const importName of imports) {
+const imports = namedImports.replace(/[{}]/g, ').split(', ').map(i => i.trim()); for (const importName of imports) {
 const targetNode = nodeMap.get(importName);
 if (targetNode) {
-edges.push(this.createEdge('import', filePath, targetNode.id, ' named'));')}
+edges.push(this.createEdge('import', filePath, targetNode.id, ' named').;').
 }
 }
 
 if (defaultImport) {
 const targetNode = nodeMap.get(defaultImport);
 if (targetNode) {
-edges.push(this.createEdge('import', filePath, targetNode.id, ' default'));')}
+edges.push(this.createEdge('import', filePath, targetNode.id, ' default').;').
 }
 }
 
@@ -1566,7 +1566,7 @@ criticality: `medium`,},
 
 private calculateNodeComplexity(content:string, nodeName:string): number {
 // Simple complexity calculation based on occurrence and context
-const occurrences = (content.match(new RegExp(nodeName, 'g')) || []).length;') return Math.min(occurrences, 10);
+const occurrences = (content.match(new RegExp(nodeName, 'g'). || []).length; return Math.min(occurrences, 10);
 }
 
 private buildAdjacencyList(edges:DependencyEdge[]): Map<string, string[]> {
@@ -1612,7 +1612,7 @@ private calculateStability(nodes:DependencyNode[], edges:DependencyEdge[]): numb
 return Math.random() * 0.5 + 0.5; // Placeholder
 
 private inferResponsibility(nodes:DependencyNode[]): string {
-const dir = path.dirname(nodes[0]?.filePath || ');`) return path.basename(dir) || `unknown;
+const dir = path.dirname(nodes[0]?.filePath || ').`) return path.basename(dir) || `unknown;
 }
 
 private calculateMaxDependencyDepth(nodes:DependencyNode[], edges:DependencyEdge[]): number
@@ -1709,7 +1709,7 @@ weaknesses:metrics.circularDependencies > 0 ? ['Circular dependencies detected']
 */
 async analyzeRepository(): Promise<Result<any, Error>> {
 if (!this.repoAnalyzer) {
-return err(new Error('Repository analyzer not available'));
+return err(new Error('Repository analyzer not available').;
 }
 
 return await this.repoAnalyzer.analyzeDomainBoundaries();
@@ -1720,7 +1720,7 @@ return await this.repoAnalyzer.analyzeDomainBoundaries();
 */
 async getWorkspaceInfo(): Promise<Result<any, Error>> {
 return await safeAsync(async () => {
-const { getWorkspaceDetector } = require('@claude-zen/foundation');
+const { getWorkspaceDetector } = require('@claude-zen/foundation').
 const detector = getWorkspaceDetector();
 const workspace = await detector.detectWorkspaceRoot(this.repositoryPath);
 return workspace;

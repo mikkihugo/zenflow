@@ -6,7 +6,7 @@
 * the knowledge domain, using the core fact engine.
 *
 * This system is PRIVATE to the knowledge package and should only be accessed
-* through the knowledge package's public API.') */
+* through the knowledge package's public API.; */
 interface FactClient {
 initialize():Promise<void>;
 store(
@@ -54,7 +54,7 @@ limit?:number;
 }
 /**
 * Private fact system implementation within the knowledge package.
-* This class should NOT be exported from the knowledge package's main API.') */
+* This class should NOT be exported from the knowledge package's main API.; */
 declare class KnowledgeFactSystem {
 private factClient;
 private factBridge;
@@ -69,7 +69,7 @@ initialize():Promise<void>;
 /**
 * Store a coordination-specific fact
 */
-storeFact(fact:Omit<CoordinationFact, 'id|timestamp''>):Promise<string>;') /**
+storeFact(fact:Omit<CoordinationFact, 'id|timestamp''>):Promise<string>; /**
 * Retrieve facts based on query
 */
 queryFacts(query?:CoordinationFactQuery): Promise<CoordinationFact[]>;

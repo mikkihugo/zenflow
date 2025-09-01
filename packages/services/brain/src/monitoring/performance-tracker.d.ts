@@ -2,7 +2,7 @@
 * @file Performance Tracker - Replaces Hook System Performance Tracking
 *
 * Monitors agent performance, resource usage, and coordination metrics.
-* This replaces the removed hook system's performance tracking functionality.') */
+* This replaces the removed hook system's performance tracking functionality.; */
 /**
 * Performance metrics snapshot
 */
@@ -70,7 +70,7 @@ export declare const DEFAULT_PERFORMANCE_CONFIG:PerformanceTrackerConfig;
 /**
 * Performance Tracker - Monitors agent and coordination performance
 *
-* Replaces the removed hook system's performance tracking with integrated monitoring.') */
+* Replaces the removed hook system's performance tracking with integrated monitoring.; */
 export declare class PerformanceTracker {
 private config;
 private snapshots;

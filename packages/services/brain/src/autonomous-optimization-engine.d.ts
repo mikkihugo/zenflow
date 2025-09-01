@@ -69,11 +69,11 @@ autoTuning?: boolean;
 }): Promise<void>;
 const enhancedScores: any;
 const dspyScore: any;
-') const mlScore = this.calculateMethodScore(': any;
+; const mlScore = this.calculateMethodScore(': any;
 ml: any;
 ', context) + enhancedScores.mlBoost;': any;
 const hybridScore: any;
-'): any;
+'). any;
 logger: any;
 debug(: any, dspyScore: any, toFixed: any): any;
 }

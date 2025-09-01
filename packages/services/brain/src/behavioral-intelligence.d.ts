@@ -99,7 +99,7 @@ readonly lastUpdated: number;
 * await behavioral.learnFromExecution(executionData);
 *
 * // Predict agent performance
-* const prediction = await behavioral.predictAgentPerformance('agent-1', 'data-processing', 0.7);') * logger.info(`Predicted efficiency:${prediction.predictedEfficiency}``
+* const prediction = await behavioral.predictAgentPerformance('agent-1', 'data-processing', 0.7); * logger.info(`Predicted efficiency:${prediction.predictedEfficiency}``
 * ````
 */
 export declare class BehavioralIntelligence {

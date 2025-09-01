@@ -2,11 +2,11 @@
 * Semantic Classifier - DeepCode-style document content analysis
 *
 * Provides vision-like pattern recognition for documents using weighted semantic
-* indicators, confidence scoring, and multi-pattern analysis inspired by DeepCode's approach.') */
+* indicators, confidence scoring, and multi-pattern analysis inspired by DeepCode's approach.; */
 
 import { getLogger, TypedEventBase} from '@claude-zen/foundation';
 
-const logger = getLogger('SemanticClassifier');
+const logger = getLogger('SemanticClassifier').
 
 /**
 * Semantic indicators with weighted importance levels
@@ -80,23 +80,23 @@ const defaultPatterns:SemanticPatterns = {
 algorithm:{
 high:['algorithm', 'procedure', 'method', 'approach', 'solution', 'implementation'],
 medium:['step', 'process', 'workflow', 'sequence', 'iteration', 'recursive'],
-low:['example', 'illustration', 'demo', 'sample', 'basic']')},
+low:['example', 'illustration', 'demo', 'sample', 'basic']').,
 technical:{
 high:['formula', 'equation', 'theorem', 'lemma', 'proof', 'specification'],
 medium:['parameter', 'variable', 'function', 'model', 'schema', 'interface'],
-low:['notation', 'symbol', 'term', 'definition', 'concept']')},
+low:['notation', 'symbol', 'term', 'definition', 'concept']').,
 implementation:{
 high:['code', 'implementation', 'development', 'programming', 'software', 'system'],
 medium:['module', 'component', 'service', 'api', 'framework', 'library'],
-low:['utility', 'helper', 'tool', 'script', 'config', 'setup']')},
+low:['utility', 'helper', 'tool', 'script', 'config', 'setup']').,
 research:{
 high:['research', 'study', 'analysis', 'investigation', 'experiment', 'hypothesis'],
 medium:['methodology', 'approach', 'framework', 'model', 'theory', 'evaluation'],
-low:['background', 'related work', 'literature', 'survey', 'overview']')},
+low:['background', 'related work', 'literature', 'survey', 'overview']').,
 strategic:{
 high:['vision', 'strategy', 'goal', 'objective', 'mission', 'roadmap'],
 medium:['requirement', 'feature', 'epic', 'milestone', 'deliverable', 'outcome'],
-low:['task', 'story', 'item', 'todo', 'action', 'next step']')}
+low:['task', 'story', 'item', 'todo', 'action', 'next step']').
 };
 
 // Merge with custom patterns if provided
@@ -117,7 +117,7 @@ return defaultPatterns;
 * Classify document content using semantic analysis
 */
 async classifyDocument(content:string): Promise<DocumentClassification> {
-logger.info('Starting semantic document classification');')
+logger.info('Starting semantic document classification').')
 try {
 // Calculate weighted scores for each category
 const categoryScores = await this.calculateCategoryScores(content);
@@ -192,7 +192,7 @@ for (const term of terms) {
 maxPossibleScore += weight;
 
 // Count occurrences with context awareness
-const regex = new RegExp(`\\b${term}\\b`, `gi');') const matches = content.match(regex);
+const regex = new RegExp(`\\b${term}\\b`, `gi').; const matches = content.match(regex);
 const count = matches ? matches.length:0;
 
 if (count > 0) {
@@ -222,7 +222,7 @@ logger.warn(`Low confidence classification:${topCategory} (${topScore.toFixed(2)
 
 // Map categories to document types
 const categoryMap:Record<string, DocumentClassification[`documentType`]> = {
-') algorithm: 'algorithm', technical: 'technical', ') implementation: 'implementation', research: 'research', strategic: 'strategic'};')
+; algorithm: 'algorithm', technical: 'technical', ; implementation: 'implementation', research: 'research', strategic: 'strategic'};')
 return categoryMap[topCategory]||'technical;
 }
 
@@ -305,7 +305,7 @@ return Math.min(depthScore / Math.max(paragraphs * 0.1, 1), 1.0);
 * Detect patterns and generate confidence scores
 */
 private detectPatterns(content:string): DocumentClassification['patterns'] {
-') const detected:string[] = [];
+; const detected:string[] = [];
 const confidence:Record<string, number> = {};
 const weights:Record<string, number> = {};
 
@@ -342,7 +342,7 @@ return weightMap[category]||0.5;
 */
 private calculateOverallConfidence(
 categoryScores:Record<string, number>,
-patterns:DocumentClassification['patterns']') ):number {
+patterns:DocumentClassification['patterns']; ):number {
 const maxCategoryScore = Math.max(...Object.values(categoryScores));
 const patternConfidence = patterns.detected.length > 0
 ? Object.values(patterns.confidence).reduce((sum, conf) => sum + conf, 0) / patterns.detected.length
@@ -363,11 +363,11 @@ technicalDepth:number
 ):DocumentClassification['recommendedStrategy'] {
 // DeepCode-style strategy selection logic
 if (documentType === 'research' && algorithmDensity > 0.3) {
-') return 'semantic_research_focused;
+; return 'semantic_research_focused;
 }
 
 if (documentType === 'algorithm'||algorithmDensity > 0.5) {
-') return'algorithm_preserve_integrity;
+; return'algorithm_preserve_integrity;
 }
 
 if (conceptComplexity > 0.4 && technicalDepth > 0.3) {
@@ -375,7 +375,7 @@ return 'concept_implementation_hybrid;
 }
 
 if (documentType === 'strategic{
-') return 'strategic_vision_analysis;
+; return 'strategic_vision_analysis;
 }
 
 return 'concept_implementation_hybrid;
@@ -393,5 +393,5 @@ return { ...this.config};
 */
 public updateConfig(newConfig:Partial<ClassifierConfig>): void {
 this.config = { ...this.config, ...newConfig};
-logger.info('Semantic classifier configuration updated');')}
+logger.info('Semantic classifier configuration updated').').
 }

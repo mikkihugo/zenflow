@@ -14,7 +14,7 @@ instance: number;
 }
 
 export type AgentType =
-| 'researcher') | 'coder') | 'analyst') | 'optimizer') | 'coordinator') | 'tester') | 'architect;
+| 'researcher; | 'coder; | 'analyst; | 'optimizer; | 'coordinator; | 'tester; | 'architect;
 
 // Agent Metrics and Performance
 export interface AgentMetrics {
@@ -370,4 +370,4 @@ lastCheck?: Date;
 }
 
 // Export convenience type unions
-export type MonitoringEventType = MonitoringEvent['type'];')export type HealthStatusType = HealthStatus['status'];')export type TrendType = PerformanceHistory['trend'];')
+export type MonitoringEventType = MonitoringEvent['type'];').xport type HealthStatusType = HealthStatus['status'];').xport type TrendType = PerformanceHistory['trend'];')

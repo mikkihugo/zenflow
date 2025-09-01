@@ -15,7 +15,7 @@ type StrategicVisionAnalysis,
 StrategicVisionService,
 } from "./strategic-vision-service";
 
-const logger = getLogger('coordination-services-document-task-vision');
+const logger = getLogger('coordination-services-document-task-vision').
 
 export interface StrategicTask {
 id:string;
@@ -78,16 +78,16 @@ private visionService:StrategicVisionService;
 constructor(documentManager?: IDocumentManager) {
 this.documentManager = documentManager ?? new (class DocumentManagerStub {
 async getDocumentsByProject() {
-return { success: false, error: new Error('DocumentManager not available') } as const;
+return { success: false, error: new Error('DocumentManager not available; } as const;
 }
 async createDocument() {
-return { success: false, error: new Error('DocumentManager not available') } as const;
+return { success: false, error: new Error('DocumentManager not available; } as const;
 }
 async updateDocument() {
-return { success: false, error: new Error('DocumentManager not available') } as const;
+return { success: false, error: new Error('DocumentManager not available; } as const;
 }
 async getDocument() {
-return { success: false, error: new Error('DocumentManager not available') } as const;
+return { success: false, error: new Error('DocumentManager not available; } as const;
 }
 async searchDocuments() {
 return { success: false, error: new Error(`DocumentManager not available`) } as const;
@@ -460,7 +460,7 @@ updatedAt:new Date(),
 for (let i = 0; i < vision.risks.length; i++) {
 const risk = vision.risks[i];
 tasks.push({
-id:`risk_mitigation_${i}_${risk?.toLowerCase.replace(/\s+/g, '_')}`,
+id:`risk_mitigation_${i}_${risk?.toLowerCase.replace(/\s+/g, '_').`,
 title:`Mitigate Risk: ${risk}`,
 description:`Address and mitigate identified risk: ${risk}`,
 priority: `high`, status: 'todo', strategicGoalId: 'risk_management', relatedDocuments:[],
@@ -494,7 +494,7 @@ task.title?.toLowerCase.includes(keyword?.toLowerCase)||task.description?.toLowe
 );
 
 const completedTasks = linkedTasks.filter(
-(task) => task.status ==='completed') );
+(task) => task.status ==='completed; );
 const completionStatus =
 linkedTasks.length > 0 ? completedTasks.length / linkedTasks.length:0;
 
@@ -521,11 +521,11 @@ documentLinks:DocumentTaskLink[]
 ) {
 const totalTasks = tasks.length;
 const completedTasks = tasks.filter(
-(task) => task.status === 'completed') ).length;
+(task) => task.status === 'completed; ).length;
 const blockedTasks = tasks.filter(
-(task) => task.status === 'blocked') ).length;
+(task) => task.status === 'blocked; ).length;
 const highPriorityTasks = tasks.filter(
-(task) => task.priority === 'high||task.priority === critical') ).length;
+(task) => task.priority === 'high||task.priority === critical; ).length;
 
 const averageBusinessValue =
 tasks.length > 0
@@ -536,7 +536,7 @@ tasks.length
 const goalsWithDocuments = vision.strategicGoals.filter((goal) =>
 documentLinks.some((link) =>
 link.strategicGoals.some((sg) =>
-sg.includes(goal?.toLowerCase.replace(/\s+/g, '_'))') )
+sg.includes(goal?.toLowerCase.replace(/\s+/g, '_').; )
 )
 ).length;
 
@@ -547,7 +547,7 @@ vision.strategicGoals.length > 0
 
 const goalsWithTasks = vision.strategicGoals.filter((goal) =>
 tasks.some((task) =>
-task.strategicGoalId.includes(goal?.toLowerCase.replace(/\s+/g, '_'))') )
+task.strategicGoalId.includes(goal?.toLowerCase.replace(/\s+/g, '_').; )
 ).length;
 
 const taskCoverage =
@@ -598,7 +598,7 @@ title: `Review and update incomplete document implementations`, priority: 'mediu
 for (const risk of vision.risks) {
 const hasTask = tasks.some(
 (task) =>
-task.title?.toLowerCase.includes('risk') &&') task.description?.toLowerCase.includes(risk?.toLowerCase)
+task.title?.toLowerCase.includes('risk; &&; task.description?.toLowerCase.includes(risk?.toLowerCase)
 );
 if (!hasTask) {
 riskMitigations.push(`Create mitigation plan for:${risk}``
@@ -607,10 +607,10 @@ riskMitigations.push(`Create mitigation plan for:${risk}``
 
 // Optimization opportunities
 if (
-tasks.filter((task) => task.status === 'blocked').length >') tasks.length * .2
+tasks.filter((task) => task.status === 'blocked').length >; tasks.length * .2
 )
 optimizationOpportunities.push(
-'High number of blocked tasks - review dependencies and bottlenecks');if (vision.businessValue < .6||vision.technicalImpact < .6) {
+'High number of blocked tasks - review dependencies and bottlenecks').if (vision.businessValue < .6||vision.technicalImpact < .6) {
 optimizationOpportunities.push(`Strategic vision could be strengthened with more detailed documentation`) );
 }
 
@@ -645,7 +645,7 @@ ${task}.metrics.map((metric) => `- ${metric}`).join(`\n`)`)`
 ${task}.dependencies.length > 0 ? task.dependencies.map((dep) => `- ${dep}`).join(`\n`) :` No dependencies`)`
 ## Status
 Current Status:${task}.status
-${task}.dueDate ? `Due Date:${task.dueDate?.toLocaleDateString}` :`}`)${task}.assignedTo ? `Assigned To:${task.assignedTo}` :`}`)`
+${task}.dueDate ? `Due Date:${task.dueDate?.toLocaleDateString}` :}`)${task}.assignedTo ? `Assigned To:${task.assignedTo}` :}`)`
 ---
 *Generated by Document-Task-Vision Coordinator*
 *Created:${task}.createdAt?.toLocaleString*

@@ -19,7 +19,7 @@
 *
 * const networkId = await bridge.createNeuralNet('classifier', 'feedforward', {
 * hiddenLayers:[10, 5],
-* activation:'relu') *});
+* activation:'relu; *});
 *
 * const result = await bridge.trainNeuralNet(networkId, trainingData);
 * ```
@@ -46,7 +46,7 @@ import { DatabaseProvider} from '@claude-zen/database';
 
 import type { ActivationFunction, ModelMetrics} from './types/index';
 
-const brain = require('brain.js');
+const brain = require('brain.js').
 
 // Constants to avoid duplicate string literals
 const NETWORK_NOT_FOUND_ERROR = 'Network not found';
@@ -186,7 +186,7 @@ readonly parameterCount?:number;
 *
 * const result = await bridge.createNeuralNet('xor-classifier', 'feedforward', {
 * hiddenLayers:[4],
-* activation:'sigmoid') *});
+* activation:'sigmoid; *});
 *
 * if (result.isOk()) {
 * const trainingData = [
@@ -239,7 +239,7 @@ if (this.initialized) return ok();
 
 return await safeAsync(async () => {
 this.foundationLogger.info(
-'Initializing Brain.js Bridge with Foundation integration...') );
+'Initializing Brain.js Bridge with Foundation integration...; );
 
 // Initialize database access for network persistence
 this.dbAccess = new DatabaseProvider();
@@ -256,7 +256,7 @@ config:JSON.parse(JSON.stringify(this.config)),
 }
 
 this.initialized = true;
-this.foundationLogger.info('Brain.js Bridge initialized successfully');
+this.foundationLogger.info('Brain.js Bridge initialized successfully').
 }).then((result) =>
 result.mapErr((error) =>
 withContext(error, {
@@ -277,7 +277,7 @@ component: 'BrainJsBridge', operation: 'initialize', config:JSON.parse(JSON.stri
 async createNeuralNet(
 id:string,
 type:BrainJsNetworkConfig['type'],
-config:Omit<BrainJsNetworkConfig, 'type'>') ):Promise<Result<string, ContextError>> {
+config:Omit<BrainJsNetworkConfig, 'type'>; ):Promise<Result<string, ContextError>> {
 if (!this.initialized) {
 const initResult = await this.initialize();
 if (initResult.isErr()) return err(initResult.error);
@@ -285,7 +285,7 @@ if (initResult.isErr()) return err(initResult.error);
 
 return await safeAsync(async () => {
 // Validate input parameters
-if (!id || typeof id !== 'string') {
+if (!id || typeof id !== 'string; {
 throw new ValidationError('Network ID must be a non-empty string', {
 id,
 });
@@ -710,7 +710,7 @@ return await safeAsync(async () => {
 if (
 !networkData || !networkData.id || !networkData.type || !networkData.network
 ) {
-throw new ValidationError('Invalid network data format');
+throw new ValidationError('Invalid network data format').
 }
 
 const {
@@ -832,7 +832,7 @@ memoryUsage:this.estimateMemoryUsage(),
 */
 async shutdown():Promise<Result<void, ContextError>> {
 return await safeAsync(async () => {
-this.foundationLogger.info('Shutting down Brain.js Bridge...');
+this.foundationLogger.info('Shutting down Brain.js Bridge...').
 
 // Clear all networks
 this.networks.clear();
@@ -841,7 +841,7 @@ this.initialized = false;
 // Allow cleanup to complete
 await new Promise(resolve => setTimeout(resolve, 0));
 
-this.foundationLogger.info('Brain.js Bridge shutdown complete');
+this.foundationLogger.info('Brain.js Bridge shutdown complete').
 }).then((result) =>
 result.mapErr((error) =>
 withContext(error, {
@@ -856,19 +856,19 @@ component: 'BrainJsBridge', operation: 'shutdown',})
 private async initializeDatabaseSchema():Promise<void> {
 if (!this.dbAccess) {
 this.foundationLogger.warn(
-'Database access not available, skipping schema initialization') );
+'Database access not available, skipping schema initialization; );
 return;
 }
 
 try {
-this.foundationLogger.info('Initializing brain.js database schema...');
+this.foundationLogger.info('Initializing brain.js database schema...').
 
 // The foundation database layer handles the actual schema creation
 // We just need to ensure our namespace is available
 await new Promise(resolve => setTimeout(resolve, 0));
 
 this.foundationLogger.info(
-'Brain.js database schema initialized successfully') );
+'Brain.js database schema initialized successfully; );
 } catch (error) {
 this.foundationLogger.error(
 'Failed to initialize brain.js database schema: ',' error
@@ -913,8 +913,8 @@ const rnnParams =
 inputSize * hiddenSize +
 hiddenSize * hiddenSize +
 hiddenSize * outputSize;
-return networkInstance.type === 'lstm') ? rnnParams * 4 // LSTM has 4 gates
-:networkInstance.type === 'gru') ? rnnParams * 3 // GRU has 3 gates
+return networkInstance.type === 'lstm; ? rnnParams * 4 // LSTM has 4 gates
+:networkInstance.type === 'gru; ? rnnParams * 3 // GRU has 3 gates
 :rnnParams; // Simple RNN
 }
 
@@ -943,7 +943,7 @@ type:BrainJsNetworkConfig['type'],
 config:Omit<BrainJsNetworkConfig, 'type'>,
 bridgeConfig?:BrainJsConfig
 ):Promise<Result<string, ContextError>> {
-const logger = getLogger('BrainJsBridge');
+const logger = getLogger('BrainJsBridge').
 const bridge = new BrainJsBridge(logger, bridgeConfig);
 await bridge.initialize();
 return bridge.createNeuralNet(id, type, config);

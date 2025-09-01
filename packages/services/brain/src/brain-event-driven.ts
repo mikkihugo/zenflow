@@ -10,11 +10,11 @@
 * **ARCHITECTURE:**
 * - Foundation imports internally (getLogger, recordMetric, withTrace, generateUUID, TypedEventBase)
 * - Event-based brain coordination only (no package dependencies)
-* - Event interfaces:'brain:brain-service:action' → ' brain-service:response') * - Internal professional service operations using foundation utilities
+* - Event interfaces:'brain:brain-service:action' → ' brain-service:response; * - Internal professional service operations using foundation utilities
 * - Clean factory exports following established patterns
 *
 * **EVENT COORDINATION:**
-* - 'brain:brain-service:optimize-prompt' → ' brain-service:prompt-optimized') * - 'brain:brain-service:estimate-complexity' → ' brain-service:complexity-estimated') * - 'brain:brain-service:predict-performance' → ' brain-service:performance-predicted') * - 'brain:brain-service:coordinate-autonomous' → ' brain-service:autonomous-coordinated') * - 'brain:brain-service:analyze-behavioral' → ' brain-service:behavioral-analyzed') * - 'brain:brain-service:process-neural' → ' brain-service:neural-processed') *
+* - 'brain:brain-service:optimize-prompt' → ' brain-service:prompt-optimized; * - 'brain:brain-service:estimate-complexity' → ' brain-service:complexity-estimated; * - 'brain:brain-service:predict-performance' → ' brain-service:performance-predicted; * - 'brain:brain-service:coordinate-autonomous' → ' brain-service:autonomous-coordinated; * - 'brain:brain-service:analyze-behavioral' → ' brain-service:behavioral-analyzed; * - 'brain:brain-service:process-neural' → ' brain-service:neural-processed; *
 * @example Event-Driven Brain Coordination
 * ```typescript`
 * import { createEventDrivenBrain, EventDrivenBrain} from '@claude-zen/brain';
@@ -123,7 +123,7 @@ memoryOptimization?:boolean;
 
 /** Optimization strategy configuration */
 optimization?:{
-strategies?:('dspy' | ' ml' | ' hybrid' | ' ensemble')[];
+strategies?:('dspy' | ' ml' | ' hybrid' | ' ensemble').];
 autoSelection?:boolean;
 performanceTracking?:boolean;
 kernelFusion?:boolean;
@@ -259,7 +259,7 @@ workload?:'light' | ' moderate' | ' heavy';
 collaboration?:boolean;
 urgency?:'low' | ' medium' | ' high';
 };
-horizons:('1h' | '4h' | '1d')[];
+horizons:('1h' | '4h' | '1d').];
 }
 
 /**
@@ -512,7 +512,7 @@ config:this.config,
 async initialize():Promise<Result<void, string>> {
 return await withTrace('brain-service:initialize', async () => {
 try {
-this.logger.info('Initializing EventDrivenBrain service');
+this.logger.info('Initializing EventDrivenBrain service').
 
 // Setup event handlers
 this.setupEventHandlers();
@@ -596,7 +596,7 @@ this.eventBus.on('brain:brain-service:process-neural', async (request) => {
 await this.handleNeuralProcessing(request);
 });
 
-this.logger.info('Event handlers setup complete');
+this.logger.info('Event handlers setup complete').
 }
 
 /**
@@ -1127,17 +1127,17 @@ this.logger.info(`Initializing neural backends`
 // Initialize based on configuration
 if (this.config.neural?.rustAcceleration) {
 this.neuralNetworks.set('rust-fann', {
-name: 'Rust FANN Backend', type: 'rust-fann', acceleration: 'cpu', status:'ready')});
+name: 'Rust FANN Backend', type: 'rust-fann', acceleration: 'cpu', status:'ready').);
 }
 
 if (this.config.neural?.gpuAcceleration) {
 this.neuralNetworks.set('gpu-accelerated', {
-name: 'GPU Accelerated Backend', type: 'gpu', acceleration: 'gpu', status:'ready')});
+name: 'GPU Accelerated Backend', type: 'gpu', acceleration: 'gpu', status:'ready').);
 }
 
 // Fallback to JavaScript backend
 this.neuralNetworks.set('brain-js', {
-name: 'Brain.js Backend', type: 'brain-js', acceleration: 'cpu', status:'ready')});
+name: 'Brain.js Backend', type: 'brain-js', acceleration: 'cpu', status:'ready').);
 
 this.logger.info('Neural backends initialized', {
 backends:Array.from(this.neuralNetworks.keys())
@@ -1145,17 +1145,17 @@ backends:Array.from(this.neuralNetworks.keys())
 }
 
 private async initializeBehavioralModels():Promise<void> {
-this.logger.info('Initializing behavioral models');
+this.logger.info('Initializing behavioral models').
 
 // Initialize performance prediction models
 this.behavioralModels.set('performance-predictor', {
 name: 'Performance Prediction Model', type: 'time-series-transformer', features:['timeSeriesAnalysis', 'behavioralClustering', 'performanceTrends'],
-status:'ready')});
+status:'ready').);
 
 // Initialize behavioral analysis models
 this.behavioralModels.set('behavioral-analyzer', {
 name: 'Behavioral Analysis Model', type: 'ensemble-classifier', features:['patternRecognition', 'anomalyDetection', 'clusterAnalysis'],
-status:'ready')});
+status:'ready').);
 
 this.logger.info('Behavioral models initialized', {
 models:Array.from(this.behavioralModels.keys())
@@ -1163,7 +1163,7 @@ models:Array.from(this.behavioralModels.keys())
 }
 
 private async setupMonitoring():Promise<void> {
-this.logger.info('Setting up real-time monitoring');
+this.logger.info('Setting up real-time monitoring').
 
 // Setup performance monitoring
 setInterval(() => {
@@ -1186,7 +1186,7 @@ status: 'ready', metrics
 });
 }, this.config.monitoring?.checkpointInterval || 10000);
 
-this.logger.info('Real-time monitoring setup complete');
+this.logger.info('Real-time monitoring setup complete').
 }
 
 // =============================================================================
@@ -1206,7 +1206,7 @@ const { complexity, priority, timeLimit, qualityRequirement} = context;
 
 if (complexity > 0.8 && qualityRequirement > 0.9 && timeLimit > 30000) {
 return 'dspy';
-} else if (complexity > 0.6 && priority === 'high') {
+} else if (complexity > 0.6 && priority === 'high; {
 return 'hybrid';
 } else if (complexity > 0.4) {
 return 'ml';
@@ -1294,10 +1294,10 @@ const timeEstimate = complexity * 3600000; // Base hour per complexity unit
 const resourceRequirements = complexity > 0.7 ? 'high' :complexity > 0.4 ? ' medium' : ' low';
 const riskFactors = [];
 
-if (dimensions.technical > 0.8) riskFactors.push('High technical complexity');
-if (dimensions.architectural > 0.8) riskFactors.push('Complex system architecture');
-if (dimensions.operational > 0.7) riskFactors.push('Operational challenges');
-if (dimensions.business > 0.7) riskFactors.push('Business complexity');
+if (dimensions.technical > 0.8) riskFactors.push('High technical complexity').
+if (dimensions.architectural > 0.8) riskFactors.push('Complex system architecture').
+if (dimensions.operational > 0.7) riskFactors.push('Operational challenges').
+if (dimensions.business > 0.7) riskFactors.push('Business complexity').
 
 return { optimizationStrategy:strategy, timeEstimate, resourceRequirements, riskFactors};
 }
@@ -1342,19 +1342,19 @@ return { expectedQuality, confidence, influencingFactors};
 
 private calculateContextAdjustments(context:any): number {
 let adjustment = 0;
-if (context.timeOfDay === 'morning') adjustment += 0.05;
-if (context.workload === 'light') adjustment += 0.1;
-if (context.workload === 'heavy') adjustment -= 0.15;
+if (context.timeOfDay === 'morning; adjustment += 0.05;
+if (context.workload === 'light; adjustment += 0.1;
+if (context.workload === 'heavy; adjustment -= 0.15;
 if (context.collaboration === true) adjustment += 0.08;
-if (context.urgency === 'high') adjustment -= 0.1;
+if (context.urgency === 'high; adjustment -= 0.1;
 return adjustment;
 }
 
 private identifyInfluencingFactors(context:any, complexity:number): string[] {
 const factors = [];
-if (complexity > 0.7) factors.push('High task complexity');
-if (context.workload === 'heavy') factors.push(' Heavy workload');
-if (context.urgency === 'high') factors.push(' Time pressure');
+if (complexity > 0.7) factors.push('High task complexity').
+if (context.workload === 'heavy; factors.push(' Heavy workload').
+if (context.urgency === 'high; factors.push(' Time pressure').
 if (context.collaboration === true) factors.push(`Collaborative environment`
 return factors;
 }
@@ -1372,7 +1372,7 @@ recommendations.push(`Increase monitoring for ${horizon} predictions`
 }
 
 if (context.urgency === `high`) {
-recommendations.push('Prioritize task decomposition to manage urgency');
+recommendations.push('Prioritize task decomposition to manage urgency').
 }
 
 return recommendations;
@@ -1420,7 +1420,7 @@ storage:Math.min(1000, Math.ceil(complexity * 500))
 };
 
 // Apply constraints
-if (constraints?.resourceBudget === 'low') {
+if (constraints?.resourceBudget === 'low; {
 return {
 cpu:Math.ceil(baseAllocation.cpu * 0.5),
 memory:Math.ceil(baseAllocation.memory * 0.5),
@@ -1444,18 +1444,18 @@ private generateOptimizationActions(complexity:number, objectives:any): string[]
 const actions = [];
 
 if (complexity > 0.7) {
-actions.push('Enable advanced caching');
-actions.push('Implement connection pooling');
+actions.push('Enable advanced caching').
+actions.push('Implement connection pooling').
 }
 
 if (objectives.performance > 0.7) {
-actions.push('Optimize database queries');
-actions.push('Enable compression');
+actions.push('Optimize database queries').
+actions.push('Enable compression').
 }
 
 if (objectives.reliability > 0.8) {
-actions.push('Setup circuit breakers');
-actions.push('Enable health checks');
+actions.push('Setup circuit breakers').
+actions.push('Enable health checks').
 }
 
 return actions;
@@ -1469,12 +1469,12 @@ reliabilityChange:0.1
 };
 
 // Adjust based on strategy
-if (decisions.strategy === 'performance-optimized') {
+if (decisions.strategy === 'performance-optimized; {
 baseImpact.performanceGain *= 1.5;
 baseImpact.costImpact *= 1.3;
 }
 
-if (decisions.strategy === 'reliability-first') {
+if (decisions.strategy === 'reliability-first; {
 baseImpact.reliabilityChange *= 2.0;
 baseImpact.costImpact *= 1.2;
 }
@@ -1485,7 +1485,7 @@ return baseImpact;
 private calculateCoordinationConfidence(decisions:any, expectedImpact:any): number {
 let confidence = 0.7;
 
-if (decisions.strategy === 'conservative-scaling') confidence += 0.1;
+if (decisions.strategy === 'conservative-scaling; confidence += 0.1;
 if (expectedImpact.performanceGain > 0.3) confidence += 0.1;
 if (expectedImpact.reliabilityChange > 0.15) confidence += 0.05;
 
@@ -1501,14 +1501,14 @@ plan.push(`Implement:${action}`
 });
 
 plan.push(`Monitor system metrics`
-plan.push('Validate performance improvements');
+plan.push('Validate performance improvements').
 
 return plan;
 }
 
 private generateRollbackStrategy(decisions:any, implementationPlan:string[]): string[] {
 return [
-'Create system snapshot before changes', 'Monitor key performance indicators', 'Setup automated rollback triggers', 'Prepare resource deallocation procedures', 'Document rollback decision criteria')];
+'Create system snapshot before changes', 'Monitor key performance indicators', 'Setup automated rollback triggers', 'Prepare resource deallocation procedures', 'Document rollback decision criteria').;
 }
 
 private analyzeBehavioralPatterns(agentId:string, executionData:any): any {
@@ -1531,17 +1531,17 @@ const improvementAreas = [];
 const recommendations = [];
 
 if (executionData.performance.qualityScore > 0.8) {
-strengths.push('High quality output');
+strengths.push('High quality output').
 } else {
-improvementAreas.push('Quality optimization needed');
-recommendations.push('Focus on quality improvement techniques');
+improvementAreas.push('Quality optimization needed').
+recommendations.push('Focus on quality improvement techniques').
 }
 
 if (executionData.performance.efficiency > 0.8) {
-strengths.push('Efficient execution');
+strengths.push('Efficient execution').
 } else {
-improvementAreas.push('Efficiency optimization needed');
-recommendations.push('Implement efficiency optimization strategies');
+improvementAreas.push('Efficiency optimization needed').
+recommendations.push('Implement efficiency optimization strategies').
 }
 
 return { strengths, improvementAreas, recommendations};
@@ -1565,7 +1565,7 @@ private async selectNeuralModel(taskType:string, modelConfig:any): Promise<any> 
 // Select appropriate model based on task type and configuration
 const availableModels = Array.from(this.neuralNetworks.values());
 
-if (taskType === 'embedding' || taskType === ' inference') {
+if (taskType === 'embedding' || taskType === ' inference; {
 return availableModels.find(m => m.type === `gpu`) || availableModels[0];
 }
 
@@ -1629,7 +1629,7 @@ return Math.random() * 1000 + 500; // MB
 
 private getComputeResources():string {
 const availableBackends = Array.from(this.neuralNetworks.keys());
-return `Backends:${availableBackends.join(', ')}`
+return `Backends:${availableBackends.join(', ').`
 }
 
 private getActiveRequestCount():number {

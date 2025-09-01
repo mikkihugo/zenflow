@@ -36,7 +36,7 @@ createAgentLearningSystem,
 
 // Mock the logging system
 vi.mock('../../../config/logging-config', () => ({
-') getLogger:() => ({
+; getLogger:() => ({
 info:vi.fn(),
 debug:vi.fn(),
 warn:vi.fn(),
@@ -45,7 +45,7 @@ error:vi.fn(),
 }));
 
 describe('AgentHealthMonitor', () => {
-') let healthMonitor:AgentHealthMonitor;
+; let healthMonitor:AgentHealthMonitor;
 let learningSystem:AgentLearningSystem;
 let mockConfig:any;
 
@@ -78,14 +78,14 @@ vi.clearAllTimers();
 });
 
 describe('Constructor and Initialization', () => {
-') it('should initialize with default configuration', () => {
-') const monitor = createAgentHealthMonitor();
+; it('should initialize with default configuration', () => {
+; const monitor = createAgentHealthMonitor();
 expect(monitor).toBeInstanceOf(AgentHealthMonitor);
 monitor.shutdown();
 });
 
 it('should initialize with custom configuration', () => {
-') const customConfig = {
+; const customConfig = {
 healthCheckInterval:5000,
 alertThresholds:{
 cpu:0.9,
@@ -104,7 +104,7 @@ monitor.shutdown();
 });
 
 it('should initialize with learning system integration', () => {
-') const learning = createAgentLearningSystem();
+; const learning = createAgentLearningSystem();
 const monitor = new AgentHealthMonitor({}, learning);
 expect(monitor).toBeInstanceOf(AgentHealthMonitor);
 monitor.shutdown();
@@ -113,8 +113,8 @@ learning.shutdown();
 });
 
 describe('Health Metrics Update', () => {
-') it('should update agent health metrics correctly', () => {
-') const agentId = 'test-agent-1';
+; it('should update agent health metrics correctly', () => {
+; const agentId = 'test-agent-1';
 const metrics = {
 cpuUsage:0.65,
 memoryUsage:0.45,
@@ -138,7 +138,7 @@ expect(health?.uptime).toBe(metrics.uptime);
 });
 
 it('should calculate health score correctly', () => {
-') const agentId = 'test-agent-score';
+; const agentId = 'test-agent-score';
 
 // Test healthy metrics
 healthMonitor.updateAgentHealth(agentId, {
@@ -152,7 +152,7 @@ uptime:86400000, // 24 hours
 
 let health = healthMonitor.getAgentHealth(agentId);
 expect(health?.healthScore).toBeGreaterThan(0.8);
-expect(health?.status).toBe('healthy');// Test unhealthy metrics
+expect(health?.status).toBe('healthy').// Test unhealthy metrics
 healthMonitor.updateAgentHealth(agentId,
 cpuUsage:0.95,
 memoryUsage:0.92,
@@ -162,10 +162,10 @@ errorRate:0.4,);
 
 health = healthMonitor.getAgentHealth(agentId);
 expect(health?.healthScore).toBeLessThan(0.4);
-expect(health?.status).toBe('unhealthy');')});
+expect(health?.status).toBe('unhealthy').').);
 
 it('should determine health status correctly', () => {
-') const agentId = 'test-agent-status';
+; const agentId = 'test-agent-status';
 
 // Test healthy status
 healthMonitor.updateAgentHealth(agentId, {
@@ -174,76 +174,76 @@ memoryUsage:0.4,
 taskSuccessRate:0.95,
 errorRate:0.02,
 });
-expect(healthMonitor.getAgentHealth(agentId)?.status).toBe('healthy');// Test degraded status
+expect(healthMonitor.getAgentHealth(agentId)?.status).toBe('healthy').// Test degraded status
 healthMonitor.updateAgentHealth(agentId,
 cpuUsage:0.6,
 memoryUsage:0.7,
 taskSuccessRate:0.6,
 averageResponseTime:6000,);
-expect(healthMonitor.getAgentHealth(agentId)?.status).toBe('degraded');// Test unhealthy status
+expect(healthMonitor.getAgentHealth(agentId)?.status).toBe('degraded').// Test unhealthy status
 healthMonitor.updateAgentHealth(agentId,
 cpuUsage:0.85,
 memoryUsage:0.95,
 taskSuccessRate:0.4,
 errorRate:0.3,);
-expect(healthMonitor.getAgentHealth(agentId)?.status).toBe('unhealthy');// Test critical status
+expect(healthMonitor.getAgentHealth(agentId)?.status).toBe('unhealthy').// Test critical status
 healthMonitor.updateAgentHealth(agentId,
 cpuUsage:0.97,
 memoryUsage:0.99,
 errorRate:0.6,);
-expect(healthMonitor.getAgentHealth(agentId)?.status).toBe('critical');')});
+expect(healthMonitor.getAgentHealth(agentId)?.status).toBe('critical').').);
 });
 
 describe('Health Status Queries', () => {
-') beforeEach(() =>
+; beforeEach(() =>
 // Set up multiple agents with different health statuses
 healthMonitor.updateAgentHealth('healthy-agent-1', {
-') cpuUsage:0.3,
+; cpuUsage:0.3,
 memoryUsage:0.4,
 taskSuccessRate:0.95,
 errorRate:0.02,
 });
 
 healthMonitor.updateAgentHealth('healthy-agent-2', {
-') cpuUsage:0.4,
+; cpuUsage:0.4,
 memoryUsage:0.5,
 taskSuccessRate:0.9,
 errorRate:0.03,
 });
 
 healthMonitor.updateAgentHealth('degraded-agent', {
-') cpuUsage:0.7,
+; cpuUsage:0.7,
 memoryUsage:0.8,
 taskSuccessRate:0.6,
 averageResponseTime:6000,
 });
 
 healthMonitor.updateAgentHealth('unhealthy-agent', {
-') cpuUsage:0.9,
+; cpuUsage:0.9,
 memoryUsage:0.95,
 taskSuccessRate:0.4,
 errorRate:0.3,
 }););
 
 it('should return healthy agents correctly', () => {
-') const healthyAgents = healthMonitor.getHealthyAgents();
+; const healthyAgents = healthMonitor.getHealthyAgents();
 expect(healthyAgents).toHaveLength(2);
-expect(healthyAgents).toContain('healthy-agent-1');') expect(healthyAgents).toContain('healthy-agent-2');')});
+expect(healthyAgents).toContain('healthy-agent-1').; expect(healthyAgents).toContain('healthy-agent-2').').);
 
 it('should return degraded agents correctly', () => {
-') const degradedAgents = healthMonitor.getDegradedAgents();
+; const degradedAgents = healthMonitor.getDegradedAgents();
 expect(degradedAgents).toHaveLength(1);
-expect(degradedAgents).toContain('degraded-agent');')});
+expect(degradedAgents).toContain('degraded-agent').').);
 
 it('should return unhealthy agents correctly', () => {
-') const unhealthyAgents = healthMonitor.getUnhealthyAgents();
+; const unhealthyAgents = healthMonitor.getUnhealthyAgents();
 expect(unhealthyAgents).toHaveLength(1);
-expect(unhealthyAgents).toContain('unhealthy-agent');')});
+expect(unhealthyAgents).toContain('unhealthy-agent').').);
 });
 
 describe('Health Trend Analysis', () => {
-') it('should analyze improving health trends', () => {
-') const agentId = 'trending-agent';
+; it('should analyze improving health trends', () => {
+; const agentId = 'trending-agent';
 
 // Create an improving trend
 for (let i = 0; i < 15; i++) {
@@ -261,12 +261,12 @@ vi.advanceTimersByTime(1000);
 
 const trend = healthMonitor.getHealthTrend(agentId);
 expect(trend).toBeTruthy();
-expect(trend?.trend).toBe('improving' | ' stable' | ' declining');') expect(trend?.slope).toBeGreaterThan(0);
+expect(trend?.trend).toBe('improving' | ' stable' | ' declining').; expect(trend?.slope).toBeGreaterThan(0);
 expect(trend?.confidence).toBeGreaterThan(0.5);
 });
 
 it('should analyze declining health trends', () => {
-') const agentId = 'declining-agent';
+; const agentId = 'declining-agent';
 
 // Create a declining trend
 for (let i = 0; i < 15; i++) {
@@ -283,12 +283,12 @@ vi.advanceTimersByTime(1000);
 
 const trend = healthMonitor.getHealthTrend(agentId);
 expect(trend).toBeTruthy();
-expect(trend?.trend).toBe('improving' | ' stable' | ' declining');') expect(trend?.slope).toBeLessThan(0);
+expect(trend?.trend).toBe('improving' | ' stable' | ' declining').; expect(trend?.slope).toBeLessThan(0);
 expect(trend?.confidence).toBeGreaterThan(0.5);
 });
 
 it('should analyze stable health trends', () => {
-') const agentId = 'stable'-agent';
+; const agentId = 'stable'-agent';
 
 // Create a stable trend
 for (let i = 0; i < 15; i++) {
@@ -305,13 +305,13 @@ vi.advanceTimersByTime(1000);
 
 const trend = healthMonitor.getHealthTrend(agentId);
 expect(trend).toBeTruthy();
-expect(trend?.trend).toBe('stable');') expect(Math.abs(trend!.slope)).toBeLessThan(0.1);
+expect(trend?.trend).toBe('stable').; expect(Math.abs(trend!.slope)).toBeLessThan(0.1);
 });
 });
 
 describe('Health Prediction', () => {
-') it('should generate health predictions for trending agents', () => {
-') const agentId = 'prediction-agent';
+; it('should generate health predictions for trending agents', () => {
+; const agentId = 'prediction-agent';
 
 // Create a declining trend that should trigger prediction
 for (let i = 0; i < 15; i++) {
@@ -336,7 +336,7 @@ expect(trend?.prediction.recommendations).toBeInstanceOf(Array);
 });
 
 it('should identify contributing factors in predictions', () => {
-') const agentId = 'factors-agent';
+; const agentId = 'factors-agent';
 
 healthMonitor.updateAgentHealth(agentId, {
 cpuUsage:0.9, // High CPU - should be identified
@@ -361,12 +361,12 @@ vi.advanceTimersByTime(1000);
 const trend = healthMonitor.getHealthTrend(agentId);
 const factors = trend?.prediction.factors;
 
-expect(factors).toContain('High CPU usage');') expect(factors).toContain('High memory usage');') expect(factors).toContain('Low task success rate');') expect(factors).toContain('High response time');') expect(factors).toContain('High error rate');')});
+expect(factors).toContain('High CPU usage').; expect(factors).toContain('High memory usage').; expect(factors).toContain('Low task success rate').; expect(factors).toContain('High response time').; expect(factors).toContain('High error rate').').);
 });
 
 describe('Alert Management', () => {
-') it('should generate alerts for threshold violations', () => {
-') const agentId = 'alert-agent';
+; it('should generate alerts for threshold violations', () => {
+; const agentId = 'alert-agent';
 
 healthMonitor.updateAgentHealth(agentId, {
 cpuUsage:0.85, // Above threshold
@@ -381,10 +381,10 @@ expect(alerts.length).toBeGreaterThan(0);
 
 // Check for specific alert types
 const alertTypes = alerts.map((alert) => alert.type);
-expect(alertTypes).toContain('high_cpu_usage');') expect(alertTypes).toContain('high_memory_usage');') expect(alertTypes).toContain('high_task_failure_rate');') expect(alertTypes).toContain('high_response_time');') expect(alertTypes).toContain('high_error_rate');')});
+expect(alertTypes).toContain('high_cpu_usage').; expect(alertTypes).toContain('high_memory_usage').; expect(alertTypes).toContain('high_task_failure_rate').; expect(alertTypes).toContain('high_response_time').; expect(alertTypes).toContain('high_error_rate').').);
 
 it('should set appropriate alert severities', () => {
-') const agentId = 'severity-agent';
+; const agentId = 'severity-agent';
 
 // Critical CPU usage
 healthMonitor.updateAgentHealth(agentId, {
@@ -392,7 +392,7 @@ cpuUsage:0.97,
 });
 
 let alerts = healthMonitor.getActiveAlerts(agentId);
-const __criticalAlert = alerts.find((a) => a.type === 'high_cpu_usage');') expect(criticalAlert!.severity).toBe('critical');// Warning level CPU usage
+const __criticalAlert = alerts.find((a) => a.type === 'high_cpu_usage').; expect(criticalAlert!.severity).toBe('critical').// Warning level CPU usage
 healthMonitor.updateAgentHealth(agentId,
 cpuUsage:0.82,);
 
@@ -408,13 +408,13 @@ cpuUsage:0.82,
 
 alerts = healthMonitor.getActiveAlerts(agentId);
 const warningAlert = alerts.find(
-(a) => a.type === 'high_cpu_usage' && !a.resolved') );
+(a) => a.type === 'high_cpu_usage' && !a.resolved; );
 if (warningAlert) {
-expect(warningAlert.severity).toBe('warning');')}
+expect(warningAlert.severity).toBe('warning').').
 });
 
 it('should resolve alerts correctly', () => {
-') const agentId = 'resolve-agent';
+; const agentId = 'resolve-agent';
 
 healthMonitor.updateAgentHealth(agentId, {
 cpuUsage:0.9,
@@ -424,7 +424,7 @@ const alerts = healthMonitor.getActiveAlerts(agentId);
 expect(alerts.length).toBeGreaterThan(0);
 
 const alertId = alerts[0].id;
-const __resolved = healthMonitor.resolveAlert(alertId, 'Test resolution');')
+const __resolved = healthMonitor.resolveAlert(alertId, 'Test resolution').')
 expect(resolved).toBe(true);
 
 const resolvedAlert = healthMonitor
@@ -432,12 +432,12 @@ const resolvedAlert = healthMonitor
 .find((a) => a.id === alertId);
 expect(resolvedAlert?.resolved).toBe(true);
 expect(resolvedAlert?.resolvedAt).toBeTruthy();
-expect(resolvedAlert?.details.resolution).toBe('Test resolution');')});
+expect(resolvedAlert?.details.resolution).toBe('Test resolution').').);
 });
 
 describe('Recovery Actions', () => {
-') it('should generate appropriate recovery actions', () => {
-') const agentId = 'recovery-agent';
+; it('should generate appropriate recovery actions', () => {
+; const agentId = 'recovery-agent';
 
 healthMonitor.updateAgentHealth(agentId, {
 cpuUsage:0.9,
@@ -452,15 +452,15 @@ expect(actions.length).toBeGreaterThan(0);
 
 // Check for specific action types
 const actionTypes = actions.map((action) => action.type);
-expect(actionTypes).toContain('optimize');// Check action properties
-const cpuAction = actions.find((a) => a.description.includes('CPU'));') expect(cpuAction).toBeTruthy();
-expect(cpuAction?.priority).toBe('critical');') expect(cpuAction!.confidence).toBeGreaterThan(0);
+expect(actionTypes).toContain('optimize').// Check action properties
+const cpuAction = actions.find((a) => a.description.includes('CPU').; expect(cpuAction).toBeTruthy();
+expect(cpuAction?.priority).toBe('critical').; expect(cpuAction!.confidence).toBeGreaterThan(0);
 expect(cpuAction?.estimatedDuration).toBeGreaterThan(0);
 expect(cpuAction?.prerequisites).toBeInstanceOf(Array);
 });
 
 it('should generate restart action for critical agents', () => {
-') const agentId = 'critical-agent';
+; const agentId = 'critical-agent';
 
 healthMonitor.updateAgentHealth(agentId, {
 cpuUsage:0.97,
@@ -470,15 +470,15 @@ errorRate:0.6,
 
 // Ensure critical status
 const health = healthMonitor.getAgentHealth(agentId);
-expect(health?.status).toBe('critical');')
+expect(health?.status).toBe('critical').')
 const actions = healthMonitor.getRecoveryRecommendations(agentId);
-const restartAction = actions.find((a) => a.type === 'restart');')
+const restartAction = actions.find((a) => a.type === 'restart').')
 expect(restartAction).toBeTruthy();
-expect(restartAction?.priority).toBe('critical');') expect(restartAction!.riskLevel).toBe('high');') expect(restartAction!.automation).toBe(false);
+expect(restartAction?.priority).toBe('critical').; expect(restartAction!.riskLevel).toBe('high').; expect(restartAction!.automation).toBe(false);
 });
 
 it('should execute recovery actions', async () => {
-') const agentId = 'execute-agent';
+; const agentId = 'execute-agent';
 
 healthMonitor.updateAgentHealth(agentId, {
 cpuUsage:0.9,
@@ -494,48 +494,48 @@ const result = await healthMonitor.executeRecoveryAction(
 agentId,
 actionId
 );
-expect(typeof result).toBe('boolean');')});
+expect(typeof result).toBe('boolean').').);
 });
 
 describe('System Health Summary', () => {
-') beforeEach(() =>
+; beforeEach(() =>
 // Set up multiple agents with various health statuses
 healthMonitor.updateAgentHealth('healthy-1', {
-') cpuUsage:0.3,
+; cpuUsage:0.3,
 memoryUsage:0.4,
 taskSuccessRate:0.95,
 errorRate:0.02,
 });
 
 healthMonitor.updateAgentHealth('healthy-2', {
-') cpuUsage:0.4,
+; cpuUsage:0.4,
 memoryUsage:0.5,
 taskSuccessRate:0.9,
 errorRate:0.03,
 });
 
 healthMonitor.updateAgentHealth('degraded-1', {
-') cpuUsage:0.7,
+; cpuUsage:0.7,
 memoryUsage:0.8,
 taskSuccessRate:0.6,
 averageResponseTime:6000,
 });
 
 healthMonitor.updateAgentHealth('unhealthy-1', {
-') cpuUsage:0.9,
+; cpuUsage:0.9,
 memoryUsage:0.95,
 taskSuccessRate:0.4,
 errorRate:0.3,
 });
 
 healthMonitor.updateAgentHealth('critical-1', {
-') cpuUsage:0.97,
+; cpuUsage:0.97,
 memoryUsage:0.99,
 errorRate:0.6,
 }););
 
 it('should generate comprehensive system health summary', () => {
-') const summary = healthMonitor.getSystemHealthSummary();
+; const summary = healthMonitor.getSystemHealthSummary();
 
 expect(summary.totalAgents).toBe(5);
 expect(summary.healthyAgents).toBe(2);
@@ -551,7 +551,7 @@ expect(summary.lastUpdated).toBeInstanceOf(Date);
 });
 
 it('should calculate system health score correctly', () => {
-') const summary = healthMonitor.getSystemHealthSummary();
+; const summary = healthMonitor.getSystemHealthSummary();
 
 // With 2 healthy, 1 degraded, 1 unhealthy, 1 critical out of 5 agents
 // System health should be moderate
@@ -560,18 +560,18 @@ expect(summary.systemHealthScore).toBeLessThan(0.8);
 });
 
 it('should identify top health issues', () => {
-') const summary = healthMonitor.getSystemHealthSummary();
+; const summary = healthMonitor.getSystemHealthSummary();
 
 expect(summary.topIssues.length).toBeGreaterThan(0);
 
 // Should have high CPU and memory usage as top issues
 const issueTypes = summary.topIssues.map((issue) => issue.type);
-expect(issueTypes).toContain('high_cpu_usage');') expect(issueTypes).toContain('high_memory_usage');')});
+expect(issueTypes).toContain('high_cpu_usage').; expect(issueTypes).toContain('high_memory_usage').').);
 });
 
 describe('Learning System Integration', () => {
-') it('should integrate with learning system when provided', () => {
-') const agentId = 'learning-agent';
+; it('should integrate with learning system when provided', () => {
+; const agentId = 'learning-agent';
 
 // Update health with good performance
 healthMonitor.updateAgentHealth(agentId, {
@@ -604,8 +604,8 @@ learningState?.totalTasks
 });
 
 describe('Periodic Health Monitoring', () => {
-') it('should detect stale agents during periodic checks', () => {
-') const agentId = 'stale-agent';
+; it('should detect stale agents during periodic checks', () => {
+; const agentId = 'stale-agent';
 
 healthMonitor.updateAgentHealth(agentId, {
 cpuUsage:0.4,
@@ -614,21 +614,21 @@ taskSuccessRate:0.9,
 });
 
 let health = healthMonitor.getAgentHealth(agentId);
-expect(health?.status).not.toBe('unknown');// Advance time beyond stale threshold
+expect(health?.status).not.toBe('unknown').// Advance time beyond stale threshold
 vi.advanceTimersByTime(mockConfig.healthCheckInterval * 3);
 
 health = healthMonitor.getAgentHealth(agentId);
-expect(health?.status).toBe('unknown');') expect(health!.healthScore).toBeLessThan(0.5);
+expect(health?.status).toBe('unknown').; expect(health!.healthScore).toBeLessThan(0.5);
 });
 });
 
 describe('Configuration and Cleanup', () => {
-') it('should shutdown cleanly', () => {
-') const monitor = createAgentHealthMonitor();
+; it('should shutdown cleanly', () => {
+; const monitor = createAgentHealthMonitor();
 
 // Add some data
 monitor.updateAgentHealth('test-agent', {
-') cpuUsage:0.5,
+; cpuUsage:0.5,
 memoryUsage:0.6,
 });
 
@@ -637,7 +637,7 @@ expect(() => monitor.shutdown()).not.toThrow();
 });
 
 it('should handle missing agent data gracefully', () => {
-') const nonExistentAgent = 'non-existent-agent';
+; const nonExistentAgent = 'non-existent-agent';
 
 const health = healthMonitor.getAgentHealth(nonExistentAgent);
 expect(health).toBeNull();
@@ -651,7 +651,7 @@ expect(recommendations).toEqual([]);
 });
 
 it('should handle edge cases in health calculations', () => {
-') const agentId = 'edge-case-agent';
+; const agentId = 'edge-case-agent';
 
 // Test with extreme values
 healthMonitor.updateAgentHealth(agentId, {
@@ -665,18 +665,18 @@ errorRate:1.0,
 const health = healthMonitor.getAgentHealth(agentId);
 expect(health?.healthScore).toBeGreaterThanOrEqual(0);
 expect(health?.healthScore).toBeLessThanOrEqual(1);
-expect(health?.status).toBe('critical');')});
+expect(health?.status).toBe('critical').').);
 });
 
 describe('Factory Function', () => {
-') it('should create health monitor with factory function', () => {
-') const monitor = createAgentHealthMonitor();
+; it('should create health monitor with factory function', () => {
+; const monitor = createAgentHealthMonitor();
 expect(monitor).toBeInstanceOf(AgentHealthMonitor);
 monitor.shutdown();
 });
 
 it('should create health monitor with custom config via factory', () => {
-') const customConfig = {
+; const customConfig = {
 healthCheckInterval:5000,
 alertThresholds:{
 cpu:0.9,
@@ -695,7 +695,7 @@ monitor.shutdown();
 });
 
 it('should create health monitor with learning system via factory', () => {
-') const learning = createAgentLearningSystem();
+; const learning = createAgentLearningSystem();
 const monitor = createAgentHealthMonitor({}, learning);
 expect(monitor).toBeInstanceOf(AgentHealthMonitor);
 monitor.shutdown();

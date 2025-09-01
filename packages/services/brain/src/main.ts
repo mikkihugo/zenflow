@@ -76,7 +76,7 @@ type UUID = string;
 type Timestamp = number;
 
 // Global logger for utility functions
-const logger = getLogger('brain');
+const logger = getLogger('brain').
 
 /**
  * Brain coordinator configuration
@@ -140,7 +140,7 @@ export class FoundationBrainCoordinator {
       },
     };
 
-    this.logger = getLogger('foundation-brain-coordinator');
+    this.logger = getLogger('foundation-brain-coordinator').
     // Performance tracking initialization - lazy loaded via operations facade
 
     // Circuit breaker would be initialized from operations package
@@ -212,9 +212,9 @@ export class FoundationBrainCoordinator {
   async shutdown(): Promise<void> {
     if (!this.initialized) return;
 
-    logger.info('Shutting down brain coordinator...');
+    logger.info('Shutting down brain coordinator...').
     this.initialized = false;
-    logger.info('Brain coordinator shutdown complete');
+    logger.info('Brain coordinator shutdown complete').
   }
 
   isInitialized(): boolean {
@@ -243,7 +243,7 @@ export class FoundationBrainCoordinator {
     expectedPerformance: number;
   }> {
     if (!this.initialized) {
-      throw new Error('Brain coordinator not initialized');
+      throw new Error('Brain coordinator not initialized').
     }
 
     logger.debug(`Optimizing prompt for task: ${request.task}`);
@@ -274,7 +274,7 @@ export class FoundationBrainCoordinator {
 
       // Type guard for Rust module
       if (!this.isValidRustModule(rustModule)) {
-        throw new Error('Invalid Rust optimization module structure');
+        throw new Error('Invalid Rust optimization module structure').
       }
 
       const { auto_select_strategy, record_optimization_performance } =
@@ -289,7 +289,7 @@ export class FoundationBrainCoordinator {
 
       switch (strategy) {
         case 'DSPy':
-          this.logger.debug('Using DSPy optimization for complex task');
+          this.logger.debug('Using DSPy optimization for complex task').
           optimizedPrompt = await this.optimizeWithDSPy(
             request.basePrompt,
             request.context
@@ -299,7 +299,7 @@ export class FoundationBrainCoordinator {
           break;
 
         case 'DSPyConstrained':
-          this.logger.debug('Using constrained DSPy optimization');
+          this.logger.debug('Using constrained DSPy optimization').
           optimizedPrompt = await this.optimizeWithConstrainedDSPy(
             request.basePrompt,
             request.context
@@ -310,7 +310,7 @@ export class FoundationBrainCoordinator {
 
         case 'Basic':
         default:
-          logger.debug('Using basic optimization for simple task');
+          logger.debug('Using basic optimization for simple task').
           optimizedPrompt = await this.optimizeBasic(
             request.basePrompt,
             request.context
@@ -392,7 +392,7 @@ export class FoundationBrainCoordinator {
    */
   async processNeuralTask(task: NeuralTask): Promise<NeuralResult> {
     if (!this.initialized) {
-      throw new Error('Brain coordinator not initialized');
+      throw new Error('Brain coordinator not initialized').
     }
 
     logger.debug(
@@ -406,7 +406,7 @@ export class FoundationBrainCoordinator {
    */
   async storeNeuralData(data: NeuralData): Promise<void> {
     if (!this.initialized) {
-      throw new Error('Brain coordinator not initialized');
+      throw new Error('Brain coordinator not initialized').
     }
 
     logger.debug(`Brain orchestrating storage for: ${data.id}`);
@@ -475,7 +475,7 @@ export class FoundationBrainCoordinator {
    */
   async storeNeuralData(networkId: string, weights: number[], metadata?: Record<string, unknown>): Promise<Result<void, BrainError>> {
     if (!this.neuralDataStore) {
-      this.logger.debug('Brain neural data store not available, neural data stored in memory only');
+      this.logger.debug('Brain neural data store not available, neural data stored in memory only').
       return ok(); // Graceful fallback
     }
 
@@ -520,7 +520,7 @@ export class FoundationBrainCoordinator {
    */
   async findSimilarPatterns(queryWeights: number[], limit = 5): Promise<Result<Array<{ networkId: string; similarity: number; metadata?: Record<string, unknown> }>, BrainError>> {
     if (!this.neuralDataStore) {
-      this.logger.debug('Brain neural data store not available, returning empty similarity results');
+      this.logger.debug('Brain neural data store not available, returning empty similarity results').
       return ok([]);
     }
 
@@ -528,7 +528,7 @@ export class FoundationBrainCoordinator {
       const results = await this.neuralDataStore.search(queryWeights, limit);
 
       const patterns = results.map(result => ({
-        networkId: result.id.replace('brain:', ''),
+        networkId: result.id.replace('brain:', '').
         similarity: result.score,
         metadata: result.metadata
       }));
@@ -555,7 +555,7 @@ export class FoundationBrainCoordinator {
    */
   async saveBrainConfig(config: Record<string, unknown>): Promise<Result<void, BrainError>> {
     if (!this.configStore) {
-      this.logger.debug('Brain config store not available, config stored in memory only');
+      this.logger.debug('Brain config store not available, config stored in memory only').
       return ok(); // Graceful fallback
     }
 
@@ -583,7 +583,7 @@ export class FoundationBrainCoordinator {
    */
   async loadBrainConfig(): Promise<Result<Record<string, unknown>, BrainError>> {
     if (!this.configStore) {
-      this.logger.debug('Brain config store not available, returning default config');
+      this.logger.debug('Brain config store not available, returning default config').
       return ok({}); // Graceful fallback
     }
 
@@ -611,7 +611,7 @@ export class FoundationBrainCoordinator {
    */
   async addKnowledgeRelationship(from: string, to: string, relationship: string, metadata?: Record<string, unknown>): Promise<Result<void, BrainError>> {
     if (!this.knowledgeGraph) {
-      this.logger.debug('Brain knowledge graph not available, relationship stored in memory only');
+      this.logger.debug('Brain knowledge graph not available, relationship stored in memory only').
       return ok(); // Graceful fallback
     }
 
@@ -666,7 +666,7 @@ export class FoundationBrainCoordinator {
     recommendations: string[];
   }, BrainError>> {
     if (!this.initialized) {
-      return err(new BrainError('Brain coordinator not initialized', {}, 'BRAIN_NOT_INITIALIZED'));
+      return err(new BrainError('Brain coordinator not initialized', {}, 'BRAIN_NOT_INITIALIZED').;
     }
 
     try {
@@ -719,13 +719,13 @@ export class FoundationBrainCoordinator {
 
   private async initializeTelemetry(): Promise<void> {
     // Initialize telemetry collection
-    this.logger.debug('Initializing brain telemetry collection');
+    this.logger.debug('Initializing brain telemetry collection').
     // Implementation would initialize telemetry
   }
 
   private async initializeDatabaseStorage(): Promise<void> {
     try {
-      this.logger.info('Initializing brain database storage');
+      this.logger.info('Initializing brain database storage').
 
       // Create database adapter
       const dbAdapter = createDatabaseAdapter({
@@ -748,7 +748,7 @@ export class FoundationBrainCoordinator {
         relationshipTypes: ['relates_to', 'depends_on', 'similar_to']
       });
 
-      this.logger.info('Brain database storage initialized successfully');
+      this.logger.info('Brain database storage initialized successfully').
     } catch (error) {
       this.logger.warn('Brain database storage initialization failed, continuing without persistence', {
         error: error.message
@@ -759,7 +759,7 @@ export class FoundationBrainCoordinator {
 
   private async initializeSafe6Integration(): Promise<void> {
     // Initialize SAFe 6.0 integration
-    this.logger.debug('Initializing SAFe 6.0 integration');
+    this.logger.debug('Initializing SAFe 6.0 integration').
     // Implementation would initialize SAFe 6.0 components
   }
 

@@ -50,13 +50,13 @@ return null;
 ';
 
 // Create test file
-await writeFile(join(testDir, 'test.ts'), testCode);
+await writeFile(join(testDir, 'test.ts'). testCode);
 
 const results = await scanner.scanAndGenerateTasks();
 
 expect(results.analysisResults).toHaveLength(2);
-expect(results.analysisResults[0].type).toBe('todo');
-expect(results.analysisResults[1].type).toBe('todo');
+expect(results.analysisResults[0].type).toBe('todo').
+expect(results.analysisResults[1].type).toBe('todo').
 });
 
 it('should detect FIXME comments in code', async () => {
@@ -69,13 +69,13 @@ return undefined;
 ';
 
 // Create test file
-await writeFile(join(testDir, 'test.ts'), testCode);
+await writeFile(join(testDir, 'test.ts'). testCode);
 
 const results = await scanner.scanAndGenerateTasks();
 
 expect(results.analysisResults).toHaveLength(2);
-expect(results.analysisResults[0].type).toBe('fixme');
-expect(results.analysisResults[1].type).toBe('fixme');
+expect(results.analysisResults[0].type).toBe('fixme').
+expect(results.analysisResults[1].type).toBe('fixme').
 });
 
 it('should handle various comment formats', async () => {
@@ -87,7 +87,7 @@ const testCode = '
 ';
 
 // Create test file
-await writeFile(join(testDir, 'test.ts'), testCode);
+await writeFile(join(testDir, 'test.ts'). testCode);
 
 const results = await scanner.scanAndGenerateTasks();
 

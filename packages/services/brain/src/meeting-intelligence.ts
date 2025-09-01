@@ -59,11 +59,11 @@ insights.push(
 // Sentiment analysis if available
 if (data.sentiment) {
 const sentimentScore =
-typeof data.sentiment ===`number'? data.sentiment') :data.sentiment.overall||data.sentiment.average||0.5;
+typeof data.sentiment ===`number'? data.sentiment; :data.sentiment.overall||data.sentiment.average||0.5;
 const __sentimentLabel =
 sentimentScore > 0.6
-?'positive') :sentimentScore < 0.4
-? 'negative') : 'neutral;
+?'positive; :sentimentScore < 0.4
+? 'negative; : 'neutral;
 ' insights.push(
 `Meeting sentiment:${_sentimentLabel}($(sentimentScore * 100).toFixed(1)%)``
 );
@@ -87,22 +87,22 @@ const recommendations = [];
 
 if (data?.duration > 60) {
 recommendations.push(
-'Consider shorter meeting duration for better engagement') );
+'Consider shorter meeting duration for better engagement; );
 }
 
 if (data?.participants?.length > 8) {
 recommendations.push(
-'Large group detected - consider breaking into smaller focused sessions') );
+'Large group detected - consider breaking into smaller focused sessions; );
 }
 
 if (data?.actionItems?.length === 0) {
 recommendations.push(
-'No action items identified - ensure clear next steps are defined') );
+'No action items identified - ensure clear next steps are defined; );
 }
 
 if (insights.length < 3) {
 recommendations.push(
-'Limited data available - consider capturing more meeting metrics') );
+'Limited data available - consider capturing more meeting metrics; );
 }
 
 return recommendations;

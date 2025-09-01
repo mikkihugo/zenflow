@@ -12,7 +12,7 @@ constructor(config: IntelligenceSystemConfig);
 predictTaskDurationMultiHorizon(agentId: AgentId, taskType: string, context?: Record<string, unknown>): Promise<MultiHorizonTaskPrediction>;
 getAgentLearningState(agentId: AgentId): AgentLearningState | null;
 logger: any;
-debug(: any, { ') agentId:agentId.id,: status, overallScore: overallHealth, responseTime: agentHealth, metrics, responseTime, errorRate: agentHealth, metrics, errorRate, }: {
+debug(: any, { ; agentId:agentId.id,: status, overallScore: overallHealth, responseTime: agentHealth, metrics, responseTime, errorRate: agentHealth, metrics, errorRate, }: {
 ") agentId:agentId.id,": any;
 overallScore: any;
 responseTime: any;

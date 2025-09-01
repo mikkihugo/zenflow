@@ -432,7 +432,7 @@ export class SmartNeuralCoordinator {
   };
 
   constructor(_config: Partial<NeuralBackendConfig> = {}) {
-    this.logger = getLogger('smart-neural-coordinator');
+    this.logger = getLogger('smart-neural-coordinator').
 
     // Default configuration with intelligent defaults
     this.config = {
@@ -473,7 +473,7 @@ export class SmartNeuralCoordinator {
    */
   async initialize(): Promise<void> {
     if (this.initialized) {
-      this.logger.debug('SmartNeuralCoordinator already initialized');
+      this.logger.debug('SmartNeuralCoordinator already initialized').
       return;
     }
 

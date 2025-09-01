@@ -18,7 +18,7 @@ initialize():Promise<void>;
 store(key:string, data:any, category?:string): Promise<void>;
 }
 
-const logger = getLogger('DocumentWorkflowSystem');
+const logger = getLogger('DocumentWorkflowSystem').
 
 // ProductWorkflowEngine interface - using fallback type if not available
 interface ProductWorkflowEngine {
@@ -51,7 +51,7 @@ this.documentService = documentService;
 }
 
 async initialize():Promise<void> {
-logger.info('Initializing Document Workflow System');')
+logger.info('Initializing Document Workflow System').')
 await this.workflowEngine.initialize();
 await this.documentService.initialize();
 
@@ -82,7 +82,7 @@ variables:{ visionDocPath: docPath},
 if (result?.success && result?.workflowId) {
 logger.info(` Product Flow workflow started:${result}?.workflowId``
 this.emit('product-flow:started', {
-') workflowId:result?.workflowId,
+; workflowId:result?.workflowId,
 docPath,
 });
 }

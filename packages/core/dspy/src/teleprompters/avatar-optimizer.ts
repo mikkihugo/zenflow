@@ -23,6 +23,8 @@ import type { MetricFunction} from "../interfaces/types";
 import type { Example} from "../primitives/example";
 import type { DSPyModule} from "../primitives/module";
 import { Teleprompter} from "./teleprompter";
+import { getLogger } from "@claude-zen/foundation";
+const logger = getLogger('AvatarOptimizer');
 
 /**
 * Default maximum examples for sampling
@@ -101,7 +103,7 @@ export class AvatarOptimizer extends Teleprompter {
 	private upper_bound:number;
 	private max_positive_inputs:number;
 	private max_negative_inputs:number;
-	private optimize_for:"max|min";
+	private optimize_for: "max" | "min";
 
 	// Internal components exactly matching Stanford implementation
 	private comparator:any;
@@ -206,7 +208,7 @@ export class AvatarOptimizer extends Teleprompter {
 
 			const {new_instruction} = new_instruction_result;
 
-			logger.info(`Generated new instruction:' + new_instruction);
+			logger.info(`Generated new instruction: ${new_instruction}`);
 
 			// Update best actor exactly matching Stanford logic
 			const should_update =
@@ -221,7 +223,7 @@ export class AvatarOptimizer extends Teleprompter {
 }
 }
 
-		logger.info('Best Actor:' + best_actor);
+		logger.info(`Best Actor: ${best_actor}`);
 
 		(best_actor as any)._compiled = true;
 		return best_actor;
@@ -301,7 +303,7 @@ export class AvatarOptimizer extends Teleprompter {
 		const avg_score = evaluation_result.score;
 		const {results} = evaluation_result;
 
-		logger.info('Average Score:${ + avg_score);
+		logger.info(`Average Score: ${avg_score}`);
 
 		for (const { example, prediction, score} of results) {
 			if (score >= this.upper_bound) {
@@ -342,7 +344,7 @@ export class AvatarOptimizer extends Teleprompter {
 			// Simulate LLM-based feedback generation
 			const feedback =
 				'Based on the analysis of positive vs negative examples, ' +
-				}the tool usage needs improvement. Focus on better action selection and ' +
+				`}the tool usage needs improvement. Focus on better action selection and ` +
 				`more effective instruction following for the problematic cases.`
 
 			return { feedback };
@@ -357,7 +359,7 @@ export class AvatarOptimizer extends Teleprompter {
 		return async (inputs: FeedbackBasedInstructionSignature) => {
 			// Simulate instruction improvement
 			const new_instruction =
-				(inputs.previous_instruction) + `\n\nBased on feedback: ${inputs.feedback}\n` +
+				`${inputs.previous_instruction}\n\nBased on feedback: ${inputs.feedback}\n` +
 				`Please pay special attention to tool selection and action planning to improve performance on challenging cases.`
 
 			return { new_instruction };

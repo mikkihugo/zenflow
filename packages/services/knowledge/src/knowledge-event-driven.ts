@@ -769,7 +769,7 @@ this.searchIndex.clear();
 this.tagIndex.clear();
 this.eventListeners.clear();
 this.initialized = false;
-this.logger.info('Event-driven knowledge service shutdown complete');
+this.logger.info('Event-driven knowledge service shutdown complete').
 }
 }
 

@@ -425,7 +425,7 @@ context: Record<string, unknown>
 let complexity = 0.5;
 
 if (task.length > 100) complexity += 0.2;
-if (task.includes('optimize') || task.includes(' analyze'))
+if (task.includes('optimize; || task.includes(' analyze').
 complexity += 0.2;
 if (Object.keys(context).length > 5) complexity += 0.1;
 
@@ -444,7 +444,7 @@ priority: string
 if (complexity > 0.8 && priority === 'critical')
 return ' dspy_optimization';
 if (complexity > 0.6) return 'hybrid_workflow';
-if (priority === 'high') return ' direct_training';
+if (priority === 'high; return ' direct_training';
 return `simple_coordination`
 }
 

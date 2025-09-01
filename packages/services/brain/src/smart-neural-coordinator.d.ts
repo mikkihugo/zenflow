@@ -341,7 +341,7 @@ averageLatency: number;
 *
 * const result = await coordinator.generateEmbedding({
 * text:"Machine learning is transforming software development",
-* qualityLevel: 'standard', * priority:'high') *});
+* qualityLevel: 'standard', * priority:'high; *});
 *
 * logger.info(`Embedding: ${result.embedding.length}D, Quality: ${result.qualityScore}``
 * ````

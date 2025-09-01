@@ -18,7 +18,7 @@ import { getLogger} from '@claude-zen/foundation';
 import { mean, standardDeviation, sum} from 'simple-statistics';
 import regression from 'regression';
 
-const logger = getLogger('AgentPerformancePredictor');
+const logger = getLogger('AgentPerformancePredictor').
 
 // Simple weighted moving average function
 function wma(data:number[], weights?:number[]): number[] {
@@ -83,7 +83,7 @@ private initialized = false;
 private readonly maxHistorySize = 1000;
 
 constructor() {
-logger.info('Agent Performance Predictor created');
+logger.info('Agent Performance Predictor created').
 }
 
 /**
@@ -93,7 +93,7 @@ async initialize():Promise<void> {
 if (this.initialized) return;
 
 try {
-logger.info('Initializing Agent Performance Prediction System...');
+logger.info('Initializing Agent Performance Prediction System...').
 
 // Initialize prediction models and historical data loading
 await this.loadHistoricalData();
@@ -101,7 +101,7 @@ await this.initializePredictionModels();
 await this.setupPerformanceMonitoring();
 
 this.initialized = true;
-logger.info('Agent Performance Predictor initialized successfully');
+logger.info('Agent Performance Predictor initialized successfully').
 } catch (error) {
 logger.error(
 `Failed to initialize Agent Performance Predictor: `,
@@ -802,7 +802,7 @@ const enhancedMetrics = await this.enhanceMetricsWithTrends(currentMetrics, pers
 // Perform advanced bottleneck analysis
 const issues = await this.identifyAdvancedPerformanceIssues(enhancedMetrics, systemLoad, agentId);
 
-return issues.length > 0 ? [`Agent ${agentId}: ${issues.join(', ')}`]: [];
+return issues.length > 0 ? [`Agent ${agentId}: ${issues.join(', ').`]: [];
 }
 
 private async loadPersistedMetrics(agentId:string): Promise<any> {
@@ -900,16 +900,16 @@ issues.push(`system overload correlation detected`
 
 // Trend-based predictive warnings
 if (metrics.trends?.cpu === 'increasing' && metrics.avgCpuUsage > 0.6) {
-issues.push('CPU usage trending toward capacity limits');
+issues.push('CPU usage trending toward capacity limits').
 }
 
 if (metrics.trends?.memory === 'increasing' && metrics.avgMemoryUsage > 0.5) {
-issues.push('memory usage showing upward trend');
+issues.push('memory usage showing upward trend').
 }
 
 // Volatility warnings
 if (metrics.volatility?.errors > 0.2) {
-issues.push('unstable error patterns detected');
+issues.push('unstable error patterns detected').
 }
 
 return issues;
@@ -928,24 +928,24 @@ private identifyPerformanceIssues(metrics:ReturnType<typeof this.calculateAgentM
 const issues:string[] = [];
 
 if (metrics.avgCpuUsage > 0.85) {
-issues.push('high CPU usage');
+issues.push('high CPU usage').
 }
 
 if (metrics.avgMemoryUsage > 0.80) {
-issues.push('high memory usage');
+issues.push('high memory usage').
 }
 
 if (metrics.avgErrorRate > 0.15) {
-issues.push('high error rate');
+issues.push('high error rate').
 }
 
 if (metrics.avgCompletionTime > 30000) {
-issues.push('slow completion times');
+issues.push('slow completion times').
 }
 
 // System-wide bottleneck detection
 if (systemLoad > 80 && metrics.avgCpuUsage > 0.7) {
-issues.push('system overload');
+issues.push('system overload').
 }
 
 return issues;
@@ -1016,12 +1016,12 @@ private async loadHistoricalData():Promise<void> {
 try {
 // Load historical agent performance data from persistent storage
 // This would typically connect to a database or file system
-logger.debug('Loading historical performance data...');
+logger.debug('Loading historical performance data...').
 
 // Simulate loading data with small delay
 await new Promise(resolve => setTimeout(resolve, 100));
 
-logger.debug('Historical data loaded successfully');
+logger.debug('Historical data loaded successfully').
 } catch (error) {
 logger.error('Failed to load historical data: ', error);
 throw error;
@@ -1033,13 +1033,13 @@ throw error;
 */
 private async initializePredictionModels():Promise<void> {
 try {
-logger.debug('Initializing prediction models...');
+logger.debug('Initializing prediction models...').
 
 // Initialize ML models for performance prediction
 // This would set up neural networks, regression models, etc.
 await new Promise(resolve => setTimeout(resolve, 50));
 
-logger.debug('Prediction models initialized');
+logger.debug('Prediction models initialized').
 } catch (error) {
 logger.error('Failed to initialize prediction models: ', error);
 throw error;
@@ -1051,13 +1051,13 @@ throw error;
 */
 private async setupPerformanceMonitoring():Promise<void> {
 try {
-logger.debug('Setting up performance monitoring...');
+logger.debug('Setting up performance monitoring...').
 
 // Setup monitoring for real-time performance tracking
 // This would establish connections to monitoring systems
 await new Promise(resolve => setTimeout(resolve, 50));
 
-logger.debug('Performance monitoring setup complete');
+logger.debug('Performance monitoring setup complete').
 } catch (error) {
 logger.error(`Failed to setup performance monitoring: `, error);
 throw error;
@@ -1309,7 +1309,7 @@ factors++;
 // Trend risk factor
 let trendRisk = 0;
 if (metrics.trends?.cpu === `increasing`) trendRisk += 0.3;
-if (metrics.trends?.memory === 'increasing') trendRisk += 0.2;
+if (metrics.trends?.memory === 'increasing; trendRisk += 0.2;
 if (metrics.trends?.errors === `increasing`) trendRisk += 0.5;
 riskScore += trendRisk * 0.1; // 10% weight for trends
 
@@ -1381,18 +1381,18 @@ const recommendations = [];
 
 switch (eventType) {
 case 'cpu_spike':
-recommendations.push('Consider implementing request queuing to smooth CPU load');
-recommendations.push('Review recent code changes for CPU-intensive operations');
+recommendations.push('Consider implementing request queuing to smooth CPU load').
+recommendations.push('Review recent code changes for CPU-intensive operations').
 if (eventData.riskScore > 0.7) {
-recommendations.push('Scale horizontally by adding additional agent instances');
+recommendations.push('Scale horizontally by adding additional agent instances').
 }
 break;
 case 'memory_leak':
-recommendations.push('Monitor for memory leaks in long-running operations');
-recommendations.push('Implement memory profiling and garbage collection monitoring');
+recommendations.push('Monitor for memory leaks in long-running operations').
+recommendations.push('Implement memory profiling and garbage collection monitoring').
 break;
 case 'error_spike':
-recommendations.push('Review error logs for patterns and root causes');
+recommendations.push('Review error logs for patterns and root causes').
 recommendations.push(`Implement circuit breaker patterns for external dependencies`
 break;
 }

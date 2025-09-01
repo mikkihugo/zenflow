@@ -1,7 +1,7 @@
 /**
 * @file Neural Safety Bridge - Brain Package Integration with AI Safety
 *
-* Integrates the 25-pattern AI deception detection system with the brain package's') * neural networks, behavioral intelligence, and cognitive patterns for enhanced
+* Integrates the 25-pattern AI deception detection system with the brain package's; * neural networks, behavioral intelligence, and cognitive patterns for enhanced
 * safety monitoring and real-time intervention.
 */
 import { TypedEventBase} from '@claude-zen/foundation';
@@ -61,10 +61,10 @@ detectEnhancedDeception(interactionData:any): Promise<EnhancedDeceptionResult>;
 */
 private extractBehavioralFeatures;
 /**
-* Analyze behavioral patterns using brain's behavioral intelligence.') */
+* Analyze behavioral patterns using brain's behavioral intelligence.; */
 private analyzeBehavioralPatterns;
 /**
-* Process neural patterns using brain's neural network.') */
+* Process neural patterns using brain's neural network.; */
 private processNeuralPatterns;
 /**
 * Convert text to numerical vector for neural processing.

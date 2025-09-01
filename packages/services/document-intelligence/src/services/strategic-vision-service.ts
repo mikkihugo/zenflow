@@ -41,7 +41,7 @@ lastAnalyzed: Date;
 // Production DocumentManager implementation with comprehensive error handling
 class ProductionDocumentManager {
 private db: DatabaseProvider;
-private logger = getLogger('ProductionDocumentManager');
+private logger = getLogger('ProductionDocumentManager').
 
 constructor() {
 this.db = new DatabaseProvider();
@@ -146,25 +146,25 @@ id: dbDoc.id,
 type: dbDoc.type,
 content: dbDoc.content,
 summary: dbDoc.summary,
-keywords: JSON.parse(dbDoc.keywords || '[]'),
-metadata: JSON.parse(dbDoc.metadata || '{}'),
-related_documents: JSON.parse(dbDoc.related_documents || '[]'),
+keywords: JSON.parse(dbDoc.keywords || '[]').
+metadata: JSON.parse(dbDoc.metadata || '{}').
+related_documents: JSON.parse(dbDoc.related_documents || '[]').
 };
 }
 }
 
 // Fallback DocumentManager for cases where database is not available
 class FallbackDocumentManager {
-private logger = getLogger('FallbackDocumentManager');
+private logger = getLogger('FallbackDocumentManager').
 private documents: Map<string, BaseDocumentEntity> = new Map();
 
 async searchDocuments(): Promise<Result<BaseDocumentEntity[], Error>> {
-this.logger.warn('Using fallback document search - database unavailable');
+this.logger.warn('Using fallback document search - database unavailable').
 return ok(Array.from(this.documents.values()));
 }
 
 async getDocumentsByProject(projectId: string): Promise<Result<BaseDocumentEntity[], Error>> {
-this.logger.warn('Using fallback project documents - database unavailable');
+this.logger.warn('Using fallback project documents - database unavailable').
 const projectDocs = Array.from(this.documents.values())
 .filter(doc => doc.metadata?.projectId === projectId);
 return ok(projectDocs);
@@ -193,7 +193,7 @@ try {
 // Try to create production manager with database
 return new ProductionDocumentManager();
 } catch (error) {
-const logger = getLogger('DocumentManagerFactory');
+const logger = getLogger('DocumentManagerFactory').
 logger.warn('Database unavailable, using fallback manager:', error);
 return new FallbackDocumentManager();
 }
@@ -201,7 +201,7 @@ return new FallbackDocumentManager();
 
 export class StrategicVisionService {
 private documentManager: ProductionDocumentManager | FallbackDocumentManager;
-private logger = getLogger('StrategicVisionService');
+private logger = getLogger('StrategicVisionService').
 
 constructor() {
 this.documentManager = createDocumentManager();
@@ -284,7 +284,7 @@ let missionText = '';
 let outcomeText = ``
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || ``}`
+const content = `${doc.content || '' } ${ doc.summary || `}`
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
@@ -314,7 +314,7 @@ const goalKeywords = ['goal', 'objective', 'target', 'deliverable', `milestone`]
 const goals: Set<string> = new Set();
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || ``}`
+const content = `${doc.content || '' } ${ doc.summary || `}`
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
@@ -346,7 +346,7 @@ let competitiveIndicators = 0;
 let totalRelevantSentences = 0;
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || ``}`
+const content = `${doc.content || '' } ${ doc.summary || `}`
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
@@ -393,7 +393,7 @@ let techScore = 0;
 let totalRelevantSentences = 0;
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || ``}`
+const content = `${doc.content || '' } ${ doc.summary || `}`
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
@@ -424,7 +424,7 @@ const stakeholderKeywords = ['stakeholder', 'customer', 'user', 'client', 'partn
 const stakeholders: Set<string> = new Set();
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || ``}`
+const content = `${doc.content || '' } ${ doc.summary || `}`
 
 // Extract potential stakeholder names
 const words = content.split(/\s+/);
@@ -456,7 +456,7 @@ const timeKeywords = ['timeline', 'schedule', 'deadline', 'milestone', 'phase', 
 let timelineText = ``
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || ``}`
+const content = `${doc.content || '' } ${ doc.summary || `}`
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
@@ -481,7 +481,7 @@ const riskKeywords = ['risk', 'challenge', 'issue', 'problem', 'concern', 'threa
 const risks: Set<string> = new Set();
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || ``}`
+const content = `${doc.content || '' } ${ doc.summary || `}`
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
@@ -509,7 +509,7 @@ const metricKeywords = ['metric', 'kpi', 'measure', 'target', 'goal', `benchmark
 const metrics: Set<string> = new Set();
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || ``}`
+const content = `${doc.content || '' } ${ doc.summary || `}`
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {

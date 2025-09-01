@@ -188,7 +188,7 @@ private requirementsExtracted = 0;
 
 constructor() {
 super();
-this.logger = getLogger('EventDrivenDocumentIntelligence');
+this.logger = getLogger('EventDrivenDocumentIntelligence').
 this.serviceContainer = createServiceContainer();
 
 this.setupBrainEventHandlers();
@@ -348,7 +348,7 @@ await this.initializeInternal();
 }
 
 private async initializeInternal():Promise<void> {
-this.logger.info('Initializing event-driven document intelligence system');
+this.logger.info('Initializing event-driven document intelligence system').
 
 // Initialize foundation-powered components
 await this.serviceContainer.register('document-processor', {
@@ -395,7 +395,7 @@ name: 'content-analysis', description: 'Analyze document content for structure a
 type: 'analyze-structure', name: 'Analyze document structure', params:{ outputKey: 'structure_analysis'},
 },
 {
-type: 'extract-entities', name: 'Extract entities and topics', params:{ outputKey: `entity_extraction`},
+type: 'extract-entities', name: 'Extract entities and topics', params:{ outputKey: `entity_extraction},
 },
 ],
 },
@@ -610,7 +610,7 @@ topics,
 entities,
 structure:{
 sections,
-headings:headings.map(h => h.replace(/^#+\s+/, ')),
+headings:headings.map(h => h.replace(/^#+\s+/, ').,
 wordCount,
 },
 };
@@ -785,20 +785,20 @@ private extractFunctionalRequirements(content:string): string[] {
 const requirements = [];
 
 // Look for requirement patterns
-if (content.toLowerCase().includes('user') && content.toLowerCase().includes(' login')) {
-requirements.push('User authentication and login');
+if (content.toLowerCase().includes('user; && content.toLowerCase().includes(' login'). {
+requirements.push('User authentication and login').
 }
-if (content.toLowerCase().includes('data') && content.toLowerCase().includes(' store')) {
-requirements.push('Data storage and retrieval');
+if (content.toLowerCase().includes('data; && content.toLowerCase().includes(' store'). {
+requirements.push('Data storage and retrieval').
 }
-if (content.toLowerCase().includes('report') || content.toLowerCase().includes(' dashboard')) {
-requirements.push('Reporting and dashboard functionality');
+if (content.toLowerCase().includes('report; || content.toLowerCase().includes(' dashboard'). {
+requirements.push('Reporting and dashboard functionality').
 }
-if (content.toLowerCase().includes('search')) {
-requirements.push('Search functionality');
+if (content.toLowerCase().includes('search'). {
+requirements.push('Search functionality').
 }
-if (content.toLowerCase().includes('notification')) {
-requirements.push('Notification system');
+if (content.toLowerCase().includes('notification'). {
+requirements.push('Notification system').
 }
 
 return requirements.length > 0 ? requirements:[
@@ -808,17 +808,17 @@ return requirements.length > 0 ? requirements:[
 private extractNonFunctionalRequirements(content:string): string[] {
 const requirements = [];
 
-if (content.toLowerCase().includes('performance') || content.toLowerCase().includes(' fast')) {
-requirements.push('System performance and response times');
+if (content.toLowerCase().includes('performance; || content.toLowerCase().includes(' fast'). {
+requirements.push('System performance and response times').
 }
-if (content.toLowerCase().includes('security') || content.toLowerCase().includes(' secure')) {
-requirements.push('Security and data protection');
+if (content.toLowerCase().includes('security; || content.toLowerCase().includes(' secure'). {
+requirements.push('Security and data protection').
 }
-if (content.toLowerCase().includes('scalable') || content.toLowerCase().includes(' scale')) {
-requirements.push('Scalability and capacity');
+if (content.toLowerCase().includes('scalable; || content.toLowerCase().includes(' scale'). {
+requirements.push('Scalability and capacity').
 }
-if (content.toLowerCase().includes('reliable') || content.toLowerCase().includes(' availability')) {
-requirements.push('Reliability and availability');
+if (content.toLowerCase().includes('reliable; || content.toLowerCase().includes(' availability'). {
+requirements.push('Reliability and availability').
 }
 
 return requirements.length > 0 ? requirements:[
@@ -828,14 +828,14 @@ return requirements.length > 0 ? requirements:[
 private extractConstraints(content:string): string[] {
 const constraints = [];
 
-if (content.toLowerCase().includes('budget')) {
-constraints.push('Budget limitations');
+if (content.toLowerCase().includes('budget'). {
+constraints.push('Budget limitations').
 }
-if (content.toLowerCase().includes('timeline') || content.toLowerCase().includes(' deadline')) {
-constraints.push('Timeline constraints');
+if (content.toLowerCase().includes('timeline; || content.toLowerCase().includes(' deadline'). {
+constraints.push('Timeline constraints').
 }
-if (content.toLowerCase().includes('technology') || content.toLowerCase().includes(' tech stack')) {
-constraints.push('Technology stack limitations');
+if (content.toLowerCase().includes('technology; || content.toLowerCase().includes(' tech stack'). {
+constraints.push('Technology stack limitations').
 }
 
 return constraints.length > 0 ? constraints:[
@@ -850,17 +850,17 @@ return [
 private extractStakeholders(content:string): string[] {
 const stakeholders = new Set<string>();
 
-if (content.toLowerCase().includes('user') || content.toLowerCase().includes(' customer')) {
-stakeholders.add('End Users');
+if (content.toLowerCase().includes('user; || content.toLowerCase().includes(' customer'). {
+stakeholders.add('End Users').
 }
-if (content.toLowerCase().includes('admin') || content.toLowerCase().includes(' administrator')) {
-stakeholders.add('System Administrators');
+if (content.toLowerCase().includes('admin; || content.toLowerCase().includes(' administrator'). {
+stakeholders.add('System Administrators').
 }
-if (content.toLowerCase().includes('manager') || content.toLowerCase().includes(' business')) {
-stakeholders.add('Business Stakeholders');
+if (content.toLowerCase().includes('manager; || content.toLowerCase().includes(' business'). {
+stakeholders.add('Business Stakeholders').
 }
-if (content.toLowerCase().includes('developer') || content.toLowerCase().includes(' technical')) {
-stakeholders.add('Development Team');
+if (content.toLowerCase().includes('developer; || content.toLowerCase().includes(' technical'). {
+stakeholders.add('Development Team').
 }
 
 return stakeholders.size > 0 ? Array.from(stakeholders) :[
@@ -868,13 +868,13 @@ return stakeholders.size > 0 ? Array.from(stakeholders) :[
 }
 
 private extractBusinessValue(content:string): string {
-if (content.toLowerCase().includes('efficiency')) {
+if (content.toLowerCase().includes('efficiency'). {
 return 'Improves operational efficiency and reduces manual work';
 }
-if (content.toLowerCase().includes('revenue') || content.toLowerCase().includes(' profit')) {
+if (content.toLowerCase().includes('revenue; || content.toLowerCase().includes(' profit'). {
 return 'Drives revenue growth and business profitability';
 }
-if (content.toLowerCase().includes('customer') || content.toLowerCase().includes(' user experience')) {
+if (content.toLowerCase().includes('customer; || content.toLowerCase().includes(' user experience'). {
 return 'Enhances customer experience and satisfaction';
 }
 
@@ -916,7 +916,7 @@ return `
 # Epic:${this.formatEpicName(epicName)}
 
 ## Description
-This epic covers the ${epicName.toLowerCase().replace(/epic$/, ')} functionality of the system.
+This epic covers the ${epicName.toLowerCase().replace(/epic$/, '). functionality of the system.
 
 ## Features
 ${features.map(feature => `- ${feature}`).join(`\n`)}`
@@ -943,14 +943,14 @@ return epicName
 .replace(/([A-Z])/g, ' $1')
 .replace(/^./, str => str.toUpperCase())
 .trim()
-.replace(/Epic$/, ');
+.replace(/Epic$/, ').
 }
 
 private extractDocumentsFromResult(results:Record<string, any>):DocumentData[] {
 const documents:DocumentData[] = [];
 
 for (const [key, value] of Object.entries(results)) {
-if (key.includes('document')) {
+if (key.includes('document'). {
 if (Array.isArray(value)) {
 documents.push(...value.filter(item => item && item.id));
 } else if (value && value.id) {
@@ -968,14 +968,14 @@ return documents;
 
 async initialize():Promise<void> {
 await this.initializeInternal();
-this.logger.info('Event-driven document intelligence system ready to receive brain events');
+this.logger.info('Event-driven document intelligence system ready to receive brain events').
 }
 
 async shutdown():Promise<void> {
 this.workflows.clear();
 this.documentIndex.clear();
 this.initialized = false;
-this.logger.info('Event-driven document intelligence system shutdown complete');
+this.logger.info('Event-driven document intelligence system shutdown complete').
 }
 
 // Status methods

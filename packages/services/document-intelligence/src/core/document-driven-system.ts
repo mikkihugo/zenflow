@@ -12,7 +12,7 @@
 */
 import { getLogger, TypedEventBase} from '@claude-zen/foundation';
 
-const logger = getLogger('SafeArtifactIntelligence');
+const logger = getLogger('SafeArtifactIntelligence').
 
 // SAFe 6.0 Essential artifacts - ALL STORED IN DATABASE
 export interface SafeArtifact {
@@ -52,7 +52,7 @@ export interface SafeWorkflowContext {
 workspace:SafeWorkspace;
 activeArtifacts:Map<string, SafeArtifact>;
 currentPI?:string; // Current Program Increment
-safeLevel: 'essential|large-solution|portfolio'; // SAFe configuration') sparcIntegration:boolean; // SPARC development execution
+safeLevel: 'essential|large-solution|portfolio'; // SAFe configuration; sparcIntegration:boolean; // SPARC development execution
 }
 
 export class SafeArtifactIntelligence extends TypedEventBase {
@@ -67,8 +67,8 @@ this.setupDocumentHandlers();
 * Initialize system - SAFe 6.0 Essential artifact intelligence.
 */
 async initialize():Promise<void> {
-logger.info(' Initializing SAFe Artifact Intelligence System');')
-logger.info(' SAFe Artifact Intelligence ready');') this.emit('initialized`, timestamp:new Date() );`)}
+logger.info(' Initializing SAFe Artifact Intelligence System').')
+logger.info(' SAFe Artifact Intelligence ready').; this.emit('initialized`, timestamp:new Date() );`)}
 
 /**
 * Load existing workspace with documents.
@@ -81,8 +81,8 @@ const workspaceId = `safe-workspace-${Date.now()}``
 const workspace:SafeWorkspace = {
 workspaceId,
 name:workspaceName,
-safeConfiguration: `essential`, // SAFe 6.0 Essential by default') databases:{
-artifacts:databaseConnections.artifacts || 'safe_artifacts.db', relationships:databaseConnections.relationships || 'safe_relationships.db', ') analytics:databaseConnections.analytics || 'safe_analytics.db',}
+safeConfiguration: `essential`, // SAFe 6.0 Essential by default; databases:{
+artifacts:databaseConnections.artifacts || 'safe_artifacts.db', relationships:databaseConnections.relationships || 'safe_relationships.db', ; analytics:databaseConnections.analytics || 'safe_analytics.db',}
 };
 
 const context:SafeWorkflowContext = {
@@ -152,7 +152,7 @@ break;
 }
 
 this.emit('document:created', {
-') workspaceId,
+; workspaceId,
 path:docPath,
 type:docType,
 document:doc,

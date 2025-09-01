@@ -116,7 +116,7 @@ extractDocumentation?:boolean;
 const family = detectLanguageFamily(filePath);
 
 if (!family) {
-throw new Error(`Unsupported file type: ${filePath}`
+throw new Error(`Unsupported file type: ${filePath}`);
 }
 
 const factory = createParserFactory();
@@ -137,7 +137,7 @@ const parser = factory.createBeamParser(options); // Fallback to beam for now
 return await parser.parseFile(filePath);
 }
 default:
-throw new Error(`Parser not implemented for language family: ${family}`
+throw new Error(`Parser not implemented for language family: ${family}`);
 }
 }
 
@@ -221,4 +221,4 @@ description:
 'parser', 'language-parser', 'code-analysis', 'multi-language', 'beam', 'elixir', 'erlang', 'gleam', 'ast-parsing', 'code-intelligence',
 ],
 } as const;
-} as const;
+

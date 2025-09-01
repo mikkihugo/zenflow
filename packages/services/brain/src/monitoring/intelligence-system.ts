@@ -16,7 +16,7 @@ MultiHorizonTaskPrediction,
 TaskPrediction,
 } from './types';
 
-const logger = getLogger('agent-monitoring-intelligence-system');
+const logger = getLogger('agent-monitoring-intelligence-system').
 
 /**
 * Complete Intelligence System - Main implementation
@@ -25,7 +25,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
 
 constructor(config:IntelligenceSystemConfig) {
 this.config = config;
-logger.info('CompleteIntelligenceSystem initialized', { config});')}
+logger.info('CompleteIntelligenceSystem initialized', { config});').
 
 async predictTaskDuration(
 agentId:AgentId,
@@ -41,7 +41,7 @@ const baseDuration = 1000;
 const adjustedDuration = baseDuration * contextComplexity * contextUrgency;
 
 logger.debug('Task duration predicted with context', {
-') agentId:agentId.id,
+; agentId:agentId.id,
 taskType,
 contextComplexity,
 contextUrgency,
@@ -87,7 +87,7 @@ const longDuration =
 2000 * contextComplexity * contextVolatility ** 1.5;
 
 logger.debug(`Multi-horizon prediction with context`, {
-') agentId:agentId.id,
+; agentId:agentId.id,
 taskType,
 contextComplexity,
 contextVolatility,
@@ -118,7 +118,7 @@ timestamp:new Date(),
 getAgentLearningState(agentId:AgentId): AgentLearningState|null {
 // Implement agent-specific learning state retrieval
 logger.debug('Retrieving agent learning state', {
-') agentId:agentId.id,
+; agentId:agentId.id,
 swarmId:agentId.swarmId,
 agentType:agentId.type,
 instance:agentId.instance,
@@ -127,11 +127,11 @@ instance:agentId.instance,
 // Create mock learning state based on agent characteristics
 const _learningState:AgentLearningState = {
 agentId:agentId.id,
-learningRate:agentId.type === 'optimizer' ? 0.15 : 0.1, // Optimizers learn faster') adaptationStrategy:
-agentId.type === 'researcher') ? 'exploration-focused') : 'exploitation-focused', performanceHistory:[], // Would be populated from historical data
+learningRate:agentId.type === 'optimizer' ? 0.15 : 0.1, // Optimizers learn faster; adaptationStrategy:
+agentId.type === 'researcher; ? 'exploration-focused; : 'exploitation-focused', performanceHistory:[], // Would be populated from historical data
 knowledgeBase:
 domains:
-agentId.type === 'researcher') ? ['research', 'analysis']') :['coordination', 'execution'],
+agentId.type === 'researcher; ? ['research', 'analysis']; :['coordination', 'execution'],
 expertise:agentId.instance > 1 ? 0.8 : 0.6, // Senior instances have higher expertise
 lastUpdated:Date.now(),,
 adaptabilityScore:Math.min(0.9, 0.5 + agentId.instance * 0.1), // More experienced agents adapt better
@@ -140,7 +140,7 @@ lastLearningUpdate:Date.now(),
 };
 
 logger.debug('Agent learning state retrieved', {
-') agentId.id,
+; agentId.id,
 learningRate:learningState.learningRate,
 adaptationStrategy:learningState.adaptationStrategy,
 adaptabilityScore:learningState.adaptabilityScore,
@@ -165,14 +165,14 @@ timestamp:Date.now(),
 logger.debug('Agent performance updated with metadata', performanceData);// Store metadata for pattern analysis and optimization
 if (metadata) {
 logger.debug('Performance metadata analyzed', {
-') agentId:agentId.id,
+; agentId:agentId.id,
 metadataKeys:Object.keys(metadata),
 duration:metadata.duration||'unknown', taskType:metadata.taskType||'generic', complexity:metadata.complexity||'normal',});
 
 // Use metadata for predictive intelligence
 if (metadata.errorType) {
 logger.warn('Performance failure with error context', {
-') agentId:agentId.id,
+; agentId:agentId.id,
 errorType:metadata.errorType,
 errorCategory:metadata.errorCategory,
 });
@@ -180,7 +180,7 @@ errorCategory:metadata.errorCategory,
 
 if (metadata.resourceUsage) {
 logger.debug('Resource usage tracked', {
-') agentId:agentId.id,
+; agentId:agentId.id,
 resourceUsage:metadata.resourceUsage,
 });
 }
@@ -190,7 +190,7 @@ resourceUsage:metadata.resourceUsage,
 getAgentHealth(agentId:AgentId): AgentHealth|null {
 // Implement comprehensive agent health assessment
 logger.debug('Assessing agent health status', {
-') agentId:agentId.id,
+; agentId:agentId.id,
 swarmId:agentId.swarmId,
 agentType:agentId.type,
 instance:agentId.instance,
@@ -199,8 +199,8 @@ instance:agentId.instance,
 // Calculate health metrics based on agent characteristics
 const baseHealth = 0.85;
 const typeMultiplier =
-agentId.type === 'coordinator') ? 0.95 // Coordinators are more stable
-:agentId.type === 'optimizer') ? 0.9 // Optimizers work harder
+agentId.type === 'coordinator; ? 0.95 // Coordinators are more stable
+:agentId.type === 'optimizer; ? 0.9 // Optimizers work harder
 :0.88; // Other types
 
 const instanceBonus = Math.min(0.1, agentId.instance * 0.02); // Experience bonus
@@ -210,10 +210,10 @@ baseHealth * typeMultiplier + instanceBonus
 );
 
 // Determine status based on health score
-const status:'healthy|warning|critical|offline' =') overallHealth >= 0.85
-? 'healthy') :overallHealth >= 0.7
-? 'warning') :overallHealth >= 0.4
-? 'critical') : 'offline;
+const status:'healthy|warning|critical|offline' =; overallHealth >= 0.85
+? 'healthy; :overallHealth >= 0.7
+? 'warning; :overallHealth >= 0.4
+? 'critical; : 'offline;
 '
 const _agentHealth:AgentHealth = {
 agentId:agentId.id,
@@ -227,8 +227,8 @@ tasks:overallHealth,
 },
 metrics:{
 uptime:86400 * (agentId.instance + 1), // Simulate uptime based on instance
-responseTime:agentId.type === 'coordinator' ? 50 : 100, // Coordinators respond faster') errorRate:Math.max(0.001, 0.05 - agentId.instance * 0.01), // Experienced agents have lower error rates
-throughput:agentId.type === 'optimizer' ? 150 : 100, // Optimizers have higher throughput')},
+responseTime:agentId.type === 'coordinator' ? 50 : 100, // Coordinators respond faster; errorRate:Math.max(0.001, 0.05 - agentId.instance * 0.01), // Experienced agents have lower error rates
+throughput:agentId.type === 'optimizer' ? 150 : 100, // Optimizers have higher throughput').,
 lastChecked:Date.now(),
 issues:
 status !== 'healthy`) ? [`${agentId.type} agent showing reduced performance`]`
@@ -236,7 +236,7 @@ status !== 'healthy`) ? [`${agentId.type} agent showing reduced performance`]`
 };
 
 logger.debug(`Agent health assessment completed', {
-') agentId:agentId.id,
+; agentId:agentId.id,
 status,
 overallScore:overallHealth,
 responseTime:agentHealth.metrics.responseTime,
@@ -251,7 +251,7 @@ swarmId:SwarmId,
 horizon?:ForecastHorizon
 ):Promise<PerformanceOptimizationForecast> {
 // Convert horizon string to days for analysis
-const horizonDays = this.convertHorizonToDays(horizon||'7d');// Adjust prediction confidence based on horizon
+const horizonDays = this.convertHorizonToDays(horizon||'7d').// Adjust prediction confidence based on horizon
 let predictedPerformance = 0.9;
 let implementationComplexity = 0.5;
 
@@ -260,7 +260,7 @@ if (horizonDays > 30) {
 predictedPerformance *= 0.85; // Reduce confidence for long-term forecasts
 implementationComplexity *= 1.3; // Higher complexity for long-term optimizations
 logger.debug('Long-term forecast requested', {
-') swarmId:swarmId,
+; swarmId:swarmId,
 horizonDays:horizonDays,
 adjustedPerformance:predictedPerformance,
 });
@@ -268,7 +268,7 @@ adjustedPerformance:predictedPerformance,
 predictedPerformance *= 1.1; // Higher confidence for short-term forecasts
 implementationComplexity *= 0.8; // Lower complexity for short-term optimizations
 logger.debug('Short-term forecast requested', {
-') swarmId:swarmId,
+; swarmId:swarmId,
 horizonDays:horizonDays,
 adjustedPerformance:predictedPerformance,
 });
@@ -279,7 +279,7 @@ const horizonConfidence =
 horizonDays <= 1 ? 0.9:horizonDays <= 7 ? 0.8 : 0.6;
 if (horizonConfidence < 0.7) {
 logger.warn('Low confidence horizon specified', {
-') swarmId:swarmId,
+; swarmId:swarmId,
 horizonDays:horizonDays,
 confidence:horizonConfidence,
 });
@@ -319,7 +319,7 @@ baseBenefit + patternCount * 0.03 - patternComplexity * 0.05
 );
 
 logger.debug(`Knowledge transfer prediction with patterns`, {
-') sourceSwarm,
+; sourceSwarm,
 targetSwarm,
 patternCount,
 patternComplexity,
@@ -347,7 +347,7 @@ private analyzePatternComplexity(patterns:unknown[]): number {
 let totalComplexity = 0;
 for (const pattern of patterns) {
 if (typeof pattern === 'object' && pattern !== null) {
-') const objectPattern = pattern as Record<string, unknown>;
+; const objectPattern = pattern as Record<string, unknown>;
 const keyCount = Object.keys(objectPattern).length;
 totalComplexity += Math.min(1, keyCount / 10); // Normalize complexity
 } else {
@@ -410,6 +410,6 @@ return 7; // default to 7 days
 }
 
 async shutdown():Promise<void> {
-logger.info('CompleteIntelligenceSystem shutting down');') this.initialized = false;
+logger.info('CompleteIntelligenceSystem shutting down').; this.initialized = false;
 }
 }
