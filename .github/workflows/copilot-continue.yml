@@ -24,7 +24,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const prNumber = Number((context.payload && context.payload.inputs && context.payload.inputs.pr) || 44)
+            const prNumber = Number((context.payload && context.payload.inputs && context.payload.inputs.pr) || 51)
 
             // Ensure PR exists and is open; otherwise skip
             try {
