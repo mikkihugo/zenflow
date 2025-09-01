@@ -1,4 +1,4 @@
-# Changelog
+12# Changelog
 
 All notable changes to the `@claude-zen/foundation` package will be documented in this file.
 
