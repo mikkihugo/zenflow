@@ -221,8 +221,8 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
         try {
           this.workflowEngine = {
             getActiveWorkflowCount: () => 0,
-            createDocumentWorkflow: (_path: string) => 
-              Promise.resolve({ workflowId: `workflow-${  Date.now()}` }),
+            createDocumentWorkflow: (path: string) =>
+              Promise.resolve({ workflowId: `workflow-${Date.now()}`, path }),
             initialize: () => Promise.resolve(),
             shutdown: () => Promise.resolve(),
           };
@@ -238,8 +238,8 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
         try {
           this.documentationSystem = {
             getDocumentCount: () => 0,
-            processDocument: (_path: string) =>
-              Promise.resolve({ workflowId: `doc-${  Date.now()}` }),
+            processDocument: (path: string) =>
+              Promise.resolve({ workflowId: `doc-${Date.now()}`, path }),
             initialize: () => Promise.resolve(),
             shutdown: () => Promise.resolve(),
           };

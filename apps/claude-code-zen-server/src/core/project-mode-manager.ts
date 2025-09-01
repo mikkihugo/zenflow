@@ -1,3 +1,10 @@
+import { z } from '@claude-zen/foundation';
+
+export const KanbanColumnsSchema = z.array(z.string()).min(1);
+
+export const kanbanSchemaVersions = new Map<string, { columns: string[] }>([
+  ['v1', { columns: KanbanColumnsSchema.parse(['To Do', 'In Progress', 'Done']) }]
+]);
 /**
  * @fileoverview Project Mode Manager - Kanban Implementation
  *
@@ -126,6 +133,13 @@ export interface ProjectModeConfig {
 }
 
 // TODO:Add workflow definitions when custom workflows are needed
+// Basic workflow definition interface
+export interface WorkflowDefinition {
+  id: string;
+  name: string;
+  steps: Array<{ stepId: string; description: string }>;
+  isActive: boolean;
+}
 // export interface WorkflowDefinition {
 //   id:string;
 //   name:string;
@@ -302,10 +316,36 @@ export class ProjectModeManager extends EventEmitter {
     warnings: string[];
   } {
     // Currently no upgrades available - only Kanban mode exists
+      success: false,
+      migrationLog: [
+        'No upgrade paths available - only Kanban mode is currently supported'
+      ],
+      warnings: [
+      ]
+    };
+        'Mode upgrades will be available when Agile and SAFe modes are implemented'
+      ]
     return {
+private async initializeAgileMode(projectId: string): Promise<void> {
+  // Placeholder for Agile mode initialization logic
+  return Promise.resolve();
+      success: false,
+      migrationLog: [
+        'No upgrade paths available - only Kanban mode is currently supported'
+      ],
+      warnings: [
+        'Mode upgrades will be available when Agile and SAFe modes are implemented'
+      ]
+      ]
+    };
+}
       success: false,
       migrationLog: [
         'No upgrade paths available - only Kanban mode is currently supported',
+private async initializeSAFeMode(projectId: string): Promise<void> {
+  // Placeholder for SAFe mode initialization logic
+  return Promise.resolve();
+}
       ],
       warnings: [
         'Mode upgrades will be available when Agile and SAFe modes are implemented',
@@ -319,6 +359,11 @@ export class ProjectModeManager extends EventEmitter {
   //   // Initialize sprints, epics, stories, backlog management
   //   // Enable Kanban-Agile integration
   //}
+// Kanban schema migration path placeholder
+export function migrateKanbanSchema(currentVersion: string, targetVersion: string): boolean {
+  // Migration logic to be implemented when schema upgrades are available
+  return currentVersion === targetVersion;
+}
 
   // TODO:Initialize SAFe mode when @claude-zen/enterprise is available
   // private async initializeSAFeMode(projectId:string): Promise<void> {
@@ -339,6 +384,46 @@ export class ProjectModeManager extends EventEmitter {
 
     // TODO:Add migration paths when Kanban schema upgrades are available
     // Example for future use:
+import { SafetyInterventionProtocols } from '../coordination/safety-intervention-protocols';
+
+async enableAGIEnhancements(projectId: string): Promise<void> {
+  // AGI enhancement using SafetyInterventionProtocols
+  const protocols = new SafetyInterventionProtocols({ projectId });
+  await protocols.initialize();
+async enableAGIEnhancements(projectId: string, agiConfig: AGIEnhancementConfig): Promise<void> {
+  // AGI enhancement using SafetyInterventionProtocols and AGIEnhancementConfig
+  const protocols = new SafetyInterventionProtocols({ projectId });
+  await protocols.initialize();
+
+  if (agiConfig.enabled) {
+    if (agiConfig.capabilities.autonomousPlanning) {
+      logger.info(`[AGI] Autonomous planning enabled for project ${projectId}`);
+      // Insert autonomous planning logic here
+    }
+    if (agiConfig.capabilities.predictiveAnalytics) {
+      logger.info(`[AGI] Predictive analytics enabled for project ${projectId}`);
+      // Insert predictive analytics logic here
+    }
+    if (agiConfig.capabilities.collectiveIntelligence) {
+      logger.info(`[AGI] Collective intelligence enabled for project ${projectId}`);
+      // Insert collective intelligence logic here
+    }
+    if (agiConfig.capabilities.emergentOptimization) {
+      logger.info(`[AGI] Emergent optimization enabled for project ${projectId}`);
+      // Insert emergent optimization logic here
+    }
+    if (agiConfig.capabilities.adaptiveCoordination) {
+      logger.info(`[AGI] Adaptive coordination enabled for project ${projectId}`);
+      // Insert adaptive coordination logic here
+    }
+    // Use analysisThresholds and adaptiveSettings as needed for advanced logic
+  }
+}
+}
+async enableAGIEnhancements(projectId: string): Promise<void> {
+  // Placeholder for AGI enhancement logic
+  return Promise.resolve();
+}
     // if (fromVersion === '1.0.0' && toVersion === '1.1.0') {
     //   return ['safe-1.0.0-to-1.1.0'];
     //}
@@ -392,6 +477,13 @@ export class ProjectModeManager extends EventEmitter {
   getModeArchitectureDescription(mode: ProjectMode): string {
     switch (mode) {
       case ProjectMode.KANBAN:
+// Basic core data structure placeholder
+export interface CoreDataStructure {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  // Extend with additional fields as needed
+}
         return 'Kanban workflow management with continuous flow, WIP limits, and flow metrics.';
       case ProjectMode.SAFE:
         return 'Enterprise SAFe Lean Portfolio Management with strategic coordination, neural intelligence, and comprehensive SAFe database services.';

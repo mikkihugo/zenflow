@@ -1,10 +1,3 @@
-/**
- * Web Interface Module - Main exports for web dashboard interface.
- *
- * Provides organized exports following foundation package structure
- * with core functionality, infrastructure, and configuration.
- */
-
 // Core web functionality
 export * from './core';
 
@@ -26,4 +19,11 @@ export const infrastructureSystem = {
 };
 
 // TODO:Add configuration module when needed
+// Basic configuration module implementation
+export const configuration = {
+  apiEndpoint: '/api',
+  enableFeatureX: false,
+  // Add more config options as needed
+};
+export * from './configuration';
 // export * from './configuration';
