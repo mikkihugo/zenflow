@@ -22,6 +22,9 @@ const logger = getLogger('claude-zen-server');
 class ClaudeZenServer {
   private port: number = process.env.PORT ? parseInt(process.env.PORT) : 3000;
   private host: string = process.env.HOST || '0.0.0.0';
+  private server: HTTPServer | null = null;
+  private io: SocketIOServer | null = null;
+  private isShuttingDown = false;
 
   async start(): Promise<Result<void, Error>> {
     try {
@@ -37,7 +40,9 @@ class ClaudeZenServer {
       // Start the server
       await new Promise<void>((resolve, reject) => {
         const server = app.listen(this.port, this.host, async () => {
+          this.server = server;
           await this.initializeWebSockets(server);
+          this.setupShutdownHandlers();
           this.logServerStartup();
           resolve();
         });
@@ -97,10 +102,14 @@ class ClaudeZenServer {
     // Health check endpoint
     app.get('/health', (req: Request, res: Response) => {
       res.json({
-        status: 'ok',
+        status: this.isShuttingDown ? 'shutting_down' : 'ok',
         timestamp: new Date().toISOString(),
         uptime: process.uptime(),
         version: '1.0.0',
+        shutdownStatus: {
+          isShuttingDown: this.isShuttingDown,
+          emergencyShutdownAvailable: true
+        }
       });
     });
 
@@ -112,6 +121,30 @@ class ClaudeZenServer {
         timestamp: new Date().toISOString(),
         uptime: process.uptime(),
       });
+    });
+
+    // Emergency shutdown endpoint (protected)
+    app.post('/api/v1/admin/emergency-shutdown', (req: Request, res: Response) => {
+      const authToken = req.headers.authorization;
+      const expectedToken = process.env.EMERGENCY_SHUTDOWN_TOKEN || 'emergency-shutdown-2025';
+
+      if (!authToken || authToken !== `Bearer ${expectedToken}`) {
+        return res.status(401).json({
+          error: 'Unauthorized',
+          message: 'Valid emergency shutdown token required'
+        });
+      }
+
+      logger.warn('🚨 Emergency shutdown triggered via API endpoint');
+      res.json({
+        message: 'Emergency shutdown initiated',
+        timestamp: new Date().toISOString()
+      });
+
+      // Trigger emergency shutdown after response
+      setTimeout(() => {
+        this.emergencyShutdown('api-endpoint');
+      }, 1000);
     });
 
     // Basic dashboard route (if no static serving is set up)
@@ -160,7 +193,7 @@ class ClaudeZenServer {
   private async initializeSocketIO(server: HTTPServer): Promise<void> {
     try {
       const { Server: socketIOServer } = await import('socket.io');
-      const io = new socketIOServer(server, {
+      this.io = new socketIOServer(server, {
         cors: {
           origin: '*',
           methods: ['GET', 'POST'],
@@ -169,7 +202,7 @@ class ClaudeZenServer {
         allowEIO3: true,
       });
 
-      this.setupSocketHandlers(io);
+      this.setupSocketHandlers(this.io);
       logger.info(
         `🔌 Socket.IO server initialized for real-time updates`
       );
@@ -246,6 +279,28 @@ class ClaudeZenServer {
       socket.emit('pong', { timestamp: new Date().toISOString() });
     });
 
+    // Emergency shutdown request from client (admin only)
+    socket.on('request-emergency-shutdown', (data: { token: string }) => {
+      const expectedToken = process.env.EMERGENCY_SHUTDOWN_TOKEN || 'emergency-shutdown-2025';
+
+      if (data.token === expectedToken) {
+        logger.warn(`🚨 Emergency shutdown requested by client ${socket.id}`);
+        socket.emit('emergency-shutdown-granted', {
+          message: 'Emergency shutdown initiated',
+          timestamp: new Date().toISOString()
+        });
+
+        setTimeout(() => {
+          this.emergencyShutdown('client-request');
+        }, 1000);
+      } else {
+        socket.emit('emergency-shutdown-denied', {
+          error: 'Invalid emergency shutdown token',
+          timestamp: new Date().toISOString()
+        });
+      }
+    });
+
     socket.on('disconnect', (reason: string) => {
       logger.debug(
         `Dashboard client disconnected: ${socket.id}, reason: ${reason}`
@@ -254,16 +309,91 @@ class ClaudeZenServer {
   }
 
   /**
-   * Log server startup information
+   * Setup shutdown handlers for graceful and emergency shutdown
    */
-  private logServerStartup(): void {
-    logger.info(
-      ` Claude Code Zen Server running on http://${this.host}:${this.port}`
-    );
-    logger.info(` Dashboard available at http://${this.host}:${this.port}`);
-    logger.info(
-      `🔌 Socket.IO server initialized for real-time updates`
-    );
+  private setupShutdownHandlers(): void {
+    // Graceful shutdown signals
+    process.on('SIGTERM', () => this.gracefulShutdown('SIGTERM'));
+    process.on('SIGINT', () => this.gracefulShutdown('SIGINT'));
+
+    // Emergency shutdown signals
+    process.on('SIGUSR1', () => this.emergencyShutdown('SIGUSR1'));
+    process.on('SIGUSR2', () => this.emergencyShutdown('SIGUSR2'));
+
+    // Handle uncaught exceptions
+    process.on('uncaughtException', (error) => {
+      logger.error('Uncaught Exception:', error);
+      this.emergencyShutdown('uncaughtException');
+    });
+
+    // Handle unhandled promise rejections
+    process.on('unhandledRejection', (reason, promise) => {
+      logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
+      this.emergencyShutdown('unhandledRejection');
+    });
+
+    logger.info('🛡️ Emergency shutdown handlers configured');
+  }
+
+  /**
+   * Graceful shutdown - clean up resources and exit
+   */
+  private gracefulShutdown(signal: string): void {
+    if (this.isShuttingDown) {
+      logger.warn(`Already shutting down, ignoring ${signal}`);
+      return;
+    }
+
+    logger.info(`🛑 Received ${signal}, starting graceful shutdown...`);
+    this.isShuttingDown = true;
+
+    // Stop accepting new connections
+    if (this.server) {
+      this.server.close((error) => {
+        if (error) {
+          logger.error('Error closing server:', error);
+        } else {
+          logger.info('✅ Server closed successfully');
+        }
+      });
+    }
+
+    // Close Socket.IO connections
+    if (this.io) {
+      this.io.close((error) => {
+        if (error) {
+          logger.error('Error closing Socket.IO:', error);
+        } else {
+          logger.info('✅ Socket.IO closed successfully');
+        }
+      });
+    }
+
+    // Give connections 10 seconds to close gracefully
+    setTimeout(() => {
+      logger.info('⏰ Graceful shutdown timeout reached, forcing exit...');
+      process.exit(0);
+    }, 10000);
+  }
+
+  /**
+   * Emergency shutdown - immediate termination for critical situations
+   */
+  private emergencyShutdown(reason: string): void {
+    logger.error(`🚨 EMERGENCY SHUTDOWN triggered by: ${reason}`);
+
+    // Broadcast emergency shutdown to all clients
+    if (this.io) {
+      this.io.emit('emergency-shutdown', {
+        reason,
+        timestamp: new Date().toISOString(),
+        message: 'Server is shutting down immediately due to critical error'
+      });
+    }
+
+    // Force immediate exit
+    logger.error('💥 Force exiting due to emergency shutdown');
+    process.exit(1);
   }
 }
 
