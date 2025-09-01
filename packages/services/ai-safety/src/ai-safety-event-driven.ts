@@ -38,15 +38,7 @@ interface AISafetyConfig {
   behavioralAnalysisEnabled?: boolean;
 }
 
-interface AIInteractionData {
-  input: string;
-  output: string;
-  model?: string;
-  agentId?: string;
-  timestamp?: number;
-  metadata?: Record<string, any>;
-}
-
+// Removed local AIInteractionData in favor of inline types to reduce surface
 interface DeceptionAnalysisResult {
   isDeceptive: boolean;
   confidence: number;
@@ -75,7 +67,6 @@ type AlertType =
   | 'harmful-content'
   | 'policy-violation'
   | 'system-threat';
-type InterventionType = 'pause' | 'restrict' | 'terminate' | 'escalate' | 'quarantine';
 
 interface SafetyMetrics {
   totalAnalyses: number;
@@ -296,18 +287,15 @@ export class EventDrivenAISafety extends EventEmitter {
   }
 
   private async analyzeResponseInternal(
-    response: any,
+    response: string,
     agentId?: string
   ): Promise<DeceptionAnalysisResult> {
     this.totalAnalyses++;
 
-    const responseText =
-      typeof response === 'string' ? response : JSON.stringify(response);
-
     // Foundation-powered deception analysis
-    const deceptionResult = await this.detectDeceptionInternal(responseText);
+    const deceptionResult = await this.detectDeceptionInternal(response);
     const behaviorResult = this.config.behavioralAnalysisEnabled
-      ? await this.analyzeBehaviorInternal(responseText, agentId)
+      ? await this.analyzeBehaviorInternal(response, agentId)
       : null;
 
     // Combine results
@@ -340,34 +328,6 @@ export class EventDrivenAISafety extends EventEmitter {
       riskLevel,
       recommendation: this.generateRecommendation(riskLevel, isDeceptive),
     };
-  }
-
-  private async checkAgentSafetyInternal(
-    agentId: string,
-    interactionData: AIInteractionData
-  ): Promise<SafetyStatus> {
-    const analysis = await this.analyzeResponseInternal(
-      interactionData.output,
-      agentId
-    );
-
-    // Determine safety status based on analysis
-    if (
-      analysis.riskLevel === 'extreme' ||
-      analysis.riskLevel === 'critical'
-    ) {
-      return 'emergency';
-    } else if (analysis.riskLevel === 'high') {
-      return 'intervention';
-    } else if (analysis.riskLevel === 'medium') {
-      return 'alert';
-    } else if (analysis.riskLevel === 'low') {
-      return 'warning';
-    } else if (this.monitoring) {
-      return 'monitoring';
-    } else {
-      return 'safe';
-    }
   }
 
   private getSafetyMetricsInternal(): SafetyMetrics {
@@ -693,94 +653,3 @@ export function createEventDrivenAISafety(): EventDrivenAISafety {
 }
 
 export default EventDrivenAISafety;
-<<<<<<< Current (Your changes)
-    this.emitEvent('safety-alert', {
-      alertId,
-      type: alert.type,
-      severity: alert.severity,
-      agentId,
-      description: alert.description,
-      timestamp: alert.timestamp,
-    });
-
-    recordMetric(`ai_safety_alerts_${alert.severity}`, 1);
-    this.logger.warn('Safety alert raised', alert);
-  }
-
-  private emitSystemIntervention(reason: string): void {
-    const interventionId = generateUUID();
-
-    this.emitEvent('safety-intervention', {
-      interventionId,
-      type: 'restrict',
-      agentId: 'system',
-      reason,
-      timestamp: Date.now(),
-    });
-
-    this.interventionCount++;
-    recordMetric('ai_safety_system_interventions', 1);
-  }
-
-  private mapRiskToSeverity(
-    riskLevel: RiskLevel
-  ): 'low' | ' medium' | ' high' | ' critical' {
-    switch (riskLevel) {
-      case 'extreme':
-      case 'critical':
-        return 'critical';
-      case 'high':
-        return 'high';
-      case 'medium':
-        return 'medium';
-      case 'low':
-      case 'minimal':
-      default:
-        return 'low';
-    }
-  }
-
-  // =============================================================================
-  // PUBLIC API - Event system integration
-  // =============================================================================
-
-  async initialize(): Promise<void> {
-    await this.initializeInternal();
-    this.logger.info(
-      'Event-driven AI safety system ready to receive brain events'
-    );
-  }
-
-  async shutdown(): Promise<void> {
-    await this.stopMonitoringInternal();
-    this.activeAlerts.clear();
-    this.agentRiskLevels.clear();
-    this.initialized = false;
-    this.logger.info('Event-driven AI safety system shutdown complete');
-  }
-
-  // Status check methods
-  isMonitoring(): boolean {
-    return this.monitoring;
-  }
-
-  getActiveAlertCount(): number {
-    return this.activeAlerts.size;
-  }
-
-  getSystemStatus(): SafetyStatus {
-    return this.determineSystemStatus();
-  }
-}
-
-// =============================================================================
-// FACTORY AND EXPORTS
-// =============================================================================
-
-export function createEventDrivenAISafety(): EventDrivenAISafety {
-  return new EventDrivenAISafety();
-}
-
-export default EventDrivenAISafety;
-=======
->>>>>>> Incoming (Background Agent changes)
