@@ -25,15 +25,15 @@
 
 // Foundation redirects to database package - ML gets its own dedicated databases
 import { 
-  EventBus,
-  getLogger,
-  createKeyValueStore,
-  createVectorStore,
-  createGraphStore,
-  getDatabaseCapability,
-  type KeyValueStore,
-  type VectorStore,
-  type GraphStore
+ EventBus,
+ getLogger,
+ createKeyValueStore,
+ createVectorStore,
+ createGraphStore,
+ getDatabaseCapability,
+ type KeyValueStore,
+ type VectorStore,
+ type GraphStore
 } from "@claude-zen/foundation";
 
 // =============================================================================
@@ -125,7 +125,7 @@ export class MLEnterpriseCoordinator {
 
 	// ML-specific dedicated databases - foundation redirects to database package
 	private mlModelStore:VectorStore | null = null; // For ML model embeddings/vectors
-	private mlTrainingDataStore:KeyValueStore | null = null; // For training data and checkpoints  
+	private mlTrainingDataStore:KeyValueStore | null = null; // For training data and checkpoints 
 	private mlWorkflowGraph:GraphStore | null = null; // For ML pipeline relationships
 	private mlMetricsStore:KeyValueStore | null = null; // For performance metrics
 
@@ -203,8 +203,8 @@ export class MLEnterpriseCoordinator {
 
 			// Initialize ML workflow graph (dedicated graph store for ML pipeline relationships)
 			const mlWorkflowGraphResult = await createGraphStore({
-				namespace: 'ml-workflows',				graphName: 'ml-pipeline-relationships',				nodeTypes:['model',    'dataset',    'training-job',    'validation',    'deployment'],
-				edgeTypes:['trains-on',    'validates-with',    'deploys-to',    'depends-on',    'produces'],
+				namespace: 'ml-workflows',				graphName: 'ml-pipeline-relationships',				nodeTypes:['model', 'dataset', 'training-job', 'validation', 'deployment'],
+				edgeTypes:['trains-on', 'validates-with', 'deploys-to', 'depends-on', 'produces'],
 				metadata:{
 					owner: 'ml-coordinator',					purpose: 'ml-workflow-relationships',					created:Date.now()
 }
@@ -872,7 +872,7 @@ export class MLEnterpriseCoordinator {
 				return progress.accuracy > 0.9 && progress.loss < 0.3;
 			case 'completion':
 				return progress.accuracy > 0.95 && progress.loss < 0.1 && 
-					   progress.validationAccuracy && progress.validationAccuracy > 0.93;
+					 progress.validationAccuracy && progress.validationAccuracy > 0.93;
 			default:
 				return false;
 }
