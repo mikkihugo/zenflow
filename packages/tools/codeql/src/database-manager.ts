@@ -37,13 +37,13 @@ options:DatabaseCreationOptions
 ):Promise<CodeQLDatabase> {
 const absolutePath = path.resolve(repositoryPath);
 const databaseId = this.generateDatabaseId(absolutePath, options.languages);
-const __databasePath = path.join(this.config.tempDir!, `${databaseId}.db``
+const __databasePath = path.join(this.config.tempDir!, `${databaseId}.db`);
 
 this.logger.info(`Creating CodeQL database`, {
-') databaseId,
-repositoryPath:absolutePath,
-databasePath,
-languages:options.languages,
+  databaseId,
+  repositoryPath: absolutePath,
+  databasePath: __databasePath,
+  languages: options.languages,
 });
 
 // Ensure temp directory exists
@@ -63,26 +63,32 @@ const args = [
 
 // Add optional arguments
 if (options.buildCommand) {
-args.push('--command', options.buildCommand);')}
+args.push('--command', options.buildCommand);
+}
 
 if (options.additionalSources && options.additionalSources.length > 0) {
 for (const source of options.additionalSources) {
-args.push('--additional-sources', source);')}
+args.push('--additional-sources', source);
+}
 }
 
 if (options.excludePatterns && options.excludePatterns.length > 0) {
 // Create exclude file
 const excludeFile = path.join(
-this.config.tempDir!,
-`${databaseId}.exclude``
+  this.config.tempDir!,
+  `${databaseId}.exclude`
 );
-await fs.writeFile(excludeFile, options.excludePatterns.join('\n'));') args.push('--exclude', excludeFile);')}
+await fs.writeFile(excludeFile, options.excludePatterns.join('\n'));
+args.push('--exclude', excludeFile);
+}
 
 if (this._config._threads && this.config.threads > 1) {
-args.push('--threads', this.config.threads.toString())();')}
+args.push('--threads', this.config.threads.toString());
+}
 
 if (this._config._verbose) {
-args.push('--verbose');')}
+args.push('--verbose');
+}
 
 // Set working directory
 const workingDirectory = options.workingDirectory||absolutePath;
@@ -101,40 +107,40 @@ env:{
 const databaseSize = await this.calculateDatabaseSize(databasePath);
 
 // Create database object
-const database:CodeQLDatabase = {
-id:databaseId,
-path:databasePath,
-language:options.languages[0], // Primary language
-additionalLanguages:options.languages.slice(1),
-sourceRoot:absolutePath,
-createdAt:new Date(),
-sizeBytes:databaseSize,
-isReady:true,
-buildCommand:options.buildCommand,
-metadata:{
-creationArgs:args,
-workingDirectory,
-excludePatterns:options.excludePatterns,
-stdout:result.stdout,
-stderr:result.stderr,
-},
+const database: CodeQLDatabase = {
+  id: databaseId,
+  path: databasePath,
+  language: options.languages[0]!, // Primary language - we know it exists
+  additionalLanguages: options.languages.slice(1),
+  sourceRoot: absolutePath,
+  createdAt: new Date(),
+  sizeBytes: databaseSize,
+  isReady: true,
+  buildCommand: options.buildCommand,
+  metadata: {
+    creationArgs: args,
+    workingDirectory,
+    excludePatterns: options.excludePatterns,
+    stdout: result.stdout,
+    stderr: result.stderr,
+  },
 };
 
 // Store in registry
 this.databases.set(databaseId, database);
 
 this.logger.info('Database created successfully', {
-') databaseId,
-sizeBytes:databaseSize,
-languages:options.languages,
+  databaseId,
+  sizeBytes: databaseSize,
+  languages: options.languages,
 });
 
 return database;
 } catch (error) {
 this.logger.error('Database creation failed', {
-') databaseId,
-repositoryPath:absolutePath,
-error,
+  databaseId,
+  repositoryPath:absolutePath,
+  error,
 });
 
 // Clean up failed database
@@ -142,7 +148,7 @@ try {
 await this.deleteDatabaseFiles(databasePath);
 } catch (cleanupError) {
 this.logger.warn('Failed to clean up failed database', {
-') cleanupError,
+  cleanupError,
 });
 }
 
@@ -153,144 +159,156 @@ throw error;
 /**
 * List all managed databases
 */
-async listDatabases():Promise<Result<CodeQLDatabase[], CodeQLError>> {
-return await safeAsync(async () => {
-const databases = Array.from(this.databases.values())();
+async listDatabases(): Promise<Result<CodeQLDatabase[], CodeQLError>> {
+  try {
+    const databases = Array.from(this.databases.values());
 
-// Verify database files still exist
-const validDatabases:CodeQLDatabase[] = [];
+    // Verify database files still exist
+    const validDatabases: CodeQLDatabase[] = [];
 
-for (const database of databases) {
-if (await this.databaseExists(database.path)) {
-validDatabases.push(database);
-} else {
-this.logger.warn('Database file missing, removing from registry', {
-') databaseId:database.id,
-path:database.path,
-});
-this.databases.delete(database.id);
-}
-}
+    for (const database of databases) {
+      if (await this.databaseExists(database.path)) {
+        validDatabases.push(database);
+      } else {
+        this.logger.warn('Database file missing, removing from registry', {
+          databaseId: database.id,
+          path: database.path,
+        });
+        this.databases.delete(database.id);
+      }
+    }
 
-return validDatabases;
-});
+    return ok(validDatabases);
+  } catch (error) {
+    return err(this.createError('system', 'Failed to list databases', { originalError: error }));
+  }
 }
 
 /**
 * Delete a database
 */
-async deleteDatabase(databaseId:string): Promise<Result<void, CodeQLError>> {
-return await safeAsync(async () => {
-const database = this.databases.get(databaseId);
+async deleteDatabase(databaseId: string): Promise<Result<void, CodeQLError>> {
+  try {
+    const database = this.databases.get(databaseId);
 
-if (!database) {
-throw this.createError('config`, `Database not found:${databaseId}``
-}
+    if (!database) {
+      throw this.createError('config', `Database not found: ${databaseId}`);
+    }
 
-this.logger.info(`Deleting database', {
-') databaseId,
-path:database.path,
-});
+    this.logger.info('Deleting database', {
+      databaseId,
+      path: database.path,
+    });
 
-// Delete database files
-await this.deleteDatabaseFiles(database.path);
+    // Delete database files
+    await this.deleteDatabaseFiles(database.path);
 
-// Remove from registry
-this.databases.delete(databaseId);
+    // Remove from registry
+    this.databases.delete(databaseId);
 
-this.logger.info('Database deleted successfully', { databaseId});')});
+    this.logger.info('Database deleted successfully', { databaseId });
+    return ok(undefined);
+  } catch (error) {
+    if (error instanceof Error && 'type' in error) {
+      return err(error as CodeQLError);
+    }
+    return err(this.createError('system', 'Failed to delete database', { originalError: error }));
+  }
 }
 
 /**
 * Clean up all databases and temporary files
 */
-async cleanup():Promise<void> {
-this.logger.info('Cleaning up all databases');')
-const databases = Array.from(this.databases.values())();
+async cleanup(): Promise<void> {
+  this.logger.info('Cleaning up all databases');
+  const databases = Array.from(this.databases.values());
 
-for (const database of databases) {
-try {
-await this.deleteDatabaseFiles(database.path);
-} catch (error) {
-this.logger.warn('Failed to delete database during cleanup', {
-') databaseId:database.id,
-error,
-});
-}
-}
+  for (const database of databases) {
+    try {
+      await this.deleteDatabaseFiles(database.path);
+    } catch (error) {
+      this.logger.warn('Failed to delete database during cleanup', {
+        databaseId: database.id,
+        error,
+      });
+    }
+  }
 
-this.databases.clear();
+  this.databases.clear();
 
-// Clean up temp directory
-try {
-await fs.rmdir(this.config.tempDir!, { recursive:true});
-} catch (error) {
-this.logger.warn('Failed to clean temp directory', {
-') tempDir:this.config.tempDir,
-error,
-});
-}
+  // Clean up temp directory
+  try {
+    await fs.rmdir(this.config.tempDir!, { recursive: true });
+  } catch (error) {
+    this.logger.warn('Failed to clean temp directory', {
+      tempDir: this.config.tempDir,
+      error,
+    });
+  }
 }
 
 // Private helper methods
 
 private generateDatabaseId(
-repositoryPath:string,
-languages:CodeQLLanguage[]
-):string {
-const repoName = path.basename(repositoryPath);
-const langString = languages.sort().join(`-`
-const timestamp = Date.now();
-return `${repoName}_${langString}_${timestamp}`
+  repositoryPath: string,
+  languages: CodeQLLanguage[]
+): string {
+  const repoName = path.basename(repositoryPath);
+  const langString = languages.sort().join('-');
+  const timestamp = Date.now();
+  return `${repoName}_${langString}_${timestamp}`;
 }
 
-private async databaseExists(databasePath:string): Promise<boolean>
-try {
-const stats = await fs.stat(databasePath);
-return stats.isDirectory();
-} catch {
-return false;
+private async databaseExists(databasePath: string): Promise<boolean> {
+  try {
+    const stats = await fs.stat(databasePath);
+    return stats.isDirectory();
+  } catch {
+    return false;
+  }
 }
 
-private async deleteDatabaseFiles(databasePath:string): Promise<void>
-try {
-await fs.rm(databasePath, { recursive:true, force:true});
-} catch (error) {
-this.logger.warn(`Failed to delete database files`, {
-') databasePath,
-error,
-});
-throw error;
+private async deleteDatabaseFiles(databasePath: string): Promise<void> {
+  try {
+    await fs.rm(databasePath, { recursive: true, force: true });
+  } catch (error) {
+    this.logger.warn('Failed to delete database files', {
+      databasePath,
+      error,
+    });
+    throw error;
+  }
 }
 
-private async calculateDatabaseSize(databasePath:string): Promise<number>
-try {
-let totalSize = 0;
+private async calculateDatabaseSize(databasePath: string): Promise<number> {
+  try {
+    let totalSize = 0;
 
-const calculateDirectorySize = async (
-dirPath:string
-):Promise<number> => {
-let size = 0;
-const entries = await fs.readdir(dirPath, { withFileTypes:true});
+    const calculateDirectorySize = async (
+      dirPath: string
+    ): Promise<number> => {
+      let size = 0;
+      const entries = await fs.readdir(dirPath, { withFileTypes: true });
 
-for (const entry of entries) {
-const entryPath = path.join(dirPath, entry.name);
+      for (const entry of entries) {
+        const entryPath = path.join(dirPath, entry.name);
 
-if (entry.isDirectory()) {
-size += await calculateDirectorySize(entryPath);
-} else {
-const stats = await fs.stat(entryPath);
-size += stats.size;
-}
-}
+        if (entry.isDirectory()) {
+          size += await calculateDirectorySize(entryPath);
+        } else {
+          const stats = await fs.stat(entryPath);
+          size += stats.size;
+        }
+      }
 
-return size;
-};
+      return size;
+    };
 
-totalSize = await calculateDirectorySize(databasePath);
-return totalSize;
-} catch {
-return 0;
+    totalSize = await calculateDirectorySize(databasePath);
+    return totalSize;
+  } catch {
+    return 0;
+  }
 }
 
 private async executeCommand(
@@ -315,23 +333,24 @@ child.stderr.on('data', (_data) => {
 ') stderr += data.toString();
 });
 
-const __timeoutId = setTimeout(() => {
-child.kill('SIGTERM');') reject(
-this.createError('system', 'Database creation timeout', ') timeout:this.config.timeout,)
-);
+const timeoutId = setTimeout(() => {
+  child.kill('SIGTERM');
+  reject(
+    this.createError('system', 'Database creation timeout', { timeout: this.config.timeout })
+  );
 }, this.config.timeout);
 
 child.on('close', (exitCode) => {
 ') clearTimeout(timeoutId);
 
 if (exitCode === 0) {
-resolve({ stdout, stderr, exitCode});
+resolve({ stdout, stderr, exitCode });
 } else {
 reject(
 this.createError('database', 'Database creation failed', {
-') exitCode,
-stderr,
-stdout,
+  exitCode,
+  stderr,
+  stdout,
 })
 );
 }
@@ -341,7 +360,7 @@ child.on('error', (error) => {
 ') clearTimeout(timeoutId);
 reject(
 this.createError('system', 'Failed to spawn CodeQL process', {
-') originalError:error.message,
+  originalError: error.message,
 })
 );
 });

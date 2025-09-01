@@ -69,12 +69,12 @@ export interface BehavioralAnalysisResult {
  */
 export interface HumanEscalationResult {
   id: string;
-  escalationLevel:'LOW' | ' MEDIUM' | ' HIGH' | ' CRITICAL';
+  escalationLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   responseTime: number;
-  resolution:'APPROVED' | ' REJECTED' | ' MODIFIED' | ' PENDING';
-  humanFeedback?:string;
+  resolution: 'APPROVED' | 'REJECTED' | 'MODIFIED' | 'PENDING';
+  humanFeedback?: string;
   timestamp: Date;
-  errors?:string[];
+  errors?: string[];
 }
 
 /**
@@ -448,18 +448,18 @@ export class AISafetyOrchestrator {
   private determineEscalationLevel(
     phase1: AutomatedDetectionResult,
     phase2: BehavioralAnalysisResult
-  ):'LOW' | ' MEDIUM' | ' HIGH' | ' CRITICAL' {
+  ): 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' {
     if (phase1.immediateInterventions > 3 || phase2.behavioralDeviations > 4) {
       return 'CRITICAL';
-}
+    }
     if (phase1.immediateInterventions > 2 || phase2.behavioralDeviations > 3) {
       return 'HIGH';
-}
+    }
     if (phase1.immediateInterventions > 1 || phase2.behavioralDeviations > 2) {
       return 'MEDIUM';
-}
+    }
     return 'LOW';
-}
+  }
 
   /**
    * Get current safety metrics.

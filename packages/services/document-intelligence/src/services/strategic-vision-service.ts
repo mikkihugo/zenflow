@@ -38,26 +38,25 @@ sourceDocuments: string[]; // IDs of documents used in analysis
 lastAnalyzed: Date;
 }
 
-// Production DocumentManager implementation with comprehensive error handling
 class ProductionDocumentManager {
-private db: DatabaseProvider;
-private logger = getLogger('ProductionDocumentManager').
+  private db: DatabaseProvider;
+  private logger = getLogger('ProductionDocumentManager');
 
-constructor() {
-this.db = new DatabaseProvider();
-}
+  constructor() {
+    this.db = new DatabaseProvider();
+  }
 
-async searchDocuments(criteria: {
-projectId?: string;
-type?: string;
-keywords?: string[];
-limit?: number;
-}): Promise<Result<BaseDocumentEntity[], Error>> {
-try {
-const query = this.buildSearchQuery(criteria);
-const documents = await this.db.query(query, criteria);
+  async searchDocuments(criteria: {
+    projectId?: string;
+    type?: string;
+    keywords?: string[];
+    limit?: number;
+  }): Promise<Result<BaseDocumentEntity[], Error>> {
+    try {
+      const query = this.buildSearchQuery(criteria);
+      const documents = await this.db.query(query, criteria);
 
-return ok(documents.map(doc => this.mapToBaseDocument(doc)));
+      return ok(documents.map(doc => this.mapToBaseDocument(doc)));
 } catch (error) {
 this.logger.error(`Document search failed:`, error);
 return err(new Error(`Document search failed: ${(error as Error).message}`));
@@ -141,44 +140,44 @@ return query;
 }
 
 private mapToBaseDocument(dbDoc: any): BaseDocumentEntity {
-return {
-id: dbDoc.id,
-type: dbDoc.type,
-content: dbDoc.content,
-summary: dbDoc.summary,
-keywords: JSON.parse(dbDoc.keywords || '[]').
-metadata: JSON.parse(dbDoc.metadata || '{}').
-related_documents: JSON.parse(dbDoc.related_documents || '[]').
-};
+  return {
+    id: dbDoc.id,
+    type: dbDoc.type,
+    content: dbDoc.content,
+    summary: dbDoc.summary,
+    keywords: JSON.parse(dbDoc.keywords || '[]'),
+    metadata: JSON.parse(dbDoc.metadata || '{}'),
+    related_documents: JSON.parse(dbDoc.related_documents || '[]'),
+  };
 }
 }
 
 // Fallback DocumentManager for cases where database is not available
 class FallbackDocumentManager {
-private logger = getLogger('FallbackDocumentManager').
-private documents: Map<string, BaseDocumentEntity> = new Map();
+  private logger = getLogger('FallbackDocumentManager');
+  private documents: Map<string, BaseDocumentEntity> = new Map();
 
-async searchDocuments(): Promise<Result<BaseDocumentEntity[], Error>> {
-this.logger.warn('Using fallback document search - database unavailable').
-return ok(Array.from(this.documents.values()));
-}
+  async searchDocuments(): Promise<Result<BaseDocumentEntity[], Error>> {
+    this.logger.warn('Using fallback document search - database unavailable');
+    return ok(Array.from(this.documents.values()));
+  }
 
-async getDocumentsByProject(projectId: string): Promise<Result<BaseDocumentEntity[], Error>> {
-this.logger.warn('Using fallback project documents - database unavailable').
-const projectDocs = Array.from(this.documents.values())
-.filter(doc => doc.metadata?.projectId === projectId);
-return ok(projectDocs);
-}
+  async getDocumentsByProject(projectId: string): Promise<Result<BaseDocumentEntity[], Error>> {
+    this.logger.warn('Using fallback project documents - database unavailable');
+    const projectDocs = Array.from(this.documents.values())
+      .filter(doc => doc.metadata?.projectId === projectId);
+    return ok(projectDocs);
+  }
 
-async createDocument(data: Partial<BaseDocumentEntity>): Promise<Result<BaseDocumentEntity, Error>> {
-this.logger.warn(`Using fallback document creation - database unavailable`
-const document: BaseDocumentEntity = {
-id: data.id || `fallback-doc-${Date.now()}`,
-type: data.type || `general`,
-content: data.content,
-summary: data.summary,
-keywords: data.keywords,
-metadata: data.metadata,
+  async createDocument(data: Partial<BaseDocumentEntity>): Promise<Result<BaseDocumentEntity, Error>> {
+    this.logger.warn(`Using fallback document creation - database unavailable`);
+    const document: BaseDocumentEntity = {
+      id: data.id || `fallback-doc-${Date.now()}`,
+      type: data.type || `general`,
+      content: data.content,
+      summary: data.summary,
+      keywords: data.keywords,
+      metadata: data.metadata,
 related_documents: data.related_documents,
 };
 
@@ -200,45 +199,43 @@ return new FallbackDocumentManager();
 }
 
 export class StrategicVisionService {
-private documentManager: ProductionDocumentManager | FallbackDocumentManager;
-private logger = getLogger('StrategicVisionService').
+  private documentManager: ProductionDocumentManager | FallbackDocumentManager;
+  private logger = getLogger('StrategicVisionService');
 
-constructor() {
-this.documentManager = createDocumentManager();
-this.logger.info(`StrategicVisionService initialized with production document manager`
+  constructor() {
+    this.documentManager = createDocumentManager();
+    this.logger.info(`StrategicVisionService initialized with production document manager`);
+  }
+
+  /**
+   * Production strategic vision analysis from database documents
+   */
+  async analyzeStrategicVision(projectId: string): Promise<Result<StrategicVisionAnalysis, Error>> {
+    try {
+      this.logger.info(`Starting strategic vision analysis for project: ${projectId}`);
+
+      // Get all relevant documents for the project
+      const documentsResult = await this.documentManager.getDocumentsByProject(projectId);
+      if (!documentsResult.success) {
+        return err(documentsResult.error);
 }
 
-/**
-* Production strategic vision analysis from database documents
-*/
-async analyzeStrategicVision(projectId: string): Promise<Result<StrategicVisionAnalysis, Error>> {
-try {
-this.logger.info(`Starting strategic vision analysis for project: ${projectId}`
+      const documents = documentsResult.data;
+      if (documents.length === 0) {
+        this.logger.warn(`No documents found for project: ${projectId}`);
+        return err(new Error(`No documents found for project: ${projectId}`));
+      }
 
-// Get all relevant documents for the project
-const documentsResult = await this.documentManager.getDocumentsByProject(projectId);
-if (!documentsResult.success) {
-return err(documentsResult.error);
-}
+      // Analyze documents using production algorithms
+      const analysis = await this.performStrategicAnalysis(projectId, documents);
 
-const documents = documentsResult.data;
-if (documents.length === 0) {
-this.logger.warn(`No documents found for project: ${projectId}`
-return err(new Error(`No documents found for project: ${projectId}`));
-}
-
-// Analyze documents using production algorithms
-const analysis = await this.performStrategicAnalysis(projectId, documents);
-
-this.logger.info(`Strategic vision analysis completed for project: ${projectId}`
-return ok(analysis);
-} catch (error) {
-this.logger.error(`Strategic vision analysis failed:`, error);
-return err(new Error(`Strategic vision analysis failed: ${(error as Error).message}`));
-}
-}
-
-/**
+      this.logger.info(`Strategic vision analysis completed for project: ${projectId}`);
+      return ok(analysis);
+    } catch (error) {
+      this.logger.error(`Strategic vision analysis failed:`, error);
+      return err(new Error(`Strategic vision analysis failed: ${(error as Error).message}`));
+    }
+  }/**
 * Production-grade strategic analysis implementation
 */
 private async performStrategicAnalysis(
@@ -281,11 +278,11 @@ const missionKeywords = [`mission`, 'purpose', 'objective', 'goal', 'vision'];
 const outcomeKeywords = ['outcome', 'result', 'deliverable', 'target', 'achievement'];
 
 let missionText = '';
-let outcomeText = ``
+    let outcomeText = '';
 
-for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || }`
-const sentences = content.split(/[!.?]+/);
+    for (const doc of documents) {
+      const content = `${doc.content || ''} ${doc.summary || ''}`;
+      const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
 const lowerSentence = sentence.toLowerCase();
@@ -310,12 +307,12 @@ outcome: outcomeText || 'Target outcomes to be defined based on strategic goals'
 * Extract strategic goals using document analysis
 */
 private extractStrategicGoals(documents: BaseDocumentEntity[]): { goals: string[] } {
-const goalKeywords = ['goal', 'objective', 'target', 'deliverable', `milestone`];
+const goalKeywords = ['goal', 'objective', 'target', 'deliverable', 'milestone'];
 const goals: Set<string> = new Set();
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || }`
-const sentences = content.split(/[!.?]+/);
+  const content = `${doc.content || ''} ${doc.summary || ''}`;
+  const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
 const lowerSentence = sentence.toLowerCase();
@@ -346,8 +343,8 @@ let competitiveIndicators = 0;
 let totalRelevantSentences = 0;
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || }`
-const sentences = content.split(/[!.?]+/);
+  const content = `${doc.content || ''} ${doc.summary || ''}`;
+  const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
 const lowerSentence = sentence.toLowerCase();
@@ -387,14 +384,14 @@ position,
 */
 private analyzeTechnicalImpact(documents: BaseDocumentEntity[]): { score: number } {
 const techKeywords = ['technical', 'technology', 'system', 'architecture', 'platform', 'infrastructure'];
-const impactKeywords = ['performance', 'scalability', 'efficiency', 'innovation', `breakthrough`];
+const impactKeywords = ['performance', 'scalability', 'efficiency', 'innovation', 'breakthrough'];
 
 let techScore = 0;
 let totalRelevantSentences = 0;
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || }`
-const sentences = content.split(/[!.?]+/);
+  const content = `${doc.content || ''} ${doc.summary || ''}`;
+  const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
 const lowerSentence = sentence.toLowerCase();
@@ -420,14 +417,14 @@ score: Math.round(normalizedScore * 100) / 100,
 * Extract stakeholders using pattern recognition
 */
 private extractStakeholders(documents: BaseDocumentEntity[]): { stakeholders: string[] } {
-const stakeholderKeywords = ['stakeholder', 'customer', 'user', 'client', 'partner', 'team', `department`];
+const stakeholderKeywords = ['stakeholder', 'customer', 'user', 'client', 'partner', 'team', 'department'];
 const stakeholders: Set<string> = new Set();
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || }`
+  const content = `${doc.content || ''} ${doc.summary || ''}`;
 
-// Extract potential stakeholder names
-const words = content.split(/\s+/);
+  // Extract potential stakeholder names
+  const words = content.split(/\s+/);
 for (let i = 0; i < words.length; i++) {
 const word = words[i].toLowerCase();
 
@@ -452,12 +449,12 @@ stakeholders: Array.from(stakeholders).slice(0, 15), // Limit to top 15 stakehol
 * Extract timeline information
 */
 private extractTimeline(documents: BaseDocumentEntity[]): { timeline: string } {
-const timeKeywords = ['timeline', 'schedule', 'deadline', 'milestone', 'phase', 'sprint', 'quarter'];
-let timelineText = ``
+  const timeKeywords = ['timeline', 'schedule', 'deadline', 'milestone', 'phase', 'sprint', 'quarter'];
+  let timelineText = '';
 
-for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || }`
-const sentences = content.split(/[!.?]+/);
+  for (const doc of documents) {
+    const content = `${doc.content || ''} ${doc.summary || ''}`;
+    const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
 const lowerSentence = sentence.toLowerCase();
@@ -477,12 +474,12 @@ timeline: timelineText || 'Timeline to be established based on project requireme
 * Analyze risks using comprehensive risk detection
 */
 private analyzeRisks(documents: BaseDocumentEntity[]): { risks: string[] } {
-const riskKeywords = ['risk', 'challenge', 'issue', 'problem', 'concern', 'threat', `obstacle`];
-const risks: Set<string> = new Set();
+  const riskKeywords = ['risk', 'challenge', 'issue', 'problem', 'concern', 'threat', 'obstacle'];
+  const risks: Set<string> = new Set();
 
-for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || }`
-const sentences = content.split(/[!.?]+/);
+  for (const doc of documents) {
+    const content = `${doc.content || ''} ${doc.summary || ''}`;
+    const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
 const lowerSentence = sentence.toLowerCase();
@@ -505,12 +502,12 @@ risks: Array.from(risks).slice(0, 10), // Limit to top 10 risks
 * Extract key metrics from documents
 */
 private extractKeyMetrics(documents: BaseDocumentEntity[]): string[] {
-const metricKeywords = ['metric', 'kpi', 'measure', 'target', 'goal', `benchmark`];
+const metricKeywords = ['metric', 'kpi', 'measure', 'target', 'goal', 'benchmark'];
 const metrics: Set<string> = new Set();
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || }`
-const sentences = content.split(/[!.?]+/);
+  const content = `${doc.content || ''} ${doc.summary || ''}`;
+  const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
 const lowerSentence = sentence.toLowerCase();

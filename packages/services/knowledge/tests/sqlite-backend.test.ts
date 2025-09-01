@@ -8,7 +8,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { unlinkSync, existsSync } from 'node:fs';
-import { SQLiteBackend } from '../knowledge-cache-backends/sqlite-backend.js';
+import { SQLiteBackend } from '../storage-backends/sqlite-backend';
 
 describe('SQLiteBackend Integration Tests', () => {
   let backend;

@@ -76,7 +76,7 @@ type UUID = string;
 type Timestamp = number;
 
 // Global logger for utility functions
-const logger = getLogger('brain').
+const logger = getLogger('brain');
 
 /**
  * Brain coordinator configuration
@@ -140,8 +140,8 @@ export class FoundationBrainCoordinator {
       },
     };
 
-    this.logger = getLogger('foundation-brain-coordinator').
-    // Performance tracking initialization - lazy loaded via operations facade
+    this.logger = getLogger('foundation-brain-coordinator');
+// Performance tracking initialization - lazy loaded via operations facade
 
     // Circuit breaker would be initialized from operations package
     this.circuitBreaker = {

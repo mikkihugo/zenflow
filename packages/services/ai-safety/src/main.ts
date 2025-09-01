@@ -250,7 +250,7 @@ export async function getSafetyOrchestrator(): Promise<unknown> {
 }
 
 export async function getDeceptionDetection(): Promise<unknown> {
-  const { createAIDeceptionDetector, analyzeAIResponse} = await import('./ai-deception-detector');
+  const { createAIDeceptionDetector, analyzeAIResponse } = await import('./ai-deception-detector');
   
   const detector = createAIDeceptionDetector();
   return {
@@ -259,7 +259,7 @@ export async function getDeceptionDetection(): Promise<unknown> {
     check: (interactionData: AIInteractionData) =>
       detector.analyzeAIResponse(interactionData),
     getMetrics: () => detector.getDetectionMetrics?.(),
-};
+  };
 }
 
 export async function getSafetyMonitoring(): Promise<unknown> {
@@ -269,7 +269,7 @@ export async function getSafetyMonitoring(): Promise<unknown> {
     evaluate: (data: AIInteractionData) => system.analyzeResponse(data),
     alert: (event: SafetyEvent) => system.escalate(event),
     report: () => system.getMetrics(),
-};
+  };
 }
 
 export async function getSafetyIntervention(): Promise<unknown> {
@@ -277,20 +277,22 @@ export async function getSafetyIntervention(): Promise<unknown> {
   return {
     intervene: (action: InterventionAction) => {
       // Implementation would handle different intervention types
-      logger.info(`Intervention requested: ${  action.type  } on ${  action.target}`
-      return Promise.resolve({ success: true, action});
-},
+      logger.info(`Intervention requested: ${action.type} on ${action.target}`);
+      return Promise.resolve({ success: true, action });
+    },
     escalate: (alert: SafetyEvent) => system.escalate(alert),
     emergency: () => system.emergencyShutdown(),
     pause: (agentId: string) => ({
-      type: 'pause',      target: agentId,
+      type: 'pause',
+      target: agentId,
       timestamp: Date.now(),
-}),
+    }),
     terminate: (agentId: string) => ({
-      type: 'terminate',      target: agentId,
+      type: 'terminate',
+      target: agentId,
       timestamp: Date.now(),
-}),
-};
+    }),
+  };
 }
 
 // Professional AI safety system object with proper naming (matches brainSystem pattern)

@@ -55,19 +55,19 @@ export enum LogLevel {
 // Simple browser logger implementation
 export const getLogger = (name: string): Logger => ({
   debug: (message: string, ...args: unknown[]) =>
-    console.debug(`[${  name  }] ${  String(message)}`, ...args),
+    console.debug(`[${name}] ${String(message)}`, ...args),
 
   info: (message: string, ...args: unknown[]) =>
-    console.info(`[${  name  }] ${  String(message)}`, ...args),
+    console.info(`[${name}] ${String(message)}`, ...args),
 
   warn: (message: string, ...args: unknown[]) =>
-    console.warn(`[${  name  }] ${  String(message)}`, ...args),
+    console.warn(`[${name}] ${String(message)}`, ...args),
 
   error: (message: string, ...args: unknown[]) =>
-    console.error(`[${  name  }] ${  String(message)}`, ...args),
+    console.error(`[${name}] ${String(message)}`, ...args),
 
   fatal: (message: string, ...args: unknown[]) =>
-    console.error(`[${  name  }] FATAL: ${  String(message)}`, ...args),
+    console.error(`[${name}] FATAL: ${String(message)}`, ...args),
 });
 
 export const getLogEntries = () => [];

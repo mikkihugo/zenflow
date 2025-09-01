@@ -128,7 +128,7 @@ Partial<BaseAnalysisConfig>,
 Partial<CodeAnalysisOptions>
 >;
 
-const logger = getLogger('CodeAnalyzer').
+const logger = getLogger('CodeAnalyzer');
 // Initialize foundation systems using refactored DI
 const diContainer = getGlobalContainer();
 
@@ -197,7 +197,7 @@ useInMemoryFileSystem:false,
 
 // Initialize repository analyzer
 try {
-const { RepoAnalyzer } = require('./repo-analyzer').
+const { RepoAnalyzer } = require('./repo-analyzer');
 this.repoAnalyzer = new RepoAnalyzer({ rootPath: this.repositoryPath });
 } catch (error) {
 logger.warn('Failed to initialize repository analyzer', { error });
@@ -210,7 +210,8 @@ hasRepoAnalyzer: !!this.repoAnalyzer
 });
 
 // Code analyzer initialized successfully
-logger.debug('Code analyzer registered successfully').}
+logger.debug('Code analyzer registered successfully');
+}
 
 /**
 * Initialize all strategic facade systems

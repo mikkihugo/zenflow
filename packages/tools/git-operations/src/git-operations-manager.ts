@@ -858,8 +858,8 @@ Respond in JSON format:
 }
 
 private parseClaudeJsonBlock(text: string): { resolution: string; confidence: number; reasoning: string } | null {
-		const jsonMatch = text.match(/```json\n([\S\s]*?)\n```/);
-		if (!jsonMatch || typeof jsonMatch[1] !== 'string') return null;
+	const jsonMatch = text.match(/```json\n([\S\s]*?)\n```/);
+	if (!jsonMatch || typeof jsonMatch[1] !== 'string') return null;
 	try {
 		return JSON.parse(jsonMatch[1]);
 	} catch {

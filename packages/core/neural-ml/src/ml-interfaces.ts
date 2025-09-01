@@ -44,7 +44,7 @@ export interface MLEngine {
  * Bayesian Optimizer interface - maps to Rust Bayesian optimization
  */
 export interface BayesianOptimizer {
-	initialize(config:OptimizationBounds): Promise<void>;
+	initialize(config: OptimizationBounds): Promise<void>;
 	optimize(
 		objective:(params: number[]) => Promise<number>,
 	):Promise<OptimizationResult>;

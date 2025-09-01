@@ -57,7 +57,7 @@ export class MemorySystemManager extends EventEmitter {
  constructor(config: MemorySystemConfig) {
  super();
  this.config = config;
- this.logger = getLogger(`MemorySystemManager:${config.name}`
+ this.logger = getLogger(`MemorySystemManager:${config.name}`);
  this.telemetry = new TelemetryManager({
  serviceName: `memory-system-${config.name}`,
  enableTracing: true,
@@ -145,7 +145,7 @@ export class MemorySystemManager extends EventEmitter {
  options: {
  weight?: number;
  priority?: number;
- tier?: 'hot|warm|cold';
+ tier?: 'hot' | 'warm' | 'cold';
  } = {}
  ): Promise<void> {
  if (!this.coordination) {

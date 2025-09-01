@@ -1120,7 +1120,7 @@ export {
 NeuralOrchestrator,
 TaskComplexity,
 StorageStrategy,
-} from'./neural-orchestrator;
+} from './neural-orchestrator';
 
 export type {
 NeuralData,
@@ -1143,10 +1143,12 @@ const brainSystemInstance:any = null;
 
 export async function getBrainSystemAccess():Promise<any> {
 if (!brainSystemInstance) {
-const { BrainCoordinator} = await import('./main').; brainSystemInstance = new BrainCoordinator(
-enabled:true,
-learningRate:0.1,
-adaptationThreshold:0.7,,);
+const { BrainCoordinator } = await import('./main');
+brainSystemInstance = new BrainCoordinator({
+  enabled: true,
+  learningRate: 0.1,
+  adaptationThreshold: 0.7,
+});
 await brainSystemInstance.initialize();
 }
 return brainSystemInstance;
@@ -1158,11 +1160,13 @@ return brainSystem.createCoordinator(config);
 }
 
 export async function getSmartNeuralCoordinator(config?:any): Promise<any> {
-const { SmartNeuralCoordinator} = await import('./smart-neural-coordinator').; return new SmartNeuralCoordinator(config);
+const { SmartNeuralCoordinator } = await import('./smart-neural-coordinator');
+return new SmartNeuralCoordinator(config);
 }
 
 export async function getNeuralOrchestrator(_config?:any): Promise<any> {
-const { NeuralOrchestrator} = await import('./neural-orchestrator').; return new NeuralOrchestrator();
+const { NeuralOrchestrator } = await import('./neural-orchestrator');
+return new NeuralOrchestrator();
 }
 
 export async function getTaskComplexityEstimator(config?:any): Promise<any> {
@@ -1171,17 +1175,20 @@ return brainSystem.createTaskComplexityEstimator(config);
 }
 
 export async function getAutonomousOptimizer(_config?:any): Promise<any> {
-const { AutonomousOptimizationEngine} = await import(
-'./autonomous-optimization-engine; );
+const { AutonomousOptimizationEngine } = await import(
+  './autonomous-optimization-engine'
+);
 return new AutonomousOptimizationEngine();
 }
 
 export async function getBehavioralIntelligence(_config?:any): Promise<any> {
-const { BehavioralIntelligence} = await import('./main').; return new BehavioralIntelligence();
+const { BehavioralIntelligence } = await import('./main');
+return new BehavioralIntelligence();
 }
 
 export async function getNeuralBridge(_config?:any): Promise<any> {
-const { NeuralBridge} = await import('./main').; return new NeuralBridge();
+const { NeuralBridge } = await import('./main');
+return new NeuralBridge();
 }
 
 // Professional brain system object with proper naming (matches Storage/Telemetry patterns)
@@ -1191,9 +1198,9 @@ getCoordinator:getBrainCoordinator,
 getSmartCoordinator:getSmartNeuralCoordinator,
 getOrchestrator:getNeuralOrchestrator,
 getComplexityEstimator:getTaskComplexityEstimator,
-getAutonomousOptimizer:getAutonomousOptimizer,
-getBehavioralIntelligence:getBehavioralIntelligence,
-getNeuralBridge:getNeuralBridge,
+getAutonomousOptimizer,
+getBehavioralIntelligence,
+getNeuralBridge,
 };
 
 // Type definitions for external consumers

@@ -14,13 +14,13 @@ import type { EmergencyHandler } from '../interfaces';
 
 const logger = {
   debug: (message: string, meta?: unknown) =>
-    logger.info('[DEBUG] ' + message, meta || ''),
+    logger.info(`[DEBUG] ${  message}`, meta || ''),
   info: (message: string, meta?: unknown) =>
-    logger.info('[INFO] ' + message, meta || ''),
+    logger.info(`[INFO] ${  message}`, meta || ''),
   warn: (message: string, meta?: unknown) =>
-    logger.warn('[WARN] ' + message, meta || ''),
+    logger.warn(`[WARN] ${  message}`, meta || ''),
   error: (message: string, meta?: unknown) =>
-    logger.error('[ERROR] ' + message, meta || ''),
+    logger.error(`[ERROR] ${  message}`, meta || ''),
 };
 
 interface EmergencyProtocol {
@@ -72,7 +72,7 @@ export class EmergencyProtocolHandler
     // 2. Reject or queue them
     // 3. Reduce processing capacity temporarily
 
-    this.recordEmergency('load_shed', 'high', `shed_${percentage}%`
+    this.recordEmergency('load_shed', 'high', `shed_${percentage}%`);
   }
 
   public async activateFailover(): Promise<void> {
@@ -90,7 +90,7 @@ export class EmergencyProtocolHandler
     // 2. Queue excess requests
     // 3. Apply backpressure
 
-    this.recordEmergency('throttle', 'medium', `throttle_${rate}rps`
+    this.recordEmergency('throttle', 'medium', `throttle_${rate}rps`);
   }
 
   public async sendAlert(
@@ -102,7 +102,7 @@ export class EmergencyProtocolHandler
     // 2. Escalate based on severity
     // 3. Track alert delivery
 
-    this.recordEmergency('alert', 'low', 'alert_sent_to_' + recipients.length);
+    this.recordEmergency('alert', 'low', `alert_sent_to_${  recipients.length}`);
   }
 
   private initializeProtocols(): void {
@@ -218,7 +218,7 @@ export class EmergencyProtocolHandler
         );
         break;
       default:
-        logger.warn('Unknown emergency action type:' + action.type);
+        logger.warn(`Unknown emergency action type:${  action.type}`);
     }
   }
 
@@ -230,14 +230,14 @@ export class EmergencyProtocolHandler
       case 'critical':
         await this.shedLoad(30);
         await this.activateFailover();
-        await this.sendAlert('Critical emergency:' + type, [
+        await this.sendAlert(`Critical emergency:${  type}`, [
           'ops-team',
           'on-call',
         ]);
         break;
       case 'high':
         await this.throttleRequests(50);
-        await this.sendAlert('High severity emergency:' + type, ['ops-team']);
+        await this.sendAlert(`High severity emergency:${  type}`, ['ops-team']);
         break;
       case 'medium':
         await this.throttleRequests(80);

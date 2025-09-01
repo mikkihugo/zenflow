@@ -90,7 +90,7 @@ options?: import('./beam-parser').BeamParserOptions
 ): import('./beam-parser').BeamLanguageParser {
 // Temporarily disabled due to syntax issues in beam-parser.ts
 throw new Error('BeamLanguageParser is temporarily disabled due to syntax issues');
-// const { BeamLanguageParser } = require(`./beam-parser`
+// const { BeamLanguageParser } = require('./beam-parser');
 // return new BeamLanguageParser(options);
 }
 }
@@ -175,19 +175,19 @@ switch (family) {
 case 'beam': {
 const parser = factory.createBeamParser(options);
 const result = await parser.parseFiles(paths);
-return result.isOk() ? result._unsafeUnwrap() :[];
+return result.isOk() ? result._unsafeUnwrap() : [];
 }
 case 'functional': {
-// Future:Add functional language parser support
+// Future: Add functional language parser support
 const parser = factory.createBeamParser(options); // Fallback to beam for now
 const result = await parser.parseFiles(paths);
-return result.isOk() ? result._unsafeUnwrap() :[];
+return result.isOk() ? result._unsafeUnwrap() : [];
 }
 case 'concurrent': {
-// Future:Add concurrent language parser support
+// Future: Add concurrent language parser support
 const parser = factory.createBeamParser(options); // Fallback to beam for now
 const result = await parser.parseFiles(paths);
-return result.isOk() ? result._unsafeUnwrap() :[];
+return result.isOk() ? result._unsafeUnwrap() : [];
 }
 default:
 return [];

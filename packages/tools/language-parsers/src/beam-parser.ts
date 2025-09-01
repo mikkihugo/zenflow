@@ -842,8 +842,10 @@ return complexity;
 }
 
 private findFunctionEnd(content:string, start:number): number {
-// Simple heuristic to find function end - look for next 'def' or ' end'const fromStart = content.substring(start);); const nextDef = fromStart.search(/\n\s*(?:def|end)/);
-return nextDef > 0 ? start + nextDef:content.length;
+// Simple heuristic to find function end - look for next 'def' or ' end'
+const fromStart = content.substring(start);
+const nextDef = fromStart.search(/\n\s*(?:def|end)/);
+return nextDef > 0 ? start + nextDef : content.length;
 }
 
 private calculateModuleMetrics(

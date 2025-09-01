@@ -40,7 +40,7 @@ import type {
  FACTStorageConfig,
 } from '../types/fact-types';
 
-import { SQLiteBackend } from './sqlite-backend';
+import { SQLiteBackend } from '../storage-backends/sqlite-backend';
 
 const logger = getLogger('VectorRAGBackend');
 
@@ -262,7 +262,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
  }
  break;
  default:
- throw new Error(`Unsupported embedding model: ${this.config.embeddingModel}`
+ throw new Error(`Unsupported embedding model: ${this.config.embeddingModel}`);
  }
 
  logger.info('Embedding service initialized', { 
@@ -579,7 +579,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
  await this.store(knowledge);
  }
 
- logger.info(`Ingested ${architecturalKnowledge.length} architectural knowledge entries`
+ logger.info(`Ingested ${architecturalKnowledge.length} architectural knowledge entries`);
  }
 
  /**
@@ -666,7 +666,7 @@ class OpenAIEmbeddingService implements EmbeddingService {
  });
 
  if (!response.ok) {
- throw new Error(`OpenAI API error: ${response.statusText}`
+ throw new Error(`OpenAI API error: ${response.statusText}`);
  }
 
  const data = await response.json();
@@ -692,7 +692,7 @@ class OpenAIEmbeddingService implements EmbeddingService {
  });
 
  if (!response.ok) {
- throw new Error(`OpenAI API error: ${response.statusText}`
+ throw new Error(`OpenAI API error: ${response.statusText}`);
  }
 
  const data = await response.json();
@@ -758,7 +758,7 @@ class SentenceTransformersEmbeddingService implements EmbeddingService {
  });
 
  if (!response.ok) {
- throw new Error(`Sentence Transformers API error: ${response.statusText}`
+ throw new Error(`Sentence Transformers API error: ${response.statusText}`);
  }
 
  const data = await response.json();

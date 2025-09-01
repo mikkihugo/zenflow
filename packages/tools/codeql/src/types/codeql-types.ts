@@ -107,7 +107,7 @@ export interface SARIFResult {
 /** SARIF format version */
 version: string;
 /** Schema URI */
-${schema}: string;
+schema: string;
 /** Analysis runs */
 runs: SARIFRun[];
 }
@@ -156,7 +156,7 @@ shortDescription?: SARIFMessage;
 fullDescription?: SARIFMessage;
 /** Default severity level */
 defaultConfiguration?: {
-level: 'error' | ' warning' | ' note' | ' info';
+level: 'error' | 'warning' | 'note' | 'info';
 rank?: number;
 };
 /** Help information */
@@ -179,7 +179,7 @@ relatedLocations?: SARIFLocation[];
 /** Code flows (for taint tracking) */
 codeFlows?: SARIFCodeFlow[];
 /** Result severity level */
-level?: 'error' | ' warning' | ' note' | ' info';
+level?: 'error' | 'warning' | 'note' | 'info';
 /** Analysis target */
 analysisTarget?: SARIFArtifactLocation;
 /** Result properties */
@@ -344,7 +344,7 @@ id?: string;
 /** Notification message */
 message: SARIFMessage;
 /** Severity level */
-level?: 'error' | ' warning' | ' note' | ' info';
+level?: 'error' | 'warning' | 'note' | 'info';
 /** Associated locations */
 locations?: SARIFLocation[];
 }
@@ -393,7 +393,7 @@ ruleId: string;
 /** Rule name */
 ruleName?: string;
 /** Severity level */
-severity: 'error' | ' warning' | ' note' | ' info';
+severity: 'error' | 'warning' | 'note' | 'info';
 /** Primary file path */
 filePath: string;
 /** Primary location */

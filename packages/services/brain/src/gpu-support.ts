@@ -7,7 +7,7 @@
 
 import { getLogger} from '@claude-zen/foundation';
 
-const logger = getLogger('GPUSupport').
+const logger = getLogger('GPUSupport');
 
 /**
 * GPU acceleration capabilities
@@ -17,7 +17,7 @@ hasWebGPU:boolean;
 hasTensorFlowGPU:boolean;
 hasGPUJS:boolean;
 hasONNXGPU:boolean;
-recommendedBackend:'webgpu' | ' tensorflow-gpu' | ' gpu.js' | ' onnx' | ' cpu;
+recommendedBackend: 'webgpu' | 'tensorflow-gpu' | 'gpu.js' | 'onnx' | 'cpu';
 }
 
 /**
@@ -25,7 +25,7 @@ recommendedBackend:'webgpu' | ' tensorflow-gpu' | ' gpu.js' | ' onnx' | ' cpu;
 */
 export interface GPUOptions {
 preferGPU?:boolean;
-backend?:'webgpu' | ' tensorflow-gpu' | ' gpu.js' | ' onnx' | ' auto' | ' cpu;
+backend?: 'webgpu' | 'tensorflow-gpu' | 'gpu.js' | 'onnx' | 'auto' | 'cpu';
 memoryFraction?:number;
 }
 
@@ -38,37 +38,42 @@ hasWebGPU:false,
 hasTensorFlowGPU:false,
 hasGPUJS:false,
 hasONNXGPU:false,
-recommendedBackend: 'cpu',};
+recommendedBackend: 'cpu',
+};
 
 // Check WebGPU availability
 try {
-if (typeof navigator !== 'undefined' && ' gpu' in navigator) {
-; const adapter = await (navigator as any).gpu?.requestAdapter();
+if (typeof navigator !== 'undefined' && 'gpu' in navigator) {
+  const adapter = await (navigator as any).gpu?.requestAdapter();
 capabilities.hasWebGPU = !!adapter;
 if (capabilities.hasWebGPU) {
-logger.info('WebGPU detected and available').').
+logger.info('WebGPU detected and available');
 }
 } catch (error) {
-logger.debug('WebGPU not available:', error);').
+logger.debug('WebGPU not available:', error);
 
 // Check TensorFlow GPU support
 try {
-const tf = await import('@tensorflow/tfjs-node-gpu').catch(() => null);if (tf) {
-capabilities.hasTensorFlowGPU = true;
-logger.info('TensorFlow GPU support detected').').
+const tf = await import('@tensorflow/tfjs-node-gpu').catch(() => null);
+if (tf) {
+  capabilities.hasTensorFlowGPU = true;
+  logger.info('TensorFlow GPU support detected');
+}
 } catch (error) {
-logger.debug('TensorFlow GPU not available:', error);').
+logger.debug('TensorFlow GPU not available:', error);
 
 // Check GPU.js availability
 try {
-const { GPU} = await import('gpu.js').catch(() => ({ GPU:null}));if (GPU) {
-const gpu = new GPU();
-capabilities.hasGPUJS = !!(gpu as any).context;
-if (capabilities.hasGPUJS) {
-logger.info('GPU.js acceleration detected').').
+const { GPU } = await import('gpu.js').catch(() => ({ GPU: null }));
+if (GPU) {
+  const gpu = new GPU();
+  capabilities.hasGPUJS = !!(gpu as any).context;
+  if (capabilities.hasGPUJS) {
+    logger.info('GPU.js acceleration detected');
+  }
 }
 } catch (error) {
-logger.debug('GPU.js not available:', error);').
+logger.debug('GPU.js not available:', error);
 
 // Check ONNX Runtime GPU support (optional dependency)
 try {
@@ -78,7 +83,7 @@ try {
 // logger.info('ONNX Runtime GPU support detected').// }
 capabilities.hasONNXGPU = false; // Default to false when dependency not available
 } catch (error) {
-logger.debug('ONNX Runtime GPU not available:', error);').
+logger.debug('ONNX Runtime GPU not available:', error);
 
 // Determine recommended backend
 if (capabilities.hasTensorFlowGPU) {
@@ -91,7 +96,8 @@ capabilities.recommendedBackend = 'onnx';
 capabilities.recommendedBackend = 'gpu.js';
 }
 
-logger.info('GPU capabilities detected:', capabilities); return capabilities;
+logger.info('GPU capabilities detected:', capabilities);
+return capabilities;
 }
 
 /**

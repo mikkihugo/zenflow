@@ -166,7 +166,6 @@ const processedData = _(data).groupBy('category').value();
 | `@claude-zen/foundation/di`         | 1.2KB | Dependency injection   |
 | `@claude-zen/foundation/resilience` | 1.8KB | Error handling         |
 | `@claude-zen/foundation/utils`      | 2.1KB | Validation & utilities |
-| `@claude-zen/foundation/full`       | 36KB  | Everything (legacy)    |
 
 **🌳 Tree-Shaking Benefits: 92% bundle size reduction (36KB → 2.8KB)**
 

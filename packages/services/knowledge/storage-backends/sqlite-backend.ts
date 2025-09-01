@@ -98,13 +98,14 @@ export class SQLiteBackend implements FACTStorageBackend {
  this.isInitialized = true;
 }
 
- async store(entry:FACTKnowledgeEntry): Promise<void> {
- if (!this.dalAdapter) {
- throw new Error('SQLite backend not initialized');')}
+ async store(entry: FACTKnowledgeEntry): Promise<void> {
+   if (!this.dalAdapter) {
+     throw new Error('SQLite backend not initialized');
+   }
 
  try {
  await this.dalAdapter.execute(
- `INSERT OR REPLACE NTO ${this.config.tableName}`;
+ `INSERT OR REPLACE INTO ${this.config.tableName}
  (id, query, response, metadata, timestamp, ttl, access_count, last_accessed, expires_at)
  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
  [
@@ -123,18 +124,19 @@ export class SQLiteBackend implements FACTStorageBackend {
  // Insert into FTS table if enabled
  if (this.config.enableFullTextSearch) {
  await this.dalAdapter.execute(
- `INSERT OR REPLACE NTO ${this.config.tableName}_fts (id, query, response, domains, type)`;
+ `INSERT OR REPLACE INTO ${this.config.tableName}_fts (id, query, response, domains, type)
  VALUES (?, ?, ?, ?, ?)`,
  [
  entry.id,
  entry.query,
  entry.response,
- entry.metadata.domains?.join(' ')||', entry.metadata.type,
+ entry.metadata.domains?.join(' ') || '', entry.metadata.type,
 ]
  );
 }
 } catch (error) {
- logger.error('Failed to store FACT entry:', error);') throw error;
+ logger.error('Failed to store FACT entry:', error);
+   throw error;
 }
 }
 
@@ -179,21 +181,22 @@ export class SQLiteBackend implements FACTStorageBackend {
  throw new Error('SQLite backend not initialized');')}
 
  try {
- let sql = ';
- let params:unknown = {};
+ let sql = '';
+ let params: unknown = {};
 
  if (query.query && this.config.enableFullTextSearch) {
  // Use full-text search
- sql = `;
- SELECT f.* FROM ${this.config.tableName} f
- JOIN ${this.config.tableName}_fts fts ON f.id = fts.id
- WHERE fts.${this.config.tableName}_fts MATCH ?
- AND f.expires_at > ?
- `;`;
+ sql = `
+   SELECT f.* FROM ${this.config.tableName} f
+   JOIN ${this.config.tableName}_fts fts ON f.id = fts.id
+   WHERE fts.${this.config.tableName}_fts MATCH ?
+   AND f.expires_at > ?
+ `;
  params = [query.query, Date.now()];
 } else {
  // Use regular search
- const conditions = ['expires_at > ?'];') params = [Date.now()];
+ const conditions = ['expires_at > ?'];
+ params = [Date.now()];
 
  if (query.query) {
  conditions.push('(query LIKE ? OR response LIKE ?)');') const searchTerm = `%${query}.query%`;`;

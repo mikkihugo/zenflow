@@ -91,11 +91,11 @@ itemId:string;
 success:boolean;
 timestamp:number;
 };
-'knowledge:item': {
-requestId:string;
-item: 'KnowledgeItem' | 'null';
-timestamp:number;
-};
+  'knowledge:item': {
+    requestId: string;
+    item: KnowledgeItem | null;
+    timestamp: number;
+  };
 'knowledge:query-results': {
 requestId:string;
 items:KnowledgeItem[];
@@ -166,7 +166,7 @@ timestamp:number;
 interface KnowledgeItem {
 id:string;
 content:string;
-type:'fact' | ' rule' | ' pattern' | ' insight' | ' procedure' | ' concept';
+  type: 'fact' | 'rule' | 'pattern' | 'insight' | 'procedure' | 'concept';
 confidence:number;
 timestamp:number;
 source?:string;
@@ -213,7 +213,7 @@ totalItems:number;
 itemsByType:Record<KnowledgeItem['type'], number>;
 averageConfidence:number;
 lastUpdated:number;
-storageHealth:'healthy' | ' degraded' | ' unhealthy';
+  storageHealth: 'healthy' | 'degraded' | 'unhealthy';
 }
 
 interface KnowledgeConfig {
@@ -426,12 +426,12 @@ timestamp:Date.now(),
 // Handle stats requests
 this.addEventListener('brain:knowledge:get-stats', async (data) => {
 try {
-const __stats = await this.getStatsInternal();
-this.emitEvent('knowledge:stats', {
-requestId:data.requestId,
-stats,
-timestamp:Date.now(),
-});
+    const stats = await this.getStatsInternal();
+    this.emitEvent('knowledge:stats', {
+      requestId: data.requestId,
+      stats,
+      timestamp: Date.now(),
+    });
 } catch (error) {
 this.emitEvent('knowledge:error', {
 requestId:data.requestId,
@@ -665,9 +665,9 @@ latestTimestamp = Math.max(latestTimestamp, item.timestamp);
 const averageConfidence = activeItems.length > 0 ? totalConfidence / activeItems.length:0;
 
 // Simple storage health calculation
-const storageHealth:KnowledgeStats['storageHealth'] =
-activeItems.length > 10000 ? 'degraded' :
-activeItems.length > 0 ? 'healthy' : ` unhealthy`
+const storageHealth: KnowledgeStats['storageHealth'] =
+  activeItems.length > 10000 ? 'degraded' :
+  activeItems.length > 0 ? 'healthy' : 'unhealthy';
 
 return {
 totalItems:activeItems.length,

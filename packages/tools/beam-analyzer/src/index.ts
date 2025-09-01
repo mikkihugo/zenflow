@@ -12,7 +12,7 @@ async execute(): Promise<void> {
 /**
  * Language detection utilities
  */
-export function detectBeamLanguage(filePath: string): string | null {</search>
+export function detectBeamLanguage(filePath: string): string | null {
 
   const ext = require('node:path').extname(filePath).toLowerCase();
 

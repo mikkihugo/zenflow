@@ -25,6 +25,8 @@ import type {
   VectorSearchOptions,
   VectorResult,
   GraphResult,
+  TransactionConnection,
+  TransactionContext,
 } from './types.js';
 
 const logger = getLogger('database-facade');
@@ -220,15 +222,25 @@ export class DatabaseFacade {
       },
 
       async transaction<T>(
-        operation: (conn: DatabaseConnection) => Promise<T>
+        operation: (conn: TransactionConnection) => Promise<T>,
+        _context?: TransactionContext
       ): Promise<T> {
         logger.warn('Fallback transaction - executing without transaction safety');
         const connectionResult = await this.connect({ type, database: 'fallback' });
-        const connection = connectionResult.unwrapOr(null);
-        if (!connection) {
+        const baseConnection = connectionResult.unwrapOr(null);
+        if (!baseConnection) {
           throw new Error('Failed to create fallback connection');
         }
-        return operation(connection);
+        // Create a minimal TransactionConnection shim around the base connection
+        const txConnection: TransactionConnection = {
+          ...baseConnection,
+          async commit() { /* no-op for fallback */ },
+          async rollback() { /* no-op for fallback */ },
+          async savepoint(_name: string) { /* no-op for fallback */ },
+          async releaseSavepoint(_name: string) { /* no-op for fallback */ },
+          async rollbackToSavepoint(_name: string) { /* no-op for fallback */ },
+        };
+        return operation(txConnection);
       },
     };
 
