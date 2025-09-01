@@ -565,7 +565,7 @@ const lineNumber = content.substring(0, match.index).split('\n').length;
 const func:BeamFunction = {
 name:functionName,
 arity:arity,
-visibility: 'public', // Determined by export list`) signature:`${functionName}(${params})`,
+visibility: 'public', // Determined by export list, signature:`${functionName}(${params})`,
 lineNumber:lineNumber,
 };
 
@@ -717,7 +717,7 @@ const funcRegex = /(?:pub\s+)?fn\s+([_a-z]\w*)\s*\(([^)]*)\)/g;
 let match;
 while ((match = funcRegex.exec(content)) !== null) {
 const functionName = match[1];
-const params = match[2] || ``
+const params = match[2] || ``;
 const arity = params ? params.split(',').length : 0;
 const lineNumber = content.substring(0, match.index).split('\n').length;
 const isPublic = content
@@ -726,7 +726,7 @@ const isPublic = content
 const func: BeamFunction = {
 name: functionName,
 arity: arity,
-visibility: isPublic ? 'public' : `private`,
+visibility: isPublic ? 'public' : `private`;
 signature: `${functionName}(${params})`,
 lineNumber: lineNumber,
 };
