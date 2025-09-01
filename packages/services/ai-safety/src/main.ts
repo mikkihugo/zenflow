@@ -37,7 +37,7 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import type { AIInteractionData } from './safety-orchestrator';
+import type { AIInteractionData } from './ai-deception-detector';
 
 const logger = getLogger('ai-safety');
 
@@ -136,7 +136,7 @@ export function emergencySafetyShutdown() {
     logger.info('Safety result: ', safetyResult);
     
     // Error scenario demonstration (expanded functionality)
-    if (process.env.NODE_ENV === 'test') {
+    if (process.env['NODE_ENV'] === 'test') {
       const testError = new Error('Test safety error for validation');
       logger.info('Test error created: ', testError.message);
     }
@@ -184,22 +184,22 @@ export type { SafetyMetrics} from './safety-orchestrator';
 
 /** Safety event interface */
 export interface SafetyEvent {
-  type: 'alert' | ' intervention' | ' escalation' | ' shutdown';
+  type: 'alert' | 'intervention' | 'escalation' | 'shutdown';
   timestamp: number;
   agentId?: string;
-  severity: 'low' | ' medium' | ' high' | ' critical';
+  severity: 'low' | 'medium' | 'high' | 'critical';
   data: Record<string, unknown>;
 }
 
 /** Risk level enum */
-export type RiskLevel = 'minimal' | ' low' | ' medium' | ' high' | ' critical' | ' extreme';
+export type RiskLevel = 'minimal' | 'low' | 'medium' | 'high' | 'critical' | 'extreme';
 
 /** Safety status enum */
-export type SafetyStatus = 'safe' | ' monitoring' | ' warning' | ' alert' | ' intervention' | ' emergency';
+export type SafetyStatus = 'safe' | 'monitoring' | 'warning' | 'alert' | 'intervention' | 'emergency';
 
 /** Intervention action interface */
 export interface InterventionAction {
-  type: 'pause' | ' restrict' | ' terminate' | ' escalate';
+  type: 'pause' | 'restrict' | 'terminate' | 'escalate';
   target: string;
   reason: string;
   timestamp: number;
@@ -250,7 +250,7 @@ export async function getSafetyOrchestrator(): Promise<unknown> {
 }
 
 export async function getDeceptionDetection(): Promise<unknown> {
-  const { createAIDeceptionDetector, analyzeAIResponse} = await import('./ai-deception-detector');
+  const { createAIDeceptionDetector, analyzeAIResponse } = await import('./ai-deception-detector');
   
   const detector = createAIDeceptionDetector();
   return {
@@ -259,38 +259,40 @@ export async function getDeceptionDetection(): Promise<unknown> {
     check: (interactionData: AIInteractionData) =>
       detector.analyzeAIResponse(interactionData),
     getMetrics: () => detector.getDetectionMetrics?.(),
-};
+  };
 }
 
 export async function getSafetyMonitoring(): Promise<unknown> {
-  const system = await getAISafetySystemAccess();
+  const system = (await getAISafetySystemAccess()) as any;
   return {
     monitor: (agentId: string) => system.checkSafety(agentId),
     evaluate: (data: AIInteractionData) => system.analyzeResponse(data),
     alert: (event: SafetyEvent) => system.escalate(event),
     report: () => system.getMetrics(),
-};
+  };
 }
 
 export async function getSafetyIntervention(): Promise<unknown> {
-  const system = await getAISafetySystemAccess();
+  const system = (await getAISafetySystemAccess()) as any;
   return {
     intervene: (action: InterventionAction) => {
       // Implementation would handle different intervention types
-      logger.info(`Intervention requested: ${  action.type  } on ${  action.target}`
-      return Promise.resolve({ success: true, action});
-},
+      logger.info(`Intervention requested: ${action.type} on ${action.target}`);
+      return Promise.resolve({ success: true, action });
+    },
     escalate: (alert: SafetyEvent) => system.escalate(alert),
     emergency: () => system.emergencyShutdown(),
     pause: (agentId: string) => ({
-      type: 'pause',      target: agentId,
+      type: 'pause',
+      target: agentId,
       timestamp: Date.now(),
-}),
+    }),
     terminate: (agentId: string) => ({
-      type: 'terminate',      target: agentId,
+      type: 'terminate',
+      target: agentId,
       timestamp: Date.now(),
-}),
-};
+    }),
+  };
 }
 
 // Professional AI safety system object with proper naming (matches brainSystem pattern)

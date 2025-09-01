@@ -69,12 +69,12 @@ export interface BehavioralAnalysisResult {
  */
 export interface HumanEscalationResult {
   id: string;
-  escalationLevel:'LOW' | ' MEDIUM' | ' HIGH' | ' CRITICAL';
+  escalationLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   responseTime: number;
-  resolution:'APPROVED' | ' REJECTED' | ' MODIFIED' | ' PENDING';
-  humanFeedback?:string;
+  resolution: 'APPROVED' | 'REJECTED' | 'MODIFIED' | 'PENDING';
+  humanFeedback?: string;
   timestamp: Date;
-  errors?:string[];
+  errors?: string[];
 }
 
 /**
@@ -262,17 +262,17 @@ export class AISafetyOrchestrator {
 
       return {
         success: true,
-        value:{
+        value: {
           id: orchestrationId,
           phase1: phase1Result.value!,
           phase2: phase2Result.value!,
-          phase3: phase3Result,
+          ...(phase3Result ? { phase3: phase3Result } : {}),
           totalTime,
           interventionsTriggered,
           timestamp: new Date(),
-          success: true
-}
-};
+          success: true,
+        },
+      };
 } catch (error) {
       return {
         success: false,
@@ -284,9 +284,9 @@ export class AISafetyOrchestrator {
   /**
    * Perform automated detection using deception detector.
    */
-  private async performAutomatedDetection(agentId: string,
+  private async performAutomatedDetection(_agentId: string,
     interactionData: AIInteractionData,
-    orchestrationId: string
+    _orchestrationId: string
   ): Promise<{ success: boolean; value?: AutomatedDetectionResult; error?: SafetyError}> {
     try {
       const startTime = Date.now();
@@ -319,9 +319,9 @@ export class AISafetyOrchestrator {
   /**
    * Perform behavioral analysis with pattern detection.
    */
-  private async performBehavioralAnalysis(agentId: string,
+  private async performBehavioralAnalysis(_agentId: string,
     interactionData: AIInteractionData,
-    orchestrationId: string
+    _orchestrationId: string
   ): Promise<{ success: boolean; value?: BehavioralAnalysisResult; error?: SafetyError}> {
     try {
       const startTime = Date.now();
@@ -415,10 +415,10 @@ export class AISafetyOrchestrator {
   /**
    * Escalate to human oversight.
    */
-  private async escalateToHuman(agentId: string,
+  private async escalateToHuman(_agentId: string,
     phase1: AutomatedDetectionResult,
     phase2: BehavioralAnalysisResult,
-    orchestrationId: string
+    _orchestrationId: string
   ): Promise<{ success: boolean; value?: HumanEscalationResult; error?: SafetyError}> {
     try {
       // Simulate human escalation process
@@ -448,18 +448,18 @@ export class AISafetyOrchestrator {
   private determineEscalationLevel(
     phase1: AutomatedDetectionResult,
     phase2: BehavioralAnalysisResult
-  ):'LOW' | ' MEDIUM' | ' HIGH' | ' CRITICAL' {
+  ): 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' {
     if (phase1.immediateInterventions > 3 || phase2.behavioralDeviations > 4) {
       return 'CRITICAL';
-}
+    }
     if (phase1.immediateInterventions > 2 || phase2.behavioralDeviations > 3) {
       return 'HIGH';
-}
+    }
     if (phase1.immediateInterventions > 1 || phase2.behavioralDeviations > 2) {
       return 'MEDIUM';
-}
+    }
     return 'LOW';
-}
+  }
 
   /**
    * Get current safety metrics.
@@ -523,22 +523,22 @@ export function createAISafetyOrchestrator():AISafetyOrchestrator {
 /**
  * Create and initialize AI safety orchestrator.
  */
-export async function createInitializedAISafetyOrchestrator():Promise<{ success: boolean; value?: AISafetyOrchestrator; error?: SafetyError}> {
+export async function createInitializedAISafetyOrchestrator():Promise<{ success: boolean; value?: AISafetyOrchestrator; error?: SafetyError }>{
   try {
     const orchestrator = new AISafetyOrchestrator();
     const startResult = await orchestrator.startSafetyMonitoring();
     
     if (!startResult.success) {
-      return { success: false, error: startResult.error};
-}
+      return { success: false, error: startResult.error ?? new SafetyError('Start failed') };
+    }
 
-    return { success: true, value: orchestrator};
-} catch (error) {
+    return { success: true, value: orchestrator };
+  } catch (error) {
     return {
       success: false,
       error: new SafetyError(
         'Failed to create and initialize AI safety orchestrator'
-      )
+      ),
     };
-}
+  }
 }
