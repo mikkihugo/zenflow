@@ -128,16 +128,17 @@ export interface AgentBehavioralProfile {
  * await behavioral.learnFromExecution(executionData);
  *
  * // Predict agent performance
- * const prediction = await behavioral.predictAgentPerformance('agent-1',    'data-processing', 0.7);') * logger.info(`Predicted efficiency:${prediction.predictedEfficiency}`);`
- * ````
+ * const prediction = await behavioral.predictAgentPerformance('agent-1', 'data-processing', 0.7);
+ * logger.info(`Predicted efficiency: ${prediction.predictedEfficiency}`);
+ * ```
  */
 export class BehavioralIntelligence {
-  private brainJsBridge:BrainJsBridge;
+  private brainJsBridge: BrainJsBridge;
   private performanceNetworkId = 'agent-performance-predictor';
   private complexityNetworkId = 'task-complexity-estimator';
   private matchingNetworkId = 'agent-task-matcher';
   private initialized = false;
-  private trainingBuffer:AgentExecutionData[] = [];
+  private trainingBuffer: AgentExecutionData[] = [];
   private readonly bufferSize = 100;
 
   constructor(brainJsBridge?:BrainJsBridge) {
@@ -409,17 +410,17 @@ export class BehavioralIntelligence {
         confidence:output[1]||0.7,
 };
 } catch (error) {
-      logger.error('Error analyzing task complexity:', error);')
+      logger.error('Error analyzing task complexity:', error);
       // Return default analysis on error
       return {
         taskType,
-        estimatedComplexity:0.5,
-        requiredSkills:['general'],
-        estimatedDuration:3000,
-        difficulty: 'medium',        confidence:0.1,
-};
-}
-}
+        estimatedComplexity: 0.5,
+        requiredSkills: ['general'],
+        estimatedDuration: 3000,
+        difficulty: 'medium',
+        confidence: 0.1,
+      };
+    }
 
   /**
    * Find the best agent for a task
@@ -430,10 +431,10 @@ export class BehavioralIntelligence {
    * @returns Best agent ID and confidence score
    */
   async findBestAgentForTask(
-    taskType:string,
-    taskComplexity:number,
-    availableAgents:string[]
-  ):Promise<{ agentId: string; confidence: number; reasoning: string}> {
+    taskType: string,
+    taskComplexity: number,
+    availableAgents: string[]
+  ): Promise<{ agentId: string; confidence: number; reasoning: string }> {
     if (!this.initialized) await this.initialize();
 
     try {
@@ -449,7 +450,7 @@ export class BehavioralIntelligence {
           taskComplexity
         );
 
-        // Calculate composite score:efficiency * success probability * confidence
+        // Calculate composite score: efficiency * success probability * confidence
         const score =
           prediction.predictedEfficiency *
           prediction.predictedSuccess *
@@ -463,7 +464,7 @@ export class BehavioralIntelligence {
       }
 
       logger.info(
-        `Selected best agent:${bestAgent} for ${taskType} (score:${bestScore.toFixed(3)})`
+        `Selected best agent: ${bestAgent} for ${taskType} (score: ${bestScore.toFixed(3)})`
       );
 
       return {
@@ -487,16 +488,16 @@ export class BehavioralIntelligence {
    * @param agentId - ID of the agent
    * @returns Agent behavioral profile or null if not found
    */
-  getAgentProfile(agentId:string): AgentBehavioralProfile|null {
-    return this.agentProfiles.get(agentId)||null;
-}
+  getAgentProfile(agentId: string): AgentBehavioralProfile | null {
+    return this.agentProfiles.get(agentId) || null;
+  }
 
   /**
    * Get all agent profiles
    *
    * @returns Map of all agent profiles
    */
-  getAllAgentProfiles():Map<string, AgentBehavioralProfile> {
+  getAllAgentProfiles(): Map<string, AgentBehavioralProfile> {
     return new Map(this.agentProfiles);
 }
 
