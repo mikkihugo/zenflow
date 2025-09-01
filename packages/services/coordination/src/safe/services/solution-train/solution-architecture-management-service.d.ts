@@ -33,38 +33,31 @@ readonly constraintId: 'technical';
 * Constraint impact
 */
 export declare enum ConstraintImpact {
-') = 0,
-high = 1,
-') = 2,
-medium = 3,
-') = 4,
-low = 5,
-')programming_language';
-
+    low = 0,
+    medium = 1,
+    high = 2,
+    critical = 3
 }
+
 /**
 * Standard scope
 */
 export declare enum StandardScope {
-') = 0,
-mandatory = 1,
-') = 2,
-recommended = 3,
-') = 4,
-approved = 5,
-') = 6,
-restricted = 7,
-') = 8,
-deprecated = 9,
-')centralized';
-
+    mandatory = 0,
+    recommended = 1,
+    approved = 2,
+    optional = 3,
+    restricted = 4,
+    deprecated = 5
 }
+
 /**
 * Decision right
 */
 export interface DecisionRight {
-readonly rightId: 'technology_adoption';
-
+    readonly rightId: string;
+    readonly scope: StandardScope;
+    readonly approver: string;
 }
 /**
 * Approval threshold
@@ -111,31 +104,20 @@ readonly componentId: 'platform';
 * Component status
 */
 export declare enum ComponentStatus {
-') = 0,
-planned = 1,
-') = 2,
-in_development = 3,
-') = 4,
-available = 5,
-') = 6,
-deprecated = 7,
-') = 8,
-retired = 9,
-')};
-/**
-* Component lifecycle
-*/
-= 10
-/**
-* Component lifecycle
-*/
-,
-/**
-* Component lifecycle
-*/
-export = 11,
-interface = 12,
-ComponentLifecycle = 13
+    planned = 0,
+    in_development = 1,
+    available = 2,
+    deprecated = 3,
+    retired = 4
+}
 
+/**
+* Component lifecycle
+*/
+export interface ComponentLifecycle {
+    status: ComponentStatus;
+    created: Date;
+    lastUpdated: Date;
+    version: string;
 }
 //# sourceMappingURL=solution-architecture-management-service.d.ts.map

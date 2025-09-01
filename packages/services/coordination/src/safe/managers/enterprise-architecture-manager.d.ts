@@ -1,8 +1,4 @@
 export interface EnterpriseArchConfig {
-readonly enablePrincipleValidation: false;
-private config;
-(): any;
-constructor(_config: {}): any;
-
+  readonly enablePrincipleValidation: boolean;
 }
 //# sourceMappingURL=enterprise-architecture-manager.d.ts.map

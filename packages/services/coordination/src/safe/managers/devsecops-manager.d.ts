@@ -14,22 +14,17 @@ data = 3
 * Incident Status
 */
 export declare enum IncidentStatus {
-') = 0,
-reported = 1,
-') = 2,
-acknowledged = 3,
-') = 4,
-investigating = 5,
-') = 6,
-contained = 7,
-') = 8,
-resolved = 9,
-') = 10,
-closed = 11,
-')json| xml| pdf' | ' html';
-readonly auditRetentionDays: number;
-readonly complianceThreshold: number;
+    reported = 0,
+    acknowledged = 1,
+    investigating = 2,
+    contained = 3,
+    resolved = 4,
+    closed = 5
+}
 
+export interface ComplianceConfig {
+    readonly auditRetentionDays: number;
+    readonly complianceThreshold: number;
 }
 /**
 * Security configuration
@@ -114,22 +109,28 @@ readonly targets: string[];
 readonly timeframe: {
 readonly start: Date;
 readonly end: Date;
-'};
-readonly depth: 'surface' | ' standard' | ' deep';
+readonly depth: 'surface' | 'standard' | 'deep';
 
 }
 /**
 * Security finding
 */
 export interface SecurityFinding {
-id: string;
-
+    id: string;
+    severity: SecuritySeverity;
+    category: SecurityCategory;
 }
-export type SecuritySeverity = 'critical| high| medium| low' | ' informational';
-export type SecurityCategory = 'injection| authentication| authorization| sensitive_data| xml_entities| access_control| security_config| cross_site_scripting' | insecure_deserialization | vulnerable_components;
+
+export type SecuritySeverity = 'critical' | 'high' | 'medium' | 'low' | 'informational';
+
+export type SecurityCategory = 'injection' | 'authentication' | 'authorization' | 'sensitive_data' | 'xml_entities' | 'access_control' | 'security_config' | 'cross_site_scripting' | 'insecure_deserialization' | 'vulnerable_components';
+
 export interface CVSSScore {
-readonly version: false;
-constructor(config: config, this: any, logger?: any): any;
+    readonly version: string;
+    readonly baseScore: number;
+    readonly temporalScore: number;
+    readonly environmentalScore: number;
+}
 
 }
 export default DevSecOpsManager;

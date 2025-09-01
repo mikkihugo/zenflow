@@ -597,15 +597,14 @@ export class KeyValueStorageImpl implements KeyValueStorage {
  ttl INTEGER,
  stored_at INTEGER NOT NULL,
  updated_at INTEGER NOT NULL
- )
- `
+ )`);
 
  // Create indexes for performance
  await this.connection.execute(`
- CREATE INDEX IF NOT EXISTS idx_kv_store_ttl_expiry 
- ON kv_store(stored_at, ttl) 
- WHERE ttl IS NOT NULL
- `
+   CREATE INDEX IF NOT EXISTS idx_kv_store_ttl_expiry
+   ON kv_store(stored_at, ttl)
+   WHERE ttl IS NOT NULL
+ `);
 
  this.initialized = true;
  logger.debug('Key-value storage initialized');

@@ -4,20 +4,15 @@
 * Service for managing epic lifecycle through Portfolio Kanban states.
 * Handles epic progression, gate criteria, and WSJF prioritization.
 *
-* SINGLE RESPONSIBILITY: dateFns;';
-import {
-orderBy,
-'} from 'lodash-es')../types');
-EpicBlocker,
-GateCriterion,
-PortfolioKanbanState,
-WSJFScore,
-'} from '../types/epic-management')/**";"
+* SINGLE RESPONSIBILITY: Epic lifecycle management through Portfolio Kanban
+*/
+
+
+
+/**
 * Epic lifecycle service configuration
 */
 export interface EpicLifecycleConfig {
-readonly analysisTimeLimit: new () => Map<string, PortfolioEpic>;
-(): any;
-
+  readonly analysisTimeLimit: number;
 }
 //# sourceMappingURL=epic-lifecycle-service.d.ts.map

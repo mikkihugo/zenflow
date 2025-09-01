@@ -8,9 +8,6 @@ import { getLogger } from '@claude-zen/foundation';
 
 export class PromptManagementService {
   private readonly logger = getLogger('PromptManagementService');
-  private database: unknown;
-  private teamworkSystem: unknown;
-  private workflowEngine: unknown;
 
   constructor() {
     // Initialize database connection
@@ -36,7 +33,7 @@ export class PromptManagementService {
     // TODO: Implement prompt template creation logic
     return {
       id: versionId,
-      ...data,
+      ...(data as Record<string, unknown>),
       version: initialVersion
     };
   }
@@ -105,70 +102,7 @@ export class PromptManagementService {
     return null;
   }
 
-  /**
-   * Create audit entry for SOC2 compliance
-   */
-  private createAuditEntry(
-    promptId: string,
-    userId: string,
-    changes: unknown,
-    metadata: unknown
-  ): void {
-    // TODO: Implement audit entry creation
-    void promptId;
-    void userId;
-    void changes;
-    void metadata;
-    this.logger.info('Audit entry created');
-  }
-
-  /**
-   * Check user permissions
-   */
-  private checkPermission(template: unknown, userId: string, action: string): void {
-    // TODO: Implement permission checking
-    void template;
-    void userId;
-    void action;
-    this.logger.info('Permission check completed');
-  }
-
-  /**
-   * Generate next version number
-   */
-  private generateNextVersion(versions: unknown[]): string {
-    // TODO: Implement version number generation
-    void versions;
-    return '1.0.1';
-  }
-
-  /**
-   * Select variant for A/B testing
-   */
-  private selectVariant(template: unknown): unknown {
-    // TODO: Implement variant selection
-    void template;
-    return null;
-  }
-
-  /**
-   * Start approval workflow
-   */
-  private startApprovalWorkflow(template: unknown, version: unknown, createdBy: string): void {
-    // TODO: Implement approval workflow
-    void template;
-    void version;
-    void createdBy;
-    this.logger.info('Approval workflow started');
-  }
-
-  /**
-   * Create database tables
-   */
-  private createTables(): void {
-    // TODO: Implement table creation
-    this.logger.info('Database tables created');
-  }
+  
 
   /**
    * Generate UUID

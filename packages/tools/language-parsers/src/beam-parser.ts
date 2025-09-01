@@ -26,7 +26,7 @@ type Result,
 */
 export interface BeamModule {
 /** Module name */
-name:string;
+name: string;
 
 /** File path */
 path: string;
@@ -35,10 +35,10 @@ path: string;
 language: 'elixir' | 'erlang' | 'gleam';
 
 /** Exported functions */
-exports:BeamFunction[];
+exports: BeamFunction[];
 
 /** Type definitions */
-types:BeamType[];
+types: BeamType[];
 
 /** Documentation strings */
 documentation:string[];
@@ -58,7 +58,7 @@ metrics?:BeamModuleMetrics;
 */
 export interface BeamFunction {
 /** Function name */
-name:string;
+name: string;
 
 /** Function arity (number of parameters) */
 arity:number;
@@ -87,7 +87,7 @@ attributes?:string[];
 */
 export interface BeamType {
 /** Type name */
-name:string;
+name: string;
 
 /** Type definition */
 definition:string;
@@ -172,9 +172,9 @@ options: this.options,
 */
 async parseFile(filePath:string): Promise<Result<BeamModule, Error>> {
 try {
-this.logger.info(`Parsing BEAM file: ${filePath}`
+this.logger.info(`Parsing BEAM file: ${filePath}`);
 
-const content = await readFile(filePath, `utf8`
+const content = await readFile(filePath, `utf8`);
 // Check file size limit
 if (content.length > (this.options.maxFileSize||10485760)) {
 return err(new Error(`File too large: ${content.length} bytes`));
@@ -230,7 +230,7 @@ return err(new Error(errorMsg));
 */
 async parseFiles(filePaths:string[]): Promise<Result<BeamModule[], Error>> {
 try {
-this.logger.info(`Parsing ${filePaths.length} BEAM files in parallel`
+this.logger.info(`Parsing ${filePaths.length} BEAM files in parallel`);
 
 const results = await Promise.allSettled(
 filePaths.map((path) => this.parseFile(path))
@@ -247,7 +247,7 @@ modules.push(result.value._unsafeUnwrap());
 const error =
 result.status === `rejected` ? result.reason
 : result.value._unsafeUnwrapErr();
-errors.push(`${filePaths[i]}: ${error.message}`
+errors.push(`${filePaths[i]}: ${error.message}`);
 }
 }
 
@@ -298,8 +298,9 @@ private async parseElixirFile(
 filePath:string,
 content:string
 ):Promise<BeamModule> {
-const moduleName =
-this.extractElixirModuleName(content)||basename(filePath,'.ex');') const functions = this.extractElixirFunctions(content);
+
+ const moduleName = this.extractElixirModuleName(content) || basename(filePath, '.ex');
+const functions = this.extractElixirFunctions(content);
 const types = this.extractElixirTypes(content);
 const docs = this.options.extractDocumentation
 ? this.extractElixirDocs(content)
@@ -335,8 +336,9 @@ private async parseErlangFile(
 filePath:string,
 content:string
 ):Promise<BeamModule> {
-const moduleName =
-this.extractErlangModuleName(content)||basename(filePath,'.erl');') const functions = this.extractErlangFunctions(content);
+
+ const moduleName = this.extractErlangModuleName(content) || basename(filePath, '.erl');
+ const functions = this.extractErlangFunctions(content);
 const types = this.extractErlangTypes(content);
 const docs = this.options.extractDocumentation
 ? this.extractErlangDocs(content)
@@ -368,7 +370,8 @@ private async parseGleamFile(
 filePath:string,
 content:string
 ):Promise<BeamModule> {
-const moduleName = basename(filePath, '.gleam');') const functions = this.extractGleamFunctions(content);
+ const moduleName = basename(filePath, '.gleam');
+	const functions = this.extractGleamFunctions(content);
 const types = this.extractGleamTypes(content);
 const docs = this.options.extractDocumentation
 ? this.extractGleamDocs(content)
@@ -496,7 +499,7 @@ docs.push(match[1].trim());
 // @doc
 const docRegex = /@doc\s+"""(.*?)"""/gs;
 while ((match = docRegex.exec(content)) !== null) {
-docs.push(match[1].trim())();
+docs.push(match[1].trim());
 }
 
 return docs;
@@ -775,7 +778,7 @@ const docRegex = /\/{3}\s*(.*)/g;
 
 let match;
 while ((match = docRegex.exec(content)) !== null) {
-docs.push(match[1].trim())();
+docs.push(match[1].trim());
 }
 
 return docs;

@@ -1187,10 +1187,10 @@ export class LanceDBAdapter implements DatabaseConnection {
  }
 
  try {
- const table = await this.database?.openTable(tableName);
- if (!table) {
- throw new Error(`Failed to open table:${tableName}`
- }
+   const table = await this.database?.openTable(tableName);
+   if (!table) {
+     throw new Error(`Failed to open table: ${tableName}`);
+   }
  let query = table.vectorSearch([...vector]);
 
  if (options?.limit) {
@@ -1255,10 +1255,10 @@ export class LanceDBAdapter implements DatabaseConnection {
  let table: LanceDBTable;
 
  try {
- const openedTable = await this.database?.openTable(tableName);
- if (!openedTable) {
- throw new Error(`Failed to open table:${tableName}`
- }
+   const openedTable = await this.database?.openTable(tableName);
+   if (!openedTable) {
+     throw new Error(`Failed to open table: ${tableName}`);
+   }
  table = openedTable;
  } catch {
  // Table doesn't exist, create it
@@ -1268,11 +1268,11 @@ export class LanceDBAdapter implements DatabaseConnection {
  ...v.metadata,
  }));
  const createdTable = await this.database?.createTable({
- name: tableName,
- data: sampleData,
+   name: tableName,
+   data: sampleData,
  });
  if (!createdTable) {
- throw new Error(`Failed to create table:${tableName}`
+   throw new Error(`Failed to create table: ${tableName}`);
  }
  table = createdTable;
  }

@@ -13,11 +13,9 @@ readonly planningAdjustments: PlanningAdjustment[];
 
 }
 export interface PlanningParticipant {
-readonly userId: string;
-readonly name: string;
-'; : any;
-readonly role: product;
-
+    readonly userId: string;
+    readonly name: string;
+    readonly role: 'product' | 'engineering' | 'quality' | 'release';
 }
 export interface PlanningAgendaItem {
 id: string;
@@ -163,13 +161,10 @@ readonly planningTemplates: string[];
 * PI Planning Service for Program Increment planning event management
 */
 export declare class PIPlanningService extends EventBus {
-private readonly logger;
-private readonly planningResults;
-private workflowEngine;
-constructor(): void { Date, now }: {"
-Date: any;
-now: any;
-'}): any;
+    private readonly logger;
+    private readonly planningResults;
+    private workflowEngine;
 
+    constructor();
 }
 //# sourceMappingURL=pi-planning-service.d.ts.map

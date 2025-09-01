@@ -18,30 +18,35 @@ readonly analyticsId: 'time_series';
 * Prediction algorithm
 */
 export declare enum PredictionAlgorithm {
-') = 0,
-arima = 1,
-') = 2,
-linear_regression = 3,
-') = 4,
-polynomial_regression = 5,
-') = 6,
-lstm = 7,
-') = 8,
-random_forest = 9,
-') = 10,
-gradient_boosting = 11,
-') = 12,
-exponential_smoothing = 13,
-')) MAE =' = 0,
-mae = 1,// Mean Absolute Error')mape,// Mean Absolute Percentage Error')rmse,// Root Mean Squared Error')r_squared')aic,// Akaike Information Criterion')bic,// Bayesian Information Criterion')numeric';
-
+    arima = 0,
+    linear_regression = 1,
+    exponential_smoothing = 2,
+    machine_learning = 3,
+    polynomial_regression = 4,
+    lstm = 5,
+    random_forest = 6,
+    gradient_boosting = 7
 }
+
+/**
+* Prediction metric
+*/
+export declare enum PredictionMetric {
+    mae = 0,
+    mape = 1,
+    rmse = 2,
+    r_squared = 3,
+    aic = 4,
+    bic = 5
+}
+
 /**
 * Data source
 */
 export interface DataSource {
-readonly sourceId: 'skip';
-
+    readonly sourceId: string;
+    readonly type: string;
+    readonly connection: string;
 }
 /**
 * Feature transformation
@@ -68,44 +73,46 @@ readonly missingValues: 'z_score';
 * Outlier treatment
 */
 export declare enum OutlierTreatment {
-') = 0,
-remove = 1,
-') = 2,
-cap = 3,
-') = 4,
-transform = 5,
-') = 6,
-ignore = 7,
-')join';
-
+    remove = 0,
+    cap = 1,
+    transform = 2,
+    ignore = 3
 }
+
 /**
 * Accuracy requirements
 */
 export interface AccuracyRequirements {
-readonly targetAccuracy: 'real_time';
-
+    readonly targetAccuracy: number;
+    readonly acceptableError: number;
+    readonly confidenceLevel: number;
 }
+
 /**
 * Value delivery prediction result
 */
 export interface ValueDeliveryPrediction {
-readonly predictionId: 'data_quality';
-
+    readonly predictionId: string;
+    readonly predictedValue: number;
+    readonly confidence: number;
+    readonly timestamp: Date;
 }
+
 /**
 * Prediction accuracy
 */
 export interface PredictionAccuracy {
-readonly historical: 'increasing';
-
+    readonly historical: number;
+    readonly current: number;
+    readonly trend: string;
 }
+
 /**
 * Trend forecast
 */
 export interface TrendForecast {
-readonly continuationProbability: new () => Map<string, ValueDeliveryPrediction>;
-(): any;
-
+    readonly continuationProbability: number;
+    readonly changeProbability: number;
+    readonly expectedValue: number;
 }
 //# sourceMappingURL=predictive-analytics-service.d.ts.map

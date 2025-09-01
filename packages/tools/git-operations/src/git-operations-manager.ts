@@ -233,7 +233,7 @@ export interface RemoteConfig {
 name: string;
 url: string;
 credentials?: {
-type: 'token' | ' ssh' | ' basic';
+type: 'token' | 'ssh' | 'basic';
 token?: string;
 username?: string;
 password?: string;
@@ -245,8 +245,8 @@ export interface BranchStrategy {
 /** Branch naming convention */
 namingPattern:
 | 'feature/{name}'
-| ' hotfix/{name}'
-| ' release/{name}'
+| 'hotfix/{name}'
+| 'release/{name}'
 | ' custom';
 /** Custom naming pattern */
 customPattern?: string;
@@ -255,12 +255,12 @@ autoCleanup: boolean;
 /** Branch protection rules */
 protectedBranches: string[];
 /** Merge strategy preference */
-defaultMergeStrategy: 'merge' | ' rebase' | ' squash';
+defaultMergeStrategy: 'merge' | 'rebase' | 'squash';
 }
 
 export interface ConflictResolution {
 /** Conflict type */
-type: 'merge' | ' rebase' | ' cherry-pick';
+type: 'merge' | 'rebase' | ' cherry-pick';
 /** Files with conflicts */
 conflictFiles: string[];
 /** AI resolution suggestions */
@@ -305,10 +305,10 @@ export interface GitOperation {
 id: string;
 type:
 | 'clone'
-| ' pull'
-| ' push'
-| ' merge'
-| ' rebase'
+| 'pull'
+| 'push'
+| 'merge'
+| 'rebase'
 | ' branch'
 | ' commit'
 | ' fetch';
@@ -373,7 +373,7 @@ timestamp: string;
 export interface GitConflictResolvedEvent {
 type: 'gitConflictResolved';
 projectId: string;
-conflictType: 'merge' | ' rebase' | ' cherry-pick';
+conflictType: 'merge' | 'rebase' | ' cherry-pick';
 filesResolved: string[];
 aiAssisted: boolean;
 timestamp: string;
@@ -740,7 +740,7 @@ projectId: string,
 sourceBranch: string,
 targetBranch: string,
 options: {
-strategy?: 'merge' | ' squash' | ' rebase';
+strategy?: 'merge' | 'squash' | 'rebase';
 message?: string;
 autoResolveConflicts?: boolean;
 } = {}
@@ -980,7 +980,7 @@ if (
 this.config.aiConflictResolution &&
 options.autoResolveConflicts !== false
 ) {
-const conflictType = options.rebase ? 'rebase' : ' merge';
+const conflictType = options.rebase ? 'rebase' : 'merge';
 const sandboxEnv =
 typeof sandbox === 'string' ? { path: sandbox } : sandbox;
 conflictResolution = await this.resolveConflictsWithAI(
@@ -1024,7 +1024,7 @@ throw error;
 */
 private async resolveConflictsWithAI(
 git: SimpleGit,
-conflictType: 'merge' | ' rebase' | ' cherry-pick',
+conflictType: 'merge' | 'rebase' | ' cherry-pick',
 workingDir: string
 ): Promise<ConflictResolution> {
 logger.info(' Starting AI conflict resolution', {
@@ -2023,7 +2023,7 @@ currentWorktree = { path: line.substring(9), isMain: false };
 currentWorktree.branch = line.substring(7);
 } else if (line.startsWith('HEAD ')) {
 currentWorktree.commit = line.substring(5);
-} else if (line === 'bare{
+} else if (line === 'bare'
 currentWorktree.isMain = true;
 }
 }

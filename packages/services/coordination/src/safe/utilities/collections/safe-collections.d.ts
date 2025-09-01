@@ -11,27 +11,24 @@
 * @since 1.0.0
 * @version 1.0.0
 */
-import { countBy, groupBy } from 'lodash-es';
+// No imports needed for type definitions
 export declare class SafeCollectionUtils {
 /**
 * Filter features by priority using lodash
 */
 static filterByPriority<T extends {
 priority: string;
-'}>(items: T[], priorities: string[]): T[];
+}>(items: T[], priorities: string[]): T[];
 /**
 * Sort epics by business value using lodash
 */
 static sortByBusinessValue<T extends {
 businessValue: number;
-'}>(epics: T[]): T[];
+}>(epics: T[]): T[];
 /**
 * Group features by ART using lodash
 */
-static groupByART<T extends {
-artId: groupBy;
-(features: any, : any): any;
-'}>(): any;
+static groupByART<T extends { artId: string }>(features: T[]): Record<string, T[]>;
 
 }
 /**
@@ -41,10 +38,7 @@ export declare class SafePortfolioUtils {
 /**
 * Calculate portfolio health metrics using lodash
 */
-static calculatePortfolioMetrics<T extends {
-status: countBy;
-(portfolioItems: any, : any): any;
-'}, const totalItems = portfolioItems.length, const healthScore = ((statusCount.green))>(): any;
+static calculatePortfolioMetrics<T extends { status: string }>(portfolioItems: T[]): { totalItems: number; healthScore: number };
 
 }
 //# sourceMappingURL=safe-collections.d.ts.map

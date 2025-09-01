@@ -20,31 +20,19 @@ readonly piId: reduces;
 * Customer impact levels
 */
 export declare enum CustomerImpactLevel {
-') = 0,
-none = 1,
-') = 2,
-low = 3,
-') = 4,
-moderate = 5,
-') = 6,
-high = 7,
-') = 8,
-critical = 9,
-')};
+    none = 0,
+    low = 1,
+    moderate = 2,
+    high = 3,
+    critical = 4
+}
 /**
 * Team morale impact levels
 */
-= 10
-/**
-* Team morale impact levels
-*/
-,
-/**
-* Team morale impact levels
-*/
-export = 11,
-enum = 12,
-MoraleImpactLevel = 13
-
+export declare enum MoraleImpactLevel {
+    low = 0,
+    moderate = 1,
+    high = 2,
+    critical = 3
 }
 //# sourceMappingURL=program-predictability-service.d.ts.map

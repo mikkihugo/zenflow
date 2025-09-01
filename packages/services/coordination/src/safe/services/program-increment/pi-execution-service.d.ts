@@ -1,18 +1,17 @@
 export interface PIExecutionMetrics {
-readonly piId: string;
-readonly timestamp: Date;
-'; : any;
-readonly overallHealth: 'healthy| at-risk' | ' critical';
-readonly progressPercentage: number;
-readonly burnupData: BurnupDataPoint[];
-readonly velocityTrend: VelocityTrend;
-readonly predictabilityMetrics: PredictabilityMetrics;
-readonly qualityMetrics: QualityMetrics;
-readonly riskBurndown: RiskBurndown;
-readonly dependencyHealth: DependencyHealth;
-readonly teamMetrics: TeamExecutionMetrics[];
-readonly alerts: ExecutionAlert[];
-readonly forecastToCompletion: ExecutionForecast;
+    readonly piId: string;
+    readonly timestamp: Date;
+    readonly overallHealth: 'healthy' | 'at-risk' | 'critical';
+    readonly progressPercentage: number;
+    readonly burnupData: BurnupDataPoint[];
+    readonly velocityTrend: VelocityTrend;
+    readonly predictabilityMetrics: PredictabilityMetrics;
+    readonly qualityMetrics: QualityMetrics;
+    readonly riskBurndown: RiskBurndown;
+    readonly dependencyHealth: DependencyHealth;
+    readonly teamMetrics: TeamExecutionMetrics[];
+    readonly alerts: ExecutionAlert[];
+    readonly forecastToCompletion: ExecutionForecast;
 
 }
 export interface BurnupDataPoint {

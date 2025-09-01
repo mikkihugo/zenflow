@@ -18,10 +18,10 @@
 import { EventBus } from '@claude-zen/foundation';
 import type { TeamCapacity } from '../services/program-increment/capacity-planning-service';
 import type { AgileReleaseTrain, Dependency, ProgramIncrement, Risk } from '../types';
-export type { '; CapacityPlanningResult, CapacityRisk, TeamAllocation, } from '../services/program-increment/capacity-planning-service';
-export type { '; Achievement, Challenge, ImprovementRecommendation, LessonLearned, PICompletionReport, } from '../services/program-increment/pi-completion-service';
-export type { '; DependencyHealth, PIExecutionMetrics, PredictabilityMetrics, QualityMetrics, RiskBurndown, VelocityTrend, } from '../services/program-increment/pi-execution-service';
-export type { ArchitecturalVision, BusinessContext, PIPlanningEventConfig, PlanningAdjustment, PlanningAgendaItem, PlanningParticipant, } from '../services/program-increment/pi-planning-service';
+export type { CapacityPlanningResult, CapacityRisk, TeamAllocation } from '../services/program-increment/capacity-planning-service';
+export type { Achievement, Challenge, ImprovementRecommendation, LessonLearned, PICompletionReport } from '../services/program-increment/pi-completion-service';
+export type { DependencyHealth, PIExecutionMetrics, PredictabilityMetrics, QualityMetrics, RiskBurndown, VelocityTrend } from '../services/program-increment/pi-execution-service';
+export type { ArchitecturalVision, BusinessContext, PIPlanningEventConfig, PlanningAdjustment, PlanningAgendaItem, PlanningParticipant } from '../services/program-increment/pi-planning-service';
 export interface PIManagerConfig {
 readonly enableAGUIIntegration: boolean;
 readonly enableAutomatedCapacityPlanning: boolean;

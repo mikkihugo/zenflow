@@ -13,15 +13,34 @@ FULL_TRACEABILITY = "full_traceability, // Complete end-to-end view"
 
 }
 /**
-* Live gate status for dashboard display
-*/
+ * Live gate status for dashboard display
+ */
 export interface LiveGateStatus {
-gateId: getLogger;
-(: any): any;
-private safeFlowIntegration;
-(): any;
-private analytics;
+  gateId: string;
+  status: 'pending' | 'approved' | 'rejected' | 'escalated';
+  lastUpdated: Date;
+  approver?: string;
+  confidence?: number;
+}
 
+/**
+ * Dashboard configuration
+ */
+export interface DashboardConfig {
+  refreshInterval: number;
+  showAnalytics: boolean;
+  enableRealTime: boolean;
+}
+
+/**
+ * SAFe Dashboard component
+ */
+export declare class SafeDashboard {
+  private safeFlowIntegration: any;
+  private analytics: any;
+  constructor(config?: DashboardConfig);
+  render(): any;
+  updateGateStatus(gateId: string, status: LiveGateStatus): void;
 }
 export default CompleteSafeDashboard;
 //# sourceMappingURL=safe-dashboard.d.ts.map

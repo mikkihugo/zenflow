@@ -11,11 +11,12 @@
 /**
 * Task states in the workflow
 */
-export type TaskState = ;
-export type TaskPriority = 'critical' | ' high' | ' medium' | ' low'; /**';
+export type TaskState = 'todo' | 'in-progress' | 'review' | 'done';
+export type TaskPriority = 'critical' | 'high' | 'medium' | 'low';
+/**
 * Optimization strategies for workflow improvement
 */
-export type OptimizationStrategy = ;
+export type OptimizationStrategy = 'bottleneck-removal' | 'capacity-balancing' | 'flow-optimization';
 export interface WIPLimits {
 readonly analysis: number;
 readonly development: number;
@@ -53,9 +54,8 @@ readonly metadata?: Record<string, any>;
 export interface WorkflowBottleneck {
 readonly id: string;
 readonly state: TaskState;
-readonly type: 'capacity' | ' process' | ' dependency';
-readonly severity: low;
-
+readonly type: 'capacity' | 'process' | 'dependency';
+readonly severity: 'low' | 'medium' | 'high';
 }
 /**
 * Flow metrics for performance analysis
@@ -89,18 +89,17 @@ readonly performanceTrackingEnabled: boolean;
 * Kanban context for state machines and operations
 */
 export interface KanbanContext {
-readonly taskId?: string;
-readonly currentState?: TaskState;
-readonly metadata?: Record<string, any>;
-
+  readonly taskId?: string;
+  readonly currentState?: TaskState;
+  readonly metadata?: Record<string, any>;
 }
 /**
 * Event definitions for the kanban system
 */
 export interface WorkflowKanbanEvents {
-'kanban: initialized: {': any;
-timestamp: Date;
-config: WorkflowKanbanConfig;
-
+  'kanban:initialized': {
+    timestamp: Date;
+    config: WorkflowKanbanConfig;
+  };
 }
 //# sourceMappingURL=events.d.ts.map

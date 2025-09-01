@@ -229,12 +229,14 @@ export async function displaySystemStatus(): Promise<void> {
        : suggestion.priority === 'medium'
          ? '🟡'
          : '🟢';
-   logger.info(`📦 pnpm add ${suggestion.package}`);
+   logger.info(`${priorityEmoji} 📦 pnpm add ${suggestion.package}`);
    logger.info(` └─ ${suggestion.reason}`);
  }
 
  logger.info(`\nLast Updated: ${dashboard.timestamp}`);
  logger.info('='.repeat(50));
+ }
+}
 
 /**
  * Create health check data providers (data only, no Express routing)

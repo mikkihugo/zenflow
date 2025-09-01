@@ -64,11 +64,11 @@ readonly stages: Record<string, number>;
 readonly queueTime: number;
 readonly waitTime: number;
 readonly percentiles: {
-readonly p50: number;
-readonly p90: number;
-readonly p95: number;
-readonly p99: number;
-'};
+    readonly p50: number;
+    readonly p90: number;
+    readonly p95: number;
+    readonly p99: number;
+};
 
 }
 /**
@@ -146,7 +146,7 @@ readonly frequency: number;
 readonly averageDuration: number;
 readonly causes: string[];
 readonly solutions: string[];
-readonly priority: low | medium | high;
+readonly priority: 'low' | 'medium' | 'high';
 
 }
 /**
@@ -154,7 +154,7 @@ readonly priority: low | medium | high;
 */
 export interface TrendAnalysis {
 readonly metric: string;
-readonly direction: 'improving' | ' stable' | ' declining' | ' improving' | ' stable' | ' declining' | ' degrading';
+readonly direction: 'improving' | 'stable' | 'declining' | 'degrading';
 readonly change: number;
 readonly period: string;
 readonly confidence: number;
@@ -175,8 +175,8 @@ readonly confidence: number;
 * Performance recommendation
 */
 export interface PerformanceRecommendation {
-readonly category: optimization | scaling | configuration | 'architecture';
-readonly priority: low | medium | high;
+readonly category: 'optimization' | 'scaling' | 'configuration' | 'architecture';
+readonly priority: 'low' | 'medium' | 'high';
 
 }
 /**
@@ -186,7 +186,7 @@ export interface HistoricalComparison {
 readonly previousPeriod: ComparisonPeriod;
 readonly improvements: MetricImprovement[];
 readonly degradations: MetricDegradation[];
-readonly overallTrend: 'improving' | ' stable' | ' declining' | ' improving' | ' stable' | ' declining' | ' degrading';
+readonly overallTrend: 'improving' | 'stable' | 'declining' | 'degrading';
 
 }
 /**
@@ -205,7 +205,7 @@ readonly averageMetrics: Record<string, number>;
 export interface MetricImprovement {
 readonly metric: string;
 readonly improvement: number;
-readonly significance: 'low' | ' medium' | ' high';
+readonly significance: 'low' | 'medium' | 'high';
 
 }
 /**
@@ -214,7 +214,7 @@ readonly significance: 'low' | ' medium' | ' high';
 export interface MetricDegradation {
 readonly metric: string;
 readonly degradation: number;
-readonly significance: 'low' | ' medium' | ' high';
+readonly significance: 'low' | 'medium' | 'high';
 
 }
 /**
@@ -228,7 +228,7 @@ private readonly logger;
 private performanceMetrics;
 private historicalData;
 private activeAlerts;
-constructor(logger: logger);
+constructor(logger: any);
 
 }
 export default PipelinePerformanceService;

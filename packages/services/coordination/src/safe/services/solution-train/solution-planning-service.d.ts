@@ -25,61 +25,53 @@ readonly constraintId: 'resource';
 * Impact levels
 */
 export declare enum ImpactLevel {
-') = 0,
-low = 1,
-') = 2,
-medium = 3,
-') = 4,
-high = 5,
-') = 6,
-critical = 7,
-')) DAILY = ' = 0,
-daily = 1,
-') = 2,
-weekly = 3,
-') = 4,
-bi_weekly = 5,
-') = 6,
-pi_boundary = 7,
-') = 8,
-on_demand = 9,
-')business_owner';
-
+    low = 0,
+    medium = 1,
+    high = 2,
+    critical = 3
 }
+
+/**
+* Reporting frequency levels
+*/
+export declare enum ReportingFrequency {
+    daily = 0,
+    weekly = 1,
+    bi_weekly = 2,
+    pi_boundary = 3,
+    on_demand = 4
+}
+
 /**
 * Influence and interest levels
 */
 export declare enum InfluenceLevel {
-') = 0,
-high = 1,
-') = 2,
-medium = 3,
-') = 4,
-low = 5,
-')high';
-
+    low = 0,
+    medium = 1,
+    high = 2
 }
+
 /**
 * Planning risk
 */
 export interface PlanningRisk {
-readonly riskId: 'technical';
-
+    readonly riskId: string;
+    readonly probability: RiskProbability;
+    readonly impact: RiskImpact;
 }
+
 /**
 * Risk probability and impact
 */
 export declare enum RiskProbability {
-') = 0,
-high = 1,
-') = 2,
-medium = 3,
-') = 4,
-low = 5,
-')}; = 6,
-export = 7,
-enum = 8,
-RiskImpact = 9
+    low = 0,
+    medium = 1,
+    high = 2
+}
 
+export declare enum RiskImpact {
+    low = 0,
+    medium = 1,
+    high = 2
 }
 //# sourceMappingURL=solution-planning-service.d.ts.map

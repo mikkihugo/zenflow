@@ -82,6 +82,7 @@ export class EventRegistryInitializer {
   /**
    * Initialize the event registry with active modules
    */
+  // eslint-disable-next-line max-lines-per-function
   private initializeModules(): void {
     logger.info('Initializing event registry with active modules...');
 

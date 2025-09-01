@@ -2,7 +2,8 @@
 * @fileoverview SAFe Framework Kanban Integration
 *
 * Integrates SAFe framework with @claude-zen/kanban XState package.
-* Provides specialized SAFe workflow configurations and state machines for: * - Portfolio Kanban (Epic lifecycle management)
+* Provides specialized SAFe workflow configurations and state machines for:
+* - Portfolio Kanban (Epic lifecycle management)
 * - Program Kanban (Feature flow management)
 * - Team Kanban (Story and task coordination)
 * - Solution Kanban (Solution epic coordination)
@@ -18,8 +19,6 @@
 * @since 1.0.0
 * @version 1.0.0
 */
-import { type WorkflowKanbanConfig, type WorkflowTask } from '../../kanban';
-import type { EventEmitter } from 'node: events';
 interface WSJFPriority {
 businessValue: number;
 urgency: number;
@@ -31,7 +30,6 @@ lastUpdated: Date;
 confidence: number;
 
 }
-import type { Feature, PortfolioEpic, Story } from '../types';
 /**
 * Portfolio Kanban states for Epic lifecycle (SAFe-specific)
 */
@@ -51,7 +49,7 @@ export type SafeSolutionKanbanState = 'vision';
 /**
 * Create Portfolio Kanban configuration optimized for Epic lifecycle
 */
-export declare function createSafePortfolioKanbanConfig(): void {};
+export declare function createSafePortfolioKanbanConfig(): void;
 /**
 * SAFe Kanban Integration Summary
 *

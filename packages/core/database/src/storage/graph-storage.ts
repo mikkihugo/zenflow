@@ -518,15 +518,15 @@ export class GraphStorageImpl implements GraphStorage {
  ) {
  // Simple node query
  const nodeResult = await this.connection.query<{
- id: string;
- labels: string;
- properties: string;
- }>(`SELECT id, labels, properties FROM graph_nodes LIMIT 10`
+   id: string;
+   labels: string;
+   properties: string;
+ }>(`SELECT id, labels, properties FROM graph_nodes LIMIT 10`);
 
  const nodes = nodeResult.rows.map((row) => ({
- id: row.id,
- labels: JSON.parse(row.labels),
- properties: JSON.parse(row.properties),
+   id: row.id,
+   labels: JSON.parse(row.labels),
+   properties: JSON.parse(row.properties),
  }));
 
  return {

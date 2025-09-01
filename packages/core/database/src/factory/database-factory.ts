@@ -308,7 +308,7 @@ export class DatabaseFactoryImpl implements DatabaseFactory {
  });
 
  default:
- throw new Error(`Unsupported database type:${config.type}`
+   throw new Error(`Unsupported database type: ${config.type}`);
  }
  }
 
@@ -573,8 +573,8 @@ export function createStorage<T extends StorageType>(
  case 'vector':
  return factory.createVectorStorage(config);
  case 'graph':
- return factory.createGraphStorage(config);
+   return factory.createGraphStorage(config);
  default:
- throw new Error(`Unsupported storage type:${type}`
+   throw new Error(`Unsupported storage type: ${type}`);
  }
 }

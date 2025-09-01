@@ -4,24 +4,26 @@
 * Integration layer between Workflows (process orchestration) and Kanban (state management).
 * Enables workflows to leverage kanban state management patterns for step-based processes.
 *
-* **Integration Patterns: getLogger('WorkflowKanbanIntegration');
-// =============================================================================
-// WORKFLOW-KANBAN INTEGRATION TYPES
-// =============================================================================
+* **Integration Patterns:**
+* - Workflow steps can be managed as kanban items
+* - State transitions trigger workflow events
+* - Bidirectional event coordination
+*
+* =============================================================================
+* WORKFLOW-KANBAN INTEGRATION TYPES
+* =============================================================================
 /**
 * Integration configuration for workflow-kanban coordination
 */
 export interface WorkflowKanbanIntegrationConfig {
-/** Enable kanban state management for workflow steps */
-enableKanbanSteps?: boolean;
-/** Enable workflow triggers from kanban state transitions */
-enableKanbanTriggers?: boolean;
-/** Enable bidirectional event coordination */
-enableBidirectionalEvents?: boolean;
-/** Custom kanban configuration for workflow integration */
-kanbanConfig?: Partial<WorkflowKanbanConfig>;
-')};;: any;
-
+  /** Enable kanban state management for workflow steps */
+  enableKanbanSteps?: boolean;
+  /** Enable workflow triggers from kanban state transitions */
+  enableKanbanTriggers?: boolean;
+  /** Enable bidirectional event coordination */
+  enableBidirectionalEvents?: boolean;
+  /** Custom kanban configuration for workflow integration */
+  kanbanConfig?: Partial<WorkflowKanbanConfig>;
 }
 /**
 * Workflow step with kanban state integration

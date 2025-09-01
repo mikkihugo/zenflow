@@ -47,15 +47,14 @@ readonly name?: string;
 readonly params?: Record<string, unknown>;
 readonly timeout?: number;
 readonly retries?: number;
-readonly onError?: 'stop' | ' continue' | ' skip';
-readonly gateConfig?: {
-';: any;
-readonly enabled: boolean;
-readonly gateType?: 'approval| checkpoint| review' | ' decision';
-readonly businessImpact?: 'low| medium| high' | ' critical';
-readonly stakeholders?: string[];
-readonly autoApproval?: boolean;
-'};
+  readonly onError?: 'stop' | 'continue' | 'skip';
+  readonly gateConfig?: {
+    readonly enabled: boolean;
+    readonly gateType?: 'approval' | 'checkpoint' | 'review' | 'decision';
+    readonly businessImpact?: 'low' | 'medium' | 'high' | 'critical';
+    readonly stakeholders?: string[];
+    readonly autoApproval?: boolean;
+  };
 
 }
 export interface WorkflowDefinition {
@@ -72,7 +71,7 @@ readonly [key: string]: unknown;
 export interface WorkflowState {
 readonly id: string;
 readonly definition: WorkflowDefinition;
-status: 'pending| running| paused| completed| failed' | ' cancelled';
+status: 'pending' | 'running' | 'paused' | 'completed' | 'failed' | 'cancelled';
 readonly context: WorkflowContext;
 currentStep: number;
 readonly stepResults: Record<string, unknown>;
@@ -81,11 +80,11 @@ endTime?: string;
 error?: string;
 pendingGates?: Map<string, WorkflowGateRequest>;
 gateResults?: Map<string, WorkflowGateResult>;
-pausedForGate?: {
-stepIndex: number;
-gateId: string;
-pausedAt: string;
-'};
+  pausedForGate?: {
+    stepIndex: number;
+    gateId: string;
+    pausedAt: string;
+  };
 
 }
 export interface WorkflowEngineConfig {
@@ -95,10 +94,9 @@ readonly persistWorkflows?: boolean;
 readonly persistencePath?: string;
 readonly retryAttempts?: number;
 readonly enableAdvancedOrchestration?: boolean;
-readonly orchestrationMode?: 'basic' | ' advanced' | ' intelligent';
-readonly enableErrorRecovery?: boolean;
-';: any;
-readonly enablePerformanceTracking?: boolean;
+  readonly orchestrationMode?: 'basic' | 'advanced' | 'intelligent';
+  readonly enableErrorRecovery?: boolean;
+  readonly enablePerformanceTracking?: boolean;
 
 }
 export interface DocumentContent {

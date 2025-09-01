@@ -9,11 +9,9 @@ readonly archivalRequirements: ArchivalRequirement[];
 
 }
 export interface CompletionStakeholder {
-readonly userId: string;
-readonly name: string;
-'; : any;
-readonly role: product;
-
+    readonly userId: string;
+    readonly name: string;
+    readonly role: 'product' | 'engineering' | 'quality' | 'release';
 }
 export interface CompletionDeliverable {
 id: string;

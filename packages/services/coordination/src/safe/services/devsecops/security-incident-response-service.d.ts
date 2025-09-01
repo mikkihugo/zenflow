@@ -4,40 +4,49 @@
 * Service for managing security incidents and coordinating response activities.
 * Handles incident detection, classification, response coordination, and post-incident analysis.
 *
-* SINGLE RESPONSIBILITY: dateFns;';
-import {
-filter,
-'} from 'lodash-es')../../types');
+* SINGLE RESPONSIBILITY: Security incident response and coordination
+*/
+
+/**
 * Security incident classification
 */
 export interface SecurityIncident {
-readonly incidentId: 'low';
-
+  readonly incidentId: string;
+  readonly severity: 'low' | 'medium' | 'high' | 'critical';
+  readonly category: IncidentCategory;
+  readonly status: IncidentStatus;
+  readonly description: string;
+  readonly detectedAt: Date;
+  readonly reportedBy: string;
 }
 /**
 * Incident categories
 */
 export declare enum IncidentCategory {
-') = 0,
-malware = 1,
-') = 2,
-phishing = 3,
-') = 4,
-data_breach = 5,
-') = 6,
-unauthorized_access = 7,
-') = 8,
-dos_ddos = 9,
-') = 10,
-insider_threat = 11,
-') = 12,
-vulnerability_exploit = 13,
-') = 14,
-compliance_violation = 15,
-') = 16,
-other = 17,
-')log_file';
+  UNKNOWN = 0,
+  MALWARE = 1,
+  INTRUSION = 2,
+  PHISHING = 3,
+  UNAUTHORIZED = 4,
+  DATA_BREACH = 5,
+  CONFIGURATION = 6,
+  UNAUTHORIZED_ACCESS = 7,
+  DOS_DDOS = 8,
+  INSIDER_THREAT = 9,
+  VULNERABILITY_EXPLOIT = 10,
+  COMPLIANCE_VIOLATION = 11,
+  OTHER = 12
+}
 
+/**
+* Incident status types
+*/
+export declare enum IncidentStatus {
+  DETECTED = 'detected',
+  INVESTIGATING = 'investigating',
+  CONTAINED = 'contained',
+  RESOLVED = 'resolved',
+  CLOSED = 'closed'
 }
 /**
 * Chain of custody entry
@@ -50,22 +59,20 @@ readonly timestamp: 'none';
 * Business impact levels
 */
 export declare enum BusinessImpactLevel {
-') = 0,
-minimal = 1,
-') = 2,
-moderate = 3,
-') = 4,
-significant = 5,
-') = 6,
-severe = 7,
-')planned';
-
+  NONE = 0,
+  MINIMAL = 1,
+  MODERATE = 2,
+  SIGNIFICANT = 3,
+  SEVERE = 4
 }
+
 /**
 * Incident resolution
 */
 export interface IncidentResolution {
-readonly rootCause: logger;
-
+  readonly rootCause: string;
+  readonly resolution: string;
+  readonly preventiveActions: string[];
+  readonly lessonsLearned: string;
 }
 //# sourceMappingURL=security-incident-response-service.d.ts.map

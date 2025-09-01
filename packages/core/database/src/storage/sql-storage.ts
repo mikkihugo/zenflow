@@ -76,7 +76,7 @@ class TransactionSQLStorageImpl implements SqlStorage {
  }
 
  async truncateTable(name: string): Promise<void> {
- await this.execute(`DELETE FROM ${name}`
+   await this.execute(`DELETE FROM ${name}`);
  }
 
  async createIndex(
@@ -103,23 +103,23 @@ class TransactionSQLStorageImpl implements SqlStorage {
  async getTableSchema(name: string): Promise<TableSchema | null> {
  // This is a simplified implementation for transactions
  const result = await this.query<{
- name: string;
- type: string;
- notnull: number;
- }>(`PRAGMA table_info(${name})`
+   name: string;
+   type: string;
+   notnull: number;
+ }>(`PRAGMA table_info(${name})`);
 
  if (result.rows.length === 0) {
- return null;
+   return null;
  }
 
  return {
- name,
- columns: result.rows.map((row) => ({
- name: row.name,
- type: row.type,
- nullable: row.notnull === 0,
- defaultValue: undefined,
- maxLength: undefined,
+   name,
+   columns: result.rows.map((row) => ({
+     name: row.name,
+     type: row.type,
+     nullable: row.notnull === 0,
+     defaultValue: undefined,
+     maxLength: undefined,
  precision: undefined,
  scale: undefined,
  })),
@@ -318,16 +318,16 @@ export class SQLStorageImpl implements SqlStorage {
 
  async truncateTable(name: string): Promise<void> {
  try {
- logger.debug('Truncating table', { name });
+   logger.debug('Truncating table', { name });
 
- await this.execute(`DELETE FROM ${name}`
+   await this.execute(`DELETE FROM ${name}`);
 
- logger.info('Table truncated successfully', { name });
+   logger.info('Table truncated successfully', { name });
  } catch (error) {
- logger.error('Failed to truncate table', {
- name,
- error: error instanceof Error ? error.message : String(error),
- });
+   logger.error('Failed to truncate table', {
+     name,
+     error: error instanceof Error ? error.message : String(error),
+   });
  throw new QueryError(
  `Failed to truncate table:${error instanceof Error ? error.message : String(error)}`,
  {
@@ -384,20 +384,20 @@ export class SQLStorageImpl implements SqlStorage {
  logger.debug('Getting table info', { tableName });
 
  const result = await this.query<{
- name: string;
- type: string;
- notnull: number;
- }>(`PRAGMA table_info(${tableName})`
+   name: string;
+   type: string;
+   notnull: number;
+ }>(`PRAGMA table_info(${tableName})`);
 
  const columns = result.rows.map((row) => ({
- name: row.name,
- type: row.type,
- nullable: row.notnull === 0,
+   name: row.name,
+   type: row.type,
+   nullable: row.notnull === 0,
  }));
 
  logger.debug('Table info retrieved', {
- tableName,
- columnCount: columns.length,
+   tableName,
+   columnCount: columns.length,
  });
  return columns;
  } catch (error) {

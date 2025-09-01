@@ -228,13 +228,20 @@ permissions: Permission[];
 
 }
 /**
-* Workflow template for reusable workflows
-*/
+ * Workflow template for reusable workflows
+ */
 export interface WorkflowTemplate extends Omit<Entity, 'version'> {
   name: string;
+  description?: string;
+  category?: string;
+  tags?: string[];
+  template: WorkflowDefinition;
+  metadata?: Record<string, unknown>;
+}
+
 /**
-* Template usage examples
-*/
+ * Template usage examples
+ */
 export interface TemplateExample {
   name: string;
   description: string;
@@ -242,15 +249,14 @@ export interface TemplateExample {
   expectedOutput: Record<string, unknown>;
 }
 /**
-* Template documentation
-*/
+ * Template documentation
+ */
 export interface TemplateDocumentation {
-overview: string;
-prerequisites: string[];
-steps: StepDocumentation[];
-troubleshooting: TroubleshootingGuide[];
-changelog: ChangelogEntry[];
-
+  overview: string;
+  prerequisites: string[];
+  steps: StepDocumentation[];
+  troubleshooting: TroubleshootingGuide[];
+  changelog: ChangelogEntry[];
 }
 /**
 * Workflow validation rules
@@ -615,36 +621,34 @@ export type WorkflowResult<T> = Result<T, WorkflowError>;
 export type ExecutionResult = Result<WorkflowExecution, ExecutionError>;
 export type StepResult = Result<StepExecution, StepExecutionError>;
 /**
-* Workflow-specific error types
-*/
+ * Workflow-specific error types
+ */
 export interface WorkflowError extends Omit<ValidationError, 'type'> {
-';: any;
-type: 'WorkflowError';
-category: 'execution';
-stepId?: UUID;
-';: any;
-retryable: 'execution';
-stepId: UUID;
-phase: 'validation| execution| output' | ' cleanup';
-recoverable: boolean;
+  type: 'WorkflowError';
+  category: 'execution' | 'validation' | 'configuration';
+  stepId?: UUID;
+  retryable: boolean;
+  phase: 'validation' | 'execution' | 'output' | 'cleanup';
+  recoverable: boolean;
 
 }
 declare const _default: {
-WorkflowStatus: typeof WorkflowStatus;
-StepStatus: typeof StepStatus;
-ExecutionStrategy: any;
-TriggerType: any;
-WorkflowCategory: any;
-StepType: any;
-BackoffStrategy: any;
-ErrorStrategy: any;
-DependencyType: any;
-LogLevel: any;
-ArtifactType: any;
-ParameterType: any;
-RollbackStrategy: any;
-LockType: any;
-'};;': string;
-'};
+  WorkflowStatus: typeof WorkflowStatus;
+  StepStatus: typeof StepStatus;
+  ExecutionStrategy: any;
+  TriggerType: any;
+  WorkflowCategory: any;
+  StepType: any;
+  BackoffStrategy: any;
+  ErrorStrategy: any;
+  DependencyType: any;
+};
+
+export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+export type ArtifactType = 'file' | 'data' | 'result';
+export type ParameterType = 'string' | 'number' | 'boolean' | 'object';
+export type RollbackStrategy = 'none' | 'compensate' | 'retry';
+export type LockType = 'exclusive' | 'shared';
+
 export default _default;
 //# sourceMappingURL=index.d.ts.map

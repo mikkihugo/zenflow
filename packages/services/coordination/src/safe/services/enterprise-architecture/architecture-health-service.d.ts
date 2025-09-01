@@ -1,19 +1,22 @@
 export interface ArchitectureHealthMetrics {
-readonly timestamp: 'A| B| C| D| F';
-
+  readonly timestamp: Date;
+  readonly overallGrade: 'A' | 'B' | 'C' | 'D' | 'F';
+  readonly overallScore: number;
+  readonly dimensions: HealthDimension[];
+  readonly lastAssessment: Date;
 }
-export interface HealthDimension {
-';: any;
-readonly name: string;
-readonly category: 'technical| operational| strategic' | ' compliance';
-readonly score: number;
-readonly weight: number;
-readonly status: 'excellent| good| fair| poor' | ' critical';
-readonly trend: 'improving' | ' stable' | ' declining' | ' improving' | ' stable' | ' declining' | ' declining';
-readonly metrics: DimensionMetric[];
-readonly issues: HealthIssue[];
-readonly recommendations: string[];
 
+export interface HealthDimension {
+  readonly id: string;
+  readonly name: string;
+  readonly category: 'technical' | 'operational' | 'strategic' | 'compliance';
+  readonly score: number;
+  readonly weight: number;
+  readonly status: 'excellent' | 'good' | 'fair' | 'poor' | 'critical';
+  readonly trend: 'improving' | 'stable' | 'declining';
+  readonly metrics: DimensionMetric[];
+  readonly issues: HealthIssue[];
+  readonly recommendations: string[];
 }
 export interface DimensionMetric {
 readonly metricId: string;
@@ -51,12 +54,17 @@ readonly factors: string[];
 
 }
 export interface HealthIssue {
-readonly issueId: string;
-readonly title: string;
-readonly description: string;
-readonly category: architecture | design | implementation | operations | 'governance';
-readonly severity: critical | high | medium;
-
+  readonly issueId: string;
+  readonly title: string;
+  readonly description: string;
+  readonly category: 'architecture' | 'design' | 'implementation' | 'operations' | 'governance';
+  readonly severity: 'critical' | 'high' | 'medium' | 'low';
+  readonly impact: IssueImpact;
+  readonly cost: IssueCost;
+  readonly status: 'open' | 'in_progress' | 'resolved' | 'closed';
+  readonly assignedTo?: string;
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
 }
 export interface IssueImpact {
 readonly performance: 'high| medium| low' | ' none';

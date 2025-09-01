@@ -12,17 +12,17 @@
 */
 export {
 KanbanConfigSchema,
-TaskPrioritySchema,
-TaskStateSchema,
-ValidationUtils,
-WIPLimitsSchema,
-WorkflowTaskSchema,
-'} from '../utils/validation';
+  TaskPrioritySchema,
+  TaskStateSchema,
+  ValidationUtils,
+  WIPLimitsSchema,
+  WorkflowTaskSchema,
+} from '../utils/validation';
 export {
-ImmutableContextUtils,
-ImmutableMetricsUtils,
-ImmutableTaskUtils,
-ImmutableUtils,
-ImmutableWIPUtils,
-'} from './immutable-utils';
+  ImmutableContextUtils,
+  ImmutableMetricsUtils,
+  ImmutableTaskUtils,
+  ImmutableUtils,
+  ImmutableWIPUtils,
+} from './immutable-utils';
 //# sourceMappingURL=index.d.ts.map

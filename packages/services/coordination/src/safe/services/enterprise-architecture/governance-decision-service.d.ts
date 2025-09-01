@@ -2,20 +2,18 @@ export interface GovernanceDecision {
 id: string;
 
 }
-export type DecisionType = architecture_standard | technology_selection | design_pattern | security_policy | integration_approach | data_governance | performance_requirement | compliance_exception | investment_decision | 'strategic_direction';
-export type DecisionStatus = submitted | under_review | pending_approval | approved | rejected | escalated | withdrawn | implemented | 'closed';
+export type DecisionType = 'architecture_standard' | 'technology_selection' | 'design_pattern' | 'security_policy' | 'integration_approach' | 'data_governance' | 'performance_requirement' | 'compliance_exception' | 'investment_decision' | 'strategic_direction';
+export type DecisionStatus = 'submitted' | 'under_review' | 'pending_approval' | 'approved' | 'rejected' | 'escalated' | 'withdrawn' | 'implemented' | 'closed';
 export interface DecisionMaker {
-';: any;
-readonly userId: string;
-readonly name: string;
-readonly role: string;
-readonly department: string;
-readonly weight: number;
-readonly required: boolean;
-readonly delegateId?: string;
-readonly expertise: string[];
-readonly availability: AvailabilityWindow[];
-
+  readonly userId: string;
+  readonly name: string;
+  readonly role: string;
+  readonly department: string;
+  readonly weight: number;
+  readonly required: boolean;
+  readonly delegateId?: string;
+  readonly expertise: string[];
+  readonly availability: AvailabilityWindow[];
 }
 export interface AvailabilityWindow {
 readonly startDate: Date;
@@ -170,15 +168,13 @@ readonly deadline?: Date;
 readonly compliance: ComplianceStatus;
 
 }
-export type ComplianceStatus = compliant | non_compliant | partially_compliant | 'under_review';
+export type ComplianceStatus = 'compliant' | 'non_compliant' | 'partially_compliant' | 'under_review';
 export interface VendorConstraint {
-';: any;
-readonly vendor: string;
-readonly constraint: string;
-readonly type: 'licensing| technical| commercial' | ' support';
-readonly impact: string;
-readonly workaround?: string;
-
+  readonly vendor: string;
+  readonly constraint: string;
+  readonly type: 'licensing' | 'technical' | 'commercial' | 'support';
+  readonly impact: string;
+  readonly workaround?: string;
 }
 export interface DecisionWorkflow {
 readonly workflowId: string;
@@ -236,12 +232,10 @@ readonly timeout: string;
 
 }
 export interface VotingRule {
-readonly method: 'unanimous| majority| weighted' | ' quorum';
-readonly threshold?: number;
-';: any;
-readonly tieBreaker: string;
-readonly abstentionHandling: 'ignore' | ' count_as_no' | ' escalate';
-
+  readonly method: 'unanimous' | 'majority' | 'weighted' | 'quorum';
+  readonly threshold?: number;
+  readonly tieBreaker: string;
+  readonly abstentionHandling: 'ignore' | 'count_as_no' | 'escalate';
 }
 export interface DelegationRule {
 readonly fromRole: string;

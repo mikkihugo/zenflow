@@ -17,14 +17,13 @@ readonly notificationEnabled: boolean;
 * Quality gate context for execution
 */
 export interface QualityGateContext {
-readonly projectId: string;
-'; : any;
-readonly environment: 'development' | ' staging' | ' production';
-readonly artifacts: QualityArtifact[];
-readonly metadata: Record<string, unknown>;
-readonly previousResults?: QualityGateResult[];
-readonly historicalData?: QualityHistoricalData;
-
+  readonly projectId: string;
+  readonly branch: string;
+  readonly environment: 'development' | 'staging' | 'production';
+  readonly artifacts: QualityArtifact[];
+  readonly metadata: Record<string, unknown>;
+  readonly previousResults?: QualityGateResult[];
+  readonly historicalData?: QualityHistoricalData;
 }
 /**
 * Quality artifact for evaluation
@@ -116,10 +115,11 @@ import type { QualityGateCriterion, QualityGateResult } from './sparc-cd-mapping
 * intelligent scoring, AI-powered optimization, and human-in-loop approvals for critical decisions.
 */
 export declare class QualityGateService {
-private readonly logger;
-private qualityGateTemplates;
-private executionHistory;
-constructor(logger: logger);
-
+  private readonly logger;
+  private qualityGateTemplates;
+  private executionHistory;
+  constructor(logger: any) {
+    this.logger = logger;
+  }
 }
 //# sourceMappingURL=quality-gate-service.d.ts.map

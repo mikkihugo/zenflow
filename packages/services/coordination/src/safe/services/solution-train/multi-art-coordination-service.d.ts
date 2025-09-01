@@ -18,49 +18,41 @@ readonly coordinationId: 'technical';
 * Dependency criticality levels
 */
 export declare enum DependencyCriticality {
-') = 0,
-low = 1,
-') = 2,
-medium = 3,
-') = 4,
-high = 5,
-') = 6,
-critical = 7,
-')) CONTINUOUS = ' = 0,
-continuous = 1,
-') = 2,
-daily = 3,
-') = 4,
-weekly = 5,
-') = 6,
-pi_boundary = 7,
-') = 8,
-on_demand = 9,
-')) REAL_TIME = ' = 0,
-real_time = 1,
-') = 2,
-daily = 3,
-') = 4,
-weekly = 5,
-') = 6,
-sprint_boundary = 7,
-') = 8,
-pi_boundary = 9,
-')};
-/**
-* Synchronization strategy
-*/
-= 10
-/**
-* Synchronization strategy
-*/
-,
-/**
-* Synchronization strategy
-*/
-export = 11,
-interface = 12,
-SynchronizationStrategy = 13
+    low = 0,
+    medium = 1,
+    high = 2,
+    critical = 3
+}
 
+/**
+* Synchronization frequency levels
+*/
+export declare enum SynchronizationFrequency {
+    continuous = 0,
+    daily = 1,
+    weekly = 2,
+    monthly = 3,
+    pi_boundary = 4,
+    on_demand = 5
+}
+
+/**
+* Reporting frequency levels
+*/
+export declare enum ReportingFrequency {
+    real_time = 0,
+    daily = 1,
+    weekly = 2,
+    sprint_boundary = 3,
+    pi_boundary = 4
+}
+
+/**
+* Synchronization strategy
+*/
+export interface SynchronizationStrategy {
+    frequency: SynchronizationFrequency;
+    reporting: ReportingFrequency;
+    criticality: DependencyCriticality;
 }
 //# sourceMappingURL=multi-art-coordination-service.d.ts.map

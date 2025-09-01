@@ -220,7 +220,7 @@ export class DatabaseFacade {
       },
 
       async transaction<T>(
-        operation: (conn: any) => Promise<T>
+        operation: (conn: DatabaseConnection) => Promise<T>
       ): Promise<T> {
         logger.warn('Fallback transaction - executing without transaction safety');
         const connectionResult = await this.connect({ type, database: 'fallback' });
@@ -511,6 +511,7 @@ export class DatabaseFacade {
         return Promise.resolve();
       },
 
+      // eslint-disable-next-line max-params
       addEdge(
         id: string,
         fromId: string,

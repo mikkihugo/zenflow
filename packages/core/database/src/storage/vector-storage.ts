@@ -188,7 +188,7 @@ export class VectorStorageImpl implements VectorStorage {
  // First check if vector exists
  const existing = await this.get(id);
  if (!existing) {
- throw new QueryError(`Vector with id ${id} does not exist`
+   throw new QueryError(`Vector with id ${id} does not exist`);
  }
 
  // Build update query

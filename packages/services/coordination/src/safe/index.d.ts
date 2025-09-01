@@ -29,7 +29,7 @@ Story,
 TeamCapacity,
 TeamMember,
 ValueStream,
-'} from './types';
+} from './types';
 export type {
 EpicBlocker,
 EpicBusinessCase,
@@ -38,11 +38,11 @@ EpicOwnerManagerConfig,
 GateCriterion,
 QualityGate as EpicQualityGate,
 WSJFScore,
-'} from './types/epic-management';
+} from './types/epic-management';
 export type {
 QualityGate as IntegrationQualityGate,
 QualityGateSettings,
-'} from './types/integration-bridge';
+} from './types/integration-bridge';
 export type * from './types/product-management';
 export { default as SolutionManager } from './coordinators/solution-manager';
 export { DocumentTaskVisionCoordinator } from './coordinators/solution-manager';
@@ -93,7 +93,7 @@ SafePortfolioKanbanState,
 SafeProgramKanbanState,
 SafeSolutionKanbanState,
 SafeTeamKanbanState,
-'} from './integrations/kanban-integration';
+} from './integrations/kanban-integration';
 export {
 createSafePortfolioKanban,
 createSafeProgramKanban,
@@ -101,7 +101,7 @@ createSafeTeamKanban,
 featureToKanbanTask,
 portfolioEpicToKanbanTask,
 storyToKanbanTask,
-'} from './integrations/kanban-integration';
+} from './integrations/kanban-integration';
 export { SafeCollectionUtils } from './utilities/collections/safe-collections';
 export { SafeDateUtils } from './utilities/date/safe-date-utils';
 export { SafeValidationUtils } from './utilities/validation/safe-validation';

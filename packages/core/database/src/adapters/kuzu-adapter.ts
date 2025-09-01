@@ -1012,18 +1012,18 @@ export class KuzuAdapter implements DatabaseConnection {
  }
 
  private async createMigrationsTable(): Promise<void> {
- try {
- await this.query(`
+   try {
+     await this.query(`
  CREATE NODE TABLE IF NOT EXISTS _Migration (
- version STRING, 
- name STRING, 
+ version STRING,
+ name STRING,
  applied_at TIMESTAMP,
  PRIMARY KEY (version)
  )
- `
- } catch (error) {
- logger.warn('Could not create migrations table', { error });
- }
+ `);
+   } catch (error) {
+     logger.warn('Could not create migrations table', { error });
+   }
  }
 
  private async recordMigration(version: string, name: string): Promise<void> {

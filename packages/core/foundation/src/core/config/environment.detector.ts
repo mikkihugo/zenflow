@@ -341,10 +341,11 @@ export class EnvironmentDetector extends EventEmitter {
  /**
  * Get predefined tool definitions
  */
+ // eslint-disable-next-line max-lines-per-function
  private getToolDefinitions(): Array<{
- name: string;
- type: EnvironmentTool['type'];
- command: string;
+   name: string;
+   type: EnvironmentTool['type'];
+   command: string;
  }> {
  return [
  // Package Managers

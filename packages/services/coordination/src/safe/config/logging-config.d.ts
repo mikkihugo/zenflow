@@ -17,13 +17,11 @@ export type SafeLogger = Logger;
 * Default logger configuration for SAFe Framework
 */
 export declare const defaultLoggerConfig: {
-level: "info ";
-';: any;
-'json ': any;
-const: any;
-true: any;
-colorize: boolean;
-component: any;
-'};': string;
-'};
+    level: "info";
+    json: any;
+    const: any;
+    true: any;
+    colorize: boolean;
+    component: any;
+};
 //# sourceMappingURL=logging-config.d.ts.map

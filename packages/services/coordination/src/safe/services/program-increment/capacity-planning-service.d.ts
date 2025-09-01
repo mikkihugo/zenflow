@@ -13,15 +13,14 @@ readonly bufferCapacity: number;
 
 }
 export interface TeamMember {
-readonly memberId: string;
-readonly name: string;
-'; : any;
-readonly role: developer | tester | architect | analyst | designer | 'devops';
-readonly capacity: number;
-readonly skills: string[];
-readonly experience: 'junior| mid| senior' | ' expert';
-readonly availability: number;
-readonly crossTrainingAreas: string[];
+    readonly memberId: string;
+    readonly name: string;
+    readonly role: 'developer' | 'tester' | 'architect' | 'analyst' | 'designer' | 'devops';
+    readonly capacity: number;
+    readonly skills: string[];
+    readonly experience: 'junior' | 'mid' | 'senior' | 'expert';
+    readonly availability: number;
+    readonly crossTrainingAreas: string[];
 
 }
 export interface TeamSkill {

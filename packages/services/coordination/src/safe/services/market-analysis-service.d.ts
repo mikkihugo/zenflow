@@ -4,25 +4,17 @@
 * Service for market analysis, competitive intelligence, and opportunity assessment.
 * Handles market sizing, trend analysis, and competitive positioning.
 *
-* SINGLE RESPONSIBILITY: dateFns;';
-import {
-filter,
-map,
-maxBy,
-meanBy,
-orderBy,
-sumBy,
-'} from 'lodash-es')../types');
-CompetitorAnalysis,
-MarketOpportunity,
-MarketTrend,
-PricingStrategy,
-'} from '../types/product-management');
+* SINGLE RESPONSIBILITY: Market analysis and competitive intelligence
+*/
+
+
+
+
+
+/**
 * Market analysis configuration
 */
 export interface MarketAnalysisConfig {
-readonly analysisDepth: new () => Map<string, CompetitorAnalysis>;
-(): any;
-
+  readonly analysisDepth: number;
 }
 //# sourceMappingURL=market-analysis-service.d.ts.map

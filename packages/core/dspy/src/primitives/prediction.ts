@@ -142,7 +142,7 @@ for (const key of Object.keys(prediction.data)) fields.add(key);
 }
 
 for (const key of Object.keys(prediction)) {
-if (key !== 'data{
+if (key !== 'data') {
 fields.add(key);
 }
 }
@@ -153,14 +153,14 @@ return Array.from(fields);
 /**
 * Validate prediction structure
 */
-static validate(prediction: any): prediction is Prediction {
+static validate(prediction:any): prediction is Prediction {
 return prediction && typeof prediction === 'object';
 }
 
 /**
 * Convert prediction to string
 */
-static toString(prediction: Prediction): string {
+static toString(prediction:Prediction): string {
 if (prediction.data) {
 return JSON.stringify(prediction.data);
 }
@@ -170,7 +170,7 @@ return JSON.stringify(prediction);
 /**
 * Deep copy prediction
 */
-static deepcopy(prediction: Prediction): Prediction {
+static deepcopy(prediction:Prediction): Prediction {
 return JSON.parse(JSON.stringify(prediction));
 }
 

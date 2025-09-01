@@ -8,11 +8,13 @@ DocumentContent,
 StepExecutionResult,
 WorkflowContext,
 WorkflowData,
-WorkflowDefinition,
 WorkflowEngineConfig,
 WorkflowState,
 WorkflowStep,
-} from './workflow-base-types'; // Import WorkflowDefinition for proper typing
+} from './workflow-base-types.ts';
+
+// Import WorkflowDefinition directly
+import type { WorkflowDefinition } from './workflow-base-types.ts';
 // Additional workflow types for advanced functionality
 export interface WorkflowTemplate {
   id: string;

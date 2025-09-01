@@ -78,8 +78,6 @@ export interface VisionArtifact {
 export class VisionManagementService {
   private readonly logger = getLogger('VisionManagementService');
   private visions: Map<string, VisionArtifact> = new Map();
-  private database: unknown;
-  private eventSystem: unknown;
 
   constructor() {
     this.logger.info('Vision Management Service initialized');

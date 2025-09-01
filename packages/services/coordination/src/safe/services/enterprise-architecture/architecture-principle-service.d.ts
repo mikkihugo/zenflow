@@ -3,13 +3,12 @@ id: string;
 
 }
 export interface PrincipleComplianceMetrics {
-readonly complianceRate: number;
-readonly violationCount: number;
-readonly lastComplianceCheck: Date;
-readonly criticalViolations: ComplianceViolation[];
-readonly trend: 'improving' | ' stable' | ' declining' | ' improving' | ' stable' | ' declining' | ' declining';
-readonly riskLevel: 'low| medium| high' | ' critical';
-
+  readonly complianceRate: number;
+  readonly violationCount: number;
+  readonly lastComplianceCheck: Date;
+  readonly criticalViolations: ComplianceViolation[];
+  readonly trend: 'improving' | 'stable' | 'declining';
+  readonly riskLevel: 'low' | 'medium' | 'high' | 'critical';
 }
 export interface ComplianceViolation {
 id: string;
@@ -25,7 +24,7 @@ readonly conditions?: string[];
 }
 export interface PrincipleRelationship {
 readonly relatedPrincipleId: string;
-readonly relationshipType: depends_on | conflicts_with | complements | 'supersedes';
+  readonly relationshipType: 'depends_on' | 'conflicts_with' | 'complements' | 'supersedes';
 readonly description: string;
 readonly strength: number;
 
@@ -45,9 +44,9 @@ readonly includeTeams: string[];
 readonly excludeTeams: string[];
 readonly includeArtifacts: string[];
 readonly timeWindow: {
-readonly startDate: Date;
-readonly endDate: Date;
-'};
+  readonly startDate: Date;
+  readonly endDate: Date;
+};
 
 }
 export interface ComplianceRule {
@@ -55,7 +54,7 @@ readonly ruleId: string;
 readonly name: string;
 readonly description: string;
 readonly condition: string;
-readonly severity: critical | high | medium;
+  readonly severity: 'critical' | 'high' | 'medium' | 'low';
 
 }
 export interface ValidationThresholds {
@@ -63,25 +62,24 @@ readonly minComplianceRate: number;
 readonly maxViolationsPerProject: number;
 readonly criticalViolationThreshold: number;
 readonly alertThresholds: {
-readonly warning: number;
-readonly critical: number;
-'};
+  readonly warning: number;
+  readonly critical: number;
+};
 
 }
 export interface ReportingConfig {
-readonly frequency: 'daily| weekly| monthly' | ' quarterly';
-readonly recipients: string[];
-readonly format: 'dashboard| email| api' | ' all';
-readonly includeRecommendations: boolean;
-readonly includeTrends: boolean;
-
+  readonly frequency: 'daily' | 'weekly' | 'monthly' | 'quarterly';
+  readonly recipients: string[];
+  readonly format: 'dashboard' | 'email' | 'api' | 'all';
+  readonly includeRecommendations: boolean;
+  readonly includeTrends: boolean;
 }
 export interface PrincipleCreationRequest {
 readonly name: string;
 readonly statement: string;
 readonly rationale: string;
 readonly category: string;
-readonly priority: critical | high | medium;
+  readonly priority: 'critical' | 'high' | 'medium' | 'low';
 
 }
 export interface PrincipleValidationResult {
@@ -126,10 +124,11 @@ readonly owner: string;
 /**
 * Architecture Principle Service for enterprise architecture principles management
 */
-export declare class ArchitecturePrincipleService extends EventBus {
-private readonly logger;
-private knowledgeManager;
-constructor(logger: logger);
-
+export declare class ArchitecturePrincipleService {
+  private readonly logger;
+  private knowledgeManager;
+  constructor(logger: any) {
+    this.logger = logger;
+  }
 }
 //# sourceMappingURL=architecture-principle-service.d.ts.map

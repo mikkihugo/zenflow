@@ -1,38 +1,92 @@
-export type { AutomationResult, PipelineArtifact, PipelineExecution, RetryPolicy, RollbackPolicy, } from './sparc-cd-mapping-service';
+export type { AutomationResult, PipelineArtifact, PipelineExecution, RetryPolicy, RollbackPolicy } from './sparc-cd-mapping-service';
+
+/**
+ * Deployment status types
+ */
+export type DeploymentStatus = 'pending' | 'in_progress' | 'completed' | 'failed' | 'rolled_back';
+
+/**
+ * Action execution result
+ */
+export interface ActionExecution {
+  readonly actionId: string;
+  readonly status: DeploymentStatus;
+  readonly result: unknown;
+  readonly message: string;
+  readonly executedAt: Date;
+}
+
+/**
+ * Condition execution result
+ */
+export interface ConditionExecution {
+  readonly conditionId: string;
+  readonly status: DeploymentStatus;
+  readonly result: boolean;
+  readonly message: string;
+  readonly evaluatedAt: Date;
+}
+
+/**
+ * Deployment action
+ */
+export interface DeploymentAction {
+  readonly id: string;
+  readonly type: string;
+  readonly parameters: Record<string, unknown>;
+}
+
+/**
+ * Target group configuration
+ */
+export interface TargetGroup {
+  readonly name: string;
+  readonly port: number;
+  readonly protocol: 'HTTP' | 'HTTPS' | 'TCP' | 'TLS';
+  readonly healthCheck: HealthCheck;
+}
+
 /**
 * Deployment strategy types
 */
 export declare enum DeploymentStrategy {
-BLUE_GREEN = "blue_green",
-CANARY = "canary",
-ROLLING = "rolling",
-RECREATE = "recreate",
-A_B_TESTING = "a_b_testing"
-
+  BLUE_GREEN = "blue_green",
+  CANARY = "canary",
+  ROLLING = "rolling",
+  RECREATE = "recreate",
+  A_B_TESTING = "a_b_testing"
 }
+
+/**
+* Load balancer configuration
+*/
+export interface LoadBalancerConfig {
+  readonly type: 'application' | 'network' | 'classic';
+  readonly scheme: 'internet-facing' | 'internal';
+  readonly targetGroups: TargetGroup[];
+}
+
 /**
 * Deployment environment configuration
 */
 export interface DeploymentEnvironment {
-id: string;
-
+  id: string;
 }
+
 /**
 * Phase execution
 */
 export interface PhaseExecution {
-readonly phaseId: string;
-readonly status: DeploymentStatus;
-readonly actions: ActionExecution[];
-readonly conditions: ConditionExecution[];
-readonly startTime?: Date;
-readonly endTime?: Date;
-readonly duration?: number;
-')met' | ' not_met' | ' timeout';
-readonly result: unknown;
-readonly message: string;
-readonly evaluatedAt: Date;
-
+  readonly phaseId: string;
+  readonly status: DeploymentStatus;
+  readonly actions: ActionExecution[];
+  readonly conditions: ConditionExecution[];
+  readonly startTime?: Date;
+  readonly endTime?: Date;
+  readonly duration?: number;
+  readonly result: unknown;
+  readonly message: string;
+  readonly evaluatedAt: Date;
 }
 /**
 * Deployment metrics
@@ -119,7 +173,7 @@ id: string;
 */
 export interface PerformanceThreshold {
 readonly metric: string;
-readonly operator: 'lt| lte| gt' | ' gte';
+readonly operator: 'lt' | 'lte' | 'gt' | 'gte';
 readonly value: number;
 readonly percentile?: number;
 
@@ -152,7 +206,7 @@ readonly measurement: string;
 * Rollout validation
 */
 export interface RolloutValidation {
-readonly strategy: 'immediate' | ' gradual' | ' scheduled';
+readonly strategy: 'immediate' | 'gradual' | 'scheduled';
 readonly phases: RolloutPhase[];
 readonly approvals: ApprovalGate[];
 readonly monitoringPeriod: number;
@@ -174,7 +228,7 @@ readonly criteria: RolloutCriteria[];
 export interface RolloutCriteria {
 readonly metric: string;
 readonly threshold: number;
-readonly operator: 'lt| lte| gt' | ' gte';
+readonly operator: 'lt' | 'lte' | 'gt' | 'gte';
 readonly required: boolean;
 
 }
@@ -189,35 +243,21 @@ id: string;
 * Supporting interfaces
 */
 export interface StorageConfig {
-readonly type: 'ebs| efs| gcs' | ' azure_disk';
-readonly size: number;
-readonly iops?: number;
-readonly encrypted: boolean;
-
-}
-export interface LoadBalancerConfig {
-readonly type: 'application' | ' network' | ' classic';
-readonly scheme: 'internet-facing' | ' internal';
-readonly targetGroups: TargetGroup[];
-
-}
-export interface TargetGroup {
-readonly name: string;
-readonly port: number;
-readonly protocol: 'HTTP| HTTPS| TCP' | ' TLS';
-readonly healthCheck: HealthCheck;
-
+  readonly type: 'ebs' | 'efs' | 'gcs' | 'azure_disk';
+  readonly size: number;
+  readonly iops?: number;
+  readonly encrypted: boolean;
 }
 export interface IngressRule {
 readonly port: number;
-readonly protocol: 'tcp' | ' udp' | ' icmp';
+readonly protocol: 'tcp' | 'udp' | 'icmp';
 readonly source: string;
 readonly description?: string;
 
 }
 export interface EgressRule {
 readonly port: number;
-readonly protocol: 'tcp' | ' udp' | ' icmp';
+readonly protocol: 'tcp' | 'udp' | 'icmp';
 readonly destination: string;
 readonly description?: string;
 
@@ -228,13 +268,11 @@ readonly rules: PolicyRule[];
 
 }
 export interface PolicyRule {
-readonly action: 'allow' | ' deny';
-readonly protocol: 'tcp' | ' udp' | ' icmp';
-readonly port?: number;
-';: any;
-readonly source?: string;
-readonly destination?: string;
-
+  readonly action: 'allow' | 'deny';
+  readonly protocol: 'tcp' | 'udp' | 'icmp';
+  readonly port?: number;
+  readonly source?: string;
+  readonly destination?: string;
 }
 export interface NotificationPlan {
 readonly channels: NotificationChannel[];
@@ -243,14 +281,12 @@ readonly templates: NotificationTemplate[];
 
 }
 export interface NotificationChannel {
-readonly type: 'email| slack| teams' | ' webhook';
-readonly configuration: Record<string, unknown>;
-';: any;
-readonly recipients: string[];
-
+  readonly type: 'email' | 'slack' | 'teams' | 'webhook';
+  readonly configuration: Record<string, unknown>;
+  readonly recipients: string[];
 }
 export interface NotificationTrigger {
-readonly event: deployment_start | deployment_success | deployment_failure | 'rollback';
+readonly event: 'deployment_start' | 'deployment_success' | 'deployment_failure' | 'rollback';
 readonly channels: string[];
 readonly conditions?: Record<string, unknown>;
 
@@ -261,7 +297,7 @@ id: string;
 }
 export interface DeploymentLog {
 readonly timestamp: Date;
-readonly level: 'debug| info| warn' | ' error';
+readonly level: 'debug' | 'info' | 'warn' | 'error';
 readonly message: string;
 readonly source: string;
 readonly metadata?: Record<string, unknown>;
@@ -271,7 +307,7 @@ export interface DeploymentError {
 readonly timestamp: Date;
 readonly phase: string;
 readonly action?: string;
-readonly type: 'validation| execution| timeout' | ' system';
+readonly type: 'validation' | 'execution' | 'timeout' | 'system';
 readonly message: string;
 readonly details: unknown;
 readonly recoverable: boolean;
@@ -285,11 +321,12 @@ readonly suggested_action?: string;
 * environment management, and AI-powered deployment optimization.
 */
 export declare class DeploymentAutomationService {
-private readonly logger;
-private environments;
-private activeDeployments;
-private deploymentHistory;
-constructor(logger: logger);
-
+  private readonly logger;
+  private environments;
+  private activeDeployments;
+  private deploymentHistory;
+  constructor(logger: any) {
+    this.logger = logger;
+  }
 }
 //# sourceMappingURL=deployment-automation-service.d.ts.map

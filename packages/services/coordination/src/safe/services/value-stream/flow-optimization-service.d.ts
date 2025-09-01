@@ -54,60 +54,48 @@ export interface ChangeManagementPreference {
 * Monitoring requirement
 */
 export interface MonitoringRequirement {
-readonly metricName: 'process_optimization';
-
+    readonly metricName: string;
+    readonly threshold: number;
+    readonly frequency: string;
 }
 /**
 * Recommendation priority
 */
 export declare enum RecommendationPriority {
-') = 0,
-critical = 1,
-') = 2,
-high = 3,
-') = 4,
-medium = 5,
-') = 6,
-low = 7,
-')available';
-
+    critical = 0,
+    high = 1,
+    medium = 2,
+    low = 3
 }
+
 /**
 * Implementation step
 */
 export interface ImplementationStep {
-readonly stepId: 'technical';
-
+    readonly stepId: string;
+    readonly description: string;
+    readonly duration: number;
 }
+
 /**
 * Risk probability
 */
 export declare enum RiskProbability {
-') = 0,
-very_low = 1,
-') = 2,
-low = 3,
-') = 4,
-medium = 5,
-') = 6,
-high = 7,
-') = 8,
-very_high = 9,
-')};
-/**
-* Risk impact
-*/
-= 10
-/**
-* Risk impact
-*/
-,
-/**
-* Risk impact
-*/
-export = 11,
-enum = 12,
-RiskImpact = 13
+    very_low = 0,
+    low = 1,
+    medium = 2,
+    high = 3,
+    very_high = 4
+}
 
+/**
+* Risk impact
+*/
+export declare enum RiskImpact {
+    very_low = 0,
+    low = 1,
+    medium = 2,
+    high = 3,
+    very_high = 4
 }
 //# sourceMappingURL=flow-optimization-service.d.ts.map

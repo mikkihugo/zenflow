@@ -63,7 +63,7 @@ export class WebsocketHub {
     
     EventLogger.log('websocket-hub:constructor', {
       bridgeEnabled: this.bridgeEnabled,
-      whitelistPrefixes: this.EVENT_WHITELIST
+      whitelistPrefixes: this.eventWhitelist
     });
   }
 
@@ -98,8 +98,10 @@ export class WebsocketHub {
   private setupEventSystemIntegration(): void {
     try {
       // Subscribe to all EventBus events using wildcard
-      this.eventBus.on('*', (payload: unknown, eventName?: string) => {
+      this.eventBus.on('*', (...args: unknown[]) => {
         try {
+          const payload = args[0];
+          const eventName = args[1] as string | undefined;
           if (!eventName) return;
           
           // Check if event matches our whitelist
@@ -209,7 +211,7 @@ export class WebsocketHub {
   /**
    * Handle publish requests - forward to EventBus
    */
-  private handlePublish(connection: WebSocketConnection, message: InboundMessage): void {
+  private handlePublish(_connection: WebSocketConnection, message: InboundMessage): void {
     if (!message.event) {
       EventLogger.log('websocket-hub:publish-missing-event');
       return;

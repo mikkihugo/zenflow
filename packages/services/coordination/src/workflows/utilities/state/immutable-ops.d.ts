@@ -27,23 +27,22 @@ static merge<T extends Record<string, any>>(base: T, updates: Partial<T>): T;
 /**
 * Update array item by ID immutably
 */
-static updateArrayItem<
-T extends {
-id: string;
-'},
->(array: T[], id: string, updater: (item: Draft<T>) => void): T[];
+  static updateArrayItem<
+    T extends {
+      id: string;
+    }
+  >(array: T[], id: string, updater: (item: Draft<T>) => void): T[];
 /**
 * Add item to array immutably
 */
 static addToArray<T>(array: T[], item: T): T[];
-/**
-* Remove item from array immutably
-*/
-static removeFromArray<
-T extends {
-id: string;
-'},
->(array: T[], id: string): T[];
-
+  /**
+   * Remove item from array immutably
+   */
+  static removeFromArray<
+    T extends {
+      id: string;
+    }
+  >(array: T[], id: string): T[];
 }
 //# sourceMappingURL=immutable-ops.d.ts.map

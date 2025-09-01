@@ -16,22 +16,19 @@
 */
 import { EventBus } from '@claude-zen/foundation';
 export interface SAFeEventsManagerConfig {
-enableSystemDemos: new () => SAFeEventsManager;
-(memory: any, eventBus: any, config: any): any;
-
+    enableSystemDemos: boolean;
+    enableIAndAWorkshops: boolean;
+    enableARTSync: boolean;
+    enableProgramIncrementEvents: boolean;
 }
+
 export declare class SAFeEventsManager extends EventBus {
-private logger;
-private eventOutcomes;
-private eventTemplates;
-private initialized;
-constructor(): void {
-piId,
-'}: {
-piId: any;
+    private logger;
+    private eventOutcomes;
+    private eventTemplates;
+    private initialized;
 
-}
-): any;
-
+    constructor();
+    initialize(piId: string): Promise<void>;
 }
 //# sourceMappingURL=safe-events-manager.d.ts.map

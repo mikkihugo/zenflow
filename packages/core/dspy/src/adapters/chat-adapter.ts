@@ -21,26 +21,26 @@ import type { Prediction} from "../primitives/prediction";
 */
 export interface ChatAdapterConfig {
 	/** Whether to include system messages */
-	include_system?:boolean;
+	include_system?: boolean;
 	/** Whether to include demonstrations */
-	include_demos?:boolean;
+	include_demos?: boolean;
 	/** Maximum number of demonstrations to include */
-	max_demos?:number;
+	max_demos?: number;
 	/** Custom role mapping */
-	role_mapping?:{
-		system?:string;
-		user?:string;
-		assistant?:string;
-};
+	role_mapping?: {
+		system?: string;
+		user?: string;
+		assistant?: string;
+	};
 }
 
 /**
 * Chat message interface
 */
 export interface ChatMessage {
-	role:"system" | "user" | "assistant";
-	content:string;
-	metadata?:Record<string, any>;
+	role: "system" | "user" | "assistant";
+	content: string;
+	metadata?: Record<string, any>;
 }
 
 /**
@@ -48,9 +48,9 @@ export interface ChatMessage {
 * Compatible with OpenAI Chat API, Anthropic Claude, and other chat-based models
 */
 export class ChatAdapter extends BaseAdapter {
-	private chatConfig:Required<ChatAdapterConfig>;
+	private chatConfig: Required<ChatAdapterConfig>;
 
-	constructor(config:ChatAdapterConfig = {}) {
+	constructor(config: ChatAdapterConfig = {}) {
 		super(config);
 
 		this.chatConfig = {
@@ -69,10 +69,10 @@ export class ChatAdapter extends BaseAdapter {
 	/**
 	 * Format data for fine-tuning in chat format
 	 */
-	override formatFinetuneData(data:FinetuneDataInput): FinetuneDataOutput {
+	override formatFinetuneData(data: FinetuneDataInput): FinetuneDataOutput {
 		this.validateInput(data, ["signature", "demos", "inputs", "outputs"]);
 
-		const messages:ChatMessage[] = [];
+		const messages: ChatMessage[] = [];
 
 		// Add system message with instructions
 		if (this.chatConfig.include_system && data.signature.instructions) {
@@ -138,7 +138,7 @@ export class ChatAdapter extends BaseAdapter {
 	/**
 	 * Format inputs as user message content
 	 */
-	private formatInputsAsUserMessage(inputs:Record<string, any>):string {
+	private formatInputsAsUserMessage(inputs: Record<string, any>): string {
 		const inputPairs = Object.entries(inputs);
 
 		if (inputPairs.length === 0) {
@@ -171,8 +171,8 @@ export class ChatAdapter extends BaseAdapter {
 	 * Format outputs as assistant message content
 	 */
 	private formatOutputsAsAssistantMessage(
-		outputs:Record<string, any>,
-	):string {
+		outputs: Record<string, any>,
+	): string {
 		const outputPairs = Object.entries(outputs).filter(
 			([_, value]) => value !== undefined,
 		);
@@ -207,8 +207,8 @@ export class ChatAdapter extends BaseAdapter {
 	 * Format prediction as assistant message content
 	 */
 	private formatPredictionAsAssistantMessage(
-		outputs: 'Prediction' | 'Record'<string, any>,
-	):string {
+		outputs: Prediction | Record<string, any>,
+	): string {
 		// Handle Prediction objects
 		if ("data" in outputs && outputs.data) {
 			return this.formatOutputsAsAssistantMessage(outputs.data);
@@ -221,7 +221,7 @@ export class ChatAdapter extends BaseAdapter {
 	/**
 	 * Capitalize first letter of string
 	 */
-	private capitalizeFirst(str:string): string {
+	private capitalizeFirst(str: string): string {
 		return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
@@ -229,8 +229,8 @@ export class ChatAdapter extends BaseAdapter {
 	 * Convert chat messages to OpenAI format
 	 */
 	toOpenAIFormat(
-		messages:ChatMessage[],
-	):Array<{ role: string; content: string}> {
+		messages: ChatMessage[],
+	): Array<{ role: string; content: string }> {
 		return messages.map((msg) => ({
 			role:msg.role,
 			content:msg.content,
@@ -240,10 +240,10 @@ export class ChatAdapter extends BaseAdapter {
 	/**
 	 * Convert chat messages to Anthropic format
 	 */
-	toAnthropicFormat(messages:ChatMessage[]): {
-		system?:string;
-		messages:Array<{ role: "user" | "assistant"; content: string}>;
-} {
+	toAnthropicFormat(messages: ChatMessage[]): {
+		system?: string;
+		messages: Array<{ role: "user" | "assistant"; content: string }>;
+	} {
 		const systemMessages = messages.filter((m) => m.role === "system");
 		const conversationMessages = messages.filter((m) => m.role !== "system");
 
@@ -267,7 +267,7 @@ export class ChatAdapter extends BaseAdapter {
 	/**
 	 * Convert chat messages to plain text format
 	 */
-	toTextFormat(messages:ChatMessage[]): string {
+	toTextFormat(messages: ChatMessage[]): string {
 		return messages
 			.map((msg) => {
 				const roleLabel = msg.role.toUpperCase();
@@ -279,7 +279,7 @@ export class ChatAdapter extends BaseAdapter {
 	/**
 	 * Validate chat message format
 	 */
-	validateMessages(messages:ChatMessage[]): boolean {
+	validateMessages(messages: ChatMessage[]): boolean {
 		if (!Array.isArray(messages) || messages.length === 0) {
 			return false;
 }
@@ -302,14 +302,14 @@ export class ChatAdapter extends BaseAdapter {
 	/**
 	 * Get adapter configuration
 	 */
-	override getConfig():ChatAdapterConfig {
-		return { ...this.chatConfig};
-}
+	override getConfig(): ChatAdapterConfig {
+		return { ...this.chatConfig };
+	}
 
 	/**
 	 * Update adapter configuration
 	 */
-	updateConfig(config:Partial<ChatAdapterConfig>): void {
+	updateConfig(config: Partial<ChatAdapterConfig>): void {
 		this.chatConfig = {
 			...this.chatConfig,
 			...config,

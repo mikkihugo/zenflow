@@ -24,16 +24,15 @@ export declare const FeatureStatusSchema: z.ZodEnum<[';']>;
 * SAFe value stream schema
 */
 export declare const ValueStreamSchema: z.ZodObject<
-z.ZodRawShape,
-'strip',
-z.ZodTypeAny,
-{
-[x: string]: any;
-'},
-{
-[x: string]: any;
-
-}
+  z.ZodRawShape,
+  'strip',
+  z.ZodTypeAny,
+  {
+    [x: string]: any;
+  },
+  {
+    [x: string]: any;
+  }
 >;
 /**
 * SAFe validation utilities class

@@ -12,19 +12,19 @@ type WorkflowContext as ValidatedWorkflowContext,
 WorkflowContextSchema,
 type WorkflowDefinition as ValidatedWorkflowDefinition,
 WorkflowDefinitionSchema,
-type WorkflowExecutionResult as ValidatedWorkflowExecutionResult,
-WorkflowExecutionResultSchema,
-type WorkflowStep as ValidatedWorkflowStep,
-WorkflowStepSchema,
-'} from './utilities/index';
+  type WorkflowExecutionResult as ValidatedWorkflowExecutionResult,
+  WorkflowExecutionResultSchema,
+  type WorkflowStep as ValidatedWorkflowStep,
+  WorkflowStepSchema,
+} from './utilities/index';
 export {
-createHighThroughputWorkflowKanbanIntegration,
-createWorkflowKanbanIntegration,
-type KanbanWorkflowDefinition,
-type KanbanWorkflowStep,
-WorkflowKanbanIntegration,
-type WorkflowKanbanIntegrationConfig,
-'} from './integrations/kanban-integration';
+  createHighThroughputWorkflowKanbanIntegration,
+  createWorkflowKanbanIntegration,
+  type KanbanWorkflowDefinition,
+  type KanbanWorkflowStep,
+  WorkflowKanbanIntegration,
+  type WorkflowKanbanIntegrationConfig,
+} from './integrations/kanban-integration';
 export type {
 AccessPolicy,
 ArtifactType,
@@ -97,12 +97,12 @@ WorkflowExecution,
 WorkflowId,
 WorkflowPermissions,
 WorkflowResult,
-WorkflowState,
-WorkflowStatus,
-WorkflowStep,
-WorkflowTemplate,
-WorkflowValidation,
-'} from './types/index';
+  WorkflowState,
+  WorkflowStatus,
+  WorkflowStep,
+  WorkflowTemplate,
+  WorkflowValidation,
+} from './types/index';
 export type {
 DocumentContent,
 StepExecutionResult,
@@ -112,22 +112,16 @@ WorkflowDefinition as WorkflowDefinitionLegacy,
 WorkflowEngineConfig as WorkflowEngineConfigLegacy,
 WorkflowEvent,
 WorkflowExecution as WorkflowExecutionLegacy,
-WorkflowRegistry,
-WorkflowState as WorkflowStateLegacy,
-WorkflowStep as WorkflowStepLegacy,
-WorkflowTemplate as WorkflowTemplateLegacy,
-'} from './types';
+  WorkflowRegistry,
+  WorkflowState as WorkflowStateLegacy,
+  WorkflowStep as WorkflowStepLegacy,
+  WorkflowTemplate as WorkflowTemplateLegacy,
+} from './types';
 export declare const WORKFLOWS_INFO: {
 version: string;
-name: void;
-description: any;
-'Production-ready workflow engine with battle-tested npm dependencies,': any;
-battleTestedDependencies: string[];
-'p-limit: Controlled concurrency,': any;
-'eventemitter3: High-performance events,': any;
-'xstate: Robust state management,': any;
-'mermaid: Professional visualization,': any;
-'node-cron: Production scheduling,': any;
-'foundation: Battle-tested storage,': any;
-'};
+name: string;
+description: string;
+productionReady: string;
+battleTestedDependencies: Record<string, string>;
+};
 //# sourceMappingURL=index.d.ts.map

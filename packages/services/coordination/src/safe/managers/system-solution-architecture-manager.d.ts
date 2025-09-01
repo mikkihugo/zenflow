@@ -19,34 +19,31 @@ import { EventBus } from '@claude-zen/foundation';
 * System and Solution Architecture Manager configuration
 */
 export interface SystemSolutionArchConfig {
-readonly enableSystemDesignCoordination: 'monolithic';
-
+    readonly enableSystemDesignCoordination: boolean;
 }
+
 /**
 * Solution architecture patterns
 */
 export declare enum SolutionArchitecturePattern {
-') = 0,
-traditional_3_tier = 1,
-') = 2,
-micro_frontend = 3,
-') = 4,
-serverless = 5,
-') = 6,
-cloud_native = 7,
-') = 8,
-hybrid_cloud = 9,
-') = 10,
-edge_computing = 11,
-')service';
-
+    monolithic = 0,
+    traditional_3_tier = 1,
+    microservices = 2,
+    micro_frontend = 3,
+    event_driven = 4,
+    serverless = 5,
+    cloud_native = 6,
+    hybrid_cloud = 7,
+    edge_computing = 8
 }
+
 /**
 * Component interface
 */
 export interface ComponentInterface {
-id: string;
-
+    id: string;
+    name: string;
+    type: string;
 }
 /**
 * Performance expectation

@@ -132,10 +132,9 @@ context: {
   constraints: string[];
   deadline?: Date;
 
-}
 /**
-* Event-driven Conversation Manager with optional SPARC integration and SAFe teamwork
-*/
+ * Event-driven Conversation Manager with optional SPARC integration and SAFe teamwork
+ */
 export declare class ConversationManager extends EventBus {
   private conversations: Map<string, Conversation>;
   private agents: Map<string, Agent>;
@@ -143,28 +142,32 @@ export declare class ConversationManager extends EventBus {
   private safeTeams: Map<string, SAFeTeam>;
   private safeMeetings: Map<string, SAFeMeeting>;
   private teamworkRequests: Map<string, TeamworkCoordinationRequest>;
+
   constructor();
+
   /**
-  * Create a new conversation
-  */
+   * Create a new conversation
+   */
   createConversation(name: string, participantIds: string[]): Promise<Conversation>;
-/**
-* Add message to conversation
-*/
-addMessage(conversationId: string, message: Omit<ConversationMessage, 'id' | 'timestamp'>): Promise<ConversationMessage>;
-/**
-* Send message to conversation
-*/
-sendMessage(params: {
-conversationId: string;
-fromAgent: string;
-content: string;
-toAgent?: string;
-type?: ConversationMessage['type'];
-'}): Promise<ConversationMessage>;
-/**
-* Get conversation by ID
-*/
+
+  /**
+   * Add message to conversation
+   */
+  addMessage(conversationId: string, message: Omit<ConversationMessage, 'id' | 'timestamp'>): Promise<ConversationMessage>;
+
+  /**
+   * Send message to conversation
+   */
+  sendMessage(params: {
+    conversationId: string;
+    fromAgent: string;
+    content: string;
+    toAgent?: string;
+    type?: ConversationMessage['type'];
+  }): Promise<ConversationMessage>;
+  /**
+   * Get conversation by ID
+   */
 getConversation(id: string): Conversation | undefined;
 /**
 * List conversations, optionally filtered by agent

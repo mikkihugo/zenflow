@@ -20,29 +20,19 @@ id: string;
 * Impediment severity levels
 */
 export declare enum ImpedimentSeverity {
-') = 0,
-low = 1,
-') = 2,
-medium = 3,
-') = 4,
-high = 5,
-') = 6,
-critical = 7,
-')};
-/**
-* Impediment status tracking
-*/
-= 8
-/**
-* Impediment status tracking
-*/
-,
-/**
-* Impediment status tracking
-*/
-export = 9,
-enum = 10,
-ImpedimentStatus = 11
+    low = 0,
+    medium = 1,
+    high = 2,
+    critical = 3
+}
 
+/**
+* Impediment status tracking
+*/
+export declare enum ImpedimentStatus {
+    open = 0,
+    in_progress = 1,
+    resolved = 2,
+    closed = 3
 }
 //# sourceMappingURL=scrum-of-scrums-service.d.ts.map

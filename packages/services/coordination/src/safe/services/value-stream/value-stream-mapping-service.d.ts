@@ -15,11 +15,10 @@ readonly metrics: DetailedFlowMetrics;
 
 }
 export interface FlowStepAnalysis {
-readonly stepId: string;
-readonly name: string;
-readonly duration: number;
-readonly type: value;
-
+    readonly stepId: string;
+    readonly name: string;
+    readonly duration: number;
+    readonly type: 'value' | 'waste' | 'necessary_waste';
 }
 export interface DetailedFlowMetrics {
 readonly totalLeadTime: number;

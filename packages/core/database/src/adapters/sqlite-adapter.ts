@@ -776,13 +776,13 @@ export class SQLiteAdapter implements DatabaseConnection {
  notnull: number;
  dflt_value: unknown;
  pk: number;
- }>(`PRAGMA table_info(${tableName})`
+ }>(`PRAGMA table_info(${tableName})`);
 
  const columns: ColumnSchema[] = pragmaResult.rows.map((row) => ({
- name: row.name,
- type: row.type,
- nullable: row.notnull === 0,
- defaultValue: row.dflt_value,
+   name: row.name,
+   type: row.type,
+   nullable: row.notnull === 0,
+   defaultValue: row.dflt_value,
  }));
 
  const primaryKey = columns
@@ -841,20 +841,20 @@ export class SQLiteAdapter implements DatabaseConnection {
  }
 
  private async createMigrationsTable(): Promise<void> {
- await this.query(`
+   await this.query(`
  CREATE TABLE IF NOT EXISTS _migrations (
  version TEXT PRIMARY KEY,
  name TEXT NOT NULL,
  applied_at DATETIME DEFAULT CURRENT_TIMESTAMP
  )
- `
+ `);
  }
 
  private async recordMigration(version: string, name: string): Promise<void> {
- await this.query('INSERT INTO _migrations (version, name) VALUES (?, ?)', [
- version,
- name,
- ]);
+   await this.query('INSERT INTO _migrations (version, name) VALUES (?, ?)', [
+     version,
+     name,
+   ]);
  }
 
  private async setIsolationLevel(
@@ -1024,42 +1024,42 @@ class SQLiteTransactionConnection implements TransactionConnection {
  }
 
  async savepoint(name: string): Promise<void> {
- return await new Promise<void>((resolve, reject) => {
- setImmediate(() => {
- try {
- this.db.exec(`SAVEPOINT ${name}`
- resolve();
- } catch (error) {
- reject(error);
- }
- });
- });
+   return await new Promise<void>((resolve, reject) => {
+     setImmediate(() => {
+       try {
+         this.db.exec(`SAVEPOINT ${name}`);
+         resolve();
+       } catch (error) {
+         reject(error);
+       }
+     });
+   });
  }
 
  async releaseSavepoint(name: string): Promise<void> {
- return await new Promise<void>((resolve, reject) => {
- setImmediate(() => {
- try {
- this.db.exec(`RELEASE SAVEPOINT ${name}`
- resolve();
- } catch (error) {
- reject(error);
- }
- });
- });
+   return await new Promise<void>((resolve, reject) => {
+     setImmediate(() => {
+       try {
+         this.db.exec(`RELEASE SAVEPOINT ${name}`);
+         resolve();
+       } catch (error) {
+         reject(error);
+       }
+     });
+   });
  }
 
  async rollbackToSavepoint(name: string): Promise<void> {
- return await new Promise<void>((resolve, reject) => {
- setImmediate(() => {
- try {
- this.db.exec(`ROLLBACK TO SAVEPOINT ${name}`
- resolve();
- } catch (error) {
- reject(error);
- }
- });
- });
+   return await new Promise<void>((resolve, reject) => {
+     setImmediate(() => {
+       try {
+         this.db.exec(`ROLLBACK TO SAVEPOINT ${name}`);
+         resolve();
+       } catch (error) {
+         reject(error);
+       }
+     });
+   });
  }
 
  private normalizeParams(params?: QueryParams): unknown[] {

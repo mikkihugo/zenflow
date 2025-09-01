@@ -47,26 +47,26 @@ readonly processor?: string;
 // CORE WORKFLOW TYPES
 // ============================================================================
 export interface WorkflowStep {
-readonly id?:string;
+readonly id?: string | undefined;
 readonly type: string;
-readonly name?:string;
-readonly params?:Record<string, unknown>;
-readonly timeout?:number;
-readonly retries?:number;
-readonly onError?: 'stop' | 'continue' | 'skip';
+readonly name?: string | undefined;
+readonly params?: Record<string, unknown> | undefined;
+readonly timeout?: number | undefined;
+readonly retries?: number | undefined;
+readonly onError?: 'stop' | 'continue' | 'skip' | undefined;
 readonly gateConfig?: {
 readonly enabled: boolean;
-readonly gateType?: 'approval' | 'checkpoint' | 'review' | 'decision';
-readonly businessImpact?: 'low' | 'medium' | 'high' | 'critical';
-readonly stakeholders?: string[];
-readonly autoApproval?: boolean;
-};
+readonly gateType?: 'approval' | 'checkpoint' | 'review' | 'decision' | undefined;
+readonly businessImpact?: 'low' | 'medium' | 'high' | 'critical' | undefined;
+readonly stakeholders?: string[] | undefined;
+readonly autoApproval?: boolean | undefined;
+} | undefined;
 
 }
 export interface WorkflowDefinition {
 readonly name: string;
-readonly description?:string;
-readonly version?:string;
+readonly description?: string | undefined;
+readonly version?: string | undefined;
 readonly steps: readonly WorkflowStep[];
 
 }
@@ -91,7 +91,7 @@ pausedForGate?: {
   stepIndex: number;
   gateId: string;
   pausedAt: string;
-};
+} | undefined;
 
 }
 export interface WorkflowEngineConfig {

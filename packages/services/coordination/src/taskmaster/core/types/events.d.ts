@@ -11,10 +11,10 @@
 * @since 1.0.0
 * @version 1.0.0
 */
-export type TaskState = ;
-export type OptimizationStrategy = 'wip_reduction' | ' bottleneck_removal' | ' parallel_processing' | ' load_balancing' | ' priority_queue' | ' resource_allocation';
+export type TaskState = 'todo' | 'in-progress' | 'review' | 'done';
+export type OptimizationStrategy = 'wip_reduction' | 'bottleneck_removal' | 'parallel_processing' | 'load_balancing' | 'priority_queue' | 'resource_allocation';
 export interface WorkflowTask {
-';: any;
+
 id: string;
 title: string;
 description?: string;
@@ -42,7 +42,7 @@ review: number;
 export interface WorkflowBottleneck {
 state: TaskState;
 count: number;
-severity: low;
+severity: 'low';
 
 }
 export interface WorkflowKanbanConfig {
@@ -56,53 +56,42 @@ enableBottleneckDetection: boolean;
 */
 export interface TaskCreatedEvent {
 type: 'TASK_CREATED';
-task: 'TASK_MOVED';
-taskId: 'TASK_UPDATED';
-taskId: 'TASK_COMPLETED';
-taskId: 'TASK_BLOCKED';
+task: WorkflowTask;
 taskId: string;
-reason: string;
-blockedAt: Date;
-
 }
 /**
 * WIP limit exceeded event
 */
 export interface WIPLimitExceededEvent {
 type: 'WIP_LIMIT_EXCEEDED';
-state: 'WIP_LIMITS_UPDATED';
+state: TaskState;
 wipLimits: Partial<WIPLimits>;
-
 }
 /**
 * Bottleneck detected event
 */
 export interface BottleneckDetectedEvent {
 type: 'BOTTLENECK_DETECTED';
-bottleneck: 'BOTTLENECK_RESOLVED';
+bottleneck: WorkflowBottleneck;
 bottleneckId: string;
-resolvedAt: Date;
-
 }
 /**
 * Flow analysis completed event
 */
 export interface FlowAnalysisCompleteEvent {
 type: 'FLOW_ANALYSIS_COMPLETE';
-metrics: 'OPTIMIZATION_TRIGGERED';
+metrics: FlowMetrics;
 strategy: OptimizationStrategy;
-triggeredBy: 'manual' | ' automatic' | ' emergency';
+triggeredBy: 'manual' | 'automatic' | 'emergency';
 timestamp: Date;
-
 }
 /**
 * System health updated event
 */
 export interface SystemHealthUpdatedEvent {
 type: 'SYSTEM_HEALTH_UPDATED';
-health: 'SYSTEM_HEALTH_CHECK';
+health: any;
 timestamp: Date;
-
 }
 /**
 * Configuration updated event
@@ -122,25 +111,15 @@ type: 'ERROR_OCCURRED';
 error: string;
 errorContext: string;
 timestamp: Date;
-severity?: 'low| medium| high' | ' critical';
-
+severity?: 'low' | 'medium' | 'high' | 'critical';
 }
 /**
 * System restart event
 */
 export interface RestartSystemEvent {
 type: 'RESTART_SYSTEM';
-reason: 'ENTER_MAINTENANCE';
-reason: 'RESUME_OPERATION';
-timestamp: 'PAUSE_OPERATION';
 reason?: string;
-';: any;
-timestamp: 'OPTIMIZATION_COMPLETE';
-strategy: 'RETRY_OPERATION';
-reason?: string;
-';: any;
 timestamp: Date;
-
 }
 /**
 * Complete union type for all workflow events
@@ -148,7 +127,15 @@ timestamp: Date;
 * This type ensures type safety across all XState event handlers
 * and provides comprehensive event payload validation.
 */
-export type WorkflowEvent = ;
+export type WorkflowEvent =
+  | TaskCreatedEvent
+  | WIPLimitExceededEvent
+  | BottleneckDetectedEvent
+  | FlowAnalysisCompleteEvent
+  | SystemHealthUpdatedEvent
+  | ConfigurationUpdatedEvent
+  | ErrorOccurredEvent
+  | RestartSystemEvent;
 /**
 * Event creation utilities for type-safe event construction
 */
@@ -156,7 +143,7 @@ export declare class WorkflowEventUtils {
 /**
 * Create task created event
 */
-static createTaskCreated(task: 'TASK_CREATED,', : any): any;
+static createTaskCreated(task: WorkflowTask): TaskCreatedEvent;
 
 }
 //# sourceMappingURL=events.d.ts.map

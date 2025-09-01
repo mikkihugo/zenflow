@@ -42,12 +42,11 @@ id: string;
 
 }
 export interface Resource {
-readonly type: 'documentation| tool| template| training' | ' support';
-readonly name: string;
-readonly url: string;
-readonly description: string;
-readonly audience: string[];
-
+    readonly type: 'documentation' | 'tool' | 'template' | 'training' | 'support';
+    readonly name: string;
+    readonly url: string;
+    readonly description: string;
+    readonly audience: string[];
 }
 export interface MigrationGuidance {
 readonly fromStandards: string[];
@@ -205,9 +204,9 @@ readonly projects: string[];
 readonly teams: string[];
 readonly environments: string[];
 readonly timeWindow: {
-readonly startDate: Date;
-readonly endDate: Date;
-'};
+    readonly startDate: Date;
+    readonly endDate: Date;
+};
 
 }
 export interface ComplianceRecommendation {

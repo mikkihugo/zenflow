@@ -18,9 +18,6 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { getBrainSystem } from '@claude-zen/intelligence';
-
-const logger = getLogger('SafePortfolioTraceabilityService');
 
 // ============================================================================
 // PORTFOLIO TRACEABILITY TYPES
@@ -74,9 +71,6 @@ export interface EpicGenerationContext {
  */
 export class SafePortfolioTraceabilityService {
   private readonly logger = getLogger('SafePortfolioTraceabilityService');
-  private brainSystem: any;
-  private database: any;
-  private eventSystem: any;
 
   constructor() {
     this.logger.info('SAFe Portfolio Traceability Service initialized');
@@ -89,8 +83,8 @@ export class SafePortfolioTraceabilityService {
     try {
       this.logger.info('Initializing SAFe Portfolio Traceability Service...');
 
-      // Initialize AI brain system for epic analysis
-      this.brainSystem = await getBrainSystem();
+      // TODO: Initialize AI brain system for epic analysis
+      // this.brainSystem = await getBrainSystemAccess();
 
       this.logger.info('SAFe Portfolio Traceability Service initialized successfully');
     } catch (error) {
@@ -132,7 +126,7 @@ export class SafePortfolioTraceabilityService {
       const wsjfScore = this.calculateWSJFScore(context, epicAnalysis);
 
       // Determine recommended portfolio Kanban state
-      const recommendedState = this.determineInitialState(context, wsjfScore);
+      const recommendedState = this.determineInitialState(context);
 
       return {
         epicId,
@@ -201,7 +195,7 @@ export class SafePortfolioTraceabilityService {
   /**
    * Determine initial portfolio Kanban state
    */
-  private determineInitialState(context: EpicGenerationContext, wsjfScore: any): string {
+  private determineInitialState(context: EpicGenerationContext): string {
     // TODO: Implement state determination logic
     if (context.trigger.urgency === 'critical') {
       return 'analyzing';
@@ -221,7 +215,7 @@ export class SafePortfolioTraceabilityService {
       very_complex: 5
     };
 
-    return complexityMultipliers[analysis.complexity] || 1;
+    return complexityMultipliers[analysis.complexity as keyof typeof complexityMultipliers] || 1;
   }
 
   /**
@@ -249,7 +243,7 @@ export class SafePortfolioTraceabilityService {
   /**
    * Get traceability record for epic
    */
-  async getEpicTraceability(epicId: string): Promise<any | null> {
+  async getEpicTraceability(_epicId: string): Promise<any | null> {
     // TODO: Implement traceability retrieval
     return null;
   }
