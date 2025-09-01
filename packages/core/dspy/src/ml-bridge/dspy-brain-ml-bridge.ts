@@ -355,7 +355,7 @@ mlEnhanced: boolean;
 await this.initialize();
 
 if (!this.brainCoordinator) {
-throw new Error(`Brain coordinator not initialized');
+throw new Error(`Brain coordinator not initialized`);
 }
 
 this.logger.info(' Analyzing task for teleprompter recommendation');
@@ -535,15 +535,15 @@ let reasoning = 'Default recommendation based on general performance';
 let mlEnhanced = true;
 
 // Enhanced recommendations based on task characteristics
-if (taskAnalysis.complexity === 'high{
+if (taskAnalysis.complexity === 'high') {
 recommendedTeleprompter = 'miprov2-ml';
 confidence = 0.9;
 reasoning = 'High complexity task benefits from ML-enhanced optimization';
-} else if (taskAnalysis.speedRequirement === 'high{
+} else if (taskAnalysis.speedRequirement === 'high') {
 recommendedTeleprompter = 'copro-ml';
 confidence = 0.8;
 reasoning = 'Speed-critical task suits COPRO with ML acceleration';
-} else if (taskAnalysis.dataSize === 'large{
+} else if (taskAnalysis.dataSize === 'large') {
 recommendedTeleprompter = 'bootstrap';
 confidence = 0.75;
 reasoning = 'Large dataset benefits from bootstrap sampling approach';

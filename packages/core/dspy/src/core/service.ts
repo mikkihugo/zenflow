@@ -240,12 +240,12 @@ this.logger.info('Shutting down DSPy service');
 
 try {
 // Clean up database access
-if (this.dbAccess && typeof this.dbAccess.close === 'function{
+if (this.dbAccess && typeof this.dbAccess.close === 'function') {
 await this.dbAccess.close();
 }
 
 // Clean up LLM provider
-if (this.llmProvider && typeof this.llmProvider.cleanup === 'function{
+if (this.llmProvider && typeof this.llmProvider.cleanup === 'function') {
 await this.llmProvider.cleanup();
 }
 

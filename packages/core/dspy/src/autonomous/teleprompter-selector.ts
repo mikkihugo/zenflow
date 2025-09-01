@@ -1041,7 +1041,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 		mlRecommendation:any,
 		score:number,
 	): string {
-		return 'Selected ' + (variant.name) + ' based on optimal fit (score: ' + (score.toFixed(3)) + '). ML analysis recommends ' + (mlRecommendation.recommendedTeleprompter) + ` with ${ + ((mlRecommendation.confidence * 100).toFixed(1)) + }% confidence. Variant offers ` + (variant.capabilities.join(", ")) + ` capabilities with ${variant.type} implementation approach.`;
+		return 'Selected ' + (variant.name) + ' based on optimal fit (score: ' + (score.toFixed(3)) + '). ML analysis recommends ' + (mlRecommendation.recommendedTeleprompter) + ` with ${((mlRecommendation.confidence * 100).toFixed(1))}% confidence. Variant offers ` + (variant.capabilities.join(", ")) + ` capabilities with ${variant.type} implementation approach.`;
 	}
 
 	private generateDecisionFactors(

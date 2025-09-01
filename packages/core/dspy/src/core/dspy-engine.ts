@@ -263,9 +263,9 @@ export class DSPyEngine {
 				`\n\nGenerate an improved version that:\n` +
 				'1. Is more specific and clear\n' +
 				'2. Provides better guidance\n' +
-				`3. Includes relevant context\n${ +
+				'3. Includes relevant context\n' +
 				'4. Maintains the same task objective\n\n' +
-				}Improved prompt:';
+				'Improved prompt:';
 
 			const response = await llm.analyze(optimizationPrompt);
 
@@ -278,7 +278,7 @@ export class DSPyEngine {
 		} catch (_error) {
 			logger.warn("Failed to generate prompt variation, using fallback");
 			return {
-				prompt: program.prompt + ` (Please be specific and detailed in your response.)`,
+				prompt: program.prompt + " (Please be specific and detailed in your response.)",
 				strategy: "fallback",
 				iteration: 0,
 				score: 0,
@@ -299,7 +299,7 @@ export class DSPyEngine {
 			const testExamples = examples.slice(0, Math.min(3, examples.length));
 
 			for (const example of testExamples) {
-				const testPrompt = `${variation.prompt}\n\nInput:` + example.input;
+				const testPrompt = `${variation.prompt}\n\nInput: ` + example.input;
 				const response = await llm.analyze(testPrompt);
 
 				// Simple similarity scoring (in real implementation, would be more sophisticated)
@@ -336,7 +336,7 @@ export class DSPyEngine {
 	// private createFewShotPrompt(program:DSPyProgram, examples:DSPyExample[]): string {
 	// const fewShot = examples
 	// .slice(0, this.config.fewShotExamples)
-	// .map(ex => `Input:${ex.input}\nOutput:` + ex.output)`
+	// .map(ex => `Input: ${ex.input}\nOutput: ` + ex.output)
 	// .join(`\n\n`);
 	//
 	// return (program.prompt) + `\n\nExamples:\n${fewShot}\n\nNow complete:`;
@@ -388,7 +388,7 @@ export class DSPyEngine {
 	):Promise<void> {
 		try {
 			const kv = await this.getKV();
-			const key = `dspy-optimization:${ + (task) + }:' + result.timestamp.getTime();
+			const key = `dspy-optimization:${task}:${result.timestamp.getTime()}`;
 			await kv.set(key, result);
 
 			// Update history

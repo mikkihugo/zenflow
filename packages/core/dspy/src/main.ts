@@ -106,7 +106,7 @@ initializeService: () => initializeDSPyService(),
 createModule: (signature: any) => {
 const module = new DSPyModule();
 // Configure module with signature if provided
-if (signature && typeof signature === 'object{
+if (signature && typeof signature === 'object') {
 Object.assign(module, signature);
 }
 return module;
