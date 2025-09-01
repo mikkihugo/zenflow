@@ -8,18 +8,18 @@
 */
 export interface PortfolioEpic {
 id: string;
-} /**';
+'} /**';
 * Value stream in the SAFe framework
 */
 export interface ValueStream {
 id: string;
-}
+'}
 /**
 * Value flow step in a value stream
 */
 export interface ValueFlowStep {
 id: string;
-}
+'}
 /**
 * Value stream metrics
 */
@@ -29,7 +29,7 @@ readonly leadTime: number;
 readonly throughput: number;
 readonly defectRate: number;
 readonly customerSatisfaction: number;
-}
+'}
 /**
 * SAFe integration configuration
 */
@@ -48,19 +48,19 @@ readonly maxFeaturesPerPI: number;
 readonly piPlanningInterval: number;
 readonly systemDemoInterval: number;
 readonly inspectAdaptInterval: number;
-}
+'}
 /**
 * Program Increment (PI) planning and execution
 */
 export interface ProgramIncrement {
 id: string;
-}
+'}
 /**
 * PI Objective with business value
 */
 export interface PIObjective {
 id: string;
-}
+'}
 /**
 * Memory system interface for persisting data
 */
@@ -68,7 +68,7 @@ export interface MemorySystem {
 store(): void { getLogger } from '@claude-zen/foundation';
 export interface MultiLevelOrchestrationManager {
 id?: string;
-}
+'}
 /**
 * SAFe framework configuration
 */
@@ -76,14 +76,14 @@ export interface SafeConfiguration {
 readonly enablePortfolioManagement: boolean;
 readonly enablePIPlanning: boolean;
 readonly enableValueStreams: boolean;
-}
+'}
 /**
 * Portfolio configuration
 */
 export interface PortfolioConfiguration {
 readonly horizonWeights: Record<InvestmentHorizon, number>;
 readonly budgetAllocation: number;
-}
+'}
 /**
 * PI configuration
 */
@@ -91,7 +91,7 @@ export interface PIConfiguration {
 readonly duration: number;
 readonly innovationWeeks: number;
 readonly planningDays: number;
-}
+'}
 /**
 * PI Status enumeration
 */
@@ -100,7 +100,7 @@ PLANNING = "planning",
 ACTIVE = "active",
 COMPLETED = "completed",
 RETROSPECTIVE = "retrospective"
-}
+'}
 /**
 * Feature Status enumeration
 */
@@ -116,19 +116,19 @@ testing = 7,
 ') = 8,
 done = 9,
 ')backlog';
-}
+'}
 /**
 * Risk
 */
 export interface Risk {
 id: string;
-}
+'}
 /**
 * System Demo
 */
 export interface SystemDemo {
 id: string;
-}
+'}
 /**
 * Demo Feedback
 */
@@ -137,19 +137,19 @@ readonly source: string;
 readonly feedback: string;
 readonly actionItem?: string;
 readonly priority: low;
-}
+'}
 /**
 * Inspect and Adapt
 */
 export interface InspectAndAdapt {
 id: string;
-}
+'}
 /**
 * Improvement
 */
 export interface Improvement {
 id: string;
-}
+'}
 /**
 * Problem Solving Items
 */
@@ -160,25 +160,25 @@ readonly solution: string;
 readonly actions: string[];
 readonly owner: string;
 readonly targetDate: Date;
-}
+'}
 /**
 * Shared Service
 */
 export interface SharedService {
 id: string;
-}
+'}
 /**
 * Enterprise Architecture Manager configuration
 */
 export interface EnterpriseArchConfig {
 readonly enablePrincipleValidation: 'approval_required';
-}
+'}
 /**
 * System and Solution Architecture Manager configuration
 */
 export interface SystemSolutionArchConfig {
 readonly enableSystemDesignCoordination: 'monolithic';
-}
+'}
 /**
 * Solution architecture patterns
 */
@@ -200,19 +200,19 @@ readonly description: string;
 readonly rationale: string;
 readonly implications: string[];
 readonly compliance: ComplianceRequirement[];
-}
+'}
 /**
 * System component
 */
 export interface SystemComponent {
 id: string;
-}
+'}
 /**
 * Component interface
 */
 export interface ComponentInterface {
 id: string;
-}
+'}
 /**
 * Performance expectation
 */
@@ -221,31 +221,31 @@ readonly metric: string;
 readonly target: number;
 readonly threshold: number;
 readonly unit: string;
-}
+'}
 /**
 * Compliance requirement
 */
 export interface ComplianceRequirement {
 id: string;
-}
+'}
 /**
 * Control requirement
 */
 export interface ControlRequirement {
 id: string;
-}
+'}
 /**
 * Architecture review
 */
 export interface ArchitectureReview {
 id: string;
-}
+'}
 /**
 * Review finding
 */
 export interface ReviewFinding {
 id: string;
-}
+'}
 /**
 * Architecture Runway types - re-exported for convenience
 */

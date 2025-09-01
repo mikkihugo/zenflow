@@ -35,7 +35,7 @@ readonly maxFeaturesPerPI: number;
 readonly maxTeamsPerART: number;
 readonly capacityBufferPercentage: number;
 readonly trackingUpdateInterval: number;
-}
+'}
 export interface PIManagerState {
 readonly activeARTs: Map<string, AgileReleaseTrain>;
 readonly activePIs: Map<string, ProgramIncrement>;
@@ -44,7 +44,7 @@ readonly teamCapacities: Map<string, TeamCapacity>;
 readonly dependencyMatrix: Map<string, Dependency[]>;
 readonly riskRegister: Map<string, Risk[]>;
 readonly lastUpdated: Date;
-}
+'}
 /**
 * Program Increment Manager - SAFe PI Planning and execution management
 *
@@ -54,5 +54,5 @@ readonly lastUpdated: Date;
 export declare class ProgramIncrementManager extends EventBus {
 private readonly logger;
 constructor(eventBus: {});
-}
+'}
 //# sourceMappingURL=program-increment-manager.d.ts.map

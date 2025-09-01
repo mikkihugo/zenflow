@@ -1199,6 +1199,7 @@ export class LanceDBAdapter implements DatabaseConnection {
 
  if (options?.threshold) {
  // LanceDB uses distance type instead of threshold
+ // eslint-disable-next-line @typescript-eslint/no-explicit-any
  query = (query as any).distanceType?.('cosine') || query;
  }
 

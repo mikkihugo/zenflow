@@ -30,7 +30,7 @@ static merge<T extends Record<string, any>>(base: T, updates: Partial<T>): T;
 static updateArrayItem<
 T extends {
 id: string;
-},
+'},
 >(array: T[], id: string, updater: (item: Draft<T>) => void): T[];
 /**
 * Add item to array immutably
@@ -42,7 +42,7 @@ static addToArray<T>(array: T[], item: T): T[];
 static removeFromArray<
 T extends {
 id: string;
-},
+'},
 >(array: T[], id: string): T[];
-}
+'}
 //# sourceMappingURL=immutable-ops.d.ts.map

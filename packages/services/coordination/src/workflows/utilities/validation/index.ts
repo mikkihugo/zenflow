@@ -16,4 +16,4 @@ type WorkflowExecutionResult,
 WorkflowExecutionResultSchema,
 type WorkflowStep,
 WorkflowStepSchema,
-} from './workflow-schemas';
+'} from './workflow-schemas';

@@ -9,7 +9,7 @@ readonly alertThresholds: PerformanceThresholds;
 readonly trendAnalysisEnabled: boolean;
 readonly bottleneckDetectionEnabled: boolean;
 readonly performanceOptimizationEnabled: boolean;
-}
+'}
 /**
 * Performance thresholds for alerting
 */
@@ -20,13 +20,13 @@ readonly minSuccessRate: number;
 readonly maxErrorRate: number;
 readonly minThroughput: number;
 readonly maxQueueTime: number;
-}
+'}
 /**
 * Performance alert
 */
 export interface PerformanceAlert {
 id: string;
-}
+'}
 /**
 * Performance analysis result
 */
@@ -39,7 +39,7 @@ readonly trends: TrendAnalysis[];
 readonly recommendations: PerformanceRecommendation[];
 readonly alerts: PerformanceAlert[];
 readonly historicalComparison: HistoricalComparison;
-}
+'}
 /**
 * Detailed performance metrics
 */
@@ -49,7 +49,7 @@ readonly throughput: ThroughputMetrics;
 readonly reliability: ReliabilityMetrics;
 readonly efficiency: EfficiencyMetrics;
 readonly resourceUtilization: ResourceUtilizationMetrics;
-}
+'}
 /**
 * Execution time metrics
 */
@@ -63,8 +63,8 @@ readonly p50: number;
 readonly p90: number;
 readonly p95: number;
 readonly p99: number;
-};
-}
+'};
+'}
 /**
 * Throughput metrics
 */
@@ -73,7 +73,7 @@ readonly pipelinesPerHour: number;
 readonly stagesPerHour: number;
 readonly parallelExecutions: number;
 readonly concurrencyUtilization: number;
-}
+'}
 /**
 * Reliability metrics
 */
@@ -84,7 +84,7 @@ readonly retryRate: number;
 readonly rollbackRate: number;
 readonly mttr: number;
 readonly mtbf: number;
-}
+'}
 /**
 * Efficiency metrics
 */
@@ -93,7 +93,7 @@ readonly resourceEfficiency: number;
 readonly timeEfficiency: number;
 readonly costEfficiency: number;
 readonly wasteReduction: number;
-}
+'}
 /**
 * Resource utilization metrics
 */
@@ -103,7 +103,7 @@ readonly memory: ResourceMetric;
 readonly disk: ResourceMetric;
 readonly network: ResourceMetric;
 readonly agents: AgentUtilizationMetric;
-}
+'}
 /**
 * Resource metric
 */
@@ -112,7 +112,7 @@ readonly average: number;
 readonly peak: number;
 readonly minimum: number;
 readonly utilization: number;
-}
+'}
 /**
 * Agent utilization metric
 */
@@ -122,7 +122,7 @@ readonly activeAgents: number;
 readonly idleAgents: number;
 readonly utilizationRate: number;
 readonly queuedTasks: number;
-}
+'}
 /**
 * Bottleneck analysis
 */
@@ -135,7 +135,7 @@ readonly averageDuration: number;
 readonly causes: string[];
 readonly solutions: string[];
 readonly priority: low | medium | high;
-}
+'}
 /**
 * Trend analysis
 */
@@ -146,7 +146,7 @@ readonly change: number;
 readonly period: string;
 readonly confidence: number;
 readonly forecast: TrendForecast;
-}
+'}
 /**
 * Trend forecast
 */
@@ -155,14 +155,14 @@ readonly shortTerm: number;
 readonly mediumTerm: number;
 readonly longTerm: number;
 readonly confidence: number;
-}
+'}
 /**
 * Performance recommendation
 */
 export interface PerformanceRecommendation {
 readonly category: optimization | scaling | configuration | 'architecture';
 readonly priority: low | medium | high;
-}
+'}
 /**
 * Historical comparison
 */
@@ -171,7 +171,7 @@ readonly previousPeriod: ComparisonPeriod;
 readonly improvements: MetricImprovement[];
 readonly degradations: MetricDegradation[];
 readonly overallTrend: 'improving' | ' stable' | ' declining' | ' improving' | ' stable' | ' declining' | ' degrading';
-}
+'}
 /**
 * Comparison period
 */
@@ -180,7 +180,7 @@ readonly startDate: Date;
 readonly endDate: Date;
 readonly executionCount: number;
 readonly averageMetrics: Record<string, number>;
-}
+'}
 /**
 * Metric improvement
 */
@@ -188,7 +188,7 @@ export interface MetricImprovement {
 readonly metric: string;
 readonly improvement: number;
 readonly significance: 'low' | ' medium' | ' high';
-}
+'}
 /**
 * Metric degradation
 */
@@ -196,7 +196,7 @@ export interface MetricDegradation {
 readonly metric: string;
 readonly degradation: number;
 readonly significance: 'low' | ' medium' | ' high';
-}
+'}
 /**
 * Pipeline Performance Service - Pipeline performance monitoring and metrics
 *
@@ -209,6 +209,6 @@ private performanceMetrics;
 private historicalData;
 private activeAlerts;
 constructor(logger: logger);
-}
+'}
 export default PipelinePerformanceService;
 //# sourceMappingURL=pipeline-performance-service.d.ts.map

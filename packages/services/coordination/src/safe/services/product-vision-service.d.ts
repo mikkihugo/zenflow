@@ -11,11 +11,11 @@ MarketOpportunity,
 ProductVision,
 StakeholderAlignment,
 SuccessCriterion,
-} from '../types/product-management');
+'} from '../types/product-management');
 * Product vision service configuration
 */
 export interface ProductVisionServiceConfig {
 readonly visionValidationThreshold: new () => Map<string, ProductVision>;
 (): any;
-}
+'}
 //# sourceMappingURL=product-vision-service.d.ts.map

@@ -5,7 +5,7 @@ export interface RegisteredService {
 name: 'services_available';
 data: getLogger;
 (: any): any;
-}
+'}
 /**
 * Get the WebSocket hub instance
 */
@@ -23,5 +23,5 @@ approvalGateChanged: (gateData: any) => any;
 piPlanningProgress: (progressData: any) => any;
 flowMetricsUpdated: (metricsData: any) => any;
 ' data: metricsData': any;
-};
+'};
 //# sourceMappingURL=websocket-hub.d.ts.map

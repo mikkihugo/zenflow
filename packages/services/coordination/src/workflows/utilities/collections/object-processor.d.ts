@@ -41,5 +41,5 @@ static isEmpty(value: any): boolean;
 * Deep equality check
 */
 static isEqual(a: any, b: any): boolean;
-}
+'}
 //# sourceMappingURL=object-processor.d.ts.map

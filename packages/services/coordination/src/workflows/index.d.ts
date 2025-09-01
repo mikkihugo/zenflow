@@ -16,7 +16,7 @@ type WorkflowExecutionResult as ValidatedWorkflowExecutionResult,
 WorkflowExecutionResultSchema,
 type WorkflowStep as ValidatedWorkflowStep,
 WorkflowStepSchema,
-} from './utilities/index';
+'} from './utilities/index';
 export {
 createHighThroughputWorkflowKanbanIntegration,
 createWorkflowKanbanIntegration,
@@ -24,7 +24,7 @@ type KanbanWorkflowDefinition,
 type KanbanWorkflowStep,
 WorkflowKanbanIntegration,
 type WorkflowKanbanIntegrationConfig,
-} from './integrations/kanban-integration';
+'} from './integrations/kanban-integration';
 export type {
 AccessPolicy,
 ArtifactType,
@@ -102,7 +102,7 @@ WorkflowStatus,
 WorkflowStep,
 WorkflowTemplate,
 WorkflowValidation,
-} from './types/index';
+'} from './types/index';
 export type {
 DocumentContent,
 StepExecutionResult,
@@ -116,7 +116,7 @@ WorkflowRegistry,
 WorkflowState as WorkflowStateLegacy,
 WorkflowStep as WorkflowStepLegacy,
 WorkflowTemplate as WorkflowTemplateLegacy,
-} from './types';
+'} from './types';
 export declare const WORKFLOWS_INFO: {
 version: string;
 name: void;
@@ -129,5 +129,5 @@ battleTestedDependencies: string[];
 'mermaid: Professional visualization,': any;
 'node-cron: Production scheduling,': any;
 'foundation: Battle-tested storage,': any;
-};
+'};
 //# sourceMappingURL=index.d.ts.map

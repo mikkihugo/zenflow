@@ -12,16 +12,16 @@ maxBy,
 meanBy,
 orderBy,
 sumBy,
-} from 'lodash-es')../types');
+'} from 'lodash-es')../types');
 CompetitorAnalysis,
 MarketOpportunity,
 MarketTrend,
 PricingStrategy,
-} from '../types/product-management');
+'} from '../types/product-management');
 * Market analysis configuration
 */
 export interface MarketAnalysisConfig {
 readonly analysisDepth: new () => Map<string, CompetitorAnalysis>;
 (): any;
-}
+'}
 //# sourceMappingURL=market-analysis-service.d.ts.map

@@ -15,7 +15,7 @@ getSafeIntegration?(): Promise<any>;
 * const taskMaster = await getTaskMaster();
 * await taskMaster.initialize();
 * ') */ ';: any;
-}
+'}
 export declare function getTaskMaster(): Promise<TaskMasterSystem>;
 /**
 * Create TaskMaster system with custom configuration
@@ -25,7 +25,7 @@ enableIntelligentWIP?: boolean;
 enableBottleneckDetection?: boolean;
 enableFlowOptimization?: boolean;
 '}): Promise<TaskMasterSystem> {': any;
-}): any;
+'}): any;
 export { KanbanEngine } from '../kanban/api/kanban-engine';
 export { ApprovalGateManager } from './core/approval-gate-manager';
 export type { TaskMasterSystem };
@@ -34,6 +34,6 @@ declare const _default: {
 getTaskMaster: typeof getTaskMaster;
 createTaskMaster: typeof createTaskMaster;
 '; ': string;
-};
+'};
 export default _default;
 //# sourceMappingURL=main.d.ts.map

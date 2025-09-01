@@ -11,7 +11,7 @@ orderBy,')lodash-es')../../types');
 */
 export interface ContinuousImprovementConfig {
 readonly improvementId: 'daily';
-}
+'}
 /**
 * Facilitation mode
 */
@@ -23,7 +23,7 @@ human_guided = 3,
 ') = 4,
 hybrid = 5,
 ')metrics_based';
-}
+'}
 /**
 * Loop frequency
 */
@@ -47,49 +47,49 @@ approver = 5,
 ') = 6,
 executor = 7,
 ')sum';
-}
+'}
 /**
 * Metric threshold
 */
 export interface MetricThreshold {
 readonly warning: 'notification';
-}
+'}
 /**
 * Action parameters
 */
 export interface ActionParameters {
 readonly [key: 'low']: any;
-}
+'}
 /**
 * Closure condition
 */
 export interface ClosureCondition {
 readonly conditionId: 'efficiency';
-}
+'}
 /**
 * Objective state
 */
 export interface ObjectiveState {
 readonly metrics: 'progress_review';
-}
+'}
 /**
 * Measurement framework
 */
 export interface MeasurementFramework {
 readonly frameworkId: 'okr';
-}
+'}
 /**
 * KPI
 */
 export interface KPI {
 readonly kpiId: 'real_time';
-}
+'}
 /**
 * KPI ownership
 */
 export interface KPIOwnership {
 readonly owner: 'real_time';
-}
+'}
 /**
 * Report format
 */
@@ -105,13 +105,13 @@ presentation = 7,
 ') = 8,
 api = 9,
 ')lightweight';
-}
+'}
 /**
 * Documentation requirement
 */
 export interface DocumentationRequirement {
 readonly documentType: 'waste_elimination';
-}
+'}
 /**
 * Improvement priority
 */
@@ -125,19 +125,19 @@ medium = 5,
 ') = 6,
 low = 7,
 ')high';
-}
+'}
 /**
 * Improvement implementation
 */
 export interface ImprovementImplementation {
 readonly implementationId: 'planned';
-}
+'}
 /**
 * Actual effort
 */
 export interface ActualEffort {
 readonly timeHours: 'technical';
-}
+'}
 /**
 * Blocker severity
 */
@@ -165,5 +165,5 @@ critical = 7,
 export = 9,
 interface = 10,
 ActualImpact = 11
-}
+'}
 //# sourceMappingURL=continuous-improvement-service.d.ts.map

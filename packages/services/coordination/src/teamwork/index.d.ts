@@ -11,7 +11,7 @@ name: string;
 role: string;
 capabilities: string[];
 status: 'idle' | 'busy' | 'offline';
-}
+'}
 export interface ConversationMessage {
 id: string;
 fromAgent: string;
@@ -19,7 +19,7 @@ toAgent?: string;
 content: string;
 timestamp: Date;
 type: 'request' | 'response' | 'notification' | 'broadcast';
-}
+'}
 export interface Conversation {
 id: string;
 name: string;
@@ -28,7 +28,7 @@ messages: ConversationMessage[];
 status: 'active' | 'completed' | 'paused';
 createdAt: Date;
 updatedAt: Date;
-}
+'}
 export interface SPARCCollaborationRequest {
 requestId: string;
 projectId: string;
@@ -38,9 +38,9 @@ suggestedAgents: string[];
 context: {
 artifacts: unknown[];
 requirements: string[];
-};
+'};
 timeout?: number;
-}
+'}
 export interface SPARCReviewResult {
 projectId: string;
 phase: string;
@@ -48,7 +48,7 @@ approved: boolean;
 feedback: string[];
 recommendations: string[];
 conversationId: string;
-}
+'}
 export interface SAFeTeam {
 id: string;
 name: string;
@@ -58,7 +58,7 @@ role: 'development' | 'system' | 'shared-services' | 'complicated-subsystem';
 capacity: TeamCapacity;
 skills: string[];
 status: 'forming' | 'storming' | 'norming' | 'performing';
-}
+'}
 export interface TeamMember {
 id: string;
 name: string;
@@ -66,18 +66,18 @@ role: string;
 skills: string[];
 capacity: number;
 availability: AgentAvailability;
-}
+'}
 export interface AgentAvailability {
 status: 'available' | 'busy' | 'offline' | 'in-meeting';
 currentTask?: string;
 nextAvailable?: Date;
-}
+'}
 export interface TeamCapacity {
 totalStoryPoints: number;
 availableHours: number;
 commitmentLevel: number;
 velocityHistory: number[];
-}
+'}
 export interface SAFeMeeting {
 id: string;
 type: 'daily-standup' | 'iteration-planning' | 'iteration-review' | 'iteration-retrospective' | 'pi-planning' | 'system-demo' | 'inspect-adapt' | 'scrum-of-scrums' | 'po-sync' | 'art-sync';
@@ -90,7 +90,7 @@ status: 'scheduled' | 'in-progress' | 'completed' | 'cancelled';
 agenda: MeetingAgenda[];
 outcomes: MeetingOutcome[];
 conversationId?: string;
-}
+'}
 export interface MeetingAgenda {
 id: string;
 title: string;
@@ -98,7 +98,7 @@ description: string;
 duration: number;
 presenter: string;
 topics: string[];
-}
+'}
 export interface MeetingOutcome {
 id: string;
 type: 'decision' | 'action-item' | 'risk' | 'dependency' | 'impediment';
@@ -106,7 +106,7 @@ description: string;
 owner?: string;
 dueDate?: Date;
 priority: 'low' | 'medium' | 'high' | 'critical';
-}
+'}
 export interface TeamworkCoordinationRequest {
 requestId: string;
 teamId: string;
@@ -118,9 +118,9 @@ context: {
 relatedFeatures: string[];
 dependencies: string[];
 constraints: string[];
-};
+'};
 deadline?: Date;
-}
+'}
 /**
 * Event-driven Conversation Manager with optional SPARC integration and SAFe teamwork
 */
@@ -149,7 +149,7 @@ fromAgent: string;
 content: string;
 toAgent?: string;
 type?: ConversationMessage['type'];
-}): Promise<ConversationMessage>;
+'}): Promise<ConversationMessage>;
 /**
 * Get conversation by ID
 */
@@ -206,7 +206,7 @@ private generateConversationId;
 * Generate message ID
 */
 private generateMessageId;
-}
+'}
 export interface TeamworkSession {
 id: string;
 name: string;
@@ -214,7 +214,7 @@ agents: Agent[];
 conversations: Conversation[];
 status: 'idle' | 'executing' | 'completed';
 createdAt: Date;
-}
+'}
 export declare class TeamworkOrchestrator {
 private sessions;
 private conversationManager;
@@ -250,7 +250,7 @@ getSession(id: string): TeamworkSession | undefined;
 * Get conversation manager for advanced coordination
 */
 getConversationManager(): ConversationManager;
-}
+'}
 export declare class ConversationMemoryManager {
 private memories;
 /**
@@ -260,12 +260,12 @@ storeMemory(memory: {
 conversationId: string;
 key: string;
 value: any;
-}): Promise<void>;
+'}): Promise<void>;
 /**
 * Retrieve memory for conversation
 */
 getMemory(conversationId: string, key?: string): any;
-}
+'}
 export declare function createConversationManager(): ConversationManager;
 export declare function createTeamworkOrchestrator(): TeamworkOrchestrator;
 export declare function createConversationMemoryManager(): ConversationMemoryManager;
@@ -274,7 +274,7 @@ name: string;
 artId: string;
 members: Omit<TeamMember, 'availability'>[];
 role?: SAFeTeam['role'];
-}): SAFeTeam;
+'}): SAFeTeam;
 export declare function createSAFeMeeting(config: {
 type: SAFeMeeting['type'];
 teamId?: string;
@@ -282,7 +282,7 @@ artId?: string;
 participants: string[];
 duration: number;
 agenda: MeetingAgenda[];
-}): SAFeMeeting;
+'}): SAFeMeeting;
 export declare function createTeamworkCoordinationRequest(config: {
 teamId: string;
 type: TeamworkCoordinationRequest['type'];
@@ -290,7 +290,7 @@ description: string;
 requestedParticipants: string[];
 priority?: TeamworkCoordinationRequest['priority'];
 context?: TeamworkCoordinationRequest['context'];
-}): TeamworkCoordinationRequest;
+'}): TeamworkCoordinationRequest;
 export declare function createSAFeTeamworkOrchestrator(): TeamworkOrchestrator;
 export { ConversationManager as TeamworkManager };
 export { TeamworkOrchestrator as MultiAgentOrchestrator };

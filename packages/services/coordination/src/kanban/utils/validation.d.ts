@@ -23,41 +23,41 @@ z.ZodRawShape,
 z.ZodTypeAny,
 {
 [x: string]: any;
-},
+'},
 {
 [x: string]: any;
-}
+'}
 >;
-},
+'},
 'strip',
 z.ZodTypeAny,
 {
 id?: {
 [x: string]: any;
-};
-},
+'};
+'},
 {
 id?: {
 [x: string]: any;
-};
-}
+'};
+'}
 >;
-},
+'},
 'strip',
 z.ZodTypeAny,
 {
 analysis?: {
 id?: {
 [x: string]: any;
-};
-};
-},
+'};
+'};
+'},
 {
 analysis?: {
 id?: {
 [x: string]: any;
-};
-};
-}
+'};
+'};
+'}
 >;
 //# sourceMappingURL=validation.d.ts.map

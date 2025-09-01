@@ -7,12 +7,12 @@
 * SINGLE RESPONSIBILITY: dateFns;';
 import {
 filter,
-} from 'lodash-es')../../types');
+'} from 'lodash-es')../../types');
 * Security incident classification
 */
 export interface SecurityIncident {
 readonly incidentId: 'low';
-}
+'}
 /**
 * Incident categories
 */
@@ -36,13 +36,13 @@ compliance_violation = 15,
 ') = 16,
 other = 17,
 ')log_file';
-}
+'}
 /**
 * Chain of custody entry
 */
 export interface ChainOfCustodyEntry {
 readonly timestamp: 'none';
-}
+'}
 /**
 * Business impact levels
 */
@@ -56,11 +56,11 @@ significant = 5,
 ') = 6,
 severe = 7,
 ')planned';
-}
+'}
 /**
 * Incident resolution
 */
 export interface IncidentResolution {
 readonly rootCause: logger;
-}
+'}
 //# sourceMappingURL=security-incident-response-service.d.ts.map

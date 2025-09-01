@@ -2,21 +2,33 @@
  * Utility functions for error handling with exact optional property types
  */
 
-export function createErrorOptions(correlationId: string, error?: unknown): any {
- const options: any = { correlationId };
+interface ErrorOptions {
+  correlationId: string;
+  cause?: Error;
+}
+
+interface QueryErrorOptions {
+  correlationId: string;
+  query?: string;
+  params?: unknown;
+  cause?: Error;
+}
+
+export function createErrorOptions(correlationId: string, error?: unknown): ErrorOptions {
+ const options: ErrorOptions = { correlationId };
  if (error instanceof Error) {
- options.cause = error;
+   options.cause = error;
  }
  return options;
 }
 
 export function createQueryErrorOptions(
  query: string,
- params: any,
+ params: unknown,
  correlationId: string,
  cause?: unknown
-): any {
- const options: any = { correlationId };
+): QueryErrorOptions {
+ const options: QueryErrorOptions = { correlationId };
  if (query) options.query = query;
  if (params !== undefined) options.params = params;
  if (cause instanceof Error) options.cause = cause;

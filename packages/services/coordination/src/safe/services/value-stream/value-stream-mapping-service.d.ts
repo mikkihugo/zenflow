@@ -5,30 +5,30 @@ readonly enableMultiLevelIntegration: boolean;
 readonly maxMappingComplexity: number;
 readonly optimizationThreshold: number;
 readonly mappingValidationEnabled: boolean;
-}
+'}
 export interface ValueStreamFlowAnalysis {
 readonly flowId: string;
 readonly name: string;
 readonly stepAnalysis: FlowStepAnalysis[];
 readonly metrics: DetailedFlowMetrics;
-}
+'}
 export interface FlowStepAnalysis {
 readonly stepId: string;
 readonly name: string;
 readonly duration: number;
 readonly type: value;
-}
+'}
 export interface DetailedFlowMetrics {
 readonly totalLeadTime: number;
 readonly totalProcessTime: number;
 readonly flowEfficiency: number;
 readonly valueAddedRatio: number;
-}
+'}
 export interface ValueStreamMapperState {
 readonly status: 'idle| mapping| optimizing' | ' completed';
 readonly progress: number;
 readonly currentStep?: string;
-}
+'}
 /**
 * Value stream mapping configuration
 */
@@ -39,7 +39,7 @@ readonly enableMultiLevelIntegration: boolean;
 readonly maxMappingComplexity: number;
 readonly optimizationThreshold: number;
 readonly mappingValidationEnabled: boolean;
-}
+'}
 /**
 * Workflow to value stream mapping
 */
@@ -52,7 +52,7 @@ readonly mappingReason: string;
 readonly steps: WorkflowStepMapping[];
 readonly validatedAt: Date;
 readonly validatedBy?: string;
-}
+'}
 /**
 * Workflow step mapping
 */
@@ -62,7 +62,7 @@ readonly valueStreamStep: string;
 readonly mappingReason: string;
 readonly confidence: number;
 readonly flowEfficiencyImpact: number;
-}
+'}
 /**
 * Value stream creation context
 */
@@ -73,7 +73,7 @@ readonly organizationalLevel: 'team| program| portfolio' | ' enterprise';
 readonly businessContext: BusinessContext;
 readonly technicalContext: TechnicalContext;
 readonly stakeholderContext: StakeholderContext;
-}
+'}
 /**
 * Business context for mapping
 */
@@ -83,7 +83,7 @@ readonly customerSegments: string[];
 readonly valuePropositions: string[];
 readonly revenueModel: string;
 readonly competitiveFactors: string[];
-}
+'}
 /**
 * Technical context for mapping
 */
@@ -93,7 +93,7 @@ readonly technologies: string[];
 readonly integrations: string[];
 readonly constraints: string[];
 readonly scalingRequirements: string[];
-}
+'}
 /**
 * Stakeholder context for mapping
 */
@@ -103,20 +103,20 @@ readonly secondaryStakeholders: string[];
 readonly decisionMakers: string[];
 readonly influencers: string[];
 readonly communicationPreferences: Record<string, string>;
-}
+'}
 /**
 * Mapping validation result
 */
 export interface MappingValidationResult {
 id: string;
-}
+'}
 /**
 * Mapping validation issue
 */
 export interface MappingValidationIssue {
 readonly type: 'conflict| gap| redundancy' | ' misalignment';
 readonly severity: low | medium | high;
-}
+'}
 /**
 * Value Stream Mapping Service - SAFe value stream mapping and workflow integration
 *
@@ -126,5 +126,5 @@ readonly severity: low | medium | high;
 export declare class ValueStreamMappingService {
 private readonly logger;
 constructor(logger: logger);
-}
+'}
 //# sourceMappingURL=value-stream-mapping-service.d.ts.map

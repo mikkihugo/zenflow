@@ -29,7 +29,7 @@ size: number;
 wsjfScore: number;
 lastUpdated: Date;
 confidence: number;
-}
+'}
 import type { Feature, PortfolioEpic, Story } from '../types';
 /**
 * Portfolio Kanban states for Epic lifecycle (SAFe-specific)

@@ -8,24 +8,24 @@
 import {
 filter,
 orderBy,
-} from 'lodash-es')../../types');
+'} from 'lodash-es')../../types');
 * Solution architecture configuration
 */
 export interface SolutionArchitectureConfig {
 readonly configId: 'business';
-}
+'}
 /**
 * Quality attribute
 */
 export interface QualityAttribute {
 readonly attributeId: 'critical';
-}
+'}
 /**
 * Architectural constraint
 */
 export interface ArchitecturalConstraint {
 readonly constraintId: 'technical';
-}
+'}
 /**
 * Constraint impact
 */
@@ -37,7 +37,7 @@ medium = 3,
 ') = 4,
 low = 5,
 ')programming_language';
-}
+'}
 /**
 * Standard scope
 */
@@ -53,48 +53,48 @@ restricted = 7,
 ') = 8,
 deprecated = 9,
 ')centralized';
-}
+'}
 /**
 * Decision right
 */
 export interface DecisionRight {
 readonly rightId: 'technology_adoption';
-}
+'}
 /**
 * Approval threshold
 */
 export interface ApprovalThreshold {
-}
+'}
 /**
 * Review step
 */
 export interface ReviewStep {
 readonly stepId: 'alignment';
-}
+'}
 /**
 * Escalation path
 */
 export interface EscalationPath {
 readonly pathId: 'continuous';
-}
+'}
 /**
 * Runway management
 */
 export interface RunwayManagement {
 readonly runwayId: 'continuous';
-}
+'}
 /**
 * Runway priority
 */
 export interface RunwayPriority {
 readonly priorityId: 'infrastructure';
-}
+'}
 /**
 * Runway component
 */
 export interface RunwayComponent {
 readonly componentId: 'platform';
-}
+'}
 /**
 * Component status
 */
@@ -124,5 +124,5 @@ retired = 9,
 export = 11,
 interface = 12,
 ComponentLifecycle = 13
-}
+'}
 //# sourceMappingURL=solution-architecture-management-service.d.ts.map

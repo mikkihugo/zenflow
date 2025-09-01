@@ -28,7 +28,7 @@ ValueStreamCreationContext,
 ValueStreamMappingConfig,
 WorkflowStepMapping,
 WorkflowValueStreamMapping,
-} from '../services/value-stream/value-stream-mapping-service';
+'} from '../services/value-stream/value-stream-mapping-service';
 /**
 * Value Stream Mapper state
 */
@@ -41,7 +41,7 @@ valueDeliveryTracking: Map<string, any>;
 continuousImprovements: any[];
 lastAnalysis: Date;
 lastOptimization: Date;
-}
+'}
 /**
 * Value Stream Mapper - SAFe value stream mapping and optimization facade
 *
@@ -51,10 +51,10 @@ lastOptimization: Date;
 export declare class ValueStreamMapper extends EventBus {
 private readonly logger;
 private state;
-}
+'}
 export interface DateRange {
 readonly start: Date;
 readonly end: Date;
-}
+'}
 export default ValueStreamMapper;
 //# sourceMappingURL=value-stream-mapper.d.ts.map

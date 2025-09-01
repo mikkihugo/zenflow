@@ -30,5 +30,5 @@ type WorkflowExecutionResult,
 WorkflowExecutionResultSchema,
 type WorkflowStep,
 WorkflowStepSchema,
-} from './validation';
+'} from './validation';
 //# sourceMappingURL=index.d.ts.map

@@ -31,14 +31,14 @@ export { ImmutableContextUtils, ImmutableMetricsUtils, ImmutableTaskUtils, Immut
 */
 export declare const DEFAULT_WORKFLOW_STATES: [
 'backlog,',
-'analysis,'
+'analysis,
 ];
 /**
 * All supported workflow states
 */
 export declare const ALL_WORKFLOW_STATES: [
-...DEFAULT_WORKFLOW_STATES,
-...SPECIAL_WORKFLOW_STATES
+'...DEFAULT_WORKFLOW_STATES,
+'...SPECIAL_WORKFLOW_STATES
 ];
 /**
 * Task priority levels in order (highest to lowest)
@@ -46,14 +46,14 @@ export declare const ALL_WORKFLOW_STATES: [
 export declare const TASK_PRIORITIES: [
 ';];;,
 'critical,',
-'high,'
+'high,
 ];
 /**
 * Available optimization strategies
 */
 export declare const OPTIMIZATION_STRATEGIES: [
 'wip_reduction,',
-'bottleneck_removal,'
+'bottleneck_removal,
 ];
 /**
 * Validate if a state is a valid workflow state

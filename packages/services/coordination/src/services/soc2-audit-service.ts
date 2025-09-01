@@ -40,23 +40,61 @@
 * SOC2 Trust Service Categories
 */
 export enum SOC2Category {
-SECURITY = 'security') AVAILABILITY = 'availability') PROCESSING_INTEGRITY = 'processing_integrity') CONFIDENTIALITY = 'confidentiality') PRIVACY ='privacy')};;
+  SECURITY = 'security',
+  AVAILABILITY = 'availability',
+  PROCESSING_INTEGRITY = 'processing_integrity',
+  CONFIDENTIALITY = 'confidentiality',
+  PRIVACY = 'privacy
+'}
 /**
 * SOC2 Event Types for comprehensive logging
 */
 export enum SOC2EventType {
-// Security Events;
-USER_AUTHENTICATION = 'user_authentication') ACCESS_GRANTED = 'access_granted') ACCESS_DENIED = 'access_denied') PRIVILEGE_ESCALATION = 'privilege_escalation') SESSION_START = 'session_start') SESSION_END = 'session_end') PASSWORD_CHANGE = 'password_change') ACCOUNT_LOCKOUT ='account_lockout,';
-
-// Availability Events') SYSTEM_START = 'system_start') SYSTEM_SHUTDOWN = 'system_shutdown') SERVICE_UNAVAILABLE = 'service_unavailable') PERFORMANCE_DEGRADATION = 'performance_degradation') BACKUP_COMPLETED = 'backup_completed') BACKUP_FAILED = 'backup_failed') RECOVERY_INITIATED ='recovery_initiated,';
-
-// Processing Integrity Events') DATA_VALIDATION_SUCCESS = 'data_validation_success') DATA_VALIDATION_FAILURE = 'data_validation_failure') TRANSACTION_START = 'transaction_start') TRANSACTION_COMMIT = 'transaction_commit') TRANSACTION_ROLLBACK = 'transaction_rollback') CONFIGURATION_CHANGE ='configuration_change,';
-
-// Confidentiality Events') DATA_ACCESS = 'data_access') DATA_EXPORT = 'data_export') ENCRYPTION_KEY_ROTATION = 'encryption_key_rotation') UNAUTHORIZED_ACCESS_ATTEMPT = 'unauthorized_access_attempt') DATA_CLASSIFICATION_CHANGE ='data_classification_change,';
-
-// Privacy Events') PERSONAL_DATA_COLLECTION = 'personal_data_collection') PERSONAL_DATA_PROCESSING = 'personal_data_processing') PERSONAL_DATA_DELETION = 'personal_data_deletion') CONSENT_GRANTED = 'consent_granted') CONSENT_WITHDRAWN = 'consent_withdrawn') DATA_SUBJECT_REQUEST ='data_subject_request,';
-
-// SAFE Framework Specific Events') EPIC_GENERATED = 'epic_generated') GATE_APPROVED = 'gate_approved') GATE_REJECTED = 'gate_rejected') AI_DECISION_MADE = 'ai_decision_made') HUMAN_OVERRIDE = 'human_override') WORKFLOW_TRANSITION ='workflow_transition')};;
+  // Security Events
+  USER_AUTHENTICATION = 'user_authentication',
+  ACCESS_GRANTED = 'access_granted',
+  ACCESS_DENIED = 'access_denied',
+  PRIVILEGE_ESCALATION = 'privilege_escalation',
+  SESSION_START = 'session_start',
+  SESSION_END = 'session_end',
+  PASSWORD_CHANGE = 'password_change',
+  ACCOUNT_LOCKOUT = 'account_lockout',
+  // Availability Events
+  SYSTEM_START = 'system_start',
+  SYSTEM_SHUTDOWN = 'system_shutdown',
+  SERVICE_UNAVAILABLE = 'service_unavailable',
+  PERFORMANCE_DEGRADATION = 'performance_degradation',
+  BACKUP_COMPLETED = 'backup_completed',
+  BACKUP_FAILED = 'backup_failed',
+  RECOVERY_INITIATED = 'recovery_initiated',
+  // Processing Integrity Events
+  DATA_VALIDATION_SUCCESS = 'data_validation_success',
+  DATA_VALIDATION_FAILURE = 'data_validation_failure',
+  TRANSACTION_START = 'transaction_start',
+  TRANSACTION_COMMIT = 'transaction_commit',
+  TRANSACTION_ROLLBACK = 'transaction_rollback',
+  CONFIGURATION_CHANGE = 'configuration_change',
+  // Confidentiality Events
+  DATA_ACCESS = 'data_access',
+  DATA_EXPORT = 'data_export',
+  ENCRYPTION_KEY_ROTATION = 'encryption_key_rotation',
+  UNAUTHORIZED_ACCESS_ATTEMPT = 'unauthorized_access_attempt',
+  DATA_CLASSIFICATION_CHANGE = 'data_classification_change',
+  // Privacy Events
+  PERSONAL_DATA_COLLECTION = 'personal_data_collection',
+  PERSONAL_DATA_PROCESSING = 'personal_data_processing',
+  PERSONAL_DATA_DELETION = 'personal_data_deletion',
+  CONSENT_GRANTED = 'consent_granted',
+  CONSENT_WITHDRAWN = 'consent_withdrawn',
+  DATA_SUBJECT_REQUEST = 'data_subject_request',
+  // SAFE Framework Specific Events
+  EPIC_GENERATED = 'epic_generated',
+  GATE_APPROVED = 'gate_approved',
+  GATE_REJECTED = 'gate_rejected',
+  AI_DECISION_MADE = 'ai_decision_made',
+  HUMAN_OVERRIDE = 'human_override',
+  WORKFLOW_TRANSITION = 'workflow_transition
+'}
 /**
 * Complete SOC2 audit log entry
 */

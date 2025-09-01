@@ -11,5 +11,5 @@
 declare const DEFAULT_CONFIG: {
 enableIntelligentWIP: false;
 constructor(config: {}): any;
-}, : any, config: any;
+'}, : any, config: any;
 //# sourceMappingURL=kanban-engine.d.ts.map

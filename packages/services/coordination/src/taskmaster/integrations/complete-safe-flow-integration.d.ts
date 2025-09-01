@@ -21,7 +21,7 @@ EPIC_DEVELOPMENT = 'epic_development,',
 export,
 interface,
 SafeEntity,
-}
+'}
 /**
 * Complete SAFE flow configuration
 */
@@ -32,28 +32,28 @@ enableInvestmentGates: boolean;
 enableValueStreamGates: boolean;
 enableEpicGates: boolean;
 autoApprovalThresholds: Record<string, number>;
-};
+'};
 art: {
 enablePlanningIntervalPlanningGates: boolean;
 enableFeatureGates: boolean;
 enableCapabilityGates: boolean;
 enableSystemDemoGates: boolean;
 autoApprovalThresholds: Record<string, number>;
-};
+'};
 team: {
 enableStoryGates: boolean;
 enableTaskGates: boolean;
 enableCodeReviewGates: boolean;
 enableSprintGates: boolean;
 autoApprovalThresholds: Record<string, number>;
-};
+'};
 solution: {
 enableSolutionIntentGates: boolean;
 enableArchitectureGates: boolean;
 enableComplianceGates: boolean;
 enableIntegrationGates: boolean;
 autoApprovalThresholds: Record<string, number>;
-};
+'};
 continuousDelivery: {
 enableBuildGates: boolean;
 enableTestGates: boolean;
@@ -61,22 +61,22 @@ enableSecurityGates: boolean;
 enablePerformanceGates: boolean;
 enableReleaseGates: boolean;
 autoApprovalThresholds: Record<string, number>;
-};
+'};
 crossCutting: {
 enableRiskGates: boolean;
 enableDependencyGates: boolean;
 enableResourceGates: boolean;
 enableStakeholderGates: boolean;
 globalEscalationRules: any[];
-};
+'};
 traceability: {
 enableFullTraceability: boolean;
 enableLearning: boolean;
 enablePatternRecognition: boolean;
 auditLevel: 'basic| soc2' | ' comprehensive';
 retentionDays: number;
-};
-}
+'};
+'}
 /**
 * Complete SAFE Flow Integration Service
 *
@@ -93,7 +93,7 @@ this: any,
 config: any,
 this: any,
 baseIntegration?: SafeFrameworkIntegration
-);
-}
+');
+'}
 export default CompleteSafeFlowIntegration;
 //# sourceMappingURL=complete-safe-flow-integration.d.ts.map

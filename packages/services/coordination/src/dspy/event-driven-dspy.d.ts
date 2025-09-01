@@ -12,25 +12,25 @@ requestId: string;
 prompt: string;
 context?: Record<string, unknown>;
 priority?: number;
-}
+'}
 export interface DspyLlmRequest {
 requestId: string;
 messages: {
 role: string;
 content: string;
-}[];
+'}[];
 model: string;
-}
+'}
 export interface DspyLlmResponse {
 requestId: string;
 content: string;
 metadata?: Record<string, unknown>;
-}
+'}
 export interface DspyOptimizationResult {
 requestId: string;
 optimizedPrompt: string;
 confidence: number;
-}
+'}
 export declare class EventDrivenDspy extends EventBus {
 private pendingOptimizations;
 private pendingLlmCalls;
@@ -68,5 +68,5 @@ private calculateSimilarity;
 * Store optimization result
 */
 private storeOptimizationResult;
-}
+'}
 //# sourceMappingURL=event-driven-dspy.d.ts.map

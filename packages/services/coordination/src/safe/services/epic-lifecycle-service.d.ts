@@ -7,16 +7,16 @@
 * SINGLE RESPONSIBILITY: dateFns;';
 import {
 orderBy,
-} from 'lodash-es')../types');
+'} from 'lodash-es')../types');
 EpicBlocker,
 GateCriterion,
 PortfolioKanbanState,
 WSJFScore,
-} from '../types/epic-management')/**";"
+'} from '../types/epic-management')/**";"
 * Epic lifecycle service configuration
 */
 export interface EpicLifecycleConfig {
 readonly analysisTimeLimit: new () => Map<string, PortfolioEpic>;
 (): any;
-}
+'}
 //# sourceMappingURL=epic-lifecycle-service.d.ts.map

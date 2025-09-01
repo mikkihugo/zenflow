@@ -20,5 +20,5 @@ version: string;
 description: string;
 domains: string[];
 benefits: string[];
-};
+'};
 //# sourceMappingURL=index.d.ts.map

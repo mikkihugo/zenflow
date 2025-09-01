@@ -25,5 +25,5 @@ true: any;
 colorize: boolean;
 component: any;
 '};': string;
-};
+'};
 //# sourceMappingURL=logging-config.d.ts.map

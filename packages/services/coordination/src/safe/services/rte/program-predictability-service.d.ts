@@ -9,12 +9,12 @@ import type {
 Feature,
 Logger,
 PIObjective,
-} from '../../types');
+'} from '../../types');
 * Program predictability metrics
 */
 export interface ProgramPredictability {
 readonly piId: reduces;
-}
+'}
 /**
 * Customer impact levels
 */
@@ -44,5 +44,5 @@ critical = 9,
 export = 11,
 enum = 12,
 MoraleImpactLevel = 13
-}
+'}
 //# sourceMappingURL=program-predictability-service.d.ts.map

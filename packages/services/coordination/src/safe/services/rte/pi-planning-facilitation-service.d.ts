@@ -10,16 +10,16 @@ filter,
 groupBy,
 map,
 orderBy,
-} from 'lodash-es');
+'} from 'lodash-es');
 Dependency,
 Feature,
 Logger,
 PIObjective,
 Risk,
-} from '../../types');
+'} from '../../types');
 * PI Planning event configuration
 */
 export interface PIPlanningEventConfig {
 readonly eventId: logger;
-}
+'}
 //# sourceMappingURL=pi-planning-facilitation-service.d.ts.map

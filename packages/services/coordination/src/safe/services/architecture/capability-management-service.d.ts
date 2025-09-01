@@ -3,7 +3,7 @@
 */
 export interface ArchitectureCapability {
 id: string;
-}
+'}
 /**
 * Capability categories for organization
 */
@@ -11,7 +11,7 @@ export type CapabilityCategory = business_capability | technology_capability | p
 export type CapabilityStatus = planning | developing | active | optimizing | retiring | deprecated | 'suspended';
 export interface CapabilityKPI {
 id: string;
-}
+'}
 /**
 * KPI trend analysis
 */
@@ -19,7 +19,7 @@ export type KPITrend = improving | 'improving' | ' stable' | ' declining' | decl
 export type MeasurementFrequency = real_time | hourly | daily | weekly | monthly | quarterly | 'annually';
 export interface PerformanceThreshold {
 readonly excellent: 'accelerating|';
-}
+'}
 /**
 * Risk exposure data
 */
@@ -29,7 +29,7 @@ readonly riskScore: number;
 readonly exposureValue: number;
 readonly mitigationCoverage: number;
 readonly residualRisk: number;
-}
+'}
 /**
 * Capability Management Service - Architecture capability tracking and management
 *
@@ -40,6 +40,6 @@ export declare class CapabilityManagementService {
 private readonly logger;
 private capabilities;
 private config;
-}
+'}
 export default CapabilityManagementService;
 //# sourceMappingURL=capability-management-service.d.ts.map

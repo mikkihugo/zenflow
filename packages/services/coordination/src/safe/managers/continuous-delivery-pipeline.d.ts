@@ -29,6 +29,6 @@ export type { AutomationAction, AutomationCondition, AutomationResult, Automatio
 export declare class ContinuousDeliveryPipelineManager extends EventBus {
 private readonly logger;
 private state;
-}
+'}
 export default ContinuousDeliveryPipelineManager;
 //# sourceMappingURL=continuous-delivery-pipeline.d.ts.map

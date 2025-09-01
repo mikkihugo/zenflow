@@ -12,7 +12,7 @@ meanBy,')lodash-es')../../types');
 */
 export interface PredictiveAnalyticsConfig {
 readonly analyticsId: 'time_series';
-}
+'}
 /**
 * Prediction algorithm
 */
@@ -33,31 +33,31 @@ gradient_boosting = 11,
 exponential_smoothing = 13,
 ')) MAE =' = 0,
 mae = 1,// Mean Absolute Error')mape,// Mean Absolute Percentage Error')rmse,// Root Mean Squared Error')r_squared')aic,// Akaike Information Criterion')bic,// Bayesian Information Criterion')numeric';
-}
+'}
 /**
 * Data source
 */
 export interface DataSource {
 readonly sourceId: 'skip';
-}
+'}
 /**
 * Feature transformation
 */
 export interface FeatureTransformation {
 readonly transformationId: 'normalization';
-}
+'}
 /**
 * Feature importance
 */
 export interface FeatureImportance {
 readonly score: 'correlation';
-}
+'}
 /**
 * Preprocessing configuration
 */
 export interface PreprocessingConfig {
 readonly missingValues: 'z_score';
-}
+'}
 /**
 * Outlier treatment
 */
@@ -71,30 +71,30 @@ transform = 5,
 ') = 6,
 ignore = 7,
 ')join';
-}
+'}
 /**
 * Accuracy requirements
 */
 export interface AccuracyRequirements {
 readonly targetAccuracy: 'real_time';
-}
+'}
 /**
 * Value delivery prediction result
 */
 export interface ValueDeliveryPrediction {
 readonly predictionId: 'data_quality';
-}
+'}
 /**
 * Prediction accuracy
 */
 export interface PredictionAccuracy {
 readonly historical: 'increasing';
-}
+'}
 /**
 * Trend forecast
 */
 export interface TrendForecast {
 readonly continuationProbability: new () => Map<string, ValueDeliveryPrediction>;
 (): any;
-}
+'}
 //# sourceMappingURL=predictive-analytics-service.d.ts.map

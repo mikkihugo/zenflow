@@ -10,7 +10,7 @@ filter,
 meanBy,
 orderBy,
 sumBy,
-} from 'lodash-es')../types');
+'} from 'lodash-es')../types');
 BusinessHypothesis,
 EpicBusinessCase,
 EpicRisk,
@@ -18,12 +18,12 @@ FinancialViability,
 MarketAnalysis,
 RevenueProjection,
 ROICalculation,
-} from '../types/epic-management');
+'} from '../types/epic-management');
 * Business case service configuration
 */
 export interface BusinessCaseConfig {
 readonly discountRate: new () => Map<string, EpicBusinessCase>;
 (): any;
 constructor(config: config, this: any, logger?: any): any;
-}
+'}
 //# sourceMappingURL=business-case-service.d.ts.map

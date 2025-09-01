@@ -16,5 +16,5 @@ export {
 createConfiguredWorkflowMachine,
 createDefaultWorkflowConfig,
 createWorkflowMachine,
-} from './workflow-machine';
+'} from './workflow-machine';
 //# sourceMappingURL=index.d.ts.map

@@ -10,7 +10,7 @@ DEVOPS_ENGINEER = "devops_engineer, // CD pipeline focus",
 ARCHITECT = "architect, // Architecture and technical focus",
 PRODUCT_OWNER = "product_owner, // Product Owner - SAFe 6.0 (Business value focus)",
 FULL_TRACEABILITY = "full_traceability, // Complete end-to-end view"
-}
+'}
 /**
 * Live gate status for dashboard display
 */
@@ -20,6 +20,6 @@ gateId: getLogger;
 private safeFlowIntegration;
 (): any;
 private analytics;
-}
+'}
 export default CompleteSafeDashboard;
 //# sourceMappingURL=safe-dashboard.d.ts.map

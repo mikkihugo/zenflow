@@ -18,21 +18,21 @@ export declare class SafeCollectionUtils {
 */
 static filterByPriority<T extends {
 priority: string;
-}>(items: T[], priorities: string[]): T[];
+'}>(items: T[], priorities: string[]): T[];
 /**
 * Sort epics by business value using lodash
 */
 static sortByBusinessValue<T extends {
 businessValue: number;
-}>(epics: T[]): T[];
+'}>(epics: T[]): T[];
 /**
 * Group features by ART using lodash
 */
 static groupByART<T extends {
 artId: groupBy;
 (features: any, : any): any;
-}>(): any;
-}
+'}>(): any;
+'}
 /**
 * SAFe portfolio and value stream utilities
 */
@@ -43,6 +43,6 @@ export declare class SafePortfolioUtils {
 static calculatePortfolioMetrics<T extends {
 status: countBy;
 (portfolioItems: any, : any): any;
-}, const totalItems = portfolioItems.length, const healthScore = ((statusCount.green))>(): any;
-}
+'}, const totalItems = portfolioItems.length, const healthScore = ((statusCount.green))>(): any;
+'}
 //# sourceMappingURL=safe-collections.d.ts.map

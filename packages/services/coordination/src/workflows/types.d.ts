@@ -11,7 +11,7 @@ WorkflowDefinition,
 WorkflowEngineConfig,
 WorkflowState,
 WorkflowStep,
-} from './workflow-base-types';
+'} from './workflow-base-types';
 import type { WorkflowDefinition } from './workflow-base-types';
 export interface WorkflowTemplate {
 id: string;
@@ -24,8 +24,8 @@ version: string;
 author?: string;
 tags?: string[];
 complexity?: 'simple' | ' medium' | ' complex';
-};
-}
+'};
+'}
 export interface WorkflowExecution {
 id: string;
 workflowId: string;
@@ -40,24 +40,24 @@ duration?: number;
 stepsCompleted: number;
 stepsFailed: number;
 resourcesUsed: Record<string, unknown>;
-};
-}
+'};
+'}
 export interface WorkflowRegistry {
 templates: Map<string, WorkflowTemplate>;
 definitions: Map<string, WorkflowDefinition>;
 executions: Map<string, WorkflowExecution>;
-}
+'}
 export interface WorkflowEvent {
 type:
-| 'workflow.started'
-| ' workflow.completed'
-| ' workflow.failed'
-| ' step.started'
-| ' step.completed'
+| 'workflow.started
+| ' workflow.completed
+| ' workflow.failed
+| ' step.started
+| ' step.completed
 | ' step.failed';
 workflowId: string;
 stepIndex?: number;
 data?: Record<string, unknown>;
 timestamp: string;
-}
+'}
 //# sourceMappingURL=types.d.ts.map

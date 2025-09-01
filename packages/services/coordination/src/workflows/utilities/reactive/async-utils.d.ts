@@ -8,7 +8,7 @@ wait: number
 ): T & {
 cancel(): void;
 flush(): void;
-};
+'};
 /**
 * Create throttled function
 */
@@ -18,7 +18,7 @@ wait: number
 ): T & {
 cancel(): void;
 flush(): void;
-};
+'};
 /**
 * Create promise-based delay
 */
@@ -30,5 +30,5 @@ static createTimeout<T>(
 promise: Promise<T>,
 milliseconds: number
 ): Promise<T>;
-}
+'}
 //# sourceMappingURL=async-utils.d.ts.map

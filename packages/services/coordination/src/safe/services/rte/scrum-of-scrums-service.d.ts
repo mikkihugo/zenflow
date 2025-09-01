@@ -9,12 +9,12 @@ import {
 filter,
 map,
 meanBy,
-} from 'lodash-es')../../types');
+'} from 'lodash-es')../../types');
 * Scrum of Scrums meeting configuration
 */
 export interface ScrumOfScrumsConfig {
 id: string;
-}
+'}
 /**
 * Impediment severity levels
 */
@@ -42,5 +42,5 @@ critical = 7,
 export = 9,
 enum = 10,
 ImpedimentStatus = 11
-}
+'}
 //# sourceMappingURL=scrum-of-scrums-service.d.ts.map

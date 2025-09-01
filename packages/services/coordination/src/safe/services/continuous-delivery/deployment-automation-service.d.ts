@@ -8,13 +8,13 @@ CANARY = "canary",
 ROLLING = "rolling",
 RECREATE = "recreate",
 A_B_TESTING = "a_b_testing"
-}
+'}
 /**
 * Deployment environment configuration
 */
 export interface DeploymentEnvironment {
 id: string;
-}
+'}
 /**
 * Phase execution
 */
@@ -30,7 +30,7 @@ readonly duration?: number;
 readonly result: unknown;
 readonly message: string;
 readonly evaluatedAt: Date;
-}
+'}
 /**
 * Deployment metrics
 */
@@ -43,7 +43,7 @@ readonly errorRate: number;
 readonly successRate: number;
 readonly resourceUtilization: ResourceUtilization;
 readonly userImpactMetrics: UserImpactMetrics;
-}
+'}
 /**
 * Resource utilization
 */
@@ -53,7 +53,7 @@ readonly memory: number;
 readonly disk: number;
 readonly network: number;
 readonly cost: number;
-}
+'}
 /**
 * User impact metrics
 */
@@ -63,7 +63,7 @@ readonly availability: number;
 readonly errorCount: number;
 readonly userSessions: number;
 readonly businessMetrics: Record<string, number>;
-}
+'}
 /**
 * Rollback plan
 */
@@ -74,13 +74,13 @@ readonly triggers: RollbackTrigger[];
 readonly actions: DeploymentAction[];
 readonly timeout: number;
 readonly healthCheckRequired: boolean;
-}
+'}
 /**
 * Rollback trigger
 */
 export interface RollbackTrigger {
 id: string;
-}
+'}
 /**
 * Validation plan
 */
@@ -90,19 +90,19 @@ readonly performanceTests: PerformanceTest[];
 readonly securityTests: SecurityTest[];
 readonly businessValidations: BusinessValidation[];
 readonly rolloutValidation: RolloutValidation;
-}
+'}
 /**
 * Health check
 */
 export interface HealthCheck {
 id: string;
-}
+'}
 /**
 * Performance test
 */
 export interface PerformanceTest {
 id: string;
-}
+'}
 /**
 * Performance threshold
 */
@@ -111,19 +111,19 @@ readonly metric: string;
 readonly operator: 'lt| lte| gt' | ' gte';
 readonly value: number;
 readonly percentile?: number;
-}
+'}
 /**
 * Security test
 */
 export interface SecurityTest {
 id: string;
-}
+'}
 /**
 * Business validation
 */
 export interface BusinessValidation {
 id: string;
-}
+'}
 /**
 * Business criteria
 */
@@ -132,7 +132,7 @@ readonly metric: string;
 readonly target: number;
 readonly tolerance: number;
 readonly measurement: string;
-}
+'}
 /**
 * Rollout validation
 */
@@ -141,7 +141,7 @@ readonly strategy: 'immediate' | ' gradual' | ' scheduled';
 readonly phases: RolloutPhase[];
 readonly approvals: ApprovalGate[];
 readonly monitoringPeriod: number;
-}
+'}
 /**
 * Rollout phase
 */
@@ -150,7 +150,7 @@ readonly name: string;
 readonly percentage: number;
 readonly duration: number;
 readonly criteria: RolloutCriteria[];
-}
+'}
 /**
 * Rollout criteria
 */
@@ -159,13 +159,13 @@ readonly metric: string;
 readonly threshold: number;
 readonly operator: 'lt| lte| gt' | ' gte';
 readonly required: boolean;
-}
+'}
 /**
 * Approval gate
 */
 export interface ApprovalGate {
 id: string;
-}
+'}
 /**
 * Supporting interfaces
 */
@@ -174,34 +174,34 @@ readonly type: 'ebs| efs| gcs' | ' azure_disk';
 readonly size: number;
 readonly iops?: number;
 readonly encrypted: boolean;
-}
+'}
 export interface LoadBalancerConfig {
 readonly type: 'application' | ' network' | ' classic';
 readonly scheme: 'internet-facing' | ' internal';
 readonly targetGroups: TargetGroup[];
-}
+'}
 export interface TargetGroup {
 readonly name: string;
 readonly port: number;
 readonly protocol: 'HTTP| HTTPS| TCP' | ' TLS';
 readonly healthCheck: HealthCheck;
-}
+'}
 export interface IngressRule {
 readonly port: number;
 readonly protocol: 'tcp' | ' udp' | ' icmp';
 readonly source: string;
 readonly description?: string;
-}
+'}
 export interface EgressRule {
 readonly port: number;
 readonly protocol: 'tcp' | ' udp' | ' icmp';
 readonly destination: string;
 readonly description?: string;
-}
+'}
 export interface NetworkPolicy {
 readonly name: string;
 readonly rules: PolicyRule[];
-}
+'}
 export interface PolicyRule {
 readonly action: 'allow' | ' deny';
 readonly protocol: 'tcp' | ' udp' | ' icmp';
@@ -209,33 +209,33 @@ readonly port?: number;
 ';: any;
 readonly source?: string;
 readonly destination?: string;
-}
+'}
 export interface NotificationPlan {
 readonly channels: NotificationChannel[];
 readonly triggers: NotificationTrigger[];
 readonly templates: NotificationTemplate[];
-}
+'}
 export interface NotificationChannel {
 readonly type: 'email| slack| teams' | ' webhook';
 readonly configuration: Record<string, unknown>;
 ';: any;
 readonly recipients: string[];
-}
+'}
 export interface NotificationTrigger {
 readonly event: deployment_start | deployment_success | deployment_failure | 'rollback';
 readonly channels: string[];
 readonly conditions?: Record<string, unknown>;
-}
+'}
 export interface NotificationTemplate {
 id: string;
-}
+'}
 export interface DeploymentLog {
 readonly timestamp: Date;
 readonly level: 'debug| info| warn' | ' error';
 readonly message: string;
 readonly source: string;
 readonly metadata?: Record<string, unknown>;
-}
+'}
 export interface DeploymentError {
 readonly timestamp: Date;
 readonly phase: string;
@@ -245,7 +245,7 @@ readonly message: string;
 readonly details: unknown;
 readonly recoverable: boolean;
 readonly suggested_action?: string;
-}
+'}
 /**
 * Deployment Automation Service - Automated deployment and release management
 *
@@ -258,5 +258,5 @@ private environments;
 private activeDeployments;
 private deploymentHistory;
 constructor(logger: logger);
-}
+'}
 //# sourceMappingURL=deployment-automation-service.d.ts.map
