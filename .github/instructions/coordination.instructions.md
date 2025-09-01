@@ -1,7 +1,3 @@
----
-applies_to: 'src/coordination/**/*'
----
-
 # Coordination System Development Instructions
 
 ## Domain Focus
@@ -167,6 +163,10 @@ const consensus = await consensusEngine.proposeDecision({
 
 - **Use coordination metrics** for performance monitoring
 - **Implement health checks** for all coordination components
+- **Log coordination decisions** with appropriate detail level
+- **Provide debugging tools** for coordination state inspection
+
+The coordination domain is critical for system performance and reliability. Maintain high standards and leverage the sophisticated patterns already established.
 - **Log coordination decisions** with appropriate detail level
 - **Provide debugging tools** for coordination state inspection
 

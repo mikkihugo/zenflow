@@ -1,7 +1,9 @@
 /**
  * @fileoverview AI Safety Package - Enterprise Foundation Integration
  *
- * Professional AI safety system leveraging comprehensive @claude-zen/foundation utilities.
+ * Professional AI safety system leveraging comprehensive @claude-zen/f      error: new Error(
+        `Emergency safety shutdown failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      )dation utilities.
  * Transformed to match memory package pattern with battle-tested enterprise architecture.
  *
  * Foundation Integration: 
@@ -34,6 +36,14 @@
  * '
  */
 
+import { getLogger } from '@claude-zen/foundation';
+import type { AIInteractionData } from './safety-orchestrator';
+
+const logger = getLogger('ai-safety');
+
+// Remove duplicate import
+// import { type AIInteractionData } from './ai-deception-detector';
+
 
 // =============================================================================
 // DECEPTION DETECTION - AI behavior analysis
@@ -44,8 +54,8 @@ export {
   createAIDeceptionDetector,
 } from './ai-deception-detector';
 
-// Import for internal use
-import { type AIInteractionData } from './ai-deception-detector';
+// Removed duplicate import - AIInteractionData is already imported above
+// import { type AIInteractionData } from './ai-deception-detector';
 // =============================================================================
 // PRIMARY ENTRY POINT - Main safety guard
 // =============================================================================
@@ -117,7 +127,7 @@ export async function initializeAISafety() {
 ' *}
  * '
  */
-export async function emergencySafetyShutdown() {
+export function emergencySafetyShutdown() {
   try {
     logger.info(' ENTERPRISE EMERGENCY SAFETY SHUTDOWN INITIATED');
 
@@ -140,7 +150,7 @@ export async function emergencySafetyShutdown() {
     return {
       success: false,
       error: new Error(
-        'Emergency safety shutdown failed: ' + error instanceof Error ? error.message : 'Unknown error'
+        `Emergency safety shutdown failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       )
     };
   }
@@ -163,13 +173,14 @@ export type { SafetyMetrics} from './safety-orchestrator';
 // PLACEHOLDER TYPES - Safety system types (future implementation)
 // =============================================================================
 
-/** Safety configuration interface */
-export interface SafetyConfig {
-  enabled: boolean;
-  strictMode?: boolean;
-  interventionThreshold?: number;
-  escalationTimeout?: number;
-}
+// SafetyConfig is imported from safety-orchestrator module
+// /** Safety configuration interface */
+// export interface SafetyConfig {
+//   enabled: boolean;
+//   strictMode?: boolean;
+//   interventionThreshold?: number;
+//   escalationTimeout?: number;
+// }
 
 /** Safety event interface */
 export interface SafetyEvent {
@@ -177,7 +188,7 @@ export interface SafetyEvent {
   timestamp: number;
   agentId?: string;
   severity: 'low' | ' medium' | ' high' | ' critical';
-  data: Record<string, any>;
+  data: Record<string, unknown>;
 }
 
 /** Risk level enum */
@@ -199,16 +210,14 @@ export interface InterventionAction {
 // PROFESSIONAL SYSTEM ACCESS - Production naming patterns
 // =============================================================================
 
-export async function getAISafetySystemAccess(
-  _config?: SafetyConfig
-): Promise<any> {
+export async function getAISafetySystemAccess(): Promise<unknown> {
   const { createInitializedAISafetyOrchestrator, createAISafetyOrchestrator} = await import('./safety-orchestrator');
   const { createAIDeceptionDetector, analyzeAIResponse} = await import('./ai-deception-detector');
   
   const orchestrator = await createInitializedAISafetyOrchestrator();
   if (!orchestrator.success) {
     throw new Error(
-      'Failed to initialize AI Safety system: ' + orchestrator.error?.message
+      `Failed to initialize AI Safety system: ${  orchestrator.error?.message}`
     );
 }
   const safetySystem = orchestrator.value!;
@@ -219,63 +228,59 @@ export async function getAISafetySystemAccess(
     startMonitoring: () => safetySystem.startSafetyMonitoring(),
     stopMonitoring: () => safetySystem.stopSafetyMonitoring(),
     getMetrics: () => safetySystem.getSafetyMetrics(),
-    analyzeResponse: (response: any) => analyzeAIResponse(response),
+    analyzeResponse: (response: AIInteractionData) => analyzeAIResponse(response),
     checkSafety: (agentId: string, data: AIInteractionData) =>
       safetySystem.evaluateAgentSafety?.(agentId, data),
     emergencyShutdown: () => emergencySafetyShutdown(),
     getStatus: () => safetySystem.getSafetyStatus?.(),
-    escalate: (alert: any) => logger.info('Escalating:', alert),
+    escalate: (alert: SafetyEvent) => logger.info('Escalating:', alert),
 };
 }
 
-export async function getSafetyOrchestrator(
-  config?: SafetyConfig
-): Promise<any> {
+export async function getSafetyOrchestrator(): Promise<unknown> {
   const { createInitializedAISafetyOrchestrator} = await import('./safety-orchestrator');
   
   const result = await createInitializedAISafetyOrchestrator();
   if (!result.success) {
     throw new Error(
-      'Failed to create safety orchestrator: ' + result.error?.message
+      `Failed to create safety orchestrator: ${  result.error?.message}`
     );
 }
   return result.value;
 }
 
-export async function getDeceptionDetection(_config?: any): Promise<any> {
+export async function getDeceptionDetection(): Promise<unknown> {
   const { createAIDeceptionDetector, analyzeAIResponse} = await import('./ai-deception-detector');
   
   const detector = createAIDeceptionDetector();
   return {
     analyze: (data: AIInteractionData) => detector.analyzeAIResponse(data),
-    detect: (response: any) => analyzeAIResponse(response),
+    detect: (response: AIInteractionData) => analyzeAIResponse(response),
     check: (interactionData: AIInteractionData) =>
       detector.analyzeAIResponse(interactionData),
     getMetrics: () => detector.getDetectionMetrics?.(),
 };
 }
 
-export async function getSafetyMonitoring(config?: SafetyConfig): Promise<any> {
-  const system = await getAISafetySystemAccess(config);
+export async function getSafetyMonitoring(): Promise<unknown> {
+  const system = await getAISafetySystemAccess();
   return {
     monitor: (agentId: string) => system.checkSafety(agentId),
-    evaluate: (data: any) => system.analyzeResponse(data),
+    evaluate: (data: AIInteractionData) => system.analyzeResponse(data),
     alert: (event: SafetyEvent) => system.escalate(event),
     report: () => system.getMetrics(),
 };
 }
 
-export async function getSafetyIntervention(
-  config?: SafetyConfig
-): Promise<any> {
-  const system = await getAISafetySystemAccess(config);
+export async function getSafetyIntervention(): Promise<unknown> {
+  const system = await getAISafetySystemAccess();
   return {
     intervene: (action: InterventionAction) => {
       // Implementation would handle different intervention types
-      logger.info('Intervention requested: ' + (action.type) + ' on ' + action.target);
+      logger.info(`Intervention requested: ${  action.type  } on ${  action.target}`);
       return Promise.resolve({ success: true, action});
 },
-    escalate: (alert: any) => system.escalate(alert),
+    escalate: (alert: SafetyEvent) => system.escalate(alert),
     emergency: () => system.emergencyShutdown(),
     pause: (agentId: string) => ({
       type: 'pause',      target: agentId,

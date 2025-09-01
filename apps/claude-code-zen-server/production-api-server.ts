@@ -153,23 +153,44 @@ app.get('/api/v1/coordination/swarms', async (req, res) => {
   }
 });
 
+// Add minimal interfaces above the endpoint for type safety
+interface Agent {
+  id?: string;
+  name?: string;
+  type?: string;
+  status?: string;
+  capabilities?: string[];
+  performance?: {
+    successRate?: number;
+    avgResponseTime?: number;
+  };
+  currentTask?: string | null;
+  lastActive?: string;
+}
+
+interface AgentRegistry {
+  getAllAgents(): Promise<Agent[]>;
+}
+
+interface BrainCoordinator {
+  getAgentRegistry(): Promise<AgentRegistry>;
+}
+
 // Production agents endpoint - get from brain coordinator agent registry
 app.get('/api/v1/coordination/agents', async (req, res) => {
   try {
     const agents = await safeAsync(async () => {
-      const { getBrainCoordinator } = (global as { foundation?: { getBrainCoordinator: () => unknown } })
+      const { getBrainCoordinator } = (global as { foundation?: { getBrainCoordinator: () => () => BrainCoordinator } })
         .foundation || { getBrainCoordinator: () => null };
       if (getBrainCoordinator) {
-        const coordinator = getBrainCoordinator();
-        // @ts-expect-error: coordinator type is unknown
-        const agentRegistry = await (coordinator as any).getAgentRegistry();
-        // @ts-expect-error: agentRegistry type is unknown
-        return (agentRegistry as any).getAllAgents();
+        const coordinator: BrainCoordinator = getBrainCoordinator();
+        const agentRegistry: AgentRegistry = await coordinator.getAgentRegistry();
+        return await agentRegistry.getAllAgents();
       }
       return [];
     }, []);
     res.json({
-      agents: (agents as unknown[]).map((agent: any) => ({
+      agents: (agents as Agent[]).map((agent: Agent) => ({
         id: agent.id || `agent-${  Date.now()}`,
         name: agent.name || 'Unnamed Agent',
         type: agent.type || 'general',
@@ -182,7 +203,7 @@ app.get('/api/v1/coordination/agents', async (req, res) => {
         currentTask: agent.currentTask || null,
         lastActive: agent.lastActive || new Date().toISOString(),
       })),
-      total: (agents as unknown[]).length,
+      total: (agents as Agent[]).length,
     });
   } catch (error) {
     logger.error("Error:", error);

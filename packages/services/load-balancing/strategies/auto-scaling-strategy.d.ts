@@ -7,7 +7,7 @@
  */
 import { EventEmitter } from '@claude-zen/foundation';
 import type { AutoScaler } from '../interfaces';
-import type { Agent, AutoScalingConfig, LoadMetrics } from '../types';
+import { type Agent, type AutoScalingConfig, type LoadMetrics } from '../types';
 interface ScalingHistory {
     timestamp: Date;
     action: string;

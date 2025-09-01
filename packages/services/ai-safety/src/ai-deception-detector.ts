@@ -9,35 +9,59 @@ import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('ai-deception-detector');
 
-/**
- * Deception alert interface.
- */
 export interface DeceptionAlert {
   type:
     // CAPABILITY INFLATION
-    'TOOL_OMNIPOTENCE' | ' API_ASSUMPTIONS' | ' LIBRARY_HALLUCINATION' | ' VERSION_CONFUSION' |
-    'PERMISSION_ASSUMPTIONS' | ' INTEGRATION_CLAIMS' | ' PERFORMANCE_PROMISES' | ' CAPABILITY_OVERREACH' |
-    'SKILL_FABRICATION' | ' ACCESS_INFLATION' | ' MEMORY_FABRICATION' | ' IMPLEMENTATION_CLAIMS' |
-    // KNOWLEDGE HALLUCINATION 
-    'FILENAME_INFERENCE' | ' CONFIGURATION_ASSUMPTION' | ' DOCUMENTATION_FABRICATION' | ' ERROR_MESSAGE_INVENTION' |
-    'DEPENDENCY_MAPPING' | ' SCHEMA_HALLUCINATION' | ' FACTUAL_INVENTION' | ' EXPERTISE_MIMICRY' |
-    'REFERENCE_FABRICATION' | ' CODE_INVENTION' | ' DOCUMENTATION_HALLUCINATION' |
+    | 'TOOL_OMNIPOTENCE'
+    | 'API_ASSUMPTIONS'
+    | 'LIBRARY_HALLUCINATION'
+    | 'VERSION_CONFUSION'
+    | 'PERMISSION_ASSUMPTIONS'
+    | 'INTEGRATION_CLAIMS'
+    | 'PERFORMANCE_PROMISES'
+    | 'CAPABILITY_OVERREACH'
+    | 'SKILL_FABRICATION'
+    | 'ACCESS_INFLATION'
+    | 'MEMORY_FABRICATION'
+    | 'IMPLEMENTATION_CLAIMS'
+    // KNOWLEDGE HALLUCINATION
+    | 'FILENAME_INFERENCE'
+    | 'CONFIGURATION_ASSUMPTION'
+    | 'DOCUMENTATION_FABRICATION'
+    | 'ERROR_MESSAGE_INVENTION'
+    | 'DEPENDENCY_MAPPING'
+    | 'SCHEMA_HALLUCINATION'
+    | 'FACTUAL_INVENTION'
+    | 'EXPERTISE_MIMICRY'
+    | 'REFERENCE_FABRICATION'
+    | 'CODE_INVENTION'
+    | 'DOCUMENTATION_HALLUCINATION'
     // VERIFICATION AVOIDANCE
-    'ANALYSIS_CLAIMS' | ' TESTING_CLAIMS' | ' DEBUGGING_CLAIMS' | ' REVIEW_CLAIMS' |
-    'VALIDATION_CLAIMS' | ' EXAMINATION_FRAUD' | ' SEARCH_AVOIDANCE' |
+    | 'ANALYSIS_CLAIMS'
+    | 'TESTING_CLAIMS'
+    | 'DEBUGGING_CLAIMS'
+    | 'REVIEW_CLAIMS'
+    | 'VALIDATION_CLAIMS'
+    | 'EXAMINATION_FRAUD'
+    | 'SEARCH_AVOIDANCE'
     // CONFIDENCE INFLATION
-    'CERTAINTY_OVERREACH' | ' BEST_PRACTICE_CLAIMS' | ' COMPATIBILITY_ASSURANCE' | ' SECURITY_ASSUMPTIONS' |
+    | 'CERTAINTY_OVERREACH'
+    | 'BEST_PRACTICE_CLAIMS'
+    | 'COMPATIBILITY_ASSURANCE'
+    | 'SECURITY_ASSUMPTIONS'
     // CONTEXT CONFUSION
-    'PROJECT_CONFLATION' | ' TIMELINE_CONFUSION' | ' ENVIRONMENT_ASSUMPTIONS';
-  severity:'LOW' | ' MEDIUM' | ' HIGH' | ' CRITICAL';
-  agentId?:string;
+    | 'PROJECT_CONFLATION'
+    | 'TIMELINE_CONFUSION'
+    | 'ENVIRONMENT_ASSUMPTIONS';
+  severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  agentId?: string;
   evidence: string[];
   confidence: number;
   intervention: string;
   timestamp: Date;
-  toolCallsRequired?:string[];
+  toolCallsRequired?: string[];
   humanEscalation: boolean;
-  category:'CAPABILITY_INFLATION' | ' KNOWLEDGE_HALLUCINATION' | ' VERIFICATION_AVOIDANCE' | ' CONFIDENCE_INFLATION' | ' CONTEXT_CONFUSION';
+  category: 'CAPABILITY_INFLATION' | 'KNOWLEDGE_HALLUCINATION' | 'VERIFICATION_AVOIDANCE' | 'CONFIDENCE_INFLATION' | 'CONTEXT_CONFUSION';
 }
 
 /**
@@ -260,10 +284,9 @@ export class AIDeceptionDetector {
       'confidenceInflation': 'confidence',
       'contextConfusion': 'context'
     };
-    return this.config.thresholds[categoryMap[category]] || 0.5;
-}
-
-  /**
+    const thresholdKey = categoryMap[category];
+    return thresholdKey ? this.config.thresholds[thresholdKey] : 0.5;
+  }  /**
    * Get category-specific multiplier for confidence calculation.
    */
   private getCategoryMultiplier(category: string): number {
@@ -312,14 +335,12 @@ export class AIDeceptionDetector {
   /**
    * Calculate severity based on confidence score.
    */
-  private calculateSeverity(confidence: number): 'LOW' | ' MEDIUM' | ' HIGH' | ' CRITICAL' {
+  private calculateSeverity(confidence: number): 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' {
     if (confidence >= 0.9) return 'CRITICAL';
     if (confidence >= 0.7) return 'HIGH';
     if (confidence >= 0.5) return 'MEDIUM';
     return 'LOW';
-}
-
-  /**
+  }  /**
    * Map category to specific deception type.
    */
   private mapCategoryToType(category: string): DeceptionAlert['type'] {
@@ -363,25 +384,25 @@ export class AIDeceptionDetector {
     
     if (severity === 'CRITICAL') {
       return `CRITICAL: ${baseIntervention}. Escalate to human oversight.`;
-}
+    }
     
     return baseIntervention;
-}
+  }
 
   /**
    * Get required tool calls for verification.
    */
   private getRequiredToolCalls(type: DeceptionAlert['type']): string[] {
     const toolMap: Record<string, string[]> = {
-      'CAPABILITY_OVERREACH':[' Read',    'Bash'],
-      'DOCUMENTATION_FABRICATION':[' Read',    'Grep'],
-      'ANALYSIS_CLAIMS':[' Read',    'Bash',    'Grep'],
-      'CERTAINTY_OVERREACH':[' Read'],
-      'PROJECT_CONFLATION':[' LS',    'Read']
-};
+      'CAPABILITY_OVERREACH': ['read', 'bash'],
+      'DOCUMENTATION_FABRICATION': ['read', 'grep'],
+      'ANALYSIS_CLAIMS': ['read', 'bash', 'grep'],
+      'CERTAINTY_OVERREACH': ['read'],
+      'PROJECT_CONFLATION': ['ls', 'read']
+    };
     
-    return toolMap[type] || ['Read'];
-}
+    return toolMap[type] || ['read'];
+  }
 
   /**
    * Determine if alert should escalate to human.
@@ -390,7 +411,7 @@ export class AIDeceptionDetector {
     return severity === 'CRITICAL' || 
            (severity === 'HIGH' && confidence >= 0.8) ||
            this.config.interventions.humanEscalation;
-}
+  }
 
   /**
    * Trigger intervention for detected deception.

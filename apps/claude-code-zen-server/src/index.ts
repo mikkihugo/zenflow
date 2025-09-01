@@ -11,10 +11,11 @@ import {
   Result,
   ok,
   err,
+  getConfig,
 } from '@claude-zen/foundation';
-import type { Express, Request, Response } from 'express';
-import type { Server as HTTPServer } from 'http';
-import type { Server as SocketIOServer, Socket } from 'socket.io';
+
+// Initialize foundation config early
+getConfig();
 
 const logger = getLogger('claude-zen-server');
 
@@ -168,19 +169,6 @@ class ClaudeZenServer {
         allowEIO3: true,
       });
 
-      // Set up broadcast callback to connect event registry with Socket.IO
-      // TODO: Re-enable event registry integration when config issue is resolved
-      /*
-      eventRegistryInitializer.setBroadcastCallback(
-        (type: string, data: unknown) => {
-          io.to('events').emit(type, {
-            data,
-            timestamp: new Date().toISOString(),
-          });
-        }
-      );
-      */
-
       this.setupSocketHandlers(io);
       logger.info(
         `🔌 Socket.IO server initialized for real-time updates`
@@ -207,7 +195,7 @@ class ClaudeZenServer {
         serverVersion: '1.0.0',
       });
 
-      this.setupSocketSubscriptions(socket, io);
+      this.setupSocketSubscriptions(socket);
       this.setupSocketUtilities(socket);
     });
   }
@@ -274,7 +262,7 @@ class ClaudeZenServer {
     );
     logger.info(` Dashboard available at http://${this.host}:${this.port}`);
     logger.info(
-      `🔌 Event Registry WebSocket available at ws://${this.host}:${this.port}/api/events/ws`
+      `🔌 Socket.IO server initialized for real-time updates`
     );
   }
 }

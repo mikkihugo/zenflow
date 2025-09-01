@@ -7,7 +7,7 @@
  */
 import { EventEmitter } from '@claude-zen/foundation';
 import type { CapacityManager, RoutingEngine } from '../interfaces';
-import type { Agent, NetworkTopology, RoutingResult, Task } from '../types';
+import { type Agent, type NetworkTopology, type RoutingResult, type Task } from '../types';
 interface RoutingMetrics {
     totalRoutingDecisions: number;
     successfulRoutings: number;

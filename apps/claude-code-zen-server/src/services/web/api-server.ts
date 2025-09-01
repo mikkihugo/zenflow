@@ -25,8 +25,6 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import { WebApiRoutes } from './api.routes';
 import { createRealApiRoutes } from './real-api-routes';
-import { eventRegistryWebSocketService } from '../websocket/event-registry-websocket';
-import { eventRegistryInitializer } from '../event-system/event-registry-initializer';
 
 const { getVersion } = (
   global as { claudeZenFoundation?: { getVersion(): string } }

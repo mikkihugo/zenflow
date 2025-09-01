@@ -17,8 +17,8 @@
     "packages/tools/*"
   ],
   "scripts": {
-    "start": "pnpm --filter @claude-zen/server start",
-    "dev": "concurrently \"pnpm --filter @claude-zen/server dev\" \"pnpm --filter @claude-zen/web-dashboard dev\"",
+    "start": "pnpm run build:packages && pnpm --filter @claude-zen/server start",
+    "dev": "pnpm run build:packages && concurrently \"pnpm --filter @claude-zen/server dev\" \"pnpm --filter @claude-zen/web-dashboard dev\"",
     "build": "node scripts/build.js",
     "build:sea": "node scripts/build-sea.js",
     "build:npm": "node scripts/build-npm.js",
