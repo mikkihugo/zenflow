@@ -279,7 +279,7 @@ export class IntelligentPromptGenerator {
       { performanceRecommendations, securityRecommendations, testingRecommendations}
     );
 
-    let __standards = `;
+    let __standards = `
 ## 🎯 Coding Standards & Best Practices (${language.toUpperCase()})
 ${enhancedStandards.contextualIntro}
 
@@ -299,10 +299,10 @@ ${enhancedStandards.contextualIntro}
 - **Max ${maxParameters} parameters**: Use objects for complex parameter sets
 - **Cyclomatic complexity**: Keep below ${maxComplexity}
 - **Pure functions**: Prefer pure functions when possible
-- **Clear naming**: Function names should describe what they do`;
+- **Clear naming**: Function names should describe what they do`
 
     if (language === 'typescript') {
-      __standards += `;
+      __standards += `
 
 ### 🔷 TypeScript Quality Standards:
 - **Strict typing**: Always use explicit types, avoid 'any'
@@ -310,29 +310,29 @@ ${enhancedStandards.contextualIntro}
 - **Generic types**: Use generics for reusable components
 - **Null safety**: Handle undefined/null cases explicitly
 - **Union types**: Use union types for controlled variants
-- **Type guards**: Implement proper type guards for runtime checks`;
+- **Type guards**: Implement proper type guards for runtime checks`
     }
 
     if (config.includePerformance) {
-      __standards += `;
+      __standards += `
 
 ### ⚡ Performance Guidelines:
 - **Big O awareness**: Consider algorithmic complexity
 - **Memory management**: Avoid memory leaks and excessive allocations
 - **Lazy loading**: Load resources only when needed
 - **Caching strategies**: Implement appropriate caching
-- **Bundle optimization**: Minimize bundle size and dependencies`;
+- **Bundle optimization**: Minimize bundle size and dependencies`
     }
 
     if (config.includeSecurity) {
-      __standards += `;
+      __standards += `
 
 ### 🔒 Security Best Practices:
 - **Input validation**: Validate all external inputs
 - **Error handling**: Don't expose sensitive information in errors
 - **Authentication**: Implement proper authentication and authorization
 - **Data sanitization**: Sanitize user inputs to prevent injection attacks
-- **Dependency security**: Regularly update and audit dependencies`;
+- **Dependency security**: Regularly update and audit dependencies`
     }
 
     return __standards;
@@ -348,64 +348,64 @@ ${enhancedStandards.contextualIntro}
   ):string {
     switch (phase) {
       case 'specification':
-        return `;
+        return `
 ### 📋 Specification Phase Guidelines:
 - **Clear requirements**: Each requirement should be testable and specific
 - **Domain modeling**: Use ${config.language === 'typescript' ? 'TypeScript interfaces' : 'clear data structures'} to model domain entities
 - **API contracts**: Define clear input/output interfaces
 - **Validation rules**: Specify data validation requirements
 - **User stories**: Write clear user stories with acceptance criteria
-- **Edge cases**: Identify and document edge cases and error scenarios`;
+- **Edge cases**: Identify and document edge cases and error scenarios`
 
       case 'pseudocode':
-        return `;
+        return `
 ### 🔄 Pseudocode Phase Guidelines:
 - **Algorithm clarity**: Write self-documenting pseudocode
 - **Data structures**: Choose appropriate data structures (Map, Set, Array)
 - **Error handling**: Plan for error scenarios and edge cases
 - **Performance considerations**: Consider Big O complexity
 - **Step-by-step logic**: Break down complex operations into clear steps
-- **Variable naming**: Use descriptive names in pseudocode`;
+- **Variable naming**: Use descriptive names in pseudocode`
 
       case 'architecture':
-        return `;
+        return `
 ### 🏗️ Architecture Phase Guidelines:
 - **Modular design**: Create loosely coupled, highly cohesive modules
 - **Separation of concerns**: Separate business logic from presentation/data layers
 - **Dependency injection**: Use DI for testability and flexibility
 - **Interface segregation**: Create focused, specific interfaces
 - **Package structure**: Organize code into logical packages/folders
-- **Scalability patterns**: Design for future growth and changes`;
+- **Scalability patterns**: Design for future growth and changes`
 
       case 'refinement':
-        return `;
+        return `
 ### ⚡ Refinement Phase Guidelines:
 - **Performance optimization**: Profile and optimize critical paths
 - **Code review practices**: Focus on readability and maintainability
 - **Testing coverage**: Aim for 80%+ test coverage
 - **Documentation**: Add comprehensive documentation for public APIs
 - **Refactoring**: Eliminate code smells and technical debt
-- **Error handling**: Robust error handling and logging`;
+- **Error handling**: Robust error handling and logging`
 
       case 'completion':
-        return `;
+        return `
 ### ✅ Completion Phase Guidelines:
 - **Production readiness**: Ensure error handling, logging, monitoring
 - **Security validation**: Check for common security vulnerabilities
 - **Performance benchmarks**: Meet defined performance criteria
 - **Documentation completeness**: README, API docs, deployment guides
 - **CI/CD pipeline**: Automated testing and deployment
-- **Monitoring**: Implement proper monitoring and alerting`;
+- **Monitoring**: Implement proper monitoring and alerting`
 
       default:
-        return `;
+        return `
 ### 🎯 General Development Guidelines:
 - **Code quality**: Follow established coding standards
 - **Documentation**: Write clear, comprehensive documentation
 - **Testing**: Implement thorough testing strategies
 - **Performance**: Consider performance implications
 - **Security**: Follow security best practices
-- **Maintainability**: Write code that's easy to maintain and extend`;
+- **Maintainability**: Write code that's easy to maintain and extend`
     }
   }
 
@@ -460,7 +460,7 @@ ${enhancedStandards.contextualIntro}
     codingStandards:string,
     phaseGuidelines:string
   ):string {
-    return `;
+    return `
 # 🚀 ${phase.charAt(0).toUpperCase() + phase.slice(1)} Phase Development Prompt
 
 ## 📋 Project Context:
@@ -490,7 +490,7 @@ ${phaseGuidelines}
 - [] Performance considerations
 - [] Security best practices
 
-Remember: Write code that tells a story - it should be self-documenting and easy for other developers to understand and maintain.`;
+Remember: Write code that tells a story - it should be self-documenting and easy for other developers to understand and maintain.`
 }
 
   /**
@@ -617,16 +617,16 @@ Generate a complete, ready-to-use development prompt.`,
   private getPhaseExampleGuidelines(phase:DevelopmentPhase): string {
     switch (phase) {
       case 'specification':
-        return `- Define clear, testable requirements\n- Model domain entities with TypeScript interfaces\n- Specify validation rules and constraints`;
+        return `- Define clear, testable requirements\n- Model domain entities with TypeScript interfaces\n- Specify validation rules and constraints`
       case 'pseudocode':
-        return `- Write self-documenting algorithm steps\n- Choose appropriate data structures\n- Plan error handling and edge cases`;
+        return `- Write self-documenting algorithm steps\n- Choose appropriate data structures\n- Plan error handling and edge cases`
       case 'architecture':
-        return `- Design modular, loosely coupled components\n- Separate concerns into logical layers\n- Use dependency injection for testability`;
+        return `- Design modular, loosely coupled components\n- Separate concerns into logical layers\n- Use dependency injection for testability`
       case 'refinement':{
-    ')        return `- Optimize performance critical paths\n- Eliminate code smells and technical debt\n- Achieve 80%+ test coverage`;`;
-      case 'completion': ')'        return `- Ensure production-ready error handling\n- Implement proper logging and monitoring\n- Complete security validation`;`;
+    ')        return `- Optimize performance critical paths\n- Eliminate code smells and technical debt\n- Achieve 80%+ test coverage``
+      case 'completion': ')'        return `- Ensure production-ready error handling\n- Implement proper logging and monitoring\n- Complete security validation``
       default:
-        return `- Follow established coding standards\n- Write maintainable, self-documenting code\n- Ensure comprehensive testing`;`;
+        return `- Follow established coding standards\n- Write maintainable, self-documenting code\n- Ensure comprehensive testing``
 }
 }
 
@@ -640,11 +640,11 @@ Generate a complete, ready-to-use development prompt.`,
     return [
       {
         input: `Generate ${phase} phase prompt for e-commerce API project in rest-api domain using ${config.language}`,
-        output: `# Development Prompt for ${phase} Phase\n\n## 📋 Project Context\n## 🎯 Coding Standards\n## 📝 CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Keep functions simple and focused\n3. Follow ${config.language} best practices`;
+        output: `# Development Prompt for ${phase} Phase\n\n## 📋 Project Context\n## 🎯 Coding Standards\n## 📝 CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Keep functions simple and focused\n3. Follow ${config.language} best practices`
       },
       {
         input: `Generate ${phase} phase prompt for mobile app project in mobile domain using ${config.language}`,
-        output: `# Development Prompt for ${phase} Phase\n\n## 📋 Project Context\n## 🎯 Coding Standards\n## 📝 CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Optimize for mobile performance\n3. Follow ${config.language} best practices`;
+        output: `# Development Prompt for ${phase} Phase\n\n## 📋 Project Context\n## 🎯 Coding Standards\n## 📝 CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Optimize for mobile performance\n3. Follow ${config.language} best practices`
       }
 ];
 }
@@ -675,30 +675,30 @@ Generate a complete, ready-to-use development prompt.`,
       let contextualInsights = ';
 
       if (context.currentPhase) {
-        contextualInsights += `- Project phase:${context}.currentPhase- applying phase-specific patterns\n`;`;
+        contextualInsights += `- Project phase:${context}.currentPhase- applying phase-specific patterns\n``
 }
 
       if (context.domainSpecific) {
-        contextualInsights += `- Domain:${context}.domainSpecific- leveraging domain expertise\n`;`;
+        contextualInsights += `- Domain:${context}.domainSpecific- leveraging domain expertise\n``
 }
 
       if (complexityLevel > 0.7) {
-        contextualInsights += `- High complexity detected (${(_complexityLevel * 100).toFixed(1)}%) - extra attention needed\n`;`;
+        contextualInsights += `- High complexity detected (${(_complexityLevel * 100).toFixed(1)}%) - extra attention needed\n``
 }
 
       // Include agent performance insights relevant to project type
       if (enhancedStats.averagePerformance > 0.8) {
-        contextualInsights += `- High-performing agent patterns available (${(_enhancedStats._averagePerformance * 100).toFixed(1)}%)\n`;`;
+        contextualInsights += `- High-performing agent patterns available (${(_enhancedStats._averagePerformance * 100).toFixed(1)}%)\n``
 }
 
-      return `${content}`;
+      return `${content}`
 
 ## 🧠 AI-Enhanced Recommendations:
 Based on ${agentProfiles.size} agent profiles and project context analysis:
 ${contextualInsights}
 - Focus on areas where similar ${projectTags.join(',    ')} projects typically encounter issues')- Leverage patterns that have proven successful in comparable domains
 - Pay special attention to complexity hotspots identified by behavioral analysis
-- Apply lessons from ${enhancedStats.totalAgents} agents' collective experience`;`;
+- Apply lessons from ${enhancedStats.totalAgents} agents' collective experience``
 } catch (error) {
       this.logger.warn(
         'Error enhancing prompt with behavioral intelligence: ','        error
@@ -718,7 +718,7 @@ ${contextualInsights}
 
     // Add additional tags based on context properties
     if (context.requirements && context.requirements.length > 0) {
-      tags.push(`${context}.requirements.length-requirements`);`;
+      tags.push(`${context}.requirements.length-requirements``
 }
 }
 
@@ -855,7 +855,7 @@ ${contextualInsights}
     context:ProjectContext,
     principles:any
   ):string {
-    return `# 🚀 ${phase.charAt(0).toUpperCase() + phase.slice(1)} Phase Development Prompt`;
+    return `# 🚀 ${phase.charAt(0).toUpperCase() + phase.slice(1)} Phase Development Prompt`
 ## META-LEARNING ENABLED ✨
 
 ## 📋 Project Context:
@@ -884,7 +884,7 @@ ${principles}.template
 3. **Maintain function _complexity** within researched thresholds
 4. **Consider domain-specific patterns** for ${context.domain || 'general'} applications')5. **Plan for validation** - another AI may review your work for accuracy
 
-Remember:This prompt learns from your execution. The better you follow and provide feedback on these guidelines, the more effective future prompts become.`;`;
+Remember:This prompt learns from your execution. The better you follow and provide feedback on these guidelines, the more effective future prompts become.``
 }
 
   /**
@@ -921,7 +921,7 @@ Remember:This prompt learns from your execution. The better you follow and provi
    * Generate principles ID for tracking
    */
   private generatePrinciplesId(config:any): string {
-    return `${config.language}-${config.domain || 'general'}-${config.role || 'general'}-${config.depth || 'intermediate'}`;
+    return `${config.language}-${config.domain || 'general'}-${config.role || 'general'}-${config.depth || 'intermediate'}`
 }
 
   /**
@@ -969,7 +969,7 @@ Remember:This prompt learns from your execution. The better you follow and provi
 };
 
     await this.codingPrinciplesResearcher.submitAgentFeedback(agentFeedback);
-    this.logger.info(`Agent feedback submitted for principles ${principlesId}:accuracy=${feedback.accuracy}, usefulness=${feedback.usefulness}`);`;
+    this.logger.info(`Agent feedback submitted for principles ${principlesId}:accuracy=${feedback.accuracy}, usefulness=${feedback.usefulness}``
 }
 
   /**
@@ -988,14 +988,14 @@ Remember:This prompt learns from your execution. The better you follow and provi
     return `# 🔍 SECOND OPINION VALIDATION
 
 ## Original Task Prompt:
-\`\`\`;
+\`\`\`
 ${originalPrompt}
-\`\`\`;
+\`\`\`
 
 ## Agent's Implementation:
-\`\`\`;
+\`\`\`
 ${agentResponse}
-\`\`\`;
+\`\`\`
 
 ## Project Context:
 - **Project**: ${context.name}
@@ -1042,9 +1042,9 @@ Provide your validation in JSON format:
   "overall_assessment": "Good implementation with minor areas for improvement",
   "validation_confidence": 0.9
 }
-\`\`\`;
+\`\`\`
 
-Be thorough but constructive. Focus on helping improve both the implementation and future prompt clarity.`;
+Be thorough but constructive. Focus on helping improve both the implementation and future prompt clarity.`
   }
 
   /**
@@ -1184,7 +1184,7 @@ Be thorough but constructive. Focus on helping improve both the implementation a
     const activeFeatures = [];
     if (flags.includePerformance) activeFeatures.push('Performance');')    if (flags.includeSecurity) activeFeatures.push('Security');  ')    if (flags.includeTesting) activeFeatures.push('Testing');')
     const contextualIntro = activeFeatures.length > 0 ? 
-      `\n### 🎯 **Enhanced Features**:${activeFeatures.join(',    ')} optimization enabled` :`;
+      `\n### 🎯 **Enhanced Features**:${activeFeatures.join(',    ')} optimization enabled` :`
 
     return {
       contextualIntro,

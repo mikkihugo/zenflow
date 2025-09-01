@@ -11,9 +11,9 @@
 * - Foundation dependencies for logging and storage
 *
 * @example Importing core components
-* ```typescript`;
+* ```typescript`
 * import { CompleteIntelligenceSystem, ITaskPredictor} from '@claude-zen/agent-monitoring';
-* import { SimpleTaskPredictor} from '@claude-zen/agent-monitoring`;
+* import { SimpleTaskPredictor} from '@claude-zen/agent-monitoring`
 * ````
 *
 * @author Claude Code Zen Team - Intelligence Integration

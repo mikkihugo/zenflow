@@ -84,7 +84,7 @@ export interface AgentRegistryEvents {
 };
   'agent-registry:agent-info': {
     requestId:string;
-    agent:AgentInstance | null;
+    agent: 'AgentInstance' | 'null';
     timestamp:number;
 };
   'agent-registry:agents-found': {

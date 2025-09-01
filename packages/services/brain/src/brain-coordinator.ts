@@ -294,13 +294,13 @@ const initStartTime = Date.now();
 
 try {
 this.logger.info(
-` Initializing Intelligence Orchestrator with foundation EventBus...`;
+` Initializing Intelligence Orchestrator with foundation EventBus...`
 );
 
 // Initialize EventBus first
 const eventBusResult = await super.initialize();
 if (eventBusResult.isErr()) {
-throw new Error(`EventBus initialization failed:${eventBusResult.error?.message}`);
+throw new Error(`EventBus initialization failed:${eventBusResult.error?.message}`
 }
 
 // Initialize monitoring components through operations facade

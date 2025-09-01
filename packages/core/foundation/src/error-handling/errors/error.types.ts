@@ -20,7 +20,7 @@
  *}
  *   return null;
  *}
- * `;
+ * `
  */
 
 import { LogLevel, type Timestamp, type UUID } from '../../types/primitives';

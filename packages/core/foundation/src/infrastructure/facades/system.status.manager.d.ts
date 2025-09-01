@@ -304,7 +304,7 @@ export declare class SystemStatusManager extends EventEmitter<ServiceStatusEvent
      *     startTimer() { return () => logger.info('Fallback timer');}
      *}
      *}));
-     * `;
+     * `
      */
     getService<T>(serviceName: string, fallback?: () => T): T | null;
     /**

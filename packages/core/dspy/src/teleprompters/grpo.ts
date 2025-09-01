@@ -82,7 +82,7 @@ class Counter {
 * Exact implementation matching Stanford DSPy GRPO teleprompter with 100% API compatibility.
 */
 export class GRPO extends FinetuneTeleprompter {
-	private metric:MetricFunction | null;
+	private metric: 'MetricFunction' | 'null';
 	private multitask:boolean;
 	private adapter:Map<LMInterface, Adapter>;
 	private num_threads:number;
@@ -197,7 +197,7 @@ export class GRPO extends FinetuneTeleprompter {
 	 * Convert adapter to LM dictionary
 	 */
 	private convert_to_lm_dict(
-		adapter:Adapter | Map<LMInterface, Adapter> | null,
+		adapter: 'Adapter' | 'Map'<LMInterface, Adapter> | null,
 	):Map<LMInterface, Adapter> {
 		if (adapter instanceof Map) {
 			return adapter;
@@ -259,7 +259,7 @@ export class GRPO extends FinetuneTeleprompter {
 					for (const t of sample.trace) {
 						const hash_val = this.hash_signature(t[0].signature);
 						if (!pred_signature_hash_to_ind.has(hash_val)) {
-							throw new Error(`Unknown signature hash:${hash_val}`);
+							throw new Error(`Unknown signature hash:${hash_val}`
 }
 }
 }
@@ -532,7 +532,7 @@ export class GRPO extends FinetuneTeleprompter {
 				:Math.floor(base_idx / this.shuffled_trainset_ids.length);
 
 		if (curr_epoch > this.epoch) {
-			logger.info(`Updating shuffled trainset for epoch ${curr_epoch}...`);
+			logger.info(`Updating shuffled trainset for epoch ${curr_epoch}...`
 			this.epoch = curr_epoch;
 			this.update_shuffled_trainset(original_trainset);
 }
@@ -697,7 +697,7 @@ export class GRPO extends FinetuneTeleprompter {
 		const grpo_training_jobs = new Map<string, any>();
 		for (const [pred_ind, pred] of student.predictors().entries()) {
 			const data_key = this.multitask ? null : pred_ind;
-			const job_key = `${pred.lm}_${data_key}`;
+			const job_key = `${pred.lm}_${data_key}`
 			if (!grpo_training_jobs.has(job_key)) {
 				const train_kwargs = this.trainKwargs?.get(pred.lm);
 				const job = pred.lm.reinforce({ train_kwargs});

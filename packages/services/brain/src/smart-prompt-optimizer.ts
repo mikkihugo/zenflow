@@ -107,7 +107,7 @@ export class SmartPromptOptimizer {
 
  try {
  logger.info(
- `🔍 Analyzing prompt for optimization: "${originalPrompt.substring(0, 50)}..."`;
+ `🔍 Analyzing prompt for optimization: "${originalPrompt.substring(0, 50)}..."`
  );
 
  // Analyze prompt characteristics
@@ -162,7 +162,7 @@ export class SmartPromptOptimizer {
  };
 
  logger.info(
- `✅ Prompt optimization complete - confidence: ${confidence.toFixed(2)}, improvement: ${improvementFactor.toFixed(2)}x`;
+ `✅ Prompt optimization complete - confidence: ${confidence.toFixed(2)}, improvement: ${improvementFactor.toFixed(2)}x`
  );
 
  return result;
@@ -269,7 +269,7 @@ export class SmartPromptOptimizer {
 ];
 
  patterns.forEach((pattern, index) => {
- this.optimizationPatterns.set(`baseline_${index}`, pattern);`;
+ this.optimizationPatterns.set(`baseline_${index}`, pattern);`
 });
 
  logger.debug(
@@ -426,7 +426,7 @@ export class SmartPromptOptimizer {
  case 'clarity_improvement': ')' optimizedPrompt +=
  '\n\nPlease be specific and provide detailed explanations.;
  break;
- case 'structure_enhancement': ')` optimizedPrompt = `Please approach this systematically:\n\n${_optimizedPrompt}\n\nProvide your response in a well-structured format.`;`;
+ case 'structure_enhancement': ')` optimizedPrompt = `Please approach this systematically:\n\n${_optimizedPrompt}\n\nProvide your response in a well-structured format.``
  break;
  case `context_addition': ')' optimizedPrompt +=
  '\n\nConsider the specific context and requirements when responding.;
@@ -549,10 +549,10 @@ export class SmartPromptOptimizer {
 }
 }
 
- logger.debug(`Updated optimization patterns based on performance feedback`);
+ logger.debug(`Updated optimization patterns based on performance feedback`
  // For now, just log the learning event
  logger.debug(
- `🎯 Pattern learning: ${analysisData.successRate > 0.7 ? 'positive' : 'negative'} feedback received`;
+ `🎯 Pattern learning: ${analysisData.successRate > 0.7 ? 'positive' : 'negative'} feedback received`
  );
 }
 

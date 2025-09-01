@@ -413,7 +413,7 @@ export function filterClaudeOutput(
  if (isDescriptivePattern && !isActualError) {
  filteredLines.push(line);
  parsingWarnings.push(
- `Filtered descriptive pattern from stderr:${trimmedLine.substring(0, 80)}...`;
+ `Filtered descriptive pattern from stderr:${trimmedLine.substring(0, 80)}...`
  );
  continue;
  }
@@ -423,7 +423,7 @@ export function filterClaudeOutput(
  if (isDescriptivePattern) {
  filteredLines.push(line);
  parsingWarnings.push(
- `Filtered descriptive pattern:${trimmedLine.substring(0, 80)}...`;
+ `Filtered descriptive pattern:${trimmedLine.substring(0, 80)}...`
  );
  continue;
  }
@@ -452,7 +452,7 @@ export function validateAndRejectPrompt(prompt: string): string {
  throw new Error(
  `Prompt validation failed with ${criticalIssues.length} critical issue(s): ${criticalIssues
  .map((i) => i['message'])
- .join('; ')}`;
+ .join('; ')}`
  );
  }
 
@@ -486,7 +486,7 @@ export function createSafePrompt(
 
  if (config.logValidation && validation.issues.length > 0) {
  logger.info(
- `Prompt safety analysis found ${validation.issues.length} issue(s), risk level:${validation.risk}`;
+ `Prompt safety analysis found ${validation.issues.length} issue(s), risk level:${validation.risk}`
  );
  }
 
@@ -496,7 +496,7 @@ export function createSafePrompt(
  `Prompt rejected due to safety concerns: ${validation.issues
  .filter((i) => i.severity === 'critical')
  .map((i) => i['message'])
- .join('; ')}`;
+ .join('; ')}`
  );
  }
 

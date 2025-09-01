@@ -225,7 +225,7 @@ export class EventDrivenSystemMonitorBridge {
         // If not valid, prefix with system-monitoring:
         validatedEventName = eventName.startsWith('system-monitoring:') 
           ? eventName 
-          : `system-monitoring:${eventName}`;
+          : `system-monitoring:${eventName}`
         
         if (this.config.enableLogging) {
           EventLogger.log('monitoring-bridge:event-name-prefixed', {

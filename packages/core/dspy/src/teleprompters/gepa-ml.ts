@@ -311,7 +311,7 @@ distanceMetric: this.config.diversityMeasure,
 this.logger.info('ML components initialized successfully');
 } catch (error) {
 this.logger.error(`Failed to initialize ML components:`, error);
-throw new Error(`GEPAML initialization failed:${error.message}`);
+throw new Error(`GEPAML initialization failed:${error.message}`
 }
 }
 
@@ -493,7 +493,7 @@ this.bestIndividualOverall = { ...population[0] };
 }
 
 this.logger.info(
-`Initialized ${numPopulations} populations with ${this.config.populationSize} individuals each`;
+`Initialized ${numPopulations} populations with ${this.config.populationSize} individuals each`
 );
 }
 
@@ -564,12 +564,12 @@ this.currentGeneration++;
 
 const generationTime = performance.now() - generationStart;
 this.logger.debug(
-`Generation ${this.currentGeneration}:best=${currentBest.toFixed(4)}, time=${generationTime.toFixed(0)}ms`;
+`Generation ${this.currentGeneration}:best=${currentBest.toFixed(4)}, time=${generationTime.toFixed(0)}ms`
 );
 }
 
 this.logger.info(
-`Evolution completed after ${this.currentGeneration} generations`;
+`Evolution completed after ${this.currentGeneration} generations`
 );
 }
 
@@ -661,7 +661,7 @@ trainset?: any[],
 valset?: any[]
 ): Promise<number> {
 // Create cache key for fitness caching
-const cacheKey = Array.from(individual.genes).join(`,`);
+const cacheKey = Array.from(individual.genes).join(`,`
 
 if (this.config.cacheResults && this.fitnessCache.has(cacheKey)) {
 return this.fitnessCache.get(cacheKey)!;

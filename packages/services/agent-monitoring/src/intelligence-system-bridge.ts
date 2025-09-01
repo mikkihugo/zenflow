@@ -225,7 +225,7 @@ export class AgentMonitoringBridge {
     }
 
     // Add agent-monitoring prefix for validation
-    const normalizedName = `agent-monitoring:${eventName}`;
+    const normalizedName = `agent-monitoring:${eventName}`
     return isValidEventName(normalizedName) ? normalizedName : null;
   }
 

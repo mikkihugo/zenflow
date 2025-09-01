@@ -48,7 +48,7 @@ export class LogTapeSyslogBridge {
  } catch (error) {
  // Use direct error logging to avoid circular dependency with syslog bridge
  process.stderr.write(
- `[SyslogBridge] Failed to initialize syslog bridge:${error}\n`;
+ `[SyslogBridge] Failed to initialize syslog bridge:${error}\n`
  );
  this.isEnabled = false;
  }
@@ -73,7 +73,7 @@ export class LogTapeSyslogBridge {
  this.logViaLogTape(entry);
  } catch (error) {
  // Use direct error logging to avoid circular dependency with syslog bridge
- process.stderr.write(`[SyslogBridge] Syslog bridge error:${error}\n`);
+ process.stderr.write(`[SyslogBridge] Syslog bridge error:${error}\n`
  }
  }
 
@@ -83,19 +83,19 @@ export class LogTapeSyslogBridge {
  private formatSyslogMessage(entry: SyslogEntry): string {
  const { component, message, metadata, sessionId, traceId } = entry;
 
- let formatted = `[${component}]`;
+ let formatted = `[${component}]`
 
  if (sessionId) {
- formatted += ` [session:${sessionId}]`;
+ formatted += ` [session:${sessionId}]`
  }
  if (traceId) {
- formatted += ` [trace:${traceId}]`;
+ formatted += ` [trace:${traceId}]`
  }
 
- formatted += ` ${message}`;
+ formatted += ` ${message}`
 
  if (metadata && Object.keys(metadata).length > 0) {
- formatted += `|${JSON.stringify(metadata)}`;
+ formatted += `|${JSON.stringify(metadata)}`
  }
 
  return formatted;
@@ -125,10 +125,10 @@ export class LogTapeSyslogBridge {
  const errorMsg =
  error instanceof Error ? error['message'] : String(error);
  process.stdout.write(
- `SYSLOG[${level.toUpperCase()}] ${this.componentName}:${message}\n`;
+ `SYSLOG[${level.toUpperCase()}] ${this.componentName}:${message}\n`
  );
  process.stderr.write(
- `SYSLOG_ERROR:Failed to write to syslog: ${errorMsg}\n`;
+ `SYSLOG_ERROR:Failed to write to syslog: ${errorMsg}\n`
  );
  }
  }
@@ -243,7 +243,7 @@ export class LogTapeSyslogBridge {
  */
  public setEnabled(enabled: boolean): void {
  this.isEnabled = enabled;
- this.logger.info(`Syslog bridge ${enabled ? 'enabled' : 'disabled'}`);
+ this.logger.info(`Syslog bridge ${enabled ? 'enabled' : 'disabled'}`
  }
 
  /**

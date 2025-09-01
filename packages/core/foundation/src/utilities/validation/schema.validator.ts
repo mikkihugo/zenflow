@@ -57,7 +57,7 @@ declare const fetch: (url: string) => Promise<{
  *
  * @interface SchemaRegistry
  * @example
- * ```typescript`;
+ * ```typescript`
  * const registry:SchemaRegistry = {
  * 'user-schema':{
  * schema:{ type: 'object', properties:{ name: { type: ' string'}}},
@@ -82,7 +82,7 @@ export interface SchemaRegistry {
  * @class SchemaValidationError
  * @extends Error
  * @example
- * ```typescript`;
+ * ```typescript`
  * const error = new SchemaValidationError(
  * 'Validation failed', * 'user-document', * ['name is required', 'age must be a number']
  * );
@@ -105,7 +105,7 @@ export class SchemaValidationError extends Error {
  *
  * @class JsonSchemaManager
  * @example
- * ```typescript`;
+ * ```typescript`
  * const manager = new JsonSchemaManager(logger, './schemas');
  *
  * // Validate data against schema
@@ -165,7 +165,7 @@ export class JsonSchemaManager {
  const schemaName = file.replace('.json', '').replace('-', '_');
 
  this.registerSchema(schemaName, schemaContent);
- this.logger.info(`Loaded JSON Schema:${schemaName}`);
+ this.logger.info(`Loaded JSON Schema:${schemaName}`
  } catch (error) {
  this.logger.error(`Failed to load schema ${file}:`, error);
  }
@@ -193,7 +193,7 @@ export class JsonSchemaManager {
  };
 
  this.logger.info(
- `Registered schema ${name} for modes:${modes.join(', ')}`;
+ `Registered schema ${name} for modes:${modes.join(', ')}`
  );
  } catch (error) {
  this.logger.error(`Failed to register schema ${name}:`, error);
@@ -258,7 +258,7 @@ export class JsonSchemaManager {
  (error['schemaPath'] as string) ||
  'root';
  const message = (error['message'] as string) || 'Unknown error';
- return `${instancePath}: ${message}`;
+ return `${instancePath}: ${message}`
  }) || ['Unknown validation error'];
 
  return { isValid: false, errors };
@@ -301,12 +301,12 @@ export class JsonSchemaManager {
  const schemaEntry = this.schemas[documentType];
 
  if (!schemaEntry) {
- throw new SchemaValidationError(`Unknown document type:${documentType}`);
+ throw new SchemaValidationError(`Unknown document type:${documentType}`
  }
 
  if (!schemaEntry.modes.includes(mode)) {
  throw new SchemaValidationError(
- `Document type ${documentType} not available in ${mode} mode`;
+ `Document type ${documentType} not available in ${mode} mode`
  );
  }
 
@@ -396,14 +396,14 @@ export class JsonSchemaManager {
  private async loadSchemaAsync(uri: string): Promise<JsonObject> {
  // Implementation for loading external schema references
  // Used for schema composition and ${ref} resolution
- this.logger.info(`Loading external schema:${uri}`);
+ this.logger.info(`Loading external schema:${uri}`
 
  try {
  // Support HTTP/HTTPS URLs and file paths
  if (uri.startsWith('http://') || uri.startsWith('https://')) {
  const response = await fetch(uri);
  if (!response.ok) {
- throw new Error(`HTTP ${response.status}:${response.statusText}`);
+ throw new Error(`HTTP ${response.status}:${response.statusText}`
  }
  return (await response.json()) as JsonObject;
  } else if (uri.startsWith('file://') || !uri.includes('://')) {
@@ -417,12 +417,12 @@ export class JsonSchemaManager {
  const content = await fs.readFile(absolutePath, 'utf-8');
  return JSON.parse(content);
  } else {
- throw new Error(`Unsupported URI scheme:${uri}`);
+ throw new Error(`Unsupported URI scheme:${uri}`
  }
  } catch (error) {
  this.logger.error(`Failed to load schema from ${uri}:`, error);
  throw new Error(
- `Schema loading failed:${error instanceof Error ? error['message'] : 'Unknown error'}`;
+ `Schema loading failed:${error instanceof Error ? error['message'] : 'Unknown error'}`
  );
  }
  }
@@ -506,7 +506,7 @@ export function validateInput<T>(schema: ZodSchema<T>, data: unknown): T {
  } catch (error) {
  if (error instanceof ZodError) {
  throw new Error(
- `Validation failed:${error.errors.map((e) => e['message']).join(', ')}`;
+ `Validation failed:${error.errors.map((e) => e['message']).join(', ')}`
  );
  }
  throw error;

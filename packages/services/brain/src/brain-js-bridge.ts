@@ -13,7 +13,7 @@
 * - Professional Google TypeScript naming conventions
 *
 * @example Basic Usage
-* ```typescript`;
+* ```typescript`
 * const bridge = container.get(BrainJsBridge);
 * await bridge.initialize();
 *
@@ -180,7 +180,7 @@ readonly parameterCount?:number;
 * - Integration with existing coordination system
 *
 * @example Creating and training a feedforward network
-* ```typescript`;
+* ```typescript`
 * const bridge = container.get(BrainJsBridge);
 * await bridge.initialize();
 *
@@ -374,7 +374,7 @@ this.networks.set(id, networkInstance);
 
 // Persist to database
 if (this.dbAccess) {
-const kv = await this.dbAccess.getKV(`neural`);
+const kv = await this.dbAccess.getKV(`neural`
 await kv.set(
 `brainjs:metadata:${id}`,
 JSON.stringify({
@@ -444,7 +444,7 @@ isTraining:true,
 this.networks.set(networkId, updatedInstance);
 
 this.foundationLogger.info(
-`Training brain.js network ${networkId} with ${trainingData.length} samples`;
+`Training brain.js network ${networkId} with ${trainingData.length} samples`
 );
 
 const startTime = Date.now();
@@ -488,7 +488,7 @@ this.networks.set(networkId, finalInstance);
 
 // Store training metrics in database
 if (this.dbAccess) {
-const kv = await this.dbAccess.getKV(`neural`);
+const kv = await this.dbAccess.getKV(`neural`
 await kv.set(
 `brainjs:training:${networkId}:${Date.now()}`,
 JSON.stringify({
@@ -644,11 +644,11 @@ this.networks.delete(networkId);
 
 // Remove from database
 if (this.dbAccess) {
-const kv = await this.dbAccess.getKV(`neural`);
-await kv.delete(`brainjs:metadata:${networkId}`);
+const kv = await this.dbAccess.getKV(`neural`
+await kv.delete(`brainjs:metadata:${networkId}`
 }
 
-this.foundationLogger.info(`Removed brain.js network:${networkId}`);
+this.foundationLogger.info(`Removed brain.js network:${networkId}`
 return true;
 }).then((result) =>
 result.mapErr((error) =>
@@ -774,7 +774,7 @@ this.networks.set(id, networkInstance);
 
 // Persist to database
 if (this.dbAccess) {
-const kv = await this.dbAccess.getKV(`neural`);
+const kv = await this.dbAccess.getKV(`neural`
 await kv.set(
 `brainjs:metadata:${id}`,
 JSON.stringify({
@@ -787,7 +787,7 @@ imported:new Date().toISOString(),
 }
 
 this.foundationLogger.info(
-`Imported brain.js neural network:${id} (${type})`;
+`Imported brain.js neural network:${id} (${type})`
 );
 return id;
 }).then((result) =>

@@ -90,7 +90,7 @@ class InMemoryDSPyKV implements DSPyKV {
 */
 export class DSPyEngine {
 	private config:DSPyConfig;
-	private kv:DSPyKV | null = null;
+	private kv: 'DSPyKV' | 'null' = null;
 	private llmService:any = null;
 	private optimizationHistory = new Map<string, DSPyOptimizationResult[]>();
 
@@ -337,9 +337,9 @@ export class DSPyEngine {
 	// const fewShot = examples
 	// .slice(0, this.config.fewShotExamples)
 	// .map(ex => `Input: ${ex.input}\nOutput: ` + ex.output)
-	// .join(`\n\n`);
+	// .join(`\n\n`
 	//
-	// return (program.prompt) + `\n\nExamples:\n${fewShot}\n\nNow complete:`;
+	// return (program.prompt) + `\n\nExamples:\n${fewShot}\n\nNow complete:`
 	//}
 
 	/**
@@ -388,7 +388,7 @@ export class DSPyEngine {
 	):Promise<void> {
 		try {
 			const kv = await this.getKV();
-			const key = `dspy-optimization:${task}:${result.timestamp.getTime()}`;
+			const key = `dspy-optimization:${task}:${result.timestamp.getTime()}`
 			await kv.set(key, result);
 
 			// Update history

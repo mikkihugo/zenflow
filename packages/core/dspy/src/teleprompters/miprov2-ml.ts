@@ -252,7 +252,7 @@ this.logger.info(
 );
 } catch (error) {
 this.logger.error(`Failed to initialize MIPROv2ML:`, error);
-throw new Error(`MIPROv2ML initialization failed:${error}`);
+throw new Error(`MIPROv2ML initialization failed:${error}`
 }
 }
 
@@ -296,7 +296,7 @@ this.optimizationHistory = [];
 
 try {
 this.logger.info(
-`Starting MIPROv2ML compilation with ML enhancements...`;
+`Starting MIPROv2ML compilation with ML enhancements...`
 );
 
 // Step 1:Multi-objective optimization for hyperparameter search
@@ -364,7 +364,7 @@ convergenceAnalysis: await this.analyzeConvergence(),
 };
 } catch (error) {
 this.logger.error(`MIPROv2ML compilation failed:`, error);
-throw new Error(`MIPROv2ML compilation error:${error}`);
+throw new Error(`MIPROv2ML compilation error:${error}`
 }
 }
 
@@ -376,7 +376,7 @@ student: DSPyModule,
 options: any
 ): Promise<{ bestSolution: any; paretoFront: ParetoFront }> {
 this.logger.info(
-`Performing multi-objective optimization with NSGA-II algorithm...`;
+`Performing multi-objective optimization with NSGA-II algorithm...`
 );
 
 // Define parameter bounds for MIPROv2
@@ -398,7 +398,7 @@ await this.evaluateMemoryUsage(student, params, options),
 const result = await this.multiObjectiveOptimizer?.optimize(objectives);
 
 if (!result || result.solutions.length === 0) {
-throw new Error(`Multi-objective optimization failed to find solutions`);
+throw new Error(`Multi-objective optimization failed to find solutions`
 }
 
 // Select best solution from Pareto front based on weighted objectives
@@ -406,7 +406,7 @@ const weights = this.config.objectiveWeights || [0.6, 0.25, 0.15]; // Prioritize
 const bestSolution = this.selectBestSolution(result, weights);
 
 this.logger.info(
-`Multi-objective optimization completed. Found ${result.solutions.length} Pareto solutions`;
+`Multi-objective optimization completed. Found ${result.solutions.length} Pareto solutions`
 );
 
 return {
@@ -423,7 +423,7 @@ student: DSPyModule,
 initialSolution: any
 ): Promise<OptimizationResult> {
 this.logger.info(
-`Performing Bayesian optimization with Gaussian Process...`;
+`Performing Bayesian optimization with Gaussian Process...`
 );
 
 const _bounds: OptimizationBounds = {
@@ -451,7 +451,7 @@ return accuracy;
 const result = await this.bayesianOptimizer?.optimize(objectiveFunction);
 
 this.logger.info(
-`Bayesian optimization completed after ${result.iterations} iterations`;
+`Bayesian optimization completed after ${result.iterations} iterations`
 );
 
 return result;
@@ -469,7 +469,7 @@ return [];
 }
 
 this.logger.info(
-`Analyzing optimization patterns with clustering algorithms...`;
+`Analyzing optimization patterns with clustering algorithms...`
 );
 
 // Extract trajectory features for pattern analysis
@@ -499,7 +499,7 @@ const patterns = Array.isArray(patternResult)
 ? patternResult
 : patternResult.patterns || [];
 
-this.logger.info(`Detected ${patterns.length} optimization patterns`);
+this.logger.info(`Detected ${patterns.length} optimization patterns`
 
 return patterns;
 }
@@ -516,7 +516,7 @@ return [];
 }
 
 this.logger.info(
-`Performing statistical validation of optimization results...`;
+`Performing statistical validation of optimization results...`
 );
 
 const tests: HypothesisTest[] = [];
@@ -563,7 +563,7 @@ regression.rSquared + 0.05,
 });
 }
 
-this.logger.info(`Completed ${tests.length} statistical tests`);
+this.logger.info(`Completed ${tests.length} statistical tests`
 
 return tests;
 }
@@ -573,7 +573,7 @@ return tests;
 private selectBestSolution(paretoFront: ParetoFront, weights: number[]): any {
 const { solutions } = paretoFront;
 if (solutions.length === 0) {
-throw new Error(`Empty Pareto front`);
+throw new Error(`Empty Pareto front`
 }
 
 // Weighted sum approach to select best solution
@@ -691,7 +691,7 @@ const highQualityPatterns = patterns.filter(
 );
 if (highQualityPatterns.length > 0) {
 recommendations.push(
-`Found ${highQualityPatterns.length} high-quality optimization patterns - consider pattern-based initialization for future runs`;
+`Found ${highQualityPatterns.length} high-quality optimization patterns - consider pattern-based initialization for future runs`
 );
 }
 }
@@ -700,7 +700,7 @@ recommendations.push(
 const significantTests = tests.filter((test) => test.significant);
 if (significantTests.length > 0) {
 recommendations.push(
-`${significantTests.length} statistical tests show significant improvement - results are statistically reliable`;
+`${significantTests.length} statistical tests show significant improvement - results are statistically reliable`
 );
 }
 
@@ -710,7 +710,7 @@ const finalAccuracy =
 this.optimizationHistory[this.optimizationHistory.length - 1].accuracy;
 if (finalAccuracy > 0.9) {
 recommendations.push(
-`Excellent optimization result achieved - consider early stopping criteria for efficiency`;
+`Excellent optimization result achieved - consider early stopping criteria for efficiency`
 );
 } else if (finalAccuracy < 0.6) {
 recommendations.push(

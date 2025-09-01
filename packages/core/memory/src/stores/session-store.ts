@@ -70,7 +70,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
   private cache = new Map<string, CacheEntry>();
   private cacheKeys: string[] = [];
 
-  private storage:KeyValueStore | null = null;
+  private storage: 'KeyValueStore' | 'null' = null;
   private circuitBreaker:unknown;
   private errorAggregator = createErrorAggregator();
   private telemetryInitialized = false;

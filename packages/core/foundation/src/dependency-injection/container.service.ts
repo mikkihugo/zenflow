@@ -183,7 +183,7 @@ export interface Container {
  *
  * // Listen to events
  * container.on('serviceRegistered', (event) => {
- *   logger.info(`Service ${event.name} registered`);
+ *   logger.info(`Service ${event.name} registered`
  *});
  * '
  */

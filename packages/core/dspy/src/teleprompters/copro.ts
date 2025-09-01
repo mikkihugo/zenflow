@@ -100,7 +100,7 @@ export interface CoproStats {
 * Matches Stanford DSPy COPRO implementation exactly.
 *
 * @example
-* ```typescript`;
+* ```typescript`
 * // Basic COPRO optimization
 * const copro = new COPRO({
 * prompt_model:gpt4,
@@ -129,7 +129,7 @@ export interface CoproStats {
 *
 * // Access optimization statistics
 * const __stats = advancedCopro.getStats();
-* logger.info(`Total LM calls:${stats.total_calls}`);
+* logger.info(`Total LM calls:${stats.total_calls}`
 * ```
 */
 export class COPRO extends Teleprompter {
@@ -243,7 +243,7 @@ export class COPRO extends Teleprompter {
 
 		// For each iteration in depth...
 		for (let d = 0; d < this.depth; d++) {
-			logger.info(`Iteration Depth:${d + 1}/${this.depth}.`);
+			logger.info(`Iteration Depth:${d + 1}/${this.depth}.`
 
 			const latest_scores:number[] = [];
 
@@ -287,7 +287,7 @@ export class COPRO extends Teleprompter {
 					const score = await evaluate(module_clone, trainset);
 					this.total_calls++;
 
-					const candidateKey = `${instruction}|||${prefix}`;
+					const candidateKey = `${instruction}|||${prefix}`
 					let replace_entry = true;
 
 					if (evaluated_candidates[predictorId][candidateKey] &&
@@ -454,7 +454,7 @@ export class COPRO extends Teleprompter {
 		const prefixes:string[] = [];
 
 		for (let i = 0; i < this.breadth - 1; i++) {
-			instructions.push(`${basic_instruction} (variation ${i + 1})`);
+			instructions.push(`${basic_instruction} (variation ${i + 1})`
 			prefixes.push("Answer:");
 }
 
@@ -475,7 +475,7 @@ export class COPRO extends Teleprompter {
 		const prefixes:string[] = [];
 
 		for (let i = 0; i < this.breadth; i++) {
-			instructions.push(`Improved instruction based on attempts (${i + 1})`);
+			instructions.push(`Improved instruction based on attempts (${i + 1})`
 			prefixes.push("Answer:");
 }
 
@@ -504,9 +504,9 @@ export class COPRO extends Teleprompter {
 		for (let i = shortest_len - 1; i >= 0; i--) {
 			const candidate = best_predictors[i];
 			const rank = shortest_len - i;
-			attempts.push(`Instruction #${rank}:${candidate.instruction}`);
-			attempts.push(`Prefix #${rank}:${candidate.prefix}`);
-			attempts.push(`Resulting Score #${rank}:${candidate.score}`);
+			attempts.push(`Instruction #${rank}:${candidate.instruction}`
+			attempts.push(`Prefix #${rank}:${candidate.prefix}`
+			attempts.push(`Resulting Score #${rank}:${candidate.score}`
 }
 
 		return attempts;

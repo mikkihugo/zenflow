@@ -201,7 +201,7 @@ export class SQLiteBackend implements FACTStorageBackend {
 }
 
  if (query.type) {
- conditions.push(`JSON_EXTRACT(metadata, '$.type') = ?`);`;
+ conditions.push(`JSON_EXTRACT(metadata, '$.type') = ?``;
  params?.push(query.type);
 }
 
@@ -211,17 +211,17 @@ export class SQLiteBackend implements FACTStorageBackend {
  () =>
  `EXISTS (SELECT 1 FROM JSON_EACH(JSON_EXTRACT(metadata, '$.domains')) WHERE value = ?)``
  )
- .join(' OR ');') conditions.push(`(${domainConditions})`);`;
+ .join(' OR ');') conditions.push(`(${domainConditions})``;
  params?.push(...query.domains);
 }
 
  if (query.minConfidence !== undefined) {
- conditions.push(`JSON_EXTRACT(metadata, '$.confidence') >= ?`);`;
+ conditions.push(`JSON_EXTRACT(metadata, '$.confidence') >= ?``;
  params?.push(query.minConfidence);
 }
 
  if (query.maxAge !== undefined) {
- conditions.push(`timestamp >= ?`);`;
+ conditions.push(`timestamp >= ?``;
  params?.push(Date.now() - query.maxAge);
 }
 
@@ -327,7 +327,7 @@ export class SQLiteBackend implements FACTStorageBackend {
  throw new Error('SQLite backend not initialized');')}
 
  try {
- await this.dalAdapter.execute(`DELETE FROM ${this.config.tableName}`);`;
+ await this.dalAdapter.execute(`DELETE FROM ${this.config.tableName}``;
 
  if (this.config.enableFullTextSearch) {
  await this.dalAdapter.execute(
@@ -443,7 +443,7 @@ export class SQLiteBackend implements FACTStorageBackend {
  // Clean up expired entries
  const cleaned = await this.cleanup(0); // Clean all expired
  if (cleaned > 0) {
- operations.push(`Cleaned ${cleaned} expired entries`);`;
+ operations.push(`Cleaned ${cleaned} expired entries``;
 }
 
  return {
@@ -541,7 +541,7 @@ export class SQLiteBackend implements FACTStorageBackend {
  last_accessed NTEGER NOT NULL,
  expires_at NTEGER NOT NULL
  )
- `);`;
+ ``;
 
  // Full-text search table
  if (this.config.enableFullTextSearch) {
@@ -554,7 +554,7 @@ export class SQLiteBackend implements FACTStorageBackend {
  type,
  content=${this.config.tableName}
  )
- `);`;
+ ``;
 }
 }
 

@@ -225,13 +225,13 @@ inputs: Record<string, any>,
 outputs: Record<string, any>
 ): string {
 const inputParts = Object.entries(inputs).map(
-([key, value]) => `${key}:${value}`;
+([key, value]) => `${key}:${value}`
 );
 const outputParts = Object.entries(outputs).map(
-([key, value]) => `${key}:${value}`;
+([key, value]) => `${key}:${value}`
 );
 
-return `Input:${inputParts.join(', ')}\nOutput:${outputParts.join(`, `)}`;
+return `Input:${inputParts.join(', ')}\nOutput:${outputParts.join(`, `)}`
 }
 
 /**
@@ -248,16 +248,16 @@ if (signature.inputs || signature.outputs) {
 message += '\n\nFields:';
 
 if (signature.inputs) {
-message += `\nInputs:`;
+message += `\nInputs:`
 for (const [key, _spec] of Object.entries(signature.inputs)) {
-message += `\n- ${key}:${_spec.description || 'No description'}`;
+message += `\n- ${key}:${_spec.description || 'No description'}`
 }
 }
 
 if (signature.outputs) {
-message += `\nOutputs:`;
+message += `\nOutputs:`
 for (const [key, spec] of Object.entries(signature.outputs)) {
-message += `\n- ${key}:${spec.description || `No description`}`;
+message += `\n- ${key}:${spec.description || `No description`}`
 }
 }
 }
@@ -271,7 +271,7 @@ return message;
 protected validateInput(data: any, requiredFields: string[]): void {
 for (const field of requiredFields) {
 if (!(field in data) || data[field] === undefined) {
-throw new Error(`Missing required field:${field}`);
+throw new Error(`Missing required field:${field}`
 }
 }
 }

@@ -331,7 +331,7 @@ averageLatency: number;
 * with comprehensive monitoring and telemetry integration.
 *
 * @example
-* ```typescript`;
+* ```typescript`
 * const coordinator = new SmartNeuralCoordinator({
 * primaryModel: 'all-mpnet-base-v2', * enableFallbacks: true,
 * cache:{ maxSize: 10000, ttlMs:3600000, performanceBasedEviction: true}
@@ -343,7 +343,7 @@ averageLatency: number;
 * text:"Machine learning is transforming software development",
 * qualityLevel: 'standard', * priority:'high') *});
 *
-* logger.info(`Embedding: ${result.embedding.length}D, Quality: ${result.qualityScore}`);`;
+* logger.info(`Embedding: ${result.embedding.length}D, Quality: ${result.qualityScore}``
 * ````
 */
 export declare class SmartNeuralCoordinator {

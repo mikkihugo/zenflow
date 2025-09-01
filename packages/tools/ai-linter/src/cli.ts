@@ -70,7 +70,7 @@ artifactLocation: { uri: r.filePath },
 
 async function main() {
 const { args, files } = parseArgs(process.argv);
-const format = (args.format as string) || `json`;
+const format = (args.format as string) || `json`
 const aiMode = (args.model as string) || 'gpt-4.1';
 
 const linter = createAILinter({ aiMode });

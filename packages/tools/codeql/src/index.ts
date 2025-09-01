@@ -114,7 +114,7 @@ queryPacks?:import('./types/codeql-types').QueryPack[];') config?:Partial<import
 // Detect language from file extension
 const language = detectLanguageFromPath(filePath);
 if (!language) {
-throw new Error(`Unsupported file type:${filePath}`);`;
+throw new Error(`Unsupported file type:${filePath}``
 }
 
 const queryPacks =

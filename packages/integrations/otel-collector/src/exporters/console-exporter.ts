@@ -17,12 +17,12 @@ export class ConsoleExporter implements BaseExporter {
  private config:ExporterConfig;
  private logger:Logger;
  private exportCount = 0;
- private lastExportTime:number | null = null;
- private lastError:string | null = null;
+ private lastExportTime: 'number' | 'null' = null;
+ private lastError: 'string' | 'null' = null;
 
  constructor(config:ExporterConfig) {
  this.config = config;
- this.logger = getLogger(`ConsoleExporter:${config.name}`);
+ this.logger = getLogger(`ConsoleExporter:${config.name}`
 }
 
  async initialize():Promise<void> {
@@ -64,7 +64,7 @@ export class ConsoleExporter implements BaseExporter {
  async exportBatch(dataItems:TelemetryData[]): Promise<ExportResult> {
  try {
  this.logger.info(
- ` Batch Export (${dataItems.length} items) - ${this.config.name}`;
+ ` Batch Export (${dataItems.length} items) - ${this.config.name}`
  );
 
  for (const data of dataItems) {
@@ -122,7 +122,7 @@ export class ConsoleExporter implements BaseExporter {
  */
  private formatAndLog(data: TelemetryData): void {
  const timestamp = new Date(data.timestamp).toISOString();
- const service = `${data.service.name}${data.service.version ? `@${data.service.version}` : ''}`;
+ const service = `${data.service.name}${data.service.version ? `@${data.service.version}` : ''}`
 
  let emoji = 'METRICS';
  let color = '';
@@ -145,7 +145,7 @@ export class ConsoleExporter implements BaseExporter {
  const reset = '\x1b[0m';
 
  logger.info(
- `${color}${emoji}[${timestamp}] ${data.type.toUpperCase()} ${service}${reset}`;
+ `${color}${emoji}[${timestamp}] ${data.type.toUpperCase()} ${service}${reset}`
  );
 
  // Format the data payload
@@ -174,15 +174,15 @@ export class ConsoleExporter implements BaseExporter {
  private logTraceData(data:TelemetryData): void {
  try {
  if (data.data && data.data.spans) {
- logger.info(` Spans:${data.data.spans.length}`);
+ logger.info(` Spans:${data.data.spans.length}`
  for (const span of data.data.spans.slice(0, 3)) {
  // Show first 3 spans
  logger.info(
- ` ├─ ${span.name || 'unnamed'} (${span.duration || ' unknown'}ms)`;
+ ` ├─ ${span.name || 'unnamed'} (${span.duration || ' unknown'}ms)`
  );
 }
  if (data.data.spans.length > 3) {
- logger.info(` └─ ... and ${data.data.spans.length - 3} more`);
+ logger.info(` └─ ... and ${data.data.spans.length - 3} more`
 }
 } else {
  logger.info(` DATA Data:`, JSON.stringify(data.data, null, 2));
@@ -198,14 +198,14 @@ export class ConsoleExporter implements BaseExporter {
  private logMetricData(data:TelemetryData): void {
  try {
  if (data.data && data.data.metrics) {
- logger.info(` Metrics:${data.data.metrics.length}`);
+ logger.info(` Metrics:${data.data.metrics.length}`
  for (const metric of data.data.metrics.slice(0, 5)) {
  // Show first 5 metrics
  const value = metric.value || metric.count || metric.sum || 'N/A';
- logger.info(` ├─ ${metric.name}: ${value} ${metric.unit || ''}`);
+ logger.info(` ├─ ${metric.name}: ${value} ${metric.unit || ''}`
  }
  if (data.data.metrics.length > 5) {
- logger.info(` └─ ... and ${data.data.metrics.length - 5} more`);
+ logger.info(` └─ ... and ${data.data.metrics.length - 5} more`
  }
  } else {
  logger.info(` Data:`, JSON.stringify(data.data, null, 2));
@@ -221,7 +221,7 @@ export class ConsoleExporter implements BaseExporter {
  private logLogData(data:TelemetryData): void {
  try {
  if (data.data && data.data.logs) {
- logger.info(` Logs:${data.data.logs.length}`);
+ logger.info(` Logs:${data.data.logs.length}`
  for (const log of data.data.logs.slice(0, 3)) {
  // Show first 3 logs
  const level = log.level || 'INFO';
@@ -230,15 +230,15 @@ export class ConsoleExporter implements BaseExporter {
  100
  );
  logger.info(
- ` ├─ [${level}] ${message}${message.length === 100 ? '...' : ''}`;
+ ` ├─ [${level}] ${message}${message.length === 100 ? '...' : ''}`
  );
  }
  if (data.data.logs.length > 3) {
- logger.info(` └─ ... and ${data.data.logs.length - 3} more`);
+ logger.info(` └─ ... and ${data.data.logs.length - 3} more`
  }
  } else if (typeof data.data === 'string') {
  logger.info(
- ` LOGS Message: ${data.data.substring(0, 200)}${data.data.length > 200 ? '...' : ''}`;
+ ` LOGS Message: ${data.data.substring(0, 200)}${data.data.length > 200 ? '...' : ''}`
  );
  } else {
  logger.info(` DATA:`, JSON.stringify(data.data, null, 2));

@@ -2,7 +2,7 @@
  * @fileoverview AI Safety Package - Enterprise Foundation Integration
  *
  * Professional AI safety system leveraging comprehensive @claude-zen/f      error: new Error(
-        `Emergency safety shutdown failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
+        `Emergency safety shutdown failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       )dation utilities.
  * Transformed to match memory package pattern with battle-tested enterprise architecture.
  *
@@ -150,7 +150,7 @@ export function emergencySafetyShutdown() {
     return {
       success: false,
       error: new Error(
-        `Emergency safety shutdown failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
+        `Emergency safety shutdown failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       )
     };
   }
@@ -217,7 +217,7 @@ export async function getAISafetySystemAccess(): Promise<unknown> {
   const orchestrator = await createInitializedAISafetyOrchestrator();
   if (!orchestrator.success) {
     throw new Error(
-      `Failed to initialize AI Safety system: ${  orchestrator.error?.message}`;
+      `Failed to initialize AI Safety system: ${  orchestrator.error?.message}`
     );
 }
   const safetySystem = orchestrator.value!;
@@ -243,7 +243,7 @@ export async function getSafetyOrchestrator(): Promise<unknown> {
   const result = await createInitializedAISafetyOrchestrator();
   if (!result.success) {
     throw new Error(
-      `Failed to create safety orchestrator: ${  result.error?.message}`;
+      `Failed to create safety orchestrator: ${  result.error?.message}`
     );
 }
   return result.value;
@@ -277,7 +277,7 @@ export async function getSafetyIntervention(): Promise<unknown> {
   return {
     intervene: (action: InterventionAction) => {
       // Implementation would handle different intervention types
-      logger.info(`Intervention requested: ${  action.type  } on ${  action.target}`);
+      logger.info(`Intervention requested: ${  action.type  } on ${  action.target}`
       return Promise.resolve({ success: true, action});
 },
     escalate: (alert: SafetyEvent) => system.escalate(alert),

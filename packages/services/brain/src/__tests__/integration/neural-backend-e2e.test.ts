@@ -264,7 +264,7 @@ return originalMock(...args);
 );
 
 // First request might fail but system should recover
-const text = 'Recovery test after temporary failure`;
+const text = 'Recovery test after temporary failure`
 
 try {
 const result = await brainCoordinator.generateEmbedding(text);

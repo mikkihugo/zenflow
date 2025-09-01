@@ -40,7 +40,7 @@ import type {
 export class InternalOTELCollector {
   private config:CollectorConfig;
   private logger:Logger;
-  private httpServer:Server | null = null;
+  private httpServer: 'Server' | 'null' = null;
   private exporterManager:ExporterManager;
   private processorManager:ProcessorManager;
   private stats:CollectorStats;
@@ -414,7 +414,7 @@ export class InternalOTELCollector {
 /**
  * Global collector instance
  */
-let globalCollector:InternalOTELCollector | null = null;
+let globalCollector: 'InternalOTELCollector' | 'null' = null;
 
 /**
  * Get global collector instance

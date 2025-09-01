@@ -383,7 +383,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
  ? data.toolCalls.length
  :0;
  if (toolCallsLength === 0 && data.response.includes('analyzed')) {
- ') patterns.push('VERIFICATION_MISMATCH`);`)}
+ ') patterns.push('VERIFICATION_MISMATCH``)}
 
  return patterns;
 }
@@ -427,7 +427,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
  deceptionIndicators += standardDetection.length;
  combinedConfidence += 0.4 * Math.min(standardDetection.length / 3, 1);
  reasoning.push(
- `Standard detection:${standardDetection.length} patterns found`;
+ `Standard detection:${standardDetection.length} patterns found`
  );
  }
 
@@ -436,18 +436,18 @@ export class NeuralSafetyBridge extends TypedEventBase {
  deceptionIndicators += 1;
  combinedConfidence += 0.3 * neuralResult.finalVerdict.confidence;
  reasoning.push(
- `Neural ML:${(neuralResult.neuralPrediction.deceptionProbability * 100).toFixed(1)}% deception probability`;
+ `Neural ML:${(neuralResult.neuralPrediction.deceptionProbability * 100).toFixed(1)}% deception probability`
  );
  }
 
  // Behavioral analysis weight:20%
  if (
- behavioralAnalysis.riskLevel === `HIGH` || behavioralAnalysis.riskLevel === `CRITICAL`;
+ behavioralAnalysis.riskLevel === `HIGH` || behavioralAnalysis.riskLevel === `CRITICAL`
  ) {
  deceptionIndicators += 1;
  combinedConfidence += 0.2 * behavioralAnalysis.anomalyScore;
  reasoning.push(
- `Behavioral analysis:${behavioralAnalysis.riskLevel} risk level`;
+ `Behavioral analysis:${behavioralAnalysis.riskLevel} risk level`
  );
  }
 
@@ -455,7 +455,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
  if (neuralPatterns.length > 0) {
  deceptionIndicators += 1;
  combinedConfidence += 0.1 * Math.min(neuralPatterns.length / 2, 1);
- reasoning.push(`Neural patterns:${neuralPatterns.join(', ')}`);
+ reasoning.push(`Neural patterns:${neuralPatterns.join(', ')}`
  }
 
  const isDeceptive =

@@ -136,7 +136,7 @@ limit = 100
 const query: CoordinationFactQuery = { limit };
 
 if (agentId) {
-query.source = `agent:${agentId}`;
+query.source = `agent:${agentId}`
 }
 
 if (type) {

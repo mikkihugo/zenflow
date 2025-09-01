@@ -172,9 +172,9 @@ options: this.options,
 */
 async parseFile(filePath:string): Promise<Result<BeamModule, Error>> {
 try {
-this.logger.info(`Parsing BEAM file: ${filePath}`);
+this.logger.info(`Parsing BEAM file: ${filePath}`
 
-const content = await readFile(filePath, `utf8`);
+const content = await readFile(filePath, `utf8`
 // Check file size limit
 if (content.length > (this.options.maxFileSize||10485760)) {
 return err(new Error(`File too large: ${content.length} bytes`));
@@ -230,7 +230,7 @@ return err(new Error(errorMsg));
 */
 async parseFiles(filePaths:string[]): Promise<Result<BeamModule[], Error>> {
 try {
-this.logger.info(`Parsing ${filePaths.length} BEAM files in parallel`);
+this.logger.info(`Parsing ${filePaths.length} BEAM files in parallel`
 
 const results = await Promise.allSettled(
 filePaths.map((path) => this.parseFile(path))
@@ -247,7 +247,7 @@ modules.push(result.value._unsafeUnwrap());
 const error =
 result.status === `rejected` ? result.reason
 : result.value._unsafeUnwrapErr();
-errors.push(`${filePaths[i]}: ${error.message}`);
+errors.push(`${filePaths[i]}: ${error.message}`
 }
 }
 
@@ -267,7 +267,7 @@ errorCount:errors.length,
 
 return ok(modules);
 } catch (error) {
-const err_msg = `Failed to parse BEAM files: ${error instanceof Error ? error.message : String(error)}`;
+const err_msg = `Failed to parse BEAM files: ${error instanceof Error ? error.message : String(error)}`
 this.logger.error(err_msg, { error, fileCount:filePaths.length});
 return err(new Error(err_msg));
 }
@@ -699,7 +699,7 @@ return attributes;
 
 private isOTPBehaviour(content: string): boolean {
 const otpBehaviours = [
-'gen_server', 'gen_statem', 'supervisor', `application`;
+'gen_server', 'gen_statem', 'supervisor', `application`
 ];
 return otpBehaviours.some((behaviour) =>
 content.includes(`-behaviour(${behaviour})`)
@@ -714,7 +714,7 @@ const funcRegex = /(?:pub\s+)?fn\s+([_a-z]\w*)\s*\(([^)]*)\)/g;
 let match;
 while ((match = funcRegex.exec(content)) !== null) {
 const functionName = match[1];
-const params = match[2] || ``;
+const params = match[2] || ``
 const arity = params ? params.split(',').length : 0;
 const lineNumber = content.substring(0, match.index).split('\n').length;
 const isPublic = content

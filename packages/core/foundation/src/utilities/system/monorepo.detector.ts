@@ -98,7 +98,7 @@ export class WorkspaceDetector {
  workspaceInfo.totalProjects = workspaces.length;
 
  logger.info(
- `Detected ${workspaceInfo.tool} workspace with ${workspaceInfo.totalProjects} projects`;
+ `Detected ${workspaceInfo.tool} workspace with ${workspaceInfo.totalProjects} projects`
  );
  return workspaceInfo;
  } catch (error) {

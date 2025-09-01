@@ -161,12 +161,12 @@ export class ExportSystem extends EventEmitter {
  validate: (data: unknown) => data !== undefined && data !== null,
  });
 
- logger.info(`Registered ${this.exporters.size} built-in exporters`);
+ logger.info(`Registered ${this.exporters.size} built-in exporters`
  }
 
  registerExporter(format: string, definition: ExporterDefinition): void {
  this.exporters.set(format.toLowerCase(), definition);
- logger.info(`Registered custom exporter:${format}`);
+ logger.info(`Registered custom exporter:${format}`
  this.emit('exporter:registered', { format, definition });
  }
 
@@ -178,7 +178,7 @@ export class ExportSystem extends EventEmitter {
  const exporter = this.exporters.get(format.toLowerCase());
 
  if (!exporter) {
- throw new Error(`Unsupported export format:${format}`);
+ throw new Error(`Unsupported export format:${format}`
  }
 
  const exportId = this.generateId();
@@ -186,14 +186,14 @@ export class ExportSystem extends EventEmitter {
 
  try {
  if (exporter.validate && !exporter.validate(data)) {
- throw new Error(`Data validation failed for ${format} format`);
+ throw new Error(`Data validation failed for ${format} format`
  }
 
  const exportedData = await exporter.export(data, options);
  const size = Buffer.byteLength(exportedData, 'utf8');
 
  const filename =
- options?.filename || `export_${timestamp}${exporter.extension}`;
+ options?.filename || `export_${timestamp}${exporter.extension}`
 
  if (options?.outputPath) {
  const filePath = join(options?.outputPath, filename);
@@ -219,7 +219,7 @@ export class ExportSystem extends EventEmitter {
  this.exportHistory.push(result);
  this.emit('export:success', result);
  logger.info(
- `Successfully exported data as ${format.toUpperCase()}:${filename}`;
+ `Successfully exported data as ${format.toUpperCase()}:${filename}`
  );
 
  return result;
@@ -256,7 +256,7 @@ export class ExportSystem extends EventEmitter {
  typeof value === 'string' &&
  (value.includes(', ') || value.includes('"'))
  ) {
- return `"${value.replace(/"/g, '""')}"`;
+ return `"${value.replace(/"/g, '""')}"`
  }
  return value;
  });
@@ -272,7 +272,7 @@ export class ExportSystem extends EventEmitter {
  if (obj === null) return 'null';
  if (typeof obj === 'boolean') return obj.toString();
  if (typeof obj === 'number') return obj.toString();
- if (typeof obj === 'string') return `"${obj.replace(/"/g, '"')}"`;
+ if (typeof obj === 'string') return `"${obj.replace(/"/g, '"')}"`
 
  if (Array.isArray(obj)) {
  if (obj.length === 0) return '[]';
@@ -288,7 +288,7 @@ export class ExportSystem extends EventEmitter {
  return entries
  .map(
  ([key, value]) =>
- `${spaces}${key}: ${this.convertToYAML(value, indent + 1)}`;
+ `${spaces}${key}: ${this.convertToYAML(value, indent + 1)}`
  )
  .join('\n');
  }
@@ -304,14 +304,14 @@ export class ExportSystem extends EventEmitter {
  typeof obj === 'number' ||
  typeof obj === 'boolean'
  ) {
- return `${spaces}<value>${this.escapeXML(String(obj))}</value>`;
+ return `${spaces}<value>${this.escapeXML(String(obj))}</value>`
  }
 
  if (Array.isArray(obj)) {
  return obj
  .map(
  (item, index) =>
- `${spaces}<item index="${index}">\n${this.convertToXML(item, indent + 1)}\n${spaces}</item>`;
+ `${spaces}<item index="${index}">\n${this.convertToXML(item, indent + 1)}\n${spaces}</item>`
  )
  .join('\n');
  }
@@ -320,12 +320,12 @@ export class ExportSystem extends EventEmitter {
  return Object.entries(obj)
  .map(
  ([key, value]) =>
- `${spaces}<${this.sanitizeXMLTag(key)}>\n${this.convertToXML(value, indent + 1)}\n${spaces}</${this.sanitizeXMLTag(key)}>`;
+ `${spaces}<${this.sanitizeXMLTag(key)}>\n${this.convertToXML(value, indent + 1)}\n${spaces}</${this.sanitizeXMLTag(key)}>`
  )
  .join('\n');
  }
 
- return `${spaces}<value>${this.escapeXML(String(obj))}</value>`;
+ return `${spaces}<value>${this.escapeXML(String(obj))}</value>`
  }
 
  private convertToMarkdown(data: unknown): string {
@@ -334,15 +334,15 @@ export class ExportSystem extends EventEmitter {
  if (typeof data === 'object' && data !== null) {
  const dataObj = data as Record<string, unknown>;
  if (dataObj['title']) {
- markdown += `# ${String(dataObj['title'])}\n\n`;
+ markdown += `# ${String(dataObj['title'])}\n\n`
  }
 
  if (dataObj['description']) {
- markdown += `${String(dataObj['description'])}\n\n`;
+ markdown += `${String(dataObj['description'])}\n\n`
  }
 
  if (dataObj['content']) {
- markdown += `## Content\n${String(dataObj['content'])}\n`;
+ markdown += `## Content\n${String(dataObj['content'])}\n`
  }
  } else {
  markdown = String(data);
@@ -362,11 +362,11 @@ export class ExportSystem extends EventEmitter {
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
  <title>${this.escapeHTML(String(title))}</title>
 </head>
-<body>`;
+<body>`
 
- html += `<h1>${this.escapeHTML(String(title))}</h1>`;
+ html += `<h1>${this.escapeHTML(String(title))}</h1>`
  html += this.objectToHTML(data);
- html += `</body></html>`;
+ html += `</body></html>`
 
  return html;
  }
@@ -378,15 +378,15 @@ export class ExportSystem extends EventEmitter {
  for (const [key, value] of Object.entries(obj)) {
  if (key === 'title') continue;
 
- html += `<h2>${this.escapeHTML(key.charAt(0).toUpperCase() + key.slice(1))}</h2>`;
+ html += `<h2>${this.escapeHTML(key.charAt(0).toUpperCase() + key.slice(1))}</h2>`
 
  html +=
  typeof value === 'string'
- ? `<p>${this.escapeHTML(value)}</p>`;
- : `<p>${this.escapeHTML(String(value))}</p>`;
+ ? `<p>${this.escapeHTML(value)}</p>`
+ : `<p>${this.escapeHTML(String(value))}</p>`
  }
  } else {
- html += `<p>${this.escapeHTML(String(obj))}</p>`;
+ html += `<p>${this.escapeHTML(String(obj))}</p>`
  }
 
  return html;
@@ -415,7 +415,7 @@ export class ExportSystem extends EventEmitter {
  }
 
  private generateId(): string {
- return `export-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+ return `export-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`
  }
 
  getAvailableFormats(): Array<{

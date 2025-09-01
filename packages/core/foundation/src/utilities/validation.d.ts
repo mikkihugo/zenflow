@@ -222,7 +222,7 @@ export declare function hasValidationError(result: Result<unknown, ZodError>, co
  * const result = validateInput(schema, data);
  * const errors = getValidationErrors(result);
  * errors.forEach(error => logger.info(error));
- * `;
+ * `
  */
 export declare function getValidationErrors(result: Result<unknown, ZodError>): string[];
 //# sourceMappingURL=validation.d.ts.map

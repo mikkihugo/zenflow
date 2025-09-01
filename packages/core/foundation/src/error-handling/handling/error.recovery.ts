@@ -31,7 +31,7 @@
  * @see {@link https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/} Retry Strategies
  *
  * @example Basic Recovery Strategy
- * ```typescript`;
+ * ```typescript`
  * import { ErrorRecoverySystem} from '@claude-zen/foundation';
  *
  * const recovery = new ErrorRecoverySystem({
@@ -575,7 +575,7 @@ export class ErrorRecoverySystem extends EventEmitter<ServiceEvents> {
  result.actionsExecuted.push(actionResult);
 
  if (!actionResult.success && !action.retryable) {
- throw new Error(`Recovery action failed:${actionResult.error}`);
+ throw new Error(`Recovery action failed:${actionResult.error}`
  }
  }
 
@@ -701,7 +701,7 @@ export class ErrorRecoverySystem extends EventEmitter<ServiceEvents> {
  };
 
  default:
- throw new Error(`Unknown recovery action type:${action.type}`);
+ throw new Error(`Unknown recovery action type:${action.type}`
  }
  }
 

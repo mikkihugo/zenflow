@@ -405,7 +405,7 @@ for (const workflow of workflows) {
 this.workflows.set(workflow.name, workflow);
 }
 
-this.logger.info(`Registered ${workflows.length} default workflows`);
+this.logger.info(`Registered ${workflows.length} default workflows`
 }
 
 private async processDocumentInternal(
@@ -506,7 +506,7 @@ context:Record<string, any>
 ):Promise<WorkflowExecutionResult> {
 const workflow = this.workflows.get(workflowName);
 if (!workflow) {
-throw new Error(`Workflow not found:${workflowName}`);
+throw new Error(`Workflow not found:${workflowName}`
 }
 
 this.workflowsExecuted++;
@@ -514,7 +514,7 @@ this.workflowsExecuted++;
 const results:Record<string, any> = {};
 const steps:StepResult[] = [];
 
-this.logger.debug(`Executing workflow:${workflowName}`);
+this.logger.debug(`Executing workflow:${workflowName}`
 
 for (const step of workflow.steps) {
 try {
@@ -574,7 +574,7 @@ case `extract-entities`:
 return await this.extractEntitiesStep(context, step.params);
 
 default:
-throw new Error(`Unknown workflow step type:${step.type}`);
+throw new Error(`Unknown workflow step type:${step.type}`
 }
 }
 
@@ -878,30 +878,30 @@ if (content.toLowerCase().includes('customer') || content.toLowerCase().includes
 return 'Enhances customer experience and satisfaction';
 }
 
-return `Provides strategic business value through improved processes and capabilities`;
+return `Provides strategic business value through improved processes and capabilities`
 }
 
 private generatePRDContent(requirements:ProductRequirements): string {
-return `;
+return `
 # Product Requirements Document
 
 ## Overview
 ${requirements.businessValue}
 
 ## Functional Requirements
-${requirements.functional.map(req => `- ${req}`).join(`\n`)}`;
+${requirements.functional.map(req => `- ${req}`).join(`\n`)}`
 
 ## Non-Functional Requirements
-${requirements.nonFunctional.map(req => `- ${req}`).join(`\n`)}`;
+${requirements.nonFunctional.map(req => `- ${req}`).join(`\n`)}`
 
 ## Stakeholders
-${requirements.stakeholders.map(stakeholder => `- ${stakeholder}`).join(`\n`)}`;
+${requirements.stakeholders.map(stakeholder => `- ${stakeholder}`).join(`\n`)}`
 
 ## Constraints
-${requirements.constraints.map(constraint => `- ${constraint}`).join(`\n`)}`;
+${requirements.constraints.map(constraint => `- ${constraint}`).join(`\n`)}`
 
 ## Assumptions
-${requirements.assumptions.map(assumption => `- ${assumption}`).join(`\n`)}`;
+${requirements.assumptions.map(assumption => `- ${assumption}`).join(`\n`)}`
 
 ## Success Criteria
 - All functional requirements implemented and tested
@@ -912,14 +912,14 @@ ${requirements.assumptions.map(assumption => `- ${assumption}`).join(`\n`)}`;
 }
 
 private generateEpicContent(epicName:string, features:string[]): string {
-return `;
+return `
 # Epic:${this.formatEpicName(epicName)}
 
 ## Description
 This epic covers the ${epicName.toLowerCase().replace(/epic$/, ')} functionality of the system.
 
 ## Features
-${features.map(feature => `- ${feature}`).join(`\n`)}`;
+${features.map(feature => `- ${feature}`).join(`\n`)}`
 
 ## Acceptance Criteria
 - [] All features implemented and tested

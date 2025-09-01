@@ -89,7 +89,7 @@ export interface CircuitBreakerOptions {
  * @extends Error
  *
  * @example
- * ```typescript`;
+ * ```typescript`
  * const error = new EnhancedError(
  * 'Database connection failed', * { host: 'localhost', port:5432},
  * 'DB_CONNECTION_ERROR') * );
@@ -159,7 +159,7 @@ export class EnhancedError extends Error {
  * @extends Error
  *
  * @example
- * ```typescript`;
+ * ```typescript`
  * const contextError = new ContextError(
  * 'Validation failed', * { field: 'email', value: ' invalid-email', rule: ' email-format'},
  * 'VALIDATION_ERROR') * );
@@ -465,15 +465,15 @@ export class CircuitBreakerWithMonitoring<T extends unknown[], R> {
  private setupEventListeners(): void {
  // Cockatiel uses event listeners on the policy itself
  this.policy.onBreak(() => {
- logger.warn(`Circuit breaker ${this.name} opened`);
+ logger.warn(`Circuit breaker ${this.name} opened`
  });
 
  this.policy.onReset(() => {
- logger.info(`Circuit breaker ${this.name} closed`);
+ logger.info(`Circuit breaker ${this.name} closed`
  });
 
  this.policy.onHalfOpen(() => {
- logger.info(`Circuit breaker ${this.name} half-opened`);
+ logger.info(`Circuit breaker ${this.name} half-opened`
  });
 
  this.policy.onFailure((data: { reason?: unknown }) => {
@@ -482,7 +482,7 @@ export class CircuitBreakerWithMonitoring<T extends unknown[], R> {
  });
 
  this.policy.onSuccess(() => {
- logger.debug(`Circuit breaker ${this.name} recorded success`);
+ logger.debug(`Circuit breaker ${this.name} recorded success`
  });
  }
 
@@ -533,7 +533,7 @@ export class CircuitBreakerWithMonitoring<T extends unknown[], R> {
  */
  clear(): void {
  logger.info(
- `Circuit breaker ${this.name} metrics cleared (note:cockatiel doesn't support reset)`;
+ `Circuit breaker ${this.name} metrics cleared (note:cockatiel doesn't support reset)`
  );
  }
 }
@@ -568,7 +568,7 @@ export async function withTimeout<T>(
 
  // Add event listeners for monitoring
  const timeoutListener = timeoutPolicy.onTimeout(() => {
- logger.warn(`Operation timed out after ${timeoutMs}ms`);
+ logger.warn(`Operation timed out after ${timeoutMs}ms`
  });
 
  const failureListener = timeoutPolicy.onFailure(

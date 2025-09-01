@@ -96,7 +96,7 @@ sandboxRoot: this.config.sandboxRoot,
 }
 
 async createSandbox(projectId: string): Promise<SandboxEnvironment> {
-const sandboxId = `${projectId}-${Date.now()}`;
+const sandboxId = `${projectId}-${Date.now()}`
 const sandboxPath = path.join(this.config.sandboxRoot, sandboxId);
 
 await fs.mkdir(sandboxPath, { recursive: true });
@@ -594,7 +594,7 @@ recursive?: boolean;
 const operation = this.createOperation(
 `clone`,
 projectId,
-`clone-${projectId}`;
+`clone-${projectId}`
 );
 
 try {
@@ -647,7 +647,7 @@ push?: boolean;
 const operation = this.createOperation(
 `branch`,
 projectId,
-`branch-${branchName}`;
+`branch-${branchName}`
 );
 
 try {
@@ -695,13 +695,13 @@ deleteRemote?: boolean;
 const operation = this.createOperation(
 `branch`,
 projectId,
-`delete-${branchName}`;
+`delete-${branchName}`
 );
 
 try {
 // Safety check: don`t delete protected branches
 if (this.branchStrategy.protectedBranches.includes(branchName)) {
-throw new Error(`Cannot delete protected branch: ${branchName}`);
+throw new Error(`Cannot delete protected branch: ${branchName}`
 }
 
 const sandbox = await this.getSandboxForProject(projectId);
@@ -748,7 +748,7 @@ autoResolveConflicts?: boolean;
 const operation = this.createOperation(
 `merge`,
 projectId,
-`merge-${sourceBranch}-${targetBranch}`;
+`merge-${sourceBranch}-${targetBranch}`
 );
 
 try {
@@ -830,7 +830,7 @@ autoResolveConflicts?: boolean;
 const operation = this.createOperation(
 `rebase`,
 projectId,
-`rebase-${targetBranch}`;
+`rebase-${targetBranch}`
 );
 
 try {
@@ -842,7 +842,7 @@ try {
 const rebaseOptions: string[] = [targetBranch];
 
 if (options.interactive) {
-rebaseOptions.push(`--interactive`);
+rebaseOptions.push(`--interactive`
 }
 if (options.preserveMerges) {
 rebaseOptions.push('--preserve-merges');
@@ -903,7 +903,7 @@ setUpstream?: boolean;
 const operation = this.createOperation(
 `push`,
 projectId,
-`push-${options.branch || 'current'}`;
+`push-${options.branch || 'current'}`
 );
 
 try {
@@ -913,7 +913,7 @@ await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
 const pushOptions: string[] = [];
 
 if (options.force) {
-pushOptions.push(`--force`);
+pushOptions.push(`--force`
 }
 if (options.setUpstream) {
 pushOptions.push('--set-upstream');
@@ -955,7 +955,7 @@ autoResolveConflicts?: boolean;
 const operation = this.createOperation(
 `pull`,
 projectId,
-`pull-${options.branch || 'current'}`;
+`pull-${options.branch || 'current'}`
 );
 
 try {
@@ -967,7 +967,7 @@ try {
 const pullOptions: string[] = [];
 
 if (options.rebase) {
-pullOptions.push(`--rebase`);
+pullOptions.push(`--rebase`
 }
 
 const remote = options.remote || 'origin';
@@ -1152,25 +1152,25 @@ max_tokens: 4000,
 messages: [
 {
 role: `user`,
-content: `;
+content: `
 # Git Merge Conflict Resolution
 
 **File**:${fileName}
 
 **Conflict Section**:
-\`\`\`;
+\`\`\`
 ${conflict.section}
-\`\`\`;
+\`\`\`
 
 **Our Version**:
-\`\`\`;
+\`\`\`
 ${conflict.ourVersion}
-\`\`\`;
+\`\`\`
 
 **Their Version**:
-\`\`\`;
+\`\`\`
 ${conflict.theirVersion}
-\`\`\`;
+\`\`\`
 
 Please analyze this merge conflict and provide:
 1. **Recommended Resolution**:The best way to combine both changes
@@ -1184,7 +1184,7 @@ Respond in JSON format:
 "confidence":85,
 "reasoning":"explanation of why this resolution is best"
 }
-\`\`\`;
+\`\`\`
 `,
 },
 ],
@@ -1565,7 +1565,7 @@ logger.debug(` Verified repository integrity: ${projectId}`, {
 managerId: this.managerId,
 });
 } catch (error) {
-const issue = `Repository integrity issue in ${projectId}:${error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE}`;
+const issue = `Repository integrity issue in ${projectId}:${error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE}`
 issues.push(issue);
 
 logger.warn(`Repository integrity issue: ${projectId}`, {
@@ -1592,7 +1592,7 @@ issues,
 */
 private async getCurrentBranch(git: SimpleGit): Promise<string> {
 const status = await git.status();
-return status.current || `main`;
+return status.current || `main`
 }
 
 /**
@@ -1609,7 +1609,7 @@ managerId: this.managerId,
 error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
 });
 const sandbox = await this.sandbox.createSandbox(
-`${projectId}-${Date.now()}`;
+`${projectId}-${Date.now()}`
 );
 return sandbox.id;
 }
@@ -1876,14 +1876,14 @@ path?: string;
 const operation = this.createOperation(
 `branch`,
 projectId,
-`worktree-${worktreeName}`;
+`worktree-${worktreeName}`
 );
 
 try {
 const sandbox = await this.getSandboxForProject(projectId);
-const branch = options.branch || `worktree/${worktreeName}`;
-const baseBranch = options.baseBranch || `main`;
-const worktreePath = options.path || `../worktrees/${worktreeName}`;
+const branch = options.branch || `worktree/${worktreeName}`
+const baseBranch = options.baseBranch || `main`
+const worktreePath = options.path || `../worktrees/${worktreeName}`
 
 await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
 // Create new branch from base branch
@@ -1939,12 +1939,12 @@ force?: boolean;
 const operation = this.createOperation(
 `branch`,
 projectId,
-`remove-worktree-${worktreeName}`;
+`remove-worktree-${worktreeName}`
 );
 
 try {
 const sandbox = await this.getSandboxForProject(projectId);
-const worktreePath = `../worktrees/${worktreeName}`;
+const worktreePath = `../worktrees/${worktreeName}`
 
 await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
 const removeFlags = options.force ? [`--force`] : [];
@@ -1954,7 +1954,7 @@ await git.raw(['worktree', `remove`, worktreePath, ...removeFlags]);
 
 // Delete branch if requested
 if (options.deleteBranch) {
-const branch = `worktree/${worktreeName}`;
+const branch = `worktree/${worktreeName}`
 const deleteFlag = options.force ? `-D` : '-d';
 await git.raw(['branch', deleteFlag, branch]);
 }

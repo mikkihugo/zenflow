@@ -56,7 +56,7 @@ await this.workflowEngine.initialize();
 await this.documentService.initialize();
 
 this.emit('initialized', {});
-logger.info('Document Workflow System ready`);`)}
+logger.info('Document Workflow System ready``)}
 
 /**
 * Process a visionary document and trigger complete Product Flow.
@@ -68,7 +68,7 @@ async processVisionaryDocument(
 _workspaceId:string,
 docPath:string
 ):Promise<void> {
-logger.info(` Processing visionary document:${docPath}`);`;
+logger.info(` Processing visionary document:${docPath}``
 
 try {
 // Start complete Product Flow workflow
@@ -80,7 +80,7 @@ variables:{ visionDocPath: docPath},
 );
 
 if (result?.success && result?.workflowId) {
-logger.info(` Product Flow workflow started:${result}?.workflowId`);`;
+logger.info(` Product Flow workflow started:${result}?.workflowId``
 this.emit('product-flow:started', {
 ') workflowId:result?.workflowId,
 docPath,

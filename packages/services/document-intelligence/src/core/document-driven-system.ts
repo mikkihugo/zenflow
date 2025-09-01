@@ -76,7 +76,7 @@ logger.info(' SAFe Artifact Intelligence ready');') this.emit('initialized`, tim
 * @param workspacePath
 */
 async loadWorkspace(workspaceName:string, _databaseConnections:any): Promise<string> {
-const workspaceId = `safe-workspace-${Date.now()}`;`;
+const workspaceId = `safe-workspace-${Date.now()}``
 
 const workspace:SafeWorkspace = {
 workspaceId,
@@ -97,7 +97,7 @@ this.workspaces.set(workspaceId, context);
 // Load existing artifacts from database
 await this.loadArtifactsFromDatabase(workspaceId);
 
-logger.info(` Loaded SAFe workspace:${workspaceName}`);`;
+logger.info(` Loaded SAFe workspace:${workspaceName}``
 this.emit(`workspace:loaded`, { workspaceId, name:workspaceName});
 
 return workspaceId;
@@ -114,11 +114,11 @@ workspaceId:string,
 docPath:string
 ):Promise<void> {
 const context = this.workspaces.get(workspaceId);
-if (!context) throw new Error(`Workspace ${workspaceId} not found`);`;
+if (!context) throw new Error(`Workspace ${workspaceId} not found``
 
 const docType = this.getDocumentType(docPath);
-const content = await readFile(docPath, `utf8`);')
-logger.info(` Processing ${docTypedocument}:${docPath}`);`;
+const content = await readFile(docPath, `utf8`')
+logger.info(` Processing ${docTypedocument}:${docPath}``
 
 const doc:VisionaryDocument = {
 type:docType,

@@ -141,7 +141,7 @@ const parsed_strategy = strategy.toLowerCase().split(STRAT_SEP);
 
 if (!parsed_strategy.every((s) => s === 'p' || s === 'w')) {
 throw new Error(
-`The strategy should be a sequence of 'p' and ' w' separated by `${STRAT_SEP}`, but found:${strategy}`;
+`The strategy should be a sequence of 'p' and ' w' separated by `${STRAT_SEP}`, but found:${strategy}`
 );
 }
 
@@ -190,7 +190,7 @@ const current_strategy = parsed_strategy
 .join(STRAT_SEP);
 
 logger.info(
-`\n########## Step ${ind + 1} of ${parsed_strategy.length} - Strategy `${current_strategy}` ##########`;
+`\n########## Step ${ind + 1} of ${parsed_strategy.length} - Strategy `${current_strategy}` ##########`
 );
 
 logger.info('Shuffling the trainset...');

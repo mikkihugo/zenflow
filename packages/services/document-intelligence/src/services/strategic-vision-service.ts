@@ -66,11 +66,11 @@ return err(new Error(`Document search failed: ${(error as Error).message}`));
 
 async getDocumentsByProject(projectId: string): Promise<Result<BaseDocumentEntity[], Error>> {
 try {
-const query = `;
+const query = `
 SELECT * FROM documents
 WHERE project_id = ?
 ORDER BY created_at DESC
-`;
+`
 const documents = await this.db.query(query, [projectId]);
 
 return ok(documents.map(doc => this.mapToBaseDocument(doc)));
@@ -94,10 +94,10 @@ created_at: new Date().toISOString(),
 updated_at: new Date().toISOString(),
 };
 
-const query = `;
+const query = `
 INSERT INTO documents (id, type, content, summary, keywords, metadata, related_documents, created_at, updated_at)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-`;
+`
 
 await this.db.query(query, [
 document.id,
@@ -119,7 +119,7 @@ return err(new Error(`Document creation failed: ${(error as Error).message}`));
 }
 
 private buildSearchQuery(criteria: any): string {
-let query = `SELECT * FROM documents WHERE 1=1`;
+let query = `SELECT * FROM documents WHERE 1=1`
 
 if (criteria.projectId) {
 query += ' AND project_id = ?';
@@ -171,7 +171,7 @@ return ok(projectDocs);
 }
 
 async createDocument(data: Partial<BaseDocumentEntity>): Promise<Result<BaseDocumentEntity, Error>> {
-this.logger.warn(`Using fallback document creation - database unavailable`);
+this.logger.warn(`Using fallback document creation - database unavailable`
 const document: BaseDocumentEntity = {
 id: data.id || `fallback-doc-${Date.now()}`,
 type: data.type || `general`,
@@ -205,7 +205,7 @@ private logger = getLogger('StrategicVisionService');
 
 constructor() {
 this.documentManager = createDocumentManager();
-this.logger.info(`StrategicVisionService initialized with production document manager`);
+this.logger.info(`StrategicVisionService initialized with production document manager`
 }
 
 /**
@@ -213,7 +213,7 @@ this.logger.info(`StrategicVisionService initialized with production document ma
 */
 async analyzeStrategicVision(projectId: string): Promise<Result<StrategicVisionAnalysis, Error>> {
 try {
-this.logger.info(`Starting strategic vision analysis for project: ${projectId}`);
+this.logger.info(`Starting strategic vision analysis for project: ${projectId}`
 
 // Get all relevant documents for the project
 const documentsResult = await this.documentManager.getDocumentsByProject(projectId);
@@ -223,14 +223,14 @@ return err(documentsResult.error);
 
 const documents = documentsResult.data;
 if (documents.length === 0) {
-this.logger.warn(`No documents found for project: ${projectId}`);
+this.logger.warn(`No documents found for project: ${projectId}`
 return err(new Error(`No documents found for project: ${projectId}`));
 }
 
 // Analyze documents using production algorithms
 const analysis = await this.performStrategicAnalysis(projectId, documents);
 
-this.logger.info(`Strategic vision analysis completed for project: ${projectId}`);
+this.logger.info(`Strategic vision analysis completed for project: ${projectId}`
 return ok(analysis);
 } catch (error) {
 this.logger.error(`Strategic vision analysis failed:`, error);
@@ -281,10 +281,10 @@ const missionKeywords = [`mission`, 'purpose', 'objective', 'goal', 'vision'];
 const outcomeKeywords = ['outcome', 'result', 'deliverable', 'target', 'achievement'];
 
 let missionText = '';
-let outcomeText = ``;
+let outcomeText = ``
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || ``}`;
+const content = `${doc.content || '' } ${ doc.summary || ``}`
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
@@ -314,7 +314,7 @@ const goalKeywords = ['goal', 'objective', 'target', 'deliverable', `milestone`]
 const goals: Set<string> = new Set();
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || ``}`;
+const content = `${doc.content || '' } ${ doc.summary || ``}`
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
@@ -346,7 +346,7 @@ let competitiveIndicators = 0;
 let totalRelevantSentences = 0;
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || ``}`;
+const content = `${doc.content || '' } ${ doc.summary || ``}`
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
@@ -393,7 +393,7 @@ let techScore = 0;
 let totalRelevantSentences = 0;
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || ``}`;
+const content = `${doc.content || '' } ${ doc.summary || ``}`
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
@@ -424,7 +424,7 @@ const stakeholderKeywords = ['stakeholder', 'customer', 'user', 'client', 'partn
 const stakeholders: Set<string> = new Set();
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || ``}`;
+const content = `${doc.content || '' } ${ doc.summary || ``}`
 
 // Extract potential stakeholder names
 const words = content.split(/\s+/);
@@ -453,10 +453,10 @@ stakeholders: Array.from(stakeholders).slice(0, 15), // Limit to top 15 stakehol
 */
 private extractTimeline(documents: BaseDocumentEntity[]): { timeline: string } {
 const timeKeywords = ['timeline', 'schedule', 'deadline', 'milestone', 'phase', 'sprint', 'quarter'];
-let timelineText = ``;
+let timelineText = ``
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || ``}`;
+const content = `${doc.content || '' } ${ doc.summary || ``}`
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
@@ -481,7 +481,7 @@ const riskKeywords = ['risk', 'challenge', 'issue', 'problem', 'concern', 'threa
 const risks: Set<string> = new Set();
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || ``}`;
+const content = `${doc.content || '' } ${ doc.summary || ``}`
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
@@ -509,7 +509,7 @@ const metricKeywords = ['metric', 'kpi', 'measure', 'target', 'goal', `benchmark
 const metrics: Set<string> = new Set();
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || ``}`;
+const content = `${doc.content || '' } ${ doc.summary || ``}`
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {

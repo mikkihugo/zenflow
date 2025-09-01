@@ -5,7 +5,7 @@
  * process lifecycle, and timeouts using proven NPM packages.
  *
  * @example Input Validation with Zod
- * ```typescript`;
+ * ```typescript`
  * import { z, validateInput, createValidator } from '@claude-zen/foundation/utilities';
  *
  * const UserSchema = z.object({
@@ -21,7 +21,7 @@
  * ```
  *
  * @example Environment Configuration with Envalid
- * ```typescript`;
+ * ```typescript`
  * import { env, str, num, bool, createEnvValidator } from '@claude-zen/foundation/utilities';
  *
  * const config = createEnvValidator({
@@ -31,11 +31,11 @@
  * DATABASE_URL:str()
  * });
  *
- * logger.info(`Server starting on port ${config.PORT} in ${config.NODE_ENV} mode`);
+ * logger.info(`Server starting on port ${config.PORT} in ${config.NODE_ENV} mode`
  * ```
  *
  * @example Process Lifecycle Management
- * ```typescript`;
+ * ```typescript`
  * import { onExit, withTimeout } from '@claude-zen/foundation/utilities';
  *
  * // Cleanup on process exit
@@ -128,7 +128,7 @@ export { z } from 'zod';
  * @returns Result containing validated data or validation error
  *
  * @example
- * ```typescript`;
+ * ```typescript`
  * const UserSchema = z.object({
  * name:z.string().min(1),
  * email:z.string().email()
@@ -151,7 +151,7 @@ export function validateInput<T>(
  return ok(validated);
  } catch (error) {
  if (error instanceof z.ZodError) {
- const message = `Validation failed: ${error.issues.map((e: { path: (string | number)[]; message: string }) => `${e.path.join('.')}: ${e.message}`).join(', ')}`;
+ const message = `Validation failed: ${error.issues.map((e: { path: (string | number)[]; message: string }) => `${e.path.join('.')}: ${e.message}`).join(', ')}`
  return err(new Error(message));
  }
  return err(
@@ -169,7 +169,7 @@ export function validateInput<T>(
  * @returns Function that validates input using the provided schema
  *
  * @example
- * ```typescript`;
+ * ```typescript`
  * const validateUser = createValidator(z.object({
  * name:z.string().min(1),
  * email:z.string().email()
@@ -194,7 +194,7 @@ export function createValidator<T>(schema: z.ZodSchema<T>) {
  * @throws {Error} When environment validation fails
  *
  * @example
- * ```typescript`;
+ * ```typescript`
  * const env = createEnvValidator({
  * NODE_ENV:str({ choices: ['development', 'production', 'test'] }),
  * PORT:num({ default: 3000 }),
@@ -203,7 +203,7 @@ export function createValidator<T>(schema: z.ZodSchema<T>) {
  * });
  *
  * // Type-safe access with intellisense
- * logger.info(`Server running on port ${env.PORT} in ${env.NODE_ENV} mode`);
+ * logger.info(`Server running on port ${env.PORT} in ${env.NODE_ENV} mode`
  * ```
  */
 export function createEnvValidator<T extends Record<string, Spec<unknown>>>(
@@ -228,7 +228,7 @@ export function createEnvValidator<T extends Record<string, Spec<unknown>>>(
  * @returns Promise resolving to Result containing success value or timeout/error
  *
  * @example
- * ```typescript`;
+ * ```typescript`
  * const result = await withTimeout(
  * fetchData(),
  * 5000,
@@ -242,7 +242,7 @@ export function createEnvValidator<T extends Record<string, Spec<unknown>>>(
  * ```
  *
  * @example API Calls with Timeout
- * ```typescript`;
+ * ```typescript`
  * const apiResult = await withTimeout(
  * fetch('/api/users').then(r => r.json()),
  * 3000,
@@ -338,7 +338,7 @@ export function parseJSON<T = unknown>(text: string): Result<T, Error> {
  } catch (error) {
  return err(
  new Error(
- `Invalid JSON:${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`;
+ `Invalid JSON:${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`
  )
  );
  }
@@ -361,7 +361,7 @@ export function stringifyJSON(
  } catch (error) {
  return err(
  new Error(
- `JSON serialization failed:${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`;
+ `JSON serialization failed:${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`
  )
  );
  }
@@ -459,7 +459,7 @@ export function safeGet<T>(
  } catch (error) {
  return err(
  new Error(
- `Failed to access property '${path}':${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`;
+ `Failed to access property '${path}':${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`
  )
  );
  }
@@ -497,7 +497,7 @@ export async function readFile(
  } catch (error) {
  return err(
  new Error(
- `Failed to read file '${filePath}':${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`;
+ `Failed to read file '${filePath}':${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`
  )
  );
  }
@@ -529,7 +529,7 @@ export async function writeFile(
  } catch (error) {
  return err(
  new Error(
- `Failed to write file '${filePath}':${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`;
+ `Failed to write file '${filePath}':${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`
  )
  );
  }
@@ -551,7 +551,7 @@ export async function directoryExists(
  }
  return err(
  new Error(
- `Failed to check directory '${dirPath}':${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`;
+ `Failed to check directory '${dirPath}':${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`
  )
  );
  }
@@ -573,7 +573,7 @@ export async function fileExists(
  }
  return err(
  new Error(
- `Failed to check file '${filePath}':${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`;
+ `Failed to check file '${filePath}':${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`
  )
  );
  }
@@ -597,7 +597,7 @@ export function safePath(...segments: string[]): Result<string, Error> {
  } catch (error) {
  return err(
  new Error(
- `Invalid path:${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`;
+ `Invalid path:${error instanceof Error ? error.message : ERROR_MESSAGES.UNKNOWN_ERROR}`
  )
  );
  }

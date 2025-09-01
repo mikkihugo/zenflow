@@ -306,7 +306,7 @@ export declare class EnvironmentDetector extends EventEmitter {
  * if (result.success) {
  *   logger.info('Nix setup completed: ', result.steps);
 ' *}
- * `;
+ * `
  */
 export declare class NixIntegration {
     private projectRoot;

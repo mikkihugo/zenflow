@@ -385,7 +385,7 @@ export interface ModelStatus {
  * with comprehensive monitoring and telemetry integration.
  *
  * @example
- * ```typescript`;
+ * ```typescript`
  * const coordinator = new SmartNeuralCoordinator({
  * primaryModel: 'all-mpnet-base-v2', * enableFallbacks: true,
  * cache:{ maxSize: 10000, ttlMs:3600000, performanceBasedEviction: true}
@@ -397,7 +397,7 @@ export interface ModelStatus {
  * text:"Machine learning is transforming software development",
  * qualityLevel: 'standard', * priority:`high`) *});
  *
- * logger.info(`Embedding: ${result.embedding.length}D, Quality: ${result.qualityScore}`);`;
+ * logger.info(`Embedding: ${result.embedding.length}D, Quality: ${result.qualityScore}``
  * ````
  */
 export class SmartNeuralCoordinator {
@@ -429,7 +429,7 @@ export class SmartNeuralCoordinator {
 };
 
  constructor(_config: Partial<NeuralBackendConfig> = {}) {
- this.logger = getLogger(`smart-neural-coordinator`);
+ this.logger = getLogger(`smart-neural-coordinator`
 
  // Default configuration with intelligent defaults
  this.config = {
@@ -1473,7 +1473,7 @@ export class SmartNeuralCoordinator {
 });
 
  const loadingTime = Date.now() - startTime;
- const openaiStatus = this.modelStatus.get('openai`);`) if (openaiStatus) {
+ const openaiStatus = this.modelStatus.get('openai``) if (openaiStatus) {
  openaiStatus.loaded = true;
  openaiStatus.loadingTime = loadingTime;
 }
@@ -1482,7 +1482,7 @@ export class SmartNeuralCoordinator {
  `✨ OpenAI client initialized for premium features (${loadingTime}ms)``
  );
 } catch (error) {
- const openaiStatus = this.modelStatus.get(`openai`);if (openaiStatus) {
+ const openaiStatus = this.modelStatus.get(`openai`if (openaiStatus) {
  openaiStatus.loaded = false;
  openaiStatus.errorMessage =
  error instanceof Error ? error.message: String(error);
@@ -1505,7 +1505,7 @@ export class SmartNeuralCoordinator {
  );
 
  const loadingTime = Date.now() - startTime;
- const transformersStatus = this.modelStatus.get('transformers`);`) if (transformersStatus) {
+ const transformersStatus = this.modelStatus.get('transformers``) if (transformersStatus) {
  transformersStatus.loaded = true;
  transformersStatus.loadingTime = loadingTime;
 }
@@ -1514,7 +1514,7 @@ export class SmartNeuralCoordinator {
  `✅ Transformers model loaded: ${this.config.primaryModel} (${loadingTime}ms)``
  );
 } catch (error) {
- const transformersStatus = this.modelStatus.get(`transformers`);if (transformersStatus) {
+ const transformersStatus = this.modelStatus.get(`transformers`if (transformersStatus) {
  transformersStatus.loaded = false;
  transformersStatus.errorMessage =
  error instanceof Error ? error.message: String(error);
@@ -1536,14 +1536,14 @@ export class SmartNeuralCoordinator {
  activation: 'sigmoid',});
 
  const loadingTime = Date.now() - startTime;
- const brainJsStatus = this.modelStatus.get('brain-js`);`) if (brainJsStatus) {
+ const brainJsStatus = this.modelStatus.get('brain-js``) if (brainJsStatus) {
  brainJsStatus.loaded = true;
  brainJsStatus.loadingTime = loadingTime;
 }
 
- this.logger.info(`✅ Brain.js model loaded (${loadingTime}ms)`);`;
+ this.logger.info(`✅ Brain.js model loaded (${loadingTime}ms)``
 } catch (error) {
- const brainJsStatus = this.modelStatus.get(`brain-js`);if (brainJsStatus) {
+ const brainJsStatus = this.modelStatus.get(`brain-js`if (brainJsStatus) {
  brainJsStatus.loaded = false;
  brainJsStatus.errorMessage =
  error instanceof Error ? error.message: String(error);
@@ -1568,7 +1568,7 @@ export class SmartNeuralCoordinator {
  onnxStatus.loadingTime = loadingTime;
 }
 
- this.logger.info(`✅ ONNX runtime loaded (${loadingTimems})`);`;
+ this.logger.info(`✅ ONNX runtime loaded (${loadingTimems})``
 } catch (error) {
  const onnxStatus = this.modelStatus.get('onnx');if (onnxStatus) {
  onnxStatus.loaded = false;
@@ -1791,8 +1791,8 @@ export class SmartNeuralCoordinator {
 }
 
  private generateCacheKey(request: NeuralEmbeddingRequest): string {
- const content = `${request}.text${request}.context || ``;`;
- return `${request.qualityLevel || 'standard'}:${this.hashString(content)}`;`;
+ const content = `${request}.text${request}.context || ```
+ return `${request.qualityLevel || 'standard'}:${this.hashString(content)}``
 }
 
  private getCachedEmbedding(cacheKey: string): CacheEntry|null {
@@ -1915,7 +1915,7 @@ export class SmartNeuralCoordinator {
  if (this.config.cache.performanceBasedEviction) {
  const cacheEfficiency = this.calculateCacheEfficiency();
  if (cacheEfficiency < 0.5) {
- this.logger.info(`📊 Cache efficiency low, performing optimization...`);') this.performCacheEviction();
+ this.logger.info(`📊 Cache efficiency low, performing optimization...`') this.performCacheEviction();
 }
 }
 
@@ -1981,8 +1981,8 @@ export class SmartNeuralCoordinator {
  private generateClassificationCacheKey(
  request: NeuralClassificationRequest
  ):string {
- const content = `${request}.text${request}.taskType${request}.categories?.join(', ') || `${request}.context || ``;`;
- return `classify: ${request.qualityLevel || 'standard'}:${this.hashString(content)}`;`;
+ const content = `${request}.text${request}.taskType${request}.categories?.join(', ') || `${request}.context || ```
+ return `classify: ${request.qualityLevel || 'standard'}:${this.hashString(content)}``
 }
 
  private getCachedClassification(cacheKey: string): any|null {
@@ -2185,8 +2185,8 @@ export class SmartNeuralCoordinator {
  // =============================================================================
 
  private generateGenerationCacheKey(request: NeuralGenerationRequest): string {
- const content = `${request}.prompt${request}.taskType${request}.temperature||0.7${request}.maxLength||1000${request}.context||``;`;
- return `generate: ${request.qualityLevel||'standard'}:${this.hashString(content)}`;`;
+ const content = `${request}.prompt${request}.taskType${request}.temperature||0.7${request}.maxLength||1000${request}.context||```
+ return `generate: ${request.qualityLevel||'standard'}:${this.hashString(content)}``
 }
 
  private getCachedGeneration(cacheKey: string): any|null {
@@ -2278,9 +2278,9 @@ export class SmartNeuralCoordinator {
 }
  :{ format: 'unknown', size:0, valid: true};`)
  // Include image metadata in cache key for better cache differentiation
- const content = `${imageHash}$request.taskType${request}.prompt||`}${request.context|||'$') imageMetadata.format_${imageMetadata}.size_${imageMetadata}.valid ? 'valid' :' invalid'`;`;
+ const content = `${imageHash}$request.taskType${request}.prompt||`}${request.context|||'$') imageMetadata.format_${imageMetadata}.size_${imageMetadata}.valid ? 'valid' :' invalid'``
 
- const __cacheKey = `vision: ${request.qualityLevel||'standard'}:${this.hashString(content)}`;`;
+ const __cacheKey = `vision: ${request.qualityLevel||'standard'}:${this.hashString(content)}``
 
  // Log cache key generation with image metadata
  this.logger.debug(`Vision cache key generated with image info`, {
@@ -2359,7 +2359,7 @@ export class SmartNeuralCoordinator {
 });
 
  // Return error-specific hash for better debugging
- return `invalid_image_${errorMessage}.replace(/[^\dA-Za-z]/g, '_').substring(0, 20)`;`;
+ return `invalid_image_${errorMessage}.replace(/[^\dA-Za-z]/g, '_').substring(0, 20)``
 }
 }
 
@@ -2395,8 +2395,8 @@ export class SmartNeuralCoordinator {
  private generateNeuralTaskCacheKey(request: NeuralTaskRequest): string {
  const inputStr = JSON.stringify(request.input).substring(0, 1000); // Limit size
  const paramsStr = JSON.stringify(request.parameters||{});
- const content = `${request.taskType}${inputStr}${paramsStr}`;`;
- return `task: ${this}.hashString(content)`;`;
+ const content = `${request.taskType}${inputStr}${paramsStr}``
+ return `task: ${this}.hashString(content)``
 }
 
  // =============================================================================
@@ -2887,7 +2887,7 @@ export class SmartNeuralCoordinator {
  const generatedText =
  prompt.length > 50
  ? `${prompt.substring(0, 47)}...``
- :`${prompt}[Generation unavailable]`;`;
+ :`${prompt}[Generation unavailable]``
 
  return {
  success: true,

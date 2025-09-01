@@ -776,7 +776,7 @@ export class SQLiteAdapter implements DatabaseConnection {
  notnull: number;
  dflt_value: unknown;
  pk: number;
- }>(`PRAGMA table_info(${tableName})`);
+ }>(`PRAGMA table_info(${tableName})`
 
  const columns: ColumnSchema[] = pragmaResult.rows.map((row) => ({
  name: row.name,
@@ -801,7 +801,7 @@ export class SQLiteAdapter implements DatabaseConnection {
 
  for (const idx of indexResult.rows) {
  const indexInfo = await this.query<{ name: string }>(
- `PRAGMA index_info(${idx.name})`;
+ `PRAGMA index_info(${idx.name})`
  );
  indexes.push({
  name: idx.name,
@@ -841,13 +841,13 @@ export class SQLiteAdapter implements DatabaseConnection {
  }
 
  private async createMigrationsTable(): Promise<void> {
- await this.query(`;
+ await this.query(`
  CREATE TABLE IF NOT EXISTS _migrations (
  version TEXT PRIMARY KEY,
  name TEXT NOT NULL,
  applied_at DATETIME DEFAULT CURRENT_TIMESTAMP
  )
- `);
+ `
  }
 
  private async recordMigration(version: string, name: string): Promise<void> {
@@ -920,7 +920,7 @@ export class SQLiteAdapter implements DatabaseConnection {
  }
 
  private generateCorrelationId(): string {
- return `sqlite-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+ return `sqlite-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
  }
 
  private sleep(ms: number): Promise<void> {
@@ -1027,7 +1027,7 @@ class SQLiteTransactionConnection implements TransactionConnection {
  return await new Promise<void>((resolve, reject) => {
  setImmediate(() => {
  try {
- this.db.exec(`SAVEPOINT ${name}`);
+ this.db.exec(`SAVEPOINT ${name}`
  resolve();
  } catch (error) {
  reject(error);
@@ -1040,7 +1040,7 @@ class SQLiteTransactionConnection implements TransactionConnection {
  return await new Promise<void>((resolve, reject) => {
  setImmediate(() => {
  try {
- this.db.exec(`RELEASE SAVEPOINT ${name}`);
+ this.db.exec(`RELEASE SAVEPOINT ${name}`
  resolve();
  } catch (error) {
  reject(error);
@@ -1053,7 +1053,7 @@ class SQLiteTransactionConnection implements TransactionConnection {
  return await new Promise<void>((resolve, reject) => {
  setImmediate(() => {
  try {
- this.db.exec(`ROLLBACK TO SAVEPOINT ${name}`);
+ this.db.exec(`ROLLBACK TO SAVEPOINT ${name}`
  resolve();
  } catch (error) {
  reject(error);

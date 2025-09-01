@@ -23,7 +23,7 @@ const logger = {
  message: msg,
  data: data || null,
  timestamp: new Date().toISOString(),
- })}\n`;
+ })}\n`
  );
  },
  error: (msg: string, data?: unknown) => {
@@ -34,7 +34,7 @@ const logger = {
  message: msg,
  data: data || null,
  timestamp: new Date().toISOString(),
- })}\n`;
+ })}\n`
  );
  },
  warn: (msg: string, data?: unknown) => {
@@ -45,7 +45,7 @@ const logger = {
  message: msg,
  data: data || null,
  timestamp: new Date().toISOString(),
- })}\n`;
+ })}\n`
  );
  },
  debug: (msg: string, data?: unknown) => {
@@ -60,7 +60,7 @@ const logger = {
  message: msg,
  data: data || null,
  timestamp: new Date().toISOString(),
- })}\n`;
+ })}\n`
  );
  }
  },
@@ -121,7 +121,7 @@ export interface Event<T = unknown> {
  * Single implementation replacing all previous event system variants.
  *
  * @example
- * ```typescript`;
+ * ```typescript`
  * // Define your event map
  * interface MyEvents {
  * userAction:{ action: string; target: string};

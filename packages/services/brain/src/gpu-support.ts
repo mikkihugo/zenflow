@@ -145,11 +145,11 @@ logger.info('ONNX Runtime GPU acceleration enabled');') return { backend: 'onnx'
 break;
 }
 } catch (error) {
-logger.warn(`Failed to initialize ${selectedBackend} acceleration:`, error);`;
+logger.warn(`Failed to initialize ${selectedBackend} acceleration:`, error);`
 }
 
 // Fallback to CPU
-logger.info(`GPU acceleration not available, falling back to CPU`);') return { backend: 'cpu', accelerated:false};')}
+logger.info(`GPU acceleration not available, falling back to CPU`') return { backend: 'cpu', accelerated:false};')}
 
 /**
 * Create a GPU-accelerated neural network if possible

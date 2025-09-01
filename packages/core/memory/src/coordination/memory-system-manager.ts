@@ -57,7 +57,7 @@ export class MemorySystemManager extends EventEmitter {
  constructor(config: MemorySystemConfig) {
  super();
  this.config = config;
- this.logger = getLogger(`MemorySystemManager:${config.name}`);
+ this.logger = getLogger(`MemorySystemManager:${config.name}`
  this.telemetry = new TelemetryManager({
  serviceName: `memory-system-${config.name}`,
  enableTracing: true,
@@ -703,7 +703,7 @@ export class MemorySystemManager extends EventEmitter {
 
  for (const [name, component] of this.components) {
  if (!component.healthy) {
- issues.push(`Component '${name}' is unhealthy`);
+ issues.push(`Component '${name}' is unhealthy`
  }
  }
 
@@ -728,7 +728,7 @@ export class MemorySystemManager extends EventEmitter {
 
  if (unhealthyComponents.length > 0) {
  recommendations.push(
- `Investigate unhealthy components:${unhealthyComponents.join(', ')}`;
+ `Investigate unhealthy components:${unhealthyComponents.join(', ')}`
  );
  }
 
@@ -838,7 +838,7 @@ export class MemorySystemManager extends EventEmitter {
  this.initialized = false;
 
  this.emit('systemShutdown', { name: this.config.name });
- this.logger.info(`Memory system '${this.config.name}' shut down`);
+ this.logger.info(`Memory system '${this.config.name}' shut down`
  } catch (error) {
  this.logger.error(`Error during memory system shutdown:`, error);
  throw error;

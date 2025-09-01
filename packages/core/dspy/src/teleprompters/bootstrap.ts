@@ -76,7 +76,7 @@ export class LabeledFewShot extends Teleprompter {
 * Matches Stanford DSPy BootstrapFewShot implementation exactly.
 *
 * @example
-* '``typescript`;
+* '``typescript`
 * // Basic bootstrapping with default settings
 * const bootstrap = new BootstrapFewShot();
 * const optimizedProgram = await bootstrap.compile(studentProgram, {
@@ -110,7 +110,7 @@ export class LabeledFewShot extends Teleprompter {
 * trainset:examples
 * // No teacher specified - program teaches itself
 *});
-* `;
+* `
 */
 export class BootstrapFewShot extends Teleprompter {
 	private metric?:MetricFunction | null;

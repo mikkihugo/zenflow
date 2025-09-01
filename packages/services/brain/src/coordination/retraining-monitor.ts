@@ -127,7 +127,7 @@ if (this.intervalId) {
 clearInterval(this.intervalId);
 this.intervalId = null;
 this.isMonitoring = false;
-this.logger.info('Retraining monitor stopped`);`)}
+this.logger.info('Retraining monitor stopped``)}
 }
 
 /**
@@ -137,7 +137,7 @@ public async manualRetrain(
 reason:string,
 additionalMetrics:Record<string, number> = {}
 ):Promise<RetrainingResult> {
-this.logger.info(`Manual retraining triggered:${reason}`);`;
+this.logger.info(`Manual retraining triggered:${reason}``
 
 const trigger:RetrainingTrigger = {
 timestamp:new Date(),
@@ -180,7 +180,7 @@ this.logger.debug('Retraining is in cooldown period, skipping check');') return;
 if (
 await this.hasExceededDailyLimit(config.maxRetrainingAttemptsPerDay)
 ) {
-this.logger.warn('Daily retraining limit exceeded, skipping check`);`) return;
+this.logger.warn('Daily retraining limit exceeded, skipping check``) return;
 }
 
 // Get current coordination success rate from database
@@ -231,13 +231,13 @@ strategy:trigger.strategy,
 
 // Store the retraining trigger in database
 if (this.dbAccess) {
-const kv = await this.dbAccess.getKV('brain`);`) await kv.set(
+const kv = await this.dbAccess.getKV('brain``) await kv.set(
 `retraining:trigger:${trigger.timestamp.getTime()}`,
 JSON.stringify(trigger)
 );
 
 // Use LLMProvider for retraining strategy generation (no file tools needed)
-const __retrainingPrompt = `Generate a neural network retraining plan based on the following performance metrics:`;
+const __retrainingPrompt = `Generate a neural network retraining plan based on the following performance metrics:`
 
 Trigger Reason:${trigger}.reason
 Current Metrics:${JSON}.stringify(trigger.metrics, null, 2)
@@ -249,7 +249,7 @@ Please provide:
 3. Success criteria for the retraining
 4. Risk mitigation strategies
 
-Format as JSON with keys:approach, epochs, batchSize, successCriteria, risks`;`;
+Format as JSON with keys:approach, epochs, batchSize, successCriteria, risks``
 
 // Use operations facade for LLM access
 let retrainingPlan =
@@ -294,7 +294,7 @@ estimatedImprovementPercent:15, // Simulated improvement
 
 // Store retraining result
 if (this.dbAccess) {
-const kv = await this.dbAccess.getKV('brain`);`) await kv.set(
+const kv = await this.dbAccess.getKV('brain``) await kv.set(
 `retraining:result:${trigger}.timestamp.getTime()`,
 JSON.stringify(result)
 );
@@ -378,7 +378,7 @@ private async hasExceededDailyLimit(maxAttempts:number): Promise<boolean> {
 if (!this.dbAccess) return false;
 
 try {
-const today = new Date().toISOString().split('T')[0];') const kv = await this.dbAccess.getKV('brain');`) const __attemptsData = await kv.get(`retraining:attempts:${today}`);`;
+const today = new Date().toISOString().split('T')[0];') const kv = await this.dbAccess.getKV('brain');`) const __attemptsData = await kv.get(`retraining:attempts:${today}``
 
 if (!attemptsData) return false;
 
@@ -396,14 +396,14 @@ public async getRetrainingHistory(
 limit:number = 10
 ):Promise<Array<RetrainingTrigger & RetrainingResult>> {
 if (!this.dbAccess) {
-this.logger.warn('Database access not available for history retrieval`);`) return [];
+this.logger.warn('Database access not available for history retrieval``) return [];
 }
 
 try {
 // This would retrieve and combine retraining triggers and results
 // Implementation depends on the specific database structure
 
-this.logger.info(`Retrieved retraining history (limit:${limit})`);`;
+this.logger.info(`Retrieved retraining history (limit:${limit})``
 return []; // Placeholder
 } catch (error) {
 this.logger.error(`Failed to retrieve retraining history:`, error);') return [];

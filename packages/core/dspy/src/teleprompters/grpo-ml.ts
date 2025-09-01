@@ -466,7 +466,7 @@ this.initialized = true;
 this.logger.info('GRPOML initialized successfully with RL components');
 } catch (error) {
 this.logger.error(`Failed to initialize GRPOML:`, error);
-throw new Error(`GRPOML initialization failed:${error}`);
+throw new Error(`GRPOML initialization failed:${error}`
 }
 }
 
@@ -509,7 +509,7 @@ this.resetTrainingState();
 
 try {
 this.logger.info(
-`Starting GRPOML compilation with policy gradient optimization...`;
+`Starting GRPOML compilation with policy gradient optimization...`
 );
 
 // Step 1:Policy gradient training with experience replay
@@ -573,13 +573,13 @@ policyInsights: this.generatePolicyInsights(),
 };
 
 this.logger.info(
-` GRPOML optimization completed in ${totalTime}ms with ${this.currentEpisode} episodes`;
+` GRPOML optimization completed in ${totalTime}ms with ${this.currentEpisode} episodes`
 );
 
 return result;
 } catch (error) {
 this.logger.error(`GRPOML compilation failed:`, error);
-throw new Error(`GRPOML compilation error:${error}`);
+throw new Error(`GRPOML compilation error:${error}`
 }
 }
 
@@ -591,7 +591,7 @@ student: DSPyModule,
 options: any
 ): Promise<void> {
 this.logger.info(
-`Starting policy gradient training with experience replay...`;
+`Starting policy gradient training with experience replay...`
 );
 
 let episodesWithoutImprovement = 0;
@@ -734,12 +734,12 @@ this.currentEpisode++;
 
 const episodeTime = Date.now() - episodeStart;
 this.logger.debug(
-`Episode ${this.currentEpisode}:reward=${episodeReward.toFixed(3)}, experiences=${episodeExperiences.length}, time=${episodeTime}ms`;
+`Episode ${this.currentEpisode}:reward=${episodeReward.toFixed(3)}, experiences=${episodeExperiences.length}, time=${episodeTime}ms`
 );
 }
 
 this.logger.info(
-`Policy gradient training completed after ${this.currentEpisode} episodes`;
+`Policy gradient training completed after ${this.currentEpisode} episodes`
 );
 }
 
@@ -815,7 +815,7 @@ private async adaptTrustRegion(
 updateResult: PolicyUpdateResult
 ): Promise<void> {
 this.logger.info(
-`Trust region violation detected (KL=${updateResult.klDivergence.toFixed(6)}) - adapting trust region`;
+`Trust region violation detected (KL=${updateResult.klDivergence.toFixed(6)}) - adapting trust region`
 );
 
 // Reduce trust region delta
@@ -835,7 +835,7 @@ if (this.episodeRewards.length < this.config.minSampleSize) {
 return tests;
 }
 
-this.logger.info(`Validating policy improvement with statistical tests...`);
+this.logger.info(`Validating policy improvement with statistical tests...`
 
 // Split episodes into early and late phases
 const midPoint = Math.floor(this.episodeRewards.length / 2);
@@ -861,7 +861,7 @@ tests.push(mannWhitneyTest);
 }
 
 this.logger.info(
-`Completed ${tests.length} statistical tests for policy improvement`;
+`Completed ${tests.length} statistical tests for policy improvement`
 );
 
 return tests;
@@ -1017,11 +1017,11 @@ const recommendations: string[] = [];
 const significantTests = policyTests.filter((test) => test.significant);
 if (significantTests.length > 0) {
 recommendations.push(
-`${significantTests.length} statistical tests show significant policy improvement - training was effective`;
+`${significantTests.length} statistical tests show significant policy improvement - training was effective`
 );
 } else if (policyTests.length > 0) {
 recommendations.push(
-`No significant policy improvement detected - consider increasing episode count or adjusting hyperparameters`;
+`No significant policy improvement detected - consider increasing episode count or adjusting hyperparameters`
 );
 }
 

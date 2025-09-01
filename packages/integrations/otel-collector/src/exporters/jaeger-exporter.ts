@@ -28,8 +28,8 @@ export class JaegerExporter implements BaseExporter {
   private queue:QueueItem[] = [];
   private batchTimer:NodeJS.Timeout  |  null = null;
   private exportCount = 0;
-  private lastExportTime:number | null = null;
-  private lastError:string | null = null;
+  private lastExportTime: 'number' | 'null' = null;
+  private lastError: 'string' | 'null' = null;
   private isShuttingDown = false;
   
   // Configuration

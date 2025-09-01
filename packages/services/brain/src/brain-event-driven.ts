@@ -16,7 +16,7 @@
 * **EVENT COORDINATION:**
 * - 'brain:brain-service:optimize-prompt' → ' brain-service:prompt-optimized') * - 'brain:brain-service:estimate-complexity' → ' brain-service:complexity-estimated') * - 'brain:brain-service:predict-performance' → ' brain-service:performance-predicted') * - 'brain:brain-service:coordinate-autonomous' → ' brain-service:autonomous-coordinated') * - 'brain:brain-service:analyze-behavioral' → ' brain-service:behavioral-analyzed') * - 'brain:brain-service:process-neural' → ' brain-service:neural-processed') *
 * @example Event-Driven Brain Coordination
-* ```typescript`;
+* ```typescript`
 * import { createEventDrivenBrain, EventDrivenBrain} from '@claude-zen/brain';
 *
 * // Create event-driven brain with brain coordination
@@ -43,7 +43,7 @@
 * ```
 *
 * @example Autonomous Decision-Making
-* ```typescript`;
+* ```typescript`
 * // Autonomous complexity estimation and strategy selection
 * brainService.eventBus.emit('brain:brain-service:estimate-complexity', {
 * requestId: 'complexity-456', * task: 'enterprise-system-design', * content: 'Build a fault-tolerant distributed system...', * context:{ domain: 'enterprise-architecture', scale: ' global'}
@@ -431,7 +431,7 @@ context:Record<string, any>;
 // Status events
 'brain-service:status': {
 serviceId:string;
-status:'initializing' | ' ready' | ' busy' | ` error`;
+status:'initializing' | ' ready' | ' busy' | ` error`
 metrics:Record<string, any>;
 };
 }
@@ -469,7 +469,7 @@ private neuralNetworks = new Map<string, any>();
 constructor(config:EventDrivenBrainConfig = {}) {
 this.serviceId = config.serviceId || generateUUID();
 this.config = config;
-this.logger = getLogger(`brain-service:${this.serviceId}`);
+this.logger = getLogger(`brain-service:${this.serviceId}`
 this.container = createServiceContainer();
 
 // Initialize event bus
@@ -545,10 +545,10 @@ behavioralModels:Object.keys(this.behavioralModels),
 },
 });
 
-this.logger.info(`EventDrivenBrain service initialized successfully`);
+this.logger.info(`EventDrivenBrain service initialized successfully`
 return ok();
 } catch (error) {
-const errorMessage = `Failed to initialize brain service:${error}`;
+const errorMessage = `Failed to initialize brain service:${error}`
 this.logger.error(errorMessage, { error, serviceId:this.serviceId});
 recordMetric(`brain_service_init_error`, 1, { serviceId:this.serviceId});
 
@@ -636,7 +636,7 @@ await this.learnFromOptimization(request, result);
 }
 
 } catch (error) {
-const errorMessage = `Prompt optimization failed:${error}`;
+const errorMessage = `Prompt optimization failed:${error}`
 this.logger.error(errorMessage, { requestId:request.requestId, error});
 recordMetric(`brain_prompt_optimization_error`, 1, {
 serviceId:this.serviceId,
@@ -681,7 +681,7 @@ strategy:result.recommendations.optimizationStrategy
 });
 
 } catch (error) {
-const errorMessage = `Complexity estimation failed:${error}`;
+const errorMessage = `Complexity estimation failed:${error}`
 this.logger.error(errorMessage, { requestId:request.requestId, error});
 recordMetric(`brain_complexity_estimation_error`, 1, {
 serviceId:this.serviceId,
@@ -727,7 +727,7 @@ horizons:Object.keys(result.predictions)
 });
 
 } catch (error) {
-const errorMessage = `Performance prediction failed:${error}`;
+const errorMessage = `Performance prediction failed:${error}`
 this.logger.error(errorMessage, { requestId:request.requestId, error});
 recordMetric(`brain_performance_prediction_error`, 1, {
 serviceId:this.serviceId,
@@ -772,7 +772,7 @@ confidence:result.confidence
 });
 
 } catch (error) {
-const errorMessage = `Autonomous coordination failed:${error}`;
+const errorMessage = `Autonomous coordination failed:${error}`
 this.logger.error(errorMessage, { requestId:request.requestId, error});
 recordMetric(`brain_autonomous_coordination_error`, 1, {
 serviceId:this.serviceId,
@@ -817,7 +817,7 @@ patterns:Object.keys(result.patterns)
 });
 
 } catch (error) {
-const errorMessage = `Behavioral analysis failed:${error}`;
+const errorMessage = `Behavioral analysis failed:${error}`
 this.logger.error(errorMessage, { requestId:request.requestId, error});
 recordMetric(`brain_behavioral_analysis_error`, 1, {
 serviceId:this.serviceId,
@@ -862,7 +862,7 @@ throughput:result.performance.throughput
 });
 
 } catch (error) {
-const errorMessage = `Neural processing failed:${error}`;
+const errorMessage = `Neural processing failed:${error}`
 this.logger.error(errorMessage, { requestId:request.requestId, error});
 recordMetric(`brain_neural_processing_error`, 1, {
 serviceId:this.serviceId,
@@ -887,7 +887,7 @@ context:{ taskType: request.taskType},
 */
 private async performPromptOptimization(request:PromptOptimizationRequest): Promise<PromptOptimizationResult> {
 const complexity = request.context?.complexity || this.estimatePromptComplexity(request.prompt);
-const priority = request.context?.priority || `medium`;
+const priority = request.context?.priority || `medium`
 const timeLimit = request.context?.timeLimit || 30000;
 const qualityRequirement = request.context?.qualityRequirement || 0.8;
 
@@ -897,7 +897,7 @@ complexity,
 priority,
 timeLimit,
 qualityRequirement,
-historicalData:this.performanceHistory.get(`${request.task}-optimization`) || {}`;
+historicalData:this.performanceHistory.get(`${request.task}-optimization`) || {}`
 });
 
 // Apply strategy-specific optimization
@@ -1092,7 +1092,7 @@ case 'optimization':
 output = await this.processOptimization(inputData, modelUsed, processingOptions);
 break;
 default:
-throw new Error(`Unsupported neural processing task type:${taskType}`);
+throw new Error(`Unsupported neural processing task type:${taskType}`
 }
 
 const processingTime = Date.now() - startTime;
@@ -1122,7 +1122,7 @@ performance
 // =============================================================================
 
 private async initializeNeuralBackends():Promise<void> {
-this.logger.info(`Initializing neural backends`);
+this.logger.info(`Initializing neural backends`
 
 // Initialize based on configuration
 if (this.config.neural?.rustAcceleration) {
@@ -1219,14 +1219,14 @@ private async applyOptimizationStrategy(prompt:string, strategy:string, context:
 // Simulate strategy-specific optimization
 switch (strategy) {
 case 'dspy':
-return `[DSPy Optimized] ${prompt}\n\nContext:${JSON.stringify(context)}`;
+return `[DSPy Optimized] ${prompt}\n\nContext:${JSON.stringify(context)}`
 case 'hybrid':
-return `[Hybrid Optimized] ${prompt}\n\nOptimization:Advanced ML + DSPy techniques applied`;
+return `[Hybrid Optimized] ${prompt}\n\nOptimization:Advanced ML + DSPy techniques applied`
 case 'ml':
-return `[ML Optimized] ${prompt}\n\nML Enhancement:Pattern-based optimization applied`;
+return `[ML Optimized] ${prompt}\n\nML Enhancement:Pattern-based optimization applied`
 case 'basic':
 default:
-return `[Optimized] ${prompt}\n\nBasic optimization applied`;
+return `[Optimized] ${prompt}\n\nBasic optimization applied`
 }
 }
 
@@ -1259,9 +1259,9 @@ return Math.min(0.95, baseConfidence + strategyConfidence - complexity * 0.1 + p
 }
 
 private generateOptimizationReasoning(strategy:string, complexity:number, confidence:number): string {
-return `Selected ${strategy} strategy based on complexity score of ${complexity.toFixed(2)}. `;
+return `Selected ${strategy} strategy based on complexity score of ${complexity.toFixed(2)}. `
 Confidence:${(confidence * 100).toFixed(1)}%.
-This approach optimizes for the given complexity and resource constraints.`;
+This approach optimizes for the given complexity and resource constraints.`
 }
 
 private analyzeTechnicalComplexity(content:string, context:any): number {
@@ -1355,7 +1355,7 @@ const factors = [];
 if (complexity > 0.7) factors.push('High task complexity');
 if (context.workload === 'heavy') factors.push(' Heavy workload');
 if (context.urgency === 'high') factors.push(' Time pressure');
-if (context.collaboration === true) factors.push(`Collaborative environment`);
+if (context.collaboration === true) factors.push(`Collaborative environment`
 return factors;
 }
 
@@ -1364,10 +1364,10 @@ const recommendations = [];
 
 for (const [horizon, prediction] of Object.entries(predictions)) {
 if ((prediction as any).expectedQuality < 0.7) {
-recommendations.push(`Consider reducing workload for ${horizon} horizon`);
+recommendations.push(`Consider reducing workload for ${horizon} horizon`
 }
 if ((prediction as any).confidence < 0.6) {
-recommendations.push(`Increase monitoring for ${horizon} predictions`);
+recommendations.push(`Increase monitoring for ${horizon} predictions`
 }
 }
 
@@ -1497,10 +1497,10 @@ const plan = [
 'Initialize coordination parameters', 'Allocate computational resources', `Configure scaling policies`)];
 
 decisions.optimizationActions.forEach((action:string) => {
-plan.push(`Implement:${action}`);
+plan.push(`Implement:${action}`
 });
 
-plan.push(`Monitor system metrics`);
+plan.push(`Monitor system metrics`
 plan.push('Validate performance improvements');
 
 return plan;
@@ -1629,7 +1629,7 @@ return Math.random() * 1000 + 500; // MB
 
 private getComputeResources():string {
 const availableBackends = Array.from(this.neuralNetworks.keys());
-return `Backends:${availableBackends.join(', ')}`;
+return `Backends:${availableBackends.join(', ')}`
 }
 
 private getActiveRequestCount():number {
@@ -1642,7 +1642,7 @@ return Math.random() * 50 + 20; // 20-70% CPU usage
 
 private async learnFromOptimization(request:PromptOptimizationRequest, result:PromptOptimizationResult): Promise<void> {
 // Store optimization history for future learning
-const historyKey = `${request.task}-optimization`;
+const historyKey = `${request.task}-optimization`
 const currentHistory = this.performanceHistory.get(historyKey) || { attempts:[], performance:[]};
 
 currentHistory.attempts.push({
@@ -1676,7 +1676,7 @@ confidence:result.confidence
 * @returns Initialized EventDrivenBrain service
 *
 * @example
-* ```typescript`;
+* ```typescript`
 * const brainService = await createEventDrivenBrain({
 * autonomous:{ enabled: true, learningRate:0.01},
 * neural:{ rustAcceleration: true, gpuAcceleration:true},
@@ -1691,7 +1691,7 @@ const brainService = new EventDrivenBrain(config);
 const initResult = await brainService.initialize();
 
 if (!initResult.success) {
-throw new Error(`Failed to create event-driven brain:${initResult.error}`);
+throw new Error(`Failed to create event-driven brain:${initResult.error}`
 }
 
 return brainService;

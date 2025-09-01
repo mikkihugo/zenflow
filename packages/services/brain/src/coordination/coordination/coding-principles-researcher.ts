@@ -132,7 +132,7 @@ this.logger.info(`Received human feedback:`, feedback);
 }
 
 private generateCacheKey(config: PrinciplesResearchConfig): string {
-return `${config.language}-${config.domain || 'general`}-${config.role || `general`}-${config.depth || `intermediate`}`;
+return `${config.language}-${config.domain || 'general`}-${config.role || `general`}-${config.depth || `intermediate`}`
 }
 
 private getFallbackPrinciples(config: PrinciplesResearchConfig): CodingPrinciples {
@@ -208,7 +208,7 @@ ${principles.languageSpecific.packageManagement.map(item => `- ${item}`).join(`\
 **Human Reviewed**: ${principles.researchMetadata.humanReviewed ? 'Yes' : 'No'}
 
 > This template is AI-generated and should be reviewed by human experts.
-> Please provide feedback to improve future research.`;
+> Please provide feedback to improve future research.`
 }
 }
 

@@ -98,7 +98,7 @@ program: DSPyModule;
 * random seeds.
 *
 * @example
-* ```typescript`;
+* ```typescript`
 * // Basic random search with default settings
 * const randomSearch = new BootstrapFewShotWithRandomSearch({
 * metric:exactMatchMetric,
@@ -247,10 +247,10 @@ this.num_candidate_sets = config.num_candidate_programs ?? 16;
 this.max_labeled_demos = config.max_labeled_demos ?? 16;
 
 logger.info(
-`Going to sample between ${this.min_num_samples} and ${this.max_num_samples} traces per predictor.`;
+`Going to sample between ${this.min_num_samples} and ${this.max_num_samples} traces per predictor.`
 );
 logger.info(
-`Will attempt to bootstrap ${this.num_candidate_sets} candidate sets.`;
+`Will attempt to bootstrap ${this.num_candidate_sets} candidate sets.`
 );
 }
 
@@ -327,7 +327,7 @@ teacher,
 });
 } else {
 if (seed < 0) {
-throw new Error(`Invalid seed:${seed}`);
+throw new Error(`Invalid seed:${seed}`
 }
 
 // Random shuffle and size exactly matching Stanford implementation
@@ -367,8 +367,8 @@ best_program = program;
 }
 
 scores.push(score);
-logger.info(`Scores so far:${scores}`);
-logger.info(`Best score so far:${Math.max(...scores)}`);
+logger.info(`Scores so far:${scores}`
+logger.info(`Best score so far:${Math.max(...scores)}`
 
 score_data.push({
 score,
@@ -383,14 +383,14 @@ this.stop_at_score !== undefined &&
 score >= this.stop_at_score
 ) {
 logger.info(
-`Stopping early because score ${score} is >= stop_at_score ${this.stop_at_score}`;
+`Stopping early because score ${score} is >= stop_at_score ${this.stop_at_score}`
 );
 break;
 }
 }
 
 if (!best_program) {
-throw new Error(`No candidate programs were successfully generated`);
+throw new Error(`No candidate programs were successfully generated`
 }
 
 // Attach metadata exactly matching Stanford implementation
@@ -399,7 +399,7 @@ throw new Error(`No candidate programs were successfully generated`);
 (a, b) => b.score - a.score
 );
 
-logger.info(`${score_data.length} candidate programs found.`);
+logger.info(`${score_data.length} candidate programs found.`
 
 (best_program as any)._compiled = true;
 return best_program;

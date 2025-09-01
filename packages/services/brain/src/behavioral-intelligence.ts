@@ -113,7 +113,7 @@ export interface AgentBehavioralProfile {
  * task assignment and swarm coordination.
  *
  * @example Basic Usage
- * ```typescript`;
+ * ```typescript`
  * const behavioral = new BehavioralIntelligence(brainJsBridge);
  * await behavioral.initialize();
  *
@@ -129,7 +129,7 @@ export interface AgentBehavioralProfile {
  *
  * // Predict agent performance
  * const prediction = await behavioral.predictAgentPerformance('agent-1', 'data-processing', 0.7);
- * logger.info(`Predicted efficiency: ${prediction.predictedEfficiency}`);
+ * logger.info(`Predicted efficiency: ${prediction.predictedEfficiency}`
  * ```
  */
 export class BehavioralIntelligence {
@@ -1673,11 +1673,11 @@ export async function demoBehavioralIntelligence(
         modelSize: 'large',        dataSize:100000,
 }
     );
-    logger.info(`🎯 Task complexity analysis:`);`;
+    logger.info(`🎯 Task complexity analysis:``
     logger.info(
       `   • Complexity:$(complexityAnalysis.estimatedComplexity * 100).toFixed(1)%``
     );
-    logger.info(`   • Difficulty:${complexityAnalysis.difficulty}`);`;
+    logger.info(`   • Difficulty:${complexityAnalysis.difficulty}``
     logger.info(
       `   • Required skills:${complexityAnalysis}.requiredSkills.join(',    ')``
     );
@@ -1689,22 +1689,22 @@ export async function demoBehavioralIntelligence(
     logger.info('🎯 Finding best agent for task...');')    const bestAgent = await behavioral.findBestAgentForTask(
       'data-processing',      0.5,
       ['agent-1',    'agent-2']')    );
-    logger.info(`🏆 Best agent selection:`);`;
-    logger.info(`   • Selected:${bestAgent}.agentId`);`;
-    logger.info(`   • Confidence:${(bestAgent.confidence * 100).toFixed(1)}%`);`;
-    logger.info(`   • Reasoning:${bestAgent}.reasoning\n`);`;
+    logger.info(`🏆 Best agent selection:``
+    logger.info(`   • Selected:${bestAgent}.agentId``
+    logger.info(`   • Confidence:${(bestAgent.confidence * 100).toFixed(1)}%``
+    logger.info(`   • Reasoning:${bestAgent}.reasoning\n``
 
     // 5. Show behavioral intelligence stats
     logger.info('📈 Behavioral Intelligence Statistics:');
     const stats = behavioral.getStats();
-    logger.info(`   • Total agents: ${stats.totalAgents}`);
-    logger.info(`   • Training data points: ${stats.trainingDataPoints}`);
-    logger.info(`   • Networks initialized: ${stats.networksInitialized}`);
+    logger.info(`   • Total agents: ${stats.totalAgents}`
+    logger.info(`   • Training data points: ${stats.trainingDataPoints}`
+    logger.info(`   • Networks initialized: ${stats.networksInitialized}`
     logger.info(
-      `   • Average performance: ${(stats.averagePerformance * 100).toFixed(1)}%`;
+      `   • Average performance: ${(stats.averagePerformance * 100).toFixed(1)}%`
     );
     logger.info(
-      `   • Most active agents: ${stats.mostActiveAgents.join(', ')}`;
+      `   • Most active agents: ${stats.mostActiveAgents.join(', ')}`
     );
 
     logger.info('\n🎉 Behavioral Intelligence Demo Complete!');

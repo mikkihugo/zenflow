@@ -590,7 +590,7 @@ export class KeyValueStorageImpl implements KeyValueStorage {
  }
 
  // Create key-value table
- await this.connection.execute(`;
+ await this.connection.execute(`
  CREATE TABLE IF NOT EXISTS kv_store (
  key TEXT PRIMARY KEY,
  value TEXT NOT NULL,
@@ -598,14 +598,14 @@ export class KeyValueStorageImpl implements KeyValueStorage {
  stored_at INTEGER NOT NULL,
  updated_at INTEGER NOT NULL
  )
- `);
+ `
 
  // Create indexes for performance
- await this.connection.execute(`;
+ await this.connection.execute(`
  CREATE INDEX IF NOT EXISTS idx_kv_store_ttl_expiry 
  ON kv_store(stored_at, ttl) 
  WHERE ttl IS NOT NULL
- `);
+ `
 
  this.initialized = true;
  logger.debug('Key-value storage initialized');
@@ -673,6 +673,6 @@ export class KeyValueStorageImpl implements KeyValueStorage {
  }
 
  private generateCorrelationId(): string {
- return `kv-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+ return `kv-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
  }
 }

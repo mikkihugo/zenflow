@@ -173,7 +173,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 					expect(resultMessage).toBeTruthy();
 					expect((resultMessage as any).is_error).toBeFalsy();
 
-					logger.info(` Model ${model} working correctly`);
+					logger.info(` Model ${model} working correctly`
 }
 },
 			TEST_CONFIG.STANDARD_TIMEOUT,
@@ -200,7 +200,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 					// All modes should work (or fail safely)
 					if (result.success) {
 						expect(result.data).toBeTruthy();
-						logger.info(` Permission mode ${permissionMode} working`);
+						logger.info(` Permission mode ${permissionMode} working`
 } else {
 						logger.info(
 							` Permission mode ${permissionMode} failed safely:` + result.error.message,
@@ -368,7 +368,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 				expect(hasData).toBe(true);
 				expect(messageCount).toBeGreaterThan(0);
 
-				logger.info(` Streaming working:${messageCount} messages received`);
+				logger.info(` Streaming working:${messageCount} messages received`
 },
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
@@ -403,7 +403,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 
 						if (messageCount > 10) break; // Safety limit
 }
-					logger.info(` Stream completed normally:${messageCount} messages`);
+					logger.info(` Stream completed normally:${messageCount} messages`
 } catch (error) {
 					if (error instanceof Error && error.message.includes("abort")) {
 						logger.info(
@@ -622,10 +622,10 @@ describe("Comprehensive Claude SDK Tests", () => {
 					if (scenario.expectError) {
 						expect(result.success).toBe(false);
 						expect(result.error).toBeInstanceOf(Error);
-						logger.info(` ${scenario.name}:Failed as expected`);
+						logger.info(` ${scenario.name}:Failed as expected`
 } else {
 						expect(result.success).toBe(true);
-						logger.info(` ${scenario.name}:Succeeded as expected`);
+						logger.info(` ${scenario.name}:Succeeded as expected`
 }
 }
 },
@@ -706,7 +706,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 					expect(task.sessionId).toBeTruthy();
 });
 
-				logger.info(` Performance tracking:${newTasks} tasks monitored`);
+				logger.info(` Performance tracking:${newTasks} tasks monitored`
 },
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
@@ -811,7 +811,7 @@ describe("Comprehensive Claude SDK Tests", () => {
         - Import statement errors
         
         Provide systematic approach to fix all issues.
-      `;
+      `
 
 				const messages = await executeClaudeTask(multiFilePrompt, {
 					maxTurns:5,

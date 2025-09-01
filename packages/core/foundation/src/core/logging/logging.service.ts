@@ -83,8 +83,8 @@ export interface LoggingConfig {
  * const logger = getLogger('myservice');
  * logger.info('Service started', { port: 3000});
  * logger.error('Database connection failed', { error: err[message]});
- * logger.success?.('Operation completed successfully`);
- * `;
+ * logger.success?.('Operation completed successfully`
+ * `
  */
 export interface Logger {
   /** Log trace level messages (most verbose) */
@@ -318,7 +318,7 @@ class LoggingConfigurationManager {
       status: 'active',
       timestamp: new Date().toISOString(),
     });
-    console.info(`   Internal Collector: ${endpoint}/ingest`);
+    console.info(`   Internal Collector: ${endpoint}/ingest`
     console.info('   Service: claude-zen-foundation');
   }
 

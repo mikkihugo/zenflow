@@ -37,7 +37,7 @@ options:DatabaseCreationOptions
 ):Promise<CodeQLDatabase> {
 const absolutePath = path.resolve(repositoryPath);
 const databaseId = this.generateDatabaseId(absolutePath, options.languages);
-const __databasePath = path.join(this.config.tempDir!, `${databaseId}.db`);`;
+const __databasePath = path.join(this.config.tempDir!, `${databaseId}.db``
 
 this.logger.info(`Creating CodeQL database`, {
 ') databaseId,
@@ -184,7 +184,7 @@ return await safeAsync(async () => {
 const database = this.databases.get(databaseId);
 
 if (!database) {
-throw this.createError('config`, `Database not found:${databaseId}`);`;
+throw this.createError('config`, `Database not found:${databaseId}``
 }
 
 this.logger.info(`Deleting database', {
@@ -239,9 +239,9 @@ repositoryPath:string,
 languages:CodeQLLanguage[]
 ):string {
 const repoName = path.basename(repositoryPath);
-const langString = languages.sort().join(`-`);
+const langString = languages.sort().join(`-`
 const timestamp = Date.now();
-return `${repoName}_${langString}_${timestamp}`;
+return `${repoName}_${langString}_${timestamp}`
 }
 
 private async databaseExists(databasePath:string): Promise<boolean>

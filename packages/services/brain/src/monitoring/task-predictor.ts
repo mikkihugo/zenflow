@@ -121,7 +121,7 @@ _duration:number,
 _success:boolean,
 _metadata?:Record<string, unknown>
 ):void {
-const key = `${agentId.id}-${taskType}`;`;
+const key = `${agentId.id}-${taskType}``
 
 const record:TaskCompletionRecord = {
 agentId,
@@ -164,7 +164,7 @@ agentId:AgentId,
 taskType:string,
 contextFactors?:Record<string, unknown>
 ):TaskPrediction {
-const key = `${agentId}.id-${taskType}`;`;
+const key = `${agentId}.id-${taskType}``
 const history = this.taskHistory.get(key)||[];
 
 if (history.length < this.config.minSamplesRequired) {
@@ -359,5 +359,5 @@ return prediction.confidence >= threshold;
 export function getPredictionSummary(prediction:TaskPrediction): string {
 const duration = (prediction.predictedDuration / 1000).toFixed(1);
 const confidence = (prediction.confidence * 100).toFixed(0);
-return `${duration}s (${confidence}% confidence)`;`;
+return `${duration}s (${confidence}% confidence)``
 }

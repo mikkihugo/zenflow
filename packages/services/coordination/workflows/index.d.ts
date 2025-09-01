@@ -25,7 +25,7 @@
  * - Emergency workflow termination and cleanup
  *
  * @example Basic Workflow Creation and Execution
- * ```typescript`;
+ * ```typescript`
  * import { WorkflowEngine, WorkflowUtils} from '@claude-zen/coordination/workflows';
  *
  * const engine = new WorkflowEngine({
@@ -60,7 +60,7 @@
  * ````
  *
  * @example Conditional Workflow with Error Handling
- * ```typescript`;
+ * ```typescript`
  * import { WorkflowEngine} from '@claude-zen/coordination/workflows';
  *
  * const conditionalWorkflow = {
@@ -96,7 +96,7 @@
  * ````
  *
  * @example Workflow Monitoring and Analytics
- * ```typescript`;
+ * ```typescript`
  * import { WorkflowEngine, WorkflowAnalytics} from '@claude-zen/coordination/workflows';
  *
  * const engine = new WorkflowEngine({
@@ -111,14 +111,14 @@
  *
  * // Monitor execution in real-time
  * analytics.onStepCompleted(workflowId, (stepResult) => {
- * logger.info(`Step ${stepResult.stepId} completed in ${stepResult.duration}ms`);`;
+ * logger.info(`Step ${stepResult.stepId} completed in ${stepResult.duration}ms``
  *});
  *
  * // Get workflow performance insights
  * const insights = await analytics.getWorkflowInsights(workflowId);
- * logger.info(`Total execution time:${insights.totalDuration}ms`);`;
- * logger.info(`Bottleneck step:${insights.bottleneckStep}`);`;
- * logger.info(`Success rate:${insights.successRate}%`);`;
+ * logger.info(`Total execution time:${insights.totalDuration}ms``
+ * logger.info(`Bottleneck step:${insights.bottleneckStep}``
+ * logger.info(`Success rate:${insights.successRate}%``
  * ````
  *
  * @author Claude Code Zen Team
@@ -227,7 +227,7 @@ export declare const WORKFLOWS_INFO:{
  *
  * ## Getting Started
  *
- * ```bash`;
+ * ```bash`
  * npm install @claude-zen/coordination/workflows @claude-zen/foundation
  * ````
  *
@@ -277,7 +277,7 @@ export declare const WorkflowUtils:{
  input:string;
  transformation:unknown;
 };
- output:string | undefined;
+ output: 'string' | 'undefined';
 };
  /**
  * Create a conditional step.

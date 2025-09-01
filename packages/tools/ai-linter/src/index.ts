@@ -97,7 +97,7 @@ aiModel: this.config.aiMode,
 }
 
 // Step 2:Read file content
-const originalContent = fs.readFileSync(filePath, `utf8`);
+const originalContent = fs.readFileSync(filePath, `utf8`
 
 // Step 3:Use GPT-4.1 to fix errors intelligently
 const fixedContent = await this.fixWithAI(
@@ -135,7 +135,7 @@ fixedErrors,
 timeTaken: Date.now() - startTime,
 aiModel: this.config.aiMode,
 backupPath: this.config.backupEnabled
-? `${filePath}.backup`;
+? `${filePath}.backup`
 : undefined,
 };
 
@@ -435,9 +435,9 @@ errors: Array<{ line: number; column: number; message: string }>
 const errorSummary = errors
 .map(
 (err, i) =>
-`${i + 1}. Line ${err.line}, Col ${err.column}:${err.message}`;
+`${i + 1}. Line ${err.line}, Col ${err.column}:${err.message}`
 )
-.join(`\n`);
+.join(`\n`
 
 return [
 'You are an intelligent TypeScript/JavaScript linter with deep understanding of:',

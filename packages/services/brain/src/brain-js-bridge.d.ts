@@ -13,7 +13,7 @@
 * - Professional Google TypeScript naming conventions
 *
 * @example Basic Usage
-* ```typescript`;
+* ```typescript`
 * const bridge = container.get(BrainJsBridge);
 * await bridge.initialize();
 *
@@ -153,7 +153,7 @@ readonly parameterCount?: number;
 * - Integration with existing coordination system
 *
 * @example Creating and training a feedforward network
-* ```typescript`;
+* ```typescript`
 * const bridge = container.get(BrainJsBridge);
 * await bridge.initialize();
 *

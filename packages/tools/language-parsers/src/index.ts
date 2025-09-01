@@ -90,7 +90,7 @@ options?: import('./beam-parser').BeamParserOptions
 ): import('./beam-parser').BeamLanguageParser {
 // Temporarily disabled due to syntax issues in beam-parser.ts
 throw new Error('BeamLanguageParser is temporarily disabled due to syntax issues');
-// const { BeamLanguageParser } = require(`./beam-parser`);
+// const { BeamLanguageParser } = require(`./beam-parser`
 // return new BeamLanguageParser(options);
 }
 }
@@ -116,7 +116,7 @@ extractDocumentation?:boolean;
 const family = detectLanguageFamily(filePath);
 
 if (!family) {
-throw new Error(`Unsupported file type: ${filePath}`);
+throw new Error(`Unsupported file type: ${filePath}`
 }
 
 const factory = createParserFactory();
@@ -137,7 +137,7 @@ const parser = factory.createBeamParser(options); // Fallback to beam for now
 return await parser.parseFile(filePath);
 }
 default:
-throw new Error(`Parser not implemented for language family: ${family}`);
+throw new Error(`Parser not implemented for language family: ${family}`
 }
 }
 

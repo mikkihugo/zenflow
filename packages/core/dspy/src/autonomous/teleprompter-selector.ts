@@ -30,7 +30,7 @@
 import type { Logger} from "@claude-zen/foundation";
 import { EventEmitter, getLogger} from "@claude-zen/foundation";
 import { DSPyBrainMLBridge} from "../ml-bridge/dspy-brain-ml-bridge";
-// Removed unused import:import type { Teleprompter} from `../teleprompters/teleprompter`;
+// Removed unused import:import type { Teleprompter} from `../teleprompters/teleprompter`
 
 // Task analysis interfaces
 export interface OptimizationTask {
@@ -318,7 +318,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 			this.selectionHistory.push(finalSelection);
 
 			this.logger.info(
-				`Selected teleprompter: ${finalSelection.selectedTeleprompter.name} (confidence: ${(finalSelection.confidence * 100).toFixed(1)}%)`;
+				`Selected teleprompter: ${finalSelection.selectedTeleprompter.name} (confidence: ${(finalSelection.confidence * 100).toFixed(1)}%)`
 			);
 
 			this.emit("teleprompter:selected", {
@@ -355,7 +355,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 	):Promise<void> {
 		const task = this.findTaskById(taskId);
 		if (!task) {
-			this.logger.warn(`Task ${taskId} not found for performance recording`);
+			this.logger.warn(`Task ${taskId} not found for performance recording`
 			return;
 }
 
@@ -1041,7 +1041,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 		mlRecommendation:any,
 		score:number,
 	): string {
-		return 'Selected ' + (variant.name) + ' based on optimal fit (score: ' + (score.toFixed(3)) + '). ML analysis recommends ' + (mlRecommendation.recommendedTeleprompter) + ` with ${((mlRecommendation.confidence * 100).toFixed(1))}% confidence. Variant offers ` + (variant.capabilities.join(", ")) + ` capabilities with ${variant.type} implementation approach.`;
+		return 'Selected ' + (variant.name) + ' based on optimal fit (score: ' + (score.toFixed(3)) + '). ML analysis recommends ' + (mlRecommendation.recommendedTeleprompter) + ` with ${((mlRecommendation.confidence * 100).toFixed(1))}% confidence. Variant offers ` + (variant.capabilities.join(", ")) + ` capabilities with ${variant.type} implementation approach.`
 	}
 
 	private generateDecisionFactors(

@@ -570,7 +570,7 @@ expect(result.metadata.taskType).toBe('completion');') expect(result.generated.t
 });
 
 it('should handle summarization task', async () => {
-`) const longText = `;
+`) const longText = `
 Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to
 the natural intelligence displayed by humans and animals. Leading AI textbooks define
 the field as the study of "intelligent agents":any device that perceives its environment
@@ -578,7 +578,7 @@ and takes actions that maximize its chance of successfully achieving its goals.
 The term "artificial intelligence" is often used to describe machines that mimic
 "cognitive" functions that humans associate with the human mind, such as "learning"
 and "problem solving".
-`;`;
+``
 const request:NeuralGenerationRequest = {
 prompt:longText,
 taskType: 'summarization', maxTokens:50,

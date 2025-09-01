@@ -143,7 +143,7 @@ export declare class ProcessLifecycleManager {
  *   await cleanup();
  *   logger.info('Shutdown complete');
  *});
- * `;
+ * `
  */
 export declare function setupProcessLifecycle(shutdownHandler: () => Promise<void>): ProcessLifecycleManager;
 //# sourceMappingURL=process.lifecycle.d.ts.map

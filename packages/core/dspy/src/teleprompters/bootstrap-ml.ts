@@ -257,7 +257,7 @@ this.statisticalAnalyzer = createStatisticalAnalyzer();
 this.logger.info('ML components initialized successfully');
 } catch (error) {
 this.logger.error(`Failed to initialize ML components:`, error);
-throw new Error(`BootstrapML initialization failed:${error.message}`);
+throw new Error(`BootstrapML initialization failed:${error.message}`
 }
 }
 
@@ -318,7 +318,7 @@ let round = 0;
 
 while (round < this.config.maxRounds) {
 this.logger.info(
-`Bootstrap round ${round + 1}/${this.config.maxRounds}`;
+`Bootstrap round ${round + 1}/${this.config.maxRounds}`
 );
 
 // Intelligent example selection
@@ -464,7 +464,7 @@ return embeddings;
 */
 private async performClustering(embeddings: MLVector[]): Promise<number[]> {
 if (!this.patternLearner)
-throw new Error(`Pattern learner not initialized`);
+throw new Error(`Pattern learner not initialized`
 
 // Convert embeddings to dataset format
 const dataset: MLDataset = {
@@ -472,7 +472,7 @@ features: embeddings,
 labels: new Int32Array(embeddings.length).fill(0), // Unsupervised
 featureNames: Array.from(
 { length: this.config.embeddingDimension },
-(_, i) => `dim_${i}`;
+(_, i) => `dim_${i}`
 ),
 size: embeddings.length,
 };
@@ -729,7 +729,7 @@ return Math.abs(hash);
 private getBigrams(words: string[]): string[] {
 const bigrams: string[] = [];
 for (let i = 0; i < words.length - 1; i++) {
-bigrams.push(`${words[i]}_${words[i + 1]}`);
+bigrams.push(`${words[i]}_${words[i + 1]}`
 }
 return bigrams;
 }

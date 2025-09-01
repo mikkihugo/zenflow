@@ -255,7 +255,7 @@ export declare function debounce<T extends unknown[], R>(fn: (...args: T) => Pro
  *},
  *   1000
  * );
- * `;
+ * `
  */
 export declare function throttle<T extends unknown[], R>(fn: (...args: T) => Promise<R>, limit: number): (...args: T) => Promise<R>;
 //# sourceMappingURL=async.d.ts.map
