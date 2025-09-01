@@ -8,23 +8,23 @@
  * multiple AI agents and domains. Built for enterprise-scale knowledge management
  * with semantic understanding, federated learning, and intelligent knowledge curation.
  *
- * ** RECOMMENDED USAGE:Access via @claude-zen/foundation Package**
+ * ** RECOMMENDED USAGE: Access via @claude-zen/foundation Package**
  *
  * While this package can be used directly, it is recommended to access knowledge
  * functionality through `@claude-zen/foundation` which provides integrated knowledge`
  * management with telemetry, logging, and configuration management.
  *
- * **CORE COLLECTIVE INTELLIGENCE CAPABILITIES:**
- * -  **Collective Intelligence**:Multi-agent collaborative reasoning and decision-making
- * -  **Cross-Agent Knowledge Sharing**:Real-time knowledge exchange between agents
- * -  **Distributed Learning**:Federated learning across agent networks
- * -  **Knowledge Synthesis**:Automated knowledge aggregation and distillation
- * -  **Cross-Domain Transfer**:Knowledge transfer between different problem domains
- * -  **Performance Optimization**:AI-driven knowledge management optimization
- * -  **Knowledge Persistence**:Long-term memory and knowledge storage
- * -  **Foundation Integration**:Complete @claude-zen/foundation support
+ * **CORE COLLECTIVE INTELLIGENCE CAPABILITIES: **
+ * - 🧠 **Collective Intelligence**: Multi-agent collaborative reasoning and decision-making
+ * - **Cross-Agent Knowledge Sharing**: Real-time knowledge exchange between agents
+ * - 📚 **Distributed Learning**: Federated learning across agent networks
+ * - **Knowledge Synthesis**: Automated knowledge aggregation and distillation
+ * - **Cross-Domain Transfer**: Knowledge transfer between different problem domains
+ * - **Performance Optimization**: AI-driven knowledge management optimization
+ * - **Knowledge Persistence**: Long-term memory and knowledge storage
+ * - **Foundation Integration**: Complete @claude-zen/foundation support
  *
- * **ADVANCED KNOWLEDGE FEATURES:**
+ * **ADVANCED KNOWLEDGE FEATURES: **
  * - Semantic knowledge graphs with ontology management
  * - Natural language knowledge extraction and processing
  * - Multi-modal knowledge integration (text, code, diagrams, data)
@@ -34,7 +34,7 @@
  * - Automated knowledge discovery and pattern recognition
  * - Real-time knowledge streaming and event-driven updates
  *
- * **ENTERPRISE COLLECTIVE INTELLIGENCE FEATURES:**
+ * **ENTERPRISE COLLECTIVE INTELLIGENCE FEATURES: **
  * - Multi-tenant knowledge isolation with strict security boundaries
  * - Enterprise-grade knowledge governance and compliance frameworks
  * - Advanced analytics for knowledge utilization and effectiveness
@@ -47,464 +47,464 @@
  * - Knowledge backup, recovery, and disaster recovery capabilities
  *
  * @example Basic Collective Intelligence Setup
- * ```typescript`
+ * ``typescript`
  * import { IntelligenceHub} from '@claude-zen/knowledge';
  *
  * const coordinator = new IntelligenceHub({
- *   maxAgents:10,
- *   consensusThreshold:0.8,
- *   enableDistributedLearning:true
+ * maxAgents: 10,
+ * consensusThreshold: 0.8,
+ * enableDistributedLearning: true
  *});
  *
  * await coordinator.initialize();
  *
  * // Add agents with different expertise
  * await coordinator.addAgent({
- *   id: 'expert-1', *   expertise:['machine-learning',    'data-science'],
- *   knowledgeLevel:0.9
+ * id: 'expert-1', * expertise: ['machine-learning', 'data-science'],
+ * knowledgeLevel: 0.9
  *});
  *
  * await coordinator.addAgent({
- *   id: 'expert-2', *   expertise:['software-architecture',    'system-design'],
- *   knowledgeLevel:0.85
+ * id: 'expert-2', * expertise: ['software-architecture', 'system-design'],
+ * knowledgeLevel: 0.85
  *});
  *
  * // Collaborative problem solving
  * const solution = await coordinator.solveCollectively({
- *   problem: 'Design scalable microservices architecture', *   context:{ requirements, constraints},
- *   timeoutMs:300000
+ * problem: 'Design scalable microservices architecture', * context: { requirements, constraints},
+ * timeoutMs: 300000
  *});
- * ````
+ * ```
  *
  * @example Cross-Domain Knowledge Transfer
- * ```typescript`
+ * ``typescript`
  * import { CrossAgentKnowledgeIntegration} from '@claude-zen/knowledge';
  *
  * const integration = new CrossAgentKnowledgeIntegration({
- *   enableCrossDomainTransfer:true,
- *   knowledgeValidation: 'strict', *   transferEfficiencyThreshold:0.7
+ * enableCrossDomainTransfer: true,
+ * knowledgeValidation: 'strict', * transferEfficiencyThreshold: 0.7
  *});
  *
  * // Transfer knowledge from ML domain to NLP domain
  * const transferResult = await integration.transferKnowledge({
- *   sourceDomain: 'machine-learning', *   targetDomain: 'natural-language-processing', *   knowledgeType: 'optimization-strategies', *   context:{
- *     sourceExperience:mlOptimizationHistory,
- *     targetRequirements:nlpPerformanceGoals
+ * sourceDomain: 'machine-learning', * targetDomain: 'natural-language-processing', * knowledgeType: 'optimization-strategies`, * context: {
+ * sourceExperience: mlOptimizationHistory,
+ * targetRequirements: nlpPerformanceGoals
  *}
  *});
  *
- * logger.info(`Transfer efficiency:${transferResult.efficiency}%`);`
- * logger.info(`Applicable patterns:${transferResult.applicablePatterns.length}`);`
- * ````
+ * logger.info(`Transfer efficiency: ${transferResult.efficiency}%`);`
+ * logger.info(`Applicable patterns: ${transferResult.applicablePatterns.length}`);`
+ * ```
  *
  * @example Distributed Learning Network
- * ```typescript`
- * import { DistributedLearningSystem} from '@claude-zen/knowledge';
+ * ``typescript`
+ * import { DistributedLearningSystem} from `@claude-zen/knowledge';
  *
  * const learningSystem = new DistributedLearningSystem({
- *   networkTopology: 'federated', *   learningRate:0.01,
- *   aggregationStrategy: 'weighted-average', *   privacyPreservation:true
+ * networkTopology: 'federated', * learningRate: 0.01,
+ * aggregationStrategy: 'weighted-average', * privacyPreservation: true
  *});
  *
  * // Create distributed learning session
  * const session = await learningSystem.createSession({
- *   taskType: 'classification', *   participants:[
- *     { agentId: 'agent-1', dataSize:1000, contribution:0.3},
- *     { agentId: 'agent-2', dataSize:1500, contribution:0.45},
- *     { agentId: 'agent-3', dataSize:800, contribution:0.25}') *],
- *   convergenceCriteria:{ minAccuracy: 0.95, maxIterations:100}
+ * taskType: 'classification', * participants: [
+ * { agentId: 'agent-1', dataSize: 1000, contribution: 0.3},
+ * { agentId: 'agent-2', dataSize: 1500, contribution: 0.45},
+ * { agentId: 'agent-3', dataSize: 800, contribution: 0.25}`) *],
+ * convergenceCriteria: { minAccuracy: 0.95, maxIterations: 100}
  *});
  *
  * // Execute federated learning
  * const result = await session.execute();
- * logger.info(`Final accuracy:${result.accuracy}`);`
- * logger.info(`Convergence iterations:${result.iterations}`);`
- * ````
+ * logger.info(`Final accuracy: ${result.accuracy}`);`
+ * logger.info(`Convergence iterations: ${result.iterations}`);`
+ * ```
  *
  * @example Knowledge Quality Management
- * ```typescript`
- * import { KnowledgeValidator} from '@claude-zen/knowledge';
+ * ``typescript`
+ * import { KnowledgeValidator} from `@claude-zen/knowledge';
  *
  * const qualityManager = new KnowledgeValidator({
- *   validationRules:['consistency',    'accuracy',    'relevance'],
- *   qualityThreshold:0.8,
- *   automaticPruning:true
+ * validationRules: ['consistency', 'accuracy', 'relevance'],
+ * qualityThreshold: 0.8,
+ * automaticPruning: true
  *});
  *
  * // Validate and assess knowledge quality
  * const assessment = await qualityManager.assessKnowledge({
- *   knowledgeBase:existingKnowledge,
- *   newKnowledge:incomingKnowledge,
- *   context:validationContext
+ * knowledgeBase: existingKnowledge,
+ * newKnowledge: incomingKnowledge,
+ * context: validationContext
  *});
  *
  * if (assessment.quality >= 0.8) {
- *   await qualityManager.integrateKnowledge(incomingKnowledge);
+ * await qualityManager.integrateKnowledge(incomingKnowledge);
  *} else {
- *   await qualityManager.flagForReview(incomingKnowledge, assessment.issues);
+ * await qualityManager.flagForReview(incomingKnowledge, assessment.issues);
  *}
- * ````
+ * ```
  *
  * @example Enterprise Knowledge Management System
- * ```typescript`
+ * ``typescript`
  * import {
- *   IntelligenceHub,
- *   KnowledgeValidator,
- *   IntelligenceCoordinationSystem,
- *   PerformanceOptimizer
+ * IntelligenceHub,
+ * KnowledgeValidator,
+ * IntelligenceCoordinationSystem,
+ * PerformanceOptimizer
  *} from '@claude-zen/knowledge';
  *
  * // Create enterprise knowledge management system
  * const enterpriseKnowledge = new IntelligenceHub({
- *   maxAgents:100,
- *   consensusThreshold:0.9,
- *   enableDistributedLearning:true,
- *   multiTenant:{
- *     enabled:true,
- *     isolation: 'strict', *     crossTenantSharing:false
+ * maxAgents: 100,
+ * consensusThreshold: 0.9,
+ * enableDistributedLearning: true,
+ * multiTenant: {
+ * enabled: true,
+ * isolation: 'strict', * crossTenantSharing: false
  *},
- *   security:{
- *     encryption: 'AES-256-GCM', *     auditTrail: 'comprehensive', *     accessControl:'rbac');
+ * security: {
+ * encryption: 'AES-256-GCM', * auditTrail: 'comprehensive', * accessControl: 'rbac');
  *},
- *   performance:{
- *     caching: 'intelligent', *     prefetching:true,
- *     compression:'lz4');
+ * performance: {
+ * caching: 'intelligent', * prefetching: true,
+ * compression: 'lz4');
  *}
  *});
  *
  * // Add quality management layer
  * const qualityManager = new KnowledgeValidator({
- *   validationRules:['consistency',    'accuracy',    'relevance',    'freshness'],
- *   qualityThreshold:0.85,
- *   automaticPruning:true,
- *   peerReview:{
- *     enabled:true,
- *     requiredReviewers:3,
- *     expertiseMatching:true
+ * validationRules: ['consistency', 'accuracy', 'relevance', 'freshness'],
+ * qualityThreshold: 0.85,
+ * automaticPruning: true,
+ * peerReview: {
+ * enabled: true,
+ * requiredReviewers: 3,
+ * expertiseMatching: true
  *}
  *});
  *
  * // Intelligence coordination for expert routing
  * const intelligenceCoordinator = new IntelligenceCoordinationSystem({
- *   expertiseDiscovery: 'automatic', *   specializationEmergence:true,
- *   crossDomainTransfer:true,
- *   loadBalancing:'weighted-round-robin');
+ * expertiseDiscovery: 'automatic', * specializationEmergence: true,
+ * crossDomainTransfer: true,
+ * loadBalancing: 'weighted-round-robin');
  *});
  *
  * // Performance optimization layer
  * const perfOptimizer = new PerformanceOptimizer({
- *   knowledgeCaching:{
- *     strategy: 'lru-with-predictive-prefetch', *     size: '10GB', *     ttl:3600000 // 1 hour
+ * knowledgeCaching: {
+ * strategy: 'lru-with-predictive-prefetch', * size: '10GB', * ttl: 3600000 // 1 hour
  *},
- *   queryOptimization:{
- *     enableIndexing:true,
- *     semanticCompression:true,
- *     parallelExecution:true
+ * queryOptimization: {
+ * enableIndexing: true,
+ * semanticCompression: true,
+ * parallelExecution: true
  *}
  *});
  *
  * // Enterprise knowledge processing workflow
  * const processingResult = await enterpriseKnowledge.processEnterpriseKnowledge({
- *   domain: 'financial-services', *   knowledgeTypes:['regulatory-compliance',    'risk-assessment',    'market-analysis'],
- *   requirements:{
- *     compliance:['SOX',    'GDPR',    'PCI-DSS'],
- *     security: 'classified', *     auditLevel:'comprehensive');
+ * domain: 'financial-services', * knowledgeTypes: ['regulatory-compliance', 'risk-assessment', 'market-analysis'],
+ * requirements: {
+ * compliance: ['SOX', 'GDPR', 'PCI-DSS'],
+ * security: 'classified', * auditLevel: 'comprehensive');
  *},
- *   performance:{
- *     latencyTarget: '100ms', *     throughputTarget: '10000/min', *     availabilityTarget:'99.99%');
+ * performance: {
+ * latencyTarget: '100ms', * throughputTarget: '10000/min', * availabilityTarget: '99.99%');
  *}
  *});
- * ````
+ * ```
  *
  * @example Real-Time Knowledge Synchronization
- * ```typescript`
+ * ``typescript`
  * import {
- *   DistributedLearningSystem,
- *   KnowledgeSwarm,
- *   CrossAgentKnowledgeIntegration
+ * DistributedLearningSystem,
+ * KnowledgeSwarm,
+ * CrossAgentKnowledgeIntegration
  *} from '@claude-zen/knowledge';
  *
  * // Create real-time knowledge synchronization system
  * const knowledgeSync = new DistributedLearningSystem({
- *   networkTopology: 'federated-hierarchical', *   learningRate:0.001,
- *   aggregationStrategy: 'weighted-average-with-expertise', *   privacyPreservation:{
- *     enabled:true,
- *     method: 'differential-privacy', *     epsilonBudget:0.1
+ * networkTopology: 'federated-hierarchical', * learningRate: 0.001,
+ * aggregationStrategy: 'weighted-average-with-expertise', * privacyPreservation: {
+ * enabled: true,
+ * method: 'differential-privacy', * epsilonBudget: 0.1
  *},
- *   realTimeSync:{
- *     enabled:true,
- *     syncInterval:1000, // 1 second
- *     conflictResolution:'expertise-weighted');
+ * realTimeSync: {
+ * enabled: true,
+ * syncInterval: 1000, // 1 second
+ * conflictResolution: 'expertise-weighted');
  *}
  *});
  *
  * // Knowledge swarm for collective intelligence
  * const knowledgeSwarm = new KnowledgeSwarm({
- *   swarmSize:50,
- *   specializations:[
- *     'natural-language-processing', *     'computer-vision', *     'reinforcement-learning', *     'knowledge-graphs', *     'semantic-reasoning');
+ * swarmSize: 50,
+ * specializations: [
+ * 'natural-language-processing', * 'computer-vision', * 'reinforcement-learning', * 'knowledge-graphs', * 'semantic-reasoning');
  *],
- *   coordination:{
- *     consensusAlgorithm: 'practical-byzantine-fault-tolerance', *     leaderElection: 'expertise-based', *     taskDistribution:'capability-aware');
+ * coordination: {
+ * consensusAlgorithm: 'practical-byzantine-fault-tolerance', * leaderElection: 'expertise-based', * taskDistribution: 'capability-aware');
  *}
  *});
  *
  * // Cross-agent knowledge integration
  * const integration = new CrossAgentKnowledgeIntegration({
- *   enableCrossDomainTransfer:true,
- *   knowledgeValidation: 'peer-review-with-ai', *   transferEfficiencyThreshold:0.8,
- *   integration:{
- *     factIntegration:{
- *       enabled:true,
- *       knowledgeSwarmIntegration:true,
- *       realTimeFactChecking:true
+ * enableCrossDomainTransfer: true,
+ * knowledgeValidation: 'peer-review-with-ai', * transferEfficiencyThreshold: 0.8,
+ * integration: {
+ * factIntegration: {
+ * enabled: true,
+ * knowledgeSwarmIntegration: true,
+ * realTimeFactChecking: true
  *},
- *     ragIntegration:{
- *       enabled:true,
- *       vectorStoreIntegration:true,
- *       semanticIndexing:true
+ * ragIntegration: {
+ * enabled: true,
+ * vectorStoreIntegration: true,
+ * semanticIndexing: true
  *}
  *}
  *});
  *
  * // Continuous learning session
  * const learningSession = await knowledgeSync.createContinuousLearningSession({
- *   domain: 'multi-modal-ai', *   participants:await knowledgeSwarm.getSpecialists(['nlp',    'cv',    'kg']),
- *   objectives:{
- *     accuracyTarget:0.95,
- *     convergenceTime:3600000, // 1 hour
- *     knowledgeRetention:0.9
+ * domain: 'multi-modal-ai', * participants: await knowledgeSwarm.getSpecialists(['nlp', 'cv', 'kg']),
+ * objectives: {
+ * accuracyTarget: 0.95,
+ * convergenceTime: 3600000, // 1 hour
+ * knowledgeRetention: 0.9
  *},
- *   constraints:{
- *     privacyBudget:0.05,
- *     computeBudget: '100 GPU-hours', *     networkBandwidth:'1Gbps');
+ * constraints: {
+ * privacyBudget: 0.05,
+ * computeBudget: '100 GPU-hours', * networkBandwidth: '1Gbps');
  *}
  *});
  *
  * // Execute with real-time monitoring
  * const result = await learningSession.executeWithMonitoring({
- *   monitoringInterval:5000, // 5 seconds
- *   adaptiveLearningRate:true,
- *   earlyStoppingEnabled:true
+ * monitoringInterval: 5000, // 5 seconds
+ * adaptiveLearningRate: true,
+ * earlyStoppingEnabled: true
  *});
  *
  * logger.info('Continuous Learning Results: ', {
-'    ') *   finalAccuracy:result.accuracy,
- *   convergenceTime:result.convergenceTime,
- *   knowledgeTransferred:result.transferredBytes,
- *   participantContributions:result.contributions
+' ') * finalAccuracy: result.accuracy,
+ * convergenceTime: result.convergenceTime,
+ * knowledgeTransferred: result.transferredBytes,
+ * participantContributions: result.contributions
  *});
- * ````
+ * ```
  *
  * @example Advanced Knowledge Analytics and Insights
- * ```typescript`
+ * ``typescript`
  * import {
- *   KnowledgeValidator,
- *   PerformanceOptimizer,
- *   IntelligenceCoordinationSystem
+ * KnowledgeValidator,
+ * PerformanceOptimizer,
+ * IntelligenceCoordinationSystem
  *} from '@claude-zen/knowledge';
  *
  * // Create advanced knowledge analytics system
  * const analytics = new KnowledgeValidator({
- *   validationRules:[
- *     'consistency',    'accuracy',    'relevance',    'freshness', *     'completeness',    'trustworthiness',    'citations');
+ * validationRules: [
+ * 'consistency', 'accuracy', 'relevance', 'freshness', * 'completeness', 'trustworthiness', 'citations');
  *],
- *   qualityThreshold:0.9,
- *   automaticPruning:true,
- *   analytics:{
- *     realTimeScoring:true,
- *     trendAnalysis:true,
- *     predictiveQuality:true,
- *     anomalyDetection:true
+ * qualityThreshold: 0.9,
+ * automaticPruning: true,
+ * analytics: {
+ * realTimeScoring: true,
+ * trendAnalysis: true,
+ * predictiveQuality: true,
+ * anomalyDetection: true
  *},
- *   reporting:{
- *     dashboards:['quality-overview',    'knowledge-gaps',    'contributor-metrics'],
- *     alerts:{
- *       qualityDegradation:true,
- *       knowledgeGaps:true,
- *       expertiseImbalance:true
+ * reporting: {
+ * dashboards: ['quality-overview', 'knowledge-gaps', 'contributor-metrics'],
+ * alerts: {
+ * qualityDegradation: true,
+ * knowledgeGaps: true,
+ * expertiseImbalance: true
  *}
  *}
  *});
  *
  * // Performance optimization with intelligent caching
  * const perfOptimizer = new PerformanceOptimizer({
- *   knowledgeCaching:{
- *     strategy: 'adaptive-lru-with-semantic-clustering', *     size: '50GB', *     ttl:7200000, // 2 hours
- *     prefetchingEnabled:true,
- *     compressionRatio:0.3
+ * knowledgeCaching: {
+ * strategy: 'adaptive-lru-with-semantic-clustering', * size: '50GB', * ttl: 7200000, // 2 hours
+ * prefetchingEnabled: true,
+ * compressionRatio: 0.3
  *},
- *   queryOptimization:{
- *     enableSemanticIndexing:true,
- *     parallelQueryExecution:true,
- *     adaptiveQueryPlanning:true,
- *     resultCaching:true
+ * queryOptimization: {
+ * enableSemanticIndexing: true,
+ * parallelQueryExecution: true,
+ * adaptiveQueryPlanning: true,
+ * resultCaching: true
  *},
- *   networkOptimization:{
- *     contentDistributionNetwork:true,
- *     edgeCaching:true,
- *     bandwidthOptimization:true
+ * networkOptimization: {
+ * contentDistributionNetwork: true,
+ * edgeCaching: true,
+ * bandwidthOptimization: true
  *}
  *});
  *
  * // Intelligence coordination for expert discovery
  * const intelligenceCoord = new IntelligenceCoordinationSystem({
- *   expertiseDiscovery:{
- *     algorithm: 'graph-based-clustering', *     updateFrequency: 'real-time', *     confidenceThreshold:0.8
+ * expertiseDiscovery: {
+ * algorithm: 'graph-based-clustering', * updateFrequency: 'real-time', * confidenceThreshold: 0.8
  *},
- *   specializationEmergence:{
- *     enabled:true,
- *     detectionWindow:604800000, // 1 week
- *     significanceThreshold:0.7
+ * specializationEmergence: {
+ * enabled: true,
+ * detectionWindow: 604800000, // 1 week
+ * significanceThreshold: 0.7
  *},
- *   routingOptimization:{
- *     strategy: 'multi-objective-optimization', *     objectives:['expertise-match',    'load-balance',    'latency'],
- *     weights:[0.5, 0.3, 0.2]
+ * routingOptimization: {
+ * strategy: 'multi-objective-optimization', * objectives: ['expertise-match', 'load-balance', 'latency'],
+ * weights: [0.5, 0.3, 0.2]
  *}
  *});
  *
  * // Comprehensive knowledge insights generation
  * const insights = await analytics.generateComprehensiveInsights({
- *   timeRange: '30d', *   domains:['ai-research',    'software-engineering',    'business-strategy'],
- *   includeMetrics:{
- *     qualityTrends:true,
- *     expertiseMapping:true,
- *     knowledgeFlows:true,
- *     performanceMetrics:true,
- *     predictionAccuracy:true
+ * timeRange: '30d', * domains: ['ai-research', 'software-engineering', 'business-strategy'],
+ * includeMetrics: {
+ * qualityTrends: true,
+ * expertiseMapping: true,
+ * knowledgeFlows: true,
+ * performanceMetrics: true,
+ * predictionAccuracy: true
  *},
- *   analysis:{
- *     gapAnalysis:true,
- *     redundancyDetection:true,
- *     expertiseImbalance:true,
- *     emergingTopics:true,
- *     crossDomainOpportunities:true
+ * analysis: {
+ * gapAnalysis: true,
+ * redundancyDetection: true,
+ * expertiseImbalance: true,
+ * emergingTopics: true,
+ * crossDomainOpportunities: true
  *}
  *});
  *
  * logger.info('Knowledge System Insights: ', {
-'    ') *   overallQualityScore:insights.quality.overall,
- *   knowledgeGaps:insights.gaps.length,
- *   expertiseDistribution:insights.expertise.distribution,
- *   performanceMetrics:{
- *     averageQueryLatency:insights.performance.queryLatency,
- *     cacheHitRatio:insights.performance.cacheHitRatio,
- *     knowledgeUtilization:insights.performance.utilization
+' ') * overallQualityScore: insights.quality.overall,
+ * knowledgeGaps: insights.gaps.length,
+ * expertiseDistribution: insights.expertise.distribution,
+ * performanceMetrics: {
+ * averageQueryLatency: insights.performance.queryLatency,
+ * cacheHitRatio: insights.performance.cacheHitRatio,
+ * knowledgeUtilization: insights.performance.utilization
  *},
- *   recommendations:insights.recommendations,
- *   emergingTrends:insights.trends.emerging
+ * recommendations: insights.recommendations,
+ * emergingTrends: insights.trends.emerging
  *});
- * ````
+ * ```
  *
  * @example Knowledge Graph Construction and Reasoning
- * ```typescript`
+ * ``typescript`
  * import {
- *   KnowledgeSwarm,
- *   ProjectContextAnalyzer,
- *   ReasoningEngine
+ * KnowledgeSwarm,
+ * ProjectContextAnalyzer,
+ * ReasoningEngine
  *} from '@claude-zen/knowledge';
  *
  * // Create knowledge graph construction system
  * const knowledgeGraphBuilder = new KnowledgeSwarm({
- *   swarmSize:20,
- *   specializations:[
- *     'entity-extraction', *     'relation-discovery', *     'semantic-linking', *     'ontology-alignment', *     'knowledge-validation');
+ * swarmSize: 20,
+ * specializations: [
+ * 'entity-extraction', * 'relation-discovery', * 'semantic-linking', * 'ontology-alignment', * 'knowledge-validation');
  *],
- *   graphConstruction:{
- *     strategy: 'incremental-distributed', *     consistencyLevel: 'eventual', *     conflictResolution:'consensus-based');
+ * graphConstruction: {
+ * strategy: 'incremental-distributed', * consistencyLevel: 'eventual', * conflictResolution: 'consensus-based');
  *},
- *   reasoning:{
- *     inferenceEngine: 'probabilistic-logic', *     uncertaintyHandling: 'bayesian', *     temporalReasoning:true
+ * reasoning: {
+ * inferenceEngine: 'probabilistic-logic', * uncertaintyHandling: 'bayesian', * temporalReasoning: true
  *}
  *});
  *
  * // Project context analyzer for domain understanding
  * const contextAnalyzer = new ProjectContextAnalyzer({
- *   analysisDepth: 'comprehensive', *   domainSpecialization:{
- *     enabled:true,
- *     domains:['technology',    'business',    'science',    'healthcare'],
- *     adaptiveSpecialization:true
+ * analysisDepth: 'comprehensive', * domainSpecialization: {
+ * enabled: true,
+ * domains: ['technology', 'business', 'science', 'healthcare'],
+ * adaptiveSpecialization: true
  *},
- *   contextualEmbedding:{
- *     model: 'transformer-xl', *     dimensions:2048,
- *     contextWindow:32768
+ * contextualEmbedding: {
+ * model: 'transformer-xl', * dimensions: 2048,
+ * contextWindow: 32768
  *}
  *});
  *
  * // Collaborative reasoning for complex problem solving
  * const reasoningEngine = new ReasoningEngine({
- *   reasoningStrategies:[
- *     'deductive-reasoning', *     'inductive-reasoning', *     'abductive-reasoning', *     'analogical-reasoning', *     'causal-reasoning');
+ * reasoningStrategies: [
+ * 'deductive-reasoning', * 'inductive-reasoning', * 'abductive-reasoning', * 'analogical-reasoning', * 'causal-reasoning');
  *],
- *   collaboration:{
- *     consensusThreshold:0.85,
- *     diversityBonus:0.1,
- *     expertiseWeighting:true
+ * collaboration: {
+ * consensusThreshold: 0.85,
+ * diversityBonus: 0.1,
+ * expertiseWeighting: true
  *},
- *   problemDecomposition:{
- *     enabled:true,
- *     maxDepth:5,
- *     parallelSolving:true
+ * problemDecomposition: {
+ * enabled: true,
+ * maxDepth: 5,
+ * parallelSolving: true
  *}
  *});
  *
  * // Build comprehensive knowledge graph
  * const knowledgeGraph = await knowledgeGraphBuilder.buildKnowledgeGraph({
- *   dataSources:[
- *     'scientific-papers', *     'technical-documentation', *     'code-repositories', *     'expert-interviews', *     'structured-databases');
+ * dataSources: [
+ * 'scientific-papers', * 'technical-documentation', * 'code-repositories', * 'expert-interviews', * 'structured-databases');
  *],
- *   domain: 'artificial-intelligence', *   scope:{
- *     temporalRange: '2020-2024', *     geographicalScope: 'global', *     languageScope:['en',    'zh',    'es',    'fr',    'de']') *},
- *   construction:{
- *     entityExtraction:{
- *       precision:0.95,
- *       recall:0.90,
- *       supportedTypes:['person',    'organization',    'concept',    'method',    'tool']') *},
- *     relationExtraction:{
- *       confidenceThreshold:0.8,
- *       supportedRelations:['influences',    'derives-from',    'applies-to',    'contradicts']') *}
+ * domain: 'artificial-intelligence', * scope: {
+ * temporalRange: '2020-2024', * geographicalScope: 'global', * languageScope: ['en', 'zh', 'es', 'fr', 'de']') *},
+ * construction: {
+ * entityExtraction: {
+ * precision: 0.95,
+ * recall: 0.90,
+ * supportedTypes: ['person', 'organization', 'concept', 'method', 'tool']') *},
+ * relationExtraction: {
+ * confidenceThreshold: 0.8,
+ * supportedRelations: ['influences', 'derives-from', 'applies-to', 'contradicts']') *}
  *}
  *});
  *
  * // Perform collaborative reasoning
  * const reasoningResult = await reasoningEngine.solveCollectively({
- *   problem:{
- *     description: 'Optimize distributed machine learning training efficiency', *     context:knowledgeGraph,
- *     constraints:{
- *       computeResources: 'limited', *       networkBandwidth: 'high-latency', *       dataPrivacy:'required');
+ * problem: {
+ * description: 'Optimize distributed machine learning training efficiency', * context: knowledgeGraph,
+ * constraints: {
+ * computeResources: 'limited', * networkBandwidth: 'high-latency', * dataPrivacy: 'required');
  *}
  *},
- *   collaboration:{
- *     maxParticipants:15,
- *     timeLimit:1800000, // 30 minutes
- *     qualityThreshold:0.9
+ * collaboration: {
+ * maxParticipants: 15,
+ * timeLimit: 1800000, // 30 minutes
+ * qualityThreshold: 0.9
  *}
  *});
  *
  * logger.info('Knowledge Graph Reasoning Results: ', {
-'    ') *   graphStatistics:{
- *     nodes:knowledgeGraph.nodeCount,
- *     edges:knowledgeGraph.edgeCount,
- *     domains:knowledgeGraph.domainCoverage
+' ') * graphStatistics: {
+ * nodes: knowledgeGraph.nodeCount,
+ * edges: knowledgeGraph.edgeCount,
+ * domains: knowledgeGraph.domainCoverage
  *},
- *   reasoningQuality:{
- *     consensus:reasoningResult.consensus,
- *     confidence:reasoningResult.confidence,
- *     novelty:reasoningResult.noveltyScore
+ * reasoningQuality: {
+ * consensus: reasoningResult.consensus,
+ * confidence: reasoningResult.confidence,
+ * novelty: reasoningResult.noveltyScore
  *},
- *   solution:{
- *     approaches:reasoningResult.approaches.length,
- *     feasibility:reasoningResult.feasibilityScore,
- *     recommendations:reasoningResult.recommendations
+ * solution: {
+ * approaches: reasoningResult.approaches.length,
+ * feasibility: reasoningResult.feasibilityScore,
+ * recommendations: reasoningResult.recommendations
  *}
  *});
- * ````
+ * ```
  *
  * @author Claude Code Zen Team
  * @since 1.0.0
  * @version 1.0.0
  *
- * @see {@link https://github.com/zen-neural/claude-code-zen} Claude Code Zen Documentation
+ * @see {@link https: //github.com/zen-neural/claude-code-zen} Claude Code Zen Documentation
  * @see {@link ./src/main} Main Implementation
  *
  * @requires @claude-zen/foundation - Core utilities and infrastructure
@@ -520,22 +520,22 @@
  */
 
 export type {
-  CollaborativeSolution,
-  ConsensusResult,
-  DistributedReasoningResult,
-  Problem,
-  ProblemDecomposition,
+ CollaborativeSolution,
+ ConsensusResult,
+ DistributedReasoningResult,
+ Problem,
+ ProblemDecomposition,
 } from './src/collaborative-reasoning-engine';
 export { CollaborativeReasoningEngine, CollaborativeReasoningEngine as ReasoningEngine} from './src/collaborative-reasoning-engine';
 // Collective Intelligence Types
 export type {
-  AgentContribution,
-  AggregatedKnowledge,
-  CollectiveDecision,
-  DecisionContext,
-  KnowledgeExchangeProtocol,
-  KnowledgePacket,
-  WorkDistributionResult,
+ AgentContribution,
+ AggregatedKnowledge,
+ CollectiveDecision,
+ DecisionContext,
+ KnowledgeExchangeProtocol,
+ KnowledgePacket,
+ WorkDistributionResult,
 } from './src/collective-intelligence-coordinator';
 // Core Collective Intelligence Systems
 export { CollectiveIntelligenceCoordinator, CollectiveIntelligenceCoordinator as IntelligenceHub} from './src/collective-intelligence-coordinator';
@@ -543,94 +543,94 @@ export { CollectiveIntelligenceCoordinator, CollectiveIntelligenceCoordinator as
 // Type Definitions - Result Types
 // Type Definitions - Request Types
 export type {
-  CollectiveKnowledgeResponse,
-  CollectiveProcessingOptions,
-  ComponentHealth,
-  CrossAgentKnowledgeConfig,
-  CrossDomainTransferRequest,
-  CrossDomainTransferResult,
-  DistributedLearningRequest,
-  DistributedLearningResult,
-  FACTIntegrationConfig,
-  IntegrationConfig,
-  IntegrationMetrics,
-  IntegrationStatus,
-  KnowledgeProcessingResult,
-  KnowledgeQuery,
-  RAGIntegrationConfig,
-  SystemStatus,
+ CollectiveKnowledgeResponse,
+ CollectiveProcessingOptions,
+ ComponentHealth,
+ CrossAgentKnowledgeConfig,
+ CrossDomainTransferRequest,
+ CrossDomainTransferResult,
+ DistributedLearningRequest,
+ DistributedLearningResult,
+ FACTIntegrationConfig,
+ IntegrationConfig,
+ IntegrationMetrics,
+ IntegrationStatus,
+ KnowledgeProcessingResult,
+ KnowledgeQuery,
+ RAGIntegrationConfig,
+ SystemStatus,
 } from './src/cross-agent-knowledge-integration';
 // Main Integration System
 export {
-  CrossAgentKnowledgeIntegration,
-  createCrossAgentKnowledgeIntegration,
-  getDefaultConfig as getDefaultKnowledgeConfig,
+ CrossAgentKnowledgeIntegration,
+ createCrossAgentKnowledgeIntegration,
+ getDefaultConfig as getDefaultKnowledgeConfig,
 } from './src/cross-agent-knowledge-integration';
 // Distributed Learning Types
 export type {
-  CollectiveExperienceAggregation,
-  FederatedLearningRound,
-  KnowledgeTransferResult,
-  ModelSnapshot,
-  ModelSynchronizationResult,
+ CollectiveExperienceAggregation,
+ FederatedLearningRound,
+ KnowledgeTransferResult,
+ ModelSnapshot,
+ ModelSynchronizationResult,
 } from './src/distributed-learning-system';
 export { DistributedLearningSystem} from './src/distributed-learning-system';
 export type { KnowledgeErrorContext} from './src/errors';
 // Knowledge Domain Error Classes
 export {
-  BaseKnowledgeError,
-  createKnowledgeError,
-  FACTError,
-  FACTGatheringError,
-  FACTProcessingError,
-  FACTStorageError,
-  getKnowledgeErrorSeverity,
-  isRecoverableKnowledgeError,
-  RAGEmbeddingError,
-  RAGError,
-  RAGRetrievalError,
-  RAGVectorError,
+ BaseKnowledgeError,
+ createKnowledgeError,
+ FACTError,
+ FACTGatheringError,
+ FACTProcessingError,
+ FACTStorageError,
+ getKnowledgeErrorSeverity,
+ isRecoverableKnowledgeError,
+ RAGEmbeddingError,
+ RAGError,
+ RAGRetrievalError,
+ RAGVectorError,
 } from './src/errors';
 // Direct error class exports for easy access
 export * from './src/errors.js';
 // Intelligence Coordination Types
 export type {
-  CrossDomainTransferResult as IntelligenceTransferResult,
-  ExpertiseDiscoveryResult,
-  ExpertiseProfile,
-  RoutingResult,
-  SpecializationEmergenceResult,
+ CrossDomainTransferResult as IntelligenceTransferResult,
+ ExpertiseDiscoveryResult,
+ ExpertiseProfile,
+ RoutingResult,
+ SpecializationEmergenceResult,
 } from './src/intelligence-coordination-system';
 export { IntelligenceCoordinationSystem} from './src/intelligence-coordination-system';
 export { KnowledgeClient} from './src/knowledge-client';
 // export { KnowledgeProcessor} from './src/knowledge-processor';
 // Quality Management Types
 export type {
-  ContributionRecord,
-  KnowledgeItem,
-  QualityMonitoringReport,
-  ReputationScore,
-  ReviewResult,
-  ValidationResult,
+ ContributionRecord,
+ KnowledgeItem,
+ QualityMonitoringReport,
+ ReputationScore,
+ ReviewResult,
+ ValidationResult,
 } from './src/knowledge-quality-management';
 export { KnowledgeQualityManagementSystem, KnowledgeQualityManagementSystem as KnowledgeValidator} from './src/knowledge-quality-management';
 // export { KnowledgeStorage} from './src/knowledge-storage';
 // Existing Knowledge System Types
 export type {
-  KnowledgeSwarmConfig,
-  SwarmAgent,
-  SwarmQuery,
-  SwarmResult,
+ KnowledgeSwarmConfig,
+ SwarmAgent,
+ SwarmQuery,
+ SwarmResult,
 } from './src/knowledge-swarm';
 // Existing Knowledge Systems (for integration)
 export { KnowledgeSwarm} from './src/knowledge-swarm';
 // Performance Optimization Types
 export type {
-  CacheOptimizationResult,
-  KnowledgeRequest,
-  KnowledgeSharingOptimization,
-  KnowledgeSharingRequest,
-  OptimizedKnowledgeResponse,
+ CacheOptimizationResult,
+ KnowledgeRequest,
+ KnowledgeSharingOptimization,
+ KnowledgeSharingRequest,
+ OptimizedKnowledgeResponse,
 } from './src/performance-optimization-system';
 export { PerformanceOptimizationSystem, PerformanceOptimizationSystem as PerformanceOptimizer} from './src/performance-optimization-system';
 export { ProjectContextAnalyzer} from './src/project-context-analyzer';
@@ -651,32 +651,31 @@ export { VectorRAGBackend, type VectorRAGConfig, type VectorKnowledgeEntry, type
  * @param eventBus
  * @example
  */
-export async function createKnowledgeSharingSystem(
-  config?:unknown,
-  logger?:unknown,
-  eventBus?:unknown
-):Promise<unknown> {
-  const { CrossAgentKnowledgeIntegration, getDefaultConfig} = await import(
-    './cross-agent-knowledge-integration');
+export async function createKnowledgeSharingSystem(config?:unknown,
+ logger?:unknown,
+ eventBus?:unknown
+): Promise<unknown> {
+ const { CrossAgentKnowledgeIntegration, getDefaultConfig} = await import(
+ './cross-agent-knowledge-integration');
 
-  // Use provided config or create default
-  const finalConfig = config
-    ? { ...getDefaultConfig(), ...config}
-    :getDefaultConfig();
+ // Use provided config or create default
+ const finalConfig = config
+ ? { ...getDefaultConfig(), ...config}
+ :getDefaultConfig();
 
-  // Create logger and event bus if not provided
-  const finalLogger = logger || console;
-  const finalEventBus =
-    eventBus || new (await import('node:events')).EventEmitter();
+ // Create logger and event bus if not provided
+ const finalLogger = logger || console;
+ const finalEventBus =
+ eventBus || new (await import('node: events')).EventEmitter();
 
-  const system = new CrossAgentKnowledgeIntegration(
-    finalConfig,
-    finalLogger,
-    finalEventBus
-  );
-  await system.initialize();
+ const system = new CrossAgentKnowledgeIntegration(
+ finalConfig,
+ finalLogger,
+ finalEventBus
+ );
+ await system.initialize();
 
-  return system;
+ return system;
 }
 
 /**
@@ -687,8 +686,8 @@ export async function createKnowledgeSharingSystem(
  * @example
  */
 export async function createKnowledgeSwarm(config?:unknown): Promise<unknown> {
-  const { initializeFACTSwarm} = await import('./knowledge-swarm');
-  return initializeFACTSwarm(config);
+ const { initializeFACTSwarm} = await import('./knowledge-swarm');
+ return initializeFACTSwarm(config);
 }
 
 /**
@@ -701,52 +700,52 @@ export async function createKnowledgeSwarm(config?:unknown): Promise<unknown> {
  * @param config
  * @example
  */
-export function validateKnowledgeConfig(config:unknown): {
-  isValid:boolean;
-  errors:string[];
-  warnings:string[];
+export function validateKnowledgeConfig(config: unknown): {
+ isValid: boolean;
+ errors: string[];
+ warnings: string[];
 } {
-  const errors:string[] = [];
-  const warnings:string[] = [];
+ const errors: string[] = [];
+ const warnings: string[] = [];
 
-  // Validate collective intelligence config
-  if (!config?.collectiveIntelligence) {
-    errors.push('Missing collectiveIntelligence configuration');
+ // Validate collective intelligence config
+ if (!config?.collectiveIntelligence) {
+ errors.push('Missing collectiveIntelligence configuration');
 }
 
-  // Validate integration config
-  if (config?.integration) {
-    if (
-      config?.integration?.factIntegration?.enabled &&
-      !config?.integration?.factIntegration?.knowledgeSwarmIntegration
-    ) {
-      warnings.push(
-        'FACT integration enabled but knowledge swarm integration disabled')      );
+ // Validate integration config
+ if (config?.integration) {
+ if (
+ config?.integration?.factIntegration?.enabled &&
+ !config?.integration?.factIntegration?.knowledgeSwarmIntegration
+ ) {
+ warnings.push(
+ 'FACT integration enabled but knowledge swarm integration disabled') );
 }
 
-    if (
-      config?.integration?.ragIntegration?.enabled &&
-      !config?.integration?.ragIntegration?.vectorStoreIntegration
-    ) {
-      warnings.push(
-        'RAG integration enabled but vector store integration disabled')      );
+ if (
+ config?.integration?.ragIntegration?.enabled &&
+ !config?.integration?.ragIntegration?.vectorStoreIntegration
+ ) {
+ warnings.push(
+ 'RAG integration enabled but vector store integration disabled') );
 }
 } else {
-    errors.push('Missing integration configuration');
+ errors.push('Missing integration configuration');
 }
 
-  // Validate distributed learning config
-  if (config?.distributedLearning?.federatedConfig) {
-    const fedConfig = config?.distributedLearning?.federatedConfig;
-    if (fedConfig?.clientFraction > 1.0 || fedConfig?.clientFraction <= 0) {
-      errors.push('federatedConfig.clientFraction must be between 0 and 1');
+ // Validate distributed learning config
+ if (config?.distributedLearning?.federatedConfig) {
+ const fedConfig = config?.distributedLearning?.federatedConfig;
+ if (fedConfig?.clientFraction > 1.0 || fedConfig?.clientFraction <= 0) {
+ errors.push('federatedConfig.clientFraction must be between 0 and 1');
 }
 }
 
-  return {
-    isValid:errors.length === 0,
-    errors,
-    warnings,
+ return {
+ isValid: errors.length === 0,
+ errors,
+ warnings,
 };
 }
 
@@ -756,25 +755,25 @@ export function validateKnowledgeConfig(config:unknown): {
  * @param config
  * @example
  */
-export function getSystemCapabilities(config:unknown): {
-  collectiveIntelligence:boolean;
-  distributedLearning:boolean;
-  collaborativeReasoning:boolean;
-  crossDomainTransfer:boolean;
-  qualityManagement:boolean;
-  performanceOptimization:boolean;
-  factIntegration:boolean;
-  ragIntegration:boolean;
+export function getSystemCapabilities(config: unknown): {
+ collectiveIntelligence: boolean;
+ distributedLearning: boolean;
+ collaborativeReasoning: boolean;
+ crossDomainTransfer: boolean;
+ qualityManagement: boolean;
+ performanceOptimization: boolean;
+ factIntegration: boolean;
+ ragIntegration: boolean;
 } {
-  return {
-    collectiveIntelligence:!!config?.collectiveIntelligence,
-    distributedLearning:!!config?.distributedLearning,
-    collaborativeReasoning:!!config?.collaborativeReasoning,
-    crossDomainTransfer:!!config?.intelligenceCoordination,
-    qualityManagement:!!config?.qualityManagement,
-    performanceOptimization:!!config?.performanceOptimization,
-    factIntegration:config?.integration?.factIntegration?.enabled,
-    ragIntegration:config?.integration?.ragIntegration?.enabled,
+ return {
+ collectiveIntelligence: !!config?.collectiveIntelligence,
+ distributedLearning: !!config?.distributedLearning,
+ collaborativeReasoning: !!config?.collaborativeReasoning,
+ crossDomainTransfer: !!config?.intelligenceCoordination,
+ qualityManagement: !!config?.qualityManagement,
+ performanceOptimization: !!config?.performanceOptimization,
+ factIntegration: config?.integration?.factIntegration?.enabled,
+ ragIntegration: config?.integration?.ragIntegration?.enabled,
 };
 }
 
@@ -784,19 +783,19 @@ export function getSystemCapabilities(config:unknown): {
  * @example
  */
 export function createTestConfig():unknown {
-  const defaultConfig = {} as any;
+ const defaultConfig = {} as any;
 
-  return {
-    ...defaultConfig,
-    integration:{
-      ...defaultConfig?.integration,
-      factIntegration:{
-        ...defaultConfig?.integration?.factIntegration,
-        enabled:false, // Disable for testing
+ return {
+ ...defaultConfig,
+ integration: {
+ ...defaultConfig?.integration,
+ factIntegration: {
+ ...defaultConfig?.integration?.factIntegration,
+ enabled: false, // Disable for testing
 },
-      ragIntegration:{
-        ...defaultConfig?.integration?.ragIntegration,
-        enabled:false, // Disable for testing
+ ragIntegration: {
+ ...defaultConfig?.integration?.ragIntegration,
+ enabled: false, // Disable for testing
 },
 },
 };
@@ -813,32 +812,32 @@ export function createTestConfig():unknown {
  * @example
  */
 export async function ensureStorageDirectory(
-  basePath:string = process.cwd()
-):Promise<{
-  swarmDir:string;
-  hiveMindDir:string;
-  knowledgeDir:string;
-  cacheDir:string;
+ basePath: string = process.cwd()
+): Promise<{
+ swarmDir: string;
+ hiveMindDir: string;
+ knowledgeDir: string;
+ cacheDir: string;
 }> {
-  const path = await import('node:path');
-  const fs = await import('node:fs/promises');
+ const path = await import('node: path');
+ const fs = await import('node: fs/promises');
 
-  const swarmDir = path.join(basePath, '.swarm');
-  const hiveMindDir = path.join(basePath, '.hive-mind');
-  const knowledgeDir = path.join(basePath, '.knowledge');
-  const cacheDir = path.join(basePath, '.cache',    'knowledge');
+ const swarmDir = path.join(basePath, '.swarm');
+ const hiveMindDir = path.join(basePath, '.hive-mind');
+ const knowledgeDir = path.join(basePath, '.knowledge');
+ const cacheDir = path.join(basePath, '.cache', 'knowledge');
 
-  // Create directories if they don't exist
-  await fs.mkdir(swarmDir, { recursive:true});
-  await fs.mkdir(hiveMindDir, { recursive:true});
-  await fs.mkdir(knowledgeDir, { recursive:true});
-  await fs.mkdir(cacheDir, { recursive:true});
+ // Create directories if they don't exist
+ await fs.mkdir(swarmDir, { recursive: true});
+ await fs.mkdir(hiveMindDir, { recursive: true});
+ await fs.mkdir(knowledgeDir, { recursive: true});
+ await fs.mkdir(cacheDir, { recursive: true});
 
-  return {
-    swarmDir,
-    hiveMindDir,
-    knowledgeDir,
-    cacheDir,
+ return {
+ swarmDir,
+ hiveMindDir,
+ knowledgeDir,
+ cacheDir,
 };
 }
 
@@ -848,23 +847,23 @@ export async function ensureStorageDirectory(
  * @param basePath
  * @example
  */
-export function getKnowledgeStoragePaths(basePath:string = process.cwd()): {
-  collective:string;
-  distributed:string;
-  collaborative:string;
-  intelligence:string;
-  quality:string;
-  performance:string;
+export function getKnowledgeStoragePaths(basePath: string = process.cwd()): {
+ collective: string;
+ distributed: string;
+ collaborative: string;
+ intelligence: string;
+ quality: string;
+ performance: string;
 } {
-  const path = require('node:path');
+ const path = require('node: path');
 
-  return {
-    collective:path.join(basePath, '.hive-mind',    'collective-intelligence'),
-    distributed:path.join(basePath, '.swarm',    'distributed-learning'),
-    collaborative:path.join(basePath, '.hive-mind',    'collaborative-reasoning'),
-    intelligence:path.join(basePath, '.swarm',    'intelligence-coordination'),
-    quality:path.join(basePath, '.knowledge',    'quality-management'),
-    performance:path.join(basePath, '.cache',    'performance-optimization'),
+ return {
+ collective: path.join(basePath, '.hive-mind', 'collective-intelligence'),
+ distributed: path.join(basePath, '.swarm', 'distributed-learning'),
+ collaborative: path.join(basePath, '.hive-mind', 'collaborative-reasoning'),
+ intelligence: path.join(basePath, '.swarm', 'intelligence-coordination'),
+ quality: path.join(basePath, '.knowledge', 'quality-management'),
+ performance: path.join(basePath, '.cache', 'performance-optimization'),
 };
 }
 
@@ -884,92 +883,90 @@ export function getKnowledgeStoragePaths(basePath:string = process.cwd()): {
  * so strategic facades don't need to translate function names.') */
 
 // Core knowledge system access with lazy loading
-let knowledgeSystemInstance:any = null;
+let knowledgeSystemInstance: any = null;
 
-export async function getKnowledgeSystemAccess():Promise<any> {
-  if (!knowledgeSystemInstance) {
-    const { CollectiveIntelligenceCoordinator} = await import(
-      './src/collective-intelligence-coordinator');
-    knowledgeSystemInstance = new CollectiveIntelligenceCoordinator({
-      maxAgents:10,
-      consensusThreshold:0.8,
-      enableDistributedLearning:true,
+export async function getKnowledgeSystemAccess(): Promise<any> {
+ if (!knowledgeSystemInstance) {
+ const { CollectiveIntelligenceCoordinator} = await import(
+ './src/collective-intelligence-coordinator');
+ knowledgeSystemInstance = new CollectiveIntelligenceCoordinator({
+ maxAgents: 10,
+ consensusThreshold: 0.8,
+ enableDistributedLearning: true,
 });
-    await knowledgeSystemInstance.initialize();
+ await knowledgeSystemInstance.initialize();
 }
-  return knowledgeSystemInstance;
+ return knowledgeSystemInstance;
 }
 
 export async function getIntelligenceHub(config?:any): Promise<any> {
-  const knowledgeSystem = await getKnowledgeSystemAccess();
-  return knowledgeSystem.createIntelligenceHub(config);
+ const knowledgeSystem = await getKnowledgeSystemAccess();
+ return knowledgeSystem.createIntelligenceHub(config);
 }
 
-export async function getCollectiveIntelligenceCoordinator(
-  config?:any
-):Promise<any> {
-  const { CollectiveIntelligenceCoordinator} = await import(
-    './src/collective-intelligence-coordinator');
-  return new CollectiveIntelligenceCoordinator(config);
+export async function getCollectiveIntelligenceCoordinator(config?:any
+): Promise<any> {
+ const { CollectiveIntelligenceCoordinator} = await import(
+ './src/collective-intelligence-coordinator');
+ return new CollectiveIntelligenceCoordinator(config);
 }
 
-export async function getCrossAgentKnowledgeIntegration(
-  config?:any
-):Promise<any> {
-  const { CrossAgentKnowledgeIntegration} = await import(
-    './src/cross-agent-knowledge-integration');
-  return new CrossAgentKnowledgeIntegration(config);
+export async function getCrossAgentKnowledgeIntegration(config?:any
+): Promise<any> {
+ const { CrossAgentKnowledgeIntegration} = await import(
+ './src/cross-agent-knowledge-integration');
+ return new CrossAgentKnowledgeIntegration(config);
 }
 
 export async function getDistributedLearningSystem(config?:any): Promise<any> {
-  const { DistributedLearningSystem} = await import(
-    './src/distributed-learning-system');
-  return new DistributedLearningSystem(config);
+ const { DistributedLearningSystem} = await import(
+ './src/distributed-learning-system');
+ return new DistributedLearningSystem(config);
 }
 
 export async function getKnowledgeValidator(config?:any): Promise<any> {
-  const { KnowledgeQualityManagementSystem} = await import(
-    './src/knowledge-quality-management');
-  return new KnowledgeQualityManagementSystem(config);
+ const { KnowledgeQualityManagementSystem} = await import(
+ './src/knowledge-quality-management');
+ return new KnowledgeQualityManagementSystem(config);
 }
 
 export async function getPerformanceOptimizer(config?:any): Promise<any> {
-  const { PerformanceOptimizationSystem} = await import(
-    './src/performance-optimization-system');
-  return new PerformanceOptimizationSystem(config);
+ const { PerformanceOptimizationSystem} = await import(
+ './src/performance-optimization-system');
+ return new PerformanceOptimizationSystem(config);
 }
 
 export async function getKnowledgeSwarm(config?:any): Promise<any> {
-  const { KnowledgeSwarm} = await import('./src/knowledge-swarm');
-  return new KnowledgeSwarm(config);
+ const { KnowledgeSwarm} = await import('./src/knowledge-swarm');
+ return new KnowledgeSwarm(config);
 }
 
 export async function getReasoningEngine(config?:any): Promise<any> {
-  const { CollaborativeReasoningEngine} = await import(
-    './src/collaborative-reasoning-engine');
-  return new CollaborativeReasoningEngine(config);
+ const { CollaborativeReasoningEngine} = await import(
+ './src/collaborative-reasoning-engine');
+ return new CollaborativeReasoningEngine(config);
 }
 
 // Professional knowledge system object with proper naming (matches Storage/Telemetry patterns)
 export const knowledgeSystem = {
-  getAccess:getKnowledgeSystemAccess,
-  getIntelligenceHub,
-  getCollectiveCoordinator:getCollectiveIntelligenceCoordinator,
-  getCrossAgentIntegration:getCrossAgentKnowledgeIntegration,
-  getDistributedLearning:getDistributedLearningSystem,
-  getValidator:getKnowledgeValidator,
-  getPerformanceOptimizer,
-  getSwarm:getKnowledgeSwarm,
-  getReasoningEngine,
+ getAccess: getKnowledgeSystemAccess,
+ getIntelligenceHub,
+ getCollectiveCoordinator: getCollectiveIntelligenceCoordinator,
+ getCrossAgentIntegration: getCrossAgentKnowledgeIntegration,
+ getDistributedLearning: getDistributedLearningSystem,
+ getValidator: getKnowledgeValidator,
+ getPerformanceOptimizer,
+ getSwarm: getKnowledgeSwarm,
+ getReasoningEngine,
 };
 
 // Type definitions for external consumers
 export interface KnowledgeSystemConfig {
-  maxAgents?:number;
-  consensusThreshold?:number;
-  enableDistributedLearning?:boolean;
-  multiTenant?:{
-    enabled?:boolean;
-    isolation?:'strict' | ' moderate' | ' minimal';
+ maxAgents?:number;
+ consensusThreshold?:number;
+ enableDistributedLearning?:boolean;
+ multiTenant?:{
+ enabled?:boolean;
+ isolation?:'strict' | ' moderate' | ' minimal';
 };
 }
