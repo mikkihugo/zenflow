@@ -318,7 +318,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 			this.selectionHistory.push(finalSelection);
 
 			this.logger.info(
-				` Selected teleprompter:' + (finalSelection.selectedTeleprompter.name) + ' (confidence:${ + (finalSelection.confidence * 100).toFixed(1) + }%)',
+				`Selected teleprompter: ${finalSelection.selectedTeleprompter.name} (confidence: ${(finalSelection.confidence * 100).toFixed(1)}%)`
 			);
 
 			this.emit("teleprompter:selected", {
