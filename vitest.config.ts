@@ -20,7 +20,7 @@
  * @see {@link https://github.com/capricorn86/happy-dom} Happy-DOM Documentation
  *
  * @example
- * ```bash`
+ * '''bash'
  * # Run tests with this configuration
  * npm test
  *
@@ -29,7 +29,7 @@
  *
  * # Run specific test pattern
  * npm test -- --run coordination
- * ```
+ * '
  */
 
 import { resolve } from 'node:path';
@@ -51,12 +51,12 @@ import { defineConfig } from 'vitest/config';
  * @returns {import('vitest/config').UserConfig} Complete Vitest configuration object
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * // This config enables path aliases in tests:
  * import { CoreEngine} from '@core/engine';
  * import { MemoryStore} from '@memory/store';
  * import { NeuralNetwork} from '@neural/network';
- * ```
+ * '
  */
 export default defineConfig({
   test: {
@@ -381,10 +381,10 @@ export default defineConfig({
    * @see {@link https://vitest.dev/config/#resolve-alias} Vitest Alias Documentation
    *
    * @example
-   * ```typescript`
+   * '''typescript'
    * // Instead of:import { Engine} from '../../../core/engine';
    * import { Engine} from '@core/engine';
-   * ```
+   * `
    */
   resolve: {
     /**

@@ -5,7 +5,7 @@
  * Supports traces, metrics, and logs.
  */
 
-import { getLogger} from '@claude-zen/foundation/logging';
+import { getLogger} from '@claude-zen/foundation';
 import type { ExporterConfig, ExportResult, TelemetryData} from '../types.js';
 import type { BaseExporter} from './index.js';
 

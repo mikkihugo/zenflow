@@ -33,7 +33,7 @@ export class AutonomousOptimizationEngine {
     complexityEstimator = null;
     initialized = false;
     constructor() {
-        logger.info('🤖 Autonomous Optimization Engine created');
+        logger.info(' Autonomous Optimization Engine created');
         ')};
         /**
          * Initialize the autonomous engine
@@ -43,7 +43,7 @@ export class AutonomousOptimizationEngine {
         Promise < void  > {
             : .initialized, return: ,
             try: {
-                logger, : .info('🚀 Initializing Autonomous Optimization Engine...'), '): this.dspyBridge = dspyBridge || null,
+                logger, : .info(' Initializing Autonomous Optimization Engine...'), '): this.dspyBridge = dspyBridge || null,
                 // Initialize Smart ML Optimizer
                 this: .smartOptimizer = new SmartPromptOptimizer(),
                 await, this: .smartOptimizer.initialize(),
@@ -53,7 +53,7 @@ export class AutonomousOptimizationEngine {
                 // Initialize method performance tracking
                 this: .initializeMethodPerformance(),
                 this: .initialized = true,
-                logger, : .info('✅ Autonomous Optimization Engine initialized successfully'), ')} catch (error) {: logger.error('❌ Failed to initialize Autonomous Optimization Engine: ', '        error),
+                logger, : .info(' Autonomous Optimization Engine initialized successfully'), ')} catch (error) {: logger.error(' Failed to initialize Autonomous Optimization Engine: ', '        error),
                 throw: error
             }
         };
@@ -70,7 +70,7 @@ export class AutonomousOptimizationEngine {
             ')};
             const __startTime = Date.now();
             try {
-                logger.info(`🤖 Autonomous optimization for:"${context.task}"`);
+                logger.info(` Autonomous optimization for:"${context.task}"`);
                 `
 
       // 1. Estimate task complexity automatically
@@ -104,7 +104,7 @@ export class AutonomousOptimizationEngine {
             }
             // 2. Analyze context and decide best approach (enhanced with complexity)
             const selectedMethod = await this.selectOptimalMethod(context, complexityEstimate);
-            logger.info(`🎯 Autonomous decision:Using ${selectedMethod} method`);
+            logger.info(` Autonomous decision:Using ${selectedMethod} method`);
             `
 
       // 3. Execute optimization using selected method
@@ -153,7 +153,7 @@ export class AutonomousOptimizationEngine {
         }
         try { }
         catch (error) {
-            logger.error('❌ Autonomous optimization failed:', error);
+            logger.error(' Autonomous optimization failed:', error);
             ');
             // Fallback to simple optimization
             return {
@@ -196,7 +196,7 @@ export class AutonomousOptimizationEngine {
                 ;
         }
         catch (error) {
-            logger.error('❌ Failed to learn from feedback:', error);
+            logger.error(' Failed to learn from feedback:', error);
             ')};
         }
         /**
@@ -243,7 +243,7 @@ export class AutonomousOptimizationEngine {
         } `);`;
     }
     catch(error) {
-        logger.error('❌ Failed to record optimization result:', error);
+        logger.error(' Failed to record optimization result:', error);
         ')};
     }
     /**
@@ -291,8 +291,8 @@ export class AutonomousOptimizationEngine {
 }, config.evaluationInterval);
 }
 
-      logger.info('✅ Continuous optimization enabled successfully');')} catch (error) {
-      logger.error('❌ Failed to enable continuous optimization:', error);')      throw error;
+      logger.info(' Continuous optimization enabled successfully');')} catch (error) {
+      logger.error(' Failed to enable continuous optimization:', error);')      throw error;
 }
 }
 
@@ -389,7 +389,7 @@ export class AutonomousOptimizationEngine {
         }
         finally {
         }
-        logger.debug('🎯 Insufficient data for autonomous decision, using hybrid approach');
+        logger.debug(' Insufficient data for autonomous decision, using hybrid approach');
         ;
         return 'hybrid;;
     }
@@ -720,7 +720,7 @@ Promise < void  > {
     if(performanceSpread) { }
 } > this.adaptationThreshold * 2;
 {
-    logger.info('🎯 High performance spread detected - increasing adaptation sensitivity');
+    logger.info(' High performance spread detected - increasing adaptation sensitivity');
     ;
 }
 logger.debug('🧠 Adaptation strategy analysis complete');

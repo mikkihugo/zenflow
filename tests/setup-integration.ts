@@ -185,20 +185,20 @@ globalThis.createTestServer = async (
  */
 globalThis.createTestClient = (baseURL: string): TestClient => {
   return {
-    get: (path: string) => fetch(`${baseURL}${path}`),
+    get: (path: string) => fetch((baseURL) + path),
     post: (path: string, data: unknown) =>
-      fetch(`${baseURL}${path}`, {
+      fetch((baseURL) + path, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       }),
     put: (path: string, data: unknown) =>
-      fetch(`${baseURL}${path}`, {
+      fetch((baseURL) + path, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       }),
-    delete: (path: string) => fetch(`${baseURL}${path}`, { method: 'DELETE' }),
+    delete: (path: string) => fetch((baseURL) + path, { method: 'DELETE' }),
   };
 };
 
@@ -222,7 +222,7 @@ globalThis.waitForPort = async (port: number, timeout: number = 5000) => {
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
   }
-  throw new Error(`Port ${port} not available within ${timeout}ms`);
+  throw new Error('Port ' + (port) + ' not available within ' + timeout + 'ms');
 };
 
 /**
@@ -286,7 +286,7 @@ globalThis.setupDatabaseFixtures = async (fixtures: DatabaseFixtures) => {
  */
 globalThis.createMockSwarm = (agentCount: number = 3): MockSwarm => {
   const swarm: MockSwarm = {
-    id: `test-swarm-${Date.now()}`,
+    id: 'test-swarm-' + Date.now(),
     agents: [],
     coordinator: null,
     status: 'active',
@@ -294,7 +294,7 @@ globalThis.createMockSwarm = (agentCount: number = 3): MockSwarm => {
 
   for (let i = 0; i < agentCount; i++) {
     swarm.agents.push({
-      id: `agent-${i}`,
+      id: 'agent-' + i,
       type: 'worker',
       status: 'idle',
       tasks: [],

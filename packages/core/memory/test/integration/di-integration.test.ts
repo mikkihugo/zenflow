@@ -156,7 +156,7 @@ describe('Memory System DI Integration', () => {
         const provider = factory.createProvider(config as any);
         expect(provider).toBeDefined();
         expect(mockLogger.debug).toHaveBeenCalledWith(
-          expect.stringContaining(`Creating ${config.type} backend`)`
+          expect.stringContaining('Creating ' + config.type + ' backend')`
         );
 }
 });

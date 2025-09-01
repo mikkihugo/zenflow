@@ -1,147 +1,147 @@
 /**
- * @fileoverview COPROML - ML-Enhanced Compositional Prefix Optimization
- *
- * Advanced ML-enhanced version of COPRO teleprompter using battle-tested
- * Rust crates (smartcore, linfa, argmin, statrs) and npm packages for
- * sophisticated Bayesian optimization, online learning with concept drift
- * detection, and adaptive feedback analysis.
- *
- * Key ML Enhancements:
- * - Bayesian optimization with acquisition function selection
- * - Online learning with concept drift detection (Page-Hinkley, ADWIN)
- * - Adaptive learning rate scheduling based on performance
- * - Real-time feedback analysis and pattern recognition
- * - Statistical significance testing for prefix effectiveness
- *
- * @author Claude Code Zen Team
- * @since 2.1.0
- * @version 1.0.0
- */
+* @fileoverview COPROML - ML-Enhanced Compositional Prefix Optimization
+*
+* Advanced ML-enhanced version of COPRO teleprompter using battle-tested
+* Rust crates (smartcore, linfa, argmin, statrs) and npm packages for
+* sophisticated Bayesian optimization, online learning with concept drift
+* detection, and adaptive feedback analysis.
+*
+* Key ML Enhancements:
+* - Bayesian optimization with acquisition function selection
+* - Online learning with concept drift detection (Page-Hinkley, ADWIN)
+* - Adaptive learning rate scheduling based on performance
+* - Real-time feedback analysis and pattern recognition
+* - Statistical significance testing for prefix effectiveness
+*
+* @author Claude Code Zen Team
+* @since 2.1.0
+* @version 1.0.0
+*/
 
 import type { EventEmitter } from 'node:events';
 import type { Logger } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
 import type {
-  BayesianOptimizer,
-  ConceptDriftDetection,
-  HypothesisTest,
-  OnlineLearner,
-  OnlineLearnerConfig,
-  OptimizationBounds,
-  OptimizationResult,
-  Pattern,
-  PatternLearner,
-  StatisticalAnalyzer,
+BayesianOptimizer,
+ConceptDriftDetection,
+HypothesisTest,
+OnlineLearner,
+OnlineLearnerConfig,
+OptimizationBounds,
+OptimizationResult,
+Pattern,
+PatternLearner,
+StatisticalAnalyzer,
 } from '@claude-zen/neural-ml';
 import type { DSPyModule } from '../primitives/module';
 import { Teleprompter } from './teleprompter';
 
 // COPRO ML-specific configuration
 export interface COPROMLConfig {
-  // Core optimization parameters
-  maxIterations: number;
-  batchSize: number;
-  learningRate: number;
-  convergenceThreshold: number;
+// Core optimization parameters
+maxIterations: number;
+batchSize: number;
+learningRate: number;
+convergenceThreshold: number;
 
-  // ML enhancement settings
-  useBayesianOptimization: boolean;
-  useOnlineLearning: boolean;
-  useDriftDetection: boolean;
-  useAdaptiveLearning: boolean;
-  useFeedbackAnalysis: boolean;
+// ML enhancement settings
+useBayesianOptimization: boolean;
+useOnlineLearning: boolean;
+useDriftDetection: boolean;
+useAdaptiveLearning: boolean;
+useFeedbackAnalysis: boolean;
 
-  // Bayesian optimization settings
-  acquisitionFunction: 'expected_improvement|upper_confidence_bound|probability_improvement|entropy_search';
-  initialExplorationBudget: number;
-  exploitationThreshold: number;
+// Bayesian optimization settings
+acquisitionFunction: 'expected_improvement|upper_confidence_bound|probability_improvement|entropy_search';
+initialExplorationBudget: number;
+exploitationThreshold: number;
 
-  // Online learning settings
-  onlineLearningAlgorithm: 'perceptron|passive_aggressive|sgd_classifier';
-  adaptiveLearningRate: boolean;
-  forgettingFactor: number;
+// Online learning settings
+onlineLearningAlgorithm: 'perceptron|passive_aggressive|sgd_classifier';
+adaptiveLearningRate: boolean;
+forgettingFactor: number;
 
-  // Drift detection settings
-  driftDetectionMethod: 'page_hinkley|adwin|kswin|ddm';
-  driftSensitivity: number;
-  minDriftSamples: number;
+// Drift detection settings
+driftDetectionMethod: 'page_hinkley|adwin|kswin|ddm';
+driftSensitivity: number;
+minDriftSamples: number;
 
-  // Feedback analysis
-  feedbackWindowSize: number;
-  feedbackAggregationMethod: 'exponential_smoothing|sliding_window|weighted_average';
-  qualityGates: {
-    minAccuracy: number;
-    maxLatency: number;
-    minConfidence: number;
-  };
+// Feedback analysis
+feedbackWindowSize: number;
+feedbackAggregationMethod: 'exponential_smoothing|sliding_window|weighted_average';
+qualityGates: {
+minAccuracy: number;
+maxLatency: number;
+minConfidence: number;
+};
 
-  // Performance constraints
-  timeoutMs: number;
-  memoryLimitMb: number;
-  maxConcurrentEvaluations: number;
+// Performance constraints
+timeoutMs: number;
+memoryLimitMb: number;
+maxConcurrentEvaluations: number;
 }
 
 export interface COPROMLResult {
-  optimizedModule: DSPyModule;
+optimizedModule: DSPyModule;
 
-  // Performance metrics
-  finalAccuracy: number;
-  convergenceRate: number;
-  totalIterations: number;
-  adaptationEvents: number;
+// Performance metrics
+finalAccuracy: number;
+convergenceRate: number;
+totalIterations: number;
+adaptationEvents: number;
 
-  // ML insights
-  bayesianResults?: OptimizationResult;
-  driftDetections: ConceptDriftDetection[];
-  learningCurve: Array<{
-    iteration: number;
-    accuracy: number;
-    learningRate: number;
-  }>;
-  detectedPatterns: Pattern[];
+// ML insights
+bayesianResults?: OptimizationResult;
+driftDetections: ConceptDriftDetection[];
+learningCurve: Array<{
+iteration: number;
+accuracy: number;
+learningRate: number;
+}>;
+detectedPatterns: Pattern[];
 
-  // Feedback analysis
-  feedbackQuality: {
-    averageConfidence: number;
-    feedbackLatency: number;
-    qualityScore: number;
-  };
+// Feedback analysis
+feedbackQuality: {
+averageConfidence: number;
+feedbackLatency: number;
+qualityScore: number;
+};
 
-  // Online learning metrics
-  onlineLearningStats: {
-    totalUpdates: number;
-    driftsDetected: number;
-    adaptationRate: number;
-    finalLearningRate: number;
-  };
+// Online learning metrics
+onlineLearningStats: {
+totalUpdates: number;
+driftsDetected: number;
+adaptationRate: number;
+finalLearningRate: number;
+};
 
-  // Optimization trajectory
-  optimizationHistory: Array<{
-    iteration: number;
-    prefix: string;
-    accuracy: number;
-    confidence: number;
-    learningRate: number;
-    driftScore: number;
-    timestamp: Date;
-  }>;
+// Optimization trajectory
+optimizationHistory: Array<{
+iteration: number;
+prefix: string;
+accuracy: number;
+confidence: number;
+learningRate: number;
+driftScore: number;
+timestamp: Date;
+}>;
 
-  // Recommendations
-  recommendations: string[];
-  adaptationInsights: string[];
+// Recommendations
+recommendations: string[];
+adaptationInsights: string[];
 
-  // Performance stats
-  totalOptimizationTime: number;
-  memoryUsage: number;
-  evaluationEfficiency: number;
+// Performance stats
+totalOptimizationTime: number;
+memoryUsage: number;
+evaluationEfficiency: number;
 }
 
 /**
- * COPROML - Advanced ML-Enhanced Compositional Prefix Optimization
- *
- * This teleprompter extends COPRO with sophisticated online learning, concept drift
- * detection, and adaptive feedback processing using battle-tested ML libraries.
- */
+* COPROML - Advanced ML-Enhanced Compositional Prefix Optimization
+*
+* This teleprompter extends COPRO with sophisticated online learning, concept drift
+* detection, and adaptive feedback processing using battle-tested ML libraries.
+*/
 export class COPROML extends Teleprompter {
 	private eventEmitter:EventEmitter = new TypedEventBase();
 	private logger:Logger;
@@ -911,7 +911,7 @@ export class COPROML extends Teleprompter {
 
 	private async getBayesianResults():Promise<OptimizationResult> {
 		// Real Bayesian optimization results using Gaussian Process regression
-		const bestHistoryPoint = this.optimizationHistory.reduce((best, current) => 
+		const bestHistoryPoint = this.optimizationHistory.reduce((best, current) =>
 			(current.accuracy > (best?.accuracy || 0)) ? current : best
 		, null);
 
@@ -1083,10 +1083,10 @@ export class COPROML extends Teleprompter {
 }
 
 /**
- * Factory function to create COPROML with sensible defaults
- */
+* Factory function to create COPROML with sensible defaults
+*/
 export function createCOPROML(config?: Partial<COPROMLConfig>): COPROML {
-  return new COPROML(config);
+return new COPROML(config);
 }
 
 // Export all types and classes - removed to avoid duplicates

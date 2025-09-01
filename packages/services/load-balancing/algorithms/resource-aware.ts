@@ -149,7 +149,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
     return {
       selectedAgent,
       confidence,
-      reasoning: `Selected based on optimal resource fit (score: ${viableAgents[0]?.score.toFixed(2)})`,
+      reasoning: 'Selected based on optimal resource fit (score: ' + viableAgents[0]?.score.toFixed(2) + ')',
       alternativeAgents: alternatives,
       estimatedLatency: this.estimateLatency(selectedAgent, metrics, false),
       expectedQuality: this.estimateQuality(selectedAgent, metrics),

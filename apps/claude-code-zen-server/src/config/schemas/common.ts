@@ -13,12 +13,12 @@
  * Standard across all list endpoints.
  *
  * @example
- * ```typescript
+ * '''typescript
  * const params:PaginationParams = {
  *   limit:20,
  *   offset:0
  * };
- * ```
+ * '
  */
 export interface PaginationParams {
   /** Maximum items to return (1-100,
@@ -33,14 +33,14 @@ export interface PaginationParams {
  * Consistent pagination metadata across all endpoints.
  *
  * @example
- * ```typescript
+ * '''typescript
  * const response: PaginationResponse = {
  *   total: 1000,
  *   offset: 0,
  *   limit: 20,
  *   hasMore: true
  *};
- * ```
+ * '
  */
 export interface PaginationResponse {
   /** Total number of items available */
@@ -58,7 +58,7 @@ export interface PaginationResponse {
  * Generic container for paginated list responses.
  *
  * @example
- * ```typescript
+ * '''typescript
  * const response:ListResponse<User> = {
  *   items:[user1,
  *   user2],
@@ -67,7 +67,7 @@ export interface PaginationResponse {
  *   limit:20,
  *   hasMore:true,
  *   timestamp:'2023-01-01T00:00:00.000Z') *};
- * ```
+ * '
  */
 export interface ListResponse<T> extends PaginationResponse {
   /** Array of items */
@@ -81,12 +81,12 @@ export interface ListResponse<T> extends PaginationResponse {
  * Following Google API Design Guide error format.
  *
  * @example
- * ```typescript
+ * '''typescript
  * const errorResponse:APIError = {
  *   error:{
  *     code: 'INVALID_REQUEST', *     message: 'Missing required field', *     timestamp: '2023-01-01T00:00:00.000Z', *     path: '/api/users', *     method:'POST') *}
  *};
- * ```
+ * '
  */
 export interface APIError {
   readonly error: {
@@ -105,12 +105,12 @@ export interface APIError {
  * Generic container for successful API responses.
  *
  * @example
- * ```typescript
+ * '''typescript
  * const response:SuccessResponse<User> = {
  *   success:true,
  *   data:user,
  *   timestamp:'2023-01-01T00:00:00.000Z') *};
- * ```
+ * '
  */
 export interface SuccessResponse<T = unknown> {
   readonly success: true;
@@ -124,11 +124,11 @@ export interface SuccessResponse<T = unknown> {
  * Consistent health check format across all services.
  *
  * @example
- * ```typescript
+ * '''typescript
  * const health:HealthResponse = {
  *   status: 'healthy', *   timestamp: '2023-01-01T00:00:00.000Z', *   version: '1.0.0', *   uptime:3600,
  *   environment:'production') *};
- * ```
+ * '
  */
 export interface HealthResponse {
   readonly status: 'healthy' | ' unhealthy' | ' degraded';
@@ -150,7 +150,7 @@ export interface HealthResponse {
  * Performance and operational metrics.
  *
  * @example
- * ```typescript
+ * '''typescript
  * const metrics:MetricsResponse = {
  *   timestamp: '2023-01-01T00:00:00.000Z', *   uptime:3600,
  *   memory:{
@@ -168,7 +168,7 @@ export interface HealthResponse {
  *     pid:12345,
  *     version: '18.17.0', *     platform: 'linux', *     architecture:'x64') *}
  *};
- * ```
+ * '
  */
 export interface MetricsResponse {
   readonly timestamp: string;
@@ -198,10 +198,10 @@ export interface MetricsResponse {
  * Consistent sorting across list endpoints.
  *
  * @example
- * ```typescript
+ * '''typescript
  * const sortParams:SortParams = {
  *   sortBy: 'createdAt', *   sortOrder:'desc') *};
- * ```
+ * '
  */
 export interface SortParams {
   /** Field to sort by */
@@ -215,10 +215,10 @@ export interface SortParams {
  * Common filtering patterns.
  *
  * @example
- * ```typescript
+ * '''typescript
  * const filters:FilterParams = {
  *   search: 'john doe', *   createdAfter: '2023-01-01T00:00:00.000Z', *   createdBefore:'2023-12-31T23:59:59.999Z') *};
- * ```
+ * '
  */
 export interface FilterParams {
   /** Text search query */
@@ -238,12 +238,12 @@ export interface FilterParams {
  * Common timestamp properties for entities.
  *
  * @example
- * ```typescript
+ * '''typescript
  * const entity:TimestampFields = {
  *   created:new Date(),
  *   updated:new Date()
  *};
- * ```
+ * '
  */
 export interface TimestampFields {
   readonly created: Date;
@@ -255,11 +255,11 @@ export interface TimestampFields {
  * Common ID and metadata for entities.
  *
  * @example
- * ```typescript
+ * '''typescript
  * const entity:EntityFields = {
  *   id: 'user-123', *   version:1,
  *   etag:'abc123') *};
- * ```
+ * '
  */
 export interface EntityFields {
   readonly id: string;
@@ -272,12 +272,12 @@ export interface EntityFields {
  * Audit trail information.
  *
  * @example
- * ```typescript
+ * '''typescript
  * const auditInfo:AuditFields = {
  *   created:new Date(),
  *   createdBy: 'user-123', *   updated:new Date(),
  *   updatedBy:'user-456') *};
- * ```
+ * '
  */
 export interface AuditFields extends TimestampFields {
   readonly createdBy?: string;
@@ -291,11 +291,11 @@ export interface AuditFields extends TimestampFields {
  * Common state management for resources.
  *
  * @example
- * ```typescript
+ * '''typescript
  * const state:ResourceState = {
  *   status: 'active', *   statusMessage: 'Resource is operational', *   statusUpdated:new Date()
  *};
- * ```
+ * '
  */
 export interface ResourceState {
   readonly status: 'active' | ' inactive' | ' pending' | ' error' | ' deleted';
@@ -308,14 +308,14 @@ export interface ResourceState {
  * Common configuration properties.
  *
  * @example
- * ```typescript
+ * '''typescript
  * const config:ConfigurationFields = {
  *   enabled:true,
  *   config:{ timeout: 5000},
  *   tags:['production',    'api'],
  *   metadata:{ region: 'us-east-1'}
  *};
- * ```
+ * '
  */
 export interface ConfigurationFields {
   readonly enabled: boolean;
@@ -329,10 +329,10 @@ export interface ConfigurationFields {
  * Detailed validation error information.
  *
  * @example
- * ```typescript
+ * '''typescript
  * const error:ValidationError = {
  *   field: 'email', *   code: 'INVALID_FORMAT', *   message: 'Email must be a valid email address', *   value: 'invalid-email', *   constraint:'email') *};
- * ```
+ * '
  */
 export interface ValidationError {
   readonly field: string;
@@ -347,7 +347,7 @@ export interface ValidationError {
  * Standard format for batch operations.
  *
  * @example
- * ```typescript
+ * '''typescript
  * const batchRequest:BatchRequest<CreateUserRequest> = {
  *   items:[user1Request, user2Request],
  *   options:{
@@ -356,7 +356,7 @@ export interface ValidationError {
  *     timeout:30000
  *}
  *};
- * ```
+ * '
  */
 export interface BatchRequest<T> {
   readonly items: readonly T[];
@@ -372,7 +372,7 @@ export interface BatchRequest<T> {
  * Standard format for batch operation results.
  *
  * @example
- * ```typescript
+ * '''typescript
  * const batchResponse:BatchResponse<User> = {
  *   results:[
  *     {
@@ -390,7 +390,7 @@ export interface BatchRequest<T> {
  *     duration:1500
  *},
  *   timestamp:'2023-01-01T00:00:00.000Z') *};
- * ```
+ * '
  */
 export interface BatchResponse<T> {
   readonly results: readonly {
@@ -413,11 +413,11 @@ export interface BatchResponse<T> {
  * For long-running operations.
  *
  * @example
- * ```typescript
+ * '''typescript
  * const asyncOp:AsyncOperationResponse = {
  *   operationId: 'op-123', *   status: 'running', *   progress:50,
  *   message: 'Processing data...', *   created: '2023-01-01T00:00:00.000Z', *   updated:'2023-01-01T00:05:00.000Z') *};
- * ```
+ * '
  */
 export interface AsyncOperationResponse {
   readonly operationId: string;
@@ -438,11 +438,11 @@ export interface AsyncOperationResponse {
  * For file upload operations.
  *
  * @example
- * ```typescript
+ * '''typescript
  * const uploadResponse:FileUploadResponse = {
  *   fileId: 'file-123', *   filename: 'document.pdf', *   size:1024000,
  *   mimeType: 'application/pdf', *   url: 'https://example.com/files/file-123', *   uploaded:'2023-01-01T00:00:00.000Z') *};
- * ```
+ * '
  */
 export interface FileUploadResponse {
   readonly fileId: string;
@@ -460,14 +460,14 @@ export interface FileUploadResponse {
  * Rate limiting metadata in response headers.
  *
  * @example
- * ```typescript
+ * '''typescript
  * const rateLimit:RateLimitInfo = {
  *   limit:1000,
  *   remaining:950,
  *   reset:1672531200,
  *   window:3600
  *};
- * ```
+ * '
  */
 export interface RateLimitInfo {
   readonly limit: number;

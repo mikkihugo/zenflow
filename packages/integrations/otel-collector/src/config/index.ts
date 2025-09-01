@@ -9,7 +9,7 @@ import { existsSync, readFileSync} from 'node:fs';
 import { resolve} from 'node:path';
 
 import type { Logger} from '@claude-zen/foundation';
-import { getLogger} from '@claude-zen/foundation/logging';
+import { getLogger} from '@claude-zen/foundation';
 
 import type {
   CollectorConfig,
@@ -46,14 +46,14 @@ export class ConfigManager {
 } else {
         // Try to load from common locations
         const commonPaths = [
-          'otel-collector.json',          'otel-collector.config.js',          '.otel/collector.json',          process.env.OTEL_COLLECTOR_CONFIG,
+          'otel-collector.json',          'otel-collector.config.js',          '.otel/collector.json',          process.env['OTEL_COLLECTOR_CONFIG'],
 ].filter(Boolean);
 
         for (const path of commonPaths) {
           if (path && existsSync(path)) {
             const fileConfig = this.loadConfigFromFile(path);
             config = this.mergeConfigs(config, fileConfig);
-            this.logger.info(`Loaded configuration from ${path}`);
+            this.logger.info('Loaded configuration from ' + path);
             break;
 }
 }
@@ -67,10 +67,10 @@ export class ConfigManager {
 
       this.config = config;
       this.logger.info('Configuration loaded successfully',{
-        exporters:config.exporters.length,
-        processors:config.processors.length,
-        httpPort:config.http.port,
-});
+        exporters: config.exporters?.length || 0,
+        processors: config.processors?.length || 0,
+        httpPort: config.httpPort,
+      });
 
       return config;
 } catch (error) {
@@ -102,18 +102,14 @@ export class ConfigManager {
    */
   private getDefaultConfig():CollectorConfig {
     return {
-      service:{
-        name: 'claude-zen-otel-collector',        version: '1.0.0',        instance:process.env.HOSTNAME  ||  'localhost',},
-      http:{
-        enabled:true,
-        port:parseInt(process.env.OTEL_COLLECTOR_PORT  ||  '4318'),
-        host:process.env.OTEL_COLLECTOR_HOST  ||  '0.0.0.0',        cors:{
-          enabled:true,
-          origins:['*'],
-          methods:['GET',    'POST',    'PUT',    'DELETE'],
-          headers:['Content-Type',    'Authorization'],
-},
-},
+      serviceName: 'claude-zen-otel-collector',
+      httpPort: parseInt(process.env['OTEL_COLLECTOR_PORT'] || '4318'),
+      grpcPort: parseInt(process.env['OTEL_COLLECTOR_GRPC_PORT'] || '4317'),
+      signals: {
+        traces: true,
+        metrics: true,
+        logs: true,
+      },
       processors:[
         {
           name: 'batch',          type: 'batch',          enabled:true,
@@ -143,9 +139,12 @@ export class ConfigManager {
 ],
       exporters:[
         {
-          name: 'console',          type: 'console',          enabled:process.env.NODE_ENV === 'development',          signals:['traces',    'metrics',    'logs'],
-          config:{},
-},
+          name: 'console',
+          type: 'console',
+          enabled: process.env['NODE_ENV'] === 'development',
+          signals: ['traces', 'metrics', 'logs'],
+          config: {},
+        },
         {
           name: 'file',          type: 'file',          enabled:true,
           signals:['traces',    'metrics',    'logs'],
@@ -155,28 +154,20 @@ export class ConfigManager {
             compression:true,
             maxFiles:10,
 },
-},
-],
-      queue:{
-        maxSize:10000,
-        batchSize:100,
-        flushInterval:5000,
-},
-      health:{
-        enabled:true,
-        interval:30000,
-        thresholds:{
-          queueUtilization:0.8,
-          errorRate:0.1,
-          exportFailureRate:0.2,
-},
-},
-      logging:{
-        level:process.env.LOG_LEVEL || 'info',        format: 'json',        enableConsole:true,
-        enableFile:false,
-},
-};
-}
+        },
+      ],
+      batching: {
+        maxBatchSize: 100,
+        batchTimeout: 5000,
+        maxQueueSize: 1000,
+      },
+      buffering: {
+        maxMemoryMiB: 100,
+        maxDiskMiB: 500,
+        flushInterval: 5000,
+      },
+    };
+  }
 
   /**
    * Load configuration from file
@@ -185,7 +176,7 @@ export class ConfigManager {
     const resolvedPath = resolve(configPath);
 
     if (!existsSync(resolvedPath)) {
-      throw new Error(`Configuration file not found:${resolvedPath}`);
+      throw new Error('Configuration file not found:' + resolvedPath);
 }
 
     try {
@@ -198,11 +189,11 @@ export class ConfigManager {
         const config = require(resolvedPath);
         return config.default || config;
 } else {
-        throw new Error(`Unsupported configuration file format:${configPath}`);
+        throw new Error('Unsupported configuration file format:' + configPath);
 }
 } catch (error) {
       this.logger.error(
-        `Failed to parse configuration file:${configPath}`,
+        'Failed to parse configuration file:' + configPath,
         error
       );
       throw error;
@@ -213,110 +204,97 @@ export class ConfigManager {
    * Merge configurations with deep merge
    */
   private mergeConfigs(
-    base:CollectorConfig,
-    override:Partial<CollectorConfig>
-  ):CollectorConfig {
-    const merged = { ...base};
+    base: CollectorConfig,
+    override: Partial<CollectorConfig>
+  ): CollectorConfig {
+    const merged = { ...base };
 
     for (const [key, value] of Object.entries(override)) {
       if (value === undefined || value === null) {
         continue;
-}
+      }
 
-      merged[key] = typeof value === 'object' && !Array.isArray(value)
-        ? { ...merged[key], ...value}
-        :value;
-}
+      const typedKey = key as keyof CollectorConfig;
+      if (typeof value === 'object' && !Array.isArray(value) && merged[typedKey] && typeof merged[typedKey] === 'object') {
+        (merged as any)[typedKey] = { ...merged[typedKey], ...value };
+      } else {
+        (merged as any)[typedKey] = value;
+      }
+    }
 
     return merged;
-}
+  }
 
   /**
    * Apply environment variable overrides
    */
-  private applyEnvironmentOverrides(config:CollectorConfig): CollectorConfig {
-    const envOverrides:Partial<CollectorConfig> = {};
+  private applyEnvironmentOverrides(config: CollectorConfig): CollectorConfig {
+    const envOverrides: Partial<CollectorConfig> = {};
 
     // HTTP settings
-    if (process.env.OTEL_COLLECTOR_PORT) {
-      envOverrides.http = {
-        ...config.http,
-        port:parseInt(process.env.OTEL_COLLECTOR_PORT, 10),
-};
-}
+    if (process.env['OTEL_COLLECTOR_PORT']) {
+      envOverrides.httpPort = parseInt(process.env['OTEL_COLLECTOR_PORT'], 10);
+    }
 
-    if (process.env.OTEL_COLLECTOR_HOST) {
-      envOverrides.http = {
-        ...envOverrides.http,
-        ...config.http,
-        host:process.env.OTEL_COLLECTOR_HOST,
-};
-}
-
-    // Queue settings
-    if (process.env.OTEL_COLLECTOR_QUEUE_SIZE) {
-      envOverrides.queue = {
-        ...config.queue,
-        maxSize:parseInt(process.env.OTEL_COLLECTOR_QUEUE_SIZE, 10),
-};
-}
-
-    // Logging settings
-    if (process.env.OTEL_COLLECTOR_LOG_LEVEL) {
-      envOverrides.logging = {
-        ...config.logging,
-        level:process.env.OTEL_COLLECTOR_LOG_LEVEL,
-};
-}
+    if (process.env['OTEL_COLLECTOR_GRPC_PORT']) {
+      envOverrides.grpcPort = parseInt(process.env['OTEL_COLLECTOR_GRPC_PORT'], 10);
+    }
 
     // Add environment-specific exporters
-    if (process.env.OTEL_COLLECTOR_JAEGER_ENDPOINT) {
-      const jaegerExporter:ExporterConfig = {
-        name: 'jaeger',        type: 'jaeger',        enabled:true,
-        signals:['traces'],
-        endpoint:process.env.OTEL_COLLECTOR_JAEGER_ENDPOINT,
-        config:{
-          maxQueueSize:1000,
-          batchTimeout:5000,
-          maxBatchSize:100,
-},
-};
+    if (process.env['OTEL_COLLECTOR_JAEGER_ENDPOINT']) {
+      const jaegerExporter: ExporterConfig = {
+        name: 'jaeger',
+        type: 'jaeger',
+        enabled: true,
+        signals: ['traces'],
+        endpoint: process.env['OTEL_COLLECTOR_JAEGER_ENDPOINT'],
+        config: {
+          maxQueueSize: 1000,
+          batchTimeout: 5000,
+          maxBatchSize: 100,
+        },
+      };
 
-      envOverrides.exporters = [...config.exporters, jaegerExporter];
-}
+      envOverrides.exporters = [...(config.exporters || []), jaegerExporter];
+    }
 
-    if (process.env.OTEL_COLLECTOR_OTLP_ENDPOINT) {
-      const otlpExporter:ExporterConfig = {
-        name: 'otlp',        type: 'otlp',        enabled:true,
-        signals:['traces',    'metrics',    'logs'],
-        endpoint:process.env.OTEL_COLLECTOR_OTLP_ENDPOINT,
-        config:{
-          maxQueueSize:1000,
-          batchTimeout:5000,
-          maxBatchSize:100,
-},
-};
+    if (process.env['OTEL_COLLECTOR_OTLP_ENDPOINT']) {
+      const otlpExporter: ExporterConfig = {
+        name: 'otlp',
+        type: 'otlp-http',
+        enabled: true,
+        signals: ['traces', 'metrics', 'logs'],
+        endpoint: process.env['OTEL_COLLECTOR_OTLP_ENDPOINT'],
+        config: {
+          maxQueueSize: 1000,
+          batchTimeout: 5000,
+          maxBatchSize: 100,
+        },
+      };
 
       envOverrides.exporters = [
-        ...(envOverrides.exporters  ||  config.exporters),
+        ...(envOverrides.exporters || config.exporters || []),
         otlpExporter,
-];
-}
+      ];
+    }
 
-    if (process.env.OTEL_COLLECTOR_PROMETHEUS_PORT) {
-      const prometheusExporter:ExporterConfig = {
-        name: 'prometheus',        type: 'prometheus',        enabled:true,
-        signals:['metrics'],
-        config:{
-          port:parseInt(process.env.OTEL_COLLECTOR_PROMETHEUS_PORT, 10),
-          metricsPath: '/metrics',},
-};
+    if (process.env['OTEL_COLLECTOR_PROMETHEUS_PORT']) {
+      const prometheusExporter: ExporterConfig = {
+        name: 'prometheus',
+        type: 'prometheus',
+        enabled: true,
+        signals: ['metrics'],
+        config: {
+          port: parseInt(process.env['OTEL_COLLECTOR_PROMETHEUS_PORT'], 10),
+          metricsPath: '/metrics',
+        },
+      };
 
       envOverrides.exporters = [
-        ...(envOverrides.exporters  ||  config.exporters),
+        ...(envOverrides.exporters || config.exporters || []),
         prometheusExporter,
-];
-}
+      ];
+    }
 
     return this.mergeConfigs(config, envOverrides);
 }
@@ -324,22 +302,20 @@ export class ConfigManager {
   /**
    * Validate configuration
    */
-  private validateConfig(config:CollectorConfig): void {
+  private validateConfig(config: CollectorConfig): void {
     // Validate basic structure
-    if (!config.service?.name) {
-      throw new Error('Configuration missing service.name');
-}
+    if (!config.serviceName) {
+      throw new Error('Configuration missing serviceName');
+    }
 
-    if (
-      !config.http?.port   ||   config.http.port < 1   ||   config.http.port > 65535
-    ) {
-      throw new Error('Configuration invalid http.port');
-}
+    if (!config.httpPort || config.httpPort < 1 || config.httpPort > 65535) {
+      throw new Error('Configuration invalid httpPort');
+    }
 
     // Validate exporters
-    if (!Array.isArray(config.exporters)   ||   config.exporters.length === 0) {
+    if (!Array.isArray(config.exporters) || config.exporters.length === 0) {
       throw new Error('Configuration must have at least one exporter');
-}
+    }
 
     const enabledExporters = config.exporters.filter((e) => e.enabled);
     if (enabledExporters.length === 0) {

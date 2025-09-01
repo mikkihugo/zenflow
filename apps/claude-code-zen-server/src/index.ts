@@ -26,7 +26,7 @@ class ClaudeZenServer {
 
   async start(): Promise<Result<void, Error>> {
     try {
-      logger.info('🚀 Starting Claude Code Zen Server');
+      logger.info(' Starting Claude Code Zen Server');
 
       const express = (await import('express')).default;
       const app = express();
@@ -47,7 +47,7 @@ class ClaudeZenServer {
 
       return ok();
     } catch (error) {
-      logger.error('❌ Failed to start server: ', error);
+      logger.error(' Failed to start server: ', error);
       return err(error instanceof Error ? error : new Error(String(error)));
     }
   }
@@ -86,7 +86,7 @@ class ClaudeZenServer {
       app.use(morgan('combined'));
     }
 
-    logger.debug('✅ Middleware setup complete');
+    logger.debug(' Middleware setup complete');
   }
 
   /**
@@ -138,7 +138,7 @@ class ClaudeZenServer {
       });
     });
 
-    logger.debug('✅ Routes setup complete');
+    logger.debug(' Routes setup complete');
   }
 
   /**
@@ -280,9 +280,9 @@ class ClaudeZenServer {
    */
   private logServerStartup(): void {
     logger.info(
-      `✅ Claude Code Zen Server running on http://${this.host}:${this.port}`
+      ` Claude Code Zen Server running on http://${this.host}:${this.port}`
     );
-    logger.info(`📊 Dashboard available at http://${this.host}:${this.port}`);
+    logger.info(` Dashboard available at http://${this.host}:${this.port}`);
     logger.info(
       `🔌 Event Registry WebSocket available at ws://${this.host}:${this.port}/api/events/ws`
     );

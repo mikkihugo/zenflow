@@ -5,7 +5,7 @@
  * process lifecycle, and timeouts using proven NPM packages.
  *
  * @example Input Validation with Zod
- * ```typescript`
+ * '''typescript'
  * import { z, validateInput, createValidator } from '@claude-zen/foundation/utilities';
  *
  * const UserSchema = z.object({
@@ -18,10 +18,10 @@
  * if (result.isOk()) {
  *   logger.info('Valid user: ', result.value);
 ' * }
- * ```
+ * '
  *
  * @example Environment Configuration with Envalid
- * ```typescript`
+ * '''typescript'
  * import { env, str, num, bool, createEnvValidator } from '@claude-zen/foundation/utilities';
  *
  * const config = createEnvValidator({
@@ -31,11 +31,11 @@
  *   DATABASE_URL:str()
  * });
  *
- * logger.info(`Server starting on port ${config.PORT} in ${config.NODE_ENV} mode`);
- * ```
+ * logger.info('Server starting on port ' + config.PORT + ' in ' + config.NODE_ENV + ' mode');
+ * '
  *
  * @example Process Lifecycle Management
- * ```typescript`
+ * '''typescript'
  * import { onExit, withTimeout } from '@claude-zen/foundation/utilities';
  *
  * // Cleanup on process exit
@@ -50,7 +50,7 @@
  *   longRunningOperation(),
  *   5000,
  *   'Operation timed out after 5 seconds') * );
- * ```
+ * '
  *
  * Features:
  * • Zod integration for type-safe validation
@@ -85,7 +85,7 @@ export { z } from 'zod';
  * @returns Result containing validated data or validation error
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const UserSchema = z.object({
  *   name:z.string().min(1),
  *   email:z.string().email()
@@ -97,7 +97,7 @@ export { z } from 'zod';
 ' * } else {
  *   logger.error('Validation error:', result.error.message);
  * }
- * ```
+ * '
  */
 export declare function validateInput<T>(schema: z.ZodSchema<T>, input: unknown): Result<T, Error>;
 /**
@@ -109,7 +109,7 @@ export declare function validateInput<T>(schema: z.ZodSchema<T>, input: unknown)
  * @returns Function that validates input using the provided schema
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const validateUser = createValidator(z.object({
  *   name:z.string().min(1),
  *   email:z.string().email()
@@ -118,7 +118,7 @@ export declare function validateInput<T>(schema: z.ZodSchema<T>, input: unknown)
  * // Reuse validator multiple times
  * const result1 = validateUser(userData1);
  * const result2 = validateUser(userData2);
- * ```
+ * '
  */
 export declare function createValidator<T>(schema: z.ZodSchema<T>): (input: unknown) => Result<T, Error>;
 /**
@@ -131,7 +131,7 @@ export declare function createValidator<T>(schema: z.ZodSchema<T>): (input: unkn
  * @throws {Error} When environment validation fails
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const env = createEnvValidator({
  *   NODE_ENV:str({ choices: ['development',    'production',    'test'] }),
  *   PORT:num({ default: 3000 }),
@@ -140,8 +140,8 @@ export declare function createValidator<T>(schema: z.ZodSchema<T>): (input: unkn
  * });
  *
  * // Type-safe access with intellisense
- * logger.info(`Server running on port ${env.PORT} in ${env.NODE_ENV} mode`);
- * ```
+ * logger.info('Server running on port ' + env.PORT + ' in ' + env.NODE_ENV + ' mode');
+ * '
  */
 export declare function createEnvValidator<T extends Record<string, Spec<unknown>>>(specs: T): CleanedEnv<T>;
 /**
@@ -155,7 +155,7 @@ export declare function createEnvValidator<T extends Record<string, Spec<unknown
  * @returns Promise resolving to Result containing success value or timeout/error
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const result = await withTimeout(
  *   fetchData(),
  *   5000,
@@ -166,15 +166,15 @@ export declare function createEnvValidator<T extends Record<string, Spec<unknown
 ' * } else {
  *   logger.error('Error or timeout:', result.error.message);
  * }
- * ```
+ * '
  *
  * @example API Calls with Timeout
- * ```typescript`
+ * '''typescript'
  * const apiResult = await withTimeout(
  *   fetch('/api/users').then(r => r.json()),
  *   3000,
  *   'API call timed out') * );
- * ```
+ * '
  */
 export declare function withTimeout<T>(promise: Promise<T>, timeoutMs: number, timeoutMessage?: string): Promise<Result<T, Error>>;
 export declare const commonEnvSchema: {

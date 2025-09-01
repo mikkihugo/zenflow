@@ -18,13 +18,13 @@ import type { UnknownRecord } from '../../types/primitives';
  * Follows standard logging conventions from most verbose to least verbose.
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const logger = getLogger('myapp');
  * logger.debug('Debug info'); // Only shown in development
  * logger.info('User action');  // General information
  * logger.warn('Deprecated API'); // Warnings
  * logger.error('Failed request'); // Errors
- * ```
+ * '
  */
 export enum LoggingLevel {
   /** Detailed trace information for debugging */
@@ -46,7 +46,7 @@ export enum LoggingLevel {
  * Controls logging behavior, output formats, and component-specific settings.
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const config: LoggingConfig = {
  *   level: LoggingLevel.INFO,
  *   enableConsole: true,
@@ -57,7 +57,7 @@ export enum LoggingLevel {
  *     'auth': LoggingLevel.WARN
  *}
  *};
- * ```
+ * '
  */
 export interface LoggingConfig {
   /** Default logging level for all components */
@@ -79,12 +79,12 @@ export interface LoggingConfig {
  * Compatible with LogTape and provides optional success/progress methods.
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const logger = getLogger('myservice');
  * logger.info('Service started', { port: 3000});
  * logger.error('Database connection failed', { error: err[message]});
- * logger.success?.('Operation completed successfully');
- * ```
+ * logger.success?.('Operation completed successfully`);
+ * `
  */
 export interface Logger {
   /** Log trace level messages (most verbose) */
@@ -249,7 +249,7 @@ class LoggingConfigurationManager {
       }
     } catch {
       console.info(
-        '📝 Foundation LogTape using console-only (OTEL unavailable)'
+        ' Foundation LogTape using console-only (OTEL unavailable)'
       );
     }
 
@@ -277,7 +277,7 @@ class LoggingConfigurationManager {
   private async checkCollectorAvailability(endpoint: string): Promise<boolean> {
     try {
       const response = await globalThis
-        .fetch(`${endpoint}/health`, {
+        .fetch(endpoint + '/health', {
           method: 'GET',
           headers: { accept: 'application/json' },
         })
@@ -297,12 +297,12 @@ class LoggingConfigurationManager {
     zenOtelEnabled: boolean;
   }) {
     console.info(
-      '⚠️  Internal OTEL collector unavailable, trying external OTEL...'
+      '  Internal OTEL collector unavailable, trying external OTEL...'
     );
 
     if (otelConfig.otelLogsExporter === 'otlp' || otelConfig.zenOtelEnabled) {
       console.info(
-        '⚠️  OTEL integration has been moved to @claude-zen/infrastructure package. Use getTelemetryManager() instead.'
+        '  OTEL integration has been moved to @claude-zen/infrastructure package. Use getTelemetryManager() instead.'
       );
       console.info('   Foundation logging will use console-only mode.');
     }
@@ -353,7 +353,7 @@ class LoggingConfigurationManager {
       }
 
       const timestamp = this.config.timestamp
-        ? `[${new Date(record['timestamp'] as string | number | Date).toISOString()}] `
+        ? '[' + new Date(record['timestamp'] as string | number | Date).toISOString() + '] '
         : '';
       const level = String(record['level']).toUpperCase().padStart(5);
       const category = Array.isArray(record['category'])
@@ -365,10 +365,10 @@ class LoggingConfigurationManager {
       const properties = (record['properties'] || {}) as UnknownRecord;
       const props =
         Object.keys(properties).length > 0
-          ? ` ${JSON.stringify(properties)}`
+          ? ' ' + JSON.stringify(properties)
           : '';
 
-      console.info(`${timestamp}${level} [${category}] ${message}${props}`);
+      console.info((timestamp) + (level) + ' [' + (category) + '] ' + (message) + props);
     };
   }
 
@@ -455,7 +455,7 @@ class LoggingConfigurationManager {
 
         // Send to internal collector via HTTP POST
         await globalThis
-          .fetch(`${collectorEndpoint}/ingest`, {
+          .fetch(collectorEndpoint + '/ingest', {
             method: 'POST',
             headers: {
               'content-type': 'application/json',
@@ -563,7 +563,7 @@ class LoggingConfigurationManager {
     if (this.loggers.has(name)) {
       const logger = this.loggers.get(name);
       if (!logger) {
-        throw new Error(`Logger '${name}' not found`);
+        throw new Error('Logger `${name}` not found');
       }
       return logger;
     }
@@ -580,7 +580,7 @@ class LoggingConfigurationManager {
     // Add success and progress methods
     logger.success = (message: string, meta?: unknown) => {
       if (this.shouldLog('info', componentLevel)) {
-        const formattedMessage = `✅ ${this.formatMessage(message, meta)}`;
+        const formattedMessage = ' ' + this.formatMessage(message, meta);
         logTapeLogger.info(formattedMessage);
         addLogEntry({
           timestamp: new Date().toISOString(),
@@ -594,7 +594,7 @@ class LoggingConfigurationManager {
 
     logger.progress = (message: string, meta?: unknown) => {
       if (this.shouldLog('info', componentLevel)) {
-        const formattedMessage = `🔄 ${this.formatMessage(message, meta)}`;
+        const formattedMessage = ' ' + this.formatMessage(message, meta);
         logTapeLogger.info(formattedMessage);
         addLogEntry({
           timestamp: new Date().toISOString(),
@@ -630,10 +630,10 @@ class LoggingConfigurationManager {
     }
 
     if (typeof meta === 'object') {
-      return `${message} ${JSON.stringify(meta)}`;
+      return (message) + ' ' + JSON.stringify(meta);
     }
 
-    return `${message} ${meta}`;
+    return (message) + ' ' + meta;
   }
 
   updateConfig(newConfig: Partial<LoggingConfig>): void {
@@ -674,7 +674,7 @@ class LoggingConfigurationManager {
 
     if (invalidLevels.length > 0) {
       issues.push(
-        `Invalid log levels for components: ${invalidLevels.join(', ')}`
+        'Invalid log levels for components: ' + invalidLevels.join(', ')
       );
     }
 

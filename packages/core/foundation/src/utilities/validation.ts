@@ -5,7 +5,7 @@
  * Combines Zod schemas with custom type guards for comprehensive validation.
  *
  * @example Schema Validation
- * ```typescript`
+ * '''typescript'
  * import { z, validateInput, createValidator} from '@claude-zen/foundation/utilities/validation';
  *
  * const UserSchema = z.object({
@@ -17,16 +17,16 @@
  * if (result.isOk()) {
  *   logger.info('Valid: ', result.value);
 ' *}
- * ```
+ * '
  *
  * @example Type Guards
- * ```typescript`
+ * '''typescript'
  * import { isEmail, isURL, isPrimitive} from '@claude-zen/foundation/utilities/validation';
  *
  * if (isEmail(userInput)) {
  *   // userInput is now typed as Email
  *}
- * ```
+ * '
  */
 
 // Foundation re-exports zod - use internal import to avoid circular dependency
@@ -59,7 +59,7 @@ export type { ZodSchema, ZodType };
  * @param data - Data to validate
  * @returns Result with validated data or error
  * @example
- * ```typescript`
+ * '''typescript'
  * const UserSchema = z.object({ name:z.string(), age:z.number()});
  * const result = validateInput(UserSchema, { name:"John", age:30});
  *
@@ -68,7 +68,7 @@ export type { ZodSchema, ZodType };
  *} else {
  *   logger.error(result.error.issues); // ZodError details
  *}
- * ```
+ * '
  */
 export function validateInput<T>(
   schema: ZodSchema<T>,
@@ -100,12 +100,12 @@ export function validateInput<T>(
  * @param schema - Zod schema to create validator for
  * @returns Validator function
  * @example
- * ```typescript`
+ * '''typescript'
  * const validateUser = createValidator(UserSchema);
  *
  * const result1 = validateUser(userData1);
  * const result2 = validateUser(userData2);
- * ```
+ * '
  */
 export function createValidator<T>(
   schema: ZodSchema<T>
@@ -124,12 +124,12 @@ export function createValidator<T>(
  * @param value - Value to check
  * @returns True if valid UUID
  * @example
- * ```typescript`
+ * '''typescript'
  * if (isUUID(userInput)) {
  *   // userInput is now typed as UUID
  *   processUUID(userInput);
  *}
- * ```
+ * '
  */
 export function isUUID(value: unknown): value is UUID {
   return (
@@ -147,12 +147,12 @@ export function isUUID(value: unknown): value is UUID {
  * @param value - Value to check
  * @returns True if valid email format
  * @example
- * ```typescript`
+ * '''typescript'
  * if (isEmail(userInput)) {
  *   // userInput is now typed as Email
  *   sendEmail(userInput);
  *}
- * ```
+ * '
  */
 export function isEmail(value: unknown): value is Email {
   return typeof value === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -165,11 +165,11 @@ export function isEmail(value: unknown): value is Email {
  * @param value - Value to check
  * @returns True if valid timestamp
  * @example
- * ```typescript`
+ * '''typescript'
  * if (isTimestamp(userInput)) {
  *   const date = new Date(userInput);
  *}
- * ```
+ * '
  */
 export function isTimestamp(value: unknown): value is Timestamp {
   return typeof value === 'number' && value > 0 && Number.isInteger(value);
@@ -182,11 +182,11 @@ export function isTimestamp(value: unknown): value is Timestamp {
  * @param value - Value to check
  * @returns True if valid ISO date string
  * @example
- * ```typescript`
+ * '''typescript'
  * if (isISODateString(userInput)) {
  *   const date = new Date(userInput);
  *}
- * ```
+ * '
  */
 export function isISODateString(value: unknown): value is ISODateString {
   return (
@@ -203,11 +203,11 @@ export function isISODateString(value: unknown): value is ISODateString {
  * @param value - Value to check
  * @returns True if primitive type
  * @example
- * ```typescript`
+ * '''typescript'
  * if (isPrimitive(value)) {
  *   // Safe to serialize/clone
  *}
- * ```
+ * '
  */
 export function isPrimitive(value: unknown): value is JsonPrimitive {
   return (
@@ -226,12 +226,12 @@ export function isPrimitive(value: unknown): value is JsonPrimitive {
  * @param arr - Array to check
  * @returns True if array has elements
  * @example
- * ```typescript`
+ * '''typescript'
  * if (isNonEmptyArray(items)) {
  *   // items[0] is safe to access
  *   const firstItem = items[0];
  *}
- * ```
+ * '
  */
 export function isNonEmptyArray<T>(arr: T[]): arr is [T, ...T[]] {
   return Array.isArray(arr) && arr.length > 0;
@@ -244,11 +244,11 @@ export function isNonEmptyArray<T>(arr: T[]): arr is [T, ...T[]] {
  * @param value - Value to check
  * @returns True if valid URL
  * @example
- * ```typescript`
+ * '''typescript'
  * if (isURL(userInput)) {
  *   fetch(userInput);
  *}
- * ```
+ * '
  */
 export function isURL(value: unknown): value is string {
   if (typeof value !== 'string') return false;
@@ -271,11 +271,11 @@ export function isURL(value: unknown): value is string {
  * @param value - String to check
  * @returns True if valid JSON
  * @example
- * ```typescript`
+ * '''typescript'
  * if (isValidJSON(userInput)) {
  *   const parsed = JSON.parse(userInput);
  *}
- * ```
+ * '
  */
 export function isValidJSON(value: string): boolean {
   try {
@@ -293,9 +293,9 @@ export function isValidJSON(value: string): boolean {
 /**
  * Pre-built Zod schema for UUID validation.
  * @example
- * ```typescript`
+ * '''typescript'
  * const result = validateInput(UUIDSchema, userInput);
- * ```
+ * '
  */
 export const uuidSchema = zodInstance.string().uuid();
 export const emailSchema = zodInstance.string().email();
@@ -322,12 +322,12 @@ export const positiveNumberSchema = zodInstance.number().positive();
  * @param code - Zod error code to look for
  * @returns True if result contains the error code
  * @example
- * ```typescript`
+ * '''typescript'
  * const result = validateInput(schema, data);
  * if (hasValidationError(result, 'too_small')) {
  *   logger.info('Value too small');
  *}
- * ```
+ * '
  */
 export function hasValidationError(
   result: Result<unknown, ZodError>,
@@ -344,11 +344,11 @@ export function hasValidationError(
  * @param result - Validation result
  * @returns Array of error messages
  * @example
- * ```typescript`
+ * '''typescript`
  * const result = validateInput(schema, data);
  * const errors = getValidationErrors(result);
  * errors.forEach(error => logger.info(error));
- * ```
+ * `
  */
 export function getValidationErrors(
   result: Result<unknown, ZodError>

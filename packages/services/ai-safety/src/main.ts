@@ -13,11 +13,11 @@
  * - Dependency injection with TSyringe
  * - Structured validation and type safety
  *
- * ENHANCEMENT: Basic → Comprehensive foundation integration
+ * ENHANCEMENT: Basic  Comprehensive foundation integration
  * PATTERN: Matches memory, knowledge, event-system, teamwork, brain packages
  *
  * @example Enterprise usage with Result pattern
- * ```typescript`
+ * '''typescript'
  * import { createInitializedAISafetyOrchestrator } from '@claude-zen/ai-safety';
  *
  * const result = await createInitializedAISafetyOrchestrator();
@@ -25,13 +25,13 @@
  *   const orchestrator = result.value;
  *   await orchestrator.startSafetyMonitoring();
  *}
- * ```
+ * '
  *
  * @example Tree-shakable imports
- * ```typescript`
+ * '''typescript'
  * import { AISafetyOrchestrator, SafetyError } from '@claude-zen/ai-safety';
  * import { AIDeceptionDetector } from '@claude-zen/ai-safety';
- * ```
+ * '
  */
 
 
@@ -72,7 +72,7 @@ export { AISafetyOrchestrator as SafetyGuard,
  *
  * @returns Promise resolving to Result with configured safety orchestrator
  * @example
- * ```typescript`
+ * '''typescript'
  * const result = await initializeAISafety();
  * if (result.success) {
  *   const safetySystem = result.value;
@@ -80,7 +80,7 @@ export { AISafetyOrchestrator as SafetyGuard,
  *} else {
  *   logger.error('Failed to initialize AI Safety: ', result.error);
 ' *}
- * ```
+ * '
  */
 export async function initializeAISafety() {
   const { createInitializedAISafetyOrchestrator } = await import(
@@ -108,18 +108,18 @@ export async function initializeAISafety() {
  *
  * @returns Promise resolving to Result indicating success or failure
  * @example
- * ```typescript`
+ * '''typescript'
  * const result = await emergencySafetyShutdown();
  * if (result.success) {
  *   logger.info('Emergency shutdown completed successfully');
  *} else {
  *   logger.error('Emergency shutdown failed: ', result.error);
 ' *}
- * ```
+ * '
  */
 export async function emergencySafetyShutdown() {
   try {
-    logger.info('🛑 ENTERPRISE EMERGENCY SAFETY SHUTDOWN INITIATED');
+    logger.info(' ENTERPRISE EMERGENCY SAFETY SHUTDOWN INITIATED');
 
     // Enhanced safety logging with error handling capabilities
     const safetyResult = { success: true, message: 'Safety shutdown initiated' };
@@ -134,13 +134,13 @@ export async function emergencySafetyShutdown() {
     // This would coordinate with all safety systems
     // For now, return success - full implementation would coordinate shutdown
 
-    logger.info('🚨 Emergency safety protocols activated');
+    logger.info(' Emergency safety protocols activated');
     return { success: true };
   } catch (error) {
     return {
       success: false,
       error: new Error(
-        `Emergency safety shutdown failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        'Emergency safety shutdown failed: ' + error instanceof Error ? error.message : 'Unknown error'
       )
     };
   }
@@ -208,7 +208,7 @@ export async function getAISafetySystemAccess(
   const orchestrator = await createInitializedAISafetyOrchestrator();
   if (!orchestrator.success) {
     throw new Error(
-      `Failed to initialize AI Safety system: ${orchestrator.error?.message}`
+      'Failed to initialize AI Safety system: ' + orchestrator.error?.message
     );
 }
   const safetySystem = orchestrator.value!;
@@ -236,7 +236,7 @@ export async function getSafetyOrchestrator(
   const result = await createInitializedAISafetyOrchestrator();
   if (!result.success) {
     throw new Error(
-      `Failed to create safety orchestrator: ${result.error?.message}`
+      'Failed to create safety orchestrator: ' + result.error?.message
     );
 }
   return result.value;
@@ -272,7 +272,7 @@ export async function getSafetyIntervention(
   return {
     intervene: (action: InterventionAction) => {
       // Implementation would handle different intervention types
-      logger.info(`Intervention requested: ${action.type} on ${action.target}`);
+      logger.info('Intervention requested: ' + (action.type) + ' on ' + action.target);
       return Promise.resolve({ success: true, action});
 },
     escalate: (alert: any) => system.escalate(alert),

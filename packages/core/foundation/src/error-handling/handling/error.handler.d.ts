@@ -60,13 +60,13 @@ export interface CircuitBreakerOptions {
  * @extends Error
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const error = new EnhancedError(
  *   'Database connection failed', *   { host: 'localhost', port:5432},
  *   'DB_CONNECTION_ERROR') * );
  *
  * const enriched = error.withContext({ retryAttempt:3});
- * ```
+ * '
  */
 export declare class EnhancedError extends Error {
     readonly context: JsonObject;
@@ -97,14 +97,14 @@ export declare class EnhancedError extends Error {
  * @extends Error
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const contextError = new ContextError(
  *   'Validation failed', *   { field: 'email', value: ' invalid-email', rule: ' email-format'},
  *   'VALIDATION_ERROR') * );
  *
  * const enriched = contextError.withContext({ userId: '12345'});
  * const serialized = enriched.toObject();
- * ```
+ * '
  */
 export declare class ContextError extends Error {
     readonly context: JsonObject;

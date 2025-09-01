@@ -83,7 +83,7 @@ const config = {
       },
       onLimitReached: (req: any) => {
         // Note: Using direct process.stderr since logging system may not be initialized yet
-        process.stderr.write(`Rate limit exceeded for IP: ${req.ip}\n`);
+        process.stderr.write('Rate limit exceeded for IP: ' + req.ip + '\n');
       },
     },
     security: {
@@ -554,7 +554,7 @@ const config = {
         if (!secret && process.env.NODE_ENV !== 'test') {
           // Note: Using direct process.stderr since logging system may not be initialized yet
           process.stderr.write(
-            '⚠️  SECURITY WARNING:Using development JWT secret. Set JWT_SECRET environment variable for production.\n'
+            '  SECURITY WARNING:Using development JWT secret. Set JWT_SECRET environment variable for production.\n'
           );
           return 'claude-zen-development-secret-REPLACE-IN-PRODUCTION';
         }

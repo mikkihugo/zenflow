@@ -38,7 +38,7 @@ class ComprehensiveRepairValidator {
 
 	/** Run all validation tests */
 	async runAllTests() {
-		log("\n🧪 Comprehensive Repair Validation Test Suite", "blue");
+		log("\n Comprehensive Repair Validation Test Suite", "blue");
 		log("=".repeat(60), "blue");
 
 		const testSuites = [
@@ -66,7 +66,7 @@ class ComprehensiveRepairValidator {
 
 	/** Test syntax fixes for all repaired scripts */
 	testSyntaxFixes() {
-		log("\n🔧 Testing Syntax Fixes", "cyan");
+		log("\n Testing Syntax Fixes", "cyan");
 
 		const repairedScripts = [
 			"scripts/performance-monitor.js",
@@ -139,7 +139,7 @@ class ComprehensiveRepairValidator {
 
 	/** Test TypeScript compilation */
 	testTypeScriptCompilation() {
-		log("\n📘 Testing TypeScript Compilation", "cyan");
+		log("\n Testing TypeScript Compilation", "cyan");
 
 		const tsFiles = [
 			"src/memory/enhanced-memory.ts",
@@ -196,7 +196,7 @@ class ComprehensiveRepairValidator {
 
 	/** Test dependencies */
 	testDependencies() {
-		log("\n📦 Testing Dependencies", "cyan");
+		log("\n Testing Dependencies", "cyan");
 
 		const criticalDeps = ["better-sqlite3", "@lancedb/lancedb", "blessed"];
 
@@ -404,7 +404,7 @@ class ComprehensiveRepairValidator {
 
 	/** Test performance components */
 	testPerformanceComponents() {
-		log("\n⚡ Testing Performance Components", "cyan");
+		log("\n Testing Performance Components", "cyan");
 
 		try {
 			// Test performance monitor
@@ -447,7 +447,7 @@ class ComprehensiveRepairValidator {
 
 	/** Test database components */
 	testDatabaseComponents() {
-		log("\n🗄️ Testing Database Components", "cyan");
+		log("\n️ Testing Database Components", "cyan");
 
 		// Test SQLite optimizations script
 		try {
@@ -492,7 +492,7 @@ class ComprehensiveRepairValidator {
 
 	/** Test error handling */
 	testErrorHandling() {
-		log("\n🛡️ Testing Error Handling", "cyan");
+		log("\n️ Testing Error Handling", "cyan");
 
 		// Test that scripts handle errors gracefully
 		const errorTests = [
@@ -540,10 +540,10 @@ class ComprehensiveRepairValidator {
 
 		if (passed) {
 			this.results.passed++;
-			log(`  ✅ ${testName}`, "green");
+			log(`   ${testName}`, "green");
 		} else {
 			this.results.failed++;
-			log(`  ❌ ${testName}`, "red");
+			log(`   ${testName}`, "red");
 		}
 
 		if (details) {
@@ -560,7 +560,7 @@ class ComprehensiveRepairValidator {
 
 	/** Display final results */
 	displayResults() {
-		log("\n📊 Test Results Summary", "blue");
+		log("\n Test Results Summary", "blue");
 		log("=".repeat(50), "blue");
 
 		const successRate = (
@@ -581,16 +581,16 @@ class ComprehensiveRepairValidator {
 
 		if (this.results.failed === 0) {
 			log(
-				"\n🎉 All tests passed! Comprehensive repair is successful.",
+				"\n All tests passed! Comprehensive repair is successful.",
 				"green",
 			);
 		} else if (this.results.failed <= 2) {
 			log(
-				"\n⚠️ Minor issues detected. Overall repair is successful with warnings.",
+				"\n Minor issues detected. Overall repair is successful with warnings.",
 				"yellow",
 			);
 		} else {
-			log("\n❌ Significant issues detected. Manual review required.", "red");
+			log("\n Significant issues detected. Manual review required.", "red");
 		}
 
 		// Export results
@@ -605,7 +605,7 @@ class ComprehensiveRepairValidator {
 			JSON.stringify(report, null, 2),
 		);
 
-		log(`\n📄 Detailed results saved to: test-results.json`, "cyan");
+		log(`\n Detailed results saved to: test-results.json`, "cyan");
 	}
 
 	/** Generate recommendations based on test results */
@@ -658,7 +658,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 		})
 		.catch((error) => {
 			// Validation failed - using process.stderr instead of console
-			process.stderr.write(`❌ Validation failed: ${error}\\n`);
+			process.stderr.write(` Validation failed: ${error}\\n`);
 			process.exit(1);
 		});
 }

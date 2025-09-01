@@ -29,5 +29,5 @@ export interface ApiError {
  * Log error for debugging and monitoring
  */
 export function logError(error: unknown, context?: string): void {
-  logger.error(`${context || 'API'} error:`, error);
+  logger.error(context || 'API' + ' error:', error);
 }

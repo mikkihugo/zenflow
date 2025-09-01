@@ -68,7 +68,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
             return;
         }
         try {
-            this.logger.info('🔧 Initializing Neural Safety Bridge with brain integration...', ');
+            this.logger.info(' Initializing Neural Safety Bridge with brain integration...', ');
             // Async initialization of safety monitoring systems
             await this.initializeSafetyProtocols();
             await this.setupNeuralValidation();
@@ -87,7 +87,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
             this.logger.info('Neural Safety Bridge initialized with metrics', { ': enhancedDetection, this: .neuralSafetyConfig.enhancedDetection.toString(),
                 behavioralLearning: this.neuralSafetyConfig.behavioralLearning.toString(),
             });
-            this.logger.info('✅ Neural Safety Bridge initialized with brain system integration', ');
+            this.logger.info(' Neural Safety Bridge initialized with brain system integration', ');
         }
         catch (error) {
             this.logger.error('Failed to initialize Neural Safety Bridge:', error);
@@ -395,7 +395,7 @@ void {
             standardAlerts: result.standardDetection.length.toString(),
         });
     }),
-    this: .logger.info('✅ Real-time safety monitoring active'), ': 
+    this: .logger.info(' Real-time safety monitoring active'), ': 
 };
 /**
  * Learn from feedback to improve detection accuracy.
@@ -532,7 +532,7 @@ Promise < void  > {
     this.removeAllListeners();
     this.isInitialized = false;
 
-    this.logger.info('✅ Neural Safety Bridge shutdown complete');'
+    this.logger.info(' Neural Safety Bridge shutdown complete');'
   }
 
   // Helper methods for enhanced async functionality

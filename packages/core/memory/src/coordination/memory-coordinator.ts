@@ -111,7 +111,7 @@ export class MemoryCoordinator extends EventEmitter {
     operation: Partial<CoordinationDecision>
   ): Promise<CoordinationDecision> {
     const decision: CoordinationDecision = {
-      id: `coord_${Date.now()}_${Math.random().toString(36).slice(2)}`,
+      id: 'coord_' + (Date.now()) + '_' + Math.random().toString(36).slice(2),
       type: operation.type || 'read',
       sessionId: operation.sessionId || 'default',
       target: operation.target || 'default',
@@ -192,7 +192,7 @@ export class MemoryCoordinator extends EventEmitter {
         await this.executeRepair(decision);
         break;
       default:
-        throw new Error(`Unknown coordination type:${decision.type}`);
+        throw new Error('Unknown coordination type:' + decision.type);
     }
   }
 
@@ -204,7 +204,7 @@ export class MemoryCoordinator extends EventEmitter {
   private async executeRead(decision: CoordinationDecision): Promise<unknown> {
     const node = this.nodes.get(decision.participants[0]);
     if (!node) {
-      throw new Error(`Node not found:${decision.participants[0]}`);
+      throw new Error('Node not found:' + decision.participants[0]);
     }
 
     return await node?.backend?.retrieve(decision.target);
@@ -219,7 +219,7 @@ export class MemoryCoordinator extends EventEmitter {
     const writePromises = decision.participants.map(async (nodeId) => {
       const node = this.nodes.get(nodeId);
       if (!node) {
-        throw new Error(`Node not found:${nodeId}`);
+        throw new Error('Node not found:' + nodeId);
       }
 
       return await node?.backend?.store(
@@ -257,7 +257,7 @@ export class MemoryCoordinator extends EventEmitter {
     const deletePromises = decision.participants.map(async (nodeId) => {
       const node = this.nodes.get(nodeId);
       if (!node) {
-        throw new Error(`Node not found:${nodeId}`);
+        throw new Error('Node not found:' + nodeId);
       }
 
       return await node?.backend?.delete(decision.target);
@@ -275,7 +275,7 @@ export class MemoryCoordinator extends EventEmitter {
     // Synchronize data between nodes
     const sourceNode = this.nodes.get(decision.participants[0]);
     if (!sourceNode) {
-      throw new Error(`Source node not found:${decision.participants[0]}`);
+      throw new Error('Source node not found:' + decision.participants[0]);
     }
 
     for (let i = 1; i < decision.participants.length; i++) {
@@ -392,7 +392,7 @@ export class MemoryCoordinator extends EventEmitter {
     });
 
     if (decision.status === 'failed') {
-      throw new Error(`Failed to store data for key:${key}`);
+      throw new Error('Failed to store data for key:' + key);
     }
   }
 
@@ -408,7 +408,7 @@ export class MemoryCoordinator extends EventEmitter {
     });
 
     if (decision.status === 'failed') {
-      throw new Error(`Failed to retrieve data for key:${key}`);
+      throw new Error('Failed to retrieve data for key:' + key);
     }
 
     return await this.executeRead(decision);
@@ -426,7 +426,7 @@ export class MemoryCoordinator extends EventEmitter {
     });
 
     if (decision.status === 'failed') {
-      throw new Error(`Failed to delete data for key:${key}`);
+      throw new Error('Failed to delete data for key:' + key);
     }
   }
 
@@ -485,7 +485,7 @@ export class MemoryCoordinator extends EventEmitter {
         const value = await node.backend.retrieve(key);
         results.push({ key, value});
       } catch (error) {
-        this.logger.warn(`Failed to retrieve key ${key} from node`, { error });
+        this.logger.warn('Failed to retrieve key ' + key + ' from node', { error });
       }
     }
 
@@ -524,7 +524,7 @@ export class MemoryCoordinator extends EventEmitter {
       .replace(/\[/g, '\\[')
       .replace(/]/g, '\\]');
 
-    const regex = new RegExp(`^${regexPattern}$`);
+    const regex = new RegExp('^' + regexPattern + '$');
     return regex.test(key);
   }
 

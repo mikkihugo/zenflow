@@ -98,7 +98,7 @@ export class MultiSwarmABTesting {
             if (options.gitConfig?.cleanupAfterTest) {
                 await this.cleanupGitWorktrees(worktreePaths);
             }
-            logger.info(`✅ A/B test completed: ${testId}`);
+            logger.info(` A/B test completed: ${testId}`);
             `
       logger.info(
         `;
@@ -107,7 +107,7 @@ export class MultiSwarmABTesting {
             return testResult;
         }
         catch (error) {
-            logger.error(`❌ A/B test failed: ${testId}`, error);
+            logger.error(` A/B test failed: ${testId}`, error);
             `
       throw error;
     }
@@ -429,7 +429,7 @@ $strategies.lengthstrategies;
 sequentially;
 ``;
 ;
-logger.info(`📊 Sequential options: delay=${delayBetweenStrategies}ms, continueOnFailure=${enableContinueOnFailure}` `
+logger.info(` Sequential options: delay=${delayBetweenStrategies}ms, continueOnFailure=${enableContinueOnFailure}` `
       );
     } else {
       logger.info(
@@ -471,7 +471,7 @@ for (let i = 0; i < strategies.length; i++) {
 }
 try { }
 catch (error) {
-    logger.error(`❌ Strategy ${i + 1} failed: ${strategy.name}`, error);
+    logger.error(` Strategy ${i + 1} failed: ${strategy.name}`, error);
     `
 
         if (!enableContinueOnFailure) {

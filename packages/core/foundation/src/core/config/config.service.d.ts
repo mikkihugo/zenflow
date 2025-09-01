@@ -18,9 +18,9 @@ import type { JsonObject } from '../../types/primitives';
  * @interface Config
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const config:Config = getConfig();
- * logger.info(config.env); // 'development' | ' production' | ' test') * logger.info(config.logging.level); // 'error' | ' warn' | ' info' | ' debug') * ```
+ * logger.info(config.env); // 'development' | ' production' | ' test') * logger.info(config.logging.level); // 'error' | ' warn' | ' info' | ' debug') * '
  */
 export interface Config {
     env: string;
@@ -57,11 +57,11 @@ export interface Config {
  * @class FoundationConfig
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const config = new FoundationConfig();
  * config.initialize();
  * const logLevel = config.get('logging.level');
- * ```
+ * '
  */
 export declare class FoundationConfig {
     private config;
@@ -83,10 +83,10 @@ export declare class FoundationConfig {
      * @throws {Error} When the key is not found or configuration is not initialized
      *
      * @example
-     * ```typescript`
+     * '''typescript'
      * const level = config.get('logging.level'); // Gets nested value
      * const env = config.get('env'); // Gets top-level value
-     * ```
+     * '
      */
     get(key: string): unknown;
     /**
@@ -112,10 +112,10 @@ declare const globalConfig: FoundationConfig;
  * @returns The validated foundation configuration
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const config = getConfig();
  * logger.info(config.logging.level);
- * ```
+ * '
  */
 export declare function getConfig(): Config;
 /**

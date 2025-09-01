@@ -74,7 +74,7 @@ export class WebSocketClient extends EventEmitter {
           resolve();
         };
 
-        this.ws.onmessage = (event) => {
+        this.ws.onmessage = (_event) => {
           try {
             const data = JSON.parse(event.data);
             this.emit('message', data);
@@ -83,7 +83,7 @@ export class WebSocketClient extends EventEmitter {
           }
         };
 
-        this.ws.onclose = (event) => {
+        this.ws.onclose = (_event) => {
           clearTimeout(timeout);
           this.isConnected = false;
           this.stopHeartbeat();
@@ -97,12 +97,12 @@ export class WebSocketClient extends EventEmitter {
           }
         };
 
-        this.ws.onerror = (error) => {
+        this.ws.onerror = (_error) => {
           clearTimeout(timeout);
           this.emit('error', error);
           reject(error);
         };
-      } catch (error) {
+      } catch (_error) {
         reject(error);
       }
     });
@@ -135,7 +135,7 @@ export class WebSocketClient extends EventEmitter {
     if (this.isConnected && this.ws) {
       try {
         this.ws.send(message);
-      } catch (error) {
+      } catch (_error) {
         this.emit('error', error);
         this.queueMessage(message);
       }
@@ -167,7 +167,7 @@ export class WebSocketClient extends EventEmitter {
       if (message) {
         try {
           this.ws?.send(message);
-        } catch (error) {
+        } catch (_error) {
           this.emit('error', error);
           this.messageQueue.unshift(message);
           break;
@@ -188,7 +188,7 @@ export class WebSocketClient extends EventEmitter {
 
       try {
         await this.connect();
-      } catch (error) {
+      } catch (_error) {
         this.emit('reconnectError', error);
         if (this.reconnectAttempts < (this.options.maxReconnectAttempts ?? 0)) {
           this.scheduleReconnect();
@@ -208,7 +208,7 @@ export class WebSocketClient extends EventEmitter {
         try {
           // Note:WebSocket ping might not be available, use a message instead
           this.ws.send(JSON.stringify({ type: 'ping' }));
-        } catch (error) {
+        } catch (_error) {
           this.emit('error', error);
         }
       }

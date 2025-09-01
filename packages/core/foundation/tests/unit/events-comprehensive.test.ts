@@ -117,8 +117,8 @@ describe('Event System - Comprehensive Coverage', () => {
       it('should handle multiple once listeners', () => {
         const results: string[] = [];
 
-        eventBase.once('message', (msg) => results.push(`A:${msg.text}`));
-        eventBase.once('message', (msg) => results.push(`B:${msg.text}`));
+        eventBase.once('message', (msg) => results.push('A:' + msg.text));
+        eventBase.once('message', (msg) => results.push('B:' + msg.text));
 
         eventBase.emit('message', { text: 'test', id: '1' });
 
@@ -148,8 +148,8 @@ describe('Event System - Comprehensive Coverage', () => {
       it('should handle mixed regular and once listeners', () => {
         const results: string[] = [];
 
-        eventBase.on('message', (msg) => results.push(`regular:${msg.text}`));
-        eventBase.once('message', (msg) => results.push(`once:${msg.text}`));
+        eventBase.on('message', (msg) => results.push('regular:' + msg.text));
+        eventBase.once('message', (msg) => results.push('once:' + msg.text));
 
         // First emit
         eventBase.emit('message', { text: 'first', id: '1' });
@@ -243,7 +243,7 @@ describe('Event System - Comprehensive Coverage', () => {
         const results: string[] = [];
 
         eventBase.on('message', (msg) => {
-          results.push(`outer:${msg.text}`);
+          results.push('outer:' + msg.text);
 
           // Emit another event during listener execution
           if (msg.text === 'trigger') {

@@ -46,7 +46,7 @@ async function getSystemCoordinator(): Promise<SystemCoordinator> {
         };
       },
     };
-  } catch (error) {
+  } catch (_error) {
     logger.warn(
       'Performance tracker unavailable, using fallback coordinator: ',
       error
@@ -176,7 +176,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
 
       logger.info('Dashboard monitoring started');
       return ok();
-    } catch (error) {
+    } catch (_error) {
       logger.error('Failed to start dashboard: ', error);
       return err(error as Error);
     }
@@ -210,7 +210,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
 
       logger.info('Dashboard monitoring stopped');
       return ok();
-    } catch (error) {
+    } catch (_error) {
       logger.error('Failed to stop dashboard: ', error);
       return err(error as Error);
     }
@@ -243,7 +243,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
       };
 
       return ok(status);
-    } catch (error) {
+    } catch (_error) {
       logger.error('Failed to get system status: ', error);
       return err(error as Error);
     }
@@ -273,8 +273,8 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
         },
         metrics: {
           uptime: metrics.uptime,
-          memoryUsage: `${Math.round(metrics.memoryUsage / 1024 / 1024)}MB`,
-          cpuUsage: `${metrics.cpuUsage.toFixed(2)}%`,
+          memoryUsage: Math.round(metrics.memoryUsage / 1024 / 1024) + 'MB',
+          cpuUsage: metrics.cpuUsage.toFixed(2) + '%',
           activeConnections: metrics.activeConnections,
           performance: metrics.performance,
         },
@@ -289,7 +289,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
       };
 
       return ok(JSON.stringify(report, null, 2));
-    } catch (error) {
+    } catch (_error) {
       logger.error('Failed to generate report: ', error);
       return err(error as Error);
     }
@@ -311,7 +311,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
       } else {
         logger.warn('Dashboard update failed: ', statusResult.error);
       }
-    } catch (error) {
+    } catch (_error) {
       logger.error('Dashboard update error: ', error);
     }
   }
@@ -321,11 +321,11 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
    */
   private displayInitialStatus(): void {
     logger.info(
-      '🚀 System Metrics Dashboard started with coordinating facade pattern'
+      ' System Metrics Dashboard started with coordinating facade pattern'
     );
-    logger.info(`📊 Refresh interval:${this.configuration.refreshInterval}ms`);
+    logger.info(` Refresh interval:${this.configuration.refreshInterval}ms`);
     logger.info(
-      `⚡ Real-time monitoring:${this.configuration.enableRealtime ? 'enabled' : ' disabled'}`
+      ' Real-time monitoring:' + this.configuration.enableRealtime ? 'enabled' : ' disabled'
     );
   }
 
@@ -335,22 +335,22 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
   private displayConsoleStatus(status: DashboardStatus): void {
     const healthEmoji =
       status.health.overall === 'healthy'
-        ? '✅'
+        ? ''
         : status.health.overall === 'warning'
-          ? '⚠️'
-          : '❌';
+          ? ''
+          : '';
 
-    logger.info(`${healthEmoji} System Health:${status.health.overall}`);
+    logger.info((healthEmoji) + ' System Health:' + status.health.overall);
 
     if (status.health.alerts.length > 0) {
       for (const alert of status.health.alerts) {
         const alertEmoji =
           alert.level === 'error'
-            ? '❌'
+            ? ''
             : alert.level === 'warning'
-              ? '⚠️'
+              ? ''
               : 'ℹ️';
-        logger.info(`${alertEmoji} ${alert.component}:${alert.message}`);
+        logger.info((alertEmoji) + ' ' + (alert.component) + ':' + alert.message);
       }
     }
   }

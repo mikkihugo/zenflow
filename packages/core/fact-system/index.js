@@ -8,14 +8,14 @@
  * multi-source data integration, and intelligent context augmentation.
  *
  * **CORE FACT CAPABILITIES:**
- * - 🚀 **Rust Engine Integration**: High-performance processing with WASM/native bindings
- * - 🔍 **Multi-Source Search**: GitHub, NPM, Documentation, and API integration
- * - 💾 **Smart Caching**: Intelligent cache with TTL and storage backends
- * - 🎯 **Vector Search**: LanceDB integration for semantic similarity search
- * - 📊 **GraphQL APIs**: Advanced GitHub GraphQL for deep repository analysis
- * - 🔧 **Foundation Integration**: Complete @claude-zen/foundation support
- * - 🌐 **Live Data Connectors**: Real-time API and documentation scraping
- * - 📈 **Performance Analytics**: Comprehensive metrics and monitoring
+ * -  **Rust Engine Integration**: High-performance processing with WASM/native bindings
+ * -  **Multi-Source Search**: GitHub, NPM, Documentation, and API integration
+ * -  **Smart Caching**: Intelligent cache with TTL and storage backends
+ * -  **Vector Search**: LanceDB integration for semantic similarity search
+ * -  **GraphQL APIs**: Advanced GitHub GraphQL for deep repository analysis
+ * -  **Foundation Integration**: Complete @claude-zen/foundation support
+ * -  **Live Data Connectors**: Real-time API and documentation scraping
+ * -  **Performance Analytics**: Comprehensive metrics and monitoring
  *
  * **Enterprise Features:**
  * - Multi-database backend support (SQLite, LanceDB, Kuzu graph database)

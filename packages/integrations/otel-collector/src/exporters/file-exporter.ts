@@ -9,15 +9,16 @@ import { createWriteStream, promises as fs, type WriteStream} from 'node:fs';
 import { dirname, join} from 'node:path';
 import { createGzip} from 'node:zlib';
 import type { Logger} from '@claude-zen/foundation';
-import { getLogger} from '@claude-zen/foundation/logging';
-import type { ExporterConfig} from '../types.js';
+import { getLogger} from '@claude-zen/foundation';
+import type { ExporterConfig, TelemetryData, ExportResult} from '../types.js';
 import type { BaseExporter} from './index.js';
 
 /**
  * File exporter implementation
  */
 export class FileExporter implements BaseExporter {
-  private logger:Logger;
+  private readonly config: ExporterConfig;
+  private logger: Logger;
   private writeStream:WriteStream  |  null = null;
   private currentFilePath:string | null = null;
   private fileRotationTimer:NodeJS.Timeout  |  null = null;
@@ -33,16 +34,17 @@ export class FileExporter implements BaseExporter {
   private readonly compression:boolean;
   private readonly maxFiles:number;
 
-  constructor(config:ExporterConfig) {
-    this.logger = getLogger(`FileExporter:${config.name}`);
+  constructor(config: ExporterConfig) {
+    this.config = config;
+    this.logger = getLogger('FileExporter:' + config.name);
 
     // Extract configuration
-    this.baseFilePath = config.config?.filePath   ||   './telemetry-data';
-    this.format = config.config?.format   ||   'jsonl';
-    this.maxFileSize = config.config?.maxFileSize   ||   50 * 1024 * 1024; // 50MB
-    this.rotationInterval = config.config?.rotationInterval   ||   3600000; // 1 hour
-    this.compression = config.config?.compression !== false; // Default true
-    this.maxFiles = config.config?.maxFiles   ||   10;
+    this.baseFilePath = config.config?.['filePath'] || './telemetry-data';
+    this.format = config.config?.['format'] || 'jsonl';
+    this.maxFileSize = config.config?.['maxFileSize'] || 50 * 1024 * 1024; // 50MB
+    this.rotationInterval = config.config?.['rotationInterval'] || 3600000; // 1 hour
+    this.compression = config.config?.['compression'] !== false; // Default true
+    this.maxFiles = config.config?.['maxFiles'] || 10;
 }
 
   async initialize():Promise<void> {
@@ -227,11 +229,11 @@ export class FileExporter implements BaseExporter {
     // Generate new file path
     const timestamp = new Date().toISOString().replace(/[.:]/g, '-');
     const extension = this.format === 'jsonl' ? 'jsonl' : 'json';
-    this.currentFilePath = `${this.baseFilePath}-${timestamp}.${extension}`;
+    this.currentFilePath = (this.baseFilePath) + '-' + (timestamp) + '.' + extension;
 
     // Create new write stream
     if (this.compression) {
-      const fileStream = createWriteStream(`${this.currentFilePath}.gz`);
+      const fileStream = createWriteStream(this.currentFilePath + '.gz');
       const gzipStream = createGzip();
       gzipStream.pipe(fileStream);
       this.writeStream = gzipStream as any;

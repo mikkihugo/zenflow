@@ -14,7 +14,7 @@ const logger = {
 	info: (...args) => console.log(...args)
 };
 
-logger.info("📦 Building Claude Code Zen for NPM distribution...\n");
+logger.info(" Building Claude Code Zen for NPM distribution...\n");
 
 // Clean and create output directory
 const distDir = "dist";
@@ -24,17 +24,17 @@ if (existsSync(distDir)) {
 }
 mkdirSync(npmDir, { recursive: true });
 
-logger.info("📦 Step 1: Building foundation...");
+logger.info(" Step 1: Building foundation...");
 try {
 	execSync("cd packages/core/foundation && pnpm build", {
 		stdio: "inherit",
 	});
-	logger.info("   ✅ Foundation built");
+	logger.info("    Foundation built");
 } catch (error) {
-	logger.info("   ⚠️ Foundation build failed, continuing...");
+	logger.info("    Foundation build failed, continuing...");
 }
 
-logger.info("📦 Step 2: Creating NPM entry point...");
+logger.info(" Step 2: Creating NPM entry point...");
 const npmEntry = `${npmDir}/claude-zen.js`;
 const entryCode = `#!/usr/bin/env node
 
@@ -66,7 +66,7 @@ function startClaudeZen() {
   const binaryPath = join(__dirname, 'bin', binaryName);
   
   if (existsSync(binaryPath)) {
-    logger.info('🚀 Starting Claude Code Zen (SEA binary)...');
+    logger.info(' Starting Claude Code Zen (SEA binary)...');
     const child = spawn(binaryPath, args, {
       stdio: 'inherit',
       env: { ...process.env, CLAUDE_ZEN_MODE: 'sea' }
@@ -78,7 +78,7 @@ function startClaudeZen() {
   // Fallback to Node.js version
   const nodePath = join(__dirname, 'lib', 'index.js');
   if (existsSync(nodePath)) {
-    logger.info('🚀 Starting Claude Code Zen (Node.js)...');
+    logger.info(' Starting Claude Code Zen (Node.js)...');
     const child = spawn('node', [nodePath, ...args], {
       stdio: 'inherit',
       env: { ...process.env, CLAUDE_ZEN_MODE: 'nodejs' }
@@ -87,7 +87,7 @@ function startClaudeZen() {
     return;
   }
   
-  logger.error('❌ Claude Code Zen not found. Please reinstall the package.');
+  logger.error(' Claude Code Zen not found. Please reinstall the package.');
   process.exit(1);
 }
 
@@ -97,7 +97,7 @@ startClaudeZen();
 writeFileSync(npmEntry, entryCode);
 execSync(`chmod +x ${npmEntry}`);
 
-logger.info("📦 Step 3: Creating Node.js fallback...");
+logger.info(" Step 3: Creating Node.js fallback...");
 mkdirSync(`${npmDir}/lib`, { recursive: true });
 const nodejsEntry = `${npmDir}/lib/index.js`;
 const nodejsCode = `#!/usr/bin/env node
@@ -111,7 +111,7 @@ const args = process.argv.slice(2);
 
 // Handle auth command
 if (args[0] === 'auth') {
-  logger.info('🔐 Claude Code Zen Authentication (Node.js)');
+  logger.info(' Claude Code Zen Authentication (Node.js)');
   
   const provider = args[1];
   if (!provider || provider === '--help' || provider === '-h') {
@@ -126,31 +126,31 @@ Commands:
   }
   
   if (provider === 'copilot') {
-    logger.info('🔐 GitHub Copilot authentication - Node.js implementation');
+    logger.info(' GitHub Copilot authentication - Node.js implementation');
   } else if (provider === 'status') {
-    logger.info('🔐 Authentication status - Node.js implementation');
+    logger.info(' Authentication status - Node.js implementation');
   }
   return;
 }
 
 // Handle main server
-logger.info('🚀 Claude Code Zen Server (Node.js Distribution)');
-logger.info('📦 Platform:', process.platform);
-logger.info('🔧 Node version:', process.version);
-logger.info('⚡ Running in Node.js mode');
+logger.info(' Claude Code Zen Server (Node.js Distribution)');
+logger.info(' Platform:', process.platform);
+logger.info(' Node version:', process.version);
+logger.info(' Running in Node.js mode');
 
 const port = args.find(arg => arg.startsWith('--port='))?.split('=')[1] || 
             (args.includes('--port') ? args[args.indexOf('--port') + 1] : '3000');
 
-logger.info(\`🌐 Server would start on port: \${port}\`);
-logger.info('✅ Node.js implementation working');
-logger.info('📋 Args received:', args);
+logger.info(\` Server would start on port: \${port}\`);
+logger.info(' Node.js implementation working');
+logger.info(' Args received:', args);
 `;
 
 writeFileSync(nodejsEntry, nodejsCode);
 execSync(`chmod +x ${nodejsEntry}`);
 
-logger.info("📦 Step 4: Build SEA binaries for NPM...");
+logger.info(" Step 4: Build SEA binaries for NPM...");
 try {
 	// Run SEA build
 	execSync("node scripts/build-sea.js", { stdio: "inherit" });
@@ -170,16 +170,16 @@ try {
 		if (existsSync(srcPath)) {
 			copyFileSync(srcPath, destPath);
 			execSync(`chmod +x ${destPath}`);
-			logger.info(`   ✅ Copied ${binary}`);
+			logger.info(`    Copied ${binary}`);
 		}
 	});
 	
-	logger.info("   ✅ SEA binaries ready for NPM");
+	logger.info("    SEA binaries ready for NPM");
 } catch (error) {
-	logger.info("   ⚠️ SEA build failed, NPM will use Node.js only");
+	logger.info("    SEA build failed, NPM will use Node.js only");
 }
 
-logger.info("📦 Step 5: Creating package files...");
+logger.info(" Step 5: Creating package files...");
 
 // Create NPM-specific package.json
 const npmPackage = {
@@ -229,16 +229,16 @@ claude-zen --port 3001
 
 ## Features
 
-✅ **Dual Distribution:**
+ **Dual Distribution:**
 - SEA binaries (no Node.js required) - Linux, macOS, Windows
 - Node.js fallback (when SEA not available)
 
-✅ **Smart Detection:**
+ **Smart Detection:**
 - Automatically uses fastest available version
 - Cross-platform compatibility
 - Zero configuration required
 
-✅ **Enterprise Ready:**
+ **Enterprise Ready:**
 - 5-tier architecture
 - Multi-agent coordination
 - Web dashboard included
@@ -277,15 +277,15 @@ Built with Node.js 22+ Single Executable Applications (SEA) technology.
 
 writeFileSync(`${npmDir}/README.md`, npmReadme);
 
-logger.info("\n🎉 NPM package build complete!");
-logger.info(`📁 NPM package ready in: ${npmDir}/`);
-logger.info("\n📊 What you get:");
-logger.info("   ✅ Smart launcher (claude-zen.js) - auto-detects best version");
-logger.info("   ✅ SEA binaries for Linux/macOS/Windows (if available)");
-logger.info("   ✅ Node.js fallback (lib/index.js) - always works");
-logger.info("   ✅ NPM package.json with proper metadata");
-logger.info("   ✅ Cross-platform compatibility");
+logger.info("\n NPM package build complete!");
+logger.info(` NPM package ready in: ${npmDir}/`);
+logger.info("\n What you get:");
+logger.info("    Smart launcher (claude-zen.js) - auto-detects best version");
+logger.info("    SEA binaries for Linux/macOS/Windows (if available)");
+logger.info("    Node.js fallback (lib/index.js) - always works");
+logger.info("    NPM package.json with proper metadata");
+logger.info("    Cross-platform compatibility");
 
-logger.info("\n🚀 Ready for NPM publish!");
-logger.info("📋 Test locally: npm install -g ./dist/npm/");
-logger.info("📋 Publish: cd dist/npm && npm publish");
+logger.info("\n Ready for NPM publish!");
+logger.info(" Test locally: npm install -g ./dist/npm/");
+logger.info(" Publish: cd dist/npm && npm publish");

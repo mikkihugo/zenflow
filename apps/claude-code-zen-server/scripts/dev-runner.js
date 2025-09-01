@@ -11,7 +11,7 @@ try {
 	// Try to import syslog bridge if available
 	const syslogModule = await import("../src/utils/logtape-syslog-bridge");
 	syslogBridge = syslogModule.syslogBridge;
-	logger.info("✅ LogTape syslog bridge loaded successfully");
+	logger.info(" LogTape syslog bridge loaded successfully");
 } catch (_error) {
 	logger.info("ℹ️ LogTape syslog bridge not available (optional feature)");
 	// Provide a simple null implementation
@@ -133,7 +133,7 @@ function createErrorPage(error) {
     <div class="auto-refresh">Auto-refreshing in 30s...</div>
     <div class="container">
         <div class="header">
-            <h1>🚨 Claude Code Zen - TypeScript Compile Error</h1>
+            <h1> Claude Code Zen - TypeScript Compile Error</h1>
             <p>Fix the error below and the server will auto-restart</p>
         </div>
         
@@ -147,7 +147,7 @@ function createErrorPage(error) {
         </div>
         
         <div style="margin-top: 20px; padding: 15px; background: #636e72; border-radius: 4px; color: #ddd;">
-            <strong>💡 Tips:</strong>
+            <strong> Tips:</strong>
             <ul>
                 <li>This page auto-refreshes every 30 seconds</li>
                 <li>The server will restart automatically when you fix the error</li>
@@ -178,7 +178,7 @@ function startErrorServer() {
 
 	errorServer.listen(PORT, () => {
 		logger.info(
-			`${colors.yellow}🚨 Error server running at http://localhost:${PORT}${colors.reset}`,
+			`${colors.yellow} Error server running at http://localhost:${PORT}${colors.reset}`,
 		);
 		logger.info(
 			`${colors.cyan}   Fix the TypeScript errors and the main server will restart${colors.reset}`,
@@ -196,7 +196,7 @@ function stopErrorServer() {
 function runTypeCheck() {
 	return new Promise((resolve, reject) => {
 		logger.info(
-			`${colors.blue}🔍 Running TypeScript type check...${colors.reset}`,
+			`${colors.blue} Running TypeScript type check...${colors.reset}`,
 		);
 
 		const tscCommand = getTscCommand();
@@ -234,7 +234,7 @@ function runTypeCheck() {
 
 		tsc.on("close", (code) => {
 			if (code === 0) {
-				logger.info(`${colors.green}✅ TypeScript check passed${colors.reset}`);
+				logger.info(`${colors.green} TypeScript check passed${colors.reset}`);
 				if (syslogBridge) {
 					syslogBridge.info("typescript", "TypeScript compilation successful", {
 						exitCode: code,
@@ -244,7 +244,7 @@ function runTypeCheck() {
 				resolve();
 			} else {
 				const error = stderr || stdout || "Unknown TypeScript error";
-				logger.info(`${colors.red}❌ TypeScript check failed:${colors.reset}`);
+				logger.info(`${colors.red} TypeScript check failed:${colors.reset}`);
 				logger.info(error);
 				if (syslogBridge) {
 					syslogBridge.error("typescript", "TypeScript compilation failed", {
@@ -261,7 +261,7 @@ function runTypeCheck() {
 
 function startMainServer() {
 	return new Promise((resolve, reject) => {
-		logger.info(`${colors.green}🚀 Starting main server...${colors.reset}`);
+		logger.info(`${colors.green} Starting main server...${colors.reset}`);
 
 		try {
 			const npxPath = execSync("which npx", { encoding: "utf8" }).trim();
@@ -290,7 +290,7 @@ function startMainServer() {
 		mainServer.on("close", (code) => {
 			if (code !== 0 && code !== null) {
 				logger.info(
-					`${colors.red}💥 Main server exited with code ${code}${colors.reset}`,
+					`${colors.red} Main server exited with code ${code}${colors.reset}`,
 				);
 				lastError = startupError || `Server exited with code ${code}`;
 				reject(new Error(lastError));
@@ -301,7 +301,7 @@ function startMainServer() {
 		setTimeout(() => {
 			if (mainServer && !mainServer.killed) {
 				logger.info(
-					`${colors.green}✅ Main server started successfully${colors.reset}`,
+					`${colors.green} Main server started successfully${colors.reset}`,
 				);
 				if (syslogBridge) {
 					syslogBridge.info(
@@ -351,7 +351,7 @@ function startFileWatcher() {
 	if (fileWatcher) return;
 
 	logger.info(
-		`${colors.blue}👁️ Watching for TypeScript file changes...${colors.reset}`,
+		`${colors.blue}️ Watching for TypeScript file changes...${colors.reset}`,
 	);
 
 	// Watch TypeScript files for changes from the server directory
@@ -360,7 +360,7 @@ function startFileWatcher() {
 
 	fileWatcher = watch(srcDir, { recursive: true }, (_eventType, filename) => {
 		if (filename?.endsWith(".ts") && !isCheckingTypes) {
-			logger.info(`${colors.cyan}📁 File changed: ${filename}${colors.reset}`);
+			logger.info(`${colors.cyan} File changed: ${filename}${colors.reset}`);
 
 			// Clear existing timer
 			if (debounceTimer) {
@@ -372,10 +372,10 @@ function startFileWatcher() {
 				if (isCheckingTypes) return; // Double-check
 
 				logger.info(
-					`${colors.blue}🔍 Debounce complete, checking TypeScript after file changes...${colors.reset}`,
+					`${colors.blue} Debounce complete, checking TypeScript after file changes...${colors.reset}`,
 				);
 				broadcastMessage(
-					"🔄 Claude Code Zen: File changes detected, checking TypeScript...",
+					" Claude Code Zen: File changes detected, checking TypeScript...",
 				);
 
 				isCheckingTypes = true;
@@ -384,10 +384,10 @@ function startFileWatcher() {
 
 					// TypeScript passed! Switch to main server
 					logger.info(
-						`${colors.green}✅ TypeScript errors fixed! Starting main server...${colors.reset}`,
+						`${colors.green} TypeScript errors fixed! Starting main server...${colors.reset}`,
 					);
 					broadcastMessage(
-						"🎉 Claude Code Zen: TypeScript errors fixed! Starting main server...",
+						" Claude Code Zen: TypeScript errors fixed! Starting main server...",
 					);
 
 					stopErrorServer();
@@ -395,16 +395,16 @@ function startFileWatcher() {
 					await startMainServer();
 
 					broadcastMessage(
-						"🚀 Claude Code Zen: Server ready at http://localhost:3000",
+						" Claude Code Zen: Server ready at http://localhost:3000",
 					);
 				} catch (error) {
 					// Still has errors, update error server
 					lastError = error.toString();
 					logger.info(
-						`${colors.yellow}⚠️ TypeScript errors still present, updating error page...${colors.reset}`,
+						`${colors.yellow} TypeScript errors still present, updating error page...${colors.reset}`,
 					);
 					broadcastMessage(
-						"⚠️ Claude Code Zen: TypeScript errors still present...",
+						" Claude Code Zen: TypeScript errors still present...",
 					);
 				}
 				isCheckingTypes = false;
@@ -431,13 +431,13 @@ function stopFileWatcher() {
 
 async function start() {
 	logger.info(
-		`${colors.bold}${colors.cyan}🔥 Claude Code Zen Development Runner${colors.reset}`,
+		`${colors.bold}${colors.cyan} Claude Code Zen Development Runner${colors.reset}`,
 	);
 	logger.info(
 		`${colors.cyan}   TypeScript checking + Error visualization${colors.reset}`,
 	);
 	logger.info(
-		`${colors.green}📖 Reload Instructions: See SYSTEMD_INSTRUCTIONS.md & CLAUDE.md${colors.reset}\n`,
+		`${colors.green} Reload Instructions: See SYSTEMD_INSTRUCTIONS.md & CLAUDE.md${colors.reset}\n`,
 	);
 
 	try {
@@ -450,7 +450,7 @@ async function start() {
 
 		// Broadcast success message
 		broadcastMessage(
-			"✅ Claude Code Zen: TypeScript check passed, server starting...",
+			" Claude Code Zen: TypeScript check passed, server starting...",
 		);
 
 		await startMainServer();
@@ -460,19 +460,19 @@ async function start() {
 
 		// Broadcast server ready
 		broadcastMessage(
-			"🚀 Claude Code Zen: Server ready at http://localhost:3000",
+			" Claude Code Zen: Server ready at http://localhost:3000",
 		);
 	} catch (error) {
 		// TypeScript failed or server crashed
 		lastError = error.toString();
 
 		logger.info(
-			`${colors.red}🚨 Error detected - starting error server${colors.reset}`,
+			`${colors.red} Error detected - starting error server${colors.reset}`,
 		);
 
 		// Broadcast error message
 		broadcastMessage(
-			"❌ Claude Code Zen: TypeScript errors detected! Fix errors to continue...",
+			" Claude Code Zen: TypeScript errors detected! Fix errors to continue...",
 		);
 
 		stopMainServer();
@@ -482,7 +482,7 @@ async function start() {
 		startFileWatcher();
 
 		logger.info(
-			`${colors.yellow}🔄 Error server running. File watcher active - will auto-restart when TypeScript errors are fixed.${colors.reset}`,
+			`${colors.yellow} Error server running. File watcher active - will auto-restart when TypeScript errors are fixed.${colors.reset}`,
 		);
 	}
 }
@@ -490,7 +490,7 @@ async function start() {
 // Handle shutdown gracefully
 process.on("SIGTERM", () => {
 	logger.info(
-		`${colors.yellow}🔄 Received SIGTERM, shutting down gracefully...${colors.reset}`,
+		`${colors.yellow} Received SIGTERM, shutting down gracefully...${colors.reset}`,
 	);
 	stopFileWatcher();
 	stopMainServer();
@@ -500,7 +500,7 @@ process.on("SIGTERM", () => {
 
 process.on("SIGINT", () => {
 	logger.info(
-		`${colors.yellow}🔄 Received SIGINT, shutting down gracefully...${colors.reset}`,
+		`${colors.yellow} Received SIGINT, shutting down gracefully...${colors.reset}`,
 	);
 	stopFileWatcher();
 	stopMainServer();

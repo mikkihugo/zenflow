@@ -53,7 +53,7 @@ export class ApiServer {
   private realApiRoutes: ReturnType<typeof createRealApiRoutes>;
 
   constructor(private config: ApiServerConfig) {
-    this.logger.info('🚀 Creating ApiServer...');
+    this.logger.info(' Creating ApiServer...');
     // Create Express app
     this.app = express();
     // Initialize real API routes  
@@ -65,7 +65,7 @@ export class ApiServer {
     this.server = createServer(this.app);
     // Initialize WebSocket service
     this.initializeWebSocketService();
-    this.logger.info('✅ ApiServer created successfully');
+    this.logger.info(' ApiServer created successfully');
   }
 
   private setupMiddleware(): void {
@@ -143,27 +143,27 @@ export class ApiServer {
       legacyHeaders: false,
     });
     this.app.use('/api/', limiter);
-    this.logger.info('✅ Production middleware configured');
+    this.logger.info(' Production middleware configured');
   }
 
   private setupRoutes(): void {
-    this.logger.info('📋 Setting up API routes...');
+    this.logger.info(' Setting up API routes...');
     this.setupHealthRoutes();
     this.setupSystemRoutes();
     this.setupRealApiRoutes();
     this.setupWorkspaceRoutes();
     this.setupSvelteStaticFiles();
     this.setupDefaultRoutes();
-    this.logger.info('✅ API routes configured');
+    this.logger.info(' API routes configured');
   }
 
   /**
    * Set up real API routes for dashboard functionality
    */
   private setupRealApiRoutes(): void {
-    this.logger.info('🔧 Setting up real API routes...');
+    this.logger.info(' Setting up real API routes...');
     this.realApiRoutes.setupRoutes(this.app);
-    this.logger.info('✅ Real API routes configured');
+    this.logger.info(' Real API routes configured');
   }
 
   /**
@@ -602,7 +602,7 @@ export class ApiServer {
    * Set up Svelte web dashboard integration
    */
   private setupSvelteStaticFiles(): void {
-    this.logger.info('🎨 Setting up Svelte web dashboard integration...');
+    this.logger.info(' Setting up Svelte web dashboard integration...');
     // Serve static assets from Svelte build client directory
     const svelteClientPath = resolve(
       __dirname,
@@ -653,7 +653,7 @@ export class ApiServer {
     });
 
     this.logger.info(
-      '✅ Svelte web dashboard integrated - Single port deployment with SvelteKit handler'
+      ' Svelte web dashboard integrated - Single port deployment with SvelteKit handler'
     );
   }
 
@@ -681,7 +681,7 @@ export class ApiServer {
 
   start(): Promise<void> {
     this.logger.info(
-      `🚀 Starting server on ${this.config.host || DEFAULT_HOST}:${this.config.port}...`
+      ` Starting server on ${this.config.host || DEFAULT_HOST}:${this.config.port}...`
     );
 
     // Setup terminus for graceful shutdown BEFORE starting server
@@ -739,7 +739,7 @@ export class ApiServer {
     error: NodeJS.ErrnoException,
     connectionMonitor: ReturnType<typeof this.createConnectionMonitor>
   ): void {
-    this.logger.error('❌ Server error detected: ', {
+    this.logger.error(' Server error detected: ', {
       error: error.message,
       errorCount: connectionMonitor.errorCount,
       connectionState: connectionMonitor.connectionState,
@@ -804,7 +804,7 @@ export class ApiServer {
     const serverUrl = `http://${this.config.host || DEFAULT_HOST}:${this.config.port}`;
 
     this.logger.info(`🌐 Claude Code Zen Server started on ${serverUrl}`);
-    this.logger.info(`⚡ Startup completed in ${startupTime}ms`);
+    this.logger.info(` Startup completed in ${startupTime}ms`);
     this.logger.info(
       `🔌 Connection state:${connectionMonitor.connectionState}`
     );
@@ -820,7 +820,7 @@ export class ApiServer {
    * Log web dashboard information
    */
   private logWebDashboardInfo(serverUrl: string): void {
-    this.logger.info(`🎨 Web Dashboard:${serverUrl}/ (Svelte)`);
+    this.logger.info(` Web Dashboard:${serverUrl}/ (Svelte)`);
   }
 
   /**
@@ -837,7 +837,7 @@ export class ApiServer {
    * Log API endpoints information
    */
   private logApiEndpoints(serverUrl: string): void {
-    this.logger.info(`📊 System Status:${serverUrl}/api/status`);
+    this.logger.info(` System Status:${serverUrl}/api/status`);
     this.logger.info(`🎛️ Control APIs:${serverUrl}/api/v1/control/*`);
     this.logger.info(`📂 Workspace API:${serverUrl}/api/workspace/files`);
   }
@@ -847,7 +847,7 @@ export class ApiServer {
    */
   private logDeploymentInfo(): void {
     this.logger.info(
-      '🎯 Single port deployment: API + Svelte dashboard + K8s health'
+      ' Single port deployment: API + Svelte dashboard + K8s health'
     );
     this.logger.info('🛡️ Graceful shutdown enabled via @godaddy/terminus');
   }
@@ -857,7 +857,7 @@ export class ApiServer {
    */
   private logConnectionMetrics(startupTime: number, errorCount: number): void {
     this.logger.info(
-      `📈 Connection metrics:startup=${startupTime}ms, errors=${errorCount}`
+      ` Connection metrics:startup=${startupTime}ms, errors=${errorCount}`
     );
   }
 
@@ -901,9 +901,9 @@ export class ApiServer {
         shutdownMonitor.shutdownState = 'stopped';
         const shutdownTime = Date.now() - shutdownMonitor.startTime;
         this.logger.info('🛑 API server stopped');
-        this.logger.info(`⚡ Shutdown completed in ${shutdownTime}ms`);
+        this.logger.info(` Shutdown completed in ${shutdownTime}ms`);
         this.logger.info(
-          `📊 Final state:connections=${shutdownMonitor.activeConnections}, state=${shutdownMonitor.shutdownState}`
+          ` Final state:connections=${shutdownMonitor.activeConnections}, state=${shutdownMonitor.shutdownState}`
         );
         resolveServerStop();
       });
@@ -1025,7 +1025,7 @@ export class ApiServer {
             `⏳ Connection drain delay:${delay}ms for graceful shutdown`
           );
           setTimeout(() => {
-            this.logger.info('✅ Connection drain delay completed');
+            this.logger.info(' Connection drain delay completed');
             resolveDelay();
           }, delay);
         });
@@ -1037,7 +1037,7 @@ export class ApiServer {
           );
           // Close database connections, cleanup resources
           // But don't close HTTP server - terminus handles that
-          this.logger.info('✅ Resources cleaned up, ready for shutdown');
+          this.logger.info(' Resources cleaned up, ready for shutdown');
         }),
       onShutdown: () =>
         Promise.resolve().then(() => {
@@ -1053,7 +1053,7 @@ export class ApiServer {
         }
       },
     });
-    this.logger.info('✅ Terminus configured successfully');
+    this.logger.info(' Terminus configured successfully');
   }
 
   /**
@@ -1105,16 +1105,16 @@ export class ApiServer {
     this.logger.info('🔌 Initializing WebSocket event service...');
     try {
       eventRegistryWebSocketService.initialize(this.server);
-      this.logger.info('✅ WebSocket event service initialized successfully');
+      this.logger.info(' WebSocket event service initialized successfully');
 
       // Initialize event registry with sample data
-      this.logger.info('🎯 Initializing event registry with sample data...');
+      this.logger.info(' Initializing event registry with sample data...');
       eventRegistryInitializer.start();
       this.logger.info(
-        '✅ Event registry initialized and broadcasting started'
+        ' Event registry initialized and broadcasting started'
       );
     } catch (error) {
-      this.logger.error('❌ Failed to initialize WebSocket service: ', error);
+      this.logger.error(' Failed to initialize WebSocket service: ', error);
     }
   }
 

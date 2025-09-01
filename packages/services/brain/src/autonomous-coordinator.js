@@ -58,7 +58,7 @@ export class AutonomousCoordinator {
         },
     };
     constructor() {
-        logger.info('🤖 Autonomous Coordinator created - self-governing brain system');
+        logger.info(' Autonomous Coordinator created - self-governing brain system');
         ;
     }
     /**
@@ -68,7 +68,7 @@ export class AutonomousCoordinator {
         if (this.initialized)
             return;
         try {
-            logger.info('🚀 Initializing Autonomous Coordinator...');
+            logger.info(' Initializing Autonomous Coordinator...');
             ');
             this.behavioralIntelligence = behavioralIntelligence || null;
             this.optimizationEngine = optimizationEngine || null;
@@ -77,11 +77,11 @@ export class AutonomousCoordinator {
             // Start autonomous monitoring and decision making
             await this.startAutonomousMonitoring();
             this.initialized = true;
-            logger.info('✅ Autonomous Coordinator initialized - brain is now self-governing');
+            logger.info(' Autonomous Coordinator initialized - brain is now self-governing');
             ;
         }
         catch (error) {
-            logger.error('❌ Failed to initialize Autonomous Coordinator:', error);
+            logger.error(' Failed to initialize Autonomous Coordinator:', error);
             ')      throw error;;
         }
     }
@@ -128,11 +128,11 @@ export class AutonomousCoordinator {
             });
             // Self-tune parameters based on decision outcomes
             await this.autonomousParameterTuning();
-            logger.debug(`🤖 Autonomous monitoring complete:${decisions.length} decisions made` `
+            logger.debug(` Autonomous monitoring complete:${decisions.length} decisions made` `
       );
       return decisions;
 } catch (error) {
-      logger.error('❌ Autonomous system monitoring failed:', error);')      return [];
+      logger.error(' Autonomous system monitoring failed:', error);')      return [];
 }
 }
 
@@ -504,7 +504,7 @@ if ((insights.adaptationRate < 0.1 && insights.totalOptimizations > 20) || needs
           this.adjustParametersForType(type,'conservative');')}
 });
 
-      logger.debug('🎯 Autonomous parameter tuning complete');')} catch (error) {
+      logger.debug(' Autonomous parameter tuning complete');')} catch (error) {
       logger.error('Error in autonomous parameter tuning:', error);')}
 }
 
@@ -785,7 +785,7 @@ if (overallPressure <= scaleDownThreshold &&
     
     // Initialize performance baselines with enhanced calculations
     this.performanceBaselines.set('response_time', 2000); // 2 seconds')    this.performanceBaselines.set('throughput', 100); // 100 tasks/minute')    this.performanceBaselines.set('error_rate', 0.05); // 5%')    this.performanceBaselines.set('cpu_usage', 0.6); // 60%')    this.performanceBaselines.set('memory_usage', 0.7); // 70%')
-    logger.debug('📊 Performance baselines initialized with enhanced analysis');')}
+    logger.debug(' Performance baselines initialized with enhanced analysis');')}
 
   private async startAutonomousMonitoring():Promise<void> {
     // Start background monitoring with async setup
@@ -806,7 +806,7 @@ if (overallPressure <= scaleDownThreshold &&
    */
   private async initializeMetricsCollection():Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 50));
-    logger.debug('📊 Metrics collection initialized');')}
+    logger.debug(' Metrics collection initialized');')}
 
   /**
    * Setup alerting system for autonomous responses

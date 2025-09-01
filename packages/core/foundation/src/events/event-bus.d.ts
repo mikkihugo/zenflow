@@ -48,7 +48,7 @@ export interface Event<T = unknown> {
  * Single implementation replacing all previous event system variants.
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * // Define your event map
  * interface MyEvents {
  *   userAction:{ action: string; target: string};
@@ -66,7 +66,7 @@ export interface Event<T = unknown> {
  *
  * // Fully typed emission
  * eventBus.emit('userAction', { action: ' click', target: ' button'});
- * ```
+ * `
  */
 export declare class EventBus<TEventMap extends Record<string, unknown> = Record<string, unknown>> extends EventEmitter {
     private static instance;

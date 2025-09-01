@@ -96,7 +96,7 @@ export class IntelligenceOrchestrator extends EventBus {
             // Mark as initialized
             this.initialized = true;
             const duration = Date.now() - initStartTime;
-            this.logger.info('✅ Intelligence Orchestrator initialized successfully', {
+            this.logger.info(' Intelligence Orchestrator initialized successfully', {
                 ')        duration:`${duration}ms`,`: monitoring, 'operations-facade': , performanceTracker: !!this.performanceTracker,
                 agentMonitor: !!this.agentMonitor,
                 sessionId: this.config.sessionId,
@@ -110,7 +110,7 @@ export class IntelligenceOrchestrator extends EventBus {
         }
         catch (error) {
             const duration = Date.now() - initStartTime;
-            this.logger.error('❌ Intelligence Orchestrator initialization failed', {
+            this.logger.error(' Intelligence Orchestrator initialization failed', {
                 ')        error:error instanceof Error ? error.message : String(error),: duration
             } `${duration}ms`, `
 });
@@ -145,7 +145,7 @@ export class IntelligenceOrchestrator extends EventBus {
     // Allow event loop to process cleanup
     await new Promise(resolve => setTimeout(resolve, 0));
     
-    this.logger.info('✅ Intelligence Orchestrator shutdown complete');')}
+    this.logger.info(' Intelligence Orchestrator shutdown complete');')}
 
   /**
    * Check if initialized

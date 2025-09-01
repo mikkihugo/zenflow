@@ -103,7 +103,7 @@ function checkFile(filePath) {
 
 				// Check if this is a forbidden import
 				if (FORBIDDEN_IMPORTS[importedModule]) {
-					logger.error(`❌ ${relativePath}:${i + 1}`);
+					logger.error(` ${relativePath}:${i + 1}`);
 					logger.error(`   Direct import: ${importedModule}`);
 					logger.error(`   ${FORBIDDEN_IMPORTS[importedModule]}`);
 					logger.error("");
@@ -117,7 +117,7 @@ function checkFile(filePath) {
 				const requiredModule = requireMatch[1];
 
 				if (FORBIDDEN_IMPORTS[requiredModule]) {
-					logger.error(`❌ ${relativePath}:${i + 1}`);
+					logger.error(` ${relativePath}:${i + 1}`);
 					logger.error(`   Direct require: ${requiredModule}`);
 					logger.error(`   ${FORBIDDEN_IMPORTS[requiredModule]}`);
 					logger.error("");
@@ -126,7 +126,7 @@ function checkFile(filePath) {
 			}
 		}
 	} catch (_error) {
-		logger.warn(`⚠️ Could not read file: ${filePath}`);
+		logger.warn(` Could not read file: ${filePath}`);
 	}
 }
 
@@ -134,7 +134,7 @@ function checkFile(filePath) {
  * Main validation function
  */
 function validateImports() {
-	logger.info("🔍 Validating imports for foundation compliance...\n");
+	logger.info(" Validating imports for foundation compliance...\n");
 
 	const sourceFiles = findSourceFiles(projectRoot);
 
@@ -145,12 +145,12 @@ function validateImports() {
 	}
 
 	if (violations === 0) {
-		logger.info("✅ All imports are compliant with foundation requirements!");
+		logger.info(" All imports are compliant with foundation requirements!");
 		return true;
 	} else {
-		logger.error(`❌ Found ${violations} forbidden import(s)`);
+		logger.error(` Found ${violations} forbidden import(s)`);
 		logger.error(
-			"\n💡 Use @claude-zen/foundation for centralized utilities instead of direct imports",
+			"\n Use @claude-zen/foundation for centralized utilities instead of direct imports",
 		);
 		return false;
 	}

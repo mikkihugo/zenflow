@@ -162,24 +162,24 @@ export interface CollectorStats {
  */
 export interface HealthStatus {
   /** Overall health status */
-  status:'healthy' | ' degraded' | ' unhealthy';
+  status:'healthy' | 'degraded' | 'unhealthy';
 
   /** Individual exporter health */
   exporters:Record<
     string,
     {
-      status:'healthy' | ' degraded' | ' unhealthy';
+      status:'healthy' | 'degraded' | 'unhealthy';
       lastSuccess?:number;
       lastError?:string;
-}
+    }
   >;
 
   /** System resource status */
   resources:{
-    memory:'ok' | ' warning' | ' critical';
-    disk:'ok' | ' warning' | ' critical';
-    cpu:'ok' | ' warning' | ' critical';
-};
+    memory:'ok' | 'warning' | 'critical';
+    disk:'ok' | 'warning' | 'critical';
+    cpu:'ok' | 'warning' | 'critical';
+  };
 
   /** Timestamp of health check */
   timestamp:number;
@@ -188,7 +188,7 @@ export interface HealthStatus {
 /**
  * Signal types supported by collector
  */
-export type SignalType = 'traces' | ' metrics' | ' logs';
+export type SignalType = 'traces' | 'metrics' | 'logs';
 
 /**
  * Backend types supported

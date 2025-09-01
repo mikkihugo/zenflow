@@ -8,21 +8,21 @@
  * multiple AI agents and domains. Built for enterprise-scale knowledge management
  * with semantic understanding, federated learning, and intelligent knowledge curation.
  *
- * **⚠️ RECOMMENDED USAGE:Access via @claude-zen/foundation Package**
+ * ** RECOMMENDED USAGE:Access via @claude-zen/foundation Package**
  *
  * While this package can be used directly, it is recommended to access knowledge
- * functionality through `@claude-zen/foundation` which provides integrated knowledge`
+ * functionality through '@claude-zen/foundation' which provides integrated knowledge'
  * management with telemetry, logging, and configuration management.
  *
  * **CORE COLLECTIVE INTELLIGENCE CAPABILITIES:**
- * - 🧠 **Collective Intelligence**:Multi-agent collaborative reasoning and decision-making
- * - 🔄 **Cross-Agent Knowledge Sharing**:Real-time knowledge exchange between agents
- * - 📚 **Distributed Learning**:Federated learning across agent networks
- * - 🎯 **Knowledge Synthesis**:Automated knowledge aggregation and distillation
- * - 🌐 **Cross-Domain Transfer**:Knowledge transfer between different problem domains
- * - 📊 **Performance Optimization**:AI-driven knowledge management optimization
- * - 💾 **Knowledge Persistence**:Long-term memory and knowledge storage
- * - 🔧 **Foundation Integration**:Complete @claude-zen/foundation support
+ * -  **Collective Intelligence**:Multi-agent collaborative reasoning and decision-making
+ * -  **Cross-Agent Knowledge Sharing**:Real-time knowledge exchange between agents
+ * -  **Distributed Learning**:Federated learning across agent networks
+ * -  **Knowledge Synthesis**:Automated knowledge aggregation and distillation
+ * -  **Cross-Domain Transfer**:Knowledge transfer between different problem domains
+ * -  **Performance Optimization**:AI-driven knowledge management optimization
+ * -  **Knowledge Persistence**:Long-term memory and knowledge storage
+ * -  **Foundation Integration**:Complete @claude-zen/foundation support
  *
  * **ADVANCED KNOWLEDGE FEATURES:**
  * - Semantic knowledge graphs with ontology management
@@ -47,7 +47,7 @@
  * - Knowledge backup, recovery, and disaster recovery capabilities
  *
  * @example Basic Collective Intelligence Setup
- * ```typescript`
+ * 'typescript'
  * import { IntelligenceHub} from '@claude-zen/knowledge';
  *
  * const coordinator = new IntelligenceHub({
@@ -74,10 +74,10 @@
  *   problem: 'Design scalable microservices architecture', *   context:{ requirements, constraints},
  *   timeoutMs:300000
  *});
- * ````
+ * '
  *
  * @example Cross-Domain Knowledge Transfer
- * ```typescript`
+ * '''typescript'
  * import { CrossAgentKnowledgeIntegration} from '@claude-zen/knowledge';
  *
  * const integration = new CrossAgentKnowledgeIntegration({
@@ -93,12 +93,12 @@
  *}
  *});
  *
- * logger.info(`Transfer efficiency:${transferResult.efficiency}%`);`
- * logger.info(`Applicable patterns:${transferResult.applicablePatterns.length}`);`
- * ````
+ * logger.info('Transfer efficiency:' + transferResult.efficiency + '%');'
+ * logger.info('Applicable patterns:' + transferResult.applicablePatterns.length);'
+ * '
  *
  * @example Distributed Learning Network
- * ```typescript`
+ * '''typescript'
  * import { DistributedLearningSystem} from '@claude-zen/knowledge';
  *
  * const learningSystem = new DistributedLearningSystem({
@@ -117,12 +117,12 @@
  *
  * // Execute federated learning
  * const result = await session.execute();
- * logger.info(`Final accuracy:${result.accuracy}`);`
- * logger.info(`Convergence iterations:${result.iterations}`);`
- * ````
+ * logger.info('Final accuracy:' + result.accuracy);'
+ * logger.info('Convergence iterations:' + result.iterations);'
+ * '
  *
  * @example Knowledge Quality Management
- * ```typescript`
+ * '''typescript'
  * import { KnowledgeValidator} from '@claude-zen/knowledge';
  *
  * const qualityManager = new KnowledgeValidator({
@@ -143,10 +143,10 @@
  *} else {
  *   await qualityManager.flagForReview(incomingKnowledge, assessment.issues);
  *}
- * ````
+ * '
  *
  * @example Enterprise Knowledge Management System
- * ```typescript`
+ * '''typescript'
  * import {
  *   IntelligenceHub,
  *   KnowledgeValidator,
@@ -209,10 +209,10 @@
  *   performance:{
  *     latencyTarget: '100ms', *     throughputTarget: '10000/min', *     availabilityTarget:'99.99%') *}
  *});
- * ````
+ * '
  *
  * @example Real-Time Knowledge Synchronization
- * ```typescript`
+ * '''typescript'
  * import {
  *   DistributedLearningSystem,
  *   KnowledgeSwarm,
@@ -285,10 +285,10 @@
  *   knowledgeTransferred:result.transferredBytes,
  *   participantContributions:result.contributions
  *});
- * ````
+ * '
  *
  * @example Advanced Knowledge Analytics and Insights
- * ```typescript`
+ * '''typescript'
  * import {
  *   KnowledgeValidator,
  *   PerformanceOptimizer,
@@ -384,10 +384,10 @@
  *   recommendations:insights.recommendations,
  *   emergingTrends:insights.trends.emerging
  *});
- * ````
+ * '
  *
  * @example Knowledge Graph Construction and Reasoning
- * ```typescript`
+ * '''typescript'
  * import {
  *   KnowledgeSwarm,
  *   ProjectContextAnalyzer,
@@ -483,7 +483,7 @@
  *     recommendations:reasoningResult.recommendations
  *}
  *});
- * ````
+ * `
  *
  * @author Claude Code Zen Team
  * @since 1.0.0

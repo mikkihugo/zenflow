@@ -146,7 +146,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
    * Start the ESLint swarm coordination process
    */
   async startCoordination(): Promise<void> {
-    this.logger.info('🚀 Starting ESLint Swarm Coordination');
+    this.logger.info(' Starting ESLint Swarm Coordination');
     this.logger.info(`Project root: ${this.options.projectRoot}`);
     this.logger.info(`Concurrent agents: ${this.options.concurrentAgents}`);
 
@@ -154,7 +154,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
       // 1. Discover all violations
       const violations = this.discoverViolations();
       this.logger.info(
-        `📊 Discovered ${violations.length} files with violations`
+        ` Discovered ${violations.length} files with violations`
       );
 
       // 2. Categorize violations by agent specialization
@@ -166,9 +166,9 @@ export class ESLintSwarmCoordinator extends EventEmitter {
       // 4. Verify results
       this.verifyFixResults();
 
-      this.logger.info('✅ ESLint Swarm Coordination completed successfully');
+      this.logger.info(' ESLint Swarm Coordination completed successfully');
     } catch (error) {
-      this.logger.error('❌ ESLint Swarm Coordination failed: ', error);
+      this.logger.error(' ESLint Swarm Coordination failed: ', error);
       throw error;
     }
   }
@@ -177,7 +177,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
    * Discover all ESLint violations in the project
    */
   private discoverViolations(): ESLintViolation[] {
-    this.logger.info('🔍 Discovering ESLint violations...');
+    this.logger.info(' Discovering ESLint violations...');
 
     const eslintCmd = [
       'npx',
@@ -257,7 +257,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
     // Log categorization results
     for (const [agentName, violations] of categorized.entries()) {
       if (violations.length > 0) {
-        this.logger.info(`📋 ${agentName}:${violations.length} files assigned`);
+        this.logger.info(` ${agentName}:${violations.length} files assigned`);
       }
     }
 
@@ -304,7 +304,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
   private async coordinateParallelFixes(
     categorizedViolations: Map<string, ESLintViolation[]>
   ): Promise<void> {
-    this.logger.info('⚡ Starting parallel ESLint fixing...');
+    this.logger.info(' Starting parallel ESLint fixing...');
 
     const fixPromises: Promise<void>[] = [];
 
@@ -327,7 +327,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
     violations: ESLintViolation[]
   ): Promise<void> {
     this.logger.info(
-      `🤖 ${agent.name} processing ${violations.length} files...`
+      ` ${agent.name} processing ${violations.length} files...`
     );
 
     const batchSize = agent.maxConcurrentFixes;
@@ -340,7 +340,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
       await Promise.allSettled(batchPromises);
     }
 
-    this.logger.info(`✅ ${agent.name} completed processing`);
+    this.logger.info(` ${agent.name} completed processing`);
   }
 
   /**
@@ -403,7 +403,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
    * Verify the results of the fixing process
    */
   private verifyFixResults(): void {
-    this.logger.info('🔍 Verifying fix results...');
+    this.logger.info(' Verifying fix results...');
 
     try {
       const remainingViolations = this.discoverViolations();
@@ -468,7 +468,7 @@ export class ESLintSwarmCoordinator extends EventEmitter {
     }
 
     this.activeProcesses.clear();
-    this.logger.info('✅ ESLint Swarm Coordinator shutdown complete');
+    this.logger.info(' ESLint Swarm Coordinator shutdown complete');
   }
 }
 

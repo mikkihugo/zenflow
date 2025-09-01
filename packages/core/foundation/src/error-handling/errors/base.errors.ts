@@ -42,12 +42,12 @@ const logger = getLogger('ErrorSystem');
  *
  * @interface ErrorContext
  * @example
- * ```typescript`
+ * '''typescript'
  * const context:ErrorContext = {
  *   timestamp:Date.now(),
  *   component: 'RAG', *   operation: 'vectorSearch', *   correlationId: 'req-123', *   userId: 'user-456', *   metadata:{ query: 'search term'}
  *};
- * ```
+ * '
  */
 export interface ErrorContext {
   /** Timestamp when the error occurred. */
@@ -75,7 +75,7 @@ export interface ErrorContext {
  *
  * @interface ErrorRecoveryOptions
  * @example
- * ```typescript`
+ * '''typescript'
  * const options:ErrorRecoveryOptions = {
  *   maxRetries:3,
  *   retryDelayMs:1000,
@@ -84,7 +84,7 @@ export interface ErrorContext {
  *   fallbackEnabled:true,
  *   gracefulDegradation:true
  *};
- * ```
+ * '
  */
 export interface ErrorRecoveryOptions {
   /** Maximum number of retry attempts (optional). */
@@ -106,7 +106,7 @@ export interface ErrorRecoveryOptions {
  *
  * @interface ErrorMetrics
  * @example
- * ```typescript`
+ * '''typescript'
  * const metrics:ErrorMetrics = {
  *   errorCount:15,
  *   errorRate:0.02, // 2%
@@ -115,7 +115,7 @@ export interface ErrorRecoveryOptions {
  *   successfulRecoveries:12,
  *   failedRecoveries:3
  *};
- * ```
+ * '
  */
 export interface ErrorMetrics {
   /** Total number of errors recorded. */
@@ -146,7 +146,7 @@ export interface ErrorMetrics {
  * @class BaseClaudeZenError
  * @augments Error
  * @example
- * ```typescript`
+ * '''typescript'
  * class CustomError extends BaseClaudeZenError {
  *   constructor(message:string) {
  *     super(message, 'Custom',    'medium', {
@@ -158,7 +158,7 @@ export interface ErrorMetrics {
  *
  * const error = new CustomError('Something went wrong');
  * logger.info(error.severity); // 'medium') * logger.info(error.recoverable); // true
- * ```
+ * '
  */
 export abstract class BaseClaudeZenError extends Error {
   /** Error context with tracking information. */
@@ -210,7 +210,7 @@ export abstract class BaseClaudeZenError extends Error {
           ? 'warn'
           : 'info';
 
-    logger[logLevel](`[${this.category}] ${this.message}`, {
+    logger[logLevel]('[' + (this.category) + '] ' + this.message, {
       severity: this.severity,
       context: this.context,
       recoverable: this.recoverable,
@@ -222,11 +222,11 @@ export abstract class BaseClaudeZenError extends Error {
    *
    * @returns JSON representation of the error.
    * @example
-   * ```typescript`
+   * 'typescript'
    * const error = new CustomError('Test error');
    * const json = error.toJSON();
    * logger.info(JSON.stringify(json, null, 2));
-   * ```
+   * '
    */
   public toJSON(): object {
     return {
@@ -266,11 +266,11 @@ export abstract class BaseClaudeZenError extends Error {
  * @class SwarmError
  * @augments BaseClaudeZenError
  * @example
- * ```typescript`
+ * '''typescript'
  * throw new SwarmError(
  *   'Swarm coordination failed', *   'swarm-789', *   'high', *   { operation: 'coordination', metadata:{ agentCount: 5}}
  * );
- * ```
+ * '
  */
 export class SwarmError extends BaseClaudeZenError {
   /**
@@ -302,10 +302,10 @@ export class SwarmError extends BaseClaudeZenError {
  * @class AgentError
  * @augments BaseClaudeZenError
  * @example
- * ```typescript`
+ * '''typescript'
  * throw new AgentError(
  *   'Agent execution failed', *   'agent-123', *   'researcher', *   'high') * );
- * ```
+ * '
  */
 export class AgentError extends BaseClaudeZenError {
   /**
@@ -436,7 +436,7 @@ export class NotFoundError extends BaseClaudeZenError {
  * @param error - Error to check for recoverability.
  * @returns True if the error is recoverable, false otherwise.
  * @example
- * ```typescript`
+ * '''typescript'
  * try {
  *   await someOperation();
  *} catch (error) {
@@ -448,7 +448,7 @@ export class NotFoundError extends BaseClaudeZenError {
  *     logger.error('Fatal error, cannot recover: ', error);
 ' *}
  *}
- * ```
+ * '
  */
 export function isRecoverableError(error: Error): boolean {
   if (error instanceof BaseClaudeZenError) {
@@ -470,7 +470,7 @@ export function isRecoverableError(error: Error): boolean {
  * @param error - Error to assess severity for.
  * @returns Severity level ('low',    'medium',    'high', or ' critical').
  * @example
- * ```typescript`
+ * '''typescript'
  * try {
  *   await networkOperation();
  *} catch (error) {
@@ -481,7 +481,7 @@ export function isRecoverableError(error: Error): boolean {
  *     await escalateAlert(error);
  *}
  *}
- * ```
+ * '
  */
 export function getErrorSeverity(
   error: Error
@@ -508,7 +508,7 @@ export function getErrorSeverity(
  * @param maxRetries - Maximum number of retries allowed (defaults to 3).
  * @returns True if the operation should be retried, false otherwise.
  * @example
- * ```typescript`
+ * '''typescript'
  * let attempt = 0;
  * const maxRetries = 3;
  *
@@ -524,7 +524,7 @@ export function getErrorSeverity(
  *     await delay(1000 * attempt); // Backoff
  *}
  *}
- * ```
+ * '
  */
 export function shouldRetry(
   error: Error,

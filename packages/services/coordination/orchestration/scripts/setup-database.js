@@ -15,17 +15,17 @@ const logger = getLogger("taskmaster-db-setup");
 async function setupTaskMasterDatabases() {
 	try {
 		logger.info(
-			"🚀 Setting up TaskMaster databases via infrastructure facade...",
+			" Setting up TaskMaster databases via infrastructure facade...",
 		);
 
 		const dbSystem = await getDatabaseSystem();
 
 		// Set up SQL database for core task data
-		logger.info("📊 Setting up SQL database for core task management...");
+		logger.info(" Setting up SQL database for core task management...");
 		const sqlProvider = dbSystem.createProvider("sql");
 
 		// Set up SQLite key-value store for real-time state and caching
-		logger.info("⚡ Setting up SQLite KV storage for real-time state...");
+		logger.info(" Setting up SQLite KV storage for real-time state...");
 		const kvProvider = dbSystem.createProvider("kv");
 
 		// Create TaskMaster schema in SQL database
@@ -34,14 +34,14 @@ async function setupTaskMasterDatabases() {
 		// Set up SQLite KV storage structure for real-time data
 		await setupKVSchema(kvProvider);
 
-		logger.info("✅ TaskMaster database setup completed successfully!");
-		logger.info("📋 Databases configured:");
+		logger.info(" TaskMaster database setup completed successfully!");
+		logger.info(" Databases configured:");
 		logger.info("  • SQL: Core task data, audit logs, metrics, dependencies");
 		logger.info(
 			"  • SQLite KV: Real-time state, session data, cache, notifications",
 		);
 	} catch (error) {
-		logger.error("❌ Database setup failed:", error);
+		logger.error(" Database setup failed:", error);
 		process.exit(1);
 	}
 }
@@ -130,7 +130,7 @@ async function setupSQLSchema(sqlProvider) {
     );
   `);
 
-	logger.info("✅ SQL schema created successfully");
+	logger.info(" SQL schema created successfully");
 }
 
 async function setupKVSchema(kvProvider) {
@@ -152,7 +152,7 @@ async function setupKVSchema(kvProvider) {
 		await kvProvider.set(`${namespace}:initialized`, "true");
 	}
 
-	logger.info("✅ SQLite KV namespaces initialized successfully");
+	logger.info(" SQLite KV namespaces initialized successfully");
 }
 
 // Run the setup

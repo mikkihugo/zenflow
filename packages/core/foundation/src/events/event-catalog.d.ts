@@ -435,23 +435,23 @@ export declare class CatalogEventLogger {
  * Common Event Flow Patterns in claude-code-zen:
  *
  * 1. SPARC Phase Execution:
- *    SPARCManager → llm:inference-request → LLMPackage
- *    LLMPackage → llm:inference-complete → SPARCManager
- *    SPARCManager → sparc:phase-complete → System
+ *    SPARCManager  llm:inference-request  LLMPackage
+ *    LLMPackage  llm:inference-complete  SPARCManager
+ *    SPARCManager  sparc:phase-complete  System
  *
  * 2. SPARC with Teamwork Collaboration:
- *    SPARCManager → sparc:phase-review-needed → TeamworkManager
- *    TeamworkManager → teamwork:review-acknowledged → SPARCManager
- *    TeamworkManager → teamwork:review-complete → SPARCManager
+ *    SPARCManager  sparc:phase-review-needed  TeamworkManager
+ *    TeamworkManager  teamwork:review-acknowledged  SPARCManager
+ *    TeamworkManager  teamwork:review-complete  SPARCManager
  *
  * 3. Claude Code Fallback:
- *    SPARCManager → claude-code:execute-task → ClaudeCode
- *    ClaudeCode → claude-code:task-complete → SPARCManager
- *    OR:ClaudeCode → claude-code:task-failed → SPARCManager
- *    SPARCManager → llm:inference-request → LLMPackage (fallback)
+ *    SPARCManager  claude-code:execute-task  ClaudeCode
+ *    ClaudeCode  claude-code:task-complete  SPARCManager
+ *    OR:ClaudeCode  claude-code:task-failed  SPARCManager
+ *    SPARCManager  llm:inference-request  LLMPackage (fallback)
  *
  * 4. System Error Handling:
- *    AnyComponent → system:error → SystemMonitor
- *    SystemMonitor → system:recovery-initiated → AnyComponent
+ *    AnyComponent  system:error  SystemMonitor
+ *    SystemMonitor  system:recovery-initiated  AnyComponent
  */
 //# sourceMappingURL=event-catalog.d.ts.map

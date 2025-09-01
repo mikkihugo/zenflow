@@ -5,7 +5,7 @@
  * environment discovery and project context analysis.
  *
  * @example Basic Environment Detection
- * ```typescript`
+ * '''typescript'
  * import { EnvironmentDetector} from '@claude-zen/foundation';
  *
  * const detector = new EnvironmentDetector();
@@ -14,10 +14,10 @@
  * logger.info('Node version: ', env.runtime.node);
 ' * logger.info('Package manager: ', env.packageManager.type);
 ' * logger.info('Available tools: ', env.tools);
-' * ```
+' * '
  *
  * @example Advanced Usage with Caching
- * ```typescript`
+ * '''typescript'
  * const detector = new EnvironmentDetector({
  *   useCache:true,
  *   cacheTimeout:300000, // 5 minutes
@@ -25,7 +25,7 @@
  *
  * const environments = await detector.detectMultiple([
  *   '/path/to/project1', *   '/path/to/project2') *]);
- * ```
+ * '
  *
  * @package @claude-zen/foundation
  * @since 2.1.0
@@ -149,19 +149,19 @@ export declare class EnvironmentDetectionError extends Error {
  * @extends EventEmitter
  *
  * @example Basic Usage
- * ```typescript`
+ * '''typescript'
  * const detector = new EnvironmentDetector();
  * const env = await detector.detectEnvironment();
  * logger.info('Available tools: ', env.tools.filter(t => t.available));
-' * ```
+' * '
  *
  * @example With Caching and Auto-refresh
- * ```typescript`
+ * '''typescript'
  * const detector = new EnvironmentDetector('/project/path', true, 30000);
  * detector.on('service-started', (event) => {
  *   logger.info('Detection completed: ', event.serviceName);
 ' *});
- * ```
+ * '
  */
 export declare class EnvironmentDetector extends EventEmitter {
     private projectRoot;
@@ -300,13 +300,13 @@ export declare class EnvironmentDetector extends EventEmitter {
  * @class NixIntegration
  *
  * @example Basic Usage
- * ```typescript`
+ * '''typescript'
  * const nix = new NixIntegration('/project/path');
  * const result = await nix.autoSetup();
  * if (result.success) {
  *   logger.info('Nix setup completed: ', result.steps);
 ' *}
- * ```
+ * `
  */
 export declare class NixIntegration {
     private projectRoot;

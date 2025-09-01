@@ -137,7 +137,7 @@ function checkPackageJson(packagePath) {
 
 			for (const [depName, version] of Object.entries(deps)) {
 				if (FORBIDDEN_DEPENDENCIES[depName]) {
-					logger.error(`❌ ${relativePath}`);
+					logger.error(` ${relativePath}`);
 					logger.error(`   Forbidden ${depType}: ${depName}@${version}`);
 					logger.error(`   ${FORBIDDEN_DEPENDENCIES[depName]}`);
 					logger.error("");
@@ -161,13 +161,13 @@ function checkPackageJson(packagePath) {
 		});
 
 		if (hasForbiddenDeps && !hasFoundation) {
-			logger.warn(`⚠️  ${relativePath}`);
+			logger.warn(`  ${relativePath}`);
 			logger.warn(`   Consider adding @claude-zen/foundation as a dependency`);
 			logger.warn("");
 		}
 	} catch (error) {
 		logger.warn(
-			`⚠️ Could not read package.json: ${packagePath} - ${error.message}`,
+			` Could not read package.json: ${packagePath} - ${error.message}`,
 		);
 	}
 }
@@ -177,7 +177,7 @@ function checkPackageJson(packagePath) {
  */
 function validateDependencies() {
 	logger.info(
-		"🔍 Validating package.json dependencies for foundation compliance...\n",
+		" Validating package.json dependencies for foundation compliance...\n",
 	);
 
 	const packageFiles = findPackageJsonFiles(projectRoot);
@@ -190,16 +190,16 @@ function validateDependencies() {
 
 	if (violations === 0) {
 		logger.info(
-			"✅ All package.json files are compliant with foundation requirements!",
+			" All package.json files are compliant with foundation requirements!",
 		);
 		return true;
 	} else {
-		logger.error(`❌ Found ${violations} forbidden dependency/dependencies`);
+		logger.error(` Found ${violations} forbidden dependency/dependencies`);
 		logger.error(
-			"\n💡 Add @claude-zen/foundation instead of direct utility dependencies",
+			"\n Add @claude-zen/foundation instead of direct utility dependencies",
 		);
 		logger.error(
-			"💡 Remove forbidden dependencies and use foundation equivalents",
+			" Remove forbidden dependencies and use foundation equivalents",
 		);
 		return false;
 	}

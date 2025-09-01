@@ -122,7 +122,7 @@ export class FoundationBrainCoordinator {
             await safeAsync(() => Promise.resolve())();
             this.initialized = true;
             const duration = Date.now() - startTime;
-            this.logger.info('✅ Foundation brain coordinator initialized with intelligent neural routing', {
+            this.logger.info(' Foundation brain coordinator initialized with intelligent neural routing', {
                 sessionId: this.brainConfig.sessionId,
                 enableLearning: this.brainConfig.enableLearning,
                 duration: `${duration}ms`,
@@ -147,7 +147,7 @@ export class FoundationBrainCoordinator {
     if (!this.initialized) return;
 
     logger.info('🧠 Shutting down brain coordinator...');')    this.initialized = false;
-    logger.info('✅ Brain coordinator shutdown complete');')}
+    logger.info(' Brain coordinator shutdown complete');')}
 
   isInitialized():boolean {
     return this.initialized;
@@ -216,7 +216,7 @@ export class FoundationBrainCoordinator {
                     switch (strategy) {
                         case 'DSPy':
                             ')';
-                            logger.debug('🎯 Using DSPy optimization for complex task');
+                            logger.debug(' Using DSPy optimization for complex task');
                             ')          optimizedPrompt = await this.optimizeWithDSPy(;
                             request.basePrompt,
                                 request.context;
@@ -226,7 +226,7 @@ export class FoundationBrainCoordinator {
                             break;
                         case 'DSPyConstrained':
                             ')';
-                            logger.debug('⚡ Using constrained DSPy optimization');
+                            logger.debug(' Using constrained DSPy optimization');
                             ')          optimizedPrompt = await this.optimizeWithConstrainedDSPy(;
                             request.basePrompt,
                                 request.context;
@@ -236,7 +236,7 @@ export class FoundationBrainCoordinator {
                             break;
                         case 'Basic': ')';
                         default:
-                            logger.debug('🚀 Using basic optimization for simple task');
+                            logger.debug(' Using basic optimization for simple task');
                             ')          optimizedPrompt = await this.optimizeBasic(;
                             request.basePrompt,
                                 request.context;
@@ -320,7 +320,7 @@ export class FoundationBrainCoordinator {
         {
             throw new Error('Brain coordinator not initialized');
             ')};
-            logger.debug(`🎯 Brain routing neural task:${task.id} (type:${task.type})` `
+            logger.debug(` Brain routing neural task:${task.id} (type:${task.type})` `
     );
     return await this.orchestrator.processNeuralTask(task);
 }
@@ -773,7 +773,7 @@ Promise < {
       
       if (brainVectorStoreResult.success) {
         this.neuralDataStore = brainVectorStoreResult.data;
-        this.logger.info('✅ Brain neural data store initialized - dedicated vector store for brain');
+        this.logger.info(' Brain neural data store initialized - dedicated vector store for brain');
 } else {
         this.logger.warn('⚠️ Brain neural data store using fallback implementation', {
           error:brainVectorStoreResult.error?.message
@@ -790,7 +790,7 @@ Promise < {
       
       if (brainConfigStoreResult.success) {
         this.configStore = brainConfigStoreResult.data;
-        this.logger.info('✅ Brain configuration store initialized - dedicated KV store for brain');
+        this.logger.info(' Brain configuration store initialized - dedicated KV store for brain');
 } else {
         this.logger.warn('⚠️ Brain configuration store using fallback implementation', {
           error:brainConfigStoreResult.error?.message
@@ -808,14 +808,14 @@ Promise < {
       
       if (brainKnowledgeGraphResult.success) {
         this.knowledgeGraph = brainKnowledgeGraphResult.data;
-        this.logger.info('✅ Brain knowledge graph initialized - dedicated graph store for brain');
+        this.logger.info(' Brain knowledge graph initialized - dedicated graph store for brain');
 } else {
         this.logger.warn('⚠️ Brain knowledge graph using fallback implementation', {
           error:brainKnowledgeGraphResult.error?.message
 });
 }
 
-      this.logger.info('✅ Brain-specific database storage initialization complete');
+      this.logger.info(' Brain-specific database storage initialization complete');
 
 } catch (error) {
       this.logger.warn('⚠️ Brain database storage initialization failed, using fallbacks', {
@@ -1383,7 +1383,7 @@ export class NeuralBridge {
             return;
         logger.info('🔗 Initializing neural bridge...');
         ')    this.initialized = true;;
-        logger.info('✅ Neural bridge initialized');
+        logger.info(' Neural bridge initialized');
         ')};
         async;
         predict(input, number[]);
@@ -1419,8 +1419,8 @@ export class BehavioralIntelligence {
   async initialize():Promise<void> {
     if (this.initialized) return;
 
-    logger.info('🎯 Initializing behavioral intelligence...');')    this.initialized = true;
-    logger.info('✅ Behavioral intelligence initialized');')}
+    logger.info(' Initializing behavioral intelligence...');')    this.initialized = true;
+    logger.info(' Behavioral intelligence initialized');')}
 
   async analyzePattern(data:unknown[]): Promise<{
     pattern:string;

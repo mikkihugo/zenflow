@@ -149,7 +149,7 @@ class LoggingConfigurationManager {
             }
         }
         catch {
-            console.info('📝 Foundation LogTape using console-only (OTEL unavailable)');
+            console.info(' Foundation LogTape using console-only (OTEL unavailable)');
         }
         return config;
     }
@@ -186,9 +186,9 @@ class LoggingConfigurationManager {
      * Handle collector fallback scenarios
      */
     handleCollectorFallback(otelConfig) {
-        console.info('⚠️  Internal OTEL collector unavailable, trying external OTEL...');
+        console.info('  Internal OTEL collector unavailable, trying external OTEL...');
         if (otelConfig.otelLogsExporter === 'otlp' || otelConfig.zenOtelEnabled) {
-            console.info('⚠️  OTEL integration has been moved to @claude-zen/infrastructure package. Use getTelemetryManager() instead.');
+            console.info('  OTEL integration has been moved to @claude-zen/infrastructure package. Use getTelemetryManager() instead.');
             console.info('   Foundation logging will use console-only mode.');
         }
     }
@@ -393,7 +393,7 @@ class LoggingConfigurationManager {
         // Add success and progress methods
         logger.success = (message, meta) => {
             if (this.shouldLog('info', componentLevel)) {
-                const formattedMessage = `✅ ${this.formatMessage(message, meta)}`;
+                const formattedMessage = ` ${this.formatMessage(message, meta)}`;
                 logTapeLogger.info(formattedMessage);
                 addLogEntry({
                     timestamp: new Date().toISOString(),
@@ -406,7 +406,7 @@ class LoggingConfigurationManager {
         };
         logger.progress = (message, meta) => {
             if (this.shouldLog('info', componentLevel)) {
-                const formattedMessage = `🔄 ${this.formatMessage(message, meta)}`;
+                const formattedMessage = ` ${this.formatMessage(message, meta)}`;
                 logTapeLogger.info(formattedMessage);
                 addLogEntry({
                     timestamp: new Date().toISOString(),

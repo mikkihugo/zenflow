@@ -10,7 +10,7 @@
  * @package @claude-zen/foundation
  * @since 2.1.0
  * @example
- * ```typescript`
+ * '''typescript'
  * import type { Timestamped, Versioned, Paginated} from '@claude-zen/foundation/types';
  *
  * interface User extends Timestamped, Versioned {
@@ -19,7 +19,7 @@
  *}
  *
  * type UserList = Paginated<User>;
- * ```
+ * '
  */
 
 import type { ID, ISODateString, Timestamp, UUID } from './primitives';
@@ -34,7 +34,7 @@ import type { ID, ISODateString, Timestamp, UUID } from './primitives';
  *
  * @interface Timestamped
  * @example
- * ```typescript`
+ * '''typescript'
  * interface User extends Timestamped {
  *   id:string;
  *   email:string;
@@ -44,7 +44,7 @@ import type { ID, ISODateString, Timestamp, UUID } from './primitives';
  *   id: '123', *   email: 'user@example.com', *   createdAt:Date.now(),
  *   updatedAt:Date.now()
  *};
- * ```
+ * '
  */
 export interface Timestamped {
   /** When this entity was created */
@@ -60,7 +60,7 @@ export interface Timestamped {
  * @interface TimestampedWithDeletion
  * @extends Timestamped
  * @example
- * ```typescript`
+ * '''typescript'
  * interface SoftDeletableUser extends TimestampedWithDeletion {
  *   id:string;
  *   email:string;
@@ -78,7 +78,7 @@ export interface Timestamped {
  *   ...activeUser,
  *   deletedAt:Date.now()
  *};
- * ```
+ * '
  */
 export interface TimestampedWithDeletion extends Timestamped {
   /** When this entity was soft-deleted (null if not deleted) */
@@ -91,7 +91,7 @@ export interface TimestampedWithDeletion extends Timestamped {
  *
  * @interface ISOTimestamped
  * @example
- * ```typescript`
+ * '''typescript'
  * interface APIResponse extends ISOTimestamped {
  *   data:unknown;
  *}
@@ -99,7 +99,7 @@ export interface TimestampedWithDeletion extends Timestamped {
  * const response:APIResponse = {
  *   data:{ message: 'Hello'},
  *   createdAt: '2025-01-15T12:00:00.000Z', *   updatedAt:'2025-01-15T12:30:00.000Z') *};
- * ```
+ * '
  */
 export interface ISOTimestamped {
   /** When this entity was created (ISO format) */
@@ -114,7 +114,7 @@ export interface ISOTimestamped {
  *
  * @interface DateTimestamped
  * @example
- * ```typescript`
+ * '''typescript'
  * interface EventLog extends DateTimestamped {
  *   event:string;
  *   data:unknown;
@@ -128,7 +128,7 @@ export interface ISOTimestamped {
  *
  * // Easy date calculations
  * const ageInMs = Date.now() - log.createdAt.getTime();
- * ```
+ * '
  */
 export interface DateTimestamped {
   /** When this entity was created */
@@ -147,7 +147,7 @@ export interface DateTimestamped {
  *
  * @interface Versioned
  * @example
- * ```typescript`
+ * '''typescript'
  * interface Document extends Versioned {
  *   id:string;
  *   content:string;
@@ -161,7 +161,7 @@ export interface DateTimestamped {
  *     version:doc.version + 1
  *};
  *};
- * ```
+ * '
  */
 export interface Versioned {
   /** Current version number (increments on each update) */
@@ -175,7 +175,7 @@ export interface Versioned {
  * @interface VersionedWithRevision
  * @extends Versioned
  * @example
- * ```typescript`
+ * '''typescript'
  * interface AuditableDocument extends VersionedWithRevision {
  *   id:string;
  *   content:string;
@@ -187,7 +187,7 @@ export interface Versioned {
  *   revisionId:'rev-789' as UUID,
  *   previousVersion:4
  *};
- * ```
+ * '
  */
 export interface VersionedWithRevision extends Versioned {
   /** Unique revision identifier */
@@ -202,7 +202,7 @@ export interface VersionedWithRevision extends Versioned {
  *
  * @interface SemanticVersioned
  * @example
- * ```typescript`
+ * '''typescript'
  * interface Package extends SemanticVersioned {
  *   name:string;
  *   description:string;
@@ -216,8 +216,8 @@ export interface VersionedWithRevision extends Versioned {
  *     prerelease: 'beta.1', *     build:'build.123') *}
  *};
  *
- * const versionString = `${pkg.version.major}.${pkg.version.minor}.${pkg.version.patch}`;
- * ```
+ * const versionString = `${pkg.version.major}.` + pkg.version.minor + '.' + pkg.version.patch;
+ * '
  */
 export interface SemanticVersioned {
   /** Semantic version string (e.g., "1.2.3") */

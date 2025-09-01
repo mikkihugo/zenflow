@@ -312,7 +312,7 @@ export class EventRegistryInitializer {
 
     if (Math.random() > 0.6) {
       const newFlow: EventFlow = {
-        id: `flow-${Date.now()}`,
+        id: 'flow-' + Date.now(),
         eventName: eventNames[Math.floor(Math.random() * eventNames.length)]!,
         source: sources[Math.floor(Math.random() * sources.length)]!,
         target: targets[Math.floor(Math.random() * targets.length)]!,

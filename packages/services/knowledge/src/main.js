@@ -13,7 +13,7 @@
  * - Dependency injection with TSyringe
  * - Structured validation and type safety
  *
- * REDUCTION: 80 → 500+ lines with comprehensive enterprise features
+ * REDUCTION: 80  500+ lines with comprehensive enterprise features
  * PATTERN: Matches memory package's comprehensive foundation integration'
  */
 var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {

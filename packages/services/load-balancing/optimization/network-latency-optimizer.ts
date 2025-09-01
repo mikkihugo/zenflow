@@ -93,7 +93,7 @@ export class NetworkLatencyOptimizer implements NetworkOptimizer {
 
   private getHopLatency(from: string, to: string): number {
     // Mock hop latency based on connection type
-    const connectionKey = `${from}-${to}`;
+    const connectionKey = (from) + '-' + to;
 
     // Check if we have cached latency for this connection
     const cachedLatency = this.connectionLatencies.get(connectionKey);

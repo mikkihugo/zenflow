@@ -37,14 +37,14 @@ export enum LogLevel {
  * Following Google Cloud Logging JSON format.
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const logEntry:LogEntry = {
  *   timestamp: '2023-01-01T00:00:00.000Z', *   level:LogLevel.INFO,
  *   message: 'Request processed', *   httpRequest:{
  *     requestMethod: 'GET', *     requestUrl: '/api/users', *     status:200,
  *     latency:'123ms') *}
  *};
- * ```
+ * '
  */
 export interface LogEntry {
   readonly timestamp: string;
@@ -77,11 +77,11 @@ export interface LogEntry {
  * Request metadata for logging context.
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const metadata:RequestMetadata = {
  *   requestId: 'req-123456', *   startTime:Date.now(),
  *   userAgent: 'Mozilla/5.0...', *   remoteIp: '127.0.0.1', *   referer:'https://example.com') *};
- * ```
+ * '
  */
 interface RequestMetadata {
   readonly requestId: string;
@@ -96,7 +96,7 @@ interface RequestMetadata {
  * Uses timestamp + random string for uniqueness.
  */
 const generateRequestId = (): string =>
-  `req-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+  'req-' + (Date.now()) + '-' + Math.random().toString(36).substring(2, 8);
 
 /**
  * Get client IP address from request.
@@ -117,7 +117,7 @@ const getClientIp = (req: Request): string =>
  *
  * @param req Express request object
  */
-const getRequestSize = (req: Request): number => {
+const getRequestSize = (_req: Request): number => {
   const contentLength = req.headers[CONTENT_LENGTH_HEADER];
   if (contentLength) {
     return Number.parseInt(contentLength as string, 10);
@@ -141,7 +141,7 @@ const getRequestSize = (req: Request): number => {
  *
  * @param res Express response object
  */
-const getResponseSize = (res: Response): number => {
+const getResponseSize = (_res: Response): number => {
   const contentLength = res.get(CONTENT_LENGTH_HEADER);
   if (contentLength) {
     return Number.parseInt(contentLength, 10);
@@ -157,9 +157,9 @@ const getResponseSize = (res: Response): number => {
  */
 const formatDuration = (milliseconds: number): string => {
   if (milliseconds < 1000) {
-    return `${milliseconds.toFixed(2)}ms`;
+    return milliseconds.toFixed(2) + 'ms';
   }
-  return `${(milliseconds / 1000).toFixed(2)}s`;
+  return (milliseconds / 1000).toFixed(2) + 's';
 };
 
 /**
@@ -182,9 +182,9 @@ const getLogLevelFromStatus = (statusCode: number): LogLevel => {
  * @param path Request path
  * @param _method HTTP method (unused but available for extension)
  */
-const shouldLog = (path: string, method: string): boolean => {
+const shouldLog = (_path: string, method: string): boolean => {
   // Skip logging for health checks in production
-  if (process.env.NODE_ENV === 'production' && path === '/health') {
+  if (process.env['NODE_ENV'] === 'production' && path === '/health') {
     return false;
   }
 
@@ -203,7 +203,7 @@ const shouldLog = (path: string, method: string): boolean => {
  *
  * @param data Data object to sanitize
  */
-const sanitizeData = (data: unknown): Record<string, unknown> => {
+const sanitizeData = (_data: unknown): Record<string, unknown> => {
   if (!data || typeof data !== 'object') {
     return { value: data };
   }
@@ -306,7 +306,7 @@ const createLogEntry = ({
  * @param logEntry Structured log entry to output
  */
 const outputLog = (logEntry: LogEntry): void => {
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env['NODE_ENV'] === 'development') {
     // Pretty print for development
     const { httpRequest, level, message, metadata } = logEntry;
     const duration = httpRequest?.latency || '';
@@ -315,12 +315,12 @@ const outputLog = (logEntry: LogEntry): void => {
     const url = httpRequest?.requestUrl || '';
 
     if (httpRequest) {
-      logger.info(`${method} ${url} ${status} ${duration}`);
+      logger.info((method) + ' ' + (url) + ' ' + (status) + ' ' + duration);
       if (level === LogLevel.ERROR && metadata) {
         logger.error('Error details: ', metadata);
       }
     } else {
-      logger.info(`${level} ${message}`);
+      logger.info((level) + ' ' + message);
     }
 
     if (metadata && level !== LogLevel.ERROR) {
@@ -397,7 +397,7 @@ export const requestLogger = (
         req,
         res,
         metadata: {
-          duration: `${duration}ms`,
+          duration: duration + 'ms',
           responseHeaders: sanitizeData({
             [CONTENT_TYPE_HEADER]: res.get(CONTENT_TYPE_HEADER),
             [CACHE_CONTROL_HEADER]: res.get(CACHE_CONTROL_HEADER),
@@ -430,12 +430,12 @@ export const logError = (
 ): void => {
   const logEntry = createLogEntry({
     level: LogLevel.ERROR,
-    message: `Error: ${error.message}`,
+    message: 'Error: ' + (error as Error).message,
     req,
     metadata: {
       error: {
         name: error.name,
-        message: error.message,
+        message: (error as Error).message,
         stack: error.stack,
       },
       context: additionalContext,
@@ -462,11 +462,11 @@ export const logPerformance = (
   const level = duration > 5000 ? LogLevel.WARNING : LogLevel.INFO;
   const logEntry = createLogEntry({
     level,
-    message: `Performance: ${operation} took ${formatDuration(duration)}`,
+    message: 'Performance: ' + (operation) + ' took ' + formatDuration(duration),
     req,
     metadata: {
       operation,
-      duration: `${duration}ms`,
+      duration: duration + 'ms',
       performanceMetric: metadata,
     },
   });
@@ -488,7 +488,7 @@ export const log = (
   req?: Request,
   metadata?: Record<string, unknown>
 ): void => {
-  if (req) {
+  if (_req) {
     const logEntry = createLogEntry({ level, message, req, metadata });
     outputLog(logEntry);
   } else {
@@ -530,13 +530,13 @@ export const logDatabaseOperation = ({
   const level = duration > 1000 ? LogLevel.WARNING : LogLevel.DEBUG;
   const logEntry = createLogEntry({
     level,
-    message: `Database: ${operation} on ${table}`,
+    message: 'Database: ' + (operation) + ' on ' + table,
     req,
     metadata: {
       database: {
         operation,
         table,
-        duration: `${duration}ms`,
+        duration: duration + 'ms',
         rowCount,
         slow: duration > 1000,
       },
@@ -574,13 +574,13 @@ export const logExternalService = ({
     statusCode >= 400 || duration > 5000 ? LogLevel.WARNING : LogLevel.INFO;
   const logEntry = createLogEntry({
     level,
-    message: `External: ${service} ${operation}`,
+    message: 'External: ' + (service) + ' ' + operation,
     req,
     metadata: {
       externalService: {
         service,
         operation,
-        duration: `${duration}ms`,
+        duration: duration + 'ms',
         statusCode,
         success: statusCode < 400,
         slow: duration > 5000,

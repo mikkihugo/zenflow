@@ -10,7 +10,7 @@ import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-// ✅ TIER 1 ONLY - 5-Tier Architecture Compliance
+//  TIER 1 ONLY - 5-Tier Architecture Compliance
 import { getLogger, ProcessLifecycleManager } from '@claude-zen/foundation';
 
 // Strategic facades for accessing functionality
@@ -579,7 +579,7 @@ export class WebInterface {
             this.logger.error('💥 Application error in web interface: ', error);
           },
         });
-        this.logger.info('✅ Process lifecycle management enabled');
+        this.logger.info(' Process lifecycle management enabled');
       }
 
       // Check for existing instances if in daemon mode
@@ -619,7 +619,7 @@ export class WebInterface {
     try {
       // Setup Express middleware
       this.server?.setupMiddleware();
-      this.logger.debug('✅ Express middleware setup complete');
+      this.logger.debug(' Express middleware setup complete');
     } catch (error) {
       this.logger.warn(
         '⚠️ Express middleware setup failed, continuing...',
@@ -630,7 +630,7 @@ export class WebInterface {
     try {
       // Add session management middleware
       app.use(this.sessionManager?.middleware);
-      this.logger.debug('✅ Session middleware setup complete');
+      this.logger.debug(' Session middleware setup complete');
     } catch (error) {
       this.logger.warn(
         '⚠️ Session middleware setup failed, continuing...',
@@ -642,7 +642,7 @@ export class WebInterface {
     try {
       // Setup API routes
       this.apiRoutes.setupRoutes(app);
-      this.logger.debug('✅ API routes setup complete');
+      this.logger.debug(' API routes setup complete');
     } catch (error) {
       this.logger.warn(
         '⚠️ API routes setup failed, continuing...',
@@ -653,7 +653,7 @@ export class WebInterface {
     try {
       // Setup WebSocket communication
       this.webSocketManager?.setupWebSocket(app);
-      this.logger.debug('✅ WebSocket setup complete');
+      this.logger.debug(' WebSocket setup complete');
     } catch (error) {
       this.logger.warn(
         '⚠️ WebSocket setup failed, continuing...',
@@ -664,7 +664,7 @@ export class WebInterface {
     try {
       // Setup Svelte proxy routes
       this.setupSvelteProxy(app);
-      this.logger.debug('✅ Svelte proxy setup complete');
+      this.logger.debug(' Svelte proxy setup complete');
     } catch (error) {
       this.logger.warn(
         '⚠️ Svelte proxy setup failed, continuing...',
@@ -675,7 +675,7 @@ export class WebInterface {
     try {
       // Setup fallback HTML serving
       this.setupFallbackRoutes(app);
-      this.logger.debug('✅ Fallback routes setup complete');
+      this.logger.debug(' Fallback routes setup complete');
     } catch (error) {
       this.logger.warn(
         '⚠️ Fallback routes setup failed, continuing...',
@@ -722,7 +722,7 @@ export class WebInterface {
     );
 
     this.logger.info(
-      `✅ Svelte proxy configured: /dashboard/* -> http://${this.svelteProxyConfig.svelteHost}:${this.svelteProxyConfig.sveltePort}`
+      ` Svelte proxy configured: /dashboard/* -> http://${this.svelteProxyConfig.svelteHost}:${this.svelteProxyConfig.sveltePort}`
     );
   }
 

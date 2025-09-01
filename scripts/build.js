@@ -9,7 +9,7 @@ import { execSync } from "node:child_process";
 import { existsSync, mkdirSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-console.log("🚀 Building Complete Claude Code Zen Distribution...\n");
+console.log(" Building Complete Claude Code Zen Distribution...\n");
 
 // Clean and create output directory
 const distDir = "dist";
@@ -19,71 +19,71 @@ if (existsSync(distDir)) {
 }
 mkdirSync(bundleDir, { recursive: true });
 
-console.log("📦 Step 1: Building ALL packages...");
+console.log(" Step 1: Building ALL packages...");
 try {
 	// Build all packages in order
-	console.log("   🔧 Building foundation...");
+	console.log("    Building foundation...");
 	execSync(
 		"cd packages/core/foundation && pnpm build",
 		{ stdio: "inherit" },
 	);
 
-	console.log("   🔧 Building core packages...");
+	console.log("    Building core packages...");
 	try {
 		execSync(
 			"find packages/core -name package.json -not -path '*/foundation/*' -execdir pnpm build \\;",
 			{ stdio: "inherit" },
 		);
 	} catch (_error) {
-		console.log("     ⚠️ Some core packages failed, continuing...");
+		console.log("      Some core packages failed, continuing...");
 	}
 
-	console.log("   🔧 Building services packages...");
+	console.log("    Building services packages...");
 	try {
 		execSync(
 			"find packages/services -name package.json -execdir pnpm build \\;",
 			{ stdio: "inherit" },
 		);
 	} catch (_error) {
-		console.log("     ⚠️ Some service packages failed, continuing...");
+		console.log("      Some service packages failed, continuing...");
 	}
 
-	console.log("   🔧 Building tools packages (including singularity-coder)...");
+	console.log("    Building tools packages (including singularity-coder)...");
 	try {
 		execSync(
 			"find packages/tools -name package.json -execdir pnpm build \\;",
 			{ stdio: "inherit" },
 		);
 	} catch (_error) {
-		console.log("     ⚠️ Some tools packages failed, continuing...");
+		console.log("      Some tools packages failed, continuing...");
 	}
 
-	console.log("   🔧 Building integration packages (including llm-providers)...");
+	console.log("    Building integration packages (including llm-providers)...");
 	try {
 		execSync(
 			"find packages/integrations -name package.json -execdir pnpm build \\;",
 			{ stdio: "inherit" },
 		);
 	} catch (_error) {
-		console.log("     ⚠️ Some integration packages failed, continuing...");
+		console.log("      Some integration packages failed, continuing...");
 	}
 
-	console.log("   🔧 Building server...");
+	console.log("    Building server...");
 	execSync("cd apps/claude-code-zen-server && pnpm build", {
 		stdio: "inherit",
 	});
 
-	console.log("   🔧 Building web dashboard...");
+	console.log("    Building web dashboard...");
 	execSync("cd apps/web-dashboard && pnpm build", {
 		stdio: "inherit",
 	});
 
-	console.log("   ✅ ALL packages build process completed");
+	console.log("    ALL packages build process completed");
 } catch (_error) {
-	console.log("   ⚠️ Some builds failed, continuing with available code...");
+	console.log("    Some builds failed, continuing with available code...");
 }
 
-console.log("📦 Step 2: Creating main entry point...");
+console.log(" Step 2: Creating main entry point...");
 // Create main entry point that includes server + auth
 const mainEntry = `${bundleDir}/claude-zen.js`;
 const entryCode = `#!/usr/bin/env node
@@ -107,7 +107,7 @@ if (args[0] === 'auth') {
 }
 
 // Handle main server
-console.log('🚀 Starting Claude Code Zen Server...');
+console.log(' Starting Claude Code Zen Server...');
 try {
   // For SEA binary, find the project root relative to binary location
   // SEA binary is in dist/bundle/, so we need to go up 2 levels to reach project root
@@ -116,7 +116,7 @@ try {
   const serverPath = join(binaryDir, 'apps/claude-code-zen-server/dist/apps/claude-code-zen-server/src/main.js');
   
   if (existsSync(serverPath)) {
-    console.log(\`📍 Using server: \${serverPath}\`);
+    console.log(\` Using server: \${serverPath}\`);
     const child = spawn('node', [serverPath, ...args], {
       stdio: 'inherit',
       env: { ...process.env, CLAUDE_ZEN_BUNDLE_MODE: 'true' },
@@ -127,7 +127,7 @@ try {
     // Fallback to development mode
     const devRunner = join(binaryDir, 'apps/claude-code-zen-server/scripts/dev-runner.js');
     if (existsSync(devRunner)) {
-      console.log('⚡ Falling back to development mode...');
+      console.log(' Falling back to development mode...');
       const child = spawn('node', [devRunner, ...args], {
         stdio: 'inherit',
         env: { ...process.env, NODE_ENV: 'development' },
@@ -135,7 +135,7 @@ try {
       });
       child.on('exit', process.exit);
     } else {
-      console.log(\`❌ Neither server nor dev-runner found:\`);
+      console.log(\` Neither server nor dev-runner found:\`);
       console.log(\`   Server: \${serverPath}\`);
       console.log(\`   Dev runner: \${devRunner}\`);
       console.log(\`   Binary dir: \${binaryDir}\`);
@@ -143,14 +143,14 @@ try {
     }
   }
 } catch (error) {
-  console.log('❌ Failed to start server:', error.message);
+  console.log(' Failed to start server:', error.message);
   process.exit(1);
 }
 `;
 
 writeFileSync(mainEntry, entryCode);
 
-console.log("📦 Step 3: Bundling WASM modules...");
+console.log(" Step 3: Bundling WASM modules...");
 // Copy WASM files if they exist
 const __wasmDirs = ["dist/wasm", "packages/private-core/*/wasm"];
 mkdirSync(`${bundleDir}/wasm`, { recursive: true });
@@ -159,23 +159,23 @@ mkdirSync(`${bundleDir}/wasm`, { recursive: true });
 if (existsSync("build-wasm.sh")) {
 	try {
 		execSync("./build-wasm.sh", { stdio: "inherit" });
-		console.log("   ✅ WASM modules built");
+		console.log("    WASM modules built");
 	} catch (_error) {
-		console.log("   ⚠️ WASM build failed, continuing...");
+		console.log("    WASM build failed, continuing...");
 	}
 }
 
-console.log("📦 Step 4: Creating final bundle...");
+console.log(" Step 4: Creating final bundle...");
 // Copy main entry as final bundle (NCC removed due to parsing issues)
 try {
 	mkdirSync(join(bundleDir, 'final'), { recursive: true });
 	execSync(`cp ${mainEntry} ${join(bundleDir, 'final', 'index.js')}`);
-	console.log("   ✅ Final bundle created");
+	console.log("    Final bundle created");
 } catch (error) {
-	console.log("   ❌ Bundle copy failed:", error.message);
+	console.log("    Bundle copy failed:", error.message);
 }
 
-console.log("📦 Step 5: Creating SEA (Single Executable Applications)...");
+console.log(" Step 5: Creating SEA (Single Executable Applications)...");
 // Create SEA config and binaries
 const bundledEntry = `${bundleDir}/final/index.js`;
 if (existsSync(bundledEntry)) {
@@ -187,13 +187,13 @@ if (existsSync(bundledEntry)) {
 			"disableExperimentalSEAWarning": true
 		};
 		writeFileSync(`${bundleDir}/sea-config.json`, JSON.stringify(seaConfig, null, 2));
-		console.log("   ✅ SEA config created");
+		console.log("    SEA config created");
 
 		// Generate the blob
 		execSync(`node --experimental-sea-config ${bundleDir}/sea-config.json`, {
 			stdio: "inherit",
 		});
-		console.log("   ✅ SEA blob generated");
+		console.log("    SEA blob generated");
 
 		// Create platform-specific executables
 		const platforms = [
@@ -217,10 +217,10 @@ if (existsSync(bundledEntry)) {
 					stdio: ["inherit", "inherit", "pipe"],
 				});
 				
-				console.log(`   ✅ SEA binary created: claude-zen-${platform.name}${platform.ext}`);
+				console.log(`    SEA binary created: claude-zen-${platform.name}${platform.ext}`);
 				seaSuccessCount++;
 			} catch (error) {
-				console.log(`   ⚠️ SEA ${platform.name} binary failed:`, error.message);
+				console.log(`    SEA ${platform.name} binary failed:`, error.message);
 				
 				// For cross-platform, copy Linux binary as fallback
 				if (seaSuccessCount > 0) {
@@ -228,9 +228,9 @@ if (existsSync(bundledEntry)) {
 						execSync(`cp ${bundleDir}/claude-zen-linux ${bundleDir}/claude-zen-${platform.name}${platform.ext}`, {
 							stdio: "inherit",
 						});
-						console.log(`   ✅ SEA binary (fallback copy): claude-zen-${platform.name}${platform.ext}`);
+						console.log(`    SEA binary (fallback copy): claude-zen-${platform.name}${platform.ext}`);
 					} catch (copyError) {
-						console.log(`   ❌ SEA ${platform.name} fallback failed:`, copyError.message);
+						console.log(`    SEA ${platform.name} fallback failed:`, copyError.message);
 					}
 				}
 			}
@@ -240,11 +240,11 @@ if (existsSync(bundledEntry)) {
 			throw new Error("No SEA binaries created successfully");
 		}
 		
-		console.log(`   ✅ SEA build completed (${seaSuccessCount}/${platforms.length} platforms successful)`);
+		console.log(`    SEA build completed (${seaSuccessCount}/${platforms.length} platforms successful)`);
 
 	} catch (error) {
-		console.log("   ❌ SEA build failed:", error.message);
-		console.log("   🔄 Falling back to PKG...");
+		console.log("    SEA build failed:", error.message);
+		console.log("    Falling back to PKG...");
 		
 		// Fallback to PKG
 		try {
@@ -254,9 +254,9 @@ if (existsSync(bundledEntry)) {
 					stdio: "inherit",
 				},
 			);
-			console.log("   ✅ PKG fallback binaries created");
+			console.log("    PKG fallback binaries created");
 		} catch (pkgError) {
-			console.log("   ❌ PKG fallback also failed:", pkgError.message);
+			console.log("    PKG fallback also failed:", pkgError.message);
 		}
 	}
 }
@@ -313,12 +313,12 @@ Commands:
   
   async function authCopilot() {
     // Complete auth implementation...
-    console.log('🔐 GitHub Copilot Authentication - Complete implementation bundled');
+    console.log(' GitHub Copilot Authentication - Complete implementation bundled');
     process.exit(0);
   }
   
   function authStatus() {
-    console.log('🔐 Authentication Status - Complete implementation bundled');
+    console.log(' Authentication Status - Complete implementation bundled');
   }
   
   if (provider === 'copilot') {
@@ -329,7 +329,7 @@ Commands:
   `;
 }
 
-console.log("📦 Step 6: Creating final distribution...");
+console.log(" Step 6: Creating final distribution...");
 // Create launchers and documentation
 const unixLauncher = `#!/bin/bash
 # Claude Code Zen Launcher
@@ -342,7 +342,7 @@ elif [ -f "$DIR/claude-zen-macos" ]; then
 elif [ -f "$DIR/final/index.js" ]; then
   exec node "$DIR/final/index.js" "$@"
 else
-  echo "❌ No claude-zen executable found"
+  echo " No claude-zen executable found"
   exit 1
 fi
 `;
@@ -354,7 +354,7 @@ if exist "%DIR%claude-zen-win.exe" (
 ) else if exist "%DIR%final\\index.js" (
   node "%DIR%final\\index.js" %*  
 ) else (
-  echo ❌ No claude-zen executable found
+  echo  No claude-zen executable found
   exit /b 1
 )
 `;
@@ -383,19 +383,19 @@ claude-zen.cmd                   # Default server
 
 ## What's Included
 
-✅ **Complete All-in-One Package:**
+ **Complete All-in-One Package:**
 - Auth CLI (GitHub Copilot integration)
 - Main Server (with all packages)
 - Web Dashboard 
 - WASM Neural Modules
 - Cross-platform binaries
 
-✅ **Self-Contained:**
+ **Self-Contained:**
 - No external dependencies
 - No Node.js required (for binaries)
 - Includes all packages and WASM
 
-✅ **Smart Distribution:**
+ **Smart Distribution:**
 - Tries native binary first
 - Falls back to Node.js bundle
 - Works on Linux, macOS, Windows
@@ -403,16 +403,16 @@ claude-zen.cmd                   # Default server
 
 writeFileSync(`${bundleDir}/README.md`, readme);
 
-console.log("\n🎉 All-in-One Claude Code Zen build complete!");
-console.log(`📁 Distribution ready in: ${bundleDir}/`);
-console.log("\n📊 What you get:");
+console.log("\n All-in-One Claude Code Zen build complete!");
+console.log(` Distribution ready in: ${bundleDir}/`);
+console.log("\n What you get:");
 console.log(
-	"   ✅ Self-contained binaries (claude-zen-linux, claude-zen-macos, claude-zen-win.exe)",
+	"    Self-contained binaries (claude-zen-linux, claude-zen-macos, claude-zen-win.exe)",
 );
-console.log("   ✅ Node.js fallback bundle (final/index.js)");
-console.log("   ✅ Smart launchers (claude-zen, claude-zen.cmd)");
-console.log("   ✅ Complete functionality: Auth + Server + Web + WASM");
-console.log("   ✅ All packages bundled in one executable");
+console.log("    Node.js fallback bundle (final/index.js)");
+console.log("    Smart launchers (claude-zen, claude-zen.cmd)");
+console.log("    Complete functionality: Auth + Server + Web + WASM");
+console.log("    All packages bundled in one executable");
 
 // Show file sizes
 try {
@@ -422,17 +422,17 @@ try {
 		"claude-zen-win.exe",
 		"final/index.js",
 	];
-	console.log("\n📏 File sizes:");
+	console.log("\n File sizes:");
 	files.forEach((file) => {
 		const fullPath = `${bundleDir}/${file}`;
 		if (existsSync(fullPath)) {
 			const stats = statSync(fullPath);
 			const sizeMB = (stats.size / (1024 * 1024)).toFixed(1);
-			console.log(`   📄 ${file}: ${sizeMB} MB`);
+			console.log(`    ${file}: ${sizeMB} MB`);
 		}
 	});
 } catch (_error) {
 	// Ignore size check errors
 }
 
-console.log("\n🚀 Ready to distribute! Everything is in dist/bundle/");
+console.log("\n Ready to distribute! Everything is in dist/bundle/");

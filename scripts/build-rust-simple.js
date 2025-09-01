@@ -8,7 +8,7 @@
 import { execSync } from "node:child_process";
 import path from "node:path";
 
-logger.info("🦀 Building Rust Projects (Smart Mode)...\n");
+logger.info(" Building Rust Projects (Smart Mode)...\n");
 
 // Known problematic packages to skip or build differently
 const HEAVY_PACKAGES = [
@@ -33,11 +33,11 @@ try {
 	);
 	cargoProjects.push(...result.trim().split("\n").filter(Boolean));
 } catch (_error) {
-	logger.info("⚠️ No Rust projects found");
+	logger.info(" No Rust projects found");
 	process.exit(0);
 }
 
-logger.info(`📦 Found ${cargoProjects.length} Rust projects`);
+logger.info(` Found ${cargoProjects.length} Rust projects`);
 logger.info("");
 
 let successCount = 0;
@@ -56,12 +56,12 @@ for (const cargoPath of cargoProjects) {
 		continue;
 	}
 
-	logger.info(`🔧 Building ${projectName}...`);
+	logger.info(` Building ${projectName}...`);
 
 	try {
 		// Heavy packages: build with minimal features
 		if (HEAVY_PACKAGES.includes(projectName)) {
-			logger.info(`   📦 Heavy package detected, using minimal build...`);
+			logger.info(`    Heavy package detected, using minimal build...`);
 			execSync("cargo build --release --no-default-features --features std", {
 				cwd: projectDir,
 				stdio: "inherit",
@@ -70,7 +70,7 @@ for (const cargoPath of cargoProjects) {
 		}
 		// WASM packages: try wasm-pack first
 		else if (cargoPath.includes("wasm") || projectName.includes("wasm")) {
-			logger.info(`   🌐 WASM package, trying wasm-pack...`);
+			logger.info(`    WASM package, trying wasm-pack...`);
 			try {
 				execSync(
 					"wasm-pack build --target web --out-dir ./pkg --scope claude-zen --dev",
@@ -81,7 +81,7 @@ for (const cargoPath of cargoProjects) {
 					},
 				);
 			} catch (_wasmError) {
-				logger.info(`   ⚠️ wasm-pack failed, trying cargo build...`);
+				logger.info(`    wasm-pack failed, trying cargo build...`);
 				execSync("cargo build --release", {
 					cwd: projectDir,
 					stdio: "inherit",
@@ -98,28 +98,28 @@ for (const cargoPath of cargoProjects) {
 			});
 		}
 
-		logger.info(`   ✅ ${projectName} built successfully\n`);
+		logger.info(`    ${projectName} built successfully\n`);
 		successCount++;
 	} catch (error) {
 		logger.info(
-			`   ❌ ${projectName} failed: ${error.message.split("\n")[0]}\n`,
+			`    ${projectName} failed: ${error.message.split("\n")[0]}\n`,
 		);
 		failureCount++;
 	}
 }
 
 // Summary
-logger.info("🦀 Rust Build Summary");
+logger.info(" Rust Build Summary");
 logger.info("═".repeat(40));
-logger.info(`✅ Successful: ${successCount}`);
-logger.info(`❌ Failed: ${failureCount}`);
+logger.info(` Successful: ${successCount}`);
+logger.info(` Failed: ${failureCount}`);
 logger.info(`⏭️ Skipped: ${skippedCount}`);
-logger.info(`📊 Total: ${cargoProjects.length}`);
+logger.info(` Total: ${cargoProjects.length}`);
 
 if (successCount > 0) {
-	logger.info("\n🎉 Some Rust builds completed successfully!");
+	logger.info("\n Some Rust builds completed successfully!");
 } else if (failureCount === cargoProjects.length) {
-	logger.info("\n💔 All builds failed");
+	logger.info("\n All builds failed");
 	process.exit(1);
 }
 

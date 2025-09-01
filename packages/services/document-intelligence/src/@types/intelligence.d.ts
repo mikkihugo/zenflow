@@ -1,10 +1,25 @@
-declare module '@claude-zen/intelligence' {
-  export interface DocumentManager {
-    initialize(): Promise<void>;
-    store<T = unknown>(key: string, data: T, category?: string): Promise<void>;
-  }
+/**
+* @fileoverview intelligence.d.ts - Minimal Implementation
+*/
 
-  export interface BrainCoordinator {
-    store<T = unknown>(key: string, data: T, category?: string): Promise<void>;
-  }
+export interface DefaultConfig {
+enabled: boolean;
+[key: string]: unknown;
 }
+
+export class DefaultImplementation {
+private config: DefaultConfig;
+
+constructor(config: Partial<DefaultConfig> = {}) {
+this.config = {
+enabled: true,
+...config,
+};
+}
+
+isEnabled(): boolean {
+return this.config.enabled;
+}
+}
+
+export default new DefaultImplementation();

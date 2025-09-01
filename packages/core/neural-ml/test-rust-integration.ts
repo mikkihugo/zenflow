@@ -5,17 +5,17 @@ import { RustNeuralML } from './src/rust-binding';
 import { getLogger } from '@claude-zen/foundation';
 
 async function testRustIntegration() {
-  console.log('🧪 Testing Rust Neural ML Integration...');
+  console.log(' Testing Rust Neural ML Integration...');
   
   try {
     const logger = getLogger('test');
     const rustML = new RustNeuralML({}, logger);
     
-    console.log('✅ RustNeuralML instance created');
+    console.log(' RustNeuralML instance created');
     
     // Initialize the Rust backend
     await rustML.initialize();
-    console.log('✅ Rust backend initialized');
+    console.log(' Rust backend initialized');
     
     // Test statistical analysis
     const task = {
@@ -26,7 +26,7 @@ async function testRustIntegration() {
     };
     
     const result = await rustML.optimize(task);
-    console.log('✅ Statistical analysis result:', {
+    console.log(' Statistical analysis result:', {
       success: result.success,
       mean: result.result.mean,
       std: result.result.std,
@@ -43,18 +43,18 @@ async function testRustIntegration() {
     };
     
     const patternResult = await rustML.optimize(patternTask);
-    console.log('✅ Pattern learning result:', {
+    console.log(' Pattern learning result:', {
       success: patternResult.success,
       patterns: patternResult.result.patterns?.length || 0,
       clusters: patternResult.result.clusters?.length || 0,
       similarity: patternResult.result.similarity
     });
     
-    console.log('\n🎉 All Rust integration tests passed!');
-    console.log('🚀 Rust neural ML backend is working correctly');
+    console.log('\n All Rust integration tests passed!');
+    console.log(' Rust neural ML backend is working correctly');
     
   } catch (error) {
-    console.error('❌ Rust integration test failed:', error);
+    console.error(' Rust integration test failed:', error);
     process.exit(1);
   }
 }

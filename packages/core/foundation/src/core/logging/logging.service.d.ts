@@ -10,13 +10,13 @@ import type { UnknownRecord } from '../../types/primitives';
  * Follows standard logging conventions from most verbose to least verbose.
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const logger = getLogger('myapp');
  * logger.debug('Debug info'); // Only shown in development
  * logger.info('User action');  // General information
  * logger.warn('Deprecated API'); // Warnings
  * logger.error('Failed request'); // Errors
- * ```
+ * '
  */
 export declare enum LoggingLevel {
     /** Detailed trace information for debugging */
@@ -37,7 +37,7 @@ export declare enum LoggingLevel {
  * Controls logging behavior, output formats, and component-specific settings.
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const config: LoggingConfig = {
  *   level: LoggingLevel.INFO,
  *   enableConsole: true,
@@ -48,7 +48,7 @@ export declare enum LoggingLevel {
  *     'auth': LoggingLevel.WARN
  *}
  *};
- * ```
+ * '
  */
 export interface LoggingConfig {
     /** Default logging level for all components */
@@ -69,12 +69,12 @@ export interface LoggingConfig {
  * Compatible with LogTape and provides optional success/progress methods.
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const logger = getLogger('myservice');
  * logger.info('Service started', { port: 3000});
  * logger.error('Database connection failed', { error: err[message]});
  * logger.success?.('Operation completed successfully');
- * ```
+ * `
  */
 export interface Logger {
     /** Log trace level messages (most verbose) */

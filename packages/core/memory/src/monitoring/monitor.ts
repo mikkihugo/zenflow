@@ -421,7 +421,7 @@ export class MemoryMonitor extends EventEmitter {
           metrics.averageLatency > thresholds.latency * 2
             ? 'critical'
             : 'warning',
-        message: `Average latency (${metrics.averageLatency.toFixed(2)}ms) exceeds threshold (${thresholds.latency}ms)`,
+        message: 'Average latency (' + (metrics.averageLatency.toFixed(2)) + 'ms) exceeds threshold (' + thresholds.latency + 'ms)',
         source: 'latency_monitor',
         metadata: {
           currentLatency: metrics.averageLatency,
@@ -440,7 +440,7 @@ export class MemoryMonitor extends EventEmitter {
           metrics.errorRate > thresholds.errorRate * 2
             ? 'critical'
             : ' warning',
-        message: `Error rate (${(metrics.errorRate * 100).toFixed(2)}%) exceeds threshold (${(thresholds.errorRate * 100).toFixed(2)}%)`,
+        message: 'Error rate (' + ((metrics.errorRate * 100).toFixed(2)) + '%) exceeds threshold (' + (thresholds.errorRate * 100).toFixed(2) + '%)',
         source: 'error_monitor',
         metadata: {
           currentErrorRate: metrics.errorRate,
@@ -458,7 +458,7 @@ export class MemoryMonitor extends EventEmitter {
           metrics.totalMemoryUsage > thresholds.memoryUsage * 1.5
             ? 'critical'
             : 'warning',
-        message: `Memory usage (${metrics.totalMemoryUsage.toFixed(2)}MB) exceeds threshold (${thresholds.memoryUsage}MB)`,
+        message: 'Memory usage (' + (metrics.totalMemoryUsage.toFixed(2)) + 'MB) exceeds threshold (' + thresholds.memoryUsage + 'MB)',
         source: 'memory_monitor',
         metadata: {
           currentUsage: metrics.totalMemoryUsage,
@@ -476,7 +476,7 @@ export class MemoryMonitor extends EventEmitter {
           metrics.cacheHitRate < thresholds.cacheHitRate * 0.5
             ? 'critical'
             : 'warning',
-        message: `Cache hit rate (${(metrics.cacheHitRate * 100).toFixed(2)}%) below threshold (${(thresholds.cacheHitRate * 100).toFixed(2)}%)`,
+        message: 'Cache hit rate (' + ((metrics.cacheHitRate * 100).toFixed(2)) + '%) below threshold (' + (thresholds.cacheHitRate * 100).toFixed(2) + '%)',
         source: 'cache_monitor',
         metadata: {
           currentHitRate: metrics.cacheHitRate,
@@ -494,7 +494,7 @@ export class MemoryMonitor extends EventEmitter {
           metrics.healthyNodes < metrics.activeNodes * 0.5
             ? 'critical'
             : 'warning',
-        message: `${metrics.activeNodes - metrics.healthyNodes} nodes are unhealthy (${metrics.healthyNodes}/${metrics.activeNodes} healthy)`,
+        message: (metrics.activeNodes - metrics.healthyNodes) + ' nodes are unhealthy (' + (metrics.healthyNodes) + '/' + metrics.activeNodes + ' healthy)',
         source: 'node_monitor',
         metadata: {
           activeNodes: metrics.activeNodes,
@@ -514,7 +514,7 @@ export class MemoryMonitor extends EventEmitter {
     alertData: Omit<MemoryAlert, 'id|timestamp|acknowledged|resolved'>
   ): void {
     const alert: MemoryAlert = {
-      id: `alert_${Date.now()}_${Math.random().toString(36).slice(2)}`,
+      id: 'alert_' + (Date.now()) + '_' + Math.random().toString(36).slice(2),
       timestamp: Date.now(),
       acknowledged: false,
       resolved: false,

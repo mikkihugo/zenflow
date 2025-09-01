@@ -7,19 +7,19 @@
  * Listens to brain events and responds with agent intelligence and monitoring data.
  *
  * **EVENT-DRIVEN CAPABILITIES:**
- * - 🧠 **Brain Integration**:Responds to brain agent monitoring requests via events
- * - 📊 **Agent Health**:Tracks agent health status via event responses
- * - 🔍 **Task Prediction**:Provides task duration predictions via events
- * - 📈 **Performance Tracking**:Monitors agent performance via events
- * - 🎯 **Zero Dependencies**:No foundation or external imports
- * - ⚡ **System Health**:Provides system-wide agent health summaries
+ * -  **Brain Integration**:Responds to brain agent monitoring requests via events
+ * -  **Agent Health**:Tracks agent health status via event responses
+ * -  **Task Prediction**:Provides task duration predictions via events
+ * -  **Performance Tracking**:Monitors agent performance via events
+ * -  **Zero Dependencies**:No foundation or external imports
+ * -  **System Health**:Provides system-wide agent health summaries
  *
  * **EVENT ARCHITECTURE:**
- * Brain emits agent monitoring requests → Agent Monitor responds with intelligence data
+ * Brain emits agent monitoring requests  Agent Monitor responds with intelligence data
  * Pure event coordination with no direct package dependencies.
  *
  * @example Event-Driven Usage (Brain Integration)
- * ```typescript`
+ * '''typescript'
  * // Brain requests agent health
  * eventSystem.emit('brain: agent-monitoring: get-agent-health', { 
  *   requestId: '123', *   agentId:{ id: 'agent-1', swarmId: ' swarm-1', type: ' coordinator', instance:1},
@@ -29,8 +29,8 @@
  * // Agent monitoring responds with health data
  * eventSystem.on('agent-monitoring: agent-health', (data) => {
  *   logger.info('Agent health: ', data.health);
-' *});
- * ````
+` *});
+ * `
  *
  * @author Claude Code Zen Team - Intelligence Integration
  * @since 1.0.0-alpha.43
@@ -159,6 +159,11 @@ import {
   PerformanceTracker,
   PerformanceTrackerConfig,
 } from './performance-tracker';
+import type {
+  IntelligenceSystemConfig,
+  AgentId,
+  AgentHealth,
+} from './types';
 import {
   createIntelligenceSystem,
   createBasicIntelligenceSystem,
@@ -209,33 +214,94 @@ type ITaskCompletionRecord = any;
 // DEFAULT_TASK_PREDICTOR_CONFIG already exported above
 
 // =============================================================================
+// DEFAULT CONFIGURATIONS
+// =============================================================================
+
+const createDefaultIntelligenceConfig = (): IntelligenceSystemConfig => ({
+  taskPrediction: {
+    enabled: true,
+    confidenceThreshold: 0.8,
+    historyWindowSize: 100,
+    updateInterval: 5000,
+  },
+  agentLearning: {
+    enabled: true,
+    adaptationRate: 0.1,
+    learningModes: ['supervised', 'reinforcement'],
+    performanceThreshold: 0.7,
+  },
+  healthMonitoring: {
+    enabled: true,
+    healthCheckInterval: 30000,
+    alertThresholds: {
+      cpu: 80,
+      memory: 85,
+      taskFailureRate: 10,
+    },
+  },
+  predictiveAnalytics: {
+    enabled: true,
+    forecastHorizons: ['1h', '6h', '24h'],
+    ensemblePrediction: true,
+    confidenceThreshold: 0.75,
+    enableEmergentBehavior: true,
+  },
+  persistence: {
+    enabled: true,
+  },
+});
+
+const createDefaultTaskPredictorConfig = (): TaskPredictorConfig => ({
+  historyWindowSize: 100,
+  confidenceThreshold: 0.8,
+  minSamplesRequired: 5,
+  maxPredictionTime: 10000,
+});
+
+const createDefaultPerformanceTrackerConfig = (): PerformanceTrackerConfig => ({
+  enabled: true,
+  historySize: 1000,
+  metricsInterval: 5000,
+  alertThresholds: {
+    memoryMB: 500,
+    cpuPercent: 80,
+    operationTimeoutMs: 30000,
+  },
+});
+
+// =============================================================================
 // PROFESSIONAL SYSTEM ACCESS - Production naming patterns
 // =============================================================================
 
 export async function getAgentMonitoringSystemAccess(
   config?: ISystemConfig
 ): Promise<any> {
-  const intelligenceSystem = new CompleteIntelligenceSystem(config);
+  const defaultConfig = createDefaultIntelligenceConfig();
+  const intelligenceSystem = new CompleteIntelligenceSystem(defaultConfig);
   await intelligenceSystem.initialize();
   return {
     createIntelligenceSystem: (systemConfig?: ISystemConfig) =>
-      createIntelligenceSystem(systemConfig),
+      createIntelligenceSystem((systemConfig as IntelligenceSystemConfig) || defaultConfig),
     createBasicSystem: (systemConfig?: ISystemConfig) =>
-      createBasicIntelligenceSystem(systemConfig),
+      createBasicIntelligenceSystem((systemConfig as IntelligenceSystemConfig) || defaultConfig),
     createProductionSystem: (systemConfig?: ISystemConfig) =>
-      createProductionIntelligenceSystem(systemConfig),
+      createProductionIntelligenceSystem((systemConfig as IntelligenceSystemConfig) || defaultConfig),
     createTaskPredictor: (predictorConfig?: ITaskPredictorConfig) =>
-      createTaskPredictor(predictorConfig),
+      createTaskPredictor((predictorConfig as TaskPredictorConfig) || createDefaultTaskPredictorConfig()),
     createPerformanceTracker: (trackerConfig?: IPerformanceTrackerConfig) =>
-      createPerformanceTracker(trackerConfig),
+      createPerformanceTracker((trackerConfig as PerformanceTrackerConfig) || createDefaultPerformanceTrackerConfig()),
     getGlobalPerformanceTracker: () => getGlobalPerformanceTracker(),
     withPerformanceTracking: <T>(fn: () => T) => withPerformanceTracking(fn),
     predict: (request: IPredictionRequest) =>
       intelligenceSystem.predict(request),
-    getHealth: (agentId: IAgentId) =>
-      intelligenceSystem.getAgentHealth(agentId),
-    updateHealth: (agentId: IAgentId, health: IAgentHealth) =>
-      intelligenceSystem.updateAgentHealth(agentId, health),
+    getHealth: (agentId: IAgentId) => {
+      const agentIdObj: AgentId = { id: agentId, swarmId: 'default', type: 'coordinator', instance: 1 };
+      return intelligenceSystem.getAgentHealth(agentIdObj);
+    },
+    updateHealth: (agentId: IAgentId, health: IAgentHealth) => {
+      const agentIdObj: AgentId = { id: agentId, swarmId: 'default', type: 'coordinator', instance: 1 };
+      return intelligenceSystem.updateAgentHealth(agentIdObj, health as AgentHealth);
+    },
     getMetrics: () => intelligenceSystem.getIntelligenceMetrics(),
     shutdown: () => intelligenceSystem.shutdown(),
   };
@@ -244,7 +310,8 @@ export async function getAgentMonitoringSystemAccess(
 export async function getIntelligenceSystemInstance(
   config?: ISystemConfig
 ): Promise<CompleteIntelligenceSystem> {
-  const system = new CompleteIntelligenceSystem(config);
+  const defaultConfig = createDefaultIntelligenceConfig();
+  const system = new CompleteIntelligenceSystem(defaultConfig);
   await system.initialize();
   return system;
 }
@@ -252,9 +319,17 @@ export async function getIntelligenceSystemInstance(
 export async function getTaskPredictionAccess(
   config?: ITaskPredictorConfig
 ): Promise<any> {
-  const predictor = createTaskPredictor(config);
+  const defaultConfig = createDefaultTaskPredictorConfig();
+  const predictor = createTaskPredictor(defaultConfig);
   return {
-    predict: (request: IPredictionRequest) => predictor.predict(request),
+    predict: (request: IPredictionRequest) => {
+      // Convert interface request to expected format
+      const predictionRequest = {
+        timeHorizon: (request as any).timeHorizon || '1h',
+        metrics: (request as any).metrics || {},
+      };
+      return predictor.predict(predictionRequest);
+    },
     isHighConfidence: (prediction: ITaskPrediction) =>
       isHighConfidencePrediction(prediction),
     getSummary: (prediction: ITaskPrediction) =>

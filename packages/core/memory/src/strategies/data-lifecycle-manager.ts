@@ -127,7 +127,7 @@ export class DataLifecycleManager extends EventEmitter {
     this.emit('dataStored', { key, stage, entry });
     recordMetric('data_lifecycle_stored', 1, { stage });
 
-    this.logger.debug(`Data stored in ${stage} stage:${key}`);
+    this.logger.debug('Data stored in ' + (stage) + ' stage:' + key);
   }
 
   retrieve(key: string): { value: unknown; entry: LifecycleEntry } | null {
@@ -306,7 +306,7 @@ export class DataLifecycleManager extends EventEmitter {
 
         if (migrated > 0) {
           this.logger.debug(
-            `Periodic migration completed:${migrated} entries migrated`
+            'Periodic migration completed:' + migrated + ' entries migrated'
           );
           recordMetric('data_lifecycle_periodic_migration', migrated);
         }
@@ -472,7 +472,7 @@ export class DataLifecycleManager extends EventEmitter {
     });
 
     this.logger.debug(
-      `Data migrated:${key} from ${currentStage} to ${targetStage} (${reason})`
+      'Data migrated:' + (key) + ' from ' + (currentStage) + ' to ' + (targetStage) + ' (' + reason + ')'
     );
     return true;
   }
@@ -562,7 +562,7 @@ export class DataLifecycleManager extends EventEmitter {
 
         if (cleaned > 0) {
           this.logger.debug(
-            `Periodic cleanup completed:${cleaned} entries removed`
+            'Periodic cleanup completed:' + cleaned + ' entries removed'
           );
           recordMetric('data_lifecycle_periodic_cleanup', cleaned);
         }

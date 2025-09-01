@@ -149,11 +149,11 @@ export class MemoryCoordinationSystem extends EventEmitter {
         }
 
         this.emit('nodeAdded', { nodeId: id, node });
-        this.logger.info(`Added memory node:${id}`);
+        this.logger.info('Added memory node:' + id);
         recordMetric('memory_coordination_nodes_total', this.nodes.size);
       });
     } catch (error) {
-      this.logger.error(`Failed to add memory node ${id}:`, error);
+      this.logger.error('Failed to add memory node ' + id + ':', error);
       throw error;
     }
   }
@@ -163,7 +163,7 @@ export class MemoryCoordinationSystem extends EventEmitter {
 
     const node = this.nodes.get(id);
     if (!node) {
-      throw new Error(`Memory node not found:${id}`);
+      throw new Error('Memory node not found:' + id);
     }
 
     try {
@@ -187,11 +187,11 @@ export class MemoryCoordinationSystem extends EventEmitter {
         }
 
         this.emit('nodeRemoved', { nodeId: id });
-        this.logger.info(`Removed memory node:${id}`);
+        this.logger.info('Removed memory node:' + id);
         recordMetric('memory_coordination_nodes_total', this.nodes.size);
       });
     } catch (error) {
-      this.logger.error(`Failed to remove memory node ${id}:`, error);
+      this.logger.error('Failed to remove memory node ' + id + ':', error);
       throw error;
     }
   }
@@ -344,7 +344,7 @@ export class MemoryCoordinationSystem extends EventEmitter {
             break;
 
           default:
-            throw new Error(`Unsupported strategy:${this.config.strategy}`);
+            throw new Error('Unsupported strategy:' + this.config.strategy);
         }
 
         const latency = Date.now() - startTime;
@@ -370,7 +370,7 @@ export class MemoryCoordinationSystem extends EventEmitter {
           error: (error as Error).message,
         });
 
-        this.logger.error(`Memory operation failed:`, error);
+        this.logger.error('Memory operation failed:', error);
 
         return {
           success: false,
@@ -618,7 +618,7 @@ export class MemoryCoordinationSystem extends EventEmitter {
 }
 
   private handleNodeUnhealthy(nodeId: string): void {
-    this.logger.warn(`Memory node unhealthy:${nodeId}`);
+    this.logger.warn('Memory node unhealthy:' + nodeId);
     recordMetric('memory_coordination_node_unhealthy', 1, { nodeId });
 
     // If primary node is unhealthy, select new primary
@@ -630,13 +630,13 @@ export class MemoryCoordinationSystem extends EventEmitter {
   }
 
   private handleNodeRecovered(nodeId: string): void {
-    this.logger.info(`Memory node recovered:${nodeId}`);
+    this.logger.info('Memory node recovered:' + nodeId);
     recordMetric('memory_coordination_node_recovered', 1, { nodeId });
     this.emit('nodeRecovered', { nodeId });
   }
 
   private handleNodeOverloaded(nodeId: string): void {
-    this.logger.warn(`Memory node overloaded:${nodeId}`);
+    this.logger.warn('Memory node overloaded:' + nodeId);
     recordMetric('memory_coordination_node_overloaded', 1, { nodeId });
     this.emit('nodeOverloaded', { nodeId });
   }
@@ -648,7 +648,7 @@ export class MemoryCoordinationSystem extends EventEmitter {
 
     if (healthyNodes.length > 0) {
       this.primaryNode = healthyNodes[0].id;
-      this.logger.info(`New primary node selected:${this.primaryNode}`);
+      this.logger.info('New primary node selected:' + this.primaryNode);
     } else {
       this.primaryNode = undefined;
       this.logger.warn('No healthy nodes available for primary');

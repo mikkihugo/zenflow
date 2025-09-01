@@ -48,11 +48,11 @@ describe('Foundation Events', () => {
       const results: string[] = [];
 
       eventBus.on('test', (data) => {
-        results.push(`listener1:${data.value}`);
+        results.push('listener1:' + data.value);
       });
 
       eventBus.on('test', (data) => {
-        results.push(`listener2:${data.value}`);
+        results.push('listener2:' + data.value);
       });
 
       eventBus.emit('test', { value: 'test' });

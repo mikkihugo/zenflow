@@ -5,28 +5,20 @@
  * Focus on behavior verification with actual implementation.
  */
 
-import { ConversationOrchestratorImpl} from '../src/main';
+import { ConversationOrchestratorImpl as _ConversationOrchestratorImpl } from '../src/main';
 import type { AgentId, 
   ConversationConfig,
   ConversationMessage} from '../src/types';
 
-describe('ConversationOrchestratorImpl - Classical TDD', () => {
-    ')  let orchestrator:ConversationOrchestratorImpl;
-
-  const sampleAgents:AgentId[] = [
-    { id: 'agent-1', swarmId: ' swarm-1', type: ' coder', instance:0},
+describe(): void {
+    ')agent-1', swarmId: ' swarm-1', type: ' coder', instance:0},
     { id: 'agent-2', swarmId: ' swarm-1', type: ' reviewer', instance:0},
 ];
 
-  beforeEach(async () => {
-    orchestrator = new ConversationOrchestratorImpl();
-});
-
-  describe('🎯 Create Conversation', () => {
-    ')    it('should create conversation and store in memory', async () => {
-    ')      // Arrange
-      const config:ConversationConfig = {
-        title: 'Test Code Review',        pattern: 'code-review',        context:{
+  beforeEach(): void {
+    orchestrator = new ConversationOrchestratorImpl(): void {
+    ')should create conversation and store in memory', async () => {
+    ')Test Code Review',        pattern: 'code-review',        _context:{
           goal: 'Review pull request #123',          domain: 'backend',          constraints:[],
           resources:[],
           expertise:['typescript',    'api-design'],
@@ -35,22 +27,12 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
 };
 
       // Act
-      const session = await orchestrator.createConversation(config);
-
-      // Assert
-      expect(session).toMatchObject({
+      const session = await orchestrator.createConversation(): void {
         title:config.title,
         participants:config.initialParticipants,
         status: 'active',});
-      expect(session.id).toBeDefined();
-      expect(session.startTime).toBeDefined();
-      expect(session.participants).toHaveLength(2);
-});
-
-    it('should create conversation with proper initial state', async () => {
-    ')      // Arrange
-      const config:ConversationConfig = {
-        title: 'Problem Solving Session',        pattern: 'problem-solving',        context:{
+      expect(): void {
+    ')Problem Solving Session',        pattern: 'problem-solving',        _context:{
           goal: 'Solve the integration puzzle',          domain: 'integration',          constraints:['time-limit'],
           resources:['documentation'],
           expertise:['testing'],
@@ -59,24 +41,16 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
 };
 
       // Act
-      const session = await orchestrator.createConversation(config);
-
-      // Assert
-      expect(session.status).toBe('active');')      expect(session.messages).toHaveLength(0);
-      expect(session.outcomes).toHaveLength(0);
-      expect(session.metrics.messageCount).toBe(0);
-      expect(session.metrics.participationByAgent).toEqual({
+      const session = await orchestrator.createConversation(): void {
         'agent-1':0,
         'agent-2':0,
 });
 });
 });
 
-  describe('🤝 Join Conversation', () => {
-    ')    it('should add agent to conversation', async () => {
-    ')      // Arrange
-      const config:ConversationConfig = {
-        title: 'Test',        pattern: 'problem-solving',        context:{
+  describe(): void {
+    ')should add agent to conversation', async () => {
+    ')Test',        pattern: 'problem-solving',        _context:{
           goal: 'Test',          domain: 'test',          constraints:[],
           resources:[],
           expertise:[],
@@ -84,39 +58,19 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
         initialParticipants:sampleAgents,
 };
 
-      const session = await orchestrator.createConversation(config);
-      const newAgent:AgentId = {
+      const session = await orchestrator.createConversation(): void {
         id: 'agent-3',        swarmId: 'swarm-1',        type: 'tester',        instance:0,
 };
 
       // Act
-      await orchestrator.joinConversation(session.id, newAgent);
-
-      // Assert
-      const updatedSession = orchestrator.getSession(session.id);
-      expect(updatedSession?.participants).toHaveLength(3);
-      expect(updatedSession?.participants).toContain(newAgent);
-      expect(updatedSession?.metrics.participationByAgent).toHaveProperty(
-        'agent-3',        0
-      );
-});
-
-    it('should reject joining non-existent conversation', async () => {
-    ')      // Arrange
-      const newAgent:AgentId = {
-        id: 'agent-3',        swarmId: 'swarm-1',        type: 'tester',        instance:0,
+      await orchestrator.joinConversation(): void {
+    ')agent-3',        swarmId: 'swarm-1',        type: 'tester',        instance:0,
 };
 
       // Act & Assert
-      await expect(
-        orchestrator.joinConversation('non-existent', newAgent)')      ).rejects.toThrow('Conversation non-existent not found');')});
-});
-
-  describe('💬 Send Message', () => {
-    ')    it('should validate sender and store message', async () => {
-    ')      // Arrange
-      const config:ConversationConfig = {
-        title: 'Test',        pattern: 'problem-solving',        context:{
+      await expect(): void {
+    ')should validate sender and store message', async () => {
+    ')Test',        pattern: 'problem-solving',        _context:{
           goal: 'Test',          domain: 'test',          constraints:[],
           resources:[],
           expertise:[],
@@ -124,38 +78,26 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
         initialParticipants:sampleAgents,
 };
 
-      const session = await orchestrator.createConversation(config);
-      const message:ConversationMessage = {
+      const session = await orchestrator.createConversation(): void {
         id: ','        conversationId:session.id,
         fromAgent:sampleAgents[0]!,
-        toAgent:undefined,
-        timestamp:new Date(),
-        content:{
-          text: 'Hello, world!',          code:undefined,
-          data:undefined,
-          attachments:undefined,
+        toAgent: undefined as any,
+        timestamp:new Date(): void {
+          text: 'Hello, world!',          _code: undefined as any,
+          _data: undefined as any,
+          attachments: undefined as any,
 },
         messageType: 'question',        metadata:{
           priority: 'medium',          requiresResponse:true,
-          context:session.context,
+          _context:session.context,
           tags:['greeting'],
-          referencedMessages:undefined,
+          referencedMessages: undefined as any,
 },
 };
 
       // Act
-      await orchestrator.sendMessage(message);
-
-      // Assert
-      const updatedSession = orchestrator.getSession(session.id);
-      expect(updatedSession?.messages).toHaveLength(1);
-      expect(updatedSession?.metrics.messageCount).toBe(1);
-      expect(updatedSession?.metrics.participationByAgent['agent-1']).toBe(1);')});
-
-    it('should reject messages from non-participants', async () => {
-    ')      // Arrange
-      const config:ConversationConfig = {
-        title: 'Test',        pattern: 'problem-solving',        context:{
+      await orchestrator.sendMessage(): void {
+    ')Test',        pattern: 'problem-solving',        _context:{
           goal: 'Test',          domain: 'test',          constraints:[],
           resources:[],
           expertise:[],
@@ -163,40 +105,31 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
         initialParticipants:sampleAgents,
 };
 
-      const session = await orchestrator.createConversation(config);
-      const nonParticipant:AgentId = {
+      const session = await orchestrator.createConversation(): void {
         id: 'outsider',        swarmId: 'swarm-2',        type: 'researcher',        instance:0,
 };
 
       const message:ConversationMessage = {
         id: ','        conversationId:session.id,
         fromAgent:nonParticipant,
-        toAgent:undefined,
-        timestamp:new Date(),
-        content:{
-          text: 'Trying to join uninvited',          code:undefined,
-          data:undefined,
-          attachments:undefined,
+        toAgent: undefined as any,
+        timestamp:new Date(): void {
+          text: 'Trying to join uninvited',          _code: undefined as any,
+          _data: undefined as any,
+          attachments: undefined as any,
 },
         messageType: 'system_notification',        metadata:{
           priority: 'high',          requiresResponse:false,
-          context:session.context,
+          _context:session.context,
           tags:[],
-          referencedMessages:undefined,
+          referencedMessages: undefined as any,
 },
 };
 
       // Act & Assert
-      await expect(orchestrator.sendMessage(message)).rejects.toThrow(
-        'Agent outsider is not a participant')      );
-});
-});
-
-  describe('🔚 Terminate Conversation', () => {
-    ')    it('should finalize conversation and generate outcomes', async () => {
-    ')      // Arrange
-      const config:ConversationConfig = {
-        title: 'Code Review Complete',        pattern: 'code-review',        context:{
+      await expect(): void {
+    ')should finalize conversation and generate outcomes', async () => {
+    ')Code Review Complete',        pattern: 'code-review',        _context:{
           goal: 'Review code',          domain: 'backend',          constraints:[],
           resources:[],
           expertise:[],
@@ -204,51 +137,30 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
         initialParticipants:sampleAgents,
 };
 
-      const session = await orchestrator.createConversation(config);
-
-      // Send a decision message to generate outcomes
-      const message:ConversationMessage = {
+      const session = await orchestrator.createConversation(): void {
         id: 'msg-1',        conversationId:session.id,
         fromAgent:sampleAgents[0]!,
-        toAgent:undefined,
-        timestamp:new Date(),
-        content:{
-          text: 'Code looks good',          code:undefined,
-          data:undefined,
-          attachments:undefined,
+        toAgent: undefined as any,
+        timestamp:new Date(): void {
+          text: 'Code looks good',          _code: undefined as any,
+          _data: undefined as any,
+          attachments: undefined as any,
 },
         messageType: 'decision',        metadata:{
           priority: 'medium',          requiresResponse:false,
-          context:session.context,
+          _context:session.context,
           tags:[],
-          referencedMessages:undefined,
+          referencedMessages: undefined as any,
 },
 };
 
-      await orchestrator.sendMessage(message);
-
-      // Act
-      const outcomes = await orchestrator.terminateConversation(
-        session.id,
-        'Review complete')      );
-
-      // Assert
-      expect(outcomes).toHaveLength(1);
-      expect(outcomes[0]).toMatchObject({
-        type: 'decision',        content:{ text: 'Code looks good'},
+      await orchestrator.sendMessage(): void { text: 'Code looks good'},
 });
 
       // Verify session is no longer active
-      const finalSession = orchestrator.getSession(session.id);
-      expect(finalSession).toBeUndefined();
-});
-});
-
-  describe('🔍 Get Conversation History', () => {
-    ')    it('should retrieve messages from active session', async () => {
-    ')      // Arrange
-      const config:ConversationConfig = {
-        title: 'Test',        pattern: 'problem-solving',        context:{
+      const finalSession = orchestrator.getSession(): void {
+    ')should retrieve messages from active session', async () => {
+    ')Test',        pattern: 'problem-solving',        _context:{
           goal: 'Test',          domain: 'test',          constraints:[],
           resources:[],
           expertise:[],
@@ -256,40 +168,26 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
         initialParticipants:sampleAgents,
 };
 
-      const session = await orchestrator.createConversation(config);
-      const message:ConversationMessage = {
+      const session = await orchestrator.createConversation(): void {
         id: 'msg-1',        conversationId:session.id,
         fromAgent:sampleAgents[0]!,
-        toAgent:undefined,
-        timestamp:new Date(),
-        content:{
-          text: 'First message',          code:undefined,
-          data:undefined,
-          attachments:undefined,
+        toAgent: undefined as any,
+        timestamp:new Date(): void {
+          text: 'First message',          _code: undefined as any,
+          _data: undefined as any,
+          attachments: undefined as any,
 },
         messageType: 'question',        metadata:{
           priority: 'medium',          requiresResponse:true,
-          context:session.context,
+          _context:session.context,
           tags:[],
-          referencedMessages:undefined,
+          referencedMessages: undefined as any,
 },
 };
 
-      await orchestrator.sendMessage(message);
-
-      // Act
-      const history = await orchestrator.getConversationHistory(session.id);
-
-      // Assert
-      expect(history).toHaveLength(1);
-      expect(history[0]?.content.text).toBe('First message');')});
-});
-
-  describe('📊 Session Management', () => {
-    ')    it('should track active sessions correctly', async () => {
-    ')      // Arrange
-      const config:ConversationConfig = {
-        title: 'Session Test',        pattern: 'problem-solving',        context:{
+      await orchestrator.sendMessage(): void {
+    ')should track active sessions correctly', async () => {
+    ')Session Test',        pattern: 'problem-solving',        _context:{
           goal: 'Test session management',          domain: 'testing',          constraints:[],
           resources:[],
           expertise:[],
@@ -298,21 +196,18 @@ describe('ConversationOrchestratorImpl - Classical TDD', () => {
 };
 
       // Act - Create multiple sessions
-      const __session1 = await orchestrator.createConversation({
-        ...config,
-        title: 'Session 1',});
-      const __session2 = await orchestrator.createConversation({
+      const __session1 = await orchestrator.createConversation(): void {
         ...config,
         title: 'Session 2',});
 
       // Assert
       const activeSessions = orchestrator.getActiveSessions();
       expect(activeSessions).toHaveLength(2);
-      expect(activeSessions.map((s) => s.title)).toContain('Session 1');')      expect(activeSessions.map((s) => s.title)).toContain('Session 2');')
+      expect(activeSessions.map((s) => s.title)).toContain('Session 1'))      expect(activeSessions.map((s) => s.title)).toContain('Session 2'))
       // Terminate one session
-      await orchestrator.terminateConversation(session1.id, 'Test complete');')
+      await orchestrator.terminateConversation(session1.id, 'Test complete'))
       const remainingSessions = orchestrator.getActiveSessions();
       expect(remainingSessions).toHaveLength(1);
-      expect(remainingSessions[0]?.title).toBe('Session 2');')});
+      expect(remainingSessions[0]?.title).toBe('Session 2'))});
 });
 });

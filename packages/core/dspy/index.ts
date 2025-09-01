@@ -7,21 +7,21 @@
  * prompt optimization, few-shot learning, and teleprompter techniques for
  * production AI systems requiring systematic prompt engineering.
  *
- * **⚠️ RECOMMENDED USAGE:Access via @claude-zen/brain Package**
+ * ** RECOMMENDED USAGE:Access via @claude-zen/brain Package**
  *
  * While this package can be used directly, it is recommended to access DSPy
- * functionality through `@claude-zen/brain` which provides integrated optimization`
+ * functionality through '@claude-zen/brain' which provides integrated optimization'
  * with autonomous decision making, task complexity estimation, and ML integration.
  *
  * **CORE DSPY CAPABILITIES:**
- * - 🎯 **Prompt Optimization**:Advanced prompt engineering with systematic optimization
- * - 📚 **Few-Shot Learning**:Intelligent example selection and demonstration optimization
- * - 🔄 **Teleprompter Algorithms**:Automated prompt refinement and improvement
- * - 🧠 **Neural Programming**:Composable AI program creation and optimization
- * - 📊 **Performance Metrics**:Comprehensive evaluation and tracking systems
- * - ⚡ **Foundation Integration**:Complete @claude-zen/foundation support
- * - 🔧 **Modular Architecture**:Composable primitives and reusable components
- * - 📈 **Production Ready**:Battle-tested algorithms for enterprise deployment
+ * -  **Prompt Optimization**:Advanced prompt engineering with systematic optimization
+ * -  **Few-Shot Learning**:Intelligent example selection and demonstration optimization
+ * -  **Teleprompter Algorithms**:Automated prompt refinement and improvement
+ * -  **Neural Programming**:Composable AI program creation and optimization
+ * -  **Performance Metrics**:Comprehensive evaluation and tracking systems
+ * -  **Foundation Integration**:Complete @claude-zen/foundation support
+ * -  **Modular Architecture**:Composable primitives and reusable components
+ * -  **Production Ready**:Battle-tested algorithms for enterprise deployment
  *
  * **Enterprise Features:**
  * - Multi-model support with adapter pattern for various LLM providers
@@ -33,7 +33,7 @@
  * - Custom teleprompter development framework
  *
  * @example Basic DSPy Prompt Optimization
- * ```typescript`
+ * 'typescript'
  * import { DSPyEngine, createDSPyEngine} from '@claude-zen/dspy';
  *
  * // Create DSPy engine with foundation integration
@@ -70,10 +70,10 @@
  * // Use the optimized prompt for predictions
  * const prediction = await dspy.predict('The service was amazing!');
  * logger.info('Prediction: ', prediction.sentiment);
-' * ```
+' * '
  *
  * @example Advanced Teleprompter Usage
- * ```typescript`
+ * '''typescript'
  * import {
  *   DSPyEngine,
  *   Ensemble,
@@ -131,11 +131,11 @@
  *   f1Score:evaluation.f1Score,
  *   confidence:evaluation.averageConfidence
  *});
- * ```
+ * '
  *
  * @example Integration with Brain Package (Recommended)
- * ```typescript`
- * // ✅ RECOMMENDED:Use via brain package for autonomous optimization
+ * '''typescript'
+ * //  RECOMMENDED:Use via brain package for autonomous optimization
  * import { BrainCoordinator, AutonomousOptimizationEngine} from '@claude-zen/brain';
  *
  * // Brain automatically chooses DSPy when appropriate
@@ -160,10 +160,10 @@
  *   optimizationTime:result.duration,
  *   confidence:result.confidence
  *});
- * ```
+ * '
  *
  * @example Custom Teleprompter Development
- * ```typescript`
+ * '''typescript'
  * import { DSPyEngine, Example, Prediction} from '@claude-zen/dspy';
  *
  * // Create custom teleprompter for domain-specific optimization
@@ -210,7 +210,7 @@
  *     // Generate prompts tailored to domain
  *     const basePrompt = module.getPrompt();
  *     const domainPrompts = this.config.expertKnowledge.map(knowledge =>
- *       `${basePrompt}\n\nDomain expertise:${knowledge}`
+ *       (basePrompt) + '\n\nDomain expertise:' + knowledge
  *     );
  *
  *     return domainPrompts;
@@ -224,10 +224,10 @@
  *   optimizationStrategy:'conservative') *});
  *
  * const optimized = await customTeleprompter.optimize(module, medicalExamples);
- * ```
+ * '
  *
  * @example Production Monitoring and Evaluation
- * ```typescript`
+ * '''typescript'
  * import { DSPyService, getDSPyService} from '@claude-zen/dspy';
  *
  * // Initialize DSPy service with production monitoring
@@ -283,7 +283,7 @@
  *     averageDuration:metrics.averageDuration
  *});
  *}, 3600000); // Every hour
- * ```
+ * '
  *
  * **Performance Characteristics:**
  * - **Optimization Speed**:10-100x faster than manual prompt engineering
