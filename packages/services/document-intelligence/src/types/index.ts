@@ -35,7 +35,7 @@ export interface DocumentIntelligenceConfig {
  * Document analysis request options
  */
 export interface DocumentAnalysisOptions {
-  content:string;
+  content: string;
   projectId?:string;
   enableSemanticAnalysis?:boolean;
   enableStrategicAnalysis?:boolean;
@@ -47,7 +47,7 @@ export interface DocumentAnalysisOptions {
  * Semantic analysis options
  */
 export interface SemanticAnalysisOptions {
-  content:string;
+  content: string;
   enablePatternRecognition?:boolean;
   enableDensityAnalysis?:boolean;
   customPatterns?:any;
@@ -57,7 +57,7 @@ export interface SemanticAnalysisOptions {
  * Document segmentation options
  */
 export interface DocumentSegmentationOptions {
-  content:string;
+  content: string;
   strategy?:string;
   preserveAlgorithmBlocks?:boolean;
   maxSegmentSize?:number;
@@ -67,7 +67,7 @@ export interface DocumentSegmentationOptions {
  * Strategic vision coordination options
  */
 export interface VisionCoordinationOptions {
-  projectId:string;
+  projectId: string;
   includeTaskGeneration?:boolean;
   includeDocumentLinks?:boolean;
 }
@@ -76,7 +76,7 @@ export interface VisionCoordinationOptions {
  * Document processing options
  */
 export interface DocumentProcessingOptions {
-  path:string;
+  path: string;
   enableWorkflow?:boolean;
   generateTasks?:boolean;
   saveToDatabase?:boolean;
@@ -86,7 +86,7 @@ export interface DocumentProcessingOptions {
  * Pattern scanning options
  */
 export interface PatternScanningOptions {
-  rootPath:string;
+  rootPath: string;
   includePatterns?:string[];
   excludePatterns?:string[];
   enabledPatterns?:string[];
@@ -97,18 +97,18 @@ export interface PatternScanningOptions {
  * Service status information
  */
 export interface ServiceStatus {
-  initialized:boolean;
-  enabledCapabilities:string[];
-  componentStatus:Record<string, boolean>;
+  initialized: boolean;
+  enabledCapabilities: string[];
+  componentStatus: Record<string, boolean>;
 }
 
 /**
  * Processing metrics
  */
 export interface ProcessingMetrics {
-  totalProcessingTime:number;
-  confidenceScore:number;
-  qualityScore:number;
+  totalProcessingTime: number;
+  confidenceScore: number;
+  qualityScore: number;
 }
 
 /**
@@ -127,25 +127,25 @@ export type ConfidenceLevel =
  * Document complexity metrics
  */
 export interface DocumentComplexityMetrics {
-  algorithmDensity:number;
-  conceptComplexity:number;
-  technicalDepth:number;
-  structuralComplexity:number;
+  algorithmDensity: number;
+  conceptComplexity: number;
+  technicalDepth: number;
+  structuralComplexity: number;
 }
 
 /**
  * Content analysis result
  */
 export interface ContentAnalysisResult {
-  documentType:string;
-  confidence:number;
-  complexity:DocumentComplexityMetrics;
-  patterns:{
-    detected:string[];
-    confidence:Record<string, number>;
-    weights:Record<string, number>;
+  documentType: string;
+  confidence: number;
+  complexity: DocumentComplexityMetrics;
+  patterns: {
+    detected: string[];
+    confidence: Record<string, number>;
+    weights: Record<string, number>;
 };
-  recommendedActions:string[];
+  recommendedActions: string[];
 }
 
 /**
@@ -158,15 +158,15 @@ export type DocumentIntelligenceEvent =
  * Event payload types
  */
 export interface EventPayloads {
-  initialized:{ config: DocumentIntelligenceConfig};
-  analysis_started:{ options: DocumentAnalysisOptions};
-  analysis_complete:{ result: any};
-  classification_complete:{ classification: any};
-  segmentation_complete:{ segmentation: any};
-  scanning_complete:{ scanResults: any};
-  processing_complete:{ processingResult: any};
-  error:{ error: Error; context?: string};
-  shutdown:{};
+  initialized: { config: DocumentIntelligenceConfig};
+  analysis_started: { options: DocumentAnalysisOptions};
+  analysis_complete: { result: any};
+  classification_complete: { classification: any};
+  segmentation_complete: { segmentation: any};
+  scanning_complete: { scanResults: any};
+  processing_complete: { processingResult: any};
+  error: { error: Error; context?: string};
+  shutdown: {};
 }
 
 /**
@@ -174,8 +174,8 @@ export interface EventPayloads {
  */
 export class DocumentIntelligenceError extends Error {
   constructor(
-    message:string,
-    public readonly code:string,
+    message: string,
+    public readonly code: string,
     public readonly context?:any
   ) {
     super(message);
@@ -193,8 +193,8 @@ export type ServiceComponent =
  * Configuration validation result
  */
 export interface ConfigValidationResult {
-  isValid:boolean;
-  errors:string[];
-  warnings:string[];
-  suggestions:string[];
+  isValid: boolean;
+  errors: string[];
+  warnings: string[];
+  suggestions: string[];
 }

@@ -20,52 +20,52 @@ import {
 const logger = getLogger('BrainConfig');
 
 export interface BrainSpecificConfig {
-  wasmPath:string;
-  maxNetworks:number;
-  defaultBatchSize:number;
-  enableGPU:boolean;
-  neuralPresets:{
-    enablePresets:boolean;
-    defaultPreset:string;
+  wasmPath: string;
+  maxNetworks: number;
+  defaultBatchSize: number;
+  enableGPU: boolean;
+  neuralPresets: {
+    enablePresets: boolean;
+    defaultPreset: string;
     customPresets?:Record<string, any>;
 };
-  dspy:{
-    teleprompter:|'MIPROv2|BootstrapFewShot|LabeledFewShot|Ensemble;
-    maxTokens:number;
-    optimizationSteps:number;
-    coordinationFeedback:boolean;
+  dspy: {
+    teleprompter: |'MIPROv2|BootstrapFewShot|LabeledFewShot|Ensemble;
+    maxTokens: number;
+    optimizationSteps: number;
+    coordinationFeedback: boolean;
     // Uses external @zen-ai/dspy-engine for implementation
 };
-  performance:{
-    enableBenchmarking:boolean;
-    trackMetrics:boolean;
-    autoOptimize:boolean;
+  performance: {
+    enableBenchmarking: boolean;
+    trackMetrics: boolean;
+    autoOptimize: boolean;
 };
 }
 
-export const DEFAULT_BRAIN_CONFIG:BrainSpecificConfig = {
-  wasmPath: './wasm/claude_zen_neural',  maxNetworks:10,
-  defaultBatchSize:32,
-  enableGPU:false,
-  neuralPresets:{
-    enablePresets:true,
+export const DEFAULT_BRAIN_CONFIG: BrainSpecificConfig = {
+  wasmPath: './wasm/claude_zen_neural',  maxNetworks: 10,
+  defaultBatchSize: 32,
+  enableGPU: false,
+  neuralPresets: {
+    enablePresets: true,
     defaultPreset: 'BASIC_CLASSIFIER',},
-  dspy:{
-    teleprompter: 'MIPROv2',    maxTokens:4000,
-    optimizationSteps:50,
-    coordinationFeedback:true,
+  dspy: {
+    teleprompter: 'MIPROv2',    maxTokens: 4000,
+    optimizationSteps: 50,
+    coordinationFeedback: true,
 },
-  performance:{
-    enableBenchmarking:isDebugMode(),
-    trackMetrics:true, // Default to true, controlled by operations facade
-    autoOptimize:false,
+  performance: {
+    enableBenchmarking: isDebugMode(),
+    trackMetrics: true, // Default to true, controlled by operations facade
+    autoOptimize: false,
 },
 };
 
 /**
  * Get brain configuration using shared infrastructure
  */
-export function getBrainConfig():BrainSpecificConfig & Partial<Config> {
+export function getBrainConfig(): BrainSpecificConfig & Partial<Config> {
   try {
     // Get shared configuration (handles environment, validation, etc.)
     const __sharedConfig = getConfig();
@@ -75,43 +75,43 @@ export function getBrainConfig():BrainSpecificConfig & Partial<Config> {
 
     // Log neural config availability for debugging
     logger.debug('Neural configuration loaded', {
-    ')      hasNeuralConfig:Object.keys(neuralConfig).length > 0,
-      neuralConfigKeys:Object.keys(neuralConfig),
-      getNeuralConfigAvailable:Boolean(getNeuralConfig),
+    ')      hasNeuralConfig: Object.keys(neuralConfig).length > 0,
+      neuralConfigKeys: Object.keys(neuralConfig),
+      getNeuralConfigAvailable: Boolean(getNeuralConfig),
 });
 
     // Get environment-specific settings
     const debugMode = isDebugMode();
     // Use NODE_ENV or fallback to debug mode inference
     const __environment =
-      process.env.NODE_ENV || (debugMode ? 'development' : 'production');
+      process.env.NODE_ENV || (debugMode ? 'development' : 'production`);
     logger.info(`Loading brain config for environment: ${__environment}`, {
       debugMode,
     });
 
     // Merge configurations with proper precedence
-    const brainConfig:BrainSpecificConfig = {
+    const brainConfig: BrainSpecificConfig = {
       ...DEFAULT_BRAIN_CONFIG,
       // Apply neural-specific configuration if available
       ...(neuralConfig as Partial<BrainSpecificConfig>),
       // Environment-specific overrides
       enableGPU:
-        environment === 'production' ? false:DEFAULT_BRAIN_CONFIG.enableGPU,
-      performance:{
+        environment === `production' ? false: DEFAULT_BRAIN_CONFIG.enableGPU,
+      performance: {
         ...DEFAULT_BRAIN_CONFIG.performance,
-        enableBenchmarking:debugMode,
-        trackMetrics:environment !== 'test', // Controlled by operations facade')},
+        enableBenchmarking: debugMode,
+        trackMetrics: environment !== 'test', // Controlled by operations facade')},
       // Production optimizations
-      dspy:{
+      dspy: {
         ...DEFAULT_BRAIN_CONFIG.dspy,
-        maxTokens:environment === 'production' ? 2000 : 4000,
-        optimizationSteps:environment === 'production' ? 25 : 50,
+        maxTokens: environment === 'production' ? 2000 : 4000,
+        optimizationSteps: environment === 'production' ? 25 : 50,
 },
 };
 
     logger.info('Brain configuration loaded successfully', {
-    ')      wasmEnabled:!!brainConfig.wasmPath,
-      gpuEnabled:brainConfig.enableGPU,
+    ')      wasmEnabled: !!brainConfig.wasmPath,
+      gpuEnabled: brainConfig.enableGPU,
       environment,
 });
 
@@ -120,8 +120,8 @@ export function getBrainConfig():BrainSpecificConfig & Partial<Config> {
       ...sharedConfig,
 } as BrainSpecificConfig & Partial<Config>;
 } catch (error) {
-    logger.error('Failed to load brain configuration:', error);')    throw new Error(
-      `Brain configuration failed:${error instanceof Error ? error.message : String(error)}``
+    logger.error('Failed to load brain configuration: ', error);`)    throw new Error(
+      `Brain configuration failed: ${error instanceof Error ? error.message : String(error)}``
     );
 }
 }
@@ -130,10 +130,10 @@ export function getBrainConfig():BrainSpecificConfig & Partial<Config> {
  * Validate brain configuration
  */
 export function validateBrainConfig(
-  config:Partial<BrainSpecificConfig>
-):boolean {
+  config: Partial<BrainSpecificConfig>
+): boolean {
   try {
-    if (!config.wasmPath||typeof config.wasmPath !=='string') {
+    if (!config.wasmPath||typeof config.wasmPath !==`string') {
     ')      throw new Error('wasmPath must be a valid string');')}
 
     if (
@@ -156,14 +156,14 @@ export function validateBrainConfig(
 
     logger.info('Brain configuration validation passed');')    return true;
 } catch (error) {
-    logger.error('Brain configuration validation failed:', error);')    throw error;
+    logger.error('Brain configuration validation failed: ', error);')    throw error;
 }
 }
 
 /**
  * Initialize brain system with shared infrastructure
  */
-export async function initializeBrainSystem():Promise<
+export async function initializeBrainSystem(): Promise<
   BrainSpecificConfig & Partial<Config>
 > {
   logger.info('Initializing brain system with shared infrastructure...');')
@@ -176,15 +176,15 @@ export async function initializeBrainSystem():Promise<
     await new Promise(resolve => setTimeout(resolve, 0));
 
     // Initialize shared services as needed
-    // The shared system handles:logging, config management, etc.
+    // The shared system handles: logging, config management, etc.
 
     logger.info('Brain system initialization completed', {
-    ')      configValid:true,
+    ')      configValid: true,
       sharedInfrastructure: 'active',});
 
     return config;
 } catch (error) {
-    logger.error('Brain system initialization failed:', error);')    throw error;
+    logger.error('Brain system initialization failed: ', error);')    throw error;
 }
 }
 

@@ -924,7 +924,7 @@ export class NeuralOrchestrator {
    * Process simple tasks with internal brain.js
    */
   private async processSimpleTask(task:NeuralTask): Promise<NeuralResult> {
-    logger.debug(` Processing simple task with brain.js:${task.id}`);`
+    logger.debug(`🟢 Processing simple task with brain.js:${task.id}`);`
 
     // Use internal brain.js for simple operations
     const input = task.data.input as number[];
@@ -947,7 +947,7 @@ export class NeuralOrchestrator {
    */
   private async processModerateTask(task:NeuralTask): Promise<NeuralResult> {
     logger.debug(
-      ` Processing moderate task with enhanced brain.js:$task.id``
+      `🟡 Processing moderate task with enhanced brain.js:$task.id``
     );
 
     // Enhanced processing with some ML features
